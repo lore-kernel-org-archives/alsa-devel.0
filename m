@@ -4,59 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D802CC001B0
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Aug 2023 13:23:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0573EC001DF
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Aug 2023 13:23:54 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 06308846;
-	Tue,  8 Aug 2023 15:22:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 06308846
+	by alsa0.perex.cz (Postfix) with ESMTPS id 333B883E;
+	Tue,  8 Aug 2023 15:23:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 333B883E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1691501011;
-	bh=zdceYwQhE2oKHL7ATZ0RdEvyo90r8XrMTWVGbtOg7Lg=;
+	s=default; t=1691501032;
+	bh=dpVROW53dR0ue55HSwbJCP/YYB2qAmqJIYh1iheyIY8=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=OgU6l3XN5j8kwo0G0ANEsDnwlW72tRAKPvv2f8NtzoV803tFfXDrjos9OS7rOdYmI
-	 2b4/pA2cB56PNrtrrF4Yrs0XZLdR+X9m1NkLAaQxX9tWxzZD1WSvoT95+3JW9LlmP7
-	 OoKn14PQHup15lfahHQ519icd+n7035JdrJFIRbU=
+	b=i0ijv+IWnSwSsDpa5U+VRDhO5V5rVHAKWd305prRMjL5L+9ClRa9RHrZVfSqMj9nx
+	 ILtMJlOzuZhSBfZxGpxsISlxwFpx20vC1OGvxN4yuKjqRfNdsM4NX26wC9L98RS1Q1
+	 uc6qJlOjBPXYF8cKaKaP/KDAr8cHf1cLuYcPRo+M=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C946CF805C3; Tue,  8 Aug 2023 15:20:48 +0200 (CEST)
+	id 1D2AEF805DF; Tue,  8 Aug 2023 15:20:50 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6008CF805C8;
-	Tue,  8 Aug 2023 15:20:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 65A71F805CA;
+	Tue,  8 Aug 2023 15:20:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 932ADF80549; Tue,  8 Aug 2023 15:20:37 +0200 (CEST)
+	id 0F5B9F805AC; Tue,  8 Aug 2023 15:20:39 +0200 (CEST)
 Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 07619F80549
-	for <alsa-devel@alsa-project.org>; Tue,  8 Aug 2023 15:20:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 07619F80549
+	by alsa1.perex.cz (Postfix) with ESMTPS id 897EFF80552
+	for <alsa-devel@alsa-project.org>; Tue,  8 Aug 2023 15:20:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 897EFF80552
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=d0RQqhNC
+ header.s=PODMain02222019 header.b=af/oXLka
 Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
 	by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id
- 378513nG020848;
-	Tue, 8 Aug 2023 08:20:19 -0500
+ 378513nH020848;
+	Tue, 8 Aug 2023 08:20:20 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
 	:mime-version:content-transfer-encoding:content-type; s=
-	PODMain02222019; bh=XSeQhKgiGoVdbgVtQlA4ObxFusKabkoscLME7nRT0DU=; b=
-	d0RQqhNCotWQTAAPiNXrlJO+dyAemst6b0xZFbrQ1wuqBIK5uUbPqwY1CWXVxFnf
-	8AZC5caqX1FvNAyD5B1BeMMui3HOpsSDKlFnCcsd78njkLnYiLg41fMC8YekgLMJ
-	u74Hg+jB/E2y17IeatSUgMDMVHlUK7d+SRv056GGKoB+YP8CcwFVFPJu93bY4B5p
-	DoOk85OSyeFiGV8Ph+38hAMq9BsYf/yWw8qiSXlqHjzZ0Palst1ZkxSL6HaMmOdf
-	Yn6XKrxzqxK5i747Xz2Vs1Ssm042jtv7+lg7h0KKC8XHBiPj5fVlx1C/hqcbyZ/W
-	TghWLblHKDTYxggPf+9Bpg==
+	PODMain02222019; bh=g1rELq1bBk1wUdOwq9UGJq+tXYx476aIPwe7TrfbhqI=; b=
+	af/oXLkaCx/VtFDSurbzkO6jn7+c80t2SybLh3Q2Ks+MlAxLQYuCrFFLSu/J0NON
+	g4t9FjDn6S2PYesfiFE//Ko5AUjj8Fp0N2HviRo6ODDRJrOUI+1OOpKZSRJ9ZfsB
+	EWtJ2v1CUdCAw8fqLFjqpaBUniL4c/tefb5Vpm3mVS/DTr9E9d0PJkyC9Ul9VJS2
+	npOWdilIr8ZjxGX291xjMbVhycmmKFCo8JF/zVHsln1xl8TT0fzqqbKRnokgSU9b
+	o7cKXK5Mwf9XUJL0Orw8+VLs1mGeX2abhGZvlYA04lvRHnVTCb3/DImBtiirWOrc
+	9swVRP8I5JybKCVEA+X6Mg==
 Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3sb7vt8wd1-5
+	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3sb7vt8wd1-6
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 08 Aug 2023 08:20:19 -0500 (CDT)
+	Tue, 08 Aug 2023 08:20:20 -0500 (CDT)
 Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Tue, 8 Aug
@@ -65,7 +65,7 @@ Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
  anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
  15.2.1118.30 via Frontend Transport; Tue, 8 Aug 2023 14:20:14 +0100
 Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 1B85E3575;
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 4A02F3578;
 	Tue,  8 Aug 2023 13:20:14 +0000 (UTC)
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
 To: <broonie@kernel.org>
@@ -74,21 +74,21 @@ CC: <lgirdwood@gmail.com>, <cezary.rojewski@intel.com>,
         <kai.vehmanen@linux.intel.com>, <yung-chuan.liao@linux.intel.com>,
         <pierre-louis.bossart@linux.intel.com>, <alsa-devel@alsa-project.org>,
         <patches@opensource.cirrus.com>
-Subject: [PATCH 06/12] ASoC: intel: sof_sdw: Pull device loop up into
- create_sdw_dailink
-Date: Tue, 8 Aug 2023 14:20:07 +0100
-Message-ID: <20230808132013.889419-6-ckeepax@opensource.cirrus.com>
+Subject: [PATCH 09/12] ASoC: intel: sof_sdw: Device loop should not always
+ start at adr_index
+Date: Tue, 8 Aug 2023 14:20:10 +0100
+Message-ID: <20230808132013.889419-9-ckeepax@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20230808132013.889419-1-ckeepax@opensource.cirrus.com>
 References: <20230808132013.889419-1-ckeepax@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: P7jn4U0-nrnLAxeykCiwaEjKezGTylcd
-X-Proofpoint-ORIG-GUID: P7jn4U0-nrnLAxeykCiwaEjKezGTylcd
+X-Proofpoint-GUID: SusC8_Jdx_yx1uWW-wUT5xPUJ-ZmQJWO
+X-Proofpoint-ORIG-GUID: SusC8_Jdx_yx1uWW-wUT5xPUJ-ZmQJWO
 X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: CSW27QQSRPD2WFXNKOHLU34ZPMGSQ4C5
-X-Message-ID-Hash: CSW27QQSRPD2WFXNKOHLU34ZPMGSQ4C5
+Message-ID-Hash: PPVOG7VYZFLZW3IMBEVYDII6CLNDQUIP
+X-Message-ID-Hash: PPVOG7VYZFLZW3IMBEVYDII6CLNDQUIP
 X-MailFrom: prvs=3584cdf4cd=ckeepax@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -101,7 +101,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CSW27QQSRPD2WFXNKOHLU34ZPMGSQ4C5/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PPVOG7VYZFLZW3IMBEVYDII6CLNDQUIP/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -110,140 +110,63 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The loops which fill the codec DAI link component structures are split
-across create_sdw_dailink and create_codec_dai_name. This causes the
-code to be rather confusing, needing to return out the function to allow
-the upper loop to iterate. Remove the create_codec_dai_name helper and
-pull its code up into create_sdw_dailink, this makes it more obvious
-what is happening in the code. This patch makes no functional change
-just hoists the code up a level.
+The current loops at the top of create_sdw_dailink process the devices
+on each link starting from device index adr_index. But adr_index is only
+meaningful on the first on these SoundWire links, as it is the index of
+the current device on that link. This means devices will be skipped on
+later links.
+
+Say for example the system looks like this:
+
+SDW0 - Codec (Not Aggregated), Amp 1 (Aggregated, Group 1)
+SDW1 - Amp 2 (Aggregated, Group 1), Amp 3 (Aggregated, Group 1)
+
+The code should create 2 DAI links, one for the CODEC and one for the
+aggregated amps. It will create the DAI link for the codec no problem.
+When it creates the DAI link for Group 1 however, create_sdw_dailink
+will be called with an adr_index of 1, since that is the index of Amp
+1 on SDW0.  However, as the loop in create_sdw_dailink moves onto SDW1
+it will again start from adr_index, skipping Amp 2. Resulting in the amp
+DAI link only have amps 1 and 3 in it.
+
+It is reasonable to start at adr_index on the first link, since
+earlier devices have by definition already been processed. However,
+update the code when processing later links to handle all devices.
 
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 ---
- sound/soc/intel/boards/sof_sdw.c | 89 +++++++++++++-------------------
- 1 file changed, 35 insertions(+), 54 deletions(-)
+ sound/soc/intel/boards/sof_sdw.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
 diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
-index ba4775e778072..5c154628236c7 100644
+index 0401516f35de6..767c49022eae4 100644
 --- a/sound/soc/intel/boards/sof_sdw.c
 +++ b/sound/soc/intel/boards/sof_sdw.c
-@@ -1197,54 +1197,6 @@ static int fill_sdw_codec_dlc(struct device *dev,
- 	return 0;
- }
+@@ -1366,6 +1366,7 @@ static int create_sdw_dailink(struct snd_soc_card *card, int *link_index,
+ 		return -ENOMEM;
  
--static int create_codec_dai_name(struct device *dev,
--				 const struct snd_soc_acpi_link_adr *adr_link,
--				 struct snd_soc_dai_link_component *codec,
--				 int offset,
--				 struct snd_soc_codec_conf *codec_conf,
--				 int codec_count,
--				 int *codec_conf_index,
--				 int adr_index,
--				 int dai_index)
--{
--	int _codec_index = -1;
--	int i, ret;
--
--	/* sanity check */
--	if (*codec_conf_index + adr_link->num_adr - adr_index > codec_count) {
--		dev_err(dev, "codec_conf: out-of-bounds access requested\n");
--		return -EINVAL;
--	}
--
--	for (i = adr_index; i < adr_link->num_adr; i++) {
--		int codec_index, comp_index;
--		u64 adr = adr_link->adr_d[i].adr;
--
--		codec_index = find_codec_info_part(adr);
--		if (codec_index < 0)
--			return codec_index;
--		if (_codec_index != -1 && codec_index != _codec_index) {
--			dev_dbg(dev, "Different devices on the same sdw link\n");
--			break;
--		}
--		_codec_index = codec_index;
--
--		comp_index = i - adr_index + offset;
--
--		ret = fill_sdw_codec_dlc(dev, adr_link, &codec[comp_index],
--					 codec_index, i, dai_index);
--		if (ret)
--			return ret;
--
--		codec_conf[*codec_conf_index].dlc = codec[comp_index];
--		codec_conf[*codec_conf_index].name_prefix = adr_link->adr_d[i].name_prefix;
--
--		++*codec_conf_index;
--	}
--
--	return 0;
--}
--
- static int set_codec_init_func(struct snd_soc_card *card,
- 			       const struct snd_soc_acpi_link_adr *adr_link,
- 			       struct snd_soc_dai_link *dai_links,
-@@ -1401,8 +1353,8 @@ static int create_sdw_dailink(struct snd_soc_card *card, int *link_index,
- 	int codec_num;
- 	int stream;
- 	int i = 0;
-+	int j, k;
- 	int ret;
--	int k;
- 
- 	ret = get_slave_info(adr_link, dev, cpu_dai_id, &cpu_dai_num, &codec_num,
- 			     &group_id, adr_index);
-@@ -1417,6 +1369,7 @@ static int create_sdw_dailink(struct snd_soc_card *card, int *link_index,
+ 	/* generate codec name on different links in the same group */
++	j = adr_index;
  	for (adr_link_next = adr_link; adr_link_next && adr_link_next->num_adr &&
  	     i < cpu_dai_num; adr_link_next++) {
  		const struct snd_soc_acpi_endpoint *endpoints;
-+		int _codec_index = -1;
- 
- 		endpoints = adr_link_next->adr_d->endpoints;
- 		if (group_id && (!endpoints->aggregated ||
-@@ -1427,11 +1380,39 @@ static int create_sdw_dailink(struct snd_soc_card *card, int *link_index,
+@@ -1380,7 +1381,8 @@ static int create_sdw_dailink(struct snd_soc_card *card, int *link_index,
  		if (cpu_dai_id[i] != ffs(adr_link_next->mask) - 1)
  			continue;
  
--		ret = create_codec_dai_name(dev, adr_link_next, codecs, codec_dlc_index,
--					    codec_conf, codec_count, codec_conf_index,
--					    adr_index, dai_index);
--		if (ret < 0)
--			return ret;
-+		/* sanity check */
-+		if (*codec_conf_index + adr_link_next->num_adr - adr_index > codec_count) {
-+			dev_err(dev, "codec_conf: out-of-bounds access requested\n");
-+			return -EINVAL;
-+		}
-+
-+		for (j = adr_index; j < adr_link_next->num_adr; j++) {
-+			int codec_index, comp_index;
-+			u64 adr = adr_link_next->adr_d[j].adr;
-+
-+			codec_index = find_codec_info_part(adr);
-+			if (codec_index < 0)
-+				return codec_index;
-+			if (_codec_index != -1 && codec_index != _codec_index) {
-+				dev_dbg(dev, "Different devices on the same sdw link\n");
-+				break;
-+			}
-+			_codec_index = codec_index;
-+
-+			comp_index = j - adr_index + codec_dlc_index;
-+
-+			ret = fill_sdw_codec_dlc(dev, adr_link_next,
-+						 &codecs[comp_index],
-+						 codec_index, j, dai_index);
-+			if (ret)
-+				return ret;
-+
-+			codec_conf[*codec_conf_index].dlc = codecs[comp_index];
-+			codec_conf[*codec_conf_index].name_prefix =
-+					adr_link_next->adr_d[j].name_prefix;
-+
-+			(*codec_conf_index)++;
-+		}
+-		for (j = adr_index; j < adr_link_next->num_adr; j++) {
++		/* j reset after loop, adr_index only applies to first link */
++		for (; j < adr_link_next->num_adr; j++) {
+ 			int codec_index;
+ 			u64 adr = adr_link_next->adr_d[j].adr;
+ 
+@@ -1412,6 +1414,7 @@ static int create_sdw_dailink(struct snd_soc_card *card, int *link_index,
+ 			codec_dlc_index++;
+ 			(*codec_conf_index)++;
+ 		}
++		j = 0;
  
  		/* check next link to create codec dai in the processed group */
  		i++;
