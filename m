@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 593BFC001B0
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Aug 2023 13:21:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1F781C001B0
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Aug 2023 13:22:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E940D823;
-	Tue,  8 Aug 2023 15:20:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E940D823
+	by alsa0.perex.cz (Postfix) with ESMTPS id EA80F839;
+	Tue,  8 Aug 2023 15:21:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EA80F839
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1691500910;
-	bh=+/el0uwarQVAGcc4tBF56AyweKNlKHQ3L1r2ac2ogDk=;
+	s=default; t=1691500933;
+	bh=WDUOT5UowiddEaaoa3IH/xV4RAnAcyVDuA3zt441H50=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=AyXMf5qqsnovea98s/xdfCNyOKDzqLHA1v7Nm8pGqYBsW4Jm2AUGGIKvn4jUpTTh8
-	 7KlKl1GbFuBGJOjHWyToMWaRiJZQXWNguhShdVm6HmIWLWTK5rJj3x2IL27fCUrTyC
-	 ESNq9pw6Hkncu6+qZ/Uu5bxp8+1hCVxkTyAbt5zM=
+	b=doqyh/WSMkStb9WsXkOO3blFqIzAjdWj2w1VL0/QMniuUhQWPSFK74e6tZRyBRiac
+	 bfVYZvUpdIO6rBEcDfxrhBjJMs9VTC60YtksJ6bwHu+SHYvYwZxNAw2ldfMWYCouVI
+	 iCZUErwaVnvYSrOx1XPb6W4f5eynkrDVyZxm+lBo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 69C69F8055A; Tue,  8 Aug 2023 15:20:31 +0200 (CEST)
+	id 63D49F80563; Tue,  8 Aug 2023 15:20:33 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C8CD6F800FE;
-	Tue,  8 Aug 2023 15:20:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 99D37F8056F;
+	Tue,  8 Aug 2023 15:20:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AA120F8055A; Tue,  8 Aug 2023 15:20:25 +0200 (CEST)
+	id B5363F80558; Tue,  8 Aug 2023 15:20:26 +0200 (CEST)
 Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 05C4AF80154
+	by alsa1.perex.cz (Postfix) with ESMTPS id EA9BAF80534
 	for <alsa-devel@alsa-project.org>; Tue,  8 Aug 2023 15:20:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 05C4AF80154
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EA9BAF80534
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=cqnoZ9kQ
+ header.s=PODMain02222019 header.b=BT001ulU
 Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
 	by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id
- 3784vnaF015760;
+ 378513nD020848;
 	Tue, 8 Aug 2023 08:20:16 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
 	:mime-version:content-transfer-encoding:content-type; s=
-	PODMain02222019; bh=rkgtbgi+SCWiycXk9ralVFCH8E4FPGd1CJTOd1wVrv4=; b=
-	cqnoZ9kQDYqBLAUGYy3E9bF36VoXsZPIE8uEeaMODr9ixeeoFp/31qwTF1nuY29I
-	rYx/+LI/ZL6NwUmYpzX07w3YbWv68RPIoz1rOZckixgDu63zNcxLkA1IetAzlNCD
-	0jwxiBY2EDYcIIQ5tmp2GwlvGOiPq1CqwIEy3pG/4csq4+ezIlkFD9UrePzeK22p
-	9d05T86m2B/8jhfapshO+ghz1LGnfn1RpoCXUEgb4HZOd7Mk6LjQb5wYTii3RVBp
-	Z/kJDArW70xTN3gQidOSnsCiyY+WW/78B+tdGynilvVreC5D8eWJzpF38LuoBn3+
-	vGOgdhFV55gLMZPVor7LzQ==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3sb7vt8wd2-1
+	PODMain02222019; bh=s0FyE52Cn+6PGgKvdPRmvC3yNUXMYoYPo4uX6E7w11E=; b=
+	BT001ulURQZjA8nUsZd6raYfgXuw6YfGUdOwptLAUdoqp6HQhOGQzSDcSw9ANhRl
+	MWYwnDH02w3TZNukhUrw3cSViJitGEJ+UwnyK+HsNRZvOifva9U21tdVqDmd8TPH
+	lEvgUdSjIsdo71ityA4TkkC7Htqu6EQ9R9RTrEGqO2wl6gszl2sAR6j6Kfo4NTGm
+	BcnFZG2atL+UX0LGOhmb6gN2HH8bIgcTmxWWyqEf/fmUiNkecJsyTnon1l/KXxYf
+	yMgXRCoRgaK6nedJHGt429qfr7+Qea78FesmidediV0Xi29BpknAHQdLeOzQuSdd
+	40sRWraoFIO+ntunZLtiMA==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3sb7vt8wd1-2
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Tue, 08 Aug 2023 08:20:16 -0500 (CDT)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Tue, 8 Aug
- 2023 14:20:14 +0100
+ 2023 14:20:13 +0100
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.30 via Frontend
- Transport; Tue, 8 Aug 2023 14:20:14 +0100
+ Transport; Tue, 8 Aug 2023 14:20:13 +0100
 Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 009EB357C;
-	Tue,  8 Aug 2023 13:20:14 +0000 (UTC)
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id CEB1C3575;
+	Tue,  8 Aug 2023 13:20:13 +0000 (UTC)
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
 To: <broonie@kernel.org>
 CC: <lgirdwood@gmail.com>, <cezary.rojewski@intel.com>,
@@ -74,21 +74,21 @@ CC: <lgirdwood@gmail.com>, <cezary.rojewski@intel.com>,
         <kai.vehmanen@linux.intel.com>, <yung-chuan.liao@linux.intel.com>,
         <pierre-louis.bossart@linux.intel.com>, <alsa-devel@alsa-project.org>,
         <patches@opensource.cirrus.com>
-Subject: [PATCH 04/12] ASoC: intel: sof-sdw: Move check for valid group id to
- get_dailink_info
-Date: Tue, 8 Aug 2023 14:20:05 +0100
-Message-ID: <20230808132013.889419-4-ckeepax@opensource.cirrus.com>
+Subject: [PATCH 02/12] ASoC: intel: sof_sdw: Remove duplicate NULL check on
+ adr_link
+Date: Tue, 8 Aug 2023 14:20:03 +0100
+Message-ID: <20230808132013.889419-2-ckeepax@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20230808132013.889419-1-ckeepax@opensource.cirrus.com>
 References: <20230808132013.889419-1-ckeepax@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: lbQ7XnNaUc0set8fkXSUIgn-XfDW2VzG
-X-Proofpoint-ORIG-GUID: lbQ7XnNaUc0set8fkXSUIgn-XfDW2VzG
+X-Proofpoint-GUID: pGpizM-cBx1WdtmY2eTsc8BM3X-HbO9F
+X-Proofpoint-ORIG-GUID: pGpizM-cBx1WdtmY2eTsc8BM3X-HbO9F
 X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: Y2TRRDX2IWPZZEFIOOIP64CV6LPC4OJA
-X-Message-ID-Hash: Y2TRRDX2IWPZZEFIOOIP64CV6LPC4OJA
+Message-ID-Hash: XT6FALSG55QTQSTNNAKSTFK67L66YP2A
+X-Message-ID-Hash: XT6FALSG55QTQSTNNAKSTFK67L66YP2A
 X-MailFrom: prvs=3584cdf4cd=ckeepax@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -101,56 +101,40 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Y2TRRDX2IWPZZEFIOOIP64CV6LPC4OJA/>
-List-Archive: <>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XT6FALSG55QTQSTNNAKSTFK67L66YP2A/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Move the check for a valid group id into get_dailink_info as
-well. This does cause a slight change in behaviour in that the system
-will return an error rather than just ignoring the link with an
-invalid group id. There are presently no systems with invalid group
-ids in mainline and failing seems more appropriate since it will
-better highlight the code needs fixing.
+get_dailink_info already checked if the adr_link pointer was NULL so
+there is no need to recheck later in sof_card_dai_links_create.
 
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 ---
- sound/soc/intel/boards/sof_sdw.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ sound/soc/intel/boards/sof_sdw.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
 diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
-index 268629d5505c3..b250fb7be4bff 100644
+index 8f3329dcf7062..89614d08d0918 100644
 --- a/sound/soc/intel/boards/sof_sdw.c
 +++ b/sound/soc/intel/boards/sof_sdw.c
-@@ -1074,6 +1074,11 @@ static int get_dailink_info(struct device *dev,
- 			}
+@@ -1632,10 +1632,6 @@ static int sof_card_dai_links_create(struct snd_soc_card *card)
+ 	if (!sdw_be_num)
+ 		goto SSP;
  
- 			endpoint = adr_link->adr_d[i].endpoints;
-+			if (endpoint->aggregated && !endpoint->group_id) {
-+				dev_err(dev, "invalid group id on link %x\n",
-+					adr_link->mask);
-+				return -EINVAL;
-+			}
+-	adr_link = mach_params->links;
+-	if (!adr_link)
+-		return -EINVAL;
+-
+ 	for (i = 0; i < SDW_MAX_LINKS; i++)
+ 		sdw_pin_index[i] = SDW_INTEL_BIDIR_PDI_BASE;
  
- 			for (j = 0; j < codec_info->dai_num; j++) {
- 				/* count DAI number for playback and capture */
-@@ -1666,11 +1671,6 @@ static int sof_card_dai_links_create(struct snd_soc_card *card)
- 			const struct snd_soc_acpi_endpoint *endpoint;
- 
- 			endpoint = adr_link->adr_d[i].endpoints;
--			if (endpoint->aggregated && !endpoint->group_id) {
--				dev_err(dev, "invalid group id on link %x\n",
--					adr_link->mask);
--				continue;
--			}
- 
- 			/* this group has been generated */
- 			if (endpoint->aggregated &&
 -- 
 2.30.2
 
