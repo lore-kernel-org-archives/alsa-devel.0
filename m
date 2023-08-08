@@ -4,91 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2974AC001DE
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Aug 2023 16:49:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 965E1C001DB
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Aug 2023 16:49:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A80DF84C;
-	Tue,  8 Aug 2023 18:48:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A80DF84C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 500E7886;
+	Tue,  8 Aug 2023 18:48:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 500E7886
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1691513349;
-	bh=kEIvGx02mnYC0fvMC3nd1mpaBEoilP90qlpZS1tqaf4=;
+	s=default; t=1691513368;
+	bh=S+ZLyoWMRp6vyh7fd6ikYxIQJLsjTYXpmR8xvH/Z5W4=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=bcn+/UTNV9eIPE8sW6JHfq0BJbfrbts4O5qvT9TT/UKefBgMjN3/BYdAzSz/otppu
-	 JbkEJKYovAaIXHhQln0fuNjTL/fsyBM0C2doWOi3FWKDWG5BqhPI3w5adD0KibrDFj
-	 NPiyb1FfCtn1tqCOcdC1VaY8xbW3cRybHi17WvtU=
+	b=l2VxsUSZn0NAVp9d7RXui+XKgKzitrLCZ71LXC9Tvo5tL4QpujHoNAOjxeY5wYj40
+	 3o7nSqhoFbnBSemeuCIvjwB07y9Kt3n/J3fJhorcB8/dZB4j4XRJq7GRBg+b2joC3v
+	 Q5F9YIV0qDMTZD/uyzQPRvMSZdduTBpVCfJ3bcQY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 82414F8055A; Tue,  8 Aug 2023 18:47:25 +0200 (CEST)
+	id AC34DF80587; Tue,  8 Aug 2023 18:47:30 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id CEE2CF8055A;
-	Tue,  8 Aug 2023 18:47:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1A205F805A0;
+	Tue,  8 Aug 2023 18:47:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 35D51F80534; Tue,  8 Aug 2023 18:47:19 +0200 (CEST)
+	id 42884F8057F; Tue,  8 Aug 2023 18:47:26 +0200 (CEST)
 Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 5FFADF800B8
-	for <alsa-devel@alsa-project.org>; Tue,  8 Aug 2023 18:47:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5FFADF800B8
+	by alsa1.perex.cz (Postfix) with ESMTPS id A4EF1F8053B
+	for <alsa-devel@alsa-project.org>; Tue,  8 Aug 2023 18:47:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A4EF1F8053B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=oPIzpcGV
+ header.s=PODMain02222019 header.b=c2D/cGWn
 Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
 	by mx0b-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id
- 378GfYwE012826;
+ 378F5h5e030864;
 	Tue, 8 Aug 2023 11:47:06 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
 	:mime-version:content-transfer-encoding:content-type; s=
-	PODMain02222019; bh=Mt28dTgZ7PN6kO/FpAGHcn+lAjxM4yoMpXnoYmoEICM=; b=
-	oPIzpcGViEhf22/FDG+vD+CfVPnzGYPiXgctTKouarGtNDf6G2s3sLxE5s72H2Ef
-	bpm1w1jZOwk5mLqZgXOePSh/DcFG4n+TsefJhSugbBEuvVsX7ZaFlmV4Vk7jCWT7
-	4bI+6Ki1oGnbl7ZPY5sK2DwgFJvnviWgJMB4x2cyxBdtmhZ/q7CyPSYW87ZA5XoA
-	f92toe1BTCFqlixXNH8M9SIDZou9IOMteAIk4SPW9Nc6a4j0DPHS/e1oliqS0gwE
-	drYNJZdfgTEsYT7FbFhyqoxp5vCOiyxbK6PPTW3CPd1mVD1+iacz1HAbh6Q09T/k
-	CB/WncpoeOiz/AgOz9LiOQ==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3s9juhtucr-1
+	PODMain02222019; bh=DHwKlQABuWJSJlMrBP0tMZ5Qj6m10MGJY4M7p6mGmqo=; b=
+	c2D/cGWnZfcQ0Jk8sbq5M0/P0rJCE+sXAYOPOGmFcRho+lSTw1WFuLt+nV/JNjSY
+	JlaBEvrdq+3GTNQAc3SU5mUCNOleKoGqI8gvHFB90SUiCrjs3D9Y8JTqW6Cex7Xq
+	RXP1+OfBty7GPUvV4B1G9DJj9es86UMWLhvndAeTn6dWb9CzTxvxNWgcrari8HDD
+	Yngfs1BHgflsN7EAD0bhQAV4pPTRXJIKoCjrmSojfBEIVRcg+jCporpaCMwSNGQJ
+	FNmldr4+3vLZfUkORq9x59HFweD0ZEVVLI3qo5htBfYyOhqpMFsffn1AJV1Lx2UY
+	/QHj/mHz56Bf7db/5SUN2Q==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3s9juhtucq-2
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Tue, 08 Aug 2023 11:47:06 -0500 (CDT)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Tue, 8 Aug
- 2023 17:47:04 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.30 via Frontend Transport; Tue, 8 Aug 2023 17:47:04 +0100
+ 2023 17:47:06 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.30 via Frontend
+ Transport; Tue, 8 Aug 2023 17:47:06 +0100
 Received: from EDIN4L06LR3.ad.cirrus.com (EDIN4L06LR3.ad.cirrus.com
  [198.61.64.220])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id A41F515B7;
-	Tue,  8 Aug 2023 16:47:04 +0000 (UTC)
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id A949F15B7;
+	Tue,  8 Aug 2023 16:47:05 +0000 (UTC)
 From: Richard Fitzgerald <rf@opensource.cirrus.com>
 To: <broonie@kernel.org>
 CC: <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
         <patches@opensource.cirrus.com>,
-        Richard Fitzgerald
-	<rf@opensource.cirrus.com>
-Subject: [PATCH 1/5] ASoC: cs35l56: Avoid uninitialized variable in
- cs35l56_set_asp_slot_positions()
-Date: Tue, 8 Aug 2023 17:46:58 +0100
-Message-ID: <20230808164702.21272-2-rf@opensource.cirrus.com>
+        Simon Trimmer
+	<simont@opensource.cirrus.com>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>
+Subject: [PATCH 4/5] ASoC: wm_adsp: Expose the DSP power down actions as
+ wm_adsp_power_down()
+Date: Tue, 8 Aug 2023 17:47:01 +0100
+Message-ID: <20230808164702.21272-5-rf@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20230808164702.21272-1-rf@opensource.cirrus.com>
 References: <20230808164702.21272-1-rf@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: 5TEVI71sAI4bd-azc_I1dsY-qWuAlvMR
-X-Proofpoint-ORIG-GUID: 5TEVI71sAI4bd-azc_I1dsY-qWuAlvMR
+X-Proofpoint-GUID: ZAU_kgMQiXl-jgql4BPkaDIKLgpxLNZQ
+X-Proofpoint-ORIG-GUID: ZAU_kgMQiXl-jgql4BPkaDIKLgpxLNZQ
 X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: VX7HXNZ3YIIVGNK5ITG7TGRFBZGZCMCQ
-X-Message-ID-Hash: VX7HXNZ3YIIVGNK5ITG7TGRFBZGZCMCQ
+Message-ID-Hash: AXXG4YJLSOA4DG6CMNVWH374LOWCKIYE
+X-Message-ID-Hash: AXXG4YJLSOA4DG6CMNVWH374LOWCKIYE
 X-MailFrom: prvs=3584a5a98c=rf@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -101,7 +102,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VX7HXNZ3YIIVGNK5ITG7TGRFBZGZCMCQ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AXXG4YJLSOA4DG6CMNVWH374LOWCKIYE/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -110,80 +111,57 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Re-implement setting of ASP TDM slots so that only the common loop to
-build the register word is factored out.
+From: Simon Trimmer <simont@opensource.cirrus.com>
 
-The original cs35l56_set_asp_slot_positions() had an apparent
-uninitialized variable if the passed register address was neither of the
-ASP slot registers. In fact this would never happen because the calling
-code passed valid registers.
+To support self-booting DSPs that operate outside of a conventional DAPM
+event life cycle expose a companion function to wm_adsp_power_up() so
+that the correct state of the DSP firmware and controls can be recorded.
 
-While it's trivial to initialize the variable or add a default case,
-actually the only common code was the loop at the end of the function,
-which simply manipulates some mask values and is identical for either
-register. Factoring out the regmap_write() didn't really gain anything.
-
-So instead re-implement the code to replace the original function with
-cs35l56_make_tdm_config_word() that only does the loop, and change the
-calling code to call regmap_write() directly.
-
+Signed-off-by: Simon Trimmer <simont@opensource.cirrus.com>
 Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 ---
- sound/soc/codecs/cs35l56.c | 24 ++++++++----------------
- 1 file changed, 8 insertions(+), 16 deletions(-)
+ sound/soc/codecs/wm_adsp.c | 8 +++++++-
+ sound/soc/codecs/wm_adsp.h | 1 +
+ 2 files changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/cs35l56.c b/sound/soc/codecs/cs35l56.c
-index 19b6b4fbe5de..be400208205a 100644
---- a/sound/soc/codecs/cs35l56.c
-+++ b/sound/soc/codecs/cs35l56.c
-@@ -358,22 +358,11 @@ static int cs35l56_asp_dai_set_fmt(struct snd_soc_dai *codec_dai, unsigned int f
- 	return 0;
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index 5a89abfe8784..13f500fa9a5f 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -1025,6 +1025,12 @@ int wm_adsp_power_up(struct wm_adsp *dsp)
  }
+ EXPORT_SYMBOL_GPL(wm_adsp_power_up);
  
--static void cs35l56_set_asp_slot_positions(struct cs35l56_private *cs35l56,
--					   unsigned int reg, unsigned long mask)
-+static unsigned int cs35l56_make_tdm_config_word(unsigned int reg_val, unsigned long mask)
++void wm_adsp_power_down(struct wm_adsp *dsp)
++{
++	cs_dsp_power_down(&dsp->cs_dsp);
++}
++EXPORT_SYMBOL_GPL(wm_adsp_power_down);
++
+ static void wm_adsp_boot_work(struct work_struct *work)
  {
--	unsigned int reg_val, channel_shift;
-+	unsigned int channel_shift;
- 	int bit_num;
+ 	struct wm_adsp *dsp = container_of(work,
+@@ -1046,7 +1052,7 @@ int wm_adsp_early_event(struct snd_soc_dapm_widget *w,
+ 		queue_work(system_unbound_wq, &dsp->boot_work);
+ 		break;
+ 	case SND_SOC_DAPM_PRE_PMD:
+-		cs_dsp_power_down(&dsp->cs_dsp);
++		wm_adsp_power_down(dsp);
+ 		break;
+ 	default:
+ 		break;
+diff --git a/sound/soc/codecs/wm_adsp.h b/sound/soc/codecs/wm_adsp.h
+index 769904d34a87..3044f964ac14 100644
+--- a/sound/soc/codecs/wm_adsp.h
++++ b/sound/soc/codecs/wm_adsp.h
+@@ -92,6 +92,7 @@ int wm_adsp_early_event(struct snd_soc_dapm_widget *w,
+ 			struct snd_kcontrol *kcontrol, int event);
  
--	/* Init all slots to 63 */
--	switch (reg) {
--	case CS35L56_ASP1_FRAME_CONTROL1:
--		reg_val = 0x3f3f3f3f;
--		break;
--	case CS35L56_ASP1_FRAME_CONTROL5:
--		reg_val = 0x3f3f3f;
--		break;
--	}
--
- 	/* Enable consecutive TX1..TXn for each of the slots set in mask */
- 	channel_shift = 0;
- 	for_each_set_bit(bit_num, &mask, 32) {
-@@ -382,7 +371,7 @@ static void cs35l56_set_asp_slot_positions(struct cs35l56_private *cs35l56,
- 		channel_shift += 8;
- 	}
+ int wm_adsp_power_up(struct wm_adsp *dsp);
++void wm_adsp_power_down(struct wm_adsp *dsp);
  
--	regmap_write(cs35l56->base.regmap, reg, reg_val);
-+	return reg_val;
- }
- 
- static int cs35l56_asp_dai_set_tdm_slot(struct snd_soc_dai *dai, unsigned int tx_mask,
-@@ -418,8 +407,11 @@ static int cs35l56_asp_dai_set_tdm_slot(struct snd_soc_dai *dai, unsigned int tx
- 	if (rx_mask == 0)
- 		rx_mask = 0xf;	// ASPTX1..TX4 in slots 0..3
- 
--	cs35l56_set_asp_slot_positions(cs35l56, CS35L56_ASP1_FRAME_CONTROL1, rx_mask);
--	cs35l56_set_asp_slot_positions(cs35l56, CS35L56_ASP1_FRAME_CONTROL5, tx_mask);
-+	/* Default unused slots to 63 */
-+	regmap_write(cs35l56->base.regmap, CS35L56_ASP1_FRAME_CONTROL1,
-+		     cs35l56_make_tdm_config_word(0x3f3f3f3f, rx_mask));
-+	regmap_write(cs35l56->base.regmap, CS35L56_ASP1_FRAME_CONTROL5,
-+		     cs35l56_make_tdm_config_word(0x3f3f3f, tx_mask));
- 
- 	dev_dbg(cs35l56->base.dev, "tdm slot width: %u count: %u tx_mask: %#x rx_mask: %#x\n",
- 		cs35l56->asp_slot_width, cs35l56->asp_slot_count, tx_mask, rx_mask);
+ irqreturn_t wm_adsp2_bus_error(int irq, void *data);
+ irqreturn_t wm_halo_bus_error(int irq, void *data);
 -- 
 2.30.2
 
