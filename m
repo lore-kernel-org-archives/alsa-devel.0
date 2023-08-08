@@ -4,76 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6A542C04A6A
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Aug 2023 17:59:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EFAA8C04A6A
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Aug 2023 17:59:45 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0696286E;
-	Tue,  8 Aug 2023 19:58:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0696286E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 10F75847;
+	Tue,  8 Aug 2023 19:58:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 10F75847
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1691517557;
-	bh=OSvszJttxNAF7oaPs45J3swOAdc7/JMUBzffXY6Edss=;
+	s=default; t=1691517584;
+	bh=COsy3V5ET+SU728KTKHgRVWYKNpkWiEh5qjoGjo8g1Y=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=KIWpAOTFPoBsRlYvb7Vkr1YyiaHRZ2BVhOLwO76kmib9TkcYU+Au0VIky497a1nGO
-	 I5j1lgAzTZlvvmqomCWgJGR+IoAXMdzCa7hKeactJE9uEf1rzbDOZUGGarSnGqktYR
-	 lfplqM7ltyhXqoircWNKVoRW+3nDDRxYa3aIUTrQ=
+	b=HJCsbj5xDmmEKVq9pJVHF/OjHBo/SW0/TP9z1ThjLc9C6gUvbpPf5QovFALXOth3W
+	 9g0jwXD44snx5PQwR67TooUXSATwDtRdnNM6p3+9AZgxeAfFFSTm1AVt5kesuQnDwT
+	 ECZbwApR8qEffkruLbT+/FMgiW93i+d0Zy4fAW6E=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AEBAEF805AF; Tue,  8 Aug 2023 19:57:25 +0200 (CEST)
+	id 7B07DF805B1; Tue,  8 Aug 2023 19:57:27 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 273BBF805AB;
-	Tue,  8 Aug 2023 19:57:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E4373F8057E;
+	Tue,  8 Aug 2023 19:57:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 27A10F80563; Tue,  8 Aug 2023 19:57:16 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+	id 80315F8055C; Tue,  8 Aug 2023 19:57:16 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D1D49F800B8
-	for <alsa-devel@alsa-project.org>; Tue,  8 Aug 2023 19:57:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D1D49F800B8
+	by alsa1.perex.cz (Postfix) with ESMTPS id 7273CF80538
+	for <alsa-devel@alsa-project.org>; Tue,  8 Aug 2023 19:57:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7273CF80538
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=aZHoibeW
+ header.s=k20201202 header.b=AAGVWqnq
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 3A8F362942;
-	Tue,  8 Aug 2023 17:57:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9D9FC433C9;
-	Tue,  8 Aug 2023 17:57:01 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 22CA562461;
+	Tue,  8 Aug 2023 17:57:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65321C433C7;
+	Tue,  8 Aug 2023 17:57:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1691517422;
-	bh=OSvszJttxNAF7oaPs45J3swOAdc7/JMUBzffXY6Edss=;
+	s=k20201202; t=1691517429;
+	bh=COsy3V5ET+SU728KTKHgRVWYKNpkWiEh5qjoGjo8g1Y=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=aZHoibeWEnNsRHe/zO9TGlWimRpA4oNcnXQASGyFEKe5Re49eOODnUTTcaHI23R7v
-	 Ox8IGYorhl/F9RSj2ZLqwSp4V+HF43zvHCyBy2FSyglLLhDrW6uYz2sW9GGBOaYums
-	 +a6nHaMfQszQImDYDHbLps7pokh7gifO6OJccffAAFBUbOVuSVNjyl39A/zXVpkPyI
-	 aQ8vToo0H4K5nDp9kNaRCR4C/8Y1Hgp1xxu1i+OO2iDF4IFAYWbiW2fuHX+EwQQd8/
-	 qVjEzfoWsnx+QOOrdLHFgpJfFdoOaO7YKg1zZadz76Jrk2cA80XXlKeuJe5R6ze7e1
-	 RkpThx2ohYqVw==
+	b=AAGVWqnqiWseR8/wFi19jekrtO0FhO7dzmKn96YkhNAUgIlD0Oa0cb+gwochbQvjV
+	 tEih7Y8xR02k3XM6MDpq9QIMBs80mrXbQwEdyaHjWWpt44e8tYdDkGMYBp6HX0MM7+
+	 eSpcU0SJZNoJQ5myqPJ5i3Fm+VWWg+uExKBNXys8R8H9jBB+2q7fSXbS2Z0/bE7VKF
+	 OUiBTI1LHCv8QjUyEh3/BqVGZ0ZobSA1ekRp3Rr5fzZmFCVCE66hWqQCGL0Jkua4h0
+	 5MP10ySHs8VwkGkYMJifwKZc6L/5QLLqmaXf5yt8kRKfr3CNjPcZRIjxTBIq00fYmu
+	 uPf8FkYPyqAMQ==
 From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: tiwai@suse.de
-In-Reply-To: <20230807215000.515846-1-pierre-louis.bossart@linux.intel.com>
-References: <20230807215000.515846-1-pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 0/2] ASoC: Intel: sof_sdw: fix two settings
-Message-Id: <169151742166.78353.4135993880316558369.b4-ty@kernel.org>
-Date: Tue, 08 Aug 2023 18:57:01 +0100
+To: lgirdwood@gmail.com, Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com,
+ ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com,
+ rander.wang@intel.com, guennadi.liakhovetski@linux.intel.com,
+ yung-chuan.liao@linux.intel.com, regressions@leemhuis.info
+In-Reply-To: <20230808110627.32375-1-peter.ujfalusi@linux.intel.com>
+References: <20230808110627.32375-1-peter.ujfalusi@linux.intel.com>
+Subject: Re: [PATCH] ASoC: SOF: intel: hda: Clean up link DMA for IPC3
+ during stop
+Message-Id: <169151742693.78353.2991484643013989552.b4-ty@kernel.org>
+Date: Tue, 08 Aug 2023 18:57:06 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-034f2
-Message-ID-Hash: 4E54YSDVODNA56Y2RUVP22NTXK525ZOW
-X-Message-ID-Hash: 4E54YSDVODNA56Y2RUVP22NTXK525ZOW
+Message-ID-Hash: SB3SEGUO7XT26JVLJXIZNZ2UPFKWBP4N
+X-Message-ID-Hash: SB3SEGUO7XT26JVLJXIZNZ2UPFKWBP4N
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -86,7 +87,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4E54YSDVODNA56Y2RUVP22NTXK525ZOW/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SB3SEGUO7XT26JVLJXIZNZ2UPFKWBP4N/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -95,16 +96,11 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, 07 Aug 2023 16:49:58 -0500, Pierre-Louis Bossart wrote:
-> Fix button mapping for CS42L42 and jack detection for LunarLake RVP.
+On Tue, 08 Aug 2023 14:06:27 +0300, Peter Ujfalusi wrote:
+> With IPC3, we reset hw_params during the stop trigger, so we should also
+> clean up the link DMA during the stop trigger.
 > 
-> Pierre-Louis Bossart (1):
->   ASoC: Intel: sof-sdw: update jack detection quirk for LunarLake RVP
 > 
-> jairaj-arava (1):
->   ASoC: Intel: sof-sdw-cs42142: fix for codec button mapping
-> 
-> [...]
 
 Applied to
 
@@ -112,10 +108,8 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: Intel: sof-sdw-cs42142: fix for codec button mapping
-      commit: e61994882611d1a49387be37fda005e0ef6226ac
-[2/2] ASoC: Intel: sof-sdw: update jack detection quirk for LunarLake RVP
-      commit: bd76caa26ab53ed3bf13ad541d69f119e910d764
+[1/1] ASoC: SOF: intel: hda: Clean up link DMA for IPC3 during stop
+      commit: 90219f1bd273055f1dc1d7bdc0965755b992c045
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
