@@ -4,117 +4,104 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ED866C001DF
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Aug 2023 10:43:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DB55BC001DF
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Aug 2023 11:03:34 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 414B5EA1;
-	Tue,  8 Aug 2023 12:42:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 414B5EA1
+	by alsa0.perex.cz (Postfix) with ESMTPS id E01CF84A;
+	Tue,  8 Aug 2023 13:02:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E01CF84A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1691491420;
-	bh=G0JGoL/rMNRUtDqtTifRpYE2RlmXvngvcsipnYYMJRM=;
-	h=Date:From:Subject:To:Cc:References:In-Reply-To:List-Id:
+	s=default; t=1691492613;
+	bh=jHOYn9//8iPX+RoPt/5H1z0TENE0RN0IS8pVvDCFJC0=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=PQBQbHPiPvKxWIPQ4A/o9vNr5CZg4PdzvXwaBjOyXGNiKxX13A2IylyqRlQBmI2n+
-	 R8czmtz+IspYwaMKhmxBhEC8r1e7o/A5FF+IInLSine7uWkHeUIOt/T8onhHlERIMs
-	 dltVHxRJcOCl3+pGGfmnevWVD4De2sM7kXLmXJuU=
+	b=dC8kEJpB/kEl4hps9nxdK4KKdO+E254vc+vzOCc7pulxs7bZkAhm6SzZ9JTz/5sYw
+	 qFjgVnQJGAEOMvVvtbD/zUm4ky0xT0TOMun7APi2btwvqAQGX3MpuV2uDk+5q27PIV
+	 eIxdpWOYQCM0/G+RtM2g8POdK6mGA2ThwoniSBZI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0AE2EF806AF; Tue,  8 Aug 2023 12:36:42 +0200 (CEST)
+	id CC340F80548; Tue,  8 Aug 2023 13:02:19 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9F787F806AF;
-	Tue,  8 Aug 2023 12:36:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 38684F80534;
+	Tue,  8 Aug 2023 13:02:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 85271F80549; Tue,  8 Aug 2023 09:50:08 +0200 (CEST)
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com
- [IPv6:2607:f8b0:4864:20::636])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 97307F80534; Tue,  8 Aug 2023 13:02:15 +0200 (CEST)
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 26D71F80544
-	for <alsa-devel@alsa-project.org>; Tue,  8 Aug 2023 09:50:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 26D71F80544
+	by alsa1.perex.cz (Postfix) with ESMTPS id A3929F800FE;
+	Tue,  8 Aug 2023 13:01:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A3929F800FE
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=daynix-com.20221208.gappssmtp.com
- header.i=@daynix-com.20221208.gappssmtp.com header.a=rsa-sha256
- header.s=20221208 header.b=Mkj09u9b
-Received: by mail-pl1-x636.google.com with SMTP id
- d9443c01a7336-1bb9e6c2a90so47065585ad.1
-        for <alsa-devel@alsa-project.org>;
- Tue, 08 Aug 2023 00:50:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=daynix-com.20221208.gappssmtp.com; s=20221208; t=1691481004;
- x=1692085804;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:from:user-agent:mime-version:date:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=5gVaSTYejp99j2UgPSGmR/5wX1Q1ia2oLZnesCpWyfk=;
-        b=Mkj09u9bcVbsCucPmPddVcFJ5hivx1RdNSIbYfNCkNhq3dAtuTsUtqmegXzUQ5vmC1
-         qG4nmxZSfvwjAsA/nVPlR1HaeOw5yfH424ZaAaKf4ZrvzM51eOz2Wg3dJeFeM+z0U6L7
-         Lwzft25xYUixVjTAG+15A5vESIFyNVhSVUJ9sLglcE67kAg8/E7xU5lndq/0fKGBEQt2
-         ApIFCigtun01oYO51ilCsXcui/nM9fNdw8SkRriEKEVqhGCfVdL/lMENHS1y+QVHWqKy
-         FV7IqnaxcAPW029SdYHHkaLaN+FMaGatafaGJQywMqk+JKQCsz9AnU1HuoVsgd69eZJX
-         hbtA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691481004; x=1692085804;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:from:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5gVaSTYejp99j2UgPSGmR/5wX1Q1ia2oLZnesCpWyfk=;
-        b=E7OlNNY+yKNn0GvajlzoIoY01n/xDfmeOZWGGeDTng7jUJTzgdnkyVmrVBcn77v9OT
-         ApQiSp7iCDKAUn9QqqTVgq8qfSYIXjoaNaHi9anC7rziGt6mN0pO1EdS2QtPdpVI8SHO
-         OIC65+ZKBmSYv++bgxRnOcGZ1uduKAXtJQV9Qs9MPXTtFBe8wVZVFR6TG25fNL5eESvD
-         VFv3PNL68vE3KnlzPQK/fTMXfuG63F0YhxKlefAhvSnOALTEPjxCV7EnRUy5gx0gTbHE
-         KhLyzwyWTmllUC4PsE1EE529y5K5WNTVR90/avmEeYH1gnVricAiuPFWm4fr1rwvbNrX
-         52rQ==
-X-Gm-Message-State: AOJu0Yx8YnzbMbm2cbIuE1X+TBo3PFW65vtgrNW7Cy9QbF8I87VPz7r9
-	HGOEFT6Zt7OIO5dJeQHjcRsx2v6eseSVh+wDgPw=
-X-Google-Smtp-Source: 
- AGHT+IFAVyiXcimI9tXWuEj4R9mV4WwBOWaAXHFFMihxNpDn6eurFOXPD6dXxTtApytWiEcQwiKdmw==
-X-Received: by 2002:a17:902:e546:b0:1b8:a697:3719 with SMTP id
- n6-20020a170902e54600b001b8a6973719mr14036571plf.25.1691481003938;
-        Tue, 08 Aug 2023 00:50:03 -0700 (PDT)
-Received: from ?IPV6:2400:4050:a840:1e00:78d2:b862:10a7:d486?
- ([2400:4050:a840:1e00:78d2:b862:10a7:d486])
-        by smtp.gmail.com with ESMTPSA id
- a7-20020a170902ecc700b001bba7aab822sm8261067plh.5.2023.08.08.00.50.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Aug 2023 00:50:03 -0700 (PDT)
-Message-ID: <bbf345f8-3476-4b0f-ab79-0cab3db73472@daynix.com>
-Date: Tue, 8 Aug 2023 16:50:01 +0900
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=TVrwh/lz
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691492531; x=1723028531;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=jHOYn9//8iPX+RoPt/5H1z0TENE0RN0IS8pVvDCFJC0=;
+  b=TVrwh/lzLc257raqqxBONIWrDm83UsnIU1sK5ORLSUg1uAKYb8VefgQR
+   2gkvhKFDvW7yVm2nDMlOTMc7HNUz3sMvORet4s/7FWs1bCGgn0xf1Qaan
+   deW9pZrz0CCz0b4mCHl8kYor5QKcOPH0Mnea1L+TlgUPGadfFV8D8iDd6
+   4sR192hqd3LpLMrYYS81sjBWsacleIwATaFiDVEsupTjaL4jB2+/xgZyB
+   mDOm7W+9HApzVK487lna5EmOSkP9Be/jTJrwQkhrCqidC0yD78wofFvEQ
+   QZAPWQUdstNy4E4+yD5aIuXAolXawc07vH/SlSf9h/yYIhlTEdI922fSv
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="457176641"
+X-IronPort-AV: E=Sophos;i="6.01,263,1684825200";
+   d="scan'208";a="457176641"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 08 Aug 2023 04:01:48 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="681198357"
+X-IronPort-AV: E=Sophos;i="6.01,263,1684825200";
+   d="scan'208";a="681198357"
+Received: from romanagn-mobl1.ger.corp.intel.com (HELO [10.252.49.59])
+ ([10.252.49.59])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 08 Aug 2023 04:01:45 -0700
+Message-ID: <98188012-8e07-4bb1-be1c-04d6c0f5260a@linux.intel.com>
+Date: Tue, 8 Aug 2023 14:03:09 +0300
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-From: Akihiko Odaki <akihiko.odaki@daynix.com>
-Subject: Re: [PATCH] ASoC: amd: acp3x-rt5682-max9836: Configure jack as not
- detecting Line Out
-To: Alper Nebi Yasak <alpernebiyasak@gmail.com>, alsa-devel@alsa-project.org
-Cc: linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Jaroslav Kysela <perex@perex.cz>, Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-References: <20230805162216.441410-1-alpernebiyasak@gmail.com>
+Subject: Re: Regression fix not progressing towards mainline/stable
 Content-Language: en-US
-In-Reply-To: <20230805162216.441410-1-alpernebiyasak@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-MailFrom: akihiko.odaki@daynix.com
-X-Mailman-Rule-Hits: nonmember-moderation
+To: Thorsten Leemhuis <regressions@leemhuis.info>,
+ Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Daniel Baluta <daniel.baluta@nxp.com>
+Cc: sound-open-firmware@alsa-project.org, LKML
+ <linux-kernel@vger.kernel.org>,
+ Linux kernel regressions list <regressions@lists.linux.dev>,
+ Alsa-devel <alsa-devel@alsa-project.org>
+References: <661fcece-a83c-cb24-1b37-5d8693b1fb94@leemhuis.info>
+From: =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>
+In-Reply-To: <661fcece-a83c-cb24-1b37-5d8693b1fb94@leemhuis.info>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: Z4AAUV6MSKZVQP5KVRQ7SJOF5QTFGIJP
+X-Message-ID-Hash: Z4AAUV6MSKZVQP5KVRQ7SJOF5QTFGIJP
+X-MailFrom: peter.ujfalusi@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: IMBX6XRBOB7QJ4INVN36XPPDK6RX3ZBT
-X-Message-ID-Hash: IMBX6XRBOB7QJ4INVN36XPPDK6RX3ZBT
-X-Mailman-Approved-At: Tue, 08 Aug 2023 10:36:35 +0000
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IMBX6XRBOB7QJ4INVN36XPPDK6RX3ZBT/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Z4AAUV6MSKZVQP5KVRQ7SJOF5QTFGIJP/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -123,13 +110,35 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 2023/08/06 1:22, Alper Nebi Yasak wrote:
-> The RT5682, RT1015 and RT1015p codecs used in this driver do not seem
-> capable of distinguishing Line Out connections from Headphone, but
-> the driver configures its jack object as if it can. Remove the wrong
-> value from the jack creation call to avoid any confusion.
-> 
-> Signed-off-by: Alper Nebi Yasak <alpernebiyasak@gmail.com>
+Hi Thorsten,
 
-Reviewed-by: Akihiko Odaki <akihiko.odaki@daynix.com>
-Tested-by: Akihiko Odaki <akihiko.odaki@daynix.com>
+On 08/08/2023 09:10, Thorsten Leemhuis wrote:
+> Hi everyone, I noticed a regression fix that afaics lingers in the
+> thesofproject's git repo instead of progressing towards the stable trees
+> and wondered what's up here.
+>
+> I'm talking about about the fix "ASoC: SOF: intel: hda: Clean up link
+> DMA for IPC3 during stop" for this ticket:
+> https://github.com/thesofproject/linux/issues/4455
+> 
+> Two more tickets about it:
+> https://github.com/thesofproject/linux/issues/4482
+> https://bugzilla.kernel.org/show_bug.cgi?id=217673
+> 
+> It seems the fix is ready and reviewed for two weeks now, but not even
+> in -next by now. That's not how it should be for regression fixes, as
+> per https://docs.kernel.org/process/handling-regressions.html it ideally
+> should be in -stable soon or already. Is this a mistake, am I missing
+> something, or is there a good reason for this?
+
+We take regressions (and user reports) seriously and trying our best to
+provide fixes asap.
+We do prioritize bug fixes over features but in this case for some
+reason the review process took longer than it usually does and the patch
+has not been sent upstream. Patches must pass the review before they put
+to the upstream queue.
+
+I will be sending the fix in few minutes after testing it on top of next.
+
+-- 
+Péter
