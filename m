@@ -4,92 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4FE8BC001B0
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Aug 2023 16:50:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C9C2DC04A6A
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Aug 2023 17:56:06 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4E714950;
-	Tue,  8 Aug 2023 18:49:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4E714950
+	by alsa0.perex.cz (Postfix) with ESMTPS id B601F829;
+	Tue,  8 Aug 2023 19:55:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B601F829
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1691513401;
-	bh=kTgjJBad6FC5V6sljDaNHr39zw8lz9cMbAMMSi8jUrs=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1691517363;
+	bh=5Fu6qH9qKQ6+4wX2RsBXoK4UmvoTjpp3eRHoJPK5zB8=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=X4r8vv1yxOiR0f79A+fz2mIZWCqKsV7cx5xRPgFNrtugBFX4MPfvLCNXTqrAhlNjV
-	 J8vps2GznkY5u9Mg/DJh9O0poM/kT9+39vCHu8ZgfJ6J/HHkaCTnyGh2awCpy6e/93
-	 LTdxoyAaV4VXaxLDBfKTZHZ/SgA0kf024KoHE4AA=
+	b=fjLo8P++xnww1sNPgEE4x7QfyAFLYx8U7yD0ga12CQF5z/gwMSL7YmkRajk+L7vag
+	 TjdyTmv9C3Kvpf0yqaHoVCL+bkEJDdATtUf8mVkqC6YJMDlo2n7JNxbhxJAHHe1WCE
+	 k8LyKEfxAd+VgDfh+csjqqCa/zu6+hPTLn72aoMM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5DEE0F805C0; Tue,  8 Aug 2023 18:47:34 +0200 (CEST)
+	id 6BDA9F800B8; Tue,  8 Aug 2023 19:55:12 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C6ADEF805B2;
-	Tue,  8 Aug 2023 18:47:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1A215F80154;
+	Tue,  8 Aug 2023 19:55:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9102DF80587; Tue,  8 Aug 2023 18:47:29 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 1058FF80534; Tue,  8 Aug 2023 19:55:08 +0200 (CEST)
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de
+ [80.237.130.52])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
+ server-digest SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 2C8EDF80544
-	for <alsa-devel@alsa-project.org>; Tue,  8 Aug 2023 18:47:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2C8EDF80544
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=NgvX80+c
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-	by mx0b-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id
- 378GfYwF012826;
-	Tue, 8 Aug 2023 11:47:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	PODMain02222019; bh=AuMoPk2SddtMqxj2LNmox9QFPh23Jlu82ndLix93u4E=; b=
-	NgvX80+c/S3jRDKQoq6/Tl6nnBWUNJTjjr1K9/iNKeMNkkkmjtGDpevVnEXj9d9Z
-	OaxEI8uh7N79xrF0Qj32phy0DgEr1O/bbtPnWBnqwX/GL2pCblCLYiaNWTEZK4ui
-	xwnIViwTgSsxbGEkDDaqgz8H2xJMTrGsPu6WEUGdvXACPOBg9cmeqqel8Z4EdmGq
-	p2ZvTZ1KLF6qSql5NYIOIV53wt7ltBqu7w2ZDU2YzH58uaUfJmXfnZ8jfTFYZHON
-	0WRiwcnmHMU4De2Pi+0MncwwTsOcXBlrTDcIyu0WACX1H6OGbPMO10VT2lIjzVNO
-	C9/ODoE5Z15I55dNaDB//g==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3s9juhtucr-2
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 08 Aug 2023 11:47:07 -0500 (CDT)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Tue, 8 Aug
- 2023 17:47:05 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.30 via Frontend
- Transport; Tue, 8 Aug 2023 17:47:05 +0100
-Received: from EDIN4L06LR3.ad.cirrus.com (EDIN4L06LR3.ad.cirrus.com
- [198.61.64.220])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id F32E43563;
-	Tue,  8 Aug 2023 16:47:04 +0000 (UTC)
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
-To: <broonie@kernel.org>
-CC: <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
-        <patches@opensource.cirrus.com>,
-        Richard Fitzgerald
-	<rf@opensource.cirrus.com>
-Subject: [PATCH 2/5] ASoC: cs35l56: Don't rely on GPIOD_OUT_LOW to set RESET
- initially low
-Date: Tue, 8 Aug 2023 17:46:59 +0100
-Message-ID: <20230808164702.21272-3-rf@opensource.cirrus.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20230808164702.21272-1-rf@opensource.cirrus.com>
-References: <20230808164702.21272-1-rf@opensource.cirrus.com>
+	by alsa1.perex.cz (Postfix) with ESMTPS id 370AAF800B8;
+	Tue,  8 Aug 2023 19:54:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 370AAF800B8
+Received: from [185.238.219.14] (helo=[192.168.44.45]); authenticated
+	by wp530.webpack.hosteurope.de running ExIM with esmtpsa
+ (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+	id 1qTQv0-0004FA-Vs; Tue, 08 Aug 2023 19:54:55 +0200
+Message-ID: <47437162-e1bd-58c1-9f34-ca4b661c3e34@leemhuis.info>
+Date: Tue, 8 Aug 2023 19:54:53 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: Regression fix not progressing towards mainline/stable
+Content-Language: en-US, de-DE
+To: =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
+ Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Daniel Baluta <daniel.baluta@nxp.com>
+Cc: sound-open-firmware@alsa-project.org, LKML
+ <linux-kernel@vger.kernel.org>,
+ Linux kernel regressions list <regressions@lists.linux.dev>,
+ Alsa-devel <alsa-devel@alsa-project.org>
+References: <661fcece-a83c-cb24-1b37-5d8693b1fb94@leemhuis.info>
+ <98188012-8e07-4bb1-be1c-04d6c0f5260a@linux.intel.com>
+From: Thorsten Leemhuis <regressions@leemhuis.info>
+In-Reply-To: <98188012-8e07-4bb1-be1c-04d6c0f5260a@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: VpSh-Y7tixG6CeifcVqE4kD-QZaxSsK7
-X-Proofpoint-ORIG-GUID: VpSh-Y7tixG6CeifcVqE4kD-QZaxSsK7
-X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: ZZF5RMKYIQZINDHEP5PEUN4YLFJCBS5L
-X-Message-ID-Hash: ZZF5RMKYIQZINDHEP5PEUN4YLFJCBS5L
-X-MailFrom: prvs=3584a5a98c=rf@opensource.cirrus.com
+X-bounce-key: 
+ webpack.hosteurope.de;regressions@leemhuis.info;1691517301;264282f5;
+X-HE-SMSGID: 1qTQv0-0004FA-Vs
+Message-ID-Hash: WZK4HQCXC7HWSCKFLYHCIFVNE3ZQGUC3
+X-Message-ID-Hash: WZK4HQCXC7HWSCKFLYHCIFVNE3ZQGUC3
+X-MailFrom: regressions@leemhuis.info
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -101,7 +81,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZZF5RMKYIQZINDHEP5PEUN4YLFJCBS5L/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WZK4HQCXC7HWSCKFLYHCIFVNE3ZQGUC3/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -110,32 +90,29 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The ACPI setting for a GPIO default state has higher priority than the
-flag passed to devm_gpiod_get_optional() so ACPI can override the
-GPIOD_OUT_LOW. Explicitly set the GPIO low when hard resetting.
+On 08.08.23 13:03, Péter Ujfalusi wrote:
+> On 08/08/2023 09:10, Thorsten Leemhuis wrote:
+>>
+>> I'm talking about about the fix "ASoC: SOF: intel: hda: Clean up link
+>> DMA for IPC3 during stop" for this ticket:
+>> https://github.com/thesofproject/linux/issues/4455
+>>
+>> Two more tickets about it:
+>> https://github.com/thesofproject/linux/issues/4482
+>> https://bugzilla.kernel.org/show_bug.cgi?id=217673
+>>
+>> It seems the fix is ready and reviewed for two weeks now,  [...]
+>
+> We take regressions (and user reports) seriously and trying our best to
+> provide fixes asap.
+> We do prioritize bug fixes over features but in this case for some
+> reason the review process took longer than it usually does and the patch
+> has not been sent upstream. [...]
 
-Although GPIOD_OUT_LOW can't be relied on this doesn't seem like a
-reason to stop passing it to devm_gpiod_get_optional(). So we still pass
-it to state our intent, but can deal with it having no effect.
+Happens, thx for taking care of it!
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
----
- sound/soc/codecs/cs35l56.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/sound/soc/codecs/cs35l56.c b/sound/soc/codecs/cs35l56.c
-index be400208205a..9560059c867b 100644
---- a/sound/soc/codecs/cs35l56.c
-+++ b/sound/soc/codecs/cs35l56.c
-@@ -1069,6 +1069,8 @@ int cs35l56_common_probe(struct cs35l56_private *cs35l56)
- 		return dev_err_probe(cs35l56->base.dev, ret, "Failed to enable supplies\n");
- 
- 	if (cs35l56->base.reset_gpio) {
-+		/* ACPI can override GPIOD_OUT_LOW flag so force it to start low */
-+		gpiod_set_value_cansleep(cs35l56->base.reset_gpio, 0);
- 		cs35l56_wait_min_reset_pulse();
- 		gpiod_set_value_cansleep(cs35l56->base.reset_gpio, 1);
- 	}
--- 
-2.30.2
-
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+If I did something stupid, please tell me, as explained on that page.
