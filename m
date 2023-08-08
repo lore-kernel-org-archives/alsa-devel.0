@@ -4,97 +4,102 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 60D0FC001DB
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Aug 2023 12:47:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C4A55C001DB
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Aug 2023 12:47:52 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CFFA3845;
-	Tue,  8 Aug 2023 14:46:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CFFA3845
+	by alsa0.perex.cz (Postfix) with ESMTPS id 84D49827;
+	Tue,  8 Aug 2023 14:47:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 84D49827
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1691498849;
-	bh=s/WbPeFwJmHRSdlNYjBCvsvubVg2Rprg0Cpv1eQZQ1k=;
+	s=default; t=1691498870;
+	bh=Ct//DwqNdXI6fe/xl51r7bLhiQc1+5/lMRXIqFYX7rI=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=au43b9RoYZT4xatSRdBlYqe1qUp3CPGJpUftZEhGj2ndbN76NAKjD73Y66GPKRc95
-	 xua9lFkyUVe97ZtwXlMLbBNRzHeiqIFe7RSpXVPsplvMiHUL6hIKYvSBj3qCdjOZKC
-	 GEdzkE2dj+xyTJ9qwInNXQdivn9w7dz0o3jE9U20=
+	b=lIE92d4Y5QHvZnq65oZy3aWjTogMThKqVmjM95E+a2bBJrNnPbwR7HSri1/5NQqgt
+	 CeL+tCLyTeeijnBlYF57Gigw1FIJM4LGxRp2/FiPy0SSPNOtEomz6IfS4PRjov3tsM
+	 B6cvS6J6BQLRLrK6BO/LqjUhRyAAQ+4i6HSfu/qI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C997FF80567; Tue,  8 Aug 2023 14:46:06 +0200 (CEST)
+	id 325FEF8057A; Tue,  8 Aug 2023 14:46:37 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 40EBEF80534;
-	Tue,  8 Aug 2023 14:46:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DC70CF80563;
+	Tue,  8 Aug 2023 14:46:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1A845F80553; Tue,  8 Aug 2023 14:46:03 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2001:67c:2178:6::1c])
+	id 6E9D8F800FE; Tue,  8 Aug 2023 14:46:32 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2001:67c:2178:6::1d])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7C96AF80534
-	for <alsa-devel@alsa-project.org>; Tue,  8 Aug 2023 14:45:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7C96AF80534
+	by alsa1.perex.cz (Postfix) with ESMTPS id E0D53F800FE
+	for <alsa-devel@alsa-project.org>; Tue,  8 Aug 2023 14:46:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E0D53F800FE
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=JYtmoeBe;
+ header.s=susede2_rsa header.b=LGtjAWgw;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=bvwOE7ZV
+ header.s=susede2_ed25519 header.b=HB19ZP5A
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id B9EC821C01;
-	Tue,  8 Aug 2023 12:45:58 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id D810D1F45E;
+	Tue,  8 Aug 2023 12:46:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1691498758;
+	t=1691498786;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=t5RRGly0OnZSk/y+CHzU8DTmny0kG6BatRI9O+U30Vg=;
-	b=JYtmoeBe9RumSWvu77ADbj3MRykhNCAIJwi8w5r7bjY6r+8cnT+czFZ1AXtkKxuH0VDtO4
-	yC8Qmd8kw3HJD3psCHtpbrDNgkQL/L8QXNkQQDDqalGXAQd64bObdxTx71KaFUOvBZOAd+
-	xQHTNV0fPaiN/9n0reDJTN/QIW0Fw30=
+	bh=sTTAM2ewHCdNL83Dn8kQGuHuJBbBf1ARyCINKwKh7S8=;
+	b=LGtjAWgwhvMtYdsh4CDF8bs3PBoq9wjj8RAHQINh/lmm6yUz6ZijmsHNnRqme0yIcKDnRc
+	avZxRP55eUl0waV2+YyCESxmfOvW7hc9NewyzzzhsfkpFxc77lAjN9fLnQye9M2uLhT/rg
+	8bB5FBAsWQJOlhKVBKO2P2TOQqblS7M=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1691498758;
+	s=susede2_ed25519; t=1691498786;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=t5RRGly0OnZSk/y+CHzU8DTmny0kG6BatRI9O+U30Vg=;
-	b=bvwOE7ZVelbqvBipniSZ6pKn80ckA/aHZkjoH8JwYsGz1K1YirMSQZdQPvY5pU5ZKLjvLf
-	fv5RFdi/xYxEzBCw==
+	bh=sTTAM2ewHCdNL83Dn8kQGuHuJBbBf1ARyCINKwKh7S8=;
+	b=HB19ZP5A+Ezp68cGH3OplEVuBpjs1Ie0b/cj+gcQ8xZz1TUVn0/dLkDZvuWCuo5nqUzKxv
+	SkBij4uGd1YSp8Cw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8A968139D1;
-	Tue,  8 Aug 2023 12:45:58 +0000 (UTC)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9CE9D139D1;
+	Tue,  8 Aug 2023 12:46:26 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id ItvWIAY50mSzAgAAMHmgww
-	(envelope-from <tiwai@suse.de>); Tue, 08 Aug 2023 12:45:58 +0000
-Date: Tue, 08 Aug 2023 14:45:58 +0200
-Message-ID: <87pm3xhfcp.wl-tiwai@suse.de>
+	id LfdbJSI50mTxAgAAMHmgww
+	(envelope-from <tiwai@suse.de>); Tue, 08 Aug 2023 12:46:26 +0000
+Date: Tue, 08 Aug 2023 14:46:26 +0200
+Message-ID: <87o7jhhfbx.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Yue Haibing <yuehaibing@huawei.com>
-Cc: <perex@perex.cz>,
-	<tiwai@suse.com>,
-	<alsa-devel@alsa-project.org>,
-	<linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH -next] ALSA: info: Remove unused function declarations
-In-Reply-To: <20230807141513.31440-1-yuehaibing@huawei.com>
-References: <20230807141513.31440-1-yuehaibing@huawei.com>
+To: Justin Stitt <justinstitt@google.com>
+Cc: Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Jonathan Hunter <jonathanh@nvidia.com>,
+	alsa-devel@alsa-project.org,
+	linux-tegra@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Kees Cook <keescook@chromium.org>,
+	linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] ALSA: hda/tegra: refactor deprecated strncpy
+In-Reply-To: <20230807-sound-pci-hda-v1-1-6d9cdcd085ca@google.com>
+References: <20230807-sound-pci-hda-v1-1-6d9cdcd085ca@google.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Message-ID-Hash: XWGSFIMHYOVO3JH7LRC7XQ2AX5R4ONQ3
-X-Message-ID-Hash: XWGSFIMHYOVO3JH7LRC7XQ2AX5R4ONQ3
+Message-ID-Hash: 7LCI2VKC6LC5Q3U7FXB2Z6GQPRPKP77R
+X-Message-ID-Hash: 7LCI2VKC6LC5Q3U7FXB2Z6GQPRPKP77R
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -107,7 +112,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XWGSFIMHYOVO3JH7LRC7XQ2AX5R4ONQ3/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7LCI2VKC6LC5Q3U7FXB2Z6GQPRPKP77R/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -116,14 +121,28 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, 07 Aug 2023 16:15:13 +0200,
-Yue Haibing wrote:
+On Mon, 07 Aug 2023 19:49:28 +0200,
+Justin Stitt wrote:
 > 
-> These declarations is never used since beginning of git history.
+> `strncpy` is deprecated for use on NUL-terminated destination strings [1].
 > 
-> Signed-off-by: Yue Haibing <yuehaibing@huawei.com>
+> A suitable replacement is `strscpy` [2] due to the fact that it
+> guarantees NUL-termination on its destination buffer argument which is
+> _not_ the case for `strncpy`!
+> 
+> It should be noted that the current implementation is unlikely to have a
+> bug because `drv_name` is a string literal with a size of 9 while
+> `card->driver` has a size of 16. However, it is probably worthwhile to
+> switch to a more robust and less ambiguous interface.
+> 
+> [1]: www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings
+> [2]: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html
+> 
+> Link: https://github.com/KSPP/linux/issues/90
+> Cc: linux-hardening@vger.kernel.org
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
 
-Thanks, applied now.
+Thanks, applied.
 
 
 Takashi
