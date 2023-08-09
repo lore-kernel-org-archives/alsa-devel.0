@@ -4,86 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D5B01EB64DD
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Aug 2023 12:57:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3CB9DC001B0
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Aug 2023 13:22:31 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 571051E4;
-	Wed,  9 Aug 2023 14:56:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 571051E4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5B4BB827;
+	Wed,  9 Aug 2023 15:21:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5B4BB827
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1691585824;
-	bh=vRB65wtDO5YhhgwvbOzlaUWv4c497lx7Jk5HwEtD6dg=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=jgNbrmXTCwJfSSeApGVeAE/jUsKg3+BTIYvKyho6xk5Sk8wd/epAH55E35z2bafgC
-	 JavqaO/6c8k/ynZOB8XTqBc1+KbPoxDP5hfAKmbd9F1EeVtlsAchbMVnyP/G/+0ql9
-	 3oe2imJ9cfajnGUAnSRhotCplgSuaZQHJJUWeHGA=
+	s=default; t=1691587349;
+	bh=FMdA3cKXSQdmBnvN0TjeYP8vF1c5SQrL3G9P6aZQLjo=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=m3bOa36vumUkBIztXoaSfBXqVA8EMmqovC/LaHaDeCaa9p36SQmYUO6R+/GmkOOAU
+	 OsLCuaE5PdFCOcuuSsP/nv/Lab6eYwuWewArpGu5GpfHk3aIfmta5B9XcWzhllyQ62
+	 xpz4UV/lYzu7GHwLapAiV64CsgrYjL2qEE2LH3Vw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6D404F800F4; Wed,  9 Aug 2023 14:55:44 +0200 (CEST)
+	id B1BC7F8016E; Wed,  9 Aug 2023 15:21:09 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 07A3BF80134;
-	Wed,  9 Aug 2023 14:55:44 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 42357F80134;
+	Wed,  9 Aug 2023 15:21:09 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5F08DF80134; Wed,  9 Aug 2023 14:55:41 +0200 (CEST)
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id A7136F80134; Wed,  9 Aug 2023 15:21:05 +0200 (CEST)
+Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
+ server-digest SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 420A0F800F4
-	for <alsa-devel@alsa-project.org>; Wed,  9 Aug 2023 14:55:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 420A0F800F4
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=He+eptaX
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691585739; x=1723121739;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=vRB65wtDO5YhhgwvbOzlaUWv4c497lx7Jk5HwEtD6dg=;
-  b=He+eptaXN0pMplKpB9HC/Wa58osPVfdJyz6sPV5l1uF+o3YYnJ01H02l
-   FsBmDGSHJbIJbZRhmVApFQie/dcdr7vlWx1HSyoWpAhdbHddd4RUQsI6B
-   TNdqTNGpqA0h5EdKOGr1dC3qut9hc9cFvDqVp8meLmcwYKi0a8HCHiHpP
-   7j/I5svBhPSPLArY9VnR6KKOsGMkPcRe8mIOeqDmo2UuB4QQGrYt7I7s0
-   jfxyXBDbfROxd8rwik7G3HlC/R6fF5B6SNVA1WJ/+WPWkZfgpZoOrRQ+C
-   SOm2/Kql26PIpbejXF9cc1ije37VNmScd75J1ulacABQdlGRhezlX+KNH
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="356079075"
-X-IronPort-AV: E=Sophos;i="6.01,159,1684825200";
-   d="scan'208";a="356079075"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Aug 2023 05:55:35 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="821842608"
-X-IronPort-AV: E=Sophos;i="6.01,159,1684825200";
-   d="scan'208";a="821842608"
-Received: from hsyrja-mobl.ger.corp.intel.com (HELO
- pujfalus-desk.ger.corp.intel.com) ([10.251.210.72])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Aug 2023 05:55:33 -0700
-From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-To: lgirdwood@gmail.com,
-	broonie@kernel.org
-Cc: alsa-devel@alsa-project.org,
-	pierre-louis.bossart@linux.intel.com,
-	ranjani.sridharan@linux.intel.com,
-	kai.vehmanen@linux.intel.com,
-	adrian.bonislawski@intel.com,
-	yung-chuan.liao@linux.intel.com,
-	chao.song@linux.intel.com
-Subject: [PATCH v2] ASoC: SOF: ipc4-topology: Update the basecfg for copier
- earlier
-Date: Wed,  9 Aug 2023 15:56:56 +0300
-Message-ID: <20230809125656.27585-1-peter.ujfalusi@linux.intel.com>
-X-Mailer: git-send-email 2.41.0
+	by alsa1.perex.cz (Postfix) with ESMTPS id B899DF800FE
+	for <alsa-devel@alsa-project.org>; Wed,  9 Aug 2023 15:21:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B899DF800FE
+Received: from [194.95.143.137] (helo=phil.localnet)
+	by gloria.sntech.de with esmtpsa  (TLS1.3) tls
+ TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <heiko@sntech.de>)
+	id 1qTj7M-0007HJ-8E; Wed, 09 Aug 2023 15:20:52 +0200
+From: Heiko Stuebner <heiko@sntech.de>
+To: Jaroslav Kysela <perex@perex.cz>, Judy Hsiao <judyhsiao@chromium.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Nicolas Frattaroli <frattaroli.nicolas@gmail.com>,
+ Takashi Iwai <tiwai@suse.com>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.org
+Subject: 
+ Re: [PATCH v2 29/39] ASoC: rockchip: merge DAI call back functions into ops
+Date: Wed, 09 Aug 2023 15:20:51 +0200
+Message-ID: <5640565.VdNmn5OnKV@phil>
+In-Reply-To: <87r0od9m6i.wl-kuninori.morimoto.gx@renesas.com>
+References: 
+ <87wmy5b0wt.wl-kuninori.morimoto.gx@renesas.com>
+ <87r0od9m6i.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 3VOR524HYCBBFV6LNTQKGLUBXWXP2OBY
-X-Message-ID-Hash: 3VOR524HYCBBFV6LNTQKGLUBXWXP2OBY
-X-MailFrom: peter.ujfalusi@linux.intel.com
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+Message-ID-Hash: 7FO4YUBCIWVHO5V3DJ24WIAGQXK43CB4
+X-Message-ID-Hash: 7FO4YUBCIWVHO5V3DJ24WIAGQXK43CB4
+X-MailFrom: heiko@sntech.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -95,66 +74,21 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3VOR524HYCBBFV6LNTQKGLUBXWXP2OBY/>
-List-Archive: <>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7FO4YUBCIWVHO5V3DJ24WIAGQXK43CB4/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The sof_ipc4_update_resource_usage() call updates the CPC value in basecfg
-and it must be done prior to making a copy of the copier configuration
-for the init message.
-Other module types do the resource update as last step or in case of a
-process module at the correct time, before the memcpy.
+Am Mittwoch, 9. August 2023, 00:57:58 CEST schrieb Kuninori Morimoto:
+> ALSA SoC merges DAI call backs into .ops.
+> This patch merge these into one.
+> 
+> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-Fixes: d8a2c9879349 ("ASoC: SOF: ipc4-loader/topology: Query the CPC value from manifest")
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Adrian Bonislawski <adrian.bonislawski@intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Reviewed-by: Chao Song <chao.song@linux.intel.com>
----
-Hi,
+Acked-by: Heiko Stuebner <heiko@sntech.de>
 
-changes since v1:
-- created on top of for-6.5 branch
-
-The conflict caused by this for 6.6 is trivial as it is just a move
-two lines patch.
-
-Regards,
-Peter
-
- sound/soc/sof/ipc4-topology.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/sound/soc/sof/ipc4-topology.c b/sound/soc/sof/ipc4-topology.c
-index a4e1a70b607d..11361e1cd688 100644
---- a/sound/soc/sof/ipc4-topology.c
-+++ b/sound/soc/sof/ipc4-topology.c
-@@ -1731,6 +1731,9 @@ sof_ipc4_prepare_copier_module(struct snd_sof_widget *swidget,
- 
- 	*ipc_config_size = ipc_size;
- 
-+	/* update pipeline memory usage */
-+	sof_ipc4_update_resource_usage(sdev, swidget, &copier_data->base_config);
-+
- 	/* copy IPC data */
- 	memcpy(*ipc_config_data, (void *)copier_data, sizeof(*copier_data));
- 	if (gtw_cfg_config_length)
-@@ -1743,9 +1746,6 @@ sof_ipc4_prepare_copier_module(struct snd_sof_widget *swidget,
- 		       gtw_cfg_config_length,
- 		       &ipc4_copier->dma_config_tlv, dma_config_tlv_size);
- 
--	/* update pipeline memory usage */
--	sof_ipc4_update_resource_usage(sdev, swidget, &copier_data->base_config);
--
- 	return 0;
- }
- 
--- 
-2.41.0
 
