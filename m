@@ -4,80 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 34070C04A94
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Aug 2023 17:28:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E7CE4C001B0
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Aug 2023 17:28:54 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DB1B5839;
-	Wed,  9 Aug 2023 19:27:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DB1B5839
+	by alsa0.perex.cz (Postfix) with ESMTPS id AEB5183E;
+	Wed,  9 Aug 2023 19:28:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AEB5183E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1691602126;
-	bh=pin7dWV6QZtDI+Mp4381FV0AgmP6/3Ic735dOKi7sDk=;
+	s=default; t=1691602132;
+	bh=mLoGnOPHxbVLWsH4NNSzTWx/xU1npGsvnrelkvn0Ex0=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Llpi8mZ0toI4XQ0MAAH4B73in36+1poT+khfFUfk4QhZq0WnadQrqmN4GefKFS9qt
-	 4Vh+rfOnOQS7N3/4fCarR4k9LgtN2kC20B/gwhrh+uvU1Jm6XUSm+F7ZiDw+QP8A9e
-	 QerAyXyjOrdlSMyAAv0Z1z1d9O9jdHsRRHoLXnv0=
+	b=qQuJpy9K11KRitj5ey+Udq+33Tf5ajFYP4X7gswj8zmks70BtnLlm97hErVbCibye
+	 RbWE5KZC+1EQgHReQKtcOqu/fJGadx1gSjOjRFqHLTs4zvxQeSlq405AaoK9pL3Tmk
+	 y9yjm1ynaEnuc5h8qUr/HJY+W78we+xluFZAfKQM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D5B06F80564; Wed,  9 Aug 2023 19:27:09 +0200 (CEST)
+	id 5933AF80567; Wed,  9 Aug 2023 19:27:11 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 403CBF80558;
-	Wed,  9 Aug 2023 19:27:09 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DF440F8056F;
+	Wed,  9 Aug 2023 19:27:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 751B5F8016E; Wed,  9 Aug 2023 19:27:04 +0200 (CEST)
+	id 83685F80557; Wed,  9 Aug 2023 19:27:06 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org
  [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id BF68DF800FB
-	for <alsa-devel@alsa-project.org>; Wed,  9 Aug 2023 19:27:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BF68DF800FB
+	by alsa1.perex.cz (Postfix) with ESMTPS id 7789EF800F4
+	for <alsa-devel@alsa-project.org>; Wed,  9 Aug 2023 19:26:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7789EF800F4
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=BglJ9Gy3
+ header.s=k20201202 header.b=dha+cNJG
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 021D8632A5;
-	Wed,  9 Aug 2023 17:26:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EEFE7C433C8;
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 0DA56632D8;
 	Wed,  9 Aug 2023 17:26:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C29EC433C8;
+	Wed,  9 Aug 2023 17:26:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1691602018;
-	bh=pin7dWV6QZtDI+Mp4381FV0AgmP6/3Ic735dOKi7sDk=;
+	s=k20201202; t=1691602015;
+	bh=mLoGnOPHxbVLWsH4NNSzTWx/xU1npGsvnrelkvn0Ex0=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=BglJ9Gy3F2gLTqevy7EEJ52aIQTyfWSE+oyv32Lse+nMHQ9UHtwtwVQvU9URmdxbr
-	 ieuqNpWikz4rGnbDxQ+I+8iKtyHCgeR9L1SdT2Y9rdEBiBsY+CFxibMOaWkOWSZZDw
-	 FwbmYhQO6x+VA8NMSSdRuy00KYJhQtj2LGAXs70FTllcZPvPPN8eMhp+s1nyO3HaOW
-	 5JfPuNxErQ7Hm2yzU7ju/+66DdHa9iDbzXv4D2lcn70vN0MvRN2ExcXrLGLjk9LIqO
-	 dmSWwsBVMnf3Ynh4LV0Kr3q1IQ9i5bUL1KxxrdWMkYMgKqTXahEYHwHTqkbpEOprGU
-	 YMtG5Y6fEN3eQ==
+	b=dha+cNJGci43s86hLcqg9q2U+5A76NmUIQkZ0J4H8DlXz/TTrHQtNkaHPRyDdRgei
+	 uHvaSFa6vyxDaX/BEhoQswvWf1hlofkqAuZwSm5vj6204hCoVAp/9VR3o42d87gsCv
+	 xn37MdS16aW2ySMazuJlH9gntJj/bgPnvaNziaXQLuXccj4D5zsjF2/kXaJ9uIzW7a
+	 4BWWGeMuzc3kewQleR8FLImBgllS/F6VlTrBTFl1QHZNxQqea3u62umMs7kh5KTfoL
+	 8XZPjwys+CQnt68ohziEZffjrSHDfKUe2Jz3qBCRB8E1SW/7mJ6huwCPuYZFU1Q0Jw
+	 iyN5EYi0IQaXg==
 From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org,
- Marek Szyprowski <m.szyprowski@samsung.com>
-Cc: Sylwester Nawrocki <s.nawrocki@samsung.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, Alper Nebi Yasak <alpernebiyasak@gmail.com>
-In-Reply-To: <20230809100446.2105825-1-m.szyprowski@samsung.com>
-References: 
- <CGME20230809100453eucas1p26811129b083949247b32369f9c38b89a@eucas1p2.samsung.com>
- <20230809100446.2105825-1-m.szyprowski@samsung.com>
-Subject: Re: [PATCH] ASoC: samsung: midas_wm1811: Fix 'Headphone Switch'
- control creation
-Message-Id: <169160201668.157618.7680518711810024806.b4-ty@kernel.org>
-Date: Wed, 09 Aug 2023 18:26:56 +0100
+To: Richard Fitzgerald <rf@opensource.cirrus.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ patches@opensource.cirrus.com
+In-Reply-To: <20230808164702.21272-1-rf@opensource.cirrus.com>
+References: <20230808164702.21272-1-rf@opensource.cirrus.com>
+Subject: Re: [PATCH 0/5] ASoC: cs35l56: Bugfixes
+Message-Id: <169160201427.157618.11759081939312972339.b4-ty@kernel.org>
+Date: Wed, 09 Aug 2023 18:26:54 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-034f2
-Message-ID-Hash: DFMCXLXDZBINBYHXYKYPLC73IRNGDM33
-X-Message-ID-Hash: DFMCXLXDZBINBYHXYKYPLC73IRNGDM33
+Message-ID-Hash: DXKVHSYP74TXO5OBSTLE3SVWCLEFX3RS
+X-Message-ID-Hash: DXKVHSYP74TXO5OBSTLE3SVWCLEFX3RS
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -90,7 +86,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DFMCXLXDZBINBYHXYKYPLC73IRNGDM33/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DXKVHSYP74TXO5OBSTLE3SVWCLEFX3RS/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -99,15 +95,14 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Wed, 09 Aug 2023 12:04:46 +0200, Marek Szyprowski wrote:
-> 'Headphone Switch' control is already registered from
-> sound/soc/codecs/wm_hubs.c:479, so duplicating it in midas_wm1811
-> causes following probe failure:
+On Tue, 08 Aug 2023 17:46:57 +0100, Richard Fitzgerald wrote:
+> Miscellaneous bugfixes for the cs35l56 codec driver.
 > 
-> midas-audio sound: control 2:0:0:Headphone Switch:0 is already present
-> midas-audio sound: ASoC: Failed to add Headphone Switch: -16
-> midas-audio sound: Failed to register card: -16
-> midas-audio: probe of sound failed with error -16
+> Richard Fitzgerald (3):
+>   ASoC: cs35l56: Avoid uninitialized variable in
+>     cs35l56_set_asp_slot_positions()
+>   ASoC: cs35l56: Don't rely on GPIOD_OUT_LOW to set RESET initially low
+>   ASoC: cs35l56: Wait for control port ready during system-resume
 > 
 > [...]
 
@@ -117,8 +112,16 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: samsung: midas_wm1811: Fix 'Headphone Switch' control creation
-      commit: 48c6253fefa38556e0c5c2942edd9181529407e4
+[1/5] ASoC: cs35l56: Avoid uninitialized variable in cs35l56_set_asp_slot_positions()
+      commit: ebd0f7b08e032900e5327962f7da6bed6f37feb6
+[2/5] ASoC: cs35l56: Don't rely on GPIOD_OUT_LOW to set RESET initially low
+      commit: 853734588dcb1bf4c41a17e4d9df231965e559db
+[3/5] ASoC: cs35l56: Wait for control port ready during system-resume
+      commit: f5eb9503e80e70c22e3d3f73a5d3c149c132407f
+[4/5] ASoC: wm_adsp: Expose the DSP power down actions as wm_adsp_power_down()
+      commit: d0a3a6ad0d3b24578f1b3832ad1d7fbdb20f7a20
+[5/5] ASoC: cs35l56: Call wm_adsp_power_down() before reloading firmware
+      commit: e24ef967c735bf7272099610e422f964c0a4258b
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
