@@ -4,77 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E7CE4C001B0
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Aug 2023 17:28:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 680A8C0015E
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Aug 2023 18:13:53 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AEB5183E;
-	Wed,  9 Aug 2023 19:28:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AEB5183E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9360610E;
+	Wed,  9 Aug 2023 20:13:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9360610E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1691602132;
-	bh=mLoGnOPHxbVLWsH4NNSzTWx/xU1npGsvnrelkvn0Ex0=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=qQuJpy9K11KRitj5ey+Udq+33Tf5ajFYP4X7gswj8zmks70BtnLlm97hErVbCibye
-	 RbWE5KZC+1EQgHReQKtcOqu/fJGadx1gSjOjRFqHLTs4zvxQeSlq405AaoK9pL3Tmk
-	 y9yjm1ynaEnuc5h8qUr/HJY+W78we+xluFZAfKQM=
+	s=default; t=1691604830;
+	bh=dQSxAwTg/Ur8+g1iyJEmUIHV6QtyBHM7QCfl22I5E88=;
+	h=From:Date:Subject:To:Cc:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=Bq6tKq0wG3JLaeKUsFZhoZKgknbGJyT/ORtlX1MzLX+Ee3ZkNUyHgpfMMZrHThhCI
+	 /ZaIc6TDrKjuKukSO8R6kQry9heBS7cXBAn0oOSGpPgAlMZDVW+m410XPF7gAmuRBx
+	 ELpHNTYWAFIBQ8Uf3TnkWLhTffBJNApc+Qm90kaM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5933AF80567; Wed,  9 Aug 2023 19:27:11 +0200 (CEST)
+	id 66009F80551; Wed,  9 Aug 2023 20:12:32 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id DF440F8056F;
-	Wed,  9 Aug 2023 19:27:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BA3C8F800FE;
+	Wed,  9 Aug 2023 20:12:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 83685F80557; Wed,  9 Aug 2023 19:27:06 +0200 (CEST)
+	id 05E57F80134; Wed,  9 Aug 2023 20:12:27 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org
  [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7789EF800F4
-	for <alsa-devel@alsa-project.org>; Wed,  9 Aug 2023 19:26:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7789EF800F4
+	by alsa1.perex.cz (Postfix) with ESMTPS id A9B03F800FE;
+	Wed,  9 Aug 2023 20:12:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A9B03F800FE
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=dha+cNJG
+ header.s=k20201202 header.b=QExAzpIx
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 0DA56632D8;
-	Wed,  9 Aug 2023 17:26:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C29EC433C8;
-	Wed,  9 Aug 2023 17:26:54 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id AE74C63A7D;
+	Wed,  9 Aug 2023 18:12:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3CCE1C433C8;
+	Wed,  9 Aug 2023 18:12:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1691602015;
-	bh=mLoGnOPHxbVLWsH4NNSzTWx/xU1npGsvnrelkvn0Ex0=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=dha+cNJGci43s86hLcqg9q2U+5A76NmUIQkZ0J4H8DlXz/TTrHQtNkaHPRyDdRgei
-	 uHvaSFa6vyxDaX/BEhoQswvWf1hlofkqAuZwSm5vj6204hCoVAp/9VR3o42d87gsCv
-	 xn37MdS16aW2ySMazuJlH9gntJj/bgPnvaNziaXQLuXccj4D5zsjF2/kXaJ9uIzW7a
-	 4BWWGeMuzc3kewQleR8FLImBgllS/F6VlTrBTFl1QHZNxQqea3u62umMs7kh5KTfoL
-	 8XZPjwys+CQnt68ohziEZffjrSHDfKUe2Jz3qBCRB8E1SW/7mJ6huwCPuYZFU1Q0Jw
-	 iyN5EYi0IQaXg==
-From: Mark Brown <broonie@kernel.org>
-To: Richard Fitzgerald <rf@opensource.cirrus.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- patches@opensource.cirrus.com
-In-Reply-To: <20230808164702.21272-1-rf@opensource.cirrus.com>
-References: <20230808164702.21272-1-rf@opensource.cirrus.com>
-Subject: Re: [PATCH 0/5] ASoC: cs35l56: Bugfixes
-Message-Id: <169160201427.157618.11759081939312972339.b4-ty@kernel.org>
-Date: Wed, 09 Aug 2023 18:26:54 +0100
+	s=k20201202; t=1691604737;
+	bh=dQSxAwTg/Ur8+g1iyJEmUIHV6QtyBHM7QCfl22I5E88=;
+	h=From:Date:Subject:To:Cc:From;
+	b=QExAzpIxW8VIhUg0Dx3HmURl8L8cDXikq01/z7xjlsz992JPeLyzHZatsyZdgx8Fe
+	 SD8Jaca7/bbEOVQeWY8qiEF9DyRf6lkHZya2xYqHWJQZ9AAEkKTXQ7lG2YsoiYcl8Q
+	 76wMGGYPqhdnyqpsLlxdglMv9nWYzowNf3LllrA5d/HNTRUnr9UnCbQhLK5wC34dSu
+	 UfPqScmBzgYm68ZLPTVQCa8BzvWtK8SWHZGwk4w2rBG3bChG2LGjWxh4A9RmibSyab
+	 QwEapEYqjVHdo1kvwUIrf/LUQNK+H28VSI4xvdTjvushDEew3K+PsYEsgH3ESQJaE3
+	 xko1vLC9gP0VA==
+From: Nathan Chancellor <nathan@kernel.org>
+Date: Wed, 09 Aug 2023 11:12:07 -0700
+Subject: [PATCH] ASoC: SOF: Intel: Initialize chip in
+ hda_sdw_check_wakeen_irq()
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-034f2
-Message-ID-Hash: DXKVHSYP74TXO5OBSTLE3SVWCLEFX3RS
-X-Message-ID-Hash: DXKVHSYP74TXO5OBSTLE3SVWCLEFX3RS
-X-MailFrom: broonie@kernel.org
+Message-Id: 
+ <20230809-intel-hda-missing-chip-init-v1-1-61557ca6fa8a@kernel.org>
+X-B4-Tracking: v=1; b=H4sIAPbW02QC/x3MQQqDMBBG4avIrB1I1Urbq4iLOJmaH9pUMiKCe
+ HdDl99bvINMM9ToVR2UdYPhlwpudUUSfZqVEYqpcU3rHu7JSKt+OAbPX5ghzSwRS8lYOYjIpH3
+ b331H5bBkfWP/34fxPC/UGTIgbQAAAA==
+To: broonie@kernel.org, pierre-louis.bossart@linux.intel.com,
+ lgirdwood@gmail.com, peter.ujfalusi@linux.intel.com,
+ yung-chuan.liao@linux.intel.com, ranjani.sridharan@linux.intel.com,
+ daniel.baluta@nxp.com
+Cc: kai.vehmanen@linux.intel.com, ndesaulniers@google.com, trix@redhat.com,
+ rander.wang@intel.com, sound-open-firmware@alsa-project.org,
+ alsa-devel@alsa-project.org, llvm@lists.linux.dev, patches@lists.linux.dev,
+ Nathan Chancellor <nathan@kernel.org>
+X-Mailer: b4 0.13-dev
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1494; i=nathan@kernel.org;
+ h=from:subject:message-id; bh=dQSxAwTg/Ur8+g1iyJEmUIHV6QtyBHM7QCfl22I5E88=;
+ b=owGbwMvMwCEmm602sfCA1DTG02pJDCmXrzPYTvdaPP30JJdUySrx88FcXYe+p3ScPHqfSdrV/
+ KerY21vRykLgxgHg6yYIkv1Y9XjhoZzzjLeODUJZg4rE8gQBi5OAZgItxwjw6kXaxRKy0pFy15t
+ nhx3bf6RacFfap7fl8itvCgl8+Rc+z2GP1w5N62F+FcE1HD3HLvlE+dx4MH1mxsbXsi8YFB5N8d
+ akRUA
+X-Developer-Key: i=nathan@kernel.org; a=openpgp;
+ fpr=2437CB76E544CB6AB3D9DFD399739260CB6CB716
+Message-ID-Hash: 55BZCV76LZEKSDYHVGOGQKZNHKZF6SUZ
+X-Message-ID-Hash: 55BZCV76LZEKSDYHVGOGQKZNHKZF6SUZ
+X-MailFrom: nathan@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -86,7 +100,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DXKVHSYP74TXO5OBSTLE3SVWCLEFX3RS/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/55BZCV76LZEKSDYHVGOGQKZNHKZF6SUZ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -95,50 +109,44 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, 08 Aug 2023 17:46:57 +0100, Richard Fitzgerald wrote:
-> Miscellaneous bugfixes for the cs35l56 codec driver.
-> 
-> Richard Fitzgerald (3):
->   ASoC: cs35l56: Avoid uninitialized variable in
->     cs35l56_set_asp_slot_positions()
->   ASoC: cs35l56: Don't rely on GPIOD_OUT_LOW to set RESET initially low
->   ASoC: cs35l56: Wait for control port ready during system-resume
-> 
-> [...]
+Clang warns (or errors with CONFIG_WERROR):
 
-Applied to
+  sound/soc/sof/intel/hda.c:423:6: error: variable 'chip' is uninitialized when used here [-Werror,-Wuninitialized]
+    423 |         if (chip && chip->check_sdw_wakeen_irq)
+        |             ^~~~
+  sound/soc/sof/intel/hda.c:418:39: note: initialize the variable 'chip' to silence this warning
+    418 |         const struct sof_intel_dsp_desc *chip;
+        |                                              ^
+        |                                               = NULL
+  1 error generated.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+Add the missing initialization, following the pattern of the other irq
+functions.
 
-Thanks!
+Fixes: 9362ab78f175 ("ASoC: SOF: Intel: add abstraction for SoundWire wake-ups")
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+---
+ sound/soc/sof/intel/hda.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-[1/5] ASoC: cs35l56: Avoid uninitialized variable in cs35l56_set_asp_slot_positions()
-      commit: ebd0f7b08e032900e5327962f7da6bed6f37feb6
-[2/5] ASoC: cs35l56: Don't rely on GPIOD_OUT_LOW to set RESET initially low
-      commit: 853734588dcb1bf4c41a17e4d9df231965e559db
-[3/5] ASoC: cs35l56: Wait for control port ready during system-resume
-      commit: f5eb9503e80e70c22e3d3f73a5d3c149c132407f
-[4/5] ASoC: wm_adsp: Expose the DSP power down actions as wm_adsp_power_down()
-      commit: d0a3a6ad0d3b24578f1b3832ad1d7fbdb20f7a20
-[5/5] ASoC: cs35l56: Call wm_adsp_power_down() before reloading firmware
-      commit: e24ef967c735bf7272099610e422f964c0a4258b
+diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
+index 04c748a72b13..15e6779efaa3 100644
+--- a/sound/soc/sof/intel/hda.c
++++ b/sound/soc/sof/intel/hda.c
+@@ -420,6 +420,7 @@ static bool hda_sdw_check_wakeen_irq(struct snd_sof_dev *sdev)
+ 	if (!(interface_mask & BIT(SOF_DAI_INTEL_ALH)))
+ 		return false;
+ 
++	chip = get_chip_info(sdev->pdata);
+ 	if (chip && chip->check_sdw_wakeen_irq)
+ 		return chip->check_sdw_wakeen_irq(sdev);
+ 
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+---
+base-commit: 59146c3cd326a622e9041614842346aada11ca99
+change-id: 20230809-intel-hda-missing-chip-init-dcccbe6365a4
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+Best regards,
+-- 
+Nathan Chancellor <nathan@kernel.org>
 
