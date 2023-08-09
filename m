@@ -4,55 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 20D11C0015E
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Aug 2023 13:33:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BE32AEB64DD
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Aug 2023 13:34:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4A078E79;
-	Wed,  9 Aug 2023 15:33:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4A078E79
+	by alsa0.perex.cz (Postfix) with ESMTPS id DB09BE7C;
+	Wed,  9 Aug 2023 15:33:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DB09BE7C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1691588037;
-	bh=o/OJeiJVg9zUfSN1lhLsibU5RgYErVv+qYbQX4ODvew=;
+	s=default; t=1691588052;
+	bh=bdsCNczJWgYI0tOT6OEpys3Qto4CuzWfDlAt1OvyIPc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=ktufmI52Mn1ssxlKRd39ixORLTCwDbodjgOC/2Kz5s8rwQFaO2W8keKwZmBjyzynu
-	 t4z2THIyu8weZQaVQssaQjp6DqO5ALfLXYfGkUHPDvcTcziQ9hQuK3CmjV71/3GhLT
-	 FaCS0Rny8wOjTe97rXlr7fdtBkLmRWuDK/pPeUH4=
+	b=oXC6ppm1G/D/UxVwIW3vBCNzui4JhjVTUgUuPK5a91+w2MM3Gy6AurEvtjP+AhFAd
+	 wvlJI1uUWKjZI/DVPeBFl2MuhGT9WbzZe1zWhoJ31SNKBt9Z6GSodutRyOdd+qbsbj
+	 +ENt9SXAgUHlFbLWfaTXv5/FEaqBrnZ7W/9nBAA4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 56855F80654; Wed,  9 Aug 2023 15:29:20 +0200 (CEST)
+	id 5C54DF8057B; Wed,  9 Aug 2023 15:29:23 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A79EEF8064F;
-	Wed,  9 Aug 2023 15:29:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7F313F80671;
+	Wed,  9 Aug 2023 15:29:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CE663F805F3; Wed,  9 Aug 2023 15:29:01 +0200 (CEST)
+	id D56FCF80621; Wed,  9 Aug 2023 15:29:13 +0200 (CEST)
 Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net
  [IPv6:2001:4b98:dc4:8::222])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 04808F805C9
-	for <alsa-devel@alsa-project.org>; Wed,  9 Aug 2023 15:28:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 04808F805C9
+	by alsa1.perex.cz (Postfix) with ESMTPS id 2E4D6F805D6
+	for <alsa-devel@alsa-project.org>; Wed,  9 Aug 2023 15:28:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2E4D6F805D6
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=ikktVcFt
-Received: by mail.gandi.net (Postfix) with ESMTPA id D2F1440019;
-	Wed,  9 Aug 2023 13:28:47 +0000 (UTC)
+ header.s=gm1 header.b=j7Ks3hdZ
+Received: by mail.gandi.net (Postfix) with ESMTPA id E7D534000D;
+	Wed,  9 Aug 2023 13:28:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1691587729;
+	t=1691587733;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=AOo0k/wMBY56BL8sRl33GbOe3r47HZ+KueJO3uCtK6U=;
-	b=ikktVcFtO5SqOw/ltOw/jkYsbHSGtXuArJ4Xuo7lRrLCe47gppNBco3SXZp0PcrYnIibXF
-	WUPIz8nETN68zoIks/ScyiddoaVFrKmtpTjqKfw5TfEe73zPfVMhnvw9FD5zKkJ2IZLeJT
-	CdRyLyrV/1poqU0aCmvBhDpZFID31GoXsOQ5137AmfVws8Rpi4bvW05OLP+IKOLopRRA1E
-	AkwKIFtHNX2X6m+BRhkb5COOoc09NNORD7B+Yt2YvhhmscrTVByQ35tWcdH9OrQRvuQj83
-	cab/Y5iBKJ8lHhnBiTN2nP3XOOHvy1LyjSlT3PN+G0yYVUcMfF82JDRKTOnmDQ==
+	bh=aemQTYh5Yy6nXctMMRYvKwfAiFzOzEdTjVq4PAtpVpg=;
+	b=j7Ks3hdZF1a1odfvknASTBKWVcWBlDmot3G9mU64Lnbr/WAIp4AVvFTa7pUtfFxgNvmrxd
+	Ro06RVr8q8xFThgkP1+DKmq5prRASSHUSnSn6xGcMQXnhLAkAsX1cYvP0WD2upkOD+4ibS
+	z+ApH2vMtPsMfCezzxWbuT0bk14FJpjh9VmjSHM1xzHdK0P/aVok5G8BH7ulM2INMDjfxu
+	MPwefBvDZpsByz+tWqOAuNWmNf05W+a5aaSKuabhu981ZxZjluG/gBscyk5+2MxHeD5Gg1
+	M4dmg69azAECUOQkUrieABSovGrSZqsudcs23jDzXJ9HfLLx+1OOOQdB4f4NzA==
 From: Herve Codina <herve.codina@bootlin.com>
 To: Herve Codina <herve.codina@bootlin.com>,
 	"David S. Miller" <davem@davemloft.net>,
@@ -85,17 +85,18 @@ Cc: netdev@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org,
 	alsa-devel@alsa-project.org,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: [PATCH v3 20/28] wan: qmc_hdlc: Add runtime timeslots changes support
-Date: Wed,  9 Aug 2023 15:27:47 +0200
-Message-ID: <20230809132757.2470544-21-herve.codina@bootlin.com>
+Subject: [PATCH v3 22/28] dt-bindings: net: Add the Lantiq PEF2256 E1/T1/J1
+ framer
+Date: Wed,  9 Aug 2023 15:27:49 +0200
+Message-ID: <20230809132757.2470544-23-herve.codina@bootlin.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230809132757.2470544-1-herve.codina@bootlin.com>
 References: <20230809132757.2470544-1-herve.codina@bootlin.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-GND-Sasl: herve.codina@bootlin.com
-Message-ID-Hash: SOSSSDNP7NGE6RUBZONDRG5OYN7G6A5Y
-X-Message-ID-Hash: SOSSSDNP7NGE6RUBZONDRG5OYN7G6A5Y
+Message-ID-Hash: 4ZZNAVNBXIFCVTTLBX5YH3YCUL6NHQFB
+X-Message-ID-Hash: 4ZZNAVNBXIFCVTTLBX5YH3YCUL6NHQFB
 X-MailFrom: herve.codina@bootlin.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -108,7 +109,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SOSSSDNP7NGE6RUBZONDRG5OYN7G6A5Y/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4ZZNAVNBXIFCVTTLBX5YH3YCUL6NHQFB/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -117,224 +118,241 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-QMC channels support runtime timeslots changes but nothing is done at
-the QMC HDLC driver to handle these changes.
-
-Use existing IFACE ioctl in order to configure the timeslots to use.
+The Lantiq PEF2256 is a framer and line interface component designed to
+fulfill all required interfacing between an analog E1/T1/J1 line and the
+digital PCM system highway/H.100 bus.
 
 Signed-off-by: Herve Codina <herve.codina@bootlin.com>
-Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
- drivers/net/wan/fsl_qmc_hdlc.c | 169 ++++++++++++++++++++++++++++++++-
- 1 file changed, 168 insertions(+), 1 deletion(-)
+ .../bindings/net/lantiq,pef2256.yaml          | 219 ++++++++++++++++++
+ 1 file changed, 219 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/net/lantiq,pef2256.yaml
 
-diff --git a/drivers/net/wan/fsl_qmc_hdlc.c b/drivers/net/wan/fsl_qmc_hdlc.c
-index 4f84ac5fc63e..4b8cb5761fd1 100644
---- a/drivers/net/wan/fsl_qmc_hdlc.c
-+++ b/drivers/net/wan/fsl_qmc_hdlc.c
-@@ -32,6 +32,7 @@ struct qmc_hdlc {
- 	struct qmc_hdlc_desc tx_descs[8];
- 	unsigned int tx_out;
- 	struct qmc_hdlc_desc rx_descs[4];
-+	u32 slot_map;
- };
- 
- static inline struct qmc_hdlc *netdev_to_qmc_hdlc(struct net_device *netdev)
-@@ -202,6 +203,162 @@ static netdev_tx_t qmc_hdlc_xmit(struct sk_buff *skb, struct net_device *netdev)
- 	return NETDEV_TX_OK;
- }
- 
-+static int qmc_hdlc_xlate_slot_map(struct qmc_hdlc *qmc_hdlc,
-+				   u32 slot_map, struct qmc_chan_ts_info *ts_info)
-+{
-+	u64 ts_mask_avail;
-+	unsigned int bit;
-+	unsigned int i;
-+	u64 ts_mask;
-+	u64 map = 0;
+diff --git a/Documentation/devicetree/bindings/net/lantiq,pef2256.yaml b/Documentation/devicetree/bindings/net/lantiq,pef2256.yaml
+new file mode 100644
+index 000000000000..72f6777afa3a
+--- /dev/null
++++ b/Documentation/devicetree/bindings/net/lantiq,pef2256.yaml
+@@ -0,0 +1,219 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/net/lantiq,pef2256.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+	/* Tx and Rx masks must be identical */
-+	if (ts_info->rx_ts_mask_avail != ts_info->tx_ts_mask_avail) {
-+		dev_err(qmc_hdlc->dev, "tx and rx available timeslots mismatch (0x%llx, 0x%llx)\n",
-+			ts_info->rx_ts_mask_avail, ts_info->tx_ts_mask_avail);
-+		return -EINVAL;
-+	}
++title: Lantiq PEF2256
 +
-+	ts_mask_avail = ts_info->rx_ts_mask_avail;
-+	ts_mask = 0;
-+	map = slot_map;
-+	bit = 0;
-+	for (i = 0; i < 64; i++) {
-+		if (ts_mask_avail & BIT_ULL(i)) {
-+			if (map & BIT_ULL(bit))
-+				ts_mask |= BIT_ULL(i);
-+			bit++;
-+		}
-+	}
++maintainers:
++  - Herve Codina <herve.codina@bootlin.com>
 +
-+	if (hweight64(ts_mask) != hweight64(map)) {
-+		dev_err(qmc_hdlc->dev, "Cannot translate timeslots 0x%llx -> (0x%llx,0x%llx)\n",
-+			map, ts_mask_avail, ts_mask);
-+		return -EINVAL;
-+	}
++description:
++  The Lantiq PEF2256, also known as Infineon PEF2256 or FALC56, is a framer and
++  line interface component designed to fulfill all required interfacing between
++  an analog E1/T1/J1 line and the digital PCM system highway/H.100 bus.
 +
-+	ts_info->tx_ts_mask = ts_mask;
-+	ts_info->rx_ts_mask = ts_mask;
-+	return 0;
-+}
++properties:
++  compatible:
++    items:
++      - const: lantiq,pef2256
 +
-+static int qmc_hdlc_xlate_ts_info(struct qmc_hdlc *qmc_hdlc,
-+				  const struct qmc_chan_ts_info *ts_info, u32 *slot_map)
-+{
-+	u64 ts_mask_avail;
-+	unsigned int bit;
-+	unsigned int i;
-+	u64 ts_mask;
-+	u64 map = 0;
++  reg:
++    maxItems: 1
 +
-+	/* Tx and Rx masks must be identical */
-+	if (ts_info->rx_ts_mask_avail != ts_info->tx_ts_mask_avail) {
-+		dev_err(qmc_hdlc->dev, "tx and rx available timeslots mismatch (0x%llx, 0x%llx)\n",
-+			ts_info->rx_ts_mask_avail, ts_info->tx_ts_mask_avail);
-+		return -EINVAL;
-+	}
-+	if (ts_info->rx_ts_mask != ts_info->tx_ts_mask) {
-+		dev_err(qmc_hdlc->dev, "tx and rx timeslots mismatch (0x%llx, 0x%llx)\n",
-+			ts_info->rx_ts_mask, ts_info->tx_ts_mask);
-+		return -EINVAL;
-+	}
++  clocks:
++    items:
++      - description: Master clock
++      - description: System Clock Receive
++      - description: System Clock Transmit
 +
-+	ts_mask_avail = ts_info->rx_ts_mask_avail;
-+	ts_mask = ts_info->rx_ts_mask;
-+	map = 0;
-+	bit = 0;
-+	for (i = 0; i < 64; i++) {
-+		if (ts_mask_avail & BIT_ULL(i)) {
-+			if (ts_mask & BIT_ULL(i))
-+				map |= BIT_ULL(bit);
-+			bit++;
-+		}
-+	}
++  clock-names:
++    items:
++      - const: mclk
++      - const: sclkr
++      - const: sclkx
 +
-+	if (hweight64(ts_mask) != hweight64(map)) {
-+		dev_err(qmc_hdlc->dev, "Cannot translate timeslots (0x%llx,0x%llx) -> 0x%llx\n",
-+			ts_mask_avail, ts_mask, map);
-+		return -EINVAL;
-+	}
++  interrupts:
++    maxItems: 1
 +
-+	if (map >= BIT_ULL(32)) {
-+		dev_err(qmc_hdlc->dev, "Slot map out of 32bit (0x%llx,0x%llx) -> 0x%llx\n",
-+			ts_mask_avail, ts_mask, map);
-+		return -EINVAL;
-+	}
++  reset-gpios:
++    description:
++      GPIO used to reset the device.
++    maxItems: 1
 +
-+	*slot_map = map;
-+	return 0;
-+}
++  '#framer-cells':
++    const: 0
 +
-+static int qmc_hdlc_set_iface(struct qmc_hdlc *qmc_hdlc, int if_iface, const te1_settings *te1)
-+{
-+	struct qmc_chan_ts_info ts_info;
-+	int ret;
++  pinctrl:
++    $ref: /schemas/pinctrl/pinctrl.yaml#
++    additionalProperties: false
 +
-+	ret = qmc_chan_get_ts_info(qmc_hdlc->qmc_chan, &ts_info);
-+	if (ret) {
-+		dev_err(qmc_hdlc->dev, "get QMC channel ts info failed %d\n", ret);
-+		return ret;
-+	}
-+	ret = qmc_hdlc_xlate_slot_map(qmc_hdlc, te1->slot_map, &ts_info);
-+	if (ret)
-+		return ret;
++    patternProperties:
++      '-pins$':
++        type: object
++        $ref: /schemas/pinctrl/pincfg-node.yaml#
++        additionalProperties: false
 +
-+	ret = qmc_chan_set_ts_info(qmc_hdlc->qmc_chan, &ts_info);
-+	if (ret) {
-+		dev_err(qmc_hdlc->dev, "set QMC channel ts info failed %d\n", ret);
-+		return ret;
-+	}
++        properties:
++          pins:
++            enum: [ RPA, RPB, RPC, RPD, XPA, XPB, XPC, XPD ]
 +
-+	qmc_hdlc->slot_map = te1->slot_map;
++          function:
++            enum: [ SYPR, RFM, RFMB, RSIGM, RSIG, DLR, FREEZE, RFSP, LOS,
++                    SYPX, XFMS, XSIG, TCLK, XMFB, XSIGM, DLX, XCLK, XLT,
++                    GPI, GPOH, GPOL ]
 +
-+	return 0;
-+}
++        required:
++          - pins
++          - function
 +
-+static int qmc_hdlc_ioctl(struct net_device *netdev, struct if_settings *ifs)
-+{
-+	struct qmc_hdlc *qmc_hdlc = netdev_to_qmc_hdlc(netdev);
-+	te1_settings te1;
++  lantiq,data-rate-bps:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    enum: [2048000, 4096000, 8192000, 16384000]
++    default: 2048000
++    description:
++      Data rate (bit per seconds) on the system highway.
 +
-+	switch (ifs->type) {
-+	case IF_GET_IFACE:
-+		ifs->type = IF_IFACE_E1;
-+		if (ifs->size < sizeof(te1)) {
-+			if (!ifs->size)
-+				return 0; /* only type requested */
++  lantiq,clock-falling-edge:
++    $ref: /schemas/types.yaml#/definitions/flag
++    description:
++      Data is sent on falling edge of the clock (and received on the rising
++      edge). If 'clock-falling-edge' is not present, data is sent on the
++      rising edge (and received on the falling edge).
 +
-+			ifs->size = sizeof(te1); /* data size wanted */
-+			return -ENOBUFS;
-+		}
++  lantiq,channel-phase:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    enum: [0, 1, 2, 3, 4, 5, 6, 7]
++    default: 0
++    description:
++      The pef2256 delivers a full frame (32 8bit time-slots in E1 and 24 8bit
++      time-slots 8 8bit signaling in E1/J1) every 125us. This lead to a data
++      rate of 2048000 bit/s. When lantiq,data-rate-bps is more than 2048000
++      bit/s, the data (all 32 8bit) present in the frame are interleave with
++      unused time-slots. The lantiq,channel-phase property allows to set the
++      correct alignment of the interleave mechanism.
++      For instance, suppose lantiq,data-rate-bps = 8192000 (ie 4*2048000), and
++      lantiq,channel-phase = 2, the interleave schema with unused time-slots
++      (nu) and used time-slots (XX) for TSi is
++        nu nu XX nu nu nu XX nu nu nu XX nu
++        <-- TSi --> <- TSi+1 -> <- TSi+2 ->
++      With lantiq,data-rate-bps = 8192000, and lantiq,channel-phase = 1, the
++      interleave schema is
++        nu XX nu nu nu XX nu nu nu XX nu nu
++        <-- TSi --> <- TSi+1 -> <- TSi+2 ->
++      With lantiq,data-rate-bps = 4096000 (ie 2*2048000), and
++      lantiq,channel-phase = 1, the interleave schema is
++        nu    XX    nu    XX    nu    XX
++        <-- TSi --> <- TSi+1 -> <- TSi+2 ->
 +
-+		memset(&te1, 0, sizeof(te1));
++patternProperties:
++  '^codec(-([0-9]|[1-2][0-9]|3[0-1]))?$':
++    type: object
++    $ref: /schemas/sound/dai-common.yaml
++    unevaluatedProperties: false
++    description:
++      Codec provided by the pef2256. This codec allows to use some of the PCM
++      system highway time-slots as audio channels to transport audio data over
++      the E1/T1/J1 lines.
++      The time-slots used by the codec must be set and so, the properties
++      'dai-tdm-slot-num', 'dai-tdm-slot-width', 'dai-tdm-slot-tx-mask' and
++      'dai-tdm-slot-rx-mask' must be present in the sound card node for
++      sub-nodes that involve the codec. The codec uses 8bit time-slots.
++      'dai-tdm-tdm-slot-with' must be set to 8.
++      The tx and rx masks define the pef2256 time-slots assigned to the codec.
 +
-+		/* Update slot_map */
-+		te1.slot_map = qmc_hdlc->slot_map;
++    properties:
++      compatible:
++        const: lantiq,pef2256-codec
 +
-+		if (copy_to_user(ifs->ifs_ifsu.te1, &te1,  sizeof(te1)))
-+			return -EFAULT;
-+		return 0;
++      '#sound-dai-cells':
++        const: 0
 +
-+	case IF_IFACE_E1:
-+	case IF_IFACE_T1:
-+		if (!capable(CAP_NET_ADMIN))
-+			return -EPERM;
++    required:
++      - compatible
++      - '#sound-dai-cells'
 +
-+		if (netdev->flags & IFF_UP)
-+			return -EBUSY;
++required:
++  - compatible
++  - reg
++  - clocks
++  - clock-names
++  - interrupts
++  - '#framer-cells'
 +
-+		if (copy_from_user(&te1, ifs->ifs_ifsu.te1, sizeof(te1)))
-+			return -EFAULT;
++additionalProperties: false
 +
-+		return qmc_hdlc_set_iface(qmc_hdlc, ifs->type, &te1);
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++    #include <dt-bindings/interrupt-controller/irq.h>
 +
-+	default:
-+		return hdlc_ioctl(netdev, ifs);
-+	}
-+}
++    pef2256: framer@2000000 {
++      compatible = "lantiq,pef2256";
++      reg = <0x2000000 0x100>;
++      interrupts = <8 IRQ_TYPE_LEVEL_LOW>;
++      interrupt-parent = <&intc>;
++      clocks = <&clk_mclk>, <&clk_sclkr>, <&clk_sclkx>;
++      clock-names = "mclk", "sclkr", "sclkx";
++      reset-gpios = <&gpio 11 GPIO_ACTIVE_LOW>;
++      lantiq,data-rate-bps = <4096000>;
++      #framer-cells = <0>;
 +
- static int qmc_hdlc_open(struct net_device *netdev)
- {
- 	struct qmc_hdlc *qmc_hdlc = netdev_to_qmc_hdlc(netdev);
-@@ -328,13 +485,14 @@ static const struct net_device_ops qmc_hdlc_netdev_ops = {
- 	.ndo_open       = qmc_hdlc_open,
- 	.ndo_stop       = qmc_hdlc_close,
- 	.ndo_start_xmit = hdlc_start_xmit,
--	.ndo_siocwandev	= hdlc_ioctl,
-+	.ndo_siocwandev = qmc_hdlc_ioctl,
- };
- 
- static int qmc_hdlc_probe(struct platform_device *pdev)
- {
- 	struct device_node *np = pdev->dev.of_node;
- 	struct qmc_hdlc *qmc_hdlc;
-+	struct qmc_chan_ts_info ts_info;
- 	struct qmc_chan_info info;
- 	hdlc_device *hdlc;
- 	int ret;
-@@ -364,6 +522,15 @@ static int qmc_hdlc_probe(struct platform_device *pdev)
- 		return -EINVAL;
- 	}
- 
-+	ret = qmc_chan_get_ts_info(qmc_hdlc->qmc_chan, &ts_info);
-+	if (ret) {
-+		dev_err(qmc_hdlc->dev, "get QMC channel ts info failed %d\n", ret);
-+		return ret;
-+	}
-+	ret = qmc_hdlc_xlate_ts_info(qmc_hdlc, &ts_info, &qmc_hdlc->slot_map);
-+	if (ret)
-+		return ret;
++      pinctrl {
++        pef2256_rpa_sypr: rpa-pins {
++          pins = "RPA";
++          function = "SYPR";
++        };
++        pef2256_xpa_sypx: xpa-pins {
++          pins = "XPA";
++          function = "SYPX";
++        };
++      };
 +
- 	qmc_hdlc->netdev = alloc_hdlcdev(qmc_hdlc);
- 	if (!qmc_hdlc->netdev) {
- 		dev_err(qmc_hdlc->dev, "failed to alloc hdlc dev\n");
++      pef2256_codec0: codec-0 {
++        compatible = "lantiq,pef2256-codec";
++        #sound-dai-cells = <0>;
++        sound-name-prefix = "PEF2256_0";
++      };
++
++      pef2256_codec1: codec-1 {
++        compatible = "lantiq,pef2256-codec";
++        #sound-dai-cells = <0>;
++        sound-name-prefix = "PEF2256_1";
++      };
++    };
++
++    sound {
++      compatible = "simple-audio-card";
++      #address-cells = <1>;
++      #size-cells = <0>;
++      simple-audio-card,dai-link@0 { /* CPU DAI1 - pef2256 codec 1 */
++        reg = <0>;
++        cpu {
++          sound-dai = <&cpu_dai1>;
++        };
++        codec {
++          sound-dai = <&pef2256_codec0>;
++          dai-tdm-slot-num = <4>;
++          dai-tdm-slot-width = <8>;
++          /* TS 1, 2, 3, 4 */
++          dai-tdm-slot-tx-mask = <0 1 1 1 1>;
++          dai-tdm-slot-rx-mask = <0 1 1 1 1>;
++        };
++      };
++      simple-audio-card,dai-link@1 { /* CPU DAI2 - pef2256 codec 2 */
++        reg = <1>;
++        cpu {
++          sound-dai = <&cpu_dai2>;
++        };
++        codec {
++          sound-dai = <&pef2256_codec1>;
++          dai-tdm-slot-num = <4>;
++          dai-tdm-slot-width = <8>;
++          /* TS 5, 6, 7, 8 */
++          dai-tdm-slot-tx-mask = <0 0 0 0 0 1 1 1 1>;
++          dai-tdm-slot-rx-mask = <0 0 0 0 0 1 1 1 1>;
++        };
++      };
++    };
 -- 
 2.41.0
 
