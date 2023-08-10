@@ -4,57 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 43472EB64DD
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Aug 2023 07:41:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BEDE0C001B0
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Aug 2023 07:41:23 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5C30384A;
-	Fri, 11 Aug 2023 09:40:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5C30384A
+	by alsa0.perex.cz (Postfix) with ESMTPS id BFE8C857;
+	Fri, 11 Aug 2023 09:40:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BFE8C857
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1691739665;
-	bh=3jAdc6zqgHguZYmqLbCBKnJUNfatNFVyOrDYZanp+ao=;
+	s=default; t=1691739681;
+	bh=l1ZlnRn8z//foXTOvzBOYTGNCY67v+UDIv8VT9EnzPs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=eOwMulrv9Yf857nWOMfkEeaJEmbLxfnV6ek0NykuWj+AgULBdY+Nk69Ukl5b+lKzP
-	 4vJO5JoFyiyNle9ROPKTT/YQaqrrHx0LZetcKtBvwTnDJIEG6wkcHbKGVmIwm6Vi8d
-	 Djm+GhYUPHGs+njXxoLUDai/HVtbLG9yIkquzh68=
+	b=lSdHc2tUJUdgZn5mEHQjWr73+hPdM7vjjaxOOlUMZrmYNIDjCk65wwPYw+T7eiB2b
+	 8TdYcG5UpA60gcLOM5BUMCQK0dtC1lIVoVPXw/VkGnM56d4vpqUmBZNB2iJLm1QuGn
+	 BpVWgJOJxro+pe8SJlQ4XEmqVl2SB3IWeol+ekjk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 908A1F8057C; Fri, 11 Aug 2023 09:39:23 +0200 (CEST)
+	id BE176F80580; Fri, 11 Aug 2023 09:39:25 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 42FB1F80571;
-	Fri, 11 Aug 2023 09:39:23 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 21FD0F8057E;
+	Fri, 11 Aug 2023 09:39:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 120EDF8016E; Fri, 11 Aug 2023 00:49:56 +0200 (CEST)
-Received: from out-87.mta0.migadu.com (out-87.mta0.migadu.com
- [IPv6:2001:41d0:1004:224b::57])
+	id DE23FF8016E; Fri, 11 Aug 2023 00:50:02 +0200 (CEST)
+Received: from out-127.mta0.migadu.com (out-127.mta0.migadu.com
+ [IPv6:2001:41d0:1004:224b::7f])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id BCC99F80134
-	for <alsa-devel@alsa-project.org>; Fri, 11 Aug 2023 00:49:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BCC99F80134
+	by alsa1.perex.cz (Postfix) with ESMTPS id E3A7BF80166
+	for <alsa-devel@alsa-project.org>; Fri, 11 Aug 2023 00:49:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E3A7BF80166
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=jookia.org header.i=@jookia.org header.a=rsa-sha256
- header.s=key1 header.b=m0z6cPN5
+ header.s=key1 header.b=G9D1ygqU
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and
  include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jookia.org; s=key1;
-	t=1691707790;
+	t=1691707796;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=XWH/gVI2uwLGog9wayY3+Gon/swcoOVqlujmFzUv5MY=;
-	b=m0z6cPN5yIKtAfUFKRi5hoLxNWAqVdrpSlpIF3O8XoWF+UM/oyPodVa9TB3ff5yFHjDXdJ
-	Fw5bR8UmYBmhG0IJ6KIR13Zde1b27f13T/TGtU+sVDj49kbD0Ti8QxLHcRQrIXbCfMXGF7
-	Egca2cmOGhvFeFV+TisTCfYI43vTwpJlAbshHAmka9w5fdzSH+N+svhnUOFTolmrCAdc6f
-	77b2s3f98qk7spjBnaM+5DjwmwZEdvOtuIO2UlrkpiKkmLniy/JyXG+xElQVmSlOFxRiE3
-	TLoSDZ+mh8QigcmkMbF2gJC1AEEEA0jJx4y3BWaso0TPJKScp6y++vfswy3TPg==
+	bh=dL6Ngh+RAsXyB4bL14IUKXOWyHxi2/XnqLmZv3QLPZQ=;
+	b=G9D1ygqU6bbwFGM7Kci4Z/8jwSyUr8F/yB30/CiYLshmPVQBjrE6hbeiDs0EpOveaKmXdN
+	abyrTmC6w5uXLqUAqv6nXO4vdpnyGm2vkIaCUcqKdpOpHEeae7AKXB75xTLPF5mhRp+iOL
+	Rdu1P3R3GnLiOWu8MdOte7DD9Tx8D1TPZfAAk/6146hGldYLfclp14L7G71CyDQHSq4HKG
+	h6rEBXWFAaN3rtgXktGERljrZLgCjd9TFQVl6YaznzZ+OkMlYT/G/5jITG2vSQHB5Iu2lR
+	8AT2tG8Tgrrq0PLx5Rg1848NOX3W7AySaIWc2EJZ1UaQs2YOeiv3xqhC8DqxSg==
 From: John Watts <contact@jookia.org>
 To: alsa-devel@alsa-project.org
 Cc: Liam Girdwood <lgirdwood@gmail.com>,
@@ -68,9 +68,9 @@ Cc: Liam Girdwood <lgirdwood@gmail.com>,
 	patches@opensource.cirrus.com,
 	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 2/3] ASoC: wm8782: Use max-rate device tree property
-Date: Fri, 11 Aug 2023 08:49:29 +1000
-Message-ID: <20230810224930.3216717-3-contact@jookia.org>
+Subject: [PATCH 3/3] ASoC: dt-bindings: wlf,wm8782: Add max-rate property
+Date: Fri, 11 Aug 2023 08:49:30 +1000
+Message-ID: <20230810224930.3216717-4-contact@jookia.org>
 In-Reply-To: <20230810224930.3216717-1-contact@jookia.org>
 References: <20230810224930.3216717-1-contact@jookia.org>
 MIME-Version: 1.0
@@ -82,56 +82,52 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: MHRK5HL63JY6GCNSG6Z65Z5CZQ6ROUUO
-X-Message-ID-Hash: MHRK5HL63JY6GCNSG6Z65Z5CZQ6ROUUO
+Message-ID-Hash: 5XHIDE5L7QDQXS27KJYYSDAUZNFND4J3
+X-Message-ID-Hash: 5XHIDE5L7QDQXS27KJYYSDAUZNFND4J3
 X-Mailman-Approved-At: Fri, 11 Aug 2023 07:39:15 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MHRK5HL63JY6GCNSG6Z65Z5CZQ6ROUUO/>
-List-Archive: <>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5XHIDE5L7QDQXS27KJYYSDAUZNFND4J3/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The wm8782 supports rates 96kHz and 192kHz as long as the hardware
-is configured properly. Allow this to be specified in the device tree.
+The WM8782 can safely support rates higher than 48kHz by changing the
+value of the FSAMPEN pin.
+
+Allow specifying the maximum support rate the hardware configuration
+supports in the device tree.
 
 Signed-off-by: John Watts <contact@jookia.org>
 ---
- sound/soc/codecs/wm8782.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ Documentation/devicetree/bindings/sound/wm8782.txt | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/codecs/wm8782.c b/sound/soc/codecs/wm8782.c
-index 63ab63f3189a..6a2f29ee897c 100644
---- a/sound/soc/codecs/wm8782.c
-+++ b/sound/soc/codecs/wm8782.c
-@@ -122,6 +122,7 @@ static const struct snd_soc_component_driver soc_component_dev_wm8782 = {
- static int wm8782_probe(struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
-+	struct device_node *np = dev->of_node;
- 	struct wm8782_priv *priv;
- 	int ret, i;
+diff --git a/Documentation/devicetree/bindings/sound/wm8782.txt b/Documentation/devicetree/bindings/sound/wm8782.txt
+index 256cdec6ec4d..a68061a3e671 100644
+--- a/Documentation/devicetree/bindings/sound/wm8782.txt
++++ b/Documentation/devicetree/bindings/sound/wm8782.txt
+@@ -7,6 +7,7 @@ Required properties:
+  - compatible  : "wlf,wm8782"
+  - Vdda-supply : phandle to a regulator for the analog power supply (2.7V - 5.5V)
+  - Vdd-supply  : phandle to a regulator for the digital power supply (2.7V - 3.6V)
++ - max-rate    : max supported audio rate configured by FSAMPEN pin, defaults to 48000
  
-@@ -139,9 +140,12 @@ static int wm8782_probe(struct platform_device *pdev)
- 	if (ret < 0)
- 		return ret;
+ Example:
  
--	/* For configurations with FSAMPEN=0 */
-+	/* Assume lowest value by default to avoid inadvertent overclocking */
- 	priv->max_rate = 48000;
- 
-+	if (np)
-+		of_property_read_u32(np, "max-rate", &priv->max_rate);
-+
- 	return devm_snd_soc_register_component(&pdev->dev,
- 			&soc_component_dev_wm8782, &wm8782_dai, 1);
- }
+@@ -14,4 +15,5 @@ wm8782: stereo-adc {
+ 	compatible = "wlf,wm8782";
+ 	Vdda-supply = <&vdda_supply>;
+ 	Vdd-supply = <&vdd_supply>;
++	max-rate = <96000>; /* FSAMPEN is 1 */
+ };
 -- 
 2.41.0
 
