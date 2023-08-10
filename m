@@ -4,108 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C3EC2EB64DD
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Aug 2023 07:37:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 13C48EB64DD
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Aug 2023 07:40:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A65A6210;
-	Fri, 11 Aug 2023 09:36:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A65A6210
+	by alsa0.perex.cz (Postfix) with ESMTPS id A941A1DC;
+	Fri, 11 Aug 2023 09:39:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A941A1DC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1691739443;
-	bh=fNEARGdBpNV44qayK+1eoVMVWkDWYR1Ll3gFpL6RUI4=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=MFPv+qNf13mSlhqvFdc6pawWWgQ1u6ReJgwg+fR/nXJP0qALj1b8u9g1AIB+Akp/k
-	 ZrTHe034KKDxKJq6IDECwY0vzeUbp/3dQZWQA/W0LJX5ZQvKDA8SjIdzDwI/GXpG2E
-	 driRoV/KyauBrv6xk+Wfe3dsGTl9da9ZSqhFirok=
+	s=default; t=1691739616;
+	bh=LHd99ZAEAk14RHMHg7apnTB74/78w1nDI7S3rnKELzI=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=YEXhPsAa9xFhHDlkaurZIMDZuhjVzzPv+3yDZI01KojFGGsQQSjlmyVxMAZw//sMB
+	 Mpk3hmLrsjhekNOV+/staQEnHV0+2IgfMqZNModzawQL5mFdx/JyY/L+NpmKxLBbh+
+	 pP36duUQRVYwFWua8E5m3YdCrwRXhdr/mVU8zFO8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1204AF80510; Fri, 11 Aug 2023 09:36:33 +0200 (CEST)
+	id 7EEB0F8016E; Fri, 11 Aug 2023 09:39:19 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id BB9CFF8016E;
-	Fri, 11 Aug 2023 09:36:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C48AEF80166;
+	Fri, 11 Aug 2023 09:39:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 87E7BF8016E; Fri, 11 Aug 2023 09:36:27 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+	id 4A63CF801EB; Fri, 11 Aug 2023 00:49:50 +0200 (CEST)
+Received: from out-83.mta1.migadu.com (out-83.mta1.migadu.com
+ [IPv6:2001:41d0:203:375::53])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B2FA4F800F4
-	for <alsa-devel@alsa-project.org>; Fri, 11 Aug 2023 09:36:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B2FA4F800F4
+	by alsa1.perex.cz (Postfix) with ESMTPS id F40D4F800EE
+	for <alsa-devel@alsa-project.org>; Fri, 11 Aug 2023 00:49:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F40D4F800EE
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=CIlP+A5K;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=w7YR7wnW
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id F25441F74A;
-	Fri, 11 Aug 2023 07:36:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1691739378;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=L7qTjamPWvdfEuBS2+Ub18mMrl9R2SqTrqxBlplL/4g=;
-	b=CIlP+A5Ks2fIzAK9mQEyiOSqKjHTd4QmVV2wYYVtiBgwl4BVykRi+Q9kP82+Y2NIVsD2Fw
-	SmmOOAlHvgIuxzXVWeG33w7B6r8fENUkZSu9qzZID7T+8Q6VdWxL7qdO7FGjmNEr7f+D96
-	NQmWY1Uyl9Dx4qG47i7YoquNDd5SkyM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1691739378;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=L7qTjamPWvdfEuBS2+Ub18mMrl9R2SqTrqxBlplL/4g=;
-	b=w7YR7wnWwTqR08nvYwgv14j6zMpyCoqzDR5W02MYe2x4ilk90Qze1ECqc/rwC53JarB8r/
-	llJAy9sRII8tXVBw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D4740138E2;
-	Fri, 11 Aug 2023 07:36:18 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id ktDnMvLk1WR+aQAAMHmgww
-	(envelope-from <tiwai@suse.de>); Fri, 11 Aug 2023 07:36:18 +0000
-Date: Fri, 11 Aug 2023 09:36:18 +0200
-Message-ID: <87sf8qrpxp.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: john_candlish@mail.candlish.net
-Cc: alsa-devel@alsa-project.org
-Subject: Re: [PATCH] -- fix Boss MS-3 midi-usb communication
-In-Reply-To: 
- <169173850488.20.12963803837559965998@mailman-web.alsa-project.org>
-References: 
- <169173850488.20.12963803837559965998@mailman-web.alsa-project.org>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Message-ID-Hash: ICADABFAFCFMSVSY2BHGSIJXSARMQP4L
-X-Message-ID-Hash: ICADABFAFCFMSVSY2BHGSIJXSARMQP4L
-X-MailFrom: tiwai@suse.de
+	dkim=pass (2048-bit key,
+ unprotected) header.d=jookia.org header.i=@jookia.org header.a=rsa-sha256
+ header.s=key1 header.b=YaL7y1P7
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and
+ include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jookia.org; s=key1;
+	t=1691707778;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=PSP4YBxo8D6m3XZCk4VYqj+oPk1gw7bx7s64DSVlKUQ=;
+	b=YaL7y1P7Ilsu4wJJ4m5+dVAfhcGn45SVAuDhFrneAsrrW8XTGYmRBcTgk5UEjCJegNEAOk
+	Y8iyz9l9ZfPGkdMOshA2ap1l3Q4YizcEqq8tLO0soHkyVLqoHtp/KKfuciEe1vosleWm1k
+	ilsOLcoGVqeLnVYY1nBksK5X1P5XZVEpysZTmWqgYJRd4BQ+H1+C70jcOApmyO/f7WThO3
+	Aq4rB+OFo5jUcrt3z8jnduHxOTysTcHrGh6XuqCYzYXsztTdHraQBdjJ4282mB9BfrBCJ6
+	vaQeDkB0uWMLNH4QM261dAkPK1QMVHLggVoyH4h8RAwleJKfOAac7HMoR8Pu2w==
+From: John Watts <contact@jookia.org>
+To: alsa-devel@alsa-project.org
+Cc: Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	John Watts <contact@jookia.org>,
+	patches@opensource.cirrus.com,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 0/3] ASoC: wm8782: Allow higher audio rates
+Date: Fri, 11 Aug 2023 08:49:27 +1000
+Message-ID: <20230810224930.3216717-1-contact@jookia.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-MailFrom: contact@jookia.org
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: WG4W5XDSQGERJB2TOSXDAGJ2LRGTZRON
+X-Message-ID-Hash: WG4W5XDSQGERJB2TOSXDAGJ2LRGTZRON
+X-Mailman-Approved-At: Fri, 11 Aug 2023 07:39:14 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ICADABFAFCFMSVSY2BHGSIJXSARMQP4L/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WG4W5XDSQGERJB2TOSXDAGJ2LRGTZRON/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -114,43 +95,22 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, 11 Aug 2023 09:21:44 +0200,
-john_candlish@mail.candlish.net wrote:
-> 
-> This one line change gets MIDI communication flowing between ALSA and the Boss MS-3 multi-effect switcher.
-> 
-> /////
-> *** sound/usb/midi.c    2023-08-10 22:46:31.016346930 +0200
-> --- sound/usb/midi.c-orig   2023-07-19 16:37:03.000000000 +0200
-> ***************
-> *** 2106,2113 ****
->     struct usb_endpoint_descriptor *epd;
->     int i, out_eps = 0, in_eps = 0;
-> 
-> !   if (USB_ID_VENDOR(umidi->usb_id) == 0x0582 &&
-> !       USB_ID_PRODUCT(umidi->usb_id) != 0x01f5)
->         snd_usbmidi_switch_roland_altsetting(umidi);
-> 
-> if (endpoint[0].out_ep || endpoint[0].in_ep)
-> --- 2106,2112 ----
->     struct usb_endpoint_descriptor *epd;
->     int i, out_eps = 0, in_eps = 0;
-> 
-> !   if (USB_ID_VENDOR(umidi->usb_id) == 0x0582)
->         snd_usbmidi_switch_roland_altsetting(umidi);
-> 
-> if (endpoint[0].out_ep || endpoint[0].in_ep)
-> 
-> /////
-> 
-> There are doubtless other Roland/Boss USB_ID_PRODUCT id's that are effected and it would be nice to make the  USB_ID_PRODUCT value a tunable, but that is beyond my competence.
+The wm8782 supports higher audio rates than just 48kHz. This is
+configured by setting the FSAMPEN pin on the codec chip.
 
-Could you give the exact USB vendor/product IDs so that I can cook a
-patch?  At best, please give alsa-info.sh output; run the script with
---no-upload option and attach the output.
+This patch series introduces the 'max-rate' device tree property
+to allow indicating which rates are fully supported by the codec
+without accidentally overclocking.
 
+John Watts (3):
+  ASoC: wm8782: Handle maximum audio rate at runtime
+  ASoC: wm8782: Use max-rate device tree property
+  ASoC: dt-bindings: wlf,wm8782: Add max-rate property
 
-thanks,
+ .../devicetree/bindings/sound/wm8782.txt      |  2 +
+ sound/soc/codecs/wm8782.c                     | 49 ++++++++++++++-----
+ 2 files changed, 39 insertions(+), 12 deletions(-)
 
-Takashi
+-- 
+2.41.0
 
