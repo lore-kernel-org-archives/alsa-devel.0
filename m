@@ -4,109 +4,115 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 052B8C001DE
-	for <alsa-devel@archiver.kernel.org>; Mon, 31 Jul 2023 10:53:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BE93CC001B0
+	for <alsa-devel@archiver.kernel.org>; Thu, 10 Aug 2023 13:03:16 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 082CF1DD;
-	Mon, 31 Jul 2023 12:52:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 082CF1DD
+	by alsa0.perex.cz (Postfix) with ESMTPS id B4A35850;
+	Thu, 10 Aug 2023 15:02:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B4A35850
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1690800829;
-	bh=QAkWF3SHnsBtMX+Ko7kFJ6YbmD7FaoUckCUKyXC97u0=;
+	s=default; t=1691672594;
+	bh=ifwSAVf7zqfgC0VUvGFtTcSsPQ83VyzNkkIsPttxrQk=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=FQZV7b56ewLZ/5v7IbLLY5JX5Ix2FYoWn5HOeEcNZcqCzGLs0PZe7aYFz6PdgSqpD
-	 6cP7WLxQLhRW2sBP3pXbwOKsVo7qFKl29gyKcJaeSVM8iwFJWDH1qt3V7q26OS5Ua/
-	 LwFgknFqMcBtPDFz/SWzVo5196bgjWpwBdA9nGAw=
+	b=DqgP/v5oXfJVgxYBKYvvaq5zxsuUZY0aNiXTK/xjkAi2PO5MnGaYjOoGqoSsXa4hr
+	 fNTj6i9YTd8MBd5lkKRsirkJCQW/8H8h7L7WmE11gvMYR6DwR9daGSLAwLi8hDWRzy
+	 2MIwrsUZI6lIYhcj+O2rFq7pnW++pebkERj6w2SI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D0E16F80548; Mon, 31 Jul 2023 12:52:10 +0200 (CEST)
+	id F0DCEF8057E; Thu, 10 Aug 2023 15:01:25 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 30965F80548;
-	Mon, 31 Jul 2023 12:52:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CC083F80578;
+	Thu, 10 Aug 2023 15:01:24 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1E61EF801D5; Mon, 31 Jul 2023 12:52:01 +0200 (CEST)
+	id 899BFF8016E; Thu, 10 Aug 2023 09:20:38 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org
  [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C4436F8015B
-	for <alsa-devel@alsa-project.org>; Mon, 31 Jul 2023 12:51:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C4436F8015B
+	by alsa1.perex.cz (Postfix) with ESMTPS id C8780F80166
+	for <alsa-devel@alsa-project.org>; Thu, 10 Aug 2023 09:20:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C8780F80166
 Authentication-Results: alsa1.perex.cz;
 	dkim=fail reason="signature verification failed" (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=hpXVnYnX
+ header.s=k20201202 header.b=XBN4oR5O
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id ABF2B61014;
-	Mon, 31 Jul 2023 10:51:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 168ABC433C8;
-	Mon, 31 Jul 2023 10:51:54 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 57088650FD;
+	Thu, 10 Aug 2023 07:20:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 293EAC433C8;
+	Thu, 10 Aug 2023 07:20:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1690800716;
-	bh=QAkWF3SHnsBtMX+Ko7kFJ6YbmD7FaoUckCUKyXC97u0=;
+	s=k20201202; t=1691652032;
+	bh=ifwSAVf7zqfgC0VUvGFtTcSsPQ83VyzNkkIsPttxrQk=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=hpXVnYnX+6E/aFEBKOCYbzMSgcyzja4VjDWQlZlezMtP7rYNcQFQDw1CU8C2YlHYt
-	 8SVR6iJL2xv8AP+JPoYSPpJIRCan2WGl1ADUGS3K4IyNn8xxbtnn0q17Wk5PsECxtQ
-	 KwHDeNLBVo3tN5XYxF8P5YfT40PHsucRECDFkvKWEYLCMviBafBnnVer55InpXM7+S
-	 5NgVIzvP6CK1DM8Nw3mO6X2DtnUQGO9+lXHp2jJOL9I2iRqHYSZfCvyKDN7c3ijpSo
-	 YQCSBhLhK2jqxdfe/ueKJldty3fgAV240ed/w2cmHDoxoIdgnJquaPAvKjFsi/PZhV
-	 rBt1sJalcvIfA==
-Received: (nullmailer pid 2405201 invoked by uid 1000);
-	Mon, 31 Jul 2023 10:51:46 -0000
+	b=XBN4oR5OUyZZhcVNV9rrvCAxgxndp8GFrEGC+8uDrfZqVkDEctDcqd4U3l7ahxG4h
+	 BEtvsfzgHjQKNnN0xjJsUTc5jX6k62eiT4XQPFQmGMu3LL+D9br3ow8heaR/fP3S9K
+	 r220hJCW/XqLkQXAW6BpPp2i1jchiunkw52+RkU5sizV/aN+P6gtv9LCjoj0cwdrNi
+	 LeMaLuGsSaZGT0uOBEt2CUIfPwTvmqzYp7ekxTy2d4NvUStogGNkvI+hRSw/+Wzzdp
+	 Yt56RXo6qOFk91K1yk9VSjvebe+gq4krCpTuXzMqC3U2yuq4p0vWOFyvE/Lf6WIion
+	 cdGkjd/O70haw==
+Received: (nullmailer pid 3911833 invoked by uid 1000);
+	Thu, 10 Aug 2023 07:20:21 -0000
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 MIME-Version: 1.0
 From: Rob Herring <robh@kernel.org>
 To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: devicetree@vger.kernel.org, Cheng-Yi Chiang <cychiang@chromium.org>,
- Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
- Sylwester Nawrocki <s.nawrocki@samsung.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Takashi Iwai <tiwai@suse.com>, Jonathan Bakker <xc-racer2@live.ca>,
- Trevor Wu <trevor.wu@mediatek.com>, NXP Linux Team <linux-imx@nxp.com>,
- Judy Hsiao <judyhsiao@chromium.org>, linux-mediatek@lists.infradead.org,
- Fabio Estevam <festevam@gmail.com>, Mark Brown <broonie@kernel.org>,
- Jerome Brunet <jbrunet@baylibre.com>,
- Rao Mandadapu <srivasam@codeaurora.org>,
- linux-arm-kernel@lists.infradead.org, Conor Dooley <conor+dt@kernel.org>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Rob Herring <robh+dt@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- Shengjiu Wang <shengjiu.wang@nxp.com>, Jaroslav Kysela <perex@perex.cz>,
- Rohit kumar <quic_rohkumar@quicinc.com>, Shawn Guo <shawnguo@k
- ernel.org>, alsa-devel@alsa-project.org,
- Pengutronix Kernel Team <kernel@pengutronix.de>
-In-Reply-To: <20230731094303.185067-8-krzysztof.kozlowski@linaro.org>
-References: <20230731094303.185067-1-krzysztof.kozlowski@linaro.org>
- <20230731094303.185067-8-krzysztof.kozlowski@linaro.org>
-Message-Id: <169080070694.2405139.10757549014732819769.robh@kernel.org>
-Subject: Re: [PATCH 07/12] ASoC: dt-bindings: samsung,tm2: use common sound
- card
-Date: Mon, 31 Jul 2023 04:51:46 -0600
-Message-ID-Hash: EAOIXWC4YUXK7QKKDW4IAOJAUHHOVWOU
-X-Message-ID-Hash: EAOIXWC4YUXK7QKKDW4IAOJAUHHOVWOU
-X-MailFrom: SRS0=3R/A=DR=robh_at_kernel.org=rob@kernel.org
+Cc: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	devicetree@vger.kernel.org, Cheng-Yi Chiang <cychiang@chromium.org>,
+	Jerome Brunet <jbrunet@baylibre.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Takashi Iwai <tiwai@suse.com>, Trevor Wu <trevor.wu@mediatek.com>,
+	linux-mediatek@lists.infradead.org,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Sylwester Nawrocki <s.nawrocki@samsung.com>,
+	Fabio Estevam <festevam@gmail.com>, Mark Brown <broonie@kernel.org>,
+	NXP Linux Team <linux-imx@nxp.com>,
+	Rohit kumar <quic_rohkumar@quicinc.com>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Rao Mandadapu <srivasam@codeaurora.org>,
+	Jaroslav Kysela <perex@perex.cz>,
+	linux-arm-kernel@lists.infradead.org,
+	Jonathan Bakker <xc-racer2@live.ca>, linux-kernel@vger.kernel.org,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	Shengjiu Wang <shengjiu.wang@nxp.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>, alsa-deve@alsa-project.org,
+	l@alsa-project.org, Judy Hsiao <judyhsiao@chromium.org>,
+	Shawn Guo <shawnguo@kernel.org>
+In-Reply-To: <20230810063300.20151-5-krzysztof.kozlowski@linaro.org>
+References: <20230810063300.20151-1-krzysztof.kozlowski@linaro.org>
+ <20230810063300.20151-5-krzysztof.kozlowski@linaro.org>
+Message-Id: <169165201914.3911686.628530054525655751.robh@kernel.org>
+Subject: Re: [PATCH v2 05/11] ASoC: dt-bindings: samsung,odroid: use common
+ sound card
+Date: Thu, 10 Aug 2023 01:20:21 -0600
+X-MailFrom: SRS0=zxi7=D3=robh_at_kernel.org=rob@kernel.org
+X-Mailman-Rule-Hits: implicit-dest
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ administrivia; max-recipients; max-size; news-moderation; no-subject;
+ digests; suspicious-header
+Message-ID-Hash: QB7M44DA6NDVWURXWOI6FXQ5ED7DFH5F
+X-Message-ID-Hash: QB7M44DA6NDVWURXWOI6FXQ5ED7DFH5F
+X-Mailman-Approved-At: Thu, 10 Aug 2023 13:01:15 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/EAOIXWC4YUXK7QKKDW4IAOJAUHHOVWOU/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QB7M44DA6NDVWURXWOI6FXQ5ED7DFH5F/>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
@@ -114,16 +120,17 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 
-On Mon, 31 Jul 2023 11:42:58 +0200, Krzysztof Kozlowski wrote:
+On Thu, 10 Aug 2023 08:32:53 +0200, Krzysztof Kozlowski wrote:
 > Reference the common sound card properties and deprecate the
 > custom "samsung,audio-routing" in favor of generic one.  This allows to
 > remove "model" property and make the binding closer to other sounds
 > cards.
 > 
+> Reviewed-by: Rob Herring <robh@kernel.org>
 > Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 > ---
->  .../devicetree/bindings/sound/samsung,tm2.yaml   | 16 ++++++++--------
->  1 file changed, 8 insertions(+), 8 deletions(-)
+>  .../devicetree/bindings/sound/samsung,odroid.yaml  | 14 +++++++-------
+>  1 file changed, 7 insertions(+), 7 deletions(-)
 > 
 
 My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
@@ -132,16 +139,11 @@ on your patch (DT_CHECKER_FLAGS is new in v5.13):
 yamllint warnings/errors:
 
 dtschema/dtc warnings/errors:
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/sound/samsung,tm2.yaml:
-Error in referenced schema matching $id: http://devicetree.org/schemas/sound/sound-card-common.yaml
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/sound/samsung,tm2.example.dtb: sound: False schema does not allow {'compatible': ['samsung,tm2-audio'], 'audio-codec': [[4294967295], [4294967295]], 'i2s-controller': [[4294967295, 0], [4294967295, 0]], 'audio-amplifier': [[4294967295]], 'mic-bias-gpios': [[4294967295, 2, 0]], 'model': ['wm5110'], 'audio-routing': ['HP', 'HPOUT1L', 'HP', 'HPOUT1R', 'SPK', 'SPKOUT', 'SPKOUT', 'HPOUT2L', 'SPKOUT', 'HPOUT2R', 'RCV', 'HPOUT3L', 'RCV', 'HPOUT3R'], '$nodename': ['sound']}
-	from schema $id: http://devicetree.org/schemas/sound/samsung,tm2.yaml#
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/sound/samsung,tm2.example.dtb: sound: Unevaluated properties are not allowed ('audio-routing', 'model' were unexpected)
-	from schema $id: http://devicetree.org/schemas/sound/samsung,tm2.yaml#
+
 
 doc reference errors (make refcheckdocs):
 
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20230731094303.185067-8-krzysztof.kozlowski@linaro.org
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20230810063300.20151-5-krzysztof.kozlowski@linaro.org
 
 The base for the series is generally the latest rc1. A different dependency
 should be noted in *this* patch.
