@@ -4,91 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 61D1BC001B0
-	for <alsa-devel@archiver.kernel.org>; Thu, 10 Aug 2023 17:12:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EB493C001B0
+	for <alsa-devel@archiver.kernel.org>; Thu, 10 Aug 2023 18:01:28 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B939E836;
-	Thu, 10 Aug 2023 19:11:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B939E836
+	by alsa0.perex.cz (Postfix) with ESMTPS id 28A27826;
+	Thu, 10 Aug 2023 20:00:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 28A27826
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1691687525;
-	bh=j25jxb+9tucS66rGgavJsaxAu4kF2QCnsk+v3QlCfGE=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=I69j40NfUVqM8rLbj/hf31oAEiE8lm0S4vcGxkgDdeJL+Mcko5LGO/D0d5Jo+sjIu
-	 1eGvw2IPlL7mHplPIHgtB6LOLQOyDxZ7q7Vj/Rm/8E0IwY/bWHIDhgcFkMIc9yNs3M
-	 MzHwOTZnxkLbTGdqmsmitpknYui4yBepgwv5DCXI=
+	s=default; t=1691690486;
+	bh=Yez2JSlnKEn/bX9Ro8qJZo9LH7FDvf4Vsbop2k5JpTY=;
+	h=From:To:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=BfRhAZ3yAXI45vsVzIMtfmXGOvyqyzAu4KYAxpfcvTxUMNtx0W3Fzzfjec9U5eqI/
+	 nQb88nqUdCfBubBRBbdza+0mYQwTBdmpaIfru0rjXpwRdT3me060LXSlqdNVRmxNhB
+	 wbioZex4PhFYXAPByBTbVywc2FMQpHNKyFqBNh7c=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 23515F80563; Thu, 10 Aug 2023 19:10:46 +0200 (CEST)
+	id 2E4B0F800FB; Thu, 10 Aug 2023 20:00:13 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C79E7F80553;
-	Thu, 10 Aug 2023 19:10:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 80FBDF80552;
+	Thu, 10 Aug 2023 20:00:13 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 86DDFF80553; Thu, 10 Aug 2023 19:10:42 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+	id EE91CF80536; Thu, 10 Aug 2023 20:00:07 +0200 (CEST)
+Received: from honk.sigxcpu.org (honk.sigxcpu.org [24.134.29.49])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 98860F80510
-	for <alsa-devel@alsa-project.org>; Thu, 10 Aug 2023 19:10:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 98860F80510
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=stPLYdwO
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 647A260B5F;
-	Thu, 10 Aug 2023 17:10:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7C91C433C8;
-	Thu, 10 Aug 2023 17:10:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1691687415;
-	bh=j25jxb+9tucS66rGgavJsaxAu4kF2QCnsk+v3QlCfGE=;
-	h=From:To:In-Reply-To:References:Subject:Date:From;
-	b=stPLYdwOkJLi/CPcbNhdZWg+u6MC9xVy0e2vYgG+WWMnmRuiwD7yR4oxsLGWUD8ru
-	 YakGsUMfBhJNbQzzTTrNnnbgFU7eYubQSiyBcZiM7EzKXv34uvxqCtnik/IIbOXGd+
-	 ZXgWlzqtLdkIhdVMAtLok8p7i1zgpaXRIMwgBu1tgHSHF60Aqfl2RM69bEW6AR75Z+
-	 TLy/ppfphqt662oQxIiRn4kxkRTfEHBp262siGSHBE7hIkaqT+5it1AiH96UzALUS8
-	 BV2h1utupsBNf075fiBEso2BxsEzIje0UkAVyDfI+pyrYazKnugnwNYcBMI+Lo6ZcR
-	 4vsj4OEE+84pA==
-From: Mark Brown <broonie@kernel.org>
-To: Ulf Hansson <ulf.hansson@linaro.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
- Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Peng Fan <peng.fan@nxp.com>, Bjorn Andersson <quic_bjorande@quicinc.com>,
- Arnd Bergmann <arnd@arndb.de>, Geert Uytterhoeven <geert+renesas@glider.be>,
- Konrad Dybcio <konrad.dybcio@linaro.org>,
- =?utf-8?q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= <nfraprado@collabora.com>,
- =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?= <rafal@milecki.pl>, kernel@puri.sm,
- linux-mmc@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-arm-kernel@lists.infradead.org, David Heidelberg <david@ixit.cz>,
- =?utf-8?q?Guido_G=C3=BCnther?= <agx@sigxcpu.org>
-In-Reply-To: <cover.1691606520.git.agx@sigxcpu.org>
-References: <cover.1691606520.git.agx@sigxcpu.org>
-Subject: Re: (subset) [PATCH v1 0/5] Device tree and config updates for the
- Librem 5 devkit
-Message-Id: <169168740844.495427.14105488780100569606.b4-ty@kernel.org>
-Date: Thu, 10 Aug 2023 18:10:08 +0100
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6FCD7F800F4
+	for <alsa-devel@alsa-project.org>; Thu, 10 Aug 2023 20:00:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6FCD7F800F4
+Received: from localhost (localhost [127.0.0.1])
+	by honk.sigxcpu.org (Postfix) with ESMTP id 18EF1FB07;
+	Thu, 10 Aug 2023 19:59:59 +0200 (CEST)
+Received: from honk.sigxcpu.org ([127.0.0.1])
+	by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id 7VeIVy9OQeEf; Thu, 10 Aug 2023 19:59:58 +0200 (CEST)
+From: =?UTF-8?q?Guido=20G=C3=BCnther?= <agx@sigxcpu.org>
+To: Ulf Hansson <ulf.hansson@linaro.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	NXP Linux Team <linux-imx@nxp.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	=?UTF-8?q?Guido=20G=C3=BCnther?= <agx@sigxcpu.org>,
+	Peng Fan <peng.fan@nxp.com>,
+	Bjorn Andersson <quic_bjorande@quicinc.com>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	=?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?=
+ <nfraprado@collabora.com>,
+	=?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
+	kernel@puri.sm,
+	linux-mmc@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	alsa-devel@alsa-project.org,
+	linux-arm-kernel@lists.infradead.org,
+	David Heidelberg <david@ixit.cz>,
+	Sherry Sun <sherry.sun@nxp.com>
+Subject: [PATCH v2 0/4] Device tree and config updates for the Librem 5 devkit
+Date: Thu, 10 Aug 2023 19:59:48 +0200
+Message-Id: <cover.1691684726.git.agx@sigxcpu.org>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.13-dev-034f2
-Message-ID-Hash: OH6LQ5GQYQCJVYDWYNP7T4NW7N7A447W
-X-Message-ID-Hash: OH6LQ5GQYQCJVYDWYNP7T4NW7N7A447W
-X-MailFrom: broonie@kernel.org
+Message-ID-Hash: 3NSGXKP62XABQXEKHJJHAAZE4UX3XIGJ
+X-Message-ID-Hash: 3NSGXKP62XABQXEKHJJHAAZE4UX3XIGJ
+X-MailFrom: agx@sigxcpu.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -100,7 +93,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OH6LQ5GQYQCJVYDWYNP7T4NW7N7A447W/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3NSGXKP62XABQXEKHJJHAAZE4UX3XIGJ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -109,43 +102,32 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Wed, 09 Aug 2023 20:50:09 +0200, Guido Günther wrote:
-> The device tree updates ensure the A53 don't get powered off and fix a
-> DT warning. This isn't testable with the arm64 default config unless we
-> enable the rsi wifi modules too so do this as well.
-> 
-> While at that include two binding file updates.
-> 
-> This is against next-20230809 that include David's option,gtm601
-> conversion.
-> 
-> [...]
+The device tree updates ensure the A53 cores don't get powered off and
+fix a DT warning. This isn't testable with the arm64 default config
+unless we enable the rsi wifi modules too so do this as well.
 
-Applied to
+While at that include a binding file update.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+This is against next-20230809 that include David's option,gtm601
+conversion.
 
-Thanks!
+v2:
+- drop "dt-bindings: mmc: Fix reference to pwr-seq-simple"
+  already picked up by Ulf Hansson, thanks!
+- add acked-by from Conor Dooley, thanks!
+- rework sdio changes as proposed by Sherry Sun
 
-[1/5] dt-bindings: sound: gtm601: Add description
-      commit: 6870f41033d839fa72195fd2dd37f902b37ea62b
+Guido Günther (4):
+  dt-bindings: sound: gtm601: Add description
+  arm64: dts: imx8mq-librem5-devkit: Mark buck2 as always on
+  arm64: dts: imx8mq-librem5-devkit: Drop power-supply
+  arm64: defconfig: Enable Redpine 91X wlan driver
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+ .../bindings/sound/option,gtm601.yaml         |  6 +++--
+ .../dts/freescale/imx8mq-librem5-devkit.dts   | 26 ++++++++-----------
+ arch/arm64/configs/defconfig                  |  1 +
+ 3 files changed, 16 insertions(+), 17 deletions(-)
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+-- 
+2.40.1
 
