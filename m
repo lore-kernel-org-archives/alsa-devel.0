@@ -4,83 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7950CC001DB
-	for <alsa-devel@archiver.kernel.org>; Thu, 10 Aug 2023 10:49:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7E85C001DB
+	for <alsa-devel@archiver.kernel.org>; Thu, 10 Aug 2023 10:49:22 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3A3A983B;
-	Thu, 10 Aug 2023 12:48:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3A3A983B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 83EB582A;
+	Thu, 10 Aug 2023 12:48:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 83EB582A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1691664548;
-	bh=ScGk93Y2dNlMmrR0MgykPBeTqSPNMT7za/shT+UCoxo=;
+	s=default; t=1691664560;
+	bh=1NMdXUOC58+tcXZ9Q7r2MNWfwM6LYQNW8X+6AqBoqyk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=ffjnPqCvIMqpCrEy6gC/PtlvSE40EWudIcG0Xh8I00X/pas6WK2NdDCHGaPngIKTk
-	 CXzdCqC4Ai3rbIyrLHCt7HNLtp2zJmbw57/KyLSrYyMLRMBLgZU096ri3LRuFqL5Qr
-	 eRGnYfKWETLa4Y6nlBTAifPUL8t1wR9MeZ915HZA=
+	b=ot+Q7DqsPazMfNUl6HB0xk8ZGlmN3PI/ouNKPYwbhcZXqMDL7cI2P5PJvLO92l2eb
+	 XaPN/tv1omixh+k6NS2Gi/bEwL88oTWj2hD8Ujn8LeGFwfMsl4nV9m9bSt3gkMjc8Q
+	 1LcQ8nCGGQJSjxtse3kLEoZU6SHFb+YuhEuSVjjA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 492CFF80568; Thu, 10 Aug 2023 12:48:05 +0200 (CEST)
+	id 38AA8F80587; Thu, 10 Aug 2023 12:48:09 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 60850F80571;
-	Thu, 10 Aug 2023 12:48:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 715A9F8057E;
+	Thu, 10 Aug 2023 12:48:09 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E25ADF801EB; Thu, 10 Aug 2023 12:48:00 +0200 (CEST)
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com
- [IPv6:2a00:1450:4864:20::52a])
+	id 94FC0F801EB; Thu, 10 Aug 2023 12:48:02 +0200 (CEST)
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com
+ [IPv6:2a00:1450:4864:20::52d])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 0CD20F80166
-	for <alsa-devel@alsa-project.org>; Thu, 10 Aug 2023 12:47:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0CD20F80166
+	by alsa1.perex.cz (Postfix) with ESMTPS id 0FFA4F800EE
+	for <alsa-devel@alsa-project.org>; Thu, 10 Aug 2023 12:47:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0FFA4F800EE
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=cq1kU20n
-Received: by mail-ed1-x52a.google.com with SMTP id
- 4fb4d7f45d1cf-52256241c50so962321a12.3
+ header.s=google header.b=L+pJzrZz
+Received: by mail-ed1-x52d.google.com with SMTP id
+ 4fb4d7f45d1cf-5230a22cfd1so922872a12.1
         for <alsa-devel@alsa-project.org>;
- Thu, 10 Aug 2023 03:47:56 -0700 (PDT)
+ Thu, 10 Aug 2023 03:47:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691664474; x=1692269274;
+        d=linaro.org; s=google; t=1691664478; x=1692269278;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=wdCk7OUtlyVla0geNv76Vk4CNU64Mjej9PSyuuwP9Mg=;
-        b=cq1kU20nMj6zkP5dpHC0Hptq8NDMOxwqXMIyqFGDLtXHdhylP/8FUA5sLq0QpIHQIn
-         R6aRN019gA0L336WxdmXNVzP9H5PB795+pAKYjntNoFZwliERBALI2KEdPDDN4h7yJ7k
-         /wNGeKxG5ZUdAKtmwd8Uql/mAj42Wkd4FeXd2mE1g6+aCRY0H/Xydvfx2LngX62guhQf
-         Q3Z92vB+nZf827DmAqmBMJJSv+FPrc1lHcIoILW7T4qVr2jlt1WlRwYv9JKmis44Xg5e
-         rzrcwyp8+z1Pk2cZktUcFxabe/SEpMY1Ukio/T9ZiJOfp3w6zfgY3FbqF8SAGFn+Ty6n
-         R/1Q==
+        bh=UpZqgVo2zkbi2B7sOh6o48YWO5812KC5/SRbTNsfhC4=;
+        b=L+pJzrZz5LiodQRp/U/kbzpSYWnuq6UUxyeRItM6/VS+qn+D1PDLrcfAJlUCmks3Kz
+         Licj4R5ZhYqFNIyGDXQpyL/zv+UQqLViDrfb5AQ5Lk0yh0s8tkC9JT5Wi4Rz2sWltvfD
+         24dwksZBWyf0htE1vPBy9QBmrbo+qPRzH8EaHBcvW31pMM5faimC9YDi9d+PxB0L0IKN
+         RvDGD0ECUskqfPBcVKcp9DdgIhUjd4a6DuzkmtbPY6Y/FFnK61k2qicYoEsqIRuuzPtV
+         5rb0itHN4h2ptsZeSrFedln9PwV3C4sILAvNxBhujef01IdBWcivSBYg3FU8C6qUz/HA
+         Y3AQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691664474; x=1692269274;
+        d=1e100.net; s=20221208; t=1691664478; x=1692269278;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=wdCk7OUtlyVla0geNv76Vk4CNU64Mjej9PSyuuwP9Mg=;
-        b=cjSobgREZkQ6D2pLTIFbm1hy0+0T1IlLeoY3/P06sYkbtaUqSSi3vEoxbQyeK2y0U4
-         NuHANN0Hp3R0N9Frf3qmkQncBPVJvG2oMaLYmBu5bVLnW7i8gEqIFd1zokMUrXeVQc2h
-         +Xu9E7e91D0v3oPZuEJ39N73ct+f6gVXrkGTK48CYU1NaTP0AiAuZ50NbM7oxId7nkkG
-         8j3Kbf1fsObcjy+0k7VOWNbP3nnMG0vybP0dwxkceC1b4i1S9oR5o3SMwvuJGKryCnIz
-         I6nxp+S1DkN4PQRL8uuS96gpj6/NUoTtOLBNcNndpzSz6Ntip/gNkHqrII0Olm1Y336u
-         Vqfg==
-X-Gm-Message-State: AOJu0Yx4S5sMcfs22JExBy0fAPw57Vgn6aH/f0fmltDObxJJMCPF2HGm
-	wxy4Qs9hjA6E36/VCuYU0xU6jA==
+        bh=UpZqgVo2zkbi2B7sOh6o48YWO5812KC5/SRbTNsfhC4=;
+        b=RfvzZHdyOpdDeavBrmsPl2F7D0yza9skMzg/yMmyhUzrxKbZEhgGxx3QTzUxLATo6+
+         5WUkD8ZQ/4k2a5eLY72rTM63dYs8o/MSR+2GQmC5Yx+x2VEpfsLmdrzgqq1K+mIvEgi9
+         Gbw5g4Nfz/0hmhbJ9d8tZ6EzgqJFvvbXVD6svdGN7gM1H7ostjeebopb04UWIcd54B6f
+         wzsUdmw9HUFoL6CS2o94+uXdLwhpBjrCdMtdkSItwshr4JpwgKA/RaZbQIUV50qo1eJP
+         KrMlt9iL1QCTihnEqsY4FNQdtxDceDSmbjCFaomYT6oCdoHGI4jOb5XU2Hd/Kh4dcUBE
+         r2dA==
+X-Gm-Message-State: AOJu0Yw7Aq4HkXzeh2qdllkbPGuPcOqR8LBDjm0fcgbMJ5fxcEWYWsoW
+	s4xCaF80sfDhAOR3KsVG+BxcVg==
 X-Google-Smtp-Source: 
- AGHT+IEnAtHjVByssGhPTqQELF84XSx5/0DHEL7BVsY09r1D07osAN5bMweLFHfpBNKn1GaFZacbBg==
-X-Received: by 2002:a50:fb91:0:b0:523:102f:3ce0 with SMTP id
- e17-20020a50fb91000000b00523102f3ce0mr1833711edq.21.1691664474683;
-        Thu, 10 Aug 2023 03:47:54 -0700 (PDT)
+ AGHT+IFi6mpqtjPUZgkNME8tljPZsCKLpCa4i79mEQYjX4KcyxYg/CD19QBrJpMdXKSWYT3AtUshSw==
+X-Received: by 2002:a50:fc09:0:b0:522:2d1b:5a38 with SMTP id
+ i9-20020a50fc09000000b005222d1b5a38mr1688860edr.10.1691664478219;
+        Thu, 10 Aug 2023 03:47:58 -0700 (PDT)
 Received: from krzk-bin.. ([178.197.222.113])
         by smtp.gmail.com with ESMTPSA id
- x20-20020aa7cd94000000b0051dfa2e30b2sm653854edv.9.2023.08.10.03.47.53
+ x20-20020aa7cd94000000b0051dfa2e30b2sm653854edv.9.2023.08.10.03.47.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Aug 2023 03:47:54 -0700 (PDT)
+        Thu, 10 Aug 2023 03:47:57 -0700 (PDT)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To: Liam Girdwood <lgirdwood@gmail.com>,
 	Mark Brown <broonie@kernel.org>,
@@ -98,17 +98,17 @@ To: Liam Girdwood <lgirdwood@gmail.com>,
 	llvm@lists.linux.dev
 Cc: Andi Shyti <andi.shyti@kernel.org>,
 	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH 2/4] ASoC: codecs: tlv320aic32x4: fix
- Wvoid-pointer-to-enum-cast warning
-Date: Thu, 10 Aug 2023 12:47:44 +0200
-Message-Id: <20230810104749.164827-2-krzysztof.kozlowski@linaro.org>
+Subject: [PATCH 3/4] ASoC: codecs: wm8904: fix Wvoid-pointer-to-enum-cast
+ warning
+Date: Thu, 10 Aug 2023 12:47:46 +0200
+Message-Id: <20230810104749.164827-4-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230810104749.164827-1-krzysztof.kozlowski@linaro.org>
 References: <20230810104749.164827-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: DU35KPYKG7CGFBA7RXWJILRYWWY5OAQR
-X-Message-ID-Hash: DU35KPYKG7CGFBA7RXWJILRYWWY5OAQR
+Message-ID-Hash: 7AKZXFSQ2JCAFU5YPTI7DLDDWGIBQFZD
+X-Message-ID-Hash: 7AKZXFSQ2JCAFU5YPTI7DLDDWGIBQFZD
 X-MailFrom: krzysztof.kozlowski@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -121,7 +121,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DU35KPYKG7CGFBA7RXWJILRYWWY5OAQR/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7AKZXFSQ2JCAFU5YPTI7DLDDWGIBQFZD/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -130,29 +130,29 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-'type' is an enum, thus cast of pointer on 64-bit compile test with W=1
-causes:
+'devtype' is an enum, thus cast of pointer on 64-bit compile test with
+W=1 causes:
 
-  tlv320aic32x4.c:1352:18: error: cast to smaller integer type 'enum aic32x4_type' from 'void *' [-Werror,-Wvoid-pointer-to-enum-cast]
+  wm8904.c:2205:21: error: cast to smaller integer type 'enum wm8904_type' from 'const void *' [-Werror,-Wvoid-pointer-to-enum-cast]
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- sound/soc/codecs/tlv320aic32x4.c | 2 +-
+ sound/soc/codecs/wm8904.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/tlv320aic32x4.c b/sound/soc/codecs/tlv320aic32x4.c
-index ffe1828a4b7e..6829834a412f 100644
---- a/sound/soc/codecs/tlv320aic32x4.c
-+++ b/sound/soc/codecs/tlv320aic32x4.c
-@@ -1349,7 +1349,7 @@ int aic32x4_probe(struct device *dev, struct regmap *regmap)
- 		return -ENOMEM;
- 
- 	aic32x4->dev = dev;
--	aic32x4->type = (enum aic32x4_type)dev_get_drvdata(dev);
-+	aic32x4->type = (uintptr_t)dev_get_drvdata(dev);
- 
- 	dev_set_drvdata(dev, aic32x4);
- 
+diff --git a/sound/soc/codecs/wm8904.c b/sound/soc/codecs/wm8904.c
+index 60319b468fb2..829bf055622a 100644
+--- a/sound/soc/codecs/wm8904.c
++++ b/sound/soc/codecs/wm8904.c
+@@ -2202,7 +2202,7 @@ static int wm8904_i2c_probe(struct i2c_client *i2c)
+ 		match = of_match_node(wm8904_of_match, i2c->dev.of_node);
+ 		if (match == NULL)
+ 			return -EINVAL;
+-		wm8904->devtype = (enum wm8904_type)match->data;
++		wm8904->devtype = (uintptr_t)match->data;
+ 	} else {
+ 		const struct i2c_device_id *id =
+ 			i2c_match_id(wm8904_i2c_id, i2c);
 -- 
 2.34.1
 
