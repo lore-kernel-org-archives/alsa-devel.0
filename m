@@ -4,97 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 00B8EC001B0
-	for <alsa-devel@archiver.kernel.org>; Thu, 10 Aug 2023 18:04:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 99529C001E0
+	for <alsa-devel@archiver.kernel.org>; Thu, 10 Aug 2023 18:57:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 06E5A82C;
-	Thu, 10 Aug 2023 20:03:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 06E5A82C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6ABDA828;
+	Thu, 10 Aug 2023 20:56:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6ABDA828
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1691690671;
-	bh=Y5NbfTzNtvATG9GxZM1Qw0F5nvZfv1HtLDJ4xkBt2hQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1691693832;
+	bh=bo8z/94vgFxt1I4cPk+N+mKay1IV/j1K+U63ow7+tMQ=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=l42PIXvsMl9QFL9cNDWlpEaNYCGa8ANsiYY7d2wg/pln5PP93Nka75T5SuDZNQSbJ
-	 dV5pX/n1tzFmtjFKCsVAaDDhJVowxIhA3Ron3BobeYfAvevYGVv4m32MNr0133qBGV
-	 9DQ/mdsjtZWHAMPb+MjZFz10eIiJirUFQhcpQvZM=
+	b=sfE8T4q7o1XrayxknIZ0GifWMZg0deWJohQAFVKYyH7aeAsE66DqmSgfBEZrVBrOe
+	 +5RGY1FKWCreFEuc+BSZCWrMrbVIqP77OXDYmlL75rOunhchCG5bQpg9P/e+FxhhC2
+	 9pD+w89W89JolZXJe0X5dmdefRNEqvGhAhAqRsTs=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3EF28F8016E; Thu, 10 Aug 2023 20:03:07 +0200 (CEST)
+	id 02040F80510; Thu, 10 Aug 2023 20:55:53 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B6F34F800F4;
-	Thu, 10 Aug 2023 20:03:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2EEFDF80510;
+	Thu, 10 Aug 2023 20:55:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 686CDF8016E; Thu, 10 Aug 2023 20:03:03 +0200 (CEST)
+	id 3C0C4F800F4; Thu, 10 Aug 2023 20:55:48 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id AF83FF800FB
-	for <alsa-devel@alsa-project.org>; Thu, 10 Aug 2023 20:02:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AF83FF800FB
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9DC3BF8016E;
+	Thu, 10 Aug 2023 20:55:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9DC3BF8016E
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=A/YtgsbU
+ header.s=k20201202 header.b=fhO/sFc3
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 8CC9E6659A;
-	Thu, 10 Aug 2023 18:02:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97EE7C433C7;
-	Thu, 10 Aug 2023 18:02:51 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 4E72062FE2;
+	Thu, 10 Aug 2023 18:55:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 934ACC433C8;
+	Thu, 10 Aug 2023 18:55:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1691690577;
-	bh=Y5NbfTzNtvATG9GxZM1Qw0F5nvZfv1HtLDJ4xkBt2hQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=A/YtgsbUK1wEI/m3j+lbTimnm7LKRJA1RywxB47qQiteMKMuxx3i5Hxz5wtM7hmBq
-	 gQWNrwf4B/Z3ZTRm6ZdGvpAAHWJuaXjOCXa7N55mL0wtFPvP/ylhqrvMtkqUIMM/JV
-	 zgJ30nRuhI4FS9CyjrmqcotVV6h78rgZPOlvHBAGXY41sG42h1oPf7apyqzwbd/rW2
-	 2DxJ/u6e3Yu352ECVCo6etxNwrv9NevlS4G0Vl+in1lmuYoXwsSn104EnGHeM4NYM/
-	 qrrmX/A1z0Ldu57/+cFQMKtZrQcnYCql4+G+6tmwkWM9V/LrtDLM93ewblFGf3R6NI
-	 eb/pN+7Q+2OGQ==
-Date: Thu, 10 Aug 2023 19:02:48 +0100
+	s=k20201202; t=1691693734;
+	bh=bo8z/94vgFxt1I4cPk+N+mKay1IV/j1K+U63ow7+tMQ=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=fhO/sFc3kQO/gaTzXXcpOzK7aHQHEEsahebOGp3RK06jwRBOp8EUp+xsjdDn01bG3
+	 BibNOLi7w2ewZPi1OUM9iwPi6ry2WRzqXpv+0ny+nAlnWVocorUsUJu18+Wfwe6ydG
+	 DgosgOy1I6/JU8zQ25WvW+ZaQV8uFmIeBATSmp95AgCMU+UityJ03mc3n1zn6dL8vk
+	 tDIQUIyNXXkA8cX/RrAXTtuKvBNeeQ0BVxVzpq99S2sOkqDsr6dR5/zI3JMS6MZ3pJ
+	 7U+II0myNiFDhg7by4Rj2uLYt3fUhnfXxARowEKYaMWOJvYPTxAWrLJAtGu9tiIbKP
+	 ZAHGuOzOVpUJA==
 From: Mark Brown <broonie@kernel.org>
-To: Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>
-Cc: Ulf Hansson <ulf.hansson@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Peng Fan <peng.fan@nxp.com>,
-	Bjorn Andersson <quic_bjorande@quicinc.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	=?iso-8859-1?Q?N=EDcolas_F=2E_R=2E_A=2E?= Prado <nfraprado@collabora.com>,
-	=?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>, kernel@puri.sm,
-	linux-mmc@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
-	linux-arm-kernel@lists.infradead.org,
-	David Heidelberg <david@ixit.cz>, Sherry Sun <sherry.sun@nxp.com>
-Subject: Re: [PATCH v2 1/4] dt-bindings: sound: gtm601: Add description
-Message-ID: <582be994-d3c8-4edf-9028-99b18505e378@sirena.org.uk>
-References: <cover.1691684726.git.agx@sigxcpu.org>
- <6904cc6d877d28d92e9f9fa9f1bdc404614d9734.1691684726.git.agx@sigxcpu.org>
+To: perex@perex.cz, tiwai@suse.com, pierre-louis.bossart@linux.intel.com,
+ lgirdwood@gmail.com, peter.ujfalusi@linux.intel.com,
+ yung-chuan.liao@linux.intel.com, ranjani.sridharan@linux.intel.com,
+ Yang Li <yang.lee@linux.alibaba.com>
+Cc: sound-open-firmware@alsa-project.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20230810005555.4610-1-yang.lee@linux.alibaba.com>
+References: <20230810005555.4610-1-yang.lee@linux.alibaba.com>
+Subject: Re: [PATCH -next] ASoC: SOF: Intel: Remove duplicated include in
+ lnl.c
+Message-Id: <169169373231.701985.12095697416342525978.b4-ty@kernel.org>
+Date: Thu, 10 Aug 2023 19:55:32 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="GODGWzgiFfPQfLkj"
-Content-Disposition: inline
-In-Reply-To: 
- <6904cc6d877d28d92e9f9fa9f1bdc404614d9734.1691684726.git.agx@sigxcpu.org>
-X-Cookie: Reunite Gondwondaland!
-Message-ID-Hash: JVCUA73SREEG6NLW2BBQJVTFALLC5G3P
-X-Message-ID-Hash: JVCUA73SREEG6NLW2BBQJVTFALLC5G3P
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-034f2
+Message-ID-Hash: U5HFVIKWEVZXSQDBIGC33H7GN2MTC3NG
+X-Message-ID-Hash: U5HFVIKWEVZXSQDBIGC33H7GN2MTC3NG
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -107,7 +89,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JVCUA73SREEG6NLW2BBQJVTFALLC5G3P/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/U5HFVIKWEVZXSQDBIGC33H7GN2MTC3NG/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -116,35 +98,36 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+On Thu, 10 Aug 2023 08:55:55 +0800, Yang Li wrote:
+> ./sound/soc/sof/intel/lnl.c: hda.h is included more than once.
+> 
+> 
 
---GODGWzgiFfPQfLkj
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Applied to
 
-On Thu, Aug 10, 2023 at 07:59:49PM +0200, Guido G=FCnther wrote:
-> This allows to us to document the channel and sampling
-> rate requirements.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-Please do not submit new versions of already applied patches, please
-submit incremental updates to the existing code.  Modifying existing
-commits creates problems for other users building on top of those
-commits so it's best practice to only change pubished git commits if
-absolutely essential.
+Thanks!
 
---GODGWzgiFfPQfLkj
-Content-Type: application/pgp-signature; name="signature.asc"
+[1/1] ASoC: SOF: Intel: Remove duplicated include in lnl.c
+      commit: 061599c8285848fe4ec64becb278dcdd60dd3369
 
------BEGIN PGP SIGNATURE-----
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTVJkcACgkQJNaLcl1U
-h9CWgQf9E1fK+h8U4tglO2QBYdincfV5U+VibIuT+X3R6d04Ld31bt4zcsOebMv6
-fsAbpoGJOrIqB63vKIGaOO3UvhUzmzR3IjzgzHf6J9a2oQm8G59+qayWuwpx8VZ3
-ttWsCsjjJU7ZILOFmfZf2zIBnipw8Ze+dlyT9qzm7W9B0CPW1FEnD6jiklT/o6YP
-ekdGU7vZA2Yap/nLhfDlLFQN5dh1UC0kuSOx/uScsanGSMtYN/WqsQHdCNsPCX0s
-v4BwnIIX+KJcOwFIJ7Ye3YaOUBWanxVI2iWXZCZ0xX1bFOeUVyZRKtKDNGyUSb4p
-jPICdMQVJ1M1b/QOehMvuvGkkbGTJg==
-=ie9k
------END PGP SIGNATURE-----
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
---GODGWzgiFfPQfLkj--
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
