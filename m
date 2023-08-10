@@ -4,83 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 317A0C001DB
-	for <alsa-devel@archiver.kernel.org>; Thu, 10 Aug 2023 06:36:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6E6E4C001DB
+	for <alsa-devel@archiver.kernel.org>; Thu, 10 Aug 2023 06:37:13 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id ECD4586F;
-	Thu, 10 Aug 2023 08:36:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ECD4586F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 44B2293A;
+	Thu, 10 Aug 2023 08:36:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 44B2293A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1691649415;
-	bh=bjiwc0x9O1YzA9o/dItr8qU6qZLmxbdOglUh+/ntFCE=;
+	s=default; t=1691649431;
+	bh=7ASYc3FbI9qd4z3PIk2i3qfy9mOzYsm5TqUlOVI1jo8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=cR++6UOVQ5lcAddeNaJUptcTpk3poJfNRNTDpF3RFZcNRw6SMD4wZLBIGQqfIePdJ
-	 vvF7kS8jr4/Tyl1e/LWXLJVua3jF3FsnxkP6JTRU18gTSzi2YIuSNTWoIY9pTBevZw
-	 rN4M4RumG2zkux6TkwBoN81+BJn2dEQM27fBnzPs=
+	b=NohVwb/zcd/7dwjKMGU/WzZOk+YKgNg/zQ58BfAdjOrHsi6tVPIOGCM2m+eEL/xyA
+	 SDdtuwqMXb9YkOS6KU+sgWt0XEXG4qmErEdp6oE21ujxFu8lz6V49ofENPHTxFiIDV
+	 2uLvmQXSFxQgeGEIT7WZ3VqAJaUZ5kaWiWIyLtDo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7289EF8055A; Thu, 10 Aug 2023 08:35:20 +0200 (CEST)
+	id 555F2F80588; Thu, 10 Aug 2023 08:35:23 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id BB141F80553;
-	Thu, 10 Aug 2023 08:35:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9F1E5F80536;
+	Thu, 10 Aug 2023 08:35:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 16F43F80510; Thu, 10 Aug 2023 08:35:17 +0200 (CEST)
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com
- [IPv6:2a00:1450:4864:20::32f])
+	id A380EF80508; Thu, 10 Aug 2023 08:35:17 +0200 (CEST)
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com
+ [IPv6:2a00:1450:4864:20::336])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E733EF801EB
-	for <alsa-devel@alsa-project.org>; Thu, 10 Aug 2023 08:33:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E733EF801EB
+	by alsa1.perex.cz (Postfix) with ESMTPS id DE803F80536
+	for <alsa-devel@alsa-project.org>; Thu, 10 Aug 2023 08:33:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DE803F80536
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=WsW7N5hH
-Received: by mail-wm1-x32f.google.com with SMTP id
- 5b1f17b1804b1-3fe5eb84dceso4802775e9.1
+ header.s=google header.b=qRwFGkjs
+Received: by mail-wm1-x336.google.com with SMTP id
+ 5b1f17b1804b1-3fe2d218eedso4896805e9.0
         for <alsa-devel@alsa-project.org>;
- Wed, 09 Aug 2023 23:33:29 -0700 (PDT)
+ Wed, 09 Aug 2023 23:33:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691649208; x=1692254008;
+        d=linaro.org; s=google; t=1691649200; x=1692254000;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/WBYHWBePTU6C5eucIxmnpm6TRHg4GxWEuDC87hbIx8=;
-        b=WsW7N5hH568pRQc1HRO3Dph5sZBjMP7VCQ9PCz17RKguEShZUyFktuqumSMowNXnNL
-         eZS7dxaBqYwAANnxZaDYAmepUMVya8yW7kPjBBApwlk7OvvMjJEZO7H+FbP07j4yW/Q9
-         v+OQWgdu1hwGASwjeScs1jrTLWsV+ZWk6T7EU3sxTyt8AmDwR3GSouEMghCxR7wTB4+l
-         QyKQhIQUJpsbbZm1bTH7OH4EwIzoF2l1A+au4POCQyT1uXwMkgZcMkz5b1mxwoyN3S41
-         HQkoW65jAh72hsl2jei/YeCfL+DOSWqvIbvOk1YayxqYBkf7jfR67GAuRMcFIDR1qauT
-         ezqw==
+        bh=2vbXpmjMjw+lKtOoDoBL66la8kJXNdX97D3faoVkRss=;
+        b=qRwFGkjs7FH05bLZCJETWbxdoViNxeC39FXgvqqlKU61gi57Ql7yy45M1F9AB8/Vnf
+         m4mxqNHy7YspE8rZapqbpkWRGZNRknmR0Yw7mWVyCBYFhav+VPIm769MnpWWKLDWK6vD
+         vC9kR5dcS6XYThPTkqfm7G3IaFxYAITemSv9pNs25yTxEymWJ1iCR4S+CpNCl/bM8AyP
+         mrkj897BIXv6i7FCzrK0Wv2NRScb1bjBumNlC2vJIZeqIGZU5Uqzi7GP1fP1aQdTNOBW
+         HBwf/zF4nwCb5TmpvViNmeug8wNpHdz1zKVQBEZuO6N2j7ktVNinkhjQ1eADaGOvVh0w
+         T7gw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691649208; x=1692254008;
+        d=1e100.net; s=20221208; t=1691649200; x=1692254000;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=/WBYHWBePTU6C5eucIxmnpm6TRHg4GxWEuDC87hbIx8=;
-        b=KY9eKNejSwMuRmPGVtSdOvHlfHxBLaB+b1NroWnXCmQ/E6CWHmxG5KIsVzOvR66+B0
-         saq5NLVyNJCmQH6FhzbkcbdMwmU6oW3G3RPLZbesx0TRuFeRMVTsODHF5XVvZn5SMvac
-         evD9lWHrubFAzEK+UTrAgQC9VTsDvG9qUFYGSj/RFDlkT3axvHkiqkv4OYRa7qKxarHk
-         /CpwEGLnt9nx4PW01GKjJGEADaa/94tCMnCHqhxJt4zeoTE8nf5am7yXTNY0+KsgzC3T
-         cxyfzVDLGtKN2yCPjLluTDnpEdxgzwuOQuigc4yPtl/TeDBhZJRb/9c1ZrzF3leTAtlT
-         ATNg==
-X-Gm-Message-State: AOJu0YxvGHzY5ZLE73h7Xz4l6fDx3k+7/G164UkuukXpMwPuHgOBVroD
-	FTn5T9THZQ2wNG+enjPYuR7J0Q==
+        bh=2vbXpmjMjw+lKtOoDoBL66la8kJXNdX97D3faoVkRss=;
+        b=jNX6oBQWXvZuyacLcugrIhMfyrMxEOtMwG9mW81WYhIj/Xw3WxBJD/yFdYegBP4SRd
+         Ev/jM4A5vuRjztYWEy+znarHW8xmVwCcjbOE3RI7MFm81QEFHqcDW/Ne5Gejm4kbaeNS
+         RVJXm+bnXkYBtA0UfXXhb0W7gG0/zjQj5TsAchnQx5xKHoWB1djGkYj9H/SQTlR7h7rI
+         IaTToYILuBDasu+oLXSPm1kuVEk1+UIZCRoffYhSRTSYFg/Ti8ZpJDg/OjHFuvce0rjM
+         sUBvVTOLuI+JGj2Q2wbktYgFZ/DCibQeVoBlhXL5bNgM5/RWpJQCt2OgMoXjUVN5OES6
+         qDIw==
+X-Gm-Message-State: AOJu0YzS57eaR567sOdANOV16VGUK3RaLMT2EFbfx7qseHOHO8G5Mtgk
+	ORAdYwxgPzr2oHs1GVBT5Zk9gw==
 X-Google-Smtp-Source: 
- AGHT+IEXV/tZ+ldWvHaqx8+19PGg8/1xO8IsS1t83BnY9Nx8oyuLOskgHlviUqUGSPNbI+PEAFXAUg==
-X-Received: by 2002:a7b:ce8e:0:b0:3fe:2109:b9ff with SMTP id
- q14-20020a7bce8e000000b003fe2109b9ffmr1127175wmj.0.1691649208491;
-        Wed, 09 Aug 2023 23:33:28 -0700 (PDT)
+ AGHT+IFDBMmqGDMuwzh1dxYq3965kvpNZ6gEY/ZZqIfT2y0gnQEekNtyV10m0SOedP3uEd/zcYBgQw==
+X-Received: by 2002:a7b:c398:0:b0:3fe:1820:2434 with SMTP id
+ s24-20020a7bc398000000b003fe18202434mr1112564wmj.1.1691649200441;
+        Wed, 09 Aug 2023 23:33:20 -0700 (PDT)
 Received: from krzk-bin.. ([178.197.222.113])
         by smtp.gmail.com with ESMTPSA id
- o10-20020a1c750a000000b003fe2b6d64c8sm4020018wmc.21.2023.08.09.23.33.26
+ o10-20020a1c750a000000b003fe2b6d64c8sm4020018wmc.21.2023.08.09.23.33.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Aug 2023 23:33:28 -0700 (PDT)
+        Wed, 09 Aug 2023 23:33:20 -0700 (PDT)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To: Jerome Brunet <jbrunet@baylibre.com>,
 	Liam Girdwood <lgirdwood@gmail.com>,
@@ -111,16 +111,16 @@ To: Jerome Brunet <jbrunet@baylibre.com>,
 	linux-arm-kernel@lists.infradead.org,
 	linux-mediatek@lists.infradead.org
 Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH v2 11/11] ASoC: samsung: tm2_wm5110: parse audio-routing
-Date: Thu, 10 Aug 2023 08:32:59 +0200
-Message-Id: <20230810063300.20151-11-krzysztof.kozlowski@linaro.org>
+Subject: [PATCH v2 08/11] ASoC: samsung: aries_wm8994: parse audio-routing
+Date: Thu, 10 Aug 2023 08:32:56 +0200
+Message-Id: <20230810063300.20151-8-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230810063300.20151-1-krzysztof.kozlowski@linaro.org>
 References: <20230810063300.20151-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: BMY63B2C4ZJ77EHDMIAS2SF77B7OC3XV
-X-Message-ID-Hash: BMY63B2C4ZJ77EHDMIAS2SF77B7OC3XV
+Message-ID-Hash: E3OPGFNDUVEC73A7FC3ZI3YVZAE5CFEU
+X-Message-ID-Hash: E3OPGFNDUVEC73A7FC3ZI3YVZAE5CFEU
 X-MailFrom: krzysztof.kozlowski@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -133,7 +133,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BMY63B2C4ZJ77EHDMIAS2SF77B7OC3XV/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/E3OPGFNDUVEC73A7FC3ZI3YVZAE5CFEU/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -147,31 +147,31 @@ Parse generic sound card "audio-routing" property and fallback to
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- sound/soc/samsung/tm2_wm5110.c | 10 +++++++---
+ sound/soc/samsung/aries_wm8994.c | 10 +++++++---
  1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/samsung/tm2_wm5110.c b/sound/soc/samsung/tm2_wm5110.c
-index d611ec9e5325..5ebf17f3de1e 100644
---- a/sound/soc/samsung/tm2_wm5110.c
-+++ b/sound/soc/samsung/tm2_wm5110.c
-@@ -523,10 +523,14 @@ static int tm2_probe(struct platform_device *pdev)
- 		return ret;
- 	}
+diff --git a/sound/soc/samsung/aries_wm8994.c b/sound/soc/samsung/aries_wm8994.c
+index 7492bb41456c..dd3cd2c9644a 100644
+--- a/sound/soc/samsung/aries_wm8994.c
++++ b/sound/soc/samsung/aries_wm8994.c
+@@ -620,10 +620,14 @@ static int aries_audio_probe(struct platform_device *pdev)
+ 	/* Update card-name if provided through DT, else use default name */
+ 	snd_soc_of_parse_card_name(card, "model");
  
 -	ret = snd_soc_of_parse_audio_routing(card, "samsung,audio-routing");
 +	ret = snd_soc_of_parse_audio_routing(card, "audio-routing");
  	if (ret < 0) {
--		dev_err(dev, "Audio routing is not specified or invalid\n");
+-		dev_err(dev, "Audio routing invalid/unspecified\n");
 -		return ret;
 +		/* Backwards compatible way */
 +		ret = snd_soc_of_parse_audio_routing(card, "samsung,audio-routing");
 +		if (ret < 0) {
-+			dev_err(dev, "Audio routing is not specified or invalid\n");
++			dev_err(dev, "Audio routing invalid/unspecified\n");
 +			return ret;
 +		}
  	}
  
- 	card->aux_dev[0].dlc.of_node = of_parse_phandle(dev->of_node,
+ 	aries_dai[1].dai_fmt = priv->variant->modem_dai_fmt;
 -- 
 2.34.1
 
