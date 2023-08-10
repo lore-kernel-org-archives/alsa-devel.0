@@ -4,119 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D816DC41513
-	for <alsa-devel@archiver.kernel.org>; Thu, 10 Aug 2023 07:49:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6DAEAC001B0
+	for <alsa-devel@archiver.kernel.org>; Thu, 10 Aug 2023 08:13:23 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 33BE93E7;
-	Thu, 10 Aug 2023 09:48:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 33BE93E7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7C31B826;
+	Thu, 10 Aug 2023 10:12:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7C31B826
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1691653740;
-	bh=SYjY3g07k8wvjYgH/5nZiRBqaJgqOomNi2+4zgo3JEI=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	s=default; t=1691655200;
+	bh=R4viWfcgZbznyQC6FfrMrWLW8ZFSL0b1+bY4vskRqcw=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=XHy8GzsDR4xnu5EgQ1UK4k4rEmIHwQ6CXLc4/a1Q8RXCumYjFw8m/YFTy32mbAdnK
-	 2XEYKSohkLkX2MIbPIZTyuldrCnsjMV+wJuLVgN5mW0nudvVUJL61VCySBx6+IeJDg
-	 m9XSPYrRYgTOVXfFuRow5xKvkMEvXVWS9aN8XBPc=
+	b=g8e4oKzfJZCKR6rb29ZyKd9K+6JIsALcCtnnjGN6Bojv99GLj/lK5QysNFmgto9P7
+	 V/iX+p5U9YBo9HlZVXP2qxdURXGXbjk1AolUYOK5wbLsH3qWA4IhLnyGFRywCN268M
+	 YmX0onDTjYQGmaUitQYRE9zuwQIU6JGe37ubeTTA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8FF30F801EB; Thu, 10 Aug 2023 09:47:42 +0200 (CEST)
+	id 0B433F80552; Thu, 10 Aug 2023 10:12:09 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1D943F8016E;
-	Thu, 10 Aug 2023 09:47:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 814F1F80536;
+	Thu, 10 Aug 2023 10:12:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A4072F8016E; Thu, 10 Aug 2023 09:47:36 +0200 (CEST)
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com
- [IPv6:2a00:1450:4864:20::532])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	id 51805F80510; Thu, 10 Aug 2023 10:12:04 +0200 (CEST)
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id DEC7EF800EE
-	for <alsa-devel@alsa-project.org>; Thu, 10 Aug 2023 09:47:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DEC7EF800EE
+	by alsa1.perex.cz (Postfix) with ESMTPS id 98B82F80166
+	for <alsa-devel@alsa-project.org>; Thu, 10 Aug 2023 10:11:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 98B82F80166
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=TCouXo8h
-Received: by mail-ed1-x532.google.com with SMTP id
- 4fb4d7f45d1cf-522bd411679so714797a12.0
-        for <alsa-devel@alsa-project.org>;
- Thu, 10 Aug 2023 00:47:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691653647; x=1692258447;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=dhpGgdbtPxtlzBnzGvNtLx/+CntVAPL8Getc9S/EtvE=;
-        b=TCouXo8hPM/jVxiHx4HiCypCk6rJQPbI9AuhBPVcn/DeoHQoGs0K/qmCBg/fXBxrnm
-         x9ndiKsg6ceAeVt7oq4Ax2tf5qYsxftiA8FXg4oYaev50pnzZ0Ndp7Q5YOHJqxUNhVod
-         qyQi4hFrls3IYYHvBlt23AoWpVRhRZnIhEm6+jfNyVfgIKcmJD7VmucVkf172J7NdzpT
-         U497GQCzvnuf6QEpie6uMYEQDyvoVDoisfnAMpwkqdfcq6xl+xKIgUtw8M/p2sM5uLkM
-         WTcUgemTcfTqlK7Yij1gZunpx3csb95oeh96TtGz7ByTAQRAZNyRkHay/kkaLS5hAU4N
-         jkwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691653647; x=1692258447;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=dhpGgdbtPxtlzBnzGvNtLx/+CntVAPL8Getc9S/EtvE=;
-        b=D7OE51tDj4qONY9Ci8ZNKu8MUpjjmYoYchAuXz6emwDO9IrAOolAieoec7F3IVQ9DD
-         i2uY8RemrT4AR14JZPjUzXqhemGWVVVHfcYXcLOtckWpMJUPtdT2CmpnEC6o0rLmT8Dx
-         oWVmsgNg9sBatvq+08oSO5oVNSHTOnvHs+iM0hY1KYekmd8IpB3fOB08FyHb7RKVZD7c
-         XA4OZzFOQIu8+J+joGm+MKfNN5ww3qsshU/Jmzyyv6mmL/Kkf+yqevuwVvxQ0k5u6v6V
-         k0ZGgAp56a2TCX9ChWudleWzcirJpaDQiMOJ5Cus+FEeSyvl/uatz+TxFnu96GuASMd7
-         tObA==
-X-Gm-Message-State: AOJu0YwbNd472lGcoiuyyPD9ZiaHRqpaaTYuyo5iQ5YAXn1cW1weeNQg
-	R6xlR3yXWD04pg6b7sOg4Jl4bQ==
-X-Google-Smtp-Source: 
- AGHT+IF9zsTmioOuHxTFGoxEizbPFEc/AaHn3qyFS7Ire5UldEq2+XXEFPOCEZP4aWihn4A+p0JOyg==
-X-Received: by 2002:a17:906:2189:b0:99b:cf0c:2cb1 with SMTP id
- 9-20020a170906218900b0099bcf0c2cb1mr1357849eju.66.1691653647608;
-        Thu, 10 Aug 2023 00:47:27 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.113])
-        by smtp.gmail.com with ESMTPSA id
- w20-20020a170906385400b0097404f4a124sm560321ejc.2.2023.08.10.00.47.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Aug 2023 00:47:27 -0700 (PDT)
-Message-ID: <137a734e-0e5a-5fcb-f0d3-1fdbb5e8da34@linaro.org>
-Date: Thu, 10 Aug 2023 09:47:24 +0200
+	dkim=pass (1024-bit key,
+ unprotected) header.d=mediatek.com header.i=@mediatek.com header.a=rsa-sha256
+ header.s=dk header.b=oqvQKWjo
+X-UUID: 8a2c78d6375511eeb20a276fd37b9834-20230810
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=mediatek.com; s=dk;
+	h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From;
+ bh=O109voinB4i42hzf7+Gca1AfZl5TFAeRyQ+uKbGY2GE=;
+	b=oqvQKWjo2O6Pel/jBsbH5KxULr305Ko2KdjVvnhiG/r5b6RUvc5Bvk1XLceOSyI/zwsuFadhG7XK07eqGOdBYRTOb8tgxWZHSdgG/5hbgJ11eTPNF0knS+U6sOCfDkguw21COWCiLpZWlVWcYgHeOX7tYth5ftZ7ApIAOpWyjAE=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.31,REQID:32e2efc3-db91-4f4f-adae-86d413d4ee55,IP:0,U
+	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+	release,TS:0
+X-CID-META: VersionHash:0ad78a4,CLOUDID:a4fd5eee-9a6e-4c39-b73e-f2bc08ca3dc5,B
+	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+	RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
+	DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR
+X-UUID: 8a2c78d6375511eeb20a276fd37b9834-20230810
+Received: from mtkmbs11n2.mediatek.inc [(172.21.101.187)] by
+ mailgw02.mediatek.com
+	(envelope-from <trevor.wu@mediatek.com>)
+	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+	with ESMTP id 519198187; Thu, 10 Aug 2023 16:11:42 +0800
+Received: from mtkmbs11n2.mediatek.inc (172.21.101.187) by
+ mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Thu, 10 Aug 2023 16:11:41 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
+ mtkmbs11n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Thu, 10 Aug 2023 16:11:41 +0800
+From: Trevor Wu <trevor.wu@mediatek.com>
+To: <broonie@kernel.org>, <lgirdwood@gmail.com>, <tiwai@suse.com>,
+	<perex@perex.cz>, <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+	<conor+dt@kernel.org>, <matthias.bgg@gmail.com>,
+	<angelogioacchino.delregno@collabora.com>
+CC: <trevor.wu@mediatek.com>, <alsa-devel@alsa-project.org>,
+	<linux-mediatek@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
+Subject: [PATCH v3 2/3] ASoC: mediatek: common: revise SOF common code
+Date: Thu, 10 Aug 2023 16:11:38 +0800
+Message-ID: <20230810081139.27957-3-trevor.wu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <20230810081139.27957-1-trevor.wu@mediatek.com>
+References: <20230810081139.27957-1-trevor.wu@mediatek.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v2 02/11] ASoC: dt-bindings: mediatek,mt8188-mt6359: use
- common sound card
-Content-Language: en-US
-To: Rob Herring <robh@kernel.org>
-Cc: Sascha Hauer <s.hauer@pengutronix.de>, Judy Hsiao
- <judyhsiao@chromium.org>, linux-arm-kernel@lists.infradead.org,
- NXP Linux Team <linux-imx@nxp.com>, Trevor Wu <trevor.wu@mediatek.com>,
- Jerome Brunet <jbrunet@baylibre.com>, Fabio Estevam <festevam@gmail.com>,
- Shengjiu Wang <shengjiu.wang@nxp.com>, Jonathan Bakker <xc-racer2@live.ca>,
- Shawn Guo <shawnguo@kernel.org>, linux-kernel@vger.kernel.org,
- Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- Sylwester Nawrocki <s.nawrocki@samsung.com>, Jaroslav Kysela
- <perex@perex.cz>, Rao Mandadapu <srivasam@codeaurora.org>,
- Takashi Iwai <tiwai@suse.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-mediatek@lists.infradead.org, Conor Dooley <conor+dt@kernel.org>,
- Rohit kumar <quic_rohkumar@quicinc.com>,
- Cheng-Yi Chiang <cychiang@chromium.org>, Mark Brown <broonie@kernel.org>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-References: <20230810063300.20151-1-krzysztof.kozlowski@linaro.org>
- <20230810063300.20151-2-krzysztof.kozlowski@linaro.org>
- <169165201641.3911557.18445521260746432395.robh@kernel.org>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <169165201641.3911557.18445521260746432395.robh@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: I7XWOZQJ4YRFJMOMY3SEJIW6JZ5LFZBA
-X-Message-ID-Hash: I7XWOZQJ4YRFJMOMY3SEJIW6JZ5LFZBA
-X-MailFrom: krzysztof.kozlowski@linaro.org
+Content-Type: text/plain
+X-MTK: N
+Message-ID-Hash: 4E3QLGWGJDWCGC4VY6UOLV6WKI6Q4KBJ
+X-Message-ID-Hash: 4E3QLGWGJDWCGC4VY6UOLV6WKI6Q4KBJ
+X-MailFrom: trevor.wu@mediatek.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -128,7 +101,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/I7XWOZQJ4YRFJMOMY3SEJIW6JZ5LFZBA/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4E3QLGWGJDWCGC4VY6UOLV6WKI6Q4KBJ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -137,34 +110,232 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 10/08/2023 09:20, Rob Herring wrote:
-> 
-> On Thu, 10 Aug 2023 08:32:50 +0200, Krzysztof Kozlowski wrote:
->> The mediatek,mt8188-mt6359 Linux sound machine driver requires the
->> "model" property, so binding was incomplete.  Reference the common sound
->> card properties to fix that which also allows to remove duplicated
->> property definitions.  Leave the relevant parts of "audio-routing"
->> description.
->>
->> Reviewed-by: Rob Herring <robh@kernel.org>
->> Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
->> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->> ---
->>  .../bindings/sound/mediatek,mt8188-mt6359.yaml  | 17 +++++++----------
->>  1 file changed, 7 insertions(+), 10 deletions(-)
->>
-> 
-> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-> on your patch (DT_CHECKER_FLAGS is new in v5.13):
-> 
-> yamllint warnings/errors:
-> 
-> dtschema/dtc warnings/errors:
-> 
+Originally, normal dai link fixup callback is overwritten by sof fixup
+callback on mtk_sof_card_late_probe and it relies on the mapping defined
+on struct sof_conn_stream.
 
-I think the bot responds like this if the patch could not be applied.
-Probably we can ignore it.
+It's not flexible. When a new hardware connection is adopted, user needs
+to update struct sof_conn_stream defined in machine driver which is used
+to specify the mapping relationship of normal BE and SOF BE.
 
-Best regards,
-Krzysztof
+In the patch, mtk_sof_check_tplg_be_dai_link_fixup() is introduced for
+all normal BEs. In mtk_sof_late_probe, back up normal BE fixup if it
+exists and then overwrite be_hw_params_fixup by the new callback.
+
+There are two cases for FE and BE connection.
+
+case 1:
+SOF FE -> normal BE
+       -> SOF_BE
+
+case 2:
+normal FE -> normal BE
+
+In the new fixup callback, it tries to find SOF_BE which connects to the
+same FE, and then reuses the fixup of SOF_BE. If no SOF_BE exists,
+it must be case 2, so rollback to the original fixup if it exists.
+
+As a result, the predefined relation is not needed anymore. Hardware
+connection can be controlled by the mixer control for AFE interconn.
+Then, DPCM finds the BE mapping at runtime.
+
+Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
+---
+ .../soc/mediatek/common/mtk-dsp-sof-common.c  | 113 +++++++++++++++---
+ .../soc/mediatek/common/mtk-dsp-sof-common.h  |   8 ++
+ 2 files changed, 106 insertions(+), 15 deletions(-)
+
+diff --git a/sound/soc/mediatek/common/mtk-dsp-sof-common.c b/sound/soc/mediatek/common/mtk-dsp-sof-common.c
+index 6fef16306f74..f3894010f656 100644
+--- a/sound/soc/mediatek/common/mtk-dsp-sof-common.c
++++ b/sound/soc/mediatek/common/mtk-dsp-sof-common.c
+@@ -54,6 +54,8 @@ int mtk_sof_card_probe(struct snd_soc_card *card)
+ {
+ 	int i;
+ 	struct snd_soc_dai_link *dai_link;
++	struct mtk_soc_card_data *soc_card_data = snd_soc_card_get_drvdata(card);
++	struct mtk_sof_priv *sof_priv = soc_card_data->sof_priv;
+ 
+ 	/* Set stream_name to help sof bind widgets */
+ 	for_each_card_prelinks(card, i, dai_link) {
+@@ -61,10 +63,81 @@ int mtk_sof_card_probe(struct snd_soc_card *card)
+ 			dai_link->stream_name = dai_link->name;
+ 	}
+ 
++	INIT_LIST_HEAD(&sof_priv->dai_link_list);
++
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(mtk_sof_card_probe);
+ 
++static struct snd_soc_pcm_runtime *mtk_sof_find_tplg_be(struct snd_soc_pcm_runtime *rtd)
++{
++	struct snd_soc_card *card = rtd->card;
++	struct mtk_soc_card_data *soc_card_data = snd_soc_card_get_drvdata(card);
++	struct mtk_sof_priv *sof_priv = soc_card_data->sof_priv;
++	struct snd_soc_pcm_runtime *fe;
++	struct snd_soc_pcm_runtime *be;
++	struct snd_soc_dpcm *dpcm;
++	int i, stream;
++
++	for_each_pcm_streams(stream) {
++		fe = NULL;
++		for_each_dpcm_fe(rtd, stream, dpcm) {
++			fe = dpcm->fe;
++			if (fe)
++				break;
++		}
++
++		if (!fe)
++			continue;
++
++		for_each_dpcm_be(fe, stream, dpcm) {
++			be = dpcm->be;
++			if (be == rtd)
++				continue;
++
++			for (i = 0; i < sof_priv->num_streams; i++) {
++				const struct sof_conn_stream *conn = &sof_priv->conn_streams[i];
++
++				if (!strcmp(be->dai_link->name, conn->sof_link))
++					return be;
++			}
++		}
++	}
++
++	return NULL;
++}
++
++/* fixup the BE DAI link to match any values from topology */
++static int mtk_sof_check_tplg_be_dai_link_fixup(struct snd_soc_pcm_runtime *rtd,
++						struct snd_pcm_hw_params *params)
++{
++	struct snd_soc_card *card = rtd->card;
++	struct mtk_soc_card_data *soc_card_data = snd_soc_card_get_drvdata(card);
++	struct mtk_sof_priv *sof_priv = soc_card_data->sof_priv;
++	struct snd_soc_pcm_runtime *sof_be;
++	struct mtk_dai_link *dai_link;
++	int ret = 0;
++
++	sof_be = mtk_sof_find_tplg_be(rtd);
++	if (sof_be) {
++		if (sof_priv->sof_dai_link_fixup)
++			ret = sof_priv->sof_dai_link_fixup(rtd, params);
++		else if (sof_be->dai_link->be_hw_params_fixup)
++			ret = sof_be->dai_link->be_hw_params_fixup(sof_be, params);
++	} else {
++		list_for_each_entry(dai_link, &sof_priv->dai_link_list, list) {
++			if (strcmp(dai_link->name, rtd->dai_link->name) == 0) {
++				if (dai_link->be_hw_params_fixup)
++					ret = dai_link->be_hw_params_fixup(rtd, params);
++
++				break;
++			}
++		}
++	}
++
++	return ret;
++}
++
+ int mtk_sof_card_late_probe(struct snd_soc_card *card)
+ {
+ 	struct snd_soc_pcm_runtime *rtd;
+@@ -72,6 +145,8 @@ int mtk_sof_card_late_probe(struct snd_soc_card *card)
+ 	struct mtk_soc_card_data *soc_card_data =
+ 		snd_soc_card_get_drvdata(card);
+ 	struct mtk_sof_priv *sof_priv = soc_card_data->sof_priv;
++	struct snd_soc_dai_link *dai_link;
++	struct mtk_dai_link *mtk_dai_link;
+ 	int i;
+ 
+ 	/* 1. find sof component */
+@@ -86,25 +161,37 @@ int mtk_sof_card_late_probe(struct snd_soc_card *card)
+ 		return 0;
+ 	}
+ 
+-	/* 2. add route path and fixup callback */
++	/* 2. overwrite all BE fixups, and backup the existing fixup */
++	for_each_card_prelinks(card, i, dai_link) {
++		if (dai_link->be_hw_params_fixup) {
++			mtk_dai_link = devm_kzalloc(card->dev,
++						    sizeof(*mtk_dai_link),
++						    GFP_KERNEL);
++			if (!mtk_dai_link)
++				return -ENOMEM;
++
++			mtk_dai_link->be_hw_params_fixup = dai_link->be_hw_params_fixup;
++			mtk_dai_link->name = dai_link->name;
++
++			list_add(&mtk_dai_link->list, &sof_priv->dai_link_list);
++		}
++
++		if (dai_link->no_pcm)
++			dai_link->be_hw_params_fixup = mtk_sof_check_tplg_be_dai_link_fixup;
++	}
++
++	/* 3. add route path and SOF_BE fixup callback */
+ 	for (i = 0; i < sof_priv->num_streams; i++) {
+ 		const struct sof_conn_stream *conn = &sof_priv->conn_streams[i];
+ 		struct snd_soc_pcm_runtime *sof_rtd = NULL;
+-		struct snd_soc_pcm_runtime *normal_rtd = NULL;
+ 
+ 		for_each_card_rtds(card, rtd) {
+ 			if (!strcmp(rtd->dai_link->name, conn->sof_link)) {
+ 				sof_rtd = rtd;
+-				continue;
+-			}
+-			if (!strcmp(rtd->dai_link->name, conn->normal_link)) {
+-				normal_rtd = rtd;
+-				continue;
+-			}
+-			if (normal_rtd && sof_rtd)
+ 				break;
++			}
+ 		}
+-		if (normal_rtd && sof_rtd) {
++		if (sof_rtd) {
+ 			int j;
+ 			struct snd_soc_dai *cpu_dai;
+ 
+@@ -131,13 +218,9 @@ int mtk_sof_card_late_probe(struct snd_soc_card *card)
+ 				}
+ 			}
+ 
++			/* overwrite SOF BE fixup */
+ 			sof_rtd->dai_link->be_hw_params_fixup =
+ 				sof_comp->driver->be_hw_params_fixup;
+-			if (sof_priv->sof_dai_link_fixup)
+-				normal_rtd->dai_link->be_hw_params_fixup =
+-					sof_priv->sof_dai_link_fixup;
+-			else
+-				normal_rtd->dai_link->be_hw_params_fixup = mtk_sof_dai_link_fixup;
+ 		}
+ 	}
+ 
+diff --git a/sound/soc/mediatek/common/mtk-dsp-sof-common.h b/sound/soc/mediatek/common/mtk-dsp-sof-common.h
+index dd38c4a93574..4bc5e1c0c8ed 100644
+--- a/sound/soc/mediatek/common/mtk-dsp-sof-common.h
++++ b/sound/soc/mediatek/common/mtk-dsp-sof-common.h
+@@ -18,11 +18,19 @@ struct sof_conn_stream {
+ 	int stream_dir;
+ };
+ 
++struct mtk_dai_link {
++	const char *name;
++	int (*be_hw_params_fixup)(struct snd_soc_pcm_runtime *rtd,
++				  struct snd_pcm_hw_params *params);
++	struct list_head list;
++};
++
+ struct mtk_sof_priv {
+ 	const struct sof_conn_stream *conn_streams;
+ 	int num_streams;
+ 	int (*sof_dai_link_fixup)(struct snd_soc_pcm_runtime *rtd,
+ 				  struct snd_pcm_hw_params *params);
++	struct list_head dai_link_list;
+ };
+ 
+ int mtk_sof_dai_link_fixup(struct snd_soc_pcm_runtime *rtd,
+-- 
+2.18.0
 
