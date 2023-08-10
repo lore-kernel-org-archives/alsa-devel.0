@@ -4,124 +4,101 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1E0C6C04A6A
-	for <alsa-devel@archiver.kernel.org>; Thu, 10 Aug 2023 06:37:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E1F42C04A6A
+	for <alsa-devel@archiver.kernel.org>; Thu, 10 Aug 2023 06:37:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 53FFEDEE;
-	Thu, 10 Aug 2023 08:36:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 53FFEDEE
+	by alsa0.perex.cz (Postfix) with ESMTPS id B34B6950;
+	Thu, 10 Aug 2023 08:36:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B34B6950
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1691649441;
-	bh=w9MDG2PIM2l+0VigNM1gBOHusv4bWzePxyDJCWMZnMs=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1691649465;
+	bh=p24DkrTwKvmii7rd8DLYKEm5RAmrHXW+B1kwrbC3X/U=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=edmn3DovhHcSAaJuq+XXuKhhthOa3GdLQbrB582W7VTMYAP6G+UGcrBjWYln0pibb
-	 b146oOsEf53w53KybjbQbT/Hq/SsZ0iGOCxkclgYZDjg+j8XM9zp6vEWdVusBrQ4XA
-	 VjQL3lcl65E1IHN1RK4Cra5GCEjFj2VHA5wRBZaA=
+	b=V3T0ORMD6U7KVJePCYdo6HOtmmOUY7pxuU5GcHlXvpKdsD39jJjv9d6aL8apCCj/N
+	 kymrL7OudhmMyNH4//70PJEGg0sZCcg3Nzyw+VTsADhH81nTYCDdFt9j8ArtsUclY3
+	 7DhQM7Jnti00liKyHdpIdtlKwkwaQVx0pNdQfANE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B63B2F805B0; Thu, 10 Aug 2023 08:35:25 +0200 (CEST)
+	id C3516F8016E; Thu, 10 Aug 2023 08:36:34 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 50FF5F805B0;
-	Thu, 10 Aug 2023 08:35:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 59587F801EB;
+	Thu, 10 Aug 2023 08:36:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 88A1DF80508; Thu, 10 Aug 2023 08:35:18 +0200 (CEST)
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com
- [IPv6:2a00:1450:4864:20::234])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	id 70AA4F8016E; Thu, 10 Aug 2023 08:36:30 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 57E27F8056F
-	for <alsa-devel@alsa-project.org>; Thu, 10 Aug 2023 08:33:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 57E27F8056F
+	by alsa1.perex.cz (Postfix) with ESMTPS id DAC1AF80166
+	for <alsa-devel@alsa-project.org>; Thu, 10 Aug 2023 08:36:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DAC1AF80166
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=mZi34Ufd
-Received: by mail-lj1-x234.google.com with SMTP id
- 38308e7fff4ca-2b9aa1d3029so8773931fa.2
-        for <alsa-devel@alsa-project.org>;
- Wed, 09 Aug 2023 23:33:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691649206; x=1692254006;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rMM3/oOp03VQdiM5UtFP36bUtHvT73/cLwCpo+QdiIw=;
-        b=mZi34UfdwwcDjlmRaN1sPV1Che6maw8DFhkpB5rlbV0q8J/t0iDdS/XpmNucnylJ3O
-         vyE0k7yv6OQFCEw9vAiWkjStNiV4ON3E3/xElpQ7NEq0kSZ1ViuYVDnrkY8Scyj/jCmb
-         jMOEwrRNdGsT2TIXKhvOODWDSAvMvm54g8VBCVAnvSeidAP/qalWZRgxGeNBuPJ92nw9
-         OAweLoETqOOEX40mYzOkfOWLZce93VOvyJteawZl7vUCJVilbW5cz/YIXuaEECihqyoU
-         sFSj748PEHeleeu7icxX4GlevJXwiCncCPSznc59NSRYeOwUMNOAXHaAgPqVO9/sqGF7
-         pR8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691649206; x=1692254006;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rMM3/oOp03VQdiM5UtFP36bUtHvT73/cLwCpo+QdiIw=;
-        b=gNx2Ic3Jw0fA0oq2uC7bpapHuEDE4y/e2v6mV/fa/dhaALcico+JamEVvmeXzZhyZa
-         5T6WrRarn00E1tU0HlBe5/eoeWcVH4P3IxYEcAcxn9U1oAw/UKFEJwodH95Rg17+YBVz
-         a9We5bM9IDfTktCJ6RiFuLFTbhbh5x78dKPzNL1xV4QaRF8Ku5OgCX9QAkUUTbMb1So/
-         fM830XOqvi3mlskSmavgcznMaJjzTy9s5QOiKy4LfQ8hYf2ywmB/zjthKeN8WEPCh4E0
-         PYyI3apgOcjGJZYid1/P1wK3+FRXcK3kjPCjvVAO4XBaDQW9A92gWqe8N/PNYpOQLtZv
-         PfgA==
-X-Gm-Message-State: AOJu0YxHMAUUw4/SImiHsyB0c2UlCB23SbV2PZ7rj8C3+aaqyAhob+l0
-	YQ7DInRFfm4JYl2AW0aphw493w==
-X-Google-Smtp-Source: 
- AGHT+IHJTabwknAAKRbDkyzBHhTtyG9imru5J2ltmZDPIQ9zQT0DI6lytWnPcjQ+HDIYznE8ecpa4w==
-X-Received: by 2002:a2e:3203:0:b0:2b6:e3d5:76a7 with SMTP id
- y3-20020a2e3203000000b002b6e3d576a7mr974468ljy.24.1691649206283;
-        Wed, 09 Aug 2023 23:33:26 -0700 (PDT)
-Received: from krzk-bin.. ([178.197.222.113])
-        by smtp.gmail.com with ESMTPSA id
- o10-20020a1c750a000000b003fe2b6d64c8sm4020018wmc.21.2023.08.09.23.33.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Aug 2023 23:33:25 -0700 (PDT)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Jerome Brunet <jbrunet@baylibre.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Sylwester Nawrocki <s.nawrocki@samsung.com>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	Shengjiu Wang <shengjiu.wang@nxp.com>,
-	Rohit kumar <quic_rohkumar@quicinc.com>,
-	Cheng-Yi Chiang <cychiang@chromium.org>,
-	Rao Mandadapu <srivasam@codeaurora.org>,
-	Judy Hsiao <judyhsiao@chromium.org>,
-	Trevor Wu <trevor.wu@mediatek.com>,
-	Jonathan Bakker <xc-racer2@live.ca>,
-	alsa-devel@alsa-project.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH v2 10/11] ASoC: samsung: odroid: parse audio-routing
-Date: Thu, 10 Aug 2023 08:32:58 +0200
-Message-Id: <20230810063300.20151-10-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230810063300.20151-1-krzysztof.kozlowski@linaro.org>
-References: <20230810063300.20151-1-krzysztof.kozlowski@linaro.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: NBWT4LWUXDOHHUFE46LZQDB2CB4L7ST6
-X-Message-ID-Hash: NBWT4LWUXDOHHUFE46LZQDB2CB4L7ST6
-X-MailFrom: krzysztof.kozlowski@linaro.org
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=yH4d29zz;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=Hmp7YURu
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 7E61521862;
+	Thu, 10 Aug 2023 06:36:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1691649381;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=WgSxFsObj2j3zQYLF7w8TnDbpCMs19foVN6ijkhLqqk=;
+	b=yH4d29zzpZhFuTCmUrRyUovDE42kRyWodknoxKtRCfSlCaJrE9qzR/QJ31yHHXEtwW3peI
+	2IjpzLZfzlUs33NvzGF7C9nb5BTrInFdlJ3Xu2pkQqYk0j9wr6w1dLy7T8Mi41oIXxhMM5
+	Er+KUf1kaXPsdu0/Y9SGwhhUZsGEBzg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1691649381;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=WgSxFsObj2j3zQYLF7w8TnDbpCMs19foVN6ijkhLqqk=;
+	b=Hmp7YURuC9C79SHXjkxiENnAicvhVadX9R7PbI8KEXQGJD3OGzyqyVccsdDwAqW7Bk4mt9
+	NFyaoxXQL6YT68AQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5A86C138E2;
+	Thu, 10 Aug 2023 06:36:21 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id 7JAmFWWF1GTiMAAAMHmgww
+	(envelope-from <tiwai@suse.de>); Thu, 10 Aug 2023 06:36:21 +0000
+Date: Thu, 10 Aug 2023 08:36:20 +0200
+Message-ID: <87jzu3cskb.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: alsa-devel@alsa-project.org,
+	Rolf Anderegg <rolf.anderegg@weiss.ch>,
+	Michele Perrone <michele.perrone@weiss.ch>
+Subject: Re: [PATCH] ALSA: dice: add stream format parameters for Weiss
+ devices
+In-Reply-To: <20230809225722.GA895382@workstation.local>
+References: <20230809002631.750120-1-o-takashi@sakamocchi.jp>
+	<87msz0e2jv.wl-tiwai@suse.de>
+	<20230809141854.GA892647@workstation.local>
+	<87bkfge0uc.wl-tiwai@suse.de>
+	<20230809225722.GA895382@workstation.local>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Message-ID-Hash: U5QD4U67J7EQKIS56RSUQBWUKAARS4LE
+X-Message-ID-Hash: U5QD4U67J7EQKIS56RSUQBWUKAARS4LE
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -133,7 +110,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NBWT4LWUXDOHHUFE46LZQDB2CB4L7ST6/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/U5QD4U67J7EQKIS56RSUQBWUKAARS4LE/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -142,38 +119,52 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Parse generic sound card "audio-routing" property and fallback to
-"samsung,audio-routing" if it is missing.
+On Thu, 10 Aug 2023 00:57:22 +0200,
+Takashi Sakamoto wrote:
+> 
+> On Wed, Aug 09, 2023 at 04:39:55PM +0200, Takashi Iwai wrote:
+> > On Wed, 09 Aug 2023 16:18:54 +0200,
+> > Takashi Sakamoto wrote:
+> > > 
+> > > Hi,
+> > > 
+> > > On Wed, Aug 09, 2023 at 04:03:00PM +0200, Takashi Iwai wrote:
+> > > > On Wed, 09 Aug 2023 02:26:31 +0200,
+> > > > Takashi Sakamoto wrote:
+> > > > > 
+> > > > > This patch is for kernel prepatch v6.5.
+> > > > 
+> > > > Why it must be included in 6.5?  This sounds more like a new
+> > > > implementation, rather than an urgent but fix that is needed for rc.
+> > > 
+> > > Thanks for your notice to the patch. Indeed, it is neither urgent nor
+> > > bug fix. It is a kind of 'adding support for new device with slight
+> > > change', like adding new entries in mod device table. The overall change
+> > > and new lines are quite typical in ALSA dice driver, like TC Electronic
+> > > devices in 'sound/firewire/dice/dice-tcelectronic.c'. Things are
+> > > prepared and not brand-new.
+> > > 
+> > > Precisely, current ALSA dice driver supports the Weiss models already,
+> > > while the functionality is limited that the part of sampling transfer
+> > > frequencies are available as the initial author said (e.g. when 44.1/48.0
+> > > kHz are available, 88.2/96.0 kHz are not, vise versa). The patch extends
+> > > the functionality by hard-coding stream formats following to the design
+> > > of ALSA dice driver.
+> > > 
+> > > Of cource, I don't mind postponing the patch to v6.6 kernel, but in my
+> > > point of view, it is worth to v6.5 since users got benefits from the
+> > > code which is not so novel.
+> > 
+> > OK, then I'd rather put it to 6.6.
+> > If it were for rc2, I could take it.  But it's already in a second
+> > half turn, and I'd rather like to limit the changes for later rcs.
+> 
+> It sounds reasonable. So should I post the patch on your for-next branch?
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
----
- sound/soc/samsung/odroid.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+No need for that, the patch itself is applicable cleanly.
+I just need to drop the commit log line indicating 6.5-rc.
 
-diff --git a/sound/soc/samsung/odroid.c b/sound/soc/samsung/odroid.c
-index 1743bd55ba1a..c93cb5a86426 100644
---- a/sound/soc/samsung/odroid.c
-+++ b/sound/soc/samsung/odroid.c
-@@ -230,12 +230,13 @@ static int odroid_audio_probe(struct platform_device *pdev)
- 			return ret;
- 	}
- 
--	if (of_property_present(dev->of_node, "samsung,audio-routing")) {
--		ret = snd_soc_of_parse_audio_routing(card,
--						"samsung,audio-routing");
--		if (ret < 0)
--			return ret;
--	}
-+	ret = 0;
-+	if (of_property_present(dev->of_node, "audio-routing"))
-+		ret = snd_soc_of_parse_audio_routing(card, "audio-routing");
-+	else if (of_property_present(dev->of_node, "samsung,audio-routing"))
-+		ret = snd_soc_of_parse_audio_routing(card, "samsung,audio-routing");
-+	if (ret < 0)
-+		return ret;
- 
- 	card->dai_link = odroid_card_dais;
- 	card->num_links = ARRAY_SIZE(odroid_card_dais);
--- 
-2.34.1
 
+thanks,
+
+Takashi
