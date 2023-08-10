@@ -4,81 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D85F5C001DB
-	for <alsa-devel@archiver.kernel.org>; Thu, 10 Aug 2023 06:34:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 18AF0C04A6A
+	for <alsa-devel@archiver.kernel.org>; Thu, 10 Aug 2023 06:35:08 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 51EE41E8;
-	Thu, 10 Aug 2023 08:33:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 51EE41E8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 84B42836;
+	Thu, 10 Aug 2023 08:34:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 84B42836
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1691649282;
-	bh=yMvO3Q+LlTUyxBJ3bdCEPtdpuI5ofxPyoJ+ae73pOMA=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=FJs1Vgehthm2L+oX1yfnblHrDG+8Y1Hz3B0SzXyeYx0SWbhFE6oXxBPk14nv8jP+f
-	 xfWDFJz3zSCsO/8nA9l8RkPDxfD3QTW+pBxchk92jsYueXCiXS4zdbQUU7q2/9cZj7
-	 yUGkrjBFqDawRN5XcvIkzKKDkXt5sB87y1cwOdDc=
+	s=default; t=1691649305;
+	bh=zwznNieYy81bMJXMYzEieqpnSPthsegPgUf+3D8L2b8=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=WABPj9lhKu/4+SELJVwgrbi0Z1w6Qxghdn7BLvF3egh0z/UKd3JpAHxMwhNm3XTk9
+	 pnfTjBenDGmxqL64DZk4FQbwoC+GMjZuOgQHNxaG03fhHTwh6Y7h7+f1ohRUM24txA
+	 PCbdWVJpQVflhTNsIvAI3Eyb9OCGykNY+BJqZl8g=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5EAF4F80558; Thu, 10 Aug 2023 08:33:24 +0200 (CEST)
+	id A0626F8055A; Thu, 10 Aug 2023 08:33:27 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B6A42F80553;
-	Thu, 10 Aug 2023 08:33:23 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 853CAF80567;
+	Thu, 10 Aug 2023 08:33:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B8DCCF80549; Thu, 10 Aug 2023 08:33:19 +0200 (CEST)
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com
- [IPv6:2a00:1450:4864:20::232])
+	id BB5A8F80549; Thu, 10 Aug 2023 08:33:22 +0200 (CEST)
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com
+ [IPv6:2a00:1450:4864:20::129])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 4488EF800FB
-	for <alsa-devel@alsa-project.org>; Thu, 10 Aug 2023 08:33:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4488EF800FB
+	by alsa1.perex.cz (Postfix) with ESMTPS id F0362F80166
+	for <alsa-devel@alsa-project.org>; Thu, 10 Aug 2023 08:33:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F0362F80166
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=x6s6BlUt
-Received: by mail-lj1-x232.google.com with SMTP id
- 38308e7fff4ca-2b9dc1bff38so8136561fa.1
+ header.s=google header.b=xU/RO30v
+Received: by mail-lf1-x129.google.com with SMTP id
+ 2adb3069b0e04-4fe655796faso763982e87.2
         for <alsa-devel@alsa-project.org>;
- Wed, 09 Aug 2023 23:33:06 -0700 (PDT)
+ Wed, 09 Aug 2023 23:33:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691649184; x=1692253984;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ngd6Ty807KCISUZiupnEhx7DHboutfbdjWWPlaLnOlU=;
-        b=x6s6BlUtchliqv3NA5bNBO+uW82+8JEcyL7h04UaYh8Dph1oXrIj9+drohWBK+Zk1/
-         BrTtyIpBP72mCoYMwIhRWV4zqasu6ISW2D9+MLt1MgglJu6K8DZy0ZijtTMOtbxOAMNK
-         hjtuJ5x8VzPkPdJ/2J1vtWqUK4QRujdPkct7MrnnOHDEHi2q0Cgo2kP6tU1if0c6v0cm
-         y+h+Yj5zBcvKS5f0sqhe5ZMaJvOADWVvWmB/jrDF2DQ+nqRgUm0ZtFbc4JZbK/2+E2IQ
-         epttvAy+jYTedANUHwXrqUOL6ldq+sx+5AuNxKw8uy/RoXdDym3EMexO7TKPI00Me5x0
-         shZA==
+        d=linaro.org; s=google; t=1691649188; x=1692253988;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=V+hlC8d67YmntwV4mHtT3ZdGF2DLfbF3GgSUytsMD/g=;
+        b=xU/RO30vWACYxqjtnyOxfTI3eJXujWzw/tOzIRF0AjoT3K3pqKUkKXyMg1cLZOOP3v
+         /yaW305bxyPasG0lRF7V+44ce5JFDRMIfoTnxZeZfjcNWGkAAKBJfCMWWE/BxgFqkryh
+         CHaNdvUeOra1W8UrXNDmgWCY+EkAOo/gHYitQwjbXaGsOJlE6ybXURT/L0xRlFZFceNp
+         ZSBm7qtK88v0UuRLyz+nXh8MVuaPxzEq0FcRHmHV7R7OPfUFaYxJh0dsEzGQsK2PHSZD
+         3lCkvhEqO/1yjUXL7T9lSyfklQFQW5cIKHgx1X8AI7lcbVQblucLHS3P12I/vKLtHG6Z
+         no9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691649184; x=1692253984;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Ngd6Ty807KCISUZiupnEhx7DHboutfbdjWWPlaLnOlU=;
-        b=kjkhWudUC+XDh1l4qx4oFOumpGdwXx+rcsSYZv/MyXb7Fpd5v2RhCxfHNkkNrF3/1O
-         W0x9jarDIDCHU6OqXyfyBhckrJFefzbonxUtEBADPEVr8LbqV2ZXacjcGWt9t7ROtZbd
-         4KLEl0lakD4ACKqdN2e9OgSy5o4EajI9CbW9pcp/GsrA3wT3hnzmL7x7V716+vRHdEBn
-         wFE/kiQmfkS4arc4vmpeW6t0B/CP/V1p+nYcChGQe9kPFtT9uMzm4FYPjSfTXy5hdGCh
-         JHAeK1XS258iGi9lRn78KtyTHXjme4/NKRPja3NXxUg0OQDLqqDXsM+cgHJHXRdDn9m+
-         NvbQ==
-X-Gm-Message-State: AOJu0Yy2JqegAvWiUWHpjJbzSzPJlIrYNVCE1mFSXJrL7QOvuutI5e6L
-	aX4jdEHRddC5Rbl6eyhRFQ018w==
+        d=1e100.net; s=20221208; t=1691649188; x=1692253988;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=V+hlC8d67YmntwV4mHtT3ZdGF2DLfbF3GgSUytsMD/g=;
+        b=aMdHUPVVXfbSHIkZ02gjYfV3F4LmpYtDZ0eVh7GM6eDoxEysr9HXaxuT79DjBhyLDp
+         sleFm/EXEnEvfKFUiJhZfXa5DBd9P7cx1c/SIChfpVEtY0ftjawdZ/eeSfyv5JwhkNGi
+         UjlfTugbQJiRzxwZCIfr66khSMxmnhdGC8CQiQ4Ly+OSZzkHbeRZFoT3ymsQG4JEfnW8
+         H+bf89iJ/W6opLBkstEN1BCN+6GBQvpbfwhxTGLxsAVYPGSGwSSPQWZg3HowskUarzGo
+         +5EA5MJz4Vz7zUQ+AX4a/IuwlNT9wouyZ8eFwKknOsoZuyU0ha9+oWvNw9SWz1VRvqo+
+         bDiw==
+X-Gm-Message-State: AOJu0Yx8f/ZZXs0+qWLPvhIRB5O3vVGAHFsLa78Qbm4yyR+rPnb8Ie/M
+	pKyvJ6HJoK2yL9RDh96grynGNQ==
 X-Google-Smtp-Source: 
- AGHT+IFgJ5/x4ZIydWhyjGRPFPyPMjdDWjiVE2eyw8KVk4Os5ZoVtk4fh4iDjqcTGmGwMIXPDWBxmg==
-X-Received: by 2002:a2e:9447:0:b0:2b6:fc80:c45f with SMTP id
- o7-20020a2e9447000000b002b6fc80c45fmr917555ljh.13.1691649184061;
-        Wed, 09 Aug 2023 23:33:04 -0700 (PDT)
+ AGHT+IErGy790Xkb6/KzdX9Bvv40e18+/V59YRvZrbqtUlAQog8GWO8fIcwIyb/Yl5HGLGY7G2ICtw==
+X-Received: by 2002:a05:6512:3483:b0:4fe:347c:874b with SMTP id
+ v3-20020a056512348300b004fe347c874bmr907453lfr.8.1691649188761;
+        Wed, 09 Aug 2023 23:33:08 -0700 (PDT)
 Received: from krzk-bin.. ([178.197.222.113])
         by smtp.gmail.com with ESMTPSA id
- o10-20020a1c750a000000b003fe2b6d64c8sm4020018wmc.21.2023.08.09.23.33.01
+ o10-20020a1c750a000000b003fe2b6d64c8sm4020018wmc.21.2023.08.09.23.33.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Aug 2023 23:33:03 -0700 (PDT)
+        Wed, 09 Aug 2023 23:33:08 -0700 (PDT)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To: Jerome Brunet <jbrunet@baylibre.com>,
 	Liam Girdwood <lgirdwood@gmail.com>,
@@ -110,14 +112,17 @@ To: Jerome Brunet <jbrunet@baylibre.com>,
 	linux-mediatek@lists.infradead.org
 Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
 	Rob Herring <robh@kernel.org>
-Subject: [PATCH v2 01/11] ASoC: dt-bindings: Add common sound card properties
-Date: Thu, 10 Aug 2023 08:32:49 +0200
-Message-Id: <20230810063300.20151-1-krzysztof.kozlowski@linaro.org>
+Subject: [PATCH v2 03/11] ASoC: dt-bindings: samsung,aries-wm8994: use common
+ sound card
+Date: Thu, 10 Aug 2023 08:32:51 +0200
+Message-Id: <20230810063300.20151-3-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230810063300.20151-1-krzysztof.kozlowski@linaro.org>
+References: <20230810063300.20151-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: FUB5L7K2F2AGUDDXEYZDHRKZMJN7ZB2D
-X-Message-ID-Hash: FUB5L7K2F2AGUDDXEYZDHRKZMJN7ZB2D
+Message-ID-Hash: CLFB7OA6WZX4Z32E7ZURLX5A37JEUT4D
+X-Message-ID-Hash: CLFB7OA6WZX4Z32E7ZURLX5A37JEUT4D
 X-MailFrom: krzysztof.kozlowski@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -130,7 +135,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FUB5L7K2F2AGUDDXEYZDHRKZMJN7ZB2D/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CLFB7OA6WZX4Z32E7ZURLX5A37JEUT4D/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -139,341 +144,88 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Almost every board machine / sound cards has "audio-routing" and "model"
-properties, so move them to common schema to have only one definition of
-these properties.
+Reference the common sound card properties and deprecate the
+custom "samsung,audio-routing" in favor of generic one.  This allows to
+remove "model" property and make the binding closer to other sounds
+cards.
 
-For amlogic,gx-sound-card, drop the minItems: 2 from the
-"audio-routing", because any limit here - lower or upper- is rather
-meaningless.  This will also fix `dtbs_check` warnings like:
-
-  meson-gxm-s912-libretech-pc.dtb: sound: audio-routing: ['AU2 INL', 'ACODEC LOLN', 'AU2 INR', 'ACODEC LORN', '7J4-14 LEFT', 'AU2 OUTL', '7J4-11 RIGHT', 'AU2 OUTR'] is too long
-
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 Reviewed-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
+ .../bindings/sound/samsung,aries-wm8994.yaml     | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-Changes in v2:
-1. Drop minItems/maxItems from amlogic,gx-sound-card
----
- .../sound/amlogic,axg-sound-card.yaml         | 15 +++--------
- .../bindings/sound/amlogic,gx-sound-card.yaml | 17 +++---------
- .../devicetree/bindings/sound/fsl,rpmsg.yaml  | 17 +++---------
- .../bindings/sound/google,sc7180-trogdor.yaml | 17 +++---------
- .../sound/google,sc7280-herobrine.yaml        | 17 +++---------
- .../bindings/sound/imx-audio-card.yaml        | 18 +++----------
- .../bindings/sound/sound-card-common.yaml     | 27 +++++++++++++++++++
- 7 files changed, 50 insertions(+), 78 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/sound-card-common.yaml
-
-diff --git a/Documentation/devicetree/bindings/sound/amlogic,axg-sound-card.yaml b/Documentation/devicetree/bindings/sound/amlogic,axg-sound-card.yaml
-index bf1234550343..5db718e4d0e7 100644
---- a/Documentation/devicetree/bindings/sound/amlogic,axg-sound-card.yaml
-+++ b/Documentation/devicetree/bindings/sound/amlogic,axg-sound-card.yaml
-@@ -9,6 +9,9 @@ title: Amlogic AXG sound card
+diff --git a/Documentation/devicetree/bindings/sound/samsung,aries-wm8994.yaml b/Documentation/devicetree/bindings/sound/samsung,aries-wm8994.yaml
+index 447e013f6e17..5ea0819a261a 100644
+--- a/Documentation/devicetree/bindings/sound/samsung,aries-wm8994.yaml
++++ b/Documentation/devicetree/bindings/sound/samsung,aries-wm8994.yaml
+@@ -9,6 +9,9 @@ title: Samsung Aries audio complex with WM8994 codec
  maintainers:
-   - Jerome Brunet <jbrunet@baylibre.com>
+   - Jonathan Bakker <xc-racer2@live.ca>
  
 +allOf:
 +  - $ref: sound-card-common.yaml#
 +
  properties:
    compatible:
-     const: amlogic,axg-sound-card
-@@ -17,23 +20,12 @@ properties:
-     $ref: /schemas/types.yaml#/definitions/phandle-array
-     description: list of auxiliary devices
- 
--  audio-routing:
--    $ref: /schemas/types.yaml#/definitions/non-unique-string-array
--    description:
--      A list of the connections between audio components. Each entry is a
--      pair of strings, the first being the connection's sink, the second
--      being the connection's source.
--
-   audio-widgets:
-     $ref: /schemas/types.yaml#/definitions/non-unique-string-array
-     description:
-       A list off component DAPM widget. Each entry is a pair of strings,
-       the first being the widget type, the second being the widget name
+     enum:
+@@ -17,10 +20,6 @@ properties:
+       # Without FM radio and modem slave
+       - samsung,fascinate4g-wm8994
  
 -  model:
 -    $ref: /schemas/types.yaml#/definitions/string
--    description: User specified audio sound card name
+-    description: The user-visible name of this sound complex.
 -
- patternProperties:
-   "^dai-link-[0-9]+$":
+   cpu:
      type: object
-@@ -108,7 +100,6 @@ patternProperties:
-       - sound-dai
+     additionalProperties: false
+@@ -46,6 +45,7 @@ properties:
  
- required:
--  - model
-   - dai-link-0
- 
- unevaluatedProperties: false
-diff --git a/Documentation/devicetree/bindings/sound/amlogic,gx-sound-card.yaml b/Documentation/devicetree/bindings/sound/amlogic,gx-sound-card.yaml
-index b358fd601ed3..d4277d342e69 100644
---- a/Documentation/devicetree/bindings/sound/amlogic,gx-sound-card.yaml
-+++ b/Documentation/devicetree/bindings/sound/amlogic,gx-sound-card.yaml
-@@ -9,6 +9,9 @@ title: Amlogic GX sound card
- maintainers:
-   - Jerome Brunet <jbrunet@baylibre.com>
- 
-+allOf:
-+  - $ref: sound-card-common.yaml#
-+
- properties:
-   compatible:
-     items:
-@@ -18,14 +21,6 @@ properties:
-     $ref: /schemas/types.yaml#/definitions/phandle-array
-     description: list of auxiliary devices
- 
--  audio-routing:
--    $ref: /schemas/types.yaml#/definitions/non-unique-string-array
--    minItems: 2
--    description: |-
--      A list of the connections between audio components. Each entry is a
--      pair of strings, the first being the connection's sink, the second
--      being the connection's source.
--
-   audio-widgets:
+   samsung,audio-routing:
      $ref: /schemas/types.yaml#/definitions/non-unique-string-array
-     minItems: 2
-@@ -33,10 +28,6 @@ properties:
-       A list off component DAPM widget. Each entry is a pair of strings,
-       the first being the widget type, the second being the widget name
++    deprecated: true
+     description: |
+       List of the connections between audio
+       components;  each entry is a pair of strings, the first being the
+@@ -56,6 +56,7 @@ properties:
+       or FM In
+       For samsung,fascinate4g-wm8994: HP, SPK, RCV, LINE, Main Mic,
+       or HeadsetMic
++      Deprecated, use audio-routing.
  
--  model:
--    $ref: /schemas/types.yaml#/definitions/string
--    description: User specified audio sound card name
--
- patternProperties:
-   "^dai-link-[0-9]+$":
-     type: object
-@@ -86,7 +77,7 @@ required:
-   - model
-   - dai-link-0
+   extcon:
+     description: Extcon phandle for dock detection
+@@ -87,10 +88,9 @@ properties:
+ 
+ required:
+   - compatible
+-  - model
+   - cpu
+   - codec
+-  - samsung,audio-routing
++  - audio-routing
+   - extcon
+   - main-micbias-supply
+   - headset-micbias-supply
+@@ -98,7 +98,7 @@ required:
+   - headset-detect-gpios
+   - headset-key-gpios
  
 -additionalProperties: false
 +unevaluatedProperties: false
  
  examples:
    - |
-diff --git a/Documentation/devicetree/bindings/sound/fsl,rpmsg.yaml b/Documentation/devicetree/bindings/sound/fsl,rpmsg.yaml
-index 6df0e03a1d4b..188f38baddec 100644
---- a/Documentation/devicetree/bindings/sound/fsl,rpmsg.yaml
-+++ b/Documentation/devicetree/bindings/sound/fsl,rpmsg.yaml
-@@ -17,6 +17,9 @@ description: |
-   such as SAI, MICFIL, .etc through building rpmsg channels between
-   Cortex-A and Cortex-M.
+@@ -121,7 +121,7 @@ examples:
+         headset-detect-gpios = <&gph0 6 GPIO_ACTIVE_HIGH>;
+         headset-key-gpios = <&gph3 6 GPIO_ACTIVE_HIGH>;
  
-+allOf:
-+  - $ref: sound-card-common.yaml#
-+
- properties:
-   compatible:
-     enum:
-@@ -27,10 +30,6 @@ properties:
-       - fsl,imx8ulp-rpmsg-audio
-       - fsl,imx93-rpmsg-audio
+-        samsung,audio-routing =
++        audio-routing =
+             "HP", "HPOUT1L",
+             "HP", "HPOUT1R",
  
--  model:
--    $ref: /schemas/types.yaml#/definitions/string
--    description: User specified audio sound card name
--
-   clocks:
-     items:
-       - description: Peripheral clock for register access
-@@ -66,13 +65,6 @@ properties:
-     $ref: /schemas/types.yaml#/definitions/phandle
-     description: The phandle to a node of audio codec
- 
--  audio-routing:
--    $ref: /schemas/types.yaml#/definitions/non-unique-string-array
--    description: |
--      A list of the connections between audio components. Each entry is a
--      pair of strings, the first being the connection's sink, the second
--      being the connection's source.
--
-   fsl,enable-lpa:
-     $ref: /schemas/types.yaml#/definitions/flag
-     description: enable low power audio path.
-@@ -101,9 +93,8 @@ properties:
- 
- required:
-   - compatible
--  - model
- 
--additionalProperties: false
-+unevaluatedProperties: false
- 
- examples:
-   - |
-diff --git a/Documentation/devicetree/bindings/sound/google,sc7180-trogdor.yaml b/Documentation/devicetree/bindings/sound/google,sc7180-trogdor.yaml
-index ba5b7728cf33..bac940553965 100644
---- a/Documentation/devicetree/bindings/sound/google,sc7180-trogdor.yaml
-+++ b/Documentation/devicetree/bindings/sound/google,sc7180-trogdor.yaml
-@@ -13,23 +13,15 @@ maintainers:
- description:
-   This binding describes the SC7180 sound card which uses LPASS for audio.
- 
-+allOf:
-+  - $ref: sound-card-common.yaml#
-+
- properties:
-   compatible:
-     enum:
-       - google,sc7180-trogdor
-       - google,sc7180-coachz
- 
--  audio-routing:
--    $ref: /schemas/types.yaml#/definitions/non-unique-string-array
--    description:
--      A list of the connections between audio components. Each entry is a
--      pair of strings, the first being the connection's sink, the second
--      being the connection's source.
--
--  model:
--    $ref: /schemas/types.yaml#/definitions/string
--    description: User specified audio sound card name
--
-   "#address-cells":
-     const: 1
- 
-@@ -86,11 +78,10 @@ patternProperties:
- 
- required:
-   - compatible
--  - model
-   - "#address-cells"
-   - "#size-cells"
- 
--additionalProperties: false
-+unevaluatedProperties: false
- 
- examples:
- 
-diff --git a/Documentation/devicetree/bindings/sound/google,sc7280-herobrine.yaml b/Documentation/devicetree/bindings/sound/google,sc7280-herobrine.yaml
-index 0b1a01a4c14e..ec4b6e547ca6 100644
---- a/Documentation/devicetree/bindings/sound/google,sc7280-herobrine.yaml
-+++ b/Documentation/devicetree/bindings/sound/google,sc7280-herobrine.yaml
-@@ -13,22 +13,14 @@ maintainers:
- description:
-   This binding describes the SC7280 sound card which uses LPASS for audio.
- 
-+allOf:
-+  - $ref: sound-card-common.yaml#
-+
- properties:
-   compatible:
-     enum:
-       - google,sc7280-herobrine
- 
--  audio-routing:
--    $ref: /schemas/types.yaml#/definitions/non-unique-string-array
--    description:
--      A list of the connections between audio components. Each entry is a
--      pair of strings, the first being the connection's sink, the second
--      being the connection's source.
--
--  model:
--    $ref: /schemas/types.yaml#/definitions/string
--    description: User specified audio sound card name
--
-   "#address-cells":
-     const: 1
- 
-@@ -97,11 +89,10 @@ patternProperties:
- 
- required:
-   - compatible
--  - model
-   - "#address-cells"
-   - "#size-cells"
- 
--additionalProperties: false
-+unevaluatedProperties: false
- 
- examples:
- 
-diff --git a/Documentation/devicetree/bindings/sound/imx-audio-card.yaml b/Documentation/devicetree/bindings/sound/imx-audio-card.yaml
-index b6f5d486600e..f7ad5ea2491e 100644
---- a/Documentation/devicetree/bindings/sound/imx-audio-card.yaml
-+++ b/Documentation/devicetree/bindings/sound/imx-audio-card.yaml
-@@ -9,23 +9,14 @@ title: NXP i.MX audio sound card.
- maintainers:
-   - Shengjiu Wang <shengjiu.wang@nxp.com>
- 
-+allOf:
-+  - $ref: sound-card-common.yaml#
-+
- properties:
-   compatible:
-     enum:
-       - fsl,imx-audio-card
- 
--  model:
--    $ref: /schemas/types.yaml#/definitions/string
--    description: User specified audio sound card name
--
--  audio-routing:
--    $ref: /schemas/types.yaml#/definitions/non-unique-string-array
--    description:
--      A list of the connections between audio components. Each entry is a
--      pair of strings, the first being the connection's sink, the second
--      being the connection's source. Valid names could be power supplies,
--      MicBias of codec and the jacks on the board.
--
- patternProperties:
-   ".*-dai-link$":
-     description:
-@@ -84,9 +75,8 @@ patternProperties:
- 
- required:
-   - compatible
--  - model
- 
--additionalProperties: false
-+unevaluatedProperties: false
- 
- examples:
-   - |
-diff --git a/Documentation/devicetree/bindings/sound/sound-card-common.yaml b/Documentation/devicetree/bindings/sound/sound-card-common.yaml
-new file mode 100644
-index 000000000000..3a941177f684
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/sound-card-common.yaml
-@@ -0,0 +1,27 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/sound-card-common.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Board Sound Card Common Properties
-+
-+maintainers:
-+  - Mark Brown <broonie@kernel.org>
-+
-+properties:
-+  audio-routing:
-+    $ref: /schemas/types.yaml#/definitions/non-unique-string-array
-+    description: |
-+      A list of the connections between audio components. Each entry is a
-+      pair of strings, the first being the connection's sink, the second
-+      being the connection's source.
-+
-+  model:
-+    $ref: /schemas/types.yaml#/definitions/string
-+    description: User specified audio sound card name
-+
-+required:
-+  - model
-+
-+additionalProperties: true
 -- 
 2.34.1
 
