@@ -4,76 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1C86CC04A6A
-	for <alsa-devel@archiver.kernel.org>; Thu, 10 Aug 2023 14:46:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 80630C001B0
+	for <alsa-devel@archiver.kernel.org>; Thu, 10 Aug 2023 15:23:44 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C78F2826;
-	Thu, 10 Aug 2023 16:45:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C78F2826
+	by alsa0.perex.cz (Postfix) with ESMTPS id D6C98822;
+	Thu, 10 Aug 2023 17:22:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D6C98822
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1691678762;
-	bh=taD2g2HjEYDDGyrJ7xRRjV/D/Ew9sTSpuCtEVhiSMVI=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1691681021;
+	bh=XAFRjI39t8Q8MiQyxRvHys4lXjxeKC98m9Ty/dzfFx4=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=koRgdn/qvbk5hkMqPWZViwQGqUDFteQPQSxgnrd5BarQH035YIQq7RjWZBqTmSBnA
-	 1PtqVMiKXE28jm6YqW0BtpL1fqTXhLxOh9XjR2ewcEuYZJj36Ep4G0gF5vO2t4Sl63
-	 3ROS0Z/1t8ZG5uGAojNwxZsaji96A4H3zHm3R+wA=
+	b=P/+2u1Oz/Gx5XpR+fWD7NN7JSyR8omQumzEIRTIiIcegjWrFQ1mKnjq6QOjnzR7qU
+	 wrVceDvFkLWesNScRzR8Mi3/1FD/TDq2M+jaQa9c+5Pj5EJWfZD+3Cd88KYI+fkQDC
+	 lWq82GVUFTecjdHBy1wOJsJLGyAJArLIrbcXdFvQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 62211F800FB; Thu, 10 Aug 2023 16:44:44 +0200 (CEST)
+	id 4E964F80551; Thu, 10 Aug 2023 17:22:51 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id EA7CCF8016E;
-	Thu, 10 Aug 2023 16:44:43 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 04789F80508;
+	Thu, 10 Aug 2023 17:22:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 876E0F8016E; Thu, 10 Aug 2023 16:44:40 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	id B9F2BF8016E; Thu, 10 Aug 2023 17:22:46 +0200 (CEST)
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 98323F800FB
-	for <alsa-devel@alsa-project.org>; Thu, 10 Aug 2023 16:44:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 98323F800FB
+	by alsa1.perex.cz (Postfix) with ESMTPS id 25E9FF800EE;
+	Thu, 10 Aug 2023 17:22:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 25E9FF800EE
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=ZARSl0Qu
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id DD4EC65E55;
-	Thu, 10 Aug 2023 14:44:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49CFDC433C7;
-	Thu, 10 Aug 2023 14:44:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1691678674;
-	bh=taD2g2HjEYDDGyrJ7xRRjV/D/Ew9sTSpuCtEVhiSMVI=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=ZARSl0Qu0dWqGyMxPdHwUP4DCJXIgtofaovntgVIS1O8ERbxLpTmxuHTv9htJBcgi
-	 WnOU4Pq1u+xdYUNAJHVHy7ODTKkDFS39Hx7degKqwA4krDXV1XR6zaeQ7RsQRjP2Jm
-	 DzbhrPVv9Vqlb0ex7NZlhzM1Pp7wYmXEdWPJGIbNp5zYrz3GM2KYg6fOxCDk4hQu+u
-	 8eXtM6ZGUxWZnrK04WseN8x+n0Ebk9FrCUbWn/enYf3qtg5kY492toI26QiP6MwiOd
-	 RNVWiZC5PsVaJRDeDGYHKgEDepoObxLt5I2EIif7/uZu0OHYQ+8jVh16FILmtrcPQO
-	 osZj5w+PuJ3xw==
-From: Mark Brown <broonie@kernel.org>
-To: Jerome Brunet <jbrunet@baylibre.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org,
- linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20230809171931.1244502-1-jbrunet@baylibre.com>
-References: <20230809171931.1244502-1-jbrunet@baylibre.com>
-Subject: Re: [PATCH] ASoC: meson: axg-tdm-formatter: fix channel slot
- allocation
-Message-Id: <169167867301.482967.10999028538152637796.b4-ty@kernel.org>
-Date: Thu, 10 Aug 2023 15:44:33 +0100
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=bFa0qslh
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691680961; x=1723216961;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=XAFRjI39t8Q8MiQyxRvHys4lXjxeKC98m9Ty/dzfFx4=;
+  b=bFa0qslhRCknpvC3OmugK08tCEJ+ZhUm/7C3QoNrTqIC7Q6JDgVbcbL3
+   JngxjnDS1YeXWfDUpmGwp3hMFx4ZljdIYZhXBWO07QRx4jlAWhOguwF+B
+   KutigdttIeQZM9SeaOjcujZs9Z6OX+Jr4AqWJuO1Zsop0hHyXEDFxlAhd
+   pGb5BgYIdFj4y2+8pCkMjy97xy2RoZtmDfLcNLFHHwJVhxDJ2+v1TndN3
+   IYeGlmKNRGYL6y3hSFhbeKZcC67xDAlgRzJqkAv/1NCFg1u7QjHaf0+gF
+   z7f1LAPkJLgeBdGDDJAek92Tm578n898uLL1S679zzS+W02JJYG6598lh
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10797"; a="356356048"
+X-IronPort-AV: E=Sophos;i="6.01,162,1684825200";
+   d="scan'208";a="356356048"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 10 Aug 2023 06:00:01 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10797"; a="709137872"
+X-IronPort-AV: E=Sophos;i="6.01,162,1684825200";
+   d="scan'208";a="709137872"
+Received: from dhoeflin-mobl.amr.corp.intel.com (HELO [10.212.101.20])
+ ([10.212.101.20])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 10 Aug 2023 06:00:00 -0700
+Message-ID: <3cbac915-8177-e30d-8e31-2aa27feebac9@linux.intel.com>
+Date: Thu, 10 Aug 2023 07:32:32 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.13.0
+Subject: Re: [PATCH -next] ASoC: SOF: Intel: Remove duplicated include in
+ lnl.c
+Content-Language: en-US
+To: Yang Li <yang.lee@linux.alibaba.com>, perex@perex.cz, tiwai@suse.com,
+ lgirdwood@gmail.com, peter.ujfalusi@linux.intel.com,
+ yung-chuan.liao@linux.intel.com, ranjani.sridharan@linux.intel.com
+Cc: sound-open-firmware@alsa-project.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org
+References: <20230810005555.4610-1-yang.lee@linux.alibaba.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20230810005555.4610-1-yang.lee@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-034f2
-Message-ID-Hash: NZNMEHONCHIAEIOWPDELRNEWZCAIELM2
-X-Message-ID-Hash: NZNMEHONCHIAEIOWPDELRNEWZCAIELM2
-X-MailFrom: broonie@kernel.org
+Message-ID-Hash: 6VS6PSSHFCGV3PT47KJ6C4SEZP2JRWZ3
+X-Message-ID-Hash: 6VS6PSSHFCGV3PT47KJ6C4SEZP2JRWZ3
+X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -85,7 +97,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NZNMEHONCHIAEIOWPDELRNEWZCAIELM2/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6VS6PSSHFCGV3PT47KJ6C4SEZP2JRWZ3/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -94,41 +106,30 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Wed, 09 Aug 2023 19:19:31 +0200, Jerome Brunet wrote:
-> When the tdm lane mask is computed, the driver currently fills the 1st lane
-> before moving on to the next. If the stream has less channels than the
-> lanes can accommodate, slots will be disabled on the last lanes.
+
+
+On 8/9/23 19:55, Yang Li wrote:
+> ./sound/soc/sof/intel/lnl.c: hda.h is included more than once.
 > 
-> Unfortunately, the HW distribute channels in a different way. It distribute
-> channels in pair on each lanes before moving on the next slots.
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+
+yes, thanks for the patch
+
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+
+> ---
+>  sound/soc/sof/intel/lnl.c | 1 -
+>  1 file changed, 1 deletion(-)
 > 
-> [...]
-
-Applied to
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-
-Thanks!
-
-[1/1] ASoC: meson: axg-tdm-formatter: fix channel slot allocation
-      commit: c1f848f12103920ca165758aedb1c10904e193e1
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+> diff --git a/sound/soc/sof/intel/lnl.c b/sound/soc/sof/intel/lnl.c
+> index 3d919b0b6891..db94b45e53af 100644
+> --- a/sound/soc/sof/intel/lnl.c
+> +++ b/sound/soc/sof/intel/lnl.c
+> @@ -16,7 +16,6 @@
+>  #include "hda-ipc.h"
+>  #include "../sof-audio.h"
+>  #include "mtl.h"
+> -#include "hda.h"
+>  #include <sound/hda-mlink.h>
+>  
+>  /* LunarLake ops */
