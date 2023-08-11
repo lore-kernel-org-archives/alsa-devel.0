@@ -4,79 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DC1CCEB64DD
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Aug 2023 07:10:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 82094C001B0
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Aug 2023 07:23:11 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1369F826;
-	Fri, 11 Aug 2023 09:09:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1369F826
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3B212826;
+	Fri, 11 Aug 2023 09:22:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3B212826
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1691737806;
-	bh=YimjOo4i63vgRZqsG35a+urQVO7OPLU+EV2AAAkyZOI=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=MoERL6JmNpKNX+V0RFpHbgfOOC5Iz5d9vguHN/2W5wpGmYKgLCfQxGyHYcDL3mNKp
-	 ff9Ym/HHmJzgWf7dI9duIio4SGLr50ku6UVbXgs5I0bA9DVnRyDokRXQGYDA5A81eQ
-	 1i83zLo1FnY0IszRxBAg69hGgH/9Ac89Z4U9ovZw=
+	s=default; t=1691738589;
+	bh=da54FdS0rtDEYkl03vZtrdhkyVjTb8y9My98MLqX5VY=;
+	h=Subject:From:To:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=r3xiXbmPS+k4XZKQyRP2cWrRktWVGXMbqZZYZv90Ld6jAeBPYH8bJRzQvuOomrjwJ
+	 MtUqvWpPpQh1yllhWgSbvzbHxK5jaMN24dN7dli6yVFUxQ5pe1qpeR+Fd/5Ic5NA8p
+	 0eAAYfQ4EJwMRkE1fZI5bEzV1mKyOUTk6rgGH/p8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C3825F80564; Fri, 11 Aug 2023 09:08:46 +0200 (CEST)
+	id 5199CF80551; Fri, 11 Aug 2023 09:21:50 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2047EF80536;
-	Fri, 11 Aug 2023 09:08:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DDAD3F800EE;
+	Fri, 11 Aug 2023 09:21:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 374F0F8016E; Fri, 11 Aug 2023 09:07:05 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C6E18F80166
-	for <alsa-devel@alsa-project.org>; Fri, 11 Aug 2023 09:06:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C6E18F80166
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=F47+daCA
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 12DEA63F3B;
-	Fri, 11 Aug 2023 07:06:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82AE2C433C8;
-	Fri, 11 Aug 2023 07:06:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1691737610;
-	bh=YimjOo4i63vgRZqsG35a+urQVO7OPLU+EV2AAAkyZOI=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=F47+daCAtAzDglTToTYMykUvM0fHnxXfUeLObZ0qhT+uEhG+toOw8klzE41vWXX2M
-	 EarXn6D1BTjxX4MQX5vll/u788CYCgqosmMkj2nKS8KDRFtny5xwA4s5N8lhLLCp9w
-	 1eb6edRsVHzVLxlkIH1pZ+Y72YLX084eFL89LsgHtj7xO/+rpgEYLaOzbad7s17u3T
-	 E8oFbBJyCncgz7NdvRhMAwyAAGI0+JRwpuApjSxzXNk69y3XWusZYpB9SbaBiipICX
-	 cGBHTmJ1TekiW0bzGQq93QHeJnysfVVn7KECqNI56EogpswIYLF2O0TmX5No2oRxkz
-	 K6s2hBsI6V0kA==
-From: Vinod Koul <vkoul@kernel.org>
-To: alsa-devel@alsa-project.org,
- Bard Liao <yung-chuan.liao@linux.intel.com>
-Cc: vinod.koul@linaro.org, linux-kernel@vger.kernel.org,
- pierre-louis.bossart@linux.intel.com, bard.liao@intel.com
-In-Reply-To: <20230731091333.3593132-1-yung-chuan.liao@linux.intel.com>
-References: <20230731091333.3593132-1-yung-chuan.liao@linux.intel.com>
-Subject: Re: [PATCH v2 0/3] soundwire: allow for more than 8 devices, keep
- IDA for wake-capable devices
-Message-Id: <169173760931.104525.18320129974065669032.b4-ty@kernel.org>
-Date: Fri, 11 Aug 2023 08:06:49 +0100
-MIME-Version: 1.0
+	id E4B6CF8016E; Fri, 11 Aug 2023 09:21:44 +0200 (CEST)
+Received: from mailman-web.alsa-project.org (mailman-web.alsa-project.org
+ [10.254.200.11])
+	by alsa1.perex.cz (Postfix) with ESMTP id DCA67F800EE
+	for <alsa-devel@alsa-project.org>; Fri, 11 Aug 2023 09:21:44 +0200 (CEST)
 Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.3
-Message-ID-Hash: TYXHZ4D3MQHONXNVCBDFR6KX7RZAKAMG
-X-Message-ID-Hash: TYXHZ4D3MQHONXNVCBDFR6KX7RZAKAMG
-X-MailFrom: vkoul@kernel.org
+Subject: [PATCH] -- fix Boss MS-3 midi-usb communication
+From: john_candlish@mail.candlish.net
+To: alsa-devel@alsa-project.org
+Date: Fri, 11 Aug 2023 07:21:44 -0000
+Message-ID: 
+ <169173850488.20.12963803837559965998@mailman-web.alsa-project.org>
+User-Agent: HyperKitty on https://mailman.alsa-project.org/
+Message-ID-Hash: JTFOLHU5NNCPNQ4VSAWXIJRD3VXSW26D
+X-Message-ID-Hash: JTFOLHU5NNCPNQ4VSAWXIJRD3VXSW26D
+X-MailFrom: john_candlish@mail.candlish.net
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -88,7 +55,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TYXHZ4D3MQHONXNVCBDFR6KX7RZAKAMG/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SIDDZZ5OCDF2WMOUMCH3OJ6NQVZO5YU7/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -97,31 +64,30 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+This one line change gets MIDI communication flowing between ALSA and the Boss MS-3 multi-effect switcher.
 
-On Mon, 31 Jul 2023 17:13:30 +0800, Bard Liao wrote:
-> This series suggests a hybrid strategy for device number allocation, where
-> only wake-capable devices use a system-unique Device Number which will be
-> used on LunarLake to handle wake-ups using the HDaudio WAKEEN and WAKESTS.
-> 
-> Pierre-Louis Bossart (3):
->   soundwire: extend parameters of new_peripheral_assigned() callback
->   soundwire: bus: add callbacks for device_number allocation
->   soundwire: intel_auxdevice: add hybrid IDA-based device_number
->     allocation
-> 
-> [...]
+/////
+*** sound/usb/midi.c    2023-08-10 22:46:31.016346930 +0200
+--- sound/usb/midi.c-orig   2023-07-19 16:37:03.000000000 +0200
+***************
+*** 2106,2113 ****
+    struct usb_endpoint_descriptor *epd;
+    int i, out_eps = 0, in_eps = 0;
 
-Applied, thanks!
+!   if (USB_ID_VENDOR(umidi->usb_id) == 0x0582 &&
+!       USB_ID_PRODUCT(umidi->usb_id) != 0x01f5)
+        snd_usbmidi_switch_roland_altsetting(umidi);
 
-[1/3] soundwire: extend parameters of new_peripheral_assigned() callback
-      commit: 23afc82fb22bccd3f1d2a856d3eccb70453f33b0
-[2/3] soundwire: bus: add callbacks for device_number allocation
-      commit: 39d80b0e5fed2c32f66093fead626358b7106974
-[3/3] soundwire: intel_auxdevice: add hybrid IDA-based device_number allocation
-      commit: e66f91a2d10b9a25eedcaddee9d6f08c8132760a
+if (endpoint[0].out_ep || endpoint[0].in_ep)
+--- 2106,2112 ----
+    struct usb_endpoint_descriptor *epd;
+    int i, out_eps = 0, in_eps = 0;
 
-Best regards,
--- 
-~Vinod
+!   if (USB_ID_VENDOR(umidi->usb_id) == 0x0582)
+        snd_usbmidi_switch_roland_altsetting(umidi);
 
+if (endpoint[0].out_ep || endpoint[0].in_ep)
 
+/////
+
+There are doubtless other Roland/Boss USB_ID_PRODUCT id's that are effected and it would be nice to make the  USB_ID_PRODUCT value a tunable, but that is beyond my competence.
