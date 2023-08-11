@@ -4,86 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 34926C001DE
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Aug 2023 16:55:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5237EC0015E
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Aug 2023 17:11:29 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0844EAEA;
-	Fri, 11 Aug 2023 18:54:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0844EAEA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 91A3A832;
+	Fri, 11 Aug 2023 19:10:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 91A3A832
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1691772914;
-	bh=WJ3TCJilsjS4OK8O1CmfN+cDm/YSkU3dXRkVRiXzRjc=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1691773887;
+	bh=UdEqF3pGPTwVExsOaFfOCqMxAjBH843Ugv8NaoMyVwk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=p7BUeBv5UzVs9CIx9TZ23pVabo875Q4Q3oXbxwZzwY1XiMBxKAlR+7k2P6n6GYMmx
-	 3ji8x3+T8/5xwWubruTDuwo0KwRm6tc3oG5J0DiM6sZmp/v8cX1hHnoSmCtlJ6n+4v
-	 nufBYkoshvE9sneaAkcAtgagm6Xrud/9pOLP5/OA=
+	b=qcjAN75VyYqWG8Te+IJdph150Y57IFl8EiT0qO79HqazklsBs+7hoWLr9iz0FkFpj
+	 PUTFVxiPLgWj7wSpcFm+nOYVag7C4qOJEdHf7tSd1Z+PbafWYxv26buMqpQaUSaHg1
+	 43O07JR5FYAUH+QupGyatruaxvgE4JKLiOUJ6uEo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E655FF80567; Fri, 11 Aug 2023 18:50:55 +0200 (CEST)
+	id 45955F80016; Fri, 11 Aug 2023 19:10:30 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 39BD2F805A8;
-	Fri, 11 Aug 2023 18:50:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EB9C0F80166;
+	Fri, 11 Aug 2023 19:10:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A605AF8016E; Fri, 11 Aug 2023 18:50:49 +0200 (CEST)
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 3AD89F80166; Fri, 11 Aug 2023 19:10:25 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 5FC92F8058C
-	for <alsa-devel@alsa-project.org>; Fri, 11 Aug 2023 18:49:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5FC92F8058C
+	by alsa1.perex.cz (Postfix) with ESMTPS id 45D1EF80016
+	for <alsa-devel@alsa-project.org>; Fri, 11 Aug 2023 19:10:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 45D1EF80016
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=bKY9MrvF
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691772586; x=1723308586;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=WJ3TCJilsjS4OK8O1CmfN+cDm/YSkU3dXRkVRiXzRjc=;
-  b=bKY9MrvFGDIh469BusbnPPVfwvNa8GU5ZLcVW9uixiT6Kija44tN9M2r
-   p5ztwUdilTYnze9u9BsHybUrH+QFyMulkptpP6tbQ2KhupC480XmsJJw5
-   JtsZZ1CTdiXK9hV7PyuCCgzN9q8Pnkky7dSQW71HABsQsf9pjB0p/lpzL
-   LH4lXO6dmFjbqTPSVUB1FGbaB8YktJVVFzUv+i/WcuY7YF8NwUjmVNcjr
-   /ZwFwcIPJkZ/TG8J0YatouXdG00miCqu/7kA7/Zma6FyO//jC9KjJopUL
-   FLQbzLGhUxfqK6wj9+RfThM46CtMwL+AdmYjMSTcjSfaqCb0ODEPQJCCt
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10799"; a="371725104"
-X-IronPort-AV: E=Sophos;i="6.01,166,1684825200";
-   d="scan'208";a="371725104"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 11 Aug 2023 09:49:27 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10799"; a="846842808"
-X-IronPort-AV: E=Sophos;i="6.01,166,1684825200";
-   d="scan'208";a="846842808"
-Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
-  by fmsmga002.fm.intel.com with ESMTP; 11 Aug 2023 09:49:26 -0700
-From: Cezary Rojewski <cezary.rojewski@intel.com>
-To: broonie@kernel.org,
-	tiwai@suse.com,
-	perex@perex.cz
-Cc: alsa-devel@alsa-project.org,
-	amadeuszx.slawinski@linux.intel.com,
-	pierre-louis.bossart@linux.intel.com,
-	hdegoede@redhat.com,
-	Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: [RFC PATCH 09/17] ASoC: codecs: hda: Switch to new stream-format
- interface
-Date: Fri, 11 Aug 2023 18:48:45 +0200
-Message-Id: <20230811164853.1797547-10-cezary.rojewski@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230811164853.1797547-1-cezary.rojewski@intel.com>
-References: <20230811164853.1797547-1-cezary.rojewski@intel.com>
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=KJ3NFlDc
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 23E046351F;
+	Fri, 11 Aug 2023 17:10:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6671BC433C7;
+	Fri, 11 Aug 2023 17:10:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1691773813;
+	bh=UdEqF3pGPTwVExsOaFfOCqMxAjBH843Ugv8NaoMyVwk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=KJ3NFlDcFjDpk1FuN54RAdpfWhRoISGqyl5eUZm2e3WsGQuNOme5lQFSu4XhuE5Gq
+	 MEog3qPjSUzn77qziQ0HAQZpAyJTDskSZq4vd104RLovJiaveLDamut4I1HVrk4CTq
+	 PgjZEecxM4pXTnEXb8tNTwsocMV5Pk9q5vO68FW8mlX0hjEF6O+8b4PnKMqiVnSVIZ
+	 5GHdJY/UA4I3zw45RmUz1C0biG+utvEVlxyELz8/HXKTH3KEY01yEhI7GqfBUiXEpe
+	 N8U1pZ0qVSzU1NsK/s+oNRi3alFikMaZOYFT48ZB+aYRTGbNvU16fyxI4Sxem7AoMI
+	 JP2Xvru9GJyng==
+Received: (nullmailer pid 3621153 invoked by uid 1000);
+	Fri, 11 Aug 2023 17:10:11 -0000
+Date: Fri, 11 Aug 2023 11:10:11 -0600
+From: Rob Herring <robh@kernel.org>
+To: Olivier Moysan <olivier.moysan@foss.st.com>
+Cc: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
+ Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ Fabrice Gasnier <fabrice.gasnier@foss.st.com>, alsa-devel@alsa-project.org,
+ linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-stm32@st-md-mailman.stormreply.com,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC v2 03/11] dt-bindings: iio: stm32-dfsdm-adc: add scaling
+ support
+Message-ID: <20230811171011.GA3618531-robh@kernel.org>
+References: <20230727150324.1157933-1-olivier.moysan@foss.st.com>
+ <20230727150324.1157933-4-olivier.moysan@foss.st.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: I5BPOQGGHQFMPL3S4AC5YN4C3TVFONC3
-X-Message-ID-Hash: I5BPOQGGHQFMPL3S4AC5YN4C3TVFONC3
-X-MailFrom: cezary.rojewski@intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230727150324.1157933-4-olivier.moysan@foss.st.com>
+Message-ID-Hash: MMWBNGSRKASIDAGDQZZUGDB7ZUW5S4TO
+X-Message-ID-Hash: MMWBNGSRKASIDAGDQZZUGDB7ZUW5S4TO
+X-MailFrom: SRS0=B9gh=D4=robh_at_kernel.org=rob@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -95,7 +96,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/I5BPOQGGHQFMPL3S4AC5YN4C3TVFONC3/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MMWBNGSRKASIDAGDQZZUGDB7ZUW5S4TO/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -104,59 +105,290 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-To provide option for selecting different bit-per-sample than just the
-maximum one, use the new format calculation mechanism.
+On Thu, Jul 27, 2023 at 05:03:14PM +0200, Olivier Moysan wrote:
+> Add scaling support to STM32 DFSDM.
+> 
+> This introduces the following changes:
 
-While at it, complete PCM stream initialization with subformat options.
+Why?
 
-Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
----
- sound/soc/codecs/hda-dai.c | 6 ++++--
- sound/soc/codecs/hda.c     | 2 ++
- 2 files changed, 6 insertions(+), 2 deletions(-)
+> - Add ADC generic channel binding and remove support of deprecated
+> channel bindings.
 
-diff --git a/sound/soc/codecs/hda-dai.c b/sound/soc/codecs/hda-dai.c
-index 5371ff086261..20b070c66c6f 100644
---- a/sound/soc/codecs/hda-dai.c
-+++ b/sound/soc/codecs/hda-dai.c
-@@ -76,13 +76,15 @@ static int hda_codec_dai_prepare(struct snd_pcm_substream *substream, struct snd
- 	struct hdac_stream *stream;
- 	struct hda_codec *codec;
- 	unsigned int format;
-+	unsigned int bps;
- 	int ret;
- 
- 	codec = dev_to_hda_codec(dai->dev);
- 	stream = substream->runtime->private_data;
- 	stream_info = snd_soc_dai_get_dma_data(dai, substream);
--	format = snd_hdac_calc_stream_format(runtime->rate, runtime->channels, runtime->format,
--					     runtime->sample_bits, 0);
-+
-+	bps = snd_hdac_stream_format_bps(runtime->format, runtime->subformat, stream_info->maxbps);
-+	format = snd_hdac_stream_format(runtime->channels, bps, runtime->rate);
- 
- 	ret = snd_hda_codec_prepare(codec, stream_info, stream->stream_tag, format, substream);
- 	if (ret < 0) {
-diff --git a/sound/soc/codecs/hda.c b/sound/soc/codecs/hda.c
-index 7f53b1981a14..8a9d0674555e 100644
---- a/sound/soc/codecs/hda.c
-+++ b/sound/soc/codecs/hda.c
-@@ -52,6 +52,7 @@ static int hda_codec_create_dais(struct hda_codec *codec, int pcm_count,
- 		stream->channels_max = pcm->stream[dir].channels_max;
- 		stream->rates = pcm->stream[dir].rates;
- 		stream->formats = pcm->stream[dir].formats;
-+		stream->subformats = pcm->stream[dir].subformats;
- 		stream->sig_bits = pcm->stream[dir].maxbps;
- 
- capture_dais:
-@@ -71,6 +72,7 @@ static int hda_codec_create_dais(struct hda_codec *codec, int pcm_count,
- 		stream->channels_max = pcm->stream[dir].channels_max;
- 		stream->rates = pcm->stream[dir].rates;
- 		stream->formats = pcm->stream[dir].formats;
-+		stream->subformats = pcm->stream[dir].subformats;
- 		stream->sig_bits = pcm->stream[dir].maxbps;
- 	}
- 
--- 
-2.25.1
+When was it deprecated?
 
+> - DFSDM is now implemented as a channel provider, so remove io-channels
+> properties.
+> - Add iio-backend property to connect DFSDM to an SD modulator.
+
+io-backends
+
+All sorts of ABI issues with this change. Please explain why you don't 
+care.
+
+> 
+> Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+> ---
+>  .../bindings/iio/adc/st,stm32-dfsdm-adc.yaml  | 189 ++++++------------
+>  1 file changed, 63 insertions(+), 126 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml b/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml
+> index 1970503389aa..128545cedc7f 100644
+> --- a/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml
+> +++ b/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml
+> @@ -85,22 +85,14 @@ patternProperties:
+>          description: Specifies the DFSDM filter instance used.
+>          maxItems: 1
+>  
+> -      interrupts:
+> -        maxItems: 1
+> +      '#address-cells':
+> +        const: 1
+>  
+> -      st,adc-channels:
+> -        description: |
+> -          List of single-ended channels muxed for this ADC.
+> -          On stm32h7 and stm32mp1:
+> -          - For st,stm32-dfsdm-adc: up to 8 channels numbered from 0 to 7.
+> -          - For st,stm32-dfsdm-dmic: 1 channel numbered from 0 to 7.
+> -        $ref: /schemas/types.yaml#/definitions/uint32-array
+> -        items:
+> -          minimum: 0
+> -          maximum: 7
+> +      '#size-cells':
+> +        const: 0
+>  
+> -      st,adc-channel-names:
+> -        description: List of single-ended channel names.
+> +      interrupts:
+> +        maxItems: 1
+>  
+>        st,filter-order:
+>          description: |
+> @@ -111,39 +103,6 @@ patternProperties:
+>          $ref: /schemas/types.yaml#/definitions/uint32
+>          maximum: 5
+>  
+> -      "#io-channel-cells":
+> -        const: 1
+> -
+> -      st,adc-channel-types:
+> -        description: |
+> -          Single-ended channel input type.
+> -          - "SPI_R": SPI with data on rising edge (default)
+> -          - "SPI_F": SPI with data on falling edge
+> -          - "MANCH_R": manchester codec, rising edge = logic 0, falling edge = logic 1
+> -          - "MANCH_F": manchester codec, rising edge = logic 1, falling edge = logic 0
+> -        items:
+> -          enum: [ SPI_R, SPI_F, MANCH_R, MANCH_F ]
+> -        $ref: /schemas/types.yaml#/definitions/non-unique-string-array
+> -
+> -      st,adc-channel-clk-src:
+> -        description: |
+> -          Conversion clock source.
+> -          - "CLKIN": external SPI clock (CLKIN x)
+> -          - "CLKOUT": internal SPI clock (CLKOUT) (default)
+> -          - "CLKOUT_F": internal SPI clock divided by 2 (falling edge).
+> -          - "CLKOUT_R": internal SPI clock divided by 2 (rising edge).
+> -        items:
+> -          enum: [ CLKIN, CLKOUT, CLKOUT_F, CLKOUT_R ]
+> -        $ref: /schemas/types.yaml#/definitions/non-unique-string-array
+> -
+> -      st,adc-alt-channel:
+> -        description:
+> -          Must be defined if two sigma delta modulators are
+> -          connected on same SPI input.
+> -          If not set, channel n is connected to SPI input n.
+> -          If set, channel n is connected to SPI input n + 1.
+> -        type: boolean
+> -
+>        st,filter0-sync:
+>          description:
+>            Set to 1 to synchronize with DFSDM filter instance 0.
+> @@ -157,14 +116,68 @@ patternProperties:
+>          items:
+>            - const: rx
+>  
+> +    patternProperties:
+> +      "^channel@([0-9]|1[0-9])$":
+> +        type: object
+> +        $ref: "adc.yaml"
+> +        description: Represents the external channels which are connected to the DFSDM.
+> +
+> +        properties:
+> +          reg:
+> +            items:
+> +              minimum: 0
+> +              maximum: 19
+> +
+> +          label:
+> +            description: |
+> +              Unique name to identify channel.
+> +
+> +          st,adc-channel-types:
+> +            description: |
+> +              Single-ended channel input type.
+> +              - "SPI_R": SPI with data on rising edge (default)
+> +              - "SPI_F": SPI with data on falling edge
+> +              - "MANCH_R": manchester codec, rising edge = logic 0, falling edge = logic 1
+> +              - "MANCH_F": manchester codec, rising edge = logic 1, falling edge = logic 0
+> +            items:
+> +              enum: [ SPI_R, SPI_F, MANCH_R, MANCH_F ]
+> +            $ref: /schemas/types.yaml#/definitions/non-unique-string-array
+> +
+> +          st,adc-channel-clk-src:
+> +            description: |
+> +              Conversion clock source.
+> +              - "CLKIN": external SPI clock (CLKIN x)
+> +              - "CLKOUT": internal SPI clock (CLKOUT) (default)
+> +              - "CLKOUT_F": internal SPI clock divided by 2 (falling edge).
+> +              - "CLKOUT_R": internal SPI clock divided by 2 (rising edge).
+> +            items:
+> +              enum: [ CLKIN, CLKOUT, CLKOUT_F, CLKOUT_R ]
+> +            $ref: /schemas/types.yaml#/definitions/non-unique-string-array
+> +
+> +          st,adc-alt-channel:
+> +            description:
+> +              Must be defined if two sigma delta modulators are
+> +              connected on same SPI input.
+> +              If not set, channel n is connected to SPI input n.
+> +              If set, channel n is connected to SPI input n + 1.
+> +            type: boolean
+> +
+> +          io-backends:
+> +            description: |
+> +              phandle to an external sigma delta modulator or internal ADC output.
+> +            $ref: /schemas/types.yaml#/definitions/phandle
+> +
+> +        required:
+> +          - reg
+> +          - io-backends
+> +
+> +        additionalProperties: false
+> +
+>      required:
+>        - compatible
+>        - reg
+>        - interrupts
+> -      - st,adc-channels
+> -      - st,adc-channel-names
+>        - st,filter-order
+> -      - "#io-channel-cells"
+>  
+>      allOf:
+>        - if:
+> @@ -175,14 +188,6 @@ patternProperties:
+>  
+>          then:
+>            properties:
+> -            st,adc-channels:
+> -              minItems: 1
+> -              maxItems: 8
+> -
+> -            st,adc-channel-names:
+> -              minItems: 1
+> -              maxItems: 8
+> -
+>              st,adc-channel-types:
+>                minItems: 1
+>                maxItems: 8
+> @@ -191,14 +196,6 @@ patternProperties:
+>                minItems: 1
+>                maxItems: 8
+>  
+> -            io-channels:
+> -              description:
+> -                From common IIO binding. Used to pipe external sigma delta
+> -                modulator or internal ADC output to DFSDM channel.
+> -
+> -          required:
+> -            - io-channels
+> -
+>        - if:
+>            properties:
+>              compatible:
+> @@ -207,12 +204,6 @@ patternProperties:
+>  
+>          then:
+>            properties:
+> -            st,adc-channels:
+> -              maxItems: 1
+> -
+> -            st,adc-channel-names:
+> -              maxItems: 1
+> -
+>              st,adc-channel-types:
+>                maxItems: 1
+>  
+> @@ -237,15 +228,9 @@ patternProperties:
+>                  "#sound-dai-cells":
+>                    const: 0
+>  
+> -                io-channels:
+> -                  description:
+> -                    From common IIO binding. Used to pipe external sigma delta
+> -                    modulator or internal ADC output to DFSDM channel.
+> -
+>                required:
+>                  - compatible
+>                  - "#sound-dai-cells"
+> -                - io-channels
+>  
+>  allOf:
+>    - if:
+> @@ -278,52 +263,4 @@ allOf:
+>                  minimum: 0
+>                  maximum: 5
+>  
+> -examples:
+> -  - |
+> -    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> -    #include <dt-bindings/clock/stm32mp1-clks.h>
+> -    dfsdm: dfsdm@4400d000 {
+> -      compatible = "st,stm32mp1-dfsdm";
+> -      reg = <0x4400d000 0x800>;
+> -      clocks = <&rcc DFSDM_K>, <&rcc ADFSDM_K>;
+> -      clock-names = "dfsdm", "audio";
+> -      #address-cells = <1>;
+> -      #size-cells = <0>;
+> -
+> -      dfsdm0: filter@0 {
+> -        compatible = "st,stm32-dfsdm-dmic";
+> -        reg = <0>;
+> -        interrupts = <GIC_SPI 110 IRQ_TYPE_LEVEL_HIGH>;
+> -        dmas = <&dmamux1 101 0x400 0x01>;
+> -        dma-names = "rx";
+> -        #io-channel-cells = <1>;
+> -        st,adc-channels = <1>;
+> -        st,adc-channel-names = "dmic0";
+> -        st,adc-channel-types = "SPI_R";
+> -        st,adc-channel-clk-src = "CLKOUT";
+> -        st,filter-order = <5>;
+> -
+> -        asoc_pdm0: dfsdm-dai {
+> -          compatible = "st,stm32h7-dfsdm-dai";
+> -          #sound-dai-cells = <0>;
+> -          io-channels = <&dfsdm0 0>;
+> -        };
+> -      };
+> -
+> -      dfsdm_pdm1: filter@1 {
+> -        compatible = "st,stm32-dfsdm-adc";
+> -        reg = <1>;
+> -        interrupts = <GIC_SPI 111 IRQ_TYPE_LEVEL_HIGH>;
+> -        dmas = <&dmamux1 102 0x400 0x01>;
+> -        dma-names = "rx";
+> -        #io-channel-cells = <1>;
+> -        st,adc-channels = <2 3>;
+> -        st,adc-channel-names = "in2", "in3";
+> -        st,adc-channel-types = "SPI_R", "SPI_R";
+> -        st,adc-channel-clk-src = "CLKOUT_F", "CLKOUT_F";
+> -        io-channels = <&sd_adc2 &sd_adc3>;
+> -        st,filter-order = <1>;
+> -      };
+> -    };
+> -
+>  ...
+> -- 
+> 2.25.1
+> 
