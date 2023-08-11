@@ -4,43 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4EF77C001B0
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Aug 2023 07:42:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6C7FBC001B0
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Aug 2023 07:42:36 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 441FDDEE;
-	Fri, 11 Aug 2023 09:41:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 441FDDEE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 582CF82C;
+	Fri, 11 Aug 2023 09:41:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 582CF82C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1691739741;
-	bh=eFWEex2sZxbulKydxzmA+lnOJnRleLwjL4hZewpZlSk=;
+	s=default; t=1691739754;
+	bh=Z5kGaqmkQS/5Z5KvkMtu0XcD8d9RFMtmHK2zBelenHk=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=dLZNr/hg74B+e16elh43bZUnIVDxGU6eyaRFBCqR6+1UxzW9fBXVZ/09mELRFEydi
-	 bQzXJLs2iJC1aGCNqEj4hcKhCFfLdspcn7vhc8h6RMGhRj5vMaP7fYPpAEJPN6Ekwc
-	 7cD80zG1VxAKZCk9tSN2CfWrYo/V0j2K+8znZSM4=
+	b=ljb6UmGkmofBoGjKDGxmcHRafYxillsM05Iqj6PGXkqL9iIsooWY/Etih29wuIbQM
+	 yEDIkGiOX0IexlxO9L5nO8VcdNupAKQW3SOd7h+O3gY8CHq4CjDU72g562bshE3ilT
+	 gRQfkePxLYZwq25Bl3rBX1teIP69T5y7imWCVsH0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 48BCAF805C5; Fri, 11 Aug 2023 09:39:34 +0200 (CEST)
+	id 7FD32F805C1; Fri, 11 Aug 2023 09:39:36 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 938DFF805C1;
-	Fri, 11 Aug 2023 09:39:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F1E63F805D3;
+	Fri, 11 Aug 2023 09:39:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8B1C1F80510; Fri, 11 Aug 2023 09:15:16 +0200 (CEST)
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+	id 3C5C7F8016E; Fri, 11 Aug 2023 09:15:18 +0200 (CEST)
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 10F64F80166
-	for <alsa-devel@alsa-project.org>; Fri, 11 Aug 2023 09:15:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 10F64F80166
-Received: from kwepemi500008.china.huawei.com (unknown [172.30.72.56])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RMZj505M3zCrkj;
-	Fri, 11 Aug 2023 15:11:36 +0800 (CST)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 3941BF80508
+	for <alsa-devel@alsa-project.org>; Fri, 11 Aug 2023 09:15:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3941BF80508
+Received: from kwepemi500008.china.huawei.com (unknown [172.30.72.57])
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4RMZjr1Ht1zqSdV;
+	Fri, 11 Aug 2023 15:12:16 +0800 (CST)
 Received: from huawei.com (10.90.53.73) by kwepemi500008.china.huawei.com
  (7.221.188.139) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 11 Aug
- 2023 15:15:05 +0800
+ 2023 15:15:07 +0800
 From: Ruan Jinjie <ruanjinjie@huawei.com>
 To: <perex@perex.cz>, <tiwai@suse.com>, <claudiu.beznea@tuxon.dev>,
 	<lgirdwood@gmail.com>, <broonie@kernel.org>, <nicolas.ferre@microchip.com>,
@@ -51,10 +51,9 @@ To: <perex@perex.cz>, <tiwai@suse.com>, <claudiu.beznea@tuxon.dev>,
 	<linux-arm-kernel@lists.infradead.org>, <asahi@lists.linux.dev>,
 	<linux-sunxi@lists.linux.dev>
 CC: <ruanjinjie@huawei.com>
-Subject: [PATCH -next 3/5] ASoC: sunxi: sun4i-spdif: Remove redundant
- of_match_ptr()
-Date: Fri, 11 Aug 2023 15:14:24 +0800
-Message-ID: <20230811071426.2343133-4-ruanjinjie@huawei.com>
+Subject: [PATCH -next 4/5] ASoC: ssm3515: Remove redundant of_match_ptr()
+Date: Fri, 11 Aug 2023 15:14:25 +0800
+Message-ID: <20230811071426.2343133-5-ruanjinjie@huawei.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230811071426.2343133-1-ruanjinjie@huawei.com>
 References: <20230811071426.2343133-1-ruanjinjie@huawei.com>
@@ -71,15 +70,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: 2HSGEQFYXXFHZEIHEB6VDDWTWNJXJZJM
-X-Message-ID-Hash: 2HSGEQFYXXFHZEIHEB6VDDWTWNJXJZJM
+Message-ID-Hash: YAJPWIDAKGVDJXFI5INOJ32Y3RHS5G6F
+X-Message-ID-Hash: YAJPWIDAKGVDJXFI5INOJ32Y3RHS5G6F
 X-Mailman-Approved-At: Fri, 11 Aug 2023 07:39:15 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2HSGEQFYXXFHZEIHEB6VDDWTWNJXJZJM/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YAJPWIDAKGVDJXFI5INOJ32Y3RHS5G6F/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -93,22 +92,22 @@ of_match_ptr() here.
 
 Signed-off-by: Ruan Jinjie <ruanjinjie@huawei.com>
 ---
- sound/soc/sunxi/sun4i-spdif.c | 2 +-
+ sound/soc/codecs/ssm3515.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/sunxi/sun4i-spdif.c b/sound/soc/sunxi/sun4i-spdif.c
-index ff18d4113aac..c2b55d2e5fe1 100644
---- a/sound/soc/sunxi/sun4i-spdif.c
-+++ b/sound/soc/sunxi/sun4i-spdif.c
-@@ -718,7 +718,7 @@ static const struct dev_pm_ops sun4i_spdif_pm = {
- static struct platform_driver sun4i_spdif_driver = {
- 	.driver		= {
- 		.name	= "sun4i-spdif",
--		.of_match_table = of_match_ptr(sun4i_spdif_of_match),
-+		.of_match_table = sun4i_spdif_of_match,
- 		.pm	= &sun4i_spdif_pm,
+diff --git a/sound/soc/codecs/ssm3515.c b/sound/soc/codecs/ssm3515.c
+index 008cb3eb5758..8c6665677a17 100644
+--- a/sound/soc/codecs/ssm3515.c
++++ b/sound/soc/codecs/ssm3515.c
+@@ -437,7 +437,7 @@ MODULE_DEVICE_TABLE(of, ssm3515_of_match);
+ static struct i2c_driver ssm3515_i2c_driver = {
+ 	.driver = {
+ 		.name = "ssm3515",
+-		.of_match_table = of_match_ptr(ssm3515_of_match),
++		.of_match_table = ssm3515_of_match,
  	},
- 	.probe		= sun4i_spdif_probe,
+ 	.probe = ssm3515_i2c_probe,
+ };
 -- 
 2.34.1
 
