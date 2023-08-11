@@ -4,43 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EC388EB64DD
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Aug 2023 07:42:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2A957EB64DD
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Aug 2023 07:43:13 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 040DCDF3;
-	Fri, 11 Aug 2023 09:42:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 040DCDF3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 616C9886;
+	Fri, 11 Aug 2023 09:42:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 616C9886
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1691739771;
-	bh=RXpyXAyKP4/E2hrbfxwTaRFDy/wISeB2XBOMbiLVAIs=;
+	s=default; t=1691739791;
+	bh=V/k4wj7KzfWCYLE/i8ExxDxvhvgWg2LUahdfoLgF7Ao=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=jPEz9LU3zK9f/a9N5MaChfZQxaSW+1+0r3mWTd0I24JdmdiuFrELn0weTqJctg3ym
-	 1aN9XJfzd++Fg3LY5/0dczkXKPhggbGbzduZai6MlFCfdH0Iq1jKc51N9RjO9HYsY0
-	 EhifbrwdjzA6Xku8r052++U/j5s3kU+zL0x+p300=
+	b=ThakOyeyoRK/4GNi9ZtMcYSdBIlYhf2Z/AV14dL1nxJTkdMOlzVH6sc80V540JCmk
+	 t8ncDMyp2BW8kizjxi7Ey9bbAkstEvlX6U2y1hUTwbEaFqevSIi0DIVe5ldDaeVo4n
+	 9E6hh3ftpbwEGZxvmsaoEm3sTvLnbGvNf7exA84Y=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 72F81F805E3; Fri, 11 Aug 2023 09:39:39 +0200 (CEST)
+	id BDEAEF805EF; Fri, 11 Aug 2023 09:39:40 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A3B77F805E0;
-	Fri, 11 Aug 2023 09:39:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1155FF805E9;
+	Fri, 11 Aug 2023 09:39:40 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8BAABF80510; Fri, 11 Aug 2023 09:15:19 +0200 (CEST)
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+	id 5DC9EF80536; Fri, 11 Aug 2023 09:15:22 +0200 (CEST)
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 8A610F800EE
-	for <alsa-devel@alsa-project.org>; Fri, 11 Aug 2023 09:15:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8A610F800EE
-Received: from kwepemi500008.china.huawei.com (unknown [172.30.72.55])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RMZll3MkvzkX5h;
-	Fri, 11 Aug 2023 15:13:55 +0800 (CST)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 2B050F801EB
+	for <alsa-devel@alsa-project.org>; Fri, 11 Aug 2023 09:15:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2B050F801EB
+Received: from kwepemi500008.china.huawei.com (unknown [172.30.72.53])
+	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4RMZlg3SJBz1L9VR;
+	Fri, 11 Aug 2023 15:13:51 +0800 (CST)
 Received: from huawei.com (10.90.53.73) by kwepemi500008.china.huawei.com
  (7.221.188.139) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 11 Aug
- 2023 15:15:08 +0800
+ 2023 15:15:04 +0800
 From: Ruan Jinjie <ruanjinjie@huawei.com>
 To: <perex@perex.cz>, <tiwai@suse.com>, <claudiu.beznea@tuxon.dev>,
 	<lgirdwood@gmail.com>, <broonie@kernel.org>, <nicolas.ferre@microchip.com>,
@@ -51,9 +51,10 @@ To: <perex@perex.cz>, <tiwai@suse.com>, <claudiu.beznea@tuxon.dev>,
 	<linux-arm-kernel@lists.infradead.org>, <asahi@lists.linux.dev>,
 	<linux-sunxi@lists.linux.dev>
 CC: <ruanjinjie@huawei.com>
-Subject: [PATCH -next 5/5] ALSA: Remove redundant of_match_ptr()
-Date: Fri, 11 Aug 2023 15:14:26 +0800
-Message-ID: <20230811071426.2343133-6-ruanjinjie@huawei.com>
+Subject: [PATCH -next 2/5] ASoC: atmel: tse850-pcm5142: Remove redundant
+ of_match_ptr()
+Date: Fri, 11 Aug 2023 15:14:23 +0800
+Message-ID: <20230811071426.2343133-3-ruanjinjie@huawei.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230811071426.2343133-1-ruanjinjie@huawei.com>
 References: <20230811071426.2343133-1-ruanjinjie@huawei.com>
@@ -70,15 +71,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: H5VUTQ2A44P2ZYURLRIJRC22R367LAPY
-X-Message-ID-Hash: H5VUTQ2A44P2ZYURLRIJRC22R367LAPY
-X-Mailman-Approved-At: Fri, 11 Aug 2023 07:39:16 +0000
+Message-ID-Hash: 65EC7ZTJ65DEFRF6QZBER5EIRF43D5ST
+X-Message-ID-Hash: 65EC7ZTJ65DEFRF6QZBER5EIRF43D5ST
+X-Mailman-Approved-At: Fri, 11 Aug 2023 07:39:26 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/H5VUTQ2A44P2ZYURLRIJRC22R367LAPY/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/65EC7ZTJ65DEFRF6QZBER5EIRF43D5ST/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -92,22 +93,22 @@ of_match_ptr() here.
 
 Signed-off-by: Ruan Jinjie <ruanjinjie@huawei.com>
 ---
- sound/drivers/serial-generic.c | 2 +-
+ sound/soc/atmel/tse850-pcm5142.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/drivers/serial-generic.c b/sound/drivers/serial-generic.c
-index b0262541802a..c8db6c75d133 100644
---- a/sound/drivers/serial-generic.c
-+++ b/sound/drivers/serial-generic.c
-@@ -366,7 +366,7 @@ MODULE_DEVICE_TABLE(of, snd_serial_generic_dt_ids);
- static struct serdev_device_driver snd_serial_generic_driver = {
- 	.driver	= {
- 		.name		= "snd-serial-generic",
--		.of_match_table	= of_match_ptr(snd_serial_generic_dt_ids),
-+		.of_match_table	= snd_serial_generic_dt_ids,
+diff --git a/sound/soc/atmel/tse850-pcm5142.c b/sound/soc/atmel/tse850-pcm5142.c
+index efead272d92b..c809b121037f 100644
+--- a/sound/soc/atmel/tse850-pcm5142.c
++++ b/sound/soc/atmel/tse850-pcm5142.c
+@@ -430,7 +430,7 @@ MODULE_DEVICE_TABLE(of, tse850_dt_ids);
+ static struct platform_driver tse850_driver = {
+ 	.driver = {
+ 		.name = "axentia-tse850-pcm5142",
+-		.of_match_table = of_match_ptr(tse850_dt_ids),
++		.of_match_table = tse850_dt_ids,
  	},
- 	.probe	= snd_serial_generic_probe,
- };
+ 	.probe = tse850_probe,
+ 	.remove_new = tse850_remove,
 -- 
 2.34.1
 
