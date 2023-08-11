@@ -4,157 +4,167 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BE93CC001B0
-	for <alsa-devel@archiver.kernel.org>; Thu, 10 Aug 2023 13:03:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2950CC0015E
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Aug 2023 20:15:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B4A35850;
-	Thu, 10 Aug 2023 15:02:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B4A35850
+	by alsa0.perex.cz (Postfix) with ESMTPS id 32464823;
+	Fri, 11 Aug 2023 22:15:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 32464823
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1691672594;
-	bh=ifwSAVf7zqfgC0VUvGFtTcSsPQ83VyzNkkIsPttxrQk=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=DqgP/v5oXfJVgxYBKYvvaq5zxsuUZY0aNiXTK/xjkAi2PO5MnGaYjOoGqoSsXa4hr
-	 fNTj6i9YTd8MBd5lkKRsirkJCQW/8H8h7L7WmE11gvMYR6DwR9daGSLAwLi8hDWRzy
-	 2MIwrsUZI6lIYhcj+O2rFq7pnW++pebkERj6w2SI=
+	s=default; t=1691784953;
+	bh=HnpYvoJ0nN9AmZR07nRMHuvB57JSEnOMzR5dlfsJJYY=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=kdZCP/KXvD/cInh5zmUYzpjGQCSpSz2uPYuWa8D5ULZ1Yiv9000pT82nKJaL7lvn/
+	 +XUX28APnZCCjtUx1wHpWdhtCNGrouGqY0xW4C1YJeIVzXN+a27zZZwsYpQP9wuBpR
+	 FqmOgNz/Fl5Ez3xnqRUaHigVTQ+rt8N+rf829GVQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id F0DCEF8057E; Thu, 10 Aug 2023 15:01:25 +0200 (CEST)
+	id 1A20AF80134; Fri, 11 Aug 2023 22:14:33 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id CC083F80578;
-	Thu, 10 Aug 2023 15:01:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 65B9EF80166;
+	Fri, 11 Aug 2023 22:14:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 899BFF8016E; Thu, 10 Aug 2023 09:20:38 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+	id D172AF8016E; Fri, 11 Aug 2023 22:14:27 +0200 (CEST)
+Received: from out-96.mta0.migadu.com (out-96.mta0.migadu.com [91.218.175.96])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C8780F80166
-	for <alsa-devel@alsa-project.org>; Thu, 10 Aug 2023 09:20:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C8780F80166
+	by alsa1.perex.cz (Postfix) with ESMTPS id 02743F800EE
+	for <alsa-devel@alsa-project.org>; Fri, 11 Aug 2023 22:14:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 02743F800EE
 Authentication-Results: alsa1.perex.cz;
-	dkim=fail reason="signature verification failed" (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=XBN4oR5O
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 57088650FD;
-	Thu, 10 Aug 2023 07:20:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 293EAC433C8;
-	Thu, 10 Aug 2023 07:20:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1691652032;
-	bh=ifwSAVf7zqfgC0VUvGFtTcSsPQ83VyzNkkIsPttxrQk=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=XBN4oR5OUyZZhcVNV9rrvCAxgxndp8GFrEGC+8uDrfZqVkDEctDcqd4U3l7ahxG4h
-	 BEtvsfzgHjQKNnN0xjJsUTc5jX6k62eiT4XQPFQmGMu3LL+D9br3ow8heaR/fP3S9K
-	 r220hJCW/XqLkQXAW6BpPp2i1jchiunkw52+RkU5sizV/aN+P6gtv9LCjoj0cwdrNi
-	 LeMaLuGsSaZGT0uOBEt2CUIfPwTvmqzYp7ekxTy2d4NvUStogGNkvI+hRSw/+Wzzdp
-	 Yt56RXo6qOFk91K1yk9VSjvebe+gq4krCpTuXzMqC3U2yuq4p0vWOFyvE/Lf6WIion
-	 cdGkjd/O70haw==
-Received: (nullmailer pid 3911833 invoked by uid 1000);
-	Thu, 10 Aug 2023 07:20:21 -0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-MIME-Version: 1.0
-From: Rob Herring <robh@kernel.org>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	devicetree@vger.kernel.org, Cheng-Yi Chiang <cychiang@chromium.org>,
-	Jerome Brunet <jbrunet@baylibre.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Takashi Iwai <tiwai@suse.com>, Trevor Wu <trevor.wu@mediatek.com>,
-	linux-mediatek@lists.infradead.org,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Sylwester Nawrocki <s.nawrocki@samsung.com>,
-	Fabio Estevam <festevam@gmail.com>, Mark Brown <broonie@kernel.org>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	Rohit kumar <quic_rohkumar@quicinc.com>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Rao Mandadapu <srivasam@codeaurora.org>,
-	Jaroslav Kysela <perex@perex.cz>,
-	linux-arm-kernel@lists.infradead.org,
-	Jonathan Bakker <xc-racer2@live.ca>, linux-kernel@vger.kernel.org,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	Shengjiu Wang <shengjiu.wang@nxp.com>,
+	dkim=pass (2048-bit key,
+ unprotected) header.d=jookia.org header.i=@jookia.org header.a=rsa-sha256
+ header.s=key1 header.b=xiIIaoSI
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and
+ include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jookia.org; s=key1;
+	t=1691784855;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=6hBtpLiHEAUCKZrFtYgu+mEZQfu4FFrE7uRZuwIPRHo=;
+	b=xiIIaoSI6Jtq489azAwmEJ/yFbLyZbRhnHjLmq9FFFDqsuGS6QLvxM3Q710jZif6S1KdLi
+	CO1yUsvfc9rneaCC3Q7n/p3PMmt3yuTVxSUjjoN7BwOMXtK6rEYEfiyPnFNyR2Ct8xWAgh
+	eMTD0kdGCv8eB5xjlNm154x1CvIkTLpljwUmQGI50pG81iPoLboEBJDtkVtpCHXNO4F+gI
+	D9OSkB32lWJ0zbQPHAcNdxT/4A6hle46rcOAQfHBlbOpTRXlWl76FNcrcPoGY8BYMXTw1S
+	Z0Y8sgtWBtPxwv83OLKrESUeJvBU2jwGXuUK1/a1CvPp5b1pmDdkXtdzL2O5vw==
+From: John Watts <contact@jookia.org>
+To: alsa-devel@alsa-project.org
+Cc: Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
 	Rob Herring <robh+dt@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>, alsa-deve@alsa-project.org,
-	l@alsa-project.org, Judy Hsiao <judyhsiao@chromium.org>,
-	Shawn Guo <shawnguo@kernel.org>
-In-Reply-To: <20230810063300.20151-5-krzysztof.kozlowski@linaro.org>
-References: <20230810063300.20151-1-krzysztof.kozlowski@linaro.org>
- <20230810063300.20151-5-krzysztof.kozlowski@linaro.org>
-Message-Id: <169165201914.3911686.628530054525655751.robh@kernel.org>
-Subject: Re: [PATCH v2 05/11] ASoC: dt-bindings: samsung,odroid: use common
- sound card
-Date: Thu, 10 Aug 2023 01:20:21 -0600
-X-MailFrom: SRS0=zxi7=D3=robh_at_kernel.org=rob@kernel.org
-X-Mailman-Rule-Hits: implicit-dest
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Chen-Yu Tsai <wens@csie.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Samuel Holland <samuel@sholland.org>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	John Watts <contact@jookia.org>,
+	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+	Maxime Ripard <mripard@kernel.org>,
+	devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-sunxi@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: [RFC PATCH 0/7] sun4i-i2s: Support channel remapping
+Date: Sat, 12 Aug 2023 06:13:59 +1000
+Message-ID: <20230811201406.4096210-1-contact@jookia.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+Message-ID-Hash: 3W2AB5JSBA7DBAOVRGWPBYCECNQMZ465
+X-Message-ID-Hash: 3W2AB5JSBA7DBAOVRGWPBYCECNQMZ465
+X-MailFrom: contact@jookia.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; max-recipients; max-size; news-moderation; no-subject;
- digests; suspicious-header
-Message-ID-Hash: QB7M44DA6NDVWURXWOI6FXQ5ED7DFH5F
-X-Message-ID-Hash: QB7M44DA6NDVWURXWOI6FXQ5ED7DFH5F
-X-Mailman-Approved-At: Thu, 10 Aug 2023 13:01:15 +0000
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QB7M44DA6NDVWURXWOI6FXQ5ED7DFH5F/>
-List-Archive: <>
+Archived-At: <>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+Hi there,
 
-On Thu, 10 Aug 2023 08:32:53 +0200, Krzysztof Kozlowski wrote:
-> Reference the common sound card properties and deprecate the
-> custom "samsung,audio-routing" in favor of generic one.  This allows to
-> remove "model" property and make the binding closer to other sounds
-> cards.
-> 
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> ---
->  .../devicetree/bindings/sound/samsung,odroid.yaml  | 14 +++++++-------
->  1 file changed, 7 insertions(+), 7 deletions(-)
-> 
+A while back I put out this thread:
+How do I set up multiple codecs on one I2S - without TDM?"
+https://lore.kernel.org/all/ZMBRMnv0GQF4wyfQ@titan/
+This is my specific use case and motivation for this patch series.
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+I posted how I managed to configure the audio-graph-card2 to allow
+doing this in conjunction with some register hacking, but I now have
+an initial patch series to support this in the sun4i-i2s driver.
 
-yamllint warnings/errors:
+Now I've tested this on the T113-s3 with 3 wm8782s and it works well,
+but I'm marking this as RFC as I think I'm out of my depth here and
+I'd like to know the direction I need to take this: I'm new to
+kernel development and I'm genuinely unsure what are best practices
+and which are bad practices design-wise.
 
-dtschema/dtc warnings/errors:
+My main concerns are the following:
 
+First, I split up channel-dins and channel-slots. This is mainly
+because I implemented one first but both of them only make sense
+together. The registers themselves use a format of a byte per
+channel with the upper nibble being the din and the lower being
+the slot. Perhaps this is a better format to copy?
 
-doc reference errors (make refcheckdocs):
+Second, I use u8 arrays on the device tree. This is done so I can
+just read the array easily, but it also means I can't make this
+property contingent on a compatible string in the schema as $ref
+doesn't seem to be allowed there.
 
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20230810063300.20151-5-krzysztof.kozlowski@linaro.org
+Third, channel-slots is available on all sun4i-i2s controllers,
+but I only have it implemented on the R329 variant for now when
+there are multiple din pins.
+I could add support for this on older controllers but there's not
+really a use case for manual configuration as there's no DIN
+and I don't have hardware to test it on.
 
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
+Fourth, I don't limit the readable channels to the channels
+listed. Reading more channels than you have currently results in
+the controller assuming you want to use TDM, but that's not the
+case here and you can have strange duplicate channels show up.
 
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
+Fifth, it might be a good idea to increase the maximum channels
+from 8 to 16, especially if people are going to be running
+multiple TDM streams on one controller.
 
-pip3 install dtschema --upgrade
+Sixth, the channel-slots only apply to capture, not playback.
+This is something I just realized now when writing and forgot
+to document in the patch set.
 
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
+Thanks for your time,
+John.
+
+John Watts (7):
+  ASoC: sunxi: sun4i-i2s: Prepare for runtime DIN pin selection
+  ASoC: sunxi: sun4i-i2s: Use channel-dins device tree property
+  ASoC: sunxi: sun4i-i2s: Prepare for runtime channel slot selection
+  ASoC: sunxi: sun4i-i2s: Use channel-slots device tree property
+  ASoC: sunxi: sun4i-i2s: Detect TDM slots based on channel slots
+  dt-bindings: sound: sun4i-i2s: Add channel-dins property
+  dt-bindings: sound: sun4i-i2s: Add channel-slots property
+
+ .../sound/allwinner,sun4i-a10-i2s.yaml        |  30 +++++
+ sound/soc/sunxi/sun4i-i2s.c                   | 106 +++++++++++++++++-
+ 2 files changed, 132 insertions(+), 4 deletions(-)
+
+-- 
+2.41.0
 
