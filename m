@@ -4,48 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5F9B0C0015E
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Aug 2023 19:11:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E55B0C001DE
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Aug 2023 19:14:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DFE3D1DA;
-	Fri, 11 Aug 2023 21:10:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DFE3D1DA
+	by alsa0.perex.cz (Postfix) with ESMTPS id AC5D1829;
+	Fri, 11 Aug 2023 21:13:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AC5D1829
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1691781065;
-	bh=OOnMjxTA+NW+7/2jqxbn6oT9VT7Wdc65m/E+tYofWqM=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=CIf4c8vRVITKG3ulw8CsDOYvlQnA/Wy3+nh8Wu8nqgyW+/VobflOmcjPghLMv4WCE
-	 WAohXWhH6ZFG5BboK40/8EGKzAN8HDcpkucJuyPdO7+PznyMWTM5GmPbNljZzXirwu
-	 s9Bplb0MVtaOuvqdQJ2K0qV8Zt9J8ukVFv3+HRg0=
+	s=default; t=1691781255;
+	bh=jVzy3ed5zrK+W0/TGI4rspWx8gcOBVlaPTtRjlEuPAc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=U8GePED+SBRQEA7vzRI686y0AcUH89kdx2aGr6HD3+6jxkhheLBAAQ9rCm5zvHVxo
+	 yikZO1FJzIqNqQoveSTwokwAxfM1UWdWtkKqtb65TSjrDOKiamZIBwwHBByFuATIvS
+	 qCrLMG/VZwkcC4XUblpqiDVCFZpohihCLGcoDV1A=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5203AF80551; Fri, 11 Aug 2023 21:10:14 +0200 (CEST)
+	id 224A1F80134; Fri, 11 Aug 2023 21:12:57 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 05979F80166;
-	Fri, 11 Aug 2023 21:10:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9D495F80166;
+	Fri, 11 Aug 2023 21:12:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 87C0AF80166; Fri, 11 Aug 2023 21:10:10 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
- [207.180.221.201])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6430CF800EE
-	for <alsa-devel@alsa-project.org>; Fri, 11 Aug 2023 21:10:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6430CF800EE
+	id 27017F80166; Fri, 11 Aug 2023 21:12:53 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 38BC8F800EE
+	for <alsa-devel@alsa-project.org>; Fri, 11 Aug 2023 21:12:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 38BC8F800EE
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=hDbN7N4O
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 2583663308;
+	Fri, 11 Aug 2023 19:12:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96157C433C7;
+	Fri, 11 Aug 2023 19:12:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1691781158;
+	bh=jVzy3ed5zrK+W0/TGI4rspWx8gcOBVlaPTtRjlEuPAc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=hDbN7N4OKVJrt6ST0CDhlPncPZnZVq/afcmTZkC6fO4bxbZwpFP2ZTcNa//l5AKwI
+	 a7FRNyb9axYwj2zLAvickZPG0pcaHKnBKY8LOBb1doUeRa/kPSHdrIG/CGDEuIAGZs
+	 4zyPG6ynAMDSqVbwDUNEhL7+wD9U32aa5HNNBdXq6aSSCvnxAUi/zbBxM2Qgo7/pPO
+	 KiGTEzD2/y1Zw5oGNhTyByRe/fp0pDH+HH2SnAudAfgfh5uwV3iRqI5gsLyliXTFkc
+	 w5cC4ae3Wpe9tDpqynVfRQ4v3oYXZ4ndMWR/pZ/Xf/BKz2eDds1excCmpSZY+QD21N
+	 vwg5p5bJ6DKbQ==
+Received: (nullmailer pid 3960943 invoked by uid 1000);
+	Fri, 11 Aug 2023 19:12:36 -0000
+Date: Fri, 11 Aug 2023 13:12:36 -0600
+From: Rob Herring <robh@kernel.org>
+To: Daniel Baluta <daniel.baluta@oss.nxp.com>
+Cc: broonie@kernel.org, alsa-devel@alsa-project.org,
+ kuninori.morimoto.gx@renesas.com, spujar@nvidia.com, tiwai@suse.com,
+ perex@perex.cz, linux-kernel@vger.kernel.org, linux-imx@nxp.com,
+ devicetree@vger.kernel.org, daniel.baluta@gmail.com
+Subject: Re: [PATCH 2/2] ASoC: dt-bindings: simple-card: Document new DAI
+ flags playback-only/capture-only
+Message-ID: <20230811191236.GA3937407-robh@kernel.org>
+References: <20230801082433.548206-1-daniel.baluta@oss.nxp.com>
+ <20230801082433.548206-3-daniel.baluta@oss.nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1691781006590857506-webhooks-bot@alsa-project.org>
-References: <1691781006590857506-webhooks-bot@alsa-project.org>
-Subject: MSI x570s Carbon Max WiFi ALC 4080
-Message-Id: <20230811191010.87C0AF80166@alsa1.perex.cz>
-Date: Fri, 11 Aug 2023 21:10:10 +0200 (CEST)
-Message-ID-Hash: JZZ2H2H2VKK5FUBWEO7MRN4MOCJYL2VE
-X-Message-ID-Hash: JZZ2H2H2VKK5FUBWEO7MRN4MOCJYL2VE
-X-MailFrom: github@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230801082433.548206-3-daniel.baluta@oss.nxp.com>
+Message-ID-Hash: HQVC5YSW2MAAIWU7XLPY3BKV4GRG7W6A
+X-Message-ID-Hash: HQVC5YSW2MAAIWU7XLPY3BKV4GRG7W6A
+X-MailFrom: SRS0=B9gh=D4=robh_at_kernel.org=rob@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -57,7 +91,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JZZ2H2H2VKK5FUBWEO7MRN4MOCJYL2VE/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HQVC5YSW2MAAIWU7XLPY3BKV4GRG7W6A/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -66,9 +100,35 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-ucm-conf issue #338 was opened from zpackrat:
+On Tue, Aug 01, 2023 at 11:24:33AM +0300, Daniel Baluta wrote:
+> From: Daniel Baluta <daniel.baluta@nxp.com>
+> 
+> Document new playback-only and capture-only flags which can be used when
+> dai link can only support just one direction: playback or capture but
+> not both.
+> 
+> Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
+> ---
+>  Documentation/devicetree/bindings/sound/simple-card.yaml | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/simple-card.yaml b/Documentation/devicetree/bindings/sound/simple-card.yaml
+> index 59ac2d1d1ccf..1bf331f095a4 100644
+> --- a/Documentation/devicetree/bindings/sound/simple-card.yaml
+> +++ b/Documentation/devicetree/bindings/sound/simple-card.yaml
+> @@ -27,6 +27,14 @@ definitions:
+>      description: dai-link uses bit clock inversion
+>      $ref: /schemas/types.yaml#/definitions/flag
+>  
+> +  playback-only:
+> +    description: dai-link is used only for playback
+> +    $ref: /schemas/types.yaml#/definitions/flag
+> +
+> +  capture-only:
+> +    description: dai-link is used only for capture
+> +    $ref: /schemas/types.yaml#/definitions/flag
 
-Fedora 38 patched to current, issue has existed for months. Rear output jacks for Center/Sub and Rear Speakers are reversed. I use a 5.1 speaker setup. When I run sound tests in the gnome audio settings the issue is verifiable. Also audio that requires center channel for dialogue has issues.
+Wouldn't this be implicit based on limitations in the either the cpu or 
+codec DAI?
 
-Issue URL     : https://github.com/alsa-project/alsa-ucm-conf/issues/338
-Repository URL: https://github.com/alsa-project/alsa-ucm-conf
+Rob
