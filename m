@@ -4,109 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 330FBC001DB
-	for <alsa-devel@archiver.kernel.org>; Sun, 13 Aug 2023 15:24:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 96C50C001DE
+	for <alsa-devel@archiver.kernel.org>; Sun, 13 Aug 2023 15:51:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8ABFB828;
-	Sun, 13 Aug 2023 17:23:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8ABFB828
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3908382A;
+	Sun, 13 Aug 2023 17:50:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3908382A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1691940248;
-	bh=FQ48e+XQ1afdzUJiYrPSg1RQUcN5DBaQuBC8C72OuW0=;
+	s=default; t=1691941898;
+	bh=yatYxyQ1mx85YlfY2/Fjj51Tmtpr6wmnnctVftLRvIs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=B/DJnSGnXp07rWD5Zca7AVwG1nvyUFaPscYAkR3zrPmjqJoIlgqbmRuRFQcbrKpio
-	 /3TNoXouDI1EF0UA8VUgpR/Uvj83o5GlCZckeBBv+CC+LPOXdadbWSGCa2RfeoPt5B
-	 6Fqci7IySA+bw2OQsdtcFKBgVlG/YR2nu0k4sFIw=
+	b=hZX6TqF03W3Q+KfvRt+/Hhp8bQoewbgVmoN9WDrw3ANyQoogW8P3qOKYBBajSUPK5
+	 GFMIk4BIACdkSX2xdqwJ678PRhpqSq3l62kMtphKVP9a8okwSqfg1NsMXBKFqpgeza
+	 b0+W+LOYEvS+gps6lRtEVk7TX7zzv9IlYJ/ye2hU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 42C4FF80549; Sun, 13 Aug 2023 17:22:50 +0200 (CEST)
+	id 4860FF80553; Sun, 13 Aug 2023 17:50:17 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id BDD4DF8025F;
-	Sun, 13 Aug 2023 17:22:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 36AC4F80272;
+	Sun, 13 Aug 2023 17:50:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 32FD5F8025F; Sun, 13 Aug 2023 17:22:43 +0200 (CEST)
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com
- [IPv6:2a00:1450:4864:20::52d])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	id 25FE3F80290; Sun, 13 Aug 2023 17:50:12 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id DDA6FF801EB
-	for <alsa-devel@alsa-project.org>; Sun, 13 Aug 2023 17:22:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DDA6FF801EB
+	by alsa1.perex.cz (Postfix) with ESMTPS id 67B14F80016
+	for <alsa-devel@alsa-project.org>; Sun, 13 Aug 2023 17:50:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 67B14F80016
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20221208 header.b=Q3uvwX+W
-Received: by mail-ed1-x52d.google.com with SMTP id
- 4fb4d7f45d1cf-51bece5d935so4590010a12.1
-        for <alsa-devel@alsa-project.org>;
- Sun, 13 Aug 2023 08:22:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691940155; x=1692544955;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=U72ij9H7xly/POAmuR9nZYqDM563QnNZZvNrcGFMct4=;
-        b=Q3uvwX+W38PXuccnalF83pEuAl0sXt0s0GtTBY/WJuv6AG0oG3EQBjR4HStycfv6HC
-         4LrvSgwnC5C+IrdaZS2HT8jx+7+oxrTLX5x/uvG1w9mrOL8OsddMgHxXyqRTzgIp6Wx1
-         j8U5CXH2HSTnXUL9kkWRElcSSBRYeRxeJgydXojH8QBRvfj823ForbSoWBHDiHT5NQO9
-         LFad+1AEVusqHj8+Zg5HgdAh2gVcGuImQoOXrixHF0DoSLxTvDZN3lzl04rIUBJgMhiS
-         ppD6iFlzhDISDFqgP1DIjSE3+PmaliegaYnmruWtcMEDGpTLhI8an9NQJ6T8M91mek+C
-         gx5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691940155; x=1692544955;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=U72ij9H7xly/POAmuR9nZYqDM563QnNZZvNrcGFMct4=;
-        b=kAx3/xhUzSP96INUfzXxWThUkGBQbjmfgS6Fptpj2gmhb7OkNggtjmn+uJDJfVmb6S
-         P4OT7He1s77/ujBUJrafrwzyRa7PT5La9IJhBBTnSUZ+5oPGikW3MEFZkTQ/hI6m8Dck
-         PFV29WR0H3vE5ZxvoXaLxkxC96erG1keMNVZjBMiXrwt5buq0YODXUHRoItuQC+FFvsh
-         xtece/ra8VfNyW1+dDntru5dc46dRCNIxorWpw1oq4lR/x7lbisaG6WhZw19LbgNDXZN
-         NWh7NdPYXOdtu4cnFpwtHr4oO2+J5sTzHEPK3yP/WSXUXnaovmmvheZPiANmpr++Yp4s
-         Wysg==
-X-Gm-Message-State: AOJu0Yx5Ko50sLOdfByXQ/LJzuUN4Ef7PD62aD1mOJMZVNZgiwaMq9hY
-	qNQzBe6qxjulr+bfoStBlto=
-X-Google-Smtp-Source: 
- AGHT+IEq8lcT27+3KXWyXugbFwqrq92P97+ZW1qmGMQsqWgCVvad8+1JiyLdlFsV4rDaqfoiy0EtMg==
-X-Received: by 2002:a17:906:5a57:b0:99a:e756:57bf with SMTP id
- my23-20020a1709065a5700b0099ae75657bfmr6293953ejc.7.1691940154549;
-        Sun, 13 Aug 2023 08:22:34 -0700 (PDT)
-Received: from jernej-laptop.localnet (89-212-118-115.static.t-2.net.
- [89.212.118.115])
-        by smtp.gmail.com with ESMTPSA id
- cd19-20020a170906b35300b0098e42bef732sm4632902ejb.183.2023.08.13.08.22.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 13 Aug 2023 08:22:34 -0700 (PDT)
-From: Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
-To: perex@perex.cz, tiwai@suse.com, claudiu.beznea@tuxon.dev,
- lgirdwood@gmail.com, broonie@kernel.org, nicolas.ferre@microchip.com,
- alexandre.belloni@bootlin.com, peda@axentia.se, lars@metafoo.de,
- nuno.sa@analog.com, povik+lin@cutebit.org, wens@csie.org,
- samuel@sholland.org, robh@kernel.org, u.kleine-koenig@pengutronix.de,
- alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org,
- asahi@lists.linux.dev, linux-sunxi@lists.linux.dev,
- Ruan Jinjie <ruanjinjie@huawei.com>
-Cc: ruanjinjie@huawei.com
-Subject: 
- Re: [PATCH -next 3/5] ASoC: sunxi: sun4i-spdif: Remove redundant
- of_match_ptr()
-Date: Sun, 13 Aug 2023 17:22:31 +0200
-Message-ID: <2691934.mvXUDI8C0e@jernej-laptop>
-In-Reply-To: <20230811071426.2343133-4-ruanjinjie@huawei.com>
-References: 
- <20230811071426.2343133-1-ruanjinjie@huawei.com>
- <20230811071426.2343133-4-ruanjinjie@huawei.com>
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=jotEyNTC
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id D1A4F631F5;
+	Sun, 13 Aug 2023 15:50:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA754C433C8;
+	Sun, 13 Aug 2023 15:50:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1691941801;
+	bh=yatYxyQ1mx85YlfY2/Fjj51Tmtpr6wmnnctVftLRvIs=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=jotEyNTCa/YKe9griP1I5x9QthpMuc/67KqZU769kbVe4NsFSHIVw/S/K0whGtwFr
+	 BOthwXlus+LdCNmVyMpgsmhGuuWs+qgqzzE9D2gMtJaq1bChxlJKZk9e5Ag/Wk15nu
+	 TBmhGwgn+nEuYd5/p4JZ4paKpPfMWGAt+KRV3JyBCf+SvKmNMc07J2VmtUGxLVGdZ8
+	 X7IjxrZSe1QNY0oIf+xC5eYtjDT64Z8ly8T7aPy+HOoar1rzHgPnRch5/Tl3PTNFNq
+	 /vZzw0dFQlGkrhMEuIM2y65Vj84snl3XuN8YYYOcpqWfoyzKO670qdx/jh9SueLznc
+	 zxDR30KcLiw1Q==
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Cc: Dmytro Maluka <dmy@semihalf.com>,
+	Mark Brown <broonie@kernel.org>,
+	Sasha Levin <sashal@kernel.org>,
+	support.opensource@diasemi.com,
+	lgirdwood@gmail.com,
+	perex@perex.cz,
+	tiwai@suse.com,
+	alsa-devel@alsa-project.org
+Subject: [PATCH AUTOSEL 6.4 16/54] ASoC: da7219: Check for failure reading AAD
+ IRQ events
+Date: Sun, 13 Aug 2023 11:48:55 -0400
+Message-Id: <20230813154934.1067569-16-sashal@kernel.org>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230813154934.1067569-1-sashal@kernel.org>
+References: <20230813154934.1067569-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-Message-ID-Hash: WXICXVPHX6Y35DKN7LEDUS32ZJR5C3BD
-X-Message-ID-Hash: WXICXVPHX6Y35DKN7LEDUS32ZJR5C3BD
-X-MailFrom: jernej.skrabec@gmail.com
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 6.4.10
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: KRVUESUJKOJGISWFCR2ECV7KKAVI6DO5
+X-Message-ID-Hash: KRVUESUJKOJGISWFCR2ECV7KKAVI6DO5
+X-MailFrom: sashal@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -118,43 +96,58 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WXICXVPHX6Y35DKN7LEDUS32ZJR5C3BD/>
-List-Archive: <>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KRVUESUJKOJGISWFCR2ECV7KKAVI6DO5/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Dne petek, 11. avgust 2023 ob 09:14:24 CEST je Ruan Jinjie napisal(a):
-> The driver depends on CONFIG_OF, it is not necessary to use
-> of_match_ptr() here.
-> 
-> Signed-off-by: Ruan Jinjie <ruanjinjie@huawei.com>
+From: Dmytro Maluka <dmy@semihalf.com>
 
-Acked-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+[ Upstream commit f0691dc16206f21b13c464434366e2cd632b8ed7 ]
 
-Best regards,
-Jernej
+When handling an AAD interrupt, if IRQ events read failed (for example,
+due to i2c "Transfer while suspended" failure, i.e. when attempting to
+read it while DA7219 is suspended, which may happen due to a spurious
+AAD interrupt), the events array contains garbage uninitialized values.
+So instead of trying to interprete those values and doing any actions
+based on them (potentially resulting in misbehavior, e.g. reporting
+bogus events), refuse to handle the interrupt.
 
-> ---
->  sound/soc/sunxi/sun4i-spdif.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/sound/soc/sunxi/sun4i-spdif.c b/sound/soc/sunxi/sun4i-spdif.c
-> index ff18d4113aac..c2b55d2e5fe1 100644
-> --- a/sound/soc/sunxi/sun4i-spdif.c
-> +++ b/sound/soc/sunxi/sun4i-spdif.c
-> @@ -718,7 +718,7 @@ static const struct dev_pm_ops sun4i_spdif_pm = {
->  static struct platform_driver sun4i_spdif_driver = {
->  	.driver		= {
->  		.name	= "sun4i-spdif",
-> -		.of_match_table = of_match_ptr(sun4i_spdif_of_match),
-> +		.of_match_table = sun4i_spdif_of_match,
->  		.pm	= &sun4i_spdif_pm,
->  	},
->  	.probe		= sun4i_spdif_probe,
+Signed-off-by: Dmytro Maluka <dmy@semihalf.com>
+Link: https://lore.kernel.org/r/20230717193737.161784-3-dmy@semihalf.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ sound/soc/codecs/da7219-aad.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-
-
+diff --git a/sound/soc/codecs/da7219-aad.c b/sound/soc/codecs/da7219-aad.c
+index 07c5d9d354b6d..70c175744772c 100644
+--- a/sound/soc/codecs/da7219-aad.c
++++ b/sound/soc/codecs/da7219-aad.c
+@@ -361,11 +361,15 @@ static irqreturn_t da7219_aad_irq_thread(int irq, void *data)
+ 	struct da7219_priv *da7219 = snd_soc_component_get_drvdata(component);
+ 	u8 events[DA7219_AAD_IRQ_REG_MAX];
+ 	u8 statusa;
+-	int i, report = 0, mask = 0;
++	int i, ret, report = 0, mask = 0;
+ 
+ 	/* Read current IRQ events */
+-	regmap_bulk_read(da7219->regmap, DA7219_ACCDET_IRQ_EVENT_A,
+-			 events, DA7219_AAD_IRQ_REG_MAX);
++	ret = regmap_bulk_read(da7219->regmap, DA7219_ACCDET_IRQ_EVENT_A,
++			       events, DA7219_AAD_IRQ_REG_MAX);
++	if (ret) {
++		dev_warn_ratelimited(component->dev, "Failed to read IRQ events: %d\n", ret);
++		return IRQ_NONE;
++	}
+ 
+ 	if (!events[DA7219_AAD_IRQ_REG_A] && !events[DA7219_AAD_IRQ_REG_B])
+ 		return IRQ_NONE;
+-- 
+2.40.1
 
