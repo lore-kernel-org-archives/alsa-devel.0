@@ -4,79 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BC037C41513
-	for <alsa-devel@archiver.kernel.org>; Sun, 13 Aug 2023 16:04:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 47E32C04A6A
+	for <alsa-devel@archiver.kernel.org>; Sun, 13 Aug 2023 16:04:08 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E51F683A;
-	Sun, 13 Aug 2023 18:03:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E51F683A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 797EAAE9;
+	Sun, 13 Aug 2023 18:03:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 797EAAE9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1691942639;
-	bh=EMqGJx5pHddWrDSuGZKtEvkH0TNvXukf5vwbehXXIqs=;
+	s=default; t=1691942646;
+	bh=Cyy2rayxpDKwC7nQitE0EVGQAfNmuElMaHb15QI7kpk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=JRPy5eVM6HNqsVfA1kIbwLmMJtbtlfnOkbhAqtQmLPPa4V5OcbUgeQ4kF7VsiXy06
-	 GP+jUQHRWUJXLCxcbERVTa4aYzhp9nPn8nZsJVm/lk4WgaTDvuY+EXTpqMZi9v7YdV
-	 CiN/G3fipK5Re4jyXI+jQW0G2R3IsOk2TphyPvmQ=
+	b=cZqZN5VZQSeDVgp0+Oe8v65YuhQv4e3RfP1LuWqvaiAZwgg2Tk7jFZGU3LMuwqe8k
+	 kLG1enPJwevGmWqA6+WPaXlPxsn0eDTgrNqQqNpuaOwWdcAG5ABfWynUZtlDqP4f37
+	 lUR6Z2atUtpMNsXHJ7fle8k5QJ3U0BQ1q2w3y9iE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3E3D3F8057A; Sun, 13 Aug 2023 18:02:53 +0200 (CEST)
+	id E636CF8058C; Sun, 13 Aug 2023 18:02:55 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8DEDEF8055B;
-	Sun, 13 Aug 2023 18:02:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 585EDF80580;
+	Sun, 13 Aug 2023 18:02:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id ABE8DF80567; Sun, 13 Aug 2023 18:02:49 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+	id 73D77F80564; Sun, 13 Aug 2023 18:02:50 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 65388F801EB
-	for <alsa-devel@alsa-project.org>; Sun, 13 Aug 2023 18:02:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 65388F801EB
+	by alsa1.perex.cz (Postfix) with ESMTPS id 738B2F8055B
+	for <alsa-devel@alsa-project.org>; Sun, 13 Aug 2023 18:02:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 738B2F8055B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=knoLw/Rn
+ header.s=k20201202 header.b=P+RUnuOb
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id F091A634F0;
-	Sun, 13 Aug 2023 16:02:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E96F4C433C8;
-	Sun, 13 Aug 2023 16:02:42 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 0E6C2635BB;
+	Sun, 13 Aug 2023 16:02:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3E1F4C433C8;
+	Sun, 13 Aug 2023 16:02:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1691942564;
-	bh=EMqGJx5pHddWrDSuGZKtEvkH0TNvXukf5vwbehXXIqs=;
+	s=k20201202; t=1691942566;
+	bh=Cyy2rayxpDKwC7nQitE0EVGQAfNmuElMaHb15QI7kpk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=knoLw/RnxWq/i/NTwgjzDcSDNSVsLme/HYElGSDpjqjtamOrPa/h8dOTCC483yPMA
-	 2Ff6wsXS+AayEIFIHCKvuKnlpwYwl5idjfpUt84muuHhSDAohFo4TSFZEL+dbM5Wjb
-	 qOh4u44g29PcoOJPO5itTbv2v9d/hFYFEZ6RdESilOkPVBB455KEhKhJ1MOfTxnjXg
-	 1zaIo2Bwcy9+g71wD4FR9XU0x8ob5nbI7mvPkTdysgn/Zor8grheRWuTvE5VH0xMlk
-	 y21L9XmZCWlWFMGAQCI65/pv388qU6Mhbq/yM3/EmTBPnPXViUQc0fRf9G1wgyoDFq
-	 P7RhpPV+acghQ==
+	b=P+RUnuObEa2T8Hdt7CXxUK8+B83EpECH7qZ3+/FkQ5R5fbjPJAklfDz2+H2zDUYzi
+	 K9X3oPbZcOrGg1jphxSrhHZSBjs4+wWmaBAK8U8PwktU93K4BZmjFfD9rGuxvPSArl
+	 386II/9EMMhZmBv7pnpIiXaVXgIpPSK8DT9+ylxCnB1q1+2JdO6SC8i3yF+oCWE0Dx
+	 1gsn9KBQs7Q/3L2mN+3r9gl3wEm/M+K5dDymFF7DcoyfAYaz4SnrhcoU6BRHeV9Chn
+	 I6RhTesor1OPWK/WlWEEBQo+ugmDZ8z8aCWb/NNERrtUHx4Sa5Xb+VEW9c6LvuLq7b
+	 rF8u09Jw0rfyA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Edgar <ljijcj@163.com>,
+Cc: Shuming Fan <shumingf@realtek.com>,
+	Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
 	Mark Brown <broonie@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
+	oder_chiou@realtek.com,
 	lgirdwood@gmail.com,
 	perex@perex.cz,
 	tiwai@suse.com,
-	cristian.ciocaltea@collabora.com,
-	yung-chuan.liao@linux.intel.com,
-	zhuning0077@gmail.com,
-	hdegoede@redhat.com,
-	pierre-louis.bossart@linux.intel.com,
-	u.kleine-koenig@pengutronix.de,
 	alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 6.1 25/47] ASoc: codecs: ES8316: Fix DMIC config
-Date: Sun, 13 Aug 2023 11:59:20 -0400
-Message-Id: <20230813160006.1073695-25-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.1 26/47] ASoC: rt711: fix for JD event handling in
+ ClockStop Mode0
+Date: Sun, 13 Aug 2023 11:59:21 -0400
+Message-Id: <20230813160006.1073695-26-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230813160006.1073695-1-sashal@kernel.org>
 References: <20230813160006.1073695-1-sashal@kernel.org>
@@ -85,8 +81,8 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.1.45
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 7YDK5IHDOBADDWXH2SVKQANXQ6CMFULK
-X-Message-ID-Hash: 7YDK5IHDOBADDWXH2SVKQANXQ6CMFULK
+Message-ID-Hash: ONC3KIM6KQ7N3EOPWUJYZKBAVNYBF3HY
+X-Message-ID-Hash: ONC3KIM6KQ7N3EOPWUJYZKBAVNYBF3HY
 X-MailFrom: sashal@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -99,7 +95,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7YDK5IHDOBADDWXH2SVKQANXQ6CMFULK/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ONC3KIM6KQ7N3EOPWUJYZKBAVNYBF3HY/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -108,34 +104,44 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Edgar <ljijcj@163.com>
+From: Shuming Fan <shumingf@realtek.com>
 
-[ Upstream commit d20d35d1ad62c6cca36368c1e8f29335a068659e ]
+[ Upstream commit b69de265bd0e877015a00fbba453ef72af162e0f ]
 
-According to the datasheet, the DMIC config should
-be changed to { 0, 2 ,3 }
+When the system suspends, peripheral Imp-defined interrupt is disabled.
+When system level resume is invoked, the peripheral Imp-defined interrupts
+should be enabled to handle JD events.
 
-Signed-off-by: Edgar <ljijcj@163.com>
-Link: https://lore.kernel.org/r/20230719054722.401954-1-ljijcj@163.com
+Signed-off-by: Shuming Fan <shumingf@realtek.com>
+Reported-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Link: https://lore.kernel.org/r/20230721090654.128230-1-shumingf@realtek.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/es8316.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/rt711-sdw.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/es8316.c b/sound/soc/codecs/es8316.c
-index 87775378362e7..c4e4ab93fdb6d 100644
---- a/sound/soc/codecs/es8316.c
-+++ b/sound/soc/codecs/es8316.c
-@@ -153,7 +153,7 @@ static const char * const es8316_dmic_txt[] = {
- 		"dmic data at high level",
- 		"dmic data at low level",
- };
--static const unsigned int es8316_dmic_values[] = { 0, 1, 2 };
-+static const unsigned int es8316_dmic_values[] = { 0, 2, 3 };
- static const struct soc_enum es8316_dmic_src_enum =
- 	SOC_VALUE_ENUM_SINGLE(ES8316_ADC_DMIC, 0, 3,
- 			      ARRAY_SIZE(es8316_dmic_txt),
+diff --git a/sound/soc/codecs/rt711-sdw.c b/sound/soc/codecs/rt711-sdw.c
+index 4fe68bcf2a7c2..9545b8a7eb192 100644
+--- a/sound/soc/codecs/rt711-sdw.c
++++ b/sound/soc/codecs/rt711-sdw.c
+@@ -541,8 +541,15 @@ static int __maybe_unused rt711_dev_resume(struct device *dev)
+ 	if (!rt711->first_hw_init)
+ 		return 0;
+ 
+-	if (!slave->unattach_request)
++	if (!slave->unattach_request) {
++		if (rt711->disable_irq == true) {
++			mutex_lock(&rt711->disable_irq_lock);
++			sdw_write_no_pm(slave, SDW_SCP_INTMASK1, SDW_SCP_INT1_IMPL_DEF);
++			rt711->disable_irq = false;
++			mutex_unlock(&rt711->disable_irq_lock);
++		}
+ 		goto regmap_sync;
++	}
+ 
+ 	time = wait_for_completion_timeout(&slave->initialization_complete,
+ 				msecs_to_jiffies(RT711_PROBE_TIMEOUT));
 -- 
 2.40.1
 
