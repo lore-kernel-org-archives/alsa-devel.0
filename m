@@ -4,76 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 85EEFC04A6A
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 183AAC001B0
 	for <alsa-devel@archiver.kernel.org>; Sun, 13 Aug 2023 15:52:03 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9893983E;
-	Sun, 13 Aug 2023 17:51:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9893983E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 40D5B83A;
+	Sun, 13 Aug 2023 17:51:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 40D5B83A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1691941920;
-	bh=2V+JFntOnsVF3G99xDqY6Zmhg9MklZAntZuwOw2aLhw=;
+	s=default; t=1691941921;
+	bh=iGTcYwKqgPj79EMUdjpLiT0rDvucpDHlktU1nMEDQEA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=EASqfPyOzQFc9YGLeR7EM1tbEFwGFHrHM3DQb7qSsHVY+N6UAJPiKtgGEWibC4Kzo
-	 HVoUiZ6oryQhual800JRstBOjz2CJ31vDc/l5doUkZJ3ql320AKnCLpf3sZqSXrvZh
-	 Ei4NyjSZIdm7lPzG/yyiMjeLul4rcUgWwFUOU4Os=
+	b=CCnwmjriil1opwEFslFp5M1bztZGrA69jGFecR4qhMPflWwv7okGZuN6oYynbmaSV
+	 fgEZq32MZ/lf98aPvvKUxZPRn9n+FPUuuEtcTUkQRvluHihpduPUrE9p13t2vD1IJQ
+	 /YM3ktrC3zseoynWkK9BfLaR77A1ez6UezELwkjY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E1AB8F80563; Sun, 13 Aug 2023 17:50:20 +0200 (CEST)
+	id 95E1DF80578; Sun, 13 Aug 2023 17:50:26 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C7CE0F80552;
-	Sun, 13 Aug 2023 17:50:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2F320F8056F;
+	Sun, 13 Aug 2023 17:50:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1CDCBF80272; Sun, 13 Aug 2023 17:50:16 +0200 (CEST)
+	id CEAF4F8056F; Sun, 13 Aug 2023 17:50:22 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org
  [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 0628DF8025F
-	for <alsa-devel@alsa-project.org>; Sun, 13 Aug 2023 17:50:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0628DF8025F
+	by alsa1.perex.cz (Postfix) with ESMTPS id 890B7F80254
+	for <alsa-devel@alsa-project.org>; Sun, 13 Aug 2023 17:50:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 890B7F80254
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=q/S43zEW
+ header.s=k20201202 header.b=uIAZ6AGq
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id A2B2863189;
-	Sun, 13 Aug 2023 15:50:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C473C433C7;
-	Sun, 13 Aug 2023 15:50:05 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 96C556320E;
+	Sun, 13 Aug 2023 15:50:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B39DC433C9;
+	Sun, 13 Aug 2023 15:49:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1691941807;
-	bh=2V+JFntOnsVF3G99xDqY6Zmhg9MklZAntZuwOw2aLhw=;
+	s=k20201202; t=1691941800;
+	bh=iGTcYwKqgPj79EMUdjpLiT0rDvucpDHlktU1nMEDQEA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=q/S43zEWQlW6hAgKgo5rPL+8jPhQzMAxc/NT26V/YvE2knJ9msWJuQ0pEaTw1pfFn
-	 BRWirqfNS0NqGmQZ3j0vvlNo8bzHRDjNjQhJWx0Lr1yWAoEWXMoPv2I2gLO6RAX7U7
-	 2+m9YMxaF5imTB+TY9DCjrz8QWqVuJ/9/KjGVcDgJkSFXystgaKas8rBTU6s3RzqQz
-	 Z4ZHhQzxH7hJthiBwGosX3o3HIobbw3AjkGTz2u1bdXKwo0omWh1P19SkXzewmp/Mb
-	 i3TF+xhNhStdDqXKOo94WB/5Lsd1sg164IYyXW+G4mn5qj2HFRF+6mXWgOrS6q1LyN
-	 ou/wEhgEKOyOQ==
+	b=uIAZ6AGqDImEblabhxnYZ4a8mDCrgvSckagj9DEpvNnZSVsmb6L/Hrp+iTUMwaIEb
+	 KjmxX3mFb0teDUTTL2aAtCLFUDOWgCueULgCSG55jNBCSR7koPhdEfLlnJ/Y2t/HtK
+	 mwpO335mt0REiWBx/vdPkYAfCyREba7T1T7R1Ip1yTxmsPr0olrAvWIAEAdP+deq72
+	 mQHCLUOHlFyWVob6zAiQelT0J9qaTmUNWQujbmC111cc3GxhUVaeLj0rOcZ/AuwoDi
+	 6vLzursSY6JAIi7i2+Ej9HLX0znWuGnHuXMSlR+KdgFwX6oxaACyChY11bGkMkPf9X
+	 d8nL6Q4p+SCfA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Edson Juliano Drosdeck <edson.drosdeck@gmail.com>,
+Cc: Dmytro Maluka <dmy@semihalf.com>,
 	Mark Brown <broonie@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
+	support.opensource@diasemi.com,
 	lgirdwood@gmail.com,
 	perex@perex.cz,
 	tiwai@suse.com,
-	wtli@nuvoton.com,
-	u.kleine-koenig@pengutronix.de,
 	alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 6.4 17/54] ASoC: nau8821: Add DMI quirk mechanism for
- active-high jack-detect
-Date: Sun, 13 Aug 2023 11:48:56 -0400
-Message-Id: <20230813154934.1067569-17-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.4 15/54] ASoC: da7219: Flush pending AAD IRQ when
+ suspending
+Date: Sun, 13 Aug 2023 11:48:54 -0400
+Message-Id: <20230813154934.1067569-15-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230813154934.1067569-1-sashal@kernel.org>
 References: <20230813154934.1067569-1-sashal@kernel.org>
@@ -82,8 +82,8 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.4.10
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: LXOI6F47ONH35NOOGGT63QSZ73LR5F5Z
-X-Message-ID-Hash: LXOI6F47ONH35NOOGGT63QSZ73LR5F5Z
+Message-ID-Hash: GDCTSJO5UZMDP6JPIPCPYKVJEHHNHY76
+X-Message-ID-Hash: GDCTSJO5UZMDP6JPIPCPYKVJEHHNHY76
 X-MailFrom: sashal@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -96,7 +96,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LXOI6F47ONH35NOOGGT63QSZ73LR5F5Z/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GDCTSJO5UZMDP6JPIPCPYKVJEHHNHY76/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -105,97 +105,75 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Edson Juliano Drosdeck <edson.drosdeck@gmail.com>
+From: Dmytro Maluka <dmy@semihalf.com>
 
-[ Upstream commit 1bc40efdaf4a0ccfdb10a1c8e4b458f4764e8e5f ]
+[ Upstream commit 91e292917dad64ab8d1d5ca2ab3069ad9dac6f72 ]
 
-Add a quirk mechanism to allow specifying that active-high jack-detection
-should be used on platforms where this info is not available in devicetree.
+da7219_aad_suspend() disables jack detection, which should prevent
+generating new interrupts by DA7219 while suspended. However, there is a
+theoretical possibility that there is a pending interrupt generated just
+before suspending DA7219 and not handled yet, so the IRQ handler may
+still run after DA7219 is suspended. To prevent that, wait until the
+pending IRQ handling is done.
 
-And add an entry for the Positivo CW14Q01P-V2 to the DMI table, so that
-jack-detection will work properly on this laptop.
+This patch arose as an attempt to fix the following I2C failure
+occurring sometimes during system suspend or resume:
 
-Signed-off-by: Edson Juliano Drosdeck <edson.drosdeck@gmail.com>
-Link: https://lore.kernel.org/r/20230719200241.4865-1-edson.drosdeck@gmail.com
+[  355.876211] i2c_designware i2c_designware.3: Transfer while suspended
+[  355.876245] WARNING: CPU: 2 PID: 3576 at drivers/i2c/busses/i2c-designware-master.c:570 i2c_dw_xfer+0x411/0x440
+...
+[  355.876462] Call Trace:
+[  355.876468]  <TASK>
+[  355.876475]  ? update_load_avg+0x1b3/0x615
+[  355.876484]  __i2c_transfer+0x101/0x1d8
+[  355.876494]  i2c_transfer+0x74/0x10d
+[  355.876504]  regmap_i2c_read+0x6a/0x9c
+[  355.876513]  _regmap_raw_read+0x179/0x223
+[  355.876521]  regmap_raw_read+0x1e1/0x28e
+[  355.876527]  regmap_bulk_read+0x17d/0x1ba
+[  355.876532]  ? __wake_up+0xed/0x1bb
+[  355.876542]  da7219_aad_irq_thread+0x54/0x2c9 [snd_soc_da7219 5fb8ebb2179cf2fea29af090f3145d68ed8e2184]
+[  355.876556]  irq_thread+0x13c/0x231
+[  355.876563]  ? irq_forced_thread_fn+0x5f/0x5f
+[  355.876570]  ? irq_thread_fn+0x4d/0x4d
+[  355.876576]  kthread+0x13a/0x152
+[  355.876581]  ? synchronize_irq+0xc3/0xc3
+[  355.876587]  ? kthread_blkcg+0x31/0x31
+[  355.876592]  ret_from_fork+0x1f/0x30
+[  355.876601]  </TASK>
+
+which indicates that the AAD IRQ handler is unexpectedly running when
+DA7219 is suspended, and as a result, is trying to read data from DA7219
+over I2C and is hitting the I2C driver "Transfer while suspended"
+failure.
+
+However, with this patch the above failure is still reproducible. So
+this patch does not fix any real observed issue so far, but at least is
+useful for confirming that the above issue is not caused by a pending
+IRQ but rather looks like a DA7219 hardware issue with an IRQ
+unexpectedly generated after jack detection is already disabled.
+
+Signed-off-by: Dmytro Maluka <dmy@semihalf.com>
+Link: https://lore.kernel.org/r/20230717193737.161784-2-dmy@semihalf.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/nau8821.c | 41 ++++++++++++++++++++++++++++++++++++++
- 1 file changed, 41 insertions(+)
+ sound/soc/codecs/da7219-aad.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/codecs/nau8821.c b/sound/soc/codecs/nau8821.c
-index fee970427a243..42de7588fdb68 100644
---- a/sound/soc/codecs/nau8821.c
-+++ b/sound/soc/codecs/nau8821.c
-@@ -10,6 +10,7 @@
- #include <linux/acpi.h>
- #include <linux/clk.h>
- #include <linux/delay.h>
-+#include <linux/dmi.h>
- #include <linux/init.h>
- #include <linux/i2c.h>
- #include <linux/module.h>
-@@ -25,6 +26,13 @@
- #include <sound/tlv.h>
- #include "nau8821.h"
- 
-+#define NAU8821_JD_ACTIVE_HIGH			BIT(0)
+diff --git a/sound/soc/codecs/da7219-aad.c b/sound/soc/codecs/da7219-aad.c
+index 993a0d00bc48d..07c5d9d354b6d 100644
+--- a/sound/soc/codecs/da7219-aad.c
++++ b/sound/soc/codecs/da7219-aad.c
+@@ -910,6 +910,8 @@ void da7219_aad_suspend(struct snd_soc_component *component)
+ 			}
+ 		}
+ 	}
 +
-+static int nau8821_quirk;
-+static int quirk_override = -1;
-+module_param_named(quirk, quirk_override, uint, 0444);
-+MODULE_PARM_DESC(quirk, "Board-specific quirk override");
-+
- #define NAU_FREF_MAX 13500000
- #define NAU_FVCO_MAX 100000000
- #define NAU_FVCO_MIN 90000000
-@@ -1792,6 +1800,33 @@ static int nau8821_setup_irq(struct nau8821 *nau8821)
- 	return 0;
++	synchronize_irq(da7219_aad->irq);
  }
  
-+/* Please keep this list alphabetically sorted */
-+static const struct dmi_system_id nau8821_quirk_table[] = {
-+	{
-+		/* Positivo CW14Q01P-V2 */
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Positivo Tecnologia SA"),
-+			DMI_MATCH(DMI_BOARD_NAME, "CW14Q01P-V2"),
-+		},
-+		.driver_data = (void *)(NAU8821_JD_ACTIVE_HIGH),
-+	},
-+	{}
-+};
-+
-+static void nau8821_check_quirks(void)
-+{
-+	const struct dmi_system_id *dmi_id;
-+
-+	if (quirk_override != -1) {
-+		nau8821_quirk = quirk_override;
-+		return;
-+	}
-+
-+	dmi_id = dmi_first_match(nau8821_quirk_table);
-+	if (dmi_id)
-+		nau8821_quirk = (unsigned long)dmi_id->driver_data;
-+}
-+
- static int nau8821_i2c_probe(struct i2c_client *i2c)
- {
- 	struct device *dev = &i2c->dev;
-@@ -1812,6 +1847,12 @@ static int nau8821_i2c_probe(struct i2c_client *i2c)
- 
- 	nau8821->dev = dev;
- 	nau8821->irq = i2c->irq;
-+
-+	nau8821_check_quirks();
-+
-+	if (nau8821_quirk & NAU8821_JD_ACTIVE_HIGH)
-+		nau8821->jkdet_polarity = 0;
-+
- 	nau8821_print_device_properties(nau8821);
- 
- 	nau8821_reset_chip(nau8821->regmap);
+ void da7219_aad_resume(struct snd_soc_component *component)
 -- 
 2.40.1
 
