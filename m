@@ -4,59 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EEFDAC001DE
-	for <alsa-devel@archiver.kernel.org>; Sun, 13 Aug 2023 15:52:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 89D06C001DE
+	for <alsa-devel@archiver.kernel.org>; Sun, 13 Aug 2023 15:53:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 525FA82C;
-	Sun, 13 Aug 2023 17:52:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 525FA82C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 76F5A827;
+	Sun, 13 Aug 2023 17:52:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 76F5A827
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1691941978;
-	bh=OrCh9CASnzShMNQneeBc1ovotGkaWkVPI1rJeBGqJLs=;
+	s=default; t=1691941997;
+	bh=Cyy2rayxpDKwC7nQitE0EVGQAfNmuElMaHb15QI7kpk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=RzvMVJFPIRM1v51toxuqUpUbQYq6r2F2biTYkdfVHEQloMN/WqegcJD13FUw7zXZg
-	 ONON28mh5dspKUL5hc8OmfyCr6gIRN8iHX1IYFEQxjQGDm82H8JzyOaSGDg7ORi2xn
-	 EEGp9AvQBzbbtNCRwGwO43pT9ybXb22SvEodZVVU=
+	b=q+f+9fTYqq75p1M0NNKedZHhCJmqgpiKrV6MAunuYCXalG3mA0MaP+27qSccTjqT0
+	 xi5Q2XCz9OyC6NRCVQnVBB1wiuhf0A9tEaJBRO4q1XulNN4Xvy3VVV2mTli9EF6iml
+	 kkJX6hw3DGmKO9KjZXiKw4SoR/4MGKgRhRfGZHmQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 521C5F8059F; Sun, 13 Aug 2023 17:51:26 +0200 (CEST)
+	id 10DDBF805B2; Sun, 13 Aug 2023 17:51:27 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 947C1F805A8;
-	Sun, 13 Aug 2023 17:51:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 37B8FF805B3;
+	Sun, 13 Aug 2023 17:51:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5105BF8057F; Sun, 13 Aug 2023 17:51:20 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	id F0B31F80589; Sun, 13 Aug 2023 17:51:22 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 0E468F801EB
-	for <alsa-devel@alsa-project.org>; Sun, 13 Aug 2023 17:51:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0E468F801EB
+	by alsa1.perex.cz (Postfix) with ESMTPS id 24F16F801EB
+	for <alsa-devel@alsa-project.org>; Sun, 13 Aug 2023 17:51:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 24F16F801EB
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=I4Hf4GkZ
+ header.s=k20201202 header.b=kLWNNO8T
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id EF50163277;
-	Sun, 13 Aug 2023 15:51:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4B20AC433C8;
-	Sun, 13 Aug 2023 15:51:15 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 075D2632AA;
+	Sun, 13 Aug 2023 15:51:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44348C433C7;
+	Sun, 13 Aug 2023 15:51:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1691941876;
-	bh=OrCh9CASnzShMNQneeBc1ovotGkaWkVPI1rJeBGqJLs=;
+	s=k20201202; t=1691941878;
+	bh=Cyy2rayxpDKwC7nQitE0EVGQAfNmuElMaHb15QI7kpk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=I4Hf4GkZ7pX53nqRXJT4A9fUB5EZUghot4EZ4blKiV/J2ejWdUNFI9Cww6hjt502D
-	 RAROaB/fouukJdh5kd4JK5zDRq3NpBUDfqqt+9/rkq0H02JF5A1noF/n0HLh2YaUCq
-	 Jy/XlGgM5ohDaMmdr4PVhLOlM5JSr6uPQRDt8kheusThrNsZ7kF/Ca1b92GTjZYKww
-	 U+XF7T0ZhSplybOJjlShgwoPTWocClseSS6dlSKhCHmLPEdOxgtpET5VD46S7pdwz2
-	 2tp2vPxlyrlQ0zNf3eLEctkjB5hhaomA3XMt/j/TiC9X0GhMmkSWgOPxXybWQBt8Ty
-	 bAjQpY9EOT9Nw==
+	b=kLWNNO8TGR7U8A99OYdk2/Lf+ocpzlvAd+mOwRMKYEW6MrOvWWOe6R6NkiRg1pygW
+	 hELN/rDB4QyMrYF2/PUEQ+I0dwqrv+i7uqzjzUtyvfUbCORNzR5I4pDsIMH0615OaZ
+	 entpXgP8yQGz0HxFjLP1vz1Yyw05dNyzP0yK3U1SmK9mZ0BiShQR+VcwiX5CskBP3G
+	 CalLd1hkJ9rTf1nQlghoaYxtaXVGi/b343YzgT9ykULYq4EY+cog+fsB4ZT+mrADHp
+	 nk7lI78awPyzMmBkSySUtP7kkRKCSeiAOrXw8u8R9Pob6Pzz0R4Qa6jZry1SsarnWC
+	 zfJpuaiDHiTCg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -69,10 +70,10 @@ Cc: Shuming Fan <shumingf@realtek.com>,
 	perex@perex.cz,
 	tiwai@suse.com,
 	alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 6.4 30/54] ASoC: rt712-sdca: fix for JD event handling
- in ClockStop Mode0
-Date: Sun, 13 Aug 2023 11:49:09 -0400
-Message-Id: <20230813154934.1067569-30-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.4 31/54] ASoC: rt711: fix for JD event handling in
+ ClockStop Mode0
+Date: Sun, 13 Aug 2023 11:49:10 -0400
+Message-Id: <20230813154934.1067569-31-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230813154934.1067569-1-sashal@kernel.org>
 References: <20230813154934.1067569-1-sashal@kernel.org>
@@ -81,8 +82,8 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.4.10
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: A7Z54YTHYI4EJYZIODN4SB3BIPC7W4AG
-X-Message-ID-Hash: A7Z54YTHYI4EJYZIODN4SB3BIPC7W4AG
+Message-ID-Hash: HDZKFFAPTYTSHM7ZLKRJLRKGCBT3H4IZ
+X-Message-ID-Hash: HDZKFFAPTYTSHM7ZLKRJLRKGCBT3H4IZ
 X-MailFrom: sashal@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -95,7 +96,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/A7Z54YTHYI4EJYZIODN4SB3BIPC7W4AG/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HDZKFFAPTYTSHM7ZLKRJLRKGCBT3H4IZ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -106,44 +107,42 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Shuming Fan <shumingf@realtek.com>
 
-[ Upstream commit 7a8735c1551e489351172d0da96128f6f8b52b2d ]
+[ Upstream commit b69de265bd0e877015a00fbba453ef72af162e0f ]
 
-When the system suspends, peripheral SDCA interrupts are disabled.
-When system level resume is invoked, the peripheral SDCA interrupts
+When the system suspends, peripheral Imp-defined interrupt is disabled.
+When system level resume is invoked, the peripheral Imp-defined interrupts
 should be enabled to handle JD events.
-Enable SDCA interrupts in resume sequence when ClockStop Mode0 is applied.
 
 Signed-off-by: Shuming Fan <shumingf@realtek.com>
 Reported-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-Link: https://lore.kernel.org/r/20230721090721.128264-1-shumingf@realtek.com
+Link: https://lore.kernel.org/r/20230721090654.128230-1-shumingf@realtek.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/rt712-sdca-sdw.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ sound/soc/codecs/rt711-sdw.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/rt712-sdca-sdw.c b/sound/soc/codecs/rt712-sdca-sdw.c
-index 3f319459dfec3..1c9e10fea3ddd 100644
---- a/sound/soc/codecs/rt712-sdca-sdw.c
-+++ b/sound/soc/codecs/rt712-sdca-sdw.c
-@@ -441,8 +441,16 @@ static int __maybe_unused rt712_sdca_dev_resume(struct device *dev)
- 	if (!rt712->first_hw_init)
+diff --git a/sound/soc/codecs/rt711-sdw.c b/sound/soc/codecs/rt711-sdw.c
+index 4fe68bcf2a7c2..9545b8a7eb192 100644
+--- a/sound/soc/codecs/rt711-sdw.c
++++ b/sound/soc/codecs/rt711-sdw.c
+@@ -541,8 +541,15 @@ static int __maybe_unused rt711_dev_resume(struct device *dev)
+ 	if (!rt711->first_hw_init)
  		return 0;
  
 -	if (!slave->unattach_request)
 +	if (!slave->unattach_request) {
-+		if (rt712->disable_irq == true) {
-+			mutex_lock(&rt712->disable_irq_lock);
-+			sdw_write_no_pm(slave, SDW_SCP_SDCA_INTMASK1, SDW_SCP_SDCA_INTMASK_SDCA_0);
-+			sdw_write_no_pm(slave, SDW_SCP_SDCA_INTMASK2, SDW_SCP_SDCA_INTMASK_SDCA_8);
-+			rt712->disable_irq = false;
-+			mutex_unlock(&rt712->disable_irq_lock);
++		if (rt711->disable_irq == true) {
++			mutex_lock(&rt711->disable_irq_lock);
++			sdw_write_no_pm(slave, SDW_SCP_INTMASK1, SDW_SCP_INT1_IMPL_DEF);
++			rt711->disable_irq = false;
++			mutex_unlock(&rt711->disable_irq_lock);
 +		}
  		goto regmap_sync;
 +	}
  
  	time = wait_for_completion_timeout(&slave->initialization_complete,
- 				msecs_to_jiffies(RT712_PROBE_TIMEOUT));
+ 				msecs_to_jiffies(RT711_PROBE_TIMEOUT));
 -- 
 2.40.1
 
