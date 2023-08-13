@@ -4,101 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B7ABC001DB
-	for <alsa-devel@archiver.kernel.org>; Sat, 12 Aug 2023 20:03:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2F2B0C001B0
+	for <alsa-devel@archiver.kernel.org>; Sun, 13 Aug 2023 07:37:08 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8566D823;
-	Sat, 12 Aug 2023 22:02:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8566D823
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0CB7D741;
+	Sun, 13 Aug 2023 09:36:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0CB7D741
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1691870617;
-	bh=3hJkTSgjdvIto70MIzUD6+7osHRCC4L3Bdrhw70bpIo=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=nAvk4fOynHz+mQWedMBcmOgtHatk0ERvD34PzGhDD+TKJ4VGsAYr7mvZ6+p5XyFpU
-	 8XlMZtz3nXltW/AbUQv5TdghNd/to0vpsnI+m5Jc6EDjMEeQv9TclE3VXuv/Cw/GKz
-	 D434JGAVX3f7QlopGa6jWkn5VBpj5MZOGmk9MQa8=
+	s=default; t=1691912226;
+	bh=d2NkZyO/REAjlLuk7qTnJ57oj5m44xN4O2EwW5rISpw=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=j6r5Tl4gzFMXAVceZUd2QYJQsmuyIeD3Nu2/LZ8QnG8BfQv+UZp9cUhOIb3RRdTNJ
+	 n5x5LN55PYw4cqMBFfhS3k4iFHBumVil+fCPAMrorQJCx35ogoUG9judj5TLz5dq2k
+	 bSketx6Bt3yVdPtRH07m2gcQxPBE7pCr4E0iZGbY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 254C7F805FB; Sat, 12 Aug 2023 22:00:27 +0200 (CEST)
+	id 7A79DF801EB; Sun, 13 Aug 2023 09:36:15 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 04F9CF805F3;
-	Sat, 12 Aug 2023 22:00:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E93C2F8025F;
+	Sun, 13 Aug 2023 09:36:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 86366F80510; Sat, 12 Aug 2023 21:59:47 +0200 (CEST)
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com
- [IPv6:2a00:1450:4864:20::134])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C6542F8016E
-	for <alsa-devel@alsa-project.org>; Sat, 12 Aug 2023 21:57:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C6542F8016E
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=H2CIsnu+
-Received: by mail-lf1-x134.google.com with SMTP id
- 2adb3069b0e04-4fe44955decso3540701e87.1
-        for <alsa-devel@alsa-project.org>;
- Sat, 12 Aug 2023 12:57:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691870219; x=1692475019;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=q0crdb9cw+jjwI8pN3ZhoF0R0PN/j+2M0tGVn01qC/g=;
-        b=H2CIsnu+od6hFKeqI7TH7aKGc9aH0I/R++IS+uEzgdApJKzed7JZuynfLxkUcHUdWM
-         poe/X6r4Hhpt9NqG2eb0Y09wXb0QFefDr1OyWIb8uYMTp5bkwt3XkIc/qvmFup47hjDL
-         eDw0iLqBZV+S/WDoQCee7J1Y9a/mLdFbaV9hgKkUK0jAidOOT7ehKqQOZKbQK5LQQ5a8
-         dCZqLS+bbMyiPHCXfmpoDkfx8y6YR3H1PDWUKkUz5at6gq5zmyC+eO9q56hZVd3hDBLl
-         Ry5MRqnRP51vlboOPj+DZL+NYG1eDAv7SRBpdRIHdPD5ynCXb8bVUfIVg6+pnzlnUeJv
-         z1Fg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691870219; x=1692475019;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=q0crdb9cw+jjwI8pN3ZhoF0R0PN/j+2M0tGVn01qC/g=;
-        b=BcS1ajyaWaWHv+YB7+z6hClpe4OTTxWSFjGeGQKGnOCceBvqMXVquIceT/vRGpBXAW
-         2sdrKq489ga8FVn+LRfw/4nIxKHy2K1VBvjjFmSco+8SfZPIKN4HdyoORrco24M9TUpN
-         DvEZgwJDtrR8E0bPN/+2EsLPJFkwTKMgaNRZ2F0x2w43OON86DWsQcNoRkYiaVZJLWa6
-         N26h41c9bxkYFZ0tt6n4GlYUi7IsD2nd63jgtNfnYyrK7zyES0dTku2eIwQ7scwlyvCw
-         5AmH00VcWKf/heAiJbfj9zcDj9SJClaY+oFEBSaKIbB6WMGQoH6511Xs7PI8tvH7tSej
-         OcHg==
-X-Gm-Message-State: AOJu0Yz6zRUTDerXWanm5huj6TX6aOVDU35UH315Pi9uRTlGwljUAPRk
-	533luakXsVvNyQhDuzXxx2F83A==
-X-Google-Smtp-Source: 
- AGHT+IE8gCqiErMbQX4Flaf4yvnwSMdbXgZwdnOvhLRn1rUy6fgQkLn7KEb/MbhUTFZESt3ZGs4Z3g==
-X-Received: by 2002:a05:6512:3111:b0:4fb:8938:48ab with SMTP id
- n17-20020a056512311100b004fb893848abmr1537577lfb.16.1691870218857;
-        Sat, 12 Aug 2023 12:56:58 -0700 (PDT)
-Received: from [127.0.1.1] ([85.235.12.238])
-        by smtp.gmail.com with ESMTPSA id
- n29-20020ac2491d000000b004f87893ce21sm1236182lfi.3.2023.08.12.12.56.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 12 Aug 2023 12:56:58 -0700 (PDT)
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Sat, 12 Aug 2023 21:56:48 +0200
-Subject: [PATCH 10/14] ASoC: rt5645: Drop legacy GPIO include
+	id 5CBD9F8025F; Sun, 13 Aug 2023 09:35:19 +0200 (CEST)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+	by alsa1.perex.cz (Postfix) with ESMTP id 21A2BF801EB
+	for <alsa-devel@alsa-project.org>; Sun, 13 Aug 2023 09:35:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 21A2BF801EB
+X-IronPort-AV: E=Sophos;i="6.01,169,1684767600";
+   d="scan'208";a="172812623"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+  by relmlie5.idc.renesas.com with ESMTP; 13 Aug 2023 16:35:03 +0900
+Received: from localhost.localdomain (unknown [10.226.92.13])
+	by relmlir6.idc.renesas.com (Postfix) with ESMTP id ADED94197BE3;
+	Sun, 13 Aug 2023 16:35:00 +0900 (JST)
+From: Biju Das <biju.das.jz@bp.renesas.com>
+To: Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>
+Cc: Biju Das <biju.das.jz@bp.renesas.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+	Andy Shevchenko <andy.shevchenko@gmail.com>,
+	alsa-devel@alsa-project.org,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	linux-renesas-soc@vger.kernel.org
+Subject: [PATCH] ASoC: ak4613: Simplify probe()
+Date: Sun, 13 Aug 2023 08:34:58 +0100
+Message-Id: <20230813073458.59606-1-biju.das.jz@bp.renesas.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230812-descriptors-asoc-v1-10-eb4dca1f68af@linaro.org>
-References: <20230812-descriptors-asoc-v1-0-eb4dca1f68af@linaro.org>
-In-Reply-To: <20230812-descriptors-asoc-v1-0-eb4dca1f68af@linaro.org>
-To: Oder Chiou <oder_chiou@realtek.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- Linus Walleij <linus.walleij@linaro.org>
-X-Mailer: b4 0.12.3
-Message-ID-Hash: 5LNOR6AKHAQ7WGHLBUCLDODGYQ74CNDN
-X-Message-ID-Hash: 5LNOR6AKHAQ7WGHLBUCLDODGYQ74CNDN
-X-MailFrom: linus.walleij@linaro.org
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: FHPRCXEXLUZZBXPNFSTERCO2JCY4GCSW
+X-Message-ID-Hash: FHPRCXEXLUZZBXPNFSTERCO2JCY4GCSW
+X-MailFrom: biju.das.jz@bp.renesas.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -110,7 +70,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5LNOR6AKHAQ7WGHLBUCLDODGYQ74CNDN/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FHPRCXEXLUZZBXPNFSTERCO2JCY4GCSW/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -119,29 +79,42 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-This driver include the GPIO legacy header <linux/gpio.h> yet
-doesn't use symbols from it. It is using the new consumer
-include <linux/gpio/consumer.h> already. Drop the surplus
-include.
+Simpilfy probe() by replacing of_device_get_match_data() and id lookup for
+retrieving match data by i2c_get_match_data().
 
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+While at it, drop unused local variable np from probe().
+
+Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
 ---
- sound/soc/codecs/rt5645.c | 1 -
- 1 file changed, 1 deletion(-)
+ sound/soc/codecs/ak4613.c | 11 +----------
+ 1 file changed, 1 insertion(+), 10 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index acc7fb1581b2..1a28fb541255 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -14,7 +14,6 @@
- #include <linux/i2c.h>
- #include <linux/platform_device.h>
- #include <linux/spi/spi.h>
--#include <linux/gpio.h>
- #include <linux/gpio/consumer.h>
- #include <linux/acpi.h>
- #include <linux/dmi.h>
-
+diff --git a/sound/soc/codecs/ak4613.c b/sound/soc/codecs/ak4613.c
+index ad56caec9dac..619a817ee91c 100644
+--- a/sound/soc/codecs/ak4613.c
++++ b/sound/soc/codecs/ak4613.c
+@@ -880,20 +880,11 @@ static void ak4613_parse_of(struct ak4613_priv *priv,
+ static int ak4613_i2c_probe(struct i2c_client *i2c)
+ {
+ 	struct device *dev = &i2c->dev;
+-	struct device_node *np = dev->of_node;
+ 	const struct regmap_config *regmap_cfg;
+ 	struct regmap *regmap;
+ 	struct ak4613_priv *priv;
+ 
+-	regmap_cfg = NULL;
+-	if (np)
+-		regmap_cfg = of_device_get_match_data(dev);
+-	else {
+-		const struct i2c_device_id *id =
+-			i2c_match_id(ak4613_i2c_id, i2c);
+-		regmap_cfg = (const struct regmap_config *)id->driver_data;
+-	}
+-
++	regmap_cfg = i2c_get_match_data(i2c);
+ 	if (!regmap_cfg)
+ 		return -EINVAL;
+ 
 -- 
-2.34.1
+2.25.1
 
