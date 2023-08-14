@@ -4,88 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 16D31C001B0
-	for <alsa-devel@archiver.kernel.org>; Mon, 14 Aug 2023 14:09:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 587CBC001B0
+	for <alsa-devel@archiver.kernel.org>; Mon, 14 Aug 2023 14:09:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3D601836;
-	Mon, 14 Aug 2023 16:08:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3D601836
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5DC471F1;
+	Mon, 14 Aug 2023 16:08:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5DC471F1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1692022168;
-	bh=IhBv0vdiTlz9m2cF3OBbowsWlswXcwkIf1qXDreG8b4=;
+	s=default; t=1692022181;
+	bh=q1bF0M0Z60l5z0SrmLHcCPMfxrtvXjd7D+J79KEYuOE=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=FurucS9IQM5TE6TLEtQ4u2OgpRk+VrbAnmmbYfSeN3JRwXWDJYQVPHZKcaqG58hRo
-	 pd5VlZWXw3j8zHp7YopDLTRv9fn69KBR/wOUxMRovMhElM18nnJs0rQkXR88saTsFu
-	 xAV/10aqzwqx5hAorlggziA6kf1s+OWQtvo98A1o=
+	b=dyxVm8HRvSbnf5oJ4EQlQ3belJQxsm7YwjKs1028BydqxvCBQw1JeP9GKmho3GHAF
+	 xL5p5vPnNtbWJJKLd9Pd5/JU1AadgMnguWFpfq5KvbdWkaqgSs/jI3CJVcvyNDYC99
+	 XtPKNu0fr3n9lJsE/S/dS2nWtH0POS7Tppq2UnqI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id ADEA7F80579; Mon, 14 Aug 2023 16:07:46 +0200 (CEST)
+	id 08D93F80510; Mon, 14 Aug 2023 16:08:28 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 08277F80272;
-	Mon, 14 Aug 2023 16:07:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9627CF801EB;
+	Mon, 14 Aug 2023 16:08:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E04DAF8056F; Mon, 14 Aug 2023 16:07:41 +0200 (CEST)
+	id 0E247F80510; Mon, 14 Aug 2023 16:08:23 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id BE472F80272
-	for <alsa-devel@alsa-project.org>; Mon, 14 Aug 2023 16:07:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BE472F80272
+	by alsa1.perex.cz (Postfix) with ESMTPS id A97F6F80254;
+	Mon, 14 Aug 2023 16:07:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A97F6F80254
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=KJawqBht
+ header.s=Intel header.b=ZwWpOzWk
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
   t=1692022052; x=1723558052;
   h=message-id:date:mime-version:subject:to:cc:references:
    from:in-reply-to:content-transfer-encoding;
-  bh=IhBv0vdiTlz9m2cF3OBbowsWlswXcwkIf1qXDreG8b4=;
-  b=KJawqBhtf+YCms60P3MAPjm/j8Sw8+LdOspozWZ4Lrs6EsvDfUQUlWmf
-   SXuMfEJt+oX3XhULj6szWA2VafHpQaTZOpPnvvvoMV2bOryFbocnFLJxA
-   1NdaECeIshyWlfYpyTOXdEBU3NIbnQMIfeob7O9ejHlDReCUUTVtCkfM8
-   9NpplR2LnSmPHFe7sC/Zr8ntaMydC8fTMOHwgq7y4pt3L2leNdMMUHJZq
-   fpyuxT8/Ecqh8f+OQFU8pllfNe3/Gun9P1vSeqH7ZSjDNShEDPPBRF8+j
-   K//gaq2d7kGbqR68LnClW/IAQZNbmKYG/11OoziEAB9uHfSCiXqZh8rr3
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="370943697"
+  bh=q1bF0M0Z60l5z0SrmLHcCPMfxrtvXjd7D+J79KEYuOE=;
+  b=ZwWpOzWkLRMMLmTJL2DG3eZQEncJQPcZl0dTwuNgJBYj/Ieq+DoRMq8q
+   PWNhgFGwDK7UV3SzviRUlWgIO/H/01x28LxsIPvu7Uht+7ttWphiNiGes
+   OtEjyXwmvZewLtm2+ZMiOFK2ydJrOd0DsKjZOmeTpt62jv8fn7KKsMLVc
+   Jgt/3Nd9bBMcV05W3irhTXBjmdpnrFIR+ZBK+6bFjtxzmj2MHbwlGtoD0
+   gZhI+gsX0ERaNQXJ6k/YPMMkKKUQkGIAs5liRN0XO+ZmOAIoMOM2IPCDh
+   FK/tBV2eoRPy3q4mYJhD0vORsYpbyy6n9Gj2aVJ5j0sKq00SStB05KmYc
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="370943687"
 X-IronPort-AV: E=Sophos;i="6.01,172,1684825200";
-   d="scan'208";a="370943697"
+   d="scan'208";a="370943687"
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
   by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 14 Aug 2023 07:07:27 -0700
+ 14 Aug 2023 07:07:26 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="798825227"
+X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="798825224"
 X-IronPort-AV: E=Sophos;i="6.01,172,1684825200";
-   d="scan'208";a="798825227"
+   d="scan'208";a="798825224"
 Received: from ryana2x-mobl.amr.corp.intel.com (HELO [10.212.126.76])
  ([10.212.126.76])
   by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 14 Aug 2023 07:07:26 -0700
-Message-ID: <389f2953-1463-34f1-b720-92af800aad5d@linux.intel.com>
-Date: Mon, 14 Aug 2023 09:01:22 -0500
+ 14 Aug 2023 07:07:25 -0700
+Message-ID: <4f5d8095-537b-433e-4839-6061beb2b0bb@linux.intel.com>
+Date: Mon, 14 Aug 2023 08:55:36 -0500
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Firefox/102.0 Thunderbird/102.13.0
-Subject: Re: [RFC PATCH 13/17] ASoC: SOF: Intel: Switch to new stream-format
- interface
+Subject: Re: [PATCH] ASoC: SOF: Intel: fix hda_sdw_check_wakeen_irq()
 Content-Language: en-US
-To: Cezary Rojewski <cezary.rojewski@intel.com>
-Cc: alsa-devel@alsa-project.org, amadeuszx.slawinski@linux.intel.com,
- hdegoede@redhat.com, broonie@kernel.org, tiwai@suse.com, perex@perex.cz
-References: <20230811164853.1797547-1-cezary.rojewski@intel.com>
- <20230811164853.1797547-14-cezary.rojewski@intel.com>
- <0474e41a-0e69-d739-1e4a-cdc555e6fbd0@linux.intel.com>
- <fef42075-44f8-c897-c05a-180dd30f5b37@intel.com>
+To: Arnd Bergmann <arnd@kernel.org>, Mark Brown <broonie@kernel.org>
+Cc: Arnd Bergmann <arnd@arndb.de>, Liam Girdwood <lgirdwood@gmail.com>,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Daniel Baluta <daniel.baluta@nxp.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>, Jaroslav Kysela
+ <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ Rander Wang <rander.wang@intel.com>, sound-open-firmware@alsa-project.org,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ Nathan Chancellor <nathan@kernel.org>
+References: <20230814074711.1068093-1-arnd@kernel.org>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <fef42075-44f8-c897-c05a-180dd30f5b37@intel.com>
+In-Reply-To: <20230814074711.1068093-1-arnd@kernel.org>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 3IAHQB7WQLNNDDA5Y4G2UDHOMOGZLNNC
-X-Message-ID-Hash: 3IAHQB7WQLNNDDA5Y4G2UDHOMOGZLNNC
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: OVLIFU4CYNCX5IBSFA4MC2XHPDEFZXXK
+X-Message-ID-Hash: OVLIFU4CYNCX5IBSFA4MC2XHPDEFZXXK
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -98,7 +102,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3IAHQB7WQLNNDDA5Y4G2UDHOMOGZLNNC/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OVLIFU4CYNCX5IBSFA4MC2XHPDEFZXXK/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -109,86 +113,42 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 
 
-On 8/14/23 05:51, Cezary Rojewski wrote:
-> On 2023-08-11 8:21 PM, Pierre-Louis Bossart wrote:
->> On 8/11/23 11:48, Cezary Rojewski wrote:
->>> To provide option for selecting different bit-per-sample than just the
->>> maximum one, use the new format calculation mechanism.
->>
->> Can you remind me what the issue is in selecting the maximum resolution?
->>
->> Isn't it a good thing to select the maximum resolution when possible so
->> as to provide more headroom and prevent clipping? Usually we try to make
->> sure the resolution becomes limited when we reach the analog parts. I am
->> not sure I see a compelling reason to reduce the resolution on the host
->> side.
+On 8/14/23 02:46, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> Maximum resolution is still the default, nothing changes there.
-> Moreover, new subformat options are not added to any driver apart from
-> the avs-driver.
-
-What's so special about this driver that it needs more capabilities for
-a standard interface?
-
-> The patchset provides _an option_ to change bits-per-sample. Right now
-> there's no option to do that so the hardware - here, SDxFMT and PPLCxFMT
-> - is not tested. We have enough recommended flows already. Frankly there
-> is one for SDxFMT for the APL-based platforms (or BXT-based if one
-> prefers that naming) present within snd_hda_intel and DSP drivers alike.
+> This function cannot work, as the 'chip' variable is never initialized:
 > 
->> I am also not sure what this patch actually changes, given that the
->> firmware actually converts everything to the full 32-bit resolution.
+> sound/soc/sof/intel/hda.c:423:6: error: variable 'chip' is uninitialized when used here [-Werror,-Wuninitialized]
+>         if (chip && chip->check_sdw_wakeen_irq)
+>             ^~~~
 > 
-> The issue does not concern firmware, so we leave firmware out of the
-> discussion - this is purely about hardware capabilities.
-
-I don't see how you can leave firmware aside, if the hardware
-configuration is selected to be based on 24 bits and the firmware
-generated 32 there's clearly a mismatch.
-
-If this is saying that we are adding an option that will never be used,
-then why bother?
-
-Lost in space on this one.
-
->> I must be missing something on the problem statement.
->>
->>> Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
->>> ---
->>>   sound/soc/sof/intel/hda-dai-ops.c | 5 +++--
->>>   1 file changed, 3 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/sound/soc/sof/intel/hda-dai-ops.c
->>> b/sound/soc/sof/intel/hda-dai-ops.c
->>> index f3513796c189..00703999e91b 100644
->>> --- a/sound/soc/sof/intel/hda-dai-ops.c
->>> +++ b/sound/soc/sof/intel/hda-dai-ops.c
->>> @@ -194,14 +194,15 @@ static unsigned int
->>> hda_calc_stream_format(struct snd_sof_dev *sdev,
->>>       struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
->>>       unsigned int link_bps;
->>>       unsigned int format_val;
->>> +    unsigned int bps;
->>>         if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
->>>           link_bps = codec_dai->driver->playback.sig_bits;
->>>       else
->>>           link_bps = codec_dai->driver->capture.sig_bits;
->>> +    bps = snd_hdac_stream_format_bps(params_format(params),
->>> SNDRV_PCM_SUBFORMAT_STD, link_bps);
->>
->> I can't say I fully understand the difference between 'bps' and
->> 'link_bps'. The naming is far from self-explanatory just by looking at
->> the code.
+> Set it the same way that other functions in this file do.
 > 
-> There's none. I just didn't reuse the 'link_bps' variable. I can reuse
-> it if you like.
+> Fixes: 9362ab78f175d ("ASoC: SOF: Intel: add abstraction for SoundWire wake-ups")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+> There hasn't been a new linux-next in a few days, so there is a good chance
+> someone else already fixed this in the meantime. Sending out my fix in case
+> that hasn't happened yet.
+
+yes it was found by Nathan Chancelor and corrected already. Thanks for
+checking though!
+
+
+> ---
+>  sound/soc/sof/intel/hda.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
->>> -    format_val = snd_hdac_calc_stream_format(params_rate(params),
->>> params_channels(params),
->>> -                         params_format(params), link_bps, 0);
->>> +    format_val = snd_hdac_stream_format(params_channels(params),
->>> bps, params_rate(params));
->>>         dev_dbg(sdev->dev, "format_val=%#x, rate=%d, ch=%d,
->>> format=%d\n", format_val,
->>>           params_rate(params), params_channels(params),
->>> params_format(params));
+> diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
+> index 04c748a72b137..6c9c7b390cf53 100644
+> --- a/sound/soc/sof/intel/hda.c
+> +++ b/sound/soc/sof/intel/hda.c
+> @@ -415,7 +415,7 @@ bool hda_sdw_check_wakeen_irq_common(struct snd_sof_dev *sdev)
+>  static bool hda_sdw_check_wakeen_irq(struct snd_sof_dev *sdev)
+>  {
+>  	u32 interface_mask = hda_get_interface_mask(sdev);
+> -	const struct sof_intel_dsp_desc *chip;
+> +	const struct sof_intel_dsp_desc *chip = get_chip_info(sdev->pdata);
+>  
+>  	if (!(interface_mask & BIT(SOF_DAI_INTEL_ALH)))
+>  		return false;
