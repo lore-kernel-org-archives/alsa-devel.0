@@ -4,63 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 685B7C001B0
-	for <alsa-devel@archiver.kernel.org>; Mon, 14 Aug 2023 23:16:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 276C9C04A6A
+	for <alsa-devel@archiver.kernel.org>; Mon, 14 Aug 2023 23:16:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CF29982C;
-	Tue, 15 Aug 2023 01:15:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CF29982C
+	by alsa0.perex.cz (Postfix) with ESMTPS id B73E483A;
+	Tue, 15 Aug 2023 01:15:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B73E483A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1692054972;
-	bh=AZp1SKo/99ayEKfU6S/47LOo31HcZUWzgyYR1nTcGSE=;
+	s=default; t=1692054978;
+	bh=iVRQAwQ3pDbGrPcwvY8XDMyzjwcCDctw4gDKrkxLB38=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=FHMbpGnYSfeCzNTahuMPxncTmZhKU5qiG2TbZR/5E4RBgNG3R4pWWSOwoe1onzAfQ
-	 mfdPSvTsHcWFZVFE3BSpKqb6X/ylrj3cARmgZu7zXYlvcvswpJdy2sCXgMi7dmYOdb
-	 8OCnNb0nFndoeseE1efjLVvCyIb7/l/5EpibmT74=
+	b=gnXCmdI73Cbjg88Wyq14Mx0XRt6JYfXjv/ISdxYSlRqsPBr8Kkhh+WNNYl24GgJN1
+	 y3fvEKIbuBBv5nq6U9dvG3OLjC//NXOB2fxE73iwrdYZJGxIWSy8BO7rifoTpe0b+U
+	 7g5W/xVJmNq5rrnTCFulq7rRl2quXXX9vka98Zbk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6737DF80564; Tue, 15 Aug 2023 01:14:33 +0200 (CEST)
+	id 0145AF800EE; Tue, 15 Aug 2023 01:14:36 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2A7E4F80558;
-	Tue, 15 Aug 2023 01:14:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2D2BBF80578;
+	Tue, 15 Aug 2023 01:14:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 89C41F80510; Tue, 15 Aug 2023 01:14:26 +0200 (CEST)
+	id 74DE1F80536; Tue, 15 Aug 2023 01:14:29 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A23EDF801EB
+	by alsa1.perex.cz (Postfix) with ESMTPS id E1DECF80272
 	for <alsa-devel@alsa-project.org>; Tue, 15 Aug 2023 01:14:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A23EDF801EB
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E1DECF80272
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=gj1TAZhg
+ header.s=Intel header.b=CmqfBDBX
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692054860; x=1723590860;
+  t=1692054861; x=1723590861;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=AZp1SKo/99ayEKfU6S/47LOo31HcZUWzgyYR1nTcGSE=;
-  b=gj1TAZhg2iWLWq7jGVSId3dXyFVlWm61SNITHObVu4QT3hDp3mCa4Rja
-   Yey2rjTT9mWuDYHZoHhJJjs/H4g4qZOnG8FH3RtzC/8MbXZQsfSllYX9v
-   rIXswV1BgQNxsXnRTQeEq4q+sJzYj2a5fIcA2xJVoLOeKmsHLEfJ+fbOc
-   Z/ItEj1dTdksZ+oXmvb+bLJhH/f4h59hDlUaWEmlXnmkTvRHkkTmZHVKK
-   JuTzjVgTpT8tCexJw4tGinxtAK+OJeP13H3RsXbFlsYj6o13cAPV2xyCr
-   LjT8uEz6fgiTQPrM65qErqLjdEXTnR65QMVLW9J681OJVA73h5RvZvCvO
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="403136800"
+  bh=iVRQAwQ3pDbGrPcwvY8XDMyzjwcCDctw4gDKrkxLB38=;
+  b=CmqfBDBXMhh9wZ0qr1rtyNz5RqlWeg5jj9c99rtIy2livxjtPm0j7J0M
+   LnhtfwMFJf6KaLmUT8duRpuOXK3566EiZ3HOKnhkW5k+yCM+IoAcnfNT+
+   hC0w8kRXtlJ2lG3+udBgbge0etiZlhZrSgVkwyNFj0Ml3ue4S/FUwuQtv
+   GtO0BhKi3ewLS253WhYhBg+WFI20zObjey5EokNE5ftLWd/1jak0aOUJ5
+   Xgmane4+okNNmIYeaiGomNuTVO9ptTA7AKhy9QkebZb+laXHO1QRMdLlk
+   HK0fxwMqg7fGjYHznXOSwdjtZcVu80XBOJfoQ2TwDBHhR12NHz2GC71K/
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="403136795"
 X-IronPort-AV: E=Sophos;i="6.01,173,1684825200";
-   d="scan'208";a="403136800"
+   d="scan'208";a="403136795"
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
   by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 14 Aug 2023 16:14:12 -0700
+ 14 Aug 2023 16:14:11 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="1064250682"
+X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="1064250681"
 X-IronPort-AV: E=Sophos;i="6.01,173,1684825200";
-   d="scan'208";a="1064250682"
+   d="scan'208";a="1064250681"
 Received: from dishasur-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.212.104.139])
   by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
@@ -69,21 +69,20 @@ From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de,
 	broonie@kernel.org,
-	Chao Song <chao.song@linux.intel.com>,
+	Balamurugan C <balamurugan.c@intel.com>,
 	Bard Liao <yung-chuan.liao@linux.intel.com>,
-	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
 	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 3/4] ASoC: Intel: soc-acpi: add support for Dell SKU0C87
- devices
-Date: Mon, 14 Aug 2023 18:13:57 -0500
-Message-Id: <20230814231358.78971-4-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 2/4] ASoC: Intel: soc-acpi: Add entry for HDMI_In capture
+ support in RPL match table
+Date: Mon, 14 Aug 2023 18:13:56 -0500
+Message-Id: <20230814231358.78971-3-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230814231358.78971-1-pierre-louis.bossart@linux.intel.com>
 References: <20230814231358.78971-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: W7LQOMNWCBRHIY5BNZ2BR5NCEBXSXMQZ
-X-Message-ID-Hash: W7LQOMNWCBRHIY5BNZ2BR5NCEBXSXMQZ
+Message-ID-Hash: HTEEJOAAMAUTW5TBQWLURF56HZIW5UWM
+X-Message-ID-Hash: HTEEJOAAMAUTW5TBQWLURF56HZIW5UWM
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -95,110 +94,78 @@ X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/W7LQOMNWCBRHIY5BNZ2BR5NCEBXSXMQZ/>
-List-Archive: <>
+Archived-At: <>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Chao Song <chao.song@linux.intel.com>
+From: Balamurugan C <balamurugan.c@intel.com>
 
-This patch adds the acpi match table for Dell SKU0C87
-devices, the codec layout is:
-    SDW0: RT714 DMIC
-    SDW1: RT1318 Speaker
-    SDW2: RT1318 Speaker
-
-Note that there is no jack codec on SKU0C87 devices.
+Adding HDMI-In capture via I2S feature support in RPL platfroms.
 
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Signed-off-by: Chao Song <chao.song@linux.intel.com>
+Signed-off-by: Balamurugan C <balamurugan.c@intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- .../intel/common/soc-acpi-intel-mtl-match.c   | 52 +++++++++++++++++++
- 1 file changed, 52 insertions(+)
+ sound/soc/intel/boards/sof_es8336.c               | 10 ++++++++++
+ sound/soc/intel/common/soc-acpi-intel-rpl-match.c | 12 ++++++++++++
+ 2 files changed, 22 insertions(+)
 
-diff --git a/sound/soc/intel/common/soc-acpi-intel-mtl-match.c b/sound/soc/intel/common/soc-acpi-intel-mtl-match.c
-index ed9821adc1d9..0304246d2922 100644
---- a/sound/soc/intel/common/soc-acpi-intel-mtl-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-mtl-match.c
-@@ -161,6 +161,33 @@ static const struct snd_soc_acpi_adr_device rt1316_3_group1_adr[] = {
- 	}
- };
- 
-+static const struct snd_soc_acpi_adr_device rt1318_1_group1_adr[] = {
-+	{
-+		.adr = 0x000130025D131801ull,
-+		.num_endpoints = 1,
-+		.endpoints = &spk_l_endpoint,
-+		.name_prefix = "rt1318-1"
-+	}
-+};
-+
-+static const struct snd_soc_acpi_adr_device rt1318_2_group1_adr[] = {
-+	{
-+		.adr = 0x000232025D131801ull,
-+		.num_endpoints = 1,
-+		.endpoints = &spk_r_endpoint,
-+		.name_prefix = "rt1318-2"
-+	}
-+};
-+
-+static const struct snd_soc_acpi_adr_device rt714_0_adr[] = {
-+	{
-+		.adr = 0x000030025D071401ull,
-+		.num_endpoints = 1,
-+		.endpoints = &single_endpoint,
-+		.name_prefix = "rt714"
-+	}
-+};
-+
- static const struct snd_soc_acpi_adr_device rt714_1_adr[] = {
- 	{
- 		.adr = 0x000130025D071401ull,
-@@ -232,6 +259,25 @@ static const struct snd_soc_acpi_link_adr mtl_3_in_1_sdca[] = {
- 	{}
- };
- 
-+static const struct snd_soc_acpi_link_adr mtl_sdw_rt1318_l12_rt714_l0[] = {
-+	{
-+		.mask = BIT(1),
-+		.num_adr = ARRAY_SIZE(rt1318_1_group1_adr),
-+		.adr_d = rt1318_1_group1_adr,
-+	},
-+	{
-+		.mask = BIT(2),
-+		.num_adr = ARRAY_SIZE(rt1318_2_group1_adr),
-+		.adr_d = rt1318_2_group1_adr,
-+	},
-+	{
-+		.mask = BIT(0),
-+		.num_adr = ARRAY_SIZE(rt714_0_adr),
-+		.adr_d = rt714_0_adr,
-+	},
-+	{}
-+};
-+
- static const struct snd_soc_acpi_adr_device mx8363_2_adr[] = {
- 	{
- 		.adr = 0x000230019F836300ull,
-@@ -298,6 +344,12 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_mtl_sdw_machines[] = {
- 		.drv_name = "sof_sdw",
- 		.sof_tplg_filename = "sof-mtl-rt712-l0-rt1712-l3.tplg",
+diff --git a/sound/soc/intel/boards/sof_es8336.c b/sound/soc/intel/boards/sof_es8336.c
+index d6c38d8ea2ff..f8a3e8a91761 100644
+--- a/sound/soc/intel/boards/sof_es8336.c
++++ b/sound/soc/intel/boards/sof_es8336.c
+@@ -798,6 +798,16 @@ static const struct platform_device_id board_ids[] = {
+ 					SOF_ES8336_SPEAKERS_EN_GPIO1_QUIRK |
+ 					SOF_ES8336_JD_INVERTED),
  	},
 +	{
-+		.link_mask = GENMASK(2, 0),
-+		.links = mtl_sdw_rt1318_l12_rt714_l0,
-+		.drv_name = "sof_sdw",
-+		.sof_tplg_filename = "sof-mtl-rt1318-l12-rt714-l0.tplg"
++		.name = "rpl_es83x6_c1_h02",
++		.driver_data = (kernel_ulong_t)(SOF_ES8336_SSP_CODEC(1) |
++					SOF_NO_OF_HDMI_CAPTURE_SSP(2) |
++					SOF_HDMI_CAPTURE_1_SSP(0) |
++					SOF_HDMI_CAPTURE_2_SSP(2) |
++					SOF_SSP_HDMI_CAPTURE_PRESENT |
++					SOF_ES8336_SPEAKERS_EN_GPIO1_QUIRK |
++					SOF_ES8336_JD_INVERTED),
++	},
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(platform, board_ids);
+diff --git a/sound/soc/intel/common/soc-acpi-intel-rpl-match.c b/sound/soc/intel/common/soc-acpi-intel-rpl-match.c
+index 1f503c734ab5..3db0dc4ca66f 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-rpl-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-rpl-match.c
+@@ -356,6 +356,11 @@ static const struct snd_soc_acpi_codecs rpl_rt1019p_amp = {
+ 	.codecs = {"RTL1019"}
+ };
+ 
++static const struct snd_soc_acpi_codecs rpl_lt6911_hdmi = {
++	.num_codecs = 1,
++	.codecs = {"INTC10B0"}
++};
++
+ struct snd_soc_acpi_mach snd_soc_acpi_intel_rpl_machines[] = {
+ 	{
+ 		.comp_ids = &rpl_rt5682_hp,
+@@ -385,6 +390,13 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_rpl_machines[] = {
+ 		.quirk_data = &rpl_rt1019p_amp,
+ 		.sof_tplg_filename = "sof-rpl-rt1019-rt5682.tplg",
+ 	},
++	{
++		.comp_ids = &rpl_essx_83x6,
++		.drv_name = "rpl_es83x6_c1_h02",
++		.machine_quirk = snd_soc_acpi_codec_list,
++		.quirk_data = &rpl_lt6911_hdmi,
++		.sof_tplg_filename = "sof-rpl-es83x6-ssp1-hdmi-ssp02.tplg",
 +	},
  	{
- 		.link_mask = GENMASK(3, 0),
- 		.links = mtl_3_in_1_sdca,
+ 		.comp_ids = &rpl_essx_83x6,
+ 		.drv_name = "sof-essx8336",
 -- 
 2.39.2
 
