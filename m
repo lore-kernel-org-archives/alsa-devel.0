@@ -4,101 +4,111 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AC1ABC001B0
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Aug 2023 10:43:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 35609C001E0
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Aug 2023 10:56:34 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BFD71827;
-	Wed, 16 Aug 2023 12:42:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BFD71827
+	by alsa0.perex.cz (Postfix) with ESMTPS id E645F82B;
+	Wed, 16 Aug 2023 12:55:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E645F82B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1692182610;
-	bh=O9Mi3ukPZMXGw4qpDDWQ4PFtxGV6uTKsBrO6Nq3xvJk=;
+	s=default; t=1692183392;
+	bh=FKWotQqYRdiVUQJCmJyqJV0tN2V5OkzGmkEHpZKmh4M=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=oiCA7MpAUBrbE/IoY/pzihcPImhlhNdPemGD91tRIDTv3joHtSAYcHojx50bZph1D
-	 L4Zk/rRaozKFyQ+tlvAwBBzo1aCeSXpnTob7ZhY9avP7DeovM6H+1d8CEZ5VfRJceL
-	 gksY7Ia8Z4GDQa8quryn9W5M6JebYHkG5dlrMqeg=
+	b=L0WzA3UqIQzhH0VXk81Bm17n7YjIxoQXl+BFmGcllFy81sehglpyrZq246gxOTcFE
+	 XLzbS1z4ahvju5gGTUVxzEdJTYwgDKhq84J59llw/HGiupZxplQtg4GnIY3Dvwp+HB
+	 ek6gpoFF5sl9Mf5GDXhPPE+BYiY2RZYYZPgT6BZU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 87059F80254; Wed, 16 Aug 2023 12:42:12 +0200 (CEST)
+	id D38FAF8016D; Wed, 16 Aug 2023 12:55:06 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2A04AF80272;
-	Wed, 16 Aug 2023 12:42:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 83CC2F8016D;
+	Wed, 16 Aug 2023 12:55:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 03519F8016D; Wed, 16 Aug 2023 12:42:06 +0200 (CEST)
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id D4A44F8025F; Mon, 14 Aug 2023 20:01:06 +0200 (CEST)
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com
+ [IPv6:2607:f8b0:4864:20::72c])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 26C38F80074
-	for <alsa-devel@alsa-project.org>; Wed, 16 Aug 2023 12:41:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 26C38F80074
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9C4D3F801EB
+	for <alsa-devel@alsa-project.org>; Mon, 14 Aug 2023 20:01:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9C4D3F801EB
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=L3GnilwA
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692182517; x=1723718517;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=O9Mi3ukPZMXGw4qpDDWQ4PFtxGV6uTKsBrO6Nq3xvJk=;
-  b=L3GnilwAsc+E21altCsIjEilEG/YRk9O35+fdRTlq57YbtGqN5EL6Yzm
-   1jHl5dSmgI7hcvxrdcHyKXErfPM+V4OT6Lq2xySzunycES0zDG+DHmFn7
-   VsjzVNkoWStZhP0zo95TF8psQOAse/Hm6HYX3zopoVcD49baj8NLAFSPs
-   zUyGzP6UYNZYfoktDrpMNnGihu59dRirc7bCDolKUOrelAh5DOebff5QI
-   jnXB3vPILG65XYrvToyqJF32JORAM13L4sEQNle+riV+SHC7xzMQNDezj
-   cGnNPFmF6izNGDoRO2D4tU0+WyFerV4+rjYoHFPtMyGNds7AJ55ZTFuDM
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="371405702"
-X-IronPort-AV: E=Sophos;i="6.01,176,1684825200";
-   d="scan'208";a="371405702"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 Aug 2023 03:41:46 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="804181910"
-X-IronPort-AV: E=Sophos;i="6.01,176,1684825200";
-   d="scan'208";a="804181910"
-Received: from lkp-server02.sh.intel.com (HELO a9caf1a0cf30) ([10.239.97.151])
-  by fmsmga004.fm.intel.com with ESMTP; 16 Aug 2023 03:41:41 -0700
-Received: from kbuild by a9caf1a0cf30 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1qWDy8-0000En-32;
-	Wed, 16 Aug 2023 10:41:40 +0000
-Date: Wed, 16 Aug 2023 18:41:20 +0800
-From: kernel test robot <lkp@intel.com>
-To: Seven Lee <wtli@nuvoton.com>, broonie@kernel.org
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	lgirdwood@gmail.com, alsa-devel@alsa-project.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	robh+dt@kernel.org, conor+dt@kernel.org, YHCHuang@nuvoton.com,
-	KCHSU0@nuvoton.com, CTLIN0@nuvoton.com, WTLI@nuvoton.com,
-	SJLIN0@nuvoton.com, scott6986@gmail.com, supercraig0719@gmail.com,
-	dardar923@gmail.com
-Subject: Re: [PATCH 2/2] ASoC: nau8821: Improve AMIC recording performance.
-Message-ID: <202308161844.humS3QWm-lkp@intel.com>
-References: <20230816080006.1624342-2-wtli@nuvoton.com>
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20221208 header.b=o2xON38b
+Received: by mail-qk1-x72c.google.com with SMTP id
+ af79cd13be357-76d198deb34so38330885a.1
+        for <alsa-devel@alsa-project.org>;
+ Mon, 14 Aug 2023 11:01:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692036058; x=1692640858;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=0tsRBGViAhNebKd5MnVOTPBp/gGIN2Nz27Fo4yeO8Lw=;
+        b=o2xON38b55OMcP+9aeVCKAf7PDYoRHOs8uWXiNOj0qT0oZYhnPZqNK1dDuTE/wgufK
+         ZaYA50NAKaSgw9BrID4a3c/Jf3SIa9v2meuCIaeuo99R5kqcrCdxtsHPwyRBlaOng3kf
+         yWHi+edmLvYi6dT0ey8942c6CGDP5dOHeTJi2p0UODnhvMXQwTYMd31oNM8kZmvjfxgb
+         4vbsO8YTWmJNBbssmSaaGbBtEwQM1Mwz71vZHvrHWCEC6zhEUSGW/OtriK+qTsqOgH0F
+         TP+8KKTZLd9wQUpM7iPzy9Ca0GP+/sxP+py0ULPb911WVAtL+RUZxuk18mxLMA3ROmUe
+         mwwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692036058; x=1692640858;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0tsRBGViAhNebKd5MnVOTPBp/gGIN2Nz27Fo4yeO8Lw=;
+        b=U5sgPxqr2QIg9iiLQwzx4q1D5ugw0Qt8VrBRAxglGdWDHfXzahxzIMCImriRMPVgdh
+         AME3x9mbCNEiPaZGvYo+EBqtBAEgpSexdcx+cgwmJVObEOdArkxG13rF5s5fW353xrwM
+         uECVK4T+kPVPy+vVKsqxfrj8twbJYTZ5BHVJRwipLcJXhXedLJ0XX14rxnwy7UZFACdF
+         xQctrajufRaD7a1nb0a9kM0imJtVPWGPoPmIYeQpfAurnvNs4q4qYDP3y+i8ia4Wrcqk
+         K3MkgjIXYPtSI5wd77vLLtbLTn1G1Fuq8eUEmhC5Qv89oaybgf+tgpMo0Jb+009IwgwW
+         Dovw==
+X-Gm-Message-State: AOJu0YzsGDguIuNpK3zPQr9bJdA1TbzhfOVSYiwM9pKEnM1+CP/0eMgQ
+	DloPqrJDM13So7XsVE71t9U=
+X-Google-Smtp-Source: 
+ AGHT+IFEqw/RGrnPlmw/yIuBGX4A0RDWc3YSEIiJelddsXJNppOAsQK356tYQvQDrVV3Qjm/IilxFQ==
+X-Received: by 2002:a05:620a:1a89:b0:767:346c:4b37 with SMTP id
+ bl9-20020a05620a1a8900b00767346c4b37mr15078520qkb.7.1692036058179;
+        Mon, 14 Aug 2023 11:00:58 -0700 (PDT)
+Received: from arch (c-68-32-9-74.hsd1.mi.comcast.net. [68.32.9.74])
+        by smtp.gmail.com with ESMTPSA id
+ i5-20020a05620a074500b00767f00a9c67sm3182843qki.95.2023.08.14.11.00.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Aug 2023 11:00:57 -0700 (PDT)
+Date: Mon, 14 Aug 2023 14:00:55 -0400
+From: Brady Norander <bradynorander@gmail.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+	alsa-devel@alsa-project.org, broonie@kernel.org
+Cc: cezary.rojewski@intel.com, amadeuszx.slawinski@linux.intel.com,
+	perex@perex.cz, tiwai@suse.de, cujomalainey@chromium.org
+Subject: Re: [PATCH] ALSA: hda: intel-dsp-cfg: Add Chromebook quirk to ADL/RPL
+Message-ID: <ZNpr18oSz1bDayj1@arch>
+References: <20230814012637.487602-1-bradynorander@gmail.com>
+ <dfdc7097-6286-f3a5-be41-eafd73fe128b@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230816080006.1624342-2-wtli@nuvoton.com>
-Message-ID-Hash: IWSBSQKZLGYJEQA7UO5WSRVGMFQBZMW6
-X-Message-ID-Hash: IWSBSQKZLGYJEQA7UO5WSRVGMFQBZMW6
-X-MailFrom: lkp@intel.com
+In-Reply-To: <dfdc7097-6286-f3a5-be41-eafd73fe128b@linux.intel.com>
+X-MailFrom: bradynorander@gmail.com
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: 75EVITIQK3LTBGNIQ37QL4BIPSNQ6F56
+X-Message-ID-Hash: 75EVITIQK3LTBGNIQ37QL4BIPSNQ6F56
+X-Mailman-Approved-At: Wed, 16 Aug 2023 10:55:02 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IWSBSQKZLGYJEQA7UO5WSRVGMFQBZMW6/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/75EVITIQK3LTBGNIQ37QL4BIPSNQ6F56/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -107,144 +117,12 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi Seven,
+On Mon, Aug 14, 2023 at 08:54:15AM -0500, Pierre-Louis Bossart wrote:
+> same here, I don't think we can blindly add quirks.
+> 
+> One might argue it doesn't hurt but not all SKUs are supported by Chrome.
 
-kernel test robot noticed the following build warnings:
-
-[auto build test WARNING on broonie-sound/for-next]
-[also build test WARNING on next-20230816]
-[cannot apply to linus/master v6.5-rc6]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Seven-Lee/ASoC-nau8821-Improve-AMIC-recording-performance/20230816-160236
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-patch link:    https://lore.kernel.org/r/20230816080006.1624342-2-wtli%40nuvoton.com
-patch subject: [PATCH 2/2] ASoC: nau8821: Improve AMIC recording performance.
-config: hexagon-randconfig-r003-20230816 (https://download.01.org/0day-ci/archive/20230816/202308161844.humS3QWm-lkp@intel.com/config)
-compiler: clang version 15.0.7 (https://github.com/llvm/llvm-project.git 8dfdcc7b7bf66834a761bd8de445840ef68e4d1a)
-reproduce: (https://download.01.org/0day-ci/archive/20230816/202308161844.humS3QWm-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308161844.humS3QWm-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   In file included from sound/soc/codecs/nau8821.c:15:
-   In file included from include/linux/i2c.h:19:
-   In file included from include/linux/regulator/consumer.h:35:
-   In file included from include/linux/suspend.h:5:
-   In file included from include/linux/swap.h:9:
-   In file included from include/linux/memcontrol.h:13:
-   In file included from include/linux/cgroup.h:26:
-   In file included from include/linux/kernel_stat.h:9:
-   In file included from include/linux/interrupt.h:11:
-   In file included from include/linux/hardirq.h:11:
-   In file included from ./arch/hexagon/include/generated/asm/hardirq.h:1:
-   In file included from include/asm-generic/hardirq.h:17:
-   In file included from include/linux/irq.h:20:
-   In file included from include/linux/io.h:13:
-   In file included from arch/hexagon/include/asm/io.h:334:
-   include/asm-generic/io.h:547:31: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           val = __raw_readb(PCI_IOBASE + addr);
-                             ~~~~~~~~~~ ^
-   include/asm-generic/io.h:560:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           val = __le16_to_cpu((__le16 __force)__raw_readw(PCI_IOBASE + addr));
-                                                           ~~~~~~~~~~ ^
-   include/uapi/linux/byteorder/little_endian.h:37:51: note: expanded from macro '__le16_to_cpu'
-   #define __le16_to_cpu(x) ((__force __u16)(__le16)(x))
-                                                     ^
-   In file included from sound/soc/codecs/nau8821.c:15:
-   In file included from include/linux/i2c.h:19:
-   In file included from include/linux/regulator/consumer.h:35:
-   In file included from include/linux/suspend.h:5:
-   In file included from include/linux/swap.h:9:
-   In file included from include/linux/memcontrol.h:13:
-   In file included from include/linux/cgroup.h:26:
-   In file included from include/linux/kernel_stat.h:9:
-   In file included from include/linux/interrupt.h:11:
-   In file included from include/linux/hardirq.h:11:
-   In file included from ./arch/hexagon/include/generated/asm/hardirq.h:1:
-   In file included from include/asm-generic/hardirq.h:17:
-   In file included from include/linux/irq.h:20:
-   In file included from include/linux/io.h:13:
-   In file included from arch/hexagon/include/asm/io.h:334:
-   include/asm-generic/io.h:573:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           val = __le32_to_cpu((__le32 __force)__raw_readl(PCI_IOBASE + addr));
-                                                           ~~~~~~~~~~ ^
-   include/uapi/linux/byteorder/little_endian.h:35:51: note: expanded from macro '__le32_to_cpu'
-   #define __le32_to_cpu(x) ((__force __u32)(__le32)(x))
-                                                     ^
-   In file included from sound/soc/codecs/nau8821.c:15:
-   In file included from include/linux/i2c.h:19:
-   In file included from include/linux/regulator/consumer.h:35:
-   In file included from include/linux/suspend.h:5:
-   In file included from include/linux/swap.h:9:
-   In file included from include/linux/memcontrol.h:13:
-   In file included from include/linux/cgroup.h:26:
-   In file included from include/linux/kernel_stat.h:9:
-   In file included from include/linux/interrupt.h:11:
-   In file included from include/linux/hardirq.h:11:
-   In file included from ./arch/hexagon/include/generated/asm/hardirq.h:1:
-   In file included from include/asm-generic/hardirq.h:17:
-   In file included from include/linux/irq.h:20:
-   In file included from include/linux/io.h:13:
-   In file included from arch/hexagon/include/asm/io.h:334:
-   include/asm-generic/io.h:584:33: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           __raw_writeb(value, PCI_IOBASE + addr);
-                               ~~~~~~~~~~ ^
-   include/asm-generic/io.h:594:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           __raw_writew((u16 __force)cpu_to_le16(value), PCI_IOBASE + addr);
-                                                         ~~~~~~~~~~ ^
-   include/asm-generic/io.h:604:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           __raw_writel((u32 __force)cpu_to_le32(value), PCI_IOBASE + addr);
-                                                         ~~~~~~~~~~ ^
->> sound/soc/codecs/nau8821.c:649:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
-           default:
-           ^
-   sound/soc/codecs/nau8821.c:649:2: note: insert 'break;' to avoid fall-through
-           default:
-           ^
-           break; 
-   7 warnings generated.
-
-
-vim +649 sound/soc/codecs/nau8821.c
-
-   626	
-   627	static int nau8821_left_fepga_event(struct snd_soc_dapm_widget *w,
-   628			struct snd_kcontrol *kcontrol, int event)
-   629	{
-   630		struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
-   631		struct nau8821 *nau8821 = snd_soc_component_get_drvdata(component);
-   632	
-   633		if (!nau8821->left_input_single_end)
-   634			return 0;
-   635	
-   636		switch (event) {
-   637		case SND_SOC_DAPM_POST_PMU:
-   638			regmap_update_bits(nau8821->regmap, NAU8821_R77_FEPGA,
-   639				NAU8821_ACDC_CTRL_MASK | NAU8821_FEPGA_MODEL_MASK,
-   640				NAU8821_ACDC_VREF_MICN | NAU8821_FEPGA_MODEL_AAF);
-   641			regmap_update_bits(nau8821->regmap, NAU8821_R76_BOOST,
-   642				NAU8821_HP_BOOST_DISCHRG_EN, NAU8821_HP_BOOST_DISCHRG_EN);
-   643			break;
-   644		case SND_SOC_DAPM_POST_PMD:
-   645			regmap_update_bits(nau8821->regmap, NAU8821_R77_FEPGA,
-   646				NAU8821_ACDC_CTRL_MASK | NAU8821_FEPGA_MODEL_MASK, 0);
-   647			regmap_update_bits(nau8821->regmap, NAU8821_R76_BOOST,
-   648				NAU8821_HP_BOOST_DISCHRG_EN, 0);
- > 649		default:
-   650			break;
-   651		}
-   652	
-   653		return 0;
-   654	}
-   655	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Fair enough. I wasn't sure which SKUs were used in Chrome platforms and
+which ones weren't so I figured it would be safer to include all of them
+than miss some that are needed. I can resend the patch without the quirk
+for the PX SKUs.
