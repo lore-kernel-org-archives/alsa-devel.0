@@ -4,97 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 81E5DC001B0
-	for <alsa-devel@archiver.kernel.org>; Mon, 14 Aug 2023 12:00:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 510ABC001B0
+	for <alsa-devel@archiver.kernel.org>; Mon, 14 Aug 2023 12:00:36 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E45C383A;
-	Mon, 14 Aug 2023 13:59:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E45C383A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 571C583E;
+	Mon, 14 Aug 2023 13:59:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 571C583E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1692014430;
-	bh=r6zg+Zlj4TbW2irAkSArgJWLVUMnOil9X5H0olQN/Es=;
+	s=default; t=1692014434;
+	bh=x2jD7wwBSpnLir/orUUBKGYVcJ/iPwp1s4ZtZXXhoCk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=TMWWMHOZhk0HxSyMYwS7WatOtLDClX7ij43FWDQSfrUVbCdROau15Pv6bG5iWfwaI
-	 PSTFLSDbffE4Y1Y7E7iteyAVRB9htrdYSliQ2D9F3FZh2Ry0CGTkwxgrXbJYZJtpj9
-	 +HFVegY7UMlPu7M2LNj89ahDeoAZylnzTRb9uFcs=
+	b=UunyMYzeZuZW4dUQidDpGoIipQu2IcQwnKEYL1wzRrKtJHXjWyX3NMSwR5FJ2pa4G
+	 Kgi00vz//xcI0kKUcOaYsECeDZdkR20pAN1c+VdJcw8fmXLJFaYeR2hp1aXbZ/fC6k
+	 Gkn0GIS21Wjz2lnz9vaJj8mGM/L+hMSqy24h59+E=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 05628F805D6; Mon, 14 Aug 2023 13:57:20 +0200 (CEST)
+	id 6ED11F805E5; Mon, 14 Aug 2023 13:57:22 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6FCB0F805D6;
-	Mon, 14 Aug 2023 13:57:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D62B4F805E3;
+	Mon, 14 Aug 2023 13:57:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BB3BCF80290; Mon, 14 Aug 2023 13:56:09 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2001:67c:2178:6::1c])
+	id 7E24AF80290; Mon, 14 Aug 2023 13:56:10 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id BB7F1F80557
-	for <alsa-devel@alsa-project.org>; Mon, 14 Aug 2023 13:55:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BB7F1F80557
+	by alsa1.perex.cz (Postfix) with ESMTPS id 23996F80272
+	for <alsa-devel@alsa-project.org>; Mon, 14 Aug 2023 13:55:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 23996F80272
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=MqkYUKC8;
+ header.s=susede2_rsa header.b=07lUyFsb;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=stzyMsXS
+ header.s=susede2_ed25519 header.b=MZRl7f8o
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 99A1E2199F;
-	Mon, 14 Aug 2023 11:55:49 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id A62571F7AB;
+	Mon, 14 Aug 2023 11:55:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1692014149;
+	t=1692014145;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=jjxBtA0K776P/pHFSLKAptmDdu6ejterm7BFJcjarEE=;
-	b=MqkYUKC84WDh0gijsgQg5GT4ops+uhrtNgO+PUaxJh9gTyqfGkVbk6dozpItWX5TRqwaJv
-	VbmN5TLs4zrL4yVyWUQaObv3zwmNgudpAEVkqptaFex4Y7PooidF73qC7B5q/9roflRL1c
-	j3WZbnoAaLRTQsJWHPc4XEeedRmzRJI=
+	bh=jMyTH+n/x40PlmiWqQalwBgzt2srwvf1AihY+ppT2RY=;
+	b=07lUyFsb5dTl2xHhgSqJ1E+hZf+Jig7MzmZEIyBGcaf2r5F+2q6f73t7WWK0zmMI/mhfSd
+	yD0TmWX2JL2xPZg2/JgHHIyWMY8aJkyZA4zVLrEA+UwrDBOci032N4EEpN3YVMbWv3A0Rq
+	EsUFjhYtimGDGd32a9yk2jSfBwNSO9M=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1692014149;
+	s=susede2_ed25519; t=1692014145;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=jjxBtA0K776P/pHFSLKAptmDdu6ejterm7BFJcjarEE=;
-	b=stzyMsXS3ZvNbIFzAMJllCGovy9cDi/l5ZyOEvHECSH4fBzWMGMqM9jufjE4jJ4/22eZ9r
-	a9Dj6xuIobDxRPCA==
+	bh=jMyTH+n/x40PlmiWqQalwBgzt2srwvf1AihY+ppT2RY=;
+	b=MZRl7f8oMgZvKHP6RqrJ0d6wlOLzHHbC3rqulgZ1s6paIGYioqG8Ki3vq+1NtAGjIgU6jH
+	wkx4SjgsMM5FW3CA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7AE86138EE;
-	Mon, 14 Aug 2023 11:55:49 +0000 (UTC)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 803A5138EE;
+	Mon, 14 Aug 2023 11:55:45 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id IIjvHEUW2mRnMAAAMHmgww
-	(envelope-from <tiwai@suse.de>); Mon, 14 Aug 2023 11:55:49 +0000
+	id KARmHUEW2mRnMAAAMHmgww
+	(envelope-from <tiwai@suse.de>); Mon, 14 Aug 2023 11:55:45 +0000
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
 Cc: linux-kernel@vger.kernel.org,
 	Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 11/25] ALSA: rme96: Convert to generic PCM copy ops
-Date: Mon, 14 Aug 2023 13:55:09 +0200
-Message-Id: <20230814115523.15279-12-tiwai@suse.de>
+Subject: [PATCH 04/25] ALSA: dummy: Convert to generic PCM copy ops
+Date: Mon, 14 Aug 2023 13:55:02 +0200
+Message-Id: <20230814115523.15279-5-tiwai@suse.de>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <20230814115523.15279-1-tiwai@suse.de>
 References: <20230814115523.15279-1-tiwai@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: ASAU6BKICRH44OCQN3EKNSQ5UM6A7YIE
-X-Message-ID-Hash: ASAU6BKICRH44OCQN3EKNSQ5UM6A7YIE
+Message-ID-Hash: HYTD3W5ZGNFEKYZFGQPMRIOUNNG2ZNE2
+X-Message-ID-Hash: HYTD3W5ZGNFEKYZFGQPMRIOUNNG2ZNE2
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -107,120 +106,54 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ASAU6BKICRH44OCQN3EKNSQ5UM6A7YIE/>
-List-Archive: <>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HYTD3W5ZGNFEKYZFGQPMRIOUNNG2ZNE2/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-This patch converts the rme96 driver code to use the new unified PCM
-copy callback.  It's a straightforward conversion from *_user() to
-*_iter() variants.
+This patch converts the dummy driver code to use the new unified PCM
+copy callback.  As dummy driver doesn't do anything in the callback,
+it's just a simple replacement.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/rme96.c | 42 ++++++++----------------------------------
- 1 file changed, 8 insertions(+), 34 deletions(-)
+ sound/drivers/dummy.c | 12 ++----------
+ 1 file changed, 2 insertions(+), 10 deletions(-)
 
-diff --git a/sound/pci/rme96.c b/sound/pci/rme96.c
-index bccb7e0d3d11..6b5ffb18197b 100644
---- a/sound/pci/rme96.c
-+++ b/sound/pci/rme96.c
-@@ -320,48 +320,26 @@ snd_rme96_playback_silence(struct snd_pcm_substream *substream,
- static int
- snd_rme96_playback_copy(struct snd_pcm_substream *substream,
- 			int channel, unsigned long pos,
--			void __user *src, unsigned long count)
-+			struct iov_iter *src, unsigned long count)
- {
- 	struct rme96 *rme96 = snd_pcm_substream_chip(substream);
+diff --git a/sound/drivers/dummy.c b/sound/drivers/dummy.c
+index 9c17b49a2ae1..4317677ba24a 100644
+--- a/sound/drivers/dummy.c
++++ b/sound/drivers/dummy.c
+@@ -626,14 +626,7 @@ static int alloc_fake_buffer(void)
  
--	return copy_from_user_toio(rme96->iobase + RME96_IO_PLAY_BUFFER + pos,
-+	return copy_from_iter_toio(rme96->iobase + RME96_IO_PLAY_BUFFER + pos,
- 				   src, count);
- }
- 
--static int
--snd_rme96_playback_copy_kernel(struct snd_pcm_substream *substream,
--			       int channel, unsigned long pos,
--			       void *src, unsigned long count)
+ static int dummy_pcm_copy(struct snd_pcm_substream *substream,
+ 			  int channel, unsigned long pos,
+-			  void __user *dst, unsigned long bytes)
 -{
--	struct rme96 *rme96 = snd_pcm_substream_chip(substream);
--
--	memcpy_toio(rme96->iobase + RME96_IO_PLAY_BUFFER + pos, src, count);
--	return 0;
+-	return 0; /* do nothing */
 -}
 -
- static int
- snd_rme96_capture_copy(struct snd_pcm_substream *substream,
- 		       int channel, unsigned long pos,
--		       void __user *dst, unsigned long count)
-+		       struct iov_iter *dst, unsigned long count)
+-static int dummy_pcm_copy_kernel(struct snd_pcm_substream *substream,
+-				 int channel, unsigned long pos,
+-				 void *dst, unsigned long bytes)
++			  struct iov_iter *iter, unsigned long bytes)
  {
- 	struct rme96 *rme96 = snd_pcm_substream_chip(substream);
- 
--	return copy_to_user_fromio(dst,
-+	return copy_to_iter_fromio(dst,
- 				   rme96->iobase + RME96_IO_REC_BUFFER + pos,
- 				   count);
+ 	return 0; /* do nothing */
  }
- 
--static int
--snd_rme96_capture_copy_kernel(struct snd_pcm_substream *substream,
--			      int channel, unsigned long pos,
--			      void *dst, unsigned long count)
--{
--	struct rme96 *rme96 = snd_pcm_substream_chip(substream);
--
--	memcpy_fromio(dst, rme96->iobase + RME96_IO_REC_BUFFER + pos, count);
--	return 0;
--}
--
- /*
-  * Digital output capabilities (S/PDIF)
-  */
-@@ -1518,8 +1496,7 @@ static const struct snd_pcm_ops snd_rme96_playback_spdif_ops = {
- 	.prepare =	snd_rme96_playback_prepare,
- 	.trigger =	snd_rme96_playback_trigger,
- 	.pointer =	snd_rme96_playback_pointer,
--	.copy_user =	snd_rme96_playback_copy,
--	.copy_kernel =	snd_rme96_playback_copy_kernel,
-+	.copy =		snd_rme96_playback_copy,
- 	.fill_silence =	snd_rme96_playback_silence,
- 	.mmap =		snd_pcm_lib_mmap_iomem,
+@@ -667,8 +660,7 @@ static const struct snd_pcm_ops dummy_pcm_ops_no_buf = {
+ 	.prepare =	dummy_pcm_prepare,
+ 	.trigger =	dummy_pcm_trigger,
+ 	.pointer =	dummy_pcm_pointer,
+-	.copy_user =	dummy_pcm_copy,
+-	.copy_kernel =	dummy_pcm_copy_kernel,
++	.copy =		dummy_pcm_copy,
+ 	.fill_silence =	dummy_pcm_silence,
+ 	.page =		dummy_pcm_page,
  };
-@@ -1531,8 +1508,7 @@ static const struct snd_pcm_ops snd_rme96_capture_spdif_ops = {
- 	.prepare =	snd_rme96_capture_prepare,
- 	.trigger =	snd_rme96_capture_trigger,
- 	.pointer =	snd_rme96_capture_pointer,
--	.copy_user =	snd_rme96_capture_copy,
--	.copy_kernel =	snd_rme96_capture_copy_kernel,
-+	.copy =		snd_rme96_capture_copy,
- 	.mmap =		snd_pcm_lib_mmap_iomem,
- };
- 
-@@ -1543,8 +1519,7 @@ static const struct snd_pcm_ops snd_rme96_playback_adat_ops = {
- 	.prepare =	snd_rme96_playback_prepare,
- 	.trigger =	snd_rme96_playback_trigger,
- 	.pointer =	snd_rme96_playback_pointer,
--	.copy_user =	snd_rme96_playback_copy,
--	.copy_kernel =	snd_rme96_playback_copy_kernel,
-+	.copy =		snd_rme96_playback_copy,
- 	.fill_silence =	snd_rme96_playback_silence,
- 	.mmap =		snd_pcm_lib_mmap_iomem,
- };
-@@ -1556,8 +1531,7 @@ static const struct snd_pcm_ops snd_rme96_capture_adat_ops = {
- 	.prepare =	snd_rme96_capture_prepare,
- 	.trigger =	snd_rme96_capture_trigger,
- 	.pointer =	snd_rme96_capture_pointer,
--	.copy_user =	snd_rme96_capture_copy,
--	.copy_kernel =	snd_rme96_capture_copy_kernel,
-+	.copy =		snd_rme96_capture_copy,
- 	.mmap =		snd_pcm_lib_mmap_iomem,
- };
- 
 -- 
 2.35.3
 
