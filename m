@@ -4,91 +4,99 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B6A3EB64DD
-	for <alsa-devel@archiver.kernel.org>; Mon, 14 Aug 2023 18:45:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D83C5C001B0
+	for <alsa-devel@archiver.kernel.org>; Mon, 14 Aug 2023 20:22:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 98BDC827;
-	Mon, 14 Aug 2023 20:44:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 98BDC827
+	by alsa0.perex.cz (Postfix) with ESMTPS id D7D1A3E8;
+	Mon, 14 Aug 2023 22:21:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D7D1A3E8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1692038701;
-	bh=PJkvzD6m99v52qVvewr6hJcz/Qx70aWvnPZtyluuAog=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	s=default; t=1692044538;
+	bh=iIh358NYlMirfNWdxYXjIpt6ooXT2xcPYRLDOQwcQzs=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=rJCmGSlL87MA9g5Xu7eW4sssQEg3lPIVBp2Tn/RAR3sLoGzdgAj0X58/r72iQLmCT
-	 v4tXv9nbnmnvZ1dEW7Y48a5HiCgqfHuh8EmCOkS19MYCanENwQdNO/PfiBAObBdh47
-	 UT6+2FvvzazxDpQZR8iF9+p0BbbPnqH4HQBg92Os=
+	b=NHU75TMA4w5FIo77jY0WA2UIKWNUD3WmwjP9DjkamPryQelwqCAHodNekc+Oc5vRO
+	 JYSXoxKalDhTHIl7aVvjS7bYyQNsAFWDVkl7Y1YC6Jouv+c/c+nrjnGh4FPzCxdqDm
+	 E9w7seoMoX8liCN7xVI57LMcfA2cbUJ9EXbTjTdY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8167EF80510; Mon, 14 Aug 2023 20:43:41 +0200 (CEST)
+	id 2611DF80074; Mon, 14 Aug 2023 22:21:00 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 16DBAF80074;
-	Mon, 14 Aug 2023 20:43:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 77953F8025F;
+	Mon, 14 Aug 2023 22:20:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 54D64F8025F; Mon, 14 Aug 2023 20:43:37 +0200 (CEST)
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 8CA63F8025F; Mon, 14 Aug 2023 22:20:54 +0200 (CEST)
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com
+ [IPv6:2607:f8b0:4864:20::533])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id CDB63F800EE
-	for <alsa-devel@alsa-project.org>; Mon, 14 Aug 2023 20:43:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CDB63F800EE
+	by alsa1.perex.cz (Postfix) with ESMTPS id C0C61F800EE
+	for <alsa-devel@alsa-project.org>; Mon, 14 Aug 2023 22:20:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C0C61F800EE
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=GjX0SHaD
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692038612; x=1723574612;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=PJkvzD6m99v52qVvewr6hJcz/Qx70aWvnPZtyluuAog=;
-  b=GjX0SHaDfoqfstbaOKBvbnJXejjmPrOheutj7Q3xCO/jaZH1CDPHn4kP
-   PUIF9yZVgcS95k1ihFV+KO9G39ZyV1gMebnqjBylRezUTsrIog869FkNc
-   NdKLKi2ajk3qEsEDCGZ/OiOZpLG7H6N1k9ZlcyO7AG3+iYNTJSEuDMi87
-   /IbMrI3QJqZ4x9Yjfl0REDvfgbVJWl/P+NBf7djazd1OlEW3TKZPQreNK
-   wuUh/EswjwNo4aN4QwbfY2xeB/ntdIlh+fZ7vV54Ji32jG7YuDQk3sa7H
-   gkiJRx1/+QxohW6PEm3fuwwQlNnacqDBFvlM9Wwos0IZMK6oOjp0HCBa+
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="372106026"
-X-IronPort-AV: E=Sophos;i="6.01,173,1684825200";
-   d="scan'208";a="372106026"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 14 Aug 2023 11:43:25 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="907311212"
-X-IronPort-AV: E=Sophos;i="6.01,173,1684825200";
-   d="scan'208";a="907311212"
-Received: from ryana2x-mobl.amr.corp.intel.com (HELO [10.212.126.76])
- ([10.212.126.76])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 14 Aug 2023 11:43:24 -0700
-Message-ID: <ca3018de-4a26-7330-fd84-45b9b4b7f339@linux.intel.com>
-Date: Mon, 14 Aug 2023 12:02:46 -0500
+ unprotected) header.d=google.com header.i=@google.com header.a=rsa-sha256
+ header.s=20221208 header.b=F8z1jnL4
+Received: by mail-pg1-x533.google.com with SMTP id
+ 41be03b00d2f7-5657add1073so2072581a12.0
+        for <alsa-devel@alsa-project.org>;
+ Mon, 14 Aug 2023 13:20:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1692044441; x=1692649241;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=eUCcq2SiexmlsG3ryBeTuRdj/QbPyChxBWalOaaO2rQ=;
+        b=F8z1jnL4DjIoBB5oRHiWRC1B+e9BBjE9Jcazm3ARz4g6DPzk4dKRWk16ZudowTFcnX
+         r6dgcNsijPVDM3GEJjQ7/fNKxTxVydg85YiL0jOtw4XZKOd8nfUiv0oGcRr4s3DdIVha
+         btpC58r9huQkpXUTUYhPqmnqxVLmaU7uEjyH0fT5AG19d7B7szVmijV7R4RlXWstYTm0
+         P0VFxwV+jwzXQqnR+v8D/HhqtWpnFlfOmDeAwt3k9hAXMsZugaHRTdXvboyuuifXyiTM
+         ti1GmHkBKxhLIk/UfrOZWsJfFGuAYm/bMEGUjSh1dyIQrpHhGn4RRzSmf5UV/WOVY7la
+         q+zQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692044441; x=1692649241;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=eUCcq2SiexmlsG3ryBeTuRdj/QbPyChxBWalOaaO2rQ=;
+        b=YmENhO4DE3t5eSZDCSGzMW6I62t13U4A6a1Kpx1NBKmhqt5paLlsqFn5njzoFjYB+2
+         yby9TWh1UBdV3PPSE0pG8EEaOeWgyKsPpsGyxw7sZgxu4EyUDugS8x3w9rjqBjr8YIxH
+         EYFCrsxOC6C9FvCRgYxRenT0P8Cv8UKiMlFSetRi1sWVi3Z4UxjBJ9BmJ1TzVLmpvnyV
+         lUz7gc+XadK3L2mModWf7C9S0Qw7KYfHO8hc771/JT8YBbzJ0c2kNtMumL/yYnY9Qquo
+         W9nIv9dmMW0X+C7gP9KtO7RYXdEMpdVNeLAhjbJmSMVi8PwWgwodEnhAh2Xk2/XpakBS
+         CMxg==
+X-Gm-Message-State: AOJu0YySz28ZFhEXtzNgSo2FeOq8x/5hcbFf9pmg0gk7Hg7KgNw3jkLf
+	5TL+y4Ee7SBWJg2U5trKhpcYLpg8kqAkbxHoAtcs7Q==
+X-Google-Smtp-Source: 
+ AGHT+IF02tNmtlMEmPmu66nbFSEx2aZbA2frt/J3983u6fWnjdhh/Z44JChxBujupefCmgutT/Um4qogs6qJvIfdBFU=
+X-Received: by 2002:a17:90a:9ce:b0:268:2f6:61c4 with SMTP id
+ 72-20020a17090a09ce00b0026802f661c4mr41803pjo.12.1692044440806; Mon, 14 Aug
+ 2023 13:20:40 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.13.0
-Subject: Re: [RFC PATCH 13/17] ASoC: SOF: Intel: Switch to new stream-format
- interface
-Content-Language: en-US
-To: Cezary Rojewski <cezary.rojewski@intel.com>
-Cc: alsa-devel@alsa-project.org, amadeuszx.slawinski@linux.intel.com,
- hdegoede@redhat.com, broonie@kernel.org, tiwai@suse.com, perex@perex.cz
-References: <20230811164853.1797547-1-cezary.rojewski@intel.com>
- <20230811164853.1797547-14-cezary.rojewski@intel.com>
- <0474e41a-0e69-d739-1e4a-cdc555e6fbd0@linux.intel.com>
- <fef42075-44f8-c897-c05a-180dd30f5b37@intel.com>
- <389f2953-1463-34f1-b720-92af800aad5d@linux.intel.com>
- <5b31b859-5130-fcce-4104-4cc8cc0e41e4@intel.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <5b31b859-5130-fcce-4104-4cc8cc0e41e4@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: IQBYJBFWBRDO2IPLHKID2S5LXF6SURWU
-X-Message-ID-Hash: IQBYJBFWBRDO2IPLHKID2S5LXF6SURWU
-X-MailFrom: pierre-louis.bossart@linux.intel.com
+References: <20230807135207.17708-1-tiwai@suse.de>
+ <CAOReqxhV=gfwNpxnEU+ruOx6gjD2BSZbYPJ6+iWzkPCidFmCBA@mail.gmail.com>
+ <CAOReqxgCDdXAEyF8pt4dePQ2H_ub=hYczvO1xGpKWAt35z5B2Q@mail.gmail.com>
+ <87o7jgfxgj.wl-tiwai@suse.de> <87sf8se471.wl-tiwai@suse.de>
+ <CAOReqxjnWruX20YyUcAjwv8zLourFv4hUKGq9_1FBsXA6Fra9Q@mail.gmail.com>
+ <87ttt3pdp5.wl-tiwai@suse.de>
+In-Reply-To: <87ttt3pdp5.wl-tiwai@suse.de>
+From: Curtis Malainey <cujomalainey@google.com>
+Date: Mon, 14 Aug 2023 13:20:29 -0700
+Message-ID: 
+ <CAOReqxhtcyePP+B6egNufuzM_ML3W7PVPNEENqxDfa605DoP9w@mail.gmail.com>
+Subject: Re: [PATCH RFC 0/6] ALSA: Fix UAF with delayed kobj release
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Curtis Malainey <cujomalainey@chromium.org>,
+	Stephen Boyd <swboyd@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Message-ID-Hash: 2WCO43HV7SAOPF7ZSGXQMDDNPVWGHNJW
+X-Message-ID-Hash: 2WCO43HV7SAOPF7ZSGXQMDDNPVWGHNJW
+X-MailFrom: cujomalainey@google.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -100,7 +108,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IQBYJBFWBRDO2IPLHKID2S5LXF6SURWU/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2WCO43HV7SAOPF7ZSGXQMDDNPVWGHNJW/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -109,85 +117,161 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-
->>>>> To provide option for selecting different bit-per-sample than just the
->>>>> maximum one, use the new format calculation mechanism.
->>>>
->>>> Can you remind me what the issue is in selecting the maximum
->>>> resolution?
->>>>
->>>> Isn't it a good thing to select the maximum resolution when possible so
->>>> as to provide more headroom and prevent clipping? Usually we try to
->>>> make
->>>> sure the resolution becomes limited when we reach the analog parts.
->>>> I am
->>>> not sure I see a compelling reason to reduce the resolution on the host
->>>> side.
->>>
->>> Maximum resolution is still the default, nothing changes there.
->>> Moreover, new subformat options are not added to any driver apart from
->>> the avs-driver.
->>
->> What's so special about this driver that it needs more capabilities for
->> a standard interface?
-> 
-> This is kind of an off-topic question.
-> 
-> While maintaining status quo from user perspective, we want to test the
-> hardware with full-stack, just like it's the case on Windows side.
-> Tested hardware yields less recommended flows.
-
-yeah, but at some point you have to draw a line. It's not because the
-codec exposes all kinds of capabilities that you want the host driver to
-enable each single possible option.
-
-Take I2S codecs for example, there are countless degrees of freedom
-between 18, 20, 24, 32 bits and all sorts of formatting (DSP_X, I2S),
-slot size, etc. We use the same subsets in 90% of the cases.
-
->>> The patchset provides _an option_ to change bits-per-sample. Right now
->>> there's no option to do that so the hardware - here, SDxFMT and PPLCxFMT
->>> - is not tested. We have enough recommended flows already. Frankly there
->>> is one for SDxFMT for the APL-based platforms (or BXT-based if one
->>> prefers that naming) present within snd_hda_intel and DSP drivers alike.
->>>
->>>> I am also not sure what this patch actually changes, given that the
->>>> firmware actually converts everything to the full 32-bit resolution.
->>>
->>> The issue does not concern firmware, so we leave firmware out of the
->>> discussion - this is purely about hardware capabilities.
->>
->> I don't see how you can leave firmware aside, if the hardware
->> configuration is selected to be based on 24 bits and the firmware
->> generated 32 there's clearly a mismatch.
->>
->> If this is saying that we are adding an option that will never be used,
->> then why bother?
->>
->> Lost in space on this one.
-> 
-> We are still on planet Earth though. Many codecs present on the market
-> support more than just 24/32 format. It is a valid testcase to check if
-> indeed the exposed functionality works.
-
-Sure, if you have spare cycles you can test all kinds of things, but the
-impact on products will be very limited. No one in their right mind is
-going to use 20 bits even if the codec advertises support for it. The
-recommended practice is to use the maximum resolution on the host side.
-
-It's not because we *can* use a lower resolution that we *should*.
-
-> In regard to firmware, please note that the AudioDSP firmware has no
-> direct access to the HOST space, so it cannot alter SDxFMT and PPLCxFMT
-> on its own. Hardcoding particular YYYxFMT value restricts testing
-> capabilities. The firmware expects that provided valid and container bit
-> depths values (copier's INIT_INSTANCE) match YYYxFMT the software had
-> assigned.
-
-what could possibly go wrong here...completely different layers that
-need to be joined to reconcile codec-specific information. D'oh.
-
-I am not going to object further to these patches, I just don't see them
-as having any material impact on any of the existing/future products.
+On Sun, Aug 13, 2023 at 1:08=E2=80=AFAM Takashi Iwai <tiwai@suse.de> wrote:
+>
+> On Wed, 09 Aug 2023 23:11:45 +0200,
+> Curtis Malainey wrote:
+> >
+> > >
+> > > And now looking back at kobj code and device code, they do refcount
+> > > parent objects.  Maybe the problem is in our side -- the all devices
+> > > are created with the original real device as the parent, including th=
+e
+> > > card_dev, while there are some dependencies among children.  So, if w=
+e
+> > > build up a proper tree, pci_dev -> card_dev -> ctl_dev, pcm_dev, etc,
+> > > one of the problems could be solved.  It's more or less similar as
+> > > what I suggested initially (referring card_dev at pcm), while changin=
+g
+> > > the parent would make it implicitly.
+> >
+> > Yes I think this would be the long term proper way to go, that way
+> > parents just put children and remove their reference, then they
+> > cleanup on their own time making everyone happy. My first patch was a
+> > very lazy attempt that, if we wanted to do the right thing we would
+> > obviously have to split the structs and free functions to operate in
+> > their own release. If you have time feel free to take another swing at
+> > the patches, otherwise I won't be able to start until next week.
+>
+> Now looking back at the problem again, I noticed that actually my
+> previous comment was wrong: as default, the device dependencies aren't
+> kept at the release time, but it's already cleared at device_del()
+> call.  The device_del() calls kobject_del() and put_device(parent).
+> So after this moment, both device releases become independent, and
+> it'll hit a problem if the released object has still some dependency
+> (such as the case of card vs ctl_dev in our case).
+>
+> An extra dependency to card_dev as I put in my early patch would "fix"
+> it.  But, there is yet another problem: the call of dev_free call for
+> snd_device object with SNDRV_DEV_LOWLEVEL can happen before releasing
+> PCM and other devices when the delayed kobj release is enabled.  And,
+> usually this callback does release the top-level resources, which
+> might be still accessed during the other releases.
 
 
+I was doing some testing late last week that confirms these fears
+actually. Basically the rig was opening a non-blocking PCM and just
+never sending data, removing the hw sound device (in this case a USB
+peripheral) but not closing the userspace app. As a result kobjects
+were released out of order with the top level "sound" being released
+at disconnect of the USB device, but the actual card not being
+released until the app closed. See annotated logs below
+
+[  690.528577] kobject: 'sound' (00000000266cd308):
+kobject_add_internal: parent: '3-9:1.0', set: '(null)' <----- plug in
+device
+[  690.528607] kobject: 'card1' (00000000f7fa0903):
+kobject_add_internal: parent: 'sound', set: 'devices'
+[  690.528732] kobject: 'card1' (00000000f7fa0903): kobject_uevent_env
+[  690.528756] kobject: 'card1' (00000000f7fa0903): fill_kobj_path:
+path =3D '/devices/pci0000:00/0000:00:14.0/usb3/3-9/3-9:1.0/sound/card1'
+[  690.528988] kobject: 'pcmC1D0p' (0000000095ff4473):
+kobject_add_internal: parent: 'card1', set: 'devices'
+[  690.529640] kobject: 'pcmC1D0p' (0000000095ff4473): fill_kobj_path:
+path =3D '/devices/pci0000:00/0000:00:14.0/usb3/3-9/3-9:1.0/sound/card1/pcm=
+C1D0p'
+[  690.529778] kobject: 'pcmC1D0c' (00000000c4879d24):
+kobject_add_internal: parent: 'card1', set: 'devices'
+[  690.530006] kobject: 'pcmC1D0c' (00000000c4879d24): fill_kobj_path:
+path =3D '/devices/pci0000:00/0000:00:14.0/usb3/3-9/3-9:1.0/sound/card1/pcm=
+C1D0c'
+[  690.530108] kobject: 'controlC1' (00000000a0a25449):
+kobject_add_internal: parent: 'card1', set: 'devices'
+[  690.530373] kobject: 'controlC1' (00000000a0a25449):
+fill_kobj_path: path =3D
+'/devices/pci0000:00/0000:00:14.0/usb3/3-9/3-9:1.0/sound/card1/controlC1'
+[  690.671889] kobject: 'card1' (00000000f7fa0903): kobject_uevent_env
+[  690.671906] kobject: 'card1' (00000000f7fa0903): fill_kobj_path:
+path =3D '/devices/pci0000:00/0000:00:14.0/usb3/3-9/3-9:1.0/sound/card1'
+[  700.009244] kobject: 'controlC1' (00000000a0a25449):
+fill_kobj_path: path =3D
+'/devices/pci0000:00/0000:00:14.0/usb3/3-9/3-9:1.0/sound/card1/controlC1'
+[  700.010131] kobject: 'pcmC1D0p' (0000000095ff4473): fill_kobj_path:
+path =3D '/devices/pci0000:00/0000:00:14.0/usb3/3-9/3-9:1.0/sound/card1/pcm=
+C1D0p'
+[  700.011344] kobject: 'pcmC1D0c' (00000000c4879d24): fill_kobj_path:
+path =3D '/devices/pci0000:00/0000:00:14.0/usb3/3-9/3-9:1.0/sound/card1/pcm=
+C1D0c'
+[  700.012916] kobject: 'card1' (00000000f7fa0903): kobject_uevent_env
+[  700.012951] kobject: 'card1' (00000000f7fa0903): fill_kobj_path:
+path =3D '/devices/pci0000:00/0000:00:14.0/usb3/3-9/3-9:1.0/sound/card1'
+ <---- start blocked playback here
+[  700.013057] kobject: 'sound' (00000000266cd308): kobject_release,
+parent 0000000000000000 (delayed 1000) <--- unplug usb device
+[  701.054221] kobject: 'sound' (00000000266cd308): kobject_cleanup,
+parent 0000000000000000
+[  701.054236] kobject: 'sound' (00000000266cd308): calling ktype release
+[  701.054257] kobject: 'sound': free name
+[  713.639843] kobject: 'card1' (00000000f7fa0903): kobject_release,
+parent 0000000000000000 (delayed 3000) <--- Send EOF to playback
+stream
+[  716.669776] kobject: 'card1' (00000000f7fa0903): kobject_cleanup,
+parent 0000000000000000
+[  716.669810] kobject: 'card1' (00000000f7fa0903): calling ktype release
+[  716.670834] kobject: 'card1': free name
+
+>
+>
+> So, if we tie the object resource with each struct device release, we
+> have a lot of works:
+> 1. Add extra dependencies among device hierarchy
+> 2. Don't use card_dev refcount for managing the sync to device closes,
+>    introduce another kref instead; otherwise card_dev refcount would
+>    never reach to zero
+> 3. Fix race of devres vs card_dev release
+> 4. Move the second half part of snd_card_do_free() to the release
+>    callback of card_dev itself to sync with the top-level release
+> 5. Rewrite all SNDRV_DEV_LOWLEVEL usages to be called via
+>    card->private_free or such;
+>    maybe the only problem is hda_intel.c and hda_tegra.c that need
+>    some work at the disconnection time, and we may introduce another
+>    hook in the card object to replace that
+>
+> And, at this moment, I feel that it'd be easier to go back to the
+> early way of device management, i.e. it'll be just like your patch,
+> managing the device object independently from the rest resources.
+> (This means also that the way freeing the resource for hwdep and
+>  rawmidi will go back again without the embedded device, too; they
+>  also suffer from the same problem of .)
+
+I agree, I think as a simple stopgap, my earlier patch would at least
+appease the test until we can figure out the best way to do some
+heavier work on the kobj. I think the proxy pointer for devres would
+also be the best short term for 3.
+
+>
+> The change 2 and 3 above can be still applied with your change, which
+> will fix the remaining devres-vs-card_dev problem.
+
+I am not sure I follow the need for 2. If we broke ctl_dev out into
+its own memory region and structured everything as a proper tree we
+would have a proper cleanup and be able to use the refcounting
+properly.
+
+>
+> Once after fixing the current problem, we may work further on other
+> stuff (e.g. item 5), so that we can switch again to the device-release
+> model eventually later, too.
+
+Agreed, I don't have any experience with SNDRV_DEV_LOWLEVEL but I am
+happy to help out here where I can.
+
+I am going to see if I can split the release card as mentioned but
+also have refcount work as expected and have the release calls roll up
+the tree.
+
+Curtis
+
+>
+>
+> Takashi
