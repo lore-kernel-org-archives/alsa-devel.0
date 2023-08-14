@@ -4,98 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6F090C001DB
-	for <alsa-devel@archiver.kernel.org>; Mon, 14 Aug 2023 11:58:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D6919C001B0
+	for <alsa-devel@archiver.kernel.org>; Mon, 14 Aug 2023 11:58:45 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8DCDC74C;
-	Mon, 14 Aug 2023 13:57:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8DCDC74C
+	by alsa0.perex.cz (Postfix) with ESMTPS id AD65D7F1;
+	Mon, 14 Aug 2023 13:57:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AD65D7F1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1692014299;
-	bh=Uo9RpRrq+tqE4aFp6WNuHO0ow2NiLxasnDduIp+UAqw=;
+	s=default; t=1692014323;
+	bh=jKX6+VbjJeDIRhh7Ey7VbwUY0e6tHoKah/voBAzjDTM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=O0QlSUQgOrXnhHYu1RRWfRNWx+zI0OJr4dTxYVCyCgkiDItzO6f9hAY4Vv5UacsqI
-	 gLy4bdzsvTvVY4oHkFCQbLDXI4WjmU7YkWgxrGszKol7g0Y0N/2AZxvmsnbng8L18s
-	 imQvdI8D7y5ykUj6KRqaa+c6Uees771O9iLNuUSk=
+	b=L1U+/uh+4OIEbitaM8OZDBBx2R34R/jh2P1BvILJQGtkjR5mv9e38OgkMiGfAMlfP
+	 T51s7FKRQra6Q88K0VYYq2yCFp1oG2V2QTRfway4FU2siNoOwOsOkEQUOg41HI0GwB
+	 rVKR9jNJ4piY9Fh4NiajIc1lGQjU/6LgAysjTvSw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 53609F80510; Mon, 14 Aug 2023 13:57:02 +0200 (CEST)
+	id 469E3F80254; Mon, 14 Aug 2023 13:57:04 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id CFF10F8025F;
-	Mon, 14 Aug 2023 13:57:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 75614F80254;
+	Mon, 14 Aug 2023 13:57:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BEF6EF8055A; Mon, 14 Aug 2023 13:55:50 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2001:67c:2178:6::1d])
+	id 8FEDBF8056F; Mon, 14 Aug 2023 13:55:55 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 87316F801EB
-	for <alsa-devel@alsa-project.org>; Mon, 14 Aug 2023 13:55:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 87316F801EB
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6F2DCF8025F
+	for <alsa-devel@alsa-project.org>; Mon, 14 Aug 2023 13:55:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6F2DCF8025F
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=uAHti5OU;
+ header.s=susede2_rsa header.b=V9QV+xTy;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=/BNv0d28
+ header.s=susede2_ed25519 header.b=9OYnNMGL
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id EF9C61F383;
-	Mon, 14 Aug 2023 11:55:42 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id ED1B02199A;
+	Mon, 14 Aug 2023 11:55:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1692014142;
+	t=1692014144;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=jL1kZwcY6dMGheLY8VT1W4i0RrpIBAIOY7mmAx3IYPo=;
-	b=uAHti5OULqy1iJ5qmMzTrzOF6pTrc5xqpfsWoBPDm1NJkWLKqcY0eF0MuZyco55vDqFy/3
-	04s0QtHEHSRP+hcqGnX8XGhcj/VrRuA2crNQfdR0/x89+A2KvGmvhUouUQqagQ0LzOYgs6
-	kuO68j+1j9veDlPvIVWFOpHC/4Zt0Tg=
+	bh=nQB22YUaqqsp9Lcc9VpyXGAbecK3pOiPSKbU17qgYNI=;
+	b=V9QV+xTyT5G0+dZBA/zXvJVOsxOew8RJnlA/Cd+nUJSm4kOG+/WtY7LuiO6NApubG4yB/M
+	hX+MERsd0qVp0CTAl+DV9aHV9bXzV0HocuJAtBvoKtWwrLoYYzMwnBclBQYr0Hp93t0xlv
+	r59MQUnWwuX39sMc0jPfzmmPoFBWnVg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1692014142;
+	s=susede2_ed25519; t=1692014144;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=jL1kZwcY6dMGheLY8VT1W4i0RrpIBAIOY7mmAx3IYPo=;
-	b=/BNv0d28eGiNeGRIzGncA5HIj+CcukrrsT4YlPvInlRECmfiNmi/JQX1Jspu0ikpcRa+g3
-	2552VMJ97kmHkoBg==
+	bh=nQB22YUaqqsp9Lcc9VpyXGAbecK3pOiPSKbU17qgYNI=;
+	b=9OYnNMGLdG5qDbG6B9FMxTf/mk7nEbquTyrzNOkI/DDsv7dkLFo+ectsH46Sb0kLM+ciAq
+	SHtnVGtd37nwe2DQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CA617138EE;
-	Mon, 14 Aug 2023 11:55:42 +0000 (UTC)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BC7B0138EE;
+	Mon, 14 Aug 2023 11:55:44 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id ENERMD4W2mRnMAAAMHmgww
-	(envelope-from <tiwai@suse.de>); Mon, 14 Aug 2023 11:55:42 +0000
+	id 2P0kLUAW2mRnMAAAMHmgww
+	(envelope-from <tiwai@suse.de>); Mon, 14 Aug 2023 11:55:44 +0000
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
 Cc: linux-kernel@vger.kernel.org,
-	Takashi Iwai <tiwai@suse.de>,
-	Alexander Viro <viro@zeniv.linux.org.uk>
-Subject: [PATCH 01/25] iov_iter: Export import_ubuf()
-Date: Mon, 14 Aug 2023 13:54:59 +0200
-Message-Id: <20230814115523.15279-2-tiwai@suse.de>
+	Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 03/25] ALSA: core: Add memory copy helpers between iov_iter
+ and iomem
+Date: Mon, 14 Aug 2023 13:55:01 +0200
+Message-Id: <20230814115523.15279-4-tiwai@suse.de>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <20230814115523.15279-1-tiwai@suse.de>
 References: <20230814115523.15279-1-tiwai@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: TKLX4G5J7JOAEXGSESKCJGOB4OUGFJ7Z
-X-Message-ID-Hash: TKLX4G5J7JOAEXGSESKCJGOB4OUGFJ7Z
+Message-ID-Hash: NBGUABJXOTSFE33O2D55OGG4OPMHNKJ6
+X-Message-ID-Hash: NBGUABJXOTSFE33O2D55OGG4OPMHNKJ6
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -108,38 +107,153 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TKLX4G5J7JOAEXGSESKCJGOB4OUGFJ7Z/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NBGUABJXOTSFE33O2D55OGG4OPMHNKJ6/>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Export import_ubuf() to be used in sound subsystem for generic memory
-handling as Linus suggested.  It's used for constructing an iov_iter
-of a single segment user-space copy for PCM data.
+Add two more helpers for copying memory between iov_iter and iomem,
+which will be used by the new PCM copy ops in a few drivers.
+The existing helpers became wrappers of those now.
 
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-Link: https://lore.kernel.org/r/CAHk-=wh-mUL6mp4chAc6E_UjwpPLyCPRCJK+iB4ZMD2BqjwGHA@mail.gmail.com
+Note that copy_from/to_iter() returns the copied bytes, hence the
+error condition is inverted from copy_from/to_user().
+
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- lib/iov_iter.c | 1 +
- 1 file changed, 1 insertion(+)
+ include/sound/pcm.h |  5 ++++
+ sound/core/memory.c | 56 ++++++++++++++++++++++++++++++++++++++-------
+ 2 files changed, 53 insertions(+), 8 deletions(-)
 
-diff --git a/lib/iov_iter.c b/lib/iov_iter.c
-index e4dc809d1075..3743bbcbbb89 100644
---- a/lib/iov_iter.c
-+++ b/lib/iov_iter.c
-@@ -1544,6 +1544,7 @@ int import_ubuf(int rw, void __user *buf, size_t len, struct iov_iter *i)
- 	iov_iter_ubuf(i, rw, buf, len);
- 	return 0;
- }
-+EXPORT_SYMBOL_GPL(import_ubuf);
+diff --git a/include/sound/pcm.h b/include/sound/pcm.h
+index ff4a0c1c93a2..f75beead79e3 100644
+--- a/include/sound/pcm.h
++++ b/include/sound/pcm.h
+@@ -1559,6 +1559,11 @@ static inline u64 pcm_format_to_bits(snd_pcm_format_t pcm_format)
+ #define pcm_dbg(pcm, fmt, args...) \
+ 	dev_dbg((pcm)->card->dev, fmt, ##args)
+ 
++/* helpers for copying between iov_iter and iomem */
++int copy_to_iter_fromio(struct iov_iter *itert, const void __iomem *src,
++			size_t count);
++int copy_from_iter_toio(void __iomem *dst, struct iov_iter *iter, size_t count);
++
+ struct snd_pcm_status64 {
+ 	snd_pcm_state_t state;		/* stream state */
+ 	u8 rsvd[4];
+diff --git a/sound/core/memory.c b/sound/core/memory.c
+index 5d894dc32f7d..e5b54cd73ed6 100644
+--- a/sound/core/memory.c
++++ b/sound/core/memory.c
+@@ -9,6 +9,7 @@
+ #include <linux/io.h>
+ #include <linux/uaccess.h>
+ #include <sound/core.h>
++#include <sound/pcm.h>
  
  /**
-  * iov_iter_restore() - Restore a &struct iov_iter to the same state as when
+  * copy_to_user_fromio - copy data from mmio-space to user-space
+@@ -21,9 +22,30 @@
+  * Return: Zero if successful, or non-zero on failure.
+  */
+ int copy_to_user_fromio(void __user *dst, const volatile void __iomem *src, size_t count)
++{
++	struct iov_iter iter;
++
++	if (import_ubuf(ITER_DEST, dst, count, &iter))
++		return -EFAULT;
++	return copy_to_iter_fromio(&iter, (const void __iomem *)src, count);
++}
++EXPORT_SYMBOL(copy_to_user_fromio);
++
++/**
++ * copy_to_iter_fromio - copy data from mmio-space to iov_iter
++ * @dst: the destination iov_iter
++ * @src: the source pointer on mmio
++ * @count: the data size to copy in bytes
++ *
++ * Copies the data from mmio-space to iov_iter.
++ *
++ * Return: Zero if successful, or non-zero on failure.
++ */
++int copy_to_iter_fromio(struct iov_iter *dst, const void __iomem *src,
++			size_t count)
+ {
+ #if defined(__i386__) || defined(CONFIG_SPARC32)
+-	return copy_to_user(dst, (const void __force*)src, count) ? -EFAULT : 0;
++	return !copy_to_iter((const void __force *)src, count, dst) ? -EFAULT : 0;
+ #else
+ 	char buf[256];
+ 	while (count) {
+@@ -31,16 +53,15 @@ int copy_to_user_fromio(void __user *dst, const volatile void __iomem *src, size
+ 		if (c > sizeof(buf))
+ 			c = sizeof(buf);
+ 		memcpy_fromio(buf, (void __iomem *)src, c);
+-		if (copy_to_user(dst, buf, c))
++		if (!copy_to_iter(buf, c, dst))
+ 			return -EFAULT;
+ 		count -= c;
+-		dst += c;
+ 		src += c;
+ 	}
+ 	return 0;
+ #endif
+ }
+-EXPORT_SYMBOL(copy_to_user_fromio);
++EXPORT_SYMBOL(copy_to_iter_fromio);
+ 
+ /**
+  * copy_from_user_toio - copy data from user-space to mmio-space
+@@ -53,23 +74,42 @@ EXPORT_SYMBOL(copy_to_user_fromio);
+  * Return: Zero if successful, or non-zero on failure.
+  */
+ int copy_from_user_toio(volatile void __iomem *dst, const void __user *src, size_t count)
++{
++	struct iov_iter iter;
++
++	if (import_ubuf(ITER_SOURCE, (void __user *)src, count, &iter))
++		return -EFAULT;
++	return copy_from_iter_toio((void __iomem *)dst, &iter, count);
++}
++EXPORT_SYMBOL(copy_from_user_toio);
++
++/**
++ * copy_from_iter_toio - copy data from iov_iter to mmio-space
++ * @dst: the destination pointer on mmio-space
++ * @src: the source iov_iter
++ * @count: the data size to copy in bytes
++ *
++ * Copies the data from iov_iter to mmio-space.
++ *
++ * Return: Zero if successful, or non-zero on failure.
++ */
++int copy_from_iter_toio(void __iomem *dst, struct iov_iter *src, size_t count)
+ {
+ #if defined(__i386__) || defined(CONFIG_SPARC32)
+-	return copy_from_user((void __force *)dst, src, count) ? -EFAULT : 0;
++	return !copy_from_iter((void __force *)dst, count, src) ? -EFAULT : 0;
+ #else
+ 	char buf[256];
+ 	while (count) {
+ 		size_t c = count;
+ 		if (c > sizeof(buf))
+ 			c = sizeof(buf);
+-		if (copy_from_user(buf, src, c))
++		if (!copy_from_iter(buf, c, src))
+ 			return -EFAULT;
+ 		memcpy_toio(dst, buf, c);
+ 		count -= c;
+ 		dst += c;
+-		src += c;
+ 	}
+ 	return 0;
+ #endif
+ }
+-EXPORT_SYMBOL(copy_from_user_toio);
++EXPORT_SYMBOL(copy_from_iter_toio);
 -- 
 2.35.3
 
