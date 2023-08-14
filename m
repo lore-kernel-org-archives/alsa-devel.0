@@ -4,97 +4,101 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C3DB9C001DB
-	for <alsa-devel@archiver.kernel.org>; Mon, 14 Aug 2023 12:04:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0AB3FC001DB
+	for <alsa-devel@archiver.kernel.org>; Mon, 14 Aug 2023 12:04:52 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B5ABAEAF;
-	Mon, 14 Aug 2023 14:03:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B5ABAEAF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2AA5EEB3;
+	Mon, 14 Aug 2023 14:04:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2AA5EEB3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1692014674;
-	bh=gApq1H8D3zA77fLoCECVg5yF9obQ+GBSITTsYlfImgc=;
+	s=default; t=1692014690;
+	bh=QrIbT7Rvgg/9V/tCoBYfGp4RznHN325hpqzqTCdxAUc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=kQlQ4KoE9uk33TThaYWAh8muh3OZvW08j9TfHhxQZyVTHWSXbOhcVKXrclkj8pD8x
-	 a7g9WOCZ81P5GEOZqa5qPUgzwMr1on3rEiGcWYIwXkSjRJpMPE30xG93OU3TFXn3jf
-	 Y7DgGupxCwnlX4Py/ebXlWuR0OWHnfnKuOXuZT7o=
+	b=UgXepxbT9MA/a98WiP84BxEarYBDEWwJzD/MRAuIO9b0zby9NAQZQqf025y5sqszC
+	 WctH/eVMIP4u+8n4V/eXUjAJ/j6bkxHu2zA026a5kIIfGEWBiQ81kAjF3Z9s1zyLXL
+	 7o/QrYI3/m1v8Mqdx5NfOKiRZWH3XYmtZI4lLQ98=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E07D4F80685; Mon, 14 Aug 2023 13:57:54 +0200 (CEST)
+	id 9ECF0F80697; Mon, 14 Aug 2023 13:57:56 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 427F3F80536;
-	Mon, 14 Aug 2023 13:57:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CB36EF80695;
+	Mon, 14 Aug 2023 13:57:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A5388F80254; Mon, 14 Aug 2023 13:56:31 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+	id 0EA98F80254; Mon, 14 Aug 2023 13:56:34 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id CB721F80571
-	for <alsa-devel@alsa-project.org>; Mon, 14 Aug 2023 13:55:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CB721F80571
+	by alsa1.perex.cz (Postfix) with ESMTPS id 3B00EF80568
+	for <alsa-devel@alsa-project.org>; Mon, 14 Aug 2023 13:55:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3B00EF80568
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=WbY4jj3/;
+ header.s=susede2_rsa header.b=f4jVwNPq;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=099nYc38
+ header.s=susede2_ed25519 header.b=TYKQwET7
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id B21791FD6A;
-	Mon, 14 Aug 2023 11:55:57 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 16CF521992;
+	Mon, 14 Aug 2023 11:55:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1692014157;
+	t=1692014156;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=DzfPkrsHVrap+B5JD7fqRR+3BmI5kvbs99homa/INDo=;
-	b=WbY4jj3/sk00FggPcUN6O0aD11Ah7Xhq+9Ug/mn6uRgymnckvhjVFU6IXtJSwKdQ+dk/2F
-	Yo/d032FvvXeB8krreZ/19OZkriFdaDStfhsTIy1uA7WzBm919g5MiiVnx/TSdrbROjrAG
-	lrYKqiLMEQUOOb9NKAlWSEsgEK2AGl4=
+	bh=n808a4+xHQ7QkYnImdaOPO/XS9ZeoOuNos6MXCLoDQg=;
+	b=f4jVwNPqaSekTafzEYgKqT65O+6RetjgJUK/t8pTxehTDjvAouzBbiJcJjqEcoED79mdMA
+	oPPqjmJuZYuvz09pH2JVIII5OyA2nDVAInDLMqj6FMD3+ncErg3MaNog3mNmQUN25ImbXB
+	eCmbUlx6HL1rEe7CyK2xfYtuPXvD6jA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1692014157;
+	s=susede2_ed25519; t=1692014156;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=DzfPkrsHVrap+B5JD7fqRR+3BmI5kvbs99homa/INDo=;
-	b=099nYc389SygLDTBfFZDK/anaM2wRHsyU4Xjdu8kvoIqxfk4wm3T2Fest5dDR87Ll+kAnz
-	HVUVFF0jBqvphtDQ==
+	bh=n808a4+xHQ7QkYnImdaOPO/XS9ZeoOuNos6MXCLoDQg=;
+	b=TYKQwET7QkFMKpdj3Q/o4fIEg9X3IfQ0X/VNEY/WWBVS1u1t4ymCNdD83xPQqYdgLerIrj
+	iJaYIGpiJDfvHGAQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9181E138EE;
-	Mon, 14 Aug 2023 11:55:57 +0000 (UTC)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D2EDC138EE;
+	Mon, 14 Aug 2023 11:55:55 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id UEaxIU0W2mRnMAAAMHmgww
-	(envelope-from <tiwai@suse.de>); Mon, 14 Aug 2023 11:55:57 +0000
+	id cJaeMksW2mRnMAAAMHmgww
+	(envelope-from <tiwai@suse.de>); Mon, 14 Aug 2023 11:55:55 +0000
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
 Cc: linux-kernel@vger.kernel.org,
-	Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 25/25] ALSA: pcm: Drop obsoleted PCM copy_user and copy_kernel
- ops
-Date: Mon, 14 Aug 2023 13:55:23 +0200
-Message-Id: <20230814115523.15279-26-tiwai@suse.de>
+	Takashi Iwai <tiwai@suse.de>,
+	Lars-Peter Clausen <lars@metafoo.de>,
+	Claudiu Beznea <claudiu.beznea@microchip.com>,
+	Mark Brown <broonie@kernel.org>,
+	Olivier Moysan <olivier.moysan@foss.st.com>,
+	Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Subject: [PATCH 22/25] ASoC: dmaengine: Use iov_iter for process callback, too
+Date: Mon, 14 Aug 2023 13:55:20 +0200
+Message-Id: <20230814115523.15279-23-tiwai@suse.de>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <20230814115523.15279-1-tiwai@suse.de>
 References: <20230814115523.15279-1-tiwai@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: KMYR2N6KLHKV57N6OOZLXM5PZCV7FMT2
-X-Message-ID-Hash: KMYR2N6KLHKV57N6OOZLXM5PZCV7FMT2
+Message-ID-Hash: AGC3OPXRQ5VG7HQFCRKKJTJ7VZ5ZGQD7
+X-Message-ID-Hash: AGC3OPXRQ5VG7HQFCRKKJTJ7VZ5ZGQD7
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -107,7 +111,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KMYR2N6KLHKV57N6OOZLXM5PZCV7FMT2/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AGC3OPXRQ5VG7HQFCRKKJTJ7VZ5ZGQD7/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -116,88 +120,89 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Finally all users have been converted to the new PCM copy ops, let's
-drop the obsoleted copy_kernel and copy_user ops completely.
+Along with the conversion to PCM copy ops, use the iov_iter for the
+pointer to be passed to the dmaengine process callback, too.  It
+avoids the direct reference of iter_iov_addr(), and it can potentially
+help for the drivers to access memory properly (although both atmel
+and stm drivers don't use the given buffer address at all for now).
 
+Cc: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Claudiu Beznea <claudiu.beznea@microchip.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Olivier Moysan <olivier.moysan@foss.st.com>
+Cc: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- include/sound/pcm.h     |  5 -----
- sound/core/pcm_lib.c    | 18 +-----------------
- sound/core/pcm_native.c |  2 +-
- 3 files changed, 2 insertions(+), 23 deletions(-)
+ include/sound/dmaengine_pcm.h         | 2 +-
+ sound/soc/atmel/mchp-pdmc.c           | 2 +-
+ sound/soc/soc-generic-dmaengine-pcm.c | 5 ++---
+ sound/soc/stm/stm32_sai_sub.c         | 2 +-
+ 4 files changed, 5 insertions(+), 6 deletions(-)
 
-diff --git a/include/sound/pcm.h b/include/sound/pcm.h
-index f75beead79e3..958a0b284b5f 100644
---- a/include/sound/pcm.h
-+++ b/include/sound/pcm.h
-@@ -71,11 +71,6 @@ struct snd_pcm_ops {
- 			    unsigned long pos, unsigned long bytes);
- 	int (*copy)(struct snd_pcm_substream *substream, int channel,
- 		    unsigned long pos, struct iov_iter *iter, unsigned long bytes);
--	int (*copy_user)(struct snd_pcm_substream *substream, int channel,
--			 unsigned long pos, void __user *buf,
--			 unsigned long bytes);
--	int (*copy_kernel)(struct snd_pcm_substream *substream, int channel,
--			   unsigned long pos, void *buf, unsigned long bytes);
- 	struct page *(*page)(struct snd_pcm_substream *substream,
- 			     unsigned long offset);
- 	int (*mmap)(struct snd_pcm_substream *substream, struct vm_area_struct *vma);
-diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
-index 3303914c58ea..4859fb1caec9 100644
---- a/sound/core/pcm_lib.c
-+++ b/sound/core/pcm_lib.c
-@@ -2031,19 +2031,6 @@ static int default_read_copy(struct snd_pcm_substream *substream,
- 	return 0;
- }
+diff --git a/include/sound/dmaengine_pcm.h b/include/sound/dmaengine_pcm.h
+index 2df54cf02cb3..c9a8bce9a785 100644
+--- a/include/sound/dmaengine_pcm.h
++++ b/include/sound/dmaengine_pcm.h
+@@ -142,7 +142,7 @@ struct snd_dmaengine_pcm_config {
+ 			struct snd_pcm_substream *substream);
+ 	int (*process)(struct snd_pcm_substream *substream,
+ 		       int channel, unsigned long hwoff,
+-		       void *buf, unsigned long bytes);
++		       struct iov_iter *buf, unsigned long bytes);
+ 	dma_filter_fn compat_filter_fn;
+ 	struct device *dma_dev;
+ 	const char *chan_names[SNDRV_PCM_STREAM_LAST + 1];
+diff --git a/sound/soc/atmel/mchp-pdmc.c b/sound/soc/atmel/mchp-pdmc.c
+index c79c73e6791e..b3afcf25b4a9 100644
+--- a/sound/soc/atmel/mchp-pdmc.c
++++ b/sound/soc/atmel/mchp-pdmc.c
+@@ -962,7 +962,7 @@ static int mchp_pdmc_dt_init(struct mchp_pdmc *dd)
+ /* used to clean the channel index found on RHR's MSB */
+ static int mchp_pdmc_process(struct snd_pcm_substream *substream,
+ 			     int channel, unsigned long hwoff,
+-			     void *buf, unsigned long bytes)
++			     struct iov_iter *buf, unsigned long bytes)
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	u8 *dma_ptr = runtime->dma_area + hwoff +
+diff --git a/sound/soc/soc-generic-dmaengine-pcm.c b/sound/soc/soc-generic-dmaengine-pcm.c
+index 1a4f000fddb9..6dee033ab9b9 100644
+--- a/sound/soc/soc-generic-dmaengine-pcm.c
++++ b/sound/soc/soc-generic-dmaengine-pcm.c
+@@ -296,18 +296,17 @@ static int dmaengine_copy(struct snd_soc_component *component,
+ 	struct dmaengine_pcm *pcm = soc_component_to_pcm(component);
+ 	int (*process)(struct snd_pcm_substream *substream,
+ 		       int channel, unsigned long hwoff,
+-		       void *buf, unsigned long bytes) = pcm->config->process;
++		       struct iov_iter *buf, unsigned long bytes) = pcm->config->process;
+ 	bool is_playback = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
+ 	void *dma_ptr = runtime->dma_area + hwoff +
+ 			channel * (runtime->dma_bytes / runtime->channels);
+-	void *ptr = (void __force *)iter_iov_addr(buf);
  
--/* a wrapper for calling old copy_kernel or copy_user ops */
--static int call_old_copy(struct snd_pcm_substream *substream,
--			 int channel, unsigned long hwoff,
--			 struct iov_iter *iter, unsigned long bytes)
--{
--	if (iov_iter_is_kvec(iter))
--		return substream->ops->copy_kernel(substream, channel, hwoff,
--						   iter_iov_addr(iter), bytes);
--	else
--		return substream->ops->copy_user(substream, channel, hwoff,
--						 iter_iov_addr(iter), bytes);
--}
--
- /* call transfer with the filled iov_iter */
- static int do_transfer(struct snd_pcm_substream *substream, int c,
- 		       unsigned long hwoff, void *data, unsigned long bytes,
-@@ -2147,7 +2134,7 @@ static int pcm_sanity_check(struct snd_pcm_substream *substream)
- 	if (PCM_RUNTIME_CHECK(substream))
- 		return -ENXIO;
- 	runtime = substream->runtime;
--	if (snd_BUG_ON(!substream->ops->copy && !substream->ops->copy_user && !runtime->dma_area))
-+	if (snd_BUG_ON(!substream->ops->copy && !runtime->dma_area))
- 		return -EINVAL;
- 	if (runtime->state == SNDRV_PCM_STATE_OPEN)
- 		return -EBADFD;
-@@ -2255,9 +2242,6 @@ snd_pcm_sframes_t __snd_pcm_lib_xfer(struct snd_pcm_substream *substream,
- 	} else {
- 		if (substream->ops->copy)
- 			transfer = substream->ops->copy;
--		else if ((in_kernel && substream->ops->copy_kernel) ||
--			 (!in_kernel && substream->ops->copy_user))
--			transfer = call_old_copy;
- 		else
- 			transfer = is_playback ?
- 				default_write_copy : default_read_copy;
-diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index 34efd4d198d6..bd9ddf412b46 100644
---- a/sound/core/pcm_native.c
-+++ b/sound/core/pcm_native.c
-@@ -809,7 +809,7 @@ static int snd_pcm_hw_params(struct snd_pcm_substream *substream,
- 		runtime->boundary *= 2;
+ 	if (is_playback)
+ 		if (!copy_from_iter(dma_ptr, bytes, buf))
+ 			return -EFAULT;
  
- 	/* clear the buffer for avoiding possible kernel info leaks */
--	if (runtime->dma_area && !substream->ops->copy && !substream->ops->copy_user) {
-+	if (runtime->dma_area && !substream->ops->copy) {
- 		size_t size = runtime->dma_bytes;
+ 	if (process) {
+-		int ret = process(substream, channel, hwoff, ptr, bytes);
++		int ret = process(substream, channel, hwoff, buf, bytes);
+ 		if (ret < 0)
+ 			return ret;
+ 	}
+diff --git a/sound/soc/stm/stm32_sai_sub.c b/sound/soc/stm/stm32_sai_sub.c
+index 271ec5b3378d..39f9b4654fa2 100644
+--- a/sound/soc/stm/stm32_sai_sub.c
++++ b/sound/soc/stm/stm32_sai_sub.c
+@@ -1233,7 +1233,7 @@ static const struct snd_soc_dai_ops stm32_sai_pcm_dai_ops = {
  
- 		if (runtime->info & SNDRV_PCM_INFO_MMAP)
+ static int stm32_sai_pcm_process_spdif(struct snd_pcm_substream *substream,
+ 				       int channel, unsigned long hwoff,
+-				       void *buf, unsigned long bytes)
++				       struct iov_iter *buf, unsigned long bytes)
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
 -- 
 2.35.3
 
