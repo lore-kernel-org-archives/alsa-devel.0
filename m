@@ -4,77 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F2C9CEB64DD
-	for <alsa-devel@archiver.kernel.org>; Mon, 14 Aug 2023 00:35:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 605D9EB64DD
+	for <alsa-devel@archiver.kernel.org>; Mon, 14 Aug 2023 00:35:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E8584847;
-	Mon, 14 Aug 2023 02:34:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E8584847
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3BF9F852;
+	Mon, 14 Aug 2023 02:34:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3BF9F852
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1691973332;
-	bh=2nf2vFvL3OWkDejUuD7ZwglngtCbKLDgZukeAuSV1aQ=;
+	s=default; t=1691973341;
+	bh=0HKobCwYJFp7mNGj/ksagn8lLLwH/aW5JaCOpwiB5t0=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=plsLpydKWSGKzH2gpop1gT/xLPwn0HqfVpwug9z0qdM2jaab7mKmqiNR+suMGKhbD
-	 HNof4ZAAJdOVUEGWxpZRA4SjufWXcJTRV9EkjQlymzAQz08Z5yunv4c61E3qf/7AM8
-	 NloAlVJSxMIQe9HBYZoqRuAsg1n38ISVqNO3O23Q=
+	b=XrVMc1voD2xYli4w5AXj9zqnEWf2nQP8DUUg5/u8sdtQpppnR6FY2gUWBoV0SQOJ8
+	 SwM3ElmZUrEEPllufLLg4VMTtOo5GDP/QJ2yReOhgHmC7wk2jDw96wbc9bRfdah6/G
+	 LNzebx60gwvO0vMSBMWxJJCdm2sa112F6xodid6s=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AAC5FF8057C; Mon, 14 Aug 2023 02:33:34 +0200 (CEST)
+	id 6DDFEF8057D; Mon, 14 Aug 2023 02:33:36 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1EA05F80568;
-	Mon, 14 Aug 2023 02:33:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D28C0F8057D;
+	Mon, 14 Aug 2023 02:33:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C3439F80272; Mon, 14 Aug 2023 02:33:28 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+	id 8F203F80553; Mon, 14 Aug 2023 02:33:31 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 738A4F80074
-	for <alsa-devel@alsa-project.org>; Mon, 14 Aug 2023 02:33:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 738A4F80074
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9ECD3F80254
+	for <alsa-devel@alsa-project.org>; Mon, 14 Aug 2023 02:33:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9ECD3F80254
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=ReMPTYlt
+ header.s=k20201202 header.b=JiRi28u6
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 9B47660AC3;
-	Mon, 14 Aug 2023 00:33:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F305C433C7;
-	Mon, 14 Aug 2023 00:33:17 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id DF0B662920;
+	Mon, 14 Aug 2023 00:33:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A4EFC433C8;
+	Mon, 14 Aug 2023 00:33:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1691973199;
-	bh=2nf2vFvL3OWkDejUuD7ZwglngtCbKLDgZukeAuSV1aQ=;
+	s=k20201202; t=1691973204;
+	bh=0HKobCwYJFp7mNGj/ksagn8lLLwH/aW5JaCOpwiB5t0=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=ReMPTYlteN4rDHklE4/fXx/5Fgyr0v9i8s3EptcTMVXO50qrDuMcTFgpml6i9onJH
-	 ZBPo4riu1N4xvB02h1+3dDOqetHWM3vhCqjncc/LO8bCE1KIkOklZD+75whJVlLpS3
-	 eKcVCW9Lp3GNQwp/q5YbIPFF7i5U0NKHq8IUHFUkp2V5FBnPLM1l67O429bar4lHnH
-	 3NIEvqIrTrsIyztjTszZcYfe7ITfERb/rqFt3ZhHvbUCqHJe6T8cjoefaZC+h32I0C
-	 CqbnhYRs0Haovb3sXynIQ2DutVZNBz5AtahcKlEkWLpLX9M87J+/zuY8OUELqmhhxT
-	 rC/0X7JJWVxMw==
+	b=JiRi28u6DZG74urkNp05FI9KBRTVEEI1sk7CL44WhVK5Z19h1fLbOCt3SiAsU/Gmx
+	 MM6+iWtN14BUEZ7PEjgmx0KsfYMx7nJapVTonxciXv0cPTmgC0py3Qhr9ZNrxNV5pc
+	 0m17dRuWHn9tQ8lfSf/u4zIz4eS4B5QcF0GSaeLDV7p3p9zexml4Z1IJXR/YfZa3f4
+	 Dqu7gFyApNgObvjKngdn4VHs6SXAy7PCCo4ZuKItTv/PXsSuD2RzfUXrkH95eYYPJy
+	 N+ePLnqjQIcCQ1WIiwAtWWejsQa0Dsnx8LCex0H91cy7qMoxg++h30KPjNX5Y5Bs6F
+	 9Yl7ELOgG/uiw==
 From: Mark Brown <broonie@kernel.org>
-To: srinivas.kandagatla@linaro.org, bgoswami@quicinc.com,
- lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
- Yue Haibing <yuehaibing@huawei.com>
-Cc: alsa-devel@alsa-project.org
-In-Reply-To: <20230811100130.36664-1-yuehaibing@huawei.com>
-References: <20230811100130.36664-1-yuehaibing@huawei.com>
-Subject: Re: [PATCH -next] ASoC: q6dsp: Remove unused declaration
-Message-Id: <169197319706.2741913.13881055187171720732.b4-ty@kernel.org>
-Date: Mon, 14 Aug 2023 01:33:17 +0100
+To: Oder Chiou <oder_chiou@realtek.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, Linus Walleij <linus.walleij@linaro.org>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20230812-descriptors-asoc-v1-0-eb4dca1f68af@linaro.org>
+References: <20230812-descriptors-asoc-v1-0-eb4dca1f68af@linaro.org>
+Subject: Re: [PATCH 00/14] ASoC: rt: Drop unused GPIO includes
+Message-Id: <169197320197.2741913.755518559282925421.b4-ty@kernel.org>
+Date: Mon, 14 Aug 2023 01:33:21 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-099c9
-Message-ID-Hash: JJLKPJSLUQ2S6HGQKR6SGOM64ONDBGHY
-X-Message-ID-Hash: JJLKPJSLUQ2S6HGQKR6SGOM64ONDBGHY
+Message-ID-Hash: 7NN7YECJ3QRS4OXIBKHUXN2OLFR2A4O2
+X-Message-ID-Hash: 7NN7YECJ3QRS4OXIBKHUXN2OLFR2A4O2
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -87,7 +85,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JJLKPJSLUQ2S6HGQKR6SGOM64ONDBGHY/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7NN7YECJ3QRS4OXIBKHUXN2OLFR2A4O2/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -96,9 +94,9 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, 11 Aug 2023 18:01:30 +0800, Yue Haibing wrote:
-> Commit 5477518b8a0e ("ASoC: qdsp6: audioreach: add q6apm support")
-> declared but never implemented these.
+On Sat, 12 Aug 2023 21:56:38 +0200, Linus Walleij wrote:
+> These drivers include legacy GPIO headers for no reason
+> at all, so get rid of the includes.
 > 
 > 
 
@@ -108,8 +106,34 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: q6dsp: Remove unused declaration
-      commit: bb6979c5ac592e11b456da728f645c9bea965489
+[01/14] ASoC: rt1011: Drop GPIO includes
+        commit: a5c8e75b34fa0d399e8e6b304de3bad4d9e41a3a
+[02/14] ASoC: rt1015: Drop GPIO include
+        commit: c7a7f4444b1fd648edc3fb54f2d3822215b46c56
+[03/14] ASoC: rt1015p: Drop legacy GPIO include
+        commit: 3abc7076851f63c5d193ee9d942554f182527d18
+[04/14] ASoC: rt1016: Drop GPIO include
+        commit: 8a5a8015b1e23e41204738f2147c01bf18039965
+[05/14] ASoC: rt1019: Drop GPIO include
+        commit: e04cbe53205ecfcb1f2a8314dfc829ebbcb542f1
+[06/14] ASoC: rt1305: Drop GPIO includes
+        commit: ba55dde45b5a5595763af6d06066ab789792e9d3
+[07/14] ASoC: rt1308: Drop GPIO includes
+        commit: f36c684e9941b3af6769b984239f62dc9fe99698
+[08/14] ASoC: rt5514-spi: Drop GPIO include
+        commit: 12ffd88e398cb82f960da25ab990a6864641fee1
+[09/14] ASoC: rt5514: Drop GPIO include
+        commit: 9fdc4feacdb0a5b3a49d611aff88371f8f8d4971
+[10/14] ASoC: rt5645: Drop legacy GPIO include
+        commit: 92f1b48277f2fdaa9649630dc9a8ec298bfd6def
+[11/14] ASoC: rt5659: Drop legacy GPIO include
+        commit: 0b759f3b3faa51022752bc4a99ae1af57baf344f
+[12/14] ASoC: rt5660: Drop GPIO includes
+        commit: b72a4dc2bede787221a4b1b2e3860f6725f109b5
+[13/14] ASoC: rt5682-sdw: Drop GPIO includes
+        commit: 1a625a7a5d74be6b367301e6eb9e38d35797313a
+[14/14] ASoC: rt715: Drop GPIO includes
+        commit: 797df2a670c336500cdea482f404a24b45b28f45
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
