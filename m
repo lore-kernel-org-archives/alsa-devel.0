@@ -4,123 +4,102 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8DE84C001DB
-	for <alsa-devel@archiver.kernel.org>; Mon, 14 Aug 2023 13:47:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8CBC7C04A6A
+	for <alsa-devel@archiver.kernel.org>; Mon, 14 Aug 2023 14:09:06 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E296B828;
-	Mon, 14 Aug 2023 15:46:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E296B828
+	by alsa0.perex.cz (Postfix) with ESMTPS id 90D2874C;
+	Mon, 14 Aug 2023 16:08:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 90D2874C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1692020841;
-	bh=3GWUGU3sn/mG21fzGuyMqh51zJlW4hGxN9JOTvBoYEc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1692022143;
+	bh=T6NLn5YIRVWjwgZevUuqpYxYLKGf+XO+f3CSLZhvDPE=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=G8D44M2S/U9Fis4TQUzi1FSe6qXSi4Na98WWKhnCCIlJfqORplS/qNEwUgR95Fpj8
-	 NkxFOhV6E9RhIx/XTFc6L3cbBwkQsIVsji288WfCyPEAj56nCmKRhyVkfnWMy6Po5r
-	 TqSjXcIM2zdBX/bJVPRF+9XXMj5ntxXbcWyCKn70=
+	b=o+YMJXNa3ZE0iRCigHBckBf80tM2GjgHEYQg5TEEhQw1QAco9dm1AJx9r2LNpiz3C
+	 +ykJccyaRY4OfL/2wmAaN7eS482QpsDszncOJ6Ky2BoHJmd1moB8wBPMm1ps1lV/+W
+	 uQ2Q14jbMHi9x0HqKjVIlwDsBJmbVXJvR5An/XfQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DDF88F80510; Mon, 14 Aug 2023 15:46:00 +0200 (CEST)
+	id 3F931F80549; Mon, 14 Aug 2023 16:07:37 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3896CF8025F;
-	Mon, 14 Aug 2023 15:46:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0E129F80290;
+	Mon, 14 Aug 2023 16:07:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D04A8F8025F; Mon, 14 Aug 2023 15:45:55 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 310EFF80510; Mon, 14 Aug 2023 16:07:34 +0200 (CEST)
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 8C4ACF80074
-	for <alsa-devel@alsa-project.org>; Mon, 14 Aug 2023 15:45:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8C4ACF80074
+	by alsa1.perex.cz (Postfix) with ESMTPS id 20EA1F801EB
+	for <alsa-devel@alsa-project.org>; Mon, 14 Aug 2023 16:07:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 20EA1F801EB
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=YqD2U0V2
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id B642E615B0;
-	Mon, 14 Aug 2023 13:45:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 918D8C433C8;
-	Mon, 14 Aug 2023 13:45:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1692020744;
-	bh=3GWUGU3sn/mG21fzGuyMqh51zJlW4hGxN9JOTvBoYEc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=YqD2U0V2tuxKZqxWonJYrqzUtF4LVqwXLZtE4B/8QCGUXmjMdi5/Vy3RG8+ny68FW
-	 9ZLD41a9bVbdV5626Qbkc/m8Uff5zw0x3RRPyGBxZkf5FqceOXnFOniggixG/FtXs6
-	 GTb8FSPkQ/TjyNtQqcbkB8/Vs87Sb3YosijuXHfP248tR4OnTyh9h+Rw6iqoHSK2Cq
-	 LVLf9nAXZ6pYHSUxJccABK8IUTTPy7LQ2PxZLrKJqjt8lQhVMxPWYnPt5631xOPHoH
-	 vnppiFo25hGzBQ89EK/NfqwgiG7yy+nKN3EVUWjBwbz9h4gWtTs1H/GF89huUiwnVw
-	 KHfaLNQ7ni+YQ==
-Date: Mon, 14 Aug 2023 15:45:41 +0200
-From: Wolfram Sang <wsa@kernel.org>
-To: Gatien Chevallier <gatien.chevallier@foss.st.com>
-Cc: Oleksii_Moisieiev@epam.com, gregkh@linuxfoundation.org,
-	herbert@gondor.apana.org.au, davem@davemloft.net,
-	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org, alexandre.torgue@foss.st.com, vkoul@kernel.org,
-	jic23@kernel.org, olivier.moysan@foss.st.com,
-	arnaud.pouliquen@foss.st.com, mchehab@kernel.org,
-	fabrice.gasnier@foss.st.com, andi.shyti@kernel.org,
-	ulf.hansson@linaro.org, edumazet@google.com, kuba@kernel.org,
-	pabeni@redhat.com, hugues.fruchet@foss.st.com, lee@kernel.org,
-	will@kernel.org, catalin.marinas@arm.com, arnd@kernel.org,
-	richardcochran@gmail.com, Frank Rowand <frowand.list@gmail.com>,
-	peng.fan@oss.nxp.com, linux-crypto@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	dmaengine@vger.kernel.org, linux-i2c@vger.kernel.org,
-	linux-iio@vger.kernel.org, alsa-devel@alsa-project.org,
-	linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
-	netdev@vger.kernel.org, linux-phy@lists.infradead.org,
-	linux-serial@vger.kernel.org, linux-spi@vger.kernel.org,
-	linux-usb@vger.kernel.org,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: Re: [PATCH v4 02/11] dt-bindings: treewide: add feature-domains
- description
-Message-ID: <ZNowBaT2nLj4jEm3@shikoro>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-	Gatien Chevallier <gatien.chevallier@foss.st.com>,
-	Oleksii_Moisieiev@epam.com, gregkh@linuxfoundation.org,
-	herbert@gondor.apana.org.au, davem@davemloft.net,
-	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org, alexandre.torgue@foss.st.com, vkoul@kernel.org,
-	jic23@kernel.org, olivier.moysan@foss.st.com,
-	arnaud.pouliquen@foss.st.com, mchehab@kernel.org,
-	fabrice.gasnier@foss.st.com, andi.shyti@kernel.org,
-	ulf.hansson@linaro.org, edumazet@google.com, kuba@kernel.org,
-	pabeni@redhat.com, hugues.fruchet@foss.st.com, lee@kernel.org,
-	will@kernel.org, catalin.marinas@arm.com, arnd@kernel.org,
-	richardcochran@gmail.com, Frank Rowand <frowand.list@gmail.com>,
-	peng.fan@oss.nxp.com, linux-crypto@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	dmaengine@vger.kernel.org, linux-i2c@vger.kernel.org,
-	linux-iio@vger.kernel.org, alsa-devel@alsa-project.org,
-	linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
-	netdev@vger.kernel.org, linux-phy@lists.infradead.org,
-	linux-serial@vger.kernel.org, linux-spi@vger.kernel.org,
-	linux-usb@vger.kernel.org,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>
-References: <20230811100731.108145-1-gatien.chevallier@foss.st.com>
- <20230811100731.108145-3-gatien.chevallier@foss.st.com>
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=c88CGZRI
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692022047; x=1723558047;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=T6NLn5YIRVWjwgZevUuqpYxYLKGf+XO+f3CSLZhvDPE=;
+  b=c88CGZRI8+Zi9JxFKonJbBPQuYws2cNsfdmjzogKUz0eravk1c+Uw6is
+   tgnlo0hz9QVtRQQ5n7rfi5zrRqETHbGZEuhP4Wq/8kgwG/KcXwWB6WThm
+   fjbgsvy+anqAZ5KxsjWWPX+LyNafjHvFVtn6O7NVexPLR94b1bbjkhXii
+   LyoonjoVJUsqy/+10bU5NdAbJXH2prvG9VMIdjKbkTiKnne3twKDiDgPb
+   tIckSvDZX4XmlYwIHo5ue05sdnmEz+YYUYfqqOJueywdme16i94/mWjE+
+   exBHsLJaDK4hVSXFz2SmYQ36DXLrw5H6o4AyeafBQDuLq41gDLXsmxdDJ
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="370943660"
+X-IronPort-AV: E=Sophos;i="6.01,172,1684825200";
+   d="scan'208";a="370943660"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 14 Aug 2023 07:07:23 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="798825217"
+X-IronPort-AV: E=Sophos;i="6.01,172,1684825200";
+   d="scan'208";a="798825217"
+Received: from ryana2x-mobl.amr.corp.intel.com (HELO [10.212.126.76])
+ ([10.212.126.76])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 14 Aug 2023 07:07:22 -0700
+Message-ID: <6c05170c-046f-84af-bed1-7c11801b938a@linux.intel.com>
+Date: Mon, 14 Aug 2023 08:48:38 -0500
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="W69stkuq3CQIl/r9"
-Content-Disposition: inline
-In-Reply-To: <20230811100731.108145-3-gatien.chevallier@foss.st.com>
-Message-ID-Hash: FIXF45JII4ISSUVJ2CP2ZKOCQ33YAN3C
-X-Message-ID-Hash: FIXF45JII4ISSUVJ2CP2ZKOCQ33YAN3C
-X-MailFrom: wsa@kernel.org
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.13.0
+Subject: Re: [PATCH v1] ASoC: Intel: Add rpl_nau8318_8825 driver
+To: Ajye Huang <ajye_huang@compal.corp-partner.google.com>,
+ linux-kernel@vger.kernel.org
+Cc: Mark Brown <broonie@kernel.org>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Akihiko Odaki <akihiko.odaki@gmail.com>, Yong Zhi <yong.zhi@intel.com>,
+ ye xingchen <ye.xingchen@zte.com.cn>,
+ "balamurugan . c" <balamurugan.c@intel.com>,
+ Libin Yang <libin.yang@intel.com>, Jaroslav Kysela <perex@perex.cz>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Cezary Rojewski <cezary.rojewski@intel.com>, David Lin <CTLIN0@nuvoton.com>,
+ Brent Lu <brent.lu@intel.com>, Takashi Iwai <tiwai@suse.com>,
+ Terry Cheong <htcheong@chromium.org>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Gongjun Song <gongjun.song@intel.com>, Arnd Bergmann <arnd@arndb.de>,
+ apoorv <apoorv@intel.com>, alsa-devel@alsa-project.org
+References: 
+ <20230804085648.3721416-1-ajye_huang@compal.corp-partner.google.com>
+Content-Language: en-US
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: 
+ <20230804085648.3721416-1-ajye_huang@compal.corp-partner.google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: FGQWX5QAMK5LDUZGPVUTUYQNZBAMFTQ6
+X-Message-ID-Hash: FGQWX5QAMK5LDUZGPVUTUYQNZBAMFTQ6
+X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -132,7 +111,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FIXF45JII4ISSUVJ2CP2ZKOCQ33YAN3C/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FGQWX5QAMK5LDUZGPVUTUYQNZBAMFTQ6/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -142,46 +121,71 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 
---W69stkuq3CQIl/r9
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Aug 11, 2023 at 12:07:22PM +0200, Gatien Chevallier wrote:
-> feature-domains is an optional property that allows a peripheral to
-> refer to one or more feature domain controller(s).
->=20
-> Description of this property is added to all peripheral binding files of
-> the peripheral under the STM32 firewall controllers. It allows an accurate
-> representation of the hardware, where various peripherals are connected
-> to this firewall bus. The firewall can then check the peripheral accesses
-> before allowing it to probe.
->=20
-> Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
-> Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+On 8/4/23 03:56, Ajye Huang wrote:
+> Boards were using this in older kernels before adl and rpl ids were
+> split. Add this back to maintain support.
+> 
+> Signed-off-by: Ajye Huang <ajye_huang@compal.corp-partner.google.com>
 
-Acked-by: Wolfram Sang <wsa@kernel.org> # for I2C (once the rest is accepte=
-d)
+Sorry, missed this.
+
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
 
---W69stkuq3CQIl/r9
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmTaMAUACgkQFA3kzBSg
-KbaUdQ//dzd+zVw4+lLQfMm5N9CAHnO3jRuJqiYQmp/rDIgsZY8CClGeuNYuiFGQ
-sJAlf9Vh2aH2qFbq7TJkPelVMPe97mgjxKZDJjrpGUe6CTcLGpK4P5dx0bQmxrDV
-X9wg54/VUPmf92H5LDELCgEQBUpxE2M9kMMYXubSN+gyCYDo+RZFOw+aOfRcqKkT
-jyWMjSPQsNYTIn/u+DiQidjJYYW3Y1NwiUufKoBCbTUDkmUkBsIAkqq5dYf1he96
-cDBjQz4aQzw8q9mITHh1GI3MX5AGpxJc8XmUwD2PwcshkDb57FJkTElHQIhKJW2R
-+BPM4dGmzfvtj6G7+/7/E0CWVymbxnEkOVK46qPYw00tD2C7Khm0kRLEbwEcenS3
-SlXgrYoVcGf73cxfYrShbSvV32GuQZ9onZxIbgdFMjtiCO7E2WKqPUkNt1hDecEf
-WoMbKLXvmxdcRjmmkRJRBGeUwKThDjHDvfYtURQ3+31TVkqxLDLoHE8gF78pL3yw
-LW4HQwfekpHvSObQssYoMM2mJrM7yidifx+OCmWywsvmYM3MlJklqapPTI+IVwdm
-CxMb+ZhS+C8HJfNS/5Q7AY4N4Qav0cG8Kdk2xTS2hBurkQ87PGjXdpkKPRIG6/wD
-02vyuQVUcnLNDqAwXkEORXxqaidoTN/suDmNhiHszczHfBZ/X0o=
-=VsN7
------END PGP SIGNATURE-----
-
---W69stkuq3CQIl/r9--
+> ---
+>  sound/soc/intel/boards/sof_nau8825.c              | 10 ++++++++++
+>  sound/soc/intel/common/soc-acpi-intel-rpl-match.c | 12 ++++++++++++
+>  2 files changed, 22 insertions(+)
+> 
+> diff --git a/sound/soc/intel/boards/sof_nau8825.c b/sound/soc/intel/boards/sof_nau8825.c
+> index 4fc6e1c6aef3..46b7ecf6f9f1 100644
+> --- a/sound/soc/intel/boards/sof_nau8825.c
+> +++ b/sound/soc/intel/boards/sof_nau8825.c
+> @@ -684,6 +684,16 @@ static const struct platform_device_id board_ids[] = {
+>  					SOF_BT_OFFLOAD_SSP(2) |
+>  					SOF_SSP_BT_OFFLOAD_PRESENT),
+>  	},
+> +	{
+> +		.name = "rpl_nau8318_8825",
+> +		.driver_data = (kernel_ulong_t)(SOF_NAU8825_SSP_CODEC(0) |
+> +					SOF_SPEAKER_AMP_PRESENT |
+> +					SOF_NAU8318_SPEAKER_AMP_PRESENT |
+> +					SOF_NAU8825_SSP_AMP(1) |
+> +					SOF_NAU8825_NUM_HDMIDEV(4) |
+> +					SOF_BT_OFFLOAD_SSP(2) |
+> +					SOF_SSP_BT_OFFLOAD_PRESENT),
+> +	},
+>  	{ }
+>  };
+>  MODULE_DEVICE_TABLE(platform, board_ids);
+> diff --git a/sound/soc/intel/common/soc-acpi-intel-rpl-match.c b/sound/soc/intel/common/soc-acpi-intel-rpl-match.c
+> index 4eefdb2dd45c..1dd699181765 100644
+> --- a/sound/soc/intel/common/soc-acpi-intel-rpl-match.c
+> +++ b/sound/soc/intel/common/soc-acpi-intel-rpl-match.c
+> @@ -351,6 +351,11 @@ static const struct snd_soc_acpi_codecs rpl_rt1019p_amp = {
+>  	.codecs = {"RTL1019"}
+>  };
+>  
+> +static const struct snd_soc_acpi_codecs rpl_nau8318_amp = {
+> +	.num_codecs = 1,
+> +	.codecs = {"NVTN2012"}
+> +};
+> +
+>  struct snd_soc_acpi_mach snd_soc_acpi_intel_rpl_machines[] = {
+>  	{
+>  		.comp_ids = &rpl_rt5682_hp,
+> @@ -373,6 +378,13 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_rpl_machines[] = {
+>  		.quirk_data = &rpl_max98373_amp,
+>  		.sof_tplg_filename = "sof-rpl-max98373-nau8825.tplg",
+>  	},
+> +	{
+> +		.id = "10508825",
+> +		.drv_name = "rpl_nau8318_8825",
+> +		.machine_quirk = snd_soc_acpi_codec_list,
+> +		.quirk_data = &rpl_nau8318_amp,
+> +		.sof_tplg_filename = "sof-rpl-nau8318-nau8825.tplg",
+> +	},
+>  	{
+>  		.comp_ids = &rpl_rt5682_hp,
+>  		.drv_name = "rpl_rt1019_rt5682",
