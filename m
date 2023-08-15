@@ -4,86 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 538BDC0015E
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Aug 2023 14:12:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 84C78C001B0
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Aug 2023 14:17:13 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DB7FF7F1;
-	Tue, 15 Aug 2023 16:11:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DB7FF7F1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6F82682A;
+	Tue, 15 Aug 2023 16:16:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6F82682A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1692108730;
-	bh=n5ZUySZEZiqsQq5qoUoRbN2WfkDeGQmpgZO6gsSVgNU=;
+	s=default; t=1692109031;
+	bh=Pvw0knH5aK1JT76Gogw5tdklLV3FIclvxoJl43eExcA=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=J9F6AmqMVPVVR3g0AOLMU7FiG5L43SV7wz8pBK4Mx00DhAbRen00su6pLfgG8cZj1
-	 xH+Uno0u9vm20hkdhBe52O+1typtKXz9RayEhDvIqzppurdznC20o98N7QrITFY6+k
-	 HeFklhVu6jCzZ8FL+/XHFWELws8MtSSsKNvNVoLo=
+	b=FtC+/q3pqieAlZImETunW1yOLceV4etjUCo2xMdkzhmLSqdV8La18eOtxUqcvHH4P
+	 Tecy4pcOqwVIFzfNLKnBm3PidZJyeso/kIp8ZxVW5AJJae2lpbdzdqtOWHFMjUU9zW
+	 J6sOJS72XYzNUwQ5NX0w5o1IFl+8RzGib1orCJAg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A8E8EF80536; Tue, 15 Aug 2023 16:10:45 +0200 (CEST)
+	id 4AF72F80536; Tue, 15 Aug 2023 16:15:53 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 015B5F80027;
-	Tue, 15 Aug 2023 16:10:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DC1ADF80027;
+	Tue, 15 Aug 2023 16:15:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 32905F8016D; Tue, 15 Aug 2023 16:10:40 +0200 (CEST)
+	id 164C5F8016D; Tue, 15 Aug 2023 16:15:50 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org
  [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 74C49F80074
-	for <alsa-devel@alsa-project.org>; Tue, 15 Aug 2023 16:10:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 74C49F80074
+	by alsa1.perex.cz (Postfix) with ESMTPS id 55AB1F80027
+	for <alsa-devel@alsa-project.org>; Tue, 15 Aug 2023 16:15:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 55AB1F80027
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=pvMT8Jcn
+ header.s=k20201202 header.b=HvklSn5g
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id A60AF649F2;
-	Tue, 15 Aug 2023 14:10:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9358C433C7;
-	Tue, 15 Aug 2023 14:10:28 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id D971462E69;
+	Tue, 15 Aug 2023 14:15:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BFFD7C433C7;
+	Tue, 15 Aug 2023 14:15:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1692108632;
-	bh=n5ZUySZEZiqsQq5qoUoRbN2WfkDeGQmpgZO6gsSVgNU=;
+	s=k20201202; t=1692108944;
+	bh=Pvw0knH5aK1JT76Gogw5tdklLV3FIclvxoJl43eExcA=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=pvMT8JcnQZj7OZmeLN4OT/RqwDIhHXrGoPSW8qC8zzDbSsyIch1Rv8GKkiGY7DkPR
-	 cTIoVmCUU/5zjeeHADYvvuuQj08CU4VD2TJzinH8qRNYMwz5N5GURwwZOEEEHZvLAF
-	 yhp3rpbsL8tMQsulZwbJ0sENQc81fWY7bx0Akhhru9ySYSuq6ewC9rTw4fc7MN6ba4
-	 X2wCXy4KqRNvCDqJib5ufDckzKOScVjVxRqL79YIvbS6bRSYsVkHm0ojoRA8he0zqs
-	 r2FeqkPyvPqJ6kl8TLFwdtJJ/1U0z67s6fDCkmZ3ZfchU/GpsrQVzk+pxlx59NNXRx
-	 OZAGmxg0PGNqw==
-Date: Tue, 15 Aug 2023 15:10:25 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>, Heiko Stuebner <heiko@sntech.de>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Tom Rix <trix@redhat.com>, alsa-devel@alsa-project.org,
-	linux-kernel@vger.kernel.org, patches@opensource.cirrus.com,
-	linux-arm-kernel@lists.infradead.org,
-	linux-rockchip@lists.infradead.org, llvm@lists.linux.dev,
-	Andi Shyti <andi.shyti@kernel.org>
-Subject: Re: [PATCH 1/4] ASoC: aw88261: Fix unitialized ret of
- aw88261_reg_update()
-Message-ID: <7b35b3b6-7eab-4652-9a16-851a060350bd@sirena.org.uk>
-References: <20230810104749.164827-1-krzysztof.kozlowski@linaro.org>
+	b=HvklSn5g0JGJd5ghvIpMvQuV6qnVfCz3qsGVAi+1A4rAE6xlGgw5yHuqiKwTKI84v
+	 Nhg+POoqt+u9pWOPVFtKcgc0v8Kk6aU9w2FW5fogV7q4fV/eRPkB/SLnKrWpxh1ufd
+	 knLpxqm8LtSFVn+ejy1lJKTzkHTlyfbrNVyKKiOad3eFTMZVz6bOSTLeXhE20K3Bq2
+	 V5mIRvBq7/QiOD7kWtq7DYwXpIwa4ZdnTtJ4y0BRb7jniiQiTFtasPXL2hG4ohqBg5
+	 IWszMUGsiVF0YdlqWcOJV8LfMlLAbu2bNv3ayhTo7ylUQ1uZxYeBmkGyhLbs69zyd7
+	 epSohgoPyeMjg==
+Date: Tue, 15 Aug 2023 07:15:41 -0700
+From: Nathan Chancellor <nathan@kernel.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: Justin Stitt <justinstitt@google.com>,
+	Oder Chiou <oder_chiou@realtek.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ASoC: rt5677: fix -Wvoid-pointer-to-enum-cast warning
+Message-ID: <20230815141541.GA4129040@dev-arch.thelio-3990X>
+References: 
+ <20230814-void-sound-soc-codecs-rt5677-v1-1-5c468c60fa37@google.com>
+ <94c059a6-07bf-4887-8c67-b8b0724baa49@sirena.org.uk>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="vj9n6GWKkaE+J3Ue"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230810104749.164827-1-krzysztof.kozlowski@linaro.org>
-X-Cookie: Darth Vader sleeps with a Teddywookie.
-Message-ID-Hash: K3QNXWNEHFQYI457HRM6GU5JHE32WRMM
-X-Message-ID-Hash: K3QNXWNEHFQYI457HRM6GU5JHE32WRMM
-X-MailFrom: broonie@kernel.org
+In-Reply-To: <94c059a6-07bf-4887-8c67-b8b0724baa49@sirena.org.uk>
+Message-ID-Hash: US342CMIQKCMFCMQJV3SCYOJFZ2UQHLX
+X-Message-ID-Hash: US342CMIQKCMFCMQJV3SCYOJFZ2UQHLX
+X-MailFrom: nathan@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -95,7 +89,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/K3QNXWNEHFQYI457HRM6GU5JHE32WRMM/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/US342CMIQKCMFCMQJV3SCYOJFZ2UQHLX/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -104,33 +98,17 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+On Tue, Aug 15, 2023 at 01:54:40PM +0100, Mark Brown wrote:
+> On Mon, Aug 14, 2023 at 09:58:56PM +0000, Justin Stitt wrote:
+> > `match_id->data` is a void* and as such is being truncated when cast to
+> > `enum rt5677_type` which is only int-width.
+> 
+> This doesn't apply against current code, please check and resend.
 
---vj9n6GWKkaE+J3Ue
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+It looks like Andy fixed this warning as part of the refactoring to
+device_get_match_data():
 
-On Thu, Aug 10, 2023 at 12:47:43PM +0200, Krzysztof Kozlowski wrote:
-> There is a branch in if() clause where aw88261_reg_update() could return
-> uninitialized value.  Pounted out by W=1 clang build:
+https://git.kernel.org/broonie/sound/c/043bb9c012ee7d092a477159cc66dbdf62fd2666
 
-This series appears to have two copies of every patch which *look*
-similar but I'm not 100% sure if that's the case or in general what's
-going on - could you please resend a clean copy, it's probably easier
-than figuring it out?
-
---vj9n6GWKkaE+J3Ue
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTbh1AACgkQJNaLcl1U
-h9Db2wgAhKl6awfKbl76YkckQHA0qEwrCC3ehM9pJoMcPKMh3Sc9f3FMZrk4XmRg
-sPzgcu1JgnUD/G3svs82wur5Kocs8gpAxTiBPonVpko0iILOA6IcELf8Rj3sXVOL
-jUS4Qz89yi5zhrTcEQwZm+9FfrXwmeeRNef1KnNHEbG+24KUPVWcRxu/mWfvTPk5
-WFL5fgeccSniy5L8pWNC464fRdUzoFSLNxR7/SXtiFjoGbXGCDkRsGNAiMWskO6h
-MuFOlNeK8dvtwoVNm06CEk1MWftPzkmRQn6WHb1YjsWU4akwwFXyDRLeTVAfmQCU
-lGuevRFzUsBb2FxR8FJyuJOpeRpAfQ==
-=8N2T
------END PGP SIGNATURE-----
-
---vj9n6GWKkaE+J3Ue--
+Cheers,
+Nathan
