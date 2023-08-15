@@ -4,102 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 507FAC0015E
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Aug 2023 19:18:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A7CCCC0015E
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Aug 2023 19:19:29 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C252C851;
-	Tue, 15 Aug 2023 21:17:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C252C851
+	by alsa0.perex.cz (Postfix) with ESMTPS id A2D4AA4E;
+	Tue, 15 Aug 2023 21:18:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A2D4AA4E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1692127116;
-	bh=yT+ibaQLIWCz8w7tHkW5NfaPrwF2Dh1AfWMPw+NLt+k=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1692127167;
+	bh=H4VEbHIybE4aqWpXjIZwsQHIPrM4Emib0GTd6wPDsFY=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=DSqiuTplHFQBW63xSg+rJWuZ684TYnW8tpLQz5OM9ebS4o9e4UJ8UNWbAAL5CBVwg
-	 8eU+uArkjTTHgCPfsqYopkfwyD2CweJBfeTQHUUTd0oxP+To3DIoelINPmZV1jFxzF
-	 N2ENjcvMvVt66KrVAneBq/HFa8kELBBOwef2SbQA=
+	b=Asjnw36zwXWm5spelwVa99R8PMfmonh/4JvAVVt3d69+0mroIogSY1TbD0WwSU90B
+	 GgKuWA37ClhpZ6yin4zdhQRlFEhLveGg/PSa8X/tV2Z8HrhsU4/f56DfZ9DF6SN6IY
+	 /fLUIMYczojalRur0ByfLDrryTlnhKmCUnRQPOko=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 48E6FF800EE; Tue, 15 Aug 2023 21:17:46 +0200 (CEST)
+	id 5632CF80553; Tue, 15 Aug 2023 21:17:58 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1D77EF801EB;
-	Tue, 15 Aug 2023 21:17:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CBF03F80553;
+	Tue, 15 Aug 2023 21:17:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B71CEF8016A; Tue, 15 Aug 2023 21:17:41 +0200 (CEST)
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com
- [IPv6:2607:f8b0:4864:20::42a])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	id 3BA1AF80553; Tue, 15 Aug 2023 21:17:53 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B26DFF80027
-	for <alsa-devel@alsa-project.org>; Tue, 15 Aug 2023 21:17:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B26DFF80027
+	by alsa1.perex.cz (Postfix) with ESMTPS id 5C98FF80549
+	for <alsa-devel@alsa-project.org>; Tue, 15 Aug 2023 21:17:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5C98FF80549
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=google.com header.i=@google.com header.a=rsa-sha256
- header.s=20221208 header.b=2O0zBWyY
-Received: by mail-pf1-x42a.google.com with SMTP id
- d2e1a72fcca58-688769faa09so434692b3a.2
-        for <alsa-devel@alsa-project.org>;
- Tue, 15 Aug 2023 12:17:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692127054; x=1692731854;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yT+ibaQLIWCz8w7tHkW5NfaPrwF2Dh1AfWMPw+NLt+k=;
-        b=2O0zBWyY7WqFZ7ubuizgne/lPWgW3xMd/00DGH+MyMXXIXb4nI3+Nmgz5ixRjmK4bJ
-         2lrAJxa9KWlny5zW1ls/kwPAe4ziThzQAL4fBpY6m7IpT+q1PiajlttXw9wkgL+ehKMe
-         SB8kw7mhElbcHYtoY/2JDcRmHCOwwQS4pxaycUR0Cxh//4UOdwkxlQ2vJybccOCUT+4i
-         OgIoqGZ/xnzFFOznRYWpTlKq/tK/jZ6k2XYmuIaD/0bpSOl01umQ2KDzgsUVvgesafUx
-         1lM2JPzZXgcuuOjuIhsFiM9SHt/ghPAknj7tFjztNG/uvwtJ/RL9zz3GMkqaksB9buOo
-         MrYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692127054; x=1692731854;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yT+ibaQLIWCz8w7tHkW5NfaPrwF2Dh1AfWMPw+NLt+k=;
-        b=XLyMRh8o87GUO2FknrJS2uUoSuzpo0XzM+zbF2h+HsF1Xn/eDSs4mdaJ72iJ0d8cqo
-         DR05Xw8alqLsXOfn65omVzkRLM6ckb4eavljLjYluPz5HAQuzKSznF+QmULaTHjsUFTx
-         26obnDg0doKwwmWap7v4Bb1pRn1OojT+KoOG+l7OWaoobW5oBsW+xkAmLLoF/wUDyGFR
-         PMzv6P2MK/Ef5aAwKG69nsNexwQCs4hBRpAYWw7wU9L5iv5dkXjC0GGmVb54a6ReoUPY
-         MYsDYYWsPofbk1Y4SlslGQR+ac6+/B0NsWTLlmbPyrHR559ZOB0xnl9EsMStqWMn/j88
-         r98w==
-X-Gm-Message-State: AOJu0YwATCkBQMmKaIWEPNC9hUpfWm1cuPNQYug1xwyhwLw6Fovveh33
-	ye6lN30z2g5G+RXzc1cpEC2wY7QeV3OuqmMMq4alXg==
-X-Google-Smtp-Source: 
- AGHT+IFKDzhSCZd90m02n5uigwN9ZIdVzwVftAWOR3pJD4PBQfD5J4TFHjevVIaFyB+y1F+b26ilsZoqCBKGydLnEX4=
-X-Received: by 2002:a05:6a00:891:b0:679:bc89:e45 with SMTP id
- q17-20020a056a00089100b00679bc890e45mr13930352pfj.6.1692127053803; Tue, 15
- Aug 2023 12:17:33 -0700 (PDT)
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=MJYCOFkm
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 8424C66073;
+	Tue, 15 Aug 2023 19:17:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4866BC433C7;
+	Tue, 15 Aug 2023 19:17:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1692127068;
+	bh=H4VEbHIybE4aqWpXjIZwsQHIPrM4Emib0GTd6wPDsFY=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=MJYCOFkmxnHofXeP22JlcDVMU7kCv80wKE5bNQvQTLp/BedEgxSH6dJcGW7GJaIJb
+	 slNdSFIonqYmkdK2/6Ji/b0NE6WiHVd4N6KuHzx41Lt1dlgA9IxhYIXYukZBG+JnpS
+	 ooPkKSCoocCbI+KqiM/119WPk9gJ/awaTvHetKozIpGRdP7nfzrDr+ZqR6C5xZ0Z4C
+	 XJiXDkZ9ICWpSlvV5fHAWIw8HCWtzqsZNYoqe1PPxV/Hvb07wA42kD2Iaqhy2FXlrI
+	 aFnB+tCUkwBrevI76ydivlGbjXv82gWmaWogYDHM8r9B7q17Fo/N0Z3Jy8WeXywfLR
+	 UuqHyBsFONwxw==
+From: Mark Brown <broonie@kernel.org>
+To: alsa-devel@alsa-project.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de
+In-Reply-To: <20230814234235.87268-1-pierre-louis.bossart@linux.intel.com>
+References: <20230814234235.87268-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH] ASoC: SOF: remove duplicate code due to merge
+Message-Id: <169212706702.68178.8183706637881431499.b4-ty@kernel.org>
+Date: Tue, 15 Aug 2023 20:17:47 +0100
 MIME-Version: 1.0
-References: <ZNuDLk5hgmfKrZg6@arch>
- <850c5b2c-265e-a565-8a88-58a88f8fb4e8@linux.intel.com>
- <CAOReqxjbjkhkqfvTWs9i5NxK6QAsk42Daw1pA_1+b1zG5mbKmQ@mail.gmail.com>
- <ZNuyuerb0M6IGRKj@arch>
- <CAOReqxi_fkthH7SPdQ6ycyMx+2Mpi+JHHYhPJKi-u82SsfN9gA@mail.gmail.com>
- <0beda41e-8dfa-054e-4069-7298b4caa879@linux.intel.com>
-In-Reply-To: <0beda41e-8dfa-054e-4069-7298b4caa879@linux.intel.com>
-From: Curtis Malainey <cujomalainey@google.com>
-Date: Tue, 15 Aug 2023 12:17:22 -0700
-Message-ID: 
- <CAOReqxi+N6fMxjraq3XJjdagG6+Z5p0PC9NV6yDJmF2hAJKp-w@mail.gmail.com>
-Subject: Re: [PATCH v2] ALSA: hda: intel-dsp-cfg: Add Chromebook quirk to
- ADL/RPL
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Brady Norander <bradynorander@gmail.com>, alsa-devel@alsa-project.org,
-	broonie@kernel.org, cezary.rojewski@intel.com,
-	amadeuszx.slawinski@linux.intel.com, perex@perex.cz, tiwai@suse.de,
-	cujomalainey@chromium.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Message-ID-Hash: FMT27EQDIQPMLATGW27N37HVX2MV3RWR
-X-Message-ID-Hash: FMT27EQDIQPMLATGW27N37HVX2MV3RWR
-X-MailFrom: cujomalainey@google.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-034f2
+Message-ID-Hash: 275PQEGXU7WAMFQRNIQBVHQXMFBTCXZ5
+X-Message-ID-Hash: 275PQEGXU7WAMFQRNIQBVHQXMFBTCXZ5
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -111,7 +86,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FMT27EQDIQPMLATGW27N37HVX2MV3RWR/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/275PQEGXU7WAMFQRNIQBVHQXMFBTCXZ5/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -120,51 +95,37 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, Aug 15, 2023 at 11:28=E2=80=AFAM Pierre-Louis Bossart
-<pierre-louis.bossart@linux.intel.com> wrote:
->
->
->
-> On 8/15/23 13:00, Curtis Malainey wrote:
-> > On Tue, Aug 15, 2023 at 10:15=E2=80=AFAM Brady Norander <bradynorander@=
-gmail.com> wrote:
-> >>
-> >> On Tue, Aug 15, 2023 at 09:56:44AM -0700, Curtis Malainey wrote:
-> >>> On Tue, Aug 15, 2023 at 8:56=E2=80=AFAM Pierre-Louis Bossart <
-> >>> pierre-louis.bossart@linux.intel.com> wrote:
-> >>>> On 8/15/23 08:52, Brady Norander wrote:
-> >>>>> AlderLake and RaptorLake Chromebooks currently use the HDA driver b=
-y
-> >>>>> default. Add a quirk to use the SOF driver on these platforms, whic=
-h is
-> >>>>> needed for functional internal audio.
-> >>>>>
-> >>>>> Signed-off-by: Brady Norander <bradynorander@gmail.com>
-> >>>>
-> >>>> Thanks for the patch
-> >>>>
-> >>>> Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com=
->
-> >>>>
-> >>>
-> >>> Now that I am looking closer at the patch, I am very curious why we a=
-re not
-> >>> hitting the following case and using SOF
-> >>
-> >> The DMIC detection looks for DMIC endpoints in the NHLT, but these
-> >> devices don't have NHLT.
-> >
-> > There would be the brokenness then. Is the DMIC not something that
-> > shows up in coreboot? Or is it only defined in the topology? If the
-> > latter we should probably extend this patch farther back to GLK.
->
-> You don't need to expose mics in NHLT, the premise has always been that
-> Chromebooks are assumed to expose 4 mics and userspace w/ UCM takes care
-> of selecting which mics are actually used on what platform.
->
-> Also there's a difference between NHLT (ACPI table) and NHLT blob in
-> topology used for IPC4. not the same thing.
+On Mon, 14 Aug 2023 18:42:35 -0500, Pierre-Louis Bossart wrote:
+> Commit 81113108491e ("ASoC: Merge up fixes") added the same code
+> twice, remove the extra call.
+> 
+> 
 
-Thanks for the clarification
+Applied to
 
-Acked-by Curtis Malainey <cujomalainey@chromium.org>
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+
+Thanks!
+
+[1/1] ASoC: SOF: remove duplicate code due to merge
+      commit: c5556d8651b4c58e0d9894be5a0188c9c90ce899
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
