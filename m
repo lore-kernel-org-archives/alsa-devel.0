@@ -4,51 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E49D8C001E0
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Aug 2023 19:05:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A9484C001E0
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Aug 2023 19:05:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 77565AEA;
-	Tue, 15 Aug 2023 21:04:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 77565AEA
+	by alsa0.perex.cz (Postfix) with ESMTPS id BC73484C;
+	Tue, 15 Aug 2023 21:04:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BC73484C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1692126307;
-	bh=AiZV3Lk7sbJulny60Fcyus3hvM9yZgNZgJwAXBbgp4A=;
+	s=default; t=1692126331;
+	bh=LFzLGTAShjRGxfCY6gNN0vok8Bpbq768CnWga+NEWtY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=fwjsLT7f60FXNaUdFeBRA/eZ4gxwqNb0q6LnYXt3Ine6nGezZn7fcqlCtoy/Ksr6t
-	 nF8Z55O76/trG6SRuDBt2uPh2sdHgQIlcx37lt+/9LzdGyVP8aTd7GTOhe8ZrRSuHb
-	 yIn3Z/MeT+MQPDms1kakn/+6UHEBbQFDzr79yhhg=
+	b=Bah066VFhEuYZbwUzZmyDhRDH4jsb16Mzh/LR4sdbiRgdBBvkS3Fd0uAqGvvZJ8TA
+	 atdAn6jO5FVA+nhOvKsXH8ugb0C3L2lqVzwo6vaCvCQtyf0xL2ESW68x8uEd4+znmE
+	 +auvU1koW2UECq5jNZNw58ha77oPKmY7qAvKCdL8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D1F18F805E4; Tue, 15 Aug 2023 21:02:32 +0200 (CEST)
+	id C38C7F805EA; Tue, 15 Aug 2023 21:02:35 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 33BABF805D4;
-	Tue, 15 Aug 2023 21:02:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D5D6EF8057E;
+	Tue, 15 Aug 2023 21:02:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7ADB7F805E4; Tue, 15 Aug 2023 21:02:28 +0200 (CEST)
+	id 0DBF6F805D7; Tue, 15 Aug 2023 21:02:30 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de
  [IPv6:2001:67c:2178:6::1c])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id AB448F80557
+	by alsa1.perex.cz (Postfix) with ESMTPS id DFE29F8055A
 	for <alsa-devel@alsa-project.org>; Tue, 15 Aug 2023 21:01:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AB448F80557
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DFE29F8055A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=IGa8I5Ln;
+ header.s=susede2_rsa header.b=HFlsEFfp;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=2R+Rcxgt
+ header.s=susede2_ed25519 header.b=H7+rZg0R
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id F2EE0219AC;
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 92CDB219AB;
 	Tue, 15 Aug 2023 19:01:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
@@ -57,45 +57,46 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=T8//wcNQwPthyNc3xqkx3W41Gepnl5c0ocQ4zcQs/T8=;
-	b=IGa8I5Ln4UTWznZ12OCFML9vAayTcN026IZSEjabIagp72t1e1c9A0mFNWJunhP7x9Iswf
-	q8ToEOIPtVn0vQEdPcj95rqfyLWRvK2JaHnO5WPo0p4h+ErAfclHjnXOFdXwhxfrmhwtfE
-	m22f2sVTq8wHF2HlR0yaKa5Hv4ciDS4=
+	bh=AoYuahFv9jY9TJIQezpvBTUC7RKI1JDEmMCNFlRwbQU=;
+	b=HFlsEFfpJhddTfmlbA88RQm9z2/PARL8ZYymbiJTyFFcGyykZJKzEnfgaQ9+2OUJ20Hjep
+	8mdHAmx+90TWzwgkOVgPPRU7rp8Y538ZbnSqH399WslW2sK1+u2EXjFjVAhYZ9QxGTrTOB
+	YEG9G9drermuiSry0wP7mGkUkZyQjC8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1692126111;
+	s=susede2_ed25519; t=1692126110;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=T8//wcNQwPthyNc3xqkx3W41Gepnl5c0ocQ4zcQs/T8=;
-	b=2R+RcxgtIgD+uo64NiNryZWEe5dGUW9Cqz4v2tT8ELTkQGaeBGBoTpbBckveuirdMDVJKt
-	bt/XDwlXZ6Acd1Dw==
+	bh=AoYuahFv9jY9TJIQezpvBTUC7RKI1JDEmMCNFlRwbQU=;
+	b=H7+rZg0RDu+leJTafpFZYEIXnx5iBQbYiF56ix+ByDMib7O1FgaNUGTft2AnWfym2DKlka
+	y9IiK0NNiMz9YTCA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D19EC1390C;
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6B3A91390C;
 	Tue, 15 Aug 2023 19:01:50 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id GCcvMp7L22QTVAAAMHmgww
+	id EKtOGZ7L22QTVAAAMHmgww
 	(envelope-from <tiwai@suse.de>); Tue, 15 Aug 2023 19:01:50 +0000
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
 Cc: linux-kernel@vger.kernel.org,
-	Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH v2 23/25] ALSA: doc: Update description for the new PCM copy
- ops
-Date: Tue, 15 Aug 2023 21:01:34 +0200
-Message-Id: <20230815190136.8987-24-tiwai@suse.de>
+	Takashi Iwai <tiwai@suse.de>,
+	Mark Brown <broonie@kernel.org>,
+	Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH v2 21/25] ASoC: dmaengine: Convert to generic PCM copy ops
+Date: Tue, 15 Aug 2023 21:01:32 +0200
+Message-Id: <20230815190136.8987-22-tiwai@suse.de>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <20230815190136.8987-1-tiwai@suse.de>
 References: <20230815190136.8987-1-tiwai@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: IBTYP3V7WTOWDURAQFXGOFVO52KTUZ4O
-X-Message-ID-Hash: IBTYP3V7WTOWDURAQFXGOFVO52KTUZ4O
+Message-ID-Hash: XNPCSE4FKNGKJ5XFMUGDFZTLINS3A3JE
+X-Message-ID-Hash: XNPCSE4FKNGKJ5XFMUGDFZTLINS3A3JE
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -108,7 +109,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IBTYP3V7WTOWDURAQFXGOFVO52KTUZ4O/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XNPCSE4FKNGKJ5XFMUGDFZTLINS3A3JE/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -117,136 +118,75 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Update the documentation about the PCM copy callbacks.
-The update was kept minimalistic, just correcting the use of copy_user
-ops with the single copy ops, and drop/update the text mentioning the
-copy_kernel.
+This patch converts the ASoC dmaenging driver code to use the new
+unified PCM copy callback.  It's a straightforward conversion from
+*_user() to *_iter() variants.
 
+The process callback is still using the direct pointer as of now, but
+it'll be converted in the next patch.
+
+Note that copy_from/to_iter() returns the copied bytes, hence the
+error condition is adjusted accordingly.
+
+Reviewed-by: Mark Brown <broonie@kernel.org>
+Cc: Lars-Peter Clausen <lars@metafoo.de>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- .../kernel-api/writing-an-alsa-driver.rst     | 58 ++++++-------------
- 1 file changed, 19 insertions(+), 39 deletions(-)
+ sound/soc/soc-generic-dmaengine-pcm.c | 17 +++++++++--------
+ 1 file changed, 9 insertions(+), 8 deletions(-)
 
-diff --git a/Documentation/sound/kernel-api/writing-an-alsa-driver.rst b/Documentation/sound/kernel-api/writing-an-alsa-driver.rst
-index 4335c98b3d82..cd421856409e 100644
---- a/Documentation/sound/kernel-api/writing-an-alsa-driver.rst
-+++ b/Documentation/sound/kernel-api/writing-an-alsa-driver.rst
-@@ -2018,8 +2018,8 @@ sleeping poll threads, etc.
+diff --git a/sound/soc/soc-generic-dmaengine-pcm.c b/sound/soc/soc-generic-dmaengine-pcm.c
+index 3b99f619e37e..f2cb75781566 100644
+--- a/sound/soc/soc-generic-dmaengine-pcm.c
++++ b/sound/soc/soc-generic-dmaengine-pcm.c
+@@ -287,10 +287,10 @@ static snd_pcm_uframes_t dmaengine_pcm_pointer(
+ 		return snd_dmaengine_pcm_pointer(substream);
+ }
  
- This callback is also atomic by default.
+-static int dmaengine_copy_user(struct snd_soc_component *component,
+-			       struct snd_pcm_substream *substream,
+-			       int channel, unsigned long hwoff,
+-			       void __user *buf, unsigned long bytes)
++static int dmaengine_copy(struct snd_soc_component *component,
++			  struct snd_pcm_substream *substream,
++			  int channel, unsigned long hwoff,
++			  struct iov_iter *buf, unsigned long bytes)
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct dmaengine_pcm *pcm = soc_component_to_pcm(component);
+@@ -300,19 +300,20 @@ static int dmaengine_copy_user(struct snd_soc_component *component,
+ 	bool is_playback = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
+ 	void *dma_ptr = runtime->dma_area + hwoff +
+ 			channel * (runtime->dma_bytes / runtime->channels);
++	void *ptr = (void __force *)iter_iov_addr(buf);
  
--copy_user, copy_kernel and fill_silence ops
--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+copy and fill_silence ops
-+~~~~~~~~~~~~~~~~~~~~~~~~~
+ 	if (is_playback)
+-		if (copy_from_user(dma_ptr, buf, bytes))
++		if (copy_from_iter(dma_ptr, bytes, buf) != bytes)
+ 			return -EFAULT;
  
- These callbacks are not mandatory, and can be omitted in most cases.
- These callbacks are used when the hardware buffer cannot be in the
-@@ -3444,8 +3444,8 @@ external hardware buffer in interrupts (or in tasklets, preferably).
+ 	if (process) {
+-		int ret = process(substream, channel, hwoff, (__force void *)buf, bytes);
++		int ret = process(substream, channel, hwoff, ptr, bytes);
+ 		if (ret < 0)
+ 			return ret;
+ 	}
  
- The first case works fine if the external hardware buffer is large
- enough. This method doesn't need any extra buffers and thus is more
--efficient. You need to define the ``copy_user`` and ``copy_kernel``
--callbacks for the data transfer, in addition to the ``fill_silence``
-+efficient. You need to define the ``copy`` callback
-+for the data transfer, in addition to the ``fill_silence``
- callback for playback. However, there is a drawback: it cannot be
- mmapped. The examples are GUS's GF1 PCM or emu8000's wavetable PCM.
+ 	if (!is_playback)
+-		if (copy_to_user(buf, dma_ptr, bytes))
++		if (copy_to_iter(dma_ptr, bytes, buf) != bytes)
+ 			return -EFAULT;
  
-@@ -3458,22 +3458,22 @@ Another case is when the chip uses a PCI memory-map region for the
- buffer instead of the host memory. In this case, mmap is available only
- on certain architectures like the Intel one. In non-mmap mode, the data
- cannot be transferred as in the normal way. Thus you need to define the
--``copy_user``, ``copy_kernel`` and ``fill_silence`` callbacks as well,
-+``copy`` and ``fill_silence`` callbacks as well,
- as in the cases above. Examples are found in ``rme32.c`` and
- ``rme96.c``.
+ 	return 0;
+@@ -337,7 +338,7 @@ static const struct snd_soc_component_driver dmaengine_pcm_component_process = {
+ 	.hw_params	= dmaengine_pcm_hw_params,
+ 	.trigger	= dmaengine_pcm_trigger,
+ 	.pointer	= dmaengine_pcm_pointer,
+-	.copy_user	= dmaengine_copy_user,
++	.copy		= dmaengine_copy,
+ 	.pcm_construct	= dmaengine_pcm_new,
+ };
  
--The implementation of the ``copy_user``, ``copy_kernel`` and
-+The implementation of the ``copy`` and
- ``silence`` callbacks depends upon whether the hardware supports
--interleaved or non-interleaved samples. The ``copy_user`` callback is
-+interleaved or non-interleaved samples. The ``copy`` callback is
- defined like below, a bit differently depending on whether the direction
- is playback or capture::
- 
--  static int playback_copy_user(struct snd_pcm_substream *substream,
-+  static int playback_copy(struct snd_pcm_substream *substream,
-                int channel, unsigned long pos,
--               void __user *src, unsigned long count);
--  static int capture_copy_user(struct snd_pcm_substream *substream,
-+               struct iov_iter *src, unsigned long count);
-+  static int capture_copy(struct snd_pcm_substream *substream,
-                int channel, unsigned long pos,
--               void __user *dst, unsigned long count);
-+               struct iov_iter *dst, unsigned long count);
- 
- In the case of interleaved samples, the second argument (``channel``) is
- not used. The third argument (``pos``) specifies the position in bytes.
-@@ -3490,18 +3490,17 @@ of data (``count``) at the specified pointer (``src``) to the specified
- offset (``pos``) in the hardware buffer. When coded like memcpy-like
- way, the copy would look like::
- 
--  my_memcpy_from_user(my_buffer + pos, src, count);
-+  my_memcpy_from_iter(my_buffer + pos, src, count);
- 
- For the capture direction, you copy the given amount of data (``count``)
- at the specified offset (``pos``) in the hardware buffer to the
- specified pointer (``dst``)::
- 
--  my_memcpy_to_user(dst, my_buffer + pos, count);
-+  my_memcpy_to_iter(dst, my_buffer + pos, count);
- 
--Here the functions are named ``from_user`` and ``to_user`` because
--it's the user-space buffer that is passed to these callbacks.  That
--is, the callback is supposed to copy data from/to the user-space
--directly to/from the hardware buffer.
-+The given ``src`` or ``dst`` a struct iov_iter pointer containing the
-+pointer and the size.  Use the existing helpers to copy or access the
-+data as defined in ``linux/uio.h``.
- 
- Careful readers might notice that these callbacks receive the
- arguments in bytes, not in frames like other callbacks.  It's because
-@@ -3519,25 +3518,6 @@ the given user-space buffer, but only for the given channel. For
- details, please check ``isa/gus/gus_pcm.c`` or ``pci/rme9652/rme9652.c``
- as examples.
- 
--The above callbacks are the copies from/to the user-space buffer.  There
--are some cases where we want to copy from/to the kernel-space buffer
--instead.  In such a case, the ``copy_kernel`` callback is called.  It'd
--look like::
--
--  static int playback_copy_kernel(struct snd_pcm_substream *substream,
--               int channel, unsigned long pos,
--               void *src, unsigned long count);
--  static int capture_copy_kernel(struct snd_pcm_substream *substream,
--               int channel, unsigned long pos,
--               void *dst, unsigned long count);
--
--As found easily, the only difference is that the buffer pointer is
--without a ``__user`` prefix; that is, a kernel-buffer pointer is passed
--in the fourth argument.  Correspondingly, the implementation would be
--a version without the user-copy, such as::
--
--  my_memcpy(my_buffer + pos, src, count);
--
- Usually for the playback, another callback ``fill_silence`` is
- defined.  It's implemented in a similar way as the copy callbacks
- above::
-@@ -3545,10 +3525,10 @@ above::
-   static int silence(struct snd_pcm_substream *substream, int channel,
-                      unsigned long pos, unsigned long count);
- 
--The meanings of arguments are the same as in the ``copy_user`` and
--``copy_kernel`` callbacks, although there is no buffer pointer
-+The meanings of arguments are the same as in the ``copy`` callback,
-+although there is no buffer pointer
- argument. In the case of interleaved samples, the channel argument has
--no meaning, as for the ``copy_*`` callbacks.
-+no meaning, as for the ``copy`` callback.
- 
- The role of the ``fill_silence`` callback is to set the given amount
- (``count``) of silence data at the specified offset (``pos``) in the
 -- 
 2.35.3
 
