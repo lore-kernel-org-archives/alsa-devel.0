@@ -4,97 +4,102 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DC74AC001E0
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Aug 2023 19:10:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 507FAC0015E
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Aug 2023 19:18:39 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 247FE827;
-	Tue, 15 Aug 2023 21:09:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 247FE827
+	by alsa0.perex.cz (Postfix) with ESMTPS id C252C851;
+	Tue, 15 Aug 2023 21:17:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C252C851
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1692126611;
-	bh=pIVBG17tkSiebGHe94MtxJL6iPPGYcICxA79B8vLaFs=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1692127116;
+	bh=yT+ibaQLIWCz8w7tHkW5NfaPrwF2Dh1AfWMPw+NLt+k=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Z/soybdwfhNl3sS7zHKha0AL+XQx1Iwq9XdfQqCKWfoi7k96lgUewL3tpbmOyZ/4d
-	 7yCCp9axTFF6x/w48i2aNvpunHHeruwmzJ+lvAEeBt+aQsiFedfQy2w9fXc4CvqOlv
-	 JYxMUHTKIM8TdUxsAJbxd/20xtRoWwVJ/jiAo5bc=
+	b=DSqiuTplHFQBW63xSg+rJWuZ684TYnW8tpLQz5OM9ebS4o9e4UJ8UNWbAAL5CBVwg
+	 8eU+uArkjTTHgCPfsqYopkfwyD2CweJBfeTQHUUTd0oxP+To3DIoelINPmZV1jFxzF
+	 N2ENjcvMvVt66KrVAneBq/HFa8kELBBOwef2SbQA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1E5D4F80695; Tue, 15 Aug 2023 21:04:05 +0200 (CEST)
+	id 48E6FF800EE; Tue, 15 Aug 2023 21:17:46 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9CA62F80691;
-	Tue, 15 Aug 2023 21:04:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1D77EF801EB;
+	Tue, 15 Aug 2023 21:17:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 32BFAF805A0; Tue, 15 Aug 2023 21:04:00 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	id B71CEF8016A; Tue, 15 Aug 2023 21:17:41 +0200 (CEST)
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com
+ [IPv6:2607:f8b0:4864:20::42a])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E22BCF801EB
-	for <alsa-devel@alsa-project.org>; Tue, 15 Aug 2023 21:01:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E22BCF801EB
+	by alsa1.perex.cz (Postfix) with ESMTPS id B26DFF80027
+	for <alsa-devel@alsa-project.org>; Tue, 15 Aug 2023 21:17:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B26DFF80027
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=G0Y7LAV+;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=HLLejty9
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 611801FD65;
-	Tue, 15 Aug 2023 19:01:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1692126108;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ASUwd958P5x/mva8ZR+pltrHluFd6nJ8P9qOx6QddwI=;
-	b=G0Y7LAV+S/FgM6AOhM28ndSn1Qz3m7uVuVFDSbKieVTcR+i0Mgln7Tildr8GVW2dRnYea2
-	Q7PqSk779EFanAiaaUKcbdFTK0n1ZKcCzvWrj3AOFavqc0D3i225Th3kEuSMqA3v/Khoyu
-	hzYZK+xJFx2pO1BNf2nVOll1pWAjOIk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1692126108;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ASUwd958P5x/mva8ZR+pltrHluFd6nJ8P9qOx6QddwI=;
-	b=HLLejty9AB+8i7AzQ7TON8xut8eQQx3L3eywPI6mKjJjcUDu0TsqB/Nb8vA9tiGP6Q6iJY
-	8ijncOpftX7onaBw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 431601353E;
-	Tue, 15 Aug 2023 19:01:48 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id 0DGZD5zL22QTVAAAMHmgww
-	(envelope-from <tiwai@suse.de>); Tue, 15 Aug 2023 19:01:48 +0000
-From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Cc: linux-kernel@vger.kernel.org,
-	Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH v2 08/25] ALSA: korg1212: Convert to generic PCM copy ops
-Date: Tue, 15 Aug 2023 21:01:19 +0200
-Message-Id: <20230815190136.8987-9-tiwai@suse.de>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20230815190136.8987-1-tiwai@suse.de>
-References: <20230815190136.8987-1-tiwai@suse.de>
+	dkim=pass (2048-bit key,
+ unprotected) header.d=google.com header.i=@google.com header.a=rsa-sha256
+ header.s=20221208 header.b=2O0zBWyY
+Received: by mail-pf1-x42a.google.com with SMTP id
+ d2e1a72fcca58-688769faa09so434692b3a.2
+        for <alsa-devel@alsa-project.org>;
+ Tue, 15 Aug 2023 12:17:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1692127054; x=1692731854;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yT+ibaQLIWCz8w7tHkW5NfaPrwF2Dh1AfWMPw+NLt+k=;
+        b=2O0zBWyY7WqFZ7ubuizgne/lPWgW3xMd/00DGH+MyMXXIXb4nI3+Nmgz5ixRjmK4bJ
+         2lrAJxa9KWlny5zW1ls/kwPAe4ziThzQAL4fBpY6m7IpT+q1PiajlttXw9wkgL+ehKMe
+         SB8kw7mhElbcHYtoY/2JDcRmHCOwwQS4pxaycUR0Cxh//4UOdwkxlQ2vJybccOCUT+4i
+         OgIoqGZ/xnzFFOznRYWpTlKq/tK/jZ6k2XYmuIaD/0bpSOl01umQ2KDzgsUVvgesafUx
+         1lM2JPzZXgcuuOjuIhsFiM9SHt/ghPAknj7tFjztNG/uvwtJ/RL9zz3GMkqaksB9buOo
+         MrYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692127054; x=1692731854;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=yT+ibaQLIWCz8w7tHkW5NfaPrwF2Dh1AfWMPw+NLt+k=;
+        b=XLyMRh8o87GUO2FknrJS2uUoSuzpo0XzM+zbF2h+HsF1Xn/eDSs4mdaJ72iJ0d8cqo
+         DR05Xw8alqLsXOfn65omVzkRLM6ckb4eavljLjYluPz5HAQuzKSznF+QmULaTHjsUFTx
+         26obnDg0doKwwmWap7v4Bb1pRn1OojT+KoOG+l7OWaoobW5oBsW+xkAmLLoF/wUDyGFR
+         PMzv6P2MK/Ef5aAwKG69nsNexwQCs4hBRpAYWw7wU9L5iv5dkXjC0GGmVb54a6ReoUPY
+         MYsDYYWsPofbk1Y4SlslGQR+ac6+/B0NsWTLlmbPyrHR559ZOB0xnl9EsMStqWMn/j88
+         r98w==
+X-Gm-Message-State: AOJu0YwATCkBQMmKaIWEPNC9hUpfWm1cuPNQYug1xwyhwLw6Fovveh33
+	ye6lN30z2g5G+RXzc1cpEC2wY7QeV3OuqmMMq4alXg==
+X-Google-Smtp-Source: 
+ AGHT+IFKDzhSCZd90m02n5uigwN9ZIdVzwVftAWOR3pJD4PBQfD5J4TFHjevVIaFyB+y1F+b26ilsZoqCBKGydLnEX4=
+X-Received: by 2002:a05:6a00:891:b0:679:bc89:e45 with SMTP id
+ q17-20020a056a00089100b00679bc890e45mr13930352pfj.6.1692127053803; Tue, 15
+ Aug 2023 12:17:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: QMH2WB74AKDAZ24VDRBBISH7QONFIOM6
-X-Message-ID-Hash: QMH2WB74AKDAZ24VDRBBISH7QONFIOM6
-X-MailFrom: tiwai@suse.de
+References: <ZNuDLk5hgmfKrZg6@arch>
+ <850c5b2c-265e-a565-8a88-58a88f8fb4e8@linux.intel.com>
+ <CAOReqxjbjkhkqfvTWs9i5NxK6QAsk42Daw1pA_1+b1zG5mbKmQ@mail.gmail.com>
+ <ZNuyuerb0M6IGRKj@arch>
+ <CAOReqxi_fkthH7SPdQ6ycyMx+2Mpi+JHHYhPJKi-u82SsfN9gA@mail.gmail.com>
+ <0beda41e-8dfa-054e-4069-7298b4caa879@linux.intel.com>
+In-Reply-To: <0beda41e-8dfa-054e-4069-7298b4caa879@linux.intel.com>
+From: Curtis Malainey <cujomalainey@google.com>
+Date: Tue, 15 Aug 2023 12:17:22 -0700
+Message-ID: 
+ <CAOReqxi+N6fMxjraq3XJjdagG6+Z5p0PC9NV6yDJmF2hAJKp-w@mail.gmail.com>
+Subject: Re: [PATCH v2] ALSA: hda: intel-dsp-cfg: Add Chromebook quirk to
+ ADL/RPL
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Brady Norander <bradynorander@gmail.com>, alsa-devel@alsa-project.org,
+	broonie@kernel.org, cezary.rojewski@intel.com,
+	amadeuszx.slawinski@linux.intel.com, perex@perex.cz, tiwai@suse.de,
+	cujomalainey@chromium.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Message-ID-Hash: FMT27EQDIQPMLATGW27N37HVX2MV3RWR
+X-Message-ID-Hash: FMT27EQDIQPMLATGW27N37HVX2MV3RWR
+X-MailFrom: cujomalainey@google.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -106,7 +111,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QMH2WB74AKDAZ24VDRBBISH7QONFIOM6/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FMT27EQDIQPMLATGW27N37HVX2MV3RWR/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -115,139 +120,51 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-This patch converts the korg1212 driver code to use the new unified
-PCM copy callback.  The open-coded conditional memory copies are
-replaced with simpler copy_from/to_iter() calls.
+On Tue, Aug 15, 2023 at 11:28=E2=80=AFAM Pierre-Louis Bossart
+<pierre-louis.bossart@linux.intel.com> wrote:
+>
+>
+>
+> On 8/15/23 13:00, Curtis Malainey wrote:
+> > On Tue, Aug 15, 2023 at 10:15=E2=80=AFAM Brady Norander <bradynorander@=
+gmail.com> wrote:
+> >>
+> >> On Tue, Aug 15, 2023 at 09:56:44AM -0700, Curtis Malainey wrote:
+> >>> On Tue, Aug 15, 2023 at 8:56=E2=80=AFAM Pierre-Louis Bossart <
+> >>> pierre-louis.bossart@linux.intel.com> wrote:
+> >>>> On 8/15/23 08:52, Brady Norander wrote:
+> >>>>> AlderLake and RaptorLake Chromebooks currently use the HDA driver b=
+y
+> >>>>> default. Add a quirk to use the SOF driver on these platforms, whic=
+h is
+> >>>>> needed for functional internal audio.
+> >>>>>
+> >>>>> Signed-off-by: Brady Norander <bradynorander@gmail.com>
+> >>>>
+> >>>> Thanks for the patch
+> >>>>
+> >>>> Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com=
+>
+> >>>>
+> >>>
+> >>> Now that I am looking closer at the patch, I am very curious why we a=
+re not
+> >>> hitting the following case and using SOF
+> >>
+> >> The DMIC detection looks for DMIC endpoints in the NHLT, but these
+> >> devices don't have NHLT.
+> >
+> > There would be the brokenness then. Is the DMIC not something that
+> > shows up in coreboot? Or is it only defined in the topology? If the
+> > latter we should probably extend this patch farther back to GLK.
+>
+> You don't need to expose mics in NHLT, the premise has always been that
+> Chromebooks are assumed to expose 4 mics and userspace w/ UCM takes care
+> of selecting which mics are actually used on what platform.
+>
+> Also there's a difference between NHLT (ACPI table) and NHLT blob in
+> topology used for IPC4. not the same thing.
 
-Note that copy_from/to_iter() returns the copied bytes, hence the
-error condition is adjusted accordingly.
+Thanks for the clarification
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/korg1212/korg1212.c | 50 +++++++++--------------------------
- 1 file changed, 12 insertions(+), 38 deletions(-)
-
-diff --git a/sound/pci/korg1212/korg1212.c b/sound/pci/korg1212/korg1212.c
-index 33b4f95d65b3..5c2cac201a28 100644
---- a/sound/pci/korg1212/korg1212.c
-+++ b/sound/pci/korg1212/korg1212.c
-@@ -1285,8 +1285,7 @@ static int snd_korg1212_silence(struct snd_korg1212 *korg1212, int pos, int coun
- }
- 
- static int snd_korg1212_copy_to(struct snd_pcm_substream *substream,
--				void __user *dst, int pos, int count,
--				bool in_kernel)
-+				struct iov_iter *dst, int pos, int count)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
-         struct snd_korg1212 *korg1212 = snd_pcm_substream_chip(substream);
-@@ -1306,24 +1305,20 @@ static int snd_korg1212_copy_to(struct snd_pcm_substream *substream,
- #if K1212_DEBUG_LEVEL > 0
- 		if ( (void *) src < (void *) korg1212->recordDataBufsPtr ||
- 		     (void *) src > (void *) korg1212->recordDataBufsPtr[8].bufferData ) {
--			printk(KERN_DEBUG "K1212_DEBUG: snd_korg1212_copy_to KERNEL EFAULT, src=%p dst=%p iter=%d\n", src, dst, i);
-+			printk(KERN_DEBUG "K1212_DEBUG: snd_korg1212_copy_to KERNEL EFAULT, src=%p dst=%p iter=%d\n", src, dst->kvec.iov_base, i);
- 			return -EFAULT;
- 		}
- #endif
--		if (in_kernel)
--			memcpy((__force void *)dst, src, size);
--		else if (copy_to_user(dst, src, size))
-+		if (copy_to_iter(src, size, dst) != size)
- 			return -EFAULT;
- 		src++;
--		dst += size;
- 	}
- 
- 	return 0;
- }
- 
- static int snd_korg1212_copy_from(struct snd_pcm_substream *substream,
--				  void __user *src, int pos, int count,
--				  bool in_kernel)
-+				  struct iov_iter *src, int pos, int count)
- {
-         struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct snd_korg1212 *korg1212 = snd_pcm_substream_chip(substream);
-@@ -1345,16 +1340,13 @@ static int snd_korg1212_copy_from(struct snd_pcm_substream *substream,
- #if K1212_DEBUG_LEVEL > 0
- 		if ( (void *) dst < (void *) korg1212->playDataBufsPtr ||
- 		     (void *) dst > (void *) korg1212->playDataBufsPtr[8].bufferData ) {
--			printk(KERN_DEBUG "K1212_DEBUG: snd_korg1212_copy_from KERNEL EFAULT, src=%p dst=%p iter=%d\n", src, dst, i);
-+			printk(KERN_DEBUG "K1212_DEBUG: snd_korg1212_copy_from KERNEL EFAULT, src=%p dst=%p iter=%d\n", src->kvec.iov_base, dst, i);
- 			return -EFAULT;
- 		}
- #endif
--		if (in_kernel)
--			memcpy(dst, (__force void *)src, size);
--		else if (copy_from_user(dst, src, size))
-+		if (copy_from_iter(dst, size, src) != size)
- 			return -EFAULT;
- 		dst++;
--		src += size;
- 	}
- 
- 	return 0;
-@@ -1642,17 +1634,9 @@ static snd_pcm_uframes_t snd_korg1212_capture_pointer(struct snd_pcm_substream *
- 
- static int snd_korg1212_playback_copy(struct snd_pcm_substream *substream,
- 				      int channel, unsigned long pos,
--				      void __user *src, unsigned long count)
-+				      struct iov_iter *src, unsigned long count)
- {
--	return snd_korg1212_copy_from(substream, src, pos, count, false);
--}
--
--static int snd_korg1212_playback_copy_kernel(struct snd_pcm_substream *substream,
--				      int channel, unsigned long pos,
--				      void *src, unsigned long count)
--{
--	return snd_korg1212_copy_from(substream, (void __user *)src,
--				      pos, count, true);
-+	return snd_korg1212_copy_from(substream, src, pos, count);
- }
- 
- static int snd_korg1212_playback_silence(struct snd_pcm_substream *substream,
-@@ -1670,17 +1654,9 @@ static int snd_korg1212_playback_silence(struct snd_pcm_substream *substream,
- 
- static int snd_korg1212_capture_copy(struct snd_pcm_substream *substream,
- 				     int channel, unsigned long pos,
--				     void __user *dst, unsigned long count)
-+				     struct iov_iter *dst, unsigned long count)
- {
--	return snd_korg1212_copy_to(substream, dst, pos, count, false);
--}
--
--static int snd_korg1212_capture_copy_kernel(struct snd_pcm_substream *substream,
--				     int channel, unsigned long pos,
--				     void *dst, unsigned long count)
--{
--	return snd_korg1212_copy_to(substream, (void __user *)dst,
--				    pos, count, true);
-+	return snd_korg1212_copy_to(substream, dst, pos, count);
- }
- 
- static const struct snd_pcm_ops snd_korg1212_playback_ops = {
-@@ -1691,8 +1667,7 @@ static const struct snd_pcm_ops snd_korg1212_playback_ops = {
-         .prepare =	snd_korg1212_prepare,
-         .trigger =	snd_korg1212_trigger,
-         .pointer =	snd_korg1212_playback_pointer,
--	.copy_user =	snd_korg1212_playback_copy,
--	.copy_kernel =	snd_korg1212_playback_copy_kernel,
-+	.copy =		snd_korg1212_playback_copy,
- 	.fill_silence =	snd_korg1212_playback_silence,
- };
- 
-@@ -1704,8 +1679,7 @@ static const struct snd_pcm_ops snd_korg1212_capture_ops = {
- 	.prepare =	snd_korg1212_prepare,
- 	.trigger =	snd_korg1212_trigger,
- 	.pointer =	snd_korg1212_capture_pointer,
--	.copy_user =	snd_korg1212_capture_copy,
--	.copy_kernel =	snd_korg1212_capture_copy_kernel,
-+	.copy =		snd_korg1212_capture_copy,
- };
- 
- /*
--- 
-2.35.3
-
+Acked-by Curtis Malainey <cujomalainey@chromium.org>
