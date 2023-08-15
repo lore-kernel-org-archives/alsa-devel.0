@@ -4,82 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 15F38C001E0
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Aug 2023 19:19:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3F85BC0015E
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Aug 2023 19:20:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 71874E0E;
-	Tue, 15 Aug 2023 21:18:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 71874E0E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7CEA4E74;
+	Tue, 15 Aug 2023 21:19:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7CEA4E74
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1692127187;
-	bh=phJbuXz6HF2w4yjZZxtGzNVVKy2Ep36uFxfwru/qKdo=;
+	s=default; t=1692127218;
+	bh=eFvjIQpfpLn04fUrutil1i4WgaNEC1I7mt3ZBcQfd9Y=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=SDZxoEpd5s5LHAVR+y9b9w0XAryu06AQ4S2zbBRerA6VHU4KxCEuPZnnQgbH+GcP1
-	 XALOKWQZ/cZ532Gn5tNl6X6NWMQkSsfTv/ZZGGaqWGOyI0wZTbTUspSKzofOxlS1C4
-	 0urFzfe3tOhw31QCjwtRkQmWcAHxGsFRcY87qD4A=
+	b=dT3ga/7kAMZkyjaA3tTKoodUJeyTyN4P+4oV8nAGya+5br/0whBwwejL2/0oY9uqo
+	 7iJCDKjNsHrCJ9ENoTsh2PqfGUZ8SDcPjqpzpgMj/URESrwK/uToUCLK4urra2DKfh
+	 96iKxg0HaHX5UMwVZZPBx/Txbk5AdtkKmHYH/GYM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8483BF80588; Tue, 15 Aug 2023 21:18:03 +0200 (CEST)
+	id 44688F805B6; Tue, 15 Aug 2023 21:18:09 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id CFCC5F8057F;
-	Tue, 15 Aug 2023 21:18:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BA969F805B2;
+	Tue, 15 Aug 2023 21:18:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 984EAF80553; Tue, 15 Aug 2023 21:17:55 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+	id D44FFF80553; Tue, 15 Aug 2023 21:17:56 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 27D4CF80536;
-	Tue, 15 Aug 2023 21:17:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 27D4CF80536
+	by alsa1.perex.cz (Postfix) with ESMTPS id 7E261F80549
+	for <alsa-devel@alsa-project.org>; Tue, 15 Aug 2023 21:17:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7E261F80549
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=oIeiwQyv
+ header.s=k20201202 header.b=O1QikjCE
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id D1C6D660C6;
-	Tue, 15 Aug 2023 19:17:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2936C433C8;
-	Tue, 15 Aug 2023 19:17:43 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id AB07F660BB;
+	Tue, 15 Aug 2023 19:17:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D1FAC433C8;
+	Tue, 15 Aug 2023 19:17:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1692127066;
-	bh=phJbuXz6HF2w4yjZZxtGzNVVKy2Ep36uFxfwru/qKdo=;
+	s=k20201202; t=1692127072;
+	bh=eFvjIQpfpLn04fUrutil1i4WgaNEC1I7mt3ZBcQfd9Y=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=oIeiwQyv2KlcnqwHhiOdhm/qsEiVQzcfDXPPGNVECnyn8MiSNQXae0OXsnUj3oJeJ
-	 ekhSA9a0qXttfqCptpIIf2i9vlfS86chRGAinL+GQVpq/wJarwtCz8DyqOd3eNWFCh
-	 tWy2jv5ddZaeeHvS+xmntqZI9+uiP3lp0GxHgesT92bbW/QwpSsHEZSZyXOGiR886d
-	 aDEFdza80MuIHUGEmtOEjaztHyk+hTg4AYP6LH2mhRP8nOgKcaBiNAVPThnGgcjsSY
-	 Xnjb+2L+hDgXYJGCRl/BxeQoob0ZLsNrD46HB1G1QJj3Ch+qqeW0YNx/+/0dEx6x2e
-	 ZVLqoRHkwU87g==
+	b=O1QikjCECQLMD6PgOJRk4l6VMHKL9lxYP08dKPODzP3JTCIbiCIlipOyThytW84u3
+	 HMkpJAABC3MQk4k3tLPshAeiAOuuyg21fH1+L4ITmL9XIbsHc5QWX9aAZ1THOM3eNG
+	 5qOmBMpsi/Wx5O6MSysAkV7Tp8689txlUgrj38t97T9Zb2HYWcRVkkT9I1hlmnRv2Y
+	 hEpJG8eLzGtbf/ZCOTzc794rw1wjWRKjIx1UJ94iLDGdiJv31v5R3+uwizEU5Q8XT7
+	 A6L9x/aim7jMpUxcyI+5/VBfIk8+Z9E3yT4+EsvBHoHCh5ypRNjKwhboqSinJ4zoXj
+	 UGpeGcMerntXg==
 From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
- pierre-louis.bossart@linux.intel.com, peter.ujfalusi@linux.intel.com,
- yung-chuan.liao@linux.intel.com, ranjani.sridharan@linux.intel.com,
- daniel.baluta@nxp.com, kai.vehmanen@linux.intel.com,
- daniel.beer@igorinstitute.com, Jonathan.Cameron@huawei.com,
- luca.ceresoli@bootlin.com, luzmaximilian@gmail.com,
- u.kleine-koenig@pengutronix.de, Li Zetao <lizetao1@huawei.com>
-Cc: alsa-devel@alsa-project.org, sound-open-firmware@alsa-project.org
-In-Reply-To: <20230810114738.2103792-1-lizetao1@huawei.com>
-References: <20230810114738.2103792-1-lizetao1@huawei.com>
-Subject: Re: [PATCH -next 0/2] Use devm_kmemdup to replace devm_kmalloc +
- memcpy
-Message-Id: <169212706337.68178.8111393898316449081.b4-ty@kernel.org>
-Date: Tue, 15 Aug 2023 20:17:43 +0100
+To: alsa-devel@alsa-project.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de
+In-Reply-To: <20230814232325.86397-1-pierre-louis.bossart@linux.intel.com>
+References: <20230814232325.86397-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 0/2] ASoC: SOF: topology: simplify kcontrol names with
+ token
+Message-Id: <169212707116.68178.17692815683017511265.b4-ty@kernel.org>
+Date: Tue, 15 Aug 2023 20:17:51 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-034f2
-Message-ID-Hash: YU7OQZIXIUICITFHS4VIXQLPCGYCA74Q
-X-Message-ID-Hash: YU7OQZIXIUICITFHS4VIXQLPCGYCA74Q
+Message-ID-Hash: BV5SOPXSZLKJVNZ37FQZPNBOSBUJJBE5
+X-Message-ID-Hash: BV5SOPXSZLKJVNZ37FQZPNBOSBUJJBE5
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -92,7 +86,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YU7OQZIXIUICITFHS4VIXQLPCGYCA74Q/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BV5SOPXSZLKJVNZ37FQZPNBOSBUJJBE5/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -101,14 +95,15 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, 10 Aug 2023 19:47:36 +0800, Li Zetao wrote:
-> This patch set use the helper function devm_kmemdup() to replace
-> devm_kmalloc + memcpy, which is the same as implementing the function
-> separately.
+On Mon, 14 Aug 2023 18:23:23 -0500, Pierre-Louis Bossart wrote:
+> The use of the widget name as a prefix for the kcontrol name is quite
+> useful in the case of multiple pipelines going to the same endpoint,
+> but it's overkill in simpler cases.
 > 
-> Li Zetao (2):
->   ASoC: tas5805m: Use devm_kmemdup to replace devm_kmalloc + memcpy
->   ASoC: SOF: ipc3: Use devm_kmemdup to replace devm_kmalloc + memcpy
+> This patchset extends the existing DAPM code to drop the widget name
+> prefix and make the kcontrol names simpler when there's no possible
+> ambiguity, e.g.  "gain.2.1 Main Playback Volume" becomes just "Main
+> Playback Volume".
 > 
 > [...]
 
@@ -118,10 +113,10 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: tas5805m: Use devm_kmemdup to replace devm_kmalloc + memcpy
-      commit: b0a4c7f5921d9c2998bdd767a93d995786d72adc
-[2/2] ASoC: SOF: ipc3: Use devm_kmemdup to replace devm_kmalloc + memcpy
-      commit: 29681184da28babc990a66e197d27ab98f2027af
+[1/2] ASoC: dapm: Add a flag for not having widget name in kcontrol name
+      commit: f7f4a5ad8e11de4edb7b62d099f0501c8610c92b
+[2/2] ASoC: SOF: topology: Add a token for dropping widget name in kcontrol name
+      commit: 56ce7b791b787e0aee19601e422f13a18d4eafe7
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
