@@ -4,61 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B705CC001B0
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Aug 2023 12:51:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6723DC001DB
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Aug 2023 12:51:45 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 712A47F1;
-	Tue, 15 Aug 2023 14:50:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 712A47F1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 81C54846;
+	Tue, 15 Aug 2023 14:50:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 81C54846
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1692103898;
-	bh=mCDefCoSl2juPKC9ahyWIbMy6EQMPzAZLu1oxaVBTwg=;
+	s=default; t=1692103903;
+	bh=8BHoVAYiMiYBCDhJ0oAvzbKLjs+/yyH+8/AHT86Rtp4=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=q2YQJS/LahlZ7CwfMH6uyuS3Vq20TJaGuJpxkmtAGR0eBkORvm12vGe3enokZ4iMF
-	 Fuce6IU2xyQEtXvfHTMlxae9sAAWZkvsYOz/YtOifUJcjCSkp/SCQI0w8yOp+IYHsU
-	 HcxU5/RMJhP3LPtkxCO4VDU53T2RMGwMilOnyK3w=
+	b=EVO58wKoncj5TbOPLHPctHQAny/M1psABa3VUKIqF4vEgrC3Ipxti8hJg7jcjm/fk
+	 UQq7rWWwEHqUVMOZhmwc6UVdajsaSScawOxrPpY9ycy2BEcJf6wQRdHlSe9BZgg+/j
+	 BYqHKeQG8hnpOKEfi9wCytmtWvL2OOrYzvQwgFIc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AFF62F80551; Tue, 15 Aug 2023 14:49:59 +0200 (CEST)
+	id B94BBF80552; Tue, 15 Aug 2023 14:50:01 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 202F7F80552;
-	Tue, 15 Aug 2023 14:49:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B24BCF80567;
+	Tue, 15 Aug 2023 14:50:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AD43DF801EB; Tue, 15 Aug 2023 14:48:43 +0200 (CEST)
+	id 29364F8016D; Tue, 15 Aug 2023 14:48:46 +0200 (CEST)
 Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E9CB6F8016D
+	by alsa1.perex.cz (Postfix) with ESMTPS id 7B6F8F8016A
 	for <alsa-devel@alsa-project.org>; Tue, 15 Aug 2023 14:48:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E9CB6F8016D
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7B6F8F8016A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=VJsqiNUX
+ header.s=PODMain02222019 header.b=eZpy70PM
 Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
 	by mx0b-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id
- 37FC59WG010995;
+ 37FC59WF010995;
 	Tue, 15 Aug 2023 07:48:31 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
 	:mime-version:content-transfer-encoding:content-type; s=
-	PODMain02222019; bh=7cFx1ctLJ56NlPPqEsUOtWiqLtYmd8Fn1JuskYJ9KW8=; b=
-	VJsqiNUXm8I+Q34IiPjo7JVgRke65CZnvS3oSoldbb/YZiLu6I0EPvIommTiMhEU
-	QOusKe186ApqjdNMXXmGj8OgwjjmJRJn/wZ6wonPyUH/L0m0Mwf/vEEWulqd58d5
-	WevD8LrtZgexWKDgYYw9nNeYaRCsD9mEUuVRvEMj6lbQVYQmlBdQcZm3tf2xbRuB
-	bUlBgHo4ZWAyI+x/dTrwbmsJtgItWPwNFqRHmxMi8LlF9VuM2BSWdqbj8jIiC2vu
-	KHivnV1Ysa/FsDhMMaUrE7himOv7kwCaZmx+vLjwi4N59PrPj42so2sO5vwmZCy+
-	wn+dpptUN3O8rij1WJigng==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3se6uhjxk4-2
+	PODMain02222019; bh=LlWeKf7KuiLdz34J272ICd3ELQqwNKf+XzE8CM8lfc0=; b=
+	eZpy70PMJzevq7QifiuKI7VswhmD4x/fqSDxRKt2hOGJvqnfOfJ7BpsSzeSgjEjO
+	pp60Xj+zjNZ/7HudoCfrxrKJR5TZRa+jis/CXtRU4tKAu/V+69u8tv2N24jEUbCr
+	j9CnVL65l5F6E6E/sUe1eEcCHE1M7FHLIhHfO2n1Imb//i0R9cl/Phw/37lB368Z
+	1WePUcjEDv6gvRV34A6DDvyk2kqYs/p3b2g8e3dpRpIEc+sYCFek0gwnFu5r7Cfh
+	6c2rXeNTntcDKjQzrN3mJm3k5dnT4zc25CwYhMOmki/GTUgWKl56P+BkTEF7mgjy
+	cmUg0E3DUPv+DQijoEr0cw==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3se6uhjxk5-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Tue, 15 Aug 2023 07:48:31 -0500 (CDT)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Tue, 15 Aug
  2023 13:48:29 +0100
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
@@ -66,7 +66,7 @@ Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
  15.2.1118.30 via Frontend Transport; Tue, 15 Aug 2023 13:48:29 +0100
 Received: from EDIN4L06LR3.ad.cirrus.com (EDIN4L06LR3.ad.cirrus.com
  [198.61.65.68])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id A9BD215B4;
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 5A32D3575;
 	Tue, 15 Aug 2023 12:48:29 +0000 (UTC)
 From: Richard Fitzgerald <rf@opensource.cirrus.com>
 To: <broonie@kernel.org>
@@ -74,20 +74,21 @@ CC: <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
         <patches@opensource.cirrus.com>,
         Richard Fitzgerald
 	<rf@opensource.cirrus.com>
-Subject: [PATCH 2/2] ASoC: cs35l56: Don't overwrite a patched firmware
-Date: Tue, 15 Aug 2023 13:48:26 +0100
-Message-ID: <20230815124826.5447-3-rf@opensource.cirrus.com>
+Subject: [PATCH 1/2] ASoC: wm_adsp: Support powering-up DSP without trying to
+ load firmware
+Date: Tue, 15 Aug 2023 13:48:25 +0100
+Message-ID: <20230815124826.5447-2-rf@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20230815124826.5447-1-rf@opensource.cirrus.com>
 References: <20230815124826.5447-1-rf@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: zcxfjfH8LkAVNrQA1ohl-2m3-2gfwBEB
-X-Proofpoint-ORIG-GUID: zcxfjfH8LkAVNrQA1ohl-2m3-2gfwBEB
+X-Proofpoint-GUID: k5s9gD_wb2dBJzTyGWJQwAIcLxeZYfQR
+X-Proofpoint-ORIG-GUID: k5s9gD_wb2dBJzTyGWJQwAIcLxeZYfQR
 X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: EGR4XZFLZEAHXL5IODRKZHK3JSWMS4M2
-X-Message-ID-Hash: EGR4XZFLZEAHXL5IODRKZHK3JSWMS4M2
+Message-ID-Hash: FSIZ7BM5DQ36C5AATCKIDACGWJK45TP4
+X-Message-ID-Hash: FSIZ7BM5DQ36C5AATCKIDACGWJK45TP4
 X-MailFrom: prvs=3591ab1424=rf@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -100,7 +101,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/EGR4XZFLZEAHXL5IODRKZHK3JSWMS4M2/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FSIZ7BM5DQ36C5AATCKIDACGWJK45TP4/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -109,56 +110,96 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Only attempt to download wmfw/bin files to a non-secured part if
-it reports FIRMWARE_MISSING. If FIRMWARE_MISSING is false the
-firmware has already been patched and overwriting the patch could
-corrupt the running firmware.
+Add a flag to wm_adsp_power_up() that indicates whether it should attempt
+to find and load firmware files.
 
-For a secured part the wmfw/bin can be downloaded even if
-FIRMWARE_MISSING is false, because they will only patch tunings.
+This is to support DSPs that have built-in firmware that may already have
+been patched (for example, by the BIOS). In that case the patch must not
+be overwritten because that could corrupt the running firmware.
 
 Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 ---
- sound/soc/codecs/cs35l56.c | 17 +++++++++++++++--
- 1 file changed, 15 insertions(+), 2 deletions(-)
+ sound/soc/codecs/cs35l56.c |  4 ++--
+ sound/soc/codecs/wm_adsp.c | 16 +++++++++-------
+ sound/soc/codecs/wm_adsp.h |  2 +-
+ 3 files changed, 12 insertions(+), 10 deletions(-)
 
 diff --git a/sound/soc/codecs/cs35l56.c b/sound/soc/codecs/cs35l56.c
-index 98cfcae554af..3a9ec8724cc1 100644
+index 80e7fddae926..98cfcae554af 100644
 --- a/sound/soc/codecs/cs35l56.c
 +++ b/sound/soc/codecs/cs35l56.c
-@@ -665,8 +665,17 @@ static void cs35l56_secure_patch(struct cs35l56_private *cs35l56)
- 
- static void cs35l56_patch(struct cs35l56_private *cs35l56)
- {
-+	unsigned int firmware_missing;
+@@ -656,7 +656,7 @@ static void cs35l56_secure_patch(struct cs35l56_private *cs35l56)
  	int ret;
  
-+	ret = regmap_read(cs35l56->base.regmap, CS35L56_PROTECTION_STATUS, &firmware_missing);
-+	if (ret) {
-+		dev_err(cs35l56->base.dev, "Failed to read PROTECTION_STATUS: %d\n", ret);
-+		return;
-+	}
-+
-+	firmware_missing &= CS35L56_FIRMWARE_MISSING;
-+
- 	/*
- 	 * Disable SoundWire interrupts to prevent race with IRQ work.
- 	 * Setting sdw_irq_no_unmask prevents the handler re-enabling
-@@ -685,8 +694,12 @@ static void cs35l56_patch(struct cs35l56_private *cs35l56)
+ 	/* Use wm_adsp to load and apply the firmware patch and coefficient files */
+-	ret = wm_adsp_power_up(&cs35l56->dsp);
++	ret = wm_adsp_power_up(&cs35l56->dsp, true);
  	if (ret)
+ 		dev_dbg(cs35l56->base.dev, "%s: wm_adsp_power_up ret %d\n", __func__, ret);
+ 	else
+@@ -686,7 +686,7 @@ static void cs35l56_patch(struct cs35l56_private *cs35l56)
  		goto err;
  
--	/* Use wm_adsp to load and apply the firmware patch and coefficient files */
--	ret = wm_adsp_power_up(&cs35l56->dsp, true);
-+	/*
-+	 * Use wm_adsp to load and apply the firmware patch and coefficient files,
-+	 * but only if firmware is missing. If firmware is already patched just
-+	 * power-up wm_adsp without downloading firmware.
-+	 */
-+	ret = wm_adsp_power_up(&cs35l56->dsp, !!firmware_missing);
+ 	/* Use wm_adsp to load and apply the firmware patch and coefficient files */
+-	ret = wm_adsp_power_up(&cs35l56->dsp);
++	ret = wm_adsp_power_up(&cs35l56->dsp, true);
  	if (ret) {
  		dev_dbg(cs35l56->base.dev, "%s: wm_adsp_power_up ret %d\n", __func__, ret);
  		goto err;
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index 13f500fa9a5f..6fc34f41b175 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -998,7 +998,7 @@ int wm_adsp2_preloader_put(struct snd_kcontrol *kcontrol,
+ }
+ EXPORT_SYMBOL_GPL(wm_adsp2_preloader_put);
+ 
+-int wm_adsp_power_up(struct wm_adsp *dsp)
++int wm_adsp_power_up(struct wm_adsp *dsp, bool load_firmware)
+ {
+ 	int ret = 0;
+ 	char *wmfw_filename = NULL;
+@@ -1006,11 +1006,13 @@ int wm_adsp_power_up(struct wm_adsp *dsp)
+ 	char *coeff_filename = NULL;
+ 	const struct firmware *coeff_firmware = NULL;
+ 
+-	ret = wm_adsp_request_firmware_files(dsp,
+-					     &wmfw_firmware, &wmfw_filename,
+-					     &coeff_firmware, &coeff_filename);
+-	if (ret)
+-		return ret;
++	if (load_firmware) {
++		ret = wm_adsp_request_firmware_files(dsp,
++						     &wmfw_firmware, &wmfw_filename,
++						     &coeff_firmware, &coeff_filename);
++		if (ret)
++			return ret;
++	}
+ 
+ 	ret = cs_dsp_power_up(&dsp->cs_dsp,
+ 			      wmfw_firmware, wmfw_filename,
+@@ -1037,7 +1039,7 @@ static void wm_adsp_boot_work(struct work_struct *work)
+ 					   struct wm_adsp,
+ 					   boot_work);
+ 
+-	wm_adsp_power_up(dsp);
++	wm_adsp_power_up(dsp, true);
+ }
+ 
+ int wm_adsp_early_event(struct snd_soc_dapm_widget *w,
+diff --git a/sound/soc/codecs/wm_adsp.h b/sound/soc/codecs/wm_adsp.h
+index 3044f964ac14..067d807a7ca8 100644
+--- a/sound/soc/codecs/wm_adsp.h
++++ b/sound/soc/codecs/wm_adsp.h
+@@ -91,7 +91,7 @@ int wm_adsp1_event(struct snd_soc_dapm_widget *w,
+ int wm_adsp_early_event(struct snd_soc_dapm_widget *w,
+ 			struct snd_kcontrol *kcontrol, int event);
+ 
+-int wm_adsp_power_up(struct wm_adsp *dsp);
++int wm_adsp_power_up(struct wm_adsp *dsp, bool load_firmware);
+ void wm_adsp_power_down(struct wm_adsp *dsp);
+ 
+ irqreturn_t wm_adsp2_bus_error(int irq, void *data);
 -- 
 2.30.2
 
