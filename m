@@ -4,50 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 38C54C0015E
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Aug 2023 19:06:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7ED59C001E0
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Aug 2023 19:06:24 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 692A71F1;
-	Tue, 15 Aug 2023 21:05:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 692A71F1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8E2F2BC0;
+	Tue, 15 Aug 2023 21:05:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8E2F2BC0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1692126367;
-	bh=5gusnJdt+VToMiQqDcsIXE72Q9H1q+xa8tv5PQ+u8S0=;
+	s=default; t=1692126382;
+	bh=jS9EcT6a0x6RvIWKF5S5/Xu0qzoqH0Z3/TzBCROkDhI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=KFbhAlLrIoFIlihgqmzddZ+p/GNSmgnI7LeRvY6BdrqeVqX6mI7D8+BKdXTXlfdHv
-	 6Tcdz/Mre+lerkmMNfaxyldDSxvt8hrSrUPu0ai2jkehswUd7zL2YPnp4fEJz2wssP
-	 G4rqhfExMtwrxt08BQH9JNd3tcT+pclzXvVxPb9Y=
+	b=faICDlSImB2Nud6GnrHrexux18y/AAoXnwvCKWOkNyUs8PKOS+8VzFOGL7u7XCEk/
+	 k+SQnbCvYC0brg3h7aEyOcPpcxc6bTg6bCkSxA3SjaMr61JOnaKEqcbT+VZbVWd5qD
+	 dFfhPk7WS6gAeuIpFtU8q3Hl4388Z6p6V11R4NrA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AE8A3F80601; Tue, 15 Aug 2023 21:02:43 +0200 (CEST)
+	id 3FA41F80604; Tue, 15 Aug 2023 21:02:45 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 00916F805FD;
-	Tue, 15 Aug 2023 21:02:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2410EF80603;
+	Tue, 15 Aug 2023 21:02:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2513FF80553; Tue, 15 Aug 2023 21:02:33 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+	id 1D47AF805ED; Tue, 15 Aug 2023 21:02:35 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2001:67c:2178:6::1d])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B70A1F8055C
+	by alsa1.perex.cz (Postfix) with ESMTPS id 700FBF80563
 	for <alsa-devel@alsa-project.org>; Tue, 15 Aug 2023 21:01:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B70A1F8055C
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 700FBF80563
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=TSDiA7Me;
+ header.s=susede2_rsa header.b=nhabCSKs;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=sDpVxR73
+ header.s=susede2_ed25519 header.b=+XKBo0gr
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 9D9751FD6B;
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 736141FD6A;
 	Tue, 15 Aug 2023 19:01:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
@@ -56,44 +57,46 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=NulgZ+I3Oy7nzxJJ1bqwE8Bv2yKQrwT2tCgp2KXuefI=;
-	b=TSDiA7MeXEdjzGY6xLKrSFR8wUeLIr+uapzCpchIYhpqBzucXri8vRhTO+hjpt5sfVutr+
-	LkOsIG1KGrBu9j5wZegKAUhGE6J2R/mMbZqUhlJr8f9GS6IryuylDWYg6qMoIY9yxrnVbC
-	o70Z9wLdOLtVmMcot8zkCsxhfnlJKKw=
+	bh=K/BgMI8FuOi/5pmBMZAtt3gp913bmnjYvQcbxzOHfHE=;
+	b=nhabCSKsWkx41NfRqAxKgh8FQUXjbeOAtxOYCVMoXsAyxByAjesTZHGSNbtuRbYe9rWpob
+	l/pgaU9eAKtGUJ+w5zfo5Qky1TpOVwKv1YoiTfvx4KZQwdlLea7GH114OMQV9Gjib9bFB0
+	9JbVbJgcn5fjiqGxhu56qkfvsNm1M/w=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
 	s=susede2_ed25519; t=1692126109;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=NulgZ+I3Oy7nzxJJ1bqwE8Bv2yKQrwT2tCgp2KXuefI=;
-	b=sDpVxR73Gn8ID8RWy1yIFSPH2YsWcWBFQ8xuNhEOpRS16JDaLJaiabCcs0br3LYWvBYHeQ
-	83ubIOnsMS878cDw==
+	bh=K/BgMI8FuOi/5pmBMZAtt3gp913bmnjYvQcbxzOHfHE=;
+	b=+XKBo0gra+U9kLyDt5tVYGNJHRwve2LRNG7LL5QlEl7517QnhuahhelIchrFC0AdbhSepj
+	n3JcgCWw5rBcIkAQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 77DBA1353E;
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4B7221390C;
 	Tue, 15 Aug 2023 19:01:49 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id SOFpHJ3L22QTVAAAMHmgww
+	id wFeVEZ3L22QTVAAAMHmgww
 	(envelope-from <tiwai@suse.de>); Tue, 15 Aug 2023 19:01:49 +0000
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
 Cc: linux-kernel@vger.kernel.org,
-	Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH v2 16/25] ALSA: pcmtest: Update comment about PCM copy ops
-Date: Tue, 15 Aug 2023 21:01:27 +0200
-Message-Id: <20230815190136.8987-17-tiwai@suse.de>
+	Takashi Iwai <tiwai@suse.de>,
+	Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
+	xen-devel@lists.xenproject.org
+Subject: [PATCH v2 15/25] ALSA: xen: Convert to generic PCM copy ops
+Date: Tue, 15 Aug 2023 21:01:26 +0200
+Message-Id: <20230815190136.8987-16-tiwai@suse.de>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <20230815190136.8987-1-tiwai@suse.de>
 References: <20230815190136.8987-1-tiwai@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 7PC7PSGNBYBRHYIXJ2JO2S5V72LI7USO
-X-Message-ID-Hash: 7PC7PSGNBYBRHYIXJ2JO2S5V72LI7USO
+Message-ID-Hash: CKGDW5BYEGMZYSEROIPIJU7KDSZ2VGET
+X-Message-ID-Hash: CKGDW5BYEGMZYSEROIPIJU7KDSZ2VGET
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -106,7 +109,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7PC7PSGNBYBRHYIXJ2JO2S5V72LI7USO/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CKGDW5BYEGMZYSEROIPIJU7KDSZ2VGET/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -115,27 +118,119 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Just an update of a comment mentioning the old PCM callbacks to
-correct to the new PCM copy ops.
+This patch converts the xen frontend driver code to use the new
+unified PCM copy callback.  It's a straightforward conversion from
+*_user() to *_iter() variants.
 
+Note that copy_from/to_iter() returns the copied bytes, hence the
+error condition is adjusted accordingly.
+
+Cc: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+Cc: xen-devel@lists.xenproject.org
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/drivers/pcmtest.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/xen/xen_snd_front_alsa.c | 56 +++++++---------------------------
+ 1 file changed, 11 insertions(+), 45 deletions(-)
 
-diff --git a/sound/drivers/pcmtest.c b/sound/drivers/pcmtest.c
-index 291e7fe47893..d205e10a0605 100644
---- a/sound/drivers/pcmtest.c
-+++ b/sound/drivers/pcmtest.c
-@@ -225,7 +225,7 @@ static void check_buf_block(struct pcmtst_buf_iter *v_iter, struct snd_pcm_runti
+diff --git a/sound/xen/xen_snd_front_alsa.c b/sound/xen/xen_snd_front_alsa.c
+index db917453a473..bfae303633ef 100644
+--- a/sound/xen/xen_snd_front_alsa.c
++++ b/sound/xen/xen_snd_front_alsa.c
+@@ -602,38 +602,24 @@ static snd_pcm_uframes_t alsa_pointer(struct snd_pcm_substream *substream)
+ 	return (snd_pcm_uframes_t)atomic_read(&stream->hw_ptr);
+ }
  
- /*
-  * Fill buffer in the non-interleaved mode. The order of samples is C0, ..., C0, C1, ..., C1, C2...
-- * The channel buffers lay in the DMA buffer continuously (see default copy_user and copy_kernel
-+ * The channel buffers lay in the DMA buffer continuously (see default copy
-  * handlers in the pcm_lib.c file).
-  *
-  * Here we increment the DMA buffer position every time we write a byte to any channel 'buffer'.
+-static int alsa_pb_copy_user(struct snd_pcm_substream *substream,
+-			     int channel, unsigned long pos, void __user *src,
+-			     unsigned long count)
++static int alsa_pb_copy(struct snd_pcm_substream *substream,
++			int channel, unsigned long pos, struct iov_iter *src,
++			unsigned long count)
+ {
+ 	struct xen_snd_front_pcm_stream_info *stream = stream_get(substream);
+ 
+ 	if (unlikely(pos + count > stream->buffer_sz))
+ 		return -EINVAL;
+ 
+-	if (copy_from_user(stream->buffer + pos, src, count))
++	if (copy_from_iter(stream->buffer + pos, count, src) != count)
+ 		return -EFAULT;
+ 
+ 	return xen_snd_front_stream_write(&stream->evt_pair->req, pos, count);
+ }
+ 
+-static int alsa_pb_copy_kernel(struct snd_pcm_substream *substream,
+-			       int channel, unsigned long pos, void *src,
+-			       unsigned long count)
+-{
+-	struct xen_snd_front_pcm_stream_info *stream = stream_get(substream);
+-
+-	if (unlikely(pos + count > stream->buffer_sz))
+-		return -EINVAL;
+-
+-	memcpy(stream->buffer + pos, src, count);
+-
+-	return xen_snd_front_stream_write(&stream->evt_pair->req, pos, count);
+-}
+-
+-static int alsa_cap_copy_user(struct snd_pcm_substream *substream,
+-			      int channel, unsigned long pos, void __user *dst,
+-			      unsigned long count)
++static int alsa_cap_copy(struct snd_pcm_substream *substream,
++			 int channel, unsigned long pos, struct iov_iter *dst,
++			 unsigned long count)
+ {
+ 	struct xen_snd_front_pcm_stream_info *stream = stream_get(substream);
+ 	int ret;
+@@ -645,26 +631,8 @@ static int alsa_cap_copy_user(struct snd_pcm_substream *substream,
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	return copy_to_user(dst, stream->buffer + pos, count) ?
+-		-EFAULT : 0;
+-}
+-
+-static int alsa_cap_copy_kernel(struct snd_pcm_substream *substream,
+-				int channel, unsigned long pos, void *dst,
+-				unsigned long count)
+-{
+-	struct xen_snd_front_pcm_stream_info *stream = stream_get(substream);
+-	int ret;
+-
+-	if (unlikely(pos + count > stream->buffer_sz))
+-		return -EINVAL;
+-
+-	ret = xen_snd_front_stream_read(&stream->evt_pair->req, pos, count);
+-	if (ret < 0)
+-		return ret;
+-
+-	memcpy(dst, stream->buffer + pos, count);
+-
++	if (copy_to_iter(stream->buffer + pos, count, dst) != count)
++		return -EFAULT;
+ 	return 0;
+ }
+ 
+@@ -697,8 +665,7 @@ static const struct snd_pcm_ops snd_drv_alsa_playback_ops = {
+ 	.prepare	= alsa_prepare,
+ 	.trigger	= alsa_trigger,
+ 	.pointer	= alsa_pointer,
+-	.copy_user	= alsa_pb_copy_user,
+-	.copy_kernel	= alsa_pb_copy_kernel,
++	.copy		= alsa_pb_copy,
+ 	.fill_silence	= alsa_pb_fill_silence,
+ };
+ 
+@@ -710,8 +677,7 @@ static const struct snd_pcm_ops snd_drv_alsa_capture_ops = {
+ 	.prepare	= alsa_prepare,
+ 	.trigger	= alsa_trigger,
+ 	.pointer	= alsa_pointer,
+-	.copy_user	= alsa_cap_copy_user,
+-	.copy_kernel	= alsa_cap_copy_kernel,
++	.copy		= alsa_cap_copy,
+ };
+ 
+ static int new_pcm_instance(struct xen_snd_front_card_info *card_info,
 -- 
 2.35.3
 
