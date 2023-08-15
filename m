@@ -4,89 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6221CC001B0
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Aug 2023 15:47:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C36F3C0015E
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Aug 2023 15:58:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9CCAF7F1;
-	Tue, 15 Aug 2023 17:46:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9CCAF7F1
+	by alsa0.perex.cz (Postfix) with ESMTPS id B7D1D7F1;
+	Tue, 15 Aug 2023 17:57:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B7D1D7F1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1692114424;
-	bh=24HZ+W3/BPWICRHz4YSlTU3HA8tS2LdPxwy0RPTELLA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1692115099;
+	bh=z4YNtVemGpaMn6cnGX/oRcs7rBSpc7X3Yc6wPTVeBMY=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=sSSgj5EiiAOvCmyC3kyf3LLzy2LYByyPVVoTiQL0cU6x5gAKcAe/x2cpwpJvEzB0o
-	 rFlVrK8DLU6LfcsGSOpaJJ387fpyLvxuACoF2XCBLN04qQUMYjGPONWiwGjJNkSHV9
-	 gYoAi8jJIMFPNJ119fkDBf6hm8nCBJSIqKGjleYk=
+	b=rWUCrqm9XLCOD++NQtpMCZBOWYX8acC4RCaOnma0Vx41lEsLZSUL/tHd7C+GRQ3wH
+	 DVdJAQYlgOWUv5RwWVk3888zgVgRLWsVAUfyPr8YZ+ub6pkxmbtpSjd/du0p0Ka/n3
+	 NMK4rlrtpACv9gO2nZ2agJ+NJVMXBINS7wz41n2o=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3ED94F80254; Tue, 15 Aug 2023 17:45:46 +0200 (CEST)
+	id 40D7EF80536; Tue, 15 Aug 2023 17:57:09 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id AE8D3F80027;
-	Tue, 15 Aug 2023 17:45:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DCA02F8016D;
+	Tue, 15 Aug 2023 17:57:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 56872F8016D; Tue, 15 Aug 2023 17:45:39 +0200 (CEST)
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+	id 8CAD7F8016D; Tue, 15 Aug 2023 17:57:05 +0200 (CEST)
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 463EEF800EE
-	for <alsa-devel@alsa-project.org>; Tue, 15 Aug 2023 17:45:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 463EEF800EE
+	by alsa1.perex.cz (Postfix) with ESMTPS id 22C1DF80027
+	for <alsa-devel@alsa-project.org>; Tue, 15 Aug 2023 17:56:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 22C1DF80027
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=ZidN1C2d
+ header.s=Intel header.b=UAgibfNt
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692114334; x=1723650334;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=24HZ+W3/BPWICRHz4YSlTU3HA8tS2LdPxwy0RPTELLA=;
-  b=ZidN1C2dYwnAG1SfdH0ALj47WE8k6xDeyEExyvWqkng4kNRz9iNgHUO+
-   FK9RDyJ28wke/7kTzI18JgLH1H9ieQzKkQkcirq7sBjsl1pyKGpR3rf0P
-   2v22zjeRIKvGfW9sdgKYim9bQdxLuuh9oiA+Zi4vWU68N5OwaPdRqjjMB
-   7gqy3H6P+3rjAWsPz2xaCLpU+/A/dS7VcVw5cpdBhz6Zkjr6z9KWXLV82
-   bar5UZR9+Kqy0gVZBPOPHOawLqGSZnt7bIPVi97pOmBUVelz5YUmNE6Iw
-   Unm75hWC8k0WlvJ+OUWTlOWsMLd6iW+qar4BmS+7iC21zc8h0GCYSiImq
+  t=1692115018; x=1723651018;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=z4YNtVemGpaMn6cnGX/oRcs7rBSpc7X3Yc6wPTVeBMY=;
+  b=UAgibfNtBXBF/RTcyk0PyibGCOYSMkGh1PQ4nPOFCsM8QPAQ2Y7Ky/nY
+   Iwp684sKOwBhpB5btce+EJK+8Qd8badeSrgbyz5LRVtJjLe30pHfZJbnT
+   bcOP0FEsSpyV3TmfE0TnlDubq/PKJoNI1SdUWUTbwN9UJBj6lRdJHf/c4
+   CopWlG7LEi8WL3yilNRso9q1feKGEkwbXXCSFTH40v6HbC8RyoYO82icc
+   7llsZ8BpmRHrYh3NxQc9z1cv3nRZVeiTHysDzzokT8buzs3tTzMdQtjU8
+   x+YbXS9IHpmOlLRdcuTyg0hEycp0JR+ImapcbckRnKJEEXQDjAdgH0qJ0
    Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="362458984"
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="436203882"
 X-IronPort-AV: E=Sophos;i="6.01,174,1684825200";
-   d="scan'208";a="362458984"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Aug 2023 08:45:28 -0700
+   d="scan'208";a="436203882"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 15 Aug 2023 08:56:53 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="733882453"
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="763304996"
 X-IronPort-AV: E=Sophos;i="6.01,174,1684825200";
-   d="scan'208";a="733882453"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga002.jf.intel.com with ESMTP; 15 Aug 2023 08:45:25 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-	(envelope-from <andriy.shevchenko@intel.com>)
-	id 1qVwEV-007spR-1c;
-	Tue, 15 Aug 2023 18:45:23 +0300
-Date: Tue, 15 Aug 2023 18:45:23 +0300
-From: Andy Shevchenko <andriy.shevchenko@intel.com>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-	Lars-Peter Clausen <lars@metafoo.de>,
-	Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 21/25] ASoC: dmaengine: Convert to generic PCM copy ops
-Message-ID: <ZNudk4147ByqSNdP@smile.fi.intel.com>
-References: <20230814115523.15279-1-tiwai@suse.de>
- <20230814115523.15279-22-tiwai@suse.de>
- <ZNuE5UunDd40e8vW@smile.fi.intel.com>
- <87wmxwxsmb.wl-tiwai@suse.de>
+   d="scan'208";a="763304996"
+Received: from bawerden-mobl.amr.corp.intel.com (HELO [10.209.163.183])
+ ([10.209.163.183])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 15 Aug 2023 08:56:51 -0700
+Message-ID: <850c5b2c-265e-a565-8a88-58a88f8fb4e8@linux.intel.com>
+Date: Tue, 15 Aug 2023 10:56:50 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87wmxwxsmb.wl-tiwai@suse.de>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-Message-ID-Hash: K5NEXZFMO23CKQBB556OOI4NBIG33A4C
-X-Message-ID-Hash: K5NEXZFMO23CKQBB556OOI4NBIG33A4C
-X-MailFrom: andriy.shevchenko@intel.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.13.0
+Subject: Re: [PATCH v2] ALSA: hda: intel-dsp-cfg: Add Chromebook quirk to
+ ADL/RPL
+Content-Language: en-US
+To: Brady Norander <bradynorander@gmail.com>, alsa-devel@alsa-project.org,
+ broonie@kernel.org
+Cc: cezary.rojewski@intel.com, amadeuszx.slawinski@linux.intel.com,
+ perex@perex.cz, tiwai@suse.de, cujomalainey@chromium.org
+References: <ZNuDLk5hgmfKrZg6@arch>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <ZNuDLk5hgmfKrZg6@arch>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: GLF73PHBQR3JUBMP22AX4PDG5TPRWHBG
+X-Message-ID-Hash: GLF73PHBQR3JUBMP22AX4PDG5TPRWHBG
+X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -98,31 +96,124 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/K5NEXZFMO23CKQBB556OOI4NBIG33A4C/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GLF73PHBQR3JUBMP22AX4PDG5TPRWHBG/>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, Aug 15, 2023 at 04:55:24PM +0200, Takashi Iwai wrote:
-> On Tue, 15 Aug 2023 16:00:05 +0200,
-> Andy Shevchenko wrote:
-> > 
-> > Can be compressed to a single conditional:
-> > 
-> > 	if (is_playback && copy_from_iter(dma_ptr, bytes, buf) != bytes)
+
+
+On 8/15/23 08:52, Brady Norander wrote:
+> AlderLake and RaptorLake Chromebooks currently use the HDA driver by
+> default. Add a quirk to use the SOF driver on these platforms, which is
+> needed for functional internal audio.
 > 
-> I prefer keeping the changes minimalistic in this kind of conversion
-> unless it becomes too ugly.  Then it's more clearer what's actually
-> changed.
+> Signed-off-by: Brady Norander <bradynorander@gmail.com>
 
-Fine by me!
+Thanks for the patch
 
--- 
-With Best Regards,
-Andy Shevchenko
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-
+> ---
+> 
+> v2: Removed quirk from SKUs not used in Chrome platforms
+> 
+>  sound/hda/intel-dsp-config.c | 60 +++++++++++++++++++++++++++++++++---
+>  1 file changed, 56 insertions(+), 4 deletions(-)
+> 
+> diff --git a/sound/hda/intel-dsp-config.c b/sound/hda/intel-dsp-config.c
+> index dcf2453138a5..24a948baf1bc 100644
+> --- a/sound/hda/intel-dsp-config.c
+> +++ b/sound/hda/intel-dsp-config.c
+> @@ -167,10 +167,10 @@ static const struct config_entry config_table[] = {
+>  #endif
+>  
+>  /*
+> - * CoffeeLake, CannonLake, CometLake, IceLake, TigerLake use legacy
+> - * HDAudio driver except for Google Chromebooks and when DMICs are
+> - * present. Two cases are required since Coreboot does not expose NHLT
+> - * tables.
+> + * CoffeeLake, CannonLake, CometLake, IceLake, TigerLake, AlderLake,
+> + * RaptorLake use legacy HDAudio driver except for Google Chromebooks
+> + * and when DMICs are present. Two cases are required since Coreboot
+> + * does not expose NHLT tables.
+>   *
+>   * When the Chromebook quirk is not present, it's based on information
+>   * that no such device exists. When the quirk is present, it could be
+> @@ -408,6 +408,19 @@ static const struct config_entry config_table[] = {
+>  		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC_OR_SOUNDWIRE,
+>  		.device = PCI_DEVICE_ID_INTEL_HDA_RPL_S,
+>  	},
+> +	{
+> +		.flags = FLAG_SOF,
+> +		.device = PCI_DEVICE_ID_INTEL_HDA_ADL_P,
+> +		.dmi_table = (const struct dmi_system_id []) {
+> +			{
+> +				.ident = "Google Chromebooks",
+> +				.matches = {
+> +					DMI_MATCH(DMI_SYS_VENDOR, "Google"),
+> +				}
+> +			},
+> +			{}
+> +		}
+> +	},
+>  	{
+>  		.flags = FLAG_SOF,
+>  		.device = PCI_DEVICE_ID_INTEL_HDA_ADL_P,
+> @@ -434,14 +447,53 @@ static const struct config_entry config_table[] = {
+>  		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC_OR_SOUNDWIRE,
+>  		.device = PCI_DEVICE_ID_INTEL_HDA_ADL_M,
+>  	},
+> +	{
+> +		.flags = FLAG_SOF,
+> +		.device = PCI_DEVICE_ID_INTEL_HDA_ADL_N,
+> +		.dmi_table = (const struct dmi_system_id []) {
+> +			{
+> +				.ident = "Google Chromebooks",
+> +				.matches = {
+> +					DMI_MATCH(DMI_SYS_VENDOR, "Google"),
+> +				}
+> +			},
+> +			{}
+> +		}
+> +	},
+>  	{
+>  		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC_OR_SOUNDWIRE,
+>  		.device = PCI_DEVICE_ID_INTEL_HDA_ADL_N,
+>  	},
+> +	{
+> +		.flags = FLAG_SOF,
+> +		.device = PCI_DEVICE_ID_INTEL_HDA_RPL_P_0,
+> +		.dmi_table = (const struct dmi_system_id []) {
+> +			{
+> +				.ident = "Google Chromebooks",
+> +				.matches = {
+> +					DMI_MATCH(DMI_SYS_VENDOR, "Google"),
+> +				}
+> +			},
+> +			{}
+> +		}
+> +	},
+>  	{
+>  		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC_OR_SOUNDWIRE,
+>  		.device = PCI_DEVICE_ID_INTEL_HDA_RPL_P_0,
+>  	},
+> +	{
+> +		.flags = FLAG_SOF,
+> +		.device = PCI_DEVICE_ID_INTEL_HDA_RPL_P_1,
+> +		.dmi_table = (const struct dmi_system_id []) {
+> +			{
+> +				.ident = "Google Chromebooks",
+> +				.matches = {
+> +					DMI_MATCH(DMI_SYS_VENDOR, "Google"),
+> +				}
+> +			},
+> +			{}
+> +		}
+> +	},
+>  	{
+>  		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC_OR_SOUNDWIRE,
+>  		.device = PCI_DEVICE_ID_INTEL_HDA_RPL_P_1,
