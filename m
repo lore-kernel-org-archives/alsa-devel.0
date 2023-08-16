@@ -4,51 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 98716C001E0
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Aug 2023 16:04:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 040C2C001E0
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Aug 2023 16:04:50 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 74F64827;
-	Wed, 16 Aug 2023 18:03:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 74F64827
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0AB1E828;
+	Wed, 16 Aug 2023 18:03:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0AB1E828
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1692201859;
-	bh=phT/Z1n5QJx4DPCoY+oX8Fj7hPpA6tzgNSIdh2jKP+4=;
+	s=default; t=1692201889;
+	bh=KIzidWZOWWg0oICJwd0Nqp/docUSis/K/1sEdFm4ypA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=LWVBlxiG2q+SqcZqx2b18n/TEUhBhdMSZf6zsAKWd8z38mweDBkeCANlW0RbLXEeF
-	 u/0jsxqeZ7+0nnjpZ5s4z17VH0Nfmb3+HS5L1ZMYwu7lsWV1LxxHrHx00sw0IQkPpi
-	 w8JTQD2oqHWo0Xeg9rqsfGfbrzvvp6KozYavvJxU=
+	b=doFIdJZAMyMrqNQFW8/FerOiA/V2EtagHHhM+ZVR4HQzAdLrHw05LDbvI3D/hbQlJ
+	 EIFnoPx5EU8FViiFgQWRrjd/q52JfajJTTzATZcUuX0W0+zneq46VVt2ICIZNyZlRY
+	 ErPpMq3pNNSSPVJA1zmAUCOmfmHfuMvCcUNYFsnc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 872ADF80553; Wed, 16 Aug 2023 18:03:08 +0200 (CEST)
+	id AF880F80568; Wed, 16 Aug 2023 18:03:10 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B4C36F80510;
-	Wed, 16 Aug 2023 18:03:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 331D4F80563;
+	Wed, 16 Aug 2023 18:03:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 114BDF80551; Wed, 16 Aug 2023 18:03:04 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2001:67c:2178:6::1d])
+	id 69517F80551; Wed, 16 Aug 2023 18:03:07 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id CBB68F80074
+	by alsa1.perex.cz (Postfix) with ESMTPS id 28608F800EE
 	for <alsa-devel@alsa-project.org>; Wed, 16 Aug 2023 18:02:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CBB68F80074
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 28608F800EE
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=L5C6XzFd;
+ header.s=susede2_rsa header.b=z+SqeBwk;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=Uc++qM6S
+ header.s=susede2_ed25519 header.b=t6gtf0z9
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 618CD1F74A;
+	by smtp-out2.suse.de (Postfix) with ESMTPS id AF6621F85D;
 	Wed, 16 Aug 2023 16:02:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
@@ -57,43 +56,43 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=a0W1/5bP7xDvKRYzs9yjyIX8JnhqCK16JlRRetS5RYY=;
-	b=L5C6XzFdAucuOtoS4K2+JqTAoWfowlPVq6bmx0lDUZPuTqFPVyP8KJ6kriRfQpv218uXsV
-	WQTzt09pb36tK+I1Y8vTmrHcvt2Veq0dz1hSF5SYvcCk8PTfd7dB8/ZqQ3hq1xQ4klShZQ
-	+OQAbikcHj39vuhiozXMXq9rh7YQvfU=
+	bh=09GtIE4nldCqlVqLMDoa3/hcoV1GSd+mdT8pNG5Mxu4=;
+	b=z+SqeBwkG3zCGP4kUTZtHxwYDsRszv0kA4wNvCy74TmMDqgvZGoIPTmzYhvyqCgym1A8TZ
+	krOKgicA4ePn0hZIfkc6JQvQJWghuYGa55BVfdJxz+vWRgSWxtKJZPIVLjxU/r86DtQxIl
+	fv5ZPzY4SGbaI6+FIntquaYeVy9+3M4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
 	s=susede2_ed25519; t=1692201775;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=a0W1/5bP7xDvKRYzs9yjyIX8JnhqCK16JlRRetS5RYY=;
-	b=Uc++qM6S1siTFULF/99EIlfwNod7g3sTMkp4RXr1o0ctau2WqBpPfQNSeJQy4A2bd0BZYF
-	DdP7DyjQ7DrksfCw==
+	bh=09GtIE4nldCqlVqLMDoa3/hcoV1GSd+mdT8pNG5Mxu4=;
+	b=t6gtf0z9mmD4/gd8XlWfYSm7puEcWYVdxh0Gy5vy8DavWW96muOYSj1NjTdgbYrpk7StPS
+	HLuZwdL2CBuFBOBQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 43B45133F2;
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8DFE5133F2;
 	Wed, 16 Aug 2023 16:02:55 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id GMGUDy/z3GSNKQAAMHmgww
+	id iMnmIS/z3GSNKQAAMHmgww
 	(envelope-from <tiwai@suse.de>); Wed, 16 Aug 2023 16:02:55 +0000
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
 Cc: Curtis Malainey <cujomalainey@google.com>
-Subject: [PATCH RFC 2/9] ALSA: control: Don't embed ctl_dev
-Date: Wed, 16 Aug 2023 18:02:45 +0200
-Message-Id: <20230816160252.23396-3-tiwai@suse.de>
+Subject: [PATCH RFC 4/9] ALSA: hwdep: Don't embed device
+Date: Wed, 16 Aug 2023 18:02:47 +0200
+Message-Id: <20230816160252.23396-5-tiwai@suse.de>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <20230816160252.23396-1-tiwai@suse.de>
 References: <20230816160252.23396-1-tiwai@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: DI2SWF4C3TLIA77AKPX3AW6MCQ3SIDKL
-X-Message-ID-Hash: DI2SWF4C3TLIA77AKPX3AW6MCQ3SIDKL
+Message-ID-Hash: JLILG2MKAKEOR3BN4A4JXQUD4CIBQ67P
+X-Message-ID-Hash: JLILG2MKAKEOR3BN4A4JXQUD4CIBQ67P
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -106,7 +105,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DI2SWF4C3TLIA77AKPX3AW6MCQ3SIDKL/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JLILG2MKAKEOR3BN4A4JXQUD4CIBQ67P/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -115,124 +114,142 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Embedding the ctl_dev in the snd_card object may result in UAF when
-the delayed kobj release is used; at the delayed kobj release, it
-still accesses the struct device itself while the card memory (that
-embeds the struct device) may be already gone.
+Like control and PCM devices, it's better to avoid the embedded struct
+device for hwdep (although it's more or less well working), too.
+Change it to allocate via snd_device_alloc(), and free the memory at
+the common snd_hwdep_free().
 
-As a workaround, detach the struct device from the card object by
-allocating via the new snd_device_alloc() helper.  The rest are just
-replacing ctl_dev access to the pointer.
-
-This is based on the fix Curtis posted initially.  In this patch, the
-changes are split and use the new helper function instead.
-
-Link: https://lore.kernel.org/r/20230801171928.1460120-1-cujomalainey@chromium.org
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- include/sound/core.h     |  2 +-
- sound/core/control.c     | 14 ++++++++------
- sound/core/control_led.c |  4 ++--
- sound/usb/media.c        |  2 +-
- 4 files changed, 12 insertions(+), 10 deletions(-)
+ include/sound/hwdep.h     |  2 +-
+ sound/core/hwdep.c        | 38 +++++++++++++++++++++-----------------
+ sound/pci/hda/hda_hwdep.c |  4 ++--
+ 3 files changed, 24 insertions(+), 20 deletions(-)
 
-diff --git a/include/sound/core.h b/include/sound/core.h
-index f986fcc5f18f..f3f6b720a278 100644
---- a/include/sound/core.h
-+++ b/include/sound/core.h
-@@ -96,7 +96,7 @@ struct snd_card {
- 								private data */
- 	struct list_head devices;	/* devices */
+diff --git a/include/sound/hwdep.h b/include/sound/hwdep.h
+index 8d6cdb254039..b0da633184cd 100644
+--- a/include/sound/hwdep.h
++++ b/include/sound/hwdep.h
+@@ -53,7 +53,7 @@ struct snd_hwdep {
+ 	wait_queue_head_t open_wait;
+ 	void *private_data;
+ 	void (*private_free) (struct snd_hwdep *hwdep);
+-	struct device dev;
++	struct device *dev;
  
--	struct device ctl_dev;		/* control device */
-+	struct device *ctl_dev;		/* control device */
- 	unsigned int last_numid;	/* last used numeric ID */
- 	struct rw_semaphore controls_rwsem;	/* controls lock (list and values) */
- 	rwlock_t ctl_files_rwlock;	/* ctl_files list lock */
-diff --git a/sound/core/control.c b/sound/core/control.c
-index 8386b53acdcd..eb975df067fb 100644
---- a/sound/core/control.c
-+++ b/sound/core/control.c
-@@ -2315,7 +2315,7 @@ static int snd_ctl_dev_register(struct snd_device *device)
- 	int err;
+ 	struct mutex open_mutex;
+ 	int used;			/* reference counter */
+diff --git a/sound/core/hwdep.c b/sound/core/hwdep.c
+index e95fa275c289..de7476034f2c 100644
+--- a/sound/core/hwdep.c
++++ b/sound/core/hwdep.c
+@@ -338,9 +338,14 @@ static const struct file_operations snd_hwdep_f_ops =
+ 	.mmap =		snd_hwdep_mmap,
+ };
  
- 	err = snd_register_device(SNDRV_DEVICE_TYPE_CONTROL, card, -1,
--				  &snd_ctl_f_ops, card, &card->ctl_dev);
-+				  &snd_ctl_f_ops, card, card->ctl_dev);
- 	if (err < 0)
- 		return err;
- 	down_read(&card->controls_rwsem);
-@@ -2351,7 +2351,7 @@ static int snd_ctl_dev_disconnect(struct snd_device *device)
- 	up_read(&snd_ctl_layer_rwsem);
- 	up_read(&card->controls_rwsem);
- 
--	return snd_unregister_device(&card->ctl_dev);
-+	return snd_unregister_device(card->ctl_dev);
+-static void release_hwdep_device(struct device *dev)
++static void snd_hwdep_free(struct snd_hwdep *hwdep)
+ {
+-	kfree(container_of(dev, struct snd_hwdep, dev));
++	if (!hwdep)
++		return;
++	if (hwdep->private_free)
++		hwdep->private_free(hwdep);
++	put_device(hwdep->dev);
++	kfree(hwdep);
  }
  
- /*
-@@ -2373,7 +2373,7 @@ static int snd_ctl_dev_free(struct snd_device *device)
- 	xa_destroy(&card->ctl_hash);
+ /**
+@@ -382,16 +387,20 @@ int snd_hwdep_new(struct snd_card *card, char *id, int device,
+ 	if (id)
+ 		strscpy(hwdep->id, id, sizeof(hwdep->id));
+ 
+-	snd_device_initialize(&hwdep->dev, card);
+-	hwdep->dev.release = release_hwdep_device;
+-	dev_set_name(&hwdep->dev, "hwC%iD%i", card->number, device);
++	err = snd_device_alloc(&hwdep->dev, card);
++	if (err < 0) {
++		snd_hwdep_free(hwdep);
++		return err;
++	}
++
++	dev_set_name(hwdep->dev, "hwC%iD%i", card->number, device);
+ #ifdef CONFIG_SND_OSSEMUL
+ 	hwdep->oss_type = -1;
  #endif
- 	up_write(&card->controls_rwsem);
--	put_device(&card->ctl_dev);
-+	put_device(card->ctl_dev);
+ 
+ 	err = snd_device_new(card, SNDRV_DEV_HWDEP, hwdep, &ops);
+ 	if (err < 0) {
+-		put_device(&hwdep->dev);
++		snd_hwdep_free(hwdep);
+ 		return err;
+ 	}
+ 
+@@ -403,12 +412,7 @@ EXPORT_SYMBOL(snd_hwdep_new);
+ 
+ static int snd_hwdep_dev_free(struct snd_device *device)
+ {
+-	struct snd_hwdep *hwdep = device->device_data;
+-	if (!hwdep)
+-		return 0;
+-	if (hwdep->private_free)
+-		hwdep->private_free(hwdep);
+-	put_device(&hwdep->dev);
++	snd_hwdep_free(device->device_data);
  	return 0;
  }
  
-@@ -2395,12 +2395,14 @@ int snd_ctl_create(struct snd_card *card)
- 	if (snd_BUG_ON(card->number < 0 || card->number >= SNDRV_CARDS))
- 		return -ENXIO;
+@@ -426,9 +430,9 @@ static int snd_hwdep_dev_register(struct snd_device *device)
+ 	list_add_tail(&hwdep->list, &snd_hwdep_devices);
+ 	err = snd_register_device(SNDRV_DEVICE_TYPE_HWDEP,
+ 				  hwdep->card, hwdep->device,
+-				  &snd_hwdep_f_ops, hwdep, &hwdep->dev);
++				  &snd_hwdep_f_ops, hwdep, hwdep->dev);
+ 	if (err < 0) {
+-		dev_err(&hwdep->dev, "unable to register\n");
++		dev_err(hwdep->dev, "unable to register\n");
+ 		list_del(&hwdep->list);
+ 		mutex_unlock(&register_mutex);
+ 		return err;
+@@ -439,12 +443,12 @@ static int snd_hwdep_dev_register(struct snd_device *device)
+ 	if (hwdep->oss_type >= 0) {
+ 		if (hwdep->oss_type == SNDRV_OSS_DEVICE_TYPE_DMFM &&
+ 		    hwdep->device)
+-			dev_warn(&hwdep->dev,
++			dev_warn(hwdep->dev,
+ 				 "only hwdep device 0 can be registered as OSS direct FM device!\n");
+ 		else if (snd_register_oss_device(hwdep->oss_type,
+ 						 card, hwdep->device,
+ 						 &snd_hwdep_f_ops, hwdep) < 0)
+-			dev_warn(&hwdep->dev,
++			dev_warn(hwdep->dev,
+ 				 "unable to register OSS compatibility device\n");
+ 		else
+ 			hwdep->ossreg = 1;
+@@ -471,7 +475,7 @@ static int snd_hwdep_dev_disconnect(struct snd_device *device)
+ 	if (hwdep->ossreg)
+ 		snd_unregister_oss_device(hwdep->oss_type, hwdep->card, hwdep->device);
+ #endif
+-	snd_unregister_device(&hwdep->dev);
++	snd_unregister_device(hwdep->dev);
+ 	list_del_init(&hwdep->list);
+ 	mutex_unlock(&hwdep->open_mutex);
+ 	mutex_unlock(&register_mutex);
+diff --git a/sound/pci/hda/hda_hwdep.c b/sound/pci/hda/hda_hwdep.c
+index 125e97fe0b1c..727f39acedfc 100644
+--- a/sound/pci/hda/hda_hwdep.c
++++ b/sound/pci/hda/hda_hwdep.c
+@@ -114,8 +114,8 @@ int snd_hda_create_hwdep(struct hda_codec *codec)
+ #endif
  
--	snd_device_initialize(&card->ctl_dev, card);
--	dev_set_name(&card->ctl_dev, "controlC%d", card->number);
-+	err = snd_device_alloc(&card->ctl_dev, card);
-+	if (err < 0)
-+		return err;
-+	dev_set_name(card->ctl_dev, "controlC%d", card->number);
+ 	/* for sysfs */
+-	hwdep->dev.groups = snd_hda_dev_attr_groups;
+-	dev_set_drvdata(&hwdep->dev, codec);
++	hwdep->dev->groups = snd_hda_dev_attr_groups;
++	dev_set_drvdata(hwdep->dev, codec);
  
- 	err = snd_device_new(card, SNDRV_DEV_CONTROL, card, &ops);
- 	if (err < 0)
--		put_device(&card->ctl_dev);
-+		put_device(card->ctl_dev);
- 	return err;
+ 	return 0;
  }
- 
-diff --git a/sound/core/control_led.c b/sound/core/control_led.c
-index ee77547bf8dc..760e46cf25cc 100644
---- a/sound/core/control_led.c
-+++ b/sound/core/control_led.c
-@@ -688,7 +688,7 @@ static void snd_ctl_led_sysfs_add(struct snd_card *card)
- 			goto cerr;
- 		led->cards[card->number] = led_card;
- 		snprintf(link_name, sizeof(link_name), "led-%s", led->name);
--		WARN(sysfs_create_link(&card->ctl_dev.kobj, &led_card->dev.kobj, link_name),
-+		WARN(sysfs_create_link(&card->ctl_dev->kobj, &led_card->dev.kobj, link_name),
- 			"can't create symlink to controlC%i device\n", card->number);
- 		WARN(sysfs_create_link(&led_card->dev.kobj, &card->card_dev.kobj, "card"),
- 			"can't create symlink to card%i\n", card->number);
-@@ -714,7 +714,7 @@ static void snd_ctl_led_sysfs_remove(struct snd_card *card)
- 		if (!led_card)
- 			continue;
- 		snprintf(link_name, sizeof(link_name), "led-%s", led->name);
--		sysfs_remove_link(&card->ctl_dev.kobj, link_name);
-+		sysfs_remove_link(&card->ctl_dev->kobj, link_name);
- 		sysfs_remove_link(&led_card->dev.kobj, "card");
- 		device_unregister(&led_card->dev);
- 		led->cards[card->number] = NULL;
-diff --git a/sound/usb/media.c b/sound/usb/media.c
-index 840f42cb9272..6d11fedb4632 100644
---- a/sound/usb/media.c
-+++ b/sound/usb/media.c
-@@ -163,7 +163,7 @@ void snd_media_stop_pipeline(struct snd_usb_substream *subs)
- 
- static int snd_media_mixer_init(struct snd_usb_audio *chip)
- {
--	struct device *ctl_dev = &chip->card->ctl_dev;
-+	struct device *ctl_dev = chip->card->ctl_dev;
- 	struct media_intf_devnode *ctl_intf;
- 	struct usb_mixer_interface *mixer;
- 	struct media_device *mdev = chip->media_dev;
 -- 
 2.35.3
 
