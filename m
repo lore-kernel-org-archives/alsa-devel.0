@@ -4,47 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A6F14C001E0
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Aug 2023 09:51:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C3255C001B0
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Aug 2023 09:58:39 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EA51584A;
-	Wed, 16 Aug 2023 11:50:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EA51584A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 642A974C;
+	Wed, 16 Aug 2023 11:57:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 642A974C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1692179503;
-	bh=W07l8Ws8Hy74/qwzQC1Q10z7EN4t1ynvDjHJjgf2V5g=;
+	s=default; t=1692179917;
+	bh=TD/tNumpjXCuJWqTknaOkANcZHSl0vVhcPwgaDipr2w=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=Kr1rZzCW/3qL1oUhfOy/8XTR5185pV+o4bEAtMXFXg80ow81jB7C927ZgEc527zdA
-	 +kFwARWdojHfiRLVpz5n7t0dwbHg/n625ETY40P8UPPqwdFkMz7F6anJsLF/dhkRGj
-	 8JiikpFr3j1yJWthhelJcI6SslMTF4DimQ+OdJoM=
+	b=EwJ3ixCIPa1fARjvlj8JD5C23+IJdI5adijC4JFbHJruJB4aBmV4jeMGn0XSXXoB1
+	 NCOCpdmql+w9j8Tl/Cw/hW65iXIg/Imj+dNFt9Y7+JyPQGCpTcpCF2k5VpXCW63Edv
+	 MBoTiRq2LHiCukPWE4Of5CsbBuChJNQm+KJ3jmMM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E0A10F80558; Wed, 16 Aug 2023 11:50:51 +0200 (CEST)
+	id E43FDF8016D; Wed, 16 Aug 2023 11:57:18 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5F0A9F80558;
-	Wed, 16 Aug 2023 11:50:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7F5A2F8016D;
+	Wed, 16 Aug 2023 11:57:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B9126F8055A; Wed, 16 Aug 2023 11:50:47 +0200 (CEST)
+	id 869C5F8016D; Wed, 16 Aug 2023 11:57:14 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
  [207.180.221.201])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3AFF1F80551
-	for <alsa-devel@alsa-project.org>; Wed, 16 Aug 2023 11:50:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3AFF1F80551
+	by alsa1.perex.cz (Postfix) with ESMTP id F1A8AF800EE
+	for <alsa-devel@alsa-project.org>; Wed, 16 Aug 2023 11:57:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F1A8AF800EE
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1692179446222721577-webhooks-bot@alsa-project.org>
-References: <1692179446222721577-webhooks-bot@alsa-project.org>
+In-Reply-To: <1692179832499982834-webhooks-bot@alsa-project.org>
+References: <1692179832499982834-webhooks-bot@alsa-project.org>
 Subject: Build fails
-Message-Id: <20230816095047.B9126F8055A@alsa1.perex.cz>
-Date: Wed, 16 Aug 2023 11:50:47 +0200 (CEST)
-Message-ID-Hash: P7XQXTX3CXTNHQIRXUUCDSN257JRPUCU
-X-Message-ID-Hash: P7XQXTX3CXTNHQIRXUUCDSN257JRPUCU
+Message-Id: <20230816095714.869C5F8016D@alsa1.perex.cz>
+Date: Wed, 16 Aug 2023 11:57:14 +0200 (CEST)
+Message-ID-Hash: VOFJLCWPHPDKMOP7GH3YUOQMDJDFTCLI
+X-Message-ID-Hash: VOFJLCWPHPDKMOP7GH3YUOQMDJDFTCLI
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -57,7 +57,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/P7XQXTX3CXTNHQIRXUUCDSN257JRPUCU/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VOFJLCWPHPDKMOP7GH3YUOQMDJDFTCLI/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -169,6 +169,9 @@ aclocal: error: autom4te failed with exit status: 1
 
 ./configure
 bash: ./configure: No such file or directory
+
+aclocal --version
+aclocal (GNU automake) 1.16.5
 
 Issue URL     : https://github.com/alsa-project/alsa-utils/issues/230
 Repository URL: https://github.com/alsa-project/alsa-utils
