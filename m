@@ -4,51 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D0AEEC04A6A
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Aug 2023 16:05:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BBBDEC04A6A
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Aug 2023 16:05:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 27FD2847;
-	Wed, 16 Aug 2023 18:04:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 27FD2847
+	by alsa0.perex.cz (Postfix) with ESMTPS id 00398850;
+	Wed, 16 Aug 2023 18:04:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 00398850
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1692201910;
-	bh=2oY2EvGNFVfMvXBPDNEOnCx7UcXe6sbmA3Oi188+3Lg=;
+	s=default; t=1692201917;
+	bh=IQ4qOf8uZ3JR8CpxsrEi6kzaQ6yDa1gco+58dFsqBQM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=uZJcNFqhNWWNve+Nyz+Ke+typXQIFB2snHMhvI1+Rps9nrf6Iwcr+7Ld/FP0bqdGH
-	 1anPeQW0y1gxeygdF4It6lW4clHelptoUF8R1HybGhQ26IjuyPEaLSVaIO59wxwKST
-	 Jpk3xMZhELr7FDrHkMLv31qHGlQU7zeP7LbQQU3A=
+	b=YEVXkgyjvpJawFf63bHvw1Oj0T9zfJxOudgwa5bsOsW3Ww4vZ3+rj8glLDj9gQHGb
+	 bdSSXFXV9Hp7+cylfK0o5OzSXx3U7DyICYEQzvEd5MdIp1ckyQfpSh51ZwyL0xYE7L
+	 mD3Zsis125rzW0HJVT681PTuVoWpYPzyLZaXTpGI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A8473F8025F; Wed, 16 Aug 2023 18:03:18 +0200 (CEST)
+	id 4E572F80589; Wed, 16 Aug 2023 18:03:19 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C034FF80567;
-	Wed, 16 Aug 2023 18:03:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3EEC8F80580;
+	Wed, 16 Aug 2023 18:03:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 16812F80571; Wed, 16 Aug 2023 18:03:13 +0200 (CEST)
+	id 5AB69F80567; Wed, 16 Aug 2023 18:03:15 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de
  [IPv6:2001:67c:2178:6::1c])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 0EFC9F8016A
-	for <alsa-devel@alsa-project.org>; Wed, 16 Aug 2023 18:02:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0EFC9F8016A
+	by alsa1.perex.cz (Postfix) with ESMTPS id 4C3D7F80254
+	for <alsa-devel@alsa-project.org>; Wed, 16 Aug 2023 18:02:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4C3D7F80254
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=JvklwM1i;
+ header.s=susede2_rsa header.b=z9CsTj/g;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=zuzSA1/l
+ header.s=susede2_ed25519 header.b=CxtEU9ex
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 8B5AA21889;
+	by smtp-out1.suse.de (Postfix) with ESMTPS id CC8E321890;
 	Wed, 16 Aug 2023 16:02:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
@@ -57,43 +57,43 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=qfyJ5Is//7uc8Mi6ii436xNwcPaQvKwSGrJ1SCUxrAE=;
-	b=JvklwM1iK0YoaZQsXrKeuwriKBbb1JLQgFR9uDkJ0PzF3VNnafIqK+DlDl//o7yWZ30iKV
-	6H6kkc55Y9rxIaPdtFMGWqKBE1z7JMPaynBwaqMDrojMSe7RFUVLBk885xUX9sLE2Bv0h8
-	79xMFDVIdN9wMrqFUeNEEgLr2y1A4sU=
+	bh=2uvkjQlv5XdKAnae/lzMDYSQYG/vfJd2EoK2s4BCYmA=;
+	b=z9CsTj/gM3n3ysrVaqfTYN0RNuY4+rNJgT1+G1e2UjR9XsB/dRldTTUQzVOm5Hf3rjK39S
+	4nja0PR6DnNBI/XC9gWYOuQ6S33OA+N7HdJNDIdewMfAuA5QEhIwUB+391b1hVntMkzfAX
+	koE0jBPG1nzF9E43eRjxx8NSIWMgXE8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
 	s=susede2_ed25519; t=1692201775;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=qfyJ5Is//7uc8Mi6ii436xNwcPaQvKwSGrJ1SCUxrAE=;
-	b=zuzSA1/l+zkTL+wzufxg77rVQCF8ehjj7NrYMWIS71aBlh6ipBm8jbNZg3k9pcNa0709Y6
-	WiZcwP4nX5Jo7mDg==
+	bh=2uvkjQlv5XdKAnae/lzMDYSQYG/vfJd2EoK2s4BCYmA=;
+	b=CxtEU9exSEg7HtuBb2gYwdtFN/0UMxnehy3jSOGrkejnRtnUzbB+nmT238EmEeiv2T2ETv
+	2XmfBT6wH7abt6Dg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 65A17139F8;
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B207C139F8;
 	Wed, 16 Aug 2023 16:02:55 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id IA3jFy/z3GSNKQAAMHmgww
+	id YKawKi/z3GSNKQAAMHmgww
 	(envelope-from <tiwai@suse.de>); Wed, 16 Aug 2023 16:02:55 +0000
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
 Cc: Curtis Malainey <cujomalainey@google.com>
-Subject: [PATCH RFC 3/9] ALSA: pcm: Don't embed device
-Date: Wed, 16 Aug 2023 18:02:46 +0200
-Message-Id: <20230816160252.23396-4-tiwai@suse.de>
+Subject: [PATCH RFC 5/9] ALSA: rawmidi: Don't embed device
+Date: Wed, 16 Aug 2023 18:02:48 +0200
+Message-Id: <20230816160252.23396-6-tiwai@suse.de>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <20230816160252.23396-1-tiwai@suse.de>
 References: <20230816160252.23396-1-tiwai@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: ML6ZH23D3PXRODMFNT7BPAC23FNVVHRJ
-X-Message-ID-Hash: ML6ZH23D3PXRODMFNT7BPAC23FNVVHRJ
+Message-ID-Hash: BMHGUSXSWIOH6JVOL4M34LICKZ7SEKOZ
+X-Message-ID-Hash: BMHGUSXSWIOH6JVOL4M34LICKZ7SEKOZ
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -106,7 +106,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ML6ZH23D3PXRODMFNT7BPAC23FNVVHRJ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BMHGUSXSWIOH6JVOL4M34LICKZ7SEKOZ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -115,147 +115,134 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-So far we use the embedded struct device for each PCM substreams in
-struct snd_pcm.  This may result in UAF when the delayed kobj release
-is used; each corresponding struct device is still accessed at the
-(delayed) device release, while the snd_pcm object may be already
-gone.
+This patch detaches the struct device from the snd_rawmidi object by
+allocating via snd_device_alloc(), just like done for other devices.
 
-As a workaround, detach the struct device from the snd_pcm object by
-allocating via the new snd_device_alloc() helper.
-
-A caveat is that we store the PCM substream pointer to drvdata since
-the device resume and others require the access to it.
-
-This patch is based on the fix Curtis posted initially.  In this
-patch, the changes are split and use the new helper function instead.
-
-Link: https://lore.kernel.org/r/20230801171928.1460120-1-cujomalainey@chromium.org
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- include/sound/pcm.h             |  2 +-
- sound/aoa/soundbus/i2sbus/pcm.c |  4 ++--
- sound/core/pcm.c                | 22 +++++++++++++---------
- sound/usb/media.c               |  2 +-
- 4 files changed, 17 insertions(+), 13 deletions(-)
+ include/sound/rawmidi.h |  2 +-
+ sound/core/rawmidi.c    | 29 +++++++++++++----------------
+ sound/core/ump.c        |  8 ++++----
+ 3 files changed, 18 insertions(+), 21 deletions(-)
 
-diff --git a/include/sound/pcm.h b/include/sound/pcm.h
-index 19f564606ac4..0243a13e9ac4 100644
---- a/include/sound/pcm.h
-+++ b/include/sound/pcm.h
-@@ -510,7 +510,7 @@ struct snd_pcm_str {
- #endif
- #endif
- 	struct snd_kcontrol *chmap_kctl; /* channel-mapping controls */
+diff --git a/include/sound/rawmidi.h b/include/sound/rawmidi.h
+index b0197b1d1fe4..f31cabf0158c 100644
+--- a/include/sound/rawmidi.h
++++ b/include/sound/rawmidi.h
+@@ -135,7 +135,7 @@ struct snd_rawmidi {
+ 	struct mutex open_mutex;
+ 	wait_queue_head_t open_wait;
+ 
 -	struct device dev;
 +	struct device *dev;
- };
  
- struct snd_pcm {
-diff --git a/sound/aoa/soundbus/i2sbus/pcm.c b/sound/aoa/soundbus/i2sbus/pcm.c
-index a9e502a6cdeb..3680eb6eabc9 100644
---- a/sound/aoa/soundbus/i2sbus/pcm.c
-+++ b/sound/aoa/soundbus/i2sbus/pcm.c
-@@ -972,7 +972,7 @@ i2sbus_attach_codec(struct soundbus_dev *dev, struct snd_card *card,
- 			goto out_put_ci_module;
- 		snd_pcm_set_ops(dev->pcm, SNDRV_PCM_STREAM_PLAYBACK,
- 				&i2sbus_playback_ops);
--		dev->pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].dev.parent =
-+		dev->pcm->streams[SNDRV_PCM_STREAM_PLAYBACK]->dev.parent =
- 			&dev->ofdev.dev;
- 		i2sdev->out.created = 1;
- 	}
-@@ -989,7 +989,7 @@ i2sbus_attach_codec(struct soundbus_dev *dev, struct snd_card *card,
- 			goto out_put_ci_module;
- 		snd_pcm_set_ops(dev->pcm, SNDRV_PCM_STREAM_CAPTURE,
- 				&i2sbus_record_ops);
--		dev->pcm->streams[SNDRV_PCM_STREAM_CAPTURE].dev.parent =
-+		dev->pcm->streams[SNDRV_PCM_STREAM_CAPTURE]->dev.parent =
- 			&dev->ofdev.dev;
- 		i2sdev->in.created = 1;
- 	}
-diff --git a/sound/core/pcm.c b/sound/core/pcm.c
-index 9d95e3731123..317a25b68159 100644
---- a/sound/core/pcm.c
-+++ b/sound/core/pcm.c
-@@ -604,7 +604,7 @@ static const struct attribute_group *pcm_dev_attr_groups[];
- #ifdef CONFIG_PM_SLEEP
- static int do_pcm_suspend(struct device *dev)
- {
--	struct snd_pcm_str *pstr = container_of(dev, struct snd_pcm_str, dev);
-+	struct snd_pcm_str *pstr = dev_get_drvdata(dev);
+ 	struct snd_info_entry *proc_entry;
  
- 	if (!pstr->pcm->no_device_suspend)
- 		snd_pcm_suspend_all(pstr->pcm);
-@@ -650,11 +650,14 @@ int snd_pcm_new_stream(struct snd_pcm *pcm, int stream, int substream_count)
- 	if (!substream_count)
- 		return 0;
+diff --git a/sound/core/rawmidi.c b/sound/core/rawmidi.c
+index 2d3cec908154..ba06484ac4aa 100644
+--- a/sound/core/rawmidi.c
++++ b/sound/core/rawmidi.c
+@@ -44,11 +44,11 @@ static LIST_HEAD(snd_rawmidi_devices);
+ static DEFINE_MUTEX(register_mutex);
  
--	snd_device_initialize(&pstr->dev, pcm->card);
--	pstr->dev.groups = pcm_dev_attr_groups;
--	pstr->dev.type = &pcm_dev_type;
--	dev_set_name(&pstr->dev, "pcmC%iD%i%c", pcm->card->number, pcm->device,
-+	err = snd_device_alloc(&pstr->dev, pcm->card);
-+	if (err < 0)
-+		return err;
-+	dev_set_name(pstr->dev, "pcmC%iD%i%c", pcm->card->number, pcm->device,
- 		     stream == SNDRV_PCM_STREAM_PLAYBACK ? 'p' : 'c');
-+	pstr->dev->groups = pcm_dev_attr_groups;
-+	pstr->dev->type = &pcm_dev_type;
-+	dev_set_drvdata(pstr->dev, pstr);
+ #define rmidi_err(rmidi, fmt, args...) \
+-	dev_err(&(rmidi)->dev, fmt, ##args)
++	dev_err((rmidi)->dev, fmt, ##args)
+ #define rmidi_warn(rmidi, fmt, args...) \
+-	dev_warn(&(rmidi)->dev, fmt, ##args)
++	dev_warn((rmidi)->dev, fmt, ##args)
+ #define rmidi_dbg(rmidi, fmt, args...) \
+-	dev_dbg(&(rmidi)->dev, fmt, ##args)
++	dev_dbg((rmidi)->dev, fmt, ##args)
  
- 	if (!pcm->internal) {
- 		err = snd_pcm_stream_proc_init(pstr);
-@@ -847,7 +850,7 @@ static void snd_pcm_free_stream(struct snd_pcm_str * pstr)
- #endif
- 	free_chmap(pstr);
- 	if (pstr->substream_count)
--		put_device(&pstr->dev);
-+		put_device(pstr->dev);
+ struct snd_rawmidi_status32 {
+ 	s32 stream;
+@@ -1877,11 +1877,6 @@ static int snd_rawmidi_alloc_substreams(struct snd_rawmidi *rmidi,
+ 	return 0;
  }
  
- #if IS_ENABLED(CONFIG_SND_PCM_OSS)
-@@ -1017,7 +1020,7 @@ void snd_pcm_detach_substream(struct snd_pcm_substream *substream)
- static ssize_t pcm_class_show(struct device *dev,
- 			      struct device_attribute *attr, char *buf)
- {
--	struct snd_pcm_str *pstr = container_of(dev, struct snd_pcm_str, dev);
-+	struct snd_pcm_str *pstr = dev_get_drvdata(dev);
- 	struct snd_pcm *pcm = pstr->pcm;
- 	const char *str;
- 	static const char *strs[SNDRV_PCM_CLASS_LAST + 1] = {
-@@ -1078,7 +1081,7 @@ static int snd_pcm_dev_register(struct snd_device *device)
- 		/* register pcm */
- 		err = snd_register_device(devtype, pcm->card, pcm->device,
- 					  &snd_pcm_f_ops[cidx], pcm,
--					  &pcm->streams[cidx].dev);
-+					  pcm->streams[cidx].dev);
- 		if (err < 0) {
- 			list_del_init(&pcm->list);
- 			goto unlock;
-@@ -1125,7 +1128,8 @@ static int snd_pcm_dev_disconnect(struct snd_device *device)
+-static void release_rawmidi_device(struct device *dev)
+-{
+-	kfree(container_of(dev, struct snd_rawmidi, dev));
+-}
+-
+ /* used for both rawmidi and ump */
+ int snd_rawmidi_init(struct snd_rawmidi *rmidi,
+ 		     struct snd_card *card, char *id, int device,
+@@ -1906,12 +1901,13 @@ int snd_rawmidi_init(struct snd_rawmidi *rmidi,
+ 	if (id != NULL)
+ 		strscpy(rmidi->id, id, sizeof(rmidi->id));
  
- 	pcm_call_notify(pcm, n_disconnect);
- 	for (cidx = 0; cidx < 2; cidx++) {
--		snd_unregister_device(&pcm->streams[cidx].dev);
-+		if (pcm->streams[cidx].dev)
-+			snd_unregister_device(pcm->streams[cidx].dev);
- 		free_chmap(&pcm->streams[cidx]);
+-	snd_device_initialize(&rmidi->dev, card);
+-	rmidi->dev.release = release_rawmidi_device;
++	err = snd_device_alloc(&rmidi->dev, card);
++	if (err < 0)
++		return err;
+ 	if (rawmidi_is_ump(rmidi))
+-		dev_set_name(&rmidi->dev, "umpC%iD%i", card->number, device);
++		dev_set_name(rmidi->dev, "umpC%iD%i", card->number, device);
+ 	else
+-		dev_set_name(&rmidi->dev, "midiC%iD%i", card->number, device);
++		dev_set_name(rmidi->dev, "midiC%iD%i", card->number, device);
+ 
+ 	err = snd_rawmidi_alloc_substreams(rmidi,
+ 					   &rmidi->streams[SNDRV_RAWMIDI_STREAM_INPUT],
+@@ -1996,7 +1992,8 @@ int snd_rawmidi_free(struct snd_rawmidi *rmidi)
+ 	snd_rawmidi_free_substreams(&rmidi->streams[SNDRV_RAWMIDI_STREAM_OUTPUT]);
+ 	if (rmidi->private_free)
+ 		rmidi->private_free(rmidi);
+-	put_device(&rmidi->dev);
++	put_device(rmidi->dev);
++	kfree(rmidi);
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(snd_rawmidi_free);
+@@ -2038,7 +2035,7 @@ static int snd_rawmidi_dev_register(struct snd_device *device)
+ 
+ 	err = snd_register_device(SNDRV_DEVICE_TYPE_RAWMIDI,
+ 				  rmidi->card, rmidi->device,
+-				  &snd_rawmidi_f_ops, rmidi, &rmidi->dev);
++				  &snd_rawmidi_f_ops, rmidi, rmidi->dev);
+ 	if (err < 0) {
+ 		rmidi_err(rmidi, "unable to register\n");
+ 		goto error;
+@@ -2103,7 +2100,7 @@ static int snd_rawmidi_dev_register(struct snd_device *device)
+ 	return 0;
+ 
+  error_unregister:
+-	snd_unregister_device(&rmidi->dev);
++	snd_unregister_device(rmidi->dev);
+  error:
+ 	mutex_lock(&register_mutex);
+ 	list_del(&rmidi->list);
+@@ -2142,7 +2139,7 @@ static int snd_rawmidi_dev_disconnect(struct snd_device *device)
+ 		rmidi->ossreg = 0;
  	}
- 	mutex_unlock(&pcm->open_mutex);
-diff --git a/sound/usb/media.c b/sound/usb/media.c
-index 6d11fedb4632..d48db6f3ae65 100644
---- a/sound/usb/media.c
-+++ b/sound/usb/media.c
-@@ -35,7 +35,7 @@ int snd_media_stream_init(struct snd_usb_substream *subs, struct snd_pcm *pcm,
- {
- 	struct media_device *mdev;
- 	struct media_ctl *mctl;
--	struct device *pcm_dev = &pcm->streams[stream].dev;
-+	struct device *pcm_dev = pcm->streams[stream].dev;
- 	u32 intf_type;
- 	int ret = 0;
- 	u16 mixer_pad;
+ #endif /* CONFIG_SND_OSSEMUL */
+-	snd_unregister_device(&rmidi->dev);
++	snd_unregister_device(rmidi->dev);
+ 	mutex_unlock(&rmidi->open_mutex);
+ 	mutex_unlock(&register_mutex);
+ 	return 0;
+diff --git a/sound/core/ump.c b/sound/core/ump.c
+index 246348766ec1..fbe2892e72fd 100644
+--- a/sound/core/ump.c
++++ b/sound/core/ump.c
+@@ -13,10 +13,10 @@
+ #include <sound/ump.h>
+ #include <sound/ump_convert.h>
+ 
+-#define ump_err(ump, fmt, args...)	dev_err(&(ump)->core.dev, fmt, ##args)
+-#define ump_warn(ump, fmt, args...)	dev_warn(&(ump)->core.dev, fmt, ##args)
+-#define ump_info(ump, fmt, args...)	dev_info(&(ump)->core.dev, fmt, ##args)
+-#define ump_dbg(ump, fmt, args...)	dev_dbg(&(ump)->core.dev, fmt, ##args)
++#define ump_err(ump, fmt, args...)	dev_err((ump)->core.dev, fmt, ##args)
++#define ump_warn(ump, fmt, args...)	dev_warn((ump)->core.dev, fmt, ##args)
++#define ump_info(ump, fmt, args...)	dev_info((ump)->core.dev, fmt, ##args)
++#define ump_dbg(ump, fmt, args...)	dev_dbg((ump)->core.dev, fmt, ##args)
+ 
+ static int snd_ump_dev_register(struct snd_rawmidi *rmidi);
+ static int snd_ump_dev_unregister(struct snd_rawmidi *rmidi);
 -- 
 2.35.3
 
