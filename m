@@ -4,95 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 917AFC001E0
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Aug 2023 16:06:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 05BF5C001E0
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Aug 2023 16:06:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5472D84A;
-	Wed, 16 Aug 2023 18:05:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5472D84A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 36094DF2;
+	Wed, 16 Aug 2023 18:05:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 36094DF2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1692201991;
-	bh=J2JFjKxmnj+2Zg82ee2JDZFziDfpEeii23cZvB5ZQoM=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=AilsG5rxLGZKl9RDzKRjeqL5FK4Hw3cHJdKu9WZ7ckXZrODhRXcA6jpVNsW+WLwjR
-	 LkUwh/9IHZxussWHsmOqKQoaBid+E+ecueFYh0F6L4Tvi9avRDSVlomaoxbY0xoafx
-	 fCAO7x+8x2lu6x35RIrEZ1Oqezr62dc79OrihZ6Y=
+	s=default; t=1692202000;
+	bh=S/SBHzWgOzqdjqUxd6gLITTcImpziyTRvr/kPbR0ad4=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=r1GBnPn/z3I4jAoO8A2IdEcLFrUBpDAWoBXPjcfvO/zO5aAYE1YwlRLp1ofPpZ7ik
+	 E0QRN3sXW6Nfo89epp/8V3GkEvDPG7tytjBUh2zk0LDNlmvvpwm3KbHl3PqjkuI/hT
+	 7RR2BN2EcrCsF3mw2knvYfzMww3Bays9HUPX5R7w=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E31D7F80549; Wed, 16 Aug 2023 18:05:02 +0200 (CEST)
+	id 26A4FF8016D; Wed, 16 Aug 2023 18:05:07 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id F3414F80536;
-	Wed, 16 Aug 2023 18:05:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 13713F8055A;
+	Wed, 16 Aug 2023 18:05:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7A4A2F8016A; Wed, 16 Aug 2023 18:04:58 +0200 (CEST)
+	id 77332F80254; Wed, 16 Aug 2023 18:05:00 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 77C5AF80272
-	for <alsa-devel@alsa-project.org>; Wed, 16 Aug 2023 18:02:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 77C5AF80272
+	by alsa1.perex.cz (Postfix) with ESMTPS id 40B1EF801EB
+	for <alsa-devel@alsa-project.org>; Wed, 16 Aug 2023 18:02:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 40B1EF801EB
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=F0RDBUUD;
+ header.s=susede2_rsa header.b=iTJ+menf;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=hiKjiajz
+ header.s=susede2_ed25519 header.b=jSTlwPIs
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 1A4921F86C;
-	Wed, 16 Aug 2023 16:02:56 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 1BAB41F855;
+	Wed, 16 Aug 2023 16:02:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1692201776;
+	t=1692201775;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Ru2u5N458a3/VA/29YhYy0dpK2vWU8XfLXpEkrMzJLA=;
-	b=F0RDBUUDMHPllqXcsxExPm7Nr567pocxb8PqDN9m6pvccrMTcUNFM+nCAeIa83BZPGNLJc
-	00nDRnaAsRKlV2NFfofI3WIJpKbhLIXsOrgJt1fapGMS/hrD8bnRHqsNcZnQSHxoakDhZ7
-	povuq/bJbizlYnUhmhXPS5shiJGVG88=
+  content-transfer-encoding:content-transfer-encoding;
+	bh=KF70rsWeN6Q8YcwKBfznUm/6zh5XJXAjgopizp+b8Jc=;
+	b=iTJ+menfv+dbukdHpz2jnEe794f4bLfT+m6y3hHOjLBudZC66c5xBoZJIQAE4A/Mz8HZ5A
+	vZ9JoHqDcV4UPjert5xPvpJmbu/Ai8240tOApvT3fdIS0fFaqB2F1OUB7/P9NMT5pBcLfo
+	2VRlL/fd/MZuooxXcgs8isHeNHTtQSY=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1692201776;
+	s=susede2_ed25519; t=1692201775;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Ru2u5N458a3/VA/29YhYy0dpK2vWU8XfLXpEkrMzJLA=;
-	b=hiKjiajzIAdIzvv8ObpiA12z2BZ1+MdhWh+kggsuZZ8dvl+/ISLfioBypBamPTEy107TMD
-	TfzVIscXttjohcBQ==
+  content-transfer-encoding:content-transfer-encoding;
+	bh=KF70rsWeN6Q8YcwKBfznUm/6zh5XJXAjgopizp+b8Jc=;
+	b=jSTlwPIsJaznzpCf6TB/oE8Zp2MsnhaVXpoNi6E0FkhiTTDnuHjJ0EL2gnVxNgW3kMgRFv
+	HrdLYAj8MI7QU3BA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F0481139F8;
-	Wed, 16 Aug 2023 16:02:55 +0000 (UTC)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id ECF6E133F2;
+	Wed, 16 Aug 2023 16:02:54 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id mA7POS/z3GSNKQAAMHmgww
-	(envelope-from <tiwai@suse.de>); Wed, 16 Aug 2023 16:02:55 +0000
+	id ICyzOC7z3GSNKQAAMHmgww
+	(envelope-from <tiwai@suse.de>); Wed, 16 Aug 2023 16:02:54 +0000
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
 Cc: Curtis Malainey <cujomalainey@google.com>
-Subject: [PATCH RFC 7/9] ALSA: timer: Create device with snd_device_alloc()
-Date: Wed, 16 Aug 2023 18:02:50 +0200
-Message-Id: <20230816160252.23396-8-tiwai@suse.de>
+Subject: [PATCH RFC 0/9] ALSA: Don't embed struct devices
+Date: Wed, 16 Aug 2023 18:02:43 +0200
+Message-Id: <20230816160252.23396-1-tiwai@suse.de>
 X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20230816160252.23396-1-tiwai@suse.de>
-References: <20230816160252.23396-1-tiwai@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: GLWY7YNCTY3LVNUFE3TE7H2RIBBVHU57
-X-Message-ID-Hash: GLWY7YNCTY3LVNUFE3TE7H2RIBBVHU57
+Message-ID-Hash: JZIPB4OIC3OK6YAGTPMAEKXMLUWM5PTA
+X-Message-ID-Hash: JZIPB4OIC3OK6YAGTPMAEKXMLUWM5PTA
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -105,7 +100,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GLWY7YNCTY3LVNUFE3TE7H2RIBBVHU57/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JZIPB4OIC3OK6YAGTPMAEKXMLUWM5PTA/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -114,68 +109,71 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Align with the other components, and use snd_device_alloc() for the
-new sound device for timer, too.  No functional changes.
+Hi,
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/core/timer.c | 16 +++++++++-------
- 1 file changed, 9 insertions(+), 7 deletions(-)
+this is another set of patches to attempt papering over the UAF
+problems that are seen when the delayed kobject release is enabled, as
+initially reported by Curtis:
+  https://lore.kernel.org/r/20230801171928.1460120-1-cujomalainey@chromium.org
 
-diff --git a/sound/core/timer.c b/sound/core/timer.c
-index 9d0d2a5c2e15..e6e551d4a29e 100644
---- a/sound/core/timer.c
-+++ b/sound/core/timer.c
-@@ -2301,7 +2301,7 @@ static void snd_timer_free_all(void)
- 		snd_timer_free(timer);
- }
- 
--static struct device timer_dev;
-+static struct device *timer_dev;
- 
- /*
-  *  ENTRY functions
-@@ -2311,8 +2311,10 @@ static int __init alsa_timer_init(void)
- {
- 	int err;
- 
--	snd_device_initialize(&timer_dev, NULL);
--	dev_set_name(&timer_dev, "timer");
-+	err = snd_device_alloc(&timer_dev, NULL);
-+	if (err < 0)
-+		return err;
-+	dev_set_name(timer_dev, "timer");
- 
- #ifdef SNDRV_OSS_INFO_DEV_TIMERS
- 	snd_oss_info_register(SNDRV_OSS_INFO_DEV_TIMERS, SNDRV_CARDS - 1,
-@@ -2326,7 +2328,7 @@ static int __init alsa_timer_init(void)
- 	}
- 
- 	err = snd_register_device(SNDRV_DEVICE_TYPE_TIMER, NULL, 0,
--				  &snd_timer_f_ops, NULL, &timer_dev);
-+				  &snd_timer_f_ops, NULL, timer_dev);
- 	if (err < 0) {
- 		pr_err("ALSA: unable to register timer device (%i)\n", err);
- 		snd_timer_free_all();
-@@ -2337,15 +2339,15 @@ static int __init alsa_timer_init(void)
- 	return 0;
- 
- put_timer:
--	put_device(&timer_dev);
-+	put_device(timer_dev);
- 	return err;
- }
- 
- static void __exit alsa_timer_exit(void)
- {
--	snd_unregister_device(&timer_dev);
-+	snd_unregister_device(timer_dev);
- 	snd_timer_free_all();
--	put_device(&timer_dev);
-+	put_device(timer_dev);
- 	snd_timer_proc_done();
- #ifdef SNDRV_OSS_INFO_DEV_TIMERS
- 	snd_oss_info_unregister(SNDRV_OSS_INFO_DEV_TIMERS, SNDRV_CARDS - 1);
+There was a previous patch set with a different approach (using the
+device refcount dependencies), but this is a sort of step-back to the
+old way.
+  https://lore.kernel.org/r/20230807135207.17708-1-tiwai@suse.de
+
+After discussions and evaluations, we agreed that decoupling the
+struct device from each sound component object is the safest (and
+easiest) way as of now.  For applying the changes more consistently, I
+introduced a new helper for the struct device allocation and
+initialization, and applied all components.
+
+A couple of more changes for card_dev refcount managed aren't included
+in this patch set, though.  They might be good to have, but this patch
+set should suffice for the currently seen UAF problems.
+
+For a long-term solution, we may restructure the device management,
+then the struct devices may be embedded again in each object.  But,
+it'll need lots of other changes and cleanups, a big TODO.
+
+The latest patches are found in topic/dev-split branch of sound.git
+tree.
+
+
+Takashi
+
+===
+
+Takashi Iwai (9):
+  ALSA: core: Introduce snd_device_alloc()
+  ALSA: control: Don't embed ctl_dev
+  ALSA: pcm: Don't embed device
+  ALSA: hwdep: Don't embed device
+  ALSA: rawmidi: Don't embed device
+  ALSA: compress: Don't embed device
+  ALSA: timer: Create device with snd_device_alloc()
+  ALSA: seq: Create device with snd_device_alloc()
+  ALSA: core: Drop snd_device_initialize()
+
+ include/sound/compress_driver.h |  2 +-
+ include/sound/core.h            |  4 ++--
+ include/sound/hwdep.h           |  2 +-
+ include/sound/pcm.h             |  2 +-
+ include/sound/rawmidi.h         |  2 +-
+ sound/aoa/soundbus/i2sbus/pcm.c |  4 ++--
+ sound/core/compress_offload.c   | 16 ++++++++------
+ sound/core/control.c            | 14 ++++++------
+ sound/core/control_led.c        |  4 ++--
+ sound/core/hwdep.c              | 38 ++++++++++++++++++---------------
+ sound/core/init.c               | 28 +++++++++++++++---------
+ sound/core/pcm.c                | 22 +++++++++++--------
+ sound/core/rawmidi.c            | 29 +++++++++++--------------
+ sound/core/seq/seq_clientmgr.c  | 16 ++++++++------
+ sound/core/timer.c              | 16 ++++++++------
+ sound/core/ump.c                |  8 +++----
+ sound/pci/hda/hda_hwdep.c       |  4 ++--
+ sound/usb/media.c               |  4 ++--
+ 18 files changed, 119 insertions(+), 96 deletions(-)
+
 -- 
 2.35.3
 
