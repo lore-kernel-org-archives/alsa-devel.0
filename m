@@ -4,91 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 68945C001B0
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Aug 2023 15:51:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 98716C001E0
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Aug 2023 16:04:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E933982A;
-	Wed, 16 Aug 2023 17:50:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E933982A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 74F64827;
+	Wed, 16 Aug 2023 18:03:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 74F64827
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1692201095;
-	bh=iFQC4hc2PQsLEl5yJ4fOGHLJFWJL/+J7j0wLGTVqGPI=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	s=default; t=1692201859;
+	bh=phT/Z1n5QJx4DPCoY+oX8Fj7hPpA6tzgNSIdh2jKP+4=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=HYdJ8W6dKT8a+jIzX/SQgUl+bukwWFQoqwWwpHWLgbpwR7bQDi6JHv823Kg3RxJxi
-	 SciU1Rs7ct8W0PQZUmd+LKkhpH5FgPqVf0M+zWOO2WvoB7VkudTaMrIuAJ3sii/IE9
-	 70il+ws2SAVogPio/m97TmrXy9eKyWwS5EfdQFA8=
+	b=LWVBlxiG2q+SqcZqx2b18n/TEUhBhdMSZf6zsAKWd8z38mweDBkeCANlW0RbLXEeF
+	 u/0jsxqeZ7+0nnjpZ5s4z17VH0Nfmb3+HS5L1ZMYwu7lsWV1LxxHrHx00sw0IQkPpi
+	 w8JTQD2oqHWo0Xeg9rqsfGfbrzvvp6KozYavvJxU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B2BF9F80074; Wed, 16 Aug 2023 17:50:14 +0200 (CEST)
+	id 872ADF80553; Wed, 16 Aug 2023 18:03:08 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2DA69F80074;
-	Wed, 16 Aug 2023 17:50:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B4C36F80510;
+	Wed, 16 Aug 2023 18:03:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1030CF8016D; Wed, 16 Aug 2023 17:50:11 +0200 (CEST)
-Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net
- [IPv6:2001:4b98:dc4:8::224])
-	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+	id 114BDF80551; Wed, 16 Aug 2023 18:03:04 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2001:67c:2178:6::1d])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 4E452F800EE
-	for <alsa-devel@alsa-project.org>; Wed, 16 Aug 2023 17:50:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4E452F800EE
+	by alsa1.perex.cz (Postfix) with ESMTPS id CBB68F80074
+	for <alsa-devel@alsa-project.org>; Wed, 16 Aug 2023 18:02:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CBB68F80074
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=aTA9l5F6
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 88A01E0008;
-	Wed, 16 Aug 2023 15:49:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1692201004;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=L5C6XzFd;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=Uc++qM6S
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 618CD1F74A;
+	Wed, 16 Aug 2023 16:02:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1692201775;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=U7qqsraPhv0yClgxA/hyk25/qkMt80mxh+Qel/Qxjxk=;
-	b=aTA9l5F6XqBRUIBDAk06nQK/nIEigxkLt66oO1lwGxbsCjnlCIksXy66MYVGgyPuPhY0NJ
-	vcgwSZPKuyDa3dpID6QwUfiGt+IN8msV8YcunSM7kYtF1MGNuhN3WTTVxkX+EPgysd5VQG
-	Y1STGp7KLgLqOUDDP+50lCSdlCa8KUV9rkbZbfyStWE5OcI3ADLgii1Ip6/MvbsBxhQlDj
-	6u2BmR71zqZy9okYfyhuIL6jZaEld4kQiGU7rMUIwVCh7I2/PYqV1NMKGK610szgjiBcZk
-	w7ZnmE8N4F7hjEK/ew8ZCi5q3X25mzwLmN2yTK1pO+C2UzINVFe4WGbLTiP2Kg==
-Date: Wed, 16 Aug 2023 17:49:58 +0200
-From: Herve Codina <herve.codina@bootlin.com>
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
- <pabeni@redhat.com>, Andrew Lunn <andrew@lunn.ch>, Rob Herring
- <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- Lee Jones <lee@kernel.org>, Qiang Zhao <qiang.zhao@nxp.com>, Li Yang
- <leoyang.li@nxp.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown
- <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai
- <tiwai@suse.com>, Shengjiu Wang <shengjiu.wang@gmail.com>, Xiubo Li
- <Xiubo.Lee@gmail.com>, Fabio Estevam <festevam@gmail.com>, Nicolin Chen
- <nicoleotsuka@gmail.com>, Christophe Leroy <christophe.leroy@csgroup.eu>,
- Randy Dunlap <rdunlap@infradead.org>, netdev@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, Thomas
- Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v3 22/28] dt-bindings: net: Add the Lantiq PEF2256
- E1/T1/J1 framer
-Message-ID: <20230816174847.4709a428@bootlin.com>
-In-Reply-To: 
- <CACRpkdZWHw7sL6EKe0EP0hX5TEsdhzgkPSdVtPPYhS3LqJRHFg@mail.gmail.com>
-References: <20230809132757.2470544-1-herve.codina@bootlin.com>
-	<20230809132757.2470544-23-herve.codina@bootlin.com>
-	<CACRpkdZWHw7sL6EKe0EP0hX5TEsdhzgkPSdVtPPYhS3LqJRHFg@mail.gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+	bh=a0W1/5bP7xDvKRYzs9yjyIX8JnhqCK16JlRRetS5RYY=;
+	b=L5C6XzFdAucuOtoS4K2+JqTAoWfowlPVq6bmx0lDUZPuTqFPVyP8KJ6kriRfQpv218uXsV
+	WQTzt09pb36tK+I1Y8vTmrHcvt2Veq0dz1hSF5SYvcCk8PTfd7dB8/ZqQ3hq1xQ4klShZQ
+	+OQAbikcHj39vuhiozXMXq9rh7YQvfU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1692201775;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=a0W1/5bP7xDvKRYzs9yjyIX8JnhqCK16JlRRetS5RYY=;
+	b=Uc++qM6S1siTFULF/99EIlfwNod7g3sTMkp4RXr1o0ctau2WqBpPfQNSeJQy4A2bd0BZYF
+	DdP7DyjQ7DrksfCw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 43B45133F2;
+	Wed, 16 Aug 2023 16:02:55 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id GMGUDy/z3GSNKQAAMHmgww
+	(envelope-from <tiwai@suse.de>); Wed, 16 Aug 2023 16:02:55 +0000
+From: Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@alsa-project.org
+Cc: Curtis Malainey <cujomalainey@google.com>
+Subject: [PATCH RFC 2/9] ALSA: control: Don't embed ctl_dev
+Date: Wed, 16 Aug 2023 18:02:45 +0200
+Message-Id: <20230816160252.23396-3-tiwai@suse.de>
+X-Mailer: git-send-email 2.35.3
+In-Reply-To: <20230816160252.23396-1-tiwai@suse.de>
+References: <20230816160252.23396-1-tiwai@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-GND-Sasl: herve.codina@bootlin.com
-Message-ID-Hash: RJFLGAGFGTCVOVTJUJXV3HS6MOAZFOYA
-X-Message-ID-Hash: RJFLGAGFGTCVOVTJUJXV3HS6MOAZFOYA
-X-MailFrom: herve.codina@bootlin.com
+Message-ID-Hash: DI2SWF4C3TLIA77AKPX3AW6MCQ3SIDKL
+X-Message-ID-Hash: DI2SWF4C3TLIA77AKPX3AW6MCQ3SIDKL
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -100,41 +106,133 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RJFLGAGFGTCVOVTJUJXV3HS6MOAZFOYA/>
-List-Archive: <>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DI2SWF4C3TLIA77AKPX3AW6MCQ3SIDKL/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi Linus,
+Embedding the ctl_dev in the snd_card object may result in UAF when
+the delayed kobj release is used; at the delayed kobj release, it
+still accesses the struct device itself while the card memory (that
+embeds the struct device) may be already gone.
 
-On Thu, 10 Aug 2023 10:53:04 +0200
-Linus Walleij <linus.walleij@linaro.org> wrote:
+As a workaround, detach the struct device from the card object by
+allocating via the new snd_device_alloc() helper.  The rest are just
+replacing ctl_dev access to the pointer.
 
-> Hi Herve,
-> 
-> thanks for your patch!
-> 
-> On Wed, Aug 9, 2023 at 3:28 PM Herve Codina <herve.codina@bootlin.com> wrote:
-> 
-> > The Lantiq PEF2256 is a framer and line interface component designed to
-> > fulfill all required interfacing between an analog E1/T1/J1 line and the
-> > digital PCM system highway/H.100 bus.
-> >
-> > Signed-off-by: Herve Codina <herve.codina@bootlin.com>  
-> (...)
-> > +    patternProperties:
-> > +      '-pins$':
-> > +        type: object
-> > +        $ref: /schemas/pinctrl/pincfg-node.yaml#  
-> 
-> Shouldn't that be pinmux-node.yaml?
-> 
+This is based on the fix Curtis posted initially.  In this patch, the
+changes are split and use the new helper function instead.
 
-Indeed, it should be pinmux-node.yaml.
-This will be fixed in the next iteration.
+Link: https://lore.kernel.org/r/20230801171928.1460120-1-cujomalainey@chromium.org
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ include/sound/core.h     |  2 +-
+ sound/core/control.c     | 14 ++++++++------
+ sound/core/control_led.c |  4 ++--
+ sound/usb/media.c        |  2 +-
+ 4 files changed, 12 insertions(+), 10 deletions(-)
 
-Best regards,
-Hervé
+diff --git a/include/sound/core.h b/include/sound/core.h
+index f986fcc5f18f..f3f6b720a278 100644
+--- a/include/sound/core.h
++++ b/include/sound/core.h
+@@ -96,7 +96,7 @@ struct snd_card {
+ 								private data */
+ 	struct list_head devices;	/* devices */
+ 
+-	struct device ctl_dev;		/* control device */
++	struct device *ctl_dev;		/* control device */
+ 	unsigned int last_numid;	/* last used numeric ID */
+ 	struct rw_semaphore controls_rwsem;	/* controls lock (list and values) */
+ 	rwlock_t ctl_files_rwlock;	/* ctl_files list lock */
+diff --git a/sound/core/control.c b/sound/core/control.c
+index 8386b53acdcd..eb975df067fb 100644
+--- a/sound/core/control.c
++++ b/sound/core/control.c
+@@ -2315,7 +2315,7 @@ static int snd_ctl_dev_register(struct snd_device *device)
+ 	int err;
+ 
+ 	err = snd_register_device(SNDRV_DEVICE_TYPE_CONTROL, card, -1,
+-				  &snd_ctl_f_ops, card, &card->ctl_dev);
++				  &snd_ctl_f_ops, card, card->ctl_dev);
+ 	if (err < 0)
+ 		return err;
+ 	down_read(&card->controls_rwsem);
+@@ -2351,7 +2351,7 @@ static int snd_ctl_dev_disconnect(struct snd_device *device)
+ 	up_read(&snd_ctl_layer_rwsem);
+ 	up_read(&card->controls_rwsem);
+ 
+-	return snd_unregister_device(&card->ctl_dev);
++	return snd_unregister_device(card->ctl_dev);
+ }
+ 
+ /*
+@@ -2373,7 +2373,7 @@ static int snd_ctl_dev_free(struct snd_device *device)
+ 	xa_destroy(&card->ctl_hash);
+ #endif
+ 	up_write(&card->controls_rwsem);
+-	put_device(&card->ctl_dev);
++	put_device(card->ctl_dev);
+ 	return 0;
+ }
+ 
+@@ -2395,12 +2395,14 @@ int snd_ctl_create(struct snd_card *card)
+ 	if (snd_BUG_ON(card->number < 0 || card->number >= SNDRV_CARDS))
+ 		return -ENXIO;
+ 
+-	snd_device_initialize(&card->ctl_dev, card);
+-	dev_set_name(&card->ctl_dev, "controlC%d", card->number);
++	err = snd_device_alloc(&card->ctl_dev, card);
++	if (err < 0)
++		return err;
++	dev_set_name(card->ctl_dev, "controlC%d", card->number);
+ 
+ 	err = snd_device_new(card, SNDRV_DEV_CONTROL, card, &ops);
+ 	if (err < 0)
+-		put_device(&card->ctl_dev);
++		put_device(card->ctl_dev);
+ 	return err;
+ }
+ 
+diff --git a/sound/core/control_led.c b/sound/core/control_led.c
+index ee77547bf8dc..760e46cf25cc 100644
+--- a/sound/core/control_led.c
++++ b/sound/core/control_led.c
+@@ -688,7 +688,7 @@ static void snd_ctl_led_sysfs_add(struct snd_card *card)
+ 			goto cerr;
+ 		led->cards[card->number] = led_card;
+ 		snprintf(link_name, sizeof(link_name), "led-%s", led->name);
+-		WARN(sysfs_create_link(&card->ctl_dev.kobj, &led_card->dev.kobj, link_name),
++		WARN(sysfs_create_link(&card->ctl_dev->kobj, &led_card->dev.kobj, link_name),
+ 			"can't create symlink to controlC%i device\n", card->number);
+ 		WARN(sysfs_create_link(&led_card->dev.kobj, &card->card_dev.kobj, "card"),
+ 			"can't create symlink to card%i\n", card->number);
+@@ -714,7 +714,7 @@ static void snd_ctl_led_sysfs_remove(struct snd_card *card)
+ 		if (!led_card)
+ 			continue;
+ 		snprintf(link_name, sizeof(link_name), "led-%s", led->name);
+-		sysfs_remove_link(&card->ctl_dev.kobj, link_name);
++		sysfs_remove_link(&card->ctl_dev->kobj, link_name);
+ 		sysfs_remove_link(&led_card->dev.kobj, "card");
+ 		device_unregister(&led_card->dev);
+ 		led->cards[card->number] = NULL;
+diff --git a/sound/usb/media.c b/sound/usb/media.c
+index 840f42cb9272..6d11fedb4632 100644
+--- a/sound/usb/media.c
++++ b/sound/usb/media.c
+@@ -163,7 +163,7 @@ void snd_media_stop_pipeline(struct snd_usb_substream *subs)
+ 
+ static int snd_media_mixer_init(struct snd_usb_audio *chip)
+ {
+-	struct device *ctl_dev = &chip->card->ctl_dev;
++	struct device *ctl_dev = chip->card->ctl_dev;
+ 	struct media_intf_devnode *ctl_intf;
+ 	struct usb_mixer_interface *mixer;
+ 	struct media_device *mdev = chip->media_dev;
+-- 
+2.35.3
+
