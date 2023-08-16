@@ -4,95 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ED71CC001E0
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Aug 2023 16:05:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AFA2EC001E0
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Aug 2023 16:06:04 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4F1E2852;
-	Wed, 16 Aug 2023 18:04:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4F1E2852
+	by alsa0.perex.cz (Postfix) with ESMTPS id A7C5282A;
+	Wed, 16 Aug 2023 18:05:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A7C5282A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1692201941;
-	bh=2FdK+5Wi5hG1tKxx/r6nUBGzHtE1ge8gP1TH9v/Pb3U=;
+	s=default; t=1692201962;
+	bh=FQe9VLDfVdRSl9wI/EZDxiX7gRbBjQeUFFFVYdsmsG8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Xjl7Hs8a+kG30IZ6hbMiYYvAch0zd7gEMC+bax2Go14Lu78jyQgHLbryOxuOtesji
-	 n2oLzfrluJud9xn7TbhCn5xcaJMQTY3uDEccoD+2aB2RjGX/kihtQK01g6KY4l+aEc
-	 x03riwlPBNX4b0qvLVdOa3osa6/h6GBb3h1hKucA=
+	b=S8UWj8GFAV70YKZr+z/SavpOeY+6mWHvqB4+yxmMZVzIbW5OPIqxwY1FGvrZFzozl
+	 P+4TGMAFLVGfFyZrRMKiirtQUK6zcZ3x4ao44Nrbq/C+JtYFkMy45QdgaQEMj4UQMo
+	 QIHlzHs6xyKFID99Rc2SQvZmUTxLqJWpHJCU1yDo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 57DD8F805AE; Wed, 16 Aug 2023 18:03:23 +0200 (CEST)
+	id 40CDAF805C0; Wed, 16 Aug 2023 18:03:26 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9FD97F80536;
-	Wed, 16 Aug 2023 18:03:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 557E2F805B5;
+	Wed, 16 Aug 2023 18:03:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 94BFFF8025F; Wed, 16 Aug 2023 18:03:18 +0200 (CEST)
+	id C5746F80587; Wed, 16 Aug 2023 18:03:20 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 427FBF8025F
-	for <alsa-devel@alsa-project.org>; Wed, 16 Aug 2023 18:02:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 427FBF8025F
+	by alsa1.perex.cz (Postfix) with ESMTPS id 8ABE5F80290
+	for <alsa-devel@alsa-project.org>; Wed, 16 Aug 2023 18:02:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8ABE5F80290
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=WqErkCVo;
+ header.s=susede2_rsa header.b=EnfwTQz1;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=LZWGyGsD
+ header.s=susede2_ed25519 header.b=2E4UPoww
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 3B4BA218F2;
-	Wed, 16 Aug 2023 16:02:56 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 40DCC21866;
+	Wed, 16 Aug 2023 16:02:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1692201776;
+	t=1692201775;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=698G18KDW4ZFQ9Xff688MQngnxCshT9y93JoXN5/sUE=;
-	b=WqErkCVowOCX8ym5Y+6NmjOgl8XF09sdMUH+PWDyh74FR2KdO6doZ4JWqkwy02A91uLqCB
-	B8rwVWdrulwOYrz+3oTwHw0K8VscplXQVNmjfN0GwxgBjJvQPff8+FYYU9dFsvLL9Iekwj
-	O10F6mBQyrKR0SJs88qHA5dU8iVlhtc=
+	bh=jib2xBRuDTapc67JM726oqyZiTwBwsXtCor6hQ+MqhE=;
+	b=EnfwTQz1+PUlZ3V0T+3tGAbY8k8LGhOtlxaamlfWqoXn4g6leQGMmd4r1Kl5u+lyaR0N5w
+	Gx+ClHtXVE3ShNzy0lEEo7KBiT4/acTxszGA9VhcQvDgZxBq+iCtOtKKfbc0Xks7CJiVLB
+	RE39Yu75Tj/QswZ/miU1FmGTsZjE6IQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1692201776;
+	s=susede2_ed25519; t=1692201775;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=698G18KDW4ZFQ9Xff688MQngnxCshT9y93JoXN5/sUE=;
-	b=LZWGyGsDL18idvQ97NZbt3Y/auVDwtC4MkC14zrl0QBhzFSLGr2SAI+Uhf0JH07ZEg13MF
-	aX3hSm9Jg6ObxpCA==
+	bh=jib2xBRuDTapc67JM726oqyZiTwBwsXtCor6hQ+MqhE=;
+	b=2E4UPowwzXWgxV/WL2U/+WGkvxypVEP//E3ZiwWBGLPxuwb4JR0/kk2ea6/FXyHteCP4Zu
+	NMpF4a8Hjq2VrKAQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1EAB9133F2;
-	Wed, 16 Aug 2023 16:02:56 +0000 (UTC)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1EBBD139F8;
+	Wed, 16 Aug 2023 16:02:55 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id AMw3BjDz3GSNKQAAMHmgww
-	(envelope-from <tiwai@suse.de>); Wed, 16 Aug 2023 16:02:56 +0000
+	id WCuABi/z3GSNKQAAMHmgww
+	(envelope-from <tiwai@suse.de>); Wed, 16 Aug 2023 16:02:55 +0000
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
 Cc: Curtis Malainey <cujomalainey@google.com>
-Subject: [PATCH RFC 8/9] ALSA: seq: Create device with snd_device_alloc()
-Date: Wed, 16 Aug 2023 18:02:51 +0200
-Message-Id: <20230816160252.23396-9-tiwai@suse.de>
+Subject: [PATCH RFC 1/9] ALSA: core: Introduce snd_device_alloc()
+Date: Wed, 16 Aug 2023 18:02:44 +0200
+Message-Id: <20230816160252.23396-2-tiwai@suse.de>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <20230816160252.23396-1-tiwai@suse.de>
 References: <20230816160252.23396-1-tiwai@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: POOOWI4SVBD32FCT2MDBRXGXBFPWLMZU
-X-Message-ID-Hash: POOOWI4SVBD32FCT2MDBRXGXBFPWLMZU
+Message-ID-Hash: Y4FI23PP7IHQSMU5BJVNIW5ISTTPSFUR
+X-Message-ID-Hash: Y4FI23PP7IHQSMU5BJVNIW5ISTTPSFUR
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -105,7 +105,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/POOOWI4SVBD32FCT2MDBRXGXBFPWLMZU/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Y4FI23PP7IHQSMU5BJVNIW5ISTTPSFUR/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -114,58 +114,70 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Align with the other components, and use snd_device_alloc() for the
-new sound device for sequencer, too.  No functional changes.
+Introduce a new helper, snd_device_alloc(), for allocating a struct
+device that is bound with the sound class.  It's a replacement of
+snd_device_initialize().
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/core/seq/seq_clientmgr.c | 16 +++++++++-------
- 1 file changed, 9 insertions(+), 7 deletions(-)
+ include/sound/core.h |  1 +
+ sound/core/init.c    | 31 +++++++++++++++++++++++++++++++
+ 2 files changed, 32 insertions(+)
 
-diff --git a/sound/core/seq/seq_clientmgr.c b/sound/core/seq/seq_clientmgr.c
-index e3f9ea67d019..42a705141050 100644
---- a/sound/core/seq/seq_clientmgr.c
-+++ b/sound/core/seq/seq_clientmgr.c
-@@ -2721,7 +2721,7 @@ static const struct file_operations snd_seq_f_ops =
- 	.compat_ioctl =	snd_seq_ioctl_compat,
- };
+diff --git a/include/sound/core.h b/include/sound/core.h
+index f6e0dd648b80..f986fcc5f18f 100644
+--- a/include/sound/core.h
++++ b/include/sound/core.h
+@@ -239,6 +239,7 @@ extern struct dentry *sound_debugfs_root;
  
--static struct device seq_dev;
-+static struct device *seq_dev;
+ void snd_request_card(int card);
  
- /* 
-  * register sequencer device 
-@@ -2730,15 +2730,17 @@ int __init snd_sequencer_device_init(void)
- {
- 	int err;
++int snd_device_alloc(struct device **dev_p, struct snd_card *card);
+ void snd_device_initialize(struct device *dev, struct snd_card *card);
  
--	snd_device_initialize(&seq_dev, NULL);
--	dev_set_name(&seq_dev, "seq");
-+	err = snd_device_alloc(&seq_dev, NULL);
-+	if (err < 0)
-+		return err;
-+	dev_set_name(seq_dev, "seq");
- 
- 	mutex_lock(&register_mutex);
- 	err = snd_register_device(SNDRV_DEVICE_TYPE_SEQUENCER, NULL, 0,
--				  &snd_seq_f_ops, NULL, &seq_dev);
-+				  &snd_seq_f_ops, NULL, seq_dev);
- 	mutex_unlock(&register_mutex);
- 	if (err < 0) {
--		put_device(&seq_dev);
-+		put_device(seq_dev);
- 		return err;
- 	}
- 	
-@@ -2752,6 +2754,6 @@ int __init snd_sequencer_device_init(void)
-  */
- void snd_sequencer_device_done(void)
- {
--	snd_unregister_device(&seq_dev);
--	put_device(&seq_dev);
-+	snd_unregister_device(seq_dev);
-+	put_device(seq_dev);
+ int snd_register_device(int type, struct snd_card *card, int dev,
+diff --git a/sound/core/init.c b/sound/core/init.c
+index baef2688d0cf..a4de9f00d90f 100644
+--- a/sound/core/init.c
++++ b/sound/core/init.c
+@@ -134,6 +134,37 @@ void snd_device_initialize(struct device *dev, struct snd_card *card)
  }
+ EXPORT_SYMBOL_GPL(snd_device_initialize);
+ 
++/* the default release callback set in snd_device_alloc() */
++static void default_release_alloc(struct device *dev)
++{
++	kfree(dev);
++}
++
++/**
++ * snd_device_alloc - Allocate and initialize struct device for sound devices
++ * @dev_p: pointer to store the allocated device
++ * @card: card to assign, optional
++ *
++ * For releasing the allocated device, call put_device().
++ */
++int snd_device_alloc(struct device **dev_p, struct snd_card *card)
++{
++	struct device *dev;
++
++	*dev_p = NULL;
++	dev = kzalloc(sizeof(*dev), GFP_KERNEL);
++	if (!dev)
++		return -ENOMEM;
++	device_initialize(dev);
++	if (card)
++		dev->parent = &card->card_dev;
++	dev->class = &sound_class;
++	dev->release = default_release_alloc;
++	*dev_p = dev;
++	return 0;
++}
++EXPORT_SYMBOL_GPL(snd_device_alloc);
++
+ static int snd_card_init(struct snd_card *card, struct device *parent,
+ 			 int idx, const char *xid, struct module *module,
+ 			 size_t extra_size);
 -- 
 2.35.3
 
