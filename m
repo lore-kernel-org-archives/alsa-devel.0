@@ -4,92 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BD8B6EE4993
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Aug 2023 11:12:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9D999EE4993
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Aug 2023 11:13:08 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3F9CF84C;
-	Mon, 21 Aug 2023 13:12:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3F9CF84C
+	by alsa0.perex.cz (Postfix) with ESMTPS id BEFF2827;
+	Mon, 21 Aug 2023 13:12:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BEFF2827
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1692616371;
-	bh=VrqFlab416UyFilTr7xvOVJTizg/+ZLODhtUuSiaxI0=;
+	s=default; t=1692616386;
+	bh=tE8D/TjXnSs4S/D2W7miJktvDJ4biX4N3O2EaWNuUGg=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=ZK/KMPEpvj/zSuJQcM8iOptLH20vet6ZsnyerZklu3fRCA+yuxMzHxo6JPAwsJktT
-	 MjxsedIyizjkI2NTpVwYTPBzYTjcKirr5PZxCgo83URP72Jd0qoxEBoLLcve4i67k7
-	 F0uviGJhewjRAMzRtjgvEqFLTakVsHHZ4sUZKRKw=
+	b=Nsa7Cmtdm6rldiJ+vYlG1adwgaE9GHalhidVomG0zDHS2FXHaRVQXeQeO5ole2sCr
+	 8Rse1FjfzZdmLxWfPkzebbJYcertEHM7L2uqv5nKjHA6WZji0oRpINUf9+pMbZVOE+
+	 /r3tC2unzny+Zu1wBSMl+lSTb8Od1FwdjEfOVzRM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5E47DF80564; Mon, 21 Aug 2023 13:11:10 +0200 (CEST)
+	id 53182F80589; Mon, 21 Aug 2023 13:11:13 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 767C4F80564;
-	Mon, 21 Aug 2023 13:11:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D57A9F8059F;
+	Mon, 21 Aug 2023 13:11:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id EBC18F801EB; Thu, 17 Aug 2023 12:14:12 +0200 (CEST)
+	id 73ADDF801EB; Thu, 17 Aug 2023 12:14:13 +0200 (CEST)
 Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 58D04F80272
-	for <alsa-devel@alsa-project.org>; Thu, 17 Aug 2023 12:14:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 58D04F80272
+	by alsa1.perex.cz (Postfix) with ESMTPS id 4D163F80254
+	for <alsa-devel@alsa-project.org>; Thu, 17 Aug 2023 12:14:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4D163F80254
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=mediatek.com header.i=@mediatek.com header.a=rsa-sha256
- header.s=dk header.b=Vq9s030D
-X-UUID: c59d9a8a3ce611eeb20a276fd37b9834-20230817
+ header.s=dk header.b=XpN5ma55
+X-UUID: c83adb903ce611eeb20a276fd37b9834-20230817
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=mediatek.com; s=dk;
 	h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From;
- bh=7ix/RW//7GffoQp3Vv9aausqbAXz17ROl2PGQ3yabyc=;
-	b=Vq9s030DNDtWqdsLKFMCH6/iY/mf/FqLb7sb6dHM8BLCHLc73hYcRH2XmlPsVWWDqRdIUR6EN1lUBTuKxywld+TiAYj79kMlZ5CX5grOxzey4IMfciAulHmJS9Re9f939L+NJbYKRMQ08oLt3+UPdSJl9wMDfxI7Se7R6VBvVw8=;
+ bh=d9vHoPGosuZuoq3F4AyLLb7jsUad9L0e24SqQtFR830=;
+	b=XpN5ma553cxW2cqHIghenMQ7290gPtxiearAvX3mwMEKvzg9kGfs2PcyBDpF0g9CAOxJoxYNYu57uuZ8dFV3Cin+NRq0LWXZoZjc+nuTdxswIw3RFJ8v6akKN+N4u1KDzmRuIflBeUUZNjAilX59p8SVFvSbc6sn0G77lXHam2Y=;
 X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.31,REQID:b915f302-0309-4e1e-bed3-db42aeaffd21,IP:0,U
-	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:95,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-	:release,TS:95
-X-CID-INFO: VERSION:1.1.31,REQID:b915f302-0309-4e1e-bed3-db42aeaffd21,IP:0,URL
-	:0,TC:0,Content:0,EDM:0,RT:0,SF:95,FILE:0,BULK:0,RULE:Spam_GS981B3D,ACTION
-	:quarantine,TS:95
-X-CID-META: VersionHash:0ad78a4,CLOUDID:2114f7c1-1e57-4345-9d31-31ad9818b39f,B
-	ulkID:2308171813564DXR1KHB,BulkQuantity:0,Recheck:0,SF:38|29|28|17|19|48,T
-	C:nil,Content:0,EDM:-3,IP:nil,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0
-	,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-O-INFO: VERSION:1.1.31,REQID:6731175c-dd07-4bb7-81f0-df2ad7ce1969,IP:0,U
+	RL:0,TC:0,Content:-25,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
+	N:release,TS:-25
+X-CID-META: VersionHash:0ad78a4,CLOUDID:3414f7c1-1e57-4345-9d31-31ad9818b39f,B
+	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+	RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
+	DKR:0,DKP:0,BRR:0,BRE:0
 X-CID-BVR: 0
 X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_SDM,TF_CID_SPAM_ASC,TF_CID_SPAM_FAS,
-	TF_CID_SPAM_FSD
-X-UUID: c59d9a8a3ce611eeb20a276fd37b9834-20230817
-Received: from mtkmbs14n2.mediatek.inc [(172.21.101.76)] by
+X-CID-FACTOR: TF_CID_SPAM_SNR
+X-UUID: c83adb903ce611eeb20a276fd37b9834-20230817
+Received: from mtkmbs13n2.mediatek.inc [(172.21.101.108)] by
  mailgw02.mediatek.com
 	(envelope-from <maso.huang@mediatek.com>)
 	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 516192113; Thu, 17 Aug 2023 18:13:55 +0800
+	with ESMTP id 867899799; Thu, 17 Aug 2023 18:13:59 +0800
 Received: from mtkmbs11n2.mediatek.inc (172.21.101.187) by
- mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
+ MTKMBS14N1.mediatek.inc (172.21.101.75) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Thu, 17 Aug 2023 18:13:53 +0800
+ 15.2.1118.26; Thu, 17 Aug 2023 18:13:58 +0800
 Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
  mtkmbs11n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Thu, 17 Aug 2023 18:13:53 +0800
+ 15.2.1118.26 via Frontend Transport; Thu, 17 Aug 2023 18:13:58 +0800
 From: Maso Huang <maso.huang@mediatek.com>
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, "Rob
- Herring" <robh+dt@kernel.org>, Krzysztof Kozlowski
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob
+ Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
 	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
 	Matthias Brugger <matthias.bgg@gmail.com>, AngeloGioacchino Del Regno
 	<angelogioacchino.delregno@collabora.com>, Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>, Trevor Wu <trevor.wu@mediatek.com>, "Arnd
- Bergmann" <arnd@arndb.de>, Mars Chen
+	Takashi Iwai <tiwai@suse.com>, Trevor Wu <trevor.wu@mediatek.com>, Arnd
+ Bergmann <arnd@arndb.de>, Mars Chen
 	<chenxiangrui@huaqin.corp-partner.google.com>, Allen-KH Cheng
 	<allen-kh.cheng@mediatek.com>, <alsa-devel@alsa-project.org>,
 	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
 	<linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>
 CC: Maso Huang <maso.huang@mediatek.com>
-Subject: [PATCH v4 1/6] ASoC: mediatek: mt7986: add common header
-Date: Thu, 17 Aug 2023 18:13:33 +0800
-Message-ID: <20230817101338.18782-2-maso.huang@mediatek.com>
+Subject: [PATCH v4 4/6] ASoC: mediatek: mt7986: add machine driver with wm8960
+Date: Thu, 17 Aug 2023 18:13:36 +0800
+Message-ID: <20230817101338.18782-5-maso.huang@mediatek.com>
 X-Mailer: git-send-email 2.18.0
 In-Reply-To: <20230817101338.18782-1-maso.huang@mediatek.com>
 References: <20230817101338.18782-1-maso.huang@mediatek.com>
@@ -101,14 +97,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: H7DSBV7EXNXA2FRCVVKAJFGXNVD74M2V
-X-Message-ID-Hash: H7DSBV7EXNXA2FRCVVKAJFGXNVD74M2V
-X-Mailman-Approved-At: Mon, 21 Aug 2023 11:11:01 +0000
+Message-ID-Hash: Y4RUX7ROUS6DMJWEPLKRDNGPFGSOR2IP
+X-Message-ID-Hash: Y4RUX7ROUS6DMJWEPLKRDNGPFGSOR2IP
+X-Mailman-Approved-At: Mon, 21 Aug 2023 11:11:02 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: <>
+Archived-At: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Y4RUX7ROUS6DMJWEPLKRDNGPFGSOR2IP/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -117,274 +114,249 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add header files for register definition and structure.
+Add support for mt7986 board with wm8960.
 
 Signed-off-by: Maso Huang <maso.huang@mediatek.com>
 Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 ---
- sound/soc/mediatek/mt7986/mt7986-afe-common.h |  49 +++++
- sound/soc/mediatek/mt7986/mt7986-reg.h        | 196 ++++++++++++++++++
- 2 files changed, 245 insertions(+)
- create mode 100644 sound/soc/mediatek/mt7986/mt7986-afe-common.h
- create mode 100644 sound/soc/mediatek/mt7986/mt7986-reg.h
+ sound/soc/mediatek/Kconfig                |  10 ++
+ sound/soc/mediatek/mt7986/Makefile        |   1 +
+ sound/soc/mediatek/mt7986/mt7986-wm8960.c | 196 ++++++++++++++++++++++
+ 3 files changed, 207 insertions(+)
+ create mode 100644 sound/soc/mediatek/mt7986/mt7986-wm8960.c
 
-diff --git a/sound/soc/mediatek/mt7986/mt7986-afe-common.h b/sound/soc/mediatek/mt7986/mt7986-afe-common.h
+diff --git a/sound/soc/mediatek/Kconfig b/sound/soc/mediatek/Kconfig
+index 558827755a8d..8d1bc8814486 100644
+--- a/sound/soc/mediatek/Kconfig
++++ b/sound/soc/mediatek/Kconfig
+@@ -64,6 +64,16 @@ config SND_SOC_MT7986
+ 	  Select Y if you have such device.
+ 	  If unsure select "N".
+ 
++config SND_SOC_MT7986_WM8960
++	tristate "ASoc Audio driver for MT7986 with WM8960 codec"
++	depends on SND_SOC_MT7986 && I2C
++	select SND_SOC_WM8960
++	help
++	  This adds support for ASoC machine driver for MediaTek MT7986
++	  boards with the WM8960 codecs.
++	  Select Y if you have such device.
++	  If unsure select "N".
++
+ config SND_SOC_MT8173
+ 	tristate "ASoC support for Mediatek MT8173 chip"
+ 	depends on ARCH_MEDIATEK
+diff --git a/sound/soc/mediatek/mt7986/Makefile b/sound/soc/mediatek/mt7986/Makefile
+index de0742a67cae..fc4c82559b29 100644
+--- a/sound/soc/mediatek/mt7986/Makefile
++++ b/sound/soc/mediatek/mt7986/Makefile
+@@ -6,3 +6,4 @@ snd-soc-mt7986-afe-objs := \
+ 	mt7986-dai-etdm.o
+ 
+ obj-$(CONFIG_SND_SOC_MT7986) += snd-soc-mt7986-afe.o
++obj-$(CONFIG_SND_SOC_MT7986_WM8960) += mt7986-wm8960.o
+diff --git a/sound/soc/mediatek/mt7986/mt7986-wm8960.c b/sound/soc/mediatek/mt7986/mt7986-wm8960.c
 new file mode 100644
-index 000000000000..fc3bb31e5167
+index 000000000000..364d13b1c426
 --- /dev/null
-+++ b/sound/soc/mediatek/mt7986/mt7986-afe-common.h
-@@ -0,0 +1,49 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * mt7986-afe-common.h  --  MediaTek 7986 audio driver definitions
-+ *
-+ * Copyright (c) 2023 MediaTek Inc.
-+ * Authors: Vic Wu <vic.wu@mediatek.com>
-+ *          Maso Huang <maso.huang@mediatek.com>
-+ */
-+
-+#ifndef _MT_7986_AFE_COMMON_H_
-+#define _MT_7986_AFE_COMMON_H_
-+
-+#include <sound/soc.h>
-+#include <linux/clk.h>
-+#include <linux/list.h>
-+#include <linux/regmap.h>
-+#include "../common/mtk-base-afe.h"
-+
-+enum {
-+	MT7986_MEMIF_DL1,
-+	MT7986_MEMIF_VUL12,
-+	MT7986_MEMIF_NUM,
-+	MT7986_DAI_ETDM = MT7986_MEMIF_NUM,
-+	MT7986_DAI_NUM,
-+};
-+
-+enum {
-+	MT7986_IRQ_0,
-+	MT7986_IRQ_1,
-+	MT7986_IRQ_2,
-+	MT7986_IRQ_NUM,
-+};
-+
-+struct mt7986_afe_private {
-+	struct clk_bulk_data *clks;
-+	int num_clks;
-+
-+	int pm_runtime_bypass_reg_ctl;
-+
-+	/* dai */
-+	void *dai_priv[MT7986_DAI_NUM];
-+};
-+
-+unsigned int mt7986_afe_rate_transform(struct device *dev,
-+				       unsigned int rate);
-+
-+/* dai register */
-+int mt7986_dai_etdm_register(struct mtk_base_afe *afe);
-+#endif
-diff --git a/sound/soc/mediatek/mt7986/mt7986-reg.h b/sound/soc/mediatek/mt7986/mt7986-reg.h
-new file mode 100644
-index 000000000000..c2b200743c3f
---- /dev/null
-+++ b/sound/soc/mediatek/mt7986/mt7986-reg.h
++++ b/sound/soc/mediatek/mt7986/mt7986-wm8960.c
 @@ -0,0 +1,196 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
++// SPDX-License-Identifier: GPL-2.0
 +/*
-+ * mt7986-reg.h  --  MediaTek 7986 audio driver reg definition
++ * mt7986-wm8960.c  --  MT7986-WM8960 ALSA SoC machine driver
 + *
 + * Copyright (c) 2023 MediaTek Inc.
 + * Authors: Vic Wu <vic.wu@mediatek.com>
 + *          Maso Huang <maso.huang@mediatek.com>
 + */
 +
-+#ifndef _MT7986_REG_H_
-+#define _MT7986_REG_H_
++#include <linux/module.h>
++#include <sound/soc.h>
 +
-+#define AUDIO_TOP_CON2                  0x0008
-+#define AUDIO_TOP_CON4                  0x0010
-+#define AUDIO_ENGEN_CON0                0x0014
-+#define AFE_IRQ_MCU_EN                  0x0100
-+#define AFE_IRQ_MCU_STATUS              0x0120
-+#define AFE_IRQ_MCU_CLR                 0x0128
-+#define AFE_IRQ0_MCU_CFG0               0x0140
-+#define AFE_IRQ0_MCU_CFG1               0x0144
-+#define AFE_IRQ1_MCU_CFG0               0x0148
-+#define AFE_IRQ1_MCU_CFG1               0x014c
-+#define AFE_IRQ2_MCU_CFG0               0x0150
-+#define AFE_IRQ2_MCU_CFG1               0x0154
-+#define ETDM_IN5_CON0                   0x13f0
-+#define ETDM_IN5_CON1                   0x13f4
-+#define ETDM_IN5_CON2                   0x13f8
-+#define ETDM_IN5_CON3                   0x13fc
-+#define ETDM_IN5_CON4                   0x1400
-+#define ETDM_OUT5_CON0                  0x1570
-+#define ETDM_OUT5_CON4                  0x1580
-+#define ETDM_OUT5_CON5                  0x1584
-+#define ETDM_4_7_COWORK_CON0            0x15e0
-+#define ETDM_4_7_COWORK_CON1            0x15e4
-+#define AFE_CONN018_1                   0x1b44
-+#define AFE_CONN018_4                   0x1b50
-+#define AFE_CONN019_1                   0x1b64
-+#define AFE_CONN019_4                   0x1b70
-+#define AFE_CONN124_1                   0x2884
-+#define AFE_CONN124_4                   0x2890
-+#define AFE_CONN125_1                   0x28a4
-+#define AFE_CONN125_4                   0x28b0
-+#define AFE_CONN_RS_0                   0x3920
-+#define AFE_CONN_RS_3                   0x392c
-+#define AFE_CONN_16BIT_0                0x3960
-+#define AFE_CONN_16BIT_3                0x396c
-+#define AFE_CONN_24BIT_0                0x3980
-+#define AFE_CONN_24BIT_3                0x398c
-+#define AFE_MEMIF_CON0                  0x3d98
-+#define AFE_MEMIF_RD_MON                0x3da0
-+#define AFE_MEMIF_WR_MON                0x3da4
-+#define AFE_DL0_BASE_MSB                0x3e40
-+#define AFE_DL0_BASE                    0x3e44
-+#define AFE_DL0_CUR_MSB                 0x3e48
-+#define AFE_DL0_CUR                     0x3e4c
-+#define AFE_DL0_END_MSB                 0x3e50
-+#define AFE_DL0_END                     0x3e54
-+#define AFE_DL0_RCH_MON                 0x3e58
-+#define AFE_DL0_LCH_MON                 0x3e5c
-+#define AFE_DL0_CON0                    0x3e60
-+#define AFE_VUL0_BASE_MSB               0x4220
-+#define AFE_VUL0_BASE                   0x4224
-+#define AFE_VUL0_CUR_MSB                0x4228
-+#define AFE_VUL0_CUR                    0x422c
-+#define AFE_VUL0_END_MSB                0x4230
-+#define AFE_VUL0_END                    0x4234
-+#define AFE_VUL0_CON0                   0x4238
++#include "mt7986-afe-common.h"
 +
-+#define AFE_MAX_REGISTER AFE_VUL0_CON0
-+#define AFE_IRQ_STATUS_BITS             0x7
-+#define AFE_IRQ_CNT_SHIFT               0
-+#define AFE_IRQ_CNT_MASK	        0xffffff
++struct mt7986_wm8960_priv {
++	struct device_node *platform_node;
++	struct device_node *codec_node;
++};
 +
-+/* AUDIO_TOP_CON2 */
-+#define CLK_OUT5_PDN                    BIT(14)
-+#define CLK_OUT5_PDN_MASK               BIT(14)
-+#define CLK_IN5_PDN                     BIT(7)
-+#define CLK_IN5_PDN_MASK                BIT(7)
++static const struct snd_soc_dapm_widget mt7986_wm8960_widgets[] = {
++	SND_SOC_DAPM_HP("Headphone", NULL),
++	SND_SOC_DAPM_MIC("AMIC", NULL),
++};
 +
-+/* AUDIO_TOP_CON4 */
-+#define PDN_APLL_TUNER2                 BIT(12)
-+#define PDN_APLL_TUNER2_MASK            BIT(12)
++static const struct snd_kcontrol_new mt7986_wm8960_controls[] = {
++	SOC_DAPM_PIN_SWITCH("Headphone"),
++	SOC_DAPM_PIN_SWITCH("AMIC"),
++};
 +
-+/* AUDIO_ENGEN_CON0 */
-+#define AUD_APLL2_EN                    BIT(3)
-+#define AUD_APLL2_EN_MASK               BIT(3)
-+#define AUD_26M_EN                      BIT(0)
-+#define AUD_26M_EN_MASK                 BIT(0)
++SND_SOC_DAILINK_DEFS(playback,
++	DAILINK_COMP_ARRAY(COMP_CPU("DL1")),
++	DAILINK_COMP_ARRAY(COMP_DUMMY()),
++	DAILINK_COMP_ARRAY(COMP_EMPTY()));
 +
-+/* AFE_DL0_CON0 */
-+#define DL0_ON_SFT                      28
-+#define DL0_ON_MASK                     0x1
-+#define DL0_ON_MASK_SFT                 BIT(28)
-+#define DL0_MINLEN_SFT                  20
-+#define DL0_MINLEN_MASK                 0xf
-+#define DL0_MINLEN_MASK_SFT             (0xf << 20)
-+#define DL0_MODE_SFT                    8
-+#define DL0_MODE_MASK                   0x1f
-+#define DL0_MODE_MASK_SFT               (0x1f << 8)
-+#define DL0_PBUF_SIZE_SFT               5
-+#define DL0_PBUF_SIZE_MASK              0x3
-+#define DL0_PBUF_SIZE_MASK_SFT          (0x3 << 5)
-+#define DL0_MONO_SFT                    4
-+#define DL0_MONO_MASK                   0x1
-+#define DL0_MONO_MASK_SFT               BIT(4)
-+#define DL0_HALIGN_SFT                  2
-+#define DL0_HALIGN_MASK                 0x1
-+#define DL0_HALIGN_MASK_SFT             BIT(2)
-+#define DL0_HD_MODE_SFT                 0
-+#define DL0_HD_MODE_MASK                0x3
-+#define DL0_HD_MODE_MASK_SFT            (0x3 << 0)
++SND_SOC_DAILINK_DEFS(capture,
++	DAILINK_COMP_ARRAY(COMP_CPU("UL1")),
++	DAILINK_COMP_ARRAY(COMP_DUMMY()),
++	DAILINK_COMP_ARRAY(COMP_EMPTY()));
 +
-+/* AFE_VUL0_CON0 */
-+#define VUL0_ON_SFT                     28
-+#define VUL0_ON_MASK                    0x1
-+#define VUL0_ON_MASK_SFT                BIT(28)
-+#define VUL0_MODE_SFT                   8
-+#define VUL0_MODE_MASK                  0x1f
-+#define VUL0_MODE_MASK_SFT              (0x1f << 8)
-+#define VUL0_MONO_SFT                   4
-+#define VUL0_MONO_MASK                  0x1
-+#define VUL0_MONO_MASK_SFT              BIT(4)
-+#define VUL0_HALIGN_SFT                 2
-+#define VUL0_HALIGN_MASK                0x1
-+#define VUL0_HALIGN_MASK_SFT            BIT(2)
-+#define VUL0_HD_MODE_SFT                0
-+#define VUL0_HD_MODE_MASK               0x3
-+#define VUL0_HD_MODE_MASK_SFT           (0x3 << 0)
++SND_SOC_DAILINK_DEFS(codec,
++	DAILINK_COMP_ARRAY(COMP_CPU("ETDM")),
++	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "wm8960-hifi")),
++	DAILINK_COMP_ARRAY(COMP_EMPTY()));
 +
-+/* AFE_IRQ_MCU_CON */
-+#define IRQ_MCU_MODE_SFT                4
-+#define IRQ_MCU_MODE_MASK               0x1f
-+#define IRQ_MCU_MODE_MASK_SFT           (0x1f << 4)
-+#define IRQ_MCU_ON_SFT                  0
-+#define IRQ_MCU_ON_MASK                 0x1
-+#define IRQ_MCU_ON_MASK_SFT             BIT(0)
-+#define IRQ0_MCU_CLR_SFT                0
-+#define IRQ0_MCU_CLR_MASK               0x1
-+#define IRQ0_MCU_CLR_MASK_SFT           BIT(0)
-+#define IRQ1_MCU_CLR_SFT                1
-+#define IRQ1_MCU_CLR_MASK               0x1
-+#define IRQ1_MCU_CLR_MASK_SFT           BIT(1)
-+#define IRQ2_MCU_CLR_SFT                2
-+#define IRQ2_MCU_CLR_MASK               0x1
-+#define IRQ2_MCU_CLR_MASK_SFT           BIT(2)
++static struct snd_soc_dai_link mt7986_wm8960_dai_links[] = {
++	/* FE */
++	{
++		.name = "wm8960-playback",
++		.stream_name = "wm8960-playback",
++		.trigger = {SND_SOC_DPCM_TRIGGER_POST,
++			    SND_SOC_DPCM_TRIGGER_POST},
++		.dynamic = 1,
++		.dpcm_playback = 1,
++		SND_SOC_DAILINK_REG(playback),
++	},
++	{
++		.name = "wm8960-capture",
++		.stream_name = "wm8960-capture",
++		.trigger = {SND_SOC_DPCM_TRIGGER_POST,
++			    SND_SOC_DPCM_TRIGGER_POST},
++		.dynamic = 1,
++		.dpcm_capture = 1,
++		SND_SOC_DAILINK_REG(capture),
++	},
++	/* BE */
++	{
++		.name = "wm8960-codec",
++		.no_pcm = 1,
++		.dai_fmt = SND_SOC_DAIFMT_I2S |
++			SND_SOC_DAIFMT_NB_NF |
++			SND_SOC_DAIFMT_CBS_CFS |
++			SND_SOC_DAIFMT_GATED,
++		.dpcm_playback = 1,
++		.dpcm_capture = 1,
++		SND_SOC_DAILINK_REG(codec),
++	},
++};
 +
-+/* ETDM_IN5_CON2 */
-+#define IN_CLK_SRC(x)                   ((x) << 10)
-+#define IN_CLK_SRC_SFT                  10
-+#define IN_CLK_SRC_MASK                 GENMASK(12, 10)
++static struct snd_soc_card mt7986_wm8960_card = {
++	.name = "mt7986-wm8960",
++	.owner = THIS_MODULE,
++	.dai_link = mt7986_wm8960_dai_links,
++	.num_links = ARRAY_SIZE(mt7986_wm8960_dai_links),
++	.controls = mt7986_wm8960_controls,
++	.num_controls = ARRAY_SIZE(mt7986_wm8960_controls),
++	.dapm_widgets = mt7986_wm8960_widgets,
++	.num_dapm_widgets = ARRAY_SIZE(mt7986_wm8960_widgets),
++};
 +
-+/* ETDM_IN5_CON3 */
-+#define IN_SEL_FS(x)                    ((x) << 26)
-+#define IN_SEL_FS_SFT                   26
-+#define IN_SEL_FS_MASK                  GENMASK(30, 26)
++static int mt7986_wm8960_machine_probe(struct platform_device *pdev)
++{
++	struct snd_soc_card *card = &mt7986_wm8960_card;
++	struct snd_soc_dai_link *dai_link;
++	struct device_node *platform, *codec;
++	struct mt7986_wm8960_priv *priv;
++	int ret, i;
 +
-+/* ETDM_IN5_CON4 */
-+#define IN_RELATCH(x)                   ((x) << 20)
-+#define IN_RELATCH_SFT                  20
-+#define IN_RELATCH_MASK                 GENMASK(24, 20)
-+#define IN_CLK_INV                      BIT(18)
-+#define IN_CLK_INV_MASK                 BIT(18)
++	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
++	if (!priv)
++		return -ENOMEM;
 +
-+/* ETDM_IN5_CON0 & ETDM_OUT5_CON0 */
-+#define RELATCH_SRC_MASK                GENMASK(30, 28)
-+#define ETDM_CH_NUM_MASK                GENMASK(27, 23)
-+#define ETDM_WRD_LEN_MASK               GENMASK(20, 16)
-+#define ETDM_BIT_LEN_MASK               GENMASK(15, 11)
-+#define ETDM_FMT_MASK                   GENMASK(8, 6)
-+#define ETDM_SYNC                       BIT(1)
-+#define ETDM_SYNC_MASK                  BIT(1)
-+#define ETDM_EN                         BIT(0)
-+#define ETDM_EN_MASK                    BIT(0)
++	platform = of_get_child_by_name(pdev->dev.of_node, "platform");
 +
-+/* ETDM_OUT5_CON4 */
-+#define OUT_RELATCH(x)                  ((x) << 24)
-+#define OUT_RELATCH_SFT                 24
-+#define OUT_RELATCH_MASK                GENMASK(28, 24)
-+#define OUT_CLK_SRC(x)                  ((x) << 6)
-+#define OUT_CLK_SRC_SFT                 6
-+#define OUT_CLK_SRC_MASK                GENMASK(8, 6)
-+#define OUT_SEL_FS(x)                   (x)
-+#define OUT_SEL_FS_SFT                  0
-+#define OUT_SEL_FS_MASK                 GENMASK(4, 0)
++	if (platform) {
++		priv->platform_node = of_parse_phandle(platform, "sound-dai", 0);
++		of_node_put(platform);
 +
-+/* ETDM_OUT5_CON5 */
-+#define ETDM_CLK_DIV                    BIT(12)
-+#define ETDM_CLK_DIV_MASK               BIT(12)
-+#define OUT_CLK_INV                     BIT(9)
-+#define OUT_CLK_INV_MASK                BIT(9)
++		if (!priv->platform_node) {
++			dev_err(&pdev->dev, "Failed to parse platform/sound-dai property\n");
++			return -EINVAL;
++		}
++	} else {
++		dev_err(&pdev->dev, "Property 'platform' missing or invalid\n");
++		return -EINVAL;
++	}
 +
-+/* ETDM_4_7_COWORK_CON0 */
-+#define OUT_SEL(x)                      ((x) << 12)
-+#define OUT_SEL_SFT                     12
-+#define OUT_SEL_MASK                    GENMASK(15, 12)
-+#endif
++	for_each_card_prelinks(card, i, dai_link) {
++		if (dai_link->platforms->name)
++			continue;
++		dai_link->platforms->of_node = priv->platform_node;
++	}
++
++	card->dev = &pdev->dev;
++
++	codec = of_get_child_by_name(pdev->dev.of_node, "codec");
++
++	if (codec) {
++		priv->codec_node = of_parse_phandle(codec, "sound-dai", 0);
++		of_node_put(codec);
++
++		if (!priv->codec_node) {
++			of_node_put(priv->platform_node);
++			dev_err(&pdev->dev, "Failed to parse codec/sound-dai property\n");
++			return -EINVAL;
++		}
++	} else {
++		of_node_put(priv->platform_node);
++		dev_err(&pdev->dev, "Property 'codec' missing or invalid\n");
++		return -EINVAL;
++	}
++
++	for_each_card_prelinks(card, i, dai_link) {
++		if (dai_link->codecs->name)
++			continue;
++		dai_link->codecs->of_node = priv->codec_node;
++	}
++
++	ret = snd_soc_of_parse_audio_routing(card, "audio-routing");
++	if (ret) {
++		dev_err(&pdev->dev, "Failed to parse audio-routing: %d\n", ret);
++		goto err_of_node_put;
++	}
++
++	ret = devm_snd_soc_register_card(&pdev->dev, card);
++	if (ret) {
++		dev_err(&pdev->dev, "%s snd_soc_register_card fail: %d\n", __func__, ret);
++		goto err_of_node_put;
++	}
++
++err_of_node_put:
++	of_node_put(priv->codec_node);
++	of_node_put(priv->platform_node);
++	return ret;
++}
++
++static void mt7986_wm8960_machine_remove(struct platform_device *pdev)
++{
++	struct snd_soc_card *card = platform_get_drvdata(pdev);
++	struct mt7986_wm8960_priv *priv = snd_soc_card_get_drvdata(card);
++
++	of_node_put(priv->codec_node);
++	of_node_put(priv->platform_node);
++}
++
++static const struct of_device_id mt7986_wm8960_machine_dt_match[] = {
++	{.compatible = "mediatek,mt7986-wm8960-sound"},
++	{ /* sentinel */ }
++};
++MODULE_DEVICE_TABLE(of, mt7986_wm8960_machine_dt_match);
++
++static struct platform_driver mt7986_wm8960_machine = {
++	.driver = {
++		.name = "mt7986-wm8960",
++		.of_match_table = mt7986_wm8960_machine_dt_match,
++	},
++	.probe = mt7986_wm8960_machine_probe,
++	.remove_new = mt7986_wm8960_machine_remove,
++};
++
++module_platform_driver(mt7986_wm8960_machine);
++
++/* Module information */
++MODULE_DESCRIPTION("MT7986 WM8960 ALSA SoC machine driver");
++MODULE_AUTHOR("Vic Wu <vic.wu@mediatek.com>");
++MODULE_LICENSE("GPL");
++MODULE_ALIAS("mt7986 wm8960 soc card");
 -- 
 2.18.0
 
