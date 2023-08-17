@@ -4,78 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1AA9FC678DC
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Aug 2023 22:39:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9D536C678DC
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Aug 2023 22:39:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1CEAA84C;
-	Fri, 18 Aug 2023 00:38:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1CEAA84C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9DCAADF2;
+	Fri, 18 Aug 2023 00:38:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9DCAADF2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1692311944;
-	bh=rIHX9Z5/J85miF4p/AYvLMNc6o8isoWh9x2Q3al4j7I=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=qthCsjlKwnKJHC2N6OuRFYVCveRGu1jh43rDcEUo5JgWkeWG1FohvVT20e4ms5SuZ
-	 HN/R5obRJHPsSiCv5mQZBBFQv4Vk+gHFEKzUCnYr3pvD2Dsi+Zo0v6Mlm9McrUAcwn
-	 aYMVC5jf62dM4SUaC61lmbBA1wIh+HN3vSr0t3i4=
+	s=default; t=1692311956;
+	bh=tOGckeY7O8J6GlVuUCz6yWek4KQlNAl8jPLek4LXQ0U=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=s3o0NKGAbJMmdlxiCURAubeKjlg0jXyZlVD+Oswfz65QayWxzwDifVcC4qLrjRNaz
+	 LsJ/jQ5A4VAzbnsk0e5XtGgWoGZtz/pIm06N9BHC37ESbSSgvf0i/UIhXvxyTWTvE7
+	 iW7aDP/UlzkVBoNd8+1iR1qd/MGY8HKTctIWEw5I=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5197AF805AE; Fri, 18 Aug 2023 00:36:49 +0200 (CEST)
+	id 1853CF805B4; Fri, 18 Aug 2023 00:36:51 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 36786F8058C;
-	Fri, 18 Aug 2023 00:36:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 61E1AF805B4;
+	Fri, 18 Aug 2023 00:36:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 39B2BF80551; Fri, 18 Aug 2023 00:36:38 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	id 2D7CEF80568; Fri, 18 Aug 2023 00:36:42 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id DBFD3F800D1
-	for <alsa-devel@alsa-project.org>; Fri, 18 Aug 2023 00:36:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DBFD3F800D1
+	by alsa1.perex.cz (Postfix) with ESMTPS id A1634F8016D
+	for <alsa-devel@alsa-project.org>; Fri, 18 Aug 2023 00:36:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A1634F8016D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=Rkj09KBO
+ header.s=k20201202 header.b=ixjjApHp
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 88DC061EA5;
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 78B2C64030;
+	Thu, 17 Aug 2023 22:36:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 734CEC433C9;
 	Thu, 17 Aug 2023 22:36:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB8A5C433C7;
-	Thu, 17 Aug 2023 22:36:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1692311793;
-	bh=rIHX9Z5/J85miF4p/AYvLMNc6o8isoWh9x2Q3al4j7I=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=Rkj09KBOa+ce/+CZFcr/dCzbkm4OQz2bV/8X/ItKrANDa9txkJnkY5LbiQJDMDHrH
-	 xZiuTDcIe9MhVaO2GHkyomFe//nwcrJ8iiIrs0MneBIGEE644ZISiNMMNaKF2fHzvz
-	 evyNV/+TpO5MtyRX0WLiqKKQf+ZGZjtQanS7lzcIuwLJqtMmfqXr10RJnyd/tCP6yx
-	 Eya06wyUieVxJHBQwueHXVVCL51AZUUvsUKBi4Xwi4sHRleCTsCMh6c1SgSgkLpjxc
-	 mIVLvQWnb0YWanoytMuKdhU915C5rKzYTi93GIyEaYwusFA8BFelcE0mAGXGFrVN2r
-	 Fvk+snX9TVXjg==
+	s=k20201202; t=1692311796;
+	bh=tOGckeY7O8J6GlVuUCz6yWek4KQlNAl8jPLek4LXQ0U=;
+	h=From:To:In-Reply-To:References:Subject:Date:From;
+	b=ixjjApHpPipdtj0u9dHwmmYsUpfpqVxAkquQ6+aGs464Wm5DY+EjZ6eQ2ipAISa38
+	 lM8u/+z2G4gnXHvbbO5AtHP3jsBFAXaqVJjrVFzWxsrA8vUnXhA7l5mEngiQKF0X4M
+	 8kbEzXDBWs/DB3kW0IWoO5+HliFfySbiRWbdzDkqGBCeCs/GOGf520Cgxbyl9ZWUCC
+	 BkaFt0OW7kd1wqm0YuY9uKAQrrY/Gdu2UQsbG4l+GXnz6JfyEmsGn0EJ5iwx6sUJ+I
+	 LW7DrA3XwZYOaQRWJmfzEGHHp7qfsUwrGizgNtTySyPSVGF7GBz7u/VecwcCnON5iJ
+	 KYSstiWDDvakA==
 From: Mark Brown <broonie@kernel.org>
-To: robh+dt@kernel.org, lgirdwood@gmail.com, perex@perex.cz,
- pierre-louis.bossart@linux.intel.com, Shenghao Ding <shenghao-ding@ti.com>
-Cc: kevin-lu@ti.com, 13916275206@139.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, liam.r.girdwood@intel.com,
- mengdong.lin@intel.com, baojun.xu@ti.com, thomas.gfeller@q-drop.com,
- peeyush@ti.com, navada@ti.com, tiwai@suse.de, gentuser@gmail.com
-In-Reply-To: <20230817093257.951-1-shenghao-ding@ti.com>
-References: <20230817093257.951-1-shenghao-ding@ti.com>
-Subject: Re: [PATCH v1] ASoC: tas2781: fixed register access error when
- switching to other chips
-Message-Id: <169231178941.153247.7234904514917786817.b4-ty@kernel.org>
-Date: Thu, 17 Aug 2023 23:36:29 +0100
+To: Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ Trevor Wu <trevor.wu@mediatek.com>, Arnd Bergmann <arnd@arndb.de>,
+ Mars Chen <chenxiangrui@huaqin.corp-partner.google.com>,
+ Allen-KH Cheng <allen-kh.cheng@mediatek.com>, alsa-devel@alsa-project.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
+ Maso Huang <maso.huang@mediatek.com>
+In-Reply-To: <20230817101338.18782-1-maso.huang@mediatek.com>
+References: <20230817101338.18782-1-maso.huang@mediatek.com>
+Subject: Re: [PATCH v4 0/6] ASoC: mediatek: Add support for MT7986 SoC
+Message-Id: <169231179319.153247.9684848124345959803.b4-ty@kernel.org>
+Date: Thu, 17 Aug 2023 23:36:33 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-034f2
-Message-ID-Hash: VOYIMEH5ICQY3KSMT2YUIWYV66SEIJDR
-X-Message-ID-Hash: VOYIMEH5ICQY3KSMT2YUIWYV66SEIJDR
+Message-ID-Hash: R4ROSA2BVU6W44MGLNYSJW64WDKS5YJD
+X-Message-ID-Hash: R4ROSA2BVU6W44MGLNYSJW64WDKS5YJD
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -88,7 +94,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VOYIMEH5ICQY3KSMT2YUIWYV66SEIJDR/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/R4ROSA2BVU6W44MGLNYSJW64WDKS5YJD/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -97,11 +103,17 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, 17 Aug 2023 17:32:56 +0800, Shenghao Ding wrote:
-> fixed register access error when switching to other tas2781 -- refresh the page
-> inside regmap on the switched tas2781
+On Thu, 17 Aug 2023 18:13:32 +0800, Maso Huang wrote:
+> Changes in v4:
+>  - fix typo of authors and copyright
+>  - refine with bitfield helper for readability [2/6]
+>  - refine with human readable error message [3/6]
+>  - use "mt7986-wm8960-sound" as compatible string [4/6] [5/6]
+>  - refine properties based on reviewer's suggestions [5/6]
+>  - remove assigned-clocks and assigned-clocks-parents [6/6]
+>  - constrain clocks per variants [6/6]
 > 
-> 
+> [...]
 
 Applied to
 
@@ -109,8 +121,18 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: tas2781: fixed register access error when switching to other chips
-      commit: 3d521f9f3663ba7a22e56d339c6632f0ca787371
+[1/6] ASoC: mediatek: mt7986: add common header
+      commit: c4c3c32d088d5a432d3c40efef80d1b64743b6bc
+[2/6] ASoC: mediatek: mt7986: support etdm in platform driver
+      commit: 9f8df795ae8daa0051fe15b27c7a3b3842d3d91f
+[3/6] ASoC: mediatek: mt7986: add platform driver
+      commit: 8d0d4884ba2cdabc823dc263c987bb22aae5fa5e
+[4/6] ASoC: mediatek: mt7986: add machine driver with wm8960
+      commit: 9873277fc2ea6e517602c29cb336bb1e43ff528c
+[5/6] ASoC: dt-bindings: mediatek,mt7986-wm8960: add mt7986-wm8960 document
+      commit: af835f0b49777476528be5a913e5c00fc3789f41
+[6/6] ASoC: dt-bindings: mediatek,mt7986-afe: add audio afe document
+      commit: b41efc224a5c859ce982ab73e8a05ecac73d4752
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
