@@ -4,94 +4,101 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7BDBC2FC0E
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Aug 2023 11:29:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 83A72C2FC04
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Aug 2023 13:31:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5D3D693A;
-	Thu, 17 Aug 2023 13:28:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5D3D693A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 90AFB82A;
+	Thu, 17 Aug 2023 15:30:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 90AFB82A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1692271770;
-	bh=qCTt4Gm+MtH9A7qs0gHaDyb83HcHIXqtnTJC09bzAiI=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=P6CF3KaHK1OhyuQbmQCBtMp5xrn08Rrk50vOIhi7syXeEMOmU3uZitxYj82xw4Co+
-	 qxLi32f7YysBImzXws0wEY0tiPHI15BO0Z+BD1KzygY1UO959AT5bRUvBODoZAb2v4
-	 QnA61xHc37MVOtQ5jFikzkh2CzXNR/VXg/fc+l/A=
+	s=default; t=1692279099;
+	bh=wkahDJFtjCX8JvPvOIF6SkhgH0jBG0sZle3XvSdu+C8=;
+	h=From:Subject:Date:To:Cc:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=Sl+w8sdLP2QkbHcbPEt6NDZSyVv4B0ZNMJiEz2ehCNXsK+N+f0wuD9mnINElcjOVk
+	 5opuglj/zPWCznawdHKKTTv3SMNimEeD96KOZNvkFEekiBI7PRTc02H2wtAL4VU3jX
+	 MAnULtbHc+u6JczFTiz2X0CaiYIwed4sZf6XThkY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E3F5AF8058C; Thu, 17 Aug 2023 13:27:37 +0200 (CEST)
+	id 8DCDCF80290; Thu, 17 Aug 2023 15:30:44 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4B9E7F8057E;
-	Thu, 17 Aug 2023 13:27:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7C423F80254;
+	Thu, 17 Aug 2023 15:30:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 62EA2F80563; Thu, 17 Aug 2023 13:27:33 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id E2DB7F80272; Thu, 17 Aug 2023 15:30:36 +0200 (CEST)
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com
+ [IPv6:2a00:1450:4864:20::230])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 25706F80290
-	for <alsa-devel@alsa-project.org>; Thu, 17 Aug 2023 13:27:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 25706F80290
+	by alsa1.perex.cz (Postfix) with ESMTPS id C0E51F800D1
+	for <alsa-devel@alsa-project.org>; Thu, 17 Aug 2023 15:30:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C0E51F800D1
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=Ot7ahKT6
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-	by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id
- 37H705EP017258;
-	Thu, 17 Aug 2023 06:27:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	PODMain02222019; bh=ozRr7lC9Q8WzRyOn8/1zIRanm0Iqd9bp6Cg1X2A42LE=; b=
-	Ot7ahKT6bEMHr6fSF6cVhyXyaDnPM3YzBx0lmJaOK3qdGBMiE/IvNRctLtTIxopo
-	aKKug1r+4hLMuYOrqwceb4V31zRcMnzqsMFuFSem2H6S1/jMX/4se6P6Hx5LV+IM
-	wdFZKVcb2nCYB5eYGAf5RKyBwoenOIvlqpoY/RhA74baU/S2uNAj2D9eXvt9fk7C
-	aHEqlD71xr63V4ViC26nTLJJNHcNyHdryxllMAnbR3sGGmw0GRiLDGUZ4frVfH2v
-	Y/M1+ksHRFmWFLUyN+uf2zbpsH+48yo+o/kq+bjwUQtV8Y6uhi12KIMauvODmKhR
-	A4+9vDwbtVT+VG5wwh6x2w==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3se8kqxa12-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 17 Aug 2023 06:27:17 -0500 (CDT)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Thu, 17 Aug
- 2023 12:27:15 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.30 via Frontend
- Transport; Thu, 17 Aug 2023 12:27:15 +0100
-Received: from EDIN4L06LR3.ad.cirrus.com (EDIN4L06LR3.ad.cirrus.com
- [198.61.65.68])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 4E847475;
-	Thu, 17 Aug 2023 11:27:15 +0000 (UTC)
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
-To: <broonie@kernel.org>
-CC: <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
-        <patches@opensource.cirrus.com>,
-        Maciej Strozek
-	<mstrozek@opensource.cirrus.com>,
-        Richard Fitzgerald
-	<rf@opensource.cirrus.com>
-Subject: [PATCH v2 1/2] ASoC: cs35l56: Read firmware uuid from a device
- property instead of _SUB
-Date: Thu, 17 Aug 2023 12:27:11 +0100
-Message-ID: <20230817112712.16637-2-rf@opensource.cirrus.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20230817112712.16637-1-rf@opensource.cirrus.com>
-References: <20230817112712.16637-1-rf@opensource.cirrus.com>
+ unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
+ header.s=google header.b=RrRrafPK
+Received: by mail-lj1-x230.google.com with SMTP id
+ 38308e7fff4ca-2b9d07a8d84so122903571fa.3
+        for <alsa-devel@alsa-project.org>;
+ Thu, 17 Aug 2023 06:30:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692279027; x=1692883827;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=VqPL20+ASkIf7J9Js8wWxOYppVj2GzrpsRc4VB1aKQE=;
+        b=RrRrafPKFPRnnWpY5579CSi/gEwFLYijlwHtFn/3Pvspbu2wqZuMAqsQePXg1M0NUJ
+         NIWv9D8Sn03gyl4rAOLGaiDLUuJfIPPX2haLkGY17j1gIYOxVzlDxJ3N9lc90HKdsCOy
+         p3eGJitNr+dDe/zdr+zECppM2xYSP/ZPdF59K0hkebv81aXZVav70VcX78xXJsZmhG6M
+         u46feMInhQFDCUbZLXvw6T99jHDkSyMsK4tTPJcZP9qWZHkgmMK3iTkwRBwFxn30+bq6
+         F9LddGBr1DxqzamQHsCE6qpC/HPkdHHKx2Fi49IxrGP1HlmQzcAU2204Kfvm1oF8NtGq
+         h2Cg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692279027; x=1692883827;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=VqPL20+ASkIf7J9Js8wWxOYppVj2GzrpsRc4VB1aKQE=;
+        b=kZnF8w5FCDLgeazhJxPu1ZgV1QiTZ2pOTL5/342djKy22AwCAK0JtOz+trcJ7AM5Q8
+         qQfke+DQZGZ1FQSfgaPXkkFDnKDf7rlQ24XjB1/i37vdLuwev7WRhpADjGdu/3xuAsy3
+         sTcIqbCSZ8RPeF2z7G1aGAuFuyN7oY4ti/0ESAZNMKFfyV2C07rNy/zxxnF54C4T5/4J
+         4g2k64s9YLubzEwDfhbu33IwSBYLvcNEkDrdqdTV9Jcr8tD/LgHPEiak1lfoKWupPdhb
+         xQnaJTBQCNqv7WrbjOB083OERi4DFmi+wepaUST38qodcPOchsCShIpiZtjsMxPagGro
+         4FDg==
+X-Gm-Message-State: AOJu0YyoMqFRcm3lHOcIeXMFsJLW5VSwOpTgUvdTONEZF1XmsIPxlIhW
+	RUGD8r1NxNYH6bgmNqbzeJmHmw==
+X-Google-Smtp-Source: 
+ AGHT+IGo4IJtNuN18JCObOYUV8FNAZFh0tysAmxt8dB74j8o6m0zJpESP5MgoF12/mjNJgZJJe6JZw==
+X-Received: by 2002:a2e:9e52:0:b0:2ba:5ca7:2311 with SMTP id
+ g18-20020a2e9e52000000b002ba5ca72311mr3886327ljk.41.1692279027459;
+        Thu, 17 Aug 2023 06:30:27 -0700 (PDT)
+Received: from [127.0.1.1] ([85.235.12.238])
+        by smtp.gmail.com with ESMTPSA id
+ z22-20020a05651c023600b002b9de06f119sm3941689ljn.67.2023.08.17.06.30.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Aug 2023 06:30:26 -0700 (PDT)
+From: Linus Walleij <linus.walleij@linaro.org>
+Subject: [PATCH 0/5] ASoC: Convert remaining Realtek codecs to GPIO
+ descriptors
+Date: Thu, 17 Aug 2023 15:30:14 +0200
+Message-Id: <20230817-descriptors-asoc-rt-v1-0-434f5f177cee@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: itVSdHVMW1jrOK1uFP4BIj9_tGxEAmxb
-X-Proofpoint-GUID: itVSdHVMW1jrOK1uFP4BIj9_tGxEAmxb
-X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: LPZNO5XIYX4ZJGNRJGNZ4QFELZ6AXMX5
-X-Message-ID-Hash: LPZNO5XIYX4ZJGNRJGNZ4QFELZ6AXMX5
-X-MailFrom: prvs=3593b560b6=rf@opensource.cirrus.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAOYg3mQC/x3MMQqAMAxA0atIZgO1FateRRykjZrFSiIiFO9uc
+ XzD/xmUhElhrDII3aycjoKmriDsy7ERciwGa6wzfeMxkgbh80qiuGgKKBcOwXg7uDY630EpT6G
+ Vn/86ze/7AXPCRUZlAAAA
+To: Oder Chiou <oder_chiou@realtek.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ Linus Walleij <linus.walleij@linaro.org>
+X-Mailer: b4 0.12.3
+Message-ID-Hash: ZHGGHYPY6VS4TWU67WPTWZI4FM7L3NNT
+X-Message-ID-Hash: ZHGGHYPY6VS4TWU67WPTWZI4FM7L3NNT
+X-MailFrom: linus.walleij@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -103,7 +110,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LPZNO5XIYX4ZJGNRJGNZ4QFELZ6AXMX5/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZHGGHYPY6VS4TWU67WPTWZI4FM7L3NNT/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -112,106 +119,41 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Maciej Strozek <mstrozek@opensource.cirrus.com>
+After dropping unused headers a few Realtek devices
+actually using the GPIO descriptors remain.
 
-Use a device property "cirrus,firmware-uid" to get the unique firmware
-identifier instead of using ACPI _SUB. There aren't any products that use
-_SUB.
+Converting them to use optional GPIO descriptors is
+pretty straight-forward.
 
-There will not usually be a _SUB in Soundwire nodes. The ACPI can use a
-_DSD section for custom properties.
-
-There is also a need to support instantiating this driver using software
-nodes. This is for systems where the CS35L56 is a back-end device and the
-ACPI refers only to the front-end audio device - there will not be any ACPI
-references to CS35L56.
-
-Fixes: e49611252900 ("ASoC: cs35l56: Add driver for Cirrus Logic CS35L56")
-Signed-off-by: Maciej Strozek <mstrozek@opensource.cirrus.com>
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 ---
-Changes since V1:
-- Rebase to apply on v6.4 and v6.5
-- Use devm_kstrdup() instead of kstrdup() and free()
+Linus Walleij (5):
+      ASoC: rt5640: Convert to just use GPIO descriptors
+      ASoC: rt5665: Convert to use GPIO descriptors
+      ASoC: rt5668: Convert to use GPIO descriptors
+      ASoC: rt5682: Convert to use GPIO descriptors
+      ASoC: rt5682s: Convert to use GPIO descriptors
 
-To apply on v6.6 a 1-line change is needed:
-
-static int cs35l56_get_firmware_uid(struct cs35l56_private *cs35l56)
-{
--	struct device *dev = cs35l56->dev;
-+	struct device *dev = cs35l56->base.dev;
+ include/sound/rt5665.h        |  2 --
+ include/sound/rt5668.h        |  3 ---
+ include/sound/rt5682.h        |  3 ---
+ include/sound/rt5682s.h       |  3 ---
+ sound/soc/codecs/rt5640.c     | 55 ++++++++++++-------------------------------
+ sound/soc/codecs/rt5640.h     |  2 +-
+ sound/soc/codecs/rt5665.c     | 17 +++++++------
+ sound/soc/codecs/rt5668.c     | 17 +++++++------
+ sound/soc/codecs/rt5682-i2c.c | 11 ++++-----
+ sound/soc/codecs/rt5682-sdw.c |  4 ++++
+ sound/soc/codecs/rt5682.c     | 20 ++++++++++++----
+ sound/soc/codecs/rt5682.h     |  3 +++
+ sound/soc/codecs/rt5682s.c    | 16 ++++++-------
+ sound/soc/codecs/rt5682s.h    |  2 ++
+ 14 files changed, 67 insertions(+), 91 deletions(-)
 ---
- sound/soc/codecs/cs35l56.c | 31 ++++++++++++-------------------
- 1 file changed, 12 insertions(+), 19 deletions(-)
+base-commit: c5b06b35a73b80f1af931c2371de084fa77b5c23
+change-id: 20230817-descriptors-asoc-rt-9c072934d376
 
-diff --git a/sound/soc/codecs/cs35l56.c b/sound/soc/codecs/cs35l56.c
-index c03f9d3c9a13..fd06b9f9d496 100644
---- a/sound/soc/codecs/cs35l56.c
-+++ b/sound/soc/codecs/cs35l56.c
-@@ -5,7 +5,6 @@
- // Copyright (C) 2023 Cirrus Logic, Inc. and
- //                    Cirrus Logic International Semiconductor Ltd.
- 
--#include <linux/acpi.h>
- #include <linux/completion.h>
- #include <linux/debugfs.h>
- #include <linux/delay.h>
-@@ -1354,26 +1353,22 @@ static int cs35l56_dsp_init(struct cs35l56_private *cs35l56)
- 	return 0;
- }
- 
--static int cs35l56_acpi_get_name(struct cs35l56_private *cs35l56)
-+static int cs35l56_get_firmware_uid(struct cs35l56_private *cs35l56)
- {
--	acpi_handle handle = ACPI_HANDLE(cs35l56->dev);
--	const char *sub;
-+	struct device *dev = cs35l56->dev;
-+	const char *prop;
-+	int ret;
- 
--	/* If there is no ACPI_HANDLE, there is no ACPI for this system, return 0 */
--	if (!handle)
-+	ret = device_property_read_string(dev, "cirrus,firmware-uid", &prop);
-+	/* If bad sw node property, return 0 and fallback to legacy firmware path */
-+	if (ret < 0)
- 		return 0;
- 
--	sub = acpi_get_subsystem_id(handle);
--	if (IS_ERR(sub)) {
--		/* If bad ACPI, return 0 and fallback to legacy firmware path, otherwise fail */
--		if (PTR_ERR(sub) == -ENODATA)
--			return 0;
--		else
--			return PTR_ERR(sub);
--	}
-+	cs35l56->dsp.system_name = devm_kstrdup(dev, prop, GFP_KERNEL);
-+	if (cs35l56->dsp.system_name == NULL)
-+		return -ENOMEM;
- 
--	cs35l56->dsp.system_name = sub;
--	dev_dbg(cs35l56->dev, "Subsystem ID: %s\n", cs35l56->dsp.system_name);
-+	dev_dbg(dev, "Firmware UID: %s\n", cs35l56->dsp.system_name);
- 
- 	return 0;
- }
-@@ -1417,7 +1412,7 @@ int cs35l56_common_probe(struct cs35l56_private *cs35l56)
- 		gpiod_set_value_cansleep(cs35l56->reset_gpio, 1);
- 	}
- 
--	ret = cs35l56_acpi_get_name(cs35l56);
-+	ret = cs35l56_get_firmware_uid(cs35l56);
- 	if (ret != 0)
- 		goto err;
- 
-@@ -1604,8 +1599,6 @@ void cs35l56_remove(struct cs35l56_private *cs35l56)
- 
- 	regcache_cache_only(cs35l56->regmap, true);
- 
--	kfree(cs35l56->dsp.system_name);
--
- 	gpiod_set_value_cansleep(cs35l56->reset_gpio, 0);
- 	regulator_bulk_disable(ARRAY_SIZE(cs35l56->supplies), cs35l56->supplies);
- }
+Best regards,
 -- 
-2.30.2
+Linus Walleij <linus.walleij@linaro.org>
 
