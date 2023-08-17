@@ -4,58 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 83078EB64DD
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Aug 2023 11:29:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7E737C2FC0E
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Aug 2023 11:29:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C3FC384C;
-	Thu, 17 Aug 2023 13:28:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C3FC384C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 45E8F82C;
+	Thu, 17 Aug 2023 13:28:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 45E8F82C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1692271742;
-	bh=BiOMTi+/qi7AvjpXGX5btRsBO+69PiV9CdFl2M2fm04=;
-	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=O2j6lKfrv79Dfxm/lNZSI0233gm5r8JsY/OIcLnDzwW/uQmax1NHBd6ttFckfc5rq
-	 8TjFan8OOiGZ4hcIAiN23fmIGWTViB6kGBbE8Adjbn0HkpzyxcmfNJDEl9OWJI9j+Q
-	 EBog8mvQNokoQMvr2Xm19PZNb9xQxc76DsbMe9uk=
+	s=default; t=1692271755;
+	bh=U3Brb+GoO+zoOuqQCJ9gYqATB4nSIKAEzTA3lYioYwA=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=E75H8GYhuuIL/naCnH0HWDsuA+rtRSMWzGPX1JvoefUev8IJDz6TBEf6vDv8fkPYG
+	 +l6zDiUaoChKfy+mP3329lB2fpgpihfGTayR6QjK2lPlrKyUxE8vdnlD3gV/sxUm0A
+	 JyMkSYTW/bUoNvwhGpBa7h74qF0DMN8nuh4AKTPE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7AA22F80567; Thu, 17 Aug 2023 13:27:32 +0200 (CEST)
+	id 6ED2FF80571; Thu, 17 Aug 2023 13:27:34 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E5805F80558;
-	Thu, 17 Aug 2023 13:27:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 09EF4F80570;
+	Thu, 17 Aug 2023 13:27:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BA3D3F80553; Thu, 17 Aug 2023 13:27:25 +0200 (CEST)
+	id 67464F80551; Thu, 17 Aug 2023 13:27:28 +0200 (CEST)
 Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 037BEF80254
-	for <alsa-devel@alsa-project.org>; Thu, 17 Aug 2023 13:27:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 037BEF80254
+	by alsa1.perex.cz (Postfix) with ESMTPS id B9B4DF8016A
+	for <alsa-devel@alsa-project.org>; Thu, 17 Aug 2023 13:27:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B9B4DF8016A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=jH+jOS65
+ header.s=PODMain02222019 header.b=pqn0Gz21
 Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
 	by mx0b-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id
- 37HBMpDl018403;
-	Thu, 17 Aug 2023 06:27:16 -0500
+ 37HBMpDm018403;
+	Thu, 17 Aug 2023 06:27:17 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	from:to:cc:subject:date:message-id:mime-version
-	:content-transfer-encoding:content-type; s=PODMain02222019; bh=7
-	1hP1qFBBQrsCWx8Ta62/z+hJB3mbnlDqwvJiEZuCyM=; b=jH+jOS65Dgle8IVg3
-	OByfuXG/r2E4V4evtIxRTPXZo6JMseAIPCtaFsdoXFMUkQ0ltSyg5nl8mtpLPdeG
-	zsO9ViNpFw/QXIDExmYZX9QdQ5/AAqZdKV3kZ2+H4+RCT9s9zGDfd35UqsPOgmtT
-	dj3KtCvs7KHcrHIGhFb0Hv4PVyZfMlbksHSyEQV+zRpuiq0QCIjhksZNv/KK4YJn
-	QsmfwXRc8nMGNKGbD7VgAD4072/+GGGZKVlcum3tzlzOMMulhxzDdG9TotR91e9z
-	hBZoJaduE3krW7GYh53CNxNlCLrPjDNl1obbRMP8IcSmeSAutrftU/Ie5JK4gspz
-	VYUhQ==
+	from:to:cc:subject:date:message-id:in-reply-to:references
+	:mime-version:content-transfer-encoding:content-type; s=
+	PODMain02222019; bh=cJhm+19aqjGyHFplA6rx/pJkqmR6MgcxkXDRw5sXF6s=; b=
+	pqn0Gz21TSI4bhAxzanvx9RQO+GsfPoAj0GhXy+wMWx2+65oL1mhrx0m1wepdVJQ
+	zawTCzsdIQHdfllxEM1jQZcobUdM+BB0eDDkkrXkcU+/WwzB3MCCOVsyQfyOqAd3
+	hnKAP0IZ5MgRv6PchfJYIqSfLdEQ1ss4XLa1PcIEMoejjZJusbpe9UOSWiNnbCtT
+	eTez8S6kKrr9io8svLpwBUtgeUUsDP5sI6cuUm6iIINJOxE94IKlyyPcmYM0gzvQ
+	tUb48WFyuyMkE1OAwr2SuuXSz/uhJieggYUbRv2kXUF2j/gfbk/x9QnGLacmOptI
+	3a+PD9P/G01c9ptidRJTUw==
 Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3se6uhn8td-1
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3se6uhn8td-2
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 17 Aug 2023 06:27:16 -0500 (CDT)
+	Thu, 17 Aug 2023 06:27:17 -0500 (CDT)
 Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
  (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Thu, 17 Aug
@@ -65,26 +66,29 @@ Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
  15.2.1118.30 via Frontend Transport; Thu, 17 Aug 2023 12:27:15 +0100
 Received: from EDIN4L06LR3.ad.cirrus.com (EDIN4L06LR3.ad.cirrus.com
  [198.61.65.68])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 086B63575;
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 9CAB13575;
 	Thu, 17 Aug 2023 11:27:15 +0000 (UTC)
 From: Richard Fitzgerald <rf@opensource.cirrus.com>
 To: <broonie@kernel.org>
 CC: <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
         <patches@opensource.cirrus.com>,
-        Richard Fitzgerald
-	<rf@opensource.cirrus.com>
-Subject: [PATCH v2 0/2] ASoC: cs35l56: Update ACPI HID and property
-Date: Thu, 17 Aug 2023 12:27:10 +0100
-Message-ID: <20230817112712.16637-1-rf@opensource.cirrus.com>
+        Simon Trimmer
+	<simont@opensource.cirrus.com>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>
+Subject: [PATCH v2 2/2] ASoC: cs35l56: Add an ACPI match table
+Date: Thu, 17 Aug 2023 12:27:12 +0100
+Message-ID: <20230817112712.16637-3-rf@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20230817112712.16637-1-rf@opensource.cirrus.com>
+References: <20230817112712.16637-1-rf@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: WwToYQLzcfST-iHR9Jef7H07jSR2nIfm
-X-Proofpoint-ORIG-GUID: WwToYQLzcfST-iHR9Jef7H07jSR2nIfm
+X-Proofpoint-GUID: _I51-rMG48qDk6ZUrRr_szd0HuuMmdmb
+X-Proofpoint-ORIG-GUID: _I51-rMG48qDk6ZUrRr_szd0HuuMmdmb
 X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: IXPAZC3GCPWDIZZ3ERIEKW25TRCRLYE6
-X-Message-ID-Hash: IXPAZC3GCPWDIZZ3ERIEKW25TRCRLYE6
+Message-ID-Hash: HDQNQJDV6UWD5SFKJHIMEEEXG2JWULKA
+X-Message-ID-Hash: HDQNQJDV6UWD5SFKJHIMEEEXG2JWULKA
 X-MailFrom: prvs=3593b560b6=rf@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -97,7 +101,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IXPAZC3GCPWDIZZ3ERIEKW25TRCRLYE6/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HDQNQJDV6UWD5SFKJHIMEEEXG2JWULKA/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -106,32 +110,66 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-These two patches add an ACPI HID and update the way the platform-
-specific firmware identifier is extracted from the ACPI.
+From: Simon Trimmer <simont@opensource.cirrus.com>
 
-CHANGES SINCE V1:
-- Rebased to apply on v6.4 and v6.5.
-- Change kstrdup() to devm_kstrdup()
+An ACPI ID has been allocated for CS35L56 ASoC devices so that they can
+be instantiated from ACPI Device entries.
 
-To apply on v6.6 a 1-line change is needed:
+Signed-off-by: Simon Trimmer <simont@opensource.cirrus.com>
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+---
+ sound/soc/codecs/cs35l56-i2c.c | 9 +++++++++
+ sound/soc/codecs/cs35l56-spi.c | 9 +++++++++
+ 2 files changed, 18 insertions(+)
 
-static int cs35l56_get_firmware_uid(struct cs35l56_private *cs35l56)
-{
--       struct device *dev = cs35l56->dev;
-+       struct device *dev = cs35l56->base.dev;
-
-Maciej Strozek (1):
-  ASoC: cs35l56: Read firmware uuid from a device property instead of
-    _SUB
-
-Simon Trimmer (1):
-  ASoC: cs35l56: Add an ACPI match table
-
- sound/soc/codecs/cs35l56-i2c.c |  9 +++++++++
- sound/soc/codecs/cs35l56-spi.c |  9 +++++++++
- sound/soc/codecs/cs35l56.c     | 31 ++++++++++++-------------------
- 3 files changed, 30 insertions(+), 19 deletions(-)
-
+diff --git a/sound/soc/codecs/cs35l56-i2c.c b/sound/soc/codecs/cs35l56-i2c.c
+index ed2a41943d97..40666e6698ba 100644
+--- a/sound/soc/codecs/cs35l56-i2c.c
++++ b/sound/soc/codecs/cs35l56-i2c.c
+@@ -62,10 +62,19 @@ static const struct i2c_device_id cs35l56_id_i2c[] = {
+ };
+ MODULE_DEVICE_TABLE(i2c, cs35l56_id_i2c);
+ 
++#ifdef CONFIG_ACPI
++static const struct acpi_device_id cs35l56_asoc_acpi_match[] = {
++	{ "CSC355C", 0 },
++	{},
++};
++MODULE_DEVICE_TABLE(acpi, cs35l56_asoc_acpi_match);
++#endif
++
+ static struct i2c_driver cs35l56_i2c_driver = {
+ 	.driver = {
+ 		.name		= "cs35l56",
+ 		.pm = &cs35l56_pm_ops_i2c_spi,
++		.acpi_match_table = ACPI_PTR(cs35l56_asoc_acpi_match),
+ 	},
+ 	.id_table	= cs35l56_id_i2c,
+ 	.probe		= cs35l56_i2c_probe,
+diff --git a/sound/soc/codecs/cs35l56-spi.c b/sound/soc/codecs/cs35l56-spi.c
+index 996aab10500e..302f9c47407a 100644
+--- a/sound/soc/codecs/cs35l56-spi.c
++++ b/sound/soc/codecs/cs35l56-spi.c
+@@ -59,10 +59,19 @@ static const struct spi_device_id cs35l56_id_spi[] = {
+ };
+ MODULE_DEVICE_TABLE(spi, cs35l56_id_spi);
+ 
++#ifdef CONFIG_ACPI
++static const struct acpi_device_id cs35l56_asoc_acpi_match[] = {
++	{ "CSC355C", 0 },
++	{},
++};
++MODULE_DEVICE_TABLE(acpi, cs35l56_asoc_acpi_match);
++#endif
++
+ static struct spi_driver cs35l56_spi_driver = {
+ 	.driver = {
+ 		.name		= "cs35l56",
+ 		.pm = &cs35l56_pm_ops_i2c_spi,
++		.acpi_match_table = ACPI_PTR(cs35l56_asoc_acpi_match),
+ 	},
+ 	.id_table	= cs35l56_id_spi,
+ 	.probe		= cs35l56_spi_probe,
 -- 
 2.30.2
 
