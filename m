@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6DAF1C7EE2A
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Aug 2023 16:44:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BC287C71159
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Aug 2023 16:44:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BFBA3E86;
-	Fri, 18 Aug 2023 18:43:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BFBA3E86
+	by alsa0.perex.cz (Postfix) with ESMTPS id E227FEC1;
+	Fri, 18 Aug 2023 18:43:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E227FEC1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1692377058;
-	bh=kVynfkxjoUCr5Ucd8fSAQnkqIHKHN5BPBApadWTzoJo=;
+	s=default; t=1692377072;
+	bh=aE05ENogn/a2Yez1YUn1LxL6bL5y34D77jtx60khwm8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=c8oC0yT/sx3bxaxuZoTpMeAINmmC6dXGdAwkYECz4TphNSNvSIGPRSlteHM09aBZZ
-	 /LB1efj4ztjjb043LfZ9pSepIowu27WLuSe5jzDVNvo4SmOoj8829M/+Rk41VsOb1f
-	 rLfIeenAJKiZj1RaELDrS9wKZdOf1CsRj51VQ3S0=
+	b=DAmYLQm7VcWTiWKKDqlSxArV2xmrBcRxQNg0CVwVxBp08B/52/Gndsj51VqQK/p4y
+	 iGrlwo+ttQOYyv3t9T2exy4K14/jzBPOZ+hkgVTBUEPF6vep9RaU7q8Xp6YXIaRlZp
+	 AmdYtPVVPr3hOkl4lEdQIDsz8+PCLeglWV+/oigs=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BCCF0F80536; Fri, 18 Aug 2023 18:40:59 +0200 (CEST)
+	id 10D4BF805FC; Fri, 18 Aug 2023 18:41:02 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 15BDFF80536;
-	Fri, 18 Aug 2023 18:40:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9F744F805F2;
+	Fri, 18 Aug 2023 18:41:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id ADA98F805E6; Fri, 18 Aug 2023 18:40:53 +0200 (CEST)
+	id 3F934F805EF; Fri, 18 Aug 2023 18:40:56 +0200 (CEST)
 Received: from pegase1.c-s.fr (unknown [90.115.179.12])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 77311F805D7
-	for <alsa-devel@alsa-project.org>; Fri, 18 Aug 2023 18:40:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 77311F805D7
+	by alsa1.perex.cz (Postfix) with ESMTPS id 8DD24F805D7
+	for <alsa-devel@alsa-project.org>; Fri, 18 Aug 2023 18:40:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8DD24F805D7
 Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
-	by localhost (Postfix) with ESMTP id 4RS6zv0pwcz9vj0;
-	Fri, 18 Aug 2023 18:40:11 +0200 (CEST)
+	by localhost (Postfix) with ESMTP id 4RS6zx101Sz9vj7;
+	Fri, 18 Aug 2023 18:40:13 +0200 (CEST)
 X-Virus-Scanned: amavisd-new at c-s.fr
 Received: from pegase1.c-s.fr ([192.168.12.234])
 	by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id axONG-mlx7_u; Fri, 18 Aug 2023 18:40:11 +0200 (CEST)
+	with ESMTP id Vq0nZ22zTOTC; Fri, 18 Aug 2023 18:40:13 +0200 (CEST)
 Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-	by pegase1.c-s.fr (Postfix) with ESMTP id 4RS6zl3NNRz9vhP;
+	by pegase1.c-s.fr (Postfix) with ESMTP id 4RS6zl3Tzmz9vhS;
 	Fri, 18 Aug 2023 18:40:03 +0200 (CEST)
 Received: from localhost (localhost [127.0.0.1])
-	by messagerie.si.c-s.fr (Postfix) with ESMTP id 670528B763;
+	by messagerie.si.c-s.fr (Postfix) with ESMTP id 6CFD28B76D;
 	Fri, 18 Aug 2023 18:40:03 +0200 (CEST)
 X-Virus-Scanned: amavisd-new at c-s.fr
 Received: from messagerie.si.c-s.fr ([127.0.0.1])
 	by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-	with ESMTP id 02pNESDStCWP; Fri, 18 Aug 2023 18:40:03 +0200 (CEST)
+	with ESMTP id FkBysxlO6_lW; Fri, 18 Aug 2023 18:40:03 +0200 (CEST)
 Received: from PO20335.IDSI0.si.c-s.fr (PO17626.IDSI0.si.c-s.fr
  [172.19.54.29])
-	by messagerie.si.c-s.fr (Postfix) with ESMTP id 9B88A8B780;
+	by messagerie.si.c-s.fr (Postfix) with ESMTP id 785AF8B778;
 	Fri, 18 Aug 2023 18:40:01 +0200 (CEST)
 Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
-	by PO20335.IDSI0.si.c-s.fr (8.17.1/8.16.1) with ESMTPS id 37IGdxXm142019
+	by PO20335.IDSI0.si.c-s.fr (8.17.1/8.16.1) with ESMTPS id 37IGduZa141965
 	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-	Fri, 18 Aug 2023 18:39:59 +0200
+	Fri, 18 Aug 2023 18:39:56 +0200
 Received: (from chleroy@localhost)
-	by PO20335.IDSI0.si.c-s.fr (8.17.1/8.17.1/Submit) id 37IGdx5n142018;
-	Fri, 18 Aug 2023 18:39:59 +0200
+	by PO20335.IDSI0.si.c-s.fr (8.17.1/8.17.1/Submit) id 37IGduW0141964;
+	Fri, 18 Aug 2023 18:39:56 +0200
 X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to
  christophe.leroy@csgroup.eu using -f
 From: Christophe Leroy <christophe.leroy@csgroup.eu>
@@ -87,25 +87,24 @@ Cc: netdev@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
         linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         alsa-devel@alsa-project.org,
         Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: [PATCH v4 19/28] soc: fsl: cpm1: qmc: Introduce functions to change
- timeslots at runtime
-Date: Fri, 18 Aug 2023 18:39:13 +0200
+Subject: [PATCH v4 06/28] dt-bindings: net: Add support for QMC HDLC
+Date: Fri, 18 Aug 2023 18:39:00 +0200
 Message-ID: 
- <a18f6c9b11a358d4cce7f4c096a85fa5e1729633.1692376361.git.christophe.leroy@csgroup.eu>
+ <817d1418fa1e9e689375177bee4bdc68ceeab7be.1692376361.git.christophe.leroy@csgroup.eu>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <cover.1692376360.git.christophe.leroy@csgroup.eu>
 References: <cover.1692376360.git.christophe.leroy@csgroup.eu>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1692376735; l=3289;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1692376734; l=2185;
  i=christophe.leroy@csgroup.eu; s=20211009; h=from:subject:message-id;
- bh=78wehWlqMiFqYxFZMxpjqZHHmzC9lp2SLom1hHjHEc0=;
- b=EH7Ypvhs7z/Y3OrSfBqFh17QEyqVrp0buZQDOR7eq0JQ1x67x/X1kUy7/Q+pHJwHVuZbuk79e
- XYTA/MXLFvZDQldKEezNeOYlhhMZAKzOjqczr1Ixz8QYRkMZcU/xiYt
+ bh=Rhuf0RNV4GJcMGFMFtbF5khE6XrVnFMNx4Jm/4p0AlQ=;
+ b=l58NOiJaH/3m2dMO1c4zAyIFYfua+VAE//+mdzcjYAj/fVr74OpMAeaProCJ8fUOhXQdDyPJg
+ z6CfXTIavP+BbLXn6OGqtdM03JBlGJZPnWeD5eXih1eKu3KroYFr3T4
 X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519;
  pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: H73LDLP6Q5FIOIIP5TY6OTYES2TUKRAK
-X-Message-ID-Hash: H73LDLP6Q5FIOIIP5TY6OTYES2TUKRAK
+Message-ID-Hash: 3O5DX7RDTFEI647VLTXXGVWP24VOMEHC
+X-Message-ID-Hash: 3O5DX7RDTFEI647VLTXXGVWP24VOMEHC
 X-MailFrom: christophe.leroy@csgroup.eu
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -118,7 +117,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/H73LDLP6Q5FIOIIP5TY6OTYES2TUKRAK/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3O5DX7RDTFEI647VLTXXGVWP24VOMEHC/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -129,105 +128,75 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Herve Codina <herve.codina@bootlin.com>
 
-Introduce qmc_chan_{get,set}_ts_info() function to allow timeslots
-modification at runtime.
+The QMC (QUICC mutichannel controller) is a controller present in some
+PowerQUICC SoC such as MPC885.
+The QMC HDLC uses the QMC controller to transfer HDLC data.
 
-The modification is provided using qmc_chan_set_ts_info() and will be
-applied on next qmc_chan_start().
-qmc_chan_set_ts_info() must be called with the channel rx and/or tx
-stopped.
+Additionally, a framer can be connected to the QMC HDLC.
+If present, this framer is the interface between the TDM bus used by the
+QMC HDLC and the E1/T1 line.
+The QMC HDLC can use this framer to get information about the E1/T1 line
+and configure the E1/T1 line.
 
 Signed-off-by: Herve Codina <herve.codina@bootlin.com>
-Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
- drivers/soc/fsl/qe/qmc.c | 51 ++++++++++++++++++++++++++++++++++++++++
- include/soc/fsl/qe/qmc.h | 10 ++++++++
- 2 files changed, 61 insertions(+)
+ .../devicetree/bindings/net/fsl,qmc-hdlc.yaml | 46 +++++++++++++++++++
+ 1 file changed, 46 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/net/fsl,qmc-hdlc.yaml
 
-diff --git a/drivers/soc/fsl/qe/qmc.c b/drivers/soc/fsl/qe/qmc.c
-index b67e73ad7c1a..2ab21a0023a7 100644
---- a/drivers/soc/fsl/qe/qmc.c
-+++ b/drivers/soc/fsl/qe/qmc.c
-@@ -290,6 +290,57 @@ int qmc_chan_get_info(struct qmc_chan *chan, struct qmc_chan_info *info)
- }
- EXPORT_SYMBOL(qmc_chan_get_info);
- 
-+int qmc_chan_get_ts_info(struct qmc_chan *chan, struct qmc_chan_ts_info *ts_info)
-+{
-+	unsigned long flags;
+diff --git a/Documentation/devicetree/bindings/net/fsl,qmc-hdlc.yaml b/Documentation/devicetree/bindings/net/fsl,qmc-hdlc.yaml
+new file mode 100644
+index 000000000000..13f3572f0feb
+--- /dev/null
++++ b/Documentation/devicetree/bindings/net/fsl,qmc-hdlc.yaml
+@@ -0,0 +1,46 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/net/fsl,qmc-hdlc.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+	spin_lock_irqsave(&chan->ts_lock, flags);
++title: Freescale/NXP QUICC Multichannel Controller (QMC) HDLC
 +
-+	ts_info->rx_ts_mask_avail = chan->rx_ts_mask_avail;
-+	ts_info->tx_ts_mask_avail = chan->tx_ts_mask_avail;
-+	ts_info->rx_ts_mask = chan->rx_ts_mask;
-+	ts_info->tx_ts_mask = chan->tx_ts_mask;
++maintainers:
++  - Herve Codina <herve.codina@bootlin.com>
 +
-+	spin_unlock_irqrestore(&chan->ts_lock, flags);
++description: |
++  The QMC HDLC uses a QMC (QUICC Multichannel Controller) channel to transfer
++  HDLC data.
 +
-+	return 0;
-+}
-+EXPORT_SYMBOL(qmc_chan_get_ts_info);
++properties:
++  compatible:
++    const: fsl,qmc-hdlc
 +
-+int qmc_chan_set_ts_info(struct qmc_chan *chan, const struct qmc_chan_ts_info *ts_info)
-+{
-+	unsigned long flags;
-+	int ret;
++  fsl,qmc-chan:
++    $ref: /schemas/types.yaml#/definitions/phandle-array
++    items:
++      - items:
++          - description: phandle to QMC node
++          - description: Channel number
++    description:
++      Should be a phandle/number pair. The phandle to QMC node and the QMC
++      channel to use.
 +
-+	/* Only a subset of available timeslots is allowed */
-+	if ((ts_info->rx_ts_mask & chan->rx_ts_mask_avail) != ts_info->rx_ts_mask)
-+		return -EINVAL;
-+	if ((ts_info->tx_ts_mask & chan->tx_ts_mask_avail) != ts_info->tx_ts_mask)
-+		return -EINVAL;
++  framer:
++    $ref: /schemas/types.yaml#/definitions/phandle
++    description:
++      phandle to the framer node
 +
-+	/* In case of common rx/tx table, rx/tx masks must be identical */
-+	if (chan->qmc->is_tsa_64rxtx) {
-+		if (ts_info->rx_ts_mask != ts_info->tx_ts_mask)
-+			return -EINVAL;
-+	}
++required:
++  - compatible
++  - fsl,qmc-chan
 +
-+	spin_lock_irqsave(&chan->ts_lock, flags);
++additionalProperties: false
 +
-+	if ((chan->tx_ts_mask != ts_info->tx_ts_mask && !chan->is_tx_stopped) ||
-+	    (chan->rx_ts_mask != ts_info->rx_ts_mask && !chan->is_rx_stopped)) {
-+		dev_err(chan->qmc->dev, "Channel rx and/or tx not stopped\n");
-+		ret = -EBUSY;
-+	} else {
-+		chan->tx_ts_mask = ts_info->tx_ts_mask;
-+		chan->rx_ts_mask = ts_info->rx_ts_mask;
-+		ret = 0;
-+	}
-+	spin_unlock_irqrestore(&chan->ts_lock, flags);
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL(qmc_chan_set_ts_info);
-+
- int qmc_chan_set_param(struct qmc_chan *chan, const struct qmc_chan_param *param)
- {
- 	if (param->mode != chan->mode)
-diff --git a/include/soc/fsl/qe/qmc.h b/include/soc/fsl/qe/qmc.h
-index 6f1d6cebc9fe..802c161636bd 100644
---- a/include/soc/fsl/qe/qmc.h
-+++ b/include/soc/fsl/qe/qmc.h
-@@ -38,6 +38,16 @@ struct qmc_chan_info {
- 
- int qmc_chan_get_info(struct qmc_chan *chan, struct qmc_chan_info *info);
- 
-+struct qmc_chan_ts_info {
-+	u64 rx_ts_mask_avail;
-+	u64 tx_ts_mask_avail;
-+	u64 rx_ts_mask;
-+	u64 tx_ts_mask;
-+};
-+
-+int qmc_chan_get_ts_info(struct qmc_chan *chan, struct qmc_chan_ts_info *ts_info);
-+int qmc_chan_set_ts_info(struct qmc_chan *chan, const struct qmc_chan_ts_info *ts_info);
-+
- struct qmc_chan_param {
- 	enum qmc_mode mode;
- 	union {
++examples:
++  - |
++    hdlc {
++        compatible = "fsl,qmc-hdlc";
++        fsl,qmc-chan = <&qmc 16>;
++    };
 -- 
 2.41.0
 
