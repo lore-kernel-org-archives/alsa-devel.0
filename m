@@ -4,82 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1FC00C71159
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Aug 2023 15:42:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 10F16C7EE24
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Aug 2023 16:32:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0B132E85;
-	Fri, 18 Aug 2023 17:41:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0B132E85
+	by alsa0.perex.cz (Postfix) with ESMTPS id 21C2AE85;
+	Fri, 18 Aug 2023 18:31:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 21C2AE85
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1692373345;
-	bh=Sza0iKQ79SrdT2ka/ImFhnwgczlzzbMIPQJckqJEnlk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1692376350;
+	bh=uI4dyA7C7/lXsadRB/ksiSuy+Lsb2LY07mjFSl/VibQ=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=DjnLnY68Kc79ANiUG37pSSlhnImFdNcTt6ClAgAHrKA/nOxn2+rf3bdOVnSMq8AJU
-	 NjcE359SAPR/9bZEU/na/RwUaBv+WGvVtGvx8qWFGY/+CTHKk31MqLct6khjNWQnGi
-	 6KumlVD7JtZw1XipxfpBY4f1rNP8jIyO75K5RdtI=
+	b=a7ECXY68aoqCUQUfJ9EjaWlEWZ+5Uxes/Wg883Yafnk78TYtA2RPzzazvTSfRL/p+
+	 A1VndedNFXU2x33VJCgiKIoQ4j0dMtR8KhqZvHY9s9mXOkdSRojoKs9gDZCofzHYQ4
+	 35chX5fmwZSvFsvj8CJ2oDUergjvvPFO9culBWf4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5D085F80027; Fri, 18 Aug 2023 17:41:05 +0200 (CEST)
+	id 2C2D7F8025F; Fri, 18 Aug 2023 18:31:12 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 96C5FF80027;
-	Fri, 18 Aug 2023 17:41:04 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D7FD2F800D1;
+	Fri, 18 Aug 2023 18:31:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 29ADBF801EB; Fri, 18 Aug 2023 17:40:59 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	id 09EBCF801EB; Fri, 18 Aug 2023 18:31:05 +0200 (CEST)
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 829CEF80027
-	for <alsa-devel@alsa-project.org>; Fri, 18 Aug 2023 17:40:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 829CEF80027
+	by alsa1.perex.cz (Postfix) with ESMTPS id 05392F80027
+	for <alsa-devel@alsa-project.org>; Fri, 18 Aug 2023 18:30:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 05392F80027
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=OJHylxsX
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 27FE460EF3;
-	Fri, 18 Aug 2023 15:40:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10EB2C433CB;
-	Fri, 18 Aug 2023 15:40:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1692373248;
-	bh=Sza0iKQ79SrdT2ka/ImFhnwgczlzzbMIPQJckqJEnlk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=OJHylxsXmbe1O7TRHgPYtHiOQ9+g/EXekAGzeh2ERlsL2Bupn0cr+OLi0AbrpV7d0
-	 YNpGNMcqqxYn1v/S/IzQBiKAlW4aOFCnojT2+FZwKbdbHRhsAQq5b3HiNYa86JnsxU
-	 txVFGqvzAR/RZk+b9T6l2rThO7XoKkFiQ6ONypgOgntC6iMnZGe/rUzk0eZMXG6CjN
-	 rpIKGK7EDt97PiHEiDaleqLPnGQI74L5rsBBq2LKC19XR+E0P8Lzn4LfIRYqMTEX2b
-	 usCuAJ34ayhHYTF8rR0IlqUE4nCno3KFRZoMUdhWMk0fYEzZ9uApXTFW6g1HI1KMn/
-	 5bcv1WmHriA9w==
-Date: Fri, 18 Aug 2023 16:40:42 +0100
-From: Lee Jones <lee@kernel.org>
-To: Charles Keepax <ckeepax@opensource.cirrus.com>
-Cc: broonie@kernel.org, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	linus.walleij@linaro.org, vkoul@kernel.org, lgirdwood@gmail.com,
-	yung-chuan.liao@linux.intel.com, sanyog.r.kale@intel.com,
-	pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
-	patches@opensource.cirrus.com, devicetree@vger.kernel.org,
-	linux-gpio@vger.kernel.org, linux-spi@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Immutable branch between MFD, Pinctrl and soundwire due
- for the v6.6 merge window
-Message-ID: <20230818154042.GX986605@google.com>
-References: <20230804104602.395892-1-ckeepax@opensource.cirrus.com>
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=lrQCVjvE
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692376251; x=1723912251;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=uI4dyA7C7/lXsadRB/ksiSuy+Lsb2LY07mjFSl/VibQ=;
+  b=lrQCVjvEtAxF6LOdVChb0gBi8RH8lIy/AoFRKEw6vy8TZ7MhFUOUqmgk
+   74MefyktHbp17ICEM3l0Y1g0cOBIydy0rYieA6XZxJ+Dt9feRxWz44dP4
+   QPA1jGVEVObS5RjXFqoWmgDZ6N38EqvfWPIFH4kLga74g70C30kuwh2Q5
+   jZGLDESGvBXhTGrrYzVhvZL6exugo/5efNSQHE5t3JduqLqPxDknTNmwX
+   bqQ56D5abwcc+TD9y1WHJO8Awb0V9Ll0Hrwr1jD0uQLkEcjZn3kI3y/gE
+   Ts5LBqevwqsv0IFagNc6mo/cZRHokyUaLpNkNnYRJeQwzfwHsW4NqyfdU
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10806"; a="370597985"
+X-IronPort-AV: E=Sophos;i="6.01,183,1684825200";
+   d="scan'208";a="370597985"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 18 Aug 2023 09:30:45 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10806"; a="728648155"
+X-IronPort-AV: E=Sophos;i="6.01,183,1684825200";
+   d="scan'208";a="728648155"
+Received: from enewberr-mobl.amr.corp.intel.com (HELO [10.212.37.100])
+ ([10.212.37.100])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 18 Aug 2023 09:30:43 -0700
+Message-ID: <9f910785-e856-1539-e3e4-c9817af5fe67@linux.intel.com>
+Date: Fri, 18 Aug 2023 11:30:42 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230804104602.395892-1-ckeepax@opensource.cirrus.com>
-Message-ID-Hash: KJ4KJPNJ4B4356K4EL5SCRBMUC327S6V
-X-Message-ID-Hash: KJ4KJPNJ4B4356K4EL5SCRBMUC327S6V
-X-MailFrom: lee@kernel.org
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.13.0
+Subject: Re: [PATCH v3 1/2] ALSA: hda/tas2781: Add tas2781 HDA driver
+Content-Language: en-US
+To: Shenghao Ding <shenghao-ding@ti.com>, tiwai@suse.de
+Cc: robh+dt@kernel.org, lgirdwood@gmail.com, perex@perex.cz, kevin-lu@ti.com,
+ 13916275206@139.com, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, liam.r.girdwood@intel.com,
+ mengdong.lin@intel.com, baojun.xu@ti.com, thomas.gfeller@q-drop.com,
+ peeyush@ti.com, navada@ti.com, broonie@kernel.org, gentuser@gmail.com
+References: <20230818085558.1431-1-shenghao-ding@ti.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20230818085558.1431-1-shenghao-ding@ti.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: 5HLUDZABDPRJPKK7ESEYT5L3PH66KERD
+X-Message-ID-Hash: 5HLUDZABDPRJPKK7ESEYT5L3PH66KERD
+X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -91,7 +97,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KJ4KJPNJ4B4356K4EL5SCRBMUC327S6V/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5HLUDZABDPRJPKK7ESEYT5L3PH66KERD/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -100,57 +106,495 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Good afternoon,
+The code doesn't look too bad but needs a bit more work. There are quite
+a few error handling issues, pm_runtime needs to be revisited and
+ACPI/EFI as well.
 
-The following changes since commit 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5:
+> +enum calib_data {
 
-  Linux 6.5-rc1 (2023-07-09 13:53:13 -0700)
+tas2781_calib_data?
 
-are available in the Git repository at:
+> +	R0_VAL = 0,
+> +	INV_R0,
+> +	R0LOW,
+> +	POWER,
+> +	TLIM,
+> +	CALIB_MAX
+> +};
+> +
+> +static int tas2781_get_i2c_res(struct acpi_resource *ares, void *data)
+> +{
+> +	struct tasdevice_priv *tas_priv = data;
+> +	struct acpi_resource_i2c_serialbus *sb;
+> +
+> +	if (i2c_acpi_get_i2c_resource(ares, &sb)) {
+> +		if (tas_priv->ndev < TASDEVICE_MAX_CHANNELS &&
+> +			sb->slave_address != TAS2781_GLOBAL_ADDR) {
+> +			tas_priv->tasdevice[tas_priv->ndev].dev_addr =
+> +				(unsigned int)sb->slave_address;
+> +			tas_priv->ndev++;
+> +		}
+> +	}
+> +	return 1;
+> +}
+> +
+> +static int tas2781_read_acpi(struct tasdevice_priv *p, const char *hid)
+> +{
+> +	struct acpi_device *adev;
+> +	struct device *physdev;
+> +	LIST_HEAD(resources);
+> +	const char *sub;
+> +	int ret;
+> +
+> +	adev = acpi_dev_get_first_match_dev(hid, NULL, -1);
+> +	if (!adev) {
+> +		dev_err(p->dev,
+> +			"Failed to find an ACPI device for %s\n", hid);
+> +		return -ENODEV;
+> +	}
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git ib-mfd-pinctrl-soundwire-v6.6
+[1] need to take care of a resource leak here
 
-for you to fetch changes up to d5282a53929791071b17dde3eed52e40f76b101c:
+> +	ret = acpi_dev_get_resources(adev, &resources, tas2781_get_i2c_res, p);
+> +	if (ret < 0)
+> +		goto err;
 
-  pinctrl: cs42l43: Add support for the cs42l43 (2023-08-17 12:06:11 +0100)
+you return without doing acpi_dev_put(adev), and you are also doing a
+put_device(physdev) which is not initialized yet.
 
-----------------------------------------------------------------
-Immutable branch between MFD, Pinctrl and soundwire due for the v6.6 merge window
+NAK, this needs to be reworked since a simple...
 
-----------------------------------------------------------------
-Charles Keepax (3):
-      dt-bindings: mfd: cirrus,cs42l43: Add initial DT binding
-      mfd: cs42l43: Add support for cs42l43 core driver
-      pinctrl: cs42l43: Add support for the cs42l43
 
-Lucas Tanure (1):
-      soundwire: bus: Allow SoundWire peripherals to register IRQ handlers
+> +
+> +	acpi_dev_free_resource_list(&resources);
+> +	strscpy(p->dev_name, hid, sizeof(p->dev_name));
+> +	physdev = get_device(acpi_get_first_physical_node(adev));
+> +	acpi_dev_put(adev);
 
- .../devicetree/bindings/sound/cirrus,cs42l43.yaml  |  313 ++++++
- MAINTAINERS                                        |    3 +
- drivers/mfd/Kconfig                                |   23 +
- drivers/mfd/Makefile                               |    3 +
- drivers/mfd/cs42l43-i2c.c                          |   98 ++
- drivers/mfd/cs42l43-sdw.c                          |  239 ++++
- drivers/mfd/cs42l43.c                              | 1188 ++++++++++++++++++++
- drivers/mfd/cs42l43.h                              |   28 +
- drivers/pinctrl/cirrus/Kconfig                     |   11 +
- drivers/pinctrl/cirrus/Makefile                    |    2 +
- drivers/pinctrl/cirrus/pinctrl-cs42l43.c           |  609 ++++++++++
- drivers/soundwire/bus.c                            |   32 +
- drivers/soundwire/bus_type.c                       |   12 +
- include/linux/mfd/cs42l43-regs.h                   | 1184 +++++++++++++++++++
- include/linux/mfd/cs42l43.h                        |  102 ++
- include/linux/soundwire/sdw.h                      |    9 +
- 16 files changed, 3856 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/cirrus,cs42l43.yaml
- create mode 100644 drivers/mfd/cs42l43-i2c.c
- create mode 100644 drivers/mfd/cs42l43-sdw.c
- create mode 100644 drivers/mfd/cs42l43.c
- create mode 100644 drivers/mfd/cs42l43.h
- create mode 100644 drivers/pinctrl/cirrus/pinctrl-cs42l43.c
- create mode 100644 include/linux/mfd/cs42l43-regs.h
- create mode 100644 include/linux/mfd/cs42l43.h
+... move ong those last two lines to [1]
 
--- 
-Lee Jones [李琼斯]
+> +
+> +	/* No side-effect to the playback even if subsystem_id is NULL*/
+> +	sub = acpi_get_subsystem_id(ACPI_HANDLE(physdev));
+> +	if (IS_ERR(sub))
+> +		sub = NULL;
+> +
+> +	p->acpi_subsystem_id = sub;
+> +
+> +	put_device(physdev);
+> +
+> +	return 0;
+> +
+> +err:
+> +	dev_err(p->dev, "read acpi error, ret: %d\n", ret);
+> +	put_device(physdev);
+> +
+> +	return ret;
+> +}
+> +
+> +static void tas2781_hda_playback_hook(struct device *dev, int action)
+> +{
+> +	struct tasdevice_priv *tas_priv = dev_get_drvdata(dev);
+> +
+> +	dev_dbg(tas_priv->dev, "%s: action = %d\n", __func__, action);
+> +	switch (action) {
+> +	case HDA_GEN_PCM_ACT_OPEN:
+> +		pm_runtime_get_sync(dev);
+
+test if this actually works?
+
+> +		mutex_lock(&tas_priv->codec_lock);
+> +		tasdevice_tuning_switch(tas_priv, 0);
+> +		mutex_unlock(&tas_priv->codec_lock);
+> +		break;
+> +	case HDA_GEN_PCM_ACT_CLOSE:
+> +		mutex_lock(&tas_priv->codec_lock);
+> +		tasdevice_tuning_switch(tas_priv, 1);
+> +		mutex_unlock(&tas_priv->codec_lock);
+
+how useful is this codec_lock, is the 'action' not protected at a higher
+level?
+
+> +
+> +		pm_runtime_mark_last_busy(dev);
+> +		pm_runtime_put_autosuspend(dev);
+> +		break;
+> +	default:
+> +		dev_dbg(tas_priv->dev, "Playback action not supported: %d\n",
+> +			action);
+> +		break;
+> +	}
+> +}
+
+> +static int tasdevice_hda_clamp(int val, int max)
+> +{
+> +	if (val > max)
+> +		val = max;
+> +
+> +	if (val < 0)
+> +		val = 0;
+> +	return val;
+> +}
+
+I've seen that macro in the TAS2783 code as well, that sounds like a
+good helper function to share?
+
+> +
+> +static int tasdevice_set_profile_id(struct snd_kcontrol *kcontrol,
+> +		struct snd_ctl_elem_value *ucontrol)
+> +{
+> +	struct tasdevice_priv *tas_priv = snd_kcontrol_chip(kcontrol);
+> +	int nr_profile = ucontrol->value.integer.value[0];
+> +	int max = tas_priv->rcabin.ncfgs - 1;
+> +	int val, ret = 0;
+> +
+> +	val = tasdevice_hda_clamp(nr_profile, max);
+> +
+> +	if (tas_priv->rcabin.profile_cfg_id != nr_profile) {
+> +		tas_priv->rcabin.profile_cfg_id = nr_profile;
+> +		ret = 1;
+
+return 1;
+> +	}
+> +
+> +	return ret;
+
+return 0;
+
+you don't really need a variable here. same comment for other usages.
+
+
+> +static void tas2781_apply_calib(struct tasdevice_priv *tas_priv)
+> +{
+> +	static const unsigned char page_array[CALIB_MAX] = {
+> +		0x17, 0x18, 0x18, 0x0d, 0x18
+> +	};
+> +	static const unsigned char rgno_array[CALIB_MAX] = {
+> +		0x74, 0x0c, 0x14, 0x3c, 0x7c
+> +	};
+> +	unsigned char *data;
+> +	int i, j, rc;
+> +
+> +	for (i = 0; i < tas_priv->ndev; i++) {
+> +		data = tas_priv->cali_data.data +
+> +			i * TASDEVICE_SPEAKER_CALIBRATION_SIZE;
+> +		for (j = 0; j < CALIB_MAX; j++) {
+> +			rc = tasdevice_dev_bulk_write(tas_priv, i,
+> +				TASDEVICE_REG(0, page_array[j], rgno_array[j]),
+> +				&(data[4 * j]), 4);
+> +			if (rc < 0)
+> +				dev_err(tas_priv->dev,
+> +					"chn %d calib %d bulk_wr err = %d\n",
+> +					i, j, rc);
+
+do you want to keep going or just stop on the first error?
+
+> +		}
+> +	}
+> +}
+> +
+> +/* Update the calibrate data, including speaker impedance, f0, etc, into algo.
+> + * Calibrate data is done by manufacturer in the factory. These data are used
+> + * by Algo for calucating the speaker temperature, speaker membrance excursion
+
+typos, use a spell checker.
+
+calculation
+membrane
+
+> + * and f0 in real time during playback.
+> + */
+> +static int tas2781_save_calibration(struct tasdevice_priv *tas_priv)
+> +{
+> +	efi_guid_t efi_guid = EFI_GUID(0x02f9af02, 0x7734, 0x4233, 0xb4, 0x3d,
+> +		0x93, 0xfe, 0x5a, 0xa3, 0x5d, 0xb3);
+
+I've seen an EFI use for SoundWire TAS2783, is this the same thing?
+It looks very very similar except that this one checks the BUFFER_TOO_SMALL.
+
+If yes, can this be a helper function? If this is the same sort of
+calibration we should not have duplicated code really, it's easier to
+maintain if there's one set of helpers shared between TI drivers.
+
+> +	static efi_char16_t efi_name[] = L"CALI_DATA";
+> +	struct tm *tm = &tas_priv->tm;
+> +	unsigned int attr, crc;
+> +	unsigned int *tmp_val;
+> +	efi_status_t status;
+> +
+> +	/* Lenovo devices */
+> +	if (tas_priv->catlog_id == LENOVO)
+> +		efi_guid = EFI_GUID(0x1f52d2a1, 0xbb3a, 0x457d, 0xbc, 0x09,
+> +			0x43, 0xa3, 0xf4, 0x31, 0x0a, 0x92);
+> +
+> +	tas_priv->cali_data.total_sz = 0;
+> +	/* Get real size of UEFI variable */
+> +	status = efi.get_variable(efi_name, &efi_guid, &attr,
+> +		&tas_priv->cali_data.total_sz, tas_priv->cali_data.data);
+> +	if (status == EFI_BUFFER_TOO_SMALL) {
+> +		/* Allocate data buffer of data_size bytes */
+> +		tas_priv->cali_data.data = devm_kzalloc(tas_priv->dev,
+> +			tas_priv->cali_data.total_sz, GFP_KERNEL);
+> +		if (!tas_priv->cali_data.data)
+> +			return -ENOMEM;
+> +		/* Get variable contents into buffer */
+> +		status = efi.get_variable(efi_name, &efi_guid, &attr,
+> +			&tas_priv->cali_data.total_sz,
+> +			tas_priv->cali_data.data);
+> +		if (status != EFI_SUCCESS)
+> +			return -EINVAL;
+> +	}
+> +
+> +	tmp_val = (unsigned int *)tas_priv->cali_data.data;
+> +
+> +	crc = crc32(~0, tas_priv->cali_data.data, 84) ^ ~0;
+> +	dev_dbg(tas_priv->dev, "cali crc 0x%08x PK tmp_val 0x%08x\n",
+> +		crc, tmp_val[21]);
+> +
+> +	if (crc == tmp_val[21]) {
+> +		time64_to_tm(tmp_val[20], 0, tm);
+> +		dev_dbg(tas_priv->dev, "%4ld-%2d-%2d, %2d:%2d:%2d\n",
+> +			tm->tm_year, tm->tm_mon, tm->tm_mday,
+> +			tm->tm_hour, tm->tm_min, tm->tm_sec);
+> +		tas2781_apply_calib(tas_priv);
+> +	} else
+> +		tas_priv->cali_data.total_sz = 0;
+> +
+> +	return 0;
+> +}
+> +
+> +static void tasdev_fw_ready(const struct firmware *fmw, void *context)
+> +{
+> +	struct tasdevice_priv *tas_priv = context;
+> +	struct hda_codec *codec = tas_priv->codec;
+> +	int i, ret;
+> +
+> +	pm_runtime_get_sync(tas_priv->dev);
+
+test that it worked?
+
+> +	mutex_lock(&tas_priv->codec_lock);
+
+...
+
+> +static int tas2781_hda_bind(struct device *dev, struct device *master,
+> +	void *master_data)
+> +{
+> +	struct tasdevice_priv *tas_priv = dev_get_drvdata(dev);
+> +	struct hda_component *comps = master_data;
+> +	struct hda_codec *codec;
+> +	unsigned int subid;
+> +	int ret;
+> +
+> +	if (!comps || tas_priv->index < 0 ||
+> +		tas_priv->index >= HDA_MAX_COMPONENTS)
+> +		return -EINVAL;
+> +
+> +	comps = &comps[tas_priv->index];
+> +	if (comps->dev)
+> +		return -EBUSY;
+> +
+> +	codec = comps->codec;
+> +	subid = codec->core.subsystem_id >> 16;
+> +
+> +	switch (subid) {
+> +	case 0x17aa:
+
+magic number should be a define somewhere...
+
+> +		tas_priv->catlog_id = LENOVO;
+> +		break;
+> +	default:
+> +		tas_priv->catlog_id = OTHERS;
+> +		break;
+> +	}
+> +
+> +	pm_runtime_get_sync(dev);
+
+test that it worked?
+
+> +
+> +	comps->dev = dev;
+> +
+> +	strscpy(comps->name, dev_name(dev), sizeof(comps->name));
+> +
+> +	ret = tascodec_init(tas_priv, codec, tasdev_fw_ready);
+> +	if (ret)
+> +		return ret;
+
+need to do a put_autosuspend below, this is leaking a refcount.
+
+> +
+> +	comps->playback_hook = tas2781_hda_playback_hook;
+> +
+> +	pm_runtime_mark_last_busy(dev);
+> +	pm_runtime_put_autosuspend(dev);
+> +
+> +	return 0;
+> +}
+> +
+> +static void tas2781_hda_unbind(struct device *dev,
+> +	struct device *master, void *master_data)
+> +{
+> +	struct tasdevice_priv *tas_priv = dev_get_drvdata(dev);
+> +	struct hda_component *comps = master_data;
+> +
+> +	if (comps[tas_priv->index].dev == dev)
+> +		memset(&comps[tas_priv->index], 0, sizeof(*comps));
+> +
+> +	tasdevice_config_info_remove(tas_priv);
+> +	tasdevice_dsp_remove(tas_priv);
+> +
+> +	tas_priv->fw_state = TASDEVICE_DSP_FW_PENDING;
+> +}
+> +
+> +static const struct component_ops tas2781_hda_comp_ops = {
+> +	.bind = tas2781_hda_bind,
+> +	.unbind = tas2781_hda_unbind,
+> +};
+> +
+> +static void tas2781_hda_remove(struct device *dev)
+> +{
+> +	struct tasdevice_priv *tas_priv = dev_get_drvdata(dev);
+> +
+> +	pm_runtime_get_sync(tas_priv->dev);
+> +	pm_runtime_disable(tas_priv->dev);
+
+I don't think this sequence makes any sense.
+
+> +	component_del(tas_priv->dev, &tas2781_hda_comp_ops);
+> +
+> +	pm_runtime_put_noidle(tas_priv->dev);
+> +
+> +	tasdevice_remove(tas_priv);
+> +}
+> +
+> +static int tas2781_hda_i2c_probe(struct i2c_client *clt)
+> +{
+> +	struct tasdevice_priv *tas_priv;
+> +	const char *device_name;
+> +	int ret;
+> +
+> +	if (strstr(dev_name(&clt->dev), "TIAS2781"))
+> +		device_name = "TIAS2781";
+> +	else
+> +		return -ENODEV;
+> +
+> +	tas_priv = tasdevice_kzalloc(clt);
+> +	if (!tas_priv)
+> +		return -ENOMEM;
+> +
+> +	tas_priv->irq_info.irq = clt->irq;
+> +	ret = tas2781_read_acpi(tas_priv, device_name);
+> +	if (ret)
+> +		return dev_err_probe(tas_priv->dev, ret,
+> +			"Platform not supported\n");
+> +
+> +	ret = tasdevice_init(tas_priv);
+> +	if (ret)
+> +		goto err;
+> +
+> +	pm_runtime_set_autosuspend_delay(tas_priv->dev, 3000);
+> +	pm_runtime_use_autosuspend(tas_priv->dev);
+> +	pm_runtime_mark_last_busy(tas_priv->dev);
+> +	pm_runtime_set_active(tas_priv->dev);
+> +	pm_runtime_get_noresume(tas_priv->dev);
+
+this ..
+
+> +	pm_runtime_enable(tas_priv->dev);
+> +
+> +	pm_runtime_put_autosuspend(tas_priv->dev);
+
+and this should be removed IMHO. it makes no sense to me.
+
+> +
+> +	ret = component_add(tas_priv->dev, &tas2781_hda_comp_ops);
+> +	if (ret) {
+> +		dev_err(tas_priv->dev, "Register component failed: %d\n", ret);
+> +		pm_runtime_disable(tas_priv->dev);
+> +		goto err;
+> +	}
+> +
+> +	tas2781_reset(tas_priv);
+> +err:
+> +	if (ret)
+> +		tas2781_hda_remove(&clt->dev);
+> +	return ret;
+> +}
+> +
+> +static void tas2781_hda_i2c_remove(struct i2c_client *clt)
+> +{
+> +	tas2781_hda_remove(&clt->dev);
+
+so for symmetry that's where pm_runtime needs to be disabled.
+
+
+> +static int tas2781_system_suspend(struct device *dev)
+> +{
+> +	struct tasdevice_priv *tas_priv = dev_get_drvdata(dev);
+> +	int ret;
+> +
+> +	dev_dbg(tas_priv->dev, "System Suspend\n");
+> +
+> +	ret = pm_runtime_force_suspend(dev);
+> +	if (ret)
+> +		return ret;
+
+that's usually the other way around, for system suspend you either want
+the device to be pm_runtime active, or if it's already suspended do nothing.
+
+This is very odd to me.
+
+> +
+> +	/* Shutdown chip before system suspend */
+> +	regcache_cache_only(tas_priv->regmap, false);
+> +	tasdevice_tuning_switch(tas_priv, 1);
+> +	regcache_cache_only(tas_priv->regmap, true);
+> +	regcache_mark_dirty(tas_priv->regmap);
+> +
+> +	/*
+> +	 * Reset GPIO may be shared, so cannot reset here.
+> +	 * However beyond this point, amps may be powered down.
+> +	 */
+> +	return 0;
+> +}
+> +
+> +static int tas2781_system_resume(struct device *dev)
+> +{
+> +	struct tasdevice_priv *tas_priv = dev_get_drvdata(dev);
+> +	unsigned long calib_data_sz =
+> +		tas_priv->ndev * TASDEVICE_SPEAKER_CALIBRATION_SIZE;
+> +	int i, ret;
+> +
+> +	dev_dbg(tas_priv->dev, "System Resume\n");
+> +
+> +	ret = pm_runtime_force_resume(dev);
+> +	if (ret)
+> +		return ret;
+
+that's also not quite right IMHO, this doesn't follow the recommended
+sequences for power management.
+
+> +
+> +	mutex_lock(&tas_priv->codec_lock);
+> +
+> +	for (i = 0; i < tas_priv->ndev; i++) {
+> +		tas_priv->tasdevice[i].cur_book = -1;
+> +		tas_priv->tasdevice[i].cur_prog = -1;
+> +		tas_priv->tasdevice[i].cur_conf = -1;
+> +	}
+> +	tas2781_reset(tas_priv);
+> +	tasdevice_prmg_load(tas_priv, tas_priv->cur_prog);
+> +
+> +	/* If calibrated data occurs error, dsp will still work with default
+> +	 * calibrated data inside algo.
+> +	 */
+> +	if (tas_priv->cali_data.total_sz > calib_data_sz)
+> +		tas2781_apply_calib(tas_priv);
+> +	mutex_unlock(&tas_priv->codec_lock);
+> +
+> +	return 0;
+> +}
+
+> +MODULE_IMPORT_NS(SND_SOC_TAS2781_FMWLIB);
