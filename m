@@ -4,89 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3C98FC71159
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Aug 2023 16:32:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 360A7C7EE2A
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Aug 2023 16:37:54 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7E4D2E8B;
-	Fri, 18 Aug 2023 18:32:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7E4D2E8B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 23151E8B;
+	Fri, 18 Aug 2023 18:37:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 23151E8B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1692376373;
-	bh=SmKn4Iw5cq/477HRxNHLvymk733vwuosXcwGbLN9Q7I=;
+	s=default; t=1692376672;
+	bh=nU+PYoRb2aLoPBQUdYTgkTX6GiAk6mSXJt392VHyqBs=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=uB23zX6+13cPQ8Z3/1g7kxbIY33uWY7ObK8ZHMvpROy0eQ9M6zkLmaLfkcZSWoOcn
-	 gON0lozDYMdO3ffOroIzOlNoR6EPKc8uZ41J4FrjIj7sOuL2YLNtnfM7jf4oUOgIcO
-	 1vvTS8gH1qbeYAoekYJj/Pgy+20dM/aMiN/KUBfg=
+	b=vUWTvim45LNNloriZrwbDL3ijvfF2EBkAugpRXHXVcwFfU2ewfKc8p4R31sCv8O8V
+	 osDl52jdqC2MdIGa0dd6QjMtxUHOBfkc/FOAIy3KmbceQXeJU+Bw441jG1N+/BqPH0
+	 t/+P98rsmmAPXAmk2RBNrLnGJ8gsqKb7lEhc92rA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9D436F80510; Fri, 18 Aug 2023 18:31:25 +0200 (CEST)
+	id DCF96F80290; Fri, 18 Aug 2023 18:36:32 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3F895F80549;
-	Fri, 18 Aug 2023 18:31:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6B447F801EB;
+	Fri, 18 Aug 2023 18:36:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9F6D5F80549; Fri, 18 Aug 2023 18:31:22 +0200 (CEST)
+	id 5336FF801EB; Fri, 18 Aug 2023 18:36:28 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 3B6D5F80510
-	for <alsa-devel@alsa-project.org>; Fri, 18 Aug 2023 18:31:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3B6D5F80510
+	by alsa1.perex.cz (Postfix) with ESMTPS id 11790F800D1
+	for <alsa-devel@alsa-project.org>; Fri, 18 Aug 2023 18:36:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 11790F800D1
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=hfK/goM7
+ header.s=Intel header.b=nyRog28s
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692376275; x=1723912275;
+  t=1692376586; x=1723912586;
   h=message-id:date:mime-version:subject:to:cc:references:
    from:in-reply-to:content-transfer-encoding;
-  bh=SmKn4Iw5cq/477HRxNHLvymk733vwuosXcwGbLN9Q7I=;
-  b=hfK/goM7lO4E4/EyKkjcFaFu55WWCmYWopkkAbDYXK9hLUz6sFMUxhO3
-   wNj7f+LAtDSWB/OYeh5rwLBdoeaVl1p/WrJVDVxXXL9lz3q59TN5rznaR
-   JVGup8yoEHTFwkvh+jA58WxihMFD3oM8d0jIpRAtB7JeaCyjT8/88TrQ+
-   MlqEgQQdSElUieP3JP6b3fwjKTbs1cCHVSU8Dvj9f+CRyZ/I/OZgZfs+Y
-   Prl2L7ItDBC6C+JUNG/Jr8K3XIiK++gvpkUJM06/KSyoxHwXrVjPw2SB8
-   7RLuhmItHM5Gg+Em4o1rINVn2B2Srwcaye6Hew1yutCQgKLvPxtEUl+ZI
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10806"; a="370598191"
+  bh=nU+PYoRb2aLoPBQUdYTgkTX6GiAk6mSXJt392VHyqBs=;
+  b=nyRog28su2MUbE6PoFV1kbfaj0PHjqoNlDfS24fxhtnrCmRQh6EOEaLX
+   MaI/RzMWYFIacs9HaFj2ZItNA1bj6t6sgBtF9KRlFRWn7XjEdK94wlYvP
+   t2N65mV6RR59LrsA/lbs7O/d+LjML2At6Q/7cpWDR6iBWo0BG6Oi5fM3o
+   Ocqfx064iAyYytbNhOcFEhp0+2Z+MN/Ew3SMKE407BbmE8LA2gSQyQpJL
+   GZi2k1TiWFYUQF3OW7XN5hex5SGEUTItheodsVR84G0IMga27mV21c5KH
+   yTFFpumt15xpUOXYbxqpU+ZWOnxWt3r2NOIqoS1gY5UOCRmJAn1KXzELc
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10806"; a="370599340"
 X-IronPort-AV: E=Sophos;i="6.01,183,1684825200";
-   d="scan'208";a="370598191"
+   d="scan'208";a="370599340"
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
   by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 Aug 2023 09:31:11 -0700
+ 18 Aug 2023 09:36:22 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10806"; a="728648300"
+X-IronPort-AV: E=McAfee;i="6600,9927,10806"; a="728649714"
 X-IronPort-AV: E=Sophos;i="6.01,183,1684825200";
-   d="scan'208";a="728648300"
+   d="scan'208";a="728649714"
 Received: from enewberr-mobl.amr.corp.intel.com (HELO [10.212.37.100])
  ([10.212.37.100])
   by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 Aug 2023 09:31:09 -0700
-Message-ID: <4c1b44b5-995a-fac7-a72b-89b8bf816dd2@linux.intel.com>
-Date: Fri, 18 Aug 2023 11:00:34 -0500
+ 18 Aug 2023 09:36:17 -0700
+Message-ID: <72960354-3f69-e2fa-e7b0-dc8b61ca4940@linux.intel.com>
+Date: Fri, 18 Aug 2023 11:36:16 -0500
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Firefox/102.0 Thunderbird/102.13.0
-Subject: Re: [PATCH v3 2/2] ALSA: hda/tas2781: Add tas2781 HDA driver
+Subject: Re: [PATCH v4 1/2] ALSA: hda/tas2781: Add tas2781 HDA driver
 Content-Language: en-US
-To: Shenghao Ding <shenghao-ding@ti.com>, tiwai@suse.de
+To: Takashi Iwai <tiwai@suse.de>, Shenghao Ding <shenghao-ding@ti.com>
 Cc: robh+dt@kernel.org, lgirdwood@gmail.com, perex@perex.cz, kevin-lu@ti.com,
  13916275206@139.com, alsa-devel@alsa-project.org,
  linux-kernel@vger.kernel.org, liam.r.girdwood@intel.com,
  mengdong.lin@intel.com, baojun.xu@ti.com, thomas.gfeller@q-drop.com,
- peeyush@ti.com, navada@ti.com, broonie@kernel.org, gentuser@gmail.com,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-References: <20230818085558.1431-1-shenghao-ding@ti.com>
- <20230818085558.1431-2-shenghao-ding@ti.com>
+ peeyush@ti.com, navada@ti.com, broonie@kernel.org, gentuser@gmail.com
+References: <20230818085836.1442-1-shenghao-ding@ti.com>
+ <87pm3kk63a.wl-tiwai@suse.de>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20230818085558.1431-2-shenghao-ding@ti.com>
+In-Reply-To: <87pm3kk63a.wl-tiwai@suse.de>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-ID-Hash: Q4UWKRLRUAAA65UJNKV4RKQLISSOV54J
-X-Message-ID-Hash: Q4UWKRLRUAAA65UJNKV4RKQLISSOV54J
+Message-ID-Hash: 72UNDK65WYODI6IEHHWWC6OFRAHDR56F
+X-Message-ID-Hash: 72UNDK65WYODI6IEHHWWC6OFRAHDR56F
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -99,179 +98,33 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Q4UWKRLRUAAA65UJNKV4RKQLISSOV54J/>
-List-Archive: <>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/72UNDK65WYODI6IEHHWWC6OFRAHDR56F/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The first patch in this series has the same commit title as the second
-one, can this be updated with a more meaningful description of the two
-patches?
 
 
-> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-> index 44fccfb93cff..ba1b02ed184a 100644
-> --- a/sound/pci/hda/patch_realtek.c
-> +++ b/sound/pci/hda/patch_realtek.c
-> @@ -6721,7 +6721,7 @@ static void comp_generic_playback_hook(struct hda_pcm_stream *hinfo, struct hda_
->  	}
->  }
->  
-> -struct cs35l41_dev_name {
-> +struct scodec_dev_name {
+On 8/18/23 05:17, Takashi Iwai wrote:
+> On Fri, 18 Aug 2023 10:58:35 +0200,
+> Shenghao Ding wrote:
+>>
+>> Integrate tas2781 configs for Lenovo Laptops. All of the tas2781s in the
+>> laptop will be aggregated as one audio device. The code support realtek
+>> as the primary codec. Rename "struct cs35l41_dev_name" to
+>> "struct scodec_dev_name" for all other side codecs instead of the certain
+>> one.
+>>
+>> Signed-off-by: Shenghao Ding <shenghao-ding@ti.com>
+> 
+> Now I applied both patches to for-next branch.
+> 
+> The patch 2 needed some minor adjustment in Kconfig to be applied to
+> the latest branch, but I resolved it locally.
 
-you are changing things in patch_realtek.c that are completely unrelated
-to the tas2781, usually the recommendation is that the changes have to
-be part of a different patch so that the real addition of tas2781 parts
-are easier to review.
-
->  	const char *bus;
->  	const char *hid;
->  	int index;
-> @@ -6730,7 +6730,7 @@ struct cs35l41_dev_name {
->  /* match the device name in a slightly relaxed manner */
->  static int comp_match_cs35l41_dev_name(struct device *dev, void *data)
->  {
-> -	struct cs35l41_dev_name *p = data;
-> +	struct scodec_dev_name *p = data;
->  	const char *d = dev_name(dev);
->  	int n = strlen(p->bus);
->  	char tmp[32];
-> @@ -6746,12 +6746,32 @@ static int comp_match_cs35l41_dev_name(struct device *dev, void *data)
->  	return !strcmp(d + n, tmp);
->  }
->  
-> +static int comp_match_tas2781_dev_name(struct device *dev,
-> +	void *data)
-> +{
-> +	struct scodec_dev_name *p = data;
-> +	const char *d = dev_name(dev);
-> +	int n = strlen(p->bus);
-> +	char tmp[32];
-> +
-> +	/* check the bus name */
-> +	if (strncmp(d, p->bus, n))
-> +		return 0;
-> +	/* skip the bus number */
-> +	if (isdigit(d[n]))
-> +		n++;
-> +	/* the rest must be exact matching */
-> +	snprintf(tmp, sizeof(tmp), "-%s:00", p->hid);
-
-ACPI can sometimes add :01 suffixes, this looks like the re-invention of
-an ACPI helper?
-
-Adding Andy for the ACPI review.
-
-> +
-> +	return !strcmp(d + n, tmp);
-> +}
-> +
->  static void cs35l41_generic_fixup(struct hda_codec *cdc, int action, const char *bus,
->  				  const char *hid, int count)
->  {
->  	struct device *dev = hda_codec_dev(cdc);
->  	struct alc_spec *spec = cdc->spec;
-> -	struct cs35l41_dev_name *rec;
-> +	struct scodec_dev_name *rec;
->  	int ret, i;
->  
->  	switch (action) {
-> @@ -6779,6 +6799,41 @@ static void cs35l41_generic_fixup(struct hda_codec *cdc, int action, const char
->  	}
->  }
->  
-> +static void tas2781_generic_fixup(struct hda_codec *cdc, int action,
-> +	const char *bus, const char *hid)
-> +{
-> +	struct device *dev = hda_codec_dev(cdc);
-> +	struct alc_spec *spec = cdc->spec;
-> +	struct scodec_dev_name *rec;
-> +	int ret;
-> +
-> +	switch (action) {
-> +	case HDA_FIXUP_ACT_PRE_PROBE:
-> +		rec = devm_kmalloc(dev, sizeof(*rec), GFP_KERNEL);
-> +		if (!rec)
-> +			return;
-> +		rec->bus = bus;
-> +		rec->hid = hid;
-> +		rec->index = 0;
-> +		spec->comps[0].codec = cdc;
-> +		component_match_add(dev, &spec->match,
-> +			comp_match_tas2781_dev_name, rec);
-> +		ret = component_master_add_with_match(dev, &comp_master_ops,
-> +			spec->match);
-> +		if (ret)
-> +			codec_err(cdc,
-> +				"Fail to register component aggregator %d\n",
-> +				ret);
-> +		else
-> +			spec->gen.pcm_playback_hook =
-> +				comp_generic_playback_hook;
-> +		break;
-> +	case HDA_FIXUP_ACT_FREE:
-
-This is the first use of FIXUP_ACT_FREE in this function, is this
-required/intentional?
-
-> +		component_master_del(dev, &comp_master_ops);
-
-Also is there a need to test that the PRE_PROBE actually worked?
-
-> +		break;
-> +	}
-> +}
-> +
->  static void cs35l41_fixup_i2c_two(struct hda_codec *cdc, const struct hda_fixup *fix, int action)
->  {
->  	cs35l41_generic_fixup(cdc, action, "i2c", "CSC3551", 2);
-> @@ -6806,6 +6861,12 @@ static void alc287_fixup_legion_16ithg6_speakers(struct hda_codec *cdc, const st
->  	cs35l41_generic_fixup(cdc, action, "i2c", "CLSA0101", 2);
->  }
->  
-> +static void tas2781_fixup_i2c(struct hda_codec *cdc,
-> +	const struct hda_fixup *fix, int action)
-> +{
-> +	 tas2781_generic_fixup(cdc, action, "i2c", "TIAS2781");
-
-TI ACPI ID is TXNW
-
-https://uefi.org/ACPI_ID_List?search=TEXAS
-
-There's also a PNP ID PXN
-
-https://uefi.org/PNP_ID_List?search=TEXAS
-
-"TIAS" looks like an invented identifier. It's not uncommon but should
-be recorded with a comment if I am not mistaken.
-
-
-> +}
-> +
->  /* for alc295_fixup_hp_top_speakers */
->  #include "hp_x360_helper.c"
->  
-> @@ -7231,6 +7292,7 @@ enum {
->  	ALC295_FIXUP_DELL_INSPIRON_TOP_SPEAKERS,
->  	ALC236_FIXUP_DELL_DUAL_CODECS,
->  	ALC287_FIXUP_CS35L41_I2C_2_THINKPAD_ACPI,
-> +	ALC287_FIXUP_TAS2781_I2C,
->  };
->  
->  /* A special fixup for Lenovo C940 and Yoga Duet 7;
-> @@ -9309,6 +9371,12 @@ static const struct hda_fixup alc269_fixups[] = {
->  		.chained = true,
->  		.chain_id = ALC269_FIXUP_THINKPAD_ACPI,
->  	},
-> +	[ALC287_FIXUP_TAS2781_I2C] = {
-> +		.type = HDA_FIXUP_FUNC,
-> +		.v.func = tas2781_fixup_i2c,
-> +		.chained = true,
-> +		.chain_id = ALC269_FIXUP_THINKPAD_ACPI,
-
-If this is part of the THINKPAD chain, should this fixup name also refer
-to THINKPAD, as e.g. ALC287_FIXUP_CS35L41_I2C_2_THINKPAD_ACPI
+There are a number of issues I just reported, I guess they will have to
+be handled with a follow-up patch now?
