@@ -4,64 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3570DC7EE2C
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Aug 2023 16:42:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9FB01C7EE2A
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Aug 2023 16:42:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 98BC4E93;
-	Fri, 18 Aug 2023 18:41:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 98BC4E93
+	by alsa0.perex.cz (Postfix) with ESMTPS id C0F47EB1;
+	Fri, 18 Aug 2023 18:41:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C0F47EB1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1692376949;
-	bh=A5gy8AlwI1bM/6pbQN6xN09ieGONbAOBnreq327GgSA=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=Ctt/KFYTwB34cPYCdO0kvdFgW7PdkuVVAPdRtqOvWYuGaqQrRJyVuwzmcpQ1oE5EE
-	 b/Dh0MCFeO2AWke7FLdoOj8lo3usxS11DfIza9mDlVz7klNiI2xWkVNZU5KTaInANI
-	 sUn+q2KnBqJGghOTkfO4Z0q6FHP2TPYkcJd6r1lE=
+	s=default; t=1692376965;
+	bh=qjqsLZgoWWABMCmQMI6fW3uC4lellPWCoMxzjW9sDzE=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=JjZW6PDIbuptwzoaZqg63MXzB91RtusAIhIVnuNo/634R5aBpoGogRXdTWe9zrGJo
+	 P/FsC/mMcz2LwDdpURyacCuds8GYTOGU9TFOX8C6WYmbzPJM62CsYyF9Hzcho4jPnx
+	 VM30YN+zt2QuC6vyW6zqXMTMKmrhryoWqvdEM6sQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id EA2ECF8059F; Fri, 18 Aug 2023 18:40:17 +0200 (CEST)
+	id 90B1BF805B0; Fri, 18 Aug 2023 18:40:27 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 26106F8059F;
-	Fri, 18 Aug 2023 18:40:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A65FBF805AA;
+	Fri, 18 Aug 2023 18:40:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D017BF80558; Fri, 18 Aug 2023 18:40:09 +0200 (CEST)
+	id 0AF5AF805AE; Fri, 18 Aug 2023 18:40:22 +0200 (CEST)
 Received: from pegase1.c-s.fr (unknown [90.115.179.12])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 90BA6F80027
-	for <alsa-devel@alsa-project.org>; Fri, 18 Aug 2023 18:40:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 90BA6F80027
+	by alsa1.perex.cz (Postfix) with ESMTPS id 60E6AF8057C
+	for <alsa-devel@alsa-project.org>; Fri, 18 Aug 2023 18:40:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 60E6AF8057C
 Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
-	by localhost (Postfix) with ESMTP id 4RS6zd3Vwdz9vh6;
-	Fri, 18 Aug 2023 18:39:57 +0200 (CEST)
+	by localhost (Postfix) with ESMTP id 4RS6zn48npz9vhh;
+	Fri, 18 Aug 2023 18:40:05 +0200 (CEST)
 X-Virus-Scanned: amavisd-new at c-s.fr
 Received: from pegase1.c-s.fr ([192.168.12.234])
 	by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id ok8P6jc0Im6f; Fri, 18 Aug 2023 18:39:57 +0200 (CEST)
+	with ESMTP id CTj05KtDi1lF; Fri, 18 Aug 2023 18:40:05 +0200 (CEST)
 Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-	by pegase1.c-s.fr (Postfix) with ESMTP id 4RS6zb6BlNz9vh2;
-	Fri, 18 Aug 2023 18:39:55 +0200 (CEST)
+	by pegase1.c-s.fr (Postfix) with ESMTP id 4RS6zl0SZFz9vhF;
+	Fri, 18 Aug 2023 18:40:03 +0200 (CEST)
 Received: from localhost (localhost [127.0.0.1])
-	by messagerie.si.c-s.fr (Postfix) with ESMTP id CBB398B763;
-	Fri, 18 Aug 2023 18:39:55 +0200 (CEST)
+	by messagerie.si.c-s.fr (Postfix) with ESMTP id 04FBB8B786;
+	Fri, 18 Aug 2023 18:40:03 +0200 (CEST)
 X-Virus-Scanned: amavisd-new at c-s.fr
 Received: from messagerie.si.c-s.fr ([127.0.0.1])
 	by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-	with ESMTP id 5beDYZ15lM4Q; Fri, 18 Aug 2023 18:39:55 +0200 (CEST)
+	with ESMTP id W0rjflobIpTw; Fri, 18 Aug 2023 18:40:02 +0200 (CEST)
 Received: from PO20335.IDSI0.si.c-s.fr (PO17626.IDSI0.si.c-s.fr
  [172.19.54.29])
-	by messagerie.si.c-s.fr (Postfix) with ESMTP id 2064B8B76C;
-	Fri, 18 Aug 2023 18:39:55 +0200 (CEST)
+	by messagerie.si.c-s.fr (Postfix) with ESMTP id 544DD8B763;
+	Fri, 18 Aug 2023 18:40:01 +0200 (CEST)
 Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
-	by PO20335.IDSI0.si.c-s.fr (8.17.1/8.16.1) with ESMTPS id 37IGdnC1141935
+	by PO20335.IDSI0.si.c-s.fr (8.17.1/8.16.1) with ESMTPS id 37IGdvCo141969
 	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-	Fri, 18 Aug 2023 18:39:49 +0200
+	Fri, 18 Aug 2023 18:39:57 +0200
 Received: (from chleroy@localhost)
-	by PO20335.IDSI0.si.c-s.fr (8.17.1/8.17.1/Submit) id 37IGdfGJ141922;
-	Fri, 18 Aug 2023 18:39:41 +0200
+	by PO20335.IDSI0.si.c-s.fr (8.17.1/8.17.1/Submit) id 37IGdvRm141968;
+	Fri, 18 Aug 2023 18:39:57 +0200
 X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to
  christophe.leroy@csgroup.eu using -f
 From: Christophe Leroy <christophe.leroy@csgroup.eu>
@@ -86,23 +87,24 @@ Cc: netdev@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
         linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         alsa-devel@alsa-project.org,
         Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: [PATCH v4 00/28] Add support for QMC HDLC,
- framer infrastruture and PEF2256 framer (v4)
-Date: Fri, 18 Aug 2023 18:38:54 +0200
-Message-ID: <cover.1692376360.git.christophe.leroy@csgroup.eu>
+Subject: [PATCH v4 07/28] net: wan: Add support for QMC HDLC
+Date: Fri, 18 Aug 2023 18:39:01 +0200
+Message-ID: 
+ <1f1c9f83995256e536bd059fafc678f40db509fc.1692376361.git.christophe.leroy@csgroup.eu>
 X-Mailer: git-send-email 2.41.0
+In-Reply-To: <cover.1692376360.git.christophe.leroy@csgroup.eu>
+References: <cover.1692376360.git.christophe.leroy@csgroup.eu>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1692376733; l=10866;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1692376734; l=13839;
  i=christophe.leroy@csgroup.eu; s=20211009; h=from:subject:message-id;
- bh=835G2+Dp1ba8DphKmbFdPRBzL9um9unEywPAxrJCQm4=;
- b=5997gMHilOeMKEtdjViSSuw8u3fSBtNmAMIrRP3FiSsrVAJNLPDw4ypo8RmXIPrGZoappExBe
- ANDgcgUJ5EBDsC0hs5U1QAqDFXb5s53H6/6hBXFlU4ImeGfN/sjH0W5
+ bh=mRqPvUv6glTTWYDh9voj8egQIX71MFysXs+evtBCtMg=;
+ b=Me85v7WY86Q5ng5ZQrTXl5ZdFUB0F86gbA9HTC1qCn1+zVHCpCXpISZK/dFDlqsRsyAYZQ5s0
+ sq+jqpJzhxwD87maa8S99S2QtEcCLvfOQ7PZ6vM1aKy5u1vLEruqlFs
 X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519;
  pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: BXYQNRSGXFSGMOL4SOW4YBONRD2KP6IE
-X-Message-ID-Hash: BXYQNRSGXFSGMOL4SOW4YBONRD2KP6IE
+Message-ID-Hash: GNCD77ICINJJNGHSQW2NTICDVZ4JBICE
+X-Message-ID-Hash: GNCD77ICINJJNGHSQW2NTICDVZ4JBICE
 X-MailFrom: christophe.leroy@csgroup.eu
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -115,7 +117,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BXYQNRSGXFSGMOL4SOW4YBONRD2KP6IE/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GNCD77ICINJJNGHSQW2NTICDVZ4JBICE/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -126,251 +128,482 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Herve Codina <herve.codina@bootlin.com>
 
-Hi,
+The QMC HDLC driver provides support for HDLC using the QMC (QUICC
+Multichannel Controller) to transfer the HDLC data.
 
-TLDR: This is a resend of v3 with a build failure fix in patch 21. No other changes.
-
-I have a system where I need to handle an HDLC interface and some audio
-data.
-
-The HDLC data are transferred using a TDM bus on which a PEF2256
-(E1/T1 framer) is present. The PEF2256 transfers data from/to the TDM
-bus to/from the E1 line. This PEF2256 is connected to a PowerQUICC SoC
-for the control path and the TDM is connected to the SoC (QMC component)
-for the data path.
-
->From the QMC HDLC driver, I need to handle HDLC data using the QMC,
-carrier detection using the PEF2256 (E1 line carrier) and set/get some
-PEF2256 configuration.
-
-The QMC HDLC driver considers the PEF2256 as a generic framer.
-It performs operations that involve the PEF2256 through the generic
-framer API.
-
-The audio data are exchanged with the PEF2256 using a CPU DAI connected
-to the TDM bus through the QMC and the PEF2256 needs to be seen as a
-codec in order to be linked to the CPU DAI.
-The codec handles the carrier detection using the PEF2256 and reports
-the carrier state to the ALSA subsystem using the ASoC jack detection.
-
-The codec, even if instantiated by the PEF2256 driver, considers the
-PEF2256 as a generic framer.
-
-The generic framer has:
- - 2 consumers (QMC HDLC drv and codec)
- - 1 provider (PEF2256)
-
-So, the design is the following:
-                        +------------------+           +---------+
-                        | QMC              | <- TDM -> | PEF2256 | <-> E1
-     +---------+        |  +-------------+ |           |         |
-     | CPU DAI | <-data--> | QMC channel | |           |         |
-     +---------+        |  +-------------+ |           |         |
-+--------------+        |  +-------------+ |           |         |
-| QMC HDLC drv | <-data--> | QMC channel | |           |         |
-+--------------+        |  +-------------+ |           |         |
-     ^                  +------------------+           |         |
-     |   +--------+     +-------------+                |         |
-     +-> | framer | <-> | PEF2256 drv | <- local bus ->|         |
-         |        |     |             |                +---------+
-     +-> |        |     |             |
-     |   +--------+     |  +-------+  |
-     +-------------------> | codec |  |
-                        |  +-------+  |
-                        +-------------+
-
-Further more, the TDM timeslots used by the QMC HDLC driver need to be
-configured at runtime (QMC dynamic timeslots).
-
-Several weeks ago, I sent two series related to this topic:
- - Add the Lantiq PEF2256 audio support [1]
- - RFC Add support for QMC HDLC and PHY [2]
-This current series is a rework of these two series taking into account
-feedbacks previously received.
-
-In order to implement all of this, I do the following:
- 1) Perform some fixes (patches 1, 2, 3, 4)
- 2) Introduce the QMC HDLC driver (patches 5, 6, 7)
- 3) Add QMC dynamic timeslot support (patches 8 - 18)
- 4) Add timeslots change support in QMC HDLC (patch 19)
- 5) Introduce framer infrastructure (patch 20)
- 6) Add PEF2256 framer provider (patches 11, 22, 23, 24, 25)
- 7) Add framer codec as a framer consumer (patch 26)
- 8) Add framer support as a framer consumer in QMC HDLC (patch 27, 28)
-
-The series contains the full story and detailed modifications.
-If needed, the series can be split and/or commmits can be squashed.
-Let me know.
-
-Compare to the previous iteration
-  https://lore.kernel.org/linux-kernel/20230726150225.483464-1-herve.codina@bootlin.com/
-This v3 series mainly:
- - Fixes some implementation details.
- - Adds a new patch (patch 5) to remove existing inline keyword in the
-   QMC driver.
- - Squashes patches related to the QMC HDLC binding together.
-
-Best regards,
-Hervé
-
-[1]: https://lore.kernel.org/all/20230417171601.74656-1-herve.codina@bootlin.com/
-[2]: https://lore.kernel.org/all/20230323103154.264546-1-herve.codina@bootlin.com/
-
-Changes v3 -> v4
-  - Fixes build failure with CONFIG_MODULES in patch 21 (net: wan: Add framer framework support)
-
-Changes v2 -> v3
-
-  - Patches 1, 2, 3, 4
-    Add 'Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>'
-
-  - New patch
-    Remove inline keyword from the existing registers accessors helpers
-
-  - Patch 6 (patches 5, 27 in v2)
-    Update the binding title
-    Squash patch 27
-
-  - Patch 7 (patch 6 in v2)
-    Remove the cast in netdev_to_qmc_hdlc()
-    Add 'Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>'
-
-  - Patch 8 (patch 7 in v2): No change
-
-  - Patches 9, 10 (patches 8, 9 in v2)
-    Add 'Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>'
-
-  - Patch 11 (patch 10 in v2)
-    Remove inline keyword from the introduced qmc_clrsetbits16() helper
-    Add 'Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>'
-
-  - Patches 12, 13, 14, 15, 16, 17, 18, 19, 20
-    Add 'Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>'
-
-  - Patch 21 (patch 20 in v2)
-    Remove unneeded framer NULL pointer check
-    Add 'Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>'
-
-  - Patch 22 (patch 21 in v2)
-    Change sclkr and sclkx clocks description
-    Remove the framer phandle property from the framer subnodes
-    (ie. from framer-codec nodes)
-
-  - Patch 23 (patch 22 in v2)
-    Initialize 'disabled' variable at declaration
-    Fix commit log
-    Add 'Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>'
-
-  - Patch 24 (patch 23 in v2)
-    Remove inline keyword from the existing registers accessors helpers
-    Use dev_warn_ratelimited() in default interrupt handler
-    Add 'Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>'
-
-  - Patch 25 (patch 24 in v2)
-    Replace #include "linux/bitfield.h" by #include <linux/bitfield.h>
-    Fold the pinctrl anonymous struct into the struct pef2256_pinctrl
-    Update commit log
-    Add 'Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>'
-
-  - Patch 26 (patch 25 in v2)
-    Add 'Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>'
-
-  - Patch 27 (patch 26 in v2)
-    Fix error message
-    Changed the ch.max computation in framer_dai_hw_rule_channels_by_format()
-    Add 'Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>'
-
-  - Patch 28
-    Add 'Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>'
-
-Changes v1 -> v2
-  - Patches 1, 2 (New in v2)
-    Fix __iomem addresses declaration
-
-  - Patch 19 (17 in v1)
-    Fix a compilation warning
-
-  - Patch 26 (24 in v1)
-    Fix a typo in Kconfig file
-    Fix issues raised by sparse (make C=1)
-
-Herve Codina (28):
-  soc: fsl: cpm1: tsa: Fix __iomem addresses declaration
-  soc: fsl: cpm1: qmc: Fix __iomem addresses declaration
-  soc: fsl: cpm1: qmc: Fix rx channel reset
-  soc: fsl: cpm1: qmc: Extend the API to provide Rx status
-  soc: fsl: cpm1: qmc: Remove inline function specifiers
-  dt-bindings: net: Add support for QMC HDLC
-  net: wan: Add support for QMC HDLC
-  MAINTAINERS: Add the Freescale QMC HDLC driver entry
-  soc: fsl: cpm1: qmc: Introduce available timeslots masks
-  soc: fsl: cpm1: qmc: Rename qmc_setup_tsa* to qmc_init_tsa*
-  soc: fsl: cpm1: qmc: Introduce qmc_chan_setup_tsa*
-  soc: fsl: cpm1: qmc: Remove no more needed checks from
-    qmc_check_chans()
-  soc: fsl: cpm1: qmc: Check available timeslots in qmc_check_chans()
-  soc: fsl: cpm1: qmc: Add support for disabling channel TSA entries
-  soc: fsl: cpm1: qmc: Split Tx and Rx TSA entries setup
-  soc: fsl: cpm1: qmc: Introduce is_tsa_64rxtx flag
-  soc: fsl: cpm1: qmc: Handle timeslot entries at channel start() and
-    stop()
-  soc: fsl: cpm1: qmc: Remove timeslots handling from setup_chan()
-  soc: fsl: cpm1: qmc: Introduce functions to change timeslots at
-    runtime
-  wan: qmc_hdlc: Add runtime timeslots changes support
-  net: wan: Add framer framework support
-  dt-bindings: net: Add the Lantiq PEF2256 E1/T1/J1 framer
-  mfd: core: Ensure disabled devices are skiped without aborting
-  net: wan: framer: Add support for the Lantiq PEF2256 framer
-  pinctrl: Add support for the Lantic PEF2256 pinmux
-  MAINTAINERS: Add the Lantiq PEF2256 driver entry
-  ASoC: codecs: Add support for the framer codec
-  net: wan: fsl_qmc_hdlc: Add framer support
-
- .../devicetree/bindings/net/fsl,qmc-hdlc.yaml |  46 +
- .../bindings/net/lantiq,pef2256.yaml          | 219 +++++
- MAINTAINERS                                   |  17 +
- drivers/mfd/mfd-core.c                        |  17 +-
- drivers/net/wan/Kconfig                       |  14 +
- drivers/net/wan/Makefile                      |   3 +
- drivers/net/wan/framer/Kconfig                |  35 +
- drivers/net/wan/framer/Makefile               |   7 +
- drivers/net/wan/framer/framer-core.c          | 886 ++++++++++++++++++
- drivers/net/wan/framer/pef2256/Makefile       |   8 +
- drivers/net/wan/framer/pef2256/pef2256-regs.h | 250 +++++
- drivers/net/wan/framer/pef2256/pef2256.c      | 880 +++++++++++++++++
- drivers/net/wan/fsl_qmc_hdlc.c                | 820 ++++++++++++++++
- drivers/pinctrl/Kconfig                       |  14 +
- drivers/pinctrl/Makefile                      |   1 +
- drivers/pinctrl/pinctrl-pef2256-regs.h        |  65 ++
- drivers/pinctrl/pinctrl-pef2256.c             | 308 ++++++
- drivers/soc/fsl/qe/qmc.c                      | 501 ++++++++--
- drivers/soc/fsl/qe/tsa.c                      |  22 +-
- include/linux/framer/framer-provider.h        | 194 ++++
- include/linux/framer/framer.h                 | 199 ++++
- include/linux/framer/pef2256.h                |  31 +
- include/soc/fsl/qe/qmc.h                      |  25 +-
- sound/soc/codecs/Kconfig                      |  15 +
- sound/soc/codecs/Makefile                     |   2 +
- sound/soc/codecs/framer-codec.c               | 413 ++++++++
- sound/soc/fsl/fsl_qmc_audio.c                 |   2 +-
- 27 files changed, 4872 insertions(+), 122 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/net/fsl,qmc-hdlc.yaml
- create mode 100644 Documentation/devicetree/bindings/net/lantiq,pef2256.yaml
- create mode 100644 drivers/net/wan/framer/Kconfig
- create mode 100644 drivers/net/wan/framer/Makefile
- create mode 100644 drivers/net/wan/framer/framer-core.c
- create mode 100644 drivers/net/wan/framer/pef2256/Makefile
- create mode 100644 drivers/net/wan/framer/pef2256/pef2256-regs.h
- create mode 100644 drivers/net/wan/framer/pef2256/pef2256.c
+Signed-off-by: Herve Codina <herve.codina@bootlin.com>
+Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ drivers/net/wan/Kconfig        |  12 +
+ drivers/net/wan/Makefile       |   1 +
+ drivers/net/wan/fsl_qmc_hdlc.c | 422 +++++++++++++++++++++++++++++++++
+ 3 files changed, 435 insertions(+)
  create mode 100644 drivers/net/wan/fsl_qmc_hdlc.c
- create mode 100644 drivers/pinctrl/pinctrl-pef2256-regs.h
- create mode 100644 drivers/pinctrl/pinctrl-pef2256.c
- create mode 100644 include/linux/framer/framer-provider.h
- create mode 100644 include/linux/framer/framer.h
- create mode 100644 include/linux/framer/pef2256.h
- create mode 100644 sound/soc/codecs/framer-codec.c
 
+diff --git a/drivers/net/wan/Kconfig b/drivers/net/wan/Kconfig
+index dcb069dde66b..8de99f4b647b 100644
+--- a/drivers/net/wan/Kconfig
++++ b/drivers/net/wan/Kconfig
+@@ -195,6 +195,18 @@ config FARSYNC
+ 	  To compile this driver as a module, choose M here: the
+ 	  module will be called farsync.
+ 
++config FSL_QMC_HDLC
++	tristate "Freescale QMC HDLC support"
++	depends on HDLC
++	depends on CPM_QMC
++	help
++	  HDLC support using the Freescale QUICC Multichannel Controller (QMC).
++
++	  To compile this driver as a module, choose M here: the
++	  module will be called fsl_qmc_hdlc.
++
++	  If unsure, say N.
++
+ config FSL_UCC_HDLC
+ 	tristate "Freescale QUICC Engine HDLC support"
+ 	depends on HDLC
+diff --git a/drivers/net/wan/Makefile b/drivers/net/wan/Makefile
+index 5bec8fae47f8..f338f4830626 100644
+--- a/drivers/net/wan/Makefile
++++ b/drivers/net/wan/Makefile
+@@ -23,6 +23,7 @@ obj-$(CONFIG_WANXL)		+= wanxl.o
+ obj-$(CONFIG_PCI200SYN)		+= pci200syn.o
+ obj-$(CONFIG_PC300TOO)		+= pc300too.o
+ obj-$(CONFIG_IXP4XX_HSS)	+= ixp4xx_hss.o
++obj-$(CONFIG_FSL_QMC_HDLC)	+= fsl_qmc_hdlc.o
+ obj-$(CONFIG_FSL_UCC_HDLC)	+= fsl_ucc_hdlc.o
+ obj-$(CONFIG_SLIC_DS26522)	+= slic_ds26522.o
+ 
+diff --git a/drivers/net/wan/fsl_qmc_hdlc.c b/drivers/net/wan/fsl_qmc_hdlc.c
+new file mode 100644
+index 000000000000..4f84ac5fc63e
+--- /dev/null
++++ b/drivers/net/wan/fsl_qmc_hdlc.c
+@@ -0,0 +1,422 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Freescale QMC HDLC Device Driver
++ *
++ * Copyright 2023 CS GROUP France
++ *
++ * Author: Herve Codina <herve.codina@bootlin.com>
++ */
++
++#include <linux/dma-mapping.h>
++#include <linux/hdlc.h>
++#include <linux/module.h>
++#include <linux/of.h>
++#include <linux/of_platform.h>
++#include <linux/platform_device.h>
++#include <linux/slab.h>
++#include <soc/fsl/qe/qmc.h>
++
++struct qmc_hdlc_desc {
++	struct net_device *netdev;
++	struct sk_buff *skb; /* NULL if the descriptor is not in use */
++	dma_addr_t dma_addr;
++	size_t dma_size;
++};
++
++struct qmc_hdlc {
++	struct device *dev;
++	struct qmc_chan *qmc_chan;
++	struct net_device *netdev;
++	bool is_crc32;
++	spinlock_t tx_lock; /* Protect tx descriptors */
++	struct qmc_hdlc_desc tx_descs[8];
++	unsigned int tx_out;
++	struct qmc_hdlc_desc rx_descs[4];
++};
++
++static inline struct qmc_hdlc *netdev_to_qmc_hdlc(struct net_device *netdev)
++{
++	return dev_to_hdlc(netdev)->priv;
++}
++
++static int qmc_hdlc_recv_queue(struct qmc_hdlc *qmc_hdlc, struct qmc_hdlc_desc *desc, size_t size);
++
++#define QMC_HDLC_RX_ERROR_FLAGS (QMC_RX_FLAG_HDLC_OVF | \
++				 QMC_RX_FLAG_HDLC_UNA | \
++				 QMC_RX_FLAG_HDLC_ABORT | \
++				 QMC_RX_FLAG_HDLC_CRC)
++
++static void qmc_hcld_recv_complete(void *context, size_t length, unsigned int flags)
++{
++	struct qmc_hdlc_desc *desc = context;
++	struct net_device *netdev = desc->netdev;
++	struct qmc_hdlc *qmc_hdlc = netdev_to_qmc_hdlc(desc->netdev);
++	int ret;
++
++	dma_unmap_single(qmc_hdlc->dev, desc->dma_addr, desc->dma_size, DMA_FROM_DEVICE);
++
++	if (flags & QMC_HDLC_RX_ERROR_FLAGS) {
++		netdev->stats.rx_errors++;
++		if (flags & QMC_RX_FLAG_HDLC_OVF) /* Data overflow */
++			netdev->stats.rx_over_errors++;
++		if (flags & QMC_RX_FLAG_HDLC_UNA) /* bits received not multiple of 8 */
++			netdev->stats.rx_frame_errors++;
++		if (flags & QMC_RX_FLAG_HDLC_ABORT) /* Received an abort sequence */
++			netdev->stats.rx_frame_errors++;
++		if (flags & QMC_RX_FLAG_HDLC_CRC) /* CRC error */
++			netdev->stats.rx_crc_errors++;
++		kfree_skb(desc->skb);
++	} else {
++		netdev->stats.rx_packets++;
++		netdev->stats.rx_bytes += length;
++
++		skb_put(desc->skb, length);
++		desc->skb->protocol = hdlc_type_trans(desc->skb, netdev);
++		netif_rx(desc->skb);
++	}
++
++	/* Re-queue a transfer using the same descriptor */
++	ret = qmc_hdlc_recv_queue(qmc_hdlc, desc, desc->dma_size);
++	if (ret) {
++		dev_err(qmc_hdlc->dev, "queue recv desc failed (%d)\n", ret);
++		netdev->stats.rx_errors++;
++	}
++}
++
++static int qmc_hdlc_recv_queue(struct qmc_hdlc *qmc_hdlc, struct qmc_hdlc_desc *desc, size_t size)
++{
++	int ret;
++
++	desc->skb = dev_alloc_skb(size);
++	if (!desc->skb)
++		return -ENOMEM;
++
++	desc->dma_size = size;
++	desc->dma_addr = dma_map_single(qmc_hdlc->dev, desc->skb->data,
++					desc->dma_size, DMA_FROM_DEVICE);
++	ret = dma_mapping_error(qmc_hdlc->dev, desc->dma_addr);
++	if (ret)
++		goto free_skb;
++
++	ret = qmc_chan_read_submit(qmc_hdlc->qmc_chan, desc->dma_addr, desc->dma_size,
++				   qmc_hcld_recv_complete, desc);
++	if (ret)
++		goto dma_unmap;
++
++	return 0;
++
++dma_unmap:
++	dma_unmap_single(qmc_hdlc->dev, desc->dma_addr, desc->dma_size, DMA_FROM_DEVICE);
++free_skb:
++	kfree_skb(desc->skb);
++	desc->skb = NULL;
++	return ret;
++}
++
++static void qmc_hdlc_xmit_complete(void *context)
++{
++	struct qmc_hdlc_desc *desc = context;
++	struct net_device *netdev = desc->netdev;
++	struct qmc_hdlc *qmc_hdlc = netdev_to_qmc_hdlc(netdev);
++	struct sk_buff *skb;
++	unsigned long flags;
++
++	spin_lock_irqsave(&qmc_hdlc->tx_lock, flags);
++	dma_unmap_single(qmc_hdlc->dev, desc->dma_addr, desc->dma_size, DMA_TO_DEVICE);
++	skb = desc->skb;
++	desc->skb = NULL; /* Release the descriptor */
++	if (netif_queue_stopped(netdev))
++		netif_wake_queue(netdev);
++	spin_unlock_irqrestore(&qmc_hdlc->tx_lock, flags);
++
++	netdev->stats.tx_packets++;
++	netdev->stats.tx_bytes += skb->len;
++
++	dev_consume_skb_any(skb);
++}
++
++static int qmc_hdlc_xmit_queue(struct qmc_hdlc *qmc_hdlc, struct qmc_hdlc_desc *desc)
++{
++	int ret;
++
++	desc->dma_addr = dma_map_single(qmc_hdlc->dev, desc->skb->data,
++					desc->dma_size, DMA_TO_DEVICE);
++	ret = dma_mapping_error(qmc_hdlc->dev, desc->dma_addr);
++	if (ret) {
++		dev_err(qmc_hdlc->dev, "failed to map skb\n");
++		return ret;
++	}
++
++	ret = qmc_chan_write_submit(qmc_hdlc->qmc_chan, desc->dma_addr, desc->dma_size,
++				    qmc_hdlc_xmit_complete, desc);
++	if (ret) {
++		dev_err(qmc_hdlc->dev, "qmc chan write returns %d\n", ret);
++		dma_unmap_single(qmc_hdlc->dev, desc->dma_addr, desc->dma_size, DMA_TO_DEVICE);
++		return ret;
++	}
++
++	return 0;
++}
++
++static netdev_tx_t qmc_hdlc_xmit(struct sk_buff *skb, struct net_device *netdev)
++{
++	struct qmc_hdlc *qmc_hdlc = netdev_to_qmc_hdlc(netdev);
++	struct qmc_hdlc_desc *desc;
++	unsigned long flags;
++	int ret;
++
++	spin_lock_irqsave(&qmc_hdlc->tx_lock, flags);
++	desc = &qmc_hdlc->tx_descs[qmc_hdlc->tx_out];
++	if (desc->skb) {
++		/* Should never happen.
++		 * Previous xmit should have already stopped the queue.
++		 */
++		netif_stop_queue(netdev);
++		spin_unlock_irqrestore(&qmc_hdlc->tx_lock, flags);
++		return NETDEV_TX_BUSY;
++	}
++	spin_unlock_irqrestore(&qmc_hdlc->tx_lock, flags);
++
++	desc->netdev = netdev;
++	desc->dma_size = skb->len;
++	desc->skb = skb;
++	ret = qmc_hdlc_xmit_queue(qmc_hdlc, desc);
++	if (ret) {
++		desc->skb = NULL; /* Release the descriptor */
++		if (ret == -EBUSY) {
++			netif_stop_queue(netdev);
++			return NETDEV_TX_BUSY;
++		}
++		dev_kfree_skb(skb);
++		netdev->stats.tx_dropped++;
++		return NETDEV_TX_OK;
++	}
++
++	qmc_hdlc->tx_out = (qmc_hdlc->tx_out + 1) % ARRAY_SIZE(qmc_hdlc->tx_descs);
++
++	spin_lock_irqsave(&qmc_hdlc->tx_lock, flags);
++	if (qmc_hdlc->tx_descs[qmc_hdlc->tx_out].skb)
++		netif_stop_queue(netdev);
++	spin_unlock_irqrestore(&qmc_hdlc->tx_lock, flags);
++
++	return NETDEV_TX_OK;
++}
++
++static int qmc_hdlc_open(struct net_device *netdev)
++{
++	struct qmc_hdlc *qmc_hdlc = netdev_to_qmc_hdlc(netdev);
++	struct qmc_chan_param chan_param;
++	struct qmc_hdlc_desc *desc;
++	int ret;
++	int i;
++
++	ret = hdlc_open(netdev);
++	if (ret)
++		return ret;
++
++	chan_param.mode = QMC_HDLC;
++	/* HDLC_MAX_MRU + 4 for the CRC
++	 * HDLC_MAX_MRU + 4 + 8 for the CRC and some extraspace needed by the QMC
++	 */
++	chan_param.hdlc.max_rx_buf_size = HDLC_MAX_MRU + 4 + 8;
++	chan_param.hdlc.max_rx_frame_size = HDLC_MAX_MRU + 4;
++	chan_param.hdlc.is_crc32 = qmc_hdlc->is_crc32;
++	ret = qmc_chan_set_param(qmc_hdlc->qmc_chan, &chan_param);
++	if (ret) {
++		dev_err(qmc_hdlc->dev, "failed to set param (%d)\n", ret);
++		goto hdlc_close;
++	}
++
++	/* Queue as many recv descriptors as possible */
++	for (i = 0; i < ARRAY_SIZE(qmc_hdlc->rx_descs); i++) {
++		desc = &qmc_hdlc->rx_descs[i];
++
++		desc->netdev = netdev;
++		ret = qmc_hdlc_recv_queue(qmc_hdlc, desc, chan_param.hdlc.max_rx_buf_size);
++		if (ret) {
++			if (ret == -EBUSY && i != 0)
++				break; /* We use all the QMC chan capability */
++			goto free_desc;
++		}
++	}
++
++	ret = qmc_chan_start(qmc_hdlc->qmc_chan, QMC_CHAN_ALL);
++	if (ret) {
++		dev_err(qmc_hdlc->dev, "qmc chan start failed (%d)\n", ret);
++		goto free_desc;
++	}
++
++	netif_start_queue(netdev);
++
++	return 0;
++
++free_desc:
++	qmc_chan_reset(qmc_hdlc->qmc_chan, QMC_CHAN_ALL);
++	for (i = 0; i < ARRAY_SIZE(qmc_hdlc->rx_descs); i++) {
++		desc = &qmc_hdlc->rx_descs[i];
++		if (!desc->skb)
++			continue;
++		dma_unmap_single(qmc_hdlc->dev, desc->dma_addr, desc->dma_size,
++				 DMA_FROM_DEVICE);
++		kfree_skb(desc->skb);
++		desc->skb = NULL;
++	}
++hdlc_close:
++	hdlc_close(netdev);
++	return ret;
++}
++
++static int qmc_hdlc_close(struct net_device *netdev)
++{
++	struct qmc_hdlc *qmc_hdlc = netdev_to_qmc_hdlc(netdev);
++	struct qmc_hdlc_desc *desc;
++	int i;
++
++	netif_stop_queue(netdev);
++
++	qmc_chan_stop(qmc_hdlc->qmc_chan, QMC_CHAN_ALL);
++	qmc_chan_reset(qmc_hdlc->qmc_chan, QMC_CHAN_ALL);
++
++	for (i = 0; i < ARRAY_SIZE(qmc_hdlc->tx_descs); i++) {
++		desc = &qmc_hdlc->tx_descs[i];
++		if (!desc->skb)
++			continue;
++		dma_unmap_single(qmc_hdlc->dev, desc->dma_addr, desc->dma_size,
++				 DMA_TO_DEVICE);
++		kfree_skb(desc->skb);
++		desc->skb = NULL;
++	}
++
++	for (i = 0; i < ARRAY_SIZE(qmc_hdlc->rx_descs); i++) {
++		desc = &qmc_hdlc->rx_descs[i];
++		if (!desc->skb)
++			continue;
++		dma_unmap_single(qmc_hdlc->dev, desc->dma_addr, desc->dma_size,
++				 DMA_FROM_DEVICE);
++		kfree_skb(desc->skb);
++		desc->skb = NULL;
++	}
++
++	hdlc_close(netdev);
++	return 0;
++}
++
++static int qmc_hdlc_attach(struct net_device *netdev, unsigned short encoding,
++			   unsigned short parity)
++{
++	struct qmc_hdlc *qmc_hdlc = netdev_to_qmc_hdlc(netdev);
++
++	if (encoding != ENCODING_NRZ)
++		return -EINVAL;
++
++	switch (parity) {
++	case PARITY_CRC16_PR1_CCITT:
++		qmc_hdlc->is_crc32 = false;
++		break;
++	case PARITY_CRC32_PR1_CCITT:
++		qmc_hdlc->is_crc32 = true;
++		break;
++	default:
++		dev_err(qmc_hdlc->dev, "unsupported parity %u\n", parity);
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++static const struct net_device_ops qmc_hdlc_netdev_ops = {
++	.ndo_open       = qmc_hdlc_open,
++	.ndo_stop       = qmc_hdlc_close,
++	.ndo_start_xmit = hdlc_start_xmit,
++	.ndo_siocwandev	= hdlc_ioctl,
++};
++
++static int qmc_hdlc_probe(struct platform_device *pdev)
++{
++	struct device_node *np = pdev->dev.of_node;
++	struct qmc_hdlc *qmc_hdlc;
++	struct qmc_chan_info info;
++	hdlc_device *hdlc;
++	int ret;
++
++	qmc_hdlc = devm_kzalloc(&pdev->dev, sizeof(*qmc_hdlc), GFP_KERNEL);
++	if (!qmc_hdlc)
++		return -ENOMEM;
++
++	qmc_hdlc->dev = &pdev->dev;
++	spin_lock_init(&qmc_hdlc->tx_lock);
++
++	qmc_hdlc->qmc_chan = devm_qmc_chan_get_byphandle(qmc_hdlc->dev, np, "fsl,qmc-chan");
++	if (IS_ERR(qmc_hdlc->qmc_chan)) {
++		ret = PTR_ERR(qmc_hdlc->qmc_chan);
++		return dev_err_probe(qmc_hdlc->dev, ret, "get QMC channel failed\n");
++	}
++
++	ret = qmc_chan_get_info(qmc_hdlc->qmc_chan, &info);
++	if (ret) {
++		dev_err(qmc_hdlc->dev, "get QMC channel info failed %d\n", ret);
++		return ret;
++	}
++
++	if (info.mode != QMC_HDLC) {
++		dev_err(qmc_hdlc->dev, "QMC chan mode %d is not QMC_HDLC\n",
++			info.mode);
++		return -EINVAL;
++	}
++
++	qmc_hdlc->netdev = alloc_hdlcdev(qmc_hdlc);
++	if (!qmc_hdlc->netdev) {
++		dev_err(qmc_hdlc->dev, "failed to alloc hdlc dev\n");
++		return -ENOMEM;
++	}
++
++	hdlc = dev_to_hdlc(qmc_hdlc->netdev);
++	hdlc->attach = qmc_hdlc_attach;
++	hdlc->xmit = qmc_hdlc_xmit;
++	SET_NETDEV_DEV(qmc_hdlc->netdev, qmc_hdlc->dev);
++	qmc_hdlc->netdev->tx_queue_len = ARRAY_SIZE(qmc_hdlc->tx_descs);
++	qmc_hdlc->netdev->netdev_ops = &qmc_hdlc_netdev_ops;
++	ret = register_hdlc_device(qmc_hdlc->netdev);
++	if (ret) {
++		dev_err(qmc_hdlc->dev, "failed to register hdlc device (%d)\n", ret);
++		goto free_netdev;
++	}
++
++	platform_set_drvdata(pdev, qmc_hdlc);
++
++	return 0;
++
++free_netdev:
++	free_netdev(qmc_hdlc->netdev);
++	return ret;
++}
++
++static int qmc_hdlc_remove(struct platform_device *pdev)
++{
++	struct qmc_hdlc *qmc_hdlc = platform_get_drvdata(pdev);
++
++	unregister_hdlc_device(qmc_hdlc->netdev);
++	free_netdev(qmc_hdlc->netdev);
++
++	return 0;
++}
++
++static const struct of_device_id qmc_hdlc_id_table[] = {
++	{ .compatible = "fsl,qmc-hdlc" },
++	{} /* sentinel */
++};
++MODULE_DEVICE_TABLE(of, qmc_hdlc_driver);
++
++static struct platform_driver qmc_hdlc_driver = {
++	.driver = {
++		.name = "fsl-qmc-hdlc",
++		.of_match_table = qmc_hdlc_id_table,
++	},
++	.probe = qmc_hdlc_probe,
++	.remove = qmc_hdlc_remove,
++};
++module_platform_driver(qmc_hdlc_driver);
++
++MODULE_AUTHOR("Herve Codina <herve.codina@bootlin.com>");
++MODULE_DESCRIPTION("QMC HDLC driver");
++MODULE_LICENSE("GPL");
 -- 
 2.41.0
 
