@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D3799C7EE2C
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Aug 2023 16:45:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7937EC7EE2A
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Aug 2023 16:45:49 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 62D65ED7;
-	Fri, 18 Aug 2023 18:44:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 62D65ED7
+	by alsa0.perex.cz (Postfix) with ESMTPS id C354AEE3;
+	Fri, 18 Aug 2023 18:44:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C354AEE3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1692377131;
-	bh=HAxMuhyyav80svWYA6JolJ4nWMQWQF7Ky3hdvayGXoQ=;
+	s=default; t=1692377147;
+	bh=W0Xww+68j7eF5BVVxJKkS+02CZZq/Y/wWf9bzXWH9BY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=OoznMDW1lQSp6LNTSWTkvHzGaYubLT7Nx0OtQ1+0bvp3oI8utG8r/FPgyvz4i0aqU
-	 grfMk0RvvNChMQ9NhfLWl+Aibh0WDn+yZ+aJ8DemecAlpHzlNU6KJGvjbpEvlYMGwk
-	 x7+uzAu9NcY/eDEnBgYgXlduTcFwrpGu5afsbGeg=
+	b=IrX9G+6NNjGC/1mohZx+g6w0TRPPL4fz0Imvhcoek69yv32jWc0uqiRiiBN92bXhY
+	 hvs8HU9rgLBCCbHTEBYMHu8DD9wuaV02qPN8qxTclyW5F342in3UwS0v1mP1nYgOlH
+	 3LXVeyxkpqTfgroR6cFuFPs+conDHNIUUrSxYYYE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BC1BAF80610; Fri, 18 Aug 2023 18:41:12 +0200 (CEST)
+	id F2763F80623; Fri, 18 Aug 2023 18:41:15 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1733CF80612;
-	Fri, 18 Aug 2023 18:41:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CBC2AF80579;
+	Fri, 18 Aug 2023 18:41:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A1406F80605; Fri, 18 Aug 2023 18:41:05 +0200 (CEST)
+	id 4C660F8060C; Fri, 18 Aug 2023 18:41:08 +0200 (CEST)
 Received: from pegase1.c-s.fr (unknown [90.115.179.12])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id ADBBBF805F3
-	for <alsa-devel@alsa-project.org>; Fri, 18 Aug 2023 18:41:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ADBBBF805F3
+	by alsa1.perex.cz (Postfix) with ESMTPS id 5B5A9F805FB
+	for <alsa-devel@alsa-project.org>; Fri, 18 Aug 2023 18:41:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5B5A9F805FB
 Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
-	by localhost (Postfix) with ESMTP id 4RS7000sFtz9vjJ;
-	Fri, 18 Aug 2023 18:40:16 +0200 (CEST)
+	by localhost (Postfix) with ESMTP id 4RS7021YcDz9vjN;
+	Fri, 18 Aug 2023 18:40:18 +0200 (CEST)
 X-Virus-Scanned: amavisd-new at c-s.fr
 Received: from pegase1.c-s.fr ([192.168.12.234])
 	by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id 2tLMKMJ80d5b; Fri, 18 Aug 2023 18:40:16 +0200 (CEST)
+	with ESMTP id 0u5EQwH0IHfw; Fri, 18 Aug 2023 18:40:18 +0200 (CEST)
 Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-	by pegase1.c-s.fr (Postfix) with ESMTP id 4RS6zl44rSz9vhX;
+	by pegase1.c-s.fr (Postfix) with ESMTP id 4RS6zl4Q41z9vhZ;
 	Fri, 18 Aug 2023 18:40:03 +0200 (CEST)
 Received: from localhost (localhost [127.0.0.1])
-	by messagerie.si.c-s.fr (Postfix) with ESMTP id 7BCEF8B763;
+	by messagerie.si.c-s.fr (Postfix) with ESMTP id 8D1908B770;
 	Fri, 18 Aug 2023 18:40:03 +0200 (CEST)
 X-Virus-Scanned: amavisd-new at c-s.fr
 Received: from messagerie.si.c-s.fr ([127.0.0.1])
 	by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-	with ESMTP id n8iY1WDueSWv; Fri, 18 Aug 2023 18:40:03 +0200 (CEST)
+	with ESMTP id VAf92wOyAjq3; Fri, 18 Aug 2023 18:40:03 +0200 (CEST)
 Received: from PO20335.IDSI0.si.c-s.fr (PO17626.IDSI0.si.c-s.fr
  [172.19.54.29])
-	by messagerie.si.c-s.fr (Postfix) with ESMTP id 9A9448B77E;
+	by messagerie.si.c-s.fr (Postfix) with ESMTP id 8179B8B77A;
 	Fri, 18 Aug 2023 18:40:01 +0200 (CEST)
 Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
-	by PO20335.IDSI0.si.c-s.fr (8.17.1/8.16.1) with ESMTPS id 37IGdxhi142015
+	by PO20335.IDSI0.si.c-s.fr (8.17.1/8.16.1) with ESMTPS id 37IGdwGP141995
 	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-	Fri, 18 Aug 2023 18:39:59 +0200
+	Fri, 18 Aug 2023 18:39:58 +0200
 Received: (from chleroy@localhost)
-	by PO20335.IDSI0.si.c-s.fr (8.17.1/8.17.1/Submit) id 37IGdxG6142014;
-	Fri, 18 Aug 2023 18:39:59 +0200
+	by PO20335.IDSI0.si.c-s.fr (8.17.1/8.17.1/Submit) id 37IGdw6p141994;
+	Fri, 18 Aug 2023 18:39:58 +0200
 X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to
  christophe.leroy@csgroup.eu using -f
 From: Christophe Leroy <christophe.leroy@csgroup.eu>
@@ -87,25 +87,25 @@ Cc: netdev@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
         linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         alsa-devel@alsa-project.org,
         Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: [PATCH v4 18/28] soc: fsl: cpm1: qmc: Remove timeslots handling from
- setup_chan()
-Date: Fri, 18 Aug 2023 18:39:12 +0200
+Subject: [PATCH v4 13/28] soc: fsl: cpm1: qmc: Check available timeslots in
+ qmc_check_chans()
+Date: Fri, 18 Aug 2023 18:39:07 +0200
 Message-ID: 
- <50f1e28baee1298cf39c8468b505a51ae6710bda.1692376361.git.christophe.leroy@csgroup.eu>
+ <c8da00bdb9c53b4c5d4978beb52bb714d893917c.1692376361.git.christophe.leroy@csgroup.eu>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <cover.1692376360.git.christophe.leroy@csgroup.eu>
 References: <cover.1692376360.git.christophe.leroy@csgroup.eu>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1692376735; l=1901;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1692376734; l=1620;
  i=christophe.leroy@csgroup.eu; s=20211009; h=from:subject:message-id;
- bh=A1rJrsre59ig518myaeGyZpy9HrxV9/ZdRaK15+9tLs=;
- b=kpMJGD3WpRipjM8MoPvUkI6SF2C1MYxifX8z4JAuWcRsfCqRxpS/a7slMqQewB13rnfdYcmLe
- 7R+UJR6aIjwDpnxnnsGjxeGXYnpw9IzXq7zunbf+AiwKnnaXkA2Opb+
+ bh=3oCJWknCD0kV9dRpPXFldERVHfu7NKNt3fpqhyftA/U=;
+ b=77KndESlUNFNW5cO4EqUGfYYsJIKJmYxBZvehK626i2v2j/9pacL7BO71YTB4BlMZuHRHbtz3
+ 5E7BGXaSL3vCICkXlZ0Bkjk52XNwarG/F0Q3lf6pLxBwGjktnylJFm7
 X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519;
  pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: TEZBSHWCL5UXYWGO7HW363KEV72GOLNG
-X-Message-ID-Hash: TEZBSHWCL5UXYWGO7HW363KEV72GOLNG
+Message-ID-Hash: HHN2OFQFZIHBVHNDJY6NI7XQLVEEQQV2
+X-Message-ID-Hash: HHN2OFQFZIHBVHNDJY6NI7XQLVEEQQV2
 X-MailFrom: christophe.leroy@csgroup.eu
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -118,7 +118,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TEZBSHWCL5UXYWGO7HW363KEV72GOLNG/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HHN2OFQFZIHBVHNDJY6NI7XQLVEEQQV2/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -129,64 +129,43 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Herve Codina <herve.codina@bootlin.com>
 
-Timeslots setting is done at channel start() and stop().
-There is no more need to do that during setup_chan().
+The timeslots checked in qmc_check_chans() are the timeslots used.
+With the introduction of the available timeslots, the used timeslots
+are a subset of the available timeslots. The timeslots checked during
+the qmc_check_chans() call should be the available ones.
 
-Simply remove timeslot setting from setup_chan().
+Simply update and check the available timeslots instead of the used
+timeslots in qmc_check_chans().
 
 Signed-off-by: Herve Codina <herve.codina@bootlin.com>
 Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
- drivers/soc/fsl/qe/qmc.c | 28 ----------------------------
- 1 file changed, 28 deletions(-)
+ drivers/soc/fsl/qe/qmc.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/soc/fsl/qe/qmc.c b/drivers/soc/fsl/qe/qmc.c
-index 00408da14cb4..b67e73ad7c1a 100644
+index 2416408bb7e7..07fa3c265858 100644
 --- a/drivers/soc/fsl/qe/qmc.c
 +++ b/drivers/soc/fsl/qe/qmc.c
-@@ -723,30 +723,6 @@ static int qmc_chan_setup_tsa_rx(struct qmc_chan *chan, bool enable)
- 	return qmc_chan_setup_tsa_32rx(chan, &info, enable);
- }
+@@ -914,13 +914,13 @@ static int qmc_check_chans(struct qmc *qmc)
+ 	rx_ts_assigned_mask = info.nb_rx_ts == 64 ? U64_MAX : (((u64)1) << info.nb_rx_ts) - 1;
  
--static int qmc_chan_setup_tsa(struct qmc_chan *chan, bool enable)
--{
--	struct tsa_serial_info info;
--	int ret;
--
--	/* Retrieve info from the TSA related serial */
--	ret = tsa_serial_get_info(chan->qmc->tsa_serial, &info);
--	if (ret)
--		return ret;
--
--	/*
--	 * Setup one common 64 entries table or two 32 entries (one for Tx
--	 * and one for Tx) according to assigned TS numbers.
--	 */
--	if (chan->qmc->is_tsa_64rxtx)
--		return qmc_chan_setup_tsa_64rxtx(chan, &info, enable);
--
--	ret = qmc_chan_setup_tsa_32rx(chan, &info, enable);
--	if (ret)
--		return ret;
--
--	return qmc_chan_setup_tsa_32tx(chan, &info, enable);
--}
--
- static int qmc_chan_command(struct qmc_chan *chan, u8 qmc_opcode)
- {
- 	return cpm_command(chan->id << 2, (qmc_opcode << 4) | 0x0E);
-@@ -1323,10 +1299,6 @@ static int qmc_setup_chan(struct qmc *qmc, struct qmc_chan *chan)
+ 	list_for_each_entry(chan, &qmc->chan_head, list) {
+-		if (chan->tx_ts_mask > tx_ts_assigned_mask) {
+-			dev_err(qmc->dev, "chan %u uses TSA unassigned Tx TS\n", chan->id);
++		if (chan->tx_ts_mask_avail > tx_ts_assigned_mask) {
++			dev_err(qmc->dev, "chan %u can use TSA unassigned Tx TS\n", chan->id);
+ 			return -EINVAL;
+ 		}
  
- 	chan->qmc = qmc;
- 
--	ret = qmc_chan_setup_tsa(chan, true);
--	if (ret)
--		return ret;
--
- 	/* Set channel specific parameter base address */
- 	chan->s_param = qmc->dpram + (chan->id * 64);
- 	/* 16 bd per channel (8 rx and 8 tx) */
+-		if (chan->rx_ts_mask > rx_ts_assigned_mask) {
+-			dev_err(qmc->dev, "chan %u uses TSA unassigned Rx TS\n", chan->id);
++		if (chan->rx_ts_mask_avail > rx_ts_assigned_mask) {
++			dev_err(qmc->dev, "chan %u can use TSA unassigned Rx TS\n", chan->id);
+ 			return -EINVAL;
+ 		}
+ 	}
 -- 
 2.41.0
 
