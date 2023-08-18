@@ -4,97 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7D07AC71149
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Aug 2023 13:44:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E33F7C71155
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Aug 2023 15:11:58 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 27604E7A;
-	Fri, 18 Aug 2023 15:43:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 27604E7A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 27D1CE79;
+	Fri, 18 Aug 2023 17:11:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 27D1CE79
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1692366282;
-	bh=GNK10cQEagxWRD7I2QyV29tvZWslv7YIUc/C6jj9774=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	s=default; t=1692371516;
+	bh=yHhhW5FtMql57N+ApWe/gEyoOJb9Tr3NYbQV103gEF0=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=JYQRPXZKQTE+dqcDDpxhPQnPaTxG2hiWPsC5gcY27C9rIIL8FmI4bscLCh79nIRbE
-	 o26NCRmdF6S1M3ilYAlwtFezXK1s4mAcnyVjsoqd041lqAQCsci/AzHsshZKhbW2sk
-	 eNRsVCHmRidmtfXNFZw4ZpCYDTw+/SkXC5QG9Z2E=
+	b=ehN/dblLAfTn5lIm1hII3CyyUmJ/OLusKThlD8jAF9vVMiC7V5ZC+SEE8B3a85R0s
+	 dye7M3HTuZy/lu4+sA4ZZN/kxqc/MOVthWQMoHGVdQr5uGpsVEU7iJ873RJyT+B1cc
+	 Wp+MMr+h828t5YaWukovSURfV9Xx1ziQNuW1/v9U=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D6B47F801EB; Fri, 18 Aug 2023 15:43:18 +0200 (CEST)
+	id 745ACF80254; Fri, 18 Aug 2023 17:11:05 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D00FAF801EB;
-	Fri, 18 Aug 2023 15:43:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BCABEF800EE;
+	Fri, 18 Aug 2023 17:11:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 007F8F801EB; Fri, 18 Aug 2023 15:43:07 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+	id 0BECCF800D1; Fri, 18 Aug 2023 17:09:19 +0200 (CEST)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id EDA8FF80027
-	for <alsa-devel@alsa-project.org>; Fri, 18 Aug 2023 15:42:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EDA8FF80027
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=YYqkKaBv;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=eOs+cEJN
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 5B671F800D1
+	for <alsa-devel@alsa-project.org>; Fri, 18 Aug 2023 17:08:48 +0200 (CEST)
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+	by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 5C42F1A70;
+	Fri, 18 Aug 2023 17:08:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 5C42F1A70
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+	t=1692371327; bh=nzVlE4QWqATao/UWngAEHK7Edi86bui8+4UGbFG3X4k=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=hp1NBrs26icK6crJOClXKNKfkYPwfufLZUlrNxcv7MHYc2HpxKvK8rSS+MQdxGgGf
+	 90l7sFhGHT99gsGx2GsF/uThtPXDgg7ph0mnfmIjuHlzppKDNIoqUNQhKrlAxY8BOZ
+	 4+f2gAwnDpu6vRoZnQiKTiRXjLvQSOjm2d6LGzvY=
+Received: from [192.168.100.98] (unknown [192.168.100.98])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id F1DD82187F;
-	Fri, 18 Aug 2023 13:42:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1692366177;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=KMM5l9RDqgIoLI/O+03uO+Sj021nvRRpM6B4FmqcBVI=;
-	b=YYqkKaBvZ1IygokOeIKImFWV9vXojAKBD83ptP5QphGw7RggLXOpSHMqXK8JlJfgP7Bt1v
-	QYtRLRgSZtXQDHcAxMGvezWbgEVVOGhGHP2J/9QPh4GUTlYreksXMF1hiD9lSDkyJ9SyHD
-	IrSuKb5hSHg7SinblBam7b0wWW4Zujc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1692366177;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=KMM5l9RDqgIoLI/O+03uO+Sj021nvRRpM6B4FmqcBVI=;
-	b=eOs+cEJNQOji8fneRQBYgtbxQD+H7YqUyqNL/Gebx2ZVQjzsUpq8ZlkZwRriYopNIg5VXr
-	SNyuo2NG/o8ryMDg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BEE2F13441;
-	Fri, 18 Aug 2023 13:42:57 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id 6/LQLWF132SyKgAAMHmgww
-	(envelope-from <tiwai@suse.de>); Fri, 18 Aug 2023 13:42:57 +0000
-Date: Fri, 18 Aug 2023 15:42:57 +0200
-Message-ID: <87o7j4ihzy.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Yue Haibing <yuehaibing@huawei.com>
-Cc: <perex@perex.cz>,
-	<tiwai@suse.com>,
-	<alsa-devel@alsa-project.org>,
-	<linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH -next] ALSA: asihpi: Remove unused declarations
-In-Reply-To: <20230818124852.51468-1-yuehaibing@huawei.com>
-References: <20230818124852.51468-1-yuehaibing@huawei.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Message-ID-Hash: S6OCP24EDK3OLTWEV45JZCMHV4H2EUUM
-X-Message-ID-Hash: S6OCP24EDK3OLTWEV45JZCMHV4H2EUUM
-X-MailFrom: tiwai@suse.de
+	(Authenticated sender: perex)
+	by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+	Fri, 18 Aug 2023 17:08:36 +0200 (CEST)
+Message-ID: <b23c2ef1-7c9f-5eca-f61d-6f6994226ddc@perex.cz>
+Date: Fri, 18 Aug 2023 17:08:35 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] ASoC: SOF: intel: hda: Clean up link DMA for IPC3 during
+ stop
+Content-Language: en-US
+To: Mark Brown <broonie@kernel.org>, lgirdwood@gmail.com,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com,
+ ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com,
+ rander.wang@intel.com, guennadi.liakhovetski@linux.intel.com,
+ yung-chuan.liao@linux.intel.com, regressions@leemhuis.info
+References: <20230808110627.32375-1-peter.ujfalusi@linux.intel.com>
+ <169151742693.78353.2991484643013989552.b4-ty@kernel.org>
+From: Jaroslav Kysela <perex@perex.cz>
+In-Reply-To: <169151742693.78353.2991484643013989552.b4-ty@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: 4636MBSH3NZOUVTXVRLHIPLNOTIJJBZG
+X-Message-ID-Hash: 4636MBSH3NZOUVTXVRLHIPLNOTIJJBZG
+X-MailFrom: perex@perex.cz
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -106,7 +87,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/S6OCP24EDK3OLTWEV45JZCMHV4H2EUUM/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4636MBSH3NZOUVTXVRLHIPLNOTIJJBZG/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -115,14 +96,31 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, 18 Aug 2023 14:48:52 +0200,
-Yue Haibing wrote:
+On 08. 08. 23 19:57, Mark Brown wrote:
+> On Tue, 08 Aug 2023 14:06:27 +0300, Peter Ujfalusi wrote:
+>> With IPC3, we reset hw_params during the stop trigger, so we should also
+>> clean up the link DMA during the stop trigger.
+>>
+>>
 > 
-> These are not implemented, so can remove them.
+> Applied to
 > 
-> Signed-off-by: Yue Haibing <yuehaibing@huawei.com>
+>     https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+> 
+> Thanks!
+> 
+> [1/1] ASoC: SOF: intel: hda: Clean up link DMA for IPC3 during stop
+>        commit: 90219f1bd273055f1dc1d7bdc0965755b992c045
 
-Thanks, applied.
+Hi Mark,
 
+	if it's not late, this patch should be also applied to the 6.5 tree. It seems 
+that many new laptops are affected (sound may be really weird when an underrun 
+occurs on those devices and users are not really happy).
 
-Takashi
+						Jaroslav
+
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+
