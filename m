@@ -4,97 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ED490EE49A6
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Aug 2023 17:30:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7D8A7EE4996
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Aug 2023 17:36:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BD21E825;
-	Mon, 21 Aug 2023 19:29:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BD21E825
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1D6EB74C;
+	Mon, 21 Aug 2023 19:35:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1D6EB74C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1692639006;
-	bh=/OeoYkugHikEXBo3UPlpwpyhdjMMUxLjzSOtgPsd+zc=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1692639368;
+	bh=s+/xqjg7X5KwSvn6RZv3TdvG5pAi5ArV5S810IETFV8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=NHcO/NhA9J4fEa80RI554TfZswGYVXmRngbrx8xgMjXE9Nmkga5nXWkEbZTbowZVg
-	 xMF6QXj49c85sSDhDgFlIhiWXh1YiuhdOAXX/1q/yyhag3iWgvLPYPYOmARll6mhI6
-	 pzHVVH24nn5kPnwpcBMUygXD2qvW+unDmjVbAkOI=
+	b=WTK2etRHv9I3dh4v9t/jx8DqZmWixaxExAE07jyhy+igFRxMy5R17YvSXtX9rSyE1
+	 l47+LpGQjKWWjEFlQ9zVj2D0GD0+8SPIEAGWJ3+WQ9Nx6CPEukEdTNTULN+2bt6b+V
+	 Yi4K1cHiSN8YW9mJcGGS8oqE/v7tloyqB+AOVnBU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 89867F80199; Mon, 21 Aug 2023 19:28:41 +0200 (CEST)
+	id 7363DF8025F; Mon, 21 Aug 2023 19:34:57 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1A0EEF80199;
-	Mon, 21 Aug 2023 19:28:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F0615F80199;
+	Mon, 21 Aug 2023 19:34:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 143EBF80199; Mon, 21 Aug 2023 19:28:36 +0200 (CEST)
+	id E2BCCF80199; Mon, 21 Aug 2023 19:34:52 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 653DCF800F8
-	for <alsa-devel@alsa-project.org>; Mon, 21 Aug 2023 19:28:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 653DCF800F8
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9994FF800F8
+	for <alsa-devel@alsa-project.org>; Mon, 21 Aug 2023 19:34:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9994FF800F8
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=T5gKJNFk
+ header.s=k20201202 header.b=Laiy+1+Y
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 219CB60AC3
-	for <alsa-devel@alsa-project.org>; Mon, 21 Aug 2023 17:28:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8BDC7C433CA
-	for <alsa-devel@alsa-project.org>; Mon, 21 Aug 2023 17:28:25 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 586F6640A8;
+	Mon, 21 Aug 2023 17:34:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52C4CC433C7;
+	Mon, 21 Aug 2023 17:34:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1692638905;
-	bh=/OeoYkugHikEXBo3UPlpwpyhdjMMUxLjzSOtgPsd+zc=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=T5gKJNFko/fwhBG5KAYl6wuxIe0lvCu8rK+hZYcTjh9PxEm0L401M+SN6/cKlbPN4
-	 ZvCndoharQ4JgSkghtGxx+Jz/fApp2E1IyXqQGO6PadYPQ25MKfW2MzSfb5Y7w4UYJ
-	 kt1fDY1LLMYBR3yPTZb4UCaqE1VQknSE10z5P4bTdeY+mMgUNfz6cIHnb84QXbbMZK
-	 Ye2KjI4f4/H7CTVcvbl5PBt5iSh86ZcigvXNGkMz+2lC8EjY00BbVBC2CPRnIuTHJt
-	 9DA4PoFuK2qxWB3UcGZbKY9jhG+N9VfWfxI1jWcXP21rs5rbsdsaO9VukCGIhOWx6M
-	 HP2h/pNXszUaw==
-Received: by mail-lj1-f175.google.com with SMTP id
- 38308e7fff4ca-2b9db1de50cso56015531fa.3
-        for <alsa-devel@alsa-project.org>;
- Mon, 21 Aug 2023 10:28:25 -0700 (PDT)
-X-Gm-Message-State: AOJu0YwbUBMO6Bz/rRWkw4F+Fl0NmDaWNgCeaJHlXMjtyK9vPQNx8hMV
-	ER++lrIpBcBXvND0x9CYyPOKVydrvkmydlE0Gw==
-X-Google-Smtp-Source: 
- AGHT+IE9WHY5/4ZLeXyRg8ekKTg9MDXk/M9DCc70jbzBrdfs7y40dPmzepVfUeIl0nhiPLCX0OQa41eCDrd9inLXXEA=
-X-Received: by 2002:a05:651c:101:b0:2b6:d89e:74e2 with SMTP id
- a1-20020a05651c010100b002b6d89e74e2mr4645401ljb.7.1692638903558; Mon, 21 Aug
- 2023 10:28:23 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230810224930.3216717-1-contact@jookia.org>
- <20230810224930.3216717-4-contact@jookia.org>
- <ZNY+x/R8/T5ysPhy@finisterre.sirena.org.uk> <ZNZFB2-kBrpnMSn1@titan>
- <a7db4653-cb12-4f90-891c-5cf7270598bd@sirena.org.uk> <ZNqgKW3TZBVF8ggo@titan>
-In-Reply-To: <ZNqgKW3TZBVF8ggo@titan>
-From: Rob Herring <robh+dt@kernel.org>
-Date: Mon, 21 Aug 2023 12:28:11 -0500
-X-Gmail-Original-Message-ID: 
- <CAL_Jsq+S2p2DarZ=kzxvsb8EPPHHFCOJ9F79Wm-LAQP14=Y97A@mail.gmail.com>
-Message-ID: 
- <CAL_Jsq+S2p2DarZ=kzxvsb8EPPHHFCOJ9F79Wm-LAQP14=Y97A@mail.gmail.com>
-Subject: Re: [PATCH 3/3] ASoC: dt-bindings: wlf,wm8782: Add max-rate property
+	s=k20201202; t=1692639282;
+	bh=s+/xqjg7X5KwSvn6RZv3TdvG5pAi5ArV5S810IETFV8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Laiy+1+YHu2bGlgIoy0SKeyPtn4QGYk8vLhYZ+GfQ2rY33FsnvgXg1YQTnWdIocFV
+	 KJU8ED58mqu4ydAs3NFTO8vdXGadzFyuKrtZMG81xob5P1m+I9eg/7LB7mnMVtVc7H
+	 Ch5tAL9siTlSkngrNtSS2S/N3byBXSpCu3CjEW9+KN4O1eD47agyE+j5cP0rPl76tN
+	 +vCCQeIisPwrswhm/LYhaDdmFLr/xlTHjQk+x6NGktp4o1eIqPbYycIo7u4lWwKSYR
+	 CXJGnzIAIajhWjwX2dNyC4ASP68EkX/xCsNP72P1FKtWyIBnDB8fWW8omSPV/G4U68
+	 EKHxorSbC8gRQ==
+Received: (nullmailer pid 2005872 invoked by uid 1000);
+	Mon, 21 Aug 2023 17:34:40 -0000
+Date: Mon, 21 Aug 2023 12:34:40 -0500
+From: Rob Herring <robh@kernel.org>
 To: John Watts <contact@jookia.org>
-Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- patches@opensource.cirrus.com,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Message-ID-Hash: Q5PJDU6MXH5IQKLVRDPUGQPYXCU4KOSX
-X-Message-ID-Hash: Q5PJDU6MXH5IQKLVRDPUGQPYXCU4KOSX
-X-MailFrom: robh+dt@kernel.org
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+ Jernej Skrabec <jernej.skrabec@gmail.com>,
+ Samuel Holland <samuel@sholland.org>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>,
+ Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
+ Maxime Ripard <mripard@kernel.org>, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+ linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 6/7] dt-bindings: sound: sun4i-i2s: Add channel-dins
+ property
+Message-ID: <20230821173440.GA2002457-robh@kernel.org>
+References: <20230811201406.4096210-1-contact@jookia.org>
+ <20230811201406.4096210-7-contact@jookia.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230811201406.4096210-7-contact@jookia.org>
+Message-ID-Hash: SZT7UHHJQF65I3J2FWKK5FRZQ74X52HK
+X-Message-ID-Hash: SZT7UHHJQF65I3J2FWKK5FRZQ74X52HK
+X-MailFrom: SRS0=A38r=EG=robh_at_kernel.org=rob@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -106,7 +96,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Q5PJDU6MXH5IQKLVRDPUGQPYXCU4KOSX/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SZT7UHHJQF65I3J2FWKK5FRZQ74X52HK/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -115,15 +105,68 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, Aug 14, 2023 at 4:45=E2=80=AFPM John Watts <contact@jookia.org> wro=
-te:
->
-> On Mon, Aug 14, 2023 at 07:27:04PM +0100, Mark Brown wrote:
-> > You'd have to define an enum for that but it does still feel like it
-> > might be easier to work with since it's more direct.
->
-> Alright, I'll give it a go in the next version. Thanks for the feedback!
+On Sat, Aug 12, 2023 at 06:14:05AM +1000, John Watts wrote:
+> The R329 variant of the sun4i I2S controller supports multiple
+> data input pins (din pins) for receiving data. Each channel can have
+> its data input pin configured.
+> 
+> Allow this to be configured using a new channel-dins property.
+> 
+> Signed-off-by: John Watts <contact@jookia.org>
+> ---
+>  .../sound/allwinner,sun4i-a10-i2s.yaml        | 22 +++++++++++++++++++
+>  1 file changed, 22 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-i2s.yaml b/Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-i2s.yaml
+> index 739114fb6549..402549f9941c 100644
+> --- a/Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-i2s.yaml
+> +++ b/Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-i2s.yaml
+> @@ -52,6 +52,13 @@ properties:
+>        - const: apb
+>        - const: mod
+>  
+> +  channel-dins:
 
-That property will need a vendor prefix as well which was missing here.
+Needs a vendor prefix.
 
-Rob
+> +    $ref: /schemas/types.yaml#/definitions/uint8-array
+> +    description:
+> +      This is a list of DIN pin numbers, each used for a receiving I2S
+> +      channel. Pins are mapped to channels based on array index.
+> +      Channel 0 is the first number, then channel 1, and so on.
+
+Constraints on the values? 255 is valid pin number?
+
+> +
+>    # Even though it only applies to subschemas under the conditionals,
+>    # not listing them here will trigger a warning because of the
+>    # additionalsProperties set to false.
+> @@ -144,4 +151,19 @@ examples:
+>          dma-names = "rx", "tx";
+>      };
+>  
+> +  - |
+> +    i2s0_d1: i2s@2032000 {
+
+Drop unused labels.
+
+However, I don't really think adding 1 property justifies a whole other 
+example.
+
+> +            #sound-dai-cells = <0>;
+> +            compatible = "allwinner,sun20i-d1-i2s",
+> +                         "allwinner,sun50i-r329-i2s";
+> +            reg = <0x2032000 0x1000>;
+> +            interrupts = <0 26 0>;
+> +            clocks = <&ccu 86>, <&ccu 82>;
+> +            clock-names = "apb", "mod";
+> +            resets = <&ccu 34>;
+> +            dmas = <&dma 3>, <&dma 3>;
+> +            dma-names = "rx", "tx";
+> +            channel-dins = /bits/ 8 <0 0 1 1 2 2>;
+> +    };
+> +
+>  ...
+> -- 
+> 2.41.0
+> 
