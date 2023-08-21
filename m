@@ -4,90 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A856AEE4996
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Aug 2023 15:49:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 086DBEE4993
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Aug 2023 16:26:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 46FEA83E;
-	Mon, 21 Aug 2023 17:48:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 46FEA83E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9662C839;
+	Mon, 21 Aug 2023 18:25:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9662C839
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1692632950;
-	bh=OdLn/5VwnPYcOVsCm+SxsCuQhbrbLAaRF11wH0pSOb0=;
+	s=default; t=1692635167;
+	bh=rh+mxk2XiwA0hIRSU2uiSF0lwTaOpoX7hUeSI+GftIc=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=QzXOLg70sdvP95vYJ7JSmfj75K+RKJ3292rp6Bsc0GSbX6IeJn9S0t7EzDObLhXR3
-	 agcbPo1s8vNSJDa8BX85uc9mnKPJDRTb56jJq3IX5dwlePoLMiLPRpHNqdSknSsAn0
-	 oZ5qayugF+jCZ72derRW46obIVEUAVhAsDqOa1tQ=
+	b=mb7QTybVRgHRqdRN2QlcZy2NXj87sbozKTjZjHqJDwAJPicrUa8ruH8me96aGTAfF
+	 g+huwvKxD4RvAQER0ZGGY2gEcdYf/7YJzWrVhSGRH8f+GJ1vC7hu7zEwr8uFvKwpH+
+	 1nokAIG7pfdVi1NCvIWNpD+H8dAMAoZ7C7eh0+8Q=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id ECED4F80508; Mon, 21 Aug 2023 17:47:58 +0200 (CEST)
+	id 0EB24F800BF; Mon, 21 Aug 2023 18:24:48 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8E8BDF8016C;
-	Mon, 21 Aug 2023 17:47:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 94C9DF80199;
+	Mon, 21 Aug 2023 18:24:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8A848F8025E; Mon, 21 Aug 2023 17:47:55 +0200 (CEST)
+	id AF8FBF80199; Mon, 21 Aug 2023 18:24:43 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org
  [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B9D53F8014C
-	for <alsa-devel@alsa-project.org>; Mon, 21 Aug 2023 17:47:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B9D53F8014C
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9D15CF800BF
+	for <alsa-devel@alsa-project.org>; Mon, 21 Aug 2023 18:24:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9D15CF800BF
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=s8fNMQA1
+ header.s=k20201202 header.b=DkQ/4HMv
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 7DE11615DB;
-	Mon, 21 Aug 2023 15:47:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 232DEC433C7;
-	Mon, 21 Aug 2023 15:47:40 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 5DA0860F73;
+	Mon, 21 Aug 2023 16:24:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E91FDC433C7;
+	Mon, 21 Aug 2023 16:24:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1692632861;
-	bh=OdLn/5VwnPYcOVsCm+SxsCuQhbrbLAaRF11wH0pSOb0=;
+	s=k20201202; t=1692635076;
+	bh=rh+mxk2XiwA0hIRSU2uiSF0lwTaOpoX7hUeSI+GftIc=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=s8fNMQA1Zn7WVe+BgPARVdchTxIZUalr5+U+um1aPXWS+g2QJrjG/cSgcnKkH6nad
-	 Ao1kq5R5JP3ezKEMdOXe26B+4Mc3xUPExkE43BUDSPa0KlY4mGJDjdwiJ4MypcCQqe
-	 pVel4Pm45bgEf+jrZy+zlJklXuvseyMMR6nthiYRiQZRcVZFXf3zEAmFHH592Z4b/3
-	 YSlpmd8X9eM57Bn93I7P6j8rzwKt287aP8GJ96LZp9IM8s75CXQtN2kIemw+K5m5eB
-	 SVLNvWi7r4Y6JpJjj+O4u2d6cIFfhyuorRdJWxDxzy3iM3Gyq7EnNrDQzeuN1gqygi
-	 HTXykkslXktjA==
-Received: (nullmailer pid 1722819 invoked by uid 1000);
-	Mon, 21 Aug 2023 15:47:39 -0000
-Date: Mon, 21 Aug 2023 10:47:39 -0500
-From: Rob Herring <robh@kernel.org>
-To: Maksim Kiselev <bigunclemax@gmail.com>
-Cc: linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
- Jernej Skrabec <jernej.skrabec@gmail.com>,
- Samuel Holland <samuel@sholland.org>,
- Paul Walmsley <paul.walmsley@sifive.com>,
- Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Maxime Ripard <mripard@kernel.org>, alsa-devel@alsa-project.org,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-sunxi@lists.linux.dev, linux-riscv@lists.infradead.org
-Subject: Re: [PATCH v1 2/5] ASoC: dt-bindings: Add schema for
- "allwinner,sun20i-d1-codec-analog"
-Message-ID: <20230821154739.GA1720453-robh@kernel.org>
-References: <20230805180506.718364-1-bigunclemax@gmail.com>
- <20230805180506.718364-3-bigunclemax@gmail.com>
+	b=DkQ/4HMvIHtmoa+Iyx2BUPnPvRz3pEt3XII2fhysU7IJ6JauOHFXqCxYk2yApb4n3
+	 JTztA3RnFEMQUBj1yH/ami1p5V2/gHXDI7JYRk0wrUm+asGgVs6sLA0/aDTtY8dHWw
+	 Any0hpk+zQCCkht2yqeqQ681dT2DimDJPH7fXbqfmJ3PeIO2lV8bnNrpIQ/xFiDHpY
+	 Y6d7Mj74rM8c+2Sl04xn9rzQyrxnkJKKoY3gde3HKm0tBL5WCr+JBBZa3XncnW2eVM
+	 5qa3l/mxradlqHMTqMz4Nt+08rWjZcMPl0ak3ZcgntmYf+TV7rN+NMz2gWTGVXqOwJ
+	 WCZYWT70FEg2g==
+Date: Mon, 21 Aug 2023 17:24:32 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
+	alsa-devel@alsa-project.org
+Subject: Re: [PATCH] ASoC: Delete UDA134x/L3 audio codec
+Message-ID: <01f4cbd3-b98a-4c8c-a19e-3e3eb2d45104@sirena.org.uk>
+References: <20230821-delete-l3-v1-1-26d9cd32e7a2@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="Bhuvj7fzxmUqme8u"
 Content-Disposition: inline
-In-Reply-To: <20230805180506.718364-3-bigunclemax@gmail.com>
-Message-ID-Hash: HM4IDR7UFH3ZKHVJFF5GFBI6BLFNIKHX
-X-Message-ID-Hash: HM4IDR7UFH3ZKHVJFF5GFBI6BLFNIKHX
-X-MailFrom: SRS0=A38r=EG=robh_at_kernel.org=rob@kernel.org
+In-Reply-To: <20230821-delete-l3-v1-1-26d9cd32e7a2@linaro.org>
+X-Cookie: No campfires allowed.
+Message-ID-Hash: ON54GPHYOF4PEDF3MUMZQJSROST3UNML
+X-Message-ID-Hash: ON54GPHYOF4PEDF3MUMZQJSROST3UNML
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -99,7 +89,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HM4IDR7UFH3ZKHVJFF5GFBI6BLFNIKHX/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ON54GPHYOF4PEDF3MUMZQJSROST3UNML/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -108,17 +98,38 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Sat, Aug 05, 2023 at 09:05:02PM +0300, Maksim Kiselev wrote:
-> Add a DT schema to describe the analog part of the Allwinner D1/T113s
-> internal audio codec.
-> 
-> Signed-off-by: Maksim Kiselev <bigunclemax@gmail.com>
-> ---
->  .../allwinner,sun20i-d1-codec-analog.yaml     | 33 +++++++++++++++++++
->  1 file changed, 33 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/allwinner,sun20i-d1-codec-analog.yaml
 
-Looks the same as allwinner,sun8i-a23-codec-analog.yaml. Why can't you 
-use that?
+--Bhuvj7fzxmUqme8u
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Rob
+On Mon, Aug 21, 2023 at 04:17:57PM +0200, Linus Walleij wrote:
+> This codec was used by the deleted S3C board
+> sound/soc/samsung/s3c24xx_uda134x.c.
+
+This breaks an x86 allmodconfig build:
+
+make --silent --keep-going --jobs=15 O=/build/stage/build-work ARCH=x86_64 SRCARCH=x86 CROSS_COMPILE=x86_64-linux-gnu-
+/build/stage/linux/sound/soc/codecs/l3.c: No such file or directory
+make[3]: *** [/build/stage/linux/scripts/Makefile.modpost:144: Module.symvers] Error 1
+make[3]: Target '__modpost' not remade because of errors.
+
+The Makefile removal is partial.
+
+
+--Bhuvj7fzxmUqme8u
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTjj78ACgkQJNaLcl1U
+h9BBUAf7B1ABhYC/tCVDTcRPuPXweTcD7N4mzXgonKq4panMmO/+6yrEOvP84bke
+hV1k61bEYTUDu9J43e9TWSbPIuBiGCIKG4o3ueuJ2f4lSf8Jg+U/n4w8+NuqYqGK
+AVWqLe5eVuGYUXpGZDjO5HNLlGlWHLOBqRw8SkNC5vogHIJtuxiDVzAileYbaBqC
+4lrOKpr8x+bp0mRYsMbdQfNr+lJrum373JN3F/rk9tBH2SHra5zROt9eUpTu7eZq
+g16hRPxfiJwX+kSrEDMdk5nkhsRYtmqkS4/tIQgh07CJ6ZiGlpSAdz+++NjkoTzo
+Wihi9k/dgmoBwfFnOMCXOatQadVbQA==
+=Rq4B
+-----END PGP SIGNATURE-----
+
+--Bhuvj7fzxmUqme8u--
