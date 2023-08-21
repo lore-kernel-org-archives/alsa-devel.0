@@ -4,47 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 89CC7C3DA6F
-	for <alsa-devel@archiver.kernel.org>; Thu, 24 Aug 2023 07:34:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5626FC7113B
+	for <alsa-devel@archiver.kernel.org>; Thu, 24 Aug 2023 07:35:13 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 84BD2847;
-	Thu, 24 Aug 2023 09:34:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 84BD2847
+	by alsa0.perex.cz (Postfix) with ESMTPS id BDC83832;
+	Thu, 24 Aug 2023 09:34:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BDC83832
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1692862495;
-	bh=ejvn2HZAAY6qIeCkyZnqZtwe6T3sPFT975+7w3Gp8lc=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=LppCbQQXU7M/Ehgra89Z+tte4ECaG3WdnEzPR9Lv4Qv7N+0ADP9p1OZEq0aH3TBIz
-	 nPcGY2ECnpJ2FmOkKElidbx7Czo50dbwQ8DlldPbdmfz4c6F4InCsCIf8/H5gXjkQm
-	 Mgjrkl4ztQiy01M1BjlWzoKKeUkReu6hnnd3dfP0=
+	s=default; t=1692862510;
+	bh=alj8jm8ey1801rpU3vcJXmAu2vPKDP3i+zmMbYa8V4o=;
+	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=KvERjEpIjuaT01mAEw8tLHzwAAgOvBwDKAxRRvqWDfN67T1B6XLczM9sHA+eFsHxb
+	 X6aZmf/jjLlbDBywU5oWZ41ACPKrhJOcZAg8RApNuDA0K9c5Ja08N6UKVmuLKkCQWG
+	 ScNAFqvWrIaOevZ7IGsbixS7mEQN+NjvkQOJBB10=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4B3C3F8059F; Thu, 24 Aug 2023 09:32:28 +0200 (CEST)
+	id 9D7BDF805BB; Thu, 24 Aug 2023 09:32:30 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 83F3AF805AD;
-	Thu, 24 Aug 2023 09:32:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 05F35F805B4;
+	Thu, 24 Aug 2023 09:32:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C7324F80508; Mon, 21 Aug 2023 16:42:14 +0200 (CEST)
-Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
+	id A2D51F804DA; Mon, 21 Aug 2023 16:42:19 +0200 (CEST)
+Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com
+ [61.152.239.71])
 	(using TLSv1 with cipher ADH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 31490F800F8
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9B5E1F8016C
 	for <alsa-devel@alsa-project.org>; Mon, 21 Aug 2023 16:42:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 31490F800F8
-Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9B5E1F8016C
+Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
 	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
-	by ex01.ufhost.com (Postfix) with ESMTP id DF0E924E2A8;
-	Mon, 21 Aug 2023 22:41:56 +0800 (CST)
-Received: from EXMBX061.cuchost.com (172.16.6.61) by EXMBX165.cuchost.com
- (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Mon, 21 Aug
- 2023 22:41:56 +0800
+	(Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
+	by fd01.gateway.ufhost.com (Postfix) with ESMTP id AECE6807C;
+	Mon, 21 Aug 2023 22:41:52 +0800 (CST)
+Received: from EXMBX061.cuchost.com (172.16.6.61) by EXMBX166.cuchost.com
+ (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Mon, 21 Aug
+ 2023 22:41:52 +0800
 Received: from localhost.localdomain (113.72.145.205) by EXMBX061.cuchost.com
  (172.16.6.61) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Mon, 21 Aug
- 2023 22:41:55 +0800
+ 2023 22:41:51 +0800
 From: Xingyu Wu <xingyu.wu@starfivetech.com>
 To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
 	Claudiu Beznea <Claudiu.Beznea@microchip.com>, Jaroslav Kysela
@@ -59,13 +59,10 @@ CC: Jose Abreu <joabreu@synopsys.com>, Paul Walmsley
  Wu" <xingyu.wu@starfivetech.com>, <devicetree@vger.kernel.org>,
 	<linux-kernel@vger.kernel.org>, <alsa-devel@alsa-project.org>,
 	<linux-riscv@lists.infradead.org>
-Subject: [PATCH v2 5/5] riscv: dts: starfive: Add the nodes and pins of
- I2Srx/I2Stx0/I2Stx1
-Date: Mon, 21 Aug 2023 22:41:51 +0800
-Message-ID: <20230821144151.207339-6-xingyu.wu@starfivetech.com>
+Subject: [PATCH v2 0/5] Add I2S support for the StarFive JH7110 SoC
+Date: Mon, 21 Aug 2023 22:41:46 +0800
+Message-ID: <20230821144151.207339-1-xingyu.wu@starfivetech.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230821144151.207339-1-xingyu.wu@starfivetech.com>
-References: <20230821144151.207339-1-xingyu.wu@starfivetech.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Originating-IP: [113.72.145.205]
@@ -79,15 +76,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: OYJD7DHSYMBHVN5D3QWMV4TTGMM4E7M2
-X-Message-ID-Hash: OYJD7DHSYMBHVN5D3QWMV4TTGMM4E7M2
-X-Mailman-Approved-At: Thu, 24 Aug 2023 07:30:03 +0000
+Message-ID-Hash: PQ5LZ3CSU6DVW6ZJ4PC2OJNQ2WHI3GYD
+X-Message-ID-Hash: PQ5LZ3CSU6DVW6ZJ4PC2OJNQ2WHI3GYD
+X-Mailman-Approved-At: Thu, 24 Aug 2023 07:30:04 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OYJD7DHSYMBHVN5D3QWMV4TTGMM4E7M2/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PQ5LZ3CSU6DVW6ZJ4PC2OJNQ2WHI3GYD/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -96,176 +93,52 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add I2Srx/I2Stx0/I2Stx1 nodes and pins configuration for the
-StarFive JH7110 SoC.
+This patch series adds I2S support for the StarFive JH7110 RISC-V
+SoC based on Designware I2S controller. There has three I2S channels
+(RX/TX0/TX1) on the JH7110 SoC, one of which is for record(RX) and=20
+two for playback(TX).
 
-Signed-off-by: Xingyu Wu <xingyu.wu@starfivetech.com>
----
- .../jh7110-starfive-visionfive-2.dtsi         | 58 +++++++++++++++++
- arch/riscv/boot/dts/starfive/jh7110.dtsi      | 65 +++++++++++++++++++
- 2 files changed, 123 insertions(+)
+The first patch adds support for the StarFive JH7110 SoC in the
+Designware I2S bindings.
+The second patch adds the ops to get data from platform bus in the=20
+I2S driver.
+The third patch adds support for the StarFive JH7110 SoC in
+the Designware I2S driver.=20
+The fourth patch fixes the name of I2STX1 pinmux.
+The last patch adds device node of I2S RX/TX0/TX1 in JH7110 dts.
 
-diff --git a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dt=
-si b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
-index d79f94432b27..7179f1a31cf2 100644
---- a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
-+++ b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
-@@ -203,6 +203,24 @@ &i2c6 {
- 	status =3D "okay";
- };
-=20
-+&i2srx {
-+	pinctrl-names =3D "default";
-+	pinctrl-0 =3D <&i2srx_pins>;
-+	status =3D "okay";
-+};
-+
-+&i2stx0 {
-+	pinctrl-names =3D "default";
-+	pinctrl-0 =3D <&mclk_ext_pins>;
-+	status =3D "okay";
-+};
-+
-+&i2stx1 {
-+	pinctrl-names =3D "default";
-+	pinctrl-0 =3D <&i2stx1_pins>;
-+	status =3D "okay";
-+};
-+
- &mmc0 {
- 	max-frequency =3D <100000000>;
- 	bus-width =3D <8>;
-@@ -337,6 +355,46 @@ GPOEN_SYS_I2C6_DATA,
- 		};
- 	};
-=20
-+	i2srx_pins: i2srx-0 {
-+		clk-sd-pins {
-+			pinmux =3D <GPIOMUX(38, GPOUT_LOW,
-+					      GPOEN_DISABLE,
-+					      GPI_SYS_I2SRX_BCLK)>,
-+				 <GPIOMUX(63, GPOUT_LOW,
-+					      GPOEN_DISABLE,
-+					      GPI_SYS_I2SRX_LRCK)>,
-+				 <GPIOMUX(38, GPOUT_LOW,
-+					      GPOEN_DISABLE,
-+					      GPI_SYS_I2STX1_BCLK)>,
-+				 <GPIOMUX(63, GPOUT_LOW,
-+					      GPOEN_DISABLE,
-+					      GPI_SYS_I2STX1_LRCK)>,
-+				 <GPIOMUX(61, GPOUT_LOW,
-+					      GPOEN_DISABLE,
-+					      GPI_SYS_I2SRX_SDIN0)>;
-+			input-enable;
-+		};
-+	};
-+
-+	i2stx1_pins: i2stx1-0 {
-+		sd-pins {
-+			pinmux =3D <GPIOMUX(44, GPOUT_SYS_I2STX1_SDO0,
-+					      GPOEN_ENABLE,
-+					      GPI_NONE)>;
-+			bias-disable;
-+			input-disable;
-+		};
-+	};
-+
-+	mclk_ext_pins: mclk-ext-0 {
-+		mclk-ext-pins {
-+			pinmux =3D <GPIOMUX(4, GPOUT_LOW,
-+					     GPOEN_DISABLE,
-+					     GPI_SYS_MCLK_EXT)>;
-+			input-enable;
-+		};
-+	};
-+
- 	mmc0_pins: mmc0-0 {
- 		 rst-pins {
- 			pinmux =3D <GPIOMUX(62, GPOUT_SYS_SDIO0_RST,
-diff --git a/arch/riscv/boot/dts/starfive/jh7110.dtsi b/arch/riscv/boot/d=
-ts/starfive/jh7110.dtsi
-index e85464c328d0..621b68c02ea8 100644
---- a/arch/riscv/boot/dts/starfive/jh7110.dtsi
-+++ b/arch/riscv/boot/dts/starfive/jh7110.dtsi
-@@ -512,6 +512,30 @@ tdm: tdm@10090000 {
- 			status =3D "disabled";
- 		};
-=20
-+		i2srx: i2s@100e0000 {
-+			compatible =3D "starfive,jh7110-i2srx";
-+			reg =3D <0x0 0x100e0000 0x0 0x1000>;
-+			clocks =3D <&syscrg JH7110_SYSCLK_I2SRX_BCLK_MST>,
-+				 <&syscrg JH7110_SYSCLK_I2SRX_APB>,
-+				 <&syscrg JH7110_SYSCLK_MCLK>,
-+				 <&syscrg JH7110_SYSCLK_MCLK_INNER>,
-+				 <&mclk_ext>,
-+				 <&syscrg JH7110_SYSCLK_I2SRX_BCLK>,
-+				 <&syscrg JH7110_SYSCLK_I2SRX_LRCK>,
-+				 <&i2srx_bclk_ext>,
-+				 <&i2srx_lrck_ext>;
-+			clock-names =3D "i2sclk", "apb", "mclk",
-+				      "mclk_inner", "mclk_ext", "bclk",
-+				      "lrck", "bclk_ext", "lrck_ext";
-+			resets =3D <&syscrg JH7110_SYSRST_I2SRX_APB>,
-+				 <&syscrg JH7110_SYSRST_I2SRX_BCLK>;
-+			dmas =3D <0>, <&dma 24>;
-+			dma-names =3D "tx", "rx";
-+			starfive,syscon =3D <&sys_syscon 0x18 0x2>;
-+			#sound-dai-cells =3D <0>;
-+			status =3D "disabled";
-+		};
-+
- 		usb0: usb@10100000 {
- 			compatible =3D "starfive,jh7110-usb";
- 			ranges =3D <0x0 0x0 0x10100000 0x100000>;
-@@ -736,6 +760,47 @@ spi6: spi@120a0000 {
- 			status =3D "disabled";
- 		};
-=20
-+		i2stx0: i2s@120b0000 {
-+			compatible =3D "starfive,jh7110-i2stx0";
-+			reg =3D <0x0 0x120b0000 0x0 0x1000>;
-+			clocks =3D <&syscrg JH7110_SYSCLK_I2STX0_BCLK_MST>,
-+				 <&syscrg JH7110_SYSCLK_I2STX0_APB>,
-+				 <&syscrg JH7110_SYSCLK_MCLK>,
-+				 <&syscrg JH7110_SYSCLK_MCLK_INNER>,
-+				 <&mclk_ext>;
-+			clock-names =3D "i2sclk", "apb", "mclk",
-+				      "mclk_inner","mclk_ext";
-+			resets =3D <&syscrg JH7110_SYSRST_I2STX0_APB>,
-+				 <&syscrg JH7110_SYSRST_I2STX0_BCLK>;
-+			dmas =3D <&dma 47>;
-+			dma-names =3D "tx";
-+			#sound-dai-cells =3D <0>;
-+			status =3D "disabled";
-+		};
-+
-+		i2stx1: i2s@120c0000 {
-+			compatible =3D "starfive,jh7110-i2stx1";
-+			reg =3D <0x0 0x120c0000 0x0 0x1000>;
-+			clocks =3D <&syscrg JH7110_SYSCLK_I2STX1_BCLK_MST>,
-+				 <&syscrg JH7110_SYSCLK_I2STX1_APB>,
-+				 <&syscrg JH7110_SYSCLK_MCLK>,
-+				 <&syscrg JH7110_SYSCLK_MCLK_INNER>,
-+				 <&mclk_ext>,
-+				 <&syscrg JH7110_SYSCLK_I2STX1_BCLK>,
-+				 <&syscrg JH7110_SYSCLK_I2STX1_LRCK>,
-+				 <&i2stx_bclk_ext>,
-+				 <&i2stx_lrck_ext>;
-+			clock-names =3D "i2sclk", "apb", "mclk",
-+				      "mclk_inner", "mclk_ext", "bclk",
-+				      "lrck", "bclk_ext", "lrck_ext";
-+			resets =3D <&syscrg JH7110_SYSRST_I2STX1_APB>,
-+				 <&syscrg JH7110_SYSRST_I2STX1_BCLK>;
-+			dmas =3D <&dma 48>;
-+			dma-names =3D "tx";
-+			#sound-dai-cells =3D <0>;
-+			status =3D "disabled";
-+		};
-+
- 		sfctemp: temperature-sensor@120e0000 {
- 			compatible =3D "starfive,jh7110-temp";
- 			reg =3D <0x0 0x120e0000 0x0 0x10000>;
+This patch series is based on Linux-next(20230818) which is merge
+clock, syscon and dma nodes for the StarFive JH7110 SoC.=20
+
+The series has been tested and works normally on the VisionFive 2
+board by plugging an audio expansion board.
+
+Changes since v1:
+- Added the maxItems of clocks, clock-names and resets on each
+  I2S controllers in the binding.
+- Dropped the useless settings about dma bus width in the I2S driver.
+- Used the 'i2s@' instead of 'i2stx@' or 'i2srx@' in the JH7110 dts.
+
+v1: https://lore.kernel.org/all/20230802084301.134122-1-xingyu.wu@starfiv=
+etech.com/
+
+Xingyu Wu (5):
+  ASoC: dt-bindings: snps,designware-i2s: Add StarFive JH7110 SoC
+    support
+  ASoC: dwc: Use ops to get platform data
+  ASoC: dwc: i2s: Add StarFive JH7110 SoC support
+  riscv: dts: starfive: pinfunc: Fix the pins name of I2STX1
+  riscv: dts: starfive: Add the nodes and pins of I2Srx/I2Stx0/I2Stx1
+
+ .../bindings/sound/snps,designware-i2s.yaml   | 108 ++++++-
+ arch/riscv/boot/dts/starfive/jh7110-pinfunc.h |   4 +-
+ .../jh7110-starfive-visionfive-2.dtsi         |  58 ++++
+ arch/riscv/boot/dts/starfive/jh7110.dtsi      |  65 ++++
+ include/sound/designware_i2s.h                |   3 +
+ sound/soc/dwc/dwc-i2s.c                       | 306 ++++++++++++++++--
+ sound/soc/dwc/local.h                         |   1 +
+ 7 files changed, 518 insertions(+), 27 deletions(-)
+
 --=20
 2.25.1
 
