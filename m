@@ -4,46 +4,99 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A0FBAEE4996
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Aug 2023 09:48:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3EAE3EE49A6
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Aug 2023 10:43:27 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D386383B;
-	Mon, 21 Aug 2023 11:47:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D386383B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 842F382C;
+	Mon, 21 Aug 2023 12:42:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 842F382C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1692611287;
-	bh=15D+t6iQibnxwHweIY4i1RKOUYkWZAbshrhbd7JT2Z0=;
-	h=Subject:From:To:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=ZnaTUgVJsfs2gN/tlWzNOAewGhBwLQ96RurNIkNigraG65q1+Yz8nEyEupHRqapYP
-	 GqSwIl+8sLc7hu4t23g2cfIpposHD9XOUbQI0apFL52gP9LL8guR456HAy1QIsVEiT
-	 QXQnazibFu92ZORQHvPaN62XuQTFgRlB/hj1iqB8=
+	s=default; t=1692614605;
+	bh=SkZfZpMy9PfzIsaBDDSOEZt4A0CLZUL7NOnPZk2jO8s=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=mkmtaKSxyXatiTcUOakmR7L3K+vv8vM8mAJHfCsIZxqp1y+LUYw9RC5JJxUYDX1q7
+	 1L4mtWUgYhk647wP7VodTbGWPEiTLqg2OWV/XkDHvTYzUeMBodsCCKzxadAH+RefVH
+	 OAQx1cfbFc/7HwoeN1DRZVMA8MAResjXr+9hPYsM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9EDD5F8025F; Mon, 21 Aug 2023 11:46:49 +0200 (CEST)
+	id CE2C8F80510; Mon, 21 Aug 2023 12:42:06 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5E527F80272;
-	Mon, 21 Aug 2023 11:46:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 451D5F80199;
+	Mon, 21 Aug 2023 12:42:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 92E6FF800F8; Mon, 21 Aug 2023 11:46:44 +0200 (CEST)
-Received: from mailman-web.alsa-project.org (mailman-web.alsa-project.org
- [10.254.200.11])
-	by alsa1.perex.cz (Postfix) with ESMTP id 88993F800F8
-	for <alsa-devel@alsa-project.org>; Mon, 21 Aug 2023 11:46:44 +0200 (CEST)
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Codec stops working after sleep and resume
-From: =?utf-8?b?SmVzw7pzIEppbcOpbmV6IFPDoW5jaGV6?=
- <Jesus.JimenezSanchez@verifone.com>
-To: alsa-devel@alsa-project.org
-Date: Mon, 21 Aug 2023 09:46:44 -0000
-Message-ID: <169261120455.20.1254929135837680857@mailman-web.alsa-project.org>
-User-Agent: HyperKitty on https://mailman.alsa-project.org/
-Message-ID-Hash: S6456ZUOMFXLRHU2B2JNZUSGKIGXNBXY
-X-Message-ID-Hash: S6456ZUOMFXLRHU2B2JNZUSGKIGXNBXY
-X-MailFrom: Jesus.JimenezSanchez@verifone.com
+	id 35E58F80199; Mon, 21 Aug 2023 12:42:01 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id C1675F800BF
+	for <alsa-devel@alsa-project.org>; Mon, 21 Aug 2023 12:41:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C1675F800BF
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=urDAlWPD;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=RNXlpjbr
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 7021622B43;
+	Mon, 21 Aug 2023 10:41:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1692614513;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DqB0kM7taH/USJhaXlPTjbflSdtweo+SFWnDZz/F+z0=;
+	b=urDAlWPDYQoJpW23PLti9o2PeDifSQIfrmDloGIQs8yFAB1P2jX+/xWD3OmxvrON4YyJcC
+	zOCygg0u8UaXf7shPSm825LUsPPySyElbBMPZ/udb1iDus8o2T3sEEKNR40eJ34z5n0iMq
+	g8cd/qEATDR4TaiumVkvbhfJqHMA2tE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1692614513;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DqB0kM7taH/USJhaXlPTjbflSdtweo+SFWnDZz/F+z0=;
+	b=RNXlpjbrbxBr/xoskPm5dLvBtUAYGcm0Afy9svGjIDyrM4e58mh33p4KcDS76viJSvAWP8
+	ietsGXNUtGos7XDg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 422A313421;
+	Mon, 21 Aug 2023 10:41:53 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id 9zXPDnE/42SgBAAAMHmgww
+	(envelope-from <tiwai@suse.de>); Mon, 21 Aug 2023 10:41:53 +0000
+Date: Mon, 21 Aug 2023 12:41:52 +0200
+Message-ID: <87cyzg8yof.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Colin Ian King <colin.i.king@gmail.com>
+Cc: Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	alsa-devel@alsa-project.org,
+	kernel-janitors@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] ALSA: hda/realtek: Fix spelling mistake "powe" ->
+ "power"
+In-Reply-To: <20230821080003.16678-1-colin.i.king@gmail.com>
+References: <20230821080003.16678-1-colin.i.king@gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Message-ID-Hash: SVWR3MHTS6XLNBVXVKAFTWHY3CZGNMVT
+X-Message-ID-Hash: SVWR3MHTS6XLNBVXVKAFTWHY3CZGNMVT
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -55,83 +108,22 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/S6456ZUOMFXLRHU2B2JNZUSGKIGXNBXY/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SVWR3MHTS6XLNBVXVKAFTWHY3CZGNMVT/>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-I am using the tlv320aic31xx codec in my embedded device and I've noticed that, after forcing the unit into sleep and then, resume, I get a bunch of these errors:
-```
-tlv320aic31xx-codec 0-0018: ASoC: error at snd_soc_component_update_bits on tlv320aic31xx-codec.0-0018: -108
-tlv320aic31xx-codec 0-0018: aic31xx_wait_bits: Failed! 0x25 was 0xcc239ca8 expected 0x0 (-108, 0x20, 0 us)
-tlv320aic31xx-codec 0-0018: ASoC: POST_PMD: HPL Driver event failed: -1
-tlv320aic31xx-codec 0-0018: ASoC: error at snd_soc_component_update_bits on tlv320aic31xx-codec.0-0018: -108
-tlv320aic31xx-codec 0-0018: ASoC: POST_PMD: SPL ClassD event failed: -108
-tlv320aic31xx-codec 0-0018: ASoC: POST_PMD: SPR ClassD event failed: -108
-tlv320aic31xx-codec 0-0018: ASoC: error at snd_soc_component_update_bits on tlv320aic31xx-codec.0-0018: -108
-tlv320aic31xx-codec 0-0018: ASoC: error at snd_soc_component_update_bits on tlv320aic31xx-codec.0-0018: -108
-tlv320aic31xx-codec 0-0018: ASoC: error at snd_soc_component_update_bits on tlv320aic31xx-codec.0-0018: -108
-tlv320aic31xx-codec 0-0018: ASoC: error at snd_soc_component_update_bits on tlv320aic31xx-codec.0-0018: -108
-tlv320aic31xx-codec 0-0018: ASoC: error at snd_soc_component_update_bits on tlv320aic31xx-codec.0-0018: -108
-tlv320aic31xx-codec 0-0018: ASoC: error at snd_soc_component_update_bits on tlv320aic31xx-codec.0-0018: -108
-tlv320aic31xx-codec 0-0018: ASoC: error at snd_soc_component_update_bits on tlv320aic31xx-codec.0-0018: -108
-```
+On Mon, 21 Aug 2023 10:00:03 +0200,
+Colin Ian King wrote:
+> 
+> There is a spelling mistake in a quirk entry. Fix it.
+> 
+> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
 
-When I look at he output of `dmesg`, I found this:
-```
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 1506 at drivers/i2c/i2c-core.h:54 __i2c_transfer+0xac/0xb4
-i2c i2c-0: Transfer while suspended
-Modules linked in: rfcomm stm32_adc stm32_timer_trigger stm32_lptimer_trigger sha256_generic libsha256 sha256_arm snd_soc_simple_card snd_soc_simple_card_utils cfg80211 stm32_crc32 hci_uart btqca stm32_cryp libdes crypto_engine snd_soc_stm32_i2s snd_soc_tlv320aic31xx bluetooth stm32_adc_core snd_soc_core atmel_mxt_ts snd_pcm_dmaengine snd_pcm ecdh_generic snd_timer snd ecc sgm4151x_charger soundcore libaes [last unloaded: wlan]
-CPU: 0 PID: 1506 Comm: sh Tainted: G           O      5.15.67 #1
-Hardware name: STM32 (Device Tree Support)
-[<c010e8cc>] (unwind_backtrace) from [<c010c120>] (show_stack+0x10/0x14)
-[<c010c120>] (show_stack) from [<c011dc1c>] (__warn+0xec/0x148)
-[<c011dc1c>] (__warn) from [<c0bed42c>] (warn_slowpath_fmt+0x78/0xac)
-[<c0bed42c>] (warn_slowpath_fmt) from [<c092ecdc>] (__i2c_transfer+0xac/0xb4)
-[<c092ecdc>] (__i2c_transfer) from [<c092ed80>] (i2c_transfer+0x9c/0x138)
-[<c092ed80>] (i2c_transfer) from [<c06f5a40>] (regmap_i2c_read+0x5c/0x98)
-[<c06f5a40>] (regmap_i2c_read) from [<c06f0e2c>] (_regmap_raw_read+0x10c/0x2a8)
-[<c06f0e2c>] (_regmap_raw_read) from [<c06f1008>] (_regmap_bus_read+0x40/0x6c)
-[<c06f1008>] (_regmap_bus_read) from [<c06ef9c4>] (_regmap_read+0x60/0x14c)
-[<c06ef9c4>] (_regmap_read) from [<c06effdc>] (_regmap_update_bits+0xb4/0xf4)
-[<c06effdc>] (_regmap_update_bits) from [<c06f00c0>] (_regmap_select_page+0xa4/0x108)
-[<c06f00c0>] (_regmap_select_page) from [<c06f07a8>] (_regmap_raw_write_impl+0x684/0x968)
-[<c06f07a8>] (_regmap_raw_write_impl) from [<c06f0b04>] (_regmap_bus_raw_write+0x78/0xa0)
-[<c06f0b04>] (_regmap_bus_raw_write) from [<c06efe40>] (_regmap_write+0x4c/0x134)
-[<c06efe40>] (_regmap_write) from [<c06f0010>] (_regmap_update_bits+0xe8/0xf4)
-[<c06f0010>] (_regmap_update_bits) from [<c06f1820>] (regmap_update_bits_base+0x50/0x74)
-[<c06f1820>] (regmap_update_bits_base) from [<bf0d0980>] (snd_soc_component_update_bits+0x78/0x124 [snd_soc_core])
-[<bf0d0980>] (snd_soc_component_update_bits [snd_soc_core]) from [<bf0daa20>] (dapm_seq_run_coalesced+0x14c/0x1a4 [snd_soc_core])
-[<bf0daa20>] (dapm_seq_run_coalesced [snd_soc_core]) from [<bf0dab68>] (dapm_seq_run+0xf0/0x350 [snd_soc_core])
-[<bf0dab68>] (dapm_seq_run [snd_soc_core]) from [<bf0db170>] (dapm_power_widgets+0x3a8/0x530 [snd_soc_core])
-[<bf0db170>] (dapm_power_widgets [snd_soc_core]) from [<bf0cc214>] (snd_soc_dapm_sync+0x48/0x54 [snd_soc_core])
-[<bf0cc214>] (snd_soc_dapm_sync [snd_soc_core]) from [<bf0c652c>] (snd_soc_suspend+0xf0/0x230 [snd_soc_core])
-[<bf0c652c>] (snd_soc_suspend [snd_soc_core]) from [<c06df188>] (dpm_run_callback+0x48/0x134)
-[<c06df188>] (dpm_run_callback) from [<c06df58c>] (__device_suspend+0x11c/0x4c4)
-[<c06df58c>] (__device_suspend) from [<c06e1c10>] (dpm_suspend+0x148/0x2cc)
-[<c06e1c10>] (dpm_suspend) from [<c06e20e8>] (dpm_suspend_start+0x64/0x6c)
-[<c06e20e8>] (dpm_suspend_start) from [<c0159f00>] (suspend_devices_and_enter+0x150/0x2b4)
-[<c0159f00>] (suspend_devices_and_enter) from [<c0bede38>] (enter_state+0x204/0x250)
-[<c0bede38>] (enter_state) from [<c015a0a4>] (pm_suspend+0x40/0x98)
-[<c015a0a4>] (pm_suspend) from [<c0158ae4>] (state_store+0x68/0xc8)
-[<c0158ae4>] (state_store) from [<c0330a68>] (kernfs_fop_write_iter+0x10c/0x1cc)
-[<c0330a68>] (kernfs_fop_write_iter) from [<c028ea40>] (vfs_write+0x298/0x45c)
-[<c028ea40>] (vfs_write) from [<c028ed4c>] (ksys_write+0x60/0xe4)
-[<c028ed4c>] (ksys_write) from [<c0100060>] (ret_fast_syscall+0x0/0x48)
-Exception stack(0xcffcbfa8 to 0xcffcbff0)
-bfa0:                   00000004 005ac7d8 00000001 005ac7d8 00000004 00000000
-bfc0: 00000004 005ac7d8 00000001 00000004 b6f01680 bee896d8 005a8448 005a8590
-bfe0: 005a6dfc bee89690 004fcda4 b6dcb4f8
----[ end trace 75457fd792755cae ]---
-```
+Thanks, applied now with the Fixes tag 3babae915f4c.
 
-I've been trying for a few days, but I can't find the source of the problem or a way to solve it. Is there anything I might be missing?
 
-I assume the problem is that it's trying to write to the registers after the suspend has happened, but I haven't been able to prove that either, and I wouldn't know how to fix that. Could that be what's happening here?
-
-Thanks.
+Takashi
