@@ -4,109 +4,107 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 53111EE4993
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Aug 2023 11:15:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E7EABEE4993
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Aug 2023 11:16:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 84B19DF4;
-	Mon, 21 Aug 2023 13:15:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 84B19DF4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 23179A4B;
+	Mon, 21 Aug 2023 13:15:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 23179A4B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1692616552;
-	bh=Zkfqr6SI88EBqD7f2xXuMdFWLsYnT+jNapbN+UhZwXU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1692616566;
+	bh=DHCqTlU2TjsWkkc9MAjgHYyKvABWy0qVk3Mkh/T9vuI=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=JvZDzpYaStHKxsmHeLCuwwAfv04LrO88jXQ5XfCKBwPpJN5Rhqq8W0ynmtSEUDxui
-	 ktX8aMzdATpraTXC0MKmuFIquIougWJsRp5I4v16d3pwqvKuUW+yMdfrXwmL/F/gKs
-	 SMS+M/K91946Ghrm25vnHa7cHgIS6U9ihP9dgjfU=
+	b=T0HVrO2U0Oyl5bs825zeH301lHtGJnkej5jhUyEmSyz9knpEeFhT2zGlrvX6LHe2K
+	 H22LYJtE7Od7W6ZM8uRYnp9051c0uCDw0zQYDZwu0M4Z7jFTdYOvtpnHQxc0/gTtqd
+	 CJvjeF3Jm/mmKyvoWDIshdg2FADK+WMTVM7YPar0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A126BF8060D; Mon, 21 Aug 2023 13:12:02 +0200 (CEST)
+	id 03DE9F8060F; Mon, 21 Aug 2023 13:12:03 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id F1969F80602;
-	Mon, 21 Aug 2023 13:12:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9FEFEF80602;
+	Mon, 21 Aug 2023 13:12:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7D7D5F80199; Sun, 20 Aug 2023 19:15:34 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E4851F80027
-	for <alsa-devel@alsa-project.org>; Sun, 20 Aug 2023 19:15:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E4851F80027
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=qcYbvMBs
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 66D866196F;
-	Sun, 20 Aug 2023 17:15:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5AD4FC433C8;
-	Sun, 20 Aug 2023 17:15:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1692551718;
-	bh=Zkfqr6SI88EBqD7f2xXuMdFWLsYnT+jNapbN+UhZwXU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=qcYbvMBsLDLwA0p1ML9ed9neCvmJ7zBgkux6racwXUMZZVDiaH6DY9dKrCsPxqXmm
-	 jDmoSSrcwPzwxcuWvZw8JCmaPiP4+CkWMr63Gbzs6NFLNMjuT3uykobNYXv/bk+lqc
-	 PvRARadbFhoxXh7t6NUX5W+JSv3/q9DN7V9zNkrWs4p2FyyMFFyaNRPelyeRE0svQF
-	 CjdUagjVJdChTfi0yau4sv+w7+4JN7aqsDX/VBmzisOeEGKLhcOnDs2bPj09ocok7N
-	 m+/l7EwNYsxKIpPD/Aj+fi236KH5xRkpGKO95YhLHsvvTIxsLtU7ugi4QHPX0OrFaU
-	 pKtT9hUh4Mn2Q==
-Date: Sun, 20 Aug 2023 19:15:11 +0200
-From: Simon Horman <horms@kernel.org>
-To: Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc: Herve Codina <herve.codina@bootlin.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Andrew Lunn <andrew@lunn.ch>, Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Lee Jones <lee@kernel.org>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Qiang Zhao <qiang.zhao@nxp.com>, Li Yang <leoyang.li@nxp.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	Shengjiu Wang <shengjiu.wang@gmail.com>,
-	Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <festevam@gmail.com>,
-	Nicolin Chen <nicoleotsuka@gmail.com>,
-	Randy Dunlap <rdunlap@infradead.org>, netdev@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v4 21/28] net: wan: Add framer framework support
-Message-ID: <ZOJKH0xHpQc4HdUP@vergenet.net>
-References: <cover.1692376360.git.christophe.leroy@csgroup.eu>
- <5f671caf19be0a9bb7ea7b96a6c86381e243ca4c.1692376361.git.christophe.leroy@csgroup.eu>
+	id 85E1CF80199; Mon, 21 Aug 2023 13:07:12 +0200 (CEST)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by alsa1.perex.cz (Postfix) with ESMTP id 5A959F800BF
+	for <alsa-devel@alsa-project.org>; Mon, 21 Aug 2023 13:06:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5A959F800BF
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 59D942F4;
+	Mon, 21 Aug 2023 04:07:33 -0700 (PDT)
+Received: from [10.57.3.137] (unknown [10.57.3.137])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4F91B3F762;
+	Mon, 21 Aug 2023 04:06:44 -0700 (PDT)
+Message-ID: <78114fd6-9b83-92ba-418f-6cc7bda9df9b@arm.com>
+Date: Mon, 21 Aug 2023 12:06:40 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: 
- <5f671caf19be0a9bb7ea7b96a6c86381e243ca4c.1692376361.git.christophe.leroy@csgroup.eu>
-X-MailFrom: horms@kernel.org
-X-Mailman-Rule-Hits: nonmember-moderation
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH] iommu: Remove the device_lock_assert() from
+ __iommu_probe_device()
+Content-Language: en-GB
+To: Jason Gunthorpe <jgg@nvidia.com>, Andy Gross <agross@kernel.org>,
+ David Airlie <airlied@gmail.com>, alsa-devel@alsa-project.org,
+ Bjorn Andersson <andersson@kernel.org>,
+ Andrzej Hajda <andrzej.hajda@intel.com>, ath10k@lists.infradead.org,
+ ath11k@lists.infradead.org, Mark Brown <broonie@kernel.org>,
+ Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+ Christian Gmeiner <christian.gmeiner@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>, devicetree@vger.kernel.org,
+ dmaengine@vger.kernel.org, Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+ dri-devel@lists.freedesktop.org, Emma Anholt <emma@anholt.net>,
+ etnaviv@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+ Frank Rowand <frowand.list@gmail.com>, iommu@lists.linux.dev,
+ Jernej Skrabec <jernej.skrabec@gmail.com>, Joerg Roedel <joro@8bytes.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Kalle Valo <kvalo@kernel.org>,
+ Lucas Stach <l.stach@pengutronix.de>, Liam Girdwood <lgirdwood@gmail.com>,
+ Russell King <linux+etnaviv@armlinux.org.uk>,
+ linux-arm-kernel@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+ linux-media@vger.kernel.org, linux-sunxi@lists.linux.dev,
+ linux-tegra@vger.kernel.org, linux-wireless@vger.kernel.org,
+ Marijn Suijten <marijn.suijten@somainline.org>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Mikko Perttunen <mperttunen@nvidia.com>, Maxime Ripard <mripard@kernel.org>,
+ Sinan Kaya <okaya@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+ Abhinav Kumar <quic_abhinavk@quicinc.com>,
+ Jeff Johnson <quic_jjohnson@quicinc.com>,
+ Vikash Garodia <quic_vgarodia@quicinc.com>, Rob Clark <robdclark@gmail.com>,
+ Rob Herring <robh+dt@kernel.org>, Samuel Holland <samuel@sholland.org>,
+ Sean Paul <sean@poorly.run>,
+ Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
+ Thierry Reding <thierry.reding@gmail.com>, Takashi Iwai <tiwai@suse.com>,
+ Vinod Koul <vkoul@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+ Will Deacon <will@kernel.org>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
+ <zajec5@gmail.com>
+Cc: Lu Baolu <baolu.lu@linux.intel.com>, Joerg Roedel <jroedel@suse.de>,
+ Kevin Tian <kevin.tian@intel.com>,
+ Marek Szyprowski <m.szyprowski@samsung.com>,
+ Chen-Yu Tsai <wenst@chromium.org>
+References: <0-v1-98d20e768c66+7-of_dma_lock_jgg@nvidia.com>
+From: Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <0-v1-98d20e768c66+7-of_dma_lock_jgg@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-MailFrom: robin.murphy@arm.com
+X-Mailman-Rule-Hits: max-recipients
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: 2O56JNR3YXFMCMYJHQWOHL46M2SNIKQI
-X-Message-ID-Hash: 2O56JNR3YXFMCMYJHQWOHL46M2SNIKQI
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-size; news-moderation; no-subject; digests;
+ suspicious-header
+Message-ID-Hash: Y5U4A3UYQDCU5DQX6N3EQIORCX5WTSZM
+X-Message-ID-Hash: Y5U4A3UYQDCU5DQX6N3EQIORCX5WTSZM
 X-Mailman-Approved-At: Mon, 21 Aug 2023 11:11:53 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2O56JNR3YXFMCMYJHQWOHL46M2SNIKQI/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Y5U4A3UYQDCU5DQX6N3EQIORCX5WTSZM/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -115,172 +113,419 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, Aug 18, 2023 at 06:39:15PM +0200, Christophe Leroy wrote:
-> From: Herve Codina <herve.codina@bootlin.com>
+On 2023-08-18 22:32, Jason Gunthorpe wrote:
+> It turns out several drivers are calling of_dma_configure() outside the
+> expected bus_type.dma_configure op. This ends up being mis-locked and
+> triggers a lockdep assertion, or instance:
 > 
-> A framer is a component in charge of an E1/T1 line interface.
-> Connected usually to a TDM bus, it converts TDM frames to/from E1/T1
-> frames. It also provides information related to the E1/T1 line.
+>    iommu_probe_device_locked+0xd4/0xe4
+>    of_iommu_configure+0x10c/0x200
+>    of_dma_configure_id+0x104/0x3b8
+>    a6xx_gmu_init+0x4c/0xccc [msm]
+>    a6xx_gpu_init+0x3ac/0x770 [msm]
+>    adreno_bind+0x174/0x2ac [msm]
+>    component_bind_all+0x118/0x24c
+>    msm_drm_bind+0x1e8/0x6c4 [msm]
+>    try_to_bring_up_aggregate_device+0x168/0x1d4
+>    __component_add+0xa8/0x170
+>    component_add+0x14/0x20
+>    dsi_dev_attach+0x20/0x2c [msm]
+>    dsi_host_attach+0x9c/0x144 [msm]
+>    devm_mipi_dsi_attach+0x34/0xb4
+>    lt9611uxc_attach_dsi.isra.0+0x84/0xfc [lontium_lt9611uxc]
+>    lt9611uxc_probe+0x5c8/0x68c [lontium_lt9611uxc]
+>    i2c_device_probe+0x14c/0x290
+>    really_probe+0x148/0x2b4
+>    __driver_probe_device+0x78/0x12c
+>    driver_probe_device+0x3c/0x160
+>    __device_attach_driver+0xb8/0x138
+>    bus_for_each_drv+0x84/0xe0
+>    __device_attach+0xa8/0x1b0
+>    device_initial_probe+0x14/0x20
+>    bus_probe_device+0xb0/0xb4
+>    deferred_probe_work_func+0x8c/0xc8
+>    process_one_work+0x1ec/0x53c
+>    worker_thread+0x298/0x408
+>    kthread+0x124/0x128
+>    ret_from_fork+0x10/0x20
 > 
-> The framer framework provides a set of APIs for the framer drivers
-> (framer provider) to create/destroy a framer and APIs for the framer
-> users (framer consumer) to obtain a reference to the framer, and
-> use the framer.
+> It is subtle and was never documented or enforced, but there has always
+> been an assumption that of_dma_configure_id() is not concurrent. It makes
+> several calls into the iommu layer that require this, including
+> dev_iommu_get(). The majority of cases have been preventing concurrency
+> using the device_lock().
 > 
-> This basic implementation provides a framer abstraction for:
->  - power on/off the framer
->  - get the framer status (line state)
->  - be notified on framer status changes
->  - get/set the framer configuration
+> Thus the new lock debugging added exposes an existing problem in
+> drivers. On inspection this looks like a theoretical locking problem as
+> generally the cases are already assuming they are the exclusive (single
+> threaded) user of the target device.
+
+Sorry to be blunt, but the only problem is that you've introduced an 
+idealistic new locking scheme which failed to take into account how 
+things currently actually work, and is broken and achieving nothing but 
+causing problems.
+
+The solution is to drop those locking patches entirely and rethink the 
+whole thing. When their sole purpose was to improve the locking and make 
+it easier to reason about, and now the latest "fix" is now to remove one 
+of the assertions which forms the fundamental basis for that reasoning, 
+then the point has clearly been lost. All we've done is churned a dodgy 
+and incomplete locking scheme into a *different* dodgy and incomplete 
+locking scheme. I do not think that continuing to dig in deeper is the 
+way out of the hole...
+
+It's now rc7, and I have little confidence that aren't still more latent 
+problems which just haven't been hit yet (e.g. acpi_dma_configure() is 
+also called in different contexts relative to the device lock, which is 
+absolutely by design and not broken).
+
+And on the subject of idealism, the fact is that doing IOMMU 
+configuration based on driver probe via bus->dma_configure is 
+*fundamentally wrong* and breaking a bunch of other IOMMU API 
+assumptions, so it is not a robust foundation to build anything upon in 
+the first place. The problem it causes with broken groups has been known 
+about for several years now, however it's needed a lot of work to get to 
+the point of being able to fix it properly (FWIW that is now #2 on my 
+priority list after getting the bus ops stuff done, which should also 
+make it easier).
+
+Thanks,
+Robin.
+
+> Sadly, there are deeper technical problems with all of the places doing
+> this. There are several problemetic patterns:
 > 
-> Signed-off-by: Herve Codina <herve.codina@bootlin.com>
-> Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-
-Hi Christophe and Herve,
-
-some minor feedback from my side.
-
-...
-
-> diff --git a/drivers/net/wan/framer/framer-core.c b/drivers/net/wan/framer/framer-core.c
-
-...
-
-> +/**
-> + * framer_create() - create a new framer
-> + * @dev: device that is creating the new framer
-> + * @node: device node of the framer. default to dev->of_node.
-> + * @ops: function pointers for performing framer operations
+> 1) Probe a driver on device A and then steal device B and use it as part
+>     of the driver operation.
+> 
+>     Since no driver was probed to device B it means we never called
+>     bus_type.dma_configure and thus the drivers hackily try to open code
+>     this.
+> 
+>     Unfortunately nothing prevents another driver from binding to device B
+>     and creating total chaos. eg vfio bind triggered by userspace
+> 
+> 2) Probe a driver on device A and then create a new platform driver B for a
+>     fwnode that doesn't have one, then do #1
+> 
+>     This has the same essential problem as #1, the new device is never
+>     probed so the hack call to of_dma_configure() is needed to setup DMA,
+>     and we are at risk of something else trying to use the device.
+> 
+> 3) Probe a driver on device A but the of_node was incorrect for DMA so fix
+>     it by figuring out the right node and calling of_dma_configure()
+> 
+>     This will blow up in the iommu code if the driver is unprobed because
+>     the bus_type now assumes that dma_configure and dma_cleanup are
+>     strictly paired. Since dma_configure will have done the wrong thing due
+>     to the missing of_node, dma_cleanup will be unpaired and
+>     iommu_device_unuse_default_domain() will blow up.
+> 
+>     Further the driver operating on device A will not be protected against
+>     changes to the iommu domain since it never called
+>     iommu_device_use_default_domain()
+> 
+>     At least this case will not throw a lockdep warning as probe
+>     is done under the device_lock already.
+> 
+> While it is tempting to just add a device_lock() around the few missing
+> places, this doesn't solve the above underlying problems with those
+> callers.
+> 
+> For this reason remove the locking assertion in the iommu code so that
+> theses driver problems continue to remain hidden.
+> 
+> Add a comment to all the problematic call sites to encourage fixing and
+> discourage future cut & paste expanding the problem.
+> 
+> Add documentation to of_dma_configure_id() explaining the locking.
+> 
+> Fixes: b19ca5922dff ("iommu: Do not attempt to re-lock the iommu device when probing")
+> Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
+> Closes: https://lore.kernel.org/all/d090f196-a5c2-b188-31bf-e42553d8d251@samsung.com/
+> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+> ---
+>   drivers/bcma/main.c                              |  4 ++++
+>   drivers/dma/qcom/hidma_mgmt.c                    |  4 ++++
+>   drivers/gpu/drm/etnaviv/etnaviv_drv.c            |  4 ++++
+>   drivers/gpu/drm/msm/adreno/a6xx_gmu.c            |  8 ++++++++
+>   drivers/gpu/drm/sun4i/sun4i_backend.c            |  4 ++++
+>   drivers/gpu/drm/sun4i/sun8i_mixer.c              |  4 ++++
+>   drivers/gpu/drm/vc4/vc4_drv.c                    |  4 ++++
+>   drivers/gpu/host1x/bus.c                         |  4 ++++
+>   drivers/iommu/iommu.c                            | 12 ++++++++----
+>   drivers/media/platform/qcom/venus/firmware.c     |  4 ++++
+>   drivers/media/platform/samsung/s5p-mfc/s5p_mfc.c |  4 ++++
+>   drivers/net/wireless/ath/ath10k/snoc.c           |  4 ++++
+>   drivers/net/wireless/ath/ath11k/ahb.c            |  4 ++++
+>   drivers/of/device.c                              |  3 +++
+>   sound/soc/bcm/bcm63xx-pcm-whistler.c             |  4 ++++
+>   15 files changed, 67 insertions(+), 4 deletions(-)
+> 
+> This is my suggestion to the issue, I don't like removing the locking
+> assertion but if we can't have debug kernels reporting existing bugs then this
+> would be the next best option.
+> 
+> I've CC'd all the driver owners, if people have better explanations for what
+> their drivers are doing please share :)
+> 
+> diff --git a/drivers/bcma/main.c b/drivers/bcma/main.c
+> index 7061d3ee836a15..4df97000d7e0a7 100644
+> --- a/drivers/bcma/main.c
+> +++ b/drivers/bcma/main.c
+> @@ -208,6 +208,10 @@ static void bcma_of_fill_device(struct device *parent,
+>   
+>   	core->irq = bcma_of_get_irq(parent, core, 0);
+>   
+> +	/*
+> +	 * FIXME: of_dma_configure() should not be called outside
+> +	 * bus_type.dma_configure
+> +	 */
+>   	of_dma_configure(&core->dev, node, false);
+>   }
+>   
+> diff --git a/drivers/dma/qcom/hidma_mgmt.c b/drivers/dma/qcom/hidma_mgmt.c
+> index 05e96b31d87169..2efd97747d37b3 100644
+> --- a/drivers/dma/qcom/hidma_mgmt.c
+> +++ b/drivers/dma/qcom/hidma_mgmt.c
+> @@ -390,6 +390,10 @@ static int __init hidma_mgmt_of_populate_channels(struct device_node *np)
+>   			goto out;
+>   		}
+>   		new_pdev->dev.of_node = child;
+> +		/*
+> +		 * FIXME: of_dma_configure() should not be called outside
+> +		 * bus_type.dma_configure
+> +		 */
+>   		of_dma_configure(&new_pdev->dev, child, true);
+>   		/*
+>   		 * It is assumed that calling of_msi_configure is safe on
+> diff --git a/drivers/gpu/drm/etnaviv/etnaviv_drv.c b/drivers/gpu/drm/etnaviv/etnaviv_drv.c
+> index 31a7f59ccb49ee..22729c66e39a65 100644
+> --- a/drivers/gpu/drm/etnaviv/etnaviv_drv.c
+> +++ b/drivers/gpu/drm/etnaviv/etnaviv_drv.c
+> @@ -635,6 +635,10 @@ static int etnaviv_pdev_probe(struct platform_device *pdev)
+>   	 * device as the GPU we found. This assumes that all Vivante
+>   	 * GPUs in the system share the same DMA constraints.
+>   	 */
+> +	/*
+> +	 * FIXME: of_dma_configure() should not be called outside
+> +	 * bus_type.dma_configure
+> +	 */
+>   	if (first_node)
+>   		of_dma_configure(&pdev->dev, first_node, true);
+>   
+> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+> index 5deb79924897af..509bd8b7ec12ae 100644
+> --- a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+> @@ -1492,6 +1492,10 @@ int a6xx_gmu_wrapper_init(struct a6xx_gpu *a6xx_gpu, struct device_node *node)
+>   
+>   	gmu->dev = &pdev->dev;
+>   
+> +	/*
+> +	 * FIXME: of_dma_configure() should not be called outside
+> +	 * bus_type.dma_configure
+> +	 */
+>   	of_dma_configure(gmu->dev, node, true);
+>   
+>   	pm_runtime_enable(gmu->dev);
+> @@ -1556,6 +1560,10 @@ int a6xx_gmu_init(struct a6xx_gpu *a6xx_gpu, struct device_node *node)
+>   
+>   	gmu->dev = &pdev->dev;
+>   
+> +	/*
+> +	 * FIXME: of_dma_configure() should not be called outside
+> +	 * bus_type.dma_configure
+> +	 */
+>   	of_dma_configure(gmu->dev, node, true);
+>   
+>   	/* Fow now, don't do anything fancy until we get our feet under us */
+> diff --git a/drivers/gpu/drm/sun4i/sun4i_backend.c b/drivers/gpu/drm/sun4i/sun4i_backend.c
+> index b11dbd50d73e98..30cbefb6799e51 100644
+> --- a/drivers/gpu/drm/sun4i/sun4i_backend.c
+> +++ b/drivers/gpu/drm/sun4i/sun4i_backend.c
+> @@ -800,6 +800,10 @@ static int sun4i_backend_bind(struct device *dev, struct device *master,
+>   		 * for us, and DRM doesn't do per-device allocation either, so
+>   		 * we would need to fix DRM first...
+>   		 */
+> +		/*
+> +		 * FIXME: of_dma_configure() should not be called outside
+> +		 * bus_type.dma_configure
+> +		 */
+>   		ret = of_dma_configure(drm->dev, dev->of_node, true);
+>   		if (ret)
+>   			return ret;
+> diff --git a/drivers/gpu/drm/sun4i/sun8i_mixer.c b/drivers/gpu/drm/sun4i/sun8i_mixer.c
+> index 11d5244a5aa5fc..e26bea207599d3 100644
+> --- a/drivers/gpu/drm/sun4i/sun8i_mixer.c
+> +++ b/drivers/gpu/drm/sun4i/sun8i_mixer.c
+> @@ -399,6 +399,10 @@ static int sun8i_mixer_bind(struct device *dev, struct device *master,
+>   		 * DRM doesn't do per-device allocation either, so we
+>   		 * would need to fix DRM first...
+>   		 */
+> +		/*
+> +		 * FIXME: of_dma_configure() should not be called outside
+> +		 * bus_type.dma_configure
+> +		 */
+>   		ret = of_dma_configure(drm->dev, dev->of_node, true);
+>   		if (ret)
+>   			return ret;
+> diff --git a/drivers/gpu/drm/vc4/vc4_drv.c b/drivers/gpu/drm/vc4/vc4_drv.c
+> index 823395c23cc308..82496d8fb50f84 100644
+> --- a/drivers/gpu/drm/vc4/vc4_drv.c
+> +++ b/drivers/gpu/drm/vc4/vc4_drv.c
+> @@ -305,6 +305,10 @@ static int vc4_drm_bind(struct device *dev)
+>   	node = of_find_matching_node_and_match(NULL, vc4_dma_range_matches,
+>   					       NULL);
+>   	if (node) {
+> +		/*
+> +		 * FIXME: of_dma_configure() should not be called outside
+> +		 * bus_type.dma_configure
+> +		 */
+>   		ret = of_dma_configure(dev, node, true);
+>   		of_node_put(node);
+>   
+> diff --git a/drivers/gpu/host1x/bus.c b/drivers/gpu/host1x/bus.c
+> index 4d16a3396c4abf..5c7ef738a7d7d7 100644
+> --- a/drivers/gpu/host1x/bus.c
+> +++ b/drivers/gpu/host1x/bus.c
+> @@ -475,6 +475,10 @@ static int host1x_device_add(struct host1x *host1x,
+>   	device->dev.bus = &host1x_bus_type;
+>   	device->dev.parent = host1x->dev;
+>   
+> +	/*
+> +	 * FIXME: of_dma_configure() should not be called outside
+> +	 * bus_type.dma_configure
+> +	 */
+>   	of_dma_configure(&device->dev, host1x->dev->of_node, true);
+>   
+>   	device->dev.dma_parms = &device->dma_parms;
+> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+> index 18162049bd2294..eb623a611f571d 100644
+> --- a/drivers/iommu/iommu.c
+> +++ b/drivers/iommu/iommu.c
+> @@ -458,8 +458,15 @@ static int __iommu_probe_device(struct device *dev, struct list_head *group_list
+>   	 * Allow __iommu_probe_device() to be safely called in parallel,
+>   	 * both dev->iommu_group and the initial setup of dev->iommu are
+>   	 * protected this way.
+> +	 *
+> +	 * We cannot have the assertion yet because of a number of drivers
+> +	 * improperly calling of_dma_configure() and expecting to attach
+> +	 * the iommu outside the bus_type.dma_configure callback. This messes
+> +	 * up our ownership tracking, does not exclude other drivers from
+> +	 * binding an operating the device, and is technically mislocked.
+> +	 *
+> +	 * device_lock_assert(dev);
+>   	 */
+> -	device_lock_assert(dev);
+>   
+>   	if (!ops)
+>   		return -ENODEV;
+> @@ -527,8 +534,6 @@ int iommu_probe_device_locked(struct device *dev)
+>   	const struct iommu_ops *ops;
+>   	int ret;
+>   
+> -	device_lock_assert(dev);
+> -
+>   	ret = __iommu_probe_device(dev, NULL);
+>   	if (ret)
+>   		return ret;
+> @@ -1202,7 +1207,6 @@ void iommu_group_remove_device(struct device *dev)
+>   		__iommu_group_remove_device(dev);
+>   	}
+>   	device_unlock(dev);
+> -
+>   }
+>   EXPORT_SYMBOL_GPL(iommu_group_remove_device);
+>   
+> diff --git a/drivers/media/platform/qcom/venus/firmware.c b/drivers/media/platform/qcom/venus/firmware.c
+> index cfb11c551167ce..f70360c5534d64 100644
+> --- a/drivers/media/platform/qcom/venus/firmware.c
+> +++ b/drivers/media/platform/qcom/venus/firmware.c
+> @@ -296,6 +296,10 @@ int venus_firmware_init(struct venus_core *core)
+>   
+>   	pdev->dev.of_node = np;
+>   
+> +	/*
+> +	 * FIXME: of_dma_configure() should not be called outside
+> +	 * bus_type.dma_configure
+> +	 */
+>   	ret = of_dma_configure(&pdev->dev, np, true);
+>   	if (ret) {
+>   		dev_err(core->dev, "dma configure fail\n");
+> diff --git a/drivers/media/platform/samsung/s5p-mfc/s5p_mfc.c b/drivers/media/platform/samsung/s5p-mfc/s5p_mfc.c
+> index e30e54935d79a9..40fa7b62545d7a 100644
+> --- a/drivers/media/platform/samsung/s5p-mfc/s5p_mfc.c
+> +++ b/drivers/media/platform/samsung/s5p-mfc/s5p_mfc.c
+> @@ -1114,6 +1114,10 @@ static struct device *s5p_mfc_alloc_memdev(struct device *dev,
+>   	 * to be treated as valid DMA masters we need a bit of a hack to force
+>   	 * them to inherit the MFC node's DMA configuration.
+>   	 */
+> +	/*
+> +	 * FIXME: of_dma_configure() should not be called outside
+> +	 * bus_type.dma_configure
+> +	 */
+>   	of_dma_configure(child, dev->of_node, true);
+>   
+>   	if (device_add(child) == 0) {
+> diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
+> index 26214c00cd0d7b..977e5c6186b131 100644
+> --- a/drivers/net/wireless/ath/ath10k/snoc.c
+> +++ b/drivers/net/wireless/ath/ath10k/snoc.c
+> @@ -1614,6 +1614,10 @@ static int ath10k_fw_init(struct ath10k *ar)
+>   
+>   	pdev->dev.of_node = node;
+>   
+> +	/*
+> +	 * FIXME: of_dma_configure() should not be called outside
+> +	 * bus_type.dma_configure
+> +	 */
+>   	ret = of_dma_configure(&pdev->dev, node, true);
+>   	if (ret) {
+>   		ath10k_err(ar, "dma configure fail: %d\n", ret);
+> diff --git a/drivers/net/wireless/ath/ath11k/ahb.c b/drivers/net/wireless/ath/ath11k/ahb.c
+> index 139da578831a44..a4d2a89ab96de0 100644
+> --- a/drivers/net/wireless/ath/ath11k/ahb.c
+> +++ b/drivers/net/wireless/ath/ath11k/ahb.c
+> @@ -1012,6 +1012,10 @@ static int ath11k_ahb_fw_resources_init(struct ath11k_base *ab)
+>   		return PTR_ERR(pdev);
+>   	}
+>   
+> +	/*
+> +	 * FIXME: of_dma_configure() should not be called outside
+> +	 * bus_type.dma_configure
+> +	 */
+>   	ret = of_dma_configure(&pdev->dev, node, true);
+>   	if (ret) {
+>   		ath11k_err(ab, "dma configure fail: %d\n", ret);
+> diff --git a/drivers/of/device.c b/drivers/of/device.c
+> index 0f00f1b8070829..bc6f62ebcbd040 100644
+> --- a/drivers/of/device.c
+> +++ b/drivers/of/device.c
+> @@ -108,6 +108,9 @@ of_dma_set_restricted_buffer(struct device *dev, struct device_node *np)
+>    * If platform code needs to use its own special DMA configuration, it
+>    * can use a platform bus notifier and handle BUS_NOTIFY_ADD_DEVICE events
+>    * to fix up DMA configuration.
 > + *
-> + * Called to create a framer using framer framework.
-> + */
-> +struct framer *framer_create(struct device *dev, struct device_node *node,
-> +			     const struct framer_ops *ops)
-> +{
-> +	int ret;
-> +	int id;
-> +	struct framer *framer;
-
-Please arrange local variable declarations for Networking code
-using reverse xmas tree order - longest line to shortest.
-
-https://github.com/ecree-solarflare/xmastree is helpful here.
-
-...
-
-> diff --git a/include/linux/framer/framer-provider.h b/include/linux/framer/framer-provider.h
-
-...
-
-> +/**
-> + * struct framer_ops - set of function pointers for performing framer operations
-> + * @init: operation to be performed for initializing the framer
-> + * @exit: operation to be performed while exiting
-> + * @power_on: powering on the framer
-> + * @power_off: powering off the framer
-> + * @flags: OR-ed flags (FRAMER_FLAG_*) to ask for core functionality
-> + *          - @FRAMER_FLAG_POLL_STATUS:
-> + *            Ask the core to perfom a polling to get the framer status and
-
-nit: perfom -> perform
-
-     checkpatch.pl --codespell is your friend here
-
-> + *            notify consumers on change.
-> + *            The framer should call @framer_notify_status_change() when it
-> + *            detects a status change. This is usally done using interrutps.
-
-nit: usally -> usually
-     interrutps -> interrupts
-
-...
-
-> diff --git a/include/linux/framer/framer.h b/include/linux/framer/framer.h
-> new file mode 100644
-> index 000000000000..0bee7135142f
-> --- /dev/null
-> +++ b/include/linux/framer/framer.h
-> @@ -0,0 +1,199 @@
-> +/* SPDX-License-Identifier: GPL-2.0-or-later */
-> +/*
-> + * Generic framer header file
-> + *
-> + * Copyright 2023 CS GROUP France
-> + *
-> + * Author: Herve Codina <herve.codina@bootlin.com>
-> + */
-> +
-> +#ifndef __DRIVERS_FRAMER_H
-> +#define __DRIVERS_FRAMER_H
-> +
-> +#include <linux/err.h>
-> +#include <linux/mutex.h>
-> +#include <linux/notifier.h>
-> +#include <linux/of.h>
-> +#include <linux/device.h>
-> +#include <linux/workqueue.h>
-> +
-> +/**
-> + * enum framer_iface - Framer interface
-
-As this is a kernel-doc, please include documentation for
-the defined constants: FRAMER_IFACE_E1 and FRAMER_IFACE_T1.
-
-As flagged by: ./scripts/kernel-doc -none
-
-> + */
-> +enum framer_iface {
-> +	FRAMER_IFACE_E1,      /* E1 interface */
-> +	FRAMER_IFACE_T1,      /* T1 interface */
-> +};
-> +
-> +/**
-> + * enum framer_clock_mode - Framer clock mode
-
-Likewise here too.
-
-Also, nit: framer_clock_mode -> framer_clock_type
-
-> + */
-> +enum framer_clock_type {
-> +	FRAMER_CLOCK_EXT, /* External clock */
-> +	FRAMER_CLOCK_INT, /* Internal clock */
-> +};
-> +
-> +/**
-> + * struct framer_configuration - Framer configuration
-
-nit: framer_configuration -> framer_config
-
-> + * @line_iface: Framer line interface
-> + * @clock_mode: Framer clock type
-> + * @clock_rate: Framer clock rate
-> + */
-> +struct framer_config {
-> +	enum framer_iface iface;
-> +	enum framer_clock_type clock_type;
-> +	unsigned long line_clock_rate;
-> +};
-> +
-> +/**
-> + * struct framer_status - Framer status
-> + * @link_is_on: Framer link state. true, the link is on, false, the link is off.
-> + */
-> +struct framer_status {
-> +	bool link_is_on;
-> +};
-> +
-> +/**
-> + * framer_event - event available for notification
-
-nit: framer_event -> enum framer_event
-
-A~d please document FRAMER_EVENT_STATUS in the kernel doc too.
-
-> + */
-> +enum framer_event {
-> +	FRAMER_EVENT_STATUS,	/* Event notified on framer_status changes */
-> +};
-
-...
+> + * This function should only be called from the bus_type.dma_configure callback
+> + * and the driver_lock(dev) must be held.
+>    */
+>   int of_dma_configure_id(struct device *dev, struct device_node *np,
+>   			bool force_dma, const u32 *id)
+> diff --git a/sound/soc/bcm/bcm63xx-pcm-whistler.c b/sound/soc/bcm/bcm63xx-pcm-whistler.c
+> index 2c600b017524f3..d8e0520ca61155 100644
+> --- a/sound/soc/bcm/bcm63xx-pcm-whistler.c
+> +++ b/sound/soc/bcm/bcm63xx-pcm-whistler.c
+> @@ -354,6 +354,10 @@ static int bcm63xx_soc_pcm_new(struct snd_soc_component *component,
+>   
+>   	i2s_priv = dev_get_drvdata(asoc_rtd_to_cpu(rtd, 0)->dev);
+>   
+> +	/*
+> +	 * FIXME: of_dma_configure() should not be called outside
+> +	 * bus_type.dma_configure
+> +	 */
+>   	of_dma_configure(pcm->card->dev, pcm->card->dev->of_node, 1);
+>   
+>   	ret = dma_coerce_mask_and_coherent(pcm->card->dev, DMA_BIT_MASK(32));
+> 
+> base-commit: 1bba4f1c0b4f2429e16da231a246ab4b99cc633c
