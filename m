@@ -4,108 +4,125 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 10BA4C7113B
-	for <alsa-devel@archiver.kernel.org>; Thu, 24 Aug 2023 07:30:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D48E8C7113B
+	for <alsa-devel@archiver.kernel.org>; Thu, 24 Aug 2023 07:33:37 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 81A5382C;
-	Thu, 24 Aug 2023 09:29:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 81A5382C
+	by alsa0.perex.cz (Postfix) with ESMTPS id E73F2844;
+	Thu, 24 Aug 2023 09:32:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E73F2844
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1692862235;
-	bh=UQzWjeXThVzoik6oZW3hBCJd2N6eebJWhyZQGZsjlU4=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	s=default; t=1692862416;
+	bh=FixGPDbY1JGUzoXJGnGCpBH8LX7vfPyc85NTwmVIvZk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=S1n1xUz+DrSGk/q+dZraweU/v/iHeOS9MUq1voDSy7S3JS4J3RwUS2D9t1YBGz0Ui
-	 1Zkw0io5NoLS24t84/whDQNn/TuJjpk9Qxa2bocb8NeGYFKXELFEuaf1cfZHuOp07H
-	 J+lecgXf9FIWwU8Dgq08eHiYCMI/26wIX8ImZdPU=
+	b=c6pPuvo02JEb5emBcSS1WpCAFBWgYbPxL2+L+b04ef8F1kMRvYTPkRNDrki5+BmWn
+	 mvNePtXKxAUdY58widgXUjEI8Vs5BUhb6nQMB37+1IS1RVhOwBM3CXpRkULRMu9e9I
+	 LY1N1VjopksmIuq+gG7gw7GAZcuYQG/NGI/GWok4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3C73DF80536; Thu, 24 Aug 2023 09:29:17 +0200 (CEST)
+	id 6D895F80158; Thu, 24 Aug 2023 09:32:17 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B7DDAF80158;
-	Thu, 24 Aug 2023 09:29:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A3487F80074;
+	Thu, 24 Aug 2023 09:32:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id F09CAF80158; Thu, 24 Aug 2023 09:29:04 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2001:67c:2178:6::1c])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id CE4C2F80074
-	for <alsa-devel@alsa-project.org>; Thu, 24 Aug 2023 09:28:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CE4C2F80074
+	id 27CE1F80199; Mon, 21 Aug 2023 14:27:55 +0200 (CEST)
+Received: from mail.8bytes.org (mail.8bytes.org
+ [IPv6:2a01:238:42d9:3f00:e505:6202:4f0c:f051])
+	by alsa1.perex.cz (Postfix) with ESMTP id C485BF800F8
+	for <alsa-devel@alsa-project.org>; Mon, 21 Aug 2023 14:27:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C485BF800F8
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=JuqDMXif;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=wyC+z6zc
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
+	dkim=pass (2048-bit key,
+ unprotected) header.d=8bytes.org header.i=@8bytes.org header.a=rsa-sha256
+ header.s=default header.b=1GNfM2qX
+Received: from 8bytes.org (pd9fe95be.dip0.t-ipconnect.de [217.254.149.190])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits)
+ server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 02E4622C83;
-	Thu, 24 Aug 2023 07:28:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1692862130;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=fb8n1PZtHcwGyzvoGObccGXYArKT3sx/BYfrlPFKLsU=;
-	b=JuqDMXifznqv/4Sa7Rda/DOGMi0IvbFw9LfFh8rdf8nmx5mEaSYojlpEcm3gG6JDorrnH7
-	tJon0t7tm6kyC0806x5rMRLAiHTmVCG8Fx1D/yGlloOR3wH5Mpoc8e9QPqGwUicsWvLJ+g
-	bn6t6KKNR1YXeh+XjTIBQEuMSPwSXt4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1692862130;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=fb8n1PZtHcwGyzvoGObccGXYArKT3sx/BYfrlPFKLsU=;
-	b=wyC+z6zccajBZSC9hovchGk5YiV1CNofRH6QY7N9RfkKPY1N+nc/qnSKvl4cQ4lQibQorS
-	xZ7xGJ+KyXXVFeCw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D9D36138FB;
-	Thu, 24 Aug 2023 07:28:49 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id PuxvNLEG52RuIwAAMHmgww
-	(envelope-from <tiwai@suse.de>); Thu, 24 Aug 2023 07:28:49 +0000
-Date: Thu, 24 Aug 2023 09:28:49 +0200
-Message-ID: <87msygc30u.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>,
-	alsa-devel@alsa-project.org
-Subject: Re: [GIT PULL] ASoC fixes for v6.5-rc7
-In-Reply-To: <20230823194049.201C2C433C7@smtp.kernel.org>
-References: <20230823194049.201C2C433C7@smtp.kernel.org>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Message-ID-Hash: CH2VPNIOI7SPPYROESHBQMPA7APCJJYO
-X-Message-ID-Hash: CH2VPNIOI7SPPYROESHBQMPA7APCJJYO
-X-MailFrom: tiwai@suse.de
+	by mail.8bytes.org (Postfix) with ESMTPSA id 14D6D28194F;
+	Mon, 21 Aug 2023 14:27:49 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=8bytes.org;
+	s=default; t=1692620870;
+	bh=FixGPDbY1JGUzoXJGnGCpBH8LX7vfPyc85NTwmVIvZk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=1GNfM2qXUHu69LlGLcBH8KY7o7o7XmY+SCrGkW/UUIs2KGTpDHXZZbMpPGz6QSYZs
+	 UPnFUxDcsVEY3pjS1DruthDw9f83ySojUQCSB+rWg+GUD0/AhHwU/y7CvGp4ChZNfv
+	 PF0U1t4Yrw0S3cKVt3Z1VBJMi6C4Yubn+JBgQ0h8akaCgHt2/SoukE6zqp52PyQtal
+	 mSBFlaAtIaUSfX6biqD/5UJPh1qGAUoCalqefQ1b2bqiPcVjHwugqG0e+YrG5Eef+K
+	 UDBnBPokoAbTS28F+RA/gZgu4I/tGuWG+hC4PlSSGwOqv9iwEYEE1WLsVZflD78r+Z
+	 CJt+ubMPFXzmw==
+Date: Mon, 21 Aug 2023 14:27:47 +0200
+From: Joerg Roedel <joro@8bytes.org>
+To: Robin Murphy <robin.murphy@arm.com>
+Cc: Jason Gunthorpe <jgg@nvidia.com>, Andy Gross <agross@kernel.org>,
+	David Airlie <airlied@gmail.com>, alsa-devel@alsa-project.org,
+	Bjorn Andersson <andersson@kernel.org>,
+	Andrzej Hajda <andrzej.hajda@intel.com>, ath10k@lists.infradead.org,
+	ath11k@lists.infradead.org, Mark Brown <broonie@kernel.org>,
+	Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+	Christian Gmeiner <christian.gmeiner@gmail.com>,
+	Daniel Vetter <daniel@ffwll.ch>, devicetree@vger.kernel.org,
+	dmaengine@vger.kernel.org,
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+	dri-devel@lists.freedesktop.org, Emma Anholt <emma@anholt.net>,
+	etnaviv@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+	Frank Rowand <frowand.list@gmail.com>, iommu@lists.linux.dev,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Kalle Valo <kvalo@kernel.org>, Lucas Stach <l.stach@pengutronix.de>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Russell King <linux+etnaviv@armlinux.org.uk>,
+	linux-arm-kernel@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+	linux-media@vger.kernel.org, linux-sunxi@lists.linux.dev,
+	linux-tegra@vger.kernel.org, linux-wireless@vger.kernel.org,
+	Marijn Suijten <marijn.suijten@somainline.org>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Mikko Perttunen <mperttunen@nvidia.com>,
+	Maxime Ripard <mripard@kernel.org>, Sinan Kaya <okaya@kernel.org>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Abhinav Kumar <quic_abhinavk@quicinc.com>,
+	Jeff Johnson <quic_jjohnson@quicinc.com>,
+	Vikash Garodia <quic_vgarodia@quicinc.com>,
+	Rob Clark <robdclark@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+	Samuel Holland <samuel@sholland.org>, Sean Paul <sean@poorly.run>,
+	Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Takashi Iwai <tiwai@suse.com>, Vinod Koul <vkoul@kernel.org>,
+	Chen-Yu Tsai <wens@csie.org>, Will Deacon <will@kernel.org>,
+	=?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+	Lu Baolu <baolu.lu@linux.intel.com>, Joerg Roedel <jroedel@suse.de>,
+	Kevin Tian <kevin.tian@intel.com>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	Chen-Yu Tsai <wenst@chromium.org>
+Subject: Re: [PATCH] iommu: Remove the device_lock_assert() from
+ __iommu_probe_device()
+Message-ID: <ZONYQyMSG17YMc_b@8bytes.org>
+References: <0-v1-98d20e768c66+7-of_dma_lock_jgg@nvidia.com>
+ <78114fd6-9b83-92ba-418f-6cc7bda9df9b@arm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <78114fd6-9b83-92ba-418f-6cc7bda9df9b@arm.com>
+X-MailFrom: joro@8bytes.org
+X-Mailman-Rule-Hits: max-recipients
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ administrivia; implicit-dest; max-size; news-moderation; no-subject; digests;
+ suspicious-header
+Message-ID-Hash: SPFGSTYL5VZXI7DBARBXROSW5CKRXJTE
+X-Message-ID-Hash: SPFGSTYL5VZXI7DBARBXROSW5CKRXJTE
+X-Mailman-Approved-At: Thu, 24 Aug 2023 07:29:53 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CH2VPNIOI7SPPYROESHBQMPA7APCJJYO/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SPFGSTYL5VZXI7DBARBXROSW5CKRXJTE/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -114,34 +131,17 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Wed, 23 Aug 2023 21:40:09 +0200,
-Mark Brown wrote:
-> 
-> The following changes since commit 37aba3190891d4de189bd5192ee95220e295f34d:
-> 
->   ASoC: rt1308-sdw: fix random louder sound (2023-08-13 18:16:32 +0100)
-> 
-> are available in the Git repository at:
-> 
->   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-fix-v6.5-rc7
-> 
-> for you to fetch changes up to 1613781d7e8a93618ff3a6b37f81f06769b53717:
-> 
->   ASoC: cs35l41: Correct amp_gain_tlv values (2023-08-23 13:27:06 +0100)
-> 
-> ----------------------------------------------------------------
-> ASoC: Fixes for v6.5
-> 
-> A relatively large but generally not super urgent set of fixes for ASoC,
-> including some quirks and a MAINTAINERS update.  There's also an update
-> to cs35l56 to change the firmware ABI, there are no current shipping
-> systems which use the current interface and the sooner we get the new
-> interface in the less likely it is that something will start.
-> 
-> It'd be nice if these landed for v6.5 but not the end of the world if
-> they wait till v6.6.
+On Mon, Aug 21, 2023 at 12:06:40PM +0100, Robin Murphy wrote:
+> The solution is to drop those locking patches entirely and rethink the whole
+> thing.
 
-Pulled now.  Thanks.
+Agreed, that was exactly what I thought when looking at this patch.
 
+I dropped the original 10 patches and the 4 fixes on-top from the IOMMU
+tree. This needs more investigation and adaption of the actual API users
+before it can be reconsidered.
 
-Takashi
+Regards,
+
+	Joerg
+
