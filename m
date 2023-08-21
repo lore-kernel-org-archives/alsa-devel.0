@@ -4,98 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B5025C7113B
-	for <alsa-devel@archiver.kernel.org>; Thu, 24 Aug 2023 07:36:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 61514C3DA6F
+	for <alsa-devel@archiver.kernel.org>; Thu, 24 Aug 2023 07:36:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 95F5283A;
-	Thu, 24 Aug 2023 09:35:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 95F5283A
+	by alsa0.perex.cz (Postfix) with ESMTPS id B2B5E847;
+	Thu, 24 Aug 2023 09:35:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B2B5E847
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1692862581;
-	bh=FSzxorOGPdl2GafRzIhh3vOF+wn6FsUiFliiqpHklao=;
-	h=Date:To:Cc:References:From:Subject:In-Reply-To:List-Id:
+	s=default; t=1692862590;
+	bh=eYYuIguSF1/jPXSxfuXL3BDNIn2AiTma6JWLnRNaeJc=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=qkYwVTwNupQDaRXYWOOJ3untaAr9PS5EGwHVUKstcnBedFS+xAgaOMgo8vrDTTV0k
-	 kMKtD9fchzfgWgHxKokF4qraYqA5242pdAm5GgJVuqFzeZvvpH0wXnbmoEyA3rIi90
-	 WKwHd6cnil8IkjepzlfTpiAakioJ5kxH7CiyasqQ=
+	b=PnU7Djf4n6IWD0Nb0mqnvNJVJk4wOgQZGHsx0bbwZ3IKEcmqe6/BMXMX0DF5y/O17
+	 Fo9dWh5ilkB0Ml0bKNaf59vG+1Qp4jPal3c46jzQuB3pIIizJRn4mmLhgqSclZIK1Y
+	 x1n5HxIgblYop78L+/zQfXjv91/BpXMIOVwmk12M=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D5777F805E9; Thu, 24 Aug 2023 09:32:38 +0200 (CEST)
+	id 3911FF805F0; Thu, 24 Aug 2023 09:32:40 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id F4084F805E8;
-	Thu, 24 Aug 2023 09:32:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6C53DF805F1;
+	Thu, 24 Aug 2023 09:32:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DA0B1F80158; Thu, 24 Aug 2023 09:31:21 +0200 (CEST)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id C7109F800F8; Mon, 21 Aug 2023 16:43:13 +0200 (CEST)
+Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
+	(using TLSv1 with cipher ADH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 5465AF800AE
-	for <alsa-devel@alsa-project.org>; Thu, 24 Aug 2023 09:31:10 +0200 (CEST)
-Received: from mail1.perex.cz (localhost [127.0.0.1])
-	by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 11E4511F1;
-	Thu, 24 Aug 2023 09:31:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 11E4511F1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
-	t=1692862269; bh=/MUjKBGkCo9ETj8z2CpMhEKd3eu17nruWV3fH3+h1h4=;
-	h=Date:To:Cc:References:From:Subject:In-Reply-To:From;
-	b=givVMsRURKK1iK0WGz/kBag4c5kZ9oWk9CLShlz92piwHxdJSbvwtq53b0ArPdrW0
-	 oluu05595maMrlxm1oFuawUTd7S/AQ0mA1cfK4CRcjv8Z5lry1sSrz3cTihE2m/2lQ
-	 odOYjRloMBIwiA5SGj16LJBIBiP54Ru7mZNLH3B8=
-Received: from [192.168.100.98] (unknown [192.168.100.98])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	(Authenticated sender: perex)
-	by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
-	Thu, 24 Aug 2023 09:31:01 +0200 (CEST)
-Message-ID: <7d2d56a5-698e-7ee3-e6ab-95757012537c@perex.cz>
-Date: Thu, 24 Aug 2023 09:31:00 +0200
+	by alsa1.perex.cz (Postfix) with ESMTPS id 1BBD6F8025E
+	for <alsa-devel@alsa-project.org>; Mon, 21 Aug 2023 16:42:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1BBD6F8025E
+Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
+	by ex01.ufhost.com (Postfix) with ESMTP id 7A17224E17F;
+	Mon, 21 Aug 2023 22:41:53 +0800 (CST)
+Received: from EXMBX061.cuchost.com (172.16.6.61) by EXMBX165.cuchost.com
+ (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Mon, 21 Aug
+ 2023 22:41:53 +0800
+Received: from localhost.localdomain (113.72.145.205) by EXMBX061.cuchost.com
+ (172.16.6.61) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Mon, 21 Aug
+ 2023 22:41:52 +0800
+From: Xingyu Wu <xingyu.wu@starfivetech.com>
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+	Claudiu Beznea <Claudiu.Beznea@microchip.com>, Jaroslav Kysela
+	<perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Maxim Kochetkov
+	<fido_max@inbox.ru>, Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
+	<conor.dooley@microchip.com>, Emil Renner Berthing
+	<emil.renner.berthing@canonical.com>
+CC: Jose Abreu <joabreu@synopsys.com>, Paul Walmsley
+	<paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou
+	<aou@eecs.berkeley.edu>, Walker Chen <walker.chen@starfivetech.com>, "Xingyu
+ Wu" <xingyu.wu@starfivetech.com>, <devicetree@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <alsa-devel@alsa-project.org>,
+	<linux-riscv@lists.infradead.org>
+Subject: [PATCH v2 1/5] ASoC: dt-bindings: snps,designware-i2s: Add StarFive
+ JH7110 SoC support
+Date: Mon, 21 Aug 2023 22:41:47 +0800
+Message-ID: <20230821144151.207339-2-xingyu.wu@starfivetech.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230821144151.207339-1-xingyu.wu@starfivetech.com>
+References: <20230821144151.207339-1-xingyu.wu@starfivetech.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Content-Language: en-US
-To: =?UTF-8?Q?Amadeusz_S=c5=82awi=c5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>, Takashi Iwai <tiwai@suse.de>
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>, broonie@kernel.org,
- tiwai@suse.com, alsa-devel@alsa-project.org,
- pierre-louis.bossart@linux.intel.com, hdegoede@redhat.com
-References: <20230811164853.1797547-1-cezary.rojewski@intel.com>
- <20230811164853.1797547-2-cezary.rojewski@intel.com>
- <43b25b8b-3e28-bd91-a29a-846a5aa7579e@perex.cz> <87bkezdsjh.wl-tiwai@suse.de>
- <67fc99db-baf8-17b0-e7c4-f420676e5c8a@perex.cz> <874jkrdr49.wl-tiwai@suse.de>
- <5d77217b-1083-a4d0-1b69-7511d24b6aec@perex.cz>
- <acfcc8a3-8ceb-1671-1dad-35a083354170@intel.com>
- <9d0f0555-411a-96aa-c8a5-382f595a2bbd@perex.cz> <871qfuhyog.wl-tiwai@suse.de>
- <85eec185-b024-573e-3fc0-31d179c832a3@perex.cz>
- <dfac60f7-e043-ca57-8005-3a744b0f920e@linux.intel.com>
- <52b50220-aab0-6df4-6bab-e43d39006c45@perex.cz> <87zg2iggn5.wl-tiwai@suse.de>
- <f97bbbd5-1397-f5d3-5ccf-420ec813deac@perex.cz>
- <6ee5dad3-c46a-4598-3b5a-cac59979ff6f@linux.intel.com>
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [RFC PATCH 01/17] ALSA: pcm: Introduce MSBITS subformat interface
-In-Reply-To: <6ee5dad3-c46a-4598-3b5a-cac59979ff6f@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: NZTHWMLH5L4Q2DMM3RCWXOQQERZTPQQY
-X-Message-ID-Hash: NZTHWMLH5L4Q2DMM3RCWXOQQERZTPQQY
-X-MailFrom: perex@perex.cz
+Content-Type: text/plain
+X-Originating-IP: [113.72.145.205]
+X-ClientProxiedBy: EXCAS062.cuchost.com (172.16.6.22) To EXMBX061.cuchost.com
+ (172.16.6.61)
+X-YovoleRuleAgent: yovoleflag
+Content-Transfer-Encoding: quoted-printable
+X-MailFrom: xingyu.wu@starfivetech.com
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: 63R3B36ZHWM5FSGFVT6W2VP33D5YIPA4
+X-Message-ID-Hash: 63R3B36ZHWM5FSGFVT6W2VP33D5YIPA4
+X-Mailman-Approved-At: Thu, 24 Aug 2023 07:32:02 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NZTHWMLH5L4Q2DMM3RCWXOQQERZTPQQY/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/63R3B36ZHWM5FSGFVT6W2VP33D5YIPA4/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -104,247 +96,169 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 23. 08. 23 18:29, Amadeusz Sławiński wrote:
-> On 8/23/2023 3:42 PM, Jaroslav Kysela wrote:
->> On 23. 08. 23 13:08, Takashi Iwai wrote:
->>> On Wed, 23 Aug 2023 12:47:33 +0200,
->>> Jaroslav Kysela wrote:
->>>>
->>>> On 23. 08. 23 12:20, Amadeusz Sławiński wrote:
->>>>> On 8/23/2023 12:00 PM, Jaroslav Kysela wrote:
->>>>>> On 23. 08. 23 11:53, Takashi Iwai wrote:
->>>>>>> On Wed, 23 Aug 2023 11:10:38 +0200,
->>>>>>> Jaroslav Kysela wrote:
->>>>>>>>
->>>>>>>> On 23. 08. 23 10:11, Cezary Rojewski wrote:
->>>>>>>>> On 2023-08-22 9:03 PM, Jaroslav Kysela wrote:
->>>>>>>>>> On 22. 08. 23 17:38, Takashi Iwai wrote:
->>>>>>>>>>> On Tue, 22 Aug 2023 17:29:47 +0200,
->>>>>>>>>>> Jaroslav Kysela wrote:
->>>>>>>>>>>>
->>>>>>>>>>>> On 22. 08. 23 17:07, Takashi Iwai wrote:
->>>>>>>>>>>>> On Tue, 22 Aug 2023 17:03:02 +0200,
->>>>>>>>>>>>> Jaroslav Kysela wrote:
->>>>>>>>>>>>>>
->>>>>>>>>>>>>> On 11. 08. 23 18:48, Cezary Rojewski wrote:
->>>>>>>>>>>>>>
->>>>>>>>>>>>>>> +#define SNDRV_PCM_SUBFMTBIT_MSBITS_32
->>>>>>>>>>>>>>> _SNDRV_PCM_SUBFMTBIT(MSBITS_32)
->>>>>>>>>>>>>>
->>>>>>>>>>>>>> What was reason to add 32/32 format ? Subformat STD +
->>>>>>>>>>>>>> msbits == 32
->>>>>>>>>>>>>> should already handle the maximal resolution. Until we do not
->>>>>>>>>>>>>> have 64
->>>>>>>>>>>>>> bit formats, it seems like an useless extension.
->>>>>>>>>>>>>
->>>>>>>>>>>>> My understanding is to distinguish the cases "we do fully
->>>>>>>>>>>>> support
->>>>>>>>>>>>> 32bit" and "we don't care".  But, the end effect is same for
->>>>>>>>>>>>> both,
->>>>>>>>>>>>> user-space would handle 32bit in both cases, so this difference
->>>>>>>>>>>>> won't
->>>>>>>>>>>>> help much, indeed.
->>>>>>>>>>>>
->>>>>>>>>>>> I don't think that we have a "do not care" situation. The
->>>>>>>>>>>> applications
->>>>>>>>>>>> currently expects to use the maximal msbits for STD
->>>>>>>>>>>> subformat. The
->>>>>>>>>>>> subformat should be used only to refine (downgrade) the
->>>>>>>>>>>> resolution on
->>>>>>>>>>>> the driver / hw side on demand. I would just add only
->>>>>>>>>>>> necessary API
->>>>>>>>>>>> extensions and save one bit for now.
->>>>>>>>>>>
->>>>>>>>>>> Well, the current behavior (with STD) is to choose whatever 32bit
->>>>>>>>>>> format the driver supports, and the driver may set a different
->>>>>>>>>>> value
->>>>>>>>>>> of hw_params.msbits at hw_params.  The explicit MSBITS_32 would
->>>>>>>>>>> enforce the hw_params.msbits to be 32, otherwise hw_refine would
->>>>>>>>>>> fail.  So I see a potential difference.
->>>>>>>>>>
->>>>>>>>>> I see. But if our target is to create a complete query/set
->>>>>>>>>> msbits API,
->>>>>>>>>> we should cover all cases also for other formats.
->>>>>>>>>>
->>>>>>>>>> I vote to replace SUBFMTBIT_MSBITS_32 to SUBFMTBIT_MSBITS_MAX
->>>>>>>>>> as the
->>>>>>>>>> second bit (right after STD). The format hw parameter already
->>>>>>>>>> defines
->>>>>>>>>> the maximal width. We can add SUBFMTBIT_MSBITS_32 when it's really
->>>>>>>>>> required. Note that MAX should be handled for all cases (not
->>>>>>>>>> only for
->>>>>>>>>> S32_LE or so).
->>>>>>>>>
->>>>>>>>> In my opinion STD already states "max". The word is not explicit
->>>>>>>>> either
->>>>>>>>> - max in the eyes of whom? The driver'? Then the driver may
->>>>>>>>> reply: max
->>>>>>>>> allowed e.g.: 24/32. And that translates to: fallback to STD.
->>>>>>>>
->>>>>>>> Max in the contents of the physical sample format (S32 = 32 bits,
->>>>>>>> S24
->>>>>>>> = 24 bits, S8 = 8 bits etc). It would mean, if the driver
->>>>>>>> supports S32
->>>>>>>> but only with 24-bit resolution, this bit should not be
->>>>>>>> set/allowed. We can also use word full or something other. If we
->>>>>>>> like
->>>>>>>> to extend the API in this way (force the specific msbits with the
->>>>>>>> error handling), all formats should be covered. For STD - see
->>>>>>>> Takashi's reply.
->>>>>>>
->>>>>>> I think MAX can be problematic when the device supports multiple
->>>>>>> formats, say, 16bit and 32bit.  Then it's not clear which MAX points
->>>>>>> to: is 16bit max or 32bit max.
->>>>>>
->>>>>> I don't take this point. The subformat depends on the format, thus if
->>>>>> one format support max, it should be set for queries.
->>>>>>
->>>>>> Theoretically, this problem is in this API extension proposal too.
->>>>>> Imagine that driver/hw support S24 and S32 formats and 20-bit
->>>>>> msbits for
->>>>>> one of them. How do you handle this? The subformat depends on
->>>>>> format and
->>>>>> should be refined when the format is known (single choice).
->>>>>>
->>>>>>> I find the subformat extension OK, as this doesn't need much
->>>>>>> change in
->>>>>>> API.  OTOH, if we want to be more consistent way, we may extend
->>>>>>> hw_params for a new interval, e.g. SNDRV_PCM_HW_PARAM_MSBITS, and let
->>>>>>> the driver choosing it.  This will need more hw_params rules and
->>>>>>> become more complex, but it allows drivers really exotic setups (like
->>>>>>> 19bit PCM :)  But my gut feeling is that the subformat extension
->>>>>>> should suffice.
->>>>>>
->>>>>> I'm not ok with 32 == 32. We should handle this case universally or
->>>>>> discard.
->>>>>>
->>>>>>                         Jaroslav
->>>>>>
->>>>>
->>>>> The reason for MSBITS32 is that, when only MSBITS_20 and MSBITS_24 are
->>>>> defined, when userspace (in this case aplay) asks for usable formats
->>>>> and
->>>>> subformat it gets something like:
->>>>>
->>>>> --------------------
->>>>> ACCESS: MMAP_INTERLEAVED RW_INTERLEAVED
->>>>> FORMAT: S16_LE S32_LE
->>>>> SUBFORMAT: STD MSBITS_20 MSBITS_24
->>>>> SAMPLE_BITS: [16 32]
->>>>> FRAME_BITS: [32 64]
->>>>> CHANNELS: 2
->>>>> RATE: 48000
->>>>>
->>>>> when MSBITS_32 is not defined it is not clear if HW supports 24 or 32
->>>>> bits as maximum possible value of msbits. However when MSBITS_32 is
->>>>> defined it is clear - in the above case maximum possible bps then is
->>>>> 24,
->>>>> because MSBITS_32 is missing in output.
->>>>>
->>>>> STD behaves as before and takes maximum possible value - in above case
->>>>> it is 24.
->>>>
->>>> This example is nice for S32_LE but not S16_LE. With the max/full bit,
->>>> we can already cover also S16_LE (so that the application can ask for
->>>> the maximal msbits which fits to the physical format for S16_LE). It
->>>> would be also a preparation for future, when we need to deal with more
->>>> msbits combos (like 14bit or 15bit samples stored in the bigger
->>>> physical words) etc.
->>>>
->>>> So application can set those parameters for in your case:
->>>>
->>>> S16_LE + STD         (maximum bits handled by driver - 16 in this case)
->>>> S16_LE + MSBITS_MAX  (maximum physical bits for the format - 16)
->>>> S32_LE + STD         (maximum bits handled by driver - 24 in this case)
->>>> S32_LE + MSBITS_MAX  (maximum physical bits for the format - 32)
->>>> S32_LE + MSBITS_24
->>>> S32_LE + MSBITS_20
->>>>
->>>> Dtto for other format like S8, S24 etc. Another way is to define
->>>> MSBITS_8, MSBITS_16 etc. But I'd prefer to save subformat bits. The
->>>> MSBITS_MAX would cover almost all cases for now.
->>>
->>> It becomes a bit tricky if we have a device that has 24bit bps on
->>> 32bit format and 16bit bps / 16bit format.  Both formats and
->>> subformats are bitmaps in hw_params, and initially formats bitmap is
->>> 16|24 and subformats bitmap is MAX|24.
->>>
->>> Now, suppose that app determines to use 16bit.  Then we need to we
->>> need to update subformats bitmap to MAX by dropping 24.  OTOH, if app
->>> chooses 32bit format, subformats will be 24 by dropping MAX, as we
->>> don't support 32 bps.  And, it's not so trivial to achieve this
->>> commonly only with the single subformats bitmap of snd_pcm_hardware,
->>> as the meaning of MAX depends on the chosen format.
->>
->> It's easy to implement using a code which will go through all set format
->> bits and do bitwise OR for all corresponding subformat bits. We can use
->> a callback which the driver may override.
->>
->> Something like (for the above HDA example): - SUBFMTBIT_STD is required
->> so it would be handled at the upper level):
->>
->> snd_pcm_subformat_t (*get_subformat)(struct snd_pcm_substream
->> *substream, snd_pcm_format_t format)
->> {
->>           switch (format) {
->>       case SNDRV_PCM_FMTBIT_S16_LE:
->>           return SNDRV_PCM_SUBFMTBIT_MSBITS_MAX;
->>           case SNDRV_PCM_FMTBIT_S32_LE:
->>                   return SNDRV_PCM_SUBFMTBIT_MSBITS_24 |
->>                          SNDRV_PCM_SUBFMTBIT_MSBITS_20;
->>       default:
->>           return 0;
->>       }
->> }
->>
->> SUBFMTBIT_STD is required so it would be handled at the upper level.
->>
->>> Meanwhile, if the subformats bitmap is with explicit bit flags,
->>> i.e. 24|16, we can reduce the bitmap easily depending on the format.
->>
->> I don't think that the current proposed code does any reduction. It will
->> return MSBITS_24 when only S16_LE format is selected, too. The refining
->> mechanism is ignored. We need to handle subformat bits differently than
->> format bits because the dependency.
->>
->>                       Jaroslav
->>
-> 
-> Problem with MSBITS_MAX is that if kernel reports something like this:
-> 
-> FORMAT: S16_LE S32_LE
-> SUBFORMAT: STD MSBITS_20 MSBITS_MAX
-> 
-> to userspace, is that userspace can't really tell if you should only
-> apply it to S16_LE or to S32_LE, or both. On the other hand if at some
-> point someone adds S64_LE format, something like:
+Add the StarFive JH7110 (TX0/TX1/RX channel) SoC support in the bindings
+of Designware I2S controller. The I2S controller needs two reset items
+to work properly on the JH7110 SoC. And TX0 channel as master mode needs
+5 clock items and TX1/RX channels as slave mode need 9 clock items on
+the JH7110 SoC. The RX channel needs System Register Controller property
+to enable it and other platforms do not need it.
 
-Unfortunately, you've not got the point that the subformat contents depends on 
-the selected format. So the subformat mask is for ALL formats selected in the 
-configuration space. The only valid contents for one format is when 
-application or kernel reduces the format to single one. And applications can do:
+Signed-off-by: Xingyu Wu <xingyu.wu@starfivetech.com>
+---
+ .../bindings/sound/snps,designware-i2s.yaml   | 108 +++++++++++++++++-
+ 1 file changed, 105 insertions(+), 3 deletions(-)
 
-1) set format to S32_LE
-2) call refine
-3) get subformat bits for single S32_LE format from the refined cfg space
-
-In this case, queries and specific msbits selection will work. It's the 
-standard refine mechanism which works also for all other fields from the 
-parameter configuration space etc. If you look to all other fields from the 
-parameter configuration space, you cannot predict the exact parameters (buffer 
-size, period size, channels) until you do more refining to set all parameters 
-to exact values (single value).
-
-In other words, the above example:
-
-FORMAT: S16_LE S32_LE
-SUBFORMAT: STD MSBITS_20 MSBITS_MAX
-
-.. means - at least one format supports maximal msbits for the given format.
-
-						Jaroslav
-
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+diff --git a/Documentation/devicetree/bindings/sound/snps,designware-i2s.=
+yaml b/Documentation/devicetree/bindings/sound/snps,designware-i2s.yaml
+index a970fd264b21..a48d040b0a4f 100644
+--- a/Documentation/devicetree/bindings/sound/snps,designware-i2s.yaml
++++ b/Documentation/devicetree/bindings/sound/snps,designware-i2s.yaml
+@@ -17,6 +17,9 @@ properties:
+           - const: snps,designware-i2s
+       - enum:
+           - snps,designware-i2s
++          - starfive,jh7110-i2stx0
++          - starfive,jh7110-i2stx1
++          - starfive,jh7110-i2srx
+=20
+   reg:
+     maxItems: 1
+@@ -29,15 +32,36 @@ properties:
+     maxItems: 1
+=20
+   clocks:
+-    description: Sampling rate reference clock
+-    maxItems: 1
++    items:
++      - description: Sampling rate reference clock
++      - description: APB clock
++      - description: Audio master clock
++      - description: Inner audio master clock source
++      - description: External audio master clock source
++      - description: Bit clock
++      - description: Left/right channel clock
++      - description: External bit clock
++      - description: External left/right channel clock
++    minItems: 1
+=20
+   clock-names:
+-    const: i2sclk
++    items:
++      - const: i2sclk
++      - const: apb
++      - const: mclk
++      - const: mclk_inner
++      - const: mclk_ext
++      - const: bclk
++      - const: lrck
++      - const: bclk_ext
++      - const: lrck_ext
++    minItems: 1
+=20
+   resets:
+     items:
+       - description: Optional controller resets
++      - description: controller reset of Sampling rate
++    minItems: 1
+=20
+   dmas:
+     items:
+@@ -51,6 +75,17 @@ properties:
+       - const: rx
+     minItems: 1
+=20
++  starfive,syscon:
++    $ref: /schemas/types.yaml#/definitions/phandle-array
++    items:
++      - items:
++          - description: phandle to System Register Controller sys_sysco=
+n node.
++          - description: I2S-rx enabled control offset of SYS_SYSCONSAIF=
+__SYSCFG register.
++          - description: I2S-rx enabled control mask
++    description:
++      The phandle to System Register Controller syscon node and the I2S-=
+rx(ADC)
++      enabled control offset and mask of SYS_SYSCONSAIF__SYSCFG register=
+.
++
+ allOf:
+   - $ref: dai-common.yaml#
+   - if:
+@@ -66,6 +101,73 @@ allOf:
+       properties:
+         "#sound-dai-cells":
+           const: 0
++  - if:
++      properties:
++        compatible:
++          contains:
++            const: snps,designware-i2s
++    then:
++      properties:
++        clocks:
++          maxItems: 1
++        clock-names:
++          maxItems: 1
++        resets:
++          maxItems: 1
++    else:
++      properties:
++        resets:
++          minItems: 2
++          maxItems: 2
++  - if:
++      properties:
++        compatible:
++          contains:
++            const: starfive,jh7110-i2stx0
++    then:
++      properties:
++        clocks:
++          minItems: 5
++          maxItems: 5
++        clock-names:
++          minItems: 5
++          maxItems: 5
++      required:
++        - resets
++  - if:
++      properties:
++        compatible:
++          contains:
++            const: starfive,jh7110-i2stx1
++    then:
++      properties:
++        clocks:
++          minItems: 9
++          maxItems: 9
++        clock-names:
++          minItems: 9
++          maxItems: 9
++      required:
++        - resets
++  - if:
++      properties:
++        compatible:
++          contains:
++            const: starfive,jh7110-i2srx
++    then:
++      properties:
++        clocks:
++          minItems: 9
++          maxItems: 9
++        clock-names:
++          minItems: 9
++          maxItems: 9
++      required:
++        - resets
++        - starfive,syscon
++    else:
++      properties:
++        starfive,syscon: false
+=20
+ required:
+   - compatible
+--=20
+2.25.1
 
