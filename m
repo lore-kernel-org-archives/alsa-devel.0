@@ -4,90 +4,108 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 61514C3DA6F
-	for <alsa-devel@archiver.kernel.org>; Thu, 24 Aug 2023 07:36:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3DEC6C7113B
+	for <alsa-devel@archiver.kernel.org>; Thu, 24 Aug 2023 07:36:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B2B5E847;
-	Thu, 24 Aug 2023 09:35:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B2B5E847
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7EE0686F;
+	Thu, 24 Aug 2023 09:35:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7EE0686F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1692862590;
-	bh=eYYuIguSF1/jPXSxfuXL3BDNIn2AiTma6JWLnRNaeJc=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=PnU7Djf4n6IWD0Nb0mqnvNJVJk4wOgQZGHsx0bbwZ3IKEcmqe6/BMXMX0DF5y/O17
-	 Fo9dWh5ilkB0Ml0bKNaf59vG+1Qp4jPal3c46jzQuB3pIIizJRn4mmLhgqSclZIK1Y
-	 x1n5HxIgblYop78L+/zQfXjv91/BpXMIOVwmk12M=
+	s=default; t=1692862600;
+	bh=KYCM/i2GMZrSoB/ozLv4x7Y1FQfdNNv+nIT7PVVBNUM=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=NMuBeYNZmaheHISEbtkygYKwdOMb5Qxb59nl/4e1TOHdNVYcDP8DRKpBt0RSJuLpN
+	 fqVVYcUg6BZmgsbrGgbJiJ8R+sdUhOeaGDNmHi2XAXjSYj27QVDlR6QQXC5iW2E/74
+	 66w+4nVFLbbaod8d7j6mclAzF50689DyBYwaNxzw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3911FF805F0; Thu, 24 Aug 2023 09:32:40 +0200 (CEST)
+	id AD878F805FF; Thu, 24 Aug 2023 09:32:42 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6C53DF805F1;
-	Thu, 24 Aug 2023 09:32:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EC5B5F805F9;
+	Thu, 24 Aug 2023 09:32:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C7109F800F8; Mon, 21 Aug 2023 16:43:13 +0200 (CEST)
-Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
-	(using TLSv1 with cipher ADH-AES256-SHA (256/256 bits))
+	id 61CF6F80158; Tue, 22 Aug 2023 17:06:27 +0200 (CEST)
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com
+ [IPv6:2a00:1450:4864:20::42b])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 1BBD6F8025E
-	for <alsa-devel@alsa-project.org>; Mon, 21 Aug 2023 16:42:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1BBD6F8025E
-Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
-	by ex01.ufhost.com (Postfix) with ESMTP id 7A17224E17F;
-	Mon, 21 Aug 2023 22:41:53 +0800 (CST)
-Received: from EXMBX061.cuchost.com (172.16.6.61) by EXMBX165.cuchost.com
- (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Mon, 21 Aug
- 2023 22:41:53 +0800
-Received: from localhost.localdomain (113.72.145.205) by EXMBX061.cuchost.com
- (172.16.6.61) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Mon, 21 Aug
- 2023 22:41:52 +0800
-From: Xingyu Wu <xingyu.wu@starfivetech.com>
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
-	Claudiu Beznea <Claudiu.Beznea@microchip.com>, Jaroslav Kysela
-	<perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Maxim Kochetkov
-	<fido_max@inbox.ru>, Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
-	<conor.dooley@microchip.com>, Emil Renner Berthing
-	<emil.renner.berthing@canonical.com>
-CC: Jose Abreu <joabreu@synopsys.com>, Paul Walmsley
-	<paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou
-	<aou@eecs.berkeley.edu>, Walker Chen <walker.chen@starfivetech.com>, "Xingyu
- Wu" <xingyu.wu@starfivetech.com>, <devicetree@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <alsa-devel@alsa-project.org>,
-	<linux-riscv@lists.infradead.org>
-Subject: [PATCH v2 1/5] ASoC: dt-bindings: snps,designware-i2s: Add StarFive
- JH7110 SoC support
-Date: Mon, 21 Aug 2023 22:41:47 +0800
-Message-ID: <20230821144151.207339-2-xingyu.wu@starfivetech.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230821144151.207339-1-xingyu.wu@starfivetech.com>
-References: <20230821144151.207339-1-xingyu.wu@starfivetech.com>
+	by alsa1.perex.cz (Postfix) with ESMTPS id A726EF800D1
+	for <alsa-devel@alsa-project.org>; Tue, 22 Aug 2023 17:06:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A726EF800D1
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20221208 header.b=EK/QqDRk
+Received: by mail-wr1-x42b.google.com with SMTP id
+ ffacd0b85a97d-31c3f574ef8so439279f8f.1
+        for <alsa-devel@alsa-project.org>;
+ Tue, 22 Aug 2023 08:06:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692716777; x=1693321577;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=hiuif0UPEilRfTqfvjhgYV9OjFsrTUZzsOgS/HAy03Q=;
+        b=EK/QqDRkxi36aIi0UBd9fmgJGjMU2iJAesESNS7RXj3CU+4OgQFnmS0DRe1Pjqt3Vj
+         aSNjrghPdOk8/h1SE6SKPJAzc5DqcD4+5PrMeavHJyeyp9S2zKh9XaOtlZn7mY5eYSD/
+         cm7wR5jRdkxFzEfC6rjLF6OrbpWnmsYdVYAbNFkRPqOaRDPsW+L2vGKCop7uzax2TDuC
+         euiDhxVc05SOEdjkhWgM5YYDIwbmQVLcQmKlNFbOLPaHYZPkGsrL6Tw3elinaF/uY5e/
+         yOhAj28EKnvg3I1Q1bZmpJZa6Itn2Tc0RfB8et8DvcNdvmh/azKkJDvWb84xZwElkzTw
+         kTWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692716777; x=1693321577;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=hiuif0UPEilRfTqfvjhgYV9OjFsrTUZzsOgS/HAy03Q=;
+        b=gaxuYvgYzGLtcFjvERXXm0NhVpPK68k/h/ANhNbBGMo4FJ5yZcxCrS3jil3d3J70zE
+         KGiSoAX/EetIEzbzKhnoqMBTL8BD1nN1oevaYwM5MlxjfT5tXkQoNE/F7t266pdTPSL0
+         PJK4huMI0sNvqjCRZBzwWXkZJ1moCBgxHXG3lvgGBR6/v37ArBafQC1ESq/FBMHMj+El
+         wmFWSgjN25oMEXeXjoP445Oq7nTL7auBmUXR7iA4A7I7RpWF5Rd38cHNLvDKCTiDJzuX
+         ZjXQPKWLHpJEA0yRhCSN4Yw2KDOORmzFoIM+0xh0ycr4S8zDcJbkex55kZ7RV0wxeWnC
+         REfw==
+X-Gm-Message-State: AOJu0YxFqY0OhXIKt6yasvhOG8sG+PfOThAf5JPRqw3Of+duJ5E/2+ic
+	2dNkLJpes2aijytAH8k+ki8=
+X-Google-Smtp-Source: 
+ AGHT+IG/WYaK4QKoY/sXJElN3HnYE35+BGE/wEL15yzukGUemxKM29AaJP9Afn93aZrjhi0CYRIJjg==
+X-Received: by 2002:adf:e710:0:b0:317:3d36:b2c1 with SMTP id
+ c16-20020adfe710000000b003173d36b2c1mr8082225wrm.7.1692716776656;
+        Tue, 22 Aug 2023 08:06:16 -0700 (PDT)
+Received: from ivan-HLYL-WXX9.. ([141.136.93.153])
+        by smtp.gmail.com with ESMTPSA id
+ p13-20020adff20d000000b0031c52e81490sm6619066wro.72.2023.08.22.08.06.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Aug 2023 08:06:16 -0700 (PDT)
+From: Ivan Orlov <ivan.orlov0322@gmail.com>
+To: perex@perex.cz,
+	tiwai@suse.com
+Cc: Ivan Orlov <ivan.orlov0322@gmail.com>,
+	alsa-devel@alsa-project.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] ALSA: pcmtest: Add support for pcm pausing
+Date: Tue, 22 Aug 2023 19:05:41 +0400
+Message-Id: <20230822150541.8450-1-ivan.orlov0322@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [113.72.145.205]
-X-ClientProxiedBy: EXCAS062.cuchost.com (172.16.6.22) To EXMBX061.cuchost.com
- (172.16.6.61)
-X-YovoleRuleAgent: yovoleflag
-Content-Transfer-Encoding: quoted-printable
-X-MailFrom: xingyu.wu@starfivetech.com
+Content-Transfer-Encoding: 8bit
+X-MailFrom: ivan.orlov0322@gmail.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: 63R3B36ZHWM5FSGFVT6W2VP33D5YIPA4
-X-Message-ID-Hash: 63R3B36ZHWM5FSGFVT6W2VP33D5YIPA4
+Message-ID-Hash: 2TFH4TNLQPIGJ4MBCJX3PDRKCIPQTUJW
+X-Message-ID-Hash: 2TFH4TNLQPIGJ4MBCJX3PDRKCIPQTUJW
 X-Mailman-Approved-At: Thu, 24 Aug 2023 07:32:02 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/63R3B36ZHWM5FSGFVT6W2VP33D5YIPA4/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2TFH4TNLQPIGJ4MBCJX3PDRKCIPQTUJW/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -96,169 +114,123 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add the StarFive JH7110 (TX0/TX1/RX channel) SoC support in the bindings
-of Designware I2S controller. The I2S controller needs two reset items
-to work properly on the JH7110 SoC. And TX0 channel as master mode needs
-5 clock items and TX1/RX channels as slave mode need 9 clock items on
-the JH7110 SoC. The RX channel needs System Register Controller property
-to enable it and other platforms do not need it.
+Add pause push/release support to the virtual PCM test driver. Add
+'suspend' boolean field to the pcmtst_buf_iter structure, so we can
+pause the timer without shutting it down. Update the trigger callback
+handler correspondingly. Extract buffer initialization to the
+'reset_buf_iterator' function since it is used in multiple places now.
 
-Signed-off-by: Xingyu Wu <xingyu.wu@starfivetech.com>
+Signed-off-by: Ivan Orlov <ivan.orlov0322@gmail.com>
 ---
- .../bindings/sound/snps,designware-i2s.yaml   | 108 +++++++++++++++++-
- 1 file changed, 105 insertions(+), 3 deletions(-)
+ sound/drivers/pcmtest.c | 49 ++++++++++++++++++++++++++++++++++-------
+ 1 file changed, 41 insertions(+), 8 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/snps,designware-i2s.=
-yaml b/Documentation/devicetree/bindings/sound/snps,designware-i2s.yaml
-index a970fd264b21..a48d040b0a4f 100644
---- a/Documentation/devicetree/bindings/sound/snps,designware-i2s.yaml
-+++ b/Documentation/devicetree/bindings/sound/snps,designware-i2s.yaml
-@@ -17,6 +17,9 @@ properties:
-           - const: snps,designware-i2s
-       - enum:
-           - snps,designware-i2s
-+          - starfive,jh7110-i2stx0
-+          - starfive,jh7110-i2stx1
-+          - starfive,jh7110-i2srx
-=20
-   reg:
-     maxItems: 1
-@@ -29,15 +32,36 @@ properties:
-     maxItems: 1
-=20
-   clocks:
--    description: Sampling rate reference clock
--    maxItems: 1
-+    items:
-+      - description: Sampling rate reference clock
-+      - description: APB clock
-+      - description: Audio master clock
-+      - description: Inner audio master clock source
-+      - description: External audio master clock source
-+      - description: Bit clock
-+      - description: Left/right channel clock
-+      - description: External bit clock
-+      - description: External left/right channel clock
-+    minItems: 1
-=20
-   clock-names:
--    const: i2sclk
-+    items:
-+      - const: i2sclk
-+      - const: apb
-+      - const: mclk
-+      - const: mclk_inner
-+      - const: mclk_ext
-+      - const: bclk
-+      - const: lrck
-+      - const: bclk_ext
-+      - const: lrck_ext
-+    minItems: 1
-=20
-   resets:
-     items:
-       - description: Optional controller resets
-+      - description: controller reset of Sampling rate
-+    minItems: 1
-=20
-   dmas:
-     items:
-@@ -51,6 +75,17 @@ properties:
-       - const: rx
-     minItems: 1
-=20
-+  starfive,syscon:
-+    $ref: /schemas/types.yaml#/definitions/phandle-array
-+    items:
-+      - items:
-+          - description: phandle to System Register Controller sys_sysco=
-n node.
-+          - description: I2S-rx enabled control offset of SYS_SYSCONSAIF=
-__SYSCFG register.
-+          - description: I2S-rx enabled control mask
-+    description:
-+      The phandle to System Register Controller syscon node and the I2S-=
-rx(ADC)
-+      enabled control offset and mask of SYS_SYSCONSAIF__SYSCFG register=
-.
+diff --git a/sound/drivers/pcmtest.c b/sound/drivers/pcmtest.c
+index 27cbb9d38f08..b59b78a09224 100644
+--- a/sound/drivers/pcmtest.c
++++ b/sound/drivers/pcmtest.c
+@@ -108,6 +108,7 @@ struct pcmtst_buf_iter {
+ 	size_t total_bytes;			// Total bytes read/written
+ 	size_t chan_block;			// Bytes in one channel buffer when non-interleaved
+ 	struct snd_pcm_substream *substream;
++	bool suspend;				// We need to pause timer without shutting it down
+ 	struct timer_list timer_instance;
+ };
+ 
+@@ -115,7 +116,8 @@ static struct snd_pcm_hardware snd_pcmtst_hw = {
+ 	.info = (SNDRV_PCM_INFO_INTERLEAVED |
+ 		 SNDRV_PCM_INFO_BLOCK_TRANSFER |
+ 		 SNDRV_PCM_INFO_NONINTERLEAVED |
+-		 SNDRV_PCM_INFO_MMAP_VALID),
++		 SNDRV_PCM_INFO_MMAP_VALID |
++		 SNDRV_PCM_INFO_PAUSE),
+ 	.formats =		SNDRV_PCM_FMTBIT_U8 | SNDRV_PCM_FMTBIT_S16_LE,
+ 	.rates =		SNDRV_PCM_RATE_8000_48000,
+ 	.rate_min =		8000,
+@@ -346,6 +348,9 @@ static void timer_timeout(struct timer_list *data)
+ 	v_iter = from_timer(v_iter, data, timer_instance);
+ 	substream = v_iter->substream;
+ 
++	if (v_iter->suspend)
++		return;
 +
- allOf:
-   - $ref: dai-common.yaml#
-   - if:
-@@ -66,6 +101,73 @@ allOf:
-       properties:
-         "#sound-dai-cells":
-           const: 0
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            const: snps,designware-i2s
-+    then:
-+      properties:
-+        clocks:
-+          maxItems: 1
-+        clock-names:
-+          maxItems: 1
-+        resets:
-+          maxItems: 1
-+    else:
-+      properties:
-+        resets:
-+          minItems: 2
-+          maxItems: 2
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            const: starfive,jh7110-i2stx0
-+    then:
-+      properties:
-+        clocks:
-+          minItems: 5
-+          maxItems: 5
-+        clock-names:
-+          minItems: 5
-+          maxItems: 5
-+      required:
-+        - resets
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            const: starfive,jh7110-i2stx1
-+    then:
-+      properties:
-+        clocks:
-+          minItems: 9
-+          maxItems: 9
-+        clock-names:
-+          minItems: 9
-+          maxItems: 9
-+      required:
-+        - resets
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            const: starfive,jh7110-i2srx
-+    then:
-+      properties:
-+        clocks:
-+          minItems: 9
-+          maxItems: 9
-+        clock-names:
-+          minItems: 9
-+          maxItems: 9
-+      required:
-+        - resets
-+        - starfive,syscon
-+    else:
-+      properties:
-+        starfive,syscon: false
-=20
- required:
-   - compatible
---=20
-2.25.1
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK && !v_iter->is_buf_corrupted)
+ 		check_buf_block(v_iter, substream->runtime);
+ 	else if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
+@@ -358,7 +363,9 @@ static void timer_timeout(struct timer_list *data)
+ 		v_iter->period_pos %= v_iter->period_bytes;
+ 		snd_pcm_period_elapsed(substream);
+ 	}
+-	mod_timer(&v_iter->timer_instance, jiffies + TIMER_INTERVAL + inject_delay);
++
++	if (!v_iter->suspend)
++		mod_timer(&v_iter->timer_instance, jiffies + TIMER_INTERVAL + inject_delay);
+ }
+ 
+ static int snd_pcmtst_pcm_open(struct snd_pcm_substream *substream)
+@@ -373,19 +380,15 @@ static int snd_pcmtst_pcm_open(struct snd_pcm_substream *substream)
+ 	if (!v_iter)
+ 		return -ENOMEM;
+ 
++	v_iter->substream = substream;
+ 	runtime->hw = snd_pcmtst_hw;
+ 	runtime->private_data = v_iter;
+-	v_iter->substream = substream;
+-	v_iter->buf_pos = 0;
+-	v_iter->is_buf_corrupted = false;
+-	v_iter->period_pos = 0;
+-	v_iter->total_bytes = 0;
+ 
+ 	playback_capture_test = 0;
+ 	ioctl_reset_test = 0;
+ 
+ 	timer_setup(&v_iter->timer_instance, timer_timeout, 0);
+-	mod_timer(&v_iter->timer_instance, jiffies + TIMER_INTERVAL);
++
+ 	return 0;
+ }
+ 
+@@ -400,10 +403,40 @@ static int snd_pcmtst_pcm_close(struct snd_pcm_substream *substream)
+ 	return 0;
+ }
+ 
++static inline void reset_buf_iterator(struct pcmtst_buf_iter *v_iter)
++{
++	v_iter->buf_pos = 0;
++	v_iter->is_buf_corrupted = false;
++	v_iter->period_pos = 0;
++	v_iter->total_bytes = 0;
++}
++
++static inline void start_pcmtest_timer(struct pcmtst_buf_iter *v_iter)
++{
++	v_iter->suspend = false;
++	mod_timer(&v_iter->timer_instance, jiffies + TIMER_INTERVAL);
++}
++
+ static int snd_pcmtst_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
+ {
++	struct pcmtst_buf_iter *v_iter = substream->runtime->private_data;
++
+ 	if (inject_trigger_err)
+ 		return -EINVAL;
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++		reset_buf_iterator(v_iter);
++		start_pcmtest_timer(v_iter);
++		break;
++	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
++		start_pcmtest_timer(v_iter);
++		break;
++	case SNDRV_PCM_TRIGGER_STOP:
++	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
++		// We can't call timer_shutdown_sync here, as it is forbidden to sleep here
++		v_iter->suspend = true;
++		break;
++	}
+ 
+ 	return 0;
+ }
+-- 
+2.34.1
 
