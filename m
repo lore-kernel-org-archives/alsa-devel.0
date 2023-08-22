@@ -4,76 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BDD20EE4996
-	for <alsa-devel@archiver.kernel.org>; Tue, 22 Aug 2023 16:36:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E1EE7EE49A3
+	for <alsa-devel@archiver.kernel.org>; Tue, 22 Aug 2023 16:36:09 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 784DF82C;
-	Tue, 22 Aug 2023 18:35:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 784DF82C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0B11C847;
+	Tue, 22 Aug 2023 18:35:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0B11C847
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1692722163;
-	bh=+Gi0L0puezhiLPx0bJgnU97RFMKBomJQ+9YUXJDIdiY=;
+	s=default; t=1692722168;
+	bh=iERAvK+2vhOf/y7Xi5SAN53Ugl5OjAiWwXiWTviJZ4k=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=YkfT1baHD1wHo8vJ1Dbh+NZRkMK4EwpPBWVrRpMTqkDrbwhiUSIXxyyyPEfi/CHB6
-	 pRmks7flvwYyr7hq5RL4KS1C1UdZn24AipPbQE9beAGGZSJopFJJMn+pleTlKb8bry
-	 Lm4FXhf2DXj/5X6i/0QoN8KLJ/f5GH6gtDUzxb0Q=
+	b=iKZXu1bzJTWrEI1KW9SFqCmhgtT0lRTi2RMF2s85aoYAswuKW5OloK54F67h2Tzf4
+	 KRqjWQ6zOVBPB21uR0qhXNyTlFutxyGq2bqrIuWLBawoxivmIaU2mx/PvgPgWOMssg
+	 AYdIo9I7upk5xB2rY4/SUyYY+Vc5XaFi+cAGpYVA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4995DF805AF; Tue, 22 Aug 2023 18:33:44 +0200 (CEST)
+	id 70A5AF805B1; Tue, 22 Aug 2023 18:33:46 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5B51BF805A8;
-	Tue, 22 Aug 2023 18:33:43 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F0E21F80589;
+	Tue, 22 Aug 2023 18:33:45 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8476DF80567; Tue, 22 Aug 2023 18:33:36 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+	id 26FCBF8057B; Tue, 22 Aug 2023 18:33:38 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 780FCF80158
-	for <alsa-devel@alsa-project.org>; Tue, 22 Aug 2023 18:33:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 780FCF80158
+	by alsa1.perex.cz (Postfix) with ESMTPS id 57196F80551
+	for <alsa-devel@alsa-project.org>; Tue, 22 Aug 2023 18:33:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 57196F80551
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=WEXUtKzb
+ header.s=k20201202 header.b=MjHvPb/P
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 563C765CC9;
-	Tue, 22 Aug 2023 16:33:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25E8AC433CA;
-	Tue, 22 Aug 2023 16:33:28 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 430A965CA9;
+	Tue, 22 Aug 2023 16:33:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD108C433C8;
+	Tue, 22 Aug 2023 16:33:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1692722010;
-	bh=+Gi0L0puezhiLPx0bJgnU97RFMKBomJQ+9YUXJDIdiY=;
+	s=k20201202; t=1692722012;
+	bh=iERAvK+2vhOf/y7Xi5SAN53Ugl5OjAiWwXiWTviJZ4k=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=WEXUtKzb8OszFFTJca99l8KUZOtNUZaN+cg50RkpPIVMmYAXPXCuDUP5yGrUnRPFF
-	 9rQOqxCpvO0hfmEDXUeIaHR6TRv60cCwaRU+JCsebu9A6UHfns76/MrnlSCWQMNTgu
-	 R79XHbMQVPbwpBl33ksK5LFhaMgLGqQVgOwBHFN4muyjp0N6yKd9v5MrybWkj0nGJD
-	 aKak6ZOF1L2RQES6qW4djkbEor95ebGEdS7m/l/mLFaXidF0FnPpgOhluCbZ4TO/nh
-	 HdQpVVWHEac2JumHdQXJnqElFtOZdQEwdv+MRfadgg35JjuI89vzbMcElZKTepBIoJ
-	 LwN2q64OEL2Xg==
+	b=MjHvPb/PahKYzD+PsZbe0mh8RH71KCp5n2uLkBmWx88GOBkWCfabs6P9QSegbvV0O
+	 WbMqQwT9JXhX/8z+PlHkkYd5oj7w4DVJ4Do/5VAYF+PHpmkCrGphj1TuxLhZ3ta6o9
+	 3J4j+DhakPNrjcCXiO+Iby6A5yIl6Ke8qq7n3xxVvxg9RKiz3IjapMOQ23iXcZ33UR
+	 eKMEK1lCrpfNX5Pt+wiCMeMWGg9rszAoy261DJ9IRXuqXPA/QJhe1FMMJTHseG82vJ
+	 Af68c8Mw+xDkFZGyNDmw9LMVtZ87K4t1xJk6XNmLcVmZ5k70XegU4SagtnClFRvuQY
+	 8qt0zimQG2hmw==
 From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com, Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com,
- ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com
-In-Reply-To: <20230822065419.24374-1-peter.ujfalusi@linux.intel.com>
-References: <20230822065419.24374-1-peter.ujfalusi@linux.intel.com>
-Subject: Re: [PATCH] ASoC: SOF: ipc4-topology: Add module parameter to
- ignore the CPC value
-Message-Id: <169272200887.71502.8291528263080381458.b4-ty@kernel.org>
-Date: Tue, 22 Aug 2023 17:33:28 +0100
+To: Daniel Mack <daniel@zonque.org>,
+ Haojian Zhuang <haojian.zhuang@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ Robert Jarzmik <robert.jarzmik@free.fr>, Takashi Iwai <tiwai@suse.com>,
+ Yangtao Li <frank.li@vivo.com>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.org
+In-Reply-To: <878ra3ubid.wl-kuninori.morimoto.gx@renesas.com>
+References: <878ra3ubid.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH] ASoC: pxa: merge DAI call back functions into ops
+Message-Id: <169272201062.71502.6717309510084152766.b4-ty@kernel.org>
+Date: Tue, 22 Aug 2023 17:33:30 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-034f2
-Message-ID-Hash: W4JZRCP4NJ25EID6GJN3Z432KKBWZLY2
-X-Message-ID-Hash: W4JZRCP4NJ25EID6GJN3Z432KKBWZLY2
+Message-ID-Hash: QMLOZGYOUZH73GD3GYRCN2ZVKTKFT6SM
+X-Message-ID-Hash: QMLOZGYOUZH73GD3GYRCN2ZVKTKFT6SM
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -86,7 +88,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/W4JZRCP4NJ25EID6GJN3Z432KKBWZLY2/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QMLOZGYOUZH73GD3GYRCN2ZVKTKFT6SM/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -95,16 +97,11 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, 22 Aug 2023 09:54:19 +0300, Peter Ujfalusi wrote:
-> Add a new module parameter ipc4_ignore_cpc which can be used to force the
-> kernel to ignore the queried CPC value for all firmware modules and use 0
-> instead.
+On Tue, 22 Aug 2023 01:11:23 +0000, Kuninori Morimoto wrote:
+> ALSA SoC merges DAI call backs into .ops.
+> This patch merge these into one.
 > 
-> The CPC lookup is still done to report missing configurations and the
-> debug print is going to be different to be explicit that the CPC is ignored
-> and what was the value we would have used.
 > 
-> [...]
 
 Applied to
 
@@ -112,8 +109,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: SOF: ipc4-topology: Add module parameter to ignore the CPC value
-      commit: 26ef47e5ba600ead306ee19e0bf56c1bf59213a3
+[1/1] ASoC: pxa: merge DAI call back functions into ops
+      commit: 2cbd5304ea393f0ca3aeebec2f6554a32ac02ce3
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
