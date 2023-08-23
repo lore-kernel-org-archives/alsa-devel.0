@@ -4,65 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7DCF2EE49A0
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Aug 2023 08:08:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5157EEE49AE
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Aug 2023 08:09:11 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 21E1C836;
-	Wed, 23 Aug 2023 10:07:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 21E1C836
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5F86E83A;
+	Wed, 23 Aug 2023 10:08:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5F86E83A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1692778108;
-	bh=xYNNIyxVR7KiISqp+e+GiV75aUZndbayAZ3Z4C/kjFc=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=p6c9+f1zATQzckNrVNWPnEdlIzyN6dwpD78APOL1E+ic1y1u+P7mqI/rzO6EimyHa
-	 alEc76kZ1N/nxyyoFtrcLNHpJUBaYS5ftlK2RpMu0vIX6Pn6Vn8JhXXAslOD3k5S1Z
-	 xfXz9+1pJlnO0I34kFMFkUykK0oq8iPuqV+ftt48=
+	s=default; t=1692778149;
+	bh=rI5MPgy1wg1Zs8L7azEeeLJeSitRt1R9hj6i3PJ6QSU=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=ED3JRyin4w8Ms3VsJe/lzYynWu5u1ld+/xfEt7QadZwUgVLV6HgekFffVnUZFOMYi
+	 7pZDrpYOPI0nuJ6n6sXew92j2yubTBWy4UIqGNUu4oygtRFmyJQLOFs61RFpo1g1l9
+	 6QYNR9+opSGnw7CEtGieLSKjy4jbRmyJvJdn/T0A=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 94121F8022B; Wed, 23 Aug 2023 10:07:28 +0200 (CEST)
+	id AB259F80549; Wed, 23 Aug 2023 10:07:30 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 06CC7F80158;
-	Wed, 23 Aug 2023 10:07:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6A060F80537;
+	Wed, 23 Aug 2023 10:07:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2F639F80536; Wed, 23 Aug 2023 10:06:20 +0200 (CEST)
+	id B2366F80022; Wed, 23 Aug 2023 10:06:22 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 11516F80022
-	for <alsa-devel@alsa-project.org>; Wed, 23 Aug 2023 10:06:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 11516F80022
+	by alsa1.perex.cz (Postfix) with ESMTPS id 27AAFF800D1
+	for <alsa-devel@alsa-project.org>; Wed, 23 Aug 2023 10:06:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 27AAFF800D1
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=HIoERzz6
+ header.s=Intel header.b=Ba0p4q+B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692777971; x=1724313971;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=xYNNIyxVR7KiISqp+e+GiV75aUZndbayAZ3Z4C/kjFc=;
-  b=HIoERzz61fUKNQlYb7GIaflFTznpkX5AlwZBogLEpQFyttKwHdbuIEHE
-   ii8skXOpHTQj5t357Rjo+yVV5FfXCeRkrfL/aV6vIDv40lfxMIknfXTij
-   q/LWLd58ccfxosc2OjdTJXrE0+ie6lZavRhMgh5b62fpvYsHsGne25Jhn
-   nJyx5U7Xf/2dhs0t/7xihofVNfvNNVDUa1Az8wSODygzI8poNUIIPE/uO
-   g7j+CwiXtL2I3f2IgkERKNL4NanThC2RdVvVNQYqfhZL1BhMy/koDHG1C
-   35GMMCF+nCXXM/UepLjgI5r5r8XkJhupQUoe/rf/zgI3yDMaxMCCG8BSg
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10810"; a="372988001"
+  t=1692777969; x=1724313969;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=rI5MPgy1wg1Zs8L7azEeeLJeSitRt1R9hj6i3PJ6QSU=;
+  b=Ba0p4q+BY2lY81JnelMna0DIhvK/F59DVZ1qMKUgyrY/fA2Yrxa3966N
+   526x0vBCxtb2/f1O/oHtyUlxAkAzC0kP/nA4c+Cvbh0pH5mPOB1ZPBxgE
+   CHWQPAWlJ3YP1EWtK9p7eTqoXdrx+BDmHBYJGLrTQfFEMeYu8HrjZaBnz
+   igOuVEYOI72tqy9lxaSP5jkKaJeaLAVTfDhcWVY3z27f6l0AHJDawsUlu
+   8SkN/Bzpdkpy9XmVxisP1S4VDny0vSO7XJ83DTunoPRdlZhWrJVAlxttB
+   R0ixEPTcj/j72MNQ0aY1GtGGZM8MA6Q8AVzIYzOUzItYr9depesu0tQYg
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10810"; a="372987969"
 X-IronPort-AV: E=Sophos;i="6.01,195,1684825200";
-   d="scan'208";a="372988001"
+   d="scan'208";a="372987969"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
   by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 23 Aug 2023 01:06:09 -0700
+ 23 Aug 2023 01:06:05 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10810"; a="766042651"
+X-IronPort-AV: E=McAfee;i="6600,9927,10810"; a="766042612"
 X-IronPort-AV: E=Sophos;i="6.01,195,1684825200";
-   d="scan'208";a="766042651"
+   d="scan'208";a="766042612"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
-  by orsmga008.jf.intel.com with ESMTP; 23 Aug 2023 01:06:07 -0700
+  by orsmga008.jf.intel.com with ESMTP; 23 Aug 2023 01:06:03 -0700
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: broonie@kernel.org,
 	tiwai@suse.com,
@@ -72,16 +71,15 @@ Cc: alsa-devel@alsa-project.org,
 	pierre-louis.bossart@linux.intel.com,
 	hdegoede@redhat.com,
 	Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: [PATCH 02/17] ALSA: pcm: Honor subformat when configuring substream
-Date: Wed, 23 Aug 2023 10:05:31 +0200
-Message-Id: <20230823080546.2224713-3-cezary.rojewski@intel.com>
+Subject: [PATCH 00/17] ALSA/ASoC: hda: Address format selection limitations
+ and ambiguity
+Date: Wed, 23 Aug 2023 10:05:29 +0200
+Message-Id: <20230823080546.2224713-1-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230823080546.2224713-1-cezary.rojewski@intel.com>
-References: <20230823080546.2224713-1-cezary.rojewski@intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: DKJPURGAETW2WAHWXR6KIIW2A7HIISF5
-X-Message-ID-Hash: DKJPURGAETW2WAHWXR6KIIW2A7HIISF5
+Message-ID-Hash: IZBGLPDXRBKI2XPIKD2KA7XVF32JAKFC
+X-Message-ID-Hash: IZBGLPDXRBKI2XPIKD2KA7XVF32JAKFC
 X-MailFrom: cezary.rojewski@intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -94,7 +92,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DKJPURGAETW2WAHWXR6KIIW2A7HIISF5/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IZBGLPDXRBKI2XPIKD2KA7XVF32JAKFC/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -103,38 +101,115 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Substream value is currently hardcoded to SNDRV_PCM_SUBFORMAT_STD.
-Update the constraint procedure so that subformat selection is not
-ignored.
+Patchset aims to address format selection restrictions present currently
+in the HDAudio library. Formats which we are concerned about are 20 and
+24 valid bits per sample within 32 bit depth container. One may identify
+them as S20_LE and S24_LE except that those, according to comments found
+in include/uapi/sound/asound.h, are for LSB-aligned scenarios. HDAudio
+streams expect MSB-aligned data, no matter if we are speaking of HOST
+(SDxFMT) or LINK (PPLCxFMT) side - chapter 4.5.1 of the public HDAudio
+specification. In short, S20_LE and S24_LE are invalid options.
 
-Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
----
- sound/core/pcm_native.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+Right now, given the implementation of snd_hdac_query_supported_pcm() 
+within sound/hda/hdac_device.c, even if a codec responds with: "I
+support all possible formats specified within HDAudio specification",
+there will be no option to open a 20/32 or 24/32 stream. The kernel will
+force the stream to be opened using the highest available bit depth.
 
-diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index 95fc56e403b1..01f2879ff8e2 100644
---- a/sound/core/pcm_native.c
-+++ b/sound/core/pcm_native.c
-@@ -2614,6 +2614,8 @@ static int snd_pcm_hw_constraints_complete(struct snd_pcm_substream *substream)
- 	int err;
- 	unsigned int mask = 0;
- 
-+	/* All PCMs support at least the default STD subformat. */
-+	hw->subformats |= PARAM_MASK_BIT(SNDRV_PCM_SUBFORMAT_STD);
-         if (hw->info & SNDRV_PCM_INFO_INTERLEAVED)
- 		mask |= PARAM_MASK_BIT(SNDRV_PCM_ACCESS_RW_INTERLEAVED);
-         if (hw->info & SNDRV_PCM_INFO_NONINTERLEAVED)
-@@ -2634,8 +2636,7 @@ static int snd_pcm_hw_constraints_complete(struct snd_pcm_substream *substream)
- 	if (err < 0)
- 		return err;
- 
--	err = snd_pcm_hw_constraint_mask(runtime, SNDRV_PCM_HW_PARAM_SUBFORMAT,
--					 PARAM_MASK_BIT(SNDRV_PCM_SUBFORMAT_STD));
-+	err = snd_pcm_hw_constraint_mask(runtime, SNDRV_PCM_HW_PARAM_SUBFORMAT, hw->subformats);
- 	if (err < 0)
- 		return err;
- 
+After discussing subject initially with Jaroslav and Takashi, suggestion
+was made to utilize 'subformat' option to address the problem. The
+eye-opening discussion begun much earlier though, in 2019 [1].
+
+Paired with PRs for alsa-utils [2] and alsa-lib [3].
+
+
+Flow of changes:
+
+The very first patch adds MSBITS subformat options to allow for granular
+20/32, 24/32 and 32/32 format selection. The next three make sure
+subformat is actually honored during runtime. Most of that code is based
+on format-related API.
+
+Follow up is upgrade to the hda stream-format interface - several
+functions are added to make the granular format selection simple in the
+HDAudio world. Core of the implementation is based on the existing
+snd_hdac_calc_stream_format(). The next ten patches are straightforward
+switch from one interface to another with cleanup of now-unsed function
+as a finishing touch.
+
+Last but not least - the avs-driver, on which the problem analyzed and
+debugged, is updated to no longer acknowledge S24_LE as a valid format
+option.
+
+Results with skylake-driver and snd_hda_intel show status quo on our
+RVPs. PR filed on SOF github shows promissing results too [4].
+
+Changes in v1:
+- fixed UBSAN due to missing snd_pcm_subformat_names[] entries for new
+  subformats
+- as HDMI stream capabilities are assigned on PCM open, patch 16/17 has
+  been updated to ignore such codecs for now. A separate patchset will
+  take care of this case
+- params_bps() reworded to snd_pcm_hw_params_bps()
+- fixed compilation issues in sof-driver, patch 13/17
+
+
+[1]: https://lore.kernel.org/alsa-devel/20190905053302.9262-1-pawel.harlozinski@linux.intel.com/
+[2]: https://github.com/alsa-project/alsa-utils/pull/228
+[3]: https://github.com/alsa-project/alsa-lib/pull/342
+[4]: https://github.com/thesofproject/linux/pull/4539
+
+Cezary Rojewski (17):
+  ALSA: pcm: Introduce MSBITS subformat interface
+  ALSA: pcm: Honor subformat when configuring substream
+  ALSA: hda: Honor subformat when querying PCMs
+  ASoC: pcm: Honor subformat when configuring runtime
+  ALSA: hda: Upgrade stream-format infrastructure
+  ALSA: hda: Switch to new stream-format interface
+  ALSA: hda/hdmi: Switch to new stream-format interface
+  ALSA: hda/ca0132: Switch to new stream-format interface
+  ASoC: codecs: hda: Switch to new stream-format interface
+  ASoC: codecs: hdac_hda: Switch to new stream-format interface
+  ASoC: codecs: hdac_hdmi: Switch to new stream-format interface
+  ASoC: Intel Skylake: Switch to new stream-format interface
+  ASoC: SOF: Intel: Switch to new stream-format interface
+  ASoC: Intel: avs: Switch to new stream-format interface
+  ALSA: hda: Drop snd_hdac_calc_stream_format()
+  ASoC: Intel: avs: Kill S24_LE in HDAudio streaming
+  ASoC: Intel: avs: Unhardcode HDAudio BE DAI drivers description
+
+ include/sound/hda_codec.h         |   5 +-
+ include/sound/hdaudio.h           |  12 +--
+ include/sound/pcm.h               |   8 ++
+ include/sound/pcm_params.h        |   2 +
+ include/sound/soc.h               |   1 +
+ include/uapi/sound/asound.h       |   5 +-
+ sound/core/pcm.c                  |   3 +
+ sound/core/pcm_lib.c              |  30 ++++++
+ sound/core/pcm_misc.c             |  23 +++++
+ sound/core/pcm_native.c           |   5 +-
+ sound/hda/hdac_device.c           | 153 +++++++++++++++++++++---------
+ sound/pci/hda/hda_codec.c         |   2 +
+ sound/pci/hda/hda_controller.c    |  10 +-
+ sound/pci/hda/patch_ca0132.c      |   3 +-
+ sound/pci/hda/patch_hdmi.c        |   6 +-
+ sound/soc/codecs/hda-dai.c        |   6 +-
+ sound/soc/codecs/hda.c            |   2 +
+ sound/soc/codecs/hdac_hda.c       |   8 +-
+ sound/soc/codecs/hdac_hdmi.c      |  10 +-
+ sound/soc/intel/avs/loader.c      |   4 +-
+ sound/soc/intel/avs/path.c        |   2 +-
+ sound/soc/intel/avs/pcm.c         |  50 ++++++++--
+ sound/soc/intel/avs/probes.c      |   3 +-
+ sound/soc/intel/avs/topology.c    |   9 +-
+ sound/soc/intel/skylake/skl-pcm.c |  11 ++-
+ sound/soc/soc-pcm.c               |  17 ++++
+ sound/soc/sof/intel/hda-dai-ops.c |  20 ++--
+ tools/include/uapi/sound/asound.h |   5 +-
+ 28 files changed, 310 insertions(+), 105 deletions(-)
+
+
+base-commit: e69dadf638e625a950b2b91591a47c9ae32a9d5e
 -- 
 2.25.1
 
