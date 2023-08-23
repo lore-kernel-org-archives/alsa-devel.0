@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01505EE49A3
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Aug 2023 01:33:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6CADBEE49A3
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Aug 2023 01:34:28 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3D8CB86F;
-	Wed, 23 Aug 2023 03:32:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3D8CB86F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 40F10868;
+	Wed, 23 Aug 2023 03:33:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 40F10868
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1692754384;
-	bh=0y79r99SXxLICHbaul7lXPP/jZiE/tBYaIwCAmlDHLU=;
+	s=default; t=1692754466;
+	bh=YriOxH+5QUYSmYKu1vIvAldIi8FTNn5iYysyBTlAnhY=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=tmAYC4vs81R2h+pwCLALdXR2HORiZx3DbObXyL6I5Di+/+nTATcn2OmPlz1CzX6bP
-	 fD4MRwifhOtGqC8N3YFZ58nib0gGUFR64+5X3Eo64JXU1KHzKlJDP5ByONdlvi/sxP
-	 cAfg/50ZfzkoNjXd6Djx18O+9iX+zaAvL0ngDjTI=
+	b=c8/UPiTghAWX3UQLoRnJR9jbvX037JG4Ted1DzwhasXVunzPkPJWIjSiAvywRViJP
+	 OTwvXpnvJ00/t6E2+Z8jT/nfdYfa1fpH+IM89elMgef8ypF0COZP02jjuuAvzvD2NC
+	 S195ifDRWeREdREzygIDYWY/wrLaK7UpTLZf0u/M=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 08F00F80551; Wed, 23 Aug 2023 03:32:13 +0200 (CEST)
+	id 2AA2DF800BF; Wed, 23 Aug 2023 03:33:16 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 84D4FF8023B;
-	Wed, 23 Aug 2023 03:32:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EEE2AF8023B;
+	Wed, 23 Aug 2023 03:33:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1004DF8022B; Wed, 23 Aug 2023 03:32:11 +0200 (CEST)
+	id 31049F80158; Wed, 23 Aug 2023 03:33:13 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
  [207.180.221.201])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7FEECF800D1
-	for <alsa-devel@alsa-project.org>; Wed, 23 Aug 2023 03:32:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7FEECF800D1
+	by alsa1.perex.cz (Postfix) with ESMTP id B8098F800BF
+	for <alsa-devel@alsa-project.org>; Wed, 23 Aug 2023 03:33:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B8098F800BF
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1692754329493961573-webhooks-bot@alsa-project.org>
-References: <1692754329493961573-webhooks-bot@alsa-project.org>
+In-Reply-To: <1692754391721709251-webhooks-bot@alsa-project.org>
+References: <1692754391721709251-webhooks-bot@alsa-project.org>
 Subject: aplaymidi causes pa_stream_writeable_size() failed - connection
  terminated
-Message-Id: <20230823013211.1004DF8022B@alsa1.perex.cz>
-Date: Wed, 23 Aug 2023 03:32:11 +0200 (CEST)
-Message-ID-Hash: 6XIRJDP7FT7FLGSSJ3HDPQRWEP4LBFK5
-X-Message-ID-Hash: 6XIRJDP7FT7FLGSSJ3HDPQRWEP4LBFK5
+Message-Id: <20230823013313.31049F80158@alsa1.perex.cz>
+Date: Wed, 23 Aug 2023 03:33:13 +0200 (CEST)
+Message-ID-Hash: NVAVLFWXIRTKUBP5AF27DOF7WUOHXYHE
+X-Message-ID-Hash: NVAVLFWXIRTKUBP5AF27DOF7WUOHXYHE
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -58,7 +58,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6XIRJDP7FT7FLGSSJ3HDPQRWEP4LBFK5/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NVAVLFWXIRTKUBP5AF27DOF7WUOHXYHE/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -82,7 +82,7 @@ Repeat steps 3 and 4 . The error won't occur.
 
 ![image](https://github.com/alsa-project/alsa-utils/assets/19564066/9bd6e993-be47-4715-8e6c-5f2a2242027c)
 
-This is not unique to aplaymidi, other ALSA clients may also cause this error.  in almost all other applications there is no error, such a web browsers as playing videos in Youtube, the audio playback just stops. some application can recover by readjusting the timeline and restarting playback. Some can only recover after closing the application.
+This is not unique to aplaymidi, other ALSA clients may also cause this error.  in almost all other applications there is no error, such a web browsers as playing videos in Youtube, the audio playback just stops. some applications , like browsers, can recover by readadjusting the timeline and restarting playback. Some can only recover after closing the application i.e mpv media player.
 
 Issue URL     : https://github.com/alsa-project/alsa-utils/issues/232
 Repository URL: https://github.com/alsa-project/alsa-utils
