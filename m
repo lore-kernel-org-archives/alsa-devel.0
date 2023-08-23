@@ -4,88 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 91200EE49B6
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Aug 2023 15:52:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 03F2BEE4993
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Aug 2023 15:52:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2ACF9844;
-	Wed, 23 Aug 2023 17:51:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2ACF9844
+	by alsa0.perex.cz (Postfix) with ESMTPS id 14E6584D;
+	Wed, 23 Aug 2023 17:51:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 14E6584D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1692805921;
-	bh=vsfzhzdNrsBf3g3KAWx7zyQxcJJxSXDU7xIHsixPApQ=;
-	h=Date:From:To:CC:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1692805960;
+	bh=ADd7oP1/d6c3aMgL14nq5nf0xJcSv5Z92YrLo2vXc+0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=AkH38t/gXizuu5+w0+SWkWAhckN2jIqa28ixdF9Lenu/AapxpC6g2iyvEf7zDXJZu
-	 qQ3rVQ5jQI+vlmCnOp0BY+2oiAArPjSdLi3wpYcaKR/XQ9fjfj0a+ZbpJncmZlWgZh
-	 64OsnYGIWkRgWnur7vb51vlAwKFyQPBbDxe3udTM=
+	b=NFxw2cxLLm3PQe7+O1+N0kmwRx/w/HOcY7DRGPK0Kd9ZBQn4zI471VXjwXegPcYYs
+	 WKehceOlaYuHRb5NRB0xrYdjXvN0BWBjcy5RqEEeBBCHokR7xMsT1EdAj8VbbZg8vh
+	 AXBGAeFxVgzKQ3+NQ5Mo0CvHxa5+UlJt0K3vTePc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7AF44F8022B; Wed, 23 Aug 2023 17:50:40 +0200 (CEST)
+	id 73729F80022; Wed, 23 Aug 2023 17:51:48 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 02B3BF80022;
-	Wed, 23 Aug 2023 17:50:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9F0DAF804DA;
+	Wed, 23 Aug 2023 17:51:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 45004F8023B; Wed, 23 Aug 2023 17:50:24 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 2AC37F8023B; Wed, 23 Aug 2023 17:51:32 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 9DE5EF80022
-	for <alsa-devel@alsa-project.org>; Wed, 23 Aug 2023 17:50:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9DE5EF80022
+	by alsa1.perex.cz (Postfix) with ESMTPS id B5159F80537
+	for <alsa-devel@alsa-project.org>; Wed, 23 Aug 2023 17:51:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B5159F80537
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=U9luYDnq
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-	by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id
- 37N4rX8H005941;
-	Wed, 23 Aug 2023 10:50:00 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	date:from:to:cc:subject:message-id:references:mime-version
-	:content-type:in-reply-to; s=PODMain02222019; bh=p89TY34g1oplKjR
-	zE1JAiK2b6jmwSGTB2Oin7Cm2PjQ=; b=U9luYDnqZSjiVqJNy+8qlu0MfSqX7RD
-	LtihomrKhOIjS8qLrpjqjm/sVCl5pyrMNrIAvplkpQMx5Hsb4HojpuDhBDdJ0iB7
-	eInFAltJgDqDgl+rM9ynbm4R/U1k7gkOWqAgWKQmg0/ef/5eo+Iamshc+TlNLegs
-	AB8oCl2TY7oSX7NJORdPH/oV7tmwgAfZRZeu9ICFzHkCOxzk/4Ty0Dz1NmQqh+56
-	mZFm7LZ8EPFHm5QdW7a9QfIuD9wad6zH9nm8tboVQya1BaU7DFk+qzq8cxls1WVv
-	IShPIMuUivtMwww6Izl1u27qUpodFLAuer1U26IKzIHPF/KcgOBh29w==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3sn21s17hu-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 23 Aug 2023 10:50:00 -0500 (CDT)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Wed, 23 Aug
- 2023 16:49:58 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.30 via Frontend Transport; Wed, 23 Aug 2023 16:49:58 +0100
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com
- [198.61.86.93])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 7F5E5357C;
-	Wed, 23 Aug 2023 15:49:58 +0000 (UTC)
-Date: Wed, 23 Aug 2023 15:49:58 +0000
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-To: <broonie@kernel.org>
-CC: <yung-chuan.liao@linux.intel.com>, <lgirdwood@gmail.com>,
-        <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>
-Subject: Re: [PATCH] ASoC: soc-pcm: Shrink stack frame for __soc_pcm_hw_params
-Message-ID: <20230823154958.GF103419@ediswmail.ad.cirrus.com>
-References: <20230823092113.788514-1-ckeepax@opensource.cirrus.com>
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=D0Nn8KkX
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 8E6A8629C7;
+	Wed, 23 Aug 2023 15:51:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5236C433C8;
+	Wed, 23 Aug 2023 15:51:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1692805870;
+	bh=ADd7oP1/d6c3aMgL14nq5nf0xJcSv5Z92YrLo2vXc+0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=D0Nn8KkX888lKSilqWK8lqv0YMZVwtNhyxd5E4r9zzLidxs9n0j9WZruAB3jWJYk/
+	 sy+wnYP2VA6UnkdZabC3WwRhIrBTTzPFjz2eTNSolzH4a/XbWhNOZw6reQsUBmpMqH
+	 aeOb2Nm4hLDHybFqD1sdMoB55lAbl/t51fgyc3cE2PyB7iDadIw7AajUVJyyLlKCdJ
+	 HLo+305rjRj94qQbddu33zj/xlfB6X1LvVbfBAt/OEkAxvoj04f+7w98UFTQofBmt7
+	 FOXIs6pTXQSJvEEyPr3v247l69Cay3XDuqCSo1ufbicFYsYUQKM9j5w8e13flHrGiH
+	 gMMiRiUlw3kng==
+Date: Wed, 23 Aug 2023 16:51:01 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Ajye Huang <ajye_huang@compal.corp-partner.google.com>
+Cc: linux-kernel@vger.kernel.org,
+	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+	Bard Liao <yung-chuan.liao@linux.intel.com>,
+	Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+	Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+	Akihiko Odaki <akihiko.odaki@gmail.com>,
+	Yong Zhi <yong.zhi@intel.com>, ye xingchen <ye.xingchen@zte.com.cn>,
+	"balamurugan . c" <balamurugan.c@intel.com>,
+	Libin Yang <libin.yang@intel.com>, Jaroslav Kysela <perex@perex.cz>,
+	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+	Cezary Rojewski <cezary.rojewski@intel.com>,
+	David Lin <CTLIN0@nuvoton.com>, Brent Lu <brent.lu@intel.com>,
+	Takashi Iwai <tiwai@suse.com>, Terry Cheong <htcheong@chromium.org>,
+	Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+	Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+	Gongjun Song <gongjun.song@intel.com>,
+	Arnd Bergmann <arnd@arndb.de>, apoorv <apoorv@intel.com>,
+	alsa-devel@alsa-project.org, kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH v1] Revert "ASoC: Intel: Add rpl_nau8318_8825 driver"
+Message-ID: <2ebbcb7a-bc0d-4f62-9f4b-706f0270b71a@sirena.org.uk>
+References: 
+ <20230823040755.2217942-1-ajye_huang@compal.corp-partner.google.com>
+ <dd6d51b0-cc60-4fb7-932d-1117143d1715@sirena.org.uk>
+ <CALprXBYxrwBW6HLP5MwYhFh1_Skei+pLbXd7yNAEuhLTQJLVPg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="gs3xv5excqw7RFrX"
 Content-Disposition: inline
-In-Reply-To: <20230823092113.788514-1-ckeepax@opensource.cirrus.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-GUID: oetx_UaDLQhyQRAX_wG_yKsCDhPE_Gr9
-X-Proofpoint-ORIG-GUID: oetx_UaDLQhyQRAX_wG_yKsCDhPE_Gr9
-X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: GYAD67IJPKDNMG3PPZP7MCONS425FH66
-X-Message-ID-Hash: GYAD67IJPKDNMG3PPZP7MCONS425FH66
-X-MailFrom: prvs=3599de430b=ckeepax@opensource.cirrus.com
+In-Reply-To: 
+ <CALprXBYxrwBW6HLP5MwYhFh1_Skei+pLbXd7yNAEuhLTQJLVPg@mail.gmail.com>
+X-Cookie: Some optional equipment shown.
+Message-ID-Hash: PSWJVYCR3WNYL2EAD5OAITR5WTLT3FNS
+X-Message-ID-Hash: PSWJVYCR3WNYL2EAD5OAITR5WTLT3FNS
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -97,7 +107,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GYAD67IJPKDNMG3PPZP7MCONS425FH66/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PSWJVYCR3WNYL2EAD5OAITR5WTLT3FNS/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -106,21 +116,32 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Wed, Aug 23, 2023 at 10:21:13AM +0100, Charles Keepax wrote:
-> Commit ac950278b087 ("ASoC: add N cpus to M codecs dai link support")
-> added an additional local params in __soc_pmc_hw_params, for the
-> CPU side of the DAI. The snd_pcm_hw_params struct is pretty large (604
-> bytes) and keeping two local copies of it makes the stack frame for
-> __soc_pcm_hw_params really large. As the two copies are only used
-> sequentially combine these into a single local variable to shrink the
-> stack frame.
-> 
-> Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-> ---
 
-Hmm... this might need a little more thought its not clear why this
-should change the frame size and it only seems to change the frame
-size on the ARM cross compiler I am using, not x86.
+--gs3xv5excqw7RFrX
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Thanks,
-Charles
+On Wed, Aug 23, 2023 at 11:45:09PM +0800, Ajye Huang wrote:
+
+> Please allow me to explain in more detail.
+> The 6b8b6892e434 should not be applied into file0yZ50U branch of broonie/ci.git.
+
+That's my CI tree, things in there aren't going anywhere unless they
+pass testing.
+
+--gs3xv5excqw7RFrX
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTmKuUACgkQJNaLcl1U
+h9Aj7Qf+OO9n7pFmDLqmTaZ+TUXsgXxHBU7c2buA+pHaL6GdSYX9Z4BSey6nKNpY
+Byr0X9nXoDSeVReO9AhK3aPz1FwlkR8oyI8OQgg1tvSm5eF8rvs7KXtBnwA1xvaA
+spaEizonya+TtLhmESmTyQPpxDXqdfscAwEDOgJh4I/lf6rQpcUPknPFrWXYaVJC
+9DScI9v70bDXBdEiM01pOe/59gtnfxoWtLu6svNGRNaRIJtLsrf5YZP4I1pquUIN
+U0dn9g2I9S0qL/g92/k+DgPszGBpKTzlRWUICmejKyqtjRJuxhdJorU3NArd0L4+
+DAXGQbW0vkxQyRszEJ2O4mjYJBnpLw==
+=Kv8M
+-----END PGP SIGNATURE-----
+
+--gs3xv5excqw7RFrX--
