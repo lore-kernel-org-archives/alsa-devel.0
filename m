@@ -4,128 +4,166 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3B33AC6FA8F
-	for <alsa-devel@archiver.kernel.org>; Thu, 24 Aug 2023 08:08:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D87A6C27C40
+	for <alsa-devel@archiver.kernel.org>; Thu, 24 Aug 2023 08:49:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BA7CB84C;
-	Thu, 24 Aug 2023 10:07:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BA7CB84C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0700C832;
+	Thu, 24 Aug 2023 10:48:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0700C832
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1692864506;
-	bh=5iy90UPBEpYr9Ks6Pdn0quIrhraOkWjQhbq0wpTYDBM=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	s=default; t=1692866981;
+	bh=r0olNdi1aH2hXazi4Rks7nyrQ8Dk+Kb0HzbgppfOuq4=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=OG0Ap0R9S2GwzAw6PPKatItx3P1srhDcsRsO+DrZCq8MaMFGTaBamlY65PZ1dUGx6
-	 8Rv1kjFR8kv2t6sTrgQJoWJO62HGE+GywAzloIFNTJIwDPWQnfgDB1OV9dforb3X9M
-	 ngVGfZNIfP773k/7af38IbBf5GUVacCD9fQ2Ht6s=
+	b=SiWpa5NM0mCsGNI79yoG4+Eh5i/bYiZtqY+tduPx0/N4B4pAv/+z7pgfjhpWm/n8r
+	 OPBR1Go87EbBeTtiiVFaxc9xcE6SpVAX+BLY3RXjqJKQR4pO3Fw2XDZprF5lshgwHx
+	 mfpJkoSfTN/T/LtD9kgSTCxAE//nqezT15KsN/7c=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 81699F8022B; Thu, 24 Aug 2023 10:07:01 +0200 (CEST)
+	id D3788F800F5; Thu, 24 Aug 2023 10:48:22 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 060FAF8022B;
-	Thu, 24 Aug 2023 10:07:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B3CADF80158;
+	Thu, 24 Aug 2023 10:48:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B88E4F80158; Thu, 24 Aug 2023 10:06:57 +0200 (CEST)
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net
- [217.70.183.195])
-	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+	id 00176F80158; Wed, 23 Aug 2023 12:16:40 +0200 (CEST)
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com
+ [IPv6:2a00:1450:4864:20::533])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E5DAAF800BF
-	for <alsa-devel@alsa-project.org>; Thu, 24 Aug 2023 10:06:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E5DAAF800BF
+	by alsa1.perex.cz (Postfix) with ESMTPS id 60136F800D1
+	for <alsa-devel@alsa-project.org>; Wed, 23 Aug 2023 12:16:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 60136F800D1
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=XizArq1A
-Received: by mail.gandi.net (Postfix) with ESMTPSA id A58C56000A;
-	Thu, 24 Aug 2023 08:06:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1692864415;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=5iy90UPBEpYr9Ks6Pdn0quIrhraOkWjQhbq0wpTYDBM=;
-	b=XizArq1AmE8u1PlEKB4g8NjhXu0zjN5QFi79zW24HbCXBErrvogWggSj9arbq+KhrFKB+O
-	uNFRNoDum6eiw6b1FusyrSJGtFu52oxgQ2aZxvU94bbYQ6VeF6C6+aaiIjsvth2eXnzCxv
-	fG9eW8n1Z7MjHVpGZKNTWsEMTPK6e/12/dzQCGsxQ9uVm1S5ddD2cTGo7DkevkDqa3KU8H
-	w1ZbBKh6080wCbuer4WK7KK05Jg/bzrwy8FVePWax3FVuMu3JvmQ+yeRvZQEooNr0+hv60
-	bNmbWEfq0tXu55UOuMr9+VZp+jY7MAOxARwAMNEhCJ6ymjR+mtZvO+UxG0Uu9Q==
-Date: Thu, 24 Aug 2023 10:06:48 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Rob Herring <robh@kernel.org>
-Cc: Suzuki K Poulose <suzuki.poulose@arm.com>, Mike Leach
- <mike.leach@linaro.org>, James Clark <james.clark@arm.com>, Leo Yan
- <leo.yan@linaro.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- Linus Walleij <linus.walleij@linaro.org>, Alexandre Torgue
- <alexandre.torgue@foss.st.com>, Bartosz Golaszewski <brgl@bgdev.pl>, Andy
- Shevchenko <andy@kernel.org>, Chen-Yu Tsai <wens@csie.org>, Jean Delvare
- <jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>, Emil Renner
- Berthing <kernel@esmil.dk>, Alexandre Belloni
- <alexandre.belloni@bootlin.com>, Jonathan Cameron <jic23@kernel.org>,
- Lars-Peter Clausen <lars@metafoo.de>, Corey Minyard <minyard@acm.org>,
- Mauro Carvalho Chehab <mchehab@kernel.org>, Thomas Bogendoerfer
- <tsbogend@alpha.franken.de>, Ulf Hansson <ulf.hansson@linaro.org>, Richard
- Weinberger <richard@nod.at>, Geert Uytterhoeven <geert+renesas@glider.be>,
- Magnus Damm <magnus.damm@gmail.com>, M ark Brown <broonie@kernel.org>,
- Thierry Reding <thierry.reding@gmail.com>, Bart Van Assche
- <bvanassche@acm.org>, Wim Van Sebroeck <wim@linux-watchdog.org>, Mathieu
- Poirier <mathieu.poirier@linaro.org>, Anshuman Khandual
- <anshuman.khandual@arm.com>, Sudeep Holla <sudeep.holla@arm.com>,
- coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-i2c@vger.kernel.org, linux-gpio@vger.kernel.org,
- linux-hwmon@vger.kernel.org, linux-i3c@lists.infradead.org,
- linux-iio@vger.kernel.org, openipmi-developer@lists.sourceforge.net,
- linux-media@vger.kernel.org, linux-mips@vger.kernel.org,
- linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
- alsa-devel@alsa-project.org, linux-scsi@vger.kernel.org,
- linux-watchdog@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: Drop remaining unneeded quotes
-Message-ID: <20230824100648.5b6e8b70@xps-13>
-In-Reply-To: <20230823183749.2609013-1-robh@kernel.org>
-References: <20230823183749.2609013-1-robh@kernel.org>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+ unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
+ header.s=google header.b=LO6EWlz7
+Received: by mail-ed1-x533.google.com with SMTP id
+ 4fb4d7f45d1cf-52a069edca6so4351955a12.3
+        for <alsa-devel@alsa-project.org>;
+ Wed, 23 Aug 2023 03:16:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692785793; x=1693390593;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=PkhmhhTWHkeRQp2PPUUxTCXWp1T0OTe7aVdp4fg5upo=;
+        b=LO6EWlz79jJJ9v/UQCg4OZKmPJO9+j6QHM1tngs1xZjP73VY2yTNyozqbCEjmHkgOJ
+         /I25kU9siRPAlFrz9dpUhrfTb7C4hK1nJcapsvmczx4ZFMRu+Id4skeNROqiKQ5j7fC1
+         ZyyN0rEkpFnovXZ/Y9YFpI+20NzFPUlKW8oib55lhQS8AfgOyDR1cSStWeGIk4mOE/f8
+         e8jk+ITZo8/vSFO72g6rBQt9NS7/HQQrfF/hlcYS6bEX+Ay7j17UK9K0sHHCYLh/aFQD
+         moxfheS5gy+jsjw+9CZRAFxsIYJOD76OVSKpIkrcpc8QGv+VCkZ89LVZ+6AtV/ge1cjC
+         e99w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692785793; x=1693390593;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=PkhmhhTWHkeRQp2PPUUxTCXWp1T0OTe7aVdp4fg5upo=;
+        b=HK+ZEQemh0yLfsbYko0JaIVJlMaeDfQ4phCyTHxp0sieH71X62zSdOTGgMfX3rjwPE
+         v3Oe+frTWAfUefAnP0sSqDryyv7Qe3SsDcg2eVx1SpPIxABTbSUOrwFunESdsP/9bo7l
+         BWRLpLU1bkgsv/gUpNlbSOKqUNLXEvNwIWMWhVOTCjElG5NZ8FkbLSuSUZfAT6Vm7Kbv
+         m/Bc/UseT0Qw+dtlvWDW/AyNPp+HsXYvNqXkj/nRsTCkDjLjXtSKxgDE3XGMh/a3qD6y
+         UzD46OCPSfNJjivY5isIC1y9Rn02mOMC4F9zviGiY24gSd5r838Ie7PYgdzJmIv6R+64
+         AUUA==
+X-Gm-Message-State: AOJu0YwHnfURXrSWlDEMTGgUOQo1DtrKSYsara2Xz1iwRr694C7FqUE9
+	7aIjmuhIpeP9lU9U6pPqivwfWw==
+X-Google-Smtp-Source: 
+ AGHT+IG4cl/3Fz/QSS2cl3WXZt2VKfaSb/kNTKY6FTxfUyaMgKaOK/vEjbIWyu1Ae6CwwBgVchcQyg==
+X-Received: by 2002:a05:6402:1614:b0:522:1e2f:fa36 with SMTP id
+ f20-20020a056402161400b005221e2ffa36mr8763754edv.28.1692785793520;
+        Wed, 23 Aug 2023 03:16:33 -0700 (PDT)
+Received: from [192.168.0.22] ([77.252.47.198])
+        by smtp.gmail.com with ESMTPSA id
+ i15-20020a50fc0f000000b0051e1660a34esm9063699edr.51.2023.08.23.03.16.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 23 Aug 2023 03:16:32 -0700 (PDT)
+Message-ID: <61b9e036-7864-65c6-d43b-463fff896ddc@linaro.org>
+Date: Wed, 23 Aug 2023 12:16:28 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v3 29/42] dt-bindings: rtc: Add ST M48T86
+Content-Language: en-US
+To: nikita.shubin@maquefel.me, Hartley Sweeten
+ <hsweeten@visionengravers.com>, Lennert Buytenhek <kernel@wantstofly.org>,
+ Alexander Sverdlin <alexander.sverdlin@gmail.com>,
+ Russell King <linux@armlinux.org.uk>, Lukasz Majewski <lukma@denx.de>,
+ Linus Walleij <linus.walleij@linaro.org>, Bartosz Golaszewski
+ <brgl@bgdev.pl>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
+ <sboyd@kernel.org>, Daniel Lezcano <daniel.lezcano@linaro.org>,
+ Thomas Gleixner <tglx@linutronix.de>, Alessandro Zummo
+ <a.zummo@towertech.it>, Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Wim Van Sebroeck <wim@linux-watchdog.org>, Guenter Roeck
+ <linux@roeck-us.net>, Sebastian Reichel <sre@kernel.org>,
+ Thierry Reding <thierry.reding@gmail.com>,
+ =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+ Mark Brown <broonie@kernel.org>, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Vinod Koul <vkoul@kernel.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Damien Le Moal <dlemoal@kernel.org>, Sergey Shtylyov <s.shtylyov@omp.ru>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>, Arnd Bergmann <arnd@arndb.de>,
+ Olof Johansson <olof@lixom.net>, soc@kernel.org,
+ Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, Andy Shevchenko <andy@kernel.org>,
+ Michael Peters <mpeters@embeddedTS.com>, Kris Bahnsen <kris@embeddedTS.com>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-clk@vger.kernel.org, linux-rtc@vger.kernel.org,
+ linux-watchdog@vger.kernel.org, linux-pm@vger.kernel.org,
+ linux-pwm@vger.kernel.org, linux-spi@vger.kernel.org,
+ netdev@vger.kernel.org, dmaengine@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-ide@vger.kernel.org,
+ linux-input@vger.kernel.org, alsa-devel@alsa-project.org
+References: <20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me>
+ <20230605-ep93xx-v3-29-3d63a5f1103e@maquefel.me>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230605-ep93xx-v3-29-3d63a5f1103e@maquefel.me>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: miquel.raynal@bootlin.com
-Message-ID-Hash: ADOQMDPU5YDE7HUEWHJZR4ED6MQ6IOOE
-X-Message-ID-Hash: ADOQMDPU5YDE7HUEWHJZR4ED6MQ6IOOE
-X-MailFrom: miquel.raynal@bootlin.com
+Content-Transfer-Encoding: 7bit
+X-MailFrom: krzysztof.kozlowski@linaro.org
+X-Mailman-Rule-Hits: max-recipients
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ administrivia; implicit-dest; max-size; news-moderation; no-subject; digests;
+ suspicious-header
+Message-ID-Hash: NPSQHKKNMKB6W4FJ3KFCNZ36HMOQXLME
+X-Message-ID-Hash: NPSQHKKNMKB6W4FJ3KFCNZ36HMOQXLME
+X-Mailman-Approved-At: Thu, 24 Aug 2023 08:48:17 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ADOQMDPU5YDE7HUEWHJZR4ED6MQ6IOOE/>
-List-Archive: <>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NPSQHKKNMKB6W4FJ3KFCNZ36HMOQXLME/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi Rob,
+On 20/07/2023 13:29, Nikita Shubin via B4 Relay wrote:
+> From: Nikita Shubin <nikita.shubin@maquefel.me>
+> 
+> Add YAML bindings for ST M48T86 / Dallas DS12887 RTC.
+> 
+> Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
 
-robh@kernel.org wrote on Wed, 23 Aug 2023 13:28:47 -0500:
 
-> Cleanup bindings dropping the last remaining unneeded quotes. With this,
-> the check for this can be enabled in yamllint.
->=20
-> Signed-off-by: Rob Herring <robh@kernel.org>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-Acked-by: Miquel Raynal <miquel.raynal@bootlin.com> # for mtd
+Best regards,
+Krzysztof
 
-Thanks,
-Miqu=C3=A8l
