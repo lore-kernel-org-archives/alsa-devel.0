@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4CB96EE49AD
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Aug 2023 01:54:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 59D82EE49A3
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Aug 2023 01:54:59 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 194A2846;
-	Wed, 23 Aug 2023 03:53:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 194A2846
+	by alsa0.perex.cz (Postfix) with ESMTPS id AF29C204;
+	Wed, 23 Aug 2023 03:54:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AF29C204
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1692755660;
-	bh=icdrrbxYYXvS0zKY+iInIrO/an1W2ufWtStCOCTUQUw=;
+	s=default; t=1692755697;
+	bh=VGpOiurFmJZZ5Kqg2lncgEjGNdYQaC/cxts9mNF5Tes=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=aGT5lvsvCr+6KhMpATDe3NqKK5At09IT/WLsHZMjy939gZkx+woOKcApHPi9S9dHG
-	 WZ7C3Y8ndS29p88imHepKeMf6erk7rzHTd25Msdrf+i4gLn2zYeCjz2QCeaVqMQUGe
-	 G4rVuDLIfUi4dwVCy2B1bGZqZ2euHD+NSbSsTu/c=
+	b=By/O5AcPMcZmrL9jhrgUhG5TmdZz9CLb4mUMwuFUlhCoJjFGScZFzWnSIaaRmVKRp
+	 vKIp4RqtLr1IAypeP0TkzaJR7fokarPx1107PegciHi7Ue/caqwaI9ycAB/Y5aRi3J
+	 +DLWzR6o7hHSBKZ44IkOvzrIEK9Iuk2mxaKDd1g0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BAC75F8055A; Wed, 23 Aug 2023 03:53:25 +0200 (CEST)
+	id 6C216F80158; Wed, 23 Aug 2023 03:54:07 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 47E0EF80537;
-	Wed, 23 Aug 2023 03:53:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2023CF804F3;
+	Wed, 23 Aug 2023 03:54:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9F711F80537; Wed, 23 Aug 2023 03:53:21 +0200 (CEST)
+	id 33B16F8022B; Wed, 23 Aug 2023 03:54:04 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
  [207.180.221.201])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3748EF8023B
-	for <alsa-devel@alsa-project.org>; Wed, 23 Aug 2023 03:53:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3748EF8023B
+	by alsa1.perex.cz (Postfix) with ESMTP id AE0CDF800D1
+	for <alsa-devel@alsa-project.org>; Wed, 23 Aug 2023 03:54:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AE0CDF800D1
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1692755600198002338-webhooks-bot@alsa-project.org>
-References: <1692755600198002338-webhooks-bot@alsa-project.org>
+In-Reply-To: <1692755642676728487-webhooks-bot@alsa-project.org>
+References: <1692755642676728487-webhooks-bot@alsa-project.org>
 Subject: aplaymidi causes pa_stream_writeable_size() failed - connection
  terminated
-Message-Id: <20230823015321.9F711F80537@alsa1.perex.cz>
-Date: Wed, 23 Aug 2023 03:53:21 +0200 (CEST)
-Message-ID-Hash: 7TSGVIJIQZOEIFIK7QKLWMROEUCCEWWJ
-X-Message-ID-Hash: 7TSGVIJIQZOEIFIK7QKLWMROEUCCEWWJ
+Message-Id: <20230823015404.33B16F8022B@alsa1.perex.cz>
+Date: Wed, 23 Aug 2023 03:54:04 +0200 (CEST)
+Message-ID-Hash: WBKJR5T3NNJ23PO5PMKRCN6RHT5XL2RM
+X-Message-ID-Hash: WBKJR5T3NNJ23PO5PMKRCN6RHT5XL2RM
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -58,7 +58,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7TSGVIJIQZOEIFIK7QKLWMROEUCCEWWJ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WBKJR5T3NNJ23PO5PMKRCN6RHT5XL2RM/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -75,7 +75,7 @@ How to reproduce:
 3. Insert a MIDI 2.0 UMP capable device  
    Note: A Focusrite 18i20 Gen 1 audio interface is used  for audio playback and set in Pavucontrol as "pro Audio"
 4. run aplaymidi -l or aplaymidi --version within about 30 seconds of plugging in the device. 
-   (if longer, the issue may not be reproduceable)
+   (if longer, the issue is not reproduceable)
 6. Audio stops and soon after the error appears stopping the video.  
    pavuctl screen goes blank and reinitializes itself.
 Unplug the device  
