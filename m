@@ -4,49 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2EA4BC88CB2
-	for <alsa-devel@archiver.kernel.org>; Thu, 24 Aug 2023 22:43:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D49D6C88CB2
+	for <alsa-devel@archiver.kernel.org>; Thu, 24 Aug 2023 22:45:04 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 288C383E;
-	Fri, 25 Aug 2023 00:42:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 288C383E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 38E5284C;
+	Fri, 25 Aug 2023 00:44:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 38E5284C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1692916998;
-	bh=aHh8Z3nd+yndis+WoMYg83bgrHr+LOyicbQvOJ90IWQ=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=lbzk/0gBzffrj9VHk42kt8ghzQ+Eq8GJcSYDqbyRDFphHbp9FleZ6m4il33S/ok7m
-	 v77KAlC2wj31y3Pvk5fCcqk/5ynNZuvkVeHyD9FCSxgZ090x/wqir1htozPr2yvSqM
-	 QgqlOFfQU7kaaxSnKip9NGHaedro0eBlePXUg/04=
+	s=default; t=1692917102;
+	bh=hQ1fgLiWLR8trUuCaYLEOSHIOYHu6hkDSCVcbXCSY+k=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=emKdanNCHOpLMi8P6/nx1KoSVCkzGYnASH2u8z4HnYnXJOKLoIB9BvQ29b28oLTzh
+	 o8v25kUYZ9BLIs9Xg4YcplhUbg7auRHaHgzx4EnxBRKHZTX9ePeM8m4O0Qs2k/VAgr
+	 hF8vLb+VL5rmf53ykeXliE/As9Ko4R3e7kraeegk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CBD68F800D1; Fri, 25 Aug 2023 00:42:06 +0200 (CEST)
+	id F30E4F804F3; Fri, 25 Aug 2023 00:43:44 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 712D2F800D1;
-	Fri, 25 Aug 2023 00:42:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 36F41F800BF;
+	Fri, 25 Aug 2023 00:43:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id F2E57F800D1; Fri, 25 Aug 2023 00:42:02 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
- [207.180.221.201])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8B6D3F800AE
-	for <alsa-devel@alsa-project.org>; Fri, 25 Aug 2023 00:41:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8B6D3F800AE
+	id A1140F800D1; Fri, 25 Aug 2023 00:43:40 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id AF347F800AE
+	for <alsa-devel@alsa-project.org>; Fri, 25 Aug 2023 00:43:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AF347F800AE
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=rrZfqM18
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 0A0576316F;
+	Thu, 24 Aug 2023 22:43:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4231C433C8;
+	Thu, 24 Aug 2023 22:43:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1692917015;
+	bh=hQ1fgLiWLR8trUuCaYLEOSHIOYHu6hkDSCVcbXCSY+k=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=rrZfqM18bVtzaiGaUuKP9b7xmnkXs8g8c3wSLjDJ9HzgvNmH1i2m8emrAWI22C21D
+	 FHYQa5K/Xvxz9/lDO7HHXUlWLdV4vvrN94IQYKumiqfmDGWUwd2FRaogmS2/L1lAyi
+	 /tjXD+/k1vOAQnMppF2o5IP53a9TV3sg6ePYqRXorT/qChWJ7NDY6HbXzwUDBLrvST
+	 E9uKOIjPBXdr59q5RMQ4zTSCflL+vR7vf98eVvLDQWmMa9ieWWehqU5DUZKQc7WHUH
+	 iOQYoLdmjWSg9RSQtPTAiQZ4EETCktewKG8lTbcdwEkJRUNOdtKrYgvLHhLL2M2sbt
+	 qPvBqcszAOpEA==
+From: Mark Brown <broonie@kernel.org>
+To: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, Weidong Wang <wangweidong.a@awinic.com>,
+ Arnd Bergmann <arnd@arndb.de>, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org,
+ Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+Cc: dan.carpenter@linaro.org, kernel-janitors@vger.kernel.org,
+ error27@gmail.com, kernel test robot <lkp@intel.com>
+In-Reply-To: <20230824191722.2701215-1-harshit.m.mogalapalli@oracle.com>
+References: <20230824191722.2701215-1-harshit.m.mogalapalli@oracle.com>
+Subject: Re: [PATCH next] ASoC: codecs: Fix error code in
+ aw88261_i2c_probe()
+Message-Id: <169291701152.2997200.14506800052724539808.b4-ty@kernel.org>
+Date: Thu, 24 Aug 2023 23:43:31 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1692916919651937962-webhooks-bot@alsa-project.org>
-References: <1692916919651937962-webhooks-bot@alsa-project.org>
-Subject: connecting second HDMI/DVI monitor mostly makes Samsung TV sound
- disappear
-Message-Id: <20230824224202.F2E57F800D1@alsa1.perex.cz>
-Date: Fri, 25 Aug 2023 00:42:02 +0200 (CEST)
-Message-ID-Hash: XZJ3F3XPHJ3Y26VOB4RR72JB33U2BKD2
-X-Message-ID-Hash: XZJ3F3XPHJ3Y26VOB4RR72JB33U2BKD2
-X-MailFrom: github@alsa-project.org
+X-Mailer: b4 0.13-dev-099c9
+Message-ID-Hash: T7WTJQNODNP3QW3NVBGWEER2PPXF7GI3
+X-Message-ID-Hash: T7WTJQNODNP3QW3NVBGWEER2PPXF7GI3
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -58,37 +90,47 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XZJ3F3XPHJ3Y26VOB4RR72JB33U2BKD2/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/T7WTJQNODNP3QW3NVBGWEER2PPXF7GI3/>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-lib issue #347 was opened from chemelnucfin:
+On Thu, 24 Aug 2023 12:17:10 -0700, Harshit Mogalapalli wrote:
+> Passing zero to dev_err_probe is a success which is incorrect when
+> i2c_check_functionality() fails.
+> 
+> Fix this by passing -ENXIO instead of zero to dev_err_probe().
+> 
+> 
 
-This is the same issue I posted in Pipewire: https://gitlab.freedesktop.org/pipewire/pipewire/-/issues/3420
-But I think this issue might be relevant here also so wanted to try here also.
+Applied to
 
-A brief summary is that my Samsung TV loses sound when I connect either HDMI to HDMI or HDMI to DVI to any of 2 Acer and 1 Samsung monitor, but an LG monitor has no problem.  The sound on the TV always comes back when I disconnect the (non-working) monitor.  
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-I have attached  _wpctl status_ for both when I connect LG and Acer monitors,
-[0824_acer_mon_wpctl_status.txt](https://github.com/alsa-project/alsa-lib/files/12433813/08241457_acer_mon_wpctl_status.txt)
-[0824_LG_mon_wpctl_status.txt](https://github.com/alsa-project/alsa-lib/files/12433814/08241457_LG_mon_wpctl_status.txt)
-and also _alsa_info.sh_ for both monitors.  
-[0824_acer_mon_alsa.txt](https://github.com/alsa-project/alsa-lib/files/12433816/0824_alsa_acer_mon.txt)
-[0824_LG_mon_alsa.txt](https://github.com/alsa-project/alsa-lib/files/12433815/0824_alsa_LG_mon.txt)
+Thanks!
 
-Please let me know if you need any other information or if there are better places for help to investigate the issue.
+[1/1] ASoC: codecs: Fix error code in aw88261_i2c_probe()
+      commit: 8886e1b03669c498f7a24bc5e483f46db5e81f82
 
-A brief search of HDMI showed this 
-https://github.com/alsa-project/alsa-lib/issues/95
-and 3 other issues which seem less relevant
-https://github.com/alsa-project/alsa-lib/issues/233
-https://github.com/alsa-project/alsa-lib/issues/209
-https://github.com/alsa-project/alsa-lib/issues/112
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-Issue URL     : https://github.com/alsa-project/alsa-lib/issues/347
-Repository URL: https://github.com/alsa-project/alsa-lib
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
