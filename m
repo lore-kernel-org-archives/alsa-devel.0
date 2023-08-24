@@ -4,82 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 83E24EE49AB
-	for <alsa-devel@archiver.kernel.org>; Thu, 24 Aug 2023 22:38:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 33213C6FA8F
+	for <alsa-devel@archiver.kernel.org>; Thu, 24 Aug 2023 22:39:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C33A5847;
-	Fri, 25 Aug 2023 00:37:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C33A5847
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6A217A4B;
+	Fri, 25 Aug 2023 00:38:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6A217A4B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1692916719;
-	bh=qfO43KuY9H4FZIv5b2C4WjeQJ8C9kmFK9DgPZV/NQD8=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	s=default; t=1692916739;
+	bh=4IaqTr1n49PG1aUlZXm7H7/81HA3rJ61LtRLVKDZ3H0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=CH6jISU5k8Y1ZJh8BhSCyuNrvex6EVYqsj48Uo6oiyZRAd1KYI5BBYe9Ic3N+q9wG
-	 HSPpM15LGrSG4qweElLyINBo+pftfMV2+2g8135Mu2i+yfI3gAHJXvkgLY7LksB4JD
-	 dmk5iQ1FaAS2bI9UMr7Kk+qDRHQeTA27t6LkccxA=
+	b=P/FBIeXj8CelXV7O2UOEqrfEwiyj+buVlDnR9zMLrg3Tliqdz1tRY3epSraeAtYVt
+	 tTLwso703VGSERvkmZoUenrtZRhWbuQCALh2ZabkK9BO7F6wwCWYd0maYHsWpikBQw
+	 +xjo9znSmqYT26tCL72CazB6uhw/YJpZ/8GqR33Y=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1C2EBF804F3; Thu, 24 Aug 2023 23:19:54 +0200 (CEST)
+	id 1F8A5F80557; Fri, 25 Aug 2023 00:38:08 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 86666F80074;
-	Thu, 24 Aug 2023 23:19:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BF028F80536;
+	Fri, 25 Aug 2023 00:38:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D4288F80158; Thu, 24 Aug 2023 23:19:50 +0200 (CEST)
-Received: from madras.collabora.co.uk (madras.collabora.co.uk
- [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+	id 6AF70F8023B; Fri, 25 Aug 2023 00:38:06 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 74C1CF800BF
-	for <alsa-devel@alsa-project.org>; Thu, 24 Aug 2023 23:19:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 74C1CF800BF
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=collabora.com header.i=@collabora.com
- header.a=rsa-sha256 header.s=mail header.b=T72ehi/8
-Received: from [192.168.1.90] (unknown [81.18.92.207])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	(Authenticated sender: cristicc)
-	by madras.collabora.co.uk (Postfix) with ESMTPSA id D8B6D6607273;
-	Thu, 24 Aug 2023 22:19:36 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1692911977;
-	bh=qfO43KuY9H4FZIv5b2C4WjeQJ8C9kmFK9DgPZV/NQD8=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=T72ehi/8b7imqbsQe/GvyYm6S0FEWEJuHY/frQC5n0Q3vL2qZ3w0Lvw7nJnvxh8aJ
-	 dFsTuWStzmmMDPGOsfVyk/ORGDsfgN0+Q3susU7avvBRP5kuj+W8lwsRCXXkMVh28r
-	 q8L5q2X35Xt1Dyt1fdzY7qQUFRiAi1QzwLiX/QanzM4WwQSGI5c5Bd1eU+b8IjoLgk
-	 1VA4KvsqUOLYF7ZTEs+JSqIxH41IDMJ2hTgaJn3XwHaIMcl9QMBmykKSkf5HMP+HzT
-	 2QbLQeKJ17ipR5urei0Ya69IvC0rep7YwfGktfWGi3CyT75s82lW0if9FiqwXswwU6
-	 4pMvpqehKLO7w==
-Message-ID: <405e420d-ba17-4a20-9cec-11e821b73bbf@collabora.com>
-Date: Fri, 25 Aug 2023 00:19:34 +0300
+	by alsa1.perex.cz (Postfix) with ESMTPS id 44564F800BF
+	for <alsa-devel@alsa-project.org>; Fri, 25 Aug 2023 00:38:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 44564F800BF
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=L5Mb6GTA
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id F28C06427F;
+	Thu, 24 Aug 2023 22:38:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E76B5C433C8;
+	Thu, 24 Aug 2023 22:37:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1692916680;
+	bh=4IaqTr1n49PG1aUlZXm7H7/81HA3rJ61LtRLVKDZ3H0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=L5Mb6GTAf7Ji93VgzSgH2IL7EHry//x8NPsLYDh3uxBlIcsZtJA/hyYRIl/115JnH
+	 9300jBxEWknj6HHBGqBmRUAv4jJz1Y0pl1Uu4AwUyWn+Y0cDNgbDDkfB3ScB2J6Psd
+	 BJ14Q07i2o6DQzoNMBRyw9cKRJqrOJufZE7GlvJUnHThlhNjpecxD1HG+l9QDFCryn
+	 yvKX1qDOI5krTHL/1rIv2wsk0OKMBjigSDmOWxGEBTe4f9WU5naGWN21U0Dzy/IriS
+	 bYyel3FIFZJ6TpplsA4y/twN54bc6afVuvHvNCAgW2U1AHyVO4zBblCG+U3hko0MDx
+	 3an4HUejhh78Q==
+Date: Thu, 24 Aug 2023 23:37:56 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Cezary Rojewski <cezary.rojewski@intel.com>
+Cc: tiwai@suse.com, perex@perex.cz, alsa-devel@alsa-project.org,
+	amadeuszx.slawinski@linux.intel.com,
+	pierre-louis.bossart@linux.intel.com, hdegoede@redhat.com
+Subject: Re: [PATCH 17/17] ASoC: Intel: avs: Unhardcode HDAudio BE DAI
+ drivers description
+Message-ID: <ZOfbxARqVr8nbQI3@finisterre.sirena.org.uk>
+References: <20230823080546.2224713-1-cezary.rojewski@intel.com>
+ <20230823080546.2224713-18-cezary.rojewski@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ASoC: soc-core.c: Do not error if a DAI link component is
- not found
-Content-Language: en-US
-To: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- kernel@collabora.com
-References: <20230824193837.369761-1-cristian.ciocaltea@collabora.com>
- <ZOe36EyxNQuz08qt@finisterre.sirena.org.uk>
-From: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
-In-Reply-To: <ZOe36EyxNQuz08qt@finisterre.sirena.org.uk>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: YWXNVTZKXNQZ7YN5IWMCSAFL5BAJ3OWT
-X-Message-ID-Hash: YWXNVTZKXNQZ7YN5IWMCSAFL5BAJ3OWT
-X-MailFrom: cristian.ciocaltea@collabora.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="9bFgNhs+XvL4Esnw"
+Content-Disposition: inline
+In-Reply-To: <20230823080546.2224713-18-cezary.rojewski@intel.com>
+X-Cookie: Give him an evasive answer.
+Message-ID-Hash: 5BL5DTQ6MBIYE527LVFSCAFMXD6LXMZW
+X-Message-ID-Hash: 5BL5DTQ6MBIYE527LVFSCAFMXD6LXMZW
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -91,7 +90,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YWXNVTZKXNQZ7YN5IWMCSAFL5BAJ3OWT/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5BL5DTQ6MBIYE527LVFSCAFMXD6LXMZW/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -100,29 +99,32 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 8/24/23 23:04, Mark Brown wrote:
-> On Thu, Aug 24, 2023 at 10:38:37PM +0300, Cristian Ciocaltea wrote:
->> A recent cleanup of soc_dai_link_sanity_check() is responsible for
->> generating lots of confusing errors before returning -EPROBE_DEFER:
->>
->>   acp5x_mach acp5x_mach.0: ASoC: Component acp5x_i2s_dma.0 not found for link acp5x-8821-play
->>   [...]
->>   acp5x_mach acp5x_mach.0: ASoC: Component spi-VLV1776:00 not found for link acp5x-CS35L41-Stereo
->>   [...]
->>   acp5x_mach acp5x_mach.0: ASoC: Component spi-VLV1776:01 not found for link acp5x-CS35L41-Stereo
->>
->> Switch back to the initial behaviour of logging those messages on
->> KERN_DEBUG level instead of KERN_ERR.
->>
->> While at it, use the correct form of the verb in 'component_not_find'
->> label.
-> 
-> Don't include random extra stuff in patches unless there is substantial
-> overlap, send one change per patch.
 
-I submitted v2 with the unrelated changes moved to a separate patch:
+--9bFgNhs+XvL4Esnw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-https://lore.kernel.org/all/20230824211241.388201-1-cristian.ciocaltea@collabora.com/
+On Wed, Aug 23, 2023 at 10:05:46AM +0200, Cezary Rojewski wrote:
 
-Thanks,
-Cristian
+> To not expose more than in fact is supported by the codec, update CPU
+> DAI initialization procedure to rely on codec capabilities instead of
+> hardcoding them. This includes subformat which is currently ignored.
+
+Acked-by: Mark Brown <broonie@kernel.org>
+
+--9bFgNhs+XvL4Esnw
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTn28MACgkQJNaLcl1U
+h9C9gQf/adiE9gXr+CyAhDCo7/UQzND6p+ckaDhzUdCXrJJO2xO6SW3EDRikRv1O
+LNwnPyXHfmHThx/J3rnxBdBgLpJ32PiC092r/Jr6CYtAYQKuSP5kiARrHYY3GAAE
+WwgmucWsuJuPXIKpJtfhvvRK0TywHaBdM61mJz0+ukMhWaAbJ7IuwXAbrX4LbQaW
+FOxC5t1/+0q0S2UHdOnxQqrvx+AG14DWy89ADed9EVNf8rfRKmLtO2eCHJijd7yG
+BEyDQYnMl4QZ/VfY8vCTl2Yiwo2524Ql+6J7yqp1HzR1Zvv1EuBATuThgR63p4jT
+ed/a8iiPEG+TkAOp0pTJgAKwC1Jv1A==
+=TIf9
+-----END PGP SIGNATURE-----
+
+--9bFgNhs+XvL4Esnw--
