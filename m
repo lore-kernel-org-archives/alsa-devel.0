@@ -4,90 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D151EC27C40
-	for <alsa-devel@archiver.kernel.org>; Thu, 24 Aug 2023 09:35:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 836F7C27C40
+	for <alsa-devel@archiver.kernel.org>; Thu, 24 Aug 2023 10:40:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6218F84B;
-	Thu, 24 Aug 2023 11:34:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6218F84B
+	by alsa0.perex.cz (Postfix) with ESMTPS id B3D3484D;
+	Thu, 24 Aug 2023 12:39:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B3D3484D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1692869712;
-	bh=NfKMK29NTaMPO5N6uvEXV29RRM9fVEXRf98uOuEoX8M=;
-	h=Date:From:To:CC:Subject:References:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=e3bhXxLoIXGX8Zsw32aMb5luISnie0unmsoI/xlwRwFh+XVYmI8tZeOCZp5lybo6l
-	 iKCJPM2i2D7h6XNtBacswiGz8QcsUQylhcKXD7jBXTntoJr24kEBp5dfuJBvQKb/0i
-	 raZyXP0mvqnzob4a13Lr3BgPyFNkTKOrRk3BpllU=
+	s=default; t=1692873639;
+	bh=0UGk2E3SRkllHFHIiA0vP4H3ajfpwvBYVDAEp1ZR5TI=;
+	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=Ib76+dekaAwTrjgQ/Xr6SuawrnNOcvd95n3PDHLgIzhsFxsp+uci0A7RlUgyXjygJ
+	 kvbNMd28U86QzzjEgBP97TlJhJi4/1B5vTdM94HmCSgwfXGv8Ii1fxGBMEPqPqgJEB
+	 TwRh0d6CTw0hOZ7YjGWVv0QIH8OVktDhJpALM4A4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A4F11F80536; Thu, 24 Aug 2023 11:33:47 +0200 (CEST)
+	id 64A31F804F3; Thu, 24 Aug 2023 12:39:19 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id EB45CF80074;
-	Thu, 24 Aug 2023 11:33:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BC019F80158;
+	Thu, 24 Aug 2023 12:39:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D5867F80158; Thu, 24 Aug 2023 11:33:41 +0200 (CEST)
+	id 86E86F80158; Thu, 24 Aug 2023 12:39:13 +0200 (CEST)
 Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 9DB8AF80074
-	for <alsa-devel@alsa-project.org>; Thu, 24 Aug 2023 11:33:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9DB8AF80074
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9A7ECF800AE
+	for <alsa-devel@alsa-project.org>; Thu, 24 Aug 2023 12:39:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9A7ECF800AE
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=Sr/2pF9o
+ header.s=PODMain02222019 header.b=piY2l1iK
 Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
 	by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id
- 37O6ESXF003405;
-	Thu, 24 Aug 2023 04:33:30 -0500
+ 37O6M19d012786;
+	Thu, 24 Aug 2023 05:39:04 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	date:from:to:cc:subject:message-id:references:mime-version
-	:content-type:in-reply-to; s=PODMain02222019; bh=kWpJQzDGwAnlfgn
-	+sTybVAJr4ABpT7SvjKUSqMojvI4=; b=Sr/2pF9oPs9sPzgX32ihC+lqkVYp9ET
-	vzY17wJ1ReH8AEJz21Q6miuDKNoj0HA4BFEz3DRzZenLsDG3HCcyETWrnRyUwKxO
-	dQZvp07dD6PlEwjyqQEagUoq4PRJIcIo7kxDb64XrDW8cFUlFh0c8aiIB7YPYATx
-	W6f3K6uQb4EPy+CXHNj34WU0Mk/oD1u3/27UhL4IVQFAWUie2wjBonJ0kD2KHDOF
-	Nc6+hFHHfQZ0H19z7MVb2W91reg9EdzZv+93ggtn2qnvH4aCcM8vt3OfBAO8KeEc
-	1rDXEPielKhwDAY2Dbod2lsMRcjg5qORe6oWER9wUA+BFKtHWwdGfLA==
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=PODMain02222019; bh=L
+	HOtCYFnfnuUa5woTMyCEd1kylTAIWtI73sOxSlodvA=; b=piY2l1iKNCq7/SuT2
+	KROqiINDhkcPYoHw1pcVP7eW536rqErhA+rkvi9RJvsiHJgoMyR6Qghxaxt4wyQj
+	dpGTjjNR80fibbW109mk/TIjwP8ulxUWoo3iFHKq3goOwS4OLPa4Q6O81rQRIta7
+	uTQu+Kuz75whcdEx03piXm5+DOjF1c4GeAUjyZ/qT+UNK6Jt4qbAIhmmluGfdZGn
+	o/J+/wDucq/I3VuzEfxeNrUhVaDmhp8c2FNBMSJ2/DyMLEKQXMYWBDuPohnAHWo2
+	FRBs2IYUKAIgB69R/qMTJx/BD7uichCuLASLKrXAFRZCFBOaqwxt+hQapklOhZ3H
+	kdSSw==
 Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3sp1rbg5yr-1
+	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3sp1rbg87q-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 24 Aug 2023 04:33:30 -0500 (CDT)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
+	Thu, 24 Aug 2023 05:39:04 -0500 (CDT)
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Thu, 24 Aug
- 2023 10:33:28 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.30 via Frontend
- Transport; Thu, 24 Aug 2023 10:33:28 +0100
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com
- [198.61.86.93])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 25B5A11CD;
-	Thu, 24 Aug 2023 09:33:28 +0000 (UTC)
-Date: Thu, 24 Aug 2023 09:33:28 +0000
+ 2023 11:39:02 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.30 via Frontend Transport; Thu, 24 Aug 2023 11:39:02 +0100
+Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 2A16B11CD;
+	Thu, 24 Aug 2023 10:39:02 +0000 (UTC)
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
-To: Mark Brown <broonie@kernel.org>
-CC: <yung-chuan.liao@linux.intel.com>, <lgirdwood@gmail.com>,
-        <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>
-Subject: Re: [PATCH] ASoC: soc-pcm: Shrink stack frame for __soc_pcm_hw_params
-Message-ID: <20230824093328.GH103419@ediswmail.ad.cirrus.com>
-References: <20230823092113.788514-1-ckeepax@opensource.cirrus.com>
- <20230823154958.GF103419@ediswmail.ad.cirrus.com>
- <df2be4c7-f3ae-41dc-b2c2-3128a1ecc684@sirena.org.uk>
- <20230823163935.GG103419@ediswmail.ad.cirrus.com>
+To: <broonie@kernel.org>
+CC: <lgirdwood@gmail.com>, <alsa-devel@alsa-project.org>,
+        <patches@opensource.cirrus.com>
+Subject: [PATCH] ASoC: cs42l43: Use new-style PM runtime macros
+Date: Thu, 24 Aug 2023 11:39:02 +0100
+Message-ID: <20230824103902.1606288-1-ckeepax@opensource.cirrus.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20230823163935.GG103419@ediswmail.ad.cirrus.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-ORIG-GUID: ijve-2W7oAiZH0bdG5PFHwyFGejKWbU6
-X-Proofpoint-GUID: ijve-2W7oAiZH0bdG5PFHwyFGejKWbU6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: 5YxsUykVgp2KaEJBbiOrP6gis2VuULOK
+X-Proofpoint-GUID: 5YxsUykVgp2KaEJBbiOrP6gis2VuULOK
 X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: M65C74OSIDJCO6XC4GK5LQO5S56CXO3M
-X-Message-ID-Hash: M65C74OSIDJCO6XC4GK5LQO5S56CXO3M
+Message-ID-Hash: HFQOJIVDEARQUNYAVRLV4XZ2ROWMA5GN
+X-Message-ID-Hash: HFQOJIVDEARQUNYAVRLV4XZ2ROWMA5GN
 X-MailFrom: prvs=3600b2e858=ckeepax@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -100,51 +94,47 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/M65C74OSIDJCO6XC4GK5LQO5S56CXO3M/>
-List-Archive: <>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HFQOJIVDEARQUNYAVRLV4XZ2ROWMA5GN/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Wed, Aug 23, 2023 at 04:39:35PM +0000, Charles Keepax wrote:
-> On Wed, Aug 23, 2023 at 05:19:31PM +0100, Mark Brown wrote:
-> > On Wed, Aug 23, 2023 at 03:49:58PM +0000, Charles Keepax wrote:
-> > > On Wed, Aug 23, 2023 at 10:21:13AM +0100, Charles Keepax wrote:
-> > > > Commit ac950278b087 ("ASoC: add N cpus to M codecs dai link support")
-> > > > added an additional local params in __soc_pmc_hw_params, for the
-> > > > CPU side of the DAI. The snd_pcm_hw_params struct is pretty large (604
-> > > > bytes) and keeping two local copies of it makes the stack frame for
-> > > > __soc_pcm_hw_params really large. As the two copies are only used
-> > > > sequentially combine these into a single local variable to shrink the
-> > > > stack frame.
-> > 
-> > > Hmm... this might need a little more thought its not clear why this
-> > > should change the frame size and it only seems to change the frame
-> > > size on the ARM cross compiler I am using, not x86.
-> > 
-> > Isn't that just going to be a function of the compiler being smart
-> > enough to work out that there aren't overlapping uses of the two
-> > variables and they can share stack space?  There's no reason not to help
-> > it figure that out.
-> 
-> Yeah I think my only concern here was I no longer was certain I
-> understood what was happening. I don't think the patch can do any
-> harm, well except for the names being slightly less clear in the
-> code. It is starting to look like the mostly comes down to the
-> compiler being smart enough, although both were GCC in my case
-> so the difference is still a little surprising to me.
-> 
+Update to the newer style PM runtime macros, no functional change.
 
-Ah ok I see what is going on here, it depends on if you have
--Os or -O2 set. -O2 will merge the two variables and give a
-smaller stack frame, -Os does not.
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+---
+ sound/soc/codecs/cs42l43.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-I would be inclined to say merge the patch, since it does help
-if some is trying to size optimise their kernel, but I don't
-feel strongly. Also I could respin to put this in the commit
-message if people prefer?
+diff --git a/sound/soc/codecs/cs42l43.c b/sound/soc/codecs/cs42l43.c
+index 18178ffa82f21..24e718e511746 100644
+--- a/sound/soc/codecs/cs42l43.c
++++ b/sound/soc/codecs/cs42l43.c
+@@ -2238,7 +2238,7 @@ static int cs42l43_codec_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static int __maybe_unused cs42l43_codec_runtime_resume(struct device *dev)
++static int cs42l43_codec_runtime_resume(struct device *dev)
+ {
+ 	struct cs42l43_codec *priv = dev_get_drvdata(dev);
+ 
+@@ -2250,9 +2250,8 @@ static int __maybe_unused cs42l43_codec_runtime_resume(struct device *dev)
+ 	return 0;
+ }
+ 
+-static const struct dev_pm_ops cs42l43_codec_pm_ops = {
+-	SET_RUNTIME_PM_OPS(NULL, cs42l43_codec_runtime_resume, NULL)
+-};
++DEFINE_RUNTIME_DEV_PM_OPS(cs42l43_codec_pm_ops, NULL,
++			  cs42l43_codec_runtime_resume, NULL);
+ 
+ static const struct platform_device_id cs42l43_codec_id_table[] = {
+ 	{ "cs42l43-codec", },
+-- 
+2.30.2
 
-Thanks,
-Charles
