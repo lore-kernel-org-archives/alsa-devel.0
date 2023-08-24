@@ -4,108 +4,101 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EEF63C71145
-	for <alsa-devel@archiver.kernel.org>; Thu, 24 Aug 2023 07:37:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E2FD6C7113B
+	for <alsa-devel@archiver.kernel.org>; Thu, 24 Aug 2023 07:52:34 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 33652857;
-	Thu, 24 Aug 2023 09:36:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 33652857
+	by alsa0.perex.cz (Postfix) with ESMTPS id 769FB845;
+	Thu, 24 Aug 2023 09:51:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 769FB845
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1692862656;
-	bh=Ee8xB/mAWkog/RCrEV39tKWALqybfTmeX+s4iTp2Mm4=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=BxHIhuX9WpySsIRR3dAp5tc94Vwf5a9QDhoJz4bfQ3ROyWaZqOtHkOhdoxbM6kbTV
-	 kgL7B3gQUEWVT87vwQJ764z8Gnfs3d6+WHdicEfwI43qkOCxCVu0U/j9joFLJljk8V
-	 xjt0hetJoGsOy8pUdw/j/BNzNmzxH5c4NX1sMck8=
+	s=default; t=1692863551;
+	bh=B1yapP3h+jWniHJCh61cwzsNRQsPchep6rtCESVYqhw=;
+	h=From:To:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=VyeThqxDJKUq0i/k67pvCtf3Wez3c8wbW1oNLIJU1cBgnkHDuMwINFZpFAKHafsuZ
+	 bZRNuuqlVAXP6WsHc0KHpK55bES67xf+HuQt5SqkELwL36EzkumA9oO8xrMydViLth
+	 iqUCBCOWRGEaYR2/olIQbYhFaxTcZEKYjsAMOles=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A2AF1F80616; Thu, 24 Aug 2023 09:32:48 +0200 (CEST)
+	id 0B970F800BF; Thu, 24 Aug 2023 09:51:18 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9D217F80614;
-	Thu, 24 Aug 2023 09:32:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 41C28F800BF;
+	Thu, 24 Aug 2023 09:51:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 23F99F80158; Wed, 23 Aug 2023 10:36:11 +0200 (CEST)
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com
- [IPv6:2a00:1450:4864:20::12c])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	id B9E18F8025F; Thu, 24 Aug 2023 09:51:14 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id EFBDAF800BF
-	for <alsa-devel@alsa-project.org>; Wed, 23 Aug 2023 10:36:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EFBDAF800BF
+	by alsa1.perex.cz (Postfix) with ESMTPS id EA574F800F5
+	for <alsa-devel@alsa-project.org>; Thu, 24 Aug 2023 09:51:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EA574F800F5
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20221208 header.b=OxuoON8T
-Received: by mail-lf1-x12c.google.com with SMTP id
- 2adb3069b0e04-4ffa94a7a47so6883795e87.1
-        for <alsa-devel@alsa-project.org>;
- Wed, 23 Aug 2023 01:36:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692779758; x=1693384558;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=5Cz/UQa94Zs7JAEORd9wmD8MG+lN6decCZtyFpWABzc=;
-        b=OxuoON8Tzug6+Al/lcL/0zc7DHtoK0vs3Ip8ObMRm6GNmCQQdPEv/bj3GbVPEO0AYi
-         GvA649rwT+FAlPACHGAfl8fvFN6b44B7SIYXOVG0WJ+3GqpgqKcf5vqKM7hQPR/JdQK+
-         K2sdNcUyo/Q1X2xEnoADrzzgMRIJL3Ijkd9AjOmGDdIgTigjXr8jqSfa6YVADRRKufRm
-         boZPu6cYuu6Cn6/b2lcSQgQPOr3J3IaGb5/vRYFDe23tn+a2IvSPQT5HFNI9l4zyq6ks
-         W5kccnIjo+Y/1iW13/tzTWIVgUf3mbMj5nwZEu8cHEU67fO95+IJO1yl+UTgK+HbqDqM
-         /FUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692779758; x=1693384558;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5Cz/UQa94Zs7JAEORd9wmD8MG+lN6decCZtyFpWABzc=;
-        b=U+5tAwNX3FUQtvMTsayPDmmK3I4+qtGaaR1OhzXdDE5ye35A6KImRXJteSbm5v5U4T
-         zwPT7CMflSvrGGb0nv//L56YBfhHim82b1eFmpPJ+o7cTW+GatdnvK3/swW2BFUEwYEz
-         zSlvW62SGFkQPakn9HrZsHZXQoql9rJ2DGelkg/t4t+7poIWqv71+Diibsa8Qi301xB9
-         iJQiNijHcPqNPxqWI9fSiV92WosSlDPZcOW7lWa+8Af/Ib39x6sE5XJPbpCxVL4S4vJU
-         23XWOtU2eBRI76Eq3IaijI9HBW4M1yl2RtTgg4xO+LYKmsusB8rWIlDSjhoM1dW+EtQD
-         ISmQ==
-X-Gm-Message-State: AOJu0YyP4YP6lyCUduVw/MqGLdFe7PluXSEn+SXorvJJOFKOozXat/f0
-	nGMFe+WFZ3kV+rOXZAdH1SKoNwvhM+vkXNBDYzE=
-X-Google-Smtp-Source: 
- AGHT+IHofmIYEaSzPfxOLCFMrBKIYZN+zWyWKyZedMMxTTW1OIgPuzn0vl1E/05BFJ1nHliWZD5g4qRhqGV7tR4MyMk=
-X-Received: by 2002:a05:6512:1287:b0:4fc:4f3e:9cbf with SMTP id
- u7-20020a056512128700b004fc4f3e9cbfmr9951925lfs.50.1692779753782; Wed, 23 Aug
- 2023 01:35:53 -0700 (PDT)
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=Y39nL83i;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=pvyHqPZn
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id C29F020EC3;
+	Thu, 24 Aug 2023 07:51:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1692863470; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:
+  content-transfer-encoding:content-transfer-encoding;
+	bh=GDeGPGJKZ+SLOlE8rjOezz6HNHsqh0RFS8TBD31GYe0=;
+	b=Y39nL83iykmeYllfYyiGj/oeymZmrbUEYOMiV0Em//lSRIoMnk4qX6ITDL7f2ZPwD6pPVZ
+	91Ffn4Yez1oFraNscZx12CosnIPNNicm9xUJ8KrCMGBna5u70UlflEO/+UDyZw7FSHNL7H
+	DzhARnKXCx/WXJbKUSZFFsaRIN+/utQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1692863470;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:
+  content-transfer-encoding:content-transfer-encoding;
+	bh=GDeGPGJKZ+SLOlE8rjOezz6HNHsqh0RFS8TBD31GYe0=;
+	b=pvyHqPZnWMpmCR1rvegukPcCUjr0CMwCdZJS457F32lc9ie9K07ES+B2pGQfMyyMAaAUuW
+	rOwGVsbdV9EkU6CQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9ECD8139BC;
+	Thu, 24 Aug 2023 07:51:10 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id dnTaJe4L52TtLAAAMHmgww
+	(envelope-from <tiwai@suse.de>); Thu, 24 Aug 2023 07:51:10 +0000
+From: Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH 0/4] ALSA: ump: Improve legacy rawmidi & co
+Date: Thu, 24 Aug 2023 09:51:04 +0200
+Message-Id: <20230824075108.29958-1-tiwai@suse.de>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-References: 
- <CAGmPKz5OeC6UVBif6ySevZEvaY_XwKh7A29K7k_Yq_D0CQJkCA@mail.gmail.com>
- <87a5uk8yiw.wl-tiwai@suse.de>
-In-Reply-To: <87a5uk8yiw.wl-tiwai@suse.de>
-From: Rohit Pidaparthi <rohitpid@gmail.com>
-Date: Wed, 23 Aug 2023 01:35:42 -0700
-Message-ID: 
- <CAGmPKz7ZDEuuB-wg+rrut0oUCXvBwhv+63pDJwGD2kmiy_CjoA@mail.gmail.com>
-Subject: Re: [PATCH] fix: Add quirk for Asus Zenbook Pro 14 UX6404 laptop
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, perex@perex.cz, tiwai@suse.com,
-	luke@ljones.dev, sbinding@opensource.cirrus.com
-X-MailFrom: rohitpid@gmail.com
-X-Mailman-Rule-Hits: nonmember-moderation
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: D4D7R5XN46IKJLQB64KNHT4X23HLJVQM
+X-Message-ID-Hash: D4D7R5XN46IKJLQB64KNHT4X23HLJVQM
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: B4FS7J3NFF6EGCHIHD5ZIU3C6G62FYQM
-X-Message-ID-Hash: B4FS7J3NFF6EGCHIHD5ZIU3C6G62FYQM
-X-Mailman-Approved-At: Thu, 24 Aug 2023 07:32:03 +0000
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="UTF-8"
-X-Content-Filtered-By: Mailman/MimeDel 3.3.8
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/B4FS7J3NFF6EGCHIHD5ZIU3C6G62FYQM/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/D4D7R5XN46IKJLQB64KNHT4X23HLJVQM/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -114,40 +107,29 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-RGVhciBUYWthc2hpLA0KDQpUaGFua3MgZm9yIHRoZSBmZWVkYmFjay4gSSB3aWxsIHN1Ym1pdCBh
-IHBhdGNoIHNob3J0bHksIHNvcnJ5IGZvciB0aGUgZGVsYXkuDQoNCkJlc3QsDQpSb2hpdA0KDQpP
-biBNb24sIEF1ZyAyMSwgMjAyMyBhdCAzOjQ14oCvQU0gVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNl
-LmRlPiB3cm90ZToNCg0KPiBPbiBTYXQsIDE5IEF1ZyAyMDIzIDEyOjE4OjQ4ICswMjAwLA0KPiBS
-b2hpdCBQaWRhcGFydGhpIHdyb3RlOg0KPiA+DQo+ID4gPkZyb20gNGYxNGNkYWQ0ZjUyNmY0NTc0
-N2M0ZjBiNzFlMjRhNDZlYmUzODg1YyBNb24gU2VwIDE3IDAwOjAwOjAwIDIwMDENCj4gPiBGcm9t
-OiBSb2hpdCBQaWRhcGFydGhpIDxyb2hpdHBpZEBnbWFpbC5jb20+DQo+ID4gRGF0ZTogU2F0LCAx
-OSBBdWcgMjAyMyAwMjoxNToxNiAtMDcwMA0KPiA+IFN1YmplY3Q6IFtQQVRDSF0gZml4OiBBZGQg
-cXVpcmsgZm9yIEFzdXMgWmVuYm9vayBQcm8gMTQgVVg2NDA0IGxhcHRvcA0KPiA+DQo+ID4gVGhl
-IEFzdXMgWmVuYm9vayBQcm8gMTQgVVg2NDA0ICgxMDQzOjE4NjMpIG5lZWRzIGJpbmRpbmcgdG8g
-dGhlDQo+ID4gQ1MzNUw0MSBjb2RlYyBvdmVyIHNwaTEgcmF0aGVyIHRoYW4gc3BpMC4gVGhpcyBp
-cyBzaW1pbGFyIHRvDQo+ID4gZXhpc3RpbmcgcXVpcmtzIGZvciBtYW55IEFTVVMgTGFwdG9wcy4N
-Cj4gPg0KPiA+IFNpZ25lZC1vZmYtYnk6IFJvaGl0IFBpZGFwYXJ0aGkgPHJvaGl0cGlkQGdtYWls
-LmNvbT4NCj4NCj4gVGhlIHBhdGNoIGlzbid0IGFwcGxpY2FibGUgY2xlYW5seSwgbGlrZWx5IHlv
-dXIgbWFpbGVyIGJyb2tlIHRoZQ0KPiB0YWJzIGFuZCBzcGFjZXMuICBDb3VsZCB5b3UgcmVzdWJt
-aXQgcHJvcGVybHk/DQo+DQo+IEFsc28sIHRoZSBxdWlyayB0YWJsZSBlbnRyaWVzIGFyZSBzb3J0
-ZWQgaW4gUENJIFNTSUQgb3JkZXIuICBQbGVhc2UNCj4gcHV0IHRoZSBuZXcgZW50cnkgYXQgdGhl
-IHJpZ2h0IHBvc2l0aW9uLg0KPg0KPg0KPiB0aGFua3MsDQo+DQo+IFRha2FzaGkNCj4NCj4gPiAt
-LS0NCj4gPiBzb3VuZC9wY2kvaGRhL3BhdGNoX3JlYWx0ZWsuYyB8IDEgKw0KPiA+IDEgZmlsZSBj
-aGFuZ2VkLCAxIGluc2VydGlvbigrKQ0KPiA+DQo+ID4gZGlmZiAtLWdpdCBhL3NvdW5kL3BjaS9o
-ZGEvcGF0Y2hfcmVhbHRlay5jDQo+IGIvc291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMNCj4g
-PiBpbmRleCBkYzdiN2E0MDc2MzguLmM0NDQ2NGIxNjE5ZiAxMDA2NDQNCj4gPiAtLS0gYS9zb3Vu
-ZC9wY2kvaGRhL3BhdGNoX3JlYWx0ZWsuYw0KPiA+ICsrKyBiL3NvdW5kL3BjaS9oZGEvcGF0Y2hf
-cmVhbHRlay5jDQo+ID4gQEAgLTk2ODEsNiArOTY4MSw3IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3Qg
-c25kX3BjaV9xdWlyaw0KPiBhbGMyNjlfZml4dXBfdGJsW10gPSB7DQo+ID4gICAgICAgIFNORF9Q
-Q0lfUVVJUksoMHgxMDQzLCAweDFkNDIsICJBU1VTIFplcGh5cnVzIEcxNCAyMDIyIiwNCj4gPiBB
-TEMyODlfRklYVVBfQVNVU19HQTQwMSksDQo+ID4gICAgICAgIFNORF9QQ0lfUVVJUksoMHgxMDQz
-LCAweDFkNGUsICJBU1VTIFRNNDIwIiwNCj4gQUxDMjU2X0ZJWFVQX0FTVVNfSFBFKSwNCj4gPiAg
-ICAgICAgU05EX1BDSV9RVUlSSygweDEwNDMsIDB4MWUwMiwgIkFTVVMgVVgzNDAyIiwNCj4gQUxD
-MjQ1X0ZJWFVQX0NTMzVMNDFfU1BJXzIpLA0KPiA+ICsgICAgIFNORF9QQ0lfUVVJUksoMHgxMDQz
-LCAweDE4NjMsICJBU1VTIFVYNjQwNCIsDQo+IEFMQzI0NV9GSVhVUF9DUzM1TDQxX1NQSV8yKSwN
-Cj4gPiAgICAgICAgU05EX1BDSV9RVUlSSygweDEwNDMsIDB4MWUxMSwgIkFTVVMgWmVwaHlydXMg
-RzE1IiwNCj4gPiBBTEMyODlfRklYVVBfQVNVU19HQTUwMiksDQo+ID4gICAgICAgIFNORF9QQ0lf
-UVVJUksoMHgxMDQzLCAweDFlMTIsICJBU1VTIFVNMzQwMiIsDQo+IEFMQzI4N19GSVhVUF9DUzM1
-TDQxX0kyQ18yKSwNCj4gPiAgICAgICAgU05EX1BDSV9RVUlSSygweDEwNDMsIDB4MWU1MSwgIkFT
-VVMgWmVwaHlydXMgTTE1IiwNCj4gPiBBTEMyOTRfRklYVVBfQVNVU19HVTUwMl9QSU5TKSwNCj4g
-PiAtLQ0KPiA+IDIuMzkuMg0KPiA+DQo+DQo=
+Hi,
+
+this is a patch set to fix / enhance the legacy rawmidi handling in
+UMP core and USB-audio driver, as well as the update of MIDI 2.0
+documentation.
+
+
+Takashi
+
+===
+
+Takashi Iwai (4):
+  ALSA: usb-audio: Attach legacy rawmidi after probing all UMP EPs
+  ALSA: ump: Fill group names for legacy rawmidi substreams
+  ALSA: ump: Don't create unused substreams for static blocks
+  ALSA: documentation: Add description for USB MIDI 2.0 gadget driver
+
+ Documentation/sound/designs/midi-2.0.rst | 188 +++++++++++++++++++++++
+ include/sound/ump.h                      |   1 +
+ sound/core/ump.c                         |  58 ++++++-
+ sound/usb/midi2.c                        |  15 +-
+ 4 files changed, 250 insertions(+), 12 deletions(-)
+
+-- 
+2.35.3
+
