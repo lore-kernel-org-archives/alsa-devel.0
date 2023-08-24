@@ -4,88 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E2FD6C7113B
-	for <alsa-devel@archiver.kernel.org>; Thu, 24 Aug 2023 07:52:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 16D4EC3DA6F
+	for <alsa-devel@archiver.kernel.org>; Thu, 24 Aug 2023 07:53:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 769FB845;
-	Thu, 24 Aug 2023 09:51:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 769FB845
+	by alsa0.perex.cz (Postfix) with ESMTPS id 179BD84D;
+	Thu, 24 Aug 2023 09:52:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 179BD84D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1692863551;
-	bh=B1yapP3h+jWniHJCh61cwzsNRQsPchep6rtCESVYqhw=;
-	h=From:To:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=VyeThqxDJKUq0i/k67pvCtf3Wez3c8wbW1oNLIJU1cBgnkHDuMwINFZpFAKHafsuZ
-	 bZRNuuqlVAXP6WsHc0KHpK55bES67xf+HuQt5SqkELwL36EzkumA9oO8xrMydViLth
-	 iqUCBCOWRGEaYR2/olIQbYhFaxTcZEKYjsAMOles=
+	s=default; t=1692863580;
+	bh=1LPIAPgHqcUP5VQM6IQUhEjMcZhe3uLVFoaG+ZNQqfw=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=d8Fzkon+cK8uZ5vRcG1tAZgM3bOe9DiUzqJzbBr53b+BQPq6SYCYpc1xiMpqevFok
+	 0709rW2YEjG0cAMHAudfdZ8AD1dCNLlA1PezUy1u142+R4B1P3oO0Fkj3NlD7TrJM4
+	 UPP6IYdAPsB/Ek8yZ0nNKzyCxCZovZHY4rDNe1H0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0B970F800BF; Thu, 24 Aug 2023 09:51:18 +0200 (CEST)
+	id 07408F80552; Thu, 24 Aug 2023 09:51:21 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 41C28F800BF;
-	Thu, 24 Aug 2023 09:51:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 71D70F8055A;
+	Thu, 24 Aug 2023 09:51:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B9E18F8025F; Thu, 24 Aug 2023 09:51:14 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+	id 1CEB0F8025F; Thu, 24 Aug 2023 09:51:16 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id EA574F800F5
+	by alsa1.perex.cz (Postfix) with ESMTPS id 0C045F8022B
 	for <alsa-devel@alsa-project.org>; Thu, 24 Aug 2023 09:51:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EA574F800F5
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0C045F8022B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=Y39nL83i;
+ header.s=susede2_rsa header.b=X1+mte/q;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=pvyHqPZn
+ header.s=susede2_ed25519 header.b=BqOCBEFh
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id C29F020EC3;
-	Thu, 24 Aug 2023 07:51:10 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 4C74722CC0;
+	Thu, 24 Aug 2023 07:51:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1692863470; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1692863471; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
-  content-transfer-encoding:content-transfer-encoding;
-	bh=GDeGPGJKZ+SLOlE8rjOezz6HNHsqh0RFS8TBD31GYe0=;
-	b=Y39nL83iykmeYllfYyiGj/oeymZmrbUEYOMiV0Em//lSRIoMnk4qX6ITDL7f2ZPwD6pPVZ
-	91Ffn4Yez1oFraNscZx12CosnIPNNicm9xUJ8KrCMGBna5u70UlflEO/+UDyZw7FSHNL7H
-	DzhARnKXCx/WXJbKUSZFFsaRIN+/utQ=
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=YghiKRcgLFIsxq+fLwAH4m1a20sGATL7xsSuDRkcDkQ=;
+	b=X1+mte/qR5XtoP0a7SmAYlv98Kn/0zEJQpG8XTU9N7omoOGdK5P4GVa9W3r+8RZcC+khVB
+	Sg/7vpu0pjkFHxGgim940htT5O6paYeoToPfbf7c3Lmjd4UC7egcurUW9ifsZC6wn41yJM
+	Ct+b75jF8RdYVAfyLphZRpD8P7cGtmY=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1692863470;
+	s=susede2_ed25519; t=1692863471;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
-  content-transfer-encoding:content-transfer-encoding;
-	bh=GDeGPGJKZ+SLOlE8rjOezz6HNHsqh0RFS8TBD31GYe0=;
-	b=pvyHqPZnWMpmCR1rvegukPcCUjr0CMwCdZJS457F32lc9ie9K07ES+B2pGQfMyyMAaAUuW
-	rOwGVsbdV9EkU6CQ==
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=YghiKRcgLFIsxq+fLwAH4m1a20sGATL7xsSuDRkcDkQ=;
+	b=BqOCBEFhIGxDODMzoH+H+iniQNQ0K3x9R4GKioyCnmK1/xuRpPVPkdE/MOAlh3SWZnugMe
+	u2AvELCcvVXMa5Ag==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9ECD8139BC;
-	Thu, 24 Aug 2023 07:51:10 +0000 (UTC)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2F034139BC;
+	Thu, 24 Aug 2023 07:51:11 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id dnTaJe4L52TtLAAAMHmgww
-	(envelope-from <tiwai@suse.de>); Thu, 24 Aug 2023 07:51:10 +0000
+	id sLSpCu8L52TtLAAAMHmgww
+	(envelope-from <tiwai@suse.de>); Thu, 24 Aug 2023 07:51:11 +0000
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 0/4] ALSA: ump: Improve legacy rawmidi & co
-Date: Thu, 24 Aug 2023 09:51:04 +0200
-Message-Id: <20230824075108.29958-1-tiwai@suse.de>
+Subject: [PATCH 4/4] ALSA: documentation: Add description for USB MIDI 2.0
+ gadget driver
+Date: Thu, 24 Aug 2023 09:51:08 +0200
+Message-Id: <20230824075108.29958-5-tiwai@suse.de>
 X-Mailer: git-send-email 2.35.3
+In-Reply-To: <20230824075108.29958-1-tiwai@suse.de>
+References: <20230824075108.29958-1-tiwai@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: D4D7R5XN46IKJLQB64KNHT4X23HLJVQM
-X-Message-ID-Hash: D4D7R5XN46IKJLQB64KNHT4X23HLJVQM
+Message-ID-Hash: 5RTIQE6PHYI3ZVQ4HZ5H7PAHCN47WLQP
+X-Message-ID-Hash: 5RTIQE6PHYI3ZVQ4HZ5H7PAHCN47WLQP
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -98,7 +104,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/D4D7R5XN46IKJLQB64KNHT4X23HLJVQM/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5RTIQE6PHYI3ZVQ4HZ5H7PAHCN47WLQP/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -107,29 +113,210 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi,
+The USB MIDI 2.0 gadget driver is now supported for 6.6 kernel, and
+here we show a brief instruction how to enable and use it.
 
-this is a patch set to fix / enhance the legacy rawmidi handling in
-UMP core and USB-audio driver, as well as the update of MIDI 2.0
-documentation.
-
-
-Takashi
-
-===
-
-Takashi Iwai (4):
-  ALSA: usb-audio: Attach legacy rawmidi after probing all UMP EPs
-  ALSA: ump: Fill group names for legacy rawmidi substreams
-  ALSA: ump: Don't create unused substreams for static blocks
-  ALSA: documentation: Add description for USB MIDI 2.0 gadget driver
-
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
  Documentation/sound/designs/midi-2.0.rst | 188 +++++++++++++++++++++++
- include/sound/ump.h                      |   1 +
- sound/core/ump.c                         |  58 ++++++-
- sound/usb/midi2.c                        |  15 +-
- 4 files changed, 250 insertions(+), 12 deletions(-)
+ 1 file changed, 188 insertions(+)
 
+diff --git a/Documentation/sound/designs/midi-2.0.rst b/Documentation/sound/designs/midi-2.0.rst
+index 27d0d3dea1b0..3b08b98354f8 100644
+--- a/Documentation/sound/designs/midi-2.0.rst
++++ b/Documentation/sound/designs/midi-2.0.rst
+@@ -376,3 +376,191 @@ Sequencer API Extensions
+   name and attributes accordingly, and notifies the changes via the
+   announcement to the ALSA sequencer system port, similarly like the
+   normal port change notification.
++
++
++MIDI2 USB Gadget Function Driver
++================================
++
++The latest kernel contains the support for USB MIDI 2.0 gadget
++function driver, which can be used for prototyping and debugging MIDI
++2.0 features.
++
++`CONFIG_USB_GADGET`, `CONFIG_USB_CONFIGFS` and
++`CONFIG_USB_CONFIGFS_F_MIDI2` need to be enabled for the MIDI2 gadget
++driver.
++
++In addition, for using a gadget driver, you need a working UDC driver.
++In the example below, we use `dummy_hcd` driver (enabled via
++`CONFIG_USB_DUMMY_HCD`) that is available on PC and VM for debugging
++purpose.  There are other UDC drivers depending on the platform, and
++those can be used for a real device, instead, too.
++
++At first, on a system to run the gadget, load `libcomposite` module::
++
++  % modprobe libcomposite
++
++and you'll have `usb_gadget` subdirectory under configfs space
++(typically `/sys/kernel/config` on modern OS).  Then create a gadget
++instance and add configurations there, for example::
++
++  % cd /sys/kernel/config
++  % mkdir usb_gadget/g1
++
++  % cd usb_gadget/g1
++  % mkdir configs/c.1
++  % mkdir functions/midi2.usb0
++
++  % echo 0x0004 > idProduct
++  % echo 0x17b3 > idVendor
++  % mkdir strings/0x409
++  % echo "ACME Enterprises" > strings/0x409/manufacturer
++  % echo "ACMESynth" > strings/0x409/product
++  % echo "ABCD12345" > strings/0x409/serialnumber
++
++  % mkdir configs/c.1/strings/0x409
++  % echo "Monosynth" > configs/c.1/strings/0x409/configuration
++  % echo 120 > configs/c.1/MaxPower
++
++At this point, there must be a subdirectory `ep.0`, and that is the
++configuration for a UMP Endpoint.  You can fill the Endpoint
++information like::
++
++  % echo "ACMESynth" > functions/midi2.usb0/iface_name
++  % echo "ACMESynth" > functions/midi2.usb0/ep.0/ep_name
++  % echo "ABCD12345" > functions/midi2.usb0/ep.0/product_id
++  % echo 0x0123 > functions/midi2.usb0/ep.0/family
++  % echo 0x4567 > functions/midi2.usb0/ep.0/model
++  % echo 0x123456 > functions/midi2.usb0/ep.0/manufacturer
++  % echo 0x12345678 > functions/midi2.usb0/ep.0/sw_revision
++
++The default MIDI protocol can be set either 1 or 2::
++
++  % echo 2 > functions/midi2.usb0/ep.0/protocol
++
++And, you can find a subdirectory `block.0` under this Endpoint
++subdirectory.  This defines the Function Block information::
++
++  % echo "Monosynth" > functions/midi2.usb0/ep.0/block.0/name
++  % echo 0 > functions/midi2.usb0/ep.0/block.0/first_group
++  % echo 1 > functions/midi2.usb0/ep.0/block.0/num_groups
++
++Finally, link the configuration and enable it::
++
++  % ln -s functions/midi2.usb0 configs/c.1
++  % echo dummy_udc.0 > UDC
++
++where `dummy_udc.0` is an example case and it differs depending on the
++system.  You can find the UDC instances in `/sys/class/udc` and pass
++the found name instead::
++
++  % ls /sys/class/udc
++  dummy_udc.0
++
++Now, the MIDI 2.0 gadget device is enabled, and the gadget host
++creates a new sound card instance containing a UMP rawmidi device by
++`f_midi2` driver::
++
++  % cat /proc/asound/cards
++  ....
++  1 [Gadget         ]: f_midi2 - MIDI 2.0 Gadget
++                       MIDI 2.0 Gadget
++
++And on the connected host, a similar card should appear, too, but with
++the card and device names given in the configfs above::
++
++  % cat /proc/asound/cards
++  ....
++  2 [ACMESynth      ]: USB-Audio - ACMESynth
++                       ACME Enterprises ACMESynth at usb-dummy_hcd.0-1, high speed
++
++You can play a MIDI file on the gadget side::
++
++  % aplaymidi -p 20:1 to_host.mid
++
++and this will appear as an input from a MIDI device on the connected
++host::
++
++  % aseqdump -p 20:0 -u 2
++
++Vice versa, a playback on the connected host will work as an input on
++the gadget, too.
++
++Each Function Block may have different direction and UI-hint,
++specified via `direction` and `ui_hint` attributes.
++Passing `1` is for input-only, `2` for out-only and `3` for
++bidirectional (the default value).  For example::
++
++  % echo 2 > functions/midi2.usb0/ep.0/block.0/direction
++  % echo 2 > functions/midi2.usb0/ep.0/block.0/ui_hint
++
++When you need more than one Function Blocks, you can create
++subdirectories `block.1`, `block.2`, etc dynamically, and configure
++them in the configuration procedure above before linking.
++For example, to create a second Function Block for a keyboard::
++
++  % mkdir functions/midi2.usb0/ep.0/block.1
++  % echo "Keyboard" > functions/midi2.usb0/ep.0/block.1/name
++  % echo 1 > functions/midi2.usb0/ep.0/block.1/first_group
++  % echo 1 > functions/midi2.usb0/ep.0/block.1/num_groups
++  % echo 1 > functions/midi2.usb0/ep.0/block.1/direction
++  % echo 1 > functions/midi2.usb0/ep.0/block.1/ui_hint
++
++The `block.*` subdirectories can be removed dynamically, too (except
++for `block.0` which is persistent).
++
++For assigning a Function Block for MIDI 1.0 I/O, set up in `is_midi1`
++attribute.  1 is for MIDI 1.0, and 2 is for MIDI 1.0 with low speed
++connection::
++
++  % echo 2 > functions/midi2.usb0/ep.0/block.1/is_midi1
++
++For disabling the processing of UMP Stream messages in the gadget
++driver, pass `0` to `process_ump attribute in the top-level config::
++
++  % echo 0 > functions/midi2.usb0/process_ump
++
++The MIDI 1.0 interface at altset 0 is supported by the gadget driver,
++too.  When MIDI 1.0 interface is selected by the connected host, the
++UMP I/O on the gadget is translated from/to USB MIDI 1.0 packets
++accordingly while the gadget driver keeps communicating with the
++user-space over UMP rawmidi.
++
++MIDI 1.0 ports are set up from the config in each Function Block.
++For example::
++
++  % echo 0 > functions/midi2.usb0/ep.0/block.0/midi1_first_group
++  % echo 1 > functions/midi2.usb0/ep.0/block.0/midi1_num_groups
++
++The configuration above will enable the Group 1 (the index 0) for MIDI
++1.0 interface.  Note that those groups must be in the groups defined
++for the Function Block itself.
++
++The gadget driver supports more than one UMP Endpoints, too.
++Similarly like the Function Blocks, you can create a new subdirectory
++`ep.1` (but under the card top-level config) to enable a new Endpoint::
++
++  % mkdir functions/midi2.usb0/ep.1
++
++and create a new Function Block there.  For example, to create 4
++Groups for the Function Block of this new Endpoint::
++
++  % mkdir functions/midi2.usb0/ep.1/block.0
++  % echo 4 > functions/midi2.usb0/ep.1/block.0/num_groups
++
++Now, you'll have 4 rawmidi devices in total: the first two are UMP
++rawmidi devices for Endpoint 0 and Endpoint 1, and other two for the
++legacy MIDI 1.0 rawmidi devices corresponding to both EP 0 and EP 1.
++
++The current altsetting on the gadget can be informed via a control
++element "Operation Mode" with `RAWMIDI` iface.  e.g. you can read it
++via `amixer` program running on the gadget host like::
++
++  % amixer -c1 cget iface=RAWMIDI,name='Operation Mode'
++  ; type=INTEGER,access=r--v----,values=1,min=0,max=2,step=0
++  : values=2
++
++The value (shown in the second returned line with `: values=`)
++indicates 1 for MIDI 1.0 (altset 0), 2 for MIDI 2.0 (altset 1) and 0
++for unset.
++
++As of now, the configurations can't be changed after binding.
 -- 
 2.35.3
 
