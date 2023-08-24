@@ -4,54 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7E237C3DA6F
-	for <alsa-devel@archiver.kernel.org>; Thu, 24 Aug 2023 21:03:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1C6EBC27C40
+	for <alsa-devel@archiver.kernel.org>; Thu, 24 Aug 2023 21:04:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D92CE86E;
-	Thu, 24 Aug 2023 23:02:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D92CE86E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8920EA4C;
+	Thu, 24 Aug 2023 23:03:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8920EA4C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1692911026;
-	bh=4iqIZczUwHj51+Gp035c8aMKqZB01cQjN+gVhw4Jg6U=;
+	s=default; t=1692911044;
+	bh=8PTrXsqkL0UNlPVGEVRU0vTAbW7pki9umfY6TrlE7rM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=O2WCCMCdkIZ/Ovr3SsBeBadurfaJg5+O16hwUk9eWv6bMMB4cw/R9PwsipqTEDlsr
-	 BU5e56NPC2ToXS9q0TzNkOMNV0mdc+gOpci46w5Z7P3DlQDOcuBl30Ajj85RfAL2vz
-	 C7sUVyjd1VCOsghgzIKajSmCJeavvM7G2Olw1HXY=
+	b=BkKAjizpz9nzpk6P5v+wBkAVaSLS/xlNasUDMOOg/PgefkhrdUU6xrNqucdOADm7F
+	 +/PNdh4lNraGCTj8s0Y5QCtriHtxgORCNfieM4Kmw3Tn5X6TUz19u5sgRr6m9MEfWZ
+	 6CMy9ILvMsMPigSxIySowQ07C1N8m9QguLrYFGVk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B708AF80563; Thu, 24 Aug 2023 23:02:04 +0200 (CEST)
+	id EDF87F80564; Thu, 24 Aug 2023 23:02:06 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E5A70F80567;
-	Thu, 24 Aug 2023 23:02:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 66488F8057C;
+	Thu, 24 Aug 2023 23:02:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A669CF80553; Thu, 24 Aug 2023 23:01:59 +0200 (CEST)
+	id EF0B6F80567; Thu, 24 Aug 2023 23:02:01 +0200 (CEST)
 Received: from mail.mutex.one (mail.mutex.one [62.77.152.124])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A4AA1F80158
-	for <alsa-devel@alsa-project.org>; Thu, 24 Aug 2023 23:01:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A4AA1F80158
+	by alsa1.perex.cz (Postfix) with ESMTPS id AEB81F800BF
+	for <alsa-devel@alsa-project.org>; Thu, 24 Aug 2023 23:01:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AEB81F800BF
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=mutex.one header.i=@mutex.one header.a=rsa-sha256
- header.s=default header.b=RTMv7Ac4
+ header.s=default header.b=XsjxURkv
 Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.mutex.one (Postfix) with ESMTP id BFCFA16C0056;
-	Fri, 25 Aug 2023 00:01:42 +0300 (EEST)
+	by mail.mutex.one (Postfix) with ESMTP id C806416C0048;
+	Fri, 25 Aug 2023 00:01:43 +0300 (EEST)
 X-Virus-Scanned: Debian amavisd-new at mail.mutex.one
 Received: from mail.mutex.one ([127.0.0.1])
 	by localhost (mail.mutex.one [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id S8NZIR6Q7wEB; Fri, 25 Aug 2023 00:01:40 +0300 (EEST)
+	with ESMTP id 5CX7HXT9j10U; Fri, 25 Aug 2023 00:01:41 +0300 (EEST)
 From: Marian Postevca <posteuca@mutex.one>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mutex.one; s=default;
-	t=1692910900; bh=4iqIZczUwHj51+Gp035c8aMKqZB01cQjN+gVhw4Jg6U=;
+	t=1692910901; bh=8PTrXsqkL0UNlPVGEVRU0vTAbW7pki9umfY6TrlE7rM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=RTMv7Ac45M5rQV//w50oKm5b9LIFwAx1eCWjng4aD6OwoQw//kYxYJBlE9YIYgiu3
-	 pNtCZWbgwQj3bv0fYampraiZY4KHfYli77Qdu/0DYiZYufllAAXsfZ/hHXkJ6ZZHWv
-	 6xdPMUc+TZZ9DzDPhQUU2RLxQZOZkDrXgbdVQi6Y=
+	b=XsjxURkv7BAH88nQTsbx+qKsY4taPx0e9iItwBt4+BL2O+Y3CD0aMu0h9xn+kOhZ3
+	 htWOlY958/6rDSS7yPM0sAFxnOtarQ5KT9lheMUOxKj1NUzIWnySunL55jNp1/IgdZ
+	 sqwdIFWhbvj3aNgwsLqtX419zkJnQNHwpD45EYyQ=
 To: Takashi Iwai <tiwai@suse.com>,
 	Liam Girdwood <lgirdwood@gmail.com>,
 	Mark Brown <broonie@kernel.org>,
@@ -59,15 +59,16 @@ To: Takashi Iwai <tiwai@suse.com>,
 Cc: alsa-devel@alsa-project.org,
 	linux-kernel@vger.kernel.org,
 	Marian Postevca <posteuca@mutex.one>
-Subject: [PATCH v2 2/4] ASoC: es8316: Enable support for MCLK div by 2
-Date: Fri, 25 Aug 2023 00:01:33 +0300
-Message-ID: <20230824210135.19303-3-posteuca@mutex.one>
+Subject: [PATCH v2 3/4] ASoC: amd: acp: Add support for splitting the codec
+ specific code from the ACP driver
+Date: Fri, 25 Aug 2023 00:01:34 +0300
+Message-ID: <20230824210135.19303-4-posteuca@mutex.one>
 In-Reply-To: <20230824210135.19303-1-posteuca@mutex.one>
 References: <20230824210135.19303-1-posteuca@mutex.one>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: ZAWNE7NORHAFCA34TENQXW2ZU34SRN5W
-X-Message-ID-Hash: ZAWNE7NORHAFCA34TENQXW2ZU34SRN5W
+Message-ID-Hash: EU4WZAS5UOFV74S6WIOJYHIQ7FDSAYQP
+X-Message-ID-Hash: EU4WZAS5UOFV74S6WIOJYHIQ7FDSAYQP
 X-MailFrom: posteuca@mutex.one
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -80,7 +81,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZAWNE7NORHAFCA34TENQXW2ZU34SRN5W/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/EU4WZAS5UOFV74S6WIOJYHIQ7FDSAYQP/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -89,80 +90,111 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-To properly support a line of Huawei laptops with AMD CPU and a
-ES8336 codec connected to the ACP3X module we need to enable
-the codec option to divide the MCLK by 2.
+This commit adds support for splitting more complicated machine drivers,
+that need special handling, from the generic ACP code.
 
-The option to divide the MCLK will be enabled for one SKU with a
-48Mhz MCLK. This frequency seems to be too high for the codec and
-leads to distorted sounds when the option is not enabled.
+By adding support for callbacks to configure and handle codec specific
+implementation details, we can split them in separate files that don't
+clutter the ACP code.
 
 Signed-off-by: Marian Postevca <posteuca@mutex.one>
 ---
- sound/soc/codecs/es8316.c | 20 ++++++++++++++++++--
- sound/soc/codecs/es8316.h |  3 +++
- 2 files changed, 21 insertions(+), 2 deletions(-)
+ sound/soc/amd/acp/acp-mach.h | 65 ++++++++++++++++++++++++++++++++++++
+ 1 file changed, 65 insertions(+)
 
-diff --git a/sound/soc/codecs/es8316.c b/sound/soc/codecs/es8316.c
-index 09fc0b25f600..b506cfb9bd5d 100644
---- a/sound/soc/codecs/es8316.c
-+++ b/sound/soc/codecs/es8316.c
-@@ -26,12 +26,19 @@
- /* In slave mode at single speed, the codec is documented as accepting 5
-  * MCLK/LRCK ratios, but we also add ratio 400, which is commonly used on
-  * Intel Cherry Trail platforms (19.2MHz MCLK, 48kHz LRCK).
-+ * Ratio 1000 is needed for at least one AMD SKU where MCLK is 48Mhz.
-  */
- #define NR_SUPPORTED_MCLK_LRCK_RATIOS ARRAY_SIZE(supported_mclk_lrck_ratios)
- static const unsigned int supported_mclk_lrck_ratios[] = {
--	256, 384, 400, 500, 512, 768, 1024
-+	256, 384, 400, 500, 512, 768, 1000, 1024
+diff --git a/sound/soc/amd/acp/acp-mach.h b/sound/soc/amd/acp/acp-mach.h
+index 2b3ec6594023..31f38ec4b1d1 100644
+--- a/sound/soc/amd/acp/acp-mach.h
++++ b/sound/soc/amd/acp/acp-mach.h
+@@ -20,6 +20,10 @@
+ 
+ #define TDM_CHANNELS	8
+ 
++#define ACP_OPS(priv, cb)	((priv)->ops.cb)
++
++#define acp_get_drvdata(card) ((struct acp_card_drvdata *)(card)->drvdata)
++
+ enum be_id {
+ 	HEADSET_BE_ID = 0,
+ 	AMP_BE_ID,
+@@ -50,6 +54,14 @@ enum platform_end_point {
+ 	REMBRANDT,
  };
  
-+/* In at least one AMD laptop the internal timing of the codec goes off
-+ * if the MCLK (48Mhz) is not divided by 2. So we will divide all MCLK
-+ * frequencies above and equal to 48MHz by 2.
-+ */
-+#define MAX_SUPPORTED_MCLK_FREQ 48000000
++struct acp_mach_ops {
++	int (*probe)(struct snd_soc_card *card);
++	int (*configure_link)(struct snd_soc_card *card, struct snd_soc_dai_link *dai_link);
++	int (*configure_widgets)(struct snd_soc_card *card);
++	int (*suspend_pre)(struct snd_soc_card *card);
++	int (*resume_post)(struct snd_soc_card *card);
++};
 +
- struct es8316_priv {
- 	struct mutex lock;
- 	struct clk *mclk;
-@@ -470,6 +477,7 @@ static int es8316_pcm_hw_params(struct snd_pcm_substream *substream,
- 	u8 bclk_divider;
- 	u16 lrck_divider;
- 	int i;
-+	unsigned int mclk_div = 1;
+ struct acp_card_drvdata {
+ 	unsigned int hs_cpu_id;
+ 	unsigned int amp_cpu_id;
+@@ -61,6 +73,8 @@ struct acp_card_drvdata {
+ 	unsigned int platform;
+ 	struct clk *wclk;
+ 	struct clk *bclk;
++	struct acp_mach_ops ops;
++	void *mach_priv;
+ 	bool soc_mclk;
+ 	bool tdm_mode;
+ };
+@@ -69,4 +83,55 @@ int acp_sofdsp_dai_links_create(struct snd_soc_card *card);
+ int acp_legacy_dai_links_create(struct snd_soc_card *card);
+ extern const struct dmi_system_id acp_quirk_table[];
  
- 	/* Validate supported sample rates that are autodetected from MCLK */
- 	for (i = 0; i < NR_SUPPORTED_MCLK_LRCK_RATIOS; i++) {
-@@ -482,7 +490,15 @@ static int es8316_pcm_hw_params(struct snd_pcm_substream *substream,
- 	}
- 	if (i == NR_SUPPORTED_MCLK_LRCK_RATIOS)
- 		return -EINVAL;
--	lrck_divider = es8316->sysclk / params_rate(params);
++static inline int acp_ops_probe(struct snd_soc_card *card)
++{
++	int ret = 1;
++	struct acp_card_drvdata *priv = acp_get_drvdata(card);
 +
-+	if (es8316->sysclk >= MAX_SUPPORTED_MCLK_FREQ) {
-+		snd_soc_component_update_bits(component, ES8316_CLKMGR_CLKSW,
-+					      ES8316_CLKMGR_CLKSW_MCLK_DIV,
-+					      ES8316_CLKMGR_CLKSW_MCLK_DIV);
-+		mclk_div = 2;
-+	}
++	if (ACP_OPS(priv, probe))
++		ret = ACP_OPS(priv, probe)(card);
++	return ret;
++}
 +
-+	lrck_divider = es8316->sysclk / params_rate(params) / mclk_div;
- 	bclk_divider = lrck_divider / 4;
- 	switch (params_format(params)) {
- 	case SNDRV_PCM_FORMAT_S16_LE:
-diff --git a/sound/soc/codecs/es8316.h b/sound/soc/codecs/es8316.h
-index c335138e2837..0ff16f948690 100644
---- a/sound/soc/codecs/es8316.h
-+++ b/sound/soc/codecs/es8316.h
-@@ -129,4 +129,7 @@
- #define ES8316_GPIO_FLAG_GM_NOT_SHORTED		0x02
- #define ES8316_GPIO_FLAG_HP_NOT_INSERTED	0x04
- 
-+/* ES8316_CLKMGR_CLKSW */
-+#define ES8316_CLKMGR_CLKSW_MCLK_DIV	0x80
++static inline int acp_ops_configure_link(struct snd_soc_card *card,
++					 struct snd_soc_dai_link *dai_link)
++{
++	int ret = 1;
++	struct acp_card_drvdata *priv = acp_get_drvdata(card);
++
++	if (ACP_OPS(priv, configure_link))
++		ret = ACP_OPS(priv, configure_link)(card, dai_link);
++	return ret;
++}
++
++static inline int acp_ops_configure_widgets(struct snd_soc_card *card)
++{
++	int ret = 1;
++	struct acp_card_drvdata *priv = acp_get_drvdata(card);
++
++	if (ACP_OPS(priv, configure_widgets))
++		ret = ACP_OPS(priv, configure_widgets)(card);
++	return ret;
++}
++
++static inline int acp_ops_suspend_pre(struct snd_soc_card *card)
++{
++	int ret = 1;
++	struct acp_card_drvdata *priv = acp_get_drvdata(card);
++
++	if (ACP_OPS(priv, suspend_pre))
++		ret = ACP_OPS(priv, suspend_pre)(card);
++	return ret;
++}
++
++static inline int acp_ops_resume_post(struct snd_soc_card *card)
++{
++	int ret = 1;
++	struct acp_card_drvdata *priv = acp_get_drvdata(card);
++
++	if (ACP_OPS(priv, resume_post))
++		ret = ACP_OPS(priv, resume_post)(card);
++	return ret;
++}
 +
  #endif
 -- 
