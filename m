@@ -4,97 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A9419C3DA6F
-	for <alsa-devel@archiver.kernel.org>; Thu, 24 Aug 2023 22:23:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 95DEBC3DA6F
+	for <alsa-devel@archiver.kernel.org>; Thu, 24 Aug 2023 22:25:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C0A7E847;
-	Fri, 25 Aug 2023 00:22:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C0A7E847
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8D270847;
+	Fri, 25 Aug 2023 00:25:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8D270847
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1692915819;
-	bh=N5Zi+lRNVA3LBjR15rKYoLmvgAGsFY938SO739H6j98=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1692915954;
+	bh=kFt+ci+UMA4Sg/4WTvYN3a+oQZtymEUWVBRzt5wwQ6k=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=D/iSz7TEugqWS2OghN5/jL9hkTbYeMo7MCEU9/Iidlr7MilkEWnQzvxk18j/+bCzv
-	 uGEbpS/rsiH6u38licYRuvUgkB6aMjPN97N6rrjaeKnOr0GeS6rxqgqx7ucCS3KolN
-	 Ij+CWonJHlzfRTxGPwT+FXvBRyM2WUvrz5bpuDiI=
+	b=uPq1qt7TvfG6ZVX+bA4HmX2etPAWO78/kLgzQt2rZ7JuAhIMwKfLut55tR2xL5Nq7
+	 ZHoGYuDBzQcwbQY5euTfziUvQzaSbfplp86BEfnlFqsIH+GbHMutXuQCeiLkEaHyop
+	 QcmThBuHZKsx8413pcCk3NnvnLD+Jcu7ds9tgVN0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 14A55F8057D; Thu, 24 Aug 2023 23:33:48 +0200 (CEST)
+	id B55D1F8055C; Fri, 25 Aug 2023 00:24:37 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0E5D9F8055A;
-	Thu, 24 Aug 2023 23:33:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 20D97F80551;
+	Fri, 25 Aug 2023 00:24:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8CC59F80552; Thu, 24 Aug 2023 23:33:40 +0200 (CEST)
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com
- [IPv6:2607:f8b0:4864:20::32e])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 73422F80537; Fri, 25 Aug 2023 00:24:32 +0200 (CEST)
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 13A60F80551
-	for <alsa-devel@alsa-project.org>; Thu, 24 Aug 2023 23:33:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 13A60F80551
+	by alsa1.perex.cz (Postfix) with ESMTPS id 5228AF800AE
+	for <alsa-devel@alsa-project.org>; Fri, 25 Aug 2023 00:24:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5228AF800AE
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=chromium.org header.i=@chromium.org header.a=rsa-sha256
- header.s=google header.b=mA2iCHU4
-Received: by mail-ot1-x32e.google.com with SMTP id
- 46e09a7af769-6bd045336c6so238249a34.2
-        for <alsa-devel@alsa-project.org>;
- Thu, 24 Aug 2023 14:33:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1692912814; x=1693517614;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PR1zji2Gv82pJsxNGTLF8FAId/T1+T9WSMkyC5Re18s=;
-        b=mA2iCHU4cZQoPUknUKFT+ZenG/MYQ9Dzpqlqj9uLhCKG2/ZtuONNQDA/AAwp9oRuVf
-         HKCpjRDyMn9p36bPwinuEXSh4lKRChitGZIGnsNxYzr9kFGv/ZtdnnymtmgJ7aS6me/0
-         4rnqzeivExrHfaE397GbAxrNA035wk5Mq9Qkg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692912814; x=1693517614;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PR1zji2Gv82pJsxNGTLF8FAId/T1+T9WSMkyC5Re18s=;
-        b=KM5U172cHwVuiQa+USnWHa7eEUsNHzORRsxv4Eb4eHUskn2q9q/v7DnUjLeEFTeqDP
-         z0VuC1HNqKDmD+uZI5BtNvkVi9a5WWEx7dwnxhZRYx4h7iJRAG3Jr6lcEg6l5PiIq1NU
-         zrrvIc1EbcWejt3qvql2KSmsMqyzEc93jFfNfpkaqeccoPadzOYzXRaIxKQOu7uRYHkG
-         6weE+sYyQMwX9ZM6S+eXo6FbNycfl7PILUF4s024H46VyJqdQ7eCkGrcMfyX+BvO3dwl
-         jEVV3bkmZJxn3fdGEw2RTWwdspKiCAX7tk2c4teOZCwS8A51w4MMIrBUo2NY8aGifWA2
-         MQkg==
-X-Gm-Message-State: AOJu0YzihT40H7QRLuhqRPZW+gPretMScUBC3pv93gBSvjxL8HVrRdUi
-	XjDJem+rquCZCnM74oBjh4BKXvxiedH7Hwc9+w==
-X-Google-Smtp-Source: 
- AGHT+IEhb3gKK2QxlZUuhJns3jnB8XoEKCVzG3BzBjZHULw4tX8C1WAJPN1uxVUIn3wEC3uuvkhu5A==
-X-Received: by 2002:a05:6359:2f97:b0:134:de8b:17ef with SMTP id
- rs23-20020a0563592f9700b00134de8b17efmr12663790rwb.18.1692912813724;
-        Thu, 24 Aug 2023 14:33:33 -0700 (PDT)
-Received: from localhost ([2620:15c:9d:4:133d:5d74:91c4:bbb1])
-        by smtp.gmail.com with UTF8SMTPSA id
- o21-20020a637315000000b00528db73ed70sm77390pgc.3.2023.08.24.14.33.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Aug 2023 14:33:32 -0700 (PDT)
-From: cujomalainey@chromium.org
-To: alsa-devel@alsa-project.org
-Cc: perex@perex.cz,
-	tiwai@suse.com,
-	ethan.geller@gmail.com,
-	Curtis Malainey <cujomalainey@chromium.org>
-Subject: [PATCH 2/2] ucm: docs: Add IVEchoData
-Date: Thu, 24 Aug 2023 14:33:12 -0700
-Message-ID: <20230824213312.1258499-2-cujomalainey@chromium.org>
-X-Mailer: git-send-email 2.42.0.rc1.204.g551eb34607-goog
-In-Reply-To: <20230824213312.1258499-1-cujomalainey@chromium.org>
-References: <20230824213312.1258499-1-cujomalainey@chromium.org>
+	dkim=pass (2048-bit key,
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=lpvfGbrj
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692915870; x=1724451870;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=kFt+ci+UMA4Sg/4WTvYN3a+oQZtymEUWVBRzt5wwQ6k=;
+  b=lpvfGbrjJ14uOa+t4VlP6ahDRg7rt0PD9qNTe2D3qMYuQwOdOW0o9Fvj
+   jtCr6IlxvLWPzzAnLhQ/08tDnuHdIqMkRT2OEYK0YTFy+bSMShd+m0gQj
+   i/MolJ6kCm0NnXi59D+0VVHmzJenByzx0tUOAr2YecPOVBvK4GE5UY5Re
+   tXuwfnePSZdR8t61FoVtb5rQCx0nyNxrDkppg3fmd6ab7SpfY27CI06PL
+   XDqKKSaRj9JRZEoKU1rmMNTXU70j/Sr8pQS6ky9ymoUiCg3kYLEIf5G+B
+   BkeF8soqPxf9doRDlSxu7tK1pD06h/MIxWd8Ljk5fDVDAZziBZtXTawQm
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="438516283"
+X-IronPort-AV: E=Sophos;i="6.02,195,1688454000";
+   d="scan'208";a="438516283"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 24 Aug 2023 15:24:26 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="714129518"
+X-IronPort-AV: E=Sophos;i="6.02,195,1688454000";
+   d="scan'208";a="714129518"
+Received: from lkp-server02.sh.intel.com (HELO daf8bb0a381d) ([10.239.97.151])
+  by orsmga006.jf.intel.com with ESMTP; 24 Aug 2023 15:24:23 -0700
+Received: from kbuild by daf8bb0a381d with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1qZIkZ-00030Z-0b;
+	Thu, 24 Aug 2023 22:24:23 +0000
+Date: Fri, 25 Aug 2023 06:23:58 +0800
+From: kernel test robot <lkp@intel.com>
+To: cujomalainey@chromium.org, alsa-devel@alsa-project.org
+Cc: oe-kbuild-all@lists.linux.dev,
+	Curtis Malainey <cujomalainey@chromium.org>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	Thierry Reding <treding@nvidia.com>,
+	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
+	Ivan Orlov <ivan.orlov0322@gmail.com>
+Subject: Re: [PATCH 1/2] ALSA: core: add snd_device_init
+Message-ID: <202308250609.8A2yaCZs-lkp@intel.com>
+References: <20230824210339.1126993-2-cujomalainey@chromium.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: CK54MDECB2RRCKKSBSFFWP6M2ZRDPUOK
-X-Message-ID-Hash: CK54MDECB2RRCKKSBSFFWP6M2ZRDPUOK
-X-MailFrom: cujomalainey@chromium.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230824210339.1126993-2-cujomalainey@chromium.org>
+Message-ID-Hash: WCTEJWHWXEKZLIBKW4EHV4JNWVBUQEZS
+X-Message-ID-Hash: WCTEJWHWXEKZLIBKW4EHV4JNWVBUQEZS
+X-MailFrom: lkp@intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -105,7 +96,8 @@ X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: <>
+Archived-At: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WCTEJWHWXEKZLIBKW4EHV4JNWVBUQEZS/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -114,33 +106,57 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Curtis Malainey <cujomalainey@chromium.org>
+Hi,
 
-Provide a UCM value to mark devices which are needed to be opened only
-for HW purposes but should not be consumed for userspace.
+kernel test robot noticed the following build warnings:
 
-Signed-off-by: Curtis Malainey <cujomalainey@chromium.org>
----
- include/use-case.h | 6 ++++++
- 1 file changed, 6 insertions(+)
+[auto build test WARNING on tiwai-sound/for-next]
+[also build test WARNING on next-20230824]
+[cannot apply to tiwai-sound/for-linus broonie-sound/for-next linus/master v6.5-rc7]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-diff --git a/include/use-case.h b/include/use-case.h
-index 3c7c0a26..3d629667 100644
---- a/include/use-case.h
-+++ b/include/use-case.h
-@@ -387,6 +387,12 @@ int snd_use_case_get_list(snd_use_case_mgr_t *uc_mgr,
-  *	  device with the same parameters it opens the source device with.
-  *   - EDIDFile
-  *      - Path to EDID file for HDMI devices
-+ *   - IVDataEcho
-+ *      - Used only on devices pointed to by EchoReferenceDev. Used to mark
-+ *        references that might be lower quality (e.g. reduced bit depth) as
-+ *        they are intended for a HW feature and not userspace consumption.
-+ *        These PCMs still need to be opened by userspace but are not
-+ *        recommended for consumption.
-  *   - JackCTL
-  *      - jack control device name
-  *   - JackControl
+url:    https://github.com/intel-lab-lkp/linux/commits/cujomalainey-chromium-org/ALSA-core-add-snd_device_init/20230825-050745
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git for-next
+patch link:    https://lore.kernel.org/r/20230824210339.1126993-2-cujomalainey%40chromium.org
+patch subject: [PATCH 1/2] ALSA: core: add snd_device_init
+config: m68k-allyesconfig (https://download.01.org/0day-ci/archive/20230825/202308250609.8A2yaCZs-lkp@intel.com/config)
+compiler: m68k-linux-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20230825/202308250609.8A2yaCZs-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308250609.8A2yaCZs-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> sound/core/init.c:149: warning: Function parameter or member 'dev' not described in 'snd_device_init'
+>> sound/core/init.c:149: warning: Excess function parameter 'dev_p' description in 'snd_device_init'
+
+
+vim +149 sound/core/init.c
+
+   140	
+   141	/**
+   142	 * snd_device_init - Initialize struct device for sound devices
+   143	 * @dev_p: pointer to store the allocated device
+   144	 * @card: card to assign, optional
+   145	 *
+   146	 * For releasing the allocated device, call put_device().
+   147	 */
+   148	void snd_device_init(struct device *dev, struct snd_card *card)
+ > 149	{
+   150		device_initialize(dev);
+   151		if (card)
+   152			dev->parent = &card->card_dev;
+   153		dev->class = &sound_class;
+   154		dev->release = default_release_alloc;
+   155	}
+   156	EXPORT_SYMBOL_GPL(snd_device_init);
+   157	
+
 -- 
-2.42.0.rc1.204.g551eb34607-goog
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
