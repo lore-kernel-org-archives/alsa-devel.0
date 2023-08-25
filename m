@@ -4,49 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BADBCC83F01
-	for <alsa-devel@archiver.kernel.org>; Sun, 27 Aug 2023 17:06:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 08AD4C83F01
+	for <alsa-devel@archiver.kernel.org>; Sun, 27 Aug 2023 17:07:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CBEE4DF8;
-	Sun, 27 Aug 2023 19:06:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CBEE4DF8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 00B6BE7C;
+	Sun, 27 Aug 2023 19:06:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 00B6BE7C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1693156012;
-	bh=jtGPtnNovZrI/f//0jEhdbjbAaXAVtUPDp5InTJbXgk=;
+	s=default; t=1693156019;
+	bh=9H07hoKhDj/tBpd9y9QcznQmA8xzSuRvEGeesfr0+ts=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=h/yR4FmApqjxiN96IEe+Lqu1L/PjSCdyxKOViWKxPo08IyrYWf1yK4hyJIYJ+qhyi
-	 nOdg9n3v3JB3+0KXOYl5sLmaJcn5XJBnhebQy8+kGvefNfmZzu2n/+9pO6YVCouASy
-	 YxXSJedSSlBdS3MIjoAAxl3RYAr8SZaAg2mzoceY=
+	b=QDZ2IcwHSLp6nfsmDGknOHW21jBdbcI0RsNKnxogAT4187HXyPlwEELt7O02RrRqP
+	 WffK8v8fHQS6DR/XpjcMZr3fq2hIAn9xLsYPpBlOLhghWGsCTNnk6je+TH9J/De2t0
+	 RYjnyaRhrc6Gy8gHLmZuYQQN1eI1aUuk7AapxU0o=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 19F0FF80558; Sun, 27 Aug 2023 19:03:11 +0200 (CEST)
+	id AC3B4F80602; Sun, 27 Aug 2023 19:03:14 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3D774F8023B;
-	Sun, 27 Aug 2023 19:03:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4B71EF80578;
+	Sun, 27 Aug 2023 19:03:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CF476F80552; Sat, 26 Aug 2023 00:22:12 +0200 (CEST)
+	id CC819F8055B; Sat, 26 Aug 2023 00:22:16 +0200 (CEST)
 Received: from bluemchen.kde.org (bluemchen.kde.org [209.51.188.41])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 9A907F800D1
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9C875F800F5
 	for <alsa-devel@alsa-project.org>; Sat, 26 Aug 2023 00:22:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9A907F800D1
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9C875F800F5
 Received: from ugly.fritz.box (localhost [127.0.0.1])
-	by bluemchen.kde.org (Postfix) with ESMTP id B13AA242C1;
+	by bluemchen.kde.org (Postfix) with ESMTP id B65C8242C4;
 	Fri, 25 Aug 2023 18:21:58 -0400 (EDT)
 Received: by ugly.fritz.box (masqmail 0.3.6-dev, from userid 1000)
-	id 1qZfBm-iUZ-00; Sat, 26 Aug 2023 00:21:58 +0200
+	id 1qZfBm-iUr-00; Sat, 26 Aug 2023 00:21:58 +0200
 From: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>,
 	Jaroslav Kysela <perex@perex.cz>
-Subject: [PATCH v5 1/8] ALSA: add snd_ctl_add_locked() & export
- snd_ctl_remove_locked()
-Date: Sat, 26 Aug 2023 00:21:51 +0200
-Message-Id: <20230825222158.171007-2-oswald.buddenhagen@gmx.de>
+Subject: [PATCH v5 4/8] ALSA: emu10k1: make playback in E-MU D.A.S. mode
+ 32-bit
+Date: Sat, 26 Aug 2023 00:21:54 +0200
+Message-Id: <20230825222158.171007-5-oswald.buddenhagen@gmx.de>
 X-Mailer: git-send-email 2.40.0.152.g15d061e6df
 In-Reply-To: <20230825222158.171007-1-oswald.buddenhagen@gmx.de>
 References: <20230825222158.171007-1-oswald.buddenhagen@gmx.de>
@@ -58,15 +58,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: OPJD3GYMTUDQT2OFNWOZHBKVT5OMQNC5
-X-Message-ID-Hash: OPJD3GYMTUDQT2OFNWOZHBKVT5OMQNC5
+Message-ID-Hash: MGZ7RI7A3PWIGCW6L6QJAQYNF4LJW327
+X-Message-ID-Hash: MGZ7RI7A3PWIGCW6L6QJAQYNF4LJW327
 X-Mailman-Approved-At: Sun, 27 Aug 2023 17:03:08 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OPJD3GYMTUDQT2OFNWOZHBKVT5OMQNC5/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MGZ7RI7A3PWIGCW6L6QJAQYNF4LJW327/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -75,125 +75,228 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-This will be used to dynamically change the available controls from
-another control's put() callback, which is already locked.
+Each channel now uses a stereo voice pair. But the FX send amounts and
+attenuation are per voice, so we have to use fixed values tuned to the
+DSP code to avoid messing up the split samples.
 
-One might want to add snd_ctl_replace_locked() for completeness, but I
-have no use for it now.
+As "regular" mode allows manipulating the amounts and att'n via mixer
+controls, we can either:
+- "Fake" them with DSP code, which doesn't seem worth the bother
+- Ignore them, which doesn't seem very nice
+
+So 32-bit playback simply remains unavailable in non-D.A.S. mode.
 
 Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 ---
+ sound/pci/emu10k1/emufx.c  | 18 ++++++++++-----
+ sound/pci/emu10k1/emupcm.c | 46 +++++++++++++++++++++++++-------------
+ 2 files changed, 43 insertions(+), 21 deletions(-)
 
-applying this upstream would simplify applying the emu10k1 high bit-rate
-patchset locally, as it would limit the affected modules to the driver
-itself.
-
-v4:
-- adjust to recent locking changes
-- mark exports as internal
-
-v3:
-- fixed typo in commit message
-
-v2:
-- extended commit message
----
- include/sound/control.h |  2 ++
- sound/core/control.c    | 43 ++++++++++++++++++++++++++++++++++++-----
- 2 files changed, 40 insertions(+), 5 deletions(-)
-
-diff --git a/include/sound/control.h b/include/sound/control.h
-index 9a4f4f7138da..7729b4ee1509 100644
---- a/include/sound/control.h
-+++ b/include/sound/control.h
-@@ -133,7 +133,9 @@ void snd_ctl_notify_one(struct snd_card * card, unsigned int mask, struct snd_kc
- 
- struct snd_kcontrol *snd_ctl_new1(const struct snd_kcontrol_new * kcontrolnew, void * private_data);
- void snd_ctl_free_one(struct snd_kcontrol * kcontrol);
-+int snd_ctl_add_locked(struct snd_card *card, struct snd_kcontrol *kcontrol);
- int snd_ctl_add(struct snd_card * card, struct snd_kcontrol * kcontrol);
-+int snd_ctl_remove_locked(struct snd_card *card, struct snd_kcontrol *kcontrol);
- int snd_ctl_remove(struct snd_card * card, struct snd_kcontrol * kcontrol);
- int snd_ctl_replace(struct snd_card *card, struct snd_kcontrol *kcontrol, bool add_on_replace);
- int snd_ctl_remove_id(struct snd_card * card, struct snd_ctl_elem_id *id);
-diff --git a/sound/core/control.c b/sound/core/control.c
-index 59c8658966d4..9e807804e110 100644
---- a/sound/core/control.c
-+++ b/sound/core/control.c
-@@ -39,9 +39,6 @@ static LIST_HEAD(snd_control_compat_ioctls);
- #endif
- static struct snd_ctl_layer_ops *snd_ctl_layer;
- 
--static int snd_ctl_remove_locked(struct snd_card *card,
--				 struct snd_kcontrol *kcontrol);
--
- static int snd_ctl_open(struct inode *inode, struct file *file)
+diff --git a/sound/pci/emu10k1/emufx.c b/sound/pci/emu10k1/emufx.c
+index 8e33cc596825..9f27f07d5271 100644
+--- a/sound/pci/emu10k1/emufx.c
++++ b/sound/pci/emu10k1/emufx.c
+@@ -1279,7 +1279,8 @@ static int _snd_emu10k1_das_init_efx(struct snd_emu10k1 *emu)
  {
- 	unsigned long flags;
-@@ -509,6 +506,27 @@ static int __snd_ctl_add_replace(struct snd_card *card,
- 	return 0;
- }
+ 	enum {
+ 		ENUM_GPR(bit_shifter16, 1),
+-		ENUM_GPR(tmp, 1),
++		ENUM_GPR(lowword_mask, 1),
++		ENUM_GPR(tmp, 2),
+ 		num_static_gprs
+ 	};
+ 	int gpr = num_static_gprs;
+@@ -1310,10 +1311,14 @@ static int _snd_emu10k1_das_init_efx(struct snd_emu10k1 *emu)
  
-+static int snd_ctl_add_replace_locked(struct snd_card *card,
-+				      struct snd_kcontrol *kcontrol,
-+				      enum snd_ctl_add_mode mode)
-+{
-+	int err = -EINVAL;
-+
-+	if (! kcontrol)
-+		return err;
-+	if (snd_BUG_ON(!card || !kcontrol->info))
-+		goto error;
-+
-+	err = __snd_ctl_add_replace(card, kcontrol, mode);
-+	if (err < 0)
-+		goto error;
-+	return 0;
-+
-+ error:
-+	snd_ctl_free_one(kcontrol);
-+	return err;
-+}
-+
- static int snd_ctl_add_replace(struct snd_card *card,
- 			       struct snd_kcontrol *kcontrol,
- 			       enum snd_ctl_add_mode mode)
-@@ -532,6 +550,16 @@ static int snd_ctl_add_replace(struct snd_card *card,
- 	return err;
- }
+ 	gpr_map = icode->gpr_map;
+ 	gpr_map[bit_shifter16] = 0x00008000;
++	gpr_map[lowword_mask] = 0x0000ffff;
  
-+/**
-+ * snd_ctl_add_locked - same as snd_ctl_add(), but card->controls_rwsem
-+ * is expected to be already locked if necessary.
-+ */
-+int snd_ctl_add_locked(struct snd_card *card, struct snd_kcontrol *kcontrol)
-+{
-+	return snd_ctl_add_replace_locked(card, kcontrol, CTL_ADD_EXCLUSIVE);
-+}
-+EXPORT_SYMBOL_GPL(snd_ctl_add_locked);
-+
- /**
-  * snd_ctl_add - add the control instance to the card
-  * @card: the card instance
-@@ -596,11 +624,16 @@ static int __snd_ctl_remove(struct snd_card *card,
- 	return 0;
- }
+ 	if (emu->card_capabilities->ca0108_chip) {
+-		for (int z = 0; z < 16; z++)
+-			A_OP(icode, &ptr, iMACINT0, A3_EMU32OUT(z), A_C_00000000, A_FXBUS(z), A_C_00000002);
++		for (int z = 0; z < 16; z++) {
++			A_OP(icode, &ptr, iMAC0, A_GPR(tmp), A_C_00000000, A_FXBUS(z * 2), A_C_00010000); // >> 15
++			A_OP(icode, &ptr, iMACINT0, A_GPR(tmp + 1), A_C_00000000, A_FXBUS(z * 2 + 1), A_C_00000002); // << 1
++			A_OP(icode, &ptr, iANDXOR, A3_EMU32OUT(z), A_GPR(tmp), A_GPR(lowword_mask), A_GPR(tmp + 1));
++		}
  
--static inline int snd_ctl_remove_locked(struct snd_card *card,
--					struct snd_kcontrol *kcontrol)
-+/**
-+ * snd_ctl_remove_locked - same as snd_ctl_remove(), but card->controls_rwsem
-+ * is expected to be already locked if necessary.
-+ */
-+int snd_ctl_remove_locked(struct snd_card *card,
-+			  struct snd_kcontrol *kcontrol)
+ 		snd_emu10k1_audigy_dsp_convert_32_to_2x16(
+ 			icode, &ptr, tmp, bit_shifter16, A3_EMU32IN(0), A_EXTOUT(0));
+@@ -1326,8 +1331,11 @@ static int _snd_emu10k1_das_init_efx(struct snd_emu10k1 *emu)
+ 			gpr_map[gpr++] = 0x00000000;
+ 		}
+ 	} else {
+-		for (int z = 0; z < 16; z++)
+-			A_OP(icode, &ptr, iMACINT0, A_EMU32OUTL(z), A_C_00000000, A_FXBUS(z), A_C_00000002);
++		for (int z = 0; z < 16; z++) {
++			A_OP(icode, &ptr, iMAC0, A_GPR(tmp), A_C_00000000, A_FXBUS(z * 2), A_C_00010000); // >> 15
++			A_OP(icode, &ptr, iMACINT0, A_GPR(tmp + 1), A_C_00000000, A_FXBUS(z * 2 + 1), A_C_00000002); // << 1
++			A_OP(icode, &ptr, iANDXOR, A_EMU32OUTL(z), A_GPR(tmp), A_GPR(lowword_mask), A_GPR(tmp + 1));
++		}
+ 
+ 		/* Note that the Alice2 DSPs have 6 I2S inputs which we don't use. */
+ 		snd_emu10k1_audigy_dsp_convert_32_to_2x16(
+diff --git a/sound/pci/emu10k1/emupcm.c b/sound/pci/emu10k1/emupcm.c
+index 9a0efa6e5ba9..a433793345d4 100644
+--- a/sound/pci/emu10k1/emupcm.c
++++ b/sound/pci/emu10k1/emupcm.c
+@@ -360,13 +360,16 @@ static void snd_emu10k1_pcm_init_das_voices(struct snd_emu10k1 *emu,
+ 					    unsigned char channel)
  {
- 	return __snd_ctl_remove(card, kcontrol, true);
- }
-+EXPORT_SYMBOL_GPL(snd_ctl_remove_locked);
+ 	static const unsigned char send_amount[8] = { 255, 0, 0, 0, 0, 0, 0, 0 };
+-	unsigned char send_routing[8];
++	unsigned char send_routing[9];
  
- /**
-  * snd_ctl_remove - remove the control from the card and release it
+ 	for (int i = 0; i < ARRAY_SIZE(send_routing); i++)
+ 		send_routing[i] = (channel + i) % NUM_G;
+-	snd_emu10k1_pcm_init_voice(emu, evoice, true, false,
++	snd_emu10k1_pcm_init_voice(emu, evoice, true, true,
+ 				   start_addr, end_addr,
+ 				   send_routing, send_amount);
++	snd_emu10k1_pcm_init_voice(emu, evoice + 1, true, true,
++				   start_addr, end_addr,
++				   send_routing + 1, send_amount);
+ }
+ 
+ static void snd_emu10k1_pcm_init_extra_voice(struct snd_emu10k1 *emu,
+@@ -400,7 +403,7 @@ static int snd_emu10k1_playback_hw_params(struct snd_pcm_substream *substream,
+ 	} else {
+ 		type = EMU10K1_EFX;
+ 		channels = params_channels(hw_params);
+-		count = 1;
++		count = 1 + emu->das_mode;
+ 	}
+ 	err = snd_emu10k1_pcm_channel_alloc(epcm, type, count, channels);
+ 	if (err < 0)
+@@ -503,15 +506,17 @@ static int snd_emu10k1_efx_playback_prepare(struct snd_pcm_substream *substream)
+ 	snd_emu10k1_pcm_init_extra_voice(emu, epcm->extra, true,
+ 					 start_addr, start_addr + extra_size);
+ 
+-	epcm->ccca_start_addr = start_addr;
+ 	if (das_mode) {
++		start_addr >>= 1;
++		epcm->ccca_start_addr = start_addr;
+ 		for (i = 0; i < runtime->channels; i++) {
+ 			snd_emu10k1_pcm_init_das_voices(emu, epcm->voices[i],
+ 							start_addr, start_addr + channel_size,
+-							i);
++							i * 2);
+ 			start_addr += channel_size;
+ 		}
+ 	} else {
++		epcm->ccca_start_addr = start_addr;
+ 		for (i = 0; i < runtime->channels; i++) {
+ 			snd_emu10k1_pcm_init_voices(emu, epcm->voices[i], true, false,
+ 						    start_addr, start_addr + channel_size,
+@@ -716,6 +721,7 @@ static void snd_emu10k1_playback_unmute_das_voices(struct snd_emu10k1 *emu,
+ 						   struct snd_emu10k1_voice *evoice)
+ {
+ 	snd_emu10k1_playback_commit_volume(emu, evoice, 0x8000 << 16);
++	snd_emu10k1_playback_commit_volume(emu, evoice + 1, 0x8000 << 16);
+ }
+ 
+ static void snd_emu10k1_playback_mute_voice(struct snd_emu10k1 *emu,
+@@ -930,24 +936,29 @@ static snd_pcm_uframes_t snd_emu10k1_playback_pointer(struct snd_pcm_substream *
+ }
+ 
+ static u64 snd_emu10k1_efx_playback_voice_mask(struct snd_emu10k1_pcm *epcm,
+-					       int channels)
++					       bool stereo, int channels)
+ {
+ 	u64 mask = 0;
++	u64 mask0 = (1 << (1 << stereo)) - 1;
+ 
+ 	for (int i = 0; i < channels; i++) {
+ 		int voice = epcm->voices[i]->number;
+-		mask |= 1ULL << voice;
++		mask |= mask0 << voice;
+ 	}
+ 	return mask;
+ }
+ 
+ static void snd_emu10k1_efx_playback_freeze_voices(struct snd_emu10k1 *emu,
+ 						   struct snd_emu10k1_pcm *epcm,
+-						   int channels)
++						   bool stereo, int channels)
+ {
+ 	for (int i = 0; i < channels; i++) {
+ 		int voice = epcm->voices[i]->number;
+ 		snd_emu10k1_ptr_write(emu, CPF_STOP, voice, 1);
++		if (stereo) {
++			// Weirdly enough, the stereo slave needs to be stopped separately
++			snd_emu10k1_ptr_write(emu, CPF_STOP, voice + 1, 1);
++		}
+ 		snd_emu10k1_playback_commit_pitch(emu, voice, PITCH_48000 << 16);
+ 	}
+ }
+@@ -971,14 +982,14 @@ static void snd_emu10k1_efx_playback_unmute_das_voices(struct snd_emu10k1 *emu,
+ 
+ static void snd_emu10k1_efx_playback_stop_voices(struct snd_emu10k1 *emu,
+ 						 struct snd_emu10k1_pcm *epcm,
+-						 int channels)
++						 bool stereo, int channels)
+ {
+ 	for (int i = 0; i < channels; i++)
+ 		snd_emu10k1_playback_stop_voice(emu, epcm->voices[i]);
+ 	snd_emu10k1_playback_set_stopped(emu, epcm);
+ 
+ 	for (int i = 0; i < channels; i++)
+-		snd_emu10k1_playback_mute_voice(emu, epcm->voices[i]);
++		snd_emu10k1_playback_mute_voices(emu, epcm->voices[i], stereo);
+ }
+ 
+ static int snd_emu10k1_efx_playback_trigger(struct snd_pcm_substream *substream,
+@@ -997,15 +1008,15 @@ static int snd_emu10k1_efx_playback_trigger(struct snd_pcm_substream *substream,
+ 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+ 	case SNDRV_PCM_TRIGGER_RESUME:
+ 		mask = snd_emu10k1_efx_playback_voice_mask(
+-				epcm, runtime->channels);
++				epcm, das_mode, runtime->channels);
+ 		for (int i = 0; i < 10; i++) {
+ 			// Note that the freeze is not interruptible, so we make no
+ 			// effort to reset the bits outside the error handling here.
+ 			snd_emu10k1_voice_set_loop_stop_multiple(emu, mask);
+ 			snd_emu10k1_efx_playback_freeze_voices(
+-					emu, epcm, runtime->channels);
++					emu, epcm, das_mode, runtime->channels);
+ 			snd_emu10k1_playback_prepare_voices(
+-					emu, epcm, true, false, runtime->channels);
++					emu, epcm, true, das_mode, runtime->channels);
+ 
+ 			// It might seem to make more sense to unmute the voices only after
+ 			// they have been started, to potentially avoid torturing the speakers
+@@ -1027,7 +1038,7 @@ static int snd_emu10k1_efx_playback_trigger(struct snd_pcm_substream *substream,
+ 			}
+ 
+ 			snd_emu10k1_efx_playback_stop_voices(
+-					emu, epcm, runtime->channels);
++					emu, epcm, das_mode, runtime->channels);
+ 
+ 			if (result != -EAGAIN)
+ 				break;
+@@ -1040,7 +1051,7 @@ static int snd_emu10k1_efx_playback_trigger(struct snd_pcm_substream *substream,
+ 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+ 		snd_emu10k1_playback_stop_voice(emu, epcm->extra);
+ 		snd_emu10k1_efx_playback_stop_voices(
+-				emu, epcm, runtime->channels);
++				emu, epcm, das_mode, runtime->channels);
+ 
+ 		epcm->resume_pos = snd_emu10k1_playback_pointer(substream);
+ 		break;
+@@ -1226,8 +1237,11 @@ static int snd_emu10k1_efx_playback_open(struct snd_pcm_substream *substream)
+ 	runtime->private_data = epcm;
+ 	runtime->private_free = snd_emu10k1_pcm_free_substream;
+ 	runtime->hw = snd_emu10k1_efx_playback;
+-	if (emu->card_capabilities->emu_model)
++	if (emu->card_capabilities->emu_model) {
+ 		snd_emu1010_constrain_efx_rate(emu, runtime);
++		if (emu->das_mode)
++			runtime->hw.formats = SNDRV_PCM_FMTBIT_S32_LE;
++	}
+ 	err = snd_emu10k1_playback_set_constraints(runtime);
+ 	if (err < 0) {
+ 		kfree(epcm);
 -- 
 2.40.0.152.g15d061e6df
 
