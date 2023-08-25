@@ -4,108 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D8D93C3DA6F
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Aug 2023 07:51:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DD843C3DA6F
+	for <alsa-devel@archiver.kernel.org>; Fri, 25 Aug 2023 07:53:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 78FAA84D;
-	Fri, 25 Aug 2023 09:50:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 78FAA84D
+	by alsa0.perex.cz (Postfix) with ESMTPS id EE181851;
+	Fri, 25 Aug 2023 09:52:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EE181851
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1692949861;
-	bh=K0s1mQ22HBoR+HxsldnBo62cOYqsvU2XBSi8kw+1o+I=;
+	s=default; t=1692949996;
+	bh=XaCj1xkBfibjnLekFHAhLF+HcZC+H920Zim1g7/h43Y=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=ZugnyeLM2JyLOA8JSry0ZllthlMhSfF5xZrLjGUhCPThWMrRO0ygnywiEyZ49DKcp
-	 TJLkr1mAwiFXahyV97Fp9gPe6y3FqqEZfgVv5/K+UxzGhGoTZ0dQTsIz9I3j58tbW7
-	 DT9M12C9kfzfyrCW2yQY24TR87jKI6hUmEHPtEqY=
+	b=S2f8CQATf5jk1idiDc5V05CBEW+LNMNB6lkZrrX7Oo6jUSGEm61/dDUo5Wnjzml82
+	 5qWMA0aOoGJDLe2+poFxIXIWSXEQ3RBljR4SIzAQP63hQyeqbfh41r70EkCbv3j46e
+	 QdAT5eIv+ohVLp1IDNnmNc/aaP9zVwX2nCGtJrls=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BF13DF804DA; Fri, 25 Aug 2023 09:49:50 +0200 (CEST)
+	id 3DC12F80536; Fri, 25 Aug 2023 09:51:58 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5D7CDF800F5;
-	Fri, 25 Aug 2023 09:49:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E4840F800F5;
+	Fri, 25 Aug 2023 09:51:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id ACE23F800F5; Fri, 25 Aug 2023 09:49:46 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2001:67c:2178:6::1d])
+	id D4ADBF80549; Fri, 25 Aug 2023 09:49:56 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 1DAD4F800BF
-	for <alsa-devel@alsa-project.org>; Fri, 25 Aug 2023 09:48:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1DAD4F800BF
+	by alsa1.perex.cz (Postfix) with ESMTPS id AF627F804F3
+	for <alsa-devel@alsa-project.org>; Fri, 25 Aug 2023 09:49:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AF627F804F3
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=zwXWUoG+;
+ header.s=susede2_rsa header.b=vyuU2toh;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=hZUWIjwj
+ header.s=susede2_ed25519 header.b=ZXBLBsGA
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id AEE341F8B2;
-	Fri, 25 Aug 2023 07:48:08 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 01C3022017;
+	Fri, 25 Aug 2023 07:49:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1692949688;
+	t=1692949793;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=mYpRgKkqPnZRHXbdkwIwj/vSbyT7RcD8xYt4PaeABDU=;
-	b=zwXWUoG+oI1n1JCYPZkhcklkmNUNOTGoNyN1sHWOJimdhyaTjDvIYnXAC0inRU20E0Mi4k
-	6+BqgWGf1IUOqPYAX6VlBL5VjFhK8OmcgGJoORlWvANypiqpeLbzjwmRlcfTxkS0mNiyK0
-	7EU7tkFNNlmZHr40mrC/ss9N5JqY2Vw=
+	bh=9AMPbzJqXUBLSj96Q3gSG+cKQ3pq7dZsZ7StM9VL3R4=;
+	b=vyuU2toh+F4s312wAO0s9NclcvOW6fWT/7b9f9sHdtiWjuc9qHjGCUBaXdOszJr7jJsAGm
+	UNmu2KCtDOuz3Nqqll65lsJA613h+PD+dDhC5tQ84+E3CwLacBOQ8iRNCusZqqTMLbtmCj
+	MeFFQAsuh4gH1FSnAeFltaotfInBbWc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1692949688;
+	s=susede2_ed25519; t=1692949793;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=mYpRgKkqPnZRHXbdkwIwj/vSbyT7RcD8xYt4PaeABDU=;
-	b=hZUWIjwjINKZ5e6ttlkKPJjGoVkxu4+Lg78g5wlJ63BG5ENx1bG9WKPyET3wwo5zElAt5Y
-	nhPfAJCfNgEDyqBw==
+	bh=9AMPbzJqXUBLSj96Q3gSG+cKQ3pq7dZsZ7StM9VL3R4=;
+	b=ZXBLBsGA64DH8CZ/62YeLKZyGohLDoz6KGOJbwUj0mAANVpovm3keiYuU/JVAx8sVDCSLY
+	dPmzZzgtTb7zZZDg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 22E731340A;
-	Fri, 25 Aug 2023 07:48:08 +0000 (UTC)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C8E181340A;
+	Fri, 25 Aug 2023 07:49:52 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id SK2jB7hc6GQdUQAAMHmgww
-	(envelope-from <tiwai@suse.de>); Fri, 25 Aug 2023 07:48:08 +0000
-Date: Fri, 25 Aug 2023 09:48:07 +0200
-Message-ID: <87edjr8sw8.wl-tiwai@suse.de>
+	id NOyrLyBd6GTkUQAAMHmgww
+	(envelope-from <tiwai@suse.de>); Fri, 25 Aug 2023 07:49:52 +0000
+Date: Fri, 25 Aug 2023 09:49:52 +0200
+Message-ID: <87cyzb8stb.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Sui Jingfeng <sui.jingfeng@linux.dev>
-Cc: Bjorn Helgaas <bhelgaas@google.com>,
-	amd-gfx@lists.freedesktop.org,
-	dri-devel@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org,
-	nouveau@lists.freedesktop.org,
-	linux-pci@vger.kernel.org,
+To: Fabian Vogt <fabian@ritter-vogt.de>
+Cc: SungHwan Jung <onenowy@gmail.com>,
 	alsa-devel@alsa-project.org,
-	Sui Jingfeng <suijingfeng@loongson.cn>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	Fred Oh <fred.oh@linux.intel.com>,
-	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-	Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Subject: Re: [PATCH 2/5] ALSA: hda/intel: Use pci_get_base_class() to reduce
- duplicated code
-In-Reply-To: <20230825062714.6325-3-sui.jingfeng@linux.dev>
-References: <20230825062714.6325-1-sui.jingfeng@linux.dev>
-	<20230825062714.6325-3-sui.jingfeng@linux.dev>
+	linux-kernel@vger.kernel.org,
+	perex@perex.cz
+Subject: Re: [PATCH v2] ALSA: hda/realtek: Add quirk for mute LEDs on HP ENVY
+ x360 15-eu0xxx
+In-Reply-To: <2693091.mvXUDI8C0e@fabians-envy>
+References: <4504056.LvFx2qVVIh@fabians-envy>
+	<20230824173718.7992-1-onenowy@gmail.com>
+	<87r0ns8hej.wl-tiwai@suse.de>
+	<2693091.mvXUDI8C0e@fabians-envy>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Message-ID-Hash: 64P2RR3U5UOQZIRVFKGLAKPPN5WSR3I5
-X-Message-ID-Hash: 64P2RR3U5UOQZIRVFKGLAKPPN5WSR3I5
+Message-ID-Hash: KJKXCSLWVN4CELVQOGM4SUZBR3VVZXPT
+X-Message-ID-Hash: KJKXCSLWVN4CELVQOGM4SUZBR3VVZXPT
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -118,7 +110,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/64P2RR3U5UOQZIRVFKGLAKPPN5WSR3I5/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KJKXCSLWVN4CELVQOGM4SUZBR3VVZXPT/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -127,55 +119,27 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, 25 Aug 2023 08:27:11 +0200,
-Sui Jingfeng wrote:
+On Thu, 24 Aug 2023 20:39:48 +0200,
+Fabian Vogt wrote:
 > 
-> From: Sui Jingfeng <suijingfeng@loongson.cn>
+> The LED for the mic mute button is controlled by GPIO2.
+> The mute button LED is slightly more complex, it's controlled by two bits
+> in coeff 0x0b.
 > 
-> Should be no functional change
-> 
-> Cc: Jaroslav Kysela <perex@perex.cz>
-> Cc: Takashi Iwai <tiwai@suse.com>
-> Cc: Fred Oh <fred.oh@linux.intel.com>
-> Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> Cc: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-> Cc: Bjorn Helgaas <bhelgaas@google.com>
-> Signed-off-by: Sui Jingfeng <suijingfeng@loongson.cn>
+> Signed-off-by: Fabian Vogt <fabian@ritter-vogt.de>
 > ---
->  sound/pci/hda/hda_intel.c | 16 +++++-----------
->  1 file changed, 5 insertions(+), 11 deletions(-)
-> 
-> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-> index a21b61ad08d1..811a149584f2 100644
-> --- a/sound/pci/hda/hda_intel.c
-> +++ b/sound/pci/hda/hda_intel.c
-> @@ -1429,17 +1429,11 @@ static bool atpx_present(void)
->  	acpi_handle dhandle, atpx_handle;
->  	acpi_status status;
->  
-> -	while ((pdev = pci_get_class(PCI_CLASS_DISPLAY_VGA << 8, pdev)) != NULL) {
-> -		dhandle = ACPI_HANDLE(&pdev->dev);
-> -		if (dhandle) {
-> -			status = acpi_get_handle(dhandle, "ATPX", &atpx_handle);
-> -			if (ACPI_SUCCESS(status)) {
-> -				pci_dev_put(pdev);
-> -				return true;
-> -			}
-> -		}
-> -	}
-> -	while ((pdev = pci_get_class(PCI_CLASS_DISPLAY_OTHER << 8, pdev)) != NULL) {
-> +	while ((pdev = pci_get_base_class(PCI_BASE_CLASS_DISPLAY, pdev))) {
-> +		if ((pdev->class != PCI_CLASS_DISPLAY_VGA << 8) &&
-> +		    (pdev->class != PCI_CLASS_DISPLAY_OTHER << 8))
-> +			continue;
-> +
->  		dhandle = ACPI_HANDLE(&pdev->dev);
->  		if (dhandle) {
->  			status = acpi_get_handle(dhandle, "ATPX", &atpx_handle);
+> Changes since v1:
+> Rebased on 03b0563c2f35. I've got this laptop for almost two years now and
+> two days ago decided to dig into the issue with mute LEDs. What amazing timing
+> that someone else made the exact same fixup for a different model just hours
+> before I submit...
+> Renamed quirk to ..._LEDS to distinguish it from the similar quirk which
+> handles only one of the mute LEDs.
 
-Reviewed-by: Takashi Iwai <tiwai@suse.de>
+Applied now.  Thanks.
 
+BTW, at the next time you post a v2 patch, it's better to start a new
+thread instead of hanging to the old thread.
 
-thanks,
 
 Takashi
