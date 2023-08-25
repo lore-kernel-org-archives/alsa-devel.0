@@ -4,90 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 447AFC3DA66
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Aug 2023 08:14:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 50EA4C3DA66
+	for <alsa-devel@archiver.kernel.org>; Fri, 25 Aug 2023 08:14:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5960D1E3;
-	Fri, 25 Aug 2023 10:13:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5960D1E3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0C8E4DEB;
+	Fri, 25 Aug 2023 10:13:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0C8E4DEB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1692951274;
-	bh=ZPOVoWflkn5ze/RL1vfcrWv4KndgatLnq+lpS515m1M=;
+	s=default; t=1692951285;
+	bh=Uz6E8HLxWI35ovCMD+J5so9kCTh/4AIEHtwt/doxIgs=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=onY12nRVoHiLCFWEr1boywbHJKI3XPq2Ti3h1TcP2Y+uG4Z2tvslpLxrTKjhqW8xD
-	 BWeQdotgFfFW83iyq8g3jq4wpQGZzM9fPwdX6242zjGyo5KV2IOdvzH0C22xqimCCI
-	 N7ahEO1EmKzU/JeB64N5siOzcEoRzX7GPNPUwHCw=
+	b=BZVRvbnSHl5mRJwqkAdqnmuA9MgdrrZwvMX71M65rbKnPTl0vW8SRZo6fOQTHNlTE
+	 PMsD1hduRFe7EXK8tO6AOm8A/4c8vVvqHZJPm+Q8obpZ0ET9Bhx5ohyH6+GQKOmf5U
+	 t5ppw6rS+vbvWdB/cZtr3ijZ7/Xlc5BpAnxP0T8k=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0E855F8056F; Fri, 25 Aug 2023 10:12:36 +0200 (CEST)
+	id 31837F805A9; Fri, 25 Aug 2023 10:12:38 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 17EF3F80579;
-	Fri, 25 Aug 2023 10:12:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A7064F80589;
+	Fri, 25 Aug 2023 10:12:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2A61DF8055C; Fri, 25 Aug 2023 10:12:30 +0200 (CEST)
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com
- [IPv6:2a00:1450:4864:20::12b])
+	id 14D37F80568; Fri, 25 Aug 2023 10:12:31 +0200 (CEST)
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com
+ [IPv6:2a00:1450:4864:20::133])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id AC363F800F5
-	for <alsa-devel@alsa-project.org>; Fri, 25 Aug 2023 10:12:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AC363F800F5
+	by alsa1.perex.cz (Postfix) with ESMTPS id 8E341F8023B
+	for <alsa-devel@alsa-project.org>; Fri, 25 Aug 2023 10:12:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8E341F8023B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=ZXicqbRu
-Received: by mail-lf1-x12b.google.com with SMTP id
- 2adb3069b0e04-5007abb15e9so963760e87.0
+ header.s=google header.b=bPi55yZm
+Received: by mail-lf1-x133.google.com with SMTP id
+ 2adb3069b0e04-4fe8c16c1b4so916199e87.2
         for <alsa-devel@alsa-project.org>;
- Fri, 25 Aug 2023 01:12:17 -0700 (PDT)
+ Fri, 25 Aug 2023 01:12:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692951135; x=1693555935;
+        d=linaro.org; s=google; t=1692951137; x=1693555937;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=NBbRRSYAQA5xmq25ubQ8kHHlKCIWtZeRLr/sb85xuNU=;
-        b=ZXicqbRubMjwCeZSDp32zGvSe2Cg8/FKjVonc3OsBRO2krXO9cvadTN+LEo+huL3zn
-         OIhuzcmuZ3+DNGfyUWUCnuHFZT6ri6Nm07495TVslpIaSQ+NwKVr6zekLYT0PZSblQrs
-         wagBfLfbz5NQpkh7nX06Io3lM54ZJt2f6MhCztCKdKx86JpxnpZlXLGy1+BQ1Im+EdaN
-         AGZG/AsNNs0dYj56gsC/jkl6aRqlgLHWJ1hpp1h+Mfw6U8oU3wtq7mCeGrhqhOULtwHX
-         1BxTwnLpJ71GxdGgkFs12MOHXaxOu6FTOzDbnJZI20sPRMcQu5+jN9t8fL8hzsj5adyJ
-         pXTA==
+        bh=d/HhJkYfqyaXs9yIGYFPPzlpsmAC+qKTgrrYF36b8es=;
+        b=bPi55yZm+3mup9ggSLUCjMWmRb49okeCF+W/OznEmbeZRtK02YnHTszrQ5+Yy1lVJE
+         FtbEsbpuiImJA7hZOJNZCCRgfo0YFxdKzRiKy5UEzNhL+4M53w7sMmYRHZOG7ewHXJF1
+         BGPt8tIiHS34hZgZkYVGV0pg3iYwr9/LpwQwMeStJUz3XwO4kMfB6XH/0W6V2Bmphf5o
+         O3mmgi3GY25eEL+fFun4wUcaJCesVXoeNpS/trH8TQeIMS38WSV4b0MMNYAWKb0boreu
+         7cW/63vZlUtX245mPHNpyw782/X9SAa/rAKyRgmXzZkGLLnXiCqFdpQDiQmQsAIYCPVD
+         +hDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692951135; x=1693555935;
+        d=1e100.net; s=20221208; t=1692951137; x=1693555937;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=NBbRRSYAQA5xmq25ubQ8kHHlKCIWtZeRLr/sb85xuNU=;
-        b=T47fWjilBVdH/VNdKUI9O85Q923sdN1q9e4mUXNoIBFx5usx3PqCB2kL7S1z/keWgd
-         rOLhw6DdI/DjqNGTwDRCJ//6X12oKFcxedM22lGxFVMkJZ/0QuGSfz0cfq0/72Ljl1TZ
-         IxScAwzjCp+JZyeW3XadpKeDX/we0luCKVCASZxk9+bfOFFMAh3Qlz8CHyqJ7jmcIReL
-         iAbGJ111H+gLeIwerGt7y4oIsNgJslLR5WoFrHwuRWE1gZIv91fYeFNMz4+pps0nl3r3
-         og7yxqxfYu4+Wh24zta+MoHmLZ6EZMtbY/n7+captunA4rz66X3LQTBwQfAiWqKyJC4r
-         Gccg==
-X-Gm-Message-State: AOJu0YwBiYLT+4YYcenGsnFQcYPB+psNvKc/CVc/9x/+JbekfG80XkPu
-	4+EZ0IEtq8+eNAlMDbcAr/oGNA==
+        bh=d/HhJkYfqyaXs9yIGYFPPzlpsmAC+qKTgrrYF36b8es=;
+        b=isO4taExrQfJfEiudChzTlg9BpApn6QvjbHuF6icFAcz0tV1O0O6qUx/kJWCPnZna1
+         n3evsIUEIh02QcCgZ634aI94cQUQi1dWL8ZPFGKLuWkzosOTK2JdM7DeqWA8MfWyRVrK
+         cF+EzThHfG0oqimGPB81+PSbOK5oTUuoqBc94LCmo/hig7eRDHDQlR0BwI4pC7oRkutP
+         b8hCw6qS+ypO9g2dtkfGoNH77KDkXKRzd4WdDFEJcZItXVqB0s9AuIrZ391Syv0VbkP7
+         2UYz9QXIQpVZkeGYv8FP05zwnVJ0YcSqIAEJXH9Eh3M6opiWHT5p6Q8FSMSYu5+MeozD
+         O85w==
+X-Gm-Message-State: AOJu0YyMzU1qDjELqrcwOdLjrdEhm9SNC85IieL7bKfl7UktBqKV75uC
+	b+lXqNU+uBQrUNOKKE2qjdocSg==
 X-Google-Smtp-Source: 
- AGHT+IEPLIDpD1w1RF98YcjynCIXKHZQox8F22rws/cF0RMIh/cKJbjBBRiwjVgcU5sTSiS7K0f0rA==
-X-Received: by 2002:a05:6512:615:b0:4fd:c923:db59 with SMTP id
- b21-20020a056512061500b004fdc923db59mr11392637lfe.15.1692951135669;
-        Fri, 25 Aug 2023 01:12:15 -0700 (PDT)
+ AGHT+IEyHJmheRscOX7UBeg6Z7DcJVfwt0W14guOb3+tSfGq9EVhRyrhY8ha1hu6hxSTW7rsulAyig==
+X-Received: by 2002:a05:6512:32cc:b0:4fd:fabf:b6ee with SMTP id
+ f12-20020a05651232cc00b004fdfabfb6eemr14730764lfg.9.1692951137399;
+        Fri, 25 Aug 2023 01:12:17 -0700 (PDT)
 Received: from [127.0.1.1] ([85.235.12.238])
         by smtp.gmail.com with ESMTPSA id
- q28-20020ac2511c000000b004fe1a35fd15sm195559lfb.140.2023.08.25.01.12.14
+ q28-20020ac2511c000000b004fe1a35fd15sm195559lfb.140.2023.08.25.01.12.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Aug 2023 01:12:15 -0700 (PDT)
+        Fri, 25 Aug 2023 01:12:16 -0700 (PDT)
 From: Linus Walleij <linus.walleij@linaro.org>
-Date: Fri, 25 Aug 2023 10:12:13 +0200
-Subject: [PATCH 3/7] ASoC: max98373: Convert to use GPIO descriptors
+Date: Fri, 25 Aug 2023 10:12:15 +0200
+Subject: [PATCH 5/7] ASoC: max98396: Drop pointless include
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230825-descriptors-asoc-max-v1-3-b212292b2f08@linaro.org>
+Message-Id: <20230825-descriptors-asoc-max-v1-5-b212292b2f08@linaro.org>
 References: <20230825-descriptors-asoc-max-v1-0-b212292b2f08@linaro.org>
 In-Reply-To: <20230825-descriptors-asoc-max-v1-0-b212292b2f08@linaro.org>
 To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
@@ -95,8 +95,8 @@ To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
 Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
  Linus Walleij <linus.walleij@linaro.org>
 X-Mailer: b4 0.12.3
-Message-ID-Hash: RTWVNJ5GMUDYOJPMKVV3NEPTTKJTKNY4
-X-Message-ID-Hash: RTWVNJ5GMUDYOJPMKVV3NEPTTKJTKNY4
+Message-ID-Hash: AMYJZNLUPDTYHBAY4XM72GKR6S7Z7ODI
+X-Message-ID-Hash: AMYJZNLUPDTYHBAY4XM72GKR6S7Z7ODI
 X-MailFrom: linus.walleij@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -109,7 +109,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RTWVNJ5GMUDYOJPMKVV3NEPTTKJTKNY4/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AMYJZNLUPDTYHBAY4XM72GKR6S7Z7ODI/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -118,124 +118,27 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Instead of relying on legacy interfaces, convert the driver to
-use GPIO descriptors. This is a straight-forward conversion,
-we support also sdw devices providing GPIO descriptor tables
-if they so desire.
+This driver is already using solely GPIO descriptors and
+do not need to include the legacy header <linux/gpio.h>.
+Drop it.
 
 Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 ---
- sound/soc/codecs/max98373-i2c.c | 17 -----------------
- sound/soc/codecs/max98373.c     | 35 +++++++++++++++++++----------------
- sound/soc/codecs/max98373.h     |  2 +-
- 3 files changed, 20 insertions(+), 34 deletions(-)
+ sound/soc/codecs/max98396.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/sound/soc/codecs/max98373-i2c.c b/sound/soc/codecs/max98373-i2c.c
-index 0fa5ceca62a2..e7ec7875c4a9 100644
---- a/sound/soc/codecs/max98373-i2c.c
-+++ b/sound/soc/codecs/max98373-i2c.c
-@@ -3,12 +3,10 @@
- 
- #include <linux/acpi.h>
- #include <linux/delay.h>
--#include <linux/gpio.h>
- #include <linux/i2c.h>
- #include <linux/module.h>
- #include <linux/mod_devicetable.h>
- #include <linux/of.h>
--#include <linux/of_gpio.h>
- #include <linux/pm.h>
- #include <linux/regmap.h>
- #include <linux/slab.h>
-@@ -560,21 +558,6 @@ static int max98373_i2c_probe(struct i2c_client *i2c)
- 	/* voltage/current slot & gpio configuration */
- 	max98373_slot_config(&i2c->dev, max98373);
- 
--	/* Power on device */
--	if (gpio_is_valid(max98373->reset_gpio)) {
--		ret = devm_gpio_request(&i2c->dev, max98373->reset_gpio,
--					"MAX98373_RESET");
--		if (ret) {
--			dev_err(&i2c->dev, "%s: Failed to request gpio %d\n",
--				__func__, max98373->reset_gpio);
--			return -EINVAL;
--		}
--		gpio_direction_output(max98373->reset_gpio, 0);
--		msleep(50);
--		gpio_direction_output(max98373->reset_gpio, 1);
--		msleep(20);
--	}
--
- 	/* Check Revision ID */
- 	ret = regmap_read(max98373->regmap,
- 			  MAX98373_R21FF_REV_ID, &reg);
-diff --git a/sound/soc/codecs/max98373.c b/sound/soc/codecs/max98373.c
-index fde055c6c894..33eb4576da23 100644
---- a/sound/soc/codecs/max98373.c
-+++ b/sound/soc/codecs/max98373.c
-@@ -12,9 +12,8 @@
- #include <sound/pcm.h>
+diff --git a/sound/soc/codecs/max98396.c b/sound/soc/codecs/max98396.c
+index 3a1d8c211f3c..e52bb2266fa1 100644
+--- a/sound/soc/codecs/max98396.c
++++ b/sound/soc/codecs/max98396.c
+@@ -7,7 +7,6 @@
  #include <sound/pcm_params.h>
+ #include <linux/regulator/consumer.h>
  #include <sound/soc.h>
 -#include <linux/gpio.h>
-+#include <linux/gpio/consumer.h>
- #include <linux/of.h>
--#include <linux/of_gpio.h>
  #include <sound/tlv.h>
- #include "max98373.h"
+ #include "max98396.h"
  
-@@ -478,20 +477,24 @@ void max98373_slot_config(struct device *dev,
- 		max98373->i_slot = value & 0xF;
- 	else
- 		max98373->i_slot = 1;
--	if (dev->of_node) {
--		max98373->reset_gpio = of_get_named_gpio(dev->of_node,
--						"maxim,reset-gpio", 0);
--		if (!gpio_is_valid(max98373->reset_gpio)) {
--			dev_err(dev, "Looking up %s property in node %s failed %d\n",
--				"maxim,reset-gpio", dev->of_node->full_name,
--				max98373->reset_gpio);
--		} else {
--			dev_dbg(dev, "maxim,reset-gpio=%d",
--				max98373->reset_gpio);
--		}
--	} else {
--		/* this makes reset_gpio as invalid */
--		max98373->reset_gpio = -1;
-+
-+	/* This will assert RESET */
-+	max98373->reset = devm_gpiod_get_optional(dev,
-+						  "maxim,reset",
-+						  GPIOD_OUT_HIGH);
-+	if (IS_ERR(max98373->reset)) {
-+		dev_err(dev, "error %ld looking up RESET GPIO line\n",
-+			PTR_ERR(max98373->reset));
-+		return;
-+	}
-+
-+	/* Cycle reset */
-+	if (max98373->reset) {
-+		gpiod_set_consumer_name(max98373->reset ,"MAX98373_RESET");
-+		gpiod_direction_output(max98373->reset, 1);
-+		msleep(50);
-+		gpiod_direction_output(max98373->reset, 0);
-+		msleep(20);
- 	}
- 
- 	if (!device_property_read_u32(dev, "maxim,spkfb-slot-no", &value))
-diff --git a/sound/soc/codecs/max98373.h b/sound/soc/codecs/max98373.h
-index e1810b3b1620..af3b62217497 100644
---- a/sound/soc/codecs/max98373.h
-+++ b/sound/soc/codecs/max98373.h
-@@ -213,7 +213,7 @@ struct max98373_cache {
- 
- struct max98373_priv {
- 	struct regmap *regmap;
--	int reset_gpio;
-+	struct gpio_desc *reset;
- 	unsigned int v_slot;
- 	unsigned int i_slot;
- 	unsigned int spkfb_slot;
 
 -- 
 2.34.1
