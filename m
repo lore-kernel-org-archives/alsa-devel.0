@@ -4,89 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 57D32C3DA66
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Aug 2023 09:25:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4F73BC71133
+	for <alsa-devel@archiver.kernel.org>; Fri, 25 Aug 2023 09:29:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 58E2E847;
-	Fri, 25 Aug 2023 11:24:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 58E2E847
+	by alsa0.perex.cz (Postfix) with ESMTPS id 47348846;
+	Fri, 25 Aug 2023 11:29:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 47348846
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1692955532;
-	bh=5VAHBv0TpInqS1VirXuZKTlgsORIDkVQPCiXeH5+BfM=;
+	s=default; t=1692955793;
+	bh=YVkGggTYqSysMBCLP+AXm7JrumFEt7U/n/5sllbKTvY=;
 	h=From:To:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=EatUY/Twja07JtaasxxaJ9qSqZ0pwbnrdS6NebETS3K+/8pxMvHtnkjAZdutAgcsZ
-	 kHA3CI3vCuiwtTIuOloAZjemNQjfeRKnSrDddUT055uE4tdUv22z3xQY44grOeYGx/
-	 +CuYw3Qfbvi5rzB8+/8yhM5+9hTB1kgSOrDHUw2w=
+	b=hLSWZZQLNkG6mddBgypo/LBK74uqI32Q34Nht5ndBvZLPfvDPXZMjYR37yDQjU5dl
+	 oimwKrG9MzqnhJMk9rH1XYc1XrjFrNi/DmHV6ENyhLgGGxRZLI+14iMbBJWsMb8H3G
+	 2CmdqnnW3dBZThfl47doBY0m7rVxzhvyZhjXdP90=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CAC18F80158; Fri, 25 Aug 2023 11:24:06 +0200 (CEST)
+	id E5B8AF804DA; Fri, 25 Aug 2023 11:28:31 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4838EF800F5;
-	Fri, 25 Aug 2023 11:24:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4DBFFF80158;
+	Fri, 25 Aug 2023 11:28:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6F856F800F5; Fri, 25 Aug 2023 11:24:01 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2001:67c:2178:6::1c])
+	id 1CD50F800F5; Fri, 25 Aug 2023 11:28:27 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2001:67c:2178:6::1d])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 5E152F800BF
-	for <alsa-devel@alsa-project.org>; Fri, 25 Aug 2023 11:23:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5E152F800BF
+	by alsa1.perex.cz (Postfix) with ESMTPS id 101A5F800AE
+	for <alsa-devel@alsa-project.org>; Fri, 25 Aug 2023 11:28:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 101A5F800AE
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=NncBh56C;
+ header.s=susede2_rsa header.b=Rdj1nc25;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=coK/vS0r
+ header.s=susede2_ed25519 header.b=afzlgD3M
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id C53AC224A0;
-	Fri, 25 Aug 2023 09:23:53 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 635982072B;
+	Fri, 25 Aug 2023 09:28:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1692955433; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1692955701; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
   content-transfer-encoding:content-transfer-encoding;
-	bh=oXvqqjW3+Df7PAZfhqt1PIbhTd7LP3sxOVPOE0+0jys=;
-	b=NncBh56C9BCSYFwj7n2UWHhSgnJz0t1fyrft3FTYy0N0+fdeiQ9Uhe/v3hHbHbF16OkxOB
-	z7Qss1mlEP+GpLV2BzDWA2i0c+p94+Dimk2O562g3ydafJWL+MK2sOo5dNlxFypgUw5NC/
-	8Rbp+/75pYYK/up8OwdQ6gmM30boC3Q=
+	bh=zR/jXqMNiL92iHRvl55DbA6q/2yupeCf1lNP6V7xICA=;
+	b=Rdj1nc25zdDzdz7oBFoltKFuvx3L3Cnq3/eMPrt+m5dmRj+k+1bs5n3AvghUBFqQZyfFuN
+	k3svnaiWeZQVs3PC+bxTzAVfv0u+f5UcEXJZhaq744As0QLVWt5RDD+jjZrVZnOZ3ToK0t
+	nzwZSatsHh8T2N+lTyGewkyKM/El+2Q=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1692955433;
+	s=susede2_ed25519; t=1692955701;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
   content-transfer-encoding:content-transfer-encoding;
-	bh=oXvqqjW3+Df7PAZfhqt1PIbhTd7LP3sxOVPOE0+0jys=;
-	b=coK/vS0rZC1R4yg74BBDxWIfEEBYF0PULzyAfMl6dF/I9/74R59RVuK9Uxfg6fEkv/FVbL
-	jokwLOmf2jKwFLBA==
+	bh=zR/jXqMNiL92iHRvl55DbA6q/2yupeCf1lNP6V7xICA=;
+	b=afzlgD3MbEpZ09fmQxItKxs8YlJ5YxPzlnJUsmpzc1UI8yStU03JfV7xTyzAs8doku0wbR
+	ru1BraYCbzOKuPCg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A8AE3138F9;
-	Fri, 25 Aug 2023 09:23:53 +0000 (UTC)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 45804138F9;
+	Fri, 25 Aug 2023 09:28:21 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id YF11KClz6GSRAgAAMHmgww
-	(envelope-from <tiwai@suse.de>); Fri, 25 Aug 2023 09:23:53 +0000
+	id KFCNDzV06GSABAAAMHmgww
+	(envelope-from <tiwai@suse.de>); Fri, 25 Aug 2023 09:28:21 +0000
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH] ALSA: doc: Fix missing backquote in midi-2.0.rst
-Date: Fri, 25 Aug 2023 11:23:51 +0200
-Message-Id: <20230825092351.11780-1-tiwai@suse.de>
+Subject: [PATCH] ALSA: hda: Add missing dependency on CONFIG_EFI for Cirrus/TI
+ sub-codecs
+Date: Fri, 25 Aug 2023 11:28:19 +0200
+Message-Id: <20230825092819.12340-1-tiwai@suse.de>
 X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: LUY2RWS5X3SEK6BSQWXNVFYM54RPRAVP
-X-Message-ID-Hash: LUY2RWS5X3SEK6BSQWXNVFYM54RPRAVP
+Message-ID-Hash: VVHKMT2SPQPCRLTAOTO4L5WFCMYWF37Y
+X-Message-ID-Hash: VVHKMT2SPQPCRLTAOTO4L5WFCMYWF37Y
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -99,38 +100,54 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LUY2RWS5X3SEK6BSQWXNVFYM54RPRAVP/>
-List-Archive: <>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VVHKMT2SPQPCRLTAOTO4L5WFCMYWF37Y/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Fix the missing  missing backquote that caused a sphinx warning:
-  Documentation/sound/designs/midi-2.0.rst:517: WARNING: Inline interpreted text or phrase reference start-string without end-string.
+The CS35L41 and TAS2781 sub-codecs depend on CONFIG_EFI, as they have
+the code accessing efi variable directly.
 
-Fixes: e240cff9e6e9 ("ALSA: documentation: Add description for USB MIDI 2.0 gadget driver")
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Closes: https://lore.kernel.org/r/20230825152957.18c54ae2@canb.auug.org.au
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202308250621.1lwt7PtZ-lkp@intel.com/
+Fixes: 5be27f1e3ec9 ("ALSA: hda/tas2781: Add tas2781 HDA driver")
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- Documentation/sound/designs/midi-2.0.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/pci/hda/Kconfig | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/Documentation/sound/designs/midi-2.0.rst b/Documentation/sound/designs/midi-2.0.rst
-index 3b08b98354f8..45987f256b97 100644
---- a/Documentation/sound/designs/midi-2.0.rst
-+++ b/Documentation/sound/designs/midi-2.0.rst
-@@ -515,7 +515,7 @@ connection::
-   % echo 2 > functions/midi2.usb0/ep.0/block.1/is_midi1
- 
- For disabling the processing of UMP Stream messages in the gadget
--driver, pass `0` to `process_ump attribute in the top-level config::
-+driver, pass `0` to `process_ump` attribute in the top-level config::
- 
-   % echo 0 > functions/midi2.usb0/process_ump
- 
+diff --git a/sound/pci/hda/Kconfig b/sound/pci/hda/Kconfig
+index 91db5f8f00b6..0d7502d6e060 100644
+--- a/sound/pci/hda/Kconfig
++++ b/sound/pci/hda/Kconfig
+@@ -104,6 +104,7 @@ config SND_HDA_SCODEC_CS35L41_I2C
+ 	tristate "Build CS35L41 HD-audio side codec support for I2C Bus"
+ 	depends on I2C
+ 	depends on ACPI
++	depends on EFI
+ 	depends on SND_SOC
+ 	select SND_SOC_CS35L41_LIB
+ 	select SND_HDA_SCODEC_CS35L41
+@@ -119,6 +120,7 @@ config SND_HDA_SCODEC_CS35L41_SPI
+ 	tristate "Build CS35L41 HD-audio codec support for SPI Bus"
+ 	depends on SPI_MASTER
+ 	depends on ACPI
++	depends on EFI
+ 	depends on SND_SOC
+ 	select SND_SOC_CS35L41_LIB
+ 	select SND_HDA_SCODEC_CS35L41
+@@ -165,6 +167,7 @@ config SND_HDA_SCODEC_TAS2781_I2C
+ 	tristate "Build TAS2781 HD-audio side codec support for I2C Bus"
+ 	depends on I2C
+ 	depends on ACPI
++	depends on EFI
+ 	depends on SND_SOC
+ 	select SND_SOC_TAS2781_COMLIB
+ 	select SND_SOC_TAS2781_FMWLIB
 -- 
 2.35.3
 
