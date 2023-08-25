@@ -4,54 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F13D8C83F01
-	for <alsa-devel@archiver.kernel.org>; Sun, 27 Aug 2023 17:04:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4DAA0C83F01
+	for <alsa-devel@archiver.kernel.org>; Sun, 27 Aug 2023 17:05:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1C7E420C;
-	Sun, 27 Aug 2023 19:04:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1C7E420C
+	by alsa0.perex.cz (Postfix) with ESMTPS id D58ED86F;
+	Sun, 27 Aug 2023 19:04:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D58ED86F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1693155893;
-	bh=MDSTxmSbsGjEUoJEOL2CjWrU4s+CsU3pMdNq+LzazFM=;
+	s=default; t=1693155911;
+	bh=RMEF3w73TsY+zbyXuw7xccZssSIjMPpZJWlzRs3G7to=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=uP/xDqm/0zOxqE7+DdTm7QVELC8mohoyI/B+m+K+97r9UomWly/Aw0YfYRMsnafTa
-	 NTQxEtBIYds5atcUCYXXPOz4epSpULzkltsSAZiSr3bvA6WiPeDHOrBFiHzGLgTmh7
-	 QCh0R43XQTqn3X791h+dHzGaEwao3CFmhyogLJYo=
+	b=shaivAj4RnUejW/pMKA8LiNhQ17jk/CjxtRDhClxi9CZ4/NH5gFojRpXYIrUDwQMy
+	 TFss+EG3HEWJRaJvrlQfIuDXmiXMgfpkmyylgTMNZx8vWfgG0ARz7F4c99KsqDcosa
+	 Rxso6+heMLVRJivvqF0ouns+FalEDi9RjOgup7GA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B4D60F805B4; Sun, 27 Aug 2023 19:02:03 +0200 (CEST)
+	id DFA50F805D9; Sun, 27 Aug 2023 19:02:04 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1148EF805C4;
-	Sun, 27 Aug 2023 19:02:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 710FDF805D3;
+	Sun, 27 Aug 2023 19:02:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7A34BF804DA; Fri, 25 Aug 2023 08:27:48 +0200 (CEST)
-Received: from out-7.mta1.migadu.com (out-7.mta1.migadu.com [95.215.58.7])
+	id A1C07F8025F; Fri, 25 Aug 2023 08:27:51 +0200 (CEST)
+Received: from out-19.mta1.migadu.com (out-19.mta1.migadu.com
+ [IPv6:2001:41d0:203:375::13])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E008EF800D1
-	for <alsa-devel@alsa-project.org>; Fri, 25 Aug 2023 08:27:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E008EF800D1
+	by alsa1.perex.cz (Postfix) with ESMTPS id C2B45F800F5
+	for <alsa-devel@alsa-project.org>; Fri, 25 Aug 2023 08:27:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C2B45F800F5
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=linux.dev header.i=@linux.dev header.a=rsa-sha256
- header.s=key1 header.b=Un86inUG
+ header.s=key1 header.b=J9557CES
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and
  include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1692944851;
+	t=1692944854;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Wd9rzcQO4o5TkX49UxGyU1jqO6hsnMsbjt9qVYaR0vo=;
-	b=Un86inUGQHAzbv/iop1ydVXq6y358z4C6QQREMzovcbDvertp4NuWGO+x9UM8QENAavwJh
-	1qy8vCrJISPWmY15TX2UFkBfE0qXG1HlAK6MWIDepmQq1aE/XDm9bbyCMocMyg6tUr2Zzs
-	MONL/1/8GYuXjhUnJ2SVp70cZvgnsgI=
+	bh=HvMwAdaM/5LwVLuwlRIstn4bDRGDsqcLFd+SgLGHveo=;
+	b=J9557CESZD0jU1gCVKUTQTMhgPsStpHY4kD4mKKub+s8jAS6W/GwAlQNVLhdXsTlKgbIwP
+	nGtqCj8han5cBytFhcvOlFt/sFPnp09Xx8kaVT4m9VTtL6o8FFya8yCHODM9rXrlRHcr1v
+	jrvUtaJzRL22rSHGrA5R7eJ7HIsgmug=
 From: Sui Jingfeng <sui.jingfeng@linux.dev>
 To: Bjorn Helgaas <bhelgaas@google.com>
 Cc: amd-gfx@lists.freedesktop.org,
@@ -61,15 +62,15 @@ Cc: amd-gfx@lists.freedesktop.org,
 	linux-pci@vger.kernel.org,
 	alsa-devel@alsa-project.org,
 	Sui Jingfeng <suijingfeng@loongson.cn>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	Fred Oh <fred.oh@linux.intel.com>,
-	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-	Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Subject: [PATCH 2/5] ALSA: hda/intel: Use pci_get_base_class() to reduce
+	Ben Skeggs <bskeggs@redhat.com>,
+	Karol Herbst <kherbst@redhat.com>,
+	Lyude Paul <lyude@redhat.com>,
+	David Airlie <airlied@gmail.com>,
+	Daniel Vetter <daniel@ffwll.ch>
+Subject: [PATCH 3/5] drm/nouveau: Use pci_get_base_class() to reduce
  duplicated code
-Date: Fri, 25 Aug 2023 14:27:11 +0800
-Message-Id: <20230825062714.6325-3-sui.jingfeng@linux.dev>
+Date: Fri, 25 Aug 2023 14:27:12 +0800
+Message-Id: <20230825062714.6325-4-sui.jingfeng@linux.dev>
 In-Reply-To: <20230825062714.6325-1-sui.jingfeng@linux.dev>
 References: <20230825062714.6325-1-sui.jingfeng@linux.dev>
 MIME-Version: 1.0
@@ -81,15 +82,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: DPNGEHMAYVJXUXJNZJZ2SICMNG5N2Z5G
-X-Message-ID-Hash: DPNGEHMAYVJXUXJNZJZ2SICMNG5N2Z5G
+Message-ID-Hash: Q2IKDO6CSXWKEM47TNQ2RHUD4DL24IYR
+X-Message-ID-Hash: Q2IKDO6CSXWKEM47TNQ2RHUD4DL24IYR
 X-Mailman-Approved-At: Sun, 27 Aug 2023 17:01:46 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DPNGEHMAYVJXUXJNZJZ2SICMNG5N2Z5G/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Q2IKDO6CSXWKEM47TNQ2RHUD4DL24IYR/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -100,46 +101,41 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Sui Jingfeng <suijingfeng@loongson.cn>
 
-Should be no functional change
+Should be no functional change.
 
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.com>
-Cc: Fred Oh <fred.oh@linux.intel.com>
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Cc: Bjorn Helgaas <bhelgaas@google.com>
+Cc: Ben Skeggs <bskeggs@redhat.com>
+Cc: Karol Herbst <kherbst@redhat.com>
+Cc: Lyude Paul <lyude@redhat.com>
+Cc: David Airlie <airlied@gmail.com>
+Cc: Daniel Vetter <daniel@ffwll.ch>
 Signed-off-by: Sui Jingfeng <suijingfeng@loongson.cn>
 ---
- sound/pci/hda/hda_intel.c | 16 +++++-----------
- 1 file changed, 5 insertions(+), 11 deletions(-)
+ drivers/gpu/drm/nouveau/nouveau_acpi.c | 11 ++++-------
+ 1 file changed, 4 insertions(+), 7 deletions(-)
 
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index a21b61ad08d1..811a149584f2 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -1429,17 +1429,11 @@ static bool atpx_present(void)
- 	acpi_handle dhandle, atpx_handle;
- 	acpi_status status;
+diff --git a/drivers/gpu/drm/nouveau/nouveau_acpi.c b/drivers/gpu/drm/nouveau/nouveau_acpi.c
+index a2ae8c21e4dc..8f0c69aad248 100644
+--- a/drivers/gpu/drm/nouveau/nouveau_acpi.c
++++ b/drivers/gpu/drm/nouveau/nouveau_acpi.c
+@@ -284,14 +284,11 @@ static bool nouveau_dsm_detect(void)
+ 		printk("MXM: GUID detected in BIOS\n");
  
+ 	/* now do DSM detection */
 -	while ((pdev = pci_get_class(PCI_CLASS_DISPLAY_VGA << 8, pdev)) != NULL) {
--		dhandle = ACPI_HANDLE(&pdev->dev);
--		if (dhandle) {
--			status = acpi_get_handle(dhandle, "ATPX", &atpx_handle);
--			if (ACPI_SUCCESS(status)) {
--				pci_dev_put(pdev);
--				return true;
--			}
--		}
+-		vga_count++;
+-
+-		nouveau_dsm_pci_probe(pdev, &dhandle, &has_mux, &has_optimus,
+-				      &has_optimus_flags, &has_power_resources);
 -	}
--	while ((pdev = pci_get_class(PCI_CLASS_DISPLAY_OTHER << 8, pdev)) != NULL) {
 +	while ((pdev = pci_get_base_class(PCI_BASE_CLASS_DISPLAY, pdev))) {
 +		if ((pdev->class != PCI_CLASS_DISPLAY_VGA << 8) &&
-+		    (pdev->class != PCI_CLASS_DISPLAY_OTHER << 8))
++		    (pdev->class != PCI_CLASS_DISPLAY_3D << 8))
 +			continue;
-+
- 		dhandle = ACPI_HANDLE(&pdev->dev);
- 		if (dhandle) {
- 			status = acpi_get_handle(dhandle, "ATPX", &atpx_handle);
+ 
+-	while ((pdev = pci_get_class(PCI_CLASS_DISPLAY_3D << 8, pdev)) != NULL) {
+ 		vga_count++;
+ 
+ 		nouveau_dsm_pci_probe(pdev, &dhandle, &has_mux, &has_optimus,
 -- 
 2.34.1
 
