@@ -4,90 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B56BEC83F01
-	for <alsa-devel@archiver.kernel.org>; Sun, 27 Aug 2023 17:06:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DBD8BC83F10
+	for <alsa-devel@archiver.kernel.org>; Sun, 27 Aug 2023 17:06:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E26DD9F6;
-	Sun, 27 Aug 2023 19:05:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E26DD9F6
+	by alsa0.perex.cz (Postfix) with ESMTPS id D0EBEDEF;
+	Sun, 27 Aug 2023 19:05:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D0EBEDEF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1693155983;
-	bh=xyshS61kGazW0xYKaF9opMK/Xa2fYOjK5ZH9KHpV3mY=;
+	s=default; t=1693155988;
+	bh=2V+0llvqa1gZO1U5Q+M+Jug9dUcE18DzKjxwmba2mps=;
 	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=kbu7wZ4G1qURyuhVZEDBnB2TxLZFsJpExwC+IRFkuZ5bdP+RtTYm5Q80ALYsDGBDO
-	 P70hynsRhiz2GO9wevh4FKpIGEAW6Q0bm37iZd/Nj8xNtyICObEnQSlM+5BpJOLdpN
-	 iMGLoVt2Vi4XbeqCmmDkllF6gQfQGB/YnkCDOGgI=
+	b=WzsyDjxqhoDIG4pDIAhZ8T9TvAJUq7IbCJqCR1lRFmtTTnySU825V7et2UiXxbJzx
+	 fA9AZ4mgqI5Ubj0IOZ71FNZjkcJqgzM1kwXa2zhCwo1UwnA3Dr94bK/DpBZm6HbHl8
+	 OiglLCKlAOE2vc9daKPobPO0vdhpmO5yp6bcQGtU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7B3FDF805F5; Sun, 27 Aug 2023 19:02:26 +0200 (CEST)
+	id 35E07F80609; Sun, 27 Aug 2023 19:02:28 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id BA370F805FB;
-	Sun, 27 Aug 2023 19:02:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 83135F80603;
+	Sun, 27 Aug 2023 19:02:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 17F75F800F5; Fri, 25 Aug 2023 17:37:17 +0200 (CEST)
-Received: from mail.astralinux.ru (mail.astralinux.ru [217.74.38.119])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 545AFF80553; Sat, 26 Aug 2023 00:22:07 +0200 (CEST)
+Received: from bluemchen.kde.org (bluemchen.kde.org [209.51.188.41])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 98548F800AE
-	for <alsa-devel@alsa-project.org>; Fri, 25 Aug 2023 17:37:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 98548F800AE
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.astralinux.ru (Postfix) with ESMTP id 202671868942;
-	Fri, 25 Aug 2023 18:37:07 +0300 (MSK)
-Received: from mail.astralinux.ru ([127.0.0.1])
-	by localhost (rbta-msk-vsrv-mail01.astralinux.ru [127.0.0.1]) (amavisd-new,
- port 10032)
-	with ESMTP id v73nNLLpUn7Y; Fri, 25 Aug 2023 18:37:06 +0300 (MSK)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.astralinux.ru (Postfix) with ESMTP id 87BBD1867579;
-	Fri, 25 Aug 2023 18:37:06 +0300 (MSK)
-X-Virus-Scanned: amavisd-new at astralinux.ru
-Received: from mail.astralinux.ru ([127.0.0.1])
-	by localhost (rbta-msk-vsrv-mail01.astralinux.ru [127.0.0.1]) (amavisd-new,
- port 10026)
-	with ESMTP id I_6nBa4-AHub; Fri, 25 Aug 2023 18:37:06 +0300 (MSK)
-Received: from rbta-msk-lt-302690.astralinux.ru (unknown [10.177.233.189])
-	by mail.astralinux.ru (Postfix) with ESMTPSA id 72BA51868950;
-	Fri, 25 Aug 2023 18:37:04 +0300 (MSK)
-From: Alexandra Diupina <adiupina@astralinux.ru>
-To: Liam Girdwood <lgirdwood@gmail.com>
-Cc: Alexandra Diupina <adiupina@astralinux.ru>,
-	Mark Brown <broonie@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	Eason Yen <eason.yen@mediatek.com>,
-	alsa-devel@alsa-project.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	lvc-project@linuxtesting.org
-Subject: [PATCH] asoc: mediatek: common: Remove check of return value of
- mtk_memif_set_addr() and mtk_memif_set_format()
-Date: Fri, 25 Aug 2023 18:36:50 +0300
-Message-Id: <20230825153650.20923-1-adiupina@astralinux.ru>
-X-Mailer: git-send-email 2.30.2
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9E74BF80158
+	for <alsa-devel@alsa-project.org>; Sat, 26 Aug 2023 00:22:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9E74BF80158
+Received: from ugly.fritz.box (localhost [127.0.0.1])
+	by bluemchen.kde.org (Postfix) with ESMTP id B9942242C7;
+	Fri, 25 Aug 2023 18:21:57 -0400 (EDT)
+Received: by ugly.fritz.box (masqmail 0.3.6-dev, from userid 1000)
+	id 1qZfBl-iTt-00; Sat, 26 Aug 2023 00:21:57 +0200
+From: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>,
+	Jaroslav Kysela <perex@perex.cz>
+Subject: [PATCH 1/3] ALSA: emu10k1: de-duplicate audigy-mixer.rst vs.
+ sb-live-mixer.rst
+Date: Sat, 26 Aug 2023 00:21:55 +0200
+Message-Id: <20230825222157.170978-1-oswald.buddenhagen@gmx.de>
+X-Mailer: git-send-email 2.40.0.152.g15d061e6df
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-MailFrom: adiupina@astralinux.ru
+Content-Transfer-Encoding: 8bit
+X-MailFrom: ossi@kde.org
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: 64F7PGD3WYJ2OLQQYZ6T7SAHRHJDT33A
-X-Message-ID-Hash: 64F7PGD3WYJ2OLQQYZ6T7SAHRHJDT33A
-X-Mailman-Approved-At: Sun, 27 Aug 2023 17:02:16 +0000
+Message-ID-Hash: H2HZKRWQVDLXY6RHPQDZW2TND62LK37O
+X-Message-ID-Hash: H2HZKRWQVDLXY6RHPQDZW2TND62LK37O
+X-Mailman-Approved-At: Sun, 27 Aug 2023 17:02:17 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/64F7PGD3WYJ2OLQQYZ6T7SAHRHJDT33A/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/H2HZKRWQVDLXY6RHPQDZW2TND62LK37O/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -96,59 +72,90 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The mtk_memif_set_addr() and mtk_memif_set_format() functions always retu=
-rns 0, so it is
-necessary to remove the check of its return value (which was
-probably specified by analogy with the check of return values
-for other functions) to make the code more readable
+Let the MANUALS/PATENTS section of the former simply refer to the latter
+- there is no point in duplicating this information with little value to
+end users.
 
-Found by Linux Verification Center (linuxtesting.org) with SVACE.
-
-Fixes: df799b9502ed ("ASoC: mediatek: common: refine hw_params and hw_pre=
-pare")
-Signed-off-by: Alexandra Diupina <adiupina@astralinux.ru>
+Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 ---
- sound/soc/mediatek/common/mtk-afe-fe-dai.c | 14 ++------------
- 1 file changed, 2 insertions(+), 12 deletions(-)
+ Documentation/sound/cards/audigy-mixer.rst | 67 +---------------------
+ 1 file changed, 1 insertion(+), 66 deletions(-)
 
-diff --git a/sound/soc/mediatek/common/mtk-afe-fe-dai.c b/sound/soc/media=
-tek/common/mtk-afe-fe-dai.c
-index 882cdf86c8bf..3c8a11c5958d 100644
---- a/sound/soc/mediatek/common/mtk-afe-fe-dai.c
-+++ b/sound/soc/mediatek/common/mtk-afe-fe-dai.c
-@@ -143,15 +143,10 @@ int mtk_afe_fe_hw_params(struct snd_pcm_substream *=
-substream,
- 		  substream->runtime->dma_bytes);
-=20
- 	/* set addr */
--	ret =3D mtk_memif_set_addr(afe, id,
-+	mtk_memif_set_addr(afe, id,
- 				 substream->runtime->dma_area,
- 				 substream->runtime->dma_addr,
- 				 substream->runtime->dma_bytes);
--	if (ret) {
--		dev_err(afe->dev, "%s(), error, id %d, set addr, ret %d\n",
--			__func__, id, ret);
--		return ret;
--	}
-=20
- 	/* set channel */
- 	ret =3D mtk_memif_set_channel(afe, id, channels);
-@@ -170,12 +165,7 @@ int mtk_afe_fe_hw_params(struct snd_pcm_substream *s=
-ubstream,
- 	}
-=20
- 	/* set format */
--	ret =3D mtk_memif_set_format(afe, id, format);
--	if (ret) {
--		dev_err(afe->dev, "%s(), error, id %d, set format %d, ret %d\n",
--			__func__, id, format, ret);
--		return ret;
--	}
-+	mtk_memif_set_format(afe, id, format);
-=20
- 	return 0;
- }
---=20
-2.30.2
+diff --git a/Documentation/sound/cards/audigy-mixer.rst b/Documentation/sound/cards/audigy-mixer.rst
+index ea66b50a2b03..51cc7ac034ce 100644
+--- a/Documentation/sound/cards/audigy-mixer.rst
++++ b/Documentation/sound/cards/audigy-mixer.rst
+@@ -303,69 +303,4 @@ The channel mapping is following:
+ MANUALS/PATENTS
+ ===============
+ 
+-ftp://opensource.creative.com/pub/doc
+--------------------------------------
+-
+-Note that the site is defunct, but the documents are available
+-from various other locations.
+-
+-LM4545.pdf
+-	AC97 Codec
+-
+-m2049.pdf
+-	The EMU10K1 Digital Audio Processor
+-
+-hog63.ps
+-	FX8010 - A DSP Chip Architecture for Audio Effects
+-
+-
+-WIPO Patents
+-------------
+-
+-WO 9901813 (A1)
+-	Audio Effects Processor with multiple asynchronous streams
+-	(Jan. 14, 1999)
+-
+-WO 9901814 (A1)
+-	Processor with Instruction Set for Audio Effects (Jan. 14, 1999)
+-
+-WO 9901953 (A1)
+-	Audio Effects Processor having Decoupled Instruction
+-        Execution and Audio Data Sequencing (Jan. 14, 1999)
+-
+-
+-US Patents (https://www.uspto.gov/)
+------------------------------------
+-
+-US 5925841
+-	Digital Sampling Instrument employing cache memory (Jul. 20, 1999)
+-
+-US 5928342
+-	Audio Effects Processor integrated on a single chip
+-        with a multiport memory onto which multiple asynchronous
+-        digital sound samples can be concurrently loaded
+-	(Jul. 27, 1999)
+-
+-US 5930158
+-	Processor with Instruction Set for Audio Effects (Jul. 27, 1999)
+-
+-US 6032235
+-	Memory initialization circuit (Tram) (Feb. 29, 2000)
+-
+-US 6138207
+-	Interpolation looping of audio samples in cache connected to
+-        system bus with prioritization and modification of bus transfers
+-        in accordance with loop ends and minimum block sizes
+-	(Oct. 24, 2000)
+-
+-US 6151670
+-	Method for conserving memory storage using a
+-        pool of  short term memory registers
+-	(Nov. 21, 2000)
+-
+-US 6195715
+-	Interrupt control for multiple programs communicating with
+-        a common interrupt by associating programs to GP registers,
+-        defining interrupt register, polling GP registers, and invoking
+-        callback routine associated with defined interrupt register
+-	(Feb. 27, 2001)
++See sb-live-mixer.rst.
+-- 
+2.40.0.152.g15d061e6df
 
