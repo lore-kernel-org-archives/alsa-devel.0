@@ -4,49 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DBD8BC83F10
-	for <alsa-devel@archiver.kernel.org>; Sun, 27 Aug 2023 17:06:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BADBCC83F01
+	for <alsa-devel@archiver.kernel.org>; Sun, 27 Aug 2023 17:06:54 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D0EBEDEF;
-	Sun, 27 Aug 2023 19:05:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D0EBEDEF
+	by alsa0.perex.cz (Postfix) with ESMTPS id CBEE4DF8;
+	Sun, 27 Aug 2023 19:06:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CBEE4DF8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1693155988;
-	bh=2V+0llvqa1gZO1U5Q+M+Jug9dUcE18DzKjxwmba2mps=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=WzsyDjxqhoDIG4pDIAhZ8T9TvAJUq7IbCJqCR1lRFmtTTnySU825V7et2UiXxbJzx
-	 fA9AZ4mgqI5Ubj0IOZ71FNZjkcJqgzM1kwXa2zhCwo1UwnA3Dr94bK/DpBZm6HbHl8
-	 OiglLCKlAOE2vc9daKPobPO0vdhpmO5yp6bcQGtU=
+	s=default; t=1693156012;
+	bh=jtGPtnNovZrI/f//0jEhdbjbAaXAVtUPDp5InTJbXgk=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=h/yR4FmApqjxiN96IEe+Lqu1L/PjSCdyxKOViWKxPo08IyrYWf1yK4hyJIYJ+qhyi
+	 nOdg9n3v3JB3+0KXOYl5sLmaJcn5XJBnhebQy8+kGvefNfmZzu2n/+9pO6YVCouASy
+	 YxXSJedSSlBdS3MIjoAAxl3RYAr8SZaAg2mzoceY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 35E07F80609; Sun, 27 Aug 2023 19:02:28 +0200 (CEST)
+	id 19F0FF80558; Sun, 27 Aug 2023 19:03:11 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 83135F80603;
-	Sun, 27 Aug 2023 19:02:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3D774F8023B;
+	Sun, 27 Aug 2023 19:03:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 545AFF80553; Sat, 26 Aug 2023 00:22:07 +0200 (CEST)
+	id CF476F80552; Sat, 26 Aug 2023 00:22:12 +0200 (CEST)
 Received: from bluemchen.kde.org (bluemchen.kde.org [209.51.188.41])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 9E74BF80158
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9A907F800D1
 	for <alsa-devel@alsa-project.org>; Sat, 26 Aug 2023 00:22:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9E74BF80158
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9A907F800D1
 Received: from ugly.fritz.box (localhost [127.0.0.1])
-	by bluemchen.kde.org (Postfix) with ESMTP id B9942242C7;
-	Fri, 25 Aug 2023 18:21:57 -0400 (EDT)
+	by bluemchen.kde.org (Postfix) with ESMTP id B13AA242C1;
+	Fri, 25 Aug 2023 18:21:58 -0400 (EDT)
 Received: by ugly.fritz.box (masqmail 0.3.6-dev, from userid 1000)
-	id 1qZfBl-iTt-00; Sat, 26 Aug 2023 00:21:57 +0200
+	id 1qZfBm-iUZ-00; Sat, 26 Aug 2023 00:21:58 +0200
 From: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>,
 	Jaroslav Kysela <perex@perex.cz>
-Subject: [PATCH 1/3] ALSA: emu10k1: de-duplicate audigy-mixer.rst vs.
- sb-live-mixer.rst
-Date: Sat, 26 Aug 2023 00:21:55 +0200
-Message-Id: <20230825222157.170978-1-oswald.buddenhagen@gmx.de>
+Subject: [PATCH v5 1/8] ALSA: add snd_ctl_add_locked() & export
+ snd_ctl_remove_locked()
+Date: Sat, 26 Aug 2023 00:21:51 +0200
+Message-Id: <20230825222158.171007-2-oswald.buddenhagen@gmx.de>
 X-Mailer: git-send-email 2.40.0.152.g15d061e6df
+In-Reply-To: <20230825222158.171007-1-oswald.buddenhagen@gmx.de>
+References: <20230825222158.171007-1-oswald.buddenhagen@gmx.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-MailFrom: ossi@kde.org
@@ -55,15 +58,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: H2HZKRWQVDLXY6RHPQDZW2TND62LK37O
-X-Message-ID-Hash: H2HZKRWQVDLXY6RHPQDZW2TND62LK37O
-X-Mailman-Approved-At: Sun, 27 Aug 2023 17:02:17 +0000
+Message-ID-Hash: OPJD3GYMTUDQT2OFNWOZHBKVT5OMQNC5
+X-Message-ID-Hash: OPJD3GYMTUDQT2OFNWOZHBKVT5OMQNC5
+X-Mailman-Approved-At: Sun, 27 Aug 2023 17:03:08 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/H2HZKRWQVDLXY6RHPQDZW2TND62LK37O/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OPJD3GYMTUDQT2OFNWOZHBKVT5OMQNC5/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -72,90 +75,125 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Let the MANUALS/PATENTS section of the former simply refer to the latter
-- there is no point in duplicating this information with little value to
-end users.
+This will be used to dynamically change the available controls from
+another control's put() callback, which is already locked.
+
+One might want to add snd_ctl_replace_locked() for completeness, but I
+have no use for it now.
 
 Signed-off-by: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
 ---
- Documentation/sound/cards/audigy-mixer.rst | 67 +---------------------
- 1 file changed, 1 insertion(+), 66 deletions(-)
 
-diff --git a/Documentation/sound/cards/audigy-mixer.rst b/Documentation/sound/cards/audigy-mixer.rst
-index ea66b50a2b03..51cc7ac034ce 100644
---- a/Documentation/sound/cards/audigy-mixer.rst
-+++ b/Documentation/sound/cards/audigy-mixer.rst
-@@ -303,69 +303,4 @@ The channel mapping is following:
- MANUALS/PATENTS
- ===============
+applying this upstream would simplify applying the emu10k1 high bit-rate
+patchset locally, as it would limit the affected modules to the driver
+itself.
+
+v4:
+- adjust to recent locking changes
+- mark exports as internal
+
+v3:
+- fixed typo in commit message
+
+v2:
+- extended commit message
+---
+ include/sound/control.h |  2 ++
+ sound/core/control.c    | 43 ++++++++++++++++++++++++++++++++++++-----
+ 2 files changed, 40 insertions(+), 5 deletions(-)
+
+diff --git a/include/sound/control.h b/include/sound/control.h
+index 9a4f4f7138da..7729b4ee1509 100644
+--- a/include/sound/control.h
++++ b/include/sound/control.h
+@@ -133,7 +133,9 @@ void snd_ctl_notify_one(struct snd_card * card, unsigned int mask, struct snd_kc
  
--ftp://opensource.creative.com/pub/doc
---------------------------------------
+ struct snd_kcontrol *snd_ctl_new1(const struct snd_kcontrol_new * kcontrolnew, void * private_data);
+ void snd_ctl_free_one(struct snd_kcontrol * kcontrol);
++int snd_ctl_add_locked(struct snd_card *card, struct snd_kcontrol *kcontrol);
+ int snd_ctl_add(struct snd_card * card, struct snd_kcontrol * kcontrol);
++int snd_ctl_remove_locked(struct snd_card *card, struct snd_kcontrol *kcontrol);
+ int snd_ctl_remove(struct snd_card * card, struct snd_kcontrol * kcontrol);
+ int snd_ctl_replace(struct snd_card *card, struct snd_kcontrol *kcontrol, bool add_on_replace);
+ int snd_ctl_remove_id(struct snd_card * card, struct snd_ctl_elem_id *id);
+diff --git a/sound/core/control.c b/sound/core/control.c
+index 59c8658966d4..9e807804e110 100644
+--- a/sound/core/control.c
++++ b/sound/core/control.c
+@@ -39,9 +39,6 @@ static LIST_HEAD(snd_control_compat_ioctls);
+ #endif
+ static struct snd_ctl_layer_ops *snd_ctl_layer;
+ 
+-static int snd_ctl_remove_locked(struct snd_card *card,
+-				 struct snd_kcontrol *kcontrol);
 -
--Note that the site is defunct, but the documents are available
--from various other locations.
--
--LM4545.pdf
--	AC97 Codec
--
--m2049.pdf
--	The EMU10K1 Digital Audio Processor
--
--hog63.ps
--	FX8010 - A DSP Chip Architecture for Audio Effects
--
--
--WIPO Patents
--------------
--
--WO 9901813 (A1)
--	Audio Effects Processor with multiple asynchronous streams
--	(Jan. 14, 1999)
--
--WO 9901814 (A1)
--	Processor with Instruction Set for Audio Effects (Jan. 14, 1999)
--
--WO 9901953 (A1)
--	Audio Effects Processor having Decoupled Instruction
--        Execution and Audio Data Sequencing (Jan. 14, 1999)
--
--
--US Patents (https://www.uspto.gov/)
-------------------------------------
--
--US 5925841
--	Digital Sampling Instrument employing cache memory (Jul. 20, 1999)
--
--US 5928342
--	Audio Effects Processor integrated on a single chip
--        with a multiport memory onto which multiple asynchronous
--        digital sound samples can be concurrently loaded
--	(Jul. 27, 1999)
--
--US 5930158
--	Processor with Instruction Set for Audio Effects (Jul. 27, 1999)
--
--US 6032235
--	Memory initialization circuit (Tram) (Feb. 29, 2000)
--
--US 6138207
--	Interpolation looping of audio samples in cache connected to
--        system bus with prioritization and modification of bus transfers
--        in accordance with loop ends and minimum block sizes
--	(Oct. 24, 2000)
--
--US 6151670
--	Method for conserving memory storage using a
--        pool of  short term memory registers
--	(Nov. 21, 2000)
--
--US 6195715
--	Interrupt control for multiple programs communicating with
--        a common interrupt by associating programs to GP registers,
--        defining interrupt register, polling GP registers, and invoking
--        callback routine associated with defined interrupt register
--	(Feb. 27, 2001)
-+See sb-live-mixer.rst.
+ static int snd_ctl_open(struct inode *inode, struct file *file)
+ {
+ 	unsigned long flags;
+@@ -509,6 +506,27 @@ static int __snd_ctl_add_replace(struct snd_card *card,
+ 	return 0;
+ }
+ 
++static int snd_ctl_add_replace_locked(struct snd_card *card,
++				      struct snd_kcontrol *kcontrol,
++				      enum snd_ctl_add_mode mode)
++{
++	int err = -EINVAL;
++
++	if (! kcontrol)
++		return err;
++	if (snd_BUG_ON(!card || !kcontrol->info))
++		goto error;
++
++	err = __snd_ctl_add_replace(card, kcontrol, mode);
++	if (err < 0)
++		goto error;
++	return 0;
++
++ error:
++	snd_ctl_free_one(kcontrol);
++	return err;
++}
++
+ static int snd_ctl_add_replace(struct snd_card *card,
+ 			       struct snd_kcontrol *kcontrol,
+ 			       enum snd_ctl_add_mode mode)
+@@ -532,6 +550,16 @@ static int snd_ctl_add_replace(struct snd_card *card,
+ 	return err;
+ }
+ 
++/**
++ * snd_ctl_add_locked - same as snd_ctl_add(), but card->controls_rwsem
++ * is expected to be already locked if necessary.
++ */
++int snd_ctl_add_locked(struct snd_card *card, struct snd_kcontrol *kcontrol)
++{
++	return snd_ctl_add_replace_locked(card, kcontrol, CTL_ADD_EXCLUSIVE);
++}
++EXPORT_SYMBOL_GPL(snd_ctl_add_locked);
++
+ /**
+  * snd_ctl_add - add the control instance to the card
+  * @card: the card instance
+@@ -596,11 +624,16 @@ static int __snd_ctl_remove(struct snd_card *card,
+ 	return 0;
+ }
+ 
+-static inline int snd_ctl_remove_locked(struct snd_card *card,
+-					struct snd_kcontrol *kcontrol)
++/**
++ * snd_ctl_remove_locked - same as snd_ctl_remove(), but card->controls_rwsem
++ * is expected to be already locked if necessary.
++ */
++int snd_ctl_remove_locked(struct snd_card *card,
++			  struct snd_kcontrol *kcontrol)
+ {
+ 	return __snd_ctl_remove(card, kcontrol, true);
+ }
++EXPORT_SYMBOL_GPL(snd_ctl_remove_locked);
+ 
+ /**
+  * snd_ctl_remove - remove the control from the card and release it
 -- 
 2.40.0.152.g15d061e6df
 
