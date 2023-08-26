@@ -4,70 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 689B0C7EE2C
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Aug 2023 21:58:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6CA8DC83F01
+	for <alsa-devel@archiver.kernel.org>; Sat, 26 Aug 2023 07:28:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E213083B;
-	Fri, 25 Aug 2023 23:57:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E213083B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6087B20C;
+	Sat, 26 Aug 2023 09:27:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6087B20C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1693000689;
-	bh=nywwSi4JCfTe6/Na+Lb56v+TrIH4XSaDTdinszc8DeY=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=BF5b5HqSCkH1o6qbJymcjPNsEr91BH1psXBd1J4LgeCBYcLrDwBxHPC48PQqfRIHb
-	 xXCWN9k2EkbPM4LWCYgVFhh6c5Toq2qlMYk0ozLIyxVNC6j+53YgknJZC10Pr/1WPU
-	 2ofA21Z8mOQ1vxHouUg57AUUDJ/U4FsVAo+hglVI=
+	s=default; t=1693034896;
+	bh=9Ppa7MOxJL9CjuTKfZR8NogE0iI8n5CoEAC9Nyo5eSo=;
+	h=From:To:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=QrldSN1uyKXNE303x302uX7zFC/mnbJ3cxzhRqL6PiXqjzqS6GYqcOU7M20kzhLNH
+	 JHqYtUD76HMfVsQQhZuhVRanf032sYHxBwpV57QY4zuYjl27tAW9byTgwgG+mojD31
+	 d+Y0TxG6THLVu+Z2GZ0lVUlf42yMEIypoX3JrXYc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D562FF800F5; Fri, 25 Aug 2023 23:56:50 +0200 (CEST)
+	id 9A700F80537; Sat, 26 Aug 2023 09:27:25 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 77FE4F800F5;
-	Fri, 25 Aug 2023 23:56:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8FBB0F80158;
+	Sat, 26 Aug 2023 09:27:24 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C7B31F800F5; Fri, 25 Aug 2023 23:56:46 +0200 (CEST)
-Received: from mail.mutex.one (mail.mutex.one [62.77.152.124])
-	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+	id C1210F80158; Sat, 26 Aug 2023 09:22:10 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2001:67c:2178:6::1c])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 0EDAAF80074
-	for <alsa-devel@alsa-project.org>; Fri, 25 Aug 2023 23:56:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0EDAAF80074
+	by alsa1.perex.cz (Postfix) with ESMTPS id 3F8E5F800F5
+	for <alsa-devel@alsa-project.org>; Sat, 26 Aug 2023 09:21:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3F8E5F800F5
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
- unprotected) header.d=mutex.one header.i=@mutex.one header.a=rsa-sha256
- header.s=default header.b=db/iGm/P
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.mutex.one (Postfix) with ESMTP id DD82D16C0048;
-	Sat, 26 Aug 2023 00:56:41 +0300 (EEST)
-X-Virus-Scanned: Debian amavisd-new at mail.mutex.one
-Received: from mail.mutex.one ([127.0.0.1])
-	by localhost (mail.mutex.one [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id IfqredlHnEla; Sat, 26 Aug 2023 00:56:40 +0300 (EEST)
-From: Marian Postevca <posteuca@mutex.one>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mutex.one; s=default;
-	t=1693000600; bh=nywwSi4JCfTe6/Na+Lb56v+TrIH4XSaDTdinszc8DeY=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=db/iGm/PMySZnG5VWcyl/xJe5FF1ny2cihx61eDr//1cHmd679bwrejUy9TZPVi5K
-	 QmoLPAmxNDwyX7gt9G+40qqq7UHT8WetGRzpt55xyhT5dDV8OiXTDgMj6lNTkoM3Vr
-	 Tnk5eBkYwWPxb5sWyjdhuNbCBBIIxRrYIvdbDWcY=
-To: Mark Brown <broonie@kernel.org>
-Cc: Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/4] ASoC: es8316: Enable support for S32 LE format
-In-Reply-To: <ZOfMo4Cb2zd1Km3H@finisterre.sirena.org.uk>
-References: <20230824210135.19303-1-posteuca@mutex.one>
- <20230824210135.19303-2-posteuca@mutex.one>
- <ZOfMo4Cb2zd1Km3H@finisterre.sirena.org.uk>
-Date: Sat, 26 Aug 2023 00:55:21 +0300
-Message-ID: <87y1hypz1y.fsf@mutex.one>
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=WsvaiyLU;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=bsfbSo+P
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 7443D21E9B;
+	Sat, 26 Aug 2023 07:21:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1693034515; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:
+  content-transfer-encoding:content-transfer-encoding;
+	bh=6UmBLhW7R2EKc//4QVzBju8LaqVhtrybVayX7+xKQ0E=;
+	b=WsvaiyLUMVUwtEE2PxlhvbJt48Vqj7hes32p2Ngyk2xCkxt/CR1/3P2JkeX1L8Le6kiHbh
+	zbV8NLnJw9R3QAIO8R+wwASq9uCm1ZAAD+U9p7IYB7wJ8m8oYBirY7EbHICOlbdlapelmZ
+	tfrpHRypYYMCHmNEQn8SRDv6zKxZxmk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1693034515;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:
+  content-transfer-encoding:content-transfer-encoding;
+	bh=6UmBLhW7R2EKc//4QVzBju8LaqVhtrybVayX7+xKQ0E=;
+	b=bsfbSo+PvPW92YWPNwNXQIK2yONlY+3c1E6pk2kS4I1+VU2wdu6hSv2crPteaXwqvgxCC5
+	tmAyz2KcNhpaEYDA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 579E213585;
+	Sat, 26 Aug 2023 07:21:55 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id RFpYFBOo6WT0FgAAMHmgww
+	(envelope-from <tiwai@suse.de>); Sat, 26 Aug 2023 07:21:55 +0000
+From: Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH v2] ALSA: ump: Fix -Wformat-truncation warnings
+Date: Sat, 26 Aug 2023 09:21:51 +0200
+Message-Id: <20230826072151.23408-1-tiwai@suse.de>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-Content-Type: text/plain
-Message-ID-Hash: SPDJGHMXLJOUIHYTNXENHULGYSDI2B42
-X-Message-ID-Hash: SPDJGHMXLJOUIHYTNXENHULGYSDI2B42
-X-MailFrom: posteuca@mutex.one
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: WBT6NPHO5ZXK4KHFF4H2JANUICDK2YZJ
+X-Message-ID-Hash: WBT6NPHO5ZXK4KHFF4H2JANUICDK2YZJ
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -79,7 +99,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SPDJGHMXLJOUIHYTNXENHULGYSDI2B42/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WBT6NPHO5ZXK4KHFF4H2JANUICDK2YZJ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -88,20 +108,46 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Mark Brown <broonie@kernel.org> writes:
+Filling the rawmidi name and substream name can be truncated, and this
+leads to spurious compiler warnings due to -Wformat-truncation.
+Although the truncation is the expected behavior, it'd be better to
+truncate the string within "(...)"
 
->> To properly support a line of Huawei laptops with AMD CPU and a
->> ES8336 codec connected to the ACP3X module we need to enable
->> the S32 LE format.
->
-> What's the issue?  The AMD code looks like it supports plenty of other
-> formats in most places.
+This patch puts the precision specifies to each %s for fitting the
+words within the size-limited strings.
 
-In previous version of the machine driver I used a different CPU
-component than acp-i2s-sp. For that one, I couldn't get it to have
-sound unless I specifically requested S32 LE format.
+Fixes: 5f11dd938fe7 ("ALSA: usb-audio: Attach legacy rawmidi after probing all UMP EPs")
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202308251844.1FuQYsql-lkp@intel.com/
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+v1->v2: change the precision to fit better
 
-I removed S32_LE from the CODEC to test if it works and it
-seems it does work with acp-is2-sp. Format S16_LE is chosen by
-both components and sound can be heard. I guess this patch is
-not really needed.
+ sound/core/ump.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/sound/core/ump.c b/sound/core/ump.c
+index cd192bec227a..3bef1944e955 100644
+--- a/sound/core/ump.c
++++ b/sound/core/ump.c
+@@ -1157,7 +1157,7 @@ static void fill_substream_names(struct snd_ump_endpoint *ump,
+ 	struct snd_rawmidi_substream *s;
+ 
+ 	list_for_each_entry(s, &rmidi->streams[dir].substreams, list)
+-		snprintf(s->name, sizeof(s->name), "Group %d (%s)",
++		snprintf(s->name, sizeof(s->name), "Group %d (%.16s)",
+ 			 ump->legacy_mapping[s->number] + 1, ump->info.name);
+ }
+ 
+@@ -1191,7 +1191,7 @@ int snd_ump_attach_legacy_rawmidi(struct snd_ump_endpoint *ump,
+ 	if (output)
+ 		snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_OUTPUT,
+ 				    &snd_ump_legacy_output_ops);
+-	snprintf(rmidi->name, sizeof(rmidi->name), "%s (MIDI 1.0)",
++	snprintf(rmidi->name, sizeof(rmidi->name), "%.68s (MIDI 1.0)",
+ 		 ump->info.name);
+ 	rmidi->info_flags = ump->core.info_flags & ~SNDRV_RAWMIDI_INFO_UMP;
+ 	rmidi->ops = &snd_ump_legacy_ops;
+-- 
+2.35.3
+
