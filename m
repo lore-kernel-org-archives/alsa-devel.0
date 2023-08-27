@@ -4,100 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0C0ECC83F01
-	for <alsa-devel@archiver.kernel.org>; Sun, 27 Aug 2023 12:17:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5CE9FC83F01
+	for <alsa-devel@archiver.kernel.org>; Sun, 27 Aug 2023 12:20:37 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 37382886;
-	Sun, 27 Aug 2023 14:16:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 37382886
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5DB4486F;
+	Sun, 27 Aug 2023 14:19:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5DB4486F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1693138655;
-	bh=n7GPHkzuEyJz8xM/RDAdmy9cky670T+7bzkNS1rM+Es=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1693138835;
+	bh=U6oncp/62KbVKV/+0RJgkny9X6hK/dhm6Fjvyy8daa0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=ks8HoIAkmf3QOckVm5olZJkrDmDnsHg9eb4TP4yB/Q4+Iked4IyLO26mKYqBikOi5
-	 yVLHtTI6xAgB3DdMIkGIbSDD5qD79FYZ+x+0gfodRuQDZJvubb/tvZCgqB0UtCoueY
-	 /88/wCgeZtZ2rexYIL3RMsC4MOwDI/nBGsgz1KtA=
+	b=qfpqbaXshD9LE0njqx+AVoFpsuCpt2ErQ+BhvM2rC7jjNk+jeUeU7fJLuEKIiu/JL
+	 Gfe0kHHJfhBOQlYK8MpWBk/1xK+mnYqkR/CSRyli1lVFmKROnNIVSxsa6L5UpQ4hpT
+	 NGoLiEwYSampYTPDW/kcGe7oRgE7CMi6//VxUqS0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C3D51F800D1; Sun, 27 Aug 2023 14:16:22 +0200 (CEST)
+	id 791A6F804DA; Sun, 27 Aug 2023 14:19:44 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 429D3F80249;
-	Sun, 27 Aug 2023 14:16:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 21357F80158;
+	Sun, 27 Aug 2023 14:19:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E9977F80158; Sun, 27 Aug 2023 14:16:18 +0200 (CEST)
-Received: from mail-oa1-x33.google.com (mail-oa1-x33.google.com
- [IPv6:2001:4860:4864:20::33])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	id C587AF80158; Sun, 27 Aug 2023 14:19:39 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A1F37F80074
-	for <alsa-devel@alsa-project.org>; Sun, 27 Aug 2023 14:16:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A1F37F80074
+	by alsa1.perex.cz (Postfix) with ESMTPS id E2D44F800D1
+	for <alsa-devel@alsa-project.org>; Sun, 27 Aug 2023 14:19:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E2D44F800D1
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20221208 header.b=glPoHyK4
-Received: by mail-oa1-x33.google.com with SMTP id
- 586e51a60fabf-1c4c7a83bcdso1724671fac.0
-        for <alsa-devel@alsa-project.org>;
- Sun, 27 Aug 2023 05:16:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693138573; x=1693743373;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mhxICFeGkDE2p17yC8izuoNjV+Z/iSI5rHHAjSvkmHw=;
-        b=glPoHyK4XgY4XfEpkbQSpCwxsu9p7pC8YvPcSkKscCVQo0lr6ziV/COWFB4o1orXf8
-         xFiWZ9EZ4Z2hsC1GLsd9skmQXMfc9C2iUo+XEFuuIJoY5jfebtVz+RA3zJ3++HBLVXuK
-         MMUbkadAzJJgsIO1jTIUCz8MWDnnPsUDSZ9fhwnQU34L3ZHGv4iMCGgnf6kxfWLMm7hA
-         AMkFtU+EMmCUxrTyXhUq+mH3uNCFReKUV8sGIx2hMB59adBLlOc6ojpyKp+nY9HKdRO0
-         jtmhXQzyhUb/e5YJl6s4/1Jm8yF0EltsodG//DBU6w0R5D8PR8RJoo6XwvhjApRA/w54
-         ngsw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693138573; x=1693743373;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mhxICFeGkDE2p17yC8izuoNjV+Z/iSI5rHHAjSvkmHw=;
-        b=l1hMhBqWbUclH665ccGFHr4crFxZloC7lN36a9NY1FVPzAn2F8m47UmXC92CE62UH8
-         CZfrA2tFYqGDYph2W8O+EeKw98/LYErXYYJe+CyjO9ZlibZA2Jt6v7QlOpbOqoImNasn
-         FygJL/lxYK9cR+SbFTLty0AnD4RevYcFcOiYwrf4t1xGgNN6gNZBPOPu7Any/O4PEisS
-         p9sl8YXzDxA6MZYP341WR6DLPQjUwXSGtP2UA9O+txMCMiLCPDuxnlqHgHxV0ikJNheY
-         wLcDdrGcOEaSfxJQbhDlOmH9aKse9s7GKLZ6uPA54UUmaAkvZh4DXDwBE4ahcIqGMC0N
-         AiHw==
-X-Gm-Message-State: AOJu0Yzj61aDMtoQ7UyePE1t7P3bL3z5OKvMoscwhXr7qAEEWnx/qdRA
-	oyXgd29mQyyO6qZuQXhHf5/ThglxX2D+3SQMwDw=
-X-Google-Smtp-Source: 
- AGHT+IEuFbu3ypnxCPMjRAy9jZ5umJQygWrfnlYh8Z97NtpdIHgolR1SEqkq2yYJgDmchyspR/bvLesvrkcnv9Frry4=
-X-Received: by 2002:a05:6870:5693:b0:1be:dbd9:dd21 with SMTP id
- p19-20020a056870569300b001bedbd9dd21mr8542691oao.48.1693138573344; Sun, 27
- Aug 2023 05:16:13 -0700 (PDT)
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=SiX9ewwV
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id F292C6103B;
+	Sun, 27 Aug 2023 12:19:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2446CC433C8;
+	Sun, 27 Aug 2023 12:19:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1693138772;
+	bh=U6oncp/62KbVKV/+0RJgkny9X6hK/dhm6Fjvyy8daa0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=SiX9ewwVM8stjlc3yHy6qyMofFxpTWcdQLHShhUMpus91DfcAarz4CuOLVMjXG791
+	 yF5+KueOpjXT3bPoggDkrw6EJqOl8sA1TOkeGl9naLY9AT2t7AeYACawEbX7a0HqE7
+	 fKek9IyfRW+imHnLonYYde7pP/xcpDwn4EYo4prxYE+fxqTG97wh9V9BweT4gqBXBy
+	 tWxJDMzRBX+B4Q4KezVdEkDndAnBxOSSqhRp+KGu5xMkoKSH2Qml3cy2qetH2B6UQQ
+	 +LhnX9C0h75V4xCYBzd5NRIZh4PBqSSa61OPaN/PpCyiJoMMgPz4ETcr6O6+K6bKKQ
+	 7XTq9Gxl22i9w==
+Date: Sun, 27 Aug 2023 13:19:26 +0100
+From: Conor Dooley <conor@kernel.org>
+To: Adam Ford <aford173@gmail.com>
+Cc: linux-arm-kernel@lists.infradead.org, aford@beaconembedded.com,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	NXP Linux Team <linux-imx@nxp.com>,
+	Shengjiu Wang <shengjiu.wang@nxp.com>, alsa-devel@alsa-project.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V2 1/3] ASoC: dt-bindings: fsl_easrc: Add support for
+ imx8mp-easrc
+Message-ID: <20230827-cackle-unseated-089a2d61ad4b@spud>
+References: <20230827023155.467807-1-aford173@gmail.com>
 MIME-Version: 1.0
-References: 
- <CAHCN7xKQ549ExO83Yur=_MPv3aYFdR0nfzUSuEXO74OddAr5gQ@mail.gmail.com>
- <ZOs5exw+95zzzawK@finisterre.sirena.org.uk>
-In-Reply-To: <ZOs5exw+95zzzawK@finisterre.sirena.org.uk>
-From: Adam Ford <aford173@gmail.com>
-Date: Sun, 27 Aug 2023 07:16:01 -0500
-Message-ID: 
- <CAHCN7x+jkU-UoR9DAPorC_i8Z-6sf4Qg2qRW444mzU1DcKiwnA@mail.gmail.com>
-Subject: Re: Question about simple-audio-card with dummy CODEC
-To: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>,
-	ALSA Development Mailing List <alsa-devel@alsa-project.org>,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Shengjiu Wang <shengjiu.wang@gmail.com>,
-	Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <festevam@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Message-ID-Hash: 2TUIC4LDXX2X7PZ5KGIORHPZUENFC36P
-X-Message-ID-Hash: 2TUIC4LDXX2X7PZ5KGIORHPZUENFC36P
-X-MailFrom: aford173@gmail.com
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="pLdAo1ePdGPvAelT"
+Content-Disposition: inline
+In-Reply-To: <20230827023155.467807-1-aford173@gmail.com>
+Message-ID-Hash: XNCFLBPFPULW3D7TXPXJIC7GE3LNQ4N6
+X-Message-ID-Hash: XNCFLBPFPULW3D7TXPXJIC7GE3LNQ4N6
+X-MailFrom: conor@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -109,7 +96,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2TUIC4LDXX2X7PZ5KGIORHPZUENFC36P/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XNCFLBPFPULW3D7TXPXJIC7GE3LNQ4N6/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -118,26 +105,63 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Sun, Aug 27, 2023 at 6:54=E2=80=AFAM Mark Brown <broonie@kernel.org> wro=
-te:
->
-> On Sat, Aug 26, 2023 at 11:15:30PM -0500, Adam Ford wrote:
->
-> > I am asking what is the best way to let simple-audio-card  use a dummy
-> > codec?  If the dummy codec is the better option, what compatible name
-> > should I use?
->
-> We have a driver for DMICs, dmic.c - you should use that.  In general
 
-Thank you. This looks like exactly what I need.  I just didn't know
-what it was called.
+--pLdAo1ePdGPvAelT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> you should never use the dummy CODEC, you should use a driver for the
-> specific thing on the board which will at least describe the
-> capabilities of the hardware even if it doesn't have any ops that do
-> anything.
+On Sat, Aug 26, 2023 at 09:31:53PM -0500, Adam Ford wrote:
+> The i.MX8MP appears to have the same easrc support as the Nano, so
+> add imx8mp as an option with a fallback to imx8mn.
+>=20
+> Signed-off-by: Adam Ford <aford173@gmail.com>
+> ---
+> V2:  Fixed errors:
+>      ['fsl,imx8mn-easrc'] is too short
+>       'fsl,imx8mn-easrc' is not one of ['fsl,imx8mp-easrc']
+>        =20
+> diff --git a/Documentation/devicetree/bindings/sound/fsl,easrc.yaml b/Doc=
+umentation/devicetree/bindings/sound/fsl,easrc.yaml
+> index bdde68a1059c..a680d7aff237 100644
+> --- a/Documentation/devicetree/bindings/sound/fsl,easrc.yaml
+> +++ b/Documentation/devicetree/bindings/sound/fsl,easrc.yaml
+> @@ -14,7 +14,13 @@ properties:
+>      pattern: "^easrc@.*"
+> =20
+>    compatible:
+> -    const: fsl,imx8mn-easrc
+> +    oneOf:
+> +      - enum:
+> +          - fsl,imx8mn-easrc
 
-I thought the dummy codec was a bad idea based on my searching.  I
-appreciate the quick response.
+This one should probably stay const, no?
+Either way,
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
 
-adam
+Thanks,
+Conor.
+
+> +      - items:
+> +          - enum:
+> +              - fsl,imx8mp-easrc
+> +          - const: fsl,imx8mn-easrc
+> =20
+>    reg:
+>      maxItems: 1
+> --=20
+> 2.39.2
+>=20
+
+--pLdAo1ePdGPvAelT
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZOs/TgAKCRB4tDGHoIJi
+0jH9AQCC7Npm9ae30q6QfswRgEaeaCzWpth2K8fmNPeg0llAZgD/SpwyM8EKqToW
+1FU3s1ZufKnuqW2q/m7hE+yXGXitfgw=
+=PtcV
+-----END PGP SIGNATURE-----
+
+--pLdAo1ePdGPvAelT--
