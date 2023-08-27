@@ -4,111 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6B746C6FA8F
-	for <alsa-devel@archiver.kernel.org>; Sun, 27 Aug 2023 02:34:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A23AAC83F10
+	for <alsa-devel@archiver.kernel.org>; Sun, 27 Aug 2023 04:18:23 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5416BDF1;
-	Sun, 27 Aug 2023 04:33:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5416BDF1
+	by alsa0.perex.cz (Postfix) with ESMTPS id B6840A4C;
+	Sun, 27 Aug 2023 06:17:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B6840A4C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1693103654;
-	bh=mGhtWSzoPTusRWci884ej+oSaEZ8ctuPjimuqlXXMJI=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=bctKNOSgqMZRgg4goXlQU2WTZOzpWgr3ZvL0rTiLKos2dv1mhNFXGQcpWQeztLNlJ
-	 pV4KPHmfXwjEkjFvityiErqS1uRmKz967phfmR+aPnn+1AUaEd51pyEcmyYM2OP0s1
-	 mSEvG8v36wkUDUeyghNWUjTyTdNu+aHf2MhFfP7s=
+	s=default; t=1693109900;
+	bh=BABXMPxMneUALd9yAZ4Y+SGWfeNAvDpxE0Y1auJbp0g=;
+	h=From:Date:Subject:To:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=t6/jXhkoEScszNJ/LsUR1Bj96OUnIxz24JX2rqQSmeJw1ct474TkjbbT37KouQneH
+	 xsqcKQm7TVFUP12hkrf4CVJE/KQp0EeJNIUp/gA0fl+34Fl2agUmoZQAMOu3kHvjdW
+	 Ml2DVoergopBOKa82Hvco04iJYUAffc8GlNwJuWc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 56E53F80567; Sun, 27 Aug 2023 04:32:28 +0200 (CEST)
+	id 99C8FF8032D; Sun, 27 Aug 2023 06:17:00 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C4169F80564;
-	Sun, 27 Aug 2023 04:32:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D6BF5F80158;
+	Sun, 27 Aug 2023 06:16:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id F3AA8F80158; Sun, 27 Aug 2023 04:32:21 +0200 (CEST)
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com
- [IPv6:2607:f8b0:4864:20::d2d])
+	id 396C7F80158; Sun, 27 Aug 2023 06:16:21 +0200 (CEST)
+Received: from mail-oa1-x29.google.com (mail-oa1-x29.google.com
+ [IPv6:2001:4860:4864:20::29])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id DD6A7F80155
-	for <alsa-devel@alsa-project.org>; Sun, 27 Aug 2023 04:32:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DD6A7F80155
+	by alsa1.perex.cz (Postfix) with ESMTPS id B6650F800D1
+	for <alsa-devel@alsa-project.org>; Sun, 27 Aug 2023 06:15:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B6650F800D1
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20221208 header.b=lo9ZFtZg
-Received: by mail-io1-xd2d.google.com with SMTP id
- ca18e2360f4ac-77a62a84855so76417439f.1
+ header.s=20221208 header.b=VjNpwv46
+Received: by mail-oa1-x29.google.com with SMTP id
+ 586e51a60fabf-1cca0a1b3c7so1537167fac.2
         for <alsa-devel@alsa-project.org>;
- Sat, 26 Aug 2023 19:32:10 -0700 (PDT)
+ Sat, 26 Aug 2023 21:15:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693103528; x=1693708328;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=E6JljaP6ydDpiKUAUEr2HJLofyqFW0MhNueQ/UlFehE=;
-        b=lo9ZFtZglKjl08HKkE5t0WneBOqBkXhXzXR2N778Blp7gbLP1XcXlyM4hoSYaQwg9H
-         jhiTL1MUwwo6IDuqSdhw1lTCA7YuQP/qjtmKjXsJ9uTKgvLZVW/ynSbudpOhq2nuexJJ
-         Q8LCxVUg0XTp3hx7uQL8K2rOXFXiHwH1S7W/HBw1KjJegELDdErKqDdf5CBjsQzFc1MR
-         7266uEIsBXOMz1QLbq2L/ok+QJ7TF5Xny/ed/31KrvO9D8dJKZiiBw2iVWpJRV+m6M/U
-         piKEifYVVVblXXC6TGJI+ltxrq/jqsopS1UA48bDufRMq8TMQ1kPRo4v/1u1ZQYLW8cj
-         iz8Q==
+        d=gmail.com; s=20221208; t=1693109742; x=1693714542;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Yt7H9ySicMeQ6CipjH35qj5+nF/2PyaMgGzn05Vybi8=;
+        b=VjNpwv46Ds0oNBdkjzqAcQmeeXEzwAZA0VnMUYxq2xHXIT2KlnzZ82nndTyc4BL7tj
+         MC0n8srTzz++vFBulgnkkZfW+VMV+fUYfU4lrNhExo+vt90av/TwTizVFchvjCZbpjEo
+         Ge4+q9SGK3JopZ8MStAdV++By+EHrz8EozzNq3LFx6eQbgZvYANOVrScaE4a78O8L8bu
+         S98d0/ydDhaTZ4ZMf6tXGpIlZd6qgx+zwbbXq+LtMGOQkmyL6rc8FLddIGYyFCIfXqQf
+         7+whShT1TQmiAviWLR9ZYf2Qj58X8JK60uDrMkoyYThTN8Pnj58/gVXjU7Q9fmmQU4ij
+         hc/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693103528; x=1693708328;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=E6JljaP6ydDpiKUAUEr2HJLofyqFW0MhNueQ/UlFehE=;
-        b=KbCr7onmmm5EEQr5Xoh1+JZIb1WpDbJgVXosiCHN0crSYzY9FRZcKU+zqlaVBYUjPS
-         kGgeTHFmRmIIOimMWHFBH7QJaQBCkZhox3HuJgpKILPxTrB0Lu71kqgK3YVsj31ps67S
-         tJZKH9Mf1ETlYkW/ucn/j7k9GNmes6BbT8Cp0hyGTMk+RmeGQroelbaNtk8LUyOVoA9r
-         cuenmq2xuS3zr2WBerxtlN+Dton5BjzKbBblYq5NY2AOQguI2GHeiDTEn0Hd9vCVptMB
-         P+6T6J1RPRgFREp7ulJduWT3Cg3zipiJvzvmc4BVl9Pv1kDW0RUO4IEgMdfsXNe21gkM
-         rh1Q==
-X-Gm-Message-State: AOJu0Yx68hSHiN6u21zeBZvyiv+mKG+9a26tG4ZNiDufFEd4xHxfSGR8
-	JxXJv3sPB46z14Cg+CwQ1j0=
+        d=1e100.net; s=20221208; t=1693109742; x=1693714542;
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Yt7H9ySicMeQ6CipjH35qj5+nF/2PyaMgGzn05Vybi8=;
+        b=Sb/xQlByBe9VXNCCzkQBK+2nbxuUw87/3mqtaj7wZUutFUtSzvvSCekdRRVWg0g2Rg
+         MVBlGJ+CRtlA7YE4ZmPP2037XFrNgsf7BaZKIn352Ri7cK+B5XcUJ2qwSpM8hKSI2TMl
+         +DedPCiiTLechIiksUfzXBSflixqymi9/I856erracfQqtnS3hsXWoe+A0/DvA1zdXb0
+         lkXh+oC2lv4B0KEEHSOITXbK5I5uOs1K5D37U0pTt9tUJiye+pQKrYJ5r/XETIT8aoZT
+         zsE3Bv+s3bphKm0pRE/KYgHTbkuYaapSodQr8eX/9huIfdrh1gUooVb5fSCYcSM/5CuS
+         kaUA==
+X-Gm-Message-State: AOJu0YzqyicvDZTdJed7xflzlG0lqYG5ATF9UHsrwlrKV7dj/WeLGmlu
+	vcVtGGbglWJDSwE1XZDGI6XwSy9zxwhgqPqgvfs=
 X-Google-Smtp-Source: 
- AGHT+IFHmtefwiknYqi7kY+GlLeufxz2ZPziMtQjJxWIMqW4V/Lw28aZlw4f8ngVDEGD8Ckeq39R/Q==
-X-Received: by 2002:a05:6e02:ca7:b0:34b:b024:a07c with SMTP id
- 7-20020a056e020ca700b0034bb024a07cmr11373658ilg.5.1693103528163;
-        Sat, 26 Aug 2023 19:32:08 -0700 (PDT)
-Received: from aford-B741.lan ([2601:447:d001:897f:80ee:1859:87ec:6d31])
-        by smtp.gmail.com with ESMTPSA id
- n18-20020a056e0208f200b0034202d05fadsm1581533ilt.72.2023.08.26.19.32.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 26 Aug 2023 19:32:07 -0700 (PDT)
-From: Adam Ford <aford173@gmail.com>
-To: linux-arm-kernel@lists.infradead.org
-Cc: aford@beaconembedded.com,
-	Adam Ford <aford173@gmail.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	Shengjiu Wang <shengjiu.wang@nxp.com>,
-	alsa-devel@alsa-project.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH V2 2/3] arm64: dts: imx8mp: Add easrc node
-Date: Sat, 26 Aug 2023 21:31:54 -0500
-Message-Id: <20230827023155.467807-2-aford173@gmail.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230827023155.467807-1-aford173@gmail.com>
-References: <20230827023155.467807-1-aford173@gmail.com>
+ AGHT+IEoUvPk6fAL1zO2iNnHtZ/RsuPPopD1xHzzPzFvrD7UL4pz6gUMFIOeL8dZvsFYOgbLk6j47OuViMRaG+7y5H8=
+X-Received: by 2002:a05:6870:d60c:b0:1ba:caf2:acc3 with SMTP id
+ a12-20020a056870d60c00b001bacaf2acc3mr7407554oaq.5.1693109741964; Sat, 26 Aug
+ 2023 21:15:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: E2I46JAEFHM6HELOITBNU27U4OC73WAY
-X-Message-ID-Hash: E2I46JAEFHM6HELOITBNU27U4OC73WAY
+From: Adam Ford <aford173@gmail.com>
+Date: Sat, 26 Aug 2023 23:15:30 -0500
+Message-ID: 
+ <CAHCN7xKQ549ExO83Yur=_MPv3aYFdR0nfzUSuEXO74OddAr5gQ@mail.gmail.com>
+Subject: Question about simple-audio-card with dummy CODEC
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Shengjiu Wang <shengjiu.wang@gmail.com>,
+	Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <festevam@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Message-ID-Hash: OKTQNE6QBHKDKAEGMN4OVILBLMMAL2XZ
+X-Message-ID-Hash: OKTQNE6QBHKDKAEGMN4OVILBLMMAL2XZ
 X-MailFrom: aford173@gmail.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -121,7 +100,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/E2I46JAEFHM6HELOITBNU27U4OC73WAY/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OKTQNE6QBHKDKAEGMN4OVILBLMMAL2XZ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -130,44 +109,32 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The i.MX8MP has an asynchronous sample rate converter which seems
-to be the same as what is available on the i.MX8M Nano.
+I want to use a PDM microphone on a variety of i.MX8M (Mini/Nano/Plus)
+boards with the simple-audio-card driver.  I can get this device to
+enumerate when I use "fsl,imx-audio-card" and it appears that it
+connects to a dummy codec:
 
-Signed-off-by: Adam Ford <aford173@gmail.com>
----
-V2:  No change
+sysdefault:CARD=imxaudiomicfil
+    imx-audio-micfil, micfil hifi snd-soc-dummy-dai-0
+    Default Audio Device
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mp.dtsi b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-index 6f2f50e1639c..79cdd4c066c8 100644
---- a/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-@@ -1453,6 +1453,26 @@ sai7: sai@30c80000 {
- 					interrupts = <GIC_SPI 111 IRQ_TYPE_LEVEL_HIGH>;
- 					status = "disabled";
- 				};
-+
-+				easrc: easrc@30c90000 {
-+					compatible = "fsl,imx8mp-easrc", "fsl,imx8mn-easrc";
-+					reg = <0x30c90000 0x10000>;
-+					interrupts = <GIC_SPI 122 IRQ_TYPE_LEVEL_HIGH>;
-+					clocks = <&audio_blk_ctrl IMX8MP_CLK_AUDIOMIX_ASRC_IPG>;
-+					clock-names = "mem";
-+					dmas = <&sdma2 16 23 0> , <&sdma2 17 23 0>,
-+					       <&sdma2 18 23 0> , <&sdma2 19 23 0>,
-+					       <&sdma2 20 23 0> , <&sdma2 21 23 0>,
-+					       <&sdma2 22 23 0> , <&sdma2 23 23 0>;
-+					dma-names = "ctx0_rx", "ctx0_tx",
-+						    "ctx1_rx", "ctx1_tx",
-+						    "ctx2_rx", "ctx2_tx",
-+						    "ctx3_rx", "ctx3_tx";
-+					firmware-name = "imx/easrc/easrc-imx8mn.bin";
-+					fsl,asrc-rate  = <8000>;
-+					fsl,asrc-format = <2>;
-+					status = "disabled";
-+				};
- 			};
- 
- 			sdma3: dma-controller@30e00000 {
--- 
-2.39.2
+When I attempt to use "simple-audio-card" with just the
+simple-audio-card,cpu  sound-dai node pointing to the micfil cpu
+without a codec node, nothing appears in arecord -L, and I don't see
+errors.
 
+I am guessing the simple-audio-card driver is expecting a CODEC, so
+hacked soc-utils.c to give soc_dummy_driver an of_match_table and
+assigned it a corresponding 'compatible' name. I then routed the codec
+node on the simple-audio-card to the dummy CODEC and it enumerated
+just like it did with the custom fsl,imx-audio-card driver:
+
+sysdefault:CARD=soundpdm
+    sound-pdm, 30ca0000.audio-controller-snd-soc-dummy-dai snd-soc-dummy-dai-0
+    Default Audio Device
+
+I am asking what is the best way to let simple-audio-card  use a dummy
+codec?  If the dummy codec is the better option, what compatible name
+should I use?
+
+adam
