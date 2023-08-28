@@ -4,84 +4,108 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 480EAC83F12
-	for <alsa-devel@archiver.kernel.org>; Tue, 29 Aug 2023 14:11:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 922CAC83F12
+	for <alsa-devel@archiver.kernel.org>; Tue, 29 Aug 2023 14:15:23 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0FA8E3E8;
-	Tue, 29 Aug 2023 16:11:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0FA8E3E8
+	by alsa0.perex.cz (Postfix) with ESMTPS id BCD7684B;
+	Tue, 29 Aug 2023 16:14:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BCD7684B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1693318313;
-	bh=5ROhx+Mdg495UmpbqjupEWMNTD1OEeXWyudo+4AQwlk=;
-	h=Date:To:Cc:References:From:Subject:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=r0LcNL29pH2GFnBFXXamsrlqpR5ZgEhgO2nLKmGmEvPLor9Sgkfpc69Djn1LCb6Bd
-	 oSkde1zPEXvRcP+bqG/Ajy48Bs7K4tnn+rsZWzihDbkiHepemQ0b+1lLF1gGdq8YsB
-	 t7vwqH53zU/gbbzPlimNrCO7d3CR6b1V48LxrIno=
+	s=default; t=1693318515;
+	bh=x/M6ySU5jIZDMw4cSAlNzXgk2cE4qlTHPmrb3jfWZnE=;
+	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=EHwzpQ/i44Uv1QBHjC1KSuo21FoPcEXmtHOKk0NPfUbprTYc0/VgPxyqoyVb8J9G0
+	 QDPCADlXnG69m/4VHD1Z0/IcJbnuHi94RFJxi1cfVYyV2oxjQzW9M0S/wihV0NfQZU
+	 o8jRJhy5+Ok4GvyCMQ7VUSQoctMdCcxMdZeRtktE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C6E25F800F5; Tue, 29 Aug 2023 16:10:35 +0200 (CEST)
+	id 287F7F80155; Tue, 29 Aug 2023 16:13:56 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8A719F80158;
-	Tue, 29 Aug 2023 16:10:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 38821F80158;
+	Tue, 29 Aug 2023 16:13:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AD7B7F80158; Tue, 29 Aug 2023 16:10:31 +0200 (CEST)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id DF113F80249; Mon, 28 Aug 2023 19:05:54 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 075E3F800D1
-	for <alsa-devel@alsa-project.org>; Tue, 29 Aug 2023 16:10:29 +0200 (CEST)
-Received: from mail1.perex.cz (localhost [127.0.0.1])
-	by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id CF5A711D9;
-	Tue, 29 Aug 2023 16:10:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz CF5A711D9
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
-	t=1693318228; bh=VFizFasrmps0pK8Vm4GD/TVsSeVHbnbNGk46FkUfXyU=;
-	h=Date:To:Cc:References:From:Subject:In-Reply-To:From;
-	b=SlcKdjZHvSJuQ5tOF5JHfz3uL4SgWS5GqyKpTsLtlHxZF/8KmjceLfG8zOxdF+ULh
-	 U43J0A2sLxkOWVY9Hh6W3te/cZKYSwXFrBF1JKGuzPa6KoK9XV6KTc6fk8LobiGeAb
-	 dqlt6xSIeE9+wjRBGhaAew2MQJXFc0CUreCdZBes=
-Received: from [192.168.100.98] (unknown [192.168.100.98])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
-	(No client certificate requested)
-	(Authenticated sender: perex)
-	by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
-	Tue, 29 Aug 2023 16:10:24 +0200 (CEST)
-Message-ID: <9b71579b-3c2c-aafc-64d0-ae16603de82b@perex.cz>
-Date: Tue, 29 Aug 2023 16:10:24 +0200
+	by alsa1.perex.cz (Postfix) with ESMTPS id 3B72CF80074
+	for <alsa-devel@alsa-project.org>; Mon, 28 Aug 2023 19:05:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3B72CF80074
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
+ header.s=PODMain02222019 header.b=e4tXq7cF
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+	by mx0b-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id
+ 37SFnRVL031069;
+	Mon, 28 Aug 2023 12:05:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=PODMain02222019; bh=u
+	ykMzcWp3pYiVsOXdian8GV2w7tbBQSBO6upZ3H11QM=; b=e4tXq7cFDwRi/L7J6
+	DZ+HPtyZaysTuPBEF61BIjA/rpHTi5TeJoN0/IvIAKBmoxf4VzQQNfu1LSsF3zGw
+	N8Zv2eTTgJhf56S9HzxJliQ4hVRB+vFrq3oxbxfFZg6IGLgwgYRNV+csg/u8uXbp
+	wGrCgbibwzVu+Jb82UWdu3n2uO0p7RmxdsvmYte3Wodus0eaDiZtOuoBU5/Q4Eux
+	rDCdOOofZ/HKSc/g0Xzofj7JaFQ8cYD/5/RaOlmAq0NkY0wH8EaY9wpexfBDd1w9
+	H2Y2yz99lpOkU1eQLOI2V64xB18sK/dhdz5Mj+0yF1fjizthn/zVpI0vZ8pfNoOg
+	ow9yg==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3sqdtj2185-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 28 Aug 2023 12:05:42 -0500 (CDT)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Mon, 28 Aug
+ 2023 18:05:41 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.37 via Frontend
+ Transport; Mon, 28 Aug 2023 18:05:41 +0100
+Received: from vkarpovich-ThinkStation-P620.crystal.cirrus.com
+ (vkarpovich-ThinkStation-P620.ad.cirrus.com [141.131.145.49])
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 03AB03561;
+	Mon, 28 Aug 2023 17:05:38 +0000 (UTC)
+From: Vlad Karpovich <vkarpovi@opensource.cirrus.com>
+To: James Schulman <james.schulman@cirrus.com>,
+        David Rhodes
+	<david.rhodes@cirrus.com>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>,
+        Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        Rob Herring
+	<robh+dt@kernel.org>
+CC: <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <RicardoRivera-Matosricardo.rivera-matos@cirrus.com>,
+        Vlad Karpovich
+	<vkarpovi@opensource.cirrus.com>
+Subject: [PATCH 1/7] ASoC: cs35l45: Add support for Chip ID 0x35A460
+Date: Mon, 28 Aug 2023 12:05:19 -0500
+Message-ID: <20230828170525.335671-1-vkarpovi@opensource.cirrus.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Content-Language: en-US
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Cc: Takashi Iwai <tiwai@suse.com>
-References: <20230829135252.3915124-1-andriy.shevchenko@linux.intel.com>
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH v1 1/1] ALSA: control: Use list_for_each_entry_safe()
-In-Reply-To: <20230829135252.3915124-1-andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: CCUY5OPZSYAP6D6NROWL3UQ5K4636CRE
-X-Message-ID-Hash: CCUY5OPZSYAP6D6NROWL3UQ5K4636CRE
-X-MailFrom: perex@perex.cz
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: aQpetfLelSSChLiugsOYyd42XXhBaNpc
+X-Proofpoint-GUID: aQpetfLelSSChLiugsOYyd42XXhBaNpc
+X-Proofpoint-Spam-Reason: safe
+X-MailFrom: prvs=4604b61042=vkarpovi@opensource.cirrus.com
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: YY7X4ZXDDIL7OUUFSIPKLSUECUMP4MPI
+X-Message-ID-Hash: YY7X4ZXDDIL7OUUFSIPKLSUECUMP4MPI
+X-Mailman-Approved-At: Tue, 29 Aug 2023 14:13:52 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CCUY5OPZSYAP6D6NROWL3UQ5K4636CRE/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YY7X4ZXDDIL7OUUFSIPKLSUECUMP4MPI/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -90,73 +114,25 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 29. 08. 23 15:52, Andy Shevchenko wrote:
-> Instead of reiterating the list, use list_for_each_entry_safe()
-> that allows to continue without starting over.
-> 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
-> 
-> Takashi, if you have anybody or want yourself to spend some time,
-> I believe you can simplify a lot the parser in this file with
-> the help of lib/cmdline.c APIs.
+The 0x35A460 chip is a different variant of the cs35l45.
 
-You probably mean next_arg() function. Unfortunately, it does not handle all 
-cases we need to parse. The control IDs are a bit different than standard 
-arguments.
+Signed-off-by: Vlad Karpovich <vkarpovi@opensource.cirrus.com>
+---
+ sound/soc/codecs/cs35l45.c | 1 +
+ 1 file changed, 1 insertion(+)
 
->   sound/core/control_led.c | 15 +++++----------
->   1 file changed, 5 insertions(+), 10 deletions(-)
-> 
-> diff --git a/sound/core/control_led.c b/sound/core/control_led.c
-> index a78eb48927c7..afc9ffc388e3 100644
-> --- a/sound/core/control_led.c
-> +++ b/sound/core/control_led.c
-> @@ -297,16 +297,13 @@ static void snd_ctl_led_clean(struct snd_card *card)
->   {
->   	unsigned int group;
->   	struct snd_ctl_led *led;
-> -	struct snd_ctl_led_ctl *lctl;
-> +	struct snd_ctl_led_ctl *lctl, _lctl;
->   
->   	for (group = 0; group < MAX_LED; group++) {
->   		led = &snd_ctl_leds[group];
-> -repeat:
-> -		list_for_each_entry(lctl, &led->controls, list)
-> -			if (!card || lctl->card == card) {
-> +		list_for_each_entry_safe(lctl, _lctl, &led->controls, list)
-> +			if (!card || lctl->card == card)
->   				snd_ctl_led_ctl_destroy(lctl);
-> -				goto repeat;
-> -			}
->   	}
->   }
->   
-> @@ -314,7 +311,7 @@ static int snd_ctl_led_reset(int card_number, unsigned int group)
->   {
->   	struct snd_card *card;
->   	struct snd_ctl_led *led;
-> -	struct snd_ctl_led_ctl *lctl;
-> +	struct snd_ctl_led_ctl *lctl, _lctl;
->   	struct snd_kcontrol_volatile *vd;
->   	bool change = false;
->   
-> @@ -329,14 +326,12 @@ static int snd_ctl_led_reset(int card_number, unsigned int group)
->   		return -ENXIO;
->   	}
->   	led = &snd_ctl_leds[group];
-> -repeat:
-> -	list_for_each_entry(lctl, &led->controls, list)
-> +	list_for_each_entry(lctl, _lctl, &led->controls, list)
-
-The list_for_each_entry_safe() should be used here, too.
-
-With the fix:
-
-Reviewed-by: Jaroslav Kysela <perex@perex.cz>
-
-						Jaroslav
+diff --git a/sound/soc/codecs/cs35l45.c b/sound/soc/codecs/cs35l45.c
+index 8f480df7f29a..7f116ae97acd 100644
+--- a/sound/soc/codecs/cs35l45.c
++++ b/sound/soc/codecs/cs35l45.c
+@@ -1078,6 +1078,7 @@ static int cs35l45_initialize(struct cs35l45_private *cs35l45)
+ 
+ 	switch (dev_id[0]) {
+ 	case 0x35A450:
++	case 0x35A460:
+ 		break;
+ 	default:
+ 		dev_err(cs35l45->dev, "Bad DEVID 0x%x\n", dev_id[0]);
 -- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+2.25.1
 
