@@ -4,68 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EF95FC71153
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Aug 2023 14:55:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F192AC83F11
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Aug 2023 14:57:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CEDBEDEB;
-	Mon, 28 Aug 2023 16:54:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CEDBEDEB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 527FD9F6;
+	Mon, 28 Aug 2023 16:56:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 527FD9F6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1693234516;
-	bh=R1KTSHNuGeL+vDraKgRI+gr5DXxU7FSRvjBBGimyR3c=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=vKFDwBMv/2XzU3oY3rFtXaqU2X00Lk1epIHshYKdlGwMxS67yqmgq85k40ljH1IU0
-	 BScn/VkrNksemnayZaAaueshJ0txHatnIWPukOQr+Z3qD80c4SUTIqhUQCkvCkR/DT
-	 CIFk+04PYo6yIqDz3B9EWyJyuWBR2EO9qwkupGhQ=
+	s=default; t=1693234644;
+	bh=/kigsO9qhFMxnNMmstEVHAYFZ/8kKYKP+4tGG/MzS14=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=LvXXOhAnnloqUvlxrkyyBGnA7Pt6iC8/ccuklQ9+n/yi4Hl6Bf6Mhx7QLmdzK1u76
+	 kFPZcR1YvYny/CLLOwq61xlvPILGNuw8dPRQg7SajsiT4MoJ1ysKIzQQZGLAcKsW/4
+	 jsLTR5Xncr8JRe/uwSZmAaYkNAQUKANS9QZ1veqw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8F9A2F8025F; Mon, 28 Aug 2023 16:54:04 +0200 (CEST)
+	id 59001F80158; Mon, 28 Aug 2023 16:56:06 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 20828F8025F;
-	Mon, 28 Aug 2023 16:54:04 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 057EDF80158;
+	Mon, 28 Aug 2023 16:56:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 15425F80158; Mon, 28 Aug 2023 16:54:00 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	id 37977F80158; Mon, 28 Aug 2023 16:56:01 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 14045F80094
-	for <alsa-devel@alsa-project.org>; Mon, 28 Aug 2023 16:53:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 14045F80094
+	by alsa1.perex.cz (Postfix) with ESMTPS id 95DFBF800F5
+	for <alsa-devel@alsa-project.org>; Mon, 28 Aug 2023 16:55:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 95DFBF800F5
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=muHKUSKj
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=yKuM8AHU;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=ltuGJBAc
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 564BF60FEC;
-	Mon, 28 Aug 2023 14:53:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4BD01C433C7;
-	Mon, 28 Aug 2023 14:53:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1693234434;
-	bh=R1KTSHNuGeL+vDraKgRI+gr5DXxU7FSRvjBBGimyR3c=;
-	h=From:To:Cc:Subject:Date:From;
-	b=muHKUSKjGwWsSDjVTdWa7Kcu2/yuD3DeL5JqMRgxtpL/HQE7TJKKUmoAqxUKWZfGZ
-	 2qh24h6DYySgwN2tLL2kF/mPm4vbqd0/oe+8dxFBy8PCqNWNZh0ygLid2jC2f5XvYe
-	 OB4F+lUpVSuXKAEyZ2qXXk5bjaooJkBjmu1dSe1xdt9RlTaQbReeoPk0qbfGyVLwZi
-	 ApHr9+MtNvoa8hUUDr/ChFJVeTlbA+GCMoFAmo2YQR58VjoGwqNnki3vpM6P8eX7Bh
-	 PPVUzN0XTsBPwijwq6wgYlHna/w13RqFq1ij9EX9j7TpLtMTQMIdkVSAszYu41wHk7
-	 om2fsGw5RqWMA==
-Message-ID: <fc0f3b34539c7a8778d59c52ec2092e1.broonie@kernel.org>
-From: Mark Brown <broonie@kernel.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org,
- Mark Brown <broonie@kernel.org>
-Subject: [GIT PULL] ASoC fixes for v6.5-merge-window
-Date: Mon, 28 Aug 2023 15:53:35 +0100
-Message-ID-Hash: JMTZSL7IRCZXRLF6FAME3ZPT72ZAQTYA
-X-Message-ID-Hash: JMTZSL7IRCZXRLF6FAME3ZPT72ZAQTYA
-X-MailFrom: broonie@kernel.org
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 112401FD65;
+	Mon, 28 Aug 2023 14:55:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1693234559;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=4UR1MixxViuvhiZbJEDh3i2NgkbeFqrAs72oMH+1DF4=;
+	b=yKuM8AHU6n42XtAKHCrdqkK7cLYXlFpJiAGzU4KzPpRGOM0Xyx70LwhyT8kJO52oXha4qf
+	YiioCGSOQCaVDUFplQ7I8foP17OnVxIETbVdXXVe/Y7zZsUUjnuwuKHQoOjIaseQf7aBgg
+	IuogOspPsSBoUF06t7O6jS53QWOe6cM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1693234559;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=4UR1MixxViuvhiZbJEDh3i2NgkbeFqrAs72oMH+1DF4=;
+	b=ltuGJBAc6oLHW+1QqO2qY8U/5bEMks/aCDCgZ5NneCIGngKuieBlB4rPRVsbHJXBMqne08
+	9ehZ8Qu+C4+DvxBA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E5263139CC;
+	Mon, 28 Aug 2023 14:55:58 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id rmLsNn617GRpbAAAMHmgww
+	(envelope-from <tiwai@suse.de>); Mon, 28 Aug 2023 14:55:58 +0000
+Date: Mon, 28 Aug 2023 16:55:58 +0200
+Message-ID: <87sf83w70h.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>,
+	alsa-devel@alsa-project.org
+Subject: Re: [GIT PULL] ASoC updates for v6.6
+In-Reply-To: <ZOy0BNm1Kw39zTZf@finisterre.sirena.org.uk>
+References: <8c4fe69de8214f27e2de1e1c37a70dce.broonie@kernel.org>
+	<87v8czxxih.wl-tiwai@suse.de>
+	<ZOy0BNm1Kw39zTZf@finisterre.sirena.org.uk>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Message-ID-Hash: UWCFU44DV74RNJWXMRZ55NLENXPTU2K7
+X-Message-ID-Hash: UWCFU44DV74RNJWXMRZ55NLENXPTU2K7
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -77,7 +106,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JMTZSL7IRCZXRLF6FAME3ZPT72ZAQTYA/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UWCFU44DV74RNJWXMRZ55NLENXPTU2K7/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -86,36 +115,19 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The following changes since commit 1f1ef7e5bbe2de125da413e238915f6047ea4ba2:
+On Mon, 28 Aug 2023 16:49:40 +0200,
+Mark Brown wrote:
+> 
+> On Mon, Aug 28, 2023 at 12:38:14PM +0200, Takashi Iwai wrote:
+> 
+> > The fix below seems working.  If you don't mind, I'll apply it (after
+> > submitting properly) on my sound.git tree.  Let me know.
+> 
+> Looks fine
+> 
+> Acked-by: Mark Brown <broonie@kernel.org>
 
-  ASoC: intel: sof_sdw: Fixup typo in device link checking (2023-06-19 12:58:22 +0100)
+Thanks, now I pulled the PR and applied the patch.
 
-are available in the Git repository at:
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-fix-v6.5-merge-window
-
-for you to fetch changes up to d900d9a435ca95a386f49424f3689cd17ec201da:
-
-  ASoC: tegra: Fix SFC conversion for few rates (2023-06-24 01:57:16 +0100)
-
-----------------------------------------------------------------
-ASoC: Fixes that got left after v6.4
-
-These were some changes in my v6.4 branch that never got sent as fixes,
-none of them super urgent thankfully.
-
-----------------------------------------------------------------
-Phil Elwell (1):
-      ASoC: cs43130: Fix numerator/denominator mixup
-
-Sheetal (1):
-      ASoC: tegra: Fix SFC conversion for few rates
-
-yixuanjiang (1):
-      ASoC: soc-compress: Fix deadlock in soc_compr_open_fe
-
- sound/soc/codecs/cs43130.h     | 138 ++++++++++++++++++++---------------------
- sound/soc/soc-compress.c       |   1 +
- sound/soc/tegra/tegra210_sfc.c |  31 ++++++++-
- sound/soc/tegra/tegra210_sfc.h |   4 +-
- 4 files changed, 102 insertions(+), 72 deletions(-)
+Takashi
