@@ -4,59 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2996AC83F18
-	for <alsa-devel@archiver.kernel.org>; Tue, 29 Aug 2023 13:35:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CA361C71153
+	for <alsa-devel@archiver.kernel.org>; Tue, 29 Aug 2023 13:36:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F410486F;
-	Tue, 29 Aug 2023 15:34:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F410486F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 803F2DED;
+	Tue, 29 Aug 2023 15:35:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 803F2DED
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1693316148;
-	bh=ZuI9nq6BLOc+u90ojpHaG+JJPx2aAxOKSOIAJFXeBjI=;
+	s=default; t=1693316165;
+	bh=Ikq7HXuDLqv01f378rpNzSykJAHeQjycEAisBl23l5s=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=vrHo88ZziE4LvbcB831BxVh2uEIjDCQOiHpTs5AP6P8ExO7va7rQ1DYT0LZ5r0zYC
-	 arvNw8LF7TqguaT4Z5nHZjlTbotQqnkAaehZE3ZWLO0DpwDTs2IvgJJcOlD717pQRT
-	 0oe3odZD6SbpHRPn+9pKP91tFDpBMCruH4z0ts4w=
+	b=tUaeD0uvdZpV21fl4HK1niHcJGrNW8SRxzXhU36EoMA7ajwNgXEkYklEChh+ts5Yl
+	 l2wEJahIlQVf5aSGjq97W1kbqS1+yNnLXj/KCkoarG5+MWQZclZ5i5Ku78DoHBqoeB
+	 H4JNfS7BpH7Qdl69qAIWT1YD9lPJeJ38zma0nCYs=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BA091F805A8; Tue, 29 Aug 2023 15:34:25 +0200 (CEST)
+	id 62DF9F80568; Tue, 29 Aug 2023 15:34:38 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 65EE8F80563;
-	Tue, 29 Aug 2023 15:34:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0A736F8056F;
+	Tue, 29 Aug 2023 15:34:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id ADA51F80563; Tue, 29 Aug 2023 15:34:22 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	id 37AA2F8032D; Tue, 29 Aug 2023 15:34:34 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C4FB3F80549
-	for <alsa-devel@alsa-project.org>; Tue, 29 Aug 2023 15:34:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C4FB3F80549
+	by alsa1.perex.cz (Postfix) with ESMTPS id 34879F800F5
+	for <alsa-devel@alsa-project.org>; Tue, 29 Aug 2023 15:34:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 34879F800F5
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=aOBLjlcu
+ header.s=k20201202 header.b=ACT+3yCo
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 9916E657F3;
-	Tue, 29 Aug 2023 13:34:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81175C43397;
-	Tue, 29 Aug 2023 13:34:17 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id CA510658A8;
+	Tue, 29 Aug 2023 13:34:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B315EC433C7;
+	Tue, 29 Aug 2023 13:34:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1693316058;
-	bh=ZuI9nq6BLOc+u90ojpHaG+JJPx2aAxOKSOIAJFXeBjI=;
+	s=k20201202; t=1693316070;
+	bh=Ikq7HXuDLqv01f378rpNzSykJAHeQjycEAisBl23l5s=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=aOBLjlcuYKDuk6amKXtMECZo34+XgU1SjavL4fyA5cfJksM5GmTxfMZgne+qv4eC2
-	 SpSgTbkR7o1a7iwOibms0yf/C4t217bOmPJSm3zcTuaVSa1/4nc98Eb9nTxxrvs2X0
-	 R77MC9FNWcwji18fYRlMN+RblvJVEf8WdbBTR8xgD/pwRCk3wt1LZNjQh0Z2sGcN7R
-	 IUuxc0LTug8UE/FHAi+DHr/ptXqIIDgUMwCdIkH9EK05U4YbWQyZgIMUlVoNDN992Q
-	 cBsb5+4qA1lcMGe2ZznvfmDfFfDxwg0FY4dA6SdJRCqXHZw3Rv/jz/FV+p2dachjKQ
-	 gKCj1E2x/H7kQ==
+	b=ACT+3yConGLTFoJ1OhqOkB8rfdacGridXfOArWymnQbWu0vcd059ThM8ztwVB1OwF
+	 dIm43QFZQ0we755fye6EFZJud3EJAlxlKgKCo/0c8RlKSY48IPvF8po8ZFLtVwgfFJ
+	 8316CIa1tls6SSW51ZLubEXR5G5+TPoj4+C9Wdqk/ZO1gKKQjHxT/QlALmqJyqgsu9
+	 rPT7Kt39okpqnoZVpnX+lz0O79CcOFnpz+DWyffACjQrHXkvu1aLaw11FQpCG5rcmt
+	 8uFJDk3TD9vA7uTNcNZwRrGOzdRDUHaM//MQcsUR15OK06CijSWOJW3cRD3hvv3fLI
+	 zrRTNIsSThXuw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -66,20 +67,20 @@ Cc: Takashi Iwai <tiwai@suse.de>,
 	perex@perex.cz,
 	tiwai@suse.com,
 	alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 4.19 5/5] ALSA: seq: oss: Fix racy open/close of MIDI
+Subject: [PATCH AUTOSEL 4.14 5/5] ALSA: seq: oss: Fix racy open/close of MIDI
  devices
-Date: Tue, 29 Aug 2023 09:34:06 -0400
-Message-Id: <20230829133406.520756-5-sashal@kernel.org>
+Date: Tue, 29 Aug 2023 09:34:18 -0400
+Message-Id: <20230829133419.520830-5-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230829133406.520756-1-sashal@kernel.org>
-References: <20230829133406.520756-1-sashal@kernel.org>
+In-Reply-To: <20230829133419.520830-1-sashal@kernel.org>
+References: <20230829133419.520830-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 4.19.292
+X-stable-base: Linux 4.14.323
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: VQ5WAWWARZERE5CSDCE4ZPRF5UJHDYFQ
-X-Message-ID-Hash: VQ5WAWWARZERE5CSDCE4ZPRF5UJHDYFQ
+Message-ID-Hash: OECB3MPTXGGX3CCIOMUEADKQ43AOSNQX
+X-Message-ID-Hash: OECB3MPTXGGX3CCIOMUEADKQ43AOSNQX
 X-MailFrom: sashal@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -92,7 +93,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VQ5WAWWARZERE5CSDCE4ZPRF5UJHDYFQ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OECB3MPTXGGX3CCIOMUEADKQ43AOSNQX/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -120,7 +121,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 22 insertions(+), 13 deletions(-)
 
 diff --git a/sound/core/seq/oss/seq_oss_midi.c b/sound/core/seq/oss/seq_oss_midi.c
-index 838c3c8b403cb..2ddfd6fed122e 100644
+index cc8f06638edca..7226c03f15934 100644
 --- a/sound/core/seq/oss/seq_oss_midi.c
 +++ b/sound/core/seq/oss/seq_oss_midi.c
 @@ -50,6 +50,7 @@ struct seq_oss_midi {
