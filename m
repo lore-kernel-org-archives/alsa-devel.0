@@ -4,83 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6511BC83F12
-	for <alsa-devel@archiver.kernel.org>; Tue, 29 Aug 2023 18:31:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2BF77C83F12
+	for <alsa-devel@archiver.kernel.org>; Tue, 29 Aug 2023 18:31:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F2B4BDF3;
-	Tue, 29 Aug 2023 20:30:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F2B4BDF3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 66019EA6;
+	Tue, 29 Aug 2023 20:30:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 66019EA6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1693333883;
-	bh=eQsHZ0ILnbzZnvNv/9wGG3s8uLuYyHZHVwG9GfAffMQ=;
+	s=default; t=1693333895;
+	bh=hV7R2a/iDhu8URzf1xC7kJk/1JmJDREPVWvPfaXh36M=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=H4VXId3KAz1+eBEzEQ+mXCqghMWG5nGCwAZkPx1jft2+joEEdJq+AOLgT29P2unhl
-	 FZEieTdkUAZGIxZvMGSVvoZ8Frklkwe0SATgBJ9Me7aj4x2du1TWYOU3tweMiitCIe
-	 hbPMztIOQmMy0uSr2QUdc1oJ1d9IEkkJxs9YGga0=
+	b=DRzJnvr0tysGc5dcYYZQ4Ii7OOJoWeO0gVU7v4gmww0fjgrzZ0uDQoVJu77/c1tOe
+	 /mVmV8SLt9AwMiVVQYEzRQlrRi9CkxgQBY61KxuPVh42KxKDOCBeVbvf5TJxHaMDUe
+	 zO6S5bQbPC7Oo1/9JXe5lYshXIblOk27UGjA8LKs=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B4C7DF8061E; Tue, 29 Aug 2023 20:26:51 +0200 (CEST)
+	id 5048BF80630; Tue, 29 Aug 2023 20:26:54 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5D32AF80614;
-	Tue, 29 Aug 2023 20:26:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AD3FEF8062E;
+	Tue, 29 Aug 2023 20:26:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2143EF80236; Tue, 29 Aug 2023 19:18:14 +0200 (CEST)
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com
- [IPv6:2a00:1450:4864:20::629])
+	id 89A5BF8055A; Tue, 29 Aug 2023 19:18:14 +0200 (CEST)
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com
+ [IPv6:2a00:1450:4864:20::62e])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C933BF8057A
-	for <alsa-devel@alsa-project.org>; Tue, 29 Aug 2023 19:17:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C933BF8057A
+	by alsa1.perex.cz (Postfix) with ESMTPS id 95ADAF804F3
+	for <alsa-devel@alsa-project.org>; Tue, 29 Aug 2023 19:17:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 95ADAF804F3
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20221208 header.b=VUixQxnY
-Received: by mail-ej1-x629.google.com with SMTP id
- a640c23a62f3a-99bed101b70so580717366b.3
+ header.s=20221208 header.b=N9JLdrwZ
+Received: by mail-ej1-x62e.google.com with SMTP id
+ a640c23a62f3a-9936b3d0286so630054666b.0
         for <alsa-devel@alsa-project.org>;
- Tue, 29 Aug 2023 10:17:42 -0700 (PDT)
+ Tue, 29 Aug 2023 10:17:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693329460; x=1693934260;
+        d=gmail.com; s=20221208; t=1693329463; x=1693934263;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=HORfKlZ4SywXOGQyingnsT/g0xzmPt7r0h5GBjv1Y2o=;
-        b=VUixQxnYtqHbxNxKsf0ASLykcCTVDBNkGoP6Rm38KMc6AILysWa8b+lFKAXuD5qslG
-         UyjCBLmFLidSKQ0RY7WXdCaq6jbPDDNTkPudF2VqWSQyI8Jia9045Tr7UoVbpy0vadyi
-         9I6hOEzja2RK9gkAfFgcBIrsuoCw0g17m2Dt7ih9TXDbMk7/TUdsAaZ/iWM7ntqpdij6
-         psUVG0D77RiEOIT04TFhtm/3QirUtJ+5sT5JehV7cPLhkUdT7cql53AtvV0XhVAiaG8R
-         +Glt9LWtL2p7QnoIAZznkypP6rY57aC9Sy3a5iDARmcIanhYxdE2wGgn9IpZf9eoxiA8
-         aNXw==
+        bh=WnJL5vGCg9h0fxl4SkoWxbvYNcnaANXMeYm5CGs278M=;
+        b=N9JLdrwZAq0dUeDJhdp81+fN8VeIO0Za4lbwtH42uBm92k/4rin/At5jq6C6VCFzuO
+         dSXTW+vgTl5x177w8ttFILgFZAlILfiKVvRuzS1z4asELiVuC3DYYCdK56ecFfhXCsyd
+         TMJJToU0FtApXWJ3U0YLNQv0ynvlUo4zpADs/WWOOxk6gE8E4Ipu6I1bGLe9pTccOEUj
+         7XvS8UctPQLlA9g1x7G9W6WX7ZNqYH0Job9qpR5AvtpWnNx8PSFeNHGKSHBmjf6Pg6YW
+         IjeAQnYojYVaaKJ9Xb0TJ7NfKlBUu04Z1nTRU6SdpJirzWnObMR9dxl77hx3BRuTkVoP
+         C/pg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693329460; x=1693934260;
+        d=1e100.net; s=20221208; t=1693329463; x=1693934263;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=HORfKlZ4SywXOGQyingnsT/g0xzmPt7r0h5GBjv1Y2o=;
-        b=FsjDQm1UZSe3JE7k3Hsc+7TyqVlfNCSQL2wcIZZgUwEU2geGary2AlFxQ6GKY5Lot4
-         fp7ce9mpF2Hntp+DSNbmQ2A4UxQL/fQ25AVFYlm4inv8BwKosStUw+gM16k9smZT+5Cj
-         AyVKNmFVAEctxrx7E4b5yHRHra01LuDrJ6YNkTh7SXo4eWvVIo2m+FLvhGHQolBAxN14
-         8NmD4POvWcH7/cwZv5wtpnpCAnP2i6p0lo6rLdvQunzM6GA/QiK09Xr8C6wBddvXEjP/
-         5be3FXISVc4gR5rmKNXExJW/SOKYCnNNEwPdwzgKx+ApCbhQUvMZXzzvRyl8C7jFptMX
-         AgjA==
-X-Gm-Message-State: AOJu0YzD4iKyJvHAnHJsCXjvqub6r8yUzPwvZf4gBj/2KhHJCtaYOwd9
-	Ux69qSwrxZ6hZ+7q3CNWjA==
+        bh=WnJL5vGCg9h0fxl4SkoWxbvYNcnaANXMeYm5CGs278M=;
+        b=dGbULfAG3j4eP4el3+xcfWlnPDwP0dc8dSML35YzgnxnIvsaDo0dtiaKttSQFj/MHL
+         QveWAgzvctw93vqndmrQQBtnohZ717RrBydCuB3KBuKdsE3XIDZmS4dNataGrrchzObo
+         IXqahe0IXpXU59z6GGrtV/JrXfNR04RHJp2GpHcnCUeiZLhkJ2twNFCA3BLWt8tSpeCN
+         ovREe9j3TGmu73QstqiMOU0KdGcjA3QEFYpM7K0ySGzqPvgcHedv4BLtEU1qxUYenqFA
+         lZj2Fv2XjNLmhRuh0/YCbHuaTqWr68OE0W6KHCfgnPjv+3CpOQwkAdKwzn2GEw5Hgrzi
+         W9wQ==
+X-Gm-Message-State: AOJu0YwSoo60Q8NNMK4uSP5LTw3KGEANqDBsjgcLbK09GfhXDJVCcQ3c
+	uvIScN+VYfw+qNa8oG+jlQ==
 X-Google-Smtp-Source: 
- AGHT+IG2fXAH6X9U8J0RtkYi3Dw+VWCQIj6fcYHWOgIhpDrIwSbMG6tADEykLLjvIrFhPYjoUswF6g==
-X-Received: by 2002:a17:907:2cc8:b0:9a5:c9a4:ba1a with SMTP id
- hg8-20020a1709072cc800b009a5c9a4ba1amr1965327ejc.59.1693329460328;
-        Tue, 29 Aug 2023 10:17:40 -0700 (PDT)
+ AGHT+IGUtSI+zxI+roO3fQg73Zix5xTmq8cVmyCvEK/LrKo7dzyudGQqYSeW+LtBceKZGkvV/0HzBg==
+X-Received: by 2002:a17:906:8a50:b0:9a1:fab3:ee3f with SMTP id
+ gx16-20020a1709068a5000b009a1fab3ee3fmr13114131ejc.40.1693329463292;
+        Tue, 29 Aug 2023 10:17:43 -0700 (PDT)
 Received: from U4.lan ([2001:9e8:b958:3410:8e0c:ed68:cd6c:7cb8])
         by smtp.gmail.com with ESMTPSA id
- a21-20020a1709062b1500b00993cc1242d4sm6115834ejg.151.2023.08.29.10.17.39
+ a21-20020a1709062b1500b00993cc1242d4sm6115834ejg.151.2023.08.29.10.17.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Aug 2023 10:17:39 -0700 (PDT)
+        Tue, 29 Aug 2023 10:17:42 -0700 (PDT)
 From: Alex Bee <knaerzche@gmail.com>
 To: Heiko Stuebner <heiko@sntech.de>,
 	Rob Herring <robh+dt@kernel.org>,
@@ -106,9 +106,10 @@ Cc: Elaine Zhang <zhangqing@rock-chips.com>,
 	linux-clk@vger.kernel.org,
 	linux-phy@lists.infradead.org,
 	Alex Bee <knaerzche@gmail.com>
-Subject: [PATCH 16/31] ARM: dts: rockchip: Add SRAM node for RK312x
-Date: Tue, 29 Aug 2023 19:16:32 +0200
-Message-ID: <20230829171647.187787-17-knaerzche@gmail.com>
+Subject: [PATCH 19/31] ARM: dts: rockchip: Switch to operating-points-v2 for
+ RK312x's CPU
+Date: Tue, 29 Aug 2023 19:16:35 +0200
+Message-ID: <20230829171647.187787-20-knaerzche@gmail.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20230829171647.187787-1-knaerzche@gmail.com>
 References: <20230829171647.187787-1-knaerzche@gmail.com>
@@ -120,15 +121,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: 5JW6EBAL4BTRLPUKEBJWPV3N3IW2I3KG
-X-Message-ID-Hash: 5JW6EBAL4BTRLPUKEBJWPV3N3IW2I3KG
+Message-ID-Hash: XRPHR2QQRFACUW2SA6OZTFOOJ6BFOZEZ
+X-Message-ID-Hash: XRPHR2QQRFACUW2SA6OZTFOOJ6BFOZEZ
 X-Mailman-Approved-At: Tue, 29 Aug 2023 18:26:44 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5JW6EBAL4BTRLPUKEBJWPV3N3IW2I3KG/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XRPHR2QQRFACUW2SA6OZTFOOJ6BFOZEZ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -137,33 +138,90 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-RK312x SoCs have 8KB of SRAM.
-Add the respective device tree node for it.
+This will allow frequency-scaling for the cpu cores.
+Operating frequencies and voltages have been taken from Rockchip's
+downstream kernel.
 
 Signed-off-by: Alex Bee <knaerzche@gmail.com>
 ---
- arch/arm/boot/dts/rockchip/rk312x.dtsi | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ arch/arm/boot/dts/rockchip/rk312x.dtsi | 43 +++++++++++++++++++++++---
+ 1 file changed, 39 insertions(+), 4 deletions(-)
 
 diff --git a/arch/arm/boot/dts/rockchip/rk312x.dtsi b/arch/arm/boot/dts/rockchip/rk312x.dtsi
-index 4d3422abf008..7aba97b2c990 100644
+index 08b953b005ff..93560c4cd16a 100644
 --- a/arch/arm/boot/dts/rockchip/rk312x.dtsi
 +++ b/arch/arm/boot/dts/rockchip/rk312x.dtsi
-@@ -77,6 +77,14 @@ xin24m: oscillator {
- 		#clock-cells = <0>;
- 	};
+@@ -36,10 +36,7 @@ cpu0: cpu@f00 {
+ 			clock-latency = <40000>;
+ 			clocks = <&cru ARMCLK>;
+ 			resets = <&cru SRST_CORE0>;
+-			operating-points = <
+-				/* KHz    uV */
+-				 816000 1000000
+-			>;
++			operating-points-v2 = <&cpu_opp_table>;
+ 			#cooling-cells = <2>; /* min followed by max */
+ 		};
  
-+	imem: sram@10080000 {
-+		compatible = "mmio-sram";
-+		reg = <0x10080000 0x2000>;
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		ranges = <0 0x10080000 0x2000>;
+@@ -48,6 +45,7 @@ cpu1: cpu@f01 {
+ 			compatible = "arm,cortex-a7";
+ 			reg = <0xf01>;
+ 			resets = <&cru SRST_CORE1>;
++			operating-points-v2 = <&cpu_opp_table>;
+ 		};
+ 
+ 		cpu2: cpu@f02 {
+@@ -55,6 +53,7 @@ cpu2: cpu@f02 {
+ 			compatible = "arm,cortex-a7";
+ 			reg = <0xf02>;
+ 			resets = <&cru SRST_CORE2>;
++			operating-points-v2 = <&cpu_opp_table>;
+ 		};
+ 
+ 		cpu3: cpu@f03 {
+@@ -62,6 +61,42 @@ cpu3: cpu@f03 {
+ 			compatible = "arm,cortex-a7";
+ 			reg = <0xf03>;
+ 			resets = <&cru SRST_CORE3>;
++			operating-points-v2 = <&cpu_opp_table>;
++		};
 +	};
 +
- 	pmu: syscon@100a0000 {
- 		compatible = "rockchip,rk3128-pmu", "syscon", "simple-mfd";
- 		reg = <0x100a0000 0x1000>;
++	cpu_opp_table: opp-table-0 {
++		compatible = "operating-points-v2";
++		opp-shared;
++
++		opp-216000000 {
++			opp-hz = /bits/ 64 <216000000>;
++			opp-microvolt = <950000 950000 1325000>;
++		};
++		opp-408000000 {
++			opp-hz = /bits/ 64 <408000000>;
++			opp-microvolt = <950000 950000 1325000>;
++		};
++		opp-600000000 {
++			opp-hz = /bits/ 64 <600000000>;
++			opp-microvolt = <950000 950000 1325000>;
++		};
++		opp-696000000 {
++			opp-hz = /bits/ 64 <696000000>;
++			opp-microvolt = <975000 975000 1325000>;
++		};
++		opp-816000000 {
++			opp-hz = /bits/ 64 <816000000>;
++			opp-microvolt = <1075000 1075000 1325000>;
++			opp-suspend;
++		};
++		opp-1008000000 {
++			opp-hz = /bits/ 64 <1008000000>;
++			opp-microvolt = <1200000 1200000 1325000>;
++		};
++		opp-1200000000 {
++			opp-hz = /bits/ 64 <1200000000>;
++			opp-microvolt = <1325000 1325000 1325000>;
+ 		};
+ 	};
+ 
 -- 
 2.42.0
 
