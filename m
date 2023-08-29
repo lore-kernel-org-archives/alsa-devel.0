@@ -4,70 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AFE78C71153
-	for <alsa-devel@archiver.kernel.org>; Tue, 29 Aug 2023 21:14:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5C749C6FA8F
+	for <alsa-devel@archiver.kernel.org>; Tue, 29 Aug 2023 21:14:49 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B9E9EE87;
-	Tue, 29 Aug 2023 23:13:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B9E9EE87
+	by alsa0.perex.cz (Postfix) with ESMTPS id 50107AE9;
+	Tue, 29 Aug 2023 23:13:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 50107AE9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1693343673;
-	bh=NGpr+64J8oCw5YykAAwJ0/JEKKzE0FMq4bdwH822eRQ=;
+	s=default; t=1693343687;
+	bh=hZa5cazdKMRnyQtdO70C7t07Jj5BJegnIZoQuvin/Fk=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=hksK+czqIPIOG65I8shn5x8fCjfS7vW9iw6XOr3VusehsMHMVjdjis55sXmwIimF1
-	 0RhaPYB5AAyM8Mt55aLQPnQC4mp7VpNTNeUSNTV5KpopP7C+c4klblVGeXbfWhL179
-	 6u7RB2yY9a5SFrJ9XcNPiC8QSlsbmf0mTIno18yM=
+	b=WOuPNbXOwbf9MQ8iFVVPoi/VVGVlvzEf32R5R+XKjGl0dH2Rg2xl0f6P9pMNRiLBm
+	 3K2IYWOSURe+cDKnCzVMecS63YoK/20JulHRJeIE7gF6Fi2fJgnq4QlYqAXUQdb7+5
+	 5DB9fdbrAd3Qs3L3XdI0OOaIm8ljWJtrH8G4MGG8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 66E53F80685; Tue, 29 Aug 2023 23:08:49 +0200 (CEST)
+	id 1E16BF80691; Tue, 29 Aug 2023 23:08:51 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C3EBDF80685;
-	Tue, 29 Aug 2023 23:08:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 49271F805AA;
+	Tue, 29 Aug 2023 23:08:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 61E66F80633; Tue, 29 Aug 2023 23:08:22 +0200 (CEST)
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com
- [205.220.168.131])
+	id 783CAF80636; Tue, 29 Aug 2023 23:08:23 +0200 (CEST)
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com
+ [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 4B12FF80158
-	for <alsa-devel@alsa-project.org>; Tue, 29 Aug 2023 23:07:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4B12FF80158
+	by alsa1.perex.cz (Postfix) with ESMTPS id 3B662F8056F
+	for <alsa-devel@alsa-project.org>; Tue, 29 Aug 2023 23:07:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3B662F8056F
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
- header.s=qcppdkim1 header.b=EfYmQooC
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+ header.s=qcppdkim1 header.b=d6DI4kuC
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
 	by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 37TKi69u016674;
-	Tue, 29 Aug 2023 21:07:09 GMT
+ 37TKtaMt024224;
+	Tue, 29 Aug 2023 21:07:16 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-type; s=qcppdkim1;
- bh=r31eiFMh/CBoLoST6JeTG7QMm3NUYna5E/5qOM98ZVk=;
- b=EfYmQooCe4L8CpmQAMAa5XBSW7TFRkILBs+fkU/WLdgPBKQ6qPA7qm51+/1qfP7lH28F
- cABS1sdGZyj4lrS49s04PYgg0Q3vi635NvclT8wnz46J5Kv45ybQJwdKN/K92HCVSYE8
- lic86IblkGQcG9CWGJgVbnj4k3edS37evrcD/URe8JvZM/QQdGFwL/aGByMURDGj5eeP
- 3pKcFiynu6xozXDOY/se6zNB5H6F71k6qTz3ut+3hrG8F1CzNysJJMKnQvmUMUF6ryDF
- reFpx/3Bk4ILjnpUSCfLnHeThSO/YHg8A7vmaMe6YyUxUgFgapt/td6HRtgaoFtyrUU6 gQ==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com
+ bh=NgFRCjD+M3RMckZvCB/SpYfm7rt+sDlhC1ZUQSS17hI=;
+ b=d6DI4kuC7nIwa75+3sF4+1LoD7oHxaAK4PLCBhBi7iQF09gW66TCpwxChhgTtPrH8ycH
+ +UtD/O/AstDCpA4108CWuBoCC0qVkDt5T+OgTdamCe9eUWahQxaemygkpGfXQrxP9X40
+ xNeI21PmpP0/m1SOl53pr2aIzoF5jWjQRTt0ZmCCgWF/8GLASmX+OXMOT7wEAVR/IXnV
+ X3dQJJqt0AGRq/hcwj06SnhE76ddzFUlvsGg+LzmJdnR/DcJkr2uWBXs/VjjHoFvmBUC
+ RboryL2f6+s+Sgcavxhy4JGtd7Vh2twcIrnZ1rhZFY+8l0r2We7VWygkNkWKKBu0pUiF Tg==
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com
  [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ssjvb0tyd-1
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ssbm2swb7-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 29 Aug 2023 21:07:09 +0000
+	Tue, 29 Aug 2023 21:07:16 +0000
 Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com
  [10.47.209.197])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id
- 37TL79hA014461
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id
+ 37TL7F1S005894
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 29 Aug 2023 21:07:09 GMT
+	Tue, 29 Aug 2023 21:07:15 GMT
 Received: from hu-wcheng-lv.qualcomm.com (10.49.16.6) by
  nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.36; Tue, 29 Aug 2023 14:07:08 -0700
+ 15.2.1118.36; Tue, 29 Aug 2023 14:07:15 -0700
 From: Wesley Cheng <quic_wcheng@quicinc.com>
 To: <srinivas.kandagatla@linaro.org>, <mathias.nyman@intel.com>,
         <perex@perex.cz>, <lgirdwood@gmail.com>, <andersson@kernel.org>,
@@ -79,10 +79,10 @@ CC: <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
         <alsa-devel@alsa-project.org>, <devicetree@vger.kernel.org>,
         <linux-usb@vger.kernel.org>, <quic_jackp@quicinc.com>,
         <quic_plai@quicinc.com>, Wesley Cheng <quic_wcheng@quicinc.com>
-Subject: [PATCH v5 05/32] usb: host: xhci-mem: Allow for interrupter clients
- to choose specific index
-Date: Tue, 29 Aug 2023 14:06:30 -0700
-Message-ID: <20230829210657.9904-6-quic_wcheng@quicinc.com>
+Subject: [PATCH v5 26/32] sound: Pass USB SND card and PCM information to SOC
+ USB
+Date: Tue, 29 Aug 2023 14:06:51 -0700
+Message-ID: <20230829210657.9904-27-quic_wcheng@quicinc.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20230829210657.9904-1-quic_wcheng@quicinc.com>
 References: <20230829210657.9904-1-quic_wcheng@quicinc.com>
@@ -94,19 +94,19 @@ X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
  signatures=585085
-X-Proofpoint-ORIG-GUID: kZAXBwe3ZLRQtxN1ZGsHZssKG7Nbv6sD
-X-Proofpoint-GUID: kZAXBwe3ZLRQtxN1ZGsHZssKG7Nbv6sD
+X-Proofpoint-GUID: -OgoLBX0nK8JyC-ew7Gw6vzhSfgQksZ8
+X-Proofpoint-ORIG-GUID: -OgoLBX0nK8JyC-ew7Gw6vzhSfgQksZ8
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
  definitions=2023-08-29_14,2023-08-29_01,2023-05-22_02
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- impostorscore=0 bulkscore=0
- spamscore=0 lowpriorityscore=0 mlxscore=0 adultscore=0 malwarescore=0
- mlxlogscore=518 priorityscore=1501 clxscore=1015 phishscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2308290182
-Message-ID-Hash: UZUELAEOTGFVQUYRJE7T46NFS4BYRJQF
-X-Message-ID-Hash: UZUELAEOTGFVQUYRJE7T46NFS4BYRJQF
+ mlxscore=0 suspectscore=0
+ impostorscore=0 priorityscore=1501 lowpriorityscore=0 adultscore=0
+ clxscore=1015 mlxlogscore=788 bulkscore=0 spamscore=0 malwarescore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2308290181
+Message-ID-Hash: MXBXU5ZHYFDXLYMXOTN2GA6NSGVLSENW
+X-Message-ID-Hash: MXBXU5ZHYFDXLYMXOTN2GA6NSGVLSENW
 X-MailFrom: quic_wcheng@quicinc.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -119,7 +119,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UZUELAEOTGFVQUYRJE7T46NFS4BYRJQF/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MXBXU5ZHYFDXLYMXOTN2GA6NSGVLSENW/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -128,59 +128,107 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Some clients may operate only on a specific XHCI interrupter instance.
-Allow for the associated class driver to request for the interrupter that
-it requires.
+Currently, only the index to the USB SND card array is passed to the USB
+backend.  Pass through more information, specifically the USB SND card
+number and the number of PCM devices available.  The USB backend should
+know about which sound resources are being shared between the ASoC and USB
+SND paths.  This can be utilized to properly select and maintain the
+offloading devices.
 
 Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
 ---
- drivers/usb/host/xhci-mem.c   | 12 ++++++------
- include/linux/usb/xhci-intr.h |  2 +-
- 2 files changed, 7 insertions(+), 7 deletions(-)
+ sound/soc/qcom/qdsp6/q6usb.c      | 19 ++++++++++++++++++-
+ sound/usb/qcom/qc_audio_offload.c | 21 ++++++++++++++++++---
+ 2 files changed, 36 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/usb/host/xhci-mem.c b/drivers/usb/host/xhci-mem.c
-index 94cbc25e77ca..9d07aea34fc6 100644
---- a/drivers/usb/host/xhci-mem.c
-+++ b/drivers/usb/host/xhci-mem.c
-@@ -2328,7 +2328,7 @@ xhci_add_interrupter(struct xhci_hcd *xhci, struct xhci_interrupter *ir,
- }
+diff --git a/sound/soc/qcom/qdsp6/q6usb.c b/sound/soc/qcom/qdsp6/q6usb.c
+index e7b9c34fd5bd..1b2c72397570 100644
+--- a/sound/soc/qcom/qdsp6/q6usb.c
++++ b/sound/soc/qcom/qdsp6/q6usb.c
+@@ -25,10 +25,18 @@
  
- struct xhci_interrupter *
--xhci_create_secondary_interrupter(struct usb_hcd *hcd)
-+xhci_create_secondary_interrupter(struct usb_hcd *hcd, int intr_num)
- {
- 	struct xhci_hcd *xhci = hcd_to_xhci(hcd);
- 	struct xhci_interrupter *ir;
-@@ -2343,15 +2343,15 @@ xhci_create_secondary_interrupter(struct usb_hcd *hcd)
- 		return NULL;
+ #define SID_MASK	0xF
  
- 	spin_lock_irq(&xhci->lock);
--
- 	/* Find available secondary interrupter, interrupter 0 is reserverd for primary */
- 	for (i = 1; i < xhci->max_interrupters; i++) {
--		if (xhci->interrupters[i] == NULL) {
--			err = xhci_add_interrupter(xhci, ir, i);
--			break;
-+		if ((intr_num > 0 && i == intr_num) || intr_num <= 0) {
-+			if (xhci->interrupters[i] == NULL) {
-+				err = xhci_add_interrupter(xhci, ir, i);
-+				break;
-+			}
- 		}
- 	}
--
- 	spin_unlock_irq(&xhci->lock);
- 	if (err) {
- 		xhci_warn(xhci, "Failed to add secondary interrupter, max interrupters %d\n",
-diff --git a/include/linux/usb/xhci-intr.h b/include/linux/usb/xhci-intr.h
-index e0091ee2c73a..738b0f0481a6 100644
---- a/include/linux/usb/xhci-intr.h
-+++ b/include/linux/usb/xhci-intr.h
-@@ -81,6 +81,6 @@ struct xhci_interrupter {
++struct q6usb_status {
++	unsigned int num_pcm;
++	unsigned int chip_index;
++	unsigned int pcm_index;
++};
++
+ struct q6usb_port_data {
+ 	struct q6afe_usb_cfg usb_cfg;
+ 	struct snd_soc_usb *usb;
+ 	struct q6usb_offload priv;
++	unsigned long available_card_slot;
++	struct q6usb_status status[SNDRV_CARDS];
+ 	int active_idx;
  };
  
- struct xhci_interrupter *
--xhci_create_secondary_interrupter(struct usb_hcd *hcd);
-+xhci_create_secondary_interrupter(struct usb_hcd *hcd, int intr_num);
- void xhci_remove_secondary_interrupter(struct usb_hcd *hcd, struct xhci_interrupter *ir);
- #endif
+@@ -106,10 +114,19 @@ static int q6usb_alsa_connection_cb(struct snd_soc_usb *usb,
+ 
+ 	data = dev_get_drvdata(usb->component->dev);
+ 
+-	if (connected)
++	if (connected) {
+ 		/* We only track the latest USB headset plugged in */
+ 		data->active_idx = sdev->card_idx;
+ 
++		set_bit(sdev->card_idx, &data->available_card_slot);
++		data->status[sdev->card_idx].num_pcm = sdev->num_playback;
++		data->status[sdev->card_idx].chip_index = sdev->chip_idx;
++	} else {
++		clear_bit(sdev->card_idx, &data->available_card_slot);
++		data->status[sdev->card_idx].num_pcm = 0;
++		data->status[sdev->card_idx].chip_index = 0;
++	}
++
+ 	return 0;
+ }
+ 
+diff --git a/sound/usb/qcom/qc_audio_offload.c b/sound/usb/qcom/qc_audio_offload.c
+index 7076f2bd1089..7d98ede94c0d 100644
+--- a/sound/usb/qcom/qc_audio_offload.c
++++ b/sound/usb/qcom/qc_audio_offload.c
+@@ -175,6 +175,21 @@ enum usb_qmi_audio_format {
+ 	USB_QMI_PCM_FORMAT_U32_BE,
+ };
+ 
++static int usb_qmi_get_pcm_num(struct snd_usb_audio *chip, int direction)
++{
++	struct snd_usb_substream *subs = NULL;
++	struct snd_usb_stream *as;
++	int count = 0;
++
++	list_for_each_entry(as, &chip->pcm_list, list) {
++		subs = &as->substream[direction];
++		if (subs->ep_num)
++			count++;
++	}
++
++	return count;
++}
++
+ static enum usb_qmi_audio_device_speed_enum_v01
+ get_speed_info(enum usb_device_speed udev_speed)
+ {
+@@ -1574,6 +1589,8 @@ static void qc_usb_audio_offload_probe(struct snd_usb_audio *chip)
+ 
+ 	sdev->card_idx = chip->card->number;
+ 	sdev->chip_idx = chip->index;
++	sdev->num_playback = usb_qmi_get_pcm_num(chip, 0);
++	sdev->num_capture = usb_qmi_get_pcm_num(chip, 1);
+ 	uadev[chip->card->number].sdev = sdev;
+ 
+ 	uaudio_qdev->last_card_num = chip->card->number;
+@@ -1674,10 +1691,8 @@ static void qc_usb_audio_offload_disconnect(struct snd_usb_audio *chip)
+ 	mutex_unlock(&chip->mutex);
+ 
+ 	atomic_dec(&uaudio_qdev->qdev_in_use);
+-	if (!atomic_read(&uaudio_qdev->qdev_in_use)) {
+-		snd_soc_usb_disconnect(usb_get_usb_backend(udev));
++	if (!atomic_read(&uaudio_qdev->qdev_in_use))
+ 		qc_usb_audio_cleanup_qmi_dev();
+-	}
+ 	mutex_unlock(&qdev_mutex);
+ 
+ 	xhci_sideband_unregister(dev->sb);
