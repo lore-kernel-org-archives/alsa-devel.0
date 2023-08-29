@@ -4,83 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ED1C9C71153
-	for <alsa-devel@archiver.kernel.org>; Tue, 29 Aug 2023 13:34:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 31248C6FA8F
+	for <alsa-devel@archiver.kernel.org>; Tue, 29 Aug 2023 13:34:40 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6C91B886;
-	Tue, 29 Aug 2023 15:33:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6C91B886
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0AC27825;
+	Tue, 29 Aug 2023 15:33:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0AC27825
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1693316070;
-	bh=24D+O0ROl68RuyCISL7V7d9L9V1jcNP9honW3jJuhUs=;
+	s=default; t=1693316078;
+	bh=2ltaxuGSw/fANNriLkAGOnUNAoOi8LrR2UhEcb6MZlc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=TeP+HJ6UBxuvMUg1suhqVbmHbdXAJgfmUQxnAuKyd8ivnOOf6n/vBNvUlT2LVw5VZ
-	 amrQrZVaW7ioretyZca4+uuRVxOrXIb/8Gw0wk52yfSTwD+RwPM2W0vQTVFVex7wP6
-	 82fia0IqYihWwKfKMzg4z+NhdD66kL09aIFDIxw4=
+	b=OhiANp4GU6MOKahSRPHXvpwpAikhiKo2CMEEQYzZZRQ9RZC8xJb2NG+Uzwk10DpWb
+	 gzGqpI8AGLigPjAKt7VXDo0wVQspKzxiLjYxmVdCmam4Y3/VuZBIm1k+aAYmLG3gVp
+	 f87pZZE1pGm/SEXE5eJssdjtsPA5/vCtbXR5ahBM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1D763F8055B; Tue, 29 Aug 2023 15:32:50 +0200 (CEST)
+	id 7442FF80571; Tue, 29 Aug 2023 15:33:27 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B8B0CF80536;
-	Tue, 29 Aug 2023 15:32:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 40245F80537;
+	Tue, 29 Aug 2023 15:33:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 42487F80158; Tue, 29 Aug 2023 15:32:45 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	id E6E23F80558; Tue, 29 Aug 2023 15:33:23 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 389CEF800F5
-	for <alsa-devel@alsa-project.org>; Tue, 29 Aug 2023 15:32:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 389CEF800F5
+	by alsa1.perex.cz (Postfix) with ESMTPS id 4DDDAF804DA
+	for <alsa-devel@alsa-project.org>; Tue, 29 Aug 2023 15:33:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4DDDAF804DA
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=Qgm5eoM4
+ header.s=k20201202 header.b=I6Xz5G+0
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 3D16B65751;
-	Tue, 29 Aug 2023 13:32:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6CB00C433CB;
-	Tue, 29 Aug 2023 13:32:33 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 6E52D65790;
+	Tue, 29 Aug 2023 13:33:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4C1AC433CA;
+	Tue, 29 Aug 2023 13:33:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1693315954;
-	bh=24D+O0ROl68RuyCISL7V7d9L9V1jcNP9honW3jJuhUs=;
+	s=k20201202; t=1693315995;
+	bh=2ltaxuGSw/fANNriLkAGOnUNAoOi8LrR2UhEcb6MZlc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Qgm5eoM4cTdmz4vncnGIMyHoqPInDfSPCKHJr5e/3bGWaAysFZj5Z9ErvuZqIIyt/
-	 JKSwe3v1z+oFEfmC/KoakXVqivDtAXTlQXXNRYwOWkr9Yl5kCKXJ52+pVuEvSWqMCS
-	 zvg5JJtPWv4E2uHo0c/o9wDMMSk4nehC6alsABAWe3pFBpFQouFYSvSpKP62KgjPjO
-	 IshuOYxxkyHltHtSSSP0sB1tvwgJiWawUYwlo4zMJ904aAIA4cP57l6Uyo3Ouur0WP
-	 H9RkgaUxN/8ziesGvwpu5Bgy6Ox6At3KhmqhaokOJclEe/9Pxx5rJuZfbL3zlKwZYH
-	 AULC9OdoIdmgQ==
+	b=I6Xz5G+0KYX8PDTkEEdLEUpk6koQ8yIuIvSeL+P2n/Gnm5goVB7uPmczSxxoozcQP
+	 pAyhdi6FzvHm/gKA+MxENKTnu6x768JbmgB7EcAkK7KSCQ/y1ZDPCatjK0hegScoX5
+	 yDSeBR8uyIkYqX6EkLzeToWkV8MAsl1NurqEVQ5Up9TiAkgCB3w8XlODrsXwPr9s74
+	 U9Nh15PDYHwgqXIZS0uMymf5db1jFFLz1oEqsztxYxZv0/xa9vVgOzFZVSru6d8OGK
+	 RpvGclCz6RxO93NG6aH2BL0PegIyWOAf++s2UW78utUnabTv9z3Zt1npjt5NP4gYIB
+	 wvgknKZcxrDJw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Shuming Fan <shumingf@realtek.com>,
+Cc: Takashi Iwai <tiwai@suse.de>,
+	"Gong, Sishuai" <sishuai@purdue.edu>,
 	Sasha Levin <sashal@kernel.org>,
-	oder_chiou@realtek.com,
-	lgirdwood@gmail.com,
-	broonie@kernel.org,
 	perex@perex.cz,
 	tiwai@suse.com,
 	alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 6.4 12/17] ASoC: rt1308-sdw: fix random louder sound
-Date: Tue, 29 Aug 2023 09:31:59 -0400
-Message-Id: <20230829133211.519957-12-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.1 15/15] ALSA: seq: oss: Fix racy open/close of MIDI
+ devices
+Date: Tue, 29 Aug 2023 09:32:45 -0400
+Message-Id: <20230829133245.520176-15-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230829133211.519957-1-sashal@kernel.org>
-References: <20230829133211.519957-1-sashal@kernel.org>
+In-Reply-To: <20230829133245.520176-1-sashal@kernel.org>
+References: <20230829133245.520176-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.4.12
+X-stable-base: Linux 6.1.49
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 6P6QEWCZ2VLJTVXDO3O2RXYAXEX7A4Z6
-X-Message-ID-Hash: 6P6QEWCZ2VLJTVXDO3O2RXYAXEX7A4Z6
+Message-ID-Hash: KMZGYL3O3ZISBAIOSBOPIMNPLWXQ4B23
+X-Message-ID-Hash: KMZGYL3O3ZISBAIOSBOPIMNPLWXQ4B23
 X-MailFrom: sashal@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -93,7 +94,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6P6QEWCZ2VLJTVXDO3O2RXYAXEX7A4Z6/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KMZGYL3O3ZISBAIOSBOPIMNPLWXQ4B23/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -102,67 +103,127 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Shuming Fan <shumingf@realtek.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-[ Upstream commit 37aba3190891d4de189bd5192ee95220e295f34d ]
+[ Upstream commit 297224fc0922e7385573a30c29ffdabb67f27b7d ]
 
-This patch uses a vendor register to check whether the system hibernated ever.
-The driver will only set the preset when the driver brings up or the system hibernated.
-It will avoid the unknown issue that makes the speaker output louder and can't control the volume.
+Although snd_seq_oss_midi_open() and snd_seq_oss_midi_close() can be
+called concurrently from different code paths, we have no proper data
+protection against races.  Introduce open_mutex to each seq_oss_midi
+object for avoiding the races.
 
-Signed-off-by: Shuming Fan <shumingf@realtek.com
-Link: https://lore.kernel.org/r/20230811093822.37573-1-shumingf@realtek.com
-Signed-off-by: Mark Brown <broonie@kernel.org
+Reported-by: "Gong, Sishuai" <sishuai@purdue.edu>
+Closes: https://lore.kernel.org/r/7DC9AF71-F481-4ABA-955F-76C535661E33@purdue.edu
+Link: https://lore.kernel.org/r/20230612125533.27461-1-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/rt1308-sdw.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+ sound/core/seq/oss/seq_oss_midi.c | 35 +++++++++++++++++++------------
+ 1 file changed, 22 insertions(+), 13 deletions(-)
 
-diff --git a/sound/soc/codecs/rt1308-sdw.c b/sound/soc/codecs/rt1308-sdw.c
-index 1797af824f60b..e2699c0b117be 100644
---- a/sound/soc/codecs/rt1308-sdw.c
-+++ b/sound/soc/codecs/rt1308-sdw.c
-@@ -52,6 +52,7 @@ static bool rt1308_volatile_register(struct device *dev, unsigned int reg)
- 	case 0x300a:
- 	case 0xc000:
- 	case 0xc710:
-+	case 0xcf01:
- 	case 0xc860 ... 0xc863:
- 	case 0xc870 ... 0xc873:
- 		return true;
-@@ -213,7 +214,7 @@ static int rt1308_io_init(struct device *dev, struct sdw_slave *slave)
- {
- 	struct rt1308_sdw_priv *rt1308 = dev_get_drvdata(dev);
- 	int ret = 0;
--	unsigned int tmp;
-+	unsigned int tmp, hibernation_flag;
+diff --git a/sound/core/seq/oss/seq_oss_midi.c b/sound/core/seq/oss/seq_oss_midi.c
+index 07efb38f58ac1..f2940b29595f0 100644
+--- a/sound/core/seq/oss/seq_oss_midi.c
++++ b/sound/core/seq/oss/seq_oss_midi.c
+@@ -37,6 +37,7 @@ struct seq_oss_midi {
+ 	struct snd_midi_event *coder;	/* MIDI event coder */
+ 	struct seq_oss_devinfo *devinfo;	/* assigned OSSseq device */
+ 	snd_use_lock_t use_lock;
++	struct mutex open_mutex;
+ };
  
- 	if (rt1308->hw_init)
- 		return 0;
-@@ -242,6 +243,10 @@ static int rt1308_io_init(struct device *dev, struct sdw_slave *slave)
  
- 	pm_runtime_get_noresume(&slave->dev);
+@@ -172,6 +173,7 @@ snd_seq_oss_midi_check_new_port(struct snd_seq_port_info *pinfo)
+ 	mdev->flags = pinfo->capability;
+ 	mdev->opened = 0;
+ 	snd_use_lock_init(&mdev->use_lock);
++	mutex_init(&mdev->open_mutex);
  
-+	regmap_read(rt1308->regmap, 0xcf01, &hibernation_flag);
-+	if ((hibernation_flag != 0x00) && rt1308->first_hw_init)
-+		goto _preset_ready_;
+ 	/* copy and truncate the name of synth device */
+ 	strscpy(mdev->name, pinfo->name, sizeof(mdev->name));
+@@ -322,15 +324,17 @@ snd_seq_oss_midi_open(struct seq_oss_devinfo *dp, int dev, int fmode)
+ 	int perm;
+ 	struct seq_oss_midi *mdev;
+ 	struct snd_seq_port_subscribe subs;
++	int err;
+ 
+ 	mdev = get_mididev(dp, dev);
+ 	if (!mdev)
+ 		return -ENODEV;
+ 
++	mutex_lock(&mdev->open_mutex);
+ 	/* already used? */
+ 	if (mdev->opened && mdev->devinfo != dp) {
+-		snd_use_lock_free(&mdev->use_lock);
+-		return -EBUSY;
++		err = -EBUSY;
++		goto unlock;
+ 	}
+ 
+ 	perm = 0;
+@@ -340,14 +344,14 @@ snd_seq_oss_midi_open(struct seq_oss_devinfo *dp, int dev, int fmode)
+ 		perm |= PERM_READ;
+ 	perm &= mdev->flags;
+ 	if (perm == 0) {
+-		snd_use_lock_free(&mdev->use_lock);
+-		return -ENXIO;
++		err = -ENXIO;
++		goto unlock;
+ 	}
+ 
+ 	/* already opened? */
+ 	if ((mdev->opened & perm) == perm) {
+-		snd_use_lock_free(&mdev->use_lock);
+-		return 0;
++		err = 0;
++		goto unlock;
+ 	}
+ 
+ 	perm &= ~mdev->opened;
+@@ -372,13 +376,17 @@ snd_seq_oss_midi_open(struct seq_oss_devinfo *dp, int dev, int fmode)
+ 	}
+ 
+ 	if (! mdev->opened) {
+-		snd_use_lock_free(&mdev->use_lock);
+-		return -ENXIO;
++		err = -ENXIO;
++		goto unlock;
+ 	}
+ 
+ 	mdev->devinfo = dp;
++	err = 0;
 +
- 	/* sw reset */
- 	regmap_write(rt1308->regmap, RT1308_SDW_RESET, 0);
++ unlock:
++	mutex_unlock(&mdev->open_mutex);
+ 	snd_use_lock_free(&mdev->use_lock);
+-	return 0;
++	return err;
+ }
  
-@@ -282,6 +287,12 @@ static int rt1308_io_init(struct device *dev, struct sdw_slave *slave)
- 	regmap_write(rt1308->regmap, 0xc100, 0xd7);
- 	regmap_write(rt1308->regmap, 0xc101, 0xd7);
+ /*
+@@ -393,10 +401,9 @@ snd_seq_oss_midi_close(struct seq_oss_devinfo *dp, int dev)
+ 	mdev = get_mididev(dp, dev);
+ 	if (!mdev)
+ 		return -ENODEV;
+-	if (! mdev->opened || mdev->devinfo != dp) {
+-		snd_use_lock_free(&mdev->use_lock);
+-		return 0;
+-	}
++	mutex_lock(&mdev->open_mutex);
++	if (!mdev->opened || mdev->devinfo != dp)
++		goto unlock;
  
-+	/* apply BQ params */
-+	rt1308_apply_bq_params(rt1308);
-+
-+	regmap_write(rt1308->regmap, 0xcf01, 0x01);
-+
-+_preset_ready_:
- 	if (rt1308->first_hw_init) {
- 		regcache_cache_bypass(rt1308->regmap, false);
- 		regcache_mark_dirty(rt1308->regmap);
+ 	memset(&subs, 0, sizeof(subs));
+ 	if (mdev->opened & PERM_WRITE) {
+@@ -415,6 +422,8 @@ snd_seq_oss_midi_close(struct seq_oss_devinfo *dp, int dev)
+ 	mdev->opened = 0;
+ 	mdev->devinfo = NULL;
+ 
++ unlock:
++	mutex_unlock(&mdev->open_mutex);
+ 	snd_use_lock_free(&mdev->use_lock);
+ 	return 0;
+ }
 -- 
 2.40.1
 
