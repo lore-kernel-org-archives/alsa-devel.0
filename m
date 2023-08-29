@@ -4,83 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 13A49C71153
-	for <alsa-devel@archiver.kernel.org>; Tue, 29 Aug 2023 18:35:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C439DC83F12
+	for <alsa-devel@archiver.kernel.org>; Tue, 29 Aug 2023 18:35:28 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EFA53F99;
-	Tue, 29 Aug 2023 20:34:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EFA53F99
+	by alsa0.perex.cz (Postfix) with ESMTPS id BE57CEAF;
+	Tue, 29 Aug 2023 20:34:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BE57CEAF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1693334109;
-	bh=KYvNaFiccEfrE3JXs+goAbFfnGcG4b4AguI6Lpp89co=;
+	s=default; t=1693334126;
+	bh=RIC8P31K7QFakjlb2bSHCx0WbUWLm6FmuOdBAqo+tss=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=PIu8qerTMA4nTuu6AUiMXlX2xUh2QxvCYlBun2H06A12SmtPzrwcDjjKlWVQs51Jj
-	 LPJx79h/AC7wymhEfn7thMk4+t0gbFeAl8UC2AqRnc7zjROy0GBYyFkBWBMc5ImAm8
-	 f87yh+pEFhF3c1qFsdIERBVzECjKFYbiBkvJezhw=
+	b=SReIIEqlvD5DvFnhJKxV9bqByJMun68cXrPw6/GJjaw77w31rQsUPXbivQ13YqAw4
+	 U5pp9XRnCr6AenqtZLehOCN63yyNXSGPMh+E6u0EpWsy/W3qMK4zIvN0K7x7lN9qe5
+	 P1bYBi1a6N0fffxrCYPlQDlEuJJ/Qm23Kit+NPbk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DE353F805D2; Tue, 29 Aug 2023 20:29:05 +0200 (CEST)
+	id 0B340F80697; Tue, 29 Aug 2023 20:29:10 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D68F9F805E1;
-	Tue, 29 Aug 2023 20:29:04 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 63F8EF80691;
+	Tue, 29 Aug 2023 20:29:09 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E86C3F80155; Tue, 29 Aug 2023 19:18:35 +0200 (CEST)
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com
- [IPv6:2a00:1450:4864:20::62d])
+	id 80704F800F5; Tue, 29 Aug 2023 19:18:51 +0200 (CEST)
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com
+ [IPv6:2a00:1450:4864:20::632])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 86FE1F80549
-	for <alsa-devel@alsa-project.org>; Tue, 29 Aug 2023 19:17:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 86FE1F80549
+	by alsa1.perex.cz (Postfix) with ESMTPS id 4DA03F8025F
+	for <alsa-devel@alsa-project.org>; Tue, 29 Aug 2023 19:17:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4DA03F8025F
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20221208 header.b=rVocglGg
-Received: by mail-ej1-x62d.google.com with SMTP id
- a640c23a62f3a-98377c5d53eso602434766b.0
+ header.s=20221208 header.b=hrdMJrO/
+Received: by mail-ej1-x632.google.com with SMTP id
+ a640c23a62f3a-99c1c66876aso600330366b.2
         for <alsa-devel@alsa-project.org>;
- Tue, 29 Aug 2023 10:17:57 -0700 (PDT)
+ Tue, 29 Aug 2023 10:17:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693329476; x=1693934276;
+        d=gmail.com; s=20221208; t=1693329452; x=1693934252;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=9dgLUHwMy8Op6Q955RlBIJYZNEpbxIwHtFF9Axp5TBc=;
-        b=rVocglGgRvpy+hgqv358C8NtQBIl+vNJ9cAF/wVlRixvPboXyjdw4vtXaI1sOyXcek
-         Jsyq/4NNhXpliV2UmTHOR95bZzPPaOdsrz6beMnEaO7NC9pmJygJfdEgXIblbEUDYoVQ
-         w1Aow4ihAO0S263Z3BxXFi+Za75AfB9GWduekvLTlLfAn0JCEnBRf2oTZ/tFPSFC4BPJ
-         o21DKAiEh0uKjHHd/H2tX2hu2QACHNMsooBUvbIJ9N9kS2ZPR6gnm2VGSrcbT/OCeRwy
-         cByHzv+q/ysAd8dyiNLiQppVdsrjyT4XsRpp7eia1Nb7Tq1mTfAKidgwcooLEulq4Z9Z
-         YBVw==
+        bh=J7lMdZMlveV8HTxjWTg5ACxFNvsNK9ctXT4heEXGiSw=;
+        b=hrdMJrO/Dt42S8+b/O8WqnLLurQK3hxu2Q1jwKGo1VfFE0roRD/lVI/J7Z/LQLf5eh
+         n7dC5HGzxWzJqFMZLyF7cFn4zV/VcYGJxErheoB2ChSfFBMxN/yUs6XWLJ0S2ZuIla8Y
+         0u3onf8sUsexOZiODwZrGZNOKPTvRhqo96lCDv1LuWCSdGzzOlVNx9mw2rAO8jIfaGHk
+         /br4zlr2VLW91r8D68MHfzoqZ1y4M5uMeQpG16Ckcy3jV1tr/ANnKpFhrzfhoFvRTugi
+         cyhdY6L3rqkO+xDkuvPkSYw/2knnGV9WABuJXId0m2dX4/9BgQtp5zbJnAgvTXVaKV+Q
+         0knA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693329476; x=1693934276;
+        d=1e100.net; s=20221208; t=1693329452; x=1693934252;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=9dgLUHwMy8Op6Q955RlBIJYZNEpbxIwHtFF9Axp5TBc=;
-        b=Hp9BOnHW813eEpoI2cfT8yx189X8FsHoprTNNj4z8vGN0pRQpJFFO1nXkmR0cQ9p9H
-         iqHi3mQqQXi9D5owf/gX7sVp3p7OS3fqQp5VdmAzlIQyT6jKX+vKnwSUdfoxgUt2tcf5
-         IDPBEf4jXX181NdBWWaqoJ6iuDjypgSWnjAY0wDRJfyxhI2+9bKci5Fc0fpz6+Y8EIWQ
-         g5BTnsaXV9Tnr/77esLuPOf2RORiyCp2NbnIEKW8+p7H9z91io//8VY53JcU1OeyUVDO
-         YYrbTRHPsrYKX15ZE0PVizZ02b4D099llsExIL7oFJmQi0XQ+n/+U5D9VYk28CEhMdc6
-         n3xA==
-X-Gm-Message-State: AOJu0Yxnl5PaqCMfXkdSisUtN1Fs00Y79ZdD0YVbv21uLKaiUT6cvFFF
-	EkaGqT9Jt6Cnu4VFiuytzw==
+        bh=J7lMdZMlveV8HTxjWTg5ACxFNvsNK9ctXT4heEXGiSw=;
+        b=JWjiafksJaSnNdy5CRXRef5QPdkb75uLj1ncc/7fyJyr8NORewf8dYQi3p4IstImoj
+         NCjIzmAyx1B0EgFYUDfPSvSsTfFNiflqdIM42Hy1q+mPb3lBQASIcY8a+jH/9GUFQXG8
+         e2R/vjt4Zi8QaM18LkJsd8cd1FC9ut37uARZU3vZAOjtKNAfDJVGP9sSQuUMI6hcDbim
+         EdVPXMO3zINFLvrblSmDxmEGxrS4AE58GkTShgxicn40QUfhYRjdowF5DOlbajuTuGXD
+         l+8+PJWEHNiMYbY3vYNwr9CoVm09AQr1yQ8tDzs/GPUxA0QbR5IVikhUspKvAj3DNYjl
+         yJ1A==
+X-Gm-Message-State: AOJu0YxMdCo1IGjyJ9cDxSC0gibNT5g9kJlrkCSdWST3Y9PY4+ta8Fqt
+	HQ3bSXeJ636RfvwrKd7uzQ==
 X-Google-Smtp-Source: 
- AGHT+IEAHEpea0my2awNoKKTjwFIoo2aOA5dRzNaAYj8ArUp4igUchYtsYpX/tLmQOBb/TDR6xtBKA==
-X-Received: by 2002:a17:906:5a45:b0:9a1:cdf1:ba6 with SMTP id
- my5-20020a1709065a4500b009a1cdf10ba6mr14633357ejc.12.1693329475384;
-        Tue, 29 Aug 2023 10:17:55 -0700 (PDT)
+ AGHT+IE6J/8Uhsz2BfGzGhWBYZ5T9q00RqsVnVJPgvgQjSVnSU0lPHnvdnxG/R+1BUlkQ8618ashfw==
+X-Received: by 2002:a17:907:6e2a:b0:9a5:8269:2c94 with SMTP id
+ sd42-20020a1709076e2a00b009a582692c94mr9897657ejc.57.1693329452148;
+        Tue, 29 Aug 2023 10:17:32 -0700 (PDT)
 Received: from U4.lan ([2001:9e8:b958:3410:8e0c:ed68:cd6c:7cb8])
         by smtp.gmail.com with ESMTPSA id
- a21-20020a1709062b1500b00993cc1242d4sm6115834ejg.151.2023.08.29.10.17.54
+ a21-20020a1709062b1500b00993cc1242d4sm6115834ejg.151.2023.08.29.10.17.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Aug 2023 10:17:55 -0700 (PDT)
+        Tue, 29 Aug 2023 10:17:31 -0700 (PDT)
 From: Alex Bee <knaerzche@gmail.com>
 To: Heiko Stuebner <heiko@sntech.de>,
 	Rob Herring <robh+dt@kernel.org>,
@@ -106,9 +106,10 @@ Cc: Elaine Zhang <zhangqing@rock-chips.com>,
 	linux-clk@vger.kernel.org,
 	linux-phy@lists.infradead.org,
 	Alex Bee <knaerzche@gmail.com>
-Subject: [PATCH 31/31] ARM: dts: Add Geniatech XPI-3128 RK3128 board
-Date: Tue, 29 Aug 2023 19:16:47 +0200
-Message-ID: <20230829171647.187787-32-knaerzche@gmail.com>
+Subject: [PATCH 08/31] phy: rockchip-inno-usb2: Split ID interrupt phy
+ registers
+Date: Tue, 29 Aug 2023 19:16:24 +0200
+Message-ID: <20230829171647.187787-9-knaerzche@gmail.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20230829171647.187787-1-knaerzche@gmail.com>
 References: <20230829171647.187787-1-knaerzche@gmail.com>
@@ -120,497 +121,223 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: RTLYEU3WJAOKRYITXSCFCUWQ6KZPRCAG
-X-Message-ID-Hash: RTLYEU3WJAOKRYITXSCFCUWQ6KZPRCAG
-X-Mailman-Approved-At: Tue, 29 Aug 2023 18:28:45 +0000
+Message-ID-Hash: 7QB3NSXSSTL3742YUASAMW3ORU7TXL5G
+X-Message-ID-Hash: 7QB3NSXSSTL3742YUASAMW3ORU7TXL5G
+X-Mailman-Approved-At: Tue, 29 Aug 2023 18:28:46 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RTLYEU3WJAOKRYITXSCFCUWQ6KZPRCAG/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7QB3NSXSSTL3742YUASAMW3ORU7TXL5G/>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-XPI-3128 is RK3128 based SBC form Geniatec in RPi form factor
+Commit 51a9b2c03dd3 ("phy: rockchip-inno-usb2: Handle ID IRQ") added ID
+detection interrupt registers. However the current implementation assumes
+that falling and rising edge interrupt are always enabled in registers
+spaning over subsequent bits.
+That is not the case for RK312x's version of the phy and this
+implementation can't be used as-is, since there are bits with different
+purpose in between.
 
-Specs:
-- Rockchip RK3128
-- 1 GB DDR3 DRAM
-- 8/16 GB eMMC
-- TF card slot
-- 100 MBit ethernet / RJ45
-- optional Marvell 88W8897 (USB version)
-- 3 x USB host (onboard GL852G hub connected to SoC ehci host)
-- 1 x USB otg
-- 1 x Type-C (solely for powering the board)
-- HDMI 1.4 out
-- 1 ADC button
-- IR receiver
-- Artasie AM1805 RTC
-- 40 pin header
+This splits up the register definitions for id_det_en, id_det_en and
+id_det_clr registers in rising and falling edge variants.
+It's required as preparation to support RK312x's Innosilicon usb2 phy as
+well in this driver and matches pretty much to what the vendor does, so I'm
+not expecting issues for other SoCs with that change.
 
 Signed-off-by: Alex Bee <knaerzche@gmail.com>
 ---
- arch/arm/boot/dts/rockchip/Makefile           |   1 +
- .../arm/boot/dts/rockchip/rk3128-xpi-3128.dts | 431 ++++++++++++++++++
- 2 files changed, 432 insertions(+)
- create mode 100644 arch/arm/boot/dts/rockchip/rk3128-xpi-3128.dts
+ drivers/phy/rockchip/phy-rockchip-inno-usb2.c | 99 +++++++++++++------
+ 1 file changed, 70 insertions(+), 29 deletions(-)
 
-diff --git a/arch/arm/boot/dts/rockchip/Makefile b/arch/arm/boot/dts/rockchip/Makefile
-index 0f46e18fe275..58868cf0510b 100644
---- a/arch/arm/boot/dts/rockchip/Makefile
-+++ b/arch/arm/boot/dts/rockchip/Makefile
-@@ -10,6 +10,7 @@ dtb-$(CONFIG_ARCH_ROCKCHIP) += \
- 	rk3066a-mk808.dtb \
- 	rk3066a-rayeager.dtb \
- 	rk3128-evb.dtb \
-+	rk3128-xpi-3128.dtb \
- 	rk3188-bqedison2qc.dtb \
- 	rk3188-px3-evb.dtb \
- 	rk3188-radxarock.dtb \
-diff --git a/arch/arm/boot/dts/rockchip/rk3128-xpi-3128.dts b/arch/arm/boot/dts/rockchip/rk3128-xpi-3128.dts
-new file mode 100644
-index 000000000000..842b5f20d98a
---- /dev/null
-+++ b/arch/arm/boot/dts/rockchip/rk3128-xpi-3128.dts
-@@ -0,0 +1,431 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+diff --git a/drivers/phy/rockchip/phy-rockchip-inno-usb2.c b/drivers/phy/rockchip/phy-rockchip-inno-usb2.c
+index a0bc10aa7961..a4a1716e67bd 100644
+--- a/drivers/phy/rockchip/phy-rockchip-inno-usb2.c
++++ b/drivers/phy/rockchip/phy-rockchip-inno-usb2.c
+@@ -116,9 +116,12 @@ struct rockchip_chg_det_reg {
+  * @bvalid_det_en: vbus valid rise detection enable register.
+  * @bvalid_det_st: vbus valid rise detection status register.
+  * @bvalid_det_clr: vbus valid rise detection clear register.
+- * @id_det_en: id detection enable register.
+- * @id_det_st: id detection state register.
+- * @id_det_clr: id detection clear register.
++ * @idfall_det_en: id detection enable register, falling edge
++ * @idfall_det_st: id detection state register, falling edge
++ * @idfall_det_clr: id detection clear register, falling edge
++ * @idrise_det_en: id detection enable register, rising edge
++ * @idrise_det_st: id detection state register, rising edge
++ * @idrise_det_clr: id detection clear register, rising edge
+  * @ls_det_en: linestate detection enable register.
+  * @ls_det_st: linestate detection state register.
+  * @ls_det_clr: linestate detection clear register.
+@@ -133,9 +136,12 @@ struct rockchip_usb2phy_port_cfg {
+ 	struct usb2phy_reg	bvalid_det_en;
+ 	struct usb2phy_reg	bvalid_det_st;
+ 	struct usb2phy_reg	bvalid_det_clr;
+-	struct usb2phy_reg	id_det_en;
+-	struct usb2phy_reg	id_det_st;
+-	struct usb2phy_reg	id_det_clr;
++	struct usb2phy_reg	idfall_det_en;
++	struct usb2phy_reg	idfall_det_st;
++	struct usb2phy_reg	idfall_det_clr;
++	struct usb2phy_reg	idrise_det_en;
++	struct usb2phy_reg	idrise_det_st;
++	struct usb2phy_reg	idrise_det_clr;
+ 	struct usb2phy_reg	ls_det_en;
+ 	struct usb2phy_reg	ls_det_st;
+ 	struct usb2phy_reg	ls_det_clr;
+@@ -429,15 +435,27 @@ static int rockchip_usb2phy_init(struct phy *phy)
+ 			if (ret)
+ 				goto out;
+ 
+-			/* clear id status and enable id detect irq */
++			/* clear id status and enable id detect irqs */
+ 			ret = property_enable(rphy->grf,
+-					      &rport->port_cfg->id_det_clr,
++					      &rport->port_cfg->idfall_det_clr,
+ 					      true);
+ 			if (ret)
+ 				goto out;
+ 
+ 			ret = property_enable(rphy->grf,
+-					      &rport->port_cfg->id_det_en,
++					      &rport->port_cfg->idrise_det_clr,
++					      true);
++			if (ret)
++				goto out;
 +
-+/dts-v1/;
++			ret = property_enable(rphy->grf,
++					      &rport->port_cfg->idfall_det_en,
++					      true);
++			if (ret)
++				goto out;
 +
-+#include <dt-bindings/input/input.h>
-+#include <dt-bindings/leds/common.h>
-+#include "rk3128.dtsi"
++			ret = property_enable(rphy->grf,
++					      &rport->port_cfg->idrise_det_en,
+ 					      true);
+ 			if (ret)
+ 				goto out;
+@@ -944,11 +962,16 @@ static irqreturn_t rockchip_usb2phy_id_irq(int irq, void *data)
+ 	struct rockchip_usb2phy *rphy = dev_get_drvdata(rport->phy->dev.parent);
+ 	bool id;
+ 
+-	if (!property_enabled(rphy->grf, &rport->port_cfg->id_det_st))
++	if (!property_enabled(rphy->grf, &rport->port_cfg->idfall_det_st) &&
++	    !property_enabled(rphy->grf, &rport->port_cfg->idrise_det_st))
+ 		return IRQ_NONE;
+ 
+ 	/* clear id detect irq pending status */
+-	property_enable(rphy->grf, &rport->port_cfg->id_det_clr, true);
++	if (property_enabled(rphy->grf, &rport->port_cfg->idfall_det_st))
++		property_enable(rphy->grf, &rport->port_cfg->idfall_det_clr, true);
 +
-+/ {
-+	model = "Geniatech XPI-3128";
-+	compatible = "geniatech,xpi-3128", "rockchip,rk3128";
-+
-+	aliases {
-+		ethernet0 = &gmac;
-+		gpio0 = &gpio0;
-+		gpio1 = &gpio1;
-+		gpio2 = &gpio2;
-+		gpio3 = &gpio3;
-+		mmc0 = &emmc;
-+		mmc1 = &sdmmc;
-+		serial0 = &uart1;
-+	};
-+
-+	chosen {
-+		stdout-path = "serial0:115200n8";
-+	};
-+
-+	adc-keys {
-+		compatible = "adc-keys";
-+		io-channels = <&saradc 1>;
-+		io-channel-names = "buttons";
-+		keyup-threshold-microvolt = <3300000>;
-+
-+		button-recovery {
-+			label = "Recovery";
-+			linux,code = <KEY_VENDOR>;
-+			press-threshold-microvolt = <0>;
-+		};
-+	};
-+
-+	dc_5v: dc-5v-regulator {
-+		compatible = "regulator-fixed";
-+		regulator-name = "DC_5V";
-+		regulator-min-microvolt = <5000000>;
-+		regulator-max-microvolt = <5000000>;
-+		regulator-always-on;
-+		regulator-boot-on;
-+	};
-+
-+	/*
-+	 * This is a vbus-supply, which also supplies the GL852G usb hub,
-+	 * thus has to be always-on
-+	 */
-+	host_pwr_5v: host-pwr-5v-regulator {
-+		compatible = "regulator-fixed";
-+		gpio = <&gpio3 RK_PC4 GPIO_ACTIVE_HIGH>;
-+		startup-delay-us = <1500>;
-+		regulator-name = "HOST_PWR_5V";
-+		regulator-min-microvolt = <5000000>;
-+		regulator-max-microvolt = <5000000>;
-+		vin-supply = <&dc_5v>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&host_drv>;
-+		enable-active-high;
-+		regulator-always-on;
-+	};
-+
-+	ir-receiver {
-+		compatible = "gpio-ir-receiver";
-+		gpios = <&gpio3 RK_PD2 GPIO_ACTIVE_LOW>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&ir_int>;
-+	};
-+
-+	leds {
-+		compatible = "gpio-leds";
-+
-+		led-power {
-+			gpios = <&gpio0 RK_PD2 GPIO_ACTIVE_HIGH>;
-+			function = LED_FUNCTION_POWER;
-+			color = <LED_COLOR_ID_BLUE>;
-+			default-state = "on";
-+			pinctrl-names = "default";
-+			pinctrl-0 = <&power_led>;
-+		};
-+
-+		led-spd {
-+			gpios = <&gpio3 RK_PB3 GPIO_ACTIVE_LOW>;
-+			function = LED_FUNCTION_LAN;
-+			color = <LED_COLOR_ID_GREEN>;
-+			/*
-+			 * currently not allowed to be set as per
-+			 * https://www.kernel.org/doc/Documentation/devicetree/bindings/leds/common.yaml
-+			 * and has to set in userspace
-+			 *
-+			 * linux,default-trigger = "netdev";
-+			 */
-+			pinctrl-names = "default";
-+			pinctrl-0 = <&spd_led>;
-+		};
-+	};
-+
-+	mcu3v3: mcu3v3-regulator {
-+		compatible = "regulator-fixed";
-+		regulator-name = "MCU3V3";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		vin-supply = <&vcc_io>;
-+		regulator-always-on;
-+		regulator-boot-on;
-+	};
-+
-+	vcc_ddr: vcc-ddr-regulator {
-+		compatible = "regulator-fixed";
-+		regulator-name = "VCC_DDR";
-+		regulator-min-microvolt = <1500000>;
-+		regulator-max-microvolt = <1500000>;
-+		vin-supply = <&vcc_sys>;
-+		regulator-always-on;
-+		regulator-boot-on;
-+	};
-+
-+	vcc_io: vcc-io-regulator {
-+		compatible = "regulator-fixed";
-+		regulator-name = "VCC_IO";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		vin-supply = <&vcc_sys>;
-+		regulator-always-on;
-+		regulator-boot-on;
-+	};
-+
-+	vcc_lan: vcc-lan-regulator {
-+		compatible = "regulator-fixed";
-+		regulator-name = "VCC_LAN";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		vin-supply = <&vcc_io>;
-+		regulator-always-on;
-+		regulator-boot-on;
-+	};
-+
-+	vcc_sd: vcc-sd-regulator {
-+		compatible = "regulator-fixed";
-+		gpio = <&gpio1 RK_PB6 GPIO_ACTIVE_LOW>;
-+		startup-delay-us = <500>;
-+		regulator-name = "VCC_SD";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		vin-supply = <&vcc_io>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&sdmmc_pwren>;
-+	};
-+
-+	vcc_sys: vcc-sys-regulator {
-+		compatible = "regulator-fixed";
-+		regulator-name = "VCC_SYS";
-+		regulator-min-microvolt = <5000000>;
-+		regulator-max-microvolt = <5000000>;
-+		vin-supply = <&dc_5v>;
-+		regulator-always-on;
-+		regulator-boot-on;
-+	};
-+
-+	vcc33_hdmi: vcc33-hdmi-regulator {
-+		compatible = "regulator-fixed";
-+		regulator-name = "VCC33_HDMI";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		vin-supply = <&vcca_33>;
-+		regulator-always-on;
-+		regulator-boot-on;
-+	};
-+
-+	vcca_33: vcca-33-regulator {
-+		compatible = "regulator-fixed";
-+		regulator-name = "VCCA_33";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		vin-supply = <&vcc_sys>;
-+		regulator-always-on;
-+		regulator-boot-on;
-+	};
-+
-+	vdd_11: vdd-11-regulator {
-+		compatible = "regulator-fixed";
-+		regulator-name = "VDD_11";
-+		regulator-min-microvolt = <1100000>;
-+		regulator-max-microvolt = <1100000>;
-+		vin-supply = <&vcc_sys>;
-+		regulator-always-on;
-+		regulator-boot-on;
-+	};
-+
-+	vdd11_hdmi: vdd11-hdmi-regulator {
-+		compatible = "regulator-fixed";
-+		regulator-name = "VDD11_HDMI";
-+		regulator-min-microvolt = <1100000>;
-+		regulator-max-microvolt = <1100000>;
-+		vin-supply = <&vdd_11>;
-+		regulator-always-on;
-+		regulator-boot-on;
-+	};
-+
-+	vdd_arm: vdd-arm-regulator {
-+		compatible = "pwm-regulator";
-+		regulator-name = "VDD_ARM";
-+		pwms = <&pwm1 0 25000 1>;
-+		pwm-supply = <&vcc_sys>;
-+		regulator-min-microvolt = <900000>;
-+		regulator-max-microvolt = <1400000>;
-+		regulator-always-on;
-+		regulator-boot-on;
-+	};
-+
-+	/*
-+	 * As per schematics vdd_log is minimum 900 mV, maximum 1400 mV.
-+	 * Since there are HW blocks in PD_LOGIC which are all driven by
-+	 * this supply, which either do not have a driver at all or the
-+	 * driver does not have regulator support, but are required for
-+	 * the board to run we have to make sure here, that the voltage
-+	 * never drops below 1050 mV.
-+	 */
-+	vdd_log: vdd-log-regulator {
-+		compatible = "pwm-regulator";
-+		regulator-name = "VDD_LOG";
-+		pwms = <&pwm2 0 25000 1>;
-+		pwm-dutycycle-range = <30 100>;
-+		pwm-supply = <&vcc_sys>;
-+		regulator-min-microvolt = <1050000>;
-+		regulator-max-microvolt = <1400000>;
-+		regulator-ramp-delay = <4000>;
-+		regulator-always-on;
-+		regulator-boot-on;
-+	};
-+
-+	memory@60000000 {
-+		device_type = "memory";
-+		reg = <0x60000000 0x40000000>;
-+	};
-+
-+};
-+
-+&cpu0 {
-+	cpu-supply = <&vdd_arm>;
-+};
-+
-+&emmc {
-+	bus-width = <8>;
-+	vmmc-supply = <&vcc_io>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&emmc_clk &emmc_cmd &emmc_bus8>;
-+	cap-mmc-highspeed;
-+	no-sd;
-+	no-sdio;
-+	status = "okay";
-+};
-+
-+&gmac {
-+	clock_in_out = "output";
-+	phy-supply = <&vcc_lan>;
-+	phy-mode = "rmii";
-+	phy-handle = <&phy0>;
-+	assigned-clocks = <&cru SCLK_MAC_SRC>;
-+	assigned-clock-rates= <50000000>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&rmii_pins>;
-+	status = "okay";
-+};
-+
-+/*
-+ * Add labels for each pin which is exposed at the 40-pin header
-+ */
-+&gpio0 {
-+	gpio-line-names = /* GPIO0 A0-A7 */
-+			  "", "", "HEADER_5", "HEADER_3",
-+			  "", "", "", "",
-+			  /* GPIO0 B0-B7 */
-+			  "HEADER_22", "HEADER_23", "", "HEADER_19",
-+			  "HEADER_26", "HEADER_21", "HEADER_24", "",
-+			  /* GPIO0 C0-C7 */
-+			  "", "HEADER_18", "", "",
-+			  "", "", "", "",
-+			  /* GPIO0 D0-D7 */
-+			  "HEADER_36", "", "", "",
-+			  "", "", "HEADER_13", "";
-+};
-+
-+&gpio1 {
-+	gpio-line-names = /* GPIO1 A0-A7 */
-+			  "HEADER_7", "HEADER_35", "HEADER_33", "HEADER_37",
-+			  "HEADER_40", "HEADER_38", "", "",
-+			  /* GPIO1 B0-B7 */
-+			  "HEADER_11", "", "", "HEADER_29",
-+			  "HEADER_31", "", "", "",
-+			  /* GPIO1 C0-C7 */
-+			  "", "", "", "",
-+			  "", "", "", "",
-+			  /* GPIO1 D0-D7 */
-+			  "", "", "", "",
-+			  "", "", "", "";
-+};
-+
-+&gpio2 {
-+	gpio-line-names = /* GPIO2 A0-A7 */
-+			  "", "", "", "",
-+			  "", "", "", "",
-+			  /* GPIO2 B0-B7 */
-+			  "", "", "", "",
-+			  "", "", "", "",
-+			  /* GPIO2 C0-C7 */
-+			  "", "", "", "",
-+			  "HEADER_27", "", "", "",
-+			  /* GPIO2 D0-D7 */
-+			  "", "", "HEADER_8", "HEADER_10",
-+			  "", "", "", "";
-+};
-+
-+&gpio3 {
-+	gpio-line-names = /* GPIO3 A0-A7 */
-+			  "", "", "", "",
-+			  "", "", "", "",
-+			  /* GPIO3 B0-B7 */
-+			  "", "", "", "",
-+			  "", "", "", "",
-+			  /* GPIO3 C0-C7 */
-+			  "", "HEADER_32", "", "",
-+			  "", "", "", "HEADER_12",
-+			  /* GPIO3 D0-D7 */
-+			  "", "", "", "HEADER_15",
-+			  "", "", "", "";
-+};
-+
-+&gpu {
-+	mali-supply = <&vdd_log>;
-+	status = "okay";
-+};
-+
-+&mdio {
-+	phy0: ethernet-phy@1 {
-+		/* DP83848C interrupt is not connected */
-+		compatible = "ethernet-phy-ieee802.3-c22";
-+		reg = <1>;
-+		max-speed = <100>;
-+		reset-assert-us = <15000>;
-+		reset-deassert-us = <80000>;
-+		reset-gpios = <&gpio2 RK_PD0 GPIO_ACTIVE_LOW>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&dp83848c_rst>;
-+	};
-+};
-+
-+&pinctrl {
-+	dp83848c {
-+		dp83848c_rst: dp83848c-rst {
-+			rockchip,pins = <2 RK_PD0 RK_FUNC_GPIO &pcfg_pull_none>;
-+		};
-+	};
-+
-+	ir-receiver {
-+		ir_int: ir-int {
-+			rockchip,pins = <3 RK_PD2 RK_FUNC_GPIO &pcfg_pull_none>;
-+		};
-+	};
-+
-+	leds {
-+		power_led: power-led {
-+			rockchip,pins = <0 RK_PD2 RK_FUNC_GPIO &pcfg_pull_none>;
-+		};
-+
-+		spd_led: spd-led {
-+			rockchip,pins = <3 RK_PB3 RK_FUNC_GPIO &pcfg_pull_none>;
-+		};
-+	};
-+
-+	usb2 {
-+		host_drv: host-drv {
-+			rockchip,pins = <3 RK_PC4 RK_FUNC_GPIO &pcfg_pull_none>;
-+		};
-+	};
-+};
-+
-+&pwm1 {
-+	status = "okay";
-+};
-+
-+&pwm2 {
-+	status = "okay";
-+};
-+
-+&saradc {
-+	vref-supply = <&vcc_io>;
-+	status = "okay";
-+};
-+
-+&sdmmc {
-+	bus-width = <4>;
-+	vmmc-supply = <&vcc_sd>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&sdmmc_bus4 &sdmmc_clk &sdmmc_cmd &sdmmc_det>;
-+	cap-sd-highspeed;
-+	no-mmc;
-+	no-sdio;
-+	status = "okay";
-+};
-+
-+&uart1 {
-+	status = "okay";
-+};
-+
-+&usb_host_ehci {
-+	status = "okay";
-+};
-+
-+&usb_otg {
-+	vusb_a-supply = <&vcc_io>;
-+	vusb_d-supply = <&vdd_11>;
-+	status = "okay";
-+};
-+
-+&usb2phy {
-+	status = "okay";
-+};
-+
-+&usb2phy_host {
-+	status = "okay";
-+};
-+
-+&usb2phy_otg {
-+	status = "okay";
-+};
++	if (property_enabled(rphy->grf, &rport->port_cfg->idrise_det_st))
++		property_enable(rphy->grf, &rport->port_cfg->idrise_det_clr, true);
+ 
+ 	id = property_enabled(rphy->grf, &rport->port_cfg->utmi_id);
+ 	extcon_set_state_sync(rphy->edev, EXTCON_USB_HOST, !id);
+@@ -1362,9 +1385,12 @@ static const struct rockchip_usb2phy_cfg rk3228_phy_cfgs[] = {
+ 				.bvalid_det_en	= { 0x0680, 3, 3, 0, 1 },
+ 				.bvalid_det_st	= { 0x0690, 3, 3, 0, 1 },
+ 				.bvalid_det_clr	= { 0x06a0, 3, 3, 0, 1 },
+-				.id_det_en	= { 0x0680, 6, 5, 0, 3 },
+-				.id_det_st	= { 0x0690, 6, 5, 0, 3 },
+-				.id_det_clr	= { 0x06a0, 6, 5, 0, 3 },
++				.idfall_det_en	= { 0x0680, 6, 6, 0, 1 },
++				.idfall_det_st	= { 0x0690, 6, 6, 0, 1 },
++				.idfall_det_clr	= { 0x06a0, 6, 6, 0, 1 },
++				.idrise_det_en	= { 0x0680, 5, 5, 0, 1 },
++				.idrise_det_st	= { 0x0690, 5, 5, 0, 1 },
++				.idrise_det_clr	= { 0x06a0, 5, 5, 0, 1 },
+ 				.ls_det_en	= { 0x0680, 2, 2, 0, 1 },
+ 				.ls_det_st	= { 0x0690, 2, 2, 0, 1 },
+ 				.ls_det_clr	= { 0x06a0, 2, 2, 0, 1 },
+@@ -1425,9 +1451,12 @@ static const struct rockchip_usb2phy_cfg rk3308_phy_cfgs[] = {
+ 				.bvalid_det_en	= { 0x3020, 3, 2, 0, 3 },
+ 				.bvalid_det_st	= { 0x3024, 3, 2, 0, 3 },
+ 				.bvalid_det_clr = { 0x3028, 3, 2, 0, 3 },
+-				.id_det_en	= { 0x3020, 5, 4, 0, 3 },
+-				.id_det_st	= { 0x3024, 5, 4, 0, 3 },
+-				.id_det_clr	= { 0x3028, 5, 4, 0, 3 },
++				.idfall_det_en	= { 0x3020, 5, 5, 0, 1 },
++				.idfall_det_st	= { 0x3024, 5, 5, 0, 1 },
++				.idfall_det_clr = { 0x3028, 5, 5, 0, 1 },
++				.idrise_det_en	= { 0x3020, 4, 4, 0, 1 },
++				.idrise_det_st	= { 0x3024, 4, 4, 0, 1 },
++				.idrise_det_clr = { 0x3028, 4, 4, 0, 1 },
+ 				.ls_det_en	= { 0x3020, 0, 0, 0, 1 },
+ 				.ls_det_st	= { 0x3024, 0, 0, 0, 1 },
+ 				.ls_det_clr	= { 0x3028, 0, 0, 0, 1 },
+@@ -1472,9 +1501,12 @@ static const struct rockchip_usb2phy_cfg rk3328_phy_cfgs[] = {
+ 				.bvalid_det_en	= { 0x0110, 3, 2, 0, 3 },
+ 				.bvalid_det_st	= { 0x0114, 3, 2, 0, 3 },
+ 				.bvalid_det_clr = { 0x0118, 3, 2, 0, 3 },
+-				.id_det_en	= { 0x0110, 5, 4, 0, 3 },
+-				.id_det_st	= { 0x0114, 5, 4, 0, 3 },
+-				.id_det_clr	= { 0x0118, 5, 4, 0, 3 },
++				.idfall_det_en	= { 0x0110, 5, 5, 0, 1 },
++				.idfall_det_st	= { 0x0114, 5, 5, 0, 1 },
++				.idfall_det_clr = { 0x0118, 5, 5, 0, 1 },
++				.idrise_det_en	= { 0x0110, 4, 4, 0, 1 },
++				.idrise_det_st	= { 0x0114, 4, 4, 0, 1 },
++				.idrise_det_clr = { 0x0118, 4, 4, 0, 1 },
+ 				.ls_det_en	= { 0x0110, 0, 0, 0, 1 },
+ 				.ls_det_st	= { 0x0114, 0, 0, 0, 1 },
+ 				.ls_det_clr	= { 0x0118, 0, 0, 0, 1 },
+@@ -1538,9 +1570,12 @@ static const struct rockchip_usb2phy_cfg rk3399_phy_cfgs[] = {
+ 				.bvalid_det_en	= { 0xe3c0, 3, 3, 0, 1 },
+ 				.bvalid_det_st	= { 0xe3e0, 3, 3, 0, 1 },
+ 				.bvalid_det_clr	= { 0xe3d0, 3, 3, 0, 1 },
+-				.id_det_en	= { 0xe3c0, 5, 4, 0, 3 },
+-				.id_det_st	= { 0xe3e0, 5, 4, 0, 3 },
+-				.id_det_clr	= { 0xe3d0, 5, 4, 0, 3 },
++				.idfall_det_en	= { 0xe3c0, 5, 5, 0, 1 },
++				.idfall_det_st	= { 0xe3e0, 5, 5, 0, 1 },
++				.idfall_det_clr	= { 0xe3d0, 5, 5, 0, 1 },
++				.idrise_det_en	= { 0xe3c0, 4, 4, 0, 1 },
++				.idrise_det_st	= { 0xe3e0, 4, 4, 0, 1 },
++				.idrise_det_clr	= { 0xe3d0, 4, 4, 0, 1 },
+ 				.utmi_avalid	= { 0xe2ac, 7, 7, 0, 1 },
+ 				.utmi_bvalid	= { 0xe2ac, 12, 12, 0, 1 },
+ 				.utmi_id	= { 0xe2ac, 8, 8, 0, 1 },
+@@ -1577,9 +1612,12 @@ static const struct rockchip_usb2phy_cfg rk3399_phy_cfgs[] = {
+ 				.bvalid_det_en  = { 0xe3c0, 8, 8, 0, 1 },
+ 				.bvalid_det_st  = { 0xe3e0, 8, 8, 0, 1 },
+ 				.bvalid_det_clr = { 0xe3d0, 8, 8, 0, 1 },
+-				.id_det_en	= { 0xe3c0, 10, 9, 0, 3 },
+-				.id_det_st	= { 0xe3e0, 10, 9, 0, 3 },
+-				.id_det_clr	= { 0xe3d0, 10, 9, 0, 3 },
++				.idfall_det_en	= { 0xe3c0, 10, 10, 0, 1 },
++				.idfall_det_st	= { 0xe3e0, 10, 10, 0, 1 },
++				.idfall_det_clr	= { 0xe3d0, 10, 10, 0, 1 },
++				.idrise_det_en	= { 0xe3c0, 9, 9, 0, 1 },
++				.idrise_det_st	= { 0xe3e0, 9, 9, 0, 1 },
++				.idrise_det_clr	= { 0xe3d0, 9, 9, 0, 1 },
+ 				.utmi_avalid	= { 0xe2ac, 10, 10, 0, 1 },
+ 				.utmi_bvalid    = { 0xe2ac, 16, 16, 0, 1 },
+ 				.utmi_id	= { 0xe2ac, 11, 11, 0, 1 },
+@@ -1608,9 +1646,12 @@ static const struct rockchip_usb2phy_cfg rk3568_phy_cfgs[] = {
+ 				.bvalid_det_en	= { 0x0080, 3, 2, 0, 3 },
+ 				.bvalid_det_st	= { 0x0084, 3, 2, 0, 3 },
+ 				.bvalid_det_clr = { 0x0088, 3, 2, 0, 3 },
+-				.id_det_en	= { 0x0080, 5, 4, 0, 3 },
+-				.id_det_st	= { 0x0084, 5, 4, 0, 3 },
+-				.id_det_clr	= { 0x0088, 5, 4, 0, 3 },
++				.idfall_det_en	= { 0x0080, 5, 5, 0, 1 },
++				.idfall_det_st	= { 0x0084, 5, 5, 0, 1 },
++				.idfall_det_clr	= { 0x0088, 5, 5, 0, 1 },
++				.idrise_det_en	= { 0x0080, 4, 4, 0, 1 },
++				.idrise_det_st	= { 0x0084, 4, 4, 0, 1 },
++				.idrise_det_clr	= { 0x0088, 4, 4, 0, 1 },
+ 				.utmi_avalid	= { 0x00c0, 10, 10, 0, 1 },
+ 				.utmi_bvalid	= { 0x00c0, 9, 9, 0, 1 },
+ 				.utmi_id	= { 0x00c0, 6, 6, 0, 1 },
 -- 
 2.42.0
 
