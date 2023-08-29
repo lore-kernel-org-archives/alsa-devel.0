@@ -4,83 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79FCCC83F12
-	for <alsa-devel@archiver.kernel.org>; Tue, 29 Aug 2023 18:33:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C8943C71153
+	for <alsa-devel@archiver.kernel.org>; Tue, 29 Aug 2023 18:33:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 78FDFEAA;
-	Tue, 29 Aug 2023 20:32:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 78FDFEAA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 24C85ED8;
+	Tue, 29 Aug 2023 20:32:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 24C85ED8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1693334011;
-	bh=kjC734WsSBlCGosnHWmKIM2ItZl0w4Aq/kKFi5e5tqQ=;
+	s=default; t=1693334022;
+	bh=KnYTnt78eqzwawHSULbXoIXZ+12LrLpdcO0JSsGjv2s=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=ceUMVNcni49NQpLYIhw7jz2cTxmLaufrXzpreexLr6o6tZo0nztpQ1Mk1M0Krt+48
-	 AxWarxYP/wN1a7HGDEhwlxOJoMQ/svPZh9TNZ888Z9DPKlpgSXUXUmyJOhQXBe4PRR
-	 WSTMCnwP5IlaBATi5Pbem9ZvFBW8YNufyACWuLX8=
+	b=XEGvKISlm3tC/sspNjIFOWwCc8awhQZdkNMo2xC2WooUMgtiQ/XaDdvORsr/GCg6g
+	 TPWlu0TL1AFU0HY4n0jyBkH893LHgbh/CYmozmqnSALaRrV40L7IlwgKZlVJ4S2R0m
+	 DIwMZZmGNzMObwEP6iAje+iLLCF16JkLUMR5xkQw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0E46BF80537; Tue, 29 Aug 2023 20:27:11 +0200 (CEST)
+	id 6EA7CF80527; Tue, 29 Aug 2023 20:28:50 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 992A5F8068F;
-	Tue, 29 Aug 2023 20:27:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B26FFF8055C;
+	Tue, 29 Aug 2023 20:28:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C38FFF80236; Tue, 29 Aug 2023 19:18:23 +0200 (CEST)
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com
- [IPv6:2a00:1450:4864:20::52a])
+	id A64F1F80236; Tue, 29 Aug 2023 19:18:24 +0200 (CEST)
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com
+ [IPv6:2a00:1450:4864:20::22d])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 61972F80558
-	for <alsa-devel@alsa-project.org>; Tue, 29 Aug 2023 19:17:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 61972F80558
+	by alsa1.perex.cz (Postfix) with ESMTPS id C5471F800D1
+	for <alsa-devel@alsa-project.org>; Tue, 29 Aug 2023 19:17:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C5471F800D1
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20221208 header.b=GYmvvj1s
-Received: by mail-ed1-x52a.google.com with SMTP id
- 4fb4d7f45d1cf-52a39a1c4d5so6050668a12.3
+ header.s=20221208 header.b=EShIb7E+
+Received: by mail-lj1-x22d.google.com with SMTP id
+ 38308e7fff4ca-2bb9a063f26so71448781fa.2
         for <alsa-devel@alsa-project.org>;
- Tue, 29 Aug 2023 10:17:48 -0700 (PDT)
+ Tue, 29 Aug 2023 10:17:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693329466; x=1693934266;
+        d=gmail.com; s=20221208; t=1693329471; x=1693934271;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=cdMp6yGV0P8L7/q8hhpBp7fZJs0P4HxP+xmd/dBUTF0=;
-        b=GYmvvj1sFbTTtXbgXqrMaNH/aVAjfAntStRnN8asGz3V+cm1HEbxj7u/duVBcmdQ7Z
-         GNd7XfGs74mOUm0PhC/djA+EPK+tWkvMkKamr+St+za05bKr8bU0eS8swyvP+xes04mz
-         ODLNqhrP16gRGQynCESNaYqSdtnbj9UtlI3F9WdnhnJ6kX5vRPnFZ6LCvlHVP4zZ24qo
-         jfwQv0P8xQJc/f4YjkAeZ21XnUlwK2+r1Kdm5FJbZvHJ4Kw92VSP4SYL09kbYoJDJHvA
-         +4vQ0JzfKeGtMTsrHcFKKviELI0MjPux56ean5Tw6J8K1AiRzuDuLKJ870CbIm0TbhMi
-         wjyQ==
+        bh=G4PHXGicMxBk+MJKalmg1iNAvJdEv1pEopykpBO9nUE=;
+        b=EShIb7E+Z3Us6tkTRIUmptYNcn1c25vEpCspbQxGLoL+VKjAo/XzXV/t/I+jrto2Lx
+         gVt5UeRIM1WKSIll76L1JN3B79kBVT0lfFGsZnECJ+uNIBuxz1f7TJblkBfZMrSiQIGT
+         /0z+a+iJBak/4doNX0w1w3AVduVoXz63YzJV0i4k16xgEWkLoxvOSrJX0wFxYJv9WUY1
+         Rjb/7WG9lvaXaAj6RvmuX6qBaDS2uP3leouUnNxofbkxuT0zXGRF2JJDC72nriYF029x
+         j27ZDobOtTmUm6vnZjKJWnpQrz5BBImekLEhx/6psHKvowGH9bJ2vhLR1YW4bkq4R6lN
+         XaHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693329466; x=1693934266;
+        d=1e100.net; s=20221208; t=1693329471; x=1693934271;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=cdMp6yGV0P8L7/q8hhpBp7fZJs0P4HxP+xmd/dBUTF0=;
-        b=VHRgFxbGNJS4DgeTsCFXMU0vbsb/QXyd5R55FOFNGSuvdWy9GElQcu11PgGHdM2JJY
-         5qZ90xEwcVqbkrysOcUi/D/muKjXbrtJ8P8b3CllJvapCIShi9GfWEm/lWZB1D4u5Ig1
-         794wIWnwYWgacgz+RWZwcpfk6DSSx6TIpNMmJgLUeA/9iUAFA268lypk0MA9S+lyoepV
-         aryDOgxnUX2b5mEknhK4BDpkILOvtTNGFuC75CyyrmMwEdnewbcpSoAddwwV2GHWp5Hv
-         znQPN364MbXODZRpESrfROdkBzBQtqk6Y0pcGVmb09tPmYd/ocSfqHjrfISdvFdGvSLb
-         bthg==
-X-Gm-Message-State: AOJu0YwdAacR+VCLMwLA4KATasSezuDQ6aIaNtjDIn/GFXuXpkVxXpf2
-	h3WWXxP8af/TSmyP4tkqYg==
+        bh=G4PHXGicMxBk+MJKalmg1iNAvJdEv1pEopykpBO9nUE=;
+        b=ahtjIXsOBP4LID2RyjM8j15vbsbB12rNfDdjU4SORkdqqxb/AhdMPUbktOPYoGEp7i
+         PhD1jzVOafLo/YW2mgYc2nDX/t5XJi1iAUgGewcLhV6QjVUbPpK5yoPSSN0nwU0SzMT0
+         Pv53zPr7UOZBQ08r7cBKpJAu9R4eGV27+Po1qdEqGGy0f5di9X4cC66+/NGUwIazQXRg
+         nFgU9zmHDhYrObN9iU669VLxsEbA2L8K+wjPjY+GSfOywuJnXtbrH1xbae9Y8H3FyGJy
+         zFsaYqBt/ydBB0e3FxJLwmqP3m/giiwQafrDAc1ICPYD4ED5JH0azSXzw31f0VqAB+rR
+         P5cg==
+X-Gm-Message-State: AOJu0YyQwEN5k2C1vq/6bmIYW+aCE4pJU3ekdpnnQUOV0xBV8I+e/x6i
+	krgk2zoPVxZ6/k6B+A1tig==
 X-Google-Smtp-Source: 
- AGHT+IEIEIVr9GVv8wcpcAh/4P6h2oRMoRbIhTVOy6XqNU2N3y4y6OKPBaGl1PKVnou0mSNTBc9qkA==
-X-Received: by 2002:a17:906:cc50:b0:9a2:143e:a062 with SMTP id
- mm16-20020a170906cc5000b009a2143ea062mr11375776ejb.49.1693329466159;
-        Tue, 29 Aug 2023 10:17:46 -0700 (PDT)
+ AGHT+IEQB3R89Y565RxZaGfUe+xAj9rNo4DRqqtlbGvy1GBw6QhT8IIxT0/e3EW2cHJ2YckOECQ8ww==
+X-Received: by 2002:a2e:9084:0:b0:2b9:f007:9910 with SMTP id
+ l4-20020a2e9084000000b002b9f0079910mr20989559ljg.53.1693329471278;
+        Tue, 29 Aug 2023 10:17:51 -0700 (PDT)
 Received: from U4.lan ([2001:9e8:b958:3410:8e0c:ed68:cd6c:7cb8])
         by smtp.gmail.com with ESMTPSA id
- a21-20020a1709062b1500b00993cc1242d4sm6115834ejg.151.2023.08.29.10.17.45
+ a21-20020a1709062b1500b00993cc1242d4sm6115834ejg.151.2023.08.29.10.17.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Aug 2023 10:17:45 -0700 (PDT)
+        Tue, 29 Aug 2023 10:17:50 -0700 (PDT)
 From: Alex Bee <knaerzche@gmail.com>
 To: Heiko Stuebner <heiko@sntech.de>,
 	Rob Herring <robh+dt@kernel.org>,
@@ -106,9 +106,9 @@ Cc: Elaine Zhang <zhangqing@rock-chips.com>,
 	linux-clk@vger.kernel.org,
 	linux-phy@lists.infradead.org,
 	Alex Bee <knaerzche@gmail.com>
-Subject: [PATCH 22/31] ARM: dts: rockchip: Add GPU node for RK312x
-Date: Tue, 29 Aug 2023 19:16:38 +0200
-Message-ID: <20230829171647.187787-23-knaerzche@gmail.com>
+Subject: [PATCH 27/31] ARM: dts: rockchip: Add dwc2 otg fifo siztes for RK312x
+Date: Tue, 29 Aug 2023 19:16:43 +0200
+Message-ID: <20230829171647.187787-28-knaerzche@gmail.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20230829171647.187787-1-knaerzche@gmail.com>
 References: <20230829171647.187787-1-knaerzche@gmail.com>
@@ -120,15 +120,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: 454RHN7MQBRNVWM6KNDLNSABGX6K5S6C
-X-Message-ID-Hash: 454RHN7MQBRNVWM6KNDLNSABGX6K5S6C
-X-Mailman-Approved-At: Tue, 29 Aug 2023 18:26:45 +0000
+Message-ID-Hash: QWI2DOQOO2654A5CJC2RYAG27QZWR3JD
+X-Message-ID-Hash: QWI2DOQOO2654A5CJC2RYAG27QZWR3JD
+X-Mailman-Approved-At: Tue, 29 Aug 2023 18:28:45 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/454RHN7MQBRNVWM6KNDLNSABGX6K5S6C/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QWI2DOQOO2654A5CJC2RYAG27QZWR3JD/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -137,79 +137,29 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-RK312x SoCs have Mali400 MP2 GPU.
-Add the respective device tree node and the correspondending opp-table.
-
-The frequencies and voltages have been taken from downstream kernel and
-work fine for both RK3126 and RK3128.
+The driver currently won't probe correctly if those values are missing.
+They have been taken from dowstream kernel and match those of other
+Rockchip SoCs.
 
 Signed-off-by: Alex Bee <knaerzche@gmail.com>
 ---
- arch/arm/boot/dts/rockchip/rk312x.dtsi | 44 ++++++++++++++++++++++++++
- 1 file changed, 44 insertions(+)
+ arch/arm/boot/dts/rockchip/rk312x.dtsi | 3 +++
+ 1 file changed, 3 insertions(+)
 
 diff --git a/arch/arm/boot/dts/rockchip/rk312x.dtsi b/arch/arm/boot/dts/rockchip/rk312x.dtsi
-index 617306a9edf7..024d801a9792 100644
+index ce3f03c3532e..019aa92c0cfa 100644
 --- a/arch/arm/boot/dts/rockchip/rk312x.dtsi
 +++ b/arch/arm/boot/dts/rockchip/rk312x.dtsi
-@@ -101,6 +101,27 @@ opp-1200000000 {
- 		};
- 	};
- 
-+	gpu_opp_table: opp-table-1 {
-+		compatible = "operating-points-v2";
-+
-+		opp-200000000 {
-+			opp-hz = /bits/ 64 <200000000>;
-+			opp-microvolt = <975000 975000 1250000>;
-+		};
-+		opp-300000000 {
-+			opp-hz = /bits/ 64 <300000000>;
-+			opp-microvolt = <1050000 1050000 1250000>;
-+		};
-+		opp-400000000 {
-+			opp-hz = /bits/ 64 <400000000>;
-+			opp-microvolt = <1150000 1150000 1250000>;
-+		};
-+		opp-480000000 {
-+			opp-hz = /bits/ 64 <480000000>;
-+			opp-microvolt = <1250000 1250000 1250000>;
-+		};
-+	};
-+
- 	timer {
- 		compatible = "arm,armv7-timer";
- 		interrupts = <GIC_PPI 13 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_HIGH)>,
-@@ -131,6 +152,29 @@ smp-sram@0 {
- 		};
- 	};
- 
-+	gpu: gpu@10090000 {
-+		compatible = "rockchip,rk3128-mali", "arm,mali-400";
-+		reg = <0x10090000 0x10000>;
-+		interrupts = <GIC_SPI 3 IRQ_TYPE_LEVEL_HIGH>,
-+			     <GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH>,
-+			     <GIC_SPI 5 IRQ_TYPE_LEVEL_HIGH>,
-+			     <GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH>,
-+			     <GIC_SPI 5 IRQ_TYPE_LEVEL_HIGH>,
-+			     <GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH>;
-+		interrupt-names = "gp",
-+				  "gpmmu",
-+				  "pp0",
-+				  "ppmmu0",
-+				  "pp1",
-+				  "ppmmu1";
-+		clocks = <&cru ACLK_GPU>, <&cru ACLK_GPU>;
-+		clock-names = "bus", "core";
-+		power-domains = <&power RK3128_PD_GPU>;
-+		resets = <&cru SRST_GPU>;
-+		operating-points-v2 = <&gpu_opp_table>;
-+		status = "disabled";
-+	};
-+
- 	pmu: syscon@100a0000 {
- 		compatible = "rockchip,rk3128-pmu", "syscon", "simple-mfd";
- 		reg = <0x100a0000 0x1000>;
+@@ -280,6 +280,9 @@ usb_otg: usb@10180000 {
+ 		clocks = <&cru HCLK_OTG>;
+ 		clock-names = "otg";
+ 		dr_mode = "otg";
++		g-np-tx-fifo-size = <16>;
++		g-rx-fifo-size = <280>;
++		g-tx-fifo-size = <256 128 128 64 32 16>;
+ 		phys = <&usb2phy_otg>;
+ 		phy-names = "usb2-phy";
+ 		status = "disabled";
 -- 
 2.42.0
 
