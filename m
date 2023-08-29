@@ -4,83 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3200EC83F12
-	for <alsa-devel@archiver.kernel.org>; Tue, 29 Aug 2023 18:28:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 33B0EC71153
+	for <alsa-devel@archiver.kernel.org>; Tue, 29 Aug 2023 18:29:09 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 558A8DF3;
-	Tue, 29 Aug 2023 20:28:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 558A8DF3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 70A5184B;
+	Tue, 29 Aug 2023 20:28:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 70A5184B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1693333731;
-	bh=m2VBSkXWvpEo0je0kGJPC5conZarCycxQkOC53TlDvw=;
+	s=default; t=1693333744;
+	bh=38WL2jbPBnF5ncTPGBFJcm9LKpOemQSpYhl/T+Vig/I=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Hetw9uhiZ6ZWaYrdNRCDG9jint7YZY0THqu8OydhR6Z8jtBL+NQYjMs3/+fYpy/zo
-	 uwEpvpIVW3uNet5yCFWMkX2lTH7hQxz2YuW7k91YBcp8kl/5fyo7EuDQX+WUNcbvq6
-	 CESXVjtwRJ5plHHE8xzy6vlGMFK9y5VsE2jsCWaM=
+	b=R1yeQm75ey7VjQIoFrnf2Pr8rjZy+Znv9ZkqjmjbylF4/FcrEAbZMtDpkjiQbdMlw
+	 tklEqrY4GYtVTaOxuL3RVXa4RMZkUcp+6VkioJGKNcYzFbP344r2b/AdbiXw2at7LA
+	 C2OT+DUr1TbqhGZwrzO8NjDTdJckjDdY96bkfqLI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 14255F805B3; Tue, 29 Aug 2023 20:26:28 +0200 (CEST)
+	id 0BC9EF805C6; Tue, 29 Aug 2023 20:26:30 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 50FBBF805AD;
-	Tue, 29 Aug 2023 20:26:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C8585F805C2;
+	Tue, 29 Aug 2023 20:26:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 97921F80568; Tue, 29 Aug 2023 19:17:44 +0200 (CEST)
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com
- [IPv6:2a00:1450:4864:20::633])
+	id 89817F80551; Tue, 29 Aug 2023 19:17:47 +0200 (CEST)
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com
+ [IPv6:2a00:1450:4864:20::236])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 9EE52F804F3
-	for <alsa-devel@alsa-project.org>; Tue, 29 Aug 2023 19:17:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9EE52F804F3
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6DA10F8023B
+	for <alsa-devel@alsa-project.org>; Tue, 29 Aug 2023 19:17:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6DA10F8023B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20221208 header.b=SUdL/xb3
-Received: by mail-ej1-x633.google.com with SMTP id
- a640c23a62f3a-99bdeae1d0aso601387266b.1
+ header.s=20221208 header.b=rIZufC/g
+Received: by mail-lj1-x236.google.com with SMTP id
+ 38308e7fff4ca-2bd0d19a304so38513181fa.1
         for <alsa-devel@alsa-project.org>;
- Tue, 29 Aug 2023 10:17:34 -0700 (PDT)
+ Tue, 29 Aug 2023 10:17:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693329453; x=1693934253;
+        d=gmail.com; s=20221208; t=1693329449; x=1693934249;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=MBe21p78bEGeinGOeEZ5dbYwb28pfpjkSo3Y7gdPnoA=;
-        b=SUdL/xb3kpsY3Akj/aJ26o1kv2KJys+W9cQBeBkftJhsQqWtZcpM7ECdOar9ADv/Jk
-         jnanflospjevW6BNesT12gqFBXaaHkeB5/Dad0SOUROZyWMFcC4+ME8Rt+tWiNBTyLGL
-         VMwY7HTAQx+H8I3BXswnEOgBBn12IteAi1X/spxrBhperVxXoUCrAPC5WTzBhG3W/QiD
-         pCWF4JTBniQzdk5RPjFTAk9dpoOCO8j3OClV0dicykotS4qTBR5aP//QtpVMSOsX+tdg
-         X0bBbzobuYclmPOSn8aN3PQxMR/UlFydtNoqxKA/LXK49n1/jGxqCSXxPz24N7GhDtJB
-         llzA==
+        bh=eNxQT2nW9mlsSDnVrDv6HQBpykI5WwmT69S9mmtvT8k=;
+        b=rIZufC/gg1cYUNWmECI/46YrswF+nz0k1qq+H1hHISIBeklCOGZL8h2zth49s1RZVn
+         eMS3vy1eFt2ISgqitOHnd4xuxo8+iIWNjZlqmvBCCd87J02vlKd9Zv2ixpmsy3+NU0X9
+         E6adDktPfEsTttBTxou7dNp3mYCHJNgYXp560go1foEMofcjlXypG662p63Ig8m3cmIh
+         UFn69k7Ma5DeluYhdc/QnbUg7APs4PdqWBW62MJ5Ot0JzD4YKKxqVIb5DHUgpvEQGy3r
+         mpTSAiIAR3NgLP3rxocc0Zn+PefKtU9K8u1OLjR5xxIB3SeSayWFc+RP4TW8MGuVV22m
+         +lag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693329453; x=1693934253;
+        d=1e100.net; s=20221208; t=1693329449; x=1693934249;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=MBe21p78bEGeinGOeEZ5dbYwb28pfpjkSo3Y7gdPnoA=;
-        b=lx/KVwUApcK6zW2nQXDIHNqD9m/QkVYG5VuAi4zcWKRggJCCXUTvK9blPpfWFSOdKT
-         6lebO1Fng3R6+cMMlaLC8UABorKCsglpoccL9Y3FCCLoNFUERF5BuuK5LZEDE7kv/I31
-         aQ9MTi+t6FmZN2oRnz1gRaPDlRNjt1gxlUozmlBukolU7sQkF++w2gUbXJkgGmgSvy8D
-         2IjQ96JrDoPjPF+zlpb3TWmEhu2+JLluEl0QLFnmkUNlgmcjw5Orz2AQcSub7J2dL+T9
-         5ldSyNA0oIihXamrlvX6o2zosCkIe4CZPY6pKHz49JmZfckuPjOCHCwQUvqE+3cWHD6Y
-         CNUQ==
-X-Gm-Message-State: AOJu0YyJxFAp45q9ok17QKAB48MuawAyn6Bl68nzC3QGye4a8y+jErzu
-	ArWcZlmn829voJIhczbPLw==
+        bh=eNxQT2nW9mlsSDnVrDv6HQBpykI5WwmT69S9mmtvT8k=;
+        b=VkvB4yA1fGY7AFmedbs8bgBr7OIaMX/z3l1pLYiZX7P5QMw+V2wFbwia89OSFDnGif
+         NdgItc9qFJfelYH/sgrpOIhyrVGi+6J7Lm8t6UuIpk8uwrjhEyKMIGMSNt2qljOryLC4
+         4ZPFzrTnbdDiu/NoxQBfAOVBR9UDSUxUYzE3WC7BONpY2qb+NXBusfS8k2y+DK51wehI
+         DEH/TfA4eNH+61ADwtn7r8gMeIL51hTORdG4BgL3xcuBh4xMsyt/qOnp3Nr5GrN/+zPF
+         TilPk/HkUXzor896KDbGvjpmJ4Tr+2EQLmFb1Ch1762LcxpjkAcyVcBLog+AZhgyVDGm
+         f/pQ==
+X-Gm-Message-State: AOJu0YwMM6bv6AC3Oj4JTKLefymwNyWFcPnw0PWGcrO2f5ooXT2ge1+c
+	S4taLpEZDOz7IYYFD5ekPA==
 X-Google-Smtp-Source: 
- AGHT+IG3HeRnwjBp4DP1d8br+7ZiHAWUkr/gchOvBZ36yJgCrvVfN0JO4YkAJKyfaU26dvULxvz2mA==
-X-Received: by 2002:a17:906:5346:b0:9a2:1ce5:1243 with SMTP id
- j6-20020a170906534600b009a21ce51243mr12594716ejo.60.1693329453236;
-        Tue, 29 Aug 2023 10:17:33 -0700 (PDT)
+ AGHT+IEznm3zQlYtjDygMW1JWLcjCU2/3FhOjEydGc5ISDGtGkj+FNhlC7tDKoYprU72zEt2ma8PQg==
+X-Received: by 2002:a2e:9b97:0:b0:2bc:b694:6d6e with SMTP id
+ z23-20020a2e9b97000000b002bcb6946d6emr21085768lji.27.1693329449142;
+        Tue, 29 Aug 2023 10:17:29 -0700 (PDT)
 Received: from U4.lan ([2001:9e8:b958:3410:8e0c:ed68:cd6c:7cb8])
         by smtp.gmail.com with ESMTPSA id
- a21-20020a1709062b1500b00993cc1242d4sm6115834ejg.151.2023.08.29.10.17.32
+ a21-20020a1709062b1500b00993cc1242d4sm6115834ejg.151.2023.08.29.10.17.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Aug 2023 10:17:32 -0700 (PDT)
+        Tue, 29 Aug 2023 10:17:28 -0700 (PDT)
 From: Alex Bee <knaerzche@gmail.com>
 To: Heiko Stuebner <heiko@sntech.de>,
 	Rob Herring <robh+dt@kernel.org>,
@@ -105,10 +105,11 @@ Cc: Elaine Zhang <zhangqing@rock-chips.com>,
 	alsa-devel@alsa-project.org,
 	linux-clk@vger.kernel.org,
 	linux-phy@lists.infradead.org,
+	Finley Xiao <finley.xiao@rock-chips.com>,
 	Alex Bee <knaerzche@gmail.com>
-Subject: [PATCH 09/31] phy: phy-rockchip-inno-usb2: Add RK3128 support
-Date: Tue, 29 Aug 2023 19:16:25 +0200
-Message-ID: <20230829171647.187787-10-knaerzche@gmail.com>
+Subject: [PATCH 05/31] clk: rockchip: rk3128: Fix aclk_peri_src parent
+Date: Tue, 29 Aug 2023 19:16:21 +0200
+Message-ID: <20230829171647.187787-6-knaerzche@gmail.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20230829171647.187787-1-knaerzche@gmail.com>
 References: <20230829171647.187787-1-knaerzche@gmail.com>
@@ -120,15 +121,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: IDNSPKSCHS5YQSEJVQNOU7VZGYVFBHPF
-X-Message-ID-Hash: IDNSPKSCHS5YQSEJVQNOU7VZGYVFBHPF
+Message-ID-Hash: ZDB3ZBNX5P2EVG2LBSH26ORWXQHHWBQM
+X-Message-ID-Hash: ZDB3ZBNX5P2EVG2LBSH26ORWXQHHWBQM
 X-Mailman-Approved-At: Tue, 29 Aug 2023 18:26:09 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IDNSPKSCHS5YQSEJVQNOU7VZGYVFBHPF/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZDB3ZBNX5P2EVG2LBSH26ORWXQHHWBQM/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -137,79 +138,68 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add registers to support the 2-port usb2 phy found in RK312x SoC familiy.
+From: Finley Xiao <finley.xiao@rock-chips.com>
 
+According to the TRM there are no specific cpll_peri, gpll_div2_peri or
+gpll_div3_peri gates, but a single clk_peri_src gate and the peri mux
+directly connects to the plls respectivly the pll divider clocks.
+Fix this by creating a single gated composite.
+
+Also rename all occurrences of "aclk_peri_src*" to clk_peri_src, since it
+is the parent for both peri aclks and hclks and that also matches the
+naming in the TRM.
+
+Fixes: f6022e88faca ("clk: rockchip: add clock controller for rk3128")
+Signed-off-by: Finley Xiao <finley.xiao@rock-chips.com>
+[renamed aclk_peri_src -> clk_peri_src and added commit message]
 Signed-off-by: Alex Bee <knaerzche@gmail.com>
 ---
- drivers/phy/rockchip/phy-rockchip-inno-usb2.c | 48 +++++++++++++++++++
- 1 file changed, 48 insertions(+)
+ drivers/clk/rockchip/clk-rk3128.c | 20 +++++++-------------
+ 1 file changed, 7 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/phy/rockchip/phy-rockchip-inno-usb2.c b/drivers/phy/rockchip/phy-rockchip-inno-usb2.c
-index a4a1716e67bd..9ea08be533cc 100644
---- a/drivers/phy/rockchip/phy-rockchip-inno-usb2.c
-+++ b/drivers/phy/rockchip/phy-rockchip-inno-usb2.c
-@@ -1374,6 +1374,53 @@ static int rockchip_usb2phy_probe(struct platform_device *pdev)
- 	return ret;
- }
+diff --git a/drivers/clk/rockchip/clk-rk3128.c b/drivers/clk/rockchip/clk-rk3128.c
+index aa53797dbfc1..fcacfe758829 100644
+--- a/drivers/clk/rockchip/clk-rk3128.c
++++ b/drivers/clk/rockchip/clk-rk3128.c
+@@ -138,7 +138,7 @@ PNAME(mux_pll_src_5plls_p)	= { "cpll", "gpll", "gpll_div2", "gpll_div3", "usb480
+ PNAME(mux_pll_src_4plls_p)	= { "cpll", "gpll", "gpll_div2", "usb480m" };
+ PNAME(mux_pll_src_3plls_p)	= { "cpll", "gpll", "gpll_div2" };
  
-+static const struct rockchip_usb2phy_cfg rk3128_phy_cfgs[] = {
-+	{
-+		.reg = 0x17c,
-+		.num_ports	= 2,
-+		.clkout_ctl	= { 0x0190, 15, 15, 1, 0 },
-+		.port_cfgs	= {
-+			[USB2PHY_PORT_OTG] = {
-+				.phy_sus	= { 0x017c, 8, 0, 0, 0x1d1 },
-+				.bvalid_det_en	= { 0x017c, 14, 14, 0, 1 },
-+				.bvalid_det_st	= { 0x017c, 15, 15, 0, 1 },
-+				.bvalid_det_clr	= { 0x017c, 15, 15, 0, 1 },
-+				.idfall_det_en  = { 0x01a0, 2, 2, 0, 1 },
-+				.idfall_det_st  = { 0x01a0, 3, 3, 0, 1 },
-+				.idfall_det_clr = { 0x01a0, 3, 3, 0, 1 },
-+				.idrise_det_en  = { 0x01a0, 0, 0, 0, 1 },
-+				.idrise_det_st  = { 0x01a0, 1, 1, 0, 1 },
-+				.idrise_det_clr = { 0x01a0, 1, 1, 0, 1 },
-+				.ls_det_en	= { 0x017c, 12, 12, 0, 1 },
-+				.ls_det_st	= { 0x017c, 13, 13, 0, 1 },
-+				.ls_det_clr	= { 0x017c, 13, 13, 0, 1 },
-+				.utmi_bvalid	= { 0x014c, 5, 5, 0, 1 },
-+				.utmi_id	= { 0x014c, 8, 8, 0, 1 },
-+				.utmi_ls	= { 0x014c, 7, 6, 0, 1 },
-+			},
-+			[USB2PHY_PORT_HOST] = {
-+				.phy_sus	= { 0x0194, 8, 0, 0, 0x1d1 },
-+				.ls_det_en	= { 0x0194, 14, 14, 0, 1 },
-+				.ls_det_st	= { 0x0194, 15, 15, 0, 1 },
-+				.ls_det_clr	= { 0x0194, 15, 15, 0, 1 }
-+			}
-+		},
-+		.chg_det = {
-+			.opmode		= { 0x017c, 3, 0, 5, 1 },
-+			.cp_det		= { 0x02c0, 6, 6, 0, 1 },
-+			.dcp_det	= { 0x02c0, 5, 5, 0, 1 },
-+			.dp_det		= { 0x02c0, 7, 7, 0, 1 },
-+			.idm_sink_en	= { 0x0184, 8, 8, 0, 1 },
-+			.idp_sink_en	= { 0x0184, 7, 7, 0, 1 },
-+			.idp_src_en	= { 0x0184, 9, 9, 0, 1 },
-+			.rdm_pdwn_en	= { 0x0184, 10, 10, 0, 1 },
-+			.vdm_src_en	= { 0x0184, 12, 12, 0, 1 },
-+			.vdp_src_en	= { 0x0184, 11, 11, 0, 1 },
-+		},
-+	},
-+	{ /* sentinel */ }
-+};
+-PNAME(mux_aclk_peri_src_p)	= { "gpll_peri", "cpll_peri", "gpll_div2_peri", "gpll_div3_peri" };
++PNAME(mux_clk_peri_src_p)	= { "gpll", "cpll", "gpll_div2", "gpll_div3" };
+ PNAME(mux_mmc_src_p)		= { "cpll", "gpll", "gpll_div2", "xin24m" };
+ PNAME(mux_clk_cif_out_src_p)		= { "clk_cif_src", "xin24m" };
+ PNAME(mux_sclk_vop_src_p)	= { "cpll", "gpll", "gpll_div2", "gpll_div3" };
+@@ -275,23 +275,17 @@ static struct rockchip_clk_branch common_clk_branches[] __initdata = {
+ 			RK2928_CLKGATE_CON(0), 11, GFLAGS),
+ 
+ 	/* PD_PERI */
+-	GATE(0, "gpll_peri", "gpll", CLK_IGNORE_UNUSED,
++	COMPOSITE(0, "clk_peri_src", mux_clk_peri_src_p, 0,
++			RK2928_CLKSEL_CON(10), 14, 2, MFLAGS, 0, 5, DFLAGS,
+ 			RK2928_CLKGATE_CON(2), 0, GFLAGS),
+-	GATE(0, "cpll_peri", "cpll", CLK_IGNORE_UNUSED,
+-			RK2928_CLKGATE_CON(2), 0, GFLAGS),
+-	GATE(0, "gpll_div2_peri", "gpll_div2", CLK_IGNORE_UNUSED,
+-			RK2928_CLKGATE_CON(2), 0, GFLAGS),
+-	GATE(0, "gpll_div3_peri", "gpll_div3", CLK_IGNORE_UNUSED,
+-			RK2928_CLKGATE_CON(2), 0, GFLAGS),
+-	COMPOSITE_NOGATE(0, "aclk_peri_src", mux_aclk_peri_src_p, 0,
+-			RK2928_CLKSEL_CON(10), 14, 2, MFLAGS, 0, 5, DFLAGS),
+-	COMPOSITE_NOMUX(PCLK_PERI, "pclk_peri", "aclk_peri_src", 0,
 +
- static const struct rockchip_usb2phy_cfg rk3228_phy_cfgs[] = {
- 	{
- 		.reg = 0x760,
-@@ -1749,6 +1796,7 @@ static const struct rockchip_usb2phy_cfg rv1108_phy_cfgs[] = {
++	COMPOSITE_NOMUX(PCLK_PERI, "pclk_peri", "clk_peri_src", 0,
+ 			RK2928_CLKSEL_CON(10), 12, 2, DFLAGS | CLK_DIVIDER_POWER_OF_TWO,
+ 			RK2928_CLKGATE_CON(2), 3, GFLAGS),
+-	COMPOSITE_NOMUX(HCLK_PERI, "hclk_peri", "aclk_peri_src", 0,
++	COMPOSITE_NOMUX(HCLK_PERI, "hclk_peri", "clk_peri_src", 0,
+ 			RK2928_CLKSEL_CON(10), 8, 2, DFLAGS | CLK_DIVIDER_POWER_OF_TWO,
+ 			RK2928_CLKGATE_CON(2), 2, GFLAGS),
+-	GATE(ACLK_PERI, "aclk_peri", "aclk_peri_src", 0,
++	GATE(ACLK_PERI, "aclk_peri", "clk_peri_src", 0,
+ 			RK2928_CLKGATE_CON(2), 1, GFLAGS),
  
- static const struct of_device_id rockchip_usb2phy_dt_match[] = {
- 	{ .compatible = "rockchip,px30-usb2phy", .data = &rk3328_phy_cfgs },
-+	{ .compatible = "rockchip,rk3128-usb2phy", .data = &rk3128_phy_cfgs },
- 	{ .compatible = "rockchip,rk3228-usb2phy", .data = &rk3228_phy_cfgs },
- 	{ .compatible = "rockchip,rk3308-usb2phy", .data = &rk3308_phy_cfgs },
- 	{ .compatible = "rockchip,rk3328-usb2phy", .data = &rk3328_phy_cfgs },
+ 	GATE(SCLK_TIMER0, "sclk_timer0", "xin24m", 0,
 -- 
 2.42.0
 
