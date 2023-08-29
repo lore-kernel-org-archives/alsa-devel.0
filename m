@@ -4,83 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 125D6C83F12
-	for <alsa-devel@archiver.kernel.org>; Tue, 29 Aug 2023 18:28:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3200EC83F12
+	for <alsa-devel@archiver.kernel.org>; Tue, 29 Aug 2023 18:28:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0C5B3DF1;
-	Tue, 29 Aug 2023 20:27:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0C5B3DF1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 558A8DF3;
+	Tue, 29 Aug 2023 20:28:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 558A8DF3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1693333711;
-	bh=5f+SC8RRRtNEEIePN/yC7F7Xm4qa2T6DxX037VbDsDg=;
+	s=default; t=1693333731;
+	bh=m2VBSkXWvpEo0je0kGJPC5conZarCycxQkOC53TlDvw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Z3wNgqFnVkGDt1EeSiBNFM9DgqNgBGKGBfT7cMZ7fmsg7WoWyYAGTzl91MlrYcwvW
-	 qth7nEy+lc4Ys73q8MwSWfxcmvgPbyGSsX4xdmcoo7kLv1fPm/yvXogZFbusc4WoyF
-	 ceFBe8mQgA+9a45D/h1MWNTxUq/BtOo/KXMq20XM=
+	b=Hetw9uhiZ6ZWaYrdNRCDG9jint7YZY0THqu8OydhR6Z8jtBL+NQYjMs3/+fYpy/zo
+	 uwEpvpIVW3uNet5yCFWMkX2lTH7hQxz2YuW7k91YBcp8kl/5fyo7EuDQX+WUNcbvq6
+	 CESXVjtwRJ5plHHE8xzy6vlGMFK9y5VsE2jsCWaM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8C2F3F805B1; Tue, 29 Aug 2023 20:26:24 +0200 (CEST)
+	id 14255F805B3; Tue, 29 Aug 2023 20:26:28 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1706FF805AB;
-	Tue, 29 Aug 2023 20:26:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 50FBBF805AD;
+	Tue, 29 Aug 2023 20:26:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 61560F80527; Tue, 29 Aug 2023 19:17:41 +0200 (CEST)
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com
- [IPv6:2a00:1450:4864:20::635])
+	id 97921F80568; Tue, 29 Aug 2023 19:17:44 +0200 (CEST)
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com
+ [IPv6:2a00:1450:4864:20::633])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E2D5AF80236
-	for <alsa-devel@alsa-project.org>; Tue, 29 Aug 2023 19:17:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E2D5AF80236
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9EE52F804F3
+	for <alsa-devel@alsa-project.org>; Tue, 29 Aug 2023 19:17:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9EE52F804F3
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20221208 header.b=bZLW+p0z
-Received: by mail-ej1-x635.google.com with SMTP id
- a640c23a62f3a-99c3d3c3db9so598948966b.3
+ header.s=20221208 header.b=SUdL/xb3
+Received: by mail-ej1-x633.google.com with SMTP id
+ a640c23a62f3a-99bdeae1d0aso601387266b.1
         for <alsa-devel@alsa-project.org>;
- Tue, 29 Aug 2023 10:17:30 -0700 (PDT)
+ Tue, 29 Aug 2023 10:17:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693329450; x=1693934250;
+        d=gmail.com; s=20221208; t=1693329453; x=1693934253;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=bfzC+/2ZWaml8G5FoMVqEV7cfUPth65LiMOYJOwJeN0=;
-        b=bZLW+p0zlfsLlVcBzVygKS55P0IRebfmfiqzvn+vw5Svt3aaCxEmAf/zNj4HxrSb3q
-         CHnOvzQ8j2IRQp89lqASBmTMaDuVAlOqF67lYkaX0qkNbvZhD+R3bJntKXa78jgmITAm
-         2DrvIUbAK8VifA3j4MPRrKZMMfmGgMhoQhZgwJDu4rLZXqE1lFOhDFB8kOHL3DWwlndP
-         pjs//iT2Q/1C+vivTrj4iPoL6TyQVWojgwxQvJQTyBhgSgxY8mn3U4y6sfBl+JArMVty
-         RsUGpKZBYW4fV4MlYjswm92/89GXO5MLr57K3JCxIoAiZqRuS/0xNbUN+CXSFTQEoqz+
-         IPiA==
+        bh=MBe21p78bEGeinGOeEZ5dbYwb28pfpjkSo3Y7gdPnoA=;
+        b=SUdL/xb3kpsY3Akj/aJ26o1kv2KJys+W9cQBeBkftJhsQqWtZcpM7ECdOar9ADv/Jk
+         jnanflospjevW6BNesT12gqFBXaaHkeB5/Dad0SOUROZyWMFcC4+ME8Rt+tWiNBTyLGL
+         VMwY7HTAQx+H8I3BXswnEOgBBn12IteAi1X/spxrBhperVxXoUCrAPC5WTzBhG3W/QiD
+         pCWF4JTBniQzdk5RPjFTAk9dpoOCO8j3OClV0dicykotS4qTBR5aP//QtpVMSOsX+tdg
+         X0bBbzobuYclmPOSn8aN3PQxMR/UlFydtNoqxKA/LXK49n1/jGxqCSXxPz24N7GhDtJB
+         llzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693329450; x=1693934250;
+        d=1e100.net; s=20221208; t=1693329453; x=1693934253;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=bfzC+/2ZWaml8G5FoMVqEV7cfUPth65LiMOYJOwJeN0=;
-        b=i40BNXkWPlXscfEt9Uf+G1s98tUnxz6bMtg66Z4TBXlonWMZyYvfcdB2/yskhN0x3F
-         YBhgQfsGf4NMBcPxIOWYIZCU8U6SRtt2y48q+aKQ3I9I4tORN1wzwKh8jkj/UuPCWwGL
-         OjK5GR46nyC/uRtIl9Agct39QijVd925UiYZvhGBSY1cjlmYVupfZT6oKuubhbRdh0fa
-         w5Pxstex16h7/b1UGxEIVeMVMKnZmkpMNaqXRm8OBmGBlrkURk0FEc/edPjffX5nPiCO
-         kXVicSkVk1f6bFoDzp+oymnqqYiGzSKSylRMBcdxYCbjwuZK98hSFgcwbkM7RKDwMXCn
-         0MBg==
-X-Gm-Message-State: AOJu0Yx9vSZmmXUb0OEnJ81auxHo2Jn6fPOvYmnvue/sJuhr3JQhGFgJ
-	XUgOXeGK1DWwypHhTUMYQA==
+        bh=MBe21p78bEGeinGOeEZ5dbYwb28pfpjkSo3Y7gdPnoA=;
+        b=lx/KVwUApcK6zW2nQXDIHNqD9m/QkVYG5VuAi4zcWKRggJCCXUTvK9blPpfWFSOdKT
+         6lebO1Fng3R6+cMMlaLC8UABorKCsglpoccL9Y3FCCLoNFUERF5BuuK5LZEDE7kv/I31
+         aQ9MTi+t6FmZN2oRnz1gRaPDlRNjt1gxlUozmlBukolU7sQkF++w2gUbXJkgGmgSvy8D
+         2IjQ96JrDoPjPF+zlpb3TWmEhu2+JLluEl0QLFnmkUNlgmcjw5Orz2AQcSub7J2dL+T9
+         5ldSyNA0oIihXamrlvX6o2zosCkIe4CZPY6pKHz49JmZfckuPjOCHCwQUvqE+3cWHD6Y
+         CNUQ==
+X-Gm-Message-State: AOJu0YyJxFAp45q9ok17QKAB48MuawAyn6Bl68nzC3QGye4a8y+jErzu
+	ArWcZlmn829voJIhczbPLw==
 X-Google-Smtp-Source: 
- AGHT+IHd4qS1gu6W8/rBDv9L8vXPbe681EHcWWDTg19iW5zGN1XHAmvdeOISpan8OWf8b/vW0vdbkg==
-X-Received: by 2002:a17:907:2e02:b0:9a1:f81f:d0d5 with SMTP id
- ig2-20020a1709072e0200b009a1f81fd0d5mr12345626ejc.54.1693329450187;
-        Tue, 29 Aug 2023 10:17:30 -0700 (PDT)
+ AGHT+IG3HeRnwjBp4DP1d8br+7ZiHAWUkr/gchOvBZ36yJgCrvVfN0JO4YkAJKyfaU26dvULxvz2mA==
+X-Received: by 2002:a17:906:5346:b0:9a2:1ce5:1243 with SMTP id
+ j6-20020a170906534600b009a21ce51243mr12594716ejo.60.1693329453236;
+        Tue, 29 Aug 2023 10:17:33 -0700 (PDT)
 Received: from U4.lan ([2001:9e8:b958:3410:8e0c:ed68:cd6c:7cb8])
         by smtp.gmail.com with ESMTPSA id
- a21-20020a1709062b1500b00993cc1242d4sm6115834ejg.151.2023.08.29.10.17.29
+ a21-20020a1709062b1500b00993cc1242d4sm6115834ejg.151.2023.08.29.10.17.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Aug 2023 10:17:29 -0700 (PDT)
+        Tue, 29 Aug 2023 10:17:32 -0700 (PDT)
 From: Alex Bee <knaerzche@gmail.com>
 To: Heiko Stuebner <heiko@sntech.de>,
 	Rob Herring <robh+dt@kernel.org>,
@@ -105,11 +105,10 @@ Cc: Elaine Zhang <zhangqing@rock-chips.com>,
 	alsa-devel@alsa-project.org,
 	linux-clk@vger.kernel.org,
 	linux-phy@lists.infradead.org,
-	Finley Xiao <finley.xiao@rock-chips.com>,
 	Alex Bee <knaerzche@gmail.com>
-Subject: [PATCH 06/31] clk: rockchip: rk3128: Fix hclk_otg gate
-Date: Tue, 29 Aug 2023 19:16:22 +0200
-Message-ID: <20230829171647.187787-7-knaerzche@gmail.com>
+Subject: [PATCH 09/31] phy: phy-rockchip-inno-usb2: Add RK3128 support
+Date: Tue, 29 Aug 2023 19:16:25 +0200
+Message-ID: <20230829171647.187787-10-knaerzche@gmail.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20230829171647.187787-1-knaerzche@gmail.com>
 References: <20230829171647.187787-1-knaerzche@gmail.com>
@@ -121,15 +120,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: ZXHDCVPDCORDPWRBSPKK7YGO5I6DXGVM
-X-Message-ID-Hash: ZXHDCVPDCORDPWRBSPKK7YGO5I6DXGVM
+Message-ID-Hash: IDNSPKSCHS5YQSEJVQNOU7VZGYVFBHPF
+X-Message-ID-Hash: IDNSPKSCHS5YQSEJVQNOU7VZGYVFBHPF
 X-Mailman-Approved-At: Tue, 29 Aug 2023 18:26:09 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZXHDCVPDCORDPWRBSPKK7YGO5I6DXGVM/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IDNSPKSCHS5YQSEJVQNOU7VZGYVFBHPF/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -138,32 +137,79 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Finley Xiao <finley.xiao@rock-chips.com>
+Add registers to support the 2-port usb2 phy found in RK312x SoC familiy.
 
-HCLK_OTG gate is located in CRU_CLKGATE5_CON, not in CRU_CLKGATE3_CON.
-CRU_CLKGATE3_CON bit 13 is already (correctly) defined for ACLK_GPU.
-
-Fixes: f6022e88faca ("clk: rockchip: add clock controller for rk3128")
-Signed-off-by: Finley Xiao <finley.xiao@rock-chips.com>
-[added commit message]
 Signed-off-by: Alex Bee <knaerzche@gmail.com>
 ---
- drivers/clk/rockchip/clk-rk3128.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/phy/rockchip/phy-rockchip-inno-usb2.c | 48 +++++++++++++++++++
+ 1 file changed, 48 insertions(+)
 
-diff --git a/drivers/clk/rockchip/clk-rk3128.c b/drivers/clk/rockchip/clk-rk3128.c
-index fcacfe758829..17bacf6dd6e7 100644
---- a/drivers/clk/rockchip/clk-rk3128.c
-+++ b/drivers/clk/rockchip/clk-rk3128.c
-@@ -484,7 +484,7 @@ static struct rockchip_clk_branch common_clk_branches[] __initdata = {
- 	GATE(HCLK_I2S_2CH, "hclk_i2s_2ch", "hclk_peri", 0, RK2928_CLKGATE_CON(7), 2, GFLAGS),
- 	GATE(0, "hclk_usb_peri", "hclk_peri", CLK_IGNORE_UNUSED, RK2928_CLKGATE_CON(9), 13, GFLAGS),
- 	GATE(HCLK_HOST2, "hclk_host2", "hclk_peri", 0, RK2928_CLKGATE_CON(7), 3, GFLAGS),
--	GATE(HCLK_OTG, "hclk_otg", "hclk_peri", 0, RK2928_CLKGATE_CON(3), 13, GFLAGS),
-+	GATE(HCLK_OTG, "hclk_otg", "hclk_peri", 0, RK2928_CLKGATE_CON(5), 13, GFLAGS),
- 	GATE(0, "hclk_peri_ahb", "hclk_peri", CLK_IGNORE_UNUSED, RK2928_CLKGATE_CON(9), 14, GFLAGS),
- 	GATE(HCLK_SPDIF, "hclk_spdif", "hclk_peri", 0, RK2928_CLKGATE_CON(10), 9, GFLAGS),
- 	GATE(HCLK_TSP, "hclk_tsp", "hclk_peri", 0, RK2928_CLKGATE_CON(10), 12, GFLAGS),
+diff --git a/drivers/phy/rockchip/phy-rockchip-inno-usb2.c b/drivers/phy/rockchip/phy-rockchip-inno-usb2.c
+index a4a1716e67bd..9ea08be533cc 100644
+--- a/drivers/phy/rockchip/phy-rockchip-inno-usb2.c
++++ b/drivers/phy/rockchip/phy-rockchip-inno-usb2.c
+@@ -1374,6 +1374,53 @@ static int rockchip_usb2phy_probe(struct platform_device *pdev)
+ 	return ret;
+ }
+ 
++static const struct rockchip_usb2phy_cfg rk3128_phy_cfgs[] = {
++	{
++		.reg = 0x17c,
++		.num_ports	= 2,
++		.clkout_ctl	= { 0x0190, 15, 15, 1, 0 },
++		.port_cfgs	= {
++			[USB2PHY_PORT_OTG] = {
++				.phy_sus	= { 0x017c, 8, 0, 0, 0x1d1 },
++				.bvalid_det_en	= { 0x017c, 14, 14, 0, 1 },
++				.bvalid_det_st	= { 0x017c, 15, 15, 0, 1 },
++				.bvalid_det_clr	= { 0x017c, 15, 15, 0, 1 },
++				.idfall_det_en  = { 0x01a0, 2, 2, 0, 1 },
++				.idfall_det_st  = { 0x01a0, 3, 3, 0, 1 },
++				.idfall_det_clr = { 0x01a0, 3, 3, 0, 1 },
++				.idrise_det_en  = { 0x01a0, 0, 0, 0, 1 },
++				.idrise_det_st  = { 0x01a0, 1, 1, 0, 1 },
++				.idrise_det_clr = { 0x01a0, 1, 1, 0, 1 },
++				.ls_det_en	= { 0x017c, 12, 12, 0, 1 },
++				.ls_det_st	= { 0x017c, 13, 13, 0, 1 },
++				.ls_det_clr	= { 0x017c, 13, 13, 0, 1 },
++				.utmi_bvalid	= { 0x014c, 5, 5, 0, 1 },
++				.utmi_id	= { 0x014c, 8, 8, 0, 1 },
++				.utmi_ls	= { 0x014c, 7, 6, 0, 1 },
++			},
++			[USB2PHY_PORT_HOST] = {
++				.phy_sus	= { 0x0194, 8, 0, 0, 0x1d1 },
++				.ls_det_en	= { 0x0194, 14, 14, 0, 1 },
++				.ls_det_st	= { 0x0194, 15, 15, 0, 1 },
++				.ls_det_clr	= { 0x0194, 15, 15, 0, 1 }
++			}
++		},
++		.chg_det = {
++			.opmode		= { 0x017c, 3, 0, 5, 1 },
++			.cp_det		= { 0x02c0, 6, 6, 0, 1 },
++			.dcp_det	= { 0x02c0, 5, 5, 0, 1 },
++			.dp_det		= { 0x02c0, 7, 7, 0, 1 },
++			.idm_sink_en	= { 0x0184, 8, 8, 0, 1 },
++			.idp_sink_en	= { 0x0184, 7, 7, 0, 1 },
++			.idp_src_en	= { 0x0184, 9, 9, 0, 1 },
++			.rdm_pdwn_en	= { 0x0184, 10, 10, 0, 1 },
++			.vdm_src_en	= { 0x0184, 12, 12, 0, 1 },
++			.vdp_src_en	= { 0x0184, 11, 11, 0, 1 },
++		},
++	},
++	{ /* sentinel */ }
++};
++
+ static const struct rockchip_usb2phy_cfg rk3228_phy_cfgs[] = {
+ 	{
+ 		.reg = 0x760,
+@@ -1749,6 +1796,7 @@ static const struct rockchip_usb2phy_cfg rv1108_phy_cfgs[] = {
+ 
+ static const struct of_device_id rockchip_usb2phy_dt_match[] = {
+ 	{ .compatible = "rockchip,px30-usb2phy", .data = &rk3328_phy_cfgs },
++	{ .compatible = "rockchip,rk3128-usb2phy", .data = &rk3128_phy_cfgs },
+ 	{ .compatible = "rockchip,rk3228-usb2phy", .data = &rk3228_phy_cfgs },
+ 	{ .compatible = "rockchip,rk3308-usb2phy", .data = &rk3308_phy_cfgs },
+ 	{ .compatible = "rockchip,rk3328-usb2phy", .data = &rk3328_phy_cfgs },
 -- 
 2.42.0
 
