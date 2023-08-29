@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EB528C71153
-	for <alsa-devel@archiver.kernel.org>; Tue, 29 Aug 2023 21:17:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A3E72C71153
+	for <alsa-devel@archiver.kernel.org>; Tue, 29 Aug 2023 21:17:31 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E1609E79;
-	Tue, 29 Aug 2023 23:16:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E1609E79
+	by alsa0.perex.cz (Postfix) with ESMTPS id CC495E7F;
+	Tue, 29 Aug 2023 23:16:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CC495E7F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1693343834;
-	bh=Qmxn1kusFWoHIIJUMEBomB+bdo+Z+qc4t9+FMs4Y5Uw=;
+	s=default; t=1693343849;
+	bh=froZV2Ynl9efcTp2DTVrf/7tuzpYTkqfH6HBZ2E1h9Q=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=mNjBjNxkoHRXw5UGTNrKkG2Bn+kESStwrPOOX/XPpGyoXxbfvImxTD+WNvef2uFl2
-	 t1pGCxKNZFcLBhW9AYZ5+8xspVwuDPxpNiRbVrzm8xrNcD3d0y4w0vV7MmIGYvfU1x
-	 zpdJSkV5jndjrNhE9ZwJfYrXI5t5lQpL/bpDwR+Y=
+	b=F5RW9oCFc5UFxJ449sS9NNRXRPxy/tytOhEo0UA9B0gd9+MlWYkG6gcHto+HtwpuW
+	 ivMsBkJRiMKX5G6y8WQaSOQv2ESvLZlc19HfAybEaKKGDQOtmi/9Ln+nANGMcx3tdo
+	 h2F5TzUz3KAMP4yO1S5h/AOYbkxDaTnwL8dy2A+I=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7BB36F806DF; Tue, 29 Aug 2023 23:09:19 +0200 (CEST)
+	id 5C57FF806EC; Tue, 29 Aug 2023 23:09:22 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id DB070F806DE;
-	Tue, 29 Aug 2023 23:09:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B8535F806E3;
+	Tue, 29 Aug 2023 23:09:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 901E0F80651; Tue, 29 Aug 2023 23:08:36 +0200 (CEST)
+	id 7F17AF8063A; Tue, 29 Aug 2023 23:08:38 +0200 (CEST)
 Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com
  [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 6388FF80568
-	for <alsa-devel@alsa-project.org>; Tue, 29 Aug 2023 23:07:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6388FF80568
+	by alsa1.perex.cz (Postfix) with ESMTPS id 567B1F80094
+	for <alsa-devel@alsa-project.org>; Tue, 29 Aug 2023 23:07:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 567B1F80094
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
- header.s=qcppdkim1 header.b=m9Jeg9nY
+ header.s=qcppdkim1 header.b=PHqx/BLd
 Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
 	by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 37TL6K8V030723;
-	Tue, 29 Aug 2023 21:07:17 GMT
+ 37TKTb9U012240;
+	Tue, 29 Aug 2023 21:07:18 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-type; s=qcppdkim1;
- bh=p/G/TK2qypuPuacwuzEQ9GHgTK7jW0G6IFELS8kOck4=;
- b=m9Jeg9nYzHG5yYjjn8OenvD7VAkJOdOZH4+TlbT6i3Ih0o/DKITiaE/xlxkktpU3sCtE
- iH4a6FQ8eKk9DiAe/GdkidtIlRwR/eBuqkMW5jzVoIsx1eDuYadljAZJTIFwb8llZnTg
- tBbwHd7RskV8v9Sf59ZGr56Ssecry3OQFmlgmNCnOk5CSq8ZZosZQhoJqd5kKSPyjb1r
- Y7+l7Gmic8EzJ+3b8mHwnqLYYAw85cXQng3hWPjq3xqm3td1gMOM4hO/MTsLdW53Wi7v
- CCCsj2QRSWBB+5yYVZg8vy6i8UIL+EmMKJI3RBZekRXDO1dvnoC2Y013wuHh6wa3BrRD cA==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com
+ bh=MUHE0pwz8elxP1d1ocdw5bD+H2ChU6AxcRGnDZb5p0g=;
+ b=PHqx/BLdOUTJAhyMAe/jp8nntyG/ksrfQkaevd1ulHy9u/46evuJAncIUonycXGc9pXE
+ lPdxipEebRSV1acwM9Nt2kzLZ+ndK3t3GfibpkqgKfcPYuqs7I2cSzhKkXBiriKnCh0O
+ 48rSAX7OJ+axykL71zORwD51Ytez/Vx453AmlNX8fjziHtTB7wdJIosCVCPgvl/SU3iq
+ yt2twjubL4HohXBGGQXcx/I0jMyg+2JblaVHgnFbUqet5QBFrZ42cOh7enLTGwoF5hTl
+ ozUDG8LPaAOsTgyogAY61HN34+JhSvUtUkR7ctVJR6j7ICSUm+OYqAYkBlfxksEn45ga Ow==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com
  [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3srybqbe6f-1
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3srybqbe6g-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Tue, 29 Aug 2023 21:07:17 +0000
 Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com
  [10.47.209.197])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id
- 37TL7GTD005899
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id
+ 37TL7Hdh016241
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 29 Aug 2023 21:07:16 GMT
+	Tue, 29 Aug 2023 21:07:17 GMT
 Received: from hu-wcheng-lv.qualcomm.com (10.49.16.6) by
  nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
@@ -79,10 +79,10 @@ CC: <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
         <alsa-devel@alsa-project.org>, <devicetree@vger.kernel.org>,
         <linux-usb@vger.kernel.org>, <quic_jackp@quicinc.com>,
         <quic_plai@quicinc.com>, Wesley Cheng <quic_wcheng@quicinc.com>
-Subject: [PATCH v5 29/32] sound: soc: qcom: q6usb: Add headphone jack for
- offload connection status
-Date: Tue, 29 Aug 2023 14:06:54 -0700
-Message-ID: <20230829210657.9904-30-quic_wcheng@quicinc.com>
+Subject: [PATCH v5 31/32] sound: usb: card: Allow for rediscovery of connected
+ USB SND devices
+Date: Tue, 29 Aug 2023 14:06:56 -0700
+Message-ID: <20230829210657.9904-32-quic_wcheng@quicinc.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20230829210657.9904-1-quic_wcheng@quicinc.com>
 References: <20230829210657.9904-1-quic_wcheng@quicinc.com>
@@ -94,8 +94,8 @@ X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
  signatures=585085
-X-Proofpoint-ORIG-GUID: ELAFceZYPIM_iDDolM0CO0pW0YyvKhJd
-X-Proofpoint-GUID: ELAFceZYPIM_iDDolM0CO0pW0YyvKhJd
+X-Proofpoint-ORIG-GUID: Lwuvpq6w_IzhISogYx3hxbh1JzX_wjI_
+X-Proofpoint-GUID: Lwuvpq6w_IzhISogYx3hxbh1JzX_wjI_
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
  definitions=2023-08-29_15,2023-08-29_01,2023-05-22_02
@@ -105,8 +105,8 @@ X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
  mlxscore=0 impostorscore=0 adultscore=0 suspectscore=0 spamscore=0
  bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2308100000 definitions=main-2308290182
-Message-ID-Hash: TCQW7KEFZC5USZRMQVS2DIICTEBQADGR
-X-Message-ID-Hash: TCQW7KEFZC5USZRMQVS2DIICTEBQADGR
+Message-ID-Hash: I2H2IVYCWH5H4L4LYUM5OW3RK2HHIYPP
+X-Message-ID-Hash: I2H2IVYCWH5H4L4LYUM5OW3RK2HHIYPP
 X-MailFrom: quic_wcheng@quicinc.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -119,7 +119,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TCQW7KEFZC5USZRMQVS2DIICTEBQADGR/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/I2H2IVYCWH5H4L4LYUM5OW3RK2HHIYPP/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -128,74 +128,67 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The headphone jack framework has a well defined infrastructure for
-notifying userspace entities through input devices.  Expose a jack device
-that carries information about if an offload capable device is connected.
-Applications can further identify specific offloading information through
-other SND kcontrols.
+In case of notifying SND platform drivers of connection events, some of
+these use cases, such as offloading, require an ASoC USB backend device to
+be initialized before the events can be handled.  If the USB backend device
+has not yet been probed, this leads to missing initial USB audio device
+connection events.
+
+Expose an API that traverses the usb_chip array for connected devices, and
+to call the respective connection callback registered to the SND platform
+driver.
 
 Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
 ---
- sound/soc/qcom/qdsp6/q6usb.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ sound/usb/card.c | 19 +++++++++++++++++++
+ sound/usb/card.h |  2 ++
+ 2 files changed, 21 insertions(+)
 
-diff --git a/sound/soc/qcom/qdsp6/q6usb.c b/sound/soc/qcom/qdsp6/q6usb.c
-index b67bf7cfc3ea..531d6c7700df 100644
---- a/sound/soc/qcom/qdsp6/q6usb.c
-+++ b/sound/soc/qcom/qdsp6/q6usb.c
-@@ -20,6 +20,7 @@
- #include <sound/pcm_params.h>
- #include <sound/asound.h>
- #include <sound/q6usboffload.h>
-+#include <sound/jack.h>
- 
- #include "q6dsp-lpass-ports.h"
- #include "q6afe.h"
-@@ -37,6 +38,7 @@ struct q6usb_status {
- struct q6usb_port_data {
- 	struct q6afe_usb_cfg usb_cfg;
- 	struct snd_soc_usb *usb;
-+	struct snd_soc_jack hs_jack;
- 	struct q6usb_offload priv;
- 	struct mutex mutex;
- 	unsigned long available_card_slot;
-@@ -279,6 +281,7 @@ static const struct snd_kcontrol_new q6usb_offload_control = {
- /* Build a mixer control for a UAC connector control (jack-detect) */
- static void q6usb_connector_control_init(struct snd_soc_component *component)
- {
-+	struct q6usb_port_data *data = dev_get_drvdata(component->dev);
- 	int ret;
- 
- 	ret = snd_ctl_add(component->card->snd_card,
-@@ -290,6 +293,11 @@ static void q6usb_connector_control_init(struct snd_soc_component *component)
- 				snd_ctl_new1(&q6usb_offload_dev_ctrl, component));
- 	if (ret < 0)
- 		return;
-+
-+	ret = snd_soc_card_jack_new(component->card, "USB offload",
-+					SND_JACK_HEADSET, &data->hs_jack);
-+	if (ret)
-+		return;
+diff --git a/sound/usb/card.c b/sound/usb/card.c
+index bbcb22166d85..007cf5ef7671 100644
+--- a/sound/usb/card.c
++++ b/sound/usb/card.c
+@@ -187,6 +187,25 @@ struct snd_usb_stream *snd_usb_find_suppported_substream(int card_idx,
  }
+ EXPORT_SYMBOL_GPL(snd_usb_find_suppported_substream);
  
- static int q6usb_audio_ports_of_xlate_dai_name(struct snd_soc_component *component,
-@@ -323,6 +331,9 @@ static int q6usb_alsa_connection_cb(struct snd_soc_usb *usb,
- 
- 	mutex_lock(&data->mutex);
- 	if (connected) {
-+		if (!data->available_card_slot)
-+			snd_jack_report(data->hs_jack.jack, 1);
++/*
++ * in case the platform driver was not ready at the time of USB SND
++ * device connect, expose an API to discover all connected USB devices
++ * so it can populate any dependent resources/structures.
++ */
++void snd_usb_rediscover_devices(void)
++{
++	int i;
 +
- 		/*
- 		 * Update the latest USB headset plugged in, if session is
- 		 * idle.
-@@ -338,6 +349,9 @@ static int q6usb_alsa_connection_cb(struct snd_soc_usb *usb,
- 		clear_bit(sdev->card_idx, &data->available_card_slot);
- 		data->status[sdev->card_idx].num_pcm = 0;
- 		data->status[sdev->card_idx].chip_index = 0;
++	mutex_lock(&register_mutex);
++	for (i = 0; i < SNDRV_CARDS; i++) {
++		if (usb_chip[i])
++			if (platform_ops && platform_ops->connect_cb)
++				platform_ops->connect_cb(usb_chip[i]);
++	}
++	mutex_unlock(&register_mutex);
++}
++EXPORT_SYMBOL_GPL(snd_usb_rediscover_devices);
 +
-+		if (!data->available_card_slot)
-+			snd_jack_report(data->hs_jack.jack, 0);
- 	}
- 	mutex_unlock(&data->mutex);
- 
+ /*
+  * disconnect streams
+  * called from usb_audio_disconnect()
+diff --git a/sound/usb/card.h b/sound/usb/card.h
+index 01f7e10f30f4..c0aeda17ed69 100644
+--- a/sound/usb/card.h
++++ b/sound/usb/card.h
+@@ -221,11 +221,13 @@ int snd_usb_unregister_platform_ops(void);
+ #if IS_ENABLED(CONFIG_SND_USB_AUDIO)
+ struct snd_usb_stream *snd_usb_find_suppported_substream(int card_idx,
+ 			struct snd_pcm_hw_params *params, int direction);
++void snd_usb_rediscover_devices(void);
+ #else
+ static struct snd_usb_stream *snd_usb_find_suppported_substream(int card_idx,
+ 			struct snd_pcm_hw_params *params, int direction)
+ {
+ 	return NULL;
+ }
++static void snd_usb_rediscover_devices(void) { }
+ #endif /* IS_ENABLED(CONFIG_SND_USB_AUDIO) */
+ #endif /* __USBAUDIO_CARD_H */
