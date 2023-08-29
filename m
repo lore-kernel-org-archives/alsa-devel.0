@@ -4,131 +4,113 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CEDC8C83F12
-	for <alsa-devel@archiver.kernel.org>; Tue, 29 Aug 2023 18:35:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F9C6C71153
+	for <alsa-devel@archiver.kernel.org>; Tue, 29 Aug 2023 18:36:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 065E1EDA;
-	Tue, 29 Aug 2023 20:35:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 065E1EDA
+	by alsa0.perex.cz (Postfix) with ESMTPS id E1CDD84C;
+	Tue, 29 Aug 2023 20:35:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E1CDD84C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1693334156;
-	bh=aQlwZJ2yBiK5LkqtZCyYhlZxI58psL+yKfI221J8Uaw=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1693334175;
+	bh=Q/0aWIxhWSak6DTBu6Ui89cl7udG2w39JRP3oozGyNs=;
+	h=Date:From:To:CC:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=rJruFAppdbqO2f9gYO11pFhAEB8RjDk6TOwc4d6QDV+eR3D19YfJMmtL81KzFki1a
-	 S5+03+Wb2zs12/p+ym8xGJCi7OZ6jf1uVO4ECl7Aq+lOBoeGF2LjqvdKe8013S00jO
-	 aKRfDLxPGBRY9m+PvSMeBw2RjcNoSyWjZDCVJjJo=
+	b=TRbAQLPgVeruELoNdwWIjMVACbbkalksuaXm3GgqvsKev1VxTDm8urK7fvrmBy7hC
+	 cMVX2xOv1kI5TC+7R9nDVfuUhuVa5ij1NPh8hdMiCvJc3Rc3jfVW9pvynUhc+PgypF
+	 f4lgH4GDxhXErtVjqWhG9RemK0wi9qR5vuHsT3v0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C4659F806A6; Tue, 29 Aug 2023 20:29:17 +0200 (CEST)
+	id F2C17F806AE; Tue, 29 Aug 2023 20:29:19 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A7DEEF805C7;
-	Tue, 29 Aug 2023 20:29:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 06A3FF806AB;
+	Tue, 29 Aug 2023 20:29:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 92B47F80155; Tue, 29 Aug 2023 19:18:52 +0200 (CEST)
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com
- [IPv6:2a00:1450:4864:20::62f])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id A5830F80158; Tue, 29 Aug 2023 20:17:42 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 3E0CAF80249
-	for <alsa-devel@alsa-project.org>; Tue, 29 Aug 2023 19:17:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3E0CAF80249
+	by alsa1.perex.cz (Postfix) with ESMTPS id 66D18F800F5
+	for <alsa-devel@alsa-project.org>; Tue, 29 Aug 2023 20:17:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 66D18F800F5
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20221208 header.b=rd4R0yJ5
-Received: by mail-ej1-x62f.google.com with SMTP id
- a640c23a62f3a-99bc9e3cbf1so2533266b.0
-        for <alsa-devel@alsa-project.org>;
- Tue, 29 Aug 2023 10:17:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693329451; x=1693934251;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qFpS6puAfr1Vvk5xVzMQk3TJscyGtiLTY36CCDlYgn4=;
-        b=rd4R0yJ5NUtAr7vhhugqHokzMG56l1owqCa+6Uo9jX4+N93yF6mL+9b3ty5yWW1gb8
-         45j8dPKZO5qBshEI153JhNmUeVkwS/HYRK/7Ig4EPjMahNhGO8glOHHCmG9M5QsEcjN+
-         PZaZpsQ8MjKL4ZNaaYSP5RYuSNPzEVXRRrEQmVppf2asd7xYBwREmY6QDap/IoLNQJhP
-         oMwmwhWExypc3amwKJTcTufbASYFqr+zAPb5KG5+Q2fU8+lktFnAMC903v4IiIq4gXK7
-         IQK0Qnwn/VY6Xgl3lnbGpqlQKDL6bXiN5avdEyQXwSnICg3ZCR2QLy2/RQ7qAWvLaOxc
-         WxUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693329451; x=1693934251;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qFpS6puAfr1Vvk5xVzMQk3TJscyGtiLTY36CCDlYgn4=;
-        b=IrG+WV+vAsZO2eqxGyTG1GNleA/XRaZEBk7m0LQ0rOCvLK969iDDW4wt2BO118ImmY
-         fDZuQhL6xMxm4sZqfduX9qUPuprOJcAMWGASFOJHU8JIhjdzGtjJl6teLevxp7BGJEfN
-         R6aAkTD7vCsCQW+cZl+xYUulnA9IOFQ6EWO5zPtptzSFUqTByL6UK2exPzgO9z8d2owN
-         OZ9wT+Mcoox5zCrTfZ4TlNgVrNRmy6TvNfo2/J3Cwu0TDBG0Y5QgjtmnPW7B5GMmtdJV
-         5t/hO6udEw0zSboVzvrE5d3p7T9NKh81LD8o8d+mM42STCIFF5NGwqlwPVd8ozaGUxhK
-         h/Ww==
-X-Gm-Message-State: AOJu0YwHwtJrjAig7fvAjYSPgmssO1t5kQBAUYDAbj9ADe/Vp0O8M6Zg
-	PlsVe7zN54vaGwtbDOJbBg==
-X-Google-Smtp-Source: 
- AGHT+IEybP8U8H/6OMY/edFtzGMriI16g5JEKpV7+P1CM2OUvZ0MmOIK8JNoZk0RoYw/W+BVoa1UJQ==
-X-Received: by 2002:a17:906:cc47:b0:9a5:bceb:1cf8 with SMTP id
- mm7-20020a170906cc4700b009a5bceb1cf8mr3568824ejb.3.1693329451153;
-        Tue, 29 Aug 2023 10:17:31 -0700 (PDT)
-Received: from U4.lan ([2001:9e8:b958:3410:8e0c:ed68:cd6c:7cb8])
-        by smtp.gmail.com with ESMTPSA id
- a21-20020a1709062b1500b00993cc1242d4sm6115834ejg.151.2023.08.29.10.17.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Aug 2023 10:17:30 -0700 (PDT)
-From: Alex Bee <knaerzche@gmail.com>
-To: Heiko Stuebner <heiko@sntech.de>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Lee Jones <lee@kernel.org>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Michael Turquette <mturquette@baylibre.com>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Vinod Koul <vkoul@kernel.org>,
-	Kishon Vijay Abraham I <kishon@kernel.org>
-Cc: Elaine Zhang <zhangqing@rock-chips.com>,
-	Johan Jonker <jbx6244@gmail.com>,
-	devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-rockchip@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	dri-devel@lists.freedesktop.org,
-	alsa-devel@alsa-project.org,
-	linux-clk@vger.kernel.org,
-	linux-phy@lists.infradead.org,
-	Alex Bee <knaerzche@gmail.com>
-Subject: [PATCH 07/31] clk: rockchip: rk3128: Fix SCLK_SDMMC's clock name
-Date: Tue, 29 Aug 2023 19:16:23 +0200
-Message-ID: <20230829171647.187787-8-knaerzche@gmail.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20230829171647.187787-1-knaerzche@gmail.com>
-References: <20230829171647.187787-1-knaerzche@gmail.com>
+ unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
+ header.s=PODMain02222019 header.b=n0D4h4ks
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+	by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id
+ 37T4t9v0016954;
+	Tue, 29 Aug 2023 13:17:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+	date:from:to:cc:subject:message-id:in-reply-to:references
+	:mime-version:content-type:content-transfer-encoding; s=
+	PODMain02222019; bh=hjJtFK3sukLgeT/0rAr92cHseae6nq/j1ezpqygbTVM=; b=
+	n0D4h4ksgc3nAuB+PCHyDw9ER30T5ZoITOWKWS8RfEFQGM3mWQdTeRV0Wx4UVTaG
+	raLaZWT0v/Ed6C5sma7ARces5Gn3N0B/I6rfBDrlXH0u7KysLu6L1PMKTjyOTCVm
+	7Y8ttmpkcP94MFyGAZfhJwHtKGIBBXLrwAV+IupXtNS20J3z2UwSpfQrSPxtFOly
+	y5gp/vTk44inT3mgPt+1p9ItuTEF9Vu/6MTYHwxDtBE38Se4mGrUpUnXnrMm9hN4
+	z85S0T/UJF125EkkMlXtWxzkx1T4ZRvqBBEMgkw7MptqhHwl2YRCpGlqOxb8UtRx
+	TO6blrfw2wHAX4cN9ej9iw==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3sqesyby57-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 29 Aug 2023 13:17:34 -0500 (CDT)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Tue, 29 Aug
+ 2023 19:17:32 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.37 via Frontend
+ Transport; Tue, 29 Aug 2023 19:17:32 +0100
+Received: from vkarpovich-home (unknown [141.131.78.71])
+	by ediswmail.ad.cirrus.com (Postfix) with SMTP id BA7DA357C;
+	Tue, 29 Aug 2023 18:17:29 +0000 (UTC)
+Date: Tue, 29 Aug 2023 13:17:23 -0500
+From: Vlad Karpovich <vkarpovi@opensource.cirrus.com>
+To: Charles Keepax <ckeepax@opensource.cirrus.com>
+CC: James Schulman <james.schulman@cirrus.com>,
+        David Rhodes
+	<david.rhodes@cirrus.com>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>,
+        Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        "Rob
+ Herring" <robh+dt@kernel.org>, <alsa-devel@alsa-project.org>,
+        <patches@opensource.cirrus.com>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        Ricardo Rivera-Matos
+	<rriveram@opensource.cirrus.com>
+Subject: Re: [PATCH 3/7] ASoC: cs35l45: Checks index of cs35l45_irqs[]
+Message-ID: <20230829131723.f0df743f3ce9293878422cc3@opensource.cirrus.com>
+In-Reply-To: <20230829100751.GR103419@ediswmail.ad.cirrus.com>
+References: <20230828170525.335671-1-vkarpovi@opensource.cirrus.com>
+	<20230828170525.335671-3-vkarpovi@opensource.cirrus.com>
+	<20230829100751.GR103419@ediswmail.ad.cirrus.com>
+Organization: Cirrus Logic
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-MailFrom: knaerzche@gmail.com
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-ORIG-GUID: K4ZE7d_kF-hVehEcIWC6k5UYWOc4ysoC
+X-Proofpoint-GUID: K4ZE7d_kF-hVehEcIWC6k5UYWOc4ysoC
+X-Proofpoint-Spam-Reason: safe
+X-MailFrom: prvs=4605e08f6d=vkarpovi@opensource.cirrus.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: WI52PE2XC4YBONXJJ2K3KZ3ZAO3MEWKO
-X-Message-ID-Hash: WI52PE2XC4YBONXJJ2K3KZ3ZAO3MEWKO
+Message-ID-Hash: CC7W3NWNHP6S6K7C2HE7NBM3IM5GX4JE
+X-Message-ID-Hash: CC7W3NWNHP6S6K7C2HE7NBM3IM5GX4JE
 X-Mailman-Approved-At: Tue, 29 Aug 2023 18:28:46 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WI52PE2XC4YBONXJJ2K3KZ3ZAO3MEWKO/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CC7W3NWNHP6S6K7C2HE7NBM3IM5GX4JE/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -137,32 +119,42 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-SCLK_SDMMC is the parent for SCLK_SDMMC_DRV and SCLK_SDMMC_SAMPLE, but
-used with the (more) correct name sclk_sdmmc. SD card tuning does currently
-fail as the parent can't be found under that name
-There is no need to suffix the name with '0' since RK312x SoCs do have a
-single sdmmc controller - so rename it to the name which is already used
-by it's children.
+On Tue, 29 Aug 2023 10:07:51 +0000
+Charles Keepax <ckeepax@opensource.cirrus.com> wrote:
 
-Fixes: f6022e88faca ("clk: rockchip: add clock controller for rk3128")
-Signed-off-by: Alex Bee <knaerzche@gmail.com>
----
- drivers/clk/rockchip/clk-rk3128.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> On Mon, Aug 28, 2023 at 12:05:21PM -0500, Vlad Karpovich wrote:
+> > Checks the index computed by the virq offset before printing the
+> > error condition in cs35l45_spk_safe_err() handler.
+> > 
+> > Signed-off-by: Ricardo Rivera-Matos <rriveram@opensource.cirrus.com>
+> > Signed-off-by: Vlad Karpovich <vkarpovi@opensource.cirrus.com>
+> > ---
+> >  sound/soc/codecs/cs35l45.c | 5 ++++-
+> >  1 file changed, 4 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/sound/soc/codecs/cs35l45.c b/sound/soc/codecs/cs35l45.c
+> > index 40fb64904260..2c9b41171a05 100644
+> > --- a/sound/soc/codecs/cs35l45.c
+> > +++ b/sound/soc/codecs/cs35l45.c
+> > @@ -1023,7 +1023,10 @@ static irqreturn_t cs35l45_spk_safe_err(int irq, void *data)
+> >  
+> >  	i = irq - regmap_irq_get_virq(cs35l45->irq_data, 0);
+> >  
+> > -	dev_err(cs35l45->dev, "%s condition detected!\n", cs35l45_irqs[i].name);
+> > +	if (i < 0 || i > 6)
+> 
+> This looks a little odd, there appear to be 8 IRQs attached to
+> this function whereas this says 6. Also this check seems like
+> it will be hard to keep in sync as things change.
+> 
+> Assuming this error check is actually necessary, would it be
+> perhaps better to check i is smaller than ARRAY_SIZE(cs35l45_irqs)
+> and check that the attached function is cs35l45_spk_safe_err.
+> That should be more robust against future changes to the IRQs.
+> 
+> Thanks,
+> Charles
+Thank you. It was picked up from a different branch,I will change to ARRAY_SIZE.
 
-diff --git a/drivers/clk/rockchip/clk-rk3128.c b/drivers/clk/rockchip/clk-rk3128.c
-index 17bacf6dd6e7..75071e0cd321 100644
---- a/drivers/clk/rockchip/clk-rk3128.c
-+++ b/drivers/clk/rockchip/clk-rk3128.c
-@@ -310,7 +310,7 @@ static struct rockchip_clk_branch common_clk_branches[] __initdata = {
- 	GATE(SCLK_MIPI_24M, "clk_mipi_24m", "xin24m", CLK_IGNORE_UNUSED,
- 			RK2928_CLKGATE_CON(2), 15, GFLAGS),
- 
--	COMPOSITE(SCLK_SDMMC, "sclk_sdmmc0", mux_mmc_src_p, 0,
-+	COMPOSITE(SCLK_SDMMC, "sclk_sdmmc", mux_mmc_src_p, 0,
- 			RK2928_CLKSEL_CON(11), 6, 2, MFLAGS, 0, 6, DFLAGS,
- 			RK2928_CLKGATE_CON(2), 11, GFLAGS),
- 
 -- 
-2.42.0
-
+Vlad Karpovich <vkarpovi@opensource.cirrus.com>
