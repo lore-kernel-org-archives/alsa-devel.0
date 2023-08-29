@@ -4,120 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4F3C5C83F12
-	for <alsa-devel@archiver.kernel.org>; Tue, 29 Aug 2023 14:18:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3DA9AC83F12
+	for <alsa-devel@archiver.kernel.org>; Tue, 29 Aug 2023 14:18:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8B8BF93A;
-	Tue, 29 Aug 2023 16:17:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8B8BF93A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7F251E0E;
+	Tue, 29 Aug 2023 16:17:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7F251E0E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1693318678;
-	bh=IrxtE5DOTCwvvdyNrQ3RENgjySFsyzoHDrEFhrBrpig=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=WULMmQsBSqZwvORrgpJlE5IBDju3OhG9BFaIhaxN0oHyGYbjancu1PjbvqC5vTX9k
-	 xbBFK23uRJUo9UewhqRzsHdBs3oTI77JATPBezVBxx6gphMaEvORMTzDIXY8WwEUOF
-	 9pnYLF0n2waK/F731GP5LUd0xEH/70H4c+NWANwQ=
+	s=default; t=1693318696;
+	bh=mIXi4VnZ2Tu1yVzadE65zNJqQwtahCq6DztaxKEtuMc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=gGUljDIJxCC5pLfNLuFOfTHj6if2GMZkibwgJbtUADvlL0X0z7mHogi7dKkFZgn5D
+	 lIA+kYRsh9Wq5EIR4SCikquQPK+xQJ1m0JyXigByUN4CDeT57N4VmR9kZ7rKU+Hmdw
+	 Z7KZ0rFuvolKU8nt/kPb1DhsNCRhmLfjeIZ/ncBk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 359AFF805E9; Tue, 29 Aug 2023 16:14:54 +0200 (CEST)
+	id 293BEF80551; Tue, 29 Aug 2023 16:16:54 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id CC6A8F805ED;
-	Tue, 29 Aug 2023 16:14:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8DA3FF80551;
+	Tue, 29 Aug 2023 16:16:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BC552F80158; Tue, 29 Aug 2023 09:36:48 +0200 (CEST)
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com
- [205.220.177.32])
+	id 1EE7AF80536; Tue, 29 Aug 2023 16:16:51 +0200 (CEST)
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id CD768F800F5
-	for <alsa-devel@alsa-project.org>; Tue, 29 Aug 2023 09:36:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CD768F800F5
+	by alsa1.perex.cz (Postfix) with ESMTPS id E70CDF80094
+	for <alsa-devel@alsa-project.org>; Tue, 29 Aug 2023 16:16:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E70CDF80094
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=oracle.com header.i=@oracle.com header.a=rsa-sha256
- header.s=corp-2023-03-30 header.b=EllaCH86
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 37T6hrr0012633;
-	Tue, 29 Aug 2023 07:36:40 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com;
- h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding;
- s=corp-2023-03-30; bh=BxK/SLJlbdVlGnbew4iPZrnJYslywfcoRRZh2jM1k9s=;
- b=EllaCH86CU2gCGrCfkwY3+/SvX7f3qdiZMddx0EVfjGXAb4l6Ql8MUZ77unC/FhSahbG
- v/C4yr8ri5EzG8AOCp5UReRiRQJTTZpKdS29TOqN/PCh9wChl8p9//Tc6/YoMwLI2Qj1
- iEUk4jvDm+oHL360V6VUIr6pvTdSEAfbMOEiDK7QVHpXz+Z7xkUI0eIqW4DqxdjqNqnb
- h9c7jCF5YKNWxqusZmCtifGF/koRBGdUzdZC6KYiSo9O4yQjvO27ra0qpeEOK+3nSYJN
- GhMo/UaKDj/QTW504zfiHSjgTFfaolpFB6YFmlegmZHS28YYZWjtyixlK1XpnZuZMZIX HA==
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com
- (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3sq9gcmarf-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 29 Aug 2023 07:36:40 +0000
-Received: from pps.filterd
- (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19)
- with ESMTP id 37T72EXE032686;
-	Tue, 29 Aug 2023 07:36:39 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id
- 3sr6dn7sm5-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 29 Aug 2023 07:36:39 +0000
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com
- (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 37T7acCA027124;
-	Tue, 29 Aug 2023 07:36:38 GMT
-Received: from ca-dev112.us.oracle.com (ca-dev112.us.oracle.com
- [10.129.136.47])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id
- 3sr6dn7ske-1;
-	Tue, 29 Aug 2023 07:36:38 +0000
-From: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
-To: James Schulman <james.schulman@cirrus.com>,
-        David Rhodes <david.rhodes@cirrus.com>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>,
-        Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
-        linux-kernel@vger.kernel.org
-Cc: dan.carpenter@linaro.org, kernel-janitors@vger.kernel.org,
-        error27@gmail.com, harshit.m.mogalapalli@oracle.com
-Subject: [PATCH next] ASoC: cs42l43: Fix missing error code in
- cs42l43_codec_probe()
-Date: Tue, 29 Aug 2023 00:36:35 -0700
-Message-ID: <20230829073635.1877367-1-harshit.m.mogalapalli@oracle.com>
-X-Mailer: git-send-email 2.41.0
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=VH7BNc9R
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693318608; x=1724854608;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=mIXi4VnZ2Tu1yVzadE65zNJqQwtahCq6DztaxKEtuMc=;
+  b=VH7BNc9RkB8tvgCKvbyOZ8TVZTZ/3ewj/dS/asERZnM9HWYlgOFxfw3S
+   y2liFL0roC8VCYF/zrkPdZrp2LXvqgPs3Q8/FmxsZV+iPoxw7/GOXG1x0
+   S0cJmD8pULK3csz12TNzTKjLUwJ98X2+8cM99JHBzvW6ILiA+fSrz/7Tp
+   zPOXby16g9QdtiRdF/WWtlMAUUOJwC/hp9XKryWeQtUdaK9ZypWu+NxO9
+   N0sCgqYXMAuWHLcwRfRnZCOFZKVzui9C4Y7PZboygScD59zdThKnnboPI
+   diDJSt6rl5zk7rqtIeLDW2Dg+L26e8qkb2RBMFJ0HuTES3zdA/EVv2xC3
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="439329359"
+X-IronPort-AV: E=Sophos;i="6.02,210,1688454000";
+   d="scan'208";a="439329359"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 29 Aug 2023 07:16:36 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10817"; a="862259273"
+X-IronPort-AV: E=Sophos;i="6.02,210,1688454000";
+   d="scan'208";a="862259273"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga004.jf.intel.com with ESMTP; 29 Aug 2023 07:16:34 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1qazWC-004tqV-1k;
+	Tue, 29 Aug 2023 17:16:32 +0300
+Date: Tue, 29 Aug 2023 17:16:32 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Subject: Re: [PATCH v1 1/1] ALSA: control: Use list_for_each_entry_safe()
+Message-ID: <ZO39wMfKDmXc1+ms@smile.fi.intel.com>
+References: <20230829135252.3915124-1-andriy.shevchenko@linux.intel.com>
+ <87ttsit08x.wl-tiwai@suse.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-29_04,2023-08-28_04,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0
- suspectscore=0
- adultscore=0 phishscore=0 spamscore=0 mlxlogscore=999 bulkscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2308290064
-X-Proofpoint-ORIG-GUID: kw1aQ_vsj7yYeDlYbURxPTCNSw0YSGst
-X-Proofpoint-GUID: kw1aQ_vsj7yYeDlYbURxPTCNSw0YSGst
-X-MailFrom: harshit.m.mogalapalli@oracle.com
-X-Mailman-Rule-Hits: nonmember-moderation
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87ttsit08x.wl-tiwai@suse.de>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Message-ID-Hash: D3Z5T5EVXR64DYYU7USPDBV23ZOWFHSI
+X-Message-ID-Hash: D3Z5T5EVXR64DYYU7USPDBV23ZOWFHSI
+X-MailFrom: andriy.shevchenko@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: X5A4X7IDSH72B4NTFL6Z2BCI6766XUXH
-X-Message-ID-Hash: X5A4X7IDSH72B4NTFL6Z2BCI6766XUXH
-X-Mailman-Approved-At: Tue, 29 Aug 2023 14:14:49 +0000
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/X5A4X7IDSH72B4NTFL6Z2BCI6766XUXH/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/D3Z5T5EVXR64DYYU7USPDBV23ZOWFHSI/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -126,33 +104,37 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-When clk_get_optional() fails, the error handling code does a 'goto
-err_pm' with ret = 0, which is resturning success on a failure path.
+On Tue, Aug 29, 2023 at 04:02:38PM +0200, Takashi Iwai wrote:
+> On Tue, 29 Aug 2023 15:52:52 +0200,
+> Andy Shevchenko wrote:
+> > 
+> > Instead of reiterating the list, use list_for_each_entry_safe()
+> > that allows to continue without starting over.
 
-Fix this by assigning the PTR_ERR(priv->mclk) to ret variable.
+> Through a quick glance, it should be OK, but I need to read and
+> understand whether this change is perfectly safe or not -- unless
+> Jaroslav gives his review and ack.
 
-Fixes: fc918cbe874e ("ASoC: cs42l43: Add support for the cs42l43")
-Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
----
-This is based on static analysis with smatch, only compile tested.
----
- sound/soc/codecs/cs42l43.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Sure.
 
-diff --git a/sound/soc/codecs/cs42l43.c b/sound/soc/codecs/cs42l43.c
-index 24e718e51174..1a95c370fc4c 100644
---- a/sound/soc/codecs/cs42l43.c
-+++ b/sound/soc/codecs/cs42l43.c
-@@ -2205,7 +2205,8 @@ static int cs42l43_codec_probe(struct platform_device *pdev)
- 	// Don't use devm as we need to get against the MFD device
- 	priv->mclk = clk_get_optional(cs42l43->dev, "mclk");
- 	if (IS_ERR(priv->mclk)) {
--		dev_err_probe(priv->dev, PTR_ERR(priv->mclk), "Failed to get mclk\n");
-+		ret = PTR_ERR(priv->mclk);
-+		dev_err_probe(priv->dev, ret, "Failed to get mclk\n");
- 		goto err_pm;
- 	}
- 
+> > ---
+> > 
+> > Takashi, if you have anybody or want yourself to spend some time,
+> > I believe you can simplify a lot the parser in this file with
+> > the help of lib/cmdline.c APIs.
+> 
+> Thanks for the hint.  Yeah, it looks feasible, but too late for 6.6,
+> it's a nice TODO ;)
+
+Of course.
+
+Just a reference what I did to gpio-aggregator module:
+ac505b6f5fa8 ("gpio: aggregator: Replace custom get_arg() with a generic next_arg()")
+deb631c40114 ("gpio: aggregator: Replace isrange() by using get_options()")
+
+
 -- 
-2.39.3
+With Best Regards,
+Andy Shevchenko
+
 
