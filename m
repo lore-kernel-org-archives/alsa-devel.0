@@ -4,99 +4,109 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1513AC83F01
-	for <alsa-devel@archiver.kernel.org>; Wed, 30 Aug 2023 15:02:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CD99DC83F01
+	for <alsa-devel@archiver.kernel.org>; Wed, 30 Aug 2023 15:13:13 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 41402741;
-	Wed, 30 Aug 2023 17:01:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 41402741
+	by alsa0.perex.cz (Postfix) with ESMTPS id 52C081FC;
+	Wed, 30 Aug 2023 17:12:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 52C081FC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1693407736;
-	bh=a5hED7uUigfFo0VrP6B4eFDZ7S4H79YZ0cZ5dwJFspc=;
-	h=Date:From:To:CC:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1693408391;
+	bh=g07jzBuhC+S5pZIQv45jfeXLs2iHMnz/PzsOou+LhUU=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Dxxlh5IrQcRXfyzGSBB6EB+Cp2109s7GFCjsAZGERSTYMxaXfsCD9MLyMGVBnEoz2
-	 y2GzWKZDXe6TpealJCJIqtQmhCxN6UIKk8QTAci1PAahYPoQwTzpeBGAepYoRTft/o
-	 6OiHKbydmHpS6r+80j1bSv9EP9Nx/IJCVFUknvwE=
+	b=kzPKQK69x4sou92gzp12FTkSzcmcvQBMN08teJcCVh1ytGt5Wi7sPEDXmttxDwAeP
+	 ijRujfd8B+n1IdmRttgX7TluRRTWkZxm8l3Dfsat99OAXzSCVXFwiBdyvbkVAIH1wY
+	 odDmLfkzhJrm0jMmyDca71aeEyVKdeoTE+I9/vDQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 68ADCF8025F; Wed, 30 Aug 2023 17:00:58 +0200 (CEST)
+	id F1888F800F5; Wed, 30 Aug 2023 17:12:20 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A3D17F800D1;
-	Wed, 30 Aug 2023 17:00:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8E887F80155;
+	Wed, 30 Aug 2023 17:12:20 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4EA79F80155; Wed, 30 Aug 2023 17:00:52 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id BC22FF80155; Wed, 30 Aug 2023 17:12:16 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2001:67c:2178:6::1d])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 92CCAF80094
-	for <alsa-devel@alsa-project.org>; Wed, 30 Aug 2023 17:00:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 92CCAF80094
+	by alsa1.perex.cz (Postfix) with ESMTPS id A3CAFF80094
+	for <alsa-devel@alsa-project.org>; Wed, 30 Aug 2023 17:12:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A3CAFF80094
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=STvijXg8
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-	by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id
- 37U7gEVE026115;
-	Wed, 30 Aug 2023 10:00:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	date:from:to:cc:subject:message-id:references:mime-version
-	:content-type:in-reply-to; s=PODMain02222019; bh=nY6mVvv6rW6BhL4
-	MqzQFYP/NvGfCvBh5V3UfYUMt3Qc=; b=STvijXg8VhtiCnXcKhtViWah2cFCb2w
-	hipYvB/Xhno62yxDTxCb6e3aVIsWXxLZUZNFWT/GD+/zdGkhZ788C2Xvwo/4NxEL
-	JsNf1URvi2HaZGcLV6rdAdmltF274DDr7/rqu4ij5nO9oQsC5DTcPlO/jIa49Brn
-	FLx23DwLcoKNY3ruu0L+X4ZdR1wwGVKWO3J7u3B3nWUyzvUIb+IK2IjCje5yTbC5
-	kklzbWUq+RqjJ6WQVrGMBxwg/RRo3hGmC2lVkhwA6F0xsNCjYogRtZp5H732XwXp
-	aD63dgYXQAXq2MbOa6p0zdraSuSbmf6zOxPE6/bepdaruNFaVWbR1XA==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3sqesyd38v-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 30 Aug 2023 10:00:40 -0500 (CDT)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Wed, 30 Aug
- 2023 16:00:38 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.37 via Frontend
- Transport; Wed, 30 Aug 2023 16:00:38 +0100
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com
- [198.61.86.93])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id E6F183561;
-	Wed, 30 Aug 2023 15:00:37 +0000 (UTC)
-Date: Wed, 30 Aug 2023 15:00:37 +0000
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-To: Takashi Iwai <tiwai@suse.de>
-CC: "Sudip Mukherjee (Codethink)" <sudipm.mukherjee@gmail.com>,
-        James Schulman
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=gRw3ufwX;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=rK20637W
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 9231D1F45F;
+	Wed, 30 Aug 2023 15:12:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1693408332;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=t40XEzRpGZfp8+6J4H0kh7K0iLROTuGTa5ymi1tx/M0=;
+	b=gRw3ufwXH6OqCSLN/K6J41i6LBXT7DwyDRBuMPqUJE4gATTr0RORMpbcwMGVZ6eD4srqXS
+	CQypot+pjPbmJ+0bhTW/tb1x9OpOuEKmPq0adD6JrYigOc0qJwumOjkwTZK6XK3XDnEvB7
+	z/K5QSEyGNob4fkRRVHDf/1tHhoVUTc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1693408332;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=t40XEzRpGZfp8+6J4H0kh7K0iLROTuGTa5ymi1tx/M0=;
+	b=rK20637WNo/ZH/uBEcLA79DHUR4xqEXK41LWHUt1E8q/X8U2TfD7EpambQLfPE4q6GYX6L
+	RCsZNREfUBYi5wAw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 701A71353E;
+	Wed, 30 Aug 2023 15:12:12 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id /sraGkxc72RzJgAAMHmgww
+	(envelope-from <tiwai@suse.de>); Wed, 30 Aug 2023 15:12:12 +0000
+Date: Wed, 30 Aug 2023 17:12:12 +0200
+Message-ID: <87ledsfttf.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc: "Sudip Mukherjee (Codethink)" <sudipm.mukherjee@gmail.com>,
+	James Schulman
 	<james.schulman@cirrus.com>,
-        David Rhodes <david.rhodes@cirrus.com>,
-        "Richard
- Fitzgerald" <rf@opensource.cirrus.com>,
-        Lee Jones <lee@kernel.org>, <alsa-devel@alsa-project.org>,
-        <patches@opensource.cirrus.com>, <linux-kernel@vger.kernel.org>,
-        Linus Torvalds
+	David Rhodes <david.rhodes@cirrus.com>,
+	"Richard Fitzgerald" <rf@opensource.cirrus.com>,
+	Lee Jones <lee@kernel.org>,
+	<alsa-devel@alsa-project.org>,
+	<patches@opensource.cirrus.com>,
+	<linux-kernel@vger.kernel.org>,
+	Linus Torvalds
 	<torvalds@linux-foundation.org>,
-        <regressions@lists.linux.dev>
+	<regressions@lists.linux.dev>
 Subject: Re: mainline build failure due to ace6d1448138 ("mfd: cs42l43: Add
  support for cs42l43 core driver")
-Message-ID: <20230830150037.GW103419@ediswmail.ad.cirrus.com>
+In-Reply-To: <20230830150037.GW103419@ediswmail.ad.cirrus.com>
 References: <ZO8oNb2hpegB6BbE@debian>
- <87cyz4he2u.wl-tiwai@suse.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <87cyz4he2u.wl-tiwai@suse.de>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-ORIG-GUID: NK8Mq90hyYK6qZ7mtTDHX5VrG2uIuS3d
-X-Proofpoint-GUID: NK8Mq90hyYK6qZ7mtTDHX5VrG2uIuS3d
-X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: U54EASBT57NTEOAYTYP4BIMRWXTXU4HI
-X-Message-ID-Hash: U54EASBT57NTEOAYTYP4BIMRWXTXU4HI
-X-MailFrom: prvs=4606023fff=ckeepax@opensource.cirrus.com
+	<87cyz4he2u.wl-tiwai@suse.de>
+	<20230830150037.GW103419@ediswmail.ad.cirrus.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Message-ID-Hash: E4UDXWXZFLNZTOBXX5SB2KQOX5YBDL6Y
+X-Message-ID-Hash: E4UDXWXZFLNZTOBXX5SB2KQOX5YBDL6Y
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -108,7 +118,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/U54EASBT57NTEOAYTYP4BIMRWXTXU4HI/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/E4UDXWXZFLNZTOBXX5SB2KQOX5YBDL6Y/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -117,43 +127,48 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Wed, Aug 30, 2023 at 03:09:13PM +0200, Takashi Iwai wrote:
-> On Wed, 30 Aug 2023 13:29:57 +0200,
-> Sudip Mukherjee (Codethink) wrote:
-> > 
-> > Hi All,
-> > 
-> > The latest mainline kernel branch fails to build alpha, csky and s390
-> > allmodconfig with the error:
-> > 
-> > drivers/mfd/cs42l43.c:1138:12: error: 'cs42l43_runtime_resume' defined but not used [-Werror=unused-function]
-> >  1138 | static int cs42l43_runtime_resume(struct device *dev)
-> >       |            ^~~~~~~~~~~~~~~~~~~~~~
-> > drivers/mfd/cs42l43.c:1124:12: error: 'cs42l43_runtime_suspend' defined but not used [-Werror=unused-function]
-> >  1124 | static int cs42l43_runtime_suspend(struct device *dev)
-> >       |            ^~~~~~~~~~~~~~~~~~~~~~~
-> > drivers/mfd/cs42l43.c:1106:12: error: 'cs42l43_resume' defined but not used [-Werror=unused-function]
-> >  1106 | static int cs42l43_resume(struct device *dev)
-> >       |            ^~~~~~~~~~~~~~
-> > drivers/mfd/cs42l43.c:1076:12: error: 'cs42l43_suspend' defined but not used [-Werror=unused-function]
-> >  1076 | static int cs42l43_suspend(struct device *dev)
-> >       |            ^~~~~~~~~~~~~~~
-> > 
-> > git bisect pointed to ace6d1448138 ("mfd: cs42l43: Add support for cs42l43 core driver")
-> > 
-> > I will be happy to test any patch or provide any extra log if needed.
+On Wed, 30 Aug 2023 17:00:37 +0200,
+Charles Keepax wrote:
 > 
-> Adding __maybe_unused for those PM functions should work around it,
-> something like below.  Could you check it?
-> If it's confirmed to work, I'll submit properly.
+> On Wed, Aug 30, 2023 at 03:09:13PM +0200, Takashi Iwai wrote:
+> > On Wed, 30 Aug 2023 13:29:57 +0200,
+> > Sudip Mukherjee (Codethink) wrote:
+> > > 
+> > > Hi All,
+> > > 
+> > > The latest mainline kernel branch fails to build alpha, csky and s390
+> > > allmodconfig with the error:
+> > > 
+> > > drivers/mfd/cs42l43.c:1138:12: error: 'cs42l43_runtime_resume' defined but not used [-Werror=unused-function]
+> > >  1138 | static int cs42l43_runtime_resume(struct device *dev)
+> > >       |            ^~~~~~~~~~~~~~~~~~~~~~
+> > > drivers/mfd/cs42l43.c:1124:12: error: 'cs42l43_runtime_suspend' defined but not used [-Werror=unused-function]
+> > >  1124 | static int cs42l43_runtime_suspend(struct device *dev)
+> > >       |            ^~~~~~~~~~~~~~~~~~~~~~~
+> > > drivers/mfd/cs42l43.c:1106:12: error: 'cs42l43_resume' defined but not used [-Werror=unused-function]
+> > >  1106 | static int cs42l43_resume(struct device *dev)
+> > >       |            ^~~~~~~~~~~~~~
+> > > drivers/mfd/cs42l43.c:1076:12: error: 'cs42l43_suspend' defined but not used [-Werror=unused-function]
+> > >  1076 | static int cs42l43_suspend(struct device *dev)
+> > >       |            ^~~~~~~~~~~~~~~
+> > > 
+> > > git bisect pointed to ace6d1448138 ("mfd: cs42l43: Add support for cs42l43 core driver")
+> > > 
+> > > I will be happy to test any patch or provide any extra log if needed.
+> > 
+> > Adding __maybe_unused for those PM functions should work around it,
+> > something like below.  Could you check it?
+> > If it's confirmed to work, I'll submit properly.
+> > 
+> > 
 > 
+> This is probably the correct fix:
 > 
+> https://lore.kernel.org/lkml/20230822114914.340359-1-ckeepax@opensource.cirrus.com/
+> 
+> Just waiting on it to be reviewed.
 
-This is probably the correct fix:
+Thanks, that looks better.  Let's wait for the patch acceptance.
 
-https://lore.kernel.org/lkml/20230822114914.340359-1-ckeepax@opensource.cirrus.com/
 
-Just waiting on it to be reviewed.
-
-Thanks,
-Charles
+Takashi
