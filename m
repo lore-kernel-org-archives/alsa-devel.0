@@ -4,38 +4,37 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D3C35C83F29
-	for <alsa-devel@archiver.kernel.org>; Thu, 31 Aug 2023 08:27:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2CA36C83F29
+	for <alsa-devel@archiver.kernel.org>; Thu, 31 Aug 2023 08:27:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9D7C874C;
-	Thu, 31 Aug 2023 10:26:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9D7C874C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 28DDC950;
+	Thu, 31 Aug 2023 10:26:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 28DDC950
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1693470432;
-	bh=u2Z5LqkjMyoVBdlcTSHSEUmyVqo7HwaJ0MCj50wy3D4=;
+	s=default; t=1693470444;
+	bh=dzFf4hVC6rODjs6jPNMNAegX/tzWYItlJQ18wRqyZN0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=r82nZNFY5Re+X5wPYBAW5LFf7a2zoYK/XJ3pVKY8rZKjdZHLR6LYs1KmkX6BHeEim
-	 AmadzqJtqgzZIVXE8USHHAHfgO7i7dnkBKZKDanQXxg4sjjBMkIVaHA//zSxmOCDds
-	 8p1OVhaK5ZAR0+5uN8JRA5X/OFt+IoGcGKt4OqJQ=
+	b=TlknfoWz/ohpn0BjwOQKQ7xiZzcGi6QTyHITR4QvNt9ErttgFHBRrGP7q6checpSv
+	 gWYTCoqeSrEuOEObPnmbZHaUMcpYDH1so5DqIcl6gPHjKqW0rXW1cvgwe1xqxgbfiM
+	 VkDhoSkdTJt7ACagPTqKrVQAi+0swrca1wRkS7jY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 74892F805D2; Thu, 31 Aug 2023 10:24:31 +0200 (CEST)
+	id 95227F805E5; Thu, 31 Aug 2023 10:24:32 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B3D26F805D2;
-	Thu, 31 Aug 2023 10:24:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 228F4F805E0;
+	Thu, 31 Aug 2023 10:24:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id ED45BF8057E; Wed, 30 Aug 2023 17:37:14 +0200 (CEST)
-Received: from mblankhorst.nl (lankhorst.se
- [IPv6:2a02:2308:0:7ec:e79c:4e97:b6c4:f0ae])
+	id 60B37F8055B; Wed, 30 Aug 2023 17:37:15 +0200 (CEST)
+Received: from mblankhorst.nl (lankhorst.se [141.105.120.124])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C471DF80094;
-	Wed, 30 Aug 2023 17:37:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C471DF80094
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6797CF805A8;
+	Wed, 30 Aug 2023 17:37:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6797CF805A8
 From: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
 To: alsa-devel@alsa-project.org
 Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
@@ -52,9 +51,10 @@ Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
 	Daniel Baluta <daniel.baluta@nxp.com>,
 	linux-kernel@vger.kernel.org,
 	sound-open-firmware@alsa-project.org
-Subject: [PATCH v4 04/11] ALSA: hda/i915: Allow override of gpu binding.
-Date: Wed, 30 Aug 2023 17:36:45 +0200
-Message-Id: <20230830153652.217855-5-maarten.lankhorst@linux.intel.com>
+Subject: [PATCH v4 09/11] ALSA: hda/intel: Move snd_hdac_i915_init to before
+ probe_work.
+Date: Wed, 30 Aug 2023 17:36:50 +0200
+Message-Id: <20230830153652.217855-10-maarten.lankhorst@linux.intel.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230830153652.217855-1-maarten.lankhorst@linux.intel.com>
 References: <20230830153652.217855-1-maarten.lankhorst@linux.intel.com>
@@ -66,15 +66,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: 3R3B3X5GTQQD66T7ADXLO2VYEGEIM54R
-X-Message-ID-Hash: 3R3B3X5GTQQD66T7ADXLO2VYEGEIM54R
-X-Mailman-Approved-At: Thu, 31 Aug 2023 08:22:58 +0000
+Message-ID-Hash: AG3FGWAWFSY4DNPONKDCXFJ2QFTLXW74
+X-Message-ID-Hash: AG3FGWAWFSY4DNPONKDCXFJ2QFTLXW74
+X-Mailman-Approved-At: Thu, 31 Aug 2023 08:22:59 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3R3B3X5GTQQD66T7ADXLO2VYEGEIM54R/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AG3FGWAWFSY4DNPONKDCXFJ2QFTLXW74/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -83,57 +83,110 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Selecting CONFIG_DRM selects CONFIG_VIDEO_NOMODESET, which exports
-video_firmware_drivers_only(). This can be used as a first
-approximation on whether i915 will be available. It's safe to use as
-this is only built when CONFIG_SND_HDA_I915 is selected by CONFIG_I915.
+Now that we can use -EPROBE_DEFER, it's no longer required to spin off
+the snd_hdac_i915_init into a workqueue.
 
-It's not completely fool proof, as you can boot with "nomodeset
-i915.modeset=1" to make i915 load regardless, or use
-"i915.force_probe=!*" to never load i915, but the common case of
-booting with nomodeset to disable all GPU drivers this will work as
-intended.
-
-Because of this, we add an extra module parameter,
-snd_hda_core.gpu_bind that can be used to signal users intent.
--1 follows nomodeset, 0 disables binding, 1 forces wait/-EPROBE_DEFER
-on binding.
+Use the -EPROBE_DEFER mechanism instead, which must be returned in the
+probe function.
 
 Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Reviewed-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- sound/hda/hdac_i915.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
 
-diff --git a/sound/hda/hdac_i915.c b/sound/hda/hdac_i915.c
-index b428537f284c7..a4a712c795c3d 100644
---- a/sound/hda/hdac_i915.c
-+++ b/sound/hda/hdac_i915.c
-@@ -10,6 +10,12 @@
- #include <sound/hdaudio.h>
- #include <sound/hda_i915.h>
- #include <sound/hda_register.h>
-+#include <video/nomodeset.h>
-+
-+static int gpu_bind = -1;
-+module_param(gpu_bind, int, 0644);
-+MODULE_PARM_DESC(gpu_bind, "Whether to bind sound component to GPU "
-+			   "(1=always, 0=never, -1=on nomodeset(default))");
+---
+Changes since v1:
+- Use dev_err_probe()
+- Don't move probed_devs bitmap unnecessarily. (tiwai)
+- Move snd_hdac_i915_init slightly upward, to ensure
+  it's always initialised before vga-switcheroo is called.
+---
+ sound/pci/hda/hda_intel.c | 59 ++++++++++++++++++++-------------------
+ 1 file changed, 30 insertions(+), 29 deletions(-)
+
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 85fa15bbd8513..d529ef21f033a 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -2135,6 +2135,36 @@ static int azx_probe(struct pci_dev *pci,
  
- /**
-  * snd_hdac_i915_set_bclk - Reprogram BCLK for HSW/BDW
-@@ -122,6 +128,9 @@ static int i915_gfx_present(struct pci_dev *hdac_pci)
- {
- 	struct pci_dev *display_dev = NULL;
+ 	pci_set_drvdata(pci, card);
  
-+	if (!gpu_bind || (gpu_bind < 0 && video_firmware_drivers_only()))
-+		return false;
++#ifdef CONFIG_SND_HDA_I915
++	/* bind with i915 if needed */
++	if (chip->driver_caps & AZX_DCAPS_I915_COMPONENT) {
++		err = snd_hdac_i915_init(azx_bus(chip), false);
++		if (err < 0) {
++			/* if the controller is bound only with HDMI/DP
++			 * (for HSW and BDW), we need to abort the probe;
++			 * for other chips, still continue probing as other
++			 * codecs can be on the same link.
++			 */
++			if (HDA_CONTROLLER_IN_GPU(pci)) {
++				dev_err_probe(card->dev, err,
++					     "HSW/BDW HD-audio HDMI/DP requires binding with gfx driver\n");
 +
- 	for_each_pci_dev(display_dev) {
- 		if (display_dev->vendor == PCI_VENDOR_ID_INTEL &&
- 		    (display_dev->class >> 16) == PCI_BASE_CLASS_DISPLAY &&
++				goto out_free;
++			} else {
++				/* don't bother any longer */
++				chip->driver_caps &= ~AZX_DCAPS_I915_COMPONENT;
++			}
++		}
++
++		/* HSW/BDW controllers need this power */
++		if (HDA_CONTROLLER_IN_GPU(pci))
++			hda->need_i915_power = true;
++	}
++#else
++	if (HDA_CONTROLLER_IN_GPU(pci))
++		dev_err(card->dev, "Haswell/Broadwell HDMI/DP must build in CONFIG_SND_HDA_I915\n");
++#endif
++
+ 	err = register_vga_switcheroo(chip);
+ 	if (err < 0) {
+ 		dev_err(card->dev, "Error registering vga_switcheroo client\n");
+@@ -2162,11 +2192,6 @@ static int azx_probe(struct pci_dev *pci,
+ 	}
+ #endif /* CONFIG_SND_HDA_PATCH_LOADER */
+ 
+-#ifndef CONFIG_SND_HDA_I915
+-	if (HDA_CONTROLLER_IN_GPU(pci))
+-		dev_err(card->dev, "Haswell/Broadwell HDMI/DP must build in CONFIG_SND_HDA_I915\n");
+-#endif
+-
+ 	if (schedule_probe)
+ 		schedule_delayed_work(&hda->probe_work, 0);
+ 
+@@ -2263,30 +2288,6 @@ static int azx_probe_continue(struct azx *chip)
+ 	to_hda_bus(bus)->bus_probing = 1;
+ 	hda->probe_continued = 1;
+ 
+-	/* bind with i915 if needed */
+-	if (chip->driver_caps & AZX_DCAPS_I915_COMPONENT) {
+-		err = snd_hdac_i915_init(bus, true);
+-		if (err < 0) {
+-			/* if the controller is bound only with HDMI/DP
+-			 * (for HSW and BDW), we need to abort the probe;
+-			 * for other chips, still continue probing as other
+-			 * codecs can be on the same link.
+-			 */
+-			if (HDA_CONTROLLER_IN_GPU(pci)) {
+-				dev_err(chip->card->dev,
+-					"HSW/BDW HD-audio HDMI/DP requires binding with gfx driver\n");
+-				goto out_free;
+-			} else {
+-				/* don't bother any longer */
+-				chip->driver_caps &= ~AZX_DCAPS_I915_COMPONENT;
+-			}
+-		}
+-
+-		/* HSW/BDW controllers need this power */
+-		if (HDA_CONTROLLER_IN_GPU(pci))
+-			hda->need_i915_power = true;
+-	}
+-
+ 	/* Request display power well for the HDA controller or codec. For
+ 	 * Haswell/Broadwell, both the display HDA controller and codec need
+ 	 * this power. For other platforms, like Baytrail/Braswell, only the
 -- 
 2.39.2
 
