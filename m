@@ -4,41 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8D120CA0FE1
-	for <alsa-devel@archiver.kernel.org>; Fri,  1 Sep 2023 07:03:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7B84FCA0FE8
+	for <alsa-devel@archiver.kernel.org>; Fri,  1 Sep 2023 07:03:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5B11F825;
-	Fri,  1 Sep 2023 09:02:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5B11F825
+	by alsa0.perex.cz (Postfix) with ESMTPS id A43E1A4C;
+	Fri,  1 Sep 2023 09:02:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A43E1A4C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1693551784;
-	bh=1ECqT2emgTpOl3wCbBrkACMiGNOlBnXgFVQONTmHbQU=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=MAklhnBJY77J4NTASyqtJBD1wavDQVWPN95BcUrIdJ932ucHwVYPU/EKF5ggJXsal
-	 ibQeM9UsEQvTX7Wobr5HWIyd4NNArbtK3Pqdg1BP7ZbqfE/79CTCYPhbdTNzZCXVjs
-	 Fd3rnOYr0oyPxNbs9onHvHo2XqMVMIarWSBq/zy4=
+	s=default; t=1693551810;
+	bh=MdehHleLjDARyPc+Ib3vigZCG/qA1CNQAr3VjBRIqMk=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=cmYXFfQJ+PQGkbfGA4fPb+J7VvLiXgSBslMq0kZ4VG9yHhny5v5CKAxyRNUnZxTVA
+	 zaosk5xs3UJ2zJLGR13pYBVGTTUt5Ru/z6wALiVHN0wj8tFtYr1SzEm4Y0t8Npfldu
+	 Tw3Su3xuoBgC/lQ3Xd1QEzT+LR4b0WjTvPmz7FSM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8A6B1F80236; Fri,  1 Sep 2023 09:01:46 +0200 (CEST)
+	id 7AE58F80568; Fri,  1 Sep 2023 09:01:50 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 02EB5F80236;
-	Fri,  1 Sep 2023 09:01:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3B97CF80568;
+	Fri,  1 Sep 2023 09:01:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7B729F8023B; Fri,  1 Sep 2023 09:00:13 +0200 (CEST)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
-	by alsa1.perex.cz (Postfix) with ESMTP id EB92BF80094
-	for <alsa-devel@alsa-project.org>; Fri,  1 Sep 2023 09:00:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EB92BF80094
+	id 00767F80236; Fri,  1 Sep 2023 09:00:17 +0200 (CEST)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+	by alsa1.perex.cz (Postfix) with ESMTP id E76B0F80094
+	for <alsa-devel@alsa-project.org>; Fri,  1 Sep 2023 09:00:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E76B0F80094
 X-IronPort-AV: E=Sophos;i="6.02,218,1688396400";
-   d="scan'208";a="174702086"
+   d="scan'208";a="178409384"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
-  by relmlie5.idc.renesas.com with ESMTP; 01 Sep 2023 15:59:59 +0900
+  by relmlie6.idc.renesas.com with ESMTP; 01 Sep 2023 16:00:12 +0900
 Received: from localhost.localdomain (unknown [10.226.92.203])
-	by relmlir5.idc.renesas.com (Postfix) with ESMTP id A6D004002949;
-	Fri,  1 Sep 2023 15:59:55 +0900 (JST)
+	by relmlir5.idc.renesas.com (Postfix) with ESMTP id 76C264008C5C;
+	Fri,  1 Sep 2023 16:00:08 +0900 (JST)
 From: Biju Das <biju.das.jz@bp.renesas.com>
 To: Jaroslav Kysela <perex@perex.cz>,
 	Takashi Iwai <tiwai@suse.com>
@@ -52,14 +53,16 @@ Cc: Biju Das <biju.das.jz@bp.renesas.com>,
 	alsa-devel@alsa-project.org,
 	linux-kernel@vger.kernel.org,
 	Biju Das <biju.das.au@gmail.com>
-Subject: [PATCH v4 0/3] Match data improvements for wm8580 driver
-Date: Fri,  1 Sep 2023 07:59:49 +0100
-Message-Id: <20230901065952.18760-1-biju.das.jz@bp.renesas.com>
+Subject: [PATCH v4 3/3] ASoC: wm8580: Move OF table
+Date: Fri,  1 Sep 2023 07:59:52 +0100
+Message-Id: <20230901065952.18760-4-biju.das.jz@bp.renesas.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230901065952.18760-1-biju.das.jz@bp.renesas.com>
+References: <20230901065952.18760-1-biju.das.jz@bp.renesas.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: GROBBQV4HFBPNJ4Y5EJ66CRTHWJ777X4
-X-Message-ID-Hash: GROBBQV4HFBPNJ4Y5EJ66CRTHWJ777X4
+Message-ID-Hash: 4P2FZU4YBIT7GYHSXEFJFMI4PM6X5562
+X-Message-ID-Hash: 4P2FZU4YBIT7GYHSXEFJFMI4PM6X5562
 X-MailFrom: biju.das.jz@bp.renesas.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -72,7 +75,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GROBBQV4HFBPNJ4Y5EJ66CRTHWJ777X4/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4P2FZU4YBIT7GYHSXEFJFMI4PM6X5562/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -81,30 +84,51 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-This patch series aims to add match data improvements for wm8580 driver.
+Move OF table near to the user.
 
-This patch series is only compile tested.
-
+Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
+---
 v3->v4:
- * Created patch#2 for removing trailing comma in the terminator entry
-   for OF table.
-v2->v3:
- * Added Rb tag from Andy.
- * Restored OF table postion and moved in patch#2
- * Moved OF table near to the user.
-v1->v2:
- * Added Ack from Charles Keepax.
- * Removed comma in the terminator entry.
- * Restored original error code -EINVAL
+ * Created patch#2 for removing trailing comma in the terminator entry for
+   OF table.
+v3:
+ * New patch.
+---
+ sound/soc/codecs/wm8580.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-Biju Das (3):
-  ASoC: wm8580: Simplify probe()
-  ASoC: wm8580: Remove trailing comma in the terminator entry
-  ASoC: wm8580: Move OF table
-
- sound/soc/codecs/wm8580.c | 26 ++++++++++----------------
- 1 file changed, 10 insertions(+), 16 deletions(-)
-
+diff --git a/sound/soc/codecs/wm8580.c b/sound/soc/codecs/wm8580.c
+index ba47b01f13e7..28c0ba348634 100644
+--- a/sound/soc/codecs/wm8580.c
++++ b/sound/soc/codecs/wm8580.c
+@@ -988,13 +988,6 @@ static const struct wm8580_driver_data wm8581_data = {
+ 	.num_dacs = 4,
+ };
+ 
+-static const struct of_device_id wm8580_of_match[] = {
+-	{ .compatible = "wlf,wm8580", .data = &wm8580_data },
+-	{ .compatible = "wlf,wm8581", .data = &wm8581_data },
+-	{ }
+-};
+-MODULE_DEVICE_TABLE(of, wm8580_of_match);
+-
+ static int wm8580_i2c_probe(struct i2c_client *i2c)
+ {
+ 	struct wm8580_priv *wm8580;
+@@ -1031,6 +1024,13 @@ static int wm8580_i2c_probe(struct i2c_client *i2c)
+ 	return ret;
+ }
+ 
++static const struct of_device_id wm8580_of_match[] = {
++	{ .compatible = "wlf,wm8580", .data = &wm8580_data },
++	{ .compatible = "wlf,wm8581", .data = &wm8581_data },
++	{ }
++};
++MODULE_DEVICE_TABLE(of, wm8580_of_match);
++
+ static const struct i2c_device_id wm8580_i2c_id[] = {
+ 	{ "wm8580", (kernel_ulong_t)&wm8580_data },
+ 	{ "wm8581", (kernel_ulong_t)&wm8581_data },
 -- 
 2.25.1
 
