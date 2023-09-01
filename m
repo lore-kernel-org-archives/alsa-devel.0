@@ -4,66 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5F256CA0FE6
-	for <alsa-devel@archiver.kernel.org>; Fri,  1 Sep 2023 07:03:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 61CE5CA0FE1
+	for <alsa-devel@archiver.kernel.org>; Fri,  1 Sep 2023 07:16:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 69E29AE9;
-	Fri,  1 Sep 2023 09:03:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 69E29AE9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0AC42846;
+	Fri,  1 Sep 2023 09:15:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0AC42846
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1693551830;
-	bh=aF/XXG0s6sA5xxzCPUnxbKnft9a3KHOxH2r2KHH5IsU=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=M/F/gvnFNIrwtfMmVOyZROvqV4zGgKXvKb6Ja+Qxy0GIBmUSiiLE3HUpaSoptf9Hy
-	 SgvZv3nXOPq4qO0ktMt1lg1EsdcWZLd6VUAU+aSc+OC0n+LMQCoct+Ux+nxMLe6+Wx
-	 WXJo01+NGsJzoZmhSilOa8J73n6I4jGddik844TQ=
+	s=default; t=1693552588;
+	bh=UPV+9X7rM4mqYTjI46If1acA7gEvaFmlg/gPAjG4Pp4=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=IDJYtD6xU1tGVxJQ3ZtIVZfN5r8AXEjF4NdAeU06WTEI+LK6/BotY3H4eAnIjIl6x
+	 DuATBxJSa4TH0LlyBM7NnUkjQxt9HhTqIKmChWYui/+U9VHX3jfIRS+cjkCInPjjh8
+	 TqBXcyYNsOUO8LM2wdCni2qb1Cl4fUL7UfWqOt1I=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 44A56F8023B; Fri,  1 Sep 2023 09:02:50 +0200 (CEST)
+	id C7A27F8032D; Fri,  1 Sep 2023 09:15:04 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id AF9AAF800D1;
-	Fri,  1 Sep 2023 09:02:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2224EF80158;
+	Fri,  1 Sep 2023 09:15:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 11C13F8023B; Fri,  1 Sep 2023 09:02:46 +0200 (CEST)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5CD97F800D1
-	for <alsa-devel@alsa-project.org>; Fri,  1 Sep 2023 09:00:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5CD97F800D1
-X-IronPort-AV: E=Sophos;i="6.02,218,1688396400";
-   d="scan'208";a="178409324"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
-  by relmlie6.idc.renesas.com with ESMTP; 01 Sep 2023 16:00:03 +0900
-Received: from localhost.localdomain (unknown [10.226.92.203])
-	by relmlir5.idc.renesas.com (Postfix) with ESMTP id D1255400264E;
-	Fri,  1 Sep 2023 15:59:59 +0900 (JST)
-From: Biju Das <biju.das.jz@bp.renesas.com>
-To: Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>
-Cc: Biju Das <biju.das.jz@bp.renesas.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Charles Keepax <ckeepax@opensource.cirrus.com>,
-	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	patches@opensource.cirrus.com,
-	alsa-devel@alsa-project.org,
-	linux-kernel@vger.kernel.org,
-	Biju Das <biju.das.au@gmail.com>
-Subject: [PATCH v4 1/3] ASoC: wm8580: Simplify probe()
-Date: Fri,  1 Sep 2023 07:59:50 +0100
-Message-Id: <20230901065952.18760-2-biju.das.jz@bp.renesas.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230901065952.18760-1-biju.das.jz@bp.renesas.com>
-References: <20230901065952.18760-1-biju.das.jz@bp.renesas.com>
+	id EEA72F80158; Fri,  1 Sep 2023 09:14:59 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
+ [207.180.221.201])
+	by alsa1.perex.cz (Postfix) with ESMTP id 2FB75F800D1
+	for <alsa-devel@alsa-project.org>; Fri,  1 Sep 2023 09:14:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2FB75F800D1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: JAPL3XXISMXL6O5HJZBCJDRC3XGQEHFK
-X-Message-ID-Hash: JAPL3XXISMXL6O5HJZBCJDRC3XGQEHFK
-X-MailFrom: biju.das.jz@bp.renesas.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1693552496049589396-webhooks-bot@alsa-project.org>
+References: <1693552496049589396-webhooks-bot@alsa-project.org>
+Subject: Sound recorded by the internal microphone is very low
+Message-Id: <20230901071459.EEA72F80158@alsa1.perex.cz>
+Date: Fri,  1 Sep 2023 09:14:59 +0200 (CEST)
+Message-ID-Hash: NZEXLNYUAU77EZNBJ3PQ2Z4I2TCMP6EM
+X-Message-ID-Hash: NZEXLNYUAU77EZNBJ3PQ2Z4I2TCMP6EM
+X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -75,7 +57,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JAPL3XXISMXL6O5HJZBCJDRC3XGQEHFK/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NZEXLNYUAU77EZNBJ3PQ2Z4I2TCMP6EM/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -84,59 +66,11 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Simplify probe() by replacing of_match_device->i2c_get_match_data()
-and extend matching support for ID table.
+alsa-project/alsa-ucm-conf issue #345 was opened from pseudocc:
 
-While at it, remove comma in the terminator entry and simplify probe()
-by replacing dev_err()->dev_err_probe().
+Even if it is set to the maximum value, headphone microphone is good.
 
-Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
-v3->v4:
- * No change.
-v2->v3:
- * Added Rb tag from Andy.
- * Restored OF table postion and moved in patch#2
-v1->v2:
- * Added Ack from Charles Keepax.
- * Removed comma in the terminator entry.
- * Restored original error code -EINVAL
----
- sound/soc/codecs/wm8580.c | 12 +++---------
- 1 file changed, 3 insertions(+), 9 deletions(-)
+http://alsa-project.org/db/?f=0fdb2be1be960a5efe41fdcc5aab9436f4c91d1f
 
-diff --git a/sound/soc/codecs/wm8580.c b/sound/soc/codecs/wm8580.c
-index 6d22f7d40ec2..826c39ec4a1e 100644
---- a/sound/soc/codecs/wm8580.c
-+++ b/sound/soc/codecs/wm8580.c
-@@ -997,7 +997,6 @@ MODULE_DEVICE_TABLE(of, wm8580_of_match);
- 
- static int wm8580_i2c_probe(struct i2c_client *i2c)
- {
--	const struct of_device_id *of_id;
- 	struct wm8580_priv *wm8580;
- 	int ret, i;
- 
-@@ -1022,14 +1021,9 @@ static int wm8580_i2c_probe(struct i2c_client *i2c)
- 
- 	i2c_set_clientdata(i2c, wm8580);
- 
--	of_id = of_match_device(wm8580_of_match, &i2c->dev);
--	if (of_id)
--		wm8580->drvdata = of_id->data;
--
--	if (!wm8580->drvdata) {
--		dev_err(&i2c->dev, "failed to find driver data\n");
--		return -EINVAL;
--	}
-+	wm8580->drvdata = i2c_get_match_data(i2c);
-+	if (!wm8580->drvdata)
-+		return dev_err_probe(&i2c->dev, -EINVAL, "failed to find driver data\n");
- 
- 	ret = devm_snd_soc_register_component(&i2c->dev,
- 			&soc_component_dev_wm8580, wm8580_dai, ARRAY_SIZE(wm8580_dai));
--- 
-2.25.1
-
+Issue URL     : https://github.com/alsa-project/alsa-ucm-conf/issues/345
+Repository URL: https://github.com/alsa-project/alsa-ucm-conf
