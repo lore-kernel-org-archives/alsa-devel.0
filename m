@@ -4,102 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BB4B3C83F2C
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 Sep 2023 12:50:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C7542C83F2C
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 Sep 2023 12:50:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 12E80AE9;
-	Mon,  4 Sep 2023 14:49:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 12E80AE9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 01486DEB;
+	Mon,  4 Sep 2023 14:49:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 01486DEB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1693831834;
-	bh=2B/FnJeGg7K3NAHuRu7Pgjl+hLySoixxolFmsv+9Bao=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=Xxb/6OhxccNZFYTqBSqzjXA8DAxpnCNTYWJtflMjD+Gz/ORxBHrH1u31rbTmkZ7aW
-	 sluO740NrF4pCicKUQWY6Qj+uP6Qn5Uzg3qZKdnFAn3EJuzYxVRGYk8N0cbrwxyzvz
-	 9l3xtfhYVltYHXdoZYX9vaOgZF99rHvcrCKOVl+Q=
+	s=default; t=1693831840;
+	bh=WilzynXfIjeYBBxn3KF8I+zEPTz6CizTqABslRcHX3c=;
+	h=Date:To:From:Cc:Subject:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=JaLjImDKqvnWaTF0ObkJBSUAXMyyPqy24nEnGO2i2QP+oeEYj4PesNcwWSNqAIzIO
+	 8hWhCt7R65V+F/tiZlMRVl6mLnH5a/UeYJQikhYt3QeCVxHHAFNnOVS2EEH92r7Wxi
+	 7UKJqABLd7avLFtfm1GfboElpGulV37y7IP/ENEQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 90FACF80551; Mon,  4 Sep 2023 14:48:56 +0200 (CEST)
+	id CA12EF8057D; Mon,  4 Sep 2023 14:48:58 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id DF2DDF80563;
-	Mon,  4 Sep 2023 14:48:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 48DF1F8057D;
+	Mon,  4 Sep 2023 14:48:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 68986F80158; Fri,  1 Sep 2023 16:47:06 +0200 (CEST)
-Received: from mail.savoirfairelinux.com (mail.savoirfairelinux.com
- [208.88.110.44])
+	id C283CF8032D; Fri,  1 Sep 2023 18:48:41 +0200 (CEST)
+Received: from mail-40133.protonmail.ch (mail-40133.protonmail.ch
+ [185.70.40.133])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 3C136F80155
-	for <alsa-devel@alsa-project.org>; Fri,  1 Sep 2023 16:46:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3C136F80155
+	by alsa1.perex.cz (Postfix) with ESMTPS id 64631F80249
+	for <alsa-devel@alsa-project.org>; Fri,  1 Sep 2023 18:48:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 64631F80249
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=savoirfairelinux.com header.i=@savoirfairelinux.com
- header.a=rsa-sha256 header.s=DFC430D2-D198-11EC-948E-34200CB392D2
- header.b=jneEN2qE
-Received: from localhost (localhost [127.0.0.1])
-	by mail.savoirfairelinux.com (Postfix) with ESMTP id 137529C2A61;
-	Fri,  1 Sep 2023 10:46:53 -0400 (EDT)
-Received: from mail.savoirfairelinux.com ([127.0.0.1])
- by localhost (mail.savoirfairelinux.com [127.0.0.1]) (amavis, port 10032)
- with ESMTP id B8ekbhEVA18W; Fri,  1 Sep 2023 10:46:52 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-	by mail.savoirfairelinux.com (Postfix) with ESMTP id 76DC49C2A62;
-	Fri,  1 Sep 2023 10:46:52 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.savoirfairelinux.com 76DC49C2A62
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=savoirfairelinux.com; s=DFC430D2-D198-11EC-948E-34200CB392D2;
-	t=1693579612; bh=axuXg0xyUTBkHymSv+mK5SQ0Rh9l5TBxWpiykyllR94=;
-	h=From:To:Date:Message-Id:MIME-Version;
-	b=jneEN2qEoy03Y/yxhI5YrU9oHrJSUiPgjrTlklcBUkrLLFBycg9NqXlRIBi/zmsVP
-	 NEPIhyY8iBn9KYkSdw/SbC71qT336C2OjUbaakfUDiadhqmY8rubbtTkMM1aYPzssN
-	 e2ggCVHyp9U+4AoEBAf1uKef5v5EpubQIbQBdeT0DuvGwDN+VhqD0k5UEvcyCcEfB3
-	 /Pmis5BB1wRm8PgezcXdp9c1SXaETr9ssGMw3FU5B4Zg8ucUV9yNNLcl3Nzqyi3vd5
-	 oR2k3vsuD7rmmXDJ0zlkLSLT6uMPV83FLlMkyGWu5BPgpNQW2vwf+ljym9D4u7eJjO
-	 Dbww4GhzMHTJA==
-X-Virus-Scanned: amavis at mail.savoirfairelinux.com
-Received: from mail.savoirfairelinux.com ([127.0.0.1])
- by localhost (mail.savoirfairelinux.com [127.0.0.1]) (amavis, port 10026)
- with ESMTP id M0FGtu6eauQA; Fri,  1 Sep 2023 10:46:52 -0400 (EDT)
-Received: from gerard.rennes.sfl
- (lmontsouris-657-1-69-118.w80-15.abo.wanadoo.fr [80.15.101.118])
-	by mail.savoirfairelinux.com (Postfix) with ESMTPSA id A23F69C2A61;
-	Fri,  1 Sep 2023 10:46:51 -0400 (EDT)
-From: elinor.montmasson@savoirfairelinux.com
-To: shengjiu.wang@gmail.com,
-	Xiubo.Lee@gmail.com
-Cc: alsa-devel@alsa-project.org,
-	philip-dylan.gleonec@savoirfairelinux.com,
-	Elinor Montmasson <elinor.montmasson@savoirfairelinux.com>
-Subject: [PATCH 08/10] ASoC: fsl-asoc-card: add dts properties
- "cpu-sysclk-freq"
-Date: Fri,  1 Sep 2023 16:45:48 +0200
-Message-Id: <20230901144550.520072-9-elinor.montmasson@savoirfairelinux.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230901144550.520072-1-elinor.montmasson@savoirfairelinux.com>
-References: <20230901144550.520072-1-elinor.montmasson@savoirfairelinux.com>
+ unprotected) header.d=pm.me header.i=@pm.me header.a=rsa-sha256
+ header.s=protonmail3 header.b=Q/KXRm4A
+Date: Fri, 01 Sep 2023 16:48:21 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me;
+	s=protonmail3; t=1693586910; x=1693846110;
+	bh=WilzynXfIjeYBBxn3KF8I+zEPTz6CizTqABslRcHX3c=;
+	h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
+	 Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
+	b=Q/KXRm4AvicJzFZb6NTLhCld+4w+WMopTVlJlWgUY91WYLgU6hGB5nBZi6xW8QUL+
+	 eO7baepjx8AqaEJ8f0WHr3Ig0nHqh2eDgwiYfAgeNJ+vfYswwfNB/VR5i5uTzqzhL4
+	 xzKlqrpvDFBO+i6SFcd6zi8v3Es2sFB3XHmTze2eiC4iEf6LkDWZADTWWO0WnWpa+B
+	 YYNoNgexWlECbB+NEn5fVKLROL3qnIgZ032J66p/6CoDRVEYeh9HxlJC3ghOGrvlzJ
+	 NipYHg1idDWzl4JL9PY7j0QDrqODnEDqZGLg+G6MmEldrjzmwkHknhq0oDUkuBoWg6
+	 8CIkrjnNiuRdQ==
+To: Stefan Binding <sbinding@opensource.cirrus.com>,
+ Takashi Iwai <tiwai@suse.de>
+From: Waldek Andrukiewicz <waldek.social@pm.me>
+Cc: Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, patches@opensource.cirrus.com
+Subject: Re: [PATCH v2 00/11] Fix support for System Suspend for CS35L41 HDA
+Message-ID: <03a70489-3a68-4c37-8f72-569bcd7463c4@pm.me>
+Feedback-ID: 6286898:user:proton
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-X-MailFrom: elinor.montmasson@savoirfairelinux.com
+X-MailFrom: waldek.social@pm.me
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: 3GVR5JDVWYVL6PWRYR6UF5VPDACNUJIU
-X-Message-ID-Hash: 3GVR5JDVWYVL6PWRYR6UF5VPDACNUJIU
+Message-ID-Hash: NGW34EPNJU5Z26QRA7L7Z4GDWXMCJ4BD
+X-Message-ID-Hash: NGW34EPNJU5Z26QRA7L7Z4GDWXMCJ4BD
 X-Mailman-Approved-At: Mon, 04 Sep 2023 12:48:48 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3GVR5JDVWYVL6PWRYR6UF5VPDACNUJIU/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NGW34EPNJU5Z26QRA7L7Z4GDWXMCJ4BD/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -108,37 +87,136 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Elinor Montmasson <elinor.montmasson@savoirfairelinux.com>
 
-Add new optional dts property "cpu-sysclk-freq" to set
-custom sysclk frequencies for the CPU DAI with the dummy codec.
-The way values are used is up to the CPU DAI driver implementation.
+On 28.07.23 15:55, Stefan Binding wrote:
+>
+> On 28/07/2023 12:10, Takashi Iwai wrote:
+>> On Mon, 24 Jul 2023 11:00:38 +0200,
+>> Takashi Iwai wrote:
+>>> On Fri, 21 Jul 2023 17:18:05 +0200,
+>>> Stefan Binding wrote:
+>>>> There have been a couple of customer reports of intermittant issues
+>>>> after
+>>>> system resume, where sometimes the DSP firmware stops responding.
+>>>> Investigations into this issue show that there is a race between
+>>>> receiving
+>>>> a prepare from the HDA core, and the firmware reload which is
+>>>> started by
+>>>> the system resume. This can causes the Global Enable on the CS35L41
+>>>> to be
+>>>> enabled during the firmware load, which can sometimes cause issues
+>>>> in the
+>>>> DSP.
+>>>>
+>>>> The existing system resume behaviour also did not resume the audio, if
+>>>> audio was previously playing when it was suspended.
+>>>> In addition, during investigation, it was found there were additional
+>>>> problems in the System Resume sequence, as well as the Playback
+>>>> sequence
+>>>> with External Boost, where the driver does not correctly follow its
+>>>> enable sequence for this mode. This can cause additional issues
+>>>> such as
+>>>> pops and clicks.
+>>>>
+>>>> This chain intends to correct the sequences for playback and system
+>>>> suspend/resume so that the driver: obeys the external boost enable
+>>>> sequence;
+>>>> resumes audio on system resume; and avoids the race condition on
+>>>> firmware
+>>>> load and playback during system resume.
+>>>>
+>>>> Changes since v1:
+>>>> - Split patch 1 into 2 separate patches
+>>>> - Combine Patches 6 and 9
+>>>>
+>>>> Stefan Binding (11):
+>>>> =C2=A0=C2=A0 ALSA: cs35l41: Use mbox command to enable speaker output =
+for
+>>>> external
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0 boost
+>>>> =C2=A0=C2=A0 ALSA: cs35l41: Poll for Power Up/Down rather than waiting=
+ a fixed
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0 delay
+>>>> =C2=A0=C2=A0 ALSA: hda: cs35l41: Check mailbox status of pause command=
+ after
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0 firmware load
+>>>> =C2=A0=C2=A0 ALSA: hda: cs35l41: Ensure we correctly re-sync regmap be=
+fore
+>>>> system
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0 suspending.
+>>>> =C2=A0=C2=A0 ALSA: hda: cs35l41: Ensure we pass up any errors during s=
+ystem
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0 suspend.
+>>>> =C2=A0=C2=A0 ALSA: hda: cs35l41: Move Play and Pause into separate fun=
+ctions
+>>>> =C2=A0=C2=A0 ALSA: hda: hda_component: Add pre and post playback hooks=
+ to
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0 hda_component
+>>>> =C2=A0=C2=A0 ALSA: hda: cs35l41: Use pre and post playback hooks
+>>>> =C2=A0=C2=A0 ALSA: hda: cs35l41: Rework System Suspend to ensure corre=
+ct call
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0 separation
+>>>> =C2=A0=C2=A0 ALSA: hda: cs35l41: Add device_link between HDA and cs35l=
+41_hda
+>>>> =C2=A0=C2=A0 ALSA: hda: cs35l41: Ensure amp is only unmuted during pla=
+yback
+>>> Applied all patches now to for-next branch.
+>> It seems that this patch set causes occasional freeze at suspend:
+>> =C2=A0=C2=A0 https://bugzilla.suse.com/show_bug.cgi?id=3D1213745
+>>
+>> Could you take a look?
+>>
+>>
+>> thanks,
+>>
+>> Takashi
+>
+> Hi Takashi,
+>
+> The initial bug report shows one of the original issues that this patch
+> chain was trying to fix.
+> From what I can tell from the second issue, something has caused the
+> CS35L41 to stop responding,
+> which in turn caused the system suspend call to fail, and the error is
+> passed up. Since system suspend
+> failed, there was no corresponding system resume, which means the
+> CS35L41 was stuck broken.
+>
+> I'm not sure what was meant by "freeze" and "overheating" in the bug
+> report, since the log seems to
+> indicate the laptop is still responsive, even if audio is broken.
+>
+> There is some oddity in the log, since one of the errors that was
+> printed should only be printed when
+> the CS35L41 is using External Boost, but I think this laptop is supposed
+> to use Internal Boost.
+> We'll investigate further.
+>
+> Thanks,
+>
+> Stefan Binding
 
-Signed-off-by: Elinor Montmasson <elinor.montmasson@savoirfairelinux.com>
-Co-authored-by: Philip-Dylan Gleonec <philip-dylan.gleonec@savoirfairelin=
-ux.com>
----
- sound/soc/fsl/fsl-asoc-card.c | 4 ++++
- 1 file changed, 4 insertions(+)
 
-diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.=
-c
-index 66bcb6aa498a..a60d78374ef3 100644
---- a/sound/soc/fsl/fsl-asoc-card.c
-+++ b/sound/soc/fsl/fsl-asoc-card.c
-@@ -723,6 +723,10 @@ static int fsl_asoc_card_probe(struct platform_devic=
-e *pdev)
- 		priv->card.num_dapm_routes =3D 0;
- 		of_property_read_u32(np, "cpu-slot-width", &priv->cpu_priv.slot_width)=
-;
- 		of_property_read_u32(np, "cpu-slot-num", &priv->cpu_priv.slot_num);
-+		of_property_read_u32(np, "cpu-sysclk-freq-rx",
-+					(u32 *)&priv->cpu_priv.sysclk_freq[RX]);
-+		of_property_read_u32(np, "cpu-sysclk-freq-tx",
-+					(u32 *)&priv->cpu_priv.sysclk_freq[TX]);
- 	} else {
- 		dev_err(&pdev->dev, "unknown Device Tree compatible\n");
- 		ret =3D -EINVAL;
---=20
-2.25.1
+Hello,
+
+I would like to inform you that (one of) those patches is probably
+breaking sound on Lenovo Legion 7 16ACHg6. They were applied in Manjaro
+Linux kernel here:
+
+https://gitlab.manjaro.org/packages/core/linux64/-/commit/742e66f525170fe02=
+dec42e47aedf53d3dc85195
+
+and when I install this kernel, there is no sound anymore. There is
+nothing more than those patches in this commit. A kernel compiled from
+the previous commit works fine.
+
+Sound used to work fine from 5.17 if I remember correctly.
+
+I hope I replied correctly to this thread, if not, apologies.
+
+Best Regards,
+
+Waldek Andrukiewicz
+
+
 
