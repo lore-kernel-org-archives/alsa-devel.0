@@ -4,81 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BA4B8C71153
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 Sep 2023 12:46:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DC720C71153
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 Sep 2023 12:46:39 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C914F84B;
-	Mon,  4 Sep 2023 14:45:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C914F84B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3523C832;
+	Mon,  4 Sep 2023 14:45:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3523C832
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1693831577;
-	bh=94GvThpch4KIQhb/eDaV9ArjImgMNezZnaruBwzFAfs=;
+	s=default; t=1693831598;
+	bh=VMTUibu+gKiKaY66dTNVlYqSL6ceQxuh372lCYys67c=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=ZnpJm0W0tH+JJOOrh9YDeimkH3HrMZyg3vjnMIWyhxDay1kxmeA4iottfdm4eXZqj
-	 aE9h0RdnwvEhKA5jexUfDRw4C9nJ9FbPKVL8+CujTJRSZ6bcmEPuTxlYfUtpRO0EX7
-	 T3UKBR2rea/48QiiCAo0z/858x2YiA7cyJWwrZIg=
+	b=VIy4UMAOGVkfg/3G5/4qIsXiSkS3g/0bZ2BIkhmUkGD0y4IZ6sqxUO4nGwoNPjd+d
+	 frYenmgQD1UjOSTNltnlU8eJrocFmPtDET7KLt6bGAChVEd5ZbraWo5K33jTNrUTmy
+	 igu1TlkMgLBCKVVRYtFnziR5bPlmFRBhyaPbm39A=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E1DF3F805A9; Mon,  4 Sep 2023 14:44:17 +0200 (CEST)
+	id 1F561F805AC; Mon,  4 Sep 2023 14:44:21 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6953CF80587;
-	Mon,  4 Sep 2023 14:44:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CA7EAF80587;
+	Mon,  4 Sep 2023 14:44:20 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 80BDAF80236; Fri,  1 Sep 2023 16:46:38 +0200 (CEST)
+	id ADF09F80236; Fri,  1 Sep 2023 16:46:40 +0200 (CEST)
 Received: from mail.savoirfairelinux.com (mail.savoirfairelinux.com
  [208.88.110.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 5D5ABF800D1
-	for <alsa-devel@alsa-project.org>; Fri,  1 Sep 2023 16:46:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5D5ABF800D1
+	by alsa1.perex.cz (Postfix) with ESMTPS id 58D70F80155
+	for <alsa-devel@alsa-project.org>; Fri,  1 Sep 2023 16:46:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 58D70F80155
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=savoirfairelinux.com header.i=@savoirfairelinux.com
  header.a=rsa-sha256 header.s=DFC430D2-D198-11EC-948E-34200CB392D2
- header.b=uGL1j1Gl
+ header.b=R8n6L/zN
 Received: from localhost (localhost [127.0.0.1])
-	by mail.savoirfairelinux.com (Postfix) with ESMTP id 420E19C1115;
-	Fri,  1 Sep 2023 10:46:32 -0400 (EDT)
+	by mail.savoirfairelinux.com (Postfix) with ESMTP id B7C379C1115;
+	Fri,  1 Sep 2023 10:46:34 -0400 (EDT)
 Received: from mail.savoirfairelinux.com ([127.0.0.1])
  by localhost (mail.savoirfairelinux.com [127.0.0.1]) (amavis, port 10032)
- with ESMTP id i_qMz8tGS-Jw; Fri,  1 Sep 2023 10:46:31 -0400 (EDT)
+ with ESMTP id gqaAkGM3qpyD; Fri,  1 Sep 2023 10:46:34 -0400 (EDT)
 Received: from localhost (localhost [127.0.0.1])
-	by mail.savoirfairelinux.com (Postfix) with ESMTP id 9EA359C2A40;
-	Fri,  1 Sep 2023 10:46:31 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.savoirfairelinux.com 9EA359C2A40
+	by mail.savoirfairelinux.com (Postfix) with ESMTP id 192D19C2A33;
+	Fri,  1 Sep 2023 10:46:34 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.savoirfairelinux.com 192D19C2A33
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
 	d=savoirfairelinux.com; s=DFC430D2-D198-11EC-948E-34200CB392D2;
-	t=1693579591; bh=Ld48BtjguABGFoT9Tu4EHwP0So3rOE0HKY9Qeb0+aGU=;
+	t=1693579594; bh=sZYZCW5RuIjbb0QpfTC3P2+IfqLC+ypkXU6dzwhTnl0=;
 	h=From:To:Date:Message-Id:MIME-Version;
-	b=uGL1j1GloTV3cs1E9uIH6MJ8gv1Augt7BeevqjQq1aM72zvVKSh5WdmhIMkeov9DE
-	 JzijQd+aiYYsHvL67XF7Bv1J9F8u7jQ/LzBtZpTXFtFOeE2lKqQp8U7/1GGJFnGSfg
-	 9o7ANxSCtjmBLydU4c1a3Y+ecVIGkql+9Jk/tdK+M6l/XS9zMaFptTCTIOfgTX/0rH
-	 bNZJndzleAoPn4LjG9UX9/ot6Xl3PKOgUrYx8M2lE1EjasiPeyhxAQ2wU0Phqr0fP3
-	 LSyjtdxyQJTXE1T1nZeNOWqci8wZEhT0Qj37J4Cfjh9zrl63IlkfVazi4QOomt9CtR
-	 55HJtoMNYZtEg==
+	b=R8n6L/zNOfeOFXrmvc9ZN1EPm/1hEL7pGFb3cHiw1GjHdQsjPVDAkne+HKcCDCdXz
+	 YMWpZgv66ONQ/DmwlklSD2sakTogXn2SL/BAWvf805Rd1Z8rWgezhBJo0U5vH+8hG1
+	 YoChclgUqDhbwTHE8P7rStGcLlObrWRefr6yVM0DhFD7gZvGaMfZQ8a6fbjN0QcDO+
+	 UnB+FC3omTSMSg9u4P71uE0bsMmNZo8Zh0m9cr2YNdyndGJJiAlnZ3KmKsosdxdEQP
+	 hHWjWvp1q10W083/eDJ7/CQ1CPCh7xQ+9tq7YFcMxQxvISy0b62bPRXfL34OBhIrU7
+	 ljXZIS9XYxmow==
 X-Virus-Scanned: amavis at mail.savoirfairelinux.com
 Received: from mail.savoirfairelinux.com ([127.0.0.1])
  by localhost (mail.savoirfairelinux.com [127.0.0.1]) (amavis, port 10026)
- with ESMTP id c6gn2rhC1vMB; Fri,  1 Sep 2023 10:46:31 -0400 (EDT)
+ with ESMTP id nK1BigwVNiBz; Fri,  1 Sep 2023 10:46:34 -0400 (EDT)
 Received: from gerard.rennes.sfl
  (lmontsouris-657-1-69-118.w80-15.abo.wanadoo.fr [80.15.101.118])
-	by mail.savoirfairelinux.com (Postfix) with ESMTPSA id B0F389C1115;
-	Fri,  1 Sep 2023 10:46:30 -0400 (EDT)
+	by mail.savoirfairelinux.com (Postfix) with ESMTPSA id 4167C9C2802;
+	Fri,  1 Sep 2023 10:46:33 -0400 (EDT)
 From: elinor.montmasson@savoirfairelinux.com
 To: shengjiu.wang@gmail.com,
 	Xiubo.Lee@gmail.com
 Cc: alsa-devel@alsa-project.org,
 	philip-dylan.gleonec@savoirfairelinux.com,
 	Elinor Montmasson <elinor.montmasson@savoirfairelinux.com>
-Subject: [PATCH 02/10] ASoC: fsl-asoc-card: prevent deferment with dummy codec
-Date: Fri,  1 Sep 2023 16:45:42 +0200
-Message-Id: <20230901144550.520072-3-elinor.montmasson@savoirfairelinux.com>
+Subject: [PATCH 03/10] ASoC: fsl-asoc-card: set dummy codec as clock consumer
+Date: Fri,  1 Sep 2023 16:45:43 +0200
+Message-Id: <20230901144550.520072-4-elinor.montmasson@savoirfairelinux.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230901144550.520072-1-elinor.montmasson@savoirfairelinux.com>
 References: <20230901144550.520072-1-elinor.montmasson@savoirfairelinux.com>
@@ -90,15 +90,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: NEWDIKDEG7A23NJBJCPUHKRO5RA7GIOR
-X-Message-ID-Hash: NEWDIKDEG7A23NJBJCPUHKRO5RA7GIOR
+Message-ID-Hash: 3B76VQEW6NHWVW24MKUDIH6USJ4XKMDE
+X-Message-ID-Hash: 3B76VQEW6NHWVW24MKUDIH6USJ4XKMDE
 X-Mailman-Approved-At: Mon, 04 Sep 2023 12:44:07 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NEWDIKDEG7A23NJBJCPUHKRO5RA7GIOR/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3B76VQEW6NHWVW24MKUDIH6USJ4XKMDE/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -109,36 +109,32 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Elinor Montmasson <elinor.montmasson@savoirfairelinux.com>
 
-Prevent deferment during sound card initialisation when using the
-dummy codec.
-If the codec isn't an ac97, it is expected to have a device tree node
-for the codec. If not, the sound card initialisation is deferred.
-However, the dummy codec has no device tree node, thus we must
-handle this specific use case.
+The default dai format defined by DAI_FMT_BASE doesn't set if the codec
+is consumer or provider of the bit and frame clocks.
+As it is set by each existing configuration, set the codec as consumer
+of both bit and frame clock by default with the dummy codec.
 
 Signed-off-by: Elinor Montmasson <elinor.montmasson@savoirfairelinux.com>
 Co-authored-by: Philip-Dylan Gleonec <philip-dylan.gleonec@savoirfairelin=
 ux.com>
 ---
- sound/soc/fsl/fsl-asoc-card.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/soc/fsl/fsl-asoc-card.c | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.=
 c
-index c12a356a86d5..d656df0b0eea 100644
+index d656df0b0eea..d210147aebfe 100644
 --- a/sound/soc/fsl/fsl-asoc-card.c
 +++ b/sound/soc/fsl/fsl-asoc-card.c
-@@ -748,7 +748,8 @@ static int fsl_asoc_card_probe(struct platform_device=
+@@ -711,6 +711,7 @@ static int fsl_asoc_card_probe(struct platform_device=
  *pdev)
- 	of_node_put(bitclkprovider);
- 	of_node_put(frameprovider);
-=20
--	if (!fsl_asoc_card_is_ac97(priv) && !codec_dev) {
-+	if (!fsl_asoc_card_is_ac97(priv) && !codec_dev
-+	  && !of_device_is_compatible(np, "fsl,imx-audio-dummy-codec")) {
- 		dev_dbg(&pdev->dev, "failed to find codec device\n");
- 		ret =3D -EPROBE_DEFER;
- 		goto asrc_fail;
+ 			priv->codec_priv.mclk =3D devm_clk_get(codec_dev, NULL);
+ 	} else if (of_device_is_compatible(np, "fsl,imx-audio-dummy-codec")) {
+ 		codec_dai_name =3D "snd-soc-dummy-dai";
++		priv->dai_fmt |=3D SND_SOC_DAIFMT_CBC_CFC;
+ 	} else {
+ 		dev_err(&pdev->dev, "unknown Device Tree compatible\n");
+ 		ret =3D -EINVAL;
 --=20
 2.25.1
 
