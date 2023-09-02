@@ -4,60 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 49152C001DB
-	for <alsa-devel@archiver.kernel.org>; Sat,  2 Sep 2023 21:10:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 602B4C001DB
+	for <alsa-devel@archiver.kernel.org>; Sat,  2 Sep 2023 21:10:46 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 979CD3E8;
-	Sat,  2 Sep 2023 23:09:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 979CD3E8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 41A6CAE9;
+	Sat,  2 Sep 2023 23:09:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 41A6CAE9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1693689031;
-	bh=EIKQVEzIvsfCigiMKXYRAU8bDJtcz9v1w1No9Z6EJII=;
+	s=default; t=1693689043;
+	bh=w5FQqX5N0SNY30mh7ugIsBlhQQTzEUlaqCEU1kT1GFk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=bF66CR2hssk6sRiKd591YmgvNF4pp+8wuzDzPzwfhWMATLiW574cooEHv1V3G/tfx
-	 tDfgMiMdoclHEgx5jz8mPblmT5FnREcpXiJudNBKgZPg3QCs1swmUzrE0YfashCNer
-	 WKlWGxbxgeH1wsTOqTo5hikMZtpkeHg9VHSZU6LE=
+	b=G8PUnPSKpojCYv90bOi1FzbAMo+ZI9oG6BMYWAEPw4fVF0/rh60clAsbnl20Onv21
+	 nF6aErNCwcFWkuBGvSumhKb1x+jomgERjxZtTXHvlYRnZWgvmIBCoBhgYOx6QlbUNb
+	 YyJbF+hORj/mHMDLM8pK+zdSmFIxZDV4YlLrGM3c=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CCC42F804DA; Sat,  2 Sep 2023 23:09:10 +0200 (CEST)
+	id 1F545F8032D; Sat,  2 Sep 2023 23:09:12 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3B1DDF804DA;
-	Sat,  2 Sep 2023 23:09:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B5775F8056F;
+	Sat,  2 Sep 2023 23:09:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A1321F80536; Sat,  2 Sep 2023 23:09:05 +0200 (CEST)
+	id 10885F8032D; Sat,  2 Sep 2023 23:09:07 +0200 (CEST)
 Received: from madras.collabora.co.uk (madras.collabora.co.uk
- [46.235.227.172])
+ [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 0BD14F80249
-	for <alsa-devel@alsa-project.org>; Sat,  2 Sep 2023 23:06:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0BD14F80249
+	by alsa1.perex.cz (Postfix) with ESMTPS id 1E52DF804DA
+	for <alsa-devel@alsa-project.org>; Sat,  2 Sep 2023 23:06:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1E52DF804DA
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=collabora.com header.i=@collabora.com
- header.a=rsa-sha256 header.s=mail header.b=kIg6hIb6
+ header.a=rsa-sha256 header.s=mail header.b=SsV5Z5qX
 Received: from localhost (unknown [81.18.92.207])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
  server-digest SHA256)
 	(No client certificate requested)
 	(Authenticated sender: cristicc)
-	by madras.collabora.co.uk (Postfix) with ESMTPSA id 6FD4866072B6;
-	Sat,  2 Sep 2023 22:06:34 +0100 (BST)
+	by madras.collabora.co.uk (Postfix) with ESMTPSA id EC9E366072B6;
+	Sat,  2 Sep 2023 22:06:43 +0100 (BST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1693688794;
-	bh=EIKQVEzIvsfCigiMKXYRAU8bDJtcz9v1w1No9Z6EJII=;
+	s=mail; t=1693688804;
+	bh=w5FQqX5N0SNY30mh7ugIsBlhQQTzEUlaqCEU1kT1GFk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=kIg6hIb6YJvChqOHLmgZRHM6t+6lgXW0nWc5+QFgmoDU98F4hY6vU6CTDDydq9ZR9
-	 x09pVplTOecbN5bkQUF57p8OZY/NmIWHE4i3/4UJQLKv+a6+H/axVo5BwqpGS4bMv0
-	 YZKpzWOTm5iQq6+HqE+fi8lIWw2jyof60EaqH93IhBCLjXHyrX5LxMFQsCdX3+gRn1
-	 IU5/l+UqsuSx9RImlyX0LJgPDBDbsCxhSJuPx4yEEmmHOusLWEBOPIavgT6/CIEHnX
-	 ODRnV/FgbYoTeh8CtjujAcETFiWnQQxtsM7qDnY3L9iEAMwghBi9Vsri/GRhtp4KIm
-	 UCG6/HY2kdq1w==
+	b=SsV5Z5qXxHI1zSHIAWX75tvNJU3lFptraqm847T0X0jApT8o3TtarXt2lIAni6cYA
+	 zWoi/adINh/vCW9bvyQsNMGRqcFso3rmxgNOcit2Kxm02CQdSlF4N/HqgVqISFAykC
+	 wKCm3j/r+ROf4iBRKsRM412rvw4bLYyWhhHy5jBCZAtTUX/m4Ly0fuozAmS81chQv0
+	 1zPdtb5MDfdrdpq+f9ZsvWPaZCuviWhzCMqKnW1raow5TNdgjJVMOKIydeDjUyY3uY
+	 XW1BAEzxzmNi3RDMMprX5rN3fJJhvWaSpzNL2kRPIm7v6xsI/VLhw2ln6moTppPEyp
+	 i7FqJXBmtj4nw==
 From: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
 To: James Schulman <james.schulman@cirrus.com>,
 	David Rhodes <david.rhodes@cirrus.com>,
@@ -72,17 +72,16 @@ Cc: alsa-devel@alsa-project.org,
 	patches@opensource.cirrus.com,
 	linux-kernel@vger.kernel.org,
 	kernel@collabora.com
-Subject: [PATCH 3/9] ASoC: cs35l41: Initialize completion object before
- requesting IRQ
-Date: Sun,  3 Sep 2023 00:06:15 +0300
-Message-ID: <20230902210621.1184693-4-cristian.ciocaltea@collabora.com>
+Subject: [PATCH 6/9] ASoC: cs35l41: Make use of dev_err_probe()
+Date: Sun,  3 Sep 2023 00:06:18 +0300
+Message-ID: <20230902210621.1184693-7-cristian.ciocaltea@collabora.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230902210621.1184693-1-cristian.ciocaltea@collabora.com>
 References: <20230902210621.1184693-1-cristian.ciocaltea@collabora.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: P72ZYHSJ36U5UISTPZDT6KU6I4GPVYOA
-X-Message-ID-Hash: P72ZYHSJ36U5UISTPZDT6KU6I4GPVYOA
+Message-ID-Hash: A3RZXDGBNZP5MXXBPXEEKXA5OFUJLOT5
+X-Message-ID-Hash: A3RZXDGBNZP5MXXBPXEEKXA5OFUJLOT5
 X-MailFrom: cristian.ciocaltea@collabora.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -95,7 +94,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/P72ZYHSJ36U5UISTPZDT6KU6I4GPVYOA/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/A3RZXDGBNZP5MXXBPXEEKXA5OFUJLOT5/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -104,38 +103,169 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Technically, an interrupt handler can be called before probe() finishes
-its execution, hence ensure the pll_lock completion object is always
-initialized before being accessed in cs35l41_irq().
+Use dev_err_probe() helper where possible, to simplify error handling
+during probe.
 
-Fixes: f5030564938b ("ALSA: cs35l41: Add shared boost feature")
 Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
 ---
- sound/soc/codecs/cs35l41.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/cs35l41-i2c.c |  9 +++------
+ sound/soc/codecs/cs35l41-spi.c |  9 +++------
+ sound/soc/codecs/cs35l41.c     | 34 ++++++++++++++++------------------
+ 3 files changed, 22 insertions(+), 30 deletions(-)
 
+diff --git a/sound/soc/codecs/cs35l41-i2c.c b/sound/soc/codecs/cs35l41-i2c.c
+index 7ea890d7d387..9109203a7f25 100644
+--- a/sound/soc/codecs/cs35l41-i2c.c
++++ b/sound/soc/codecs/cs35l41-i2c.c
+@@ -35,7 +35,6 @@ static int cs35l41_i2c_probe(struct i2c_client *client)
+ 	struct device *dev = &client->dev;
+ 	struct cs35l41_hw_cfg *hw_cfg = dev_get_platdata(dev);
+ 	const struct regmap_config *regmap_config = &cs35l41_regmap_i2c;
+-	int ret;
+ 
+ 	cs35l41 = devm_kzalloc(dev, sizeof(struct cs35l41_private), GFP_KERNEL);
+ 
+@@ -47,11 +46,9 @@ static int cs35l41_i2c_probe(struct i2c_client *client)
+ 
+ 	i2c_set_clientdata(client, cs35l41);
+ 	cs35l41->regmap = devm_regmap_init_i2c(client, regmap_config);
+-	if (IS_ERR(cs35l41->regmap)) {
+-		ret = PTR_ERR(cs35l41->regmap);
+-		dev_err(cs35l41->dev, "Failed to allocate register map: %d\n", ret);
+-		return ret;
+-	}
++	if (IS_ERR(cs35l41->regmap))
++		return dev_err_probe(cs35l41->dev, PTR_ERR(cs35l41->regmap),
++				     "Failed to allocate register map\n");
+ 
+ 	return cs35l41_probe(cs35l41, hw_cfg);
+ }
+diff --git a/sound/soc/codecs/cs35l41-spi.c b/sound/soc/codecs/cs35l41-spi.c
+index 5c8bb24909eb..28e9c9473e60 100644
+--- a/sound/soc/codecs/cs35l41-spi.c
++++ b/sound/soc/codecs/cs35l41-spi.c
+@@ -32,7 +32,6 @@ static int cs35l41_spi_probe(struct spi_device *spi)
+ 	const struct regmap_config *regmap_config = &cs35l41_regmap_spi;
+ 	struct cs35l41_hw_cfg *hw_cfg = dev_get_platdata(&spi->dev);
+ 	struct cs35l41_private *cs35l41;
+-	int ret;
+ 
+ 	cs35l41 = devm_kzalloc(&spi->dev, sizeof(struct cs35l41_private), GFP_KERNEL);
+ 	if (!cs35l41)
+@@ -43,11 +42,9 @@ static int cs35l41_spi_probe(struct spi_device *spi)
+ 
+ 	spi_set_drvdata(spi, cs35l41);
+ 	cs35l41->regmap = devm_regmap_init_spi(spi, regmap_config);
+-	if (IS_ERR(cs35l41->regmap)) {
+-		ret = PTR_ERR(cs35l41->regmap);
+-		dev_err(&spi->dev, "Failed to allocate register map: %d\n", ret);
+-		return ret;
+-	}
++	if (IS_ERR(cs35l41->regmap))
++		return dev_err_probe(cs35l41->dev, PTR_ERR(cs35l41->regmap),
++				     "Failed to allocate register map\n");
+ 
+ 	cs35l41->dev = &spi->dev;
+ 	cs35l41->irq = spi->irq;
 diff --git a/sound/soc/codecs/cs35l41.c b/sound/soc/codecs/cs35l41.c
-index 722b69a6de26..fe5376b3e01b 100644
+index e143b0e306b1..6f2ad0d3a75c 100644
 --- a/sound/soc/codecs/cs35l41.c
 +++ b/sound/soc/codecs/cs35l41.c
-@@ -1273,6 +1273,8 @@ int cs35l41_probe(struct cs35l41_private *cs35l41, const struct cs35l41_hw_cfg *
- 		regmap_update_bits(cs35l41->regmap, CS35L41_IRQ1_MASK3, CS35L41_INT3_PLL_LOCK_MASK,
- 				   0 << CS35L41_INT3_PLL_LOCK_SHIFT);
+@@ -1204,16 +1204,14 @@ int cs35l41_probe(struct cs35l41_private *cs35l41, const struct cs35l41_hw_cfg *
  
-+	init_completion(&cs35l41->pll_lock);
-+
- 	ret = devm_request_threaded_irq(cs35l41->dev, cs35l41->irq, NULL, cs35l41_irq,
+ 	ret = devm_regulator_bulk_get(cs35l41->dev, CS35L41_NUM_SUPPLIES,
+ 				      cs35l41->supplies);
+-	if (ret != 0) {
+-		dev_err(cs35l41->dev, "Failed to request core supplies: %d\n", ret);
+-		return ret;
+-	}
++	if (ret != 0)
++		return dev_err_probe(cs35l41->dev, ret,
++				     "Failed to request core supplies\n");
+ 
+ 	ret = regulator_bulk_enable(CS35L41_NUM_SUPPLIES, cs35l41->supplies);
+-	if (ret != 0) {
+-		dev_err(cs35l41->dev, "Failed to enable core supplies: %d\n", ret);
+-		return ret;
+-	}
++	if (ret != 0)
++		return dev_err_probe(cs35l41->dev, ret,
++				     "Failed to enable core supplies\n");
+ 
+ 	/* returning NULL can be an option if in stereo mode */
+ 	cs35l41->reset_gpio = devm_gpiod_get_optional(cs35l41->dev, "reset",
+@@ -1225,8 +1223,8 @@ int cs35l41_probe(struct cs35l41_private *cs35l41, const struct cs35l41_hw_cfg *
+ 			dev_info(cs35l41->dev,
+ 				 "Reset line busy, assuming shared reset\n");
+ 		} else {
+-			dev_err(cs35l41->dev,
+-				"Failed to get reset GPIO: %d\n", ret);
++			dev_err_probe(cs35l41->dev, ret,
++				      "Failed to get reset GPIO\n");
+ 			goto err;
+ 		}
+ 	}
+@@ -1242,8 +1240,8 @@ int cs35l41_probe(struct cs35l41_private *cs35l41, const struct cs35l41_hw_cfg *
+ 				       int_status, int_status & CS35L41_OTP_BOOT_DONE,
+ 				       1000, 100000);
+ 	if (ret) {
+-		dev_err(cs35l41->dev,
+-			"Failed waiting for OTP_BOOT_DONE: %d\n", ret);
++		dev_err_probe(cs35l41->dev, ret,
++			      "Failed waiting for OTP_BOOT_DONE\n");
+ 		goto err;
+ 	}
+ 
+@@ -1256,13 +1254,13 @@ int cs35l41_probe(struct cs35l41_private *cs35l41, const struct cs35l41_hw_cfg *
+ 
+ 	ret = regmap_read(cs35l41->regmap, CS35L41_DEVID, &regid);
+ 	if (ret < 0) {
+-		dev_err(cs35l41->dev, "Get Device ID failed: %d\n", ret);
++		dev_err_probe(cs35l41->dev, ret, "Get Device ID failed\n");
+ 		goto err;
+ 	}
+ 
+ 	ret = regmap_read(cs35l41->regmap, CS35L41_REVID, &reg_revid);
+ 	if (ret < 0) {
+-		dev_err(cs35l41->dev, "Get Revision ID failed: %d\n", ret);
++		dev_err_probe(cs35l41->dev, ret, "Get Revision ID failed\n");
+ 		goto err;
+ 	}
+ 
+@@ -1287,7 +1285,7 @@ int cs35l41_probe(struct cs35l41_private *cs35l41, const struct cs35l41_hw_cfg *
+ 
+ 	ret = cs35l41_otp_unpack(cs35l41->dev, cs35l41->regmap);
+ 	if (ret < 0) {
+-		dev_err(cs35l41->dev, "OTP Unpack failed: %d\n", ret);
++		dev_err_probe(cs35l41->dev, ret, "OTP Unpack failed\n");
+ 		goto err;
+ 	}
+ 
+@@ -1309,13 +1307,13 @@ int cs35l41_probe(struct cs35l41_private *cs35l41, const struct cs35l41_hw_cfg *
  					IRQF_ONESHOT | IRQF_SHARED | irq_pol,
  					"cs35l41", cs35l41);
-@@ -1295,8 +1297,6 @@ int cs35l41_probe(struct cs35l41_private *cs35l41, const struct cs35l41_hw_cfg *
- 	if (ret < 0)
+ 	if (ret != 0) {
+-		dev_err(cs35l41->dev, "Failed to request IRQ: %d\n", ret);
++		dev_err_probe(cs35l41->dev, ret, "Failed to request IRQ\n");
  		goto err;
+ 	}
  
--	init_completion(&cs35l41->pll_lock);
--
- 	pm_runtime_set_autosuspend_delay(cs35l41->dev, 3000);
- 	pm_runtime_use_autosuspend(cs35l41->dev);
- 	pm_runtime_mark_last_busy(cs35l41->dev);
+ 	ret = cs35l41_set_pdata(cs35l41);
+ 	if (ret < 0) {
+-		dev_err(cs35l41->dev, "Set pdata failed: %d\n", ret);
++		dev_err_probe(cs35l41->dev, ret, "Set pdata failed\n");
+ 		goto err;
+ 	}
+ 
+@@ -1340,7 +1338,7 @@ int cs35l41_probe(struct cs35l41_private *cs35l41, const struct cs35l41_hw_cfg *
+ 					      &soc_component_dev_cs35l41,
+ 					      cs35l41_dai, ARRAY_SIZE(cs35l41_dai));
+ 	if (ret < 0) {
+-		dev_err(cs35l41->dev, "Register codec failed: %d\n", ret);
++		dev_err_probe(cs35l41->dev, ret, "Register codec failed\n");
+ 		goto err_pm;
+ 	}
+ 
 -- 
 2.41.0
 
