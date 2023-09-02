@@ -4,60 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AA18CC001DB
-	for <alsa-devel@archiver.kernel.org>; Sat,  2 Sep 2023 21:08:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9A628C001DB
+	for <alsa-devel@archiver.kernel.org>; Sat,  2 Sep 2023 21:09:03 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4BFDC3E8;
-	Sat,  2 Sep 2023 23:08:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4BFDC3E8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 62D11846;
+	Sat,  2 Sep 2023 23:08:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 62D11846
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1693688934;
-	bh=26NMKBPf7XsNqWOLU3lHGtCa6VNcw1e2kRl5lt256Sw=;
+	s=default; t=1693688941;
+	bh=iekwK11XbOskpf3xmL90QbHkzIoNYgnBqbKDM8TC4do=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=RAaxSZZL6tjffVRL8tmCdfK7z3HvQR5GMriNWNdLfqAXiHuWm7+yDsHXgy4nDX8h8
-	 Bf3MWOmx3eZI8dsAJms9kJrzsHb4OSw532jRuYpdP6jZ9oSaqev3/oHqqhvS0fGPZj
-	 WmrbvSlRW0mA1vSz7pIWbpYkoLx6louUGl4INec8=
+	b=o+06LeF7PDuTg4CTTqgCcJXuCyEJXe3LC0DYaA37f6ajoV70ITA/EHL2nHUn7HWI0
+	 /Ot9aZapNXPAIPky91MRfUfl0dOTCXHZY/zMpZ6F/cC69zkSVBQubOroqZZQL6J9i1
+	 EGQM3azUnplYpZMDzySmG5aN5HARJiejjO0UpkeU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E177AF8055C; Sat,  2 Sep 2023 23:08:02 +0200 (CEST)
+	id 6C021F8025F; Sat,  2 Sep 2023 23:08:04 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 313CBF80537;
-	Sat,  2 Sep 2023 23:08:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DBD40F80563;
+	Sat,  2 Sep 2023 23:08:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AD008F804F3; Sat,  2 Sep 2023 23:06:38 +0200 (CEST)
+	id 2EAF6F8032D; Sat,  2 Sep 2023 23:06:46 +0200 (CEST)
 Received: from madras.collabora.co.uk (madras.collabora.co.uk
  [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id DDF69F8025F
-	for <alsa-devel@alsa-project.org>; Sat,  2 Sep 2023 23:06:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DDF69F8025F
+	by alsa1.perex.cz (Postfix) with ESMTPS id A3255F8032D
+	for <alsa-devel@alsa-project.org>; Sat,  2 Sep 2023 23:06:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A3255F8032D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=collabora.com header.i=@collabora.com
- header.a=rsa-sha256 header.s=mail header.b=mJYLRed+
+ header.a=rsa-sha256 header.s=mail header.b=kEQCHpSr
 Received: from localhost (unknown [81.18.92.207])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
  server-digest SHA256)
 	(No client certificate requested)
 	(Authenticated sender: cristicc)
-	by madras.collabora.co.uk (Postfix) with ESMTPSA id B774F66072B7;
-	Sat,  2 Sep 2023 22:06:31 +0100 (BST)
+	by madras.collabora.co.uk (Postfix) with ESMTPSA id 9031E66072B5;
+	Sat,  2 Sep 2023 22:06:37 +0100 (BST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1693688791;
-	bh=26NMKBPf7XsNqWOLU3lHGtCa6VNcw1e2kRl5lt256Sw=;
+	s=mail; t=1693688797;
+	bh=iekwK11XbOskpf3xmL90QbHkzIoNYgnBqbKDM8TC4do=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=mJYLRed+Xn/OCGoqJANMJT+Qcbr1w0ZjRWsF/zTsV/tI/z7BQR7ktDyd9XSwsy9wt
-	 70OXfwogFsS3sdAYL79mpZ/n679OjNp8YH8m0I1MlJIBcRtOOGqwcvBXQbv/J4ZCp6
-	 BUacio4bBQAGkIPkMMGFY2ypgQ9g4SH3n8TL1takaT4f9tq5hO2m/gpi7Eea3FvNEr
-	 7TVeyDP6GVrUJGxIDb5TrQz4y1mneqKWQeHJL0rZhaMx2oLxuypKwKdM1S+Wz+B/vK
-	 WQkajK7pwRp0fPXel0P6XSs9tYThnwMTB9Bnp/S1+Dkw7gzIwVo3TKV1PWSz9TnbX1
-	 YRLfnt51RQifQ==
+	b=kEQCHpSriKXpgzz8SYM6UDY3NfM2gzd31oZ9qyiEvlYODl7G9ehRlcdEmACivD4/z
+	 gX7q/cSkv3l0z2kLsFg09pflgPAc8LvvDTmFxQWbDVh3exCESVLFYOEtUCDfCQM8w2
+	 SFpbRcwMTVMpVK7GQijRbYRaDIv6MDavavMI2japFEcux9BY1Bfj+q4qe4BEvHRCSy
+	 rj/I1d1sVmIUXPLn38tviW15zH04/1YZY5RPn4zLB7qV2jkFb+VxdcvJ8fZdTFE+dl
+	 TDzdFUx2eTF+tU/GwQWIfOuEbXq+5rmOc76h1QOgxFsSKAwUPkY6zyr6FQDBnZNabv
+	 4xF9IPb72GJ4Q==
 From: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
 To: James Schulman <james.schulman@cirrus.com>,
 	David Rhodes <david.rhodes@cirrus.com>,
@@ -72,16 +72,16 @@ Cc: alsa-devel@alsa-project.org,
 	patches@opensource.cirrus.com,
 	linux-kernel@vger.kernel.org,
 	kernel@collabora.com
-Subject: [PATCH 2/9] ASoC: cs35l41: Handle mdsync_up reg write errors
-Date: Sun,  3 Sep 2023 00:06:14 +0300
-Message-ID: <20230902210621.1184693-3-cristian.ciocaltea@collabora.com>
+Subject: [PATCH 4/9] ASoC: cs35l41: Fix broken shared boost activation
+Date: Sun,  3 Sep 2023 00:06:16 +0300
+Message-ID: <20230902210621.1184693-5-cristian.ciocaltea@collabora.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230902210621.1184693-1-cristian.ciocaltea@collabora.com>
 References: <20230902210621.1184693-1-cristian.ciocaltea@collabora.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 7RZAB4YT73NV5U32INFD2CWQKN3CARAC
-X-Message-ID-Hash: 7RZAB4YT73NV5U32INFD2CWQKN3CARAC
+Message-ID-Hash: YNXSB63WIJIPZ6P6HMECTF65RO74AFW7
+X-Message-ID-Hash: YNXSB63WIJIPZ6P6HMECTF65RO74AFW7
 X-MailFrom: cristian.ciocaltea@collabora.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -94,7 +94,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7RZAB4YT73NV5U32INFD2CWQKN3CARAC/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YNXSB63WIJIPZ6P6HMECTF65RO74AFW7/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -103,55 +103,284 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The return code of regmap_multi_reg_write() call related to "MDSYNC up"
-sequence is shadowed by the subsequent regmap_read_poll_timeout()
-invocation, which will hit a timeout in case the write operation above
-fails.
+Enabling the active/passive shared boosts involves writing the MDSYNC UP
+register sequence, which cannot be performed before receiving the PLL
+lock signal.
 
-Make sure cs35l41_global_enable() returns the correct error code instead
-of -ETIMEDOUT.
+Due to improper error handling, it was not obvious the wait operation
+times out and, consequently, the shared boost gets never enabled.
 
-Additionally, to be able to distinguish between the timeouts of
-wait_for_completion_timeout() and regmap_read_poll_timeout(), print an
-error message for the former and return immediately.  This also avoids
-having to wait unnecessarily for the second time.
+Further investigations revealed the signal is triggered while
+snd_pcm_start() is executed, right after receiving the
+SNDRV_PCM_TRIGGER_START command, which happens long after the
+SND_SOC_DAPM_PRE_PMU event handler is invoked as part of
+snd_pcm_prepare().  That is where cs35l41_global_enable() is called
+from.
 
-Fixes: f8264c759208 ("ALSA: cs35l41: Poll for Power Up/Down rather than waiting a fixed delay")
+Increasing the wait duration doesn't help, as it only causes an
+unnecessary delay in the invocation of snd_pcm_start().  Moving the wait
+and the subsequent regmap operations to the SNDRV_PCM_TRIGGER_START
+callback is not a solution either, since they would be executed in an
+IRQ-off atomic context.
+
+Solve the issue by deferring the processing to a workqueue task, which
+allows to correctly wait for the signal and then safely proceed with
+the required regmap operations.
+
+Fixes: f5030564938b ("ALSA: cs35l41: Add shared boost feature")
 Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
 ---
- sound/soc/codecs/cs35l41-lib.c | 17 ++++++++++-------
- 1 file changed, 10 insertions(+), 7 deletions(-)
+ include/sound/cs35l41.h        |  5 +-
+ sound/soc/codecs/cs35l41-lib.c | 86 +++++++++++++++++++++++++---------
+ sound/soc/codecs/cs35l41.c     | 38 ++++++++++++++-
+ sound/soc/codecs/cs35l41.h     |  2 +
+ 4 files changed, 104 insertions(+), 27 deletions(-)
 
+diff --git a/include/sound/cs35l41.h b/include/sound/cs35l41.h
+index 1bf757901d02..91024411f8a1 100644
+--- a/include/sound/cs35l41.h
++++ b/include/sound/cs35l41.h
+@@ -11,7 +11,7 @@
+ #define __CS35L41_H
+ 
+ #include <linux/regmap.h>
+-#include <linux/completion.h>
++#include <linux/workqueue.h>
+ #include <linux/firmware/cirrus/cs_dsp.h>
+ 
+ #define CS35L41_FIRSTREG		0x00000000
+@@ -902,7 +902,8 @@ int cs35l41_exit_hibernate(struct device *dev, struct regmap *regmap);
+ int cs35l41_init_boost(struct device *dev, struct regmap *regmap,
+ 		       struct cs35l41_hw_cfg *hw_cfg);
+ bool cs35l41_safe_reset(struct regmap *regmap, enum cs35l41_boost_type b_type);
++int cs35l41_mdsync_up(struct regmap *regmap);
+ int cs35l41_global_enable(struct device *dev, struct regmap *regmap, enum cs35l41_boost_type b_type,
+-			  int enable, struct completion *pll_lock, bool firmware_running);
++			  int enable, struct work_struct *mdsync_up_work, bool firmware_running);
+ 
+ #endif /* __CS35L41_H */
 diff --git a/sound/soc/codecs/cs35l41-lib.c b/sound/soc/codecs/cs35l41-lib.c
-index a018f1d98428..a6c6bb23b957 100644
+index a6c6bb23b957..16e7f46d3853 100644
 --- a/sound/soc/codecs/cs35l41-lib.c
 +++ b/sound/soc/codecs/cs35l41-lib.c
-@@ -1251,15 +1251,18 @@ int cs35l41_global_enable(struct device *dev, struct regmap *regmap, enum cs35l4
+@@ -1192,8 +1192,56 @@ bool cs35l41_safe_reset(struct regmap *regmap, enum cs35l41_boost_type b_type)
+ }
+ EXPORT_SYMBOL_GPL(cs35l41_safe_reset);
  
- 		ret = wait_for_completion_timeout(pll_lock, msecs_to_jiffies(1000));
- 		if (ret == 0) {
--			ret = -ETIMEDOUT;
--		} else {
--			regmap_read(regmap, CS35L41_PWR_CTRL3, &pwr_ctrl3);
--			pwr_ctrl3 |= CS35L41_SYNC_EN_MASK;
--			cs35l41_mdsync_up_seq[0].def = pwr_ctrl3;
--			ret = regmap_multi_reg_write(regmap, cs35l41_mdsync_up_seq,
--						     ARRAY_SIZE(cs35l41_mdsync_up_seq));
-+			dev_err(dev, "Timed out waiting for pll_lock\n");
-+			return -ETIMEDOUT;
++int cs35l41_mdsync_up(struct regmap *regmap)
++{
++	struct reg_sequence cs35l41_mdsync_up_seq[] = {
++		{CS35L41_PWR_CTRL3, 0},
++		{CS35L41_PWR_CTRL1, 0x00000000, 3000},
++		{CS35L41_PWR_CTRL1, 0x00000001, 3000},
++	};
++	unsigned int pwr_ctrl3, int_status;
++	int ret;
++
++	regmap_read(regmap, CS35L41_PWR_CTRL3, &pwr_ctrl3);
++	pwr_ctrl3 |= CS35L41_SYNC_EN_MASK;
++	cs35l41_mdsync_up_seq[0].def = pwr_ctrl3;
++
++	ret = regmap_multi_reg_write(regmap, cs35l41_mdsync_up_seq,
++				     ARRAY_SIZE(cs35l41_mdsync_up_seq));
++	if (ret < 0)
++		return ret;
++
++	ret = regmap_read_poll_timeout(regmap, CS35L41_IRQ1_STATUS1, int_status,
++				       int_status & CS35L41_PUP_DONE_MASK,
++				       1000, 100000);
++
++	/* Clear PUP/PDN status */
++	regmap_write(regmap, CS35L41_IRQ1_STATUS1, CS35L41_PUP_DONE_MASK);
++	return ret;
++}
++EXPORT_SYMBOL_GPL(cs35l41_mdsync_up);
++
++/*
++ * NOTE: Enabling the CS35L41_SHD_BOOST_ACTV and CS35L41_SHD_BOOST_PASS shared
++ * boosts involves writing the MDSYNC UP reg sequence, which must be performed
++ * only after getting the PLL lock signal. This signal seems to be triggered
++ * soon after snd_pcm_start() is executed and SNDRV_PCM_TRIGGER_START command
++ * is processed, which happens (long) after the SND_SOC_DAPM_PRE_PMU event
++ * handler is invoked as part of snd_pcm_prepare().
++ *
++ * The event handler is where cs35l41_global_enable() should be normally called
++ * from, but waiting for the PLL lock signal here will time out. Increasing the
++ * wait duration will not help, as the only consequence of that would be to add
++ * an unnecessary delay in the invocation of snd_pcm_start().
++ *
++ * Trying to move the wait in the SNDRV_PCM_TRIGGER_START callback is not a
++ * solution either, as the trigger is executed in an IRQ-off atomic context,
++ * hence the current approach is to defer the processing to a workqueue task.
++ * This allows to properly wait for the signal and then safely write the
++ * necessary MDSYNC sequence by calling cs35l41_mdsync_up() above.
++ */
+ int cs35l41_global_enable(struct device *dev, struct regmap *regmap, enum cs35l41_boost_type b_type,
+-			  int enable, struct completion *pll_lock, bool firmware_running)
++			  int enable, struct work_struct *mdsync_up_work, bool firmware_running)
+ {
+ 	int ret;
+ 	unsigned int gpio1_func, pad_control, pwr_ctrl1, pwr_ctrl3, int_status, pup_pdn_mask;
+@@ -1203,11 +1251,6 @@ int cs35l41_global_enable(struct device *dev, struct regmap *regmap, enum cs35l4
+ 		{CS35L41_GPIO_PAD_CONTROL,	0},
+ 		{CS35L41_PWR_CTRL1,		0, 3000},
+ 	};
+-	struct reg_sequence cs35l41_mdsync_up_seq[] = {
+-		{CS35L41_PWR_CTRL3,	0},
+-		{CS35L41_PWR_CTRL1,	0x00000000, 3000},
+-		{CS35L41_PWR_CTRL1,	0x00000001, 3000},
+-	};
+ 
+ 	pup_pdn_mask = enable ? CS35L41_PUP_DONE_MASK : CS35L41_PDN_DONE_MASK;
+ 
+@@ -1226,6 +1269,9 @@ int cs35l41_global_enable(struct device *dev, struct regmap *regmap, enum cs35l4
+ 	switch (b_type) {
+ 	case CS35L41_SHD_BOOST_ACTV:
+ 	case CS35L41_SHD_BOOST_PASS:
++		if (mdsync_up_work)
++			cancel_work_sync(mdsync_up_work);
++
+ 		regmap_read(regmap, CS35L41_PWR_CTRL3, &pwr_ctrl3);
+ 		regmap_read(regmap, CS35L41_GPIO_PAD_CONTROL, &pad_control);
+ 
+@@ -1243,33 +1289,27 @@ int cs35l41_global_enable(struct device *dev, struct regmap *regmap, enum cs35l4
+ 		cs35l41_mdsync_down_seq[2].def = pwr_ctrl1;
+ 		ret = regmap_multi_reg_write(regmap, cs35l41_mdsync_down_seq,
+ 					     ARRAY_SIZE(cs35l41_mdsync_down_seq));
+-		if (ret || !enable)
++		if (ret)
+ 			break;
+ 
+-		if (!pll_lock)
+-			return -EINVAL;
+-
+-		ret = wait_for_completion_timeout(pll_lock, msecs_to_jiffies(1000));
+-		if (ret == 0) {
+-			dev_err(dev, "Timed out waiting for pll_lock\n");
+-			return -ETIMEDOUT;
++		if (enable) {
++			if (mdsync_up_work) {
++				/* Call cs35l41_mdsync_up() after receiving PLL lock signal */
++				schedule_work(mdsync_up_work);
++			} else {
++				dev_err(dev, "MDSYNC UP work not provided\n");
++				ret = -EINVAL;
++			}
++			break;
  		}
  
-+		regmap_read(regmap, CS35L41_PWR_CTRL3, &pwr_ctrl3);
-+		pwr_ctrl3 |= CS35L41_SYNC_EN_MASK;
-+		cs35l41_mdsync_up_seq[0].def = pwr_ctrl3;
-+		ret = regmap_multi_reg_write(regmap, cs35l41_mdsync_up_seq,
-+					     ARRAY_SIZE(cs35l41_mdsync_up_seq));
-+		if (ret)
-+			return ret;
-+
+-		regmap_read(regmap, CS35L41_PWR_CTRL3, &pwr_ctrl3);
+-		pwr_ctrl3 |= CS35L41_SYNC_EN_MASK;
+-		cs35l41_mdsync_up_seq[0].def = pwr_ctrl3;
+-		ret = regmap_multi_reg_write(regmap, cs35l41_mdsync_up_seq,
+-					     ARRAY_SIZE(cs35l41_mdsync_up_seq));
+-		if (ret)
+-			return ret;
+-
  		ret = regmap_read_poll_timeout(regmap, CS35L41_IRQ1_STATUS1,
  					int_status, int_status & pup_pdn_mask,
  					1000, 100000);
+ 		if (ret)
+ 			dev_err(dev, "Enable(%d) failed: %d\n", enable, ret);
+ 
+-		// Clear PUP/PDN status
++		/* Clear PUP/PDN status */
+ 		regmap_write(regmap, CS35L41_IRQ1_STATUS1, pup_pdn_mask);
+ 		break;
+ 	case CS35L41_INT_BOOST:
+diff --git a/sound/soc/codecs/cs35l41.c b/sound/soc/codecs/cs35l41.c
+index fe5376b3e01b..9bf70da03972 100644
+--- a/sound/soc/codecs/cs35l41.c
++++ b/sound/soc/codecs/cs35l41.c
+@@ -500,11 +500,11 @@ static int cs35l41_main_amp_event(struct snd_soc_dapm_widget *w,
+ 						ARRAY_SIZE(cs35l41_pup_patch));
+ 
+ 		ret = cs35l41_global_enable(cs35l41->dev, cs35l41->regmap, cs35l41->hw_cfg.bst_type,
+-					    1, &cs35l41->pll_lock, cs35l41->dsp.cs_dsp.running);
++					    1, &cs35l41->mdsync_up_work, cs35l41->dsp.cs_dsp.running);
+ 		break;
+ 	case SND_SOC_DAPM_POST_PMD:
+ 		ret = cs35l41_global_enable(cs35l41->dev, cs35l41->regmap, cs35l41->hw_cfg.bst_type,
+-					    0, &cs35l41->pll_lock, cs35l41->dsp.cs_dsp.running);
++					    0, &cs35l41->mdsync_up_work, cs35l41->dsp.cs_dsp.running);
+ 
+ 		regmap_multi_reg_write_bypassed(cs35l41->regmap,
+ 						cs35l41_pdn_patch,
+@@ -1155,6 +1155,36 @@ static int cs35l41_acpi_get_name(struct cs35l41_private *cs35l41)
+ 	return 0;
+ }
+ 
++static void cs35l41_mdsync_up_work(struct work_struct *work)
++{
++	struct cs35l41_private *cs35l41 = container_of(work,
++						       struct cs35l41_private,
++						       mdsync_up_work);
++	int ret = wait_for_completion_timeout(&cs35l41->pll_lock,
++					      msecs_to_jiffies(100));
++	if (ret == 0) {
++		dev_err(cs35l41->dev, "Timed out waiting for pll_lock signal\n");
++		return;
++	}
++
++	dev_dbg(cs35l41->dev, "Received pll_lock signal\n");
++
++	ret = pm_runtime_resume_and_get(cs35l41->dev);
++	if (ret < 0) {
++		dev_err(cs35l41->dev,
++			"pm_runtime_resume_and_get failed in %s: %d\n",
++			__func__, ret);
++		return;
++	}
++
++	ret = cs35l41_mdsync_up(cs35l41->regmap);
++	if (ret < 0)
++		dev_err(cs35l41->dev, "MDSYNC UP failed: %d\n", ret);
++
++	pm_runtime_mark_last_busy(cs35l41->dev);
++	pm_runtime_put_autosuspend(cs35l41->dev);
++}
++
+ int cs35l41_probe(struct cs35l41_private *cs35l41, const struct cs35l41_hw_cfg *hw_cfg)
+ {
+ 	u32 regid, reg_revid, i, mtl_revid, int_status, chipid_match;
+@@ -1297,6 +1327,8 @@ int cs35l41_probe(struct cs35l41_private *cs35l41, const struct cs35l41_hw_cfg *
+ 	if (ret < 0)
+ 		goto err;
+ 
++	INIT_WORK(&cs35l41->mdsync_up_work, cs35l41_mdsync_up_work);
++
+ 	pm_runtime_set_autosuspend_delay(cs35l41->dev, 3000);
+ 	pm_runtime_use_autosuspend(cs35l41->dev);
+ 	pm_runtime_mark_last_busy(cs35l41->dev);
+@@ -1335,6 +1367,8 @@ EXPORT_SYMBOL_GPL(cs35l41_probe);
+ 
+ void cs35l41_remove(struct cs35l41_private *cs35l41)
+ {
++	cancel_work_sync(&cs35l41->mdsync_up_work);
++
+ 	pm_runtime_get_sync(cs35l41->dev);
+ 	pm_runtime_disable(cs35l41->dev);
+ 
+diff --git a/sound/soc/codecs/cs35l41.h b/sound/soc/codecs/cs35l41.h
+index 34d967d4372b..f9f85796a13a 100644
+--- a/sound/soc/codecs/cs35l41.h
++++ b/sound/soc/codecs/cs35l41.h
+@@ -13,6 +13,7 @@
+ #include <linux/gpio/consumer.h>
+ #include <linux/regulator/consumer.h>
+ #include <linux/firmware.h>
++#include <linux/completion.h>
+ #include <sound/core.h>
+ #include <sound/cs35l41.h>
+ 
+@@ -34,6 +35,7 @@ struct cs35l41_private {
+ 	/* GPIO for /RST */
+ 	struct gpio_desc *reset_gpio;
+ 	struct completion pll_lock;
++	struct work_struct mdsync_up_work;
+ };
+ 
+ int cs35l41_probe(struct cs35l41_private *cs35l41, const struct cs35l41_hw_cfg *hw_cfg);
 -- 
 2.41.0
 
