@@ -4,97 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DCDB6CA0FFC
-	for <alsa-devel@archiver.kernel.org>; Sat,  2 Sep 2023 06:01:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D9D41CA0FFC
+	for <alsa-devel@archiver.kernel.org>; Sat,  2 Sep 2023 06:03:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2F00A1FC;
-	Sat,  2 Sep 2023 08:00:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2F00A1FC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 93421100;
+	Sat,  2 Sep 2023 08:02:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 93421100
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1693634478;
-	bh=NlzT/15Y7yg40boDvvvkBG3Z3aDkm9zBzvJaMeFvbFo=;
+	s=default; t=1693634610;
+	bh=lK6lvrhtV75oTr60GkFj/Ut3veDzxcMYjH1JrBzG5X0=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=BtDCwtdHbVq8+f5tb+iIwKn40nT5+llzpGTEZx9XnSj4KFDWY+yzqzwd2IRJB/kY4
-	 JXMkFoIulKkaB6jpeRJ7GCgSW7EsM3SOws6Zf8MYgGfxSQbvoTOF/U5uU4E+hHb3ez
-	 CsoVHf7uSUekLJNpJw3eJbOFjfpCnlfRYB0S8v44=
+	b=hBmjc16UJicHCWYzGVGM23F4CObUxa84AuUlzvu7Ck0kkjlYaFIlpxscVv5WkF3mn
+	 qGQhla8Ivjf6VUs4ihBil2DB+gK4+IKS06egmwIqkZ6ddlQagK9d/R3gkIRTLp2N1a
+	 Itf/6/+7oz39rpn7qb1FlTg0GNinzE90ETYQB+vk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A8186F804F3; Sat,  2 Sep 2023 08:00:27 +0200 (CEST)
+	id BC59AF80249; Sat,  2 Sep 2023 08:02:14 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3DABEF80249;
-	Sat,  2 Sep 2023 08:00:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0D14AF80249;
+	Sat,  2 Sep 2023 08:02:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 61D95F8032D; Sat,  2 Sep 2023 08:00:18 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2001:67c:2178:6::1d])
+	id 04DEEF8032D; Sat,  2 Sep 2023 08:02:11 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2001:67c:2178:6::1c])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id F2F89F80249
-	for <alsa-devel@alsa-project.org>; Sat,  2 Sep 2023 08:00:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F2F89F80249
+	by alsa1.perex.cz (Postfix) with ESMTPS id B1D9EF8025F
+	for <alsa-devel@alsa-project.org>; Sat,  2 Sep 2023 08:01:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B1D9EF8025F
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=hIkKKbKv;
+ header.s=susede2_rsa header.b=bCsAomZx;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=8vbCd2MK
+ header.s=susede2_ed25519 header.b=m0S2p1u/
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 3AC531F45E;
-	Sat,  2 Sep 2023 06:00:11 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 370A821860;
+	Sat,  2 Sep 2023 06:01:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1693634411;
+	t=1693634514;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=UiJw0wZmYV8xH3B+NPa1TPI5Mn11gBz0SBgdVdGvyAI=;
-	b=hIkKKbKv08qFtCaP5D8arDHucS3JMv12FWNwuu6CKbOhnD/W3+liToOSWcK0W3XaBbpz79
-	f2cxmf93ddlujT7JIlHfTlxh9qwoM4HqhpgA1dMp58ONzoLInwG2KH4PqnlC6FTOLTdOy1
-	Ln9s7yS33OrbAX3i+NcTvMo7jf1/PeM=
+	bh=abAFWmqD3MSKZ2lEcxkJ4zagvS5AzWLDxL9nMbeEEVM=;
+	b=bCsAomZxexiMIDAgbzhi7er6Fl/kOOYr2on7G/uIk+h2lzY5vPVBhC0y1GJGR8G6r3HRTP
+	e0ARYO41sGBaHjNhGBjylrGdaTkUJulhzCoGeBWsyz7+nF10p54WPbD1cF0eOLyRBsJw2u
+	q7ubpb6w5ycNGLeDJMFNtXZEIozXZOI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1693634411;
+	s=susede2_ed25519; t=1693634514;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=UiJw0wZmYV8xH3B+NPa1TPI5Mn11gBz0SBgdVdGvyAI=;
-	b=8vbCd2MKe43WIoDW2Uha+1Y/3FYvVtJrX5iHNJUg6MpOUSEqontYND2c3A5Y+djkBvjPfF
-	5p41zJyuEVneqXCA==
+	bh=abAFWmqD3MSKZ2lEcxkJ4zagvS5AzWLDxL9nMbeEEVM=;
+	b=m0S2p1u/z6dq50vH5Z0uB9fmtGMJUTt4AZ9a2I1av+QN0MxxIbTqriS+72pPUJuy6yaU4w
+	RN0EhtVlxB5KbEBA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1A08E13440;
-	Sat,  2 Sep 2023 06:00:11 +0000 (UTC)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0CEA213440;
+	Sat,  2 Sep 2023 06:01:54 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id lo2EBWvP8mSsTgAAMHmgww
-	(envelope-from <tiwai@suse.de>); Sat, 02 Sep 2023 06:00:11 +0000
-Date: Sat, 02 Sep 2023 08:00:10 +0200
-Message-ID: <87edjhm7x1.wl-tiwai@suse.de>
+	id pHCyAdLP8mRETwAAMHmgww
+	(envelope-from <tiwai@suse.de>); Sat, 02 Sep 2023 06:01:54 +0000
+Date: Sat, 02 Sep 2023 08:01:53 +0200
+Message-ID: <87cyz1m7u6.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Al Viro <viro@zeniv.linux.org.uk>
 Cc: alsa-devel@alsa-project.org,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 02/25] ALSA: pcm: Add copy ops with iov_iter
-In-Reply-To: <20230902053044.GJ3390869@ZenIV>
+Subject: Re: [PATCH v2 06/25] ALSA: emu8000: Convert to generic PCM copy ops
+In-Reply-To: <20230902053646.GK3390869@ZenIV>
 References: <20230815190136.8987-1-tiwai@suse.de>
-	<20230815190136.8987-3-tiwai@suse.de>
-	<20230902053044.GJ3390869@ZenIV>
+	<20230815190136.8987-7-tiwai@suse.de>
+	<20230902053646.GK3390869@ZenIV>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Message-ID-Hash: KGUYZBLLDUC4OHS66BA4GNI67QDJX4VZ
-X-Message-ID-Hash: KGUYZBLLDUC4OHS66BA4GNI67QDJX4VZ
+Message-ID-Hash: WKDXQ46HVQTEHR3G5KS7KI3SK45VZNCK
+X-Message-ID-Hash: WKDXQ46HVQTEHR3G5KS7KI3SK45VZNCK
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -107,7 +107,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KGUYZBLLDUC4OHS66BA4GNI67QDJX4VZ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WKDXQ46HVQTEHR3G5KS7KI3SK45VZNCK/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -116,24 +116,44 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Sat, 02 Sep 2023 07:30:44 +0200,
+On Sat, 02 Sep 2023 07:36:46 +0200,
 Al Viro wrote:
 > 
-> On Tue, Aug 15, 2023 at 09:01:13PM +0200, Takashi Iwai wrote:
+> On Tue, Aug 15, 2023 at 09:01:17PM +0200, Takashi Iwai wrote:
+> > +		else if (copy_from_iter(&sval, 2, iter) != 2)		\
+> > +			return -EFAULT;					\
 > 
-> > -	if (copy_from_user(get_dma_ptr(substream->runtime, channel, hwoff),
-> > -			   (void __user *)buf, bytes))
-> > +	if (!copy_from_iter(get_dma_ptr(substream->runtime, channel, hwoff),
-> > +			    bytes, iter))
+> copy_from_iter_full()?
+
+It's a place in an internal copy to carry each 16bit word, so this is
+intentional.
+
+> > -static int emu8k_pcm_copy_kernel(struct snd_pcm_substream *subs,
+> > -				 int voice, unsigned long pos,
+> > -				 void *src, unsigned long count)
+> > -{
+> > -	struct snd_emu8k_pcm *rec = subs->runtime->private_data;
+> > -
+> > -	/* convert to word unit */
+> > -	pos = (pos << 1) + rec->loop_start[voice];
+> > -	count <<= 1;
+> > -	LOOP_WRITE(rec, pos, src, count, COPY_KERNEL);
+> > +	LOOP_WRITE(rec, pos, src, count);
+> >  	return 0;
+> >  }
+> >  
+> > @@ -483,16 +456,15 @@ static int emu8k_pcm_silence(struct snd_pcm_substream *subs,
+> >  	/* convert to word unit */
+> >  	pos = (pos << 1) + rec->loop_start[voice];
+> >  	count <<= 1;
+> > -	LOOP_WRITE(rec, pos, NULL, count, FILL_SILENCE);
+> > +	LOOP_WRITE(rec, pos, USER_SOCKPTR(NULL), count);
 > 
-> The former is "if not everything got copied", the latter - "if nothing got
-> copied"; the same goes for other places like that.
+> USER_SOCKPTR?
 
-Thanks, yes, this should be
-	if (copy_from_iter(...) != bytes)
-
-Other places have been already corrected in v2 patchset, but this
-place was overseen.  Will fix it.
+Oh, obviously a leftover :-<
+It's a code in #if-0 block, and compiler didn't catch it.
 
 
 Takashi
+
