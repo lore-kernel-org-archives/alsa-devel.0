@@ -4,113 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 67BEAC83F2C
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 Sep 2023 12:51:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 11F0EC83F2C
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 Sep 2023 12:51:11 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9A1C39F6;
-	Mon,  4 Sep 2023 14:50:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9A1C39F6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 28C2983A;
+	Mon,  4 Sep 2023 14:50:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 28C2983A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1693831860;
-	bh=bYmI/d5gchNZGoYLiUYNtoIlYUDp9EgG9zy/mmO09IE=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	s=default; t=1693831869;
+	bh=C5K5T8cLD6MsV3JuNrelh6EoFxmZ3DeI7zpx45M1in0=;
+	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=m2zpuKIp2JgRBOwSXFuxZ4dzIbLjbnsMccXa/XehB+RKuXb1C4lt4chAwDLpZPwP3
-	 7IPIlkfoTlg4Dys8VCnyJvpIYmC9ksVoOyMXxuuifeHA6qj74sARmKTGdH3wNnkBgE
-	 oWxfnj8CHAC15DmBiXTWSfnpHd/gyBYaVZPB6Sow=
+	b=d3iDcGcIz6zbQMo4gKNtauIE+ocwW6k0Z9R6a+a8WcOPihiNKvsWqMzA+7zkASPoV
+	 OLgRmplXYFk7UMKxCF5won7v8eHggr9VKSki53DbsoKT340e4MuLVOCAEvXSyxbqSQ
+	 MubtO8Zvx/bKBkmVRfJNzHownldyRbe0G/R9Jnqc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id F40F2F80589; Mon,  4 Sep 2023 14:49:01 +0200 (CEST)
+	id 561FAF805AC; Mon,  4 Sep 2023 14:49:05 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2DE77F805A1;
-	Mon,  4 Sep 2023 14:49:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7B20EF805AE;
+	Mon,  4 Sep 2023 14:49:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3FD4CF8032D; Sat,  2 Sep 2023 17:08:37 +0200 (CEST)
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com
- [IPv6:2607:f8b0:4864:20::630])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 477A0F8047D; Sun,  3 Sep 2023 18:15:07 +0200 (CEST)
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7D0CAF80074
-	for <alsa-devel@alsa-project.org>; Sat,  2 Sep 2023 17:08:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7D0CAF80074
+	by alsa1.perex.cz (Postfix) with ESMTPS id D44B8F80236
+	for <alsa-devel@alsa-project.org>; Sun,  3 Sep 2023 18:14:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D44B8F80236
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20221208 header.b=gxEahK4W
-Received: by mail-pl1-x630.google.com with SMTP id
- d9443c01a7336-1c1e780aa95so76965ad.3
-        for <alsa-devel@alsa-project.org>;
- Sat, 02 Sep 2023 08:08:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693667308; x=1694272108;
- darn=alsa-project.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=oihOd2gBCa1RX2c3YMiv0m+sHANy7GfRsmex7Iu3Xq4=;
-        b=gxEahK4WYYpab+ieJVRn4z3ABOY2NpQNaZmDFfJA5Q1k3e11HydcmweToPR/a2rMLZ
-         DTKBHkkg/ruX+ImMJgHRZEzERnJQ2OhQSds6m5Y7y7Mb/45dN7RNxo+ECHjm4tJzmGgd
-         ZfFn0/lbUR++aL1TUOS4xYKg4/7HoQFXpsld3gm4iQhISJkgipk/qTkdqoemLJ0VoG5Z
-         X4IevCuFnkOOQWhA7Jd6Imot7RajAcgrE4tTlhsJ3XH3OmB/rQlcMnKHYzLfLjVmyWjC
-         MdvDmiwof1gx4Mp0urYH8MzDCe/ZaIHdwIFVw9wu/zIJdEHqHmeMTDu/XtvpTVEEt8xD
-         +a/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693667308; x=1694272108;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=oihOd2gBCa1RX2c3YMiv0m+sHANy7GfRsmex7Iu3Xq4=;
-        b=JYz/5OzqKLlynHxV7lPOGi3KZ3KLgzpeM9/twAXSMmQKP0ry0mGud7VFG0iwOelEwh
-         8S/ntuUFIq32M042NtLrPri2tVzQZ/gPADJUwr3IWcbhpAz+WsJ9PvniOVDsJQWIT3Aa
-         YDluv1sgQ7V3a1fJzaCH0n9HfuUw9cJcGx4rD4eB0WSxZoYAN8sDyehv9M67ejwEPBhp
-         V0H1B1j/cXIj42V+/TPIhwDahF042dm/R+IEAbazDYipqbE1HWJFaCSUgQliaM7FtdXj
-         LRw5zE7ztGvtxTZxW1mj3nV3DTGT+OyMnPGmzcOw+UmWM9YxozrcFZiy0wHX0mmnMv6Q
-         q4lw==
-X-Gm-Message-State: AOJu0Yx0OU6b2WGhE6bOcWEblOdp6CqZv7+TyesWk46aLyL5VARr6/bJ
-	I+FyrlavWyqloJ50VOOub18=
-X-Google-Smtp-Source: 
- AGHT+IERQ00WE8oz6cvfQd3k8l6X70FT5h5iZzzmJDyy+VwqH7eZ3w1ho05x2raTeACzPZsJP84nng==
-X-Received: by 2002:a17:902:da86:b0:1c0:c7ae:a8a2 with SMTP id
- j6-20020a170902da8600b001c0c7aea8a2mr701251plx.35.1693667307788;
-        Sat, 02 Sep 2023 08:08:27 -0700 (PDT)
-Received: from localhost.localdomain
- ([2405:201:a40d:5ac2:6bab:c627:af57:9218])
-        by smtp.gmail.com with ESMTPSA id
- j2-20020a170902da8200b001b53c8659fesm4755896plx.30.2023.09.02.08.08.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 02 Sep 2023 08:08:27 -0700 (PDT)
-From: Shubh <shubhisroking@gmail.com>
-To: Liam Girdwood <lgirdwood@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	Shubh <shubhisroking@gmail.com>,
-	alsa-devel@alsa-project.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: amd: yc: Add DMI entries to support Victus by HP Gaming
- Laptop 15-fb0xxx (8A3E)
-Date: Sat,  2 Sep 2023 20:38:07 +0530
-Message-ID: <20230902150807.133523-1-shubhisroking@gmail.com>
-X-Mailer: git-send-email 2.42.0
+	dkim=pass (1024-bit key,
+ unprotected) header.d=ti.com header.i=@ti.com header.a=rsa-sha256
+ header.s=ti-com-17Q1 header.b=OXc3wHf5
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 383GEui4021076;
+	Sun, 3 Sep 2023 11:14:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1693757697;
+	bh=4gcLlaEYGDGQOk6RQ1aDfmPPL3ddH9FwQ/oXw3nLfWY=;
+	h=From:To:CC:Subject:Date;
+	b=OXc3wHf5n3bPrDF2KhmSo/twCRcwTmR0QBK9nK7gbNN2mzBIhHOQG0Gbdgxtow/0P
+	 SdT41yFq/whmvCVnS6QQguwsTuFYl3DYL1KQCkLl/0alFETHeDvOpsWJs/hpuGYvc4
+	 DZ7t2YzfXzn3gOp8+tlh6JsZAEhCPtzM2dZXykkU=
+Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 383GEuk8105599
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Sun, 3 Sep 2023 11:14:56 -0500
+Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Sun, 3
+ Sep 2023 11:14:56 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Sun, 3 Sep 2023 11:14:56 -0500
+Received: from LT5CG2035V3Q.dhcp.ti.com (ileaxei01-snat.itg.ti.com
+ [10.180.69.5])
+	by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 383GEqlu016482;
+	Sun, 3 Sep 2023 11:14:53 -0500
+From: Kevin-Lu <kevin-lu@ti.com>
+To: <broonie@kernel.org>, <peeyush@ti.com>, <navada@ti.com>,
+        <baojun.xu@ti.com>
+CC: <shenghao-ding@ti.com>, <linux-kernel@vger.kernel.org>,
+        <alsa-devel@alsa-project.org>, Kevin-Lu <kevin-lu@ti.com>
+Subject: [PATCH v1] MAINTAINERS: Update the MAINTAINERS enties for TEXAS
+ INSTRUMENTS ASoC DRIVERS
+Date: Mon, 4 Sep 2023 00:14:37 +0800
+Message-ID: <20230903161439.85-1-kevin-lu@ti.com>
+X-Mailer: git-send-email 2.33.0.windows.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-MailFrom: shubhisroking@gmail.com
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-MailFrom: kevin-lu@ti.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: 52Q6HFXH5CWID3XDW4KWFB77V7UZLYR2
-X-Message-ID-Hash: 52Q6HFXH5CWID3XDW4KWFB77V7UZLYR2
-X-Mailman-Approved-At: Mon, 04 Sep 2023 12:48:48 +0000
+Message-ID-Hash: L477B4M3ZFRTFS563HZR2W5T2IFDFYUH
+X-Message-ID-Hash: L477B4M3ZFRTFS563HZR2W5T2IFDFYUH
+X-Mailman-Approved-At: Mon, 04 Sep 2023 12:48:49 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/52Q6HFXH5CWID3XDW4KWFB77V7UZLYR2/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/L477B4M3ZFRTFS563HZR2W5T2IFDFYUH/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -119,32 +100,30 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-This model requires an additional detection quirk to
-enable the internal microphone.
+Update the MAINTAINERS email for TEXAS INSTRUMENTS ASoC DRIVERS.
 
-Signed-off-by: Shubh <shubhisroking@gmail.com>
+Signed-off-by: Kevin-Lu <kevin-lu@ti.com>
+
 ---
- sound/soc/amd/yc/acp6x-mach.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+Change in v1:
+Change Baojun Xu's email to a commonly used address
+---
+ MAINTAINERS | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/amd/yc/acp6x-mach.c b/sound/soc/amd/yc/acp6x-mach.c
-index b304b3562..f7ee792bd 100644
---- a/sound/soc/amd/yc/acp6x-mach.c
-+++ b/sound/soc/amd/yc/acp6x-mach.c
-@@ -325,6 +325,13 @@ static const struct dmi_system_id yc_acp_quirk_table[] = {
- 			DMI_MATCH(DMI_BOARD_NAME, "8A22"),
- 		}
- 	},
-+	{
-+		.driver_data = &acp6x_card,
-+		.matches = {
-+			DMI_MATCH(DMI_BOARD_VENDOR, "HP"),
-+			DMI_MATCH(DMI_BOARD_NAME, "8A3E"),
-+		}
-+	},
- 	{
- 		.driver_data = &acp6x_card,
- 		.matches = {
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 88174736be51..8c8857826a79 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -21066,7 +21066,7 @@ F:	sound/soc/ti/
+ TEXAS INSTRUMENTS AUDIO (ASoC/HDA) DRIVERS
+ M:	Shenghao Ding <shenghao-ding@ti.com>
+ M:	Kevin Lu <kevin-lu@ti.com>
+-M:	Baojun Xu <x1077012@ti.com>
++M:	Baojun Xu <baojun.xu@ti.com>
+ L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
+ S:	Maintained
+ F:	Documentation/devicetree/bindings/sound/tas2552.txt
 -- 
-2.42.0
+2.34.1
 
