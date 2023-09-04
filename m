@@ -4,48 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D7DABC71153
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 Sep 2023 02:14:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BDA73C71153
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 Sep 2023 02:49:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8B29574C;
-	Mon,  4 Sep 2023 04:13:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8B29574C
+	by alsa0.perex.cz (Postfix) with ESMTPS id B78447F1;
+	Mon,  4 Sep 2023 04:48:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B78447F1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1693793667;
-	bh=QG2oYivlpGdU7wMjig869eSlAAajhsMZTCQjPKFjJQU=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=TIdwZxQL9KAzv77mXh4iPTPsEhTP3cSEKRv9g5KAkVvifp9ZBMLWgJwNx7rXj44w7
-	 gjDpFhjTyZ/Yc2N+QGW0IqQKtQ/gaUBjq8LBTOyx+7b+Xq3D+9Q0etm+YsO+sTnGxV
-	 2JdfmcB0SCDTfykPpzJwlkgm8WMUcMyfn20iE5Kk=
+	s=default; t=1693795747;
+	bh=+K68lfgDJnncZhdPoXtkx8rsl+vybU3TKHpTw1jqewI=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=jEx9Wdvnn+VSsoE8IKnpzeSbEfQSE1/cbhuUuIRdMTZ2rYHj1sO5fSWVs6Qsdh5TD
+	 MPT8Wamo9ksAHINBxhtt5jXfknC+cE0TOusx5tUbAuFQSJWIC4nks0CsRAPv0fY80C
+	 eM7XYgFb6Gaud3kkP5i6RNJsWUjZL5EdANavet8A=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9DE10F80537; Mon,  4 Sep 2023 04:13:11 +0200 (CEST)
+	id 87BFEF80527; Mon,  4 Sep 2023 04:47:50 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 35C49F80527;
-	Mon,  4 Sep 2023 04:13:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A5ABAF80141;
+	Mon,  4 Sep 2023 04:47:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D0516F8047D; Mon,  4 Sep 2023 04:13:06 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
- [207.180.221.201])
-	by alsa1.perex.cz (Postfix) with ESMTP id 45013F80141
-	for <alsa-devel@alsa-project.org>; Mon,  4 Sep 2023 04:13:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 45013F80141
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub issues - edited <github@alsa-project.org>
+	id C68F2F8047D; Mon,  4 Sep 2023 04:47:40 +0200 (CEST)
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 3529EF80236
+	for <alsa-devel@alsa-project.org>; Mon,  4 Sep 2023 04:47:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3529EF80236
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=lOKt5jZt
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693795657; x=1725331657;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=+K68lfgDJnncZhdPoXtkx8rsl+vybU3TKHpTw1jqewI=;
+  b=lOKt5jZtYAOGdShMaxwzdMVWlFVefrcvSBWfik7m6v1y/D3p7AxCaY1t
+   vKZuf9Lgodz+xyqzP7w694H4PX2JvSfInSDizJ/QIiZuBgoEtuj3bDQUv
+   U7gzNk//FakXjwjmpCLIfrBDC7MW/oWE9nvz3uUW5h8JstpbuIVJ6/9Rs
+   Dr0fb2w5yIUX7DeZHwIA7PjJ3QBiI/l59lDf1qFwGHjdl2cqps1TTap1Y
+   rJlMwHIVG0sUBrV3lJpZy+qwwhx+q9Te+IzrP9LKWA9XJKwxN2ZncCUxe
+   rjbtQj4+z/qXVEegPszvNyQGb0jr1fFLNcCPzv47xpcM/+jCS4oEbd2mc
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10822"; a="407499751"
+X-IronPort-AV: E=Sophos;i="6.02,225,1688454000";
+   d="scan'208";a="407499751"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 03 Sep 2023 19:47:31 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10822"; a="810743609"
+X-IronPort-AV: E=Sophos;i="6.02,225,1688454000";
+   d="scan'208";a="810743609"
+Received: from brentlu-desktop.itwn.intel.com ([10.5.252.92])
+  by fmsmga004.fm.intel.com with ESMTP; 03 Sep 2023 19:47:29 -0700
+From: Brent Lu <brent.lu@intel.com>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1693793584749669313-webhooks-bot@alsa-project.org>
-References: <1693793584749669313-webhooks-bot@alsa-project.org>
-Subject: Alsa Lib segfaults when built statically
-Message-Id: <20230904021306.D0516F8047D@alsa1.perex.cz>
-Date: Mon,  4 Sep 2023 04:13:06 +0200 (CEST)
-Message-ID-Hash: QCL6S2N6O4MGYOEWRCBBN64FPKQC3LCT
-X-Message-ID-Hash: QCL6S2N6O4MGYOEWRCBBN64FPKQC3LCT
-X-MailFrom: github@alsa-project.org
+Cc: Oder Chiou <oder_chiou@realtek.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	linux-kernel@vger.kernel.org,
+	Brent Lu <brent.lu@intel.com>
+Subject: [PATCH] ASoC: rt5645: NULL pointer access when removing jack
+Date: Mon,  4 Sep 2023 18:40:46 +0800
+Message-Id: <20230904104046.4150208-1-brent.lu@intel.com>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: FOJQCHU4JVBFRRVYXXFWFGJGWE6SGVJB
+X-Message-ID-Hash: FOJQCHU4JVBFRRVYXXFWFGJGWE6SGVJB
+X-MailFrom: brent.lu@intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -57,7 +91,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QCL6S2N6O4MGYOEWRCBBN64FPKQC3LCT/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FOJQCHU4JVBFRRVYXXFWFGJGWE6SGVJB/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -66,37 +100,43 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-lib issue #349 was edited from cybersoulK:
+Machine driver calls snd_soc_component_set_jack() function with NULL
+jack and data parameters when removing jack in codec exit function.
+Do not access data when jack is NULL.
 
-I am building a game that uses alsa. All of my linux players segfault. This has been going for over 1 year.
-Alsa-lib is built statically on a ubuntu machine with the following commands:
+Signed-off-by: Brent Lu <brent.lu@intel.com>
+---
+ sound/soc/codecs/rt5645.c | 16 ++++++++++------
+ 1 file changed, 10 insertions(+), 6 deletions(-)
 
-```
-git clone https://github.com/alsa-project/alsa-lib
-cd alsa-lib
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index 5be5ec0260e9..2412b0853364 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -3263,13 +3263,17 @@ static int rt5645_component_set_jack(struct snd_soc_component *component,
+ {
+ 	struct snd_soc_jack *mic_jack = NULL;
+ 	struct snd_soc_jack *btn_jack = NULL;
+-	int *type = (int *)data;
++	int type;
+ 
+-	if (*type & SND_JACK_MICROPHONE)
+-		mic_jack = hs_jack;
+-	if (*type & (SND_JACK_BTN_0 | SND_JACK_BTN_1 |
+-		SND_JACK_BTN_2 | SND_JACK_BTN_3))
+-		btn_jack = hs_jack;
++	if (hs_jack) {
++		type = *(int *)data;
++
++		if (type & SND_JACK_MICROPHONE)
++			mic_jack = hs_jack;
++		if (type & (SND_JACK_BTN_0 | SND_JACK_BTN_1 |
++			SND_JACK_BTN_2 | SND_JACK_BTN_3))
++			btn_jack = hs_jack;
++	}
+ 
+ 	return rt5645_set_jack_detect(component, hs_jack, mic_jack, btn_jack);
+ }
+-- 
+2.34.1
 
-apt-get update
-apt-get install libtool
-apt-get install make
-apt install autoconf
-
-autoreconf -i
-./configure --disable-shared
-make
-```
-
-Then i use libasound.a to build my Rust executable (On my mac machine).
-
-I do the same process to build openssl for linux and it works great.
-
-
-So There definitely is an issue when building alsa lib statically.
-
-One of my players was able to provide me with a core dump that might be helpful to track down the fault:
-
-<img width="770" alt="image" src="https://github.com/alsa-project/alsa-lib/assets/102260392/7390b851-47a1-4e50-a33b-e33254dddabc">
-
-[coredump.txt](https://github.com/alsa-project/alsa-lib/files/12508784/coredump.txt)
-
-Issue URL     : https://github.com/alsa-project/alsa-lib/issues/349
-Repository URL: https://github.com/alsa-project/alsa-lib
