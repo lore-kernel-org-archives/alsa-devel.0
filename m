@@ -4,96 +4,110 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4FA76C71153
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 Sep 2023 12:01:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 06B86C71153
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 Sep 2023 12:16:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0F4A4827;
-	Mon,  4 Sep 2023 14:00:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0F4A4827
+	by alsa0.perex.cz (Postfix) with ESMTPS id 88194201;
+	Mon,  4 Sep 2023 14:15:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 88194201
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1693828906;
-	bh=oair6OqWfYPic011S/cW06x/t141CP8M1i5kkoNK0KQ=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To:List-Id:
+	s=default; t=1693829758;
+	bh=wAoGj4PivjNjmSU0XgN+FoIFHXVvIgbu2sx7KLn30AQ=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=nRj/ZRJSifNimCUU2c20zy15FaILhUX63ofHyFh/t0szkVsfm4QvkmYfH2zW7WGct
-	 STl6XkjgWiVFhGwR4XQTkwIcOi7J0KfyRE1W+5cSgIsiAMVWsc/NlMAVRY6QRCUCvf
-	 9ARHqHASbqxO9A8j8OT0o7TEwPiCJVCGnAhkdz0Q=
+	b=DJJ0lQb3D5d9hyKzvcc6EregKW6sVr4BDafmsnxYpGKGt9LAVXbvkIDbVU22qYp78
+	 s8i3RT2NhyBdlakinTOaG83QLzV+r1Pz5MNEg89qlknfIYfrk9/ZPKqhSc2V0cZCl0
+	 yC1Vf62NDOuywzh0bTq47DwxKsSm8lcVnshW0C64=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8CF56F80141; Mon,  4 Sep 2023 14:00:36 +0200 (CEST)
+	id 27249F80236; Mon,  4 Sep 2023 14:14:41 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id ED332F80141;
-	Mon,  4 Sep 2023 14:00:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9E07EF8047D;
+	Mon,  4 Sep 2023 14:14:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 50BDBF8047D; Mon,  4 Sep 2023 14:00:30 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 3BCF8F8047D; Mon,  4 Sep 2023 14:14:38 +0200 (CEST)
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com
+ [IPv6:2a00:1450:4864:20::130])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B2669F80236
-	for <alsa-devel@alsa-project.org>; Mon,  4 Sep 2023 14:00:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B2669F80236
+	by alsa1.perex.cz (Postfix) with ESMTPS id 394FDF80141
+	for <alsa-devel@alsa-project.org>; Mon,  4 Sep 2023 14:14:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 394FDF80141
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=SIj2RYqr
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-	by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id
- 3846MTdr025299;
-	Mon, 4 Sep 2023 07:00:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	PODMain02222019; bh=xktY9esea8iLpj8prmL3lc/OChXQqmpWC/2D/wVnM/c=; b=
-	SIj2RYqrZTVgbx5bTsNQFKuuKpW9LwcjfL3FgVmc6Z3KaXIiw52gIzzp90wd2BtV
-	sjVS8S7O2f+ldgWAhyFWbuZhohmvLK1ADZFh7XHNPa1c9NIQjAmzuPwDpTLoilVM
-	0n4ccbUoqYREXBH/kfTUfkaOX7pqax568NIj+BFWcaGCvwrf5fSlUvwFamZ5kudL
-	MDdUljSJ+5zHO+VzlFdxGDx/NfRS+LVR+NhtWkZJ4JkIakP8CwdOwLzKbO79vyff
-	f6dHOwLAZjGbKVsBWtllHijx9gbfnUdkfjzqodhWf1h36Y7+AObAOLJGvSKIZi+x
-	ZI5EhKOgAO6s/Kbll42c/w==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3sv2ex29ke-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 04 Sep 2023 07:00:22 -0500 (CDT)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Mon, 4 Sep
- 2023 13:00:20 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.37 via Frontend
- Transport; Mon, 4 Sep 2023 13:00:20 +0100
-Received: from [198.61.65.243] (LONN2DGDQ73.ad.cirrus.com [198.61.65.243])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 3CF75B06;
-	Mon,  4 Sep 2023 12:00:20 +0000 (UTC)
-Message-ID: <71808adb-bf54-a34b-5a63-70d454e3d426@opensource.cirrus.com>
-Date: Mon, 4 Sep 2023 13:00:20 +0100
+ unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
+ header.s=google header.b=F+zTsxoS
+Received: by mail-lf1-x130.google.com with SMTP id
+ 2adb3069b0e04-4ff8cf11b90so2244900e87.1
+        for <alsa-devel@alsa-project.org>;
+ Mon, 04 Sep 2023 05:14:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693829673; x=1694434473;
+ darn=alsa-project.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=k8h2PEzYhpa6MHVwUhluiZHRc9KyJDz5gg/68n+8KtA=;
+        b=F+zTsxoSw/3aVKzV/80SOKwwxOUvMSJQfmSloV5uuNwK9/OECm4+Lw3BUg7mrsTlIv
+         bamTMBvm1G+nwOBfFdJcB/wdG4TtozSHkcXSyKYUoYfvlng7uNevJY+ouED7RZtU+Qfa
+         0pbahwCveiZEaXkCFpZk3OB12dXiPKCMCZk7gqAmtXVw6ByXFLJvSAL/mpLrsdpG60oY
+         DhyZKeEaaD6JhIgFymfGwuPbG5w9e8IK9femfbzfRzEZyQbg/bFJ6iJZaJI4Kovuwj9r
+         HqOIh3XEteR2po5am2+YITjZ2W1kIXKFyY72rUVdAwgSseIgtsyLII3dNC7Jc9LxQc80
+         zlwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693829673; x=1694434473;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=k8h2PEzYhpa6MHVwUhluiZHRc9KyJDz5gg/68n+8KtA=;
+        b=Gh+0rOto2YY2+JNCE2A1K9YUWv2H6vRjzVtuOdHSJgGFqC/X4DpM4TXVFcBhUquBVq
+         XCJ3abDPZ3hx57tn4qn247tQJeCraCPfcBFBU8lriBkLqjc2SxUxThSz2IS653XLlcBS
+         LOG8A0Ztp1p/TlAGLRuVXuyKsOze9IPCj3YIP6wVpI8dL0nzIU/N0rbs1v8vHt3qXLE4
+         EjcgXsNB6NxImnUt2zlOZBjU9DvMTdj6LhHW70pTfw+AJDkrWMGWXao5u3370ESNbv1Q
+         frSyWHqUUvgxy6WuJ9Ce4H/elrw9GZ48TI49xoe7W9V5gRJfM6BVOFMgCM4WD4ri7td0
+         q1Cg==
+X-Gm-Message-State: AOJu0YzydtHJEXHHGA/pvN+AUDLqhNXUPMq018MSSu3ZTBpGc+LIMy6d
+	LJK/q1PClxDShyE4cy9/VdvaOA==
+X-Google-Smtp-Source: 
+ AGHT+IE2wrX16Gd9r87d7r5ei0oq1G2ppg6vlpwEiVioalK8RSkBhOZ14YzpapLDxGwN6EbpHHSRBg==
+X-Received: by 2002:a05:6512:ac7:b0:500:7cab:efc3 with SMTP id
+ n7-20020a0565120ac700b005007cabefc3mr9077071lfu.11.1693829673359;
+        Mon, 04 Sep 2023 05:14:33 -0700 (PDT)
+Received: from [192.168.0.22] (77-252-46-238.static.ip.netia.com.pl.
+ [77.252.46.238])
+        by smtp.gmail.com with ESMTPSA id
+ r2-20020aa7c142000000b00522828d438csm5789637edp.7.2023.09.04.05.14.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Sep 2023 05:14:32 -0700 (PDT)
+Message-ID: <a3ada071-4c8e-f65d-ad75-655370ba2c55@linaro.org>
+Date: Mon, 4 Sep 2023 14:14:31 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.15.0
-Subject: Re: [PATCH v1] ALSA: hda: cs35l41: Support mute notifications for
- CS35L41 HDA
-To: Takashi Iwai <tiwai@suse.de>
-CC: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
-        <patches@opensource.cirrus.com>,
-        Vitaly Rodionov
-	<vitalyr@opensource.cirrus.com>
-References: <20230825120525.1337417-1-sbinding@opensource.cirrus.com>
- <87edjr7218.wl-tiwai@suse.de>
- <32a62c2f-5000-132c-255c-8ccd135ba60f@opensource.cirrus.com>
- <87h6oisz9c.wl-tiwai@suse.de>
-From: Stefan Binding <sbinding@opensource.cirrus.com>
-In-Reply-To: <87h6oisz9c.wl-tiwai@suse.de>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Subject: Re: [PATCH V1 1/3] ASoC: dt-bindings: Add schema for "awinic,aw87390"
+Content-Language: en-US
+To: wangweidong.a@awinic.com, lgirdwood@gmail.com, broonie@kernel.org,
+ robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ perex@perex.cz, tiwai@suse.com, rf@opensource.cirrus.com,
+ herve.codina@bootlin.com, shumingf@realtek.com, rdunlap@infradead.org,
+ 13916275206@139.com, ryans.lee@analog.com, linus.walleij@linaro.org,
+ ckeepax@opensource.cirrus.com, yijiangtao@awinic.com, liweilei@awinic.com,
+ colin.i.king@gmail.com, trix@redhat.com, alsa-devel@alsa-project.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: zhangjianming@awinic.com
+References: <20230904114621.4457-1-wangweidong.a@awinic.com>
+ <20230904114621.4457-2-wangweidong.a@awinic.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230904114621.4457-2-wangweidong.a@awinic.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Proofpoint-ORIG-GUID: gVL-CyIEc5wk9PdN0VBZnQmTLAM-GyS7
-X-Proofpoint-GUID: gVL-CyIEc5wk9PdN0VBZnQmTLAM-GyS7
-X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: 2YPGWVL3BKQW3XQSPUAZDHEAKMOLKHV4
-X-Message-ID-Hash: 2YPGWVL3BKQW3XQSPUAZDHEAKMOLKHV4
-X-MailFrom: prvs=461170b156=sbinding@opensource.cirrus.com
+Message-ID-Hash: DOSHIRMHXA2FGCCYGGPVXSE344G52BDX
+X-Message-ID-Hash: DOSHIRMHXA2FGCCYGGPVXSE344G52BDX
+X-MailFrom: krzysztof.kozlowski@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -105,7 +119,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2YPGWVL3BKQW3XQSPUAZDHEAKMOLKHV4/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DOSHIRMHXA2FGCCYGGPVXSE344G52BDX/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -114,76 +128,48 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+On 04/09/2023 13:46, wangweidong.a@awinic.com wrote:
+> From: Weidong Wang <wangweidong.a@awinic.com>
+> 
+> Add a DT schema for describing awinic aw87390 audio amplifiers.
+> They are controlled using I2C.
 
-On 29/08/2023 15:23, Takashi Iwai wrote:
-> On Tue, 29 Aug 2023 16:18:12 +0200,
-> Stefan Binding wrote:
->>
->> On 25/08/2023 13:13, Takashi Iwai wrote:
->>> On Fri, 25 Aug 2023 14:05:25 +0200,
->>> Stefan Binding wrote:
->>>> From: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
->>>>
->>>> Some laptops require a hardware based mute system, where when a hotkey
->>>> is pressed, it forces the amp to be muted.
->>>>
->>>> For CS35L41, when the hotkey is pressed, an acpi notification is sent
->>>> to the CS35L41 Device Node. The driver needs to handle this notification
->>>> and call a _DSM function to retrieve the mute state.
->>>>
->>>> Since the amp is only muted during playback, the driver will only mute
->>>> or unmute if playback is occurring, otherwise it will save the mute
->>>> state for when playback starts.
->>>>
->>>> Only one handler can be registered for the acpi notification, but all
->>>> amps need to receive that notification, we can register a single handler
->>>> inside the Realtek HDA driver, so that it can then notify through the
->>>> component framework.
->>>>
->>>> Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
->>>> Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
->>> We don't do normally in this way.  The ACPI hot key handling is done
->>> via user-space, and user-space daemon triggers the mute of the
->>> system.
->>>
->>> Can't the ACPI notify the key event on those machines?
->> This feature is not the "normal" mute button on a keyboard, it is a
->> custom request
->> from a manufacturer which only mutes the audio on the speakers.
->> On previous generations, this was achieved using a GPIO controlled by
->> the BIOS/EC.
->> However, since CS35L41 does not have such GPIO, we must control it by
->> other means.
->>
->> Our solution, which we have to share with the Windows driver, it to use ACPI
->> notifications to tell the driver to mute the amps when the shortcut is
->> pressed.
->>
->> Does this seem like a valid exception to the typical approach?
-> It's still the question whether we have to do this inevitably in the
-> kernel in a way like that.  It sounds quite unusual.  Why this must be
-> handled directly?  IOW, what's the difference from the "normal" mute
-> button?
->
-> And, even if we take this approach, it leaves the device muted without
-> exposing it to user-space.  Then user wouldn't know what happens.
->
->
-> thanks,
->
-> Takashi
-We spoke to the ODM for this system to get a more detailed explanation 
-of this feature.
-The keyboard shortcut enables something called "Unobtrusive Mode". 
-According to their explanation:
+Thank you for your patch. There is something to discuss/improve.
 
-- Unobtrusive mode is distinct to normal mute, as it only mutes the speakers
-- There is no requirement to update the volume controls, as the screen 
-backlight will be off anyway in this mode
-- All other unobtrusive mode functions are enabled without user-space 
-dependencies, and they would prefer not to make speaker mute an exception
 
-Thanks,
+> +
+> +allOf:
+> +  - $ref: dai-common.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    const: awinic,aw87390
+> +
+> +  reg:
+> +    maxItems: 1
 
-Stefan
+No reset-gpios? Shouldn't this be just merged with awinic,aw88395 bindings?
+
+Missing sound-dai-cells (const: 0 or 1)
+
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    i2c {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +        audio-codec@58 {
+> +            compatible = "awinic,aw87390";
+> +            reg = <0x58>;
+
+Please add sound-dai-cells for the example to be complete.
+
+Best regards,
+Krzysztof
 
