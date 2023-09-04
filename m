@@ -4,76 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 625C5C71153
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 Sep 2023 14:57:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B8A81C71153
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 Sep 2023 14:58:13 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3948A84C;
-	Mon,  4 Sep 2023 16:56:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3948A84C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3B082A4B;
+	Mon,  4 Sep 2023 16:57:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3B082A4B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1693839467;
-	bh=6ta1H1SO5AL7wZ6YLXn2VSihZbdu5lIUUcM8Iy6JTnE=;
+	s=default; t=1693839491;
+	bh=lSogzzno6crleiVA2VrKeMQYvVrENZwQWRFLzD0t5zk=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=ZhsLoRvIYxz/63nwVFOKuEEVC1Hlq+DG32I91VwoqpYX8gdujnNoe5NtjIg6QSGo5
-	 Hg7BHxHGnO/4SowP1O+xnvjau1epgjp0RWMzDt+Z7DhlOBvqRmhJYnLKnvAIoL3n72
-	 iaHahURqgurBN0nNF1QDYpjHtClx81RmbQhi4jmU=
+	b=b75uO0s8L6LryenCKl/XTY0zzqQG9mAplCV+0dhqfxJ40CwHn+cmkSobJmxgQXCNB
+	 No7zf4pbN127zjX7BC7+6RzQCw+Wt7C07BFNxSmkIS1crA6brLvU0WYbl2cxO1lRAj
+	 PP0ZkO++XF84q6HOpgx5zcnV9MwxL0/MaSzVPSUs=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 15C5AF8047D; Mon,  4 Sep 2023 16:56:29 +0200 (CEST)
+	id D3489F8057D; Mon,  4 Sep 2023 16:56:34 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0C4E0F80494;
-	Mon,  4 Sep 2023 16:56:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A8C57F80578;
+	Mon,  4 Sep 2023 16:56:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6A7ABF8055C; Mon,  4 Sep 2023 16:55:25 +0200 (CEST)
+	id A577DF8055A; Mon,  4 Sep 2023 16:55:28 +0200 (CEST)
 Received: from ams.source.kernel.org (ams.source.kernel.org
  [IPv6:2604:1380:4601:e00::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 69C8FF80552
-	for <alsa-devel@alsa-project.org>; Mon,  4 Sep 2023 16:55:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 69C8FF80552
+	by alsa1.perex.cz (Postfix) with ESMTPS id 3CF71F804F3
+	for <alsa-devel@alsa-project.org>; Mon,  4 Sep 2023 16:55:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3CF71F804F3
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=sHP2SNnD
+ header.s=k20201202 header.b=r00O1+cx
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id 976D9B80DB3;
-	Mon,  4 Sep 2023 14:55:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE14AC433C8;
-	Mon,  4 Sep 2023 14:55:16 +0000 (UTC)
+	by ams.source.kernel.org (Postfix) with ESMTPS id 5B76DB80E6C;
+	Mon,  4 Sep 2023 14:55:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9F79C433C7;
+	Mon,  4 Sep 2023 14:55:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1693839318;
-	bh=6ta1H1SO5AL7wZ6YLXn2VSihZbdu5lIUUcM8Iy6JTnE=;
+	s=k20201202; t=1693839322;
+	bh=lSogzzno6crleiVA2VrKeMQYvVrENZwQWRFLzD0t5zk=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=sHP2SNnDUsBdeagUhh2OVza/4crpSmg8m97YFIa/lCwJWEwe33LAG4Bk98a2q8XYu
-	 ZkKNQtYXeprXXpdNjSoAjHAXQteTULJkrkehBtm9GLzu6u+cHRGLeMEuHLfnR+hYw0
-	 C38zIrauRj825B+MHA1d89dgFj0U/DnDrbNsLhabiAD8YezOh5c/sr439Z7OlX2/NA
-	 iPReXKcIAd45EkFw1Axl1fLowSwStk3tSQPJf1qfBM/KQqpg57GoJjcTLOqirl9YVR
-	 Ppcro5/bSd7g0xbAjNUDHsaSi3BV96+U2hWQrxHRknjKKWBVprUhX4ryFTtt6znLmw
-	 a/EbMQG1K1lNw==
+	b=r00O1+cxAhpSXvL+ZVTK+TiHOtncmOR8xJX7ex72LTI5P8BwA7PjlI0k/NJ9nq/Ld
+	 pgwY0FBX1yjqY7gC7GgPb6svDlZryNmJvrWJtaRV9AnAIRadMeoZA5zIgEsHfvqErh
+	 jGio5NRPDPoG4ysGoypukk4Hl9VXnUcI/TmTDrMFnGsJeOmDDSc20VuFhwQCcggWxL
+	 3sO1CK+gB69p1r7FUq3EyO4WUeyYGKmIepB6mbWzs5wsJtcdaud9V1JmA6l4cR3UkY
+	 1FVa0zhXZ8DLO/yfyHa7HC062R7yAEQ5ic+tYFeUqHUp1LWZEnBc5nhwnyX5mCLbEV
+	 8IXBfByvaM4iw==
 From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org, Brent Lu <brent.lu@intel.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org
-In-Reply-To: <20230904104046.4150208-1-brent.lu@intel.com>
-References: <20230904104046.4150208-1-brent.lu@intel.com>
-Subject: Re: [PATCH] ASoC: rt5645: NULL pointer access when removing jack
-Message-Id: <169383931669.34217.8836745562314083087.b4-ty@kernel.org>
-Date: Mon, 04 Sep 2023 15:55:16 +0100
+To: Liam Girdwood <lgirdwood@gmail.com>, Shubh <shubhisroking@gmail.com>
+Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20230902150807.133523-1-shubhisroking@gmail.com>
+References: <20230902150807.133523-1-shubhisroking@gmail.com>
+Subject: Re: [PATCH] ASoC: amd: yc: Add DMI entries to support Victus by HP
+ Gaming Laptop 15-fb0xxx (8A3E)
+Message-Id: <169383932048.34217.18361652872072310930.b4-ty@kernel.org>
+Date: Mon, 04 Sep 2023 15:55:20 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-034f2
-Message-ID-Hash: JLWVEYDNVR3TQWTX6BBPP4UETSCKMWTK
-X-Message-ID-Hash: JLWVEYDNVR3TQWTX6BBPP4UETSCKMWTK
+Message-ID-Hash: HJ24OTFOCXZTPO5ZILZELDQPSX5VEOFU
+X-Message-ID-Hash: HJ24OTFOCXZTPO5ZILZELDQPSX5VEOFU
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -86,18 +86,18 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JLWVEYDNVR3TQWTX6BBPP4UETSCKMWTK/>
-List-Archive: <>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HJ24OTFOCXZTPO5ZILZELDQPSX5VEOFU/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, 04 Sep 2023 18:40:46 +0800, Brent Lu wrote:
-> Machine driver calls snd_soc_component_set_jack() function with NULL
-> jack and data parameters when removing jack in codec exit function.
-> Do not access data when jack is NULL.
+On Sat, 02 Sep 2023 20:38:07 +0530, Shubh wrote:
+> This model requires an additional detection quirk to
+> enable the internal microphone.
 > 
 > 
 
@@ -107,8 +107,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: rt5645: NULL pointer access when removing jack
-      commit: 5366a64033ef46d7fc36db097d4bde12af22c405
+[1/1] ASoC: amd: yc: Add DMI entries to support Victus by HP Gaming Laptop 15-fb0xxx (8A3E)
+      commit: d1cf5d30b43f1a331032ebf3e11d9e366ab0f885
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
