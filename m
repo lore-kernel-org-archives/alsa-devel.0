@@ -4,86 +4,118 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8E471C83F3E
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Sep 2023 06:26:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 71B61C83F3E
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Sep 2023 06:34:03 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6D78EA4C;
-	Tue,  5 Sep 2023 08:25:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6D78EA4C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1C94A741;
+	Tue,  5 Sep 2023 08:33:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1C94A741
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1693895187;
-	bh=W48eUaigC/q/9Vh62BQ/O1KK4hWEE98Cu/B2HjHe9J0=;
+	s=default; t=1693895641;
+	bh=GX0r5vqvY9gxgJ/yvzEOyi8DmAnBRxI0orLlqMmJexM=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=LugCnopqmZtibjArE0M3WWAAbAbWKOUwal+qJRjFhSkMRcRWHYFNtLsBHJVa+vcrx
-	 jvmgoIYYgV1PwZBC/4su/BTEVEFqy6ksDpAvPcYB9qPDE3TGl1UN7Sd+MXhOZiqBh4
-	 rHY3qH7JU7wvZOjSiR9B4gNHrCFphMCw2JFmoY6A=
+	b=WUK9TvamsIdUd6Sgl70Ay2dbt6L69Z8cTb5nYxi10av9RQi0WXvd2km4ZIZXqYYPe
+	 8OVcTYWmau95Vz1XnhEZr4VSOy9SezCURHWET9mIlRxEP6cpNnTNvljR676u3mfDzZ
+	 alVDply7/tMYsbbYqAeE9OQpUYi2rtH7iXJ5kn+M=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 92724F805A0; Tue,  5 Sep 2023 08:24:32 +0200 (CEST)
+	id 4CE15F8047D; Tue,  5 Sep 2023 08:32:44 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 13E1DF80580;
-	Tue,  5 Sep 2023 08:24:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B10EFF8047D;
+	Tue,  5 Sep 2023 08:32:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B8694F8047D; Tue,  5 Sep 2023 01:00:21 +0200 (CEST)
-Received: from mx1.mythic-beasts.com (mx1.mythic-beasts.com
- [IPv6:2a00:1098:0:86:1000:0:2:1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
- server-digest SHA256)
+	id 6D80BF8047D; Tue,  5 Sep 2023 08:32:38 +0200 (CEST)
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com
+ [IPv6:2a00:1450:4864:20::62b])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 9D522F80236
-	for <alsa-devel@alsa-project.org>; Tue,  5 Sep 2023 01:00:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9D522F80236
+	by alsa1.perex.cz (Postfix) with ESMTPS id 98971F80236
+	for <alsa-devel@alsa-project.org>; Tue,  5 Sep 2023 08:32:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 98971F80236
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=sorrel.sh header.i=@sorrel.sh header.a=rsa-sha256
- header.s=mythic-beasts-k1 header.b=cmS9Biem
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=sorrel.sh;
-	s=mythic-beasts-k1; h=From:To:Subject:Date;
-	bh=5ya9GFvoiOZ3eDqN3x0kvIb4vIxMJkc0ruZbcotFYXY=; b=cmS9BiemwAm7N/Lyk7qvEy+eJh
-	BRYeRg0934Q4e1Jg4CPP1wRuC27I29HAwtWG+JhV80LJ2qFGLhZhqfDiu9TWFYn4m80ai0aNqUIl+
-	M7PjnnqedJ6+MPl1Xte7PoYWxRQ5+q6+sDRYDl37mmQl2qZoZKBoysiWT7WJLhv6S4mC7DK08STGh
-	IFyUexOAuW1enhp+U/EfE26qxLhWpV7Ne7+D83BpPgaOaHtqiXUxl6yh1fkA6+t9hcIJqlXh7y8qk
-	SD3Gtd6EfFepwOlWJ3me02ZwoJ1NHRRrvQtUR/SuK3rdO5RyiriBRMWVqZ4QH5RTYb0gkAAWCDGGS
-	Ll8F2TWQ==;
-Received: by mailhub-cam-d.mythic-beasts.com with esmtpsa  (TLS1.3) tls
- TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ash@sorrel.sh>)
-	id 1qdIYH-002QxT-K8; Tue, 05 Sep 2023 00:00:13 +0100
-Message-ID: <46e9cbcc-8fbc-4f58-9ec9-b17dfdf25a5f@sorrel.sh>
-Date: Tue, 5 Sep 2023 00:00:11 +0100
+ unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
+ header.s=google header.b=PZA16ctA
+Received: by mail-ej1-x62b.google.com with SMTP id
+ a640c23a62f3a-977e0fbd742so298496866b.2
+        for <alsa-devel@alsa-project.org>;
+ Mon, 04 Sep 2023 23:32:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693895552; x=1694500352;
+ darn=alsa-project.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=V2zvcX9pHacLNf0ykPfp3m/i4l5HADAdXshgrpjJZEQ=;
+        b=PZA16ctAJolriPEfLGDDY8zWO3H2nkXfg9lN8WdXecltxUSEYqKDaLxgzIOyP9ocK5
+         IzrKhXB9Hbq1UqyTC9thW1sBuPyc0dsy03+lWF7Wq2GtiyrIOEOvac13utlQ49jzflxM
+         mG65MUrEVc5I/73wmuntoaCiXThHUsZRYqqRNLFHugDqCZTVYnFdGH6XJQdgKtC2b7RC
+         1MEf8ANFCrPJYvIlsNtteytHQZh7+4UEk3ziZdJZd2QuLOp/mpyjsxWELQoHS3rjzgjC
+         /OsrXBKDqXy7Lbksfs22WCctVnAj8FHDELkAZ+WmY/IRB4o6qS+aYyER+/56G0wNLZaA
+         ItRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693895552; x=1694500352;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=V2zvcX9pHacLNf0ykPfp3m/i4l5HADAdXshgrpjJZEQ=;
+        b=Fbc9nwfuxzhK+ie62qZQrfgAfI6ajXXxxxLNgCMHzh2XYw9KT3lKv5ZpmdQQIdNqQL
+         +irto5h7vaN1XnOTl0MUeLpqZjm709y76gXbZCsYXj7iM5LTlnNfy3MElz8NWQ8+XNjh
+         BNQNLJJVIED4EeP9CpymD8uSXIWg16JSNqkm71jn5/Wy42gfoa/zQKKNYvaPrO6sRelO
+         f0nnUfqn4EPe0fgUkQfO7B7PYbS5l8WqGIBZgdN09v+idYaNPhQj4iuzEgCQpMVK+/r/
+         wwPcn2SYDmnOvAMNod/EfkbZ333P9Z+Hj3CJYk/2Pk3a2mdF+f8/Eml6jED6gXTmOY1U
+         OKkg==
+X-Gm-Message-State: AOJu0Ywg3jQRJAds8yjJKpazvzVqkwexBX90/ulVlZHqchcl2VoaUOei
+	IJNIVespB+TzuXbGGj1QwhSH2w==
+X-Google-Smtp-Source: 
+ AGHT+IHO45N6+V7Ag6AL53zjf/NBrs1e+jux62HnuWPxGdyF6+qb4L+PhPB7YuMqE2GhKQWyxhm3xQ==
+X-Received: by 2002:a17:906:73c7:b0:9a5:deef:886 with SMTP id
+ n7-20020a17090673c700b009a5deef0886mr8787456ejl.43.1693895552487;
+        Mon, 04 Sep 2023 23:32:32 -0700 (PDT)
+Received: from [192.168.0.22] (77-252-46-238.static.ip.netia.com.pl.
+ [77.252.46.238])
+        by smtp.gmail.com with ESMTPSA id
+ i7-20020a170906444700b0099297c99314sm7148980ejp.113.2023.09.04.23.32.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Sep 2023 23:32:32 -0700 (PDT)
+Message-ID: <3ff94d4b-7585-d7ed-9736-ba4c02b3fcff@linaro.org>
+Date: Tue, 5 Sep 2023 08:32:31 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [REGRESSION] rust midir MIDI library causes kernel oops
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, regressions@lists.linux.dev
-References: <8a555319-9f31-4ea2-878f-adc338bc40d4@sorrel.sh>
- <87msy1ip6l.wl-tiwai@suse.de>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH 3/3] ASoC: aw88395: drop undocumented and unused
+ sound-channel property
 Content-Language: en-US
-From: Ash Holland <ash@sorrel.sh>
-In-Reply-To: <87msy1ip6l.wl-tiwai@suse.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To: wangweidong.a@awinic.com
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com,
+ linux-kernel@vger.kernel.org, perex@perex.cz, tiwai@suse.com,
+ yijiangtao@awinic.com
+References: <20230904125309.43350-3-krzysztof.kozlowski@linaro.org>
+ <20230905024659.15071-1-wangweidong.a@awinic.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230905024659.15071-1-wangweidong.a@awinic.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-BlackCat-Spam-Score: 0
-X-MailFrom: ash@sorrel.sh
-X-Mailman-Rule-Hits: nonmember-moderation
+Message-ID-Hash: UVAFKILUV6ZX3P7LSQPSIPROFQGTX4BX
+X-Message-ID-Hash: UVAFKILUV6ZX3P7LSQPSIPROFQGTX4BX
+X-MailFrom: krzysztof.kozlowski@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: O2PZ3XI2NJ2Z4QHEHRMIHZKNBEILADGT
-X-Message-ID-Hash: O2PZ3XI2NJ2Z4QHEHRMIHZKNBEILADGT
-X-Mailman-Approved-At: Tue, 05 Sep 2023 06:24:23 +0000
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/O2PZ3XI2NJ2Z4QHEHRMIHZKNBEILADGT/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UVAFKILUV6ZX3P7LSQPSIPROFQGTX4BX/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -92,35 +124,44 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 04/09/2023 22:49, Takashi Iwai wrote:
-> Yes, that was a bad change.  Could you try the fix below?
+On 05/09/2023 04:46, wangweidong.a@awinic.com wrote:
+> Thank you very much for the proposed patch, but I have some 
+> questions that I would like to discuss with you
 > 
+> On Mon, Sep 04, 2023 at 12:53 PM +0200, Krzysztof Kozlowski wrote:
+>> The Devicetree sound-channel property was never accepted and is not
+>> allowed by bindings.  It is not used by any upstream user, thus
+>> considering that it was never documented, should be dropped.
 > 
-> thanks,
-> 
-> Takashi
-> 
-> -- 8< --
-> --- a/sound/core/seq/seq_memory.c
-> +++ b/sound/core/seq/seq_memory.c
-> @@ -187,8 +187,12 @@ int snd_seq_expand_var_event(const struct snd_seq_event *event, int count, char
->   	err = expand_var_event(event, 0, len, buf, in_kernel);
->   	if (err < 0)
->   		return err;
-> -	if (len != newlen)
-> -		memset(buf + len, 0, newlen - len);
-> +	if (len != newlen) {
-> +		if (in_kernel)
-> +			memset(buf + len, 0, newlen - len);
-> +		else
-> +			clear_user((__force void __user *)buf + len, newlen - len);
-> +	}
->   	return newlen;
->   }
->   EXPORT_SYMBOL(snd_seq_expand_var_event);
+> This node property is intended for use with multiple PA, to
+> load different configurations for different PA.
+> Can I add this sound-channel in the "awinic,aw88395.yaml" file?
 
-That patch seems to work fine! Many thanks.
+Maybe?
 
--- 
-Ash Holland, she/her
+> 
+>> Even though it does not look like from the diff, the property is not
+>> actually used by the driver, because once set, it is read only in loops
+>> depending on ddt_num (prof_hdr->ddt_num, cfg_hdr->ddt_num).  The
+>> variable ddt_num is never set and is always 0, so the loops do not have
+>> any iteration.  Dropping sound-channel and ddt_num-related loops allows
+>> to drop empty functions which in turn drop quite a lot of code.  This
+>> entire code was not possible to execute. 
+> 
+> The ddt_num variable is not always 0, this variable is defined
+> in the configuration file. The "prof_hdr" variable is assigned by 
+> the "cfg_hdr" variable. The "cfg_hdr" variable is assigned by "aw_cfg"
+> aw_cfg is the data obtained through request_firmware.The specific 
+> process is as follows:
+> 
+> request_firmware ---> cont->data ---> aw_cfg->data --> cfg_hdr --> prof_hdr
+
+Hm. So you load user-space provided file and assign it directly, without
+any validation (aw88395_dev_load_acf_check() checks only for magic), to
+a kernel structure. Sounds bullet-proof. Why using known kernel
+interfaces, better to implement some conf-file-parsing.
+
+
+Best regards,
+Krzysztof
 
