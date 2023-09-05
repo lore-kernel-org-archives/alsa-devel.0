@@ -4,48 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2D677C83F3E
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Sep 2023 07:38:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DF1EEC83F3E
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Sep 2023 08:13:44 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 31B6C84B;
-	Tue,  5 Sep 2023 09:37:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 31B6C84B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3F436206;
+	Tue,  5 Sep 2023 10:12:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3F436206
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1693899501;
-	bh=2+ReDN+ML+ATmyMB62GRMiu9VgAAj3RHcbqcERYbE3s=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=FlEZh0c1n4Rtq659M1qpxU0pxqFNwv6h17DkV4iS9PH1alhQX1oeKzFxx1yeXmofO
-	 SRdupEnFt8odOygUrW/sU19e8NLPIchZRd23PTMK2Y77G32NEMDa0aRsSl79Ero+1L
-	 9R+tw2Tcr4jeQxGZxJkdJfJ8AwdnCOwSDa7sFF38=
+	s=default; t=1693901622;
+	bh=QGJW7HcNFWiE/aj+WJpky27+HGqJAsg4oVCQulSpdHA=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=k4n+AzKNxs7Ez2ASwnpBEdlbVhqS4T2N3EsL331s8nKkNqGa9m3qaWSswbg9TZWnq
+	 zXq7qsy6ci4wgoZnaYc8ilvS/samAxqePCwLXMHmm8vEpVIoe30TFECmOFKQjw7mG2
+	 ylAPTU686p2FSUG/GifMmcHsLhroOnJwDr+RcQCo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E5C40F80527; Tue,  5 Sep 2023 09:37:11 +0200 (CEST)
+	id DDF2EF80549; Tue,  5 Sep 2023 10:12:24 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6B0D1F8047D;
-	Tue,  5 Sep 2023 09:37:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 98650F8047D;
+	Tue,  5 Sep 2023 10:12:24 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D9E21F8047D; Tue,  5 Sep 2023 09:37:07 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
- [207.180.221.201])
-	by alsa1.perex.cz (Postfix) with ESMTP id 634C2F80141
-	for <alsa-devel@alsa-project.org>; Tue,  5 Sep 2023 09:37:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 634C2F80141
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub pull_request - opened <github@alsa-project.org>
+	id DF8EBF8047D; Tue,  5 Sep 2023 10:12:19 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 98015F80236
+	for <alsa-devel@alsa-project.org>; Tue,  5 Sep 2023 10:12:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 98015F80236
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=LXZ14eLR;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=jPhRFkMq
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id AF3081F750;
+	Tue,  5 Sep 2023 08:12:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1693901532;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:
+  content-transfer-encoding:content-transfer-encoding;
+	bh=vXrlT15bVFgndCa2VOvr5NzcUokK5WiCZgecVH73Ikk=;
+	b=LXZ14eLRSSsIMbWWSx1WXffqpcNwO5qsZmjE/UW/yMGDMIXaFvWEX1b6xJfQ8YbOPNeLDz
+	aiFJ3J12DbdAOjkl7LGHQIA+Hw8a+4jFRG8YGA8emUB/GIeGH+ah6sJCoVS1qwo5NpYZWi
+	v1Gda6zKVR0zH2F/4wJII/8yFERnDWw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1693901532;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:
+  content-transfer-encoding:content-transfer-encoding;
+	bh=vXrlT15bVFgndCa2VOvr5NzcUokK5WiCZgecVH73Ikk=;
+	b=jPhRFkMqj4Ei6uN+mJG7YwNeHDaYt3C4gNPcweSa5zvepAtp9YHh/cvhN4atJGJIRhUkOM
+	LSv/U4B1Ym7ntkBw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9192013911;
+	Tue,  5 Sep 2023 08:12:12 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id jGLGItzi9mRQBgAAMHmgww
+	(envelope-from <tiwai@suse.de>); Tue, 05 Sep 2023 08:12:12 +0000
+From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1693899425924479246-webhooks-bot@alsa-project.org>
-References: <1693899425924479246-webhooks-bot@alsa-project.org>
-Subject: ucm2: Sync Librem 5 config with Purism's downstream one
-Message-Id: <20230905073707.D9E21F8047D@alsa1.perex.cz>
-Date: Tue,  5 Sep 2023 09:37:07 +0200 (CEST)
-Message-ID-Hash: YLCYUDWXMFMQ4MAON44ISBY3SJPEIAQU
-X-Message-ID-Hash: YLCYUDWXMFMQ4MAON44ISBY3SJPEIAQU
-X-MailFrom: github@alsa-project.org
+Cc: Ash Holland <ash@sorrel.sh>
+Subject: [PATCH v2] ALSA: seq: Fix snd_seq_expand_var_event() call to
+ user-space
+Date: Tue,  5 Sep 2023 10:12:10 +0200
+Message-Id: <20230905081210.6731-1-tiwai@suse.de>
+X-Mailer: git-send-email 2.35.3
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: U2UV53SEEV6P7Z4MYURRASEJE6SHI3KN
+X-Message-ID-Hash: U2UV53SEEV6P7Z4MYURRASEJE6SHI3KN
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -57,7 +101,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YLCYUDWXMFMQ4MAON44ISBY3SJPEIAQU/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/U2UV53SEEV6P7Z4MYURRASEJE6SHI3KN/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -66,13 +110,42 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-ucm-conf pull request #347 was opened from Newbytee:
+The recent fix to clear the padding bytes at
+snd_seq_expand_var_event() broke the read to user-space with
+in_kernel=0 parameter.  For user-space address, it has to use
+clear_user() instead of memset().
 
-The config currently in this repo has several issues. The Purism
-downstream one resolves these.
+Fixes: f80e6d60d677 ("ALSA: seq: Clear padded bytes at expanding events")
+Reported-and-tested-by: Ash Holland <ash@sorrel.sh>
+Closes: https://lore.kernel.org/r/8a555319-9f31-4ea2-878f-adc338bc40d4@sorrel.sh
+Link: https://lore.kernel.org/r/20230905052631.18240-1-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+v1->v2: add clear_user() return check
 
-Taken from https://source.puri.sm/Librem5/librem5-base, commit f5b51beb144f76ef3bc483b74e19867bd6364d32
+ sound/core/seq/seq_memory.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/347
-Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/347.patch
-Repository URL: https://github.com/alsa-project/alsa-ucm-conf
+diff --git a/sound/core/seq/seq_memory.c b/sound/core/seq/seq_memory.c
+index 174585bf59d2..b603bb93f896 100644
+--- a/sound/core/seq/seq_memory.c
++++ b/sound/core/seq/seq_memory.c
+@@ -187,8 +187,13 @@ int snd_seq_expand_var_event(const struct snd_seq_event *event, int count, char
+ 	err = expand_var_event(event, 0, len, buf, in_kernel);
+ 	if (err < 0)
+ 		return err;
+-	if (len != newlen)
+-		memset(buf + len, 0, newlen - len);
++	if (len != newlen) {
++		if (in_kernel)
++			memset(buf + len, 0, newlen - len);
++		else if (clear_user((__force void __user *)buf + len,
++				    newlen - len))
++			return -EFAULT;
++	}
+ 	return newlen;
+ }
+ EXPORT_SYMBOL(snd_seq_expand_var_event);
+-- 
+2.35.3
+
