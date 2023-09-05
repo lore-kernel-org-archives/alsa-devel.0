@@ -4,118 +4,108 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 20AE2C83F33
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Sep 2023 12:16:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D1CE3C83F33
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Sep 2023 13:54:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B510984B;
-	Tue,  5 Sep 2023 14:15:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B510984B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 88DE5832;
+	Tue,  5 Sep 2023 15:53:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 88DE5832
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1693916207;
-	bh=2MHYRwe9rnpuICDY7bZx5GUQvBJY3G6aT6x/qmGL7hg=;
-	h=Date:To:References:Cc:From:Subject:In-Reply-To:Reply-To:List-Id:
+	s=default; t=1693922049;
+	bh=GGTb85SwmehwRQFdOE4/kZdtjUSb36Ogu5VpLNfqXYs=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=B+XLU0Q4AG2AVYWxE1w7ZVX2Pu4nZ9KG1odklBnhGu7UuDSHjaLm88Fa16bPJOZ39
-	 LqHC3fTtX4w07vhq7EhErmKZLfipzTi1egS7s/hQPZ2JaWGrRFcG9CxZiObtxsvxGy
-	 QUms+IJ5izqHVmCFwHD19AeB1gaxX0Zv538QHXF8=
+	b=KHjPgarkE+WI3H1IFPKUfs3hdjSJh9pjBsMerbbDA65CoQIXlAZXDT5c/i2seUJJp
+	 RgmSKIufMeOVSIHApBlHc6FC1Q/jTWgOCZ+0xSdVoD0DOBB5Yc1iMis8Yv7r/y15KQ
+	 1WjeS3B3s9VMh39w3S99rXMzDdi3JDnEOG1NmX8Y=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8BB73F80527; Tue,  5 Sep 2023 14:15:37 +0200 (CEST)
+	id 64EE0F80537; Tue,  5 Sep 2023 15:53:00 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id CB53FF80527;
-	Tue,  5 Sep 2023 14:15:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2695DF80537;
+	Tue,  5 Sep 2023 15:53:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BB620F8047D; Tue,  5 Sep 2023 10:57:35 +0200 (CEST)
-Received: from asave03.hostfactory.ch (asave03.hostfactory.ch
- [185.16.174.135])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 9D703F804F3; Tue,  5 Sep 2023 15:52:56 +0200 (CEST)
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 5733CF800F5
-	for <alsa-devel@alsa-project.org>; Tue,  5 Sep 2023 10:57:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5733CF800F5
-Received: from server11.hostfactory.ch ([185.117.169.60])
-	by asave03.hostfactory.ch with esmtps (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <rolf.anderegg@weiss.ch>)
-	id 1qdRs5-0001vg-90; Tue, 05 Sep 2023 10:57:23 +0200
-Received: from [10.208.232.97] (unknown [185.12.131.94])
-	(Authenticated sender: rolf.anderegg@weiss.ch)
-	by server11.hostfactory.ch (Postfix) with ESMTPSA id E709440E8EFB3;
-	Tue,  5 Sep 2023 10:57:13 +0200 (CEST)
-Message-ID: <194ed68c-c06f-9451-73e6-3574ff341dc7@weiss.ch>
-Date: Tue, 5 Sep 2023 10:57:12 +0200
+	by alsa1.perex.cz (Postfix) with ESMTPS id 5E7D2F800F5;
+	Tue,  5 Sep 2023 15:52:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5E7D2F800F5
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=WYXPihN+
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693921971; x=1725457971;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=GGTb85SwmehwRQFdOE4/kZdtjUSb36Ogu5VpLNfqXYs=;
+  b=WYXPihN+bZnq79Dmm14Y2nzKTEbcATN6DPY8RZ7vbdDQzzpuiCd7cJM9
+   7NCHDt1Hv5W1B3SLq3ozRPhNvvUVJthomrAOXRX5yBaiXQC01dVxNi1w/
+   lUKe9SyksPMsX0/1IBXNvAAqTo1Lr6YCJPwRWVZ71WkGXsgDZ4O2JEH2I
+   upAwrPumPglv8HuTUzrRGbZZJoExWoCL0z76OZl7KqsM/ma0/euAiJfR7
+   oZ2gdD4KvATTQ7okYoFNJVFWE0j5Z8F9bns4z1MU1Y0NcPvs6avmhdYSA
+   FucNS/DVca4Yuq4wh8iubgmeP9+BSGbSkGPmcTH8JPNoCNFGXky+RoapM
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10824"; a="463165896"
+X-IronPort-AV: E=Sophos;i="6.02,229,1688454000";
+   d="scan'208";a="463165896"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 05 Sep 2023 06:52:44 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10824"; a="741100793"
+X-IronPort-AV: E=Sophos;i="6.02,229,1688454000";
+   d="scan'208";a="741100793"
+Received: from qatran-mobl2.amr.corp.intel.com (HELO [10.212.36.84])
+ ([10.212.36.84])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 05 Sep 2023 06:52:41 -0700
+Message-ID: <4d84a799-c07e-e917-7c82-2f24456e3ac2@linux.intel.com>
+Date: Tue, 5 Sep 2023 08:37:24 -0400
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Content-Language: de-CH
-To: o-takashi@sakamocchi.jp
-References: <24703333-9250-40bf-e736-a5f3c4862034@weiss.ch>
- <20230728131308.GA142765@workstation.local>
- <7a0cf3fd-9e31-45e1-7aa4-97cab27dafa7@weiss.ch>
- <20230731140655.GA367100@workstation.local>
- <81450de2-3bf5-cb96-114f-6d75314e5a03@weiss.ch>
- <20230808152511.GA729027@workstation.local>
- <a41c675d-c1bd-4e89-9519-63b2b088f16d@weiss.ch>
- <20230822135807.GA470519@workstation.local>
- <20230831132817.GB174574@workstation.local>
- <d102d417-c34d-b4f5-f037-e5460c01ea58@weiss.ch>
- <20230905012028.GA262570@workstation.local>
-Cc: alsa-devel@alsa-project.org, Michele Perrone <michele.perrone@weiss.ch>
-From: Rolf Anderegg <rolf.anderegg@weiss.ch>
-Organization: Weiss Engineering Ltd.
-Subject: Re: ALSA: dice: improve support for Weiss devices
-In-Reply-To: <20230905012028.GA262570@workstation.local>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-PPP-Message-ID: 
- <169390423424.14369.13692411379431697553@server11.hostfactory.ch>
-X-PPP-Vhost: weiss.ch
-X-Originating-IP: 185.117.169.60
-X-SpamExperts-Domain: outboundprotection.hostfactory.ch
-X-SpamExperts-Username: 185.117.169.60
-Authentication-Results: hostfactory.ch;
- auth=pass smtp.auth=185.117.169.60@outboundprotection.hostfactory.ch
-X-SpamExperts-Outgoing-Class: ham
-X-SpamExperts-Outgoing-Evidence: Combined (0.12)
-X-Recommended-Action: accept
-X-Filter-ID: 
- Pt3MvcO5N4iKaDQ5O6lkdGlMVN6RH8bjRMzItlySaT+gqpPiFbJ0QQ2lnl7qvUScPUtbdvnXkggZ
- 3YnVId/Y5jcf0yeVQAvfjHznO7+bT5ynOqv5wVH0VS/etXvrFNNzaJlM0GUlwLkcZrRacppWhTh3
- wKoTBNAKgp9qBcKLgDl1CmCG4MXmWFl9KMUaH9XX58fMnqZUTt7CyKlJUh+zhuJdoXcSm+MMatNN
- DNB2PfqDJYXE4Dl0gs/Km8rE1WFZsa4tn+I7Msq8d2ButzR7zuNCJEw/kSI+NGmTkOAYrsWG+7KW
- gD+bDPIkhgaV+BrNPm4RC15bm+XtbeDRPYK0+jEhP40QAirHpNS4YoSI2quRX4CqZGaDhAYAy17q
- LsiPEjbpD80/bJiKjNrjoh6e0i1+Itm3Zi67f33Q0vSIt5Es9EoJF76glRJeGkLNzPOkhY6U4Nwm
- pcGPuCEf4Z43ofcLVphtCwl8mpTwF6N+yd3meH6vXVooEJgrc7O3bOwHG4jNxwLDu0EPJmzXz3lI
- JZGQYfs9F/5Z8G6oVO3G8vqzIh1wkn5B+muMTuS2LDwzt8Ds8HhMu8AsuC+XP0IWdXNPnE19HtJr
- tg3Pj7jTUmPeUd4qXkcTpXUhLfkIyoAKIK/1NH5THMtlYvyHAYGOGuJw+IsbRAYC1LPVQPP+P/MU
- IKFuyZZpeW4SbXxBSCRrOs7vsAFzVd1v1GhPoE7QPxC59DegVi6blZxv1U8KkX2uKrU74lZlsFOl
- gFX20rO1HXOpautW7CbGNZwwbJsCHp/kMSmXrYKZNCJovpK1wz63CbV8Zw2lmL9cOWgYRg4RZeC+
- xOGUeJHFDzHrZb8RMeiz0C3wJ/Tus61aZWHQ8aIZ99SJ6uKkUf5M3Jzws9T5ioF0BjXWAU1vmSbm
- ljue91wcXFuwGFFjpBMGkg875o0v+vZ3YbQI3JxBioGzgNK0SWIiDpqdN4qbPHc11xYymnmywFHG
- auIdg50ahSvWmwPrjuU3A3io6xJmD59iFVkbsKSvTEqJB5UsC6xx3EoswRGPIAIpAWefZdZabSnD
- 9siUkxE+SK4CkqqQuY/ADtB7VmkAHwHuPWE1+MMVWSY/DLpLeMX9LG2Gr3VtpElgRF4yYVk6thCV
- cysKZKQpuBbVY6p3bUp7p9VcHLKlW2db9DNsrBagLoEqqxMVcVS4bjQ=
-X-Report-Abuse-To: spam@asave01.hostfactory.ch
-X-MailFrom: rolf.anderegg@weiss.ch
-X-Mailman-Rule-Hits: nonmember-moderation
+ Firefox/102.0 Thunderbird/102.13.0
+Subject: Re: [PATCH v4 01/11] ASoC: SOF: core: add 'no_wq' probe and remove
+ callbacks
+Content-Language: en-US
+To: =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, Cezary Rojewski <cezary.rojewski@intel.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Mark Brown <broonie@kernel.org>, Daniel Baluta <daniel.baluta@nxp.com>,
+ linux-kernel@vger.kernel.org, sound-open-firmware@alsa-project.org
+References: <20230830153652.217855-1-maarten.lankhorst@linux.intel.com>
+ <20230830153652.217855-2-maarten.lankhorst@linux.intel.com>
+ <alpine.DEB.2.22.394.2309011509200.3532114@eliteleevi.tm.intel.com>
+ <4252a4dc-0cf3-4ff2-aa55-c03e56345276@linux.intel.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <4252a4dc-0cf3-4ff2-aa55-c03e56345276@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: JCPIF64GPBP6NCLYXP42WFEBQ2Q3PZFU
+X-Message-ID-Hash: JCPIF64GPBP6NCLYXP42WFEBQ2Q3PZFU
+X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: DS3URLQU5RYTLMKHUISC4W3DC6WTVS5T
-X-Message-ID-Hash: DS3URLQU5RYTLMKHUISC4W3DC6WTVS5T
-X-Mailman-Approved-At: Tue, 05 Sep 2023 12:15:33 +0000
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.8
 Precedence: list
-Reply-To: rolf.anderegg@weiss.ch
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DS3URLQU5RYTLMKHUISC4W3DC6WTVS5T/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JCPIF64GPBP6NCLYXP42WFEBQ2Q3PZFU/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -124,181 +114,54 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi Takashi,
 
-On 05.09.23 03:20, Takashi Sakamoto wrote:
-> Hi Rolf,
+
+On 9/1/23 08:44, Péter Ujfalusi wrote:
 > 
-> On Mon, Sep 04, 2023 at 06:00:24PM +0200, Rolf Anderegg wrote:
->> Hi Takashi,
+> 
+> On 01/09/2023 15:15, Kai Vehmanen wrote:
+>> Hi,
 >>
->> Glad that we could be of help.
->> We checked this on the firmware side and yes, we can confirm that the
->> Weiss MAN301 is the only device with AV/C protocol (using vendor dependent
->> commands).
->   
-> OK. It is good firmware design to make snd-dice-ctl-service simpler.
-> 
->> We are deploying a small set of commands in order to probe and control
->> the parameters on the MAN301:
+>> On Wed, 30 Aug 2023, Maarten Lankhorst wrote:
 >>
->> WEISS_CMD_ID_DEV_CONST:
->> 	probe the number of parameters
+>>> With the upcoming changes for i915/Xe driver relying on the
+>>> -EPROBE_DEFER mechanism, we need to have a first pass of the probe
+>>> which cannot be pushed to a workqueue. Introduce 2 new optional
+>>> callbacks.
+>> [...]
+>>> diff --git a/sound/soc/sof/core.c b/sound/soc/sof/core.c
+>>> index 30db685cc5f4b..54c384a5d6140 100644
+>>> --- a/sound/soc/sof/core.c
+>>> +++ b/sound/soc/sof/core.c
+>>> @@ -327,8 +327,6 @@ static int sof_probe_continue(struct snd_sof_dev *sdev)
+>>>  dsp_err:
+>>>  	snd_sof_remove(sdev);
+>>>  probe_err:
+>>> -	sof_ops_free(sdev);
+>>> -
 >>
->> WEISS_CMD_ID_PARAM_OP:
->> 	read/write to a parameter
+>> this seems a bit out-of-place in this patch. It seems a valid change,
+>> but not really related to this patch, right?
+> 
+> The ops needs to be preserved even if the wq fails since the patch wants
+> to call snd_sof_remove_no_wq() unconditionally on remove.
+> 
+>> We seem to have a related fix waiting to be sent to alsa-devel, by
+>> Peter:
+>> "ASoC: SOF: core: Only call sof_ops_free() on remove if the probe wa"
+>> https://github.com/thesofproject/linux/pull/4515
+> 
+> I guess we can revert that in sof-dev, if this is the preferred way?
+> 
+>> ... not yet in Mark's tree.
 >>
->> WEISS_CMD_ID_PARAM_INFO:
->> 	read parameter info (index, type, iface type, name)
->>
->> WEISS_CMD_ID_ENUM_ITEM_INFO:
->> 	read parameter enum type info
->>
->> This allows us to populate and control snd-control instances that represent
->> the device's featured parameters [1].
->>
->> How would you like to proceed for `snd-firewire-ctl-services`?
->> We can start by giving you the output of `amixer contents` for the MAN301,
->> so you see all the controls and their possible values (see below).
->   
-> Great. In my current plan for snd-dice-ctl-service, action items would
-> be enumerated in below:
+>> Otherwise patch looks good to me.
 > 
-> 1. Add support for all of models except for MA301 (need additional work to
->     current MR to exclude MA301)
-> 2. implement the vendor dependent command to `firewire-dice-protocols`
->     crate[2] with dependency on `ta1394_avc_general` crate[3]
-> 3. implement the control primitives to `firewire-dice-protocols` in the
->     fasion of hard-code
-> 4. Add support for MA301
-> 
-> The reason of hard-code against your implementation in dice-avc.c is
-> to express hardware specification in code. FireWire audio devices are
-> nowadays not updated anymore, and I think the explicit control primitives
-> is helpful to remaining users.
+> I would have not created the snd_sof_remove_no_wq() as it makes not much
+> functional sense.
+> It might be even better if the remove in the wq would do the
+> hda_codec_i915_exit() as the module will remain in there until the user
+> removes it.
 
-Yes, we agree that it's appropriate to hardcode the currently available
-controls.
-
-In that case you will only be using the following vendor specific command
-to write parameter values [1][2]:
-
-WEISS_CMD_ID_PARAM_OP:
-	read/write to a parameter
-
-> 
-> [1] https://github.com/alsa-project/snd-firewire-ctl-services/pull/175
-> [2] https://crates.io/crates/firewire-dice-protocols
-> [3] https://docs.rs/ta1394-avc-general/latest/ta1394_avc_general/
-> 
->> Let us know if there's any additional information we can provide.
-> 
-> If the control primitives have been changed (newly added or abandoned)
-> between several firmware versions, I would like you to inform it to me.
-
-Thank you, we would inform you of any changes. But I doubt that that will
-ever be necessary.
-
-> 
->> Kind regards,
->> Rolf Anderegg
->>
->>
->> [1] https://github.com/weiss-engineering/snd-dice/blob/avc/dice-avc.c
->   
-> Thanks for your delivery of useful information for Weiss models. It is
-> my pleasure to maintain Linux systems to use them for 6 more years.
-
-Thank you Takashi, we highly appreciate your engagement.
-
-Best regards,
-Rolf Anderegg
-
-[1] https://github.com/weiss-engineering/snd-dice/blob/avc/dice-avc.c#L135
-[2] https://github.com/weiss-engineering/snd-dice/blob/avc/dice-avc.c#L201
-
-> 
-> 
-> Regards
-> 
-> Takashi Sakamoto
-> 
->> --
->> $ amixer contents
->> numid=3,iface=CARD,name='Dual Wire Mode Switch'
->>    ; type=BOOLEAN,access=rw------,values=1
->>    : values=off
->> numid=4,iface=CARD,name='Dual Wire Word Clock Half Rate Switch'
->>    ; type=BOOLEAN,access=rw------,values=1
->>    : values=off
->> numid=1,iface=CARD,name='Sync source'
->>    ; type=ENUMERATED,access=rw------,values=1,items=13
->>    ; Item #0 'AES1'
->>    ; Item #1 'AES2'
->>    ; Item #2 'AES3'
->>    ; Item #3 'AES4'
->>    ; Item #4 'AES'
->>    ; Item #5 'ADAT'
->>    ; Item #6 'TDIF'
->>    ; Item #7 'Wordclock'
->>    ; Item #8 'ARX1'
->>    ; Item #9 'ARX2'
->>    ; Item #10 'ARX3'
->>    ; Item #11 'ARX4'
->>    ; Item #12 'Internal'
->>    : values=2
->> numid=10,iface=MIXER,name='DAC::Analog Output Level'
->>    ; type=ENUMERATED,access=rw------,values=1,items=4
->>    ; Item #0 '0 dB'
->>    ; Item #1 '-10 dB'
->>    ; Item #2 '-20 dB'
->>    ; Item #3 '-30 dB'
->>    : values=1
->> numid=8,iface=MIXER,name='DAC::DAC Filter Type'
->>    ; type=ENUMERATED,access=rw------,values=1,items=2
->>    ; Item #0 'A'
->>    ; Item #1 'B'
->>    : values=0
->> numid=9,iface=MIXER,name='DAC::DAC Output Playback Switch'
->>    ; type=BOOLEAN,access=rw------,values=1
->>    : values=on
->> numid=7,iface=MIXER,name='DAC::DAC Polarity Inversion Playback Switch'
->>    ; type=BOOLEAN,access=rw------,values=1
->>    : values=off
->> numid=2,iface=MIXER,name='Digital Input Capture Route'
->>    ; type=ENUMERATED,access=rw------,values=1,items=3
->>    ; Item #0 'AES/EBU (XLR)'
->>    ; Item #1 'S/PDIF (RCA)'
->>    ; Item #2 'S/PDIF (TOS)'
->>    : values=2
->> numid=6,iface=MIXER,name='RCA::RCA Output Playback Switch'
->>    ; type=BOOLEAN,access=rw------,values=1
->>    : values=on
->> numid=5,iface=MIXER,name='XLR::XLR Output Playback Switch'
->>    ; type=BOOLEAN,access=rw------,values=1
->>    : values=on
->>
->> On 31.08.23 15:28, Takashi Sakamoto wrote:
->>> Hi Michele,
->>>
->>> Thanks for your contribution of configuration ROM for Weiss models[1].
->>> I'm sorry for my little reaction but currently I'm working for Debian ITP
->>> to linux-firewire-utils package[2][3].
->>>
->>> As a quick glance, all of configuration ROMs except for Weiss MAN301
->>> include single unit directory, while the exception includes two unit
->>> directories; 1394TA AV/C protocol and TCAT protocol. It means that
->>> the vendor-dependent AV/C command[4] is implemented in MAN301, but not
->>> in the others. Then I would like to figure out whether it is correct or
->>> not. If it is unique for MAN301, the implementation of control service
->>> can be simpler to support the command just for MAN301.
->>>
->>> [1] https://github.com/takaswie/am-config-roms/pull/5
->>> [2] https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1050551
->>> [3] https://mentors.debian.net/package/linux-firewire-utils/
->>> [4] https://github.com/weiss-engineering/snd-dice/blob/avc/dice-avc.c
->>>
->>>
->>> Regards
->>>
->>> Takashi Sakamoto
+I think find all this very confusing, because there is no workqueue used
+in the remove steps. The workqueue is only used ONCE during the probe.
