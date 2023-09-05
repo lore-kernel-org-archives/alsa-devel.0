@@ -4,92 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9FC3EC83F2C
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Sep 2023 05:46:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 95C95C83F33
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Sep 2023 06:09:04 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0FF50852;
-	Tue,  5 Sep 2023 07:46:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0FF50852
+	by alsa0.perex.cz (Postfix) with ESMTPS id E31ED846;
+	Tue,  5 Sep 2023 08:08:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E31ED846
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1693892814;
-	bh=t8q9YcKXHvLwjMeTHrZA/qvR1iGAYQrioRmcGLncToI=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=tqSfm03DnGDqC73B2npXlOfPgmtKWVvIXCZXOAkLf0o1A8FSoSfy5YcAbmnFJjkVn
-	 dsUHO5QwYRQiZ5byK9fPyjUBX5DLE30xwwd3TfB6xnApCkf0zb64eHdqzG0zO0y63f
-	 eUnF8bGpekPagcycHGdoplQ14tELggPCMVRxA814=
+	s=default; t=1693894141;
+	bh=qpFrkfoif99wFoA9QI0vEHV61QPOlw2L8N3R6xrWTYI=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=uAZTwJyaJY0ah+JIZ28waY6bO5cfeArZXGTrHsHAmNuqSxKhUdV2t6e+CNxEH4mxQ
+	 BzfXEnqicOIl48kKFt8sabQUskPmjyiv7r6RP2tmsKSzeSYUji9LLr103BgsA2sZn4
+	 sovSuxMG6zCu/hv/qUujdnZ8LkGhMQsGkxoScBW4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B86D9F80494; Tue,  5 Sep 2023 07:45:37 +0200 (CEST)
+	id 8968DF80552; Tue,  5 Sep 2023 08:08:02 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0ABFEF8047D;
-	Tue,  5 Sep 2023 07:45:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 00AA9F8047D;
+	Tue,  5 Sep 2023 08:08:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8558FF8047D; Tue,  5 Sep 2023 07:45:31 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 489E6F800F5
-	for <alsa-devel@alsa-project.org>; Tue,  5 Sep 2023 07:45:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 489E6F800F5
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=WfjcyuM6;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=FMiOl54c
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id B37451F74D;
-	Tue,  5 Sep 2023 05:45:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1693892722;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-  content-transfer-encoding:content-transfer-encoding;
-	bh=ouaQIpNRvfxBy5cx92uWEDL4CdzPp4e+TbtGshjgg2c=;
-	b=WfjcyuM6FSJHt6AiNVqV5irmu7fMsg3x1z3FmRqb9hjbSpRmDwH+QrPJx4yiRhsjhk86z6
-	pweaULfrix3irBh43DchORy4+jDCf2rV4coYaPYeFBHZJCkQck2b3WORyjw1Bdn/cGsk6V
-	buzLydEOH3PBHqbkCSRlIZc62/dp16M=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1693892722;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-  content-transfer-encoding:content-transfer-encoding;
-	bh=ouaQIpNRvfxBy5cx92uWEDL4CdzPp4e+TbtGshjgg2c=;
-	b=FMiOl54c4KnwOaJs3d4loyHHGfENy68zhxwZv/HKjdKsmeq3BzzAJ5R/naQrvR4Z7V3+e6
-	VKgim6yoR4dLx9Dw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 93F00134B2;
-	Tue,  5 Sep 2023 05:45:22 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id AH4CI3LA9mT1NwAAMHmgww
-	(envelope-from <tiwai@suse.de>); Tue, 05 Sep 2023 05:45:22 +0000
-From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Cc: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] ALSA: usb-audio: Fix potential memory leaks at error path for
- UMP open
-Date: Tue,  5 Sep 2023 07:45:11 +0200
-Message-Id: <20230905054511.20502-1-tiwai@suse.de>
-X-Mailer: git-send-email 2.35.3
+	id ACE24F8047D; Tue,  5 Sep 2023 08:07:57 +0200 (CEST)
+Received: from out28-5.mail.aliyun.com (out28-5.mail.aliyun.com
+ [115.124.28.5])
+	by alsa1.perex.cz (Postfix) with ESMTP id 73924F80236
+	for <alsa-devel@alsa-project.org>; Tue,  5 Sep 2023 08:07:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 73924F80236
+X-Alimail-AntiSpam: 
+ AC=CONTINUE;BC=0.07437018|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0078599-0.000796544-0.991344;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047194;MF=wangweidong.a@awinic.com;NM=1;PH=DS;RN=25;RT=25;SR=0;TI=SMTPD_---.UXsaVvi_1693893801;
+Received: from ubuntu-VirtualBox..(mailfrom:wangweidong.a@awinic.com
+ fp:SMTPD_---.UXsaVvi_1693893801)
+          by smtp.aliyun-inc.com;
+          Tue, 05 Sep 2023 14:03:29 +0800
+From: wangweidong.a@awinic.com
+To: krzysztof.kozlowski@linaro.org
+Cc: 13916275206@139.com,
+	alsa-devel@alsa-project.org,
+	broonie@kernel.org,
+	ckeepax@opensource.cirrus.com,
+	colin.i.king@gmail.com,
+	conor+dt@kernel.org,
+	devicetree@vger.kernel.org,
+	herve.codina@bootlin.com,
+	krzysztof.kozlowski+dt@linaro.org,
+	lgirdwood@gmail.com,
+	linus.walleij@linaro.org,
+	linux-kernel@vger.kernel.org,
+	liweilei@awinic.com,
+	perex@perex.cz,
+	rdunlap@infradead.org,
+	rf@opensource.cirrus.com,
+	robh+dt@kernel.org,
+	ryans.lee@analog.com,
+	shumingf@realtek.com,
+	tiwai@suse.com,
+	trix@redhat.com,
+	wangweidong.a@awinic.com,
+	yijiangtao@awinic.com,
+	zhangjianming@awinic.com
+Subject: Re: [PATCH V1 3/3] ASoC: codecs: Add aw87390 amplifier driver
+Date: Tue,  5 Sep 2023 14:03:21 +0800
+Message-ID: <20230905060321.15849-1-wangweidong.a@awinic.com>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <5ea76d3f-c9dd-10f5-4f9a-7b32b535ab5c@linaro.org>
+References: <5ea76d3f-c9dd-10f5-4f9a-7b32b535ab5c@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: BI2POQRVTJFQWKUZFP6WND3ALISCIC46
-X-Message-ID-Hash: BI2POQRVTJFQWKUZFP6WND3ALISCIC46
-X-MailFrom: tiwai@suse.de
+Message-ID-Hash: FAJWWAOGXPBO22LDSE774TKZAIGXWD6Q
+X-Message-ID-Hash: FAJWWAOGXPBO22LDSE774TKZAIGXWD6Q
+X-MailFrom: wangweidong.a@awinic.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -101,7 +87,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BI2POQRVTJFQWKUZFP6WND3ALISCIC46/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FAJWWAOGXPBO22LDSE774TKZAIGXWD6Q/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -110,63 +96,129 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The allocation and initialization errors at alloc_midi_urbs() that is
-called at MIDI 2.0 / UMP device are supposed to be handled at the
-caller side by invoking free_midi_urbs().  However, free_midi_urbs()
-loops only for ep->num_urbs entries, and since ep->num_entries wasn't
-updated yet at the allocation / init error in alloc_midi_urbs(), this
-entry won't be released.
+Thank you very much. Here are some things I'd like to discuss with you.
 
-The intention of free_midi_urbs() is to release the whole elements, so
-change the loop size to NUM_URBS to scan over all elements for fixing
-the missed releases.
+On 05/09/2023 11:50, krzysztof.kozlowski@linaro.org wrote:
+> On 04/09/2023 13:46, wangweidong.a@awinic.com wrote:
+>> From: Weidong Wang <wangweidong.a@awinic.com>
+>> 
 
-Also, the call of free_midi_urbs() is missing at
-snd_usb_midi_v2_open().  Although it'll be released later at
-reopen/close or disconnection, it's better to release immediately at
-the error path.
+> ...
 
-Fixes: ff49d1df79ae ("ALSA: usb-audio: USB MIDI 2.0 UMP support")
-Reported-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Closes: https://lore.kernel.org/r/fc275ed315b9157952dcf2744ee7bdb78defdb5f.1693746347.git.christophe.jaillet@wanadoo.fr
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/usb/midi2.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+>> +static void aw87390_parse_channel_dt(struct aw87390 *aw87390)
+>> +{
+>> +	struct aw_device *aw_dev = aw87390->aw_pa;
+>> +	struct device_node *np = aw_dev->dev->of_node;
+>> +	u32 channel_value = AW87390_DEV_DEFAULT_CH;
+>> +
+>> +	of_property_read_u32(np, "sound-channel", &channel_value);
 
-diff --git a/sound/usb/midi2.c b/sound/usb/midi2.c
-index a27e244650c8..1ec177fe284e 100644
---- a/sound/usb/midi2.c
-+++ b/sound/usb/midi2.c
-@@ -265,7 +265,7 @@ static void free_midi_urbs(struct snd_usb_midi2_endpoint *ep)
- 
- 	if (!ep)
- 		return;
--	for (i = 0; i < ep->num_urbs; ++i) {
-+	for (i = 0; i < NUM_URBS; ++i) {
- 		ctx = &ep->urbs[i];
- 		if (!ctx->urb)
- 			break;
-@@ -279,6 +279,7 @@ static void free_midi_urbs(struct snd_usb_midi2_endpoint *ep)
- }
- 
- /* allocate URBs for an EP */
-+/* the callers should handle allocation errors via free_midi_urbs() */
- static int alloc_midi_urbs(struct snd_usb_midi2_endpoint *ep)
- {
- 	struct snd_usb_midi2_urb *ctx;
-@@ -351,8 +352,10 @@ static int snd_usb_midi_v2_open(struct snd_ump_endpoint *ump, int dir)
- 		return -EIO;
- 	if (ep->direction == STR_OUT) {
- 		err = alloc_midi_urbs(ep);
--		if (err)
-+		if (err) {
-+			free_midi_urbs(ep);
- 			return err;
-+		}
- 	}
- 	return 0;
- }
--- 
-2.35.3
+> NAK, there is no such property. It seems you already sneaked in such for
+> other codecs. Please do not repeat such patterns of work.
 
+> That's also why I expect full DTS example, not some reduced pieces.
+
+Thank you very much. I would like to add a sound-channel property to awinic,aw87390.yaml
+This property is used to distinguish between multiple PA's in order to 
+load different configurations for different PA's
+
+>> +
+>> +	aw_dev->channel = channel_value;
+>> +}
+>> +
+>> +static int aw87390_init(struct aw87390 **aw87390, struct i2c_client *i2c, struct regmap *regmap)
+>> +{
+>> +	struct aw_device *aw_dev;
+>> +	unsigned int chip_id;
+>> +	int ret;
+>> +
+>> +	/* read chip id */
+>> +	ret = regmap_read(regmap, AW87390_ID_REG, &chip_id);
+>> +	if (ret) {
+>> +		dev_err(&i2c->dev, "%s read chipid error. ret = %d\n", __func__, ret);
+>> +		return ret;
+>> +	}
+>> +
+>> +	if (chip_id != AW87390_CHIP_ID) {
+>> +		dev_err(&i2c->dev, "unsupported device\n");
+
+> Why? The compatible tells it cannot be anything else.
+
+>> +		return -ENXIO;
+>> +	}
+>> +
+>> +	dev_info(&i2c->dev, "chip id = 0x%x\n", chip_id);
+>> +
+>> +	aw_dev = devm_kzalloc(&i2c->dev, sizeof(*aw_dev), GFP_KERNEL);
+>> +	if (!aw_dev)
+>> +		return -ENOMEM;
+>> +
+>> +	(*aw87390)->aw_pa = aw_dev;
+>> +	aw_dev->i2c = i2c;
+>> +	aw_dev->regmap = regmap;
+>> +	aw_dev->dev = &i2c->dev;
+>> +	aw_dev->chip_id = AW87390_CHIP_ID;
+>> +	aw_dev->acf = NULL;
+>> +	aw_dev->prof_info.prof_desc = NULL;
+>> +	aw_dev->prof_info.count = 0;
+>> +	aw_dev->prof_info.prof_type = AW88395_DEV_NONE_TYPE_ID;
+>> +	aw_dev->channel = AW87390_DEV_DEFAULT_CH;
+>> +	aw_dev->fw_status = AW87390_DEV_FW_FAILED;
+>> +	aw_dev->prof_index = AW87390_INIT_PROFILE;
+>> +	aw_dev->status = AW87390_DEV_PW_OFF;
+>> +
+>> +	aw87390_parse_channel_dt(*aw87390);
+>> +
+>> +	return ret;
+>> +}
+>> +
+>> +static int aw87390_i2c_probe(struct i2c_client *i2c)
+>> +{
+>> +	struct aw87390 *aw87390;
+>> +	int ret;
+>> +
+>> +	ret = i2c_check_functionality(i2c->adapter, I2C_FUNC_I2C);
+>> +	if (!ret)
+>> +		return dev_err_probe(&i2c->dev, -ENXIO, "check_functionality failed\n");
+>> +
+>> +	aw87390 = devm_kzalloc(&i2c->dev, sizeof(*aw87390), GFP_KERNEL);
+>> +	if (!aw87390)
+>> +		return -ENOMEM;
+>> +
+>> +	mutex_init(&aw87390->lock);
+>> +
+>> +	i2c_set_clientdata(i2c, aw87390);
+>> +
+>> +	aw87390->regmap = devm_regmap_init_i2c(i2c, &aw87390_remap_config);
+>> +	if (IS_ERR(aw87390->regmap)) {
+>> +		ret = PTR_ERR(aw87390->regmap);
+
+> ret is not needed here, so just:
+> return dev_err_probe()
+
+Thank you very much. I will modify it to 
+"return dev_err_probe(&i2c->dev, PTR_ERR(aw87390->regmap), "failed to init regmap: %d\n", ret);"
+
+>> +		return dev_err_probe(&i2c->dev, ret, "failed to init regmap: %d\n", ret);
+>> +	}
+>> +
+>> +	/* aw pa init */
+>> +	ret = aw87390_init(&aw87390, i2c, aw87390->regmap);
+>> +	if (ret)
+>> +		return ret;
+>> +
+>> +	ret = regmap_write(aw87390->regmap, AW87390_ID_REG, AW87390_SOFT_RESET_VALUE);
+>> +	if (ret)
+>> +		return ret;
+>> +
+>> +	ret = devm_snd_soc_register_component(&i2c->dev,
+>> +				&soc_codec_dev_aw87390, NULL, 0);
+>> +	if (ret)
+>> +		dev_err(&i2c->dev, "failed to register aw87390: %d\n", ret);
+>> +
+>> +	return ret;
+>> +}
+
+
+Best regards,
+Weidong Wang
