@@ -4,96 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9A722C83F2C
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Sep 2023 05:14:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 34DEFCA0FE9
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Sep 2023 05:28:13 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A35F5827;
-	Tue,  5 Sep 2023 07:14:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A35F5827
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8A825846;
+	Tue,  5 Sep 2023 07:27:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8A825846
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1693890893;
-	bh=QeIVSdui903GRsuTIj9qUQRE2P0dD0SczPGF4tpsZ6w=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=uJTMzyvyxt8P/WgsJ1IQ5SpnvYhR+yHvRqpkDP0qYD+q35YFts08qe+OJrGdqoy7q
-	 GJyM/wYDA+sGqBhgLtmgWtaMNkFTipYapNicaEcVf9iCemDe7AY6ac/r1xE0GQWVjZ
-	 bFPdccgAiYJl6wPxATZRBJKYiCFl+MmNM/pOK2Dc=
+	s=default; t=1693891691;
+	bh=sKTDtBzXxIoOP/AT+OVaK6YGhZhxrskgETmowzkudDM=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=cl/zwCvcD43hPk7D72eiNDWAyjGOZe7whQXvrAyb61KPLqlmsRefUrYL0Vkz9F0z7
+	 5izTnp+10BwdCHmVCaNPuUT696PR7IKdHR+X/oReFKnSnLetxwwh0qOKHDGv+aO2Z7
+	 I9PFlrseCnAI7L5tFvu6W+KzGTnACy2Di84TTL6E=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0B348F804F3; Tue,  5 Sep 2023 07:13:36 +0200 (CEST)
+	id 0A5C0F80549; Tue,  5 Sep 2023 07:26:53 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E5E4CF800F5;
-	Tue,  5 Sep 2023 07:13:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 21BFCF8047D;
+	Tue,  5 Sep 2023 07:26:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9BB56F8047D; Tue,  5 Sep 2023 07:13:13 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+	id 96EF1F8047D; Tue,  5 Sep 2023 07:26:47 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2001:67c:2178:6::1c])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 8F74EF800F5
-	for <alsa-devel@alsa-project.org>; Tue,  5 Sep 2023 07:12:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8F74EF800F5
+	by alsa1.perex.cz (Postfix) with ESMTPS id 7C73FF80236
+	for <alsa-devel@alsa-project.org>; Tue,  5 Sep 2023 07:26:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7C73FF80236
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=dwZqNgV/;
+ header.s=susede2_rsa header.b=ll1nwdsY;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=XwJazWxK
+ header.s=susede2_ed25519 header.b=ViQNVSu1
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 84D1821853;
-	Tue,  5 Sep 2023 05:12:55 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id CF00B21850;
+	Tue,  5 Sep 2023 05:26:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1693890775;
+	t=1693891598;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=69UWUDTMxZk5rZSe2MJ3+KIE5a94YKPMsHLa8ysN+O0=;
-	b=dwZqNgV/au/X4SDx9xNDmj2tJq/Ek8jA5WYWKSiAxmZGHkkw4dZz+l1ki1ErCZgZvizaUD
-	mJoCWsk/Tco+xEiwyL+p6HeJdF3Fqr1ViiJAz4e2VMnMlM0KhgAnhoHkyz5NjesP5x6M9k
-	ByQMJX0K+l9NFeb3VWslgpXuzkQFfeM=
+	 mime-version:mime-version:
+  content-transfer-encoding:content-transfer-encoding;
+	bh=TrC51d+ZJBUQcFjxZwIciw4rW5ciXy4mMxn6+Usbc1I=;
+	b=ll1nwdsY+q9VzZAcRnvd2PFbiE57rVIVi2rw+qFuYCJhjWgzJ/m3dHSJW43kB1wIr0G92P
+	XTX1Uvz7gE6utvjW+YdmtCZFLsEJIbaP3YRrH+AKkgmrYVflVNjWexq1470T6m5UZaD5K8
+	9XjA28vlG0Y4KNMQzdR6BJDsRcoS0lw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1693890775;
+	s=susede2_ed25519; t=1693891598;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=69UWUDTMxZk5rZSe2MJ3+KIE5a94YKPMsHLa8ysN+O0=;
-	b=XwJazWxKmYXLSZwqasCQKm5nXVf2xre6pnxxCUCjIqfyoonE5yEXjpiDW+PXT2OgeD0cCT
-	b/4fDMfRW4Pu1SBQ==
+	 mime-version:mime-version:
+  content-transfer-encoding:content-transfer-encoding;
+	bh=TrC51d+ZJBUQcFjxZwIciw4rW5ciXy4mMxn6+Usbc1I=;
+	b=ViQNVSu1wVTx1+AOsH6eTDgYJhr1Z4JP83sSKio112zeAg2F1Tt1gT5JCnbnwhukVX0T2X
+	nGg9w+L5eYYGGTBg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4B824134B2;
-	Tue,  5 Sep 2023 05:12:55 +0000 (UTC)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AD65A134B2;
+	Tue,  5 Sep 2023 05:26:38 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id ZwhYC9e49mSPKgAAMHmgww
-	(envelope-from <tiwai@suse.de>); Tue, 05 Sep 2023 05:12:55 +0000
-Date: Tue, 05 Sep 2023 07:12:54 +0200
-Message-ID: <87il8pi4o9.wl-tiwai@suse.de>
+	id EsRNKQ689mTYLwAAMHmgww
+	(envelope-from <tiwai@suse.de>); Tue, 05 Sep 2023 05:26:38 +0000
 From: Takashi Iwai <tiwai@suse.de>
-To: Ash Holland <ash@sorrel.sh>
-Cc: alsa-devel@alsa-project.org,
-	regressions@lists.linux.dev
-Subject: Re: [REGRESSION] rust midir MIDI library causes kernel oops
-In-Reply-To: <46e9cbcc-8fbc-4f58-9ec9-b17dfdf25a5f@sorrel.sh>
-References: <8a555319-9f31-4ea2-878f-adc338bc40d4@sorrel.sh>
-	<87msy1ip6l.wl-tiwai@suse.de>
-	<46e9cbcc-8fbc-4f58-9ec9-b17dfdf25a5f@sorrel.sh>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Message-ID-Hash: 4CANXG5ZRH3JMABMT4BHJGNR5TXWDZNL
-X-Message-ID-Hash: 4CANXG5ZRH3JMABMT4BHJGNR5TXWDZNL
+To: alsa-devel@alsa-project.org
+Cc: Ash Holland <ash@sorrel.sh>
+Subject: [PATCH] ALSA: seq: Fix snd_seq_expand_var_event() call to user-space
+Date: Tue,  5 Sep 2023 07:26:31 +0200
+Message-Id: <20230905052631.18240-1-tiwai@suse.de>
+X-Mailer: git-send-email 2.35.3
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: NGLCZGZKJBYN6GAXQM6LB6VFOKNVH6DJ
+X-Message-ID-Hash: NGLCZGZKJBYN6GAXQM6LB6VFOKNVH6DJ
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -106,7 +101,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4CANXG5ZRH3JMABMT4BHJGNR5TXWDZNL/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NGLCZGZKJBYN6GAXQM6LB6VFOKNVH6DJ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -115,39 +110,38 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, 05 Sep 2023 01:00:11 +0200,
-Ash Holland wrote:
-> 
-> On 04/09/2023 22:49, Takashi Iwai wrote:
-> > Yes, that was a bad change.  Could you try the fix below?
-> > 
-> > 
-> > thanks,
-> > 
-> > Takashi
-> > 
-> > -- 8< --
-> > --- a/sound/core/seq/seq_memory.c
-> > +++ b/sound/core/seq/seq_memory.c
-> > @@ -187,8 +187,12 @@ int snd_seq_expand_var_event(const struct snd_seq_event *event, int count, char
-> >   	err = expand_var_event(event, 0, len, buf, in_kernel);
-> >   	if (err < 0)
-> >   		return err;
-> > -	if (len != newlen)
-> > -		memset(buf + len, 0, newlen - len);
-> > +	if (len != newlen) {
-> > +		if (in_kernel)
-> > +			memset(buf + len, 0, newlen - len);
-> > +		else
-> > +			clear_user((__force void __user *)buf + len, newlen - len);
-> > +	}
-> >   	return newlen;
-> >   }
-> >   EXPORT_SYMBOL(snd_seq_expand_var_event);
-> 
-> That patch seems to work fine! Many thanks.
+The recent fix to clear the padding bytes at
+snd_seq_expand_var_event() broke the read to user-space with
+in_kernel=0 parameter.  For user-space address, it has to use
+clear_user() instead of memset().
 
-Thanks for quick testing!  I'll submit the proper patch later.
+Fixes: f80e6d60d677 ("ALSA: seq: Clear padded bytes at expanding events")
+Reported-and-tested-by: Ash Holland <ash@sorrel.sh>
+Closes: https://lore.kernel.org/r/8a555319-9f31-4ea2-878f-adc338bc40d4@sorrel.sh
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/core/seq/seq_memory.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
+diff --git a/sound/core/seq/seq_memory.c b/sound/core/seq/seq_memory.c
+index 174585bf59d2..94db3726864b 100644
+--- a/sound/core/seq/seq_memory.c
++++ b/sound/core/seq/seq_memory.c
+@@ -187,8 +187,12 @@ int snd_seq_expand_var_event(const struct snd_seq_event *event, int count, char
+ 	err = expand_var_event(event, 0, len, buf, in_kernel);
+ 	if (err < 0)
+ 		return err;
+-	if (len != newlen)
+-		memset(buf + len, 0, newlen - len);
++	if (len != newlen) {
++		if (in_kernel)
++			memset(buf + len, 0, newlen - len);
++		else
++			clear_user((__force void __user *)buf + len, newlen - len);
++	}
+ 	return newlen;
+ }
+ EXPORT_SYMBOL(snd_seq_expand_var_event);
+-- 
+2.35.3
 
-Takashi
