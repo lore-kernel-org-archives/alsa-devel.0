@@ -4,121 +4,105 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 066CAEE14D0
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Sep 2023 18:58:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 98EE5EE14D3
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Sep 2023 19:04:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A7D9D832;
-	Wed,  6 Sep 2023 20:57:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A7D9D832
+	by alsa0.perex.cz (Postfix) with ESMTPS id BDA9083A;
+	Wed,  6 Sep 2023 21:03:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BDA9083A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1694026714;
-	bh=cIH9om/GNhIxk31g3AXC3UFpJVqp6UUNDUoU65Va4U4=;
-	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=fRAaNRxbhfYK/wd5+qcMsvUn30BfV4hT/w1Aymyha4uQ3DDD3xUBKBw9UorpD1+gD
-	 toGzMDJ8WZesF3LC8laM5lzbxzU1CBD+VpQtm+KmXGgd0KemT496w0Dm+IFY68ZbyL
-	 xH21geY9Nhe49k/Kl6y71vVeplZJx1wRwCNKt/xo=
+	s=default; t=1694027080;
+	bh=DL/vVGQJmUYLFObfYPWtDEk1+JS7JlOmp6oQnVr2cPM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=FKtSFU1gaezlq+UUVDVOxj/5OJxNoD+6rwq0F7rXMz70U3OyfvZfBpNdWuk5dCqaN
+	 ry1i+59wChiHly2pN1z1T/d13KcLJrVuMp1LVzJE/5zhOQ32wfFEhJhg94VenHdXzJ
+	 MLNyPPp6Q137mCFeNsLONcMD9++/iC9LeO6tStsA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8207CF80527; Wed,  6 Sep 2023 20:57:17 +0200 (CEST)
+	id D816DF80527; Wed,  6 Sep 2023 21:03:23 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id EBECEF80494;
-	Wed,  6 Sep 2023 20:57:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7A610F80494;
+	Wed,  6 Sep 2023 21:03:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 89B08F80494; Wed,  6 Sep 2023 20:57:12 +0200 (CEST)
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com
- (mail-bn8nam12on20609.outbound.protection.outlook.com
- [IPv6:2a01:111:f400:fe5b::609])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id DDAB2F80494; Wed,  6 Sep 2023 21:03:18 +0200 (CEST)
+Received: from mail-oa1-x34.google.com (mail-oa1-x34.google.com
+ [IPv6:2001:4860:4864:20::34])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 832EFF80431
-	for <alsa-devel@alsa-project.org>; Wed,  6 Sep 2023 20:57:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 832EFF80431
+	by alsa1.perex.cz (Postfix) with ESMTPS id F0A5CF800AA
+	for <alsa-devel@alsa-project.org>; Wed,  6 Sep 2023 21:03:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F0A5CF800AA
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=amd.com header.i=@amd.com header.a=rsa-sha256
- header.s=selector1 header.b=WFjaYZxB
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IY7wSww6FgUFdbNAeqcXA918BJ3k3VlAeyU0ohdbh0uKmqDjbx2cc1DLtr3C5lzIjn4VYrADfp36N5rZLSmT7bgpaX9hChR9OMxw1knKP4b6xlyv5+ZIjS7uWixozc4t9Sc8MHRpa1nfTNBoe9KO9EE5bczdit6AQSKabg+inSHhDhPmOZa7UBmhgt2GJ9OvjAe1jLcM7fcMcAA5LSlIPg2zsr6c3hOtb75EBJiQNwPtuL3WwA47IR+oVDGnhIYH2xQRkf/xVVEyU2QEqzNzcN5kZlKezzpi6gR/vOjo1/EsOA3CaPaYMuQ7TYV+4SZqfr4umrYn8qDVDICUowp0gw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=JUhPFoaOxWMnPIJglh6t9xLOG5iIvyEo7v83sTN76Ss=;
- b=KEFGLpeNkrJwihn+wjAHr7Ocqci/SRUUGYmhMbrfeywRTYSjzBCaLPPXbHfN+CGERcmOBuowLaqEAgdgOLdAFUl5A5Q0teXLhia+3qpQFS41DDsds22CfnrQn8OZKE8Pm1bZBWZluzbyc2ukJKUycWv0uVolaPwTRsMCDJI7tmAchNQ1vJuqI1mK8SBLZ0/5/XxSquORqTgA2zEuWAW08fllWZph0oPNcgYTjQ2TP9x30nfPguaZRkwRX/n7iVucf0FwClINxlvKmJhPkodZ538aPjxmZJDFS0LbSQ7Zi1SIManM63yegr1dXZ+cybYU0mD6l9TAtHZdTixx7XhPCg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=suse.com smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JUhPFoaOxWMnPIJglh6t9xLOG5iIvyEo7v83sTN76Ss=;
- b=WFjaYZxBsswkB8a7u6Fb+MqZMkj05ziaytuTLtWM+ISzP1BBl8PiiUvNzCxNqdG0BFSU6nt5pnCQIl852+Q2BxrTDO4YjCoCP8J5g4V/L3rEjarSem9uDG156Uf5nVOSe63nrKzRMDN6AgbwNRkSgE3NvltZE7BH8905OW13fZw=
-Received: from BL0PR0102CA0034.prod.exchangelabs.com (2603:10b6:207:18::47) by
- DM4PR12MB5866.namprd12.prod.outlook.com (2603:10b6:8:65::6) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6745.34; Wed, 6 Sep 2023 18:56:58 +0000
-Received: from BL6PEPF0001AB56.namprd02.prod.outlook.com
- (2603:10b6:207:18:cafe::11) by BL0PR0102CA0034.outlook.office365.com
- (2603:10b6:207:18::47) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.30 via Frontend
- Transport; Wed, 6 Sep 2023 18:56:57 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- BL6PEPF0001AB56.mail.protection.outlook.com (10.167.241.8) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6768.26 via Frontend Transport; Wed, 6 Sep 2023 18:56:57 +0000
-Received: from AUS-P9-MLIMONCI.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 6 Sep
- 2023 13:56:56 -0500
-From: Mario Limonciello <mario.limonciello@amd.com>
-To: <tiwai@suse.com>, <broonie@kernel.org>
-CC: <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
-	<Syed.SabaKareem@amd.com>, Mario Limonciello <mario.limonciello@amd.com>,
-	<wildjim@kiwinet.org>
-Subject: [PATCH] ASoC: amd: yc: Fix a non-functional mic on Lenovo 82TL
-Date: Wed, 6 Sep 2023 13:22:57 -0500
-Message-ID: <20230906182257.45736-1-mario.limonciello@amd.com>
-X-Mailer: git-send-email 2.34.1
+	dkim=pass (2048-bit key,
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20221208 header.b=E5fRrM/K
+Received: by mail-oa1-x34.google.com with SMTP id
+ 586e51a60fabf-1c5451a1fbaso121760fac.1
+        for <alsa-devel@alsa-project.org>;
+ Wed, 06 Sep 2023 12:03:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694026991; x=1694631791;
+ darn=alsa-project.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=e3q/T6tNlmeW82eZnvMrVcLhUOOtgnqhDwVveJXqFWk=;
+        b=E5fRrM/KXHsOKiRlzYh/SpneFaT+pnCyUoctTbTNTh9K8i86YTMU5opXZ3myXA3Bq1
+         WtqFbeCRnAB310dsdtjlNoj+E7ASNveXvIr9mA2WHS0Qdrhcdx0iC1DcDCjoU4ogNEGD
+         T2R8ss8ni0PEJ1JjF6FnWDlyheRi7EcQOJrS/qt4jy+RsYy0AGXbtem7pAKpQgU6RV51
+         EiV96UodPW1MSA5IEzwN03Tg/gBgfawJCAMcqfcrC6DiXC2fCJDpM38I7gOAug1j4gjm
+         Wv12we2bLqNDyoRLWZta+CvHjibhvzGWDezqYnNduc/3dGM4Kzp0rLmCnzTgLKDmC7iR
+         CbVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1694026991; x=1694631791;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=e3q/T6tNlmeW82eZnvMrVcLhUOOtgnqhDwVveJXqFWk=;
+        b=AiR2xMNBP1Xma30VeEc4E93jLQMB7R5UvlnOOZk4/ZQSCqEBRkvr8SsipLRTDr8/Ai
+         b8GTtNrkmcSlT+wy6eUZm/DVNuPPkKkn9O8Ntoo/e9lsLDbmh8eT93jvZO0mwltSTq4t
+         DibRg5w3L7ef9a3VYFjnnq4tPiiMXp2bkMyPDb4RBjMglH5vELbxi0Fn6bV6hjvsOLB3
+         A1g28aTkBZiswr27gzACenalbOMrbLv6MAmybRBjLtO6NSm7z3vnon/NU47uCoahVohs
+         zOyuWTBbRELZw/KmRKLQ5PbPOc8JRZU8Ouj5bOPCAJ0wMBZTzzlK0XTKcH15tU2/8Fcn
+         Qeeg==
+X-Gm-Message-State: AOJu0YyDD+vqLLWulfbfhl44tzh+EgwgF+hlNmgilYC3n3k+Z4W+WugB
+	w+g0gE23HJEfTlYcPOSga2U=
+X-Google-Smtp-Source: 
+ AGHT+IFiZtabVhUuY1bomsXQZWF6oaToQkCFgYCHPt/3Khyme6ZSuBPbGJFAJ0jyeRFKC3p9n0wiWw==
+X-Received: by 2002:a05:6870:5b81:b0:1bf:440:a055 with SMTP id
+ em1-20020a0568705b8100b001bf0440a055mr18592017oab.4.1694026991204;
+        Wed, 06 Sep 2023 12:03:11 -0700 (PDT)
+Received: from geday ([2804:7f2:8006:99ef:50e4:98e3:42a7:1619])
+        by smtp.gmail.com with ESMTPSA id
+ tp10-20020a0568718b8a00b0019e6b96f909sm7918494oab.22.2023.09.06.12.03.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Sep 2023 12:03:10 -0700 (PDT)
+Date: Wed, 6 Sep 2023 16:03:10 -0300
+From: Geraldo Nascimento <geraldogabriel@gmail.com>
+To: Antonio Terceiro <antonio.terceiro@linaro.org>
+Cc: Robin Murphy <robin.murphy@arm.com>, Takashi Iwai <tiwai@suse.de>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, alsa-devel@alsa-project.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: snd-cmipci oops during probe on arm64 (current mainline,
+ pre-6.6-rc1)
+Message-ID: <ZPjM7op/B/CGCF/N@geday>
+References: <ZPelHaX/Lt++kkOm@linaro.org>
+ <877cp3esse.wl-tiwai@suse.de>
+ <4f335dd2-8043-c60e-cf84-c2b01c4fee12@arm.com>
+ <ZPjGuCdmPgqznc5t@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL6PEPF0001AB56:EE_|DM4PR12MB5866:EE_
-X-MS-Office365-Filtering-Correlation-Id: ee1c32b5-141e-459a-5a9c-08dbaf0b0ba0
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	2G2108Z9VAtJ17lSkln00fK8z7b1zoNF02w1zkA0xup72tBRgt7GVmqhNubad/NXyv70OFwNQVtnJWhwGE96Dnra468bTe/JlI8Xcr5BmFsBGgvvkOQ0DsOFuic2ej/PkQEx0ifZoMAT6z2yM74HgEJJ/tt1YTk1lmPzRhRUR4Un961TUZdoA9hGJf3qGnH1V2ovpphiToWo0e5eOU3sRUKXakm7pPUvN/2t4+xsdbyS6hABufJ3LftXskV5q/7vvyS6VBGI9FBE9613oJrXm2DDlmCbyKaHVcfiMUfNgfFV2DjLBJ0SWC1CrLg+tT+IqAnn7Z4m117+IqkKe+Cr2+5t8/hQHTn1W6HH4GVJefQLInt0VtnKFdfu82zjUVCW6GXyj0J2MpanXPVQmnO0LvZAsSYjEFgAR48BtMJ6RsQvbIVTLu0s1gqyM6UxMuk+tIJFH6RGqtqSTunH9Oz3TaG0+Rt0KTVPLq6XbnORA9MMfOAW9lP3SI5tqpU5r4bK7NWy6R16c/uM2U98Lw19Jdpz9y5BiU03JPmHH3Mj9Lm7gae5rbhrslDaBKjH9CS1M4TpHDtT8CTNRKAFuge9nl05Xs2YJy4tTUvlrWWCGegXormZ9JA2L4B8/qLi25sLGsVBLrv3EkmNs04r3+WUPQFALnvUjy0GlCcQzcoDFDbb/3VJPBpPlCBA4R4XDXo7oD5NrbzE0eIgoWyireGCdiNMsL+ucpw96sK1XRCJhr3/Zi/B3ZJIYkdH4CLagLug6LftBgqHo7uZkehJ9YK/HcfwU6ME1tjtT5eULZhhjut1rGuidn7Ph3g/lIQdpR/k
-X-Forefront-Antispam-Report: 
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(136003)(376002)(396003)(346002)(186009)(1800799009)(82310400011)(451199024)(36840700001)(46966006)(40470700004)(40460700003)(2906002)(966005)(82740400003)(86362001)(36860700001)(426003)(336012)(1076003)(16526019)(2616005)(26005)(36756003)(478600001)(7696005)(47076005)(83380400001)(356005)(81166007)(40480700001)(41300700001)(8936002)(4326008)(8676002)(4744005)(70586007)(110136005)(316002)(54906003)(5660300002)(70206006)(44832011)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Sep 2023 18:56:57.7147
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 
- ee1c32b5-141e-459a-5a9c-08dbaf0b0ba0
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: 
- TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: 
-	BL6PEPF0001AB56.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5866
-Message-ID-Hash: OCOCV7SSKN7S65BH34PAKYI7OTK5E7KP
-X-Message-ID-Hash: OCOCV7SSKN7S65BH34PAKYI7OTK5E7KP
-X-MailFrom: Mario.Limonciello@amd.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZPjGuCdmPgqznc5t@linaro.org>
+Message-ID-Hash: TSAAYIYB2SBOSJJJ2Q4H4QYUXU5622X3
+X-Message-ID-Hash: TSAAYIYB2SBOSJJJ2Q4H4QYUXU5622X3
+X-MailFrom: geraldogabriel@gmail.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -130,7 +114,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OCOCV7SSKN7S65BH34PAKYI7OTK5E7KP/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TSAAYIYB2SBOSJJJ2Q4H4QYUXU5622X3/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -139,34 +123,26 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Lenovo 82TL has DMIC connected like 82V2 does.  Also match
-82TL.
+On Wed, Sep 06, 2023 at 03:36:40PM -0300, Antonio Terceiro wrote:
+> On Wed, Sep 06, 2023 at 01:49:16PM +0100, Robin Murphy wrote:
+> > On 2023-09-06 07:10, Takashi Iwai wrote:
+> > > On Wed, 06 Sep 2023 00:01:01 +0200,
+> > > Antonio Terceiro wrote:
+> > > > 
+> > > > Hi,
+> > > > 
 
-Reported-by: wildjim@kiwinet.org
-Closes: https://bugzilla.kernel.org/show_bug.cgi?id=217063
-Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
----
- sound/soc/amd/yc/acp6x-mach.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+Hi Antonio, my 2 cents:
 
-diff --git a/sound/soc/amd/yc/acp6x-mach.c b/sound/soc/amd/yc/acp6x-mach.c
-index b304b3562c82..7c3b32d6f2fb 100644
---- a/sound/soc/amd/yc/acp6x-mach.c
-+++ b/sound/soc/amd/yc/acp6x-mach.c
-@@ -213,6 +213,13 @@ static const struct dmi_system_id yc_acp_quirk_table[] = {
- 			DMI_MATCH(DMI_PRODUCT_NAME, "21J6"),
- 		}
- 	},
-+	{
-+		.driver_data = &acp6x_card,
-+		.matches = {
-+			DMI_MATCH(DMI_BOARD_VENDOR, "LENOVO"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "82TL"),
-+		}
-+	},
- 	{
- 		.driver_data = &acp6x_card,
- 		.matches = {
--- 
-2.34.1
+> > > > I'm using an arm64 workstation, and wanted to add a sound card to it. I bought
+> > > > one who was pretty popular around where I live, and it is supported by the
+> > > > snd-cmipci driver.
+
+Specifically, which arm64 workstation? I'm guessing Compute Module 4 IO
+Board + Raspbery Pi CM4? This detail is important because the stack
+trace you provided only references generic PCI calls and there's a need
+to know exactly which PCIe driver could be failing. Is it pcie-brcmstb?
+
+Thanks,
+Geraldo Nascimento
 
