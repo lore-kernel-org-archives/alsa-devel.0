@@ -4,47 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 168E4EB8FAD
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Sep 2023 09:59:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DF93FEB8FA5
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Sep 2023 10:02:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 954E8846;
-	Wed,  6 Sep 2023 11:59:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 954E8846
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6B46683A;
+	Wed,  6 Sep 2023 12:01:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6B46683A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1693994393;
-	bh=PZ47ZEPoVQqAp2yGb1CDTW8VSvGTiQhFtQPJKX7Je2w=;
+	s=default; t=1693994535;
+	bh=qxQdfGVfvOEslfvsh5Q3H8ANCLKowY4/vJUvQVIr9UE=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=Vyx+phRzKRPs3PdPgUsvZ0mDOuNPtaLNLPtXkrGH6GsDr7WkLbSrbqKxn6j1zM5oe
-	 KLBuO6ZSg3y0eOyVD980nqAvIBRONRfKY8Mn2FnGB/N7aOA2sQThwKk7NygzbJMV0Z
-	 AZToJV6ecH3HpHZsdHmVBQYheoGMyQdxlLTqHWgs=
+	b=YFVYQdHuYDyEvjJ2y4aBveoql2oNliMLTtAAJr3kV3yzqaOxY/dh2eXbFtRjRI6L9
+	 cO00ShsG4rq9G5PMGTzCthXUljccyggMr7Y8Mrmx9nXhgMoofHK6eJ+P+xB+NzSG+b
+	 b+v/RoI2MMlNw81Cdpln8u3RZUEXIyPmEdK9OKO0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9764AF80549; Wed,  6 Sep 2023 11:58:36 +0200 (CEST)
+	id 00DF8F804F3; Wed,  6 Sep 2023 12:00:50 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4E476F80527;
-	Wed,  6 Sep 2023 11:58:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 138C9F80431;
+	Wed,  6 Sep 2023 12:00:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E4064F80537; Wed,  6 Sep 2023 11:54:57 +0200 (CEST)
+	id 41571F804F3; Wed,  6 Sep 2023 12:00:41 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
  [207.180.221.201])
-	by alsa1.perex.cz (Postfix) with ESMTP id 37638F80494
-	for <alsa-devel@alsa-project.org>; Wed,  6 Sep 2023 11:54:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 37638F80494
+	by alsa1.perex.cz (Postfix) with ESMTP id 07954F80431
+	for <alsa-devel@alsa-project.org>; Wed,  6 Sep 2023 11:55:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 07954F80431
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1693994096205333471-webhooks-bot@alsa-project.org>
-References: <1693994096205333471-webhooks-bot@alsa-project.org>
+In-Reply-To: <1693994146787618876-webhooks-bot@alsa-project.org>
+References: <1693994146787618876-webhooks-bot@alsa-project.org>
 Subject: _dlsym_control_001 undeclared when compiling alsa-lib
-Message-Id: <20230906095457.E4064F80537@alsa1.perex.cz>
-Date: Wed,  6 Sep 2023 11:54:57 +0200 (CEST)
-Message-ID-Hash: FOZYTU6EQFERPX6KTSSYE3VLTMWIHMXV
-X-Message-ID-Hash: FOZYTU6EQFERPX6KTSSYE3VLTMWIHMXV
+Message-Id: <20230906100041.41571F804F3@alsa1.perex.cz>
+Date: Wed,  6 Sep 2023 12:00:41 +0200 (CEST)
+Message-ID-Hash: NAMC2IPCYJ4UZ7QMDPCC6NR5HX7QTEME
+X-Message-ID-Hash: NAMC2IPCYJ4UZ7QMDPCC6NR5HX7QTEME
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -57,7 +57,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FOZYTU6EQFERPX6KTSSYE3VLTMWIHMXV/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NAMC2IPCYJ4UZ7QMDPCC6NR5HX7QTEME/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -102,7 +102,7 @@ control.c:1541:43: note: in expansion of macro 'SND_CONTROL_DLSYM_VERSION'
 make: *** [Makefile:415: control.lo] Error 1
 ```
 
-I have tried to understand the reason this occurs. This doesn't happen when compiling version `1.2.9`, so I can't understand how and where the declaration is for that version.
+I have tried to understand the reason this occurs. This doesn't happen when compiling version `1.2.9`, yet I also can't understand how and where the declaration is for that version.
 
 Issue URL     : https://github.com/alsa-project/alsa-lib/issues/350
 Repository URL: https://github.com/alsa-project/alsa-lib
