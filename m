@@ -4,82 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AC73AEC873B
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Sep 2023 15:40:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 29600EC873A
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Sep 2023 15:53:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 370DDA4B;
-	Thu,  7 Sep 2023 17:39:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 370DDA4B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 47D7284B;
+	Thu,  7 Sep 2023 17:52:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 47D7284B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1694101209;
-	bh=tteNpLIFLw5MS+k+dFBVbckGuhwk/VpXStJ/V7Yltdg=;
+	s=default; t=1694101988;
+	bh=yygdrR9tXi+0eL4XEux60q+4Uf5gpP4X6x/GdxMk2nQ=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=U1j6fnjS8mmITWDhaalBEcU+Y9exC7t9RQmnRqnaSx2L4GQDW5oh4ERqBYG5aaB29
-	 KxbKJk4Dy/UbbfRMBvIHB0eCIsBNwJSNuicoDETKJbwOkhOualV5GNbrpGgJaPFpR9
-	 ERmwSVAsxbptn7KijwdAlHNdXgc/jZxFIf8n7Wvo=
+	b=tLLmyqplaf9XcdbqVzfPbu8hlIqfciY81TlQYSNTW0FO5oS3CbyXiOsrUAfL/PC9O
+	 nOMrH4f6Z2LiOCt1CZDRszlRyE4jzI3oD3G+VW5dEOosoSuYPlED8zLYKYryJypFFT
+	 EvZ3a/u+Qe1Z5udkXtqxOK8GRgMX92kuYHQBPxLo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0418FF80537; Thu,  7 Sep 2023 17:38:58 +0200 (CEST)
+	id 54624F8047D; Thu,  7 Sep 2023 17:51:43 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 89362F80494;
-	Thu,  7 Sep 2023 17:38:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D1D58F80494;
+	Thu,  7 Sep 2023 17:51:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 50120F80494; Thu,  7 Sep 2023 17:38:54 +0200 (CEST)
+	id C1C20F80494; Thu,  7 Sep 2023 17:51:38 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id DCF7FF800AA
-	for <alsa-devel@alsa-project.org>; Thu,  7 Sep 2023 17:38:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DCF7FF800AA
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9541EF80431
+	for <alsa-devel@alsa-project.org>; Thu,  7 Sep 2023 17:51:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9541EF80431
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=vBDAI4/P;
+ header.s=susede2_rsa header.b=MG/RWiix;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=EwXU7EZK
+ header.s=susede2_ed25519 header.b=PgTRAY/j
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 5352521860;
-	Thu,  7 Sep 2023 15:38:51 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id C27FE21862;
+	Thu,  7 Sep 2023 15:51:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1694101131;
+	t=1694101893;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ZEqj/TaMjwHlTs/viCIGXa1aFhlVcHEDbr8DfvrhoN8=;
-	b=vBDAI4/PiCVn0AfPsBB++vFHV29E9kYYThDdSDAKY8U39NWoxg3qaUZwqlvn9vYxMrxsI5
-	7y7Vcvo8lubTaAyvP76ZYuxoesuoQxlimCWSz8rDvbXICY4YT2m9tw53ueSspATKfQ54Jn
-	+EM58KQCjqr6sU+x5BuX5wPA9ONiojI=
+	bh=tk3J/weePsTr2+puEZaryztfMldIRsL7MjS11xHNPq4=;
+	b=MG/RWiixzRUD5n21QY2yXLKv/zxycwe2jvwvqsZhnjyl0H7FMWmzreTziH5v3xUpVO2ST2
+	yu4FWXTNDRNIKjs3oZrJrIlUYo9ByzoFJFbu7uGHWT000wzW87sPlE0S3X6h6mrCb2Poln
+	jyaxTpMKrnwUimNWsKjEy53luKAW7rc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1694101131;
+	s=susede2_ed25519; t=1694101893;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ZEqj/TaMjwHlTs/viCIGXa1aFhlVcHEDbr8DfvrhoN8=;
-	b=EwXU7EZKC+nUnxytU6JT1R0nmGcVE9XPQDvpF0P0Gr8AQTIgiw7A2ewAsWC2zsCm174trU
-	JAEhfGyY/upGdvCA==
+	bh=tk3J/weePsTr2+puEZaryztfMldIRsL7MjS11xHNPq4=;
+	b=PgTRAY/jSIOr1hyGZbPTqd+ID749qUOYH1g8gzONDoREaJFpp8MDUTuBDrtTkNFrVzvWF8
+	MQwXRemp0OfM7WCA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B42B5138FA;
-	Thu,  7 Sep 2023 15:38:50 +0000 (UTC)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4946E138FA;
+	Thu,  7 Sep 2023 15:51:33 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id R8TKKoru+WTZAwAAMHmgww
-	(envelope-from <tiwai@suse.de>); Thu, 07 Sep 2023 15:38:50 +0000
-Date: Thu, 07 Sep 2023 17:38:50 +0200
-Message-ID: <874jk6at85.wl-tiwai@suse.de>
+	id gkbnEIXx+WQ+CwAAMHmgww
+	(envelope-from <tiwai@suse.de>); Thu, 07 Sep 2023 15:51:33 +0000
+Date: Thu, 07 Sep 2023 17:51:32 +0200
+Message-ID: <8734zqasmz.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Wesley Cheng <quic_wcheng@quicinc.com>
 Cc: <srinivas.kandagatla@linaro.org>,
@@ -102,15 +102,16 @@ Cc: <srinivas.kandagatla@linaro.org>,
 	<linux-usb@vger.kernel.org>,
 	<quic_jackp@quicinc.com>,
 	<quic_plai@quicinc.com>
-Subject: Re: [PATCH v5 12/32] sound: usb: Export USB SND APIs for modules
-In-Reply-To: <20230829210657.9904-13-quic_wcheng@quicinc.com>
+Subject: Re: [PATCH v5 18/32] sound: usb: Introduce QC USB SND offloading
+ support
+In-Reply-To: <20230829210657.9904-19-quic_wcheng@quicinc.com>
 References: <20230829210657.9904-1-quic_wcheng@quicinc.com>
-	<20230829210657.9904-13-quic_wcheng@quicinc.com>
+	<20230829210657.9904-19-quic_wcheng@quicinc.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Message-ID-Hash: PPG53LZMO2X6IJYCO6PXC7UX7OMJUQUI
-X-Message-ID-Hash: PPG53LZMO2X6IJYCO6PXC7UX7OMJUQUI
+Message-ID-Hash: U4KNQGEKXSQVLCZ63VVZC47F5DIPY4RE
+X-Message-ID-Hash: U4KNQGEKXSQVLCZ63VVZC47F5DIPY4RE
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -123,7 +124,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PPG53LZMO2X6IJYCO6PXC7UX7OMJUQUI/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/U4KNQGEKXSQVLCZ63VVZC47F5DIPY4RE/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -132,29 +133,82 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, 29 Aug 2023 23:06:37 +0200,
+On Tue, 29 Aug 2023 23:06:43 +0200,
 Wesley Cheng wrote:
-> -/*
-> - * hw_params callback
-> - *
-> - * allocate a buffer and set the given audio format.
-> - *
-> - * so far we use a physically linear buffer although packetize transfer
-> - * doesn't need a continuous area.
-> - * if sg buffer is supported on the later version of alsa, we'll follow
-> - * that.
-> - */
-> -static int snd_usb_hw_params(struct snd_pcm_substream *substream,
-> -			     struct snd_pcm_hw_params *hw_params)
-> +int snd_usb_attach_endpoints(struct snd_usb_substream *subs,
-> +				struct snd_pcm_hw_params *hw_params)
+> 
+> Several Qualcomm SoCs have a dedicated audio DSP, which has the ability to
+> support USB sound devices.  This vendor driver will implement the required
+> handshaking with the DSP, in order to pass along required resources that
+> will be utilized by the DSP's USB SW.  The communication channel used for
+> this handshaking will be using the QMI protocol.  Required resources
+> include:
+> - Allocated secondary event ring address
+> - EP transfer ring address
+> - Interrupter number
+> 
+> The above information will allow for the audio DSP to execute USB transfers
+> over the USB bus.  It will also be able to support devices that have an
+> implicit feedback and sync endpoint as well.  Offloading these data
+> transfers will allow the main/applications processor to enter lower CPU
+> power modes, and sustain a longer duration in those modes.
+> 
+> Audio offloading is initiated with the following sequence:
+> 1. Userspace configures to route audio playback to USB backend and starts
+> playback on the platform soundcard.
+> 2. The Q6DSP AFE will communicate to the audio DSP to start the USB AFE
+> port.
+> 3. This results in a QMI packet with a STREAM enable command.
+> 4. The QC audio offload driver will fetch the required resources, and pass
+> this information as part of the QMI response to the STREAM enable command.
+> 5. Once the QMI response is received the audio DSP will start queuing data
+> on the USB bus.
+> 
+> Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
+> ---
+>  sound/usb/Kconfig                 |   15 +
+>  sound/usb/Makefile                |    2 +-
+>  sound/usb/qcom/Makefile           |    2 +
+>  sound/usb/qcom/qc_audio_offload.c | 1813 +++++++++++++++++++++++++++++
+>  4 files changed, 1831 insertions(+), 1 deletion(-)
+>  create mode 100644 sound/usb/qcom/Makefile
+>  create mode 100644 sound/usb/qcom/qc_audio_offload.c
+> 
+> diff --git a/sound/usb/Kconfig b/sound/usb/Kconfig
+> index 4a9569a3a39a..da5838656baa 100644
+> --- a/sound/usb/Kconfig
+> +++ b/sound/usb/Kconfig
+> @@ -176,6 +176,21 @@ config SND_BCD2000
+>  	  To compile this driver as a module, choose M here: the module
+>  	  will be called snd-bcd2000.
+>  
+> +config QC_USB_AUDIO_OFFLOAD
 
-This doesn't only "attach" endpoints, but it does more other things
-that are needed for PCM hw_params procedure.  I'd rather keep
-hw_params in the function name instead of creating completely
-different one.
+Keep SND_ prefix for consistency.  And, at best, align with the module
+name.
 
-Ditto for hw_free.
+> +	tristate "Qualcomm Audio Offload driver"
+> +	depends on QCOM_QMI_HELPERS && SND_USB_AUDIO && USB_XHCI_SIDEBAND
+> +	select SND_PCM
+> +	help
+> +	  Say Y here to enable the Qualcomm USB audio offloading feature.
+> +
+> +	  This module sets up the required QMI stream enable/disable
+> +	  responses to requests generated by the audio DSP.  It passes the
+> +	  USB transfer resource references, so that the audio DSP can issue
+> +	  USB transfers to the host controller.
+> +
+> +	  To compile this driver as a module, choose M here: the module
+> +	  will be called qc-audio-offload.
+
+Hmm, you renamed it differently, no?  In the below:
+
+> --- /dev/null
+> +++ b/sound/usb/qcom/Makefile
+> @@ -0,0 +1,2 @@
+> +snd-usb-audio-qmi-objs := usb_audio_qmi_v01.o qc_audio_offload.o
+> +obj-$(CONFIG_QC_USB_AUDIO_OFFLOAD) += snd-usb-audio-qmi.o
+
+... it's called snd-usb-audio-qmi.
 
 
 thanks,
