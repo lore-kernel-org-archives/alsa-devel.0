@@ -4,81 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C7107EC8732
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Sep 2023 14:31:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 13F8AEC8734
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Sep 2023 14:36:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E89F9852;
-	Thu,  7 Sep 2023 16:30:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E89F9852
+	by alsa0.perex.cz (Postfix) with ESMTPS id CF96DA4B;
+	Thu,  7 Sep 2023 16:36:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CF96DA4B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1694097093;
-	bh=SpgVoXpZ8tTPJGkfU3ecVLROLILLP+Tw7lqoCXII6pc=;
+	s=default; t=1694097413;
+	bh=GY6/oA7SpWwIF/ML9jHKi31Aw6dDj+gK/Pfk0CzMgqw=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=N74IcHiJB/yERnu8oA5Q2ZTP7azt8mPF3adCuoomMvqEw3CZ/ItQS0JOPSSjA3ppH
-	 qJMagM+w4EWZUUXksKqpUELhCzOysFjrzmt9pz7asQDCvsDyRQiobhYE8de0IgjRe+
-	 79fb3IcJaIYAgUG8kev6w32o8NqRWTRzMj8DgykE=
+	b=S+BoK8+ErqkwOKvsugsPSUxmy6vsPruY2i67+jGrHPkNw1vVDVLsnx5XdinxZyRKP
+	 uRfYC2qScaZttHWSc545AxczevBuxqq442MaUkQtDwKk1r0Ow3WS85yM/Mr5r7v4Om
+	 0AScnWIexWHZxKuQBf83AQ1ViUg7RFNqrqvJqtZo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D7689F8055A; Thu,  7 Sep 2023 16:30:15 +0200 (CEST)
+	id D0D20F804F3; Thu,  7 Sep 2023 16:35:53 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0A641F800F5;
-	Thu,  7 Sep 2023 16:30:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4498BF80494;
+	Thu,  7 Sep 2023 16:35:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 54701F80494; Thu,  7 Sep 2023 16:30:10 +0200 (CEST)
-Received: from sin.source.kernel.org (sin.source.kernel.org
- [IPv6:2604:1380:40e1:4800::1])
+	id 090EAF80494; Thu,  7 Sep 2023 16:35:50 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 199E6F800AA
-	for <alsa-devel@alsa-project.org>; Thu,  7 Sep 2023 16:30:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 199E6F800AA
+	by alsa1.perex.cz (Postfix) with ESMTPS id 13AEEF800F5
+	for <alsa-devel@alsa-project.org>; Thu,  7 Sep 2023 16:35:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 13AEEF800F5
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=pzVfDghy
+ header.s=k20201202 header.b=meYesdsY
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by sin.source.kernel.org (Postfix) with ESMTPS id 0011CCE1A05;
-	Thu,  7 Sep 2023 14:21:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24B9DC3278F;
-	Thu,  7 Sep 2023 14:21:07 +0000 (UTC)
+	by ams.source.kernel.org (Postfix) with ESMTPS id 642B6B81D4A;
+	Thu,  7 Sep 2023 14:35:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D23E2C32792;
+	Thu,  7 Sep 2023 14:35:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1694096471;
-	bh=SpgVoXpZ8tTPJGkfU3ecVLROLILLP+Tw7lqoCXII6pc=;
+	s=k20201202; t=1694097344;
+	bh=GY6/oA7SpWwIF/ML9jHKi31Aw6dDj+gK/Pfk0CzMgqw=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=pzVfDghyPadfvHEaQazjewvNksmHCOeqpcQtRd8NfmTvtgJaEIil6dYLiDDwRBmt8
-	 I4PAp7Qp9QVzzCF4dJZWLMReBnQbv4uLDnicicGHV1dVh2l7Z+y/L2Yun5UcE3XRqp
-	 DnINdfmlALickPzVNDSarwzlwJdc0rh4WKt2cQIq64nPNYjKFe76qtZkUdIDQ6voBV
-	 oC3MX+cdASaWGkV4h+fRDK9CQBJNeWWVFAWDtKHtGloudKltLKBOJKFINtc3mBFq+3
-	 I/jIwllcIfRLPGanbBTts8/MLJVF4kIVzNiEpJNGosbNRZyAcWOI7GiY3qAySKst1O
-	 VdkWDT8YlMXew==
-Date: Thu, 7 Sep 2023 15:21:04 +0100
+	b=meYesdsY2uNTDb5EWe4281EIPUqP+ejVqDZt9LCkSfXPg4Irrz3V+aN6tNCzOlgc2
+	 ahh8dLGQQAnbuiFUv6CfwEQdgMoQh2Us23Bv55rnXFCgCOLrOmRgckQmB49BCwBfNT
+	 F3vJeT816sWqUt+PmdBvRs2D4bFdqQfjc1DO7pMD099Ku5mwQT/QLbNiAWJ/KW2x1x
+	 2ft6mNiLln57pjQduAluykFZGPrhx+sfNSVVZRVaXjbIdi+4wugfRr70TqxfCMPe1l
+	 Gbt/aytSPZ6Z7sQtswCgUTVlJunB/G6M+lsApHXzAaRfDmEyiemOTyTCnbq+vrNOO9
+	 r6MAC/pLNbtjg==
+Date: Thu, 7 Sep 2023 15:35:38 +0100
 From: Mark Brown <broonie@kernel.org>
-To: Joerg Schambacher <joerg.hifiberry@gmail.com>
-Cc: a-krasser@ti.com, joerg@hifiberry.com,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
-	Zhang Qilong <zhangqilong3@huawei.com>, alsa-devel@alsa-project.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] ASoC: Adds support for TAS575x to the pcm512x driver
-Message-ID: <a9c3d43a-af26-44a0-9352-4666107f9f56@sirena.org.uk>
-References: <20230907161207.14426-1-joerg.hifiberry@gmail.com>
+To: Sameer Pujar <spujar@nvidia.com>
+Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
+	thierry.reding@gmail.com, jonathanh@nvidia.com,
+	alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+	linux-tegra@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH 2/2] ASoC: tegra: Fix redundant PLLA and PLLA_OUT0 updates
+Message-ID: <262708f6-d25c-4734-834e-6a3959ad6c07@sirena.org.uk>
+References: <1694069533-7832-1-git-send-email-spujar@nvidia.com>
+ <1694069533-7832-3-git-send-email-spujar@nvidia.com>
+ <2c3371b7-3dae-48d7-8cc8-1acfd5bd267c@sirena.org.uk>
+ <61ca531e-6138-7abe-74d1-357369134748@nvidia.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="pHp2IBdZnGQB80wz"
+	protocol="application/pgp-signature"; boundary="1d4+VEBxjo3mBMnm"
 Content-Disposition: inline
-In-Reply-To: <20230907161207.14426-1-joerg.hifiberry@gmail.com>
+In-Reply-To: <61ca531e-6138-7abe-74d1-357369134748@nvidia.com>
 X-Cookie: In the next world, you're on your own.
-Message-ID-Hash: AHURR2L4FQS6DZ3B7FAOJWLGMCGDER7T
-X-Message-ID-Hash: AHURR2L4FQS6DZ3B7FAOJWLGMCGDER7T
+Message-ID-Hash: 7FGIOL4K627K2H6GO4R7TQY6PNPTST3A
+X-Message-ID-Hash: 7FGIOL4K627K2H6GO4R7TQY6PNPTST3A
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -91,7 +91,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AHURR2L4FQS6DZ3B7FAOJWLGMCGDER7T/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7FGIOL4K627K2H6GO4R7TQY6PNPTST3A/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -101,58 +101,41 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 
---pHp2IBdZnGQB80wz
+--1d4+VEBxjo3mBMnm
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Sep 07, 2023 at 06:12:05PM +0200, Joerg Schambacher wrote:
+On Thu, Sep 07, 2023 at 07:51:13PM +0530, Sameer Pujar wrote:
+> On 07-09-2023 17:21, Mark Brown wrote:
+> > On Thu, Sep 07, 2023 at 12:22:13PM +0530, Sameer Pujar wrote:
 
-> +		if (pcm512x->tas_device) {
-> +			/* set necessary PLL coeffs for amp
-> +			 * according to spec only 2x and 4x MCLKs
-> +			 * possible
-> +			 */
-> +			ret = regmap_write(pcm512x->regmap,
-> +					   PCM512x_PLL_COEFF_0, 0x01);
-> +			if (mck_rate > 25000000UL)
-> +				ret = regmap_write(pcm512x->regmap,
-> +						   PCM512x_PLL_COEFF_1, 0x02);
-> +			else
-> +				ret = regmap_write(pcm512x->regmap,
-> +						   PCM512x_PLL_COEFF_1, 0x04);
+> > > Fixes: 202e2f774543 ("ASoC: tegra: Add audio graph based card driver")
+> > > Cc: stable@vger.kernel.org
 
-I would name this quirk something a bit more specific - it seems likely
-that there might be future TASxxxx devices which need different quirks.
-If it's a limited range of MCLK multipliers perhaps something about how
-the PLL is limited, or just make the quirk data being to specify min/max
-for the multiplier?
+> > This is just a performance improvement rather than a correctness fix as
+> > far as I can tell?
 
-> +		if (!pcm512x->tas_device) {
-> +			ret = regmap_update_bits(pcm512x->regmap,
-> +						 PCM512x_PLL_EN, PCM512x_PLLE, 0);
-> +		} else {
-> +			/* leave PLL enabled for amp clocking */
-> +			ret = regmap_write(pcm512x->regmap,
-> +					   PCM512x_PLL_EN, 0x01);
-> +			dev_dbg(component->dev, "Enabling PLL for TAS575x\n");
-> +		}
+> This was supposed to be a performance improvement. However this is found to
+> be resolving a DMIC clock discrepancy and suspect is it happens because of
+> back to back quick PLLA updates. Thought it would be safer to have this fix
+> in stable releases. May be I should mention these points to justify the
+> 'Fixes' and 'stable' tag?
 
-This is probably a separate quirk?  I'm a bit concerned about what's
-turning the PLL off here...
+Yes, please - that does make sense as a fix.
 
---pHp2IBdZnGQB80wz
+--1d4+VEBxjo3mBMnm
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmT53E8ACgkQJNaLcl1U
-h9DIkAf8DvIkbJTLPPb9WOeICPPEg31V9fX1Gbjibv6WKE3XAX0kQvEVID4XikuC
-DMutxl/up7Xepw12fXsRnM6ZM1x24dcJoZHfJTLruL48di2xmfOdPskk70WIpXL+
-fF9+GzaQ/7pH0VLSOQ7SK/28BNU7lAhVBhqngemmMKLGf7HJpldwoFdaHs4PYOy+
-adM6gpYlOJc4bxd0WJ5ua2KUEHWYhaz7T13GLlxchG7WR1UOjHA39uoL3K0NkRuX
-unIygkvTh01GYmpEsW3FEfZiRvLhGlxkW15DbrkALX1Tty5Q1hs4eSsGkiwhzTBk
-nR0dMZ1hISOepsmVPvS2cq8hnjHYKQ==
-=N6pg
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmT537kACgkQJNaLcl1U
+h9Aybwf+PTHcefnbcaqpdAilafzxlBkq71oJqgpR14bRtbQXU4jEgToFVRwoEe2r
+eh7710aUYzNQatW+EVTp6OlxujcL/CmTLyjzdmVZDRViDZvVTtq1BwnEMBPVoDnm
+VQd2uTPqMq05uopzbCnq2s3Mv5gEcw1PPMnqAYvGBOJ+e1XvlBC4h7t3svkcHHku
+Y8QCOwyGF+Akq3Dl7WFvenZ0rGJ7z2/NXP//rD2TXeKorRSID19tupKL+i4KJPFV
+9RLhqpX/8CpXvo2EwlOSuWvtvN1Waqego6zmQ511uj90I1K24+dY9sgXk8JEE/6L
+gsWaQE4XT7wbfut/xeALndmOVrDk0g==
+=Ei6H
 -----END PGP SIGNATURE-----
 
---pHp2IBdZnGQB80wz--
+--1d4+VEBxjo3mBMnm--
