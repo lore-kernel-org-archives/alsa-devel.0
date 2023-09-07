@@ -4,47 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4FA08EC8759
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Sep 2023 20:31:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6162EEC875E
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Sep 2023 21:16:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7A71786F;
-	Thu,  7 Sep 2023 22:30:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7A71786F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 72762852;
+	Thu,  7 Sep 2023 23:15:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 72762852
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1694118681;
-	bh=3xneWt1lWEnLCFLNGBjipGmtnojdQSe/YEcETi3WK74=;
+	s=default; t=1694121375;
+	bh=ZSCrVTvHHb+4mfQHpL35oAqtu4nAoecpFq8Tby3s2vw=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=JQTjHeZLellYGwq9XW+IKWKJ8NFPV2jchC+mlpGEiHl711cXkbowLXmdOd43cwIlw
-	 U2Tq7r0zUvOo+CGG0yHtgnNsCwkBQObHNotLEoKDso0iVMGaCbrDmwBMFFh0xphYOU
-	 zA7QHRSiTJ5SaoiYOLVP++KNHFTRlTeycVDHvl2g=
+	b=ilemDsdTU9qdY/tyMuCeiyaJAch+LfdGQT66iPhQJG4ljd1mERacRzUfikWhbmvF0
+	 PrLCXarH59xKBWPb30cJGRSJIY3gV0K4Dpvt8tUBsPnb0VW6ZT+uexOo6Zelg6yjQD
+	 5+M9WTHLZe8M3totTtAmovztZTUGS+2oIZv98rIE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BC7F0F80552; Thu,  7 Sep 2023 22:29:55 +0200 (CEST)
+	id 4E9B3F800AA; Thu,  7 Sep 2023 23:14:57 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3D4C7F80494;
-	Thu,  7 Sep 2023 22:29:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D1CD3F80494;
+	Thu,  7 Sep 2023 23:14:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 25147F80494; Thu,  7 Sep 2023 22:29:50 +0200 (CEST)
+	id 9329FF80494; Thu,  7 Sep 2023 23:14:52 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
  [207.180.221.201])
-	by alsa1.perex.cz (Postfix) with ESMTP id 81F77F800AA
-	for <alsa-devel@alsa-project.org>; Thu,  7 Sep 2023 22:29:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 81F77F800AA
+	by alsa1.perex.cz (Postfix) with ESMTP id 895B5F80431
+	for <alsa-devel@alsa-project.org>; Thu,  7 Sep 2023 23:14:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 895B5F80431
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub pull_request - opened <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1694118584679869652-webhooks-bot@alsa-project.org>
-References: <1694118584679869652-webhooks-bot@alsa-project.org>
-Subject: topology: add include for ENABLE_NLS on musl
-Message-Id: <20230907202950.25147F80494@alsa1.perex.cz>
-Date: Thu,  7 Sep 2023 22:29:50 +0200 (CEST)
-Message-ID-Hash: 6U3MYPXMFSZWVOXYFGLRPJGB45Z5EPID
-X-Message-ID-Hash: 6U3MYPXMFSZWVOXYFGLRPJGB45Z5EPID
+In-Reply-To: <1694121289943583727-webhooks-bot@alsa-project.org>
+References: <1694121289943583727-webhooks-bot@alsa-project.org>
+Subject: pcm: fix signed overflow in pcm_softvol
+Message-Id: <20230907211452.9329FF80494@alsa1.perex.cz>
+Date: Thu,  7 Sep 2023 23:14:52 +0200 (CEST)
+Message-ID-Hash: VMD47AOL2D5X46XZNU4OGKLIGKOQ3R2H
+X-Message-ID-Hash: VMD47AOL2D5X46XZNU4OGKLIGKOQ3R2H
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -57,7 +57,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6U3MYPXMFSZWVOXYFGLRPJGB45Z5EPID/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VMD47AOL2D5X46XZNU4OGKLIGKOQ3R2H/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -66,12 +66,10 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-utils pull request #234 was opened from thesamesam:
+alsa-project/alsa-lib pull request #351 was opened from q66:
 
-Needed for setlocale().
+This fixes functionality on specific setups with UBSan.
 
-Signed-off-by: Sam James <sam@gentoo.org>
-
-Request URL   : https://github.com/alsa-project/alsa-utils/pull/234
-Patch URL     : https://github.com/alsa-project/alsa-utils/pull/234.patch
-Repository URL: https://github.com/alsa-project/alsa-utils
+Request URL   : https://github.com/alsa-project/alsa-lib/pull/351
+Patch URL     : https://github.com/alsa-project/alsa-lib/pull/351.patch
+Repository URL: https://github.com/alsa-project/alsa-lib
