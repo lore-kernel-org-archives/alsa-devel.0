@@ -4,60 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 304E1EC8742
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Sep 2023 17:13:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B27C7EC8742
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Sep 2023 17:13:28 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 46CDFE0D;
-	Thu,  7 Sep 2023 19:12:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 46CDFE0D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2141E93A;
+	Thu,  7 Sep 2023 19:12:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2141E93A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1694106785;
-	bh=fBfsFcET+MCXlOleecv+XYcgSYKwelm2evWuMi6WZt4=;
+	s=default; t=1694106807;
+	bh=al0e+KmaEmZIhVKCVtjP9iNhEGj5bzloAJ+lYxNnbIk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=uSKQylyOBunwBI65lvbAk2d7hHBZQQPFqzvwiqMkvNvkGnyOg0LEDHlkDGxPzQTqn
-	 1JS3fP+6bjcGnGFSKpCpOiDAwBfMO+aT6ncmZOyGNsHIML2tP9+jcWUn4K/wT8Lskf
-	 hAAGZTdob0um9oEoR37cIMz/f0nVrbHMoKQnBnqQ=
+	b=JEd6x0ArxnbiT5o5O8oE4ej5vsE4vpXH5Ins+R6nJtMLtIPuSk3jpHVNVnWInwSr+
+	 CZBmLAPpXaFdwdNuXjkrmap9Nh+tjrlbSzAxsVYbfylGMKurTjGSGgp5FLS5CtXAd7
+	 nTbt1oesNjxTXbCbfRSWdb4jlQARL1BrsP1Qtl2Y=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 513E9F805BD; Thu,  7 Sep 2023 19:10:42 +0200 (CEST)
+	id 35414F8056F; Thu,  7 Sep 2023 19:10:43 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id CC495F805BE;
-	Thu,  7 Sep 2023 19:10:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3073DF805C6;
+	Thu,  7 Sep 2023 19:10:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B71F8F805AB; Thu,  7 Sep 2023 19:10:36 +0200 (CEST)
+	id 8F773F805AE; Thu,  7 Sep 2023 19:10:37 +0200 (CEST)
 Received: from madras.collabora.co.uk (madras.collabora.co.uk
- [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+ [46.235.227.172])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 8EF36F80588
-	for <alsa-devel@alsa-project.org>; Thu,  7 Sep 2023 19:10:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8EF36F80588
+	by alsa1.perex.cz (Postfix) with ESMTPS id 7E277F805A8
+	for <alsa-devel@alsa-project.org>; Thu,  7 Sep 2023 19:10:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7E277F805A8
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=collabora.com header.i=@collabora.com
- header.a=rsa-sha256 header.s=mail header.b=ouYnSJqB
+ header.a=rsa-sha256 header.s=mail header.b=cfN+i/tX
 Received: from localhost (unknown [81.18.92.207])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
  server-digest SHA256)
 	(No client certificate requested)
 	(Authenticated sender: cristicc)
-	by madras.collabora.co.uk (Postfix) with ESMTPSA id EB51266072EF;
-	Thu,  7 Sep 2023 18:10:32 +0100 (BST)
+	by madras.collabora.co.uk (Postfix) with ESMTPSA id 3908966072F0;
+	Thu,  7 Sep 2023 18:10:30 +0100 (BST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1694106633;
-	bh=fBfsFcET+MCXlOleecv+XYcgSYKwelm2evWuMi6WZt4=;
+	s=mail; t=1694106630;
+	bh=al0e+KmaEmZIhVKCVtjP9iNhEGj5bzloAJ+lYxNnbIk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ouYnSJqBiL0WtmQqXcb+GIFgI1feIaQxestI0hqNbsnm43sm7CDBRsbUz9Azd+Esj
-	 BEzyO+Ecunp7TmN9ZuzL9oLnw04Ndjl5SWeBfnblfWoMi0+J0l/VMDTnJ/Ls0ZTzHa
-	 or/pma/AzJ5+5deXLcWJNcmwKD4tCbO0TAExV/jrOt4KrnvP2ZwDmY0oXtWeS0E3BD
-	 iZJbFL10PN94HLaqQqP/fiHGOR+MbbfGrvj8HItjrfwvK0R+Q7I/1fJjWWFgjHctIn
-	 hDnVhH21grdtoPyfdxkjYEYF2edTdVusj+VKTt61MbQbXSwy5KMhA/0QI1nAqiwUkK
-	 eUJzH4xn+/lBg==
+	b=cfN+i/tXAGmFgLedeeIDQKOa3hk7CoPzD4kJaGXco3pOXbGwMrlfpzajywg1XuMtw
+	 A395WFtSu9jn4b4ZjO+tYka/e0zeW/Evimvy1bJ0o0MD93OWEzIWetIcLBe9eN0RPO
+	 /gSF6zKTmtnHZupDzPT4V2ROm6E9YwJfpjq3h0NOeIyN4qkPWLz7NeQQ6UoljXwQcS
+	 jRD7sCh2eB1aRr/tUNMHLEhU8jJOHQ18QApjTwObESnRi7LcWjnVW3ChVf+ROrh2Rs
+	 c8wEh86SXXTrMTKKmHPG6L8tQ/0pbACSmvTJ7r1Mg1NDrtWB7slR2Tr8/bpPp0/IvL
+	 v1C6IGoapb55g==
 From: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
 To: James Schulman <james.schulman@cirrus.com>,
 	David Rhodes <david.rhodes@cirrus.com>,
@@ -73,17 +73,17 @@ Cc: alsa-devel@alsa-project.org,
 	patches@opensource.cirrus.com,
 	linux-kernel@vger.kernel.org,
 	kernel@collabora.com
-Subject: [PATCH v2 06/11] ASoC: cs35l41: Undo runtime PM changes at driver
- exit time
-Date: Thu,  7 Sep 2023 20:10:05 +0300
-Message-ID: <20230907171010.1447274-7-cristian.ciocaltea@collabora.com>
+Subject: [PATCH v2 05/11] ASoC: cs35l41: Verify PM runtime resume errors in
+ IRQ handler
+Date: Thu,  7 Sep 2023 20:10:04 +0300
+Message-ID: <20230907171010.1447274-6-cristian.ciocaltea@collabora.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230907171010.1447274-1-cristian.ciocaltea@collabora.com>
 References: <20230907171010.1447274-1-cristian.ciocaltea@collabora.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: HWAFUMOPNF7TUXCEJ6W6COY656RQEZPZ
-X-Message-ID-Hash: HWAFUMOPNF7TUXCEJ6W6COY656RQEZPZ
+Message-ID-Hash: SFAUELFALEVXXVSDREP7LCIOBP736TDM
+X-Message-ID-Hash: SFAUELFALEVXXVSDREP7LCIOBP736TDM
 X-MailFrom: cristian.ciocaltea@collabora.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -96,7 +96,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HWAFUMOPNF7TUXCEJ6W6COY656RQEZPZ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SFAUELFALEVXXVSDREP7LCIOBP736TDM/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -105,43 +105,45 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-According to the documentation, drivers are responsible for undoing at
-removal time all runtime PM changes done during probing.
+The interrupt handler invokes pm_runtime_get_sync() without checking the
+returned error code.
 
-Hence, add the missing calls to pm_runtime_dont_use_autosuspend(), which
-are necessary for undoing pm_runtime_use_autosuspend().
-
-Note this would have been handled implicitly by
-devm_pm_runtime_enable(), but there is a need to continue using
-pm_runtime_enable()/pm_runtime_disable() in order to ensure the runtime
-PM is disabled as soon as the remove() callback is entered.
+Add a proper verification and switch to pm_runtime_resume_and_get(), to
+avoid the need to call pm_runtime_put_noidle() for decrementing the PM
+usage counter before returning from the error condition.
 
 Fixes: f517ba4924ad ("ASoC: cs35l41: Add support for hibernate memory retention mode")
 Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 ---
- sound/soc/codecs/cs35l41.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/codecs/cs35l41.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/codecs/cs35l41.c b/sound/soc/codecs/cs35l41.c
-index a31cb9ba7f7d..5456e6bfa242 100644
+index 12327b4c3d56..a31cb9ba7f7d 100644
 --- a/sound/soc/codecs/cs35l41.c
 +++ b/sound/soc/codecs/cs35l41.c
-@@ -1334,6 +1334,7 @@ int cs35l41_probe(struct cs35l41_private *cs35l41, const struct cs35l41_hw_cfg *
- 	return 0;
+@@ -386,10 +386,18 @@ static irqreturn_t cs35l41_irq(int irq, void *data)
+ 	struct cs35l41_private *cs35l41 = data;
+ 	unsigned int status[4] = { 0, 0, 0, 0 };
+ 	unsigned int masks[4] = { 0, 0, 0, 0 };
+-	int ret = IRQ_NONE;
+ 	unsigned int i;
++	int ret;
  
- err_pm:
-+	pm_runtime_dont_use_autosuspend(cs35l41->dev);
- 	pm_runtime_disable(cs35l41->dev);
- 	pm_runtime_put_noidle(cs35l41->dev);
+-	pm_runtime_get_sync(cs35l41->dev);
++	ret = pm_runtime_resume_and_get(cs35l41->dev);
++	if (ret < 0) {
++		dev_err(cs35l41->dev,
++			"pm_runtime_resume_and_get failed in %s: %d\n",
++			__func__, ret);
++		return IRQ_NONE;
++	}
++
++	ret = IRQ_NONE;
  
-@@ -1350,6 +1351,7 @@ EXPORT_SYMBOL_GPL(cs35l41_probe);
- void cs35l41_remove(struct cs35l41_private *cs35l41)
- {
- 	pm_runtime_get_sync(cs35l41->dev);
-+	pm_runtime_dont_use_autosuspend(cs35l41->dev);
- 	pm_runtime_disable(cs35l41->dev);
- 
- 	regmap_write(cs35l41->regmap, CS35L41_IRQ1_MASK1, 0xFFFFFFFF);
+ 	for (i = 0; i < ARRAY_SIZE(status); i++) {
+ 		regmap_read(cs35l41->regmap,
 -- 
 2.41.0
 
