@@ -4,86 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6EEE9EC8742
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Sep 2023 17:14:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 048EDEC8742
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Sep 2023 17:23:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CA6EAE10;
-	Thu,  7 Sep 2023 19:13:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CA6EAE10
+	by alsa0.perex.cz (Postfix) with ESMTPS id 182A1A4D;
+	Thu,  7 Sep 2023 19:22:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 182A1A4D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1694106886;
-	bh=rIB839KbtT4M8CYKZ1SHwXmr9eGS1OcT+UowfodUupQ=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1694107410;
+	bh=XlJDbU1PykwszLckIDeqTgZVj8n/v3RikjI/YqwqCDA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=c+A91p46snSMLfbJDchFwm6XQMCLw0JByq49NQAlDL05q3GyMY5qDXtl4StykYw2k
-	 Rd56t5L/Hv1NL8cmLjtOOzK/xdyW1t3eE4l4cWzgFJZoKqKegFFag3h0xvfmYsCQ6Z
-	 9d4UKVmZ7VSazUKOg1TR8oYuCh8zpJUQRWFe/CRk=
+	b=DxIx1daIzkidzTd9o7dZyQ24o4pJBkuu/2r5hiSnmJOG0gbwSJ9p93jSATdyjibi8
+	 4LPK9dByZiFRHKJQpOzO/vhUnNRYYp3SkTrJbznSPO9JLJQUApi5pgvk1neW2szAbb
+	 hSGym+VEqzbe2BAnCBPJuDdvZb/b66246WxjDTbU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 49AC7F805F6; Thu,  7 Sep 2023 19:10:57 +0200 (CEST)
+	id D2CB5F80527; Thu,  7 Sep 2023 19:22:10 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B1689F80600;
-	Thu,  7 Sep 2023 19:10:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 16191F8047D;
+	Thu,  7 Sep 2023 19:22:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6564DF805EF; Thu,  7 Sep 2023 19:10:51 +0200 (CEST)
-Received: from madras.collabora.co.uk (madras.collabora.co.uk
- [46.235.227.172])
+	id 95436F80494; Thu,  7 Sep 2023 19:22:05 +0200 (CEST)
+Received: from sin.source.kernel.org (sin.source.kernel.org
+ [IPv6:2604:1380:40e1:4800::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 53D6DF805E0
-	for <alsa-devel@alsa-project.org>; Thu,  7 Sep 2023 19:10:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 53D6DF805E0
+	by alsa1.perex.cz (Postfix) with ESMTPS id 2B059F800AA
+	for <alsa-devel@alsa-project.org>; Thu,  7 Sep 2023 19:22:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2B059F800AA
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=collabora.com header.i=@collabora.com
- header.a=rsa-sha256 header.s=mail header.b=YipAyS+s
-Received: from localhost (unknown [81.18.92.207])
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=p0/oYw03
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
- server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	(Authenticated sender: cristicc)
-	by madras.collabora.co.uk (Postfix) with ESMTPSA id A88C166072F7;
-	Thu,  7 Sep 2023 18:10:47 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1694106647;
-	bh=rIB839KbtT4M8CYKZ1SHwXmr9eGS1OcT+UowfodUupQ=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=YipAyS+s+34w+o5S1L4JGFAzu5i0XzX7Mm1+LeSjGSXnMAFaoUoQ1R7GKS+ZFf0Kh
-	 67E41SgZlirlEk5cElfhVylwcu1tZlXJ/v9aoCTCFS5Z7d4NbKeFmJVBhLePQvKVgm
-	 gA/zkun9e+nM+pt8yxV69r6KgWbiakFkmtZYiqKhFBBwlXo60Ci91duDxUU9hSF0ny
-	 zcnggy+6OTxCaKO/gVNoFqvjGuGFQlHirPsLNsGwngFPMerC5UwONMjZZ9o0eg4AZL
-	 G1qA1LUqB97//C6rWkxVRUbL8uxCviOscdPOvBf9kzjO/6ukokLf6eOA7mZqd9uS0v
-	 d91xxPzjrtAaQ==
-From: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
-To: James Schulman <james.schulman@cirrus.com>,
+	by sin.source.kernel.org (Postfix) with ESMTPS id 4414ACE1A54;
+	Thu,  7 Sep 2023 17:21:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97C61C433C8;
+	Thu,  7 Sep 2023 17:21:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1694107317;
+	bh=XlJDbU1PykwszLckIDeqTgZVj8n/v3RikjI/YqwqCDA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=p0/oYw03EZZzSTmukYBCAvlRQoG3dUkXObbI08zjrlWK6Oy/YhuBuhaSvQ87M37Eo
+	 zPwzWt7GqDW+AO5NOgcRNe4gaDQ986thcklUFGm6lUJPyN+fjI9ruBqgQyN172nS83
+	 5B6cvq/I9qSC/4rR/Rii8bKiqaEb2u9DOCQTBd7TGQBN23Pg5xHJQwVy62WeF97wpC
+	 MW4d4jQEXORyXQj4Pc5DPRMwgDtJ3Ia0ZrRARdtH6s46WqibxtfbUDPnvA0kPVsSra
+	 2aRf3487ENrAFAY5rm88EoLIi9EWxuVFWbeT9WG4Vkz9Gmk8BPUWMf4thVRntEaDSl
+	 bwzF7PA8IFg5A==
+Date: Thu, 7 Sep 2023 18:21:51 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+Cc: James Schulman <james.schulman@cirrus.com>,
 	David Rhodes <david.rhodes@cirrus.com>,
 	Richard Fitzgerald <rf@opensource.cirrus.com>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
 	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
 	Stefan Binding <sbinding@opensource.cirrus.com>,
 	Charles Keepax <ckeepax@opensource.cirrus.com>,
-	Vitaly Rodionov <vitalyr@opensource.cirrus.com>
-Cc: alsa-devel@alsa-project.org,
-	patches@opensource.cirrus.com,
-	linux-kernel@vger.kernel.org,
-	kernel@collabora.com
-Subject: [PATCH v2 11/11] ALSA: hda: cs35l41: Consistently use dev_err_probe()
-Date: Thu,  7 Sep 2023 20:10:10 +0300
-Message-ID: <20230907171010.1447274-12-cristian.ciocaltea@collabora.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230907171010.1447274-1-cristian.ciocaltea@collabora.com>
+	Vitaly Rodionov <vitalyr@opensource.cirrus.com>,
+	alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
+	linux-kernel@vger.kernel.org, kernel@collabora.com
+Subject: Re: [PATCH v2 00/11] Improve CS35l41-based audio codec drivers
+Message-ID: <4a658238-b5cf-44fc-802b-f09f8d5e0ad1@sirena.org.uk>
 References: <20230907171010.1447274-1-cristian.ciocaltea@collabora.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: QL7KLN44U2VYJX46ISLE3TD2JL3PV7YD
-X-Message-ID-Hash: QL7KLN44U2VYJX46ISLE3TD2JL3PV7YD
-X-MailFrom: cristian.ciocaltea@collabora.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="XvuXBREcYlQzjp52"
+Content-Disposition: inline
+In-Reply-To: <20230907171010.1447274-1-cristian.ciocaltea@collabora.com>
+X-Cookie: In the next world, you're on your own.
+Message-ID-Hash: KBGZMU7TOBYZCAVBM5JJJ63U6YV5PUQB
+X-Message-ID-Hash: KBGZMU7TOBYZCAVBM5JJJ63U6YV5PUQB
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -95,7 +95,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QL7KLN44U2VYJX46ISLE3TD2JL3PV7YD/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KBGZMU7TOBYZCAVBM5JJJ63U6YV5PUQB/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -104,69 +104,30 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Replace the remaining dev_err() calls in probe() with dev_err_probe(),
-to improve consistency.
 
-Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
----
- sound/pci/hda/cs35l41_hda.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+--XvuXBREcYlQzjp52
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/sound/pci/hda/cs35l41_hda.c b/sound/pci/hda/cs35l41_hda.c
-index 565f7b897436..c74faa2ff46c 100644
---- a/sound/pci/hda/cs35l41_hda.c
-+++ b/sound/pci/hda/cs35l41_hda.c
-@@ -1550,27 +1550,27 @@ int cs35l41_hda_probe(struct device *dev, const char *device_name, int id, int i
- 	ret = regmap_read_poll_timeout(cs35l41->regmap, CS35L41_IRQ1_STATUS4, int_status,
- 				       int_status & CS35L41_OTP_BOOT_DONE, 1000, 100000);
- 	if (ret) {
--		dev_err(cs35l41->dev, "Failed waiting for OTP_BOOT_DONE: %d\n", ret);
-+		dev_err_probe(cs35l41->dev, ret, "Failed waiting for OTP_BOOT_DONE\n");
- 		goto err;
- 	}
- 
- 	ret = regmap_read(cs35l41->regmap, CS35L41_IRQ1_STATUS3, &int_sts);
- 	if (ret || (int_sts & CS35L41_OTP_BOOT_ERR)) {
--		dev_err(cs35l41->dev, "OTP Boot status %x error: %d\n",
--			int_sts & CS35L41_OTP_BOOT_ERR, ret);
-+		dev_err_probe(cs35l41->dev, ret, "OTP Boot status %x error\n",
-+			      int_sts & CS35L41_OTP_BOOT_ERR);
- 		ret = -EIO;
- 		goto err;
- 	}
- 
- 	ret = regmap_read(cs35l41->regmap, CS35L41_DEVID, &regid);
- 	if (ret) {
--		dev_err(cs35l41->dev, "Get Device ID failed: %d\n", ret);
-+		dev_err_probe(cs35l41->dev, ret, "Get Device ID failed\n");
- 		goto err;
- 	}
- 
- 	ret = regmap_read(cs35l41->regmap, CS35L41_REVID, &reg_revid);
- 	if (ret) {
--		dev_err(cs35l41->dev, "Get Revision ID failed: %d\n", ret);
-+		dev_err_probe(cs35l41->dev, ret, "Get Revision ID failed\n");
- 		goto err;
- 	}
- 
-@@ -1593,7 +1593,7 @@ int cs35l41_hda_probe(struct device *dev, const char *device_name, int id, int i
- 
- 	ret = cs35l41_otp_unpack(cs35l41->dev, cs35l41->regmap);
- 	if (ret) {
--		dev_err(cs35l41->dev, "OTP Unpack failed: %d\n", ret);
-+		dev_err_probe(cs35l41->dev, ret, "OTP Unpack failed\n");
- 		goto err;
- 	}
- 
-@@ -1624,7 +1624,7 @@ int cs35l41_hda_probe(struct device *dev, const char *device_name, int id, int i
- 
- 	ret = component_add(cs35l41->dev, &cs35l41_hda_comp_ops);
- 	if (ret) {
--		dev_err(cs35l41->dev, "Register component failed: %d\n", ret);
-+		dev_err_probe(cs35l41->dev, ret, "Register component failed\n");
- 		goto err_pm;
- 	}
- 
--- 
-2.41.0
+On Thu, Sep 07, 2023 at 08:09:59PM +0300, Cristian Ciocaltea wrote:
 
+>  - Added 3 new patches providing some HDA related fixes
+
+Do these have any interaction with the rest of the series?
+
+--XvuXBREcYlQzjp52
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmT6Bq4ACgkQJNaLcl1U
+h9DHogf/RF1H5pI87OixXP/jRxp2mAsLVLGaQ3RjIJTi00LPr5TJEv455keNqxGU
+ZGFv0gPvJ7j2ja/Psu23ZBlcgoeI/y9sVaQbaISTw1bUXIXdxRPDjIQrbzuw0Tpp
+/K/89ROxmK3I2xwZ2IzBZwwb4jE2Jlxr96Q5EaFlU0gJpWQFOVzGmeymAwgCmS1E
+qLJg+jqf++xxUvPgcM+l5J86srsE597mf2lVwsR5532JeJBQ/smC+vrBFihdQLNP
+ALnftYbhT+18pdhP0xPVaErBhX65xOYLCwYHt1Q3Pjt5GDQvorWG2hF4S6aFBQIa
+vQYudyD/Fn8U1qdPFn3xssF9p6x6pw==
+=vXsG
+-----END PGP SIGNATURE-----
+
+--XvuXBREcYlQzjp52--
