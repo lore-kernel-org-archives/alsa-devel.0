@@ -4,78 +4,115 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DA351EE57DF
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 Sep 2023 07:16:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 19FFEEE57DF
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 Sep 2023 07:32:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5E72884C;
-	Mon, 11 Sep 2023 09:15:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5E72884C
+	by alsa0.perex.cz (Postfix) with ESMTPS id C5B2ED8;
+	Mon, 11 Sep 2023 09:31:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C5B2ED8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1694416559;
-	bh=KArebcRQbLe+0cHGqcWa33ZfoxKv8pqd18NKG13tXf0=;
-	h=From:To:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=o6rqgbAkik0pbjU8B29C0Y330x2kpWrR57CvB9oPVP3tyHlgDmGRdQeRDfJiNhwNK
-	 JyXMa6jsvnFql9FvjD1u567iqEYMfpSt441+SZk8fVfbOxJ2lCNo0e9XbPc+Ks/iJu
-	 oDX2K1WDDMNNqDFi3H0adwvpmGvworq6PVMpwziY=
+	s=default; t=1694417537;
+	bh=md4bvUTX1nPNpkTGazHYCPaSZXO+rkHrP+Y+Kg+Eecg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=V4YL1EC/dK1FVj5o/c+KWED9ZtWvc7wvZhEpvPfKtaKlqMmrSFV5S8tTlWdwbg3PV
+	 1ddKpw8/eCTtSlzbYCxDpRhWBvEuS3M5NcZPAECfM2ydRXNoU/w8V/9X1KyPLhQTIJ
+	 PWzntwYHJWRm6BmkgED76OyYfekVy0jVelV5JY+k=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C55B0F8007C; Mon, 11 Sep 2023 09:14:48 +0200 (CEST)
+	id 64D67F80425; Mon, 11 Sep 2023 09:31:25 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 73C78F80425;
-	Mon, 11 Sep 2023 09:14:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7DA56F80425;
+	Mon, 11 Sep 2023 09:31:24 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 05D51F80425; Mon, 11 Sep 2023 09:14:45 +0200 (CEST)
-Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 5206EF80494; Thu,  7 Sep 2023 18:22:30 +0200 (CEST)
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com
+ [IPv6:2a00:1450:4864:20::343])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C6824F8007C
-	for <alsa-devel@alsa-project.org>; Mon, 11 Sep 2023 09:14:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C6824F8007C
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id F1E481A135A;
-	Mon, 11 Sep 2023 09:14:38 +0200 (CEST)
-Received: from aprdc01srsp001v.ap-rdc01.nxp.com
- (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
-	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id B9D4B1A1380;
-	Mon, 11 Sep 2023 09:14:38 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net
- [10.192.224.44])
-	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 30A171820F56;
-	Mon, 11 Sep 2023 15:14:37 +0800 (+08)
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
-To: shengjiu.wang@gmail.com,
-	Xiubo.Lee@gmail.com,
-	festevam@gmail.com,
-	nicoleotsuka@gmail.com,
-	lgirdwood@gmail.com,
-	broonie@kernel.org,
-	perex@perex.cz,
-	tiwai@suse.com,
-	alsa-devel@alsa-project.org,
-	linuxppc-dev@lists.ozlabs.org,
+	by alsa1.perex.cz (Postfix) with ESMTPS id 8DF7EF80431
+	for <alsa-devel@alsa-project.org>; Thu,  7 Sep 2023 18:22:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8DF7EF80431
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20221208 header.b=T9x54Mpw
+Received: by mail-wm1-x343.google.com with SMTP id
+ 5b1f17b1804b1-400a087b0bfso12405935e9.2
+        for <alsa-devel@alsa-project.org>;
+ Thu, 07 Sep 2023 09:22:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694103736; x=1694708536;
+ darn=alsa-project.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=V94N1ORYrLaXKL1qzREjQHJ4JwS/WOj3pdtg65MWaAk=;
+        b=T9x54MpwxndS1DTYjao1e2H8Dnn11HjaviHXNTEHae2JBiTB+BxDp1rJCDhF+GVXpK
+         2qGDUI0LYtJfRLxHRTwrSxSuqEtFVmrAWWDPX0mJIY86DgI4ZwbqXIBsw1giOPXm09b5
+         /MJ/eETfwJmLpssBlypkEk0bCdNyNryGrtBP7w17YRmlmTxN+0gPhQ5O5f2xO07WmL7a
+         EnrC9L3Jgxe7DJE+pcxehe2u5ARSEmA0utf+2YQswydqgy4zQd4fUXRuFcj0c6zU2g0B
+         2FILYWjbER0qKRaUZJ3mI30frrYWigFvXdIWmFV+WsqlHoX+OpEiHWXkXA2MDmyOX15D
+         i88Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1694103736; x=1694708536;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=V94N1ORYrLaXKL1qzREjQHJ4JwS/WOj3pdtg65MWaAk=;
+        b=VHQAgF2fUYXoqWI1EXui2quqHqWcsFKUTdtladPZxmItIcikEaIoW0mfTO6aKo4ZmX
+         95EndOoj3mH+MtjMi6YMLCl0tcrT1npBK+3/ztIDGufHR6n2ZxY4vU9fZNjuhj7i5wet
+         h3KRYtkcPUsK53aOhzqmH/hnjdIuXDJIY3OuCIKPbtsn7Z7C+GE/qHbDGq2SIMhxqdDs
+         cj205TTTZRv+Jx2OTwCBy0ri0RMbFsP8PKyziQoOVFiOY/fy+rvWxJkbwTjFKAPGpqhk
+         tAHBTl81Q6K1p28FuvB2TtqNGvo7m/szfvZwcqoXkogdDgWu2w85iADGYBXDV+jIVubT
+         rknQ==
+X-Gm-Message-State: AOJu0Yzx5f+CXptyF343AJqas65+/4aHDJae2lkbwwIDlgSVD+bPFRrG
+	RJF+1L7l/8u0I7SYAMo7pH8=
+X-Google-Smtp-Source: 
+ AGHT+IFSokuvidPb1pXREVhfaW7eDebj6W9QXi1Pae06YNBdw+btfNaTUKU6LAI1FFxmeA8DOiJk+A==
+X-Received: by 2002:a7b:cb87:0:b0:401:cc0f:f866 with SMTP id
+ m7-20020a7bcb87000000b00401cc0ff866mr149074wmi.12.1694103735822;
+        Thu, 07 Sep 2023 09:22:15 -0700 (PDT)
+Received: from ubuntu ([2a02:810d:1640:10d8:bdda:474a:9786:1e73])
+        by smtp.gmail.com with ESMTPSA id
+ l5-20020adfe585000000b0031c71693449sm23623180wrm.1.2023.09.07.09.22.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Sep 2023 09:22:15 -0700 (PDT)
+Date: Thu, 7 Sep 2023 18:21:50 +0200
+From: Joerg Schambacher <joerg.hifiberry@gmail.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: a-krasser@ti.com, joerg@hifiberry.com,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+	Zhang Qilong <zhangqilong3@huawei.com>, alsa-devel@alsa-project.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: fsl: imx-pcm-rpmsg: Add SNDRV_PCM_INFO_BATCH flag
-Date: Mon, 11 Sep 2023 14:38:07 +0800
-Message-Id: <1694414287-13291-1-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
-Message-ID-Hash: 4PD3345GQ2WH37P6TBTW2PNNHYIAJLYG
-X-Message-ID-Hash: 4PD3345GQ2WH37P6TBTW2PNNHYIAJLYG
-X-MailFrom: shengjiu.wang@nxp.com
+Subject: Re: [PATCH 2/2] ASoC: Adds support for TAS575x to the pcm512x driver
+Message-ID: <ZPn4nsypsSXdB3J7@ubuntu>
+References: <20230907161207.14426-1-joerg.hifiberry@gmail.com>
+ <a9c3d43a-af26-44a0-9352-4666107f9f56@sirena.org.uk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <a9c3d43a-af26-44a0-9352-4666107f9f56@sirena.org.uk>
+X-MailFrom: joerg.hifiberry@gmail.com
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: EG6TRKJA6DJB2YJPLXFHC4GOCNQT2HPT
+X-Message-ID-Hash: EG6TRKJA6DJB2YJPLXFHC4GOCNQT2HPT
+X-Mailman-Approved-At: Mon, 11 Sep 2023 07:31:20 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4PD3345GQ2WH37P6TBTW2PNNHYIAJLYG/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/EG6TRKJA6DJB2YJPLXFHC4GOCNQT2HPT/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -84,39 +121,62 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The rpmsg pcm device is a device which should support
-double buffering.
+Am 07.09.2023 um 15:21 hat Mark Brown geschrieben:
+> On Thu, Sep 07, 2023 at 06:12:05PM +0200, Joerg Schambacher wrote:
+> 
+> > +		if (pcm512x->tas_device) {
+> > +			/* set necessary PLL coeffs for amp
+> > +			 * according to spec only 2x and 4x MCLKs
+> > +			 * possible
+> > +			 */
+> > +			ret = regmap_write(pcm512x->regmap,
+> > +					   PCM512x_PLL_COEFF_0, 0x01);
+> > +			if (mck_rate > 25000000UL)
+> > +				ret = regmap_write(pcm512x->regmap,
+> > +						   PCM512x_PLL_COEFF_1, 0x02);
+> > +			else
+> > +				ret = regmap_write(pcm512x->regmap,
+> > +						   PCM512x_PLL_COEFF_1, 0x04);
+> 
+> I would name this quirk something a bit more specific - it seems likely
+> that there might be future TASxxxx devices which need different quirks.
+> If it's a limited range of MCLK multipliers perhaps something about how
+> the PLL is limited, or just make the quirk data being to specify min/max
+> for the multiplier?
+The spec allows a maximum input Clk of 50MHz. Useful for the concerned
+mode are only clocks with 22.5792/45.1584MHz for the 44.1ksps family rates
+and 24.576/49.152MHz for the 48ksps. The only thing we need
+to make sure is to divide the master clock by 2 in case of a MCLK input
+of >25MHz to use the the same settings hereafter.
+And yes, we cannot be sure that future devices may require different
+settings, but I can hardly imagine anything completely different than
+this approach with the usual audio MCLK frequencies.
+> 
+> > +		if (!pcm512x->tas_device) {
+> > +			ret = regmap_update_bits(pcm512x->regmap,
+> > +						 PCM512x_PLL_EN, PCM512x_PLLE, 0);
+> > +		} else {
+> > +			/* leave PLL enabled for amp clocking */
+> > +			ret = regmap_write(pcm512x->regmap,
+> > +					   PCM512x_PLL_EN, 0x01);
+> > +			dev_dbg(component->dev, "Enabling PLL for TAS575x\n");
+> > +		}
+> 
+> This is probably a separate quirk?  I'm a bit concerned about what's
+> turning the PLL off here...
+The PLL should not be used in this specific case where all divisions are
+just divide-by-2's. Your original code does reflect that and turns the
+PLL off. It improves jitter and finally audio performance.
+But in the case of the TAS-devices we even then need the PLL to
+drive the AMP clocks.
+My code changes only address the case 'TAS-device and external audio MCLK'.
+All other constellations like clock slave mode or e.g. 12MHz MCLK input
+require the PLL anyhow. THe 12MHz clock input even requires the FLEX mode
+through the PLL using the GPIOs as PLL-in and -out.
+I hope I could clarify things a bit.
 
-Found this issue with pipewire. When there is no
-SNDRV_PCM_INFO_BATCH flag in driver, the pipewire will
-set headroom to be zero, and because rpmsg pcm device
-don't support residue report, when the latency setting
-is small, the "delay" always larger than "target" in
-alsa-pcm.c, that reading next period data is not
-scheduled on time.
 
-With SNDRV_PCM_INFO_BATCH flag in driver, the pipewire
-will select a smaller period size for device, then
-the task of reading next period data will be scheduled
-on time.
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
- sound/soc/fsl/imx-pcm-rpmsg.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/sound/soc/fsl/imx-pcm-rpmsg.c b/sound/soc/fsl/imx-pcm-rpmsg.c
-index d63782b8bdef..bb736d45c9e0 100644
---- a/sound/soc/fsl/imx-pcm-rpmsg.c
-+++ b/sound/soc/fsl/imx-pcm-rpmsg.c
-@@ -19,6 +19,7 @@
- static struct snd_pcm_hardware imx_rpmsg_pcm_hardware = {
- 	.info = SNDRV_PCM_INFO_INTERLEAVED |
- 		SNDRV_PCM_INFO_BLOCK_TRANSFER |
-+		SNDRV_PCM_INFO_BATCH |
- 		SNDRV_PCM_INFO_MMAP |
- 		SNDRV_PCM_INFO_MMAP_VALID |
- 		SNDRV_PCM_INFO_NO_PERIOD_WAKEUP |
 -- 
-2.34.1
+
 
