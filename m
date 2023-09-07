@@ -4,115 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 29600EC873A
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Sep 2023 15:53:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C98B6EC873D
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Sep 2023 16:30:23 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 47D7284B;
-	Thu,  7 Sep 2023 17:52:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 47D7284B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2DC1A886;
+	Thu,  7 Sep 2023 18:29:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2DC1A886
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1694101988;
-	bh=yygdrR9tXi+0eL4XEux60q+4Uf5gpP4X6x/GdxMk2nQ=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	s=default; t=1694104221;
+	bh=kKCZnmdvlWAjdrTU0JnWgVFWVm2CYeepMuQakkeoZIE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=tLLmyqplaf9XcdbqVzfPbu8hlIqfciY81TlQYSNTW0FO5oS3CbyXiOsrUAfL/PC9O
-	 nOMrH4f6Z2LiOCt1CZDRszlRyE4jzI3oD3G+VW5dEOosoSuYPlED8zLYKYryJypFFT
-	 EvZ3a/u+Qe1Z5udkXtqxOK8GRgMX92kuYHQBPxLo=
+	b=Df4TCXx6ey1MImz8MqugWHXbUXp1CRtyl3FFfIYyQF0EVPnzvxlf51W7WUHDQgkkU
+	 2Ge8eXmKnkyGFDTm00IHljkw0mZ63S2uQn4Dr2Wj4Ac6O3UDt92bVJclzyM7nCl3Ze
+	 O7mAbV7axpfZqYbGifR+fJnuASj8Q+4iU63jEQRk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 54624F8047D; Thu,  7 Sep 2023 17:51:43 +0200 (CEST)
+	id 37618F80431; Thu,  7 Sep 2023 18:28:56 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D1D58F80494;
-	Thu,  7 Sep 2023 17:51:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B29C0F80494;
+	Thu,  7 Sep 2023 18:28:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C1C20F80494; Thu,  7 Sep 2023 17:51:38 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+	id DB4F3F80494; Thu,  7 Sep 2023 18:28:51 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 9541EF80431
-	for <alsa-devel@alsa-project.org>; Thu,  7 Sep 2023 17:51:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9541EF80431
+	by alsa1.perex.cz (Postfix) with ESMTPS id ABD94F800F5
+	for <alsa-devel@alsa-project.org>; Thu,  7 Sep 2023 18:28:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ABD94F800F5
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=MG/RWiix;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=PgTRAY/j
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
+	dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=md4gqddd
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id C27FE21862;
-	Thu,  7 Sep 2023 15:51:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1694101893;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=tk3J/weePsTr2+puEZaryztfMldIRsL7MjS11xHNPq4=;
-	b=MG/RWiixzRUD5n21QY2yXLKv/zxycwe2jvwvqsZhnjyl0H7FMWmzreTziH5v3xUpVO2ST2
-	yu4FWXTNDRNIKjs3oZrJrIlUYo9ByzoFJFbu7uGHWT000wzW87sPlE0S3X6h6mrCb2Poln
-	jyaxTpMKrnwUimNWsKjEy53luKAW7rc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1694101893;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=tk3J/weePsTr2+puEZaryztfMldIRsL7MjS11xHNPq4=;
-	b=PgTRAY/jSIOr1hyGZbPTqd+ID749qUOYH1g8gzONDoREaJFpp8MDUTuBDrtTkNFrVzvWF8
-	MQwXRemp0OfM7WCA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4946E138FA;
-	Thu,  7 Sep 2023 15:51:33 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id gkbnEIXx+WQ+CwAAMHmgww
-	(envelope-from <tiwai@suse.de>); Thu, 07 Sep 2023 15:51:33 +0000
-Date: Thu, 07 Sep 2023 17:51:32 +0200
-Message-ID: <8734zqasmz.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Wesley Cheng <quic_wcheng@quicinc.com>
-Cc: <srinivas.kandagatla@linaro.org>,
-	<mathias.nyman@intel.com>,
-	<perex@perex.cz>,
-	<lgirdwood@gmail.com>,
-	<andersson@kernel.org>,
-	<krzysztof.kozlowski+dt@linaro.org>,
-	<gregkh@linuxfoundation.org>,
-	<Thinh.Nguyen@synopsys.com>,
-	<broonie@kernel.org>,
-	<bgoswami@quicinc.com>,
-	<tiwai@suse.com>,
-	<robh+dt@kernel.org>,
-	<agross@kernel.org>,
-	<linux-kernel@vger.kernel.org>,
-	<linux-arm-msm@vger.kernel.org>,
-	<alsa-devel@alsa-project.org>,
-	<devicetree@vger.kernel.org>,
-	<linux-usb@vger.kernel.org>,
-	<quic_jackp@quicinc.com>,
-	<quic_plai@quicinc.com>
-Subject: Re: [PATCH v5 18/32] sound: usb: Introduce QC USB SND offloading
- support
-In-Reply-To: <20230829210657.9904-19-quic_wcheng@quicinc.com>
-References: <20230829210657.9904-1-quic_wcheng@quicinc.com>
-	<20230829210657.9904-19-quic_wcheng@quicinc.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Message-ID-Hash: U4KNQGEKXSQVLCZ63VVZC47F5DIPY4RE
-X-Message-ID-Hash: U4KNQGEKXSQVLCZ63VVZC47F5DIPY4RE
-X-MailFrom: tiwai@suse.de
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 1CFEC61230;
+	Thu,  7 Sep 2023 16:28:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0F3FC433C9;
+	Thu,  7 Sep 2023 16:28:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1694104122;
+	bh=kKCZnmdvlWAjdrTU0JnWgVFWVm2CYeepMuQakkeoZIE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=md4gqdddSO75KH0T47TDmNEOdTf41rhUx525zBO7wDx1GSSi0sr7xkqy8MuFHqauP
+	 nhO2VHtsMeUCqKmw6eisy7vq0/5xR3u8jrC//uvr9EQrNk5kytuUbHUTRUk9ugyxgx
+	 3gSbAEWD3u0Gyz0dh6NI7flXZNoypzJYi6Gwh5BJytM2We8AibqAKNUG9IW6roAbGo
+	 0iuC0r5m6jjPnx8Jz0nyh7UBwT6nHV95FkZREvvqPBzaQY9EVBGGqiFE7xX7NryX5W
+	 gHXkYEawONiYhIBWoTKMA6cRhR+J9S4N6Op3eOlZLgdJnPGnXDWljlFl2qIEwtAXJp
+	 mYOMEcrY/9RNQ==
+Date: Thu, 7 Sep 2023 17:28:30 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Joerg Schambacher <joerg.hifiberry@gmail.com>
+Cc: a-krasser@ti.com, joerg@hifiberry.com,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
+	Zhang Qilong <zhangqilong3@huawei.com>, alsa-devel@alsa-project.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] ASoC: Adds support for TAS575x to the pcm512x driver
+Message-ID: <bb3e5ccf-6eb5-4a36-9af0-b33f2db68445@sirena.org.uk>
+References: <20230907161207.14426-1-joerg.hifiberry@gmail.com>
+ <a9c3d43a-af26-44a0-9352-4666107f9f56@sirena.org.uk>
+ <ZPn4nsypsSXdB3J7@ubuntu>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="hUcgJYAhcs+B7VEy"
+Content-Disposition: inline
+In-Reply-To: <ZPn4nsypsSXdB3J7@ubuntu>
+X-Cookie: In the next world, you're on your own.
+Message-ID-Hash: OT7WODCGRT345BWGNJMNVXN7LGGJL24J
+X-Message-ID-Hash: OT7WODCGRT345BWGNJMNVXN7LGGJL24J
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -124,7 +93,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/U4KNQGEKXSQVLCZ63VVZC47F5DIPY4RE/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OT7WODCGRT345BWGNJMNVXN7LGGJL24J/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -133,84 +102,48 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, 29 Aug 2023 23:06:43 +0200,
-Wesley Cheng wrote:
-> 
-> Several Qualcomm SoCs have a dedicated audio DSP, which has the ability to
-> support USB sound devices.  This vendor driver will implement the required
-> handshaking with the DSP, in order to pass along required resources that
-> will be utilized by the DSP's USB SW.  The communication channel used for
-> this handshaking will be using the QMI protocol.  Required resources
-> include:
-> - Allocated secondary event ring address
-> - EP transfer ring address
-> - Interrupter number
-> 
-> The above information will allow for the audio DSP to execute USB transfers
-> over the USB bus.  It will also be able to support devices that have an
-> implicit feedback and sync endpoint as well.  Offloading these data
-> transfers will allow the main/applications processor to enter lower CPU
-> power modes, and sustain a longer duration in those modes.
-> 
-> Audio offloading is initiated with the following sequence:
-> 1. Userspace configures to route audio playback to USB backend and starts
-> playback on the platform soundcard.
-> 2. The Q6DSP AFE will communicate to the audio DSP to start the USB AFE
-> port.
-> 3. This results in a QMI packet with a STREAM enable command.
-> 4. The QC audio offload driver will fetch the required resources, and pass
-> this information as part of the QMI response to the STREAM enable command.
-> 5. Once the QMI response is received the audio DSP will start queuing data
-> on the USB bus.
-> 
-> Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
-> ---
->  sound/usb/Kconfig                 |   15 +
->  sound/usb/Makefile                |    2 +-
->  sound/usb/qcom/Makefile           |    2 +
->  sound/usb/qcom/qc_audio_offload.c | 1813 +++++++++++++++++++++++++++++
->  4 files changed, 1831 insertions(+), 1 deletion(-)
->  create mode 100644 sound/usb/qcom/Makefile
->  create mode 100644 sound/usb/qcom/qc_audio_offload.c
-> 
-> diff --git a/sound/usb/Kconfig b/sound/usb/Kconfig
-> index 4a9569a3a39a..da5838656baa 100644
-> --- a/sound/usb/Kconfig
-> +++ b/sound/usb/Kconfig
-> @@ -176,6 +176,21 @@ config SND_BCD2000
->  	  To compile this driver as a module, choose M here: the module
->  	  will be called snd-bcd2000.
->  
-> +config QC_USB_AUDIO_OFFLOAD
 
-Keep SND_ prefix for consistency.  And, at best, align with the module
-name.
+--hUcgJYAhcs+B7VEy
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> +	tristate "Qualcomm Audio Offload driver"
-> +	depends on QCOM_QMI_HELPERS && SND_USB_AUDIO && USB_XHCI_SIDEBAND
-> +	select SND_PCM
-> +	help
-> +	  Say Y here to enable the Qualcomm USB audio offloading feature.
-> +
-> +	  This module sets up the required QMI stream enable/disable
-> +	  responses to requests generated by the audio DSP.  It passes the
-> +	  USB transfer resource references, so that the audio DSP can issue
-> +	  USB transfers to the host controller.
-> +
-> +	  To compile this driver as a module, choose M here: the module
-> +	  will be called qc-audio-offload.
+On Thu, Sep 07, 2023 at 06:21:50PM +0200, Joerg Schambacher wrote:
 
-Hmm, you renamed it differently, no?  In the below:
+> And yes, we cannot be sure that future devices may require different
+> settings, but I can hardly imagine anything completely different than
+> this approach with the usual audio MCLK frequencies.
 
-> --- /dev/null
-> +++ b/sound/usb/qcom/Makefile
-> @@ -0,0 +1,2 @@
-> +snd-usb-audio-qmi-objs := usb_audio_qmi_v01.o qc_audio_offload.o
-> +obj-$(CONFIG_QC_USB_AUDIO_OFFLOAD) += snd-usb-audio-qmi.o
+They may for example be restricted and just not the the incoming MCLK
+divider, or require a higher frequency for some fancy processing.  In
+any case tas_device is just an obviously bad name here - there should be
+a flag per quirk, not a flag per entire class of devices.
 
-... it's called snd-usb-audio-qmi.
+> > This is probably a separate quirk?  I'm a bit concerned about what's
+> > turning the PLL off here...
 
+> The PLL should not be used in this specific case where all divisions are
+> just divide-by-2's. Your original code does reflect that and turns the
+> PLL off. It improves jitter and finally audio performance.
 
-thanks,
+> But in the case of the TAS-devices we even then need the PLL to
+> drive the AMP clocks.
 
-Takashi
+That's definitely a separate quirk, and does sound like it should be
+driven from the bias management or DAPM more than hw_params.
+
+--hUcgJYAhcs+B7VEy
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmT5+i4ACgkQJNaLcl1U
+h9CZ+Qf+J2f6CIl+3kQOLAmv4SLapcB47o1g840CoC/9/uJ/sk2TlngPfsjmLttb
+uW+Sv7yC6pLMtzMHz8kwbnjhapJTJLlrQKhL4u7OPQtX2S5Dm9xbjO3ZXX+MxQX5
+wPn/HpF2qDdA/cp/TdBycJcM9zJ+1jjMKBMneCqEPGXJZCRz0mEl9XTaIQLKk9Cq
+4fIjWXyyPLf8j+kvqzIBKItMIYkPXABMnjJ7f8jYox9LyigjW306+rCxOJaU1qL5
+ZKOiWeZqBWwWI1TEkQQd3i3n6pzmNSAHK0KhlGR1qDaYdjkkyFBhKe5wKsOZeE1w
+6WbW/o4djQkLPhrAIoQ7eVyuV0WQuA==
+=I+kL
+-----END PGP SIGNATURE-----
+
+--hUcgJYAhcs+B7VEy--
