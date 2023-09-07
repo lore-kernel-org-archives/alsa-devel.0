@@ -4,82 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9C090EC8736
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Sep 2023 14:48:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BEC9BEC8734
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Sep 2023 14:48:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AFF10AE9;
-	Thu,  7 Sep 2023 16:47:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AFF10AE9
+	by alsa0.perex.cz (Postfix) with ESMTPS id E9F39DF9;
+	Thu,  7 Sep 2023 16:47:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E9F39DF9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1694098085;
-	bh=9Zx7zIB3NC7A7DJJ71yax4wSukRrrdP6dqPNKKLTXb0=;
+	s=default; t=1694098097;
+	bh=f81IjHFhtrUyWCKu7/WGOe+LBkT3Yst1qx3qL/lQSpM=;
 	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=UtXn2XtaogJuaJ59fz7Edxl4ESfFRGFi8ipryivgPNjU5B07NS76srF71TQagEtD0
-	 3L52WvRzaDFJKN2fFHrDHBuwL1XVHK4wtvFxojs0nTyPWoUTHZR+0Bh8LcQmPRf3uR
-	 S6ghmG1WeR3ePpV7+dU1wgJ8PvSqR3V4GenaU81k=
+	b=VkKoASKDQLvMUB/C3MXUQlBzF7f5qPwBUU53WoMeLyTwKzN1h3QMHsQOO76uTlg/K
+	 +Uaz6N8PHjYqwkW/bghCBjwzxR+lq2w4wl+u+wQ2zKDS9J3IIHAMr13NSlogd8ZS0K
+	 AJuFQR7B9sls3BKoWIHs0SjGTMyx1a1NuQQUlqGI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 53A5DF80558; Thu,  7 Sep 2023 16:47:03 +0200 (CEST)
+	id 5B17BF80579; Thu,  7 Sep 2023 16:47:06 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 30CCEF8055B;
-	Thu,  7 Sep 2023 16:47:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 65F2EF80579;
+	Thu,  7 Sep 2023 16:47:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CF46BF80494; Thu,  7 Sep 2023 16:41:15 +0200 (CEST)
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com
- [IPv6:2a00:1450:4864:20::643])
+	id 1A1A9F80494; Thu,  7 Sep 2023 16:43:45 +0200 (CEST)
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com
+ [IPv6:2a00:1450:4864:20::22b])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 6C36CF800AA
-	for <alsa-devel@alsa-project.org>; Thu,  7 Sep 2023 16:41:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6C36CF800AA
+	by alsa1.perex.cz (Postfix) with ESMTPS id 92218F800AA
+	for <alsa-devel@alsa-project.org>; Thu,  7 Sep 2023 16:43:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 92218F800AA
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20221208 header.b=FB73sLsz
-Received: by mail-ej1-x643.google.com with SMTP id
- a640c23a62f3a-9936b3d0286so134009966b.0
+ header.s=20221208 header.b=gzZCA+gR
+Received: by mail-lj1-x22b.google.com with SMTP id
+ 38308e7fff4ca-2b703a0453fso17829571fa.3
         for <alsa-devel@alsa-project.org>;
- Thu, 07 Sep 2023 07:41:06 -0700 (PDT)
+ Thu, 07 Sep 2023 07:43:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694097666; x=1694702466;
+        d=gmail.com; s=20221208; t=1694097820; x=1694702620;
  darn=alsa-project.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=4jYT9kLob9nPIyNfblhvoxqGynMI2Une8KMJHJA8vZY=;
-        b=FB73sLszcUF/4KYecWc0cbM2BjXivDiPMPOB9cuDBaQBZrymyFG88xS4r5ZMd6OFmr
-         4oRLE6k90L2PBsg2YIRUswnpOyc+W+klYcTAQ+zHA8qIyn3exJWqs83qEUJ6RohwrRo2
-         by4bfFDMTbqyqXr/ng5mvXhNJAJtHsRRFrOV0UXtjvBOkvOGoeByAafX1c+vEQX9A5o8
-         njKX0K1Mr/gRZXYw3SnEdg4W3Yq52ND1Ts8N2E3CwWk9HdIEXZZnEh2s0uWtGNjUdcqM
-         8px26N0HekMbxXo3MSsPaAs4c/7kxo6hzikY8/QcqTCC4c7Icf0L8NmpjPtFWFTgtSZF
-         P88g==
+        bh=927dFowXauJqC2YOXBDk/4qoxBXJD8XdbGuXvoshWHY=;
+        b=gzZCA+gRGF1tvNhxMoyQWBIwh1BCfFEq+8Yoy52LUiRwWhtZBAqkFQXnM9V+aaNOAq
+         UkFG2KXNPUeVoFPCnBwinphqWszRCEkRL2VDhUjsurWAbVPsDFmOp5l56PZDl+zXAmtO
+         zTBm12pbhTnlAmyXPNd3/eylNy5ndKRJrFxrFV8FyeVbPuFJvhxoQYRKjHzsN4FN2q/7
+         WdJ8b76tHJr9WlTjVGSLopSlUunv33bdsPGHsl5HcLUn8yJXXA8Y3PeDZB17vX5YUZyI
+         KOG16KiuYD9d6LHH/gLldPzmisHWYOqaamTvWnXHBVVNh5zq+nt81SR1CcN/BgIhQyte
+         af+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1694097666; x=1694702466;
+        d=1e100.net; s=20221208; t=1694097820; x=1694702620;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=4jYT9kLob9nPIyNfblhvoxqGynMI2Une8KMJHJA8vZY=;
-        b=IAfOI5QdBpbRMph0ZZ0wW0udMgodkeuweQN9QV6fgGR5ON7FjlHJ8Rny0nY1DMJjmj
-         McoVRMPx6ZJn7TqgVj3Ax13AFw90UF54Di78E1ZCpicImDmFvA74nkabI2FBpTeUxWbX
-         LhPm2gk0RixmHRWKF7E+5HTK1IGXh6YjTuM6EhS/RDrXytcqmZl6aBMOkNmKOZ7zJZ/w
-         yunYC3BToCEf8m+SrioQhzmW35TuAiMg17x7Gq1kVEplenFwad2d0sskqieHh/rp7ygD
-         neQdgKtQS8iGuVPiVz4iE2u4s+o7T0k7TAn+YSyjb4rvnfxjVIZTS75CYsfNgEpfzBLP
-         QaGQ==
-X-Gm-Message-State: AOJu0Yya8A73bbHoptb14uBIM0w2ZhqDVtCN9Vi52KDBUgzj1sxtvtvm
-	tpu7znTg1K6pY9V3FkFoMOyDzbhuj+mG9g==
+        bh=927dFowXauJqC2YOXBDk/4qoxBXJD8XdbGuXvoshWHY=;
+        b=Ar8C1T9ybBB3ceUWs7TZgf/GIn+5AfNc57WOtfCFr5K0aSCLZzHmDP6XiSRiqvtYrJ
+         1a9vNIiqL2Uj/WBA85bMt9Y0f2bx6eeBwHenfmuanoZ/IkrGNpqIKWqBqlmFsSkVy/c6
+         kO65mt7wvu302KypXpmKE302a8p8pUKwWuLkXXYO+oNiDT1hHc2Q5tsIqSq9bmFHEFEd
+         0oAbeiVMQribAOwhnjdSMlq8sNlv531Hj5eIH7b5pxS3QYVXCf/JybsGJewSbYY1foYW
+         U4UwqL1TGTZO9/Ay3mVH1iHKZUzeGHmGZ9gRDy4FnAQEWVB8hhY4Kqf5Ph6PHQ8lbGuA
+         y1WA==
+X-Gm-Message-State: AOJu0YwU8s2pKdoNT6M5+QwrQufdz+U9am8MQMv3T7xsphBKwT/8rokX
+	97SbjoFLY/yDdAwnj8r+y6E6MDC64ok=
 X-Google-Smtp-Source: 
- AGHT+IHXkIuf9N5nGW89maqgby2dHVDbA33YMaEwj4MhkYrRiH8QkzU9VivmJGE2z/24H72fIGHDbw==
-X-Received: by 2002:a05:600c:2611:b0:3fb:c9f4:150e with SMTP id
- h17-20020a05600c261100b003fbc9f4150emr4910559wma.14.1694095934657;
-        Thu, 07 Sep 2023 07:12:14 -0700 (PDT)
+ AGHT+IH9O6jeW0XIr3SNBsUTJS7++/h8X1hnBWZyxkOvHJj1QJ0k19xawmaY+Y2sK27mo7gAVRC44Q==
+X-Received: by 2002:a5d:6d4c:0:b0:317:5182:7b55 with SMTP id
+ k12-20020a5d6d4c000000b0031751827b55mr4719128wri.42.1694095818965;
+        Thu, 07 Sep 2023 07:10:18 -0700 (PDT)
 Received: from localhost ([2a02:810d:1640:10d8:bdda:474a:9786:1e73])
         by smtp.gmail.com with ESMTPSA id
- g1-20020a7bc4c1000000b003fe1a092925sm2612137wmk.19.2023.09.07.07.12.14
+ n17-20020a1c7211000000b003fe1630a8f0sm2588711wmc.24.2023.09.07.07.10.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Sep 2023 07:12:14 -0700 (PDT)
+        Thu, 07 Sep 2023 07:10:18 -0700 (PDT)
 From: Joerg Schambacher <joerg.hifiberry@gmail.com>
 To: 
 Cc: a-krasser@ti.com,
@@ -87,15 +87,15 @@ Cc: a-krasser@ti.com,
 	Joerg Schambacher <joerg.hifiberry@gmail.com>,
 	Liam Girdwood <lgirdwood@gmail.com>,
 	Mark Brown <broonie@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-	Zhang Qilong <zhangqilong3@huawei.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
 	alsa-devel@alsa-project.org,
+	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] ASoC: Adds support for TAS575x to the pcm512x driver
-Date: Thu,  7 Sep 2023 18:12:05 +0200
-Message-Id: <20230907161207.14426-1-joerg.hifiberry@gmail.com>
+Subject: [PATCH 1/2] ASoC: pcm512x: Adds bindings for TAS575x devices
+Date: Thu,  7 Sep 2023 18:08:51 +0200
+Message-Id: <20230907160851.14241-1-joerg.hifiberry@gmail.com>
 X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -105,15 +105,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: DCSHHWTHJAQLSEI3TA4WZ3ALRQCGXG6G
-X-Message-ID-Hash: DCSHHWTHJAQLSEI3TA4WZ3ALRQCGXG6G
+Message-ID-Hash: MXTZJ5CAAGEFF6E3UARKIG4TOOUFUJE4
+X-Message-ID-Hash: MXTZJ5CAAGEFF6E3UARKIG4TOOUFUJE4
 X-Mailman-Approved-At: Thu, 07 Sep 2023 14:46:57 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DCSHHWTHJAQLSEI3TA4WZ3ALRQCGXG6G/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MXTZJ5CAAGEFF6E3UARKIG4TOOUFUJE4/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -122,108 +122,60 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Enables the existing pcm512x driver to control the almost
-compatible TAS5754 and -76 amplifers. Both amplifiers support
-only an I2C interface and the internal PLL must be always
-on to provide necessary clocks to the amplifier section.
-Tested on TAS5756 with support from Andreas Arbesser-Krasser
-from Texas Instruments <a-krasser@ti.com>
+The TAS5754/6 power amplifiers use the same pcm512x driver with
+only minor restictions described in the bindings document.
 
 Signed-off-by: Joerg Schambacher <joerg.hifiberry@gmail.com>
 ---
- sound/soc/codecs/pcm512x-i2c.c |  4 ++++
- sound/soc/codecs/pcm512x.c     | 34 +++++++++++++++++++++++++++++++---
- 2 files changed, 35 insertions(+), 3 deletions(-)
+ .../devicetree/bindings/sound/pcm512x.txt     | 22 +++++++++++++++----
+ 1 file changed, 18 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/pcm512x-i2c.c b/sound/soc/codecs/pcm512x-i2c.c
-index 5cd2b64b9337..4be476a280e1 100644
---- a/sound/soc/codecs/pcm512x-i2c.c
-+++ b/sound/soc/codecs/pcm512x-i2c.c
-@@ -39,6 +39,8 @@ static const struct i2c_device_id pcm512x_i2c_id[] = {
- 	{ "pcm5122", },
- 	{ "pcm5141", },
- 	{ "pcm5142", },
-+	{ "tas5754", },
-+	{ "tas5756", },
- 	{ }
- };
- MODULE_DEVICE_TABLE(i2c, pcm512x_i2c_id);
-@@ -49,6 +51,8 @@ static const struct of_device_id pcm512x_of_match[] = {
- 	{ .compatible = "ti,pcm5122", },
- 	{ .compatible = "ti,pcm5141", },
- 	{ .compatible = "ti,pcm5142", },
-+	{ .compatible = "ti,tas5754", },
-+	{ .compatible = "ti,tas5756", },
- 	{ }
- };
- MODULE_DEVICE_TABLE(of, pcm512x_of_match);
-diff --git a/sound/soc/codecs/pcm512x.c b/sound/soc/codecs/pcm512x.c
-index 89059a673cf0..9aa9be2dbdb2 100644
---- a/sound/soc/codecs/pcm512x.c
-+++ b/sound/soc/codecs/pcm512x.c
-@@ -48,6 +48,7 @@ struct pcm512x_priv {
- 	int mute;
- 	struct mutex mutex;
- 	unsigned int bclk_ratio;
-+	int tas_device;
- };
+diff --git a/Documentation/devicetree/bindings/sound/pcm512x.txt b/Documentation/devicetree/bindings/sound/pcm512x.txt
+index 3aae3b41bd8e..b16cd0463695 100644
+--- a/Documentation/devicetree/bindings/sound/pcm512x.txt
++++ b/Documentation/devicetree/bindings/sound/pcm512x.txt
+@@ -1,12 +1,12 @@
+-PCM512x audio CODECs
++PCM512x and TAS575x audio CODECs/amplifiers
  
- /*
-@@ -927,6 +928,20 @@ static int pcm512x_set_dividers(struct snd_soc_dai *dai,
- 		bclk_div = DIV_ROUND_CLOSEST(sck_rate, bclk_rate);
+ These devices support both I2C and SPI (configured with pin strapping
+-on the board).
++on the board). The TAS575x devices only support I2C.
  
- 		mck_rate = sck_rate;
-+		if (pcm512x->tas_device) {
-+			/* set necessary PLL coeffs for amp
-+			 * according to spec only 2x and 4x MCLKs
-+			 * possible
-+			 */
-+			ret = regmap_write(pcm512x->regmap,
-+					   PCM512x_PLL_COEFF_0, 0x01);
-+			if (mck_rate > 25000000UL)
-+				ret = regmap_write(pcm512x->regmap,
-+						   PCM512x_PLL_COEFF_1, 0x02);
-+			else
-+				ret = regmap_write(pcm512x->regmap,
-+						   PCM512x_PLL_COEFF_1, 0x04);
-+		}
- 	} else {
- 		ret = snd_soc_params_to_bclk(params);
- 		if (ret < 0) {
-@@ -1258,10 +1273,18 @@ static int pcm512x_hw_params(struct snd_pcm_substream *substream,
- 			return ret;
- 		}
+ Required properties:
  
--		ret = regmap_update_bits(pcm512x->regmap, PCM512x_PLL_EN,
--					 PCM512x_PLLE, 0);
-+		if (!pcm512x->tas_device) {
-+			ret = regmap_update_bits(pcm512x->regmap,
-+						 PCM512x_PLL_EN, PCM512x_PLLE, 0);
-+		} else {
-+			/* leave PLL enabled for amp clocking */
-+			ret = regmap_write(pcm512x->regmap,
-+					   PCM512x_PLL_EN, 0x01);
-+			dev_dbg(component->dev, "Enabling PLL for TAS575x\n");
-+		}
+-  - compatible : One of "ti,pcm5121", "ti,pcm5122", "ti,pcm5141" or
+-                 "ti,pcm5142"
++  - compatible : One of "ti,pcm5121", "ti,pcm5122", "ti,pcm5141",
++                 "ti,pcm5142", "ti,tas5754" or "ti,tas5756"
+ 
+   - reg : the I2C address of the device for I2C, the chip select
+           number for SPI.
+@@ -25,6 +25,7 @@ Optional properties:
+     through <6>.  The device will be configured for clock input on the
+     given pll-in pin and PLL output on the given pll-out pin.  An
+     external connection from the pll-out pin to the SCLK pin is assumed.
++    Caution: the TAS-desvices only support gpios 1,2 and 3
+ 
+ Examples:
+ 
+@@ -50,3 +51,16 @@ Examples:
+ 		pll-in = <3>;
+ 		pll-out = <6>;
+ 	};
 +
- 		if (ret != 0) {
--			dev_err(component->dev, "Failed to disable pll: %d\n", ret);
-+			dev_err(component->dev, "Failed to set pll mode: %d\n", ret);
- 			return ret;
- 		}
- 	}
-@@ -1659,6 +1682,11 @@ int pcm512x_probe(struct device *dev, struct regmap *regmap)
- 			ret = -EINVAL;
- 			goto err_pm;
- 		}
++	tas5756: tas5756@4f {
++		compatible = "ti,tas5756";
++		reg = <0x4f>;
 +
-+		if (!strcmp(np->name, "tas5756") ||
-+		    !strcmp(np->name, "tas5754"))
-+			pcm512x->tas_device = 1;
-+		dev_dbg(dev, "Device ID: %s\n", np->name);
- 	}
- #endif
- 
++		AVDD-supply = <&reg_3v3_analog>;
++		DVDD-supply = <&reg_1v8>;
++		CPVDD-supply = <&reg_3v3>;
++
++		clocks = <&sck>;
++		pll-in = <1>;
++		pll-out = <2>;
++	};
 -- 
 2.34.1
 
