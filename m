@@ -4,60 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EBF72EC874B
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Sep 2023 17:14:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6EEE9EC8742
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Sep 2023 17:14:48 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1C2A8E0F;
-	Thu,  7 Sep 2023 19:13:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1C2A8E0F
+	by alsa0.perex.cz (Postfix) with ESMTPS id CA6EAE10;
+	Thu,  7 Sep 2023 19:13:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CA6EAE10
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1694106867;
-	bh=ebjTOlKhI8W4zt2KLb9pyA5zxGnqWLuX8KAbomolyu8=;
+	s=default; t=1694106886;
+	bh=rIB839KbtT4M8CYKZ1SHwXmr9eGS1OcT+UowfodUupQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=iMtO3uisPuOaAeTGnISxUARL8+kQCoDi4xMdV30ZiWt1mwgYNJ1+avzWkGDeHDyie
-	 8TadXqzvWa/2x8QZzhYslV+HVSq4bD81BFQNbofUQ+2mHGKECHA9sxPa8srTUsur0f
-	 WBMN9buGpdMd7uDKv5Piety+pTVKJa7VZlbjFA68=
+	b=c+A91p46snSMLfbJDchFwm6XQMCLw0JByq49NQAlDL05q3GyMY5qDXtl4StykYw2k
+	 Rd56t5L/Hv1NL8cmLjtOOzK/xdyW1t3eE4l4cWzgFJZoKqKegFFag3h0xvfmYsCQ6Z
+	 9d4UKVmZ7VSazUKOg1TR8oYuCh8zpJUQRWFe/CRk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0C5DAF805F1; Thu,  7 Sep 2023 19:10:55 +0200 (CEST)
+	id 49AC7F805F6; Thu,  7 Sep 2023 19:10:57 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 49E5CF805F8;
-	Thu,  7 Sep 2023 19:10:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B1689F80600;
+	Thu,  7 Sep 2023 19:10:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7C41DF805E1; Thu,  7 Sep 2023 19:10:47 +0200 (CEST)
+	id 6564DF805EF; Thu,  7 Sep 2023 19:10:51 +0200 (CEST)
 Received: from madras.collabora.co.uk (madras.collabora.co.uk
- [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+ [46.235.227.172])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 77D53F805E0
-	for <alsa-devel@alsa-project.org>; Thu,  7 Sep 2023 19:10:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 77D53F805E0
+	by alsa1.perex.cz (Postfix) with ESMTPS id 53D6DF805E0
+	for <alsa-devel@alsa-project.org>; Thu,  7 Sep 2023 19:10:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 53D6DF805E0
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=collabora.com header.i=@collabora.com
- header.a=rsa-sha256 header.s=mail header.b=eIsHJoKe
+ header.a=rsa-sha256 header.s=mail header.b=YipAyS+s
 Received: from localhost (unknown [81.18.92.207])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
  server-digest SHA256)
 	(No client certificate requested)
 	(Authenticated sender: cristicc)
-	by madras.collabora.co.uk (Postfix) with ESMTPSA id 6468366072F6;
-	Thu,  7 Sep 2023 18:10:44 +0100 (BST)
+	by madras.collabora.co.uk (Postfix) with ESMTPSA id A88C166072F7;
+	Thu,  7 Sep 2023 18:10:47 +0100 (BST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1694106644;
-	bh=ebjTOlKhI8W4zt2KLb9pyA5zxGnqWLuX8KAbomolyu8=;
+	s=mail; t=1694106647;
+	bh=rIB839KbtT4M8CYKZ1SHwXmr9eGS1OcT+UowfodUupQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=eIsHJoKe89p6AZNI2jcZHGhVv4MPQa5q9p46uvQ8sFgCFwlpdPsRcHkX3dCMgh9wJ
-	 O6o+jDDv5FDaOZ25kDeRI3K82Y8F6BaU9WcLJYB/HZ+mSkTLUgMe7RSKbOg9Uj2ReY
-	 tT2czfmwjqhPAdUjzSGldkGo0b70PrObV/XmUVlAUKeSq7XQmnWgCsL13C4r5NmEvn
-	 b7ROTdmf+wzyOLhjrGvtnbWGgtY43YEHeyxzApWRfiIIoclw2ZRTyKr1y8cNa7fwWJ
-	 GKNJV1yv3Rlw9rTZroGp0pOAfv/mbDYaBmwzmaur+aEgC9i2wa+U/QMvyRQJQwy7e/
-	 f/9nHk4Ct8A6g==
+	b=YipAyS+s+34w+o5S1L4JGFAzu5i0XzX7Mm1+LeSjGSXnMAFaoUoQ1R7GKS+ZFf0Kh
+	 67E41SgZlirlEk5cElfhVylwcu1tZlXJ/v9aoCTCFS5Z7d4NbKeFmJVBhLePQvKVgm
+	 gA/zkun9e+nM+pt8yxV69r6KgWbiakFkmtZYiqKhFBBwlXo60Ci91duDxUU9hSF0ny
+	 zcnggy+6OTxCaKO/gVNoFqvjGuGFQlHirPsLNsGwngFPMerC5UwONMjZZ9o0eg4AZL
+	 G1qA1LUqB97//C6rWkxVRUbL8uxCviOscdPOvBf9kzjO/6ukokLf6eOA7mZqd9uS0v
+	 d91xxPzjrtAaQ==
 From: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
 To: James Schulman <james.schulman@cirrus.com>,
 	David Rhodes <david.rhodes@cirrus.com>,
@@ -73,17 +73,16 @@ Cc: alsa-devel@alsa-project.org,
 	patches@opensource.cirrus.com,
 	linux-kernel@vger.kernel.org,
 	kernel@collabora.com
-Subject: [PATCH v2 10/11] ALSA: hda: cs35l41: Undo runtime PM changes at
- driver exit time
-Date: Thu,  7 Sep 2023 20:10:09 +0300
-Message-ID: <20230907171010.1447274-11-cristian.ciocaltea@collabora.com>
+Subject: [PATCH v2 11/11] ALSA: hda: cs35l41: Consistently use dev_err_probe()
+Date: Thu,  7 Sep 2023 20:10:10 +0300
+Message-ID: <20230907171010.1447274-12-cristian.ciocaltea@collabora.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230907171010.1447274-1-cristian.ciocaltea@collabora.com>
 References: <20230907171010.1447274-1-cristian.ciocaltea@collabora.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: QSC6SBV43AZS7ZBZJA7INJ6254AKQ4JU
-X-Message-ID-Hash: QSC6SBV43AZS7ZBZJA7INJ6254AKQ4JU
+Message-ID-Hash: QL7KLN44U2VYJX46ISLE3TD2JL3PV7YD
+X-Message-ID-Hash: QL7KLN44U2VYJX46ISLE3TD2JL3PV7YD
 X-MailFrom: cristian.ciocaltea@collabora.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -96,7 +95,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QSC6SBV43AZS7ZBZJA7INJ6254AKQ4JU/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QL7KLN44U2VYJX46ISLE3TD2JL3PV7YD/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -105,38 +104,69 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-According to the documentation, drivers are responsible for undoing at
-removal time all runtime PM changes done during probing.
+Replace the remaining dev_err() calls in probe() with dev_err_probe(),
+to improve consistency.
 
-Hence, add the missing calls to pm_runtime_dont_use_autosuspend(), which
-are necessary for undoing pm_runtime_use_autosuspend().
-
-Fixes: 1873ebd30cc8 ("ALSA: hda: cs35l41: Support Hibernation during Suspend")
 Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
 ---
- sound/pci/hda/cs35l41_hda.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/pci/hda/cs35l41_hda.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
 diff --git a/sound/pci/hda/cs35l41_hda.c b/sound/pci/hda/cs35l41_hda.c
-index 6fd827093c92..565f7b897436 100644
+index 565f7b897436..c74faa2ff46c 100644
 --- a/sound/pci/hda/cs35l41_hda.c
 +++ b/sound/pci/hda/cs35l41_hda.c
-@@ -1633,6 +1633,7 @@ int cs35l41_hda_probe(struct device *dev, const char *device_name, int id, int i
- 	return 0;
+@@ -1550,27 +1550,27 @@ int cs35l41_hda_probe(struct device *dev, const char *device_name, int id, int i
+ 	ret = regmap_read_poll_timeout(cs35l41->regmap, CS35L41_IRQ1_STATUS4, int_status,
+ 				       int_status & CS35L41_OTP_BOOT_DONE, 1000, 100000);
+ 	if (ret) {
+-		dev_err(cs35l41->dev, "Failed waiting for OTP_BOOT_DONE: %d\n", ret);
++		dev_err_probe(cs35l41->dev, ret, "Failed waiting for OTP_BOOT_DONE\n");
+ 		goto err;
+ 	}
  
- err_pm:
-+	pm_runtime_dont_use_autosuspend(cs35l41->dev);
- 	pm_runtime_disable(cs35l41->dev);
- 	pm_runtime_put_noidle(cs35l41->dev);
+ 	ret = regmap_read(cs35l41->regmap, CS35L41_IRQ1_STATUS3, &int_sts);
+ 	if (ret || (int_sts & CS35L41_OTP_BOOT_ERR)) {
+-		dev_err(cs35l41->dev, "OTP Boot status %x error: %d\n",
+-			int_sts & CS35L41_OTP_BOOT_ERR, ret);
++		dev_err_probe(cs35l41->dev, ret, "OTP Boot status %x error\n",
++			      int_sts & CS35L41_OTP_BOOT_ERR);
+ 		ret = -EIO;
+ 		goto err;
+ 	}
  
-@@ -1651,6 +1652,7 @@ void cs35l41_hda_remove(struct device *dev)
- 	struct cs35l41_hda *cs35l41 = dev_get_drvdata(dev);
+ 	ret = regmap_read(cs35l41->regmap, CS35L41_DEVID, &regid);
+ 	if (ret) {
+-		dev_err(cs35l41->dev, "Get Device ID failed: %d\n", ret);
++		dev_err_probe(cs35l41->dev, ret, "Get Device ID failed\n");
+ 		goto err;
+ 	}
  
- 	pm_runtime_get_sync(cs35l41->dev);
-+	pm_runtime_dont_use_autosuspend(cs35l41->dev);
- 	pm_runtime_disable(cs35l41->dev);
+ 	ret = regmap_read(cs35l41->regmap, CS35L41_REVID, &reg_revid);
+ 	if (ret) {
+-		dev_err(cs35l41->dev, "Get Revision ID failed: %d\n", ret);
++		dev_err_probe(cs35l41->dev, ret, "Get Revision ID failed\n");
+ 		goto err;
+ 	}
  
- 	if (cs35l41->halo_initialized)
+@@ -1593,7 +1593,7 @@ int cs35l41_hda_probe(struct device *dev, const char *device_name, int id, int i
+ 
+ 	ret = cs35l41_otp_unpack(cs35l41->dev, cs35l41->regmap);
+ 	if (ret) {
+-		dev_err(cs35l41->dev, "OTP Unpack failed: %d\n", ret);
++		dev_err_probe(cs35l41->dev, ret, "OTP Unpack failed\n");
+ 		goto err;
+ 	}
+ 
+@@ -1624,7 +1624,7 @@ int cs35l41_hda_probe(struct device *dev, const char *device_name, int id, int i
+ 
+ 	ret = component_add(cs35l41->dev, &cs35l41_hda_comp_ops);
+ 	if (ret) {
+-		dev_err(cs35l41->dev, "Register component failed: %d\n", ret);
++		dev_err_probe(cs35l41->dev, ret, "Register component failed\n");
+ 		goto err_pm;
+ 	}
+ 
 -- 
 2.41.0
 
