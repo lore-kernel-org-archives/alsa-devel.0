@@ -4,78 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E3DB8EE14D4
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Sep 2023 09:57:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5FDA5EB8FD8
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Sep 2023 11:53:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D4B33A4A;
-	Thu,  7 Sep 2023 11:56:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D4B33A4A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6A2A284C;
+	Thu,  7 Sep 2023 13:52:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6A2A284C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1694080645;
-	bh=mM0JcVmjQBwg2L+s+Z5a+scf9lawERwrqGvhO/cyEyw=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1694087604;
+	bh=zjCLSVlz5LdCpC8IOpacCvdlUauv1FO+yJco6i36Oic=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=PqyXcJuiAEhK5CioNBJJYmbTHPSvY+UuRPV+cqQBPxFup9c6HW7iSIv//zFRsihzX
-	 F5aO7Dp+lIcXvkSbPN70Ei/aOB5Lib2eT1/uY2FuRtQe0c40z4bYm0MCDnAJg/Me9p
-	 rCliIhxtYyn/8RHuQApql4AXxupRIqFxr34Lshqg=
+	b=b4RPKT9yeM2IrSeXmZ8PBf/GbQI32qKU0drox5AV+N//KrXrTp9fCGFn9MB6JD2NT
+	 dMH7f9imOH9UVWUxoK88IE+5F/JpWp//NUO6qIpkRcHrFlqiq3xbUeC55DsJdVlmyj
+	 5lo+uYVaQ0C+3UEC6g1uNgoOQCq3pHrEBSKiUZzM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4B98EF80570; Thu,  7 Sep 2023 11:55:44 +0200 (CEST)
+	id B719CF80494; Thu,  7 Sep 2023 13:52:06 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4F791F80549;
-	Thu,  7 Sep 2023 11:55:44 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 57862F80494;
+	Thu,  7 Sep 2023 13:52:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 88C51F80494; Thu,  7 Sep 2023 11:55:40 +0200 (CEST)
-Received: from mail3-relais-sop.national.inria.fr
- (mail3-relais-sop.national.inria.fr [192.134.164.104])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 9C647F80494; Thu,  7 Sep 2023 13:51:56 +0200 (CEST)
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 1924AF800AA
-	for <alsa-devel@alsa-project.org>; Thu,  7 Sep 2023 11:55:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1924AF800AA
+	by alsa1.perex.cz (Postfix) with ESMTPS id 32C95F800AA
+	for <alsa-devel@alsa-project.org>; Thu,  7 Sep 2023 13:51:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 32C95F800AA
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=inria.fr header.i=@inria.fr header.a=rsa-sha256
- header.s=dc header.b=YSzuTvQA
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=inria.fr; s=dc;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=eOVoT6V7KWNNEIeADoIjwh0zS86Ag75fR3Q12aE6oes=;
-  b=YSzuTvQA1jS+b4RjgU0BGQ9rm6YONlbqmUWkHmpA7Ni8z+ubJcrp4Xi4
-   QSyaSS4iH3rh7puO2ZE0ujv75PkCRRHmoJqmItOf67TgDYmEH3tZulHik
-   5r7mYK/CQtqqOQ9I9Xfv6/q81mevXo6QCyyLqrCEcHf+66hVN9wv/nNOI
-   o=;
-Authentication-Results: mail3-relais-sop.national.inria.fr;
- dkim=none (message not signed) header.i=none;
- spf=SoftFail smtp.mailfrom=Julia.Lawall@inria.fr;
- dmarc=fail (p=none dis=none) d=inria.fr
-X-IronPort-AV: E=Sophos;i="6.02,234,1688421600";
-   d="scan'208";a="65324670"
-Received: from i80.paris.inria.fr (HELO i80.paris.inria.fr.) ([128.93.90.48])
-  by mail3-relais-sop.national.inria.fr with
- ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2023 11:55:31 +0200
-From: Julia Lawall <Julia.Lawall@inria.fr>
-To: Liam Girdwood <lgirdwood@gmail.com>
-Cc: kernel-janitors@vger.kernel.org,
-	Mark Brown <broonie@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	alsa-devel@alsa-project.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 10/11] ASoC: rsnd: add missing of_node_put
-Date: Thu,  7 Sep 2023 11:55:20 +0200
-Message-Id: <20230907095521.14053-11-Julia.Lawall@inria.fr>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20230907095521.14053-1-Julia.Lawall@inria.fr>
-References: <20230907095521.14053-1-Julia.Lawall@inria.fr>
+	dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=SqUytxf6
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	(No client certificate requested)
+	by sin.source.kernel.org (Postfix) with ESMTPS id F2E78CE1870;
+	Thu,  7 Sep 2023 11:51:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2430EC3277F;
+	Thu,  7 Sep 2023 11:51:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1694087504;
+	bh=zjCLSVlz5LdCpC8IOpacCvdlUauv1FO+yJco6i36Oic=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=SqUytxf6zXbzBIIkpjtKMhcFfrmJPqHiIboWOlhpunBvqIjcLazGaEq1guZ+y0hRI
+	 Bu0087gvzOUJwwaOADCNRZLmNLQIVmFe/BX/T/SFl+5+Xg9HD+L/e0JJFX2l6i/koq
+	 WnvGt5s1VGrabaFiyZ2/CdJRL4+7a8WixhRxQULr7OzK3B+E3k1Gw3pOz1CKu+2GZq
+	 Sd1AlnviH2HtKpNHVOrpwl1YcMdI7rdW+LctE8YH6Q8Vpd0XBFFLqXXb4754DnoLAo
+	 zh61V47/eh7v3+V61IOdpGE180+ykPp2csE0qn8tlopWLb4A7wVOKOxR6VW9xMwyzz
+	 nBBCZDDex/VoQ==
+Date: Thu, 7 Sep 2023 12:51:38 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Sameer Pujar <spujar@nvidia.com>
+Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
+	thierry.reding@gmail.com, jonathanh@nvidia.com,
+	alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+	linux-tegra@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH 2/2] ASoC: tegra: Fix redundant PLLA and PLLA_OUT0 updates
+Message-ID: <2c3371b7-3dae-48d7-8cc8-1acfd5bd267c@sirena.org.uk>
+References: <1694069533-7832-1-git-send-email-spujar@nvidia.com>
+ <1694069533-7832-3-git-send-email-spujar@nvidia.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: OLZFW5JFYWC357UYIO2AZ3SAJQCM7MZ3
-X-Message-ID-Hash: OLZFW5JFYWC357UYIO2AZ3SAJQCM7MZ3
-X-MailFrom: Julia.Lawall@inria.fr
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="HG1UHo7ZQGFGM8s+"
+Content-Disposition: inline
+In-Reply-To: <1694069533-7832-3-git-send-email-spujar@nvidia.com>
+X-Cookie: In the next world, you're on your own.
+Message-ID-Hash: RAJBLEIQHBGE6QOMRH7N4HWPO27VTBQ2
+X-Message-ID-Hash: RAJBLEIQHBGE6QOMRH7N4HWPO27VTBQ2
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -87,37 +89,40 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OLZFW5JFYWC357UYIO2AZ3SAJQCM7MZ3/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RAJBLEIQHBGE6QOMRH7N4HWPO27VTBQ2/>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-for_each_child_of_node performs an of_node_get on each
-iteration, so a break out of the loop requires an
-of_node_put.
 
-This was done using the Coccinelle semantic patch
-iterators/for_each_child.cocci
+--HG1UHo7ZQGFGM8s+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
+On Thu, Sep 07, 2023 at 12:22:13PM +0530, Sameer Pujar wrote:
 
----
- sound/soc/sh/rcar/core.c |    1 +
- 1 file changed, 1 insertion(+)
+> Fixes: 202e2f774543 ("ASoC: tegra: Add audio graph based card driver")
+> Cc: stable@vger.kernel.org
 
-diff -u -p a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
---- a/sound/soc/sh/rcar/core.c
-+++ b/sound/soc/sh/rcar/core.c
-@@ -1303,6 +1303,7 @@ audio_graph:
- 		if (i >= RSND_MAX_COMPONENT) {
- 			dev_info(dev, "reach to max component\n");
- 			of_node_put(node);
-+			of_node_put(ports);
- 			break;
- 		}
- 	}
+This is just a performance improvement rather than a correctness fix as
+far as I can tell?
 
+--HG1UHo7ZQGFGM8s+
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmT5uUoACgkQJNaLcl1U
+h9CANgf/U94AHJ9kaYX/llz+gCrnDPZiKF6ybEtAU8/FafiAXB1qqhJXgW7rYlOv
+w1oreyoLvt7fSSDilpCBjkB95pwSzAsqtuoGj1jvwfszhZtNuKBAILsU3TEQYuyh
+ZJ9sSzvEiWM3QAYyIqSfQuPGbkQ0vZ0uHk3jE/M3t2MB6XvTzijC5HAU5lSqKf5q
+KB+sHqqvMZDdQHADUKo7kgd6CqMEDriZAkoL4OSpYpBQN45gU5qDGzpZi9E9qIz8
+9M5cGuEnzj4Z6Bh8KrFf4xEQOp/rKx47iz3KfkXpVJaBWASm+vqeFfSCR7DGxaKq
+n/GTqlWdCZjilEbg9YapCRGiljEkVA==
+=D621
+-----END PGP SIGNATURE-----
+
+--HG1UHo7ZQGFGM8s+--
