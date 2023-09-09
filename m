@@ -4,76 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 74095EEB58C
-	for <alsa-devel@archiver.kernel.org>; Sat,  9 Sep 2023 12:47:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3CA9CEE49BF
+	for <alsa-devel@archiver.kernel.org>; Sat,  9 Sep 2023 18:53:57 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6D61786F;
-	Sat,  9 Sep 2023 14:46:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6D61786F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0918D83A;
+	Sat,  9 Sep 2023 20:53:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0918D83A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1694263636;
-	bh=/BkZmW+Y3mlj97JtUG1ZwG/p/fnfbVMkY31uTf3YqrU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=LekyJnQOGopWtlfnJB692cnK5cPr17UKhU4R36ENPl/0FRu2RdpRS3H5b+U6CiJYe
-	 BXNg2uuOPkqO5LQ5EZCVyU6GscB6vyTm76k3gGyWMYPUH7DcC42ryKTgynj2sYE6j/
-	 iVOtbiv8D7BknzF2/xQnYuQ8jhpQsRe3rHj36aHY=
+	s=default; t=1694285635;
+	bh=vELJBwvwc1Jc/uqYXY0cIZzAykhl+Vmz9jdf6L10quc=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=OM8Lr7jr1DTWXyVVFHnQl24xdx5BTXpzrRKj+577HEd6kWIu4OXclmL+ugl4u7sMJ
+	 /14knB9Qzl2FkEAkYch5BEuGFDJhtSsIg2XmL/Cpq+8O+TKgR6eJ8uhc/3IEw3yL9u
+	 irEzDNn4mYYp4Wm3xJGsau64jI6WyiChzzh2egfI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C55EDF80527; Sat,  9 Sep 2023 14:45:56 +0200 (CEST)
+	id 7D8FBF80551; Sat,  9 Sep 2023 20:53:02 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3DB22F80494;
-	Sat,  9 Sep 2023 14:45:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4AD1DF80494;
+	Sat,  9 Sep 2023 20:53:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AB303F80494; Sat,  9 Sep 2023 14:45:52 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 87D0FF800AA
-	for <alsa-devel@alsa-project.org>; Sat,  9 Sep 2023 14:45:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 87D0FF800AA
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=DHXgIfHk
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
-	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id C75B6B8010F;
-	Sat,  9 Sep 2023 12:45:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0C7EC433C9;
-	Sat,  9 Sep 2023 12:45:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1694263546;
-	bh=/BkZmW+Y3mlj97JtUG1ZwG/p/fnfbVMkY31uTf3YqrU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=DHXgIfHkqFr93L8vqvKYYF/bRfV41TJhTJizya8HEpOTF2PnJI9+q7kdy4bfvfixG
-	 qbuXBomPd6HUQWJSaQC5CMd1rm0hEPZ7782m7Sckwx62EHOVuyYO55Ehqnet4zNQ6V
-	 +MotxMlTUs0IlJzwU4oOGxJkXi29jR01ocrmHUJbOlJItcT6ehR5ai1OxN7UJoT9ia
-	 5I23lgGiUDovnrhSi1i1c6cbAfGi1Xnxz8+xDfUEii+CVJwin0yMA6L8744sdeALzP
-	 TG2YjT4/uhpnaN7e5FOrr7EvDCNcJxraq21M+F3DWF7GLkpyhgXlsA1iiIlWolvudo
-	 Pn1tRzxC4gPmA==
-Date: Sat, 9 Sep 2023 13:45:38 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Matthias Reichl <hias@horus.com>
-Cc: Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
-Subject: Re: [PATCH] ASoC: hdmi-codec: Fix broken channel map reporting
-Message-ID: <ZPxo8qKMDkmBqGxw@finisterre.sirena.org.uk>
-References: <20230909114633.3193-1-hias@horus.com>
+	id D2D03F80494; Sat,  9 Sep 2023 20:50:04 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
+ [207.180.221.201])
+	by alsa1.perex.cz (Postfix) with ESMTP id A1F90F800F5
+	for <alsa-devel@alsa-project.org>; Sat,  9 Sep 2023 20:50:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A1F90F800F5
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="CRYsJteP4m9VwM7C"
-Content-Disposition: inline
-In-Reply-To: <20230909114633.3193-1-hias@horus.com>
-X-Cookie: Save energy:  Drive a smaller shell.
-Message-ID-Hash: YZPYKTSY2Y4HRRNHLO4VJFXHUNOGFY6C
-X-Message-ID-Hash: YZPYKTSY2Y4HRRNHLO4VJFXHUNOGFY6C
-X-MailFrom: broonie@kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1694285400406148672-webhooks-bot@alsa-project.org>
+References: <1694285400406148672-webhooks-bot@alsa-project.org>
+Subject: Remove mic permissions.
+Message-Id: <20230909185004.D2D03F80494@alsa1.perex.cz>
+Date: Sat,  9 Sep 2023 20:50:04 +0200 (CEST)
+Message-ID-Hash: PO6RL4X72XKYXU4PAE77HWYDAHDINND5
+X-Message-ID-Hash: PO6RL4X72XKYXU4PAE77HWYDAHDINND5
+X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -85,7 +57,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YZPYKTSY2Y4HRRNHLO4VJFXHUNOGFY6C/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PO6RL4X72XKYXU4PAE77HWYDAHDINND5/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -94,39 +66,11 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+alsa-project/alsa-lib issue #353 was opened from stefan11111:
 
---CRYsJteP4m9VwM7C
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I first asked this on the gentoo forums: https://forums.gentoo.org/viewtopic-t-1164837.html
+I would like to tweak my /dev/snd permissions in such a way that members of the audio group can listen to sounds, but only root and maybe root group can use the microphone to record sounds.
+Is such a thing possible? Note that I have a static /dev, so no need to worry about changes not being permanent.
 
-On Sat, Sep 09, 2023 at 01:46:33PM +0200, Matthias Reichl wrote:
-> Commit 4e0871333661 ("ASoC: hdmi-codec: fix channel info for
-> compressed formats") accidentally changed hcp->chmap_idx from
-> ca_id, the CEA channel allocation ID, to idx, the index to
-> the table of channel mappings ordered by preference.
->=20
-> This resulted in wrong channel maps being reported to userspace,
-> eg for 5.1 "FL,FR,LFE,FC" was reported instead of the expected
-> "FL,FR,LFE,FC,RL,RR":
-
-Presumably this will cause a regression for people using compressed
-formats - isn't the fix here to make this behaviour conditional on if
-the format is compressed?
-
---CRYsJteP4m9VwM7C
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmT8aPIACgkQJNaLcl1U
-h9CBowf+JGLhC4wKjhk+Xm1dMsIghIlZq6aJwbbuKM929p/iKVwWTv7AyuQ+U9y/
-p/fV9EeYDYVRfVppD5VVlya5egCxQSfDhXTGrhSDFzCtlp9TMml3t+vsQ6cYJwFX
-O7P2vk00i5ADmH7pGVBsJYCMzxydIHCeErD/6LETO+uBMnIRGqTGgh0VqFO+T20f
-PQUM75OZFFM5cAm6wFYv3VWt6lo9hW+TjSvuElRawpdrbOPWYUtiRkuIWhBH8jGY
-77eOnewhMO65/sGS+qnzEPLKkT82KJs+XcmeCb7sLHC9PXswHMpL+z4H/W9UpsHn
-nNSOGAtXAhcGQvmjFbYR9s+/NlOdLQ==
-=rfza
------END PGP SIGNATURE-----
-
---CRYsJteP4m9VwM7C--
+Issue URL     : https://github.com/alsa-project/alsa-lib/issues/353
+Repository URL: https://github.com/alsa-project/alsa-lib
