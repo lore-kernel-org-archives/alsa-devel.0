@@ -4,114 +4,117 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E65DCCA0ECA
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Sep 2023 09:53:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 19611CA0ECA
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Sep 2023 10:03:51 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B04D8A4D;
-	Tue, 12 Sep 2023 11:52:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B04D8A4D
+	by alsa0.perex.cz (Postfix) with ESMTPS id B6C54846;
+	Tue, 12 Sep 2023 12:02:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B6C54846
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1694512405;
-	bh=NuDSgU/za9u2Y0vgU21V368MH+0liwIWfP/620NIUoc=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1694513029;
+	bh=otXpSz6gr8KPYm4mMDXXGqK2BsqjN7OA0FhyTrfvxdA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=YiIiIPRxfPtDzl27/WHLq/2bncCBE/7dwSinKErRVhfixXtES9+sCWNgVgonJ78Wn
-	 XCM6guUdyZERKeSbri5QEUdQWfz3nmgZK3pBoh9BuefUcBUIDZFf9CKIK7WMh4w2FZ
-	 YGrt8Nap+PZxekg9VvCrF5Ilf7hj3Oa1bVfjPojg=
+	b=e/DoilvY4DKNyW5AxEUVKG0TauebxgYgnjhrWH8gxt9qaDSfMDkHHAjvFrHBrhyZV
+	 VXo0mU3G7jKVBdxubrvLNGnPBQNAu2KV+xjGNFK1qBImGR70CQp+HMhR1Tz7ZoUShr
+	 dTSv5zQlgV7pnJn3MJr6B9ypr84WTGlnGHrQbfss=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8199DF8055A; Tue, 12 Sep 2023 11:52:07 +0200 (CEST)
+	id 32274F80558; Tue, 12 Sep 2023 12:02:31 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1286CF80425;
-	Tue, 12 Sep 2023 11:52:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 89F09F80431;
+	Tue, 12 Sep 2023 12:02:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6B91FF80425; Tue, 12 Sep 2023 11:52:04 +0200 (CEST)
-Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net
- [IPv6:2001:4b98:dc4:8::221])
-	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+	id 1390FF80425; Mon, 11 Sep 2023 11:59:56 +0200 (CEST)
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com
+ [IPv6:2a00:1450:4864:20::343])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 93A29F800AA
-	for <alsa-devel@alsa-project.org>; Tue, 12 Sep 2023 11:52:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 93A29F800AA
+	by alsa1.perex.cz (Postfix) with ESMTPS id 596E8F8007C
+	for <alsa-devel@alsa-project.org>; Mon, 11 Sep 2023 11:59:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 596E8F8007C
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=K+nnYXVg
-Received: by mail.gandi.net (Postfix) with ESMTPA id 5A722240009;
-	Tue, 12 Sep 2023 09:39:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1694512320;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ScPjzuZaLLYh2lcosF7mjC3LbbKogbqWDUhQ8RkAceU=;
-	b=K+nnYXVgVTeIYLV1BYZk8yVPM7a2nPu/2JA6GWMyyv0Za8enlurHjBH7plSt2lkrUaQgFx
-	0f+eic3JBBgKxtWXmU15F2NOL2ZoHFXm8dROGgnxxRWdTKbO53xzFHJjRrH2cKPixxWiIQ
-	X0H50mqA/O7gee/qxhpcScSAQrz6oC5amb4tHHTsy3EQ30w3liig4hh60CmVmm0cSjrsOm
-	3+A4lbr4FIsGWAyRl0hBgn4ip8FNO3Untij7ggUFAU3Q5C3z+B+ux/Tq3eCFHsmlxJXwfW
-	EQItj5FZbLmxsodLOd0QDPWT6RUBUWUp7yQWKgN05HapEUcrPwoojI25LbtKJQ==
-From: Herve Codina <herve.codina@bootlin.com>
-To: Herve Codina <herve.codina@bootlin.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Lee Jones <lee@kernel.org>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Qiang Zhao <qiang.zhao@nxp.com>,
-	Li Yang <leoyang.li@nxp.com>,
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20221208 header.b=rIXsWIRW
+Received: by mail-wm1-x343.google.com with SMTP id
+ 5b1f17b1804b1-403004a96eeso20909205e9.3
+        for <alsa-devel@alsa-project.org>;
+ Mon, 11 Sep 2023 02:59:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694426389; x=1695031189;
+ darn=alsa-project.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=W8DwGOouAfeTC9dQWWUPc8inKmfQnl7752/OQxdRR2w=;
+        b=rIXsWIRWl4l7WaCrARuUNhX7bEVnzAF2wq2CEQCQBNB+p2yqrnzvQ7YDacpYl5F4tG
+         i2+6sNgj173VyqoWYJGITzemSmVJ13pXWgqK6RHF7kaWX/yCBthx/ToOYWmKRYKo4qZi
+         bn+P46yMt+hQHx8MuohR3iP5eex/8fyN1ddz3aojceNF2IH2vqIHiLjTzI4UkgkK0TCP
+         ewkrdDHX3X8nhs3Y7WFupgaV0Ne0dfe2uairw5V/Ot61JBLwcS3e4N7f6WPvtgcx8g0K
+         81gyqZI0ii/o44ovDi43JN/Fx+q83f5FXIWEzngE4PLsYePK/nVku8t+4SlT7LJrNTrw
+         XN4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694426389; x=1695031189;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=W8DwGOouAfeTC9dQWWUPc8inKmfQnl7752/OQxdRR2w=;
+        b=QratdtqKE+amdJgec/aIOxzJq2dGk5z7fICcgy254Eq87QSRj5Nn890y4x3tpwiAhm
+         fEbBc58MJQMeRyiQjbFAg94E4M+3ulf15uTOybVzid8zYZ9xXYgqEjshuL3VrjNiMbKY
+         +AqgUeP4nxQdAMErqnBrmCFQros5fifqbjQAMN2VHjRO9qfRDToxyugBPkQ4NQQZS7gG
+         KHMotI5YidEVxWyyL6SI2HYWfALrUNMLMCWm0qdO7/2D8qBPN56kRXppJZbGyOoB4ToG
+         t+sQDG/JTt1eVIzTG3G7WqXS+LCWDeQl0vtyq+5Tfje0QFC7BdyCZG17qvlYwfGD2uiC
+         yv5w==
+X-Gm-Message-State: AOJu0Yzxsjs4BvFSHVuGFYRt6UJoz0DcjocryQTuX43Y7VNX7to12Sx6
+	LNbTlWpgASafEoVc5uLglhw=
+X-Google-Smtp-Source: 
+ AGHT+IFBUY7gHK1mAZy8nG0AfLjBC8XLEJvInpL0oTLiQQfgZnP7fUu+Eo0jMt8J4B/7vYrmK/mfrQ==
+X-Received: by 2002:a05:600c:452:b0:402:cc5c:c98 with SMTP id
+ s18-20020a05600c045200b00402cc5c0c98mr7693933wmb.13.1694426389291;
+        Mon, 11 Sep 2023 02:59:49 -0700 (PDT)
+Received: from ubuntu ([2a02:810d:1640:10d8:ac22:c335:c227:5398])
+        by smtp.gmail.com with ESMTPSA id
+ fa14-20020a05600c518e00b00402fa98abe3sm8936300wmb.46.2023.09.11.02.59.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Sep 2023 02:59:48 -0700 (PDT)
+Date: Mon, 11 Sep 2023 13:59:46 +0200
+From: Joerg Schambacher <joerg.hifiberry@gmail.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: a-krasser@ti.com, joerg@hifiberry.com,
 	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	Shengjiu Wang <shengjiu.wang@gmail.com>,
-	Xiubo Li <Xiubo.Lee@gmail.com>,
-	Fabio Estevam <festevam@gmail.com>,
-	Nicolin Chen <nicoleotsuka@gmail.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Randy Dunlap <rdunlap@infradead.org>
-Cc: netdev@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-gpio@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	alsa-devel@alsa-project.org,
-	Simon Horman <horms@kernel.org>,
-	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: [PATCH v5 07/31] dt-bindings: soc: fsl: cpm_qe: cpm1-scc-qmc: Add
- 'additionalProperties: false' in child nodes
-Date: Tue, 12 Sep 2023 10:14:58 +0200
-Message-ID: <20230912081527.208499-8-herve.codina@bootlin.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230912081527.208499-1-herve.codina@bootlin.com>
-References: <20230912081527.208499-1-herve.codina@bootlin.com>
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+	Zhang Qilong <zhangqilong3@huawei.com>, alsa-devel@alsa-project.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] ASoC: Adds support for TAS575x to the pcm512x driver
+Message-ID: <ZP8BMkDeZakUyACL@ubuntu>
+References: <20230907161207.14426-1-joerg.hifiberry@gmail.com>
+ <a9c3d43a-af26-44a0-9352-4666107f9f56@sirena.org.uk>
+ <ZPn4nsypsSXdB3J7@ubuntu>
+ <bb3e5ccf-6eb5-4a36-9af0-b33f2db68445@sirena.org.uk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: herve.codina@bootlin.com
-Message-ID-Hash: SRXA6CD2YQP5WEW2I62NVYH5ULYVL56L
-X-Message-ID-Hash: SRXA6CD2YQP5WEW2I62NVYH5ULYVL56L
-X-MailFrom: herve.codina@bootlin.com
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <bb3e5ccf-6eb5-4a36-9af0-b33f2db68445@sirena.org.uk>
+X-MailFrom: joerg.hifiberry@gmail.com
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: S7W5KV7GYBVR4MSA6BSJU3F3PZB2H5J6
+X-Message-ID-Hash: S7W5KV7GYBVR4MSA6BSJU3F3PZB2H5J6
+X-Mailman-Approved-At: Tue, 12 Sep 2023 10:02:26 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SRXA6CD2YQP5WEW2I62NVYH5ULYVL56L/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/S7W5KV7GYBVR4MSA6BSJU3F3PZB2H5J6/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -120,27 +123,42 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Additional properties in child node should not be allowed.
+Am 07.09.2023 um 17:28 hat Mark Brown geschrieben:
+> On Thu, Sep 07, 2023 at 06:21:50PM +0200, Joerg Schambacher wrote:
+> 
+> > And yes, we cannot be sure that future devices may require different
+> > settings, but I can hardly imagine anything completely different than
+> > this approach with the usual audio MCLK frequencies.
+> 
+> They may for example be restricted and just not the the incoming MCLK
+> divider, or require a higher frequency for some fancy processing.  In
+> any case tas_device is just an obviously bad name here - there should be
+> a flag per quirk, not a flag per entire class of devices.
+> 
+Ok, I see your point and completely agree. I tend for now to leave that
+part out of the patch. This leaves the PLL divider programmings
+completely 'untouched'. Nevertheless, I'll continue with testing here
+on the hardware.
+> > > This is probably a separate quirk?  I'm a bit concerned about what's
+> > > turning the PLL off here...
+> 
+> > The PLL should not be used in this specific case where all divisions are
+> > just divide-by-2's. Your original code does reflect that and turns the
+> > PLL off. It improves jitter and finally audio performance.
+> 
+> > But in the case of the TAS-devices we even then need the PLL to
+> > drive the AMP clocks.
+> 
+> That's definitely a separate quirk, and does sound like it should be
+> driven from the bias management or DAPM more than hw_params.
 
-Prevent them adding 'additionalProperties: false'
+Then it makes sense to use a DT-param 'force_pll_on' and even
+remove the compatible string fixes from the patch series.
+Still, I think, this is the best part of the code to act on the PLL.
+Simply instead of checking 'do we need it or not' just let it run.
+What do you think?
 
-Signed-off-by: Herve Codina <herve.codina@bootlin.com>
----
- .../devicetree/bindings/soc/fsl/cpm_qe/fsl,cpm1-scc-qmc.yaml     | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/Documentation/devicetree/bindings/soc/fsl/cpm_qe/fsl,cpm1-scc-qmc.yaml b/Documentation/devicetree/bindings/soc/fsl/cpm_qe/fsl,cpm1-scc-qmc.yaml
-index 450a0354cb1d..82d9beb48e00 100644
---- a/Documentation/devicetree/bindings/soc/fsl/cpm_qe/fsl,cpm1-scc-qmc.yaml
-+++ b/Documentation/devicetree/bindings/soc/fsl/cpm_qe/fsl,cpm1-scc-qmc.yaml
-@@ -64,6 +64,7 @@ patternProperties:
-     description:
-       A channel managed by this controller
-     type: object
-+    additionalProperties: false
- 
-     properties:
-       reg:
 -- 
-2.41.0
+
 
