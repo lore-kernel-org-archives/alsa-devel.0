@@ -4,67 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AB740EE57DF
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 Sep 2023 07:34:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0EB98EE7FF4
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 Sep 2023 07:34:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A3E59A4B;
-	Mon, 11 Sep 2023 09:33:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A3E59A4B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4F65FAE9;
+	Mon, 11 Sep 2023 09:33:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4F65FAE9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1694417644;
-	bh=KLL4/zg9cHrVjqzy8obIyVqLqEaE3fRqt4rdPfa3oZo=;
+	s=default; t=1694417659;
+	bh=bzJxkBfpVm1/deBBiF/eNjThcHxDvsNuUv8j7H0sCsY=;
 	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=et2TAaI1hie3IKJB6xrZOnzvqOxsIjG8fzy6Y/o91KH0iGnDWGYkNE6xKyZD5lTMp
-	 4MABxwbzqKjPh7DTmoIL09H5O2oV7NreHd2xJiP8VmUra42elVmcY4F82YhDsnRL15
-	 F0pTxal7mI0GjpOU3LmN174VPyrKS2NEzMTQwLUM=
+	b=l9ts5OTyK7Xo8QrPGPyUCCRNQzeusOZemMM21FSpLf1CqTc8ZTHsnVwBLgs8GhK1s
+	 MI8NREMO34UUVL7V9CBzUSN4Js8gQEkgbx1ArAJUErk47vSoWCad6KijoDVPl/6rHw
+	 oyfNfPykr2scLbR83bx4lQtZJrsaDJOvhmlnKx7U=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 37994F805C5; Mon, 11 Sep 2023 09:31:37 +0200 (CEST)
+	id A7C26F805C9; Mon, 11 Sep 2023 09:31:38 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1F738F805B4;
+	by alsa1.perex.cz (Postfix) with ESMTP id EBDE4F805AF;
 	Mon, 11 Sep 2023 09:31:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AC485F80425; Mon, 11 Sep 2023 04:41:10 +0200 (CEST)
-Received: from smtp4.hiworks.co.kr (smtp4.hiworks.co.kr [121.254.168.203])
+	id 70856F80425; Mon, 11 Sep 2023 08:47:05 +0200 (CEST)
+Received: from smtp3.hiworks.co.kr (smtp3.hiworks.co.kr [121.254.168.205])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 11F67F801F5
-	for <alsa-devel@alsa-project.org>; Mon, 11 Sep 2023 04:40:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 11F67F801F5
-Received: (qmail 111452 invoked from network); 11 Sep 2023 11:40:46 +0900
-Received: from unknown (HELO hiworks.co.kr) (192.168.10.38)
+	by alsa1.perex.cz (Postfix) with ESMTPS id E68D1F800AA
+	for <alsa-devel@alsa-project.org>; Mon, 11 Sep 2023 08:46:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E68D1F800AA
+Received: (qmail 149409 invoked from network); 11 Sep 2023 15:46:50 +0900
+Received: from unknown (HELO hiworks.co.kr) (192.168.10.162)
 	by 0 (qmail 1.03 + ejcp v14) with SMTP;
-	11 Sep 2023 11:40:46 +0900
-Received: (qmail 28400 invoked from network); 11 Sep 2023 11:40:45 +0900
+	11 Sep 2023 15:46:50 +0900
+Received: (qmail 79196 invoked from network); 11 Sep 2023 15:46:50 +0900
 Received: from unknown (HELO saram-MINIPC-PN53..)
  (mwkim@gaonchips.com@220.88.49.178)
 	by 0 (qmail 1.03 + ejcp v14) with SMTP;
-	11 Sep 2023 11:40:45 +0900
+	11 Sep 2023 15:46:50 +0900
 X-Authinfo: HIWORKS SMTP authenticated
- <mwkim@gaonchips.com|220.88.49.178|mwkim@gaonchips.com|230911114045_542828023>
+ <mwkim@gaonchips.com|220.88.49.178|mwkim@gaonchips.com|230911154650_360978981>
 X-MailFrom-INFO: Info <country_code:KR|rbl_level:0>
 From: Myunguk Kim <mwkim@gaonchips.com>
 To: alsa-devel@alsa-project.org
-Cc: Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
+Cc: Liam Girdwood <lgirdwood@gmail.com>,
 	Mark Brown <broonie@kernel.org>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
 	Maxim Kochetkov <fido_max@inbox.ru>,
-	Xingyu Wu <xingyu.wu@starfivetech.com>,
 	Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-	=?UTF-8?q?Uw=20e=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-	Myunguk Kim <mwkim@gaonchips.com>,
+	Xingyu Wu <xingyu.wu@starfivetech.com>,
+	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
 	linux-kernel@vger.kernel.org,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Jose Abreu <joabreu@synopsys.com>,
-	devicetree@vger.kernel.org
-Subject: [PATCH] ASoC: dwc: Add Single DMA mode support
-Date: Mon, 11 Sep 2023 11:40:23 +0900
-Message-Id: <20230911024023.43833-1-mwkim@gaonchips.com>
+	Myunguk Kim <mwkim@gaonchips.com>
+Subject: [PATCH] ASoC: dwc: fix typo in comment
+Date: Mon, 11 Sep 2023 15:46:46 +0900
+Message-Id: <20230911064646.168181-1-mwkim@gaonchips.com>
 X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -74,15 +69,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: DVSSYUV6FKGV5GYSIBEAJ7RFGONFGY52
-X-Message-ID-Hash: DVSSYUV6FKGV5GYSIBEAJ7RFGONFGY52
+Message-ID-Hash: SFPBXWVOBMAM44Q7UOQIEEG564VQPFGI
+X-Message-ID-Hash: SFPBXWVOBMAM44Q7UOQIEEG564VQPFGI
 X-Mailman-Approved-At: Mon, 11 Sep 2023 07:31:22 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DVSSYUV6FKGV5GYSIBEAJ7RFGONFGY52/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SFPBXWVOBMAM44Q7UOQIEEG564VQPFGI/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -91,81 +86,26 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-There is a SoC between dwc and DMA block (ie. PL330)
-that does not have a burst signal and supports only single.
-
-So write not-support-burst property on dts, it support single DMA mode.
+This fixes typo in comment
 
 Signed-off-by: Myunguk Kim <mwkim@gaonchips.com>
 ---
- .../bindings/sound/snps,designware-i2s.yaml          |  3 +++
- include/sound/designware_i2s.h                       |  1 +
- sound/soc/dwc/dwc-i2s.c                              | 12 ++++++++++--
- 3 files changed, 14 insertions(+), 2 deletions(-)
+ sound/soc/dwc/dwc-i2s.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/snps,designware-i2s.yaml b/Documentation/devicetree/bindings/sound/snps,designware-i2s.yaml
-index a48d040b0a4f..43a46ba2a70c 100644
---- a/Documentation/devicetree/bindings/sound/snps,designware-i2s.yaml
-+++ b/Documentation/devicetree/bindings/sound/snps,designware-i2s.yaml
-@@ -86,6 +86,9 @@ properties:
-       The phandle to System Register Controller syscon node and the I2S-rx(ADC)
-       enabled control offset and mask of SYS_SYSCONSAIF__SYSCFG register.
- 
-+  no-burst:
-+    description: Use single transaction only between DesignWare I2S and DMA IP.
-+
- allOf:
-   - $ref: dai-common.yaml#
-   - if:
-diff --git a/include/sound/designware_i2s.h b/include/sound/designware_i2s.h
-index f6803205a9fb..f0207f21f09d 100644
---- a/include/sound/designware_i2s.h
-+++ b/include/sound/designware_i2s.h
-@@ -36,6 +36,7 @@ struct i2s_platform_data 
-{ 	#define DW_I2S_QUIRK_COMP_REG_OFFSET	(1 << 0)
- 	#define DW_I2S_QUIRK_COMP_PARAM1	(1 << 1)
- 	#define DW_I2S_QUIRK_16BIT_IDX_OVERRIDE (1 << 2)
-+	#define DW_I2S_QUIRK_NO_BURST		(1 << 3)
- 	unsigned int quirks;
- 	unsigned int i2s_reg_comp1;
- 	unsigned int i2s_reg_comp2;
 diff --git a/sound/soc/dwc/dwc-i2s.c b/sound/soc/dwc/dwc-i2s.c
-index 5ab1b3eb2d28..71ff894035a4 100644
+index 71ff894035a4..45e55e550924 100644
 --- a/sound/soc/dwc/dwc-i2s.c
 +++ b/sound/soc/dwc/dwc-i2s.c
-@@ -713,7 +713,10 @@ static int dw_configure_dai_by_dt(struct dw_i2s_dev *dev,
- 		dev->play_dma_data.dt.addr = res->start + I2S_TXDMA;
- 		dev->play_dma_data.dt.fifo_size = fifo_depth *
- 			(fifo_width[idx2]) >> 8;
--		dev->play_dma_data.dt.maxburst = 16;
-+		if (dev->quirks & DW_I2S_QUIRK_NO_BURST)
-+			dev->play_dma_data.dt.maxburst = 1;
-+		else
-+			dev->play_dma_data.dt.maxburst = 16;
- 	}
- 	if (COMP1_RX_ENABLED(comp1)) 
-{ 		idx2 = COMP2_RX_WORDSIZE_0(comp2);
-@@ -722,7 +725,10 @@ static int dw_configure_dai_by_dt(struct dw_i2s_dev *dev,
- 		dev->capture_dma_data.dt.addr = res->start + I2S_RXDMA;
- 		dev->capture_dma_data.dt.fifo_size = fifo_depth *
- 			(fifo_width[idx2] >> 8);
--		dev->capture_dma_data.dt.maxburst = 16;
-+		if (dev->quirks & DW_I2S_QUIRK_NO_BURST)
-+			dev->capture_dma_data.dt.maxburst = 1;
-+		else
-+			dev->capture_dma_data.dt.maxburst = 16;
- 	}
+@@ -138,7 +138,7 @@ static irqreturn_t i2s_irq_handler(int irq, void *dev_id)
+ 			irq_valid = true;
+ 		}
  
- 	return 0;
-@@ -979,6 +985,8 @@ static int dw_i2s_probe(struct platform_device *pdev)
- 		ret = dw_configure_dai_by_pd(dev, dw_i2s_dai, res, pdata);
- 	} else 
-{ 		clk_id = "i2sclk";
-+		if (of_get_property(pdev->dev.of_node, "no-burst", NULL))
-+			dev->quirks |= DW_I2S_QUIRK_NO_BURST;
- 		ret = dw_configure_dai_by_dt(dev, dw_i2s_dai, res);
- 	}
- 	if (ret < 0)
+-		/* Error Handling: TX */
++		/* Error Handling: RX */
+ 		if (isr[i] & ISR_RXFO) 
+{ 			dev_err_ratelimited(dev->dev, "RX overrun (ch_id=%d)\n", i);
+ 			irq_valid = true;
 -- 
 2.34.1
 
