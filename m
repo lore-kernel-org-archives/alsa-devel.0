@@ -4,77 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 063D2CA0EC6
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Sep 2023 00:04:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D71E9CA0EC6
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Sep 2023 00:04:36 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 36EC2149C;
-	Tue, 12 Sep 2023 02:03:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 36EC2149C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 384F4E9B;
+	Tue, 12 Sep 2023 02:03:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 384F4E9B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1694477064;
-	bh=eOmDusuTp1utIJYuSczsLIAkbuZQLw7Sxoi8jQp9lAk=;
+	s=default; t=1694477074;
+	bh=9snFwBbBoXitUM3dr7LW8n+9wzN0NmBcRWUrdshcpEg=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=ESXCbtkctkPxTCQg2C84dd2I+O0DafE2+1r2/vzDMiLbeuiIyWx6G11x7OYoIT5Z8
-	 VjDkHn/mNoCNFzCYaqnKESUERVNMDz1MQmAeziuvij/Loy0Y7WpppLwC11ttkfjtEI
-	 IEFbAFtKfg+B8KD2goQteEkqkO18agJP5m0wJYlc=
+	b=txHF8MMfxaZcgmDyG0iyxrz/qV8RNCZdYKZkBo515OYDGPlO0kUBMi769mwLIHrsU
+	 pBUt/rFuTgYPznI32J4qvwEqPCvq8FSVxvsuyEfnSTR03cs7ohEo6j+WrjYG6tg4Te
+	 GlPQBTAYJnSQOGvl4NGUL0EE47d9ci5BCKYoOCOs=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9C605F805BE; Tue, 12 Sep 2023 01:57:31 +0200 (CEST)
+	id DDA60F805EE; Tue, 12 Sep 2023 01:57:34 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7B690F805B1;
-	Tue, 12 Sep 2023 01:57:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 219DBF805E2;
+	Tue, 12 Sep 2023 01:57:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A25EAF8057B; Tue, 12 Sep 2023 01:57:24 +0200 (CEST)
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+	id 49FF0F8057B; Tue, 12 Sep 2023 01:57:25 +0200 (CEST)
+Received: from sin.source.kernel.org (sin.source.kernel.org
+ [IPv6:2604:1380:40e1:4800::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 4D8B7F80549
-	for <alsa-devel@alsa-project.org>; Tue, 12 Sep 2023 01:57:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4D8B7F80549
+	by alsa1.perex.cz (Postfix) with ESMTPS id A8E40F80549
+	for <alsa-devel@alsa-project.org>; Tue, 12 Sep 2023 01:57:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A8E40F80549
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=cVzAtPbk
+ header.s=k20201202 header.b=LWv6YbI5
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by sin.source.kernel.org (Postfix) with ESMTPS id 69ADBCE1915;
-	Mon, 11 Sep 2023 23:57:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55E72C116D4;
-	Mon, 11 Sep 2023 23:57:10 +0000 (UTC)
+	by sin.source.kernel.org (Postfix) with ESMTPS id 7E345CE19AF;
+	Mon, 11 Sep 2023 23:57:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48232C116CB;
+	Mon, 11 Sep 2023 23:57:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1694476631;
-	bh=eOmDusuTp1utIJYuSczsLIAkbuZQLw7Sxoi8jQp9lAk=;
+	s=k20201202; t=1694476634;
+	bh=9snFwBbBoXitUM3dr7LW8n+9wzN0NmBcRWUrdshcpEg=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=cVzAtPbk9FxAp/DM3cm0Jw4Z3tqtzaiTutJkJD5vd7PDjSz02Blz+Hxkaeoiez6j1
-	 GTUbU27tSlkpodhs7NZ/pvQM69djJLYrtnUVpJcfcqBkSKJfgTfnS+9IgEhbP8yJzB
-	 DHvCCKk7UZMHATdPec+GzX/Z6t0GGv7YM+Xf+o5bUQ3vFCQKTcAtSKvyhEeAwP3dFA
-	 PCCUbRxA6RqQv4yjJgH3WabWCcmbhaLpKKMj2t9siX3nIS1xQpkgey/d1yal58MYz0
-	 1Ob0MRSRxexi6dGYcCdNnvDY1MIaYu0qlzM/mXQzn+/RRPSgoQ9xyN75nFaQv2tl3G
-	 GnpGD2lVRKNaQ==
+	b=LWv6YbI5tJ9QV/UPRJJ2tAq2HBTzDY9ZA4hwVpuwhTVcBOFy/c8TWp1TrHkgyZoPM
+	 /scG2uInKBC/1a/nNu+1Ju0AiiySR4Bq2o13qQCGydygCtpE2tPhgKBQQ/DhEwL6Ul
+	 kS+TkvPFMesybu4JUZFr84FWH28SgtUadrvzvj/bYOzro79lFvYR08wQh6Go0F422Q
+	 rYodtKmhHz7WyhsSoiRIcq/AjQ25Ug8BpLNPHSGclJm9WI3xlztOblC1jb1zie/HeL
+	 iPPpnJwz0CoHaXROGopWa6lhzh4pcwxIYkQTru7kFNUNr5qHqDzLNW6HffVXq/QLC9
+	 knG9pkKNHYvVg==
 From: Mark Brown <broonie@kernel.org>
 To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Linus Walleij <linus.walleij@linaro.org>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20230825-descriptors-asoc-max-v1-0-b212292b2f08@linaro.org>
-References: <20230825-descriptors-asoc-max-v1-0-b212292b2f08@linaro.org>
-Subject: Re: [PATCH 0/7] ASoC: Convert some Maxim codecs to use GPIO
- descriptors
-Message-Id: <169447662997.2387538.6093833545457230678.b4-ty@kernel.org>
-Date: Tue, 12 Sep 2023 00:57:09 +0100
+ Biju Das <biju.das.jz@bp.renesas.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>,
+ Charles Keepax <ckeepax@opensource.cirrus.com>,
+ =?utf-8?q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+ patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+ linux-renesas-soc@vger.kernel.org
+In-Reply-To: <20230827102114.55863-1-biju.das.jz@bp.renesas.com>
+References: <20230827102114.55863-1-biju.das.jz@bp.renesas.com>
+Subject: Re: [PATCH] ASoC: wm8580: Simplify probe()
+Message-Id: <169447663194.2387538.5757531864571268154.b4-ty@kernel.org>
+Date: Tue, 12 Sep 2023 00:57:11 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-099c9
-Message-ID-Hash: SMOEIH2OVZORGIYQ3AZVJSNXISUJBMMY
-X-Message-ID-Hash: SMOEIH2OVZORGIYQ3AZVJSNXISUJBMMY
+Message-ID-Hash: JKZOFXE42J6GZHEWEFAN7NZ23I4DO6OI
+X-Message-ID-Hash: JKZOFXE42J6GZHEWEFAN7NZ23I4DO6OI
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -86,7 +92,8 @@ X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: <>
+Archived-At: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JKZOFXE42J6GZHEWEFAN7NZ23I4DO6OI/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -95,15 +102,11 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, 25 Aug 2023 10:12:10 +0200, Linus Walleij wrote:
-> The Maxim devices are pretty straight-forward to convert
-> over to use GPIO descriptors, so let's do it.
-> 
-> Tested with some x86_64 allmodconfig and aarch64 allmodconfig
-> to smoke out the worst bugs this time.
+On Sun, 27 Aug 2023 11:21:14 +0100, Biju Das wrote:
+> Simplify probe() by replacing of_match_device->i2c_get_match_data() and
+> extend matching support for ID table.
 > 
 > 
-> [...]
 
 Applied to
 
@@ -111,20 +114,8 @@ Applied to
 
 Thanks!
 
-[1/7] ASoC: max9768: Convert to use GPIO descriptors
-      commit: 0015a18acf9ceafbf7e24f5addefce566326132b
-[2/7] ASoC: max98357a: Drop pointless include
-      commit: a3b68ba9f594ae4f9a96e0730e9aeadb9f64c43e
-[3/7] ASoC: max98373: Convert to use GPIO descriptors
-      commit: c5cb83a104a2d95ba4ba182051eff2a8c82d5beb
-[4/7] ASoC: max98388: Correct the includes
-      commit: 4b0dfc0e8cdebd6aa6ce25593c0dcc71d9d21961
-[5/7] ASoC: max98396: Drop pointless include
-      commit: 70f29a3078f7bc1f1011b7b5fee41fcd52ff189f
-[6/7] ASoC: max98520: Drop pointless includes
-      commit: d9241aaea1418fa4bd6653bee093f63cf47a2c6e
-[7/7] ASoC: max98927: Drop pointless includes
-      commit: 0307ba5420cd785615efc94be6b101b4ac2538cf
+[1/1] ASoC: wm8580: Simplify probe()
+      commit: 26eacb98ca7dd3ba5a6845028a13d13a7f03123f
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
