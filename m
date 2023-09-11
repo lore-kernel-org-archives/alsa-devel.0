@@ -4,91 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D3DC6EE801F
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 Sep 2023 08:25:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 02140EE57DF
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 Sep 2023 08:25:52 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BEE8BA4C;
-	Mon, 11 Sep 2023 10:24:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BEE8BA4C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3B8A0846;
+	Mon, 11 Sep 2023 10:25:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3B8A0846
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1694420741;
-	bh=vFZEnrTAOAQen32IAhYU+bdqfyBr2cM5J/GXiySPy/U=;
+	s=default; t=1694420751;
+	bh=ZPOVoWflkn5ze/RL1vfcrWv4KndgatLnq+lpS515m1M=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=sPTIDqUaxzJns8xOlILjPFwlvBb98lPQaIvQ2GYp2AnaS6sheU5c0rTiS4MzDNoU8
-	 rjSMY64WMYZ4Mhckz+rwyKRFBKYKDMA5M6No7NLsBHrdjE7swqMU0G8jOyv0EO12Za
-	 ISwMt+0yhQt64nMkB5fuiTKNPhWGW1Rh7OdFdevw=
+	b=i90Cv8sezKZPIbAxRetPHXLyFIHdSKvWGNuEh1p8JGFI62ghbB+oGwRGvulWe//eh
+	 FeL6Oc5+4Zs3D9WIscZdP/0PkVPj6BfQkWSAAG5vUDc0r36JD/L+tWCTGf5cCs4JTz
+	 DlVycrKMGkUF0ygvmzAp9cyPnQlxHWscvwmAryoc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 36497F80431; Mon, 11 Sep 2023 10:24:04 +0200 (CEST)
+	id 7953EF8057B; Mon, 11 Sep 2023 10:24:09 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C383AF80568;
-	Mon, 11 Sep 2023 10:24:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AF646F8057B;
+	Mon, 11 Sep 2023 10:24:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AB804F80552; Mon, 11 Sep 2023 10:24:00 +0200 (CEST)
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com
- [IPv6:2a00:1450:4864:20::12c])
+	id A6E7CF80570; Mon, 11 Sep 2023 10:24:03 +0200 (CEST)
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com
+ [IPv6:2a00:1450:4864:20::235])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 8B7B5F801F5
-	for <alsa-devel@alsa-project.org>; Mon, 11 Sep 2023 10:23:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8B7B5F801F5
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9B18CF80431
+	for <alsa-devel@alsa-project.org>; Mon, 11 Sep 2023 10:23:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9B18CF80431
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=quNLntoZ
-Received: by mail-lf1-x12c.google.com with SMTP id
- 2adb3069b0e04-502a7e1bdc7so3024856e87.0
+ header.s=google header.b=kTse9t7i
+Received: by mail-lj1-x235.google.com with SMTP id
+ 38308e7fff4ca-2bce552508fso67712021fa.1
         for <alsa-devel@alsa-project.org>;
- Mon, 11 Sep 2023 01:23:52 -0700 (PDT)
+ Mon, 11 Sep 2023 01:23:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694420630; x=1695025430;
+        d=linaro.org; s=google; t=1694420632; x=1695025432;
  darn=alsa-project.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=b+8MTCJJPEn/JGBNuu906jziHv3DlZsxUiatrimUoug=;
-        b=quNLntoZk6qr/F7ZGiS/iko/wD56SLQnv0WRdVoAopUjT8dbIhyCFOHf1sbCeScQhR
-         6507VcfXwxBrx4UuqqrvmFiVSd5zpZIuOwxK6HW+NIwjLRW3OCZ6XCQFdl2+YGX2TV2v
-         gWKjv+v4LcnIZuZyBdIqx/6D1Yl8N4+Ff68Nf/JIhrz6tH1FmldDfWDqkMrlmNFCek4w
-         Uh0hZHra4TcKS7vVbppRH00UX0ltPLkWTCOe62iEMqMNVf6NMJg5QzY0OJcADpVOoGXe
-         EPFA4zzxHCK+HSar6IXbTMMhYt90zfayzuVLE5VQ/Z6sSmokVCaLLg7GEi/ztu/NNO/S
-         jO8w==
+        bh=NBbRRSYAQA5xmq25ubQ8kHHlKCIWtZeRLr/sb85xuNU=;
+        b=kTse9t7iVJc5iq9wptlDVeVt/VUB7GMqnkRked5SlNfMx1+a89C+0qUrHkQOrtEOZf
+         MItPfJFNvPDEFeitFiKVHFYJNdjXi0W8a+cMHvhtJ2xv69XQvYakaNnfbM2Wwfg7f7cY
+         tWoU0I8AcpNTmyZwngPzg4qWUGB8Fh2dJy88AlXNNbO1X2WCEmpucU2Oj7hhIzjYYgGV
+         nbyaKVW0w6Ahb7EFI9LCkkrUAdujKVtqEExbN8IVIlI7x3Jv0t9tEXxhJMGVjcbTR2hR
+         2ANltc9C3DiZSlSs/VK59s7NY441kIwJQPpAVHBVc94rb2dWrWjp935idssz7O4MmK1L
+         tpTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694420630; x=1695025430;
+        d=1e100.net; s=20230601; t=1694420632; x=1695025432;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=b+8MTCJJPEn/JGBNuu906jziHv3DlZsxUiatrimUoug=;
-        b=fjZUOEJHhNpdNtw6aZTwpIOfj1FRgWzkmZbPymWgBBft2cWRiTpC7s2CzgMyJkgSuP
-         Y5W2Y8e3zRAw/J6cOydATPYZW0P7tFRoG9x7j5J4a2rwlKxQpREu1TqvoSu/DbH5KR4R
-         0Tjb6ZpK1WNcOZWMhog8Bmbwt4Nu8uHFx1CZJRFx3iNDIr+YbyXw6mj3p+G2ahiqgdHh
-         N3zZr6nIcWIrl4VkOwEScOp2hMt0r0Mo9qeGzT5vqNcOuZsm5O3hNxaxfg1R0DI2T+9T
-         bOFif5yXLfu4wMLROCl/T4yczRnQRLylbFQmy3hmnfHY2wHlj7EbA4w22ZryQ46Ni3LZ
-         Z6JA==
-X-Gm-Message-State: AOJu0YweyxUZbtHsCCn5J0/OPyOGdXK98s8oaUDXKzv59MA5hQZULnho
-	tSIO64VK65X5wulx3eSLYJQ0rA==
+        bh=NBbRRSYAQA5xmq25ubQ8kHHlKCIWtZeRLr/sb85xuNU=;
+        b=RRWQ6wkS7+vo+DaJTTR3n5CZ9+V6JbeXT3bloc0YstY7bUG0m4Sg/KUnb2jd3xF75h
+         dhoXE3iCzUfixcPg+a64kvOfsW4vD1gAWN6HwCfcGF2KZ+CRNDZgeDrou4Qk/Ej1JHOK
+         Iu7AnFJgDrObWxEVhzsolno41064jOrMpG86jHKA+hskcgKRFEWs706Qv6MMJxAY7P2c
+         On6Wy8EL94i+/3Y5vjObwVr9rz4s8c+q1DZz8zb3uoM8VV0sj/Kctg7FwLi0cwSKWvaB
+         qHb/Hfyqzp6vz7BWd1xf3gjihlX5+m6yB8GsYYIlCIJliDPkLYSsc0aKa8fanCta0mDm
+         aWzA==
+X-Gm-Message-State: AOJu0Yxb4eTVsVQrOqk7FZQQ24E9LkfTsf6eS7J6oTTkF4l3NB8SSiBY
+	npux9jA6BN+yo+ONZyUy5x8zdg==
 X-Google-Smtp-Source: 
- AGHT+IH2r7bEFi9jxVEwNGLaxc6z7Q9adp/d/GtZ3BsKXID0oUG7bLJPmPTXt/XXRsoZ48ICBEYqow==
-X-Received: by 2002:a05:6512:1185:b0:4f8:5cde:a44f with SMTP id
- g5-20020a056512118500b004f85cdea44fmr5691530lfr.10.1694420630585;
-        Mon, 11 Sep 2023 01:23:50 -0700 (PDT)
+ AGHT+IE795z4MeyvcfiIIYPz/bYjnDK/11+Ubx+DKYPxh6E6lvf7/Sxx7I8bOqlaNVa5jarhNcJo9w==
+X-Received: by 2002:a05:6512:398a:b0:4fd:d213:dfd4 with SMTP id
+ j10-20020a056512398a00b004fdd213dfd4mr8795699lfu.20.1694420632485;
+        Mon, 11 Sep 2023 01:23:52 -0700 (PDT)
 Received: from [127.0.1.1] ([85.235.12.238])
         by smtp.gmail.com with ESMTPSA id
- a8-20020a19f808000000b00500968ddca9sm1247712lff.136.2023.09.11.01.23.49
+ a8-20020a19f808000000b00500968ddca9sm1247712lff.136.2023.09.11.01.23.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Sep 2023 01:23:50 -0700 (PDT)
+        Mon, 11 Sep 2023 01:23:52 -0700 (PDT)
 From: Linus Walleij <linus.walleij@linaro.org>
-Date: Mon, 11 Sep 2023 10:23:48 +0200
-Subject: [PATCH v2 1/7] ASoC: max9768: Convert to use GPIO descriptors
+Date: Mon, 11 Sep 2023 10:23:50 +0200
+Subject: [PATCH v2 3/7] ASoC: max98373: Convert to use GPIO descriptors
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230911-descriptors-asoc-max-v2-1-b9d793fb768e@linaro.org>
+Message-Id: <20230911-descriptors-asoc-max-v2-3-b9d793fb768e@linaro.org>
 References: <20230911-descriptors-asoc-max-v2-0-b9d793fb768e@linaro.org>
 In-Reply-To: <20230911-descriptors-asoc-max-v2-0-b9d793fb768e@linaro.org>
 To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
@@ -96,8 +96,8 @@ To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
 Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
  Linus Walleij <linus.walleij@linaro.org>
 X-Mailer: b4 0.12.3
-Message-ID-Hash: IUIRDZW2AKAUOUMBWXYFO5PBVBPQNWHH
-X-Message-ID-Hash: IUIRDZW2AKAUOUMBWXYFO5PBVBPQNWHH
+Message-ID-Hash: XNGZT6GCMVAIXZB657E2IR4E2DZ75RZN
+X-Message-ID-Hash: XNGZT6GCMVAIXZB657E2IR4E2DZ75RZN
 X-MailFrom: linus.walleij@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -110,7 +110,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IUIRDZW2AKAUOUMBWXYFO5PBVBPQNWHH/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XNGZT6GCMVAIXZB657E2IR4E2DZ75RZN/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -119,138 +119,124 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The MAX9768 is pretty straight forward to convert to GPIO
-descriptors.
-
-To name the GPIO properties, I looke at the bindings in
-maxim,max9759.yaml which names these GPIO "mute" and
-"shutdown" respectively.
-
-No board files using platform data exist in the kernel, new
-users can use GPIO descriptor tables if desired.
+Instead of relying on legacy interfaces, convert the driver to
+use GPIO descriptors. This is a straight-forward conversion,
+we support also sdw devices providing GPIO descriptor tables
+if they so desire.
 
 Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 ---
- include/sound/max9768.h    |  4 ----
- sound/soc/codecs/max9768.c | 45 +++++++++++++++++++++++----------------------
- 2 files changed, 23 insertions(+), 26 deletions(-)
+ sound/soc/codecs/max98373-i2c.c | 17 -----------------
+ sound/soc/codecs/max98373.c     | 35 +++++++++++++++++++----------------
+ sound/soc/codecs/max98373.h     |  2 +-
+ 3 files changed, 20 insertions(+), 34 deletions(-)
 
-diff --git a/include/sound/max9768.h b/include/sound/max9768.h
-index 0f78b41d030e..8509ba0079b0 100644
---- a/include/sound/max9768.h
-+++ b/include/sound/max9768.h
-@@ -9,14 +9,10 @@
+diff --git a/sound/soc/codecs/max98373-i2c.c b/sound/soc/codecs/max98373-i2c.c
+index 0fa5ceca62a2..e7ec7875c4a9 100644
+--- a/sound/soc/codecs/max98373-i2c.c
++++ b/sound/soc/codecs/max98373-i2c.c
+@@ -3,12 +3,10 @@
  
- /**
-  * struct max9768_pdata - optional platform specific MAX9768 configuration
-- * @shdn_gpio:	GPIO to SHDN pin. If not valid, pin must be hardwired HIGH
-- * @mute_gpio:	GPIO to MUTE pin. If not valid, control for mute won't be added
-  * @flags: configuration flags, e.g. set classic PWM mode (check datasheet
-  *         regarding "filterless modulation" which is default).
-  */
- struct max9768_pdata {
--	int shdn_gpio;
--	int mute_gpio;
- 	unsigned flags;
- #define MAX9768_FLAG_CLASSIC_PWM	(1 << 0)
- };
-diff --git a/sound/soc/codecs/max9768.c b/sound/soc/codecs/max9768.c
-index d22b4ba51ed8..8d0ca1be99c0 100644
---- a/sound/soc/codecs/max9768.c
-+++ b/sound/soc/codecs/max9768.c
-@@ -9,7 +9,7 @@
- #include <linux/module.h>
+ #include <linux/acpi.h>
+ #include <linux/delay.h>
+-#include <linux/gpio.h>
  #include <linux/i2c.h>
+ #include <linux/module.h>
+ #include <linux/mod_devicetable.h>
+ #include <linux/of.h>
+-#include <linux/of_gpio.h>
+ #include <linux/pm.h>
+ #include <linux/regmap.h>
  #include <linux/slab.h>
+@@ -560,21 +558,6 @@ static int max98373_i2c_probe(struct i2c_client *i2c)
+ 	/* voltage/current slot & gpio configuration */
+ 	max98373_slot_config(&i2c->dev, max98373);
+ 
+-	/* Power on device */
+-	if (gpio_is_valid(max98373->reset_gpio)) {
+-		ret = devm_gpio_request(&i2c->dev, max98373->reset_gpio,
+-					"MAX98373_RESET");
+-		if (ret) {
+-			dev_err(&i2c->dev, "%s: Failed to request gpio %d\n",
+-				__func__, max98373->reset_gpio);
+-			return -EINVAL;
+-		}
+-		gpio_direction_output(max98373->reset_gpio, 0);
+-		msleep(50);
+-		gpio_direction_output(max98373->reset_gpio, 1);
+-		msleep(20);
+-	}
+-
+ 	/* Check Revision ID */
+ 	ret = regmap_read(max98373->regmap,
+ 			  MAX98373_R21FF_REV_ID, &reg);
+diff --git a/sound/soc/codecs/max98373.c b/sound/soc/codecs/max98373.c
+index fde055c6c894..33eb4576da23 100644
+--- a/sound/soc/codecs/max98373.c
++++ b/sound/soc/codecs/max98373.c
+@@ -12,9 +12,8 @@
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+ #include <sound/soc.h>
 -#include <linux/gpio.h>
 +#include <linux/gpio/consumer.h>
- #include <linux/regmap.h>
+ #include <linux/of.h>
+-#include <linux/of_gpio.h>
+ #include <sound/tlv.h>
+ #include "max98373.h"
  
- #include <sound/core.h>
-@@ -27,8 +27,8 @@
- 
- struct max9768 {
- 	struct regmap *regmap;
--	int mute_gpio;
--	int shdn_gpio;
-+	struct gpio_desc *mute;
-+	struct gpio_desc *shdn;
- 	u32 flags;
- };
- 
-@@ -42,7 +42,7 @@ static int max9768_get_gpio(struct snd_kcontrol *kcontrol,
- {
- 	struct snd_soc_component *c = snd_soc_kcontrol_component(kcontrol);
- 	struct max9768 *max9768 = snd_soc_component_get_drvdata(c);
--	int val = gpio_get_value_cansleep(max9768->mute_gpio);
-+	int val = gpiod_get_value_cansleep(max9768->mute);
- 
- 	ucontrol->value.integer.value[0] = !val;
- 
-@@ -55,7 +55,7 @@ static int max9768_set_gpio(struct snd_kcontrol *kcontrol,
- 	struct snd_soc_component *c = snd_soc_kcontrol_component(kcontrol);
- 	struct max9768 *max9768 = snd_soc_component_get_drvdata(c);
- 
--	gpio_set_value_cansleep(max9768->mute_gpio, !ucontrol->value.integer.value[0]);
-+	gpiod_set_value_cansleep(max9768->mute, !ucontrol->value.integer.value[0]);
- 
- 	return 0;
- }
-@@ -138,7 +138,7 @@ static int max9768_probe(struct snd_soc_component *component)
- 			return ret;
+@@ -478,20 +477,24 @@ void max98373_slot_config(struct device *dev,
+ 		max98373->i_slot = value & 0xF;
+ 	else
+ 		max98373->i_slot = 1;
+-	if (dev->of_node) {
+-		max98373->reset_gpio = of_get_named_gpio(dev->of_node,
+-						"maxim,reset-gpio", 0);
+-		if (!gpio_is_valid(max98373->reset_gpio)) {
+-			dev_err(dev, "Looking up %s property in node %s failed %d\n",
+-				"maxim,reset-gpio", dev->of_node->full_name,
+-				max98373->reset_gpio);
+-		} else {
+-			dev_dbg(dev, "maxim,reset-gpio=%d",
+-				max98373->reset_gpio);
+-		}
+-	} else {
+-		/* this makes reset_gpio as invalid */
+-		max98373->reset_gpio = -1;
++
++	/* This will assert RESET */
++	max98373->reset = devm_gpiod_get_optional(dev,
++						  "maxim,reset",
++						  GPIOD_OUT_HIGH);
++	if (IS_ERR(max98373->reset)) {
++		dev_err(dev, "error %ld looking up RESET GPIO line\n",
++			PTR_ERR(max98373->reset));
++		return;
++	}
++
++	/* Cycle reset */
++	if (max98373->reset) {
++		gpiod_set_consumer_name(max98373->reset ,"MAX98373_RESET");
++		gpiod_direction_output(max98373->reset, 1);
++		msleep(50);
++		gpiod_direction_output(max98373->reset, 0);
++		msleep(20);
  	}
  
--	if (gpio_is_valid(max9768->mute_gpio)) {
-+	if (max9768->mute) {
- 		ret = snd_soc_add_component_controls(component, max9768_mute,
- 				ARRAY_SIZE(max9768_mute));
- 		if (ret)
-@@ -171,28 +171,29 @@ static int max9768_i2c_probe(struct i2c_client *client)
- {
- 	struct max9768 *max9768;
- 	struct max9768_pdata *pdata = client->dev.platform_data;
--	int err;
+ 	if (!device_property_read_u32(dev, "maxim,spkfb-slot-no", &value))
+diff --git a/sound/soc/codecs/max98373.h b/sound/soc/codecs/max98373.h
+index e1810b3b1620..af3b62217497 100644
+--- a/sound/soc/codecs/max98373.h
++++ b/sound/soc/codecs/max98373.h
+@@ -213,7 +213,7 @@ struct max98373_cache {
  
- 	max9768 = devm_kzalloc(&client->dev, sizeof(*max9768), GFP_KERNEL);
- 	if (!max9768)
- 		return -ENOMEM;
- 
--	if (pdata) {
--		/* Mute on powerup to avoid clicks */
--		err = devm_gpio_request_one(&client->dev, pdata->mute_gpio,
--				GPIOF_INIT_HIGH, "MAX9768 Mute");
--		max9768->mute_gpio = err ?: pdata->mute_gpio;
--
--		/* Activate chip by releasing shutdown, enables I2C */
--		err = devm_gpio_request_one(&client->dev, pdata->shdn_gpio,
--				GPIOF_INIT_HIGH, "MAX9768 Shutdown");
--		max9768->shdn_gpio = err ?: pdata->shdn_gpio;
--
-+	/* Mute on powerup to avoid clicks */
-+	max9768->mute = devm_gpiod_get_optional(&client->dev,
-+						"mute",
-+						GPIOD_OUT_HIGH);
-+	if (IS_ERR(max9768->mute))
-+		return PTR_ERR(max9768->mute);
-+	gpiod_set_consumer_name(max9768->mute, "MAX9768 Mute");
-+
-+	/* Activate chip by releasing shutdown, enables I2C */
-+	max9768->shdn = devm_gpiod_get_optional(&client->dev,
-+						"shutdown",
-+						GPIOD_OUT_HIGH);
-+	if (IS_ERR(max9768->shdn))
-+		return PTR_ERR(max9768->shdn);
-+	gpiod_set_consumer_name(max9768->shdn, "MAX9768 Shutdown");
-+
-+	if (pdata)
- 		max9768->flags = pdata->flags;
--	} else {
--		max9768->shdn_gpio = -EINVAL;
--		max9768->mute_gpio = -EINVAL;
--	}
- 
- 	i2c_set_clientdata(client, max9768);
- 
+ struct max98373_priv {
+ 	struct regmap *regmap;
+-	int reset_gpio;
++	struct gpio_desc *reset;
+ 	unsigned int v_slot;
+ 	unsigned int i_slot;
+ 	unsigned int spkfb_slot;
 
 -- 
 2.34.1
