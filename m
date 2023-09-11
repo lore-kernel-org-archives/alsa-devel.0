@@ -4,76 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A8441CA0EC6
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Sep 2023 00:05:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 23C7ACA0EC3
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Sep 2023 00:06:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6DDB51487;
-	Tue, 12 Sep 2023 02:04:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6DDB51487
+	by alsa0.perex.cz (Postfix) with ESMTPS id 52E62ED2;
+	Tue, 12 Sep 2023 02:05:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 52E62ED2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1694477144;
-	bh=ZLQwBDO9oB7DwHjbeEilVGbTlMbMwI68sm9U3hUF8Q0=;
+	s=default; t=1694477158;
+	bh=poTnKEe6IplQsM0sZiVOzS9IQ55fPQI6l6cswfygPgg=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=oM5DvD1FSy25hVZVwgy6rf70U+cZ6WlbUC76ibRJ7sUjEkN7WUz2U9Y1xSmFZxWP7
-	 LMIv3Ml/H1M8kfJi6Dl4o4EamULxQmCP9DHISeyaocwkVQWRteqLDEYGbqSUySiYfV
-	 blha87SdvKBrv1Nit5cN/8v0FKc5xmnVZwtDYnZ4=
+	b=Gnd7KyfFbjh4rKOtZj4+lVOQzduobKlrwu7xegq151IbrudXlybCL4483Bgo26eqv
+	 qIPjFRZS5PS8S3JLozUwtRKSTHiF8dfGPHX5eKkSC/e4i+MSnzbIQsvmYmFawPMNnO
+	 AusKFUJwzLLTwcHd/YTDkfs/ls7IX4T5SdkCnpkQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C19EFF8062E; Tue, 12 Sep 2023 01:57:48 +0200 (CEST)
+	id 56C25F805C7; Tue, 12 Sep 2023 01:57:52 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id DF0AFF805D5;
-	Tue, 12 Sep 2023 01:57:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6C445F8064F;
+	Tue, 12 Sep 2023 01:57:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 60EF6F80600; Tue, 12 Sep 2023 01:57:41 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+	id 54718F8060D; Tue, 12 Sep 2023 01:57:43 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 2E130F805EB
-	for <alsa-devel@alsa-project.org>; Tue, 12 Sep 2023 01:57:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2E130F805EB
+	by alsa1.perex.cz (Postfix) with ESMTPS id 5757FF805B2
+	for <alsa-devel@alsa-project.org>; Tue, 12 Sep 2023 01:57:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5757FF805B2
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=pleTmCeO
+ header.s=k20201202 header.b=oTBDoyVl
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id 6E785B81A35;
-	Mon, 11 Sep 2023 23:57:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B10A8C16ABD;
-	Mon, 11 Sep 2023 23:57:30 +0000 (UTC)
+	by ams.source.kernel.org (Postfix) with ESMTPS id 8B73AB81A21;
+	Mon, 11 Sep 2023 23:57:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 722E2C193E8;
+	Mon, 11 Sep 2023 23:57:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1694476652;
-	bh=ZLQwBDO9oB7DwHjbeEilVGbTlMbMwI68sm9U3hUF8Q0=;
+	s=k20201202; t=1694476650;
+	bh=poTnKEe6IplQsM0sZiVOzS9IQ55fPQI6l6cswfygPgg=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=pleTmCeOGpMp8OgSpvq2ZspmRywpezPrXCk/saOp8oLbJxHb1URIfoC2U+sXj6YQb
-	 go7PMdiP3hem3qYezceAvWhuvcSVY5sHbCC4P3QuK/BjcBrG/53ifTGiH4LopCDjjb
-	 9QtNWoKdiQoGZdy8AK89kia1vNZ5gciwl8DXLCMirJ+cEk0314moYlCPlZcf4ZJT2s
-	 2bDllpNOWhsLOfbGSVC3AHO0AK2rX1Czs1VDy+CiD7Vda6nSQkH1324dK0dsJWBZR6
-	 FMe6FnQj7cZWguglf1y8uLxO3OpQprUklkYJQRnrckKbKmcMzT+JmdDT4dXVqlUncW
-	 i7rl6oIKaoT+w==
+	b=oTBDoyVlmbPiUNJ5ie97Fq3Gib2HBmv+d0kujDh4uPlOPe692KleQ9SwBDkaHgj5z
+	 OmWIxkph0P1waxpMohJwZvPPmz+IcUhjVyV7jcVNbOqMBhz7iV8Ia8i3aSMFSKwlIa
+	 NaaqySAI52ke7326cToF0GGbo72iRkGp8mEDfeeGUpokzcu1sScO2/tBYrCNvuzcMw
+	 t2GHgJx6uf3LWU0UwznApIAWRPRQv8p4a04Z/fN2okpQn+oBVzGn6JXisAlEYLcOat
+	 mgx0wcUhEpfLHUvMbJkQ7aM28L5avt7HmgZKkXDZLbPZ/nLbIPgz2CGj5VhcQsVG1C
+	 82ReO3EcZdpVA==
 From: Mark Brown <broonie@kernel.org>
-To: Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>,
- Jaroslav Kysela <perex@perex.cz>, Marian Postevca <posteuca@mutex.one>
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-In-Reply-To: <20230829220116.1159-1-posteuca@mutex.one>
-References: <20230829220116.1159-1-posteuca@mutex.one>
-Subject: Re: [PATCH v3 0/5] ASoC: amd: acp: Add sound support for a line of
- HUAWEI laptops
-Message-Id: <169447665042.2387538.16679409837029670258.b4-ty@kernel.org>
-Date: Tue, 12 Sep 2023 00:57:30 +0100
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ Biju Das <biju.das.jz@bp.renesas.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>,
+ =?utf-8?q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20230828180003.127896-1-biju.das.jz@bp.renesas.com>
+References: <20230828180003.127896-1-biju.das.jz@bp.renesas.com>
+Subject: Re: [PATCH v2] ASoC: ak4642: Simplify probe()
+Message-Id: <169447664816.2387538.7019264836970248142.b4-ty@kernel.org>
+Date: Tue, 12 Sep 2023 00:57:28 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-099c9
-Message-ID-Hash: DJS7L4O3B5EQZ6VYZ2E6TOLBYCLER3OI
-X-Message-ID-Hash: DJS7L4O3B5EQZ6VYZ2E6TOLBYCLER3OI
+Message-ID-Hash: ELM3BSCFJ23SEXEYEHKPCX42ATHG6D2V
+X-Message-ID-Hash: ELM3BSCFJ23SEXEYEHKPCX42ATHG6D2V
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -86,7 +87,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DJS7L4O3B5EQZ6VYZ2E6TOLBYCLER3OI/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ELM3BSCFJ23SEXEYEHKPCX42ATHG6D2V/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -95,14 +96,13 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Wed, 30 Aug 2023 01:01:11 +0300, Marian Postevca wrote:
-> This series adds support for a line of HUAWEI laptops with
-> AMD CPUs that connect using the ACP3x module to a ES8336 CODEC.
+On Mon, 28 Aug 2023 19:00:03 +0100, Biju Das wrote:
+> Simpilfy probe() by replacing of_device_get_match_data() and id lookup for
+> retrieving match data by i2c_get_match_data() and replace
+> dev_err()->dev_err_probe().
 > 
-> The CODEC driver must be extended to support the S32 LE format
-> and the MCLK div by 2 option. MCLK div by 2 is needed for one specific
-> SKU, which uses a 48Mhz MCLK, which seems to be too high of a frequency
-> for the CODEC and must be divided by 2.
+> While at it, drop local variable np and use dev_fwnode() instead and
+> remove comma in the terminator entry.
 > 
 > [...]
 
@@ -112,16 +112,8 @@ Applied to
 
 Thanks!
 
-[1/5] ASoC: es8316: Enable support for S32 LE format
-      commit: 2f06f231f0bfe74711fee14e28a8789a3de9bc36
-[2/5] ASoC: es8316: Replace NR_SUPPORTED_MCLK_LRCK_RATIOS with ARRAY_SIZE()
-      commit: a43c0dc1004cbe2edbae9b6e6793db71f6896449
-[3/5] ASoC: es8316: Enable support for MCLK div by 2
-      commit: 869f30782cdad0a86598a700a864e4a2bf44f8cc
-[4/5] ASoC: amd: acp: Add support for splitting the codec specific code from the ACP driver
-      commit: c680f57095411559e7605af689c7ce01f2281005
-[5/5] ASoC: amd: acp: Add machine driver that enables sound for systems with a ES8336 codec
-      commit: 54fcd9dd44b2c82a0262e29b288c2d0b36c6bba5
+[1/1] ASoC: ak4642: Simplify probe()
+      commit: d9e6a80a2c7bea4cc2edc87fa43b876a64b13074
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
