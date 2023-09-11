@@ -4,100 +4,109 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A2F5EEE7FF4
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 Sep 2023 04:50:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D036FEE57DF
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 Sep 2023 06:13:34 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3D27E852;
-	Mon, 11 Sep 2023 06:49:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3D27E852
+	by alsa0.perex.cz (Postfix) with ESMTPS id 89C2884C;
+	Mon, 11 Sep 2023 08:12:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 89C2884C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1694407843;
-	bh=jRbGX37pKE/flPAVK4KmRTNNYn+YjmtCaP+B5V/gVX0=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:List-Id:
+	s=default; t=1694412811;
+	bh=vxC4RoL9uqtP6MXYD9XdnefL+iUNc1fmyBwL4Ew1NRw=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=px4qOCJKk6zrskFp07VvyKQrKz3b0J/m8WmL5OgMXzRa6KqQSvHYH4uub0OvFFO6b
-	 kEVDTKFsm5A9SXAxG0YD0jL+Tdi66F1aXJyQgAPd6TqlHKj2ezr+Omj54/ZAnLfX6E
-	 RiQ1kOBTkGOHbrFRVkJ7F7rA1DuFWyo8qbOfq8Rw=
+	b=flUiK7M/dRMeQ42vUxuko4CvYHqGmKdOGv1eUUM7WjC9unRj0HZZ1R5zwMNDxbQx8
+	 y+DP6g0dOGduRmi6wM/Zy6LPq9SwAkMDnOAQ9DiWikkmHgJRO1Dcxl4oiN1rOe2Xbj
+	 wZ6C95f8BVXou0NFKcDF3oXAxbI9LVHk1bp2/OQk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 12DFCF80425; Mon, 11 Sep 2023 06:49:16 +0200 (CEST)
+	id 26D2EF801F5; Mon, 11 Sep 2023 08:12:38 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3737DF80425;
-	Mon, 11 Sep 2023 06:49:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B3FB3F80425;
+	Mon, 11 Sep 2023 08:12:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BCDFEF80425; Mon, 11 Sep 2023 06:49:11 +0200 (CEST)
-Received: from sin.source.kernel.org (sin.source.kernel.org
- [IPv6:2604:1380:40e1:4800::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	id 9F387F80425; Mon, 11 Sep 2023 08:12:32 +0200 (CEST)
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com
+ [IPv6:2a00:1450:4864:20::42c])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 8DDF6F8007C
-	for <alsa-devel@alsa-project.org>; Mon, 11 Sep 2023 06:49:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8DDF6F8007C
+	by alsa1.perex.cz (Postfix) with ESMTPS id 54F7DF801F5
+	for <alsa-devel@alsa-project.org>; Mon, 11 Sep 2023 08:12:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 54F7DF801F5
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=hRTK/O7z
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
-	(No client certificate requested)
-	by sin.source.kernel.org (Postfix) with ESMTPS id 12C0FCE0F28;
-	Mon, 11 Sep 2023 04:49:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 2E1D7C433C8;
-	Mon, 11 Sep 2023 04:49:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1694407740;
-	bh=jRbGX37pKE/flPAVK4KmRTNNYn+YjmtCaP+B5V/gVX0=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=hRTK/O7zd2EVcyRIHv/i0CAjz9UpjidahDXSIXk4ACb38jZ+6K0Q30pzOqZOLqypY
-	 C75nnrtT8Yv6GiMTvD61pKvkFLRfhtUBVWtZcBLARUs5c+zflqjKF2vVtznLpozQoM
-	 GCNDa18FhndrrkuE6m/0q7HCv7yOAC6mlWVm+BRnredL6UXg7U1td5nMObALXI8tDQ
-	 4sZzvZ12uCsLziIZXf9AsxgF8FMszCNitekMmUlSZhzGlOAtLbZ6bAuUGQovA8xlPE
-	 s6xIC6qIfoHYkDG9jnYDNje1UTc0fpBvjr9tsdVWGYlC4/aJBTcr3g4fKbEVro77gN
-	 eo2XoPvZ0aheA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org
- (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id
- 122E7E1F67E;
-	Mon, 11 Sep 2023 04:49:00 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+ unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
+ header.s=google header.b=GdHinTpO
+Received: by mail-wr1-x42c.google.com with SMTP id
+ ffacd0b85a97d-31dcf18f9e2so4041337f8f.0
+        for <alsa-devel@alsa-project.org>;
+ Sun, 10 Sep 2023 23:12:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1694412741; x=1695017541;
+ darn=alsa-project.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=XezrCl8ZqDRyxio73LdcaLmnL38z1MHmy6zWkUdZX0c=;
+        b=GdHinTpOqyha/jU6R1EKOA38LPjPeE6Yr9DBJ2XUIvhZ2UzXcSPOYKmLzVbDbAh9XQ
+         FLqlXMGF3lLDBm1h62fSc+SBhzHG2BgmmWWXxCtI7LX6N3aBsOGuNTDamrK6DCEjYgTe
+         HZ2ZjpfsQyrZTt/0gMjAuqjk3d93xKiP77unzhaDBxCX3rXxWMXzXzu0MuAkYcpuY/ZP
+         4HiZLZBpL0zMUG88vgdj/0WiIVjXzKuIrsB7rX/dYR8XaNITscOGV6N3CbeBnBQaEHZw
+         O1Rp0e9WwyA6uJgmNLE6/h6oR2nJDK5WlJILtUV7dRbl7xPK590CC5ibgZZv2+Z88PYt
+         K+9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694412741; x=1695017541;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=XezrCl8ZqDRyxio73LdcaLmnL38z1MHmy6zWkUdZX0c=;
+        b=QjOR+4eHzrjIGH89ILxyRWKRDJiigEKDA+J/dbp1qHgAuk2e2wPUae0MO+6fPvcpQQ
+         5zjMOV7DfyqPgsVGmMJj9X15JNr28qP2ETPsUwmdeQookqUM6dPTwYrIkKPA1bhYJCqW
+         f8iRMK1/GxBOhiTUd1td4AdklLHIC3iOPBdgfL2giBKqL/fAlztuCTRmTeMSU3fbv2jY
+         nEQNx1+2KRVa1LZ2Me3WQPx3UUu452ofZfXKO6dszqQDsOr5wJnsScnOAlltqCXHlizP
+         kvTQFVQ1mDfxEnfEsjjqpi57Ry2+EIivrJ7IsHdkljJ09TrOaAMln2Lqd0PsAr34NObO
+         DYcA==
+X-Gm-Message-State: AOJu0Yy8RiMzloHlo5KNIeZkHz6+ko0lycAddZAFf5DSypi36e4HOPWk
+	ILwBNcKN0PXuCqiibN8kp3L1mw==
+X-Google-Smtp-Source: 
+ AGHT+IE5Ebjr5i6VAf1KdNZGjQGiz4Iee/J02faavRwi1z0yfclTmtfOj/Jn0i8zTJzMyqK6vWlhfw==
+X-Received: by 2002:adf:e68a:0:b0:317:5ed6:887 with SMTP id
+ r10-20020adfe68a000000b003175ed60887mr6707475wrm.66.1694412741175;
+        Sun, 10 Sep 2023 23:12:21 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.214.188])
+        by smtp.gmail.com with ESMTPSA id
+ x5-20020a1c7c05000000b003fef5402d2dsm12227048wmc.8.2023.09.10.23.12.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 10 Sep 2023 23:12:20 -0700 (PDT)
+Message-ID: <bf43b771-35e3-1b37-24f5-e21b2c34a415@linaro.org>
+Date: Mon, 11 Sep 2023 08:12:18 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] mfd: Explicitly include correct DT includes
-From: patchwork-bot+chrome-platform@kernel.org
-Message-Id: 
- <169440774007.22573.6670993122914766002.git-patchwork-notify@kernel.org>
-Date: Mon, 11 Sep 2023 04:49:00 +0000
-References: <20230714174731.4059811-1-robh@kernel.org>
-In-Reply-To: <20230714174731.4059811-1-robh@kernel.org>
-To: Rob Herring <robh@kernel.org>
-Cc: linus.walleij@linaro.org, lee@kernel.org, thor.thayer@linux.intel.com,
- mani@kernel.org, cristian.ciocaltea@gmail.com, bleung@chromium.org,
- groeck@chromium.org, support.opensource@diasemi.com,
- ckeepax@opensource.cirrus.com, rf@opensource.cirrus.com,
- cw00.choi@samsung.com, krzysztof.kozlowski@linaro.org,
- matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com,
- tony@atomide.com, agross@kernel.org, andersson@kernel.org,
- konrad.dybcio@linaro.org, mazziesaccount@gmail.com, orsonzhai@gmail.com,
- baolin.wang@linux.alibaba.com, zhang.lyra@gmail.com,
- fabrice.gasnier@foss.st.com, mcoquelin.stm32@gmail.com,
- alexandre.torgue@foss.st.com, wens@csie.org, jernej.skrabec@gmail.com,
- samuel@sholland.org, miquel.raynal@bootlin.com, richard@nod.at,
- vigneshr@ti.com, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- patches@opensource.cirrus.com, linux-actions@lists.infradead.org,
- chrome-platform@lists.linux.dev, alsa-devel@alsa-project.org,
- linux-mediatek@lists.infradead.org, linux-omap@vger.kernel.org,
- linux-arm-msm@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
- linux-stm32@st-md-mailman.stormreply.com, linux-sunxi@lists.linux.dev,
- linux-mtd@lists.infradead.org
-Message-ID-Hash: SIBUFZMAQKIBNSNESI2OZHBTHN6OWZHY
-X-Message-ID-Hash: SIBUFZMAQKIBNSNESI2OZHBTHN6OWZHY
-X-MailFrom: patchwork-bot+chrome-platform@kernel.org
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH] ASoC: dwc: Add Single DMA mode support
+Content-Language: en-US
+To: Myunguk Kim <mwkim@gaonchips.com>, alsa-devel@alsa-project.org
+Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Maxim Kochetkov <fido_max@inbox.ru>, Xingyu Wu <xingyu.wu@starfivetech.com>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ =?UTF-8?Q?Uw_e_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+ linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Jose Abreu <joabreu@synopsys.com>,
+ devicetree@vger.kernel.org
+References: <20230911024023.43833-1-mwkim@gaonchips.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230911024023.43833-1-mwkim@gaonchips.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: Q6PSJYXQOHKSFXFITZEXFAEFL5OCRGYP
+X-Message-ID-Hash: Q6PSJYXQOHKSFXFITZEXFAEFL5OCRGYP
+X-MailFrom: krzysztof.kozlowski@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -109,7 +118,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/U7IQKKNMKWFSK2YBZUKN5AUDLFPFGFT4/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Q6PSJYXQOHKSFXFITZEXFAEFL5OCRGYP/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -118,30 +127,48 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hello:
-
-This patch was applied to chrome-platform/linux.git (for-next)
-by Lee Jones <lee@kernel.org>:
-
-On Fri, 14 Jul 2023 11:47:27 -0600 you wrote:
-> The DT of_device.h and of_platform.h date back to the separate
-> of_platform_bus_type before it as merged into the regular platform bus.
-> As part of that merge prepping Arm DT support 13 years ago, they
-> "temporarily" include each other. They also include platform_device.h
-> and of.h. As a result, there's a pretty much random mix of those include
-> files used throughout the tree. In order to detangle these headers and
-> replace the implicit includes with struct declarations, users need to
-> explicitly include the correct includes.
+On 11/09/2023 04:40, Myunguk Kim wrote:
+> There is a SoC between dwc and DMA block (ie. PL330)
+> that does not have a burst signal and supports only single.
 > 
-> [...]
+> So write not-support-burst property on dts, it support single DMA mode.
+> 
+> Signed-off-by: Myunguk Kim <mwkim@gaonchips.com>
+> ---
+>  .../bindings/sound/snps,designware-i2s.yaml          |  3 +++
 
-Here is the summary with links:
-  - mfd: Explicitly include correct DT includes
-    https://git.kernel.org/chrome-platform/c/dc0c386e09a7
+Bindings are always separate patch.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Please run scripts/checkpatch.pl and fix reported warnings. Some
+warnings can be ignored, but the code here looks like it needs a fix.
+Feel free to get in touch if the warning is not clear.
 
+Please use subject prefixes matching the subsystem. You can get them for
+example with `git log --oneline -- DIRECTORY_OR_FILE` on the directory
+your patch is touching.
+
+
+>  include/sound/designware_i2s.h                       |  1 +
+>  sound/soc/dwc/dwc-i2s.c                              | 12 ++++++++++--
+>  3 files changed, 14 insertions(+), 2 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/snps,designware-i2s.yaml b/Documentation/devicetree/bindings/sound/snps,designware-i2s.yaml
+> index a48d040b0a4f..43a46ba2a70c 100644
+> --- a/Documentation/devicetree/bindings/sound/snps,designware-i2s.yaml
+> +++ b/Documentation/devicetree/bindings/sound/snps,designware-i2s.yaml
+> @@ -86,6 +86,9 @@ properties:
+>        The phandle to System Register Controller syscon node and the I2S-rx(ADC)
+>        enabled control offset and mask of SYS_SYSCONSAIF__SYSCFG register.
+>  
+> +  no-burst:
+> +    description: Use single transaction only between DesignWare I2S and DMA IP.
+
+This was not tested. Missing vendor prefix, type.
+
+Anyway please provide some explanation why this cannot be deduced from
+the compatible.
+
+
+Best regards,
+Krzysztof
 
