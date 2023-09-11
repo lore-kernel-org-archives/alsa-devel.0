@@ -4,91 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EF0B6EE7FF4
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 Sep 2023 14:57:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EE386EE7FF4
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 Sep 2023 15:08:49 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A60DE84B;
-	Mon, 11 Sep 2023 16:56:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A60DE84B
+	by alsa0.perex.cz (Postfix) with ESMTPS id B1B316C1;
+	Mon, 11 Sep 2023 17:07:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B1B316C1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1694444220;
-	bh=Bxd4iBadiCksPMtXCU+Z466w/fNZ8R/SB/l+zVj+DaQ=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1694444927;
+	bh=V/6hBx5mfx0fd3CGt05eTAr9zX0uhJnhj4yOo8q7jvg=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=hJ8Z/9MsMQTIxdQp5aslmgnesR1OMTg8ThlBs/ukb0Xqlb03eG8c47BeOEW/WJVhx
-	 Qyw7rDOSUaFJ88EpniFbtOr+lqCkdUeMJL277Ro67gCDjhRCEFFuWuWNAEwSaCKDr3
-	 rPg951xsIVoFjIEfTQtVO4h6QptsVI2TX2NqmYKE=
+	b=iWx1V95NPHQG3dq7Yvqg6gvOTIme5PnjUElT4Ty6VGQ1Tf2jvqcp/NCnGnpI6TQRr
+	 d/Y1NzntG+waKwW9eOAlvl0cQRj/2c3dD6tgqaDOr6wKqx0/l0dEKkg4GsNilQpcav
+	 Mq5oTdPHmh/S3v4kI/ZL6WgWZz2vFdAakGlyhqLA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3F3C3F80537; Mon, 11 Sep 2023 16:55:48 +0200 (CEST)
+	id EEEF4F801F5; Mon, 11 Sep 2023 17:07:56 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A2EC1F8007C;
-	Mon, 11 Sep 2023 16:55:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 34F77F80549;
+	Mon, 11 Sep 2023 17:07:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BB227F80425; Mon, 11 Sep 2023 16:55:43 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+	id BDA96F80431; Mon, 11 Sep 2023 17:07:51 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 80E92F800AA
-	for <alsa-devel@alsa-project.org>; Mon, 11 Sep 2023 16:55:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 80E92F800AA
+	by alsa1.perex.cz (Postfix) with ESMTPS id 63CCFF8007C
+	for <alsa-devel@alsa-project.org>; Mon, 11 Sep 2023 17:07:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 63CCFF8007C
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=linuxfoundation.org header.i=@linuxfoundation.org
- header.a=rsa-sha256 header.s=korg header.b=gnQ03gXi
+	dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=GpTK2/sR
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id 6890FB80EC6;
-	Mon, 11 Sep 2023 14:55:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A737EC433C8;
-	Mon, 11 Sep 2023 14:55:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1694444135;
-	bh=Bxd4iBadiCksPMtXCU+Z466w/fNZ8R/SB/l+zVj+DaQ=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=gnQ03gXiFomF/RbiXOR7zVIxOqgs4tjnfkNro1/3UKpTB52OuURRPnPCulR5OGE7J
-	 0faMK97fDUxbYVn6L/9CK9uiWLX0j9CA7R4spWhO8MTmIivaRCsHxsW1OX5aSQZ1N+
-	 GeUDFELmUUMcsIW5M02dDY0qTj5GgIvJOnhAx+Io=
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: stable@vger.kernel.org
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	patches@lists.linux.dev,
-	Randy Dunlap <rdunlap@infradead.org>,
-	kernel test robot <lkp@intel.com>,
-	Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	linux-um@lists.infradead.org,
-	Tejun Heo <tj@kernel.org>,
-	Takashi Iwai <tiwai@suse.de>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Masahiro Yamada <masahiroy@kernel.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Nicolas Schier <nicolas@fjasle.eu>,
-	linux-kbuild@vger.kernel.org,
-	alsa-devel@alsa-project.org,
-	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.4 623/737] um: Fix hostaudio build errors
-Date: Mon, 11 Sep 2023 15:48:02 +0200
-Message-ID: <20230911134707.934739546@linuxfoundation.org>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20230911134650.286315610@linuxfoundation.org>
-References: <20230911134650.286315610@linuxfoundation.org>
-User-Agent: quilt/0.67
-X-stable: review
-X-Patchwork-Hint: ignore
+	by dfw.source.kernel.org (Postfix) with ESMTPS id C56FF61122;
+	Mon, 11 Sep 2023 15:07:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9EFEC433CA;
+	Mon, 11 Sep 2023 15:07:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1694444862;
+	bh=V/6hBx5mfx0fd3CGt05eTAr9zX0uhJnhj4yOo8q7jvg=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=GpTK2/sRNv5OM0TZC09QCDJ+z89ykEEW0HzWjtUQQQyDMbUAlotSUgO3hDmQms3mC
+	 SjHNXCrzzH3pciauKJw+s6l2epY5XBuDMYEjF8WWilN+uhJJtdvn1MroneBHbJikO9
+	 ewk5EM+L8Kn2cZI1+UBtOJK6H5sJ76fg2iEmUh+H421I4e2ywu6oVxJQP67AiuWDuF
+	 IMh11Tx5q4HozD4yYj9J3IhfxRKmfivF6zQKuRP6hdo40cIrnZTkynN0lxhBVL94NC
+	 t73StKrOtJSZL5ROTYjSKz8v62D/aAEB7UiJurIMUmXXFYTL4zoZOG59zI+8qGN6VA
+	 fBcSaSQjbXlYg==
+From: Mark Brown <broonie@kernel.org>
+To: Liam Girdwood <lgirdwood@gmail.com>,
+ Jerome Brunet <jbrunet@baylibre.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ linux-amlogic@lists.infradead.org
+In-Reply-To: <20230907090504.12700-1-jbrunet@baylibre.com>
+References: <20230907090504.12700-1-jbrunet@baylibre.com>
+Subject: Re: [PATCH] ASoC: meson: spdifin: start hw on dai probe
+Message-Id: <169444486047.1851820.2260771441651865260.b4-ty@kernel.org>
+Date: Mon, 11 Sep 2023 16:07:40 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: JAZ6DCTYLUYXCEDZUPENK4WH3BG6Z6DI
-X-Message-ID-Hash: JAZ6DCTYLUYXCEDZUPENK4WH3BG6Z6DI
-X-MailFrom: gregkh@linuxfoundation.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-099c9
+Message-ID-Hash: Y46TR7TNGQ2NF6O45VF2NCBR3BEKTRL4
+X-Message-ID-Hash: Y46TR7TNGQ2NF6O45VF2NCBR3BEKTRL4
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -100,7 +85,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JAZ6DCTYLUYXCEDZUPENK4WH3BG6Z6DI/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Y46TR7TNGQ2NF6O45VF2NCBR3BEKTRL4/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -109,152 +94,38 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-6.4-stable review patch.  If anyone has any objections, please let me know.
+On Thu, 07 Sep 2023 11:05:04 +0200, Jerome Brunet wrote:
+> For spdif input to report the locked rate correctly, even when no capture
+> is running, the HW and reference clock must be started as soon as
+> the dai is probed.
+> 
+> 
 
-------------------
+Applied to
 
-From: Randy Dunlap <rdunlap@infradead.org>
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-[ Upstream commit db4bfcba7bb8d10f00bba2a3da6b9a9c2a1d7b71 ]
+Thanks!
 
-Use "select" to ensure that the required kconfig symbols are set
-as expected.
-Drop HOSTAUDIO since it is now equivalent to UML_SOUND.
+[1/1] ASoC: meson: spdifin: start hw on dai probe
+      commit: aedf323b66b2b875137422ecb7d2525179759076
 
-Set CONFIG_SOUND=m in ARCH=um defconfig files to maintain the
-status quo of the default configs.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-Allow SOUND with UML regardless of HAS_IOMEM. Otherwise there is a
-kconfig warning for unmet dependencies. (This was not an issue when
-SOUND was defined in arch/um/drivers/Kconfig. I have done 50 randconfig
-builds and didn't find any issues.)
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-This fixes build errors when CONFIG_SOUND is not set:
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-ld: arch/um/drivers/hostaudio_kern.o: in function `hostaudio_cleanup_module':
-hostaudio_kern.c:(.exit.text+0xa): undefined reference to `unregister_sound_mixer'
-ld: hostaudio_kern.c:(.exit.text+0x15): undefined reference to `unregister_sound_dsp'
-ld: arch/um/drivers/hostaudio_kern.o: in function `hostaudio_init_module':
-hostaudio_kern.c:(.init.text+0x19): undefined reference to `register_sound_dsp'
-ld: hostaudio_kern.c:(.init.text+0x31): undefined reference to `register_sound_mixer'
-ld: hostaudio_kern.c:(.init.text+0x49): undefined reference to `unregister_sound_dsp'
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-and this kconfig warning:
-WARNING: unmet direct dependencies detected for SOUND
-
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Fixes: d886e87cb82b ("sound: make OSS sound core optional")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: lore.kernel.org/r/202307141416.vxuRVpFv-lkp@intel.com
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc: Johannes Berg <johannes@sipsolutions.net>
-Cc: linux-um@lists.infradead.org
-Cc: Tejun Heo <tj@kernel.org>
-Cc: Takashi Iwai <tiwai@suse.de>
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: Masahiro Yamada <masahiroy@kernel.org>
-Cc: Nathan Chancellor <nathan@kernel.org>
-Cc: Nick Desaulniers <ndesaulniers@google.com>
-Cc: Nicolas Schier <nicolas@fjasle.eu>
-Cc: linux-kbuild@vger.kernel.org
-Cc: alsa-devel@alsa-project.org
-Reviewed-by: Masahiro Yamada <masahiroy@kernel.org>
-Signed-off-by: Richard Weinberger <richard@nod.at>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- arch/um/configs/i386_defconfig   |  1 +
- arch/um/configs/x86_64_defconfig |  1 +
- arch/um/drivers/Kconfig          | 16 +++-------------
- arch/um/drivers/Makefile         |  2 +-
- sound/Kconfig                    |  2 +-
- 5 files changed, 7 insertions(+), 15 deletions(-)
-
-diff --git a/arch/um/configs/i386_defconfig b/arch/um/configs/i386_defconfig
-index c0162286d68b7..c33a6880a437a 100644
---- a/arch/um/configs/i386_defconfig
-+++ b/arch/um/configs/i386_defconfig
-@@ -35,6 +35,7 @@ CONFIG_TTY_CHAN=y
- CONFIG_XTERM_CHAN=y
- CONFIG_CON_CHAN="pts"
- CONFIG_SSL_CHAN="pts"
-+CONFIG_SOUND=m
- CONFIG_UML_SOUND=m
- CONFIG_DEVTMPFS=y
- CONFIG_DEVTMPFS_MOUNT=y
-diff --git a/arch/um/configs/x86_64_defconfig b/arch/um/configs/x86_64_defconfig
-index bec6e5d956873..df29f282b6ac2 100644
---- a/arch/um/configs/x86_64_defconfig
-+++ b/arch/um/configs/x86_64_defconfig
-@@ -33,6 +33,7 @@ CONFIG_TTY_CHAN=y
- CONFIG_XTERM_CHAN=y
- CONFIG_CON_CHAN="pts"
- CONFIG_SSL_CHAN="pts"
-+CONFIG_SOUND=m
- CONFIG_UML_SOUND=m
- CONFIG_DEVTMPFS=y
- CONFIG_DEVTMPFS_MOUNT=y
-diff --git a/arch/um/drivers/Kconfig b/arch/um/drivers/Kconfig
-index 36911b1fddcf0..b94b2618e7d84 100644
---- a/arch/um/drivers/Kconfig
-+++ b/arch/um/drivers/Kconfig
-@@ -111,24 +111,14 @@ config SSL_CHAN
- 
- config UML_SOUND
- 	tristate "Sound support"
-+	depends on SOUND
-+	select SOUND_OSS_CORE
- 	help
- 	  This option enables UML sound support.  If enabled, it will pull in
--	  soundcore and the UML hostaudio relay, which acts as a intermediary
-+	  the UML hostaudio relay, which acts as a intermediary
- 	  between the host's dsp and mixer devices and the UML sound system.
- 	  It is safe to say 'Y' here.
- 
--config SOUND
--	tristate
--	default UML_SOUND
--
--config SOUND_OSS_CORE
--	bool
--	default UML_SOUND
--
--config HOSTAUDIO
--	tristate
--	default UML_SOUND
--
- endmenu
- 
- menu "UML Network Devices"
-diff --git a/arch/um/drivers/Makefile b/arch/um/drivers/Makefile
-index a461a950f0518..0e6af81096fd5 100644
---- a/arch/um/drivers/Makefile
-+++ b/arch/um/drivers/Makefile
-@@ -54,7 +54,7 @@ obj-$(CONFIG_UML_NET) += net.o
- obj-$(CONFIG_MCONSOLE) += mconsole.o
- obj-$(CONFIG_MMAPPER) += mmapper_kern.o 
- obj-$(CONFIG_BLK_DEV_UBD) += ubd.o 
--obj-$(CONFIG_HOSTAUDIO) += hostaudio.o
-+obj-$(CONFIG_UML_SOUND) += hostaudio.o
- obj-$(CONFIG_NULL_CHAN) += null.o 
- obj-$(CONFIG_PORT_CHAN) += port.o
- obj-$(CONFIG_PTY_CHAN) += pty.o
-diff --git a/sound/Kconfig b/sound/Kconfig
-index 0ddfb717b81dc..466e848689bd1 100644
---- a/sound/Kconfig
-+++ b/sound/Kconfig
-@@ -1,7 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0-only
- menuconfig SOUND
- 	tristate "Sound card support"
--	depends on HAS_IOMEM
-+	depends on HAS_IOMEM || UML
- 	help
- 	  If you have a sound card in your computer, i.e. if it can say more
- 	  than an occasional beep, say Y.
--- 
-2.40.1
-
-
+Thanks,
+Mark
 
