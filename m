@@ -4,97 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 66E72EE7FF4
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 Sep 2023 06:54:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DA351EE57DF
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 Sep 2023 07:16:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 709EF84C;
-	Mon, 11 Sep 2023 08:53:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 709EF84C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5E72884C;
+	Mon, 11 Sep 2023 09:15:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5E72884C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1694415237;
-	bh=4vB32nanE+MDEqTy1CJdYDHQ1Wfx+YCcuQAd0vYkfI0=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=kpakl+OzgFQVIRcny+CMqgVA9nSh/t39ZLOsJYgPk89TY4qJawS1REOAnnqd4aG0t
-	 DqFolEVsxZABU/moJ7kXUeVy3ap6yGGi1GTDUB6CZRcY47uodvnx60zZB8fTU4aVbk
-	 tbexhmzazNZgiMjUZ1gkCisb06ERqipOWtHcfpdM=
+	s=default; t=1694416559;
+	bh=KArebcRQbLe+0cHGqcWa33ZfoxKv8pqd18NKG13tXf0=;
+	h=From:To:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=o6rqgbAkik0pbjU8B29C0Y330x2kpWrR57CvB9oPVP3tyHlgDmGRdQeRDfJiNhwNK
+	 JyXMa6jsvnFql9FvjD1u567iqEYMfpSt441+SZk8fVfbOxJ2lCNo0e9XbPc+Ks/iJu
+	 oDX2K1WDDMNNqDFi3H0adwvpmGvworq6PVMpwziY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DA816F8007C; Mon, 11 Sep 2023 08:52:38 +0200 (CEST)
+	id C55B0F8007C; Mon, 11 Sep 2023 09:14:48 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8BFEFF80425;
-	Mon, 11 Sep 2023 08:52:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 73C78F80425;
+	Mon, 11 Sep 2023 09:14:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D1832F80425; Mon, 11 Sep 2023 08:52:35 +0200 (CEST)
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+	id 05D51F80425; Mon, 11 Sep 2023 09:14:45 +0200 (CEST)
+Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 0142DF8007C;
-	Mon, 11 Sep 2023 08:52:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0142DF8007C
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=U0EEHFga
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694415152; x=1725951152;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=4vB32nanE+MDEqTy1CJdYDHQ1Wfx+YCcuQAd0vYkfI0=;
-  b=U0EEHFgaB8wvjaQEFGfY5p4jYw79Y0T4Hbnp4AS4rvO6RJampr6fFqgV
-   uMGN08x8bh3RRJ+xHQ51APfkCL/XfxpxTCSgumfnSmRujO9eiZfGNjR7y
-   12KuL/NDRln82dbugglj4F4hUAZZ9yUAP3yVWY4m5BaKC5gIBNhVwLnW2
-   pTqCD3hugILb6V9SuwWTdSodu/0s4nzHPF5mINDief0oIa9BRiUyksqfw
-   X4AuTz9qT55b809gxe1GK4RXX40V4jynos6nA9t5JRfhlmf1T477SklNi
-   Cf0TDAFmo0inF61uURwNd7WJHJuuKKkG0na/Dw7N/nxwEgFedL1yLvxlv
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10829"; a="380707659"
-X-IronPort-AV: E=Sophos;i="6.02,243,1688454000";
-   d="scan'208";a="380707659"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Sep 2023 23:51:59 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10829"; a="746303083"
-X-IronPort-AV: E=Sophos;i="6.02,243,1688454000";
-   d="scan'208";a="746303083"
-Received: from vcouthon-mobl1.ger.corp.intel.com (HELO [10.251.216.222])
- ([10.251.216.222])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Sep 2023 23:51:52 -0700
-Message-ID: <e8880daf-8f74-4350-96c4-d625272aed35@linux.intel.com>
-Date: Mon, 11 Sep 2023 09:51:41 +0300
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 01/11] ASoC: SOF: core: add 'no_wq' probe and remove
- callbacks
-Content-Language: en-US
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, Cezary Rojewski <cezary.rojewski@intel.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Mark Brown <broonie@kernel.org>, Daniel Baluta <daniel.baluta@nxp.com>,
- linux-kernel@vger.kernel.org, sound-open-firmware@alsa-project.org
-References: <20230830153652.217855-1-maarten.lankhorst@linux.intel.com>
- <20230830153652.217855-2-maarten.lankhorst@linux.intel.com>
- <alpine.DEB.2.22.394.2309011509200.3532114@eliteleevi.tm.intel.com>
- <4252a4dc-0cf3-4ff2-aa55-c03e56345276@linux.intel.com>
- <4d84a799-c07e-e917-7c82-2f24456e3ac2@linux.intel.com>
- <6d39eac7-06c7-45f0-0318-72be1753641f@linux.intel.com>
-From: =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>
-In-Reply-To: <6d39eac7-06c7-45f0-0318-72be1753641f@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: UM6WYC4B4NWMCZ5JYBRTJWALL27OVH6U
-X-Message-ID-Hash: UM6WYC4B4NWMCZ5JYBRTJWALL27OVH6U
-X-MailFrom: peter.ujfalusi@linux.intel.com
+	by alsa1.perex.cz (Postfix) with ESMTPS id C6824F8007C
+	for <alsa-devel@alsa-project.org>; Mon, 11 Sep 2023 09:14:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C6824F8007C
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id F1E481A135A;
+	Mon, 11 Sep 2023 09:14:38 +0200 (CEST)
+Received: from aprdc01srsp001v.ap-rdc01.nxp.com
+ (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
+	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id B9D4B1A1380;
+	Mon, 11 Sep 2023 09:14:38 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net
+ [10.192.224.44])
+	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 30A171820F56;
+	Mon, 11 Sep 2023 15:14:37 +0800 (+08)
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
+To: shengjiu.wang@gmail.com,
+	Xiubo.Lee@gmail.com,
+	festevam@gmail.com,
+	nicoleotsuka@gmail.com,
+	lgirdwood@gmail.com,
+	broonie@kernel.org,
+	perex@perex.cz,
+	tiwai@suse.com,
+	alsa-devel@alsa-project.org,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: fsl: imx-pcm-rpmsg: Add SNDRV_PCM_INFO_BATCH flag
+Date: Mon, 11 Sep 2023 14:38:07 +0800
+Message-Id: <1694414287-13291-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
+Message-ID-Hash: 4PD3345GQ2WH37P6TBTW2PNNHYIAJLYG
+X-Message-ID-Hash: 4PD3345GQ2WH37P6TBTW2PNNHYIAJLYG
+X-MailFrom: shengjiu.wang@nxp.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -106,7 +75,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UM6WYC4B4NWMCZ5JYBRTJWALL27OVH6U/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4PD3345GQ2WH37P6TBTW2PNNHYIAJLYG/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -115,51 +84,39 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 07/09/2023 20:29, Pierre-Louis Bossart wrote:
->> I think find all this very confusing, because there is no workqueue used
->> in the remove steps. The workqueue is only used ONCE during the probe.
-> 
-> Maybe we should just remove any references to workqueues, and have
-> 
-> probe_start (cannot run in a wq)
-> probe (may run in a wq)
-> remove (cannot run in a wq, needs to call cancel_work_sync() if the
-> probe runs in a wq)
-> remove_last (cannot run in a wq, releases all resources acquired in
-> probe_start)
-> 
-> Or something similar that shows the symmetry between steps and when the
-> wq is allowed.
+The rpmsg pcm device is a device which should support
+double buffering.
 
-What we have atm:
-snd_sof_probe - might be called from wq
-snd_sof_remove - might be called from wq (cleans up the snd_sof_probe
-		 step)
+Found this issue with pipewire. When there is no
+SNDRV_PCM_INFO_BATCH flag in driver, the pipewire will
+set headroom to be zero, and because rpmsg pcm device
+don't support residue report, when the latency setting
+is small, the "delay" always larger than "target" in
+alsa-pcm.c, that reading next period data is not
+scheduled on time.
 
-We want a callbacks for hardware/device probing, right, split the
-snd_sof_probe (and remove) to be able to support a sane level of
-deferred probing support.
+With SNDRV_PCM_INFO_BATCH flag in driver, the pipewire
+will select a smaller period size for device, then
+the task of reading next period data will be scheduled
+on time.
 
-With that in mind:
-snd_sof_device_probe - Not called from wq (to handle deferred probing)
-snd_sof_probe - might be called from wq
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+---
+ sound/soc/fsl/imx-pcm-rpmsg.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-snd_sof_remove - might be called from wq (cleans up the snd_sof_probe
-		 step)
-snd_sof_device_remove - Not called from wq (to up the
-			snd_sof_device_probe step)
-
-Naming option: s/device/hardware
-
-However, I think the snd_sof_device_remove itself is redundant and we
-might not need it at all as in case we have wq and there is a failure in
-there we do want to release resources as much as possible. The module
-will be kept loaded (no deferred handling in wq) and that might block
-PM, other devices to behave correctly. Iow, if the wq has failure we
-should do a cleanup to the best effort to reach a level like the driver
-is not even loaded.
-
-Doable? I thin it is.
-
+diff --git a/sound/soc/fsl/imx-pcm-rpmsg.c b/sound/soc/fsl/imx-pcm-rpmsg.c
+index d63782b8bdef..bb736d45c9e0 100644
+--- a/sound/soc/fsl/imx-pcm-rpmsg.c
++++ b/sound/soc/fsl/imx-pcm-rpmsg.c
+@@ -19,6 +19,7 @@
+ static struct snd_pcm_hardware imx_rpmsg_pcm_hardware = {
+ 	.info = SNDRV_PCM_INFO_INTERLEAVED |
+ 		SNDRV_PCM_INFO_BLOCK_TRANSFER |
++		SNDRV_PCM_INFO_BATCH |
+ 		SNDRV_PCM_INFO_MMAP |
+ 		SNDRV_PCM_INFO_MMAP_VALID |
+ 		SNDRV_PCM_INFO_NO_PERIOD_WAKEUP |
 -- 
-Péter
+2.34.1
+
