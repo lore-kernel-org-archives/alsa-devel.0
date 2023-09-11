@@ -4,139 +4,145 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E7ACFCA0EC3
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 Sep 2023 23:59:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 11770CA0EC3
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 Sep 2023 23:59:22 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 44484EA6;
-	Tue, 12 Sep 2023 01:58:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 44484EA6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 43640EE0;
+	Tue, 12 Sep 2023 01:58:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 43640EE0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1694476749;
-	bh=tnpT/IZH/Ok7pZ9BvfleC1kJCFvrpBQ/ZA2eNDKiE2s=;
+	s=default; t=1694476760;
+	bh=ZEGv5FvoYCHSFk2oDcg+Vk8xYvhNOYL94CtERYwTwbw=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=vBVDfo11AMftA71xfJODvf0uaiUuMSWrk7Os6Tr6lC4NrXn1Q1BUlG9PxLJh/btku
-	 hPlYjSNwMRIeULeij/MWgeBqO7wnFsWJ/9nMba9m9yqNCH+oEAI1EeWrxdx40wA/yk
-	 U0NE3kXssKmEjz90qtmRXKzi54o5UlUwX5OMFAUA=
+	b=dbBU9Q/n1uNCFBnBT133Iu2ss9CJH7gmKek+GnxCQyjFXs0olpYR6UU1KEjNZ+F5M
+	 gRCbICE6JwCPgqSPPHEUgk/JPq9QHovKHzmOFT5prFb8+hGaqM7vJsQUIruFODDeK9
+	 T6L/sgxffpdJthbA/5l4DVWVKoe2HC7GuFMFctSk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E7206F805C6; Tue, 12 Sep 2023 01:52:40 +0200 (CEST)
+	id CB94AF806E3; Tue, 12 Sep 2023 01:52:42 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0FA64F805C6;
-	Tue, 12 Sep 2023 01:52:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0233AF80570;
+	Tue, 12 Sep 2023 01:52:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 73776F805CB; Tue, 12 Sep 2023 01:52:35 +0200 (CEST)
+	id 4F98AF805E9; Tue, 12 Sep 2023 01:52:37 +0200 (CEST)
 Received: from JPN01-OS0-obe.outbound.protection.outlook.com
- (mail-os0jpn01on20706.outbound.protection.outlook.com
- [IPv6:2a01:111:f403:700c::706])
+ (mail-os0jpn01on20728.outbound.protection.outlook.com
+ [IPv6:2a01:111:f403:700c::728])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 72EBDF805E9
-	for <alsa-devel@alsa-project.org>; Tue, 12 Sep 2023 01:50:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 72EBDF805E9
+	by alsa1.perex.cz (Postfix) with ESMTPS id 3ACA7F80677
+	for <alsa-devel@alsa-project.org>; Tue, 12 Sep 2023 01:51:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3ACA7F80677
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=renesas.com header.i=@renesas.com header.a=rsa-sha256
- header.s=selector1 header.b=E+MC3R2R
+ header.s=selector1 header.b=RbsKytaW
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=m1C4IE1vpY1yOOO4y7WoEsuuPmAsFRVngsTB9OX5RjjSOkvluyL4UmSmCfdlTfv7EwjlUNTMHJMaBi/J700+TAB44mzyEKpKOL05Td3rvU3Ia3KflSMkY/HTEypli6MPMSEHTzndKKUvnX5PcOsAeVmaoZkGXZuUWpyqDYZlurmfAs+mHvAXDyzPDcDyMjFHj/w7FMt108YH8pTvv3Di0mfYcxcZbGXIsS7hd8ibybtiBs4KxSYiAW04aYymL79RX+gtolZj82cKI7WFiSwlMBKzKgyVVfeKSzbdVr4Ok826lcGsIH3J1mnsn4hNJi3PFj6snB9hnsl+bZ6H4S9d1w==
+ b=nsSO5gZp2hoOmJrIRffsdyWnOzzSbsCf0B2nhnUCWxFi8bfLlmDt67TGWxRSn0N7ggFhXI2jroQC61Nmy8BwzXw9v5wIlLD3kUap/qhjPD02SEQ+Xxb2CAdI2G8MwfHEWYxiqClVlFuy2RtALJmZAOiKNgCEkGOdVuG1RVVUeIk2HurO7snFrEnBMM8CBAMqYcS2xcgbbVQiMT6D6q95bdfBRrD6MJgWjUI/RXH118EBJ89F+JW702LvUJtYjr5/QdwiVI/MckLpsOKVKbNbk3f9AOvIDroQuE+PugljLMwYonT0LMbjoUKocZM8sUNnPtHuN0WTZd7O3dWU8IKWNg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=2796x5QOoBlMgwA+IuQCvVThTJT+wuDUntIloEwzVq8=;
- b=Ta/LmgQHiN06xGRjXJLaa6Jss+MGUyJkk0JBwvFNKj6jAxeijGOqgfkf7U2yC5BCjaPloKLrz9x71MlMdce6bqPMPzsekUcqIjXb9Os2PsBnGXQlAe2dXcly1vws1HR+FMt11N0Wy/y9hxJDWaEc0zMeEnBnnMpZcOzenDu6JXp8E1ZHPDnnZqhXAljaEUbco/aaH94dICLhALU/VLVTvQSz69RECWdBluyifGcZEu8uHg0n9b5UGaVZ7aSlJErOX6zHX4cHVnDpf+H59JGhPFWYEg07ZEeYrv9oRJgpDly0ezaTC3uscyJ6v0L4jqAmB8dtPH6nOzXIMgbg0UOkOw==
+ bh=rhzOUelusQoBR5Scv5ve4RaOIOmoETDDfVcm0hyHtRk=;
+ b=IeoR8AmIcE/jzeabdnpBMMuy5MxJ8f/HdAgg0lc+5+fapRUb9qwAUaXt7H+Ev00u3LoKDPhbXqpvot9HkMdeXOQHG1HbYP6MgVYPMNYbHs2DzWchzR4rAiYABCz99NSa6DQkMamO/volzciGf3mW8tyZXITjh+n97VUzr3LpduPik84dOHYeitDthZfHjRgPhFZNQGwNjRNmsrIZ1vwiI72251zek8hs0fsfxISGklqZUa/eb/l5ScFgghW4A0zwL+yuG1jyFCo6+4P592jg4Ui87mLaaL9YMX5VBNAv/QCFoFHbuOBYX0nBiO54Zb9ljzsxgggMsWXYfLTtjarnag==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=renesas.com; dmarc=pass action=none header.from=renesas.com;
  dkim=pass header.d=renesas.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=renesas.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2796x5QOoBlMgwA+IuQCvVThTJT+wuDUntIloEwzVq8=;
- b=E+MC3R2RojrewheWu3P+tnLDV/L8tMGupIwP5pSMErs3yII2Yy4d69DfQd1pxBFrda9rY9z1GbPD1Wdd296e8+axg1qb/6rzYBSCRAZBifP/ay19C8FTod+xZ2lCGorVUUzblA2KR3oAQkqCTqGx/v0NFonR1htH7tCB8fpfJLs=
+ bh=rhzOUelusQoBR5Scv5ve4RaOIOmoETDDfVcm0hyHtRk=;
+ b=RbsKytaWHQgbsR+zwH/Ph6hGM7wnRChWkrc9W18Od/eNn0EOQj7pBOIUUaXHsp3/sgw1+o5+PNtGNTcTiv4MUWKK98q/R/X9FOaMlPWbg1imip213sfPIQaUXt2GhU72FuJuw61FyOFHHDSfdINA41Az8i8j7s8yBXVS40gTWx8=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=renesas.com;
 Received: from OS3PR01MB8426.jpnprd01.prod.outlook.com (2603:1096:604:194::10)
  by OS3PR01MB9445.jpnprd01.prod.outlook.com (2603:1096:604:1ce::11) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6768.37; Mon, 11 Sep
- 2023 23:50:52 +0000
+ 2023 23:51:03 +0000
 Received: from OS3PR01MB8426.jpnprd01.prod.outlook.com
  ([fe80::8c08:d94c:8e54:9b5d]) by OS3PR01MB8426.jpnprd01.prod.outlook.com
  ([fe80::8c08:d94c:8e54:9b5d%6]) with mapi id 15.20.6768.036; Mon, 11 Sep 2023
- 23:50:52 +0000
-Message-ID: <87y1hcp8v8.wl-kuninori.morimoto.gx@renesas.com>
+ 23:51:03 +0000
+Message-ID: <87v8cgp8ux.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Jaroslav Kysela <perex@perex.cz>, Jason Montleon <jmontleo@redhat.com>,
+To: Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Daniel Baluta <daniel.baluta@nxp.com>, Jaroslav Kysela <perex@perex.cz>,
  Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Oder Chiou <oder_chiou@realtek.com>, Takashi Iwai <tiwai@suse.com>
-Cc: alsa-devel@alsa-project.org
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Takashi Iwai <tiwai@suse.com>
+Cc: =?ISO-8859-1?Q?=22P=C3=A9ter_Ujfalusi=22?=
+ <peter.ujfalusi@linux.intel.com>, Kai Vehmanen
+ <kai.vehmanen@linux.intel.com>, alsa-devel@alsa-project.org
 In-Reply-To: <87h6o0s275.wl-kuninori.morimoto.gx@renesas.com>
 References: <87h6o0s275.wl-kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 38/54] ASoC: codec: rt5677: convert not to use asoc_xxx()
+Subject: [PATCH 40/54] ASoC: sof: convert not to use asoc_xxx()
 User-Agent: Wanderlust/2.15.9 Emacs/27.1 Mule/6.0
 Content-Type: text/plain; charset=US-ASCII
-Date: Mon, 11 Sep 2023 23:50:52 +0000
-X-ClientProxiedBy: TY2PR06CA0013.apcprd06.prod.outlook.com
- (2603:1096:404:42::25) To OS3PR01MB8426.jpnprd01.prod.outlook.com
+Date: Mon, 11 Sep 2023 23:51:02 +0000
+X-ClientProxiedBy: TYCPR01CA0164.jpnprd01.prod.outlook.com
+ (2603:1096:400:2b1::19) To OS3PR01MB8426.jpnprd01.prod.outlook.com
  (2603:1096:604:194::10)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: OS3PR01MB8426:EE_|OS3PR01MB9445:EE_
-X-MS-Office365-Filtering-Correlation-Id: 6e0fcc7c-dc78-413f-11f4-08dbb321eeb7
+X-MS-Office365-Filtering-Correlation-Id: f39bf8a3-505b-4fef-1691-08dbb321f53e
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info: 
-	drEVcUYq8bHKoxX9HHe3B3MO+8r5FCDR7NYiqmsAHlcWP8AnAASmCKpNIbaiaa+d8+J7Xd7rTZvXyRBd+kvfRQu0Kzh1bUDfRGdIneh47tlYQFV7CJcuUoCd5kXSKJI+2d1XGycI4Cbp4UtWTby/FFONh3ZlOgy0i4Wyfy8O7zBUSG520Xijuv/6xbrFoZNeTnhgiE5y5nuD5XxuA8syj8Np4UnI1t4pXpPYEZLXtRfdF8L//W1u+2AYy36zjgQfRaqCM9CYFKoa5icBirJQQOwSop3ji+1k8wEqW+IHAQxSRvcDhnNkmHs6qkbjaaP6odZKqaXGPU94e13rBWXhkbKVhNsNPObt/bV589Cax8NFD5LqpfL/RLyk5saIY3i65AzkkoElQ5GUkmYPR/LtRkclacCTQyunpT57V+KARI3Cm4ldruuOWAu5KFaiNYI75+buDk/SFkwq/kw3/Q3m1iqgMIpugyX/fqzggCPhXYD6JE08eozUm+XlG6KOi7jbGxk0iI3Nhmx9iK9X/wVbtqoPfEdYbrujQ8EZ4IZ5ggFhRAbZ1eZsQIckts6Wyag1/y0FPOc4a7eC3H9sxisdFGUVEtiKhe3zKDxeMpGPsC7DIbmcrbGtnFvYvQ7GHWxcvxZEYM20vCE1iKaK1DbgcQ==
+	hcE62zSd8asanzDJoUhD3Skd73l+EuvO71PPOcQ9RzrkcmLtTCwfdJ7KKpPECfZm5TXjZ6g3H+RLKThU83FLaP8lbMIQESMtVlBTF1/GZpWATjai1DHxwH7qquhjO1f/hLeWjFKv64K55BKtVrsfdKcWtI113Yep9vz2incFx7NXFRZyy/7GPERsFrrJHoSvhixuUh87vWfhNMUU9XgSJ655c3KOUwt8w1ak7z4l+OtrekPw7O6Z9FSFsOudkNCVVPPdxv4d7Jeph20s8uNyRrYX58bRpdFeZSMAbeA9RZPt4x0CksfCoFlBfuf8H836ChGdX0+1FnuzOpeH9EP7lcASoJ8x0orzbk+m1ydG4dysrzwvELDcenzsggDC+qoXcJHV3XBMfpRlY4KrKOxjS+YG5ZIsazSqL4MFuzCano/jrHgF2/VUAKYnVRN9Es2yIdx1zaf0+A6IlcxLrtJJajLr+jt16d0Be4o3X/jPL32+FcPSSuSZ7esObbY4DNTXoJknnxlyoF/A686LN6CyQwUZBo3FbKhh3T8ynomYstcLUQ8Cdak6SyblWEOhXJsb1VFHUVUg6Fz6vsmO79v58YQvKCitn7ip+RpjyhqnO7qPXlIi/tXv+rgI9QOoYtUVZ9azQyyXjYSfcXuMbgZWaA==
 X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OS3PR01MB8426.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(366004)(376002)(136003)(39860400002)(396003)(1800799009)(186009)(451199024)(83380400001)(66556008)(110136005)(38100700002)(36756003)(38350700002)(86362001)(316002)(66476007)(66946007)(8936002)(4326008)(8676002)(41300700001)(5660300002)(6506007)(6486002)(52116002)(6512007)(2906002)(478600001)(2616005)(26005)(21314003);DIR:OUT;SFP:1102;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OS3PR01MB8426.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(366004)(376002)(136003)(39860400002)(396003)(1800799009)(186009)(451199024)(83380400001)(66556008)(110136005)(38100700002)(36756003)(38350700002)(86362001)(316002)(54906003)(66476007)(66946007)(8936002)(4326008)(8676002)(41300700001)(5660300002)(6506007)(6486002)(52116002)(6512007)(7416002)(2906002)(478600001)(2616005)(26005)(21314003);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?us-ascii?Q?/sMW/bj4twGd/UguL1+45JXJH+P5U8Q4VajZMV07vay90DxkYD8OzFfavpqR?=
- =?us-ascii?Q?O1piCP7JasCZsAjbGEm0aWpmgeRsQxSPAkZ3dIzleuEDftfPE0XKB32ijysT?=
- =?us-ascii?Q?Bffv3nvpW4VUHZHDf5QNVINrJC4VQY8WRsn505GZK5pnsZJY50GLdayswCyH?=
- =?us-ascii?Q?MZEuxeqbXxsev6xkW4Yz8UuR8OiRNK05QhjqdJ+y+GrYa/TKDkynyr5M2TUZ?=
- =?us-ascii?Q?6eJmIpCGlif5WthuyY1dCA+9gruPE8LB/Xqgi87ZXJSqwcG/k0l15KOqusJN?=
- =?us-ascii?Q?5kuKrQ63+g92xA7y91x0RgdlF5vI7nM71sw48bNZKGvtWxmfLkUistOfULQu?=
- =?us-ascii?Q?05lZJxLPipU6oWqWW5AsTN/mxeaNkLgYTtFKe+96rT68SCSm1RkIKwv6oocJ?=
- =?us-ascii?Q?JFRUbrvfgSXP+TnAc1FDv1EdtRFjbqrE4bzQ0bIxKCrdsda8xdjQ7/UZnHgb?=
- =?us-ascii?Q?BGNeVemCgywEJNYRpiNVstUlLmeB6aHnkzOIRhPoF6clSbBKuC2fSrwk//4B?=
- =?us-ascii?Q?9Ch+rxQXpSD/T8dldy1WHMVAWnMJ9lH7myjcCiIU9/0q34rjIRFLHy/AdhiA?=
- =?us-ascii?Q?LoP3nIbRac8Wr5anlR35IiASvLav/87vX8vCtLW0/E7sXCg+zsIUOI4L/Atm?=
- =?us-ascii?Q?6kmEQu+47KC85aPpZE3OBDwBjOXKDWSDGWHpiFsNcTMcypmmp15Rgugq+l5i?=
- =?us-ascii?Q?n0k+UK7zjOLoZ0ua6TLSkA56tLgu/ZXGmWDM/Vd4ZwC5ZaLlLi05NkALO146?=
- =?us-ascii?Q?WjLf1kSueu/OBeup+aHWYbFYMzV5XX4I6CZ3OcEChNIu5miDHmSXKUP8ZEVI?=
- =?us-ascii?Q?sTkmqUaxYHhFWN8x3/PjxQHUcHMB4XVXLjLXzbInGZeQCqF/FXQErdstbrh+?=
- =?us-ascii?Q?Um5UX/k4G3hA4sjH1fURTO3ryVycO8PtRuB0hNR3JVY3Bo8hnMmU2VvrRvEj?=
- =?us-ascii?Q?4mJTfRzKYDI6/nYH8qaZf2SvTuFwpwSVMAw+i7JDpxBypha11tgWiSgqP3ez?=
- =?us-ascii?Q?phaG2XPgUvbRgwCxhgUKTrj2WfhH79ck3W2MUJ4ohd6mljVYQLIOVHmrV1mC?=
- =?us-ascii?Q?34JvnguYPrgK83u6HVlGxeLAN4/jo8bbpa0FHSWxhWllARlqW0oZVwnURIC8?=
- =?us-ascii?Q?BmGZ+XeATXp9SqisqTaoCDvwJ6vG59Jwr7foqGJDHSE+9t3I38Q4MEzxFQOu?=
- =?us-ascii?Q?OrYc+XXZXIY5Zln6Ce1fAvhXEudjhHHE6hTuLwmCpGpFq/FeTfmK3T7h+n2a?=
- =?us-ascii?Q?2O3RWOQjmnCIFM/puQmhaV3l7kE3N1s7d1km9jfCA12xZExhEQJrUvckRsoZ?=
- =?us-ascii?Q?TKlKfZOQFT+Boj+GFsUbNOWqeVsXZdAzXEErKBO4WiHkHXsqSId7jOiSNN3j?=
- =?us-ascii?Q?LizrwLzvHvN4M7sZ+HgnLx0ygkLM2mbWjo87uq5Mdemv/jSeaD8vE8uC3hqo?=
- =?us-ascii?Q?32mbF5yA/lSUa/6q5bHCB2jeMERLtFs20Kv6Ddos7lrK5ubC2WfPcQM8kp9C?=
- =?us-ascii?Q?oSKXaCGYCQGBQrsOvzS/m/oCcfkCIYFCS09Odsc9ILEalYGZ9XL5qmYJw3CJ?=
- =?us-ascii?Q?C/GJ+54kH/U0zyGXG5TItxTgGHnp2OqxFFT0QcDusKYmQvZIqZwE77Bb5m6l?=
- =?us-ascii?Q?7LqhtTnD0BONAc/SX+qle7o=3D?=
+	=?us-ascii?Q?iAYbQUZ3ZSxJXGxwu72CkVLDB5AgMAAEA6VslcfzTSy3N+A6OpG8yJkWikSc?=
+ =?us-ascii?Q?8HwMFHE3NIk1Erft1QdkxwSf7XhnD761cGtLd9WewZA3J8YEP4N5Lrny6JPm?=
+ =?us-ascii?Q?oUk6zsk46XpX2AKv8gxb1hJInqG9qQS6uDtSKXcfKyzL/hLGEiNATqOpG3Ul?=
+ =?us-ascii?Q?h7STz4wBY8mSvYkhx3D5W3y9a5zv5y+jQbCkWcIpfSadrU/KDrPFEEJbezW6?=
+ =?us-ascii?Q?xj0y8vK1x6xc1n8CqxG7MfPlS9A3Z7KnwajCPC8DYbivEtqwk4p+ikfjgc2i?=
+ =?us-ascii?Q?RT9FC6WlW8Kt0meEp8uMuBCE08mZlJbmsNjUCzhCs6SfBqbMj+GDAl0eS048?=
+ =?us-ascii?Q?vJPqqESfSY4u27byJGubylvLp0xGWvsKNStKDIdtLpIJmhuZpKesoMTC34Dy?=
+ =?us-ascii?Q?SX8xzLnMynxL7f1sh/ghukURkcgWvbF2hiUsybs8zJ54364y4bQHmjACa1TL?=
+ =?us-ascii?Q?SDryLpwyBGCRhJ72ZtU4d9DooiqukuFcnk60QfrbPPB2/7pWbncrgSzyTvTk?=
+ =?us-ascii?Q?WcucTcOJ3CJIMi6wwn5NjLXWtM9sJJrUW3zUrF5Ut98IasRkUjzBG42vZgl8?=
+ =?us-ascii?Q?Pzl1vwCjCs6O4mQN8IMVDygN0/QRVhZTirvidgA5uOY2ckj9bWxp9nkUnXlT?=
+ =?us-ascii?Q?0qNZKqhgFyT1RAmezcnvly6GcXRQ27bEqn05bQFv3VAaL+bJjhBAFNYzrsef?=
+ =?us-ascii?Q?O92yVes8xLshRo+/ZIeYGxTH7d72QdmrddToZnfcR5RvZ7EWwZSCSGpB9khM?=
+ =?us-ascii?Q?g4kLKtARzAB84kzLxBKIzGMxHcPbSIfmyLuH2wO4aVuaqkWz1A7fJFykONgE?=
+ =?us-ascii?Q?S8V9Dyjed9DHDjiOtWdfC7yidBVf2PgRCxVG2RrbbKfllw79TD2Lr5tEKU+/?=
+ =?us-ascii?Q?2vHfBRt5ejLebc9cu795POqltAP8e50o+C4EMt9fOb/TCDRuy3kWakqKJj0B?=
+ =?us-ascii?Q?Vxd0pvxbAY6EJG2paFjb+k/4rYHhxi0VgZjK4r9YGroW7eYerDnGh3fuw4Fg?=
+ =?us-ascii?Q?mlyPE5+uvtbfukCL5unb50c6dM7+VRz3r7w99WaUTZTcU09mcebzNtcPizFR?=
+ =?us-ascii?Q?ctqqO0J1TnYP0dINwIDL9WL1m29KKUCPolLyweSaXG946tzI2LVSpqlkg+X9?=
+ =?us-ascii?Q?KQ0PnLOoze26zmOaO4xEXFNcvXAHIMXdX/hRvGdOTGY9d9vZTiB3ZoImct5X?=
+ =?us-ascii?Q?wwylKEvLq6z3e3pUtawlq5gfOjjjiWA2vcFQR0A4dxrndu78fMnUrVQf5Sn/?=
+ =?us-ascii?Q?cjiprHcRrVVZ6kGsAMBNnVu1T8am6FZaOEEiqpdqTt7OGItULN+D9UwP3ota?=
+ =?us-ascii?Q?+t7eGFWsoXOJFc9E+JYJBOXQRAhap3uPxsEhG7oW3sPshgPePJNbgu8qrrDz?=
+ =?us-ascii?Q?jvaep3n4mSFBEePx73ms0flBc35huRkMpzQw+92zNp1gcVFBvkIUU0ggtXWw?=
+ =?us-ascii?Q?QxLCcxxwDIX+l6njqK4C7r0Vp/MnknlWEz2Ho8dJcrzadjfx4bTyD7kfq3J3?=
+ =?us-ascii?Q?WMfGPI8qLpGfBPgnHY28683VEEk0UhB93OI4e8CSymWJ6vxZrtDYFT4GJ6Ud?=
+ =?us-ascii?Q?rQLLAd2BSJG10858TLYkc2E0JfST99dO3hZy1lBkHZu3DbHjSblDASg3VICt?=
+ =?us-ascii?Q?FLnAcIBsrdihlhPKtDF5Z1I=3D?=
 X-OriginatorOrg: renesas.com
 X-MS-Exchange-CrossTenant-Network-Message-Id: 
- 6e0fcc7c-dc78-413f-11f4-08dbb321eeb7
+ f39bf8a3-505b-4fef-1691-08dbb321f53e
 X-MS-Exchange-CrossTenant-AuthSource: OS3PR01MB8426.jpnprd01.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Sep 2023 23:50:52.4267
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Sep 2023 23:51:03.4160
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 53d82571-da19-47e4-9cb4-625a166a4a2a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
 X-MS-Exchange-CrossTenant-UserPrincipalName: 
- S53lYMJbYKGhnfsADycsMMJpga3+KtnpC0oj0+EQ1Ttqf3YfkMZpAgqBuIskUfhnfweII/e73frz2wPiES9KdyYxKCz4OEKNDE8uuI2Sab21OUwMHWiGMrZR+kBcpPvN
+ 09TT4TcFHW1fNASBNhz+37yM2k62oe8itd/IZCuJVgNrVkF+7Ag5yrV4ibzjMAlO/rBVVeMrXOnurX5PkLegg3XQmYy3V/aF+j423n0gT1nxtHTMjLObdBde+LVueSfa
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: OS3PR01MB9445
-Message-ID-Hash: AF4TSADWRTS64J3WSJ3U7KZ74W2UNVBF
-X-Message-ID-Hash: AF4TSADWRTS64J3WSJ3U7KZ74W2UNVBF
+Message-ID-Hash: 622J3EYI2KBSLKDV3VXTDOMI4I6ETIKM
+X-Message-ID-Hash: 622J3EYI2KBSLKDV3VXTDOMI4I6ETIKM
 X-MailFrom: kuninori.morimoto.gx@renesas.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -149,7 +155,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AF4TSADWRTS64J3WSJ3U7KZ74W2UNVBF/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/622J3EYI2KBSLKDV3VXTDOMI4I6ETIKM/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -163,31 +169,181 @@ This patch convert asoc_xxx() to snd_soc_xxx().
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/codecs/rt5677-spi.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/sof/ipc3-pcm.c |  6 +++---
+ sound/soc/sof/ipc4-pcm.c |  8 ++++----
+ sound/soc/sof/nocodec.c  |  2 +-
+ sound/soc/sof/pcm.c      | 18 +++++++++---------
+ 4 files changed, 17 insertions(+), 17 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5677-spi.c b/sound/soc/codecs/rt5677-spi.c
-index d25703dd74996..d91a2184f67c0 100644
---- a/sound/soc/codecs/rt5677-spi.c
-+++ b/sound/soc/codecs/rt5677-spi.c
-@@ -112,7 +112,7 @@ static int rt5677_spi_pcm_close(
- 		struct snd_soc_component *component,
- 		struct snd_pcm_substream *substream)
+diff --git a/sound/soc/sof/ipc3-pcm.c b/sound/soc/sof/ipc3-pcm.c
+index cb58ee8c158a5..2d0addcbc8192 100644
+--- a/sound/soc/sof/ipc3-pcm.c
++++ b/sound/soc/sof/ipc3-pcm.c
+@@ -17,7 +17,7 @@ static int sof_ipc3_pcm_hw_free(struct snd_soc_component *component,
+ 				struct snd_pcm_substream *substream)
+ {
+ 	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(component);
+-	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
++	struct snd_soc_pcm_runtime *rtd = snd_soc_substream_to_rtd(substream);
+ 	struct sof_ipc_stream stream;
+ 	struct snd_sof_pcm *spcm;
+ 
+@@ -42,7 +42,7 @@ static int sof_ipc3_pcm_hw_params(struct snd_soc_component *component,
+ 				  struct snd_sof_platform_stream_params *platform_params)
+ {
+ 	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(component);
+-	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
++	struct snd_soc_pcm_runtime *rtd = snd_soc_substream_to_rtd(substream);
+ 	struct sof_ipc_fw_version *v = &sdev->fw_ready.version;
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct sof_ipc_pcm_params_reply ipc_params_reply;
+@@ -142,7 +142,7 @@ static int sof_ipc3_pcm_hw_params(struct snd_soc_component *component,
+ static int sof_ipc3_pcm_trigger(struct snd_soc_component *component,
+ 				struct snd_pcm_substream *substream, int cmd)
  {
 -	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
 +	struct snd_soc_pcm_runtime *rtd = snd_soc_substream_to_rtd(substream);
- 	struct snd_soc_component *codec_component =
- 			snd_soc_rtdcom_lookup(rtd, "rt5677");
- 	struct rt5677_priv *rt5677 =
-@@ -158,7 +158,7 @@ static int rt5677_spi_prepare(
- 		struct snd_soc_component *component,
- 		struct snd_pcm_substream *substream)
+ 	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(component);
+ 	struct sof_ipc_stream stream;
+ 	struct snd_sof_pcm *spcm;
+diff --git a/sound/soc/sof/ipc4-pcm.c b/sound/soc/sof/ipc4-pcm.c
+index db19cd03ecad8..9a458b84d6ebf 100644
+--- a/sound/soc/sof/ipc4-pcm.c
++++ b/sound/soc/sof/ipc4-pcm.c
+@@ -280,7 +280,7 @@ static int sof_ipc4_trigger_pipelines(struct snd_soc_component *component,
+ 				      struct snd_pcm_substream *substream, int state, int cmd)
+ {
+ 	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(component);
+-	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
++	struct snd_soc_pcm_runtime *rtd = snd_soc_substream_to_rtd(substream);
+ 	struct snd_sof_pcm_stream_pipeline_list *pipeline_list;
+ 	struct sof_ipc4_fw_data *ipc4_data = sdev->private;
+ 	struct ipc4_pipeline_set_state_data *trigger_list;
+@@ -518,7 +518,7 @@ static int sof_ipc4_pcm_dai_link_fixup(struct snd_soc_pcm_runtime *rtd,
+ 	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, SOF_AUDIO_PCM_DRV_NAME);
+ 	struct snd_sof_dai *dai = snd_sof_find_dai(component, rtd->dai_link->name);
+ 	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(component);
+-	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
++	struct snd_soc_dai *cpu_dai = snd_soc_rtd_to_cpu(rtd, 0);
+ 	struct sof_ipc4_copier *ipc4_copier;
+ 	bool use_chain_dma = false;
+ 	int dir;
+@@ -704,7 +704,7 @@ static int sof_ipc4_pcm_hw_params(struct snd_soc_component *component,
+ 				  struct snd_sof_platform_stream_params *platform_params)
+ {
+ 	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(component);
+-	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
++	struct snd_soc_pcm_runtime *rtd = snd_soc_substream_to_rtd(substream);
+ 	struct sof_ipc4_timestamp_info *time_info;
+ 	struct snd_sof_pcm *spcm;
+ 
+@@ -765,7 +765,7 @@ static snd_pcm_sframes_t sof_ipc4_pcm_delay(struct snd_soc_component *component,
+ 					    struct snd_pcm_substream *substream)
+ {
+ 	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(component);
+-	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
++	struct snd_soc_pcm_runtime *rtd = snd_soc_substream_to_rtd(substream);
+ 	struct sof_ipc4_timestamp_info *time_info;
+ 	struct sof_ipc4_llp_reading_slot llp;
+ 	snd_pcm_uframes_t head_ptr, tail_ptr;
+diff --git a/sound/soc/sof/nocodec.c b/sound/soc/sof/nocodec.c
+index 7c5bb9badb6c2..34aa8a7cfc7db 100644
+--- a/sound/soc/sof/nocodec.c
++++ b/sound/soc/sof/nocodec.c
+@@ -44,7 +44,7 @@ static int sof_nocodec_bes_setup(struct device *dev,
+ 		links[i].stream_name = links[i].name;
+ 
+ 		links[i].cpus = &dlc[0];
+-		links[i].codecs = &asoc_dummy_dlc;
++		links[i].codecs = &snd_soc_dummy_dlc;
+ 		links[i].platforms = &dlc[1];
+ 
+ 		links[i].num_cpus = 1;
+diff --git a/sound/soc/sof/pcm.c b/sound/soc/sof/pcm.c
+index d778717cab10b..33d576b176478 100644
+--- a/sound/soc/sof/pcm.c
++++ b/sound/soc/sof/pcm.c
+@@ -25,7 +25,7 @@ static int create_page_table(struct snd_soc_component *component,
+ 			     struct snd_pcm_substream *substream,
+ 			     unsigned char *dma_area, size_t size)
  {
 -	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
 +	struct snd_soc_pcm_runtime *rtd = snd_soc_substream_to_rtd(substream);
- 	struct snd_soc_component *rt5677_component =
- 			snd_soc_rtdcom_lookup(rtd, "rt5677");
- 	struct rt5677_priv *rt5677 =
+ 	struct snd_sof_pcm *spcm;
+ 	struct snd_dma_buffer *dmab = snd_pcm_get_dma_buf(substream);
+ 	int stream = substream->stream;
+@@ -60,7 +60,7 @@ void snd_sof_pcm_init_elapsed_work(struct work_struct *work)
+  */
+ void snd_sof_pcm_period_elapsed(struct snd_pcm_substream *substream)
+ {
+-	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
++	struct snd_soc_pcm_runtime *rtd = snd_soc_substream_to_rtd(substream);
+ 	struct snd_soc_component *component =
+ 		snd_soc_rtdcom_lookup(rtd, SOF_AUDIO_PCM_DRV_NAME);
+ 	struct snd_sof_pcm *spcm;
+@@ -124,7 +124,7 @@ static int sof_pcm_hw_params(struct snd_soc_component *component,
+ 			     struct snd_pcm_hw_params *params)
+ {
+ 	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(component);
+-	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
++	struct snd_soc_pcm_runtime *rtd = snd_soc_substream_to_rtd(substream);
+ 	const struct sof_ipc_pcm_ops *pcm_ops = sof_ipc_get_ops(sdev, pcm);
+ 	struct snd_sof_platform_stream_params platform_params = { 0 };
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+@@ -194,7 +194,7 @@ static int sof_pcm_hw_params(struct snd_soc_component *component,
+ static int sof_pcm_hw_free(struct snd_soc_component *component,
+ 			   struct snd_pcm_substream *substream)
+ {
+-	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
++	struct snd_soc_pcm_runtime *rtd = snd_soc_substream_to_rtd(substream);
+ 	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(component);
+ 	const struct sof_ipc_pcm_ops *pcm_ops = sof_ipc_get_ops(sdev, pcm);
+ 	struct snd_sof_pcm *spcm;
+@@ -246,7 +246,7 @@ static int sof_pcm_hw_free(struct snd_soc_component *component,
+ static int sof_pcm_prepare(struct snd_soc_component *component,
+ 			   struct snd_pcm_substream *substream)
+ {
+-	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
++	struct snd_soc_pcm_runtime *rtd = snd_soc_substream_to_rtd(substream);
+ 	struct snd_sof_pcm *spcm;
+ 	int ret;
+ 
+@@ -283,7 +283,7 @@ static int sof_pcm_prepare(struct snd_soc_component *component,
+ static int sof_pcm_trigger(struct snd_soc_component *component,
+ 			   struct snd_pcm_substream *substream, int cmd)
+ {
+-	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
++	struct snd_soc_pcm_runtime *rtd = snd_soc_substream_to_rtd(substream);
+ 	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(component);
+ 	const struct sof_ipc_pcm_ops *pcm_ops = sof_ipc_get_ops(sdev, pcm);
+ 	struct snd_sof_pcm *spcm;
+@@ -386,7 +386,7 @@ static int sof_pcm_trigger(struct snd_soc_component *component,
+ static snd_pcm_uframes_t sof_pcm_pointer(struct snd_soc_component *component,
+ 					 struct snd_pcm_substream *substream)
+ {
+-	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
++	struct snd_soc_pcm_runtime *rtd = snd_soc_substream_to_rtd(substream);
+ 	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(component);
+ 	struct snd_sof_pcm *spcm;
+ 	snd_pcm_uframes_t host, dai;
+@@ -417,7 +417,7 @@ static snd_pcm_uframes_t sof_pcm_pointer(struct snd_soc_component *component,
+ static int sof_pcm_open(struct snd_soc_component *component,
+ 			struct snd_pcm_substream *substream)
+ {
+-	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
++	struct snd_soc_pcm_runtime *rtd = snd_soc_substream_to_rtd(substream);
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(component);
+ 	struct snd_sof_dsp_ops *ops = sof_ops(sdev);
+@@ -482,7 +482,7 @@ static int sof_pcm_open(struct snd_soc_component *component,
+ static int sof_pcm_close(struct snd_soc_component *component,
+ 			 struct snd_pcm_substream *substream)
+ {
+-	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
++	struct snd_soc_pcm_runtime *rtd = snd_soc_substream_to_rtd(substream);
+ 	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(component);
+ 	struct snd_sof_pcm *spcm;
+ 	int err;
 -- 
 2.25.1
 
