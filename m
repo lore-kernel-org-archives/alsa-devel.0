@@ -4,140 +4,140 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 42D17CA0EC6
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 Sep 2023 23:57:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7CC3DCA0EC6
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 Sep 2023 23:57:29 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 688ABE96;
-	Tue, 12 Sep 2023 01:56:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 688ABE96
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7DCB3EA4;
+	Tue, 12 Sep 2023 01:56:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7DCB3EA4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1694476628;
-	bh=vpYGWMPmDXektfXUd+TtQU19HDkC/mWxFBqHVoonrDg=;
+	s=default; t=1694476647;
+	bh=lyNUMozV3X75wdPa6c/h1akraJ1wptwb4Yd7Xgf6iK4=;
 	h=From:To:Cc:Subject:In-Reply-To:References:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Of5yAvZCC7PhIJrcgmcJXlnCiLJt/+xgSHxyuBuJTUbX8w2AQ7XWVv5VW15RCp5ca
-	 njG46zydAg5tbUEOGMQYb9m680TaX0RA0IgyigQ3a/KWPVQmFCRUXx2pFt4vro7ibz
-	 MPtGXK2L8ZCnHY/1HbMOzg4Wd28YhCn8H+Kwhsv4=
+	b=Hm4tLXjOV4tISQJlsj4889Xt2Czfp7Jye3ZDYj7s81/PFmlu7lTt1IZVRJzGUhNwn
+	 cL2ucdAP5cle1pQCLhOyslt/LXQTTgUrfqE9xmtCZOES+LxTLy9nEmzzmVtP4Zi/eg
+	 wu3+JII5FotyNZ6fKbYLX1GOCkRuskNAoCmS397s=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C5E01F806A4; Tue, 12 Sep 2023 01:51:55 +0200 (CEST)
+	id 4714DF806AD; Tue, 12 Sep 2023 01:51:59 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 51F95F8061C;
-	Tue, 12 Sep 2023 01:51:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9DD57F805C7;
+	Tue, 12 Sep 2023 01:51:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D59A8F80600; Tue, 12 Sep 2023 01:51:48 +0200 (CEST)
+	id 65FE3F805B5; Tue, 12 Sep 2023 01:51:49 +0200 (CEST)
 Received: from JPN01-OS0-obe.outbound.protection.outlook.com
- (mail-os0jpn01on2072e.outbound.protection.outlook.com
- [IPv6:2a01:111:f403:700c::72e])
+ (mail-os0jpn01on2070a.outbound.protection.outlook.com
+ [IPv6:2a01:111:f403:700c::70a])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E9A69F80537
-	for <alsa-devel@alsa-project.org>; Tue, 12 Sep 2023 01:50:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E9A69F80537
+	by alsa1.perex.cz (Postfix) with ESMTPS id C37C3F8057B
+	for <alsa-devel@alsa-project.org>; Tue, 12 Sep 2023 01:50:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C37C3F8057B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=renesas.com header.i=@renesas.com header.a=rsa-sha256
- header.s=selector1 header.b=c3NUa/e3
+ header.s=selector1 header.b=mHADqHJ7
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CHGLlm1/OKSkMu1KmnfyqqusXgPJ9PQKh24o7Fj46wHqc+K4gz5mBTSt+8B/3F3apVKR58LkIsdbFUVZjmRaXgVqYG54rfjF6tLssBN42uFDNelorxP7ckn6ZUTTMbGNxHbLDs1B+FsI9klVncynAjWm+A7qkcgPcWzNfiqoS2r6nbZvQNJPtNjUWa4jI5tYskZF7Rjo0Ylb+ZBg1ujOOHH7rG7Gv79te7Nv4MWRvDy4qQZKDyh8wEdO1fTU4ucd0qv0SpVZpzOW20Ev4lzWx7AzG1Ty5luOh2To5NGRGe2ZVnVSLbTNgSJ+ESxItulk1pF7oiXIejFrpt+4eWMR4A==
+ b=OzYo+Tt9iHA814KPRrVF7s2pMMaP6fngEa7HXOTg0htsql10TGBQtlBj9S3vCfACtjUTrTQCfxYkedSMe9qnICAkueFgfBOtWhunJQcWqTRfWdtpNSPMipuRj9l3Mu+2nymTMulutNKCTnNEFgSmUvjyqRZtL/cXGSPA1rYQRvJotjy6CHVRbUuQmnPu8H5GpkGRiwthF1MhPy4h71SemyY4tYYDtfC5NTJwMkPlv2bgh/ajzVrURqRjIikwF9g7Q7buSyAHIkE/3bqwrP2sjeHAeME7t9P1Juyowes9qJTUuxgJna7UyIaCcPjZ7Mxj3iHZU4k2vtKIvooa4QicxA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=2oDwcKSoajgXqqugldaYPJb5TkLJKNBwotZUwYrpbZs=;
- b=CMxSruc9u9VAvgyE52OG8U0XOY1A4cCEZW20muqI/r7//4zijPKtFJoGVYm9wJ6A3AN52k4Mk6/1iqST51tReq+MztSh5hlIRcZdms36zduK6v2xN1MZUcziurPCHCrv0DOe/OFMFc9bs4lIA49b4i0FQGmDxHNTVWCmbpaTA/X36Z0yqcxGuMeJRfbXkp27Aq57GKnNz3q/xM3c3quglKeaSuyGDIYyD0F+P0gCdXfuqEHNenIdyy4wayA1qvRzQbyoFteCZFiYFbDGhvhGVTLQFYDPneZE7z3LFmhXaSlg6YF3ZNqkAOWMsJr9boFoGTEbZZcLFcIEdo07Xtl84A==
+ bh=Pq/8uknxbA8g5mEBHdDBYwphkBwUM4HLrzkI+ZA0hIE=;
+ b=a4NEcTx1c258NtFQ4nyVbQE/PoA9JZp9fkL3udFN2wmf40KDkqA5oqRrFnlUis/aotEpmcH1aUWg+L1fjltaNyICR33MU7bq9Kf1uJ5Y5nuo7KakGAQCZ1EnNPYfBGAQdu/pDoT6vgY+XwrCRAa+ivXRixF4GqidT9Id8ZhN2puKv55eh93S7rWUtXGw0QFh2i6iO7zfkKNUp0ClQgw0hIljRvUuLiIzdhRUib6owHNu1JuvLC8wI5NuTZxIKBdl3H28ebMK1KfUlvEL0DYWw7UxFs7NJX48zdXIVynY0QPYec15ul0v8yC4ERim8zYakxx+8Sltx82pX3CnJDQzdA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=renesas.com; dmarc=pass action=none header.from=renesas.com;
  dkim=pass header.d=renesas.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=renesas.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2oDwcKSoajgXqqugldaYPJb5TkLJKNBwotZUwYrpbZs=;
- b=c3NUa/e38HSlJ4IkaCzIsDAlLh/bofY6w/4uyTsszGTrEaFddr4DQwTKdefymB37EdOmkY7Rwfi/0n4aOdxBJWN40d4caW1tiUXuyZY+gCpzNi+SiItD27uYhMJSxiMHeGURPlUo2d581IyliLeqIdRmEfGacvhrhWnuQDDsSf0=
+ bh=Pq/8uknxbA8g5mEBHdDBYwphkBwUM4HLrzkI+ZA0hIE=;
+ b=mHADqHJ7amshA+BWqubzFAUvsiuT3gPDbIAnmNMQxRaWBvLHYbZw5HtziEEOPy3sqrA8bmRTMTDQEo8w7WTXX/WddH4aMHuADjFkRkIUaRbbBYfeyRL2CW1vQ5tkFZvvE/mJB3vN3Kbz8tpMgzNgd5zOCe+rMkt4EPo+sMgdOgw=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=renesas.com;
 Received: from OS3PR01MB8426.jpnprd01.prod.outlook.com (2603:1096:604:194::10)
  by OS3PR01MB9445.jpnprd01.prod.outlook.com (2603:1096:604:1ce::11) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6768.37; Mon, 11 Sep
- 2023 23:50:24 +0000
+ 2023 23:50:14 +0000
 Received: from OS3PR01MB8426.jpnprd01.prod.outlook.com
  ([fe80::8c08:d94c:8e54:9b5d]) by OS3PR01MB8426.jpnprd01.prod.outlook.com
  ([fe80::8c08:d94c:8e54:9b5d%6]) with mapi id 15.20.6768.036; Mon, 11 Sep 2023
- 23:50:24 +0000
-Message-ID: <875y4gqngf.wl-kuninori.morimoto.gx@renesas.com>
+ 23:50:13 +0000
+Message-ID: <878r9cqngq.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Jaroslav Kysela <perex@perex.cz>,
- Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Masami Hiramatsu <mhiramat@kernel.org>, Takashi Iwai <tiwai@suse.com>
+To: Alper Nebi Yasak <alpernebiyasak@gmail.com>,
+ Heiko Stuebner <heiko@sntech.de>, Jaroslav Kysela <perex@perex.cz>,
+ Judy Hsiao <judyhsiao@chromium.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
 Cc: alsa-devel@alsa-project.org
-Subject: [PATCH 33/54] ASoC: uniphier: convert not to use asoc_xxx()
+Subject: [PATCH 31/54] ASoC: rockchip: convert not to use asoc_xxx()
 In-Reply-To: <87h6o0s275.wl-kuninori.morimoto.gx@renesas.com>
 References: <87h6o0s275.wl-kuninori.morimoto.gx@renesas.com>
 User-Agent: Wanderlust/2.15.9 Emacs/27.1 Mule/6.0
 Content-Type: text/plain; charset=US-ASCII
-Date: Mon, 11 Sep 2023 23:50:24 +0000
-X-ClientProxiedBy: TYCP286CA0158.JPNP286.PROD.OUTLOOK.COM
- (2603:1096:400:383::9) To OS3PR01MB8426.jpnprd01.prod.outlook.com
+Date: Mon, 11 Sep 2023 23:50:13 +0000
+X-ClientProxiedBy: TYCPR01CA0092.jpnprd01.prod.outlook.com
+ (2603:1096:405:3::32) To OS3PR01MB8426.jpnprd01.prod.outlook.com
  (2603:1096:604:194::10)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: OS3PR01MB8426:EE_|OS3PR01MB9445:EE_
-X-MS-Office365-Filtering-Correlation-Id: 87226d49-ad27-4c75-6e00-08dbb321de39
+X-MS-Office365-Filtering-Correlation-Id: 3dceeeb8-778c-44fa-f37e-08dbb321d7bb
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info: 
-	xAg4QTpfNlmx8CL2ZVEwnOPUnQvnaQ7rb3xefNsR0QWmdBtAZ1EOaX8YPNES9S+DdLbIp2jjezl2vl0/QiDq+wgSH6Ix14NnTyhtzv20pajnYBJuzyBO+LesNKirqr4fsg0niHJEiW/UMiq1UXekd/ZBGWOR+flcILFSUZj/wUQTCVHVlMZyumsyrRzReWRijfqHmUJLjjGiV9+un4gJF/Syf1/d1LVijYtPZXMuD9j56voN05aWgm5ouYmIXBDFklaed/QX2I+oCc1/pXHPYoCmbPDhTZ9nVmFeg8h9aMtnrp7FIXbRSiZ5Gh5HYrLpjM4QG7ZDjCmLHXbABCkcDTAArdzBHRyGAyEZO4dL94JCu2ElsWIZyaUp9AcCsWD4anT1yB5DTJWotL1eBro1hPVGzGOrD9hGINYriv9Skq2JPnZR3a6I+1KsydxGtaHbIWl56F4iq4zUGoKt8fiIflmORX0M/E0FCjmgqlT48XHynHM3PpptJxdsyHwE6LzwuNYXC44n7uguySOLKEJcAsdwJEkxakc/DSO3TQLvIBfL80U/ausjMdWCKsH3c5LvhY4FS4K/Dlrx1L9By0c+RPXPyHcFzimok/W1lsBY/2cwszA0eiJ1styvAFfRBly26+cmo/Vje0lqMBgKuO84Wg==
+	fBBvcBfc+gMxZADTlOEcDJQTyUPyfQOkP11NLL8E7I6oiwsArDppSWarLbRCArg6Tc0hqTQr54RLkS0gl8Diwo3W1+WK2dFlnXo3A5mtBkdrHLLqzJscPNOi84BRNkrlAsw+AFWroCQe4qlhJ3maL60QczxOedOI8oF7gUz1veJ74IMToAJ8olRjbYXgen+XJBv291aavFzSY/WPQHZv/YvG9nhoEDCKZ//mu7Ko9JbcBj9iDQldpzqMBRT/Nh7kP2+OMSaoDTyx8mSwcZxlWskFLc7sGD1NMZlHI2Z8b4vA6Xg+hRFS255wPKzHAT+BN4dO8ckbgGmDx8z9FxPL+V/TcaCoWxfNHshkCbLMtz8VFG0KmzZG08qDdrLyaqPwMoVAMpd3dioGEOEXGHuH4qr2/1Beu5e7CU0nPn9xisdsLR25b4LR0upDBGqsq+SFI42CD5fNIrEgEz6AoRPzXgIYlimt7OmEoW/AG921L1BAwQjZjaEbClrviyd4Frb0fGfPM69pmV3ZLp6TDPedMguTY72ipuugfgaQY0TwUnfk03ZjBfYJrkhIDJtlgIu/Vyexkm/avIgN+YnSpAJRMQlbGiFLOEv288UMOwYy+WQRcgGSGf6JjRpryx8PF2tK10ePiYuzLyg0gYfhfTuSpg==
 X-Forefront-Antispam-Report: 
 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OS3PR01MB8426.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(366004)(376002)(136003)(39860400002)(396003)(1800799009)(186009)(451199024)(83380400001)(66556008)(110136005)(38100700002)(36756003)(38350700002)(86362001)(316002)(66476007)(66946007)(8936002)(4326008)(8676002)(41300700001)(5660300002)(6506007)(6486002)(52116002)(6512007)(2906002)(478600001)(2616005)(26005)(21314003);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?us-ascii?Q?9WkXISpP7rLhvv381oU/yUr/Wr79WbXIQWfj/BwOQBMsd6GQEoM/ynKZuEyy?=
- =?us-ascii?Q?srSN1d4KlC6YLpG26P7I8QCHvb0A1gQsAhYLVvSlF3ld8P4LT3LjPRv2K38u?=
- =?us-ascii?Q?caMA7w1/gXGMteoj3HJjlu+JNuX1nR37pwZAPsAyLjUZqRHPeIHE7gh8ecnZ?=
- =?us-ascii?Q?aEBkXbLUZzyhRsVNyCONAHjTzxuEfxu4VfW+IXvu9Fn115bIMod6rFDRRJ3y?=
- =?us-ascii?Q?J5wetEGPwIyRsfz+C9VBWAr3XIWaTAhBOMdtZPI/FQxYRWnpEo1ZZttwAbuT?=
- =?us-ascii?Q?o4rADQq3qPTCWt2JWMnHBxJwkjUohsnubNze8QKt1TFt2Mfm3j1vb5tX0JVm?=
- =?us-ascii?Q?jKSlaunNTciG3Itm/zioADVXATs1MQEq6r6zg2+iFdPvfAgGLlZ/YaQq8t6c?=
- =?us-ascii?Q?5yIYIcWzk6k85ePhGTH655SYsJnUM7+6A9BHAptcLCB+uw3j/1wA0sWCXICB?=
- =?us-ascii?Q?2Cn3VI2RA6h7Gd1ydkVBGrJdrPdsXJvOkZCwOwd1RYoB7T4cWf7Fe6qq2PX8?=
- =?us-ascii?Q?F8SrwEkshOx1OmiiqzVGQNv86YTx7tjVwGg1pgo/IHpA6lC2aT/WDEIyYwij?=
- =?us-ascii?Q?tAmQYkykCg0zWk/MqOR6ugUklNDZ6OfHhDPUJ0GJM/Ng4G+RCEnxPkG9ivya?=
- =?us-ascii?Q?w8mVYvD6Y/5iU3y2hrBNSWdmv7FSPkP2Dml1rCxM9R2Z15XUM5HdmIGMLi1j?=
- =?us-ascii?Q?GAxf97F9ktdQcy9Zs0ZYofHLSA5xoJDROIcBS9wpHjpI93Ks23WB/7YnL/4B?=
- =?us-ascii?Q?DTJA2IPRf/zRKOmy382wUAKKCxKi7z7YKd3Mxt4LKgLmOkS/BkdexlIcGrDq?=
- =?us-ascii?Q?zcBEuVAAzLnwpgqc/VmdieYCbrgsfKii3ohxRDvRR0Mcv+NHiYNm9G3zWRsS?=
- =?us-ascii?Q?lth/GIHS+nJj+chpp1f+cngMFUA2ynLsuotzYuzYckjCPDmIpofpOQ1As3Cd?=
- =?us-ascii?Q?JraAUNTjoykU+LgYDsxbM3HiMPCyk8LQgXhG5qbu32/BlCNqf1/4g86p7AUy?=
- =?us-ascii?Q?gsXbcCWlJNPGdFHlrYgM71aFmLU3zdDoEDqKh8qQMngMtLGu2OS91frOVN9L?=
- =?us-ascii?Q?7XP74QuQ3sZ2vp05aVlHp8kIYLlEaSD9/JNOCjaW7YoYqZjci4YyLsINHwxo?=
- =?us-ascii?Q?2bYfGcKL/11Elw/I/MZAhPr0zaDxSsQNfb2FScwdPWv13COtJv+03w3jp8Hc?=
- =?us-ascii?Q?GiXTZhyzeOUuEAA7EjiZewQZwxZtaqSZCeFfaf5GGVadBBaAtXfl2PhXe5UN?=
- =?us-ascii?Q?eBDLTethNrD/37N1hPFckdMeq8XNS2e9PHcMrNznbdSAQR6CoFfnvEPY8tEl?=
- =?us-ascii?Q?9MoSXERBIlGaUVnSacZeZr6pEuYSl4mLYdnwn5zpjGiNiZnO/00rHfSNhuT3?=
- =?us-ascii?Q?qQ761rmYOMF7XObtR3aDCfclo2Y8Ad1C4DPWCfJDkM+OlTwqGwxeouSJipb4?=
- =?us-ascii?Q?xXizTtt4W8kIjpDNCvXIhldTlk8b8yLvvscdUBhu+PmcT8OZNoaYL0PGqTA6?=
- =?us-ascii?Q?i16T83Xt/xg9cxRpUa5mRgsZh5ON58f4wgc2m3uR+qGUeHGuUn0HyJcCXLOt?=
- =?us-ascii?Q?9+8SxLZvSVML2s/YOPJPlPe3230kCYTsiRIGI7ZT/skazWB3BJjyvJGH0GF+?=
- =?us-ascii?Q?UFbTxxxN1rbdg0KZvOLddjs=3D?=
+	=?us-ascii?Q?I5EpYHerJoBV0jtkJiGtLsCKABDYQv/Prb2gKhnQiuhsAD/t9tJPwPTh5Zgl?=
+ =?us-ascii?Q?PyiTKhZZILpO581Qhwg8HuKW9ZO3ROFiwuZmiZyXyjX5J7SXGUL3pUQTeY4t?=
+ =?us-ascii?Q?L5DIGBmj/3X1qLxffQRVwNn7mGlyMGBkBFZPrSzt9CmjZk76b1/E2klVuwX0?=
+ =?us-ascii?Q?GNKDNMW3T7H429bF51iDkpaLVIb72WlmZyY8g39Rq5dFSS8naBTXK++SfjN6?=
+ =?us-ascii?Q?98GBVM9N53sdZxeCW/W6YZ016rAdZSeRUy1BRgcWUL5TbhtURagKMVMP5CJc?=
+ =?us-ascii?Q?BOoGOCWh4nEOWWF7jG5IJlkj+8DMbdjgDLNa4rDcJEhf1cCa7nrS0j26+Xn8?=
+ =?us-ascii?Q?h6WJRPYFG1Sun3k/kNz7NJskp4y0cxjSzYv/SgSwjXurTsQDdHh5HBpR0wX/?=
+ =?us-ascii?Q?oVVxTBHO9DKX96Z7Y8N40P7IFP/DfT666H8iSMu3sdV53xjMpaBSzXVB3IXC?=
+ =?us-ascii?Q?rYOP6JrD3TicoC6kb+IUOzy0h+yhB5jb6CWfytemZIFG20+2hEWK17ELh/lk?=
+ =?us-ascii?Q?sSBR+CE08CwX21Nnv9XhoWJL/GZzTpnLDsU0gWx2b+Grec8nYfiEPxtBj8Ex?=
+ =?us-ascii?Q?0jtzi7pHmyhLk6E1zDFv3Dcxrf8jlej7swKlDNUthw0QvGEt9kFboiKY1yYE?=
+ =?us-ascii?Q?4orBj2A8WIU/JQXbZuAwgev2Qa4lnTxTvrcfPwXkTIhzv96LZPk0nVQLybqS?=
+ =?us-ascii?Q?OoHdbTEiIlRlyCVnDe9fEpDw6Ed4x6aESFCSJSpgpPJ18QBhz+xTBjOI01/F?=
+ =?us-ascii?Q?hgR+PeXCdAGNVHmUdRm21n5wdLUncVBwBNjWcuxQH2SLP9k0Mt4ZakgGzIvW?=
+ =?us-ascii?Q?1feMgAFaXFJiSiB3jfdSi/lHHF4OjXErRyOJWg+U82P0A5GOosC0aubmOAeD?=
+ =?us-ascii?Q?rSMqXLVzdRoipRu9N32Jc4YStFN/44VsnGyi1neG/YqWBzKkKM1Kt6R8dzMg?=
+ =?us-ascii?Q?BTsXkOsF78DHZ1Gq03bNe9Srb3ND21HkL08FqsFy5dpvB2OS1b50gAL4W5en?=
+ =?us-ascii?Q?nkVW5P90WpNMQ5aOdexpTIbzgjBNAFwmi+JEMRVZo+nZMlqTKTuqLJrd3GVl?=
+ =?us-ascii?Q?n7qXSWt16PeRvj2kLcrR9rsjr9bsQLbxHrdN1vSDBpJIkDMCMjqR2OSV7iTU?=
+ =?us-ascii?Q?YnSvTRNZ8rebZSwkfJxi9vNhH3qV4c28EM1NcGrr0SNdSfgjsQmZklhkQg8i?=
+ =?us-ascii?Q?F4FT+ytQXwrePsaug9uIS+Y5KLonkxRoZVlW8NdzyNQS2ggZgOygFYZE41It?=
+ =?us-ascii?Q?Cr2J4ev1Bwt5mLmux72szSlbLywPRQ41byVODrQgY+1l6ec5CPOHCH6USDfv?=
+ =?us-ascii?Q?NR4bhJVrwlEpayW/5j5RtuhXUrcNNcOEi34J79WWpdofpg1Y9whBmV+NUVTm?=
+ =?us-ascii?Q?Ff6zaoBcRr2ZvRIMH3pl2A09JJvhsQDP1K+vcLusYWpy+5a5/6SWAQZwd9UD?=
+ =?us-ascii?Q?7NnOm7hzV6opH8Yi/Yb2aNHqWc0S8rlfjQ0yZw8ejeQUHjO4FXnxIskVDrQi?=
+ =?us-ascii?Q?EmjgXK3SEvz2Aylbo/n2SfNZ0LZfuLzt+rlO0+wAV9nscW+HU5J/uEzqt3L9?=
+ =?us-ascii?Q?Bfemjsys2KrqYSiyNFcTwvcoRJD2e86EsR52CD2/2n/J/i2+6wD1Z+swTqlp?=
+ =?us-ascii?Q?bh6hP9dSBTOt3eSxCAKbS4Y=3D?=
 X-OriginatorOrg: renesas.com
 X-MS-Exchange-CrossTenant-Network-Message-Id: 
- 87226d49-ad27-4c75-6e00-08dbb321de39
+ 3dceeeb8-778c-44fa-f37e-08dbb321d7bb
 X-MS-Exchange-CrossTenant-AuthSource: OS3PR01MB8426.jpnprd01.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Sep 2023 23:50:24.7758
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Sep 2023 23:50:13.9066
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 53d82571-da19-47e4-9cb4-625a166a4a2a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
 X-MS-Exchange-CrossTenant-UserPrincipalName: 
- TPWSjRVf3NS0fw4bNrwU3vRgQs+B67X77U20LdlnF6P1xcga7KU2kn8DfEFd+V00S/sxwK0vjycrVnyaW3bhpsG5mMsZ2m+xuP/icxCkHDeehTFE8rv6kCnJ9Ew0tHQ1
+ KQaHzDIiHNi+iMhoc/BdTQaI782II+lGRQtWyxejYQJXqUpU1u4bTLRnmF4z5VoScFmaUd46I0Br3AhvT3fF0lDrB820pgB9s49ikRK9YBVhouihU96KiHx0d8OG0Zr1
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: OS3PR01MB9445
-Message-ID-Hash: MYEAUSIY66NLAZMO3CRLIWK4XW6XHBCP
-X-Message-ID-Hash: MYEAUSIY66NLAZMO3CRLIWK4XW6XHBCP
+Message-ID-Hash: LFFS7U5ZJFMQCLZMDBGCBOXC4SJ4NEJQ
+X-Message-ID-Hash: LFFS7U5ZJFMQCLZMDBGCBOXC4SJ4NEJQ
 X-MailFrom: kuninori.morimoto.gx@renesas.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -150,7 +150,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MYEAUSIY66NLAZMO3CRLIWK4XW6XHBCP/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LFFS7U5ZJFMQCLZMDBGCBOXC4SJ4NEJQ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -164,150 +164,177 @@ This patch convert asoc_xxx() to snd_soc_xxx().
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/uniphier/aio-compress.c | 22 +++++++++++-----------
- sound/soc/uniphier/aio-dma.c      | 12 ++++++------
- 2 files changed, 17 insertions(+), 17 deletions(-)
+ sound/soc/rockchip/rk3288_hdmi_analog.c |  6 +++---
+ sound/soc/rockchip/rk3399_gru_sound.c   | 26 ++++++++++++-------------
+ sound/soc/rockchip/rockchip_i2s.c       |  2 +-
+ sound/soc/rockchip/rockchip_max98090.c  |  8 ++++----
+ sound/soc/rockchip/rockchip_rt5645.c    |  8 ++++----
+ 5 files changed, 25 insertions(+), 25 deletions(-)
 
-diff --git a/sound/soc/uniphier/aio-compress.c b/sound/soc/uniphier/aio-compress.c
-index 7d1492c15b575..4a19d4908ffd6 100644
---- a/sound/soc/uniphier/aio-compress.c
-+++ b/sound/soc/uniphier/aio-compress.c
-@@ -25,7 +25,7 @@ static int uniphier_aio_comprdma_new(struct snd_soc_pcm_runtime *rtd)
+diff --git a/sound/soc/rockchip/rk3288_hdmi_analog.c b/sound/soc/rockchip/rk3288_hdmi_analog.c
+index 0c6bd9a019dbe..5ff499c81d3f2 100644
+--- a/sound/soc/rockchip/rk3288_hdmi_analog.c
++++ b/sound/soc/rockchip/rk3288_hdmi_analog.c
+@@ -66,9 +66,9 @@ static int rk_hw_params(struct snd_pcm_substream *substream,
+ 			struct snd_pcm_hw_params *params)
  {
- 	struct snd_compr *compr = rtd->compr;
- 	struct device *dev = compr->card->dev;
--	struct uniphier_aio *aio = uniphier_priv(asoc_rtd_to_cpu(rtd, 0));
-+	struct uniphier_aio *aio = uniphier_priv(snd_soc_rtd_to_cpu(rtd, 0));
- 	struct uniphier_aio_sub *sub = &aio->sub[compr->direction];
- 	size_t size = AUD_RING_SIZE;
- 	int dma_dir = DMA_FROM_DEVICE, ret;
-@@ -58,7 +58,7 @@ static int uniphier_aio_comprdma_free(struct snd_soc_pcm_runtime *rtd)
- {
- 	struct snd_compr *compr = rtd->compr;
- 	struct device *dev = compr->card->dev;
--	struct uniphier_aio *aio = uniphier_priv(asoc_rtd_to_cpu(rtd, 0));
-+	struct uniphier_aio *aio = uniphier_priv(snd_soc_rtd_to_cpu(rtd, 0));
- 	struct uniphier_aio_sub *sub = &aio->sub[compr->direction];
- 	int dma_dir = DMA_FROM_DEVICE;
+ 	int ret = 0;
+-	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
+-	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
+-	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
++	struct snd_soc_pcm_runtime *rtd = snd_soc_substream_to_rtd(substream);
++	struct snd_soc_dai *cpu_dai = snd_soc_rtd_to_cpu(rtd, 0);
++	struct snd_soc_dai *codec_dai = snd_soc_rtd_to_codec(rtd, 0);
+ 	int mclk;
  
-@@ -76,7 +76,7 @@ static int uniphier_aio_compr_open(struct snd_soc_component *component,
- 				   struct snd_compr_stream *cstream)
+ 	switch (params_rate(params)) {
+diff --git a/sound/soc/rockchip/rk3399_gru_sound.c b/sound/soc/rockchip/rk3399_gru_sound.c
+index 0f704d22d21b0..4c3b8b3635300 100644
+--- a/sound/soc/rockchip/rk3399_gru_sound.c
++++ b/sound/soc/rockchip/rk3399_gru_sound.c
+@@ -68,13 +68,13 @@ static const struct snd_kcontrol_new rockchip_controls[] = {
+ static int rockchip_sound_max98357a_hw_params(struct snd_pcm_substream *substream,
+ 			     struct snd_pcm_hw_params *params)
  {
- 	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
--	struct uniphier_aio *aio = uniphier_priv(asoc_rtd_to_cpu(rtd, 0));
-+	struct uniphier_aio *aio = uniphier_priv(snd_soc_rtd_to_cpu(rtd, 0));
- 	struct uniphier_aio_sub *sub = &aio->sub[cstream->direction];
+-	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
++	struct snd_soc_pcm_runtime *rtd = snd_soc_substream_to_rtd(substream);
+ 	unsigned int mclk;
  	int ret;
  
-@@ -102,7 +102,7 @@ static int uniphier_aio_compr_free(struct snd_soc_component *component,
- 				   struct snd_compr_stream *cstream)
+ 	mclk = params_rate(params) * SOUND_FS;
+ 
+-	ret = snd_soc_dai_set_sysclk(asoc_rtd_to_cpu(rtd, 0), 0, mclk, 0);
++	ret = snd_soc_dai_set_sysclk(snd_soc_rtd_to_cpu(rtd, 0), 0, mclk, 0);
+ 	if (ret) {
+ 		dev_err(rtd->card->dev, "%s() error setting sysclk to %u: %d\n",
+ 				__func__, mclk, ret);
+@@ -87,9 +87,9 @@ static int rockchip_sound_max98357a_hw_params(struct snd_pcm_substream *substrea
+ static int rockchip_sound_rt5514_hw_params(struct snd_pcm_substream *substream,
+ 			     struct snd_pcm_hw_params *params)
  {
- 	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
--	struct uniphier_aio *aio = uniphier_priv(asoc_rtd_to_cpu(rtd, 0));
-+	struct uniphier_aio *aio = uniphier_priv(snd_soc_rtd_to_cpu(rtd, 0));
- 	struct uniphier_aio_sub *sub = &aio->sub[cstream->direction];
+-	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
+-	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
+-	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
++	struct snd_soc_pcm_runtime *rtd = snd_soc_substream_to_rtd(substream);
++	struct snd_soc_dai *cpu_dai = snd_soc_rtd_to_cpu(rtd, 0);
++	struct snd_soc_dai *codec_dai = snd_soc_rtd_to_codec(rtd, 0);
+ 	unsigned int mclk;
  	int ret;
  
-@@ -123,7 +123,7 @@ static int uniphier_aio_compr_get_params(struct snd_soc_component *component,
- 					 struct snd_codec *params)
+@@ -119,9 +119,9 @@ static int rockchip_sound_rt5514_hw_params(struct snd_pcm_substream *substream,
+ static int rockchip_sound_da7219_hw_params(struct snd_pcm_substream *substream,
+ 			     struct snd_pcm_hw_params *params)
  {
- 	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
--	struct uniphier_aio *aio = uniphier_priv(asoc_rtd_to_cpu(rtd, 0));
-+	struct uniphier_aio *aio = uniphier_priv(snd_soc_rtd_to_cpu(rtd, 0));
- 	struct uniphier_aio_sub *sub = &aio->sub[cstream->direction];
- 
- 	*params = sub->cparams.codec;
-@@ -136,7 +136,7 @@ static int uniphier_aio_compr_set_params(struct snd_soc_component *component,
- 					 struct snd_compr_params *params)
- {
- 	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
--	struct uniphier_aio *aio = uniphier_priv(asoc_rtd_to_cpu(rtd, 0));
-+	struct uniphier_aio *aio = uniphier_priv(snd_soc_rtd_to_cpu(rtd, 0));
- 	struct uniphier_aio_sub *sub = &aio->sub[cstream->direction];
- 	struct device *dev = &aio->chip->pdev->dev;
- 
-@@ -167,7 +167,7 @@ static int uniphier_aio_compr_hw_free(struct snd_soc_component *component,
- 				      struct snd_compr_stream *cstream)
- {
- 	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
--	struct uniphier_aio *aio = uniphier_priv(asoc_rtd_to_cpu(rtd, 0));
-+	struct uniphier_aio *aio = uniphier_priv(snd_soc_rtd_to_cpu(rtd, 0));
- 	struct uniphier_aio_sub *sub = &aio->sub[cstream->direction];
- 
- 	sub->setting = 0;
-@@ -180,7 +180,7 @@ static int uniphier_aio_compr_prepare(struct snd_soc_component *component,
- {
- 	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
- 	struct snd_compr_runtime *runtime = cstream->runtime;
--	struct uniphier_aio *aio = uniphier_priv(asoc_rtd_to_cpu(rtd, 0));
-+	struct uniphier_aio *aio = uniphier_priv(snd_soc_rtd_to_cpu(rtd, 0));
- 	struct uniphier_aio_sub *sub = &aio->sub[cstream->direction];
- 	int bytes = runtime->fragment_size;
- 	unsigned long flags;
-@@ -219,7 +219,7 @@ static int uniphier_aio_compr_trigger(struct snd_soc_component *component,
- {
- 	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
- 	struct snd_compr_runtime *runtime = cstream->runtime;
--	struct uniphier_aio *aio = uniphier_priv(asoc_rtd_to_cpu(rtd, 0));
-+	struct uniphier_aio *aio = uniphier_priv(snd_soc_rtd_to_cpu(rtd, 0));
- 	struct uniphier_aio_sub *sub = &aio->sub[cstream->direction];
- 	struct device *dev = &aio->chip->pdev->dev;
- 	int bytes = runtime->fragment_size, ret = 0;
-@@ -253,7 +253,7 @@ static int uniphier_aio_compr_pointer(struct snd_soc_component *component,
- {
- 	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
- 	struct snd_compr_runtime *runtime = cstream->runtime;
--	struct uniphier_aio *aio = uniphier_priv(asoc_rtd_to_cpu(rtd, 0));
-+	struct uniphier_aio *aio = uniphier_priv(snd_soc_rtd_to_cpu(rtd, 0));
- 	struct uniphier_aio_sub *sub = &aio->sub[cstream->direction];
- 	int bytes = runtime->fragment_size;
- 	unsigned long flags;
-@@ -328,7 +328,7 @@ static int uniphier_aio_compr_copy(struct snd_soc_component *component,
- 	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
- 	struct snd_compr_runtime *runtime = cstream->runtime;
- 	struct device *carddev = rtd->compr->card->dev;
--	struct uniphier_aio *aio = uniphier_priv(asoc_rtd_to_cpu(rtd, 0));
-+	struct uniphier_aio *aio = uniphier_priv(snd_soc_rtd_to_cpu(rtd, 0));
- 	struct uniphier_aio_sub *sub = &aio->sub[cstream->direction];
- 	size_t cnt = min_t(size_t, count, aio_rb_space_to_end(sub) / 2);
- 	int bytes = runtime->fragment_size;
-diff --git a/sound/soc/uniphier/aio-dma.c b/sound/soc/uniphier/aio-dma.c
-index 3d9736e7381f8..fe272befd9676 100644
---- a/sound/soc/uniphier/aio-dma.c
-+++ b/sound/soc/uniphier/aio-dma.c
-@@ -108,8 +108,8 @@ static int uniphier_aiodma_prepare(struct snd_soc_component *component,
- 				   struct snd_pcm_substream *substream)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
 -	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
--	struct uniphier_aio *aio = uniphier_priv(asoc_rtd_to_cpu(rtd, 0));
+-	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
+-	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
 +	struct snd_soc_pcm_runtime *rtd = snd_soc_substream_to_rtd(substream);
-+	struct uniphier_aio *aio = uniphier_priv(snd_soc_rtd_to_cpu(rtd, 0));
- 	struct uniphier_aio_sub *sub = &aio->sub[substream->stream];
- 	int bytes = runtime->period_size *
- 		runtime->channels * samples_to_bytes(runtime, 1);
-@@ -135,8 +135,8 @@ static int uniphier_aiodma_trigger(struct snd_soc_component *component,
- 				   struct snd_pcm_substream *substream, int cmd)
++	struct snd_soc_dai *cpu_dai = snd_soc_rtd_to_cpu(rtd, 0);
++	struct snd_soc_dai *codec_dai = snd_soc_rtd_to_codec(rtd, 0);
+ 	int mclk, ret;
+ 
+ 	/* in bypass mode, the mclk has to be one of the frequencies below */
+@@ -172,7 +172,7 @@ static struct snd_soc_jack cdn_dp_card_jack;
+ 
+ static int rockchip_sound_cdndp_init(struct snd_soc_pcm_runtime *rtd)
  {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
--	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
--	struct uniphier_aio *aio = uniphier_priv(asoc_rtd_to_cpu(rtd, 0));
-+	struct snd_soc_pcm_runtime *rtd = snd_soc_substream_to_rtd(substream);
-+	struct uniphier_aio *aio = uniphier_priv(snd_soc_rtd_to_cpu(rtd, 0));
- 	struct uniphier_aio_sub *sub = &aio->sub[substream->stream];
- 	struct device *dev = &aio->chip->pdev->dev;
- 	int bytes = runtime->period_size *
-@@ -171,8 +171,8 @@ static snd_pcm_uframes_t uniphier_aiodma_pointer(
- 					struct snd_pcm_substream *substream)
+-	struct snd_soc_component *component = asoc_rtd_to_codec(rtd, 0)->component;
++	struct snd_soc_component *component = snd_soc_rtd_to_codec(rtd, 0)->component;
+ 	struct snd_soc_card *card = rtd->card;
+ 	int ret;
+ 
+@@ -189,8 +189,8 @@ static int rockchip_sound_cdndp_init(struct snd_soc_pcm_runtime *rtd)
+ 
+ static int rockchip_sound_da7219_init(struct snd_soc_pcm_runtime *rtd)
  {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
+-	struct snd_soc_component *component = asoc_rtd_to_codec(rtd, 0)->component;
+-	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
++	struct snd_soc_component *component = snd_soc_rtd_to_codec(rtd, 0)->component;
++	struct snd_soc_dai *codec_dai = snd_soc_rtd_to_codec(rtd, 0);
+ 	int ret;
+ 
+ 	/* We need default MCLK and PLL settings for the accessory detection */
+@@ -238,13 +238,13 @@ static int rockchip_sound_da7219_init(struct snd_soc_pcm_runtime *rtd)
+ static int rockchip_sound_dmic_hw_params(struct snd_pcm_substream *substream,
+ 			     struct snd_pcm_hw_params *params)
+ {
 -	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
--	struct uniphier_aio *aio = uniphier_priv(asoc_rtd_to_cpu(rtd, 0));
 +	struct snd_soc_pcm_runtime *rtd = snd_soc_substream_to_rtd(substream);
-+	struct uniphier_aio *aio = uniphier_priv(snd_soc_rtd_to_cpu(rtd, 0));
- 	struct uniphier_aio_sub *sub = &aio->sub[substream->stream];
- 	int bytes = runtime->period_size *
- 		runtime->channels * samples_to_bytes(runtime, 1);
+ 	unsigned int mclk;
+ 	int ret;
+ 
+ 	mclk = params_rate(params) * SOUND_FS;
+ 
+-	ret = snd_soc_dai_set_sysclk(asoc_rtd_to_cpu(rtd, 0), 0, mclk, 0);
++	ret = snd_soc_dai_set_sysclk(snd_soc_rtd_to_cpu(rtd, 0), 0, mclk, 0);
+ 	if (ret) {
+ 		dev_err(rtd->card->dev, "%s() error setting sysclk to %u: %d\n",
+ 				__func__, mclk, ret);
+diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
+index 834fbb5cf8103..74e7d6ee0f28b 100644
+--- a/sound/soc/rockchip/rockchip_i2s.c
++++ b/sound/soc/rockchip/rockchip_i2s.c
+@@ -352,7 +352,7 @@ static int rockchip_i2s_hw_params(struct snd_pcm_substream *substream,
+ 				  struct snd_soc_dai *dai)
+ {
+ 	struct rk_i2s_dev *i2s = to_info(dai);
+-	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
++	struct snd_soc_pcm_runtime *rtd = snd_soc_substream_to_rtd(substream);
+ 	unsigned int val = 0;
+ 	unsigned int mclk_rate, bclk_rate, div_bclk, div_lrck;
+ 
+diff --git a/sound/soc/rockchip/rockchip_max98090.c b/sound/soc/rockchip/rockchip_max98090.c
+index 150ac524a5903..17087b504a37e 100644
+--- a/sound/soc/rockchip/rockchip_max98090.c
++++ b/sound/soc/rockchip/rockchip_max98090.c
+@@ -144,9 +144,9 @@ static int rk_aif1_hw_params(struct snd_pcm_substream *substream,
+ 			     struct snd_pcm_hw_params *params)
+ {
+ 	int ret = 0;
+-	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
+-	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
+-	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
++	struct snd_soc_pcm_runtime *rtd = snd_soc_substream_to_rtd(substream);
++	struct snd_soc_dai *cpu_dai = snd_soc_rtd_to_cpu(rtd, 0);
++	struct snd_soc_dai *codec_dai = snd_soc_rtd_to_codec(rtd, 0);
+ 	int mclk;
+ 
+ 	switch (params_rate(params)) {
+@@ -226,7 +226,7 @@ static struct snd_soc_jack rk_hdmi_jack;
+ static int rk_hdmi_init(struct snd_soc_pcm_runtime *runtime)
+ {
+ 	struct snd_soc_card *card = runtime->card;
+-	struct snd_soc_component *component = asoc_rtd_to_codec(runtime, 0)->component;
++	struct snd_soc_component *component = snd_soc_rtd_to_codec(runtime, 0)->component;
+ 	int ret;
+ 
+ 	/* enable jack detection */
+diff --git a/sound/soc/rockchip/rockchip_rt5645.c b/sound/soc/rockchip/rockchip_rt5645.c
+index ef9fdf0386cbd..d5cfef9be1af8 100644
+--- a/sound/soc/rockchip/rockchip_rt5645.c
++++ b/sound/soc/rockchip/rockchip_rt5645.c
+@@ -65,9 +65,9 @@ static int rk_aif1_hw_params(struct snd_pcm_substream *substream,
+ 			     struct snd_pcm_hw_params *params)
+ {
+ 	int ret = 0;
+-	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
+-	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
+-	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
++	struct snd_soc_pcm_runtime *rtd = snd_soc_substream_to_rtd(substream);
++	struct snd_soc_dai *cpu_dai = snd_soc_rtd_to_cpu(rtd, 0);
++	struct snd_soc_dai *codec_dai = snd_soc_rtd_to_codec(rtd, 0);
+ 	int mclk;
+ 
+ 	switch (params_rate(params)) {
+@@ -125,7 +125,7 @@ static int rk_init(struct snd_soc_pcm_runtime *runtime)
+ 		return ret;
+ 	}
+ 
+-	return rt5645_set_jack_detect(asoc_rtd_to_codec(runtime, 0)->component,
++	return rt5645_set_jack_detect(snd_soc_rtd_to_codec(runtime, 0)->component,
+ 				     &headset_jack,
+ 				     &headset_jack,
+ 				     &headset_jack);
 -- 
 2.25.1
 
