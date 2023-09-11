@@ -4,74 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E35A6EE57DF
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 Sep 2023 15:10:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B07CDEE7FF4
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 Sep 2023 15:13:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DF2AFDF8;
-	Mon, 11 Sep 2023 17:10:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DF2AFDF8
+	by alsa0.perex.cz (Postfix) with ESMTPS id ABE9F886;
+	Mon, 11 Sep 2023 17:12:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ABE9F886
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1694445054;
-	bh=FNwiZky5nIsUMiFSy7nXej3Zdr1lH6C0uhWn5tULBJA=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=rdGBesVpgVGA4VlQp3WvnMH0badJgYM/TIMiPd0ARLnzeOmMGuN4Sp3rZQSn2FiBw
-	 YWE30ddaYxHH+PMz91ASJsU8KjdqkhfOiMygGtcwWfy0uKQhOR0IwezNGGs1QNmzN+
-	 ZJZDl/EtwlPEsICzN6OGbCu5UCZfR81PNBu4QNHk=
+	s=default; t=1694445188;
+	bh=kdHDmZBJypm3+Z6nLoVCkTJCRK1I6EVTUwEg0G2swWU=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=DVQKybE/4oFEBK2jBwUye6wrrDEJAq3By4+Cz1IWoVDqNTsAaH3JpkZ9Snrv2pvs4
+	 rYClz/J6QWunOQVIDNz9hsuQZ8jEsq3IeDQn3KKifmYBqgk9KB0g1Ex7byEH2rbkcO
+	 5QqNC/fSJmVqwfjtoZpB8whsaXcByiZ+iPJxDg04=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0423BF80552; Mon, 11 Sep 2023 17:09:11 +0200 (CEST)
+	id 1E3DAF80567; Mon, 11 Sep 2023 17:11:50 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8E2ECF80431;
-	Mon, 11 Sep 2023 17:09:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7A3FFF801F5;
+	Mon, 11 Sep 2023 17:11:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AFE15F80425; Mon, 11 Sep 2023 17:09:07 +0200 (CEST)
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+	id B754EF80549; Mon, 11 Sep 2023 17:11:46 +0200 (CEST)
+Received: from sin.source.kernel.org (sin.source.kernel.org
+ [IPv6:2604:1380:40e1:4800::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 6646DF8007C
-	for <alsa-devel@alsa-project.org>; Mon, 11 Sep 2023 17:09:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6646DF8007C
+	by alsa1.perex.cz (Postfix) with ESMTPS id 4497AF80431
+	for <alsa-devel@alsa-project.org>; Mon, 11 Sep 2023 17:11:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4497AF80431
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=W4KK5zpd
+	dkim=pass (1024-bit key,
+ unprotected) header.d=linuxfoundation.org header.i=@linuxfoundation.org
+ header.a=rsa-sha256 header.s=korg header.b=FtO9TrDd
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by sin.source.kernel.org (Postfix) with ESMTPS id F39E5CE13FD;
-	Mon, 11 Sep 2023 15:09:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D9CAC433D9;
-	Mon, 11 Sep 2023 15:08:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1694444940;
-	bh=FNwiZky5nIsUMiFSy7nXej3Zdr1lH6C0uhWn5tULBJA=;
-	h=From:To:In-Reply-To:References:Subject:Date:From;
-	b=W4KK5zpd/ADT2bDqknyYoxvk/UBZSsuvECcJt9r+G8PTNpzvtizrE3/EuY+83Fytw
-	 Isa3oplxk0C/4PsNgkB9y8rWVuWbRVIp5YxgXjm6zdBZIFWH+1uAZd4oTCdkUPJ7Hm
-	 ytWCdH8Uykj/H112g0kz8j4rJLKoY8HTikh355h/FLn7gJnYK0HddVzc3O473qwGTl
-	 O29LhtzmzfhCcgka18u7i/hhAT4k4IZoO0bql7qtJ2mzQT9f6woVyyMNQsRs6PThF4
-	 5W0v/uqrGSzdlWLpzCz7oTPRzx+Ex2xnnRYngfn7eTcz5DkohhK7Ov4ueSWe9sfQuu
-	 0jl1qhHbYxMcg==
-From: Mark Brown <broonie@kernel.org>
-To: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
- lgirdwood@gmail.com, Walt Holman <waltholman09@gmail.com>
-In-Reply-To: <20230910185433.13677-1-waltholman09@gmail.com>
-References: <20230910185433.13677-1-waltholman09@gmail.com>
-Subject: Re: [PATCH] Add DMI ID for MSI Bravo 15 B7ED
-Message-Id: <169444490120.1851820.5934729126873072182.b4-ty@kernel.org>
-Date: Mon, 11 Sep 2023 16:08:21 +0100
+	by sin.source.kernel.org (Postfix) with ESMTPS id 6B1CCCE1729;
+	Mon, 11 Sep 2023 15:11:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66547C433C8;
+	Mon, 11 Sep 2023 15:11:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1694445077;
+	bh=kdHDmZBJypm3+Z6nLoVCkTJCRK1I6EVTUwEg0G2swWU=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=FtO9TrDdyRmS17AHZDkzl0kes0EG6IrMW25dZ0rePyl+cdJYxbyJugphx644A8lpq
+	 Yr+esc5WJeCL+kKMHLDBOh67D/A/Xf81fALHmf9uKq+PWrbEsjRJ6DxpCcI4kSS280
+	 ILL69BOrUi41eTAR/VWHqd33hlvpB8kmiLXgCSus=
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: stable@vger.kernel.org
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	patches@lists.linux.dev,
+	Randy Dunlap <rdunlap@infradead.org>,
+	Lars-Peter Clausen <lars@metafoo.de>,
+	Mark Brown <broonie@kernel.org>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	alsa-devel@alsa-project.org,
+	Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 6.1 220/600] ASoC: stac9766: fix build errors with REGMAP_AC97
+Date: Mon, 11 Sep 2023 15:44:13 +0200
+Message-ID: <20230911134640.109966659@linuxfoundation.org>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20230911134633.619970489@linuxfoundation.org>
+References: <20230911134633.619970489@linuxfoundation.org>
+User-Agent: quilt/0.67
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-099c9
-Message-ID-Hash: 7G3272MT7OYQJBX7ZLSJRUA4SWAHST7U
-X-Message-ID-Hash: 7G3272MT7OYQJBX7ZLSJRUA4SWAHST7U
-X-MailFrom: broonie@kernel.org
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: SMFJVUZPYMOROQ5AITTR74D4BLIWSVLL
+X-Message-ID-Hash: SMFJVUZPYMOROQ5AITTR74D4BLIWSVLL
+X-MailFrom: gregkh@linuxfoundation.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -83,7 +90,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7G3272MT7OYQJBX7ZLSJRUA4SWAHST7U/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SMFJVUZPYMOROQ5AITTR74D4BLIWSVLL/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -92,35 +99,46 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Sun, 10 Sep 2023 13:54:34 -0500, Walt Holman wrote:
-> 
+6.1-stable review patch.  If anyone has any objections, please let me know.
+
+------------------
+
+From: Randy Dunlap <rdunlap@infradead.org>
+
+[ Upstream commit c70064b96f509daa78f57992aeabcf274fb2fed4 ]
+
+Select REGMAP_AC97 to fix these build errors:
+
+ERROR: modpost: "regmap_ac97_default_volatile" [sound/soc/codecs/snd-soc-stac9766.ko] undefined!
+ERROR: modpost: "__regmap_init_ac97" [sound/soc/codecs/snd-soc-stac9766.ko] undefined!
+
+Fixes: 6bbf787bb70c ("ASoC: stac9766: Convert to regmap")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org
+Link: https://lore.kernel.org/r/20230701044836.18789-1-rdunlap@infradead.org
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ sound/soc/codecs/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 965ae55fa1607..0904827e2f3db 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -1552,6 +1552,7 @@ config SND_SOC_STA529
+ config SND_SOC_STAC9766
+ 	tristate
+ 	depends on SND_SOC_AC97_BUS
++	select REGMAP_AC97
+ 
+ config SND_SOC_STI_SAS
+ 	tristate "codec Audio support for STI SAS codec"
+-- 
+2.40.1
 
 
-Applied to
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-
-Thanks!
-
-[1/1] Add DMI ID for MSI Bravo 15 B7ED
-      commit: e616a916fe8431ebd5eb3cf4ac224d143c57083c
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
 
