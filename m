@@ -4,98 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6AE2BEE7FF4
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 Sep 2023 06:31:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 66E72EE7FF4
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 Sep 2023 06:54:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 78BBD846;
-	Mon, 11 Sep 2023 08:30:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 78BBD846
+	by alsa0.perex.cz (Postfix) with ESMTPS id 709EF84C;
+	Mon, 11 Sep 2023 08:53:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 709EF84C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1694413878;
-	bh=Eg3KgnUNpRNSqU6Gshl9UX1IZKtftgzqrmAacovn2M4=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	s=default; t=1694415237;
+	bh=4vB32nanE+MDEqTy1CJdYDHQ1Wfx+YCcuQAd0vYkfI0=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=bKa75HS/36pJzD6QQvlq918w0RVpKwOuCdD4YYM5Vyx2CvSrYfz8zkdYRF7Nq+Rui
-	 92mI2xvXS4fMATnKh7kQM6wjLf5VoHFpaVXV2LzLbjSTvVD+27z3GFgDfxZL+G4hrr
-	 ZLGHsiJ2fWGR5TSNHJyAvjxT2kT1l/zuOF/DJBcg=
+	b=kpakl+OzgFQVIRcny+CMqgVA9nSh/t39ZLOsJYgPk89TY4qJawS1REOAnnqd4aG0t
+	 DqFolEVsxZABU/moJ7kXUeVy3ap6yGGi1GTDUB6CZRcY47uodvnx60zZB8fTU4aVbk
+	 tbexhmzazNZgiMjUZ1gkCisb06ERqipOWtHcfpdM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D67F6F801F5; Mon, 11 Sep 2023 08:29:59 +0200 (CEST)
+	id DA816F8007C; Mon, 11 Sep 2023 08:52:38 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 30EEAF801F5;
-	Mon, 11 Sep 2023 08:29:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8BFEFF80425;
+	Mon, 11 Sep 2023 08:52:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DA23DF80425; Mon, 11 Sep 2023 08:29:54 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id D1832F80425; Mon, 11 Sep 2023 08:52:35 +0200 (CEST)
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 546DDF801F5
-	for <alsa-devel@alsa-project.org>; Mon, 11 Sep 2023 08:29:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 546DDF801F5
+	by alsa1.perex.cz (Postfix) with ESMTPS id 0142DF8007C;
+	Mon, 11 Sep 2023 08:52:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0142DF8007C
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=BraPm3c0;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=hBjPE4wS
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 3FBEC21954;
-	Mon, 11 Sep 2023 06:29:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1694413790;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=tr/bSdM83dCsFkG0lgZwfeOVd5FVEbn88zt0hKpSIi0=;
-	b=BraPm3c0n2pCVnkk0GlJVS1mvUw0g+FI25kMy7FqcLLV8lN5VhCYbTkXBohgsYZ5Ps7A6j
-	aQyxS0XgaDHWqIPRq8NGQv4cMWocGrlevZ0599sfqaeudw1NUfcjaFOR2JpyxNIX3WOBjO
-	u1mJ2wD9AXu3AfJIEJsFm4CDIaOSHWA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1694413790;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=tr/bSdM83dCsFkG0lgZwfeOVd5FVEbn88zt0hKpSIi0=;
-	b=hBjPE4wSYIyTP2SkjDlix+APmnvtQX2JCCd0K0yrMUPqpp9KUTUMClHdwG+yNxlAsCOFkj
-	OyofnT+E/D0PdhAQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 161F913780;
-	Mon, 11 Sep 2023 06:29:50 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id 7tNzBN6z/mSDRgAAMHmgww
-	(envelope-from <tiwai@suse.de>); Mon, 11 Sep 2023 06:29:50 +0000
-Date: Mon, 11 Sep 2023 08:29:49 +0200
-Message-ID: <87sf7l6x42.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Richard Fitzgerald <rf@opensource.cirrus.com>
-Cc: <tiwai@suse.com>,
-	<alsa-devel@alsa-project.org>,
-	<patches@opensource.cirrus.com>,
-	<linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] ALSA: hda: cs35l56: Call
- pm_runtime_dont_use_autosuspend()
-In-Reply-To: <20230908101223.2656901-1-rf@opensource.cirrus.com>
-References: <20230908101223.2656901-1-rf@opensource.cirrus.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Message-ID-Hash: A2N4ULCD44FHXVKM3MBDJGGEAINY6MEQ
-X-Message-ID-Hash: A2N4ULCD44FHXVKM3MBDJGGEAINY6MEQ
-X-MailFrom: tiwai@suse.de
+	dkim=pass (2048-bit key,
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=U0EEHFga
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694415152; x=1725951152;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=4vB32nanE+MDEqTy1CJdYDHQ1Wfx+YCcuQAd0vYkfI0=;
+  b=U0EEHFgaB8wvjaQEFGfY5p4jYw79Y0T4Hbnp4AS4rvO6RJampr6fFqgV
+   uMGN08x8bh3RRJ+xHQ51APfkCL/XfxpxTCSgumfnSmRujO9eiZfGNjR7y
+   12KuL/NDRln82dbugglj4F4hUAZZ9yUAP3yVWY4m5BaKC5gIBNhVwLnW2
+   pTqCD3hugILb6V9SuwWTdSodu/0s4nzHPF5mINDief0oIa9BRiUyksqfw
+   X4AuTz9qT55b809gxe1GK4RXX40V4jynos6nA9t5JRfhlmf1T477SklNi
+   Cf0TDAFmo0inF61uURwNd7WJHJuuKKkG0na/Dw7N/nxwEgFedL1yLvxlv
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10829"; a="380707659"
+X-IronPort-AV: E=Sophos;i="6.02,243,1688454000";
+   d="scan'208";a="380707659"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 10 Sep 2023 23:51:59 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10829"; a="746303083"
+X-IronPort-AV: E=Sophos;i="6.02,243,1688454000";
+   d="scan'208";a="746303083"
+Received: from vcouthon-mobl1.ger.corp.intel.com (HELO [10.251.216.222])
+ ([10.251.216.222])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 10 Sep 2023 23:51:52 -0700
+Message-ID: <e8880daf-8f74-4350-96c4-d625272aed35@linux.intel.com>
+Date: Mon, 11 Sep 2023 09:51:41 +0300
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 01/11] ASoC: SOF: core: add 'no_wq' probe and remove
+ callbacks
+Content-Language: en-US
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, Cezary Rojewski <cezary.rojewski@intel.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Mark Brown <broonie@kernel.org>, Daniel Baluta <daniel.baluta@nxp.com>,
+ linux-kernel@vger.kernel.org, sound-open-firmware@alsa-project.org
+References: <20230830153652.217855-1-maarten.lankhorst@linux.intel.com>
+ <20230830153652.217855-2-maarten.lankhorst@linux.intel.com>
+ <alpine.DEB.2.22.394.2309011509200.3532114@eliteleevi.tm.intel.com>
+ <4252a4dc-0cf3-4ff2-aa55-c03e56345276@linux.intel.com>
+ <4d84a799-c07e-e917-7c82-2f24456e3ac2@linux.intel.com>
+ <6d39eac7-06c7-45f0-0318-72be1753641f@linux.intel.com>
+From: =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>
+In-Reply-To: <6d39eac7-06c7-45f0-0318-72be1753641f@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: UM6WYC4B4NWMCZ5JYBRTJWALL27OVH6U
+X-Message-ID-Hash: UM6WYC4B4NWMCZ5JYBRTJWALL27OVH6U
+X-MailFrom: peter.ujfalusi@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -107,7 +106,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/A2N4ULCD44FHXVKM3MBDJGGEAINY6MEQ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UM6WYC4B4NWMCZ5JYBRTJWALL27OVH6U/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -116,45 +115,51 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, 08 Sep 2023 12:12:23 +0200,
-Richard Fitzgerald wrote:
+On 07/09/2023 20:29, Pierre-Louis Bossart wrote:
+>> I think find all this very confusing, because there is no workqueue used
+>> in the remove steps. The workqueue is only used ONCE during the probe.
 > 
-> Driver remove() must call pm_runtime_dont_use_autosuspend().
+> Maybe we should just remove any references to workqueues, and have
 > 
-> Drivers that call pm_runtime_use_autosuspend() must disable
-> it in driver remove(). Unfortunately until recently this was
-> only mentioned in 1 line in a 900+ line document so most
-> people hadn't noticed this. It has only recently been added
-> to the kerneldoc of pm_runtime_use_autosuspend().
+> probe_start (cannot run in a wq)
+> probe (may run in a wq)
+> remove (cannot run in a wq, needs to call cancel_work_sync() if the
+> probe runs in a wq)
+> remove_last (cannot run in a wq, releases all resources acquired in
+> probe_start)
 > 
-> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-> Fixes: 2a930a6da8ec ("ALSA: hda/cs35l56: Add driver for Cirrus Logic CS35L56 amplifier")
+> Or something similar that shows the symmetry between steps and when the
+> wq is allowed.
 
-Applied now.
-The Fixes tag points to a non-existing ID, so I corrected in my side
-to 73cfbfa9caea.
+What we have atm:
+snd_sof_probe - might be called from wq
+snd_sof_remove - might be called from wq (cleans up the snd_sof_probe
+		 step)
 
+We want a callbacks for hardware/device probing, right, split the
+snd_sof_probe (and remove) to be able to support a sane level of
+deferred probing support.
 
-thanks,
+With that in mind:
+snd_sof_device_probe - Not called from wq (to handle deferred probing)
+snd_sof_probe - might be called from wq
 
-Takashi
+snd_sof_remove - might be called from wq (cleans up the snd_sof_probe
+		 step)
+snd_sof_device_remove - Not called from wq (to up the
+			snd_sof_device_probe step)
 
-> ---
->  sound/pci/hda/cs35l56_hda.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/sound/pci/hda/cs35l56_hda.c b/sound/pci/hda/cs35l56_hda.c
-> index 76b9c685560b..9e4976bdb5e0 100644
-> --- a/sound/pci/hda/cs35l56_hda.c
-> +++ b/sound/pci/hda/cs35l56_hda.c
-> @@ -1003,6 +1003,7 @@ void cs35l56_hda_remove(struct device *dev)
->  {
->  	struct cs35l56_hda *cs35l56 = dev_get_drvdata(dev);
->  
-> +	pm_runtime_dont_use_autosuspend(cs35l56->base.dev);
->  	pm_runtime_get_sync(cs35l56->base.dev);
->  	pm_runtime_disable(cs35l56->base.dev);
->  
-> -- 
-> 2.30.2
-> 
+Naming option: s/device/hardware
+
+However, I think the snd_sof_device_remove itself is redundant and we
+might not need it at all as in case we have wq and there is a failure in
+there we do want to release resources as much as possible. The module
+will be kept loaded (no deferred handling in wq) and that might block
+PM, other devices to behave correctly. Iow, if the wq has failure we
+should do a cleanup to the best effort to reach a level like the driver
+is not even loaded.
+
+Doable? I thin it is.
+
+-- 
+Péter
