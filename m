@@ -4,78 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 63B82CA0EC6
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Sep 2023 00:06:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 863C3CA0EC6
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Sep 2023 00:06:44 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9EBE114FA;
-	Tue, 12 Sep 2023 02:05:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9EBE114FA
+	by alsa0.perex.cz (Postfix) with ESMTPS id B92DE103A;
+	Tue, 12 Sep 2023 02:05:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B92DE103A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1694477185;
-	bh=LeuApLpG3v8SYN8BHFkhSYMJ/eALFnk+G1jkLasFDnM=;
+	s=default; t=1694477202;
+	bh=DgTYRQBSoJwFvdOE21aqdGWssFdi96AaqXB7ox6Gvl8=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=kGlH1z09qs5PbDcpFrkCqCs/HrvCchAqJkN6LWogKPCgTvDS9VRfrjDFAlLwhlzNl
-	 Lx83/zCwDZARmoOomz/r3C0EDcLiD9DNyVUqM2aFKZ40n3eheBTuSOEDiXtuXk3y72
-	 nZbpShTlas5vXwtg/x7OynKs8uwCknnDF2qzuTbE=
+	b=qEHHieUtUBy6e15nMT00MAh8Ef2DF9NzFd1lS8BN58txzaXdqh+LNX1AvLuz0uAfy
+	 +ltBUS1TGWHtCkVVML901eq9O+P1lynEH92JnWw1h/KxfpZlF+F4x1P+5cnFH10DtU
+	 gXSCyDBTveyyk/MPpoz4PxGN9fvnr5RTgZCqcXmc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 07E80F8067C; Tue, 12 Sep 2023 01:58:00 +0200 (CEST)
+	id 9C89CF805B3; Tue, 12 Sep 2023 01:58:05 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C6103F80678;
-	Tue, 12 Sep 2023 01:57:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9F8C0F805D9;
+	Tue, 12 Sep 2023 01:58:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9B6FEF8060D; Tue, 12 Sep 2023 01:57:44 +0200 (CEST)
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+	id DE6EEF8061B; Tue, 12 Sep 2023 01:57:46 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 0CD07F80608
-	for <alsa-devel@alsa-project.org>; Tue, 12 Sep 2023 01:57:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0CD07F80608
+	by alsa1.perex.cz (Postfix) with ESMTPS id CD260F805E8
+	for <alsa-devel@alsa-project.org>; Tue, 12 Sep 2023 01:57:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CD260F805E8
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=QEWWVVng
+ header.s=k20201202 header.b=sCsbC+kB
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by sin.source.kernel.org (Postfix) with ESMTPS id 92970CE1915;
-	Mon, 11 Sep 2023 23:57:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A309AC197C4;
-	Mon, 11 Sep 2023 23:57:32 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id B33CB614B3;
+	Mon, 11 Sep 2023 23:57:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9376C32779;
+	Mon, 11 Sep 2023 23:57:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1694476654;
-	bh=LeuApLpG3v8SYN8BHFkhSYMJ/eALFnk+G1jkLasFDnM=;
+	s=k20201202; t=1694476662;
+	bh=DgTYRQBSoJwFvdOE21aqdGWssFdi96AaqXB7ox6Gvl8=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=QEWWVVngtHVHAwR30+E8WivwUqjWkChBZJKrl/XHINMzEFqr7EXO+Xt7imEmwN7wm
-	 +sSWtLmIIMAWnjBlZLv0YLOVtFB0d3nm0n3noo+yu3XaXQCCLce+IRQs8SZYgybSRP
-	 16pZ7ovq1vukKeYwAdiwMHEAGDRc64iTZtY/rAEETPi69t2mRLAKQ7wpeLgnWzePgP
-	 hItJ2WCw11kIGq3VwetC2krMWVmhjggnOUMHpNkRIegP3xuMuDAp9dmnP3GuepYBsR
-	 c387xpjWPupQtc5Mbd/GYSIlE+Ni/OoGSY8ExMxxDoMIyZvUKxRzsFc7Sxki/t2EQ9
-	 ZbjbUGJ/+Cc0g==
+	b=sCsbC+kBVOnYpheOEgpvIQenH7Rc5ejskACNLgOFadmXomrRduMQWUqt747gbZEYn
+	 DJWD9sn8SQpvwnUc5i4Er6yDrW0g/ekW5W/18qnu6473W9xqN8DJ27U0VgvRRvaoeb
+	 z/GXRQYMe8bwrZ2zkCFgV6g2pvNY3MluE9cr97p4/2BpIx4VQgRu9Q//+PChIVK7dU
+	 ewEQjQgO2jiYrE/FmbTpFfinrqanrbUgcneOk6iBk53977A06j109yuNWsG9ctKUdY
+	 +Hoet91nTSOyQ7Pq/zKpGAFXddjr3wD2u4CUurCxwTylM7HYRd/alkV9cAKR47ST8u
+	 SB7Rb7xiu+/rw==
 From: Mark Brown <broonie@kernel.org>
-To: Shenghao Ding <shenghao-ding@ti.com>, Kevin Lu <kevin-lu@ti.com>,
- Baojun Xu <x1077012@ti.com>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, Biju Das <biju.das.jz@bp.renesas.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20230828191014.138310-1-biju.das.jz@bp.renesas.com>
-References: <20230828191014.138310-1-biju.das.jz@bp.renesas.com>
-Subject: Re: [PATCH v2 0/2] Match data improvements for tlv320aic32x4
- driver
-Message-Id: <169447665230.2387538.10106285236700897579.b4-ty@kernel.org>
-Date: Tue, 12 Sep 2023 00:57:32 +0100
+To: lgirdwood@gmail.com, tiwai@suse.com, perex@perex.cz,
+ matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com,
+ Trevor Wu <trevor.wu@mediatek.com>
+Cc: alsa-devel@alsa-project.org, linux-mediatek@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20230825024935.10878-1-trevor.wu@mediatek.com>
+References: <20230825024935.10878-1-trevor.wu@mediatek.com>
+Subject: Re: [RESEND,v3 0/3] ASoC: mt8188-mt6359: add SOF support
+Message-Id: <169447666040.2387538.8880759925016184457.b4-ty@kernel.org>
+Date: Tue, 12 Sep 2023 00:57:40 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-099c9
-Message-ID-Hash: FFSJA7ADH3YJ6E434OO2L6W65GA2YHL6
-X-Message-ID-Hash: FFSJA7ADH3YJ6E434OO2L6W65GA2YHL6
+Message-ID-Hash: AKD5HCALWCAPVUTGFCSQLA6FU4LPBHYP
+X-Message-ID-Hash: AKD5HCALWCAPVUTGFCSQLA6FU4LPBHYP
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -88,26 +87,23 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FFSJA7ADH3YJ6E434OO2L6W65GA2YHL6/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AKD5HCALWCAPVUTGFCSQLA6FU4LPBHYP/>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, 28 Aug 2023 20:10:12 +0100, Biju Das wrote:
-> This patch series aims to add match data improvements for tlv320aic32x4
-> driver.
+On Fri, 25 Aug 2023 10:49:32 +0800, Trevor Wu wrote:
+> This series introduces dynamic pinctrl and adds support for the SOF on
+> the mt8188-mt6359 machine driver.
 > 
-> This patch series is only compile tested.
+> Changes since v2:
+>   - revise mtk_sof_check_tplg_be_dai_link_fixup().
 > 
-> v1->v2:
->  * Created patch#1 for adding enum aic32x4_type to aic32x4_probe() and
->    drop using dev_set_drvdata() from tlv320aic32x4_{i2c,spi} drivers.
->  * Return value of i2c_get_match_data() passed to type paramemter in
->    aic32x4_probe().
+> Changes since v1:
+>   - minor changes to incorporate the suggestions from the reviewer.
 > 
 > [...]
 
@@ -117,10 +113,12 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: codec: tlv320aic32x4: Add enum aic32x4_type to aic32x4_probe()
-      commit: cac1636e214930b01b2f8ac9867771486554271a
-[2/2] ASoC: tlv320aic32x4-i2c: Simplify probe()
-      commit: d44f7bc9d181a2bec0dcff694d00b08c8f99284d
+[1/3] ASoC: mediatek: mt8188-mt6359: support dynamic pinctrl
+      commit: d601bb78f06b9e3cbb52e6b87b88add9920a11b6
+[2/3] ASoC: mediatek: common: revise SOF common code
+      commit: 4047b35c836ff9f8bf1f57c4ab871136899267e9
+[3/3] ASoC: mediatek: mt8188-mt6359: add SOF support
+      commit: 1bce95deab841ece9602f941e68c7b919fde303d
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
