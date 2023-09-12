@@ -4,101 +4,102 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E0A2CCA0ECA
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Sep 2023 08:51:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 36150CA0ECA
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Sep 2023 08:52:53 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AAFA193A;
-	Tue, 12 Sep 2023 10:50:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AAFA193A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4655CAE8;
+	Tue, 12 Sep 2023 10:52:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4655CAE8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1694508688;
-	bh=w+2jDHnL+K2GSYrM4PrNVINIoRLiElza0bikDjxuiqE=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	s=default; t=1694508771;
+	bh=VaHcnf0Oe94R1ui0OjR9HSdn/INV9sf104dQNcD0py8=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=TGugQS5LOpAiyUUcaNXPDxUAGGsFupHE0Wyd5kouCsN/2tIDMDJPruaRzRKeefPn6
-	 GdR/+kXnrT6jz1XPWDvbdBtUcVzeAbPB+HwszhAU+gt61GcwkMjv9AAGVRh53lfIQF
-	 rWGRGNjGO8SdCTxfw+foI1AcLG++QZvFPDVGHnm8=
+	b=FxUboRgk6wb4wEfgRsXaJbr+KzY8j4DfzUSIiLxnu5n/CBUgMNhLGy3pnU1vD8fHU
+	 jDVrwtQYDp2c1lWeiOeTA19hg7EJ0BBUPZ30+mR10nibWvpurgQ56Lhyhf8RrqcpwT
+	 ZsEjgxFnFE0358vtnziLdEsqaPgdOd3Xbu6nfwfM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 42E9CF800AA; Tue, 12 Sep 2023 10:50:30 +0200 (CEST)
+	id E7830F800AA; Tue, 12 Sep 2023 10:51:51 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 03DCAF800AA;
-	Tue, 12 Sep 2023 10:50:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7F389F80431;
+	Tue, 12 Sep 2023 10:51:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id EB053F80425; Tue, 12 Sep 2023 10:50:26 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id B1342F80425; Tue, 12 Sep 2023 10:51:48 +0200 (CEST)
+Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net
+ [217.70.183.193])
+	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 1B785F800AA
-	for <alsa-devel@alsa-project.org>; Tue, 12 Sep 2023 10:50:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1B785F800AA
+	by alsa1.perex.cz (Postfix) with ESMTPS id 397D1F80212
+	for <alsa-devel@alsa-project.org>; Tue, 12 Sep 2023 10:51:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 397D1F80212
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=eW1YZYxL;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=yKM33t8E
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 56B191F85D;
-	Tue, 12 Sep 2023 08:50:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1694508623;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
+	dkim=pass (2048-bit key,
+ unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
+ header.s=gm1 header.b=mx341Kce
+Received: by mail.gandi.net (Postfix) with ESMTPA id 7054024005D;
+	Tue, 12 Sep 2023 08:39:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1694508704;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=KyBRNaYAj1FKVpZu9HTV7I7nxJWl2NPUn/LfwzF1WeI=;
-	b=eW1YZYxLFqxyWkULT6ZYZrK3h/QcYe+vuzo+A5rmti1vihVjukYpzwz0+Gr0kPWGrXx3JG
-	BowZ6Sad+tkbiDlYbYRAm9A/v1FpfJwMVJFhNrlEl4klsuFKV72hurstQMIPAWAT1CCfEM
-	Nh1QDJVu1KqrOnUilB/A4vuQ99gKOK4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1694508623;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=KyBRNaYAj1FKVpZu9HTV7I7nxJWl2NPUn/LfwzF1WeI=;
-	b=yKM33t8EHd+XHmiR+zbPECsds0tfw8Jgv5kxkR4URSa4w32uf1pdsQsVeebl9tVtyHy3N3
-	cFYGvoKjbVnhduDQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 19703139DB;
-	Tue, 12 Sep 2023 08:50:23 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id 5+cNBU8mAGWhJgAAMHmgww
-	(envelope-from <tiwai@suse.de>); Tue, 12 Sep 2023 08:50:23 +0000
-Date: Tue, 12 Sep 2023 10:50:22 +0200
-Message-ID: <87o7i77p2p.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Ma Ke <make_ruc2021@163.com>
-Cc: perex@perex.cz,
-	tiwai@suse.com,
-	cujomalainey@chromium.org,
-	maciej.szmigiero@oracle.com,
-	clecigne@google.com,
+	bh=fnhlmyV9uqfQHa6AlRpMQCfiW/NfQzJB6OlaQ/hT7HQ=;
+	b=mx341KceJaUgBDsgVG30vUrWpWZD65gedAPbcxO0PrGlNZ5/L1PKGa/q/iThrJ6Srt6x5B
+	dM3M4ydgc4GlL0/87qKFiUdu9wpcx3iIivvTxv2K6R910LfJHFUOxkd3iI8vLNwDiYzMOK
+	4rWMmEmKsVhx7/+pIpePRcuB+4ZQgCiG2AGrK69CGT2cnfmkutn5MUKcHP8vrnlLe2FZNb
+	JzmmbzK8q9Q6rGATjYPV1mWMfY55wLVv7PNrvOOYvdPS3oM2gGtER6y5da9b9UciFezkT9
+	4RsanBUFuLvLk+o1JqunSBk6KlZmlRrsqWVSwEFGc46nWLZZSZL/MfeXq+vlyQ==
+From: Herve Codina <herve.codina@bootlin.com>
+To: Herve Codina <herve.codina@bootlin.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Andrew Lunn <andrew@lunn.ch>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Lee Jones <lee@kernel.org>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Qiang Zhao <qiang.zhao@nxp.com>,
+	Li Yang <leoyang.li@nxp.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	Shengjiu Wang <shengjiu.wang@gmail.com>,
+	Xiubo Li <Xiubo.Lee@gmail.com>,
+	Fabio Estevam <festevam@gmail.com>,
+	Nicolin Chen <nicoleotsuka@gmail.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Randy Dunlap <rdunlap@infradead.org>
+Cc: netdev@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-gpio@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
 	alsa-devel@alsa-project.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ALSA: control: do not access controls without possession
- of r_w lock
-In-Reply-To: <20230912084530.3307329-1-make_ruc2021@163.com>
-References: <20230912084530.3307329-1-make_ruc2021@163.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Message-ID-Hash: ROIHVXXKDRURELACL5B5KVTY5A76UMKX
-X-Message-ID-Hash: ROIHVXXKDRURELACL5B5KVTY5A76UMKX
-X-MailFrom: tiwai@suse.de
+	Simon Horman <horms@kernel.org>,
+	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: [PATCH v5 02/31] soc: fsl: cpm1: qmc: Fix __iomem addresses
+ declaration
+Date: Tue, 12 Sep 2023 10:14:53 +0200
+Message-ID: <20230912081527.208499-3-herve.codina@bootlin.com>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230912081527.208499-1-herve.codina@bootlin.com>
+References: <20230912081527.208499-1-herve.codina@bootlin.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: herve.codina@bootlin.com
+Message-ID-Hash: GPO7EARCGJMKHW5KUORRIT5IWUTZBNLL
+X-Message-ID-Hash: GPO7EARCGJMKHW5KUORRIT5IWUTZBNLL
+X-MailFrom: herve.codina@bootlin.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -110,7 +111,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ROIHVXXKDRURELACL5B5KVTY5A76UMKX/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GPO7EARCGJMKHW5KUORRIT5IWUTZBNLL/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -119,42 +120,151 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, 12 Sep 2023 10:45:30 +0200,
-Ma Ke wrote:
-> 
-> we should not access any of its memory when we don't ensure possession of
-> a read/write lock. Otherwise we risk a use after free access, which allows
-> local users to cause a denial of service and obtain sensitive information
-> from kernel memory.
+Running sparse (make C=1) on qmc.c raises a lot of warning such as:
+  ...
+  warning: incorrect type in assignment (different address spaces)
+     expected struct cpm_buf_desc [usertype] *[noderef] __iomem bd
+     got struct cpm_buf_desc [noderef] [usertype] __iomem *txbd_free
+  ...
 
-This function is called always under card->controls_rwsem.
-So it should be OK as is.
+Indeed, some variable were declared 'type *__iomem var' instead of
+'type __iomem *var'.
 
+Use the correct declaration to remove these warnings.
 
-thanks,
+Fixes: 3178d58e0b97 ("soc: fsl: cpm1: Add support for QMC")
+Signed-off-by: Herve Codina <herve.codina@bootlin.com>
+Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ drivers/soc/fsl/qe/qmc.c | 34 +++++++++++++++++-----------------
+ 1 file changed, 17 insertions(+), 17 deletions(-)
 
-Takashi
+diff --git a/drivers/soc/fsl/qe/qmc.c b/drivers/soc/fsl/qe/qmc.c
+index b3c292c9a14e..7ad0d77f1740 100644
+--- a/drivers/soc/fsl/qe/qmc.c
++++ b/drivers/soc/fsl/qe/qmc.c
+@@ -175,7 +175,7 @@ struct qmc_chan {
+ 	struct list_head list;
+ 	unsigned int id;
+ 	struct qmc *qmc;
+-	void *__iomem s_param;
++	void __iomem *s_param;
+ 	enum qmc_mode mode;
+ 	u64	tx_ts_mask;
+ 	u64	rx_ts_mask;
+@@ -203,9 +203,9 @@ struct qmc_chan {
+ struct qmc {
+ 	struct device *dev;
+ 	struct tsa_serial *tsa_serial;
+-	void *__iomem scc_regs;
+-	void *__iomem scc_pram;
+-	void *__iomem dpram;
++	void __iomem *scc_regs;
++	void __iomem *scc_pram;
++	void __iomem *dpram;
+ 	u16 scc_pram_offset;
+ 	cbd_t __iomem *bd_table;
+ 	dma_addr_t bd_dma_addr;
+@@ -218,37 +218,37 @@ struct qmc {
+ 	struct qmc_chan *chans[64];
+ };
+ 
+-static inline void qmc_write16(void *__iomem addr, u16 val)
++static inline void qmc_write16(void __iomem *addr, u16 val)
+ {
+ 	iowrite16be(val, addr);
+ }
+ 
+-static inline u16 qmc_read16(void *__iomem addr)
++static inline u16 qmc_read16(void __iomem *addr)
+ {
+ 	return ioread16be(addr);
+ }
+ 
+-static inline void qmc_setbits16(void *__iomem addr, u16 set)
++static inline void qmc_setbits16(void __iomem *addr, u16 set)
+ {
+ 	qmc_write16(addr, qmc_read16(addr) | set);
+ }
+ 
+-static inline void qmc_clrbits16(void *__iomem addr, u16 clr)
++static inline void qmc_clrbits16(void __iomem *addr, u16 clr)
+ {
+ 	qmc_write16(addr, qmc_read16(addr) & ~clr);
+ }
+ 
+-static inline void qmc_write32(void *__iomem addr, u32 val)
++static inline void qmc_write32(void __iomem *addr, u32 val)
+ {
+ 	iowrite32be(val, addr);
+ }
+ 
+-static inline u32 qmc_read32(void *__iomem addr)
++static inline u32 qmc_read32(void __iomem *addr)
+ {
+ 	return ioread32be(addr);
+ }
+ 
+-static inline void qmc_setbits32(void *__iomem addr, u32 set)
++static inline void qmc_setbits32(void __iomem *addr, u32 set)
+ {
+ 	qmc_write32(addr, qmc_read32(addr) | set);
+ }
+@@ -318,7 +318,7 @@ int qmc_chan_write_submit(struct qmc_chan *chan, dma_addr_t addr, size_t length,
+ {
+ 	struct qmc_xfer_desc *xfer_desc;
+ 	unsigned long flags;
+-	cbd_t *__iomem bd;
++	cbd_t __iomem *bd;
+ 	u16 ctrl;
+ 	int ret;
+ 
+@@ -374,7 +374,7 @@ static void qmc_chan_write_done(struct qmc_chan *chan)
+ 	void (*complete)(void *context);
+ 	unsigned long flags;
+ 	void *context;
+-	cbd_t *__iomem bd;
++	cbd_t __iomem *bd;
+ 	u16 ctrl;
+ 
+ 	/*
+@@ -425,7 +425,7 @@ int qmc_chan_read_submit(struct qmc_chan *chan, dma_addr_t addr, size_t length,
+ {
+ 	struct qmc_xfer_desc *xfer_desc;
+ 	unsigned long flags;
+-	cbd_t *__iomem bd;
++	cbd_t __iomem *bd;
+ 	u16 ctrl;
+ 	int ret;
+ 
+@@ -488,7 +488,7 @@ static void qmc_chan_read_done(struct qmc_chan *chan)
+ 	void (*complete)(void *context, size_t size);
+ 	struct qmc_xfer_desc *xfer_desc;
+ 	unsigned long flags;
+-	cbd_t *__iomem bd;
++	cbd_t __iomem *bd;
+ 	void *context;
+ 	u16 datalen;
+ 	u16 ctrl;
+@@ -663,7 +663,7 @@ static void qmc_chan_reset_rx(struct qmc_chan *chan)
+ {
+ 	struct qmc_xfer_desc *xfer_desc;
+ 	unsigned long flags;
+-	cbd_t *__iomem bd;
++	cbd_t __iomem *bd;
+ 	u16 ctrl;
+ 
+ 	spin_lock_irqsave(&chan->rx_lock, flags);
+@@ -694,7 +694,7 @@ static void qmc_chan_reset_tx(struct qmc_chan *chan)
+ {
+ 	struct qmc_xfer_desc *xfer_desc;
+ 	unsigned long flags;
+-	cbd_t *__iomem bd;
++	cbd_t __iomem *bd;
+ 	u16 ctrl;
+ 
+ 	spin_lock_irqsave(&chan->tx_lock, flags);
+-- 
+2.41.0
 
-> 
-> Signed-off-by: Ma Ke <make_ruc2021@163.com>
-> ---
->  sound/core/control.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/sound/core/control.c b/sound/core/control.c
-> index 59c8658966d4..98782cc68ee1 100644
-> --- a/sound/core/control.c
-> +++ b/sound/core/control.c
-> @@ -590,7 +590,8 @@ static int __snd_ctl_remove(struct snd_card *card,
->  		remove_hash_entries(card, kcontrol);
->  
->  	card->controls_count -= kcontrol->count;
-> -	for (idx = 0; idx < kcontrol->count; idx++)
-> +	count = kcontrol->count;
-> +	for (idx = 0; idx < count; idx++)
->  		snd_ctl_notify_one(card, SNDRV_CTL_EVENT_MASK_REMOVE, kcontrol, idx);
->  	snd_ctl_free_one(kcontrol);
->  	return 0;
-> -- 
-> 2.37.2
-> 
