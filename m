@@ -4,89 +4,101 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4961FCA0ECA
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Sep 2023 08:53:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B5E0ECA0ECA
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Sep 2023 09:05:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 827F8DEB;
-	Tue, 12 Sep 2023 10:52:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 827F8DEB
+	by alsa0.perex.cz (Postfix) with ESMTPS id A0C25A4E;
+	Tue, 12 Sep 2023 11:04:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A0C25A4E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1694508791;
-	bh=ZZ/7wwp4gZYi9KKfVsD5bjYEFWhKTnIkH45CF/h84Ic=;
-	h=From:To:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=Gj2OiTRaEJZXCt9v0kEMvAcT8aVquiyBf8oL6WwEHuZVtFzrIAgsONe7LXlVwp0Np
-	 SInxJu+8tawBeeZ2Glrcp0TadLXxCElldK/BaYK2+VpH/9VajBKxyTIoJt2p3QnuR2
-	 SPqCFYleyOn/01l+KOPfMZH13wpk4D8AI2njZjnM=
+	s=default; t=1694509513;
+	bh=X9kXmBtJCxdri6wIDJc7D4FbiQfqsl2mU0uxDYqz7Xk=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=qq6tIlGcKU9DFtRrxRoqh6gCb04iaXBl/Mi2d0upvbBmCqeKzYN9FpQKSM7DFpEjV
+	 6dX6KkgpCUwR/haQSf6PkWnPDfsOT1L4N7Jb9MGyywlYZUjzVqndQ1AvqmfneM6tAs
+	 NXQK0qfArjGE8GtE6x9CHmkP0OwlRjU3MJhFkEbo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5B814F8057B; Tue, 12 Sep 2023 10:51:55 +0200 (CEST)
+	id 0D345F80537; Tue, 12 Sep 2023 11:03:53 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id F27A1F80563;
-	Tue, 12 Sep 2023 10:51:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 82AAEF80425;
+	Tue, 12 Sep 2023 11:03:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id EECAEF80212; Tue, 12 Sep 2023 10:51:51 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 8BB0BF80425; Tue, 12 Sep 2023 11:03:50 +0200 (CEST)
+Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net
+ [IPv6:2001:4b98:dc4:8::221])
+	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B6DC7F800AA
-	for <alsa-devel@alsa-project.org>; Tue, 12 Sep 2023 10:51:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B6DC7F800AA
+	by alsa1.perex.cz (Postfix) with ESMTPS id 0FFAFF80212
+	for <alsa-devel@alsa-project.org>; Tue, 12 Sep 2023 11:03:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0FFAFF80212
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=FW33aYcQ;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=6+Hg7gHU
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id C8BD2212AE;
-	Tue, 12 Sep 2023 08:51:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1694508707; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-  content-transfer-encoding:content-transfer-encoding;
-	bh=LcHOQyzFANyuYXQ2XNNLEgBKPJtoB1mN26LXW86bq3s=;
-	b=FW33aYcQwUlAnIqTUf22rnObcCoMS064DrncWwxrg7FX7GnU23hHJYoaavwgFIF77GaAPV
-	XP9uWfcGdDWmmCsfuChxyz9C6vhw7vZb6gWAWPQ19E0cOzX5AWw8DnN2i6m+RPnwn2c5RZ
-	q1zJS+59OLeN93T0w3XKHWbAei1stcU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1694508707;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-  content-transfer-encoding:content-transfer-encoding;
-	bh=LcHOQyzFANyuYXQ2XNNLEgBKPJtoB1mN26LXW86bq3s=;
-	b=6+Hg7gHUm7faEvLUxEc07O8padLOW0HkokQd8vv9fmDuV9YdLg2UNZLxeeW2z8G7MPcY72
-	16QQinDZ8es80rAA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B02B5139DB;
-	Tue, 12 Sep 2023 08:51:47 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id BEc2KqMmAGVSJwAAMHmgww
-	(envelope-from <tiwai@suse.de>); Tue, 12 Sep 2023 08:51:47 +0000
-From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH] ALSA: seq: Avoid delivery of events for disabled UMP groups
-Date: Tue, 12 Sep 2023 10:51:44 +0200
-Message-Id: <20230912085144.32534-1-tiwai@suse.de>
-X-Mailer: git-send-email 2.35.3
+	dkim=pass (2048-bit key,
+ unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
+ header.s=gm1 header.b=ZTFZyz6H
+Received: by mail.gandi.net (Postfix) with ESMTPA id D33A5240061;
+	Tue, 12 Sep 2023 08:51:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1694509426;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DxyuVFnS14xfvlofWP1396X+QDpYh2tc32oijKr4Rok=;
+	b=ZTFZyz6HcLMeHyZSapA4AyFJzqP6t9lwJsx6DsAQSxdbuftqRxiU/ArAZBDXy/Sb5oEiV/
+	USPg9pjkgVpp5T0WOtVzNd9JRkFBEveeZQVQ9X0QxqdZc8B3ff6tmaGd2pCImbyl+5gXgm
+	mmk0UivuRz9DLTvAhmMLIdcf8p8GYzvu/0uAV99F1hc7oncZ3Rz72btNoDHWYza8DqGgCF
+	amf1SmU6xzefxQ0iAAJzS4hus7ACLZNvIk7pKwPML3LZJt32KFosTvr9hhWdgsvh4VBC7p
+	PMul8VUHnAWJ0qKKjUnFAU14UGCgoq7EHqp3+MenBU3y4bDI/WkxEPxLVNFNdg==
+From: Herve Codina <herve.codina@bootlin.com>
+To: Herve Codina <herve.codina@bootlin.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Andrew Lunn <andrew@lunn.ch>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Lee Jones <lee@kernel.org>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Qiang Zhao <qiang.zhao@nxp.com>,
+	Li Yang <leoyang.li@nxp.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	Shengjiu Wang <shengjiu.wang@gmail.com>,
+	Xiubo Li <Xiubo.Lee@gmail.com>,
+	Fabio Estevam <festevam@gmail.com>,
+	Nicolin Chen <nicoleotsuka@gmail.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Randy Dunlap <rdunlap@infradead.org>
+Cc: netdev@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-gpio@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	alsa-devel@alsa-project.org,
+	Simon Horman <horms@kernel.org>,
+	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: [PATCH v5 03/31] soc: fsl: cpm1: qmc: Fix rx channel reset
+Date: Tue, 12 Sep 2023 10:14:54 +0200
+Message-ID: <20230912081527.208499-4-herve.codina@bootlin.com>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230912081527.208499-1-herve.codina@bootlin.com>
+References: <20230912081527.208499-1-herve.codina@bootlin.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 75LN2OWAXFE4HJYJ5LPJ7OHZEYONBJBH
-X-Message-ID-Hash: 75LN2OWAXFE4HJYJ5LPJ7OHZEYONBJBH
-X-MailFrom: tiwai@suse.de
+X-GND-Sasl: herve.codina@bootlin.com
+Message-ID-Hash: OQM2WGFDEZ52E5P47SOY4NIQB2E7RFVN
+X-Message-ID-Hash: OQM2WGFDEZ52E5P47SOY4NIQB2E7RFVN
+X-MailFrom: herve.codina@bootlin.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -98,7 +110,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/75LN2OWAXFE4HJYJ5LPJ7OHZEYONBJBH/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OQM2WGFDEZ52E5P47SOY4NIQB2E7RFVN/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -107,86 +119,37 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-ALSA sequencer core still delivers events to the disabled UMP Group,
-leaving this handling to the device.  But it's rather risky and it's
-easy to imagine that such an unexpected event may screw up the device
-firmware.
+The qmc_chan_reset_rx() set the is_rx_stopped flag. This leads to an
+inconsistent state in the following sequence.
+    qmc_chan_stop()
+    qmc_chan_reset()
+Indeed, after the qmc_chan_reset() call, the channel must still be
+stopped. Only a qmc_chan_start() call can move the channel from stopped
+state to started state.
 
-This patch avoids the superfluous event deliveries by setting the
-group_filter of the UMP client as default, and evaluate the
-group_filter properly at delivery from non-UMP clients.
+Fix the issue removing the is_rx_stopped flag setting from
+qmc_chan_reset()
 
-The grouop_filter is updated upon the dynamic UMP Function Block
-updates, so that it follows the change of the disabled UMP Groups,
-too.
-
-Fixes: d2b706077792 ("ALSA: seq: Add UMP group filter")
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Fixes: 3178d58e0b97 ("soc: fsl: cpm1: Add support for QMC")
+Signed-off-by: Herve Codina <herve.codina@bootlin.com>
+Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
- sound/core/seq/seq_ump_client.c  | 22 ++++++++++++++++++++++
- sound/core/seq/seq_ump_convert.c |  2 ++
- 2 files changed, 24 insertions(+)
+ drivers/soc/fsl/qe/qmc.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/sound/core/seq/seq_ump_client.c b/sound/core/seq/seq_ump_client.c
-index f26a1812dfa7..a60e3f069a80 100644
---- a/sound/core/seq/seq_ump_client.c
-+++ b/sound/core/seq/seq_ump_client.c
-@@ -416,6 +416,25 @@ static void setup_client_midi_version(struct seq_ump_client *client)
- 	snd_seq_kernel_client_put(cptr);
+diff --git a/drivers/soc/fsl/qe/qmc.c b/drivers/soc/fsl/qe/qmc.c
+index 7ad0d77f1740..8dc73cc1a83b 100644
+--- a/drivers/soc/fsl/qe/qmc.c
++++ b/drivers/soc/fsl/qe/qmc.c
+@@ -685,7 +685,6 @@ static void qmc_chan_reset_rx(struct qmc_chan *chan)
+ 		    qmc_read16(chan->s_param + QMC_SPE_RBASE));
+ 
+ 	chan->rx_pending = 0;
+-	chan->is_rx_stopped = false;
+ 
+ 	spin_unlock_irqrestore(&chan->rx_lock, flags);
  }
- 
-+/* set up client's group_filter bitmap */
-+static void setup_client_group_filter(struct seq_ump_client *client)
-+{
-+	struct snd_seq_client *cptr;
-+	unsigned int filter;
-+	int p;
-+
-+	cptr = snd_seq_kernel_client_get(client->seq_client);
-+	if (!cptr)
-+		return;
-+	filter = ~(1U << 0); /* always allow groupless messages */
-+	for (p = 0; p < SNDRV_UMP_MAX_GROUPS; p++) {
-+		if (client->groups[p].active)
-+			filter &= ~(1U << (p + 1));
-+	}
-+	cptr->group_filter = filter;
-+	snd_seq_kernel_client_put(cptr);
-+}
-+
- /* UMP group change notification */
- static void handle_group_notify(struct work_struct *work)
- {
-@@ -424,6 +443,7 @@ static void handle_group_notify(struct work_struct *work)
- 
- 	update_group_attrs(client);
- 	update_port_infos(client);
-+	setup_client_group_filter(client);
- }
- 
- /* UMP FB change notification */
-@@ -492,6 +512,8 @@ static int snd_seq_ump_probe(struct device *_dev)
- 			goto error;
- 	}
- 
-+	setup_client_group_filter(client);
-+
- 	err = create_ump_endpoint_port(client);
- 	if (err < 0)
- 		goto error;
-diff --git a/sound/core/seq/seq_ump_convert.c b/sound/core/seq/seq_ump_convert.c
-index 7cc84e137999..b141024830ec 100644
---- a/sound/core/seq/seq_ump_convert.c
-+++ b/sound/core/seq/seq_ump_convert.c
-@@ -1197,6 +1197,8 @@ int snd_seq_deliver_to_ump(struct snd_seq_client *source,
- 			   struct snd_seq_event *event,
- 			   int atomic, int hop)
- {
-+	if (dest->group_filter & (1U << dest_port->ump_group))
-+		return 0; /* group filtered - skip the event */
- 	if (event->type == SNDRV_SEQ_EVENT_SYSEX)
- 		return cvt_sysex_to_ump(dest, dest_port, event, atomic, hop);
- 	else if (snd_seq_client_is_midi2(dest))
 -- 
-2.35.3
+2.41.0
 
