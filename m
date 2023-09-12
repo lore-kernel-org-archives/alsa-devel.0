@@ -4,84 +4,102 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 58967CA0ECA
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Sep 2023 08:40:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 797B3CA0ECF
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Sep 2023 08:41:03 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B52E1A4B;
-	Tue, 12 Sep 2023 10:39:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B52E1A4B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 84F31AE9;
+	Tue, 12 Sep 2023 10:40:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 84F31AE9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1694508033;
-	bh=4ejql24HEMpBoTtiKSAXpLvVWBPjkQdUnHC8bPFBtto=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=PORyCXmaFR2uCIWRk/keT+hYv/ylvZ58EkDC9lWJ+KvUvcGa93qOvT/Xn0zzswrkL
-	 12RV+EXqEuB2DAbJJv80iDAqxtPv2W0PR847TvfdMCYttWecDDaktURJUUnLJ36XVb
-	 RT/nCn8VvvCrSu2QsKxCoZ8c09utQtCZtQZAMIpU=
+	s=default; t=1694508061;
+	bh=JckFiaw0B32weMpypPXBuy8hhPCeBPl682cS3XyP6to=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=NIz1TLYybLI4vDVzCrlTXvn1o+liMAxRx56bjqzHV5rgHuibziJRZvu2UmtNhUYy6
+	 rE4+AR2vLbRnY/lz1Cd9CwcuH8tVyuGRQkex+7w19/LfxaG3avD1Q2G39FcpX9EMbu
+	 Rqv2TVuAZR/VYTTsPzrW3nsM/rRDcK6usTRDd+z8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B353EF80551; Tue, 12 Sep 2023 10:39:20 +0200 (CEST)
+	id 1AEF8F80564; Tue, 12 Sep 2023 10:39:48 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 43C4AF8047D;
-	Tue, 12 Sep 2023 10:39:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CCBDEF80558;
+	Tue, 12 Sep 2023 10:39:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 47623F80425; Tue, 12 Sep 2023 10:39:16 +0200 (CEST)
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id D1824F80558; Tue, 12 Sep 2023 10:39:45 +0200 (CEST)
+Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net
+ [217.70.183.193])
+	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id F103FF800AA
-	for <alsa-devel@alsa-project.org>; Tue, 12 Sep 2023 10:39:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F103FF800AA
+	by alsa1.perex.cz (Postfix) with ESMTPS id 71F2BF80212
+	for <alsa-devel@alsa-project.org>; Tue, 12 Sep 2023 10:39:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 71F2BF80212
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=Y/oe5eIj
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694507953; x=1726043953;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=4ejql24HEMpBoTtiKSAXpLvVWBPjkQdUnHC8bPFBtto=;
-  b=Y/oe5eIjvRL8ToDnzadIMOHTSJEQpCtHcUnuSXlFzMSG+dqC5SZdZWxO
-   8RO9YlbXQSkegL5xdgukG4i0qgrg++UkrjgWyQdmeftj65HQ7vL/4skAk
-   r6RhZQ8vw6MjRcqAa1hqxxIpmgxspaDCmDEAWrOUjvj0X8TDB0eUW7GPt
-   a5DtIENy0TAilzf2O526hac6gMzdYUslQ8cUd0oKYuUkK3gDuGzDNAvVk
-   opX0MjGqUv2DWhcV/wexVKLMDUWIBXzgJBC1GlxF6s58GieYrTmd2EnIi
-   zROQ/yI5KCtPt0LOJZ9jORFf5j4+SFVbpZyVaJFx7qMfkHfo2vrJl5+dy
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="381015227"
-X-IronPort-AV: E=Sophos;i="6.02,245,1688454000";
-   d="scan'208";a="381015227"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Sep 2023 01:39:08 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="833826778"
-X-IronPort-AV: E=Sophos;i="6.02,245,1688454000";
-   d="scan'208";a="833826778"
-Received: from mkidd-mobl.ger.corp.intel.com (HELO
- pujfalus-desk.ger.corp.intel.com) ([10.251.217.72])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Sep 2023 01:39:06 -0700
-From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-To: tiwai@suse.com,
-	perex@perex.cz,
-	arnd@arndb.de
-Cc: masahiroy@kernel.org,
+ unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
+ header.s=gm1 header.b=oLok+OOs
+Received: by mail.gandi.net (Postfix) with ESMTPA id 007B624004D;
+	Tue, 12 Sep 2023 08:27:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1694507980;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=T7eAo6eW4LH/itJ5iNHW3/VWEq1oYWNKzte1zOtlCR4=;
+	b=oLok+OOs4ffQd0UMBO50MacJ3uKLr0F+DyrziScO1iuVum0FMSXhjiS+BxV2yZ7jP/KmXC
+	4E3N50C84RvvXQ2Z/T3Xg1XVWYWqDbnn6NlPhccNno1chA8oro3dvnr26u5GU9VxzlyNk1
+	wz66hR3lq9McKdfdN1Aw1BWPHYd6dJks5wy92vhUSPkuh/NC4ZFm0ygO0flXC9332TZbTw
+	nhLF4Ea+PrwTT+Ok2+6Lf78DUeqOFU5CjQJK1n8tWtGIwEvDkq6L/knUqUvPGn1u7BpTm2
+	GJzCTStnfYGEEsCSkoosqaLd5EtP0kZ2CDqZtkWymBcUthQCI/yDOU3KjTlbNA==
+From: Herve Codina <herve.codina@bootlin.com>
+To: Herve Codina <herve.codina@bootlin.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Andrew Lunn <andrew@lunn.ch>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Lee Jones <lee@kernel.org>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Qiang Zhao <qiang.zhao@nxp.com>,
+	Li Yang <leoyang.li@nxp.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	Shengjiu Wang <shengjiu.wang@gmail.com>,
+	Xiubo Li <Xiubo.Lee@gmail.com>,
+	Fabio Estevam <festevam@gmail.com>,
+	Nicolin Chen <nicoleotsuka@gmail.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Randy Dunlap <rdunlap@infradead.org>
+Cc: netdev@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	alsa-devel@alsa-project.org
-Subject: [PATCH] ALSA: core: Increase the name array size for debugfs
- directory name
-Date: Tue, 12 Sep 2023 11:39:10 +0300
-Message-ID: <20230912083910.15994-1-peter.ujfalusi@linux.intel.com>
-X-Mailer: git-send-email 2.42.0
+	linux-gpio@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	alsa-devel@alsa-project.org,
+	Simon Horman <horms@kernel.org>,
+	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: [PATCH v5 01/31] soc: fsl: cpm1: tsa: Fix __iomem addresses
+ declaration
+Date: Tue, 12 Sep 2023 10:14:52 +0200
+Message-ID: <20230912081527.208499-2-herve.codina@bootlin.com>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230912081527.208499-1-herve.codina@bootlin.com>
+References: <20230912081527.208499-1-herve.codina@bootlin.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: SEVXQ25C54XEWTWTJD35KWQR53OGYGDT
-X-Message-ID-Hash: SEVXQ25C54XEWTWTJD35KWQR53OGYGDT
-X-MailFrom: peter.ujfalusi@linux.intel.com
+X-GND-Sasl: herve.codina@bootlin.com
+Message-ID-Hash: SQMVSXPAB32EO5LQNLI2FZOZ3RZOUMBT
+X-Message-ID-Hash: SQMVSXPAB32EO5LQNLI2FZOZ3RZOUMBT
+X-MailFrom: herve.codina@bootlin.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -93,7 +111,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SEVXQ25C54XEWTWTJD35KWQR53OGYGDT/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SQMVSXPAB32EO5LQNLI2FZOZ3RZOUMBT/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -102,66 +120,96 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The idx is guarantied to be less than SNDRV_CARDS (max 256 or 8) by the
-code in snd_card_init(), however the compiler does not see that.
-Compiling with W=1 results:
+Running sparse (make C=1) on tsa.c raises a lot of warning such as:
+  --- 8< ---
+  warning: incorrect type in assignment (different address spaces)
+     expected void *[noderef] si_regs
+     got void [noderef] __iomem *
+  --- 8< ---
 
-sound/core/init.c: In function ‘snd_card_init’:
-sound/core/init.c:367:28: error: ‘%d’ directive writing between 1 and 10 bytes into a region of size 4 [-Werror=format-overflow=]
-  367 |         sprintf(name, "card%d", idx);
-      |                            ^~
-sound/core/init.c:367:23: note: directive argument in the range [0, 2147483646]
-  367 |         sprintf(name, "card%d", idx);
-      |                       ^~~~~~~~
-sound/core/init.c:367:9: note: ‘sprintf’ output between 6 and 15 bytes into a destination of size 8
-  367 |         sprintf(name, "card%d", idx);
-      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-cc1: all warnings being treated as errors
+Indeed, some variable were declared 'type *__iomem var' instead of
+'type __iomem *var'.
 
-While the code is correct, we need to silence the compiler somehow.
-It could be done by limiting the range in sprintf like
-sprintf(name, "card%d", idx % SNDRV_CARDS);
-sprintf(name, "card%hhd", idx);
-etc
+Use the correct declaration to remove these warnings.
 
-These are too workaroundish. Increase the name array to 15 instead which
-looks better and only adds 7 bytes on stack.
-
-The warnings got brought to light by a recent patch upstream:
-commit 6d4ab2e97dcf ("extrawarn: enable format and stringop overflow warnings in W=1")
-
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Fixes: 1d4ba0b81c1c ("soc: fsl: cpm1: Add support for TSA")
+Signed-off-by: Herve Codina <herve.codina@bootlin.com>
+Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
-Hi,
+ drivers/soc/fsl/qe/tsa.c | 22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
 
-The mentioned commit causes other build failures with W=1 at least in
-sound/usb/mixer_scarlett_gen2.c
-sound/usb/mixer.c
-sound/soc/codecs/hdac_hdmi.c
-sound/hda/intel-sdw-acpi.c
-
-Some of them are also false and we need to find a workaround, but
-I think the scarlett case might be valid.
-
-Regards,
-Peter
-
- sound/core/init.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/core/init.c b/sound/core/init.c
-index d61bde1225f2..d8a13a76d241 100644
---- a/sound/core/init.c
-+++ b/sound/core/init.c
-@@ -279,7 +279,7 @@ static int snd_card_init(struct snd_card *card, struct device *parent,
- {
- 	int err;
- #ifdef CONFIG_SND_DEBUG
--	char name[8];
-+	char name[15];
- #endif
+diff --git a/drivers/soc/fsl/qe/tsa.c b/drivers/soc/fsl/qe/tsa.c
+index 3646153117b3..e0527b9efd05 100644
+--- a/drivers/soc/fsl/qe/tsa.c
++++ b/drivers/soc/fsl/qe/tsa.c
+@@ -98,9 +98,9 @@
+ #define TSA_SIRP	0x10
  
- 	if (extra_size > 0)
+ struct tsa_entries_area {
+-	void *__iomem entries_start;
+-	void *__iomem entries_next;
+-	void *__iomem last_entry;
++	void __iomem *entries_start;
++	void __iomem *entries_next;
++	void __iomem *last_entry;
+ };
+ 
+ struct tsa_tdm {
+@@ -117,8 +117,8 @@ struct tsa_tdm {
+ 
+ struct tsa {
+ 	struct device *dev;
+-	void *__iomem si_regs;
+-	void *__iomem si_ram;
++	void __iomem *si_regs;
++	void __iomem *si_ram;
+ 	resource_size_t si_ram_sz;
+ 	spinlock_t	lock;
+ 	int tdms; /* TSA_TDMx ORed */
+@@ -135,27 +135,27 @@ static inline struct tsa *tsa_serial_get_tsa(struct tsa_serial *tsa_serial)
+ 	return container_of(tsa_serial, struct tsa, serials[tsa_serial->id]);
+ }
+ 
+-static inline void tsa_write32(void *__iomem addr, u32 val)
++static inline void tsa_write32(void __iomem *addr, u32 val)
+ {
+ 	iowrite32be(val, addr);
+ }
+ 
+-static inline void tsa_write8(void *__iomem addr, u32 val)
++static inline void tsa_write8(void __iomem *addr, u32 val)
+ {
+ 	iowrite8(val, addr);
+ }
+ 
+-static inline u32 tsa_read32(void *__iomem addr)
++static inline u32 tsa_read32(void __iomem *addr)
+ {
+ 	return ioread32be(addr);
+ }
+ 
+-static inline void tsa_clrbits32(void *__iomem addr, u32 clr)
++static inline void tsa_clrbits32(void __iomem *addr, u32 clr)
+ {
+ 	tsa_write32(addr, tsa_read32(addr) & ~clr);
+ }
+ 
+-static inline void tsa_clrsetbits32(void *__iomem addr, u32 clr, u32 set)
++static inline void tsa_clrsetbits32(void __iomem *addr, u32 clr, u32 set)
+ {
+ 	tsa_write32(addr, (tsa_read32(addr) & ~clr) | set);
+ }
+@@ -313,7 +313,7 @@ static u32 tsa_serial_id2csel(struct tsa *tsa, u32 serial_id)
+ static int tsa_add_entry(struct tsa *tsa, struct tsa_entries_area *area,
+ 			 u32 count, u32 serial_id)
+ {
+-	void *__iomem addr;
++	void __iomem *addr;
+ 	u32 left;
+ 	u32 val;
+ 	u32 cnt;
 -- 
-2.42.0
+2.41.0
 
