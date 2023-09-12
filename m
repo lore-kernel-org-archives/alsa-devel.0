@@ -4,103 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F3ADCA0ED3
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Sep 2023 13:33:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AC3F1CA0ECA
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Sep 2023 13:36:29 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 32F57886;
-	Tue, 12 Sep 2023 15:32:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 32F57886
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3FAFADEB;
+	Tue, 12 Sep 2023 15:35:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3FAFADEB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1694525581;
-	bh=bPwOEdrHpsPaITN5TMkOR0NwC1YFNuCjN2PmbMssOcU=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	s=default; t=1694525787;
+	bh=VbfJfM9sOOPsxv+wZn4Vfk3FxTBuEdVpBFsYpcdpDaU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=kw5o9vS/hy0GyRzGPCy7dI5QojJCBNX4Pbm62V6ZgntJ5fVpGW+OQZJG5g7qRR3dI
-	 gRWEZ1RtK2AbBcqxCE8gdCUDJvUbifrU8J2MrkfGgFdWLSchEWrALN6FkQ2eXQSjXC
-	 11nZKUoUMTXgPKwFD7OsT/fBR3GfkELy6DZP4k4Q=
+	b=GiYobqiq2nOTj5h3H81auBze81TKpShyn3OXpsqM7+HyOU56rBDegpFFj8AdZP80Z
+	 Y6JndMvkWNYbBK3owkxJwa0ZAWYTF0udIqkqz7sn6B0YKZe+IYGS+LmjnmVRSUTvQS
+	 13M0gqsn5HpIV/zlEoCLH60LKiAN6QdAnUKbrddM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7F28FF80246; Tue, 12 Sep 2023 15:31:41 +0200 (CEST)
+	id 07CACF80552; Tue, 12 Sep 2023 15:35:14 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id EA8A6F80425;
-	Tue, 12 Sep 2023 15:31:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9599BF80425;
+	Tue, 12 Sep 2023 15:35:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 09D70F80425; Tue, 12 Sep 2023 15:31:35 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+	id 9F0FEF80425; Tue, 12 Sep 2023 15:34:14 +0200 (CEST)
+Received: from sin.source.kernel.org (sin.source.kernel.org
+ [IPv6:2604:1380:40e1:4800::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id CCBCFF80212
-	for <alsa-devel@alsa-project.org>; Tue, 12 Sep 2023 15:31:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CCBCFF80212
+	by alsa1.perex.cz (Postfix) with ESMTPS id 35BBBF8007C
+	for <alsa-devel@alsa-project.org>; Tue, 12 Sep 2023 15:34:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 35BBBF8007C
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=yQvOiNTp;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=dsZSMuAi
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
+	dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=nYclrPIU
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id CA7DC1F45A;
-	Tue, 12 Sep 2023 13:31:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1694525487;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QsgcKrpCBQmwIVUIkIa0mU20jeiAaYjLhhAbrQIvNAM=;
-	b=yQvOiNTp0A3PZHjYu6gXqQ+UHmiwvE9aFTRQIflH0m3cwkmqOOFdauZEOQzfqVqn1Aa7b3
-	qtVyHChQCBd048K+rqtcQzaO9IBw96zvun8s2720rR4jT73HM+jbdrCikqk1Ue5APby+61
-	sh3xhcDK/OEDlO2df3spXOUznfPOvHw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1694525487;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QsgcKrpCBQmwIVUIkIa0mU20jeiAaYjLhhAbrQIvNAM=;
-	b=dsZSMuAiQzaRzROLaJX4x1MDRmCBWp/xgSBwFWUGUa4+w9CDIf5YUVQS2squYzZZbJ5P4S
-	jHG6DJUNowwYGFCQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8EB0F139DB;
-	Tue, 12 Sep 2023 13:31:27 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id WB/dIS9oAGVUOQAAMHmgww
-	(envelope-from <tiwai@suse.de>); Tue, 12 Sep 2023 13:31:27 +0000
-Date: Tue, 12 Sep 2023 15:31:26 +0200
-Message-ID: <87zg1r5xht.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Cc: tiwai@suse.com,
-	perex@perex.cz,
-	arnd@arndb.de,
-	masahiroy@kernel.org,
-	linux-kernel@vger.kernel.org,
-	alsa-devel@alsa-project.org
-Subject: Re: [PATCH] ALSA: core: Use dev_name of card_dev as debugfs directory
- name
-In-Reply-To: <20230912110113.3166-1-peter.ujfalusi@linux.intel.com>
-References: <20230912110113.3166-1-peter.ujfalusi@linux.intel.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=ISO-8859-7
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: SSOPEH5H22AFMGVMZ7JVQEQ4SE33MHPX
-X-Message-ID-Hash: SSOPEH5H22AFMGVMZ7JVQEQ4SE33MHPX
-X-MailFrom: tiwai@suse.de
+	by sin.source.kernel.org (Postfix) with ESMTPS id 5C502CE1C8D;
+	Tue, 12 Sep 2023 13:34:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28D78C433C7;
+	Tue, 12 Sep 2023 13:34:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1694525644;
+	bh=VbfJfM9sOOPsxv+wZn4Vfk3FxTBuEdVpBFsYpcdpDaU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=nYclrPIUtVBYBadfqV0Ryw7szcbwQJBncSZr5HpNxiSvecLInH5gih2nhcEMU51dJ
+	 IVRdkQBDOYT/WNEi2dkAo7PeYgvTL2GpsJTvwFgRM4zUENfXu42WQVZPGsnFq2NtJA
+	 FKl1lWpQmba7P9toALrcJZp58VpgNOvmVBctcZKomyw1G4fZaeX5d6IYEtGxs3iDkZ
+	 1VG4S698CPOJLjtngMWVDmdZ3d6Prq2UkWc+hb3CrL1GDHks164m0dASWYCqM5MuUZ
+	 MpyvJUbeeNfqTphJC0rlICmG54+hdWKsU+D50PD/pv1Pc2rxB35eoxIDD6tztxs8Y0
+	 iDy9ZoHwdsS/g==
+Date: Tue, 12 Sep 2023 14:34:00 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Myunguk Kim <mwkim@gaonchips.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	Maxim Kochetkov <fido_max@inbox.ru>,
+	Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+	Xingyu Wu <xingyu.wu@starfivetech.com>,
+	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ASoC: dwc: fix typo in comment
+Message-ID: <ZQBoyKulheGf8h/e@finisterre.sirena.org.uk>
+References: <20230911064646.168181-1-mwkim@gaonchips.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="DRWzJOqD/qMbZEsz"
+Content-Disposition: inline
+In-Reply-To: <20230911064646.168181-1-mwkim@gaonchips.com>
+X-Cookie: It was Penguin lust... at its ugliest.
+Message-ID-Hash: ZIFI25X4XKKILCXM3CN4TNCQETBM2J4X
+X-Message-ID-Hash: ZIFI25X4XKKILCXM3CN4TNCQETBM2J4X
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -112,7 +92,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SSOPEH5H22AFMGVMZ7JVQEQ4SE33MHPX/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZIFI25X4XKKILCXM3CN4TNCQETBM2J4X/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -121,37 +101,39 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, 12 Sep 2023 13:01:13 +0200,
-Peter Ujfalusi wrote:
-> 
-> There is no need to use temporary string for the debugfs directory name as
-> we can use the device name of the card.
-> 
-> This change will also fixes the following compiler warning/error (W=1):
-> 
-> sound/core/init.c: In function ¡snd_card_init¢:
-> sound/core/init.c:367:28: error: ¡%d¢ directive writing between 1 and 10 bytes into a region of size 4 [-Werror=format-overflow=]
->   367 |         sprintf(name, "card%d", idx);
->       |                            ^~
-> sound/core/init.c:367:23: note: directive argument in the range [0, 2147483646]
->   367 |         sprintf(name, "card%d", idx);
->       |                       ^~~~~~~~
-> sound/core/init.c:367:9: note: ¡sprintf¢ output between 6 and 15 bytes into a destination of size 8
->   367 |         sprintf(name, "card%d", idx);
->       |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> cc1: all warnings being treated as errors
-> 
-> The idx is guarantied to be less than SNDRV_CARDS (max 256 or 8) by the
-> code in snd_card_init(), however the compiler does not see that.
-> 
-> The warnings got brought to light by a recent patch upstream:
-> commit 6d4ab2e97dcf ("extrawarn: enable format and stringop overflow warnings in W=1")
-> 
-> Suggested-by: Arnd Bergmann <arnd@arndb.de>
-> Suggested-by: Takashi Iwai <tiwai@suse.de>
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 
-Thanks, applied now.
+--DRWzJOqD/qMbZEsz
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+On Mon, Sep 11, 2023 at 03:46:46PM +0900, Myunguk Kim wrote:
+> This fixes typo in comment
+>=20
+> Signed-off-by: Myunguk Kim <mwkim@gaonchips.com>
 
-Takashi
+This doesn't apply against current code, please check and resend:
+
+Applying: ASoC: dwc: fix typo in comment
+error: sha1 information is lacking or useless (sound/soc/dwc/dwc-i2s.c).
+error: could not build fake ancestor
+Patch failed at 0001 ASoC: dwc: fix typo in comment
+
+(after fixing what looked like corruption in the mail)
+
+--DRWzJOqD/qMbZEsz
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmUAaMgACgkQJNaLcl1U
+h9DoGQf/TJUS/g2YbbUbZNg3GI4ImJplDhgpqZge7XpokWGYCEX2sIYeZdrmz3Zp
+MKsK0XmClFvOJrjLUUygTTqaepttrDsn8T95vIWwdUX8BqddAGKvDSZ87ymhgcRh
+8XdWRJXx/X7NQROPrRmOlE7U36kYIbMh2KgmykwKwjEJuggaOTFJn/9I0Q/CnOsl
+So89RmULbpI/68nPmKPZK9/SAogN4ySFSXNXJx9SgDi+p42LCrz/Z2zvZ6L70cNa
+0CiDGHlIc3sQQNJI4VUktBA17BtfHUOH8cMR0iPWN+8THH2Y+yjFI/7lsGCxndNC
+2YUTVv358liuW5sHKOQA3h6RKd/CLA==
+=y//G
+-----END PGP SIGNATURE-----
+
+--DRWzJOqD/qMbZEsz--
