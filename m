@@ -4,78 +4,99 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 246DDCA0EC3
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Sep 2023 00:09:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1C1BDCA0EC6
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Sep 2023 00:31:13 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2E26914F4;
-	Tue, 12 Sep 2023 02:08:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2E26914F4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0980AE84;
+	Tue, 12 Sep 2023 02:30:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0980AE84
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1694477341;
-	bh=XmvvSnPPZfJmsrUyZ/7/dR8/drInjaaG1l50K2Joi1E=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1694478672;
+	bh=NT0igPUaqXUrlEzLPjsu0IEnx8SqEPXynrBlbgMaU38=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=WvVeqzjDRlgbYTbT0AAEsCVHrHN1XVD1GGLmdNLVXwKWKNnNEmXedIHJlnh2mouX9
-	 9B5qItv6PGnaMxCm9R32Djk8sC08Q0Bw3Y4oYtnnSn7+fLJKeg7ZhOxPSWgkbSNuir
-	 nDvZdK1jvw+D26HF+lBvZc3QhZL7BXyfwK8BKWM4=
+	b=sov8UrqYnAm+xlLiQp6jBuGQT7ZQI3/MeICFCphxAKAiJ0F18Hw/v6UveHF6C8Gk/
+	 qiy7x8Ew1CqY4NJzjWS7XPE4BOoigwtcZmIYQjBtoRq4J0qU/dADAu8s2aHDOnsuQO
+	 CAiXoc0OzmHisGzCEiAxTAhVGHZ7vwytaZKG9ozY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B0F1BF805AF; Tue, 12 Sep 2023 02:02:37 +0200 (CEST)
+	id D93F5F80551; Tue, 12 Sep 2023 02:29:53 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id EA6CFF800AA;
-	Tue, 12 Sep 2023 02:02:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 78D4AF80246;
+	Tue, 12 Sep 2023 02:29:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BA70FF8057E; Tue, 12 Sep 2023 02:02:26 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	id 505A0F80246; Tue, 12 Sep 2023 02:29:49 +0200 (CEST)
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 40C11F80568
-	for <alsa-devel@alsa-project.org>; Tue, 12 Sep 2023 02:01:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 40C11F80568
+	by alsa1.perex.cz (Postfix) with ESMTPS id AE3DEF800AA;
+	Tue, 12 Sep 2023 02:29:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AE3DEF800AA
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=J0Rk2Gsw
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 001FC61486;
-	Tue, 12 Sep 2023 00:01:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0DCECC433BD;
-	Tue, 12 Sep 2023 00:01:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1694476913;
-	bh=XmvvSnPPZfJmsrUyZ/7/dR8/drInjaaG1l50K2Joi1E=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=J0Rk2Gsw9fmnC318IRR7A9MwTuYhIUXoxBG/mV08+o+a9NMDng3RLoWLdjqDSbyj6
-	 T7Trxr8PMmaa+NyAoxw1FbB/8CMFZfypZzHMxJkHe7rYA5r3OfEVEjgdviBY6qB7V+
-	 VmWcqFOHxxHKLkziEo4zjmpWs8NlKQ7PqWTJ3L+sAJqbNh6gG8SH+Pe/az3z/BOzz8
-	 ajXfxuTAGfgEK4sZrCJxiiuvsYDBCIlIpuIDi5um+azat7+RPw09UPts++GnRP7112
-	 jpFRygQisPn4UE+mP2iZcsD7E+NxrvBEuppmLYhz6i0Ioomnnn9P3TUQil0Q/sTtfX
-	 Tt/1YPvx4itFQ==
-From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
- Sameer Pujar <spujar@nvidia.com>
-Cc: thierry.reding@gmail.com, jonathanh@nvidia.com,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- linux-tegra@vger.kernel.org
-In-Reply-To: <1694098945-32760-1-git-send-email-spujar@nvidia.com>
-References: <1694098945-32760-1-git-send-email-spujar@nvidia.com>
-Subject: Re: [PATCH v2 0/2] Fix redundant PLLA update
-Message-Id: <169447691068.2390116.10518505217580469969.b4-ty@kernel.org>
-Date: Tue, 12 Sep 2023 01:01:50 +0100
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=Z+EFVhBI
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694478581; x=1726014581;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=NT0igPUaqXUrlEzLPjsu0IEnx8SqEPXynrBlbgMaU38=;
+  b=Z+EFVhBI5b0XXaJmU64ZEG25oz6uk11nW9fVxMJVm5cmjIu49m0UWASP
+   PfM5Twe/JdA5PMXlT1mHlLcpoeyJ4BxCfSdiDtP/JNiU6bggDZTd0e9oo
+   wtTUIwFZfzJ3Xpn9S8ksEB+6qwcbgfrEJBApFnBYidgNarRlc6hB4V4Ih
+   rxWZ3d/Nm68kH/HhgGg5Tr6G5GAYj2Xp/qehI78Z440vS+QD4whUOWqVC
+   vfbkkr5uLcSQFQJH/VsbvCKFlagiE6sZZC6/kmQ2yRLUO8BteEcyOK6HD
+   WAvq6tXsW33qT0pBLaT7VWLrFHB4W3yrNOsn3SJRcVywEqvL2Lsg9spt0
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="357676958"
+X-IronPort-AV: E=Sophos;i="6.02,244,1688454000";
+   d="scan'208";a="357676958"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 11 Sep 2023 17:29:32 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="886739584"
+X-IronPort-AV: E=Sophos;i="6.02,244,1688454000";
+   d="scan'208";a="886739584"
+Received: from sbeyer-mobl.amr.corp.intel.com (HELO [10.212.76.33])
+ ([10.212.76.33])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 11 Sep 2023 17:29:05 -0700
+Message-ID: <34d34e99-c6a3-2d08-2c4b-c548b6b87e9a@linux.intel.com>
+Date: Mon, 11 Sep 2023 20:25:28 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.15.0
+Subject: Re: [PATCH v4 01/11] ASoC: SOF: core: add 'no_wq' probe and remove
+ callbacks
+Content-Language: en-US
+To: =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, Cezary Rojewski <cezary.rojewski@intel.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Mark Brown <broonie@kernel.org>, Daniel Baluta <daniel.baluta@nxp.com>,
+ linux-kernel@vger.kernel.org, sound-open-firmware@alsa-project.org
+References: <20230830153652.217855-1-maarten.lankhorst@linux.intel.com>
+ <20230830153652.217855-2-maarten.lankhorst@linux.intel.com>
+ <alpine.DEB.2.22.394.2309011509200.3532114@eliteleevi.tm.intel.com>
+ <4252a4dc-0cf3-4ff2-aa55-c03e56345276@linux.intel.com>
+ <4d84a799-c07e-e917-7c82-2f24456e3ac2@linux.intel.com>
+ <6d39eac7-06c7-45f0-0318-72be1753641f@linux.intel.com>
+ <e8880daf-8f74-4350-96c4-d625272aed35@linux.intel.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <e8880daf-8f74-4350-96c4-d625272aed35@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-099c9
-Message-ID-Hash: OUOMSVMSCNHE45TGZOOP4IQLTWXFZOQG
-X-Message-ID-Hash: OUOMSVMSCNHE45TGZOOP4IQLTWXFZOQG
-X-MailFrom: broonie@kernel.org
+Message-ID-Hash: QKNPFVKLZVO222Z5LV7ROQDYP4IMU6G4
+X-Message-ID-Hash: QKNPFVKLZVO222Z5LV7ROQDYP4IMU6G4
+X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -87,7 +108,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OUOMSVMSCNHE45TGZOOP4IQLTWXFZOQG/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QKNPFVKLZVO222Z5LV7ROQDYP4IMU6G4/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -96,44 +117,41 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, 07 Sep 2023 20:32:23 +0530, Sameer Pujar wrote:
-> This small series fixes redundant PLLA updates that happen for
-> each DAI link in the audio path. This helps to resolve DMIC clock
-> issue seen on Jetson TX2 platform.
+
+
+> What we have atm:
+> snd_sof_probe - might be called from wq
+> snd_sof_remove - might be called from wq (cleans up the snd_sof_probe
+> 		 step)
+
+I don't think it's correct, snd_sof_remove cannot be called from a wq.
+The device core knows nothing about workqueues.
+
+> We want a callbacks for hardware/device probing, right, split the
+> snd_sof_probe (and remove) to be able to support a sane level of
+> deferred probing support.
 > 
-> Sameer Pujar (2):
->   ASoC: soc-utils: Export snd_soc_dai_is_dummy() symbol
->   ASoC: tegra: Fix redundant PLLA and PLLA_OUT0 updates
+> With that in mind:
+> snd_sof_device_probe - Not called from wq (to handle deferred probing)
+> snd_sof_probe - might be called from wq
 > 
-> [...]
+> snd_sof_remove - might be called from wq (cleans up the snd_sof_probe
+> 		 step)
+> snd_sof_device_remove - Not called from wq (to up the
+> 			snd_sof_device_probe step)
+> 
+> Naming option: s/device/hardware
 
-Applied to
+I like the 'device' hint since it's directly related to the device (or
+subsystem) callbacks.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+> However, I think the snd_sof_device_remove itself is redundant and we
+> might not need it at all as in case we have wq and there is a failure in
+> there we do want to release resources as much as possible. The module
+> will be kept loaded (no deferred handling in wq) and that might block
+> PM, other devices to behave correctly. Iow, if the wq has failure we
+> should do a cleanup to the best effort to reach a level like the driver
+> is not even loaded.
 
-Thanks!
-
-[1/2] ASoC: soc-utils: Export snd_soc_dai_is_dummy() symbol
-      commit: f101583fa9f8c3f372d4feb61d67da0ccbf4d9a5
-[2/2] ASoC: tegra: Fix redundant PLLA and PLLA_OUT0 updates
-      commit: e765886249c533e1bb5cbc3cd741bad677417312
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+If we have a failure in a workqueue used for probe, then we have to
+clean-up everything since nothing in the device core will do so for us.
