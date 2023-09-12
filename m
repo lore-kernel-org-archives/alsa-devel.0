@@ -4,84 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 67189CA0EF1
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Sep 2023 16:27:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 43000CA0EF1
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Sep 2023 16:30:50 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4967ADEB;
-	Tue, 12 Sep 2023 18:26:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4967ADEB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 11D61A4D;
+	Tue, 12 Sep 2023 18:29:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 11D61A4D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1694536048;
-	bh=8ltZ1RAODhf+ZyZGueAkDu0r0heKXiDqd7lSxiNg+s0=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=DU2dMZKhlDi+gOSzqpCyGH3J/BBjpYwwQri22BfvjUXsVdadp70KnD3qRfNlUGctN
-	 IFJutoqMz+KuOfcmHymKKuaDe4/EeaNXI889TTxLAjZOu4GDY9n1AJadJJwWjJgbBj
-	 8u5aSiKGTgi6ttTyKefU/xaHWtwFxL+faJUvyPxU=
+	s=default; t=1694536248;
+	bh=+ne2QoXtf7yPAarnt2iHbPmV1YKRfcKbyuDLCVGZRtY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=VOrMVhQ/LOW3d75hXoQLFFzmJ2Okh+GvSswRbgHjwoOAo8dWvv9WHzBN+MqMewmPa
+	 4/HBcGEz9w+DMDUGeX19GH+JLiSoiMAO1Q+yfrdfa005ODryg6Vyv91yJ1agZyfJ8A
+	 WiMXAdXtmigZO0m9A8XSYRJYMWj4sbV/zDdXQBjw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D6F3BF80564; Tue, 12 Sep 2023 18:26:27 +0200 (CEST)
+	id CAD5EF80425; Tue, 12 Sep 2023 18:29:55 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4DC35F80563;
-	Tue, 12 Sep 2023 18:26:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 707FEF80425;
+	Tue, 12 Sep 2023 18:29:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A9DCCF8055A; Tue, 12 Sep 2023 18:26:23 +0200 (CEST)
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+	id B98AEF80425; Tue, 12 Sep 2023 18:29:51 +0200 (CEST)
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 0DB20F80425
-	for <alsa-devel@alsa-project.org>; Tue, 12 Sep 2023 18:26:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0DB20F80425
+	by alsa1.perex.cz (Postfix) with ESMTPS id 8DA85F80212
+	for <alsa-devel@alsa-project.org>; Tue, 12 Sep 2023 18:29:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8DA85F80212
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=DK2phx2k
+ header.s=Intel header.b=TsePVlmE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694535980; x=1726071980;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=8ltZ1RAODhf+ZyZGueAkDu0r0heKXiDqd7lSxiNg+s0=;
-  b=DK2phx2knx6QWCufa9Un0c8d5ehViogjdWrlIs5vknaeQMCWXBm+tCRf
-   pRP5/t+V9LhJO8Teb+IcWpcW1ICm1nEnIqas3ItWv339RAm4vHjzZzlgp
-   VzNkdLgvfil3mIenfqU+PXDWa4Cm78r3Dp8br24+F0eVsQ3kJbpQoHAw6
-   Xfb9BTlOFduLWlhhEF2jmZqvVfnDcvkgi/pIZCC6wc9FQslxov0vMnNHB
-   5nBCDe/RuFBh5p/kxTGpEf5SJ96SptL0bIhET51eQgsmGMHIO8dYU/wbs
-   hwmSSnaflPdFPYDJNlMhlEOzkUWSg4SycrIshaEVZbdk3azO48SmJA3jC
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="357860027"
+  t=1694536185; x=1726072185;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=+ne2QoXtf7yPAarnt2iHbPmV1YKRfcKbyuDLCVGZRtY=;
+  b=TsePVlmE8K0hmxUrNr/jgNCEyGyOcaJa1gezQDVEtTHaaHQWQPGr9Um1
+   XLMZwGd9wB33sTcvQ6TgVW8PR9i3HfXOEANes6HK+O9m3UGBBKg4ZV5sJ
+   BybrnINNUmPPTWTlKdc5m2SyzmkbbYquezS424angYnwcQKymsWqob01f
+   dt+j++BCtLkcKyxPLycBGFrXrA74hToxuhMvWkYHa+T6ZNe+zLdFk5E3H
+   H5CKT+NhvXnOb1plqdspBkkRj0Nfn7nsbJ2VRw3CXsVTl4HL74h0huP+A
+   bk5K1mlCYrjwrgeqp0LnEx6fvYneUhWyKylQ5zLkq83jTznP9hcQ2k4FF
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="464801241"
 X-IronPort-AV: E=Sophos;i="6.02,139,1688454000";
-   d="scan'208";a="357860027"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Sep 2023 09:26:16 -0700
+   d="scan'208";a="464801241"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 12 Sep 2023 09:20:47 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="737173950"
+X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="746957326"
 X-IronPort-AV: E=Sophos;i="6.02,139,1688454000";
-   d="scan'208";a="737173950"
-Received: from zmoussao-mobl1.ger.corp.intel.com (HELO
- pujfalus-desk.ger.corp.intel.com) ([10.252.37.58])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Sep 2023 09:26:13 -0700
-From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-To: tiwai@suse.com,
-	perex@perex.cz,
-	arnd@arndb.de
-Cc: masahiroy@kernel.org,
-	linux-kernel@vger.kernel.org,
-	alsa-devel@alsa-project.org,
-	pierre-louis.bossart@linux.intel.com
-Subject: [PATCH] ALSA: hda: intel-sdw-acpi: Use u8 type for link index
-Date: Tue, 12 Sep 2023 19:26:17 +0300
-Message-ID: <20230912162617.29178-1-peter.ujfalusi@linux.intel.com>
-X-Mailer: git-send-email 2.42.0
+   d="scan'208";a="746957326"
+Received: from lkp-server02.sh.intel.com (HELO 0a6943a0b3e1) ([10.239.97.151])
+  by fmsmga007.fm.intel.com with ESMTP; 12 Sep 2023 09:20:42 -0700
+Received: from kbuild by 0a6943a0b3e1 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1qg67w-0000E6-0b;
+	Tue, 12 Sep 2023 16:20:37 +0000
+Date: Wed, 13 Sep 2023 00:11:20 +0800
+From: kernel test robot <lkp@intel.com>
+To: Shenghao Ding <shenghao-ding@ti.com>, tiwai@suse.de
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev, robh+dt@kernel.org,
+	andriy.shevchenko@linux.intel.com, lgirdwood@gmail.com,
+	perex@perex.cz, pierre-louis.bossart@linux.intel.com,
+	kevin-lu@ti.com, 13916275206@139.com, alsa-devel@alsa-project.org,
+	linux-kernel@vger.kernel.org, liam.r.girdwood@intel.com,
+	mengdong.lin@intel.com, baojun.xu@ti.com, thomas.gfeller@q-drop.com,
+	peeyush@ti.com, navada@ti.com, broonie@kernel.org,
+	gentuser@gmail.com, Shenghao Ding <shenghao-ding@ti.com>
+Subject: Re: [PATCH v1] ALSA: hda/tas2781: Support ACPI_ID both TXNW2781 and
+ TIAS2781
+Message-ID: <202309122358.aEcJnIUJ-lkp@intel.com>
+References: <20230910072704.1359-1-shenghao-ding@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: KKJDHY2WLK6HZ35WZP62XABH464C6OTH
-X-Message-ID-Hash: KKJDHY2WLK6HZ35WZP62XABH464C6OTH
-X-MailFrom: peter.ujfalusi@linux.intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230910072704.1359-1-shenghao-ding@ti.com>
+Message-ID-Hash: YSKQNMSH6CB3IMAMRGSGEXYX4OR6FF3O
+X-Message-ID-Hash: YSKQNMSH6CB3IMAMRGSGEXYX4OR6FF3O
+X-MailFrom: lkp@intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -93,7 +100,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KKJDHY2WLK6HZ35WZP62XABH464C6OTH/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YSKQNMSH6CB3IMAMRGSGEXYX4OR6FF3O/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -102,66 +109,96 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Use consistently u8 for sdw link index. The id is limited to 4, u8 is
-adequate in size to store it.
+Hi Shenghao,
 
-This change will also fixes the following compiler warning/error (W=1):
+kernel test robot noticed the following build warnings:
 
-sound/hda/intel-sdw-acpi.c: In function ‘sdw_intel_acpi_scan’:
-sound/hda/intel-sdw-acpi.c:34:35: error: ‘-subproperties’ directive output may be truncated writing 14 bytes into a region of size between 7 and 17 [-Werror=format-truncation=]
-   34 |                  "mipi-sdw-link-%d-subproperties", i);
-      |                                   ^~~~~~~~~~~~~~
-In function ‘is_link_enabled’,
-    inlined from ‘sdw_intel_scan_controller’ at sound/hda/intel-sdw-acpi.c:106:8,
-    inlined from ‘sdw_intel_acpi_scan’ at sound/hda/intel-sdw-acpi.c:180:9:
-sound/hda/intel-sdw-acpi.c:33:9: note: ‘snprintf’ output between 30 and 40 bytes into a destination of size 32
-   33 |         snprintf(name, sizeof(name),
-      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   34 |                  "mipi-sdw-link-%d-subproperties", i);
-      |                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-cc1: all warnings being treated as errors
+[auto build test WARNING on tiwai-sound/for-next]
+[also build test WARNING on tiwai-sound/for-linus linus/master v6.6-rc1 next-20230912]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-The warnings got brought to light by a recent patch upstream:
-commit 6d4ab2e97dcf ("extrawarn: enable format and stringop overflow warnings in W=1")
+url:    https://github.com/intel-lab-lkp/linux/commits/Shenghao-Ding/ALSA-hda-tas2781-Support-ACPI_ID-both-TXNW2781-and-TIAS2781/20230910-153010
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git for-next
+patch link:    https://lore.kernel.org/r/20230910072704.1359-1-shenghao-ding%40ti.com
+patch subject: [PATCH v1] ALSA: hda/tas2781: Support ACPI_ID both TXNW2781 and TIAS2781
+config: i386-buildonly-randconfig-003-20230912 (https://download.01.org/0day-ci/archive/20230912/202309122358.aEcJnIUJ-lkp@intel.com/config)
+compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230912/202309122358.aEcJnIUJ-lkp@intel.com/reproduce)
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
----
- sound/hda/intel-sdw-acpi.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309122358.aEcJnIUJ-lkp@intel.com/
 
-diff --git a/sound/hda/intel-sdw-acpi.c b/sound/hda/intel-sdw-acpi.c
-index 5cb92f7ccbca..b57d72ea4503 100644
---- a/sound/hda/intel-sdw-acpi.c
-+++ b/sound/hda/intel-sdw-acpi.c
-@@ -23,7 +23,7 @@ static int ctrl_link_mask;
- module_param_named(sdw_link_mask, ctrl_link_mask, int, 0444);
- MODULE_PARM_DESC(sdw_link_mask, "Intel link mask (one bit per link)");
- 
--static bool is_link_enabled(struct fwnode_handle *fw_node, int i)
-+static bool is_link_enabled(struct fwnode_handle *fw_node, u8 idx)
- {
- 	struct fwnode_handle *link;
- 	char name[32];
-@@ -31,7 +31,7 @@ static bool is_link_enabled(struct fwnode_handle *fw_node, int i)
- 
- 	/* Find master handle */
- 	snprintf(name, sizeof(name),
--		 "mipi-sdw-link-%d-subproperties", i);
-+		 "mipi-sdw-link-%hhu-subproperties", idx);
- 
- 	link = fwnode_get_named_child_node(fw_node, name);
- 	if (!link)
-@@ -51,8 +51,8 @@ static int
- sdw_intel_scan_controller(struct sdw_intel_acpi_info *info)
- {
- 	struct acpi_device *adev = acpi_fetch_acpi_dev(info->handle);
--	int ret, i;
--	u8 count;
-+	u8 count, i;
-+	int ret;
- 
- 	if (!adev)
- 		return -EINVAL;
+All warnings (new ones prefixed by >>):
+
+>> sound/pci/hda/tas2781_hda_i2c.c:665:24: warning: variable 'tas_priv' is uninitialized when used here [-Wuninitialized]
+                   return dev_err_probe(tas_priv->dev, -ENODEV,
+                                        ^~~~~~~~
+   sound/pci/hda/tas2781_hda_i2c.c:656:33: note: initialize the variable 'tas_priv' to silence this warning
+           struct tasdevice_priv *tas_priv;
+                                          ^
+                                           = NULL
+   1 warning generated.
+
+
+vim +/tas_priv +665 sound/pci/hda/tas2781_hda_i2c.c
+
+   653	
+   654	static int tas2781_hda_i2c_probe(struct i2c_client *clt)
+   655	{
+   656		struct tasdevice_priv *tas_priv;
+   657		int ret, i;
+   658	
+   659		/* Check TIAS2781 or TXNW2781 */
+   660		for (i = 0; i < ARRAY_SIZE(tas2781_acpi_hda_match); i++)
+   661			if (strstr(dev_name(&clt->dev), tas2781_acpi_hda_match[i].id))
+   662				break;
+   663	
+   664		if (i == ARRAY_SIZE(tas2781_acpi_hda_match))
+ > 665			return dev_err_probe(tas_priv->dev, -ENODEV,
+   666				"Device not available\n");
+   667	
+   668		tas_priv = tasdevice_kzalloc(clt);
+   669		if (!tas_priv)
+   670			return -ENOMEM;
+   671	
+   672		tas_priv->irq_info.irq = clt->irq;
+   673		ret = tas2781_read_acpi(tas_priv, tas2781_acpi_hda_match[i].id);
+   674		if (ret)
+   675			return dev_err_probe(tas_priv->dev, ret,
+   676				"Platform not supported\n");
+   677	
+   678		ret = tasdevice_init(tas_priv);
+   679		if (ret)
+   680			goto err;
+   681	
+   682		pm_runtime_set_autosuspend_delay(tas_priv->dev, 3000);
+   683		pm_runtime_use_autosuspend(tas_priv->dev);
+   684		pm_runtime_mark_last_busy(tas_priv->dev);
+   685		pm_runtime_set_active(tas_priv->dev);
+   686		pm_runtime_get_noresume(tas_priv->dev);
+   687		pm_runtime_enable(tas_priv->dev);
+   688	
+   689		pm_runtime_put_autosuspend(tas_priv->dev);
+   690	
+   691		ret = component_add(tas_priv->dev, &tas2781_hda_comp_ops);
+   692		if (ret) {
+   693			dev_err(tas_priv->dev, "Register component failed: %d\n", ret);
+   694			pm_runtime_disable(tas_priv->dev);
+   695			goto err;
+   696		}
+   697	
+   698		tas2781_reset(tas_priv);
+   699	err:
+   700		if (ret)
+   701			tas2781_hda_remove(&clt->dev);
+   702		return ret;
+   703	}
+   704	
+
 -- 
-2.42.0
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
