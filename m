@@ -4,96 +4,113 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C8E53CD5BDC
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Sep 2023 15:28:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1B402EEAA4F
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 Sep 2023 15:07:40 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EC7D9AE8;
-	Tue, 19 Sep 2023 17:27:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EC7D9AE8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 639DB950;
+	Thu, 14 Sep 2023 17:06:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 639DB950
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1695137300;
-	bh=2jEbRBdj0yQgcAERAHc0+iGw8y5hMp6viTr59c8MhQ8=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=UNRgA9DuFhyVFfn+Z5VHZ0FWRLvU3O7fy9NoFxoCK++/aOffZNRwb9A8Gl84bo/kc
-	 F1ozWvpVK8RzZJZ6iPOw8wHc6UhtBcsoWCEfMKXOMd0Hsnv4rL7KG951AQxJ8ZQxNI
-	 qxMlhVlHLs/Bnwm4Ru7sgqgr5meZyYszubY8Nw2M=
+	s=default; t=1694704058;
+	bh=TXiuRN+fe9222gKISsn8I4Nogbg3rIgI0SbpBvdFjlg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=cPNF28e11noVtGZQpFo25E5UiUbEWPbhezBBCuj/FHIbsRYpCnxAtQP7rMfs1rQdp
+	 z75iNvOCCAmCfQrHyjGa1zYXFWyvha+qpIdw81Li9A10LlRPRLUQC7mph4qbE20TRN
+	 A0Q0uUoz9FhlMnyLaMUt8VI3o3yxp1fnfZbi5IH4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BC8E9F80125; Tue, 19 Sep 2023 17:27:21 +0200 (CEST)
+	id 548D6F80551; Thu, 14 Sep 2023 17:06:20 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6A630F8025A;
-	Tue, 19 Sep 2023 17:27:21 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DCC5BF80141;
+	Thu, 14 Sep 2023 17:06:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 23792F8025A; Tue, 19 Sep 2023 17:27:17 +0200 (CEST)
-Received: from madras.collabora.co.uk (madras.collabora.co.uk
- [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+	id 8FC2EF80431; Tue, 12 Sep 2023 20:54:17 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C45B9F80124
-	for <alsa-devel@alsa-project.org>; Tue, 19 Sep 2023 17:27:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C45B9F80124
+	by alsa1.perex.cz (Postfix) with ESMTPS id 91954F80212
+	for <alsa-devel@alsa-project.org>; Tue, 12 Sep 2023 20:54:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 91954F80212
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=collabora.com header.i=@collabora.com
- header.a=rsa-sha256 header.s=mail header.b=AMO7Efh8
-Received: from notapiano.myfiosgateway.com (zone.collabora.co.uk
- [167.235.23.81])
+	dkim=fail reason="signature verification failed" (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=AQbfl2VA
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	(Authenticated sender: nfraprado)
-	by madras.collabora.co.uk (Postfix) with ESMTPSA id ABFB066030BF;
-	Tue, 19 Sep 2023 16:27:06 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1695137228;
-	bh=2jEbRBdj0yQgcAERAHc0+iGw8y5hMp6viTr59c8MhQ8=;
-	h=From:To:Cc:Subject:Date:From;
-	b=AMO7Efh87cuQ63p4ytCwVimcppjonpe8HZJxNoLe/GLFeVmcxE26Em2Er5xbNteBm
-	 MqN1Lt+kzhW9ZWx/xO/uG0KaFmlm1IAlLmaZ09dze3Ebm9jyU9/pFusZH5/mW/gHus
-	 /6uA/cv8PC/ShZa7wfmnJSIgxPPQWgH0P839PcaiusOQlNyNbK0cU0+Y+Ej0YAztmA
-	 FcvHkQv9VNZw9FFo66nYX2+XpSkVDdH4kj/F3nQZxMzaw6AtIE9nwvRRW0QqpbuFaR
-	 pPjSon57N4touuWBrzijaShWBJAQWWydRJ5J55OKs0xjJbWVf3gssY7mp4kJnnIAmi
-	 MrRWUpZgrajzw==
-From: =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?=
- <nfraprado@collabora.com>
-To: Takashi Iwai <tiwai@suse.com>
-Cc: kernel@collabora.com,
-	=?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?=
- <nfraprado@collabora.com>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Mark Brown <broonie@kernel.org>,
-	Shuah Khan <shuah@kernel.org>,
-	alsa-devel@alsa-project.org,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: [PATCH] kselftest/alsa: pcm-test: Report cards declared in config but
- missing
-Date: Tue, 19 Sep 2023 11:26:21 -0400
-Message-ID: <20230919152702.100617-1-nfraprado@collabora.com>
-X-Mailer: git-send-email 2.42.0
+	by dfw.source.kernel.org (Postfix) with ESMTPS id DEC8961342;
+	Tue, 12 Sep 2023 18:54:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 823B5C433C7;
+	Tue, 12 Sep 2023 18:54:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1694544849;
+	bh=TXiuRN+fe9222gKISsn8I4Nogbg3rIgI0SbpBvdFjlg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=AQbfl2VAFMXprI20AyydmsAr0WY8B0+CRGiMAJBjHuM7zSB08TgOI39lOlAx4tapU
+	 SAr8+vpjsNuFUeyxhdDsGrxFGTGdtpVOQxdNr4Td1zvJiZnOs96WFm9JRZ3JUGuWAJ
+	 fzNqrnCeVj73z7hV9uCGgWxPMXMvvEXmqZeB0p0qfEOwtTjqgcfHJwKZhz722LgOz1
+	 7N5gtqy7r3WoNRVv7/FN3geOzhHRldS2I5I6QZVjnI+HfBMQIswdDyHZ/5d6indzNa
+	 bSX/C78catM28TBZV7Q4ac0dpeVTMDC2LWq7gfdCfrIC7Q1ou6Wk/pO1Z/hKqMJ1oL
+	 wfD6zTM+4J/YA==
+Received: (nullmailer pid 1225743 invoked by uid 1000);
+	Tue, 12 Sep 2023 18:54:05 -0000
+Date: Tue, 12 Sep 2023 13:54:05 -0500
+From: Rob Herring <robh@kernel.org>
+To: Conor Dooley <conor@kernel.org>
+Cc: Herve Codina <herve.codina@bootlin.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew@lunn.ch>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Lee Jones <lee@kernel.org>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Qiang Zhao <qiang.zhao@nxp.com>, Li Yang <leoyang.li@nxp.com>,
+	Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	Shengjiu Wang <shengjiu.wang@gmail.com>,
+	Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <festevam@gmail.com>,
+	Nicolin Chen <nicoleotsuka@gmail.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Randy Dunlap <rdunlap@infradead.org>, netdev@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, alsa-@alsa-project.org,
+	devel@alsa-project.org, Simon Horman <horms@kernel.org>,
+	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH v5 25/31] dt-bindings: net: Add the Lantiq PEF2256
+ E1/T1/J1 framer
+Message-ID: <20230912185405.GA1165807-robh@kernel.org>
+References: <20230912081527.208499-1-herve.codina@bootlin.com>
+ <20230912101444.225809-1-herve.codina@bootlin.com>
+ <20230912-overplay-donated-080eb97803d6@spud>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: ZTB4ZPHTIEKDTXEZZ6X7URFGMGE3HQBV
-X-Message-ID-Hash: ZTB4ZPHTIEKDTXEZZ6X7URFGMGE3HQBV
-X-MailFrom: nfraprado@collabora.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230912-overplay-donated-080eb97803d6@spud>
+X-MailFrom: SRS0=xM+6=E4=robh_at_kernel.org=rob@kernel.org
+X-Mailman-Rule-Hits: implicit-dest
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ administrivia; max-recipients; max-size; news-moderation; no-subject;
+ digests; suspicious-header
+Message-ID-Hash: ICBKOL6M55VSQGED6P42K25UMMM2BGSB
+X-Message-ID-Hash: ICBKOL6M55VSQGED6P42K25UMMM2BGSB
+X-Mailman-Approved-At: Thu, 14 Sep 2023 15:06:15 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZTB4ZPHTIEKDTXEZZ6X7URFGMGE3HQBV/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ICBKOL6M55VSQGED6P42K25UMMM2BGSB/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -102,247 +119,114 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-When parsing the configs, keep track of card configurations that match
-the current system but haven't matched any card, and report those as
-test failures as they represent that a card which was expected to be
-present on the system is missing. This allows the configuration files to
-not only be used to detect missing PCM devices (which is currently
-possible) but also that the soundcard hasn't been registered at all.
+On Tue, Sep 12, 2023 at 07:13:32PM +0100, Conor Dooley wrote:
+> Yo,
+> 
+> I'm not au fait enough with this to leave particularly meaningful
+> comments, so just some minor ones for you.
+> 
+> On Tue, Sep 12, 2023 at 12:14:44PM +0200, Herve Codina wrote:
+> > The Lantiq PEF2256 is a framer and line interface component designed to
+> > fulfill all required interfacing between an analog E1/T1/J1 line and the
+> > digital PCM system highway/H.100 bus.
+> > 
+> > Signed-off-by: Herve Codina <herve.codina@bootlin.com>
+> > Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> 
+> Missing a co-developed-by?
 
-Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
+Whomever sends the patch should have the last Sob.
 
----
+> 
+> > ---
+> >  .../bindings/net/lantiq,pef2256.yaml          | 214 ++++++++++++++++++
+> >  1 file changed, 214 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/net/lantiq,pef2256.yaml
+> > 
+> > diff --git a/Documentation/devicetree/bindings/net/lantiq,pef2256.yaml b/Documentation/devicetree/bindings/net/lantiq,pef2256.yaml
+> > new file mode 100644
+> > index 000000000000..c4f21678bf6a
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/net/lantiq,pef2256.yaml
+> > @@ -0,0 +1,214 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/net/lantiq,pef2256.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Lantiq PEF2256
+> > +
+> > +maintainers:
+> > +  - Herve Codina <herve.codina@bootlin.com>
+> > +
+> > +description:
+> > +  The Lantiq PEF2256, also known as Infineon PEF2256 or FALC56, is a framer and
+> > +  line interface component designed to fulfill all required interfacing between
+> > +  an analog E1/T1/J1 line and the digital PCM system highway/H.100 bus.
+> > +
+> > +properties:
+> > +  compatible:
+> > +    items:
+> > +      - const: lantiq,pef2256
+> > +
+> > +  reg:
+> > +    maxItems: 1
+> > +
+> > +  clocks:
+> > +    items:
+> > +      - description: Master clock
+> 
+> My OCD is rather upset by the inconsistent capitalisation used here :/
+> 
+> > +      - description: System Clock Receive
+> > +      - description: System Clock Transmit
+> > +
+> > +  clock-names:
+> > +    items:
+> > +      - const: mclk
+> > +      - const: sclkr
+> > +      - const: sclkx
+> > +
+> > +  interrupts:
+> > +    maxItems: 1
+> > +
+> > +  reset-gpios:
+> > +    description:
+> > +      GPIO used to reset the device.
+> > +    maxItems: 1
+> > +
+> > +  pinctrl:
+> > +    $ref: /schemas/pinctrl/pinctrl.yaml#
+> > +    additionalProperties: false
+> > +
+> > +    patternProperties:
+> > +      '-pins$':
+> > +        type: object
+> > +        $ref: /schemas/pinctrl/pinmux-node.yaml#
+> > +        additionalProperties: false
+> > +
+> > +        properties:
+> > +          pins:
+> > +            enum: [ RPA, RPB, RPC, RPD, XPA, XPB, XPC, XPD ]
+> > +
+> > +          function:
+> > +            enum: [ SYPR, RFM, RFMB, RSIGM, RSIG, DLR, FREEZE, RFSP, LOS,
+> > +                    SYPX, XFMS, XSIG, TCLK, XMFB, XSIGM, DLX, XCLK, XLT,
+> > +                    GPI, GPOH, GPOL ]
+> > +
+> > +        required:
+> > +          - pins
+> > +          - function
+> > +
+> > +  lantiq,data-rate-bps:
+> > +    $ref: /schemas/types.yaml#/definitions/uint32
+> > +    enum: [2048000, 4096000, 8192000, 16384000]
+> 
+> -kBps is a standard suffix, would it be worth using that instead here?
+> What you have would fit as even multiples.
+> Otherwise Rob, should dt-schema grow -bps as a standard suffix?
 
- tools/testing/selftests/alsa/alsa-local.h |  10 +++
- tools/testing/selftests/alsa/conf.c       | 100 ++++++++++++----------
- tools/testing/selftests/alsa/pcm-test.c   |  10 +++
- 3 files changed, 73 insertions(+), 47 deletions(-)
+Yeah, I think that makes sense. I've added it now.
 
-diff --git a/tools/testing/selftests/alsa/alsa-local.h b/tools/testing/selftests/alsa/alsa-local.h
-index de030dc23bd1..29143ef52101 100644
---- a/tools/testing/selftests/alsa/alsa-local.h
-+++ b/tools/testing/selftests/alsa/alsa-local.h
-@@ -24,4 +24,14 @@ int conf_get_bool(snd_config_t *root, const char *key1, const char *key2, int de
- void conf_get_string_array(snd_config_t *root, const char *key1, const char *key2,
- 			   const char **array, int array_size, const char *def);
- 
-+struct card_cfg_data {
-+	int card;
-+	snd_config_t *config;
-+	const char *filename;
-+	const char *config_id;
-+	struct card_cfg_data *next;
-+};
-+
-+extern struct card_cfg_data *conf_cards;
-+
- #endif /* __ALSA_LOCAL_H */
-diff --git a/tools/testing/selftests/alsa/conf.c b/tools/testing/selftests/alsa/conf.c
-index 2f1685a3eae1..00925eb8d9f4 100644
---- a/tools/testing/selftests/alsa/conf.c
-+++ b/tools/testing/selftests/alsa/conf.c
-@@ -19,14 +19,7 @@
- 
- #define SYSFS_ROOT "/sys"
- 
--struct card_data {
--	int card;
--	snd_config_t *config;
--	const char *filename;
--	struct card_data *next;
--};
--
--static struct card_data *conf_cards;
-+struct card_cfg_data *conf_cards;
- 
- static const char *alsa_config =
- "ctl.hw {\n"
-@@ -97,9 +90,9 @@ snd_config_t *get_alsalib_config(void)
- 	return config;
- }
- 
--static struct card_data *conf_data_by_card(int card, bool msg)
-+static struct card_cfg_data *conf_data_by_card(int card, bool msg)
- {
--	struct card_data *conf;
-+	struct card_cfg_data *conf;
- 
- 	for (conf = conf_cards; conf; conf = conf->next) {
- 		if (conf->card == card) {
-@@ -229,55 +222,31 @@ static bool sysfs_match(const char *sysfs_root, snd_config_t *config)
- 	return iter > 0;
- }
- 
--static bool test_filename1(int card, const char *filename, const char *sysfs_card_root)
-+static void assign_card_config(int card, const char *sysfs_card_root)
- {
--	struct card_data *data, *data2;
--	snd_config_t *config, *sysfs_config, *card_config, *sysfs_card_config, *node;
--	snd_config_iterator_t i, next;
-+	struct card_cfg_data *data;
-+	snd_config_t *sysfs_card_config;
- 
--	config = conf_load_from_file(filename);
--	if (snd_config_search(config, "sysfs", &sysfs_config) ||
--	    snd_config_get_type(sysfs_config) != SND_CONFIG_TYPE_COMPOUND)
--		ksft_exit_fail_msg("Missing global sysfs block in filename %s\n", filename);
--	if (snd_config_search(config, "card", &card_config) ||
--	    snd_config_get_type(card_config) != SND_CONFIG_TYPE_COMPOUND)
--		ksft_exit_fail_msg("Missing global card block in filename %s\n", filename);
--	if (!sysfs_match(SYSFS_ROOT, sysfs_config))
--		return false;
--	snd_config_for_each(i, next, card_config) {
--		node = snd_config_iterator_entry(i);
--		if (snd_config_search(node, "sysfs", &sysfs_card_config) ||
--		    snd_config_get_type(sysfs_card_config) != SND_CONFIG_TYPE_COMPOUND)
--			ksft_exit_fail_msg("Missing card sysfs block in filename %s\n", filename);
-+	for (data = conf_cards; data; data = data->next) {
-+		snd_config_search(data->config, "sysfs", &sysfs_card_config);
- 		if (!sysfs_match(sysfs_card_root, sysfs_card_config))
- 			continue;
--		data = malloc(sizeof(*data));
--		if (!data)
--			ksft_exit_fail_msg("Out of memory\n");
--		data2 = conf_data_by_card(card, false);
--		if (data2)
--			ksft_exit_fail_msg("Duplicate card '%s' <-> '%s'\n", filename, data2->filename);
-+
- 		data->card = card;
--		data->filename = filename;
--		data->config = node;
--		data->next = conf_cards;
--		conf_cards = data;
--		return true;
-+		break;
- 	}
--	return false;
- }
- 
--static bool test_filename(const char *filename)
-+static void assign_card_configs(void)
- {
- 	char fn[128];
- 	int card;
- 
- 	for (card = 0; card < 32; card++) {
- 		snprintf(fn, sizeof(fn), "%s/class/sound/card%d", SYSFS_ROOT, card);
--		if (access(fn, R_OK) == 0 && test_filename1(card, filename, fn))
--			return true;
-+		if (access(fn, R_OK) == 0)
-+			assign_card_config(card, fn);
- 	}
--	return false;
- }
- 
- static int filename_filter(const struct dirent *dirent)
-@@ -296,6 +265,41 @@ static int filename_filter(const struct dirent *dirent)
- 	return 0;
- }
- 
-+static bool match_config(const char *filename)
-+{
-+	struct card_cfg_data *data;
-+	snd_config_t *config, *sysfs_config, *card_config, *sysfs_card_config, *node;
-+	snd_config_iterator_t i, next;
-+
-+	config = conf_load_from_file(filename);
-+	if (snd_config_search(config, "sysfs", &sysfs_config) ||
-+	    snd_config_get_type(sysfs_config) != SND_CONFIG_TYPE_COMPOUND)
-+		ksft_exit_fail_msg("Missing global sysfs block in filename %s\n", filename);
-+	if (snd_config_search(config, "card", &card_config) ||
-+	    snd_config_get_type(card_config) != SND_CONFIG_TYPE_COMPOUND)
-+		ksft_exit_fail_msg("Missing global card block in filename %s\n", filename);
-+	if (!sysfs_match(SYSFS_ROOT, sysfs_config))
-+		return false;
-+	snd_config_for_each(i, next, card_config) {
-+		node = snd_config_iterator_entry(i);
-+		if (snd_config_search(node, "sysfs", &sysfs_card_config) ||
-+		    snd_config_get_type(sysfs_card_config) != SND_CONFIG_TYPE_COMPOUND)
-+			ksft_exit_fail_msg("Missing card sysfs block in filename %s\n", filename);
-+
-+		data = malloc(sizeof(*data));
-+		if (!data)
-+			ksft_exit_fail_msg("Out of memory\n");
-+		data->filename = filename;
-+		data->config = node;
-+		data->card = -1;
-+		if (snd_config_get_id(node, &data->config_id))
-+			ksft_exit_fail_msg("snd_config_get_id failed for card\n");
-+		data->next = conf_cards;
-+		conf_cards = data;
-+	}
-+	return true;
-+}
-+
- void conf_load(void)
- {
- 	const char *fn = "conf.d";
-@@ -311,17 +315,19 @@ void conf_load(void)
- 		if (filename == NULL)
- 			ksft_exit_fail_msg("Out of memory\n");
- 		sprintf(filename, "%s/%s", fn, namelist[j]->d_name);
--		if (test_filename(filename))
-+		if (match_config(filename))
- 			filename = NULL;
- 		free(filename);
- 		free(namelist[j]);
- 	}
- 	free(namelist);
-+
-+	assign_card_configs();
- }
- 
- void conf_free(void)
- {
--	struct card_data *conf;
-+	struct card_cfg_data *conf;
- 
- 	while (conf_cards) {
- 		conf = conf_cards;
-@@ -332,7 +338,7 @@ void conf_free(void)
- 
- snd_config_t *conf_by_card(int card)
- {
--	struct card_data *conf;
-+	struct card_cfg_data *conf;
- 
- 	conf = conf_data_by_card(card, true);
- 	if (conf)
-diff --git a/tools/testing/selftests/alsa/pcm-test.c b/tools/testing/selftests/alsa/pcm-test.c
-index c0a39818c5a4..de664dedb541 100644
---- a/tools/testing/selftests/alsa/pcm-test.c
-+++ b/tools/testing/selftests/alsa/pcm-test.c
-@@ -566,6 +566,7 @@ void *card_thread(void *data)
- int main(void)
- {
- 	struct card_data *card;
-+	struct card_cfg_data *conf;
- 	struct pcm_data *pcm;
- 	snd_config_t *global_config, *cfg;
- 	int num_pcm_tests = 0, num_tests, num_std_pcm_tests;
-@@ -583,6 +584,10 @@ int main(void)
- 
- 	find_pcms();
- 
-+	for (conf = conf_cards; conf; conf = conf->next)
-+		if (conf->card < 0)
-+			num_missing++;
-+
- 	num_std_pcm_tests = conf_get_count(default_pcm_config, "test", NULL);
- 
- 	for (pcm = pcm_list; pcm != NULL; pcm = pcm->next) {
-@@ -598,6 +603,11 @@ int main(void)
- 
- 	ksft_set_plan(num_missing + num_pcm_tests);
- 
-+	for (conf = conf_cards; conf; conf = conf->next)
-+		if (conf->card < 0)
-+			ksft_test_result_fail("test.missing.%s.%s\n",
-+					      conf->filename, conf->config_id);
-+
- 	for (pcm = pcm_missing; pcm != NULL; pcm = pcm->next) {
- 		ksft_test_result(false, "test.missing.%d.%d.%d.%s\n",
- 				 pcm->card, pcm->device, pcm->subdevice,
--- 
-2.42.0
-
+Rob
