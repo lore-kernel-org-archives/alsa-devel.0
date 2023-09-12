@@ -4,102 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 36150CA0ECA
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Sep 2023 08:52:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4961FCA0ECA
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Sep 2023 08:53:13 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4655CAE8;
-	Tue, 12 Sep 2023 10:52:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4655CAE8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 827F8DEB;
+	Tue, 12 Sep 2023 10:52:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 827F8DEB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1694508771;
-	bh=VaHcnf0Oe94R1ui0OjR9HSdn/INV9sf104dQNcD0py8=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=FxUboRgk6wb4wEfgRsXaJbr+KzY8j4DfzUSIiLxnu5n/CBUgMNhLGy3pnU1vD8fHU
-	 jDVrwtQYDp2c1lWeiOeTA19hg7EJ0BBUPZ30+mR10nibWvpurgQ56Lhyhf8RrqcpwT
-	 ZsEjgxFnFE0358vtnziLdEsqaPgdOd3Xbu6nfwfM=
+	s=default; t=1694508791;
+	bh=ZZ/7wwp4gZYi9KKfVsD5bjYEFWhKTnIkH45CF/h84Ic=;
+	h=From:To:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=Gj2OiTRaEJZXCt9v0kEMvAcT8aVquiyBf8oL6WwEHuZVtFzrIAgsONe7LXlVwp0Np
+	 SInxJu+8tawBeeZ2Glrcp0TadLXxCElldK/BaYK2+VpH/9VajBKxyTIoJt2p3QnuR2
+	 SPqCFYleyOn/01l+KOPfMZH13wpk4D8AI2njZjnM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E7830F800AA; Tue, 12 Sep 2023 10:51:51 +0200 (CEST)
+	id 5B814F8057B; Tue, 12 Sep 2023 10:51:55 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7F389F80431;
-	Tue, 12 Sep 2023 10:51:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F27A1F80563;
+	Tue, 12 Sep 2023 10:51:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B1342F80425; Tue, 12 Sep 2023 10:51:48 +0200 (CEST)
-Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net
- [217.70.183.193])
-	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+	id EECAEF80212; Tue, 12 Sep 2023 10:51:51 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 397D1F80212
-	for <alsa-devel@alsa-project.org>; Tue, 12 Sep 2023 10:51:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 397D1F80212
+	by alsa1.perex.cz (Postfix) with ESMTPS id B6DC7F800AA
+	for <alsa-devel@alsa-project.org>; Tue, 12 Sep 2023 10:51:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B6DC7F800AA
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=mx341Kce
-Received: by mail.gandi.net (Postfix) with ESMTPA id 7054024005D;
-	Tue, 12 Sep 2023 08:39:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1694508704;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=fnhlmyV9uqfQHa6AlRpMQCfiW/NfQzJB6OlaQ/hT7HQ=;
-	b=mx341KceJaUgBDsgVG30vUrWpWZD65gedAPbcxO0PrGlNZ5/L1PKGa/q/iThrJ6Srt6x5B
-	dM3M4ydgc4GlL0/87qKFiUdu9wpcx3iIivvTxv2K6R910LfJHFUOxkd3iI8vLNwDiYzMOK
-	4rWMmEmKsVhx7/+pIpePRcuB+4ZQgCiG2AGrK69CGT2cnfmkutn5MUKcHP8vrnlLe2FZNb
-	JzmmbzK8q9Q6rGATjYPV1mWMfY55wLVv7PNrvOOYvdPS3oM2gGtER6y5da9b9UciFezkT9
-	4RsanBUFuLvLk+o1JqunSBk6KlZmlRrsqWVSwEFGc46nWLZZSZL/MfeXq+vlyQ==
-From: Herve Codina <herve.codina@bootlin.com>
-To: Herve Codina <herve.codina@bootlin.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Lee Jones <lee@kernel.org>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Qiang Zhao <qiang.zhao@nxp.com>,
-	Li Yang <leoyang.li@nxp.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	Shengjiu Wang <shengjiu.wang@gmail.com>,
-	Xiubo Li <Xiubo.Lee@gmail.com>,
-	Fabio Estevam <festevam@gmail.com>,
-	Nicolin Chen <nicoleotsuka@gmail.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Randy Dunlap <rdunlap@infradead.org>
-Cc: netdev@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-gpio@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	alsa-devel@alsa-project.org,
-	Simon Horman <horms@kernel.org>,
-	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: [PATCH v5 02/31] soc: fsl: cpm1: qmc: Fix __iomem addresses
- declaration
-Date: Tue, 12 Sep 2023 10:14:53 +0200
-Message-ID: <20230912081527.208499-3-herve.codina@bootlin.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230912081527.208499-1-herve.codina@bootlin.com>
-References: <20230912081527.208499-1-herve.codina@bootlin.com>
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=FW33aYcQ;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=6+Hg7gHU
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id C8BD2212AE;
+	Tue, 12 Sep 2023 08:51:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1694508707; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:
+  content-transfer-encoding:content-transfer-encoding;
+	bh=LcHOQyzFANyuYXQ2XNNLEgBKPJtoB1mN26LXW86bq3s=;
+	b=FW33aYcQwUlAnIqTUf22rnObcCoMS064DrncWwxrg7FX7GnU23hHJYoaavwgFIF77GaAPV
+	XP9uWfcGdDWmmCsfuChxyz9C6vhw7vZb6gWAWPQ19E0cOzX5AWw8DnN2i6m+RPnwn2c5RZ
+	q1zJS+59OLeN93T0w3XKHWbAei1stcU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1694508707;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:
+  content-transfer-encoding:content-transfer-encoding;
+	bh=LcHOQyzFANyuYXQ2XNNLEgBKPJtoB1mN26LXW86bq3s=;
+	b=6+Hg7gHUm7faEvLUxEc07O8padLOW0HkokQd8vv9fmDuV9YdLg2UNZLxeeW2z8G7MPcY72
+	16QQinDZ8es80rAA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B02B5139DB;
+	Tue, 12 Sep 2023 08:51:47 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id BEc2KqMmAGVSJwAAMHmgww
+	(envelope-from <tiwai@suse.de>); Tue, 12 Sep 2023 08:51:47 +0000
+From: Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH] ALSA: seq: Avoid delivery of events for disabled UMP groups
+Date: Tue, 12 Sep 2023 10:51:44 +0200
+Message-Id: <20230912085144.32534-1-tiwai@suse.de>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-GND-Sasl: herve.codina@bootlin.com
-Message-ID-Hash: GPO7EARCGJMKHW5KUORRIT5IWUTZBNLL
-X-Message-ID-Hash: GPO7EARCGJMKHW5KUORRIT5IWUTZBNLL
-X-MailFrom: herve.codina@bootlin.com
+Message-ID-Hash: 75LN2OWAXFE4HJYJ5LPJ7OHZEYONBJBH
+X-Message-ID-Hash: 75LN2OWAXFE4HJYJ5LPJ7OHZEYONBJBH
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -111,7 +98,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GPO7EARCGJMKHW5KUORRIT5IWUTZBNLL/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/75LN2OWAXFE4HJYJ5LPJ7OHZEYONBJBH/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -120,151 +107,86 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Running sparse (make C=1) on qmc.c raises a lot of warning such as:
-  ...
-  warning: incorrect type in assignment (different address spaces)
-     expected struct cpm_buf_desc [usertype] *[noderef] __iomem bd
-     got struct cpm_buf_desc [noderef] [usertype] __iomem *txbd_free
-  ...
+ALSA sequencer core still delivers events to the disabled UMP Group,
+leaving this handling to the device.  But it's rather risky and it's
+easy to imagine that such an unexpected event may screw up the device
+firmware.
 
-Indeed, some variable were declared 'type *__iomem var' instead of
-'type __iomem *var'.
+This patch avoids the superfluous event deliveries by setting the
+group_filter of the UMP client as default, and evaluate the
+group_filter properly at delivery from non-UMP clients.
 
-Use the correct declaration to remove these warnings.
+The grouop_filter is updated upon the dynamic UMP Function Block
+updates, so that it follows the change of the disabled UMP Groups,
+too.
 
-Fixes: 3178d58e0b97 ("soc: fsl: cpm1: Add support for QMC")
-Signed-off-by: Herve Codina <herve.codina@bootlin.com>
-Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Fixes: d2b706077792 ("ALSA: seq: Add UMP group filter")
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- drivers/soc/fsl/qe/qmc.c | 34 +++++++++++++++++-----------------
- 1 file changed, 17 insertions(+), 17 deletions(-)
+ sound/core/seq/seq_ump_client.c  | 22 ++++++++++++++++++++++
+ sound/core/seq/seq_ump_convert.c |  2 ++
+ 2 files changed, 24 insertions(+)
 
-diff --git a/drivers/soc/fsl/qe/qmc.c b/drivers/soc/fsl/qe/qmc.c
-index b3c292c9a14e..7ad0d77f1740 100644
---- a/drivers/soc/fsl/qe/qmc.c
-+++ b/drivers/soc/fsl/qe/qmc.c
-@@ -175,7 +175,7 @@ struct qmc_chan {
- 	struct list_head list;
- 	unsigned int id;
- 	struct qmc *qmc;
--	void *__iomem s_param;
-+	void __iomem *s_param;
- 	enum qmc_mode mode;
- 	u64	tx_ts_mask;
- 	u64	rx_ts_mask;
-@@ -203,9 +203,9 @@ struct qmc_chan {
- struct qmc {
- 	struct device *dev;
- 	struct tsa_serial *tsa_serial;
--	void *__iomem scc_regs;
--	void *__iomem scc_pram;
--	void *__iomem dpram;
-+	void __iomem *scc_regs;
-+	void __iomem *scc_pram;
-+	void __iomem *dpram;
- 	u16 scc_pram_offset;
- 	cbd_t __iomem *bd_table;
- 	dma_addr_t bd_dma_addr;
-@@ -218,37 +218,37 @@ struct qmc {
- 	struct qmc_chan *chans[64];
- };
- 
--static inline void qmc_write16(void *__iomem addr, u16 val)
-+static inline void qmc_write16(void __iomem *addr, u16 val)
- {
- 	iowrite16be(val, addr);
+diff --git a/sound/core/seq/seq_ump_client.c b/sound/core/seq/seq_ump_client.c
+index f26a1812dfa7..a60e3f069a80 100644
+--- a/sound/core/seq/seq_ump_client.c
++++ b/sound/core/seq/seq_ump_client.c
+@@ -416,6 +416,25 @@ static void setup_client_midi_version(struct seq_ump_client *client)
+ 	snd_seq_kernel_client_put(cptr);
  }
  
--static inline u16 qmc_read16(void *__iomem addr)
-+static inline u16 qmc_read16(void __iomem *addr)
++/* set up client's group_filter bitmap */
++static void setup_client_group_filter(struct seq_ump_client *client)
++{
++	struct snd_seq_client *cptr;
++	unsigned int filter;
++	int p;
++
++	cptr = snd_seq_kernel_client_get(client->seq_client);
++	if (!cptr)
++		return;
++	filter = ~(1U << 0); /* always allow groupless messages */
++	for (p = 0; p < SNDRV_UMP_MAX_GROUPS; p++) {
++		if (client->groups[p].active)
++			filter &= ~(1U << (p + 1));
++	}
++	cptr->group_filter = filter;
++	snd_seq_kernel_client_put(cptr);
++}
++
+ /* UMP group change notification */
+ static void handle_group_notify(struct work_struct *work)
  {
- 	return ioread16be(addr);
+@@ -424,6 +443,7 @@ static void handle_group_notify(struct work_struct *work)
+ 
+ 	update_group_attrs(client);
+ 	update_port_infos(client);
++	setup_client_group_filter(client);
  }
  
--static inline void qmc_setbits16(void *__iomem addr, u16 set)
-+static inline void qmc_setbits16(void __iomem *addr, u16 set)
- {
- 	qmc_write16(addr, qmc_read16(addr) | set);
- }
+ /* UMP FB change notification */
+@@ -492,6 +512,8 @@ static int snd_seq_ump_probe(struct device *_dev)
+ 			goto error;
+ 	}
  
--static inline void qmc_clrbits16(void *__iomem addr, u16 clr)
-+static inline void qmc_clrbits16(void __iomem *addr, u16 clr)
++	setup_client_group_filter(client);
++
+ 	err = create_ump_endpoint_port(client);
+ 	if (err < 0)
+ 		goto error;
+diff --git a/sound/core/seq/seq_ump_convert.c b/sound/core/seq/seq_ump_convert.c
+index 7cc84e137999..b141024830ec 100644
+--- a/sound/core/seq/seq_ump_convert.c
++++ b/sound/core/seq/seq_ump_convert.c
+@@ -1197,6 +1197,8 @@ int snd_seq_deliver_to_ump(struct snd_seq_client *source,
+ 			   struct snd_seq_event *event,
+ 			   int atomic, int hop)
  {
- 	qmc_write16(addr, qmc_read16(addr) & ~clr);
- }
- 
--static inline void qmc_write32(void *__iomem addr, u32 val)
-+static inline void qmc_write32(void __iomem *addr, u32 val)
- {
- 	iowrite32be(val, addr);
- }
- 
--static inline u32 qmc_read32(void *__iomem addr)
-+static inline u32 qmc_read32(void __iomem *addr)
- {
- 	return ioread32be(addr);
- }
- 
--static inline void qmc_setbits32(void *__iomem addr, u32 set)
-+static inline void qmc_setbits32(void __iomem *addr, u32 set)
- {
- 	qmc_write32(addr, qmc_read32(addr) | set);
- }
-@@ -318,7 +318,7 @@ int qmc_chan_write_submit(struct qmc_chan *chan, dma_addr_t addr, size_t length,
- {
- 	struct qmc_xfer_desc *xfer_desc;
- 	unsigned long flags;
--	cbd_t *__iomem bd;
-+	cbd_t __iomem *bd;
- 	u16 ctrl;
- 	int ret;
- 
-@@ -374,7 +374,7 @@ static void qmc_chan_write_done(struct qmc_chan *chan)
- 	void (*complete)(void *context);
- 	unsigned long flags;
- 	void *context;
--	cbd_t *__iomem bd;
-+	cbd_t __iomem *bd;
- 	u16 ctrl;
- 
- 	/*
-@@ -425,7 +425,7 @@ int qmc_chan_read_submit(struct qmc_chan *chan, dma_addr_t addr, size_t length,
- {
- 	struct qmc_xfer_desc *xfer_desc;
- 	unsigned long flags;
--	cbd_t *__iomem bd;
-+	cbd_t __iomem *bd;
- 	u16 ctrl;
- 	int ret;
- 
-@@ -488,7 +488,7 @@ static void qmc_chan_read_done(struct qmc_chan *chan)
- 	void (*complete)(void *context, size_t size);
- 	struct qmc_xfer_desc *xfer_desc;
- 	unsigned long flags;
--	cbd_t *__iomem bd;
-+	cbd_t __iomem *bd;
- 	void *context;
- 	u16 datalen;
- 	u16 ctrl;
-@@ -663,7 +663,7 @@ static void qmc_chan_reset_rx(struct qmc_chan *chan)
- {
- 	struct qmc_xfer_desc *xfer_desc;
- 	unsigned long flags;
--	cbd_t *__iomem bd;
-+	cbd_t __iomem *bd;
- 	u16 ctrl;
- 
- 	spin_lock_irqsave(&chan->rx_lock, flags);
-@@ -694,7 +694,7 @@ static void qmc_chan_reset_tx(struct qmc_chan *chan)
- {
- 	struct qmc_xfer_desc *xfer_desc;
- 	unsigned long flags;
--	cbd_t *__iomem bd;
-+	cbd_t __iomem *bd;
- 	u16 ctrl;
- 
- 	spin_lock_irqsave(&chan->tx_lock, flags);
++	if (dest->group_filter & (1U << dest_port->ump_group))
++		return 0; /* group filtered - skip the event */
+ 	if (event->type == SNDRV_SEQ_EVENT_SYSEX)
+ 		return cvt_sysex_to_ump(dest, dest_port, event, atomic, hop);
+ 	else if (snd_seq_client_is_midi2(dest))
 -- 
-2.41.0
+2.35.3
 
