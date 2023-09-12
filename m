@@ -4,99 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 09BFBCA0EFD
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Sep 2023 17:23:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9A168EE3F09
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Sep 2023 17:45:52 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 357FEA4D;
-	Tue, 12 Sep 2023 19:22:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 357FEA4D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0767AA4D;
+	Tue, 12 Sep 2023 19:45:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0767AA4D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1694539424;
-	bh=rRrJDnsPwd8jMYw4Teztqav9PlNugqhsqBqwAuwaVlo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1694540750;
+	bh=cm5fmflUTyUPcscwv9xakLpN6ml82B7DzcINH5QsMyM=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Oj23KA3wgJ1imhfWmAL0a23SDerpQvjoaxgiqivtvAFk/6jyEtDfqmCNx/OG5fVSK
-	 103kZIRDd2Dx/sjqsDVDiuyxXZMP7qRVXJn2AUcLrhf0+BLDNLJpVUayCowTyPLWZ/
-	 7RWcQ6YsFXskSDO8O7rtNYFDCCrxMmDBFK0UIIsY=
+	b=YDBj6sC8zOj4kfrZUIA53GUqCF431ZEj6LNS9oRmxhiCAyx6ZUB5dbJLYAz86gn+C
+	 8f7hBPS7i3xsPsFoUkpjoF/6bskxvzKqhdJhaThV0KIX/k67qzYSLNBQZWdAvfx2s0
+	 BIS9fwC8Q0WjHIByKXwuTBDB8E7tUnYBTz5hbYtI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0DB5EF80552; Tue, 12 Sep 2023 19:22:20 +0200 (CEST)
+	id D0B52F80552; Tue, 12 Sep 2023 19:44:31 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8142BF80425;
-	Tue, 12 Sep 2023 19:22:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1E9C8F80537;
+	Tue, 12 Sep 2023 19:44:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 54F7CF80425; Tue, 12 Sep 2023 19:22:16 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 03306F80425; Tue, 12 Sep 2023 19:44:26 +0200 (CEST)
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 31130F8007C
-	for <alsa-devel@alsa-project.org>; Tue, 12 Sep 2023 19:22:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 31130F8007C
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9A386F80212
+	for <alsa-devel@alsa-project.org>; Tue, 12 Sep 2023 19:44:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9A386F80212
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=Iii5UWu1
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
-	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id 3109AB81BBB;
-	Tue, 12 Sep 2023 17:22:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5492C433C8;
-	Tue, 12 Sep 2023 17:22:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1694539326;
-	bh=rRrJDnsPwd8jMYw4Teztqav9PlNugqhsqBqwAuwaVlo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Iii5UWu1mdHxD2eSbuXqs6kx4AHgW0/LoRft/f7lyOXJm52Rgi8Ss5jvrOQ7BrJTL
-	 HGjHS80pVjavTF4tfpykYr5T/7fkgKiE9YpmlWEPyBR3aNc+/hYiE191mnmhexl3o1
-	 CRosDNzzFYjKhuhcjmbbUjN7j01k4T3tOUv4i5jUygNoHPfOGH8XZQUtk5OaNdJ9eW
-	 pYLBfVy1Flo6/FS3VYYYvSj35AGFS9ADHfByzFRZStVVmWm0ObNv49tZznX+1faQlU
-	 TpLaRb6QGs2E99A0+EPgis0PHVuXqBCvx2SRZ1SqYeDb/y2Uldr0StaNvnp99RkhVo
-	 nBx3TcaF+l1Gw==
-Date: Tue, 12 Sep 2023 18:21:58 +0100
-From: Conor Dooley <conor@kernel.org>
-To: Herve Codina <herve.codina@bootlin.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Andrew Lunn <andrew@lunn.ch>, Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Lee Jones <lee@kernel.org>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Qiang Zhao <qiang.zhao@nxp.com>, Li Yang <leoyang.li@nxp.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	Shengjiu Wang <shengjiu.wang@gmail.com>,
-	Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <festevam@gmail.com>,
-	Nicolin Chen <nicoleotsuka@gmail.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Randy Dunlap <rdunlap@infradead.org>, netdev@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
-	Simon Horman <horms@kernel.org>,
-	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v5 08/31] dt-bindings: soc: fsl: cpm_qe: cpm1-scc-qmc:
- Add support for QMC HDLC
-Message-ID: <20230912-capable-stash-c7a3e33078ac@spud>
-References: <20230912081527.208499-1-herve.codina@bootlin.com>
- <20230912101018.225246-1-herve.codina@bootlin.com>
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=Xccj3iJc
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694540660; x=1726076660;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=cm5fmflUTyUPcscwv9xakLpN6ml82B7DzcINH5QsMyM=;
+  b=Xccj3iJch6F4AahdVVJaI233X0UdbGC1V/pF2mj40B7FAGaGKY8P+YVJ
+   kiDvNsnXjhzB3cvezeWM0HMmXiD3c+DO3GxdXIFHGsV7/cYBnR4f1L20x
+   VzuAOdeL1vGdJqisdqEChmX1ZJKX0YjvrjVbECiZdVZFbodaAjpTEP1qd
+   m1C2kTDdemKxOcedRl2OBCBWgUA2WmubCWwGQh/aGkZCYiWKx9Xu+N2wP
+   OhqgapvsvZCVl/zSEtjeySCFrUqXRRqlByMKOtPH6hcwBV67gyi16M/vf
+   WIdGXgh8OGI7nzJudo5v3IavCUEnDjw201SJr6k16qcmIv5/E9cGTwCuZ
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="378356231"
+X-IronPort-AV: E=Sophos;i="6.02,139,1688454000";
+   d="scan'208";a="378356231"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 12 Sep 2023 10:44:15 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="809363946"
+X-IronPort-AV: E=Sophos;i="6.02,139,1688454000";
+   d="scan'208";a="809363946"
+Received: from skotini-mobl.amr.corp.intel.com (HELO [10.209.169.137])
+ ([10.209.169.137])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 12 Sep 2023 10:44:14 -0700
+Message-ID: <1d2d927d-6506-86fb-fc42-038d2d70c853@linux.intel.com>
+Date: Tue, 12 Sep 2023 13:39:56 -0400
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="bf5FPf5K5KaccQV9"
-Content-Disposition: inline
-In-Reply-To: <20230912101018.225246-1-herve.codina@bootlin.com>
-Message-ID-Hash: PJUW4I6RMBAAWPDXKHWCVNNVDLJX6NCR
-X-Message-ID-Hash: PJUW4I6RMBAAWPDXKHWCVNNVDLJX6NCR
-X-MailFrom: conor@kernel.org
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.15.0
+Subject: Re: [PATCH 0/4] ASoC: cs35l56: Use PCI SSID to select specific
+ firmware
+Content-Language: en-US
+To: Richard Fitzgerald <rf@opensource.cirrus.com>, broonie@kernel.org,
+ yung-chuan.liao@linux.intel.com, kai.vehmanen@linux.intel.com,
+ peter.ujfalusi@linux.intel.com
+Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
+ linux-kernel@vger.kernel.org
+References: <20230912163207.3498161-1-rf@opensource.cirrus.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20230912163207.3498161-1-rf@opensource.cirrus.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: 444PNYHG325JOCGPLOFXOR5GETQ3URNH
+X-Message-ID-Hash: 444PNYHG325JOCGPLOFXOR5GETQ3URNH
+X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -108,7 +97,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PJUW4I6RMBAAWPDXKHWCVNNVDLJX6NCR/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/444PNYHG325JOCGPLOFXOR5GETQ3URNH/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -118,84 +107,45 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 
---bf5FPf5K5KaccQV9
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Sep 12, 2023 at 12:10:18PM +0200, Herve Codina wrote:
-> The QMC (QUICC mutichannel controller) is a controller present in some
-> PowerQUICC SoC such as MPC885.
-> The QMC HDLC uses the QMC controller to transfer HDLC data.
->=20
-> Additionally, a framer can be connected to the QMC HDLC.
-> If present, this framer is the interface between the TDM bus used by the
-> QMC HDLC and the E1/T1 line.
-> The QMC HDLC can use this framer to get information about the E1/T1 line
-> and configure the E1/T1 line.
->=20
-> Signed-off-by: Herve Codina <herve.codina@bootlin.com>
-> ---
->  .../bindings/soc/fsl/cpm_qe/fsl,cpm1-scc-qmc.yaml   | 13 +++++++++++++
->  1 file changed, 13 insertions(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/soc/fsl/cpm_qe/fsl,cpm1-sc=
-c-qmc.yaml b/Documentation/devicetree/bindings/soc/fsl/cpm_qe/fsl,cpm1-scc-=
-qmc.yaml
-> index 82d9beb48e00..b5073531f3f1 100644
-> --- a/Documentation/devicetree/bindings/soc/fsl/cpm_qe/fsl,cpm1-scc-qmc.y=
-aml
-> +++ b/Documentation/devicetree/bindings/soc/fsl/cpm_qe/fsl,cpm1-scc-qmc.y=
-aml
-> @@ -101,6 +101,16 @@ patternProperties:
->            Channel assigned Rx time-slots within the Rx time-slots routed=
- by the
->            TSA to this cell.
-> =20
-> +      compatible:
-> +        const: fsl,qmc-hdlc
-> +
-> +      fsl,framer:
-> +        $ref: /schemas/types.yaml#/definitions/phandle
-> +        description:
-> +          phandle to the framer node. The framer is in charge of an E1/T=
-1 line
-> +          interface connected to the TDM bus. It can be used to get the =
-E1/T1 line
-> +          status such as link up/down.
+On 9/12/23 12:32, Richard Fitzgerald wrote:
+> The PCI device registers contain a subsystem ID (SSID), that is
+> separate from the silicon ID. The PCI specification defines it thus:
+> 
+> "They provide a mechanism for board vendors to distiguish their
+>  boards from one another even thought the boards may have the same
+>  PCI controller on them."
+> 
+> This allows the driver for the silicon part to apply board-speficic
+> settings based on this SSID.
+> 
+> The CS35L56 driver uses this to select the correct firmware file for
+> the board. The actual ID is part of the PCI register set of the
+> host audio interface so this set of patches includes extracting the
+> SSID from the Intel audio controller and passing it to the machine
+> driver and then to ASoC components. Other PCI audio controllers
+> will have the same SSID registers, so can use the same mechanism to
+> pass the SSID.
+> 
+> Richard Fitzgerald (4):
+>   ASoC: soc-card: Add storage for PCI SSID
+>   ASoC: SOF: Pass PCI SSID to machine driver
+>   ASoC: Intel: sof_sdw: Copy PCI SSID to struct snd_soc_card
+>   ASoC: cs35l56: Use PCI SSID as the firmware UID
 
-Sounds like this fsl,framer property should depend on the compatible
-being present, no?
+for the series
 
-Thanks,
-Conor.
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-> +
->      required:
->        - reg
->        - fsl,tx-ts-mask
-> @@ -159,5 +169,8 @@ examples:
->              fsl,operational-mode =3D "hdlc";
->              fsl,tx-ts-mask =3D <0x00000000 0x0000ff00>;
->              fsl,rx-ts-mask =3D <0x00000000 0x0000ff00>;
-> +
-> +            compatible =3D "fsl,qmc-hdlc";
-> +            fsl,framer =3D <&framer>;
->          };
->      };
-> --=20
-> 2.41.0
->=20
 
---bf5FPf5K5KaccQV9
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZQCeNgAKCRB4tDGHoIJi
-0iOYAQDpq19XBQVxAut3ryCZTWFRliPi5kerZHMkKGzgUwIbKwEA+gnc9IR2Iao6
-Qt/bYjPuz9mjrBe0gcXcC3CDZicWwAE=
-=QoY/
------END PGP SIGNATURE-----
-
---bf5FPf5K5KaccQV9--
+> 
+>  include/sound/soc-acpi.h         |  7 ++++++
+>  include/sound/soc-card.h         | 37 ++++++++++++++++++++++++++++++++
+>  include/sound/soc.h              | 11 ++++++++++
+>  include/sound/sof.h              |  8 +++++++
+>  sound/soc/codecs/cs35l56.c       | 11 ++++++++++
+>  sound/soc/intel/boards/sof_sdw.c |  6 ++++++
+>  sound/soc/sof/sof-audio.c        |  7 ++++++
+>  sound/soc/sof/sof-pci-dev.c      |  8 +++++++
+>  8 files changed, 95 insertions(+)
+> 
