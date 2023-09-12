@@ -4,77 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D01B4CA0EC6
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Sep 2023 00:08:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 246DDCA0EC3
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Sep 2023 00:09:03 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E64071518;
-	Tue, 12 Sep 2023 02:08:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E64071518
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2E26914F4;
+	Tue, 12 Sep 2023 02:08:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2E26914F4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1694477337;
-	bh=b7QKl0a0AEHRzG/6bKiidEwJZlxjVK/5NxsY7VlNA8Q=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=voHWrchf+lSFNEPMVrTOfSz3WOOOBylLhRDVAK5EBQd7sNZ9oy+se7aWVObzLOdPo
-	 3kinDgJoqLNbgeGR2swUqp/RQHhHk9uSTM762cCKod8cyS5kzuTT1AXXmUYuICUgQO
-	 WSJcnhPek9N3KasepXuhCAr0zoqlnl1M9khEXSwE=
+	s=default; t=1694477341;
+	bh=XmvvSnPPZfJmsrUyZ/7/dR8/drInjaaG1l50K2Joi1E=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=WvVeqzjDRlgbYTbT0AAEsCVHrHN1XVD1GGLmdNLVXwKWKNnNEmXedIHJlnh2mouX9
+	 9B5qItv6PGnaMxCm9R32Djk8sC08Q0Bw3Y4oYtnnSn7+fLJKeg7ZhOxPSWgkbSNuir
+	 nDvZdK1jvw+D26HF+lBvZc3QhZL7BXyfwK8BKWM4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8599EF80568; Tue, 12 Sep 2023 02:02:37 +0200 (CEST)
+	id B0F1BF805AF; Tue, 12 Sep 2023 02:02:37 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 92C4FF8057E;
+	by alsa1.perex.cz (Postfix) with ESMTP id EA6CFF800AA;
 	Tue, 12 Sep 2023 02:02:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 260CBF8057D; Tue, 12 Sep 2023 02:02:24 +0200 (CEST)
+	id BA70FF8057E; Tue, 12 Sep 2023 02:02:26 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org
  [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A7421F8057E
-	for <alsa-devel@alsa-project.org>; Tue, 12 Sep 2023 02:01:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A7421F8057E
+	by alsa1.perex.cz (Postfix) with ESMTPS id 40C11F80568
+	for <alsa-devel@alsa-project.org>; Tue, 12 Sep 2023 02:01:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 40C11F80568
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=H2B1meau
+ header.s=k20201202 header.b=J0Rk2Gsw
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 20C7E614A4;
-	Tue, 12 Sep 2023 00:01:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F27E0C32787;
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 001FC61486;
 	Tue, 12 Sep 2023 00:01:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0DCECC433BD;
+	Tue, 12 Sep 2023 00:01:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1694476916;
-	bh=b7QKl0a0AEHRzG/6bKiidEwJZlxjVK/5NxsY7VlNA8Q=;
-	h=From:To:In-Reply-To:References:Subject:Date:From;
-	b=H2B1meaujGjdupBvdKujlqBDeO+9jyKuGE747IQuFVPFFSmruNXZYdxPcCcDW2aCE
-	 SX3TIKkNBV1YjsBqRpxtvCmmFuHcPksCKc1PHACOUz7yB9mx84z6xOuZ6xvrC99V0R
-	 SJ2se1JUKRlOA+p6cawZzrRkSAkNGq43GTJhR2Qs59VLEAsCis1d1i2zG1UTRwj4qE
-	 j2NOVEqjqXstwTczrGuj+GF0S4g6WYZi0x2mlYqfVL54mx31Zl0xI7t62E2bvoGUqI
-	 ip4Qt4O5if/a02Zyd/RegMMGZ67J/MV3AzbMxlm7znXn3it3v/kes7+7XNcR2b2LEd
-	 ttonejNGSDKtw==
+	s=k20201202; t=1694476913;
+	bh=XmvvSnPPZfJmsrUyZ/7/dR8/drInjaaG1l50K2Joi1E=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=J0Rk2Gsw9fmnC318IRR7A9MwTuYhIUXoxBG/mV08+o+a9NMDng3RLoWLdjqDSbyj6
+	 T7Trxr8PMmaa+NyAoxw1FbB/8CMFZfypZzHMxJkHe7rYA5r3OfEVEjgdviBY6qB7V+
+	 VmWcqFOHxxHKLkziEo4zjmpWs8NlKQ7PqWTJ3L+sAJqbNh6gG8SH+Pe/az3z/BOzz8
+	 ajXfxuTAGfgEK4sZrCJxiiuvsYDBCIlIpuIDi5um+azat7+RPw09UPts++GnRP7112
+	 jpFRygQisPn4UE+mP2iZcsD7E+NxrvBEuppmLYhz6i0Ioomnnn9P3TUQil0Q/sTtfX
+	 Tt/1YPvx4itFQ==
 From: Mark Brown <broonie@kernel.org>
-To: shengjiu.wang@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
- nicoleotsuka@gmail.com, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
- alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org,
- linux-kernel@vger.kernel.org, Shengjiu Wang <shengjiu.wang@nxp.com>
-In-Reply-To: <1694414287-13291-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1694414287-13291-1-git-send-email-shengjiu.wang@nxp.com>
-Subject: Re: [PATCH] ASoC: fsl: imx-pcm-rpmsg: Add SNDRV_PCM_INFO_BATCH
- flag
-Message-Id: <169447691360.2390116.6423554135052140931.b4-ty@kernel.org>
-Date: Tue, 12 Sep 2023 01:01:53 +0100
+To: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
+ Sameer Pujar <spujar@nvidia.com>
+Cc: thierry.reding@gmail.com, jonathanh@nvidia.com,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ linux-tegra@vger.kernel.org
+In-Reply-To: <1694098945-32760-1-git-send-email-spujar@nvidia.com>
+References: <1694098945-32760-1-git-send-email-spujar@nvidia.com>
+Subject: Re: [PATCH v2 0/2] Fix redundant PLLA update
+Message-Id: <169447691068.2390116.10518505217580469969.b4-ty@kernel.org>
+Date: Tue, 12 Sep 2023 01:01:50 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-099c9
-Message-ID-Hash: MM6E643GRXWOC24GZXGIBBBPNPPSKVM5
-X-Message-ID-Hash: MM6E643GRXWOC24GZXGIBBBPNPPSKVM5
+Message-ID-Hash: OUOMSVMSCNHE45TGZOOP4IQLTWXFZOQG
+X-Message-ID-Hash: OUOMSVMSCNHE45TGZOOP4IQLTWXFZOQG
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -87,7 +87,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MM6E643GRXWOC24GZXGIBBBPNPPSKVM5/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OUOMSVMSCNHE45TGZOOP4IQLTWXFZOQG/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -96,17 +96,14 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, 11 Sep 2023 14:38:07 +0800, Shengjiu Wang wrote:
-> The rpmsg pcm device is a device which should support
-> double buffering.
+On Thu, 07 Sep 2023 20:32:23 +0530, Sameer Pujar wrote:
+> This small series fixes redundant PLLA updates that happen for
+> each DAI link in the audio path. This helps to resolve DMIC clock
+> issue seen on Jetson TX2 platform.
 > 
-> Found this issue with pipewire. When there is no
-> SNDRV_PCM_INFO_BATCH flag in driver, the pipewire will
-> set headroom to be zero, and because rpmsg pcm device
-> don't support residue report, when the latency setting
-> is small, the "delay" always larger than "target" in
-> alsa-pcm.c, that reading next period data is not
-> scheduled on time.
+> Sameer Pujar (2):
+>   ASoC: soc-utils: Export snd_soc_dai_is_dummy() symbol
+>   ASoC: tegra: Fix redundant PLLA and PLLA_OUT0 updates
 > 
 > [...]
 
@@ -116,8 +113,10 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: fsl: imx-pcm-rpmsg: Add SNDRV_PCM_INFO_BATCH flag
-      commit: 2f9426905a63be7ccf8cd10109caf1848aa0993a
+[1/2] ASoC: soc-utils: Export snd_soc_dai_is_dummy() symbol
+      commit: f101583fa9f8c3f372d4feb61d67da0ccbf4d9a5
+[2/2] ASoC: tegra: Fix redundant PLLA and PLLA_OUT0 updates
+      commit: e765886249c533e1bb5cbc3cd741bad677417312
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
