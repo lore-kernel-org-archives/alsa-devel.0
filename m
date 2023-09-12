@@ -4,47 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4540AEE3F11
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Sep 2023 19:49:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3A7DFEE3F12
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Sep 2023 19:51:02 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 94F72886;
-	Tue, 12 Sep 2023 21:48:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 94F72886
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4EFCD950;
+	Tue, 12 Sep 2023 21:50:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4EFCD950
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1694548178;
-	bh=T1t/57Cz89XT/CHZe/b38I61bPm2b8hm7sgiiJHtS9w=;
+	s=default; t=1694548260;
+	bh=PO2R58qlsEDTog4WW+D3lihbLGZ88TiUmExN8eORMXc=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=SRxq6X6iNtugWL1L4Sz9+D5EX76feAwtVTRYikxH5XJfSoSyL/Il47dpbtWEj+5gR
-	 AjTHxvJ3yF1uPgYYqTHnvaWkQ1H0ehS4URA1UG+Q7ehfT/AmB/WZztvhsFkpsru2j3
-	 EDZCV0LZCvyH0ZBhLTDhxQOBITV2Sydk5HyWGOlo=
+	b=iruQ1OVMdDz1RKFLwA42Er9UkqC8iXEXsDFsYiLzUfHTmSi53vR9A6AweIk1teqns
+	 mZRK3L4ArW61dfy2apvF1r4OfXH6qEcrRY82vmi/AT9VIXzUM2F/xla+LE9Ff27uYr
+	 bFBCtLAVx/tgoJstWLzhQoIPcEbEAgRJuqkhtYn8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 26F56F80246; Tue, 12 Sep 2023 21:48:19 +0200 (CEST)
+	id 403D2F80558; Tue, 12 Sep 2023 21:49:42 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 99D1FF80425;
-	Tue, 12 Sep 2023 21:48:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0860BF80431;
+	Tue, 12 Sep 2023 21:49:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 00C61F80425; Tue, 12 Sep 2023 21:48:15 +0200 (CEST)
+	id A52E8F8047D; Tue, 12 Sep 2023 21:49:38 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
  [207.180.221.201])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8E9A2F8007C
-	for <alsa-devel@alsa-project.org>; Tue, 12 Sep 2023 21:48:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8E9A2F8007C
+	by alsa1.perex.cz (Postfix) with ESMTP id D2418F80425
+	for <alsa-devel@alsa-project.org>; Tue, 12 Sep 2023 21:49:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D2418F80425
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
+From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1694548093934110165-webhooks-bot@alsa-project.org>
-References: <1694548093934110165-webhooks-bot@alsa-project.org>
-Subject: Bug: AIF2 ADC Stereo Capture Route is unitialised in alsa-ucm-conf
-Message-Id: <20230912194816.00C61F80425@alsa1.perex.cz>
-Date: Tue, 12 Sep 2023 21:48:16 +0200 (CEST)
-Message-ID-Hash: QPSX23OKJFBQZUT3K3Q2JRFXRB462HUR
-X-Message-ID-Hash: QPSX23OKJFBQZUT3K3Q2JRFXRB462HUR
+In-Reply-To: <1694548176393902779-webhooks-bot@alsa-project.org>
+References: <1694548176393902779-webhooks-bot@alsa-project.org>
+Subject: AIF2 ADC Stereo Capture Route is unitialised in alsa-ucm-conf
+Message-Id: <20230912194938.A52E8F8047D@alsa1.perex.cz>
+Date: Tue, 12 Sep 2023 21:49:38 +0200 (CEST)
+Message-ID-Hash: R6WOBGO7QEAWJE4CRFIPA2V5RUNGU65Z
+X-Message-ID-Hash: R6WOBGO7QEAWJE4CRFIPA2V5RUNGU65Z
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -57,16 +57,15 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QPSX23OKJFBQZUT3K3Q2JRFXRB462HUR/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/R6WOBGO7QEAWJE4CRFIPA2V5RUNGU65Z/>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-ucm-conf issue #351 was opened from broukema:
+alsa-project/alsa-ucm-conf issue #351 was edited from broukema:
 
 DESCRIPTION:
 `AIF2 ADC Stereo Capture Route` is not initialised in
