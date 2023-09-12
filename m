@@ -4,82 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 10D5DCA0EC3
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Sep 2023 00:08:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D01B4CA0EC6
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Sep 2023 00:08:59 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5CD3914FC;
-	Tue, 12 Sep 2023 02:07:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5CD3914FC
+	by alsa0.perex.cz (Postfix) with ESMTPS id E64071518;
+	Tue, 12 Sep 2023 02:08:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E64071518
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1694477318;
-	bh=5KdR9Uxjdsqqm9Cq0uLvkPGlOrrGg9FgEKiihbuW1Fk=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=LnUFAHPXKwNSR4bmEL526yn18w2BbxaYvu1gS9tKaSzEHXkeNl86NfUQuf/qHvBMD
-	 UChlxcnpQlFRkweKrbdZ9uPOGY0McWKqquwRyImcvWUiDZtMsKWtJU2wGlBvKGwhUy
-	 EnqEtnApvrc3qa2FM0X7XsXuhpScRiO2jdCIzhCw=
+	s=default; t=1694477337;
+	bh=b7QKl0a0AEHRzG/6bKiidEwJZlxjVK/5NxsY7VlNA8Q=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=voHWrchf+lSFNEPMVrTOfSz3WOOOBylLhRDVAK5EBQd7sNZ9oy+se7aWVObzLOdPo
+	 3kinDgJoqLNbgeGR2swUqp/RQHhHk9uSTM762cCKod8cyS5kzuTT1AXXmUYuICUgQO
+	 WSJcnhPek9N3KasepXuhCAr0zoqlnl1M9khEXSwE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3121CF806CB; Tue, 12 Sep 2023 01:58:28 +0200 (CEST)
+	id 8599EF80568; Tue, 12 Sep 2023 02:02:37 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 30866F806C5;
-	Tue, 12 Sep 2023 01:58:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 92C4FF8057E;
+	Tue, 12 Sep 2023 02:02:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E094AF8068E; Tue, 12 Sep 2023 01:58:10 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	id 260CBF8057D; Tue, 12 Sep 2023 02:02:24 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id EF090F805A9
-	for <alsa-devel@alsa-project.org>; Tue, 12 Sep 2023 01:58:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EF090F805A9
+	by alsa1.perex.cz (Postfix) with ESMTPS id A7421F8057E
+	for <alsa-devel@alsa-project.org>; Tue, 12 Sep 2023 02:01:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A7421F8057E
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=ri9555RZ
+ header.s=k20201202 header.b=H2B1meau
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id CEB7661486;
-	Mon, 11 Sep 2023 23:57:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35D1CC3277E;
-	Mon, 11 Sep 2023 23:57:55 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 20C7E614A4;
+	Tue, 12 Sep 2023 00:01:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F27E0C32787;
+	Tue, 12 Sep 2023 00:01:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1694476679;
-	bh=5KdR9Uxjdsqqm9Cq0uLvkPGlOrrGg9FgEKiihbuW1Fk=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=ri9555RZ2H4mSY3qKw7BFMeL2NE8xysJ78P8+Z5nDp3fRrd5ZuasZSN/vtne0HiK1
-	 mWmbzINwiXRO9KQxm+sgIY6MnVeyO/ar1pYV62LVllZSZsyWuaX9sDWUe8qfoQgqpg
-	 6FRzt1qWf4TTjEvsT82PPfuQTldcWEoi/hqo7/W10f8FNKn7t8V51YJqGCzKVStxGd
-	 +SS4XBoGMpEwF611islvFyPSJPnDUXvOy94ePlRdg6quuUDi58GZ55PQoVJxgJTG0l
-	 ltKmU3oKb74ejTr+2uWsUxi0zwbmOuu+y9izlzxUbzRJU5jOXz00job6JGeyBV159i
-	 giBNLbEC73JWw==
+	s=k20201202; t=1694476916;
+	bh=b7QKl0a0AEHRzG/6bKiidEwJZlxjVK/5NxsY7VlNA8Q=;
+	h=From:To:In-Reply-To:References:Subject:Date:From;
+	b=H2B1meaujGjdupBvdKujlqBDeO+9jyKuGE747IQuFVPFFSmruNXZYdxPcCcDW2aCE
+	 SX3TIKkNBV1YjsBqRpxtvCmmFuHcPksCKc1PHACOUz7yB9mx84z6xOuZ6xvrC99V0R
+	 SJ2se1JUKRlOA+p6cawZzrRkSAkNGq43GTJhR2Qs59VLEAsCis1d1i2zG1UTRwj4qE
+	 j2NOVEqjqXstwTczrGuj+GF0S4g6WYZi0x2mlYqfVL54mx31Zl0xI7t62E2bvoGUqI
+	 ip4Qt4O5if/a02Zyd/RegMMGZ67J/MV3AzbMxlm7znXn3it3v/kes7+7XNcR2b2LEd
+	 ttonejNGSDKtw==
 From: Mark Brown <broonie@kernel.org>
-To: James Schulman <james.schulman@cirrus.com>,
- David Rhodes <david.rhodes@cirrus.com>,
- Richard Fitzgerald <rf@opensource.cirrus.com>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Stefan Binding <sbinding@opensource.cirrus.com>,
- Charles Keepax <ckeepax@opensource.cirrus.com>,
- Vitaly Rodionov <vitalyr@opensource.cirrus.com>,
- Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
- linux-kernel@vger.kernel.org, kernel@collabora.com
-In-Reply-To: <20230907171010.1447274-1-cristian.ciocaltea@collabora.com>
-References: <20230907171010.1447274-1-cristian.ciocaltea@collabora.com>
-Subject: Re: [PATCH v2 00/11] Improve CS35l41-based audio codec drivers
-Message-Id: <169447667585.2387538.14630945148313901984.b4-ty@kernel.org>
-Date: Tue, 12 Sep 2023 00:57:55 +0100
+To: shengjiu.wang@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
+ nicoleotsuka@gmail.com, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
+ alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org,
+ linux-kernel@vger.kernel.org, Shengjiu Wang <shengjiu.wang@nxp.com>
+In-Reply-To: <1694414287-13291-1-git-send-email-shengjiu.wang@nxp.com>
+References: <1694414287-13291-1-git-send-email-shengjiu.wang@nxp.com>
+Subject: Re: [PATCH] ASoC: fsl: imx-pcm-rpmsg: Add SNDRV_PCM_INFO_BATCH
+ flag
+Message-Id: <169447691360.2390116.6423554135052140931.b4-ty@kernel.org>
+Date: Tue, 12 Sep 2023 01:01:53 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-099c9
-Message-ID-Hash: G2TVN6QGWXSE7V2OFF64PLMQ44YMMO5D
-X-Message-ID-Hash: G2TVN6QGWXSE7V2OFF64PLMQ44YMMO5D
+Message-ID-Hash: MM6E643GRXWOC24GZXGIBBBPNPPSKVM5
+X-Message-ID-Hash: MM6E643GRXWOC24GZXGIBBBPNPPSKVM5
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -92,7 +87,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/G2TVN6QGWXSE7V2OFF64PLMQ44YMMO5D/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MM6E643GRXWOC24GZXGIBBBPNPPSKVM5/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -101,21 +96,17 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, 07 Sep 2023 20:09:59 +0300, Cristian Ciocaltea wrote:
-> This patch series contains several fixes and improvements to drivers
-> based on the CS35l41 audio codec.
+On Mon, 11 Sep 2023 14:38:07 +0800, Shengjiu Wang wrote:
+> The rpmsg pcm device is a device which should support
+> double buffering.
 > 
-> It has been verified on Valve's Steam Deck, except the HDA related patches.
-> 
-> Changes in v2:
->  - Added Acked-by tags from Charles
->  - Reworked the shared boost handling per reviews from Charles and David
->  - Dropped PATCH 5/9 and moved PATCH 6/9 a bit down the list, as it doesn't
->    contain a Fixes tag
->  - Reverted usage of devm_pm_runtime_enable() in PATCH 9/9 and replaced with
->    a proper runtime PM changes undo in PATCH v2 06/11
->  - Added 3 new patches providing some HDA related fixes
->  - v1: https://lore.kernel.org/all/20230902210621.1184693-1-cristian.ciocaltea@collabora.com/
+> Found this issue with pipewire. When there is no
+> SNDRV_PCM_INFO_BATCH flag in driver, the pipewire will
+> set headroom to be zero, and because rpmsg pcm device
+> don't support residue report, when the latency setting
+> is small, the "delay" always larger than "target" in
+> alsa-pcm.c, that reading next period data is not
+> scheduled on time.
 > 
 > [...]
 
@@ -125,28 +116,8 @@ Applied to
 
 Thanks!
 
-[01/11] ASoC: cs35l41: Handle mdsync_down reg write errors
-        commit: a9a3f54a23d844971c274f352500dddeadb4412c
-[02/11] ASoC: cs35l41: Handle mdsync_up reg write errors
-        commit: 4bb5870ab60abca6ad18196090831b5e4cf82d93
-[03/11] ASoC: cs35l41: Initialize completion object before requesting IRQ
-        commit: 5ad668a9ce83d819701fb7abc1c2236049ec15c2
-[04/11] ASoC: cs35l41: Fix broken shared boost activation
-        commit: 77bf613f0bf08c021309cdb5f84b5f630b829261
-[05/11] ASoC: cs35l41: Verify PM runtime resume errors in IRQ handler
-        commit: 9f8948db9849d202dee3570507d3a0642f92d632
-[06/11] ASoC: cs35l41: Undo runtime PM changes at driver exit time
-        commit: 2d5661e6008ae1a1cd6df7cc844908fb8b982c58
-[07/11] ASoC: cs35l41: Make use of dev_err_probe()
-        commit: 3db52739aca981a436536423a36ab59b9f241096
-[08/11] ASoC: cs35l41: Use modern pm_ops
-        commit: 611b8813a28f49e206e05198dae77c544c72b050
-[09/11] ALSA: hda: cs35l41: Fix unbalanced pm_runtime_get()
-        commit: 486465508f8a5fe441939a7d97607f4460a60891
-[10/11] ALSA: hda: cs35l41: Undo runtime PM changes at driver exit time
-        commit: 85a1bf86fac0c195929768b4e92c78cad107523b
-[11/11] ALSA: hda: cs35l41: Consistently use dev_err_probe()
-        commit: 206b250c3e9be44c096bb9bb1f9d6b7f3440bfbb
+[1/1] ASoC: fsl: imx-pcm-rpmsg: Add SNDRV_PCM_INFO_BATCH flag
+      commit: 2f9426905a63be7ccf8cd10109caf1848aa0993a
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
