@@ -4,83 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AAEF9EE3F0D
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Sep 2023 18:55:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 455FEEE3F0F
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Sep 2023 19:24:53 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4781BDF1;
-	Tue, 12 Sep 2023 20:54:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4781BDF1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2DF16A4B;
+	Tue, 12 Sep 2023 21:24:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2DF16A4B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1694544898;
-	bh=42xcdlbrjyVky2/tm5xi0r/vdFecT+EUTCaruqGYrrg=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1694546691;
+	bh=L5LXCOa8/2p57HUzV4WLPFe2Xu5lNiNBgeYv6A6lup4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=trLd/3+SGUmx9rXBsbvf3qi6WuWG7D9Ze2/lcx8WcTpaCWpbS8aT2hLM4RhwqVG2f
-	 1Prr1kid66ebv0xBiVxZUvCrCXNgzbX7GCzGw6T4RDV+9XPv4vZPhveJvZjNNIfNV/
-	 g8qNyQ08WWH8Lnt18JH5qj3lY7YqJX/S+3L+9YAg=
+	b=OzRDhKVjyCwtK/HPbp8qltXHIZWbjcup79P0+jnRZOUPUkX1F3F/NQAhmg81aBJE6
+	 tuS1IBnp4gaRrSFdYNTglMb6IVrz4s4erGWELJK1moVE8vAniCw8cuVG3xAlv6z+5B
+	 tmWOC2akBfWqGSTcZbfyaopgJ4Z/wGE9wlkiiIqc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6F0DDF80551; Tue, 12 Sep 2023 20:53:19 +0200 (CEST)
+	id 5486CF80212; Tue, 12 Sep 2023 21:23:51 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id DBF73F80551;
-	Tue, 12 Sep 2023 20:53:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EB8B1F80425;
+	Tue, 12 Sep 2023 21:23:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E2146F80425; Tue, 12 Sep 2023 20:53:13 +0200 (CEST)
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+	id BD359F80425; Tue, 12 Sep 2023 21:23:46 +0200 (CEST)
+Received: from madras.collabora.co.uk (madras.collabora.co.uk
+ [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 33601F8007C
-	for <alsa-devel@alsa-project.org>; Tue, 12 Sep 2023 20:53:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 33601F8007C
+	by alsa1.perex.cz (Postfix) with ESMTPS id 2750FF80212
+	for <alsa-devel@alsa-project.org>; Tue, 12 Sep 2023 21:23:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2750FF80212
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=tnBXOzns
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ unprotected) header.d=collabora.com header.i=@collabora.com
+ header.a=rsa-sha256 header.s=mail header.b=iGMNuICe
+Received: from notapiano (zone.collabora.co.uk [167.235.23.81])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
+ server-digest SHA256)
 	(No client certificate requested)
-	by sin.source.kernel.org (Postfix) with ESMTPS id B7660CE1E47;
-	Tue, 12 Sep 2023 18:53:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C397C433C7;
-	Tue, 12 Sep 2023 18:53:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1694544784;
-	bh=42xcdlbrjyVky2/tm5xi0r/vdFecT+EUTCaruqGYrrg=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=tnBXOzns3TRJQ3v2DIWxovHmqpLyVkrdcfa60aU16eqotefX6AAO9ny+VhyOzVTwa
-	 vMVlIV1+6hNvf1rt+deYVUX7gXM9V9QdeaZOgSX9LLWJ84wCPMzwus4JETKqLHDFie
-	 tNpBDpsy59MWbR3IhREh716peEmbR1aCuxc7C1wfvSsRx7qe3ReSzhUFhI9KWrnQcp
-	 vhq3FBdz78lg7Sj/1q4JyfcVMiyyQqFfkbDnkIETWv8F1/V1yLvzVcL9nkwoSAgdfP
-	 Z2sb/yqMAUcJnQZSl6mp/qwECmAcbPMIC3tcTyLmmNv/UdA30S0hVPhkz0BS7PcLom
-	 g6rQL+BgRt33g==
-From: Mark Brown <broonie@kernel.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Banajit Goswami <bgoswami@quicinc.com>, Andy Gross <agross@kernel.org>,
- Bjorn Andersson <andersson@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc: Marijn Suijten <marijn.suijten@somainline.org>,
- alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20230825-topic-6115tx-v1-0-ebed201ad54b@linaro.org>
-References: <20230825-topic-6115tx-v1-0-ebed201ad54b@linaro.org>
-Subject: Re: [PATCH 0/2] SM6115 TX Macro
-Message-Id: <169454477946.2415953.15150744982318349138.b4-ty@kernel.org>
-Date: Tue, 12 Sep 2023 19:52:59 +0100
+	(Authenticated sender: nfraprado)
+	by madras.collabora.co.uk (Postfix) with ESMTPSA id 16E3566072FA;
+	Tue, 12 Sep 2023 20:23:37 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1694546619;
+	bh=L5LXCOa8/2p57HUzV4WLPFe2Xu5lNiNBgeYv6A6lup4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=iGMNuICeZavLkjCjzs0HR+aITpCAoLOzcgQo2B7IjI/edLsI4fMJ/cJmE5kh5ztrv
+	 759iOSvTYFhUZNT2o+Z2o9+ckESdkjk4VJ6aE/oQNX2y4mVJ6aYH0fEhRkRiwo4e5V
+	 dQnJk6R42GtChT5a08UERktaP4mGRy7HkJlN2gcbFJPPxJP1p9NxgmYjCPYbRCOw7G
+	 TF6FU0QlfRafRa7CKhJ/Y7KNh4lHgUyd+IVJMuRD5edD57JftZqR2vsjDFGYYtzIta
+	 Fib19nE1fo5qmo99YuvD4SpUTIQ8uPcjik5UnooUaQVMNkvpLzeT9LYaJimDQrdWta
+	 82TDu0ONiYN2Q==
+Date: Tue, 12 Sep 2023 15:23:34 -0400
+From: =?utf-8?B?TsOtY29sYXMgRi4gUi4gQS4=?= Prado <nfraprado@collabora.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: Takashi Iwai <tiwai@suse.com>, kernel@collabora.com,
+	Jaroslav Kysela <perex@perex.cz>, Shuah Khan <shuah@kernel.org>,
+	alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH] kselftest/alsa: Mark test plan as skipped when no cards
+ are available
+Message-ID: <a12b1144-bea0-4bd7-a429-da800dc8f568@notapiano>
+References: <20230908181242.95714-1-nfraprado@collabora.com>
+ <0fa0901e-d271-438d-bc2b-11399ad3b07c@sirena.org.uk>
+ <868a8f08-ba39-4550-8e7b-0572ea03c4e7@notapiano>
+ <ZP8kLM5ln2YBCHap@finisterre.sirena.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-099c9
-Message-ID-Hash: 7372EMILLS6QNOMPMFZNQJJU2LRMWV3A
-X-Message-ID-Hash: 7372EMILLS6QNOMPMFZNQJJU2LRMWV3A
-X-MailFrom: broonie@kernel.org
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZP8kLM5ln2YBCHap@finisterre.sirena.org.uk>
+Message-ID-Hash: BOU6K2RGUQZBRBCWZVZPPFXWDV2I6BPR
+X-Message-ID-Hash: BOU6K2RGUQZBRBCWZVZPPFXWDV2I6BPR
+X-MailFrom: nfraprado@collabora.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -92,7 +92,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7372EMILLS6QNOMPMFZNQJJU2LRMWV3A/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BOU6K2RGUQZBRBCWZVZPPFXWDV2I6BPR/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -101,40 +101,34 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, 25 Aug 2023 19:23:11 +0200, Konrad Dybcio wrote:
-> Like most Qualcomm SoCs, SM6115 has a TX Macro.
+On Mon, Sep 11, 2023 at 03:29:00PM +0100, Mark Brown wrote:
+> On Mon, Sep 11, 2023 at 08:35:37AM -0400, Nícolas F. R. A. Prado wrote:
+> > On Sat, Sep 09, 2023 at 12:08:22AM +0100, Mark Brown wrote:
 > 
-> Only some minor changes were required.
+> > > Why?
 > 
+> > To better reflect the actual test plan status. If 0 tests were run, it doesn't
+> > really make sense to say that the test plan passed, rather it was skipped since
+> > nothing was run. So with this change, if there's a regression that prevents the
+> > soundcard driver from even probing, the result won't be "pass", but "skip", and
+> > the reason 'No soundcard available' will be in the logs.
 > 
+> So, I would interpret the overall result for the suite as being "No
+> errors were found in any of the cards discovered" if there is no
+> configuration file specified which enumerates the set of cards that are
+> expected (if there is a config file that's a different matter, we know
+> what we're expecting).  I'm not sure that the different behaviour for 0
+> cards is super useful.
 
-Applied to
+Right... So what we want to be doing is adding a config file for every platform
+defining the card(s) and PCMs expected, so that when they're missing a test
+failure will be triggered which is even more helpful. Although I've noticed that
+only missing PCMs are detected currently, but I imagine it should be possible to
+to extend the code to detect missing cards as well.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-
-Thanks!
-
-[1/2] ASoC: dt-bindings: qcom,lpass-tx-macro: Add SM6115
-      commit: 9ff143aaabba989f275612de0d83cf9d39274828
-[2/2] ASoC: codecs: lpass-tx-macro: Add SM6115 support
-      commit: 510c46884299cf8da8e9d7db27572eafa9a0c567
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+I take it the intention is to expand the conf.d directory with configs for all
+platforms currently being tested then? There's only one example file there so I
+wasn't sure.
 
 Thanks,
-Mark
-
+Nícolas
