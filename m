@@ -4,103 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E1EFCCA5501
-	for <alsa-devel@archiver.kernel.org>; Wed, 13 Sep 2023 07:28:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 048D0CA5501
+	for <alsa-devel@archiver.kernel.org>; Wed, 13 Sep 2023 07:44:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D885EA4B;
-	Wed, 13 Sep 2023 09:27:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D885EA4B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 68F8DA4B;
+	Wed, 13 Sep 2023 09:43:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 68F8DA4B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1694590117;
-	bh=kdgtIxC8l4hgNL1H4TcWeKbPhLBN88BmmdJGGOilwXo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1694591063;
+	bh=l0R9WhFt2sSasiyZivOklzdgYwZctatsaAY++fTJEAo=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=gr3E4NWPpq63jIsuRnlJGjyx7dYEsCpRKXEbKQy7DCGCDrPPkrENQUHQOK8ipuEJm
-	 a4H5Afmb9B/rWp0R5RgiCIHsL5EGEe9MY2JDTgjGHLIFDQZgQxGF6AHtHIqLNxnxos
-	 oTYuzj3QT2ChS1MArIcNazL9jXyDQP8x3i6Ute70=
+	b=otKUNvP5sZzkpSHylIg2Uwse0UrfdrsvfUnAW9kKkAJTusmZVt4WDHKbF57Q89nJa
+	 7Rr5CXAFppguJXCFK357AsJEXuePDgKHj3chbrAFfy2j7uD18wZevxN4XB5t7eZFW2
+	 Ng1fk/aE+VWD0k0NthAVwBCgKJsQlrcVaSvvEAdQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0C5D1F8055B; Wed, 13 Sep 2023 09:27:22 +0200 (CEST)
+	id 20C4AF80425; Wed, 13 Sep 2023 09:43:03 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B640AF8055A;
-	Wed, 13 Sep 2023 09:27:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 67C94F80425;
+	Wed, 13 Sep 2023 09:43:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8ADD4F8055A; Wed, 13 Sep 2023 09:27:19 +0200 (CEST)
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com
- [IPv6:2607:f8b0:4864:20::629])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	id 4F7D0F80425; Wed, 13 Sep 2023 09:42:58 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 253A5F80549
-	for <alsa-devel@alsa-project.org>; Wed, 13 Sep 2023 09:27:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 253A5F80549
+	by alsa1.perex.cz (Postfix) with ESMTPS id 3BAC0F8007C
+	for <alsa-devel@alsa-project.org>; Wed, 13 Sep 2023 09:42:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3BAC0F8007C
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20221208 header.b=XwKMXQLS
-Received: by mail-pl1-x629.google.com with SMTP id
- d9443c01a7336-1bf11b1c7d0so4872715ad.0
-        for <alsa-devel@alsa-project.org>;
- Wed, 13 Sep 2023 00:27:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694590033; x=1695194833;
- darn=alsa-project.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=/U+Y3lXkYu7caCIkdd3um0u2yWGnImH6AF8GWuY2Sng=;
-        b=XwKMXQLSLE/V7TI/xZukZEI1gWIhIOq1gZjQIiBMeWMYy7F0QXX8pg7dmoATH9ysPE
-         09uAS3xMNGLp3qUOXGx+1BjwmKTKOiHDjslcRzChd7f0NotHAXaPlKYrM7O4whvrphzs
-         usrvi39C/fUx1UJYxjHS3aiuLLqK8QJ8zY+8EfQawtkJdYVLkqy1AbFJYZW3fCTjbxcs
-         EK514d6V9l3PosrHQl/riuGyeNYxKXN+aQITnrY2trEk2R6Nkt4N3Xza9tsyCMujdApX
-         ZgfquB4boZS0f3enp1TSRDc2YmAHY4WGFw7ldS6Kj4kcSH7C8q6EImcE3gp3r2PoUu8L
-         4oXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694590033; x=1695194833;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/U+Y3lXkYu7caCIkdd3um0u2yWGnImH6AF8GWuY2Sng=;
-        b=cNCOCDDk60JTFHuCVDMM8pHKJiq5JY6LXXx0GJCuaWR6vowLpqLGlGdq63f6RER7Pf
-         EG5wPg2XFjJVjTkf+29eRrTBIwbdQd4MCgPrDFYXNQdkv+H4Drxq9BG7nRyHybPyrnlD
-         92diKESJEHorh6x8ytmEjAzTIvARd/r2J++2UurwLswgqSlNl+g3+JIqWfntrPTHhJn8
-         Y5tiGgnPpDFsgsE5M9QzzpVYj42LYq1axZ3oNuTNshaDwkezdPuFQDNQvc1rmMQdv2tc
-         195csMU3TlfcIoRPXSuv50j12JVsPTKDu+j+ykAD+T08Aibfm2d7Do9bnfjtZRRhzHur
-         wNGg==
-X-Gm-Message-State: AOJu0YwHfHmtOZilzTp9teAdcNKU7K2CyEhqrt6J3wi/9KBgire9AUUG
-	ammro7jXckJIFczlBBxT7WrBYC1Bl2Q=
-X-Google-Smtp-Source: 
- AGHT+IGZWdmjxFZdnmgRLOwMQ8jZlp8YoTiqoeKbtipu94an5Ymgd1VKd/ABcnjQwkiXMVWRf1tBRg==
-X-Received: by 2002:a17:903:22c3:b0:1c3:a814:a12b with SMTP id
- y3-20020a17090322c300b001c3a814a12bmr2872742plg.16.1694590033299;
-        Wed, 13 Sep 2023 00:27:13 -0700 (PDT)
-Received: from debian.me ([103.124.138.83])
-        by smtp.gmail.com with ESMTPSA id
- iz2-20020a170902ef8200b001bd99fd1114sm9713884plb.288.2023.09.13.00.27.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Sep 2023 00:27:12 -0700 (PDT)
-Received: by debian.me (Postfix, from userid 1000)
-	id 575FF8212DD9; Wed, 13 Sep 2023 14:27:10 +0700 (WIB)
-Date: Wed, 13 Sep 2023 14:27:09 +0700
-From: Bagas Sanjaya <bagasdotme@gmail.com>
-To: Myunguk Kim <mwkim@gaonchips.com>, alsa-devel@alsa-project.org
-Cc: broonie@kernel.org, fido_max@inbox.ru, kuninori.morimoto.gx@renesas.com,
-	lgirdwood@gmail.com, linux-kernel@vger.kernel.org, perex@perex.cz,
-	tiwai@suse.com, u.kleine-koenig@pengutronix.de,
-	xingyu.wu@starfivetech.com
-Subject: Re: [PATCH] [v2] ASoC: dwc: fix typo in comment
-Message-ID: <ZQFkTYqZ-QWxCjFu@debian.me>
-References: <20230913024103.1454354-1-mwkim@gaonchips.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="Ob7r/gzMky4stU9D"
-Content-Disposition: inline
-In-Reply-To: <20230913024103.1454354-1-mwkim@gaonchips.com>
-Message-ID-Hash: ELWXCLRNAJPWWSZ3FGBSUCBPNLXLQL3N
-X-Message-ID-Hash: ELWXCLRNAJPWWSZ3FGBSUCBPNLXLQL3N
-X-MailFrom: bagasdotme@gmail.com
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=egaIlFHS;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=Pm+Ho9OP
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 35358218E4;
+	Wed, 13 Sep 2023 07:42:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1694590969;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=PKaaKAX3n/MM3Qc4E7MqzWVdlr+6vIJCe0q8d34nhWU=;
+	b=egaIlFHSCHajDzTN3mXg2WIkcfM0I3t5n1jEFNFIY0DPAgvWk+mU+1hi5VtA/aedFvNpdA
+	lmTQ8ONl3YZmnKJGbdC2HMl5RxDAhLyRt6tZ1tiVw9dcYgUFFVOqGIf5KPfTkfAeCnQ6mS
+	abCqCqYyX6sxEIuVLiERtExelTNASsY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1694590969;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=PKaaKAX3n/MM3Qc4E7MqzWVdlr+6vIJCe0q8d34nhWU=;
+	b=Pm+Ho9OPkyRnsEPVrRDFgGoFZEq+M3FvkiQWODtkO08qhJVRBmoI61FUJbQPxoyAwxwanj
+	dSuBqFGsD7VF9MBA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0D16613582;
+	Wed, 13 Sep 2023 07:42:49 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id vJgeAvlnAWWmDQAAMHmgww
+	(envelope-from <tiwai@suse.de>); Wed, 13 Sep 2023 07:42:49 +0000
+Date: Wed, 13 Sep 2023 09:42:48 +0200
+Message-ID: <87zg1q4iyv.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Richard Fitzgerald <rf@opensource.cirrus.com>
+Cc: <tiwai@suse.com>,
+	<alsa-devel@alsa-project.org>,
+	<patches@opensource.cirrus.com>,
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] ALSA: hda: cs35l56: Disable low-power hibernation mode
+In-Reply-To: <20230912132739.3478441-1-rf@opensource.cirrus.com>
+References: <20230912132739.3478441-1-rf@opensource.cirrus.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Message-ID-Hash: 4RP3PH3W5A4DKELZZSM25GAF3RIAKAV5
+X-Message-ID-Hash: 4RP3PH3W5A4DKELZZSM25GAF3RIAKAV5
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -112,7 +106,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ELWXCLRNAJPWWSZ3FGBSUCBPNLXLQL3N/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4RP3PH3W5A4DKELZZSM25GAF3RIAKAV5/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -121,60 +115,20 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+On Tue, 12 Sep 2023 15:27:39 +0200,
+Richard Fitzgerald wrote:
+> 
+> Do not allow the CS35L56 to be put into its lowest power
+> "hibernation" mode. This only affects I2C because "hibernation"
+> is already disabled on SPI.
+> 
+> Recent firmwares need a different wake-up sequence. Until
+> that sequence has been specified, the chip "hibernation" mode
+> must be disabled otherwise it can intermittently fail to wake.
+> 
+> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 
---Ob7r/gzMky4stU9D
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thanks, applied.
 
-On Wed, Sep 13, 2023 at 11:41:04AM +0900, Myunguk Kim wrote:
-> ISR_RXFO means "Status of Data Overrun interrupt for the RX channel"
-> according to the datasheet.
->=20
-> So, the comment should be RX, not TX
 
-Thanks for better description!
-
-The patch title though, I'd like to write it as "ASoC: dwc: correct ISR_RXFO
-check comment".
-
->=20
-> Signed-off-by: Myunguk Kim <mwkim@gaonchips.com>
-> ---
->  sound/soc/dwc/dwc-i2s.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/sound/soc/dwc/dwc-i2s.c b/sound/soc/dwc/dwc-i2s.c
-> index 22c004179214..c71c17ef961d 100644
-> --- a/sound/soc/dwc/dwc-i2s.c
-> +++ b/sound/soc/dwc/dwc-i2s.c
-> @@ -138,7 +138,7 @@ static irqreturn_t i2s_irq_handler(int irq, void *dev=
-_id)
->  			irq_valid =3D true;
->  		}
-> =20
-> -		/* Error Handling: TX */
-> +		/* Error Handling: RX */
->  		if (isr[i] & ISR_RXFO)=20
-> { 			dev_err_ratelimited(dev->dev, "RX overrun (ch_id=3D%d)\n", i);
->  			irq_valid =3D true;
-
-In any case,
-
-Reviewed-by: Bagas Sanjaya <bagasdotme@gmail.com>
-
---=20
-An old man doll... just what I always wanted! - Clara
-
---Ob7r/gzMky4stU9D
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZQFkSQAKCRD2uYlJVVFO
-oyutAQClx0B4pl8pmOqjUxvXFRf0+/lJMGZQaaeply8sj17flgEAuE3xDs4OmWl9
-crDoNHVRX2FbfnwnfY48vy4ehCyKQAU=
-=uSnr
------END PGP SIGNATURE-----
-
---Ob7r/gzMky4stU9D--
+Takashi
