@@ -4,80 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 76098EE01FD
-	for <alsa-devel@archiver.kernel.org>; Wed, 13 Sep 2023 17:48:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C744BEE01FC
+	for <alsa-devel@archiver.kernel.org>; Wed, 13 Sep 2023 17:50:24 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 96512A4B;
-	Wed, 13 Sep 2023 19:47:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 96512A4B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1E025852;
+	Wed, 13 Sep 2023 19:49:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1E025852
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1694627286;
-	bh=6RQLwm9+y0/pjTEP8oYtSeOWaSaM8z+j+IMHHzvs4IQ=;
+	s=default; t=1694627423;
+	bh=C69XA7WhlnFGCOFGMTb5QDKicj6hLtK+9Kr20IL8P4Y=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=oTBEtc1jcy7IUMYpuPF2ZRZTe4dCGK+MwdSWl+vWJqwbU9CYw2coPpJebFw1hx9O7
-	 1xdNICMPgDj+AiQAv3faZ83lknNuPVEUQzuCFS/VY5GWWlbwRYUW+8ftj1k9m8PTTM
-	 OQxLy8kpRt7lcXEt8/sOPB09Wk/oGafoNlT1RBfE=
+	b=Ek0OVYOj7VCxiilR78cgA+1czaJBT3ltuefZ0hP7RM0XMOGotc/bXMluUkNrSPM7h
+	 hnvp2U0uao7V/GTlsi13i2vsVzccXO/wbkARTDA/lKpzMFtRKmKF1wmdYJsSMwZqK+
+	 GUXkNJ/AqXGPODtJGJTLjss5DEOBwuLD9LmGC7Rw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 15316F80552; Wed, 13 Sep 2023 19:46:53 +0200 (CEST)
+	id A0B97F80246; Wed, 13 Sep 2023 19:48:55 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2CE3AF80425;
-	Wed, 13 Sep 2023 19:46:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 28339F80425;
+	Wed, 13 Sep 2023 19:48:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3796EF80431; Wed, 13 Sep 2023 19:46:48 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+	id 467A0F801F5; Wed, 13 Sep 2023 19:46:50 +0200 (CEST)
+Received: from sin.source.kernel.org (sin.source.kernel.org
+ [IPv6:2604:1380:40e1:4800::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 3A51BF8007C
-	for <alsa-devel@alsa-project.org>; Wed, 13 Sep 2023 19:46:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3A51BF8007C
+	by alsa1.perex.cz (Postfix) with ESMTPS id B5D47F801F5
+	for <alsa-devel@alsa-project.org>; Wed, 13 Sep 2023 19:46:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B5D47F801F5
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=MXKAplrA
+ header.s=k20201202 header.b=JUEWMTyA
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id 0C01CB82410;
-	Wed, 13 Sep 2023 17:46:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99E45C433C7;
-	Wed, 13 Sep 2023 17:46:37 +0000 (UTC)
+	by sin.source.kernel.org (Postfix) with ESMTPS id 9AAF1CE2382;
+	Wed, 13 Sep 2023 17:46:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3AAABC433C9;
+	Wed, 13 Sep 2023 17:46:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1694627199;
-	bh=6RQLwm9+y0/pjTEP8oYtSeOWaSaM8z+j+IMHHzvs4IQ=;
+	s=k20201202; t=1694627202;
+	bh=C69XA7WhlnFGCOFGMTb5QDKicj6hLtK+9Kr20IL8P4Y=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=MXKAplrAetGPjfxNmSciWt8ol/UlnaVaGb1xTkcfa9zoMQgsP8xhzUPxy1vJDhPhj
-	 1llVebSBlwhirtTcAxlyolhl1zlsMvIP23EG5pSTPe+rwIo5BOuImY1QzjbVkE1F4p
-	 WqaScJkoBxa4fLJvvWFnnLl8NLtGBiLbKTHhCwpfFeYDEU49qENOUyHnGtlyKIcw7g
-	 4vGmHZlSfN7V/YDFOFawm5fXzHSTK+sO9nzWm0CSYbcmGKy77MT/IoYt2lRzp/zfDz
-	 9OunRFzWvMlUOTsfhx8bq33/QYxS3+u7xiPE1Mwyxb7BEZ8BKPf9hNuueWopBvQcwS
-	 SaiDOyEvz4a8Q==
+	b=JUEWMTyAew0CYabud9NhLZvJlGPjv1y/e2NNN95RAQicKEpm6NXCVijFlNqp/Ab0Q
+	 gsh+0ltas9250WlXXupFNGTQghBTWk+fNRtKklquF6b+MVyAwaNxqoKgcsO0i6RxN9
+	 FltuYHu3jK6IV9ebTncvGo7deftNOWM+bIvLetqPsYGJ6qqq8dC9KiJBeLisAlf18j
+	 4iKOjE2GxpJepr6iNgoIkTSxHi1eKjAAidGIx0Z9pYOrAuvfkhIv1eb3DiaiADHff+
+	 /aUMY0w3S7gJX31TRd8d10Jfwag9pnI9xNBj52ki2ZuarAYfsoPxISpY35/3PlI6H4
+	 hvrtn+Ynv/RQQ==
 From: Mark Brown <broonie@kernel.org>
-To: Weidong Wang <wangweidong.a@awinic.com>,
- Dan Carpenter <dan.carpenter@linaro.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, Nick Li <liweilei@awinic.com>,
- Colin Ian King <colin.i.king@gmail.com>, Ben Yi <yijiangtao@awinic.com>,
- Tom Rix <trix@redhat.com>, alsa-devel@alsa-project.org,
- kernel-janitors@vger.kernel.org
-In-Reply-To: <81476e78-05c2-4656-b754-f314c7ccdb81@moroto.mountain>
-References: <81476e78-05c2-4656-b754-f314c7ccdb81@moroto.mountain>
-Subject: Re: [PATCH] ASoC: codecs: aw88395: Fix some error codes
-Message-Id: <169462719734.54382.4099179509276849892.b4-ty@kernel.org>
-Date: Wed, 13 Sep 2023 18:46:37 +0100
+To: lgirdwood@gmail.com, pierre-louis.bossart@linux.intel.com,
+ tiwai@suse.com, perex@perex.cz, arnd@arndb.de,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ masahiroy@kernel.org
+In-Reply-To: <20230913091325.16877-1-peter.ujfalusi@linux.intel.com>
+References: <20230913091325.16877-1-peter.ujfalusi@linux.intel.com>
+Subject: Re: [PATCH] ASoC: hdac_hdmi: Remove temporary string use in
+ create_fill_jack_kcontrols
+Message-Id: <169462719996.54382.1348437312266956494.b4-ty@kernel.org>
+Date: Wed, 13 Sep 2023 18:46:39 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Mailer: b4 0.13-dev-034f2
-Message-ID-Hash: TWVZ35Z6X6JFV36US2T4AKSGABGZYVMF
-X-Message-ID-Hash: TWVZ35Z6X6JFV36US2T4AKSGABGZYVMF
+Message-ID-Hash: CNQX7MCK4VVSCASBV66WJPSRGIY2BRVM
+X-Message-ID-Hash: CNQX7MCK4VVSCASBV66WJPSRGIY2BRVM
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -90,7 +88,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TWVZ35Z6X6JFV36US2T4AKSGABGZYVMF/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CNQX7MCK4VVSCASBV66WJPSRGIY2BRVM/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -99,10 +97,24 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Wed, 13 Sep 2023 11:18:22 +0300, Dan Carpenter wrote:
-> These error paths should return -EINVAL instead of success.
+On Wed, 13 Sep 2023 12:13:25 +0300, Peter Ujfalusi wrote:
+> There is no need to use temporary strings to construct the kcontrol names,
+> devm_kasprintf can be used to replace the snprintf + devm_kstrdup pairs.
 > 
+> This change will also fixes the following compiler warning/error (W=1):
 > 
+> sound/soc/codecs/hdac_hdmi.c: In function ‘hdac_hdmi_jack_port_init’:
+> sound/soc/codecs/hdac_hdmi.c:1793:63: error: ‘ Switch’ directive output may be truncated writing 7 bytes into a region of size between 1 and 32 [-Werror=format-truncation=]
+>  1793 |                         snprintf(kc_name, sizeof(kc_name), "%s Switch", xname);
+>       |                                                               ^~~~~~~
+> In function ‘create_fill_jack_kcontrols’,
+>     inlined from ‘hdac_hdmi_jack_port_init’ at sound/soc/codecs/hdac_hdmi.c:1871:8:
+> sound/soc/codecs/hdac_hdmi.c:1793:25: note: ‘snprintf’ output between 8 and 39 bytes into a destination of size 32
+>  1793 |                         snprintf(kc_name, sizeof(kc_name), "%s Switch", xname);
+>       |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> cc1: all warnings being treated as errors
+> 
+> [...]
 
 Applied to
 
@@ -110,8 +122,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: codecs: aw88395: Fix some error codes
-      commit: cf0ba445f5e4dd74c1e9d7a83ca721ba69204a11
+[1/1] ASoC: hdac_hdmi: Remove temporary string use in create_fill_jack_kcontrols
+      commit: 67a810b6f37a7805474add2d003034a288b94fa4
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
