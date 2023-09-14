@@ -4,47 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3ACBEEDE983
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 Sep 2023 06:37:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DF3A4EDE987
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 Sep 2023 06:37:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 32935A4D;
-	Thu, 14 Sep 2023 08:36:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 32935A4D
+	by alsa0.perex.cz (Postfix) with ESMTPS id E67D3A4E;
+	Thu, 14 Sep 2023 08:36:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E67D3A4E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1694673428;
-	bh=ej4c6dNQ/O5BWyGia2K6Ba0aelsNDe9yV3HOEh8spCE=;
+	s=default; t=1694673440;
+	bh=sevoNV3/X2PAmaYm2KSnDHJzBfc21SOc9J1H9OJzUbg=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=ElAcT0/+nj44oM/XCnr1O7skjc93779qbjLEsE/E8hdrz2h6R/ce3O0uLrkchBPjS
-	 9tIUoKWen7L0XdJPadfiKFu/psIXfa8ZrWqEjefjSlvWs3ULj/E7oxXkJfzoZwYrIw
-	 pH553Z+qrwQ7vU7XpyPM37VuH+0UETUK8Dt9XOD0=
+	b=os9V1/keS0ed/7CgdrogzvAZGlcGLABPu7YQRwYTjNTZH8gHrWNCmDioFhN1bfn0U
+	 CorQktka3NXMZW4zOfeHmpnw6btjWlaoe/+pbfQW5VxRnVZhX1MrbkOTBiNrTDlx8R
+	 tg+SI1ZVTCH36n6u+CuNxdai29BWLqOYo6JBKZQE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 344C3F805E8; Thu, 14 Sep 2023 08:33:50 +0200 (CEST)
+	id B8F66F805CA; Thu, 14 Sep 2023 08:33:50 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8DB51F805C4;
-	Thu, 14 Sep 2023 08:33:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1B1E4F805E4;
+	Thu, 14 Sep 2023 08:33:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9132CF80246; Thu, 14 Sep 2023 08:32:46 +0200 (CEST)
+	id BA795F80246; Thu, 14 Sep 2023 08:32:47 +0200 (CEST)
 Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 8927DF8047D
-	for <alsa-devel@alsa-project.org>; Thu, 14 Sep 2023 08:30:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8927DF8047D
+	by alsa1.perex.cz (Postfix) with ESMTPS id 204B2F80425
+	for <alsa-devel@alsa-project.org>; Thu, 14 Sep 2023 08:30:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 204B2F80425
 Received: from inva020.nxp.com (localhost [127.0.0.1])
-	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 1E6151A0641;
-	Thu, 14 Sep 2023 08:30:49 +0200 (CEST)
+	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id BCF2C1A062C;
+	Thu, 14 Sep 2023 08:30:43 +0200 (CEST)
 Received: from aprdc01srsp001v.ap-rdc01.nxp.com
  (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
-	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id DAF361A0649;
-	Thu, 14 Sep 2023 08:30:48 +0200 (CEST)
+	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 8536E1A0640;
+	Thu, 14 Sep 2023 08:30:43 +0200 (CEST)
 Received: from localhost.localdomain (shlinux2.ap.freescale.net
  [10.192.224.44])
-	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 5456F1820F59;
-	Thu, 14 Sep 2023 14:30:47 +0800 (+08)
+	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 99B83183486C;
+	Thu, 14 Sep 2023 14:30:41 +0800 (+08)
 From: Shengjiu Wang <shengjiu.wang@nxp.com>
 To: hverkuil@xs4all.nl,
 	sakari.ailus@iki.fi,
@@ -63,16 +63,16 @@ To: hverkuil@xs4all.nl,
 	tiwai@suse.com,
 	alsa-devel@alsa-project.org,
 	linuxppc-dev@lists.ozlabs.org
-Subject: [RFC PATCH v3 7/9] media: uapi: Add V4L2_CID_USER_IMX_ASRC_RATIO_MOD
- control
-Date: Thu, 14 Sep 2023 13:54:03 +0800
-Message-Id: <1694670845-17070-8-git-send-email-shengjiu.wang@nxp.com>
+Subject: [RFC PATCH v3 3/9] ASoC: fsl_asrc: move fsl_asrc_common.h to
+ include/sound
+Date: Thu, 14 Sep 2023 13:53:59 +0800
+Message-Id: <1694670845-17070-4-git-send-email-shengjiu.wang@nxp.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1694670845-17070-1-git-send-email-shengjiu.wang@nxp.com>
 References: <1694670845-17070-1-git-send-email-shengjiu.wang@nxp.com>
 X-Virus-Scanned: ClamAV using ClamSMTP
-Message-ID-Hash: 4ZIFRB627X7ZQVDTWLLFCRO67CEHSSGE
-X-Message-ID-Hash: 4ZIFRB627X7ZQVDTWLLFCRO67CEHSSGE
+Message-ID-Hash: BS6K7QM6JKXHIZLSCJX2FAQGZCANSMNI
+X-Message-ID-Hash: BS6K7QM6JKXHIZLSCJX2FAQGZCANSMNI
 X-MailFrom: shengjiu.wang@nxp.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -85,7 +85,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4ZIFRB627X7ZQVDTWLLFCRO67CEHSSGE/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BS6K7QM6JKXHIZLSCJX2FAQGZCANSMNI/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -94,61 +94,61 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The input clock and output clock may not be the accurate
-rate as the sample rate, there is some drift, so the convert
-ratio of i.MX ASRC module need to be changed according to
-actual clock rate.
-
-Add V4L2_CID_USER_IMX_ASRC_RATIO_MOD control for user to
-adjust the ratio.
+Move fsl_asrc_common.h to include/sound that it can be
+included from other drivers.
 
 Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 ---
- Documentation/userspace-api/media/v4l/control.rst | 5 +++++
- drivers/media/v4l2-core/v4l2-ctrls-defs.c         | 1 +
- include/uapi/linux/v4l2-controls.h                | 1 +
- 3 files changed, 7 insertions(+)
+ {sound/soc/fsl => include/sound}/fsl_asrc_common.h | 0
+ sound/soc/fsl/fsl_asrc.h                           | 2 +-
+ sound/soc/fsl/fsl_asrc_dma.c                       | 2 +-
+ sound/soc/fsl/fsl_easrc.h                          | 2 +-
+ 4 files changed, 3 insertions(+), 3 deletions(-)
+ rename {sound/soc/fsl => include/sound}/fsl_asrc_common.h (100%)
 
-diff --git a/Documentation/userspace-api/media/v4l/control.rst b/Documentation/userspace-api/media/v4l/control.rst
-index 4463fce694b0..2bc175900a34 100644
---- a/Documentation/userspace-api/media/v4l/control.rst
-+++ b/Documentation/userspace-api/media/v4l/control.rst
-@@ -318,6 +318,11 @@ Control IDs
-     depending on particular custom controls should check the driver name
-     and version, see :ref:`querycap`.
+diff --git a/sound/soc/fsl/fsl_asrc_common.h b/include/sound/fsl_asrc_common.h
+similarity index 100%
+rename from sound/soc/fsl/fsl_asrc_common.h
+rename to include/sound/fsl_asrc_common.h
+diff --git a/sound/soc/fsl/fsl_asrc.h b/sound/soc/fsl/fsl_asrc.h
+index 1c492eb237f5..66544624de7b 100644
+--- a/sound/soc/fsl/fsl_asrc.h
++++ b/sound/soc/fsl/fsl_asrc.h
+@@ -10,7 +10,7 @@
+ #ifndef _FSL_ASRC_H
+ #define _FSL_ASRC_H
  
-+.. _v4l2-audio-imx:
-+
-+``V4L2_CID_USER_IMX_ASRC_RATIO_MOD``
-+    sets the rasampler ratio modifier of i.MX asrc module.
-+
- Applications can enumerate the available controls with the
- :ref:`VIDIOC_QUERYCTRL` and
- :ref:`VIDIOC_QUERYMENU <VIDIOC_QUERYCTRL>` ioctls, get and set a
-diff --git a/drivers/media/v4l2-core/v4l2-ctrls-defs.c b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
-index 8696eb1cdd61..16f66f66198c 100644
---- a/drivers/media/v4l2-core/v4l2-ctrls-defs.c
-+++ b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
-@@ -1242,6 +1242,7 @@ const char *v4l2_ctrl_get_name(u32 id)
- 	case V4L2_CID_COLORIMETRY_CLASS:	return "Colorimetry Controls";
- 	case V4L2_CID_COLORIMETRY_HDR10_CLL_INFO:		return "HDR10 Content Light Info";
- 	case V4L2_CID_COLORIMETRY_HDR10_MASTERING_DISPLAY:	return "HDR10 Mastering Display";
-+	case V4L2_CID_USER_IMX_ASRC_RATIO_MOD:			return "ASRC RATIO MOD";
- 	default:
- 		return NULL;
- 	}
-diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4l2-controls.h
-index c3604a0a3e30..b1c319906d12 100644
---- a/include/uapi/linux/v4l2-controls.h
-+++ b/include/uapi/linux/v4l2-controls.h
-@@ -162,6 +162,7 @@ enum v4l2_colorfx {
- /* The base for the imx driver controls.
-  * We reserve 16 controls for this driver. */
- #define V4L2_CID_USER_IMX_BASE			(V4L2_CID_USER_BASE + 0x10b0)
-+#define V4L2_CID_USER_IMX_ASRC_RATIO_MOD	(V4L2_CID_USER_IMX_BASE + 0)
+-#include  "fsl_asrc_common.h"
++#include  <sound/fsl_asrc_common.h>
  
- /*
-  * The base for the atmel isc driver controls.
+ #define ASRC_M2M_INPUTFIFO_WML		0x4
+ #define ASRC_M2M_OUTPUTFIFO_WML		0x2
+diff --git a/sound/soc/fsl/fsl_asrc_dma.c b/sound/soc/fsl/fsl_asrc_dma.c
+index 05a7d1588d20..b034fee3f1f4 100644
+--- a/sound/soc/fsl/fsl_asrc_dma.c
++++ b/sound/soc/fsl/fsl_asrc_dma.c
+@@ -12,7 +12,7 @@
+ #include <sound/dmaengine_pcm.h>
+ #include <sound/pcm_params.h>
+ 
+-#include "fsl_asrc_common.h"
++#include <sound/fsl_asrc_common.h>
+ 
+ #define FSL_ASRC_DMABUF_SIZE	(256 * 1024)
+ 
+diff --git a/sound/soc/fsl/fsl_easrc.h b/sound/soc/fsl/fsl_easrc.h
+index bee887c8b4f2..f571647c508f 100644
+--- a/sound/soc/fsl/fsl_easrc.h
++++ b/sound/soc/fsl/fsl_easrc.h
+@@ -9,7 +9,7 @@
+ #include <sound/asound.h>
+ #include <linux/dma/imx-dma.h>
+ 
+-#include "fsl_asrc_common.h"
++#include <sound/fsl_asrc_common.h>
+ 
+ /* EASRC Register Map */
+ 
 -- 
 2.34.1
 
