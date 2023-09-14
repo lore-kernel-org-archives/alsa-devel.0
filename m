@@ -4,82 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6F250EDE9A4
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 Sep 2023 11:43:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 60756EDE9B4
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 Sep 2023 12:10:45 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AA7BE886;
-	Thu, 14 Sep 2023 13:43:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AA7BE886
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6F8ED852;
+	Thu, 14 Sep 2023 14:09:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6F8ED852
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1694691831;
-	bh=2uxrJxwYAB7KQpEcYwTSxbHEbSchGWMf1R2ISLP87Iw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=GoMdxavmBK3g5t9eeozcMGJsHzcXueLblo8thG153USVFkM5j+2U5ZIW8keR+x6+O
-	 Aw96a453y4LTqqL9tnm7Wf3nb0Xi1XAxsewaMdz/22WhDWkqa/C6Jlce/5Qgp/JiAh
-	 wAnE8bhpcvasghOYAUuBVAjMRIRk+Hl0hLXiTECs=
+	s=default; t=1694693443;
+	bh=O3cOg1o0UjljsB/K3rkKLxqO8cs6l6qg/dkRiVCSYIE=;
+	h=From:Date:Subject:To:Cc:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=c4o3QC5MaimKbasDsoAWlEOmO9fr9mzVdM3GzvDSYg2FVnqyAwxT9WDhvMS4XCPLU
+	 J5AjriLzbYRYq92C36I1+79ejm8UX4ejeWGJ6PYaU967i1N3qIsHPZ68aA6qfDWRLh
+	 sr7Q1aVl/dGBlGHFSqMM0xONPwbVMuf1QdBl+gTo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 89D19F80141; Thu, 14 Sep 2023 13:42:33 +0200 (CEST)
+	id 3EAC0F80549; Thu, 14 Sep 2023 14:09:51 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0C092F80425;
-	Thu, 14 Sep 2023 13:42:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C72FCF80425;
+	Thu, 14 Sep 2023 14:09:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7063DF80425; Thu, 14 Sep 2023 13:42:27 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	id 5D1B9F80141; Thu, 14 Sep 2023 14:01:35 +0200 (CEST)
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com
+ [IPv6:2a00:1450:4864:20::135])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id CCEC5F80141
-	for <alsa-devel@alsa-project.org>; Thu, 14 Sep 2023 13:42:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CCEC5F80141
+	by alsa1.perex.cz (Postfix) with ESMTPS id D9194F80141
+	for <alsa-devel@alsa-project.org>; Thu, 14 Sep 2023 13:59:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D9194F80141
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=BInpl9z9
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 36B9B61D4C;
-	Thu, 14 Sep 2023 11:42:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 102EBC433C8;
-	Thu, 14 Sep 2023 11:42:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1694691736;
-	bh=2uxrJxwYAB7KQpEcYwTSxbHEbSchGWMf1R2ISLP87Iw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=BInpl9z9qTMufVz3uWoJichhjcN21keXh0QUv8oEyIcAAuY1iaRre/Cw/+fw4EggI
-	 JlugdkcCjOfTfmBx2m1JL8zyn0DI7iRJkplFpOhI7ekzpjsoZuiPzo7DuJtT6pwXup
-	 Y126sC25PEiW1+0BEasFAwi++PQKL/0QW50TMBKYtTTd4ar9paL02K8OYjSn7SjoxA
-	 Esaae7EjbfotcBGZPg2RzB9rxeSZvmHr4ZSOpkY04x4/xS5F2fFpiK3iYnCt85EcF+
-	 DBy50YYtquXGubPBRzGOEeRYTbgAgcK+D2g7DFq1w+bzDxCytB/gS1ySxPQWeK1Y4o
-	 orb6XFO5r8gLg==
-Date: Thu, 14 Sep 2023 12:42:10 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-Cc: Myunguk Kim <mwkim@gaonchips.com>, alsa-devel@alsa-project.org,
-	fido_max@inbox.ru, kuninori.morimoto.gx@renesas.com,
-	lgirdwood@gmail.com, linux-kernel@vger.kernel.org, perex@perex.cz,
-	tiwai@suse.com, xingyu.wu@starfivetech.com
-Subject: Re: [PATCH] [v2] ASoC: dwc: fix typo in comment
-Message-ID: <5a74a371-c447-4fc6-abf1-08514de8fc00@sirena.org.uk>
-References: <64683b6c-1e31-4037-a47d-b8a19ea77c72@sirena.org.uk>
- <20230914005633.2423696-1-mwkim@gaonchips.com>
- <20230914063248.rquitqthmddgm5oa@pengutronix.de>
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20221208 header.b=m6M7ZriJ
+Received: by mail-lf1-x135.google.com with SMTP id
+ 2adb3069b0e04-500c7796d8eso1491408e87.1
+        for <alsa-devel@alsa-project.org>;
+ Thu, 14 Sep 2023 04:59:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694692775; x=1695297575;
+ darn=alsa-project.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=O3cOg1o0UjljsB/K3rkKLxqO8cs6l6qg/dkRiVCSYIE=;
+        b=m6M7ZriJePoVQ9UGETgH4b/q1v93kMvXqYK1Uc+BY8PcyHWpzU0rL2xBp2ks3vpgZv
+         qB6jpeo687h3Xzlwz1lh56RBPA7BYd6NXd8C3ykY2DO85MkZy2ylQfwxpdvIowXM1ybx
+         oiFXd0BSvQOyKdnjCgujXLriMxDL8HZ7Xikil+vHYiIkAvYpAsspnmurmf0gldPI3CTN
+         T5m0ERUJl5ppIhyXPpSeWkG7ku+sf3Y8UyyjCOhL79ZgA9Rr5JzR8+uqfXIhf7XqnM0V
+         nAme3180u2WhL/05J3juCTjlN3lCjhqRaOthxr07C4zG3896Il8UJtK4KfE+ShEsOzAr
+         o35g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694692775; x=1695297575;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=O3cOg1o0UjljsB/K3rkKLxqO8cs6l6qg/dkRiVCSYIE=;
+        b=mY+S0aDIx+NDo/qNC6fHDlDoj6gkTWPQYWs2SXL+C7GWOKGEjzwtKn3ygONDQEuPZT
+         Y+IkwhJoWjui67covwen3y+T1X+cZKBZpJ1F083mT1UR2MLzRkvpWEl8Qj2Xhs4lzifB
+         3IaWFNXh7ngFfO0GtFQ0+Yt4zNqe06UR+VoDf2+96CAsv3ZzOnRDMtQ1HOq7NtZIfIPD
+         VnOqCjtMCe8EOqwqaX6HRjCdgQA3SQWCFdJLD7R/JaIntYEyIxND5OAWLbDc/UX6rsDp
+         FCikUCAH0osiD6FcJgPRNKEeHePb15oxZUhZ8HrOa8m2ahOk10fN1oK4NOx713Kvjqwq
+         dyyg==
+X-Gm-Message-State: AOJu0YzL46U9VXCvBtRrdXD7/IHQ4O83bWP+5IYKXRAPBO+JGi+xOUA0
+	KKWWbtcx4U/fYHL7/TGn2ZNCadt/OxhAVvfdHcpERfxWZzXvuA==
+X-Google-Smtp-Source: 
+ AGHT+IEAr/K0dPutYeM2btq5X5P6U/+/t8ZmXNbCguVhUj1A0wc1hnBbEoRj4KxyoAGycO5R0htt4FYb88dNA+XB2Nc=
+X-Received: by 2002:ac2:4e13:0:b0:500:7efe:313c with SMTP id
+ e19-20020ac24e13000000b005007efe313cmr5749621lfr.24.1694692775279; Thu, 14
+ Sep 2023 04:59:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="sJAlP+HmLks31y3M"
-Content-Disposition: inline
-In-Reply-To: <20230914063248.rquitqthmddgm5oa@pengutronix.de>
-X-Cookie: Do clones have navels?
-Message-ID-Hash: 7TNJKJTUHURV3CL7OMJMGLRLMKDBMFZZ
-X-Message-ID-Hash: 7TNJKJTUHURV3CL7OMJMGLRLMKDBMFZZ
-X-MailFrom: broonie@kernel.org
+From: Daniel Baluta <daniel.baluta@gmail.com>
+Date: Thu, 14 Sep 2023 14:59:23 +0300
+Message-ID: 
+ <CAEnQRZAHXy7U4Y=J1wyktA5O6CJB+6M-BBD6O=yjTgPcbjHLkw@mail.gmail.com>
+Subject: Why is there no SND_SOC_DAIFMT_TDM bit?
+To: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
+Cc: "S.j. Wang" <shengjiu.wang@nxp.com>,
+	Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Message-ID-Hash: JMTF67MFT6H6NT3MIWIBJLUEDJOCPSTV
+X-Message-ID-Hash: JMTF67MFT6H6NT3MIWIBJLUEDJOCPSTV
+X-MailFrom: daniel.baluta@gmail.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -91,7 +100,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7TNJKJTUHURV3CL7OMJMGLRLMKDBMFZZ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JMTF67MFT6H6NT3MIWIBJLUEDJOCPSTV/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -100,45 +109,10 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+Hi,
 
---sJAlP+HmLks31y3M
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I wonder why there is no SND_SOC_DAIFMT_TDM format although there
+actual codecs supporting TDM.
 
-On Thu, Sep 14, 2023 at 08:32:48AM +0200, Uwe Kleine-K=F6nig wrote:
-> On Thu, Sep 14, 2023 at 09:56:34AM +0900, Myunguk Kim wrote:
-> > > The patch is obviously corrupted, the { there should be on the prior
-> > > line and even fixing that by hand there appear to be some other issue=
-s.
-
-> > The patch file should have been attached as shown below.=20
-> > Is there a problem with my git send-email?
-
-> > +		/* Error Handling: RX */
-> >  		if (isr[i] & ISR_RXFO)=20
-> > { 			dev_err_ratelimited(dev->dev, "RX overrun (ch_id=3D%d)\n", i);
-
-> FTR: I get this mail directly (so no mailing list server involved), and
-> the patch is mangled in the same way as broonie pointed out in his mail
-> earlier in this thread.
-
-Right, same here.  I don't know where the problem might be, it's not a
-pattern I've seen before.
-
---sJAlP+HmLks31y3M
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmUC8ZEACgkQJNaLcl1U
-h9CjCQf/R7AX12nMWEuy7dcBdyq8lqjAH+lOvlwKwaNdkyTBfTTHfSot/QOLxRJn
-SBHOAt/ojIWZU+voPcU6gunCJJAzaF7lKaSvm+s8of3RrcEdi3elvNjQfnKVYqNp
-TK5d9rTfWIy9uwAh1qOTeq3wal5KzDFcUeqeshrh/RRG8Kgx8w9asECAcP9fblR1
-qYgX3ZA86rjQdcDyyD+k8zhDgSDqh/mfO+62RnkWK43p/+ng1i1XcR2pQz00XGGW
-3WhVWqmU3KrtDAW1jZHpecX8cbCgA+3btmYFqhSqOXtQXBgX5jLOHMVKv7c55x/S
-gYikAxrevsOsfn/+ZlnEz4cNoKn2GQ==
-=r6i2
------END PGP SIGNATURE-----
-
---sJAlP+HmLks31y3M--
+Most of the drivers I see use SND_SOC_DAIFMT_DSP_A or SND_SOC_DAIFMT_DSP_B
+to signal that the format used is TDM.
