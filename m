@@ -4,78 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B74ADEDE9A5
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 Sep 2023 11:22:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 82707EDE9A5
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 Sep 2023 11:22:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B5244AEA;
-	Thu, 14 Sep 2023 13:21:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B5244AEA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 16BA09F6;
+	Thu, 14 Sep 2023 13:21:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 16BA09F6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1694690527;
-	bh=BAzmsoSj0BnX7MoU6zXX/2/yna/irLVGocmTBn20dLU=;
+	s=default; t=1694690551;
+	bh=g5Y+W+fEfFjASOlsvhwzFczRz/xSyswp99GTZRJ8t5o=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=UTkRjISWv7Q5jXQ9FgekH5rTALNgv4OmV0uNE3Vz5P07UVKtwKJYJ6/2+CdHbBPGy
-	 ebAQVkw3C/TnJqXQJIDn5T9ws7qgonhZmUnaF7I3CcoUdTqsmCS6MJfNm3MNu5FHr2
-	 6/VMt/+iEaWibDs1XEIPoUTwT78EnOj7VyuJi/dI=
+	b=NsVdyv11lLHlf9cT7IjzUbLric5njLtpouB71rBo3Vy5J/iPCehCgIL0mR8H86cHU
+	 vkWzbaZnmfxWrsGtylY9shinuKUu6lhUrlJuUmLXCZHw7/TLT1MTolPx5bjPO3Z6xr
+	 4gHdurYDKWv85aCRtSZfDSds4iGmG44LUBPNjLmg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 329ABF805A1; Thu, 14 Sep 2023 13:20:04 +0200 (CEST)
+	id 9E8BBF805AC; Thu, 14 Sep 2023 13:20:34 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9292FF805A1;
-	Thu, 14 Sep 2023 13:20:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 07CCDF805AD;
+	Thu, 14 Sep 2023 13:20:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DD8FCF80246; Thu, 14 Sep 2023 13:19:56 +0200 (CEST)
+	id C0D13F805AD; Thu, 14 Sep 2023 13:20:30 +0200 (CEST)
 Received: from sin.source.kernel.org (sin.source.kernel.org
  [IPv6:2604:1380:40e1:4800::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id BD2C0F80246
-	for <alsa-devel@alsa-project.org>; Thu, 14 Sep 2023 13:19:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BD2C0F80246
+	by alsa1.perex.cz (Postfix) with ESMTPS id 60810F80431
+	for <alsa-devel@alsa-project.org>; Thu, 14 Sep 2023 13:19:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 60810F80431
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=CO+q3UPZ
+ header.s=k20201202 header.b=B+PkzGir
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by sin.source.kernel.org (Postfix) with ESMTPS id A3D29CE268A;
-	Thu, 14 Sep 2023 11:19:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05CFBC433CB;
-	Thu, 14 Sep 2023 11:19:39 +0000 (UTC)
+	by sin.source.kernel.org (Postfix) with ESMTPS id 8245ECE2696;
+	Thu, 14 Sep 2023 11:19:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A7ADC433C7;
+	Thu, 14 Sep 2023 11:19:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1694690381;
-	bh=BAzmsoSj0BnX7MoU6zXX/2/yna/irLVGocmTBn20dLU=;
+	s=k20201202; t=1694690385;
+	bh=g5Y+W+fEfFjASOlsvhwzFczRz/xSyswp99GTZRJ8t5o=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=CO+q3UPZlmZLLf52885QGYBw+GfGnDj3i2p/OQmZzu3eZty6e9GYRLtwlYF/1iBvy
-	 JqqHmvqKPUjITmfleG4EcUwE+DtLuNOQEcw/qKx4WQTB8+Nnh2n2Qier9+TtZgwEfe
-	 QPjk14lFH9/4hrgmmOXQZ6mYO8oRvsAAFV4bbaJAW3ES8u31V3SM0Zh88DarVHYRg2
-	 ht6//d0ZbYMVqTQvLJ2YE7CGO2+So9cGEIQzNVkmdXPm5WBZUt3GLcfAMPZhFi9A7F
-	 QmM1Tk+/hbBOtl4cbRK8jd8C0L1pZq/2IFiJHZ1xWC2N0rQK39eYPzl7QVjCkC0dja
-	 OtBbIe1FfxNAg==
+	b=B+PkzGir/DRNMzN3QXhNTw8h3I+MqNEMR5BXHWXO0+5yDOVBmGJmv1qqDKGaZDgtx
+	 f2iYaxPqZ6RFRs6TJw/7MlNLR2etIBUPka7uXh+2j86vfmyF6ItkCLl9g2AltCKs46
+	 rYdLEkyC7VoqY4diY6PgF8JvYeglFHWSPdLSy8GUwhcW3qEl1ddBcitBouE8/XMFUd
+	 sWIf586Fuknkf1RKi9B3ebZfV5v9VW/EztQJgV6i1PCUxhY3p0ePDxdNGWkGWxRAPp
+	 dDEQNcg1CKIEIqVGj3cyBM7zbTaycQZv4fxdf5o5y3my1qh6Fp1JZT6P20nbH/GfZY
+	 zja5yuER5gB5g==
 From: Mark Brown <broonie@kernel.org>
-To: Uday M Bhat <uday.m.bhat@intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Stefan Binding <sbinding@opensource.cirrus.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- patches@opensource.cirrus.com
-In-Reply-To: <20230913150012.604775-1-sbinding@opensource.cirrus.com>
-References: <20230913150012.604775-1-sbinding@opensource.cirrus.com>
-Subject: Re: [PATCH v1 0/3] ASoC: cs42l42: Fix handling of hard reset
-Message-Id: <169469037974.23670.12014281893865046396.b4-ty@kernel.org>
-Date: Thu, 14 Sep 2023 12:19:39 +0100
+To: Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>,
+ Takashi Iwai <tiwai@suse.com>, Marian Postevca <posteuca@mutex.one>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+ kernel test robot <lkp@intel.com>
+In-Reply-To: <20230913210916.2523-1-posteuca@mutex.one>
+References: <20230913210916.2523-1-posteuca@mutex.one>
+Subject: Re: [PATCH] ASoC: amd: acp: Fix -Wmissing-prototypes warning
+Message-Id: <169469038415.23670.15827539133366262566.b4-ty@kernel.org>
+Date: Thu, 14 Sep 2023 12:19:44 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-034f2
-Message-ID-Hash: 4MSOTDUYE7RYAWHZR34X6CCOHQ2AX2MM
-X-Message-ID-Hash: 4MSOTDUYE7RYAWHZR34X6CCOHQ2AX2MM
+Message-ID-Hash: 2FWVNGHPT6K2VO4RDNMF5K4O4YHFVCBB
+X-Message-ID-Hash: 2FWVNGHPT6K2VO4RDNMF5K4O4YHFVCBB
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -88,7 +86,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4MSOTDUYE7RYAWHZR34X6CCOHQ2AX2MM/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2FWVNGHPT6K2VO4RDNMF5K4O4YHFVCBB/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -97,19 +95,11 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Wed, 13 Sep 2023 16:00:09 +0100, Stefan Binding wrote:
-> These patches fix 3 problems with hard reset:
-> 1. Ensure a minimum reset pulse width
-> 2. Deal with ACPI overriding the requested default GPIO state
-> 3. Avoid a race condition when hard-resetting a SoundWire peripheral
->    that is already enumerated
+On Thu, 14 Sep 2023 00:09:16 +0300, Marian Postevca wrote:
+> Fix prototype missing warning for acp3x_es83xx_init_ops() by
+> including the header acp3x-es83xx.h
 > 
-> Richard Fitzgerald (3):
->   ASoC: cs42l42: Ensure a reset pulse meets minimum pulse width.
->   ASoC: cs42l42: Don't rely on GPIOD_OUT_LOW to set RESET initially low
->   ASoC: cs42l42: Avoid stale SoundWire ATTACH after hard reset
 > 
-> [...]
 
 Applied to
 
@@ -117,12 +107,8 @@ Applied to
 
 Thanks!
 
-[1/3] ASoC: cs42l42: Ensure a reset pulse meets minimum pulse width.
-      commit: 41dac81b56c82c51a6d00fda5f3af7691ffee2d7
-[2/3] ASoC: cs42l42: Don't rely on GPIOD_OUT_LOW to set RESET initially low
-      commit: a479b44ac0a0ac25cd48e5356200078924d78022
-[3/3] ASoC: cs42l42: Avoid stale SoundWire ATTACH after hard reset
-      commit: 2d066c6a78654c179f95c9beda1985d4c6befa4e
+[1/1] ASoC: amd: acp: Fix -Wmissing-prototypes warning
+      commit: cfaa4c32ccd3a4cb1140416a9ab51904e938d767
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
