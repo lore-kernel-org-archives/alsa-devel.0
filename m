@@ -4,84 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7160EEAA44
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 Sep 2023 14:12:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 629E4EEAA45
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 Sep 2023 14:30:48 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 42B549F6;
-	Thu, 14 Sep 2023 16:12:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 42B549F6
+	by alsa0.perex.cz (Postfix) with ESMTPS id EE66E93A;
+	Thu, 14 Sep 2023 16:29:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EE66E93A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1694700773;
-	bh=KUgZPRTukqyv6bhXTNuEIAtyKESr5YryOLyzkkcPud8=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=QEP16eiYiXgjnATBSojOfKCUBKHAlCkS5KY+r0h+PJOLCxdbo3CpHDRD87ukCX8jT
-	 vzp8xlrKslJFWoGZDOjTshM/e0Gkhr9raKvsxZmNQxB1FeB4g8ZkVYdTd2CIhN1N6j
-	 Is3CVxqFjo6GzHJfxT6ELSjegsge1zvb97WwMxXo=
+	s=default; t=1694701846;
+	bh=MgiG4l/fHzNNkK0HjACVjuTdRx6HvJMXlY9v9vu5L68=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=AcWPe8wMJTbPb4YarOzEKjc/hPioHdQCg+j5zw+5yl1axSFgd+n+O8eoep3m5Vz2+
+	 0C7vfp8R+UtK2hLAvt1iT1pxD1ReuABd5nJKY+eoQL5kmmUqfffLPKkvcJegALilj3
+	 HFyrcXH1qY1ycUtMo6KhUWYj6pP5UIurHNDb01zk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CD396F80141; Thu, 14 Sep 2023 16:11:42 +0200 (CEST)
+	id AE6F3F80537; Thu, 14 Sep 2023 16:29:27 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 44A11F80141;
-	Thu, 14 Sep 2023 16:11:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 37A7BF80246;
+	Thu, 14 Sep 2023 16:29:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 38951F80246; Thu, 14 Sep 2023 16:11:38 +0200 (CEST)
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 02F33F80246; Thu, 14 Sep 2023 16:29:21 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 262BDF80141
-	for <alsa-devel@alsa-project.org>; Thu, 14 Sep 2023 16:11:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 262BDF80141
+	by alsa1.perex.cz (Postfix) with ESMTPS id 0974EF80141
+	for <alsa-devel@alsa-project.org>; Thu, 14 Sep 2023 16:29:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0974EF80141
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=RVScO51t
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694700695; x=1726236695;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=KUgZPRTukqyv6bhXTNuEIAtyKESr5YryOLyzkkcPud8=;
-  b=RVScO51t0RXombPxw3eFpJXk4FmJqiD/VlPV+QsgoHKkH/6kb0eNltnK
-   Re1lCHGmLLPk3NgtclN5uX6PGjvHgxs/kuJD/k5cTZcn2SaJ6sPtzKDHn
-   1hl7CnLA23NUyZsT1DrdyfdWFoGLMDVERs3JckpyOiml+hHTQ0v0qBsxa
-   COSHemVZ1EyZ5l7z5S1h3tGnXrtS5156HToCJFDv6OnqVxQT4IAxqNjow
-   D10Jp2Y/EMEzsHXlpzuWfrBz3V3rkhED0+uc12hASyrrzAIkDrFpfQezv
-   RjZJhNlbR953FSbPl62+e8NAxKQbUe+ADAHHobJcTCQ56keSHwNFANE/h
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="369243008"
-X-IronPort-AV: E=Sophos;i="6.02,146,1688454000";
-   d="scan'208";a="369243008"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 14 Sep 2023 06:25:01 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="747729971"
-X-IronPort-AV: E=Sophos;i="6.02,146,1688454000";
-   d="scan'208";a="747729971"
-Received: from pakurapo-mobl3.ger.corp.intel.com (HELO
- pujfalus-desk.ger.corp.intel.com) ([10.252.37.8])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 14 Sep 2023 06:24:59 -0700
-From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-To: lgirdwood@gmail.com,
-	broonie@kernel.org
-Cc: alsa-devel@alsa-project.org,
-	pierre-louis.bossart@linux.intel.com,
-	ranjani.sridharan@linux.intel.com,
-	kai.vehmanen@linux.intel.com,
-	yung-chuan.liao@linux.intel.com
-Subject: [PATCH v2] ASoC: SOF: ipc4-topology: fix wrong sizeof argument
-Date: Thu, 14 Sep 2023 16:25:04 +0300
-Message-ID: <20230914132504.18463-1-peter.ujfalusi@linux.intel.com>
-X-Mailer: git-send-email 2.42.0
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 4CGI4DQFPVHNNREN3DBE3HPMH2EY33FQ
-X-Message-ID-Hash: 4CGI4DQFPVHNNREN3DBE3HPMH2EY33FQ
-X-MailFrom: peter.ujfalusi@linux.intel.com
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=clsjyHng;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=MuPvWmJy
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id AC16E218F0;
+	Thu, 14 Sep 2023 14:29:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1694701751;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=2cQqm3IxLFOpNf1wNNro2m2AP7w9Qrx243MKxUbDrug=;
+	b=clsjyHnglaHWQoHtjJbOXG+74XyDfkQuidTS+CW6rTfrlYbcXFZe+5wpqYtlS7m1t5e483
+	dsB+Mx3gEYWvxbKd49pYdngvlKhWbBupSV5EBLkbjm2u/RQeXyOoU9T+nO0ZVE6+2hRgav
+	y7YpRa4obHYN3gT2VaDpzMEoQ/5CDnc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1694701751;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=2cQqm3IxLFOpNf1wNNro2m2AP7w9Qrx243MKxUbDrug=;
+	b=MuPvWmJy9St++Q7vQIiRQqZ5ko+Ty17s9S8fFiCWNaxow+Jl4sj2pkQWSElXyOkvLj0b4n
+	fj7PJwsLtmjbcCBQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 86F60139DB;
+	Thu, 14 Sep 2023 14:29:11 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id 9osnILcYA2VFdAAAMHmgww
+	(envelope-from <tiwai@suse.de>); Thu, 14 Sep 2023 14:29:11 +0000
+Date: Thu, 14 Sep 2023 16:29:11 +0200
+Message-ID: <871qf0zv48.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Richard Fitzgerald <rf@opensource.cirrus.com>
+Cc: <tiwai@suse.com>,
+	<alsa-devel@alsa-project.org>,
+	<patches@opensource.cirrus.com>,
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] ALSA: hda: cs35l56: Fix missing RESET GPIO if _SUB is
+ missing
+In-Reply-To: <20230914121120.6201-1-rf@opensource.cirrus.com>
+References: <20230914121120.6201-1-rf@opensource.cirrus.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Message-ID-Hash: 7G427EGYB437T4VTU47MNDRN5IVHEU24
+X-Message-ID-Hash: 7G427EGYB437T4VTU47MNDRN5IVHEU24
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -93,7 +107,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4CGI4DQFPVHNNREN3DBE3HPMH2EY33FQ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7G427EGYB437T4VTU47MNDRN5IVHEU24/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -102,32 +116,49 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Bard Liao <yung-chuan.liao@linux.intel.com>
+On Thu, 14 Sep 2023 14:11:20 +0200,
+Richard Fitzgerald wrote:
+> 
+> In cs35l56_hda_read_acpi() do not return if ACPI _SUB is missing.
+> 
+> A missing _SUB means that the driver cannot load a system-specific
+> firmware, because the firmware is identified by the _SUB. But it can
+> fallback to a generic firmware. Unfortunately this was being handled
+> by immediately returning 0, which would skip the remaining ACPI
+> configuration in cs35l56_hda_read_acpi() and so it would not get the
+> RESET GPIO.
+> 
+> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+> Fixes: 73cfbfa9caea ("ALSA: hda/cs35l56: Add driver for Cirrus Logic CS35L56 amplifier")
+> ---
+>  sound/pci/hda/cs35l56_hda.c | 14 +++++---------
+>  1 file changed, 5 insertions(+), 9 deletions(-)
+> 
+> diff --git a/sound/pci/hda/cs35l56_hda.c b/sound/pci/hda/cs35l56_hda.c
+> index 9e4976bdb5e0..a9844336bdc9 100644
+> --- a/sound/pci/hda/cs35l56_hda.c
+> +++ b/sound/pci/hda/cs35l56_hda.c
+> @@ -864,15 +864,11 @@ static int cs35l56_hda_read_acpi(struct cs35l56_hda *cs35l56, int id)
+>  
+>  	sub = acpi_get_subsystem_id(ACPI_HANDLE(cs35l56->base.dev));
+>  
+> -	if (IS_ERR(sub)) {
+> -		/* If no ACPI SUB, return 0 and fallback to legacy firmware path, otherwise fail */
+> -		if (PTR_ERR(sub) == -ENODATA)
+> -			return 0;
+> -		else
+> -			return PTR_ERR(sub);
+> -	}
+> -
+> -	cs35l56->system_name = sub;
+> +	if (IS_ERR(sub))
+> +		dev_err_probe(cs35l56->base.dev, PTR_ERR(sub),
+> +			      "Read ACPI _SUB failed: fallback to generic firmware\n");
 
-available_fmt is a pointer.
+Do we want to show as an error?  Since the driver continue to work, it
+could be rather dev_info()?
 
-Fixes: 4fdef47a44d6 ("ASoC: SOF: ipc4-topology: Add new tokens for input/output pin format count")
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
----
- sound/soc/sof/ipc4-topology.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/sof/ipc4-topology.c b/sound/soc/sof/ipc4-topology.c
-index f2a30cd31378..7cb63e6b24dc 100644
---- a/sound/soc/sof/ipc4-topology.c
-+++ b/sound/soc/sof/ipc4-topology.c
-@@ -231,7 +231,7 @@ static int sof_ipc4_get_audio_fmt(struct snd_soc_component *scomp,
- 
- 	ret = sof_update_ipc_object(scomp, available_fmt,
- 				    SOF_AUDIO_FMT_NUM_TOKENS, swidget->tuples,
--				    swidget->num_tuples, sizeof(available_fmt), 1);
-+				    swidget->num_tuples, sizeof(*available_fmt), 1);
- 	if (ret) {
- 		dev_err(scomp->dev, "Failed to parse audio format token count\n");
- 		return ret;
--- 
-2.42.0
+thanks,
 
+Takashi
