@@ -4,89 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F1E72EEAA4E
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 Sep 2023 15:08:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 160C1EEAA50
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 Sep 2023 15:10:50 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B8058DF3;
-	Thu, 14 Sep 2023 17:07:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B8058DF3
+	by alsa0.perex.cz (Postfix) with ESMTPS id E6095FA;
+	Thu, 14 Sep 2023 17:09:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E6095FA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1694704109;
-	bh=vNpK3vKTvXAn2nEQwG4uNUlRiH/o4ga8EvveqoV30vA=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=cNi3m3TOGwVUtH3Q6SEgKqLIZoxyxiibGN0+ffF54CqBOf7RCJW7isPz9kUqI1j5L
-	 kktcnwr23TPlQhYPtSHB/HmyiLkXooG5avPw8ayagzqEbJp8xL7hoxNeCcmRHD5oqz
-	 4x+5VhHS+tkTaw+e2mc7dk0HdReT5dv5RFGSix8A=
+	s=default; t=1694704249;
+	bh=Ozfv33hSd7HVs61TgWQt4gE63LEJ1zPotNoc+j6y4ds=;
+	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=CfnIj2bAys8yXRI6wraCfbFQJmgJ5vJwRCBkw92nwqlGad/pv8Js8Ziz0iy1o/CIh
+	 ox2clnlkIdjIBaUB6Y4rGlJbvFBHgpt6u/pu7qUd4WZUbzwsG1fG0hBDYaLnGl7C2e
+	 5K7XNZovsUkjeXy5dDT/U8fIjj/2y9AgPGiU4EQI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DE3DFF80587; Thu, 14 Sep 2023 17:06:30 +0200 (CEST)
+	id 21E95F80558; Thu, 14 Sep 2023 17:09:31 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id BEE0FF80588;
-	Thu, 14 Sep 2023 17:06:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B897CF80431;
+	Thu, 14 Sep 2023 17:09:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B1570F80425; Wed, 13 Sep 2023 05:55:26 +0200 (CEST)
-Received: from smtp4.hiworks.co.kr (smtp4.hiworks.co.kr [121.254.168.203])
+	id 74379F80431; Thu, 14 Sep 2023 17:09:26 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D9B09F80212
-	for <alsa-devel@alsa-project.org>; Wed, 13 Sep 2023 05:54:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D9B09F80212
-Received: (qmail 13978 invoked from network); 13 Sep 2023 12:54:47 +0900
-Received: from unknown (HELO hiworks.co.kr) (192.168.10.101)
-	by 0 (qmail 1.03 + ejcp v14) with SMTP;
-	13 Sep 2023 12:54:47 +0900
-Received: (qmail 62196 invoked from network); 13 Sep 2023 12:54:47 +0900
-Received: from unknown (HELO saram-MINIPC-PN53..)
- (mwkim@gaonchips.com@220.88.49.178)
-	by 0 (qmail 1.03 + ejcp v14) with SMTP;
-	13 Sep 2023 12:54:47 +0900
-X-Authinfo: HIWORKS SMTP authenticated
- <mwkim@gaonchips.com|220.88.49.178|mwkim@gaonchips.com|230913125447_297661931>
-X-MailFrom-INFO: Info <country_code:KR|rbl_level:0>
-From: Myunguk Kim <mwkim@gaonchips.com>
-To: krzysztof.kozlowski@linaro.org
-Cc: alsa-devel@alsa-project.org,
-	broonie@kernel.org,
-	conor+dt@kernel.org,
-	devicetree@vger.kernel.org,
-	fido_max@inbox.ru,
-	joabreu@synopsys.com,
-	krzysztof.kozlowski+dt@linaro.org,
-	kuninori.morimoto.gx@renesas.com,
-	lgirdwood@gmail.com,
-	linux-kernel@vger.kernel.org,
-	mwkim@gaonchips.com,
-	perex@perex.cz,
-	robh+dt@kernel.org,
-	tiwai@suse.com,
-	u.kleine-koenig@pengutronix.de,
-	xingyu.wu@starfivetech.com
-Subject: Re: [PATCH] ASoC: dwc: Add Single DMA mode support
-Date: Wed, 13 Sep 2023 11:53:43 +0900
-Message-Id: <20230913025342.1460157-1-mwkim@gaonchips.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <bf43b771-35e3-1b37-24f5-e21b2c34a415@linaro.org>
-References: <bf43b771-35e3-1b37-24f5-e21b2c34a415@linaro.org>
+	by alsa1.perex.cz (Postfix) with ESMTPS id B460AF80141
+	for <alsa-devel@alsa-project.org>; Thu, 14 Sep 2023 17:09:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B460AF80141
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
+ header.s=PODMain02222019 header.b=DmRsOdku
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+	by mx0b-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id
+ 38ECunMH020490;
+	Thu, 14 Sep 2023 10:09:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=PODMain02222019; bh=S
+	2UpFO3lB2wyOwT/WGOW/cnqkjwF0wKC7PyTNKd0P38=; b=DmRsOdkuy3W3BezcB
+	5Rh02PdcQCe+j1op82uw3Ej2v5dXcxSuhcYsY95W1ecqC8pYiqz+r7FmogLOvOru
+	cXNHPWDWdGZnKkkK3U+xEOvlIKBhnDk8TtjREjL5NeTiheMnrcA66Y69k87GxSOc
+	jBfg2/DeEhXIXS3Hd9okML6gnJaWDEGKCYZFSL1SJyqfho80QCwDopeRZ79V9rop
+	IGUgQi1yLdjTXKeFRAcMLvjFm1utUcd1kydoruPJDIud4haJzte95bWch/02Wql7
+	xmzUnJUsmDGz8pb3lx2qe/kxXlJboltnLBO5JOwasFLw97mCxuJv+T/r3KqN/6PG
+	JOysw==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3t2y7sj90x-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 14 Sep 2023 10:09:21 -0500 (CDT)
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Thu, 14 Sep
+ 2023 16:09:20 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.37 via Frontend Transport; Thu, 14 Sep 2023 16:09:20 +0100
+Received: from EDIN4L06LR3.ad.cirrus.com (EDIN4L06LR3.ad.cirrus.com
+ [198.61.65.215])
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id F1E913563;
+	Thu, 14 Sep 2023 15:09:19 +0000 (UTC)
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
+To: <broonie@kernel.org>
+CC: <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
+        <linux-kernel@vger.kernel.org>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>
+Subject: [PATCH 0/3] ASoC: cs35l56: Define and export I2C/SPI pm_ops only if
+ needed
+Date: Thu, 14 Sep 2023 16:09:15 +0100
+Message-ID: <20230914150918.14505-1-rf@opensource.cirrus.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-MailFrom: mwkim@gaonchips.com
-X-Mailman-Rule-Hits: nonmember-moderation
+Content-Type: text/plain
+X-Proofpoint-GUID: _QPw9Fkw16YQYjvTJXiCeOUVT2RyzeqM
+X-Proofpoint-ORIG-GUID: _QPw9Fkw16YQYjvTJXiCeOUVT2RyzeqM
+X-Proofpoint-Spam-Reason: safe
+Message-ID-Hash: 5XIYIFHZHCNEADH7BO5AJHYJJAWOOVPS
+X-Message-ID-Hash: 5XIYIFHZHCNEADH7BO5AJHYJJAWOOVPS
+X-MailFrom: prvs=46218c6399=rf@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: MLJOZIN7BBNEW7ZENLOYLUPAJROZBW4A
-X-Message-ID-Hash: MLJOZIN7BBNEW7ZENLOYLUPAJROZBW4A
-X-Mailman-Approved-At: Thu, 14 Sep 2023 15:06:22 +0000
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MLJOZIN7BBNEW7ZENLOYLUPAJROZBW4A/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5XIYIFHZHCNEADH7BO5AJHYJJAWOOVPS/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -95,16 +106,20 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-> Bindings are always separate patch.
+These 3 patches update the pm_ops for I2C/SPI so that they are only built
+and exported if they are needed.
 
-Okay, I will send v2.
+Richard Fitzgerald (3):
+  ASoC: cs35l56: Use pm_ptr()
+  ASoC: cs35l56: Use new export macro for dev_pm_ops
+  ASoC: cs35l56: Omit cs35l56_pm_ops_i2c_spi if I2C/SPI not enabled
 
-> This was not tested. Missing vendor prefix, type.
->
-> Anyway please provide some explanation why this cannot be deduced from
-> the compatible.
+ sound/soc/codecs/cs35l56-i2c.c | 2 +-
+ sound/soc/codecs/cs35l56-sdw.c | 2 +-
+ sound/soc/codecs/cs35l56-spi.c | 2 +-
+ sound/soc/codecs/cs35l56.c     | 5 +++--
+ 4 files changed, 6 insertions(+), 5 deletions(-)
 
-This is not dependent on a specific vendor, 
-but is intended to describe 
-the properties of the signal(single/burst request) connection 
-relationship between i2s and dma.
+-- 
+2.30.2
+
