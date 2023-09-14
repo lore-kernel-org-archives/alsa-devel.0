@@ -4,80 +4,99 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BDBF9EEAA49
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 Sep 2023 14:35:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4D6A5EEAA49
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 Sep 2023 14:38:54 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 99AFBAE9;
-	Thu, 14 Sep 2023 16:34:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 99AFBAE9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 10A49AE9;
+	Thu, 14 Sep 2023 16:38:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 10A49AE9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1694702142;
-	bh=9S7VIQV7YxfxsrOKvFr7Zd7ehjJmNmiY2E7KkfD5TvE=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=WWTdwInIYWKajytkpqxArUJfWvEb/AaVNDyujNm/SmdoNsnDnd8j67DjPLipo8dUi
-	 /MkbSjv10py+rMs59lpSldoAuLKcDI6PrcYEBWv15mGDzm9D8IxInKldyJtU05Xmdi
-	 WJbxLb5OATuaqFhconGgGROWHnivaRgmygIWWOdI=
+	s=default; t=1694702332;
+	bh=fAk2IZTjBTq69+NcwTU5UjsqDGc2yZwNAChkm+lNvvc=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=SoWdJEz2I2v6soF4Qb6RKUrVihyYS7tnLGC27xDoAFTZ+2Em1vvFQYtCk1o1oHyi9
+	 XgyB5YD5LO+/VQx4jw0n7hSSG949uXHmI6/Xtaxo2qe9yTezKPcfAHwPBn31es0FcP
+	 qe5jLgoMQA9kQJlifXqy4/C6i5qIN387wiXIa1+U=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E5299F80570; Thu, 14 Sep 2023 16:34:27 +0200 (CEST)
+	id E5133F801F5; Thu, 14 Sep 2023 16:37:33 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7F114F80558;
-	Thu, 14 Sep 2023 16:34:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 85387F80431;
+	Thu, 14 Sep 2023 16:37:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 272FAF80558; Thu, 14 Sep 2023 16:34:24 +0200 (CEST)
-Received: from sin.source.kernel.org (sin.source.kernel.org
- [IPv6:2604:1380:40e1:4800::1])
+	id 5A340F80212; Thu, 14 Sep 2023 16:37:30 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2001:67c:2178:6::1c])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 75CFFF80141
-	for <alsa-devel@alsa-project.org>; Thu, 14 Sep 2023 16:34:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 75CFFF80141
+	by alsa1.perex.cz (Postfix) with ESMTPS id 5F088F801F5
+	for <alsa-devel@alsa-project.org>; Thu, 14 Sep 2023 16:37:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5F088F801F5
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=DstQJ4b9
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=cp6fCWVm;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=CYblOK5z
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by sin.source.kernel.org (Postfix) with ESMTPS id 2243BCE2703;
-	Thu, 14 Sep 2023 14:34:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC3CCC433C7;
-	Thu, 14 Sep 2023 14:34:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1694702051;
-	bh=9S7VIQV7YxfxsrOKvFr7Zd7ehjJmNmiY2E7KkfD5TvE=;
-	h=From:To:In-Reply-To:References:Subject:Date:From;
-	b=DstQJ4b9OBCNoWWvU0xCDU0aEnvcxyudZYIHGCRUJJqqLg9y5HoR9sxwszcOI1gT1
-	 /O7mQOKgCgZ5xjBIENcYxyK3jGoeG3+lNsLRRgWEcHn3n2cHtcazZe/y3O3PTQxIDp
-	 LRn5qXgvuSq5+gMhkYzbdyqrekN2kAbfakpk4z837Y+S6aWXrexkLndqe0v6zbIxc9
-	 TaGkX3OwtCobkBWY1L4Ex0n5YAeAJvQONPlAPOTXpzp1YKSDZuYVQsMfVuMXtzCxM4
-	 L16OaTA/vFhMyMYFYOgofXD+3xncI3VZSTTvuuEjfQ9SIcoG3wdXG/PexvJG1m/+ju
-	 eKmfkqGAgvP/g==
-From: Mark Brown <broonie@kernel.org>
-To: shengjiu.wang@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
- nicoleotsuka@gmail.com, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
- shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org, Chancel Liu <chancel.liu@nxp.com>
-In-Reply-To: <20230913102656.2966757-1-chancel.liu@nxp.com>
-References: <20230913102656.2966757-1-chancel.liu@nxp.com>
-Subject: Re: [PATCH v2] ASoC: imx-rpmsg: Set ignore_pmdown_time for
- dai_link
-Message-Id: <169470204840.386807.4356692554775825839.b4-ty@kernel.org>
-Date: Thu, 14 Sep 2023 15:34:08 +0100
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-034f2
-Message-ID-Hash: TVMQ2SXHX6SVOQVYZ4IRBJW75OPOLFB5
-X-Message-ID-Hash: TVMQ2SXHX6SVOQVYZ4IRBJW75OPOLFB5
-X-MailFrom: broonie@kernel.org
+	by smtp-out1.suse.de (Postfix) with ESMTPS id A1FF521842;
+	Thu, 14 Sep 2023 14:37:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1694702244;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=lZRieROqbwcDhGtcftY4gNUE3C/0M9g8+nAIb/BCYK8=;
+	b=cp6fCWVmRmhxGFp2vxv37JeKGKUzTZz5QvZQtfmU/3DLy+XlaKWpBJnwRWOi+CNFo16MgN
+	X1g/kaJ9coBrYxaB5sQEJldmBAe9TljMQJKVXRBUoxNx1zSHWyT0ESY295aAurJwKioIrm
+	gX7UsaGaoiEqnxGJUmw6aQep07MgQs8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1694702244;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=lZRieROqbwcDhGtcftY4gNUE3C/0M9g8+nAIb/BCYK8=;
+	b=CYblOK5z/3NzYmTTCuwIY3/csHiYxFVfB0NXTnNAnQYhcpuWjCRZh+pMqGb91pusfgOKFr
+	2zM4SARn5zIzeuAg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7D7DE139DB;
+	Thu, 14 Sep 2023 14:37:24 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id 3Rd4HaQaA2WweAAAMHmgww
+	(envelope-from <tiwai@suse.de>); Thu, 14 Sep 2023 14:37:24 +0000
+Date: Thu, 14 Sep 2023 16:37:23 +0200
+Message-ID: <87wmwsyg64.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Richard Fitzgerald <rf@opensource.cirrus.com>
+Cc: <tiwai@suse.com>,
+	<alsa-devel@alsa-project.org>,
+	<patches@opensource.cirrus.com>,
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] ALSA: hda: cs35l56: Don't 'return ret' if ret is always
+ zero
+In-Reply-To: <20230914140852.7112-1-rf@opensource.cirrus.com>
+References: <20230914140852.7112-1-rf@opensource.cirrus.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Message-ID-Hash: CTYJ5IMCSED2W3XMVICTIAMFYDLNH2KK
+X-Message-ID-Hash: CTYJ5IMCSED2W3XMVICTIAMFYDLNH2KK
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -89,7 +108,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TVMQ2SXHX6SVOQVYZ4IRBJW75OPOLFB5/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CTYJ5IMCSED2W3XMVICTIAMFYDLNH2KK/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -98,43 +117,16 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Wed, 13 Sep 2023 18:26:56 +0800, Chancel Liu wrote:
-> i.MX rpmsg sound cards work on codec slave mode. MCLK will be disabled
-> by CPU DAI driver in hw_free(). Some codec requires MCLK present at
-> power up/down sequence. So need to set ignore_pmdown_time to power down
-> codec immediately before MCLK is turned off.
+On Thu, 14 Sep 2023 16:08:52 +0200,
+Richard Fitzgerald wrote:
 > 
-> Take WM8962 as an example, if MCLK is disabled before DAPM power down
-> playback stream, FIFO error will arise in WM8962 which will have bad
-> impact on playback next.
+> The final return in cs35l56_hda_posture_get() was returning the
+> value of 'ret', but ret is always zero at this point. So this
+> can be a simple 'return 0'.
 > 
-> [...]
+> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 
-Applied to
+Thanks, applied.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-Thanks!
-
-[1/1] ASoC: imx-rpmsg: Set ignore_pmdown_time for dai_link
-      commit: fac58baf8fcfcd7481e8f6d60206ce2a47c1476c
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+Takashi
