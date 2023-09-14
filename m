@@ -4,47 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70555EDE987
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 Sep 2023 06:36:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E0DB7EDE983
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 Sep 2023 06:36:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A4FB9AE8;
-	Thu, 14 Sep 2023 08:35:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A4FB9AE8
+	by alsa0.perex.cz (Postfix) with ESMTPS id E4672DEF;
+	Thu, 14 Sep 2023 08:35:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E4672DEF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1694673368;
-	bh=DL7Vpsnbp8nvwIakzjIA2zfBh1qVqpO0zZrjLtbGnbY=;
+	s=default; t=1694673379;
+	bh=A3JEeuELplWLUWARRZWmqt+mQCqKgxXMsePYT74djrU=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=eC3MDGuoh8jIaE+Yvdh7ziNjYeADyOWLy4Jc85Ky579ddibXTDAPrwDegqpM2KekC
-	 NbXePGhTLlCDmEwokmo8wyKe6SVJ0P9M3QVxwj8FJ3ob291fLnUbhikYybR36+8cCj
-	 QZbSeJj9uSLVGjNlQ0FhdN33atiiitIQGWFvIhEs=
+	b=AUebmFeKxK5RqM+JVZ0p56eJgyGQbV4tM9SI9np6+iUNgQuMB0vkq79XKxtSj9H3c
+	 jnq5v28mG9w1UHetrhPD4Ot1iUDwHlu2A5Zrh+9dLIkiFvvnHlsO7gve4jjJrvS2ga
+	 yyQgcCxLk41hcwtRwAvCRmSaz6XJB33/lt5wPexk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DA7EAF8057E; Thu, 14 Sep 2023 08:33:47 +0200 (CEST)
+	id 619A3F805B1; Thu, 14 Sep 2023 08:33:47 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D86BBF805AF;
-	Thu, 14 Sep 2023 08:33:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 51D91F805B4;
+	Thu, 14 Sep 2023 08:33:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A60E6F80431; Thu, 14 Sep 2023 08:31:33 +0200 (CEST)
-Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
+	id 3B143F80246; Thu, 14 Sep 2023 08:31:44 +0200 (CEST)
+Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 22E6DF80246
-	for <alsa-devel@alsa-project.org>; Thu, 14 Sep 2023 08:30:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 22E6DF80246
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 200FB20041C;
-	Thu, 14 Sep 2023 08:30:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTPS id C7D32F80551
+	for <alsa-devel@alsa-project.org>; Thu, 14 Sep 2023 08:30:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C7D32F80551
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 1384A1A0636;
+	Thu, 14 Sep 2023 08:30:51 +0200 (CEST)
 Received: from aprdc01srsp001v.ap-rdc01.nxp.com
  (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
-	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id AFCD52003AA;
-	Thu, 14 Sep 2023 08:30:40 +0200 (CEST)
+	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id A381B1A063C;
+	Thu, 14 Sep 2023 08:30:50 +0200 (CEST)
 Received: from localhost.localdomain (shlinux2.ap.freescale.net
  [10.192.224.44])
-	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id C4871183486B;
-	Thu, 14 Sep 2023 14:30:38 +0800 (+08)
+	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id BA04B1834869;
+	Thu, 14 Sep 2023 14:30:48 +0800 (+08)
 From: Shengjiu Wang <shengjiu.wang@nxp.com>
 To: hverkuil@xs4all.nl,
 	sakari.ailus@iki.fi,
@@ -63,16 +63,16 @@ To: hverkuil@xs4all.nl,
 	tiwai@suse.com,
 	alsa-devel@alsa-project.org,
 	linuxppc-dev@lists.ozlabs.org
-Subject: [RFC PATCH v3 1/9] ASoC: fsl_asrc: define functions for memory to
- memory usage
-Date: Thu, 14 Sep 2023 13:53:57 +0800
-Message-Id: <1694670845-17070-2-git-send-email-shengjiu.wang@nxp.com>
+Subject: [RFC PATCH v3 8/9] media: audm2m: add virtual driver for audio memory
+ to memory
+Date: Thu, 14 Sep 2023 13:54:04 +0800
+Message-Id: <1694670845-17070-9-git-send-email-shengjiu.wang@nxp.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1694670845-17070-1-git-send-email-shengjiu.wang@nxp.com>
 References: <1694670845-17070-1-git-send-email-shengjiu.wang@nxp.com>
 X-Virus-Scanned: ClamAV using ClamSMTP
-Message-ID-Hash: C6NI4BVNWQAJPFAJPS6F5K4GSKHDCTWS
-X-Message-ID-Hash: C6NI4BVNWQAJPFAJPS6F5K4GSKHDCTWS
+Message-ID-Hash: CLUTAC4PVY57HPADE2VKXCYYOCLV3EUT
+X-Message-ID-Hash: CLUTAC4PVY57HPADE2VKXCYYOCLV3EUT
 X-MailFrom: shengjiu.wang@nxp.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -85,7 +85,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/C6NI4BVNWQAJPFAJPS6F5K4GSKHDCTWS/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CLUTAC4PVY57HPADE2VKXCYYOCLV3EUT/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -94,282 +94,826 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-ASRC can be used on memory to memory case, define several
-functions for m2m usage.
+Audio memory to memory virtual driver use video memory to memory
+virtual driver vim2m.c as example. The main difference is
+device type is VFL_TYPE_AUDIO and device cap type is V4L2_CAP_AUDIO_M2M.
 
-m2m_start_part_one: first part of the start steps
-m2m_start_part_two: second part of the start steps
-m2m_stop_part_one: first part of stop steps
-m2m_stop_part_two: second part of stop steps, optional
-m2m_check_format: check format is supported or not
-m2m_calc_out_len: calculate output length according to input length
-m2m_get_maxburst: burst size for dma
-m2m_pair_suspend: suspend function of pair, optional.
-m2m_pair_resume: resume function of pair
-get_output_fifo_size: get remaining data size in FIFO
+The device_run function is a dummy function, which is simply
+copy the data from input buffer to output buffer.
 
 Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 ---
- sound/soc/fsl/fsl_asrc.c        | 150 ++++++++++++++++++++++++++++++++
- sound/soc/fsl/fsl_asrc.h        |   2 +
- sound/soc/fsl/fsl_asrc_common.h |  42 +++++++++
- 3 files changed, 194 insertions(+)
+ drivers/media/test-drivers/Kconfig  |   9 +
+ drivers/media/test-drivers/Makefile |   1 +
+ drivers/media/test-drivers/audm2m.c | 767 ++++++++++++++++++++++++++++
+ 3 files changed, 777 insertions(+)
+ create mode 100644 drivers/media/test-drivers/audm2m.c
 
-diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
-index b793263291dc..f9d830e0957f 100644
---- a/sound/soc/fsl/fsl_asrc.c
-+++ b/sound/soc/fsl/fsl_asrc.c
-@@ -1063,6 +1063,145 @@ static int fsl_asrc_get_fifo_addr(u8 dir, enum asrc_pair_index index)
- 	return REG_ASRDx(dir, index);
- }
+diff --git a/drivers/media/test-drivers/Kconfig b/drivers/media/test-drivers/Kconfig
+index 459b433e9fae..be60d73cbf97 100644
+--- a/drivers/media/test-drivers/Kconfig
++++ b/drivers/media/test-drivers/Kconfig
+@@ -17,6 +17,15 @@ config VIDEO_VIM2M
+ 	  This is a virtual test device for the memory-to-memory driver
+ 	  framework.
  
-+/* Get sample numbers in FIFO */
-+static unsigned int fsl_asrc_get_output_fifo_size(struct fsl_asrc_pair *pair)
++config VIDEO_AUDM2M
++	tristate "Virtual Memory-to-Memory Driver For Audio"
++	depends on VIDEO_DEV
++	select VIDEOBUF2_VMALLOC
++	select V4L2_MEM2MEM_DEV
++	help
++	  This is a virtual audio test device for the memory-to-memory driver
++	  framework.
++
+ source "drivers/media/test-drivers/vicodec/Kconfig"
+ source "drivers/media/test-drivers/vimc/Kconfig"
+ source "drivers/media/test-drivers/vivid/Kconfig"
+diff --git a/drivers/media/test-drivers/Makefile b/drivers/media/test-drivers/Makefile
+index 740714a4584d..b53ed7e6eaf1 100644
+--- a/drivers/media/test-drivers/Makefile
++++ b/drivers/media/test-drivers/Makefile
+@@ -10,6 +10,7 @@ obj-$(CONFIG_DVB_VIDTV) += vidtv/
+ 
+ obj-$(CONFIG_VIDEO_VICODEC) += vicodec/
+ obj-$(CONFIG_VIDEO_VIM2M) += vim2m.o
++obj-$(CONFIG_VIDEO_AUDM2M) += audm2m.o
+ obj-$(CONFIG_VIDEO_VIMC) += vimc/
+ obj-$(CONFIG_VIDEO_VIVID) += vivid/
+ obj-$(CONFIG_VIDEO_VISL) += visl/
+diff --git a/drivers/media/test-drivers/audm2m.c b/drivers/media/test-drivers/audm2m.c
+new file mode 100644
+index 000000000000..d54bc99b9275
+--- /dev/null
++++ b/drivers/media/test-drivers/audm2m.c
+@@ -0,0 +1,767 @@
++// SPDX-License-Identifier: GPL-2.0+
++/*
++ * A virtual v4l2-mem2mem example for audio device.
++ */
++
++#include <linux/module.h>
++#include <linux/delay.h>
++#include <linux/fs.h>
++#include <linux/sched.h>
++#include <linux/slab.h>
++
++#include <linux/platform_device.h>
++#include <media/v4l2-mem2mem.h>
++#include <media/v4l2-device.h>
++#include <media/v4l2-ioctl.h>
++#include <media/v4l2-ctrls.h>
++#include <media/v4l2-event.h>
++#include <media/videobuf2-vmalloc.h>
++#include <sound/dmaengine_pcm.h>
++
++MODULE_DESCRIPTION("Virtual device for audio mem2mem testing");
++MODULE_LICENSE("GPL");
++MODULE_VERSION("0.1");
++MODULE_ALIAS("audio_mem2mem_testdev");
++
++static unsigned int debug;
++module_param(debug, uint, 0644);
++MODULE_PARM_DESC(debug, "debug level");
++
++/* Flags that indicate a format can be used for capture/output */
++#define MEM2MEM_CAPTURE	BIT(0)
++#define MEM2MEM_OUTPUT	BIT(1)
++
++#define MEM2MEM_NAME "audm2m"
++
++#define dprintk(dev, lvl, fmt, arg...) \
++	v4l2_dbg(lvl, debug, &(dev)->v4l2_dev, "%s: " fmt, __func__, ## arg)
++
++#define SAMPLE_NUM 4096
++
++static void audm2m_dev_release(struct device *dev)
++{}
++
++static struct platform_device audm2m_pdev = {
++	.name		= MEM2MEM_NAME,
++	.dev.release	= audm2m_dev_release,
++};
++
++struct audm2m_fmt {
++	u32	fourcc;
++	u32     types;
++};
++
++static struct audm2m_fmt formats[] = {
++	{
++		.fourcc	= V4L2_AUDIO_FMT_LPCM,
++		.types  = MEM2MEM_CAPTURE | MEM2MEM_OUTPUT,
++	}
++};
++
++#define NUM_FORMATS ARRAY_SIZE(formats)
++
++/* Per-queue, driver-specific private data */
++struct audm2m_q_data {
++	unsigned int		rate;
++	snd_pcm_format_t	format;
++	unsigned int		channels;
++	unsigned int		buffersize;
++	struct audm2m_fmt	*fmt;
++};
++
++enum {
++	V4L2_M2M_SRC = 0,
++	V4L2_M2M_DST = 1,
++};
++
++static struct audm2m_fmt *find_format(u32 fourcc)
 +{
-+	struct fsl_asrc *asrc = pair->asrc;
-+	enum asrc_pair_index index = pair->index;
-+	u32 val;
++	struct audm2m_fmt *fmt;
++	unsigned int k;
 +
-+	regmap_read(asrc->regmap, REG_ASRFST(index), &val);
-+
-+	val &= ASRFSTi_OUTPUT_FIFO_MASK;
-+
-+	return val >> ASRFSTi_OUTPUT_FIFO_SHIFT;
-+}
-+
-+static int fsl_asrc_m2m_start_part_one(struct fsl_asrc_pair *pair)
-+{
-+	struct fsl_asrc_pair_priv *pair_priv = pair->private;
-+	struct fsl_asrc *asrc = pair->asrc;
-+	struct device *dev = &asrc->pdev->dev;
-+	struct asrc_config config;
-+	int ret;
-+
-+	/* fill config */
-+	config.pair = pair->index;
-+	config.channel_num = pair->channels;
-+	config.input_sample_rate = pair->rate[IN];
-+	config.output_sample_rate = pair->rate[OUT];
-+	config.input_format = pair->sample_format[IN];
-+	config.output_format = pair->sample_format[OUT];
-+	config.inclk = INCLK_NONE;
-+	config.outclk = OUTCLK_ASRCK1_CLK;
-+
-+	pair_priv->config = &config;
-+	ret = fsl_asrc_config_pair(pair, true);
-+	if (ret) {
-+		dev_err(dev, "failed to config pair: %d\n", ret);
-+		return ret;
++	for (k = 0; k < NUM_FORMATS; k++) {
++		fmt = &formats[k];
++		if (fmt->fourcc == fourcc)
++			break;
 +	}
 +
-+	fsl_asrc_start_pair(pair);
++	if (k == NUM_FORMATS)
++		return NULL;
 +
-+	return 0;
++	return &formats[k];
 +}
 +
-+static int fsl_asrc_m2m_start_part_two(struct fsl_asrc_pair *pair)
++struct audm2m_dev {
++	struct v4l2_device	v4l2_dev;
++	struct video_device	vfd;
++
++	atomic_t		num_inst;
++	struct mutex		dev_mutex;
++
++	struct v4l2_m2m_dev	*m2m_dev;
++};
++
++struct audm2m_ctx {
++	struct v4l2_fh		fh;
++	struct audm2m_dev	*dev;
++
++	struct mutex		vb_mutex;
++
++	/* Abort requested by m2m */
++	int			aborting;
++
++	/* Source and destination queue data */
++	struct audm2m_q_data   q_data[2];
++};
++
++static inline struct audm2m_ctx *file2ctx(struct file *file)
 +{
-+	/*
-+	 * Clear DMA request during the stall state of ASRC:
-+	 * During STALL state, the remaining in input fifo would never be
-+	 * smaller than the input threshold while the output fifo would not
-+	 * be bigger than output one. Thus the DMA request would be cleared.
-+	 */
-+	fsl_asrc_set_watermarks(pair, ASRC_FIFO_THRESHOLD_MIN,
-+				ASRC_FIFO_THRESHOLD_MAX);
-+
-+	/* Update the real input threshold to raise DMA request */
-+	fsl_asrc_set_watermarks(pair, ASRC_M2M_INPUTFIFO_WML,
-+				ASRC_M2M_OUTPUTFIFO_WML);
-+
-+	return 0;
++	return container_of(file->private_data, struct audm2m_ctx, fh);
 +}
 +
-+static int fsl_asrc_m2m_stop_part_one(struct fsl_asrc_pair *pair)
++static struct audm2m_q_data *get_q_data(struct audm2m_ctx *ctx,
++					enum v4l2_buf_type type)
 +{
-+	fsl_asrc_stop_pair(pair);
-+
-+	return 0;
++	switch (type) {
++	case V4L2_BUF_TYPE_AUDIO_OUTPUT:
++		return &ctx->q_data[V4L2_M2M_SRC];
++	case V4L2_BUF_TYPE_AUDIO_CAPTURE:
++		return &ctx->q_data[V4L2_M2M_DST];
++	default:
++		return NULL;
++	}
 +}
 +
-+static int fsl_asrc_m2m_check_format(u8 dir, u32 format)
++static const char *type_name(enum v4l2_buf_type type)
 +{
-+	u64 support_format = FSL_ASRC_FORMATS;
-+
-+	if (dir == IN)
-+		support_format |= SNDRV_PCM_FMTBIT_S8;
-+
-+	if (!(1 << format & support_format))
-+		return -EINVAL;
-+
-+	return 0;
++	switch (type) {
++	case V4L2_BUF_TYPE_AUDIO_OUTPUT:
++		return "Output";
++	case V4L2_BUF_TYPE_AUDIO_CAPTURE:
++		return "Capture";
++	default:
++		return "Invalid";
++	}
 +}
 +
-+static int fsl_asrc_m2m_check_rate(u8 dir, u32 rate)
-+{
-+	if (rate < 5512 || rate > 192000)
-+		return -EINVAL;
++/*
++ * mem2mem callbacks
++ */
 +
-+	return 0;
++/*
++ * job_ready() - check whether an instance is ready to be scheduled to run
++ */
++static int job_ready(void *priv)
++{
++	struct audm2m_ctx *ctx = priv;
++
++	if (v4l2_m2m_num_src_bufs_ready(ctx->fh.m2m_ctx) < 1 ||
++	    v4l2_m2m_num_dst_bufs_ready(ctx->fh.m2m_ctx) < 1) {
++		dprintk(ctx->dev, 1, "Not enough buffers available\n");
++		return 0;
++	}
++
++	return 1;
 +}
 +
-+static int fsl_asrc_m2m_check_channel(u8 dir, u32 channels)
++static void job_abort(void *priv)
 +{
-+	if (channels < 1 || channels > 10)
-+		return -EINVAL;
++	struct audm2m_ctx *ctx = priv;
 +
-+	return 0;
++	/* Will cancel the transaction in the next interrupt handler */
++	ctx->aborting = 1;
 +}
 +
-+/* calculate capture data length according to output data length and sample rate */
-+static int fsl_asrc_m2m_calc_out_len(struct fsl_asrc_pair *pair, int input_buffer_length)
++/*
++ * device_run() - prepares and starts the device
++ */
++static void device_run(void *priv)
 +{
-+	unsigned int in_width, out_width;
-+	unsigned int channels = pair->channels;
-+	unsigned int in_samples, out_samples;
-+	unsigned int out_length;
++	struct audm2m_ctx *ctx = priv;
++	struct audm2m_dev *audm2m_dev;
++	struct vb2_v4l2_buffer *src_buf, *dst_buf;
++	struct audm2m_q_data *q_data_src, *q_data_dst;
++	int src_size, dst_size;
 +
-+	in_width = snd_pcm_format_physical_width(pair->sample_format[IN]) / 8;
-+	out_width = snd_pcm_format_physical_width(pair->sample_format[OUT]) / 8;
++	audm2m_dev = ctx->dev;
 +
-+	in_samples = input_buffer_length / in_width / channels;
-+	out_samples = pair->rate[OUT] * in_samples / pair->rate[IN];
-+	out_length = (out_samples - ASRC_OUTPUT_LAST_SAMPLE) * out_width * channels;
++	q_data_src = get_q_data(ctx, V4L2_BUF_TYPE_AUDIO_OUTPUT);
++	if (!q_data_src)
++		return;
 +
-+	return out_length;
-+}
++	q_data_dst = get_q_data(ctx, V4L2_BUF_TYPE_AUDIO_CAPTURE);
++	if (!q_data_dst)
++		return;
 +
-+static int fsl_asrc_m2m_get_maxburst(u8 dir, struct fsl_asrc_pair *pair)
-+{
-+	struct fsl_asrc *asrc = pair->asrc;
-+	struct fsl_asrc_priv *asrc_priv = asrc->private;
-+	int wml = (dir == IN) ? ASRC_M2M_INPUTFIFO_WML : ASRC_M2M_OUTPUTFIFO_WML;
++	src_buf = v4l2_m2m_next_src_buf(ctx->fh.m2m_ctx);
++	dst_buf = v4l2_m2m_next_dst_buf(ctx->fh.m2m_ctx);
 +
-+	if (!asrc_priv->soc->use_edma)
-+		return wml * pair->channels;
++	/* Process the conversion */
++	src_size = vb2_get_plane_payload(&src_buf->vb2_buf, 0);
++
++	if (src_size > q_data_dst->buffersize)
++		dst_size = q_data_dst->buffersize;
 +	else
-+		return 1;
++		dst_size = src_size;
++
++	memcpy(vb2_plane_vaddr(&dst_buf->vb2_buf, 0),
++	       vb2_plane_vaddr(&src_buf->vb2_buf, 0),
++	       dst_size);
++
++	vb2_set_plane_payload(&dst_buf->vb2_buf, 0, dst_size);
++
++	src_buf = v4l2_m2m_src_buf_remove(ctx->fh.m2m_ctx);
++	dst_buf = v4l2_m2m_dst_buf_remove(ctx->fh.m2m_ctx);
++
++	v4l2_m2m_buf_done(src_buf, VB2_BUF_STATE_DONE);
++	v4l2_m2m_buf_done(dst_buf, VB2_BUF_STATE_DONE);
++	v4l2_m2m_job_finish(audm2m_dev->m2m_dev, ctx->fh.m2m_ctx);
 +}
 +
-+static int fsl_asrc_m2m_pair_resume(struct fsl_asrc_pair *pair)
++static int audm2m_querycap(struct file *file, void *priv,
++			   struct v4l2_capability *cap)
 +{
-+	struct fsl_asrc *asrc = pair->asrc;
-+	int i;
-+
-+	for (i = 0; i < pair->channels * 4; i++)
-+		regmap_write(asrc->regmap, REG_ASRDI(pair->index), 0);
++	strscpy(cap->driver, MEM2MEM_NAME, sizeof(cap->driver));
++	strscpy(cap->card, MEM2MEM_NAME, sizeof(cap->card));
++	snprintf(cap->bus_info, sizeof(cap->bus_info),
++		 "platform:%s", MEM2MEM_NAME);
 +
 +	return 0;
 +}
 +
- static int fsl_asrc_runtime_resume(struct device *dev);
- static int fsl_asrc_runtime_suspend(struct device *dev);
- 
-@@ -1147,6 +1286,17 @@ static int fsl_asrc_probe(struct platform_device *pdev)
- 	asrc->get_fifo_addr = fsl_asrc_get_fifo_addr;
- 	asrc->pair_priv_size = sizeof(struct fsl_asrc_pair_priv);
- 
-+	asrc->m2m_start_part_one = fsl_asrc_m2m_start_part_one;
-+	asrc->m2m_start_part_two = fsl_asrc_m2m_start_part_two;
-+	asrc->m2m_stop_part_one = fsl_asrc_m2m_stop_part_one;
-+	asrc->get_output_fifo_size = fsl_asrc_get_output_fifo_size;
-+	asrc->m2m_check_format = fsl_asrc_m2m_check_format;
-+	asrc->m2m_check_rate = fsl_asrc_m2m_check_rate;
-+	asrc->m2m_check_channel = fsl_asrc_m2m_check_channel;
-+	asrc->m2m_calc_out_len = fsl_asrc_m2m_calc_out_len;
-+	asrc->m2m_get_maxburst = fsl_asrc_m2m_get_maxburst;
-+	asrc->m2m_pair_resume = fsl_asrc_m2m_pair_resume;
++static int enum_fmt(struct v4l2_fmtdesc *f, u32 type)
++{
++	int i, num;
++	struct audm2m_fmt *fmt;
 +
- 	if (of_device_is_compatible(np, "fsl,imx35-asrc")) {
- 		asrc_priv->clk_map[IN] = input_clk_map_imx35;
- 		asrc_priv->clk_map[OUT] = output_clk_map_imx35;
-diff --git a/sound/soc/fsl/fsl_asrc.h b/sound/soc/fsl/fsl_asrc.h
-index 86d2422ad606..1c492eb237f5 100644
---- a/sound/soc/fsl/fsl_asrc.h
-+++ b/sound/soc/fsl/fsl_asrc.h
-@@ -12,6 +12,8 @@
- 
- #include  "fsl_asrc_common.h"
- 
-+#define ASRC_M2M_INPUTFIFO_WML		0x4
-+#define ASRC_M2M_OUTPUTFIFO_WML		0x2
- #define ASRC_DMA_BUFFER_NUM		2
- #define ASRC_INPUTFIFO_THRESHOLD	32
- #define ASRC_OUTPUTFIFO_THRESHOLD	32
-diff --git a/sound/soc/fsl/fsl_asrc_common.h b/sound/soc/fsl/fsl_asrc_common.h
-index 7e1c13ca37f1..7f7e725075fe 100644
---- a/sound/soc/fsl/fsl_asrc_common.h
-+++ b/sound/soc/fsl/fsl_asrc_common.h
-@@ -34,6 +34,11 @@ enum asrc_pair_index {
-  * @pos: hardware pointer position
-  * @req_dma_chan: flag to release dev_to_dev chan
-  * @private: pair private area
-+ * @complete: dma task complete
-+ * @sample_format: format of m2m
-+ * @rate: rate of m2m
-+ * @buf_len: buffer length of m2m
-+ * @req_pair: flag for request pair
-  */
- struct fsl_asrc_pair {
- 	struct fsl_asrc *asrc;
-@@ -49,6 +54,13 @@ struct fsl_asrc_pair {
- 	bool req_dma_chan;
- 
- 	void *private;
++	num = 0;
 +
-+	/* used for m2m */
-+	struct completion complete[2];
-+	snd_pcm_format_t sample_format[2];
-+	unsigned int rate[2];
-+	unsigned int buf_len[2];
-+	bool req_pair;
- };
- 
- /**
-@@ -72,6 +84,19 @@ struct fsl_asrc_pair {
-  * @request_pair: function pointer
-  * @release_pair: function pointer
-  * @get_fifo_addr: function pointer
-+ * @m2m_start_part_one: function pointer
-+ * @m2m_start_part_two: function pointer
-+ * @m2m_stop_part_one: function pointer
-+ * @m2m_stop_part_two: function pointer
-+ * @m2m_check_format: function pointer
-+ * @m2m_check_rate: function pointer
-+ * @m2m_check_channel: function pointer
-+ * @m2m_calc_out_len: function pointer
-+ * @m2m_get_maxburst: function pointer
-+ * @m2m_pair_suspend: function pointer
-+ * @m2m_pair_resume: function pointer
-+ * @m2m_set_ratio_mod: function pointer
-+ * @get_output_fifo_size: function pointer
-  * @pair_priv_size: size of pair private struct.
-  * @private: private data structure
-  */
-@@ -97,6 +122,23 @@ struct fsl_asrc {
- 	int (*request_pair)(int channels, struct fsl_asrc_pair *pair);
- 	void (*release_pair)(struct fsl_asrc_pair *pair);
- 	int (*get_fifo_addr)(u8 dir, enum asrc_pair_index index);
++	for (i = 0; i < NUM_FORMATS; ++i) {
++		if (formats[i].types & type) {
++			if (num == f->index)
++				break;
++			/*
++			 * Correct type but haven't reached our index yet,
++			 * just increment per-type index
++			 */
++			++num;
++		}
++	}
 +
-+	int (*m2m_start_part_one)(struct fsl_asrc_pair *pair);
-+	int (*m2m_start_part_two)(struct fsl_asrc_pair *pair);
-+	int (*m2m_stop_part_one)(struct fsl_asrc_pair *pair);
-+	int (*m2m_stop_part_two)(struct fsl_asrc_pair *pair);
++	if (i < NUM_FORMATS) {
++		/* Format found */
++		fmt = &formats[i];
++		f->pixelformat = fmt->fourcc;
++		return 0;
++	}
 +
-+	int (*m2m_check_format)(u8 dir, u32 format);
-+	int (*m2m_check_rate)(u8 dir, u32 rate);
-+	int (*m2m_check_channel)(u8 dir, u32 channels);
++	/* Format not found */
++	return -EINVAL;
++}
 +
-+	int (*m2m_calc_out_len)(struct fsl_asrc_pair *pair, int input_buffer_length);
-+	int (*m2m_get_maxburst)(u8 dir, struct fsl_asrc_pair *pair);
-+	int (*m2m_pair_suspend)(struct fsl_asrc_pair *pair);
-+	int (*m2m_pair_resume)(struct fsl_asrc_pair *pair);
-+	int (*m2m_set_ratio_mod)(struct fsl_asrc_pair *pair, int val);
++static int audm2m_enum_fmt_audio_cap(struct file *file, void *priv,
++				     struct v4l2_fmtdesc *f)
++{
++	return enum_fmt(f, MEM2MEM_CAPTURE);
++}
 +
-+	unsigned int (*get_output_fifo_size)(struct fsl_asrc_pair *pair);
- 	size_t pair_priv_size;
- 
- 	void *private;
++static int audm2m_enum_fmt_audio_out(struct file *file, void *priv,
++				     struct v4l2_fmtdesc *f)
++{
++	return enum_fmt(f, MEM2MEM_OUTPUT);
++}
++
++static int audm2m_g_fmt(struct audm2m_ctx *ctx, struct v4l2_format *f)
++{
++	struct vb2_queue *vq;
++	struct audm2m_q_data *q_data;
++
++	vq = v4l2_m2m_get_vq(ctx->fh.m2m_ctx, f->type);
++	if (!vq)
++		return -EINVAL;
++
++	q_data = get_q_data(ctx, f->type);
++	if (!q_data)
++		return -EINVAL;
++
++	f->fmt.audio.rate	= q_data->rate;
++	f->fmt.audio.format	= q_data->format;
++	f->fmt.audio.channels	= q_data->channels;
++	f->fmt.audio.buffersize = q_data->buffersize;
++
++	return 0;
++}
++
++static int audm2m_g_fmt_audio_out(struct file *file, void *priv,
++				  struct v4l2_format *f)
++{
++	return audm2m_g_fmt(file2ctx(file), f);
++}
++
++static int audm2m_g_fmt_audio_cap(struct file *file, void *priv,
++				  struct v4l2_format *f)
++{
++	return audm2m_g_fmt(file2ctx(file), f);
++}
++
++static int audm2m_try_fmt(struct v4l2_format *f, struct audm2m_fmt *fmt)
++{
++	if (f->fmt.audio.rate < 8000)
++		f->fmt.audio.rate = 8000;
++	else if (f->fmt.audio.rate > 192000)
++		f->fmt.audio.rate = 192000;
++
++	if (f->fmt.audio.channels < 1)
++		f->fmt.audio.channels = 1;
++	else if (f->fmt.audio.channels > 8)
++		f->fmt.audio.channels = 8;
++
++	if (f->fmt.audio.format != SNDRV_PCM_FORMAT_S16_LE ||
++	    f->fmt.audio.format != SNDRV_PCM_FORMAT_S32_LE)
++		f->fmt.audio.format = SNDRV_PCM_FORMAT_S32_LE;
++
++	f->fmt.audio.buffersize = f->fmt.audio.channels *
++				  snd_pcm_format_physical_width(f->fmt.audio.format) *
++				  SAMPLE_NUM;
++	return 0;
++}
++
++static int audm2m_try_fmt_audio_cap(struct file *file, void *priv,
++				    struct v4l2_format *f)
++{
++	struct audm2m_fmt *fmt;
++	struct audm2m_ctx *ctx = file2ctx(file);
++
++	fmt = find_format(f->fmt.pix.pixelformat);
++	if (!fmt) {
++		f->fmt.pix.pixelformat = formats[0].fourcc;
++		fmt = find_format(f->fmt.pix.pixelformat);
++	}
++
++	if (!(fmt->types & MEM2MEM_CAPTURE)) {
++		v4l2_err(&ctx->dev->v4l2_dev,
++			 "Fourcc format (0x%08x) invalid.\n",
++			 f->fmt.pix.pixelformat);
++		return -EINVAL;
++	}
++
++	return audm2m_try_fmt(f, fmt);
++}
++
++static int audm2m_try_fmt_audio_out(struct file *file, void *priv,
++				    struct v4l2_format *f)
++{
++	struct audm2m_fmt *fmt;
++	struct audm2m_ctx *ctx = file2ctx(file);
++
++	fmt = find_format(f->fmt.pix.pixelformat);
++	if (!fmt) {
++		f->fmt.pix.pixelformat = formats[0].fourcc;
++		fmt = find_format(f->fmt.pix.pixelformat);
++	}
++	if (!(fmt->types & MEM2MEM_OUTPUT)) {
++		v4l2_err(&ctx->dev->v4l2_dev,
++			 "Fourcc format (0x%08x) invalid.\n",
++			 f->fmt.pix.pixelformat);
++		return -EINVAL;
++	}
++
++	return audm2m_try_fmt(f, fmt);
++}
++
++static int audm2m_s_fmt(struct audm2m_ctx *ctx, struct v4l2_format *f)
++{
++	struct audm2m_q_data *q_data;
++	struct vb2_queue *vq;
++
++	vq = v4l2_m2m_get_vq(ctx->fh.m2m_ctx, f->type);
++	if (!vq)
++		return -EINVAL;
++
++	q_data = get_q_data(ctx, f->type);
++	if (!q_data)
++		return -EINVAL;
++
++	if (vb2_is_busy(vq)) {
++		v4l2_err(&ctx->dev->v4l2_dev, "%s queue busy\n", __func__);
++		return -EBUSY;
++	}
++
++	q_data->fmt	= find_format(f->fmt.pix.pixelformat);
++	q_data->rate	= f->fmt.audio.rate;
++	q_data->format	= f->fmt.audio.format;
++	q_data->channels = f->fmt.audio.channels;
++	q_data->buffersize = q_data->channels *
++			     snd_pcm_format_physical_width(q_data->format) *
++			     SAMPLE_NUM;
++
++	dprintk(ctx->dev, 1,
++		"Format for type %s: %d/%d/%d, fmt: %c%c%c%c\n",
++		type_name(f->type), q_data->rate, q_data->format,
++		q_data->channels,
++		(q_data->fmt->fourcc & 0xff),
++		(q_data->fmt->fourcc >>  8) & 0xff,
++		(q_data->fmt->fourcc >> 16) & 0xff,
++		(q_data->fmt->fourcc >> 24) & 0xff);
++
++	return 0;
++}
++
++static int audm2m_s_fmt_audio_cap(struct file *file, void *priv,
++				  struct v4l2_format *f)
++{
++	int ret;
++
++	ret = audm2m_try_fmt_audio_cap(file, priv, f);
++	if (ret)
++		return ret;
++
++	return audm2m_s_fmt(file2ctx(file), f);
++}
++
++static int audm2m_s_fmt_audio_out(struct file *file, void *priv,
++				  struct v4l2_format *f)
++{
++	int ret;
++
++	ret = audm2m_try_fmt_audio_out(file, priv, f);
++	if (ret)
++		return ret;
++
++	return audm2m_s_fmt(file2ctx(file), f);
++}
++
++static const struct v4l2_ioctl_ops audm2m_ioctl_ops = {
++	.vidioc_querycap		= audm2m_querycap,
++
++	.vidioc_enum_fmt_audio_cap	= audm2m_enum_fmt_audio_cap,
++	.vidioc_g_fmt_audio_cap		= audm2m_g_fmt_audio_cap,
++	.vidioc_try_fmt_audio_cap	= audm2m_try_fmt_audio_cap,
++	.vidioc_s_fmt_audio_cap		= audm2m_s_fmt_audio_cap,
++
++	.vidioc_enum_fmt_audio_out	= audm2m_enum_fmt_audio_out,
++	.vidioc_g_fmt_audio_out		= audm2m_g_fmt_audio_out,
++	.vidioc_try_fmt_audio_out	= audm2m_try_fmt_audio_out,
++	.vidioc_s_fmt_audio_out		= audm2m_s_fmt_audio_out,
++
++	.vidioc_reqbufs			= v4l2_m2m_ioctl_reqbufs,
++	.vidioc_querybuf		= v4l2_m2m_ioctl_querybuf,
++	.vidioc_qbuf			= v4l2_m2m_ioctl_qbuf,
++	.vidioc_dqbuf			= v4l2_m2m_ioctl_dqbuf,
++	.vidioc_prepare_buf		= v4l2_m2m_ioctl_prepare_buf,
++	.vidioc_create_bufs		= v4l2_m2m_ioctl_create_bufs,
++	.vidioc_expbuf			= v4l2_m2m_ioctl_expbuf,
++
++	.vidioc_streamon		= v4l2_m2m_ioctl_streamon,
++	.vidioc_streamoff		= v4l2_m2m_ioctl_streamoff,
++
++	.vidioc_subscribe_event		= v4l2_ctrl_subscribe_event,
++	.vidioc_unsubscribe_event	= v4l2_event_unsubscribe,
++};
++
++/*
++ * Queue operations
++ */
++static int audm2m_queue_setup(struct vb2_queue *vq,
++			      unsigned int *nbuffers,
++			      unsigned int *nplanes,
++			      unsigned int sizes[],
++			      struct device *alloc_devs[])
++{
++	struct audm2m_ctx *ctx = vb2_get_drv_priv(vq);
++	struct audm2m_q_data *q_data;
++
++	q_data = get_q_data(ctx, vq->type);
++	if (!q_data)
++		return -EINVAL;
++
++	*nplanes = 1;
++	sizes[0] = q_data->buffersize;
++
++	dprintk(ctx->dev, 1, "%s: get %d buffer(s) of size %d each.\n",
++		type_name(vq->type), *nplanes, sizes[0]);
++
++	return 0;
++}
++
++static void audm2m_buf_queue(struct vb2_buffer *vb)
++{
++	struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
++	struct audm2m_ctx *ctx = vb2_get_drv_priv(vb->vb2_queue);
++
++	v4l2_m2m_buf_queue(ctx->fh.m2m_ctx, vbuf);
++}
++
++static int audm2m_start_streaming(struct vb2_queue *q, unsigned int count)
++{
++	struct audm2m_ctx *ctx = vb2_get_drv_priv(q);
++	struct audm2m_q_data *q_data = get_q_data(ctx, q->type);
++
++	if (!q_data)
++		return -EINVAL;
++
++	if (V4L2_TYPE_IS_OUTPUT(q->type))
++		ctx->aborting = 0;
++
++	return 0;
++}
++
++static void audm2m_stop_streaming(struct vb2_queue *q)
++{
++	struct audm2m_ctx *ctx = vb2_get_drv_priv(q);
++	struct vb2_v4l2_buffer *vbuf;
++
++	for (;;) {
++		if (V4L2_TYPE_IS_OUTPUT(q->type))
++			vbuf = v4l2_m2m_src_buf_remove(ctx->fh.m2m_ctx);
++		else
++			vbuf = v4l2_m2m_dst_buf_remove(ctx->fh.m2m_ctx);
++		if (!vbuf)
++			return;
++		v4l2_m2m_buf_done(vbuf, VB2_BUF_STATE_ERROR);
++	}
++}
++
++static const struct vb2_ops audm2m_qops = {
++	.queue_setup	 = audm2m_queue_setup,
++	.buf_queue	 = audm2m_buf_queue,
++	.start_streaming = audm2m_start_streaming,
++	.stop_streaming  = audm2m_stop_streaming,
++	.wait_prepare	 = vb2_ops_wait_prepare,
++	.wait_finish	 = vb2_ops_wait_finish,
++};
++
++static int queue_init(void *priv, struct vb2_queue *src_vq,
++		      struct vb2_queue *dst_vq)
++{
++	struct audm2m_ctx *ctx = priv;
++	int ret;
++
++	src_vq->type = V4L2_BUF_TYPE_AUDIO_OUTPUT;
++	src_vq->io_modes = VB2_MMAP | VB2_DMABUF;
++	src_vq->drv_priv = ctx;
++	src_vq->buf_struct_size = sizeof(struct v4l2_m2m_buffer);
++	src_vq->ops = &audm2m_qops;
++	src_vq->mem_ops = &vb2_vmalloc_memops;
++	src_vq->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_COPY;
++	src_vq->lock = &ctx->vb_mutex;
++	src_vq->min_buffers_needed = 1;
++
++	ret = vb2_queue_init(src_vq);
++	if (ret)
++		return ret;
++
++	dst_vq->type = V4L2_BUF_TYPE_AUDIO_CAPTURE;
++	dst_vq->io_modes = VB2_MMAP | VB2_DMABUF;
++	dst_vq->drv_priv = ctx;
++	dst_vq->buf_struct_size = sizeof(struct v4l2_m2m_buffer);
++	dst_vq->ops = &audm2m_qops;
++	dst_vq->mem_ops = &vb2_vmalloc_memops;
++	dst_vq->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_COPY;
++	dst_vq->lock = &ctx->vb_mutex;
++	dst_vq->min_buffers_needed = 1;
++
++	return vb2_queue_init(dst_vq);
++}
++
++/*
++ * File operations
++ */
++static int audm2m_open(struct file *file)
++{
++	struct audm2m_dev *dev = video_drvdata(file);
++	struct audm2m_ctx *ctx = NULL;
++	int rc = 0;
++
++	if (mutex_lock_interruptible(&dev->dev_mutex))
++		return -ERESTARTSYS;
++	ctx = kzalloc(sizeof(*ctx), GFP_KERNEL);
++	if (!ctx) {
++		rc = -ENOMEM;
++		goto open_unlock;
++	}
++
++	v4l2_fh_init(&ctx->fh, video_devdata(file));
++	file->private_data = &ctx->fh;
++	ctx->dev = dev;
++
++	ctx->q_data[V4L2_M2M_SRC].fmt = &formats[0];
++	ctx->q_data[V4L2_M2M_SRC].rate = 8000;
++	ctx->q_data[V4L2_M2M_SRC].format = SNDRV_PCM_FORMAT_S32_LE;
++	ctx->q_data[V4L2_M2M_SRC].channels = 2;
++
++	/* Fix to 4096 samples */
++	ctx->q_data[V4L2_M2M_SRC].buffersize = SAMPLE_NUM * 2 * 4;
++	ctx->q_data[V4L2_M2M_DST] = ctx->q_data[V4L2_M2M_SRC];
++
++	ctx->fh.m2m_ctx = v4l2_m2m_ctx_init(dev->m2m_dev, ctx, &queue_init);
++
++	mutex_init(&ctx->vb_mutex);
++
++	if (IS_ERR(ctx->fh.m2m_ctx)) {
++		rc = PTR_ERR(ctx->fh.m2m_ctx);
++
++		v4l2_fh_exit(&ctx->fh);
++		kfree(ctx);
++		goto open_unlock;
++	}
++
++	v4l2_fh_add(&ctx->fh);
++	atomic_inc(&dev->num_inst);
++
++	dprintk(dev, 1, "Created instance: %p, m2m_ctx: %p\n",
++		ctx, ctx->fh.m2m_ctx);
++
++open_unlock:
++	mutex_unlock(&dev->dev_mutex);
++	return rc;
++}
++
++static int audm2m_release(struct file *file)
++{
++	struct audm2m_dev *dev = video_drvdata(file);
++	struct audm2m_ctx *ctx = file2ctx(file);
++
++	dprintk(dev, 1, "Releasing instance %p\n", ctx);
++
++	v4l2_fh_del(&ctx->fh);
++	v4l2_fh_exit(&ctx->fh);
++	mutex_lock(&dev->dev_mutex);
++	v4l2_m2m_ctx_release(ctx->fh.m2m_ctx);
++	mutex_unlock(&dev->dev_mutex);
++	kfree(ctx);
++
++	atomic_dec(&dev->num_inst);
++
++	return 0;
++}
++
++static void audm2m_device_release(struct video_device *vdev)
++{
++	struct audm2m_dev *dev = container_of(vdev, struct audm2m_dev, vfd);
++
++	v4l2_device_unregister(&dev->v4l2_dev);
++	v4l2_m2m_release(dev->m2m_dev);
++
++	kfree(dev);
++}
++
++static const struct v4l2_file_operations audm2m_fops = {
++	.owner		= THIS_MODULE,
++	.open		= audm2m_open,
++	.release	= audm2m_release,
++	.poll		= v4l2_m2m_fop_poll,
++	.unlocked_ioctl	= video_ioctl2,
++	.mmap		= v4l2_m2m_fop_mmap,
++};
++
++static const struct video_device audm2m_videodev = {
++	.name		= MEM2MEM_NAME,
++	.vfl_dir	= VFL_DIR_M2M,
++	.fops		= &audm2m_fops,
++	.ioctl_ops	= &audm2m_ioctl_ops,
++	.minor		= -1,
++	.release	= audm2m_device_release,
++	.device_caps	= V4L2_CAP_AUDIO_M2M | V4L2_CAP_STREAMING,
++};
++
++static const struct v4l2_m2m_ops m2m_ops = {
++	.device_run	= device_run,
++	.job_ready	= job_ready,
++	.job_abort	= job_abort,
++};
++
++static int audm2m_probe(struct platform_device *pdev)
++{
++	struct audm2m_dev *dev;
++	struct video_device *vfd;
++	int ret;
++
++	dev = kzalloc(sizeof(*dev), GFP_KERNEL);
++	if (!dev)
++		return -ENOMEM;
++
++	ret = v4l2_device_register(&pdev->dev, &dev->v4l2_dev);
++	if (ret)
++		goto error_free;
++
++	atomic_set(&dev->num_inst, 0);
++	mutex_init(&dev->dev_mutex);
++
++	dev->vfd = audm2m_videodev;
++	vfd = &dev->vfd;
++	vfd->lock = &dev->dev_mutex;
++	vfd->v4l2_dev = &dev->v4l2_dev;
++
++	video_set_drvdata(vfd, dev);
++	v4l2_info(&dev->v4l2_dev,
++		  "Device registered as /dev/v4l-audio%d\n", vfd->num);
++
++	platform_set_drvdata(pdev, dev);
++
++	dev->m2m_dev = v4l2_m2m_init(&m2m_ops);
++	if (IS_ERR(dev->m2m_dev)) {
++		v4l2_err(&dev->v4l2_dev, "Failed to init mem2mem device\n");
++		ret = PTR_ERR(dev->m2m_dev);
++		dev->m2m_dev = NULL;
++		goto error_dev;
++	}
++
++	ret = video_register_device(vfd, VFL_TYPE_AUDIO, 0);
++	if (ret) {
++		v4l2_err(&dev->v4l2_dev, "Failed to register video device\n");
++		goto error_m2m;
++	}
++
++	return 0;
++
++error_m2m:
++	v4l2_m2m_release(dev->m2m_dev);
++error_dev:
++	v4l2_device_unregister(&dev->v4l2_dev);
++error_free:
++	kfree(dev);
++
++	return ret;
++}
++
++static void audm2m_remove(struct platform_device *pdev)
++{
++	struct audm2m_dev *dev = platform_get_drvdata(pdev);
++
++	v4l2_info(&dev->v4l2_dev, "Removing " MEM2MEM_NAME);
++
++	video_unregister_device(&dev->vfd);
++}
++
++static struct platform_driver audm2m_pdrv = {
++	.probe		= audm2m_probe,
++	.remove_new	= audm2m_remove,
++	.driver		= {
++		.name	= MEM2MEM_NAME,
++	},
++};
++
++static void __exit audm2m_exit(void)
++{
++	platform_driver_unregister(&audm2m_pdrv);
++	platform_device_unregister(&audm2m_pdev);
++}
++
++static int __init audm2m_init(void)
++{
++	int ret;
++
++	ret = platform_device_register(&audm2m_pdev);
++	if (ret)
++		return ret;
++
++	ret = platform_driver_register(&audm2m_pdrv);
++	if (ret)
++		platform_device_unregister(&audm2m_pdev);
++
++	return ret;
++}
++
++module_init(audm2m_init);
++module_exit(audm2m_exit);
 -- 
 2.34.1
 
