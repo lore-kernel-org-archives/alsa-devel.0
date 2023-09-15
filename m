@@ -4,87 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D6384EE6457
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Sep 2023 11:07:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9D1A4EE6459
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Sep 2023 11:40:46 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9FCDF820;
-	Fri, 15 Sep 2023 13:06:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9FCDF820
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2636B950;
+	Fri, 15 Sep 2023 13:39:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2636B950
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1694776036;
-	bh=hOyiTxdftFAjmpAlocJ9lFxzTFRptiSSvs7eM0255YI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1694778044;
+	bh=cV7AHlontMovqDlnpniU2t4nIcmYa9dc2wIMkhwQasI=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=dTITdv4WgJ8u/9+wqO2k7Gz7mUruaznqDYBWTGo/4hBqlI207qK7zBuhVsO67eVLM
-	 ofN6SEeVwPFqTLD+UpYTdPRHOtL4RfOOhjscIHMbA07hcKeaExUECZVlpGlkgmBhKG
-	 IZS4n/On/lDB8IR+KTt7UFxgHaIYuyvGahM3vnVU=
+	b=gxORaET5Bc9n8oggIXhZF/qtHJNFJyDYZ+Iz/MrJ45QDQ3FI8crEPv7MfnZyPjtpQ
+	 NlOBNiRJabyHdQeKKdZr9pcZu6KCBm28akFU3s6JUpofTdMxggMiDyQvI6Noefu0v/
+	 tA/jVoFU4/qbyKZp0S8JKAb45PeyOGGLt9Njns0Q=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CA596F8047D; Fri, 15 Sep 2023 13:05:49 +0200 (CEST)
+	id 731CEF8055A; Fri, 15 Sep 2023 13:39:31 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 24EB4F80425;
-	Fri, 15 Sep 2023 13:05:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BA723F80425;
+	Fri, 15 Sep 2023 13:39:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 800D0F80425; Fri, 15 Sep 2023 13:05:43 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 1F6B1F80537; Fri, 15 Sep 2023 13:39:25 +0200 (CEST)
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id EA1E7F801F5
-	for <alsa-devel@alsa-project.org>; Fri, 15 Sep 2023 13:05:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EA1E7F801F5
+	by alsa1.perex.cz (Postfix) with ESMTPS id 74EE0F80141
+	for <alsa-devel@alsa-project.org>; Fri, 15 Sep 2023 13:39:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 74EE0F80141
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=WpDsJsuw
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 6167461EE3;
-	Fri, 15 Sep 2023 11:05:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 47547C433C8;
-	Fri, 15 Sep 2023 11:05:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1694775933;
-	bh=hOyiTxdftFAjmpAlocJ9lFxzTFRptiSSvs7eM0255YI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=WpDsJsuw/XYb/kdsFriqTellUdxp3bv3hoVp+QKf5Zpd8MhP0Gs9q8g0/SNyC4oSI
-	 As8VAsqgLMD6cOuFT6sTDAOZ3oXGRMxIEoHxhnSUvvRmqg0/WML6mljnfDFQhkqDL5
-	 yZFxquEeaZDlA8oinuSE2akhgUhcCDZDSP5aSXL+c4XwciNfqVqekVgovMX4sfRRhx
-	 zgRlwHnnDr8lfFn9IpPKhxPn8RuYby5Kw94sDqy1xI8iSHxducXC1Wn0DS0zJ3bq+d
-	 EuOqmeCiZp5VyB0kqNE8kjNZcAgL7lolHLaZlVUC6MoDWNzGCRA3dKY1lVAH8zcwi0
-	 zAyT/8woJ3GJw==
-Date: Fri, 15 Sep 2023 12:05:28 +0100
-From: Mark Brown <broonie@kernel.org>
-To: John Watts <contact@jookia.org>
-Cc: Rob Herring <robh@kernel.org>, alsa-devel@alsa-project.org,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-	patches@opensource.cirrus.com, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/3] ASoC: dt-bindings: wlf,wm8782: Add wlf,fsampen
- property
-Message-ID: <5af3315a-7d28-456d-ae36-9984bc8a36e0@sirena.org.uk>
-References: <20230913171552.92252-1-contact@jookia.org>
- <20230913171552.92252-4-contact@jookia.org>
- <20230914145234.GA1275176-robh@kernel.org>
- <ZQPuJXcmHABQFaQl@titan>
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=TwvSAvpY
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694777958; x=1726313958;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=cV7AHlontMovqDlnpniU2t4nIcmYa9dc2wIMkhwQasI=;
+  b=TwvSAvpYeNTba+pGtc0HSIIyqT6XwA0VenIbEBfy+EA+ZuGXRYKrw+ZC
+   bWnAGkPEIY/FK/ogf9gbm/VItLneSQKw283KyAy0cv9eoSGtox2oj+Mae
+   Pj+jhGtcB0pCJ61S+L3DGsAcOmU7GbLceKGkP/yZKjdSM/+JuSy6AglKq
+   +8h9h9cql1KyXi3ZxD6MUvREw/c+XIO8GFmsR9dh29JAXQxV2KXrVhG6l
+   9f0aMt4jFCpPXT0QkD4Gj4cXVEB/lUsC3ldKH/otufQbMRiKPL28xFMkY
+   9PQTlO/CuIxqmPpb40dwJWzH+PLHCiZyyrgMSTINlhuXz0ZE4+EnZh8Wr
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="465590996"
+X-IronPort-AV: E=Sophos;i="6.02,149,1688454000";
+   d="scan'208";a="465590996"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 15 Sep 2023 04:39:12 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="918629479"
+X-IronPort-AV: E=Sophos;i="6.02,149,1688454000";
+   d="scan'208";a="918629479"
+Received: from brhacker-mobl26.amr.corp.intel.com (HELO
+ pujfalus-desk.ger.corp.intel.com) ([10.252.48.34])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 15 Sep 2023 04:39:09 -0700
+From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+To: lgirdwood@gmail.com,
+	broonie@kernel.org
+Cc: alsa-devel@alsa-project.org,
+	pierre-louis.bossart@linux.intel.com,
+	ranjani.sridharan@linux.intel.com,
+	kai.vehmanen@linux.intel.com,
+	guennadi.liakhovetski@linux.intel.com,
+	chao.song@linux.intel.com
+Subject: [PATCH 1/3] ASoC: SOF: Intel: hda: Add definition for SDxFIFOS.FIFOS
+ mask
+Date: Fri, 15 Sep 2023 14:39:10 +0300
+Message-ID: <20230915113912.1405-2-peter.ujfalusi@linux.intel.com>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20230915113912.1405-1-peter.ujfalusi@linux.intel.com>
+References: <20230915113912.1405-1-peter.ujfalusi@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="fvWBAkIAAADLULEo"
-Content-Disposition: inline
-In-Reply-To: <ZQPuJXcmHABQFaQl@titan>
-X-Cookie: Gravity brings me down.
-Message-ID-Hash: QNNOETSGCX3DPAWJI2FHQLVFRNTBR3JG
-X-Message-ID-Hash: QNNOETSGCX3DPAWJI2FHQLVFRNTBR3JG
-X-MailFrom: broonie@kernel.org
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: KUEVWFNKLR7RGAUR6XLQYJNIXW7CQ2NQ
+X-Message-ID-Hash: KUEVWFNKLR7RGAUR6XLQYJNIXW7CQ2NQ
+X-MailFrom: peter.ujfalusi@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -96,7 +97,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QNNOETSGCX3DPAWJI2FHQLVFRNTBR3JG/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KUEVWFNKLR7RGAUR6XLQYJNIXW7CQ2NQ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -105,33 +106,47 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+The FIFOS (FIFO Size) field is in bit 0-15 of the register.
+Use the defined mask instead of a magic number for the FIFOS value
+masking in hda_dsp_stream_hw_params().
 
---fvWBAkIAAADLULEo
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Reviewed-by: Chao Song <chao.song@linux.intel.com>
+---
+ sound/soc/sof/intel/hda-stream.c | 2 +-
+ sound/soc/sof/intel/hda.h        | 3 +++
+ 2 files changed, 4 insertions(+), 1 deletion(-)
 
-On Fri, Sep 15, 2023 at 03:39:49PM +1000, John Watts wrote:
-> On Thu, Sep 14, 2023 at 09:52:34AM -0500, Rob Herring wrote:
-> > What's the default if the property is not present?
->=20
-> 0. Should I specify it here?
+diff --git a/sound/soc/sof/intel/hda-stream.c b/sound/soc/sof/intel/hda-stream.c
+index 0b0087abcc50..65e9242365be 100644
+--- a/sound/soc/sof/intel/hda-stream.c
++++ b/sound/soc/sof/intel/hda-stream.c
+@@ -668,7 +668,7 @@ int hda_dsp_stream_hw_params(struct snd_sof_dev *sdev,
+ 			snd_sof_dsp_read(sdev, HDA_DSP_HDA_BAR,
+ 					 sd_offset +
+ 					 SOF_HDA_ADSP_REG_SD_FIFOSIZE);
+-		hstream->fifo_size &= 0xffff;
++		hstream->fifo_size &= SOF_HDA_SD_FIFOSIZE_FIFOS_MASK;
+ 		hstream->fifo_size += 1;
+ 	} else {
+ 		hstream->fifo_size = 0;
+diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
+index 5c517ec57d4a..2b228c63905b 100644
+--- a/sound/soc/sof/intel/hda.h
++++ b/sound/soc/sof/intel/hda.h
+@@ -135,6 +135,9 @@
+ #define SOF_HDA_ADSP_REG_SD_BDLPU		0x1C
+ #define SOF_HDA_ADSP_SD_ENTRY_SIZE		0x20
+ 
++/* SDxFIFOS FIFOS */
++#define SOF_HDA_SD_FIFOSIZE_FIFOS_MASK		GENMASK(15, 0)
++
+ /* CL: Software Position Based FIFO Capability Registers */
+ #define SOF_DSP_REG_CL_SPBFIFO \
+ 	(SOF_HDA_ADSP_LOADER_BASE + 0x20)
+-- 
+2.42.0
 
-Yes.
-
---fvWBAkIAAADLULEo
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmUEOncACgkQJNaLcl1U
-h9Alnwf9EPsqr1HyoMSzQWvu19hw6Elkc/4CZFN7c83HmYYYCw9czGwXkWmepk/7
-pdGCA6F7elZgl4NSe5uVT9oufbHDplEwq5p7PCW4kK+V5q0THsxxNXfG9QvWb+LV
-xbHHM2IBeAUR1Vb9Ah7aauT0Ub+ZzQxwSRcbmq5Vue3Q7OiVEc5PNPt+PVonR9uU
-/kl6+rj7bQGjTPZBPODjqPNTzuKq0ZiW2fNBIS1BRj/rOGqzdmufuXPNmbRL3RLF
-U8BdngqaatpTb/MDsqYBrJlcruyd2ohW/Wzmo7KVkSbHYRZn5xssz2w5hKW4L0Ds
-kvORxQle7O2YX/3zfrfRDhp0GQL5rQ==
-=rfmv
------END PGP SIGNATURE-----
-
---fvWBAkIAAADLULEo--
