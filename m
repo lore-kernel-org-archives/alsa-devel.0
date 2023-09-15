@@ -4,66 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 25948EE645A
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Sep 2023 11:41:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BCA19EE6457
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Sep 2023 11:41:36 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 37550DEE;
-	Fri, 15 Sep 2023 13:40:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 37550DEE
+	by alsa0.perex.cz (Postfix) with ESMTPS id C1E32DF1;
+	Fri, 15 Sep 2023 13:40:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C1E32DF1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1694778080;
-	bh=iXPCYcT4FXNNSbDM2bk+ID/REq63Xzzblt6xNu6xPrI=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=uTECCdFxCgjNGLN7arFkICUC9IYtU0qoL7FUM1XL/WPdbbut60rJJTfv1pZVe6ykY
-	 f3WzJbk8dsbjxgi2E+zS22iIhlE9zcGIfuHX05+cPYaEgoQFQethVaS7rM0QQV9qez
-	 J9WGTIa+mV64qVtXFijgvt9Azla52p17kSoNapn0=
+	s=default; t=1694778094;
+	bh=R5UmcmMi+0KGyQh2g1ZKzfiwXf75bbklKGGQF55+D5w=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=lM3LXs1U5tHwHvYT7wyGa01Lua56mf216XhpWXhCJF0HT0llBcoFLoBLLJ3u9nsRI
+	 jXxd1OzV5UC32jtHHT9rZEea7yD3OGjBXVlVgXAzaTfMFPEhg1HT4/iz6GSeRqahLu
+	 afYM86LCC13AjeJxFAjJ9Pzd/QbLQQqqLAHq0yyQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7EFA9F80578; Fri, 15 Sep 2023 13:39:34 +0200 (CEST)
+	id 8C34CF8057B; Fri, 15 Sep 2023 13:39:37 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E9F37F80578;
-	Fri, 15 Sep 2023 13:39:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 06577F80589;
+	Fri, 15 Sep 2023 13:39:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 04E97F80425; Fri, 15 Sep 2023 13:39:29 +0200 (CEST)
+	id CC569F80537; Fri, 15 Sep 2023 13:39:30 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7B661F801F5
-	for <alsa-devel@alsa-project.org>; Fri, 15 Sep 2023 13:39:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7B661F801F5
+	by alsa1.perex.cz (Postfix) with ESMTPS id D4291F80431
+	for <alsa-devel@alsa-project.org>; Fri, 15 Sep 2023 13:39:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D4291F80431
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=irFfKlpd
+ header.s=Intel header.b=G8V0O6Xn
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694777960; x=1726313960;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=iXPCYcT4FXNNSbDM2bk+ID/REq63Xzzblt6xNu6xPrI=;
-  b=irFfKlpdf6c6QU0f86C6abX8N0nX0OcWWGEGLcZgAB6ZuBqvTZeKt74W
-   bwHUMDShamYvLa+mZWo7iffzfF8Onvou2Pa/TZtU3C2FAq7W6xZqSoFJJ
-   Ni79krcrgV1XmWMuM/+88xZ8sOArt3GonthFx0LMSDTggRrR2tTcDDk8+
-   bmCKsyps+PFsdba9suGhTjCxHCqKhGs3Uf1bVeg0BPGVfi9RoTu9CbnYQ
-   ahZbApLMrcz2asGwHIPZIXdTo88oj0XRB6/UDBbeloN0b5jaIGSQIBndd
-   +sts+cpy1Ul3N4mrQIudEX6vImOfoCtJcJ+oaoQIUvxGm1JeJ1TMJLFdh
+  t=1694777963; x=1726313963;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=R5UmcmMi+0KGyQh2g1ZKzfiwXf75bbklKGGQF55+D5w=;
+  b=G8V0O6XnLv9NT3pnuMDfrbK5Kd24JsG8hJ4qLs4WjPZWsaeyEFZzooE4
+   RAlXwEvRST0nvSYbm4gASavFJN13589PEiNrlKQVr0+gP1FbsEqBXOfAS
+   shFxPg9Qu1qkYnDxy1BA3tIMJlSOxr1Yqv5QiXjcOnbyDk7v7VxogIACC
+   IElikc46zlsNAPU7ffATkPW8r09/XZ/oDsH+iowj7as+pN2nC+KScVduR
+   Z2GU9Nh+b+R1RS+CeUt1MB8N662WylYXqXHBhciT2S4jn6hdbXGdbWZjF
+   +oxUISi5X097LGXWuGNqjCGjYhtnV5TeNtgmnC912ZdmzE/q/ZgTAaCFa
    g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="465590992"
+X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="465591008"
 X-IronPort-AV: E=Sophos;i="6.02,149,1688454000";
-   d="scan'208";a="465590992"
+   d="scan'208";a="465591008"
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
   by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Sep 2023 04:39:09 -0700
+ 15 Sep 2023 04:39:17 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="918629460"
+X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="918629516"
 X-IronPort-AV: E=Sophos;i="6.02,149,1688454000";
-   d="scan'208";a="918629460"
+   d="scan'208";a="918629516"
 Received: from brhacker-mobl26.amr.corp.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.252.48.34])
   by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Sep 2023 04:39:07 -0700
+ 15 Sep 2023 04:39:15 -0700
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com,
 	broonie@kernel.org
@@ -73,14 +74,17 @@ Cc: alsa-devel@alsa-project.org,
 	kai.vehmanen@linux.intel.com,
 	guennadi.liakhovetski@linux.intel.com,
 	chao.song@linux.intel.com
-Subject: [PATCH 0/3] ASoC: SOF: ipc4/Intel: Implement split fw library loading
-Date: Fri, 15 Sep 2023 14:39:09 +0300
-Message-ID: <20230915113912.1405-1-peter.ujfalusi@linux.intel.com>
+Subject: [PATCH 3/3] ASoC: SOF: Intel: hda-loader: Add support for split
+ library loading
+Date: Fri, 15 Sep 2023 14:39:12 +0300
+Message-ID: <20230915113912.1405-4-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20230915113912.1405-1-peter.ujfalusi@linux.intel.com>
+References: <20230915113912.1405-1-peter.ujfalusi@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: AXLD2SXRP2NOGIHHS4MCDUDROMTVNL3Z
-X-Message-ID-Hash: AXLD2SXRP2NOGIHHS4MCDUDROMTVNL3Z
+Message-ID-Hash: UBMXRFAVOOPRWOVMBZNK3OHEPJ2HBXKI
+X-Message-ID-Hash: UBMXRFAVOOPRWOVMBZNK3OHEPJ2HBXKI
 X-MailFrom: peter.ujfalusi@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -93,7 +97,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AXLD2SXRP2NOGIHHS4MCDUDROMTVNL3Z/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UBMXRFAVOOPRWOVMBZNK3OHEPJ2HBXKI/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -102,33 +106,94 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi,
+There is a certain sequence needs to be followed when configuring the HDA
+DMA in host and DSP.
+The firmware provides a way to handle this two stage sequencing by
+splitting the library loading into two stage:
+1st stage: LOAD_LIBRARY_PREPARE message
+           the lib_id is 0, used to configure the DMA on DSP side
+2nd stage: LOAD_LIBRARY message
+           both dma_id and lib_id is valid, used for the actual transfer of
+           the library
 
-This series implements support for split library loading to comply with the HDA
-DMA programming sequence recommendation, which is:
-1. DSP side DMA programming and GEN bit set to 1
-2. host side DMA programming and RUN bit set to 1
+In case a firmware without support for this two stage loading is used then
+the second stage message will trigger the loading and the first stage will
+return with error, which is ignored by the kernel.
 
-The SOF support for library loading is based on this sequence, backwards
-compatibility with older reference firmware is supported (where only the
-LOAD_LIBRARY message is supported).
-
-Regards,
-Peter
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Reviewed-by: Chao Song <chao.song@linux.intel.com>
 ---
-Peter Ujfalusi (3):
-  ASoC: SOF: Intel: hda: Add definition for SDxFIFOS.FIFOS mask
-  ASoC: SOF: ipc4: Add new message type:
-    SOF_IPC4_GLB_LOAD_LIBRARY_PREPARE
-  ASoC: SOF: Intel: hda-loader: Add support for split library loading
-
- include/sound/sof/ipc4/header.h  | 15 +++++++++---
  sound/soc/sof/intel/hda-loader.c | 42 ++++++++++++++++++++++++++++++--
- sound/soc/sof/intel/hda-stream.c |  2 +-
- sound/soc/sof/intel/hda.h        |  3 +++
- sound/soc/sof/ipc4.c             |  1 +
- 5 files changed, 56 insertions(+), 7 deletions(-)
+ 1 file changed, 40 insertions(+), 2 deletions(-)
 
+diff --git a/sound/soc/sof/intel/hda-loader.c b/sound/soc/sof/intel/hda-loader.c
+index 50ce6b190002..1e2669a8088d 100644
+--- a/sound/soc/sof/intel/hda-loader.c
++++ b/sound/soc/sof/intel/hda-loader.c
+@@ -545,11 +545,40 @@ int hda_dsp_ipc4_load_library(struct snd_sof_dev *sdev,
+ 
+ 	memcpy(dmab.area, stripped_firmware.data, stripped_firmware.size);
+ 
++	/*
++	 * 1st stage: SOF_IPC4_GLB_LOAD_LIBRARY_PREPARE
++	 * Message includes the dma_id to be prepared for the library loading.
++	 * If the firmware does not have support for the message, we will
++	 * receive -EOPNOTSUPP. In this case we will use single step library
++	 * loading and proceed to send the LOAD_LIBRARY message.
++	 */
+ 	msg.primary = hext_stream->hstream.stream_tag - 1;
+-	msg.primary |= SOF_IPC4_MSG_TYPE_SET(SOF_IPC4_GLB_LOAD_LIBRARY);
++	msg.primary |= SOF_IPC4_MSG_TYPE_SET(SOF_IPC4_GLB_LOAD_LIBRARY_PREPARE);
+ 	msg.primary |= SOF_IPC4_MSG_DIR(SOF_IPC4_MSG_REQUEST);
+ 	msg.primary |= SOF_IPC4_MSG_TARGET(SOF_IPC4_FW_GEN_MSG);
+-	msg.primary |= SOF_IPC4_GLB_LOAD_LIBRARY_LIB_ID(fw_lib->id);
++	ret = sof_ipc_tx_message_no_reply(sdev->ipc, &msg, 0);
++	if (!ret) {
++		int sd_offset = SOF_STREAM_SD_OFFSET(&hext_stream->hstream);
++		unsigned int status;
++
++		/*
++		 * Make sure that the FIFOS value is not 0 in SDxFIFOS register
++		 * which indicates that the firmware set the GEN bit and we can
++		 * continue to start the DMA
++		 */
++		ret = snd_sof_dsp_read_poll_timeout(sdev, HDA_DSP_HDA_BAR,
++					sd_offset + SOF_HDA_ADSP_REG_SD_FIFOSIZE,
++					status,
++					status & SOF_HDA_SD_FIFOSIZE_FIFOS_MASK,
++					HDA_DSP_REG_POLL_INTERVAL_US,
++					HDA_DSP_BASEFW_TIMEOUT_US);
++
++		if (ret < 0)
++			dev_warn(sdev->dev,
++				 "%s: timeout waiting for FIFOS\n", __func__);
++	} else if (ret != -EOPNOTSUPP) {
++		goto cleanup;
++	}
+ 
+ 	ret = cl_trigger(sdev, hext_stream, SNDRV_PCM_TRIGGER_START);
+ 	if (ret < 0) {
+@@ -557,8 +586,17 @@ int hda_dsp_ipc4_load_library(struct snd_sof_dev *sdev,
+ 		goto cleanup;
+ 	}
+ 
++	/*
++	 * 2nd stage: LOAD_LIBRARY
++	 * Message includes the dma_id and the lib_id, the dma_id must be
++	 * identical to the one sent via LOAD_LIBRARY_PREPARE
++	 */
++	msg.primary &= ~SOF_IPC4_MSG_TYPE_MASK;
++	msg.primary |= SOF_IPC4_MSG_TYPE_SET(SOF_IPC4_GLB_LOAD_LIBRARY);
++	msg.primary |= SOF_IPC4_GLB_LOAD_LIBRARY_LIB_ID(fw_lib->id);
+ 	ret = sof_ipc_tx_message_no_reply(sdev->ipc, &msg, 0);
+ 
++	/* Stop the DMA channel */
+ 	ret1 = cl_trigger(sdev, hext_stream, SNDRV_PCM_TRIGGER_STOP);
+ 	if (ret1 < 0) {
+ 		dev_err(sdev->dev, "%s: DMA trigger stop failed\n", __func__);
 -- 
 2.42.0
 
