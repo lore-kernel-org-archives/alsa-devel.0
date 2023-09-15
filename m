@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4C19CEE6457
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Sep 2023 12:45:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B943EEE6457
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Sep 2023 12:45:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 60475DEE;
-	Fri, 15 Sep 2023 14:44:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 60475DEE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3DB44DF0;
+	Fri, 15 Sep 2023 14:44:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3DB44DF0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1694781923;
-	bh=+nKJ/PSxOyzVc92SxY5hlQYodLmGBl0Juiujx8Gpw9Y=;
+	s=default; t=1694781937;
+	bh=zPy+3sccQoKNgoc0xK4zF+WWBM6gv5CjZjz0dOBjI6c=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=RBL6yWeXpdYxPm95vNv0yAQaFY5ca3BXpeiOkj0W5htSt+fi+u8nPWV1vWL0S1Wqu
-	 90rYyTQnp+CLTvcBzVvcjdxdoq221nd7OzRgHheCr9irA2Heoze73A8MmHDkX3a7OK
-	 SDWNSCjqt/e6tRyo3XZWf1IGNsHMFQ6OeTSnzqP8=
+	b=kbHEki4x0RyjO+hHUZ/4PcRZLxfaC9RS0gueBwzDyycvCW7YWLlk9nI5PL8EodEkg
+	 7s4+1blH5Yi03Y9s52mU89LOSjhJuSQCSuQ0LPOm3SbAUi6P1Wfax+9FfI00UERyf5
+	 EOY0cFhvx1MzPGJj/HdMIuIFGRSBZ1mldUQgzwhY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B86C4F80610; Fri, 15 Sep 2023 14:41:09 +0200 (CEST)
+	id 8AE57F8061E; Fri, 15 Sep 2023 14:41:11 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D9D04F80615;
-	Fri, 15 Sep 2023 14:41:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 75063F8061C;
+	Fri, 15 Sep 2023 14:41:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 421C5F805C6; Fri, 15 Sep 2023 14:40:46 +0200 (CEST)
+	id A0803F805D7; Fri, 15 Sep 2023 14:40:48 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 04F23F805A1
-	for <alsa-devel@alsa-project.org>; Fri, 15 Sep 2023 14:40:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 04F23F805A1
+	by alsa1.perex.cz (Postfix) with ESMTPS id BB13FF805C4
+	for <alsa-devel@alsa-project.org>; Fri, 15 Sep 2023 14:40:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BB13FF805C4
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=UXIgqf6L
+ header.s=Intel header.b=LsuaEtCP
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694781637; x=1726317637;
+  t=1694781644; x=1726317644;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=+nKJ/PSxOyzVc92SxY5hlQYodLmGBl0Juiujx8Gpw9Y=;
-  b=UXIgqf6L651gBRaPF+a2vNwxi+KqcXfVRV0J13KAfV4+VKV8VzDi+Al2
-   9/mLwzfECGA4+Nvp0socP3yb+USAJZwKjrLkTKE9bpatFSLW+mUvA2PlL
-   j0yvuKuIKvac6pFvF5e97gA2dH2nbCz7AO6cYwCSqynAzyNjXvgHvH5Lk
-   c6iCu1VI2uWrsX8I59GA2Tg5wppwxj5zcmv6oUipud6TCRFGRthiDfD+o
-   OrAtFxN/3RIvaoxuIrZXfwjnoxR4wTE59aa6Xtbrw0uVaFQX1bCu5Q451
-   RI2myX+x3vZFFwq8q1W8lBcT2d8imWf0sfhE4kXWw96xaNqlUq+wd5car
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="358653194"
+  bh=zPy+3sccQoKNgoc0xK4zF+WWBM6gv5CjZjz0dOBjI6c=;
+  b=LsuaEtCP6dehHBHOMow8mbe/VIU6Nq3ox6sDEN6bzZ//zgBkYLXv+dwD
+   24ORphbTuE9EVL8PDaxlMC0BaY5xBnF0x4/DLj7VUJ2StCF7qMQUp/wgF
+   UpQ1ar1on7Yy2YdaG7N5fcTrVTPExfn/AW/VTJDlZLPccztKkVl1yQgR3
+   EDVVbIpYsqpxvx0virzfpA/yvSSQm9sCAOZhGEOd89y9StnDZSobBbxOE
+   N5WjVa/5VYyubxaj8lX2+DPDpazLKWomoJljGvd3bs7xv+b9jIKv+clKb
+   0xTKj5mVMQIO047jnrDpdR38OA/vsbDsMn5LBNoFkdsXEm+8sLPr70HHm
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="358653217"
 X-IronPort-AV: E=Sophos;i="6.02,149,1688454000";
-   d="scan'208";a="358653194"
+   d="scan'208";a="358653217"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
   by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Sep 2023 05:40:34 -0700
+ 15 Sep 2023 05:40:41 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="774304597"
+X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="774304612"
 X-IronPort-AV: E=Sophos;i="6.02,149,1688454000";
-   d="scan'208";a="774304597"
+   d="scan'208";a="774304612"
 Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
   by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Sep 2023 05:40:31 -0700
+ 15 Sep 2023 05:40:39 -0700
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 To: broonie@kernel.org,
 	tiwai@suse.de
@@ -74,16 +74,16 @@ Cc: alsa-devel@alsa-project.org,
 	brent.lu@intel.com,
 	uday.m.bhat@intel.com,
 	balamurugan.c@intel.com
-Subject: [PATCH 10/19] ASoC: Intel: sof_rt5682: add adl_rt5650 board config
-Date: Fri, 15 Sep 2023 20:48:43 +0800
-Message-Id: <20230915124852.1696857-11-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH 13/19] ASoC: Intel: nuvoton-common: support nau8318 amplifier
+Date: Fri, 15 Sep 2023 20:48:46 +0800
+Message-Id: <20230915124852.1696857-14-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230915124852.1696857-1-yung-chuan.liao@linux.intel.com>
 References: <20230915124852.1696857-1-yung-chuan.liao@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 3SYVD2C5QJVK3IWEHVH5TDR7JM464WBE
-X-Message-ID-Hash: 3SYVD2C5QJVK3IWEHVH5TDR7JM464WBE
+Message-ID-Hash: 7YGITBTB3DHHAHSMKUMQMMKRHWJHHXXQ
+X-Message-ID-Hash: 7YGITBTB3DHHAHSMKUMQMMKRHWJHHXXQ
 X-MailFrom: yung-chuan.liao@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -96,7 +96,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3SYVD2C5QJVK3IWEHVH5TDR7JM464WBE/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7YGITBTB3DHHAHSMKUMQMMKRHWJHHXXQ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -107,94 +107,155 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Brent Lu <brent.lu@intel.com>
 
-This configuration supports ADL boards which implement ALC5650 dual
-I2S interface codec. Two DAI links are added: AIF1 (on codec side) for
-headphone and AIF2 for speakers.
+Implement nau8318 support code in this common module so it could be
+shared between multiple SOF machine drivers.
 
 Signed-off-by: Brent Lu <brent.lu@intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- sound/soc/intel/boards/sof_rt5682.c           | 21 +++++++++++++------
- .../intel/common/soc-acpi-intel-adl-match.c   | 12 +++++++++++
- 2 files changed, 27 insertions(+), 6 deletions(-)
+ sound/soc/intel/boards/Kconfig              |  3 +
+ sound/soc/intel/boards/Makefile             |  3 +
+ sound/soc/intel/boards/sof_nuvoton_common.c | 73 +++++++++++++++++++++
+ sound/soc/intel/boards/sof_nuvoton_common.h | 22 +++++++
+ 4 files changed, 101 insertions(+)
+ create mode 100644 sound/soc/intel/boards/sof_nuvoton_common.c
+ create mode 100644 sound/soc/intel/boards/sof_nuvoton_common.h
 
-diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
-index bbe15c36b855..f5767f9e506d 100644
---- a/sound/soc/intel/boards/sof_rt5682.c
-+++ b/sound/soc/intel/boards/sof_rt5682.c
-@@ -1153,6 +1153,12 @@ static const struct platform_device_id board_ids[] = {
- 		.driver_data = (kernel_ulong_t)(SOF_RT5682_MCLK_EN |
- 					SOF_RT5682_SSP_CODEC(0)),
- 	},
-+	{
-+		.name = "jsl_rt5650",
-+		.driver_data = (kernel_ulong_t)(SOF_RT5682_MCLK_EN |
-+					SOF_RT5682_SSP_CODEC(0) |
-+					SOF_RT5682_SSP_AMP(1)),
-+	},
- 	{
- 		.name = "tgl_mx98357_rt5682",
- 		.driver_data = (kernel_ulong_t)(SOF_RT5682_MCLK_EN |
-@@ -1239,6 +1245,15 @@ static const struct platform_device_id board_ids[] = {
- 					/* SSP 0 and SSP 2 are used for HDMI IN */
- 					SOF_HDMI_CAPTURE_SSP_MASK(0x5)),
- 	},
-+	{
-+		.name = "adl_rt5650",
-+		.driver_data = (kernel_ulong_t)(SOF_RT5682_MCLK_EN |
-+					SOF_RT5682_SSP_CODEC(0) |
-+					SOF_RT5682_SSP_AMP(1) |
-+					SOF_RT5682_NUM_HDMIDEV(4) |
-+					SOF_BT_OFFLOAD_SSP(2) |
-+					SOF_SSP_BT_OFFLOAD_PRESENT),
-+	},
- 	{
- 		.name = "rpl_mx98357_rt5682",
- 		.driver_data = (kernel_ulong_t)(SOF_RT5682_MCLK_EN |
-@@ -1287,12 +1302,6 @@ static const struct platform_device_id board_ids[] = {
- 					SOF_RT5682_SSP_AMP(0) |
- 					SOF_RT5682_NUM_HDMIDEV(3)),
- 	},
--	{
--		.name = "jsl_rt5650",
--		.driver_data = (kernel_ulong_t)(SOF_RT5682_MCLK_EN |
--					SOF_RT5682_SSP_CODEC(0) |
--					SOF_RT5682_SSP_AMP(1)),
--	},
- 	{ }
- };
- MODULE_DEVICE_TABLE(platform, board_ids);
-diff --git a/sound/soc/intel/common/soc-acpi-intel-adl-match.c b/sound/soc/intel/common/soc-acpi-intel-adl-match.c
-index 8e995edf4c10..4e9787870f60 100644
---- a/sound/soc/intel/common/soc-acpi-intel-adl-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-adl-match.c
-@@ -492,6 +492,11 @@ static const struct snd_soc_acpi_codecs adl_nau8318_amp = {
- 	.codecs = {"NVTN2012"}
- };
+diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
+index 6da6cad7fd05..d32098e0c576 100644
+--- a/sound/soc/intel/boards/Kconfig
++++ b/sound/soc/intel/boards/Kconfig
+@@ -38,6 +38,9 @@ config SND_SOC_INTEL_SOF_REALTEK_COMMON
+ config SND_SOC_INTEL_SOF_CIRRUS_COMMON
+ 	tristate
  
-+static struct snd_soc_acpi_codecs adl_rt5650_amp = {
-+	.num_codecs = 1,
-+	.codecs = {"10EC5650"}
++config SND_SOC_INTEL_SOF_NUVOTON_COMMON
++	tristate
++
+ config SND_SOC_INTEL_SOF_SSP_COMMON
+ 	tristate
+ 
+diff --git a/sound/soc/intel/boards/Makefile b/sound/soc/intel/boards/Makefile
+index ce03a0be1a92..70eb596f4ec3 100644
+--- a/sound/soc/intel/boards/Makefile
++++ b/sound/soc/intel/boards/Makefile
+@@ -97,5 +97,8 @@ obj-$(CONFIG_SND_SOC_INTEL_SOF_REALTEK_COMMON) += snd-soc-intel-sof-realtek-comm
+ snd-soc-intel-sof-cirrus-common-objs += sof_cirrus_common.o
+ obj-$(CONFIG_SND_SOC_INTEL_SOF_CIRRUS_COMMON) += snd-soc-intel-sof-cirrus-common.o
+ 
++snd-soc-intel-sof-nuvoton-common-objs += sof_nuvoton_common.o
++obj-$(CONFIG_SND_SOC_INTEL_SOF_NUVOTON_COMMON) += snd-soc-intel-sof-nuvoton-common.o
++
+ snd-soc-intel-sof-ssp-common-objs += sof_ssp_common.o
+ obj-$(CONFIG_SND_SOC_INTEL_SOF_SSP_COMMON) += snd-soc-intel-sof-ssp-common.o
+diff --git a/sound/soc/intel/boards/sof_nuvoton_common.c b/sound/soc/intel/boards/sof_nuvoton_common.c
+new file mode 100644
+index 000000000000..549a412f5d53
+--- /dev/null
++++ b/sound/soc/intel/boards/sof_nuvoton_common.c
+@@ -0,0 +1,73 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * This file defines data structures and functions used in Machine
++ * Driver for Intel platforms with Nuvoton Codecs.
++ *
++ * Copyright 2023 Intel Corporation.
++ */
++#include <linux/module.h>
++#include <sound/sof.h>
++#include "sof_nuvoton_common.h"
++
++/*
++ * Nuvoton NAU8318
++ */
++static const struct snd_kcontrol_new nau8318_kcontrols[] = {
++	SOC_DAPM_PIN_SWITCH("Spk"),
 +};
 +
- struct snd_soc_acpi_mach snd_soc_acpi_intel_adl_machines[] = {
- 	{
- 		.comp_ids = &adl_rt5682_rt5682s_hp,
-@@ -602,6 +607,13 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_adl_machines[] = {
- 					SND_SOC_ACPI_TPLG_INTEL_SSP_MSB |
- 					SND_SOC_ACPI_TPLG_INTEL_DMIC_NUMBER,
- 	},
++static const struct snd_soc_dapm_widget nau8318_widgets[] = {
++	SND_SOC_DAPM_SPK("Spk", NULL),
++};
++
++static const struct snd_soc_dapm_route nau8318_routes[] = {
++	{ "Spk", NULL, "Speaker" },
++};
++
++static struct snd_soc_dai_link_component nau8318_components[] = {
 +	{
-+		.id = "10EC5650",
-+		.drv_name = "adl_rt5650",
-+		.machine_quirk = snd_soc_acpi_codec_list,
-+		.quirk_data = &adl_rt5650_amp,
-+		.sof_tplg_filename = "sof-adl-rt5650.tplg",
-+	},
- 	/* place amp-only boards in the end of table */
- 	{
- 		.id = "CSC3541",
++		.name = NAU8318_DEV0_NAME,
++		.dai_name = NAU8318_CODEC_DAI,
++	}
++};
++
++static int nau8318_init(struct snd_soc_pcm_runtime *rtd)
++{
++	struct snd_soc_card *card = rtd->card;
++	int ret;
++
++	ret = snd_soc_dapm_new_controls(&card->dapm, nau8318_widgets,
++					ARRAY_SIZE(nau8318_widgets));
++	if (ret) {
++		dev_err(rtd->dev, "fail to add nau8318 widgets, ret %d\n", ret);
++		return ret;
++	}
++
++	ret = snd_soc_add_card_controls(card, nau8318_kcontrols,
++					ARRAY_SIZE(nau8318_kcontrols));
++	if (ret) {
++		dev_err(rtd->dev, "fail to add nau8318 kcontrols, ret %d\n", ret);
++		return ret;
++	}
++
++	ret = snd_soc_dapm_add_routes(&card->dapm, nau8318_routes,
++				      ARRAY_SIZE(nau8318_routes));
++
++	if (ret) {
++		dev_err(rtd->dev, "fail to add nau8318 routes, ret %d\n", ret);
++		return ret;
++	}
++
++	return ret;
++}
++
++void nau8318_set_dai_link(struct snd_soc_dai_link *link)
++{
++	link->codecs = nau8318_components;
++	link->num_codecs = ARRAY_SIZE(nau8318_components);
++	link->init = nau8318_init;
++}
++EXPORT_SYMBOL_NS(nau8318_set_dai_link, SND_SOC_INTEL_SOF_NUVOTON_COMMON);
++
++MODULE_DESCRIPTION("ASoC Intel SOF Nuvoton helpers");
++MODULE_LICENSE("GPL");
+diff --git a/sound/soc/intel/boards/sof_nuvoton_common.h b/sound/soc/intel/boards/sof_nuvoton_common.h
+new file mode 100644
+index 000000000000..53a84f9a67c0
+--- /dev/null
++++ b/sound/soc/intel/boards/sof_nuvoton_common.h
+@@ -0,0 +1,22 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++/*
++ * This file defines data structures used in Machine Driver for Intel
++ * platforms with Nuvoton Codecs.
++ *
++ * Copyright 2023 Intel Corporation.
++ */
++#ifndef __SOF_NUVOTON_COMMON_H
++#define __SOF_NUVOTON_COMMON_H
++
++#include <sound/soc.h>
++#include "sof_ssp_common.h"
++
++/*
++ * Nuvoton NAU8318
++ */
++#define NAU8318_CODEC_DAI	"nau8315-hifi"
++#define NAU8318_DEV0_NAME	"i2c-" NAU8318_ACPI_HID ":00"
++
++void nau8318_set_dai_link(struct snd_soc_dai_link *link);
++
++#endif /* __SOF_NUVOTON_COMMON_H */
 -- 
 2.25.1
 
