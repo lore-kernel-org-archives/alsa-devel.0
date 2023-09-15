@@ -4,90 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0CFC4EE6442
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Sep 2023 08:23:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F05DDEE643D
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Sep 2023 08:29:39 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C32D584C;
-	Fri, 15 Sep 2023 10:22:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C32D584C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 48A8C206;
+	Fri, 15 Sep 2023 10:28:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 48A8C206
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1694766223;
-	bh=yPmFxqa/oDREoJOGNrmiN24unhnTilxPj/agOz4qrgw=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=SXMya5ChHgANexkr5n30HwlPvDUTT/PWzV/a+jQZqZ0kBCrLxTr3tmzuBZoZMM00X
-	 qOvUADyVD6S3h22DdRZmmKN1WYmOkSL7jvP8N5k6bVFDbppqlMs63s5VubzQpTilH9
-	 qclcjz3PuiAWaIwCy7MBeXjmJ2MVVWb0ZRP+/hCI=
+	s=default; t=1694766577;
+	bh=yG+VpIY7wdPHAu3FPDRZEyR1zG2xDN+YQQnSl35mbgU=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=SfWaW7uwfhV9YEQU4kO2RZ9BYfBmfzlzRzd62LJiXo+VXKKniHF1cneeEviRidGjL
+	 3+gc3VframCDq51FgjxWDgL9eMGbnpHUtUlCQCml8o89cHV4SBPbV3zkaFKBw7Z0em
+	 Rb3+mG6zpercwrmNdvzpvqWUFusdsizyPChm8C9M=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6152EF80552; Fri, 15 Sep 2023 10:22:25 +0200 (CEST)
+	id EE58FF80568; Fri, 15 Sep 2023 10:28:17 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 99FB6F80425;
-	Fri, 15 Sep 2023 10:22:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3BE29F80558;
+	Fri, 15 Sep 2023 10:28:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3C3DFF80425; Fri, 15 Sep 2023 10:22:20 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+	id CF307F80567; Fri, 15 Sep 2023 10:28:12 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2001:67c:2178:6::1d])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 4CF36F8007C
-	for <alsa-devel@alsa-project.org>; Fri, 15 Sep 2023 10:22:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4CF36F8007C
+	by alsa1.perex.cz (Postfix) with ESMTPS id 0EF0CF80551
+	for <alsa-devel@alsa-project.org>; Fri, 15 Sep 2023 10:28:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0EF0CF80551
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=g7dfFFhP;
+ header.s=susede2_rsa header.b=MAsImQrD;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=4cCPHdzd
+ header.s=susede2_ed25519 header.b=XJvXnRvj
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 88CC6218E5;
-	Fri, 15 Sep 2023 08:22:16 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 058641F854;
+	Fri, 15 Sep 2023 08:28:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1694766136;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1694766487; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
-  content-transfer-encoding:content-transfer-encoding;
-	bh=o3S9DfckXdFYSaIFJXSrrtRWEgE8xTPJPA0wp0PmiRQ=;
-	b=g7dfFFhPkEVMQNbmEJyRq+qBGNWqp60V6CmE3wIJDOC8+FYcB6geUkSCsf2t3oSZRbSVX1
-	bxIhgj8m04nbL8ThGNHIO+BNmf/Tsn+8NgvmVJOWM/fix1cjzJhXwyEsmatQe340MIz8Y+
-	xipENSMv2y65CGDCAXsXTl3zUpDrpwI=
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ynXYPd2uD0C5NDK4NdLWI9mGj1vcafvL56YCrd5YFpA=;
+	b=MAsImQrDy7HJc4TZaBtasv0T/yXl/vNBao5X5NQ5YSN2a0Lw0qTQi1FjJTmmUFQrYxE8B7
+	BXPxqoXV0FESWnkYhaknM+9H0L9xiH55HNBcMRlmjzPhHaWiLpDdPegJyFbtoVPeNzBPtS
+	9dsBN0I6MGj0n51a9iTky7q8Z1B1U/k=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1694766136;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	s=susede2_ed25519; t=1694766487;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
-  content-transfer-encoding:content-transfer-encoding;
-	bh=o3S9DfckXdFYSaIFJXSrrtRWEgE8xTPJPA0wp0PmiRQ=;
-	b=4cCPHdzd6iu4JAZ9K7LcbEecWNqCmKhYAdMI6SdJv6smzZDQc8XgtqtU4xhUKigDYhc7E6
-	e5DV4/mc69hJOsBA==
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ynXYPd2uD0C5NDK4NdLWI9mGj1vcafvL56YCrd5YFpA=;
+	b=XJvXnRvjQBH9DQWsGQSH1XbEUkkWlLxqy/qC+a321rPvhMfsdzNftj/9lMvJDutpWqN03y
+	Jslov75+BEoT2fBQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6BB991358A;
-	Fri, 15 Sep 2023 08:22:16 +0000 (UTC)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DACBE13A34;
+	Fri, 15 Sep 2023 08:28:06 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id gyGJGTgUBGWHPgAAMHmgww
-	(envelope-from <tiwai@suse.de>); Fri, 15 Sep 2023 08:22:16 +0000
+	id UKKDNJYVBGVfQQAAMHmgww
+	(envelope-from <tiwai@suse.de>); Fri, 15 Sep 2023 08:28:06 +0000
 From: Takashi Iwai <tiwai@suse.de>
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
-Subject: [PATCH] ASoC: amd: ps: Fix -Wformat-truncation warning
-Date: Fri, 15 Sep 2023 10:22:07 +0200
-Message-Id: <20230915082207.26200-1-tiwai@suse.de>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH 04/13] ALSA: caiaq: Fix -Wformat-truncation warning
+Date: Fri, 15 Sep 2023 10:27:53 +0200
+Message-Id: <20230915082802.28684-5-tiwai@suse.de>
 X-Mailer: git-send-email 2.35.3
+In-Reply-To: <20230915082802.28684-1-tiwai@suse.de>
+References: <20230915082802.28684-1-tiwai@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: RAZZFR3SUYHO67PM4YHPZPBS3EFFD2JH
-X-Message-ID-Hash: RAZZFR3SUYHO67PM4YHPZPBS3EFFD2JH
+Message-ID-Hash: HP45GJBBSLCQT5DDP7CUTKRPM2XM5E2F
+X-Message-ID-Hash: HP45GJBBSLCQT5DDP7CUTKRPM2XM5E2F
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -100,7 +104,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RAZZFR3SUYHO67PM4YHPZPBS3EFFD2JH/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HP45GJBBSLCQT5DDP7CUTKRPM2XM5E2F/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -109,31 +113,28 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The compile warning with -Wformat-truncation at
-sdw_amd_scan_controller() is false-positive; the max loop size is
-AMD_SDW_MAX_MANAGERS (= 2), hence it fits with the given size.
-
-For suppressing the warning, replace snprintf() with scnprintf().
-As stated in the above, truncation doesn't matter.
+The filling of card->longname can be gracefully truncated, as it's
+only informative.  Use scnprintf() and suppress the superfluous
+compile warning with -Wformat-truncation.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/amd/ps/pci-ps.c | 2 +-
+ sound/usb/caiaq/device.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/amd/ps/pci-ps.c b/sound/soc/amd/ps/pci-ps.c
-index 4af3c3665387..7e4c0ec9e56c 100644
---- a/sound/soc/amd/ps/pci-ps.c
-+++ b/sound/soc/amd/ps/pci-ps.c
-@@ -274,7 +274,7 @@ static int sdw_amd_scan_controller(struct device *dev)
- 	dev_dbg(dev, "ACPI reports %d SoundWire Manager devices\n", count);
- 	acp_data->sdw_manager_count = count;
- 	for (index = 0; index < count; index++) {
--		snprintf(name, sizeof(name), "mipi-sdw-link-%d-subproperties", index);
-+		scnprintf(name, sizeof(name), "mipi-sdw-link-%d-subproperties", index);
- 		link = fwnode_get_named_child_node(acp_data->sdw_fw_node, name);
- 		if (!link) {
- 			dev_err(dev, "Manager node %s not found\n", name);
+diff --git a/sound/usb/caiaq/device.c b/sound/usb/caiaq/device.c
+index 49f63f878e6f..b5cbf1f195c4 100644
+--- a/sound/usb/caiaq/device.c
++++ b/sound/usb/caiaq/device.c
+@@ -485,7 +485,7 @@ static int init_card(struct snd_usb_caiaqdev *cdev)
+ 	}
+ 
+ 	usb_make_path(usb_dev, usbpath, sizeof(usbpath));
+-	snprintf(card->longname, sizeof(card->longname), "%s %s (%s)",
++	scnprintf(card->longname, sizeof(card->longname), "%s %s (%s)",
+ 		       cdev->vendor_name, cdev->product_name, usbpath);
+ 
+ 	setup_card(cdev);
 -- 
 2.35.3
 
