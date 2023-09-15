@@ -4,94 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3DBCCEE6447
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Sep 2023 09:14:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B9BDBEE6447
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Sep 2023 09:15:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 03889886;
-	Fri, 15 Sep 2023 11:13:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 03889886
+	by alsa0.perex.cz (Postfix) with ESMTPS id CFA14AE8;
+	Fri, 15 Sep 2023 11:14:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CFA14AE8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1694769285;
-	bh=qzqZMSrlm8MofmMbgfIS1NfrvrvfbnjrGbA44oN3XSU=;
+	s=default; t=1694769307;
+	bh=/lGnA7rI8koibJpRsndQr7RurpifjtLMCupZNYo29+w=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=h3zvKnsT3wNxhH8IyR6CFK7Udt0xHH2dK7L6dV0CKqDRjgc8vRa/mVsG77ua7EF1g
-	 hbH0ohImS+LXU9EVE4yuvIaArQ0dkSbaNTqn76PK6i17CV673ieGZF+im+Ma8v16Ok
-	 MIL9PPE4ItoGz9aDsY3bxt7yx/uh1EgKpq6JnuNA=
+	b=gwN60U4ndA0sNHleADKw9YyhYK9wDKJLMsmhdIlzV2+kmyAasNhjcw9DgyKRbLu/0
+	 gwPvlqHJOT4C7a7przXszqW2kgWBm2emuKWYZZlJjQE6jvMsqbxhHg41UgU8EKVa5H
+	 +2shHgYeda39wG/Ko8znE/0xNrwjET8gFedaNyWg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 473E8F80246; Fri, 15 Sep 2023 11:13:25 +0200 (CEST)
+	id 2F75BF8056F; Fri, 15 Sep 2023 11:13:26 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 95917F80431;
-	Fri, 15 Sep 2023 11:13:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5E1F0F80552;
+	Fri, 15 Sep 2023 11:13:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 237C9F80537; Fri, 15 Sep 2023 11:13:20 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+	id 1D74CF8047D; Fri, 15 Sep 2023 11:13:21 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 60792F80246
-	for <alsa-devel@alsa-project.org>; Fri, 15 Sep 2023 11:13:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 60792F80246
+	by alsa1.perex.cz (Postfix) with ESMTPS id 59300F80431
+	for <alsa-devel@alsa-project.org>; Fri, 15 Sep 2023 11:13:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 59300F80431
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=H7JSq7M4;
+ header.s=susede2_rsa header.b=h7mSoMzY;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=+59tMBi1
+ header.s=susede2_ed25519 header.b=gezIRnJ7
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 0B7A11F8AB;
-	Fri, 15 Sep 2023 09:13:16 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id BF08E21870;
+	Fri, 15 Sep 2023 09:13:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1694769196; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1694769195; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=FU5N5ZUFYLEztewH7EzVmK64E92xSnsafUMID+RqehM=;
-	b=H7JSq7M406uQW6rl6dRIpnTsSelSeW7FhZUi1ncJ7ITVnl2c6a+LG2WWTG2MITuqaJWoGp
-	/ePzFHm1s8nTHWm/JCExmsBgIor3aQE6yQX9uQ9nw2Gu8HGH0+wwDi/sFaInyeycvuXe+9
-	n5WJzv/RMkuTlAPOoQj1oQxdR8M4uxU=
+	bh=JNB/QN+tf2i0Tl/Ol2jUJbw4CqfNUZ15IK9TH78YPDo=;
+	b=h7mSoMzYCmg+z/TVQ0y6k9yUq5X3QtMJ4ngAIHPIYD2rhoqvhXA97dbv3hgedQo5FZ/BO0
+	UIR20bHe2k9DAe8673mER4gWBk714V0ZYBqzD7YftSr24/XyqELsRxeoy4pxwC3xTMhDkH
+	rYwzzUzfB0KmGjN1XjcJqHUY6V6X41I=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1694769196;
+	s=susede2_ed25519; t=1694769195;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=FU5N5ZUFYLEztewH7EzVmK64E92xSnsafUMID+RqehM=;
-	b=+59tMBi1fRyFCpYIDu5fLvl6wFAuv/1DYssZ9Fi7RUdjx2Ob/n+QamESsMUKGXc+mib3iZ
-	SYtvHBv1BDniOjCA==
+	bh=JNB/QN+tf2i0Tl/Ol2jUJbw4CqfNUZ15IK9TH78YPDo=;
+	b=gezIRnJ7Z08rOTFXu49KGVAZjwZMl8pjYt7lKicqG/lAFqrChQolEwQBSAPhLrexe8KS/G
+	137HkX/aNoeJiECQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E3B4113A34;
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A430313A34;
 	Fri, 15 Sep 2023 09:13:15 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id EHWjNisgBGWcWQAAMHmgww
+	id 6NIsJysgBGWcWQAAMHmgww
 	(envelope-from <tiwai@suse.de>); Fri, 15 Sep 2023 09:13:15 +0000
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 3/3] ALSA: riptide: Fix -Wformat-truncation warning for
+Subject: [PATCH 1/3] ALSA: ad1848: Fix -Wformat-truncation warning for
  longname string
-Date: Fri, 15 Sep 2023 11:13:13 +0200
-Message-Id: <20230915091313.5988-4-tiwai@suse.de>
+Date: Fri, 15 Sep 2023 11:13:11 +0200
+Message-Id: <20230915091313.5988-2-tiwai@suse.de>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <20230915091313.5988-1-tiwai@suse.de>
 References: <20230915091313.5988-1-tiwai@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: QOA4B6264PFDP63Y437IVDNWQHXWF6SI
-X-Message-ID-Hash: QOA4B6264PFDP63Y437IVDNWQHXWF6SI
+Message-ID-Hash: LNP6IDWE2DSRBESRZ4TSAGOETW66TSQI
+X-Message-ID-Hash: LNP6IDWE2DSRBESRZ4TSAGOETW66TSQI
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -104,7 +104,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QOA4B6264PFDP63Y437IVDNWQHXWF6SI/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LNP6IDWE2DSRBESRZ4TSAGOETW66TSQI/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -119,37 +119,33 @@ compile warning with -Wformat-truncation.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/riptide/riptide.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ sound/isa/ad1848/ad1848.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/sound/pci/riptide/riptide.c b/sound/pci/riptide/riptide.c
-index b37c877c2c16..9dee0345f22c 100644
---- a/sound/pci/riptide/riptide.c
-+++ b/sound/pci/riptide/riptide.c
-@@ -2105,15 +2105,15 @@ __snd_card_riptide_probe(struct pci_dev *pci, const struct pci_device_id *pci_id
- 	strcpy(card->driver, "RIPTIDE");
- 	strcpy(card->shortname, "Riptide");
- #ifdef SUPPORT_JOYSTICK
--	snprintf(card->longname, sizeof(card->longname),
--		 "%s at 0x%lx, irq %i mpu 0x%x opl3 0x%x gameport 0x%x",
--		 card->shortname, chip->port, chip->irq, chip->mpuaddr,
--		 chip->opladdr, chip->gameaddr);
-+	scnprintf(card->longname, sizeof(card->longname),
-+		  "%s at 0x%lx, irq %i mpu 0x%x opl3 0x%x gameport 0x%x",
-+		  card->shortname, chip->port, chip->irq, chip->mpuaddr,
-+		  chip->opladdr, chip->gameaddr);
- #else
--	snprintf(card->longname, sizeof(card->longname),
--		 "%s at 0x%lx, irq %i mpu 0x%x opl3 0x%x",
--		 card->shortname, chip->port, chip->irq, chip->mpuaddr,
--		 chip->opladdr);
-+	scnprintf(card->longname, sizeof(card->longname),
-+		  "%s at 0x%lx, irq %i mpu 0x%x opl3 0x%x",
-+		  card->shortname, chip->port, chip->irq, chip->mpuaddr,
-+		  chip->opladdr);
- #endif
- 	snd_riptide_proc_init(chip);
- 	err = snd_card_register(card);
+diff --git a/sound/isa/ad1848/ad1848.c b/sound/isa/ad1848/ad1848.c
+index c471ac2aa450..401d8df28d87 100644
+--- a/sound/isa/ad1848/ad1848.c
++++ b/sound/isa/ad1848/ad1848.c
+@@ -96,13 +96,13 @@ static int snd_ad1848_probe(struct device *dev, unsigned int n)
+ 	strscpy(card->shortname, chip->pcm->name, sizeof(card->shortname));
+ 
+ 	if (!thinkpad[n])
+-		snprintf(card->longname, sizeof(card->longname),
+-			 "%s at 0x%lx, irq %d, dma %d",
+-			 chip->pcm->name, chip->port, irq[n], dma1[n]);
++		scnprintf(card->longname, sizeof(card->longname),
++			  "%s at 0x%lx, irq %d, dma %d",
++			  chip->pcm->name, chip->port, irq[n], dma1[n]);
+ 	else
+-		snprintf(card->longname, sizeof(card->longname),
+-			 "%s at 0x%lx, irq %d, dma %d [Thinkpad]",
+-			 chip->pcm->name, chip->port, irq[n], dma1[n]);
++		scnprintf(card->longname, sizeof(card->longname),
++			  "%s at 0x%lx, irq %d, dma %d [Thinkpad]",
++			  chip->pcm->name, chip->port, irq[n], dma1[n]);
+ 
+ 	error = snd_card_register(card);
+ 	if (error < 0)
 -- 
 2.35.3
 
