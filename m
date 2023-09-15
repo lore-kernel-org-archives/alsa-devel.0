@@ -4,78 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7959DEE0205
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Sep 2023 02:07:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D872BEE021D
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Sep 2023 05:43:57 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9684C84B;
-	Fri, 15 Sep 2023 04:06:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9684C84B
+	by alsa0.perex.cz (Postfix) with ESMTPS id ECC45886;
+	Fri, 15 Sep 2023 07:43:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ECC45886
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1694743650;
-	bh=CyuNw99YJL+VqmHDfPJQuAJ2OaV0jQh0+/qwg935wXs=;
-	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=f7hlpJ7R1E9ZQ0KLYNrL5pjVak38BTT3BW4/mWEAN2nzLD/8keJfplADjMQGVI57m
-	 XGCUia0rBif2AzudPEVmvFpYBmvTjh9sd5qWtdtdwFkMXMaMHxZ9xe2p+A0UK2JJBl
-	 J03W/EitwFjt6K0zyVkQtPN3AWTnIQKWLGsqdCFo=
+	s=default; t=1694756635;
+	bh=cCM3351WRdV6tVhq+BNSXK1D16VOR98tLWYlqsnRpDw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=MGW41zfTBZZZouIvLLANlTd0c8aOvyDM5DM5igrGmna9tehvyEx+Ifw+huXeb7IFX
+	 SlSNoBQkPb1otY8rbiyIPtKr/mcBmCRCIl7ksefvcAOxaarKymo5NMOfwS5v96EUNm
+	 Gh4nM9xQMYzAP4mU+v4srzmRBufeAbz/GerssGHM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7435CF80431; Fri, 15 Sep 2023 04:06:11 +0200 (CEST)
+	id 4347CF80425; Fri, 15 Sep 2023 07:42:35 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D2DA7F80425;
-	Fri, 15 Sep 2023 04:06:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7ADA4F80425;
+	Fri, 15 Sep 2023 07:42:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D5192F80425; Fri, 15 Sep 2023 04:06:05 +0200 (CEST)
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+	id A9E65F80425; Fri, 15 Sep 2023 07:41:22 +0200 (CEST)
+Received: from out-229.mta1.migadu.com (out-229.mta1.migadu.com
+ [IPv6:2001:41d0:203:375::e5])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 4F791F80141
-	for <alsa-devel@alsa-project.org>; Fri, 15 Sep 2023 04:05:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4F791F80141
-X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 38F25i0K21919137,
- This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
-	by rtits2.realtek.com.tw (8.15.2/2.92/5.92) with ESMTPS id 38F25i0K21919137
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 15 Sep 2023 10:05:44 +0800
-Received: from RTEXMBS01.realtek.com.tw (172.21.6.94) by
- RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.32; Fri, 15 Sep 2023 10:05:44 +0800
-Received: from sw-server.localdomain (172.22.102.1) by
- RTEXMBS01.realtek.com.tw (172.21.6.94) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.7; Fri, 15 Sep 2023 10:05:43 +0800
-From: <shumingf@realtek.com>
-To: <broonie@kernel.org>, <lgirdwood@gmail.com>
-CC: <alsa-devel@alsa-project.org>, <lars@metafoo.de>, <flove@realtek.com>,
-        <oder_chiou@realtek.com>, <jack.yu@realtek.com>,
-        <derek.fang@realtek.com>, <judyhsiao@google.com>,
-        Shuming Fan <shumingf@realtek.com>
-Subject: [PATCH] ASoC: rt1015: fix the first word being cut off
-Date: Fri, 15 Sep 2023 10:05:30 +0800
-Message-ID: <20230915020530.83452-1-shumingf@realtek.com>
-X-Mailer: git-send-email 2.34.1
+	by alsa1.perex.cz (Postfix) with ESMTPS id 49931F801F5
+	for <alsa-devel@alsa-project.org>; Fri, 15 Sep 2023 07:41:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 49931F801F5
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=jookia.org header.i=@jookia.org header.a=rsa-sha256
+ header.s=key1 header.b=u9eOnFw7
+Date: Fri, 15 Sep 2023 15:39:49 +1000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jookia.org; s=key1;
+	t=1694756471;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cCM3351WRdV6tVhq+BNSXK1D16VOR98tLWYlqsnRpDw=;
+	b=u9eOnFw7G6nV8I4pyPcyYq5WTp+JJAn8sNstU2xz4zKQD9wNpeQPxcZ1wpS4NOu6dZGHPf
+	qJgWrd3KczX9vFViCBZznRYceLqxrcfis/ccPHeucCwJX1BEeL5ffVWz3oNAMb4y6Kn7ab
+	5J5J4XLFa7egL93YEc1z7G8xRQQjMziXepYYDPtgUn/Tk2K5Q+veeAYrALzbMk8ke03wFc
+	22YaADVRIp2w6Qy6D3KyxGbWbwxbYCQkYcaBbVPnj5qm8Bb9TGr21SkPAKJLWg38ykDJpD
+	QQXqBtr8brPT+rVOBC4wX6aQRllOlhRq+4XGqH6y+Kt0ZGhxn2eL8flZzrbR/Q==
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and
+ include these headers.
+From: John Watts <contact@jookia.org>
+To: Rob Herring <robh@kernel.org>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	patches@opensource.cirrus.com, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/3] ASoC: dt-bindings: wlf,wm8782: Add wlf,fsampen
+ property
+Message-ID: <ZQPuJXcmHABQFaQl@titan>
+References: <20230913171552.92252-1-contact@jookia.org>
+ <20230913171552.92252-4-contact@jookia.org>
+ <20230914145234.GA1275176-robh@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [172.22.102.1]
-X-ClientProxiedBy: RTEXH36505.realtek.com.tw (172.21.6.25) To
- RTEXMBS01.realtek.com.tw (172.21.6.94)
-X-KSE-ServerInfo: RTEXMBS01.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
-Message-ID-Hash: REIGPUIRSLVTBDNBAR7KP4FXOXNKEL6V
-X-Message-ID-Hash: REIGPUIRSLVTBDNBAR7KP4FXOXNKEL6V
-X-MailFrom: shumingf@realtek.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230914145234.GA1275176-robh@kernel.org>
+X-Migadu-Flow: FLOW_OUT
+Message-ID-Hash: K65LGWPSZSZSUSFWUZZUQ5UBLLE4ZG6B
+X-Message-ID-Hash: K65LGWPSZSZSUSFWUZZUQ5UBLLE4ZG6B
+X-MailFrom: contact@jookia.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -87,7 +89,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/REIGPUIRSLVTBDNBAR7KP4FXOXNKEL6V/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/K65LGWPSZSZSUSFWUZZUQ5UBLLE4ZG6B/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -96,48 +98,9 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Shuming Fan <shumingf@realtek.com>
+On Thu, Sep 14, 2023 at 09:52:34AM -0500, Rob Herring wrote:
+> What's the default if the property is not present?
 
-This patch adds a control that there are four options to control the digital volume output.
-The user could select "immediate" to make volume updates immediately.
-In default, the driver selects the volume update with "zero detection + soft inc/dec change".
+0. Should I specify it here?
 
-Signed-off-by: Shuming Fan <shumingf@realtek.com>
----
- sound/soc/codecs/rt1015.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
-
-diff --git a/sound/soc/codecs/rt1015.c b/sound/soc/codecs/rt1015.c
-index 99ec0f9a8362..1250cfaf2adc 100644
---- a/sound/soc/codecs/rt1015.c
-+++ b/sound/soc/codecs/rt1015.c
-@@ -546,6 +546,16 @@ static int rt1015_bypass_boost_put(struct snd_kcontrol *kcontrol,
- 	return 0;
- }
- 
-+static const char * const rt1015_dac_output_vol_select[] = {
-+	"immediate",
-+	"zero detection + immediate change",
-+	"zero detection + inc/dec change",
-+	"zero detection + soft inc/dec change",
-+};
-+
-+static SOC_ENUM_SINGLE_DECL(rt1015_dac_vol_ctl_enum,
-+	RT1015_DAC3, 2, rt1015_dac_output_vol_select);
-+
- static const struct snd_kcontrol_new rt1015_snd_controls[] = {
- 	SOC_SINGLE_TLV("DAC Playback Volume", RT1015_DAC1, RT1015_DAC_VOL_SFT,
- 		127, 0, dac_vol_tlv),
-@@ -556,6 +566,9 @@ static const struct snd_kcontrol_new rt1015_snd_controls[] = {
- 	SOC_ENUM("Mono LR Select", rt1015_mono_lr_sel),
- 	SOC_SINGLE_EXT("Bypass Boost", SND_SOC_NOPM, 0, 1, 0,
- 		rt1015_bypass_boost_get, rt1015_bypass_boost_put),
-+
-+	/* DAC Output Volume Control */
-+	SOC_ENUM("DAC Output Control", rt1015_dac_vol_ctl_enum),
- };
- 
- static int rt1015_is_sys_clk_from_pll(struct snd_soc_dapm_widget *source,
--- 
-2.34.1
-
+John.
