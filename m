@@ -4,101 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DBED6EED617
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Sep 2023 15:45:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3E3F8EED60B
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Sep 2023 15:48:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 261F993A;
-	Fri, 15 Sep 2023 17:44:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 261F993A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5126A93A;
+	Fri, 15 Sep 2023 17:47:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5126A93A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1694792711;
-	bh=j9q2DlOkoE2QhMMg+WIyXTHXrkJmqA4vzmrcUwcWDAs=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	s=default; t=1694792885;
+	bh=4wmbU8p90diEkfrKmJrux8txyti0J57vdMv+IMd9Zrk=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=EFcMnWXnNFdQ4aMC08i5Bt/242o8GbVTvh9jE08oPDwWGv8q/tCX93h2r2nc9E5bO
-	 I1jZ2Mcs+vEQG3aSs2jzMWJYxSDU0kTEzzjLvo+F68IODG0CmsjLMp//H3z00fZCsH
-	 x/eIRLa+iotVH/7sUynlm30kHuC1bAoP5J/Bn0f8=
+	b=eQHBkSPg9HYuzJX/pYl2SyiUDjdxWrGq8VuONVWVycc+2Utsax59YnUrwprqEBNBk
+	 GjhiXoPK1ZttcvyylCY7Imy1eQwYEraWHOlvbXCkyO98/rEicgwz/yfpRdLgmm5Yrs
+	 lZAlxwRJZrSkKok+w8M+MGitnsh9mq0WnzjWhE1Y=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 70358F80425; Fri, 15 Sep 2023 17:43:50 +0200 (CEST)
+	id A2197F80558; Fri, 15 Sep 2023 17:46:44 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 18C87F80425;
-	Fri, 15 Sep 2023 17:43:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 09A0AF80425;
+	Fri, 15 Sep 2023 17:46:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1D62CF80425; Fri, 15 Sep 2023 17:43:44 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 34AA9F80425; Fri, 15 Sep 2023 17:46:41 +0200 (CEST)
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E502FF801F5
-	for <alsa-devel@alsa-project.org>; Fri, 15 Sep 2023 17:43:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E502FF801F5
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6BCE6F801F5
+	for <alsa-devel@alsa-project.org>; Fri, 15 Sep 2023 17:46:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6BCE6F801F5
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=UAv6WF4M;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=iTBnwDvZ
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 4C9D01FD73;
-	Fri, 15 Sep 2023 15:43:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1694792615;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TsUtvyIy8QYODPqWrfssR5hMzz+Rfpupg7Om3YgtHr4=;
-	b=UAv6WF4MwABsqamiOY5QUGByAk/QU4k7Dffcy1IY01lJ3i5X4693tzKRM82/NmEf7e7cvB
-	v6l+Ky4YRMOSQsup/ZKn1dsXJWtSZgj6l+KMJVVnB86hxfBidnAB7qGzPlqDcI6c7QKy5g
-	x9TCnBzyCNLfsYDlvefdk/upxErSRQ8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1694792615;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TsUtvyIy8QYODPqWrfssR5hMzz+Rfpupg7Om3YgtHr4=;
-	b=iTBnwDvZ9ALdwrM7h9aJbjX2e2eLoPiimgSFGL8WTYm+WyK2NaiPlxNXeXiSsISOiIz41W
-	gli2Lp5DtvRjyjCg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 08AC41358A;
-	Fri, 15 Sep 2023 15:43:35 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id nV0+Aad7BGVAIwAAMHmgww
-	(envelope-from <tiwai@suse.de>); Fri, 15 Sep 2023 15:43:35 +0000
-Date: Fri, 15 Sep 2023 17:43:34 +0200
-Message-ID: <87fs3fv3vd.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Cc: tiwai@suse.com,
-	perex@perex.cz,
-	alsa-devel@alsa-project.org,
-	pierre-louis.bossart@linux.intel.com,
-	ranjani.sridharan@linux.intel.com,
-	yung-chuan.liao@linux.intel.com,
-	fred.oh@linux.intel.com,
-	chao.song@linux.intel.com
+	dkim=pass (2048-bit key,
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=gG1OGdXL
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694792799; x=1726328799;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=4wmbU8p90diEkfrKmJrux8txyti0J57vdMv+IMd9Zrk=;
+  b=gG1OGdXLtgIOxmfwNEeYiY3HDCzjxr/G3wYyPGOLvDKCIOGmmrzp//od
+   PREUEM5BQWstG8+vQ1zSbac5AFIfPTm4mLjMxJc7uK7DZstMvldfNaFGs
+   86pwcYhuOkqXuSgBCg1Wud+Tl9sLDwYk1nuNyUFGNeKexGJzR2c29KygB
+   4ElrhCGy7mLkByoCoU9gKbv5r88setm8cAsjSD1Wwl1BFi4ZGiDwDYZU+
+   Ou8NYuTaPDyJa4ja5ilXSrI5D2E4Ni0s/RiDG0I649y6als6tFmtuUnXv
+   k2E4ScZm3stwX70EXUks/9FG/eFpiovLgZWmJE+LI4J0fMyf1lJCqTGNV
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="358696868"
+X-IronPort-AV: E=Sophos;i="6.02,149,1688454000";
+   d="scan'208";a="358696868"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 15 Sep 2023 08:46:34 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="918694698"
+X-IronPort-AV: E=Sophos;i="6.02,149,1688454000";
+   d="scan'208";a="918694698"
+Received: from teoliyon-mobl.gar.corp.intel.com (HELO [10.212.118.44])
+ ([10.212.118.44])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 15 Sep 2023 08:46:33 -0700
+Message-ID: <9c2e08db-4baf-72fa-2b07-0a08c6a0299b@linux.intel.com>
+Date: Fri, 15 Sep 2023 11:46:32 -0400
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.15.1
 Subject: Re: [PATCH] ALSA: hda: hdac-i915: make i915 timeout configurable
-In-Reply-To: <20230915134527.16679-1-peter.ujfalusi@linux.intel.com>
+Content-Language: en-US
+To: Takashi Iwai <tiwai@suse.de>,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Cc: tiwai@suse.com, perex@perex.cz, alsa-devel@alsa-project.org,
+ ranjani.sridharan@linux.intel.com, yung-chuan.liao@linux.intel.com,
+ fred.oh@linux.intel.com, chao.song@linux.intel.com
 References: <20230915134527.16679-1-peter.ujfalusi@linux.intel.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Message-ID-Hash: KL65EUHBZQA6PNIXAQIBCOZ6QEJP5QZH
-X-Message-ID-Hash: KL65EUHBZQA6PNIXAQIBCOZ6QEJP5QZH
-X-MailFrom: tiwai@suse.de
+ <87fs3fv3vd.wl-tiwai@suse.de>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <87fs3fv3vd.wl-tiwai@suse.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: PN6TQPUGSVC22E6TI2X2C4BYGN5UZKV6
+X-Message-ID-Hash: PN6TQPUGSVC22E6TI2X2C4BYGN5UZKV6
+X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -110,35 +97,37 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KL65EUHBZQA6PNIXAQIBCOZ6QEJP5QZH/>
-List-Archive: <>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PN6TQPUGSVC22E6TI2X2C4BYGN5UZKV6/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, 15 Sep 2023 15:45:27 +0200,
-Peter Ujfalusi wrote:
+
+
+On 9/15/23 11:43, Takashi Iwai wrote:
+> On Fri, 15 Sep 2023 15:45:27 +0200,
+> Peter Ujfalusi wrote:
+>>
+>> From: Fred Oh <fred.oh@linux.intel.com>
+>>
+>> When enabling new platforms, missing dependencies on i915 driver
+>> updates cause i915 timeouts. Rather than wait 60s for no good reason,
+>> this patch adds a kernel parameter so that developers can cut to the
+>> chase and skip a known problem.
+>>
+>> Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+>> Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+>> Reviewed-by: Chao Song <chao.song@linux.intel.com>
+>> Signed-off-by: Fred Oh <fred.oh@linux.intel.com>
+>> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+>> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 > 
-> From: Fred Oh <fred.oh@linux.intel.com>
-> 
-> When enabling new platforms, missing dependencies on i915 driver
-> updates cause i915 timeouts. Rather than wait 60s for no good reason,
-> this patch adds a kernel parameter so that developers can cut to the
-> chase and skip a known problem.
-> 
-> Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-> Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-> Reviewed-by: Chao Song <chao.song@linux.intel.com>
-> Signed-off-by: Fred Oh <fred.oh@linux.intel.com>
-> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+> The change looks trivial, but this would be little use if we support
+> EPROBE_DEFER, right?  Or does it need to be merged into 6.6?
 
-The change looks trivial, but this would be little use if we support
-EPROBE_DEFER, right?  Or does it need to be merged into 6.6?
-
-
-thanks,
-
-Takashi
+It'd be fine to keep this in the SOF tree for now, and remove it from
+our tree once the deferred probe is implemented.
