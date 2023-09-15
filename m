@@ -4,50 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B9BDBEE6447
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Sep 2023 09:15:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B3738EE6447
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Sep 2023 09:15:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CFA14AE8;
-	Fri, 15 Sep 2023 11:14:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CFA14AE8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1A4C7DEF;
+	Fri, 15 Sep 2023 11:14:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1A4C7DEF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1694769307;
-	bh=/lGnA7rI8koibJpRsndQr7RurpifjtLMCupZNYo29+w=;
+	s=default; t=1694769319;
+	bh=U1p/37ZtlSumjUNc0HKmXGvNpuA442R6sstWMQxrNt0=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=gwN60U4ndA0sNHleADKw9YyhYK9wDKJLMsmhdIlzV2+kmyAasNhjcw9DgyKRbLu/0
-	 gwPvlqHJOT4C7a7przXszqW2kgWBm2emuKWYZZlJjQE6jvMsqbxhHg41UgU8EKVa5H
-	 +2shHgYeda39wG/Ko8znE/0xNrwjET8gFedaNyWg=
+	b=XIm7zeyLWUOmhynEovOImvaNJ9xiHhQhdYxXvy5j6JFb7mCCcIXz4Ga8MpLxxFR1F
+	 cGFY9ZtHMbrfRmrsyRQQMfWlzVFGut+bzIqNekFbPgpmThAYfkvM89Nb52I2he8f3J
+	 FDA1ZpHzdHqdU/6fvqW+rtrH7ONM867q9Sl9t9no=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2F75BF8056F; Fri, 15 Sep 2023 11:13:26 +0200 (CEST)
+	id EBF99F8057F; Fri, 15 Sep 2023 11:13:29 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5E1F0F80552;
-	Fri, 15 Sep 2023 11:13:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 60DA0F80578;
+	Fri, 15 Sep 2023 11:13:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1D74CF8047D; Fri, 15 Sep 2023 11:13:21 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+	id 6FFBCF80431; Fri, 15 Sep 2023 11:13:23 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2001:67c:2178:6::1d])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 59300F80431
-	for <alsa-devel@alsa-project.org>; Fri, 15 Sep 2023 11:13:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 59300F80431
+	by alsa1.perex.cz (Postfix) with ESMTPS id 67E2BF80425
+	for <alsa-devel@alsa-project.org>; Fri, 15 Sep 2023 11:13:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 67E2BF80425
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=h7mSoMzY;
+ header.s=susede2_rsa header.b=deW/ujMd;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=gezIRnJ7
+ header.s=susede2_ed25519 header.b=MP4JjCZ2
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id BF08E21870;
+	by smtp-out2.suse.de (Postfix) with ESMTPS id EBD9C1F899;
 	Fri, 15 Sep 2023 09:13:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
@@ -55,43 +56,43 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=JNB/QN+tf2i0Tl/Ol2jUJbw4CqfNUZ15IK9TH78YPDo=;
-	b=h7mSoMzYCmg+z/TVQ0y6k9yUq5X3QtMJ4ngAIHPIYD2rhoqvhXA97dbv3hgedQo5FZ/BO0
-	UIR20bHe2k9DAe8673mER4gWBk714V0ZYBqzD7YftSr24/XyqELsRxeoy4pxwC3xTMhDkH
-	rYwzzUzfB0KmGjN1XjcJqHUY6V6X41I=
+	bh=YkK8LaUckJY43a8lRktBCRgEtKmXzGa/MN2c3P21F2g=;
+	b=deW/ujMdNFKf6OpiZB1vwgD//ER0dulQzHSp13/pd0kWnPbJQtrbIkggLQekEj4EMt14i/
+	hEYZSpdITWeoZ7UG9GJmToPxkB9neMrH6w06yCLzjvN1pnj1fVXMVjh/6KXar2KjsiJt8x
+	yQqEiT8J2t6LTBvTAqNyJSx6XaKVGU0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
 	s=susede2_ed25519; t=1694769195;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=JNB/QN+tf2i0Tl/Ol2jUJbw4CqfNUZ15IK9TH78YPDo=;
-	b=gezIRnJ7Z08rOTFXu49KGVAZjwZMl8pjYt7lKicqG/lAFqrChQolEwQBSAPhLrexe8KS/G
-	137HkX/aNoeJiECQ==
+	bh=YkK8LaUckJY43a8lRktBCRgEtKmXzGa/MN2c3P21F2g=;
+	b=MP4JjCZ2oqCVO/kmebSh+UGphj5qCi/zJWEOmlD8vdKu2YJNzCTNiffRhhE6AuJgqPJ+X2
+	/8Tp4JwpGfwjJ2AQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A430313A34;
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C33C31358A;
 	Fri, 15 Sep 2023 09:13:15 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id 6NIsJysgBGWcWQAAMHmgww
+	id iD7ELisgBGWcWQAAMHmgww
 	(envelope-from <tiwai@suse.de>); Fri, 15 Sep 2023 09:13:15 +0000
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 1/3] ALSA: ad1848: Fix -Wformat-truncation warning for
+Subject: [PATCH 2/3] ALSA: cs4231: Fix -Wformat-truncation warning for
  longname string
-Date: Fri, 15 Sep 2023 11:13:11 +0200
-Message-Id: <20230915091313.5988-2-tiwai@suse.de>
+Date: Fri, 15 Sep 2023 11:13:12 +0200
+Message-Id: <20230915091313.5988-3-tiwai@suse.de>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <20230915091313.5988-1-tiwai@suse.de>
 References: <20230915091313.5988-1-tiwai@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: LNP6IDWE2DSRBESRZ4TSAGOETW66TSQI
-X-Message-ID-Hash: LNP6IDWE2DSRBESRZ4TSAGOETW66TSQI
+Message-ID-Hash: IQNXEQVAB6WCYIKGMOJAUADRFK2OAEPO
+X-Message-ID-Hash: IQNXEQVAB6WCYIKGMOJAUADRFK2OAEPO
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -104,7 +105,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LNP6IDWE2DSRBESRZ4TSAGOETW66TSQI/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IQNXEQVAB6WCYIKGMOJAUADRFK2OAEPO/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -119,17 +120,17 @@ compile warning with -Wformat-truncation.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/isa/ad1848/ad1848.c | 12 ++++++------
+ sound/isa/cs423x/cs4231.c | 12 ++++++------
  1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/sound/isa/ad1848/ad1848.c b/sound/isa/ad1848/ad1848.c
-index c471ac2aa450..401d8df28d87 100644
---- a/sound/isa/ad1848/ad1848.c
-+++ b/sound/isa/ad1848/ad1848.c
-@@ -96,13 +96,13 @@ static int snd_ad1848_probe(struct device *dev, unsigned int n)
+diff --git a/sound/isa/cs423x/cs4231.c b/sound/isa/cs423x/cs4231.c
+index 1e8923385366..c87be4be6df1 100644
+--- a/sound/isa/cs423x/cs4231.c
++++ b/sound/isa/cs423x/cs4231.c
+@@ -98,13 +98,13 @@ static int snd_cs4231_probe(struct device *dev, unsigned int n)
  	strscpy(card->shortname, chip->pcm->name, sizeof(card->shortname));
  
- 	if (!thinkpad[n])
+ 	if (dma2[n] < 0)
 -		snprintf(card->longname, sizeof(card->longname),
 -			 "%s at 0x%lx, irq %d, dma %d",
 -			 chip->pcm->name, chip->port, irq[n], dma1[n]);
@@ -138,13 +139,13 @@ index c471ac2aa450..401d8df28d87 100644
 +			  chip->pcm->name, chip->port, irq[n], dma1[n]);
  	else
 -		snprintf(card->longname, sizeof(card->longname),
--			 "%s at 0x%lx, irq %d, dma %d [Thinkpad]",
--			 chip->pcm->name, chip->port, irq[n], dma1[n]);
+-			 "%s at 0x%lx, irq %d, dma %d&%d",
+-			 chip->pcm->name, chip->port, irq[n], dma1[n], dma2[n]);
 +		scnprintf(card->longname, sizeof(card->longname),
-+			  "%s at 0x%lx, irq %d, dma %d [Thinkpad]",
-+			  chip->pcm->name, chip->port, irq[n], dma1[n]);
++			  "%s at 0x%lx, irq %d, dma %d&%d",
++			  chip->pcm->name, chip->port, irq[n], dma1[n], dma2[n]);
  
- 	error = snd_card_register(card);
+ 	error = snd_wss_mixer(chip);
  	if (error < 0)
 -- 
 2.35.3
