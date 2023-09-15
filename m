@@ -4,89 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3E316EE6447
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Sep 2023 09:15:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 57183EE6447
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Sep 2023 09:18:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 74BA3A4B;
-	Fri, 15 Sep 2023 11:14:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 74BA3A4B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 60E45D8;
+	Fri, 15 Sep 2023 11:17:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 60E45D8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1694769336;
-	bh=aAKvD7hx0uO1tCyx5nAqyjMI+Tn7dzMKgIT3uoYNjBM=;
-	h=From:To:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=hjrXfGc7ogCbVBQVAc+5FETjTuz9ZTr+KNjENJv6j+gPnmOB9zhIK5B0NmSC4MFj6
-	 5su83TOscI8x7yqSP1tfnEbX2QRlNe0YTxUvNKtbcRDKnmqqD6u31g/eCMZpfDjgu6
-	 MCMmy4HzMPnFUmhMfnjPu5VTaCBkpm3/NPcrZ0ZU=
+	s=default; t=1694769511;
+	bh=CDwlISH8mA5+8r/atwWQjOKJK6Fu8LdmLkEDKau+iAQ=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=SZO3iOOnLgw8/wYuy40KtspfKNBiroE5FuJLjy1mfXzWO5UsfwfTizzr8JMD/sYY+
+	 a9EXfAK3MIqNfjSZHVn3076kDl5CRoiWkwQe0PU6xPNxbGrecsSSCF+kBlWY5kzAgs
+	 rHZYIQ5H64ebyz4C0z3olTElHUxZGfGYJhUJuEL8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 90ABAF80588; Fri, 15 Sep 2023 11:13:31 +0200 (CEST)
+	id 2B6C1F80552; Fri, 15 Sep 2023 11:17:12 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 23F16F80589;
-	Fri, 15 Sep 2023 11:13:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 59D30F8047D;
+	Fri, 15 Sep 2023 11:17:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 40D7BF80567; Fri, 15 Sep 2023 11:13:26 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 761D9F80425; Fri, 15 Sep 2023 11:17:08 +0200 (CEST)
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 5C22AF8007C
-	for <alsa-devel@alsa-project.org>; Fri, 15 Sep 2023 11:13:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5C22AF8007C
+	by alsa1.perex.cz (Postfix) with ESMTPS id D3A52F80141
+	for <alsa-devel@alsa-project.org>; Fri, 15 Sep 2023 11:17:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D3A52F80141
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=FJxYDTqF;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=A+MEdM6E
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id A0B412185F;
-	Fri, 15 Sep 2023 09:13:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1694769195; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-  content-transfer-encoding:content-transfer-encoding;
-	bh=pjdoECbel2xKDElSQcL17UTGhNlQa8zIxiftJXqnpA0=;
-	b=FJxYDTqFIkp29WEEKoQ0RYbvg/xRtUrZv88twMhDVqxPerDMhvmM3HGo9RK/MLuOMX81iO
-	SmDHVMB3J3vNohEC03JRa4dYP96res3quNLX26RGTqCSEBfMvqmWvDqmHPwlcyEcUFe8vw
-	1t58eWXCaYf/HSBg8qppl/mI8mKLmkk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1694769195;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-  content-transfer-encoding:content-transfer-encoding;
-	bh=pjdoECbel2xKDElSQcL17UTGhNlQa8zIxiftJXqnpA0=;
-	b=A+MEdM6ELpVD5q/5ZWrumMdy5tlstOgL6IOElMYrKFjp29aqL0jnuPsk5RscfIl5K4UPdI
-	ZQOaQkTaoIhn6MAQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7A2671358A;
-	Fri, 15 Sep 2023 09:13:15 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id +3+/HCsgBGWcWQAAMHmgww
-	(envelope-from <tiwai@suse.de>); Fri, 15 Sep 2023 09:13:15 +0000
-From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH 0/3] ALSA: Yer more fix -Wformat-truncation warnings
-Date: Fri, 15 Sep 2023 11:13:10 +0200
-Message-Id: <20230915091313.5988-1-tiwai@suse.de>
-X-Mailer: git-send-email 2.35.3
+	dkim=pass (2048-bit key,
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=J0h7d6Cg
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694769427; x=1726305427;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=CDwlISH8mA5+8r/atwWQjOKJK6Fu8LdmLkEDKau+iAQ=;
+  b=J0h7d6CgnwN2bPmfjfeadX5bjSuqBjByWDaRPSzovSK8r4NWWrQydJjl
+   JrByLBUGghwpLd8zwWv6URKkeN2vc6Jy/lNxOqpmv+/q6ISWRN0ftdJnz
+   4N5J3rNdsLME3Um6OdiBYFfbV41sV6ROfxmBmFG3WvVT9NNiMhTL3LwIA
+   VockiNi4M15CicN8n8CfYqqwtRCVltSFyIfHwdhnUJOb8wf6BncYZb8pv
+   gtoEiVnfURkjx2zqvwRfFwHo++zf7uqcrIOqAcyviPVMMxKFKdyF5EEvG
+   aUb4YdbpGCq496F3zZ5ooZOi/a/ODpMNqqOxu+zPK7/1R00ZJNSxX7L2L
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="369524153"
+X-IronPort-AV: E=Sophos;i="6.02,148,1688454000";
+   d="scan'208";a="369524153"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 15 Sep 2023 02:17:03 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="744906235"
+X-IronPort-AV: E=Sophos;i="6.02,148,1688454000";
+   d="scan'208";a="744906235"
+Received: from aslawinx-mobl.ger.corp.intel.com (HELO [10.94.0.91])
+ ([10.94.0.91])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 15 Sep 2023 02:16:59 -0700
+Message-ID: <1c887615-0e59-8556-e2ab-b985033519d7@linux.intel.com>
+Date: Fri, 15 Sep 2023 11:16:57 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH] ASoC: hdaudio.c: Add missing check for devm_kstrdup
+Content-Language: en-US
+To: Chen Ni <nichen@iscas.ac.cn>, cezary.rojewski@intel.com,
+ pierre-louis.bossart@linux.intel.com, liam.r.girdwood@linux.intel.com,
+ peter.ujfalusi@linux.intel.com, yung-chuan.liao@linux.intel.com,
+ ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com,
+ broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
+ kuninori.morimoto.gx@renesas.com, brent.lu@intel.com
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+References: <20230915021344.3078-1-nichen@iscas.ac.cn>
+From: =?UTF-8?Q?Amadeusz_S=c5=82awi=c5=84ski?=
+ <amadeuszx.slawinski@linux.intel.com>
+In-Reply-To: <20230915021344.3078-1-nichen@iscas.ac.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: NJZ76PREXTHL6WAH6TDP67UQ5RL4OGOU
-X-Message-ID-Hash: NJZ76PREXTHL6WAH6TDP67UQ5RL4OGOU
-X-MailFrom: tiwai@suse.de
+Message-ID-Hash: T5ZLQVJKOQOVZ5QKZGQ4ZUK6VSHHTD5E
+X-Message-ID-Hash: T5ZLQVJKOQOVZ5QKZGQ4ZUK6VSHHTD5E
+X-MailFrom: amadeuszx.slawinski@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -98,7 +99,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NJZ76PREXTHL6WAH6TDP67UQ5RL4OGOU/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/T5ZLQVJKOQOVZ5QKZGQ4ZUK6VSHHTD5E/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -107,24 +108,33 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-This is a few more similar patches covering the recent warnings by
-the -Wformat-truncation option.
+On 9/15/2023 4:13 AM, Chen Ni wrote:
+> Because of the potential failure of the devm_kstrdup(), the
+> dl[i].codecs->name could be NULL.
+> Therefore, we need to check it and return -ENOMEM in order to transfer
+> the error.
+> 
+> Fixes: 97030a43371e ("ASoC: Intel: avs: Add HDAudio machine board")
+> Signed-off-by: Chen Ni <nichen@iscas.ac.cn>
+> ---
+>   sound/soc/intel/avs/boards/hdaudio.c | 3 +++
+>   1 file changed, 3 insertions(+)
+> 
+> diff --git a/sound/soc/intel/avs/boards/hdaudio.c b/sound/soc/intel/avs/boards/hdaudio.c
+> index cb00bc86ac94..8876558f19a1 100644
+> --- a/sound/soc/intel/avs/boards/hdaudio.c
+> +++ b/sound/soc/intel/avs/boards/hdaudio.c
+> @@ -55,6 +55,9 @@ static int avs_create_dai_links(struct device *dev, struct hda_codec *codec, int
+>   			return -ENOMEM;
+>   
+>   		dl[i].codecs->name = devm_kstrdup(dev, cname, GFP_KERNEL);
+> +		if (!dl[i].codecs->name)
+> +			return -ENOMEM;
+> +
+>   		dl[i].codecs->dai_name = pcm->name;
+>   		dl[i].num_codecs = 1;
+>   		dl[i].num_cpus = 1;
 
+Good catch
 
-Takashi
-
-===
-
-Takashi Iwai (3):
-  ALSA: ad1848: Fix -Wformat-truncation warning for longname string
-  ALSA: cs4231: Fix -Wformat-truncation warning for longname string
-  ALSA: riptide: Fix -Wformat-truncation warning for longname string
-
- sound/isa/ad1848/ad1848.c   | 12 ++++++------
- sound/isa/cs423x/cs4231.c   | 12 ++++++------
- sound/pci/riptide/riptide.c | 16 ++++++++--------
- 3 files changed, 20 insertions(+), 20 deletions(-)
-
--- 
-2.35.3
-
+Reviewed-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
