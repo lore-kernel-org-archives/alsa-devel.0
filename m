@@ -4,109 +4,109 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C4E7EEE6447
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Sep 2023 08:37:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 15A6EEE643D
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Sep 2023 08:40:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C3A69DF3;
-	Fri, 15 Sep 2023 10:36:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C3A69DF3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 22CACE0F;
+	Fri, 15 Sep 2023 10:39:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 22CACE0F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1694767066;
-	bh=XMe4gH+B08X5RMvEPdEtSh9tiAuQiRRQ1ocx6OSJQ90=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:List-Id:
+	s=default; t=1694767213;
+	bh=dcJ0YF656Gqyw4TwkIVu38nmGFD+TIOI6rP0TNwnO88=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=GuAEGbII84nVtoVoXUrYc3jdTFVWf/2hTU4aNxB3kFyJY1C4XTGw1sjfn3VG+kBB+
-	 ilaEXHRUN+PU1Aw6PzlY3hMtdys4a3QQ04kmCOT0Zn89bsZPPq/Hgd/fenzaRIDfwe
-	 4ooAkz6KewHs01lK+3JgcBOalHMc9JjGk2tISlD4=
+	b=UuVHmrVjcgzOD019uTKb5lv0QJp/xVe1EmOYRi5XiY/NXc0TAnHj7o0X9QKjn7OpN
+	 SfRzyw1Dc0ZGFDwanEsMzM1exL0PvwiUp2BwnW41nYjHaS4+XriOO4kdbjBhmMe/AG
+	 CGh/Y4V3GrwxVDKyX7JJwgiVJm8yJyFIoGXWtZTc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 038BDF805AD; Fri, 15 Sep 2023 10:36:02 +0200 (CEST)
+	id 1ACF0F80537; Fri, 15 Sep 2023 10:39:14 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6A2A5F8057F;
-	Fri, 15 Sep 2023 10:36:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9F831F80425;
+	Fri, 15 Sep 2023 10:39:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E81A0F80425; Fri, 15 Sep 2023 10:12:28 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	id 554F7F80425; Fri, 15 Sep 2023 10:39:10 +0200 (CEST)
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com
+ [IPv6:2a00:1450:4864:20::52d])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id BF42FF8007C
-	for <alsa-devel@alsa-project.org>; Fri, 15 Sep 2023 10:12:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BF42FF8007C
+	by alsa1.perex.cz (Postfix) with ESMTPS id B5CA7F8007C
+	for <alsa-devel@alsa-project.org>; Fri, 15 Sep 2023 10:39:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B5CA7F8007C
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=dd8dFNbr
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 2934C61F8B;
-	Fri, 15 Sep 2023 08:12:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id B242AC113C9;
-	Fri, 15 Sep 2023 08:12:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1694765530;
-	bh=XMe4gH+B08X5RMvEPdEtSh9tiAuQiRRQ1ocx6OSJQ90=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=dd8dFNbrY2eKv5BRVvT9o7FRHU/OSRYHdQMWdGRr2AWBOEfhPNrC55aNndGAnVLvy
-	 FrBLQytKnx10TBNJqjIfDZEQmZw6vuYquqC0pa4MY4HDFampDtnptsz9kimaWeb2Gs
-	 xfoVYwrMArjX1NOqqC0cw6HAEMspStNvFUXpZsJeraImtsnaoA6/uJvBSaSWt3Gxyg
-	 k+/gSDp+B0M1rTgoHviUfPX7aN99M0OSsQKEPMGqktocnkzjXAvYOa4o1V118AKIey
-	 +WBonlUVjrcBwapo60n6fsxSARWMWQAfNeu2hxdd7syYJdGavqpkLKlTMBPBS7yfvJ
-	 fgrNojU9LJWGw==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org
- (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A084FEE6442;
-	Fri, 15 Sep 2023 08:12:10 +0000 (UTC)
-From: 
- Nikita Shubin via B4 Relay <devnull+nikita.shubin.maquefel.me@kernel.org>
-Date: Fri, 15 Sep 2023 11:11:24 +0300
-Subject: [PATCH v4 42/42] ASoC: cirrus: edb93xx: Delete driver
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20230601 header.b=NJ6e9HSG
+Received: by mail-ed1-x52d.google.com with SMTP id
+ 4fb4d7f45d1cf-52bd9ddb741so2313564a12.0
+        for <alsa-devel@alsa-project.org>;
+ Fri, 15 Sep 2023 01:39:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1694767146; x=1695371946;
+ darn=alsa-project.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dcJ0YF656Gqyw4TwkIVu38nmGFD+TIOI6rP0TNwnO88=;
+        b=NJ6e9HSGapHpSNS0lZDR3F+P6zYU3ntfGAJOogKh3R8ROf4cmIcI4ugacHyic3N43J
+         YSyMR8D+tsOhoHw68wRik4Kb9sD9sma8YfGyaPMn9WHADTBNFlpVmMNqVE8WNAQtZN+D
+         li7pLSh14dVl0kgF98z1qT+SYkohwtS+6Z2fMz7dl/kyp+7yO4cCV5BfaxhmZLI6VdJu
+         cgv6/k7Bx3MBlk9IsvS/McfndYHs6ycfZ49M4F35vCD4lUyb9PS73RyO6VLsEudiQ3Pc
+         KWKIo6YBe3cESr7H0Gqt/ctnv48TWUZLKk3NglVb7vz1o9ALulkpaidGbno0a+o3iHzG
+         sxSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694767146; x=1695371946;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dcJ0YF656Gqyw4TwkIVu38nmGFD+TIOI6rP0TNwnO88=;
+        b=vb0DGWFQTmrXk0jB3oIEhMFiwd80UsCl6Lu85n2np9NTpNrAx3Dsxl7WbcnOFG76fI
+         yhAytdkshZGxUpKSCQucjxdRglO0qAQw72gLkLFaJHOOKGJobvULyixRvG/g9o+XBQVj
+         NB4rOMEzpr9WH+sTevsYSMekkWTRYkMzGPUmXP1DiWTDgrPK/yO0OuoXk9XG50U3aLpX
+         KZ+lN1IgIZ5HXpdRyMTLI9B9M1cdTX62JM4QboG6rSn6s4ieK0XFoAKm1amesZf32OCA
+         W0TG46IoFMwXBjaaNWnJ+o0XA6IfWVF7MirROrM9QzVbsMPaOQ39gnjETGCkPYIrKpaS
+         7s/w==
+X-Gm-Message-State: AOJu0Yw1yIv3H6sbDb85TGhxZichgr9sQ1wHGhI/NGzzHXTCEb2spcRG
+	WWenAkbmgWlVe6waeD8MuLiF9nFPEINKS7pCFL5wMG5S5eQ=
+X-Google-Smtp-Source: 
+ AGHT+IFqWx5uj2DHjRauIvxPCOhENMc7x02MgQj1RmKhG/d1C1fdZNN3IRf0HXHut2+w8tXTNZoGQcO6LcoXjI6pYko=
+X-Received: by 2002:aa7:cd57:0:b0:52d:212d:78e8 with SMTP id
+ v23-20020aa7cd57000000b0052d212d78e8mr847795edw.34.1694767146186; Fri, 15 Sep
+ 2023 01:39:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230915-ep93xx-v4-42-a1d779dcec10@maquefel.me>
-References: <20230915-ep93xx-v4-0-a1d779dcec10@maquefel.me>
-In-Reply-To: <20230915-ep93xx-v4-0-a1d779dcec10@maquefel.me>
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Alexander Sverdlin <alexander.sverdlin@gmail.com>,
- Nikita Shubin <nikita.shubin@maquefel.me>, Arnd Bergmann <arnd@arndb.de>,
- =?utf-8?q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-Cc: Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org,
- alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>,
- Alexander Sverdlin <alexander.sverdlin@gmail.com>
-X-Mailer: b4 0.13-dev-e3e53
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1694765525; l=5005;
- i=nikita.shubin@maquefel.me; s=20230718; h=from:subject:message-id;
- bh=5H/AhoUK+yJvLHtkGvg+ugJ2oZLcgzPnv9WeEQfV0LM=; =?utf-8?q?b=3DmRW5JHllCeDr?=
- =?utf-8?q?2+GVsnn0VnCeZcdbrCNIg/utv5YqO/00LhjkGtz4t+3jK1nbYNA+OLQtkKcu7SND?=
- 1C2oQEn3Df1lu2o2VOW9k8BbRop4tIde8JPYWLb18AFvmhYpnzLs
-X-Developer-Key: i=nikita.shubin@maquefel.me; a=ed25519;
- pk=vqf5YIUJ7BJv3EJFaNNxWZgGuMgDH6rwufTLflwU9ac=
-X-Endpoint-Received: 
- by B4 Relay for nikita.shubin@maquefel.me/20230718 with auth_id=65
-X-Original-From: Nikita Shubin <nikita.shubin@maquefel.me>
-X-MailFrom: devnull+nikita.shubin.maquefel.me@kernel.org
-X-Mailman-Rule-Hits: nonmember-moderation
+References: <1694757731-18308-1-git-send-email-shengjiu.wang@nxp.com>
+In-Reply-To: <1694757731-18308-1-git-send-email-shengjiu.wang@nxp.com>
+From: Daniel Baluta <daniel.baluta@gmail.com>
+Date: Fri, 15 Sep 2023 11:38:54 +0300
+Message-ID: 
+ <CAEnQRZAU01qbeVjcEVnL0emc3ovo+NSs_N5=xUB2fVaswnjVqg@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: imx-audmix: Fix return error with devm_clk_get()
+To: Shengjiu Wang <shengjiu.wang@nxp.com>
+Cc: shengjiu.wang@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
+	nicoleotsuka@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
+	perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
+	linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Message-ID-Hash: QAL23UXFPOBIZQEG6UI7OQXBHBVQNOLV
+X-Message-ID-Hash: QAL23UXFPOBIZQEG6UI7OQXBHBVQNOLV
+X-MailFrom: daniel.baluta@gmail.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: CLBMDXDVBBERWQMTEJQFVGKZEZYZIPYG
-X-Message-ID-Hash: CLBMDXDVBBERWQMTEJQFVGKZEZYZIPYG
-X-Mailman-Approved-At: Fri, 15 Sep 2023 08:35:55 +0000
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.8
 Precedence: list
-Reply-To: nikita.shubin@maquefel.me
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CLBMDXDVBBERWQMTEJQFVGKZEZYZIPYG/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QAL23UXFPOBIZQEG6UI7OQXBHBVQNOLV/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -115,173 +115,16 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Alexander Sverdlin <alexander.sverdlin@gmail.com>
+On Fri, Sep 15, 2023 at 9:38=E2=80=AFAM Shengjiu Wang <shengjiu.wang@nxp.co=
+m> wrote:
+>
+> The devm_clk_get() can return -EPROBE_DEFER error,
+> modify the error code to be -EINVAL is not correct, which
+> cause the -EPROBE_DEFER error is not correctly handled.
+>
+> This patch is to fix the return error code.
+>
+> Fixes: b86ef5367761 ("ASoC: fsl: Add Audio Mixer machine driver")
+> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 
-Can be replaced with "simple-audio-card" for the rates up to 50kHz, refer
-to commit "ARM: dts: ep93xx: Add EDB9302 DT".
-
-Signed-off-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
-Acked-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
----
- sound/soc/cirrus/Kconfig   |   9 ----
- sound/soc/cirrus/Makefile  |   4 --
- sound/soc/cirrus/edb93xx.c | 117 ---------------------------------------------
- 3 files changed, 130 deletions(-)
-
-diff --git a/sound/soc/cirrus/Kconfig b/sound/soc/cirrus/Kconfig
-index 38a83c4dcc2d..97def4e53fbc 100644
---- a/sound/soc/cirrus/Kconfig
-+++ b/sound/soc/cirrus/Kconfig
-@@ -31,12 +31,3 @@ config SND_EP93XX_SOC_I2S_WATCHDOG
- 
- endif # if SND_EP93XX_SOC_I2S
- 
--config SND_EP93XX_SOC_EDB93XX
--	tristate "SoC Audio support for Cirrus Logic EDB93xx boards"
--	depends on SND_EP93XX_SOC && (MACH_EDB9301 || MACH_EDB9302 || MACH_EDB9302A || MACH_EDB9307A || MACH_EDB9315A)
--	select SND_EP93XX_SOC_I2S
--	select SND_SOC_CS4271_I2C if I2C
--	select SND_SOC_CS4271_SPI if SPI_MASTER
--	help
--	  Say Y or M here if you want to add support for I2S audio on the
--	  Cirrus Logic EDB93xx boards.
-diff --git a/sound/soc/cirrus/Makefile b/sound/soc/cirrus/Makefile
-index 19a86daad660..5916c03888cb 100644
---- a/sound/soc/cirrus/Makefile
-+++ b/sound/soc/cirrus/Makefile
-@@ -6,7 +6,3 @@ snd-soc-ep93xx-i2s-objs	 			:= ep93xx-i2s.o
- obj-$(CONFIG_SND_EP93XX_SOC)			+= snd-soc-ep93xx.o
- obj-$(CONFIG_SND_EP93XX_SOC_I2S)		+= snd-soc-ep93xx-i2s.o
- 
--# EP93XX Machine Support
--snd-soc-edb93xx-objs				:= edb93xx.o
--
--obj-$(CONFIG_SND_EP93XX_SOC_EDB93XX)		+= snd-soc-edb93xx.o
-diff --git a/sound/soc/cirrus/edb93xx.c b/sound/soc/cirrus/edb93xx.c
-deleted file mode 100644
-index f49caab21a25..000000000000
---- a/sound/soc/cirrus/edb93xx.c
-+++ /dev/null
-@@ -1,117 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0-or-later
--/*
-- * SoC audio for EDB93xx
-- *
-- * Copyright (c) 2010 Alexander Sverdlin <subaparts@yandex.ru>
-- *
-- * This driver support CS4271 codec being master or slave, working
-- * in control port mode, connected either via SPI or I2C.
-- * The data format accepted is I2S or left-justified.
-- * DAPM support not implemented.
-- */
--
--#include <linux/platform_device.h>
--#include <linux/gpio.h>
--#include <linux/module.h>
--#include <linux/soc/cirrus/ep93xx.h>
--#include <sound/core.h>
--#include <sound/pcm.h>
--#include <sound/soc.h>
--#include <asm/mach-types.h>
--
--static int edb93xx_hw_params(struct snd_pcm_substream *substream,
--			     struct snd_pcm_hw_params *params)
--{
--	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
--	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
--	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
--	int err;
--	unsigned int mclk_rate;
--	unsigned int rate = params_rate(params);
--
--	/*
--	 * According to CS4271 datasheet we use MCLK/LRCK=256 for
--	 * rates below 50kHz and 128 for higher sample rates
--	 */
--	if (rate < 50000)
--		mclk_rate = rate * 64 * 4;
--	else
--		mclk_rate = rate * 64 * 2;
--
--	err = snd_soc_dai_set_sysclk(codec_dai, 0, mclk_rate,
--				     SND_SOC_CLOCK_IN);
--	if (err)
--		return err;
--
--	return snd_soc_dai_set_sysclk(cpu_dai, 0, mclk_rate,
--				      SND_SOC_CLOCK_OUT);
--}
--
--static const struct snd_soc_ops edb93xx_ops = {
--	.hw_params	= edb93xx_hw_params,
--};
--
--SND_SOC_DAILINK_DEFS(hifi,
--	DAILINK_COMP_ARRAY(COMP_CPU("ep93xx-i2s")),
--	DAILINK_COMP_ARRAY(COMP_CODEC("spi0.0", "cs4271-hifi")),
--	DAILINK_COMP_ARRAY(COMP_PLATFORM("ep93xx-i2s")));
--
--static struct snd_soc_dai_link edb93xx_dai = {
--	.name		= "CS4271",
--	.stream_name	= "CS4271 HiFi",
--	.dai_fmt	= SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
--			  SND_SOC_DAIFMT_CBC_CFC,
--	.ops		= &edb93xx_ops,
--	SND_SOC_DAILINK_REG(hifi),
--};
--
--static struct snd_soc_card snd_soc_edb93xx = {
--	.name		= "EDB93XX",
--	.owner		= THIS_MODULE,
--	.dai_link	= &edb93xx_dai,
--	.num_links	= 1,
--};
--
--static int edb93xx_probe(struct platform_device *pdev)
--{
--	struct snd_soc_card *card = &snd_soc_edb93xx;
--	int ret;
--
--	ret = ep93xx_i2s_acquire();
--	if (ret)
--		return ret;
--
--	card->dev = &pdev->dev;
--
--	ret = snd_soc_register_card(card);
--	if (ret) {
--		dev_err(&pdev->dev, "snd_soc_register_card() failed: %d\n",
--			ret);
--		ep93xx_i2s_release();
--	}
--
--	return ret;
--}
--
--static void edb93xx_remove(struct platform_device *pdev)
--{
--	struct snd_soc_card *card = platform_get_drvdata(pdev);
--
--	snd_soc_unregister_card(card);
--	ep93xx_i2s_release();
--}
--
--static struct platform_driver edb93xx_driver = {
--	.driver		= {
--		.name	= "edb93xx-audio",
--	},
--	.probe		= edb93xx_probe,
--	.remove_new	= edb93xx_remove,
--};
--
--module_platform_driver(edb93xx_driver);
--
--MODULE_AUTHOR("Alexander Sverdlin <subaparts@yandex.ru>");
--MODULE_DESCRIPTION("ALSA SoC EDB93xx");
--MODULE_LICENSE("GPL");
--MODULE_ALIAS("platform:edb93xx-audio");
-
--- 
-2.39.2
-
+Reviewed-by: Daniel Baluta <daniel.baluta@nxp.com>
