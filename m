@@ -4,83 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C0314EE6457
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Sep 2023 12:27:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D128CEE6457
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Sep 2023 12:41:46 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D1339950;
-	Fri, 15 Sep 2023 14:26:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D1339950
+	by alsa0.perex.cz (Postfix) with ESMTPS id 73837886;
+	Fri, 15 Sep 2023 14:40:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 73837886
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1694780850;
-	bh=JOeaiOvA9aSzfqtb72DtC8F5kZInpmUOpbcL9asatYw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=JjGtW+q/BOrP02WDJq0UYBBQ7vDE4rWB6e+y6c8Z13mcBt8hmjlJOjqCbmSRrf+B8
-	 YZ40/daC48azl9atTpsDC6nmgs29XSPTQIM5RksCMLBhlbW4Oubg4Rrj9BWwVPJOeL
-	 jWg2Om5yeBUoPJVf0sXk5GzDVej+UfHyvPv6Y59o=
+	s=default; t=1694781704;
+	bh=MzeShrIvSqG9AFXhmhSIDhg+tspxYnTBXB8X3TOyRsE=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=iGQalZTb+YHL49NYQ1AoblSwyxXFuozr4dEctZ4uy7BLbCgFCtyyoPFbqWmHswDnV
+	 92Au7mz7hI0CJ5WDn4ME2HrnwT5HH4KGQx9y9S80K+cmNeqCsvucIQvN2dIKDx6/Gk
+	 LEeSTMlw58mQEp0sv16xHscDa/QGLeaxbkLl65mo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 568CBF8047D; Fri, 15 Sep 2023 14:26:20 +0200 (CEST)
+	id 176A7F80568; Fri, 15 Sep 2023 14:40:25 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 152B4F80425;
-	Fri, 15 Sep 2023 14:26:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9E01AF80537;
+	Fri, 15 Sep 2023 14:40:24 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 74CB2F80425; Fri, 15 Sep 2023 14:26:16 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	id 6B986F80549; Fri, 15 Sep 2023 14:40:20 +0200 (CEST)
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 2C858F80141
-	for <alsa-devel@alsa-project.org>; Fri, 15 Sep 2023 14:26:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2C858F80141
+	by alsa1.perex.cz (Postfix) with ESMTPS id 96110F80141
+	for <alsa-devel@alsa-project.org>; Fri, 15 Sep 2023 14:40:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 96110F80141
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=lqsAO6gf
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
-	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id 4360EB82DDE;
-	Fri, 15 Sep 2023 12:26:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 768C7C433C8;
-	Fri, 15 Sep 2023 12:26:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1694780772;
-	bh=JOeaiOvA9aSzfqtb72DtC8F5kZInpmUOpbcL9asatYw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=lqsAO6gfiPtIyCZa6PvfTrsBBx8PbvTyahGSVVl5JCl68zD/er9oQ5a1hf9IfFfnu
-	 sQtcx+14SO2pE1jJhLZmlqDM8fcWLaSaPFqbqlqBk1nkCLKU6kJePXDSRk5De4cW//
-	 zEJGITFYLVuM9LLOhNUb2phka7l8RsUko8Dh2vNwb6yO0h0q96/3qMpAAamAqC7Ya6
-	 V4JJhMHFT0YHF/F6g10zOyvXFZJ888T/ixbJ6r7LPwLW9aanT1CTrxSbRUC658437F
-	 MNM7ND6wf/IVaidLRNfEtCs5D0mw3kFCCH198OD2YRGmRq7L3P2cGMiEnwbM03BLp+
-	 8MNl5kLPYclDA==
-Date: Fri, 15 Sep 2023 13:26:06 +0100
-From: Mark Brown <broonie@kernel.org>
-To: nikita.shubin@maquefel.me
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	Alexander Sverdlin <alexander.sverdlin@gmail.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
-	Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org,
-	alsa-devel@alsa-project.org
-Subject: Re: [PATCH v4 42/42] ASoC: cirrus: edb93xx: Delete driver
-Message-ID: <63fd4212-6544-4fa3-b10b-f7f38137b06c@sirena.org.uk>
-References: <20230915-ep93xx-v4-0-a1d779dcec10@maquefel.me>
- <20230915-ep93xx-v4-42-a1d779dcec10@maquefel.me>
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=fFLigSxn
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694781615; x=1726317615;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=MzeShrIvSqG9AFXhmhSIDhg+tspxYnTBXB8X3TOyRsE=;
+  b=fFLigSxn+lSrSXp93sp3m/sKUi9/u7eknSnbI+b0azViY4kt8lMKvarw
+   YpirHTngcF7sBjWHYGg+kh4RYzNi1xLYX/tKszRWb7wAjysRQM4exstmn
+   XHfp/qKhZI4Ey/P4bO2i1yRjgLFqHnTAhzK9VG8PHFk+YhvTdmWEd3kVl
+   z5K5TI9r6GJZ6jz0cyzlE/f8kmH746+BLqyqeho4EnbCJn79sm5fSFojA
+   1Qj4KXwSW9YtDUtKsuyCM4GTiFtGbQirzuDbAqtFKO/KPAtdPqVxQ9X/1
+   NQ0VbaCyWww3N0P0cSAdAj+txnsMqd+Xj7NXyL45lIPgrsFI+AaWF4W5F
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="358653100"
+X-IronPort-AV: E=Sophos;i="6.02,149,1688454000";
+   d="scan'208";a="358653100"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 15 Sep 2023 05:40:11 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="774304514"
+X-IronPort-AV: E=Sophos;i="6.02,149,1688454000";
+   d="scan'208";a="774304514"
+Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 15 Sep 2023 05:40:05 -0700
+From: Bard Liao <yung-chuan.liao@linux.intel.com>
+To: broonie@kernel.org,
+	tiwai@suse.de
+Cc: alsa-devel@alsa-project.org,
+	pierre-louis.bossart@linux.intel.com,
+	bard.liao@intel.com,
+	peter.ujfalusi@linux.intel.com,
+	brent.lu@intel.com,
+	uday.m.bhat@intel.com,
+	balamurugan.c@intel.com
+Subject: [PATCH 00/19] ASoC: Intel: machine driver update
+Date: Fri, 15 Sep 2023 20:48:33 +0800
+Message-Id: <20230915124852.1696857-1-yung-chuan.liao@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="WBj+u/ilrjOP7tNM"
-Content-Disposition: inline
-In-Reply-To: <20230915-ep93xx-v4-42-a1d779dcec10@maquefel.me>
-X-Cookie: Gravity brings me down.
-Message-ID-Hash: 3TBXGFB73KOTG66O2CQIAE2BHVSFTXAZ
-X-Message-ID-Hash: 3TBXGFB73KOTG66O2CQIAE2BHVSFTXAZ
-X-MailFrom: broonie@kernel.org
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: TVZULG3GAIKD6M3CUV6QOCBPEJA7JT7F
+X-Message-ID-Hash: TVZULG3GAIKD6M3CUV6QOCBPEJA7JT7F
+X-MailFrom: yung-chuan.liao@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -92,7 +93,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3TBXGFB73KOTG66O2CQIAE2BHVSFTXAZ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TVZULG3GAIKD6M3CUV6QOCBPEJA7JT7F/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -101,34 +102,59 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+Some cleanups from Brent Lu for I2S platforms. And minor additions for
+RVPs and Chromebooks.
 
---WBj+u/ilrjOP7tNM
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Balamurugan C (1):
+  ASoC: Intel: sof_rt5682: add HDMI_In capture feature support for RPL.
 
-On Fri, Sep 15, 2023 at 11:11:24AM +0300, Nikita Shubin via B4 Relay wrote:
-> From: Alexander Sverdlin <alexander.sverdlin@gmail.com>
->=20
-> Can be replaced with "simple-audio-card" for the rates up to 50kHz, refer
-> to commit "ARM: dts: ep93xx: Add EDB9302 DT".
+Brent Lu (16):
+  ASoC: Intel: sof_rt5682: cleanup unnecessary quirk flag
+  ASoC: Intel: ssp-common: support codec detection
+  ASoC: Intel: use ACPI HID definition in ssp-common
+  ASoC: Intel: sof_rt5682: use ssp-common module to detect codec
+  ASoC: Intel: sof_cs42l42: use ssp-common module to detect codec
+  ASoC: Intel: sof_ssp_amp: use ssp-common module to detect codec
+  ASoC: Intel: sof_nau8825: use ssp-common module to detect codec
+  ASoC: Intel: sof_rt5682: add adl_rt5650 board config
+  ASoC: Intel: sof_ssp_amp: do not create amp link for nocodec board
+  ASoC: Intel: nuvoton-common: support nau8318 amplifier
+  ASoC: Intel: sof_nau8825: use nuvoton-common module
+  ASoC: Intel: sof_nau8825: use realtek-common module
+  ASoC: Intel: sof_da7219: rename driver file and kernel option
+  ASoC: Intel: sof_da7219: use maxim-common module
+  ASoC: Intel: sof_da7219: add adl_mx98360_da7219 board config
+  ASoC: Intel: sof_da7219: use ssp-common module to detect codec
 
-Please use audio-graph-card2 for new systems, it's a more flexible
-replacement.
+Uday M Bhat (2):
+  ASoC: Intel: sof_rt5682: Add support for Rex with discrete BT offload.
+  ASoC: Intel: sof_rt5682: Modify number of HDMI to 3 for MTL/Rex
+    devices
 
---WBj+u/ilrjOP7tNM
-Content-Type: application/pgp-signature; name="signature.asc"
+ sound/soc/intel/boards/Kconfig                |  24 +-
+ sound/soc/intel/boards/Makefile               |  10 +-
+ sound/soc/intel/boards/sof_cirrus_common.h    |   9 +-
+ sound/soc/intel/boards/sof_cs42l42.c          |  55 +-
+ .../{sof_da7219_max98373.c => sof_da7219.c}   | 361 ++++++++-----
+ sound/soc/intel/boards/sof_maxim_common.h     |  13 +-
+ sound/soc/intel/boards/sof_nau8825.c          | 168 +++----
+ sound/soc/intel/boards/sof_nuvoton_common.c   |  73 +++
+ sound/soc/intel/boards/sof_nuvoton_common.h   |  22 +
+ sound/soc/intel/boards/sof_realtek_common.h   |  37 +-
+ sound/soc/intel/boards/sof_rt5682.c           | 473 ++++++++++--------
+ sound/soc/intel/boards/sof_ssp_amp.c          | 114 +++--
+ sound/soc/intel/boards/sof_ssp_common.c       | 101 ++++
+ sound/soc/intel/boards/sof_ssp_common.h       |  71 +++
+ .../intel/common/soc-acpi-intel-adl-match.c   |  19 +
+ .../intel/common/soc-acpi-intel-jsl-match.c   |  12 +-
+ .../intel/common/soc-acpi-intel-rpl-match.c   |   7 +
+ 17 files changed, 1008 insertions(+), 561 deletions(-)
+ rename sound/soc/intel/boards/{sof_da7219_max98373.c => sof_da7219.c} (56%)
+ create mode 100644 sound/soc/intel/boards/sof_nuvoton_common.c
+ create mode 100644 sound/soc/intel/boards/sof_nuvoton_common.h
+ create mode 100644 sound/soc/intel/boards/sof_ssp_common.c
+ create mode 100644 sound/soc/intel/boards/sof_ssp_common.h
 
------BEGIN PGP SIGNATURE-----
+-- 
+2.25.1
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmUETV0ACgkQJNaLcl1U
-h9DUgwf9GWnPbx+GEF+jTZxt9NpWNVd7+WyyyAyfFMpRrGXjysCtrKkWTDFQ/uJ9
-e2UK5xCHpf0WVNmGDG0WRvlgzlI5POCCE9H+YkIPBBsGQZtnxmj57PLRQpv1DYlL
-YUuCITGE67RgEMwQHRu6XJh9gW5PY9deRRaKWW6+kWFNiED72G12gOB1/obftnUh
-A7EowQO3vQrAGDG4dic9OvUbZ66ihwd+t9BDtWa17rmo/0lZ3eahi6hu2pCegArr
-Avi5x/S2zdW2Bns7BbwxFcaYfuhX3psY9cszsw43tGWs9ZZNQIRltCi/KGONgl4H
-6lDc29Bhf+aYxXDaKsch4Bq6oAxDcA==
-=hBHf
------END PGP SIGNATURE-----
-
---WBj+u/ilrjOP7tNM--
