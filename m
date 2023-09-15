@@ -4,83 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 95839EE6431
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Sep 2023 07:59:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0CFC4EE6442
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Sep 2023 08:23:45 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6B34C886;
-	Fri, 15 Sep 2023 09:58:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6B34C886
+	by alsa0.perex.cz (Postfix) with ESMTPS id C32D584C;
+	Fri, 15 Sep 2023 10:22:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C32D584C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1694764755;
-	bh=Tn9oxM7Nk2s+bFo9hm0UDWLjqTRrU/ymSSS76x6wC1A=;
+	s=default; t=1694766223;
+	bh=yPmFxqa/oDREoJOGNrmiN24unhnTilxPj/agOz4qrgw=;
 	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=tt5DVvd7LKZfVZxzgSxciswuzFbk3c06Wx7+zOqvrBKhHrUpJL/MuYvagC4pUm8BK
-	 O1SBXF2+3yQHwoOQm4RXMNop9kOkn0KPH3VAPP4+0fcG38JEfQybMfMuHIc/NUfTL2
-	 D4peRLGWwFMrv1zd8TH7QASZ+DjUfdQ56qIty5iU=
+	b=SXMya5ChHgANexkr5n30HwlPvDUTT/PWzV/a+jQZqZ0kBCrLxTr3tmzuBZoZMM00X
+	 qOvUADyVD6S3h22DdRZmmKN1WYmOkSL7jvP8N5k6bVFDbppqlMs63s5VubzQpTilH9
+	 qclcjz3PuiAWaIwCy7MBeXjmJ2MVVWb0ZRP+/hCI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3A141F8055A; Fri, 15 Sep 2023 09:57:56 +0200 (CEST)
+	id 6152EF80552; Fri, 15 Sep 2023 10:22:25 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E4160F80549;
-	Fri, 15 Sep 2023 09:57:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 99FB6F80425;
+	Fri, 15 Sep 2023 10:22:24 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4678EF80425; Fri, 15 Sep 2023 09:57:53 +0200 (CEST)
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 3C3DFF80425; Fri, 15 Sep 2023 10:22:20 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C9DCAF8007C
-	for <alsa-devel@alsa-project.org>; Fri, 15 Sep 2023 09:57:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C9DCAF8007C
+	by alsa1.perex.cz (Postfix) with ESMTPS id 4CF36F8007C
+	for <alsa-devel@alsa-project.org>; Fri, 15 Sep 2023 10:22:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4CF36F8007C
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=hGOZrKu0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694764671; x=1726300671;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=Tn9oxM7Nk2s+bFo9hm0UDWLjqTRrU/ymSSS76x6wC1A=;
-  b=hGOZrKu0+TXzOQTaE3ZUFRFW4OTqPfGkPo8ZDE7ayA3xTUINOdgBp/gk
-   6V0QMBijLdvoCip4R1nBuEHB0jj7r8V9unIGchJ8KGs5BgmJmLG9v/Obm
-   RHcfNYWN3SJmM0MlGTI+z5CU2wtEx4ZadI+FuIsJV0ZDOOVRp6Ux1Tou9
-   YjMyp5UzTaPHC0RjLoWBaThBrTboM3nkQzYU+c1KdzJxHni0cx9VN/38s
-   7EuQfAi7u7QR9WvYfFbb8QgHX2oj2HT2BePZ5hf8MxG773NufGQTU9gcP
-   H5bd6Rwp0jnTdEzZ7xu1osjLZePJf8tXRz+51mQp2Vd7r8/4U7upepQeu
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="445647569"
-X-IronPort-AV: E=Sophos;i="6.02,148,1688454000";
-   d="scan'208";a="445647569"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Sep 2023 00:57:46 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10833"; a="888147574"
-X-IronPort-AV: E=Sophos;i="6.02,148,1688454000";
-   d="scan'208";a="888147574"
-Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Sep 2023 00:57:09 -0700
-From: Bard Liao <yung-chuan.liao@linux.intel.com>
-To: broonie@kernel.org,
-	tiwai@suse.de
-Cc: alsa-devel@alsa-project.org,
-	pierre-louis.bossart@linux.intel.com,
-	bard.liao@intel.com,
-	peter.ujfalusi@linux.intel.com,
-	arun.t@intel.com
-Subject: [PATCH 1/1] ASoC: Intel: common: add ACPI matching tables for Arrow
- Lake
-Date: Fri, 15 Sep 2023 16:06:35 +0800
-Message-Id: <20230915080635.1619942-1-yung-chuan.liao@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=g7dfFFhP;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=4cCPHdzd
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 88CC6218E5;
+	Fri, 15 Sep 2023 08:22:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1694766136;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:
+  content-transfer-encoding:content-transfer-encoding;
+	bh=o3S9DfckXdFYSaIFJXSrrtRWEgE8xTPJPA0wp0PmiRQ=;
+	b=g7dfFFhPkEVMQNbmEJyRq+qBGNWqp60V6CmE3wIJDOC8+FYcB6geUkSCsf2t3oSZRbSVX1
+	bxIhgj8m04nbL8ThGNHIO+BNmf/Tsn+8NgvmVJOWM/fix1cjzJhXwyEsmatQe340MIz8Y+
+	xipENSMv2y65CGDCAXsXTl3zUpDrpwI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1694766136;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:
+  content-transfer-encoding:content-transfer-encoding;
+	bh=o3S9DfckXdFYSaIFJXSrrtRWEgE8xTPJPA0wp0PmiRQ=;
+	b=4cCPHdzd6iu4JAZ9K7LcbEecWNqCmKhYAdMI6SdJv6smzZDQc8XgtqtU4xhUKigDYhc7E6
+	e5DV4/mc69hJOsBA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6BB991358A;
+	Fri, 15 Sep 2023 08:22:16 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id gyGJGTgUBGWHPgAAMHmgww
+	(envelope-from <tiwai@suse.de>); Fri, 15 Sep 2023 08:22:16 +0000
+From: Takashi Iwai <tiwai@suse.de>
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
+Subject: [PATCH] ASoC: amd: ps: Fix -Wformat-truncation warning
+Date: Fri, 15 Sep 2023 10:22:07 +0200
+Message-Id: <20230915082207.26200-1-tiwai@suse.de>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: NILMYFVBG5ZZZSQDLD7V7PZ4Q7ICVKKZ
-X-Message-ID-Hash: NILMYFVBG5ZZZSQDLD7V7PZ4Q7ICVKKZ
-X-MailFrom: yung-chuan.liao@linux.intel.com
+Message-ID-Hash: RAZZFR3SUYHO67PM4YHPZPBS3EFFD2JH
+X-Message-ID-Hash: RAZZFR3SUYHO67PM4YHPZPBS3EFFD2JH
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -92,7 +100,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NILMYFVBG5ZZZSQDLD7V7PZ4Q7ICVKKZ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RAZZFR3SUYHO67PM4YHPZPBS3EFFD2JH/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -101,111 +109,31 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Arun T <arun.t@intel.com>
+The compile warning with -Wformat-truncation at
+sdw_amd_scan_controller() is false-positive; the max loop size is
+AMD_SDW_MAX_MANAGERS (= 2), hence it fits with the given size.
 
-Initial support for ARL w/ RT711
+For suppressing the warning, replace snprintf() with scnprintf().
+As stated in the above, truncation doesn't matter.
 
-Signed-off-by: Arun T <arun.t@intel.com>
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- include/sound/soc-acpi-intel-match.h          |  2 +
- sound/soc/intel/common/Makefile               |  1 +
- .../intel/common/soc-acpi-intel-arl-match.c   | 51 +++++++++++++++++++
- 3 files changed, 54 insertions(+)
- create mode 100644 sound/soc/intel/common/soc-acpi-intel-arl-match.c
+ sound/soc/amd/ps/pci-ps.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/sound/soc-acpi-intel-match.h b/include/sound/soc-acpi-intel-match.h
-index e49b97d9e3ff..845e7608ac37 100644
---- a/include/sound/soc-acpi-intel-match.h
-+++ b/include/sound/soc-acpi-intel-match.h
-@@ -32,6 +32,7 @@ extern struct snd_soc_acpi_mach snd_soc_acpi_intel_adl_machines[];
- extern struct snd_soc_acpi_mach snd_soc_acpi_intel_rpl_machines[];
- extern struct snd_soc_acpi_mach snd_soc_acpi_intel_mtl_machines[];
- extern struct snd_soc_acpi_mach snd_soc_acpi_intel_lnl_machines[];
-+extern struct snd_soc_acpi_mach snd_soc_acpi_intel_arl_machines[];
- 
- extern struct snd_soc_acpi_mach snd_soc_acpi_intel_cnl_sdw_machines[];
- extern struct snd_soc_acpi_mach snd_soc_acpi_intel_cfl_sdw_machines[];
-@@ -42,6 +43,7 @@ extern struct snd_soc_acpi_mach snd_soc_acpi_intel_adl_sdw_machines[];
- extern struct snd_soc_acpi_mach snd_soc_acpi_intel_rpl_sdw_machines[];
- extern struct snd_soc_acpi_mach snd_soc_acpi_intel_mtl_sdw_machines[];
- extern struct snd_soc_acpi_mach snd_soc_acpi_intel_lnl_sdw_machines[];
-+extern struct snd_soc_acpi_mach snd_soc_acpi_intel_arl_sdw_machines[];
- 
- /*
-  * generic table used for HDA codec-based platforms, possibly with
-diff --git a/sound/soc/intel/common/Makefile b/sound/soc/intel/common/Makefile
-index 07aa37dd90e9..f7370e5b4e9e 100644
---- a/sound/soc/intel/common/Makefile
-+++ b/sound/soc/intel/common/Makefile
-@@ -10,6 +10,7 @@ snd-soc-acpi-intel-match-objs := soc-acpi-intel-byt-match.o soc-acpi-intel-cht-m
- 	soc-acpi-intel-tgl-match.o soc-acpi-intel-ehl-match.o \
- 	soc-acpi-intel-jsl-match.o soc-acpi-intel-adl-match.o \
- 	soc-acpi-intel-rpl-match.o soc-acpi-intel-mtl-match.o \
-+	soc-acpi-intel-arl-match.o \
- 	soc-acpi-intel-lnl-match.o \
- 	soc-acpi-intel-hda-match.o \
- 	soc-acpi-intel-sdw-mockup-match.o
-diff --git a/sound/soc/intel/common/soc-acpi-intel-arl-match.c b/sound/soc/intel/common/soc-acpi-intel-arl-match.c
-new file mode 100644
-index 000000000000..e52797aae6e6
---- /dev/null
-+++ b/sound/soc/intel/common/soc-acpi-intel-arl-match.c
-@@ -0,0 +1,51 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * soc-apci-intel-arl-match.c - tables and support for ARL ACPI enumeration.
-+ *
-+ * Copyright (c) 2023 Intel Corporation.
-+ */
-+
-+#include <sound/soc-acpi.h>
-+#include <sound/soc-acpi-intel-match.h>
-+
-+static const struct snd_soc_acpi_endpoint single_endpoint = {
-+	.num = 0,
-+	.aggregated = 0,
-+	.group_position = 0,
-+	.group_id = 0,
-+};
-+
-+static const struct snd_soc_acpi_adr_device rt711_0_adr[] = {
-+	{
-+		.adr = 0x000020025D071100ull,
-+		.num_endpoints = 1,
-+		.endpoints = &single_endpoint,
-+		.name_prefix = "rt711"
-+	}
-+};
-+
-+static const struct snd_soc_acpi_link_adr arl_rvp[] = {
-+	{
-+		.mask = BIT(0),
-+		.num_adr = ARRAY_SIZE(rt711_0_adr),
-+		.adr_d = rt711_0_adr,
-+	},
-+	{}
-+};
-+
-+struct snd_soc_acpi_mach snd_soc_acpi_intel_arl_machines[] = {
-+	{},
-+};
-+EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_arl_machines);
-+
-+/* this table is used when there is no I2S codec present */
-+struct snd_soc_acpi_mach snd_soc_acpi_intel_arl_sdw_machines[] = {
-+	{
-+		.link_mask = 0x1, /* link0 required */
-+		.links = arl_rvp,
-+		.drv_name = "sof_sdw",
-+		.sof_tplg_filename = "sof-arl-rt711.tplg",
-+	},
-+	{},
-+};
-+EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_arl_sdw_machines);
+diff --git a/sound/soc/amd/ps/pci-ps.c b/sound/soc/amd/ps/pci-ps.c
+index 4af3c3665387..7e4c0ec9e56c 100644
+--- a/sound/soc/amd/ps/pci-ps.c
++++ b/sound/soc/amd/ps/pci-ps.c
+@@ -274,7 +274,7 @@ static int sdw_amd_scan_controller(struct device *dev)
+ 	dev_dbg(dev, "ACPI reports %d SoundWire Manager devices\n", count);
+ 	acp_data->sdw_manager_count = count;
+ 	for (index = 0; index < count; index++) {
+-		snprintf(name, sizeof(name), "mipi-sdw-link-%d-subproperties", index);
++		scnprintf(name, sizeof(name), "mipi-sdw-link-%d-subproperties", index);
+ 		link = fwnode_get_named_child_node(acp_data->sdw_fw_node, name);
+ 		if (!link) {
+ 			dev_err(dev, "Manager node %s not found\n", name);
 -- 
-2.25.1
+2.35.3
 
