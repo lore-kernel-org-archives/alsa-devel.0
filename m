@@ -4,76 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D7C37EED616
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Sep 2023 16:15:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F0142EED617
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Sep 2023 16:15:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A529F846;
-	Fri, 15 Sep 2023 18:14:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A529F846
+	by alsa0.perex.cz (Postfix) with ESMTPS id E1D1BA4D;
+	Fri, 15 Sep 2023 18:14:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E1D1BA4D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1694794509;
-	bh=iNKMq8pQmi1xurRTgo9Yv30Q912F1svy9/M2MmUxALg=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=b4FyvWhGV5Lp4Y/4QDeceFoFR5xzFc5q1B9nCq7gi9l9yln6dhqjpeZld5xOLWjuE
-	 AIEJJ0KeXkSIBZ9bl+a3fyeNqzfgQCrx8IvCnLLGgioMTP8p5VLQPmI9aYJcTlC+fI
-	 aaF6NaX9Yq2cdgNLNIMbiClFJNoPSyXjzp5CiyUA=
+	s=default; t=1694794523;
+	bh=C71tN8ZIhlVIDV9QKHTbB9EmSGHavmQk0JRFq/aLG+U=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=hfbO2xasKlYKjHe1/i96NW43uK/F75EdczDDjJWemNFqIBHjn6oWYFqja+psT6v0Z
+	 nbrqvLs47aHAnrqSM6Iz0Ej5xvOS6sR95Wc+IjogO/gghQazYq6fqZQu3RxQUXZ0g5
+	 UXyGYoIq9BLbW8wjW0YJza11xwsxR4frYaOklTEc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C5C57F80537; Fri, 15 Sep 2023 18:13:42 +0200 (CEST)
+	id 991ACF80558; Fri, 15 Sep 2023 18:13:45 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4D7E8F80425;
-	Fri, 15 Sep 2023 18:13:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F165FF80568;
+	Fri, 15 Sep 2023 18:13:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AF381F80425; Fri, 15 Sep 2023 18:13:39 +0200 (CEST)
+	id C32DEF80425; Fri, 15 Sep 2023 18:13:40 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 3EA4CF801F5
-	for <alsa-devel@alsa-project.org>; Fri, 15 Sep 2023 18:13:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3EA4CF801F5
+	by alsa1.perex.cz (Postfix) with ESMTPS id C5601F8007C
+	for <alsa-devel@alsa-project.org>; Fri, 15 Sep 2023 18:13:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C5601F8007C
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=B0CxjdTm
+ header.s=k20201202 header.b=r0ophIMJ
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 5811D620E5;
-	Fri, 15 Sep 2023 16:13:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 726DEC433C8;
-	Fri, 15 Sep 2023 16:13:30 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id A9CB3620FF;
+	Fri, 15 Sep 2023 16:13:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 254FEC433C9;
+	Fri, 15 Sep 2023 16:13:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1694794412;
-	bh=iNKMq8pQmi1xurRTgo9Yv30Q912F1svy9/M2MmUxALg=;
-	h=From:To:In-Reply-To:References:Subject:Date:From;
-	b=B0CxjdTmKQ3QyOnISup33+DTuKAuN7MOookDWNbwjVRVmOgorLjl6x+gzqYLRqXDS
-	 ko4kjD3Y+1rkBa5dlqyMQq/WIf0OAbx91itA8T5pw8B+lpwydmgXJNfc3LpQyXJhQE
-	 fMgPe7BlStiajx885jBtB0IjwLflfHCsH6Wxe5WUoj/8EgxjYY4Tzm9SMG0YZCKX16
-	 hGDc9dlE7mBiEuQHM3P1v73RPWmkRK8s/LVTwGF0R10gQl935X6ijsunkeK561BA9g
-	 xhveRZFOnKWYSNn2bOaHZw8zBLU0lWswGHDgKWGC35lezyqDmSeJ998M58f8JkrTF3
-	 NMY27gWpd9RJw==
+	s=k20201202; t=1694794416;
+	bh=C71tN8ZIhlVIDV9QKHTbB9EmSGHavmQk0JRFq/aLG+U=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=r0ophIMJxc2q+fkdkYDTRxogvZGxJE1bpdqk6N3OYryTsGALno9ruuy5mLyIMg6DD
+	 sVv1wk+j4YqRa+q+PCFvjyvPqjpa9EcDqH4B73wn6QwRFidGJRzZGvz04yUfizK1C+
+	 bZExmfz7YE9wCmtyyud/3FdduH1tRRd/m+reRwwCCNGpQllFv2nMP2Dv7QxcR7PA5l
+	 XrPfxm3UremLdzzcJkMxoZnvvUZoqhQCaqsLyqseJZCWppVAqCvQ9UoHdn/QU/hxgM
+	 nWbCm575/xJqYGmf0KQDeGj0S3lC4h6lrO2xxETubNyo1C1+5FU8ZyZ0aPBYruKOoE
+	 M9uHzxg0DHzhg==
 From: Mark Brown <broonie@kernel.org>
-To: shengjiu.wang@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
- nicoleotsuka@gmail.com, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
- alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org,
- linux-kernel@vger.kernel.org, Shengjiu Wang <shengjiu.wang@nxp.com>
-In-Reply-To: <1694757731-18308-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1694757731-18308-1-git-send-email-shengjiu.wang@nxp.com>
-Subject: Re: [PATCH] ASoC: imx-audmix: Fix return error with devm_clk_get()
-Message-Id: <169479441018.352295.3740215215305425642.b4-ty@kernel.org>
-Date: Fri, 15 Sep 2023 17:13:30 +0100
+To: cezary.rojewski@intel.com, pierre-louis.bossart@linux.intel.com,
+ liam.r.girdwood@linux.intel.com, peter.ujfalusi@linux.intel.com,
+ yung-chuan.liao@linux.intel.com, ranjani.sridharan@linux.intel.com,
+ kai.vehmanen@linux.intel.com, perex@perex.cz, tiwai@suse.com,
+ kuninori.morimoto.gx@renesas.com, brent.lu@intel.com,
+ amadeuszx.slawinski@linux.intel.com, Chen Ni <nichen@iscas.ac.cn>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20230915021344.3078-1-nichen@iscas.ac.cn>
+References: <20230915021344.3078-1-nichen@iscas.ac.cn>
+Subject: Re: [PATCH] ASoC: hdaudio.c: Add missing check for devm_kstrdup
+Message-Id: <169479441287.352295.6511877103194317709.b4-ty@kernel.org>
+Date: Fri, 15 Sep 2023 17:13:32 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-034f2
-Message-ID-Hash: K3QWOEQFTXCOE6ECN4R2NLT7EDE3N5CJ
-X-Message-ID-Hash: K3QWOEQFTXCOE6ECN4R2NLT7EDE3N5CJ
+Message-ID-Hash: LERQNES74FUJU4U4OR2PMR74UNXOE27L
+X-Message-ID-Hash: LERQNES74FUJU4U4OR2PMR74UNXOE27L
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -86,7 +88,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/K3QWOEQFTXCOE6ECN4R2NLT7EDE3N5CJ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LERQNES74FUJU4U4OR2PMR74UNXOE27L/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -95,15 +97,13 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, 15 Sep 2023 14:02:11 +0800, Shengjiu Wang wrote:
-> The devm_clk_get() can return -EPROBE_DEFER error,
-> modify the error code to be -EINVAL is not correct, which
-> cause the -EPROBE_DEFER error is not correctly handled.
+On Fri, 15 Sep 2023 02:13:44 +0000, Chen Ni wrote:
+> Because of the potential failure of the devm_kstrdup(), the
+> dl[i].codecs->name could be NULL.
+> Therefore, we need to check it and return -ENOMEM in order to transfer
+> the error.
 > 
-> This patch is to fix the return error code.
 > 
-> 
-> [...]
 
 Applied to
 
@@ -111,8 +111,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: imx-audmix: Fix return error with devm_clk_get()
-      commit: b19a5733de255cabba5feecabf6e900638b582d1
+[1/1] ASoC: hdaudio.c: Add missing check for devm_kstrdup
+      commit: c04efbfd76d23157e64e6d6147518c187ab4233a
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
