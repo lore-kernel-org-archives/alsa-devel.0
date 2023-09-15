@@ -4,78 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 108B0EE645B
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Sep 2023 12:20:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DF726EE6457
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Sep 2023 12:20:54 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E7EE8DEB;
-	Fri, 15 Sep 2023 14:19:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E7EE8DEB
+	by alsa0.perex.cz (Postfix) with ESMTPS id BA7B2A4E;
+	Fri, 15 Sep 2023 14:20:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BA7B2A4E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1694780436;
-	bh=IYMn0XydTsQdKgRIeo9p7qSKaP9DMvGzFzUjETrPlyc=;
+	s=default; t=1694780452;
+	bh=FoDCC8b+yNrvOVCKMMKtaidkTMNGEtdcrNvpPRAZyoo=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=se50InKoC2Cq5SR+VKx+KDlFUq93wocfXVyw+5C5p3V/CX4iAGnzm9cdpQjm3BXT6
-	 +JpHLDPanGX1EZ8E5snJNyT5sg3Wcgk7Sb9KVad00KrSrQGLNXZEheMu5WPmpxQQhx
-	 wpCgyiI+nOY3MSNxiZnzZwaq6YzntGJDkGs0VO9w=
+	b=lCgjBjC090iA/6P0Bsd48Rol66oUZXhY7IoqBCCsC4VkIS3DYN9S+ap3Wm8fUpI+p
+	 R+pysEo5+NsyQzx068Hc5N+6gXOFw3LiiWYpGaHqau11Ojs4nXj3r1x/wha480u+7R
+	 PPsYvFS9NUkoJE9YmTxYAboRJL6jD56t83/0Iazw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C83DFF8057D; Fri, 15 Sep 2023 14:18:52 +0200 (CEST)
+	id A462BF805A8; Fri, 15 Sep 2023 14:18:55 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6C255F80571;
-	Fri, 15 Sep 2023 14:18:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 37A81F80588;
+	Fri, 15 Sep 2023 14:18:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 148C4F8007C; Fri, 15 Sep 2023 14:18:47 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+	id 515D6F8055A; Fri, 15 Sep 2023 14:18:48 +0200 (CEST)
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7D422F8007C
-	for <alsa-devel@alsa-project.org>; Fri, 15 Sep 2023 14:18:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7D422F8007C
+	by alsa1.perex.cz (Postfix) with ESMTPS id 7196EF8047D
+	for <alsa-devel@alsa-project.org>; Fri, 15 Sep 2023 14:18:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7196EF8047D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=QnQr3F90
+ header.s=k20201202 header.b=s/5wD1ve
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id AD211B82B50;
-	Fri, 15 Sep 2023 12:18:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BCCE8C433C8;
-	Fri, 15 Sep 2023 12:18:39 +0000 (UTC)
+	by sin.source.kernel.org (Postfix) with ESMTPS id C7588CE2B61;
+	Fri, 15 Sep 2023 12:18:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C982C433CA;
+	Fri, 15 Sep 2023 12:18:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1694780322;
-	bh=IYMn0XydTsQdKgRIeo9p7qSKaP9DMvGzFzUjETrPlyc=;
+	s=k20201202; t=1694780319;
+	bh=FoDCC8b+yNrvOVCKMMKtaidkTMNGEtdcrNvpPRAZyoo=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=QnQr3F90vyTy00IQULOBUsagIH2ggZ/YMZJzuaLtIRaHt5upGvMAO7gcu74WeVyFK
-	 GyijUAqCMnO55AMMRSpoqXyFXBgYlkwxwLUrj5ZW9/cNghLqdydA+38uNDGKS22YvI
-	 bNgcPttcr0VzGqZSc+tLSb50uCffp2d9+ei5T7ksLL8gF3Sn7tINeYjdkImNy6bcn8
-	 xSMF/b7SI0uCfKgHo7VTGkUa2b9wbBJAEI0+yXIbF3zmRB7D22BKWND8dyRwV09BYJ
-	 61Lz3+Vf7SaiIXscpQADU4s9H28u48EZ4l5Jlo4mndQdsgCGQBM868SEuD+cwaq/wf
-	 1GycuNTHcpSmQ==
+	b=s/5wD1ve2x8Qc4YNoLvOHH/Z9dBHkncCw+nF+g0h57uchYQWQJfPrwRIXRxgDcMlN
+	 nLdKTDuzM3cEIowJ0KTady4iGJeuZkmssXdP9OqutkwANwwTwSAjXAS3d2VnpHEtvm
+	 hURBthFLIJiCd4gIml/GwOpkz6NPx/wbyuTyB7N3gFK6NiBlyq9yD6SlxlwiioUHpQ
+	 ujBDGLRozdeTDrzDf1XucWNiKxVsVX0UBPzfptJvJGuCcjGWtmVMi365wnRXG34flH
+	 CvY9KvAb1P/sh57AtGtNnl4G8Le60fnNzTqh9m1SCKDa+Hbv/tqriRF62BJJWedFLB
+	 VODNiNjXR3HsA==
 From: Mark Brown <broonie@kernel.org>
 To: lgirdwood@gmail.com, Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Cc: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com,
  ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com,
- yung-chuan.liao@linux.intel.com, yong.zhi@intel.com
-In-Reply-To: <20230914130303.13636-1-peter.ujfalusi@linux.intel.com>
-References: <20230914130303.13636-1-peter.ujfalusi@linux.intel.com>
-Subject: Re: [PATCH] ASoC: SOF: ipc4-topology: Add deep buffer size to
- debug prints
-Message-Id: <169478031932.22068.4090045440139083206.b4-ty@kernel.org>
-Date: Fri, 15 Sep 2023 13:18:39 +0100
+ yung-chuan.liao@linux.intel.com
+In-Reply-To: <20230914125115.30904-1-peter.ujfalusi@linux.intel.com>
+References: <20230914125115.30904-1-peter.ujfalusi@linux.intel.com>
+Subject: Re: [PATCH] ASoC: SOF: ipc4: Dump the payload also when
+ set_get_data fails
+Message-Id: <169478031619.22068.12580878564050317780.b4-ty@kernel.org>
+Date: Fri, 15 Sep 2023 13:18:36 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-034f2
-Message-ID-Hash: HE5IJCZVVJ75OV5SHV5I7S36XHIIVP4W
-X-Message-ID-Hash: HE5IJCZVVJ75OV5SHV5I7S36XHIIVP4W
+Message-ID-Hash: YLVVZBABC2DHLPZ3SVR2VDK4UMYEZMIH
+X-Message-ID-Hash: YLVVZBABC2DHLPZ3SVR2VDK4UMYEZMIH
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -88,7 +87,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HE5IJCZVVJ75OV5SHV5I7S36XHIIVP4W/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YLVVZBABC2DHLPZ3SVR2VDK4UMYEZMIH/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -97,8 +96,10 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, 14 Sep 2023 16:03:03 +0300, Peter Ujfalusi wrote:
-> Print deep_buffer_dma_ms and dma_buffer_size for debug purpose.
+On Thu, 14 Sep 2023 15:51:15 +0300, Peter Ujfalusi wrote:
+> Move the out label to dump the message payload when the IPC message fails.
+> The payload contains important information on what might have caused the
+> error in firmware.
 > 
 > 
 
@@ -108,8 +109,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: SOF: ipc4-topology: Add deep buffer size to debug prints
-      commit: 642d1de63cea161c629afd2e82d9db5a1582ffea
+[1/1] ASoC: SOF: ipc4: Dump the payload also when set_get_data fails
+      commit: f7d67a9c254829930355d675e989c0dfa884242c
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
