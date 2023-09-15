@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4DACFEE645A
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Sep 2023 12:45:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4C19CEE6457
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Sep 2023 12:45:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E3728E0E;
-	Fri, 15 Sep 2023 14:44:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E3728E0E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 60475DEE;
+	Fri, 15 Sep 2023 14:44:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 60475DEE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1694781900;
-	bh=3PGrPEVFkjyjnStgupe6/kqw87gbIX3yc0ZoAhK/yME=;
+	s=default; t=1694781923;
+	bh=+nKJ/PSxOyzVc92SxY5hlQYodLmGBl0Juiujx8Gpw9Y=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=ctnJZogDUZDKVSoo23qPiAd+YvAQ579OmgOc3yVighZL23/Dxi84UuQ7QsQzrPGnv
-	 W55ydOUVXdIo21u6bygjPGBbYbecQEoCL4x2BB4zFN7+9R4h6CjNTH3fY059aVtXAP
-	 PQ6lqtwQHTb4BIScFITPl0ipsaw9Tl2Lk17RdO+o=
+	b=RBL6yWeXpdYxPm95vNv0yAQaFY5ca3BXpeiOkj0W5htSt+fi+u8nPWV1vWL0S1Wqu
+	 90rYyTQnp+CLTvcBzVvcjdxdoq221nd7OzRgHheCr9irA2Heoze73A8MmHDkX3a7OK
+	 SDWNSCjqt/e6tRyo3XZWf1IGNsHMFQ6OeTSnzqP8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D937BF8060E; Fri, 15 Sep 2023 14:41:06 +0200 (CEST)
+	id B86C4F80610; Fri, 15 Sep 2023 14:41:09 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 315CFF80601;
-	Fri, 15 Sep 2023 14:41:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D9D04F80615;
+	Fri, 15 Sep 2023 14:41:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0772EF805C7; Fri, 15 Sep 2023 14:40:45 +0200 (CEST)
+	id 421C5F805C6; Fri, 15 Sep 2023 14:40:46 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C0A09F805B2
-	for <alsa-devel@alsa-project.org>; Fri, 15 Sep 2023 14:40:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C0A09F805B2
+	by alsa1.perex.cz (Postfix) with ESMTPS id 04F23F805A1
+	for <alsa-devel@alsa-project.org>; Fri, 15 Sep 2023 14:40:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 04F23F805A1
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=O5EsIE2E
+ header.s=Intel header.b=UXIgqf6L
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694781641; x=1726317641;
+  t=1694781637; x=1726317637;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=3PGrPEVFkjyjnStgupe6/kqw87gbIX3yc0ZoAhK/yME=;
-  b=O5EsIE2EBHbjpycsXO3IUy74gWddAd1Dg2p9ALvmlRGQXyfqaOeWEuww
-   f6JL+fAEfj6yHMgPdyJ4Lacx3vmacnxZJSKg1r+UcNvy6NgS6SPMjceUZ
-   lMMzdELbj4VuATYjC8NMsKo7jHozrKCnAHw/ug8rUfuyOHNcwQZ2m0Qew
-   6c/5sy8Rz7HcQRhACWYPmJLXfAoh8ht9ESpyWKwvQ+MXCupbdfUHVuXMD
-   FyQtdptHeaePeBqPcjAwzRKjxFErC7ABgkDVwzv7vKYsOQ/f8tilX0rT6
-   yvwqU/+7Tla28uxNaGFnv8xJyUe67W1Qevhk7Pt6pzHiM5EUCiFfKyG5J
+  bh=+nKJ/PSxOyzVc92SxY5hlQYodLmGBl0Juiujx8Gpw9Y=;
+  b=UXIgqf6L651gBRaPF+a2vNwxi+KqcXfVRV0J13KAfV4+VKV8VzDi+Al2
+   9/mLwzfECGA4+Nvp0socP3yb+USAJZwKjrLkTKE9bpatFSLW+mUvA2PlL
+   j0yvuKuIKvac6pFvF5e97gA2dH2nbCz7AO6cYwCSqynAzyNjXvgHvH5Lk
+   c6iCu1VI2uWrsX8I59GA2Tg5wppwxj5zcmv6oUipud6TCRFGRthiDfD+o
+   OrAtFxN/3RIvaoxuIrZXfwjnoxR4wTE59aa6Xtbrw0uVaFQX1bCu5Q451
+   RI2myX+x3vZFFwq8q1W8lBcT2d8imWf0sfhE4kXWw96xaNqlUq+wd5car
    A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="358653209"
+X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="358653194"
 X-IronPort-AV: E=Sophos;i="6.02,149,1688454000";
-   d="scan'208";a="358653209"
+   d="scan'208";a="358653194"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
   by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Sep 2023 05:40:39 -0700
+ 15 Sep 2023 05:40:34 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="774304606"
+X-IronPort-AV: E=McAfee;i="6600,9927,10834"; a="774304597"
 X-IronPort-AV: E=Sophos;i="6.02,149,1688454000";
-   d="scan'208";a="774304606"
+   d="scan'208";a="774304597"
 Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
   by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Sep 2023 05:40:36 -0700
+ 15 Sep 2023 05:40:31 -0700
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 To: broonie@kernel.org,
 	tiwai@suse.de
@@ -74,17 +74,16 @@ Cc: alsa-devel@alsa-project.org,
 	brent.lu@intel.com,
 	uday.m.bhat@intel.com,
 	balamurugan.c@intel.com
-Subject: [PATCH 12/19] ASoC: Intel: sof_ssp_amp: do not create amp link for
- nocodec board
-Date: Fri, 15 Sep 2023 20:48:45 +0800
-Message-Id: <20230915124852.1696857-13-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH 10/19] ASoC: Intel: sof_rt5682: add adl_rt5650 board config
+Date: Fri, 15 Sep 2023 20:48:43 +0800
+Message-Id: <20230915124852.1696857-11-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230915124852.1696857-1-yung-chuan.liao@linux.intel.com>
 References: <20230915124852.1696857-1-yung-chuan.liao@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: BIQGHWII6X5YUJRB6GAJ37HZF2OPWV56
-X-Message-ID-Hash: BIQGHWII6X5YUJRB6GAJ37HZF2OPWV56
+Message-ID-Hash: 3SYVD2C5QJVK3IWEHVH5TDR7JM464WBE
+X-Message-ID-Hash: 3SYVD2C5QJVK3IWEHVH5TDR7JM464WBE
 X-MailFrom: yung-chuan.liao@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -97,7 +96,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BIQGHWII6X5YUJRB6GAJ37HZF2OPWV56/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3SYVD2C5QJVK3IWEHVH5TDR7JM464WBE/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -108,165 +107,94 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Brent Lu <brent.lu@intel.com>
 
-A BE DAI link for speaker amplifier is always created even a board
-quirk specifies there is no amplifier. Modify the driver to check
-amplifier type before creating corresponding DAI link.
-
-The topology (sof-tgl-rt1308-hdmi-ssp.m4) which supports HDMI-IN is
-using fixed BE ID for each DAI link. Therefore we also uses fixed ID
-in machine driver side.
+This configuration supports ADL boards which implement ALC5650 dual
+I2S interface codec. Two DAI links are added: AIF1 (on codec side) for
+headphone and AIF2 for speakers.
 
 Signed-off-by: Brent Lu <brent.lu@intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Balamurugan C <balamurugan.c@intel.com>
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- sound/soc/intel/boards/sof_ssp_amp.c | 79 +++++++++++++++++-----------
- 1 file changed, 47 insertions(+), 32 deletions(-)
+ sound/soc/intel/boards/sof_rt5682.c           | 21 +++++++++++++------
+ .../intel/common/soc-acpi-intel-adl-match.c   | 12 +++++++++++
+ 2 files changed, 27 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/intel/boards/sof_ssp_amp.c b/sound/soc/intel/boards/sof_ssp_amp.c
-index e2b3553dbc65..483ddb1c04cd 100644
---- a/sound/soc/intel/boards/sof_ssp_amp.c
-+++ b/sound/soc/intel/boards/sof_ssp_amp.c
-@@ -186,6 +186,12 @@ static int sof_hdmi_init(struct snd_soc_pcm_runtime *rtd)
+diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
+index bbe15c36b855..f5767f9e506d 100644
+--- a/sound/soc/intel/boards/sof_rt5682.c
++++ b/sound/soc/intel/boards/sof_rt5682.c
+@@ -1153,6 +1153,12 @@ static const struct platform_device_id board_ids[] = {
+ 		.driver_data = (kernel_ulong_t)(SOF_RT5682_MCLK_EN |
+ 					SOF_RT5682_SSP_CODEC(0)),
+ 	},
++	{
++		.name = "jsl_rt5650",
++		.driver_data = (kernel_ulong_t)(SOF_RT5682_MCLK_EN |
++					SOF_RT5682_SSP_CODEC(0) |
++					SOF_RT5682_SSP_AMP(1)),
++	},
+ 	{
+ 		.name = "tgl_mx98357_rt5682",
+ 		.driver_data = (kernel_ulong_t)(SOF_RT5682_MCLK_EN |
+@@ -1239,6 +1245,15 @@ static const struct platform_device_id board_ids[] = {
+ 					/* SSP 0 and SSP 2 are used for HDMI IN */
+ 					SOF_HDMI_CAPTURE_SSP_MASK(0x5)),
+ 	},
++	{
++		.name = "adl_rt5650",
++		.driver_data = (kernel_ulong_t)(SOF_RT5682_MCLK_EN |
++					SOF_RT5682_SSP_CODEC(0) |
++					SOF_RT5682_SSP_AMP(1) |
++					SOF_RT5682_NUM_HDMIDEV(4) |
++					SOF_BT_OFFLOAD_SSP(2) |
++					SOF_SSP_BT_OFFLOAD_PRESENT),
++	},
+ 	{
+ 		.name = "rpl_mx98357_rt5682",
+ 		.driver_data = (kernel_ulong_t)(SOF_RT5682_MCLK_EN |
+@@ -1287,12 +1302,6 @@ static const struct platform_device_id board_ids[] = {
+ 					SOF_RT5682_SSP_AMP(0) |
+ 					SOF_RT5682_NUM_HDMIDEV(3)),
+ 	},
+-	{
+-		.name = "jsl_rt5650",
+-		.driver_data = (kernel_ulong_t)(SOF_RT5682_MCLK_EN |
+-					SOF_RT5682_SSP_CODEC(0) |
+-					SOF_RT5682_SSP_AMP(1)),
+-	},
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(platform, board_ids);
+diff --git a/sound/soc/intel/common/soc-acpi-intel-adl-match.c b/sound/soc/intel/common/soc-acpi-intel-adl-match.c
+index 8e995edf4c10..4e9787870f60 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-adl-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-adl-match.c
+@@ -492,6 +492,11 @@ static const struct snd_soc_acpi_codecs adl_nau8318_amp = {
+ 	.codecs = {"NVTN2012"}
+ };
  
- #define IDISP_CODEC_MASK	0x4
- 
-+/* BE ID defined in sof-tgl-rt1308-hdmi-ssp.m4 */
-+#define HDMI_IN_BE_ID		0
-+#define SPK_BE_ID		2
-+#define DMIC01_BE_ID		3
-+#define INTEL_HDMI_BE_ID	5
++static struct snd_soc_acpi_codecs adl_rt5650_amp = {
++	.num_codecs = 1,
++	.codecs = {"10EC5650"}
++};
 +
- static struct snd_soc_dai_link *
- sof_card_dai_links_create(struct device *dev, enum sof_ssp_codec amp_type,
- 			  int ssp_codec, int dmic_be_num, int hdmi_num,
-@@ -195,6 +201,7 @@ sof_card_dai_links_create(struct device *dev, enum sof_ssp_codec amp_type,
- 	struct snd_soc_dai_link_component *cpus;
- 	struct snd_soc_dai_link *links;
- 	int i, id = 0;
-+	bool fixed_be = false;
- 
- 	links = devm_kcalloc(dev, sof_ssp_amp_card.num_links,
- 					sizeof(struct snd_soc_dai_link), GFP_KERNEL);
-@@ -208,6 +215,9 @@ sof_card_dai_links_create(struct device *dev, enum sof_ssp_codec amp_type,
- 		int num_of_hdmi_ssp = (sof_ssp_amp_quirk & SOF_NO_OF_HDMI_CAPTURE_SSP_MASK) >>
- 				SOF_NO_OF_HDMI_CAPTURE_SSP_SHIFT;
- 
-+		/* the topology supports HDMI-IN uses fixed BE ID for DAI links */
-+		fixed_be = true;
-+
- 		for (i = 1; i <= num_of_hdmi_ssp; i++) {
- 			int port = (i == 1 ? (sof_ssp_amp_quirk & SOF_HDMI_CAPTURE_1_SSP_MASK) >>
- 						SOF_HDMI_CAPTURE_1_SSP_SHIFT :
-@@ -222,7 +232,7 @@ sof_card_dai_links_create(struct device *dev, enum sof_ssp_codec amp_type,
- 			links[id].name = devm_kasprintf(dev, GFP_KERNEL, "SSP%d-HDMI", port);
- 			if (!links[id].name)
- 				return NULL;
--			links[id].id = id;
-+			links[id].id = fixed_be ? (HDMI_IN_BE_ID + i - 1) : id;
- 			links[id].codecs = &asoc_dummy_dlc;
- 			links[id].num_codecs = 1;
- 			links[id].platforms = platform_component;
-@@ -235,38 +245,40 @@ sof_card_dai_links_create(struct device *dev, enum sof_ssp_codec amp_type,
- 	}
- 
- 	/* codec SSP */
--	links[id].name = devm_kasprintf(dev, GFP_KERNEL, "SSP%d-Codec", ssp_codec);
--	if (!links[id].name)
--		return NULL;
-+	if (amp_type != CODEC_NONE) {
-+		links[id].name = devm_kasprintf(dev, GFP_KERNEL, "SSP%d-Codec", ssp_codec);
-+		if (!links[id].name)
-+			return NULL;
- 
--	links[id].id = id;
-+		links[id].id = fixed_be ? SPK_BE_ID : id;
- 
--	switch (amp_type) {
--	case CODEC_CS35L41:
--		cs35l41_set_dai_link(&links[id]);
--		break;
--	case CODEC_RT1308:
--		sof_rt1308_dai_link(&links[id]);
--		break;
--	default:
--		dev_err(dev, "invalid amp type %d\n", amp_type);
--		return NULL;
-+		switch (amp_type) {
-+		case CODEC_CS35L41:
-+			cs35l41_set_dai_link(&links[id]);
-+			break;
-+		case CODEC_RT1308:
-+			sof_rt1308_dai_link(&links[id]);
-+			break;
-+		default:
-+			dev_err(dev, "invalid amp type %d\n", amp_type);
-+			return NULL;
-+		}
-+
-+		links[id].platforms = platform_component;
-+		links[id].num_platforms = ARRAY_SIZE(platform_component);
-+		links[id].dpcm_playback = 1;
-+		/* feedback from amplifier or firmware-generated echo reference */
-+		links[id].dpcm_capture = 1;
-+		links[id].no_pcm = 1;
-+		links[id].cpus = &cpus[id];
-+		links[id].num_cpus = 1;
-+		links[id].cpus->dai_name = devm_kasprintf(dev, GFP_KERNEL, "SSP%d Pin", ssp_codec);
-+		if (!links[id].cpus->dai_name)
-+			return NULL;
-+
-+		id++;
- 	}
- 
--	links[id].platforms = platform_component;
--	links[id].num_platforms = ARRAY_SIZE(platform_component);
--	links[id].dpcm_playback = 1;
--	/* feedback from amplifier or firmware-generated echo reference */
--	links[id].dpcm_capture = 1;
--	links[id].no_pcm = 1;
--	links[id].cpus = &cpus[id];
--	links[id].num_cpus = 1;
--	links[id].cpus->dai_name = devm_kasprintf(dev, GFP_KERNEL, "SSP%d Pin", ssp_codec);
--	if (!links[id].cpus->dai_name)
--		return NULL;
--
--	id++;
--
- 	/* dmic */
- 	if (dmic_be_num > 0) {
- 		/* at least we have dmic01 */
-@@ -283,7 +295,7 @@ sof_card_dai_links_create(struct device *dev, enum sof_ssp_codec amp_type,
- 	}
- 
- 	for (i = 0; i < dmic_be_num; i++) {
--		links[id].id = id;
-+		links[id].id = fixed_be ? (DMIC01_BE_ID + i) : id;
- 		links[id].num_cpus = 1;
- 		links[id].codecs = dmic_component;
- 		links[id].num_codecs = ARRAY_SIZE(dmic_component);
-@@ -312,7 +324,7 @@ sof_card_dai_links_create(struct device *dev, enum sof_ssp_codec amp_type,
- 			if (!links[id].name)
- 				goto devm_err;
- 
--			links[id].id = id;
-+			links[id].id = fixed_be ? (INTEL_HDMI_BE_ID + i - 1) : id;
- 			links[id].cpus = &cpus[id];
- 			links[id].num_cpus = 1;
- 			links[id].cpus->dai_name = devm_kasprintf(dev, GFP_KERNEL,
-@@ -398,7 +410,10 @@ static int sof_ssp_amp_probe(struct platform_device *pdev)
- 	ssp_codec = sof_ssp_amp_quirk & SOF_AMPLIFIER_SSP_MASK;
- 
- 	/* set number of dai links */
--	sof_ssp_amp_card.num_links = 1 + dmic_be_num;
-+	sof_ssp_amp_card.num_links = dmic_be_num;
-+
-+	if (ctx->amp_type != CODEC_NONE)
-+		sof_ssp_amp_card.num_links++;
- 
- 	if (sof_ssp_amp_quirk & SOF_SSP_HDMI_CAPTURE_PRESENT)
- 		sof_ssp_amp_card.num_links += (sof_ssp_amp_quirk & SOF_NO_OF_HDMI_CAPTURE_SSP_MASK) >>
+ struct snd_soc_acpi_mach snd_soc_acpi_intel_adl_machines[] = {
+ 	{
+ 		.comp_ids = &adl_rt5682_rt5682s_hp,
+@@ -602,6 +607,13 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_adl_machines[] = {
+ 					SND_SOC_ACPI_TPLG_INTEL_SSP_MSB |
+ 					SND_SOC_ACPI_TPLG_INTEL_DMIC_NUMBER,
+ 	},
++	{
++		.id = "10EC5650",
++		.drv_name = "adl_rt5650",
++		.machine_quirk = snd_soc_acpi_codec_list,
++		.quirk_data = &adl_rt5650_amp,
++		.sof_tplg_filename = "sof-adl-rt5650.tplg",
++	},
+ 	/* place amp-only boards in the end of table */
+ 	{
+ 		.id = "CSC3541",
 -- 
 2.25.1
 
