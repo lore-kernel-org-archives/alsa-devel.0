@@ -4,70 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D0A12CD37B0
-	for <alsa-devel@archiver.kernel.org>; Sat, 16 Sep 2023 00:20:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 32301CD37AF
+	for <alsa-devel@archiver.kernel.org>; Sat, 16 Sep 2023 00:20:39 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0DD1EEAA;
-	Sat, 16 Sep 2023 02:19:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0DD1EEAA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5884BEAD;
+	Sat, 16 Sep 2023 02:19:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5884BEAD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1694823628;
-	bh=/owbOIU0LVvfonTPDSprfGbaJiMuncEnWWk9R5sD5P4=;
+	s=default; t=1694823637;
+	bh=p13kY0KQ6OS3VxAIfpk8mxVwnhTEHCZGnQJROsTvDBk=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=alFdP7fM3hCImU9qza/Uy9fINscQo2H1EgrOn3A6jV9FJuv4mkKVrZs9rjidd0dw2
-	 YGclsX2vFuZXxsLrLHl/063DN4/9q9jXZh5z+Ge3stJQ3BCAQYr5z3jZyph+OEkTCg
-	 NXhD8b8LIfE/DFbPu887WgdtQHwJIJVlcrGKGXUI=
+	b=s1N2l6o9Xj392Hc6c0Gee94KMmnQe0qHZP/bFBtUEYpBoUQhg0Io82sHwhcvVTAQa
+	 anrwF3odfJO35Eu8FVC5Va9/dKM7ps3nuBYLGE3J5Trg52qtuEy6AELrvjKyl7SkuV
+	 NxnvyMP/9088NKzJPIzqHluM0aHmU5SPOljhVDNI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1A491F806E7; Sat, 16 Sep 2023 02:12:26 +0200 (CEST)
+	id E05E1F806ED; Sat, 16 Sep 2023 02:12:28 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 582C8F806E5;
-	Sat, 16 Sep 2023 02:12:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 37ED0F806E5;
+	Sat, 16 Sep 2023 02:12:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 39CDEF8069C; Sat, 16 Sep 2023 02:12:09 +0200 (CEST)
+	id EF625F806BE; Sat, 16 Sep 2023 02:12:15 +0200 (CEST)
 Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com
  [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 48DCDF805BD
+	by alsa1.perex.cz (Postfix) with ESMTPS id 8F8CAF805C5
 	for <alsa-devel@alsa-project.org>; Sat, 16 Sep 2023 02:11:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 48DCDF805BD
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8F8CAF805C5
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
- header.s=qcppdkim1 header.b=fsjzmFS7
+ header.s=qcppdkim1 header.b=N6WIotZp
 Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
 	by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 38G07hiv027575;
+ 38FNj8po016577;
 	Sat, 16 Sep 2023 00:11:09 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-type; s=qcppdkim1;
- bh=DJXYybKJrBl7GHgka4BmKmo4v4Wju0w3cfuDKhuRqeQ=;
- b=fsjzmFS7jm36MMeCfp+/52i7K0FZvaz/ssBM6PQJlZBUGzLxzKzZu3RGwoWKChOT8G04
- KLyHZKTWMm2nmiY7243QK5u16V6TdP5P8q/v2K51Z/cqIunHYufY7M62zO8+f2OzF15F
- oe+9bPoD6YO1qX43SmSUzfGIDL3W+feKQf6JRjySA/8A6GKbnVn4n+74zXhAxvmy9AVn
- /dvH25rgQY9MnHzVmo+ePu4fh7SvvFW3JNZN7cQT0VAuMicnwCcS5ozVi/aRmaUKKTNc
- 0BccCNXt2uvmwOqSD8JKHaMsUt3UMb3NOXHJyBdpT8FtO50cBJj3j1Dpr7uvbc5hwPlc 4Q==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com
+ bh=eZIaIKYDkX93uc12FFvrk5rH+DwbW37vpDohQM+C1Zs=;
+ b=N6WIotZp0vtL/RZN0ko+tm4TRMUzVYAJVfBaOYpL65gDSettYKKI9oL1s89PNvJTDA5V
+ 3Pc0qhekpcGvwR+WHMh/t8BFMRCU2Pxfwar252/bmUBF2+05fI1IRuEOLf9GwMir++65
+ SJOUat5WfkNu3pNbyCJclfqM7jykHARauKs94yLGlTDvjt5212ZahRMw1TuWQxJ5pnZX
+ oBL1N9hApNkido7md3H4Mb9gjF9Xnkg6zDvGrRgU6r5pWOGJJvTBsUIGvSlCQ24jV4t0
+ LFi6iyM8Qrs8DTATxAycN2wKc4QszB8JeNMNp1VEi9N64tbbMcr+boelvfvahODvFyd/ /Q==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com
  [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t4g3gtd2f-1
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t4g3gtd25-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Sat, 16 Sep 2023 00:11:08 +0000
 Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com
  [10.47.209.197])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id
- 38G0AiB0011932
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id
+ 38G0AbME025995
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 16 Sep 2023 00:10:44 GMT
+	Sat, 16 Sep 2023 00:10:37 GMT
 Received: from hu-wcheng-lv.qualcomm.com (10.49.16.6) by
  nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.36; Fri, 15 Sep 2023 17:10:44 -0700
+ 15.2.1118.36; Fri, 15 Sep 2023 17:10:37 -0700
 From: Wesley Cheng <quic_wcheng@quicinc.com>
 To: <mathias.nyman@intel.com>, <gregkh@linuxfoundation.org>,
         <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
@@ -78,11 +78,13 @@ To: <mathias.nyman@intel.com>, <gregkh@linuxfoundation.org>,
         <Thinh.Nguyen@synopsys.com>
 CC: <linux-kernel@vger.kernel.org>, <linux-usb@vger.kernel.org>,
         <alsa-devel@alsa-project.org>, <linux-arm-msm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, Wesley Cheng <quic_wcheng@quicinc.com>
-Subject: [PATCH v6 25/33] ASoC: qcom: qdsp6: q6afe: Split USB AFE dev_token
- param into separate API
-Date: Fri, 15 Sep 2023 17:10:18 -0700
-Message-ID: <20230916001026.315-26-quic_wcheng@quicinc.com>
+        <devicetree@vger.kernel.org>,
+        Mathias Nyman <mathias.nyman@linux.intel.com>,
+        Wesley Cheng <quic_wcheng@quicinc.com>
+Subject: [PATCH v6 03/33] xhci: sideband: add initial api to register a
+ sideband entity
+Date: Fri, 15 Sep 2023 17:09:56 -0700
+Message-ID: <20230916001026.315-4-quic_wcheng@quicinc.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20230916001026.315-1-quic_wcheng@quicinc.com>
 References: <20230916001026.315-1-quic_wcheng@quicinc.com>
@@ -94,19 +96,19 @@ X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
  signatures=585085
-X-Proofpoint-GUID: _oncAGCP59f8cUy1DGGVfRK17rZvLC4F
-X-Proofpoint-ORIG-GUID: _oncAGCP59f8cUy1DGGVfRK17rZvLC4F
+X-Proofpoint-GUID: SzeN1puYIQvRX9GglruraGyK_LB1rSfg
+X-Proofpoint-ORIG-GUID: SzeN1puYIQvRX9GglruraGyK_LB1rSfg
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
  definitions=2023-09-15_20,2023-09-15_01,2023-05-22_02
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
  adultscore=0 clxscore=1015
- mlxlogscore=999 phishscore=0 impostorscore=0 suspectscore=0
+ mlxlogscore=980 phishscore=0 impostorscore=0 suspectscore=0
  priorityscore=1501 mlxscore=0 malwarescore=0 spamscore=0 bulkscore=0
  lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2308100000 definitions=main-2309160000
-Message-ID-Hash: H5QXLFV72KZ5V6ZID5SIVIQHPHEML3RT
-X-Message-ID-Hash: H5QXLFV72KZ5V6ZID5SIVIQHPHEML3RT
+Message-ID-Hash: T2GBCIB34KHWCVGZOVLHVZX3HD4L2RYQ
+X-Message-ID-Hash: T2GBCIB34KHWCVGZOVLHVZX3HD4L2RYQ
 X-MailFrom: quic_wcheng@quicinc.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -119,7 +121,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/H5QXLFV72KZ5V6ZID5SIVIQHPHEML3RT/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/T2GBCIB34KHWCVGZOVLHVZX3HD4L2RYQ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -128,108 +130,389 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The Q6USB backend can carry information about the available USB SND cards
-and PCM devices discovered on the USB bus.  The dev_token field is used by
-the audio DSP to notify the USB offload driver of which card and PCM index
-to enable playback on.  Separate this into a dedicated API, so the USB
-backend can set the dev_token accordingly.  The audio DSP does not utilize
-this information until the AFE port start command is sent, which is done
-during the PCM prepare phase.
+From: Mathias Nyman <mathias.nyman@linux.intel.com>
 
+Introduce XHCI sideband, which manages the USB endpoints being requested by
+a client driver.  This is used for when client drivers are attempting to
+offload USB endpoints to another entity for handling USB transfers.  XHCI
+sideband will allow for drivers to fetch the required information about the
+transfer ring, so the user can submit transfers independently.  Expose the
+required APIs for drivers to register and request for a USB endpoint.
+
+Multiple ring segment page linking and proper endpoint clean up added by
+Wesley Cheng to complete original concept code by Mathias Nyman.
+
+Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
+Co-developed-by: Wesley Cheng <quic_wcheng@quicinc.com>
 Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
 ---
- sound/soc/qcom/qdsp6/q6afe.c | 49 +++++++++++++++++++++++++-----------
- sound/soc/qcom/qdsp6/q6afe.h |  1 +
- 2 files changed, 36 insertions(+), 14 deletions(-)
+ drivers/usb/host/Kconfig          |   9 ++
+ drivers/usb/host/Makefile         |   4 +
+ drivers/usb/host/xhci-sideband.c  | 195 ++++++++++++++++++++++++++++++
+ drivers/usb/host/xhci.h           |  23 +---
+ include/linux/usb/xhci-sideband.h |  57 +++++++++
+ 5 files changed, 270 insertions(+), 18 deletions(-)
+ create mode 100644 drivers/usb/host/xhci-sideband.c
+ create mode 100644 include/linux/usb/xhci-sideband.h
 
-diff --git a/sound/soc/qcom/qdsp6/q6afe.c b/sound/soc/qcom/qdsp6/q6afe.c
-index 72c4e6fe20c4..f09a756246f8 100644
---- a/sound/soc/qcom/qdsp6/q6afe.c
-+++ b/sound/soc/qcom/qdsp6/q6afe.c
-@@ -1394,10 +1394,42 @@ void q6afe_tdm_port_prepare(struct q6afe_port *port,
- }
- EXPORT_SYMBOL_GPL(q6afe_tdm_port_prepare);
+diff --git a/drivers/usb/host/Kconfig b/drivers/usb/host/Kconfig
+index 4448d0ab06f0..83be56c27d64 100644
+--- a/drivers/usb/host/Kconfig
++++ b/drivers/usb/host/Kconfig
+@@ -104,6 +104,15 @@ config USB_XHCI_RZV2M
+ 	  Say 'Y' to enable the support for the xHCI host controller
+ 	  found in Renesas RZ/V2M SoC.
  
--static int afe_port_send_usb_dev_param(struct q6afe_port *port, struct q6afe_usb_cfg *cfg)
-+/**
-+ * afe_port_send_usb_dev_param() - Send USB dev token
++config USB_XHCI_SIDEBAND
++	bool "xHCI support for sideband"
++	help
++	  Say 'Y' to enable the support for the xHCI sideband capability.
++	  Provide a mechanism for a sideband datapath for payload associated
++	  with audio class endpoints. This allows for an audio DSP to use
++	  xHCI USB endpoints directly, allowing CPU to sleep while playing
++	  audio.
++
+ config USB_XHCI_TEGRA
+ 	tristate "xHCI support for NVIDIA Tegra SoCs"
+ 	depends on PHY_TEGRA_XUSB
+diff --git a/drivers/usb/host/Makefile b/drivers/usb/host/Makefile
+index be4e5245c52f..4df946c05ba0 100644
+--- a/drivers/usb/host/Makefile
++++ b/drivers/usb/host/Makefile
+@@ -32,6 +32,10 @@ endif
+ xhci-rcar-hcd-y				+= xhci-rcar.o
+ xhci-rcar-hcd-$(CONFIG_USB_XHCI_RZV2M)	+= xhci-rzv2m.o
+ 
++ifneq ($(CONFIG_USB_XHCI_SIDEBAND),)
++	xhci-hcd-y		+= xhci-sideband.o
++endif
++
+ obj-$(CONFIG_USB_PCI)	+= pci-quirks.o
+ 
+ obj-$(CONFIG_USB_EHCI_HCD)	+= ehci-hcd.o
+diff --git a/drivers/usb/host/xhci-sideband.c b/drivers/usb/host/xhci-sideband.c
+new file mode 100644
+index 000000000000..a077eb8783cc
+--- /dev/null
++++ b/drivers/usb/host/xhci-sideband.c
+@@ -0,0 +1,195 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * xHCI host controller sideband support
 + *
-+ * @port: Instance of afe port
-+ * @cardidx: USB SND card index to reference
-+ * @pcmidx: USB SND PCM device index to reference
++ * Copyright (c) 2023, Intel Corporation.
 + *
-+ * The USB dev token carries information about which USB SND card instance and
-+ * PCM device to execute the offload on.  This information is carried through
-+ * to the stream enable QMI request, which is handled by the offload class
-+ * driver.  The information is parsed to determine which USB device to query
-+ * the required resources for.
++ * Author: Mathias Nyman
 + */
-+int afe_port_send_usb_dev_param(struct q6afe_port *port, int cardidx, int pcmidx)
- {
--	union afe_port_config *pcfg = &port->port_cfg;
- 	struct afe_param_id_usb_audio_dev_params usb_dev;
-+	int ret;
++#include <linux/usb.h>
++#include <linux/dma-direct.h>
 +
-+	memset(&usb_dev, 0, sizeof(usb_dev));
++#include "xhci.h"
 +
-+	usb_dev.cfg_minor_version = AFE_API_MINOR_VERSION_USB_AUDIO_CONFIG;
-+	usb_dev.dev_token = (cardidx << 16) | (pcmidx << 8);
-+	ret = q6afe_port_set_param_v2(port, &usb_dev,
-+				AFE_PARAM_ID_USB_AUDIO_DEV_PARAMS,
-+				AFE_MODULE_AUDIO_DEV_INTERFACE, sizeof(usb_dev));
-+	if (ret)
-+		dev_err(port->afe->dev, "%s: AFE device param cmd failed %d\n",
-+			__func__, ret);
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(afe_port_send_usb_dev_param);
-+
-+static int afe_port_send_usb_params(struct q6afe_port *port, struct q6afe_usb_cfg *cfg)
++static int
++xhci_ring_to_sgtable(struct xhci_sideband *sb, struct xhci_ring *ring, struct device *dev)
 +{
-+	union afe_port_config *pcfg = &port->port_cfg;
- 	struct afe_param_id_usb_audio_dev_lpcm_fmt lpcm_fmt;
- 	struct afe_param_id_usb_audio_svc_interval svc_int;
- 	int ret = 0;
-@@ -1408,20 +1440,9 @@ static int afe_port_send_usb_dev_param(struct q6afe_port *port, struct q6afe_usb
- 		goto exit;
- 	}
++	struct sg_table	*sgt;
++	struct xhci_segment *seg;
++	struct page **pages;
++	unsigned int n_pages;
++	size_t sz;
++	int i;
++
++	sz = ring->num_segs * TRB_SEGMENT_SIZE;
++	n_pages = PAGE_ALIGN(sz) >> PAGE_SHIFT;
++	pages = kvmalloc_array(n_pages, sizeof(struct page *), GFP_KERNEL);
++	if (!pages)
++		return 0;
++
++	sgt = kzalloc(sizeof(struct sg_table), GFP_KERNEL);
++	if (!sgt) {
++		kvfree(pages);
++		return 0;
++	}
++
++	seg = ring->first_seg;
++
++	/*
++	 * Rings can potentially have multiple segments, create an array that
++	 * carries page references to allocated segments.  Utilize the
++	 * sg_alloc_table_from_pages() to create the sg table, and to ensure
++	 * that page links are created.
++	 */
++	for (i = 0; i < ring->num_segs; i++) {
++		pages[i] = vmalloc_to_page(seg->trbs);
++		seg = seg->next;
++	}
++
++	if (sg_alloc_table_from_pages(sgt, pages, n_pages, 0, sz, GFP_KERNEL)) {
++		kvfree(pages);
++		kfree(sgt);
++
++		return 0;
++	}
++
++	sb->sgt = sgt;
++
++	return 0;
++}
++
++static int __xhci_sideband_remove_endpoint(struct xhci_sideband *sb,
++						int idx)
++{
++	struct xhci_virt_ep *ep = sb->eps[idx];
++
++	/*
++	 * Issue a stop endpoint command when an endpoint is removed.
++	 * The stop ep cmd handler will handle the ring cleanup.
++	 */
++	xhci_stop_endpoint_sync(sb->xhci, ep, 0);
++
++	sg_free_table(sb->sgt);
++	ep->sideband = NULL;
++	sb->eps[idx] = NULL;
++
++	return 0;
++}
++
++/* sidband api functions */
++struct xhci_sideband *
++xhci_sideband_register(struct usb_device *udev)
++{
++	struct usb_hcd *hcd = bus_to_hcd(udev->bus);
++	struct xhci_hcd *xhci = hcd_to_xhci(hcd);
++	struct xhci_virt_device *vdev;
++	struct xhci_sideband *sb;
++
++	/* make sure the usb device is connected to a xhci controller */
++	if (!udev->slot_id)
++		return NULL;
++
++	/* check this device isn't already controller via sideband */
++	vdev = xhci->devs[udev->slot_id];
++
++	if (!vdev || vdev->sideband) {
++		xhci_warn(xhci, "XHCI sideband slot already in use %d\n",
++				udev->slot_id);
++		return NULL;
++	}
++
++	sb = kzalloc_node(sizeof(*sb), GFP_KERNEL, dev_to_node(hcd->self.sysdev));
++	if (!sb)
++		return NULL;
++
++	sb->xhci = xhci;
++	sb->vdev = vdev;
++	vdev->sideband = sb;
++
++	return sb;
++}
++EXPORT_SYMBOL_GPL(xhci_sideband_register);
++
++void
++xhci_sideband_unregister(struct xhci_sideband *sb)
++{
++	int i;
++
++	for (i = 0; i < EP_CTX_PER_DEV; i++)
++		if (sb->eps[i])
++			__xhci_sideband_remove_endpoint(sb, i);
++
++	sb->vdev->sideband = NULL;
++	kfree(sb);
++}
++EXPORT_SYMBOL_GPL(xhci_sideband_unregister);
++
++int
++xhci_sideband_add_endpoint(struct xhci_sideband *sb,
++			   struct usb_host_endpoint *host_ep)
++{
++	struct xhci_hcd *xhci = sb->xhci;
++	struct device *dev = xhci_to_hcd(xhci)->self.sysdev;
++	struct xhci_virt_ep *ep;
++	unsigned int ep_index;
++
++	ep_index = xhci_get_endpoint_index(&host_ep->desc);
++	ep = &sb->vdev->eps[ep_index];
++
++	/*
++	 * Note, we don't know the DMA mask of the audio DSP device, if its
++	 * smaller than for xhci it won't be able to access the endpoint ring
++	 * buffer. This could be solved by not allowing the audio class driver
++	 * to add the endpoint the normal way, but instead offload it immediately,
++	 * and let this function add the endpoint and allocate the ring buffer
++	 * with the smallest common DMA mask
++	 */
++	if (sb->eps[ep_index] || ep->sideband)
++		return -EBUSY;
++
++	ep->sideband = sb;
++	sb->eps[ep_index] = ep;
++	sb->ring = ep->ring;
++	xhci_ring_to_sgtable(sb, ep->ring, dev);
++
++	return 0;
++
++}
++EXPORT_SYMBOL_GPL(xhci_sideband_add_endpoint);
++
++int
++xhci_sideband_remove_endpoint(struct xhci_sideband *sb,
++			      struct usb_host_endpoint *host_ep)
++{
++	struct xhci_virt_ep *ep;
++	unsigned int ep_index;
++
++	ep_index = xhci_get_endpoint_index(&host_ep->desc);
++	ep = sb->eps[ep_index];
++
++	if (!ep || !ep->sideband || sb->vdev != ep->sideband->vdev)
++		return -ENODEV;
++
++	__xhci_sideband_remove_endpoint(sb, ep_index);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(xhci_sideband_remove_endpoint);
++
++int
++xhci_sideband_stop_endpoint(struct xhci_sideband *sb,
++			    struct usb_host_endpoint *host_ep)
++{
++	struct xhci_virt_ep *ep;
++	unsigned int ep_index;
++
++	ep_index = xhci_get_endpoint_index(&host_ep->desc);
++	ep = sb->eps[ep_index];
++
++
++	if (!ep || ep->sideband != sb || sb->vdev != ep->sideband->vdev)
++		return -EINVAL;
++
++	return xhci_stop_endpoint_sync(sb->xhci, ep, 0);
++}
++EXPORT_SYMBOL_GPL(xhci_sideband_stop_endpoint);
+diff --git a/drivers/usb/host/xhci.h b/drivers/usb/host/xhci.h
+index 898b6434dc27..15ade8ec6b6c 100644
+--- a/drivers/usb/host/xhci.h
++++ b/drivers/usb/host/xhci.h
+@@ -18,6 +18,7 @@
+ #include <linux/usb/hcd.h>
+ #include <linux/io-64-nonatomic-lo-hi.h>
+ #include <linux/usb/xhci-intr.h>
++#include <linux/usb/xhci-sideband.h>
  
--	memset(&usb_dev, 0, sizeof(usb_dev));
- 	memset(&lpcm_fmt, 0, sizeof(lpcm_fmt));
- 	memset(&svc_int, 0, sizeof(svc_int));
+ /* Code sharing between pci-quirks and xhci hcd */
+ #include	"xhci-ext-caps.h"
+@@ -975,6 +976,8 @@ struct xhci_virt_ep {
+ 	int			next_frame_id;
+ 	/* Use new Isoch TRB layout needed for extended TBC support */
+ 	bool			use_extended_tbc;
++	/* set if this endpoint is controlled via sideband access*/
++	struct xhci_sideband			*sideband;
+ };
  
--	usb_dev.cfg_minor_version = AFE_API_MINOR_VERSION_USB_AUDIO_CONFIG;
--	ret = q6afe_port_set_param_v2(port, &usb_dev,
--				      AFE_PARAM_ID_USB_AUDIO_DEV_PARAMS,
--				      AFE_MODULE_AUDIO_DEV_INTERFACE, sizeof(usb_dev));
--	if (ret) {
--		dev_err(port->afe->dev, "%s: AFE device param cmd failed %d\n",
--			__func__, ret);
--		goto exit;
--	}
+ enum xhci_overhead_type {
+@@ -1004,8 +1007,6 @@ struct xhci_interval_bw_table {
+ 	unsigned int		ss_bw_out;
+ };
+ 
+-#define EP_CTX_PER_DEV		31
 -
- 	lpcm_fmt.cfg_minor_version = AFE_API_MINOR_VERSION_USB_AUDIO_CONFIG;
- 	lpcm_fmt.endian = pcfg->usb_cfg.endian;
- 	ret = q6afe_port_set_param_v2(port, &lpcm_fmt,
-@@ -1463,7 +1484,7 @@ void q6afe_usb_port_prepare(struct q6afe_port *port,
- 	pcfg->usb_cfg.num_channels = cfg->num_channels;
- 	pcfg->usb_cfg.bit_width = cfg->bit_width;
+ struct xhci_virt_device {
+ 	int				slot_id;
+ 	struct usb_device		*udev;
+@@ -1038,6 +1039,8 @@ struct xhci_virt_device {
+ 	u16				current_mel;
+ 	/* Used for the debugfs interfaces. */
+ 	void				*debugfs_private;
++	/* set if this device is registered for sideband access */
++	struct xhci_sideband			*sideband;
+ };
  
--	afe_port_send_usb_dev_param(port, cfg);
-+	afe_port_send_usb_params(port, cfg);
- }
- EXPORT_SYMBOL_GPL(q6afe_usb_port_prepare);
+ /*
+@@ -1518,22 +1521,6 @@ static inline const char *xhci_trb_type_string(u8 type)
+ #define NEC_FW_MINOR(p)		(((p) >> 0) & 0xff)
+ #define NEC_FW_MAJOR(p)		(((p) >> 8) & 0xff)
  
-diff --git a/sound/soc/qcom/qdsp6/q6afe.h b/sound/soc/qcom/qdsp6/q6afe.h
-index ef47b4ae9e27..2ce5ba9dba69 100644
---- a/sound/soc/qcom/qdsp6/q6afe.h
-+++ b/sound/soc/qcom/qdsp6/q6afe.h
-@@ -263,6 +263,7 @@ void q6afe_tdm_port_prepare(struct q6afe_port *port, struct q6afe_tdm_cfg *cfg);
- void q6afe_cdc_dma_port_prepare(struct q6afe_port *port,
- 				struct q6afe_cdc_dma_cfg *cfg);
- 
-+int afe_port_send_usb_dev_param(struct q6afe_port *port, int cardidx, int pcmidx);
- int q6afe_port_set_sysclk(struct q6afe_port *port, int clk_id,
- 			  int clk_src, int clk_root,
- 			  unsigned int freq, int dir);
+-/*
+- * TRBS_PER_SEGMENT must be a multiple of 4,
+- * since the command ring is 64-byte aligned.
+- * It must also be greater than 16.
+- */
+-#define TRBS_PER_SEGMENT	256
+-/* Allow two commands + a link TRB, along with any reserved command TRBs */
+-#define MAX_RSVD_CMD_TRBS	(TRBS_PER_SEGMENT - 3)
+-#define TRB_SEGMENT_SIZE	(TRBS_PER_SEGMENT*16)
+-#define TRB_SEGMENT_SHIFT	(ilog2(TRB_SEGMENT_SIZE))
+-/* TRB buffer pointers can't cross 64KB boundaries */
+-#define TRB_MAX_BUFF_SHIFT		16
+-#define TRB_MAX_BUFF_SIZE	(1 << TRB_MAX_BUFF_SHIFT)
+-/* How much data is left before the 64KB boundary? */
+-#define TRB_BUFF_LEN_UP_TO_BOUNDARY(addr)	(TRB_MAX_BUFF_SIZE - \
+-					(addr & (TRB_MAX_BUFF_SIZE - 1)))
+ #define MAX_SOFT_RETRY		3
+ /*
+  * Limits of consecutive isoc trbs that can Block Event Interrupt (BEI) if
+diff --git a/include/linux/usb/xhci-sideband.h b/include/linux/usb/xhci-sideband.h
+new file mode 100644
+index 000000000000..d6b2cc91666f
+--- /dev/null
++++ b/include/linux/usb/xhci-sideband.h
+@@ -0,0 +1,57 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * xHCI host controller sideband support
++ *
++ * Copyright (c) 2023, Intel Corporation.
++ *
++ * Author: Mathias Nyman <mathias.nyman@linux.intel.com>
++ */
++
++#ifndef __LINUX_XHCI_SIDEBAND_H  // fixme check ok
++#define __LINUX_XHCI_SIDEBAND_H
++
++#include <linux/dma-mapping.h>
++/*
++ * TRBS_PER_SEGMENT must be a multiple of 4,
++ * since the command ring is 64-byte aligned.
++ * It must also be greater than 16.
++ */
++#define TRBS_PER_SEGMENT	256
++/* Allow two commands + a link TRB, along with any reserved command TRBs */
++#define MAX_RSVD_CMD_TRBS	(TRBS_PER_SEGMENT - 3)
++#define TRB_SEGMENT_SIZE	(TRBS_PER_SEGMENT*16)
++#define TRB_SEGMENT_SHIFT	(ilog2(TRB_SEGMENT_SIZE))
++/* TRB buffer pointers can't cross 64KB boundaries */
++#define TRB_MAX_BUFF_SHIFT		16
++#define TRB_MAX_BUFF_SIZE	(1 << TRB_MAX_BUFF_SHIFT)
++/* How much data is left before the 64KB boundary? */
++#define TRB_BUFF_LEN_UP_TO_BOUNDARY(addr)	(TRB_MAX_BUFF_SIZE - \
++					(addr & (TRB_MAX_BUFF_SIZE - 1)))
++
++#define EP_CTX_PER_DEV		31
++
++struct xhci_sideband {
++	struct xhci_hcd                 *xhci;
++	struct xhci_virt_device         *vdev;
++	struct xhci_virt_ep             *eps[EP_CTX_PER_DEV];
++	struct xhci_interrupter         *ir;
++	struct sg_table			*sgt;
++	struct xhci_ring		*ring;
++	dma_addr_t dma;
++};
++
++struct xhci_sideband *
++xhci_sideband_register(struct usb_device *udev);
++void
++xhci_sideband_unregister(struct xhci_sideband *sb);
++int
++xhci_sideband_add_endpoint(struct xhci_sideband *sb,
++			   struct usb_host_endpoint *host_ep);
++int
++xhci_sideband_remove_endpoint(struct xhci_sideband *sb,
++			      struct usb_host_endpoint *host_ep);
++int
++xhci_sideband_stop_endpoint(struct xhci_sideband *sb,
++			    struct usb_host_endpoint *host_ep);
++#endif /* __LINUX_XHCI_SIDEBAND_H */
++
