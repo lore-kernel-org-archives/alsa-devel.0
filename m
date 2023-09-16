@@ -4,70 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7F2E9CD37AF
-	for <alsa-devel@archiver.kernel.org>; Sat, 16 Sep 2023 00:17:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 15AA9CD37AF
+	for <alsa-devel@archiver.kernel.org>; Sat, 16 Sep 2023 00:17:22 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 48513950;
-	Sat, 16 Sep 2023 02:16:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 48513950
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1989ADED;
+	Sat, 16 Sep 2023 02:16:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1989ADED
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1694823419;
-	bh=A+VMTPRiWoPhUC6fF9YWIodpkdHwwjDpont1NQ45TDk=;
+	s=default; t=1694823435;
+	bh=cct3Vn0+BNnCSFr2GYVWbxxzohUSPo5KDiJHX0jsOBA=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=ObWdlOHb1kpn4DO2beIAsNULnlLFRABqkCyWE8fGLMvMEu/XgDOy/Xn3Bq+8wV9Yd
-	 Nw+MwdHfsLd2Ja+RVv7lTdghef2cGb58p4DesX3sV6whH5tDDwFLpWuwb6i4naUgIq
-	 IIp+qDU3fWt0Ly9PtROXdX9sIhDFidk9jddDDeN4=
+	b=NbymnK0EVFydATKYHfzTQwlqqUKLuOgTc1Ees05tLoQpWC65GOzkFQ2oBsW5ek/SJ
+	 fXm8DzbEb/JMCxn0Ax8nniOKUOR1KMM1FZuHoFLnbL4gq8EVgT0mtH+wNNICEJublV
+	 3AIz6neFhuv9jRoPV/SvJSbhGSCjen6DHjnTfFso=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CBCE0F80659; Sat, 16 Sep 2023 02:11:57 +0200 (CEST)
+	id 501B8F80675; Sat, 16 Sep 2023 02:11:59 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3420FF8065E;
-	Sat, 16 Sep 2023 02:11:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E2242F80673;
+	Sat, 16 Sep 2023 02:11:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id EE0FAF8061F; Sat, 16 Sep 2023 02:11:47 +0200 (CEST)
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com
- [205.220.168.131])
+	id 6CEF9F8061F; Sat, 16 Sep 2023 02:11:49 +0200 (CEST)
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com
+ [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id DD590F8056F
-	for <alsa-devel@alsa-project.org>; Sat, 16 Sep 2023 02:10:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DD590F8056F
+	by alsa1.perex.cz (Postfix) with ESMTPS id 91599F8055C
+	for <alsa-devel@alsa-project.org>; Sat, 16 Sep 2023 02:10:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 91599F8055C
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
- header.s=qcppdkim1 header.b=eDVl3oEn
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+ header.s=qcppdkim1 header.b=nvy1CfFG
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
 	by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 38FNuSgi027183;
-	Sat, 16 Sep 2023 00:10:45 GMT
+ 38FNfj8R020285;
+	Sat, 16 Sep 2023 00:10:47 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-type; s=qcppdkim1;
- bh=NmQu8MFx2lZ7/sy3a7JXrsNnPwmoH+GDE19rppIQVy8=;
- b=eDVl3oEny2/ATCZx4oOViLXPlZulUyQPaH+ewWocW1p21vIG26MB8D/XUuWQbu0TNnMp
- rHrOuWIPuuwIdq7TcPM6Qo0d4PgWJpPqNU6dEDZwKxKrFZWuV67WP75Ev/Fo10s53xD8
- EPnOV6totWU8kPbNoOGZrxwXnPZYNsPBPXJDB/+fymoaXqc0JNLR5Q9VZnxXaPo/qUdt
- ZbchnlBCJ2hAYA4dI1H+lh2kKV8dAl1+qXeRRHkT8sktJ0LtxbLJWSblK4Ark2xfYNZu
- 5eu4CA8CysOfZjrtQqVa/x6dnu0TbvqCev2JpUgW5QA88VKtaLeIL2rVCLVXqlfj1Z6b HQ==
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com
+ bh=oks7YR0tLBPVDhFcnzKD257JdH4grR8wIyg+6UEAGIY=;
+ b=nvy1CfFGCqE326NmXFmhntMGL0gJzo7tVcfP/CkShB1fBv8viaieDeHwPqOug3sbb8ME
+ KnjsEWo/MzbhIYuJQBuy/TLpHQW3QWtBqhmCtzv2LZJiF5RNbsgihQzx/9MoaqmL4vl9
+ sG0v0oBfmZoclKpTsSIny2IPHQW9DEr7z36Xpyaqa3V/Djn/an3nveUHWv11SdQ0lO31
+ V7MH/1qA+BppiMKHbkj7fIcBFjf77eXzgG0BhGsuFoCgst0IV8kQ2gEkNFf3AMw9MS9L
+ RJsWasecK53M2NHEAPQ1003q2ysNgET2BmsdAq+bkwn/8bmQqiTDyksg3BnuN/fDy3JE Hg==
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com
  [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t4dvqtsws-1
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t4g842dr2-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 16 Sep 2023 00:10:45 +0000
+	Sat, 16 Sep 2023 00:10:47 +0000
 Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com
  [10.47.209.197])
-	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id
- 38G0AinM027139
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id
+ 38G0Aklm018269
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 16 Sep 2023 00:10:44 GMT
+	Sat, 16 Sep 2023 00:10:46 GMT
 Received: from hu-wcheng-lv.qualcomm.com (10.49.16.6) by
  nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.36; Fri, 15 Sep 2023 17:10:44 -0700
+ 15.2.1118.36; Fri, 15 Sep 2023 17:10:45 -0700
 From: Wesley Cheng <quic_wcheng@quicinc.com>
 To: <mathias.nyman@intel.com>, <gregkh@linuxfoundation.org>,
         <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
@@ -79,10 +79,10 @@ To: <mathias.nyman@intel.com>, <gregkh@linuxfoundation.org>,
 CC: <linux-kernel@vger.kernel.org>, <linux-usb@vger.kernel.org>,
         <alsa-devel@alsa-project.org>, <linux-arm-msm@vger.kernel.org>,
         <devicetree@vger.kernel.org>, Wesley Cheng <quic_wcheng@quicinc.com>
-Subject: [PATCH v6 26/33] ALSA: usb-audio: qcom: Populate PCM and USB chip
- information
-Date: Fri, 15 Sep 2023 17:10:19 -0700
-Message-ID: <20230916001026.315-27-quic_wcheng@quicinc.com>
+Subject: [PATCH v6 30/33] ASoC: qcom: qdsp6: Add headphone jack for offload
+ connection status
+Date: Fri, 15 Sep 2023 17:10:23 -0700
+Message-ID: <20230916001026.315-31-quic_wcheng@quicinc.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20230916001026.315-1-quic_wcheng@quicinc.com>
 References: <20230916001026.315-1-quic_wcheng@quicinc.com>
@@ -94,19 +94,19 @@ X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
  signatures=585085
-X-Proofpoint-GUID: P10v1dq7kayIu9bHxYWH3MnMXfpcIQNS
-X-Proofpoint-ORIG-GUID: P10v1dq7kayIu9bHxYWH3MnMXfpcIQNS
+X-Proofpoint-GUID: bytDKOPqcbxCAgBwxXrX-izhPbUrf45D
+X-Proofpoint-ORIG-GUID: bytDKOPqcbxCAgBwxXrX-izhPbUrf45D
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
  definitions=2023-09-15_20,2023-09-15_01,2023-05-22_02
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- mlxscore=0 suspectscore=0
- lowpriorityscore=0 spamscore=0 impostorscore=0 bulkscore=0 clxscore=1015
- mlxlogscore=661 phishscore=0 adultscore=0 malwarescore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ mlxlogscore=999
+ malwarescore=0 phishscore=0 lowpriorityscore=0 spamscore=0 adultscore=0
+ impostorscore=0 bulkscore=0 suspectscore=0 priorityscore=1501
+ clxscore=1015 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2308100000 definitions=main-2309160000
-Message-ID-Hash: FMXTAPDRPTO73LMU3C3S77JILQQRYTAO
-X-Message-ID-Hash: FMXTAPDRPTO73LMU3C3S77JILQQRYTAO
+Message-ID-Hash: Q5OSUT75QH4G6CTCAQFP667N6PS7HR3J
+X-Message-ID-Hash: Q5OSUT75QH4G6CTCAQFP667N6PS7HR3J
 X-MailFrom: quic_wcheng@quicinc.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -118,69 +118,84 @@ X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: <>
-List-Archive: <>
+Archived-At: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Q5OSUT75QH4G6CTCAQFP667N6PS7HR3J/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Currently, only the index to the USB SND card array is passed to the USB
-backend.  Pass through more information, specifically the USB SND card
-number and the number of PCM devices available.  This allows for the DPCM
-backend to determine what USB resources are available during situations,
-such as USB audio offloading.
+The headphone jack framework has a well defined infrastructure for
+notifying userspace entities through input devices.  Expose a jack device
+that carries information about if an offload capable device is connected.
+Applications can further identify specific offloading information through
+other SND kcontrols.
 
 Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
 ---
- sound/usb/qcom/qc_audio_offload.c | 21 ++++++++++++++++++---
- 1 file changed, 18 insertions(+), 3 deletions(-)
+ sound/soc/qcom/qdsp6/q6usb.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-diff --git a/sound/usb/qcom/qc_audio_offload.c b/sound/usb/qcom/qc_audio_offload.c
-index 2ce39aa26906..2dffe7e99e01 100644
---- a/sound/usb/qcom/qc_audio_offload.c
-+++ b/sound/usb/qcom/qc_audio_offload.c
-@@ -175,6 +175,21 @@ enum usb_qmi_audio_format {
- 	USB_QMI_PCM_FORMAT_U32_BE,
- };
+diff --git a/sound/soc/qcom/qdsp6/q6usb.c b/sound/soc/qcom/qdsp6/q6usb.c
+index 392608db44f8..d85fcd5dda28 100644
+--- a/sound/soc/qcom/qdsp6/q6usb.c
++++ b/sound/soc/qcom/qdsp6/q6usb.c
+@@ -20,6 +20,7 @@
+ #include <sound/pcm_params.h>
+ #include <sound/asound.h>
+ #include <sound/q6usboffload.h>
++#include <sound/jack.h>
  
-+static int usb_qmi_get_pcm_num(struct snd_usb_audio *chip, int direction)
-+{
-+	struct snd_usb_substream *subs = NULL;
-+	struct snd_usb_stream *as;
-+	int count = 0;
-+
-+	list_for_each_entry(as, &chip->pcm_list, list) {
-+		subs = &as->substream[direction];
-+		if (subs->ep_num)
-+			count++;
-+	}
-+
-+	return count;
-+}
-+
- static enum usb_qmi_audio_device_speed_enum_v01
- get_speed_info(enum usb_device_speed udev_speed)
+ #include "q6dsp-lpass-ports.h"
+ #include "q6afe.h"
+@@ -37,6 +38,7 @@ struct q6usb_status {
+ struct q6usb_port_data {
+ 	struct q6afe_usb_cfg usb_cfg;
+ 	struct snd_soc_usb *usb;
++	struct snd_soc_jack hs_jack;
+ 	struct q6usb_offload priv;
+ 	struct mutex mutex;
+ 	unsigned long available_card_slot;
+@@ -279,6 +281,7 @@ static const struct snd_kcontrol_new q6usb_offload_control = {
+ /* Build a mixer control for a UAC connector control (jack-detect) */
+ static void q6usb_connector_control_init(struct snd_soc_component *component)
  {
-@@ -1579,6 +1594,8 @@ static void qc_usb_audio_offload_probe(struct snd_usb_audio *chip)
++	struct q6usb_port_data *data = dev_get_drvdata(component->dev);
+ 	int ret;
  
- 	sdev->card_idx = chip->card->number;
- 	sdev->chip_idx = chip->index;
-+	sdev->num_playback = usb_qmi_get_pcm_num(chip, 0);
-+	sdev->num_capture = usb_qmi_get_pcm_num(chip, 1);
- 	uadev[chip->card->number].sdev = sdev;
- 
- 	uaudio_qdev->last_card_num = chip->card->number;
-@@ -1693,10 +1710,8 @@ static void qc_usb_audio_offload_disconnect(struct snd_usb_audio *chip)
- 	mutex_unlock(&chip->mutex);
- 
- 	atomic_dec(&uaudio_qdev->qdev_in_use);
--	if (!atomic_read(&uaudio_qdev->qdev_in_use)) {
--		snd_soc_usb_disconnect(usb_get_usb_backend(udev));
-+	if (!atomic_read(&uaudio_qdev->qdev_in_use))
- 		qc_usb_audio_cleanup_qmi_dev();
--	}
- 	mutex_unlock(&qdev_mutex);
+ 	ret = snd_ctl_add(component->card->snd_card,
+@@ -290,6 +293,11 @@ static void q6usb_connector_control_init(struct snd_soc_component *component)
+ 				snd_ctl_new1(&q6usb_offload_dev_ctrl, component));
+ 	if (ret < 0)
+ 		return;
++
++	ret = snd_soc_card_jack_new(component->card, "USB offload",
++					SND_JACK_HEADSET, &data->hs_jack);
++	if (ret)
++		return;
  }
+ 
+ static int q6usb_audio_ports_of_xlate_dai_name(struct snd_soc_component *component,
+@@ -323,6 +331,9 @@ static int q6usb_alsa_connection_cb(struct snd_soc_usb *usb,
+ 
+ 	mutex_lock(&data->mutex);
+ 	if (connected) {
++		if (!data->available_card_slot)
++			snd_jack_report(data->hs_jack.jack, 1);
++
+ 		/*
+ 		 * Update the latest USB headset plugged in, if session is
+ 		 * idle.
+@@ -338,6 +349,9 @@ static int q6usb_alsa_connection_cb(struct snd_soc_usb *usb,
+ 		clear_bit(sdev->card_idx, &data->available_card_slot);
+ 		data->status[sdev->card_idx].num_pcm = 0;
+ 		data->status[sdev->card_idx].chip_index = 0;
++
++		if (!data->available_card_slot)
++			snd_jack_report(data->hs_jack.jack, 0);
+ 	}
+ 	mutex_unlock(&data->mutex);
  
