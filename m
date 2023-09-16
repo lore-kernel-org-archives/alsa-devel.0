@@ -4,76 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 98E70CD37B0
-	for <alsa-devel@archiver.kernel.org>; Sat, 16 Sep 2023 01:15:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 69A7DCD37B0
+	for <alsa-devel@archiver.kernel.org>; Sat, 16 Sep 2023 01:15:13 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A49BFE0F;
-	Sat, 16 Sep 2023 03:14:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A49BFE0F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 25E9DDF9;
+	Sat, 16 Sep 2023 03:14:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 25E9DDF9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1694826901;
-	bh=icgcK+uwSA0+VSZJjA85kWEqslygEVMQ4cqSfA21KZ0=;
+	s=default; t=1694826911;
+	bh=dZR0GWf50FStNbx7lZqfkCWNcNcaGnGld8hlfIFXDoQ=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Yh8w2WgaZsGpyVx5AW/bYzIOp/pecDA2oLWDEPVun48CDTuazVNiQoKpe1zUn5jxX
-	 Qzb+eGQ/Xqr49fx0o85Yh72j5DL2aaehKs0WJrmGV2aEQ81U7SPS3ZdXkFLxa+nRH2
-	 zNEmEGzgasBYbhlX2FiWG9Rvf9mXPyH/neA0tK2I=
+	b=vZlNTeKyss7ZogOzTKV4Cdeb8WDn2bBqRTast3JYGZ40tngqOkz19lsJai7wEt7du
+	 tGVHmXL0ZF8o02hQW0DHK2SUTzKBw+L3IU+P8bZea8qZiCm5HL3fqVxbg4Mwt9g4SX
+	 fNriUWex/SfpEG+sDr6/wN2OW1IhGvzpKjNYIeXo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C0EB7F805D9; Sat, 16 Sep 2023 03:12:05 +0200 (CEST)
+	id A440AF805E6; Sat, 16 Sep 2023 03:12:08 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0D43DF805D7;
-	Sat, 16 Sep 2023 03:12:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E2757F805E3;
+	Sat, 16 Sep 2023 03:12:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 281CEF805AC; Sat, 16 Sep 2023 03:11:53 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+	id 2B9AFF805AC; Sat, 16 Sep 2023 03:11:54 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 2D422F80570
-	for <alsa-devel@alsa-project.org>; Sat, 16 Sep 2023 03:11:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2D422F80570
+	by alsa1.perex.cz (Postfix) with ESMTPS id CEB6EF80564
+	for <alsa-devel@alsa-project.org>; Sat, 16 Sep 2023 03:11:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CEB6EF80564
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=uJtTiyhi
+ header.s=k20201202 header.b=WfYxS0YY
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id B1179B82BF7;
-	Sat, 16 Sep 2023 01:11:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7D1BC433C7;
-	Sat, 16 Sep 2023 01:11:44 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 06815621D9;
+	Sat, 16 Sep 2023 01:11:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A54ACC433C9;
+	Sat, 16 Sep 2023 01:11:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1694826706;
-	bh=icgcK+uwSA0+VSZJjA85kWEqslygEVMQ4cqSfA21KZ0=;
+	s=k20201202; t=1694826704;
+	bh=dZR0GWf50FStNbx7lZqfkCWNcNcaGnGld8hlfIFXDoQ=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=uJtTiyhiB6cJAKqxnior3B21nbAu0y2EFLHp8Got08sO90ZQcF3y3zQtp0jI5JQUO
-	 GEB2WXdZR1ivO1QItcgfRF0ya/Q5NuYxqhOvV6f38e41CaYDa11I8ZGBXnXnw9xaZ7
-	 zJVI2I6Qjt6wpiF0/Pfd3p33FupPDxz6sZ210JgoGbQAXKL8J9OaUVkUuXrnp/ozZR
-	 ++dX/hLVM3G1kbDtJOlDq7rDti6hzuPt3I6fNF5xwVvtbS3ttbjRFj9epRuvb1oa32
-	 BJacP/W2J3Ay+08Et8dK7zKALG8xrg27+vciHRRTiVDSwDZJPq8kR9fK9T69e9g4zu
-	 9YNOcGwvRyoCQ==
+	b=WfYxS0YY0XOuDjqmrm3yjJytcyKtbt2+hc/wIbi4AyGXUOBYDG3B9bph9itL0B2wI
+	 HdmfJGh8jBR9ypqBb0A3/J9YErVptaLnUFg4Tlj/zt3220xc01dXNn8iPvBbra5JT4
+	 mTpxgwzdMPXZL8jPqmSiQabgaDx3BxL+sUoSo6EY23geX2G+bYaNw93fnBLj8YAtCR
+	 xfPJLmSViZnSyA7/pWJ4jWbiGsqS+Kxwp0PZJuZJSs0ThO0Ak/6p9qPKFNPj3i+iSU
+	 a8o1MSgGmEwEDLMDIVHPRz46n/ibZAZ68dQCIyWarmNCB6lKpeK6nBMRmMzPZvJALi
+	 TVuuwKP1PIEAA==
 From: Mark Brown <broonie@kernel.org>
-To: tiwai@suse.de, Bard Liao <yung-chuan.liao@linux.intel.com>
+To: lgirdwood@gmail.com, Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Cc: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com,
- bard.liao@intel.com, peter.ujfalusi@linux.intel.com, brent.lu@intel.com,
- uday.m.bhat@intel.com, balamurugan.c@intel.com
-In-Reply-To: <20230915124852.1696857-1-yung-chuan.liao@linux.intel.com>
-References: <20230915124852.1696857-1-yung-chuan.liao@linux.intel.com>
-Subject: Re: [PATCH 00/19] ASoC: Intel: machine driver update
-Message-Id: <169482670447.606223.8805759859695209985.b4-ty@kernel.org>
-Date: Sat, 16 Sep 2023 02:11:44 +0100
+ ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com,
+ yung-chuan.liao@linux.intel.com, rander.wang@intel.com
+In-Reply-To: <20230915124015.19637-1-peter.ujfalusi@linux.intel.com>
+References: <20230915124015.19637-1-peter.ujfalusi@linux.intel.com>
+Subject: Re: [PATCH] ASoC: SOF: core: Only call sof_ops_free() on remove if
+ the probe was successful
+Message-Id: <169482670239.606223.6198823189854629531.b4-ty@kernel.org>
+Date: Sat, 16 Sep 2023 02:11:42 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-034f2
-Message-ID-Hash: EPU6JVZJ2MLRNEP5XHRWZFPMGDQOQW7W
-X-Message-ID-Hash: EPU6JVZJ2MLRNEP5XHRWZFPMGDQOQW7W
+Message-ID-Hash: 6CHKYSMIBKJDSBGJ4WWFIPJDV7E7PO4H
+X-Message-ID-Hash: 6CHKYSMIBKJDSBGJ4WWFIPJDV7E7PO4H
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -86,7 +88,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/EPU6JVZJ2MLRNEP5XHRWZFPMGDQOQW7W/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6CHKYSMIBKJDSBGJ4WWFIPJDV7E7PO4H/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -95,32 +97,11 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, 15 Sep 2023 20:48:33 +0800, Bard Liao wrote:
-> Some cleanups from Brent Lu for I2S platforms. And minor additions for
-> RVPs and Chromebooks.
+On Fri, 15 Sep 2023 15:40:15 +0300, Peter Ujfalusi wrote:
+> All the fail paths during probe will free up the ops, on remove we should
+> only free it if the probe was successful.
 > 
-> Balamurugan C (1):
->   ASoC: Intel: sof_rt5682: add HDMI_In capture feature support for RPL.
 > 
-> Brent Lu (16):
->   ASoC: Intel: sof_rt5682: cleanup unnecessary quirk flag
->   ASoC: Intel: ssp-common: support codec detection
->   ASoC: Intel: use ACPI HID definition in ssp-common
->   ASoC: Intel: sof_rt5682: use ssp-common module to detect codec
->   ASoC: Intel: sof_cs42l42: use ssp-common module to detect codec
->   ASoC: Intel: sof_ssp_amp: use ssp-common module to detect codec
->   ASoC: Intel: sof_nau8825: use ssp-common module to detect codec
->   ASoC: Intel: sof_rt5682: add adl_rt5650 board config
->   ASoC: Intel: sof_ssp_amp: do not create amp link for nocodec board
->   ASoC: Intel: nuvoton-common: support nau8318 amplifier
->   ASoC: Intel: sof_nau8825: use nuvoton-common module
->   ASoC: Intel: sof_nau8825: use realtek-common module
->   ASoC: Intel: sof_da7219: rename driver file and kernel option
->   ASoC: Intel: sof_da7219: use maxim-common module
->   ASoC: Intel: sof_da7219: add adl_mx98360_da7219 board config
->   ASoC: Intel: sof_da7219: use ssp-common module to detect codec
-> 
-> [...]
 
 Applied to
 
@@ -128,44 +109,8 @@ Applied to
 
 Thanks!
 
-[01/19] ASoC: Intel: sof_rt5682: cleanup unnecessary quirk flag
-        commit: 95409545095bca8fd6a48bc66c401e101dfc57e6
-[02/19] ASoC: Intel: ssp-common: support codec detection
-        commit: 4b38d63916ab0d21c9eb967087e9ccb99d151696
-[03/19] ASoC: Intel: use ACPI HID definition in ssp-common
-        commit: 02a204dd4e627900fad66b4362f6c4fb6a0a7a26
-[04/19] ASoC: Intel: sof_rt5682: use ssp-common module to detect codec
-        commit: 5f706c5e929b10c6fa38c0170d9ddec21e373f20
-[05/19] ASoC: Intel: sof_cs42l42: use ssp-common module to detect codec
-        commit: 811e874dd3fbe61709c246a99168f6416b76ddf3
-[06/19] ASoC: Intel: sof_ssp_amp: use ssp-common module to detect codec
-        commit: 6308c12507c0c24fe594a26a1d92ed899fc1eea5
-[07/19] ASoC: Intel: sof_nau8825: use ssp-common module to detect codec
-        commit: 19fa16b6b66b9ec5fcd1db6ba308062a8090d27f
-[08/19] ASoC: Intel: sof_rt5682: Add support for Rex with discrete BT offload.
-        commit: aa3216f52a64c833866b94b1e3e215540f562343
-[09/19] ASoC: Intel: sof_rt5682: Modify number of HDMI to 3 for MTL/Rex devices
-        commit: c1cecc920a7fd2f4d3cc5f77be0de58f2cee4f35
-[10/19] ASoC: Intel: sof_rt5682: add adl_rt5650 board config
-        commit: db31e3a1c5bcf9dc6fe12325f162946e3161bb57
-[11/19] ASoC: Intel: sof_rt5682: add HDMI_In capture feature support for RPL.
-        commit: 14b7ed66e394d097eed9469abef1434a0e07b383
-[12/19] ASoC: Intel: sof_ssp_amp: do not create amp link for nocodec board
-        commit: 48bc32d94c360a8501e632d24557ad3aba304e9e
-[13/19] ASoC: Intel: nuvoton-common: support nau8318 amplifier
-        commit: e82907e7c10ef87768a625e732083f8dc4fe75e3
-[14/19] ASoC: Intel: sof_nau8825: use nuvoton-common module
-        commit: e8f34882622274f6d107774d9f621ef924df0b03
-[15/19] ASoC: Intel: sof_nau8825: use realtek-common module
-        commit: 8d2671d12a305ccd81c117a2293b87376a9d8e84
-[16/19] ASoC: Intel: sof_da7219: rename driver file and kernel option
-        commit: 18e12093e3da13f32bc5521a894a9c92357f7f55
-[17/19] ASoC: Intel: sof_da7219: use maxim-common module
-        commit: 729fd8b233c9a716f38834d486eacb952034fdb0
-[18/19] ASoC: Intel: sof_da7219: add adl_mx98360_da7219 board config
-        commit: 6bd912d75dcf2c919a715b6e163f90a125e66d78
-[19/19] ASoC: Intel: sof_da7219: use ssp-common module to detect codec
-        commit: 5f017134e42df6208a828f2aca26d56ecca9747c
+[1/1] ASoC: SOF: core: Only call sof_ops_free() on remove if the probe was successful
+      commit: 31bb7bd9ffee50d09ec931998b823a86132ab807
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
