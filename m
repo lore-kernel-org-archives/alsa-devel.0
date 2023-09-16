@@ -4,77 +4,115 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EB7FFCD37B1
-	for <alsa-devel@archiver.kernel.org>; Sat, 16 Sep 2023 01:16:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 77223CD37B0
+	for <alsa-devel@archiver.kernel.org>; Sat, 16 Sep 2023 01:17:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2B700E7F;
-	Sat, 16 Sep 2023 03:15:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2B700E7F
+	by alsa0.perex.cz (Postfix) with ESMTPS id C6370E73;
+	Sat, 16 Sep 2023 03:16:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C6370E73
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1694826968;
-	bh=pykjoQuGQaVivMRRrqZi4uwsGsGeIzi9rCjAbb4C5mk=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1694827035;
+	bh=xEq8AY4fuiaalxjAN4RLrs2a1IBrzOuLaWPlfDlk6OM=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=rvUl+xVqMWFlXsd6cs60l8/sA1bjAfBPvDGbaEkQ7l/NYCVp96LvwRKbLQQT9akIk
-	 6Hb3Ez00/qVFPTIJPuI91E8KR1ZM3Xk0Gwv/uTcHpIBG+m0xH+7CMIqcFoPfqaN+zZ
-	 OvOVRGcj6JExd3mgUleCL3Y1Sxe3WQbI5pMLdzbE=
+	b=P1jHCPYD3U88HYT5CbT55uSQRdybC/Ni8yOQqkT+w6zf6tt8Vf4qGzaAZ4NK0MF5y
+	 peqcxGzycA4wfzpeBjq8W6am0+pzfCViqdeKzywx5DNLtdWY+vsTY+l3h+WFj54qqF
+	 0bGulzurFi3P4GZ0W0y1li8uk2lDLbd+mkSPhBjw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id EF89DF805FD; Sat, 16 Sep 2023 03:12:17 +0200 (CEST)
+	id 94966F80551; Sat, 16 Sep 2023 03:16:25 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 397A6F80600;
-	Sat, 16 Sep 2023 03:12:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3D60BF8007C;
+	Sat, 16 Sep 2023 03:16:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 46CB2F805D3; Sat, 16 Sep 2023 03:12:02 +0200 (CEST)
-Received: from sin.source.kernel.org (sin.source.kernel.org
- [IPv6:2604:1380:40e1:4800::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	id 7D19DF80425; Sat, 16 Sep 2023 03:16:21 +0200 (CEST)
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com
+ [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 903CEF805A9
-	for <alsa-devel@alsa-project.org>; Sat, 16 Sep 2023 03:11:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 903CEF805A9
+	by alsa1.perex.cz (Postfix) with ESMTPS id 96C52F8007C
+	for <alsa-devel@alsa-project.org>; Sat, 16 Sep 2023 03:16:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 96C52F8007C
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=TCkj7Cc1
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
-	(No client certificate requested)
-	by sin.source.kernel.org (Postfix) with ESMTPS id 125E2CE2E4D;
-	Sat, 16 Sep 2023 01:11:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC131C433CA;
-	Sat, 16 Sep 2023 01:11:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1694826708;
-	bh=pykjoQuGQaVivMRRrqZi4uwsGsGeIzi9rCjAbb4C5mk=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=TCkj7Cc12MrrEfJZWFqQvPTM3mJuBssh4oPX8K9zSkxkGTO4ahVWl67tj2OuECfCc
-	 4LbAVhbl6M8lgSZLRSMGJDMkfoZA5l7HO13BmO+Z/YskgUcHYUaQcRBwvOttEXsCyF
-	 xAUZ3deVXTTIJog1Ej9wLHn3f7eC98U8IABMUoOtY2AX5jVkFtJ9hL/Gfd7b1wDZrL
-	 qOSWRTD8wsPrpPWF82q8TEgLIzunt/ruaz+cvGN0wvMxoBQxiSZOodWk/5rD5yWW6D
-	 eNbGpPYfGd2gvPzI4IPYqzvhE9wPumOTLgN1F/cfiwLVMuPUspyAPq9Jh5kyZzw9at
-	 K9d3gBkzMHfcA==
-From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com, Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com,
- ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com,
- yung-chuan.liao@linux.intel.com
-In-Reply-To: <20230915134153.9688-1-peter.ujfalusi@linux.intel.com>
-References: <20230915134153.9688-1-peter.ujfalusi@linux.intel.com>
-Subject: Re: [PATCH] ASoC: SOF: Intel: MTL: Reduce the DSP init timeout
-Message-Id: <169482670668.606223.14208020206388216636.b4-ty@kernel.org>
-Date: Sat, 16 Sep 2023 02:11:46 +0100
+ unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
+ header.s=qcppdkim1 header.b=Ycfwhlm5
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 38G19HRm021822;
+	Sat, 16 Sep 2023 01:16:16 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com;
+ h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=lzUInNfZ/+GSqx3Doaa3+ebCwEy1pXDvPNHjtdmQEjg=;
+ b=Ycfwhlm5luFeuKHDm7B+4ETyXypXu4ky7g+6Oe6MKh8HP7SkmGoLSALaaENrx7DKyKi4
+ xWOSYcK4+6/X2jXmiSdf4TxvMcNOkfpzTRV8sCPskaHRiaTc9IYY4CFzbGaFzlgeUW7Y
+ spQu7RW6b/2qNIeiEfzbYlbvrX1DcFOUDbqYsBTgtxdMCpHJMWzN4bVcKAu3bHODv3E/
+ Vdx/uGNNO+4FXDjrk9Am2f0/QAk4rsSExwwC0+NReOXpdAmotpfROhXn91AG+WOvI0sq
+ ubB3y5kL9ZoEPPMKG6xIde+8fPT+TSDBXHNMhwi3roasyHPlr2ms0bUf4uUM6x0yb5lL EA==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com
+ [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t4g072n8e-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sat, 16 Sep 2023 01:16:16 +0000
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com
+ [10.47.209.197])
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id
+ 38G1GFgO019026
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sat, 16 Sep 2023 01:16:15 GMT
+Received: from [10.110.47.184] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Fri, 15 Sep
+ 2023 18:16:14 -0700
+Message-ID: <ae5a603f-459b-84af-239b-aca34c61e95d@quicinc.com>
+Date: Fri, 15 Sep 2023 18:16:14 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+Subject: Re: [PATCH v6 10/33] ASoC: qcom: qdsp6: Add USB backend ASoC driver
+ for Q6
+Content-Language: en-US
+To: Konrad Dybcio <konrad.dybcio@linaro.org>, <mathias.nyman@intel.com>,
+        <gregkh@linuxfoundation.org>, <lgirdwood@gmail.com>,
+        <broonie@kernel.org>, <perex@perex.cz>, <tiwai@suse.com>,
+        <agross@kernel.org>, <andersson@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <srinivas.kandagatla@linaro.org>, <bgoswami@quicinc.com>,
+        <Thinh.Nguyen@synopsys.com>
+CC: <linux-kernel@vger.kernel.org>, <linux-usb@vger.kernel.org>,
+        <alsa-devel@alsa-project.org>, <linux-arm-msm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>
+References: <20230916001026.315-1-quic_wcheng@quicinc.com>
+ <20230916001026.315-11-quic_wcheng@quicinc.com>
+ <fc3cecda-72dd-4b7f-8839-95bd04481038@linaro.org>
+From: Wesley Cheng <quic_wcheng@quicinc.com>
+In-Reply-To: <fc3cecda-72dd-4b7f-8839-95bd04481038@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-034f2
-Message-ID-Hash: O7OKJMLDNHOC3ODKULZ2QHKFDG5KMNNC
-X-Message-ID-Hash: O7OKJMLDNHOC3ODKULZ2QHKFDG5KMNNC
-X-MailFrom: broonie@kernel.org
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
+ signatures=585085
+X-Proofpoint-GUID: zEvQ2eMYk9JPuewhMCOPnOY4ErObID6W
+X-Proofpoint-ORIG-GUID: zEvQ2eMYk9JPuewhMCOPnOY4ErObID6W
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-15_20,2023-09-15_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ priorityscore=1501
+ impostorscore=0 clxscore=1015 phishscore=0 spamscore=0 mlxscore=0
+ adultscore=0 suspectscore=0 lowpriorityscore=0 malwarescore=0 bulkscore=0
+ mlxlogscore=772 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309160010
+Message-ID-Hash: YM7R4OIVCWQDGKW7NGJZGWTNTEPZZNTL
+X-Message-ID-Hash: YM7R4OIVCWQDGKW7NGJZGWTNTEPZZNTL
+X-MailFrom: quic_wcheng@quicinc.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -86,7 +124,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/O7OKJMLDNHOC3ODKULZ2QHKFDG5KMNNC/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YM7R4OIVCWQDGKW7NGJZGWTNTEPZZNTL/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -95,39 +133,33 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, 15 Sep 2023 16:41:53 +0300, Peter Ujfalusi wrote:
-> 20s seems unnecessarily large for the DSP init timeout. This coupled with
-> multiple FW boot attempts causes an excessive delay in the error path when
-> booting in recovery mode. Reduce it to 0.5s and use the existing
-> HDA_DSP_INIT_TIMEOUT_US.
+Hi Konrad,
+
+On 9/15/2023 5:34 PM, Konrad Dybcio wrote:
+> On 16.09.2023 02:10, Wesley Cheng wrote:
+>> Create a USB BE component that will register a new USB port to the ASoC USB
+>> framework.  This will handle determination on if the requested audio
+>> profile is supported by the USB device currently selected.
+>>
+>> Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
+>> ---
+> [...]
 > 
+>> +	ret = of_parse_phandle_with_fixed_args(node, "iommus", 1, 0, &args);
+>> +	if (ret < 0)
+>> +		data->priv.sid = -1;
+>> +	else
+>> +		data->priv.sid = args.args[0] & SID_MASK;
+> SID masking is done in the devicetree.
 > 
 
-Applied to
+Not sure I get this point, but let me explain the use case of this 
+parameter, and maybe you can help clarify.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+In this case, we are saving and passing the SID info so that the buffers 
+being mapped within the QC offload driver can be communicated to the 
+audio DSP.  So in short, the SID masking that is done here is just to 
+extract the SID from the iommus property.
 
-Thanks!
-
-[1/1] ASoC: SOF: Intel: MTL: Reduce the DSP init timeout
-      commit: e0f96246c4402514acda040be19ee24c1619e01a
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+Thanks
+Wesley Cheng
