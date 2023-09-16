@@ -4,114 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 953B8CD37B1
-	for <alsa-devel@archiver.kernel.org>; Sat, 16 Sep 2023 00:47:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3E686CD37B0
+	for <alsa-devel@archiver.kernel.org>; Sat, 16 Sep 2023 01:13:11 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 96E3FE85;
-	Sat, 16 Sep 2023 02:46:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 96E3FE85
+	by alsa0.perex.cz (Postfix) with ESMTPS id E3763DF4;
+	Sat, 16 Sep 2023 03:12:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E3763DF4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1694825256;
-	bh=G1xirRxD2MN2Pqxh+QVx8ba2QIqBE20DcKZqYoG0q14=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To:List-Id:
+	s=default; t=1694826790;
+	bh=zT62z2Z6UE52rrmOXIbJsKZfUvjdayZ1ZZhteFroU/M=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=SFvULd6cSutKywVEh+evqRpyON4ob80GK/OXuSKLzK41YeXCpKUGpwyfzXEfXA/fI
-	 SM4R1hYciL95E12Rbz2iSf3XVlxtXC5NKoAXtFfezDxhuH7cM0EXTiDGDJ1a7/+OU7
-	 fLUysXVriqlsdj1VwWN5pw8kCJivWP5Ny6hBA9ns=
+	b=BuO6XGc9Gc5MuMaU60wJoj8SxoQMK1mpTQ0gVxvxW0sS5iH/SBeAdkfc+6DuN5UHY
+	 8aByt6FDJA2bzDEX4754Zr4QZR2cmz0v9EEGhvc+RtbiH6AbBzN1/kan7vInA5YRS7
+	 y33a22UuIeM8jGVp3BYu/W2+WMBTZKtTepu25beI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6F0ACF80425; Sat, 16 Sep 2023 02:46:17 +0200 (CEST)
+	id A7AF3F80552; Sat, 16 Sep 2023 03:11:43 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0DB96F80425;
-	Sat, 16 Sep 2023 02:46:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CCE6DF80549;
+	Sat, 16 Sep 2023 03:11:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C76A1F80425; Sat, 16 Sep 2023 02:46:13 +0200 (CEST)
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com
- [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id E498EF80425; Sat, 16 Sep 2023 03:11:37 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E6F3EF8007C
-	for <alsa-devel@alsa-project.org>; Sat, 16 Sep 2023 02:46:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E6F3EF8007C
+	by alsa1.perex.cz (Postfix) with ESMTPS id A1AF8F80141
+	for <alsa-devel@alsa-project.org>; Sat, 16 Sep 2023 03:11:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A1AF8F80141
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
- header.s=qcppdkim1 header.b=bS9T3u21
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 38G0AjxH018114;
-	Sat, 16 Sep 2023 00:46:10 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com;
- h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=ck+kiCghvHyIq4BaYnOXBbHHLhiRIKeMgU0Ox/vMOs0=;
- b=bS9T3u21H8RVIEBXoeHKFi33J5e9jT5yQX9DQQcT44fiqw68fHwfAGYMHhd2B+dN9vcJ
- pqGFB7edIOjCbzjqfOEowz+BvF5ZJq7P/7tOaWBXZzn3T/uqnGjwXI8IxREd85LDVqQM
- Dxrcc2VFxSxKMsIxt+pMYzd6a4lyVvPc5Cd3E8fGn9mplSqqygYdrWby095vAW6ACbX6
- HtpYrfMV5yE1ghZ67qtKA31DVX3ubzu15W3RpeOMz3aZyaoL3GNVWPxHZJ91dFRApDs4
- bUNhvYpI5Qo6ZxWQ2q7nfW/jpEPeopycNaak1ucNJEkChwNy4//RBuhncIbpsw28x9+p uA==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com
- [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t4g86teve-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 16 Sep 2023 00:46:10 +0000
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com
- [10.47.209.197])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id
- 38G0k93I016034
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 16 Sep 2023 00:46:09 GMT
-Received: from [10.110.47.184] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Fri, 15 Sep
- 2023 17:46:07 -0700
-Message-ID: <60df2d55-ce96-1095-0e52-254d7bd91e7b@quicinc.com>
-Date: Fri, 15 Sep 2023 17:46:07 -0700
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=iRmrlSUQ
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	(No client certificate requested)
+	by ams.source.kernel.org (Postfix) with ESMTPS id 5F0BCB82BF7;
+	Sat, 16 Sep 2023 01:11:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A7E65C433C7;
+	Sat, 16 Sep 2023 01:11:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1694826692;
+	bh=zT62z2Z6UE52rrmOXIbJsKZfUvjdayZ1ZZhteFroU/M=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=iRmrlSUQM3DfAqweUfGCWKGp8n6jI6cvI2bwTVK+0pqeA1B2aDZ2PF1lUPsunrebA
+	 n7KmhE91BRrEQRxUXabIAmYuxT9TG+yZTyTdPkgtaYuz2tP3qIwFXQdb4vFohpqsBY
+	 T/K8ZbrV0gbD5gJOQ1HtkB6DraUWKI/UFnzLl9Z6vOQ8Zv91RQ7X8VCSi7+D+cbect
+	 25JT0arpZ4Yv9+vwCBPEGBeIRmcfWBMIbhHZnejEoVp0jfLLDJ1LXZvKoo+Kfuq1zK
+	 XAnEnTZ8bbXQDap8yKMiNfwOzlyux+A2rVDDxSqVzR8Vg36NNQc244cn1rDNzPB/Yk
+	 d4UBBNu87qoHg==
+From: Mark Brown <broonie@kernel.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
+In-Reply-To: <20230915082207.26200-1-tiwai@suse.de>
+References: <20230915082207.26200-1-tiwai@suse.de>
+Subject: Re: [PATCH] ASoC: amd: ps: Fix -Wformat-truncation warning
+Message-Id: <169482669140.606223.9253593129279338010.b4-ty@kernel.org>
+Date: Sat, 16 Sep 2023 02:11:31 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: [PATCH v6 23/33] ASoC: dt-bindings: Add Q6USB backend
-Content-Language: en-US
-To: Konrad Dybcio <konrad.dybcio@linaro.org>, <mathias.nyman@intel.com>,
-        <gregkh@linuxfoundation.org>, <lgirdwood@gmail.com>,
-        <broonie@kernel.org>, <perex@perex.cz>, <tiwai@suse.com>,
-        <agross@kernel.org>, <andersson@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <srinivas.kandagatla@linaro.org>, <bgoswami@quicinc.com>,
-        <Thinh.Nguyen@synopsys.com>
-CC: <linux-kernel@vger.kernel.org>, <linux-usb@vger.kernel.org>,
-        <alsa-devel@alsa-project.org>, <linux-arm-msm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>
-References: <20230916001026.315-1-quic_wcheng@quicinc.com>
- <20230916001026.315-24-quic_wcheng@quicinc.com>
- <9144cb67-9606-4b17-b760-a6d3e8e346cc@linaro.org>
-From: Wesley Cheng <quic_wcheng@quicinc.com>
-In-Reply-To: <9144cb67-9606-4b17-b760-a6d3e8e346cc@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
- signatures=585085
-X-Proofpoint-GUID: zgDNW_TDu9Oe6lDKtF37RINtdlYN4fmk
-X-Proofpoint-ORIG-GUID: zgDNW_TDu9Oe6lDKtF37RINtdlYN4fmk
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-15_20,2023-09-15_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- phishscore=0 clxscore=1015
- bulkscore=0 impostorscore=0 adultscore=0 suspectscore=0 malwarescore=0
- spamscore=0 mlxscore=0 priorityscore=1501 mlxlogscore=712
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309160005
-Message-ID-Hash: FHCLCQEBGDW4GHZWPMSZ66ZPLSNRSBKU
-X-Message-ID-Hash: FHCLCQEBGDW4GHZWPMSZ66ZPLSNRSBKU
-X-MailFrom: quic_wcheng@quicinc.com
+X-Mailer: b4 0.13-dev-034f2
+Message-ID-Hash: WGS7S26MS3ET3ZLF2FJLBIVNURZHUAJ3
+X-Message-ID-Hash: WGS7S26MS3ET3ZLF2FJLBIVNURZHUAJ3
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -123,7 +85,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FHCLCQEBGDW4GHZWPMSZ66ZPLSNRSBKU/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WGS7S26MS3ET3ZLF2FJLBIVNURZHUAJ3/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -132,71 +94,41 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi Konrad,
-
-On 9/15/2023 5:37 PM, Konrad Dybcio wrote:
-> On 16.09.2023 02:10, Wesley Cheng wrote:
->> Add a dt-binding to describe the definition of enabling the Q6 USB backend
->> device for audio offloading.  The node carries information, which is passed
->> along to the QC USB SND class driver counterpart.  These parameters will be
->> utilized during QMI stream enable requests.
->>
->> Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
->> ---
->>   .../devicetree/bindings/sound/qcom,q6usb.yaml | 55 +++++++++++++++++++
->>   1 file changed, 55 insertions(+)
->>   create mode 100644 Documentation/devicetree/bindings/sound/qcom,q6usb.yaml
->>
->> diff --git a/Documentation/devicetree/bindings/sound/qcom,q6usb.yaml b/Documentation/devicetree/bindings/sound/qcom,q6usb.yaml
->> new file mode 100644
->> index 000000000000..51ff0b1ffa2d
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/sound/qcom,q6usb.yaml
->> @@ -0,0 +1,55 @@
->> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/sound/qcom,q6usb-dais.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: Qualcomm ASoC DPCM USB backend DAI
->> +
->> +maintainers:
->> +  - Wesley Cheng <quic_wcheng@quicinc.com>
->> +
->> +description:
->> +  The USB port is a supported AFE path on the Q6 DSP.  This ASoC DPCM
->> +  backend DAI will communicate the required settings to initialize the
->> +  XHCI host controller properly for enabling the offloaded audio stream.
->> +  Parameters defined under this node will carry settings, which will be
->> +  passed along during the QMI stream enable request and configuration of
->> +  the XHCI host controller.
->> +
->> +allOf:
->> +  - $ref: dai-common.yaml#
->> +
->> +properties:
->> +  compatible:
->> +    enum:
->> +      - qcom,q6usb
->> +
->> +  iommus:
->> +    maxItems: 1
->> +
->> +  "#sound-dai-cells":
->> +    const: 1
->> +
->> +  qcom,usb-audio-intr-num:
->> +    description:
->> +      Desired XHCI interrupter number to use.  Depending on the audio DSP
->> +      on the platform, it will operate on a specific XHCI interrupter.
-> So is this the number of interrupters to be used or the index of
-> a single interrupter? If the latter, then "num" is definitely way
-> too ambiguous.
+On Fri, 15 Sep 2023 10:22:07 +0200, Takashi Iwai wrote:
+> The compile warning with -Wformat-truncation at
+> sdw_amd_scan_controller() is false-positive; the max loop size is
+> AMD_SDW_MAX_MANAGERS (= 2), hence it fits with the given size.
 > 
+> For suppressing the warning, replace snprintf() with scnprintf().
+> As stated in the above, truncation doesn't matter.
+> 
+> [...]
 
-It defines the index of a single interrupter.  I'll change the naming of 
-this property.
+Applied to
 
-Thanks
-Wesley Cheng
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+
+Thanks!
+
+[1/1] ASoC: amd: ps: Fix -Wformat-truncation warning
+      commit: 925819c7969cc1453a3e8125787942d6127fa002
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
