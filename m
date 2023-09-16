@@ -4,70 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 92AA0CD37AF
-	for <alsa-devel@archiver.kernel.org>; Sat, 16 Sep 2023 00:15:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B2BE1CD37B0
+	for <alsa-devel@archiver.kernel.org>; Sat, 16 Sep 2023 00:16:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C1E1CE11;
-	Sat, 16 Sep 2023 02:14:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C1E1CE11
+	by alsa0.perex.cz (Postfix) with ESMTPS id D5B1FA4E;
+	Sat, 16 Sep 2023 02:15:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D5B1FA4E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1694823347;
-	bh=zVp6bPiJqumP0MemEef2s14w3tZci4+XahoXbOo+CfE=;
+	s=default; t=1694823367;
+	bh=04YywNfTmy0B5gdD+KrF//iIBFuU9M8KutfL16NuXCQ=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Qy8UghUolYBLuRanAnPQ7qsNMJSQm+hxksVh1d/yFc3ELx9SO6JpKWwWF/Pl0I/S/
-	 pZ7y+rkISM766ztLx/3CwaXuDLsvf3VEOVT22rLnqpIMTbI+Qqeac1S5H9cl9r1gSM
-	 VUMBqJ4mAv4PqRcmGD71ivPM516TYvaEk7xJgtlM=
+	b=jA5WtU+q4ArvdjLNF9lEJlC5abVkW+YE5+Gjwke1FS6UhHvDUJWwdegppMgwLTH57
+	 z/54B3044mOVCYm4zugq54wSokjHqjPQqCR3B+spOUNWkYvnN8ZsAJqJa5LpSpfv3H
+	 pLUX9GBvohISZmCR4BCsR3hrkZFmlnZf3gpTLp/c=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 89FF4F8061F; Sat, 16 Sep 2023 02:11:49 +0200 (CEST)
+	id 507E0F80634; Sat, 16 Sep 2023 02:11:51 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id ECEF6F80621;
-	Sat, 16 Sep 2023 02:11:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C2F14F80571;
+	Sat, 16 Sep 2023 02:11:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id F2ADDF8060D; Sat, 16 Sep 2023 02:11:42 +0200 (CEST)
+	id 1DDD4F8055A; Sat, 16 Sep 2023 02:11:42 +0200 (CEST)
 Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com
  [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 1F900F80425
-	for <alsa-devel@alsa-project.org>; Sat, 16 Sep 2023 02:10:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1F900F80425
+	by alsa1.perex.cz (Postfix) with ESMTPS id 183A8F80431
+	for <alsa-devel@alsa-project.org>; Sat, 16 Sep 2023 02:10:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 183A8F80431
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
- header.s=qcppdkim1 header.b=V9kScgx9
+ header.s=qcppdkim1 header.b=QbaDS5RD
 Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
 	by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 38FNlIHm017220;
-	Sat, 16 Sep 2023 00:10:41 GMT
+ 38G00xTW017389;
+	Sat, 16 Sep 2023 00:10:38 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-type; s=qcppdkim1;
- bh=soLP1wxYe/Q2Qo2eRZtDOZ0+xrFrE1vGLjGfET0ejzk=;
- b=V9kScgx9UwNyMwuWb0FSqH9vAmT8gyfZxU68aePz+B3iahPCoimJi79u1nK+IYkZP6zG
- g8grC/OIh3bv3/3MHhz00x2li47IxoC3Ko3WnaqY1IbVPoXz3QtKSSjf1fslJxbrJUl7
- hg9l2iPqxKupdkNzPp/6TNzs7yGJhRkW9HkYpwf4XwaPb+o3H0FszBVeMi6dPoY1MplR
- 4vtYFwUvbHwLJQCMa2zAOiIHAwvkQwfGcuQe2i69Qre6Shatu5oQCmuXIhqmSCOOI4RM
- nNVuJzdqvZHHwrMuFbMP5aZ6VvvG+XeWGNYJGvlb8+KHxnrQm+Ooc1ExNiVSnq2Y12aq 9g==
+ bh=ZseVt8TpXNsPnD9gXvZiESwKDgOnEM+cyJSdOPfVtyQ=;
+ b=QbaDS5RDJ5wiHUNwtZivC2/jUq6lEx/iLHFVlqu3q45Nueic1nZhlraVew1Fb2Lb1moO
+ +TNOht/Zfasg5DI3c5HbKXKWquMSDTSJKg9vqNG+VqExgX8lS9cNvV1E8uKhozPhjpFV
+ ZCOT78hDBROQ4kB1j32QOzMJ1stg4MBXGWqQ/i41BkeWyHBXPa1SUKK1vd44mOUCfvsh
+ HIQUqNl3BgDk+Cl56JjZijCE1Yxix31FJEDAbSKMavd4za0tqnZUT1Psqi2Hd4sLVmd9
+ uw2rMTw5QKahQfdL5NIwV00onkMIFFSZGEov+dgFDwbRkPGsfoBoSG+1HeG8v+hyQyE9 EQ==
 Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com
  [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t4f6v2q4r-1
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t4f6v2q4p-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 16 Sep 2023 00:10:40 +0000
+	Sat, 16 Sep 2023 00:10:38 +0000
 Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com
  [10.47.209.197])
 	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id
- 38G0Aev7011919
+ 38G0AbxH011911
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 16 Sep 2023 00:10:40 GMT
+	Sat, 16 Sep 2023 00:10:37 GMT
 Received: from hu-wcheng-lv.qualcomm.com (10.49.16.6) by
  nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.36; Fri, 15 Sep 2023 17:10:39 -0700
+ 15.2.1118.36; Fri, 15 Sep 2023 17:10:36 -0700
 From: Wesley Cheng <quic_wcheng@quicinc.com>
 To: <mathias.nyman@intel.com>, <gregkh@linuxfoundation.org>,
         <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
@@ -78,11 +78,13 @@ To: <mathias.nyman@intel.com>, <gregkh@linuxfoundation.org>,
         <Thinh.Nguyen@synopsys.com>
 CC: <linux-kernel@vger.kernel.org>, <linux-usb@vger.kernel.org>,
         <alsa-devel@alsa-project.org>, <linux-arm-msm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, Wesley Cheng <quic_wcheng@quicinc.com>
-Subject: [PATCH v6 11/33] ALSA: usb-audio: Introduce USB SND platform op
- callbacks
-Date: Fri, 15 Sep 2023 17:10:04 -0700
-Message-ID: <20230916001026.315-12-quic_wcheng@quicinc.com>
+        <devicetree@vger.kernel.org>,
+        Mathias Nyman <mathias.nyman@linux.intel.com>,
+        Wesley Cheng <quic_wcheng@quicinc.com>
+Subject: [PATCH v6 02/33] xhci: add helper to stop endpoint and wait for
+ completion
+Date: Fri, 15 Sep 2023 17:09:55 -0700
+Message-ID: <20230916001026.315-3-quic_wcheng@quicinc.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20230916001026.315-1-quic_wcheng@quicinc.com>
 References: <20230916001026.315-1-quic_wcheng@quicinc.com>
@@ -94,19 +96,19 @@ X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
  signatures=585085
-X-Proofpoint-GUID: H2RyBZgZ1V9FzQ3NAxfijUes4HDzwYt-
-X-Proofpoint-ORIG-GUID: H2RyBZgZ1V9FzQ3NAxfijUes4HDzwYt-
+X-Proofpoint-GUID: 5DlQGLVrPbbBYF9b7-3tYAEDmoqhQ7jN
+X-Proofpoint-ORIG-GUID: 5DlQGLVrPbbBYF9b7-3tYAEDmoqhQ7jN
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
  definitions=2023-09-15_20,2023-09-15_01,2023-05-22_02
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
  adultscore=0
  lowpriorityscore=0 malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0
- clxscore=1015 mlxlogscore=916 spamscore=0 mlxscore=0 priorityscore=1501
+ clxscore=1015 mlxlogscore=999 spamscore=0 mlxscore=0 priorityscore=1501
  impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2308100000 definitions=main-2309160000
-Message-ID-Hash: PHSUZMWV324IMV363H2DSARTSAH5QAZ2
-X-Message-ID-Hash: PHSUZMWV324IMV363H2DSARTSAH5QAZ2
+Message-ID-Hash: 7MS7NVOGZ6IY7ZL6GSMQWC74AVLC4ZPF
+X-Message-ID-Hash: 7MS7NVOGZ6IY7ZL6GSMQWC74AVLC4ZPF
 X-MailFrom: quic_wcheng@quicinc.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -119,7 +121,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PHSUZMWV324IMV363H2DSARTSAH5QAZ2/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7MS7NVOGZ6IY7ZL6GSMQWC74AVLC4ZPF/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -128,132 +130,208 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Allow for different platforms to be notified on USB SND connect/disconnect
-seqeunces.  This allows for platform USB SND modules to properly initialize
-and populate internal structures with references to the USB SND chip
-device.
+From: Mathias Nyman <mathias.nyman@linux.intel.com>
 
+Expose xhci_stop_endpoint_sync() which is a synchronous variant of
+xhci_queue_stop_endpoint().  This is useful for client drivers that are
+using the secondary interrupters, and need to stop/clean up the current
+session.  The stop endpoint command handler will also take care of cleaning
+up the ring.
+
+Modifications to repurpose the new API into existing stop endpoint
+sequences was implemented by Wesley Cheng.
+
+Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
+Co-developed-by: Wesley Cheng <quic_wcheng@quicinc.com>
 Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
 ---
- sound/usb/card.c | 60 ++++++++++++++++++++++++++++++++++++++++++++++++
- sound/usb/card.h |  9 ++++++++
- 2 files changed, 69 insertions(+)
+ drivers/usb/host/xhci-hub.c | 29 +++---------------
+ drivers/usb/host/xhci.c     | 60 +++++++++++++++++++++++++++----------
+ drivers/usb/host/xhci.h     |  2 ++
+ 3 files changed, 50 insertions(+), 41 deletions(-)
 
-diff --git a/sound/usb/card.c b/sound/usb/card.c
-index 1b2edc0fd2e9..1ef6d144aa51 100644
---- a/sound/usb/card.c
-+++ b/sound/usb/card.c
-@@ -118,6 +118,49 @@ MODULE_PARM_DESC(skip_validation, "Skip unit descriptor validation (default: no)
- static DEFINE_MUTEX(register_mutex);
- static struct snd_usb_audio *usb_chip[SNDRV_CARDS];
- static struct usb_driver usb_audio_driver;
-+static struct snd_usb_platform_ops *platform_ops;
-+
+diff --git a/drivers/usb/host/xhci-hub.c b/drivers/usb/host/xhci-hub.c
+index 0054d02239e2..2f7309bdc922 100644
+--- a/drivers/usb/host/xhci-hub.c
++++ b/drivers/usb/host/xhci-hub.c
+@@ -489,7 +489,6 @@ EXPORT_SYMBOL_GPL(xhci_find_slot_id_by_port);
+ static int xhci_stop_device(struct xhci_hcd *xhci, int slot_id, int suspend)
+ {
+ 	struct xhci_virt_device *virt_dev;
+-	struct xhci_command *cmd;
+ 	unsigned long flags;
+ 	int ret;
+ 	int i;
+@@ -501,10 +500,6 @@ static int xhci_stop_device(struct xhci_hcd *xhci, int slot_id, int suspend)
+ 
+ 	trace_xhci_stop_device(virt_dev);
+ 
+-	cmd = xhci_alloc_command(xhci, true, GFP_NOIO);
+-	if (!cmd)
+-		return -ENOMEM;
+-
+ 	spin_lock_irqsave(&xhci->lock, flags);
+ 	for (i = LAST_EP_INDEX; i > 0; i--) {
+ 		if (virt_dev->eps[i].ring && virt_dev->eps[i].ring->dequeue) {
+@@ -521,7 +516,7 @@ static int xhci_stop_device(struct xhci_hcd *xhci, int slot_id, int suspend)
+ 			if (!command) {
+ 				spin_unlock_irqrestore(&xhci->lock, flags);
+ 				ret = -ENOMEM;
+-				goto cmd_cleanup;
++				goto out;
+ 			}
+ 
+ 			ret = xhci_queue_stop_endpoint(xhci, command, slot_id,
+@@ -529,30 +524,14 @@ static int xhci_stop_device(struct xhci_hcd *xhci, int slot_id, int suspend)
+ 			if (ret) {
+ 				spin_unlock_irqrestore(&xhci->lock, flags);
+ 				xhci_free_command(xhci, command);
+-				goto cmd_cleanup;
++				goto out;
+ 			}
+ 		}
+ 	}
+-	ret = xhci_queue_stop_endpoint(xhci, cmd, slot_id, 0, suspend);
+-	if (ret) {
+-		spin_unlock_irqrestore(&xhci->lock, flags);
+-		goto cmd_cleanup;
+-	}
+-
+-	xhci_ring_cmd_db(xhci);
+ 	spin_unlock_irqrestore(&xhci->lock, flags);
++	ret = xhci_stop_endpoint_sync(xhci, &virt_dev->eps[0], suspend);
+ 
+-	/* Wait for last stop endpoint command to finish */
+-	wait_for_completion(cmd->completion);
+-
+-	if (cmd->status == COMP_COMMAND_ABORTED ||
+-	    cmd->status == COMP_COMMAND_RING_STOPPED) {
+-		xhci_warn(xhci, "Timeout while waiting for stop endpoint command\n");
+-		ret = -ETIME;
+-	}
+-
+-cmd_cleanup:
+-	xhci_free_command(xhci, cmd);
++out:
+ 	return ret;
+ }
+ 
+diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
+index 3fd2b58ee1d3..163d533d6200 100644
+--- a/drivers/usb/host/xhci.c
++++ b/drivers/usb/host/xhci.c
+@@ -2758,6 +2758,46 @@ static int xhci_reserve_bandwidth(struct xhci_hcd *xhci,
+ 	return -ENOMEM;
+ }
+ 
 +/*
-+ * Register platform specific operations that will be notified on events
-+ * which occur in USB SND.  The platform driver can utilize this path to
-+ * enable features, such as USB audio offloading, which allows for audio data
-+ * to be queued by an audio DSP.
-+ *
-+ * Only one set of platform operations can be registered to USB SND.  The
-+ * platform register operation is protected by the register_mutex.
++ * Synchronous XHCI stop endpoint helper.  Issues the stop endpoint command and
++ * waits for the command completion before returning.
 + */
-+int snd_usb_register_platform_ops(struct snd_usb_platform_ops *ops)
++int xhci_stop_endpoint_sync(struct xhci_hcd *xhci, struct xhci_virt_ep *ep, int suspend)
 +{
++	struct xhci_command *command;
++	unsigned long flags;
 +	int ret;
 +
-+	mutex_lock(&register_mutex);
-+	if (platform_ops) {
-+		ret = -EEXIST;
++	command = xhci_alloc_command(xhci, true, GFP_KERNEL);
++	if (!command)
++		return -ENOMEM;
++
++	spin_lock_irqsave(&xhci->lock, flags);
++	ret = xhci_queue_stop_endpoint(xhci, command, ep->vdev->slot_id,
++				       ep->ep_index, suspend);
++	if (ret < 0) {
++		spin_unlock_irqrestore(&xhci->lock, flags);
 +		goto out;
 +	}
 +
-+	platform_ops = ops;
++	xhci_ring_cmd_db(xhci);
++	spin_unlock_irqrestore(&xhci->lock, flags);
++
++	ret = wait_for_completion_timeout(command->completion, msecs_to_jiffies(3000));
++	if (!ret)
++		xhci_warn(xhci, "%s: Unable to stop endpoint.\n",
++				__func__);
++
++	if (command->status == COMP_COMMAND_ABORTED ||
++	    command->status == COMP_COMMAND_RING_STOPPED) {
++		xhci_warn(xhci, "Timeout while waiting for stop endpoint command\n");
++		ret = -ETIME;
++	}
 +out:
-+	mutex_unlock(&register_mutex);
-+	return 0;
++	xhci_free_command(xhci, command);
++
++	return ret;
 +}
-+EXPORT_SYMBOL_GPL(snd_usb_register_platform_ops);
-+
-+/*
-+ * Unregisters the current set of platform operations.  This allows for
-+ * a new set to be registered if required.
-+ *
-+ * The platform unregister operation is protected by the register_mutex.
-+ */
-+int snd_usb_unregister_platform_ops(void)
-+{
-+	mutex_lock(&register_mutex);
-+	platform_ops = NULL;
-+	mutex_unlock(&register_mutex);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(snd_usb_unregister_platform_ops);
  
- /*
-  * disconnect streams
-@@ -910,7 +953,11 @@ static int usb_audio_probe(struct usb_interface *intf,
- 	chip->num_interfaces++;
- 	usb_set_intfdata(intf, chip);
- 	atomic_dec(&chip->active);
-+
-+	if (platform_ops && platform_ops->connect_cb)
-+		platform_ops->connect_cb(chip);
- 	mutex_unlock(&register_mutex);
-+
- 	return 0;
+ /* Issue a configure endpoint command or evaluate context command
+  * and wait for it to finish.
+@@ -3078,7 +3118,7 @@ static void xhci_endpoint_reset(struct usb_hcd *hcd,
+ 	struct xhci_virt_device *vdev;
+ 	struct xhci_virt_ep *ep;
+ 	struct xhci_input_control_ctx *ctrl_ctx;
+-	struct xhci_command *stop_cmd, *cfg_cmd;
++	struct xhci_command *cfg_cmd;
+ 	unsigned int ep_index;
+ 	unsigned long flags;
+ 	u32 ep_flag;
+@@ -3118,10 +3158,6 @@ static void xhci_endpoint_reset(struct usb_hcd *hcd,
+ 	if (ep_flag == SLOT_FLAG || ep_flag == EP0_FLAG)
+ 		return;
  
-  __error:
-@@ -947,6 +994,9 @@ static void usb_audio_disconnect(struct usb_interface *intf)
- 	card = chip->card;
- 
- 	mutex_lock(&register_mutex);
-+	if (platform_ops && platform_ops->disconnect_cb)
-+		platform_ops->disconnect_cb(chip);
-+
- 	if (atomic_inc_return(&chip->shutdown) == 1) {
- 		struct snd_usb_stream *as;
- 		struct snd_usb_endpoint *ep;
-@@ -1090,6 +1140,11 @@ static int usb_audio_suspend(struct usb_interface *intf, pm_message_t message)
- 		chip->system_suspend = chip->num_suspended_intf;
+-	stop_cmd = xhci_alloc_command(xhci, true, GFP_NOWAIT);
+-	if (!stop_cmd)
+-		return;
+-
+ 	cfg_cmd = xhci_alloc_command_with_ctx(xhci, true, GFP_NOWAIT);
+ 	if (!cfg_cmd)
+ 		goto cleanup;
+@@ -3144,23 +3180,16 @@ static void xhci_endpoint_reset(struct usb_hcd *hcd,
+ 		goto cleanup;
  	}
  
-+	mutex_lock(&register_mutex);
-+	if (platform_ops && platform_ops->suspend_cb)
-+		platform_ops->suspend_cb(intf, message);
-+	mutex_unlock(&register_mutex);
+-	err = xhci_queue_stop_endpoint(xhci, stop_cmd, udev->slot_id,
+-					ep_index, 0);
++	spin_unlock_irqrestore(&xhci->lock, flags);
 +
- 	return 0;
- }
++	err = xhci_stop_endpoint_sync(xhci, ep, 0);
+ 	if (err < 0) {
+-		spin_unlock_irqrestore(&xhci->lock, flags);
+-		xhci_free_command(xhci, cfg_cmd);
+ 		xhci_dbg(xhci, "%s: Failed to queue stop ep command, %d ",
+ 				__func__, err);
+ 		goto cleanup;
+ 	}
  
-@@ -1130,6 +1185,11 @@ static int usb_audio_resume(struct usb_interface *intf)
+-	xhci_ring_cmd_db(xhci);
+-	spin_unlock_irqrestore(&xhci->lock, flags);
+-
+-	wait_for_completion(stop_cmd->completion);
+-
+ 	spin_lock_irqsave(&xhci->lock, flags);
+-
+ 	/* config ep command clears toggle if add and drop ep flags are set */
+ 	ctrl_ctx = xhci_get_input_control_ctx(cfg_cmd->in_ctx);
+ 	if (!ctrl_ctx) {
+@@ -3192,7 +3221,6 @@ static void xhci_endpoint_reset(struct usb_hcd *hcd,
  
- 	snd_usb_midi_v2_resume_all(chip);
+ 	xhci_free_command(xhci, cfg_cmd);
+ cleanup:
+-	xhci_free_command(xhci, stop_cmd);
+ 	spin_lock_irqsave(&xhci->lock, flags);
+ 	if (ep->ep_state & EP_SOFT_CLEAR_TOGGLE)
+ 		ep->ep_state &= ~EP_SOFT_CLEAR_TOGGLE;
+diff --git a/drivers/usb/host/xhci.h b/drivers/usb/host/xhci.h
+index d706a27ec0a3..898b6434dc27 100644
+--- a/drivers/usb/host/xhci.h
++++ b/drivers/usb/host/xhci.h
+@@ -2125,6 +2125,8 @@ void xhci_ring_doorbell_for_active_rings(struct xhci_hcd *xhci,
+ void xhci_cleanup_command_queue(struct xhci_hcd *xhci);
+ void inc_deq(struct xhci_hcd *xhci, struct xhci_ring *ring);
+ unsigned int count_trbs(u64 addr, u64 len);
++int xhci_stop_endpoint_sync(struct xhci_hcd *xhci, struct xhci_virt_ep *ep,
++			    int suspend);
  
-+	mutex_lock(&register_mutex);
-+	if (platform_ops && platform_ops->resume_cb)
-+		platform_ops->resume_cb(intf);
-+	mutex_unlock(&register_mutex);
-+
-  out:
- 	if (chip->num_suspended_intf == chip->system_suspend) {
- 		snd_power_change_state(chip->card, SNDRV_CTL_POWER_D0);
-diff --git a/sound/usb/card.h b/sound/usb/card.h
-index 6ec95b2edf86..2884912adc96 100644
---- a/sound/usb/card.h
-+++ b/sound/usb/card.h
-@@ -207,4 +207,13 @@ struct snd_usb_stream {
- 	struct list_head list;
- };
- 
-+struct snd_usb_platform_ops {
-+	void (*connect_cb)(struct snd_usb_audio *chip);
-+	void (*disconnect_cb)(struct snd_usb_audio *chip);
-+	void (*suspend_cb)(struct usb_interface *intf, pm_message_t message);
-+	void (*resume_cb)(struct usb_interface *intf);
-+};
-+
-+int snd_usb_register_platform_ops(struct snd_usb_platform_ops *ops);
-+int snd_usb_unregister_platform_ops(void);
- #endif /* __USBAUDIO_CARD_H */
+ /* xHCI roothub code */
+ void xhci_set_link_state(struct xhci_hcd *xhci, struct xhci_port *port,
