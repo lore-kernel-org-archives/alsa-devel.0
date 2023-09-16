@@ -4,86 +4,102 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BA116CD37B1
-	for <alsa-devel@archiver.kernel.org>; Sat, 16 Sep 2023 02:38:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5649FCD37B2
+	for <alsa-devel@archiver.kernel.org>; Sat, 16 Sep 2023 06:09:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9C41EDF6;
-	Sat, 16 Sep 2023 04:38:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9C41EDF6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 45DFFAE9;
+	Sat, 16 Sep 2023 08:08:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 45DFFAE9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1694831931;
-	bh=DUIXYVvaiR1keYTg+miPivXtIvLrN04LFwPuanPw45o=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1694844548;
+	bh=3Fhyy5SYSq+q1YLoxp9rt7vV1TadT4QCv9w+qHaGS4U=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=DWX2KRMbmbPMOJ08OG4P20RB/F4LqgPBd/L2lGQyXBzjXcS+jy6sNAIE2sDQck7g9
-	 gpXktSFuO7ml1znn261I9q7HOwbRoyYfcxpbdhCrDPGf4gsn3pMXnhXxgwvrC7u6dx
-	 MmfC6amF77O4VlTz2XHIUz+gGqtINf6IpaY8E+k0=
+	b=O5zjfnJbLDAgCyYat3TrvrXbq92GZNCVuaUQyZWB0svM4FTCcf8fq2nEScraKEm9v
+	 x0+eqRo1yKgTAmrcUwulEZoMH9jFtS+H4YPluOZXFlv3IvgT5HiSYhy+KP0YsTVKcr
+	 mTD8+Cb5AibeT68dA3umWT6eTQ35jCH1YIaFtJPw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D0B39F8056F; Sat, 16 Sep 2023 04:37:11 +0200 (CEST)
+	id 092E2F80549; Sat, 16 Sep 2023 08:07:48 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 38619F8055B;
-	Sat, 16 Sep 2023 04:37:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4EA1EF80425;
+	Sat, 16 Sep 2023 08:07:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4C538F80425; Sat, 16 Sep 2023 04:37:06 +0200 (CEST)
-Received: from sin.source.kernel.org (sin.source.kernel.org
- [IPv6:2604:1380:40e1:4800::1])
+	id 59FB9F80425; Sat, 16 Sep 2023 08:06:16 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2001:67c:2178:6::1c])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id BB299F80212
-	for <alsa-devel@alsa-project.org>; Sat, 16 Sep 2023 04:37:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BB299F80212
+	by alsa1.perex.cz (Postfix) with ESMTPS id 60C29F80141
+	for <alsa-devel@alsa-project.org>; Sat, 16 Sep 2023 08:06:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 60C29F80141
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=MAJt6ld0
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=TuZEJ/fZ;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=LJWUrQoB
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by sin.source.kernel.org (Postfix) with ESMTPS id B938DCE2E67;
-	Sat, 16 Sep 2023 02:36:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4FD3C433CB;
-	Sat, 16 Sep 2023 02:36:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1694831817;
-	bh=DUIXYVvaiR1keYTg+miPivXtIvLrN04LFwPuanPw45o=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=MAJt6ld0NervcoMWRakm4IMmY4S9TiVuhxsX/g1way4XvP8b2eUtPLgPa0PhXXCmb
-	 s8mUtmMLKbpIcPqSyH5HXMT8CiTGZ32xvQXZyAY4ys8ravwyX6mg4dORPZfU7qmFRy
-	 vo+mQbCrWxa43bVwwY3iG13MOMqTyKXtZLpLU2iqNMPkDz5go/v6k2P7zwqUzWCS2M
-	 OSQ5Gvm+ibHFQOOJs1wtxM+o1CRWqo3A9XinbhcjKG4FXgWYzblzj2tcuWG7jJTPtG
-	 yC5vuoD4Pi/xf0YIALg8zuOWDbQPZSb8Zq7sUwvpNzo3k5bG/jReMkRWrNbzSI0xLn
-	 WaAaFR2HTbvRQ==
-Received: (nullmailer pid 607832 invoked by uid 1000);
-	Sat, 16 Sep 2023 02:36:49 -0000
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-MIME-Version: 1.0
-From: Rob Herring <robh@kernel.org>
-To: Wesley Cheng <quic_wcheng@quicinc.com>
-Cc: broonie@kernel.org, andersson@kernel.org, linux-arm-msm@vger.kernel.org,
- linux-kernel@vger.kernel.org, conor+dt@kernel.org, agross@kernel.org,
- tiwai@suse.com, lgirdwood@gmail.com, bgoswami@quicinc.com,
- konrad.dybcio@linaro.org, perex@perex.cz, devicetree@vger.kernel.org,
- gregkh@linuxfoundation.org, Thinh.Nguyen@synopsys.com,
- srinivas.kandagatla@linaro.org, alsa-devel@alsa-project.org,
- krzysztof.kozlowski+dt@linaro.org, mathias.nyman@intel.com,
- robh+dt@kernel.org, linux-usb@vger.kernel.org
-In-Reply-To: <20230916001026.315-25-quic_wcheng@quicinc.com>
-References: <20230916001026.315-1-quic_wcheng@quicinc.com>
- <20230916001026.315-25-quic_wcheng@quicinc.com>
-Message-Id: <169483180949.607796.6898944173811945795.robh@kernel.org>
-Subject: Re: [PATCH v6 24/33] ASoC: dt-bindings: Update example for
- enabling USB offload on SM8250
-Date: Fri, 15 Sep 2023 21:36:49 -0500
-Message-ID-Hash: VRTY25SBLJ3WKFSEO7KFWBDSUGMFZPRK
-X-Message-ID-Hash: VRTY25SBLJ3WKFSEO7KFWBDSUGMFZPRK
-X-MailFrom: SRS0=w9sT=FA=robh_at_kernel.org=rob@kernel.org
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 8BE962197E;
+	Sat, 16 Sep 2023 06:06:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1694844361;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=MKJPVMkfCPsAMBC1n6lximFInfxVkA6IUNTVb85qc70=;
+	b=TuZEJ/fZuOkZjYIvqj7wBizy0xRWY+crKyCyqoR4u+Qsh3ThpV/ysvTpvGNGymLsKEmkbk
+	SBiJ3JxTQM5joQjmigkmJ8kPpSBphgsS+XrkDPpvobqC4fD4QWRzWThByZwmUcNyjdgmd5
+	b9cxr8b9rlnTCmis3hUhWe2CLj9/js8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1694844361;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=MKJPVMkfCPsAMBC1n6lximFInfxVkA6IUNTVb85qc70=;
+	b=LJWUrQoB/bEFmoHkCJr0nseXLpmxnMElbbppZCq4rXdDze8oyDi1nk/C9o7NqSE1MD64PO
+	TmuRQ21vFJT1PjDg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6B43E13499;
+	Sat, 16 Sep 2023 06:06:01 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id 6KX3GMlFBWUMVwAAMHmgww
+	(envelope-from <tiwai@suse.de>); Sat, 16 Sep 2023 06:06:01 +0000
+Date: Sat, 16 Sep 2023 08:06:01 +0200
+Message-ID: <87y1h6tzxy.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Mark Hills <mark@xwax.org>
+Cc: Ash Holland <ash@sorrel.sh>,
+	alsa-devel@alsa-project.org,
+	regressions@lists.linux.dev
+Subject: Re: [REGRESSION] rust midir MIDI library causes kernel oops
+In-Reply-To: <ba096915-4d9e-0cfa-2dfb-57cb476b3544@xwax.org>
+References: <8a555319-9f31-4ea2-878f-adc338bc40d4@sorrel.sh>
+	<87msy1ip6l.wl-tiwai@suse.de>
+	<ef9118c3-a2eb-d0ff-1efa-cc5fb6416bde@xwax.org>
+	<874jjvuywk.wl-tiwai@suse.de>
+	<871qezux3d.wl-tiwai@suse.de>
+	<ba096915-4d9e-0cfa-2dfb-57cb476b3544@xwax.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Message-ID-Hash: HBRQNS3DIYP4OMAOPNEMHZEBFFGONYXX
+X-Message-ID-Hash: HBRQNS3DIYP4OMAOPNEMHZEBFFGONYXX
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -95,54 +111,68 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VRTY25SBLJ3WKFSEO7KFWBDSUGMFZPRK/>
-List-Archive: <>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HBRQNS3DIYP4OMAOPNEMHZEBFFGONYXX/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-
-On Fri, 15 Sep 2023 17:10:17 -0700, Wesley Cheng wrote:
-> Add an example on enabling of USB offload for the Q6DSP.  The routing can
-> be done by the mixer, which can pass the multimedia stream to the USB
-> backend.
+On Fri, 15 Sep 2023 20:20:12 +0200,
+Mark Hills wrote:
 > 
-> Acked-by: Rob Herring <robh@kernel.org>
-> Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
-> ---
->  .../devicetree/bindings/sound/qcom,sm8250.yaml    | 15 +++++++++++++++
->  1 file changed, 15 insertions(+)
+> On Fri, 15 Sep 2023, Takashi Iwai wrote:
 > 
+> > On Fri, 15 Sep 2023 19:30:51 +0200, Takashi Iwai wrote:
+> > > 
+> > > On Fri, 15 Sep 2023 18:04:35 +0200, Mark Hills wrote:
+> [...]
+> > > > I upgraded from 6.1.0 to 6.5.3 and Reaper now crashes or hangs on startup 
+> > > > with the trace below in dmesg.
+> > > > 
+> > > > The newer kernel already includes a fix very similar to below, so I think 
+> > > > an issue remains.
+> > > > 
+> > > > I did not dig deeper than capturing information and finding this related 
+> > > > thread.
+> > > (snip)
+> > > > [   72.601440] BUG: kernel NULL pointer dereference, address: 0000000000000020
+> > > (snip)
+> > > > [   72.601455] RIP: 0010:snd_rawmidi_proc_info_read+0x35/0x220 [snd_rawmidi]
+> > > (snip)
+> > > > [   72.601477] Call Trace:
+> > > > [   72.601478]  <TASK>
+> > > > [   72.601479]  ? __die+0x1b/0x60
+> > > > [   72.601482]  ? page_fault_oops+0x154/0x420
+> > > > [   72.601485]  ? mas_update_gap.part.0+0xac/0x1f0
+> > > > [   72.601488]  ? sched_clock_cpu+0xb/0x190
+> > > > [   72.601491]  ? __smp_call_single_queue+0x2f/0x50
+> > > > [   72.601493]  ? exc_page_fault+0x37a/0x560
+> > > > [   72.601495]  ? seq_open+0x4b/0x70
+> > > > [   72.601497]  ? asm_exc_page_fault+0x22/0x30
+> > > > [   72.601501]  ? snd_rawmidi_proc_info_read+0x35/0x220 [snd_rawmidi]
+> > > > [   72.601505]  snd_info_seq_show+0x21/0x40 [snd]
+> > > > [   72.601511]  seq_read_iter+0x105/0x4a0
+> > > > [   72.601514]  seq_read+0x9e/0xd0
+> > > > [   72.601516]  proc_reg_read+0x50/0xa0
+> > > > [   72.601518]  vfs_read+0xa4/0x300
+> > > > [   72.601521]  ? __do_sys_newfstatat+0x35/0x60
+> > > > [   72.601524]  ksys_read+0x5a/0xe0
+> > > > [   72.601526]  do_syscall_64+0x38/0x90
+> > > > [   72.601528]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+> > > 
+> > > It must be a completely different bug.  It comes from the proc fs
+> > > read, not the read over sequencer device itself.
+> > 
+> > Does the change below fix the problem?
+> 
+> It does! At least it passes my initial test. Reaper starts up now.
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+Good to hear.  I'll submit the proper fix patch.
 
-yamllint warnings/errors:
 
-dtschema/dtc warnings/errors:
-Error: Documentation/devicetree/bindings/sound/qcom,sm8250.example.dts:97.44-45 syntax error
-FATAL ERROR: Unable to parse input tree
-make[2]: *** [scripts/Makefile.lib:419: Documentation/devicetree/bindings/sound/qcom,sm8250.example.dtb] Error 1
-make[2]: *** Waiting for unfinished jobs....
-make[1]: *** [/builds/robherring/dt-review-ci/linux/Makefile:1427: dt_binding_check] Error 2
-make: *** [Makefile:234: __sub-make] Error 2
+thanks,
 
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20230916001026.315-25-quic_wcheng@quicinc.com
-
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
-
+Takashi
