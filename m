@@ -4,76 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 050FFCD37B0
-	for <alsa-devel@archiver.kernel.org>; Sat, 16 Sep 2023 01:13:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 84238CD37B0
+	for <alsa-devel@archiver.kernel.org>; Sat, 16 Sep 2023 01:13:35 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 12897E0F;
-	Sat, 16 Sep 2023 03:12:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 12897E0F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8D5D1AEA;
+	Sat, 16 Sep 2023 03:12:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8D5D1AEA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1694826805;
-	bh=ic8FddN6BAcES8WHpLHqJl92TlDBnuUDAtvaplE9vpw=;
+	s=default; t=1694826813;
+	bh=Bj2qh4y6sKb9dvuxkfpcxQVhYnAqob9WgtHaABSZtlk=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=IEeUSJcUImMwtoWeQyldRWU55/tEj8GRb89M66MXhy43iEx1j0Lr/OkC9w3rzYtIF
-	 wY7PILWivVdMYXL0ETd81AJ5oEknhrqQDlHcWECATSu67QkXmVIld3ktb1KkynroKb
-	 vxobzh0eAlwdpLZ0IRyX8OofR5EgFoiOj73kx/ZY=
+	b=swywmpZHY6Br3p+OZ8IyomHT6rwurKppbPoNKZGsocGsWrKp2WXxd45F1/6SlSPPG
+	 asCx2qdjrPXD69dIzKZRke/wetvV4/dxBT0sPZTblabw1eNVipBXHltFxiPSXyvv/b
+	 6lAx5O6gSMFICrPyQTcztnlYgGoGqnWu955Kmtpc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AE4F0F80578; Sat, 16 Sep 2023 03:11:45 +0200 (CEST)
+	id 27E73F80580; Sat, 16 Sep 2023 03:11:48 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 03D28F80568;
-	Sat, 16 Sep 2023 03:11:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 82C67F80579;
+	Sat, 16 Sep 2023 03:11:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 91773F80431; Sat, 16 Sep 2023 03:11:39 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+	id ACE02F80425; Sat, 16 Sep 2023 03:11:41 +0200 (CEST)
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 4062BF8007C
+	by alsa1.perex.cz (Postfix) with ESMTPS id E2290F80141
 	for <alsa-devel@alsa-project.org>; Sat, 16 Sep 2023 03:11:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4062BF8007C
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E2290F80141
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=NG+6wnjG
+ header.s=k20201202 header.b=UXpT5QjT
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id 8791FB82BF7;
-	Sat, 16 Sep 2023 01:11:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B1377C433CA;
+	by sin.source.kernel.org (Postfix) with ESMTPS id DC592CE2CD5;
 	Sat, 16 Sep 2023 01:11:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58260C433C9;
+	Sat, 16 Sep 2023 01:11:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1694826694;
-	bh=ic8FddN6BAcES8WHpLHqJl92TlDBnuUDAtvaplE9vpw=;
+	s=k20201202; t=1694826691;
+	bh=Bj2qh4y6sKb9dvuxkfpcxQVhYnAqob9WgtHaABSZtlk=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=NG+6wnjG6c3b1GPPHCAsCbpKErpGM6P2HuBlDSii5ex8g8pHdcw/N2DO++JF5wJem
-	 iHy4UZH51rfyK9l6PtZ6QvxEzq4I6UrKSgaINulKTCYXurdKuaGwpHsXfLfeyqUIay
-	 /MiSQhnCIg5dRv86hIhf0gXLCQky4JjOL8mRQHayNOiKT7UZ+EaOi3iWX+5LeCdIgT
-	 cnca+TZASF9KbR0o+1w+BY4PYiWrhoHOSLChkvv2RLEC0bYpPIcoXl+GXHnb2GoxPQ
-	 bR13VBhOPPt6f4um1T6r7IQWKniCuf2cDqr/SIfz1dL0hbO3e07sTxarroGk1swvrg
-	 CIlGyCkDj7hiQ==
+	b=UXpT5QjTyKN5n5xo8qmVHdtuL1XzaLDtkv+t3h2xYtDFoRJuSqO9SHSLm4yYGVJI+
+	 RWIpPM5yXAZoX/TiLJxcs1HKuo0N+955KKZlQuMClCIMNzDDxxZxZ8qXdJDqQVCRJY
+	 Rcu4B+OZRnMumfUQgntjK2F8XUZNebDgygYgiBD92pPO01O++klFamDVUDPwiMSQp7
+	 xramL8E/PKOOwVvqI7QTnhwh2QCskir7Dg2z1iLs1BOT4C8I0VcXwEtP2HdeMNKVe1
+	 lv4pwK8qSJ9eDSjmKCbegyVOuYHDUrFNixiazSeQTexpjdA9muxVBNlGZ4ZPbbwmkL
+	 VrMZ7USP8oHbQ==
 From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com, shumingf@realtek.com
-Cc: alsa-devel@alsa-project.org, lars@metafoo.de, flove@realtek.com,
- oder_chiou@realtek.com, jack.yu@realtek.com, derek.fang@realtek.com,
- judyhsiao@google.com
-In-Reply-To: <20230915020530.83452-1-shumingf@realtek.com>
-References: <20230915020530.83452-1-shumingf@realtek.com>
-Subject: Re: [PATCH] ASoC: rt1015: fix the first word being cut off
-Message-Id: <169482669244.606223.14087611369554477136.b4-ty@kernel.org>
-Date: Sat, 16 Sep 2023 02:11:32 +0100
+To: Richard Fitzgerald <rf@opensource.cirrus.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20230914150918.14505-1-rf@opensource.cirrus.com>
+References: <20230914150918.14505-1-rf@opensource.cirrus.com>
+Subject: Re: [PATCH 0/3] ASoC: cs35l56: Define and export I2C/SPI pm_ops
+ only if needed
+Message-Id: <169482669005.606223.15627123606539321145.b4-ty@kernel.org>
+Date: Sat, 16 Sep 2023 02:11:30 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-034f2
-Message-ID-Hash: ZKQYUWTV4KJPED2ZXVYHSNTK55PMG7Y6
-X-Message-ID-Hash: ZKQYUWTV4KJPED2ZXVYHSNTK55PMG7Y6
+Message-ID-Hash: L6SFPR2Y2OPGUPUTXNG3U5EWTURCIAX3
+X-Message-ID-Hash: L6SFPR2Y2OPGUPUTXNG3U5EWTURCIAX3
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -86,7 +86,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZKQYUWTV4KJPED2ZXVYHSNTK55PMG7Y6/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/L6SFPR2Y2OPGUPUTXNG3U5EWTURCIAX3/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -95,12 +95,16 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, 15 Sep 2023 10:05:30 +0800, shumingf@realtek.com wrote:
-> This patch adds a control that there are four options to control the digital volume output.
-> The user could select "immediate" to make volume updates immediately.
-> In default, the driver selects the volume update with "zero detection + soft inc/dec change".
+On Thu, 14 Sep 2023 16:09:15 +0100, Richard Fitzgerald wrote:
+> These 3 patches update the pm_ops for I2C/SPI so that they are only built
+> and exported if they are needed.
 > 
+> Richard Fitzgerald (3):
+>   ASoC: cs35l56: Use pm_ptr()
+>   ASoC: cs35l56: Use new export macro for dev_pm_ops
+>   ASoC: cs35l56: Omit cs35l56_pm_ops_i2c_spi if I2C/SPI not enabled
 > 
+> [...]
 
 Applied to
 
@@ -108,8 +112,12 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: rt1015: fix the first word being cut off
-      commit: 74d71f628db99987d43d242ea4d3631ef0a906d0
+[1/3] ASoC: cs35l56: Use pm_ptr()
+      commit: 3d3a86679541044a65ea23175cb95206921c8fe2
+[2/3] ASoC: cs35l56: Use new export macro for dev_pm_ops
+      commit: 6399eb58254b98bbe42c9d14e07c50e1c3d9f8cd
+[3/3] ASoC: cs35l56: Omit cs35l56_pm_ops_i2c_spi if I2C/SPI not enabled
+      commit: 01e76ee227564008d71ddce6e43132b36d2d2252
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
