@@ -4,80 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A6759CD37B0
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 Sep 2023 16:07:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3D0F7CD37B0
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 Sep 2023 17:49:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5CE6CDF3;
-	Mon, 18 Sep 2023 18:06:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5CE6CDF3
+	by alsa0.perex.cz (Postfix) with ESMTPS id B2BCA84C;
+	Mon, 18 Sep 2023 19:49:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B2BCA84C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1695053255;
-	bh=V2Ca0FDQjE39oqGvsLz24cV0i2ZCGGyShiYZ2H0bMsg=;
+	s=default; t=1695059393;
+	bh=oHw562cwwj68xY+FoUZXzpEdcQhn4hhCJhVT1FDVvGY=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=rJyBiQQzJ1yC6OKMvjxCHpHkskBXOfT2xII1Zt64JwVCagZvxCjShjSksZS2sdzsc
-	 AachzrCJh3+K8R228TA6OKJbfri7WTvPqcvbwP1DipAQgsGpp6gnD475GKPWJ26SOV
-	 F3ZLDLpA8x7hnPNLRam5y3KnloYSenaYSaa0jlyk=
+	b=WQYYApwJQwSWCePk1oLWgcF2jFPmcPBvRKdONMvGaAKEN7tkCqn+iSHk2UM+wRBQR
+	 xDo8Vsl/mOlPhzflcaJO58uGM0iv5zrYRStTcXUx0JR5YfB9p8tHveWPQlURJzuDiJ
+	 zEFfZ6zIDVs4epP2yVMk8LlDNj0ZjAu6eXkTU/Rk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7292DF80551; Mon, 18 Sep 2023 18:06:17 +0200 (CEST)
+	id 111ADF801F5; Mon, 18 Sep 2023 19:48:34 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2880FF8025A;
-	Mon, 18 Sep 2023 18:06:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 85138F8025A;
+	Mon, 18 Sep 2023 19:48:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C2B41F8025A; Mon, 18 Sep 2023 18:06:11 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+	id 3BE5EF8025A; Mon, 18 Sep 2023 19:48:28 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 0A3C8F80124
-	for <alsa-devel@alsa-project.org>; Mon, 18 Sep 2023 18:06:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0A3C8F80124
+	by alsa1.perex.cz (Postfix) with ESMTPS id BA18DF800AA
+	for <alsa-devel@alsa-project.org>; Mon, 18 Sep 2023 19:48:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BA18DF800AA
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=UldQm7CJ
+ header.s=k20201202 header.b=LFEP0QLy
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id 35D82B80E8B;
-	Mon, 18 Sep 2023 16:06:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4191AC43397;
-	Mon, 18 Sep 2023 16:06:03 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 2F08861269;
+	Mon, 18 Sep 2023 17:48:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A4A7C433CB;
+	Mon, 18 Sep 2023 17:48:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1695053165;
-	bh=V2Ca0FDQjE39oqGvsLz24cV0i2ZCGGyShiYZ2H0bMsg=;
+	s=k20201202; t=1695059297;
+	bh=oHw562cwwj68xY+FoUZXzpEdcQhn4hhCJhVT1FDVvGY=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=UldQm7CJ9UETNwt+IdBde9nLe74kkvoFkvfYLgXu1wygHRMBeXhwMD4yoVxTVDqT5
-	 KF7laZavM388qSKV5hu541FbgkeV/OLoJMEGr+esV1HWx69xQ6y+hPQZwPJBJTSHFW
-	 i5jmLAjYCu93Oh0/saLqhJ0sr40KOZQO/dBntn5sFcSBZDrY9AmceMpk0ZnvZ7FZve
-	 yzGiJyTINuLc2TZuyXflbd6l8bjKcZJMnI76hyKDALDA7yESCoJR7uWEPL6OvGPSt4
-	 NGwyHhGF3qIuZbVamVqmwshVBvQbcrA3P5Tl7uoelHpXhj5GrgTl1M/muH0HokK8SJ
-	 34BmXpUUBpeQQ==
+	b=LFEP0QLyhENz9xpylhd21WJKOD9zfZi1knNuf61Fslt3waS9WLhy17eKBgW/vPw1i
+	 VkN4/WVebS0MwjdDmsD289l3Zj4jfMppuotTXTU4DCP/L3F6r+e9UHwWteU4MEvenE
+	 na2O0Ly/qpOxMy08Q6rLyEthqiFFichqxrBKnmMTTQS/aHbpXUsXjsqwrX2MZ8QHNT
+	 ULjyG3OU+GK/BhibC0I9iBB4OL98a2rxIy3MCtrCk2nvidAb9gOAhyjnzmueCgVawL
+	 ZlkBgGkoAM3sHPuVr7p5qdvvFsfts6teRVxqkXW3jLzaKrY5rjFgraWEEv8SKyPbfQ
+	 IzIzmPG+xNWhA==
 From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org, John Watts <contact@jookia.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+To: Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>,
+ Support Opensource <support.opensource@diasemi.com>,
  Takashi Iwai <tiwai@suse.com>,
- Charles Keepax <ckeepax@opensource.cirrus.com>,
- patches@opensource.cirrus.com, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-In-Reply-To: <20230918131532.2257615-1-contact@jookia.org>
-References: <20230918131532.2257615-1-contact@jookia.org>
-Subject: Re: [PATCH v4 0/3] ASoC: wm8782: Allow higher audio rates
-Message-Id: <169505316298.74713.188374805406477074.b4-ty@kernel.org>
-Date: Mon, 18 Sep 2023 17:06:02 +0100
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.org
+In-Reply-To: <871qf5ij0d.wl-kuninori.morimoto.gx@renesas.com>
+References: <871qf5ij0d.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH 0/2] ASoC: da7213: add .auto_selectable_formats support
+Message-Id: <169505929579.78329.14996059650591207946.b4-ty@kernel.org>
+Date: Mon, 18 Sep 2023 18:48:15 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-034f2
-Message-ID-Hash: 5DRG5NBTTJBVLGSPF5BZMOWAB3WWS3YX
-X-Message-ID-Hash: 5DRG5NBTTJBVLGSPF5BZMOWAB3WWS3YX
+Message-ID-Hash: V3B2EG3HQLAMXRSEF7DSXA77VRTGQHST
+X-Message-ID-Hash: V3B2EG3HQLAMXRSEF7DSXA77VRTGQHST
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -90,22 +88,22 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5DRG5NBTTJBVLGSPF5BZMOWAB3WWS3YX/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/V3B2EG3HQLAMXRSEF7DSXA77VRTGQHST/>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, 18 Sep 2023 23:15:29 +1000, John Watts wrote:
-> The wm8782 supports higher audio rates than just 48kHz. This is
-> configured by setting the FSAMPEN pin on the codec chip.
+On Mon, 11 Sep 2023 01:41:23 +0000, Kuninori Morimoto wrote:
+> da7213 is still using M/S instead of P/C for SND_SOC_DAIFMT_CBx_CFx.
+> [PATCH 1/2] will update it.
+> [PATCH 2/2] will enable DAI format automatic select.
 > 
-> This patch series introduces the 'wlf,fsampen' device tree property
-> to indicate the pin status and control the maximum rate available
-> when using the codec.
+> Kuninori Morimoto (2):
+>   ASoC: da7213: tidyup SND_SOC_DAIFMT_xxx
+>   ASoC: da7213: add .auto_selectable_formats support
 > 
 > [...]
 
@@ -115,12 +113,10 @@ Applied to
 
 Thanks!
 
-[1/3] ASoC: wm8782: Constrain maximum audio rate at runtime
-      commit: 00524a8415aa400567538c0e75a463d517cded7f
-[2/3] ASoC: wm8782: Use wlf,fsampen device tree property
-      commit: 5d34887eab8daad8f63d584ae4d12d480beb9f0e
-[3/3] ASoC: dt-bindings: wlf,wm8782: Add wlf,fsampen property
-      commit: 5d5529b0057146043a4328aa194280299ba966c2
+[1/2] ASoC: da7213: tidyup SND_SOC_DAIFMT_xxx
+      commit: e335f29583ac9bb3ba454a1273a3d72c6d2e1fec
+[2/2] ASoC: da7213: add .auto_selectable_formats support
+      commit: 88e20c1f8c1c0018a2dad50b991b87ef028b9c1c
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
