@@ -4,123 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4BAC8C46CA1
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 Sep 2023 16:00:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EA09DC46CA1
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 Sep 2023 16:00:28 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 86B0DA4B;
-	Mon, 18 Sep 2023 17:59:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 86B0DA4B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 45245DF4;
+	Mon, 18 Sep 2023 17:59:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 45245DF4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1695052821;
-	bh=P2Wi6yZVEElIZa+S6uqGb8GsdyiF6u3MY9GZpLmEvYQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1695052827;
+	bh=Sfbs5YbyNMeZApW20Y2dEZj/DIy5Z5JFjPMLCw11Hys=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Fc7BcCTB4HecAcmIl3GhVyOfv6rLmPeh7B+gJt8Wb/BEw3sHC/D5M9Be29oxHQ9rU
-	 07Cfw5Bbw3GLJ+utLpga+AjqXj+dA28nha+4s8wtd6AxLnBKVWJhK678bffXy9H03j
-	 6wwi9KzLdS5PT7xtKMOaz9BEQws7dokl0WY0Dspw=
+	b=BHNDaseGM6P+27Sa9lDeqNEd1sAKp7LdJ2EJZMnLtfarCf7J2uURCWQQvtIPhGRcb
+	 MP2TBg9d2rC3Fy4UOwk6DzMTsYzUoqnKpmuNBDSKeh0R2Zvn46BtjSb3ynVfH2u67s
+	 gneyESZbhxI9XwEDqihldP0z6Urpg4djvTlq8P4U=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 08503F805AF; Mon, 18 Sep 2023 17:57:59 +0200 (CEST)
+	id D3491F80588; Mon, 18 Sep 2023 17:58:04 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4A8C9F805AD;
-	Mon, 18 Sep 2023 17:57:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4F305F805B3;
+	Mon, 18 Sep 2023 17:58:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0A7C3F801F5; Mon, 18 Sep 2023 09:39:55 +0200 (CEST)
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 52EE4F800AA
-	for <alsa-devel@alsa-project.org>; Mon, 18 Sep 2023 09:39:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 52EE4F800AA
-X-IronPort-AV: E=McAfee;i="6600,9927,10836"; a="382333097"
-X-IronPort-AV: E=Sophos;i="6.02,156,1688454000";
-   d="scan'208";a="382333097"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 Sep 2023 00:39:38 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10836"; a="811259953"
-X-IronPort-AV: E=Sophos;i="6.02,156,1688454000";
-   d="scan'208";a="811259953"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga008.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 Sep 2023 00:39:24 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC0)
-	(envelope-from <andy@kernel.org>)
-	id 1qi8qk-0000000EvwK-3qGW;
-	Mon, 18 Sep 2023 10:39:18 +0300
-Date: Mon, 18 Sep 2023 10:39:18 +0300
-From: Andy Shevchenko <andy@kernel.org>
-To: nikita.shubin@maquefel.me
-Cc: Hartley Sweeten <hsweeten@visionengravers.com>,
-	Alexander Sverdlin <alexander.sverdlin@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	Lukasz Majewski <lukma@denx.de>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Bartosz Golaszewski <brgl@bgdev.pl>,
-	Michael Turquette <mturquette@baylibre.com>,
-	Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Sebastian Reichel <sre@kernel.org>,
-	Daniel Lezcano <daniel.lezcano@linaro.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Alessandro Zummo <a.zummo@towertech.it>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	Wim Van Sebroeck <wim@linux-watchdog.org>,
-	Guenter Roeck <linux@roeck-us.net>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
-	Mark Brown <broonie@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Vinod Koul <vkoul@kernel.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Damien Le Moal <dlemoal@kernel.org>,
-	Sergey Shtylyov <s.shtylyov@omp.ru>,
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-gpio@vger.kernel.org, linux-clk@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
-	linux-rtc@vger.kernel.org, linux-watchdog@vger.kernel.org,
-	linux-pwm@vger.kernel.org, linux-spi@vger.kernel.org,
-	netdev@vger.kernel.org, dmaengine@vger.kernel.org,
-	linux-mtd@lists.infradead.org, linux-ide@vger.kernel.org,
-	linux-input@vger.kernel.org, alsa-devel@alsa-project.org,
-	Arnd Bergmann <arnd@arndb.de>,
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Andrew Lunn <andrew@lunn.ch>
-Subject: Re: [PATCH v4 00/42] ep93xx device tree conversion
-Message-ID: <ZQf+pps0Ffsak+BA@smile.fi.intel.com>
-References: <20230915-ep93xx-v4-0-a1d779dcec10@maquefel.me>
+	id 8391DF801D5; Mon, 18 Sep 2023 11:46:40 +0200 (CEST)
+Received: from mg.richtek.com (mg.richtek.com [220.130.44.152])
+	by alsa1.perex.cz (Postfix) with ESMTP id 888F2F801D5
+	for <alsa-devel@alsa-project.org>; Mon, 18 Sep 2023 11:46:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 888F2F801D5
+X-MailGates: (SIP:2,PASS,NONE)(compute_score:DELIVER,40,3)
+Received: from 192.168.10.47
+	by mg.richtek.com with MailGates ESMTPS Server V6.0(1978093:0:AUTH_RELAY)
+	(envelope-from <cy_huang@richtek.com>)
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256/256);
+ Mon, 18 Sep 2023 17:45:51 +0800 (CST)
+Received: from ex4.rt.l (192.168.10.47) by ex4.rt.l (192.168.10.47) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.25; Mon, 18 Sep
+ 2023 17:45:50 +0800
+Received: from linuxcarl2.richtek.com (192.168.10.154) by ex4.rt.l
+ (192.168.10.45) with Microsoft SMTP Server id 15.2.1118.25 via Frontend
+ Transport; Mon, 18 Sep 2023 17:45:50 +0800
+From: <cy_huang@richtek.com>
+To: Mark Brown <broonie@kernel.org>, Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>
+CC: Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, ChiYuan
+ Huang <cy_huang@richtek.com>, Allen Lin <allen_lin@richtek.com>,
+	<alsa-devel@alsa-project.org>, <devicetree@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: [PATCH 1/2] ASoC: dt-bindings: Add Richtek rtq9128 audio amplifier
+Date: Mon, 18 Sep 2023 17:45:40 +0800
+Message-ID: <1695030341-20711-2-git-send-email-cy_huang@richtek.com>
+X-Mailer: git-send-email 1.8.3.1
+In-Reply-To: <1695030341-20711-1-git-send-email-cy_huang@richtek.com>
+References: <1695030341-20711-1-git-send-email-cy_huang@richtek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230915-ep93xx-v4-0-a1d779dcec10@maquefel.me>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-MailFrom: andy@kernel.org
+Content-Type: text/plain
+X-MailFrom: prvs=16244D1BD6=cy_huang@richtek.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: CZ3JNCP6PMV5RHCZQJPDLH3MGQQJUOLY
-X-Message-ID-Hash: CZ3JNCP6PMV5RHCZQJPDLH3MGQQJUOLY
+Message-ID-Hash: 4UMZ54BFKJHAXNN6GJ357QNVIYZZZCLX
+X-Message-ID-Hash: 4UMZ54BFKJHAXNN6GJ357QNVIYZZZCLX
 X-Mailman-Approved-At: Mon, 18 Sep 2023 15:57:48 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CZ3JNCP6PMV5RHCZQJPDLH3MGQQJUOLY/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4UMZ54BFKJHAXNN6GJ357QNVIYZZZCLX/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -129,28 +84,73 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, Sep 15, 2023 at 11:10:42AM +0300, Nikita Shubin via B4 Relay wrote:
-> This series aims to convert ep93xx from platform to full device tree support.
-> 
-> The main goal is to receive ACK's to take it via Arnd's arm-soc branch.
-> 
-> Major changes:
-> - drop newline at the end from each YAML files
-> - rename dma and clk bindings headers to match first compatible
-> - shrink SoC exported functions number to only 2
-> - dropped some ep93xx_pata fixes from these series
-> - dropped m48t86 stuff from these series
-> 
-> Bit thanks to Andy Shevchenko for thorough review.
+From: ChiYuan Huang <cy_huang@richtek.com>
 
-You are welcome!
+Create richtek,rtq9128.yaml for rtq9128 amplifier.
 
-Dunno if you have used --patience when formatted the patches, but I think
-you should, if hadn't, for the next version. It will help a lot in reviewing
-and understanding the changes.
+Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
+---
+ .../bindings/sound/richtek,rtq9128.yaml       | 51 +++++++++++++++++++
+ 1 file changed, 51 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/richtek,rtq9128.yaml
 
+diff --git a/Documentation/devicetree/bindings/sound/richtek,rtq9128.yaml b/Documentation/devicetree/bindings/sound/richtek,rtq9128.yaml
+new file mode 100644
+index 000000000000..a79694c2b169
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/richtek,rtq9128.yaml
+@@ -0,0 +1,51 @@
++# SPDX-License-Identifier: GPL-2.0
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/richtek,rtq9128.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Richtek RTQ9128 Automative Audio Power Amplifier
++
++maintainers:
++  - ChiYuan Huang <cy_huang@richtek.com>
++
++description: |
++  The RTQ9128 is a ultra-low output noise, high-efficiency, four-channel
++  class-D audio power amplifier and delivering 4x75W into 4OHm at 10%
++  THD+N from a 25V supply in automotive applications.
++
++properties:
++  compatible:
++    enum:
++      - richtek,rtq9128
++
++  reg:
++    maxItems: 1
++
++  enable-gpios:
++    maxItems: 1
++
++  '#sound-dai-cells':
++    const: 0
++
++required:
++  - compatible
++  - reg
++  - '#sound-dai-cells'
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++    i2c {
++      #address-cells = <1>;
++      #size-cells = <0>;
++
++      speaker@1a {
++        compatible = "richtek,rtq9128";
++        reg = <0x1a>;
++        enable-gpios = <&gpio 26 GPIO_ACTIVE_HIGH>;
++        #sound-dai-cells = <0>;
++      };
++    };
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.34.1
 
