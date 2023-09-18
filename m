@@ -4,99 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DC731C46CA1
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 Sep 2023 16:05:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A6759CD37B0
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 Sep 2023 16:07:37 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3EABEDED;
-	Mon, 18 Sep 2023 18:04:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3EABEDED
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5CE6CDF3;
+	Mon, 18 Sep 2023 18:06:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5CE6CDF3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1695053130;
-	bh=AK1rbXX9OFHjt2Nf/vVo4VmuO4/7zP5FL/s75eIJruE=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	s=default; t=1695053255;
+	bh=V2Ca0FDQjE39oqGvsLz24cV0i2ZCGGyShiYZ2H0bMsg=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=NCl1DuZPh1hyiK/gDGSI4vzJLWVLMTvF2YfHSW4uvv40cB77lXTnov7htsv7NmxMj
-	 LUYvFEKkJQ3JAt8o/j05u6OnfFuCllA1znLUIi/EoWwtVC6saFeZMQp8MF5uvI+pEj
-	 MMXrBEf6UOog2i6lQrxSW4wioE39zs888uYpfZPc=
+	b=rJyBiQQzJ1yC6OKMvjxCHpHkskBXOfT2xII1Zt64JwVCagZvxCjShjSksZS2sdzsc
+	 AachzrCJh3+K8R228TA6OKJbfri7WTvPqcvbwP1DipAQgsGpp6gnD475GKPWJ26SOV
+	 F3ZLDLpA8x7hnPNLRam5y3KnloYSenaYSaa0jlyk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CA77DF8055B; Mon, 18 Sep 2023 18:04:12 +0200 (CEST)
+	id 7292DF80551; Mon, 18 Sep 2023 18:06:17 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 895EBF801F5;
-	Mon, 18 Sep 2023 18:04:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2880FF8025A;
+	Mon, 18 Sep 2023 18:06:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B236AF8025A; Mon, 18 Sep 2023 18:04:08 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2001:67c:2178:6::1d])
+	id C2B41F8025A; Mon, 18 Sep 2023 18:06:11 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 9862EF80124
-	for <alsa-devel@alsa-project.org>; Mon, 18 Sep 2023 18:04:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9862EF80124
+	by alsa1.perex.cz (Postfix) with ESMTPS id 0A3C8F80124
+	for <alsa-devel@alsa-project.org>; Mon, 18 Sep 2023 18:06:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0A3C8F80124
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=tJEAZfRs;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=/Ki7iBXE
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
+	dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=UldQm7CJ
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 5CEE41FFC4;
-	Mon, 18 Sep 2023 16:04:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1695053046;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zhMUK9UW4puMA8+e626q/mX4DpZltH/tBVHAy2TFCdk=;
-	b=tJEAZfRsLkUu4aMKUxrBPhlu7dn/4lIYaOFDG725MGfTiQoOK59n3oguMRTTWVgDK0hre/
-	aemckBS0zFm+brYTOdc36vlkL63/+1oblQ0i1rlcw/0slNt7SCB6Ee/W+iL4qzac1PoUgx
-	ZOkY+GH3zvs3OVEM9jh6cR/eAJIURMs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1695053046;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zhMUK9UW4puMA8+e626q/mX4DpZltH/tBVHAy2TFCdk=;
-	b=/Ki7iBXE+G+gu7eOVT8x3eSsxDtnHhCDuewKxAp9FtPP+vQ5W6i+FByGuDrWXfs9TPjVNc
-	jBkq4fSgK6QGRZAA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2266C13480;
-	Mon, 18 Sep 2023 16:04:06 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id TYNnB/Z0CGVcbwAAMHmgww
-	(envelope-from <tiwai@suse.de>); Mon, 18 Sep 2023 16:04:06 +0000
-Date: Mon, 18 Sep 2023 18:04:05 +0200
-Message-ID: <87edivzcwa.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Stefan Binding <sbinding@opensource.cirrus.com>
-Cc: Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	<alsa-devel@alsa-project.org>,
-	<linux-kernel@vger.kernel.org>,
-	<patches@opensource.cirrus.com>
-Subject: Re: [PATCH v2 0/2] Support mute notifications for CS35L41 HDA
-In-Reply-To: <20230908133421.2483508-1-sbinding@opensource.cirrus.com>
-References: <20230908133421.2483508-1-sbinding@opensource.cirrus.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Message-ID-Hash: GXPL236ZVM6LBDXG4GRAV6ICQHRWOVVW
-X-Message-ID-Hash: GXPL236ZVM6LBDXG4GRAV6ICQHRWOVVW
-X-MailFrom: tiwai@suse.de
+	by ams.source.kernel.org (Postfix) with ESMTPS id 35D82B80E8B;
+	Mon, 18 Sep 2023 16:06:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4191AC43397;
+	Mon, 18 Sep 2023 16:06:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1695053165;
+	bh=V2Ca0FDQjE39oqGvsLz24cV0i2ZCGGyShiYZ2H0bMsg=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=UldQm7CJ9UETNwt+IdBde9nLe74kkvoFkvfYLgXu1wygHRMBeXhwMD4yoVxTVDqT5
+	 KF7laZavM388qSKV5hu541FbgkeV/OLoJMEGr+esV1HWx69xQ6y+hPQZwPJBJTSHFW
+	 i5jmLAjYCu93Oh0/saLqhJ0sr40KOZQO/dBntn5sFcSBZDrY9AmceMpk0ZnvZ7FZve
+	 yzGiJyTINuLc2TZuyXflbd6l8bjKcZJMnI76hyKDALDA7yESCoJR7uWEPL6OvGPSt4
+	 NGwyHhGF3qIuZbVamVqmwshVBvQbcrA3P5Tl7uoelHpXhj5GrgTl1M/muH0HokK8SJ
+	 34BmXpUUBpeQQ==
+From: Mark Brown <broonie@kernel.org>
+To: alsa-devel@alsa-project.org, John Watts <contact@jookia.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>,
+ Charles Keepax <ckeepax@opensource.cirrus.com>,
+ patches@opensource.cirrus.com, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20230918131532.2257615-1-contact@jookia.org>
+References: <20230918131532.2257615-1-contact@jookia.org>
+Subject: Re: [PATCH v4 0/3] ASoC: wm8782: Allow higher audio rates
+Message-Id: <169505316298.74713.188374805406477074.b4-ty@kernel.org>
+Date: Mon, 18 Sep 2023 17:06:02 +0100
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-034f2
+Message-ID-Hash: 5DRG5NBTTJBVLGSPF5BZMOWAB3WWS3YX
+X-Message-ID-Hash: 5DRG5NBTTJBVLGSPF5BZMOWAB3WWS3YX
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -108,7 +90,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GXPL236ZVM6LBDXG4GRAV6ICQHRWOVVW/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5DRG5NBTTJBVLGSPF5BZMOWAB3WWS3YX/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -117,29 +99,45 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, 08 Sep 2023 15:34:19 +0200,
-Stefan Binding wrote:
+On Mon, 18 Sep 2023 23:15:29 +1000, John Watts wrote:
+> The wm8782 supports higher audio rates than just 48kHz. This is
+> configured by setting the FSAMPEN pin on the codec chip.
 > 
-> Some systems use a special keyboard shortcut to mute speaker audio.
-> On systems using CS35L41 HDA which have this shortcut, add a
-> mechanism which uses ACPI notifications to determine when the
-> shortcut is pressed, and then mute the amps inside the driver.
+> This patch series introduces the 'wlf,fsampen' device tree property
+> to indicate the pin status and control the maximum rate available
+> when using the codec.
 > 
-> Since this is not a normal mute mechanism, it does not go through
-> userspace. To allow userspace to be able to track this special
-> state, add an ALSA control which tracks the state of this forced
-> mute
-> 
-> Stefan Binding (1):
->   ALSA: hda: cs35l41: Add read-only ALSA control for forced mute
-> 
-> Vitaly Rodionov (1):
->   ALSA: hda: cs35l41: Support mute notifications for CS35L41 HDA
+> [...]
 
-JFYI, I didn't take those patches due to the errors 0-day bot showed.
-Please resubmit the fixed patch set.
+Applied to
 
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-thanks,
+Thanks!
 
-Takashi
+[1/3] ASoC: wm8782: Constrain maximum audio rate at runtime
+      commit: 00524a8415aa400567538c0e75a463d517cded7f
+[2/3] ASoC: wm8782: Use wlf,fsampen device tree property
+      commit: 5d34887eab8daad8f63d584ae4d12d480beb9f0e
+[3/3] ASoC: dt-bindings: wlf,wm8782: Add wlf,fsampen property
+      commit: 5d5529b0057146043a4328aa194280299ba966c2
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
