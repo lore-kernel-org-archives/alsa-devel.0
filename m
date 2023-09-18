@@ -4,37 +4,36 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EA09DC46CA1
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 Sep 2023 16:00:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BB71CC46CA1
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 Sep 2023 16:00:51 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 45245DF4;
-	Mon, 18 Sep 2023 17:59:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 45245DF4
+	by alsa0.perex.cz (Postfix) with ESMTPS id D0B87DFA;
+	Mon, 18 Sep 2023 17:59:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D0B87DFA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1695052827;
-	bh=Sfbs5YbyNMeZApW20Y2dEZj/DIy5Z5JFjPMLCw11Hys=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=BHNDaseGM6P+27Sa9lDeqNEd1sAKp7LdJ2EJZMnLtfarCf7J2uURCWQQvtIPhGRcb
-	 MP2TBg9d2rC3Fy4UOwk6DzMTsYzUoqnKpmuNBDSKeh0R2Zvn46BtjSb3ynVfH2u67s
-	 gneyESZbhxI9XwEDqihldP0z6Urpg4djvTlq8P4U=
+	s=default; t=1695052849;
+	bh=cy5P25cz3r5IaXvoe3bsdIGWs3gH7tzrKzMRYe2drqQ=;
+	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=AyGzW4568oTT9/nUu/UqzjVXL7usVxhqS80rc6ihu75Oy9eVwpeZiBHDWrFpCkyx7
+	 k1m7nutvHkVy/9x9h+d/72EvsaQg2AVd5O8GL4yDzhSQA9SeLodwiFqeY/d+NYTC04
+	 l3ilBba+M1up63j1P0yh6HF8GitvBi/jihuiKuS0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D3491F80588; Mon, 18 Sep 2023 17:58:04 +0200 (CEST)
+	id 55F88F805C6; Mon, 18 Sep 2023 17:58:07 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4F305F805B3;
-	Mon, 18 Sep 2023 17:58:04 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B6F3FF805C6;
+	Mon, 18 Sep 2023 17:58:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8391DF801D5; Mon, 18 Sep 2023 11:46:40 +0200 (CEST)
+	id 9B915F8025A; Mon, 18 Sep 2023 11:46:50 +0200 (CEST)
 Received: from mg.richtek.com (mg.richtek.com [220.130.44.152])
-	by alsa1.perex.cz (Postfix) with ESMTP id 888F2F801D5
+	by alsa1.perex.cz (Postfix) with ESMTP id D4013F801F5
 	for <alsa-devel@alsa-project.org>; Mon, 18 Sep 2023 11:46:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 888F2F801D5
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D4013F801F5
 X-MailGates: (SIP:2,PASS,NONE)(compute_score:DELIVER,40,3)
 Received: from 192.168.10.47
-	by mg.richtek.com with MailGates ESMTPS Server V6.0(1978093:0:AUTH_RELAY)
+	by mg.richtek.com with MailGates ESMTPS Server V6.0(1978114:0:AUTH_RELAY)
 	(envelope-from <cy_huang@richtek.com>)
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256/256);
  Mon, 18 Sep 2023 17:45:51 +0800 (CST)
@@ -53,12 +52,10 @@ CC: Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
  Huang <cy_huang@richtek.com>, Allen Lin <allen_lin@richtek.com>,
 	<alsa-devel@alsa-project.org>, <devicetree@vger.kernel.org>,
 	<linux-kernel@vger.kernel.org>
-Subject: [PATCH 1/2] ASoC: dt-bindings: Add Richtek rtq9128 audio amplifier
-Date: Mon, 18 Sep 2023 17:45:40 +0800
-Message-ID: <1695030341-20711-2-git-send-email-cy_huang@richtek.com>
+Subject: [PATCH 0/2] ASoC: Add rtq9128 audio amplifier
+Date: Mon, 18 Sep 2023 17:45:39 +0800
+Message-ID: <1695030341-20711-1-git-send-email-cy_huang@richtek.com>
 X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1695030341-20711-1-git-send-email-cy_huang@richtek.com>
-References: <1695030341-20711-1-git-send-email-cy_huang@richtek.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-MailFrom: prvs=16244D1BD6=cy_huang@richtek.com
@@ -67,15 +64,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: 4UMZ54BFKJHAXNN6GJ357QNVIYZZZCLX
-X-Message-ID-Hash: 4UMZ54BFKJHAXNN6GJ357QNVIYZZZCLX
+Message-ID-Hash: UJLFDAZDWSXMUUKQXN73RNCN4CSF5Q2M
+X-Message-ID-Hash: UJLFDAZDWSXMUUKQXN73RNCN4CSF5Q2M
 X-Mailman-Approved-At: Mon, 18 Sep 2023 15:57:48 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4UMZ54BFKJHAXNN6GJ357QNVIYZZZCLX/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UJLFDAZDWSXMUUKQXN73RNCN4CSF5Q2M/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -86,71 +83,24 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: ChiYuan Huang <cy_huang@richtek.com>
 
-Create richtek,rtq9128.yaml for rtq9128 amplifier.
+This patch series adds Richtek rtq9128 automotive audio amplifier
+support. It can deliver up to 4x75W into 4Ohm speaker from a 25V
+supply in automotive applications.
 
-Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
----
- .../bindings/sound/richtek,rtq9128.yaml       | 51 +++++++++++++++++++
- 1 file changed, 51 insertions(+)
+ChiYuan Huang (2):
+  ASoC: dt-bindings: Add Richtek rtq9128 audio amplifier
+  ASoC: codecs: Add Richtek rtq9128audio amplifier support
+
+ .../bindings/sound/richtek,rtq9128.yaml       |  51 ++
+ sound/soc/codecs/Kconfig                      |  15 +
+ sound/soc/codecs/Makefile                     |   2 +
+ sound/soc/codecs/rtq9128.c                    | 742 ++++++++++++++++++
+ 4 files changed, 810 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/sound/richtek,rtq9128.yaml
+ create mode 100644 sound/soc/codecs/rtq9128.c
 
-diff --git a/Documentation/devicetree/bindings/sound/richtek,rtq9128.yaml b/Documentation/devicetree/bindings/sound/richtek,rtq9128.yaml
-new file mode 100644
-index 000000000000..a79694c2b169
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/richtek,rtq9128.yaml
-@@ -0,0 +1,51 @@
-+# SPDX-License-Identifier: GPL-2.0
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/richtek,rtq9128.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Richtek RTQ9128 Automative Audio Power Amplifier
-+
-+maintainers:
-+  - ChiYuan Huang <cy_huang@richtek.com>
-+
-+description: |
-+  The RTQ9128 is a ultra-low output noise, high-efficiency, four-channel
-+  class-D audio power amplifier and delivering 4x75W into 4OHm at 10%
-+  THD+N from a 25V supply in automotive applications.
-+
-+properties:
-+  compatible:
-+    enum:
-+      - richtek,rtq9128
-+
-+  reg:
-+    maxItems: 1
-+
-+  enable-gpios:
-+    maxItems: 1
-+
-+  '#sound-dai-cells':
-+    const: 0
-+
-+required:
-+  - compatible
-+  - reg
-+  - '#sound-dai-cells'
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/gpio/gpio.h>
-+    i2c {
-+      #address-cells = <1>;
-+      #size-cells = <0>;
-+
-+      speaker@1a {
-+        compatible = "richtek,rtq9128";
-+        reg = <0x1a>;
-+        enable-gpios = <&gpio 26 GPIO_ACTIVE_HIGH>;
-+        #sound-dai-cells = <0>;
-+      };
-+    };
+
+base-commit: ce9ecca0238b140b88f43859b211c9fdfd8e5b70
 -- 
 2.34.1
 
