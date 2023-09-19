@@ -4,91 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8CED9CD5BB3
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Sep 2023 13:09:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 21B9ACD5BBC
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Sep 2023 13:24:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F030FDEE;
-	Tue, 19 Sep 2023 15:08:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F030FDEE
+	by alsa0.perex.cz (Postfix) with ESMTPS id B5ADADED;
+	Tue, 19 Sep 2023 15:23:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B5ADADED
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1695128967;
-	bh=eHGLPuJLnfYPHZJ2U5imVvNKpQ7YRooOfvMe9p3pXJc=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=p9BrzCT3Pj5xgEb0hZMYeW+w8tqf2eDGRf9qiMGSzumSpDiCxgVhlps7qKOp/HSf+
-	 ZtrUt+HGpSRLcEowaVePSsb7ZfaCa9ISCnV1JcV2fRRLDWuZ/G8lsiMFHDuAxPPNcY
-	 CZ6/2APPcnTml2TUt8K7ugI46sZ6Es0dQox2iYGY=
+	s=default; t=1695129870;
+	bh=tbaxXTXzAGV7H5Ig38QwpLAYbYPEOXuT6WUb4t/S45M=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=FJU//QSXr652XvaY3APtYmmjFCBMWd36aEYdgtOPH2+AlTIbAC8CR2PXCmazLv/SQ
+	 4w0HIYxwtHxr7ZZbhpe8sHj6irSaMr8pACgOqwSsJ/OYRp7cyXC6Kqs2a8KxkwHuFa
+	 y8tCgyl6QjA9dtLJ6YfJIg6vjgMycCiUr5qhhkhk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9EE61F800F4; Tue, 19 Sep 2023 15:08:16 +0200 (CEST)
+	id 31BEBF80551; Tue, 19 Sep 2023 15:23:40 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5C7B7F80494;
-	Tue, 19 Sep 2023 15:08:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DBE96F80124;
+	Tue, 19 Sep 2023 15:23:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 514FFF8025A; Tue, 19 Sep 2023 15:08:13 +0200 (CEST)
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+	id 1F650F8025A; Tue, 19 Sep 2023 15:23:35 +0200 (CEST)
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 1865CF80124
-	for <alsa-devel@alsa-project.org>; Tue, 19 Sep 2023 15:08:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1865CF80124
+	by alsa1.perex.cz (Postfix) with ESMTPS id 12351F80124
+	for <alsa-devel@alsa-project.org>; Tue, 19 Sep 2023 15:23:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 12351F80124
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=eB7X0fO3
+ header.s=Intel header.b=LujLhFwh
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695128891; x=1726664891;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=eHGLPuJLnfYPHZJ2U5imVvNKpQ7YRooOfvMe9p3pXJc=;
-  b=eB7X0fO32nASimGGiUJcA+j70Yh00r1dNwO4ZmadLM1LeFE/GBIlMYwY
-   XivSfyrXhC+IQ8mxz4ASJRIBnfU+HbQOHexT4OuHS3m2QB/iZi75ALi4Z
-   mvXfhLJCpIH3qBsyJWumRzb9ghH1gozAnTnvUm/0gkij9woalkzwjm1KI
-   85cYjRAnD2mS0pDHWfbo3awGln/Hptv7HaouIBpPiHp8eTgCxddH69So7
-   ExDgtoCdFcRQf3Wxv9vtaUUw0uIVB3gKkfZ/cfBnk3Jeo3jdai6K9Os6F
-   7Uv2I1eEEtPu0aUibvsLUzChVX9x0ghrBMUioeYrywHEidONdB4CnawEn
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="370249836"
+  t=1695129811; x=1726665811;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=tbaxXTXzAGV7H5Ig38QwpLAYbYPEOXuT6WUb4t/S45M=;
+  b=LujLhFwh1sK5W9UjUFSLzpq9IUUczfqvJcx+A/6WzS9Ki7p02bdTsEWO
+   jDus34nWUQ9+DkyqrfJHrTXcdG9o8csX26UWoVKXK7vMAzZpwl/ZjGA9t
+   g0VG9K9tDLccNvu0Q2t05XWwnuSjsHZwqm1nY2HVzPAkm9mZQJd4oEozo
+   iyhd8mPdMOa27CPdxVV+u6+VQHoMy/CUbKAFA7qHU0qSHK0Xbo55rvN4h
+   deyr0oPqYfe0G0a80RxoXvd6GLvPJq2xNZLhFAXpNuIyhIh1WXppuzG5d
+   frMmPV5+z6QnJIcd4+js23koZlif6WO2dlNX0LLk/uY/LCz0tsOHDGtlX
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="378829398"
 X-IronPort-AV: E=Sophos;i="6.02,159,1688454000";
-   d="scan'208";a="370249836"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Sep 2023 06:08:07 -0700
+   d="scan'208";a="378829398"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 19 Sep 2023 06:23:25 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="861538519"
+X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="919866582"
 X-IronPort-AV: E=Sophos;i="6.02,159,1688454000";
-   d="scan'208";a="861538519"
-Received: from lwatts-mobl1.amr.corp.intel.com (HELO [10.212.5.115])
- ([10.212.5.115])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Sep 2023 06:08:04 -0700
-Message-ID: <eae67380-4eb5-b5b2-d010-ce1f80bc91f9@linux.intel.com>
-Date: Tue, 19 Sep 2023 08:42:29 -0400
+   d="scan'208";a="919866582"
+Received: from jelyouss-mobl.ger.corp.intel.com (HELO
+ pujfalus-desk.ger.corp.intel.com) ([10.249.47.85])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 19 Sep 2023 06:23:15 -0700
+From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+To: tiwai@suse.com,
+	perex@perex.cz
+Cc: alsa-devel@alsa-project.org,
+	pierre-louis.bossart@linux.intel.com
+Subject: [PATCH] ALSA: hda: hda_auto_parser: Always set codec->fixup_name when
+ a quirk found
+Date: Tue, 19 Sep 2023 16:23:22 +0300
+Message-ID: <20230919132322.17352-1-peter.ujfalusi@linux.intel.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.15.1
-Subject: Re: [PATCH v2 2/2] ASoC: codecs: Add Richtek rtq9128audio amplifier
- support
-To: cy_huang@richtek.com, Mark Brown <broonie@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Allen Lin <allen_lin@richtek.com>, alsa-devel@alsa-project.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1695086301-10376-1-git-send-email-cy_huang@richtek.com>
- <1695086301-10376-3-git-send-email-cy_huang@richtek.com>
-Content-Language: en-US
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <1695086301-10376-3-git-send-email-cy_huang@richtek.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: GTZ7TNQTIFC7B2THGL5Y5Y6ID2ZLPLTS
-X-Message-ID-Hash: GTZ7TNQTIFC7B2THGL5Y5Y6ID2ZLPLTS
-X-MailFrom: pierre-louis.bossart@linux.intel.com
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: V5UYANIRPU3P6NH4YJF6TAFBOSIBWUPC
+X-Message-ID-Hash: V5UYANIRPU3P6NH4YJF6TAFBOSIBWUPC
+X-MailFrom: peter.ujfalusi@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -100,7 +90,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GTZ7TNQTIFC7B2THGL5Y5Y6ID2ZLPLTS/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/V5UYANIRPU3P6NH4YJF6TAFBOSIBWUPC/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -109,20 +99,35 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+If a fixup is found via a quirk then the codec->fixup_name is only set if
+CONFIG_SND_DEBUG_VERBOSE is enabled, otherwise the fixup_name is set to
+NULL.
 
-> +static int rtq9128_i2c_write(void *context, const void *data, size_t count)
-> +{
-> +	struct device *dev = context;
-> +	struct i2c_client *i2c = to_i2c_client(dev);
-> +	u8 reg = *(u8 *)data;
-> +	int rg_size;
-> +
-> +	BUG_ON(count != 5);
+This will result prints in __snd_hda_apply_fixup() when applying the found
+fixup for example:
+ehdaudio0D0: ALC236: Apply fix-func for (null)
 
-is this really necessary? Just log and error and return?
-same comments for other functions
+Fixes: 73355ddd8775 ("ALSA: hda: Code refactoring snd_hda_pick_fixup()")
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+---
+ sound/pci/hda/hda_auto_parser.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-> +	rg_size = rtq9128_get_reg_size(reg);
-> +	return i2c_smbus_write_i2c_block_data(i2c, reg, rg_size, data + count - rg_size);
-> +}
+diff --git a/sound/pci/hda/hda_auto_parser.c b/sound/pci/hda/hda_auto_parser.c
+index 7c6b1fe8dfcc..7b1ddb8d40cb 100644
+--- a/sound/pci/hda/hda_auto_parser.c
++++ b/sound/pci/hda/hda_auto_parser.c
+@@ -1043,9 +1043,8 @@ void snd_hda_pick_fixup(struct hda_codec *codec,
+ 
+  found_device:
+ 	id = q->value;
+-#ifdef CONFIG_SND_DEBUG_VERBOSE
+ 	name = q->name;
+-#endif
++
+ 	codec_dbg(codec, "%s: picked fixup %s for %s %04x:%04x\n",
+ 		  codec->core.chip_name, name ? name : "",
+ 		  type, q->subvendor, q->subdevice);
+-- 
+2.42.0
 
