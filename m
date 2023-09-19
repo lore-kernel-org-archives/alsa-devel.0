@@ -4,66 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1BC9CCD54AD
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Sep 2023 09:25:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9993ECD54AB
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Sep 2023 09:26:05 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 20ADEBC0;
-	Tue, 19 Sep 2023 11:24:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 20ADEBC0
+	by alsa0.perex.cz (Postfix) with ESMTPS id AE0F5DF1;
+	Tue, 19 Sep 2023 11:25:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AE0F5DF1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1695115535;
-	bh=auaE8PR6vPscH5MRtxQ54G0lLjKqw54IL9+GjyTLNGM=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=dkmbmGmLhwh3RDbvM9ONOotd5GomRjFLi1WV0ynDnFvKb2otoGvDEl50KN5iVvBve
-	 xKIQdkrFN3h07fa6ZR5nCrB5akuZwNIY3HXu5thCnbTmz3O3+u1XRjkslY5HDGnoAi
-	 Q0+fu+Zr3qpEimiiDmgMml74Cbj1hMIzM10XZyRE=
+	s=default; t=1695115563;
+	bh=lXILLkVDnPG++NGaxfZdr52oMz7U/mUPY+TSxPk4as8=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=V94RkmJX5bBZ4pWGnaoGYyYJ6c3JhIGufrUWmSEva48IKCd36oB7g/9+cil7E//UI
+	 uiaDd89ajq7n8OacGhDRNNdCwZD3aFVehtWqY/awCZUtHmF8S/BC3zI4Qt+ElEMSoP
+	 ST51e5bhSoHBpD/3yNFZTrXQdwoCFMWVPN8N9LM8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D6A9EF80552; Tue, 19 Sep 2023 11:24:22 +0200 (CEST)
+	id A9D05F8056F; Tue, 19 Sep 2023 11:24:27 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 83DCAF80552;
-	Tue, 19 Sep 2023 11:24:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id ECEB2F80567;
+	Tue, 19 Sep 2023 11:24:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id F147CF8047D; Tue, 19 Sep 2023 11:24:18 +0200 (CEST)
+	id E76C3F80563; Tue, 19 Sep 2023 11:24:22 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D7688F80124
-	for <alsa-devel@alsa-project.org>; Tue, 19 Sep 2023 11:24:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D7688F80124
+	by alsa1.perex.cz (Postfix) with ESMTPS id 76B56F80125
+	for <alsa-devel@alsa-project.org>; Tue, 19 Sep 2023 11:24:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 76B56F80125
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=a/bnGd5e
+ header.s=Intel header.b=Xv7pKreL
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695115455; x=1726651455;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=auaE8PR6vPscH5MRtxQ54G0lLjKqw54IL9+GjyTLNGM=;
-  b=a/bnGd5eYSZSumCK2S8KJExSIhzzUoDqb5748Xcm8PLQd2IywzYW8Ped
-   nErBz9+4Clzb0pK9oii2j/n4IrUH39TGnMQlWGHudH7UGh/jAAv+oaZ9r
-   OOp4iXPio5kXmFk5IP0i9+meGYwzAOgE7K6khyrN8ApgcDs33W3OSbqfU
-   2LS9E4pe4sRjrCd4cAECSgLoardRHYJyXv4eIcxddFVG9iWzhQGpblZ+J
-   bKyxq7ubecKEmf+8z31IVrKW2fGfWRtRi0P2OMCHu22Z+QQAzmxhn5ANs
-   6xlqUWVa8Kmk71Xa1v+IeAoGVwTzdXVIvRod6+ICXpTI5ij14yCcsbfVg
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10837"; a="377205140"
+  t=1695115457; x=1726651457;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=lXILLkVDnPG++NGaxfZdr52oMz7U/mUPY+TSxPk4as8=;
+  b=Xv7pKreLYn+e0CNXgRylikB7dR+FEYfkZCAkwil3WH9hXH0iu3NH55jl
+   oF30fjVl4WYbrH8LfmN7xQSIQgFYKz4KSdVzS8Yq05Hp/FqE1VNc1dJiH
+   arklgBwAptNaSz8nwZ/99plsQ7S2IkgrqwITQxCV72G2zBy7M0EdOf5KG
+   EtDdU4rX9MqA2W+LozIEJTxi9dNAXsn/H1NkaJd1KuBOMg0H2Yub63/Rn
+   oQSPPxnIB5R3peUL2tkRXe7ylBExfRclq6Pl0PlRWxL3zH1q5beAswD0P
+   Er3e5vziZP0oeyLfhslm6I/IQN/lOxumjYLXd2bFk1D0qrxf8nNVlLfRs
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10837"; a="377205164"
 X-IronPort-AV: E=Sophos;i="6.02,159,1688454000";
-   d="scan'208";a="377205140"
+   d="scan'208";a="377205164"
 Received: from fmsmga002.fm.intel.com ([10.253.24.26])
   by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Sep 2023 02:24:10 -0700
+ 19 Sep 2023 02:24:16 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10837"; a="861460183"
+X-IronPort-AV: E=McAfee;i="6600,9927,10837"; a="861460208"
 X-IronPort-AV: E=Sophos;i="6.02,159,1688454000";
-   d="scan'208";a="861460183"
+   d="scan'208";a="861460208"
 Received: from pzsolt-mobl1.ger.corp.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.249.47.169])
   by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Sep 2023 02:24:08 -0700
+ 19 Sep 2023 02:24:13 -0700
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com,
 	broonie@kernel.org
@@ -73,16 +74,18 @@ Cc: alsa-devel@alsa-project.org,
 	kai.vehmanen@linux.intel.com,
 	rander.wang@intel.com,
 	guennadi.liakhovetski@linux.intel.com
-Subject: [PATCH 0/9] ASoC: SOF: ipc4/Intel: Support for firmware exception
- handling
-Date: Tue, 19 Sep 2023 12:24:07 +0300
-Message-ID: <20230919092416.4137-1-peter.ujfalusi@linux.intel.com>
+Subject: [PATCH 2/9] ASoC: SOF: ipc4-mtrace: move debug slot related
+ definitions to header.h
+Date: Tue, 19 Sep 2023 12:24:09 +0300
+Message-ID: <20230919092416.4137-3-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20230919092416.4137-1-peter.ujfalusi@linux.intel.com>
+References: <20230919092416.4137-1-peter.ujfalusi@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 4AL3N37XU3E7DTVPBMFGZMEFT3TWNP4F
-X-Message-ID-Hash: 4AL3N37XU3E7DTVPBMFGZMEFT3TWNP4F
+Message-ID-Hash: KWG6CGWYSOLHHG2FWTSO7KUWDSNXASOF
+X-Message-ID-Hash: KWG6CGWYSOLHHG2FWTSO7KUWDSNXASOF
 X-MailFrom: peter.ujfalusi@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -95,7 +98,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4AL3N37XU3E7DTVPBMFGZMEFT3TWNP4F/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KWG6CGWYSOLHHG2FWTSO7KUWDSNXASOF/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -104,57 +107,143 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi,
+From: Rander Wang <rander.wang@intel.com>
 
-When a firmware crashes it creats a panic information into a telemetry slot.
-The panic format is defined by Zephyr, includes stack and additional information
-to help to identify the reason for the crash.
-Part of the firmware exception handling the firmware also sends an
-EXCEPTION_CAUGHT notification.
+The macro definitions of debug slot can be used by gdb, telemetry
+and mtrace log, so move these definitions to header.h from mtrace.
+Then these macro definitions can be shared
 
-This series implements the kernel side handling of the exception:
-print information into the kernel log
-export the whole telemetry slot to user space for tools extract additional
-information from the panic dump.
-
-Regards,
-Peter
+Signed-off-by: Rander Wang <rander.wang@intel.com>
+Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 ---
-Rander Wang (9):
-  ASoC: SOF: Xtensa: dump ar registers to restore call stack
-  ASoC: SOF: ipc4-mtrace: move debug slot related definitions to
-    header.h
-  ASoC: SOF: ipc4: add a helper function to search debug slot
-  ASoC: SOF: ipc4: add definition of telemetry slot for exception
-    handling
-  ASoC: SOF: ipc4: add exception node in sof debugfs directory
-  ASoC: SOF: Intel: add telemetry retrieval support on Intel platforms
-  ASoC: SOF: Intel: mtl: dump dsp stack
-  ASoC: SOF: Intel: hda: add ipc4 FW panic support on CAVS 2.5+
-    platforms
-  ASoC: SOF: ipc4: handle EXCEPTION_CAUGHT notification from firmware
+ include/sound/sof/ipc4/header.h | 17 +++++++++++++++++
+ sound/soc/sof/ipc4-mtrace.c     | 34 +++++++++++----------------------
+ 2 files changed, 28 insertions(+), 23 deletions(-)
 
- include/sound/sof/ipc4/header.h | 17 ++++++
- sound/soc/sof/Makefile          |  2 +-
- sound/soc/sof/intel/Makefile    |  3 +-
- sound/soc/sof/intel/hda.c       | 14 +++++
- sound/soc/sof/intel/hda.h       |  1 +
- sound/soc/sof/intel/mtl.c       |  3 ++
- sound/soc/sof/intel/telemetry.c | 95 +++++++++++++++++++++++++++++++++
- sound/soc/sof/intel/telemetry.h | 35 ++++++++++++
- sound/soc/sof/intel/tgl.c       |  1 +
- sound/soc/sof/ipc4-mtrace.c     | 34 ++++--------
- sound/soc/sof/ipc4-priv.h       |  3 ++
- sound/soc/sof/ipc4-telemetry.c  | 95 +++++++++++++++++++++++++++++++++
- sound/soc/sof/ipc4-telemetry.h  | 73 +++++++++++++++++++++++++
- sound/soc/sof/ipc4.c            | 29 ++++++++++
- sound/soc/sof/xtensa/core.c     | 11 ++++
- 15 files changed, 391 insertions(+), 25 deletions(-)
- create mode 100644 sound/soc/sof/intel/telemetry.c
- create mode 100644 sound/soc/sof/intel/telemetry.h
- create mode 100644 sound/soc/sof/ipc4-telemetry.c
- create mode 100644 sound/soc/sof/ipc4-telemetry.h
-
+diff --git a/include/sound/sof/ipc4/header.h b/include/sound/sof/ipc4/header.h
+index c58f00ef054a..574a9d581f88 100644
+--- a/include/sound/sof/ipc4/header.h
++++ b/include/sound/sof/ipc4/header.h
+@@ -515,6 +515,23 @@ struct sof_ipc4_notify_resource_data {
+ 	uint32_t data[6];
+ } __packed __aligned(4);
+ 
++#define SOF_IPC4_DEBUG_DESCRIPTOR_SIZE		12 /* 3 x u32 */
++
++/*
++ * The debug memory window is divided into 16 slots, and the
++ * first slot is used as a recorder for the other 15 slots.
++ */
++#define SOF_IPC4_MAX_DEBUG_SLOTS		15
++#define SOF_IPC4_DEBUG_SLOT_SIZE		0x1000
++
++/* debug log slot types */
++#define SOF_IPC4_DEBUG_SLOT_UNUSED		0x00000000
++#define SOF_IPC4_DEBUG_SLOT_CRITICAL_LOG	0x54524300 /* byte 0: core ID */
++#define SOF_IPC4_DEBUG_SLOT_DEBUG_LOG		0x474f4c00 /* byte 0: core ID */
++#define SOF_IPC4_DEBUG_SLOT_GDB_STUB		0x42444700
++#define SOF_IPC4_DEBUG_SLOT_TELEMETRY		0x4c455400
++#define SOF_IPC4_DEBUG_SLOT_BROKEN		0x44414544
++
+ /** @}*/
+ 
+ #endif
+diff --git a/sound/soc/sof/ipc4-mtrace.c b/sound/soc/sof/ipc4-mtrace.c
+index 2b4659a1768e..9f1e33ee8826 100644
+--- a/sound/soc/sof/ipc4-mtrace.c
++++ b/sound/soc/sof/ipc4-mtrace.c
+@@ -41,24 +41,12 @@
+  * The two pointers are offsets within the buffer.
+  */
+ 
+-#define SOF_MTRACE_DESCRIPTOR_SIZE		12 /* 3 x u32 */
+-
+ #define FW_EPOCH_DELTA				11644473600LL
+ 
+-#define INVALID_SLOT_OFFSET			0xffffffff
+ #define MAX_ALLOWED_LIBRARIES			16
+-#define MAX_MTRACE_SLOTS			15
+-
+-#define SOF_MTRACE_PAGE_SIZE			0x1000
+-#define SOF_MTRACE_SLOT_SIZE			SOF_MTRACE_PAGE_SIZE
+-
+-/* debug log slot types */
+-#define SOF_MTRACE_SLOT_UNUSED			0x00000000
+-#define SOF_MTRACE_SLOT_CRITICAL_LOG		0x54524300 /* byte 0: core ID */
+-#define SOF_MTRACE_SLOT_DEBUG_LOG		0x474f4c00 /* byte 0: core ID */
+-#define SOF_MTRACE_SLOT_GDB_STUB		0x42444700
+-#define SOF_MTRACE_SLOT_TELEMETRY		0x4c455400
+-#define SOF_MTRACE_SLOT_BROKEN			0x44414544
++
++#define SOF_IPC4_INVALID_SLOT_OFFSET		0xffffffff
++
+  /* for debug and critical types */
+ #define SOF_MTRACE_SLOT_CORE_MASK		GENMASK(7, 0)
+ #define SOF_MTRACE_SLOT_TYPE_MASK		GENMASK(31, 8)
+@@ -140,7 +128,7 @@ static int sof_ipc4_mtrace_dfs_open(struct inode *inode, struct file *file)
+ 	if (unlikely(ret))
+ 		goto out;
+ 
+-	core_data->log_buffer = kmalloc(SOF_MTRACE_SLOT_SIZE, GFP_KERNEL);
++	core_data->log_buffer = kmalloc(SOF_IPC4_DEBUG_SLOT_SIZE, GFP_KERNEL);
+ 	if (!core_data->log_buffer) {
+ 		debugfs_file_put(file->f_path.dentry);
+ 		ret = -ENOMEM;
+@@ -212,13 +200,13 @@ static ssize_t sof_ipc4_mtrace_dfs_read(struct file *file, char __user *buffer,
+ 		return 0;
+ 	}
+ 
+-	if (core_data->slot_offset == INVALID_SLOT_OFFSET)
++	if (core_data->slot_offset == SOF_IPC4_INVALID_SLOT_OFFSET)
+ 		return 0;
+ 
+ 	/* The log data buffer starts after the two pointer in the slot */
+ 	log_buffer_offset =  core_data->slot_offset + (sizeof(u32) * 2);
+ 	/* The log data size excludes the pointers */
+-	log_buffer_size = SOF_MTRACE_SLOT_SIZE - (sizeof(u32) * 2);
++	log_buffer_size = SOF_IPC4_DEBUG_SLOT_SIZE - (sizeof(u32) * 2);
+ 
+ 	read_ptr = core_data->host_read_ptr;
+ 	write_ptr = core_data->dsp_write_ptr;
+@@ -510,13 +498,13 @@ static void sof_mtrace_find_core_slots(struct snd_sof_dev *sdev)
+ 	u32 slot_desc_type_offset, type, core;
+ 	int i;
+ 
+-	for (i = 0; i < MAX_MTRACE_SLOTS; i++) {
++	for (i = 0; i < SOF_IPC4_MAX_DEBUG_SLOTS; i++) {
+ 		/* The type is the second u32 in the slot descriptor */
+ 		slot_desc_type_offset = sdev->debug_box.offset;
+-		slot_desc_type_offset += SOF_MTRACE_DESCRIPTOR_SIZE * i + sizeof(u32);
++		slot_desc_type_offset += SOF_IPC4_DEBUG_DESCRIPTOR_SIZE * i + sizeof(u32);
+ 		sof_mailbox_read(sdev, slot_desc_type_offset, &type, sizeof(type));
+ 
+-		if ((type & SOF_MTRACE_SLOT_TYPE_MASK) == SOF_MTRACE_SLOT_DEBUG_LOG) {
++		if ((type & SOF_MTRACE_SLOT_TYPE_MASK) == SOF_IPC4_DEBUG_SLOT_DEBUG_LOG) {
+ 			core = type & SOF_MTRACE_SLOT_CORE_MASK;
+ 
+ 			if (core >= sdev->num_cores) {
+@@ -533,7 +521,7 @@ static void sof_mtrace_find_core_slots(struct snd_sof_dev *sdev)
+ 			 * debug_box + SOF_MTRACE_SLOT_SIZE offset
+ 			 */
+ 			core_data->slot_offset = sdev->debug_box.offset;
+-			core_data->slot_offset += SOF_MTRACE_SLOT_SIZE * (i + 1);
++			core_data->slot_offset += SOF_IPC4_DEBUG_SLOT_SIZE * (i + 1);
+ 			dev_dbg(sdev->dev, "slot%d is used for core%u\n", i, core);
+ 			if (core_data->delayed_pos_update) {
+ 				sof_ipc4_mtrace_update_pos(sdev, core);
+@@ -633,7 +621,7 @@ int sof_ipc4_mtrace_update_pos(struct snd_sof_dev *sdev, int core)
+ 
+ 	core_data = &priv->cores[core];
+ 
+-	if (core_data->slot_offset == INVALID_SLOT_OFFSET) {
++	if (core_data->slot_offset == SOF_IPC4_INVALID_SLOT_OFFSET) {
+ 		core_data->delayed_pos_update = true;
+ 		return 0;
+ 	}
 -- 
 2.42.0
 
