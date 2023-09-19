@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C4B34CD54AB
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Sep 2023 09:27:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6701ACD54A9
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Sep 2023 09:27:39 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D958CDEF;
-	Tue, 19 Sep 2023 11:26:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D958CDEF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 90C7EA4A;
+	Tue, 19 Sep 2023 11:26:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 90C7EA4A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1695115630;
-	bh=LHAGRTyXyRn/oFHcXiDDku5/WS7ZE3y+c0bSzckfIWw=;
+	s=default; t=1695115657;
+	bh=ohbNTmLqmHIzWj+nlHAKpIKEDJekGQWr1yZcA6umW4E=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Fi5rxwgWnTWM83Ey7FCYNwU8gwTJzcxVN9Tvk8yezuFUer5vTFWKwRImCsnIlyWX9
-	 hw+88cD9XJuBz926riifMF/ivdvnpruYdwilIpFRv+LGI4SWsfTuqva9S6KFhlncej
-	 GkOx3icQAphbYskukqD1ZYAfRZFo870oDD7f44A8=
+	b=KDDGrhoOyxBT4kYngGiKnwOekWNuNLqggM/LVf/wz3h85wu8b4brTr7S6MQ/Wkaau
+	 i+wBq2OYpHGbRECSJe6epU1emNKBy96c9s5KOqH6KeH/y+13mV5n7p6SsaFD3M3CQM
+	 UNCfgErSzVXh6DrNZQ4G2w9b7eZu4/eloe3U1qxQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5A56AF805CB; Tue, 19 Sep 2023 11:24:43 +0200 (CEST)
+	id 88B46F80564; Tue, 19 Sep 2023 11:24:45 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id BD0A2F805CA;
-	Tue, 19 Sep 2023 11:24:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id ED172F80564;
+	Tue, 19 Sep 2023 11:24:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 11011F805AD; Tue, 19 Sep 2023 11:24:34 +0200 (CEST)
+	id CDA7BF805AD; Tue, 19 Sep 2023 11:24:35 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7C457F80579
-	for <alsa-devel@alsa-project.org>; Tue, 19 Sep 2023 11:24:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7C457F80579
+	by alsa1.perex.cz (Postfix) with ESMTPS id E94ABF8055B
+	for <alsa-devel@alsa-project.org>; Tue, 19 Sep 2023 11:24:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E94ABF8055B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=PmcWYxiS
+ header.s=Intel header.b=ZDsnU3nL
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695115468; x=1726651468;
+  t=1695115472; x=1726651472;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=LHAGRTyXyRn/oFHcXiDDku5/WS7ZE3y+c0bSzckfIWw=;
-  b=PmcWYxiSOIy4vGIamCXcfScp2GZJ+KEq5+XCDsXPxMkV9mEsaTkc76fm
-   VvXHEAvLtNHJAtm1HOrbqdyS0lrs7rzAj3E5S9eEc8kJVvW7RHp+kqeyE
-   G4sFksTKQEe5fCdmBx4+It6yIfPzzanhLN6LXIrPfO0lOLS/ImkwGGYKX
-   6Sep5xl4sDhMr2md01NaspM/etb4b4mStBWN/s8WOpKnDXk9doj2SiwPy
-   dXnCjg62yVCvRqXjEfhcFh+Aaa6bSnEo/NNDJ0mRVe2ds8tyts03v1PWt
-   HjGkGghEUFB4dUhf27Xq0bxTrdeilxGhedZsKx8X/ttsSRod07gAggQfV
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10837"; a="377205253"
+  bh=ohbNTmLqmHIzWj+nlHAKpIKEDJekGQWr1yZcA6umW4E=;
+  b=ZDsnU3nLS+HRUJJos60rZkXlsi3DOW2F74X1DoFT1gwrcLY4YTvxRjQp
+   8vJF59kqiyh9aLEd3nN9ORc7ykz+n0+Si2IQ8JpKNf8q0X7iWUmVvBBxT
+   wfHGh2z4T5z/qdJK/xP3GkI9r7u2+YXT6W1jOjU6tdeVrsBzE2IKxqxXs
+   0Nc1eU+4mWbUjz+uYrlxYoleryRtfa8jHtwDjiYT5xqfOdtnIU8ytvydj
+   y47akurWmSF/fBMtcXygLNF6hnSKzOOthw19cPGHTLCtKpz3birqM9mSp
+   rBszgF35pwTigCeKHVSmrVV3UXsZwGX0doUaL99FgPUxSNFrMaSpxlgK7
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10837"; a="377205260"
 X-IronPort-AV: E=Sophos;i="6.02,159,1688454000";
-   d="scan'208";a="377205253"
+   d="scan'208";a="377205260"
 Received: from fmsmga002.fm.intel.com ([10.253.24.26])
   by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Sep 2023 02:24:25 -0700
+ 19 Sep 2023 02:24:30 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10837"; a="861460302"
+X-IronPort-AV: E=McAfee;i="6600,9927,10837"; a="861460314"
 X-IronPort-AV: E=Sophos;i="6.02,159,1688454000";
-   d="scan'208";a="861460302"
+   d="scan'208";a="861460314"
 Received: from pzsolt-mobl1.ger.corp.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.249.47.169])
   by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Sep 2023 02:24:23 -0700
+ 19 Sep 2023 02:24:28 -0700
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com,
 	broonie@kernel.org
@@ -74,18 +74,18 @@ Cc: alsa-devel@alsa-project.org,
 	kai.vehmanen@linux.intel.com,
 	rander.wang@intel.com,
 	guennadi.liakhovetski@linux.intel.com
-Subject: [PATCH 6/9] ASoC: SOF: Intel: add telemetry retrieval support on
- Intel platforms
-Date: Tue, 19 Sep 2023 12:24:13 +0300
-Message-ID: <20230919092416.4137-7-peter.ujfalusi@linux.intel.com>
+Subject: [PATCH 8/9] ASoC: SOF: Intel: hda: add ipc4 FW panic support on CAVS
+ 2.5+ platforms
+Date: Tue, 19 Sep 2023 12:24:15 +0300
+Message-ID: <20230919092416.4137-9-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20230919092416.4137-1-peter.ujfalusi@linux.intel.com>
 References: <20230919092416.4137-1-peter.ujfalusi@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 5JAMUEXJC62XDIQCLS5EDQUIPZO23HOF
-X-Message-ID-Hash: 5JAMUEXJC62XDIQCLS5EDQUIPZO23HOF
+Message-ID-Hash: R77YGF3ENTJ64WOQKWHQZHJOZRE4T6PU
+X-Message-ID-Hash: R77YGF3ENTJ64WOQKWHQZHJOZRE4T6PU
 X-MailFrom: peter.ujfalusi@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -98,7 +98,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5JAMUEXJC62XDIQCLS5EDQUIPZO23HOF/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/R77YGF3ENTJ64WOQKWHQZHJOZRE4T6PU/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -109,8 +109,9 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Rander Wang <rander.wang@intel.com>
 
-Telemetry data is decoded based on intel xtensa design and printed in
-kernel log by sof debug framework.
+Get the FW panic information from telemetry data in memory window and
+dump it to kernel log. The old platforms before CAVS 2.5+ don't support
+it since there is no support in FW for them.
 
 Signed-off-by: Rander Wang <rander.wang@intel.com>
 Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
@@ -119,169 +120,67 @@ Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 ---
- sound/soc/sof/intel/Makefile    |  3 +-
- sound/soc/sof/intel/telemetry.c | 95 +++++++++++++++++++++++++++++++++
- sound/soc/sof/intel/telemetry.h | 35 ++++++++++++
- 3 files changed, 132 insertions(+), 1 deletion(-)
- create mode 100644 sound/soc/sof/intel/telemetry.c
- create mode 100644 sound/soc/sof/intel/telemetry.h
+ sound/soc/sof/intel/hda.c | 14 ++++++++++++++
+ sound/soc/sof/intel/hda.h |  1 +
+ sound/soc/sof/intel/tgl.c |  1 +
+ 3 files changed, 16 insertions(+)
 
-diff --git a/sound/soc/sof/intel/Makefile b/sound/soc/sof/intel/Makefile
-index 030574dbc998..6489d0660d58 100644
---- a/sound/soc/sof/intel/Makefile
-+++ b/sound/soc/sof/intel/Makefile
-@@ -7,7 +7,8 @@ snd-sof-intel-hda-common-objs := hda.o hda-loader.o hda-stream.o hda-trace.o \
- 				 hda-dsp.o hda-ipc.o hda-ctrl.o hda-pcm.o \
- 				 hda-dai.o hda-dai-ops.o hda-bus.o \
- 				 skl.o hda-loader-skl.o \
--				 apl.o cnl.o tgl.o icl.o mtl.o lnl.o hda-common-ops.o
-+				 apl.o cnl.o tgl.o icl.o mtl.o lnl.o hda-common-ops.o \
-+				 telemetry.o
- 
- snd-sof-intel-hda-mlink-objs := hda-mlink.o
- 
-diff --git a/sound/soc/sof/intel/telemetry.c b/sound/soc/sof/intel/telemetry.c
-new file mode 100644
-index 000000000000..1a3b5c28a6f0
---- /dev/null
-+++ b/sound/soc/sof/intel/telemetry.c
-@@ -0,0 +1,95 @@
-+// SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause)
-+//
-+// This file is provided under a dual BSD/GPLv2 license.  When using or
-+// redistributing this file, you may do so under either license.
-+//
-+// Copyright(c) 2023 Intel Corporation. All rights reserved.
-+
-+/* telemetry data queried from debug window */
-+
-+#include <sound/sof/ipc4/header.h>
-+#include <sound/sof/xtensa.h>
-+#include "../ipc4-priv.h"
-+#include "../sof-priv.h"
-+#include "hda.h"
+diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
+index 15e6779efaa3..02c82ccb9f66 100644
+--- a/sound/soc/sof/intel/hda.c
++++ b/sound/soc/sof/intel/hda.c
+@@ -31,6 +31,7 @@
+ #include "../sof-pci-dev.h"
+ #include "../ops.h"
+ #include "hda.h"
 +#include "telemetry.h"
-+
-+void sof_ipc4_intel_dump_telemetry_state(struct snd_sof_dev *sdev, u32 flags)
+ 
+ #define CREATE_TRACE_POINTS
+ #include <trace/events/sof_intel.h>
+@@ -731,6 +732,19 @@ void hda_dsp_dump(struct snd_sof_dev *sdev, u32 flags)
+ 	}
+ }
+ 
++void hda_ipc4_dsp_dump(struct snd_sof_dev *sdev, u32 flags)
 +{
-+	static const char invalid_slot_msg[] = "Core dump is not available due to";
-+	struct sof_ipc4_telemetry_slot_data *telemetry_data;
-+	struct sof_ipc_dsp_oops_xtensa *xoops;
-+	struct xtensa_arch_block *block;
-+	u32 slot_offset;
-+	char *level;
++	char *level = (flags & SOF_DBG_DUMP_OPTIONAL) ? KERN_DEBUG : KERN_ERR;
 +
-+	level = (flags & SOF_DBG_DUMP_OPTIONAL) ? KERN_DEBUG : KERN_ERR;
++	/* print ROM/FW status */
++	hda_dsp_get_state(sdev, level);
 +
-+	slot_offset = sof_ipc4_find_debug_slot_offset_by_type(sdev, SOF_IPC4_DEBUG_SLOT_TELEMETRY);
-+	if (!slot_offset)
-+		return;
-+
-+	telemetry_data = kmalloc(sizeof(*telemetry_data), GFP_KERNEL);
-+	if (!telemetry_data)
-+		return;
-+	sof_mailbox_read(sdev, slot_offset, telemetry_data, sizeof(*telemetry_data));
-+	if (telemetry_data->separator != XTENSA_CORE_DUMP_SEPARATOR) {
-+		dev_err(sdev->dev, "%s invalid separator %#x\n", invalid_slot_msg,
-+			telemetry_data->separator);
-+		goto free_telemetry_data;
-+	}
-+
-+	block = kmalloc(sizeof(*block), GFP_KERNEL);
-+	if (!block)
-+		goto free_telemetry_data;
-+
-+	sof_mailbox_read(sdev, slot_offset + sizeof(*telemetry_data), block, sizeof(*block));
-+	if (block->soc != XTENSA_SOC_INTEL_ADSP) {
-+		dev_err(sdev->dev, "%s invalid SOC %d\n", invalid_slot_msg, block->soc);
-+		goto free_block;
-+	}
-+
-+	if (telemetry_data->hdr.id[0] != COREDUMP_HDR_ID0 ||
-+	    telemetry_data->hdr.id[1] != COREDUMP_HDR_ID1 ||
-+	    telemetry_data->arch_hdr.id != COREDUMP_ARCH_HDR_ID) {
-+		dev_err(sdev->dev, "%s invalid coredump header %c%c, arch hdr %c\n",
-+			invalid_slot_msg, telemetry_data->hdr.id[0],
-+			telemetry_data->hdr.id[1],
-+			telemetry_data->arch_hdr.id);
-+		goto free_block;
-+	}
-+
-+	switch (block->toolchain) {
-+	case XTENSA_TOOL_CHAIN_ZEPHYR:
-+		dev_printk(level, sdev->dev, "FW is built with Zephyr toolchain\n");
-+		break;
-+	case XTENSA_TOOL_CHAIN_XCC:
-+		dev_printk(level, sdev->dev, "FW is built with XCC toolchain\n");
-+		break;
-+	default:
-+		dev_printk(level, sdev->dev, "Unknown toolchain is used\n");
-+		break;
-+	}
-+
-+	xoops = kzalloc(struct_size(xoops, ar, XTENSA_CORE_AR_REGS_COUNT), GFP_KERNEL);
-+	if (!xoops)
-+		goto free_block;
-+
-+	xoops->exccause = block->exccause;
-+	xoops->excvaddr = block->excvaddr;
-+	xoops->epc1 = block->pc;
-+	xoops->ps = block->ps;
-+	xoops->sar = block->sar;
-+
-+	xoops->plat_hdr.numaregs = XTENSA_CORE_AR_REGS_COUNT;
-+	memcpy((void *)xoops->ar, block->ar, XTENSA_CORE_AR_REGS_COUNT * sizeof(u32));
-+
-+	sof_oops(sdev, level, xoops);
-+	sof_stack(sdev, level, xoops, NULL, 0);
-+
-+	kfree(xoops);
-+free_block:
-+	kfree(block);
-+free_telemetry_data:
-+	kfree(telemetry_data);
++	if (flags & SOF_DBG_DUMP_REGS)
++		sof_ipc4_intel_dump_telemetry_state(sdev, flags);
++	else
++		hda_dsp_dump_ext_rom_status(sdev, level, flags);
 +}
-diff --git a/sound/soc/sof/intel/telemetry.h b/sound/soc/sof/intel/telemetry.h
-new file mode 100644
-index 000000000000..3c2b23c75f5d
---- /dev/null
-+++ b/sound/soc/sof/intel/telemetry.h
-@@ -0,0 +1,35 @@
-+/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause) */
-+/*
-+ * This file is provided under a dual BSD/GPLv2 license.  When using or
-+ * redistributing this file, you may do so under either license.
-+ *
-+ * Copyright(c) 2023 Intel Corporation. All rights reserved.
-+ *
-+ * telemetry data in debug windows
-+ */
 +
-+#ifndef _SOF_INTEL_TELEMETRY_H
-+#define _SOF_INTEL_TELEMETRY_H
-+
-+#include "../ipc4-telemetry.h"
-+
-+struct xtensa_arch_block {
-+	u8	soc; /* should be equal to XTENSA_SOC_INTEL_ADSP */
-+	u16	version;
-+	u8	toolchain; /* ZEPHYR or XCC */
-+
-+	u32	pc;
-+	u32	exccause;
-+	u32	excvaddr;
-+	u32	sar;
-+	u32	ps;
-+	u32	scompare1;
-+	u32	ar[XTENSA_CORE_AR_REGS_COUNT];
-+	u32	lbeg;
-+	u32	lend;
-+	u32	lcount;
-+} __packed;
-+
-+void sof_ipc4_intel_dump_telemetry_state(struct snd_sof_dev *sdev, u32 flags);
-+
-+#endif /* _SOF_INTEL_TELEMETRY_H */
+ static bool hda_check_ipc_irq(struct snd_sof_dev *sdev)
+ {
+ 	const struct sof_intel_dsp_desc *chip;
+diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
+index 2b228c63905b..7c575ba9462c 100644
+--- a/sound/soc/sof/intel/hda.h
++++ b/sound/soc/sof/intel/hda.h
+@@ -603,6 +603,7 @@ int hda_dsp_shutdown_dma_flush(struct snd_sof_dev *sdev);
+ int hda_dsp_shutdown(struct snd_sof_dev *sdev);
+ int hda_dsp_set_hw_params_upon_resume(struct snd_sof_dev *sdev);
+ void hda_dsp_dump(struct snd_sof_dev *sdev, u32 flags);
++void hda_ipc4_dsp_dump(struct snd_sof_dev *sdev, u32 flags);
+ void hda_ipc_dump(struct snd_sof_dev *sdev);
+ void hda_ipc_irq_dump(struct snd_sof_dev *sdev);
+ void hda_dsp_d0i3_work(struct work_struct *work);
+diff --git a/sound/soc/sof/intel/tgl.c b/sound/soc/sof/intel/tgl.c
+index bb9f20253c99..4a61f6d28ae5 100644
+--- a/sound/soc/sof/intel/tgl.c
++++ b/sound/soc/sof/intel/tgl.c
+@@ -102,6 +102,7 @@ int sof_tgl_ops_init(struct snd_sof_dev *sdev)
+ 
+ 		/* debug */
+ 		sof_tgl_ops.ipc_dump	= cnl_ipc4_dump;
++		sof_tgl_ops.dbg_dump	= hda_ipc4_dsp_dump;
+ 
+ 		sof_tgl_ops.set_power_state = hda_dsp_set_power_state_ipc4;
+ 	}
 -- 
 2.42.0
 
