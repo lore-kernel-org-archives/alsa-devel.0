@@ -4,101 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A6233CD548C
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Sep 2023 07:43:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9A7C1CD54A0
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Sep 2023 07:57:24 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 87919A4B;
-	Tue, 19 Sep 2023 09:42:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 87919A4B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6EC34A4D;
+	Tue, 19 Sep 2023 09:56:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6EC34A4D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1695109392;
-	bh=C7DpkmodZfVUe1R9lh7ReNhYISBDIY+teiqxNa+sPRc=;
+	s=default; t=1695110242;
+	bh=FhSRy06C0Dqg1E1iAsUxa/JT5FR0zypzzO2PrXff4Gs=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Z7z0FVICSTbEXr5zG0q73gC8wxOfbDU5TSmfWzSK+P0pHgokM9s/lyHo2/bpw9Jvi
-	 KK/JgCpdYb2lkBPDvUTGuLDAe286kpQp7T2YX8LL48/yiBraDARROD34NzsEackVUd
-	 HtAzDSZRDG6PyEh38SU4+SQgNK14Or0lspr9YfKI=
+	b=emYxyZova3EiHNLTcvTGqeoQjfsGPzKMA/gKevW0fgSVV4XAXOhoY8AbV1yaM4RnQ
+	 vrlYEPq5xuPnYDcdlIs6bduWneCcPASZr51F5v9sa7ZYFXTAvqc1HB/36ciOD5Zzih
+	 iyT3mmJVVlymkEDE2LuhqWvUbKTReXyhQTiIkYXQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 38778F80494; Tue, 19 Sep 2023 09:41:53 +0200 (CEST)
+	id 7398AF801F5; Tue, 19 Sep 2023 09:56:10 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C1CB6F8025A;
-	Tue, 19 Sep 2023 09:41:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 21AF0F8025A;
+	Tue, 19 Sep 2023 09:56:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 77AC7F8025A; Tue, 19 Sep 2023 09:41:48 +0200 (CEST)
+	id 07A8BF8025A; Tue, 19 Sep 2023 09:56:06 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 9DDBCF800F4
-	for <alsa-devel@alsa-project.org>; Tue, 19 Sep 2023 09:41:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9DDBCF800F4
+	by alsa1.perex.cz (Postfix) with ESMTPS id 1C16DF800F4
+	for <alsa-devel@alsa-project.org>; Tue, 19 Sep 2023 09:56:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1C16DF800F4
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=cY8XcfwD;
+ header.s=susede2_rsa header.b=mQwQtjKd;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=mKvUEzz+
+ header.s=susede2_ed25519 header.b=+CMRTs0O
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id F40101F383;
-	Tue, 19 Sep 2023 07:41:42 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id A7BCE1FE09;
+	Tue, 19 Sep 2023 07:56:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1695109303;
+	t=1695110161;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=+VEDZHtSV4C0X1DXJfPgk4WnB1OG4ZAgbRRJCV5ZC0o=;
-	b=cY8XcfwD0tSXSxufRLoITWp6doJdyps4l3fdQGsb2cssWaoxIRW147W4jlw7+RZjqEvRS8
-	TM8i+2rSXGLM8D4GyN11Lsxz+FwTO/saZjxF4925vFSsT9bHgMIMnVZDiHW6MUaEeflg3A
-	q0ZzR2hJn8YAqtszBFVsMyTddfqrrZY=
+	bh=CFaGFhIaTzpbZC4A9IwfPNn/AnZpNzT/vtySOR34fG8=;
+	b=mQwQtjKdLG9NCVrXx66GnkR6xyZ1eLSfswc/ztDLE2Xy5UBtBpInHjSgUG0Kn9KMpgaXxb
+	NSIJsInCQ0at1qJqF8KNH6S7jMryeHguIlyALXneqJW2uJ99w1bZjfH6R8IS+sKCEDeueK
+	zWxc6bBt/egQBB/A2VN79qvV64g0Q/s=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1695109303;
+	s=susede2_ed25519; t=1695110161;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=+VEDZHtSV4C0X1DXJfPgk4WnB1OG4ZAgbRRJCV5ZC0o=;
-	b=mKvUEzz+RP78CgyMOD+lW9xvV0GrNqS9MmhxrzrgTfzMBgRlTXlzv80DqAnoDQzrmJ1f9L
-	NDnPznBF860QEtAg==
+	bh=CFaGFhIaTzpbZC4A9IwfPNn/AnZpNzT/vtySOR34fG8=;
+	b=+CMRTs0O4Z5kJUVbYpXCNfWOze9kIThOHpQVT6O6/2PVARStWVM8gzWTO3b9Yc5isOp4Vv
+	XNGdRU3dudrKvpDA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CCBC3134F3;
-	Tue, 19 Sep 2023 07:41:42 +0000 (UTC)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6EA0113458;
+	Tue, 19 Sep 2023 07:56:01 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id pfv9MLZQCWXfcwAAMHmgww
-	(envelope-from <tiwai@suse.de>); Tue, 19 Sep 2023 07:41:42 +0000
-Date: Tue, 19 Sep 2023 09:41:42 +0200
-Message-ID: <8734zazk21.wl-tiwai@suse.de>
+	id zvARGhFUCWU1ewAAMHmgww
+	(envelope-from <tiwai@suse.de>); Tue, 19 Sep 2023 07:56:01 +0000
+Date: Tue, 19 Sep 2023 09:56:00 +0200
+Message-ID: <87y1h2y4tr.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: =?ISO-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@linux.intel.com>
-Cc: tiwai@suse.com,
-	perex@perex.cz,
-	alsa-devel@alsa-project.org
-Subject: Re: [PATCH] ALSA: usb-audio: scarlett_gen2: Fix another
- -Wformat-truncation warning
-In-Reply-To: <12419771-0fa4-4d44-86fb-440ae14ffda2@linux.intel.com>
-References: <20230919071205.10684-1-peter.ujfalusi@linux.intel.com>
-	<875y46zl3f.wl-tiwai@suse.de>
-	<12419771-0fa4-4d44-86fb-440ae14ffda2@linux.intel.com>
+To: Ivan Orlov <ivan.orlov0322@gmail.com>
+Cc: perex@perex.cz,
+	tiwai@suse.com,
+	corbet@lwn.net,
+	alsa-devel@alsa-project.org,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	gregkh@linuxfoundation.org
+Subject: Re: [PATCH v2 2/2] ALSA: Add new driver for Marian M2 sound card
+In-Reply-To: <20230918181044.7257-2-ivan.orlov0322@gmail.com>
+References: <20230918181044.7257-1-ivan.orlov0322@gmail.com>
+	<20230918181044.7257-2-ivan.orlov0322@gmail.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: BFVXRIMWVXP5P4SGNEL5MLVHGSCR37JR
-X-Message-ID-Hash: BFVXRIMWVXP5P4SGNEL5MLVHGSCR37JR
+Content-Type: text/plain; charset=US-ASCII
+Message-ID-Hash: HBQGHUZDJEY7R6GY4YL56UYA7YM7QOLK
+X-Message-ID-Hash: HBQGHUZDJEY7R6GY4YL56UYA7YM7QOLK
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -111,7 +110,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BFVXRIMWVXP5P4SGNEL5MLVHGSCR37JR/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HBQGHUZDJEY7R6GY4YL56UYA7YM7QOLK/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -120,35 +119,73 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, 19 Sep 2023 09:22:58 +0200,
-Péter Ujfalusi wrote:
+On Mon, 18 Sep 2023 20:10:44 +0200,
+Ivan Orlov wrote:
 > 
-> 
-> 
-> On 19/09/2023 10:19, Takashi Iwai wrote:
-> > On Tue, 19 Sep 2023 09:12:05 +0200,
-> > Peter Ujfalusi wrote:
-> >>
-> >> The recent enablement of -Wformat-truncation leads to a false-positive
-> >> warning for mixer_scarlett_gen2.c.
-> >>
-> >> For suppressing the warning, replace snprintf() with scnprintf().
-> >> As stated in the above, truncation doesn't matter.
-> >>
-> >> Fixes: 78bd8f5126f8 ("ALSA: usb-audio: scarlett_gen2: Fix -Wformat-truncation warning")
-> >> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-> > 
-> > While I applied it now, I wonder why this didn't show up with my local
-> > test.
-> 
-> I wondered about the same thing...
-> 
-> > Which compiler are you using?
-> 
-> $ gcc --version
-> gcc (GCC) 13.2.1 20230801
+> +#include <sound/core.h>
+> +#include <sound/control.h>
+> +#include <sound/pcm.h>
+> +#include <sound/pcm_params.h>
+> +#include <sound/core.h>
+> +#include <sound/pcm.h>
+> +#include <sound/initval.h>
+> +#include <sound/info.h>
+> +#include <linux/delay.h>
+> +#include <linux/module.h>
+> +#include <linux/pci.h>
+> +#include <linux/interrupt.h>
 
-Ah mine is still gcc12, and this might be.
+We usually include linux/* at first, followed by sound/*.
 
+
+> +#define DEBUG
+
+Any need to define this for the production system?
+
+
+> +struct marian_card_descriptor;
+> +struct marian_card;
+> +
+> +struct marian_card_descriptor {
+> +	char *name;
+> +	char *port_names;
+> +	unsigned int speedmode_max;
+> +	unsigned int ch_in;
+> +	unsigned int ch_out;
+> +	unsigned int midi_in;
+> +	unsigned int midi_out;
+> +	unsigned int serial_in;
+> +	unsigned int serial_out;
+> +	unsigned int wck_in;
+> +	unsigned int wck_out;
+> +
+> +	unsigned int dma_bufsize;
+> +
+> +	void (*hw_constraints_func)(struct marian_card *marian,
+> +				    struct snd_pcm_substream *substream,
+> +				    struct snd_pcm_hw_params *params);
+> +	/* custom function to set up ALSA controls */
+> +	void (*create_controls)(struct marian_card *marian);
+> +	/* init is called after probing the card */
+> +	int (*init_card)(struct marian_card *marian);
+> +	void (*free_card)(struct marian_card *marian);
+> +	/* prepare is called when ALSA is opening the card */
+> +	void (*prepare)(struct marian_card *marian);
+> +	void (*set_speedmode)(struct marian_card *marian, unsigned int speedmode);
+> +	void (*proc_status)(struct marian_card *marian, struct snd_info_buffer *buffer);
+> +	void (*proc_ports)(struct marian_card *marian, struct snd_info_buffer *buffer,
+> +			   unsigned int type);
+> +
+> +	struct snd_pcm_hardware info_playback;
+> +	struct snd_pcm_hardware info_capture;
+
+Do we need this kind of abstraction inside the driver?
+As far as I see, the driver supports only a single model, hence there
+is no real merit of abstracted / indirect function calls.
+
+So I stop reading at this point.
+
+
+thanks,
 
 Takashi
