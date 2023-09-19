@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 874D0CD54B0
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Sep 2023 10:45:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E89C5CD54B0
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Sep 2023 10:46:03 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 80986E88;
-	Tue, 19 Sep 2023 12:45:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 80986E88
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2AC3EEAD;
+	Tue, 19 Sep 2023 12:45:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2AC3EEAD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1695120351;
-	bh=Nt0bthKLFZje7hBE5U/N8YDfWnbmmj6r2OxxcmnhYt4=;
+	s=default; t=1695120362;
+	bh=jSjrZPIxqBCPPykYn5idzXFgdMVgMGsndrwh31h84P4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=fIh7IEyOuVZk9Kx8kFy8y9TL4wTjKNKFkox83VvDkDS8BaeiICX8ZYtzZdJJxcVNE
-	 ZMrgp5iHEr8kB9mRyJp4z7yKVfbxnObPAfYEG9CCT0T0kWJaYHkKJjRHP7DlZ5aqNb
-	 PAliGJv+rCN5JfuVTORcXeAqMzcSz77qLPUAq8Tg=
+	b=HIMHHAzbyvlDIqKZ7kfy7iTW/HscPPM2dNcRTqfqw9Ia2ef97jfc2p0uhbPSKBDfA
+	 UmH8HmliuXonkfnDA5vt179si3Sds0wsiGBN+9t+7ohddMmiopTMfo7z9DLZRdIjUX
+	 n7f+2wM7HGpVBOvKQaCwCLWRTOrjWGGlYMpPDVjk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2DE39F805E5; Tue, 19 Sep 2023 12:42:53 +0200 (CEST)
+	id E2BB0F805ED; Tue, 19 Sep 2023 12:42:55 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 930C4F805E4;
-	Tue, 19 Sep 2023 12:42:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8E316F805EC;
+	Tue, 19 Sep 2023 12:42:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 61808F805E1; Tue, 19 Sep 2023 12:42:49 +0200 (CEST)
+	id E02A4F805D6; Tue, 19 Sep 2023 12:42:49 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 18029F8057A
-	for <alsa-devel@alsa-project.org>; Tue, 19 Sep 2023 12:42:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 18029F8057A
+	by alsa1.perex.cz (Postfix) with ESMTPS id 67CCFF805B3
+	for <alsa-devel@alsa-project.org>; Tue, 19 Sep 2023 12:42:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 67CCFF805B3
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=kQZmjNyX
+ header.s=Intel header.b=oE/vvYwH
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695120162; x=1726656162;
+  t=1695120167; x=1726656167;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=Nt0bthKLFZje7hBE5U/N8YDfWnbmmj6r2OxxcmnhYt4=;
-  b=kQZmjNyX2zK8agL53BuwdbLKW6jAtlAmTbR2Mp63Kl5bpmC7jC9J5o2o
-   O5ijTwdiRCc55M0vAe4CsRaanJyGjSwH276nTx9gugH7OX1QxnaRK9DqO
-   eDai7FQPPq/Z/QaWKhyaPxlUvC8oR0P5s2xxfu3tftsi7/KlrbhkVw0tZ
-   v7wPknpEENDif/oqz5hWKX6fOHvwuSklSqXyPn2vfdQDuRa1qfqNT7vPp
-   13OSzt52eVMNeNDFyJmt7OtQMZCddXvMyD2bQkRhqHh88U7SGWYSa+MBX
-   JGXfXH17AEY/jhKkt0v6y9Fy/vudsToe16j4QrSGV16y8clYFaAgeiWF6
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10837"; a="382658503"
+  bh=jSjrZPIxqBCPPykYn5idzXFgdMVgMGsndrwh31h84P4=;
+  b=oE/vvYwH4C2Iu42Hy7VeLjs1g+KjhRd7fNZsKSpd3o9d9FWlyuKs4kP6
+   FIJCmsrjTW1WgJPFD7houAzQU33ya1L/qcTEjlXfzRemK8cLLqvQJJZ2h
+   D3y4+L/MwwAZ/Kyt5iY76Nt4kWyZRWSonfELMt+u5TKvcubZd3QY1SIkK
+   51mCHl6u1lFc8b61DHf1vsqaWKw4p1CKX0MUIkFMcNaBxAWM+2OQWGQfP
+   BiokQSYT2TFLMAi0V31DFuDOR2kb7tvooAWR8HE5JCPgEDuWVWhp/S2vO
+   IJo+qGDVcHBcODvHfgIMhJ6RVKKs4Ow2Wa0trwp88L8qYw2D1jlrCV6t2
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10837"; a="382658520"
 X-IronPort-AV: E=Sophos;i="6.02,159,1688454000";
-   d="scan'208";a="382658503"
+   d="scan'208";a="382658520"
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
   by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Sep 2023 03:42:40 -0700
+ 19 Sep 2023 03:42:46 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10837"; a="722823291"
+X-IronPort-AV: E=McAfee;i="6600,9927,10837"; a="722823306"
 X-IronPort-AV: E=Sophos;i="6.02,159,1688454000";
-   d="scan'208";a="722823291"
+   d="scan'208";a="722823306"
 Received: from mokashi-mobl1.ger.corp.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.252.50.26])
   by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Sep 2023 03:42:37 -0700
+ 19 Sep 2023 03:42:43 -0700
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com,
 	broonie@kernel.org
@@ -74,16 +74,16 @@ Cc: alsa-devel@alsa-project.org,
 	kai.vehmanen@linux.intel.com,
 	daniel.baluta@nxp.com,
 	rander.wang@intel.com
-Subject: [PATCH 7/9] ASoC: SOF: Intel: Use generic names for IPC types
-Date: Tue, 19 Sep 2023 13:42:24 +0300
-Message-ID: <20230919104226.32239-8-peter.ujfalusi@linux.intel.com>
+Subject: [PATCH 9/9] ASoC: SOF: Drop unused IPC type defines
+Date: Tue, 19 Sep 2023 13:42:26 +0300
+Message-ID: <20230919104226.32239-10-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20230919104226.32239-1-peter.ujfalusi@linux.intel.com>
 References: <20230919104226.32239-1-peter.ujfalusi@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 36KKHVSXWG7LRJCDBVSB44RRV2DYE7EZ
-X-Message-ID-Hash: 36KKHVSXWG7LRJCDBVSB44RRV2DYE7EZ
+Message-ID-Hash: IDX57I47HIJS6AJ75OWEXF6GWIH5H5EM
+X-Message-ID-Hash: IDX57I47HIJS6AJ75OWEXF6GWIH5H5EM
 X-MailFrom: peter.ujfalusi@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -96,7 +96,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/36KKHVSXWG7LRJCDBVSB44RRV2DYE7EZ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IDX57I47HIJS6AJ75OWEXF6GWIH5H5EM/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -105,9 +105,8 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Use the new SOF_IPC_TYPE_3, SOF_IPC_TYPE_4 in core code.
-
-No functional changes, just renaming.
+The SOF stack now uses the generic names for the IPC type, the defines can
+be dropped.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Daniel Baluta <daniel.baluta@nxp.com>
@@ -115,925 +114,23 @@ Reviewed-by: Rander Wang <rander.wang@intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/intel/apl.c         |   4 +-
- sound/soc/sof/intel/bdw.c         |  10 +--
- sound/soc/sof/intel/byt.c         |  30 +++----
- sound/soc/sof/intel/cnl.c         |   4 +-
- sound/soc/sof/intel/hda-dai-ops.c |   4 +-
- sound/soc/sof/intel/hda-dai.c     |   4 +-
- sound/soc/sof/intel/hda-loader.c  |   2 +-
- sound/soc/sof/intel/hda.c         |   2 +-
- sound/soc/sof/intel/icl.c         |   4 +-
- sound/soc/sof/intel/pci-apl.c     |  36 ++++----
- sound/soc/sof/intel/pci-cnl.c     |  54 +++++------
- sound/soc/sof/intel/pci-icl.c     |  36 ++++----
- sound/soc/sof/intel/pci-lnl.c     |  10 +--
- sound/soc/sof/intel/pci-mtl.c     |  12 +--
- sound/soc/sof/intel/pci-skl.c     |  20 ++---
- sound/soc/sof/intel/pci-tgl.c     | 144 +++++++++++++++---------------
- sound/soc/sof/intel/pci-tng.c     |  10 +--
- sound/soc/sof/intel/tgl.c         |   4 +-
- 18 files changed, 195 insertions(+), 195 deletions(-)
+ include/sound/sof.h | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/sound/soc/sof/intel/apl.c b/sound/soc/sof/intel/apl.c
-index e1f25a8f0c32..776b66389c34 100644
---- a/sound/soc/sof/intel/apl.c
-+++ b/sound/soc/sof/intel/apl.c
-@@ -39,7 +39,7 @@ int sof_apl_ops_init(struct snd_sof_dev *sdev)
- 	/* probe/remove/shutdown */
- 	sof_apl_ops.shutdown	= hda_dsp_shutdown;
+diff --git a/include/sound/sof.h b/include/sound/sof.h
+index 31121c6df027..268d0ca0f69f 100644
+--- a/include/sound/sof.h
++++ b/include/sound/sof.h
+@@ -57,9 +57,6 @@ enum sof_ipc_type {
+ 	SOF_IPC_TYPE_COUNT
+ };
  
--	if (sdev->pdata->ipc_type == SOF_IPC) {
-+	if (sdev->pdata->ipc_type == SOF_IPC_TYPE_3) {
- 		/* doorbell */
- 		sof_apl_ops.irq_thread	= hda_dsp_ipc_irq_thread;
- 
-@@ -52,7 +52,7 @@ int sof_apl_ops_init(struct snd_sof_dev *sdev)
- 		sof_apl_ops.set_power_state = hda_dsp_set_power_state_ipc3;
- 	}
- 
--	if (sdev->pdata->ipc_type == SOF_INTEL_IPC4) {
-+	if (sdev->pdata->ipc_type == SOF_IPC_TYPE_4) {
- 		struct sof_ipc4_fw_data *ipc4_data;
- 
- 		sdev->private = devm_kzalloc(sdev->dev, sizeof(*ipc4_data), GFP_KERNEL);
-diff --git a/sound/soc/sof/intel/bdw.c b/sound/soc/sof/intel/bdw.c
-index 812a49b1d3f4..511fce8e0e19 100644
---- a/sound/soc/sof/intel/bdw.c
-+++ b/sound/soc/sof/intel/bdw.c
-@@ -639,16 +639,16 @@ static const struct sof_dev_desc sof_acpi_broadwell_desc = {
- 	.resindex_imr_base = -1,
- 	.irqindex_host_ipc = 0,
- 	.chip_info = &bdw_chip_info,
--	.ipc_supported_mask = BIT(SOF_IPC),
--	.ipc_default = SOF_IPC,
-+	.ipc_supported_mask = BIT(SOF_IPC_TYPE_3),
-+	.ipc_default = SOF_IPC_TYPE_3,
- 	.default_fw_path = {
--		[SOF_IPC] = "intel/sof",
-+		[SOF_IPC_TYPE_3] = "intel/sof",
- 	},
- 	.default_tplg_path = {
--		[SOF_IPC] = "intel/sof-tplg",
-+		[SOF_IPC_TYPE_3] = "intel/sof-tplg",
- 	},
- 	.default_fw_filename = {
--		[SOF_IPC] = "sof-bdw.ri",
-+		[SOF_IPC_TYPE_3] = "sof-bdw.ri",
- 	},
- 	.nocodec_tplg_filename = "sof-bdw-nocodec.tplg",
- 	.ops = &sof_bdw_ops,
-diff --git a/sound/soc/sof/intel/byt.c b/sound/soc/sof/intel/byt.c
-index faf223b38360..a976dc91d2ec 100644
---- a/sound/soc/sof/intel/byt.c
-+++ b/sound/soc/sof/intel/byt.c
-@@ -374,16 +374,16 @@ static const struct sof_dev_desc sof_acpi_baytrailcr_desc = {
- 	.resindex_imr_base = 2,
- 	.irqindex_host_ipc = 0,
- 	.chip_info = &byt_chip_info,
--	.ipc_supported_mask = BIT(SOF_IPC),
--	.ipc_default = SOF_IPC,
-+	.ipc_supported_mask = BIT(SOF_IPC_TYPE_3),
-+	.ipc_default = SOF_IPC_TYPE_3,
- 	.default_fw_path = {
--		[SOF_IPC] = "intel/sof",
-+		[SOF_IPC_TYPE_3] = "intel/sof",
- 	},
- 	.default_tplg_path = {
--		[SOF_IPC] = "intel/sof-tplg",
-+		[SOF_IPC_TYPE_3] = "intel/sof-tplg",
- 	},
- 	.default_fw_filename = {
--		[SOF_IPC] = "sof-byt.ri",
-+		[SOF_IPC_TYPE_3] = "sof-byt.ri",
- 	},
- 	.nocodec_tplg_filename = "sof-byt-nocodec.tplg",
- 	.ops = &sof_byt_ops,
-@@ -396,16 +396,16 @@ static const struct sof_dev_desc sof_acpi_baytrail_desc = {
- 	.resindex_imr_base = 2,
- 	.irqindex_host_ipc = 5,
- 	.chip_info = &byt_chip_info,
--	.ipc_supported_mask = BIT(SOF_IPC),
--	.ipc_default = SOF_IPC,
-+	.ipc_supported_mask = BIT(SOF_IPC_TYPE_3),
-+	.ipc_default = SOF_IPC_TYPE_3,
- 	.default_fw_path = {
--		[SOF_IPC] = "intel/sof",
-+		[SOF_IPC_TYPE_3] = "intel/sof",
- 	},
- 	.default_tplg_path = {
--		[SOF_IPC] = "intel/sof-tplg",
-+		[SOF_IPC_TYPE_3] = "intel/sof-tplg",
- 	},
- 	.default_fw_filename = {
--		[SOF_IPC] = "sof-byt.ri",
-+		[SOF_IPC_TYPE_3] = "sof-byt.ri",
- 	},
- 	.nocodec_tplg_filename = "sof-byt-nocodec.tplg",
- 	.ops = &sof_byt_ops,
-@@ -418,16 +418,16 @@ static const struct sof_dev_desc sof_acpi_cherrytrail_desc = {
- 	.resindex_imr_base = 2,
- 	.irqindex_host_ipc = 5,
- 	.chip_info = &cht_chip_info,
--	.ipc_supported_mask = BIT(SOF_IPC),
--	.ipc_default = SOF_IPC,
-+	.ipc_supported_mask = BIT(SOF_IPC_TYPE_3),
-+	.ipc_default = SOF_IPC_TYPE_3,
- 	.default_fw_path = {
--		[SOF_IPC] = "intel/sof",
-+		[SOF_IPC_TYPE_3] = "intel/sof",
- 	},
- 	.default_tplg_path = {
--		[SOF_IPC] = "intel/sof-tplg",
-+		[SOF_IPC_TYPE_3] = "intel/sof-tplg",
- 	},
- 	.default_fw_filename = {
--		[SOF_IPC] = "sof-cht.ri",
-+		[SOF_IPC_TYPE_3] = "sof-cht.ri",
- 	},
- 	.nocodec_tplg_filename = "sof-cht-nocodec.tplg",
- 	.ops = &sof_cht_ops,
-diff --git a/sound/soc/sof/intel/cnl.c b/sound/soc/sof/intel/cnl.c
-index c6fbf4285262..598cf50abadb 100644
---- a/sound/soc/sof/intel/cnl.c
-+++ b/sound/soc/sof/intel/cnl.c
-@@ -386,7 +386,7 @@ int sof_cnl_ops_init(struct snd_sof_dev *sdev)
- 	sof_cnl_ops.shutdown	= hda_dsp_shutdown;
- 
- 	/* ipc */
--	if (sdev->pdata->ipc_type == SOF_IPC) {
-+	if (sdev->pdata->ipc_type == SOF_IPC_TYPE_3) {
- 		/* doorbell */
- 		sof_cnl_ops.irq_thread	= cnl_ipc_irq_thread;
- 
-@@ -399,7 +399,7 @@ int sof_cnl_ops_init(struct snd_sof_dev *sdev)
- 		sof_cnl_ops.set_power_state = hda_dsp_set_power_state_ipc3;
- 	}
- 
--	if (sdev->pdata->ipc_type == SOF_INTEL_IPC4) {
-+	if (sdev->pdata->ipc_type == SOF_IPC_TYPE_4) {
- 		struct sof_ipc4_fw_data *ipc4_data;
- 
- 		sdev->private = devm_kzalloc(sdev->dev, sizeof(*ipc4_data), GFP_KERNEL);
-diff --git a/sound/soc/sof/intel/hda-dai-ops.c b/sound/soc/sof/intel/hda-dai-ops.c
-index 494ced2b746e..012a75f366ab 100644
---- a/sound/soc/sof/intel/hda-dai-ops.c
-+++ b/sound/soc/sof/intel/hda-dai-ops.c
-@@ -609,7 +609,7 @@ hda_select_dai_widget_ops(struct snd_sof_dev *sdev, struct snd_sof_widget *swidg
- 	sdai = swidget->private;
- 
- 	switch (sdev->pdata->ipc_type) {
--	case SOF_IPC:
-+	case SOF_IPC_TYPE_3:
- 	{
- 		struct sof_dai_private_data *private = sdai->private;
- 
-@@ -617,7 +617,7 @@ hda_select_dai_widget_ops(struct snd_sof_dev *sdev, struct snd_sof_widget *swidg
- 			return &hda_ipc3_dma_ops;
- 		break;
- 	}
--	case SOF_INTEL_IPC4:
-+	case SOF_IPC_TYPE_4:
- 	{
- 		struct sof_ipc4_copier *ipc4_copier = sdai->private;
- 		const struct sof_intel_dsp_desc *chip;
-diff --git a/sound/soc/sof/intel/hda-dai.c b/sound/soc/sof/intel/hda-dai.c
-index f3cefd866081..318a21c12cd0 100644
---- a/sound/soc/sof/intel/hda-dai.c
-+++ b/sound/soc/sof/intel/hda-dai.c
-@@ -607,7 +607,7 @@ void hda_set_dai_drv_ops(struct snd_sof_dev *sdev, struct snd_sof_dsp_ops *ops)
- 	ssp_set_dai_drv_ops(sdev, ops);
- 	dmic_set_dai_drv_ops(sdev, ops);
- 
--	if (sdev->pdata->ipc_type == SOF_INTEL_IPC4 && !hda_use_tplg_nhlt) {
-+	if (sdev->pdata->ipc_type == SOF_IPC_TYPE_4 && !hda_use_tplg_nhlt) {
- 		struct sof_ipc4_fw_data *ipc4_data = sdev->private;
- 
- 		ipc4_data->nhlt = intel_nhlt_init(sdev->dev);
-@@ -616,7 +616,7 @@ void hda_set_dai_drv_ops(struct snd_sof_dev *sdev, struct snd_sof_dsp_ops *ops)
- 
- void hda_ops_free(struct snd_sof_dev *sdev)
- {
--	if (sdev->pdata->ipc_type == SOF_INTEL_IPC4) {
-+	if (sdev->pdata->ipc_type == SOF_IPC_TYPE_4) {
- 		struct sof_ipc4_fw_data *ipc4_data = sdev->private;
- 
- 		if (!hda_use_tplg_nhlt)
-diff --git a/sound/soc/sof/intel/hda-loader.c b/sound/soc/sof/intel/hda-loader.c
-index 1e2669a8088d..46fb2d1425e9 100644
---- a/sound/soc/sof/intel/hda-loader.c
-+++ b/sound/soc/sof/intel/hda-loader.c
-@@ -643,7 +643,7 @@ int hda_dsp_post_fw_run(struct snd_sof_dev *sdev)
- 		/* Check if IMR boot is usable */
- 		if (!sof_debug_check_flag(SOF_DBG_IGNORE_D3_PERSISTENT) &&
- 		    (sdev->fw_ready.flags & SOF_IPC_INFO_D3_PERSISTENT ||
--		     sdev->pdata->ipc_type == SOF_INTEL_IPC4))
-+		     sdev->pdata->ipc_type == SOF_IPC_TYPE_4))
- 			hdev->imrboot_supported = true;
- 	}
- 
-diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
-index 15e6779efaa3..01de9ce38147 100644
---- a/sound/soc/sof/intel/hda.c
-+++ b/sound/soc/sof/intel/hda.c
-@@ -718,7 +718,7 @@ void hda_dsp_dump(struct snd_sof_dev *sdev, u32 flags)
- 	hda_dsp_get_state(sdev, level);
- 
- 	/* The firmware register dump only available with IPC3 */
--	if (flags & SOF_DBG_DUMP_REGS && sdev->pdata->ipc_type == SOF_IPC) {
-+	if (flags & SOF_DBG_DUMP_REGS && sdev->pdata->ipc_type == SOF_IPC_TYPE_3) {
- 		u32 status = snd_sof_dsp_read(sdev, HDA_DSP_BAR, HDA_DSP_SRAM_REG_FW_STATUS);
- 		u32 panic = snd_sof_dsp_read(sdev, HDA_DSP_BAR, HDA_DSP_SRAM_REG_FW_TRACEP);
- 
-diff --git a/sound/soc/sof/intel/icl.c b/sound/soc/sof/intel/icl.c
-index 7ac10167a90d..8e29d6bb6fe8 100644
---- a/sound/soc/sof/intel/icl.c
-+++ b/sound/soc/sof/intel/icl.c
-@@ -107,7 +107,7 @@ int sof_icl_ops_init(struct snd_sof_dev *sdev)
- 	/* probe/remove/shutdown */
- 	sof_icl_ops.shutdown	= hda_dsp_shutdown;
- 
--	if (sdev->pdata->ipc_type == SOF_IPC) {
-+	if (sdev->pdata->ipc_type == SOF_IPC_TYPE_3) {
- 		/* doorbell */
- 		sof_icl_ops.irq_thread	= cnl_ipc_irq_thread;
- 
-@@ -120,7 +120,7 @@ int sof_icl_ops_init(struct snd_sof_dev *sdev)
- 		sof_icl_ops.set_power_state = hda_dsp_set_power_state_ipc3;
- 	}
- 
--	if (sdev->pdata->ipc_type == SOF_INTEL_IPC4) {
-+	if (sdev->pdata->ipc_type == SOF_IPC_TYPE_4) {
- 		struct sof_ipc4_fw_data *ipc4_data;
- 
- 		sdev->private = devm_kzalloc(sdev->dev, sizeof(*ipc4_data), GFP_KERNEL);
-diff --git a/sound/soc/sof/intel/pci-apl.c b/sound/soc/sof/intel/pci-apl.c
-index 460f87f25dac..4b287b5e9077 100644
---- a/sound/soc/sof/intel/pci-apl.c
-+++ b/sound/soc/sof/intel/pci-apl.c
-@@ -27,23 +27,23 @@ static const struct sof_dev_desc bxt_desc = {
- 	.resindex_imr_base	= -1,
- 	.irqindex_host_ipc	= -1,
- 	.chip_info = &apl_chip_info,
--	.ipc_supported_mask	= BIT(SOF_IPC) | BIT(SOF_INTEL_IPC4),
--	.ipc_default		= SOF_IPC,
-+	.ipc_supported_mask	= BIT(SOF_IPC_TYPE_3) | BIT(SOF_IPC_TYPE_4),
-+	.ipc_default		= SOF_IPC_TYPE_3,
- 	.dspless_mode_supported	= true,		/* Only supported for HDaudio */
- 	.default_fw_path = {
--		[SOF_IPC] = "intel/sof",
--		[SOF_INTEL_IPC4] = "intel/avs/apl",
-+		[SOF_IPC_TYPE_3] = "intel/sof",
-+		[SOF_IPC_TYPE_4] = "intel/avs/apl",
- 	},
- 	.default_lib_path = {
--		[SOF_INTEL_IPC4] = "intel/avs-lib/apl",
-+		[SOF_IPC_TYPE_4] = "intel/avs-lib/apl",
- 	},
- 	.default_tplg_path = {
--		[SOF_IPC] = "intel/sof-tplg",
--		[SOF_INTEL_IPC4] = "intel/avs-tplg",
-+		[SOF_IPC_TYPE_3] = "intel/sof-tplg",
-+		[SOF_IPC_TYPE_4] = "intel/avs-tplg",
- 	},
- 	.default_fw_filename = {
--		[SOF_IPC] = "sof-apl.ri",
--		[SOF_INTEL_IPC4] = "dsp_basefw.bin",
-+		[SOF_IPC_TYPE_3] = "sof-apl.ri",
-+		[SOF_IPC_TYPE_4] = "dsp_basefw.bin",
- 	},
- 	.nocodec_tplg_filename = "sof-apl-nocodec.tplg",
- 	.ops = &sof_apl_ops,
-@@ -59,23 +59,23 @@ static const struct sof_dev_desc glk_desc = {
- 	.resindex_imr_base	= -1,
- 	.irqindex_host_ipc	= -1,
- 	.chip_info = &apl_chip_info,
--	.ipc_supported_mask	= BIT(SOF_IPC) | BIT(SOF_INTEL_IPC4),
--	.ipc_default		= SOF_IPC,
-+	.ipc_supported_mask	= BIT(SOF_IPC_TYPE_3) | BIT(SOF_IPC_TYPE_4),
-+	.ipc_default		= SOF_IPC_TYPE_3,
- 	.dspless_mode_supported	= true,		/* Only supported for HDaudio */
- 	.default_fw_path = {
--		[SOF_IPC] = "intel/sof",
--		[SOF_INTEL_IPC4] = "intel/avs/glk",
-+		[SOF_IPC_TYPE_3] = "intel/sof",
-+		[SOF_IPC_TYPE_4] = "intel/avs/glk",
- 	},
- 	.default_lib_path = {
--		[SOF_INTEL_IPC4] = "intel/avs-lib/glk",
-+		[SOF_IPC_TYPE_4] = "intel/avs-lib/glk",
- 	},
- 	.default_tplg_path = {
--		[SOF_IPC] = "intel/sof-tplg",
--		[SOF_INTEL_IPC4] = "intel/avs-tplg",
-+		[SOF_IPC_TYPE_3] = "intel/sof-tplg",
-+		[SOF_IPC_TYPE_4] = "intel/avs-tplg",
- 	},
- 	.default_fw_filename = {
--		[SOF_IPC] = "sof-glk.ri",
--		[SOF_INTEL_IPC4] = "dsp_basefw.bin",
-+		[SOF_IPC_TYPE_3] = "sof-glk.ri",
-+		[SOF_IPC_TYPE_4] = "dsp_basefw.bin",
- 	},
- 	.nocodec_tplg_filename = "sof-glk-nocodec.tplg",
- 	.ops = &sof_apl_ops,
-diff --git a/sound/soc/sof/intel/pci-cnl.c b/sound/soc/sof/intel/pci-cnl.c
-index e2c50e7b0aa7..9fa0cd2eae79 100644
---- a/sound/soc/sof/intel/pci-cnl.c
-+++ b/sound/soc/sof/intel/pci-cnl.c
-@@ -28,23 +28,23 @@ static const struct sof_dev_desc cnl_desc = {
- 	.resindex_imr_base	= -1,
- 	.irqindex_host_ipc	= -1,
- 	.chip_info = &cnl_chip_info,
--	.ipc_supported_mask	= BIT(SOF_IPC) | BIT(SOF_INTEL_IPC4),
--	.ipc_default		= SOF_IPC,
-+	.ipc_supported_mask	= BIT(SOF_IPC_TYPE_3) | BIT(SOF_IPC_TYPE_4),
-+	.ipc_default		= SOF_IPC_TYPE_3,
- 	.dspless_mode_supported	= true,		/* Only supported for HDaudio */
- 	.default_fw_path = {
--		[SOF_IPC] = "intel/sof",
--		[SOF_INTEL_IPC4] = "intel/avs/cnl",
-+		[SOF_IPC_TYPE_3] = "intel/sof",
-+		[SOF_IPC_TYPE_4] = "intel/avs/cnl",
- 	},
- 	.default_lib_path = {
--		[SOF_INTEL_IPC4] = "intel/avs-lib/cnl",
-+		[SOF_IPC_TYPE_4] = "intel/avs-lib/cnl",
- 	},
- 	.default_tplg_path = {
--		[SOF_IPC] = "intel/sof-tplg",
--		[SOF_INTEL_IPC4] = "intel/avs-tplg",
-+		[SOF_IPC_TYPE_3] = "intel/sof-tplg",
-+		[SOF_IPC_TYPE_4] = "intel/avs-tplg",
- 	},
- 	.default_fw_filename = {
--		[SOF_IPC] = "sof-cnl.ri",
--		[SOF_INTEL_IPC4] = "dsp_basefw.bin",
-+		[SOF_IPC_TYPE_3] = "sof-cnl.ri",
-+		[SOF_IPC_TYPE_4] = "dsp_basefw.bin",
- 	},
- 	.nocodec_tplg_filename = "sof-cnl-nocodec.tplg",
- 	.ops = &sof_cnl_ops,
-@@ -61,23 +61,23 @@ static const struct sof_dev_desc cfl_desc = {
- 	.resindex_imr_base	= -1,
- 	.irqindex_host_ipc	= -1,
- 	.chip_info = &cnl_chip_info,
--	.ipc_supported_mask	= BIT(SOF_IPC) | BIT(SOF_INTEL_IPC4),
--	.ipc_default		= SOF_IPC,
-+	.ipc_supported_mask	= BIT(SOF_IPC_TYPE_3) | BIT(SOF_IPC_TYPE_4),
-+	.ipc_default		= SOF_IPC_TYPE_3,
- 	.dspless_mode_supported	= true,		/* Only supported for HDaudio */
- 	.default_fw_path = {
--		[SOF_IPC] = "intel/sof",
--		[SOF_INTEL_IPC4] = "intel/avs/cnl",
-+		[SOF_IPC_TYPE_3] = "intel/sof",
-+		[SOF_IPC_TYPE_4] = "intel/avs/cnl",
- 	},
- 	.default_lib_path = {
--		[SOF_INTEL_IPC4] = "intel/avs-lib/cnl",
-+		[SOF_IPC_TYPE_4] = "intel/avs-lib/cnl",
- 	},
- 	.default_tplg_path = {
--		[SOF_IPC] = "intel/sof-tplg",
--		[SOF_INTEL_IPC4] = "intel/avs-tplg",
-+		[SOF_IPC_TYPE_3] = "intel/sof-tplg",
-+		[SOF_IPC_TYPE_4] = "intel/avs-tplg",
- 	},
- 	.default_fw_filename = {
--		[SOF_IPC] = "sof-cfl.ri",
--		[SOF_INTEL_IPC4] = "dsp_basefw.bin",
-+		[SOF_IPC_TYPE_3] = "sof-cfl.ri",
-+		[SOF_IPC_TYPE_4] = "dsp_basefw.bin",
- 	},
- 	.nocodec_tplg_filename = "sof-cnl-nocodec.tplg",
- 	.ops = &sof_cnl_ops,
-@@ -94,23 +94,23 @@ static const struct sof_dev_desc cml_desc = {
- 	.resindex_imr_base	= -1,
- 	.irqindex_host_ipc	= -1,
- 	.chip_info = &cnl_chip_info,
--	.ipc_supported_mask	= BIT(SOF_IPC) | BIT(SOF_INTEL_IPC4),
--	.ipc_default		= SOF_IPC,
-+	.ipc_supported_mask	= BIT(SOF_IPC_TYPE_3) | BIT(SOF_IPC_TYPE_4),
-+	.ipc_default		= SOF_IPC_TYPE_3,
- 	.dspless_mode_supported	= true,		/* Only supported for HDaudio */
- 	.default_fw_path = {
--		[SOF_IPC] = "intel/sof",
--		[SOF_INTEL_IPC4] = "intel/avs/cnl",
-+		[SOF_IPC_TYPE_3] = "intel/sof",
-+		[SOF_IPC_TYPE_4] = "intel/avs/cnl",
- 	},
- 	.default_lib_path = {
--		[SOF_INTEL_IPC4] = "intel/avs-lib/cnl",
-+		[SOF_IPC_TYPE_4] = "intel/avs-lib/cnl",
- 	},
- 	.default_tplg_path = {
--		[SOF_IPC] = "intel/sof-tplg",
--		[SOF_INTEL_IPC4] = "intel/avs-tplg",
-+		[SOF_IPC_TYPE_3] = "intel/sof-tplg",
-+		[SOF_IPC_TYPE_4] = "intel/avs-tplg",
- 	},
- 	.default_fw_filename = {
--		[SOF_IPC] = "sof-cml.ri",
--		[SOF_INTEL_IPC4] = "dsp_basefw.bin",
-+		[SOF_IPC_TYPE_3] = "sof-cml.ri",
-+		[SOF_IPC_TYPE_4] = "dsp_basefw.bin",
- 	},
- 	.nocodec_tplg_filename = "sof-cnl-nocodec.tplg",
- 	.ops = &sof_cnl_ops,
-diff --git a/sound/soc/sof/intel/pci-icl.c b/sound/soc/sof/intel/pci-icl.c
-index 0a65df3ed9e2..b99c7c9aad7d 100644
---- a/sound/soc/sof/intel/pci-icl.c
-+++ b/sound/soc/sof/intel/pci-icl.c
-@@ -28,23 +28,23 @@ static const struct sof_dev_desc icl_desc = {
- 	.resindex_imr_base      = -1,
- 	.irqindex_host_ipc      = -1,
- 	.chip_info = &icl_chip_info,
--	.ipc_supported_mask	= BIT(SOF_IPC) | BIT(SOF_INTEL_IPC4),
--	.ipc_default		= SOF_IPC,
-+	.ipc_supported_mask	= BIT(SOF_IPC_TYPE_3) | BIT(SOF_IPC_TYPE_4),
-+	.ipc_default		= SOF_IPC_TYPE_3,
- 	.dspless_mode_supported	= true,		/* Only supported for HDaudio */
- 	.default_fw_path = {
--		[SOF_IPC] = "intel/sof",
--		[SOF_INTEL_IPC4] = "intel/avs/icl",
-+		[SOF_IPC_TYPE_3] = "intel/sof",
-+		[SOF_IPC_TYPE_4] = "intel/avs/icl",
- 	},
- 	.default_lib_path = {
--		[SOF_INTEL_IPC4] = "intel/avs-lib/icl",
-+		[SOF_IPC_TYPE_4] = "intel/avs-lib/icl",
- 	},
- 	.default_tplg_path = {
--		[SOF_IPC] = "intel/sof-tplg",
--		[SOF_INTEL_IPC4] = "intel/avs-tplg",
-+		[SOF_IPC_TYPE_3] = "intel/sof-tplg",
-+		[SOF_IPC_TYPE_4] = "intel/avs-tplg",
- 	},
- 	.default_fw_filename = {
--		[SOF_IPC] = "sof-icl.ri",
--		[SOF_INTEL_IPC4] = "dsp_basefw.bin",
-+		[SOF_IPC_TYPE_3] = "sof-icl.ri",
-+		[SOF_IPC_TYPE_4] = "dsp_basefw.bin",
- 	},
- 	.nocodec_tplg_filename = "sof-icl-nocodec.tplg",
- 	.ops = &sof_icl_ops,
-@@ -60,23 +60,23 @@ static const struct sof_dev_desc jsl_desc = {
- 	.resindex_imr_base      = -1,
- 	.irqindex_host_ipc      = -1,
- 	.chip_info = &jsl_chip_info,
--	.ipc_supported_mask	= BIT(SOF_IPC) | BIT(SOF_INTEL_IPC4),
--	.ipc_default		= SOF_IPC,
-+	.ipc_supported_mask	= BIT(SOF_IPC_TYPE_3) | BIT(SOF_IPC_TYPE_4),
-+	.ipc_default		= SOF_IPC_TYPE_3,
- 	.dspless_mode_supported	= true,		/* Only supported for HDaudio */
- 	.default_fw_path = {
--		[SOF_IPC] = "intel/sof",
--		[SOF_INTEL_IPC4] = "intel/avs/jsl",
-+		[SOF_IPC_TYPE_3] = "intel/sof",
-+		[SOF_IPC_TYPE_4] = "intel/avs/jsl",
- 	},
- 	.default_lib_path = {
--		[SOF_INTEL_IPC4] = "intel/avs-lib/jsl",
-+		[SOF_IPC_TYPE_4] = "intel/avs-lib/jsl",
- 	},
- 	.default_tplg_path = {
--		[SOF_IPC] = "intel/sof-tplg",
--		[SOF_INTEL_IPC4] = "intel/avs-tplg",
-+		[SOF_IPC_TYPE_3] = "intel/sof-tplg",
-+		[SOF_IPC_TYPE_4] = "intel/avs-tplg",
- 	},
- 	.default_fw_filename = {
--		[SOF_IPC] = "sof-jsl.ri",
--		[SOF_INTEL_IPC4] = "dsp_basefw.bin",
-+		[SOF_IPC_TYPE_3] = "sof-jsl.ri",
-+		[SOF_IPC_TYPE_4] = "dsp_basefw.bin",
- 	},
- 	.nocodec_tplg_filename = "sof-jsl-nocodec.tplg",
- 	.ops = &sof_cnl_ops,
-diff --git a/sound/soc/sof/intel/pci-lnl.c b/sound/soc/sof/intel/pci-lnl.c
-index 1b12c280edb4..78a57eb9cbc3 100644
---- a/sound/soc/sof/intel/pci-lnl.c
-+++ b/sound/soc/sof/intel/pci-lnl.c
-@@ -29,17 +29,17 @@ static const struct sof_dev_desc lnl_desc = {
- 	.resindex_imr_base      = -1,
- 	.irqindex_host_ipc      = -1,
- 	.chip_info		= &lnl_chip_info,
--	.ipc_supported_mask	= BIT(SOF_INTEL_IPC4),
--	.ipc_default		= SOF_INTEL_IPC4,
-+	.ipc_supported_mask	= BIT(SOF_IPC_TYPE_4),
-+	.ipc_default		= SOF_IPC_TYPE_4,
- 	.dspless_mode_supported	= true,
- 	.default_fw_path = {
--		[SOF_INTEL_IPC4] = "intel/sof-ipc4/lnl",
-+		[SOF_IPC_TYPE_4] = "intel/sof-ipc4/lnl",
- 	},
- 	.default_tplg_path = {
--		[SOF_INTEL_IPC4] = "intel/sof-ace-tplg",
-+		[SOF_IPC_TYPE_4] = "intel/sof-ace-tplg",
- 	},
- 	.default_fw_filename = {
--		[SOF_INTEL_IPC4] = "sof-lnl.ri",
-+		[SOF_IPC_TYPE_4] = "sof-lnl.ri",
- 	},
- 	.nocodec_tplg_filename = "sof-lnl-nocodec.tplg",
- 	.ops = &sof_lnl_ops,
-diff --git a/sound/soc/sof/intel/pci-mtl.c b/sound/soc/sof/intel/pci-mtl.c
-index 7868b0827e84..235e31a26106 100644
---- a/sound/soc/sof/intel/pci-mtl.c
-+++ b/sound/soc/sof/intel/pci-mtl.c
-@@ -29,20 +29,20 @@ static const struct sof_dev_desc mtl_desc = {
- 	.resindex_imr_base      = -1,
- 	.irqindex_host_ipc      = -1,
- 	.chip_info = &mtl_chip_info,
--	.ipc_supported_mask	= BIT(SOF_INTEL_IPC4),
--	.ipc_default		= SOF_INTEL_IPC4,
-+	.ipc_supported_mask	= BIT(SOF_IPC_TYPE_4),
-+	.ipc_default		= SOF_IPC_TYPE_4,
- 	.dspless_mode_supported	= true,		/* Only supported for HDaudio */
- 	.default_fw_path = {
--		[SOF_INTEL_IPC4] = "intel/sof-ipc4/mtl",
-+		[SOF_IPC_TYPE_4] = "intel/sof-ipc4/mtl",
- 	},
- 	.default_lib_path = {
--		[SOF_INTEL_IPC4] = "intel/sof-ipc4-lib/mtl",
-+		[SOF_IPC_TYPE_4] = "intel/sof-ipc4-lib/mtl",
- 	},
- 	.default_tplg_path = {
--		[SOF_INTEL_IPC4] = "intel/sof-ace-tplg",
-+		[SOF_IPC_TYPE_4] = "intel/sof-ace-tplg",
- 	},
- 	.default_fw_filename = {
--		[SOF_INTEL_IPC4] = "sof-mtl.ri",
-+		[SOF_IPC_TYPE_4] = "sof-mtl.ri",
- 	},
- 	.nocodec_tplg_filename = "sof-mtl-nocodec.tplg",
- 	.ops = &sof_mtl_ops,
-diff --git a/sound/soc/sof/intel/pci-skl.c b/sound/soc/sof/intel/pci-skl.c
-index a6588b138a8c..9dde439a0b0f 100644
---- a/sound/soc/sof/intel/pci-skl.c
-+++ b/sound/soc/sof/intel/pci-skl.c
-@@ -24,17 +24,17 @@ static struct sof_dev_desc skl_desc = {
- 	.resindex_imr_base	= -1,
- 	.chip_info = &skl_chip_info,
- 	.irqindex_host_ipc	= -1,
--	.ipc_supported_mask	= BIT(SOF_INTEL_IPC4),
--	.ipc_default		= SOF_INTEL_IPC4,
-+	.ipc_supported_mask	= BIT(SOF_IPC_TYPE_4),
-+	.ipc_default		= SOF_IPC_TYPE_4,
- 	.dspless_mode_supported	= true,		/* Only supported for HDaudio */
- 	.default_fw_path = {
--		[SOF_INTEL_IPC4] = "intel/avs/skl",
-+		[SOF_IPC_TYPE_4] = "intel/avs/skl",
- 	},
- 	.default_tplg_path = {
--		[SOF_INTEL_IPC4] = "intel/avs-tplg",
-+		[SOF_IPC_TYPE_4] = "intel/avs-tplg",
- 	},
- 	.default_fw_filename = {
--		[SOF_INTEL_IPC4] = "dsp_basefw.bin",
-+		[SOF_IPC_TYPE_4] = "dsp_basefw.bin",
- 	},
- 	.nocodec_tplg_filename = "sof-skl-nocodec.tplg",
- 	.ops = &sof_skl_ops,
-@@ -49,17 +49,17 @@ static struct sof_dev_desc kbl_desc = {
- 	.resindex_imr_base	= -1,
- 	.chip_info = &skl_chip_info,
- 	.irqindex_host_ipc	= -1,
--	.ipc_supported_mask	= BIT(SOF_INTEL_IPC4),
--	.ipc_default		= SOF_INTEL_IPC4,
-+	.ipc_supported_mask	= BIT(SOF_IPC_TYPE_4),
-+	.ipc_default		= SOF_IPC_TYPE_4,
- 	.dspless_mode_supported	= true,		/* Only supported for HDaudio */
- 	.default_fw_path = {
--		[SOF_INTEL_IPC4] = "intel/avs/kbl",
-+		[SOF_IPC_TYPE_4] = "intel/avs/kbl",
- 	},
- 	.default_tplg_path = {
--		[SOF_INTEL_IPC4] = "intel/avs-tplg",
-+		[SOF_IPC_TYPE_4] = "intel/avs-tplg",
- 	},
- 	.default_fw_filename = {
--		[SOF_INTEL_IPC4] = "dsp_basefw.bin",
-+		[SOF_IPC_TYPE_4] = "dsp_basefw.bin",
- 	},
- 	.nocodec_tplg_filename = "sof-kbl-nocodec.tplg",
- 	.ops = &sof_skl_ops,
-diff --git a/sound/soc/sof/intel/pci-tgl.c b/sound/soc/sof/intel/pci-tgl.c
-index d688f9373fb2..0660d4b2ac96 100644
---- a/sound/soc/sof/intel/pci-tgl.c
-+++ b/sound/soc/sof/intel/pci-tgl.c
-@@ -28,23 +28,23 @@ static const struct sof_dev_desc tgl_desc = {
- 	.resindex_imr_base      = -1,
- 	.irqindex_host_ipc      = -1,
- 	.chip_info = &tgl_chip_info,
--	.ipc_supported_mask	= BIT(SOF_IPC) | BIT(SOF_INTEL_IPC4),
--	.ipc_default		= SOF_IPC,
-+	.ipc_supported_mask	= BIT(SOF_IPC_TYPE_3) | BIT(SOF_IPC_TYPE_4),
-+	.ipc_default		= SOF_IPC_TYPE_3,
- 	.dspless_mode_supported	= true,		/* Only supported for HDaudio */
- 	.default_fw_path = {
--		[SOF_IPC] = "intel/sof",
--		[SOF_INTEL_IPC4] = "intel/avs/tgl",
-+		[SOF_IPC_TYPE_3] = "intel/sof",
-+		[SOF_IPC_TYPE_4] = "intel/avs/tgl",
- 	},
- 	.default_lib_path = {
--		[SOF_INTEL_IPC4] = "intel/avs-lib/tgl",
-+		[SOF_IPC_TYPE_4] = "intel/avs-lib/tgl",
- 	},
- 	.default_tplg_path = {
--		[SOF_IPC] = "intel/sof-tplg",
--		[SOF_INTEL_IPC4] = "intel/avs-tplg",
-+		[SOF_IPC_TYPE_3] = "intel/sof-tplg",
-+		[SOF_IPC_TYPE_4] = "intel/avs-tplg",
- 	},
- 	.default_fw_filename = {
--		[SOF_IPC] = "sof-tgl.ri",
--		[SOF_INTEL_IPC4] = "dsp_basefw.bin",
-+		[SOF_IPC_TYPE_3] = "sof-tgl.ri",
-+		[SOF_IPC_TYPE_4] = "dsp_basefw.bin",
- 	},
- 	.nocodec_tplg_filename = "sof-tgl-nocodec.tplg",
- 	.ops = &sof_tgl_ops,
-@@ -61,23 +61,23 @@ static const struct sof_dev_desc tglh_desc = {
- 	.resindex_imr_base      = -1,
- 	.irqindex_host_ipc      = -1,
- 	.chip_info = &tglh_chip_info,
--	.ipc_supported_mask	= BIT(SOF_IPC) | BIT(SOF_INTEL_IPC4),
--	.ipc_default		= SOF_IPC,
-+	.ipc_supported_mask	= BIT(SOF_IPC_TYPE_3) | BIT(SOF_IPC_TYPE_4),
-+	.ipc_default		= SOF_IPC_TYPE_3,
- 	.dspless_mode_supported	= true,		/* Only supported for HDaudio */
- 	.default_fw_path = {
--		[SOF_IPC] = "intel/sof",
--		[SOF_INTEL_IPC4] = "intel/avs/tgl-h",
-+		[SOF_IPC_TYPE_3] = "intel/sof",
-+		[SOF_IPC_TYPE_4] = "intel/avs/tgl-h",
- 	},
- 	.default_lib_path = {
--		[SOF_INTEL_IPC4] = "intel/avs-lib/tgl-h",
-+		[SOF_IPC_TYPE_4] = "intel/avs-lib/tgl-h",
- 	},
- 	.default_tplg_path = {
--		[SOF_IPC] = "intel/sof-tplg",
--		[SOF_INTEL_IPC4] = "intel/avs-tplg",
-+		[SOF_IPC_TYPE_3] = "intel/sof-tplg",
-+		[SOF_IPC_TYPE_4] = "intel/avs-tplg",
- 	},
- 	.default_fw_filename = {
--		[SOF_IPC] = "sof-tgl-h.ri",
--		[SOF_INTEL_IPC4] = "dsp_basefw.bin",
-+		[SOF_IPC_TYPE_3] = "sof-tgl-h.ri",
-+		[SOF_IPC_TYPE_4] = "dsp_basefw.bin",
- 	},
- 	.nocodec_tplg_filename = "sof-tgl-nocodec.tplg",
- 	.ops = &sof_tgl_ops,
-@@ -93,23 +93,23 @@ static const struct sof_dev_desc ehl_desc = {
- 	.resindex_imr_base      = -1,
- 	.irqindex_host_ipc      = -1,
- 	.chip_info = &ehl_chip_info,
--	.ipc_supported_mask	= BIT(SOF_IPC) | BIT(SOF_INTEL_IPC4),
--	.ipc_default		= SOF_IPC,
-+	.ipc_supported_mask	= BIT(SOF_IPC_TYPE_3) | BIT(SOF_IPC_TYPE_4),
-+	.ipc_default		= SOF_IPC_TYPE_3,
- 	.dspless_mode_supported	= true,		/* Only supported for HDaudio */
- 	.default_fw_path = {
--		[SOF_IPC] = "intel/sof",
--		[SOF_INTEL_IPC4] = "intel/avs/ehl",
-+		[SOF_IPC_TYPE_3] = "intel/sof",
-+		[SOF_IPC_TYPE_4] = "intel/avs/ehl",
- 	},
- 	.default_lib_path = {
--		[SOF_INTEL_IPC4] = "intel/avs-lib/ehl",
-+		[SOF_IPC_TYPE_4] = "intel/avs-lib/ehl",
- 	},
- 	.default_tplg_path = {
--		[SOF_IPC] = "intel/sof-tplg",
--		[SOF_INTEL_IPC4] = "intel/avs-tplg",
-+		[SOF_IPC_TYPE_3] = "intel/sof-tplg",
-+		[SOF_IPC_TYPE_4] = "intel/avs-tplg",
- 	},
- 	.default_fw_filename = {
--		[SOF_IPC] = "sof-ehl.ri",
--		[SOF_INTEL_IPC4] = "dsp_basefw.bin",
-+		[SOF_IPC_TYPE_3] = "sof-ehl.ri",
-+		[SOF_IPC_TYPE_4] = "dsp_basefw.bin",
- 	},
- 	.nocodec_tplg_filename = "sof-ehl-nocodec.tplg",
- 	.ops = &sof_tgl_ops,
-@@ -126,23 +126,23 @@ static const struct sof_dev_desc adls_desc = {
- 	.resindex_imr_base      = -1,
- 	.irqindex_host_ipc      = -1,
- 	.chip_info = &adls_chip_info,
--	.ipc_supported_mask	= BIT(SOF_IPC) | BIT(SOF_INTEL_IPC4),
--	.ipc_default		= SOF_IPC,
-+	.ipc_supported_mask	= BIT(SOF_IPC_TYPE_3) | BIT(SOF_IPC_TYPE_4),
-+	.ipc_default		= SOF_IPC_TYPE_3,
- 	.dspless_mode_supported	= true,		/* Only supported for HDaudio */
- 	.default_fw_path = {
--		[SOF_IPC] = "intel/sof",
--		[SOF_INTEL_IPC4] = "intel/avs/adl-s",
-+		[SOF_IPC_TYPE_3] = "intel/sof",
-+		[SOF_IPC_TYPE_4] = "intel/avs/adl-s",
- 	},
- 	.default_lib_path = {
--		[SOF_INTEL_IPC4] = "intel/avs-lib/adl-s",
-+		[SOF_IPC_TYPE_4] = "intel/avs-lib/adl-s",
- 	},
- 	.default_tplg_path = {
--		[SOF_IPC] = "intel/sof-tplg",
--		[SOF_INTEL_IPC4] = "intel/avs-tplg",
-+		[SOF_IPC_TYPE_3] = "intel/sof-tplg",
-+		[SOF_IPC_TYPE_4] = "intel/avs-tplg",
- 	},
- 	.default_fw_filename = {
--		[SOF_IPC] = "sof-adl-s.ri",
--		[SOF_INTEL_IPC4] = "dsp_basefw.bin",
-+		[SOF_IPC_TYPE_3] = "sof-adl-s.ri",
-+		[SOF_IPC_TYPE_4] = "dsp_basefw.bin",
- 	},
- 	.nocodec_tplg_filename = "sof-adl-nocodec.tplg",
- 	.ops = &sof_tgl_ops,
-@@ -159,23 +159,23 @@ static const struct sof_dev_desc adl_desc = {
- 	.resindex_imr_base      = -1,
- 	.irqindex_host_ipc      = -1,
- 	.chip_info = &tgl_chip_info,
--	.ipc_supported_mask	= BIT(SOF_IPC) | BIT(SOF_INTEL_IPC4),
--	.ipc_default		= SOF_IPC,
-+	.ipc_supported_mask	= BIT(SOF_IPC_TYPE_3) | BIT(SOF_IPC_TYPE_4),
-+	.ipc_default		= SOF_IPC_TYPE_3,
- 	.dspless_mode_supported	= true,		/* Only supported for HDaudio */
- 	.default_fw_path = {
--		[SOF_IPC] = "intel/sof",
--		[SOF_INTEL_IPC4] = "intel/avs/adl",
-+		[SOF_IPC_TYPE_3] = "intel/sof",
-+		[SOF_IPC_TYPE_4] = "intel/avs/adl",
- 	},
- 	.default_lib_path = {
--		[SOF_INTEL_IPC4] = "intel/avs-lib/adl",
-+		[SOF_IPC_TYPE_4] = "intel/avs-lib/adl",
- 	},
- 	.default_tplg_path = {
--		[SOF_IPC] = "intel/sof-tplg",
--		[SOF_INTEL_IPC4] = "intel/avs-tplg",
-+		[SOF_IPC_TYPE_3] = "intel/sof-tplg",
-+		[SOF_IPC_TYPE_4] = "intel/avs-tplg",
- 	},
- 	.default_fw_filename = {
--		[SOF_IPC] = "sof-adl.ri",
--		[SOF_INTEL_IPC4] = "dsp_basefw.bin",
-+		[SOF_IPC_TYPE_3] = "sof-adl.ri",
-+		[SOF_IPC_TYPE_4] = "dsp_basefw.bin",
- 	},
- 	.nocodec_tplg_filename = "sof-adl-nocodec.tplg",
- 	.ops = &sof_tgl_ops,
-@@ -192,23 +192,23 @@ static const struct sof_dev_desc adl_n_desc = {
- 	.resindex_imr_base      = -1,
- 	.irqindex_host_ipc      = -1,
- 	.chip_info = &tgl_chip_info,
--	.ipc_supported_mask	= BIT(SOF_IPC) | BIT(SOF_INTEL_IPC4),
--	.ipc_default		= SOF_IPC,
-+	.ipc_supported_mask	= BIT(SOF_IPC_TYPE_3) | BIT(SOF_IPC_TYPE_4),
-+	.ipc_default		= SOF_IPC_TYPE_3,
- 	.dspless_mode_supported	= true,		/* Only supported for HDaudio */
- 	.default_fw_path = {
--		[SOF_IPC] = "intel/sof",
--		[SOF_INTEL_IPC4] = "intel/avs/adl-n",
-+		[SOF_IPC_TYPE_3] = "intel/sof",
-+		[SOF_IPC_TYPE_4] = "intel/avs/adl-n",
- 	},
- 	.default_lib_path = {
--		[SOF_INTEL_IPC4] = "intel/avs-lib/adl-n",
-+		[SOF_IPC_TYPE_4] = "intel/avs-lib/adl-n",
- 	},
- 	.default_tplg_path = {
--		[SOF_IPC] = "intel/sof-tplg",
--		[SOF_INTEL_IPC4] = "intel/avs-tplg",
-+		[SOF_IPC_TYPE_3] = "intel/sof-tplg",
-+		[SOF_IPC_TYPE_4] = "intel/avs-tplg",
- 	},
- 	.default_fw_filename = {
--		[SOF_IPC] = "sof-adl-n.ri",
--		[SOF_INTEL_IPC4] = "dsp_basefw.bin",
-+		[SOF_IPC_TYPE_3] = "sof-adl-n.ri",
-+		[SOF_IPC_TYPE_4] = "dsp_basefw.bin",
- 	},
- 	.nocodec_tplg_filename = "sof-adl-nocodec.tplg",
- 	.ops = &sof_tgl_ops,
-@@ -225,23 +225,23 @@ static const struct sof_dev_desc rpls_desc = {
- 	.resindex_imr_base      = -1,
- 	.irqindex_host_ipc      = -1,
- 	.chip_info = &adls_chip_info,
--	.ipc_supported_mask	= BIT(SOF_IPC) | BIT(SOF_INTEL_IPC4),
--	.ipc_default		= SOF_IPC,
-+	.ipc_supported_mask	= BIT(SOF_IPC_TYPE_3) | BIT(SOF_IPC_TYPE_4),
-+	.ipc_default		= SOF_IPC_TYPE_3,
- 	.dspless_mode_supported	= true,		/* Only supported for HDaudio */
- 	.default_fw_path = {
--		[SOF_IPC] = "intel/sof",
--		[SOF_INTEL_IPC4] = "intel/avs/rpl-s",
-+		[SOF_IPC_TYPE_3] = "intel/sof",
-+		[SOF_IPC_TYPE_4] = "intel/avs/rpl-s",
- 	},
- 	.default_lib_path = {
--		[SOF_INTEL_IPC4] = "intel/avs-lib/rpl-s",
-+		[SOF_IPC_TYPE_4] = "intel/avs-lib/rpl-s",
- 	},
- 	.default_tplg_path = {
--		[SOF_IPC] = "intel/sof-tplg",
--		[SOF_INTEL_IPC4] = "intel/avs-tplg",
-+		[SOF_IPC_TYPE_3] = "intel/sof-tplg",
-+		[SOF_IPC_TYPE_4] = "intel/avs-tplg",
- 	},
- 	.default_fw_filename = {
--		[SOF_IPC] = "sof-rpl-s.ri",
--		[SOF_INTEL_IPC4] = "dsp_basefw.bin",
-+		[SOF_IPC_TYPE_3] = "sof-rpl-s.ri",
-+		[SOF_IPC_TYPE_4] = "dsp_basefw.bin",
- 	},
- 	.nocodec_tplg_filename = "sof-rpl-nocodec.tplg",
- 	.ops = &sof_tgl_ops,
-@@ -258,23 +258,23 @@ static const struct sof_dev_desc rpl_desc = {
- 	.resindex_imr_base      = -1,
- 	.irqindex_host_ipc      = -1,
- 	.chip_info = &tgl_chip_info,
--	.ipc_supported_mask	= BIT(SOF_IPC) | BIT(SOF_INTEL_IPC4),
--	.ipc_default		= SOF_IPC,
-+	.ipc_supported_mask	= BIT(SOF_IPC_TYPE_3) | BIT(SOF_IPC_TYPE_4),
-+	.ipc_default		= SOF_IPC_TYPE_3,
- 	.dspless_mode_supported	= true,		/* Only supported for HDaudio */
- 	.default_fw_path = {
--		[SOF_IPC] = "intel/sof",
--		[SOF_INTEL_IPC4] = "intel/avs/rpl",
-+		[SOF_IPC_TYPE_3] = "intel/sof",
-+		[SOF_IPC_TYPE_4] = "intel/avs/rpl",
- 	},
- 	.default_lib_path = {
--		[SOF_INTEL_IPC4] = "intel/avs-lib/rpl",
-+		[SOF_IPC_TYPE_4] = "intel/avs-lib/rpl",
- 	},
- 	.default_tplg_path = {
--		[SOF_IPC] = "intel/sof-tplg",
--		[SOF_INTEL_IPC4] = "intel/avs-tplg",
-+		[SOF_IPC_TYPE_3] = "intel/sof-tplg",
-+		[SOF_IPC_TYPE_4] = "intel/avs-tplg",
- 	},
- 	.default_fw_filename = {
--		[SOF_IPC] = "sof-rpl.ri",
--		[SOF_INTEL_IPC4] = "dsp_basefw.bin",
-+		[SOF_IPC_TYPE_3] = "sof-rpl.ri",
-+		[SOF_IPC_TYPE_4] = "dsp_basefw.bin",
- 	},
- 	.nocodec_tplg_filename = "sof-rpl-nocodec.tplg",
- 	.ops = &sof_tgl_ops,
-diff --git a/sound/soc/sof/intel/pci-tng.c b/sound/soc/sof/intel/pci-tng.c
-index 4ae4fe17cc0b..c90173003c2b 100644
---- a/sound/soc/sof/intel/pci-tng.c
-+++ b/sound/soc/sof/intel/pci-tng.c
-@@ -208,16 +208,16 @@ static const struct sof_dev_desc tng_desc = {
- 	.resindex_imr_base	= 0,
- 	.irqindex_host_ipc	= -1,
- 	.chip_info = &tng_chip_info,
--	.ipc_supported_mask	= BIT(SOF_IPC),
--	.ipc_default		= SOF_IPC,
-+	.ipc_supported_mask	= BIT(SOF_IPC_TYPE_3),
-+	.ipc_default		= SOF_IPC_TYPE_3,
- 	.default_fw_path = {
--		[SOF_IPC] = "intel/sof",
-+		[SOF_IPC_TYPE_3] = "intel/sof",
- 	},
- 	.default_tplg_path = {
--		[SOF_IPC] = "intel/sof-tplg",
-+		[SOF_IPC_TYPE_3] = "intel/sof-tplg",
- 	},
- 	.default_fw_filename = {
--		[SOF_IPC] = "sof-byt.ri",
-+		[SOF_IPC_TYPE_3] = "sof-byt.ri",
- 	},
- 	.nocodec_tplg_filename = "sof-byt.tplg",
- 	.ops = &sof_tng_ops,
-diff --git a/sound/soc/sof/intel/tgl.c b/sound/soc/sof/intel/tgl.c
-index bb9f20253c99..61dfc18a8fc0 100644
---- a/sound/soc/sof/intel/tgl.c
-+++ b/sound/soc/sof/intel/tgl.c
-@@ -66,7 +66,7 @@ int sof_tgl_ops_init(struct snd_sof_dev *sdev)
- 	/* probe/remove/shutdown */
- 	sof_tgl_ops.shutdown	= hda_dsp_shutdown_dma_flush;
- 
--	if (sdev->pdata->ipc_type == SOF_IPC) {
-+	if (sdev->pdata->ipc_type == SOF_IPC_TYPE_3) {
- 		/* doorbell */
- 		sof_tgl_ops.irq_thread	= cnl_ipc_irq_thread;
- 
-@@ -79,7 +79,7 @@ int sof_tgl_ops_init(struct snd_sof_dev *sdev)
- 		sof_tgl_ops.set_power_state = hda_dsp_set_power_state_ipc3;
- 	}
- 
--	if (sdev->pdata->ipc_type == SOF_INTEL_IPC4) {
-+	if (sdev->pdata->ipc_type == SOF_IPC_TYPE_4) {
- 		struct sof_ipc4_fw_data *ipc4_data;
- 
- 		sdev->private = devm_kzalloc(sdev->dev, sizeof(*ipc4_data), GFP_KERNEL);
+-#define SOF_IPC		SOF_IPC_TYPE_3
+-#define SOF_INTEL_IPC4	SOF_IPC_TYPE_4
+-
+ /*
+  * SOF Platform data.
+  */
 -- 
 2.42.0
 
