@@ -4,99 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6F9BACD5BBD
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Sep 2023 13:38:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7EA64CD5BC2
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Sep 2023 13:53:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3FC29DEE;
-	Tue, 19 Sep 2023 15:37:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3FC29DEE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8AF7BDEC;
+	Tue, 19 Sep 2023 15:52:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8AF7BDEC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1695130725;
-	bh=ZH6uY6a2Mw4JAFF7v6HzF3eW0YrN1hILL+o0z8aLjio=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	s=default; t=1695131577;
+	bh=+J3MG488bmnVB+qwR/tYZJ+rvOJbY2vNog81jESwLhE=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Cin/uolFXqacBuwVd+9bZZMtCL7UJvi1Tg8u50PfUcWcnp+/FB52QINfQrUoi5w+Y
-	 tRzwIM5ADnSBwAvF+tzN03Au8KamjKwM9Vg68x6ZmeZeC5nRAuv2QhcLl8aM8i7c6Z
-	 XLz5bLEvT7+265Ejp+7qOzIMp0lo7iecsXvDbsgk=
+	b=qbVVpKsn0DFQy18I2pkaBO/K7BMf8NlwvpEmO3sCxkM/f4TBKRlfjCz9OdnruQune
+	 EVXEVKg4HCl7I1iwHxFWaJ/CVr+U6IvVp/TLXv9SP0VXUFbYMQfvcUwF2e7xQvSPqH
+	 uXREPB5FYfk3ugo9raE0O/HeZBa+wmTSL0MIFwu8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DCD0DF80552; Tue, 19 Sep 2023 15:37:24 +0200 (CEST)
+	id B4291F80551; Tue, 19 Sep 2023 15:51:39 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 809E7F800F4;
-	Tue, 19 Sep 2023 15:37:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 339C8F8025A;
+	Tue, 19 Sep 2023 15:51:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 37AC1F8025A; Tue, 19 Sep 2023 15:37:19 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2001:67c:2178:6::1c])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 5FC6FF8025A; Tue, 19 Sep 2023 15:51:34 +0200 (CEST)
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C1857F800F4
-	for <alsa-devel@alsa-project.org>; Tue, 19 Sep 2023 15:37:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C1857F800F4
+	by alsa1.perex.cz (Postfix) with ESMTPS id B3625F80124
+	for <alsa-devel@alsa-project.org>; Tue, 19 Sep 2023 15:51:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B3625F80124
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=YgJtGdOA;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=gL5pX/yW
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 0402D21E13;
-	Tue, 19 Sep 2023 13:37:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1695130633;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=15KHoKmBUcMsVHEV2wbsNyPF7iDEgMYHmMYdas1SvYw=;
-	b=YgJtGdOA8qHFQwXnzOOEB24Lo3qC+Ewrt1ZFFKPhWtvUfGU32oV4uGrOh48iUx8Qsao2oI
-	xtoO5WVSanc5hSmvAfodPZVJ+EcBov0ZvQRTsJ1gw6KecdhCUe2h90HoetZ6VJ0wglFqHX
-	Fd5Mhfd2CuOF7vuC/jrW4vjK8WE1vhg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1695130633;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=15KHoKmBUcMsVHEV2wbsNyPF7iDEgMYHmMYdas1SvYw=;
-	b=gL5pX/yWruuHURgB0ES1Rpk5mUclSIp+D95HsmbEjk9IdA+ifiO3Fue/XQZv7RYcG8IkRS
-	NillHUauuwdJ2vDQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CFB49134F3;
-	Tue, 19 Sep 2023 13:37:12 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id T67FMQikCWU7OgAAMHmgww
-	(envelope-from <tiwai@suse.de>); Tue, 19 Sep 2023 13:37:12 +0000
-Date: Tue, 19 Sep 2023 15:37:12 +0200
-Message-ID: <87wmwmwagn.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Cc: tiwai@suse.com,
-	perex@perex.cz,
-	alsa-devel@alsa-project.org,
-	pierre-louis.bossart@linux.intel.com
+	dkim=pass (2048-bit key,
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=nW/vWI3v
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695131492; x=1726667492;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=+J3MG488bmnVB+qwR/tYZJ+rvOJbY2vNog81jESwLhE=;
+  b=nW/vWI3vdcsrdOk5Q5FrT1jwN/2JW1LBYHW+9hmAYaHjzWhXn0LcqXch
+   VwsJvkAhLMdCXdjfGcxQcbK4dM5cNjfhCvcV/BHMvlt7Tyg1oThzKZyzW
+   gv12dihmtu9Wy7hZWrvw9WBUuMqU5dcEa06QPLfjQW5WS/ffLU9m/Cf5G
+   rPT10GMDpubAZUkJR7FqtyVudqBVOcr706k5DGvGrl1WLtg2fo+okgqf2
+   wp3X0sTsK1H1dExm7AGSmUbi5FFJlP6f8ibc7/2DDPgkVWOGpF1YeBwq2
+   AYB05kIWB8lWSLsYNjitT+kXe6Nx3MhnKisgM62R0QFujSnUz+sm0SksB
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="359337936"
+X-IronPort-AV: E=Sophos;i="6.02,159,1688454000";
+   d="scan'208";a="359337936"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 19 Sep 2023 06:51:25 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="1076981257"
+X-IronPort-AV: E=Sophos;i="6.02,159,1688454000";
+   d="scan'208";a="1076981257"
+Received: from jelyouss-mobl.ger.corp.intel.com (HELO [10.249.47.85])
+ ([10.249.47.85])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 19 Sep 2023 06:51:23 -0700
+Message-ID: <5eafb0a8-b8a9-4d4e-81e8-8f4c35c4037e@linux.intel.com>
+Date: Tue, 19 Sep 2023 16:51:31 +0300
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH] ALSA: hda: hda_auto_parser: Always set codec->fixup_name
  when a quirk found
-In-Reply-To: <20230919132322.17352-1-peter.ujfalusi@linux.intel.com>
+Content-Language: en-US
+To: Takashi Iwai <tiwai@suse.de>
+Cc: tiwai@suse.com, perex@perex.cz, alsa-devel@alsa-project.org,
+ pierre-louis.bossart@linux.intel.com
 References: <20230919132322.17352-1-peter.ujfalusi@linux.intel.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Message-ID-Hash: QAWQNZ6WBYIMJBB2EFRKOAC2M5EDN6VY
-X-Message-ID-Hash: QAWQNZ6WBYIMJBB2EFRKOAC2M5EDN6VY
-X-MailFrom: tiwai@suse.de
+ <87wmwmwagn.wl-tiwai@suse.de>
+From: =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>
+In-Reply-To: <87wmwmwagn.wl-tiwai@suse.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: UOONT3XKBVMRV7EEK3Z25XGWR3LD6LSL
+X-Message-ID-Hash: UOONT3XKBVMRV7EEK3Z25XGWR3LD6LSL
+X-MailFrom: peter.ujfalusi@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -108,56 +95,64 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QAWQNZ6WBYIMJBB2EFRKOAC2M5EDN6VY/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UOONT3XKBVMRV7EEK3Z25XGWR3LD6LSL/>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, 19 Sep 2023 15:23:22 +0200,
-Peter Ujfalusi wrote:
+
+
+On 19/09/2023 16:37, Takashi Iwai wrote:
+> On Tue, 19 Sep 2023 15:23:22 +0200,
+> Peter Ujfalusi wrote:
+>>
+>> If a fixup is found via a quirk then the codec->fixup_name is only set if
+>> CONFIG_SND_DEBUG_VERBOSE is enabled, otherwise the fixup_name is set to
+>> NULL.
+>>
+>> This will result prints in __snd_hda_apply_fixup() when applying the found
+>> fixup for example:
+>> ehdaudio0D0: ALC236: Apply fix-func for (null)
 > 
-> If a fixup is found via a quirk then the codec->fixup_name is only set if
-> CONFIG_SND_DEBUG_VERBOSE is enabled, otherwise the fixup_name is set to
-> NULL.
+> Are you sure this doesn't break?  snd_pci_quirk.name is defined only
+> when CONFIG_SND_DEBUG_VERBOSE=y.
+
+Right, that might cause some issues (I have it enabled), hrm, but the
+print in __snd_hda_apply_fixup() is not much of a help in this case..
+
 > 
-> This will result prints in __snd_hda_apply_fixup() when applying the found
-> fixup for example:
-> ehdaudio0D0: ALC236: Apply fix-func for (null)
-
-Are you sure this doesn't break?  snd_pci_quirk.name is defined only
-when CONFIG_SND_DEBUG_VERBOSE=y.
-
-
-thanks,
-
-Takashi
-
-
-> Fixes: 73355ddd8775 ("ALSA: hda: Code refactoring snd_hda_pick_fixup()")
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-> ---
->  sound/pci/hda/hda_auto_parser.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
+> thanks,
 > 
-> diff --git a/sound/pci/hda/hda_auto_parser.c b/sound/pci/hda/hda_auto_parser.c
-> index 7c6b1fe8dfcc..7b1ddb8d40cb 100644
-> --- a/sound/pci/hda/hda_auto_parser.c
-> +++ b/sound/pci/hda/hda_auto_parser.c
-> @@ -1043,9 +1043,8 @@ void snd_hda_pick_fixup(struct hda_codec *codec,
->  
->   found_device:
->  	id = q->value;
-> -#ifdef CONFIG_SND_DEBUG_VERBOSE
->  	name = q->name;
-> -#endif
-> +
->  	codec_dbg(codec, "%s: picked fixup %s for %s %04x:%04x\n",
->  		  codec->core.chip_name, name ? name : "",
->  		  type, q->subvendor, q->subdevice);
-> -- 
-> 2.42.0
+> Takashi
 > 
+> 
+>> Fixes: 73355ddd8775 ("ALSA: hda: Code refactoring snd_hda_pick_fixup()")
+>> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+>> ---
+>>  sound/pci/hda/hda_auto_parser.c | 3 +--
+>>  1 file changed, 1 insertion(+), 2 deletions(-)
+>>
+>> diff --git a/sound/pci/hda/hda_auto_parser.c b/sound/pci/hda/hda_auto_parser.c
+>> index 7c6b1fe8dfcc..7b1ddb8d40cb 100644
+>> --- a/sound/pci/hda/hda_auto_parser.c
+>> +++ b/sound/pci/hda/hda_auto_parser.c
+>> @@ -1043,9 +1043,8 @@ void snd_hda_pick_fixup(struct hda_codec *codec,
+>>  
+>>   found_device:
+>>  	id = q->value;
+>> -#ifdef CONFIG_SND_DEBUG_VERBOSE
+>>  	name = q->name;
+>> -#endif
+>> +
+>>  	codec_dbg(codec, "%s: picked fixup %s for %s %04x:%04x\n",
+>>  		  codec->core.chip_name, name ? name : "",
+>>  		  type, q->subvendor, q->subdevice);
+>> -- 
+>> 2.42.0
+>>
+
+-- 
+Péter
