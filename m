@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4C103CD54AB
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Sep 2023 09:27:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5F32ACD54A9
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Sep 2023 09:28:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7EE86DF4;
-	Tue, 19 Sep 2023 11:27:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7EE86DF4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9A93EE89;
+	Tue, 19 Sep 2023 11:27:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9A93EE89
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1695115672;
-	bh=gqNqMU8X/cQOZ4VnxAWLkfXuNoHeEY4XAUAXlvMoSRA=;
+	s=default; t=1695115685;
+	bh=fGZLPAWqlG3G53PLSoARLx122sWQbTvmt81gM4cfCEA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=OukyNvAulynJ6T6hMgSGnX3mP6r6vW1/aDXrn4/gQx0fTDMlVWVXnGAAUsdy39c7o
-	 Z+Hh1L3TyTYRrLxxV0JS1FaTiE0MAD7QPDh52hp1S37OgUCwLJA9t8wrQovwLFK2M0
-	 EoV4yhXLLg+3VuQc5gtBnsGU5vuD9/VOB/lkRXsE=
+	b=t61boLodUjIIOz3bgsWVqt3s8RmwzCDGzTFObCRdy+0/xrCq37+W6XKLNmFyf7tHJ
+	 NwdFpNKdoGwPVKOroZqXKf80V/bJaUQ/tfWTZbIis8hDZjRH3KvNx7eCRCU/c1xmiQ
+	 07wn8QU9KD6X2u5VOq9bGecy36WYRyzvFZEe3UnI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9246AF805C4; Tue, 19 Sep 2023 11:24:47 +0200 (CEST)
+	id 48EECF805F0; Tue, 19 Sep 2023 11:24:51 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0D47FF805E2;
-	Tue, 19 Sep 2023 11:24:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C11B1F805E9;
+	Tue, 19 Sep 2023 11:24:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id EB8EEF805B0; Tue, 19 Sep 2023 11:24:36 +0200 (CEST)
+	id A1884F805BA; Tue, 19 Sep 2023 11:24:37 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 66BF0F80125
-	for <alsa-devel@alsa-project.org>; Tue, 19 Sep 2023 11:24:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 66BF0F80125
+	by alsa1.perex.cz (Postfix) with ESMTPS id 7BEF8F80579
+	for <alsa-devel@alsa-project.org>; Tue, 19 Sep 2023 11:24:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7BEF8F80579
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=XFni7Gfe
+ header.s=Intel header.b=CpF1vdhl
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695115470; x=1726651470;
+  t=1695115474; x=1726651474;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=gqNqMU8X/cQOZ4VnxAWLkfXuNoHeEY4XAUAXlvMoSRA=;
-  b=XFni7GfeouvWFVhd9yxc/3R/VEj6EIlDE4IgF9t/xw+3RjC5fwt9Pvqc
-   BBnH0HEp7czGzNGKqL/v3gex/OEGB6A/zYJktFiy+UsS+02G3OmgQbCTn
-   0NDk0oi+ojlWIWkpvzIGrfbfWMQR7dvoxzUtqAkVt1rW+Tai9eHA++qVT
-   Hvk2/xTu/y0JDaAH5lsamtOHTX8w1zN5Y1oXeXxvH28ptBYoSHu+zQWpw
-   GN+4s4uM1uM5QbPIFEaUinw83FcMPm1H2xKTQwClT1rveFf+DoV47vmgz
-   BCFy4WmWSHYERjiJKXio03+LBDQk6XBxF1fGpY6+t1QkqJcoz7WOJqVdW
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10837"; a="377205257"
+  bh=fGZLPAWqlG3G53PLSoARLx122sWQbTvmt81gM4cfCEA=;
+  b=CpF1vdhlvsXzoKuFSjjoFyIK/wla973v8irklQsXKyuMP0zFNPsJpMsh
+   3osMCiQkzr5pVNA4TxG2fWBMzu2I1IIw/iaw5maBz+TaMoTZwtgd5RDRP
+   LfrSYqCE23xCkyPeWfv+A+WMQdSI72hKlNFjtPQel7do2wKxZnZ/BvP6F
+   zfyfQJhsFgw8ofnHXCx20RnBwy/UOHHifup5hw1WzV5n8vWruR7P+b4ty
+   lKhfZpJuaXsGNZ//f0LmMNvgDFa6Tote0p9FYQxWDo3T1tVqTY8LDs8uK
+   +tKlHjiabihX8CQVzjDKGlNM9t/f4UgBhST18YwkGK0ULvI1eTFpT91XN
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10837"; a="377205265"
 X-IronPort-AV: E=Sophos;i="6.02,159,1688454000";
-   d="scan'208";a="377205257"
+   d="scan'208";a="377205265"
 Received: from fmsmga002.fm.intel.com ([10.253.24.26])
   by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Sep 2023 02:24:28 -0700
+ 19 Sep 2023 02:24:33 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10837"; a="861460308"
+X-IronPort-AV: E=McAfee;i="6600,9927,10837"; a="861460321"
 X-IronPort-AV: E=Sophos;i="6.02,159,1688454000";
-   d="scan'208";a="861460308"
+   d="scan'208";a="861460321"
 Received: from pzsolt-mobl1.ger.corp.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.249.47.169])
   by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Sep 2023 02:24:25 -0700
+ 19 Sep 2023 02:24:30 -0700
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com,
 	broonie@kernel.org
@@ -74,17 +74,18 @@ Cc: alsa-devel@alsa-project.org,
 	kai.vehmanen@linux.intel.com,
 	rander.wang@intel.com,
 	guennadi.liakhovetski@linux.intel.com
-Subject: [PATCH 7/9] ASoC: SOF: Intel: mtl: dump dsp stack
-Date: Tue, 19 Sep 2023 12:24:14 +0300
-Message-ID: <20230919092416.4137-8-peter.ujfalusi@linux.intel.com>
+Subject: [PATCH 9/9] ASoC: SOF: ipc4: handle EXCEPTION_CAUGHT notification
+ from firmware
+Date: Tue, 19 Sep 2023 12:24:16 +0300
+Message-ID: <20230919092416.4137-10-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20230919092416.4137-1-peter.ujfalusi@linux.intel.com>
 References: <20230919092416.4137-1-peter.ujfalusi@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 2TVEIFMKXFZSN7PBZUMGH4HSU25DDH4P
-X-Message-ID-Hash: 2TVEIFMKXFZSN7PBZUMGH4HSU25DDH4P
+Message-ID-Hash: JFB2VCUGEVV7WODVM7B7W77FV6BSSZRA
+X-Message-ID-Hash: JFB2VCUGEVV7WODVM7B7W77FV6BSSZRA
 X-MailFrom: peter.ujfalusi@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -97,7 +98,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2TVEIFMKXFZSN7PBZUMGH4HSU25DDH4P/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JFB2VCUGEVV7WODVM7B7W77FV6BSSZRA/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -108,9 +109,8 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Rander Wang <rander.wang@intel.com>
 
-Dump dsp stack with sof_ipc4_intel_dump_telemetry_state since dsp stack
-information is included by telemetry data. This also supports lnl since
-the mtl code is reused.
+Driver will receive exception IPC message and process it by
+snd_sof_dsp_panic.
 
 Signed-off-by: Rander Wang <rander.wang@intel.com>
 Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
@@ -119,30 +119,23 @@ Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 ---
- sound/soc/sof/intel/mtl.c | 3 +++
+ sound/soc/sof/ipc4.c | 3 +++
  1 file changed, 3 insertions(+)
 
-diff --git a/sound/soc/sof/intel/mtl.c b/sound/soc/sof/intel/mtl.c
-index f9412517eaf2..254dbbeac1d0 100644
---- a/sound/soc/sof/intel/mtl.c
-+++ b/sound/soc/sof/intel/mtl.c
-@@ -18,6 +18,7 @@
- #include "hda-ipc.h"
- #include "../sof-audio.h"
- #include "mtl.h"
-+#include "telemetry.h"
- 
- static const struct snd_sof_debugfs_map mtl_dsp_debugfs[] = {
- 	{"hda", HDA_DSP_HDA_BAR, 0, 0x4000, SOF_DEBUGFS_ACCESS_ALWAYS},
-@@ -320,6 +321,8 @@ void mtl_dsp_dump(struct snd_sof_dev *sdev, u32 flags)
- 	romdbgsts = snd_sof_dsp_read(sdev, HDA_DSP_BAR, MTL_DSP_REG_HFFLGPXQWY + 0x8 * 3);
- 	dev_printk(level, sdev->dev, "ROM feature bit%s enabled\n",
- 		   romdbgsts & BIT(24) ? "" : " not");
-+
-+	sof_ipc4_intel_dump_telemetry_state(sdev, flags);
- }
- 
- static bool mtl_dsp_primary_core_is_enabled(struct snd_sof_dev *sdev)
+diff --git a/sound/soc/sof/ipc4.c b/sound/soc/sof/ipc4.c
+index 82f2f196c9c2..3f4d57dba972 100644
+--- a/sound/soc/sof/ipc4.c
++++ b/sound/soc/sof/ipc4.c
+@@ -645,6 +645,9 @@ static void sof_ipc4_rx_msg(struct snd_sof_dev *sdev)
+ 	case SOF_IPC4_NOTIFY_LOG_BUFFER_STATUS:
+ 		sof_ipc4_mtrace_update_pos(sdev, SOF_IPC4_LOG_CORE_GET(ipc4_msg->primary));
+ 		break;
++	case SOF_IPC4_NOTIFY_EXCEPTION_CAUGHT:
++		snd_sof_dsp_panic(sdev, 0, true);
++		break;
+ 	default:
+ 		dev_dbg(sdev->dev, "Unhandled DSP message: %#x|%#x\n",
+ 			ipc4_msg->primary, ipc4_msg->extension);
 -- 
 2.42.0
 
