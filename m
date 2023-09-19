@@ -4,89 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F0E00CD54B2
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Sep 2023 10:34:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D5F47CD54B0
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Sep 2023 10:34:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CAE7FE7F;
-	Tue, 19 Sep 2023 12:33:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CAE7FE7F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 35372AE8;
+	Tue, 19 Sep 2023 12:33:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 35372AE8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1695119657;
-	bh=l09yDGcnzXEeClNs/xS4QqbqsXVO9LM/UmCa6wNknfA=;
+	s=default; t=1695119665;
+	bh=TBV7VBlbSg+AyI9gJvcQKM0umpAUUUn/foxc0duA4lM=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=nqBhLPx0TWBAbuIV/khuA9X1Nw/F14DCHN5L2xzIJljS7ZgwVgWSDqts6gYjXrPVf
-	 kt7XPxkGCnKUvsQYvRbhs1vUXjIccvIblLJ8VKW0pERo83SEzPgvlAjHruIM61jaoy
-	 Yua+bvCEYtS4e9/T/GwOnNaJB5httPp1mdvWeLwY=
+	b=qyoLzAA2Okuo2xISsEB9m/ySCnB/RUF09eDuDakglUESqDVWesND1JJli8DEhF2CF
+	 xiGobikcFzYkDYtu+sTCOqaDi+0Lqz3Xl8+w6iGVCRlxaGcId2auRdnIVD+y62Lm7Z
+	 ztTwuLS7H5GN/t+u6NUceqLL8xCqY5LB5bBjdhr8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8EE80F805C0; Tue, 19 Sep 2023 12:31:46 +0200 (CEST)
+	id 8957FF805D2; Tue, 19 Sep 2023 12:31:48 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 230D5F805C1;
-	Tue, 19 Sep 2023 12:31:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F0B1AF805C8;
+	Tue, 19 Sep 2023 12:31:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 32CE2F805B4; Tue, 19 Sep 2023 12:31:40 +0200 (CEST)
+	id F0BDCF805A1; Tue, 19 Sep 2023 12:31:40 +0200 (CEST)
 Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E1D56F80551
-	for <alsa-devel@alsa-project.org>; Tue, 19 Sep 2023 12:31:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E1D56F80551
+	by alsa1.perex.cz (Postfix) with ESMTPS id 0C0DAF80558
+	for <alsa-devel@alsa-project.org>; Tue, 19 Sep 2023 12:31:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0C0DAF80558
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=dVKV51Ha
+ header.s=PODMain02222019 header.b=q+X/DsTj
 Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
 	by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id
- 38J4RRCa031661;
-	Tue, 19 Sep 2023 05:31:19 -0500
+ 38J4RRCb031661;
+	Tue, 19 Sep 2023 05:31:20 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
 	:mime-version:content-transfer-encoding:content-type; s=
-	PODMain02222019; bh=ny+kWn1OMlivpfvutLz7uBLYoUEzNwaJVd7DQn728FU=; b=
-	dVKV51Havk5/WNH/QT+i0Vnpw9LMTidMz8S21LCVuuyuDgAZl54feif4sUlfc0T7
-	xM3CMZPE3a4EhHX1AZPZj+MACubTZJLaHrN0WIXOYoaZxeUw7wvDVjFQyU53CSX0
-	Mm/iKKB2FkqgXqrXOytr4JgVRIcHT/+ncgQ6mrfBjT2xfUcvTFtqr1Uh8xuUjW58
-	cNu5LEQ75vNmPi3FGVjbOY/9T3ZF1U1XbuWjSkOUqz5fMrHK6+XkKKmUrI97fSXE
-	Ea9AXn5hfgfIF2N3OCG8ZfEgdeko6TQQGG6tx/3FB52ARKzDMjsXfl2Twqu4LF+e
-	OqTse3kp9QX2K5aw66QTqg==
+	PODMain02222019; bh=Owv3MGKxi43WD2sBuhitoE9k62iaoJnCTY7E9ZslEyc=; b=
+	q+X/DsTjY0qdwFjSHgLivZRNEuPSlguJo7x6uRQ6ECsiu4QPFfqWrjtklP82gsIX
+	5p2zdlpZRVoLCdmCE96G71TIFLzBKQ0TRYvAyssYwS6Op2QIbbO1HDdp+WmP3gra
+	oOWAUfqTUr2L/yS8tJWv7wn8C/RT61jKlerAwbPfclECAp/Dkg5j2Rko0hsP8TNf
+	xzH/n8z5LO998/leyKpNkthpRugIG2n2UCHObDUGpHwAsXx0svpk1rHDiKKdgoiu
+	VovEjXiNNlwGYBnD2xPaJ2f2Aanv9kI+hJ6zlZJbUH3r/U22iffUFxz5FAAPYWeb
+	51Tm6AQQhfBiqI1zYhxNzw==
 Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3t59ry3p1h-2
+	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3t59ry3p1h-3
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 19 Sep 2023 05:31:19 -0500 (CDT)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
+	Tue, 19 Sep 2023 05:31:20 -0500 (CDT)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Tue, 19 Sep
  2023 11:31:16 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.37 via Frontend Transport; Tue, 19 Sep 2023 11:31:16 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.37 via Frontend
+ Transport; Tue, 19 Sep 2023 11:31:16 +0100
 Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 594983563;
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 97D92357E;
 	Tue, 19 Sep 2023 10:31:16 +0000 (UTC)
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
 To: <broonie@kernel.org>
 CC: <lgirdwood@gmail.com>, <robh+dt@kernel.org>,
         <krzysztof.kozlowski+dt@linaro.org>, <alsa-devel@alsa-project.org>,
         <devicetree@vger.kernel.org>, <patches@opensource.cirrus.com>
-Subject: [PATCH 1/5] dt-bindings: ASoC: cirrus,cs42l43: Update a couple of
- default values
-Date: Tue, 19 Sep 2023 11:31:12 +0100
-Message-ID: <20230919103116.580305-2-ckeepax@opensource.cirrus.com>
+Subject: [PATCH 5/5] ASoC: cs42l43: Extend timeout on bias sense timeout
+Date: Tue, 19 Sep 2023 11:31:16 +0100
+Message-ID: <20230919103116.580305-6-ckeepax@opensource.cirrus.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230919103116.580305-1-ckeepax@opensource.cirrus.com>
 References: <20230919103116.580305-1-ckeepax@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: adsKyA2nt2mWX-skmmLzAT8VMQg0zPlt
-X-Proofpoint-ORIG-GUID: adsKyA2nt2mWX-skmmLzAT8VMQg0zPlt
+X-Proofpoint-GUID: TBnGqPNena2gfzHQHpLl-HTcDJpprhtk
+X-Proofpoint-ORIG-GUID: TBnGqPNena2gfzHQHpLl-HTcDJpprhtk
 X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: SSYKCCKP2MR7FDBGX7HAUUJSQWE2TQBS
-X-Message-ID-Hash: SSYKCCKP2MR7FDBGX7HAUUJSQWE2TQBS
+Message-ID-Hash: ZCILIU6PRIXCPQDE4KS76J3RW37FUPL2
+X-Message-ID-Hash: ZCILIU6PRIXCPQDE4KS76J3RW37FUPL2
 X-MailFrom: prvs=4626caf035=ckeepax@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -99,7 +98,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SSYKCCKP2MR7FDBGX7HAUUJSQWE2TQBS/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZCILIU6PRIXCPQDE4KS76J3RW37FUPL2/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -108,37 +107,30 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The bias sense is being enabled by default in the driver, and the
-default detect time is being dropped slightly. Update the binding
-document to match.
+For very slow removals the current bias sense timeout is sometimes too
+short and unclamps the mic bias before the jack removal is properly
+detected by the tip detect, causing a pop. As bias sense should be
+tuned to deliver very few false positives, increase the timeout fairly
+dramatically to cover all but the most exaggerated removals.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 ---
- Documentation/devicetree/bindings/sound/cirrus,cs42l43.yaml | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/cs42l43-jack.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/cirrus,cs42l43.yaml b/Documentation/devicetree/bindings/sound/cirrus,cs42l43.yaml
-index 7a6de938b11d1..4fa22fa70ace5 100644
---- a/Documentation/devicetree/bindings/sound/cirrus,cs42l43.yaml
-+++ b/Documentation/devicetree/bindings/sound/cirrus,cs42l43.yaml
-@@ -83,7 +83,7 @@ properties:
-       Current at which the headset micbias sense clamp will engage, 0 to
-       disable.
-     enum: [ 0, 14, 23, 41, 50, 60, 68, 86, 95 ]
--    default: 0
-+    default: 14
+diff --git a/sound/soc/codecs/cs42l43-jack.c b/sound/soc/codecs/cs42l43-jack.c
+index 66923cf2fdaff..861f9ee671cdf 100644
+--- a/sound/soc/codecs/cs42l43-jack.c
++++ b/sound/soc/codecs/cs42l43-jack.c
+@@ -290,7 +290,7 @@ irqreturn_t cs42l43_bias_detect_clamp(int irq, void *data)
+ 	struct cs42l43_codec *priv = data;
  
-   cirrus,bias-ramp-ms:
-     description:
-@@ -97,7 +97,7 @@ properties:
-       Time in microseconds the type detection will run for. Long values will
-       cause more audible effects, but give more accurate detection.
-     enum: [ 20, 100, 1000, 10000, 50000, 75000, 100000, 200000 ]
--    default: 10000
-+    default: 1000
+ 	queue_delayed_work(system_wq, &priv->bias_sense_timeout,
+-			   msecs_to_jiffies(250));
++			   msecs_to_jiffies(1000));
  
-   cirrus,button-automute:
-     type: boolean
+ 	return IRQ_HANDLED;
+ }
 -- 
 2.39.2
 
