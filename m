@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6701ACD54A9
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Sep 2023 09:27:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4C103CD54AB
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Sep 2023 09:27:54 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 90C7EA4A;
-	Tue, 19 Sep 2023 11:26:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 90C7EA4A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7EE86DF4;
+	Tue, 19 Sep 2023 11:27:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7EE86DF4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1695115657;
-	bh=ohbNTmLqmHIzWj+nlHAKpIKEDJekGQWr1yZcA6umW4E=;
+	s=default; t=1695115672;
+	bh=gqNqMU8X/cQOZ4VnxAWLkfXuNoHeEY4XAUAXlvMoSRA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=KDDGrhoOyxBT4kYngGiKnwOekWNuNLqggM/LVf/wz3h85wu8b4brTr7S6MQ/Wkaau
-	 i+wBq2OYpHGbRECSJe6epU1emNKBy96c9s5KOqH6KeH/y+13mV5n7p6SsaFD3M3CQM
-	 UNCfgErSzVXh6DrNZQ4G2w9b7eZu4/eloe3U1qxQ=
+	b=OukyNvAulynJ6T6hMgSGnX3mP6r6vW1/aDXrn4/gQx0fTDMlVWVXnGAAUsdy39c7o
+	 Z+Hh1L3TyTYRrLxxV0JS1FaTiE0MAD7QPDh52hp1S37OgUCwLJA9t8wrQovwLFK2M0
+	 EoV4yhXLLg+3VuQc5gtBnsGU5vuD9/VOB/lkRXsE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 88B46F80564; Tue, 19 Sep 2023 11:24:45 +0200 (CEST)
+	id 9246AF805C4; Tue, 19 Sep 2023 11:24:47 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id ED172F80564;
-	Tue, 19 Sep 2023 11:24:44 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0D47FF805E2;
+	Tue, 19 Sep 2023 11:24:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CDA7BF805AD; Tue, 19 Sep 2023 11:24:35 +0200 (CEST)
+	id EB8EEF805B0; Tue, 19 Sep 2023 11:24:36 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E94ABF8055B
-	for <alsa-devel@alsa-project.org>; Tue, 19 Sep 2023 11:24:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E94ABF8055B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 66BF0F80125
+	for <alsa-devel@alsa-project.org>; Tue, 19 Sep 2023 11:24:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 66BF0F80125
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=ZDsnU3nL
+ header.s=Intel header.b=XFni7Gfe
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695115472; x=1726651472;
+  t=1695115470; x=1726651470;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=ohbNTmLqmHIzWj+nlHAKpIKEDJekGQWr1yZcA6umW4E=;
-  b=ZDsnU3nLS+HRUJJos60rZkXlsi3DOW2F74X1DoFT1gwrcLY4YTvxRjQp
-   8vJF59kqiyh9aLEd3nN9ORc7ykz+n0+Si2IQ8JpKNf8q0X7iWUmVvBBxT
-   wfHGh2z4T5z/qdJK/xP3GkI9r7u2+YXT6W1jOjU6tdeVrsBzE2IKxqxXs
-   0Nc1eU+4mWbUjz+uYrlxYoleryRtfa8jHtwDjiYT5xqfOdtnIU8ytvydj
-   y47akurWmSF/fBMtcXygLNF6hnSKzOOthw19cPGHTLCtKpz3birqM9mSp
-   rBszgF35pwTigCeKHVSmrVV3UXsZwGX0doUaL99FgPUxSNFrMaSpxlgK7
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10837"; a="377205260"
+  bh=gqNqMU8X/cQOZ4VnxAWLkfXuNoHeEY4XAUAXlvMoSRA=;
+  b=XFni7GfeouvWFVhd9yxc/3R/VEj6EIlDE4IgF9t/xw+3RjC5fwt9Pvqc
+   BBnH0HEp7czGzNGKqL/v3gex/OEGB6A/zYJktFiy+UsS+02G3OmgQbCTn
+   0NDk0oi+ojlWIWkpvzIGrfbfWMQR7dvoxzUtqAkVt1rW+Tai9eHA++qVT
+   Hvk2/xTu/y0JDaAH5lsamtOHTX8w1zN5Y1oXeXxvH28ptBYoSHu+zQWpw
+   GN+4s4uM1uM5QbPIFEaUinw83FcMPm1H2xKTQwClT1rveFf+DoV47vmgz
+   BCFy4WmWSHYERjiJKXio03+LBDQk6XBxF1fGpY6+t1QkqJcoz7WOJqVdW
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10837"; a="377205257"
 X-IronPort-AV: E=Sophos;i="6.02,159,1688454000";
-   d="scan'208";a="377205260"
+   d="scan'208";a="377205257"
 Received: from fmsmga002.fm.intel.com ([10.253.24.26])
   by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Sep 2023 02:24:30 -0700
+ 19 Sep 2023 02:24:28 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10837"; a="861460314"
+X-IronPort-AV: E=McAfee;i="6600,9927,10837"; a="861460308"
 X-IronPort-AV: E=Sophos;i="6.02,159,1688454000";
-   d="scan'208";a="861460314"
+   d="scan'208";a="861460308"
 Received: from pzsolt-mobl1.ger.corp.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.249.47.169])
   by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Sep 2023 02:24:28 -0700
+ 19 Sep 2023 02:24:25 -0700
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com,
 	broonie@kernel.org
@@ -74,18 +74,17 @@ Cc: alsa-devel@alsa-project.org,
 	kai.vehmanen@linux.intel.com,
 	rander.wang@intel.com,
 	guennadi.liakhovetski@linux.intel.com
-Subject: [PATCH 8/9] ASoC: SOF: Intel: hda: add ipc4 FW panic support on CAVS
- 2.5+ platforms
-Date: Tue, 19 Sep 2023 12:24:15 +0300
-Message-ID: <20230919092416.4137-9-peter.ujfalusi@linux.intel.com>
+Subject: [PATCH 7/9] ASoC: SOF: Intel: mtl: dump dsp stack
+Date: Tue, 19 Sep 2023 12:24:14 +0300
+Message-ID: <20230919092416.4137-8-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20230919092416.4137-1-peter.ujfalusi@linux.intel.com>
 References: <20230919092416.4137-1-peter.ujfalusi@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: R77YGF3ENTJ64WOQKWHQZHJOZRE4T6PU
-X-Message-ID-Hash: R77YGF3ENTJ64WOQKWHQZHJOZRE4T6PU
+Message-ID-Hash: 2TVEIFMKXFZSN7PBZUMGH4HSU25DDH4P
+X-Message-ID-Hash: 2TVEIFMKXFZSN7PBZUMGH4HSU25DDH4P
 X-MailFrom: peter.ujfalusi@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -98,7 +97,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/R77YGF3ENTJ64WOQKWHQZHJOZRE4T6PU/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2TVEIFMKXFZSN7PBZUMGH4HSU25DDH4P/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -109,9 +108,9 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Rander Wang <rander.wang@intel.com>
 
-Get the FW panic information from telemetry data in memory window and
-dump it to kernel log. The old platforms before CAVS 2.5+ don't support
-it since there is no support in FW for them.
+Dump dsp stack with sof_ipc4_intel_dump_telemetry_state since dsp stack
+information is included by telemetry data. This also supports lnl since
+the mtl code is reused.
 
 Signed-off-by: Rander Wang <rander.wang@intel.com>
 Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
@@ -120,67 +119,30 @@ Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 ---
- sound/soc/sof/intel/hda.c | 14 ++++++++++++++
- sound/soc/sof/intel/hda.h |  1 +
- sound/soc/sof/intel/tgl.c |  1 +
- 3 files changed, 16 insertions(+)
+ sound/soc/sof/intel/mtl.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
-index 15e6779efaa3..02c82ccb9f66 100644
---- a/sound/soc/sof/intel/hda.c
-+++ b/sound/soc/sof/intel/hda.c
-@@ -31,6 +31,7 @@
- #include "../sof-pci-dev.h"
- #include "../ops.h"
- #include "hda.h"
+diff --git a/sound/soc/sof/intel/mtl.c b/sound/soc/sof/intel/mtl.c
+index f9412517eaf2..254dbbeac1d0 100644
+--- a/sound/soc/sof/intel/mtl.c
++++ b/sound/soc/sof/intel/mtl.c
+@@ -18,6 +18,7 @@
+ #include "hda-ipc.h"
+ #include "../sof-audio.h"
+ #include "mtl.h"
 +#include "telemetry.h"
  
- #define CREATE_TRACE_POINTS
- #include <trace/events/sof_intel.h>
-@@ -731,6 +732,19 @@ void hda_dsp_dump(struct snd_sof_dev *sdev, u32 flags)
- 	}
+ static const struct snd_sof_debugfs_map mtl_dsp_debugfs[] = {
+ 	{"hda", HDA_DSP_HDA_BAR, 0, 0x4000, SOF_DEBUGFS_ACCESS_ALWAYS},
+@@ -320,6 +321,8 @@ void mtl_dsp_dump(struct snd_sof_dev *sdev, u32 flags)
+ 	romdbgsts = snd_sof_dsp_read(sdev, HDA_DSP_BAR, MTL_DSP_REG_HFFLGPXQWY + 0x8 * 3);
+ 	dev_printk(level, sdev->dev, "ROM feature bit%s enabled\n",
+ 		   romdbgsts & BIT(24) ? "" : " not");
++
++	sof_ipc4_intel_dump_telemetry_state(sdev, flags);
  }
  
-+void hda_ipc4_dsp_dump(struct snd_sof_dev *sdev, u32 flags)
-+{
-+	char *level = (flags & SOF_DBG_DUMP_OPTIONAL) ? KERN_DEBUG : KERN_ERR;
-+
-+	/* print ROM/FW status */
-+	hda_dsp_get_state(sdev, level);
-+
-+	if (flags & SOF_DBG_DUMP_REGS)
-+		sof_ipc4_intel_dump_telemetry_state(sdev, flags);
-+	else
-+		hda_dsp_dump_ext_rom_status(sdev, level, flags);
-+}
-+
- static bool hda_check_ipc_irq(struct snd_sof_dev *sdev)
- {
- 	const struct sof_intel_dsp_desc *chip;
-diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
-index 2b228c63905b..7c575ba9462c 100644
---- a/sound/soc/sof/intel/hda.h
-+++ b/sound/soc/sof/intel/hda.h
-@@ -603,6 +603,7 @@ int hda_dsp_shutdown_dma_flush(struct snd_sof_dev *sdev);
- int hda_dsp_shutdown(struct snd_sof_dev *sdev);
- int hda_dsp_set_hw_params_upon_resume(struct snd_sof_dev *sdev);
- void hda_dsp_dump(struct snd_sof_dev *sdev, u32 flags);
-+void hda_ipc4_dsp_dump(struct snd_sof_dev *sdev, u32 flags);
- void hda_ipc_dump(struct snd_sof_dev *sdev);
- void hda_ipc_irq_dump(struct snd_sof_dev *sdev);
- void hda_dsp_d0i3_work(struct work_struct *work);
-diff --git a/sound/soc/sof/intel/tgl.c b/sound/soc/sof/intel/tgl.c
-index bb9f20253c99..4a61f6d28ae5 100644
---- a/sound/soc/sof/intel/tgl.c
-+++ b/sound/soc/sof/intel/tgl.c
-@@ -102,6 +102,7 @@ int sof_tgl_ops_init(struct snd_sof_dev *sdev)
- 
- 		/* debug */
- 		sof_tgl_ops.ipc_dump	= cnl_ipc4_dump;
-+		sof_tgl_ops.dbg_dump	= hda_ipc4_dsp_dump;
- 
- 		sof_tgl_ops.set_power_state = hda_dsp_set_power_state_ipc4;
- 	}
+ static bool mtl_dsp_primary_core_is_enabled(struct snd_sof_dev *sdev)
 -- 
 2.42.0
 
