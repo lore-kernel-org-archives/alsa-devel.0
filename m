@@ -4,94 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9A17DCD5BB3
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Sep 2023 12:59:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8CED9CD5BB3
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Sep 2023 13:09:29 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A305B9F6;
-	Tue, 19 Sep 2023 14:58:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A305B9F6
+	by alsa0.perex.cz (Postfix) with ESMTPS id F030FDEE;
+	Tue, 19 Sep 2023 15:08:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F030FDEE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1695128338;
-	bh=4JQuFHXJ7Ex21uNOAazLaWa6Tfm2I6MuhXE/mXoLkj8=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	s=default; t=1695128967;
+	bh=eHGLPuJLnfYPHZJ2U5imVvNKpQ7YRooOfvMe9p3pXJc=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=nsT8ZbAA8YBbdUbtPiUgnG/ex/u8GDBw0cgxm+S2zDtUKkXliLUDRRo/9Thnhrji+
-	 bWh5LdwRBJNVvzILvovsU2PV1yPuk2ZsWQ1QZL59n2wL+WYlFcd9H40A4L+9e0z8/4
-	 6xyIdGWRZBMww3dF+7k2W80KCConVqt2BjywoRGI=
+	b=p9BrzCT3Pj5xgEb0hZMYeW+w8tqf2eDGRf9qiMGSzumSpDiCxgVhlps7qKOp/HSf+
+	 ZtrUt+HGpSRLcEowaVePSsb7ZfaCa9ISCnV1JcV2fRRLDWuZ/G8lsiMFHDuAxPPNcY
+	 CZ6/2APPcnTml2TUt8K7ugI46sZ6Es0dQox2iYGY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6DB38F80124; Tue, 19 Sep 2023 14:57:31 +0200 (CEST)
+	id 9EE61F800F4; Tue, 19 Sep 2023 15:08:16 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B3339F80124;
-	Tue, 19 Sep 2023 14:57:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5C7B7F80494;
+	Tue, 19 Sep 2023 15:08:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 349CBF8025A; Tue, 19 Sep 2023 14:57:27 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 514FFF8025A; Tue, 19 Sep 2023 15:08:13 +0200 (CEST)
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 33DEDF80124
-	for <alsa-devel@alsa-project.org>; Tue, 19 Sep 2023 14:57:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 33DEDF80124
+	by alsa1.perex.cz (Postfix) with ESMTPS id 1865CF80124
+	for <alsa-devel@alsa-project.org>; Tue, 19 Sep 2023 15:08:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1865CF80124
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=AfqjLWtz;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=mWuLyzIh
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 6B71C228FD;
-	Tue, 19 Sep 2023 12:57:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1695128244;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=CY75Mpafmt1Qi9WbhVDr8SnWEFJkCNZfpdHmTun5NbI=;
-	b=AfqjLWtzwGHPv2DATHLqXdFMtc0dAFc/Aws0Kx4QoTdSZueCVFONAIGvo8IMipn9C9Dyw/
-	TeKBMRPwvObJk4fZ+GHx/XPPvsKw8Ps6fJboMcUQQShU4CFMNKa3J6LJvb+GtLlpIXBqjp
-	brjmnHnRcemlgFzM9QCMs+V+X+Qnqeo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1695128244;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=CY75Mpafmt1Qi9WbhVDr8SnWEFJkCNZfpdHmTun5NbI=;
-	b=mWuLyzIhxRk/fYCjr0443lLWSHhPE8Kj9KAN0P+oX7igAsO46ef7hhgUrRkU1KUJXZBmxr
-	eVd8neDoQUM1SQAQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4127B13458;
-	Tue, 19 Sep 2023 12:57:24 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id Hbr/DrSaCWVfIwAAMHmgww
-	(envelope-from <tiwai@suse.de>); Tue, 19 Sep 2023 12:57:24 +0000
-Date: Tue, 19 Sep 2023 14:57:23 +0200
-Message-ID: <874jjqxqvg.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Kailang <kailang@realtek.com>
-Cc: " (alsa-devel@alsa-project.org)" <alsa-devel@alsa-project.org>
-Subject: Re: New Lenovo MTL platform
-In-Reply-To: <8d63c6e360124e3ea2523753050e6f05@realtek.com>
-References: <8d63c6e360124e3ea2523753050e6f05@realtek.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Message-ID-Hash: ULUIUG3JTAQ3VF5RIJQBXXUHCRU7ABPA
-X-Message-ID-Hash: ULUIUG3JTAQ3VF5RIJQBXXUHCRU7ABPA
-X-MailFrom: tiwai@suse.de
+	dkim=pass (2048-bit key,
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=eB7X0fO3
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695128891; x=1726664891;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=eHGLPuJLnfYPHZJ2U5imVvNKpQ7YRooOfvMe9p3pXJc=;
+  b=eB7X0fO32nASimGGiUJcA+j70Yh00r1dNwO4ZmadLM1LeFE/GBIlMYwY
+   XivSfyrXhC+IQ8mxz4ASJRIBnfU+HbQOHexT4OuHS3m2QB/iZi75ALi4Z
+   mvXfhLJCpIH3qBsyJWumRzb9ghH1gozAnTnvUm/0gkij9woalkzwjm1KI
+   85cYjRAnD2mS0pDHWfbo3awGln/Hptv7HaouIBpPiHp8eTgCxddH69So7
+   ExDgtoCdFcRQf3Wxv9vtaUUw0uIVB3gKkfZ/cfBnk3Jeo3jdai6K9Os6F
+   7Uv2I1eEEtPu0aUibvsLUzChVX9x0ghrBMUioeYrywHEidONdB4CnawEn
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="370249836"
+X-IronPort-AV: E=Sophos;i="6.02,159,1688454000";
+   d="scan'208";a="370249836"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 19 Sep 2023 06:08:07 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10838"; a="861538519"
+X-IronPort-AV: E=Sophos;i="6.02,159,1688454000";
+   d="scan'208";a="861538519"
+Received: from lwatts-mobl1.amr.corp.intel.com (HELO [10.212.5.115])
+ ([10.212.5.115])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 19 Sep 2023 06:08:04 -0700
+Message-ID: <eae67380-4eb5-b5b2-d010-ce1f80bc91f9@linux.intel.com>
+Date: Tue, 19 Sep 2023 08:42:29 -0400
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.15.1
+Subject: Re: [PATCH v2 2/2] ASoC: codecs: Add Richtek rtq9128audio amplifier
+ support
+To: cy_huang@richtek.com, Mark Brown <broonie@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ Allen Lin <allen_lin@richtek.com>, alsa-devel@alsa-project.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1695086301-10376-1-git-send-email-cy_huang@richtek.com>
+ <1695086301-10376-3-git-send-email-cy_huang@richtek.com>
+Content-Language: en-US
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <1695086301-10376-3-git-send-email-cy_huang@richtek.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: GTZ7TNQTIFC7B2THGL5Y5Y6ID2ZLPLTS
+X-Message-ID-Hash: GTZ7TNQTIFC7B2THGL5Y5Y6ID2ZLPLTS
+X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -103,7 +100,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ULUIUG3JTAQ3VF5RIJQBXXUHCRU7ABPA/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GTZ7TNQTIFC7B2THGL5Y5Y6ID2ZLPLTS/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -112,15 +109,20 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, 19 Sep 2023 10:39:39 +0200,
-Kailang wrote:
-> 
-> Hi Takashi,
-> 
-> SSID:0x231f Lenovo new MTL platform.
-> Attach patch will support it.
 
-Thanks, applied now.
+> +static int rtq9128_i2c_write(void *context, const void *data, size_t count)
+> +{
+> +	struct device *dev = context;
+> +	struct i2c_client *i2c = to_i2c_client(dev);
+> +	u8 reg = *(u8 *)data;
+> +	int rg_size;
+> +
+> +	BUG_ON(count != 5);
 
+is this really necessary? Just log and error and return?
+same comments for other functions
 
-Takashi
+> +	rg_size = rtq9128_get_reg_size(reg);
+> +	return i2c_smbus_write_i2c_block_data(i2c, reg, rg_size, data + count - rg_size);
+> +}
+
