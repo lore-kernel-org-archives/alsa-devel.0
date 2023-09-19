@@ -4,66 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D78F4CD54B0
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Sep 2023 10:43:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C420CCD54B0
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Sep 2023 10:44:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B99D9DF6;
-	Tue, 19 Sep 2023 12:42:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B99D9DF6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 720F7E88;
+	Tue, 19 Sep 2023 12:43:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 720F7E88
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1695120229;
-	bh=FPj8xAZ/tX0/uiWeQ1XcYGgFLfr0YGFIH6xExBsUNdw=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=jPXUooXFV0BGQn/a3PQflJ8L2nEpH5X1FhmRFNJDWIgUtZDbXtKiZ3fnPQRKfwtQi
-	 PUxg2829T0jWW6mag1tZy7diGPF4HmclnvX3TFVg6hapnlGibZCFHwrZkwFZgg6And
-	 txp4Q0D93XTg5R5E4IHJZm55k0v5CYJhmRE/rt7E=
+	s=default; t=1695120251;
+	bh=XeM5jYckyNPNZtwb/IMsh7m3Ugxqvetbv3NndgCDPe4=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=Kxaxy0ES6rORbgPalpCyb8MDeGVfW88NxygbVYbPdxB6QrP9Odrk/B8biUV0cdQXe
+	 3tDdfpNwSQpUHLW23smMra3XlHgrjchWqeZisbrlzfyZjnTW35hNX2PChjRhrrmmXs
+	 H+U/VF8k7ZtYcYEmyWrn1mnEXW3TnhdwHX/Flu2I=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A12EBF80494; Tue, 19 Sep 2023 12:42:30 +0200 (CEST)
+	id CF8BCF80570; Tue, 19 Sep 2023 12:42:34 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 03CD8F80494;
-	Tue, 19 Sep 2023 12:42:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1B3DBF80563;
+	Tue, 19 Sep 2023 12:42:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C595DF80125; Tue, 19 Sep 2023 12:42:26 +0200 (CEST)
+	id 817E2F8025A; Tue, 19 Sep 2023 12:42:27 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 3EC67F80125
-	for <alsa-devel@alsa-project.org>; Tue, 19 Sep 2023 12:42:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3EC67F80125
+	by alsa1.perex.cz (Postfix) with ESMTPS id 26A00F800F4
+	for <alsa-devel@alsa-project.org>; Tue, 19 Sep 2023 12:42:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 26A00F800F4
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=kEvaOgTH
+ header.s=Intel header.b=JRW1wIYu
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695120144; x=1726656144;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=FPj8xAZ/tX0/uiWeQ1XcYGgFLfr0YGFIH6xExBsUNdw=;
-  b=kEvaOgTHcl1tM7uyox+nWbE9lQQZ7e/euUrw60ajWhQbQ3etLS6HkaSE
-   ys+8jmW2KnjN+20g1tM6L4WXid9g+WSxYkQhNjg+9WeMSQ9yC0miJTjvx
-   u0zIgoZDWPF9ykbw1OCaHB8oCEbsNxNueFJF/TAWcHchMozoMR/9EJFUO
-   mpr3N8KPuIDPH6YmIcQnEsAJyJqETZICk1x5kNoFU/cq2Ujmjd+BTd484
-   9z7yU8d01/cMLoFdbujSiAbscEbGeapbNqTR0DFrZPsOAIpFdkILWL9We
-   LmXF4nxyeKWl2pUraeF4yWcO/j2CGAYNK3OjV4B5JPbEBoLFz+OpWRdQ4
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10837"; a="382658435"
+  t=1695120146; x=1726656146;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=XeM5jYckyNPNZtwb/IMsh7m3Ugxqvetbv3NndgCDPe4=;
+  b=JRW1wIYuuytXaEiCFdki6LH7FpiQ4IqgHFSlMoa+h+R42j6DS8p3GN4J
+   LkbBsOF0z6Vw7fgNQC4po2iYWnoYRatPROO3yTTkvM6xiGom38OkNgL3K
+   0cdjI6zvFeAZBJbcPrH23Yny/48cMSOyHCZNxWO6UlQZy6DCru6yRAIwG
+   E0ZHNCoTBiWhrvxVxrf0M+od/iN5/N7LnE4pxsfysYOB916m4DLjO3XJU
+   vvoCiQYmGSkwHVq1DPJp34S3nPUOVS+3GuhGhilcJ5kg7MH5tgsGAVtew
+   Msm8QjXyLKmnrqzk/yKws4/nHkuD39354JAODkSJTWCgkiTCQIx7PM8CC
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10837"; a="382658443"
 X-IronPort-AV: E=Sophos;i="6.02,159,1688454000";
-   d="scan'208";a="382658435"
+   d="scan'208";a="382658443"
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
   by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Sep 2023 03:42:21 -0700
+ 19 Sep 2023 03:42:23 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10837"; a="722823178"
+X-IronPort-AV: E=McAfee;i="6600,9927,10837"; a="722823187"
 X-IronPort-AV: E=Sophos;i="6.02,159,1688454000";
-   d="scan'208";a="722823178"
+   d="scan'208";a="722823187"
 Received: from mokashi-mobl1.ger.corp.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.252.50.26])
   by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Sep 2023 03:42:18 -0700
+ 19 Sep 2023 03:42:21 -0700
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com,
 	broonie@kernel.org
@@ -73,14 +74,16 @@ Cc: alsa-devel@alsa-project.org,
 	kai.vehmanen@linux.intel.com,
 	daniel.baluta@nxp.com,
 	rander.wang@intel.com
-Subject: [PATCH 0/9] ASoC: SOF: Use generic IPC type identifiers
-Date: Tue, 19 Sep 2023 13:42:17 +0300
-Message-ID: <20230919104226.32239-1-peter.ujfalusi@linux.intel.com>
+Subject: [PATCH 1/9] ASoC: SOF: Introduce generic names for IPC types
+Date: Tue, 19 Sep 2023 13:42:18 +0300
+Message-ID: <20230919104226.32239-2-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20230919104226.32239-1-peter.ujfalusi@linux.intel.com>
+References: <20230919104226.32239-1-peter.ujfalusi@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: QGIRASOXWEX3FJRM7FN2CVYQDZ2PFDFO
-X-Message-ID-Hash: QGIRASOXWEX3FJRM7FN2CVYQDZ2PFDFO
+Message-ID-Hash: DUZ47GO43PGORCIJE3ZPDL2QYD4ANZE6
+X-Message-ID-Hash: DUZ47GO43PGORCIJE3ZPDL2QYD4ANZE6
 X-MailFrom: peter.ujfalusi@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -93,7 +96,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QGIRASOXWEX3FJRM7FN2CVYQDZ2PFDFO/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DUZ47GO43PGORCIJE3ZPDL2QYD4ANZE6/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -102,69 +105,42 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi,
+Change the enum names for the IPC types to be more descriptive and drop
+tying the IPC4 to Intel SoCs.
 
-rename the IPC type defines to be more generic and intuitive:
-SOF_IPC -> SOF_IPC_TYPE_3
-SOF_INTEL_IPC4 -> SOF_IPC_TYPE_4
+Add defines to avoid build breakage while the related code is
+modified to use the new enum names.
 
-No functional change, just renaming all around.
-
-Regards,
-Peter
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Reviewed-by: Daniel Baluta <daniel.baluta@nxp.com>
+Reviewed-by: Rander Wang <rander.wang@intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
-Peter Ujfalusi (9):
-  ASoC: SOF: Introduce generic names for IPC types
-  ASoC: SOF: sof-pci-dev: Update the ipc_type module parameter
-    description
-  ASoC: SOF: Kconfig: Rename SND_SOC_SOF_INTEL_IPC4 to SND_SOC_SOF_IPC4
-  ASoC: SOF: Use generic names for IPC types
-  ASoC: SOF: amd: Use generic names for IPC types
-  ASoC: SOF: imx: Use generic names for IPC types
-  ASoC: SOF: Intel: Use generic names for IPC types
-  ASoC: SOF: mediatek: Use generic names for IPC types
-  ASoC: SOF: Drop unused IPC type defines
+ include/sound/sof.h | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
- include/sound/sof.h                         |   4 +-
- sound/soc/sof/Kconfig                       |   2 +-
- sound/soc/sof/Makefile                      |   4 +-
- sound/soc/sof/amd/pci-rmb.c                 |  10 +-
- sound/soc/sof/amd/pci-rn.c                  |  10 +-
- sound/soc/sof/amd/pci-vangogh.c             |  10 +-
- sound/soc/sof/imx/imx8.c                    |  20 +--
- sound/soc/sof/imx/imx8m.c                   |  10 +-
- sound/soc/sof/imx/imx8ulp.c                 |  10 +-
- sound/soc/sof/intel/Kconfig                 |  14 +-
- sound/soc/sof/intel/apl.c                   |   4 +-
- sound/soc/sof/intel/bdw.c                   |  10 +-
- sound/soc/sof/intel/byt.c                   |  30 ++--
- sound/soc/sof/intel/cnl.c                   |   4 +-
- sound/soc/sof/intel/hda-dai-ops.c           |   4 +-
- sound/soc/sof/intel/hda-dai.c               |   4 +-
- sound/soc/sof/intel/hda-loader.c            |   2 +-
- sound/soc/sof/intel/hda.c                   |   2 +-
- sound/soc/sof/intel/icl.c                   |   4 +-
- sound/soc/sof/intel/pci-apl.c               |  36 ++---
- sound/soc/sof/intel/pci-cnl.c               |  54 ++++----
- sound/soc/sof/intel/pci-icl.c               |  36 ++---
- sound/soc/sof/intel/pci-lnl.c               |  10 +-
- sound/soc/sof/intel/pci-mtl.c               |  12 +-
- sound/soc/sof/intel/pci-skl.c               |  20 +--
- sound/soc/sof/intel/pci-tgl.c               | 144 ++++++++++----------
- sound/soc/sof/intel/pci-tng.c               |  10 +-
- sound/soc/sof/intel/tgl.c                   |   4 +-
- sound/soc/sof/ipc.c                         |   6 +-
- sound/soc/sof/ipc3-dtrace.c                 |   2 +-
- sound/soc/sof/mediatek/mt8186/mt8186.c      |  20 +--
- sound/soc/sof/mediatek/mt8195/mt8195.c      |  10 +-
- sound/soc/sof/sof-acpi-dev.c                |   8 +-
- sound/soc/sof/sof-client-ipc-msg-injector.c |   4 +-
- sound/soc/sof/sof-client-probes.c           |   6 +-
- sound/soc/sof/sof-client.c                  |  26 ++--
- sound/soc/sof/sof-of-dev.c                  |   6 +-
- sound/soc/sof/sof-pci-dev.c                 |   2 +-
- 38 files changed, 286 insertions(+), 288 deletions(-)
-
+diff --git a/include/sound/sof.h b/include/sound/sof.h
+index 51294f2ba302..31121c6df027 100644
+--- a/include/sound/sof.h
++++ b/include/sound/sof.h
+@@ -52,11 +52,14 @@ enum sof_dsp_power_states {
+ 
+ /* Definitions for multiple IPCs */
+ enum sof_ipc_type {
+-	SOF_IPC,
+-	SOF_INTEL_IPC4,
++	SOF_IPC_TYPE_3,
++	SOF_IPC_TYPE_4,
+ 	SOF_IPC_TYPE_COUNT
+ };
+ 
++#define SOF_IPC		SOF_IPC_TYPE_3
++#define SOF_INTEL_IPC4	SOF_IPC_TYPE_4
++
+ /*
+  * SOF Platform data.
+  */
 -- 
 2.42.0
 
