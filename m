@@ -4,67 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 51AE4CD54AF
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Sep 2023 10:20:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5D915CD54AF
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Sep 2023 10:32:52 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D47D9E12;
-	Tue, 19 Sep 2023 12:19:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D47D9E12
+	by alsa0.perex.cz (Postfix) with ESMTPS id 34279E10;
+	Tue, 19 Sep 2023 12:32:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 34279E10
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1695118831;
-	bh=BYDHLrPl8EYUabIrQ6D85MIOWoL331Ahepp5mC65R/4=;
-	h=From:To:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=cxOD8ww7Tar+ukxLG8ZxngnqMVJBT3UjcgZ6mRCB9npitsNgZ1DzGOnfjAGoJi5Ku
-	 u857O7djURZo4seuxifjJwyXWjc7XflPxGQfxe2pd5O/mghEjx/uBRvxqxw1Uc7Sn5
-	 1E+qDD1mw8IqvX1SDHUW9KQEybgA/iaWAO08ljwk=
+	s=default; t=1695119570;
+	bh=Cj6S3Tosfu1CFPwdQuX2+GhSEmgcO+nYQK2tZvvKHnU=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=QPkD9UyA2YGT0XsFcEGHoMIUgXloq/e/pu7nUXGL6HSy7yue+p0YWImilbTptmulk
+	 nkzJlEGkup0YooFsCv5CCM8DL/e8Teh+EZA7hrPLiSvTs0bYcJ0ev5dNpoQvGbjuQ5
+	 zEeRHzFDZaX9PIFTcXYPg6xlN0/F/PBvnkXmZVGo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 35759F8055A; Tue, 19 Sep 2023 12:19:05 +0200 (CEST)
+	id 03240F80570; Tue, 19 Sep 2023 12:31:28 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B15BFF8025A;
-	Tue, 19 Sep 2023 12:19:04 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5F085F801F5;
+	Tue, 19 Sep 2023 12:31:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 55A87F8025A; Tue, 19 Sep 2023 12:19:01 +0200 (CEST)
-Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
+	id 66C2CF8055A; Tue, 19 Sep 2023 12:31:23 +0200 (CEST)
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 6D4B4F80125
-	for <alsa-devel@alsa-project.org>; Tue, 19 Sep 2023 12:18:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6D4B4F80125
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id A9A191A07B0;
-	Tue, 19 Sep 2023 12:18:55 +0200 (CEST)
-Received: from aprdc01srsp001v.ap-rdc01.nxp.com
- (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
-	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 72F7A1A0313;
-	Tue, 19 Sep 2023 12:18:55 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net
- [10.192.224.44])
-	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id E62CA1820F58;
-	Tue, 19 Sep 2023 18:18:53 +0800 (+08)
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
-To: shengjiu.wang@gmail.com,
-	Xiubo.Lee@gmail.com,
-	festevam@gmail.com,
-	nicoleotsuka@gmail.com,
-	lgirdwood@gmail.com,
-	broonie@kernel.org,
-	perex@perex.cz,
-	tiwai@suse.com,
-	alsa-devel@alsa-project.org,
-	linuxppc-dev@lists.ozlabs.org,
-	linux-kernel@vger.kernel.org,
-	matuszpd@gmail.com
-Subject: [PATCH] ASoC: fsl_sai: Don't disable bitclock for i.MX8MP
-Date: Tue, 19 Sep 2023 17:42:13 +0800
-Message-Id: <1695116533-23287-1-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
-Message-ID-Hash: 6TYZHCAM3JP7UFRSSZAQB4ZR6TOZ2F5T
-X-Message-ID-Hash: 6TYZHCAM3JP7UFRSSZAQB4ZR6TOZ2F5T
-X-MailFrom: shengjiu.wang@nxp.com
+	by alsa1.perex.cz (Postfix) with ESMTPS id 09CB5F801F5
+	for <alsa-devel@alsa-project.org>; Tue, 19 Sep 2023 12:31:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 09CB5F801F5
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=QUJJRIiV
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695119477; x=1726655477;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=Cj6S3Tosfu1CFPwdQuX2+GhSEmgcO+nYQK2tZvvKHnU=;
+  b=QUJJRIiV2D0Uyld5AIplxRT3jGafMJ/AXFN2cqU/h6/EJaKFogPbtrLI
+   Mjl4HrwrqXRMld02ZeIz6ZlAjWKPnO4V5ANbEYzaK6jY/LcPxSj8RrWCf
+   nPsYj274PCh8PXYYze9YxhGlJR2rMtvRhTz3KgVPhp5aDtJc69q+gUBLj
+   N3YAG73SMcHRkIiOwRuSkPoMCAZhf5Cc388A6/Ki5KcH/bEFY6XQYL5Pq
+   uRUE+rtTWZ6HNbWvfKpFXYfuin2jhHFRO1e6JHYlr/BR9ncQj2ooLtY24
+   mtANXoJMOAMKZXS7NtR4Yaj0A1D04RdCRL1S/zts5Ywx8ltBeadM0zLte
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10837"; a="443990503"
+X-IronPort-AV: E=Sophos;i="6.02,159,1688454000";
+   d="scan'208";a="443990503"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 19 Sep 2023 03:31:11 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10837"; a="861486849"
+X-IronPort-AV: E=Sophos;i="6.02,159,1688454000";
+   d="scan'208";a="861486849"
+Received: from mokashi-mobl1.ger.corp.intel.com (HELO
+ pujfalus-desk.ger.corp.intel.com) ([10.252.50.26])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 19 Sep 2023 03:31:09 -0700
+From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+To: lgirdwood@gmail.com,
+	broonie@kernel.org
+Cc: alsa-devel@alsa-project.org,
+	pierre-louis.bossart@linux.intel.com,
+	ranjani.sridharan@linux.intel.com,
+	kai.vehmanen@linux.intel.com,
+	yung-chuan.liao@linux.intel.com
+Subject: [PATCH 1/3] ASoC: SOF: ipc4-topology: Add definition for generic
+ switch/enum control
+Date: Tue, 19 Sep 2023 13:31:13 +0300
+Message-ID: <20230919103115.30783-2-peter.ujfalusi@linux.intel.com>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20230919103115.30783-1-peter.ujfalusi@linux.intel.com>
+References: <20230919103115.30783-1-peter.ujfalusi@linux.intel.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: UO75RWFULNOD4VRJLMVQ2NUDX5X2J7FQ
+X-Message-ID-Hash: UO75RWFULNOD4VRJLMVQ2NUDX5X2J7FQ
+X-MailFrom: peter.ujfalusi@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -76,7 +96,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6TYZHCAM3JP7UFRSSZAQB4ZR6TOZ2F5T/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UO75RWFULNOD4VRJLMVQ2NUDX5X2J7FQ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -85,49 +105,62 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On i.MX8MP, the BCE and TERE bit are binding with mclk
-enablement, if BCE and TERE are cleared the MCLK also be
-disabled on output pin, that cause the external codec (wm8960)
-in wrong state.
+Currently IPC4 has no notion of a switch or enum type of control which is
+a generic concept in ALSA.
 
-Codec (wm8960) is using the mclk to generate PLL clock,
-if mclk is disabled before disabling PLL, the codec (wm8960)
-won't generate bclk and frameclk when sysclk switch to
-MCLK source in next test case.
+The generic support for these control types will be as follows:
+- large config is used to send the channel-value par array
+- param_id of a SWITCH type is 200
+- param_id of an ENUM type is 201
 
-The test case:
-$aplay -r44100 test1.wav (PLL source)
-$aplay -r48000 test2.wav (MCLK source)
-aplay: pcm_write:2127: write error: Input/output error
+Each module need to support a switch or/and enum must handle these
+universal param_ids.
+The message payload is described by struct sof_ipc4_control_msg_payload.
 
-Fixes: 269f399dc19f ("ASoC: fsl_sai: Disable bit clock with transmitter")
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/fsl/fsl_sai.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ sound/soc/sof/ipc4-topology.h | 19 ++++++++++++++++++-
+ 1 file changed, 18 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-index 1e4020fae05a..8a9a30dd31e2 100644
---- a/sound/soc/fsl/fsl_sai.c
-+++ b/sound/soc/fsl/fsl_sai.c
-@@ -710,10 +710,15 @@ static void fsl_sai_config_disable(struct fsl_sai *sai, int dir)
- {
- 	unsigned int ofs = sai->soc_data->reg_offset;
- 	bool tx = dir == TX;
--	u32 xcsr, count = 100;
-+	u32 xcsr, count = 100, mask;
+diff --git a/sound/soc/sof/ipc4-topology.h b/sound/soc/sof/ipc4-topology.h
+index d94f0ab4aee3..0a57b8ab3e08 100644
+--- a/sound/soc/sof/ipc4-topology.h
++++ b/sound/soc/sof/ipc4-topology.h
+@@ -319,7 +319,7 @@ struct sof_ipc4_copier {
+ /**
+  * struct sof_ipc4_ctrl_value_chan: generic channel mapped value data
+  * @channel: Channel ID
+- * @value: gain value
++ * @value: Value associated with @channel
+  */
+ struct sof_ipc4_ctrl_value_chan {
+ 	u32 channel;
+@@ -343,6 +343,23 @@ struct sof_ipc4_control_data {
+ 	};
+ };
+ 
++#define SOF_IPC4_SWITCH_CONTROL_PARAM_ID	200
++#define SOF_IPC4_ENUM_CONTROL_PARAM_ID		201
 +
-+	if (sai->soc_data->mclk_with_tere && sai->mclk_direction_output)
-+		mask = FSL_SAI_CSR_TERE;
-+	else
-+		mask = FSL_SAI_CSR_TERE | FSL_SAI_CSR_BCE;
- 
- 	regmap_update_bits(sai->regmap, FSL_SAI_xCSR(tx, ofs),
--			   FSL_SAI_CSR_TERE | FSL_SAI_CSR_BCE, 0);
-+			   mask, 0);
- 
- 	/* TERE will remain set till the end of current frame */
- 	do {
++/**
++ * struct sof_ipc4_control_msg_payload - IPC payload for kcontrol parameters
++ * @id: unique id of the control
++ * @num_elems: Number of elements in the chanv array
++ * @reserved: reserved for future use, must be set to 0
++ * @chanv: channel ID and value array
++ */
++struct sof_ipc4_control_msg_payload {
++	uint16_t id;
++	uint16_t num_elems;
++	uint32_t reserved[4];
++	DECLARE_FLEX_ARRAY(struct sof_ipc4_ctrl_value_chan, chanv);
++} __packed;
++
+ /**
+  * struct sof_ipc4_gain_data - IPC gain blob
+  * @channels: Channels
 -- 
-2.34.1
+2.42.0
 
