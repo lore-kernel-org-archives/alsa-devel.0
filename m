@@ -4,78 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8AA0ECD54AC
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Sep 2023 10:09:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 51AE4CD54AF
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Sep 2023 10:20:34 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0511FE0E;
-	Tue, 19 Sep 2023 12:08:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0511FE0E
+	by alsa0.perex.cz (Postfix) with ESMTPS id D47D9E12;
+	Tue, 19 Sep 2023 12:19:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D47D9E12
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1695118162;
-	bh=itUnSJXLn9yGvv/1aouTT5nNHJEY8NbOndeV8HQeOA4=;
-	h=Date:To:Cc:References:From:Subject:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=N5aGovWds+5XuyrNbksZTgGgMl2X85Wu+XLhtI0Y+34NvACjCHTIrCk4M1SNGsYYG
-	 zn6DGsc385L23UzWr9ZhptmLZCZwNSbUrq/lGpGV/kFm95t7gSN95HxXvgziDN/cgR
-	 xh8Ma5oWl67ZRw9+tKLnq8pnuCojtJ5iXts75Z18=
+	s=default; t=1695118831;
+	bh=BYDHLrPl8EYUabIrQ6D85MIOWoL331Ahepp5mC65R/4=;
+	h=From:To:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=cxOD8ww7Tar+ukxLG8ZxngnqMVJBT3UjcgZ6mRCB9npitsNgZ1DzGOnfjAGoJi5Ku
+	 u857O7djURZo4seuxifjJwyXWjc7XflPxGQfxe2pd5O/mghEjx/uBRvxqxw1Uc7Sn5
+	 1E+qDD1mw8IqvX1SDHUW9KQEybgA/iaWAO08ljwk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B0A5CF80549; Tue, 19 Sep 2023 12:08:10 +0200 (CEST)
+	id 35759F8055A; Tue, 19 Sep 2023 12:19:05 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4F8DBF8025A;
-	Tue, 19 Sep 2023 12:08:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B15BFF8025A;
+	Tue, 19 Sep 2023 12:19:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 24DD7F8025A; Tue, 19 Sep 2023 12:08:08 +0200 (CEST)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 55A87F8025A; Tue, 19 Sep 2023 12:19:01 +0200 (CEST)
+Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 058AFF80124
-	for <alsa-devel@alsa-project.org>; Tue, 19 Sep 2023 12:07:55 +0200 (CEST)
-Received: from mail1.perex.cz (localhost [127.0.0.1])
-	by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 75F8C11D3;
-	Tue, 19 Sep 2023 12:07:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 75F8C11D3
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
-	t=1695118074; bh=g71YaR2NX363/3hfBwRMHi2sPcajcnv/d3ZHoD5pU0Y=;
-	h=Date:To:Cc:References:From:Subject:In-Reply-To:From;
-	b=v8FSjQwX6wzLm6reWTLUtrTYTEqb9vLYBDTv5XB2hYRsGfxECHEYW+tGLO1MJqyvF
-	 JtafJO9S1svGnN64jHuMIB88lLClBr9D5B4vWd5yKMzIMo8W52I9TfHhDkPDh7mkBJ
-	 2Wj5GAOhPmJLceFblRZlxGEq/hDXJqHZW0lmwy0I=
-Received: from [192.168.100.98] (unknown [192.168.100.98])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	(Authenticated sender: perex)
-	by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
-	Tue, 19 Sep 2023 12:07:51 +0200 (CEST)
-Message-ID: <0e6aac35-eb1f-311d-b246-cec5aefab62c@perex.cz>
-Date: Tue, 19 Sep 2023 12:07:50 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Content-Language: en-US
-To: Cezary Rojewski <cezary.rojewski@intel.com>
-Cc: Takashi Iwai <tiwai@suse.de>,
- ALSA development <alsa-devel@alsa-project.org>
-References: <20230912162526.7138-1-perex@perex.cz>
- <fd153436-d128-c1b9-dee0-ba03224fa013@intel.com>
- <f7dfdbd9-b8c0-fd65-1280-256e9a82fca2@perex.cz>
- <63b3eb26-3a76-5993-bd65-c3461a264b95@intel.com>
- <de412997-627d-9ad2-b9c2-cbdb78b70f5d@perex.cz>
- <89b0c3e8-2834-ba69-831b-51ea0621edb6@intel.com>
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [RFC PATCH] ALSA: pcm: Introduce MSBITS subformat API extension
-In-Reply-To: <89b0c3e8-2834-ba69-831b-51ea0621edb6@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: U6DUNWFXWI5FEEDH57GHLEKT757AH6H5
-X-Message-ID-Hash: U6DUNWFXWI5FEEDH57GHLEKT757AH6H5
-X-MailFrom: perex@perex.cz
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6D4B4F80125
+	for <alsa-devel@alsa-project.org>; Tue, 19 Sep 2023 12:18:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6D4B4F80125
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id A9A191A07B0;
+	Tue, 19 Sep 2023 12:18:55 +0200 (CEST)
+Received: from aprdc01srsp001v.ap-rdc01.nxp.com
+ (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
+	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 72F7A1A0313;
+	Tue, 19 Sep 2023 12:18:55 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net
+ [10.192.224.44])
+	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id E62CA1820F58;
+	Tue, 19 Sep 2023 18:18:53 +0800 (+08)
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
+To: shengjiu.wang@gmail.com,
+	Xiubo.Lee@gmail.com,
+	festevam@gmail.com,
+	nicoleotsuka@gmail.com,
+	lgirdwood@gmail.com,
+	broonie@kernel.org,
+	perex@perex.cz,
+	tiwai@suse.com,
+	alsa-devel@alsa-project.org,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-kernel@vger.kernel.org,
+	matuszpd@gmail.com
+Subject: [PATCH] ASoC: fsl_sai: Don't disable bitclock for i.MX8MP
+Date: Tue, 19 Sep 2023 17:42:13 +0800
+Message-Id: <1695116533-23287-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
+Message-ID-Hash: 6TYZHCAM3JP7UFRSSZAQB4ZR6TOZ2F5T
+X-Message-ID-Hash: 6TYZHCAM3JP7UFRSSZAQB4ZR6TOZ2F5T
+X-MailFrom: shengjiu.wang@nxp.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -87,7 +76,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/U6DUNWFXWI5FEEDH57GHLEKT757AH6H5/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6TYZHCAM3JP7UFRSSZAQB4ZR6TOZ2F5T/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -96,111 +85,49 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 19. 09. 23 11:28, Cezary Rojewski wrote:
-> On 2023-09-18 5:04 PM, Jaroslav Kysela wrote:
->> On 18. 09. 23 15:55, Cezary Rojewski wrote:
-> 
-> ...
-> 
->>>> This is for a special case when the drivers do not set
->>>> snd_pcm_hw_constraint_subformats (all current drivers). In this case,
->>>> the default is to handle STD and MAX subformat bits.
->>>>
->>>> This constraint should be applied only one time. So this prevents to
->>>> install it twice.
->>>
->>> I believe we could avoid special-case approach. Have a copy/intersection
->>> helpers in place and utilize iterations-with-sentinel-entry. Provided
->>> such in v2 of my series.
->>
->> I don't think that it's required to carry the format->subformat map in
->> struct snd_pcm_hardware. Only few drivers will use it, so the separate
->> constraint is fine. Also, you can remove a lot of your added code to the
->> pcm_misc and ASoC core (copy, masking, allocating) when the affected
->> drivers install the map using the constraint call.
-> 
-> I believe the question isn't how few or how many, but are there users or
-> not. The answer to that question is: there are users of the subformat
-> feature.
-> 
-> Adding an array of subformats to the snd_pcm_hardware makes things
-> explicit, example being sound/soc/intel/avs/pcm.c. That's a win from
-> maintenance point of view. Another thing is that we could utilize
-> subformat to drop msbits entirely in the future. To summarize, to make
-> subformat a first class citizen, we should avoid special-casing anything
-> related to it.
+On i.MX8MP, the BCE and TERE bit are binding with mclk
+enablement, if BCE and TERE are cleared the MCLK also be
+disabled on output pin, that cause the external codec (wm8960)
+in wrong state.
 
-I would argue that the snd_pcm_hardware is just a static template which is 
-refined by constraints (runtime) anyway. The new constraint which is called 
-directly in the PCM open callback means really minimal changes in the core 
-code and ASoC core code. We can implement more robust way on demand in future 
-when we have a better picture for the subformat mask usage.
+Codec (wm8960) is using the mclk to generate PLL clock,
+if mclk is disabled before disabling PLL, the codec (wm8960)
+won't generate bclk and frameclk when sysclk switch to
+MCLK source in next test case.
 
->> Few points:
->>
->> 1) PCM API interface changes should be separate, you mixing unused
->> helpers and separating vital functionality for drivers
-> 
-> What I could do is shuffle the code a bit e.g.: let snd_pcm_hw_copy() be
-> introduced along the ASoC changes. Frankly that was the initial approach
-> (forgotten to update the commit message of 04/17 so it still talks about
-> code that's no longer part of the commit).
+The test case:
+$aplay -r44100 test1.wav (PLL source)
+$aplay -r48000 test2.wav (MCLK source)
+aplay: pcm_write:2127: write error: Input/output error
 
-The first patch should cover the vital code which is required for the 
-subformat extension in the PCM core code. When we have this base, you can work 
-on other things.
+Fixes: 269f399dc19f ("ASoC: fsl_sai: Disable bit clock with transmitter")
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+---
+ sound/soc/fsl/fsl_sai.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
->> 2) if you copy 90% of my code, I don't think that Suggested-by: tag is fine
->>
->> Could you do your work on top of my patch?
-> 
-> I'm afraid this isn't a fair claim. The feature is driven by validation
-> and this has been conducted be me or my folks entirely. Given the scarce
-> guidance provided in [1] I still provided a valid WIP in [2] and
-> expected to iterate over it given the feedback. Closing the discussion
-> by taking a single patch away from the series and re-authoring it is not
-> a welcoming way to do a review. Perhaps Co-developed-by: then?
-
-I don't follow you. My patch can be also changed - I've not heard any review 
-except cosmetic changes. I am just telling you that the patch is a good base 
-for all other changes. I think that the best way is to finish the base 
-extension in sound/core at first without any helpers and so on and then work 
-on other parts.
-
-> Please note that the code differs. I do believe that splitting the API
-> and the constrains into separate patches is a better approach from
-> maintenance point of view.
-
-It does not make sense to extend API without constraints. The splitting does 
-not help here.
-
-> Proposed readability improvements have also
-> been applied in v2. For reasons provided in previous paragraphs, I chose > to avoid the chicken-bit and treat subformat constraints in generic
-> fashion. Also, validation shows that without updating
-> snd_pcm_subformat_names[] in pcm.c the code ends with UBSAN during
-
-Yes, I missed that. I can put it to my v3 when we agree on the constraints.
-
-> runtime. I've already addressed that, even in v1.
-> 
-> I'm happy to continue the technical discussion as there are still points
-> to discuss. Let's do so in v2 of the series [3].
-
-Unfortunately, you are not working with the technical discussion anyway. 
-Changing comments adding empty lines, renaming variables to make you happy is 
-not a nice way to co-operate with others and then act as the author of the 
-CODE (not comments) is really bad. Everyone has own coding style and you're 
-forcing your opinion.
-
-Also, I though about {} end-of-array mark (remove 
-SNDRV_PCM_FORMAT_CONSTRAINT_END), but I found that I prefer to have the 
-possibility to skip the MSBITS_MAX settings for the given format. It may make 
-sense in a situation when the MSBITS configuration is too rare to be added as 
-the API bit.
-
-						Jaroslav
-
+diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
+index 1e4020fae05a..8a9a30dd31e2 100644
+--- a/sound/soc/fsl/fsl_sai.c
++++ b/sound/soc/fsl/fsl_sai.c
+@@ -710,10 +710,15 @@ static void fsl_sai_config_disable(struct fsl_sai *sai, int dir)
+ {
+ 	unsigned int ofs = sai->soc_data->reg_offset;
+ 	bool tx = dir == TX;
+-	u32 xcsr, count = 100;
++	u32 xcsr, count = 100, mask;
++
++	if (sai->soc_data->mclk_with_tere && sai->mclk_direction_output)
++		mask = FSL_SAI_CSR_TERE;
++	else
++		mask = FSL_SAI_CSR_TERE | FSL_SAI_CSR_BCE;
+ 
+ 	regmap_update_bits(sai->regmap, FSL_SAI_xCSR(tx, ofs),
+-			   FSL_SAI_CSR_TERE | FSL_SAI_CSR_BCE, 0);
++			   mask, 0);
+ 
+ 	/* TERE will remain set till the end of current frame */
+ 	do {
 -- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+2.34.1
 
