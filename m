@@ -4,71 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 25D6CCD5BAA
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Sep 2023 12:38:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8350FCD5BB2
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Sep 2023 12:49:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 58D07DEF;
-	Tue, 19 Sep 2023 14:37:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 58D07DEF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 33489BC0;
+	Tue, 19 Sep 2023 14:48:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 33489BC0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1695127124;
-	bh=G6RGBHHMHWK8yELZ7uPperdzmaQNyPp5KSOeBYqzvGg=;
-	h=Date:Subject:To:References:From:In-Reply-To:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=vP+l80ZUtaUjhPcHpH1Byz0UfZIiUXmK26fpadynRynk+u67pH2cMI8KyiJS3tFtd
-	 4h9Anmxan9u3ipsTuM8vVUDDsMzENfn4DePoh/pU6hPn4PAsvFq8kCQWkVXV9SFNlm
-	 Z8PYi/Xe7W1jfj631bzXEOFiNGpRZC7cvFN/Ln/o=
+	s=default; t=1695127771;
+	bh=7FE79ZGZnujStBTzdj42cQyq8jX7BDKtlAfZNWdleng=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=AJUP1s43A4bOhVXrLn3l9YXjxTrW+E43KfndRy1JBO8nYboVklvFMm5fSCaW4LL9g
+	 6d08AKWkfuWgvIPhYgHFjT9WvXAvxqNLwJBtAwL8tmMYe8D6O6HsiKkbDoPZnqFL3i
+	 jwZ1EQaclfoxP4wfN3BG0p8akVx82FqtnqUqmEyo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 219D8F80494; Tue, 19 Sep 2023 14:37:45 +0200 (CEST)
+	id 2396CF8025A; Tue, 19 Sep 2023 14:48:20 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 74E62F800F4;
-	Tue, 19 Sep 2023 14:37:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 99CA6F8025A;
+	Tue, 19 Sep 2023 14:48:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 851A1F8025A; Tue, 19 Sep 2023 14:37:41 +0200 (CEST)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+	id CFC8EF8025A; Tue, 19 Sep 2023 14:48:16 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 32278F800F4
-	for <alsa-devel@alsa-project.org>; Tue, 19 Sep 2023 14:37:36 +0200 (CEST)
-Received: from mail1.perex.cz (localhost [127.0.0.1])
-	by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 56FB21603;
-	Tue, 19 Sep 2023 14:37:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 56FB21603
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
-	t=1695127056; bh=WQmrT06b24Zai6S7EgszZhRo67vJFwZHDBV5s3rLFEQ=;
-	h=Date:Subject:To:References:From:In-Reply-To:From;
-	b=aO6uE6SN8SFee0IirGqK+v2lSYTS+pcffD85BVbqyNEVzFDJX0sJzvlhQG50q/1Qr
-	 BA4/3MkqUhqkHMq6IkNRjEtczrbGw2PGeGngx+3f3zMTyoIKJ2684CxjB6rr1uZlQK
-	 vLbjrGN1oB7jmR5F1igsLvtmGzRKjCxr2+INNUVE=
-Received: from [192.168.100.98] (unknown [192.168.100.98])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 4DAB6F800F4
+	for <alsa-devel@alsa-project.org>; Tue, 19 Sep 2023 14:48:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4DAB6F800F4
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=imKIQMCv;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=uZjWkxj8
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	(Authenticated sender: perex)
-	by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
-	Tue, 19 Sep 2023 14:37:34 +0200 (CEST)
-Message-ID: <92599ced-0172-c01f-99bb-af1a8da794f0@perex.cz>
-Date: Tue, 19 Sep 2023 14:37:33 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 0/2] fixes for the musl C library
-Content-Language: en-US
-To: michael.opdenacker@bootlin.com, alsa-devel@alsa-project.org
-References: <20230919111430.2912326-1-michael.opdenacker@bootlin.com>
-From: Jaroslav Kysela <perex@perex.cz>
-In-Reply-To: <20230919111430.2912326-1-michael.opdenacker@bootlin.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: KN32XBOFYIXLNSJ3SGBCGVIDQLQ6E5TQ
-X-Message-ID-Hash: KN32XBOFYIXLNSJ3SGBCGVIDQLQ6E5TQ
-X-MailFrom: perex@perex.cz
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 7B1E21FF1F;
+	Tue, 19 Sep 2023 12:48:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1695127692;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FLDyssVEjITRmQSNBn9KBG3aMrnzHh8SlQfWxQger7E=;
+	b=imKIQMCvOP4LkKEZ8DSV78+zPJ90X7gg3OG+kh06+IGuC8PEFJM87BbzP5NY2Ce49OaNvh
+	a0n4TBZCB7ZQcNlo+xx99FlSrCfWGe//eIkg6LVUOfP9tixzPIOhMSB2K3sDxOvuaQqctN
+	8/FGHC3+hyBJR3cVLn5nzIfMj7XQyfY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1695127692;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FLDyssVEjITRmQSNBn9KBG3aMrnzHh8SlQfWxQger7E=;
+	b=uZjWkxj8IJrdn8pwtUyPL7DKJ71qmh+4OGvn4fPkihJUIKCuPjjX0lNY8l/sMsKU+95S4v
+	zOXR2fGo8A+BqsBg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 599A313458;
+	Tue, 19 Sep 2023 12:48:12 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id aM36FIyYCWXxHQAAMHmgww
+	(envelope-from <tiwai@suse.de>); Tue, 19 Sep 2023 12:48:12 +0000
+Date: Tue, 19 Sep 2023 14:48:11 +0200
+Message-ID: <877comxras.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Richard Fitzgerald <rf@opensource.cirrus.com>
+Cc: <tiwai@suse.com>,
+	<alsa-devel@alsa-project.org>,
+	<patches@opensource.cirrus.com>,
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] ALSA: hda: cs35l56: Use the new RUNTIME_PM_OPS() macro
+In-Reply-To: <20230919081153.19793-1-rf@opensource.cirrus.com>
+References: <20230919081153.19793-1-rf@opensource.cirrus.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Message-ID-Hash: YQDXRRGNI7K3MEMJES6BUAJAL7XUE7I4
+X-Message-ID-Hash: YQDXRRGNI7K3MEMJES6BUAJAL7XUE7I4
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -80,7 +106,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KN32XBOFYIXLNSJ3SGBCGVIDQLQ6E5TQ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YQDXRRGNI7K3MEMJES6BUAJAL7XUE7I4/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -89,26 +115,17 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 19. 09. 23 13:14, michael.opdenacker@bootlin.com wrote:
-> From: Michael Opdenacker <michael.opdenacker@bootlin.com>
+On Tue, 19 Sep 2023 10:11:53 +0200,
+Richard Fitzgerald wrote:
 > 
-> This is a series of patches to fix compiling alsa-utils
-> with the Musl C library.
+> Use RUNTIME_PM_OPS() instead of the old SET_RUNTIME_PM_OPS().
+> This means we don't need  __maybe_unused on the functions.
 > 
-> Tests were made use the "master" branch of the Yocto Project
-> Poky distribution.
-> 
-> Compiling with the GNU C library (glibc) was tested too.
-> 
-> Michael Opdenacker (2):
->    topology.c: include locale.h
->    nhlt-dmic-info.c: include sys/types.h
+> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 
-Thanks. Applied both.
+Applied with Fixes tag to 73cfbfa9caea.
 
-				Jaroslav
 
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+thanks,
 
+Takashi
