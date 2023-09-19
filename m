@@ -4,87 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3D465CD54B0
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Sep 2023 10:46:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B3261CD54AF
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Sep 2023 10:56:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9EDADE7F;
-	Tue, 19 Sep 2023 12:45:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9EDADE7F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 54702E74;
+	Tue, 19 Sep 2023 12:55:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 54702E74
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1695120383;
-	bh=aaMLuEiP7TVXj7E8zb9XY4W/RIc703I1jPOLEd+vB3I=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=mQEIeskjaCfpIUqhq+AjKRJNgrJ6UqdPXkRy3I5VqBAQ8VEfLaInd15elYllJ7yv8
-	 Prk8xhi+GU+T+7rTweswCv5XtO+bCH7hDV0ZWIxtDvpPmt4U0GR2Js3iqGGWe5rTko
-	 Z5Dm4MVhSTKpKtO6i9CFkyb45w65a6ALEqJ0Uflg=
+	s=default; t=1695120970;
+	bh=LJpBEn3pfSHJ78h9OnCxiasCyMuk8i/0oj6iXmMx7ZM=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=HAaBlEmrN8kwv0HYmOGFgiQxhKc4ZcPT4A8h6QK2Ru7zI8cdnPOXa+2vqDprNoEOj
+	 afjJeLuAvry9HA2Y6zkmxuRGNJsQK9C/0F4pMN+i/qbwZvYUfiWjWDAwGo1PD2FhZH
+	 wljwpeCJJLRMdVFFIhBwpe/w5zE17D+cCrexXhiw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 05329F805FA; Tue, 19 Sep 2023 12:42:57 +0200 (CEST)
+	id 1E551F80125; Tue, 19 Sep 2023 12:54:59 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 91036F805F0;
-	Tue, 19 Sep 2023 12:42:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CB98AF8025A;
+	Tue, 19 Sep 2023 12:54:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 24993F805CA; Tue, 19 Sep 2023 12:42:51 +0200 (CEST)
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 8E249F805C2
-	for <alsa-devel@alsa-project.org>; Tue, 19 Sep 2023 12:42:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8E249F805C2
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=JrSY10fM
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695120167; x=1726656167;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=aaMLuEiP7TVXj7E8zb9XY4W/RIc703I1jPOLEd+vB3I=;
-  b=JrSY10fMmENV2s6PyxuQfD9g7ZqQLvZj16j7bMVNkRwwkap7aO+0hzvg
-   HEnMuRPLgsCFQD4eIPLzm6QcA3hbDyXOg8pc6wko31LUmVZU10TjjxbLj
-   oLkbik+eO3SvtGCu+MP3/3Yo7WgRrTu2cfdu9pRGmQhntjYLJwojGJJ6F
-   EAtlZcVtCKYoQ0IivvAL7I9BbFCXaN86g68/5v4JtRJNO82g4yFvJUd5s
-   t6D0/oSUbmUYVqPQoneYFKFKS21VHo/KdDf/lDDRLc1CR8ccuKOKIBjHO
-   RIhx17qUx9COegrXRN1nYdgOBpGAwKqy02QuBNUlUPhsZfx0UG7XlDLMD
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10837"; a="382658514"
-X-IronPort-AV: E=Sophos;i="6.02,159,1688454000";
-   d="scan'208";a="382658514"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Sep 2023 03:42:43 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10837"; a="722823302"
-X-IronPort-AV: E=Sophos;i="6.02,159,1688454000";
-   d="scan'208";a="722823302"
-Received: from mokashi-mobl1.ger.corp.intel.com (HELO
- pujfalus-desk.ger.corp.intel.com) ([10.252.50.26])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Sep 2023 03:42:40 -0700
-From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-To: lgirdwood@gmail.com,
-	broonie@kernel.org
-Cc: alsa-devel@alsa-project.org,
-	pierre-louis.bossart@linux.intel.com,
-	ranjani.sridharan@linux.intel.com,
-	kai.vehmanen@linux.intel.com,
-	daniel.baluta@nxp.com,
-	rander.wang@intel.com
-Subject: [PATCH 8/9] ASoC: SOF: mediatek: Use generic names for IPC types
-Date: Tue, 19 Sep 2023 13:42:25 +0300
-Message-ID: <20230919104226.32239-9-peter.ujfalusi@linux.intel.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20230919104226.32239-1-peter.ujfalusi@linux.intel.com>
-References: <20230919104226.32239-1-peter.ujfalusi@linux.intel.com>
+	id 51A1AF8025A; Tue, 19 Sep 2023 12:54:56 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
+ [207.180.221.201])
+	by alsa1.perex.cz (Postfix) with ESMTP id C488DF800F4
+	for <alsa-devel@alsa-project.org>; Tue, 19 Sep 2023 12:54:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C488DF800F4
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: KTFGNG37HBM6MNOO3B4A2ULPO5EAQ4KZ
-X-Message-ID-Hash: KTFGNG37HBM6MNOO3B4A2ULPO5EAQ4KZ
-X-MailFrom: peter.ujfalusi@linux.intel.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1695120894436670065-webhooks-bot@alsa-project.org>
+References: <1695120894436670065-webhooks-bot@alsa-project.org>
+Subject: topology/topology.c: error: 'LC_ALL' undeclared - compiling
+ alsa-utils 1.2.10 with musl
+Message-Id: <20230919105456.51A1AF8025A@alsa1.perex.cz>
+Date: Tue, 19 Sep 2023 12:54:56 +0200 (CEST)
+Message-ID-Hash: TDSXCL7YBZMWHQUHYNQDK6LQQUOTPQV4
+X-Message-ID-Hash: TDSXCL7YBZMWHQUHYNQDK6LQQUOTPQV4
+X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -96,7 +58,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KTFGNG37HBM6MNOO3B4A2ULPO5EAQ4KZ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TDSXCL7YBZMWHQUHYNQDK6LQQUOTPQV4/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -105,94 +67,23 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Use the new SOF_IPC_TYPE_3 in core code.
+alsa-project/alsa-utils issue #239 was opened from michaelopdenacker:
 
-No functional changes, just renaming.
+I'm facing the below issue trying to compile alsa-utils with the musl C library with the Yocto Project Poky master branch:
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Reviewed-by: Daniel Baluta <daniel.baluta@nxp.com>
-Reviewed-by: Rander Wang <rander.wang@intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- sound/soc/sof/mediatek/mt8186/mt8186.c | 20 ++++++++++----------
- sound/soc/sof/mediatek/mt8195/mt8195.c | 10 +++++-----
- 2 files changed, 15 insertions(+), 15 deletions(-)
+x86_64-poky-linux-musl-gcc  -m64 -march=core2 -mtune=core2 -msse3 -mfpmath=sse -fstack-protector-strong  -O2 -D_FORTIFY_SOURCE=2 -Wformat -Wformat-security -Werror=format-security --sysroot=/home/mike/work/yocto/poky/build/tmp/work/core2-64-poky-linux-musl/alsa-utils/1.2.10/recipe-sysroot -DHAVE_CONFIG_H -I. -I../../alsa-utils-1.2.10/topology -I../include  -Wall -I../../alsa-utils-1.2.10/include -DALSA_TOPOLOGY_PLUGIN_DIR=\"/usr/lib/alsa-topology\"   -O2 -pipe -g -feliminate-unused-debug-types -fcanon-prefix-map  -fmacro-prefix-map=/home/mike/work/yocto/poky/build/tmp/work/core2-64-poky-linux-musl/alsa-utils/1.2.10/alsa-utils-1.2.10=/usr/src/debug/alsa-utils/1.2.10-r0  -fdebug-prefix-map=/home/mike/work/yocto/poky/build/tmp/work/core2-64-poky-linux-musl/alsa-utils/1.2.10/alsa-utils-1.2.10=/usr/src/debug/alsa-utils/1.2.10-r0  -fmacro-prefix-map=/home/mike/work/yocto/poky/build/tmp/work/core2-64-poky-linux-musl/alsa-utils/1.2.10/build=/usr/src/debug/alsa-utils/1.2.10-r0  -fdebug-prefix
+ -map=/home/mike/work/yocto/poky/build/tmp/work/core2-64-poky-linux-musl/alsa-utils/1.2.10/build=/usr/src/debug/alsa-utils/1.2.10-r0  -fdebug-prefix-map=/home/mike/work/yocto/poky/build/tmp/work/core2-64-poky-linux-musl/alsa-utils/1.2.10/recipe-sysroot=  -fmacro-prefix-map=/home/mike/work/yocto/poky/build/tmp/work/core2-64-poky-linux-musl/alsa-utils/1.2.10/recipe-sysroot=  -fdebug-prefix-map=/home/mike/work/yocto/poky/build/tmp/work/core2-64-poky-linux-musl/alsa-utils/1.2.10/recipe-sysroot-native=  -c -o pre-process-dai.o ../../alsa-utils-1.2.10/topology/pre-process-dai.c
+| ../../alsa-utils-1.2.10/topology/topology.c: In function 'main':
+| ../../alsa-utils-1.2.10/topology/topology.c:442:9: warning: implicit declaration of function 'setlocale' [-Wimplicit-function-declaration]
+|   442 |         setlocale(LC_ALL, "");
+|       |         ^~~~~~~~~
+| ../../alsa-utils-1.2.10/topology/topology.c:442:19: error: 'LC_ALL' undeclared (first use in this function)
+|   442 |         setlocale(LC_ALL, "");
+|       |                   ^~~~~~
 
-diff --git a/sound/soc/sof/mediatek/mt8186/mt8186.c b/sound/soc/sof/mediatek/mt8186/mt8186.c
-index f587edf9e0a7..8544d65bc2cf 100644
---- a/sound/soc/sof/mediatek/mt8186/mt8186.c
-+++ b/sound/soc/sof/mediatek/mt8186/mt8186.c
-@@ -607,16 +607,16 @@ static struct snd_sof_of_mach sof_mt8186_machs[] = {
- 
- static const struct sof_dev_desc sof_of_mt8186_desc = {
- 	.of_machines = sof_mt8186_machs,
--	.ipc_supported_mask	= BIT(SOF_IPC),
--	.ipc_default		= SOF_IPC,
-+	.ipc_supported_mask	= BIT(SOF_IPC_TYPE_3),
-+	.ipc_default		= SOF_IPC_TYPE_3,
- 	.default_fw_path = {
--		[SOF_IPC] = "mediatek/sof",
-+		[SOF_IPC_TYPE_3] = "mediatek/sof",
- 	},
- 	.default_tplg_path = {
--		[SOF_IPC] = "mediatek/sof-tplg",
-+		[SOF_IPC_TYPE_3] = "mediatek/sof-tplg",
- 	},
- 	.default_fw_filename = {
--		[SOF_IPC] = "sof-mt8186.ri",
-+		[SOF_IPC_TYPE_3] = "sof-mt8186.ri",
- 	},
- 	.nocodec_tplg_filename = "sof-mt8186-nocodec.tplg",
- 	.ops = &sof_mt8186_ops,
-@@ -681,16 +681,16 @@ static struct snd_sof_of_mach sof_mt8188_machs[] = {
- 
- static const struct sof_dev_desc sof_of_mt8188_desc = {
- 	.of_machines = sof_mt8188_machs,
--	.ipc_supported_mask	= BIT(SOF_IPC),
--	.ipc_default		= SOF_IPC,
-+	.ipc_supported_mask	= BIT(SOF_IPC_TYPE_3),
-+	.ipc_default		= SOF_IPC_TYPE_3,
- 	.default_fw_path = {
--		[SOF_IPC] = "mediatek/sof",
-+		[SOF_IPC_TYPE_3] = "mediatek/sof",
- 	},
- 	.default_tplg_path = {
--		[SOF_IPC] = "mediatek/sof-tplg",
-+		[SOF_IPC_TYPE_3] = "mediatek/sof-tplg",
- 	},
- 	.default_fw_filename = {
--		[SOF_IPC] = "sof-mt8188.ri",
-+		[SOF_IPC_TYPE_3] = "sof-mt8188.ri",
- 	},
- 	.nocodec_tplg_filename = "sof-mt8188-nocodec.tplg",
- 	.ops = &sof_mt8188_ops,
-diff --git a/sound/soc/sof/mediatek/mt8195/mt8195.c b/sound/soc/sof/mediatek/mt8195/mt8195.c
-index 7d6a568556ea..fab2d5af8610 100644
---- a/sound/soc/sof/mediatek/mt8195/mt8195.c
-+++ b/sound/soc/sof/mediatek/mt8195/mt8195.c
-@@ -635,16 +635,16 @@ static struct snd_sof_of_mach sof_mt8195_machs[] = {
- 
- static const struct sof_dev_desc sof_of_mt8195_desc = {
- 	.of_machines = sof_mt8195_machs,
--	.ipc_supported_mask	= BIT(SOF_IPC),
--	.ipc_default		= SOF_IPC,
-+	.ipc_supported_mask	= BIT(SOF_IPC_TYPE_3),
-+	.ipc_default		= SOF_IPC_TYPE_3,
- 	.default_fw_path = {
--		[SOF_IPC] = "mediatek/sof",
-+		[SOF_IPC_TYPE_3] = "mediatek/sof",
- 	},
- 	.default_tplg_path = {
--		[SOF_IPC] = "mediatek/sof-tplg",
-+		[SOF_IPC_TYPE_3] = "mediatek/sof-tplg",
- 	},
- 	.default_fw_filename = {
--		[SOF_IPC] = "sof-mt8195.ri",
-+		[SOF_IPC_TYPE_3] = "sof-mt8195.ri",
- 	},
- 	.nocodec_tplg_filename = "sof-mt8195-nocodec.tplg",
- 	.ops = &sof_mt8195_ops,
--- 
-2.42.0
+Including <locale.h> in topology.c makes the error go away.
+I'll send a patch shortly.
+Michael
 
+Issue URL     : https://github.com/alsa-project/alsa-utils/issues/239
+Repository URL: https://github.com/alsa-project/alsa-utils
