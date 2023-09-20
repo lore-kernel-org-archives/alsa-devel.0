@@ -4,105 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8E9FECE79CE
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Sep 2023 11:29:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BCF16CE79CF
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Sep 2023 12:19:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E1B3A9F6;
-	Wed, 20 Sep 2023 13:28:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E1B3A9F6
+	by alsa0.perex.cz (Postfix) with ESMTPS id D2493A4D;
+	Wed, 20 Sep 2023 14:18:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D2493A4D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1695209385;
-	bh=4EFPJZtqxIwSVxCQmczIePvRJo4iVjfLMyy4JQ6HdLk=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	s=default; t=1695212344;
+	bh=uQfT1CrEBKgPRGDrz2daN9OzvE6cgnuzScJXZmkZwQc=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=JekAgITmgiz1KrauzhLbUcDtlVSKyGs86TPUJ/0P5JVLN0DkvSZ9wwJX99r+jKf3X
-	 EqLq3QUQG/eCSIDyi9SpyunmmatDTCLUNyLJZSYRDToBpV9o4ye0l082dGNK226NRJ
-	 rEHJkcU74tTP/BbGZLbtKvZFv+NgdY1QCpjUMMm4=
+	b=J55YjT+FrQImepYcwpPF0EdkNo62N6tYfS398NxZW5CXMxu4zoZPZzDNAs4rREDde
+	 CoTciOMyl4Kce4964HGbRuyK39uQSvbKgL/X742HotlqxRC1kRleAfsg0HE/e/QeqL
+	 JK9Uc8TtrT3ipn7vhYF0SLBr1x3eUEf8AY5o7VZI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 85D61F8047D; Wed, 20 Sep 2023 13:28:25 +0200 (CEST)
+	id 5F422F80125; Wed, 20 Sep 2023 14:17:44 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 228F8F8025A;
-	Wed, 20 Sep 2023 13:28:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E8C9BF8025A;
+	Wed, 20 Sep 2023 14:17:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id F1602F8025A; Wed, 20 Sep 2023 13:28:20 +0200 (CEST)
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com
- [IPv6:2a00:1450:4864:20::635])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	id 7977BF8025A; Wed, 20 Sep 2023 14:17:39 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 28746F80125
-	for <alsa-devel@alsa-project.org>; Wed, 20 Sep 2023 13:28:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 28746F80125
+	by alsa1.perex.cz (Postfix) with ESMTPS id B1093F800AA
+	for <alsa-devel@alsa-project.org>; Wed, 20 Sep 2023 14:17:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B1093F800AA
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=gQ7J1kw4
-Received: by mail-ej1-x635.google.com with SMTP id
- a640c23a62f3a-9adc75f6f09so743198266b.0
-        for <alsa-devel@alsa-project.org>;
- Wed, 20 Sep 2023 04:28:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695209286; x=1695814086;
- darn=alsa-project.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=GACDrnV+AI9jqnTx+ewaqjW9iyUrnWty7M6DlDib3xY=;
-        b=gQ7J1kw4F2Lp75Bi9vEdGcNA6352C6yQUhqn0+t4AXH1bJ5SUQKtAMSEwloD9CAg50
-         jd/N3IPVnQvfIlEQ8mOAPwmwjtw/8PZKCDcnPSnfCz9sqSKk8h0GGZqkBtINyuPvXYI3
-         hh4qXk9KAJOpYkhpuOF2l9YdUwFGuoVbADbDt/8XmBH/PRROCunwN2ukz1+tPs31fwSr
-         sLQ0PTaGl6pPbJZRZIjRb9RHfFl8Oa2x8HUzFa3lUt2xRDvyRc1d2v2gnJ0sjLw+eUJ2
-         rwwejsBiEn9pbfGlA+oMHMjBUrV2W0HG0ZS0nClzzgOGNucbZxB9nelpHxxvQF7rQfpH
-         YWWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695209286; x=1695814086;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GACDrnV+AI9jqnTx+ewaqjW9iyUrnWty7M6DlDib3xY=;
-        b=hM/Zm9Y0n+GJ9kVsswPgnyFA5tFM4x1IRWAhnKbtntqiwfD6aRbJr44W6Ug6USNQe2
-         UHh6lrW7OZ/J9oypI+jJmH7lT6kX0n6IVFf98VeoSWUj6S8A0mjtCog6NcwIi8ntK/hF
-         Ddn4d6CknAnpLV4FFEZYtGQOjzYtYEUUiUjpx+XBcoBu3RkVBs0IZV3L2zaZYS+HezWu
-         qa2fdUVRHA89xfFgus8cHbFrx5nIGY+JXBP40FhXM09PmaKYjd5V5RMIRAUk58SAPoMY
-         0JuzaFAj66Ch1iBa1AmtrF4elhkT4O1iT6x+E5zd0Ty7ER7cl158QT0Wz40HfWXmCPaV
-         eBXQ==
-X-Gm-Message-State: AOJu0Yz8cFsAVJ7AwiJZMytwYg60sIhyaDopTENqGckJ044/l1g0vc6A
-	YXhQfxwR5ZnTLKes0LYmWlGtoA==
-X-Google-Smtp-Source: 
- AGHT+IGPfIQWQ+EueBRU+uoEQXPLQOfh1V2CdlSsyL7H9gVvMK0VwLBKxAMb/iW36KEiRSVWP/qlAA==
-X-Received: by 2002:a17:906:311b:b0:9a2:143e:a062 with SMTP id
- 27-20020a170906311b00b009a2143ea062mr1843177ejx.49.1695209286403;
-        Wed, 20 Sep 2023 04:28:06 -0700 (PDT)
-Received: from [172.20.24.238] (static-212-193-78-212.thenetworkfactory.nl.
- [212.78.193.212])
-        by smtp.gmail.com with ESMTPSA id
- wy2-20020a170906fe0200b009adcb6c0f0esm7835502ejb.193.2023.09.20.04.28.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Sep 2023 04:28:05 -0700 (PDT)
-Message-ID: <9d612171-8ae4-de65-31b0-fbb5f1f8331e@linaro.org>
-Date: Wed, 20 Sep 2023 13:28:05 +0200
+	dkim=pass (1024-bit key,
+ unprotected) header.d=linuxfoundation.org header.i=@linuxfoundation.org
+ header.a=rsa-sha256 header.s=korg header.b=FZFFK0Xs
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	(No client certificate requested)
+	by ams.source.kernel.org (Postfix) with ESMTPS id 45DF7B81D36;
+	Wed, 20 Sep 2023 12:17:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 545BAC433B7;
+	Wed, 20 Sep 2023 12:17:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1695212244;
+	bh=uQfT1CrEBKgPRGDrz2daN9OzvE6cgnuzScJXZmkZwQc=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=FZFFK0XszUwRdEDI8JsbdUCeBUwIS3srfStQeU8L7GgMeK+1KM/aspStcwtWfhv4/
+	 pekamhVin8ZYu7Df7GcDHcgF1OVgpJw0W3rlS4op7khCYYt5a9OhWkFJlm/EMxk04h
+	 PXQ5nzwezYzPt+lKXhGijEVCok73Gjo5CWq8WJwA=
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: stable@vger.kernel.org
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	patches@lists.linux.dev,
+	Randy Dunlap <rdunlap@infradead.org>,
+	kernel test robot <lkp@intel.com>,
+	Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	linux-um@lists.infradead.org,
+	Tejun Heo <tj@kernel.org>,
+	Takashi Iwai <tiwai@suse.de>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Nicolas Schier <nicolas@fjasle.eu>,
+	linux-kbuild@vger.kernel.org,
+	alsa-devel@alsa-project.org,
+	Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 163/273] um: Fix hostaudio build errors
+Date: Wed, 20 Sep 2023 13:30:03 +0200
+Message-ID: <20230920112851.561465885@linuxfoundation.org>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20230920112846.440597133@linuxfoundation.org>
+References: <20230920112846.440597133@linuxfoundation.org>
+User-Agent: quilt/0.67
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH] ASoC: dt-bindings: tfa9879: Convert to dtschema
-To: Bragatheswaran Manickavel <bragathemanick0908@gmail.com>,
- lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
-Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20230919090739.2448-1-bragathemanick0908@gmail.com>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230919090739.2448-1-bragathemanick0908@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: N4FIE4ZR6IMH72HD4L3VKTKJQHBTDHKV
-X-Message-ID-Hash: N4FIE4ZR6IMH72HD4L3VKTKJQHBTDHKV
-X-MailFrom: krzysztof.kozlowski@linaro.org
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: LZOX2W3RLDDDTWROEETJUSCZX25BESJX
+X-Message-ID-Hash: LZOX2W3RLDDDTWROEETJUSCZX25BESJX
+X-MailFrom: gregkh@linuxfoundation.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -114,7 +101,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/N4FIE4ZR6IMH72HD4L3VKTKJQHBTDHKV/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LZOX2W3RLDDDTWROEETJUSCZX25BESJX/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -123,38 +110,151 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 19/09/2023 11:07, Bragatheswaran Manickavel wrote:
-> Convert the tfa9879 audio CODEC bindings to DT schema
-> 
+4.19-stable review patch.  If anyone has any objections, please let me know.
 
-> +required:
-> +  - compatible
-> +  - reg
-> +  - '#sound-dai-cells'
-> +
-> +additionalProperties: false
+------------------
 
-Instead:
-unevaluatedProperties: false
+From: Randy Dunlap <rdunlap@infradead.org>
 
-> +
-> +examples:
-> +  - |
-> +    i2c1 {
-> +       #address-cells = <1>;
-> +       #size-cells = <0>;
-> +       amp: amp@6c {
+[ Upstream commit db4bfcba7bb8d10f00bba2a3da6b9a9c2a1d7b71 ]
 
-amplifier@6c
+Use "select" to ensure that the required kconfig symbols are set
+as expected.
+Drop HOSTAUDIO since it is now equivalent to UML_SOUND.
 
-> +          compatible: "nxp,tfa9879";
-> +          reg: <0x6c>;
-> +          "#sound-dai-cells": <0>;
-> +          pinctrl-names: "default";
-> +          pinctrl-0: <&pinctrl_i2c1>;
+Set CONFIG_SOUND=m in ARCH=um defconfig files to maintain the
+status quo of the default configs.
 
-That's not a DT syntax.
+Allow SOUND with UML regardless of HAS_IOMEM. Otherwise there is a
+kconfig warning for unmet dependencies. (This was not an issue when
+SOUND was defined in arch/um/drivers/Kconfig. I have done 50 randconfig
+builds and didn't find any issues.)
 
-Best regards,
-Krzysztof
+This fixes build errors when CONFIG_SOUND is not set:
+
+ld: arch/um/drivers/hostaudio_kern.o: in function `hostaudio_cleanup_module':
+hostaudio_kern.c:(.exit.text+0xa): undefined reference to `unregister_sound_mixer'
+ld: hostaudio_kern.c:(.exit.text+0x15): undefined reference to `unregister_sound_dsp'
+ld: arch/um/drivers/hostaudio_kern.o: in function `hostaudio_init_module':
+hostaudio_kern.c:(.init.text+0x19): undefined reference to `register_sound_dsp'
+ld: hostaudio_kern.c:(.init.text+0x31): undefined reference to `register_sound_mixer'
+ld: hostaudio_kern.c:(.init.text+0x49): undefined reference to `unregister_sound_dsp'
+
+and this kconfig warning:
+WARNING: unmet direct dependencies detected for SOUND
+
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Fixes: d886e87cb82b ("sound: make OSS sound core optional")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: lore.kernel.org/r/202307141416.vxuRVpFv-lkp@intel.com
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: Johannes Berg <johannes@sipsolutions.net>
+Cc: linux-um@lists.infradead.org
+Cc: Tejun Heo <tj@kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Masahiro Yamada <masahiroy@kernel.org>
+Cc: Nathan Chancellor <nathan@kernel.org>
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+Cc: Nicolas Schier <nicolas@fjasle.eu>
+Cc: linux-kbuild@vger.kernel.org
+Cc: alsa-devel@alsa-project.org
+Reviewed-by: Masahiro Yamada <masahiroy@kernel.org>
+Signed-off-by: Richard Weinberger <richard@nod.at>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ arch/um/configs/i386_defconfig   |  1 +
+ arch/um/configs/x86_64_defconfig |  1 +
+ arch/um/drivers/Kconfig          | 16 +++-------------
+ arch/um/drivers/Makefile         |  2 +-
+ sound/Kconfig                    |  2 +-
+ 5 files changed, 7 insertions(+), 15 deletions(-)
+
+diff --git a/arch/um/configs/i386_defconfig b/arch/um/configs/i386_defconfig
+index 8f114e3b0a7a3..8d06b799a0e4e 100644
+--- a/arch/um/configs/i386_defconfig
++++ b/arch/um/configs/i386_defconfig
+@@ -35,6 +35,7 @@ CONFIG_TTY_CHAN=y
+ CONFIG_XTERM_CHAN=y
+ CONFIG_CON_CHAN="pts"
+ CONFIG_SSL_CHAN="pts"
++CONFIG_SOUND=m
+ CONFIG_UML_SOUND=m
+ CONFIG_UEVENT_HELPER_PATH="/sbin/hotplug"
+ CONFIG_DEVTMPFS=y
+diff --git a/arch/um/configs/x86_64_defconfig b/arch/um/configs/x86_64_defconfig
+index 5d0875fc0db25..446bdda4cbfb6 100644
+--- a/arch/um/configs/x86_64_defconfig
++++ b/arch/um/configs/x86_64_defconfig
+@@ -33,6 +33,7 @@ CONFIG_TTY_CHAN=y
+ CONFIG_XTERM_CHAN=y
+ CONFIG_CON_CHAN="pts"
+ CONFIG_SSL_CHAN="pts"
++CONFIG_SOUND=m
+ CONFIG_UML_SOUND=m
+ CONFIG_UEVENT_HELPER_PATH="/sbin/hotplug"
+ CONFIG_DEVTMPFS=y
+diff --git a/arch/um/drivers/Kconfig b/arch/um/drivers/Kconfig
+index 2638e46f50ccd..494f7c27056e3 100644
+--- a/arch/um/drivers/Kconfig
++++ b/arch/um/drivers/Kconfig
+@@ -104,24 +104,14 @@ config SSL_CHAN
+ 
+ config UML_SOUND
+ 	tristate "Sound support"
++	depends on SOUND
++	select SOUND_OSS_CORE
+ 	help
+ 	  This option enables UML sound support.  If enabled, it will pull in
+-	  soundcore and the UML hostaudio relay, which acts as a intermediary
++	  the UML hostaudio relay, which acts as a intermediary
+ 	  between the host's dsp and mixer devices and the UML sound system.
+ 	  It is safe to say 'Y' here.
+ 
+-config SOUND
+-	tristate
+-	default UML_SOUND
+-
+-config SOUND_OSS_CORE
+-	bool
+-	default UML_SOUND
+-
+-config HOSTAUDIO
+-	tristate
+-	default UML_SOUND
+-
+ endmenu
+ 
+ menu "UML Network Devices"
+diff --git a/arch/um/drivers/Makefile b/arch/um/drivers/Makefile
+index 693319839f69e..d945abf90c319 100644
+--- a/arch/um/drivers/Makefile
++++ b/arch/um/drivers/Makefile
+@@ -52,7 +52,7 @@ obj-$(CONFIG_UML_NET) += net.o
+ obj-$(CONFIG_MCONSOLE) += mconsole.o
+ obj-$(CONFIG_MMAPPER) += mmapper_kern.o 
+ obj-$(CONFIG_BLK_DEV_UBD) += ubd.o 
+-obj-$(CONFIG_HOSTAUDIO) += hostaudio.o
++obj-$(CONFIG_UML_SOUND) += hostaudio.o
+ obj-$(CONFIG_NULL_CHAN) += null.o 
+ obj-$(CONFIG_PORT_CHAN) += port.o
+ obj-$(CONFIG_PTY_CHAN) += pty.o
+diff --git a/sound/Kconfig b/sound/Kconfig
+index 1140e9988fc50..76febc37862de 100644
+--- a/sound/Kconfig
++++ b/sound/Kconfig
+@@ -1,6 +1,6 @@
+ menuconfig SOUND
+ 	tristate "Sound card support"
+-	depends on HAS_IOMEM
++	depends on HAS_IOMEM || UML
+ 	help
+ 	  If you have a sound card in your computer, i.e. if it can say more
+ 	  than an occasional beep, say Y.
+-- 
+2.40.1
+
+
 
