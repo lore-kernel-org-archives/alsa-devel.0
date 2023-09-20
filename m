@@ -4,58 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BCF16CE79CF
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Sep 2023 12:19:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 08FFECE79CE
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Sep 2023 12:35:27 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D2493A4D;
-	Wed, 20 Sep 2023 14:18:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D2493A4D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8CC75A4B;
+	Wed, 20 Sep 2023 14:34:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8CC75A4B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1695212344;
-	bh=uQfT1CrEBKgPRGDrz2daN9OzvE6cgnuzScJXZmkZwQc=;
+	s=default; t=1695213325;
+	bh=OQuFw530VvmmOoooiJfvcNZ3JlUlVfAUg5Wqop8iNp4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=J55YjT+FrQImepYcwpPF0EdkNo62N6tYfS398NxZW5CXMxu4zoZPZzDNAs4rREDde
-	 CoTciOMyl4Kce4964HGbRuyK39uQSvbKgL/X742HotlqxRC1kRleAfsg0HE/e/QeqL
-	 JK9Uc8TtrT3ipn7vhYF0SLBr1x3eUEf8AY5o7VZI=
+	b=NUA6MqcJVwFbhPYRLJn0Fitj3QOZu2fbMXyhOfd6uahBirXycNTRJLwEiJVMyEzb/
+	 GTTy5DLyPMgpgJNM8KeC59EaeYozRdz4wXcQ4ZnRIYHp+nr+4bsGcZ1CMDknfXK6C4
+	 ysKlkojQA9wgirIrtsS2Ur78LcvmHdqQ+O3Kf6nM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5F422F80125; Wed, 20 Sep 2023 14:17:44 +0200 (CEST)
+	id 62ACEF801F5; Wed, 20 Sep 2023 14:33:57 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E8C9BF8025A;
-	Wed, 20 Sep 2023 14:17:43 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C0D85F801F5;
+	Wed, 20 Sep 2023 14:33:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7977BF8025A; Wed, 20 Sep 2023 14:17:39 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+	id BD9E7F8025A; Wed, 20 Sep 2023 14:33:52 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B1093F800AA
-	for <alsa-devel@alsa-project.org>; Wed, 20 Sep 2023 14:17:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B1093F800AA
+	by alsa1.perex.cz (Postfix) with ESMTPS id B64CEF800F4
+	for <alsa-devel@alsa-project.org>; Wed, 20 Sep 2023 14:33:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B64CEF800F4
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=linuxfoundation.org header.i=@linuxfoundation.org
- header.a=rsa-sha256 header.s=korg header.b=FZFFK0Xs
+ header.a=rsa-sha256 header.s=korg header.b=FGmBKk/u
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id 45DF7B81D36;
-	Wed, 20 Sep 2023 12:17:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 545BAC433B7;
-	Wed, 20 Sep 2023 12:17:24 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id B714961BCD;
+	Wed, 20 Sep 2023 12:33:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 08058C433C8;
+	Wed, 20 Sep 2023 12:33:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1695212244;
-	bh=uQfT1CrEBKgPRGDrz2daN9OzvE6cgnuzScJXZmkZwQc=;
+	s=korg; t=1695213208;
+	bh=OQuFw530VvmmOoooiJfvcNZ3JlUlVfAUg5Wqop8iNp4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=FZFFK0XszUwRdEDI8JsbdUCeBUwIS3srfStQeU8L7GgMeK+1KM/aspStcwtWfhv4/
-	 pekamhVin8ZYu7Df7GcDHcgF1OVgpJw0W3rlS4op7khCYYt5a9OhWkFJlm/EMxk04h
-	 PXQ5nzwezYzPt+lKXhGijEVCok73Gjo5CWq8WJwA=
+	b=FGmBKk/uTgxhE87zatDxYBYzCTcvsk6CjOT3XBt7bZDLtn2xJY0mYfTgL2cZyA+Cw
+	 GasB4JAzxYjYIlhjqUzatiiFh7gg4xrk+2QA0C9XywmXU8YpDK6m2r9lAVhBJ2nAvh
+	 +48edOgEbgXEsdqt7bSZGlohwNp0uUXer6N01ePA=
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To: stable@vger.kernel.org
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -76,19 +75,19 @@ Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	linux-kbuild@vger.kernel.org,
 	alsa-devel@alsa-project.org,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 163/273] um: Fix hostaudio build errors
-Date: Wed, 20 Sep 2023 13:30:03 +0200
-Message-ID: <20230920112851.561465885@linuxfoundation.org>
+Subject: [PATCH 5.4 200/367] um: Fix hostaudio build errors
+Date: Wed, 20 Sep 2023 13:29:37 +0200
+Message-ID: <20230920112903.802759535@linuxfoundation.org>
 X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20230920112846.440597133@linuxfoundation.org>
-References: <20230920112846.440597133@linuxfoundation.org>
+In-Reply-To: <20230920112858.471730572@linuxfoundation.org>
+References: <20230920112858.471730572@linuxfoundation.org>
 User-Agent: quilt/0.67
 X-stable: review
 X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: LZOX2W3RLDDDTWROEETJUSCZX25BESJX
-X-Message-ID-Hash: LZOX2W3RLDDDTWROEETJUSCZX25BESJX
+Message-ID-Hash: LRJQG4PBV4JTCNEODINIQZQRDMQ6HBFP
+X-Message-ID-Hash: LRJQG4PBV4JTCNEODINIQZQRDMQ6HBFP
 X-MailFrom: gregkh@linuxfoundation.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -101,7 +100,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LZOX2W3RLDDDTWROEETJUSCZX25BESJX/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LRJQG4PBV4JTCNEODINIQZQRDMQ6HBFP/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -110,7 +109,7 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-4.19-stable review patch.  If anyone has any objections, please let me know.
+5.4-stable review patch.  If anyone has any objections, please let me know.
 
 ------------------
 
@@ -173,7 +172,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  5 files changed, 7 insertions(+), 15 deletions(-)
 
 diff --git a/arch/um/configs/i386_defconfig b/arch/um/configs/i386_defconfig
-index 8f114e3b0a7a3..8d06b799a0e4e 100644
+index 73e98bb57bf51..4229ac9165e83 100644
 --- a/arch/um/configs/i386_defconfig
 +++ b/arch/um/configs/i386_defconfig
 @@ -35,6 +35,7 @@ CONFIG_TTY_CHAN=y
@@ -182,10 +181,10 @@ index 8f114e3b0a7a3..8d06b799a0e4e 100644
  CONFIG_SSL_CHAN="pts"
 +CONFIG_SOUND=m
  CONFIG_UML_SOUND=m
- CONFIG_UEVENT_HELPER_PATH="/sbin/hotplug"
  CONFIG_DEVTMPFS=y
+ CONFIG_DEVTMPFS_MOUNT=y
 diff --git a/arch/um/configs/x86_64_defconfig b/arch/um/configs/x86_64_defconfig
-index 5d0875fc0db25..446bdda4cbfb6 100644
+index 3281d7600225b..f6993a0067272 100644
 --- a/arch/um/configs/x86_64_defconfig
 +++ b/arch/um/configs/x86_64_defconfig
 @@ -33,6 +33,7 @@ CONFIG_TTY_CHAN=y
@@ -194,10 +193,10 @@ index 5d0875fc0db25..446bdda4cbfb6 100644
  CONFIG_SSL_CHAN="pts"
 +CONFIG_SOUND=m
  CONFIG_UML_SOUND=m
- CONFIG_UEVENT_HELPER_PATH="/sbin/hotplug"
  CONFIG_DEVTMPFS=y
+ CONFIG_DEVTMPFS_MOUNT=y
 diff --git a/arch/um/drivers/Kconfig b/arch/um/drivers/Kconfig
-index 2638e46f50ccd..494f7c27056e3 100644
+index 388096fb45a25..12f54a4a3747d 100644
 --- a/arch/um/drivers/Kconfig
 +++ b/arch/um/drivers/Kconfig
 @@ -104,24 +104,14 @@ config SSL_CHAN
@@ -229,7 +228,7 @@ index 2638e46f50ccd..494f7c27056e3 100644
  
  menu "UML Network Devices"
 diff --git a/arch/um/drivers/Makefile b/arch/um/drivers/Makefile
-index 693319839f69e..d945abf90c319 100644
+index a290821e355c2..4d7fb606a5f04 100644
 --- a/arch/um/drivers/Makefile
 +++ b/arch/um/drivers/Makefile
 @@ -52,7 +52,7 @@ obj-$(CONFIG_UML_NET) += net.o
@@ -242,10 +241,11 @@ index 693319839f69e..d945abf90c319 100644
  obj-$(CONFIG_PORT_CHAN) += port.o
  obj-$(CONFIG_PTY_CHAN) += pty.o
 diff --git a/sound/Kconfig b/sound/Kconfig
-index 1140e9988fc50..76febc37862de 100644
+index 36785410fbe15..aaf2022ffc57d 100644
 --- a/sound/Kconfig
 +++ b/sound/Kconfig
-@@ -1,6 +1,6 @@
+@@ -1,7 +1,7 @@
+ # SPDX-License-Identifier: GPL-2.0-only
  menuconfig SOUND
  	tristate "Sound card support"
 -	depends on HAS_IOMEM
