@@ -4,82 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8263DE7106C
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 Sep 2023 13:24:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5C634E7106C
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 Sep 2023 13:25:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AF586DF6;
-	Thu, 21 Sep 2023 15:23:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AF586DF6
+	by alsa0.perex.cz (Postfix) with ESMTPS id C4B7EE10;
+	Thu, 21 Sep 2023 15:24:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C4B7EE10
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1695302679;
-	bh=3RqFZkD8YA4uhVjWcjXMVAfipQ+XsjLHPc3ZcEQ6Ink=;
-	h=Date:From:To:CC:Subject:References:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=YM/BSeNFvs6phv2rFTmfsWBwZ7UtOTLv/aCXZX6fpl/GcaUwZzAhlqDkmTAWyyxdZ
-	 ELlDVYjgLWlxO3E2LDABk18JdLQCDqk1b1c7Y3aiNbHvLOz0NbtgM/tkZIVT9bnwC/
-	 cKEvTaekQVWGaUSOGVnDZd99H1UJvXDjDgf4Nq7Y=
+	s=default; t=1695302698;
+	bh=IAcXaOLXJdM7zW3THpLltxV9v4Ww5ruOOwl8Tmhy13c=;
+	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=mN4qwKS9xZXw1/lygK5JhZqGft/9YS8h2lHXIuSLz1eFbbhM5ZqQQjdVq1GDXguIw
+	 gDdO6blGnERgFCAOTqtZdZYYmaHA33UTUQcz9DYqVbwzdo/wPi02sWYsvm2mLQWCIn
+	 /zQkcRqhaA7T9+FkQJwen4GbObMz+LokXtugNMsQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B7015F805C9; Thu, 21 Sep 2023 15:22:21 +0200 (CEST)
+	id BD9CEF805DF; Thu, 21 Sep 2023 15:22:23 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 43F2FF805C7;
-	Thu, 21 Sep 2023 15:22:21 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5C7BBF805DF;
+	Thu, 21 Sep 2023 15:22:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1C0BEF8025A; Wed, 20 Sep 2023 05:44:12 +0200 (CEST)
+	id D4E88F80494; Wed, 20 Sep 2023 05:51:10 +0200 (CEST)
 Received: from mg.richtek.com (mg.richtek.com [220.130.44.152])
-	by alsa1.perex.cz (Postfix) with ESMTP id 564C9F80125
-	for <alsa-devel@alsa-project.org>; Wed, 20 Sep 2023 05:44:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 564C9F80125
+	by alsa1.perex.cz (Postfix) with ESMTP id D2862F80125
+	for <alsa-devel@alsa-project.org>; Wed, 20 Sep 2023 05:51:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D2862F80125
 X-MailGates: (SIP:2,PASS,NONE)(compute_score:DELIVER,40,3)
-Received: from 192.168.10.47
-	by mg.richtek.com with MailGates ESMTPS Server V6.0(1978089:0:AUTH_RELAY)
+Received: from 192.168.10.46
+	by mg.richtek.com with MailGates ESMTPS Server V6.0(1978098:0:AUTH_RELAY)
 	(envelope-from <cy_huang@richtek.com>)
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256/256);
- Wed, 20 Sep 2023 11:43:19 +0800 (CST)
-Received: from ex4.rt.l (192.168.10.47) by ex4.rt.l (192.168.10.47) with
+ Wed, 20 Sep 2023 11:50:36 +0800 (CST)
+Received: from ex4.rt.l (192.168.10.47) by ex3.rt.l (192.168.10.46) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.25; Wed, 20 Sep
- 2023 11:43:19 +0800
+ 2023 11:50:35 +0800
 Received: from linuxcarl2.richtek.com (192.168.10.154) by ex4.rt.l
  (192.168.10.45) with Microsoft SMTP Server id 15.2.1118.25 via Frontend
- Transport; Wed, 20 Sep 2023 11:43:19 +0800
-Date: Wed, 20 Sep 2023 11:43:19 +0800
-From: ChiYuan Huang <cy_huang@richtek.com>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-CC: Mark Brown <broonie@kernel.org>, Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, Liam
- Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Jaroslav
- Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Allen Lin
-	<allen_lin@richtek.com>, <alsa-devel@alsa-project.org>,
-	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 2/2] ASoC: codecs: Add Richtek rtq9128audio amplifier
- support
-Message-ID: <20230920034319.GA4446@linuxcarl2.richtek.com>
-References: <1695086301-10376-1-git-send-email-cy_huang@richtek.com>
- <1695086301-10376-3-git-send-email-cy_huang@richtek.com>
- <eae67380-4eb5-b5b2-d010-ce1f80bc91f9@linux.intel.com>
+ Transport; Wed, 20 Sep 2023 11:50:35 +0800
+From: <cy_huang@richtek.com>
+To: Mark Brown <broonie@kernel.org>, Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>
+CC: Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Pierre-Louis
+ Bossart <pierre-louis.bossart@linux.intel.com>, ChiYuan Huang
+	<cy_huang@richtek.com>, Allen Lin <allen_lin@richtek.com>,
+	<alsa-devel@alsa-project.org>, <devicetree@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: [PATCH v3 0/2] ASoC: Add rtq9128 audio amplifier
+Date: Wed, 20 Sep 2023 11:50:32 +0800
+Message-ID: <1695181834-5809-1-git-send-email-cy_huang@richtek.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <eae67380-4eb5-b5b2-d010-ce1f80bc91f9@linux.intel.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Type: text/plain
 X-MailFrom: prvs=16244D1BD6=cy_huang@richtek.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: RY5H74RJ4KWYULQEN6JKZNT7KKDKHUCG
-X-Message-ID-Hash: RY5H74RJ4KWYULQEN6JKZNT7KKDKHUCG
+Message-ID-Hash: 47UOD2FKIB4DGPRFZ34F66HECFPODMO2
+X-Message-ID-Hash: 47UOD2FKIB4DGPRFZ34F66HECFPODMO2
 X-Mailman-Approved-At: Thu, 21 Sep 2023 13:22:11 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RY5H74RJ4KWYULQEN6JKZNT7KKDKHUCG/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/47UOD2FKIB4DGPRFZ34F66HECFPODMO2/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -88,26 +82,34 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, Sep 19, 2023 at 08:42:29AM -0400, Pierre-Louis Bossart wrote:
-> 
-> > +static int rtq9128_i2c_write(void *context, const void *data, size_t count)
-> > +{
-> > +	struct device *dev = context;
-> > +	struct i2c_client *i2c = to_i2c_client(dev);
-> > +	u8 reg = *(u8 *)data;
-> > +	int rg_size;
-> > +
-> > +	BUG_ON(count != 5);
-> 
-> is this really necessary? Just log and error and return?
-> same comments for other functions
->
-Yap, it can be removed. Originally, just use it to check regmap core really
-follow the declared regmap config.
+From: ChiYuan Huang <cy_huang@richtek.com>
 
-I think this check may still needed. I'll change the BUG_ON to if/err/return
-following by your suggestion in v3.
-> > +	rg_size = rtq9128_get_reg_size(reg);
-> > +	return i2c_smbus_write_i2c_block_data(i2c, reg, rg_size, data + count - rg_size);
-> > +}
-> 
+This patch series adds Richtek rtq9128 automotive audio amplifier
+support. It can deliver up to 4x75W into 4Ohm speaker from a 25V
+supply in automotive applications.
+
+Change log
+v3
+- Add Reviewed-by tag for dt binding patch
+- Refine the source code by reviewer's comments
+  detail changes listed in the patch
+- Add DVDD undervoltage threshold selection from HW guy's suggestion
+
+v2
+- dt document fix listed in patch extra comment
+
+ChiYuan Huang (2):
+  ASoC: dt-bindings: Add Richtek rtq9128 audio amplifier
+  ASoC: codecs: Add Richtek rtq9128 audio amplifier support
+
+ .../bindings/sound/richtek,rtq9128.yaml       |  54 ++
+ sound/soc/codecs/Kconfig                      |  15 +
+ sound/soc/codecs/Makefile                     |   2 +
+ sound/soc/codecs/rtq9128.c                    | 766 ++++++++++++++++++
+ 4 files changed, 837 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/richtek,rtq9128.yaml
+ create mode 100644 sound/soc/codecs/rtq9128.c
+
+-- 
+2.34.1
+
