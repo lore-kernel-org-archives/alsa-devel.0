@@ -4,101 +4,108 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2D097CE79AD
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Sep 2023 06:59:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D2AB7CE79AC
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Sep 2023 07:06:40 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4DF7FA4E;
-	Wed, 20 Sep 2023 08:59:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4DF7FA4E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6A43EAE8;
+	Wed, 20 Sep 2023 09:05:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6A43EAE8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1695193195;
-	bh=HE+7UDFxiqmiYeY8i4whBcfn8hOn3yhFe9r5DSczc0o=;
+	s=default; t=1695193598;
+	bh=L8zJrU36zq86rP/GiaecLsglbuVVL8hjj6GZESOK4WA=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=T0N9fqYspJ0/GVINxDpSGx6qZ3kThNCBZplEk15B3dtNwXQhGJdSb5OHMqzuKNOdB
-	 CvtEzAk1G1s+hJrZAbxYCDogV+D8bX/cHjRSLF25uaek0EK3eAsG10tnnXg+s5HP/G
-	 1jlV8MnXH1bghFvlTfplluEHF6HaXiC412EY8LRc=
+	b=d5wX2OkaJjN7BVL7Pisel8sZV9iPQT14++izeTsov0JhFVvgSbdpUxMHNwsFtk50E
+	 T2zU7jA2qhNPe48jHVSqjn8owmtBPyPZmsk5+5uwWgNPpF3SbhQw6GBVOkywJVLdtj
+	 k2n7EysnCjI7NQMHFrEPHp6Ong8DZmI+ARs2WQfA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BC161F8025A; Wed, 20 Sep 2023 08:58:26 +0200 (CEST)
+	id 2BB8AF801F5; Wed, 20 Sep 2023 09:05:17 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 12A79F8025A;
-	Wed, 20 Sep 2023 08:58:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E1983F8025A;
+	Wed, 20 Sep 2023 09:05:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 67FC5F8025A; Wed, 20 Sep 2023 08:58:22 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+	id D3742F8025A; Wed, 20 Sep 2023 09:05:09 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id AF0FBF800F4
-	for <alsa-devel@alsa-project.org>; Wed, 20 Sep 2023 08:58:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AF0FBF800F4
+	by alsa1.perex.cz (Postfix) with ESMTPS id 5430FF800F4
+	for <alsa-devel@alsa-project.org>; Wed, 20 Sep 2023 09:05:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5430FF800F4
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=ZTvwWH7D;
+ header.s=susede2_rsa header.b=VUdNbspt;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=Ti67fr5g
+ header.s=susede2_ed25519 header.b=5Sa7R9Oc
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 5E6231F385;
-	Wed, 20 Sep 2023 06:58:17 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 953072251C;
+	Wed, 20 Sep 2023 07:05:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1695193097;
+	t=1695193504;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=AU/S14PFj+HSKAHNrVMLXPOUtuJzNO4drT/vg2xb5Nk=;
-	b=ZTvwWH7DlfDaJyvjkaxKXMcKVrd6Pkjt2zKhadlrRH23fdTulAKDj5GG0pavlHUe48qTqB
-	amTYuVEhRtEcKmehvmf7ZkWUnZprqaN0OL/eYbnz3iBsg6wK8JA1K1vPP3ObwktLmRYwVC
-	baYwDmwlEUjY+kHC7FmQjVLQ+er3rzw=
+	bh=YtpT9rmsvNdD25C52w/dsFnFom7gmr6h8hTnMT9pppA=;
+	b=VUdNbsptH6xtu8SuSD1phRT0W/65IBdC356rMtSp3IQLekQbLsJxbwDlmZjGBov3oaLqRB
+	c/RiR3ah/OzaVhc+F0ig/I9Vlzp645LprpNEG8znmpmzCYGfbSr5pNmFf+wWcvMdtjCNkN
+	H31bI+i0XvPIYCvOeI3NHFp31r0uEI4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1695193097;
+	s=susede2_ed25519; t=1695193504;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=AU/S14PFj+HSKAHNrVMLXPOUtuJzNO4drT/vg2xb5Nk=;
-	b=Ti67fr5ghtbbifLv6sylB2kBYwRiZqotBW0DzMpoa7W9QE4wcIrwdEOJ7CLR/YO/Hb5mti
-	e/MEo+RZKbKCQBCQ==
+	bh=YtpT9rmsvNdD25C52w/dsFnFom7gmr6h8hTnMT9pppA=;
+	b=5Sa7R9OcmwNsSJDDy17+/1xNUt5/Qo67Eu1e4a9fpmRM2Y3HvpWjCY+kmyG0My/2mWR799
+	rLVDYboGJxWv1GBA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2C37E1333E;
-	Wed, 20 Sep 2023 06:58:17 +0000 (UTC)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 523051333E;
+	Wed, 20 Sep 2023 07:05:04 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id g58LCgmYCmUlIwAAMHmgww
-	(envelope-from <tiwai@suse.de>); Wed, 20 Sep 2023 06:58:17 +0000
-Date: Wed, 20 Sep 2023 08:58:16 +0200
-Message-ID: <8734z9wctz.wl-tiwai@suse.de>
+	id iygqE6CZCmXUJgAAMHmgww
+	(envelope-from <tiwai@suse.de>); Wed, 20 Sep 2023 07:05:04 +0000
+Date: Wed, 20 Sep 2023 09:05:03 +0200
+Message-ID: <871qetwcio.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Stefan Binding <sbinding@opensource.cirrus.com>
-Cc: Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	<alsa-devel@alsa-project.org>,
-	<linux-kernel@vger.kernel.org>,
-	<patches@opensource.cirrus.com>,
-	Vitaly Rodionov
-	<vitalyr@opensource.cirrus.com>
-Subject: Re: [PATCH v3 1/2] ALSA: hda: cs35l41: Support mute notifications for
- CS35L41 HDA
-In-Reply-To: <20230919142240.467682-2-sbinding@opensource.cirrus.com>
-References: <20230919142240.467682-1-sbinding@opensource.cirrus.com>
-	<20230919142240.467682-2-sbinding@opensource.cirrus.com>
+To: Ma Ke <make_ruc2021@163.com>
+Cc: perex@perex.cz,
+	tiwai@suse.com,
+	mhocko@suse.com,
+	akpm@linux-foundation.org,
+	mgorman@techsingularity.net,
+	42.hyeyoo@gmail.com,
+	surenb@google.com,
+	alsa-devel@alsa-project.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ALSA: pcm: oss: Fix race at SNDCTL_DSP_SETTRIGGER There
+ is a small race window at snd_pcm_oss_set_trigger() that is called from OSS
+ PCM SNDCTL_DSP_SETTRIGGER ioctl;
+ namely the function calls snd_pcm_oss_make_ready() at first,
+ then takes the params_lock mutex for the rest.  When the stream is set up
+ again by another thread between them, it leads to inconsistency,
+ and may result in unexpected results such as NULL dereference of OSS buffer
+ as a fuzzer spotted recently.
+In-Reply-To: <20230920023536.3535439-1-make_ruc2021@163.com>
+References: <20230920023536.3535439-1-make_ruc2021@163.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Message-ID-Hash: YOUQBPJRUB6YKNQCKA5Y4INWQCELVETX
-X-Message-ID-Hash: YOUQBPJRUB6YKNQCKA5Y4INWQCELVETX
+Message-ID-Hash: OKFHFDBPLYOM77GI2EQNDCNVRUQ5DVCX
+X-Message-ID-Hash: OKFHFDBPLYOM77GI2EQNDCNVRUQ5DVCX
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -111,7 +118,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YOUQBPJRUB6YKNQCKA5Y4INWQCELVETX/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OKFHFDBPLYOM77GI2EQNDCNVRUQ5DVCX/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -120,54 +127,70 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, 19 Sep 2023 16:22:39 +0200,
-Stefan Binding wrote:
+On Wed, 20 Sep 2023 04:35:36 +0200,
+Ma Ke wrote:
 > 
-> From: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+> The fix is simply to cover snd_pcm_oss_make_ready() call into the same
+> params_lock mutex with snd_pcm_oss_make_ready_locked() variant.
 > 
-> Some laptops require a hardware based mute system, where when a hotkey
-> is pressed, it forces the amp to be muted.
-> 
-> For CS35L41, when the hotkey is pressed, an acpi notification is sent
-> to the CS35L41 Device Node. The driver needs to handle this notification
-> and call a _DSM function to retrieve the mute state.
-> 
-> Since the amp is only muted during playback, the driver will only mute
-> or unmute if playback is occurring, otherwise it will save the mute
-> state for when playback starts.
-> 
-> Only one handler can be registered for the acpi notification, but all
-> amps need to receive that notification, we can register a single handler
-> inside the Realtek HDA driver, so that it can then notify through the
-> component framework.
-> 
-> Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
-> Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
+> Signed-off-by: Ma Ke <make_ruc2021@163.com>
 
-The patch is a bit lengthy.  I'd split the binding of patch_realtek.c
-into another patch.  That part is fairly generic.
+The patch subject needs to be fixed.  The subject line can't be that
+long.  It must be concise.  Put more text in the patch description
+instead.
 
-> --- a/sound/pci/hda/patch_realtek.c
-> +++ b/sound/pci/hda/patch_realtek.c
-(snip)
-> +static void comp_acpi_device_notify(acpi_handle handle, u32 event, void *data)
-> +{
-> +	struct hda_codec *cdc = data;
-> +	struct alc_spec *spec = cdc->spec;
-> +	int i;
-> +
-> +	codec_info(cdc, "ACPI Notification %d\n", event);
-> +
-> +	for (i = 0; i < HDA_MAX_COMPONENTS; i++) {
-> +		if (spec->comps[i].dev && spec->comps[i].acpi_notify)
-> +			spec->comps[i].acpi_notify(acpi_device_handle(spec->comps[i].adev), event,
-> +						   spec->comps[i].dev);
-> +	}
-> +}
-
-This function should be in #ifdef CONFIG_ACPI, too.
+About the code change: the error handling is different after the
+patch.  The current code returns an error immediately while your patch
+does "goto _skip1" etc, which doesn't abort but continues.
 
 
 thanks,
 
 Takashi
+
+> ---
+>  sound/core/oss/pcm_oss.c | 16 ++++++----------
+>  1 file changed, 6 insertions(+), 10 deletions(-)
+> 
+> diff --git a/sound/core/oss/pcm_oss.c b/sound/core/oss/pcm_oss.c
+> index 728c211142d1..9a830aeeba63 100644
+> --- a/sound/core/oss/pcm_oss.c
+> +++ b/sound/core/oss/pcm_oss.c
+> @@ -2083,21 +2083,14 @@ static int snd_pcm_oss_set_trigger(struct snd_pcm_oss_file *pcm_oss_file, int tr
+>  	psubstream = pcm_oss_file->streams[SNDRV_PCM_STREAM_PLAYBACK];
+>  	csubstream = pcm_oss_file->streams[SNDRV_PCM_STREAM_CAPTURE];
+>  
+> -	if (psubstream) {
+> -		err = snd_pcm_oss_make_ready(psubstream);
+> -		if (err < 0)
+> -			return err;
+> -	}
+> -	if (csubstream) {
+> -		err = snd_pcm_oss_make_ready(csubstream);
+> -		if (err < 0)
+> -			return err;
+> -	}
+>        	if (psubstream) {
+>        		runtime = psubstream->runtime;
+>  		cmd = 0;
+>  		if (mutex_lock_interruptible(&runtime->oss.params_lock))
+>  			return -ERESTARTSYS;
+> +		err = snd_pcm_oss_make_ready_locked(psubstream);
+> +		if (err < 0)
+> +			goto _skip1;
+>  		if (trigger & PCM_ENABLE_OUTPUT) {
+>  			if (runtime->oss.trigger)
+>  				goto _skip1;
+> @@ -2128,6 +2121,9 @@ static int snd_pcm_oss_set_trigger(struct snd_pcm_oss_file *pcm_oss_file, int tr
+>  		cmd = 0;
+>  		if (mutex_lock_interruptible(&runtime->oss.params_lock))
+>  			return -ERESTARTSYS;
+> +		err = snd_pcm_oss_make_ready_locked(csubstream);
+> +		if (err < 0)
+> +			goto _skip2;
+>  		if (trigger & PCM_ENABLE_INPUT) {
+>  			if (runtime->oss.trigger)
+>  				goto _skip2;
+> -- 
+> 2.37.2
+> 
