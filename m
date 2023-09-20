@@ -4,91 +4,103 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C1D3DC04AAF
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Sep 2023 16:36:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CA614C04AB4
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Sep 2023 16:52:11 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 12A48A4D;
-	Wed, 20 Sep 2023 18:35:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 12A48A4D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 86C73A4A;
+	Wed, 20 Sep 2023 18:51:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 86C73A4A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1695227786;
-	bh=nyfm0L9J1fsqjvtCWjXbNdNJSUQDtcw8ykzrjrNHJRI=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1695228728;
+	bh=xItVh1dNSBX0qQ1JZj1Ob9JKAzX3hp85sRcvKGIkjf4=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=JnOaiuKKj9me0ScAczIwUrViwzxxHeTOy8i2YOc0k+ctTHXAs0liOdVELC+CkDHfD
-	 575a7VprB+9N54Ac6qCcUo7lGjR7aJ6yQoPBajvYq9vMsvgHaxk1OQOkdqK4m1oKBd
-	 bLne5Yn2Jd89iNBs4X6WjVuNYh0WiqvPk9IWfCWs=
+	b=YdEYcfHWa8Hs2mrbJbYaNLeF2EgLFOmsxOGz8NyZUk3Bac5KnRwEASHIJHmPUxwzq
+	 B2oFxhNliL7Z30Zi8NXVIocrfpznfdSBD6HwiNqkAJd/jyQ749FKBPclBDvk26fDjG
+	 863UWqxo61nQg1bX+hIkcgIE+Yw0tLEB6d3sATuw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 46EDCF805B1; Wed, 20 Sep 2023 18:34:05 +0200 (CEST)
+	id DBB75F8025A; Wed, 20 Sep 2023 18:51:17 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B4D92F805B1;
-	Wed, 20 Sep 2023 18:34:04 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 85C7EF8025A;
+	Wed, 20 Sep 2023 18:51:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 85C5FF80588; Wed, 20 Sep 2023 18:34:01 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 9A0A6F800AA; Wed, 20 Sep 2023 18:51:13 +0200 (CEST)
+Received: from mail-yw1-x112f.google.com (mail-yw1-x112f.google.com
+ [IPv6:2607:f8b0:4864:20::112f])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 31FE5F80571
-	for <alsa-devel@alsa-project.org>; Wed, 20 Sep 2023 18:33:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 31FE5F80571
+	by alsa1.perex.cz (Postfix) with ESMTPS id 43FB0F800AA
+	for <alsa-devel@alsa-project.org>; Wed, 20 Sep 2023 18:51:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 43FB0F800AA
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=YWbx3A5E
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-	by mx0b-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id
- 38KFt6MZ023727;
-	Wed, 20 Sep 2023 11:33:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	PODMain02222019; bh=PzgE18K4PqO8dXD62uIrqgRS5xHATb17ID0/Z6vMJHE=; b=
-	YWbx3A5Ecp6k7YzYCpzXyDXj+LPXsyFHg7swCcqlPTVkoEIF7mOTOUYJAIwZ/yuv
-	8NKiYaodEeULYqdozFiZGpD+dFm+pVgWp67ePuR5Ban5b5TNEFRJxObkHPi2tSUN
-	cIPdQKuJaNbMW1WWXapgcMGJKzIVbkVm1R19C+TVh6YSCd062lsJsbtvOdGJaClF
-	ng+9kfpdTLrCgBTaOD0CyTiGOhbMajsup1CWt8CRiKW9q629gLWVSOOxnHAK48Dd
-	BFya0A+UCOXSJuupSf4PYiv6Q2iY6o2RcbXbw6t5Qr7hB7oR7Z9tJOprCEmoj1+4
-	m4tTVjRqTMHpagvY8+0ByA==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3t58shvnd5-3
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 20 Sep 2023 11:33:39 -0500 (CDT)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Wed, 20 Sep
- 2023 17:33:37 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.37 via Frontend
- Transport; Wed, 20 Sep 2023 17:33:37 +0100
-Received: from sbinding-cirrus-dsktp2.ad.cirrus.com (unknown [198.90.238.135])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 393BE458;
-	Wed, 20 Sep 2023 16:33:37 +0000 (UTC)
-From: Stefan Binding <sbinding@opensource.cirrus.com>
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-CC: <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
-        <patches@opensource.cirrus.com>,
-        Stefan Binding
-	<sbinding@opensource.cirrus.com>
-Subject: [PATCH v4 4/4] ALSA: hda: cs35l41: Add read-only ALSA control for
- forced mute
-Date: Wed, 20 Sep 2023 16:54:50 +0100
-Message-ID: <20230920155450.576287-5-sbinding@opensource.cirrus.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230920155450.576287-1-sbinding@opensource.cirrus.com>
-References: <20230920155450.576287-1-sbinding@opensource.cirrus.com>
+ unprotected) header.d=google.com header.i=@google.com header.a=rsa-sha256
+ header.s=20230601 header.b=FlLef50Q
+Received: by mail-yw1-x112f.google.com with SMTP id
+ 00721157ae682-59c2ca01f27so238167b3.2
+        for <alsa-devel@alsa-project.org>;
+ Wed, 20 Sep 2023 09:51:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1695228661; x=1695833461;
+ darn=alsa-project.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XFp4/FBehp7bXIUiukwsVd1VDsGADtdLcprhP9iiGVo=;
+        b=FlLef50QJtJ5eIvsi9O+KEPfPRaGV3kAJEpdWzNQpIHSCvRa5pxShB1rdFiz2J7kd/
+         +1kSZciTYGG+Qu8wrof04LQ+dyMIEse46U7bg8ZuaVQrNLB1Uqn3SmrVWT4JYzIkJYkh
+         Z6Sk265q8+YiF9W+7CfOAYNRtiCxSKil8yPRvGyvkyEze0XlTU3Cpe4sXPCqgKljb0Hh
+         XRFK3vuJYUkq9xPQAr52Xff+15B01/hNUC+AsRiCFDhymKhmyE+W8+QDwPBIeeG7ZrkP
+         lzP5Q3/4T7n01Flk2f29kq1Iehzi6jTJziO45pXgguGIvH22bpYnz7vZwk7q+IdElZMS
+         4OKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695228661; x=1695833461;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XFp4/FBehp7bXIUiukwsVd1VDsGADtdLcprhP9iiGVo=;
+        b=RIAB/FtFSJnU8y9dsvZFi/l7IuunKnDVBCri8xYEkKH591veY8H2yU2DqUSZXTFmCL
+         uutVyCJWRSxhHa/Vabx70AVCEBue7IX2yDjsIbvFHSrM0IBv/7OeNAK4Abn2qg4yK9U+
+         R/er31FctEtFRly4t0or6D4i8ih9G00Zv1mDfyE+eeXJcQ2GY45Z3Gh5re9g4PXzN14J
+         Qpa3UyNZWqvwMvFviU/F01rr3mwLuTL/eCqNymLiYg8zfgWzINER5Ay4HTGf7A0tRV8s
+         JKMDcHiqi0dhefVtGY5F87/D1xgNQCu1GVT0nA1ShlVQqXU1TsPAsCSnAWre7K+WTj9m
+         M1lA==
+X-Gm-Message-State: AOJu0Yza9BP/0Sssf9uhp0fU4h2rhRIa1GikwkaNyzgRTjjkeL15gcJV
+	TGXF8yEP7JojyIvuooorMn2easATNAwLpqVcga5CIQ==
+X-Google-Smtp-Source: 
+ AGHT+IEuELX3/Oyy6eRXnIacTDFmEDIXHMrCxW6IPWYkJBUy8R78CaXGS8Piry3NQBq/Ct/oKIOvajA2h1foAouaUKk=
+X-Received: by 2002:a25:d0d7:0:b0:d81:5ec1:80cf with SMTP id
+ h206-20020a25d0d7000000b00d815ec180cfmr3192253ybg.12.1695228660956; Wed, 20
+ Sep 2023 09:51:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: EUwYUiMW8bgtt8XIRHweRy9CqW2mTvf_
-X-Proofpoint-ORIG-GUID: EUwYUiMW8bgtt8XIRHweRy9CqW2mTvf_
-X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: LJ7K4XASN55ZA27IYVZY26W4XNCID66S
-X-Message-ID-Hash: LJ7K4XASN55ZA27IYVZY26W4XNCID66S
-X-MailFrom: prvs=462798be35=sbinding@opensource.cirrus.com
+References: <20230920153819.2069869-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20230920153819.2069869-1-andriy.shevchenko@linux.intel.com>
+From: Nick Desaulniers <ndesaulniers@google.com>
+Date: Wed, 20 Sep 2023 09:50:45 -0700
+Message-ID: 
+ <CAKwvOd=7vk2HKOpgVrRd2RtKSF9tXPqbVmN+5teLTNoBy4BWVg@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] device property: Replace custom implementation of
+ COUNT_ARGS()
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ linux-acpi@vger.kernel.org,
+	linux-kernel@vger.kernel.org, "Rafael J. Wysocki" <rafael@kernel.org>,
+	Daniel Scally <djrscally@gmail.com>,
+ Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+	Sakari Ailus <sakari.ailus@linux.intel.com>,
+	Richard Fitzgerald <rf@opensource.cirrus.com>, tiwai@suse.com,
+ llvm@lists.linux.dev,
+	alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Message-ID-Hash: TOJE6LPM23C6675ORWPD37JEBKRPOFUN
+X-Message-ID-Hash: TOJE6LPM23C6675ORWPD37JEBKRPOFUN
+X-MailFrom: ndesaulniers@google.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -100,93 +112,62 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LJ7K4XASN55ZA27IYVZY26W4XNCID66S/>
-List-Archive: <>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TOJE6LPM23C6675ORWPD37JEBKRPOFUN/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-When the CS35L41 amp is requested to mute using the ACPI
-notification mechanism, userspace is not notified that the amp
-is muted. To allow userspace to know about the mute, add an
-ALSA control which tracks the forced mute override.
-This control does not track the overall mute state of the amp,
-since the amp is only unmuted during playback anyway, instead
-it tracks the mute override request from the ACPI notification.
+On Wed, Sep 20, 2023 at 8:38=E2=80=AFAM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> Replace custom and non-portable implementation of COUNT_ARGS().
+>
+> Fixes: e64b674bc9d7 ("software node: implement reference properties")
+> Reported-by: Nick Desaulniers <ndesaulniers@google.com>
+> Closes: https://lore.kernel.org/r/ZQoILN6QCjzosCOs@google.com
 
-Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
----
- sound/pci/hda/cs35l41_hda.c | 28 ++++++++++++++++++++++++++++
- 1 file changed, 28 insertions(+)
+Thanks for the patch!
+Closes: https://github.com/ClangBuiltLinux/linux/issues/1935
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
 
-diff --git a/sound/pci/hda/cs35l41_hda.c b/sound/pci/hda/cs35l41_hda.c
-index 7b56bceea9e8..dd10b4cd3d1a 100644
---- a/sound/pci/hda/cs35l41_hda.c
-+++ b/sound/pci/hda/cs35l41_hda.c
-@@ -972,6 +972,15 @@ static int cs35l41_fw_load_ctl_get(struct snd_kcontrol *kcontrol,
- 	return 0;
- }
- 
-+static int cs35l41_mute_override_ctl_get(struct snd_kcontrol *kcontrol,
-+					 struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct cs35l41_hda *cs35l41 = snd_kcontrol_chip(kcontrol);
-+
-+	ucontrol->value.integer.value[0] = cs35l41->mute_override;
-+	return 0;
-+}
-+
- static void cs35l41_fw_load_work(struct work_struct *work)
- {
- 	struct cs35l41_hda *cs35l41 = container_of(work, struct cs35l41_hda, fw_load_work);
-@@ -1055,6 +1064,7 @@ static int cs35l41_create_controls(struct cs35l41_hda *cs35l41)
- {
- 	char fw_type_ctl_name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
- 	char fw_load_ctl_name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
-+	char mute_override_ctl_name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
- 	struct snd_kcontrol_new fw_type_ctl = {
- 		.name = fw_type_ctl_name,
- 		.iface = SNDRV_CTL_ELEM_IFACE_CARD,
-@@ -1069,12 +1079,21 @@ static int cs35l41_create_controls(struct cs35l41_hda *cs35l41)
- 		.get = cs35l41_fw_load_ctl_get,
- 		.put = cs35l41_fw_load_ctl_put,
- 	};
-+	struct snd_kcontrol_new mute_override_ctl = {
-+		.name = mute_override_ctl_name,
-+		.iface = SNDRV_CTL_ELEM_IFACE_CARD,
-+		.info = snd_ctl_boolean_mono_info,
-+		.access = SNDRV_CTL_ELEM_ACCESS_READ | SNDRV_CTL_ELEM_ACCESS_VOLATILE,
-+		.get = cs35l41_mute_override_ctl_get,
-+	};
- 	int ret;
- 
- 	scnprintf(fw_type_ctl_name, SNDRV_CTL_ELEM_ID_NAME_MAXLEN, "%s DSP1 Firmware Type",
- 		  cs35l41->amp_name);
- 	scnprintf(fw_load_ctl_name, SNDRV_CTL_ELEM_ID_NAME_MAXLEN, "%s DSP1 Firmware Load",
- 		  cs35l41->amp_name);
-+	scnprintf(mute_override_ctl_name, SNDRV_CTL_ELEM_ID_NAME_MAXLEN, "%s Forced Mute Status",
-+		  cs35l41->amp_name);
- 
- 	ret = snd_ctl_add(cs35l41->codec->card, snd_ctl_new1(&fw_type_ctl, cs35l41));
- 	if (ret) {
-@@ -1092,6 +1111,15 @@ static int cs35l41_create_controls(struct cs35l41_hda *cs35l41)
- 
- 	dev_dbg(cs35l41->dev, "Added Control %s\n", fw_load_ctl.name);
- 
-+	ret = snd_ctl_add(cs35l41->codec->card, snd_ctl_new1(&mute_override_ctl, cs35l41));
-+	if (ret) {
-+		dev_err(cs35l41->dev, "Failed to add KControl %s = %d\n", mute_override_ctl.name,
-+			ret);
-+		return ret;
-+	}
-+
-+	dev_dbg(cs35l41->dev, "Added Control %s\n", mute_override_ctl.name);
-+
- 	return 0;
- }
- 
--- 
-2.34.1
+Of course Linux would have a macro for this!  I should have known.
+Trying to wrap my head around it. Awesome
 
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+>  include/linux/property.h | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/include/linux/property.h b/include/linux/property.h
+> index 1684fca930f7..55c2692ffa8c 100644
+> --- a/include/linux/property.h
+> +++ b/include/linux/property.h
+> @@ -10,6 +10,7 @@
+>  #ifndef _LINUX_PROPERTY_H_
+>  #define _LINUX_PROPERTY_H_
+>
+> +#include <linux/args.h>
+>  #include <linux/bits.h>
+>  #include <linux/fwnode.h>
+>  #include <linux/stddef.h>
+> @@ -314,7 +315,7 @@ struct software_node_ref_args {
+>  #define SOFTWARE_NODE_REFERENCE(_ref_, ...)                    \
+>  (const struct software_node_ref_args) {                                \
+>         .node =3D _ref_,                                          \
+> -       .nargs =3D ARRAY_SIZE(((u64[]){ 0, ##__VA_ARGS__ })) - 1, \
+> +       .nargs =3D COUNT_ARGS(__VA_ARGS__),                       \
+>         .args =3D { __VA_ARGS__ },                                \
+>  }
+>
+> --
+> 2.40.0.1.gaa8946217a0b
+>
+
+
+--=20
+Thanks,
+~Nick Desaulniers
