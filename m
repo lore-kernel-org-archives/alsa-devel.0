@@ -4,108 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D2AB7CE79AC
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Sep 2023 07:06:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B6E72CE79AC
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Sep 2023 07:12:36 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6A43EAE8;
-	Wed, 20 Sep 2023 09:05:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6A43EAE8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4E603DE5;
+	Wed, 20 Sep 2023 09:11:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4E603DE5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1695193598;
-	bh=L8zJrU36zq86rP/GiaecLsglbuVVL8hjj6GZESOK4WA=;
+	s=default; t=1695193954;
+	bh=UKlzRQJ9PllxgAujiCDZAH0EUhsmVBI6thQ7K8ZKXxU=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=d5wX2OkaJjN7BVL7Pisel8sZV9iPQT14++izeTsov0JhFVvgSbdpUxMHNwsFtk50E
-	 T2zU7jA2qhNPe48jHVSqjn8owmtBPyPZmsk5+5uwWgNPpF3SbhQw6GBVOkywJVLdtj
-	 k2n7EysnCjI7NQMHFrEPHp6Ong8DZmI+ARs2WQfA=
+	b=NOBNzhTRI97QpfwnC6LRrZn9FylUK1i0Xs6YpR3jl8yPUkM5fVj7LcWn8hTzKp1fz
+	 QnGBGC6bh8gV/NWR2G0ainEmVai9GXkmRg6BIExwifB6NA6On/3XsHWNZh2gPLpBUb
+	 WYR0byZjNYHhpJFF5uQ/Md6EzMh9Bny6CJcnyGUw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2BB8AF801F5; Wed, 20 Sep 2023 09:05:17 +0200 (CEST)
+	id B579EF801F5; Wed, 20 Sep 2023 09:11:12 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E1983F8025A;
-	Wed, 20 Sep 2023 09:05:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 65859F8025A;
+	Wed, 20 Sep 2023 09:11:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D3742F8025A; Wed, 20 Sep 2023 09:05:09 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+	id 2A66DF8025A; Wed, 20 Sep 2023 09:11:06 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 5430FF800F4
-	for <alsa-devel@alsa-project.org>; Wed, 20 Sep 2023 09:05:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5430FF800F4
+	by alsa1.perex.cz (Postfix) with ESMTPS id 98626F80125
+	for <alsa-devel@alsa-project.org>; Wed, 20 Sep 2023 09:11:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 98626F80125
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=VUdNbspt;
+ header.s=susede2_rsa header.b=ob61XTTG;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=5Sa7R9Oc
+ header.s=susede2_ed25519 header.b=5pTs7JXV
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 953072251C;
-	Wed, 20 Sep 2023 07:05:04 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id A03E31F7AB;
+	Wed, 20 Sep 2023 07:11:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1695193504;
+	t=1695193862;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=YtpT9rmsvNdD25C52w/dsFnFom7gmr6h8hTnMT9pppA=;
-	b=VUdNbsptH6xtu8SuSD1phRT0W/65IBdC356rMtSp3IQLekQbLsJxbwDlmZjGBov3oaLqRB
-	c/RiR3ah/OzaVhc+F0ig/I9Vlzp645LprpNEG8znmpmzCYGfbSr5pNmFf+wWcvMdtjCNkN
-	H31bI+i0XvPIYCvOeI3NHFp31r0uEI4=
+	bh=VPIfa9RSJC+r1M9uLaZPB6rbX0Q0q/vQnrnbkBxoW0c=;
+	b=ob61XTTG8b2RWji4wqUNbb+EBLgzhXtRcrY7XLt6pIDe97+P0lANLmR1xce8dcfV4gUtrS
+	KYO5nmY+5pD6R9mlRZj+3Dvwo1fwrQ7gfxOTzDPFAE212WnA1RB6/RO7f5kSjP1kK21ttM
+	HIl8qtrn8tv3Sl69oJJMoronf398bBs=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1695193504;
+	s=susede2_ed25519; t=1695193862;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=YtpT9rmsvNdD25C52w/dsFnFom7gmr6h8hTnMT9pppA=;
-	b=5Sa7R9OcmwNsSJDDy17+/1xNUt5/Qo67Eu1e4a9fpmRM2Y3HvpWjCY+kmyG0My/2mWR799
-	rLVDYboGJxWv1GBA==
+	bh=VPIfa9RSJC+r1M9uLaZPB6rbX0Q0q/vQnrnbkBxoW0c=;
+	b=5pTs7JXV/My8HFV1U2CI/HJH1qKXjI6hhWWC+o6Dio/4hQXW/3vrEoBB0fdQl68ug+jMOw
+	C7e6JUoWaEHpcsBw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 523051333E;
-	Wed, 20 Sep 2023 07:05:04 +0000 (UTC)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 81CD81333E;
+	Wed, 20 Sep 2023 07:11:02 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id iygqE6CZCmXUJgAAMHmgww
-	(envelope-from <tiwai@suse.de>); Wed, 20 Sep 2023 07:05:04 +0000
-Date: Wed, 20 Sep 2023 09:05:03 +0200
-Message-ID: <871qetwcio.wl-tiwai@suse.de>
+	id +a7vHgabCmUFKgAAMHmgww
+	(envelope-from <tiwai@suse.de>); Wed, 20 Sep 2023 07:11:02 +0000
+Date: Wed, 20 Sep 2023 09:11:02 +0200
+Message-ID: <87zg1huxo9.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Ma Ke <make_ruc2021@163.com>
-Cc: perex@perex.cz,
-	tiwai@suse.com,
-	mhocko@suse.com,
-	akpm@linux-foundation.org,
-	mgorman@techsingularity.net,
-	42.hyeyoo@gmail.com,
-	surenb@google.com,
-	alsa-devel@alsa-project.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ALSA: pcm: oss: Fix race at SNDCTL_DSP_SETTRIGGER There
- is a small race window at snd_pcm_oss_set_trigger() that is called from OSS
- PCM SNDCTL_DSP_SETTRIGGER ioctl;
- namely the function calls snd_pcm_oss_make_ready() at first,
- then takes the params_lock mutex for the rest.  When the stream is set up
- again by another thread between them, it leads to inconsistency,
- and may result in unexpected results such as NULL dereference of OSS buffer
- as a fuzzer spotted recently.
-In-Reply-To: <20230920023536.3535439-1-make_ruc2021@163.com>
-References: <20230920023536.3535439-1-make_ruc2021@163.com>
+To: yu tian <tianyucode9603@gmail.com>
+Cc: tiwai@suse.com,
+	alsa-devel@alsa-project.org
+Subject: Re: sound/hda: Module loading problem of controller and codec
+In-Reply-To: 
+ <CADMex3N0yR60Hzkbg5Qx5MNZaqmx59-HKDB=MEEMvG2fL4QM_Q@mail.gmail.com>
+References: 
+ <CADMex3N0yR60Hzkbg5Qx5MNZaqmx59-HKDB=MEEMvG2fL4QM_Q@mail.gmail.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Message-ID-Hash: OKFHFDBPLYOM77GI2EQNDCNVRUQ5DVCX
-X-Message-ID-Hash: OKFHFDBPLYOM77GI2EQNDCNVRUQ5DVCX
+Content-Type: text/plain; charset=ISO-2022-JP
+Message-ID-Hash: BRKPDAQ53GM4DZVYYU4HCUK2NEY5IPBP
+X-Message-ID-Hash: BRKPDAQ53GM4DZVYYU4HCUK2NEY5IPBP
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -118,7 +106,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OKFHFDBPLYOM77GI2EQNDCNVRUQ5DVCX/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BRKPDAQ53GM4DZVYYU4HCUK2NEY5IPBP/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -127,70 +115,32 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Wed, 20 Sep 2023 04:35:36 +0200,
-Ma Ke wrote:
+On Wed, 20 Sep 2023 06:18:28 +0200,
+yu tian wrote:
 > 
-> The fix is simply to cover snd_pcm_oss_make_ready() call into the same
-> params_lock mutex with snd_pcm_oss_make_ready_locked() variant.
+> Hi Takashi,
+> The following commit only gives a warning in menuconfig:
+> "Set to Y if you want auto-loading the codec driver"
 > 
-> Signed-off-by: Ma Ke <make_ruc2021@163.com>
+> d8f66c71d547 ("ALSA: hda - Add warning texts when codec driver Kconfig
+> doesn't match")
+> 78e34f34ac27 ("ALSA: hda - remove PCI dependency in Kconfig")
+> 
+> The problem with module loading is because when SND_HDA=y,
+> sound/pci/hda/hda_bind.c is not compiled as a module.There is a
+> “#ifdef MODULE“ in the codec_bind_module function in this file. Why
+> can't it be deleted directly?Or am I missing something?
 
-The patch subject needs to be fixed.  The subject line can't be that
-long.  It must be concise.  Put more text in the patch description
-instead.
+You seem looking at things other way round.  The problem is not
+because of '#ifdef MODULE'.  It's rather because of the code behavior
+and the expected results.
 
-About the code change: the error handling is different after the
-patch.  The current code returns an error immediately while your patch
-does "goto _skip1" etc, which doesn't abort but continues.
+The current code there requires the module loading for binding when
+the HDA stuff is built as modules.  Although you may reduce the ifdef,
+it doesn't mean that the behavior would change.  Hence, when
+CONFIG_SND_HDA=y and codecs are modules, those codecs will be never
+bound, no matter with or without ifdef.  That's the reason of the
+warning there.
 
-
-thanks,
 
 Takashi
-
-> ---
->  sound/core/oss/pcm_oss.c | 16 ++++++----------
->  1 file changed, 6 insertions(+), 10 deletions(-)
-> 
-> diff --git a/sound/core/oss/pcm_oss.c b/sound/core/oss/pcm_oss.c
-> index 728c211142d1..9a830aeeba63 100644
-> --- a/sound/core/oss/pcm_oss.c
-> +++ b/sound/core/oss/pcm_oss.c
-> @@ -2083,21 +2083,14 @@ static int snd_pcm_oss_set_trigger(struct snd_pcm_oss_file *pcm_oss_file, int tr
->  	psubstream = pcm_oss_file->streams[SNDRV_PCM_STREAM_PLAYBACK];
->  	csubstream = pcm_oss_file->streams[SNDRV_PCM_STREAM_CAPTURE];
->  
-> -	if (psubstream) {
-> -		err = snd_pcm_oss_make_ready(psubstream);
-> -		if (err < 0)
-> -			return err;
-> -	}
-> -	if (csubstream) {
-> -		err = snd_pcm_oss_make_ready(csubstream);
-> -		if (err < 0)
-> -			return err;
-> -	}
->        	if (psubstream) {
->        		runtime = psubstream->runtime;
->  		cmd = 0;
->  		if (mutex_lock_interruptible(&runtime->oss.params_lock))
->  			return -ERESTARTSYS;
-> +		err = snd_pcm_oss_make_ready_locked(psubstream);
-> +		if (err < 0)
-> +			goto _skip1;
->  		if (trigger & PCM_ENABLE_OUTPUT) {
->  			if (runtime->oss.trigger)
->  				goto _skip1;
-> @@ -2128,6 +2121,9 @@ static int snd_pcm_oss_set_trigger(struct snd_pcm_oss_file *pcm_oss_file, int tr
->  		cmd = 0;
->  		if (mutex_lock_interruptible(&runtime->oss.params_lock))
->  			return -ERESTARTSYS;
-> +		err = snd_pcm_oss_make_ready_locked(csubstream);
-> +		if (err < 0)
-> +			goto _skip2;
->  		if (trigger & PCM_ENABLE_INPUT) {
->  			if (runtime->oss.trigger)
->  				goto _skip2;
-> -- 
-> 2.37.2
-> 
