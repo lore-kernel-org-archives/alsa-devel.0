@@ -4,114 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 76928E71093
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 Sep 2023 16:23:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C1418E71096
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 Sep 2023 16:30:11 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1C28A822;
-	Thu, 21 Sep 2023 18:22:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1C28A822
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7515BAE8;
+	Thu, 21 Sep 2023 18:29:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7515BAE8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1695313399;
-	bh=w6Scveg7OgQGE1yvinUFWT/rRTwS4ERa1ZqoFQI9DIE=;
-	h=In-Reply-To:References:Date:From:To:Cc:Subject:List-Id:
+	s=default; t=1695313809;
+	bh=3uOxBRr1RvY5owLaGEq/jb6XVeFgpAo/dpt/BLEPdcY=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=IljEwYpPvRUCRE8jL+JDkD3kXN9TwXJF87oWD0NVT4XFadoOrYFtim0S243L0rJ1S
-	 v34fqU1cv2Nwm42GY+scGX7nmGULROouDXgDluzYgbBdCJa4aRXZ3L3KkG3b4T/wSo
-	 L3zTpn6QjscflhmDLGXGPaZBX2+1IGc1hhGRUCPQ=
+	b=SdsJqgro1a40azifF8VMl92nHoUEYHE4R65/ejWzBLkGF1xMrYM2OkeFsxtxPADBC
+	 h0d/3YDk/Tr7JB/liGk+VcVL/CN4HNjkFZNlw8OGMiWocT6190+dq5oOBbB4KpiJZq
+	 /hW4dsYMfmibOWM7fHUzAEarBvP/DCoWidk0vGak=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 63897F80494; Thu, 21 Sep 2023 18:22:28 +0200 (CEST)
+	id C1B82F80124; Thu, 21 Sep 2023 18:29:18 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id BC827F800AA;
-	Thu, 21 Sep 2023 18:22:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CE462F80549;
+	Thu, 21 Sep 2023 18:29:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CF12DF8025A; Thu, 21 Sep 2023 18:22:21 +0200 (CEST)
-Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com
- [66.111.4.28])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 4291FF80551; Thu, 21 Sep 2023 18:29:11 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id F3716F800AA
-	for <alsa-devel@alsa-project.org>; Thu, 21 Sep 2023 18:22:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F3716F800AA
+	by alsa1.perex.cz (Postfix) with ESMTPS id 04B92F8025A
+	for <alsa-devel@alsa-project.org>; Thu, 21 Sep 2023 18:29:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 04B92F8025A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=arndb.de header.i=@arndb.de header.a=rsa-sha256
- header.s=fm1 header.b=W9y15g3E;
-	dkim=pass (2048-bit key,
- unprotected) header.d=messagingengine.com header.i=@messagingengine.com
- header.a=rsa-sha256 header.s=fm2 header.b=TjA3qLPB
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-	by mailout.nyi.internal (Postfix) with ESMTP id 5DCF45C00F5;
-	Thu, 21 Sep 2023 12:22:10 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute6.internal (MEProxy); Thu, 21 Sep 2023 12:22:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:sender
-	:subject:subject:to:to; s=fm1; t=1695313330; x=1695399730; bh=Ak
-	TeiXuh1R0GwYgW9icwMNtyaC+fPAA3UuL0o7kHtXA=; b=W9y15g3EH9bJjempT8
-	+GXjIHTdeH+fnkwtU9PXakn42mnYK8z+ZMlKuE1CFY9ShkbOeKRK83GF+TgQ7vFs
-	keJDMoHxcpFbYKYBKcWJFmuypitoogZonoH1PVJ0iLcp0hmoCkBnJrWAU+R0fCsn
-	2RKYHax0XaNf1P5nUReAsS25zv3iCSY9Izp/gM8uILLcEyZ8OE9sP2DOo4zKY27H
-	lYuVnxoztz6udfUbsxbfPPFWutBlglayYpCEj4hPSGQuxMA+4Rqajk9vKPZPdEeP
-	XPhZc4KizcVml9Md5j+RLVKRwhfFA2SkmnuA4Y69p6ESEck1C/UxDsknfSq7UAJC
-	JjSg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:sender:subject
-	:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-	:x-sasl-enc; s=fm2; t=1695313330; x=1695399730; bh=AkTeiXuh1R0Gw
-	YgW9icwMNtyaC+fPAA3UuL0o7kHtXA=; b=TjA3qLPBTIEtXUxpSuCxiujcGSSSt
-	gYpHY3FMzLXHZpqT/lYBfIC11FEBr3hwqLB5TzhTUI7+B1ZUjKanZOUsXcQgL84N
-	3fUxZcD7SS0lSMCRnluRzKiE7mlPw7DVvUcz2tj/9n93Dq7LAA5ZL6bUEGRHQNg+
-	HegkzZPpqZlA0t61hS3fCNOoi25VLqcCoWralv5VPt+HShmvZLDkG2jSlp/jlUgT
-	vBsGHyaG8DY5mA9xN6gz5stTdrvHdmH//Oc3QAVHOBh5rTRD1aWnOtIb/XpksVsU
-	2oLjKPr824DnAAGK74YvPll0WKozQmNDp3sXJpWG67rRe1u53KI/vMdYw==
-X-ME-Sender: <xms:sW0MZZE93hMTjKk52LCn1vqyxzJ4F947U0fqL5tatel9XhVwwyl7uA>
-    <xme:sW0MZeWYkuidBxxE8NInlsTtLnnrrz3j_CXscCTdV4yRt6ioeun-B_jemQ7OFKpen
-    Lyb5LjRY8R1hv-devE>
-X-ME-Proxy-Cause: 
- gggruggvucftvghtrhhoucdtuddrgedviedrudekiedgleelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
-    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:sW0MZbIvRTxOfiUICkvF_9mdqbMJY3-XyK473LOH-ealMElDXsm0tQ>
-    <xmx:sW0MZfGmSmuCAWxby9F501t-i1p9yT-EgXrHvfn1bCJgT9PpgAvKUA>
-    <xmx:sW0MZfVeNeG14nBQw--M0pcIrOxKDFMhHcUKN-bKzu7MyWZVXRiqiw>
-    <xmx:sm0MZaTfxSCuu0r6jGq3SUITIWXvzxeZrjQ-1YFpIoWtfdU0YF8TDQ>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 6E6B5B6008D; Thu, 21 Sep 2023 12:22:09 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-761-gece9e40c48-fm-20230913.001-gece9e40c
+ unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
+ header.s=PODMain02222019 header.b=jIQsgshe
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+	by mx0b-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id
+ 38LFWYi7009262;
+	Thu, 21 Sep 2023 11:29:00 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+	from:to:cc:subject:date:message-id:in-reply-to:references
+	:mime-version:content-transfer-encoding:content-type; s=
+	PODMain02222019; bh=MaHpdygZ/aP2aJTDzDqitZm8Hr1umO0xthwnGH/UKh4=; b=
+	jIQsgshesJgCUN1YdVO9UDEmyAgX6B0saJnL2OWOc5xcJE2W39kdzaOlfCWKpjjB
+	g+FuAYB1UmLS61WTskl4QI1qLWobVqNVK4dVrYtH4GHOgTC1qNUVh1j8Qh7Tn99u
+	W1amWyokDGPWCRJmJBk3xtkPFhJefw6bgerFCBwKCggOCY6/EjUlcMSci7kFAXaz
+	CTRB1uQkK8kcFwKNdYbq9hQXKqOvkN5wc1ldjwxZlZAhoHnHxyfzNwyVD0nmQCtb
+	rTvSRmIlFOTIE0wqalGNsha4C+XvvJNNJTwNooFmrexDfPWzwWqbkzm4yuEBCzKG
+	8kiXjALUE15RB837TcA9+g==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3t58shx0ab-4
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 21 Sep 2023 11:29:00 -0500 (CDT)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Thu, 21 Sep
+ 2023 17:28:57 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.37 via Frontend
+ Transport; Thu, 21 Sep 2023 17:28:57 +0100
+Received: from sbinding-cirrus-dsktp2.ad.cirrus.com (unknown [198.90.238.135])
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id AEE8615B9;
+	Thu, 21 Sep 2023 16:28:57 +0000 (UTC)
+From: Stefan Binding <sbinding@opensource.cirrus.com>
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+CC: <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
+        <patches@opensource.cirrus.com>,
+        Stefan Binding
+	<sbinding@opensource.cirrus.com>
+Subject: [PATCH v5 4/4] ALSA: hda: cs35l41: Add read-only ALSA control for
+ forced mute
+Date: Thu, 21 Sep 2023 17:28:49 +0100
+Message-ID: <20230921162849.1988124-5-sbinding@opensource.cirrus.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230921162849.1988124-1-sbinding@opensource.cirrus.com>
+References: <20230921162849.1988124-1-sbinding@opensource.cirrus.com>
 MIME-Version: 1.0
-Message-Id: <e09527e8-ac2d-49e8-9e36-ea8e5f9ed8aa@app.fastmail.com>
-In-Reply-To: <87pm2bzov8.wl-tiwai@suse.de>
-References: <202309210751.TXlnuEMF-lkp@intel.com>
- <0a4644bc-d345-9988-2eb6-e95c8db06219@opensource.cirrus.com>
- <87pm2bzov8.wl-tiwai@suse.de>
-Date: Thu, 21 Sep 2023 12:21:49 -0400
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Takashi Iwai" <tiwai@suse.de>,
- "Richard Fitzgerald" <rf@opensource.cirrus.com>
-Cc: "Thierry Reding" <treding@nvidia.com>, llvm@lists.linux.dev,
- oe-kbuild-all@lists.linux.dev, alsa-devel@alsa-project.org
-Subject: Re: [tiwai-sound:for-next 36/38]
- sound/pci/hda/cirrus_scodec_test.c:151:60:
- error: initializer element is not a compile-time constant
+Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-Message-ID-Hash: D2ROVLEQ47S2A6NY6YBIMC2AE3LAZIQ7
-X-Message-ID-Hash: D2ROVLEQ47S2A6NY6YBIMC2AE3LAZIQ7
-X-MailFrom: arnd@arndb.de
+X-Proofpoint-GUID: apFXas9Py_YWxUMrItTTFvVR4_hQlcD8
+X-Proofpoint-ORIG-GUID: apFXas9Py_YWxUMrItTTFvVR4_hQlcD8
+X-Proofpoint-Spam-Reason: safe
+Message-ID-Hash: L6WS4TMDMDEOG4SS7YVKXFCSWSPY6DT7
+X-Message-ID-Hash: L6WS4TMDMDEOG4SS7YVKXFCSWSPY6DT7
+X-MailFrom: prvs=462875a41c=sbinding@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -123,38 +100,94 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/D2ROVLEQ47S2A6NY6YBIMC2AE3LAZIQ7/>
-List-Archive: <>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/L6WS4TMDMDEOG4SS7YVKXFCSWSPY6DT7/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, Sep 21, 2023, at 08:34, Takashi Iwai wrote:
-> On Thu, 21 Sep 2023 11:23:14 +0200, Richard Fitzgerald wrote:
->> On 21/9/23 00:35, kernel test robot wrote:
+When the CS35L41 amp is requested to mute using the ACPI
+notification mechanism, userspace is not notified that the amp
+is muted. To allow userspace to know about the mute, add an
+ALSA control which tracks the forced mute override.
+This control does not track the overall mute state of the amp,
+since the amp is only unmuted during playback anyway, instead
+it tracks the mute override request from the ACPI notification.
 
->> >     In file included from arch/hexagon/include/asm/io.h:337:
->> >     include/asm-generic/io.h:547:31: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->> >             val = __raw_readb(PCI_IOBASE + addr);
->> >                               ~~~~~~~~~~ ^
->> >     include/asm-generic/io.h:560:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->> >             val = __le16_to_cpu((__le16 __force)__raw_readw(PCI_IOBASE + addr));
->> >                                                             ~~~~~~~~~~ ^
->> >     include/uapi/linux/byteorder/little_endian.h:37:51: note: expanded from macro '__le16_to_cpu'
->> >     #define __le16_to_cpu(x) ((__force __u16)(__le16)(x))
->> >                                                       ^
->> 
->> This looks like it has nothing to do with cirrus_scodec_test, it's just
->> unfortunate that including gpio/driver.h results in also including io.h.
->
-> Yeah, I believe this part is irrelevant can be ignored.  It's included
-> as a part of (single) log.
+Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
+---
+ sound/pci/hda/cs35l41_hda.c | 28 ++++++++++++++++++++++++++++
+ 1 file changed, 28 insertions(+)
 
-Correct, it's a known bug that we've been working on for (literally) years,
-it should be fixed soon by enforcing CONFIG_HAS_IOPORT soon to blank out
-these functions on architectures that cannot support them. I hope we can
-land the last patch for this in 6.7.
+diff --git a/sound/pci/hda/cs35l41_hda.c b/sound/pci/hda/cs35l41_hda.c
+index 18ca00c0a8cd..92b815ce193b 100644
+--- a/sound/pci/hda/cs35l41_hda.c
++++ b/sound/pci/hda/cs35l41_hda.c
+@@ -972,6 +972,15 @@ static int cs35l41_fw_load_ctl_get(struct snd_kcontrol *kcontrol,
+ 	return 0;
+ }
+ 
++static int cs35l41_mute_override_ctl_get(struct snd_kcontrol *kcontrol,
++					 struct snd_ctl_elem_value *ucontrol)
++{
++	struct cs35l41_hda *cs35l41 = snd_kcontrol_chip(kcontrol);
++
++	ucontrol->value.integer.value[0] = cs35l41->mute_override;
++	return 0;
++}
++
+ static void cs35l41_fw_load_work(struct work_struct *work)
+ {
+ 	struct cs35l41_hda *cs35l41 = container_of(work, struct cs35l41_hda, fw_load_work);
+@@ -1055,6 +1064,7 @@ static int cs35l41_create_controls(struct cs35l41_hda *cs35l41)
+ {
+ 	char fw_type_ctl_name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
+ 	char fw_load_ctl_name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
++	char mute_override_ctl_name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
+ 	struct snd_kcontrol_new fw_type_ctl = {
+ 		.name = fw_type_ctl_name,
+ 		.iface = SNDRV_CTL_ELEM_IFACE_CARD,
+@@ -1069,12 +1079,21 @@ static int cs35l41_create_controls(struct cs35l41_hda *cs35l41)
+ 		.get = cs35l41_fw_load_ctl_get,
+ 		.put = cs35l41_fw_load_ctl_put,
+ 	};
++	struct snd_kcontrol_new mute_override_ctl = {
++		.name = mute_override_ctl_name,
++		.iface = SNDRV_CTL_ELEM_IFACE_CARD,
++		.info = snd_ctl_boolean_mono_info,
++		.access = SNDRV_CTL_ELEM_ACCESS_READ | SNDRV_CTL_ELEM_ACCESS_VOLATILE,
++		.get = cs35l41_mute_override_ctl_get,
++	};
+ 	int ret;
+ 
+ 	scnprintf(fw_type_ctl_name, SNDRV_CTL_ELEM_ID_NAME_MAXLEN, "%s DSP1 Firmware Type",
+ 		  cs35l41->amp_name);
+ 	scnprintf(fw_load_ctl_name, SNDRV_CTL_ELEM_ID_NAME_MAXLEN, "%s DSP1 Firmware Load",
+ 		  cs35l41->amp_name);
++	scnprintf(mute_override_ctl_name, SNDRV_CTL_ELEM_ID_NAME_MAXLEN, "%s Forced Mute Status",
++		  cs35l41->amp_name);
+ 
+ 	ret = snd_ctl_add(cs35l41->codec->card, snd_ctl_new1(&fw_type_ctl, cs35l41));
+ 	if (ret) {
+@@ -1092,6 +1111,15 @@ static int cs35l41_create_controls(struct cs35l41_hda *cs35l41)
+ 
+ 	dev_dbg(cs35l41->dev, "Added Control %s\n", fw_load_ctl.name);
+ 
++	ret = snd_ctl_add(cs35l41->codec->card, snd_ctl_new1(&mute_override_ctl, cs35l41));
++	if (ret) {
++		dev_err(cs35l41->dev, "Failed to add KControl %s = %d\n", mute_override_ctl.name,
++			ret);
++		return ret;
++	}
++
++	dev_dbg(cs35l41->dev, "Added Control %s\n", mute_override_ctl.name);
++
+ 	return 0;
+ }
+ 
+-- 
+2.34.1
 
-       Arnd
