@@ -4,75 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6B3AEE71094
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 Sep 2023 16:32:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8FD08E71096
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 Sep 2023 16:32:51 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9532586F;
-	Thu, 21 Sep 2023 18:31:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9532586F
+	by alsa0.perex.cz (Postfix) with ESMTPS id BFE04E10;
+	Thu, 21 Sep 2023 18:31:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BFE04E10
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1695313960;
-	bh=x01Kxm/9gYMEc3tRd6K+OX6u8aPjjVNrTUQsLyR+bh4=;
+	s=default; t=1695313969;
+	bh=HQeco8190ix/liegyvioFxGiHh5bkP41j1jLytqngaI=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=UfCoG1kaoCx/1oKkZ+tgkg/wV1AkSGagrs4C+ylc5ZV+2nGnjyaM66rmB/FZ3M0y3
-	 1Oc05UEC4B/K+qGLKPS0xmpHyBBkYpUo1pixo4halXTNCV/R6Hc2dVYUG2iAt+F3tM
-	 XEM9+wZrUnVSQAAGToNxbzLnaa4Or9HnhMhTeOFI=
+	b=RYV9WMT+UaPwkLQimzpTEvZu84fTUxux7ecIy2zdtDFEPeefW6gIySMCUWzIgJKkB
+	 zDVOCDDakPHp0aru0mVOWV14DklfMh9sF6gOQvRAEMxpFriyPHKLXGwBpI0TfZJpPd
+	 hzN/cFjAukzYCP4zNO0digf1Yate2jLgxJ89Yg2U=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C2665F805CA; Thu, 21 Sep 2023 18:30:37 +0200 (CEST)
+	id C361CF8056F; Thu, 21 Sep 2023 18:30:39 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id AA50CF805C5;
-	Thu, 21 Sep 2023 18:30:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2E248F805D7;
+	Thu, 21 Sep 2023 18:30:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B8E2CF8059F; Thu, 21 Sep 2023 18:30:25 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	id 2E7A4F805A0; Thu, 21 Sep 2023 18:30:27 +0200 (CEST)
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A6C4FF8055A
+	by alsa1.perex.cz (Postfix) with ESMTPS id E432CF80558
 	for <alsa-devel@alsa-project.org>; Thu, 21 Sep 2023 18:30:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A6C4FF8055A
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E432CF80558
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=FNedpMNV
+ header.s=k20201202 header.b=oBX+8GJm
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 2EC4361F31;
-	Thu, 21 Sep 2023 16:30:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 559EBC611A7;
-	Thu, 21 Sep 2023 16:30:19 +0000 (UTC)
+	by sin.source.kernel.org (Postfix) with ESMTPS id F26B1CE228D;
+	Thu, 21 Sep 2023 16:30:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE6EBC611A7;
+	Thu, 21 Sep 2023 16:30:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1695313820;
-	bh=x01Kxm/9gYMEc3tRd6K+OX6u8aPjjVNrTUQsLyR+bh4=;
+	s=k20201202; t=1695313816;
+	bh=HQeco8190ix/liegyvioFxGiHh5bkP41j1jLytqngaI=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=FNedpMNVBuLXklKrexRLNACz6FR9IbuPvG0QlMqhjK7AhKPtyc4bNI5e+cdzcv/SN
-	 GK+8VztBWBTDT3cKs6HlLbcXxWVAjDwuGmf/fZm0Cn8T+pClNfYPN2VUym8huoAkOj
-	 BO+dn6JENh/8F8W+JqE9FLzWqtky5dPzP29RsLai9/EOFaBU1Vq0qT/6u7H6nwV1dF
-	 P6obK7VhKjXzoKqz+7jGNmAHWjKmDDP/d7tntSv0EZ5rGpg3bojsXPyq4B2JG/vy8n
-	 o1bqH+VhXSMN9Ro+LIDib9qDDaHs+TA/RcZQd6TWdswCC8HMMyVkSIT/fJmnOsaMpq
-	 Je9nX2cAhjrbw==
+	b=oBX+8GJmL/xQh1q7ux6Fpr+kYYZOTDBi60jSXGzacx7ueshhH9oH+j+mMkxoWSfzE
+	 mDfpYzsfO4BtcfULQLVWy279af9Jq24I97xZ3SiFuDtDGR/SzuAm9qbIu/iBvaW6tE
+	 kMhvht9d9DQnyKPbK55yIOw31WnDcStM0aGXyUtVIqwMS+qGX6Xht37rBcrEkZe7LT
+	 GL7jZKGool+07TGxywaQ5uGzbQe0/GfMhZLtxPrX1n5FCqD5AT4otAVsgyEpnRxyKq
+	 HpZIte8QmnHRpsDEgQEiiTp2Jl34Z4bJ2yZK6+F3BctfEZLSgp2VWhzbpYVUin42ry
+	 c4wUft34RhowA==
 From: Mark Brown <broonie@kernel.org>
 To: tiwai@suse.de, Bard Liao <yung-chuan.liao@linux.intel.com>
 Cc: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com,
  bard.liao@intel.com, peter.ujfalusi@linux.intel.com
-In-Reply-To: <20230919092125.1922468-1-yung-chuan.liao@linux.intel.com>
-References: <20230919092125.1922468-1-yung-chuan.liao@linux.intel.com>
-Subject: Re: [PATCH] ASoC: Intel: sof_sdw: add support for SKU 0B14
-Message-Id: <169531381906.61074.12846477501137066646.b4-ty@kernel.org>
-Date: Thu, 21 Sep 2023 17:30:19 +0100
+In-Reply-To: <20230919083606.1920202-1-yung-chuan.liao@linux.intel.com>
+References: <20230919083606.1920202-1-yung-chuan.liao@linux.intel.com>
+Subject: Re: [PATCH] ASoC: Intel: soc-acpi: fix Dell SKU 0B34
+Message-Id: <169531381351.61074.14535029532779711469.b4-ty@kernel.org>
+Date: Thu, 21 Sep 2023 17:30:13 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-034f2
-Message-ID-Hash: EEC77DGHAKDABQ4K2KQNLXXD4FEPJOMR
-X-Message-ID-Hash: EEC77DGHAKDABQ4K2KQNLXXD4FEPJOMR
+Message-ID-Hash: AGLCJBPSRJM6RZHK6LZH3PCH3DN36D4S
+X-Message-ID-Hash: AGLCJBPSRJM6RZHK6LZH3PCH3DN36D4S
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -85,18 +85,24 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/EEC77DGHAKDABQ4K2KQNLXXD4FEPJOMR/>
-List-Archive: <>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AGLCJBPSRJM6RZHK6LZH3PCH3DN36D4S/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, 19 Sep 2023 17:21:25 +0800, Bard Liao wrote:
-> One more missing SKU in the list.
+On Tue, 19 Sep 2023 16:36:06 +0800, Bard Liao wrote:
+> The rule for the SoundWire tables is that the platforms with more
+> devices need to be added first. We broke that rule with the Dell SKU
+> 0B34, and caused the second amplifier for SKU 0AF3 to be ignored.
 > 
+> The fix is simple, we need to move the single-amplifier entry after
+> the two-amplifier one.
 > 
+> [...]
 
 Applied to
 
@@ -104,8 +110,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: Intel: sof_sdw: add support for SKU 0B14
-      commit: fb0b8d299781be8d46b3612aa96cef28da0d93f4
+[1/1] ASoC: Intel: soc-acpi: fix Dell SKU 0B34
+      commit: b399f9706a1cbae42731cc420a46cfb9c3c6b10f
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
