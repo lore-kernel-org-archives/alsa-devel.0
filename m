@@ -4,75 +4,104 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 41B58CD495D
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 Sep 2023 06:43:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B8449CD495F
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 Sep 2023 06:57:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B3502A4B;
-	Thu, 21 Sep 2023 08:42:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B3502A4B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 36D99A4D;
+	Thu, 21 Sep 2023 08:56:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 36D99A4D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1695278608;
-	bh=58kIfvWvOI3rJ1BPjfFsdGG6ESCtqO0FU96tJV3Bbqg=;
-	h=Date:To:Cc:References:From:Subject:In-Reply-To:List-Id:
+	s=default; t=1695279436;
+	bh=+pXEIhjyEsgvQMa16xxFenvysqGGQBAyA3+oZk90Uik=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=OfQ3tP9LGnd4FMhPfqH5E20abN5url2qer4WrtOSQKWynquwkDHGTJ4mfW4iiqiIo
-	 uSrU+O8ld/FAHyPHPQkRwUJ2PRN16EdlqYmYOIQPMFczGSG3omxZjl567RBAS0RDqs
-	 tuDTftGKb+iFDDQqdwRSX+qv6e9XnwqFjv9UXa4s=
+	b=NBzGZ4HaDg6XJUPUdaiormjzgwfCwlOoMy3NhVkM+eyMw90FUO8vElTlgqYnB5TyS
+	 ZAvYQvyD1JP00xtijkmxKkxi0CIAhg09zWudRN4xDTcwnqDelELUaxc7pFy/Gl5Vji
+	 Qsq3N8uiA8zIYQgvFzJjo0ElIatN2dAaDkJnZiic=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7B765F801F5; Thu, 21 Sep 2023 08:42:08 +0200 (CEST)
+	id 8C81DF8025A; Thu, 21 Sep 2023 08:56:03 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3BD64F8025A;
-	Thu, 21 Sep 2023 08:42:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F00F4F80124;
+	Thu, 21 Sep 2023 08:56:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B4880F8025A; Thu, 21 Sep 2023 08:42:04 +0200 (CEST)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	id 453BDF8025A; Thu, 21 Sep 2023 08:55:57 +0200 (CEST)
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com
+ [IPv6:2607:f8b0:4864:20::102e])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D945BF80124
-	for <alsa-devel@alsa-project.org>; Thu, 21 Sep 2023 08:41:58 +0200 (CEST)
-Received: from mail1.perex.cz (localhost [127.0.0.1])
-	by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 915991A59;
-	Thu, 21 Sep 2023 08:41:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 915991A59
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
-	t=1695278517; bh=Eeq7sJDs1hu7y+D8yq9la0L6+8mtY+D8U6KKDTZYBqg=;
-	h=Date:To:Cc:References:From:Subject:In-Reply-To:From;
-	b=d1X6qlagWwbP3e3/2EqcPJTLcKYYB7P/fqkVSdnjPFCoFl4JLKxJkYzqVEmBry0LW
-	 ep8Qe92wX6fxREXyeKlyMDvjKXX18RX0yq1Yvgqg9AouAl9q5Rz+ebgB0tBfxsqLev
-	 ZS9IvPCOdljmZstYkyQvykte0IoxKydmx2gVPciM=
-Received: from [192.168.100.98] (unknown [192.168.100.98])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
-	(No client certificate requested)
-	(Authenticated sender: perex)
-	by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
-	Thu, 21 Sep 2023 08:41:50 +0200 (CEST)
-Message-ID: <2a249c19-d045-f3c4-3b8a-898ecd278abc@perex.cz>
-Date: Thu, 21 Sep 2023 08:41:50 +0200
+	by alsa1.perex.cz (Postfix) with ESMTPS id D9E0CF800AA
+	for <alsa-devel@alsa-project.org>; Thu, 21 Sep 2023 08:55:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D9E0CF800AA
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20230601 header.b=BslbIUoH
+Received: by mail-pj1-x102e.google.com with SMTP id
+ 98e67ed59e1d1-26934bc3059so1201130a91.1
+        for <alsa-devel@alsa-project.org>;
+ Wed, 20 Sep 2023 23:55:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695279348; x=1695884148;
+ darn=alsa-project.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1bVL+jGs6sqP7VG1dEZazWMAPQBBD+mX9InFJhTfc4M=;
+        b=BslbIUoHWGvU6Fil1ANVjYJepbQRupafk3nDb/U85+37cFw6XyFGMAwpOMBgjuXbn6
+         ZUgnhgW0TSq2/U69DAgvZfa7g2rnaXnKjfXK50V2p/AcSXyOwcM0N71L3uiu7dlSA5uK
+         VOp0RG/Kq1tBu+IzeOnZu3Mbxt5PJAq5/fntbyVIHS/NtmSTefsM5WZjjYB/VHwg7vqm
+         wCqp1wh/0+pcAyUlbZugE2Z9rVhjNXAs6zQ2VuoClSCpMgjVq2aANX87uqsHe52Qp5Q+
+         +z7d5jAdwqo885QBEvHOQRV/BRU3X4zRUmgv0GMPqaP5Q2JUBHAP3uTweYevJN1uCIT/
+         pmMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695279348; x=1695884148;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1bVL+jGs6sqP7VG1dEZazWMAPQBBD+mX9InFJhTfc4M=;
+        b=TcPvcpRlE/gHrmLi/IGBHPDOsxDYB6i6YIgjpuklYYlFiqFjkOntO5zSuXWc9yEU9J
+         Ulier2I1R6Dt85x59rh/bX7KL2Cm3lf6li7ieK/aY2zfBLyOpYE0mYehYILqiq74/RV5
+         av5prAdOHs9MwvLnfJKgIKx49cEVhHs5JS/xSxBUBEg+Be/Q5TNmG3CVhCmK3OQ+hDa8
+         bGyoRqHeXpchzngugfq6kGiQeCkd7plMODZvwg9VEgp2z+PA+8K5Uvik0qwJTyB/J4WE
+         tcfwfujPCXEmklXIjtKfng/4a/7O8u/wwCp7jfoomKlXl7K+sF2J6qyy1McjMaRM4vKq
+         haew==
+X-Gm-Message-State: AOJu0YxbTlGecFYjLKYtuLmY2fo92wV4h2QbwUpvU6ePsz6GqZlU8nbs
+	VYVAYVCirQi5LQWux6ty0CGIHoSNXO6cDev6GQI=
+X-Google-Smtp-Source: 
+ AGHT+IFVBrCouVQWwD+e2QYzdo6XT481j2Idi0aW4ihmGivrnNEgvLCRqXRTybpDG6APLo336LaCnJUTntu6YTFsRW0=
+X-Received: by 2002:a17:90b:1482:b0:276:6be8:8bfe with SMTP id
+ js2-20020a17090b148200b002766be88bfemr7106957pjb.23.1695279348052; Wed, 20
+ Sep 2023 23:55:48 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Content-Language: en-US
-To: Cezary Rojewski <cezary.rojewski@intel.com>, broonie@kernel.org,
- tiwai@suse.com
-Cc: alsa-devel@alsa-project.org, amadeuszx.slawinski@linux.intel.com,
- pierre-louis.bossart@linux.intel.com, hdegoede@redhat.com
-References: <20230918133940.3676091-1-cezary.rojewski@intel.com>
- <20230918133940.3676091-3-cezary.rojewski@intel.com>
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH v2 02/17] ALSA: pcm: Honor subformat when configuring
- substream
-In-Reply-To: <20230918133940.3676091-3-cezary.rojewski@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: HCYQIXPHMEHMJCN3KUY64MBB55JPOTHP
-X-Message-ID-Hash: HCYQIXPHMEHMJCN3KUY64MBB55JPOTHP
-X-MailFrom: perex@perex.cz
+References: <1695202370-24678-1-git-send-email-shengjiu.wang@nxp.com>
+ <1695202370-24678-10-git-send-email-shengjiu.wang@nxp.com>
+ <fbedcbf1-d925-47d6-b9fb-c9e15263c117@xs4all.nl>
+In-Reply-To: <fbedcbf1-d925-47d6-b9fb-c9e15263c117@xs4all.nl>
+From: Shengjiu Wang <shengjiu.wang@gmail.com>
+Date: Thu, 21 Sep 2023 14:55:36 +0800
+Message-ID: 
+ <CAA+D8APyNGFSry1GUv6TOW0nKYHKSwQd5bTcRNuT7cu0Xf8eUA@mail.gmail.com>
+Subject: Re: [RFC PATCH v4 09/11] media: uapi: Add
+ V4L2_CID_USER_IMX_ASRC_RATIO_MOD
+ control
+To: Hans Verkuil <hverkuil@xs4all.nl>
+Cc: Shengjiu Wang <shengjiu.wang@nxp.com>, sakari.ailus@iki.fi,
+ tfiga@chromium.org,
+	m.szyprowski@samsung.com, mchehab@kernel.org, linux-media@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Xiubo.Lee@gmail.com, festevam@gmail.com,
+	nicoleotsuka@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
+	perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
+	linuxppc-dev@lists.ozlabs.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Message-ID-Hash: PSACBLFQDJ7RVEQ2KQYL4S6NXHFHLNEU
+X-Message-ID-Hash: PSACBLFQDJ7RVEQ2KQYL4S6NXHFHLNEU
+X-MailFrom: shengjiu.wang@gmail.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -84,7 +113,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HCYQIXPHMEHMJCN3KUY64MBB55JPOTHP/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PSACBLFQDJ7RVEQ2KQYL4S6NXHFHLNEU/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -93,56 +122,111 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 18. 09. 23 15:39, Cezary Rojewski wrote:
-> Substream value is currently hardcoded to SNDRV_PCM_SUBFORMAT_STD.
-> Update the constraint procedure so that subformat selection is not
-> ignored. Case STD is always supported as most PCMs do not care about
-> subformat.
-> 
-> Suggested-by: Jaroslav Kysela <perex@perex.cz>
+On Wed, Sep 20, 2023 at 6:19=E2=80=AFPM Hans Verkuil <hverkuil@xs4all.nl> w=
+rote:
+>
+> On 20/09/2023 11:32, Shengjiu Wang wrote:
+> > The input clock and output clock may not be the accurate
+> > rate as the sample rate, there is some drift, so the convert
+> > ratio of i.MX ASRC module need to be changed according to
+> > actual clock rate.
+> >
+> > Add V4L2_CID_USER_IMX_ASRC_RATIO_MOD control for user to
+> > adjust the ratio.
+> >
+> > Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> > ---
+> >  Documentation/userspace-api/media/v4l/control.rst | 5 +++++
+> >  drivers/media/v4l2-core/v4l2-ctrls-defs.c         | 1 +
+> >  include/uapi/linux/v4l2-controls.h                | 1 +
+> >  3 files changed, 7 insertions(+)
+> >
+> > diff --git a/Documentation/userspace-api/media/v4l/control.rst b/Docume=
+ntation/userspace-api/media/v4l/control.rst
+> > index 4463fce694b0..2bc175900a34 100644
+> > --- a/Documentation/userspace-api/media/v4l/control.rst
+> > +++ b/Documentation/userspace-api/media/v4l/control.rst
+> > @@ -318,6 +318,11 @@ Control IDs
+> >      depending on particular custom controls should check the driver na=
+me
+> >      and version, see :ref:`querycap`.
+> >
+> > +.. _v4l2-audio-imx:
+> > +
+> > +``V4L2_CID_USER_IMX_ASRC_RATIO_MOD``
+> > +    sets the rasampler ratio modifier of i.MX asrc module.
+>
+> rasampler -> resampler (I think?)
+>
+> This doesn't document at all what the type of the control is or how to in=
+terpret it.
+>
+> > +
+> >  Applications can enumerate the available controls with the
+> >  :ref:`VIDIOC_QUERYCTRL` and
+> >  :ref:`VIDIOC_QUERYMENU <VIDIOC_QUERYCTRL>` ioctls, get and set a
+> > diff --git a/drivers/media/v4l2-core/v4l2-ctrls-defs.c b/drivers/media/=
+v4l2-core/v4l2-ctrls-defs.c
+> > index 8696eb1cdd61..16f66f66198c 100644
+> > --- a/drivers/media/v4l2-core/v4l2-ctrls-defs.c
+> > +++ b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
+> > @@ -1242,6 +1242,7 @@ const char *v4l2_ctrl_get_name(u32 id)
+> >       case V4L2_CID_COLORIMETRY_CLASS:        return "Colorimetry Contr=
+ols";
+> >       case V4L2_CID_COLORIMETRY_HDR10_CLL_INFO:               return "H=
+DR10 Content Light Info";
+> >       case V4L2_CID_COLORIMETRY_HDR10_MASTERING_DISPLAY:      return "H=
+DR10 Mastering Display";
+> > +     case V4L2_CID_USER_IMX_ASRC_RATIO_MOD:                  return "A=
+SRC RATIO MOD";
+>
+> Let's stay consistent with the other control names:
+>
+> "ASRC Ratio Modifier"
+>
+> But if this is a driver specific control, then this doesn't belong here.
+>
+> Driver specific controls are defined in the driver itself, including this
+> description.
+>
+> Same for the control documentation: if it is driver specific, then that
+> typically is documented either in a driver-specific public header, or
+> possibly in driver-specific documentation (Documentation/admin-guide/medi=
+a/).
+>
+> But is this imx specific? Wouldn't other similar devices need this?
 
-Better Co-developed mark. Also I would move whole code to the first patch. It 
-does not make sense to split the mandatory code.
+It is imx specific.
 
-Another option is to increase the protocol version to the separate patch where 
-all necessary code changes are applied (for MSBITS_MAX). But it may break 
-backports, so the change should be aligned with the SUBFMT defines.
+Does this mean that I need to create a header file in include/uapi/linux
+folder to put this definition?  I just hesitate if this is necessary.
 
-> +	struct snd_mask *sfmask;
+There is folder Documentation/userspace-api/media/drivers/ for drivers
+Should this document in this folder, not in the
+Documentation/admin-guide/media/?
 
-m_rw -> sfmask renaming. I prefer universal name to allow easy reuse in future.
-
-> +		for (sf = hw->subformats; sf->mask && !found; sf++) {
-
-My proposal [1] defined SNDRV_PCM_FORMAT_CONSTRAINT_END value not relying to 
-zero format (which is U8) and zero subformat to skip the MSBIT_MAX setting 
-bellow. After some thought, if the driver sets SNDRV_PCM_SUBFORMAT_MSBITS_STD, 
-the result will be similar, thus the mask can be zero and the code may be 
-reduced. So no objection for this change.
-
-> +		if (!found && snd_pcm_format_linear(f))
-> +			snd_mask_set(&m, (__force unsigned)SNDRV_PCM_SUBFORMAT_MSBITS_MAX);
-> +	}
-> +exit:
-> +	return snd_mask_refine(sfmask, &m);
-> +}
-> +
-> +static int snd_pcm_hw_constraint_subformats(struct snd_pcm_runtime *runtime,
-> +					   unsigned int cond,
-> +					   struct snd_pcm_hardware *hw)
-> +{
-
-Because your change does not assume that this constraint is called from the 
-drivers, the comments and EXPORT_SYMBOL() lines were removed from the original 
-proposal [1]. I believe that the standalone constraint is better at this time 
-- reduce code, the use of the subformat extension is not mandatory.
-
-							Jaroslav
-
-[1] https://lore.kernel.org/alsa-devel/20230912162526.7138-1-perex@perex.cz/
-     https://lore.kernel.org/alsa-devel/20230913103716.67315-1-perex@perex.cz/
-
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
-
+Best regards
+Wang shengjiu
+>
+> >       default:
+> >               return NULL;
+> >       }
+> > diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4=
+l2-controls.h
+> > index c3604a0a3e30..b1c319906d12 100644
+> > --- a/include/uapi/linux/v4l2-controls.h
+> > +++ b/include/uapi/linux/v4l2-controls.h
+> > @@ -162,6 +162,7 @@ enum v4l2_colorfx {
+> >  /* The base for the imx driver controls.
+> >   * We reserve 16 controls for this driver. */
+> >  #define V4L2_CID_USER_IMX_BASE                       (V4L2_CID_USER_BA=
+SE + 0x10b0)
+> > +#define V4L2_CID_USER_IMX_ASRC_RATIO_MOD     (V4L2_CID_USER_IMX_BASE +=
+ 0)
+> >
+> >  /*
+> >   * The base for the atmel isc driver controls.
+>
+> Regards,
+>
+>         Hans
