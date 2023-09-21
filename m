@@ -4,75 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7FC67E71094
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 Sep 2023 16:34:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BCF7DE71094
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 Sep 2023 16:34:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 878C3EA1;
-	Thu, 21 Sep 2023 18:33:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 878C3EA1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 949D7E97;
+	Thu, 21 Sep 2023 18:33:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 949D7E97
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1695314066;
-	bh=H43DsDU/RmLDaEl6eOKwt5T7tmutU77sEJ06ee0iqD8=;
+	s=default; t=1695314085;
+	bh=QcghfEVQ+7sZ0IERxkAoR4kgaIN7uggzHaMvZcIgWnY=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=eqpzn5dv1BKL0MJsOsadxsFhFpKqG34PojKztKiuQEEkJn6TD22P/CR0W17+Z4+pB
-	 vELywXFew8QA5vq+MaNn0tYByIIxg5ZJJGp9KJU5u5X0vVRYPWGQdlIC0lJ9m7eVa8
-	 g0aWneJ8+COKuQU3GVOb5DCqSjXl7B6Hh5wKDUy0=
+	b=N1o8+Bq2ufOrc9xAGOX/kBJo24ELhgXEo1EGTHU8f9O6LakANxwPx5bxDJjrtMvrG
+	 QcYKQakA00kOMJc5X1pP9UOZ3Z+TWW03c4bNo4SVPAOKt+bM5I0yuLvoWeRlkO3hr3
+	 l3ceMaLVZq+D1DgzOfi1Tpc/vQIcYjm6mUyz6QoQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9F5A2F80611; Thu, 21 Sep 2023 18:30:54 +0200 (CEST)
+	id 3ADB3F80614; Thu, 21 Sep 2023 18:30:56 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2B0BFF8060D;
-	Thu, 21 Sep 2023 18:30:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E5638F80614;
+	Thu, 21 Sep 2023 18:30:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 584F5F805EF; Thu, 21 Sep 2023 18:30:45 +0200 (CEST)
+	id 59E15F805F4; Thu, 21 Sep 2023 18:30:48 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 87D5BF801F5
-	for <alsa-devel@alsa-project.org>; Thu, 21 Sep 2023 18:30:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 87D5BF801F5
+	by alsa1.perex.cz (Postfix) with ESMTPS id 80B9AF80578
+	for <alsa-devel@alsa-project.org>; Thu, 21 Sep 2023 18:30:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 80B9AF80578
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=AFcwJO2a
+ header.s=k20201202 header.b=ed7oV3+M
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id C5CA961ADA;
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 7A8E961F31;
+	Thu, 21 Sep 2023 16:30:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A36DEC611A6;
 	Thu, 21 Sep 2023 16:30:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EFACCC611A7;
-	Thu, 21 Sep 2023 16:30:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1695313831;
-	bh=H43DsDU/RmLDaEl6eOKwt5T7tmutU77sEJ06ee0iqD8=;
+	s=k20201202; t=1695313832;
+	bh=QcghfEVQ+7sZ0IERxkAoR4kgaIN7uggzHaMvZcIgWnY=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=AFcwJO2ac/NhmC/ILDrN2YVf6OO344kixEXsAw2GOVeIrHIp8H72OC6bLTibPLcdJ
-	 ai0NjtmBD15yMK1PwbsZGdZwOZw3EcgUx+j9UfxZmYUdSOCCbzGK29GfUQwEj2C5qb
-	 Aj23mzLLZDI3ExFlv7F7/+Ve+a1Z/ZoG5Wua613qxkvP/S+VE6IE78+N0DEZBjOKrm
-	 BquFlNYTtN4XU0XFKci7TPQujloO745FSjC74tFBuxpPYMDG4Uv1K3yZXjnU5bRriE
-	 zmT1bJLgwMTX4jucYH5yiITKwypdiOUuUOYptIyAjHPlLT13HeQ0/aOlh+hDiSW8Ha
-	 CcqXhzBtWEMqg==
+	b=ed7oV3+M51I7R+/s06Z1+4PoUpLS1lMUuHMsZsFepj5kSap5nbLRkXZt34zx876ac
+	 2Zw76f8Iph7Zr+WMFDRxKXkVEEJkWtx9MpR0WuNbgmlOvBCsGIGOCJYfeq9oHtTWKH
+	 7wyh74xoXKMxISpYF7tGA5veiGYtVSazEnG5BJJOsIz5UZn6KkGlRczXIjKVa5BUAw
+	 QZ3XhWX89AFCb+T53N353wmlDYz24OKX18m0Gbq0MxJ4XNWZPe3wfA6zjtqgToyvfA
+	 4NY4giQLNqoBiLdxwRHBH0iTH50UJk5WGpmuSqLhjM52d2SPU62sMGwPLeXdrOinsx
+	 OjjUOrp8YuM1Q==
 From: Mark Brown <broonie@kernel.org>
 To: tiwai@suse.de, Bard Liao <yung-chuan.liao@linux.intel.com>
 Cc: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com,
  bard.liao@intel.com, peter.ujfalusi@linux.intel.com
-In-Reply-To: <20230919020011.1896041-1-yung-chuan.liao@linux.intel.com>
-References: <20230919020011.1896041-1-yung-chuan.liao@linux.intel.com>
-Subject: Re: [PATCH 0/2] ASoC: intel: Add CS42L43 sdw machine driver
- support
-Message-Id: <169531382970.61074.5109700499295851468.b4-ty@kernel.org>
-Date: Thu, 21 Sep 2023 17:30:29 +0100
+In-Reply-To: <20230921064317.2120452-1-yung-chuan.liao@linux.intel.com>
+References: <20230921064317.2120452-1-yung-chuan.liao@linux.intel.com>
+Subject: Re: [PATCH] ASoC: hdac_hda: fix HDA patch loader support
+Message-Id: <169531383138.61074.244138319291791890.b4-ty@kernel.org>
+Date: Thu, 21 Sep 2023 17:30:31 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-034f2
-Message-ID-Hash: J5QJSWBCNHMZRQ37GSM4RW7TC7HN4EHB
-X-Message-ID-Hash: J5QJSWBCNHMZRQ37GSM4RW7TC7HN4EHB
+Message-ID-Hash: YY6BZB64C7UX4ZTMIQNC6TQZW5DWX7EN
+X-Message-ID-Hash: YY6BZB64C7UX4ZTMIQNC6TQZW5DWX7EN
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -85,7 +84,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/J5QJSWBCNHMZRQ37GSM4RW7TC7HN4EHB/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YY6BZB64C7UX4ZTMIQNC6TQZW5DWX7EN/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -94,17 +93,13 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, 19 Sep 2023 10:00:09 +0800, Bard Liao wrote:
-> Add cs42l43 codec support to sof_sdw machine driver.
+On Thu, 21 Sep 2023 14:43:17 +0800, Bard Liao wrote:
+> The array size is irrelevant with SNDRV_CARDS. dev_index is from
+> codec address and the available codec number is HDA_MAX_CODECS.
+> Also, hda_pvt->fw is for a temporary use, no need to add a new extra
+> field in hdac_hda_priv{}.
 > 
-> Bard Liao (1):
->   ASoC: intel: sof_sdw: Add CS42L43 CODEC support
 > 
-> Chao Song (1):
->   ASoC: Intel: soc-acpi-intel-mtl-match: add acpi match table for
->     cdb35l56-eight-c
-> 
-> [...]
 
 Applied to
 
@@ -112,10 +107,8 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: intel: sof_sdw: Add CS42L43 CODEC support
-      commit: 06d94b43fc39af16d3d74a93d27ee92902b56bc6
-[2/2] ASoC: Intel: soc-acpi-intel-mtl-match: add acpi match table for cdb35l56-eight-c
-      commit: 05fe62842804d644d986cb248ca871335b2628af
+[1/1] ASoC: hdac_hda: fix HDA patch loader support
+      commit: 2f3fb85b258334a4247af5c92b4a21480ca5634e
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
