@@ -4,90 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 23B4ACD342E
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 Sep 2023 11:47:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2177CE71060
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 Sep 2023 12:18:08 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 25923206;
-	Thu, 21 Sep 2023 13:46:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 25923206
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3F171A4C;
+	Thu, 21 Sep 2023 14:17:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3F171A4C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1695296858;
-	bh=B5xFlRjZSUa0fGEwETgAARr7jSAUY2bfCZxgYOjYkAY=;
+	s=default; t=1695298686;
+	bh=YXpKcY1zj9CbhWrNoJOaRCo5if0SZJ8FAfi8Te+CR3k=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=FGlSOt4cUhmEUiLmugDYu9HCaAY2r1arRKx5oDgd5vP4CNrUETM9xvrLyV29ZG4g3
-	 YkUHf/nKlMkc2N/FQ+gs3p/RedTys4Zay+Gpf9LoTrs49hv2s+dhecbbrMJw0IE7R7
-	 tgi+LFSeYofMqcLe+F7F/vsMjArOrqNcxrTiWdJg=
+	b=ckghEhuXMkq/GoH0CdI1lm/0AwOb5bPl5jOElNuIJ0NSoi++4EA/pJesPnQ1R6MQh
+	 IM27bjhwVq1tqtELAx/N3XmcPwx/m7GadCP3Osn8uaYeazt3j2MwIetdpydBz4fhwn
+	 0bU4jSoPWvzeS76fB9T68oiEolLrezxntamk2smQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D8597F80494; Thu, 21 Sep 2023 13:46:15 +0200 (CEST)
+	id 83F36F8055A; Thu, 21 Sep 2023 14:16:45 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 65CCBF8025A;
-	Thu, 21 Sep 2023 13:46:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id ECA09F8025A;
+	Thu, 21 Sep 2023 14:16:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CB4F0F8025A; Thu, 21 Sep 2023 13:46:10 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 05ACAF80125
-	for <alsa-devel@alsa-project.org>; Thu, 21 Sep 2023 13:46:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 05ACAF80125
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=jdyOD5QZ
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
-	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id 277ADB81FDE;
-	Thu, 21 Sep 2023 11:46:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B98BC4AF7A;
-	Thu, 21 Sep 2023 11:45:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1695296759;
-	bh=B5xFlRjZSUa0fGEwETgAARr7jSAUY2bfCZxgYOjYkAY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=jdyOD5QZ6UTXYGX7KA1Tj9gVp/Qwr1N6OPc0v9/f7gTBIi/oJUq1uO1u9GnXQfasv
-	 rSThNQBU9ikPIcgzLz5GRis/Gb8qmVipZ4QJV0mCKbpOp+KoAYQ6ye8IKvmm5L0mVN
-	 Y5r4Zy2sdCI8+QWdLtl3D4sMxIM7ho7JtpVId9wgwlaWI90Bu59LBINbbdtvAA+uGE
-	 w39DocBGiNpFtJeAXtezq5k4cXbvnG5iZfhGHf8dmad33eY2LonBfYexXHwxSzsbTc
-	 ODcqFVJAsAqf542oSYL0n3rCmdonR++9lTxeu2ACrLyRFJIw7gB+0l75zdJKkqR730
-	 JlNnhpWZjfmlA==
-Date: Thu, 21 Sep 2023 12:45:52 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Shengjiu Wang <shengjiu.wang@gmail.com>
-Cc: Hans Verkuil <hverkuil@xs4all.nl>,
-	Shengjiu Wang <shengjiu.wang@nxp.com>, sakari.ailus@iki.fi,
-	tfiga@chromium.org, m.szyprowski@samsung.com, mchehab@kernel.org,
-	linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Xiubo.Lee@gmail.com, festevam@gmail.com, nicoleotsuka@gmail.com,
-	lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
-	alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [RFC PATCH v4 09/11] media: uapi: Add
- V4L2_CID_USER_IMX_ASRC_RATIO_MOD control
-Message-ID: <f5743550-89a1-48b4-a8a6-f66fd246a02c@sirena.org.uk>
-References: <1695202370-24678-1-git-send-email-shengjiu.wang@nxp.com>
- <1695202370-24678-10-git-send-email-shengjiu.wang@nxp.com>
- <fbedcbf1-d925-47d6-b9fb-c9e15263c117@xs4all.nl>
- <CAA+D8APyNGFSry1GUv6TOW0nKYHKSwQd5bTcRNuT7cu0Xf8eUA@mail.gmail.com>
- <5292ce53-643e-44f0-b2cc-cb66efee9712@xs4all.nl>
- <CAA+D8AMZN59uTRs2sOrSeVb5AGopTzurNVCTNwJOVPahfEXd+w@mail.gmail.com>
+	id EFF0DF8025A; Thu, 21 Sep 2023 14:16:39 +0200 (CEST)
+Received: from muru.com (muru.com [72.249.23.125])
+	by alsa1.perex.cz (Postfix) with ESMTP id D9DC8F80124
+	for <alsa-devel@alsa-project.org>; Thu, 21 Sep 2023 14:16:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D9DC8F80124
+Received: from localhost (localhost [127.0.0.1])
+	by muru.com (Postfix) with ESMTPS id BA1328109;
+	Thu, 21 Sep 2023 12:16:27 +0000 (UTC)
+Date: Thu, 21 Sep 2023 15:16:26 +0300
+From: Tony Lindgren <tony@atomide.com>
+To: =?utf-8?B?UMOpdGVy?= Ujfalusi <peter.ujfalusi@gmail.com>
+Cc: Andreas Kemnade <andreas@kemnade.info>, bcousson@baylibre.com,
+	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org, lgirdwood@gmail.com, broonie@kernel.org,
+	perex@perex.cz, tiwai@suse.com, jarkko.nikula@bitmer.com,
+	dmitry.torokhov@gmail.com, linux-omap@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	alsa-devel@alsa-project.org
+Subject: Re: [PATCH 1/3] ASoC: ti: omap-mcbsp: Ignore errors for getting
+ fck_src
+Message-ID: <20230921121626.GT5285@atomide.com>
+References: <20230705190324.355282-1-andreas@kemnade.info>
+ <20230705190324.355282-2-andreas@kemnade.info>
+ <7d58d52d-2087-45af-b29e-2515b63ead13@gmail.com>
+ <20230920063353.GQ5285@atomide.com>
+ <dac768d2-2c66-4d6b-b3d3-d1ef69103c76@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="VZPV3UQ+Ok/rD6bG"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: 
- <CAA+D8AMZN59uTRs2sOrSeVb5AGopTzurNVCTNwJOVPahfEXd+w@mail.gmail.com>
-X-Cookie: Caution: Keep out of reach of children.
-Message-ID-Hash: G5MFJGGWT3FAKZUB4BTZT4YDBPY422BG
-X-Message-ID-Hash: G5MFJGGWT3FAKZUB4BTZT4YDBPY422BG
-X-MailFrom: broonie@kernel.org
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <dac768d2-2c66-4d6b-b3d3-d1ef69103c76@gmail.com>
+Message-ID-Hash: DBF2YXIWBJCUB2J2HLH4ZQVWUJWIQNZN
+X-Message-ID-Hash: DBF2YXIWBJCUB2J2HLH4ZQVWUJWIQNZN
+X-MailFrom: tony@atomide.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -99,7 +72,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/G5MFJGGWT3FAKZUB4BTZT4YDBPY422BG/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DBF2YXIWBJCUB2J2HLH4ZQVWUJWIQNZN/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -108,37 +81,23 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+* Péter Ujfalusi <peter.ujfalusi@gmail.com> [230920 17:40]:
+> It is not the parent's fck, it is the PRCM clock which is selected as
+> the sourcee of the clock generator (CLKS) for BCLK/FSYNC. That is the
+> functional clock as well for the McBSP instance.
 
---VZPV3UQ+Ok/rD6bG
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Oh OK
 
-On Thu, Sep 21, 2023 at 07:13:14PM +0800, Shengjiu Wang wrote:
+> Out of reset it is using the PRCM source which is fine in all current users.
+> I would do this fix or workaround in a different way: instead of
+> ignoring the error, avoid it in the first place. Do nothing if the
+> already selected clock is requested.
+> That would remove the error and will fail in case the reparenting is not
+> working -> boards will know this and might be able to do something about
+> it in a reasonable way.
+> 
+> How that sounds?
 
-> Ratio modification on i.MX is to modify the configured ratio.
-> For example, the input rate is 44.1kHz,  output rate is 48kHz,
-> configured ratio = 441/480,   the ratio modification is to modify
-> the fractional part of (441/480) with small steps.  because the
-> input clock or output clock has drift in the real hardware.
-> The ratio modification is signed value, it is added to configured
-> ratio.
+Sounds good to me :)
 
-It does sound like something other vendors are likely to have to provide
-a mechanism to compensate for clock inaccuracies.
-
---VZPV3UQ+Ok/rD6bG
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmUMLO8ACgkQJNaLcl1U
-h9BsbAf9FFU/jXmFMuDrv5AHXagBE2ZnPpLBCFyq5o9+5iHStRpg6JjatAWgBYz6
-jSQEHHIrxzJXJERSR6ZRV0pZu6xHQJgWxH3wzCBgIv9xwxRVKaBgJ9/qAfHIhq3r
-VlDRzT6xqXstBSc0AC8vZPVcimz2QNMQSf81b66DFlAS96pzIYtUvR6Hj7zXYSRg
-YcJSBjoPYvhB9vnst4d/+sEB53MTq5+gqAkjsB2nYHkDAcRTBUf6BVTD/NFtGk0K
-04YzjgyoI4OW05wj1RcNk5AnFI8C519Qyaf+mLrJTIjZx4Y/v3wvw5N9h1tLc+0r
-AjoZOgf+eL5qYEbRF1M4VyBn2rgwOQ==
-=3xkU
------END PGP SIGNATURE-----
-
---VZPV3UQ+Ok/rD6bG--
+Tony
