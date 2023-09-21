@@ -4,115 +4,110 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AA6B4E7106C
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 Sep 2023 13:29:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F0E82E7106D
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 Sep 2023 13:29:35 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 689A7E9B;
-	Thu, 21 Sep 2023 15:28:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 689A7E9B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 03620DEB;
+	Thu, 21 Sep 2023 15:28:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 03620DEB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1695302963;
-	bh=me873n3Yj9n1czKjtEbLrI/Z+x3xoMpgXSRWDChd8ow=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1695302974;
+	bh=YFNNyBmiEk3rLroLYnamlhN/dyD1rbf5jeUM8GnGhtU=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=RYEKylwaYsB8mZgPmQarUaBjCgiyZ9JGelRnV7NqPTdKtPPvptdCxDoG0oKa5TjRC
-	 aqewZ1He5eLofbge9MrjVx+EZ/pp2TGQx5KpjSHmXtIwBOqhspDEih5sRMQO9cPhMm
-	 KSKAP1wru4+wnNGtZRVZydR9ZTvobFMWc8XSELec=
+	b=qn5FM2fKFpOiFid+oE7Ig6TalxgCbcNVwIU5fvCL/UhUcjcPU4ffItGTPzzJiWH56
+	 ubMiObSypCNMwhXfEj8B1UFt1D8hBnbkmz8LoWFyYARu+Mhdr+hH+pDashz+ShTNLg
+	 UhaLAi5bkbfUJ3hHTMG2UizYqVw/bE5MinJaXbVI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C5ECEF8064F; Thu, 21 Sep 2023 15:24:30 +0200 (CEST)
+	id C2A1FF8055B; Thu, 21 Sep 2023 15:28:36 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2C56EF805BF;
-	Thu, 21 Sep 2023 15:24:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C0724F80494;
+	Thu, 21 Sep 2023 15:28:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 62400F8025A; Thu, 21 Sep 2023 12:30:36 +0200 (CEST)
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com
- [IPv6:2a00:1450:4864:20::443])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	id C3BEBF80494; Thu, 21 Sep 2023 15:28:28 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 9D1BAF800AA
-	for <alsa-devel@alsa-project.org>; Thu, 21 Sep 2023 12:30:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9D1BAF800AA
+	by alsa1.perex.cz (Postfix) with ESMTPS id 89051F801F5
+	for <alsa-devel@alsa-project.org>; Thu, 21 Sep 2023 15:28:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 89051F801F5
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20230601 header.b=msN/2AhI
-Received: by mail-wr1-x443.google.com with SMTP id
- ffacd0b85a97d-31dcf18f9e2so746573f8f.0
-        for <alsa-devel@alsa-project.org>;
- Thu, 21 Sep 2023 03:30:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695292223; x=1695897023;
- darn=alsa-project.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=baNlgOJnWePw9cKCL/heNAHkNhAX0XDqCt8diliLsFk=;
-        b=msN/2AhIYmuWzdxTnKufGR7I5QTyFfpbZJxKK3NUlvBUVQ503AwPsn7nVAWgX9Ydc5
-         ZBvTo7q/MslV9FFRj6V0D2vblZxe43IOluOkKk29dch+ZnL/+/9LlsKJgHW+CkA6dBBp
-         vck5Akmt/UF5/Zpe9+fg/kE7nOLc+PVs4TEHC354Hxa9dkRZswkpMTmi6u/3HtdA26W+
-         AKA6mzDT65VgHGqRkF5HF5JNprGhMXNHUcVI8AvZzVBbrliwfyTAEgeavVSLlAXgOA0I
-         KhLvA1Cv+DP9kgNnUO+aai/BGOVnWbNMPo4Uscj0DrRbA95hY0lG3I3/iIMkSw/YdQ3l
-         pWjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695292223; x=1695897023;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=baNlgOJnWePw9cKCL/heNAHkNhAX0XDqCt8diliLsFk=;
-        b=Q9z+Bm04+uN66nPPJazfuIsOHqsI/veohPY/GWobH0omemJYo5m3qSre02zz4EsjA1
-         ZHRakEmCWa/tzqqaoPkaFPFpKVo+/bLbdLxvOP8xv5ZTqYV5p9QrIm1N34hVJG1TFwOl
-         4BdVlkd2UrSczTnFZr1WQK7uZx/4fw2HdfVX/j0aPcmkKfLVJTmWPxReJd4lyUb9cqUb
-         cKV9Qk0VCr79LyXOswxLRinZuAQU3qvOgxNmjwqUV1aRvwm2uqYiAalgR1dqi3VedxAB
-         L18nQ0XWL1TQWlV+khmYVrAi3lcxrvpvER2osbAPKU0nWp026hbBDMNAStbaDalSNdbM
-         AYww==
-X-Gm-Message-State: AOJu0YwHxFr1bmn1X+SY5R9yO1/RnIV6pnXnTBnHqg2cen7f4+Cky19d
-	8N3PoybN+6f+ay4Ia0YjBrc=
-X-Google-Smtp-Source: 
- AGHT+IH0koU/bsuvVlM3BjX3ipEkbzBkUBpc5x70WcHc8JTAs4gsHs92ZrhfG3MpQgIZzAVa/GzWJA==
-X-Received: by 2002:adf:f084:0:b0:321:52fb:5703 with SMTP id
- n4-20020adff084000000b0032152fb5703mr4879118wro.13.1695292223361;
-        Thu, 21 Sep 2023 03:30:23 -0700 (PDT)
-Received: from ubuntu ([2a02:810d:1640:10d8:fd07:b1e6:bd19:371d])
-        by smtp.gmail.com with ESMTPSA id
- n11-20020a5d4c4b000000b0031fbbe347ebsm1379868wrt.22.2023.09.21.03.30.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Sep 2023 03:30:22 -0700 (PDT)
-Date: Thu, 21 Sep 2023 12:30:19 +0200
-From: Joerg Schambacher <joerg.hifiberry@gmail.com>
-To: Rob Herring <robh@kernel.org>
-Cc: a-krasser@ti.com, joerg@hifiberry.com,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, alsa-devel@alsa-project.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] ASoC: pcm512x: Adds bindings for TAS575x devices
-Message-ID: <ZQwbO6BuBOTuCI4C@ubuntu>
-References: <20230907160851.14241-1-joerg.hifiberry@gmail.com>
- <20230912151535.GA812148-robh@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230912151535.GA812148-robh@kernel.org>
-X-MailFrom: joerg.hifiberry@gmail.com
-X-Mailman-Rule-Hits: nonmember-moderation
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=e4IUGIBx;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=9Z4adN7p
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 690E6338A8;
+	Thu, 21 Sep 2023 13:28:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1695302888;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=TS3D+7Noi/ekM5Do3sWjHaf4aVYAbdJpk5SpStfjSjo=;
+	b=e4IUGIBxWuD0/AkunF7JdM5NTJ0RRW3PhXXUz+HXwMiarod8FPEF92EQRTfvGsLlPnzY+v
+	mv37dd0PrsMfFutaK74VpeLRGd7B9pRw0spvcNoPQ1rjbCQ9xuFSJwMmW6llxkwIpo+0Z0
+	Cg1ztwfdm4p10lZpMnrbEMXCiTcB4eY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1695302888;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=TS3D+7Noi/ekM5Do3sWjHaf4aVYAbdJpk5SpStfjSjo=;
+	b=9Z4adN7psTvw+/3+rl5LzfIMvN5CvJm+uZFWWhS9pAj8fA5SVthBr4fH3RLfuHiHKnL5ov
+	/n53GGuf0Iss2BCw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3BBCC134B0;
+	Thu, 21 Sep 2023 13:28:08 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id elmJDehEDGWhOAAAMHmgww
+	(envelope-from <tiwai@suse.de>); Thu, 21 Sep 2023 13:28:08 +0000
+Date: Thu, 21 Sep 2023 15:28:07 +0200
+Message-ID: <87jzsjzme0.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Bard Liao <yung-chuan.liao@linux.intel.com>
+Cc: broonie@kernel.org,
+	alsa-devel@alsa-project.org,
+	pierre-louis.bossart@linux.intel.com,
+	bard.liao@intel.com,
+	peter.ujfalusi@linux.intel.com
+Subject: Re: [PATCH] ASoC: hdac_hda: fix HDA patch loader support
+In-Reply-To: <20230921064317.2120452-1-yung-chuan.liao@linux.intel.com>
+References: <20230921064317.2120452-1-yung-chuan.liao@linux.intel.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Message-ID-Hash: DB65TTFC6TZ22SLQFYIICUTD2TZUGKNE
+X-Message-ID-Hash: DB65TTFC6TZ22SLQFYIICUTD2TZUGKNE
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: H2R6P2GNVFLGGNCL3RDVJJSYRMRIHQ47
-X-Message-ID-Hash: H2R6P2GNVFLGGNCL3RDVJJSYRMRIHQ47
-X-Mailman-Approved-At: Thu, 21 Sep 2023 13:24:27 +0000
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/H2R6P2GNVFLGGNCL3RDVJJSYRMRIHQ47/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DB65TTFC6TZ22SLQFYIICUTD2TZUGKNE/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -121,62 +116,89 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Am 12.09.2023 um 10:15 hat Rob Herring geschrieben:
-> On Thu, Sep 07, 2023 at 06:08:51PM +0200, Joerg Schambacher wrote:
-> > The TAS5754/6 power amplifiers use the same pcm512x driver with
-> > only minor restictions described in the bindings document.
-> > 
-> > Signed-off-by: Joerg Schambacher <joerg.hifiberry@gmail.com>
-> > ---
-> >  .../devicetree/bindings/sound/pcm512x.txt     | 22 +++++++++++++++----
-> >  1 file changed, 18 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/sound/pcm512x.txt b/Documentation/devicetree/bindings/sound/pcm512x.txt
-> > index 3aae3b41bd8e..b16cd0463695 100644
-> > --- a/Documentation/devicetree/bindings/sound/pcm512x.txt
-> > +++ b/Documentation/devicetree/bindings/sound/pcm512x.txt
-> > @@ -1,12 +1,12 @@
-> > -PCM512x audio CODECs
-> > +PCM512x and TAS575x audio CODECs/amplifiers
-> >  
-> >  These devices support both I2C and SPI (configured with pin strapping
-> > -on the board).
-> > +on the board). The TAS575x devices only support I2C.
-> >  
-> >  Required properties:
-> >  
-> > -  - compatible : One of "ti,pcm5121", "ti,pcm5122", "ti,pcm5141" or
-> > -                 "ti,pcm5142"
-> > +  - compatible : One of "ti,pcm5121", "ti,pcm5122", "ti,pcm5141",
-> > +                 "ti,pcm5142", "ti,tas5754" or "ti,tas5756"
-> >  
-> >    - reg : the I2C address of the device for I2C, the chip select
-> >            number for SPI.
-> > @@ -25,6 +25,7 @@ Optional properties:
-> >      through <6>.  The device will be configured for clock input on the
-> >      given pll-in pin and PLL output on the given pll-out pin.  An
-> >      external connection from the pll-out pin to the SCLK pin is assumed.
-> > +    Caution: the TAS-desvices only support gpios 1,2 and 3
-> >  
-> >  Examples:
-> >  
-> > @@ -50,3 +51,16 @@ Examples:
-> >  		pll-in = <3>;
-> >  		pll-out = <6>;
-> >  	};
-> > +
-> > +	tas5756: tas5756@4f {
-> > +		compatible = "ti,tas5756";
+On Thu, 21 Sep 2023 08:43:17 +0200,
+Bard Liao wrote:
 > 
-> Is there anything new here? Just a different compatible doesn't justify 
-> another example.
+> The array size is irrelevant with SNDRV_CARDS. dev_index is from
+> codec address and the available codec number is HDA_MAX_CODECS.
+> Also, hda_pvt->fw is for a temporary use, no need to add a new extra
+> field in hdac_hda_priv{}.
 > 
-> With that dropped,
-> 
-> Reviewed-by: Rob Herring <robh@kernel.org>
-Thanks for feedback. Actually, there is nothing really new. More to show
-the reduced availability of GPIOs. I'm preparing a new version of the
-patch and I will drop the example.
--- 
+> Fixes: 842a62a75e70 ("ASoC: hdac_hda: add HDA patch loader support")
+> Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+> Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+
+Reviewed-by: Takashi Iwai <tiwai@suse.de>
 
 
+thanks,
+
+Takashi
+
+> ---
+>  sound/soc/codecs/hdac_hda.c | 15 ++++++++-------
+>  sound/soc/codecs/hdac_hda.h |  3 ---
+>  2 files changed, 8 insertions(+), 10 deletions(-)
+> 
+> diff --git a/sound/soc/codecs/hdac_hda.c b/sound/soc/codecs/hdac_hda.c
+> index 8f5d97949d3d..355f30779a34 100644
+> --- a/sound/soc/codecs/hdac_hda.c
+> +++ b/sound/soc/codecs/hdac_hda.c
+> @@ -37,10 +37,10 @@
+>  				 SNDRV_PCM_RATE_192000)
+>  
+>  #ifdef CONFIG_SND_HDA_PATCH_LOADER
+> -static char *loadable_patch[SNDRV_CARDS];
+> +static char *loadable_patch[HDA_MAX_CODECS];
+>  
+>  module_param_array_named(patch, loadable_patch, charp, NULL, 0444);
+> -MODULE_PARM_DESC(patch, "Patch file for Intel HD audio interface.");
+> +MODULE_PARM_DESC(patch, "Patch file array for Intel HD audio interface. The array index is the codec address.");
+>  #endif
+>  
+>  static int hdac_hda_dai_open(struct snd_pcm_substream *substream,
+> @@ -434,20 +434,21 @@ static int hdac_hda_codec_probe(struct snd_soc_component *component)
+>  
+>  #ifdef CONFIG_SND_HDA_PATCH_LOADER
+>  	if (loadable_patch[hda_pvt->dev_index] && *loadable_patch[hda_pvt->dev_index]) {
+> +		const struct firmware *fw;
+> +
+>  		dev_info(&hdev->dev, "Applying patch firmware '%s'\n",
+>  			 loadable_patch[hda_pvt->dev_index]);
+> -		ret = request_firmware(&hda_pvt->fw, loadable_patch[hda_pvt->dev_index],
+> +		ret = request_firmware(&fw, loadable_patch[hda_pvt->dev_index],
+>  				       &hdev->dev);
+>  		if (ret < 0)
+>  			goto error_no_pm;
+> -		if (hda_pvt->fw) {
+> -			ret = snd_hda_load_patch(hcodec->bus, hda_pvt->fw->size, hda_pvt->fw->data);
+> +		if (fw) {
+> +			ret = snd_hda_load_patch(hcodec->bus, fw->size, fw->data);
+>  			if (ret < 0) {
+>  				dev_err(&hdev->dev, "failed to load hda patch %d\n", ret);
+>  				goto error_no_pm;
+>  			}
+> -			release_firmware(hda_pvt->fw);
+> -			hda_pvt->fw = NULL;
+> +			release_firmware(fw);
+>  		}
+>  	}
+>  #endif
+> diff --git a/sound/soc/codecs/hdac_hda.h b/sound/soc/codecs/hdac_hda.h
+> index b7a12aea8d32..d03a5d4e7288 100644
+> --- a/sound/soc/codecs/hdac_hda.h
+> +++ b/sound/soc/codecs/hdac_hda.h
+> @@ -27,9 +27,6 @@ struct hdac_hda_priv {
+>  	struct hdac_hda_pcm pcm[HDAC_DAI_ID_NUM];
+>  	bool need_display_power;
+>  	int dev_index;
+> -#ifdef CONFIG_SND_HDA_PATCH_LOADER
+> -	const struct firmware *fw;
+> -#endif
+>  };
+>  
+>  struct hdac_ext_bus_ops *snd_soc_hdac_hda_get_ops(void);
+> -- 
+> 2.25.1
+> 
