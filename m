@@ -4,74 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5B362CD4958
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 Sep 2023 06:28:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 202F1CD4958
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 Sep 2023 06:35:44 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 98197AE9;
-	Thu, 21 Sep 2023 08:27:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 98197AE9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9F3EEA4B;
+	Thu, 21 Sep 2023 08:34:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9F3EEA4B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1695277715;
-	bh=M+L7+F55WM4eBb+OG7TotbuMyHtiWu3cAjnynoCMZjc=;
-	h=Date:To:Cc:References:From:Subject:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=Ih4iUfSv/Q/CDUeDQWmzAkeNjED7EE82PhUPsuQWG2VopuEaCfgHwKCmH1p0BlDFi
-	 LX+i/redyU+6rzpRlSYLzqZYxaXI8R6D+vJqHt8XgmUuWjYVZ/9AoY6DtJMW+nDWvB
-	 mlOP7/QtKgGJzX32UeyNH9pqioudvF7uXwMIRe1E=
+	s=default; t=1695278141;
+	bh=Uu1FgcDEvBVHUCLithFMPg/f0NwSrFDEgPpam3COMR4=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=UPBCLhnqO4iXz6XaPeg/HP4AevF4ALclI+zyCUiFFhIOcuOJpTKgZHTWsHuQ9xf0G
+	 ywaw4kKEqwvcP8BOdfpZSYHgLZrtjoFSKvVv/9QNEVGJEbvb/tS9vQly1sAlf4qyXW
+	 k4euMCu+3Ux2xDtTbJnV559p204MAVAaj2RQc9Is=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 23078F80558; Thu, 21 Sep 2023 08:26:56 +0200 (CEST)
+	id 26AF7F8025A; Thu, 21 Sep 2023 08:34:51 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A33E1F8055C;
-	Thu, 21 Sep 2023 08:26:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B6F48F8025A;
+	Thu, 21 Sep 2023 08:34:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 04F67F8025A; Thu, 21 Sep 2023 08:25:26 +0200 (CEST)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id E94DAF8025A; Thu, 21 Sep 2023 08:34:45 +0200 (CEST)
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 52A93F800AA
-	for <alsa-devel@alsa-project.org>; Thu, 21 Sep 2023 08:25:21 +0200 (CEST)
-Received: from mail1.perex.cz (localhost [127.0.0.1])
-	by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id DD58C1A5A;
-	Thu, 21 Sep 2023 08:25:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz DD58C1A5A
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
-	t=1695277520; bh=h1+29ujJVsZjgKz4znBsbmS5rDXG1dS4MFnQRdPOSuo=;
-	h=Date:To:Cc:References:From:Subject:In-Reply-To:From;
-	b=tnP64pn1xlKaMU2pKdbgv5NYedTGfp+tnQhM1LgkKx3BiqdjiOFTw6SZYRUigR5hr
-	 Pyw76pc5a+UEt9tzJFvTJcajTkLSQxcOfFnpTzoKa60ehdbKX6u5+lGt6IR+8VneOf
-	 TkBm/qsx0Kyfcy/TB4cZy9JbaYY58X3Rj/Anhalc=
-Received: from [192.168.100.98] (unknown [192.168.100.98])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
-	(No client certificate requested)
-	(Authenticated sender: perex)
-	by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
-	Thu, 21 Sep 2023 08:25:13 +0200 (CEST)
-Message-ID: <be2ec481-fb35-52be-0847-199d446b6431@perex.cz>
-Date: Thu, 21 Sep 2023 08:25:13 +0200
+	by alsa1.perex.cz (Postfix) with ESMTPS id 8B128F800AA
+	for <alsa-devel@alsa-project.org>; Thu, 21 Sep 2023 08:34:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8B128F800AA
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=iKTFFonf
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695278081; x=1726814081;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=Uu1FgcDEvBVHUCLithFMPg/f0NwSrFDEgPpam3COMR4=;
+  b=iKTFFonfi46R/CuhQPpTD13rhgWHDkv4/2kuVV3vHmdhrUYB6zti0LS3
+   oCDAvZ4vTqmNDce2dLx5BSnUYTTihTNSoVP1mxD2pJZbCh/2nF6SitGgF
+   WoESFOOLI1lXb8dGy3Sxho0YHFORsMmhWRDkAooCZPCcJU3Z9cIxsBVRN
+   B4CVwk22CiulPp4emSd3hFbS1aYSfzQAAOWlqqKne3KEa9Sx2Bxa8cs2+
+   pDAeVlvtp9jiI6Bo6U9PkP8ltms9yztQplFptr/BY5a9kfLf8W57LlspJ
+   Aad6Y2OMLWEjVw3YzrfsAeEKuokabMwfYdVQkyiHXj1O7f25x6KzlxdHN
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="360684864"
+X-IronPort-AV: E=Sophos;i="6.03,164,1694761200";
+   d="scan'208";a="360684864"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 20 Sep 2023 23:33:56 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="837200822"
+X-IronPort-AV: E=Sophos;i="6.03,164,1694761200";
+   d="scan'208";a="837200822"
+Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 20 Sep 2023 23:33:54 -0700
+From: Bard Liao <yung-chuan.liao@linux.intel.com>
+To: broonie@kernel.org,
+	tiwai@suse.de
+Cc: alsa-devel@alsa-project.org,
+	pierre-louis.bossart@linux.intel.com,
+	bard.liao@intel.com,
+	peter.ujfalusi@linux.intel.com
+Subject: [PATCH] ASoC: hdac_hda: fix HDA patch loader support
+Date: Thu, 21 Sep 2023 14:43:17 +0800
+Message-Id: <20230921064317.2120452-1-yung-chuan.liao@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Content-Language: en-US
-To: Cezary Rojewski <cezary.rojewski@intel.com>, broonie@kernel.org,
- tiwai@suse.com
-Cc: alsa-devel@alsa-project.org, amadeuszx.slawinski@linux.intel.com,
- pierre-louis.bossart@linux.intel.com, hdegoede@redhat.com
-References: <20230918133940.3676091-1-cezary.rojewski@intel.com>
- <20230918133940.3676091-2-cezary.rojewski@intel.com>
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH v2 01/17] ALSA: pcm: Introduce MSBITS subformat interface
-In-Reply-To: <20230918133940.3676091-2-cezary.rojewski@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: NCVKLU5FETTFLBEDBCD2AAOINX4NNJIX
-X-Message-ID-Hash: NCVKLU5FETTFLBEDBCD2AAOINX4NNJIX
-X-MailFrom: perex@perex.cz
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: W4WGCV2EQFAPMKYFNNDI3RVPG67W3FOS
+X-Message-ID-Hash: W4WGCV2EQFAPMKYFNNDI3RVPG67W3FOS
+X-MailFrom: yung-chuan.liao@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -83,82 +90,87 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NCVKLU5FETTFLBEDBCD2AAOINX4NNJIX/>
-List-Archive: <>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/W4WGCV2EQFAPMKYFNNDI3RVPG67W3FOS/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 18. 09. 23 15:39, Cezary Rojewski wrote:
-> Improve granularity of format selection for S32/U32 formats by adding
-> constants representing 20, 24 and MAX most significant bits.
-> 
-> To make it easy for drivers to utilize those constants, introduce
-> snd_pcm_subformat_width() and snd_pcm_hw_params_bps(). While the former
-> is self-explanatory, the latter returns the bit-per-sample value based
-> on format and subformat characteristics of the provided hw_params.
-> snd_pcm_hw_copy() helps with copying a hardware parameters space as with
-> introduction of subformats the operations becomes non-trivial.
-> 
-> Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
+The array size is irrelevant with SNDRV_CARDS. dev_index is from
+codec address and the available codec number is HDA_MAX_CODECS.
+Also, hda_pvt->fw is for a temporary use, no need to add a new extra
+field in hdac_hda_priv{}.
 
-...
+Fixes: 842a62a75e70 ("ASoC: hdac_hda: add HDA patch loader support")
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+---
+ sound/soc/codecs/hdac_hda.c | 15 ++++++++-------
+ sound/soc/codecs/hdac_hda.h |  3 ---
+ 2 files changed, 8 insertions(+), 10 deletions(-)
 
->   struct snd_pcm_hardware {
->   	unsigned int info;		/* SNDRV_PCM_INFO_* */
->   	u64 formats;			/* SNDRV_PCM_FMTBIT_* */
-> +	struct snd_pcm_subformat *subformats;
-
-I don't think that it's required to add subformats to the hardware template. 
-The new constraint can handle subformat refining without the template 
-modifications (pointer to map table is stored privately to this constraint).
-
-Also, I miss the constraint handling here. Without the constraint, the new API 
-is not functional and it does not make sense to split the constraint code to 
-other patch.
-
-> +int snd_pcm_hw_params_bps(const struct snd_pcm_hw_params *p);
-
-This may be probably inline function. See bellow.
-
-> +	kfree(runtime->hw.subformats);
-
-Do we really need to do an assumption about allocations for this field? The 
-driver may use a static structure. No problem, when this is not added to 
-runtime->hw.
-
-> +int snd_pcm_hw_params_bps(const struct snd_pcm_hw_params *p)
-> +{
-> +	snd_pcm_subformat_t subformat = params_subformat(p);
-> +	snd_pcm_format_t format = params_format(p);
-> +	int width;
-> +
-> +	switch (format) {
-> +	case SNDRV_PCM_FORMAT_S32_LE:
-> +	case SNDRV_PCM_FORMAT_U32_LE:
-> +	case SNDRV_PCM_FORMAT_S32_BE:
-> +	case SNDRV_PCM_FORMAT_U32_BE:
-> +		width = snd_pcm_subformat_width(subformat);
-
-This is not a correct implementation. The width should be returned for MAX 
-subformat (== snd_pcm_format_width value). See bellow.
-
-> +int snd_pcm_subformat_width(snd_pcm_subformat_t subformat)
-
-This function should probably have two arguments - format + subformat to 
-return the correct information. The MAX subformat should return 
-snd_pcm_format_width value.
-
-> +int snd_pcm_hw_copy(struct snd_pcm_hardware *hw, const struct snd_pcm_hardware *from)
-
-This function is not required, if only the constraint function handles the 
-subformat refining.
-
-						Jaroslav
-
+diff --git a/sound/soc/codecs/hdac_hda.c b/sound/soc/codecs/hdac_hda.c
+index 8f5d97949d3d..355f30779a34 100644
+--- a/sound/soc/codecs/hdac_hda.c
++++ b/sound/soc/codecs/hdac_hda.c
+@@ -37,10 +37,10 @@
+ 				 SNDRV_PCM_RATE_192000)
+ 
+ #ifdef CONFIG_SND_HDA_PATCH_LOADER
+-static char *loadable_patch[SNDRV_CARDS];
++static char *loadable_patch[HDA_MAX_CODECS];
+ 
+ module_param_array_named(patch, loadable_patch, charp, NULL, 0444);
+-MODULE_PARM_DESC(patch, "Patch file for Intel HD audio interface.");
++MODULE_PARM_DESC(patch, "Patch file array for Intel HD audio interface. The array index is the codec address.");
+ #endif
+ 
+ static int hdac_hda_dai_open(struct snd_pcm_substream *substream,
+@@ -434,20 +434,21 @@ static int hdac_hda_codec_probe(struct snd_soc_component *component)
+ 
+ #ifdef CONFIG_SND_HDA_PATCH_LOADER
+ 	if (loadable_patch[hda_pvt->dev_index] && *loadable_patch[hda_pvt->dev_index]) {
++		const struct firmware *fw;
++
+ 		dev_info(&hdev->dev, "Applying patch firmware '%s'\n",
+ 			 loadable_patch[hda_pvt->dev_index]);
+-		ret = request_firmware(&hda_pvt->fw, loadable_patch[hda_pvt->dev_index],
++		ret = request_firmware(&fw, loadable_patch[hda_pvt->dev_index],
+ 				       &hdev->dev);
+ 		if (ret < 0)
+ 			goto error_no_pm;
+-		if (hda_pvt->fw) {
+-			ret = snd_hda_load_patch(hcodec->bus, hda_pvt->fw->size, hda_pvt->fw->data);
++		if (fw) {
++			ret = snd_hda_load_patch(hcodec->bus, fw->size, fw->data);
+ 			if (ret < 0) {
+ 				dev_err(&hdev->dev, "failed to load hda patch %d\n", ret);
+ 				goto error_no_pm;
+ 			}
+-			release_firmware(hda_pvt->fw);
+-			hda_pvt->fw = NULL;
++			release_firmware(fw);
+ 		}
+ 	}
+ #endif
+diff --git a/sound/soc/codecs/hdac_hda.h b/sound/soc/codecs/hdac_hda.h
+index b7a12aea8d32..d03a5d4e7288 100644
+--- a/sound/soc/codecs/hdac_hda.h
++++ b/sound/soc/codecs/hdac_hda.h
+@@ -27,9 +27,6 @@ struct hdac_hda_priv {
+ 	struct hdac_hda_pcm pcm[HDAC_DAI_ID_NUM];
+ 	bool need_display_power;
+ 	int dev_index;
+-#ifdef CONFIG_SND_HDA_PATCH_LOADER
+-	const struct firmware *fw;
+-#endif
+ };
+ 
+ struct hdac_ext_bus_ops *snd_soc_hdac_hda_get_ops(void);
 -- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+2.25.1
 
