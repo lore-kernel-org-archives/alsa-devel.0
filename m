@@ -4,102 +4,113 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 75374E7D0D2
-	for <alsa-devel@archiver.kernel.org>; Fri, 22 Sep 2023 07:11:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BB749CD4F2B
+	for <alsa-devel@archiver.kernel.org>; Fri, 22 Sep 2023 07:53:06 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A66B8DF2;
-	Fri, 22 Sep 2023 09:11:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A66B8DF2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 12D15DF4;
+	Fri, 22 Sep 2023 09:52:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 12D15DF4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1695366713;
-	bh=E7qTeQvG+VsEQSWTs5jOYmqzdrkrv2hPDom7F2xtE1A=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=guJA3KLedUDMjXi75sLQJBv2omOui6l349Bed7JTMEJcDxPBJooZ9oxCLggwGIAeP
-	 vfzuK1vLPm8o16go/PNuqDKKjwvfQM+xxTeSAn0F411tNYJEDvI/A5iKaBlINqxIgn
-	 EZ5v3E0S1HxOtqtfsMUxdYARXkmvWJB3IPkSvjXw=
+	s=default; t=1695369184;
+	bh=p0porzjtM7prWMoGjFsbBDMK9K3omahP6owNEMNUJro=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=ANfsRBjB9rBwqjsz7Zuvzj5gpPVibDKB45ZeN0Ed4YKkI2cyCUv60U7qbtSQwHXWB
+	 JMeV/DoSLgzejPOjPFTZqVw7nFxLuVIAfgiPopYVb2wMVkLZaJDdv0EfC5g2SGbkBz
+	 ytMhcOLix1kG5VTNnbQ2ga9ixxKdX4kZh49/D+ys=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A5079F80558; Fri, 22 Sep 2023 09:10:53 +0200 (CEST)
+	id C4FF1F8055A; Fri, 22 Sep 2023 09:51:43 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8CE3DF801F5;
-	Fri, 22 Sep 2023 09:10:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 88D15F800AA;
+	Fri, 22 Sep 2023 09:51:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4EDFCF801F5; Fri, 22 Sep 2023 09:09:42 +0200 (CEST)
-Received: from mail.insite.cz (smtp.ivitera.com [88.101.85.59])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	id 62624F8025A; Thu, 21 Sep 2023 20:34:29 +0200 (CEST)
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com
+ [IPv6:2607:f8b0:4864:20::629])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 11DF9F800AA
-	for <alsa-devel@alsa-project.org>; Fri, 22 Sep 2023 09:09:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 11DF9F800AA
+	by alsa1.perex.cz (Postfix) with ESMTPS id 4B085F800AA
+	for <alsa-devel@alsa-project.org>; Thu, 21 Sep 2023 20:34:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4B085F800AA
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=ivitera.com header.i=@ivitera.com header.a=rsa-sha256
- header.s=mail header.b=qIayzXgj;
-	dkim=pass (1024-bit key) header.d=ivitera.com header.i=@ivitera.com
- header.a=rsa-sha256 header.s=mail header.b=NpZ3RoSV
-Received: from localhost (localhost [127.0.0.1])
-	by mail.insite.cz (Postfix) with ESMTP id 4B1F5A1A32301;
-	Fri, 22 Sep 2023 09:13:35 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=ivitera.com; s=mail;
-	t=1695366815; bh=E7qTeQvG+VsEQSWTs5jOYmqzdrkrv2hPDom7F2xtE1A=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=qIayzXgj6sOs1eqqd7CwhZd7Ub+mNTJ7gqT3+pd4eHX5bMJu5J/wtmKprwZU29R0T
-	 YE+lTczG2m9T2JDTvYNLOkhTImF1zRXByFrPKJflTYlMgb2hqPhqRSfDlfnsV3IQAh
-	 h8JZd1dGuKmifdckYctokzvaM+Nyk270doKOemgI=
-Received: from mail.insite.cz ([10.0.1.254])
-	by localhost (server.insite.cz [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id tEf46MNYUTBv; Fri, 22 Sep 2023 09:13:29 +0200 (CEST)
-Received: from [192.168.105.22] (dustin.pilsfree.net [81.201.58.138])
-	(Authenticated sender: pavel)
-	by mail.insite.cz (Postfix) with ESMTPSA id 31565A1A32300;
-	Fri, 22 Sep 2023 09:13:28 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=ivitera.com; s=mail;
-	t=1695366808; bh=E7qTeQvG+VsEQSWTs5jOYmqzdrkrv2hPDom7F2xtE1A=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=NpZ3RoSVIG+BBzyN1rKpTn+GFKa3gBzh/5d6n4gWaN4xQd5cfyiVQyoRutSZV1Cum
-	 6M32Uex9HvS0IHQt2bAJmXwPgVrnzu7UwvQNdG7+BF7kDB1QuNQjXcs23ydD0JMEyC
-	 gNBXwohLRPwE0wkjFBYGRXijUodOJLELOmLgqiHI=
-Message-ID: <4154b125-35c8-b15a-8706-54b9eb3cb5e0@ivitera.com>
-Date: Fri, 22 Sep 2023 09:09:22 +0200
+	dkim=pass (2048-bit key,
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20230601 header.b=bydxRhDa
+Received: by mail-pl1-x629.google.com with SMTP id
+ d9443c01a7336-1c1ff5b741cso11567585ad.2
+        for <alsa-devel@alsa-project.org>;
+ Thu, 21 Sep 2023 11:34:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695321259; x=1695926059;
+ darn=alsa-project.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=bGf/7eKiw4GZy2wkGbtT/YuoGRNiPGyqjAL1OAImvU4=;
+        b=bydxRhDaYK5DMLgon7h0zag/4Fvi79klW3WcQiG4RvYEzrePWO/17iPkQEg7/c2YOf
+         ZlMs1PbjzESXy7K7r5Oh0v+xmRGWyk2eG7ZyH4/ZJSwrmvM0iFvfXS/2KdYmq8JXX515
+         m17Vctyz52QgV+BrO4rGrOSAakehvrJ70SKBuoWZp3AlcLQzWsWR8kwqfDNz5JNVprh5
+         dI0ma9WaW8/H7uW1VujkDH4LGa+VVaSjIyc1/KEbhBPwVRtChPr1ZzxkxO4YdLH2wkO9
+         sP9N3iH6ovEGuVJFxdv6SzRORwfXFM5oLBUoc3eMfGGyhrxeNgeRMmkUgy5W8qEctuQi
+         hmhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695321259; x=1695926059;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=bGf/7eKiw4GZy2wkGbtT/YuoGRNiPGyqjAL1OAImvU4=;
+        b=RUjEZOAQ5RCbZovJNG8sLKWSB6tJ+OtmDFFtXitTjxFFV15DYywrXdAMNFGBITmBd4
+         xSyr6tD+rqQjuIvTGr7mUPVpEufYYwmpfF94z3R5uzgshbiqqwIDSnZK6hm+fAa+QL6Q
+         FFh1i+jtcLccBZdx4E2mKSeFhffgfFG0pOGHMRFk8yc+qv/oCq2oWOacsQWirdY47Gpy
+         DLK/t1ieno7zdUOw5N2iO9E8MtkBNAQLmAy1NQLIRCxqcF83+LbxTcPceu2bzL0ANFj/
+         8vhiWmsG07WeYXPYKuYo5QB5jVbz9/nJJOyZ7SBaebIlDO5exwg9IK5fSGwBK/ocdIww
+         5JAw==
+X-Gm-Message-State: AOJu0YySenBVVrMfYgNJFF8PObCGtZgh9bBYcaljmCNI0FRJzbkM0qHs
+	AvEi7ICJk7tw2nYBmSDpsu4=
+X-Google-Smtp-Source: 
+ AGHT+IHIURvUvx+ENScmM7CExkX+NBRuXfn7qir3DidtTnofrsT1JNEfob6CFehvv2XfBUELPXBlsg==
+X-Received: by 2002:a17:902:7d93:b0:1c5:e00f:2 with SMTP id
+ a19-20020a1709027d9300b001c5e00f0002mr910511plm.28.1695321258605;
+        Thu, 21 Sep 2023 11:34:18 -0700 (PDT)
+Received: from localhost.localdomain ([122.172.81.113])
+        by smtp.gmail.com with ESMTPSA id
+ c3-20020a170902d90300b001bbfa86ca3bsm1844790plz.78.2023.09.21.11.34.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Sep 2023 11:34:18 -0700 (PDT)
+From: Bragatheswaran Manickavel <bragathemanick0908@gmail.com>
+To: lgirdwood@gmail.com,
+	broonie@kernel.org,
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org
+Cc: Bragatheswaran Manickavel <bragathemanick0908@gmail.com>,
+	alsa-devel@alsa-project.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2] ASoC: dt-bindings: tfa9879: Convert to dtschema
+Date: Fri, 22 Sep 2023 00:03:13 +0530
+Message-Id: <20230921183313.54112-1-bragathemanick0908@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: RFC: usb: gadget: u_audio: Notifying gadget that host started
- playback/capture?
-Content-Language: en-US
-To: Arun Raghavan <arun@arunraghavan.net>,
- "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
- "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: Julian Scheel <julian@jusst.de>, Takashi Iwai <tiwai@suse.de>,
- Ruslan Bilovol <ruslan.bilovol@gmail.com>,
- Jerome Brunet <jbrunet@baylibre.com>
-References: <6ebc2456-a46b-bc47-da76-7a341414c1fb@ivitera.com>
- <35766f0f-784d-d37a-6d07-665f9ee88331@ivitera.com>
- <27b4b607-5d71-4e5d-a0ff-530c25752213@app.fastmail.com>
-From: Pavel Hofman <pavel.hofman@ivitera.com>
-In-Reply-To: <27b4b607-5d71-4e5d-a0ff-530c25752213@app.fastmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: 4QWN6LTPSEJ5DQTDYFKNAS4VYAOXDX5F
-X-Message-ID-Hash: 4QWN6LTPSEJ5DQTDYFKNAS4VYAOXDX5F
-X-MailFrom: pavel.hofman@ivitera.com
+Content-Transfer-Encoding: 8bit
+X-MailFrom: bragathemanick0908@gmail.com
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: 7XNPQFQ2V2ZCIN6O6BQJ6OYTHANBVALH
+X-Message-ID-Hash: 7XNPQFQ2V2ZCIN6O6BQJ6OYTHANBVALH
+X-Mailman-Approved-At: Fri, 22 Sep 2023 07:51:38 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4QWN6LTPSEJ5DQTDYFKNAS4VYAOXDX5F/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7XNPQFQ2V2ZCIN6O6BQJ6OYTHANBVALH/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -108,82 +119,113 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+Convert the tfa9879 audio CODEC bindings to DT schema
+No error/warning seen when running make dt_binding_check
 
-Dne 21. 09. 23 v 3:30 Arun Raghavan napsal(a):
-> Hi folks,
-> 
-> On Fri, 1 Oct 2021, at 8:38 AM, Pavel Hofman wrote:
->> Hi,
->>
->> Dne 08. 09. 21 v 10:21 Pavel Hofman napsal(a):
->>> Hi,
->>>
->>> The current audio gadget has no way to inform the gadget side that the
->>> host side has started playback/capture and that gadget-side alsa
->>> processes should be started.
->>>
->>> Playback/capture processes on the host side do not get stuck without the
->>> gadget side consuming/producing data (OUT requests are ignored in
->>> u_audio_iso_complete, IN ones send initial zeros in their req->buf).
->>>
->>> However, playback/capture processes on the gadget side get stuck without
->>> the host side sending playback OUT packets or capture IN requests and
->>> time out with error. If there was a way to inform the gadget side that
->>> playback/capture has started on the host side, the gadget clients could
->>> react accordingly.
->>>
->>
->> I drafted a simple patch for u_audio.c which defines read-only boolean
->> ctl elems "Capture Requested" and "Playback Requested". Their values are
->> set/reset in methods u_audio_start_capture/playback and
->> u_audio_stop_capture/playback, i.e. at changes of respective altsettings
->> from 0 to 1 and back. Every ctl elem value change sends notification via
->> snd_ctl_notify. The principle works OK for capture/playback start/stop
->> on the host, as monitored by alsactl:
->>
->> pi@raspberrypi:~ $ alsactl monitor hw:UAC2Gadget
->> node hw:UAC2Gadget, #4 (3,0,0,Capture Requested,0) VALUE
->> node hw:UAC2Gadget, #4 (3,0,0,Capture Requested,0) VALUE
->> node hw:UAC2Gadget, #3 (3,0,0,Playback Requested,0) VALUE
->> node hw:UAC2Gadget, #3 (3,0,0,Playback Requested,0) VALUE
->>
->> However at enumeration the USB host switches both playback and capture
->> altsettings repeatedly, generating "fake" events from the gadget side
->> POW. The host even sends regular-sized EP-OUT packets filled with zeros
->> during enumeration (tested on linux only for now).
->>
->> Please is there any way to "detect" the enumeration stage to mask out
->> the "fake" playback/capture start/stop events?
->>
->> The attached patch does not apply cleanly to mainline u_audio.c because
->> it's rebased on other patches not submitted yet but it's only a
->> discussion inducer for now.
-> 
-> Resurrecting this one -- is there any input on how we want to deal wit letting UAC gadgets know when the host is sending/receiving data?
+Signed-off-by: Bragatheswaran Manickavel <bragathemanick0908@gmail.com>
 
-The current version uses the Playback/Capture Rate alsa ctls with 
-notifications 
-https://lore.kernel.org/all/20220121155308.48794-8-pavel.hofman@ivitera.com/
+Changes:
+V1 -> V2: Fixed DT syntax errors and doc warning
+---
+ .../bindings/sound/nxp,tfa9879.yaml           | 44 +++++++++++++++++++
+ .../devicetree/bindings/sound/tfa9879.txt     | 23 ----------
+ MAINTAINERS                                   |  2 +-
+ 3 files changed, 45 insertions(+), 24 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/nxp,tfa9879.yaml
+ delete mode 100644 Documentation/devicetree/bindings/sound/tfa9879.txt
 
-Example of handling is e.g. https://github.com/pavhofman/gaudio_ctl , 
-the controller is being used in a number of projects, mostly DIY.
+diff --git a/Documentation/devicetree/bindings/sound/nxp,tfa9879.yaml b/Documentation/devicetree/bindings/sound/nxp,tfa9879.yaml
+new file mode 100644
+index 000000000000..df26248573ad
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/nxp,tfa9879.yaml
+@@ -0,0 +1,44 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/nxp,tfa9879.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: NXP TFA9879 class-D audio amplifier
++
++maintainers:
++  - Peter Rosin <peda@axentia.se>
++
++allOf:
++  - $ref: dai-common.yaml#
++
++properties:
++  compatible:
++    const: nxp,tfa9879
++
++  reg:
++    maxItems: 1
++
++  "#sound-dai-cells":
++    const: 0
++
++required:
++  - compatible
++  - reg
++  - '#sound-dai-cells'
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    i2c1 {
++       #address-cells = <1>;
++       #size-cells = <0>;
++       amplifier@6c {
++          compatible = "nxp,tfa9879";
++          reg = <0x6c>;
++          pinctrl-names = "default";
++          pinctrl-0 = <&pinctrl_i2c1>;
++          #sound-dai-cells = <0>;
++       };
++    };
+diff --git a/Documentation/devicetree/bindings/sound/tfa9879.txt b/Documentation/devicetree/bindings/sound/tfa9879.txt
+deleted file mode 100644
+index 1620e6848436..000000000000
+--- a/Documentation/devicetree/bindings/sound/tfa9879.txt
++++ /dev/null
+@@ -1,23 +0,0 @@
+-NXP TFA9879 class-D audio amplifier
+-
+-Required properties:
+-
+-- compatible : "nxp,tfa9879"
+-
+-- reg : the I2C address of the device
+-
+-- #sound-dai-cells : must be 0.
+-
+-Example:
+-
+-&i2c1 {
+-	pinctrl-names = "default";
+-	pinctrl-0 = <&pinctrl_i2c1>;
+-
+-	amp: amp@6c {
+-		#sound-dai-cells = <0>;
+-		compatible = "nxp,tfa9879";
+-		reg = <0x6c>;
+-	};
+-};
+-
+diff --git a/MAINTAINERS b/MAINTAINERS
+index a4c30221eb30..569303daf9b4 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -15476,7 +15476,7 @@ NXP TFA9879 DRIVER
+ M:	Peter Rosin <peda@axentia.se>
+ L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
+ S:	Maintained
+-F:	Documentation/devicetree/bindings/sound/tfa9879.txt
++F:	Documentation/devicetree/bindings/sound/nxp,tfa9879.yaml
+ F:	sound/soc/codecs/tfa9879*
+ 
+ NXP-NCI NFC DRIVER
+-- 
+2.34.1
 
-Recently Qualcomm devs have submitted patches for alternative approach 
-using uevents 
-https://lore.kernel.org/lkml/2023050801-handshake-refusing-0367@gregkh/T/#mcd6b346f3ddab6ab34792be0141633bb362d168f 
-and later versions. The detection is identical, monitoring change in 
-altsetting from 0 to non zero and back (methods 
-u_audio_[start/stop]_[capture/playback]), just a different means of 
-communicating the events to userspace.
-
-Both methods (using the same principle) suffer from not knowing what's 
-going on the host side and cannot differentiate between player really 
-starting playback vs. UAC2 host driver or Pulseaudio shortly checking 
-device availability. That's why the gaudio_ctl controller can debounce 
-the playback/capture start 
-https://github.com/pavhofman/gaudio_ctl#debouncing . But that is just an 
-ugly workaround...
-
-With regards,
-
-Pavel.
