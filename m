@@ -4,49 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B9B65E71094
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 Sep 2023 16:42:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9808BE7D0A2
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 Sep 2023 18:42:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5E687E9D;
-	Thu, 21 Sep 2023 18:41:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5E687E9D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0939720C;
+	Thu, 21 Sep 2023 20:41:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0939720C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1695314558;
-	bh=qDw3Z3ZGntfm7KS2hx62YhHcpq1EVaho9BXN99AIHO0=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=fkW/Gl8OkPaeqErXz3Ewj38dcUSAsxuhjdRD9RRbW6t8OlPjnuUlMegzdUOmuZ09V
-	 tzF8ZbYqIgHstFOMHwku/756ut1vY2l/Niqtll/K9wEjsD/A2FauVQtTfon0a6hj5B
-	 XMzcllAlfV5nPzLf4D05JTE11ka9j2eFHRh0WE7U=
+	s=default; t=1695321718;
+	bh=Wr2cv8QCwxAryDvxcwX4UC8nEWWMWGBn+9Iohg5X4X0=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=hW2ZAipxJcy+3En6E4ow9mxaTdR0reT7PDZ4UfyJoM5cYOblC08vpyDa+MkS0WQgm
+	 IHQmjzz3KpewtFGc+SuccW1TrghNjlrcb7Pik2wNSYEhTZ7RHRQnbcOwN0uOsYItZG
+	 12BMiJMpOHAlTaBBArq/EsyahFh3qG8A45uD7xB4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 74B62F80558; Thu, 21 Sep 2023 18:41:20 +0200 (CEST)
+	id A3C68F8055C; Thu, 21 Sep 2023 20:40:29 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 105D9F8025A;
-	Thu, 21 Sep 2023 18:41:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 67410F80125;
+	Thu, 21 Sep 2023 20:40:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 07F61F8025A; Thu, 21 Sep 2023 18:41:16 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
- [207.180.221.201])
-	by alsa1.perex.cz (Postfix) with ESMTP id 957BFF80124
-	for <alsa-devel@alsa-project.org>; Thu, 21 Sep 2023 18:41:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 957BFF80124
+	id CBEE4F8025A; Thu, 21 Sep 2023 20:40:24 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 56F45F80125
+	for <alsa-devel@alsa-project.org>; Thu, 21 Sep 2023 20:40:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 56F45F80125
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=fRaqzNRC
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 163B66200E;
+	Thu, 21 Sep 2023 18:40:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30966C433CB;
+	Thu, 21 Sep 2023 18:40:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1695321616;
+	bh=Wr2cv8QCwxAryDvxcwX4UC8nEWWMWGBn+9Iohg5X4X0=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=fRaqzNRC6y8wuOy/xNgzt3w7HwUN/UHBiSiN3EaCUd6gomEl6oRQ0PDNLMQttdA2v
+	 LuOCU6o7NQ4uxrjr/hfoYYevkLOLGYMjk9BzzP6AIihHBqt8SmqwAYsDevyhfED+P/
+	 iiPkxqqqbLtebgWenOzpi+tzHZjE+ZMQohN1bJYw6eYj4ZykkijbDpvWXXWVfCw/rj
+	 +iMefCNoEKulywlB2m7JuP0J6W7GiquwVfaOqdWMcF3jeNODBbQh3YGersXOpqxEcy
+	 wGDGDLxXB3/wU9qbHJgBBkVoPhpYAu0v8w8tnAoVDmf0TGJXTjS10J/OAcELrIliuw
+	 7Mc1/MusSyiVw==
+From: Mark Brown <broonie@kernel.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, cy_huang@richtek.com
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Allen Lin <allen_lin@richtek.com>, alsa-devel@alsa-project.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <1695181834-5809-1-git-send-email-cy_huang@richtek.com>
+References: <1695181834-5809-1-git-send-email-cy_huang@richtek.com>
+Subject: Re: [PATCH v3 0/2] ASoC: Add rtq9128 audio amplifier
+Message-Id: <169532161380.157918.6015807992333109867.b4-ty@kernel.org>
+Date: Thu, 21 Sep 2023 19:40:13 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1695314472824420929-webhooks-bot@alsa-project.org>
-References: <1695314472824420929-webhooks-bot@alsa-project.org>
-Subject: UCM doesn't set mixer for speaker if it fails to set mixer for
- microphones
-Message-Id: <20230921164116.07F61F8025A@alsa1.perex.cz>
-Date: Thu, 21 Sep 2023 18:41:16 +0200 (CEST)
-Message-ID-Hash: SEJHZGP3NVEJF4UM3O3EN2H63QMMEJPN
-X-Message-ID-Hash: SEJHZGP3NVEJF4UM3O3EN2H63QMMEJPN
-X-MailFrom: github@alsa-project.org
+X-Mailer: b4 0.13-dev-034f2
+Message-ID-Hash: M4EJDTHQ57YC4IOISMTOJA24UNX7UNE6
+X-Message-ID-Hash: M4EJDTHQ57YC4IOISMTOJA24UNX7UNE6
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -58,55 +90,55 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SEJHZGP3NVEJF4UM3O3EN2H63QMMEJPN/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/M4EJDTHQ57YC4IOISMTOJA24UNX7UNE6/>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-ucm-conf issue #356 was opened from halobarrlets:
+On Wed, 20 Sep 2023 11:50:32 +0800, cy_huang@richtek.com wrote:
+> This patch series adds Richtek rtq9128 automotive audio amplifier
+> support. It can deliver up to 4x75W into 4Ohm speaker from a 25V
+> supply in automotive applications.
+> 
+> Change log
+> v3
+> - Add Reviewed-by tag for dt binding patch
+> - Refine the source code by reviewer's comments
+>   detail changes listed in the patch
+> - Add DVDD undervoltage threshold selection from HW guy's suggestion
+> 
+> [...]
 
-I have laptop Dell XPS 17 9720 SKU 0AFE which has microphones and webcam on top of the display connected to motherboard with cable. I need to have webcam and microphones disabled so I've disconnected the cable from motherboard.
-Because microphones are disconnected firmware fails to initialize them but speakers are initialized properly.
-With pulseaudio disabled and manually setting amixer I can play audio with speakers using aplay:
-```
-user@user:~$ amixer -c0 cset name='Speaker Switch' 1
-numid=38,iface=MIXER,name='Speaker Switch'
-  ; type=BOOLEAN,access=rw------,values=1
-  : values=on
-user@user:~$ amixer -c0 cset name='rt1316-1 DAC Switch' 
-numid=75,iface=MIXER,name='rt1316-1 DAC Switch'
-  ; type=BOOLEAN,access=rw------,values=2
-  : values=on,on
-user@user:~$ amixer -c0 cset name='rt1316-2 DAC Switch' 1
-numid=76,iface=MIXER,name='rt1316-2 DAC Switch'
-  ; type=BOOLEAN,access=rw------,values=2
-  : values=on,on
-user@user:~$ aplay -Dhw:0,2 test.wav
-```
-But with pulseaudio enabled it fails to load mixer because of missing microphones:
-`systemctl --user status pulseaudio`
-```
-systemd[1160]: Starting pulseaudio.service - Sound Service...
-pulseaudio[1176]: Failed to get the verb HiFi
-pulseaudio[1176]: No UCM verb is valid for hw:0
-pulseaudio[1176]: Unable to load mixer: Invalid argument
-systemd[1160]: Started pulseaudio.service - Sound Service.
-```
-Thanks to @bardliao the problem was narrowed down to the problem with UCM from this issue https://github.com/thesofproject/linux/issues/4580#issuecomment-1723432549 so I'm reporting this issue here.
-Is it possible to fix this issue so UCM won't fail completely if one of the audio devices (microphones) is missing and will still initialize the available devices (speaker, jack output)? So that I can use speakers even without microphones?
+Applied to
 
-I'm using Debian unstable with latest kernel 6.5.0-rc6+ from https://github.com/thesofproject/linux and firmware-sof-signed 2.2.6-1.
-Here are the logs:
-[alsa-info.txt](https://github.com/alsa-project/alsa-ucm-conf/files/12688962/alsa-info.txt)
-[dmesg-cable-connected.txt](https://github.com/alsa-project/alsa-ucm-conf/files/12688964/dmesg-cable-connected.txt)
-[dmesg-cable-disconnected.txt](https://github.com/alsa-project/alsa-ucm-conf/files/12688965/dmesg-cable-disconnected.txt)
-`amixer contents -c0`
-[amixer-contents-cable-connected.txt](https://github.com/alsa-project/alsa-ucm-conf/files/12688993/amixer-contents-cable-connected.txt)
-[amixer-contents-cable-disconnected.txt](https://github.com/alsa-project/alsa-ucm-conf/files/12688994/amixer-contents-cable-disconnected.txt)
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-Issue URL     : https://github.com/alsa-project/alsa-ucm-conf/issues/356
-Repository URL: https://github.com/alsa-project/alsa-ucm-conf
+Thanks!
+
+[1/2] ASoC: dt-bindings: Add Richtek rtq9128 audio amplifier
+      commit: 0339eadb871ab1ebf249932fecb75ab13cc3c565
+[2/2] ASoC: codecs: Add Richtek rtq9128 audio amplifier support
+      commit: 736064c64cf3fc51c6090884a9f4efe047f9f616
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
