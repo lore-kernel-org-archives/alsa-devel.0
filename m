@@ -4,91 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2FA48E71096
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 Sep 2023 16:31:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3CF5CE71094
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 Sep 2023 16:31:54 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BF54DE11;
-	Thu, 21 Sep 2023 18:30:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BF54DE11
+	by alsa0.perex.cz (Postfix) with ESMTPS id DB992E12;
+	Thu, 21 Sep 2023 18:31:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DB992E12
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1695313892;
-	bh=dJDjfrLAKivUblGfaQV3YbrxEMRn89eblmBZJUoxxjQ=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1695313911;
+	bh=nZpjoR0hCOsQnQVg/vaX8/PozCdrpRYnHa+VvQhCQ7Y=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=q8WOzMwbI89H7rKzBFyqV1ICa24ZgPU6F7NWhO6eAZuM0XPbmPR76UEXHUpRgilI4
-	 cSigj3zy+aJRBzuMe7rM0oKvKEdpwgIDr6ju7X4fdbVn/TPrKWxQ4rBH26Cp6OuXAj
-	 8rOfgqKylErmLrIbI4yn20rekpZzq/N9/MMxYN8M=
+	b=eD/bzznKQAdGt8GMP2CqnWXu3wgRkAtz4m7A6ehhKyFFP1k6sQTUfBR0fCmOqO1dh
+	 YCWrbQPEbpzpbVqhRvDSQbCDyNE3kT+3zm14z5a2+WgW2n0ChKGQhT2BT6LEGXjZvu
+	 aOkDesw1FEJ2QPCsGoULD0I/X/EROIHovGBC6yj8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 091E3F805AC; Thu, 21 Sep 2023 18:29:29 +0200 (CEST)
+	id EA59BF80494; Thu, 21 Sep 2023 18:30:23 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A09A7F805AC;
-	Thu, 21 Sep 2023 18:29:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3860CF8025A;
+	Thu, 21 Sep 2023 18:30:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 82938F8057D; Thu, 21 Sep 2023 18:29:24 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id E650EF80552; Thu, 21 Sep 2023 18:30:19 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 2818CF8047D
-	for <alsa-devel@alsa-project.org>; Thu, 21 Sep 2023 18:29:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2818CF8047D
+	by alsa1.perex.cz (Postfix) with ESMTPS id 29312F80494
+	for <alsa-devel@alsa-project.org>; Thu, 21 Sep 2023 18:30:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 29312F80494
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=gNSSCd4P
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-	by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id
- 38LFWPBQ005190;
-	Thu, 21 Sep 2023 11:28:59 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	PODMain02222019; bh=EJ5ed+ITbEi3A3t572jlfnIzGCe9Zx/6EDGQBJFmsQs=; b=
-	gNSSCd4PDPvkL7ci3EHGFlaQdPKJDYb6H2QFa4QEasqDnxCLROJ3ihi02jI2HwE5
-	yuamzPBk3PK0fjVerRoRJ6yTYMur68L4sT5w7iieLao9txAhearzqA1cjE2aq0UB
-	xx8jPo5+ivGt0RGnpejXGvNtB6bhdWJ0IoNw38L4OHmJNOWw+zwc002hCjas7Mj3
-	9chkjDcY2ICPCzpDSmvO6/IgMXmE0MOcW1h28e/N5b96b82+dQoFHTpoBeWxmISO
-	51ecnnVp1pmVOF2HNgULZc+Ej+sDDjfuqbYWnOTqa9nLCGDr9nknWLGpt++/CiJl
-	MHmtbelneZYpZ6g90o8MkQ==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3t59ry7bve-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 21 Sep 2023 11:28:59 -0500 (CDT)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Thu, 21 Sep
- 2023 17:28:57 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.37 via Frontend
- Transport; Thu, 21 Sep 2023 17:28:57 +0100
-Received: from sbinding-cirrus-dsktp2.ad.cirrus.com (unknown [198.90.238.135])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 08E143575;
-	Thu, 21 Sep 2023 16:28:57 +0000 (UTC)
-From: Stefan Binding <sbinding@opensource.cirrus.com>
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-CC: <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
-        <patches@opensource.cirrus.com>,
-        Stefan Binding
-	<sbinding@opensource.cirrus.com>
-Subject: [PATCH v5 1/4] ALSA: hda: cs35l41: Add notification support into
- component binding
-Date: Thu, 21 Sep 2023 17:28:46 +0100
-Message-ID: <20230921162849.1988124-2-sbinding@opensource.cirrus.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230921162849.1988124-1-sbinding@opensource.cirrus.com>
-References: <20230921162849.1988124-1-sbinding@opensource.cirrus.com>
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=aYCw1cHe
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	(No client certificate requested)
+	by ams.source.kernel.org (Postfix) with ESMTPS id EAFF9B82159;
+	Thu, 21 Sep 2023 16:30:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C02DC611A6;
+	Thu, 21 Sep 2023 16:30:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1695313811;
+	bh=nZpjoR0hCOsQnQVg/vaX8/PozCdrpRYnHa+VvQhCQ7Y=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=aYCw1cHeNbldZ28iLJjIx+7DeAtUZ9kk+Qw9CLsJAbceuf1LnoYX3qwxA56hMR2Dn
+	 Bfp/FXnD0Okg3qiNtq4LlMIhn+xa9bu+/tuO+Equwd+bZT7HdYaxG4t1+R3hwUXjay
+	 XLyN+qPkPomCUh3sRLE5r0Kb4+WTZnmzvI7GPVi5aGOC3WkR882eUpGrJVY7mu1iuq
+	 Jmp6mRmw3+/QDRva6s3NrFzi4QVSoanKwke2kbc7OMI1l1ErX7vKlQgCKRTp1IySzs
+	 H+yWV6TP1IdF1rnfQ4hKzHZb6ff4w2ApkZDn9/Jr24IqwCu2J3sW03pYquq89MLP4Y
+	 OKKDAAj0nDRow==
+From: Mark Brown <broonie@kernel.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>,
+ Dan Carpenter <dan.carpenter@linaro.org>,
+ Robert Hancock <robert.hancock@calian.com>
+In-Reply-To: <87v8c76jnz.wl-kuninori.morimoto.gx@renesas.com>
+References: <87v8c76jnz.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH v2] ASoC: simple-card-utils: fixup
+ simple_util_startup() error handling
+Message-Id: <169531381002.61074.15608456084087041714.b4-ty@kernel.org>
+Date: Thu, 21 Sep 2023 17:30:10 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: qSCoWmKrYT07CGY2xlPm7zGbv2jZsfdd
-X-Proofpoint-ORIG-GUID: qSCoWmKrYT07CGY2xlPm7zGbv2jZsfdd
-X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: MPGYYQKJMGB4YET22BA35U6UVWSWSEGZ
-X-Message-ID-Hash: MPGYYQKJMGB4YET22BA35U6UVWSWSEGZ
-X-MailFrom: prvs=462875a41c=sbinding@opensource.cirrus.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-034f2
+Message-ID-Hash: VG32R3C2FDEXOIOEJB5GMNQWC745INC2
+X-Message-ID-Hash: VG32R3C2FDEXOIOEJB5GMNQWC745INC2
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -100,7 +88,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MPGYYQKJMGB4YET22BA35U6UVWSWSEGZ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VG32R3C2FDEXOIOEJB5GMNQWC745INC2/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -109,43 +97,36 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Some systems support a notification from ACPI, which can be used
-for different things.
+On Tue, 19 Sep 2023 01:22:57 +0000, Kuninori Morimoto wrote:
+> It should use "goto" instead of "return"
+> 
+> 
 
-Only one handler can be registered for the acpi notification, but all
-amps need to receive that notification, we can register a single handler
-inside the component master, so that it can then notify through the
-component framework.
+Applied to
 
-This is required to support mute notifications from ACPI.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
----
- sound/pci/hda/hda_component.h | 4 ++++
- 1 file changed, 4 insertions(+)
+Thanks!
 
-diff --git a/sound/pci/hda/hda_component.h b/sound/pci/hda/hda_component.h
-index f170aec967c1..bbd6f0ed16c1 100644
---- a/sound/pci/hda/hda_component.h
-+++ b/sound/pci/hda/hda_component.h
-@@ -6,6 +6,7 @@
-  *                    Cirrus Logic International Semiconductor Ltd.
-  */
- 
-+#include <linux/acpi.h>
- #include <linux/component.h>
- 
- #define HDA_MAX_COMPONENTS	4
-@@ -15,6 +16,9 @@ struct hda_component {
- 	struct device *dev;
- 	char name[HDA_MAX_NAME_SIZE];
- 	struct hda_codec *codec;
-+	struct acpi_device *adev;
-+	bool acpi_notifications_supported;
-+	void (*acpi_notify)(acpi_handle handle, u32 event, struct device *dev);
- 	void (*pre_playback_hook)(struct device *dev, int action);
- 	void (*playback_hook)(struct device *dev, int action);
- 	void (*post_playback_hook)(struct device *dev, int action);
--- 
-2.34.1
+[1/1] ASoC: simple-card-utils: fixup simple_util_startup() error handling
+      commit: 69cf63b6560205a390a736b88d112374655adb28
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
 
