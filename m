@@ -4,97 +4,101 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F0E82E7106D
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 Sep 2023 13:29:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F23FBE7106E
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 Sep 2023 13:30:52 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 03620DEB;
-	Thu, 21 Sep 2023 15:28:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 03620DEB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2BA5EEC8;
+	Thu, 21 Sep 2023 15:30:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2BA5EEC8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1695302974;
-	bh=YFNNyBmiEk3rLroLYnamlhN/dyD1rbf5jeUM8GnGhtU=;
+	s=default; t=1695303051;
+	bh=9Xfdb96CFH/rTanYrZSeXopEq2SO8VZNYu0lA6yqv/M=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=qn5FM2fKFpOiFid+oE7Ig6TalxgCbcNVwIU5fvCL/UhUcjcPU4ffItGTPzzJiWH56
-	 ubMiObSypCNMwhXfEj8B1UFt1D8hBnbkmz8LoWFyYARu+Mhdr+hH+pDashz+ShTNLg
-	 UhaLAi5bkbfUJ3hHTMG2UizYqVw/bE5MinJaXbVI=
+	b=N4CVy37hq7Yc4GYoeI4g/jOA+UEhKVwufSa0r59SwzHPewuPAYiNRYwvSm+Bzcq3Q
+	 1s4bmIc7Uqq/a6/tddofAVFVK296IffFlooh3rTNQK8J5cROdeBhn82UXs4bTEQN6K
+	 OQwDlx2+lTuRPorSjj5L4wiiRGoL7pQGksoieIk4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C2A1FF8055B; Thu, 21 Sep 2023 15:28:36 +0200 (CEST)
+	id 75499F80552; Thu, 21 Sep 2023 15:29:39 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C0724F80494;
-	Thu, 21 Sep 2023 15:28:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3138AF800AA;
+	Thu, 21 Sep 2023 15:29:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C3BEBF80494; Thu, 21 Sep 2023 15:28:28 +0200 (CEST)
+	id BF6D8F8025A; Thu, 21 Sep 2023 15:29:36 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 89051F801F5
-	for <alsa-devel@alsa-project.org>; Thu, 21 Sep 2023 15:28:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 89051F801F5
+	by alsa1.perex.cz (Postfix) with ESMTPS id CF467F80125
+	for <alsa-devel@alsa-project.org>; Thu, 21 Sep 2023 15:29:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CF467F80125
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=e4IUGIBx;
+ header.s=susede2_rsa header.b=uJQgO2Dm;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=9Z4adN7p
+ header.s=susede2_ed25519 header.b=ieGH00Us
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 690E6338A8;
-	Thu, 21 Sep 2023 13:28:08 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 05151338AA;
+	Thu, 21 Sep 2023 13:29:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1695302888;
+	t=1695302968;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=TS3D+7Noi/ekM5Do3sWjHaf4aVYAbdJpk5SpStfjSjo=;
-	b=e4IUGIBxWuD0/AkunF7JdM5NTJ0RRW3PhXXUz+HXwMiarod8FPEF92EQRTfvGsLlPnzY+v
-	mv37dd0PrsMfFutaK74VpeLRGd7B9pRw0spvcNoPQ1rjbCQ9xuFSJwMmW6llxkwIpo+0Z0
-	Cg1ztwfdm4p10lZpMnrbEMXCiTcB4eY=
+	bh=B4ukeL06gNkW2qwY73xzCc5or7ZOWYu47UFNiHA4sRE=;
+	b=uJQgO2DmrOlob0nOo/gvqcHgDMSNFGUM2gGXPdp79ntAOsVO7hmqxktnsfDHPFZniVf01T
+	v7Kn5AgQT6huYctuoqJ8LwO6G7g0cwZ44V3ggVgYfN2VUsSeIQQ80bnmTP05396MlpEmII
+	fSA/dV5eo7ZFdyCoaSK4+dAcLUSAbRg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1695302888;
+	s=susede2_ed25519; t=1695302968;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=TS3D+7Noi/ekM5Do3sWjHaf4aVYAbdJpk5SpStfjSjo=;
-	b=9Z4adN7psTvw+/3+rl5LzfIMvN5CvJm+uZFWWhS9pAj8fA5SVthBr4fH3RLfuHiHKnL5ov
-	/n53GGuf0Iss2BCw==
+	bh=B4ukeL06gNkW2qwY73xzCc5or7ZOWYu47UFNiHA4sRE=;
+	b=ieGH00UspKgSKl5QEaY/iWTETyiW7Scz3JDoW1tgNAc/gFtBfLNVWlYo33/zUyHcj0IeaR
+	NPwDU9XbPWCYX2Ag==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3BBCC134B0;
-	Thu, 21 Sep 2023 13:28:08 +0000 (UTC)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BA60B134B0;
+	Thu, 21 Sep 2023 13:29:27 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id elmJDehEDGWhOAAAMHmgww
-	(envelope-from <tiwai@suse.de>); Thu, 21 Sep 2023 13:28:08 +0000
-Date: Thu, 21 Sep 2023 15:28:07 +0200
-Message-ID: <87jzsjzme0.wl-tiwai@suse.de>
+	id A5qWLDdFDGV0OQAAMHmgww
+	(envelope-from <tiwai@suse.de>); Thu, 21 Sep 2023 13:29:27 +0000
+Date: Thu, 21 Sep 2023 15:29:27 +0200
+Message-ID: <87il83zmbs.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Bard Liao <yung-chuan.liao@linux.intel.com>
-Cc: broonie@kernel.org,
+To: Ma Ke <make_ruc2021@163.com>
+Cc: perex@perex.cz,
+	tiwai@suse.com,
+	Liam.Howlett@Oracle.com,
+	rppt@kernel.org,
+	mgorman@techsingularity.net,
+	mhocko@suse.com,
+	surenb@google.com,
 	alsa-devel@alsa-project.org,
-	pierre-louis.bossart@linux.intel.com,
-	bard.liao@intel.com,
-	peter.ujfalusi@linux.intel.com
-Subject: Re: [PATCH] ASoC: hdac_hda: fix HDA patch loader support
-In-Reply-To: <20230921064317.2120452-1-yung-chuan.liao@linux.intel.com>
-References: <20230921064317.2120452-1-yung-chuan.liao@linux.intel.com>
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] ALSA: pcm: oss: Fix race at SNDCTL_DSP_SETTRIGGER
+In-Reply-To: <20230921064258.3582115-1-make_ruc2021@163.com>
+References: <20230921064258.3582115-1-make_ruc2021@163.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Message-ID-Hash: DB65TTFC6TZ22SLQFYIICUTD2TZUGKNE
-X-Message-ID-Hash: DB65TTFC6TZ22SLQFYIICUTD2TZUGKNE
+Message-ID-Hash: T5XABTKZYEBCZFPSAO5NUEQBOKAD5XFQ
+X-Message-ID-Hash: T5XABTKZYEBCZFPSAO5NUEQBOKAD5XFQ
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -107,7 +111,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DB65TTFC6TZ22SLQFYIICUTD2TZUGKNE/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/T5XABTKZYEBCZFPSAO5NUEQBOKAD5XFQ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -116,89 +120,71 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, 21 Sep 2023 08:43:17 +0200,
-Bard Liao wrote:
+On Thu, 21 Sep 2023 08:42:58 +0200,
+Ma Ke wrote:
 > 
-> The array size is irrelevant with SNDRV_CARDS. dev_index is from
-> codec address and the available codec number is HDA_MAX_CODECS.
-> Also, hda_pvt->fw is for a temporary use, no need to add a new extra
-> field in hdac_hda_priv{}.
+> There is a small race window at snd_pcm_oss_set_trigger() that is
+> called from OSS PCM SNDCTL_DSP_SETTRIGGER ioctl; namely the function
+> calls snd_pcm_oss_make_ready() at first, then takes the params_lock
+> mutex for the rest. When the stream is set up again by another thread
+> between them, it leads to inconsistency, and may result in unexpected
+> results such as NULL dereference of OSS buffer as a fuzzer spotted
+> recently.
+> The fix is simply to cover snd_pcm_oss_make_ready() call into the same
+> params_lock mutex with snd_pcm_oss_make_ready_locked() variant.
 > 
-> Fixes: 842a62a75e70 ("ASoC: hdac_hda: add HDA patch loader support")
-> Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-> Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+> Signed-off-by: Ma Ke <make_ruc2021@163.com>
+> ---
+>  sound/core/oss/pcm_oss.c | 18 ++++++++----------
+>  1 file changed, 8 insertions(+), 10 deletions(-)
+> 
+> diff --git a/sound/core/oss/pcm_oss.c b/sound/core/oss/pcm_oss.c
+> index 728c211142d1..f6340a2fe52b 100644
+> --- a/sound/core/oss/pcm_oss.c
+> +++ b/sound/core/oss/pcm_oss.c
+> @@ -2083,21 +2083,15 @@ static int snd_pcm_oss_set_trigger(struct snd_pcm_oss_file *pcm_oss_file, int tr
+>  	psubstream = pcm_oss_file->streams[SNDRV_PCM_STREAM_PLAYBACK];
+>  	csubstream = pcm_oss_file->streams[SNDRV_PCM_STREAM_CAPTURE];
+>  
+> -	if (psubstream) {
+> -		err = snd_pcm_oss_make_ready(psubstream);
+> -		if (err < 0)
+> -			return err;
+> -	}
+> -	if (csubstream) {
+> -		err = snd_pcm_oss_make_ready(csubstream);
+> -		if (err < 0)
+> -			return err;
+> -	}
+>        	if (psubstream) {
+>        		runtime = psubstream->runtime;
+>  		cmd = 0;
+>  		if (mutex_lock_interruptible(&runtime->oss.params_lock))
+>  			return -ERESTARTSYS;
+> +		err = snd_pcm_oss_make_ready_locked(psubstream);
+> +		if (err < 0)
+> +			mutex_unlock(&runtime->oss.params_lock);
+> +			return err;
 
-Reviewed-by: Takashi Iwai <tiwai@suse.de>
+This breaks totally;  you missed braces...  (Ditto for another place).
 
-
-thanks,
 
 Takashi
 
-> ---
->  sound/soc/codecs/hdac_hda.c | 15 ++++++++-------
->  sound/soc/codecs/hdac_hda.h |  3 ---
->  2 files changed, 8 insertions(+), 10 deletions(-)
-> 
-> diff --git a/sound/soc/codecs/hdac_hda.c b/sound/soc/codecs/hdac_hda.c
-> index 8f5d97949d3d..355f30779a34 100644
-> --- a/sound/soc/codecs/hdac_hda.c
-> +++ b/sound/soc/codecs/hdac_hda.c
-> @@ -37,10 +37,10 @@
->  				 SNDRV_PCM_RATE_192000)
->  
->  #ifdef CONFIG_SND_HDA_PATCH_LOADER
-> -static char *loadable_patch[SNDRV_CARDS];
-> +static char *loadable_patch[HDA_MAX_CODECS];
->  
->  module_param_array_named(patch, loadable_patch, charp, NULL, 0444);
-> -MODULE_PARM_DESC(patch, "Patch file for Intel HD audio interface.");
-> +MODULE_PARM_DESC(patch, "Patch file array for Intel HD audio interface. The array index is the codec address.");
->  #endif
->  
->  static int hdac_hda_dai_open(struct snd_pcm_substream *substream,
-> @@ -434,20 +434,21 @@ static int hdac_hda_codec_probe(struct snd_soc_component *component)
->  
->  #ifdef CONFIG_SND_HDA_PATCH_LOADER
->  	if (loadable_patch[hda_pvt->dev_index] && *loadable_patch[hda_pvt->dev_index]) {
-> +		const struct firmware *fw;
-> +
->  		dev_info(&hdev->dev, "Applying patch firmware '%s'\n",
->  			 loadable_patch[hda_pvt->dev_index]);
-> -		ret = request_firmware(&hda_pvt->fw, loadable_patch[hda_pvt->dev_index],
-> +		ret = request_firmware(&fw, loadable_patch[hda_pvt->dev_index],
->  				       &hdev->dev);
->  		if (ret < 0)
->  			goto error_no_pm;
-> -		if (hda_pvt->fw) {
-> -			ret = snd_hda_load_patch(hcodec->bus, hda_pvt->fw->size, hda_pvt->fw->data);
-> +		if (fw) {
-> +			ret = snd_hda_load_patch(hcodec->bus, fw->size, fw->data);
->  			if (ret < 0) {
->  				dev_err(&hdev->dev, "failed to load hda patch %d\n", ret);
->  				goto error_no_pm;
->  			}
-> -			release_firmware(hda_pvt->fw);
-> -			hda_pvt->fw = NULL;
-> +			release_firmware(fw);
->  		}
->  	}
->  #endif
-> diff --git a/sound/soc/codecs/hdac_hda.h b/sound/soc/codecs/hdac_hda.h
-> index b7a12aea8d32..d03a5d4e7288 100644
-> --- a/sound/soc/codecs/hdac_hda.h
-> +++ b/sound/soc/codecs/hdac_hda.h
-> @@ -27,9 +27,6 @@ struct hdac_hda_priv {
->  	struct hdac_hda_pcm pcm[HDAC_DAI_ID_NUM];
->  	bool need_display_power;
->  	int dev_index;
-> -#ifdef CONFIG_SND_HDA_PATCH_LOADER
-> -	const struct firmware *fw;
-> -#endif
->  };
->  
->  struct hdac_ext_bus_ops *snd_soc_hdac_hda_get_ops(void);
+>  		if (trigger & PCM_ENABLE_OUTPUT) {
+>  			if (runtime->oss.trigger)
+>  				goto _skip1;
+> @@ -2128,6 +2122,10 @@ static int snd_pcm_oss_set_trigger(struct snd_pcm_oss_file *pcm_oss_file, int tr
+>  		cmd = 0;
+>  		if (mutex_lock_interruptible(&runtime->oss.params_lock))
+>  			return -ERESTARTSYS;
+> +		err = snd_pcm_oss_make_ready_locked(csubstream);
+> +		if (err < 0)
+> +			mutex_unlock(&runtime->oss.params_lock);
+> +			return err;
+>  		if (trigger & PCM_ENABLE_INPUT) {
+>  			if (runtime->oss.trigger)
+>  				goto _skip2;
 > -- 
-> 2.25.1
+> 2.37.2
 > 
