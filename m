@@ -4,68 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E425BE71094
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 Sep 2023 16:31:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2FA48E71096
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 Sep 2023 16:31:35 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8CF21E0F;
-	Thu, 21 Sep 2023 18:30:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8CF21E0F
+	by alsa0.perex.cz (Postfix) with ESMTPS id BF54DE11;
+	Thu, 21 Sep 2023 18:30:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BF54DE11
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1695313866;
-	bh=yR2bBzM2g5ncGo/QQl9Cl+YCmMYz7FIUOq+33ba02AE=;
+	s=default; t=1695313892;
+	bh=dJDjfrLAKivUblGfaQV3YbrxEMRn89eblmBZJUoxxjQ=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=itpqAooIcYpgkG13ETGORPJKrATJbhwevez/YEgTH+f/7C213pqtuCpRdZg5qfEoC
-	 0iHEQsYtGBkLHVr9ugXPXEqzZU03y76aPuKaWGXP2BivK3RycPcz9IjggOUGzhWaZ8
-	 BoU7b0bVWtlw9j2Qr9zXsTDcWxUpmmogW9UAYeFE=
+	b=q8WOzMwbI89H7rKzBFyqV1ICa24ZgPU6F7NWhO6eAZuM0XPbmPR76UEXHUpRgilI4
+	 cSigj3zy+aJRBzuMe7rM0oKvKEdpwgIDr6ju7X4fdbVn/TPrKWxQ4rBH26Cp6OuXAj
+	 8rOfgqKylErmLrIbI4yn20rekpZzq/N9/MMxYN8M=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 93AB6F8057D; Thu, 21 Sep 2023 18:29:26 +0200 (CEST)
+	id 091E3F805AC; Thu, 21 Sep 2023 18:29:29 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id EDF66F8057D;
-	Thu, 21 Sep 2023 18:29:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A09A7F805AC;
+	Thu, 21 Sep 2023 18:29:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 24F01F80580; Thu, 21 Sep 2023 18:29:22 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
+	id 82938F8057D; Thu, 21 Sep 2023 18:29:24 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 00FABF80125
+	by alsa1.perex.cz (Postfix) with ESMTPS id 2818CF8047D
 	for <alsa-devel@alsa-project.org>; Thu, 21 Sep 2023 18:29:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 00FABF80125
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2818CF8047D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=gEJJ8f8K
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-	by mx0b-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id
- 38LFWYi6009262;
-	Thu, 21 Sep 2023 11:29:00 -0500
+ header.s=PODMain02222019 header.b=gNSSCd4P
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+	by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id
+ 38LFWPBQ005190;
+	Thu, 21 Sep 2023 11:28:59 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
 	:mime-version:content-transfer-encoding:content-type; s=
-	PODMain02222019; bh=61ZFg2gV3Al0nwgzo7Gw4piqKLQ8/iZLOYRotwQT6CY=; b=
-	gEJJ8f8KKOoMTfQ5Ka31AyCS1WvA6T1L2Y7Y7eahOsufmOWbgyUxVntU0Ayy/lbg
-	d8nmr3R0NCs9V0t3DdcoTKY+Mwy+NWnGCUKiLJXbYukAJZIFEfDkwOZNYK6Y25qO
-	nQkLLRyOGnmmxQLXzzDv/u1b0xf5n3T9Ww3Ss7JHAe7gIvYNu7LGnGMKbRRC89b7
-	jiLDkeD8MGPQvaOF4jPGn6wJCWXfxB2hMRTqB+jhBQHtZFBk5XDAHNfePRtwNfyl
-	XfbOYzWl2zpPTHQCqra1Tdu/CDomsgMcCvXTEE5z6eATZDgZt2oqn80xCk9YQzGM
-	PmqVYo670Il8SSuyuN7t/A==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3t58shx0ab-3
+	PODMain02222019; bh=EJ5ed+ITbEi3A3t572jlfnIzGCe9Zx/6EDGQBJFmsQs=; b=
+	gNSSCd4PDPvkL7ci3EHGFlaQdPKJDYb6H2QFa4QEasqDnxCLROJ3ihi02jI2HwE5
+	yuamzPBk3PK0fjVerRoRJ6yTYMur68L4sT5w7iieLao9txAhearzqA1cjE2aq0UB
+	xx8jPo5+ivGt0RGnpejXGvNtB6bhdWJ0IoNw38L4OHmJNOWw+zwc002hCjas7Mj3
+	9chkjDcY2ICPCzpDSmvO6/IgMXmE0MOcW1h28e/N5b96b82+dQoFHTpoBeWxmISO
+	51ecnnVp1pmVOF2HNgULZc+Ej+sDDjfuqbYWnOTqa9nLCGDr9nknWLGpt++/CiJl
+	MHmtbelneZYpZ6g90o8MkQ==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3t59ry7bve-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Thu, 21 Sep 2023 11:28:59 -0500 (CDT)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Thu, 21 Sep
  2023 17:28:57 +0100
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.37 via Frontend
  Transport; Thu, 21 Sep 2023 17:28:57 +0100
 Received: from sbinding-cirrus-dsktp2.ad.cirrus.com (unknown [198.90.238.135])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 709453563;
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 08E143575;
 	Thu, 21 Sep 2023 16:28:57 +0000 (UTC)
 From: Stefan Binding <sbinding@opensource.cirrus.com>
 To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
@@ -73,21 +73,21 @@ CC: <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
         <patches@opensource.cirrus.com>,
         Stefan Binding
 	<sbinding@opensource.cirrus.com>
-Subject: [PATCH v5 3/4] ALSA: hda: cs35l41: Support mute notifications for
- CS35L41 HDA
-Date: Thu, 21 Sep 2023 17:28:48 +0100
-Message-ID: <20230921162849.1988124-4-sbinding@opensource.cirrus.com>
+Subject: [PATCH v5 1/4] ALSA: hda: cs35l41: Add notification support into
+ component binding
+Date: Thu, 21 Sep 2023 17:28:46 +0100
+Message-ID: <20230921162849.1988124-2-sbinding@opensource.cirrus.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230921162849.1988124-1-sbinding@opensource.cirrus.com>
 References: <20230921162849.1988124-1-sbinding@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: 3mVg1CtpW34pdimdKWeiN6-G24Tigmiv
-X-Proofpoint-ORIG-GUID: 3mVg1CtpW34pdimdKWeiN6-G24Tigmiv
+X-Proofpoint-GUID: qSCoWmKrYT07CGY2xlPm7zGbv2jZsfdd
+X-Proofpoint-ORIG-GUID: qSCoWmKrYT07CGY2xlPm7zGbv2jZsfdd
 X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: O3ZMG4AHVXZPRGTWMMFHQD7TTW7C3GMW
-X-Message-ID-Hash: O3ZMG4AHVXZPRGTWMMFHQD7TTW7C3GMW
+Message-ID-Hash: MPGYYQKJMGB4YET22BA35U6UVWSWSEGZ
+X-Message-ID-Hash: MPGYYQKJMGB4YET22BA35U6UVWSWSEGZ
 X-MailFrom: prvs=462875a41c=sbinding@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -100,7 +100,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/O3ZMG4AHVXZPRGTWMMFHQD7TTW7C3GMW/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MPGYYQKJMGB4YET22BA35U6UVWSWSEGZ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -109,234 +109,43 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Some laptops require a hardware based mute system, where when a hotkey
-is pressed, it forces the amp to be muted.
+Some systems support a notification from ACPI, which can be used
+for different things.
 
-For CS35L41, when the hotkey is pressed, an acpi notification is sent
-to the CS35L41 Device Node. The driver needs to handle this notification
-and call a _DSM function to retrieve the mute state.
+Only one handler can be registered for the acpi notification, but all
+amps need to receive that notification, we can register a single handler
+inside the component master, so that it can then notify through the
+component framework.
 
-Since the amp is only muted during playback, the driver will only mute
-or unmute if playback is occurring, otherwise it will save the mute
-state for when playback starts.
-
-This uses the ACPI Notification mechanism, where a handler has been
-registered in the component master, which notifies each amp through
-the component binding.
+This is required to support mute notifications from ACPI.
 
 Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
 ---
- sound/pci/hda/cs35l41_hda.c | 104 +++++++++++++++++++++++++++++++-----
- sound/pci/hda/cs35l41_hda.h |   3 ++
- 2 files changed, 94 insertions(+), 13 deletions(-)
+ sound/pci/hda/hda_component.h | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/sound/pci/hda/cs35l41_hda.c b/sound/pci/hda/cs35l41_hda.c
-index f9b77353c266..18ca00c0a8cd 100644
---- a/sound/pci/hda/cs35l41_hda.c
-+++ b/sound/pci/hda/cs35l41_hda.c
-@@ -33,6 +33,9 @@
- #define CAL_AMBIENT_DSP_CTL_NAME	"CAL_AMBIENT"
- #define CAL_DSP_CTL_TYPE		5
- #define CAL_DSP_CTL_ALG			205
-+#define CS35L41_UUID			"50d90cdc-3de4-4f18-b528-c7fe3b71f40d"
-+#define CS35L41_DSM_GET_MUTE		5
-+#define CS35L41_NOTIFY_EVENT		0x91
- 
- static bool firmware_autostart = 1;
- module_param(firmware_autostart, bool, 0444);
-@@ -520,6 +523,31 @@ static void cs35l41_hda_play_start(struct device *dev)
- 
- }
- 
-+static void cs35l41_mute(struct device *dev, bool mute)
-+{
-+	struct cs35l41_hda *cs35l41 = dev_get_drvdata(dev);
-+	struct regmap *reg = cs35l41->regmap;
-+
-+	dev_dbg(dev, "Mute(%d:%d) Playback Started: %d\n", mute, cs35l41->mute_override,
-+		cs35l41->playback_started);
-+
-+	if (cs35l41->playback_started) {
-+		if (mute || cs35l41->mute_override) {
-+			dev_dbg(dev, "Muting\n");
-+			regmap_multi_reg_write(reg, cs35l41_hda_mute, ARRAY_SIZE(cs35l41_hda_mute));
-+		} else {
-+			dev_dbg(dev, "Unmuting\n");
-+			if (cs35l41->firmware_running) {
-+				regmap_multi_reg_write(reg, cs35l41_hda_unmute_dsp,
-+						ARRAY_SIZE(cs35l41_hda_unmute_dsp));
-+			} else {
-+				regmap_multi_reg_write(reg, cs35l41_hda_unmute,
-+						ARRAY_SIZE(cs35l41_hda_unmute));
-+			}
-+		}
-+	}
-+}
-+
- static void cs35l41_hda_play_done(struct device *dev)
- {
- 	struct cs35l41_hda *cs35l41 = dev_get_drvdata(dev);
-@@ -529,13 +557,7 @@ static void cs35l41_hda_play_done(struct device *dev)
- 
- 	cs35l41_global_enable(dev, reg, cs35l41->hw_cfg.bst_type, 1, NULL,
- 			      cs35l41->firmware_running);
--	if (cs35l41->firmware_running) {
--		regmap_multi_reg_write(reg, cs35l41_hda_unmute_dsp,
--				       ARRAY_SIZE(cs35l41_hda_unmute_dsp));
--	} else {
--		regmap_multi_reg_write(reg, cs35l41_hda_unmute,
--				       ARRAY_SIZE(cs35l41_hda_unmute));
--	}
-+	cs35l41_mute(dev, false);
- }
- 
- static void cs35l41_hda_pause_start(struct device *dev)
-@@ -545,7 +567,7 @@ static void cs35l41_hda_pause_start(struct device *dev)
- 
- 	dev_dbg(dev, "Pause (Start)\n");
- 
--	regmap_multi_reg_write(reg, cs35l41_hda_mute, ARRAY_SIZE(cs35l41_hda_mute));
-+	cs35l41_mute(dev, true);
- 	cs35l41_global_enable(dev, reg, cs35l41->hw_cfg.bst_type, 0, NULL,
- 			      cs35l41->firmware_running);
- }
-@@ -1073,6 +1095,53 @@ static int cs35l41_create_controls(struct cs35l41_hda *cs35l41)
- 	return 0;
- }
- 
-+static bool cs35l41_dsm_supported(acpi_handle handle, unsigned int commands)
-+{
-+	guid_t guid;
-+
-+	guid_parse(CS35L41_UUID, &guid);
-+
-+	return acpi_check_dsm(handle, &guid, 0, BIT(commands));
-+}
-+
-+static int cs35l41_get_acpi_mute_state(struct cs35l41_hda *cs35l41, acpi_handle handle)
-+{
-+	guid_t guid;
-+	union acpi_object *ret;
-+	int mute = -ENODEV;
-+
-+	guid_parse(CS35L41_UUID, &guid);
-+
-+	if (cs35l41_dsm_supported(handle, CS35L41_DSM_GET_MUTE)) {
-+		ret = acpi_evaluate_dsm(handle, &guid, 0, CS35L41_DSM_GET_MUTE, NULL);
-+		mute = *ret->buffer.pointer;
-+		dev_dbg(cs35l41->dev, "CS35L41_DSM_GET_MUTE: %d\n", mute);
-+	}
-+
-+	dev_dbg(cs35l41->dev, "%s: %d\n", __func__, mute);
-+
-+	return mute;
-+}
-+
-+static void cs35l41_acpi_device_notify(acpi_handle handle, u32 event, struct device *dev)
-+{
-+	struct cs35l41_hda *cs35l41 = dev_get_drvdata(dev);
-+	int mute;
-+
-+	if (event != CS35L41_NOTIFY_EVENT)
-+		return;
-+
-+	mute = cs35l41_get_acpi_mute_state(cs35l41, handle);
-+	if (mute < 0) {
-+		dev_warn(cs35l41->dev, "Unable to retrieve mute state: %d\n", mute);
-+		return;
-+	}
-+
-+	dev_dbg(cs35l41->dev, "Requesting mute value: %d\n", mute);
-+	cs35l41->mute_override = (mute > 0);
-+	cs35l41_mute(cs35l41->dev, cs35l41->mute_override);
-+}
-+
- static int cs35l41_hda_bind(struct device *dev, struct device *master, void *master_data)
- {
- 	struct cs35l41_hda *cs35l41 = dev_get_drvdata(dev);
-@@ -1114,6 +1183,14 @@ static int cs35l41_hda_bind(struct device *dev, struct device *master, void *mas
- 	comps->playback_hook = cs35l41_hda_playback_hook;
- 	comps->pre_playback_hook = cs35l41_hda_pre_playback_hook;
- 	comps->post_playback_hook = cs35l41_hda_post_playback_hook;
-+	comps->acpi_notify = cs35l41_acpi_device_notify;
-+	comps->adev = cs35l41->dacpi;
-+
-+	comps->acpi_notifications_supported = cs35l41_dsm_supported(acpi_device_handle(comps->adev),
-+		CS35L41_DSM_GET_MUTE);
-+
-+	cs35l41->mute_override = cs35l41_get_acpi_mute_state(cs35l41,
-+						acpi_device_handle(cs35l41->dacpi)) > 0;
- 
- 	mutex_unlock(&cs35l41->fw_mutex);
- 
-@@ -1387,8 +1464,8 @@ static int cs35l41_hda_read_acpi(struct cs35l41_hda *cs35l41, const char *hid, i
- 		return -ENODEV;
- 	}
- 
-+	cs35l41->dacpi = adev;
- 	physdev = get_device(acpi_get_first_physical_node(adev));
--	acpi_dev_put(adev);
- 
- 	sub = acpi_get_subsystem_id(ACPI_HANDLE(physdev));
- 	if (IS_ERR(sub))
-@@ -1498,6 +1575,7 @@ static int cs35l41_hda_read_acpi(struct cs35l41_hda *cs35l41, const char *hid, i
- 	hw_cfg->valid = false;
- 	hw_cfg->gpio1.valid = false;
- 	hw_cfg->gpio2.valid = false;
-+	acpi_dev_put(cs35l41->dacpi);
- put_physdev:
- 	put_device(physdev);
- 
-@@ -1601,10 +1679,7 @@ int cs35l41_hda_probe(struct device *dev, const char *device_name, int id, int i
- 	if (ret)
- 		goto err;
- 
--	ret = regmap_multi_reg_write(cs35l41->regmap, cs35l41_hda_mute,
--				     ARRAY_SIZE(cs35l41_hda_mute));
--	if (ret)
--		goto err;
-+	cs35l41_mute(cs35l41->dev, true);
- 
- 	INIT_WORK(&cs35l41->fw_load_work, cs35l41_fw_load_work);
- 	mutex_init(&cs35l41->fw_mutex);
-@@ -1641,6 +1716,7 @@ int cs35l41_hda_probe(struct device *dev, const char *device_name, int id, int i
- 	if (cs35l41_safe_reset(cs35l41->regmap, cs35l41->hw_cfg.bst_type))
- 		gpiod_set_value_cansleep(cs35l41->reset_gpio, 0);
- 	gpiod_put(cs35l41->reset_gpio);
-+	acpi_dev_put(cs35l41->dacpi);
- 	kfree(cs35l41->acpi_subsystem_id);
- 
- 	return ret;
-@@ -1659,6 +1735,8 @@ void cs35l41_hda_remove(struct device *dev)
- 
- 	component_del(cs35l41->dev, &cs35l41_hda_comp_ops);
- 
-+	acpi_dev_put(cs35l41->dacpi);
-+
- 	pm_runtime_put_noidle(cs35l41->dev);
- 
- 	if (cs35l41_safe_reset(cs35l41->regmap, cs35l41->hw_cfg.bst_type))
-diff --git a/sound/pci/hda/cs35l41_hda.h b/sound/pci/hda/cs35l41_hda.h
-index b93bf762976e..ce3f2bb6ffd0 100644
---- a/sound/pci/hda/cs35l41_hda.h
-+++ b/sound/pci/hda/cs35l41_hda.h
-@@ -10,6 +10,7 @@
- #ifndef __CS35L41_HDA_H__
- #define __CS35L41_HDA_H__
+diff --git a/sound/pci/hda/hda_component.h b/sound/pci/hda/hda_component.h
+index f170aec967c1..bbd6f0ed16c1 100644
+--- a/sound/pci/hda/hda_component.h
++++ b/sound/pci/hda/hda_component.h
+@@ -6,6 +6,7 @@
+  *                    Cirrus Logic International Semiconductor Ltd.
+  */
  
 +#include <linux/acpi.h>
- #include <linux/efi.h>
- #include <linux/regulator/consumer.h>
- #include <linux/gpio/consumer.h>
-@@ -70,6 +71,8 @@ struct cs35l41_hda {
- 	bool halo_initialized;
- 	bool playback_started;
- 	struct cs_dsp cs_dsp;
-+	struct acpi_device *dacpi;
-+	bool mute_override;
- };
+ #include <linux/component.h>
  
- enum halo_state {
+ #define HDA_MAX_COMPONENTS	4
+@@ -15,6 +16,9 @@ struct hda_component {
+ 	struct device *dev;
+ 	char name[HDA_MAX_NAME_SIZE];
+ 	struct hda_codec *codec;
++	struct acpi_device *adev;
++	bool acpi_notifications_supported;
++	void (*acpi_notify)(acpi_handle handle, u32 event, struct device *dev);
+ 	void (*pre_playback_hook)(struct device *dev, int action);
+ 	void (*playback_hook)(struct device *dev, int action);
+ 	void (*post_playback_hook)(struct device *dev, int action);
 -- 
 2.34.1
 
