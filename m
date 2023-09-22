@@ -4,92 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 59FF2E6FE2F
-	for <alsa-devel@archiver.kernel.org>; Fri, 22 Sep 2023 13:47:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 59CD8E6FE38
+	for <alsa-devel@archiver.kernel.org>; Fri, 22 Sep 2023 14:30:04 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 73944E12;
-	Fri, 22 Sep 2023 15:46:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 73944E12
+	by alsa0.perex.cz (Postfix) with ESMTPS id A7709E75;
+	Fri, 22 Sep 2023 16:29:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A7709E75
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1695390447;
-	bh=C6hSm4/guJqzFk1sj8f9w5GZLn1kmRcMMa1StlR+duI=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	s=default; t=1695393001;
+	bh=iGBs6/wgO5VxNEF8bES6vyl+Tqjbm1jLfFLcqqNZ4cM=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=C4gIf2Inrzj0vtvrLvoCq0NtSTPFRUG54SkKBgd/1jCFIc+8nC8qOMa9kNT5DAHTM
-	 pNVbfR5QIdewQxjSbyNyGn2xKLo2pjZsy8K79nypg1b3Pk1x6gi5Kp1EC5DUE7B+lV
-	 WYY5mtatNcoYOwU22xw4cdvNp1SD8XQjEr5zxLg8=
+	b=tF9ij5YDw+W7BgRoHsk49WVoW3RlgFc5AqNxwEAuixWOemJVtSCiGUk5RC1OjRvjz
+	 0JibBXAj32JQymQMN5TE3ZzqqLOeoX+Rr91s0Qsv+02/Hf83g+wDdi/SXt3UyYJzw2
+	 Mf2vwQgBvTtGQOenTkN87NskvptTonvLPgNX+fAQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1D230F80494; Fri, 22 Sep 2023 15:46:07 +0200 (CEST)
+	id 504D1F8047D; Fri, 22 Sep 2023 16:28:51 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id BF8DEF80125;
-	Fri, 22 Sep 2023 15:46:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B9556F8025A;
+	Fri, 22 Sep 2023 16:28:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BDAC6F80125; Fri, 22 Sep 2023 15:46:02 +0200 (CEST)
-Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net
- [IPv6:2001:4b98:dc4:8::228])
-	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+	id 7C89DF8025A; Fri, 22 Sep 2023 16:28:45 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D3C72F800AA
-	for <alsa-devel@alsa-project.org>; Fri, 22 Sep 2023 15:45:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D3C72F800AA
+	by alsa1.perex.cz (Postfix) with ESMTPS id 74E45F800F4
+	for <alsa-devel@alsa-project.org>; Fri, 22 Sep 2023 16:28:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 74E45F800F4
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=biE04lp+
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 6BC371BF20D;
-	Fri, 22 Sep 2023 13:45:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1695390352;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3d45HSdjEBrGWXzT/hFE6ZoKYqY81rYCMtjLk2B/bLE=;
-	b=biE04lp+7hE+NLdqozy2BgZPaAjb3vaTtdsBnKCNRXF0qN2XFtgDbT6n4cqLkcqbHptxLb
-	oeMOmF7eHyF3aNQjMyD5QaHQjivx7ot6sdz0fFd0QcreP+88erVcjSDntCACDudD3RcyQH
-	iK/3cWyQ7W7XAH8Riv34zdtaG/ZaF9U8gRbBkmmXP9wtu9Dpmv+8fBGDH2uHlFgTVuaf+D
-	vUEEo2o7OwBll3KiAvIkjzGSfu3326QoSexo+bH5ppzRDvkVMmXLebD7B12+Z2XnIyyhNX
-	ouCNBvOA0rABVPgSWhVwNkW32WK4XjYvnXpRZzPaNCdSCfw9y1M3ExfRT98Eow==
-Date: Fri, 22 Sep 2023 15:45:46 +0200
-From: Herve Codina <herve.codina@bootlin.com>
-To: Rob Herring <robh@kernel.org>
-Cc: linux-arm-kernel@lists.infradead.org, Randy Dunlap
- <rdunlap@infradead.org>, Takashi Iwai <tiwai@suse.com>, Simon Horman
- <horms@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood
- <lgirdwood@gmail.com>, Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- linux-gpio@vger.kernel.org, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, netdev@vger.kernel.org, Fabio Estevam
- <festevam@gmail.com>, Eric Dumazet <edumazet@google.com>, Andrew Lunn
- <andrew@lunn.ch>, Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
- Christophe Leroy <christophe.leroy@csgroup.eu>, Nicolin Chen
- <nicoleotsuka@gmail.com>, Conor Dooley <conor+dt@kernel.org>, Mark Brown
- <broonie@kernel.org>, Linus Walleij <linus.walleij@linaro.org>,
- alsa-devel@alsa-project.org, Paolo Abeni <pabeni@redhat.com>, Lee Jones
- <lee@kernel.org>, linux-kernel@vger.kernel.org, "David S. Miller"
- <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Xiubo Li
- <Xiubo.Lee@gmail.com>, Rob Herring <robh+dt@kernel.org>, Shengjiu Wan g
- <shengjiu.wang@gmail.com>, linuxppc-dev@lists.ozlabs.org,
- devicetree@vger.kernel.org, Li Yang <leoyang.li@nxp.com>, Qiang Zhao
- <qiang.zhao@nxp.com>
-Subject: Re: [PATCH v6 25/30] dt-bindings: net: Add the Lantiq PEF2256
- E1/T1/J1 framer
-Message-ID: <20230922154546.4ca18b6f@bootlin.com>
-In-Reply-To: <169538601225.2919383.2942072541503354871.robh@kernel.org>
-References: <20230922075913.422435-1-herve.codina@bootlin.com>
-	<20230922075913.422435-26-herve.codina@bootlin.com>
-	<169538601225.2919383.2942072541503354871.robh@kernel.org>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+ unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
+ header.s=PODMain02222019 header.b=KR9p9XDN
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+	by mx0b-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id
+ 38ME9ncD026380;
+	Fri, 22 Sep 2023 09:28:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+	from:to:cc:subject:date:message-id:in-reply-to:references
+	:mime-version:content-transfer-encoding:content-type; s=
+	PODMain02222019; bh=GVpBuBAzGFQgcGkv1YuafJIAN9EB/2eol/ELWiLaAoo=; b=
+	KR9p9XDNhDbHM699gRB3wkJqylpRddRh95fiHvqFZ8SmTAQSD+gU7PmDPWRoHUu8
+	eLeMo/gNPZY4myCLb9+5C8E6DHbJTBBawlRd9tTzr4VPXeOe4HHqqHRIjBdoYH5E
+	ikBmnJH9NWdsF5g0TwYkU1bw+pG5e1OgCLzD2BqE8lHYETH2ku/F8M9odyUG0MkN
+	CM3XjhzpRX6hbruegxZ02jArCIJBwD/pIz+wUjNDHI8jt6p6Qfue1nmifxKJ22aG
+	Jv3xJ3znKTZNboeedYZ0nmikJ4+VLAEDEp58Vp6ksH7XAMpNft1/F7OoRku8laiY
+	MQAlTlXhhUvcHGT+//ZQlA==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3t8tt7h2pv-2
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 22 Sep 2023 09:28:30 -0500 (CDT)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Fri, 22 Sep
+ 2023 15:28:28 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.37 via Frontend
+ Transport; Fri, 22 Sep 2023 15:28:28 +0100
+Received: from sbinding-cirrus-dsktp2.ad.cirrus.com (unknown [198.90.238.135])
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 0824C15B9;
+	Fri, 22 Sep 2023 14:28:28 +0000 (UTC)
+From: Stefan Binding <sbinding@opensource.cirrus.com>
+To: Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+        "Takashi Iwai" <tiwai@suse.com>
+CC: <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
+        <patches@opensource.cirrus.com>,
+        Stefan Binding
+	<sbinding@opensource.cirrus.com>
+Subject: [PATCH v1 1/2] ALSA: hda: cs35l41: Remove unnecessary boolean state
+ variable firmware_running
+Date: Fri, 22 Sep 2023 15:28:17 +0100
+Message-ID: <20230922142818.2021103-2-sbinding@opensource.cirrus.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230922142818.2021103-1-sbinding@opensource.cirrus.com>
+References: <20230922142818.2021103-1-sbinding@opensource.cirrus.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-GND-Sasl: herve.codina@bootlin.com
-Message-ID-Hash: B4SAPUDGCT6AIFJRNPIDRRIWBA2NQ6VA
-X-Message-ID-Hash: B4SAPUDGCT6AIFJRNPIDRRIWBA2NQ6VA
-X-MailFrom: herve.codina@bootlin.com
+Content-Type: text/plain
+X-Proofpoint-GUID: 50LmBvAYHCwKYNufaZECr4K6KdPsHlIB
+X-Proofpoint-ORIG-GUID: 50LmBvAYHCwKYNufaZECr4K6KdPsHlIB
+X-Proofpoint-Spam-Reason: safe
+Message-ID-Hash: QJBMGMNAGQ2SXPVVLYUMTECX6OFY3LDO
+X-Message-ID-Hash: QJBMGMNAGQ2SXPVVLYUMTECX6OFY3LDO
+X-MailFrom: prvs=462953d6eb=sbinding@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -101,7 +101,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/B4SAPUDGCT6AIFJRNPIDRRIWBA2NQ6VA/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QJBMGMNAGQ2SXPVVLYUMTECX6OFY3LDO/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -110,48 +110,154 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi Rob,
+This state duplicates the running state inside cs_dsp, so is not necessary.
+Remove it, and use cs_dsp.running instead.
+This brings the CS35L41 HDA driver more inline with its ASoC version,
+allowing the same state to be used when calling library functions.
 
-On Fri, 22 Sep 2023 07:33:32 -0500
-Rob Herring <robh@kernel.org> wrote:
+Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
+---
+ sound/pci/hda/cs35l41_hda.c | 28 ++++++++++++----------------
+ sound/pci/hda/cs35l41_hda.h |  1 -
+ 2 files changed, 12 insertions(+), 17 deletions(-)
 
-> On Fri, 22 Sep 2023 09:59:00 +0200, Herve Codina wrote:
-> > The Lantiq PEF2256 is a framer and line interface component designed to
-> > fulfill all required interfacing between an analog E1/T1/J1 line and the
-> > digital PCM system highway/H.100 bus.
-> > 
-> > Signed-off-by: Herve Codina <herve.codina@bootlin.com>
-> > Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> > ---
-> >  .../bindings/net/lantiq,pef2256.yaml          | 214 ++++++++++++++++++
-> >  1 file changed, 214 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/net/lantiq,pef2256.yaml
-> >   
-> 
-> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-> on your patch (DT_CHECKER_FLAGS is new in v5.13):
-> 
-> yamllint warnings/errors:
-> 
-> dtschema/dtc warnings/errors:
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/lantiq,pef2256.yaml: properties:lantiq,data-rate-bps: '$ref' should not be valid under {'const': '$ref'}
-> 	hint: Standard unit suffix properties don't need a type $ref
-> 	from schema $id: http://devicetree.org/meta-schemas/core.yaml#
-> 
-
-The '-bps' suffix was added recently in
-https://github.com/devicetree-org/dt-schema/
-commit 033d0b1 ("Add '-bps' as a standard unit suffix for bits per second")
-
-This commit is not yet present in any dt-schema release.
-
-Should I update my patch (ie. removing $ref) right now even if this update will
-make the last dt-schema release not happy ?
-
-Regards,
-Hervé
-
+diff --git a/sound/pci/hda/cs35l41_hda.c b/sound/pci/hda/cs35l41_hda.c
+index c74faa2ff46c..28f6ef32937d 100644
+--- a/sound/pci/hda/cs35l41_hda.c
++++ b/sound/pci/hda/cs35l41_hda.c
+@@ -458,7 +458,6 @@ static void cs35l41_shutdown_dsp(struct cs35l41_hda *cs35l41)
+ 
+ 	cs_dsp_stop(dsp);
+ 	cs_dsp_power_down(dsp);
+-	cs35l41->firmware_running = false;
+ 	dev_dbg(cs35l41->dev, "Unloaded Firmware\n");
+ }
+ 
+@@ -504,7 +503,7 @@ static void cs35l41_hda_play_start(struct device *dev)
+ 
+ 	cs35l41->playback_started = true;
+ 
+-	if (cs35l41->firmware_running) {
++	if (cs35l41->cs_dsp.running) {
+ 		regmap_multi_reg_write(reg, cs35l41_hda_config_dsp,
+ 				       ARRAY_SIZE(cs35l41_hda_config_dsp));
+ 		regmap_update_bits(reg, CS35L41_PWR_CTRL2,
+@@ -528,8 +527,8 @@ static void cs35l41_hda_play_done(struct device *dev)
+ 	dev_dbg(dev, "Play (Complete)\n");
+ 
+ 	cs35l41_global_enable(dev, reg, cs35l41->hw_cfg.bst_type, 1,
+-			      cs35l41->firmware_running);
+-	if (cs35l41->firmware_running) {
++			      cs35l41->cs_dsp.running);
++	if (cs35l41->cs_dsp.running) {
+ 		regmap_multi_reg_write(reg, cs35l41_hda_unmute_dsp,
+ 				       ARRAY_SIZE(cs35l41_hda_unmute_dsp));
+ 	} else {
+@@ -547,7 +546,7 @@ static void cs35l41_hda_pause_start(struct device *dev)
+ 
+ 	regmap_multi_reg_write(reg, cs35l41_hda_mute, ARRAY_SIZE(cs35l41_hda_mute));
+ 	cs35l41_global_enable(dev, reg, cs35l41->hw_cfg.bst_type, 0,
+-			      cs35l41->firmware_running);
++			      cs35l41->cs_dsp.running);
+ }
+ 
+ static void cs35l41_hda_pause_done(struct device *dev)
+@@ -560,7 +559,7 @@ static void cs35l41_hda_pause_done(struct device *dev)
+ 	regmap_update_bits(reg, CS35L41_PWR_CTRL2, CS35L41_AMP_EN_MASK, 0 << CS35L41_AMP_EN_SHIFT);
+ 	if (cs35l41->hw_cfg.bst_type == CS35L41_EXT_BOOST)
+ 		regmap_write(reg, CS35L41_GPIO1_CTRL1, 0x00000001);
+-	if (cs35l41->firmware_running) {
++	if (cs35l41->cs_dsp.running) {
+ 		cs35l41_set_cspl_mbox_cmd(dev, reg, CSPL_MBOX_CMD_PAUSE);
+ 		regmap_update_bits(reg, CS35L41_PWR_CTRL2,
+ 				   CS35L41_VMON_EN_MASK | CS35L41_IMON_EN_MASK,
+@@ -610,7 +609,7 @@ static void cs35l41_hda_playback_hook(struct device *dev, int action)
+ 		break;
+ 	case HDA_GEN_PCM_ACT_CLOSE:
+ 		mutex_lock(&cs35l41->fw_mutex);
+-		if (!cs35l41->firmware_running && cs35l41->request_fw_load &&
++		if (!cs35l41->cs_dsp.running && cs35l41->request_fw_load &&
+ 		    !cs35l41->fw_request_ongoing) {
+ 			dev_info(dev, "Requesting Firmware Load after HDA_GEN_PCM_ACT_CLOSE\n");
+ 			cs35l41->fw_request_ongoing = true;
+@@ -670,7 +669,7 @@ static int cs35l41_ready_for_reset(struct cs35l41_hda *cs35l41)
+ 	int ret = 0;
+ 
+ 	mutex_lock(&cs35l41->fw_mutex);
+-	if (cs35l41->firmware_running) {
++	if (cs35l41->cs_dsp.running) {
+ 
+ 		regcache_cache_only(cs35l41->regmap, false);
+ 
+@@ -748,7 +747,6 @@ static int cs35l41_system_suspend(struct device *dev)
+ 
+ 	/* Shutdown DSP before system suspend */
+ 	ret = cs35l41_ready_for_reset(cs35l41);
+-
+ 	if (ret)
+ 		dev_err(dev, "System Suspend Failed, not ready for Reset: %d\n", ret);
+ 
+@@ -818,7 +816,7 @@ static int cs35l41_runtime_suspend(struct device *dev)
+ 
+ 	mutex_lock(&cs35l41->fw_mutex);
+ 
+-	if (cs35l41->firmware_running) {
++	if (cs35l41->cs_dsp.running) {
+ 		ret = cs35l41_enter_hibernate(cs35l41->dev, cs35l41->regmap,
+ 					      cs35l41->hw_cfg.bst_type);
+ 		if (ret)
+@@ -852,7 +850,7 @@ static int cs35l41_runtime_resume(struct device *dev)
+ 
+ 	regcache_cache_only(cs35l41->regmap, false);
+ 
+-	if (cs35l41->firmware_running)	{
++	if (cs35l41->cs_dsp.running)	{
+ 		ret = cs35l41_exit_hibernate(cs35l41->dev, cs35l41->regmap);
+ 		if (ret) {
+ 			dev_warn(cs35l41->dev, "Unable to exit Hibernate.");
+@@ -919,8 +917,6 @@ static int cs35l41_smart_amp(struct cs35l41_hda *cs35l41)
+ 		goto clean_dsp;
+ 	}
+ 
+-	cs35l41->firmware_running = true;
+-
+ 	return 0;
+ 
+ clean_dsp:
+@@ -930,10 +926,10 @@ static int cs35l41_smart_amp(struct cs35l41_hda *cs35l41)
+ 
+ static void cs35l41_load_firmware(struct cs35l41_hda *cs35l41, bool load)
+ {
+-	if (cs35l41->firmware_running && !load) {
++	if (cs35l41->cs_dsp.running && !load) {
+ 		dev_dbg(cs35l41->dev, "Unloading Firmware\n");
+ 		cs35l41_shutdown_dsp(cs35l41);
+-	} else if (!cs35l41->firmware_running && load) {
++	} else if (!cs35l41->cs_dsp.running && load) {
+ 		dev_dbg(cs35l41->dev, "Loading Firmware\n");
+ 		cs35l41_smart_amp(cs35l41);
+ 	} else {
+@@ -1130,7 +1126,7 @@ static int cs35l41_hda_bind(struct device *dev, struct device *master, void *mas
+ 		 cs35l41->acpi_subsystem_id, cs35l41->hw_cfg.bst_type,
+ 		 cs35l41->hw_cfg.gpio1.func == CS35l41_VSPK_SWITCH,
+ 		 cs35l41->hw_cfg.spk_pos ? 'R' : 'L',
+-		 cs35l41->firmware_running, cs35l41->speaker_id);
++		 cs35l41->cs_dsp.running, cs35l41->speaker_id);
+ 
+ 	return ret;
+ }
+diff --git a/sound/pci/hda/cs35l41_hda.h b/sound/pci/hda/cs35l41_hda.h
+index b93bf762976e..f712a87473c8 100644
+--- a/sound/pci/hda/cs35l41_hda.h
++++ b/sound/pci/hda/cs35l41_hda.h
+@@ -64,7 +64,6 @@ struct cs35l41_hda {
+ 	struct work_struct fw_load_work;
+ 
+ 	struct regmap_irq_chip_data *irq_data;
+-	bool firmware_running;
+ 	bool request_fw_load;
+ 	bool fw_request_ongoing;
+ 	bool halo_initialized;
 -- 
-Hervé Codina, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+2.34.1
+
