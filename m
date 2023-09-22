@@ -4,117 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 382C7CD484A
-	for <alsa-devel@archiver.kernel.org>; Fri, 22 Sep 2023 17:53:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EEF23CD4847
+	for <alsa-devel@archiver.kernel.org>; Fri, 22 Sep 2023 18:22:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EADD0E75;
-	Fri, 22 Sep 2023 19:52:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EADD0E75
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3B1C4DEE;
+	Fri, 22 Sep 2023 20:21:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3B1C4DEE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1695405224;
-	bh=HuMddFYgVndPh/PHwPakmOFy8JD6xsoP6JcApWcCcuU=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=ecpTSk7hFocjTB9sGOpouvoyoAZ0f0gLuYzHiP0wpbn6xZK/bKSFSLNR385kAMloq
-	 hUIyp6Dm11zv5M+3WG9Txbzr5rD7HglJW5F4Tb/j+KsG1ZjN6gcnihfDWwobGETBKP
-	 raLlpHYjMp6GoXrCZFR1pqnhoxjHnK2npyjeVjMg=
+	s=default; t=1695406956;
+	bh=SJcH9WWUC7b4icS4mYzsgIi5682dqbrCHyF82Gm43a4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=aOTsJPEW4R0LPlwYorUFNrz2X3R3HhdWiKFX315H/zmY83lXmfnbHsZ+lL9h7x8CB
+	 hDi447lQcjPess1i65O9eQ6LRvGbGjgOaE8/ljmeYjR8suk6IHrairPpBxvwpBHIrr
+	 6nPd061tPfGoT+DPfzNPTMV4egmrxFpGSDnnWb3Y=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A4FB3F8057D; Fri, 22 Sep 2023 19:52:36 +0200 (CEST)
+	id 4A24FF80558; Fri, 22 Sep 2023 20:21:31 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 210E0F8055C;
-	Fri, 22 Sep 2023 19:52:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EF950F80125;
+	Fri, 22 Sep 2023 20:21:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id EF683F8055C; Fri, 22 Sep 2023 19:52:31 +0200 (CEST)
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com
- [IPv6:2607:f8b0:4864:20::102e])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	id 1C2D4F80125; Fri, 22 Sep 2023 20:21:27 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A298DF80005
-	for <alsa-devel@alsa-project.org>; Fri, 22 Sep 2023 19:50:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A298DF80005
+	by alsa1.perex.cz (Postfix) with ESMTPS id 05EDEF800AA
+	for <alsa-devel@alsa-project.org>; Fri, 22 Sep 2023 20:21:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 05EDEF800AA
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=chromium.org header.i=@chromium.org header.a=rsa-sha256
- header.s=google header.b=N5dJr85Q
-Received: by mail-pj1-x102e.google.com with SMTP id
- 98e67ed59e1d1-27496d4e13bso1777437a91.1
-        for <alsa-devel@alsa-project.org>;
- Fri, 22 Sep 2023 10:50:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1695405049; x=1696009849;
- darn=alsa-project.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=p4NIQNCYJbnDD0lgKwFFor/ygcTIyNapGv2KUfTJ4d4=;
-        b=N5dJr85QQcYQ5/xZFQWqZqsjtEM93/S2XMBbkLFGC8FdFa8B1LmMiJFSLFY29f0gPb
-         phs/ydGrajNfNH+Mbw9Rlr1Ug3ROKYccVCRKONA8LqW7mXGW4LAIs8vs2lD//D3IEHcf
-         EQ4NR1+ZPb8XksHTfOkXvc12EiU4+0QbzStr0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695405049; x=1696009849;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=p4NIQNCYJbnDD0lgKwFFor/ygcTIyNapGv2KUfTJ4d4=;
-        b=EZW0t22VJTV/fABvt0fGB5kUTMcSjAf/Ox3+DO53oIcFEGgoyqiUS77RR7uMuH+QE+
-         GIltPLb2VGc4RtQ5onpk4BX08uF/ZkeLxV7WThTcQxcKBZSKlnLb11Vh9jg5t/Yrt624
-         QsTrj++0LuBtnin61nRhUX03qOQyTHYKQrLBAmV24zlXvrnv3VumyWfYEGs6IxmpdSc7
-         pjjUv3lirya/Llnd9t+OgNUWjPzyTBtlQGFPA879PzinU4hnBbWyTHcCBdRNGzwhHW1G
-         qmYpVqqUYyCb/ZeobbeL6peOWwTpPKX0tnwF5z2lJdyrVeAEOgAYJMLAKC5hKoY+p24m
-         FKrA==
-X-Gm-Message-State: AOJu0Yy2C5AoqwknhZL9kokbnqOWJGtfAjokQYg3CdhlO4LbIByDlnDf
-	iXLHuyA8sDKX2A8Gx3xD88fBgqEdngojgdKH09I=
-X-Google-Smtp-Source: 
- AGHT+IEJ3CwBJxHBD2S/iRbuv7h3J2P2idJlpvbN/PHvMygWYxAkP3UQVJBARQ54CmTyH8OyoBgDuA==
-X-Received: by 2002:a17:90b:3a8d:b0:274:8ef2:b251 with SMTP id
- om13-20020a17090b3a8d00b002748ef2b251mr422960pjb.3.1695405048769;
-        Fri, 22 Sep 2023 10:50:48 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net.
- [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id
- ji18-20020a170903325200b001bdbe6c86a9sm3776862plb.225.2023.09.22.10.50.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Sep 2023 10:50:48 -0700 (PDT)
-From: Kees Cook <keescook@chromium.org>
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: Kees Cook <keescook@chromium.org>,
-	Takashi Iwai <tiwai@suse.com>,
-	alsa-devel@alsa-project.org,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Tom Rix <trix@redhat.com>,
-	linux-kernel@vger.kernel.org,
-	llvm@lists.linux.dev,
-	linux-hardening@vger.kernel.org
-Subject: [PATCH] ALSA: usx2y: Annotate struct snd_usx2y_urb_seq with
- __counted_by
-Date: Fri, 22 Sep 2023 10:50:47 -0700
-Message-Id: <20230922175046.work.766-kees@kernel.org>
-X-Mailer: git-send-email 2.34.1
+	dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=d8gs3/mY
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id C9E1462349;
+	Fri, 22 Sep 2023 18:21:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96E29C433C7;
+	Fri, 22 Sep 2023 18:21:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1695406880;
+	bh=SJcH9WWUC7b4icS4mYzsgIi5682dqbrCHyF82Gm43a4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=d8gs3/mY6Sf+oS/SUeaP2Jr42tQw1grzspJHmvAh0xv4/+drpEjIlsXppZcRi7KdK
+	 H1xlDY+5Jmqc350YgZ7s6/KjEMpRr+IuBZ72LbFd9JXI1PEgD+32dQcBfMFlOg6StE
+	 eJVTLbJwx0SQxQIYCQEBuN98pStC4Aw+jowy/I8t8vTk84nQXTJckh7RvlU2XicOa9
+	 6rfz7Ywp5RXslfiTwqe3jlbCfReheshhS0PhfbfYGj4+umuwO5qtaRnb/kF1jNEmuR
+	 3jRzhBYdCS86IkHBLADgzu6gsL2OujwgGAGNPW9myq2JtxWCGAFWKgliszWbwcFz8a
+	 byzboUiwmGsuw==
+Date: Fri, 22 Sep 2023 19:21:16 +0100
+From: Conor Dooley <conor@kernel.org>
+To: Bragatheswaran Manickavel <bragathemanick0908@gmail.com>
+Cc: lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] ASoC: dt-bindings: tfa9879: Convert to dtschema
+Message-ID: <20230922-scoreless-battalion-8b33e36066eb@spud>
+References: <20230921183313.54112-1-bragathemanick0908@gmail.com>
+ <20230922-unmindful-anyplace-f1da73ab168c@spud>
+ <c6f795f1-2832-c282-5819-f8f402a312bd@gmail.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2063; i=keescook@chromium.org;
- h=from:subject:message-id; bh=HuMddFYgVndPh/PHwPakmOFy8JD6xsoP6JcApWcCcuU=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlDdP3P/EpFy9NJv+1rIpzaY3g8AIW3vya14cPa
- ztrzZA921GJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZQ3T9wAKCRCJcvTf3G3A
- Ju4hEACjuUA3Cclq1k0WCnCTsZmN3Tm80FjCZ7ifVnctsIbqyFhFbiTbVnjnDmO7JtEkL1cvWTQ
- xHEXi8laitjmNKaBHHfu2ypu1K8iYnShM0cMUgmgbbUfNsOda9o+3zd5I/P46MZ6UxBv61qGB/9
- QF7uh5ORDm717e+wZRNy0W/tiCgFcuYgk7D5zf1PWjxxhPTeEgKnOsvR0Bb6GNg/kJwb8h8Gajd
- Fd3qjAW+hhzATiOhKR6jy49tdtK+UjSKjQ/nWguI4CDUNxxuxPrwFKggQ70hYDq1OBGWxbB0JdV
- 8HaDQ3DhV6K9s8ixCvSo7/fk4fgPmgDX/iOQDw1E3Hw2zqZEz/NPYD/krvJjEMW3u0Y67zA5skR
- 6VfdwxqbB/JdcJzfHas/Ta7pnmVimqc33zCL3AfXYoaNfG/HEgkOh28LWC3s8Wbacw9xQJRiYZX
- c82DKjSa75L6+UuneQdqQkQNS0AF7e1vXihoM07z3R9OUrhZ6qIjTxcHumTEqidVCpnZ+SMtZMs
- 8N5biPzcYek87DYprIaESzg+vozpm/gY3yCTjY97bttJu1+6XyrgRKzd+HzPU7O5NguA6EbVURx
- kJUyBIAAJ8wAnWE0FViQaWfHgUGxfxyWoKd3Cq/NE36UOD+hKW1YsNpaTPyxENYPX3oVB8DvWCl
- MKaM/7M RUQvz/lQ==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp;
- fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: YIERIZIZVTPQIW2MQRATHJMHEUMUTEEE
-X-Message-ID-Hash: YIERIZIZVTPQIW2MQRATHJMHEUMUTEEE
-X-MailFrom: keescook@chromium.org
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="rF2zpNVePdlmTHic"
+Content-Disposition: inline
+In-Reply-To: <c6f795f1-2832-c282-5819-f8f402a312bd@gmail.com>
+Message-ID-Hash: MGYMJAIVEU3OJOKQCJ7ATSQVWRWBTLEJ
+X-Message-ID-Hash: MGYMJAIVEU3OJOKQCJ7ATSQVWRWBTLEJ
+X-MailFrom: conor@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -126,7 +86,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YIERIZIZVTPQIW2MQRATHJMHEUMUTEEE/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MGYMJAIVEU3OJOKQCJ7ATSQVWRWBTLEJ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -135,60 +95,55 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Prepare for the coming implementation by GCC and Clang of the __counted_by
-attribute. Flexible array members annotated with __counted_by can have
-their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
-(for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-functions).
 
-As found with Coccinelle[1], add __counted_by for struct snd_usx2y_urb_seq.
-Additionally, since the element count member must be set before accessing
-the annotated flexible array member, move its initialization earlier.
+--rF2zpNVePdlmTHic
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-[1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
+On Fri, Sep 22, 2023 at 10:53:06PM +0530, Bragatheswaran Manickavel wrote:
+>=20
+> On 22/09/23 20:56, Conor Dooley wrote:
+> > On Fri, Sep 22, 2023 at 12:03:13AM +0530, Bragatheswaran Manickavel wro=
+te:
+> > > Convert the tfa9879 audio CODEC bindings to DT schema
+> > > No error/warning seen when running make dt_binding_check
+> > >=20
+> > > Signed-off-by: Bragatheswaran Manickavel <bragathemanick0908@gmail.co=
+m>
+> > > Changes:
+> > > V1 -> V2: Fixed DT syntax errors and doc warning
+> > These should be under the --- line, not above it.
+> > Perhaps Mark will change it on application.
+> > Otherwise,
+> > Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
 
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.com>
-Cc: alsa-devel@alsa-project.org
-Signed-off-by: Kees Cook <keescook@chromium.org>
+> Thanks for reviewing it.
+> Do I need to send a new patch by addressing the above comments ?
+
+To be clear, it's the changelog, not the sign off, that needs to go
+under the ---. It'd look like:
+
+Signed-off-by: Bragatheswaran Manickavel <bragathemanick0908@gmail.com>
 ---
- sound/usb/usx2y/usbusx2y.h      | 2 +-
- sound/usb/usx2y/usbusx2yaudio.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+Changes:
+V1 -> V2: Fixed DT syntax errors and doc warning
 
-diff --git a/sound/usb/usx2y/usbusx2y.h b/sound/usb/usx2y/usbusx2y.h
-index 8d82f5cc2fe1..391fd7b4ed5e 100644
---- a/sound/usb/usx2y/usbusx2y.h
-+++ b/sound/usb/usx2y/usbusx2y.h
-@@ -18,7 +18,7 @@ struct snd_usx2y_async_seq {
- struct snd_usx2y_urb_seq {
- 	int	submitted;
- 	int	len;
--	struct urb	*urb[];
-+	struct urb	*urb[] __counted_by(len);
- };
- 
- #include "usx2yhwdeppcm.h"
-diff --git a/sound/usb/usx2y/usbusx2yaudio.c b/sound/usb/usx2y/usbusx2yaudio.c
-index 5197599e7aa6..ca7888495a9f 100644
---- a/sound/usb/usx2y/usbusx2yaudio.c
-+++ b/sound/usb/usx2y/usbusx2yaudio.c
-@@ -681,6 +681,7 @@ static int usx2y_rate_set(struct usx2ydev *usx2y, int rate)
- 			err = -ENOMEM;
- 			goto cleanup;
- 		}
-+		us->len = NOOF_SETRATE_URBS;
- 		usbdata = kmalloc_array(NOOF_SETRATE_URBS, sizeof(int),
- 					GFP_KERNEL);
- 		if (!usbdata) {
-@@ -702,7 +703,6 @@ static int usx2y_rate_set(struct usx2ydev *usx2y, int rate)
- 		if (err < 0)
- 			goto cleanup;
- 		us->submitted =	0;
--		us->len =	NOOF_SETRATE_URBS;
- 		usx2y->us04 =	us;
- 		wait_event_timeout(usx2y->in04_wait_queue, !us->len, HZ);
- 		usx2y->us04 =	NULL;
--- 
-2.34.1
+Mark often fixes these things when he applies patches, but sending a v2
+w/ the changelog fixed might make his life easier.
 
+Cheers,
+Conor.
+
+--rF2zpNVePdlmTHic
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZQ3bHAAKCRB4tDGHoIJi
+0o6LAP9Vq8grg9fJf5i45dQtQG833qk7XMbr9PXVfnfcitVhBgD/b/LHnihKc99a
+Ei0JpNNTNhBFWQLwjwosqqdeiWJJFgI=
+=xq4J
+-----END PGP SIGNATURE-----
+
+--rF2zpNVePdlmTHic--
