@@ -4,55 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C0AAECD4F30
-	for <alsa-devel@archiver.kernel.org>; Fri, 22 Sep 2023 08:03:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E2CDACD4F2B
+	for <alsa-devel@archiver.kernel.org>; Fri, 22 Sep 2023 08:03:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 05BD4DF9;
-	Fri, 22 Sep 2023 10:02:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 05BD4DF9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4CB83E7D;
+	Fri, 22 Sep 2023 10:02:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4CB83E7D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1695369780;
-	bh=cwlLDkHD5GleikMujZJJFMLQDFW+U6o4IM9ISVv/kEg=;
+	s=default; t=1695369793;
+	bh=EzSFHHJfaoK7COhtVHUv3qazP3eHEVgqQ+pqJoQRMFg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=PM7dY+zXoHHEqMNNUsvunYBQAQRty6Sltku35BZTh+pynkpuUQgPlNbGiAnDZvn9o
-	 OL7X7QImCEbrKcuCHBf1vB46soBvnZ45Uc6KJp6dVFtbT/hDxiabWN2glJXjEVlHy7
-	 loZIaEHMjnfarMon81EMis8NcL8xuv0TqWw3zXgE=
+	b=qzLipoiUKVOpeVvTCp/gILYdmrl/vheGL/Jf1m59i5SsuVgQUtrwTZ05gWEIn2RFV
+	 n3QoDt+cqpevCkEBcZw6Jyvn9y1Bg1R0d1vuIZV4Q4W17IH+dfqa2h2qaHGIu/yZ5N
+	 ncTD1aFLwRkqdQF2mh+/A58lQ2aTZe3p0RqhMg1I=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 05CD1F805E5; Fri, 22 Sep 2023 10:00:01 +0200 (CEST)
+	id 81979F805E9; Fri, 22 Sep 2023 10:00:04 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3E546F805D9;
-	Fri, 22 Sep 2023 10:00:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7B1F1F805E8;
+	Fri, 22 Sep 2023 10:00:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 52D6FF805B4; Fri, 22 Sep 2023 09:59:51 +0200 (CEST)
+	id 3D0BEF805C0; Fri, 22 Sep 2023 09:59:54 +0200 (CEST)
 Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net
  [IPv6:2001:4b98:dc4:8::228])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D7DF8F8058C
-	for <alsa-devel@alsa-project.org>; Fri, 22 Sep 2023 09:59:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D7DF8F8058C
+	by alsa1.perex.cz (Postfix) with ESMTPS id 344ADF805B4
+	for <alsa-devel@alsa-project.org>; Fri, 22 Sep 2023 09:59:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 344ADF805B4
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=pO33ohhC
-Received: by mail.gandi.net (Postfix) with ESMTPA id 792D51BF207;
-	Fri, 22 Sep 2023 07:59:44 +0000 (UTC)
+ header.s=gm1 header.b=EN0N1Rbw
+Received: by mail.gandi.net (Postfix) with ESMTPA id 1DDC71BF210;
+	Fri, 22 Sep 2023 07:59:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1695369587;
+	t=1695369591;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=lf9JV9F39ozNh88R+m/f9VKoeA/LX0lqm95WkOR9T2E=;
-	b=pO33ohhCHs+6D2tSz6cmPIe4SROBts0rOtuO0Yb3b3zbIAM1UXku8m92RaIxr95pmtyeBr
-	44J8uLZpcqdigS1BecyI6mRcn4waCRwvM81zrPcMb9ESudyZYyvgSzdd+xBzqn66crUX/9
-	RuYm1WHhGsknzUga/8KejAPLQSS70nF6CP4s/cOSyUKTDLBiCKREBvtOXtrjljRMuCa0Rl
-	aKMywpiM1HchrKUaRNLLjMcHh0dvMMaImvLs/ge6HLUyg6mMxX9TZNy8qdW6n5boerkxBc
-	Y4LsHtR7rvPDyYLl+uH2aHJg/w9rww6nok+XaKnGFETBAudD8OyqWraeuffN0Q==
+	bh=3Ei1SGBpAQnikHMG2PgG7rf+pMcYro8+X/9szrlFHGc=;
+	b=EN0N1RbwflOkNfBzO4aA5HnQxKxWRVL7bXCcWdd88EQJhy2wYgbYQ9rFEjUAFBSOGAeeyB
+	PjuFQXcGVErIuIRmsUMP5oD8xatWs0XC2pPO22WyYP5JZJs1JijiaXKHSwo9+nbiRgp26K
+	/FCvaL1zHUQTTpXoCS0ba2jd7wMm9/m1FafcdnonQoQUHkJkpGfnZzUcyHb1DkdA+PcrLy
+	MPA1kmk4WqLz4SCDlQHb07MGhB226BY98b/nKb5+GVSQ5zLvfvXxaMp3R0EmVlVawVmFdZ
+	cQSoDK1lChsHA7Ijo3u57KzE77uYIxZWEEp3sfwk8gxcNGUXC8hwEMddrzysbQ==
 From: Herve Codina <herve.codina@bootlin.com>
 To: Herve Codina <herve.codina@bootlin.com>,
 	"David S. Miller" <davem@davemloft.net>,
@@ -86,21 +86,19 @@ Cc: netdev@vger.kernel.org,
 	alsa-devel@alsa-project.org,
 	Simon Horman <horms@kernel.org>,
 	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Conor Dooley <conor.dooley@microchip.com>,
-	Rob Herring <robh@kernel.org>
-Subject: [PATCH v6 07/30] dt-bindings: soc: fsl: cpm_qe: cpm1-scc-qmc: Add
- 'additionalProperties: false' in child nodes
-Date: Fri, 22 Sep 2023 09:58:42 +0200
-Message-ID: <20230922075913.422435-8-herve.codina@bootlin.com>
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: [PATCH v6 08/30] dt-bindings: soc: fsl: cpm_qe: cpm1-scc-qmc: Add
+ support for QMC HDLC
+Date: Fri, 22 Sep 2023 09:58:43 +0200
+Message-ID: <20230922075913.422435-9-herve.codina@bootlin.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230922075913.422435-1-herve.codina@bootlin.com>
 References: <20230922075913.422435-1-herve.codina@bootlin.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-GND-Sasl: herve.codina@bootlin.com
-Message-ID-Hash: LVAA24EIL6BJB6YEHVNAH6LIE6OCM4N5
-X-Message-ID-Hash: LVAA24EIL6BJB6YEHVNAH6LIE6OCM4N5
+Message-ID-Hash: 53HHFD3DII2HTVTSN7T657LMUC7SCCH3
+X-Message-ID-Hash: 53HHFD3DII2HTVTSN7T657LMUC7SCCH3
 X-MailFrom: herve.codina@bootlin.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -113,7 +111,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LVAA24EIL6BJB6YEHVNAH6LIE6OCM4N5/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/53HHFD3DII2HTVTSN7T657LMUC7SCCH3/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -122,29 +120,62 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Additional properties in child node should not be allowed.
+The QMC (QUICC mutichannel controller) is a controller present in some
+PowerQUICC SoC such as MPC885.
+The QMC HDLC uses the QMC controller to transfer HDLC data.
 
-Prevent them adding 'additionalProperties: false'
+Additionally, a framer can be connected to the QMC HDLC.
+If present, this framer is the interface between the TDM bus used by the
+QMC HDLC and the E1/T1 line.
+The QMC HDLC can use this framer to get information about the E1/T1 line
+and configure the E1/T1 line.
 
 Signed-off-by: Herve Codina <herve.codina@bootlin.com>
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
-Acked-by: Rob Herring <robh@kernel.org>
 ---
- .../devicetree/bindings/soc/fsl/cpm_qe/fsl,cpm1-scc-qmc.yaml     | 1 +
- 1 file changed, 1 insertion(+)
+ .../soc/fsl/cpm_qe/fsl,cpm1-scc-qmc.yaml      | 24 +++++++++++++++++++
+ 1 file changed, 24 insertions(+)
 
 diff --git a/Documentation/devicetree/bindings/soc/fsl/cpm_qe/fsl,cpm1-scc-qmc.yaml b/Documentation/devicetree/bindings/soc/fsl/cpm_qe/fsl,cpm1-scc-qmc.yaml
-index 450a0354cb1d..82d9beb48e00 100644
+index 82d9beb48e00..61dfd5ef7407 100644
 --- a/Documentation/devicetree/bindings/soc/fsl/cpm_qe/fsl,cpm1-scc-qmc.yaml
 +++ b/Documentation/devicetree/bindings/soc/fsl/cpm_qe/fsl,cpm1-scc-qmc.yaml
-@@ -64,6 +64,7 @@ patternProperties:
-     description:
-       A channel managed by this controller
-     type: object
-+    additionalProperties: false
+@@ -101,6 +101,27 @@ patternProperties:
+           Channel assigned Rx time-slots within the Rx time-slots routed by the
+           TSA to this cell.
  
-     properties:
-       reg:
++      compatible:
++        const: fsl,qmc-hdlc
++
++      fsl,framer:
++        $ref: /schemas/types.yaml#/definitions/phandle
++        description:
++          phandle to the framer node. The framer is in charge of an E1/T1 line
++          interface connected to the TDM bus. It can be used to get the E1/T1 line
++          status such as link up/down.
++
++    allOf:
++      - if:
++          properties:
++            compatible:
++              not:
++                contains:
++                  const: fsl,qmc-hdlc
++        then:
++          properties:
++            fsl,framer: false
++
+     required:
+       - reg
+       - fsl,tx-ts-mask
+@@ -159,5 +180,8 @@ examples:
+             fsl,operational-mode = "hdlc";
+             fsl,tx-ts-mask = <0x00000000 0x0000ff00>;
+             fsl,rx-ts-mask = <0x00000000 0x0000ff00>;
++
++            compatible = "fsl,qmc-hdlc";
++            fsl,framer = <&framer>;
+         };
+     };
 -- 
 2.41.0
 
