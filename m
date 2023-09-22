@@ -4,55 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 64910CD4F30
-	for <alsa-devel@archiver.kernel.org>; Fri, 22 Sep 2023 08:08:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1CEEACD4F2B
+	for <alsa-devel@archiver.kernel.org>; Fri, 22 Sep 2023 08:09:05 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3EB731089;
-	Fri, 22 Sep 2023 10:07:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3EB731089
+	by alsa0.perex.cz (Postfix) with ESMTPS id E0EE3FF3;
+	Fri, 22 Sep 2023 10:08:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E0EE3FF3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1695370125;
-	bh=W3HF8zpsaUJC3Bxd0MeNB7krkJsy5uJKSuv2bNTvt74=;
+	s=default; t=1695370142;
+	bh=+e0MDzMRAeP/ia6S4PRuyWsMZFqMQl5vNsBNLUZGW9A=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=KGxg0/ffyQDojsY1HItW+grC752EatCcI55T4wgytHmD6ggx5v+EgobpepNMvLLe+
-	 WLYjFxsXHy3SbsF2PhYM+QLQbsTqFQomSxOKAAUsCLvv+wAQBV2cdLNLGq0QO92GDF
-	 CBMkwtUTO3m2wWjtr+1VbeU6gWArUU0ddZip2mlI=
+	b=k+TgjSTtVoVdI0FvGSGm+65X8s+p8aYkoJj7EKHqRT1RJ0vtulqzVyY4rsTADk73i
+	 JaVga1A8tj+0F+0vaktbcifFo+WkEDOA3TYKezXH4HXLfhb8tvocTsQVI92JrNODb0
+	 wdhX9sGScgwQd15W9jwEJTfY8eACNGox5z6MjONc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9F00EF806B3; Fri, 22 Sep 2023 10:02:32 +0200 (CEST)
+	id AAB98F806BA; Fri, 22 Sep 2023 10:02:37 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 41293F806AE;
-	Fri, 22 Sep 2023 10:02:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BB450F806B7;
+	Fri, 22 Sep 2023 10:02:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 73AE2F805B0; Fri, 22 Sep 2023 10:02:24 +0200 (CEST)
+	id 5C9F4F806B6; Fri, 22 Sep 2023 10:02:33 +0200 (CEST)
 Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net
  [IPv6:2001:4b98:dc4:8::228])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id AE9C4F80568
-	for <alsa-devel@alsa-project.org>; Fri, 22 Sep 2023 10:01:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AE9C4F80568
+	by alsa1.perex.cz (Postfix) with ESMTPS id 96013F80558
+	for <alsa-devel@alsa-project.org>; Fri, 22 Sep 2023 10:01:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 96013F80558
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=odgqJTrn
-Received: by mail.gandi.net (Postfix) with ESMTPA id 87FB61BF21C;
-	Fri, 22 Sep 2023 08:01:07 +0000 (UTC)
+ header.s=gm1 header.b=E4d8nyyX
+Received: by mail.gandi.net (Postfix) with ESMTPA id 6EA321BF207;
+	Fri, 22 Sep 2023 08:01:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1695369671;
+	t=1695369682;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=/DwitjZhCHlnkz7qkrXG3uyfct/SPxtzv9MZMSwF7Vo=;
-	b=odgqJTrn5AWO2KV6QOdO01qC/bvabvDX4gRf90eEM143FNsxUhO/o9XY+5by0mr5B/PqYR
-	p0CmKRWdiUCYXAC3XKD8f20my642knPOuxHtSqF4d2sPpgYUd+gCxOHlbXDHy3BnCaJeYN
-	nwcyI7mTQQSGOXtAxKc927d/eXC/TV1PRok19k8tUZObTim0M7bD8kuosbjMOYBVm4muaa
-	fy21ly4Y4lF5kSo+y3C5vieWRUxdkktXUlJLPWjiaoNMhlv/z6B8OkZvVJptSsYPdrm8Kx
-	e6KRiTu77i4GESOPab4QNsKZWBjUrQEhBm0mf0pOV9rFmd2396Cfmpb8CguveA==
+	bh=SPPKnsxPiGLFIPufukLsHFF+zm3ucje7cBgO9mGwdEo=;
+	b=E4d8nyyXx+ArzBdl257wIe9MJ/dzFLIqEfbCkOo0s9uMnpVNyJZikYMKUPhKXtpTaLUX/b
+	UeFakgt+6dIFpZRkza8nOYDe/9mRDamaIqsBbDx4hD3eG9tvak4T0OunC9WeDIaGdaYmyN
+	Qla3aQxfidSdnObEoF6x+1kveVKSFIy0IiN37jk7Oss9HNt8kjnoVBvC61C5TJO53NEQOd
+	icsZj2pHd0vlVKjEPzwwlaV4zy4d3Uj0zyrmuYLcsVjwwId1NKyCg4AjkVYJizxC3dLfzu
+	Mvvf+g/3d7Uxv6mKCEJysmk1o+gbvN3cEhoP+61rjmMjVHMBOg7nhLkpGPb5qQ==
 From: Herve Codina <herve.codina@bootlin.com>
 To: Herve Codina <herve.codina@bootlin.com>,
 	"David S. Miller" <davem@davemloft.net>,
@@ -87,17 +87,17 @@ Cc: netdev@vger.kernel.org,
 	Simon Horman <horms@kernel.org>,
 	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: [PATCH v6 27/30] pinctrl: Add support for the Lantic PEF2256 pinmux
-Date: Fri, 22 Sep 2023 09:59:02 +0200
-Message-ID: <20230922075913.422435-28-herve.codina@bootlin.com>
+Subject: [PATCH v6 30/30] net: wan: fsl_qmc_hdlc: Add framer support
+Date: Fri, 22 Sep 2023 09:59:05 +0200
+Message-ID: <20230922075913.422435-31-herve.codina@bootlin.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230922075913.422435-1-herve.codina@bootlin.com>
 References: <20230922075913.422435-1-herve.codina@bootlin.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-GND-Sasl: herve.codina@bootlin.com
-Message-ID-Hash: JSOTAV4WYHQKJKHX4EUK6SDW4G3TFVTS
-X-Message-ID-Hash: JSOTAV4WYHQKJKHX4EUK6SDW4G3TFVTS
+Message-ID-Hash: ZVZM2OQX5HVRCUEOJHU7WMKXZHO4K3KK
+X-Message-ID-Hash: ZVZM2OQX5HVRCUEOJHU7WMKXZHO4K3KK
 X-MailFrom: herve.codina@bootlin.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -110,7 +110,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JSOTAV4WYHQKJKHX4EUK6SDW4G3TFVTS/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZVZM2OQX5HVRCUEOJHU7WMKXZHO4K3KK/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -119,430 +119,366 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The Lantiq PEF2256 is a framer and line interface component designed to
-fulfill all required interfacing between an analog E1/T1/J1 line and the
-digital PCM system highway/H.100 bus.
-
-This kind of component can be found in old telecommunication system.
-It was used to digital transmission of many simultaneous telephone calls
-by time-division multiplexing. Also using HDLC protocol, WAN networks
-can be reached through the framer.
-
-This pinmux support handles the pin muxing part (pins RP(A..D) and pins
-XP(A..D)) of the PEF2256.
+Add framer support in the fsl_qmc_hdlc driver in order to be able to
+signal carrier changes to the network stack based on the framer status
+Also use this framer to provide information related to the E1/T1 line
+interface on IF_GET_IFACE and configure the line interface according to
+IF_IFACE_{E1,T1} information.
 
 Signed-off-by: Herve Codina <herve.codina@bootlin.com>
 Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 ---
- drivers/pinctrl/Kconfig           |  15 ++
- drivers/pinctrl/Makefile          |   1 +
- drivers/pinctrl/pinctrl-pef2256.c | 358 ++++++++++++++++++++++++++++++
- 3 files changed, 374 insertions(+)
- create mode 100644 drivers/pinctrl/pinctrl-pef2256.c
+ drivers/net/wan/fsl_qmc_hdlc.c | 239 ++++++++++++++++++++++++++++++++-
+ 1 file changed, 235 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/pinctrl/Kconfig b/drivers/pinctrl/Kconfig
-index 7dfb7190580e..32728d73e0d1 100644
---- a/drivers/pinctrl/Kconfig
-+++ b/drivers/pinctrl/Kconfig
-@@ -366,6 +366,21 @@ config PINCTRL_PALMAS
- 	  open drain configuration for the Palmas series devices like
- 	  TPS65913, TPS80036 etc.
+diff --git a/drivers/net/wan/fsl_qmc_hdlc.c b/drivers/net/wan/fsl_qmc_hdlc.c
+index 24f466fa48b1..e5982766ff71 100644
+--- a/drivers/net/wan/fsl_qmc_hdlc.c
++++ b/drivers/net/wan/fsl_qmc_hdlc.c
+@@ -8,6 +8,7 @@
+  */
  
-+config PINCTRL_PEF2256
-+	tristate "Lantiq PEF2256 (FALC56) pin controller driver"
-+	depends on OF && FRAMER_PEF2256
-+	select PINMUX
-+	select PINCONF
-+	select GENERIC_PINCONF
-+	help
-+	  This option enables the pin controller support for the Lantiq PEF2256
-+	  framer, also known as FALC56.
-+
-+	  If unsure, say N.
-+
-+	  To compile this driver as a module, choose M here: the
-+	  module will be called pinctrl-pef2256.
-+
- config PINCTRL_PIC32
- 	bool "Microchip PIC32 pin controller driver"
- 	depends on OF
-diff --git a/drivers/pinctrl/Makefile b/drivers/pinctrl/Makefile
-index dd6cda270294..800c4219fcc1 100644
---- a/drivers/pinctrl/Makefile
-+++ b/drivers/pinctrl/Makefile
-@@ -39,6 +39,7 @@ obj-$(CONFIG_PINCTRL_MICROCHIP_SGPIO)	+= pinctrl-microchip-sgpio.o
- obj-$(CONFIG_PINCTRL_MLXBF3)	+= pinctrl-mlxbf3.o
- obj-$(CONFIG_PINCTRL_OCELOT)	+= pinctrl-ocelot.o
- obj-$(CONFIG_PINCTRL_PALMAS)	+= pinctrl-palmas.o
-+obj-$(CONFIG_PINCTRL_PEF2256)	+= pinctrl-pef2256.o
- obj-$(CONFIG_PINCTRL_PIC32)	+= pinctrl-pic32.o
- obj-$(CONFIG_PINCTRL_PISTACHIO)	+= pinctrl-pistachio.o
- obj-$(CONFIG_PINCTRL_RK805)	+= pinctrl-rk805.o
-diff --git a/drivers/pinctrl/pinctrl-pef2256.c b/drivers/pinctrl/pinctrl-pef2256.c
-new file mode 100644
-index 000000000000..868ea33bec3c
---- /dev/null
-+++ b/drivers/pinctrl/pinctrl-pef2256.c
-@@ -0,0 +1,358 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * PEF2256 also known as FALC56 driver
-+ *
-+ * Copyright 2023 CS GROUP France
-+ *
-+ * Author: Herve Codina <herve.codina@bootlin.com>
-+ */
-+
-+#include <linux/bitfield.h>
-+#include <linux/framer/pef2256.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/pinctrl/pinctrl.h>
-+#include <linux/pinctrl/pinconf-generic.h>
-+#include <linux/pinctrl/pinmux.h>
-+#include <linux/platform_device.h>
-+#include <linux/regmap.h>
-+#include <linux/slab.h>
-+
-+/* Port Configuration 1..4 */
-+#define PEF2256_PC1		  0x80
-+#define PEF2256_PC2		  0x81
-+#define PEF2256_PC3		  0x82
-+#define PEF2256_PC4		  0x83
-+#define PEF2256_12_PC_RPC_MASK	  GENMASK(6, 4)
-+#define PEF2256_12_PC_RPC_SYPR	  FIELD_PREP_CONST(PEF2256_12_PC_RPC_MASK, 0x0)
-+#define PEF2256_12_PC_RPC_RFM	  FIELD_PREP_CONST(PEF2256_12_PC_RPC_MASK, 0x1)
-+#define PEF2256_12_PC_RPC_RFMB	  FIELD_PREP_CONST(PEF2256_12_PC_RPC_MASK, 0x2)
-+#define PEF2256_12_PC_RPC_RSIGM	  FIELD_PREP_CONST(PEF2256_12_PC_RPC_MASK, 0x3)
-+#define PEF2256_12_PC_RPC_RSIG	  FIELD_PREP_CONST(PEF2256_12_PC_RPC_MASK, 0x4)
-+#define PEF2256_12_PC_RPC_DLR	  FIELD_PREP_CONST(PEF2256_12_PC_RPC_MASK, 0x5)
-+#define PEF2256_12_PC_RPC_FREEZE  FIELD_PREP_CONST(PEF2256_12_PC_RPC_MASK, 0x6)
-+#define PEF2256_12_PC_RPC_RFSP	  FIELD_PREP_CONST(PEF2256_12_PC_RPC_MASK, 0x7)
-+#define PEF2256_12_PC_XPC_MASK    GENMASK(4, 0)
-+#define PEF2256_12_PC_XPC_SYPX	  FIELD_PREP_CONST(PEF2256_12_PC_XPC_MASK, 0x0)
-+#define PEF2256_12_PC_XPC_XFMS	  FIELD_PREP_CONST(PEF2256_12_PC_XPC_MASK, 0x1)
-+#define PEF2256_12_PC_XPC_XSIG	  FIELD_PREP_CONST(PEF2256_12_PC_XPC_MASK, 0x2)
-+#define PEF2256_12_PC_XPC_TCLK	  FIELD_PREP_CONST(PEF2256_12_PC_XPC_MASK, 0x3)
-+#define PEF2256_12_PC_XPC_XMFB	  FIELD_PREP_CONST(PEF2256_12_PC_XPC_MASK, 0x4)
-+#define PEF2256_12_PC_XPC_XSIGM	  FIELD_PREP_CONST(PEF2256_12_PC_XPC_MASK, 0x5)
-+#define PEF2256_12_PC_XPC_DLX	  FIELD_PREP_CONST(PEF2256_12_PC_XPC_MASK, 0x6)
-+#define PEF2256_12_PC_XPC_XCLK	  FIELD_PREP_CONST(PEF2256_12_PC_XPC_MASK, 0x7)
-+#define PEF2256_12_PC_XPC_XLT	  FIELD_PREP_CONST(PEF2256_12_PC_XPC_MASK, 0x8)
-+#define PEF2256_2X_PC_RPC_MASK	  GENMASK(7, 4)
-+#define PEF2256_2X_PC_RPC_SYPR	  FIELD_PREP_CONST(PEF2256_2X_PC_RPC_MASK, 0x0)
-+#define PEF2256_2X_PC_RPC_RFM	  FIELD_PREP_CONST(PEF2256_2X_PC_RPC_MASK, 0x1)
-+#define PEF2256_2X_PC_RPC_RFMB	  FIELD_PREP_CONST(PEF2256_2X_PC_RPC_MASK, 0x2)
-+#define PEF2256_2X_PC_RPC_RSIGM	  FIELD_PREP_CONST(PEF2256_2X_PC_RPC_MASK, 0x3)
-+#define PEF2256_2X_PC_RPC_RSIG	  FIELD_PREP_CONST(PEF2256_2X_PC_RPC_MASK, 0x4)
-+#define PEF2256_2X_PC_RPC_DLR	  FIELD_PREP_CONST(PEF2256_2X_PC_RPC_MASK, 0x5)
-+#define PEF2256_2X_PC_RPC_FREEZE  FIELD_PREP_CONST(PEF2256_2X_PC_RPC_MASK, 0x6)
-+#define PEF2256_2X_PC_RPC_RFSP	  FIELD_PREP_CONST(PEF2256_2X_PC_RPC_MASK, 0x7)
-+#define PEF2256_2X_PC_RPC_GPI	  FIELD_PREP_CONST(PEF2256_2X_PC_RPC_MASK, 0x9)
-+#define PEF2256_2X_PC_RPC_GPOH	  FIELD_PREP_CONST(PEF2256_2X_PC_RPC_MASK, 0xa)
-+#define PEF2256_2X_PC_RPC_GPOL	  FIELD_PREP_CONST(PEF2256_2X_PC_RPC_MASK, 0xb)
-+#define PEF2256_2X_PC_RPC_LOS	  FIELD_PREP_CONST(PEF2256_2X_PC_RPC_MASK, 0xc)
-+#define PEF2256_2X_PC_XPC_MASK	  GENMASK(3, 0)
-+#define PEF2256_2X_PC_XPC_SYPX	  FIELD_PREP_CONST(PEF2256_2X_PC_XPC_MASK, 0x0)
-+#define PEF2256_2X_PC_XPC_XFMS	  FIELD_PREP_CONST(PEF2256_2X_PC_XPC_MASK, 0x1)
-+#define PEF2256_2X_PC_XPC_XSIG	  FIELD_PREP_CONST(PEF2256_2X_PC_XPC_MASK, 0x2)
-+#define PEF2256_2X_PC_XPC_TCLK	  FIELD_PREP_CONST(PEF2256_2X_PC_XPC_MASK, 0x3)
-+#define PEF2256_2X_PC_XPC_XMFB	  FIELD_PREP_CONST(PEF2256_2X_PC_XPC_MASK, 0x4)
-+#define PEF2256_2X_PC_XPC_XSIGM	  FIELD_PREP_CONST(PEF2256_2X_PC_XPC_MASK, 0x5)
-+#define PEF2256_2X_PC_XPC_DLX	  FIELD_PREP_CONST(PEF2256_2X_PC_XPC_MASK, 0x6)
-+#define PEF2256_2X_PC_XPC_XCLK	  FIELD_PREP_CONST(PEF2256_2X_PC_XPC_MASK, 0x7)
-+#define PEF2256_2X_PC_XPC_XLT	  FIELD_PREP_CONST(PEF2256_2X_PC_XPC_MASK, 0x8)
-+#define PEF2256_2X_PC_XPC_GPI	  FIELD_PREP_CONST(PEF2256_2X_PC_XPC_MASK, 0x9)
-+#define PEF2256_2X_PC_XPC_GPOH	  FIELD_PREP_CONST(PEF2256_2X_PC_XPC_MASK, 0xa)
-+#define PEF2256_2X_PC_XPC_GPOL	  FIELD_PREP_CONST(PEF2256_2X_PC_XPC_MASK, 0xb)
-+
-+struct pef2256_pinreg_desc {
-+	int offset;
-+	u8 mask;
-+};
-+
-+struct pef2256_function_desc {
-+	const char *name;
-+	const char * const*groups;
-+	unsigned int ngroups;
-+	u8 func_val;
-+};
-+
-+struct pef2256_pinctrl {
-+	struct device *dev;
-+	struct regmap *regmap;
-+	enum pef2256_version version;
-+	struct pinctrl_desc pctrl_desc;
-+	const struct pef2256_function_desc *functions;
-+	unsigned int nfunctions;
-+};
-+
-+static int pef2256_get_groups_count(struct pinctrl_dev *pctldev)
+ #include <linux/dma-mapping.h>
++#include <linux/framer/framer.h>
+ #include <linux/hdlc.h>
+ #include <linux/module.h>
+ #include <linux/of.h>
+@@ -27,6 +28,9 @@ struct qmc_hdlc {
+ 	struct device *dev;
+ 	struct qmc_chan *qmc_chan;
+ 	struct net_device *netdev;
++	struct framer *framer;
++	spinlock_t carrier_lock; /* Protect carrier detection */
++	struct notifier_block nb;
+ 	bool is_crc32;
+ 	spinlock_t tx_lock; /* Protect tx descriptors */
+ 	struct qmc_hdlc_desc tx_descs[8];
+@@ -40,6 +44,195 @@ static inline struct qmc_hdlc *netdev_to_qmc_hdlc(struct net_device *netdev)
+ 	return dev_to_hdlc(netdev)->priv;
+ }
+ 
++static int qmc_hdlc_framer_set_carrier(struct qmc_hdlc *qmc_hdlc)
 +{
-+	struct pef2256_pinctrl *pef2256 = pinctrl_dev_get_drvdata(pctldev);
-+
-+	/* We map 1 group <-> 1 pin */
-+	return pef2256->pctrl_desc.npins;
-+}
-+
-+static const char *pef2256_get_group_name(struct pinctrl_dev *pctldev,
-+					  unsigned int selector)
-+{
-+	struct pef2256_pinctrl *pef2256 = pinctrl_dev_get_drvdata(pctldev);
-+
-+	/* We map 1 group <-> 1 pin */
-+	return pef2256->pctrl_desc.pins[selector].name;
-+}
-+
-+static int pef2256_get_group_pins(struct pinctrl_dev *pctldev, unsigned int selector,
-+				  const unsigned int **pins,
-+				  unsigned int *num_pins)
-+{
-+	struct pef2256_pinctrl *pef2256 = pinctrl_dev_get_drvdata(pctldev);
-+
-+	/* We map 1 group <-> 1 pin */
-+	*pins = &pef2256->pctrl_desc.pins[selector].number;
-+	*num_pins = 1;
-+
-+	return 0;
-+}
-+
-+static const struct pinctrl_ops pef2256_pctlops = {
-+	.get_groups_count	= pef2256_get_groups_count,
-+	.get_group_name		= pef2256_get_group_name,
-+	.get_group_pins		= pef2256_get_group_pins,
-+	.dt_node_to_map		= pinconf_generic_dt_node_to_map_pin,
-+	.dt_free_map		= pinconf_generic_dt_free_map,
-+};
-+
-+static int pef2256_get_functions_count(struct pinctrl_dev *pctldev)
-+{
-+	struct pef2256_pinctrl *pef2256 = pinctrl_dev_get_drvdata(pctldev);
-+
-+	return pef2256->nfunctions;
-+}
-+
-+static const char *pef2256_get_function_name(struct pinctrl_dev *pctldev,
-+					     unsigned int selector)
-+{
-+	struct pef2256_pinctrl *pef2256 = pinctrl_dev_get_drvdata(pctldev);
-+
-+	return pef2256->functions[selector].name;
-+}
-+
-+static int pef2256_get_function_groups(struct pinctrl_dev *pctldev, unsigned int selector,
-+				       const char * const **groups,
-+				       unsigned * const num_groups)
-+{
-+	struct pef2256_pinctrl *pef2256 = pinctrl_dev_get_drvdata(pctldev);
-+
-+	*groups = pef2256->functions[selector].groups;
-+	*num_groups = pef2256->functions[selector].ngroups;
-+	return 0;
-+}
-+
-+static int pef2256_set_mux(struct pinctrl_dev *pctldev, unsigned int func_selector,
-+			   unsigned int group_selector)
-+{
-+	struct pef2256_pinctrl *pef2256 = pinctrl_dev_get_drvdata(pctldev);
-+	const struct pef2256_pinreg_desc *pinreg_desc;
-+	u8 func_val;
-+
-+	/* We map 1 group <-> 1 pin */
-+	pinreg_desc = pef2256->pctrl_desc.pins[group_selector].drv_data;
-+	func_val = pef2256->functions[func_selector].func_val;
-+
-+	return regmap_update_bits(pef2256->regmap, pinreg_desc->offset,
-+				  pinreg_desc->mask, func_val);
-+}
-+
-+static const struct pinmux_ops pef2256_pmxops = {
-+	.get_functions_count	= pef2256_get_functions_count,
-+	.get_function_name	= pef2256_get_function_name,
-+	.get_function_groups	= pef2256_get_function_groups,
-+	.set_mux		= pef2256_set_mux,
-+};
-+
-+#define PEF2256_PINCTRL_PIN(_number, _name, _offset, _mask) { \
-+	.number = _number, \
-+	.name = _name, \
-+	.drv_data = &(struct pef2256_pinreg_desc) { \
-+		.offset = _offset, \
-+		.mask = _mask, \
-+	}, \
-+}
-+
-+static const struct pinctrl_pin_desc pef2256_v12_pins[] = {
-+	PEF2256_PINCTRL_PIN(0, "RPA", PEF2256_PC1, PEF2256_12_PC_RPC_MASK),
-+	PEF2256_PINCTRL_PIN(1, "RPB", PEF2256_PC2, PEF2256_12_PC_RPC_MASK),
-+	PEF2256_PINCTRL_PIN(2, "RPC", PEF2256_PC3, PEF2256_12_PC_RPC_MASK),
-+	PEF2256_PINCTRL_PIN(3, "RPD", PEF2256_PC4, PEF2256_12_PC_RPC_MASK),
-+	PEF2256_PINCTRL_PIN(4, "XPA", PEF2256_PC1, PEF2256_12_PC_XPC_MASK),
-+	PEF2256_PINCTRL_PIN(5, "XPB", PEF2256_PC2, PEF2256_12_PC_XPC_MASK),
-+	PEF2256_PINCTRL_PIN(6, "XPC", PEF2256_PC3, PEF2256_12_PC_XPC_MASK),
-+	PEF2256_PINCTRL_PIN(7, "XPD", PEF2256_PC4, PEF2256_12_PC_XPC_MASK),
-+};
-+
-+static const struct pinctrl_pin_desc pef2256_v2x_pins[] = {
-+	PEF2256_PINCTRL_PIN(0, "RPA", PEF2256_PC1, PEF2256_2X_PC_RPC_MASK),
-+	PEF2256_PINCTRL_PIN(1, "RPB", PEF2256_PC2, PEF2256_2X_PC_RPC_MASK),
-+	PEF2256_PINCTRL_PIN(2, "RPC", PEF2256_PC3, PEF2256_2X_PC_RPC_MASK),
-+	PEF2256_PINCTRL_PIN(3, "RPD", PEF2256_PC4, PEF2256_2X_PC_RPC_MASK),
-+	PEF2256_PINCTRL_PIN(4, "XPA", PEF2256_PC1, PEF2256_2X_PC_XPC_MASK),
-+	PEF2256_PINCTRL_PIN(5, "XPB", PEF2256_PC2, PEF2256_2X_PC_XPC_MASK),
-+	PEF2256_PINCTRL_PIN(6, "XPC", PEF2256_PC3, PEF2256_2X_PC_XPC_MASK),
-+	PEF2256_PINCTRL_PIN(7, "XPD", PEF2256_PC4, PEF2256_2X_PC_XPC_MASK),
-+};
-+
-+static const char *const pef2256_rp_groups[] = { "RPA", "RPB", "RPC", "RPD" };
-+static const char *const pef2256_xp_groups[] = { "XPA", "XPB", "XPC", "XPD" };
-+static const char *const pef2256_all_groups[] = { "RPA", "RPB", "RPC", "RPD",
-+						  "XPA", "XPB", "XPC", "XPD" };
-+
-+#define PEF2256_FUNCTION(_name, _func_val, _groups) { \
-+	.name = _name, \
-+	.groups = _groups, \
-+	.ngroups = ARRAY_SIZE(_groups), \
-+	.func_val = _func_val, \
-+}
-+
-+static const struct pef2256_function_desc pef2256_v2x_functions[] = {
-+	PEF2256_FUNCTION("SYPR",   PEF2256_2X_PC_RPC_SYPR,   pef2256_rp_groups),
-+	PEF2256_FUNCTION("RFM",    PEF2256_2X_PC_RPC_RFM,    pef2256_rp_groups),
-+	PEF2256_FUNCTION("RFMB",   PEF2256_2X_PC_RPC_RFMB,   pef2256_rp_groups),
-+	PEF2256_FUNCTION("RSIGM",  PEF2256_2X_PC_RPC_RSIGM,  pef2256_rp_groups),
-+	PEF2256_FUNCTION("RSIG",   PEF2256_2X_PC_RPC_RSIG,   pef2256_rp_groups),
-+	PEF2256_FUNCTION("DLR",    PEF2256_2X_PC_RPC_DLR,    pef2256_rp_groups),
-+	PEF2256_FUNCTION("FREEZE", PEF2256_2X_PC_RPC_FREEZE, pef2256_rp_groups),
-+	PEF2256_FUNCTION("RFSP",   PEF2256_2X_PC_RPC_RFSP,   pef2256_rp_groups),
-+	PEF2256_FUNCTION("LOS",    PEF2256_2X_PC_RPC_LOS,    pef2256_rp_groups),
-+
-+	PEF2256_FUNCTION("SYPX",  PEF2256_2X_PC_XPC_SYPX,  pef2256_xp_groups),
-+	PEF2256_FUNCTION("XFMS",  PEF2256_2X_PC_XPC_XFMS,  pef2256_xp_groups),
-+	PEF2256_FUNCTION("XSIG",  PEF2256_2X_PC_XPC_XSIG,  pef2256_xp_groups),
-+	PEF2256_FUNCTION("TCLK",  PEF2256_2X_PC_XPC_TCLK,  pef2256_xp_groups),
-+	PEF2256_FUNCTION("XMFB",  PEF2256_2X_PC_XPC_XMFB,  pef2256_xp_groups),
-+	PEF2256_FUNCTION("XSIGM", PEF2256_2X_PC_XPC_XSIGM, pef2256_xp_groups),
-+	PEF2256_FUNCTION("DLX",   PEF2256_2X_PC_XPC_DLX,   pef2256_xp_groups),
-+	PEF2256_FUNCTION("XCLK",  PEF2256_2X_PC_XPC_XCLK,  pef2256_xp_groups),
-+	PEF2256_FUNCTION("XLT",   PEF2256_2X_PC_XPC_XLT,   pef2256_xp_groups),
-+
-+	PEF2256_FUNCTION("GPI",  PEF2256_2X_PC_RPC_GPI | PEF2256_2X_PC_XPC_GPI,
-+			 pef2256_all_groups),
-+	PEF2256_FUNCTION("GPOH", PEF2256_2X_PC_RPC_GPOH | PEF2256_2X_PC_XPC_GPOH,
-+			 pef2256_all_groups),
-+	PEF2256_FUNCTION("GPOL", PEF2256_2X_PC_RPC_GPOL | PEF2256_2X_PC_XPC_GPOL,
-+			 pef2256_all_groups),
-+};
-+
-+static const struct pef2256_function_desc pef2256_v12_functions[] = {
-+	PEF2256_FUNCTION("SYPR",   PEF2256_12_PC_RPC_SYPR,   pef2256_rp_groups),
-+	PEF2256_FUNCTION("RFM",    PEF2256_12_PC_RPC_RFM,    pef2256_rp_groups),
-+	PEF2256_FUNCTION("RFMB",   PEF2256_12_PC_RPC_RFMB,   pef2256_rp_groups),
-+	PEF2256_FUNCTION("RSIGM",  PEF2256_12_PC_RPC_RSIGM,  pef2256_rp_groups),
-+	PEF2256_FUNCTION("RSIG",   PEF2256_12_PC_RPC_RSIG,   pef2256_rp_groups),
-+	PEF2256_FUNCTION("DLR",    PEF2256_12_PC_RPC_DLR,    pef2256_rp_groups),
-+	PEF2256_FUNCTION("FREEZE", PEF2256_12_PC_RPC_FREEZE, pef2256_rp_groups),
-+	PEF2256_FUNCTION("RFSP",   PEF2256_12_PC_RPC_RFSP,   pef2256_rp_groups),
-+
-+	PEF2256_FUNCTION("SYPX",  PEF2256_12_PC_XPC_SYPX,  pef2256_xp_groups),
-+	PEF2256_FUNCTION("XFMS",  PEF2256_12_PC_XPC_XFMS,  pef2256_xp_groups),
-+	PEF2256_FUNCTION("XSIG",  PEF2256_12_PC_XPC_XSIG,  pef2256_xp_groups),
-+	PEF2256_FUNCTION("TCLK",  PEF2256_12_PC_XPC_TCLK,  pef2256_xp_groups),
-+	PEF2256_FUNCTION("XMFB",  PEF2256_12_PC_XPC_XMFB,  pef2256_xp_groups),
-+	PEF2256_FUNCTION("XSIGM", PEF2256_12_PC_XPC_XSIGM, pef2256_xp_groups),
-+	PEF2256_FUNCTION("DLX",   PEF2256_12_PC_XPC_DLX,   pef2256_xp_groups),
-+	PEF2256_FUNCTION("XCLK",  PEF2256_12_PC_XPC_XCLK,  pef2256_xp_groups),
-+	PEF2256_FUNCTION("XLT",   PEF2256_12_PC_XPC_XLT,   pef2256_xp_groups),
-+};
-+
-+static int pef2256_register_pinctrl(struct pef2256_pinctrl *pef2256)
-+{
-+	struct pinctrl_dev	*pctrl;
-+
-+	pef2256->pctrl_desc.name    = dev_name(pef2256->dev);
-+	pef2256->pctrl_desc.owner   = THIS_MODULE;
-+	pef2256->pctrl_desc.pctlops = &pef2256_pctlops;
-+	pef2256->pctrl_desc.pmxops  = &pef2256_pmxops;
-+	if (pef2256->version == PEF2256_VERSION_1_2) {
-+		pef2256->pctrl_desc.pins  = pef2256_v12_pins;
-+		pef2256->pctrl_desc.npins = ARRAY_SIZE(pef2256_v12_pins);
-+		pef2256->functions  = pef2256_v12_functions;
-+		pef2256->nfunctions = ARRAY_SIZE(pef2256_v12_functions);
-+	} else {
-+		pef2256->pctrl_desc.pins  = pef2256_v2x_pins;
-+		pef2256->pctrl_desc.npins = ARRAY_SIZE(pef2256_v2x_pins);
-+		pef2256->functions  = pef2256_v2x_functions;
-+		pef2256->nfunctions = ARRAY_SIZE(pef2256_v2x_functions);
-+	}
-+
-+	pctrl = devm_pinctrl_register(pef2256->dev, &pef2256->pctrl_desc, pef2256);
-+	if (IS_ERR(pctrl))
-+		return dev_err_probe(pef2256->dev, PTR_ERR(pctrl),
-+				     "pinctrl driver registration failed\n");
-+
-+	return 0;
-+}
-+
-+static void pef2256_reset_pinmux(struct pef2256_pinctrl *pef2256)
-+{
-+	u8 val;
-+	/*
-+	 * Reset values cannot be used.
-+	 * They define the SYPR/SYPX pin mux for all the RPx and XPx pins and
-+	 * Only one pin can be muxed to SYPR and one pin can be muxed to SYPX.
-+	 * Choose here an other reset value.
-+	 */
-+	if (pef2256->version == PEF2256_VERSION_1_2)
-+		val = PEF2256_12_PC_XPC_XCLK | PEF2256_12_PC_RPC_RFSP;
-+	else
-+		val = PEF2256_2X_PC_XPC_GPI | PEF2256_2X_PC_RPC_GPI;
-+
-+	regmap_write(pef2256->regmap, PEF2256_PC1, val);
-+	regmap_write(pef2256->regmap, PEF2256_PC2, val);
-+	regmap_write(pef2256->regmap, PEF2256_PC3, val);
-+	regmap_write(pef2256->regmap, PEF2256_PC4, val);
-+}
-+
-+static int pef2256_pinctrl_probe(struct platform_device *pdev)
-+{
-+	struct pef2256_pinctrl *pef2256_pinctrl;
-+	struct pef2256 *pef2256;
++	struct framer_status framer_status;
++	unsigned long flags;
 +	int ret;
 +
-+	pef2256_pinctrl = devm_kzalloc(&pdev->dev, sizeof(*pef2256_pinctrl), GFP_KERNEL);
-+	if (!pef2256_pinctrl)
-+		return -ENOMEM;
++	if (!qmc_hdlc->framer)
++		return 0;
 +
-+	device_set_node(&pdev->dev, dev_fwnode(pdev->dev.parent));
++	spin_lock_irqsave(&qmc_hdlc->carrier_lock, flags);
 +
-+	pef2256 = dev_get_drvdata(pdev->dev.parent);
++	ret = framer_get_status(qmc_hdlc->framer, &framer_status);
++	if (ret) {
++		dev_err(qmc_hdlc->dev, "get framer status failed (%d)\n", ret);
++		goto end;
++	}
++	if (framer_status.link_is_on)
++		netif_carrier_on(qmc_hdlc->netdev);
++	else
++		netif_carrier_off(qmc_hdlc->netdev);
 +
-+	pef2256_pinctrl->dev = &pdev->dev;
-+	pef2256_pinctrl->regmap = pef2256_get_regmap(pef2256);
-+	pef2256_pinctrl->version = pef2256_get_version(pef2256);
++end:
++	spin_unlock_irqrestore(&qmc_hdlc->carrier_lock, flags);
++	return ret;
++}
 +
-+	platform_set_drvdata(pdev, pef2256_pinctrl);
++static int qmc_hdlc_framer_notifier(struct notifier_block *nb, unsigned long action,
++				    void *data)
++{
++	struct qmc_hdlc *qmc_hdlc = container_of(nb, struct qmc_hdlc, nb);
++	int ret;
 +
-+	pef2256_reset_pinmux(pef2256_pinctrl);
-+	ret = pef2256_register_pinctrl(pef2256_pinctrl);
++	if (action != FRAMER_EVENT_STATUS)
++		return NOTIFY_DONE;
++
++	ret = qmc_hdlc_framer_set_carrier(qmc_hdlc);
++	return ret ? NOTIFY_DONE : NOTIFY_OK;
++}
++
++static int qmc_hdlc_framer_start(struct qmc_hdlc *qmc_hdlc)
++{
++	struct framer_status framer_status;
++	int ret;
++
++	if (!qmc_hdlc->framer)
++		return 0;
++
++	ret = framer_power_on(qmc_hdlc->framer);
++	if (ret) {
++		dev_err(qmc_hdlc->dev, "framer power-on failed (%d)\n", ret);
++		return ret;
++	}
++
++	/* Be sure that get_status is supported */
++	ret = framer_get_status(qmc_hdlc->framer, &framer_status);
++	if (ret) {
++		dev_err(qmc_hdlc->dev, "get framer status failed (%d)\n", ret);
++		goto framer_power_off;
++	}
++
++	qmc_hdlc->nb.notifier_call = qmc_hdlc_framer_notifier;
++	ret = framer_notifier_register(qmc_hdlc->framer, &qmc_hdlc->nb);
++	if (ret) {
++		dev_err(qmc_hdlc->dev, "framer notifier register failed (%d)\n", ret);
++		goto framer_power_off;
++	}
++
++	return 0;
++
++framer_power_off:
++	framer_power_off(qmc_hdlc->framer);
++	return ret;
++}
++
++static void qmc_hdlc_framer_stop(struct qmc_hdlc *qmc_hdlc)
++{
++	if (!qmc_hdlc->framer)
++		return;
++
++	framer_notifier_unregister(qmc_hdlc->framer, &qmc_hdlc->nb);
++	framer_power_off(qmc_hdlc->framer);
++}
++
++static int qmc_hdlc_framer_set_iface(struct qmc_hdlc *qmc_hdlc, int if_iface,
++				     const te1_settings *te1)
++{
++	struct framer_config config;
++	int ret;
++
++	if (!qmc_hdlc->framer)
++		return 0;
++
++	ret = framer_get_config(qmc_hdlc->framer, &config);
 +	if (ret)
 +		return ret;
 +
++	switch (if_iface) {
++	case IF_IFACE_E1:
++		config.iface = FRAMER_IFACE_E1;
++		break;
++	case IF_IFACE_T1:
++		config.iface = FRAMER_IFACE_T1;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	switch (te1->clock_type) {
++	case CLOCK_DEFAULT:
++		/* Keep current value */
++		break;
++	case CLOCK_EXT:
++		config.clock_type = FRAMER_CLOCK_EXT;
++		break;
++	case CLOCK_INT:
++		config.clock_type = FRAMER_CLOCK_INT;
++		break;
++	default:
++		return -EINVAL;
++	}
++	config.line_clock_rate = te1->clock_rate;
++
++	return framer_set_config(qmc_hdlc->framer, &config);
++}
++
++static int qmc_hdlc_framer_get_iface(struct qmc_hdlc *qmc_hdlc, int *if_iface, te1_settings *te1)
++{
++	struct framer_config config;
++	int ret;
++
++	if (!qmc_hdlc->framer) {
++		*if_iface = IF_IFACE_E1;
++		return 0;
++	}
++
++	ret = framer_get_config(qmc_hdlc->framer, &config);
++	if (ret)
++		return ret;
++
++	switch (config.iface) {
++	case FRAMER_IFACE_E1:
++		*if_iface = IF_IFACE_E1;
++		break;
++	case FRAMER_IFACE_T1:
++		*if_iface = IF_IFACE_T1;
++		break;
++	}
++
++	if (!te1)
++		return 0; /* Only iface type requested */
++
++	switch (config.clock_type) {
++	case FRAMER_CLOCK_EXT:
++		te1->clock_type = CLOCK_EXT;
++		break;
++	case FRAMER_CLOCK_INT:
++		te1->clock_type = CLOCK_INT;
++		break;
++	default:
++		return -EINVAL;
++	}
++	te1->clock_rate = config.line_clock_rate;
 +	return 0;
 +}
 +
-+static struct platform_driver pef2256_pinctrl_driver = {
-+	.driver = {
-+		.name = "lantiq-pef2256-pinctrl",
-+	},
-+	.probe = pef2256_pinctrl_probe,
-+};
-+module_platform_driver(pef2256_pinctrl_driver);
++static int qmc_hdlc_framer_init(struct qmc_hdlc *qmc_hdlc)
++{
++	int ret;
 +
-+MODULE_AUTHOR("Herve Codina <herve.codina@bootlin.com>");
-+MODULE_DESCRIPTION("PEF2256 pin controller driver");
-+MODULE_LICENSE("GPL");
++	if (!qmc_hdlc->framer)
++		return 0;
++
++	ret = framer_init(qmc_hdlc->framer);
++	if (ret) {
++		dev_err(qmc_hdlc->dev, "framer init failed (%d)\n", ret);
++		return ret;
++	}
++
++	return 0;
++}
++
++static void qmc_hdlc_framer_exit(struct qmc_hdlc *qmc_hdlc)
++{
++	if (!qmc_hdlc->framer)
++		return;
++
++	framer_exit(qmc_hdlc->framer);
++}
++
+ static int qmc_hdlc_recv_queue(struct qmc_hdlc *qmc_hdlc, struct qmc_hdlc_desc *desc, size_t size);
+ 
+ #define QMC_HDLC_RX_ERROR_FLAGS (QMC_RX_FLAG_HDLC_OVF | \
+@@ -313,6 +506,12 @@ static int qmc_hdlc_set_iface(struct qmc_hdlc *qmc_hdlc, int if_iface, const te1
+ 
+ 	qmc_hdlc->slot_map = te1->slot_map;
+ 
++	ret = qmc_hdlc_framer_set_iface(qmc_hdlc, if_iface, te1);
++	if (ret) {
++		dev_err(qmc_hdlc->dev, "framer set iface failed %d\n", ret);
++		return ret;
++	}
++
+ 	return 0;
+ }
+ 
+@@ -320,11 +519,16 @@ static int qmc_hdlc_ioctl(struct net_device *netdev, struct if_settings *ifs)
+ {
+ 	struct qmc_hdlc *qmc_hdlc = netdev_to_qmc_hdlc(netdev);
+ 	te1_settings te1;
++	int ret;
+ 
+ 	switch (ifs->type) {
+ 	case IF_GET_IFACE:
+-		ifs->type = IF_IFACE_E1;
+ 		if (ifs->size < sizeof(te1)) {
++			/* Retrieve type only */
++			ret = qmc_hdlc_framer_get_iface(qmc_hdlc, &ifs->type, NULL);
++			if (ret)
++				return ret;
++
+ 			if (!ifs->size)
+ 				return 0; /* only type requested */
+ 
+@@ -334,6 +538,11 @@ static int qmc_hdlc_ioctl(struct net_device *netdev, struct if_settings *ifs)
+ 
+ 		memset(&te1, 0, sizeof(te1));
+ 
++		/* Retrieve info from framer */
++		ret = qmc_hdlc_framer_get_iface(qmc_hdlc, &ifs->type, &te1);
++		if (ret)
++			return ret;
++
+ 		/* Update slot_map */
+ 		te1.slot_map = qmc_hdlc->slot_map;
+ 
+@@ -367,10 +576,17 @@ static int qmc_hdlc_open(struct net_device *netdev)
+ 	int ret;
+ 	int i;
+ 
+-	ret = hdlc_open(netdev);
++	ret = qmc_hdlc_framer_start(qmc_hdlc);
+ 	if (ret)
+ 		return ret;
+ 
++	ret = hdlc_open(netdev);
++	if (ret)
++		goto framer_stop;
++
++	/* Update carrier */
++	qmc_hdlc_framer_set_carrier(qmc_hdlc);
++
+ 	chan_param.mode = QMC_HDLC;
+ 	/* HDLC_MAX_MRU + 4 for the CRC
+ 	 * HDLC_MAX_MRU + 4 + 8 for the CRC and some extraspace needed by the QMC
+@@ -420,6 +636,8 @@ static int qmc_hdlc_open(struct net_device *netdev)
+ 	}
+ hdlc_close:
+ 	hdlc_close(netdev);
++framer_stop:
++	qmc_hdlc_framer_stop(qmc_hdlc);
+ 	return ret;
+ }
+ 
+@@ -455,6 +673,7 @@ static int qmc_hdlc_close(struct net_device *netdev)
+ 	}
+ 
+ 	hdlc_close(netdev);
++	qmc_hdlc_framer_stop(qmc_hdlc);
+ 	return 0;
+ }
+ 
+@@ -503,6 +722,7 @@ static int qmc_hdlc_probe(struct platform_device *pdev)
+ 
+ 	qmc_hdlc->dev = &pdev->dev;
+ 	spin_lock_init(&qmc_hdlc->tx_lock);
++	spin_lock_init(&qmc_hdlc->carrier_lock);
+ 
+ 	qmc_hdlc->qmc_chan = devm_qmc_chan_get_bychild(qmc_hdlc->dev, np);
+ 	if (IS_ERR(qmc_hdlc->qmc_chan)) {
+@@ -531,10 +751,19 @@ static int qmc_hdlc_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		return ret;
+ 
++	qmc_hdlc->framer = devm_framer_optional_get(qmc_hdlc->dev, "fsl,framer");
++	if (IS_ERR(qmc_hdlc->framer))
++		return PTR_ERR(qmc_hdlc->framer);
++
++	ret = qmc_hdlc_framer_init(qmc_hdlc);
++	if (ret)
++		return ret;
++
+ 	qmc_hdlc->netdev = alloc_hdlcdev(qmc_hdlc);
+ 	if (!qmc_hdlc->netdev) {
+ 		dev_err(qmc_hdlc->dev, "failed to alloc hdlc dev\n");
+-		return -ENOMEM;
++		ret = -ENOMEM;
++		goto framer_exit;
+ 	}
+ 
+ 	hdlc = dev_to_hdlc(qmc_hdlc->netdev);
+@@ -550,11 +779,12 @@ static int qmc_hdlc_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	platform_set_drvdata(pdev, qmc_hdlc);
+-
+ 	return 0;
+ 
+ free_netdev:
+ 	free_netdev(qmc_hdlc->netdev);
++framer_exit:
++	qmc_hdlc_framer_exit(qmc_hdlc);
+ 	return ret;
+ }
+ 
+@@ -564,6 +794,7 @@ static int qmc_hdlc_remove(struct platform_device *pdev)
+ 
+ 	unregister_hdlc_device(qmc_hdlc->netdev);
+ 	free_netdev(qmc_hdlc->netdev);
++	qmc_hdlc_framer_exit(qmc_hdlc);
+ 
+ 	return 0;
+ }
 -- 
 2.41.0
 
