@@ -4,96 +4,111 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C9A82CD4F27
-	for <alsa-devel@archiver.kernel.org>; Fri, 22 Sep 2023 07:55:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C1614CD4F2E
+	for <alsa-devel@archiver.kernel.org>; Fri, 22 Sep 2023 08:00:52 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B7F90DF5;
-	Fri, 22 Sep 2023 09:54:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B7F90DF5
+	by alsa0.perex.cz (Postfix) with ESMTPS id DE540DF6;
+	Fri, 22 Sep 2023 10:00:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DE540DF6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1695369299;
-	bh=L5vy6RwzEPcOwMXiTeLuAKLW5Um5lmpsw25dx7JxhfQ=;
+	s=default; t=1695369650;
+	bh=0+bzb3LOofN18ZV6HyD1ByeosyzAMoRaDYh9nIslOGg=;
 	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=ktkFzKAMapqcbtjpRRYiykNW18VK0eS7qrspQPV/g9x+xgRQtO5WESlYn4yK3sjN9
-	 fLLVl5bHNN4q3BlnppqLPt6KKW7XPpr+q/MVYax+y3/G2NpvuIUZ3TUa2N6qPQFE8u
-	 forBp9yo5fAFXsMOU0QMl6LSG/wBqz59wLN5SORg=
+	b=UTdWQp5U9dld30ENZ4issfWG20HcZifUSvgq0o3woULQE7Dzzxq5TWwxv40lpO9eB
+	 oFxR5Z7F4irqlqLJi2nQxp+ID4EUV59ESiBmBGB88Bn2ZWch7+Nr9Qbs4pg9e24LrX
+	 Z9TXf5cykOvkUlPQqrTHL5YbS7wDqB6ujYklR7YM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 82097F80549; Fri, 22 Sep 2023 09:53:48 +0200 (CEST)
+	id 75248F80552; Fri, 22 Sep 2023 09:59:40 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3AA74F801F5;
-	Fri, 22 Sep 2023 09:53:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7050BF8025A;
+	Fri, 22 Sep 2023 09:59:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B4138F801F5; Fri, 22 Sep 2023 02:55:19 +0200 (CEST)
-Received: from sender4-op-o15.zoho.com (sender4-op-o15.zoho.com
- [136.143.188.15])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 1F45DF8047D; Fri, 22 Sep 2023 09:59:34 +0200 (CEST)
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net
+ [217.70.183.201])
+	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 86AADF800AA
-	for <alsa-devel@alsa-project.org>; Fri, 22 Sep 2023 02:53:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 86AADF800AA
+	by alsa1.perex.cz (Postfix) with ESMTPS id E75D7F80124
+	for <alsa-devel@alsa-project.org>; Fri, 22 Sep 2023 09:59:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E75D7F80124
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=marliere.net header.i=ricardo@marliere.net
- header.a=rsa-sha256 header.s=zmail header.b=CawUBV8S
-ARC-Seal: i=1; a=rsa-sha256; t=1695343962; cv=none;
-	d=zohomail.com; s=zohoarc;
-	b=gx/PDXOp9fJP1H3Mmco4a2vkqGUGk8O9bFLvii12wfX7tZ5NEDK/oLC0Y7i9rONR2eealv8miCn+pQckoYgLcbOGdcga9xdG2Nm051s6poqmJsHDBRflWMElH0e27xgwZUFxRrPG1xIm9dju3c1n2SYO86lfL3l9YmR6Q22POhk=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com;
- s=zohoarc;
-	t=1695343962;
- h=Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:MIME-Version:Message-ID:Subject:Subject:To:To:Message-Id:Reply-To;
-	bh=2zFhR/B8Wliu/U9DfZEw9AYH1z4/jqjAMIdokfhTfU0=;
-	b=Mjuq9ydmy8uNdJ5AtD1amYv6PkjQNMj7j+9uF2YhQOE5qYEoDsHWPQUD5JonEnlZ7YPbLg9RBUHgnZbicL/7si2Gum6XOodNYrWBJWX1xG8cw4do2zqoJ88TWumhZfarYBwVrnL3W3z6YiwQv7YKwxOTb2mHuERHDlBVFkPMD4A=
-ARC-Authentication-Results: i=1; mx.zohomail.com;
-	dkim=pass  header.i=marliere.net;
-	spf=pass  smtp.mailfrom=ricardo@marliere.net;
-	dmarc=pass header.from=<ricardo@marliere.net>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1695343962;
-	s=zmail; d=marliere.net; i=ricardo@marliere.net;
-	h=From:From:To:To:Cc:Cc:Subject:Subject:Date:Date:Message-Id:Message-Id:MIME-Version:Content-Transfer-Encoding:Reply-To;
-	bh=2zFhR/B8Wliu/U9DfZEw9AYH1z4/jqjAMIdokfhTfU0=;
-	b=CawUBV8SyXJkq63xYRlDA+vjyMmegrcXA5LU+GUN75yX/z0PmOuxVIL+SbBNqK+l
-	Q5hFrAnzvTBOykkEiHmVrPPWay/xtFtVJn5ojeyUZMUHzMuRX3O00Aa7pFpjVy3JWuH
-	NLuul+L79+sEIdZxp0SRWpd49LQzh4DxnLj+Hygs=
-Received: from localhost (177.104.93.54 [177.104.93.54]) by mx.zohomail.com
-	with SMTPS id 1695343961324118.64966551399345;
- Thu, 21 Sep 2023 17:52:41 -0700 (PDT)
-From: "Ricardo B. Marliere" <ricardo@marliere.net>
-To: Jaroslav Kysela <perex@perex.cz>,
+	dkim=pass (2048-bit key,
+ unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
+ header.s=gm1 header.b=cSwMqTbG
+Received: by mail.gandi.net (Postfix) with ESMTPA id 115231BF217;
+	Fri, 22 Sep 2023 07:59:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1695369564;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=WgMxEm4VRkxel0xU1uH/ZlB5sNqwCY408cp4kscn9vU=;
+	b=cSwMqTbGumrymBzBJdqZPVstLt1EMxwjzWijwdBdj/reVCvw7psYrCOfu/0ODQ0KYwy+pL
+	VpYRtbJLQSn/XTmGyotQS+bGY1eCMjnAouLYAtYa+nmspSdEFiWteLE/w+zf4lEdI3Xb+e
+	Bnj4pwqaRUTwdrKykkm6PzNLD7jGcvNcctO0f28T0gJnuGnpJwSVAW/u1Ei2YRBFLp/KQm
+	P4EdMZCp4XcmOsOeXnqsgi6D+NWtKpa030hb1wpAVBeGeMchpNLVIA1ji/maizKLM08XuJ
+	rV0qp9QdzRStvQH9QWi54eX3HPOUD5KRr7TWcx0m+AItQpv1vix6Lb/dEMookg==
+From: Herve Codina <herve.codina@bootlin.com>
+To: Herve Codina <herve.codina@bootlin.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Andrew Lunn <andrew@lunn.ch>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Lee Jones <lee@kernel.org>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Qiang Zhao <qiang.zhao@nxp.com>,
+	Li Yang <leoyang.li@nxp.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Jaroslav Kysela <perex@perex.cz>,
 	Takashi Iwai <tiwai@suse.com>,
-	Ruslan Bilovol <ruslan.bilovol@gmail.com>
-Cc: alsa-devel@alsa-project.org,
+	Shengjiu Wang <shengjiu.wang@gmail.com>,
+	Xiubo Li <Xiubo.Lee@gmail.com>,
+	Fabio Estevam <festevam@gmail.com>,
+	Nicolin Chen <nicoleotsuka@gmail.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Randy Dunlap <rdunlap@infradead.org>
+Cc: netdev@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	linux-kernel-mentees@lists.linuxfoundation.org,
-	"Ricardo B. Marliere" <ricardo@marliere.net>,
-	syzbot+59875ffef5cb9c9b29e9@syzkaller.appspotmail.com
-Subject: [PATCH] sound: usb: increase snd_card alloc size
-Date: Thu, 21 Sep 2023 21:51:53 -0300
-Message-Id: <20230922005152.163640-1-ricardo@marliere.net>
-X-Mailer: git-send-email 2.40.1
+	linux-gpio@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	alsa-devel@alsa-project.org,
+	Simon Horman <horms@kernel.org>,
+	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: [PATCH v6 00/30] Add support for QMC HDLC,
+ framer infrastructure and PEF2256 framer
+Date: Fri, 22 Sep 2023 09:58:35 +0200
+Message-ID: <20230922075913.422435-1-herve.codina@bootlin.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-ZohoMailClient: External
-X-MailFrom: ricardo@marliere.net
-X-Mailman-Rule-Hits: nonmember-moderation
+X-GND-Sasl: herve.codina@bootlin.com
+Message-ID-Hash: L2GNJJF2XJ7FGNX67655CSDSNTIUM3AJ
+X-Message-ID-Hash: L2GNJJF2XJ7FGNX67655CSDSNTIUM3AJ
+X-MailFrom: herve.codina@bootlin.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: ED6F3MPPGCIOWY25LMQKXIIJ6TNU3KH2
-X-Message-ID-Hash: ED6F3MPPGCIOWY25LMQKXIIJ6TNU3KH2
-X-Mailman-Approved-At: Fri, 22 Sep 2023 07:51:46 +0000
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ED6F3MPPGCIOWY25LMQKXIIJ6TNU3KH2/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/L2GNJJF2XJ7FGNX67655CSDSNTIUM3AJ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -102,40 +117,340 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Syzbot reports a slab-out-of-bounds read of a snd_card object. When
-snd_usb_audio_create calls snd_card_new, it passes sizeof(*chip) as the
-extra_size argument, which is not enough in this case.
+Hi,
 
-Relevant logs below:
+I have a system where I need to handle an HDLC interface and some audio
+data.
 
-BUG: KASAN: slab-out-of-bounds in imon_probe+0x2983/0x3910
-Read of size 1 at addr ffff8880436a2c71 by task kworker/1:2/777
-(...)
-The buggy address belongs to the object at ffff8880436a2000
- which belongs to the cache kmalloc-4k of size 4096
-The buggy address is located 1 bytes to the right of
- allocated 3184-byte region [ffff8880436a2000, ffff8880436a2c70)
+The HDLC data are transferred using a TDM bus on which a PEF2256
+(E1/T1 framer) is present. The PEF2256 transfers data from/to the TDM
+bus to/from the E1 line. This PEF2256 is connected to a PowerQUICC SoC
+for the control path and the TDM is connected to the SoC (QMC component)
+for the data path.
 
-Reported-by: syzbot+59875ffef5cb9c9b29e9@syzkaller.appspotmail.com
-Closes: https://lore.kernel.org/all/000000000000a838aa0603cc74d6@google.com/
-Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
----
- sound/usb/card.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+>From the QMC HDLC driver, I need to handle HDLC data using the QMC,
+carrier detection using the PEF2256 (E1 line carrier) and set/get some
+PEF2256 configuration.
 
-diff --git a/sound/usb/card.c b/sound/usb/card.c
-index 1b2edc0fd2e9..6578326d33e8 100644
---- a/sound/usb/card.c
-+++ b/sound/usb/card.c
-@@ -619,7 +619,7 @@ static int snd_usb_audio_create(struct usb_interface *intf,
- 	}
- 
- 	err = snd_card_new(&intf->dev, index[idx], id[idx], THIS_MODULE,
--			   sizeof(*chip), &card);
-+			   sizeof(*chip) + 2, &card);
- 	if (err < 0) {
- 		dev_err(&dev->dev, "cannot create card instance %d\n", idx);
- 		return err;
+The QMC HDLC driver considers the PEF2256 as a generic framer.
+It performs operations that involve the PEF2256 through the generic
+framer API.
+
+The audio data are exchanged with the PEF2256 using a CPU DAI connected
+to the TDM bus through the QMC and the PEF2256 needs to be seen as a
+codec in order to be linked to the CPU DAI.
+The codec handles the carrier detection using the PEF2256 and reports
+the carrier state to the ALSA subsystem using the ASoC jack detection.
+
+The codec, even if instantiated by the PEF2256 driver, considers the
+PEF2256 as a generic framer.
+
+The generic framer has:
+ - 2 consumers (QMC HDLC drv and codec)
+ - 1 provider (PEF2256)
+
+So, the design is the following:
+                        +------------------+           +---------+
+                        | QMC              | <- TDM -> | PEF2256 | <-> E1
+     +---------+        |  +-------------+ |           |         |
+     | CPU DAI | <-data--> | QMC channel | |           |         |
+     +---------+        |  +-------------+ |           |         |
++--------------+        |  +-------------+ |           |         |
+| QMC HDLC drv | <-data--> | QMC channel | |           |         |
++--------------+        |  +-------------+ |           |         |
+     ^                  +------------------+           |         |
+     |   +--------+     +-------------+                |         |
+     +-> | framer | <-> | PEF2256 drv | <- local bus ->|         |
+         |        |     |             |                +---------+
+     +-> |        |     |             |
+     |   +--------+     |  +-------+  |
+     +-------------------> | codec |  |
+                        |  +-------+  |
+                        +-------------+
+
+Further more, the TDM timeslots used by the QMC HDLC driver need to be
+configured at runtime (QMC dynamic timeslots).
+
+Several weeks ago, I sent two series related to this topic:
+ - Add the Lantiq PEF2256 audio support [1]
+ - RFC Add support for QMC HDLC and PHY [2]
+This current series is a rework of these two series taking into account
+feedbacks previously received.
+
+In order to implement all of this, I do the following:
+ 1) Perform some fixes (patches 1, 2, 3, 4, 5, 6, 7)
+ 2) Introduce the QMC HDLC driver (patches 8, 9, 10, 11)
+ 3) Add QMC dynamic timeslot support (patches 12 - 22)
+ 4) Add timeslots change support in QMC HDLC (patch 23)
+ 5) Introduce framer infrastructure (patch 24)
+ 6) Add PEF2256 framer provider (patches 25, 26, 27, 28, 29)
+ 7) Add framer codec as a framer consumer (patch 30)
+ 8) Add framer support as a framer consumer in QMC HDLC (patch 31)
+
+The series contains the full story and detailed modifications.
+If needed, the series can be split and/or commits can be squashed.
+Let me know.
+
+Compare to the previous iteration
+  https://lore.kernel.org/linux-kernel/20230912081527.208499-1-herve.codina@bootlin.com/
+This v6 series mainly:
+ - Fixes the QMC DT binding adding a constraint on fsl,framer
+ - Fixes descriptions in the PEF2256 DT binding
+ - Fixes the PEF2256 pinctrl driver
+
+Best regards,
+Hervé
+
+[1]: https://lore.kernel.org/all/20230417171601.74656-1-herve.codina@bootlin.com/
+[2]: https://lore.kernel.org/all/20230323103154.264546-1-herve.codina@bootlin.com/
+
+Changes v5 -> v6
+
+  - All patches
+    Remove 'Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>'
+    These Sob were added by Christophe when he sent the v4 while I was
+    on vacation.
+    https://lore.kernel.org/linux-kernel/992a2b31-e21f-eee3-8bfc-a65b69fe5bd7@csgroup.eu/
+
+  - Patch 6, 7
+    Add 'Acked-by: Conor Dooley <conor.dooley@microchip.com>'
+    Add 'Acked-by: Rob Herring <robh@kernel.org>'
+
+  - Patch 8
+    Add a constraint on fsl,framer.
+
+  - Patch 25
+    Fix clocks description (inconsistent capitalisation)
+    Use '8-bit' instead of '8bit'
+    Add 'Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>'
+
+  - Removed patch 26 (patch applied)
+
+  - Patch 26 (patch 27 in v5)
+    Add 'Reviewed-by: Linus Walleij <linus.walleij@linaro.org>'
+
+  - Patch 27 (patch 28 in v5)
+    Move registers definition to .c file and remove .h file
+    Add 'select PINCONF' in Kconfig
+    Use dev_err_probe()
+    Add 'Reviewed-by: Linus Walleij <linus.walleij@linaro.org>'
+
+  - Patch 28 (patch 29 in v5)
+    Remove .h file
+
+Changes v4 -> v5
+
+  - Patches 1 to 5
+    No changes
+
+  - Patch 6 (new in v5)
+    Fix QMC binding example
+
+  - Patch 7 (new in v5)
+    Add missing 'additionalProperties: false'
+
+  - Patch 8 (new in v5, replace v4 patch 6)
+    Add QMC HDLC properties in the QMC channel node
+    Renamed the 'framer' property to 'fsl,framer'
+
+  - Patch 9 (new in v5)
+    Add support for QMC child devices
+
+  - Patch 10 (patch 7 in v4)
+    No changes
+
+  - Patch 11 (patch 8 in v4)
+    Remove fsl,qmc-hdlc.yaml (no more existing file)
+
+  - Patches 12 to 22 (patches 9 to 19 in v4)
+    No changes
+
+  - Patch 23 (patch 20 in v4)
+    Remove unused variable initializations
+    Remove extra space
+
+  - Patch 24 (patch 21 in v4)
+    Improve Kconfig help text
+    Fix variable declaration (reverse xmas tree)
+    Fix typos and extra spaces
+    Fix documentation issues raised by 'kernel-doc -none'
+    Move of_node_put() and kfree() out of the mutex
+    Replace ida_simple_{get,remove}() by ida_{alloc,free}()
+    Support framer device-tree nodes without '#framer-cells' property
+
+  - Patch 25 (patch 22 in v4)
+    Fix $ref in the pinctrl subnode
+    Remove '#framer-cells' property
+    Add needed '|'
+
+  - Patch 26 (patch 23 in v4)
+    Fix a typo in the commit subject
+
+  - Patches 27, 28, 29 (patch 24, 25, 26 in v4)
+    No changes
+
+  - Patch 30 (patch 27 in v4)
+    Fix a typo in the commit log
+
+  - Patch 31 (patch 28 in v4)
+    Used 'fsl,framer' property name instead of 'framer'
+
+Changes v3 -> v4
+
+  - Patch 21
+    Fixes build failure with CONFIG_MODULES
+
+Changes v2 -> v3
+
+  - Patches 1, 2, 3, 4
+    Add 'Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>'
+
+  - New patch
+    Remove inline keyword from the existing registers accessors helpers
+
+  - Patch 6 (patches 5, 27 in v2)
+    Update the binding title
+    Squash patch 27
+
+  - Patch 7 (patch 6 in v2)
+    Remove the cast in netdev_to_qmc_hdlc()
+    Add 'Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>'
+
+  - Patch 8 (patch 7 in v2): No change
+
+  - Patches 9, 10 (patches 8, 9 in v2)
+    Add 'Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>'
+
+  - Patch 11 (patch 10 in v2)
+    Remove inline keyword from the introduced qmc_clrsetbits16() helper
+    Add 'Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>'
+
+  - Patches 12, 13, 14, 15, 16, 17, 18, 19, 20
+    Add 'Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>'
+
+  - Patch 21 (patch 20 in v2)
+    Remove unneeded framer NULL pointer check
+    Add 'Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>'
+
+  - Patch 22 (patch 21 in v2)
+    Change sclkr and sclkx clocks description
+    Remove the framer phandle property from the framer subnodes
+    (ie. from framer-codec nodes)
+
+  - Patch 23 (patch 22 in v2)
+    Initialize 'disabled' variable at declaration
+    Fix commit log
+    Add 'Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>'
+
+  - Patch 24 (patch 23 in v2)
+    Remove inline keyword from the existing registers accessors helpers
+    Use dev_warn_ratelimited() in default interrupt handler
+    Add 'Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>'
+
+  - Patch 25 (patch 24 in v2)
+    Replace #include "linux/bitfield.h" by #include <linux/bitfield.h>
+    Fold the pinctrl anonymous struct into the struct pef2256_pinctrl
+    Update commit log
+    Add 'Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>'
+
+  - Patch 26 (patch 25 in v2)
+    Add 'Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>'
+
+  - Patch 27 (patch 26 in v2)
+    Fix error message
+    Changed the ch.max computation in framer_dai_hw_rule_channels_by_format()
+    Add 'Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>'
+
+  - Patch 28
+    Add 'Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>'
+
+Changes v1 -> v2
+  - Patches 1, 2 (New in v2)
+    Fix __iomem addresses declaration
+
+  - Patch 19 (17 in v1)
+    Fix a compilation warning
+
+  - Patch 26 (24 in v1)
+    Fix a typo in Kconfig file
+    Fix issues raised by sparse (make C=1)
+
+Herve Codina (30):
+  soc: fsl: cpm1: tsa: Fix __iomem addresses declaration
+  soc: fsl: cpm1: qmc: Fix __iomem addresses declaration
+  soc: fsl: cpm1: qmc: Fix rx channel reset
+  soc: fsl: cpm1: qmc: Extend the API to provide Rx status
+  soc: fsl: cpm1: qmc: Remove inline function specifiers
+  dt-bindings: soc: fsl: cpm_qe: cpm1-scc-qmc: Fix example property name
+  dt-bindings: soc: fsl: cpm_qe: cpm1-scc-qmc: Add
+    'additionalProperties: false' in child nodes
+  dt-bindings: soc: fsl: cpm_qe: cpm1-scc-qmc: Add support for QMC HDLC
+  soc: fsl: cpm1: qmc: Add support for child devices
+  net: wan: Add support for QMC HDLC
+  MAINTAINERS: Add the Freescale QMC HDLC driver entry
+  soc: fsl: cpm1: qmc: Introduce available timeslots masks
+  soc: fsl: cpm1: qmc: Rename qmc_setup_tsa* to qmc_init_tsa*
+  soc: fsl: cpm1: qmc: Introduce qmc_chan_setup_tsa*
+  soc: fsl: cpm1: qmc: Remove no more needed checks from
+    qmc_check_chans()
+  soc: fsl: cpm1: qmc: Check available timeslots in qmc_check_chans()
+  soc: fsl: cpm1: qmc: Add support for disabling channel TSA entries
+  soc: fsl: cpm1: qmc: Split Tx and Rx TSA entries setup
+  soc: fsl: cpm1: qmc: Introduce is_tsa_64rxtx flag
+  soc: fsl: cpm1: qmc: Handle timeslot entries at channel start() and
+    stop()
+  soc: fsl: cpm1: qmc: Remove timeslots handling from setup_chan()
+  soc: fsl: cpm1: qmc: Introduce functions to change timeslots at
+    runtime
+  wan: qmc_hdlc: Add runtime timeslots changes support
+  net: wan: Add framer framework support
+  dt-bindings: net: Add the Lantiq PEF2256 E1/T1/J1 framer
+  net: wan: framer: Add support for the Lantiq PEF2256 framer
+  pinctrl: Add support for the Lantic PEF2256 pinmux
+  MAINTAINERS: Add the Lantiq PEF2256 driver entry
+  ASoC: codecs: Add support for the framer codec
+  net: wan: fsl_qmc_hdlc: Add framer support
+
+ .../bindings/net/lantiq,pef2256.yaml          | 214 +++++
+ .../soc/fsl/cpm_qe/fsl,cpm1-scc-qmc.yaml      |  31 +-
+ MAINTAINERS                                   |  15 +
+ drivers/net/wan/Kconfig                       |  14 +
+ drivers/net/wan/Makefile                      |   3 +
+ drivers/net/wan/framer/Kconfig                |  39 +
+ drivers/net/wan/framer/Makefile               |   7 +
+ drivers/net/wan/framer/framer-core.c          | 887 ++++++++++++++++++
+ drivers/net/wan/framer/pef2256/Makefile       |   8 +
+ drivers/net/wan/framer/pef2256/pef2256-regs.h | 250 +++++
+ drivers/net/wan/framer/pef2256/pef2256.c      | 880 +++++++++++++++++
+ drivers/net/wan/fsl_qmc_hdlc.c                | 820 ++++++++++++++++
+ drivers/pinctrl/Kconfig                       |  15 +
+ drivers/pinctrl/Makefile                      |   1 +
+ drivers/pinctrl/pinctrl-pef2256.c             | 358 +++++++
+ drivers/soc/fsl/qe/qmc.c                      | 592 +++++++++---
+ drivers/soc/fsl/qe/tsa.c                      |  22 +-
+ include/linux/framer/framer-provider.h        | 194 ++++
+ include/linux/framer/framer.h                 | 205 ++++
+ include/linux/framer/pef2256.h                |  31 +
+ include/soc/fsl/qe/qmc.h                      |  27 +-
+ sound/soc/codecs/Kconfig                      |  15 +
+ sound/soc/codecs/Makefile                     |   2 +
+ sound/soc/codecs/framer-codec.c               | 413 ++++++++
+ sound/soc/fsl/fsl_qmc_audio.c                 |   2 +-
+ 25 files changed, 4905 insertions(+), 140 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/net/lantiq,pef2256.yaml
+ create mode 100644 drivers/net/wan/framer/Kconfig
+ create mode 100644 drivers/net/wan/framer/Makefile
+ create mode 100644 drivers/net/wan/framer/framer-core.c
+ create mode 100644 drivers/net/wan/framer/pef2256/Makefile
+ create mode 100644 drivers/net/wan/framer/pef2256/pef2256-regs.h
+ create mode 100644 drivers/net/wan/framer/pef2256/pef2256.c
+ create mode 100644 drivers/net/wan/fsl_qmc_hdlc.c
+ create mode 100644 drivers/pinctrl/pinctrl-pef2256.c
+ create mode 100644 include/linux/framer/framer-provider.h
+ create mode 100644 include/linux/framer/framer.h
+ create mode 100644 include/linux/framer/pef2256.h
+ create mode 100644 sound/soc/codecs/framer-codec.c
+
 -- 
-2.40.1
+2.41.0
 
