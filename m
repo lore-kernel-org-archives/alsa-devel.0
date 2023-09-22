@@ -4,55 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4E75ACD4F2B
-	for <alsa-devel@archiver.kernel.org>; Fri, 22 Sep 2023 08:01:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A0502CD4F30
+	for <alsa-devel@archiver.kernel.org>; Fri, 22 Sep 2023 08:01:50 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 74FB0E82;
-	Fri, 22 Sep 2023 10:00:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 74FB0E82
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6122CE76;
+	Fri, 22 Sep 2023 10:00:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6122CE76
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1695369690;
-	bh=Od+4tAHCdSoDyB64WKmT5DRnIYj7hTIJsyyH0ZKwVIA=;
+	s=default; t=1695369708;
+	bh=lBgPu1rWH69Q07lzdpaOwo4YiW9KYPvcyAe5S9eNdAY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=TMTmGOpISjM7ZjgdDZoEW+rUmN3DQycwj1a3I8Oa1g/6fsjVvLoCsnfnxHUiwMhUP
-	 NQ/ouo2GdQ5J1Bh4WQfB2znkoDfDW9HUqyakJj1BWdgFSH0lOatav5DSE5wrE22gMS
-	 LTdGhVttYL+TC2DuStjLYgaOlvkppVElDcXN2Qtc=
+	b=HHzRqY0fPqtr7cMuEtR0rtZnBkpWmR8rGLVpNHlpvLMMVY8fbgNLZWCLDVpDiYzDf
+	 HFKghJ1B+twwmgUfJ/qCGKkhkYjIddwg7xzo6joumQgmt7f1dC3FjpqRoQ5lqnMB33
+	 /UFiQpFp41tt9FpZFkoKIzG4vkJs1eootClKPug4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2BB33F80578; Fri, 22 Sep 2023 09:59:45 +0200 (CEST)
+	id 2AD7BF805AB; Fri, 22 Sep 2023 09:59:47 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7EF70F80578;
-	Fri, 22 Sep 2023 09:59:44 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0290AF805A1;
+	Fri, 22 Sep 2023 09:59:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CDF01F8025A; Fri, 22 Sep 2023 09:59:36 +0200 (CEST)
+	id DE38BF801F5; Fri, 22 Sep 2023 09:59:37 +0200 (CEST)
 Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net
- [217.70.183.201])
+ [IPv6:2001:4b98:dc4:8::228])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A05FDF80124
-	for <alsa-devel@alsa-project.org>; Fri, 22 Sep 2023 09:59:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A05FDF80124
+	by alsa1.perex.cz (Postfix) with ESMTPS id 0B6B9F800AA
+	for <alsa-devel@alsa-project.org>; Fri, 22 Sep 2023 09:59:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0B6B9F800AA
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=brWhaUKD
-Received: by mail.gandi.net (Postfix) with ESMTPA id 2CA961BF204;
-	Fri, 22 Sep 2023 07:59:31 +0000 (UTC)
+ header.s=gm1 header.b=WEMjZBlx
+Received: by mail.gandi.net (Postfix) with ESMTPA id 45C961BF218;
+	Fri, 22 Sep 2023 07:59:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1695369574;
+	t=1695369567;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Vsq3fcsRQ92trwLtB4WXIyAHgTZzHeLSP3hrA+1+hQo=;
-	b=brWhaUKDSbig4ktuGNsS484EtfqQIqiYqnqlmpBDR8pHhzg5vuZzE47H35cNElYC3opvFk
-	8CB1mL3KPOXaJx3FxxUj353hC/AB5aTKANJPoEsmeaNqt5ESz4yyd7hoThwR/zjpA+TR36
-	eIo8LW5cuwrMfwvpCOvWC5plGSG50LZdEMaIZtlTiyFXrcPhDAs17JRLoDspJpslior/sK
-	/trwa6igM1lh086S7xgWXdTjYSs/riVG90MFdIoyDlHQXawBwYtNdMXRr9h4naRQBmI0wC
-	d9yZre35IRamn5XJc4WIMIAWTxzgNonE4HK6dv9e/X58MkZ0rJnHfVvRH4gjpA==
+	bh=x+RB2ITbfqKP6mO7lXP9MlFfW3RztOHoR8uJSPHnXIA=;
+	b=WEMjZBlxzwK41hS8zjzlvato3t8EDTQUHjA7bwTASBJaJpSBtr7L72lqPrScVADR9Fb3gq
+	ZZ0Zr8DeC6ZUx+cwIWmSJRZweHE6CYWEgR8FeG2J1UoO3cs4S4TxpP1i1UVPYFHsdNmTvq
+	cSl3Y13YO481t+jxusQz0LXPq41hWiEtTg7IMTLZoOwXfuv4R8CZDk5J4ZemY3xO5c3eNB
+	ZLib6V5aM5gAZ6lSqLMvoKzR00GpDOHGH//YOBKpItKSYupbCz3XJ9LJsj1dajVakJhUQs
+	eYlZU4DHvEGWOki4pxjmMrUROFaXsgs2humfKREbFKR1oZJ+GYxmVR7sHfsrHA==
 From: Herve Codina <herve.codina@bootlin.com>
 To: Herve Codina <herve.codina@bootlin.com>,
 	"David S. Miller" <davem@davemloft.net>,
@@ -87,17 +87,18 @@ Cc: netdev@vger.kernel.org,
 	Simon Horman <horms@kernel.org>,
 	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: [PATCH v6 03/30] soc: fsl: cpm1: qmc: Fix rx channel reset
-Date: Fri, 22 Sep 2023 09:58:38 +0200
-Message-ID: <20230922075913.422435-4-herve.codina@bootlin.com>
+Subject: [PATCH v6 01/30] soc: fsl: cpm1: tsa: Fix __iomem addresses
+ declaration
+Date: Fri, 22 Sep 2023 09:58:36 +0200
+Message-ID: <20230922075913.422435-2-herve.codina@bootlin.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230922075913.422435-1-herve.codina@bootlin.com>
 References: <20230922075913.422435-1-herve.codina@bootlin.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-GND-Sasl: herve.codina@bootlin.com
-Message-ID-Hash: JU7R7B2GP6UKOCCBOFAWZBWTM4VQ77TR
-X-Message-ID-Hash: JU7R7B2GP6UKOCCBOFAWZBWTM4VQ77TR
+Message-ID-Hash: LIEGB2L7HWTCIW65LR6LDKY5IHRC6VWQ
+X-Message-ID-Hash: LIEGB2L7HWTCIW65LR6LDKY5IHRC6VWQ
 X-MailFrom: herve.codina@bootlin.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -110,7 +111,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JU7R7B2GP6UKOCCBOFAWZBWTM4VQ77TR/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LIEGB2L7HWTCIW65LR6LDKY5IHRC6VWQ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -119,36 +120,95 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The qmc_chan_reset_rx() set the is_rx_stopped flag. This leads to an
-inconsistent state in the following sequence.
-    qmc_chan_stop()
-    qmc_chan_reset()
-Indeed, after the qmc_chan_reset() call, the channel must still be
-stopped. Only a qmc_chan_start() call can move the channel from stopped
-state to started state.
+Running sparse (make C=1) on tsa.c raises a lot of warning such as:
+  --- 8< ---
+  warning: incorrect type in assignment (different address spaces)
+     expected void *[noderef] si_regs
+     got void [noderef] __iomem *
+  --- 8< ---
 
-Fix the issue removing the is_rx_stopped flag setting from
-qmc_chan_reset()
+Indeed, some variable were declared 'type *__iomem var' instead of
+'type __iomem *var'.
 
-Fixes: 3178d58e0b97 ("soc: fsl: cpm1: Add support for QMC")
+Use the correct declaration to remove these warnings.
+
+Fixes: 1d4ba0b81c1c ("soc: fsl: cpm1: Add support for TSA")
 Signed-off-by: Herve Codina <herve.codina@bootlin.com>
 Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
- drivers/soc/fsl/qe/qmc.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/soc/fsl/qe/tsa.c | 22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/soc/fsl/qe/qmc.c b/drivers/soc/fsl/qe/qmc.c
-index 7ad0d77f1740..8dc73cc1a83b 100644
---- a/drivers/soc/fsl/qe/qmc.c
-+++ b/drivers/soc/fsl/qe/qmc.c
-@@ -685,7 +685,6 @@ static void qmc_chan_reset_rx(struct qmc_chan *chan)
- 		    qmc_read16(chan->s_param + QMC_SPE_RBASE));
+diff --git a/drivers/soc/fsl/qe/tsa.c b/drivers/soc/fsl/qe/tsa.c
+index 3646153117b3..e0527b9efd05 100644
+--- a/drivers/soc/fsl/qe/tsa.c
++++ b/drivers/soc/fsl/qe/tsa.c
+@@ -98,9 +98,9 @@
+ #define TSA_SIRP	0x10
  
- 	chan->rx_pending = 0;
--	chan->is_rx_stopped = false;
+ struct tsa_entries_area {
+-	void *__iomem entries_start;
+-	void *__iomem entries_next;
+-	void *__iomem last_entry;
++	void __iomem *entries_start;
++	void __iomem *entries_next;
++	void __iomem *last_entry;
+ };
  
- 	spin_unlock_irqrestore(&chan->rx_lock, flags);
+ struct tsa_tdm {
+@@ -117,8 +117,8 @@ struct tsa_tdm {
+ 
+ struct tsa {
+ 	struct device *dev;
+-	void *__iomem si_regs;
+-	void *__iomem si_ram;
++	void __iomem *si_regs;
++	void __iomem *si_ram;
+ 	resource_size_t si_ram_sz;
+ 	spinlock_t	lock;
+ 	int tdms; /* TSA_TDMx ORed */
+@@ -135,27 +135,27 @@ static inline struct tsa *tsa_serial_get_tsa(struct tsa_serial *tsa_serial)
+ 	return container_of(tsa_serial, struct tsa, serials[tsa_serial->id]);
  }
+ 
+-static inline void tsa_write32(void *__iomem addr, u32 val)
++static inline void tsa_write32(void __iomem *addr, u32 val)
+ {
+ 	iowrite32be(val, addr);
+ }
+ 
+-static inline void tsa_write8(void *__iomem addr, u32 val)
++static inline void tsa_write8(void __iomem *addr, u32 val)
+ {
+ 	iowrite8(val, addr);
+ }
+ 
+-static inline u32 tsa_read32(void *__iomem addr)
++static inline u32 tsa_read32(void __iomem *addr)
+ {
+ 	return ioread32be(addr);
+ }
+ 
+-static inline void tsa_clrbits32(void *__iomem addr, u32 clr)
++static inline void tsa_clrbits32(void __iomem *addr, u32 clr)
+ {
+ 	tsa_write32(addr, tsa_read32(addr) & ~clr);
+ }
+ 
+-static inline void tsa_clrsetbits32(void *__iomem addr, u32 clr, u32 set)
++static inline void tsa_clrsetbits32(void __iomem *addr, u32 clr, u32 set)
+ {
+ 	tsa_write32(addr, (tsa_read32(addr) & ~clr) | set);
+ }
+@@ -313,7 +313,7 @@ static u32 tsa_serial_id2csel(struct tsa *tsa, u32 serial_id)
+ static int tsa_add_entry(struct tsa *tsa, struct tsa_entries_area *area,
+ 			 u32 count, u32 serial_id)
+ {
+-	void *__iomem addr;
++	void __iomem *addr;
+ 	u32 left;
+ 	u32 val;
+ 	u32 cnt;
 -- 
 2.41.0
 
