@@ -4,88 +4,121 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 10C87CE7A88
-	for <alsa-devel@archiver.kernel.org>; Sat, 23 Sep 2023 10:59:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 69437CE7A88
+	for <alsa-devel@archiver.kernel.org>; Sat, 23 Sep 2023 12:23:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E75EDA4E;
-	Sat, 23 Sep 2023 12:58:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E75EDA4E
+	by alsa0.perex.cz (Postfix) with ESMTPS id E1688A4C;
+	Sat, 23 Sep 2023 14:23:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E1688A4C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1695466749;
-	bh=LSPrOzzBJSALfxsi/TkmBkbdCdUmFs6Rujo4buJXlPI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1695471832;
+	bh=XCn3g6VrtWVvCyfdM5/ATwi/EFcM272P3JkBTJvdl9w=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=izwfRLqSibWzWVL8g5noz0TkKq2997gOmm6P3Nex3bWqXfx3MayFpYssmbbvvOTRg
-	 36Sv9f4U1YBQYGGZSFW2oF+7ylL1sFBtRFruMsSBQygraxboiBtCPvxPhHhi3KmTJf
-	 ke4ON75wdA67LKvbVK8Xjmtwm2xtcc+cv2GIshEc=
+	b=gh/PMKuGZ6kJg7ld6gcSzYajlchYm0dO34iQAkA90ZM8e4nL461uoxX27zKigFyud
+	 7CoV6OEZCcQxIRkXFwWBggtuo+hbWKSGIiqEFQZ49FwP0Chs2bgYCBlhSWTerM4HQK
+	 rHxyo3WJjoeP5MK/Pc/opajZ7+AeodSE1bHGapQ4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7553DF8055A; Sat, 23 Sep 2023 12:57:58 +0200 (CEST)
+	id 9C849F80124; Sat, 23 Sep 2023 14:22:32 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2583CF801F5;
-	Sat, 23 Sep 2023 12:57:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F25CEF801F5;
+	Sat, 23 Sep 2023 14:22:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DA7B9F801F5; Sat, 23 Sep 2023 12:55:34 +0200 (CEST)
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+	id 6623AF8025A; Sat, 23 Sep 2023 14:22:26 +0200 (CEST)
+Received: from omta40.uswest2.a.cloudfilter.net
+ (omta40.uswest2.a.cloudfilter.net [35.89.44.39])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 272CEF80124
-	for <alsa-devel@alsa-project.org>; Sat, 23 Sep 2023 12:55:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 272CEF80124
+	by alsa1.perex.cz (Postfix) with ESMTPS id 2630CF80124
+	for <alsa-devel@alsa-project.org>; Sat, 23 Sep 2023 14:22:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2630CF80124
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=lljZf9Kb
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695466526; x=1727002526;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=LSPrOzzBJSALfxsi/TkmBkbdCdUmFs6Rujo4buJXlPI=;
-  b=lljZf9KbvU+xoL1VVZda0bAVOYVAtk30YEMukbWOOUaHd0WcqBXxuXIt
-   21tspBe74lMT+X3QMpx/XxxngY1fY4tyLcsTtSHOh9IaQCy/4i+y8/X3Z
-   s+RzcNayWbCotcR3MTUiJ1quSzcmUTFtKS6ZBdLorX4AQVcmlAYQmJ3hT
-   Xor4rbGg2ZRdzeT/cdfWv93eCCPGPlkMoDWoVmmD/cXxtbtVSFQsXSIRg
-   YHhQ+duWX59gEJdCTpF6ghhPk+8nXs9KTjQm0UDknDn8RQvCDmBGs0Tqh
-   JLARKHXynAffnon8DMs/xWPJDY6r2Wlyj2mWyIv1jr+WLH7wIHDa+peV/
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10841"; a="378290314"
-X-IronPort-AV: E=Sophos;i="6.03,171,1694761200";
-   d="scan'208";a="378290314"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 23 Sep 2023 03:55:21 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10841"; a="697493257"
-X-IronPort-AV: E=Sophos;i="6.03,171,1694761200";
-   d="scan'208";a="697493257"
-Received: from lkp-server02.sh.intel.com (HELO 493f6c7fed5d) ([10.239.97.151])
-  by orsmga003.jf.intel.com with ESMTP; 23 Sep 2023 03:55:18 -0700
-Received: from kbuild by 493f6c7fed5d with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1qk0I8-0002AH-0s;
-	Sat, 23 Sep 2023 10:55:16 +0000
-Date: Sat, 23 Sep 2023 18:55:02 +0800
-From: kernel test robot <lkp@intel.com>
-To: Cezary Rojewski <cezary.rojewski@intel.com>, broonie@kernel.org,
-	tiwai@suse.com, perex@perex.cz
-Cc: oe-kbuild-all@lists.linux.dev, alsa-devel@alsa-project.org,
-	amadeuszx.slawinski@linux.intel.com,
-	pierre-louis.bossart@linux.intel.com, hdegoede@redhat.com,
-	Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: Re: [PATCH v2 02/17] ALSA: pcm: Honor subformat when configuring
- substream
-Message-ID: <202309231825.17qi62Yr-lkp@intel.com>
-References: <20230918133940.3676091-3-cezary.rojewski@intel.com>
+ unprotected) header.d=embeddedor.com header.i=@embeddedor.com
+ header.a=rsa-sha256 header.s=default header.b=h3eHSGpp
+Received: from eig-obgw-6001a.ext.cloudfilter.net ([10.0.30.140])
+	by cmsmtp with ESMTP
+	id jkvmqGuTYbK1Vk1eFql75C; Sat, 23 Sep 2023 12:22:11 +0000
+Received: from gator4166.hostgator.com ([108.167.133.22])
+	by cmsmtp with ESMTPS
+	id k1eEqSdMxuMYjk1eFq2tPA; Sat, 23 Sep 2023 12:22:11 +0000
+X-Authority-Analysis: v=2.4 cv=RtrWkQqK c=1 sm=1 tr=0 ts=650ed873
+ a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=P7XfKmiOJ4/qXqHZrN7ymg==:17
+ a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
+ a=IkcTkHD0fZMA:10 a=zNV7Rl7Rt7sA:10 a=wYkD_t78qR0A:10 a=NEAV23lmAAAA:8
+ a=NwbpVL58AAAA:8 a=pGLkceISAAAA:8 a=VwQbUJbxAAAA:8 a=iox4zFpeAAAA:8
+ a=foHCeV_ZAAAA:8 a=cm27Pg_UAAAA:8 a=HvF037n1xESchLcPDVoA:9 a=QEXdDO2ut3YA:10
+ a=tNWvAHffTtQgx3ZTRG8Q:22 a=AjGcO6oz07-iQ99wixmX:22 a=WzC6qhA0u3u7Ye7llzcV:22
+ a=h8a9FgHX5U4dIE3jaWyr:22 a=xmb-EsYY8bH0VWELuYED:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=MSqzGt9UPF/qfrZg382/BJIq8GRlN4t6fuaOHKqouVk=; b=h3eHSGppG8aL2sTqNmwGzFk8RX
+	bCel+HJ6ZDApjZGTwxq6N6Y4051hjdcyd9Z/364iEtKUFRiodOhNGBiU9g0JmzsatzaMG7Vr+rmFk
+	rEbNLVLT97eRpw57p7VaUE4JvXh/FByGB7FVtAbd9fCCmOBMWUznMij6EuaOb1b/WrzBa23gZZg27
+	uIdBaDQVcrLzZ1DnI98JiaovZq+wJ6C5meVeTi5za/74sJ90ySNgsUdtaNXQrDAbd+rBCrVpeRYbf
+	NU7AmJk7ac6oM7dJQqXfFKbna27k6FKOOXtpz9FurtiBD5p7NRnBofkQNypLKa2kLipwFOKSuYedm
+	7EZUSL7A==;
+Received: from [94.239.20.48] (port=49974 helo=[192.168.1.98])
+	by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls
+ TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96)
+	(envelope-from <gustavo@embeddedor.com>)
+	id 1qjy1T-003YxY-0f;
+	Sat, 23 Sep 2023 03:29:55 -0500
+Message-ID: <5b288203-e26d-9fd2-fc5f-e30e78f0202e@embeddedor.com>
+Date: Sat, 23 Sep 2023 10:30:59 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230918133940.3676091-3-cezary.rojewski@intel.com>
-Message-ID-Hash: 53QJOCS2FWOMDW43ST4CYLSDOYPHZI7B
-X-Message-ID-Hash: 53QJOCS2FWOMDW43ST4CYLSDOYPHZI7B
-X-MailFrom: lkp@intel.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH] ASoC: apple: mca: Annotate struct mca_data with
+ __counted_by
+Content-Language: en-US
+To: Kees Cook <keescook@chromium.org>, =?UTF-8?Q?Martin_Povi=c5=a1er?=
+ <povik+lin@cutebit.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ asahi@lists.linux.dev, alsa-devel@alsa-project.org,
+ Nathan Chancellor <nathan@kernel.org>,
+ Nick Desaulniers <ndesaulniers@google.com>, Tom Rix <trix@redhat.com>,
+ linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+ linux-hardening@vger.kernel.org
+References: <20230922175050.work.819-kees@kernel.org>
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+In-Reply-To: <20230922175050.work.819-kees@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse,
+ please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - alsa-project.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 94.239.20.48
+X-Source-L: No
+X-Exim-ID: 1qjy1T-003YxY-0f
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: ([192.168.1.98]) [94.239.20.48]:49974
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 0
+X-Org: HG=hgshared;ORG=hostgator;
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: 
+ MS4xfGXugUWTtXOCkAlZWDtEStJprlRFzPrd3CRfjMwJ7Q+zn9I5OvM38kpFN0v8a+X2eryJs+gwtJHRYJ5p3pmR91CaL2FyWHxD0l/rMCo58LvhdSMkBMVS
+ v6P2VaQDMIeKIagzTHhNOxaLGmlEuC1yAceEz/kgwrdh3UeAbi7omAsWskosDWAjBE7gcdpE0fWhaqtzQ4530gbcDBnBQKBrb7snSS58IOVdbCYDpT6ylJD4
+Message-ID-Hash: ZMW4XGWZTFDPSSO42NBHXV44WZWA2DPE
+X-Message-ID-Hash: ZMW4XGWZTFDPSSO42NBHXV44WZWA2DPE
+X-MailFrom: gustavo@embeddedor.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -97,7 +130,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/53QJOCS2FWOMDW43ST4CYLSDOYPHZI7B/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZMW4XGWZTFDPSSO42NBHXV44WZWA2DPE/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -106,82 +139,48 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi Cezary,
 
-kernel test robot noticed the following build warnings:
 
-[auto build test WARNING on 564ee9ac788b680e4ec4a6cb3a4a953dc61d5da8]
+On 9/22/23 11:50, Kees Cook wrote:
+> Prepare for the coming implementation by GCC and Clang of the __counted_by
+> attribute. Flexible array members annotated with __counted_by can have
+> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
+> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
+> functions).
+> 
+> As found with Coccinelle[1], add __counted_by for struct mca_data.
+> 
+> [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
+> 
+> Cc: "Martin Povišer" <povik+lin@cutebit.org>
+> Cc: Liam Girdwood <lgirdwood@gmail.com>
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: Jaroslav Kysela <perex@perex.cz>
+> Cc: Takashi Iwai <tiwai@suse.com>
+> Cc: asahi@lists.linux.dev
+> Cc: alsa-devel@alsa-project.org
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Cezary-Rojewski/ALSA-pcm-Introduce-MSBITS-subformat-interface/20230918-214758
-base:   564ee9ac788b680e4ec4a6cb3a4a953dc61d5da8
-patch link:    https://lore.kernel.org/r/20230918133940.3676091-3-cezary.rojewski%40intel.com
-patch subject: [PATCH v2 02/17] ALSA: pcm: Honor subformat when configuring substream
-config: x86_64-randconfig-121-20230923 (https://download.01.org/0day-ci/archive/20230923/202309231825.17qi62Yr-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230923/202309231825.17qi62Yr-lkp@intel.com/reproduce)
+Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309231825.17qi62Yr-lkp@intel.com/
-
-sparse warnings: (new ones prefixed by >>)
->> sound/core/pcm_native.c:2523:43: sparse: sparse: incorrect type in argument 2 (different base types) @@     expected unsigned int val @@     got restricted snd_pcm_format_t [assigned] [usertype] f @@
-   sound/core/pcm_native.c:2523:43: sparse:     expected unsigned int val
-   sound/core/pcm_native.c:2523:43: sparse:     got restricted snd_pcm_format_t [assigned] [usertype] f
-   sound/core/pcm_native.c:95:1: sparse: sparse: context imbalance in 'snd_pcm_group_lock' - different lock contexts for basic block
-   sound/core/pcm_native.c:96:1: sparse: sparse: context imbalance in 'snd_pcm_group_unlock' - unexpected unlock
-   sound/core/pcm_native.c:97:1: sparse: sparse: context imbalance in 'snd_pcm_group_lock_irq' - different lock contexts for basic block
-   sound/core/pcm_native.c:98:1: sparse: sparse: context imbalance in 'snd_pcm_group_unlock_irq' - unexpected unlock
-   sound/core/pcm_native.c:145:9: sparse: sparse: context imbalance in 'snd_pcm_stream_lock_nested' - different lock contexts for basic block
-   sound/core/pcm_native.c:171:9: sparse: sparse: context imbalance in '_snd_pcm_stream_lock_irqsave' - different lock contexts for basic block
-   sound/core/pcm_native.c:184:9: sparse: sparse: context imbalance in '_snd_pcm_stream_lock_irqsave_nested' - different lock contexts for basic block
-   sound/core/pcm_native.c:201:39: sparse: sparse: context imbalance in 'snd_pcm_stream_unlock_irqrestore' - unexpected unlock
-   sound/core/pcm_native.c:1279:44: sparse: sparse: context imbalance in 'snd_pcm_action_group' - unexpected unlock
-   sound/core/pcm_native.c:1349:37: sparse: sparse: context imbalance in 'snd_pcm_stream_group_ref' - different lock contexts for basic block
-   sound/core/pcm_native.c: note: in included file (through arch/x86/include/asm/uaccess.h, include/linux/uaccess.h, include/linux/sched/task.h, ...):
-   arch/x86/include/asm/uaccess_64.h:88:24: sparse: sparse: cast removes address space '__user' of expression
-
-vim +2523 sound/core/pcm_native.c
-
-  2503	
-  2504	static int snd_pcm_hw_rule_subformats(struct snd_pcm_hw_params *params,
-  2505					      struct snd_pcm_hw_rule *rule)
-  2506	{
-  2507		struct snd_mask *sfmask = hw_param_mask(params, SNDRV_PCM_HW_PARAM_SUBFORMAT);
-  2508		struct snd_mask *fmask = hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
-  2509		struct snd_pcm_hardware *hw = rule->private;
-  2510		struct snd_pcm_subformat *sf;
-  2511		snd_pcm_format_t f;
-  2512		struct snd_mask m;
-  2513		bool found;
-  2514	
-  2515		snd_mask_none(&m);
-  2516		/* All PCMs support at least the default STD subformat. */
-  2517		snd_mask_set(&m, (__force unsigned)SNDRV_PCM_SUBFORMAT_STD);
-  2518	
-  2519		if (!hw->subformats)
-  2520			goto exit;
-  2521	
-  2522		pcm_for_each_format(f) {
-> 2523			if (!snd_mask_test(fmask, f))
-  2524				continue;
-  2525	
-  2526			found = false;
-  2527			for (sf = hw->subformats; sf->mask && !found; sf++) {
-  2528				if (sf->format != f)
-  2529					continue;
-  2530				m.bits[0] |= sf->mask;
-  2531				found = true;
-  2532			}
-  2533			if (!found && snd_pcm_format_linear(f))
-  2534				snd_mask_set(&m, (__force unsigned)SNDRV_PCM_SUBFORMAT_MSBITS_MAX);
-  2535		}
-  2536	exit:
-  2537		return snd_mask_refine(sfmask, &m);
-  2538	}
-  2539	
-
+Thanks
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Gustavo
+
+> ---
+>   sound/soc/apple/mca.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/sound/soc/apple/mca.c b/sound/soc/apple/mca.c
+> index ce77934f3eef..99e547ef95e6 100644
+> --- a/sound/soc/apple/mca.c
+> +++ b/sound/soc/apple/mca.c
+> @@ -161,7 +161,7 @@ struct mca_data {
+>   	struct mutex port_mutex;
+>   
+>   	int nclusters;
+> -	struct mca_cluster clusters[];
+> +	struct mca_cluster clusters[] __counted_by(nclusters);
+>   };
+>   
+>   static void mca_modify(struct mca_cluster *cl, int regoffset, u32 mask, u32 val)
