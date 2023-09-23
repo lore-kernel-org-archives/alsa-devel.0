@@ -4,79 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E5039E7735F
-	for <alsa-devel@archiver.kernel.org>; Sat, 30 Sep 2023 07:54:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8F6C3E7735F
+	for <alsa-devel@archiver.kernel.org>; Sat, 30 Sep 2023 07:54:23 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BFB16DF5;
-	Sat, 30 Sep 2023 09:53:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BFB16DF5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 64E07E0F;
+	Sat, 30 Sep 2023 09:53:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 64E07E0F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1696060453;
-	bh=02620K2/znes2DUxPlHwZszukHUYiPLPn97khamCL20=;
+	s=default; t=1696060461;
+	bh=3xA/j4TyjfUZiMSZeaBGG89zukPzSUMMECtxhlS3TPk=;
 	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=qv9Cl0xmSAXKsig5lwLWhpz0IV1E1XX8J7DMHgSCRXyMSeyO04In70GsKsb3BHyzB
-	 GH9QcRX0IcHxv1MTIpvRbGAcqVC6arcYK4rkxZJOx0Ef5233Jry8P9DSUt7YNufveP
-	 5lPlBIlg5Z3chBK9rHeKFRDrfH5Dk7Ys4cuHcst4=
+	b=ROtZ+LxjIPz3/v2ObOIHLRLDnKO7tCAbcrzsiPet82Gri3/7IfW2C55Vzw8BQi1Gm
+	 nToPAj6UyWhMkcnwxg1zS+sE2i/pYkJWYPIUpDRL69VgWHJG2rv9FoYJVDvf7o8t1q
+	 wepXF2cv2BxxV/jkj5RrDhbbIxamz8MKYNHyupJ8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 557F9F80570; Sat, 30 Sep 2023 09:52:40 +0200 (CEST)
+	id 2C84AF80571; Sat, 30 Sep 2023 09:52:46 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D66C5F80552;
-	Sat, 30 Sep 2023 09:52:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2D6DAF80568;
+	Sat, 30 Sep 2023 09:52:45 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 35821F801F5; Sat, 23 Sep 2023 08:21:25 +0200 (CEST)
-Received: from m12.mail.163.com (m12.mail.163.com [220.181.12.198])
-	by alsa1.perex.cz (Postfix) with ESMTP id AE044F800AA
-	for <alsa-devel@alsa-project.org>; Sat, 23 Sep 2023 08:21:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AE044F800AA
+	id 76BA1F801F5; Sat, 23 Sep 2023 11:10:32 +0200 (CEST)
+Received: from m15.mail.163.com (m15.mail.163.com [45.254.50.219])
+	by alsa1.perex.cz (Postfix) with ESMTP id 91A22F800AA
+	for <alsa-devel@alsa-project.org>; Sat, 23 Sep 2023 11:10:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 91A22F800AA
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=163.com header.i=@163.com header.a=rsa-sha256
- header.s=s110527 header.b=Vuxe9H+d
+ header.s=s110527 header.b=hRcmq5wq
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:Subject:Date:Message-Id; bh=mNK4p31V/ZLMBUmi5U
-	KGQSJ6tS3MD1wGMkK0tMwsMz0=; b=Vuxe9H+d8ubxiqdUvEIfZCmSzjUHyLy0ti
-	CEMXSy2axpwU0pwakmAcsErSoMw1CoY46X3eTI2UniuMoQvUmztbSvH1unkn7Gkx
-	uswDF/zdq71inJbCYNXden8BmUslGMW8WJ4pQu7eSa7kuoFQ1Ne65Qdr4QTm5Kw4
-	I94gM/Wb4=
+	s=s110527; h=From:Subject:Date:Message-Id; bh=WVhvNnkbbz8M0re/Wi
+	YwjHnFm1UGmVpvLG1PcR3SdAI=; b=hRcmq5wqODiNxRS/FVTKSh9QJ6pth6/ODk
+	vXEIyEtxoxeL4JpgyyT++jAweM2ENHe69kjpqLZlsl6LlhqhbYOXxXnsrWxG/Rsp
+	xLvk6vAeStzOyGS7Ct7xC8s+/uuMXDRr4wsp6A45HKmtsJvKKKbr32R5Q+9+FSJO
+	AphmWeiMI=
 Received: from localhost.localdomain (unknown [223.104.131.178])
-	by zwqz-smtp-mta-g5-2 (Coremail) with SMTP id
- _____wAHmhfTgw5l5cJ1Cw--.48056S2;
-	Sat, 23 Sep 2023 14:21:09 +0800 (CST)
+	by zwqz-smtp-mta-g2-2 (Coremail) with SMTP id
+ _____wCnYT95qw5lHeluCw--.48095S2;
+	Sat, 23 Sep 2023 17:10:19 +0800 (CST)
 From: liuhaoran <liuhaoran14@163.com>
 To: perex@perex.cz
 Cc: tiwai@suse.com,
 	alsa-devel@alsa-project.org,
 	liuhaoran <liuhaoran14@163.com>
-Subject: [PATCH] ASoC: img: Add error handling for clk_set_rate in
- img_prl_out_hw_params
-Date: Sat, 23 Sep 2023 14:20:54 +0800
-Message-Id: <20230923062054.19325-1-liuhaoran14@163.com>
+Subject: [PATCH] ASoC: loongson: Add error handling in loongson_pcm_open
+Date: Sat, 23 Sep 2023 17:10:04 +0800
+Message-Id: <20230923091004.26211-1-liuhaoran14@163.com>
 X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: _____wAHmhfTgw5l5cJ1Cw--.48056S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrtFW5Xw1DGr45CFW3tw1rXrb_yoWfAFcEvw
-	4xWa40gryDt397K3y5Gw43tr9ayrs7CF1UCr1vqr4fJryUCryrGaykAa93urW8Zr18Cry8
-	Kw4vvrWrCFy8CjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUjhFx5UUUUU==
+X-CM-TRANSID: _____wCnYT95qw5lHeluCw--.48095S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxJr1UGrW3AFyrKF18Jw17GFg_yoW8JF4xpr
+	Z3C3yDWrW5J3WF9F98JFWfJr1fA3yS9FWfXrWay340krZrCw1YgryUJF1j9FWxCrW5GF1U
+	ZrWxWFZxCF13AFUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UV6wtUUUUU=
 X-Originating-IP: [223.104.131.178]
-X-CM-SenderInfo: xolxxtxrud0iqu6rljoofrz/1tbibAPygmNfuKTXTwABsm
+X-CM-SenderInfo: xolxxtxrud0iqu6rljoofrz/1tbibBzzgmNfuLBqJgAAs5
 X-MailFrom: liuhaoran14@163.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: 3MH4RJXSKO3JBY7XI6R2ARRYFGEDH2MR
-X-Message-ID-Hash: 3MH4RJXSKO3JBY7XI6R2ARRYFGEDH2MR
-X-Mailman-Approved-At: Sat, 30 Sep 2023 07:52:36 +0000
+Message-ID-Hash: 4525PG2GQQ4QBQHYTXACCIM6X75CRWIY
+X-Message-ID-Hash: 4525PG2GQQ4QBQHYTXACCIM6X75CRWIY
+X-Mailman-Approved-At: Sat, 30 Sep 2023 07:52:41 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3MH4RJXSKO3JBY7XI6R2ARRYFGEDH2MR/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4525PG2GQQ4QBQHYTXACCIM6X75CRWIY/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -85,30 +84,42 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-This patch adds error-handling for the clk_set_rate() call inside
-the img_prl_out_hw_params function in the img-parallel-out.c file.
+This patch adds error-handling for the snd_pcm_hw_constraint_step() and
+snd_pcm_hw_constrain_integer() inside the img_prl_out_hw_params function
+in the loongson_dma.c file.
 
 Signed-off-by: liuhaoran <liuhaoran14@163.com>
 ---
- sound/soc/img/img-parallel-out.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ sound/soc/loongson/loongson_dma.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/img/img-parallel-out.c b/sound/soc/img/img-parallel-out.c
-index 815e68a7048c..698e9e92ded9 100644
---- a/sound/soc/img/img-parallel-out.c
-+++ b/sound/soc/img/img-parallel-out.c
-@@ -137,7 +137,10 @@ static int img_prl_out_hw_params(struct snd_pcm_substream *substream,
- 	if (channels != 2)
- 		return -EINVAL;
+diff --git a/sound/soc/loongson/loongson_dma.c b/sound/soc/loongson/loongson_dma.c
+index 47d6551903fc..af9e6a881a2a 100644
+--- a/sound/soc/loongson/loongson_dma.c
++++ b/sound/soc/loongson/loongson_dma.c
+@@ -240,17 +240,17 @@ static int loongson_pcm_open(struct snd_soc_component *component,
  
--	clk_set_rate(prl->clk_ref, rate * 256);
-+	int ret = clk_set_rate(prl->clk_ref, rate * 256);
-+
-+	if (!ret)
-+		return ret;
+ 	ret = snd_pcm_hw_constraint_step(runtime, 0,
+ 				   SNDRV_PCM_HW_PARAM_PERIOD_BYTES, 128);
+-	if (ret<0)
++	if (ret < 0)
+ 		return ret;
  
- 	reg = img_prl_out_readl(prl, IMG_PRL_OUT_CTL);
- 	reg = (reg & ~IMG_PRL_OUT_CTL_PACKH_MASK) | control_set;
+-	error = snd_pcm_hw_constraint_step(runtime, 0,
++	ret = snd_pcm_hw_constraint_step(runtime, 0,
+ 				   SNDRV_PCM_HW_PARAM_BUFFER_BYTES, 128);
+-	if (ret<0)
++	if (ret < 0)
+ 		return ret;
+ 	
+-	error = snd_pcm_hw_constraint_integer(substream->runtime,
++	ret = snd_pcm_hw_constraint_integer(substream->runtime,
+ 				      SNDRV_PCM_HW_PARAM_PERIODS);
+-	if (ret<0)
++	if (ret < 0)
+ 		return ret;
+ 
+ 	snd_soc_set_runtime_hwparams(substream, &ls_pcm_hardware);
 -- 
 2.17.1
 
