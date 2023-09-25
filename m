@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DC721CE7A81
-	for <alsa-devel@archiver.kernel.org>; Mon, 25 Sep 2023 12:01:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BE448CE7A81
+	for <alsa-devel@archiver.kernel.org>; Mon, 25 Sep 2023 12:02:16 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 16228DF1;
-	Mon, 25 Sep 2023 14:01:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 16228DF1
+	by alsa0.perex.cz (Postfix) with ESMTPS id E186BE7B;
+	Mon, 25 Sep 2023 14:01:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E186BE7B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1695643311;
-	bh=1udrsUXKWi9M5QA0dgKm3W8B4ZxeJLuI6NUL+L3z7G8=;
+	s=default; t=1695643334;
+	bh=7IaqF9tqYde7TGQs9NJExhz5C/UJMuSbNyTLxe/uCYo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=dnf7Z1Gxx9kL2FGSPvdkeJan7L56Brmc/eQ0lI3RSMtFJCOiYaf/50txDqGOHZA9u
-	 tlFSeOPXe0EPzKZVtsBvbiLGZUsgNvuGmFo46vQ0zeTkOHxAlQ5Quvnbw9c0SltAtC
-	 Scbf9liErNpmwyJ+dNYAnmmBk4q1lThbNx4IhHWI=
+	b=YTVz55xj8tl4Pw8LCJtRcQcxvX79aU2Xfk5yViw9LlQztzdnY6Wqs7qhjjqXUXiAM
+	 dPzCaeNij812wnefsrJIy88WDhuk+K3loL4PcsUrUNlolg52g/KIvPei6PYMyRcy/v
+	 kWlytWDLqjpz8nc4IZN9UpyW7kKAFHxMyazKNDgY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CC6F7F80567; Mon, 25 Sep 2023 14:00:52 +0200 (CEST)
+	id 80577F8057F; Mon, 25 Sep 2023 14:00:55 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 21507F80553;
-	Mon, 25 Sep 2023 14:00:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8F2BBF8055A;
+	Mon, 25 Sep 2023 14:00:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E4541F80553; Mon, 25 Sep 2023 14:00:49 +0200 (CEST)
+	id 3A943F8047D; Mon, 25 Sep 2023 14:00:50 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E50AAF8047D
-	for <alsa-devel@alsa-project.org>; Mon, 25 Sep 2023 13:59:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E50AAF8047D
+	by alsa1.perex.cz (Postfix) with ESMTPS id 62C82F80290
+	for <alsa-devel@alsa-project.org>; Mon, 25 Sep 2023 13:59:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 62C82F80290
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=WCjuRFa8
+ header.s=Intel header.b=HdOdjufG
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695643175; x=1727179175;
+  t=1695643173; x=1727179173;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=1udrsUXKWi9M5QA0dgKm3W8B4ZxeJLuI6NUL+L3z7G8=;
-  b=WCjuRFa8VWU2ckw4jJ70XW2P9oH/dtaepahl+dl3yfXnxFxvH0ZRhImS
-   fNATnVqk1qpAOxXeiOJlHnmltu7Y/egkgoUbWB39CkN7/5I/SmM+KyBZF
-   Lp/3nXrbLLLatPc9fWVovbTes+XtLAMZq6CAIxquzTOSpI1Fp8hEZ2OrH
-   ip9vIqttCX4UEMaiHBq3MBM4D0DRxyst5hvTbWFXF5BD22gjyUCX6ORrN
-   RReHX98Ky4TFqtwRnlMVgJv2CL5Dkt7/4+wU7A+F+Du/9tqki7NZUnr1L
-   baVwVPPrGrsp/mdcqnfiF5mxdsQLCj3Ft3ZZlqwQEIxJDqSUHdAeKpcx7
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="383993033"
+  bh=7IaqF9tqYde7TGQs9NJExhz5C/UJMuSbNyTLxe/uCYo=;
+  b=HdOdjufGHVxrcEjpC7k8vB3aOpXOLq7OY9mZFrOb+Wzi1+vTzjfrgmP+
+   24VfoqnngX6Havrx3id+xCfk0jZoN2SV+Bnj7VnrFCFs/rtuIzzswGf0/
+   Wx5eZlwMgy+AQQVPplyeruXV/ylmcDQcOD7DnEbFS2fM3qKyXITE5kXiF
+   HKWIQhQRL44rZ7jiYRmXBbNMefqo6cg+NmlWhCKtYbex07awelz9X7UCh
+   DWVLc0bMTXdIxTul8oHugLY1z4dGYi5/mbRgZymmuXeFAm39HG2+pCPOf
+   5Sc32VdYME341ns9W/UW2tXzfRL/zmNDQciuW85wjXdkIK26cE2g2q8Pv
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="383993025"
 X-IronPort-AV: E=Sophos;i="6.03,174,1694761200";
-   d="scan'208";a="383993033"
+   d="scan'208";a="383993025"
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
   by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Sep 2023 04:59:31 -0700
+ 25 Sep 2023 04:59:29 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="813938145"
+X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="813938132"
 X-IronPort-AV: E=Sophos;i="6.03,174,1694761200";
-   d="scan'208";a="813938145"
+   d="scan'208";a="813938132"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
-  by fmsmga008.fm.intel.com with ESMTP; 25 Sep 2023 04:59:29 -0700
+  by fmsmga008.fm.intel.com with ESMTP; 25 Sep 2023 04:59:27 -0700
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: broonie@kernel.org,
 	tiwai@suse.com
@@ -72,16 +72,16 @@ Cc: alsa-devel@alsa-project.org,
 	pierre-louis.bossart@linux.intel.com,
 	hdegoede@redhat.com,
 	Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: [PATCH 4/4] ASoC: Intel: Skylake: Use helper to setup HOST stream
-Date: Mon, 25 Sep 2023 13:58:44 +0200
-Message-Id: <20230925115844.18795-5-cezary.rojewski@intel.com>
+Subject: [PATCH 3/4] ASoC: Intel: avs: Use helper to setup HOST stream
+Date: Mon, 25 Sep 2023 13:58:43 +0200
+Message-Id: <20230925115844.18795-4-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230925115844.18795-1-cezary.rojewski@intel.com>
 References: <20230925115844.18795-1-cezary.rojewski@intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: HZHULS73TQSZU6RE66WOPMYGTGB7PYYT
-X-Message-ID-Hash: HZHULS73TQSZU6RE66WOPMYGTGB7PYYT
+Message-ID-Hash: 5R6N4GBQKR5GFHK5G32ZYALPNANOINKZ
+X-Message-ID-Hash: 5R6N4GBQKR5GFHK5G32ZYALPNANOINKZ
 X-MailFrom: cezary.rojewski@intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -94,9 +94,8 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HZHULS73TQSZU6RE66WOPMYGTGB7PYYT/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5R6N4GBQKR5GFHK5G32ZYALPNANOINKZ/>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
@@ -108,40 +107,21 @@ Simplify the code by using it.
 
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 ---
- sound/soc/intel/skylake/skl-pcm.c | 14 +-------------
- 1 file changed, 1 insertion(+), 13 deletions(-)
+ sound/soc/intel/avs/pcm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
-index ac3dc8c63c26..7502b2e70e46 100644
---- a/sound/soc/intel/skylake/skl-pcm.c
-+++ b/sound/soc/intel/skylake/skl-pcm.c
-@@ -124,7 +124,6 @@ static void skl_set_suspend_active(struct snd_pcm_substream *substream,
- int skl_pcm_host_dma_prepare(struct device *dev, struct skl_pipe_params *params)
- {
- 	struct hdac_bus *bus = dev_get_drvdata(dev);
--	struct skl_dev *skl = bus_to_skl(bus);
- 	unsigned int format_val;
- 	struct hdac_stream *hstream;
- 	struct hdac_ext_stream *stream;
-@@ -149,18 +148,7 @@ int skl_pcm_host_dma_prepare(struct device *dev, struct skl_pipe_params *params)
- 	if (err < 0)
- 		return err;
+diff --git a/sound/soc/intel/avs/pcm.c b/sound/soc/intel/avs/pcm.c
+index 8565a530706d..e628fdfdc018 100644
+--- a/sound/soc/intel/avs/pcm.c
++++ b/sound/soc/intel/avs/pcm.c
+@@ -625,7 +625,7 @@ static int avs_dai_fe_prepare(struct snd_pcm_substream *substream, struct snd_so
+ 	if (ret < 0)
+ 		return ret;
  
--	/*
--	 * The recommended SDxFMT programming sequence for BXT
--	 * platforms is to couple the stream before writing the format
--	 */
--	if (HDA_CONTROLLER_IS_APL(skl->pci)) {
--		snd_hdac_ext_stream_decouple(bus, stream, false);
--		err = snd_hdac_stream_setup(hdac_stream(stream));
--		snd_hdac_ext_stream_decouple(bus, stream, true);
--	} else {
--		err = snd_hdac_stream_setup(hdac_stream(stream));
--	}
--
-+	err = snd_hdac_ext_host_stream_setup(stream);
- 	if (err < 0)
- 		return err;
+-	ret = snd_hdac_stream_setup(hdac_stream(host_stream));
++	ret = snd_hdac_ext_host_stream_setup(host_stream);
+ 	if (ret < 0)
+ 		return ret;
  
 -- 
 2.25.1
