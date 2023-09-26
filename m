@@ -4,104 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 92A5BE7E636
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 Sep 2023 13:31:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2E24CE7E648
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 Sep 2023 15:08:35 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8C34DE7A;
-	Tue, 26 Sep 2023 15:30:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8C34DE7A
+	by alsa0.perex.cz (Postfix) with ESMTPS id CD98B829;
+	Tue, 26 Sep 2023 17:07:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CD98B829
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1695735070;
-	bh=VZX7lHzYcH50gScj6Du2G4mI0CLftcbNVNeTUfrR5ok=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
+	s=default; t=1695740912;
+	bh=dMkPat5SysTqeHQNXfaF030bIQgy5IudxutWzuQNBVQ=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=fpcUZNjarl8A6z3BJCRvZPNNn6Ky7x8BcaBLnnm9gtQdxQpvmqhMiNgnva3Uyl8RX
-	 kH4aIEHFRk2F5TKnWRY5wptErUNTVIMLL5y6/KsHOQ3329Sce9eShR5PfwNyIokGP6
-	 voQnZCbqVKzg9qGsIeYklMDHBpGAnqlCPWSLVra8=
+	b=jcmdndX7X4w0SIPOfgIb9n7zWnKUDLrcXY+sy1r9kbUh/aqqv3NEIxVnETQlbsCay
+	 KmSGDtp+8pNsk6ZMBpZhU/q6NpENmmTCOvtbze2tA+9g4mBJ+vcb4Wek1qsv//FJkf
+	 bSwwyP8OYmwiDyeN3myq/6vEHCjrBuY/vTvzaeb4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 69777F805B0; Tue, 26 Sep 2023 15:29:00 +0200 (CEST)
+	id 671F4F80290; Tue, 26 Sep 2023 17:07:42 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0EB1DF805B1;
-	Tue, 26 Sep 2023 15:28:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2CB0EF8016A;
+	Tue, 26 Sep 2023 17:07:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 28141F8016A; Tue, 26 Sep 2023 15:26:38 +0200 (CEST)
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com
- [IPv6:2a00:1450:4864:20::12c])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	id 36FA8F8016A; Tue, 26 Sep 2023 17:07:35 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7A676F80166
-	for <alsa-devel@alsa-project.org>; Tue, 26 Sep 2023 15:25:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7A676F80166
+	by alsa1.perex.cz (Postfix) with ESMTPS id E5A95F8001D
+	for <alsa-devel@alsa-project.org>; Tue, 26 Sep 2023 17:07:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E5A95F8001D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=GW0XRq4l
-Received: by mail-lf1-x12c.google.com with SMTP id
- 2adb3069b0e04-503012f4e71so12014041e87.0
-        for <alsa-devel@alsa-project.org>;
- Tue, 26 Sep 2023 06:25:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695734739; x=1696339539;
- darn=alsa-project.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=hr5amuTNg43g84vy8vdnricessR4/d7Wx6XjZcS7tVE=;
-        b=GW0XRq4lzPnKhhjYyubRXKNZxHDmbVOjxbXEFH284oBfB/QPfCSZIYR49ArOxm7rCY
-         TbfisdVS63dOIn1aB1NZ5So9gByqbZTdz3n0Egk9GWfcjfUs+oQrmUQDrmquZvZFSw9k
-         4Re46CCh6hY3+TKmzdlodd8pTwFXlaOHQuc0iYlbaS5mlEPd+IbKB2VbDx5Gkpqht1nZ
-         e043VXchlQNvkbcB/XbJGcX+/q5s74IJB0SQGcG2ot9gdrjuNdYV4z6/y20IGa1Q5D94
-         ND57cp9RqnvTTB8rgYoA3kmm55RXksaNcnuMTk1OyLNeGNIbyYzG2VfCYGtI29L1muP6
-         bQQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695734739; x=1696339539;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hr5amuTNg43g84vy8vdnricessR4/d7Wx6XjZcS7tVE=;
-        b=NCqIkNSHy0D6HePTonHJsGsFs+fbfo7kHTbdEFdJB4BGJf/X9v+cLtxvMGUQG/jgww
-         7AJ8CunCTOyBMlEPyw9/UdEoIr3QmPW9cb8U+Ex2teXbQHEvSxR9GABnDAkjeHiXaivP
-         r8tYpWN+PZpg/dipHY1zuni21PbyEiK9iGeUkBkS0G6zp2zfJazVj72uISTKHLHE10Xu
-         n/5GHehd9B9TkItsQYWsVLHx1GgiVdRnapawkR3zh5wbzS4roYukX1Kpe6vOJVed2SjT
-         USiI9lM2mwP/GmnChwsaayHQv9xaD+C/GxQ8rCa9QvsnxMS8o60/DWNKP/42xF1R7Xl8
-         SYlg==
-X-Gm-Message-State: AOJu0Yyxfy0IaY+v7wUVE67UPagaicAUAt0hLFZhhpMhslbPoh/wU/M1
-	1Cvq03qv9CoMj6pQrkGBdkEZxQ==
-X-Google-Smtp-Source: 
- AGHT+IGhCkADecUplAXbs0IyJ40nh2sd47gAxE7FjpqNC2VQj9VPtPn0k3sCnuX/N/x/fkycKRNmpg==
-X-Received: by 2002:a05:6512:114d:b0:501:bf37:262a with SMTP id
- m13-20020a056512114d00b00501bf37262amr1239953lfg.32.1695734739514;
-        Tue, 26 Sep 2023 06:25:39 -0700 (PDT)
-Received: from [127.0.1.1] ([85.235.12.238])
-        by smtp.gmail.com with ESMTPSA id
- eq25-20020a056512489900b0050307bf2bcdsm2221540lfb.247.2023.09.26.06.25.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Sep 2023 06:25:39 -0700 (PDT)
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Tue, 26 Sep 2023 15:25:33 +0200
-Subject: [PATCH 5/5] ASoC: ti: osk5912: Drop unused include
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=ujsXl/1N
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by ams.source.kernel.org (Postfix) with ESMTP id CF87CB81081;
+	Tue, 26 Sep 2023 15:07:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 545EAC433C9;
+	Tue, 26 Sep 2023 15:07:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1695740833;
+	bh=dMkPat5SysTqeHQNXfaF030bIQgy5IudxutWzuQNBVQ=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=ujsXl/1Nv8KE2evIgH5hWf4kNmGc4ef+8ZpkjU7oL1dZHDJHzI7fhwXmAsxr4O03m
+	 J9IV5gB3ZF/VXUPfa+sHRFBOGqDVxxHIPont7eYa0D2e4Nu0Wi5wnmvjPwhI660QZO
+	 Gxp5kMfk2vENWCj32HsuWpkuK0rqifg64KHXAGqz+W3Yntvm3C2TjQfYOuZVicAG5N
+	 lurqpuV8VgS6v8wX/IG2acUrY/oUx83YHRXViQjZWltPVYTEv5t9Pg8Rky11tYab2I
+	 kcK2OFqMLkz/dXicxzltMDesufljoDrG6K7+s4bLMQNnQXCNRTcKUgNEUwuj71aHFc
+	 tQ47tdWxDoijA==
+From: Mark Brown <broonie@kernel.org>
+To: Liam Girdwood <lgirdwood@gmail.com>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Herve Codina <herve.codina@bootlin.com>,
+ Shenghao Ding <shenghao-ding@ti.com>, Kevin Lu <kevin-lu@ti.com>,
+ Baojun Xu <baojun.xu@ti.com>,
+ David Rau <David.Rau.opensource@dm.renesas.com>,
+ Damien Horsley <Damien.Horsley@imgtec.com>,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Rob Herring <robh@kernel.org>
+Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+In-Reply-To: <20230925220947.2031536-1-robh@kernel.org>
+References: <20230925220947.2031536-1-robh@kernel.org>
+Subject: Re: [PATCH] ASoC: dt-bindings: Add missing
+ (unevaluated|additional)Properties on child node schemas
+Message-Id: <169574083005.2649266.12499263818632259969.b4-ty@kernel.org>
+Date: Tue, 26 Sep 2023 17:07:10 +0200
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230926-descriptors-asoc-ti-v1-5-60cf4f8adbc5@linaro.org>
-References: <20230926-descriptors-asoc-ti-v1-0-60cf4f8adbc5@linaro.org>
-In-Reply-To: <20230926-descriptors-asoc-ti-v1-0-60cf4f8adbc5@linaro.org>
-To: Tony Lindgren <tony@atomide.com>,
- Peter Ujfalusi <peter.ujfalusi@gmail.com>,
- Jarkko Nikula <jarkko.nikula@bitmer.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- alsa-devel@alsa-project.org, Linus Walleij <linus.walleij@linaro.org>
-X-Mailer: b4 0.12.3
-Message-ID-Hash: NJCTBNPVBQUPQVM75XDCC3BHT5QZ5CDU
-X-Message-ID-Hash: NJCTBNPVBQUPQVM75XDCC3BHT5QZ5CDU
-X-MailFrom: linus.walleij@linaro.org
+X-Mailer: b4 0.13-dev-099c9
+Message-ID-Hash: ZLBSIPAZUCRWAVVGYJ3IYL3MU7DFDMV6
+X-Message-ID-Hash: ZLBSIPAZUCRWAVVGYJ3IYL3MU7DFDMV6
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -113,7 +92,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NJCTBNPVBQUPQVM75XDCC3BHT5QZ5CDU/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZLBSIPAZUCRWAVVGYJ3IYL3MU7DFDMV6/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -122,27 +101,41 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-This driver includes the legacy header <linux/gpio.h> but doesn't
-use it. Drop the include.
+On Mon, 25 Sep 2023 17:09:28 -0500, Rob Herring wrote:
+> Just as unevaluatedProperties or additionalProperties are required at
+> the top level of schemas, they should (and will) also be required for
+> child node schemas. That ensures only documented properties are
+> present for any node.
+> 
+> Add unevaluatedProperties or additionalProperties as appropriate.
+> 
+> [...]
 
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
----
- sound/soc/ti/osk5912.c | 1 -
- 1 file changed, 1 deletion(-)
+Applied to
 
-diff --git a/sound/soc/ti/osk5912.c b/sound/soc/ti/osk5912.c
-index 2790c8915f55..12f0c3a15201 100644
---- a/sound/soc/ti/osk5912.c
-+++ b/sound/soc/ti/osk5912.c
-@@ -14,7 +14,6 @@
- #include <sound/soc.h>
- 
- #include <asm/mach-types.h>
--#include <linux/gpio.h>
- #include <linux/module.h>
- #include <linux/platform_data/asoc-ti-mcbsp.h>
- 
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
--- 
-2.34.1
+Thanks!
+
+[1/1] ASoC: dt-bindings: Add missing (unevaluated|additional)Properties on child node schemas
+      commit: 7b71da59122c3ab82908910abf78db1fd6340cac
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
 
