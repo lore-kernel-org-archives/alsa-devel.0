@@ -4,84 +4,104 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B2EDE7E632
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 Sep 2023 13:09:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 224B5E7E635
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 Sep 2023 13:29:22 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 82F18BC0;
-	Tue, 26 Sep 2023 15:08:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 82F18BC0
+	by alsa0.perex.cz (Postfix) with ESMTPS id BEADC1E8;
+	Tue, 26 Sep 2023 15:28:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BEADC1E8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1695733767;
-	bh=nj7Pno7gxKRpYeFnO5r1L7tRE2na9od26GJPA9cmoRY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1695734958;
+	bh=+mW+ItO2ncTEv3r/3Ag6MY6WLi9b6nycGVL/4Q2gVPk=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=sMloAUgWWwUZwqz5+LGOdN1E6hewv1Yj2k4JwBMxNkqGDsA1pJ6YVQ8nXcoIFQ4qr
-	 1ASvng/gnmDOsTp72kcyObxafoPRU/tv2em4NCUGsQl14Fl3IGDLzjCNZBWXattlp9
-	 +UqkFhojC+0pCJybAzf3WTDrso8B2HEBxOYTmu9c=
+	b=X7brE6ajdbXGAjxPKGFFKI6d0CiB5GniXGs0xBqkgGGuAFOUmby1YxMQqJdLRUohW
+	 9Wc8BdYMI3I0aOWvC5Gbojc2wtc+i2hULPrTY9p1XqVW8XGEqshpj3DfZxBRZS7oN0
+	 saNsMtNC6xy94d2tgEf2jA1JnhvTf3ZdGAM/iVRY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 14A52F8001D; Tue, 26 Sep 2023 15:07:46 +0200 (CEST)
+	id AB0CBF800AE; Tue, 26 Sep 2023 15:28:27 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5FEF3F801D5;
-	Tue, 26 Sep 2023 15:07:43 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DF1C6F8001D;
+	Tue, 26 Sep 2023 15:28:24 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C2E09F801D5; Tue, 26 Sep 2023 15:07:11 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	id 137FEF80552; Tue, 26 Sep 2023 15:26:05 +0200 (CEST)
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com
+ [IPv6:2a00:1450:4864:20::131])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 4FBEAF800AE
-	for <alsa-devel@alsa-project.org>; Tue, 26 Sep 2023 15:06:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4FBEAF800AE
+	by alsa1.perex.cz (Postfix) with ESMTPS id 1A1F1F80290
+	for <alsa-devel@alsa-project.org>; Tue, 26 Sep 2023 15:25:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1A1F1F80290
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=LsTkHnL+
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 94D4761491;
-	Tue, 26 Sep 2023 13:06:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05736C433C8;
-	Tue, 26 Sep 2023 13:06:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1695733591;
-	bh=nj7Pno7gxKRpYeFnO5r1L7tRE2na9od26GJPA9cmoRY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=LsTkHnL+6Gku6jK1CrWtDSHYgBlZFoUkeW85VJlnCA2VJfgl+VdLRc1KdBwA3ddze
-	 GnvDYhB+gobdJsh2F9tLYu6jFTKL4t9FvI+d2NuWIJNOj4OeMtD0FfPIoQRCm4PY7l
-	 AeNDe2d/BANbs941hh7vjo32zrGFxelZzKkzbUlnVQyD8FJt641HPC441YFKrF9A7K
-	 c0EeNsL7xLQG6A72wQ2zRk3ujrUCH86Tv2yw0GQ2OmJKXKe9DiAZMz6RcSkO5HAhfV
-	 s7wOluArGcS6ljG5riOpXja14UG0qj2MQTQPlq1Oi02n+8xZkVUlKVQky0P4UnSz/B
-	 baLx3rZxaRD0w==
-Date: Tue, 26 Sep 2023 14:06:25 +0100
-From: Conor Dooley <conor@kernel.org>
-To: Rob Herring <robh@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Herve Codina <herve.codina@bootlin.com>,
-	Shenghao Ding <shenghao-ding@ti.com>, Kevin Lu <kevin-lu@ti.com>,
-	Baojun Xu <baojun.xu@ti.com>,
-	David Rau <David.Rau.opensource@dm.renesas.com>,
-	Damien Horsley <Damien.Horsley@imgtec.com>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-	alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH] ASoC: dt-bindings: Add missing
- (unevaluated|additional)Properties on child node schemas
-Message-ID: <20230926-freewill-treachery-81fb636e537e@spud>
-References: <20230925220947.2031536-1-robh@kernel.org>
+ unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
+ header.s=google header.b=jf6/6ZXD
+Received: by mail-lf1-x131.google.com with SMTP id
+ 2adb3069b0e04-50335f6b48dso15018988e87.3
+        for <alsa-devel@alsa-project.org>;
+ Tue, 26 Sep 2023 06:25:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1695734738; x=1696339538;
+ darn=alsa-project.org;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=eSwx/b4rntThA+gqocWEhyhWPDC/t/D3gklrenCSnqA=;
+        b=jf6/6ZXDBFEoyzQ56LVt9Kmq191BwlQOWj6mnNKbWyf0G3Yl/05VJvKCHb6xrAL8n8
+         YThFuAbmAEgg+36BX5PTKymEbvw+CZxmv1Khe4KGrvas7Q413AHbs7sHgI24ImGpOWdI
+         CqEEhwNHktl+CtLIU5BDyQbJn3VfUz9nAjCAvW9AQZpoXM4dKrL77f+/JB/lvYfCZd1Q
+         5oXDw31HqdVXr5OOHzfmoX/TrupLbt94sTsBaQyOgNE4wRPxK2acbcn8OXVaFeYF6/ay
+         veYfRLnIRsaZG0IDBOupGg5mW1L+oBjsdn/2ZFvwvkHtjhPJS1yzl+yXp1gvIPpOL4oX
+         bgow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695734738; x=1696339538;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=eSwx/b4rntThA+gqocWEhyhWPDC/t/D3gklrenCSnqA=;
+        b=f7SVN2Gu2TF6RpmztX7BDyO0LSfIRHRGygZett5z+N0jLWYuG2TwcbJF/+PwAOutZy
+         iGo5uFWRItQgRvEZrE5eHtOuREBX6UfUHf5gHjPwH3oy579DeMVNWPD9amHgOyyz7u9w
+         NeTK7GIt4wGRLcnTS9m0CLrUXT630wKiK9nI+N/bvU9ArhKH26gpXUowjz96oBdrPBTC
+         PKQCpIctAQHg+HBfjvVg3qcJtR4YWz5sEWmSX5wQkQ1qDeiPqMr683mp6Wly3HU1TP7a
+         6ZpqU4qUFAPkZgcN+oZ800iDb2T00oqIJ++8Yw6c0JyvX7mPYJoiBZt6FFzCCBdw01gf
+         Bm1g==
+X-Gm-Message-State: AOJu0YzeBxxqYwf2w4Prr37d6tHi+BS3CC2Kya+uGdpFX5UBzp24GDo7
+	LLtx9B8ESAz5efwpTBWG9VtPgg==
+X-Google-Smtp-Source: 
+ AGHT+IHbc+35uDWrkEivnndc1O1s8dDLRqOAC93DpPEiyvRCo+RGrZSf7R/WlQvJuC7dgDELyQzkng==
+X-Received: by 2002:a19:f508:0:b0:503:3781:ac32 with SMTP id
+ j8-20020a19f508000000b005033781ac32mr8255259lfb.41.1695734738627;
+        Tue, 26 Sep 2023 06:25:38 -0700 (PDT)
+Received: from [127.0.1.1] ([85.235.12.238])
+        by smtp.gmail.com with ESMTPSA id
+ eq25-20020a056512489900b0050307bf2bcdsm2221540lfb.247.2023.09.26.06.25.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Sep 2023 06:25:38 -0700 (PDT)
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Tue, 26 Sep 2023 15:25:32 +0200
+Subject: [PATCH 4/5] ASoC: ti: Convert Pandora ASoC to GPIO descriptors
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="pRkokaTksUJ87J4L"
-Content-Disposition: inline
-In-Reply-To: <20230925220947.2031536-1-robh@kernel.org>
-Message-ID-Hash: GMEGNBGKXEQG7RXVLXARE6PUTYDXIFO3
-X-Message-ID-Hash: GMEGNBGKXEQG7RXVLXARE6PUTYDXIFO3
-X-MailFrom: conor@kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20230926-descriptors-asoc-ti-v1-4-60cf4f8adbc5@linaro.org>
+References: <20230926-descriptors-asoc-ti-v1-0-60cf4f8adbc5@linaro.org>
+In-Reply-To: <20230926-descriptors-asoc-ti-v1-0-60cf4f8adbc5@linaro.org>
+To: Tony Lindgren <tony@atomide.com>,
+ Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+ Jarkko Nikula <jarkko.nikula@bitmer.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ alsa-devel@alsa-project.org, Linus Walleij <linus.walleij@linaro.org>
+X-Mailer: b4 0.12.3
+Message-ID-Hash: TOWMLI5LS3XDWN2VP3C2A3PB2QRHKO2U
+X-Message-ID-Hash: TOWMLI5LS3XDWN2VP3C2A3PB2QRHKO2U
+X-MailFrom: linus.walleij@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -93,7 +113,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GMEGNBGKXEQG7RXVLXARE6PUTYDXIFO3/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TOWMLI5LS3XDWN2VP3C2A3PB2QRHKO2U/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -102,85 +122,176 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+The Pandora uses GPIO descriptors pretty much exclusively, but not
+for ASoC, so let's fix it. Register the pins in a descriptor table
+in the machine since the ASoC device is not using device tree.
 
---pRkokaTksUJ87J4L
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Use static locals for the GPIO descriptors because I'm not able
+to experient with better state storage on any real hardware. Others
+using the Pandora can come afterwards and improve this.
 
-On Mon, Sep 25, 2023 at 05:09:28PM -0500, Rob Herring wrote:
-> Just as unevaluatedProperties or additionalProperties are required at
-> the top level of schemas, they should (and will) also be required for
-> child node schemas. That ensures only documented properties are
-> present for any node.
->=20
-> Add unevaluatedProperties or additionalProperties as appropriate.
->=20
-> Signed-off-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+---
+ arch/arm/mach-omap2/pdata-quirks.c | 10 ++++++
+ sound/soc/ti/omap3pandora.c        | 63 ++++++++++++++------------------------
+ 2 files changed, 33 insertions(+), 40 deletions(-)
 
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
+diff --git a/arch/arm/mach-omap2/pdata-quirks.c b/arch/arm/mach-omap2/pdata-quirks.c
+index c1c0121f478d..b947bacf23a3 100644
+--- a/arch/arm/mach-omap2/pdata-quirks.c
++++ b/arch/arm/mach-omap2/pdata-quirks.c
+@@ -275,9 +275,19 @@ static struct platform_device pandora_backlight = {
+ 	.id	= -1,
+ };
+ 
++static struct gpiod_lookup_table pandora_soc_audio_gpios = {
++	.dev_id = "soc-audio",
++	.table = {
++		GPIO_LOOKUP("gpio-112-127", 6, "dac", GPIO_ACTIVE_HIGH),
++		GPIO_LOOKUP("gpio-0-15", 14, "amp", GPIO_ACTIVE_HIGH),
++		{ }
++	},
++};
++
+ static void __init omap3_pandora_legacy_init(void)
+ {
+ 	platform_device_register(&pandora_backlight);
++	gpiod_add_lookup_table(&pandora_soc_audio_gpios);
+ }
+ #endif /* CONFIG_ARCH_OMAP3 */
+ 
+diff --git a/sound/soc/ti/omap3pandora.c b/sound/soc/ti/omap3pandora.c
+index a287e9747c2a..fa92ed97dfe3 100644
+--- a/sound/soc/ti/omap3pandora.c
++++ b/sound/soc/ti/omap3pandora.c
+@@ -7,7 +7,7 @@
+ 
+ #include <linux/clk.h>
+ #include <linux/platform_device.h>
+-#include <linux/gpio.h>
++#include <linux/gpio/consumer.h>
+ #include <linux/delay.h>
+ #include <linux/regulator/consumer.h>
+ #include <linux/module.h>
+@@ -21,12 +21,11 @@
+ 
+ #include "omap-mcbsp.h"
+ 
+-#define OMAP3_PANDORA_DAC_POWER_GPIO	118
+-#define OMAP3_PANDORA_AMP_POWER_GPIO	14
+-
+ #define PREFIX "ASoC omap3pandora: "
+ 
+ static struct regulator *omap3pandora_dac_reg;
++static struct gpio_desc *dac_power_gpio;
++static struct gpio_desc *amp_power_gpio;
+ 
+ static int omap3pandora_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_pcm_hw_params *params)
+@@ -78,9 +77,9 @@ static int omap3pandora_dac_event(struct snd_soc_dapm_widget *w,
+ 			return ret;
+ 		}
+ 		mdelay(1);
+-		gpio_set_value(OMAP3_PANDORA_DAC_POWER_GPIO, 1);
++		gpiod_set_value(dac_power_gpio, 1);
+ 	} else {
+-		gpio_set_value(OMAP3_PANDORA_DAC_POWER_GPIO, 0);
++		gpiod_set_value(dac_power_gpio, 0);
+ 		mdelay(1);
+ 		regulator_disable(omap3pandora_dac_reg);
+ 	}
+@@ -92,9 +91,9 @@ static int omap3pandora_hp_event(struct snd_soc_dapm_widget *w,
+ 	struct snd_kcontrol *k, int event)
+ {
+ 	if (SND_SOC_DAPM_EVENT_ON(event))
+-		gpio_set_value(OMAP3_PANDORA_AMP_POWER_GPIO, 1);
++		gpiod_set_value(amp_power_gpio, 1);
+ 	else
+-		gpio_set_value(OMAP3_PANDORA_AMP_POWER_GPIO, 0);
++		gpiod_set_value(amp_power_gpio, 0);
+ 
+ 	return 0;
+ }
+@@ -229,35 +228,10 @@ static int __init omap3pandora_soc_init(void)
+ 
+ 	pr_info("OMAP3 Pandora SoC init\n");
+ 
+-	ret = gpio_request(OMAP3_PANDORA_DAC_POWER_GPIO, "dac_power");
+-	if (ret) {
+-		pr_err(PREFIX "Failed to get DAC power GPIO\n");
+-		return ret;
+-	}
+-
+-	ret = gpio_direction_output(OMAP3_PANDORA_DAC_POWER_GPIO, 0);
+-	if (ret) {
+-		pr_err(PREFIX "Failed to set DAC power GPIO direction\n");
+-		goto fail0;
+-	}
+-
+-	ret = gpio_request(OMAP3_PANDORA_AMP_POWER_GPIO, "amp_power");
+-	if (ret) {
+-		pr_err(PREFIX "Failed to get amp power GPIO\n");
+-		goto fail0;
+-	}
+-
+-	ret = gpio_direction_output(OMAP3_PANDORA_AMP_POWER_GPIO, 0);
+-	if (ret) {
+-		pr_err(PREFIX "Failed to set amp power GPIO direction\n");
+-		goto fail1;
+-	}
+-
+ 	omap3pandora_snd_device = platform_device_alloc("soc-audio", -1);
+ 	if (omap3pandora_snd_device == NULL) {
+ 		pr_err(PREFIX "Platform device allocation failed\n");
+-		ret = -ENOMEM;
+-		goto fail1;
++		return -ENOMEM;
+ 	}
+ 
+ 	platform_set_drvdata(omap3pandora_snd_device, &snd_soc_card_omap3pandora);
+@@ -268,6 +242,20 @@ static int __init omap3pandora_soc_init(void)
+ 		goto fail2;
+ 	}
+ 
++	dac_power_gpio = devm_gpiod_get(&omap3pandora_snd_device->dev,
++					"dac", GPIOD_OUT_LOW);
++	if (IS_ERR(dac_power_gpio)) {
++		ret = PTR_ERR(dac_power_gpio);
++		goto fail3;
++	}
++
++	amp_power_gpio = devm_gpiod_get(&omap3pandora_snd_device->dev,
++					"amp", GPIOD_OUT_LOW);
++	if (IS_ERR(amp_power_gpio)) {
++		ret = PTR_ERR(amp_power_gpio);
++		goto fail3;
++	}
++
+ 	omap3pandora_dac_reg = regulator_get(&omap3pandora_snd_device->dev, "vcc");
+ 	if (IS_ERR(omap3pandora_dac_reg)) {
+ 		pr_err(PREFIX "Failed to get DAC regulator from %s: %ld\n",
+@@ -283,10 +271,7 @@ static int __init omap3pandora_soc_init(void)
+ 	platform_device_del(omap3pandora_snd_device);
+ fail2:
+ 	platform_device_put(omap3pandora_snd_device);
+-fail1:
+-	gpio_free(OMAP3_PANDORA_AMP_POWER_GPIO);
+-fail0:
+-	gpio_free(OMAP3_PANDORA_DAC_POWER_GPIO);
++
+ 	return ret;
+ }
+ module_init(omap3pandora_soc_init);
+@@ -295,8 +280,6 @@ static void __exit omap3pandora_soc_exit(void)
+ {
+ 	regulator_put(omap3pandora_dac_reg);
+ 	platform_device_unregister(omap3pandora_snd_device);
+-	gpio_free(OMAP3_PANDORA_AMP_POWER_GPIO);
+-	gpio_free(OMAP3_PANDORA_DAC_POWER_GPIO);
+ }
+ module_exit(omap3pandora_soc_exit);
+ 
 
-Thanks,
-Conor.
+-- 
+2.34.1
 
-> ---
->  Documentation/devicetree/bindings/sound/dialog,da7219.yaml | 1 +
->  Documentation/devicetree/bindings/sound/fsl,qmc-audio.yaml | 1 +
->  Documentation/devicetree/bindings/sound/ti,pcm3168a.yaml   | 1 +
->  3 files changed, 3 insertions(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/sound/dialog,da7219.yaml b=
-/Documentation/devicetree/bindings/sound/dialog,da7219.yaml
-> index eb7d219e2c86..19137abdba3e 100644
-> --- a/Documentation/devicetree/bindings/sound/dialog,da7219.yaml
-> +++ b/Documentation/devicetree/bindings/sound/dialog,da7219.yaml
-> @@ -89,6 +89,7 @@ properties:
-> =20
->    da7219_aad:
->      type: object
-> +    additionalProperties: false
->      description:
->        Configuration of advanced accessory detection.
->      properties:
-> diff --git a/Documentation/devicetree/bindings/sound/fsl,qmc-audio.yaml b=
-/Documentation/devicetree/bindings/sound/fsl,qmc-audio.yaml
-> index ff5cd9241941..b522ed7dcc51 100644
-> --- a/Documentation/devicetree/bindings/sound/fsl,qmc-audio.yaml
-> +++ b/Documentation/devicetree/bindings/sound/fsl,qmc-audio.yaml
-> @@ -33,6 +33,7 @@ patternProperties:
->      description:
->        A DAI managed by this controller
->      type: object
-> +    additionalProperties: false
-> =20
->      properties:
->        reg:
-> diff --git a/Documentation/devicetree/bindings/sound/ti,pcm3168a.yaml b/D=
-ocumentation/devicetree/bindings/sound/ti,pcm3168a.yaml
-> index b6a4360ab845..0b4f003989a4 100644
-> --- a/Documentation/devicetree/bindings/sound/ti,pcm3168a.yaml
-> +++ b/Documentation/devicetree/bindings/sound/ti,pcm3168a.yaml
-> @@ -60,6 +60,7 @@ properties:
-> =20
->    ports:
->      $ref: audio-graph-port.yaml#/definitions/port-base
-> +    unevaluatedProperties: false
->      properties:
->        port@0:
->          $ref: audio-graph-port.yaml#
-> --=20
-> 2.40.1
->=20
-
---pRkokaTksUJ87J4L
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZRLXUQAKCRB4tDGHoIJi
-0pghAP9+4AC2NOyTDvOOxue9O55ySqsVJ7XyGO5vj0hDxz+4vAD+JR0pthP9HqDu
-s11/vLsHj4O2ke1qIBfFm69Uq5wWhgo=
-=vDBg
------END PGP SIGNATURE-----
-
---pRkokaTksUJ87J4L--
