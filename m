@@ -4,84 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2BD68E7D24B
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 Sep 2023 08:10:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BEA1EE7D261
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 Sep 2023 08:34:50 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6EA97DFA;
-	Tue, 26 Sep 2023 10:09:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6EA97DFA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 10AC3AE9;
+	Tue, 26 Sep 2023 10:33:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 10AC3AE9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1695715798;
-	bh=UjHcxElqJT2Xn40h70QVPAzMGgQiQRJNiS+9s0Gk/2Y=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1695717288;
+	bh=dbbX1FFj5odJESaYerWrSHZZitlFANR1mu4B8lsyCEg=;
+	h=Date:From:To:CC:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=nVSPTafz6dawKfP/4I2nB5QHls3FaGgkuh5pfBaww+vAHbAYTFtRjgK4sYPHOeB5p
-	 gqgBfmIxuZjJ6Ub1DQ3G3s+FRH++gdDGwoGD7Fv+gUFkXPDKdtU9LnCtArz9KAZGc/
-	 2COvjHDF01QckWgQ+5JNe0L8Ts2STIyQ3tKLpskc=
+	b=vhKyXPDwtDFtI0K1SSFp8eQNZ/5LJJaTRp0Q9WnL4/4AErhBQWFUljiON5XQrCnAb
+	 8aJP86wVQqPxMd6bkbx3UUYnEohbkXpBuqE/g0EsslRJSQoLreQBOklU4S41wJ+BKX
+	 qBFeqvq8UdjHZLZnnqEZVQ8n8HUtz3rLmOyexpZg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id EF3E6F80578; Tue, 26 Sep 2023 10:08:37 +0200 (CEST)
+	id 68CF2F801D5; Tue, 26 Sep 2023 10:33:48 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7AF10F80578;
-	Tue, 26 Sep 2023 10:08:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DC5DDF8001D;
+	Tue, 26 Sep 2023 10:33:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6CD12F801D5; Tue, 26 Sep 2023 10:08:33 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 9D498F8016A; Tue, 26 Sep 2023 10:33:43 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id AB35DF8001D
-	for <alsa-devel@alsa-project.org>; Tue, 26 Sep 2023 10:08:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AB35DF8001D
+	by alsa1.perex.cz (Postfix) with ESMTPS id 4BA4AF8001D
+	for <alsa-devel@alsa-project.org>; Tue, 26 Sep 2023 10:33:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4BA4AF8001D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=Tbfzb396
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 581B261326;
-	Tue, 26 Sep 2023 08:08:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F12C4C433C8;
-	Tue, 26 Sep 2023 08:08:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1695715702;
-	bh=UjHcxElqJT2Xn40h70QVPAzMGgQiQRJNiS+9s0Gk/2Y=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=Tbfzb396Id5RYpSZusFkKdTiL9aPVNcGgS0A0dsHmqnoeaLC1HtiE+jwMZNzXUs9H
-	 uuRoqOoSaznBmPFFknL2+Obbdu3r2S8RdSLvjueky9tM0+prY6DIqOuHyWNXvEVpO1
-	 CQZaVkCTpHqMv04Zgn6xY9NV7Ynab9biQhu5D0HL9Bh0bRX9bvuaQ5avK/6cc0Ovfx
-	 AYLacydmC1YKFY3nr83v3IQDO1tvJPc/HkP656G6Tm+iwQDWPaMCm1NclDK6AaWwf4
-	 Gkk2ejWhkF/NzRyL/ZxjpS8AO1pfdyLbtwFwDqIZiqP7CN7Yn2SjJyCCn1UVy5CYHS
-	 c93sy0mgxUI7w==
-From: Mark Brown <broonie@kernel.org>
-To: Heiko Stuebner <heiko@sntech.de>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, David Airlie <airlied@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>, Lee Jones <lee@kernel.org>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Michael Turquette <mturquette@baylibre.com>,
- Stephen Boyd <sboyd@kernel.org>, Vinod Koul <vkoul@kernel.org>,
- Kishon Vijay Abraham I <kishon@kernel.org>, Alex Bee <knaerzche@gmail.com>
-Cc: Elaine Zhang <zhangqing@rock-chips.com>,
- Johan Jonker <jbx6244@gmail.com>, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org,
- linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
- alsa-devel@alsa-project.org, linux-clk@vger.kernel.org,
- linux-phy@lists.infradead.org
-In-Reply-To: <20230829171647.187787-1-knaerzche@gmail.com>
-References: <20230829171647.187787-1-knaerzche@gmail.com>
-Subject: Re: (subset) [PATCH 00/31] Fix and improve Rockchip RK3128 support
-Message-Id: <169571569769.2520438.14041840367987493896.b4-ty@kernel.org>
-Date: Tue, 26 Sep 2023 10:08:17 +0200
+ unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
+ header.s=PODMain02222019 header.b=CQSJsrUH
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+	by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id
+ 38Q50jYn008767;
+	Tue, 26 Sep 2023 03:33:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+	date:from:to:cc:subject:message-id:references:mime-version
+	:content-type:in-reply-to; s=PODMain02222019; bh=pAigu0GNj8nsOQO
+	fvrw9g4qUfEwLPwCd3czBjlCEqgE=; b=CQSJsrUH2IFeRqEisV/o6fnrhKPVocY
+	ClBdQbnZEdE8PTsF/GlnNdzzq/H251jFHPFxmKdIrMQ+oYOx+b2EXP5CDXEZZBaZ
+	tUZyNMwBj1k1l7GjU7Ljor51HSeVRE7GBhCxKouqkcLfH+636+o1QwA/DewBvZTB
+	XBUv7Q/QKugNX1IwUfc7AoQBEFmKs/jK9IBsagTteRn7NRC/0nCOQ2P8SurhSRrV
+	f1t+5Pn47ddUaK2RDk9tZG5JG63GtOsKD4Fg6OULSPDuaM7avT9Z8+bxhv2gnVj5
+	r6b6zZwYhdzZcwU4HM7l5FDMwIXNzjC5ypW91UNCVz5yjxeSHVcA4AQ==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3t9wdxktyf-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 26 Sep 2023 03:33:32 -0500 (CDT)
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Tue, 26 Sep
+ 2023 09:33:30 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.37 via Frontend Transport; Tue, 26 Sep 2023 09:33:30 +0100
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com
+ [198.61.86.93])
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id DE7E411CD;
+	Tue, 26 Sep 2023 08:33:29 +0000 (UTC)
+Date: Tue, 26 Sep 2023 08:33:29 +0000
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+CC: David Rhodes <david.rhodes@cirrus.com>,
+        James Schulman
+	<james.schulman@cirrus.com>,
+        Jaroslav Kysela <perex@perex.cz>, Liam Girdwood
+	<lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Richard Fitzgerald
+	<rf@opensource.cirrus.com>,
+        Takashi Iwai <tiwai@suse.com>, <alsa-devel@alsa-project.org>
+Subject: Re: [PATCH v2 39/54] ASoC: codec: cs47lxx: convert not to use
+ asoc_xxx()
+Message-ID: <20230926083329.GK103419@ediswmail.ad.cirrus.com>
+References: <87edilihhg.wl-kuninori.morimoto.gx@renesas.com>
+ <87ttrhfo3e.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-099c9
-Message-ID-Hash: A7OZF2VSCFFUS3TUKMXR27PURMLWIN64
-X-Message-ID-Hash: A7OZF2VSCFFUS3TUKMXR27PURMLWIN64
-X-MailFrom: broonie@kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <87ttrhfo3e.wl-kuninori.morimoto.gx@renesas.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-ORIG-GUID: MC0hPptXhD6pZaG5ydsX4W5T9ocHlttA
+X-Proofpoint-GUID: MC0hPptXhD6pZaG5ydsX4W5T9ocHlttA
+X-Proofpoint-Spam-Reason: safe
+Message-ID-Hash: OGK6PHBBSC42EYITEQMHHBSBT72EJBC2
+X-Message-ID-Hash: OGK6PHBBSC42EYITEQMHHBSBT72EJBC2
+X-MailFrom: prvs=4633103414=ckeepax@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -93,7 +106,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/A7OZF2VSCFFUS3TUKMXR27PURMLWIN64/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OGK6PHBBSC42EYITEQMHHBSBT72EJBC2/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -102,44 +115,14 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, 29 Aug 2023 19:16:16 +0200, Alex Bee wrote:
-> this series fixes some issues I found when testing my "new" RK3128 board
-> with the mainline kernel and adds some core functionality like SMP bringup,
-> usb and networking.
+On Tue, Sep 26, 2023 at 06:25:10AM +0000, Kuninori Morimoto wrote:
+> ASoC is now unified asoc_xxx() into snd_soc_xxx().
+> This patch convert asoc_xxx() to snd_soc_xxx().
 > 
-> The propably most distinctive change is the split up of the DTs for the
-> different SoCs of this platform: RK3126 and RK3128. Even if I'm not adding
-> a RK3126 board in this series: I think this change should be done as early
-> as possible in order to avoid issues in future.
-> Actually it should have been done like that in the first place.
-> 
-> [...]
+> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> ---
 
-Applied to
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-
-Thanks!
-
-[03/31] dt-bindings: ASoC: rockchip: Add compatible for RK3128 spdif
-        commit: 5c8a033f5674ae62d5aa2ebbdb9980b89380c34f
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 
 Thanks,
-Mark
-
+Charles
