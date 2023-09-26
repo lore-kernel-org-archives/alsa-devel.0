@@ -4,82 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2E24CE7E648
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 Sep 2023 15:08:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E386CE7E649
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 Sep 2023 15:31:35 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CD98B829;
-	Tue, 26 Sep 2023 17:07:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CD98B829
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2D91AA4D;
+	Tue, 26 Sep 2023 17:30:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2D91AA4D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1695740912;
-	bh=dMkPat5SysTqeHQNXfaF030bIQgy5IudxutWzuQNBVQ=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1695742293;
+	bh=2Jb5MLyd3rbl26MU5nCagQLymqLt7wlawNMs49LT7rU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=jcmdndX7X4w0SIPOfgIb9n7zWnKUDLrcXY+sy1r9kbUh/aqqv3NEIxVnETQlbsCay
-	 KmSGDtp+8pNsk6ZMBpZhU/q6NpENmmTCOvtbze2tA+9g4mBJ+vcb4Wek1qsv//FJkf
-	 bSwwyP8OYmwiDyeN3myq/6vEHCjrBuY/vTvzaeb4=
+	b=SrOG5B+9cktVHNLinHV9VaBrssncMX2ShjLhYAc4/NID7Eggk5v+kBMPT/4DsE0B1
+	 dTjEIaKKxQZUtRC6XeMgCiHqLW6Ed03405HQonbQ8616jwLwdsllqoqbh4yTgnHRVC
+	 VYsYytHO3n9aOZUir8dZoMCffv6F6SXAvRZMxbLA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 671F4F80290; Tue, 26 Sep 2023 17:07:42 +0200 (CEST)
+	id DFA72F80553; Tue, 26 Sep 2023 17:30:11 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2CB0EF8016A;
-	Tue, 26 Sep 2023 17:07:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 59187F8016A;
+	Tue, 26 Sep 2023 17:30:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 36FA8F8016A; Tue, 26 Sep 2023 17:07:35 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+	id 9823CF8016A; Tue, 26 Sep 2023 17:30:04 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E5A95F8001D
-	for <alsa-devel@alsa-project.org>; Tue, 26 Sep 2023 17:07:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E5A95F8001D
+	by alsa1.perex.cz (Postfix) with ESMTPS id 08106F800AE
+	for <alsa-devel@alsa-project.org>; Tue, 26 Sep 2023 17:29:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 08106F800AE
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=ujsXl/1N
+ header.s=k20201202 header.b=YPv2l6Cm
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by ams.source.kernel.org (Postfix) with ESMTP id CF87CB81081;
-	Tue, 26 Sep 2023 15:07:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 545EAC433C9;
-	Tue, 26 Sep 2023 15:07:10 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 0664860EFB;
+	Tue, 26 Sep 2023 15:29:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59DE6C433C7;
+	Tue, 26 Sep 2023 15:29:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1695740833;
-	bh=dMkPat5SysTqeHQNXfaF030bIQgy5IudxutWzuQNBVQ=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=ujsXl/1Nv8KE2evIgH5hWf4kNmGc4ef+8ZpkjU7oL1dZHDJHzI7fhwXmAsxr4O03m
-	 J9IV5gB3ZF/VXUPfa+sHRFBOGqDVxxHIPont7eYa0D2e4Nu0Wi5wnmvjPwhI660QZO
-	 Gxp5kMfk2vENWCj32HsuWpkuK0rqifg64KHXAGqz+W3Yntvm3C2TjQfYOuZVicAG5N
-	 lurqpuV8VgS6v8wX/IG2acUrY/oUx83YHRXViQjZWltPVYTEv5t9Pg8Rky11tYab2I
-	 kcK2OFqMLkz/dXicxzltMDesufljoDrG6K7+s4bLMQNnQXCNRTcKUgNEUwuj71aHFc
-	 tQ47tdWxDoijA==
+	s=k20201202; t=1695742194;
+	bh=2Jb5MLyd3rbl26MU5nCagQLymqLt7wlawNMs49LT7rU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=YPv2l6CmyXtOpZKvmlX3hnmQgZI02mFgNMblM4VNp5DGcjOWSr/Z1FFHYry1x1IQP
+	 gAoPZgMnU8ok2hNXLppK+yxVTUlEgp1u00lfge0/PK58756w97rHlc9Ox+RYgVs/Ov
+	 fvTGVgFcIQuAGlJ8y/A2EodbFqywbMNQ60G7IAaILh3vzx+PxE9qE9GU9Dw0JJ1wCH
+	 0SwHPkzMWD035vXJ3fJjm17gAjb5+wsYp3oMgi4cyFWLsgbcjm0m8Je6THVMaHyx8A
+	 b3mAV0IZqedbNjz0jLcQTOKgYV2h8BnPqhJal44jlDlnSrhUNSWQedDRFRlGtwGt44
+	 6vKCxrNWov0+g==
+Date: Tue, 26 Sep 2023 17:29:52 +0200
 From: Mark Brown <broonie@kernel.org>
-To: Liam Girdwood <lgirdwood@gmail.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Herve Codina <herve.codina@bootlin.com>,
- Shenghao Ding <shenghao-ding@ti.com>, Kevin Lu <kevin-lu@ti.com>,
- Baojun Xu <baojun.xu@ti.com>,
- David Rau <David.Rau.opensource@dm.renesas.com>,
- Damien Horsley <Damien.Horsley@imgtec.com>,
- Geert Uytterhoeven <geert+renesas@glider.be>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Rob Herring <robh@kernel.org>
-Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-In-Reply-To: <20230925220947.2031536-1-robh@kernel.org>
-References: <20230925220947.2031536-1-robh@kernel.org>
-Subject: Re: [PATCH] ASoC: dt-bindings: Add missing
- (unevaluated|additional)Properties on child node schemas
-Message-Id: <169574083005.2649266.12499263818632259969.b4-ty@kernel.org>
-Date: Tue, 26 Sep 2023 17:07:10 +0200
+To: Matthias Reichl <hias@horus.com>
+Cc: Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
+Subject: Re: [PATCH] ASoC: hdmi-codec: Fix broken channel map reporting
+Message-ID: <ZRL48HIeZz2JgGoD@finisterre.sirena.org.uk>
+References: <20230909114633.3193-1-hias@horus.com>
+ <ZPxo8qKMDkmBqGxw@finisterre.sirena.org.uk>
+ <ZP2zKg88n4MaD53z@camel3.lan>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-099c9
-Message-ID-Hash: ZLBSIPAZUCRWAVVGYJ3IYL3MU7DFDMV6
-X-Message-ID-Hash: ZLBSIPAZUCRWAVVGYJ3IYL3MU7DFDMV6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="9c4iZsXD5UAc16dA"
+Content-Disposition: inline
+In-Reply-To: <ZP2zKg88n4MaD53z@camel3.lan>
+X-Cookie: Save energy:  Drive a smaller shell.
+Message-ID-Hash: QOAEAHW44VM4MP3O377JPXWJNQAQJSWL
+X-Message-ID-Hash: QOAEAHW44VM4MP3O377JPXWJNQAQJSWL
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -92,7 +84,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZLBSIPAZUCRWAVVGYJ3IYL3MU7DFDMV6/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QOAEAHW44VM4MP3O377JPXWJNQAQJSWL/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -101,41 +93,39 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, 25 Sep 2023 17:09:28 -0500, Rob Herring wrote:
-> Just as unevaluatedProperties or additionalProperties are required at
-> the top level of schemas, they should (and will) also be required for
-> child node schemas. That ensures only documented properties are
-> present for any node.
-> 
-> Add unevaluatedProperties or additionalProperties as appropriate.
-> 
-> [...]
 
-Applied to
+--9c4iZsXD5UAc16dA
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+On Sun, Sep 10, 2023 at 02:14:34PM +0200, Matthias Reichl wrote:
 
-Thanks!
+> An alternative would be to set chmap_idx to HDMI_CODEC_CHMAP_IDX_UNKNOWN
+> in the non-PCM case so the channel map control will return UNKNOWN for
+> all channels. i.e. use this code instead:
 
-[1/1] ASoC: dt-bindings: Add missing (unevaluated|additional)Properties on child node schemas
-      commit: 7b71da59122c3ab82908910abf78db1fd6340cac
+>         if (pcm_audio)
+>                 hcp->chmap_idx = ca_id;
+>         else
+>                 hcp->chmap_idx = HDMI_CODEC_CHMAP_IDX_UNKNOWN;
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+> Any input on that topic is highly appreciated.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+Can you send this version as a real patch please?
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+--9c4iZsXD5UAc16dA
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+-----BEGIN PGP SIGNATURE-----
 
-Thanks,
-Mark
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmUS+O8ACgkQJNaLcl1U
+h9A+Ggf8D95e3bYetQKg0SqfXVsjiEUJZaJn0cpgHJtSSGHQK1Dl6Yz3Y2gBHIf8
+z2nwBWe1ogjIrrBDuMI0EsWpV9n/OgHKNv5PngqVrwCyr07UFgeP75jgaqlxuQ8o
+guZzAIen5LH9yK3dx6vURzPoLdzWz4ImOdesqS/AQY8HMSnVoghpqOK6smnBBBa0
+ALpWMZKUxVi6NJbNZGDsSKKsmK8b9CmOZqSNNQ17N0crPdM/VOgSOB2iqk77anUi
+GGnWnuPoHLx12JaNsSyxT+xSb/NtS3NXDD+0XJXCfyoKx1t+Hg4lrpL27EXnDsDc
+5vFu/VQB75762KXK018DAG+eBR0x6w==
+=NS5o
+-----END PGP SIGNATURE-----
 
+--9c4iZsXD5UAc16dA--
