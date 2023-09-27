@@ -4,107 +4,109 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A94B8E7735F
-	for <alsa-devel@archiver.kernel.org>; Sat, 30 Sep 2023 08:11:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0156AE7735F
+	for <alsa-devel@archiver.kernel.org>; Sat, 30 Sep 2023 08:11:35 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 99763F0D;
-	Sat, 30 Sep 2023 10:10:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 99763F0D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3DEF7ECA;
+	Sat, 30 Sep 2023 10:10:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3DEF7ECA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1696061477;
-	bh=zYQlpbL61EMP9nyuhMZEPIXzWxJUvsiz6DycgU+sZIM=;
-	h=Date:From:Subject:To:Cc:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=vHoRqWeTPP1C1oY2Zmm/9sBmPLGl8Pqv4y0kHHL9o/1LoSxNQvP87UQUoJc7erlI+
-	 tx2iyezMl1cQa+tnevP0hNsBmgHdQ+nqlDhBwfJJ7uj2L1Qc6LM8d3WNBpeAVwIaUy
-	 wDYa/3BSkxhamn3GdqaFUw1L+0aF9nr6N2ks9Ons=
+	s=default; t=1696061494;
+	bh=sQuUQbG0PBQ334ZvXSaWByq89UXDki4JqHCtU5iUUK4=;
+	h=Date:From:Subject:To:Cc:References:In-reply-to:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=keTXPLZOZQGq7K2vry3N2r9CZIOVB6prT8hI6VC/A8m9hq3tdyQmRNX7ajKxXu5o1
+	 UDlcifgoxSQaeD6acWZLso0DbgDOb17oCsuBZOPuEJGKNbYHSWH3HT4dI+cF6wrXCv
+	 aiqBHfdf7Bcr50B/da0y6hEpfAthygS0znEo2hjw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3E0CDF806A2; Sat, 30 Sep 2023 10:07:41 +0200 (CEST)
+	id BE23BF806B0; Sat, 30 Sep 2023 10:07:42 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3781BF805E3;
-	Sat, 30 Sep 2023 10:07:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 13BD2F805E0;
+	Sat, 30 Sep 2023 10:07:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C58D1F8016A; Wed, 27 Sep 2023 18:29:39 +0200 (CEST)
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com
- [IPv6:2a00:1450:4864:20::32c])
+	id 2DA8EF8016A; Wed, 27 Sep 2023 19:42:02 +0200 (CEST)
+Received: from abi149hd126.arn1.oracleemaildelivery.com
+ (abi149hd126.arn1.oracleemaildelivery.com [129.149.84.126])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B1D79F80130
-	for <alsa-devel@alsa-project.org>; Wed, 27 Sep 2023 18:29:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B1D79F80130
+	by alsa1.perex.cz (Postfix) with ESMTPS id 637D7F8007C
+	for <alsa-devel@alsa-project.org>; Wed, 27 Sep 2023 19:41:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 637D7F8007C
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20230601 header.b=j/KSkuu+
-Received: by mail-wm1-x32c.google.com with SMTP id
- 5b1f17b1804b1-405524e6740so95666625e9.1
-        for <alsa-devel@alsa-project.org>;
- Wed, 27 Sep 2023 09:29:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695832173; x=1696436973;
- darn=alsa-project.org;
-        h=mime-version:message-id:cc:to:subject:from:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=QDCfzaeGWcIi7AD4z9zDOVfBWix11jNGiL4ta6mok7Q=;
-        b=j/KSkuu+htiqsTimLWwvTv8H5nSFSrUvOqQL7AJM16iVDiNA3pAHRFoxh67TH7b00J
-         6jTL9BVA0Fj3x6JTuh7E2dCsjd5LQeP5qxxDKhDEsPLO1DhiFKZ9Rq9t/SvCtsbwRw33
-         I+j5706XRx5+a63H5BZNT0jj8NSqKSnb3DF3cueMFGRhkYQp7ToFAoNqzw0D6zeU5Use
-         a4vaIWSpeoyM/6Lc1khJMi3exCnERwVAF8V0oE5znR1YoIGdGvpdNNboHndVIOApw3pX
-         el24T8EHx9y/r8dMjFKQUkc4Nf518nci+TN+hrCK9G9FtrTd8Xj8DLxzd99z0g0IrrR1
-         FiKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695832173; x=1696436973;
-        h=mime-version:message-id:cc:to:subject:from:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=QDCfzaeGWcIi7AD4z9zDOVfBWix11jNGiL4ta6mok7Q=;
-        b=bvGUn0wceSkKC5FctFRivWp3Z2XgjQ1NeZya113HkGM/2U118KLqhJ4sNZeN+o0kbH
-         tlS5a+9owk0tanVb2jraWql3YFpTYI/jXPDaxJ4bunjfuLKKIaEghwWhWLBIebnSbzMI
-         p/1rmpGAtI+7eFRkYLPDQX55/vZ99v+uoamhNSg209F43ZLWrRiQKAKd6cR2/a4/r0lb
-         plVs1/PDoxIqF2fSVhyxx6sTXCO8ZkjoJRt+VfWuwZjdd43ATzOigkOjs9OBh1boi8HW
-         A89YZ+V8A119jg9Nnrj4YLJTF9sI/NFjVwOmI3xGzWdkhkFOg3pBozZCe6sv4BeFLGSZ
-         GN+A==
-X-Gm-Message-State: AOJu0YwSZH+KBZ6P7jjnNC17SyKEeOmNJGgyPcVh6liP3/HJ2Pmwhu3t
-	z2KmCHm0mxlEfLFU7VGaZAc=
-X-Google-Smtp-Source: 
- AGHT+IHZ14obC9/XSaCfdC7bhMAaNzWl5pFem971kF4c1AI/TMOUFYjMimOzF5kR/Wyx/g+tjXrfzw==
-X-Received: by 2002:a05:600c:244:b0:3fe:1232:93fa with SMTP id
- 4-20020a05600c024400b003fe123293famr2392386wmj.22.1695832172753;
-        Wed, 27 Sep 2023 09:29:32 -0700 (PDT)
-Received: from yoga ([2001:638:904:ffe5:5742:c50f:bd0:6aa6])
-        by smtp.gmail.com with ESMTPSA id
- z9-20020a05600c114900b004058e6379d8sm9334215wmz.23.2023.09.27.09.29.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Sep 2023 09:29:30 -0700 (PDT)
-Date: Wed, 27 Sep 2023 18:22:39 +0200
-From: Sven Frotscher <sven.frotscher@gmail.com>
-Subject: [PATCH] ASoC: amd: yc: Fix non-functional mic on Lenovo 82YM
-To: broonie@kernel.org
-Cc: git@augustwikerfors.se, alsa-devel@alsa-project.org, lgirdwood@gmail.com,
-	linux-kernel@vger.kernel.org, mario.limonciello@amd.com,
-	regressions@lists.linux.dev
-Message-Id: <R5KN1S.18M6QDS4T9PY1@gmail.com>
-X-Mailer: geary/44.1
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-X-MailFrom: sven.frotscher@gmail.com
+ unprotected) header.d=augustwikerfors.se header.i=@augustwikerfors.se
+ header.a=rsa-sha256 header.s=oci-arn1-20220924 header.b=BZ6DMylt;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=arn1.rp.oracleemaildelivery.com
+ header.i=@arn1.rp.oracleemaildelivery.com header.a=rsa-sha256
+ header.s=prod-arn-20211201 header.b=BH10ErWP
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; s=oci-arn1-20220924;
+ d=augustwikerfors.se;
+ h=Date:To:From:Subject:Message-Id:MIME-Version:Sender;
+ bh=2/l64ESvX3L+vIHRLzcU/B0t8GMPI3Lpqyo4lNmvNeU=;
+ b=BZ6DMyltQg9yBoL1mS43hzA2MCs+q9DFw81K7XlQHjU49XM4rEDqk0nyfs7843qfR1mbCF4+MOvw
+   bhuhd1j8NaUi0IShlAjYSLHJMW4Kc5yIgaxU60a0WFxsw32rNZN24rBw0cyV4zbmM2rv74gWKXV3
+   psg9Dz8KM/nRvTI013x3wrCKuSw+OpWzxeMJoE5bodFpyodDIsJZ5+6sLkUh06F4EcwpUdhM38/C
+   Dl+tDTnbRuKYuquaOK+03d9WIII54ouMkspeo7ifm4Zy0D0jeSF0n3vD0buj2/AXNfl5l5Qwv2IX
+   mSh5yGGfjDmBAL+t/jouxvHBUpW0/P88xWspmg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; s=prod-arn-20211201;
+ d=arn1.rp.oracleemaildelivery.com;
+ h=Date:To:From:Subject:Message-Id:MIME-Version:Sender;
+ bh=2/l64ESvX3L+vIHRLzcU/B0t8GMPI3Lpqyo4lNmvNeU=;
+ b=BH10ErWPgQ3N4JyLJnenvlfMwWtjlPJFY8F0LeqXHJvyzOTV4PKksa1LDctAPM2gwFIUAy/pbZzg
+   U/EFADGUh22sF88aUDsdSPk6J07eMfQcokVGd4KllumpIm6BGmkHloGommo11csFtKvxCp3AQ3Li
+   iK1nJNbdHRTuRse8Sef7c+wUGH04rYzoq7vW2FSySMRmTSupCW857Rq2xq4uAeeUiOkTEKEh3V+i
+   9WvpIkD/fMWwE1mM/xPVUlB33qw2rcx8kc4swJZwKtexaoNV2X/qMdHJz8ruTDkVSZf3bDeyU43D
+   0rZlczrel4JeQmy33pTqa/GJS251mqHkz7fXHA==
+Received: by omta-ad1-fd3-401-eu-stockholm-1.omtaad1.vcndparn.oraclevcn.com
+ (Oracle Communications Messaging Server 8.1.0.1.20230808 64bit (built Aug  8
+ 2023))
+ with ESMTPS id
+ <0S1N0049TNTNQ700@omta-ad1-fd3-401-eu-stockholm-1.omtaad1.vcndparn.oraclevcn.com>
+ for alsa-devel@alsa-project.org; Wed, 27 Sep 2023 17:41:47 +0000 (GMT)
+Message-id: <e8479eff-a5cb-41b0-8bf6-bcc20ccbecfb@augustwikerfors.se>
+Date: Wed, 27 Sep 2023 19:41:43 +0200
+MIME-version: 1.0
+From: August Wikerfors <git@augustwikerfors.se>
+Subject: Re: [PATCH] ASoC: amd: yc: Fix non-functional mic on Lenovo 82YM
+To: Sven Frotscher <sven.frotscher@gmail.com>
+Cc: broonie@kernel.org, alsa-devel@alsa-project.org, lgirdwood@gmail.com,
+ linux-kernel@vger.kernel.org, mario.limonciello@amd.com,
+ regressions@lists.linux.dev
+References: <R5KN1S.18M6QDS4T9PY1@gmail.com>
+Content-language: en-US
+In-reply-to: <R5KN1S.18M6QDS4T9PY1@gmail.com>
+Content-type: text/plain; charset=UTF-8; format=flowed
+Content-transfer-encoding: 7bit
+Reporting-Meta: 
+ AAEINYZ3dhLONaY9tyI3lZesZ89O1+5jgsVyp4dMSkyYuppG/dP70jN8lViyntJq
+ I5DRJNIssIA14bGdujauc2Sb5GPSDteTcc2ej6KPI0QA8XftcxM/z5SADAlnB7on
+ GNW6XUpIcWJK9wdwGqOMpR9mwolJRH3Qe9FX9lvcHJNLaBxNheyXAUd/i7FgyKoJ
+ OJWb5XV9SxJEfjn4UITFq+ph9G3pxGrESIaqUMmklaT8zdMn8bZecMQHWkzVGima
+ oljN5mKETDiQVZ+ek9hsk73GN0lWxHn3vx179oF5zO4IaOsT5cHwtJIhWwf9xbmf
+ b2JzNLm2HwBNP3oupBnlq8AAoJ5upZZq8VqHmzBPQiLko+uRB4Qm/EYuteGH9kH5
+ 8l+bZ1Y/8wEn2/BdUXa9OHFOv3IiQj0VKCejcPN5URD0l9X88a6YAiJ1D6YLD9JN GaX7/w==
+X-MailFrom: 
+ bounces+alsa-devel=alsa-project.org@arn1.rp.oracleemaildelivery.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: 6XNR6KWHLTTXZDOYYQRVWPOCF5NVZJA7
-X-Message-ID-Hash: 6XNR6KWHLTTXZDOYYQRVWPOCF5NVZJA7
+Message-ID-Hash: 6YOIHGPCZNBBL4Y5JQFYDRDPPWGRDZXJ
+X-Message-ID-Hash: 6YOIHGPCZNBBL4Y5JQFYDRDPPWGRDZXJ
 X-Mailman-Approved-At: Sat, 30 Sep 2023 08:07:27 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6XNR6KWHLTTXZDOYYQRVWPOCF5NVZJA7/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6YOIHGPCZNBBL4Y5JQFYDRDPPWGRDZXJ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -113,38 +115,56 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+Hi,
 
-Like the Lenovo 82TL, 82V2, 82QF and 82UG, the 82YM (Yoga 7 14ARP8)
-requires an entry in the quirk list to enable the internal microphone.
-The latter two received similar fixes in commit 1263cc0f, see
-https://lore.kernel.org/r/20230911213409.6106-1-git@augustwikerfors.se.
+On 2023-09-27 18:22, Sven Frotscher wrote:
+> 
+> Like the Lenovo 82TL, 82V2, 82QF and 82UG, the 82YM (Yoga 7 14ARP8)
+> requires an entry in the quirk list to enable the internal microphone.
+> The latter two received similar fixes in commit 1263cc0f, see
+> https://lore.kernel.org/r/20230911213409.6106-1-git@augustwikerfors.se.
+> 
+> Signed-off-by: Sven Frotscher <sven.frotscher@gmail.com>
+Since this fixes a regression caused by commit c008323fe361 which has
+been backported to stable, please add "Fixes:" and "Cc:" tags above the
+"Signed-off-by:" tag to ensure the fix also gets backported in a timely
+manner [1]:
 
-Signed-off-by: Sven Frotscher <sven.frotscher@gmail.com>
----
- sound/soc/amd/yc/acp6x-mach.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+Fixes: c008323fe361 ("ASoC: amd: yc: Fix a non-functional mic on Lenovo 82SJ")
+Cc: stable@vger.kernel.org
 
-diff --git a/sound/soc/amd/yc/acp6x-mach.c 
-b/sound/soc/amd/yc/acp6x-mach.c
-index 3d8a51351e29..e3d2b9d01552 100644
---- a/sound/soc/amd/yc/acp6x-mach.c
-+++ b/sound/soc/amd/yc/acp6x-mach.c
-@@ -241,6 +241,13 @@ static const struct dmi_system_id 
-yc_acp_quirk_table[] = {
- >..>...>...DMI_MATCH(DMI_PRODUCT_NAME, "82V2"),
- >..>...}
- >..},
-+>..{
-+>..>....driver_data = &acp6x_card,
-+>..>....matches = {
-+>..>...>...DMI_MATCH(DMI_BOARD_VENDOR, "LENOVO"),
-+>..>...>...DMI_MATCH(DMI_PRODUCT_NAME, "82YM"),
-+>..>...}
-+>..},
- >..{
- >..>....driver_data = &acp6x_card,
- >..>....matches = {
---
-2.42.0
+> ---
+> sound/soc/amd/yc/acp6x-mach.c | 7 +++++++
+> 1 file changed, 7 insertions(+)
+> 
+> diff --git a/sound/soc/amd/yc/acp6x-mach.c b/sound/soc/amd/yc/acp6x-mach.c
+> index 3d8a51351e29..e3d2b9d01552 100644
+> --- a/sound/soc/amd/yc/acp6x-mach.c
+> +++ b/sound/soc/amd/yc/acp6x-mach.c
+> @@ -241,6 +241,13 @@ static const struct dmi_system_id 
+> yc_acp_quirk_table[] = {
+>  >..>...>...DMI_MATCH(DMI_PRODUCT_NAME, "82V2"),
+>  >..>...}
+>  >..},
+> +>..{
+> +>..>....driver_data = &acp6x_card,
+> +>..>....matches = {
+> +>..>...>...DMI_MATCH(DMI_BOARD_VENDOR, "LENOVO"),
+> +>..>...>...DMI_MATCH(DMI_PRODUCT_NAME, "82YM"),
+> +>..>...}
+> +>..},
+>  >..{
+>  >..>....driver_data = &acp6x_card,
+>  >..>....matches = {
+Your e-mail client seems to have mangled the leading whitespace here,
+which will prevent the patch from applying cleanly. It is strongly
+recommended [2] to use git send-email for sending patches, see [3] for a
+tutorial on how to set up and use it. For other e-mail clients, see [4].
 
+[1] https://www.kernel.org/doc/html/latest/process/handling-regressions.html#what-s-important-when-fixing-regressions
+[2] https://www.kernel.org/doc/html/latest/process/submitting-patches.html#no-mime-no-links-no-compression-no-attachments-just-plain-text
+[3] https://git-send-email.io/
+[4] https://www.kernel.org/doc/html/latest/process/email-clients.html
 
+Regards,
+August Wikerfors
