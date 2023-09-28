@@ -4,92 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4CC77E743C9
-	for <alsa-devel@archiver.kernel.org>; Thu, 28 Sep 2023 22:14:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 00322E743C8
+	for <alsa-devel@archiver.kernel.org>; Thu, 28 Sep 2023 22:15:06 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1A634DFA;
-	Fri, 29 Sep 2023 00:14:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1A634DFA
+	by alsa0.perex.cz (Postfix) with ESMTPS id E9997DEF;
+	Fri, 29 Sep 2023 00:14:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E9997DEF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1695939293;
-	bh=e5uMytFORBtEIHAjSylc3qhIWcry5i4MxZvbLyhQDeM=;
+	s=default; t=1695939305;
+	bh=D8YsIbvwKFaGFU37tFCU3Xa5vmJQnpOrgCzxwQMTrDY=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=DgTHANDv+n9R8+23dWua2RD/pd4Y1CV9L9uDzdrPx+k4D+VydoL674FjRyDfBEWXW
-	 mgyMc60ca0EP33vSVp/lv6A0UruWOa20G+2jS+XglNvdGeWV1AJ4cjyoD72xFkS54f
-	 DCA5jjKUQZy01R2eU++ibpMhHXa+BAWc9jMrCMiw=
+	b=hc4XvT+X31zeoiKg8Noj4nT/JCATOC/AehtScLiD8MteTUqyAwenroJ5/6JFZsSvs
+	 l47jpw7o6w8kG1v8vlGS+ItQvROrONG4C/gsPzpbLgkzZu/tfJsc/oJfdG5zUwRECL
+	 rAgn/QcARTfF3AI9TD5TN+RWjyVZauCxx39LQ/hE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 69572F80563; Fri, 29 Sep 2023 00:13:10 +0200 (CEST)
+	id C2309F80580; Fri, 29 Sep 2023 00:13:11 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C727BF80563;
-	Fri, 29 Sep 2023 00:13:09 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 55EBFF8057F;
+	Fri, 29 Sep 2023 00:13:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D8693F80563; Fri, 29 Sep 2023 00:13:04 +0200 (CEST)
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com
- [IPv6:2a00:1450:4864:20::12c])
+	id 0EAE1F80549; Fri, 29 Sep 2023 00:13:06 +0200 (CEST)
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com
+ [IPv6:2a00:1450:4864:20::130])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D5AC6F801D5
+	by alsa1.perex.cz (Postfix) with ESMTPS id A8A89F8016A
 	for <alsa-devel@alsa-project.org>; Fri, 29 Sep 2023 00:13:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D5AC6F801D5
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A8A89F8016A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=N0RrBlq2
-Received: by mail-lf1-x12c.google.com with SMTP id
- 2adb3069b0e04-5041d6d8b10so22069669e87.2
+ header.s=google header.b=CpY4mv8b
+Received: by mail-lf1-x130.google.com with SMTP id
+ 2adb3069b0e04-50435a9f800so20538692e87.2
         for <alsa-devel@alsa-project.org>;
  Thu, 28 Sep 2023 15:13:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695939178; x=1696543978;
+        d=linaro.org; s=google; t=1695939179; x=1696543979;
  darn=alsa-project.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=gEziQa3WMTxBubEiTduzNr8x972su8Z0Wh8gtotlZpA=;
-        b=N0RrBlq2LALGRAJWEuUV618XnjYIiytLJK0ZzD4IIHE8fFCXd/JxOTAyHqovdRgObV
-         CZzcf5AzqFbeCvlAEfTbFUTB4F49Lmaq3eWGKHXg2t0vNn6tWs/1YYTxSe98ndiqq0zM
-         UQO8N40FVPqzzi911oy80qA7I9+yBpAFHhVQTnuXn4OGxdDEaUO+w/nQ/fJ1dTKloWli
-         i74kOIVsYJpB2/i5SDLIKpP3HE6sCnVFdVYccGGImNZBeIhvlQqzlew0N9hwB/LwAWtX
-         MWBF3Xrjh4S0oIxp7Rf1qE3srIVuirdk6bsksPGCUDU5ANfZc3m7TstDKfaX/MY/gT5W
-         seEg==
+        bh=CY0vsjcVCBgE58w9UR6SBm++3xKyQBSwPNYicIzid6s=;
+        b=CpY4mv8bMLm+c4C3+JqYn6/oE1/wQ9hbv/J25qFmvXMT1Bay0i6NJ/1Oi7qpPbf3Jw
+         WxgBiZEP1xD/6Gd2xaUZ2B6OHRjuWc/fbIRMfsmyJ6L/rctszeE4jA+qf7/Xqle1A2b3
+         PXi6i8vxEcEaHYDfkb3QrDNSP/UjWINHvD3RpQ3e+k3GPjLltFH4vz7zXpPGmUSmafUr
+         1Fa03V+6qpWbSpgxjOI89JMg1LNYs1RzX2bdDZqukexEgEwAo7cR0HCJOUTmQFmejBYZ
+         ZiXo4TOSnMHI9VdYuE5T1gnqpAELbr2YYyS+aYA0iXEe5oGqul9gFPnI9fN29j0c15+Q
+         fveQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695939178; x=1696543978;
+        d=1e100.net; s=20230601; t=1695939179; x=1696543979;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=gEziQa3WMTxBubEiTduzNr8x972su8Z0Wh8gtotlZpA=;
-        b=Ua8GtTYjodO9Ordj0OQ9GgmlAMf+0aQp8GLiwZGvyWu51bzZWrf73mppWVJZnNuZM7
-         WqqbUKyVmE5igTFJZSPeLSKoma/HFvb3awUQuDFl4uEEwltSoPibbL0eFOdPhAvvlZc1
-         ZFb/gPdbUaZOGMLorIIHlvwsl9nwaf1wHeFnJG0qRlg8v1V660iCclzWfXD6dOF0brxb
-         1nCYmusFT9OWLCGV6+nBImOtwmnrnkjDx1mU/a/7OWKxqJ1LU5pVqcrS1ndjSEvySK5T
-         YO7hLa5pGcAcgWcuywB7i80qB0JxHgE/r46VvVCLNZD/gRWK6CHW/l73J7bRAR6daY5P
-         +gWg==
-X-Gm-Message-State: AOJu0YwjJ1PbrrL+zKSHyjAmeKl6Vb+muaZ3yJO7y1UmVh8Nz0HxcwRI
-	dbayG3Hw9523rmEAY2Knzi1GYTj121Gui0I326A=
+        bh=CY0vsjcVCBgE58w9UR6SBm++3xKyQBSwPNYicIzid6s=;
+        b=GplX7RjV7uqh4uF7SXQeuBTgPYiDJa7YrhVuetIu+aNdsrZGyhIPxEDu6ZJnfF/ydb
+         xKuNVVRXmq7ZjPIvijr8CMv+Hg1nxBPQ1xbRrI/7LNw7i6sge8uOChkpgUZkbvYT6rXP
+         iYHDkeUKt+xxSP46t4pBg29Afli50m4td2Bq/eTHfSocLkvYKCKrLVOn0cN94qtGJEGN
+         3TBFBgRDY7+BSYvIbYF+88MXGYOaMZDDKkwzkvdaAz9WcLxuqFK6CJT1ANXhqJ6AjCe/
+         djlm7k05D1vl7SL80yDuYeIGreR3OdY9qM4Zdem4pLVWARRlauUx5icOIyIutB60oL5c
+         xXBQ==
+X-Gm-Message-State: AOJu0Yy59LDh/R2ueNjIaJn7Flq0H03OJ6H9qrYPBQwn9jjDyQdf/Q4b
+	qnZ06Oizwwn9+X039m1lqkihxWaTXRqOL4lc/2I=
 X-Google-Smtp-Source: 
- AGHT+IGzel1RkPZ4JzmTAzm8NUoePCdFt5ZlaT/NGsNucaV0V6gsJlM+udU+/kODIJyvFU9Ivj83aA==
-X-Received: by 2002:a05:6512:448:b0:4e0:a426:6ddc with SMTP id
- y8-20020a056512044800b004e0a4266ddcmr2091697lfk.0.1695939177623;
-        Thu, 28 Sep 2023 15:12:57 -0700 (PDT)
+ AGHT+IH+8EEAM93O9nlO+qtWwhEoVV89Rw7mcTI5Ss+i9HtYU7SmmUhL1U+18gaNy0wOYFIltW+FjA==
+X-Received: by 2002:a05:6512:2825:b0:503:257a:7f5d with SMTP id
+ cf37-20020a056512282500b00503257a7f5dmr2553724lfb.31.1695939179359;
+        Thu, 28 Sep 2023 15:12:59 -0700 (PDT)
 Received: from [127.0.1.1] ([85.235.12.238])
         by smtp.gmail.com with ESMTPSA id
- r27-20020ac25a5b000000b005030cef433esm3271964lfn.94.2023.09.28.15.12.56
+ r27-20020ac25a5b000000b005030cef433esm3271964lfn.94.2023.09.28.15.12.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Sep 2023 15:12:56 -0700 (PDT)
+        Thu, 28 Sep 2023 15:12:58 -0700 (PDT)
 From: Linus Walleij <linus.walleij@linaro.org>
-Date: Fri, 29 Sep 2023 00:12:54 +0200
-Subject: [PATCH v2 1/4] ASoC: rockchip: Convert RK3288 HDMI to GPIO
- descriptors
+Date: Fri, 29 Sep 2023 00:12:56 +0200
+Subject: [PATCH v2 3/4] ASoC: rockchip: Drop includes from Rockchip
+ MAX98090
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230929-descriptors-asoc-rockchip-v2-1-2d2c0e043aab@linaro.org>
+Message-Id: <20230929-descriptors-asoc-rockchip-v2-3-2d2c0e043aab@linaro.org>
 References: <20230929-descriptors-asoc-rockchip-v2-0-2d2c0e043aab@linaro.org>
 In-Reply-To: <20230929-descriptors-asoc-rockchip-v2-0-2d2c0e043aab@linaro.org>
 To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
@@ -99,8 +99,8 @@ Cc: alsa-devel@alsa-project.org, linux-gpio@vger.kernel.org,
  linux-rockchip@lists.infradead.org,
  Linus Walleij <linus.walleij@linaro.org>
 X-Mailer: b4 0.12.3
-Message-ID-Hash: FOOIMJWP2SWEGJVTG5PBVKPKH5ZOWRND
-X-Message-ID-Hash: FOOIMJWP2SWEGJVTG5PBVKPKH5ZOWRND
+Message-ID-Hash: 3OR5M5225U3UK2ZQA5Z6UPG73R4G3YXP
+X-Message-ID-Hash: 3OR5M5225U3UK2ZQA5Z6UPG73R4G3YXP
 X-MailFrom: linus.walleij@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -113,7 +113,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FOOIMJWP2SWEGJVTG5PBVKPKH5ZOWRND/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3OR5M5225U3UK2ZQA5Z6UPG73R4G3YXP/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -122,119 +122,28 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-This converts the Rockchip RK3288 HDMI driver to use GPIO
-descriptors:
-
-- Look up the HP EN GPIO as an optional descriptor and handle
-  it directly, the gpiod API is NULL-tolerant so no special
-  guards are needed.
-
-- Let the Jack detection core obtain and handle the HP detection
-  GPIO, just pass the right name and gpiod_dev and it will
-  do the job. Make sure to check that the GPIO property
-  is there first, so it becomes optional.
+The Rockchip MAX98090 ASoC driver includes two legacy GPIO
+headers but doesn't use symbols from any of them. Delete
+the includes.
 
 Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 ---
- sound/soc/rockchip/rk3288_hdmi_analog.c | 46 ++++++++++-----------------------
- 1 file changed, 14 insertions(+), 32 deletions(-)
+ sound/soc/rockchip/rockchip_max98090.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/sound/soc/rockchip/rk3288_hdmi_analog.c b/sound/soc/rockchip/rk3288_hdmi_analog.c
-index 0c6bd9a019db..cdb5dfd0d1d4 100644
---- a/sound/soc/rockchip/rk3288_hdmi_analog.c
-+++ b/sound/soc/rockchip/rk3288_hdmi_analog.c
-@@ -12,8 +12,7 @@
- #include <linux/module.h>
+diff --git a/sound/soc/rockchip/rockchip_max98090.c b/sound/soc/rockchip/rockchip_max98090.c
+index 150ac524a590..8e48eb8aa7ad 100644
+--- a/sound/soc/rockchip/rockchip_max98090.c
++++ b/sound/soc/rockchip/rockchip_max98090.c
+@@ -9,8 +9,6 @@
+ #include <linux/of_device.h>
  #include <linux/platform_device.h>
  #include <linux/slab.h>
 -#include <linux/gpio.h>
 -#include <linux/of_gpio.h>
-+#include <linux/gpio/consumer.h>
  #include <sound/core.h>
  #include <sound/jack.h>
  #include <sound/pcm.h>
-@@ -26,8 +25,7 @@
- #define DRV_NAME "rk3288-snd-hdmi-analog"
- 
- struct rk_drvdata {
--	int gpio_hp_en;
--	int gpio_hp_det;
-+	struct gpio_desc *gpio_hp_en;
- };
- 
- static int rk_hp_power(struct snd_soc_dapm_widget *w,
-@@ -35,11 +33,8 @@ static int rk_hp_power(struct snd_soc_dapm_widget *w,
- {
- 	struct rk_drvdata *machine = snd_soc_card_get_drvdata(w->dapm->card);
- 
--	if (!gpio_is_valid(machine->gpio_hp_en))
--		return 0;
--
--	gpio_set_value_cansleep(machine->gpio_hp_en,
--				SND_SOC_DAPM_EVENT_ON(event));
-+	gpiod_set_value_cansleep(machine->gpio_hp_en,
-+				 SND_SOC_DAPM_EVENT_ON(event));
- 
- 	return 0;
- }
-@@ -113,22 +108,23 @@ static int rk_hw_params(struct snd_pcm_substream *substream,
- }
- 
- static struct snd_soc_jack_gpio rk_hp_jack_gpio = {
--	.name = "Headphone detection",
-+	.name = "rockchip,hp-det",
- 	.report = SND_JACK_HEADPHONE,
- 	.debounce_time = 150
- };
- 
- static int rk_init(struct snd_soc_pcm_runtime *runtime)
- {
--	struct rk_drvdata *machine = snd_soc_card_get_drvdata(runtime->card);
-+	struct snd_soc_card *card = runtime->card;
-+	struct device *dev = card->dev;
- 
--	/* Enable Headset Jack detection */
--	if (gpio_is_valid(machine->gpio_hp_det)) {
-+	/* Enable optional Headset Jack detection */
-+	if (of_property_present(dev->of_node, "rockchip,hp-det-gpios")) {
-+		rk_hp_jack_gpio.gpiod_dev = dev;
- 		snd_soc_card_jack_new_pins(runtime->card, "Headphone Jack",
- 					   SND_JACK_HEADPHONE, &headphone_jack,
- 					   headphone_jack_pins,
- 					   ARRAY_SIZE(headphone_jack_pins));
--		rk_hp_jack_gpio.gpio = machine->gpio_hp_det;
- 		snd_soc_jack_add_gpios(&headphone_jack, 1, &rk_hp_jack_gpio);
- 	}
- 
-@@ -182,24 +178,10 @@ static int snd_rk_mc_probe(struct platform_device *pdev)
- 
- 	card->dev = &pdev->dev;
- 
--	machine->gpio_hp_det = of_get_named_gpio(np,
--		"rockchip,hp-det-gpios", 0);
--	if (!gpio_is_valid(machine->gpio_hp_det) && machine->gpio_hp_det != -ENODEV)
--		return machine->gpio_hp_det;
--
--	machine->gpio_hp_en = of_get_named_gpio(np,
--		"rockchip,hp-en-gpios", 0);
--	if (!gpio_is_valid(machine->gpio_hp_en) && machine->gpio_hp_en != -ENODEV)
--		return machine->gpio_hp_en;
--
--	if (gpio_is_valid(machine->gpio_hp_en)) {
--		ret = devm_gpio_request_one(&pdev->dev, machine->gpio_hp_en,
--					    GPIOF_OUT_INIT_LOW, "hp_en");
--		if (ret) {
--			dev_err(card->dev, "cannot get hp_en gpio\n");
--			return ret;
--		}
--	}
-+	machine->gpio_hp_en = devm_gpiod_get_optional(&pdev->dev, "rockchip,hp-en", GPIOD_OUT_LOW);
-+	if (IS_ERR(machine->gpio_hp_en))
-+		return PTR_ERR(machine->gpio_hp_en);
-+	gpiod_set_consumer_name(machine->gpio_hp_en, "hp_en");
- 
- 	ret = snd_soc_of_parse_card_name(card, "rockchip,model");
- 	if (ret) {
 
 -- 
 2.34.1
