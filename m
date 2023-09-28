@@ -4,45 +4,45 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EFCCDCE7B19
-	for <alsa-devel@archiver.kernel.org>; Thu, 28 Sep 2023 11:00:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9D457CE7B1A
+	for <alsa-devel@archiver.kernel.org>; Thu, 28 Sep 2023 11:00:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 095C5E0D;
-	Thu, 28 Sep 2023 12:59:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 095C5E0D
+	by alsa0.perex.cz (Postfix) with ESMTPS id E1F5FE7A;
+	Thu, 28 Sep 2023 12:59:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E1F5FE7A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1695898819;
-	bh=LcES4dB99BZ2kRfi5alygAKTwlfbvnsSYmxjB4e5RtE=;
+	s=default; t=1695898831;
+	bh=8kRMJCXCoZOKGgiWIhVcnDvi/svKYtPCAwosE6C8fSk=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=Kes/hkew2JNtwGADwvwxVrCKuTePSrQ0i/i6X7fhpz3raQKp5jUJoE8jrQXhQx5he
-	 ggGims9QcZ686zRxNcOR3mBsdgOfDs1up0JnfNUe3l/cvQmnJQ/ronNHBxyuwYVxfv
-	 68YUlRBmtfVdS9ly6epq92GH7oaNNaP8HbZZCGjA=
+	b=DzbArO5xL6B7KH4PKthU7MN+FBWWasqJBW9ZdrgR0OsRjRWh9hrnLA7Cg6aj9vt+h
+	 bU45Hrk/FRCTib9IR+dsWnW80Ta+EjNxKi2J+2j9Y/inVwv0aqwXnqcff04Thu3L9y
+	 KuBL/S0ZTvKu0ClOtIlGKpf/MxPeBykHXevyr6aQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6184BF805A1; Thu, 28 Sep 2023 12:58:30 +0200 (CEST)
+	id 5DF8DF805B6; Thu, 28 Sep 2023 12:58:40 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 222EDF805A1;
-	Thu, 28 Sep 2023 12:58:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A507EF805B3;
+	Thu, 28 Sep 2023 12:58:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3D1CFF805A0; Thu, 28 Sep 2023 12:58:26 +0200 (CEST)
-Received: from out28-1.mail.aliyun.com (out28-1.mail.aliyun.com
- [115.124.28.1])
+	id 9384BF805B5; Thu, 28 Sep 2023 12:58:35 +0200 (CEST)
+Received: from out28-124.mail.aliyun.com (out28-124.mail.aliyun.com
+ [115.124.28.124])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D9B5EF805A1
-	for <alsa-devel@alsa-project.org>; Thu, 28 Sep 2023 12:58:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D9B5EF805A1
+	by alsa1.perex.cz (Postfix) with ESMTPS id 5C74BF805B4
+	for <alsa-devel@alsa-project.org>; Thu, 28 Sep 2023 12:58:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5C74BF805B4
 X-Alimail-AntiSpam: 
- AC=CONTINUE;BC=0.1038123|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.00093891-0.000127708-0.998933;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047190;MF=wangweidong.a@awinic.com;NM=1;PH=DS;RN=30;RT=30;SR=0;TI=SMTPD_---.UqYH8d0_1695898685;
+ AC=CONTINUE;BC=0.06714053|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0119606-0.00394247-0.984097;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047194;MF=wangweidong.a@awinic.com;NM=1;PH=DS;RN=30;RT=30;SR=0;TI=SMTPD_---.UqYH8mm_1695898693;
 Received: from ubuntu-VirtualBox..(mailfrom:wangweidong.a@awinic.com
- fp:SMTPD_---.UqYH8d0_1695898685)
+ fp:SMTPD_---.UqYH8mm_1695898693)
           by smtp.aliyun-inc.com;
-          Thu, 28 Sep 2023 18:58:13 +0800
+          Thu, 28 Sep 2023 18:58:21 +0800
 From: wangweidong.a@awinic.com
 To: girdwood@gmail.com,
 	broonie@kernel.org,
@@ -74,17 +74,17 @@ To: girdwood@gmail.com,
 	alsa-devel@alsa-project.org,
 	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH V6 04/10] ASoC: codecs: Rename "sound-channel" to
- "awinic,audio-channel"
-Date: Thu, 28 Sep 2023 18:57:21 +0800
-Message-ID: <20230928105727.47273-5-wangweidong.a@awinic.com>
+Subject: [PATCH V6 05/10] ASoC: codecs: Modify the transmission method of
+ parameters
+Date: Thu, 28 Sep 2023 18:57:22 +0800
+Message-ID: <20230928105727.47273-6-wangweidong.a@awinic.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230928105727.47273-1-wangweidong.a@awinic.com>
 References: <20230928105727.47273-1-wangweidong.a@awinic.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: KDJL7PBDYYH3LWK3QTV6A2KOLJHCL223
-X-Message-ID-Hash: KDJL7PBDYYH3LWK3QTV6A2KOLJHCL223
+Message-ID-Hash: 2WK47P7Y6SQONYZPBKED6GQTRWW7OKKR
+X-Message-ID-Hash: 2WK47P7Y6SQONYZPBKED6GQTRWW7OKKR
 X-MailFrom: wangweidong.a@awinic.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -97,9 +97,8 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KDJL7PBDYYH3LWK3QTV6A2KOLJHCL223/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2WK47P7Y6SQONYZPBKED6GQTRWW7OKKR/>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
@@ -108,51 +107,98 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Weidong Wang <wangweidong.a@awinic.com>
 
-Rename "sound-channel" to "awinic,audio-channel",
-this is to be consistent with the "awinic,aw88395.yaml" file
+Change the transmission mode of the "aw88395_dev_get_prof_name"
+function parameter, Instead of using return values for data
+transfer, parameters are used
 
 Signed-off-by: Weidong Wang <wangweidong.a@awinic.com>
 ---
- sound/soc/codecs/aw88261.c                | 2 +-
- sound/soc/codecs/aw88395/aw88395_device.c | 6 +++---
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/codecs/aw88395/aw88395.c        |  9 ++++-----
+ sound/soc/codecs/aw88395/aw88395_device.c | 12 ++++++++----
+ sound/soc/codecs/aw88395/aw88395_device.h |  2 +-
+ 3 files changed, 13 insertions(+), 10 deletions(-)
 
-diff --git a/sound/soc/codecs/aw88261.c b/sound/soc/codecs/aw88261.c
-index a697b5006b45..7df641592330 100644
---- a/sound/soc/codecs/aw88261.c
-+++ b/sound/soc/codecs/aw88261.c
-@@ -1189,7 +1189,7 @@ static void aw88261_parse_channel_dt(struct aw88261 *aw88261)
- 	u32 channel_value = AW88261_DEV_DEFAULT_CH;
- 	u32 sync_enable = false;
+diff --git a/sound/soc/codecs/aw88395/aw88395.c b/sound/soc/codecs/aw88395/aw88395.c
+index 9dcd75dd799a..77227c8f01f6 100644
+--- a/sound/soc/codecs/aw88395/aw88395.c
++++ b/sound/soc/codecs/aw88395/aw88395.c
+@@ -175,9 +175,8 @@ static int aw88395_profile_info(struct snd_kcontrol *kcontrol,
+ {
+ 	struct snd_soc_component *codec = snd_soc_kcontrol_component(kcontrol);
+ 	struct aw88395 *aw88395 = snd_soc_component_get_drvdata(codec);
+-	const char *prof_name;
+-	char *name;
+-	int count;
++	char *prof_name, *name;
++	int count, ret;
  
--	of_property_read_u32(np, "sound-channel", &channel_value);
-+	of_property_read_u32(np, "awinic,audio-channel", &channel_value);
- 	of_property_read_u32(np, "sync-flag", &sync_enable);
+ 	uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
+ 	uinfo->count = 1;
+@@ -196,8 +195,8 @@ static int aw88395_profile_info(struct snd_kcontrol *kcontrol,
+ 	name = uinfo->value.enumerated.name;
+ 	count = uinfo->value.enumerated.item;
  
- 	aw_dev->channel = channel_value;
+-	prof_name = aw88395_dev_get_prof_name(aw88395->aw_pa, count);
+-	if (!prof_name) {
++	ret = aw88395_dev_get_prof_name(aw88395->aw_pa, count, &prof_name);
++	if (ret) {
+ 		strscpy(uinfo->value.enumerated.name, "null",
+ 						strlen("null") + 1);
+ 		return 0;
 diff --git a/sound/soc/codecs/aw88395/aw88395_device.c b/sound/soc/codecs/aw88395/aw88395_device.c
-index 25b32cdceeec..5ca4172cb788 100644
+index 5ca4172cb788..fd1f67d5f22f 100644
 --- a/sound/soc/codecs/aw88395/aw88395_device.c
 +++ b/sound/soc/codecs/aw88395/aw88395_device.c
-@@ -1584,15 +1584,15 @@ static void aw88395_parse_channel_dt(struct aw_device *aw_dev)
- 	u32 channel_value;
- 	int ret;
- 
--	ret = of_property_read_u32(np, "sound-channel", &channel_value);
-+	ret = of_property_read_u32(np, "awinic,audio-channel", &channel_value);
- 	if (ret) {
- 		dev_dbg(aw_dev->dev,
--			"read sound-channel failed,use default 0");
-+			"read audio-channel failed,use default 0");
- 		aw_dev->channel = AW88395_DEV_DEFAULT_CH;
- 		return;
+@@ -1296,7 +1296,9 @@ int aw88395_dev_fw_update(struct aw_device *aw_dev, bool up_dsp_fw_en, bool forc
+ 		return -EPERM;
  	}
  
--	dev_dbg(aw_dev->dev, "read sound-channel value is: %d",
-+	dev_dbg(aw_dev->dev, "read audio-channel value is: %d",
- 			channel_value);
- 	aw_dev->channel = channel_value;
+-	prof_name = aw88395_dev_get_prof_name(aw_dev, aw_dev->prof_index);
++	ret = aw88395_dev_get_prof_name(aw_dev, aw_dev->prof_index, &prof_name);
++	if (ret)
++		return ret;
+ 
+ 	dev_dbg(aw_dev->dev, "start update %s", prof_name);
+ 
+@@ -1644,7 +1646,7 @@ int aw88395_dev_set_profile_index(struct aw_device *aw_dev, int index)
  }
+ EXPORT_SYMBOL_GPL(aw88395_dev_set_profile_index);
+ 
+-char *aw88395_dev_get_prof_name(struct aw_device *aw_dev, int index)
++int aw88395_dev_get_prof_name(struct aw_device *aw_dev, int index, char **prof_name)
+ {
+ 	struct aw_prof_info *prof_info = &aw_dev->prof_info;
+ 	struct aw_prof_desc *prof_desc;
+@@ -1652,12 +1654,14 @@ char *aw88395_dev_get_prof_name(struct aw_device *aw_dev, int index)
+ 	if ((index >= aw_dev->prof_info.count) || (index < 0)) {
+ 		dev_err(aw_dev->dev, "index[%d] overflow count[%d]",
+ 			index, aw_dev->prof_info.count);
+-		return NULL;
++		return -EINVAL;
+ 	}
+ 
+ 	prof_desc = &aw_dev->prof_info.prof_desc[index];
+ 
+-	return prof_info->prof_name_list[prof_desc->id];
++	*prof_name = prof_info->prof_name_list[prof_desc->id];
++
++	return 0;
+ }
+ EXPORT_SYMBOL_GPL(aw88395_dev_get_prof_name);
+ 
+diff --git a/sound/soc/codecs/aw88395/aw88395_device.h b/sound/soc/codecs/aw88395/aw88395_device.h
+index d32d16c89509..791c8c106557 100644
+--- a/sound/soc/codecs/aw88395/aw88395_device.h
++++ b/sound/soc/codecs/aw88395/aw88395_device.h
+@@ -181,7 +181,7 @@ int aw88395_dev_fw_update(struct aw_device *aw_dev, bool up_dsp_fw_en, bool forc
+ void aw88395_dev_set_volume(struct aw_device *aw_dev, unsigned short set_vol);
+ int aw88395_dev_get_prof_data(struct aw_device *aw_dev, int index,
+ 			struct aw_prof_desc **prof_desc);
+-char *aw88395_dev_get_prof_name(struct aw_device *aw_dev, int index);
++int aw88395_dev_get_prof_name(struct aw_device *aw_dev, int index, char **prof_name);
+ int aw88395_dev_set_profile_index(struct aw_device *aw_dev, int index);
+ int aw88395_dev_get_profile_index(struct aw_device *aw_dev);
+ int aw88395_dev_get_profile_count(struct aw_device *aw_dev);
 -- 
 2.41.0
 
