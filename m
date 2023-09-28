@@ -4,44 +4,45 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7BD3ECE7B1A
-	for <alsa-devel@archiver.kernel.org>; Thu, 28 Sep 2023 10:59:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EA5F3CE7B19
+	for <alsa-devel@archiver.kernel.org>; Thu, 28 Sep 2023 10:59:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C9781DF2;
-	Thu, 28 Sep 2023 12:58:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C9781DF2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 50953E11;
+	Thu, 28 Sep 2023 12:58:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 50953E11
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1695898757;
-	bh=6d6vS59XD1mh2crea32SZ42FYBqQ+jBcxo9PpIQdXQg=;
-	h=From:To:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=d3ZGMfcmvRxepS5syCMDNAg12zs0u4ceaFjm5gBJMvEGgZZSF3QEcAKNHkI+o8ne2
-	 n2Yp5qLc5VK2BAdztYgUUCORpkK/OSxink3abwPp3kQwNxT8J9TC+kt6z7bgcfR6PN
-	 Xl5ltKqSxs5TCuTeMJFhLNS7/qHu1Bv3d52REJkc=
+	s=default; t=1695898778;
+	bh=Q3Mj5h8UAC3aVv25e3aSpCoXKucabxVF42v/AmLOM+g=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=KW8BsHEniZVUx1IH4cdOKQada1obHE8l9diVXal9C3ZjRR6RJSMR3Wow9LH/diXSf
+	 ghsGwT29I8+X/LneOi1Z9Gi5uQyyduZsloby/+GCghmd/YIZWXcEv7fbijHHMVZA0x
+	 BX+ZTS39yY3GxHa7H7Gczoh3ZgYBhNqj9FQ4D3Mc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 69D11F80558; Thu, 28 Sep 2023 12:57:56 +0200 (CEST)
+	id 56FAEF80589; Thu, 28 Sep 2023 12:58:12 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9A894F80290;
-	Thu, 28 Sep 2023 12:57:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E8774F80564;
+	Thu, 28 Sep 2023 12:58:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8592CF801D5; Thu, 28 Sep 2023 12:57:53 +0200 (CEST)
-Received: from out28-74.mail.aliyun.com (out28-74.mail.aliyun.com
- [115.124.28.74])
+	id 19ECDF8057C; Thu, 28 Sep 2023 12:58:07 +0200 (CEST)
+Received: from out28-73.mail.aliyun.com (out28-73.mail.aliyun.com
+ [115.124.28.73])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 1C6B1F80130
-	for <alsa-devel@alsa-project.org>; Thu, 28 Sep 2023 12:57:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1C6B1F80130
+	by alsa1.perex.cz (Postfix) with ESMTPS id BC950F80564
+	for <alsa-devel@alsa-project.org>; Thu, 28 Sep 2023 12:58:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BC950F80564
 X-Alimail-AntiSpam: 
- AC=CONTINUE;BC=0.07345675|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0406445-0.000234974-0.959121;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047204;MF=wangweidong.a@awinic.com;NM=1;PH=DS;RN=30;RT=30;SR=0;TI=SMTPD_---.UqYH824_1695898649;
+ AC=CONTINUE;BC=0.1364492|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.302725-0.000405716-0.696869;FP=5027444005160210874|1|1|20|0|-1|-1|-1;HT=ay29a033018047205;MF=wangweidong.a@awinic.com;NM=1;PH=DS;RN=31;RT=31;SR=0;TI=SMTPD_---.UqYH8KI_1695898668;
 Received: from ubuntu-VirtualBox..(mailfrom:wangweidong.a@awinic.com
- fp:SMTPD_---.UqYH824_1695898649)
+ fp:SMTPD_---.UqYH8KI_1695898668)
           by smtp.aliyun-inc.com;
-          Thu, 28 Sep 2023 18:57:38 +0800
+          Thu, 28 Sep 2023 18:57:56 +0800
 From: wangweidong.a@awinic.com
 To: girdwood@gmail.com,
 	broonie@kernel.org,
@@ -73,14 +74,17 @@ To: girdwood@gmail.com,
 	alsa-devel@alsa-project.org,
 	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH V6 00/10] ASoC: codecs: Add aw87390 amplifier driver
-Date: Thu, 28 Sep 2023 18:57:17 +0800
-Message-ID: <20230928105727.47273-1-wangweidong.a@awinic.com>
+Cc: Rob Herring <robh@kernel.org>
+Subject: [PATCH V6 02/10] ASoC: dt-bindings: Add schema for "awinic,aw87390"
+Date: Thu, 28 Sep 2023 18:57:19 +0800
+Message-ID: <20230928105727.47273-3-wangweidong.a@awinic.com>
 X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230928105727.47273-1-wangweidong.a@awinic.com>
+References: <20230928105727.47273-1-wangweidong.a@awinic.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: LGG4RYIBYBUZVA3DMWCSI6A4VFYUKT22
-X-Message-ID-Hash: LGG4RYIBYBUZVA3DMWCSI6A4VFYUKT22
+Message-ID-Hash: Y73JUELJJZZJB4AKVVCUHJFJIOI4R72K
+X-Message-ID-Hash: Y73JUELJJZZJB4AKVVCUHJFJIOI4R72K
 X-MailFrom: wangweidong.a@awinic.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -93,7 +97,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LGG4RYIBYBUZVA3DMWCSI6A4VFYUKT22/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Y73JUELJJZZJB4AKVVCUHJFJIOI4R72K/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -104,55 +108,80 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Weidong Wang <wangweidong.a@awinic.com>
 
-The awinic aw87390 is a new high efficiency, low noise,
-constant large volume, 6th Smart K audio amplifier.
-
 Add a DT schema for describing awinic aw87390 audio amplifiers.
 They are controlled using I2C.
 
-Modify some code for aw88261 and aw88395
-
-v5 -> v6: Adjust the order and context of the patch
-          Use "len-1" as a loop judgment modifier
-          Use return 0 instead of return ret at the end of a function
-          Use dev_dbg instead of dev_info
-          Use struct_size to calculate the structure size
-          Remove the space before the exclamation mark
-
-Weidong Wang (10):
-  ASoC: dt-bindings: awinic,aw88395: Add properties for multiple PA
-    support
-  ASoC: dt-bindings: Add schema for "awinic,aw87390"
-  ASoC: codecs: Remove the "fade-enable property"
-  ASoC: codecs: Rename "sound-channel" to "awinic,audio-channel"
-  ASoC: codecs: Modify the transmission method of parameters
-  ASoC: codecs: Modify i2c driver name
-  ASoC: codecs: Add code for bin parsing compatible with aw87390
-  ASoC: codecs: Rename "sync-flag" to "awinic,sync-flag"
-  ASoC: codecs: Modify the transmission mode of function parameters
-  ASoC: codecs: Add aw87390 amplifier driver
-
- .../bindings/sound/awinic,aw87390.yaml        |  58 +++
- .../bindings/sound/awinic,aw88395.yaml        |  16 +
- sound/soc/codecs/Kconfig                      |  15 +-
- sound/soc/codecs/Makefile                     |   2 +
- sound/soc/codecs/aw87390.c                    | 463 ++++++++++++++++++
- sound/soc/codecs/aw87390.h                    |  85 ++++
- sound/soc/codecs/aw88261.c                    |  27 +-
- sound/soc/codecs/aw88261.h                    |   4 +-
- sound/soc/codecs/aw88395/aw88395.c            |   9 +-
- sound/soc/codecs/aw88395/aw88395.h            |   2 +-
- sound/soc/codecs/aw88395/aw88395_device.c     |  47 +-
- sound/soc/codecs/aw88395/aw88395_device.h     |   6 +-
- sound/soc/codecs/aw88395/aw88395_lib.c        |  25 +-
- sound/soc/codecs/aw88395/aw88395_reg.h        |   1 +
- 14 files changed, 686 insertions(+), 74 deletions(-)
+Signed-off-by: Weidong Wang <wangweidong.a@awinic.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
+---
+ .../bindings/sound/awinic,aw87390.yaml        | 58 +++++++++++++++++++
+ 1 file changed, 58 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/sound/awinic,aw87390.yaml
- create mode 100644 sound/soc/codecs/aw87390.c
- create mode 100644 sound/soc/codecs/aw87390.h
 
-
-base-commit: 633b47cb009d09dc8f4ba9cdb3a0ca138809c7c7
+diff --git a/Documentation/devicetree/bindings/sound/awinic,aw87390.yaml b/Documentation/devicetree/bindings/sound/awinic,aw87390.yaml
+new file mode 100644
+index 000000000000..ba9d8767c5d5
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/awinic,aw87390.yaml
+@@ -0,0 +1,58 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/awinic,aw87390.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Awinic Aw87390 Audio Amplifier
++
++maintainers:
++  - Weidong Wang <wangweidong.a@awinic.com>
++
++description:
++  The awinic aw87390 is specifically designed to improve
++  the musical output dynamic range, enhance the overall
++  sound quallity, which is a new high efficiency, low
++  noise, constant large volume, 6th Smart K audio amplifier.
++
++allOf:
++  - $ref: dai-common.yaml#
++
++properties:
++  compatible:
++    const: awinic,aw87390
++
++  reg:
++    maxItems: 1
++
++  "#sound-dai-cells":
++    const: 0
++
++  awinic,audio-channel:
++    description:
++      It is used to distinguish multiple PA devices, so that different
++      configurations can be loaded to different PA devices
++    $ref: /schemas/types.yaml#/definitions/uint32
++    minimum: 0
++    maximum: 7
++
++required:
++  - compatible
++  - reg
++  - "#sound-dai-cells"
++  - awinic,audio-channel
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    i2c {
++        #address-cells = <1>;
++        #size-cells = <0>;
++        audio-codec@58 {
++            compatible = "awinic,aw87390";
++            reg = <0x58>;
++            #sound-dai-cells = <0>;
++            awinic,audio-channel = <0>;
++        };
++    };
 -- 
 2.41.0
 
