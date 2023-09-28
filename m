@@ -4,102 +4,136 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 314CEE7F14F
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 Sep 2023 22:51:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 669A3E7F14F
+	for <alsa-devel@archiver.kernel.org>; Thu, 28 Sep 2023 00:06:03 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3CA83DF3;
-	Thu, 28 Sep 2023 00:50:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3CA83DF3
+	by alsa0.perex.cz (Postfix) with ESMTPS id BDF67A4C;
+	Thu, 28 Sep 2023 02:05:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BDF67A4C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1695855091;
-	bh=T3q9QLabZEYd0hmVe8qpe5pzEaN/xwj2bJFEP461rzg=;
-	h=From:Subject:Date:To:Cc:List-Id:List-Archive:List-Help:List-Owner:
+	s=default; t=1695859561;
+	bh=dqwdFOtbLtnqLzyMpP0Rxyf8yHyA4lRI/SsMddob0lQ=;
+	h=From:Subject:To:Cc:Date:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=noccuDvDAgxRfXqKtB8cxVH71zTJ9Vpt1eAc/GXaYN0hi9KdFM4EIT+UUZi7vSn6n
-	 KO8Ops8y5YKg3SwWA2R8NFvokHtJKVfd5IWiAVOcjTw839GMro5198zVVqzOz1l15U
-	 CpHFmqKWdLRk1ilHaQYF/rWDuAiZmgOqIOoI17p4=
+	b=Gim3xjFUQzzs78/klKGVOHhNL7pDAz+AwKyT5yYfPuyYI0AL0TztLncm8N4u7ySJl
+	 VeeUMhmE3wstoODlhVO/mtRLxl8p7SFjEd5NuQSmtVvAEAYoQRvtzG0o22UggZlm5+
+	 GYHQrADEu3fPeEt1zZedfGMVLU08vMum5hNmH04g=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 417E6F8057C; Thu, 28 Sep 2023 00:49:38 +0200 (CEST)
+	id A9379F80551; Thu, 28 Sep 2023 02:04:39 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id F1499F80579;
-	Thu, 28 Sep 2023 00:49:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2EF89F801D5;
+	Thu, 28 Sep 2023 02:04:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id EDE8DF801D5; Thu, 28 Sep 2023 00:49:32 +0200 (CEST)
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com
- [IPv6:2a00:1450:4864:20::136])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 6A6CAF801D5; Thu, 28 Sep 2023 02:04:34 +0200 (CEST)
+Received: from JPN01-OS0-obe.outbound.protection.outlook.com
+ (mail-os0jpn01on20717.outbound.protection.outlook.com
+ [IPv6:2a01:111:f403:700c::717])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 61A85F800AE
-	for <alsa-devel@alsa-project.org>; Thu, 28 Sep 2023 00:47:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 61A85F800AE
+	by alsa1.perex.cz (Postfix) with ESMTPS id 50B01F800AE
+	for <alsa-devel@alsa-project.org>; Thu, 28 Sep 2023 02:04:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 50B01F800AE
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=BNU5/kGd
-Received: by mail-lf1-x136.google.com with SMTP id
- 2adb3069b0e04-50435a9f800so18780633e87.2
-        for <alsa-devel@alsa-project.org>;
- Wed, 27 Sep 2023 15:47:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695854835; x=1696459635;
- darn=alsa-project.org;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=1dCKjjzeijbdTSPrO4ZzfLQv8741SuwD/1oOGQ2gAfc=;
-        b=BNU5/kGdagSHqnm9G21qUcVd8gWpUpTsedu1Lq45yxuJBHqZo4DN4Tj+Ae3rLh/UVN
-         WMXGzaE7rSM500pesH526m+uYaLs0dKuPkXuzpUoL17eMy77OGPWzXdwTgbaF3lHvp61
-         txTTpoCOHZzcxiHr1UNZ7tSR+tACdL3CVwOakXDJEQ6ZDVjJrpEyWEBbKMPEnkWVVW6Q
-         ZinbvexekFNTv+gedqwr5OvhFoQ1j2XBXonQj1ysxKQN9D/hxtXa5Mys0KZOUf0kfJ8Q
-         KDeZHFgpFn9YdkTW7YoAjc3o2OSOIrEaxT5sGvqcqU4PdD3KazI3lUNeBO3ksI2xivzq
-         G8jA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695854835; x=1696459635;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=1dCKjjzeijbdTSPrO4ZzfLQv8741SuwD/1oOGQ2gAfc=;
-        b=qTrmyh1z7GHl4KqAUTkiqyG85OeCGMxJpaY9leSuCaOSz0sUNKh0TI6aDkGwwFK9Yw
-         qMqkKtzIfQL6hLCvNPft0BV5MOaUjU+irXk2mVlFcuQ0Ozyn860ualGZzDA9jatuR2ee
-         53TNprNd6UlCkf6vCMiU9YAqonIxeFSJR3q8HwwmI2aGKHuNcaguoO6ORfltdEmnWEDM
-         90sE4eLs8oL/u+v82zIM9bChz7lKHpeZX1NKdM9w+R8AOt3NshA91N5mDZWRFrm1uKxx
-         YF3NMde7+uaYSGZhT5aHL1E4q4KQae2e+MI8MJXRFys5wTGYv7Uh8TpkpTADPb7/yjCJ
-         op1A==
-X-Gm-Message-State: AOJu0Yy68086+t08TRD9RaUa6va3N0J8iH2Kzpk6H+C3AzMgSAbvHGfO
-	J2WcYbd6BARR6ULJ4YsXsfoIxw==
-X-Google-Smtp-Source: 
- AGHT+IGhFAuBK5ertcQ4xkq/eaYTwDXePJsXKH8GWiwuuhP409Sx4xS0GQOcgVKOghVztPKWhY3JxQ==
-X-Received: by 2002:a05:6512:3c88:b0:500:8f66:5941 with SMTP id
- h8-20020a0565123c8800b005008f665941mr3683799lfv.50.1695854835087;
-        Wed, 27 Sep 2023 15:47:15 -0700 (PDT)
-Received: from [127.0.1.1] ([85.235.12.238])
-        by smtp.gmail.com with ESMTPSA id
- ep14-20020a056512484e00b0050296068a12sm2801746lfb.30.2023.09.27.15.47.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Sep 2023 15:47:14 -0700 (PDT)
-From: Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH 0/4] Convert Rockchip ASoC drivers to GPIO descriptors
-Date: Thu, 28 Sep 2023 00:47:13 +0200
-Message-Id: <20230928-descriptors-asoc-rockchip-v1-0-a142a42d4787@linaro.org>
+	dkim=pass (1024-bit key,
+ unprotected) header.d=renesas.com header.i=@renesas.com header.a=rsa-sha256
+ header.s=selector1 header.b=ed6fYi5V
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=W5yOzTIyYlSMnQi47jGGgVbPSvUCsWOsxUZlKv4gacVQdu/+26oa3d2z65Ufly8P6xaRtmG8eAq6TZ71ycAk230H+Rb0cbUjROApPiX0EEJvgpDtRU0lB+9U+GsH5Ue95tWmYT9ulxTEJw9KUjzOjMQXQuaRuf7W+L6mFxgm4jCkRbp4kdMWO7KwkltbTiiHeYt40OGh9VnvO+DPl/xFG1DrvMRJyBfHblxdUEP+Wk55xZPY1BgGg32V2lsqPjfBIdkq84dwmHvntH6rq/5RpOOrdwmwAdzSNREoyISzdL+/p0DHF8UFc3roDvtd/jYj5Fz0ABbTeFsqb+AHHZ3HaA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=6egjXJBKJ/qhjW7M3zE00OGmX031EnIUd5jpAqi4ps8=;
+ b=oJqY6sbydDVkkV3UceXNCvdQTRZBO2Zi9dCbf7OuRvPoL282YSYA1g4xWSlF+2qsVSy93Q5DohmX80X9sXF6y8mW5SBxQSw9t0FxbWgqYudaxlf4FsRYtYOZN2loNdmrP8Q1VbJe/jgJQUAV7gRDMzoby9jm6mBtLMqCDmAJ3qeuZ8rCR1jLEKXZ3+j7LuYACumk3yYhAohP1atyr/gZ33dANcloHr2jodu/beSyDS3RcSdNHQJ0dG2yi545iOSOz6D1DCDv0MumG1j0ClysPR6QfeFZpmIawEfJz5TYngc8UU7NclzWHpjFJZJyPM5yk18YD1RdE7A+9ZktUA8HpA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=renesas.com; dmarc=pass action=none header.from=renesas.com;
+ dkim=pass header.d=renesas.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=renesas.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6egjXJBKJ/qhjW7M3zE00OGmX031EnIUd5jpAqi4ps8=;
+ b=ed6fYi5V++sx/S2eh+EBNYpY0DKcoaTSHMqA6JVJCZrYhOk5RIOJi3yNTiyxfR9K7I43jCw4CbZJCCKXQrkxtfDU0yKl72VY4YrzoW3A5/sR6VB8I3wX51SexsFDnbzs29ThIspihbApkXpbBWYNUuZKsfA+q0a7mlyNZ5sZ6oc=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=renesas.com;
+Received: from OS3PR01MB8426.jpnprd01.prod.outlook.com (2603:1096:604:194::10)
+ by TYAPR01MB6011.jpnprd01.prod.outlook.com (2603:1096:402:35::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.24; Thu, 28 Sep
+ 2023 00:04:16 +0000
+Received: from OS3PR01MB8426.jpnprd01.prod.outlook.com
+ ([fe80::d2a3:45df:a180:595c]) by OS3PR01MB8426.jpnprd01.prod.outlook.com
+ ([fe80::d2a3:45df:a180:595c%6]) with mapi id 15.20.6838.016; Thu, 28 Sep 2023
+ 00:04:16 +0000
+Message-ID: <87ttrfgo3j.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Subject: [PATCH] sh: boards: Fix Sound Simple-Card struct name
+User-Agent: Wanderlust/2.15.9 Emacs/27.1 Mule/6.0
+To: Mark Brown <broonie@kernel.org>,
+ John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=US-ASCII
+Date: Thu, 28 Sep 2023 00:04:16 +0000
+X-ClientProxiedBy: TYXPR01CA0046.jpnprd01.prod.outlook.com
+ (2603:1096:403:a::16) To OS3PR01MB8426.jpnprd01.prod.outlook.com
+ (2603:1096:604:194::10)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAPGwFGUC/x3MTQqEMAxA4atI1hPQVpyfqwyzqDHVINiSyCAU7
- 25x+S3eK2CswgafpoDyX0zSVtE9GqAlbDOjTNXgWufbtxtwYiOVvCc1DJYINdFKi2R8eR/6ONK
- Tugi1z8pRjvv9/Z3nBWpkjGZrAAAA
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Heiko Stuebner <heiko@sntech.de>
-Cc: alsa-devel@alsa-project.org, linux-gpio@vger.kernel.org,
- linux-rockchip@lists.infradead.org,
- Linus Walleij <linus.walleij@linaro.org>
-X-Mailer: b4 0.12.3
-Message-ID-Hash: YRM7FQ3Q3R6IKNRZAAHPFKHHRXCNC5OJ
-X-Message-ID-Hash: YRM7FQ3Q3R6IKNRZAAHPFKHHRXCNC5OJ
-X-MailFrom: linus.walleij@linaro.org
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: OS3PR01MB8426:EE_|TYAPR01MB6011:EE_
+X-MS-Office365-Filtering-Correlation-Id: dcb1cef8-5433-4b0d-4357-08dbbfb674aa
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	Mx/UTW25WANQZQxD0wT+rcqteIif9nmhbzTfXP5yFoMVBdvmtCw5rpcPou9RcZV5XblQk5K7RHB/xu5XjZUS0EH9Fp8rmWZ/dI+ZR5jg2wUZcltMLJyz2L3p1HmX7p0A4K5JaGzrAg8z+b4xcyOgSTY78i+BQVcxF8Eu6W0NoOHxfNsd/jBPsqfU37CQQRieQTBmicVC7t95i8AQs/ZoFps5KFvTcJliNigqOuZ8jEIbBX9FWKRwJE7jtAXaPRt30v8BRVYT7cgg9PIYfDa1+Fs1FOvMw179TbUAyddQME4FtH4S8ym2lgl/YuagDEkBvrHpAIHoAl2onmoO1JK4fo/aUSUJ7Odxizw0OoWT7Vo56MbLzWcXmrJB8vduxXoimCyd8Zc+6goUav7m2sObq7mIBPSNXxroFlYG807/ti3n0yc0u8gvwCBu3+usgderSxRLYy/sH054ygnTZbIghafXdAbRJ7zXPir40s+q1asQBo0bf5e0VJwDKvSGWkGacBIwqKxoHrDHb2rYZzTpVGO0TruD8FReRe8jj1YZXqpbYiio0MwReZ0Dynpfzm9bJ6fJk5sl3v4yRDkvwNVtI2TDJuMdY1gtQ05BxA1eZr9rxHH4W4cFj+kAyHBUJOJg
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OS3PR01MB8426.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(376002)(136003)(396003)(346002)(39860400002)(230922051799003)(1800799009)(186009)(451199024)(64100799003)(5660300002)(6512007)(52116002)(4326008)(8676002)(8936002)(66476007)(66556008)(110136005)(66946007)(316002)(478600001)(6486002)(966005)(2616005)(6506007)(2906002)(26005)(83380400001)(41300700001)(38100700002)(38350700002)(86362001)(36756003)(21314003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?us-ascii?Q?6W1Jks90jyLckFh8Eip8nQPh38aWlP/3JzmStL2sn4SiVzOFtmtPMJAnZgf5?=
+ =?us-ascii?Q?ybrFbjwL5RrM78V4fLog/iiOJjDiPqYOIUcr13hNNsmAvvdWuDFFgqYDN8Pq?=
+ =?us-ascii?Q?kXng780Fyn3v3mjalWrlHgxvEmGkxnr/AYTzF75A1tpbTSydxBd7IccOhb6a?=
+ =?us-ascii?Q?AbeK2S4DpBY0w/tLKs9N26zoUJbum5wob6Ky973BVwNLD46y+fHXGn777EdV?=
+ =?us-ascii?Q?13uYnoSReVJe/+Kq/k7GfIS4pubbxDXd544ZApE4YD33Nti7dK8OFBHkwN4O?=
+ =?us-ascii?Q?aqpQyD1Dt+ONpF3NLoc3yCgpkNkjnI3NHvb/Yy+mx3OdeQzvVSkqp47x7+Ru?=
+ =?us-ascii?Q?ejqqgY5k1BhJqA8mIHoGj0s5SK5/28izJthrbV2qTOsmb3Mfll+1xyyWRbEd?=
+ =?us-ascii?Q?/chbzyU7swdHWP7LOGx1uQRsKigQJj1vKZFJ7BLsVwpZfr8iAiHZkfR3+IA5?=
+ =?us-ascii?Q?e+r7/H0k+rqdhV2pMZXEaoWFZl3V5Ynmcfk+HQgPvOvnOSvoUKV0WvxE66Zu?=
+ =?us-ascii?Q?YSNFpKy44vm53jfDnRG5+PmEJNkvn93ecCIDcw4blbFsdFtG72w1tbvUBfY8?=
+ =?us-ascii?Q?6iSNdB3TGJDVwWYZyqE/kRgFmhVAc+gtKyQ0Gkl+JCQndhF0sCOKgy45PW5k?=
+ =?us-ascii?Q?3Pf2m6VeAeuRyk0Bf+Ssb7BQrV2c2oXgNJjNJMB9GHbIQXd9b+/xDFm7cXTg?=
+ =?us-ascii?Q?hu1eRknWbm0x/HKfjwMr7+s7FaUKSWK4uiKjkpXZskIIz/zfn3ptuGHA5Uw6?=
+ =?us-ascii?Q?TecldBn8HSxZGcmyMpHTNJ3nMdk/6sNgMxvNmQZPNCF7JG0d6YmDJ8Uimy2B?=
+ =?us-ascii?Q?0nrtluZvUz0lgndFVlsZMDXnrspEz5Gacf3nmyeW7XERqtc/psG29kxaz8yw?=
+ =?us-ascii?Q?eI0yVIAjHe38cOnl1kbJ+3T8d6l8U3x81DfNSKHOJ6T8w8TlutxYeB8M/bDh?=
+ =?us-ascii?Q?ii3l5VoFT5aLI/KZwwRIs4AaE6iVcg/OWcfyyrSrjeeMPuOj2tFZDNvqjaUD?=
+ =?us-ascii?Q?SAv9SFUfuQBlaL+mEPxFj9ijWr7m0i9KrvGOaw/E5PYo76InOrKU4tC7uXsI?=
+ =?us-ascii?Q?vt3KJ2ipQG70Zl8ZimBWZVHNntTxxSwoTTY/WzXK2Mo5/uyXt2a7W6/CCeen?=
+ =?us-ascii?Q?aCiLUOy/sbhEKIDIqcnnb6Wgp+FPT04EKSu7EpiBqipCydr2gcrvLi/E5vxE?=
+ =?us-ascii?Q?z+swNLgZ2U58WHaiBKd5eKXUwFu442f/txH+fsLWkm0zv3D2WQCKtbyCPN2I?=
+ =?us-ascii?Q?zcDz8zyU72bleSYH8vukkw5blx2AlecoPnn6zDcGzAeoZLl56X7U1YRCMLAL?=
+ =?us-ascii?Q?8gJhomGNlfIewPcusD5AFnpi5/VvTNp2pjOiCVBHqdFW+FjIUdYpcUSyes7E?=
+ =?us-ascii?Q?1LAUEFTAS82YreoV8iVrWzuXVmbslDCSyKquR0aNL1Xbk3uNAzDnqnz3tO/8?=
+ =?us-ascii?Q?eEwRoT0is5/3LUPwthpmN6b75fDJJzsafrbZjNJG5JFVzbm2vwRdZpCCAAEu?=
+ =?us-ascii?Q?/v54uU7iLpMXVZn6k/5A4klUCUVswLUHGwqRnbPXaQWESiqNnf6a3KPIliqA?=
+ =?us-ascii?Q?vCuxRzZ47uMhVbSh4f9Dc3170G/g74eVQoAQJ/rlktoIVCXuYyiFFF5KSknX?=
+ =?us-ascii?Q?Ev8UEgo1IvvC5iGhhIGz/qA=3D?=
+X-OriginatorOrg: renesas.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 
+ dcb1cef8-5433-4b0d-4357-08dbbfb674aa
+X-MS-Exchange-CrossTenant-AuthSource: OS3PR01MB8426.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Sep 2023 00:04:16.6507
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 53d82571-da19-47e4-9cb4-625a166a4a2a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 
+ HSSuFlqwNDofkCwT/k4dL2ATGig24cBA0F7TR50dkpn+kWAc0Ai9k2oBNPZvryMhRv5L8zur7suDlnZQEZsIEbq/56G2hRMz8NoDA9IgvJa86YzMBBtfIQ47MGVmH2C4
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYAPR01MB6011
+Message-ID-Hash: LS4BV7TZPCI64V7IF7VJNJOIWMTE2UJM
+X-Message-ID-Hash: LS4BV7TZPCI64V7IF7VJNJOIWMTE2UJM
+X-MailFrom: kuninori.morimoto.gx@renesas.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -111,7 +145,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YRM7FQ3Q3R6IKNRZAAHPFKHHRXCNC5OJ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LS4BV7TZPCI64V7IF7VJNJOIWMTE2UJM/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -120,27 +154,49 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The Rockchip drivers are pretty straight-forward to convert
-over to using GPIO descriptors.
+"asoc_simple_card_info" was renamed to "simple_util_info" by
+commit ad484cc98f2 ("ASoC: remove asoc_xxx() compatible macro").
+This patch fixup it For SH7724 boards.
 
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Fixes: ad484cc98f2 ("ASoC: remove asoc_xxx() compatible macro")
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202309280417.rOLRdrdM-lkp@intel.com/
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
-Linus Walleij (4):
-      ASoC: rockchip: Convert RK3288 HDMI to GPIO descriptors
-      ASoC: rockchip: Drop includes from RK3399
-      ASoC: rockchip: Drop includes from Rockchip MAX98090
-      ASoC: rockchip: Drop includes from Rockchip RT5645
+Mark, John
 
- sound/soc/rockchip/rk3288_hdmi_analog.c | 54 +++++++++++----------------------
- sound/soc/rockchip/rk3399_gru_sound.c   |  2 --
- sound/soc/rockchip/rockchip_max98090.c  |  2 --
- sound/soc/rockchip/rockchip_rt5645.c    |  2 --
- 4 files changed, 17 insertions(+), 43 deletions(-)
----
-base-commit: 0bb80ecc33a8fb5a682236443c1e740d5c917d1d
-change-id: 20230926-descriptors-asoc-rockchip-833a4fbc7c1f
+This patch is for latest asoc for-next branch
 
-Best regards,
+ arch/sh/boards/mach-ecovec24/setup.c | 2 +-
+ arch/sh/boards/mach-se/7724/setup.c  | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/sh/boards/mach-ecovec24/setup.c b/arch/sh/boards/mach-ecovec24/setup.c
+index 3be293335de5..0f279360838a 100644
+--- a/arch/sh/boards/mach-ecovec24/setup.c
++++ b/arch/sh/boards/mach-ecovec24/setup.c
+@@ -881,7 +881,7 @@ static struct platform_device fsi_device = {
+ 	.resource	= fsi_resources,
+ };
+ 
+-static struct asoc_simple_card_info fsi_da7210_info = {
++static struct simple_util_info fsi_da7210_info = {
+ 	.name		= "DA7210",
+ 	.card		= "FSIB-DA7210",
+ 	.codec		= "da7210.0-001a",
+diff --git a/arch/sh/boards/mach-se/7724/setup.c b/arch/sh/boards/mach-se/7724/setup.c
+index 6495f9354065..787ddd3c627a 100644
+--- a/arch/sh/boards/mach-se/7724/setup.c
++++ b/arch/sh/boards/mach-se/7724/setup.c
+@@ -300,7 +300,7 @@ static struct platform_device fsi_device = {
+ 	.resource	= fsi_resources,
+ };
+ 
+-static struct asoc_simple_card_info fsi_ak4642_info = {
++static struct simple_util_info fsi_ak4642_info = {
+ 	.name		= "AK4642",
+ 	.card		= "FSIA-AK4642",
+ 	.codec		= "ak4642-codec.0-0012",
 -- 
-Linus Walleij <linus.walleij@linaro.org>
+2.25.1
 
