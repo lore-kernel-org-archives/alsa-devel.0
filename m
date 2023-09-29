@@ -4,74 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 40486E71D4F
-	for <alsa-devel@archiver.kernel.org>; Fri, 29 Sep 2023 15:23:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B333DE71D53
+	for <alsa-devel@archiver.kernel.org>; Fri, 29 Sep 2023 15:27:08 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DF8C0DF1;
-	Fri, 29 Sep 2023 17:22:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DF8C0DF1
+	by alsa0.perex.cz (Postfix) with ESMTPS id A9939DE5;
+	Fri, 29 Sep 2023 17:26:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A9939DE5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1696001012;
-	bh=cRITPcSOZCDpOlOAYPtEtv+wUjewiatWysnCmQpHZdo=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1696001226;
+	bh=zR3V39FUOXpDJZX+fcXic0O2fzgMBC+hizqSI52SM+4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=GSrowmuuDdtBiZaEKpweKGd1Cs0t30RH/AR4Q/YU0sBeZnSKSeThVTJk4f1i2Wvq6
-	 B27XOIwm0Hv+FY1NOHoRBj31dhEvk16JhkEdS9do/ltr3EqXhlWf1486u3NLC2A1wr
-	 ZGtqeB8l33/YLkhqPsGyvAPWYeNbCAPn8Z9VMr/w=
+	b=FL3dEUqdZ8DT9c7XHB3AzQXlB/28XaCq92u5QggC+8BbfR23k2mBRrQyec97eKlpE
+	 VYhqUFLB+XM5uQ6t7p6zeyRwybcLRpwyyHb5My3KmudFJ6GQo1h/VYdQqHHU167jMb
+	 WKEl1npD0qxlGotzsEfrjZB3CWyMG96Tt74J5Tjk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7B3BAF80290; Fri, 29 Sep 2023 17:22:13 +0200 (CEST)
+	id 54BD6F80551; Fri, 29 Sep 2023 17:25:47 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1E637F801D5;
-	Fri, 29 Sep 2023 17:22:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C0503F801D5;
+	Fri, 29 Sep 2023 17:25:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BB4AEF801D5; Fri, 29 Sep 2023 17:22:08 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	id 2F477F801D5; Fri, 29 Sep 2023 17:25:43 +0200 (CEST)
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 73360F8007C
-	for <alsa-devel@alsa-project.org>; Fri, 29 Sep 2023 17:21:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 73360F8007C
+	by alsa1.perex.cz (Postfix) with ESMTPS id E4397F800AE;
+	Fri, 29 Sep 2023 17:25:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E4397F800AE
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=GDJW6lgp
+ header.s=k20201202 header.b=raNcOeAP
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id BCB2961E5F;
-	Fri, 29 Sep 2023 15:21:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 706ABC433C8;
-	Fri, 29 Sep 2023 15:21:52 +0000 (UTC)
+	by sin.source.kernel.org (Postfix) with ESMTP id 5885CCE243B;
+	Fri, 29 Sep 2023 15:25:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34F0FC433C7;
+	Fri, 29 Sep 2023 15:25:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1696000913;
-	bh=cRITPcSOZCDpOlOAYPtEtv+wUjewiatWysnCmQpHZdo=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=GDJW6lgp7tjawISSVcPjtQu8ifTb53tlLs3yg/gFtEVoIGhSbrv+uOeV/g0xofEzS
-	 YgK91w5b2TEIQj4JMrFOjU4/esJRz/OkEcsIKyeYiPJRtayFWy2hivpRib9u3MbC6T
-	 WO/3tPosBxpbSkTv85CfBOPNNpXdIpfAhUjuBfKaOgPtIJeS8SItyYAfr6tRJrGv8g
-	 X7k6/wi3w5Ht5NuyduESSiCCvwOWpAnjgzTAm4kRLKDSOBNNYPNYnoBkT255GZtTJK
-	 xW4cTLCL0MQWVDxEb6MhQJgvnfUxPmird5wcBySYTi4HmrgIgE28ed/IUJspPTwpU+
-	 RjEfbuSVbMU4g==
+	s=k20201202; t=1696001128;
+	bh=zR3V39FUOXpDJZX+fcXic0O2fzgMBC+hizqSI52SM+4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=raNcOeAP+3T8q5itobNnfQzGZodlhmfufngy0pt74/+sP7smAxMCkRkquKoPhJ8oH
+	 l2HRX3hCJN7FAxdaZRt0/7k3pKWACWvwFibCjq2a9G8XDAoPQVGhGV6R3AmSGJjcOO
+	 G14QPDMELVKzgoooGk2Nj+N85rUhN7uylPvlQBg/81oOPbpQuq77krausidgIQbCoa
+	 sFIgaKO9rrzQaJabcVR5Zy0nhRc0fgmfX6tc13DW2TNHGGTxNhp4BVDFpfBJrGrOZ+
+	 MMdWVpAGeked2HEmGQLOGD+vtPNw0nx5KlKfHzamSg0QzRz8rL1xl04RvFMpzxTU+A
+	 Y0QXaZ4/FiwNQ==
+Date: Fri, 29 Sep 2023 17:25:26 +0200
 From: Mark Brown <broonie@kernel.org>
-To: =?utf-8?q?Amadeusz_S=C5=82awi=C5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
- Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
- alsa-devel@alsa-project.org
-In-Reply-To: <20230929112436.787058-1-amadeuszx.slawinski@linux.intel.com>
-References: <20230929112436.787058-1-amadeuszx.slawinski@linux.intel.com>
-Subject: Re: [PATCH 0/6] ASoC: Intel: avs: QoL fixes
-Message-Id: <169600091218.2899821.6351532599212308129.b4-ty@kernel.org>
-Date: Fri, 29 Sep 2023 17:21:52 +0200
+To: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	Cezary Rojewski <cezary.rojewski@intel.com>,
+	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+	Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+	Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+	Bard Liao <yung-chuan.liao@linux.intel.com>,
+	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+	Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+	Daniel Baluta <daniel.baluta@nxp.com>, linux-kernel@vger.kernel.org,
+	sound-open-firmware@alsa-project.org
+Subject: Re: [PATCH v5 00/12] sound: Use -EPROBE_DEFER instead of i915 module
+ loading.
+Message-ID: <ZRbsZmjnR3hfsr3N@finisterre.sirena.org.uk>
+References: <20230929145123.233838-1-maarten.lankhorst@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.13-dev-0438c
-Message-ID-Hash: 6IQZYTT637YEEM4NF66EW6AWTBLD5XOB
-X-Message-ID-Hash: 6IQZYTT637YEEM4NF66EW6AWTBLD5XOB
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="A0XDTaLZBAdeh9YB"
+Content-Disposition: inline
+In-Reply-To: <20230929145123.233838-1-maarten.lankhorst@linux.intel.com>
+X-Cookie: Save energy:  Drive a smaller shell.
+Message-ID-Hash: NSSKCNTEWAGUDKD23D7EB4BLO7BVJ4HZ
+X-Message-ID-Hash: NSSKCNTEWAGUDKD23D7EB4BLO7BVJ4HZ
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -84,7 +93,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6IQZYTT637YEEM4NF66EW6AWTBLD5XOB/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NSSKCNTEWAGUDKD23D7EB4BLO7BVJ4HZ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -93,51 +102,35 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, 29 Sep 2023 13:24:30 +0200, Amadeusz Sławiński wrote:
-> Set of fixes mainly cleaning up code, but also correcting some minor HW
-> assumptions.
-> 
-> Amadeusz Sławiński (2):
->   ASoC: Intel: avs: Use generic size defines
->   ASoC: Intel: avs: Preallocate memory for module configuration
-> 
-> [...]
 
-Applied to
+--A0XDTaLZBAdeh9YB
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+On Fri, Sep 29, 2023 at 04:51:14PM +0200, Maarten Lankhorst wrote:
 
-Thanks!
+>   ASoC/SOF/core: Ensure sof_ops_free() is still called when probe never
+>     ran.
+>   ASoC: SOF: Intel: Move binding to display driver outside of deferred
+>     probe
+>   ASoC: SOF: core: Add probe_early and remove_late callbacks
+>   ASoC: SOF: Intel: hda: start splitting the probe
 
-[1/6] ASoC: Intel: avs: Move IPC error messages one level down
-      commit: 26033ae6bd896d89aac4a3194ceb5dc673ce9214
-[2/6] ASoC: Intel: avs: Use generic size defines
-      commit: 7eb878e768fd952739a03bf4bbd021496a818eb9
-[3/6] ASoC: Intel: avs: Preallocate memory for module configuration
-      commit: 28a21cb26425797910b4d7ab0cad0d377d4a004c
-[4/6] ASoC: Intel: avs: Keep module refcount up when gathering traces
-      commit: 0a5fb3cc28fda52c761775db2ccb7ccb954aee2a
-[5/6] ASoC: Intel: avs: Disable DSP before loading basefw
-      commit: a5e6ea01265e9ed9ab8511907ebbc82552cd2e9e
-[6/6] ASoC: Intel: avs: Drop superfluous stream decoupling
-      commit: b87b8f43afd5f7afd3920532942f5e9ea028d955
+The subject line styles aren't consistent within the series here.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+--A0XDTaLZBAdeh9YB
+Content-Type: application/pgp-signature; name="signature.asc"
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+-----BEGIN PGP SIGNATURE-----
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmUW7GUACgkQJNaLcl1U
+h9AnUwgAhkSLp+kvd8MgYHfmPYIFUUhZBZQRkcIQIqKSWYl6JEIdZ1alxsCsbLsQ
+bLr4HT6V+0HukhLfCwbFCk/oL2R+dhrxz/s1lLANnVdQd7sZ9qsmpj3FRV2TFnpM
+pKL0z8mJF3mHV9z1k5KxcJO91VnBQE+0o+P3GkYAJA4P++kOD++2+HX3k59Z+WM5
+TKsYQ/7y89Y7XThCqJclbyGgp9rOz/JLblfdMvtUhP3hgzjDxd25md+L8v6BHmIR
+0fHrppNupGzgB1095PW/uFB9v8bXDsgHKRMvc7n0nO7RJ23h2w9Vx84b/G2LYBNe
+dH331KjnIx7FUlLcTb71hXlpPXotbg==
+=cs2R
+-----END PGP SIGNATURE-----
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+--A0XDTaLZBAdeh9YB--
