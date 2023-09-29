@@ -4,98 +4,111 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6DD92E728CA
-	for <alsa-devel@archiver.kernel.org>; Fri, 29 Sep 2023 17:28:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 784C4E728D7
+	for <alsa-devel@archiver.kernel.org>; Fri, 29 Sep 2023 19:16:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 47AD6DFA;
-	Fri, 29 Sep 2023 19:27:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 47AD6DFA
+	by alsa0.perex.cz (Postfix) with ESMTPS id A62A7DEF;
+	Fri, 29 Sep 2023 21:15:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A62A7DEF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1696008511;
-	bh=JHVli4pvb5ByrQNcvtdJFMebLZ+PfOz2xZbBxg+qzMI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1696014989;
+	bh=Rm6JXdf9+lBE8RKAJuQjOMxWnCKPnrSEMwlnxiPGaiI=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=mSIkZQAb30FaGOT2SIqT520+O20erFyWBqXL+5zeqQoxEmolhR4zIjyR+31642AF3
-	 ZRgVe/2fgW3F9M/rFoBTi0TiAfNLPuPjpn2FZ937DcseOOpC51fFHaSCXQihl8Zzk7
-	 n0AZ5C0M/8+M+N22dniangk0FzcZZpxjH0KojtZM=
+	b=BW8VyT0f30nMvlJACdwZvmvCsg91pAOvwqVWQpDRDKIsBvt3UI0AyoUdzvrZ61/0K
+	 JcUtTFsMBBIsvR9+1OHDxwFi7ydD5OofjH8FPM55RZ0vwiu0NidoeJkEl9D6ntxD/s
+	 XcaBn0C/DSwBkKRkhjOStteOxa6GyP/21N1+Qkr0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B9B3CF8056F; Fri, 29 Sep 2023 19:27:12 +0200 (CEST)
+	id 9EEF5F8047D; Fri, 29 Sep 2023 21:15:19 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 386D0F8055A;
-	Fri, 29 Sep 2023 19:27:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5929EF8007C;
+	Fri, 29 Sep 2023 21:15:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9737AF8055A; Fri, 29 Sep 2023 19:27:08 +0200 (CEST)
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com
- [IPv6:2607:f8b0:4864:20::431])
+	id C1D49F801D5; Fri, 29 Sep 2023 21:15:13 +0200 (CEST)
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com
+ [IPv6:2607:f8b0:4864:20::434])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 1EABEF801D5
-	for <alsa-devel@alsa-project.org>; Fri, 29 Sep 2023 19:27:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1EABEF801D5
+	by alsa1.perex.cz (Postfix) with ESMTPS id C7C52F8007C
+	for <alsa-devel@alsa-project.org>; Fri, 29 Sep 2023 21:15:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C7C52F8007C
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=chromium.org header.i=@chromium.org header.a=rsa-sha256
- header.s=google header.b=JbWG+3/Z
-Received: by mail-pf1-x431.google.com with SMTP id
- d2e1a72fcca58-691c05bc5aaso12665527b3a.2
+ header.s=google header.b=NNp8jjo7
+Received: by mail-pf1-x434.google.com with SMTP id
+ d2e1a72fcca58-692a885f129so10432124b3a.0
         for <alsa-devel@alsa-project.org>;
- Fri, 29 Sep 2023 10:27:05 -0700 (PDT)
+ Fri, 29 Sep 2023 12:15:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1696008423; x=1696613223;
+        d=chromium.org; s=google; t=1696014905; x=1696619705;
  darn=alsa-project.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Wd8ES7UTRS4g/SWmf5zxBULHM/lF3w6VRAdiJYs6Tsc=;
-        b=JbWG+3/Z8YQwcOrKGCc0zwXmjp17XzFa/daNRDiBNS9JUtb00ismpQKIjjL7H92Rji
-         kddS1LznNfnFW88Sc+8p8p3RGQfFrtzOACv1h93QnQiMu2XTisLm38N+mqmnbaBebV8O
-         RKfKSvaEoS+G4lxLwaDWCouEMiC1G6qmpysFc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696008423; x=1696613223;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Wd8ES7UTRS4g/SWmf5zxBULHM/lF3w6VRAdiJYs6Tsc=;
-        b=WRkXK4AuH+yuLt/uHQe8Vu+iFsSipSAuQWcNiMpjwHzNV/UMjnttU2auzl4Yu9TmDh
-         SYGuPvjiiz7PIwSodTLLsivAfyW0qM6LVchtikpPU8wFTKzcXAB+NS0VBtZorD/val3E
-         5BltBcL4sBmPxQpeoMAjqKbroj6kcsGaHsg+rA9koxGovgyJX/dPIp4eWqR4QbYpV9jI
-         PNapPo2XqzSnA1VKcvJ3gPV+YQsDHYr7nZ6mlVsJukfdODKngCTMuz3OKMTeECDgBY7X
-         E81B3YR/zGGvPAvg9bx3qEGpJTcDhUkMqe5e6Bh5J3pNqUAlABG01ViD7EnXpE5rEmql
-         XYBA==
-X-Gm-Message-State: AOJu0YxIiyoREtolk27nRVOKa0NnApkhPTu0hgBS/UBK2tHqKt286ZpR
-	fJdW7vzRsJ/8PHbtDk2ynQPjtal5XUl2Q5fdais=
+        bh=DGE+mhT2J6BxwaI8MX/iLRb/F1GWPeFnuoGQKhDB53k=;
+        b=NNp8jjo74VydLQrJDC3b2e12mV1JNY/d0MjJNW1UhRgD1wJLMXTjxceRTg5u4oqUqR
+         QG4gPtq4tmDPdirVPONKLOcQ+Cp8gEC4XKCIpt2J2NN9RAqvBibU207sUhpZE3vPX7OK
+         xnhvaWZwpJf9xkKY1SbFSrq/tv4dh7oMfR87o=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696014905; x=1696619705;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DGE+mhT2J6BxwaI8MX/iLRb/F1GWPeFnuoGQKhDB53k=;
+        b=wNxVgE7V6OjhcJo2AmnE7Y0BJCeWBy786vgXcItfUgcWCWicQT8zhZFaEA3Ae/YlMS
+         0K2ZV7NjcmFAZ0z3B7Z0FcC0CvRoCMXQgxxyuneGL2z0CWhHv2k4r7OPKZh9XhUv3nzz
+         SXo0KxKHOl0ZmdvP7lLEYmqNEbPEr+Z6KGOv7xVVVNnTlfLtq4P8CcYLzcxfuYxssq4w
+         pZKD55Lh5mlx2JtCgP0dQlmG2Iam6g25GiE5vEE6TbU4jEcdHRpTfbDFPaOONSoi7dTV
+         eL7TmvtsNalaAUuykjegHZ4pLChkm1aIqslvjAfuwMcXEeYp06RYmaDYVEDIBx2dUR/i
+         jf5g==
+X-Gm-Message-State: AOJu0YwxyWbq1OI5+Co8/48557oknLDYxOyYP0oZntNS5angBj1Cu7va
+	xDykcUNz6WaymyXMstEXorh12IEsRHPKYyQ7Z7w=
 X-Google-Smtp-Source: 
- AGHT+IEXWkksRK1toVy3j5D1s4dbzSv/nL8bWHO6yyUqYwQr+UgzfldVKiEECFSqaadF6uH++QvI9w==
-X-Received: by 2002:a05:6a20:d42f:b0:14e:315b:d9c with SMTP id
- il47-20020a056a20d42f00b0014e315b0d9cmr4362465pzb.22.1696008423179;
-        Fri, 29 Sep 2023 10:27:03 -0700 (PDT)
+ AGHT+IGdWrWALlMstgZLw0gTzX8sPC+R7tbZh2lrWw0eupjJZhVRje8lP169zMl1usYEXoSsJDs8vg==
+X-Received: by 2002:a05:6a21:4985:b0:140:c838:2b2e with SMTP id
+ ax5-20020a056a21498500b00140c8382b2emr5182838pzc.22.1696014904595;
+        Fri, 29 Sep 2023 12:15:04 -0700 (PDT)
 Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net.
  [198.0.35.241])
         by smtp.gmail.com with ESMTPSA id
- i6-20020aa787c6000000b0068a0b5df6b2sm15242690pfo.196.2023.09.29.10.27.02
+ e20-20020aa78c54000000b0069337938bdcsm4816734pfd.125.2023.09.29.12.15.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Sep 2023 10:27:02 -0700 (PDT)
-Date: Fri, 29 Sep 2023 10:27:02 -0700
+        Fri, 29 Sep 2023 12:15:03 -0700 (PDT)
 From: Kees Cook <keescook@chromium.org>
-To: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-	Torsten Schenk <torsten.schenk@zoho.com>,
-	alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+	Bard Liao <yung-chuan.liao@linux.intel.com>,
+	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+	Daniel Baluta <daniel.baluta@nxp.com>,
+	Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+	Mark Brown <broonie@kernel.org>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc: Kees Cook <keescook@chromium.org>,
+	sound-open-firmware@alsa-project.org,
+	alsa-devel@alsa-project.org,
+	linux-kernel@vger.kernel.org,
 	linux-hardening@vger.kernel.org
-Subject: Re: [PATCH][next] ALSA: 6fire: Fix undefined behavior bug in struct
- midi_runtime
-Message-ID: <202309291026.06071AC@keescook>
-References: <ZRb2CKHuaCu0u38i@work>
+Subject: Re: [PATCH][next] ASoC: SOF: ipc4-topology: Use size_add() in call to
+ struct_size()
+Date: Fri, 29 Sep 2023 12:14:59 -0700
+Message-Id: <169601489953.3012131.13922425518082792309.b4-ty@chromium.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <ZQSr15AYJpDpipg6@work>
+References: <ZQSr15AYJpDpipg6@work>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZRb2CKHuaCu0u38i@work>
-Message-ID-Hash: 4QBRFMPPEQO7V3GHTIJCT27E22EP2QGC
-X-Message-ID-Hash: 4QBRFMPPEQO7V3GHTIJCT27E22EP2QGC
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: XGYMMJUNUAZB3CTDBY2PXPTI3S5J2TZS
+X-Message-ID-Hash: XGYMMJUNUAZB3CTDBY2PXPTI3S5J2TZS
 X-MailFrom: keescook@chromium.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -108,7 +121,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4QBRFMPPEQO7V3GHTIJCT27E22EP2QGC/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XGYMMJUNUAZB3CTDBY2PXPTI3S5J2TZS/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -117,22 +130,21 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, Sep 29, 2023 at 06:06:32PM +0200, Gustavo A. R. Silva wrote:
-> `struct urb` is a flexible structure, which means that it contains a
-> flexible-array member at the bottom. This could potentially lead to an
-> overwrite of the objects following `out_urb` in `struct midi_runtime`,
-> among them a function pointer.
+On Fri, 15 Sep 2023 13:09:11 -0600, Gustavo A. R. Silva wrote:
+> If, for any reason, the open-coded arithmetic causes a wraparound,
+> the protection that `struct_size()` adds against potential integer
+> overflows is defeated. Fix this by hardening call to `struct_size()`
+> with `size_add()`.
 > 
-> Fix this by placing the declaration of object `out_urb` at the end of
-> `struct midi_runtime`.
 > 
-> Fixes: c6d43ba816d1 ("ALSA: usb/6fire - Driver for TerraTec DMX 6Fire USB")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-Another good find. :)
+Applied to for-next/hardening, thanks!
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+[1/1] ASoC: SOF: ipc4-topology: Use size_add() in call to struct_size()
+      https://git.kernel.org/kees/c/93d2858dd630
+
+Take care,
 
 -- 
 Kees Cook
+
