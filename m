@@ -4,77 +4,116 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 834B8E77360
-	for <alsa-devel@archiver.kernel.org>; Sat, 30 Sep 2023 08:19:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3E7E4E77362
+	for <alsa-devel@archiver.kernel.org>; Sat, 30 Sep 2023 08:19:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9859F1508;
-	Sat, 30 Sep 2023 10:18:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9859F1508
+	by alsa0.perex.cz (Postfix) with ESMTPS id 33D41EBE;
+	Sat, 30 Sep 2023 10:18:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 33D41EBE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1696061945;
-	bh=DVmT68nGVttzYKMHWeZa0QzZDvlg+0ZoTxaw//bT2s8=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=ZtELJ1dQ9q/Z6+PP7+OqDiTztdRXfm/u2LRhyVpmOkgtjAxs+FSAieWXqQwzMiV0M
-	 gNCm+m9yMVGMgU+rSwhsegIFu6Eq0sPswUHAwVXdgzoPmAp8OhrsNwOGQVcwO9Z59K
-	 Go18nfmJRGKZP0n/VN5muSEHyBi0O9MdcQDXqNIU=
+	s=default; t=1696061971;
+	bh=5267xrteeJIj4R0JInOg7X/x3Oyz68W6Tdklr66zM8A=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=Y+KKm6Oi0as3U3Jt7/u04kYhPl8LM76lTL4HTBHZI1shjng+Ct55GrYJ9ZRGfkOw4
+	 LOmFHQrc/hKuPGo4X8ZaN3wNx4zJzdhLTazOIcyqduVEFDjUkdgsUf2SafZcn7ROrW
+	 SprJSDUuKRc3Cm6SY4Kil8WmvUiU9TA/m2hreb2c=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3BF94F80684; Sat, 30 Sep 2023 10:13:01 +0200 (CEST)
+	id D0FDDF805C4; Sat, 30 Sep 2023 10:13:04 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9F520F80684;
-	Sat, 30 Sep 2023 10:13:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A0F4AF805CA;
+	Sat, 30 Sep 2023 10:13:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6B27BF80290; Fri, 29 Sep 2023 16:51:51 +0200 (CEST)
-Received: from mblankhorst.nl (lankhorst.se [141.105.120.124])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	id 7C300F801D5; Fri, 29 Sep 2023 17:06:47 +0200 (CEST)
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com
+ [IPv6:2a00:1450:4864:20::343])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 452B6F80166;
-	Fri, 29 Sep 2023 16:51:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 452B6F80166
-From: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-To: alsa-devel@alsa-project.org
-Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	Cezary Rojewski <cezary.rojewski@intel.com>,
-	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-	Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-	Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-	Bard Liao <yung-chuan.liao@linux.intel.com>,
-	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-	Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+	by alsa1.perex.cz (Postfix) with ESMTPS id 8D649F800AE
+	for <alsa-devel@alsa-project.org>; Fri, 29 Sep 2023 17:06:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8D649F800AE
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20230601 header.b=jKrzMxXx
+Received: by mail-wm1-x343.google.com with SMTP id
+ 5b1f17b1804b1-405524e6769so5127455e9.1
+        for <alsa-devel@alsa-project.org>;
+ Fri, 29 Sep 2023 08:06:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695999981; x=1696604781;
+ darn=alsa-project.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=I+HDInQo6A1OIfSQ4kDLBbQAIE/uOQhrvXDem09PR3k=;
+        b=jKrzMxXxla7/LkXjr1iTa4RVWGaesUA1WuvszYZhXRjNrsE790fgRpsY2emmbV7ncP
+         nypLlOYwVvTWvj5Ff9aeHVi6URgklDYbBgqtxUeg8Vzd5JQKFbjQCtLMMQQNlPsjEFnD
+         BTCmoF4AHT8PAVpbgQwUaw9acA03vtzhpqHAi3qzNvRKZi6yVh7DVR8jPbg5qPorEEs/
+         bM8AiiEPWXeUva5MuCIzBxuHIJSLo0ZSLv5UYj1z1aPTN9Wvu+n0mf0yvWfOReG1VbX0
+         1lWacfJGkIngKiC0NtleLFnotLVeVmMGgUKvDkT4lQ8jHxN5YK4nWPYu5y5F2YbAClgK
+         be/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695999981; x=1696604781;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=I+HDInQo6A1OIfSQ4kDLBbQAIE/uOQhrvXDem09PR3k=;
+        b=tInQnsxP/n1xO0HHINkjyAPRCi5XDUW/MuQlq7oIJvb5hYjLOYdJCUmOUWi83X6qQB
+         JmEzGVlaykRPw3Kfk/v1cFD9q6loY3OskVU79o5prCS9kEvel34sIYkvb1FgkzOnM167
+         LIgi6VK2lTaz871k8Pcupsa4k6Yw4BhfKbVJHoVMkkpjeNYL/xSLDtlzoM0C+3Y3yvY9
+         k/M63JGEVzHmxMUNVkjcQvFsdsYsRXz0QaMwHav3nCd/EeIn+YhpG8q51XxLWI+jw0/H
+         LLBkaxC1fERwLrgXDtuDMCDd8YerDx0dAnvJv2JadOqdqBVL7yNnndTCVHlUVtVR3ukZ
+         7Pww==
+X-Gm-Message-State: AOJu0YzVfiDm5GTCQR8rEf/gc/WXF/tAip8dC64nbtvcRlXrf2b6Cwec
+	sEMkXgRlFyZJtNBICIZVtXk=
+X-Google-Smtp-Source: 
+ AGHT+IFajsTW5J93K/OzzdCwONkeonYv1BhbbEV7MBCbRDZMmPHOe8BVXYC6nzOe54XQkf98bAaeqA==
+X-Received: by 2002:a7b:cd85:0:b0:402:ebe1:7960 with SMTP id
+ y5-20020a7bcd85000000b00402ebe17960mr4202891wmj.2.1695999980586;
+        Fri, 29 Sep 2023 08:06:20 -0700 (PDT)
+Received: from localhost ([2a02:810d:1640:10d8:9259:8ee2:26ea:3669])
+        by smtp.gmail.com with ESMTPSA id
+ y19-20020a1c4b13000000b00405bbfd5d16sm1606110wma.7.2023.09.29.08.06.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Sep 2023 08:06:20 -0700 (PDT)
+From: Joerg Schambacher <joerg.hifiberry@gmail.com>
+To: 
+Cc: a-krasser@ti.com,
+	joerg@hifiberry.com,
+	Joerg Schambacher <joerg.hifiberry@gmail.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
 	Mark Brown <broonie@kernel.org>,
-	Daniel Baluta <daniel.baluta@nxp.com>,
-	linux-kernel@vger.kernel.org,
-	sound-open-firmware@alsa-project.org
-Subject: [PATCH v5 09/12] ALSA: hda/intel: Move snd_hdac_i915_init to before
- probe_work.
-Date: Fri, 29 Sep 2023 16:51:23 +0200
-Message-Id: <20230929145123.233838-10-maarten.lankhorst@linux.intel.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230929145123.233838-1-maarten.lankhorst@linux.intel.com>
-References: <20230929145123.233838-1-maarten.lankhorst@linux.intel.com>
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	alsa-devel@alsa-project.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/2] ASoC: pcm512x: Adds bindings for TAS575x devices
+Date: Fri, 29 Sep 2023 17:05:55 +0200
+Message-Id: <20230929150555.405388-1-joerg.hifiberry@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-MailFrom: mlankhorst@mblankhorst.nl
+X-MailFrom: joerg.hifiberry@gmail.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: SXWHP4NJFEUEYDKRWXWAD25TTVHAVZYC
-X-Message-ID-Hash: SXWHP4NJFEUEYDKRWXWAD25TTVHAVZYC
-X-Mailman-Approved-At: Sat, 30 Sep 2023 08:12:30 +0000
+Message-ID-Hash: VZJLKP57WK4OERCGNZ5KLW2ZBEQ3DI6Y
+X-Message-ID-Hash: VZJLKP57WK4OERCGNZ5KLW2ZBEQ3DI6Y
+X-Mailman-Approved-At: Sat, 30 Sep 2023 08:12:52 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SXWHP4NJFEUEYDKRWXWAD25TTVHAVZYC/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VZJLKP57WK4OERCGNZ5KLW2ZBEQ3DI6Y/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -83,103 +122,43 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Now that we can use -EPROBE_DEFER, it's no longer required to spin off
-the snd_hdac_i915_init into a workqueue.
+The TAS5754/6 power amplifiers use the same pcm512x driver with
+only minor restictions described in the bindings document.
 
-Use the -EPROBE_DEFER mechanism instead, which must be returned in the
-probe function.
-
-Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Joerg Schambacher <joerg.hifiberry@gmail.com>
 ---
- sound/pci/hda/hda_intel.c | 59 ++++++++++++++++++++-------------------
- 1 file changed, 30 insertions(+), 29 deletions(-)
+ Documentation/devicetree/bindings/sound/pcm512x.txt | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index bfe6232bb0e0e..5cf7676114dc6 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -2135,6 +2135,36 @@ static int azx_probe(struct pci_dev *pci,
+diff --git a/Documentation/devicetree/bindings/sound/pcm512x.txt b/Documentation/devicetree/bindings/sound/pcm512x.txt
+index 3aae3b41bd8e..77006a4aec4a 100644
+--- a/Documentation/devicetree/bindings/sound/pcm512x.txt
++++ b/Documentation/devicetree/bindings/sound/pcm512x.txt
+@@ -1,12 +1,12 @@
+-PCM512x audio CODECs
++PCM512x and TAS575x audio CODECs/amplifiers
  
- 	pci_set_drvdata(pci, card);
+ These devices support both I2C and SPI (configured with pin strapping
+-on the board).
++on the board). The TAS575x devices only support I2C.
  
-+#ifdef CONFIG_SND_HDA_I915
-+	/* bind with i915 if needed */
-+	if (chip->driver_caps & AZX_DCAPS_I915_COMPONENT) {
-+		err = snd_hdac_i915_init(azx_bus(chip), false);
-+		if (err < 0) {
-+			/* if the controller is bound only with HDMI/DP
-+			 * (for HSW and BDW), we need to abort the probe;
-+			 * for other chips, still continue probing as other
-+			 * codecs can be on the same link.
-+			 */
-+			if (HDA_CONTROLLER_IN_GPU(pci)) {
-+				dev_err_probe(card->dev, err,
-+					     "HSW/BDW HD-audio HDMI/DP requires binding with gfx driver\n");
-+
-+				goto out_free;
-+			} else {
-+				/* don't bother any longer */
-+				chip->driver_caps &= ~AZX_DCAPS_I915_COMPONENT;
-+			}
-+		}
-+
-+		/* HSW/BDW controllers need this power */
-+		if (HDA_CONTROLLER_IN_GPU(pci))
-+			hda->need_i915_power = true;
-+	}
-+#else
-+	if (HDA_CONTROLLER_IN_GPU(pci))
-+		dev_err(card->dev, "Haswell/Broadwell HDMI/DP must build in CONFIG_SND_HDA_I915\n");
-+#endif
-+
- 	err = register_vga_switcheroo(chip);
- 	if (err < 0) {
- 		dev_err(card->dev, "Error registering vga_switcheroo client\n");
-@@ -2162,11 +2192,6 @@ static int azx_probe(struct pci_dev *pci,
- 	}
- #endif /* CONFIG_SND_HDA_PATCH_LOADER */
+ Required properties:
  
--#ifndef CONFIG_SND_HDA_I915
--	if (HDA_CONTROLLER_IN_GPU(pci))
--		dev_err(card->dev, "Haswell/Broadwell HDMI/DP must build in CONFIG_SND_HDA_I915\n");
--#endif
--
- 	if (schedule_probe)
- 		schedule_delayed_work(&hda->probe_work, 0);
+-  - compatible : One of "ti,pcm5121", "ti,pcm5122", "ti,pcm5141" or
+-                 "ti,pcm5142"
++  - compatible : One of "ti,pcm5121", "ti,pcm5122", "ti,pcm5141",
++                 "ti,pcm5142", "ti,tas5754" or "ti,tas5756"
  
-@@ -2264,30 +2289,6 @@ static int azx_probe_continue(struct azx *chip)
- 	to_hda_bus(bus)->bus_probing = 1;
- 	hda->probe_continued = 1;
+   - reg : the I2C address of the device for I2C, the chip select
+           number for SPI.
+@@ -25,6 +25,7 @@ Optional properties:
+     through <6>.  The device will be configured for clock input on the
+     given pll-in pin and PLL output on the given pll-out pin.  An
+     external connection from the pll-out pin to the SCLK pin is assumed.
++    Caution: the TAS-desvices only support gpios 1,2 and 3
  
--	/* bind with i915 if needed */
--	if (chip->driver_caps & AZX_DCAPS_I915_COMPONENT) {
--		err = snd_hdac_i915_init(bus, true);
--		if (err < 0) {
--			/* if the controller is bound only with HDMI/DP
--			 * (for HSW and BDW), we need to abort the probe;
--			 * for other chips, still continue probing as other
--			 * codecs can be on the same link.
--			 */
--			if (HDA_CONTROLLER_IN_GPU(pci)) {
--				dev_err(chip->card->dev,
--					"HSW/BDW HD-audio HDMI/DP requires binding with gfx driver\n");
--				goto out_free;
--			} else {
--				/* don't bother any longer */
--				chip->driver_caps &= ~AZX_DCAPS_I915_COMPONENT;
--			}
--		}
--
--		/* HSW/BDW controllers need this power */
--		if (HDA_CONTROLLER_IN_GPU(pci))
--			hda->need_i915_power = true;
--	}
--
- 	/* Request display power well for the HDA controller or codec. For
- 	 * Haswell/Broadwell, both the display HDA controller and codec need
- 	 * this power. For other platforms, like Baytrail/Braswell, only the
+ Examples:
+ 
 -- 
-2.39.2
+2.34.1
 
