@@ -4,160 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 38E8CE7C4F5
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Oct 2023 07:28:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 90A13E7C4F5
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Oct 2023 07:48:36 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 78118E72;
-	Thu,  5 Oct 2023 09:27:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 78118E72
+	by alsa0.perex.cz (Postfix) with ESMTPS id E156EDF9;
+	Thu,  5 Oct 2023 09:47:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E156EDF9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1696490897;
-	bh=MCDHXf1PAu+rSsnNngdoI9qtkWujFGa6u+gC2oSddf0=;
-	h=Date:Subject:To:References:From:In-Reply-To:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=Hm46lsX/z3UzRnU86qNuvvgb8Rjq6vSvNBpS6rAF3Htykw/sMLbf3GsjNenQDI2vq
-	 x4H69NfbwJssPdRSvs6rHec1enPOfmeS7GEjcNXbd6nP0EWlUpej+bLCsE+eJlO0sW
-	 cTrxEFZxio9w5fHQ45Xqv1PCjycekRc+7djVo8g4=
+	s=default; t=1696492113;
+	bh=vTJNiOwVF4b2pGfzGVb8ZHxmmjupc/KlN8DrOG4IFn0=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=Tjmxzl4hnMozjCahmOvleclFOwlQGnu7JbJanGMpmPwx0Fz17/2B4lRWdksw6qqWs
+	 75rh0tgxysAh/e+c1OX9LgME5q9SwrZCy551ufREhJKOVEHWSxuOMQysH6vFb/supI
+	 uFZ1FkPvwXtU32DV8Lod6pGcFe7M0nNrP7LQsZfY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C333DF80570; Thu,  5 Oct 2023 09:27:16 +0200 (CEST)
+	id 21397F80568; Thu,  5 Oct 2023 09:46:50 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5E280F8047D;
-	Thu,  5 Oct 2023 09:27:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9AB51F8055B;
+	Thu,  5 Oct 2023 09:46:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 46B0CF8055B; Thu,  5 Oct 2023 09:27:13 +0200 (CEST)
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com
- [IPv6:2a00:1450:4864:20::535])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 97F88F80290; Sat, 30 Sep 2023 11:56:22 +0200 (CEST)
+Received: from out162-62-57-137.mail.qq.com (out162-62-57-137.mail.qq.com
+ [162.62.57.137])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 8F65AF8047D
-	for <alsa-devel@alsa-project.org>; Thu,  5 Oct 2023 09:27:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8F65AF8047D
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9CADAF8007C
+	for <alsa-devel@alsa-project.org>; Sat, 30 Sep 2023 11:56:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9CADAF8007C
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=rgoRwU9w
-Received: by mail-ed1-x535.google.com with SMTP id
- 4fb4d7f45d1cf-5344d996bedso1030592a12.3
-        for <alsa-devel@alsa-project.org>;
- Thu, 05 Oct 2023 00:27:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696490826; x=1697095626;
- darn=alsa-project.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:to:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=5SrzplvVlseH8yy0u9HJkWONhb3rVNqc0m2X466+msY=;
-        b=rgoRwU9wFPkNXBEqmbelGK2jD7NytBKs+bFBdgSwTwiJMX7+KYsIsAxhBpLFFD6xj9
-         TCD8sf3WGGEM5uNQxT6DxqEcAAscKXDBA77NhiI6qZ4cFp9VzdBBHkg2yLO69+R4JveX
-         HCzKyvi7XImp0+8uKre7OsuzqOHZxtLgKY2lRy/s5zl6ebupXiLBAT0KAk2I9GAG1/+c
-         6N5bQKIRmTHUTLadQ5tJlMVkKXfBQoyTN+DoJvfnr4uaS0pRQXErxRzxzK7fNb8saXYV
-         UiZ/n/4jfX3vAWDxv6O/2B0KBK2Mv7lPfmKYDutjBN5Ririsiw4Al19sOogR+ekGNNeA
-         Hwcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696490826; x=1697095626;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:to:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5SrzplvVlseH8yy0u9HJkWONhb3rVNqc0m2X466+msY=;
-        b=n/gGSHj676d2YAHgLKK77KEWI5COYYh/mR2tjJsJjmbTd2v4rwZ3GSUmd3urTp+kum
-         tk8i028pfXfd1VAH8ihPYPEVoB/cn9YyKopqVco7nV3BWAOqZFweQ5CDqtrn+TyiDltP
-         LDs2LN1Q7uIMbejzH07zEvq3eUAngJbwRNIfaas3rFaf5o1sEnG2g7JnloXFhk5uR90v
-         SP24VaL7+ruhtiHzpnjO3fQt9G4OUnjj5H4yMmYdNnq2UYcXo7CIwNJeWKeRhC4RS+/k
-         tZzrwYNgLymhIKr2xCZGXqqp/Valu8wJlttXwP4yRMxm4TtbPf0rBUAvn5MVqzrh6wZ9
-         ohww==
-X-Gm-Message-State: AOJu0YyTLtiojBbfvs+8HAa0fNKZAxeR7GJ8PRuow7wYUIYfaMZwmdeI
-	snUSI1+Hl/4wZMgzdsJK6k/X0P3NnHamLvrJHzd8Fw==
-X-Google-Smtp-Source: 
- AGHT+IEAt2qJb+jrN4dW4OOChrFrkXUoDnpak2JaBtAGUxEC6HObmc2VY9PwRk4/Rrw4iL0oCb2dCA==
-X-Received: by 2002:a17:906:23e9:b0:9b2:c583:cd71 with SMTP id
- j9-20020a17090623e900b009b2c583cd71mr3984453ejg.50.1696490826286;
-        Thu, 05 Oct 2023 00:27:06 -0700 (PDT)
-Received: from [192.168.1.197] (5-157-101-10.dyn.eolo.it. [5.157.101.10])
-        by smtp.gmail.com with ESMTPSA id
- l17-20020a170906415100b009ad87fd4e65sm684142ejk.108.2023.10.05.00.27.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 05 Oct 2023 00:27:05 -0700 (PDT)
-Message-ID: <688c0678-fad8-490a-9f1e-bb0caffee129@linaro.org>
-Date: Thu, 5 Oct 2023 09:27:03 +0200
+	dkim=pass (1024-bit key,
+ unprotected) header.d=foxmail.com header.i=@foxmail.com header.a=rsa-sha256
+ header.s=s201512 header.b=TuKoQkK9
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+	s=s201512; t=1696067754;
+	bh=bT0oatsp3pkSMaLKyp4Qrnd8ADAIwJtCgQOgUa+Ug6s=;
+	h=From:To:Cc:Subject:Date;
+	b=TuKoQkK9X8Tv/fYSIyblHvvdW+UufLSrjkAx3URg/JKCmbrNy0KF0zRsaE9btFXr2
+	 /VmA1LLESWreGNqd7b53bP7rHIehOldJtF1hBpxvrK3HH1I+WTOqLcXUE4K/wikUjP
+	 z+nS2mehFg77CO5Yu5yQfX98UWNEGOt1NTeWQGqI=
+Received: from KernelDevBox.byted.org ([180.184.51.40])
+	by newxmesmtplogicsvrszb9-0.qq.com (NewEsmtp) with SMTP
+	id DF306A2B; Sat, 30 Sep 2023 17:55:51 +0800
+X-QQ-mid: xmsmtpt1696067751ty35czsma
+Message-ID: <tencent_4F37C9B5315B7960041E8E0ADDA869128F08@qq.com>
+X-QQ-XMAILINFO: MBf0q8AysQnBhAPO+DycjfzqE4Ij8dAVEqskp0OipBIJ1hs7gNgQbeHUOFMDom
+	 jOhD4yriDBYsMsOjrlj14H3u2/egNFnAa8SxkXJumF5w9XcdwgZbCwGmp1knEbPPSuCdd3vI3rxH
+	 89PT7Y4FgpwBCBVrTGpY47mcsPpOYU3N3tdCGrlPP3XpfPj10kyEG2GFZj7E0WXKI0DOi04N+J5R
+	 BErCXvlfI/e+dj0/+BhdP8oJLS65iw2+9ic2EwexRHeKhdNXnljqyL/gQ2MBB5dVLe4kgjIYZEUI
+	 OVLOGzEWyQE/kJBDr5Ai2Xc7BTcTAWv2VN9MLgDRoIc9ZU9eL1BgpcW1o67/jD3OPYsAAdWfmoLG
+	 1SBr4e9b4cDQAHkwwat7U4ra+Bw7s2mFk3j9FYV8pobC4wvgsPRqHNUEWZm4Fy/goBHvJsN4I07T
+	 OjgQruxTHdaxYjbrudqRKBB6Z/yhFB13Hfigc49YnNWhRsn6cbrf/px/7ZuK5ECWbjkT31tdgwxh
+	 ruwe0/C7zH2KhiYxBHtpgFBFEMxVUoF9Q+dZpq7z9AKuHIJtpflK4LJNNqRcgopVXkUvNCdvvhC4
+	 OhAcrVjTwT/27ZDZYN+DqY/1wZXCDRRH0DQNd0r4stLaBA7bUfmqlAv3NxBSzaciKJyLo++iMP4S
+	 FCsvhT+V1FmhvwaeWfu/Vl7i2EvkUYmUDqq7/zR4QqByZHDMTdXf8B8HtR6ESBgQCE9Uypf1E/vo
+	 uQGzwjkGiwY8mq83BuovzaPJKAc+7VfzgaU6Kvl6vfmTmu9AN1oclynyAQbv7lAUit/71Z0yFpkn
+	 z/KDzb0Z4yyrCX1tzIASdjJqIOb+YdIvLvlRh8imNubfgnURz3egLq6+4EDTOp14ttjee4iVjigv
+	 6BQ2RoW2aF08NLhpKKakMNeffpQ5MWmTPKwr2sFeZUCdFORoG9N4mKPvOfe5haJU36OapYsHiQ12
+	 jW0muUv6qqW4t18uxamGutGbUL0mYv0fEhK6rM2LPzrqd48xxrpFSiPJkjJasx
+X-QQ-XMRINFO: Mp0Kj//9VHAxr69bL5MkOOs=
+From: Zhang Shurong <zhang_shurong@foxmail.com>
+To: oder_chiou@realtek.com
+Cc: lgirdwood@gmail.com,
+	broonie@kernel.org,
+	perex@perex.cz,
+	tiwai@suse.com,
+	alsa-devel@alsa-project.org,
+	linux-kernel@vger.kernel.org,
+	Zhang Shurong <zhang_shurong@foxmail.com>
+Subject: [PATCH] ASoC: rt5682: Fix regulator enable/disable sequence
+Date: Sat, 30 Sep 2023 17:55:50 +0800
+X-OQ-MSGID: <20230930095550.99344-1-zhang_shurong@foxmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ASoC: qcom: reduce number of binding headers includes
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Banajit Goswami <bgoswami@quicinc.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
-References: <20231004163030.670039-1-krzysztof.kozlowski@linaro.org>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
- cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
- JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
- gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
- J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
- NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
- BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
- vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
- Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
- TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
- S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
- m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
- HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
- XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
- mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
- v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
- cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
- rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
- qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
- aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
- gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
- dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
- NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
- hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
- oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
- H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
- yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
- 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
- 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
- +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
- FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
- 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
- DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
- oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
- 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
- Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
- qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
- /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
- qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
- EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
- KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
- fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231004163030.670039-1-krzysztof.kozlowski@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: 5YOGCX6MZEDNV5K6YVVSMCULDXS4SWVU
-X-Message-ID-Hash: 5YOGCX6MZEDNV5K6YVVSMCULDXS4SWVU
-X-MailFrom: krzysztof.kozlowski@linaro.org
+Content-Transfer-Encoding: 8bit
+X-MailFrom: zhang_shurong@foxmail.com
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: MR7MDX4J5RLQZ3I7C26VKASHNMAGGPAB
+X-Message-ID-Hash: MR7MDX4J5RLQZ3I7C26VKASHNMAGGPAB
+X-Mailman-Approved-At: Thu, 05 Oct 2023 07:46:44 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5YOGCX6MZEDNV5K6YVVSMCULDXS4SWVU/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MR7MDX4J5RLQZ3I7C26VKASHNMAGGPAB/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -166,41 +103,44 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 04/10/2023 18:30, Krzysztof Kozlowski wrote:
-> Move the includes of binding headers from Qualcomm SoC sound drivers
-> headers to unit files actually using these bindings.  This reduces the
-> amount of work for C preprocessor and makes usage of bindings easier to
-> follow.  No impact expected on final binaries.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> ---
->  sound/soc/qcom/apq8016_sbc.c            | 1 +
->  sound/soc/qcom/common.c                 | 2 +-
->  sound/soc/qcom/lpass-cdc-dma.c          | 1 +
->  sound/soc/qcom/lpass-cpu.c              | 1 +
->  sound/soc/qcom/lpass-platform.c         | 1 +
->  sound/soc/qcom/lpass.h                  | 1 -
->  sound/soc/qcom/qdsp6/q6afe-clocks.c     | 1 +
->  sound/soc/qcom/qdsp6/q6afe-dai.c        | 1 +
->  sound/soc/qcom/qdsp6/q6afe.c            | 1 +
->  sound/soc/qcom/qdsp6/q6afe.h            | 2 --
->  sound/soc/qcom/qdsp6/q6apm-lpass-dais.c | 1 +
->  sound/soc/qcom/qdsp6/q6apm.h            | 1 -
->  sound/soc/qcom/qdsp6/q6asm-dai.c        | 1 +
->  sound/soc/qcom/qdsp6/q6asm.c            | 1 +
->  sound/soc/qcom/qdsp6/q6asm.h            | 1 -
->  sound/soc/qcom/qdsp6/q6prm-clocks.c     | 2 +-
->  sound/soc/qcom/qdsp6/q6routing.c        | 2 ++
->  sound/soc/qcom/sc7180.c                 | 2 +-
->  sound/soc/qcom/sc7280.c                 | 2 ++
->  sound/soc/qcom/sc8280xp.c               | 1 +
->  sound/soc/qcom/sdm845.c                 | 1 +
->  sound/soc/qcom/sdw.c                    | 2 +-
->  sound/soc/qcom/sm8250.c                 | 1 +
+This will attempt to disable the regulators if the initial enable fails
+which is a bug.
 
-I missed few cases of header dependencies, as pointed out by kbuild. I
-will send v2.
+Fix this bug by modifying the code to the correct sequence.
 
-Best regards,
-Krzysztof
+Signed-off-by: Zhang Shurong <zhang_shurong@foxmail.com>
+---
+ sound/soc/codecs/rt5682-i2c.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/sound/soc/codecs/rt5682-i2c.c b/sound/soc/codecs/rt5682-i2c.c
+index b05b4f73d8aa..fbad1ed06626 100644
+--- a/sound/soc/codecs/rt5682-i2c.c
++++ b/sound/soc/codecs/rt5682-i2c.c
+@@ -157,11 +157,6 @@ static int rt5682_i2c_probe(struct i2c_client *i2c)
+ 		return ret;
+ 	}
+ 
+-	ret = devm_add_action_or_reset(&i2c->dev, rt5682_i2c_disable_regulators,
+-				       rt5682);
+-	if (ret)
+-		return ret;
+-
+ 	ret = regulator_bulk_enable(ARRAY_SIZE(rt5682->supplies),
+ 				    rt5682->supplies);
+ 	if (ret) {
+@@ -169,6 +164,11 @@ static int rt5682_i2c_probe(struct i2c_client *i2c)
+ 		return ret;
+ 	}
+ 
++	ret = devm_add_action_or_reset(&i2c->dev, rt5682_i2c_disable_regulators,
++				       rt5682);
++	if (ret)
++		return ret;
++
+ 	ret = rt5682_get_ldo1(rt5682, &i2c->dev);
+ 	if (ret)
+ 		return ret;
+-- 
+2.30.2
 
