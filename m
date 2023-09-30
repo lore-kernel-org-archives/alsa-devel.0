@@ -4,80 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 123B5E77362
-	for <alsa-devel@archiver.kernel.org>; Sat, 30 Sep 2023 09:40:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 30BACE748F0
+	for <alsa-devel@archiver.kernel.org>; Sat, 30 Sep 2023 23:43:04 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6D0A4DF0;
-	Sat, 30 Sep 2023 11:39:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6D0A4DF0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7CB48DF8;
+	Sun,  1 Oct 2023 01:42:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7CB48DF8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1696066830;
-	bh=IvpiOG/bGE3T67kaLiqC3a217xhno8NefOjxFtDtAkw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1696117382;
+	bh=V+O6eQuM5B0HdTm47CD/9waTIHMwPF1LS6QbLhwkCfg=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=nPE1f6mM/19UNSo/baV9x/CQNbrbFXHIMnzlJ+KwCbOucIZop/3bGit1PsCDDzBeR
-	 tlSmeNJ0gyGmBA+x1F78B4mW76YboaEDMSPvuyxzkbcAnk5m18KJEnzH6TYs7cRw7l
-	 u8tvsoLx2zuJ5ELcCOFcHvVby2ThodIXKTrx9mZc=
+	b=TRC7mzPAb4VV1jrIYIHlHWzBxkAgTXltKlRO/Rh5kbapqg/oz0oUCg6j3Sj3JFC4t
+	 ZLratbk7P4WG3SlgnYf1jw7jVabgOOE6Q+ILSL42+MbtPjVB7KCh4d7i9EG3lALFw0
+	 YFuDXDYG8qg0fVs/7ulIdA33J9J5XuC2DVxg4L2Q=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C7B24F80549; Sat, 30 Sep 2023 11:39:03 +0200 (CEST)
+	id 187AFF80551; Sun,  1 Oct 2023 01:41:43 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3233EF801D5;
-	Sat, 30 Sep 2023 11:39:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C4849F80310;
+	Sun,  1 Oct 2023 01:41:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B831EF801D5; Sat, 30 Sep 2023 11:38:56 +0200 (CEST)
+	id E6FDAF80310; Sun,  1 Oct 2023 01:41:05 +0200 (CEST)
 Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B3471F8007C
-	for <alsa-devel@alsa-project.org>; Sat, 30 Sep 2023 11:38:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B3471F8007C
+	by alsa1.perex.cz (Postfix) with ESMTPS id 54047F80130
+	for <alsa-devel@alsa-project.org>; Sun,  1 Oct 2023 01:41:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 54047F80130
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=linuxfoundation.org header.i=@linuxfoundation.org
- header.a=rsa-sha256 header.s=korg header.b=WaJVTLBe
+	dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=X1Oej8zV
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by ams.source.kernel.org (Postfix) with ESMTP id 22AB0B80185;
-	Sat, 30 Sep 2023 09:38:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E27E9C433C7;
-	Sat, 30 Sep 2023 09:38:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1696066728;
-	bh=IvpiOG/bGE3T67kaLiqC3a217xhno8NefOjxFtDtAkw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=WaJVTLBeni9ABYwJGH6p5NdtU/RU11lfOkq4o8gQbfieAj6Xnu0oPttIzCz/pyfLD
-	 zfTdBg1nNBQgV/qTj+JiGRQfkYtvcqEH6wKhSQRy3qHNAswsL8/wJRZIiqy/KwH3qN
-	 XJnhdlMtd5WJtvr9+PF0pxAhe4SXcD3e669r7MFw=
-Date: Sat, 30 Sep 2023 11:38:44 +0200
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Nick Desaulniers <ndesaulniers@google.com>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>, tiwai@suse.com,
-	linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Daniel Scally <djrscally@gmail.com>,
-	Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-	Sakari Ailus <sakari.ailus@linux.intel.com>,
-	Richard Fitzgerald <rf@opensource.cirrus.com>, llvm@lists.linux.dev,
-	alsa-devel@alsa-project.org,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH v1 1/1] device property: Replace custom implementation of
- COUNT_ARGS()
-Message-ID: <2023093029-balmy-shrewdly-3e3d@gregkh>
-References: <20230920153819.2069869-1-andriy.shevchenko@linux.intel.com>
- <CAKwvOd=7vk2HKOpgVrRd2RtKSF9tXPqbVmN+5teLTNoBy4BWVg@mail.gmail.com>
- <CAKwvOdkbcUh+tmsNcT4nCzFY37WbAUdjHJ62qNe=p8SetaQNTQ@mail.gmail.com>
+	by ams.source.kernel.org (Postfix) with ESMTP id 63C90B80815;
+	Sat, 30 Sep 2023 23:40:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D5EAC433C7;
+	Sat, 30 Sep 2023 23:40:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1696117258;
+	bh=V+O6eQuM5B0HdTm47CD/9waTIHMwPF1LS6QbLhwkCfg=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=X1Oej8zVNwS/Rt/ZdLXtCo5GuQMb5zZU0WYV9RJZcWxa5l1A1oQuDpUlyqv7yQL4m
+	 2qTNpJvDEpXhCQtiwomyB1GX2ZIH+FMBwjJGO21l79Q1y2NV6JIUbijmS9d/a2Uu2B
+	 YrA4IdJMq5YQuxkM7h0pfSfVbtkTpvccr7zmv6WScuW8vWXcnAEqVP0s8EXWoyDuGq
+	 J9LuJi2nRTbRuZyc2opdrS6adISVap6Uj8M29+wxobzM+3faw+CQ8mjSQ4siHugV/z
+	 kP02wTp2jw1Oex9PoC+hQH2IBsVDuKlzrPzPOic+64EdmKdi0ULuMq8c0zepVv7t3f
+	 /CRSAMBvz+kAA==
+From: Mark Brown <broonie@kernel.org>
+To: =?utf-8?q?Amadeusz_S=C5=82awi=C5=84ski?=
+ <amadeuszx.slawinski@linux.intel.com>
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
+ Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
+ alsa-devel@alsa-project.org
+In-Reply-To: <20230929103243.705433-1-amadeuszx.slawinski@linux.intel.com>
+References: <20230929103243.705433-1-amadeuszx.slawinski@linux.intel.com>
+Subject: Re: [PATCH 1/2] ASoC: core: Print component name when printing log
+Message-Id: <169611725680.2917199.9476174586360220671.b4-ty@kernel.org>
+Date: Sun, 01 Oct 2023 01:40:56 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-In-Reply-To: 
- <CAKwvOdkbcUh+tmsNcT4nCzFY37WbAUdjHJ62qNe=p8SetaQNTQ@mail.gmail.com>
-Message-ID-Hash: TGIJCEU5SOBZLT6DVJW3VEXWWETC2SXL
-X-Message-ID-Hash: TGIJCEU5SOBZLT6DVJW3VEXWWETC2SXL
-X-MailFrom: gregkh@linuxfoundation.org
+X-Mailer: b4 0.13-dev-0438c
+Message-ID-Hash: Q332UOM5QTAFM7NZS35FSOGZJ6FWMC35
+X-Message-ID-Hash: Q332UOM5QTAFM7NZS35FSOGZJ6FWMC35
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -89,7 +84,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TGIJCEU5SOBZLT6DVJW3VEXWWETC2SXL/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Q332UOM5QTAFM7NZS35FSOGZJ6FWMC35/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -98,32 +93,39 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, Sep 29, 2023 at 09:10:11AM -0700, Nick Desaulniers wrote:
-> On Wed, Sep 20, 2023 at 9:50 AM Nick Desaulniers
-> <ndesaulniers@google.com> wrote:
-> >
-> > On Wed, Sep 20, 2023 at 8:38 AM Andy Shevchenko
-> > <andriy.shevchenko@linux.intel.com> wrote:
-> > >
-> > > Replace custom and non-portable implementation of COUNT_ARGS().
-> > >
-> > > Fixes: e64b674bc9d7 ("software node: implement reference properties")
-> > > Reported-by: Nick Desaulniers <ndesaulniers@google.com>
-> > > Closes: https://lore.kernel.org/r/ZQoILN6QCjzosCOs@google.com
-> >
-> > Thanks for the patch!
-> > Closes: https://github.com/ClangBuiltLinux/linux/issues/1935
-> > Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-> >
-> > Of course Linux would have a macro for this!  I should have known.
-> > Trying to wrap my head around it. Awesome
+On Fri, 29 Sep 2023 12:32:42 +0200, Amadeusz Sławiński wrote:
+> When printing log related to component it is useful to know, to which
+> component it applies to.
 > 
-> (resending as text/plain)
 > 
-> Can someone pick this up for linux-next?
-> 
-> CI for linux-next has been red for days over this.
 
-Will do, give me a chance to catch up...
+Applied to
 
-greg k-h
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+
+Thanks!
+
+[1/2] ASoC: core: Print component name when printing log
+      commit: e80f238d2bc0c0f27dc52ac824ca80b938a43ace
+[2/2] ASoC: core: Do not call link_exit() on uninitialized rtd objects
+      commit: dd9f9cc1e6b9391140afa5cf27bb47c9e2a08d02
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
