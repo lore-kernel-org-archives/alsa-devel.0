@@ -4,66 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 445CAE748E9
-	for <alsa-devel@archiver.kernel.org>; Sun,  1 Oct 2023 17:51:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1BB6CE748F3
+	for <alsa-devel@archiver.kernel.org>; Sun,  1 Oct 2023 17:51:53 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1F46C82A;
-	Sun,  1 Oct 2023 19:50:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1F46C82A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 39BF4E73;
+	Sun,  1 Oct 2023 19:51:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 39BF4E73
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1696182660;
-	bh=OlGOYkXdiabEgmDbaGoWgkKX+CGtDzDfITk9gFpfz6I=;
+	s=default; t=1696182711;
+	bh=l84zSjGv/3HxQqqQVT5pTigBf0iuKgtfn3rivfi9Nnw=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=o3cD8fFeOQph5G7LneCpBaowcRR1tFQI8VaYUJindH2zc5SaNCQNPUAxPClluGlta
-	 xe8qDoDAZNQ57hsvFZYwDsLfUesy2FbJzSj7x8+ORUXM1mDRDT3GyqsytqzGmNNlhO
-	 iXqRlRHUYIW/MfP2VhvNPljX0OKEbELwMvS9w7Lc=
+	b=uYSO0XPa0UdTMEIRZiJzUhztrXy2N9tt3K8tFTn8DnI7gdzub1R03I3bFMlGJMqv4
+	 KISc3GFKioOOTX0KMCKbG60hmJ+C7+sDyKOUR8Ei1D0hve993iC5psa6OnILh64w4G
+	 L+ouUEMZ5SYEqSXKYZ3eNunNeVB+NJoD2OBbXSRM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7144EF8047D; Sun,  1 Oct 2023 19:50:09 +0200 (CEST)
+	id E63BCF8056F; Sun,  1 Oct 2023 19:50:09 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 03B9DF80310;
+	by alsa1.perex.cz (Postfix) with ESMTP id 726ECF8055A;
 	Sun,  1 Oct 2023 19:50:09 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1C9DDF80310; Sun,  1 Oct 2023 19:48:39 +0200 (CEST)
+	id F1403F80310; Sun,  1 Oct 2023 19:49:23 +0200 (CEST)
 Received: from bitmer.com (server-237-49.tentacle.cloud [185.179.237.49])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
  server-digest SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 0F07FF80166
-	for <alsa-devel@alsa-project.org>; Sun,  1 Oct 2023 19:48:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0F07FF80166
+	by alsa1.perex.cz (Postfix) with ESMTPS id A295AF80166
+	for <alsa-devel@alsa-project.org>; Sun,  1 Oct 2023 19:49:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A295AF80166
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=bitmer.com header.i=@bitmer.com header.a=rsa-sha256
- header.s=key header.b=YTF5G9Ob
+ header.s=key header.b=M6E1/vc5
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=bitmer.com;
 	 s=key; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:References:
 	Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=OHJV4Sbao8KEygABucM61Za6AzpYax4JS41eeNRQYSs=; b=YTF5G9ObZ+7XoTL8MThpatt+pN
-	pNsI0Soe8j7Yz+THsOmlhlCovsxh71VAIbOdc1JjLArOXvO6neSNUpdxHBZfwl4f56jzeP584UsEP
-	vGArS0TbjG54Aw/hkGncx3VfGK0i4DGxnoU6XJNxr0mHSqjF3YnDk2HYcuIgmOFFq1vvgfQ3LN18e
-	0e2QoyvEoD5++jXLomIElCsh7Eep7bPVJfbN8JqCR4x0Q3ByV8g3qYsrVSITs9Z8gctSGjr2Yicem
-	R5pyUr1BXJDfjnCPGKL+AMA7WUEdYgAP8KWT2to6DTHPn6iuIuTV1TRJQ400m1RZmEQArQP8NQ3u+
-	/+p2wJwQ==;
+	bh=yE49Vr6pptS+we01SoDcdrGH43G1IbFfqo3qFcIDImY=; b=M6E1/vc5QBUmN8Vju48mmV490O
+	YU1iNjUX1GW9nKJGkJTU7a5Li4C1IBrWSeXkGQeGGw8jJnt1cI77LCMI5L7DxircuLlmthqOPjVqs
+	T0yQhtf6pKW3kXIMs+z1E9Fg8iX26iVD225bT8nkQYiUl03+EY2Rw65EiRIz1/MsD1qZ1ilnY/ziG
+	3N1iXny3H399pi59i3DAoFhK3E3LYiQ2bV4myWfmrJfrCX/v0ySxdNoqb5tincG1GfRaBKjnRQ0ij
+	zQlXAKUwrZixsZe31mCQgJ/SJAFI0SQvufJ+fzsQcAG4qwMIs4ka62anYw8pKwbKq1Le9Ud8h8LfL
+	Uw32wN5Q==;
 Received: from 91-158-0-106.elisa-laajakaista.fi ([91.158.0.106]
  helo=[192.168.0.12])
 	by bitmer.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
 	(Exim 4.92)
 	(envelope-from <jarkko.nikula@bitmer.com>)
-	id 1qn0Y7-0000Yz-Ov; Sun, 01 Oct 2023 20:48:11 +0300
-Message-ID: <d402fbdb-fba7-412b-ae1e-470ad253981e@bitmer.com>
-Date: Sun, 1 Oct 2023 20:48:06 +0300
+	id 1qn0Z6-0000Yz-TG; Sun, 01 Oct 2023 20:49:12 +0300
+Message-ID: <4eb93a15-6e6b-4b81-aa3e-d78d7ef9476c@bitmer.com>
+Date: Sun, 1 Oct 2023 20:49:12 +0300
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/5] ASoC: ti: Convert RX51 to use exclusively GPIO
- descriptors
+Subject: Re: [PATCH 0/5] GPIO descriptors for TI ASoC codecs
 Content-Language: en-US
 To: Linus Walleij <linus.walleij@linaro.org>, Tony Lindgren
  <tony@atomide.com>, Peter Ujfalusi <peter.ujfalusi@gmail.com>,
@@ -72,13 +71,12 @@ To: Linus Walleij <linus.walleij@linaro.org>, Tony Lindgren
 Cc: linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
  alsa-devel@alsa-project.org
 References: <20230926-descriptors-asoc-ti-v1-0-60cf4f8adbc5@linaro.org>
- <20230926-descriptors-asoc-ti-v1-2-60cf4f8adbc5@linaro.org>
 From: Jarkko Nikula <jarkko.nikula@bitmer.com>
-In-Reply-To: <20230926-descriptors-asoc-ti-v1-2-60cf4f8adbc5@linaro.org>
+In-Reply-To: <20230926-descriptors-asoc-ti-v1-0-60cf4f8adbc5@linaro.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-ID-Hash: KCGYT6DWV5YIT46CBIZRYUATYPEOOSAM
-X-Message-ID-Hash: KCGYT6DWV5YIT46CBIZRYUATYPEOOSAM
+Message-ID-Hash: VIYVBBWZUGW3ZZRE43Q54DTDGO5COVRZ
+X-Message-ID-Hash: VIYVBBWZUGW3ZZRE43Q54DTDGO5COVRZ
 X-MailFrom: jarkko.nikula@bitmer.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -91,7 +89,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KCGYT6DWV5YIT46CBIZRYUATYPEOOSAM/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VIYVBBWZUGW3ZZRE43Q54DTDGO5COVRZ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -101,17 +99,31 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 On 9/26/23 16:25, Linus Walleij wrote:
-> The RX51/Nokia n900 uses the legacy GPIO header to convert a GPIO
-> back to the global GPIO numberspace and then the jack using it
-> in the snd_soc_jack_add_gpios() call immediately looks up the
-> corresponding descriptor again.
-> 
-> The snd_soc_jack_add_gpios() handles GPIOs passed with devices
-> just fine: pass in the device instead, and rename the GPIO
-> to match the property in the device tree, and it should work
-> all the same but without all the trouble.
+> This cleans up and rewrites the GPIO usage in the TI
+> ASoC components to use GPIO descriptors exclusively.
 > 
 > Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 > ---
+> Linus Walleij (5):
+>       ASoC: ti: Convert N810 ASoC to GPIO descriptors
+>       ASoC: ti: Convert RX51 to use exclusively GPIO descriptors
+>       ASoC: ti: Convert TWL4030 to use GPIO descriptors
+>       ASoC: ti: Convert Pandora ASoC to GPIO descriptors
+>       ASoC: ti: osk5912: Drop unused include
+> 
+>  arch/arm/mach-omap2/board-n8x0.c           | 10 +++++
+>  arch/arm/mach-omap2/pdata-quirks.c         | 10 +++++
+>  include/linux/platform_data/omap-twl4030.h |  3 --
+>  sound/soc/ti/n810.c                        | 31 ++++++++-------
+>  sound/soc/ti/omap-twl4030.c                | 20 ++++------
+>  sound/soc/ti/omap3pandora.c                | 63 +++++++++++-------------------
+>  sound/soc/ti/osk5912.c                     |  1 -
+>  sound/soc/ti/rx51.c                        | 19 ++-------
+>  8 files changed, 72 insertions(+), 85 deletions(-)
 
+To whole set (for sound/soc/ti/):
+
+Acked-by: Jarkko Nikula <jarkko.nikula@bitmer.com>
+
+And to 2/5:
 Tested-by: Jarkko Nikula <jarkko.nikula@bitmer.com>
