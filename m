@@ -4,76 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E103FE74911
-	for <alsa-devel@archiver.kernel.org>; Mon,  2 Oct 2023 18:52:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1EE39E7490C
+	for <alsa-devel@archiver.kernel.org>; Mon,  2 Oct 2023 19:21:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 00669E0D;
-	Mon,  2 Oct 2023 20:52:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 00669E0D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9ED22A4B;
+	Mon,  2 Oct 2023 21:20:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9ED22A4B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1696272775;
-	bh=5CTwTLBEvduUICvuu4skaNUm4ejcj7Qi7S/UNZzRJiE=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1696274500;
+	bh=VQ45G7PYlL0FP/UIakxyWuwF9DPXgSI52rIbqA5VkiA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=KMD2cK9eOA9sClhhwaAnxLgP50HXwwxg0jop7xx7EybETt//86jb9Gg62oapsWHEG
-	 qTtj5QEJWLNmgBA51BqgrnYDM256LcSQaSYBvTDfI6nx8iVGQoxuNnyTqVHQs/p6pZ
-	 y/ehCf2wQbRPpnP6qGBsuOl34435INHenBl9dO3M=
+	b=oFlGklZUAq3apiJ7LgnYPgSg6C/zdfcnnCFK40z81tNTa71FEEZE+X7RpjmxfevLF
+	 2aQLtRwnL9U6+atHoHLEOuY0aXSTtI/WEIPkWaZ0yb8bSk1BUrgcnxoFbl6s1OWiyC
+	 WzFyOThjMk6o6REOW7M95ddX4J2w9LO44u21rxAg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7AC4BF8055C; Mon,  2 Oct 2023 20:51:16 +0200 (CEST)
+	id C8D84F80310; Mon,  2 Oct 2023 21:20:28 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 00237F8055B;
-	Mon,  2 Oct 2023 20:51:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 73AB0F80549;
+	Mon,  2 Oct 2023 21:20:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 20ADAF80310; Mon,  2 Oct 2023 20:51:12 +0200 (CEST)
+	id EF7C5F80310; Mon,  2 Oct 2023 21:20:24 +0200 (CEST)
 Received: from ams.source.kernel.org (ams.source.kernel.org
  [IPv6:2604:1380:4601:e00::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 3C906F800C1
-	for <alsa-devel@alsa-project.org>; Mon,  2 Oct 2023 20:51:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3C906F800C1
+	by alsa1.perex.cz (Postfix) with ESMTPS id D7201F801EB
+	for <alsa-devel@alsa-project.org>; Mon,  2 Oct 2023 21:20:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D7201F801EB
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=S8AF7ciA
+ header.s=k20201202 header.b=P/3zTldm
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by ams.source.kernel.org (Postfix) with ESMTP id B32C5B811FF;
-	Mon,  2 Oct 2023 18:51:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DBF30C433C9;
-	Mon,  2 Oct 2023 18:51:05 +0000 (UTC)
+	by ams.source.kernel.org (Postfix) with ESMTP id 70301B81250;
+	Mon,  2 Oct 2023 19:20:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EDA7AC433C8;
+	Mon,  2 Oct 2023 19:20:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1696272668;
-	bh=5CTwTLBEvduUICvuu4skaNUm4ejcj7Qi7S/UNZzRJiE=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=S8AF7ciAoQ2kkg5GltwcBo7ww4CDBBhPHcFnC3/w/u/OM2IdygZ8Nl11+7XXddPCm
-	 A4MP+YkhXNhN515RN+L7svKr7FzXiq5K+G1zWkgOV7wkP9dTBAn0sCHNtTRUY/4bgm
-	 L0z8iUucUsRpPB6zZCW93SpmPCBSbyeQQxtbzJf+BtTBJQ0cia/HAL2FtzV/Jv632g
-	 6O5GdBPF8D606o/VXHA0vm1zAuj4PXkPTq2b+l1+UrBsb8Q0IRIGSVoi2OJKfvpBYI
-	 wDsZQekeqMPdBVCsOJ7a5h5Em9RLPQwdSLGSbpSMUdoxgQ7S9Rm+l4okPEf4QtUjPk
-	 8wDzs1JM2oQpQ==
-From: Mark Brown <broonie@kernel.org>
-To: Sven Frotscher <sven.frotscher@gmail.com>
-Cc: git@augustwikerfors.se, alsa-devel@alsa-project.org,
- lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
- mario.limonciello@amd.com, regressions@lists.linux.dev,
- stable@vger.kernel.org
-In-Reply-To: <20230927223758.18870-1-sven.frotscher@gmail.com>
-References: <20230927223758.18870-1-sven.frotscher@gmail.com>
-Subject: Re: [PATCH v4] ASoC: amd: yc: Fix non-functional mic on Lenovo
- 82YM
-Message-Id: <169627266558.110968.10545623851131128761.b4-ty@kernel.org>
-Date: Mon, 02 Oct 2023 19:51:05 +0100
+	s=k20201202; t=1696274419;
+	bh=VQ45G7PYlL0FP/UIakxyWuwF9DPXgSI52rIbqA5VkiA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=P/3zTldmAvtvA6Dupg185llQZT3c+BZdhuLzSBPvA25QSnATf5zk+lekQjHRBPDIA
+	 pnzVH3mh1kd+fcYfcWAr+5s9JLiTe6h3JTUjHgyUdInFfLaMiPKZ0USzW6pNj+Q1Wo
+	 Cy2xLkTKOYN3ZHWWTXMX1afdQz+BpFv1/ZGfNUIc9YqRYeoBFNsJrGMBKnkzkh9r24
+	 uMZpHIYXPy4QZM+VaZvTNcj5NK7f1FzBee49Ai5qs49NO4C4Q2p5CiB2u9aUz5YvYF
+	 KKHGSFmiJ0YJcSdtxZKKexR8BdhI+TheZHS67r+ekHkbo053RgixC+IlUSpCi1Ih2I
+	 tg8zJGpdhC4cQ==
+Received: (nullmailer pid 2379910 invoked by uid 1000);
+	Mon, 02 Oct 2023 19:20:18 -0000
+Date: Mon, 2 Oct 2023 14:20:18 -0500
+From: Rob Herring <robh@kernel.org>
+To: Bragatheswaran Manickavel <bragathemanick0908@gmail.com>
+Cc: broonie@kernel.org, alsa-devel@alsa-project.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ conor+dt@kernel.org, lgirdwood@gmail.com, krzysztof.kozlowski+dt@linaro.org,
+ robh+dt@kernel.org
+Subject: Re: [PATCH v2] ASoC: dt-bindings: rt5616: Convert to dtschema
+Message-ID: <169627441749.2379855.17500143382668612525.robh@kernel.org>
+References: <20230930165050.7793-1-bragathemanick0908@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-0438c
-Message-ID-Hash: LDTJWV5TFQSQ6R4ZFOEYDSDNEVQYLTUP
-X-Message-ID-Hash: LDTJWV5TFQSQ6R4ZFOEYDSDNEVQYLTUP
-X-MailFrom: broonie@kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230930165050.7793-1-bragathemanick0908@gmail.com>
+Message-ID-Hash: 37AXR3QUP57GVWM5PX4OXTXV6MOCQNXB
+X-Message-ID-Hash: 37AXR3QUP57GVWM5PX4OXTXV6MOCQNXB
+X-MailFrom: SRS0=McIo=FQ=robh_at_kernel.org=rob@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -85,7 +85,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LDTJWV5TFQSQ6R4ZFOEYDSDNEVQYLTUP/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/37AXR3QUP57GVWM5PX4OXTXV6MOCQNXB/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -94,39 +94,20 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, 28 Sep 2023 00:36:07 +0200, Sven Frotscher wrote:
-> Like the Lenovo 82TL, 82V2, 82QF and 82UG, the 82YM (Yoga 7 14ARP8)
-> requires an entry in the quirk list to enable the internal microphone.
-> The latter two received similar fixes in commit 1263cc0f414d
-> ("ASoC: amd: yc: Fix non-functional mic on Lenovo 82QF and 82UG").
+
+On Sat, 30 Sep 2023 22:20:50 +0530, Bragatheswaran Manickavel wrote:
+> Convert the rt5616 audio CODEC bindings to DT schema
 > 
+> Signed-off-by: Bragatheswaran Manickavel <bragathemanick0908@gmail.com>
+> ---
+> V1 -> V2: Changes codec to audio-codec and added spacing above
+> 
+>  .../bindings/sound/realtek,rt5616.yaml        | 49 +++++++++++++++++++
+>  .../devicetree/bindings/sound/rt5616.txt      | 32 ------------
+>  2 files changed, 49 insertions(+), 32 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/sound/realtek,rt5616.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/sound/rt5616.txt
 > 
 
-Applied to
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-
-Thanks!
-
-[1/1] ASoC: amd: yc: Fix non-functional mic on Lenovo 82YM
-      commit: 1948fa64727685ac3f6584755212e2e738b6b051
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+Reviewed-by: Rob Herring <robh@kernel.org>
 
