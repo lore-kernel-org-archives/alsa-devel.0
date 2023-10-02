@@ -4,72 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B8331E784BC
-	for <alsa-devel@archiver.kernel.org>; Mon,  2 Oct 2023 15:19:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B49F4E784BE
+	for <alsa-devel@archiver.kernel.org>; Mon,  2 Oct 2023 15:19:40 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A525DAE9;
-	Mon,  2 Oct 2023 17:18:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A525DAE9
+	by alsa0.perex.cz (Postfix) with ESMTPS id AC268E87;
+	Mon,  2 Oct 2023 17:18:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AC268E87
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1696259969;
-	bh=hF16LqSa4Syn4jn5dAWKbpzCRm2q1LVCGwoK56BnfY4=;
+	s=default; t=1696259978;
+	bh=ER6oLVHxt79NWJRk4i6TQYMDnVPa/mQSBVn1tmMNCvk=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=uitW/JIH5IPAhZiSoVEZnQkkagmfAPZu6XFUF7S95XxnQtIxNhOUh/0vUhiqqd0Zd
-	 nbs+O9Nl8RnPL8YfWucOv3IpgpEMqyechw5gl/yr5qSa+0IumxR2jDr97SbMBCpABy
-	 nQkneiOalpFKHMNxrQ544jwA01z6xaUjqwx1Nx9c=
+	b=E/Ayf43Ge5DEIPx29pgbdGxVFlq1lYNbw7wVMbnSvzSk7H1qLkIk1LjIKi82hbRqg
+	 U1W9AD8oZqVDEDpnhiuP17j8e3RuvAsFnufue6305JVGRc4wsOW7OYWJUxVcNf3Xpw
+	 p8NFcNG0T5VnQ1fM99+wynckn7Sl+AdGE76CdVvk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C0132F8058C; Mon,  2 Oct 2023 17:17:58 +0200 (CEST)
+	id F2D60F805AE; Mon,  2 Oct 2023 17:18:12 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3A478F80589;
-	Mon,  2 Oct 2023 17:17:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 35B72F8047D;
+	Mon,  2 Oct 2023 17:18:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 793DBF8057A; Mon,  2 Oct 2023 17:17:53 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+	id CA5E3F8055C; Mon,  2 Oct 2023 17:18:07 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 3FB3FF80568
-	for <alsa-devel@alsa-project.org>; Mon,  2 Oct 2023 17:17:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3FB3FF80568
+	by alsa1.perex.cz (Postfix) with ESMTPS id 77C5DF80587
+	for <alsa-devel@alsa-project.org>; Mon,  2 Oct 2023 17:17:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 77C5DF80587
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=chvy6+gE
+ header.s=k20201202 header.b=NxQuX+QI
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by ams.source.kernel.org (Postfix) with ESMTP id 94AFEB81181;
-	Mon,  2 Oct 2023 15:17:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6901C433C8;
-	Mon,  2 Oct 2023 15:17:28 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 0A80B60F4B;
+	Mon,  2 Oct 2023 15:17:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B693C433C8;
+	Mon,  2 Oct 2023 15:17:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1696259850;
-	bh=hF16LqSa4Syn4jn5dAWKbpzCRm2q1LVCGwoK56BnfY4=;
+	s=k20201202; t=1696259857;
+	bh=ER6oLVHxt79NWJRk4i6TQYMDnVPa/mQSBVn1tmMNCvk=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=chvy6+gEVKMrMyTwo76gNnMqZNgcqeIh0iCT+slnWvKswqcF2RysWxQb0BQlS06dr
-	 QVmasCtcr3hB+/LZ5OIXgt4k2tU3+/RsOUpEJsCKMXvU3t/BWJcdd9XBI4/1ZKeFmQ
-	 1/FHkTlRsVFpuNYehLzlvpqT6f+5IrQjVDMFzKlakeDBZXnHWuia392P4RaI9QdS/O
-	 3NIVUUDkY7aInCuLN1xAdp/qsGyapkLzIG6sZ7w3shP7pQn4MWFP0nnEKw21aptPfm
-	 armmcBXB8HwZqMBOsYJAkZ2NsV2piwnHngfTEJtWrGjYcBMgHTxBpWyz3obqfyM12g
-	 pHc6Srxhp+Kow==
+	b=NxQuX+QICNK9ffUBus5qmweKQ0JZMHcxdvRWiiOil8fkQD3VXK9x+JEoOLi4NFTo2
+	 ewJI1kBalKZbVTai3b5QD1rs202AWarmW5ZmYm/NP4UoNLOcuS2zmaD8IzLBb53GUk
+	 bpeutcVFTgB1KxBNFjxVRIPHsWVgDN/C83drI2xrr0wb1KzpmZPSMuv8gD9H0dKBMD
+	 6ixWQzbSVb5P5xKChC/JILDPZJvq+wHzjpC29cOI6GD74AITUhHjWKnVsKOOkqJxe4
+	 r3PK+Nw/rvhYkCGNG7y7+QYUoZtpBh3ExDZu+/ZOG/ImJMQUiFd2vrFARfFXRBpYWw
+	 zriimCuzJOerw==
 From: Mark Brown <broonie@kernel.org>
-To: oder_chiou@realtek.com, Zhang Shurong <zhang_shurong@foxmail.com>
-Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-In-Reply-To: <tencent_4F37C9B5315B7960041E8E0ADDA869128F08@qq.com>
-References: <tencent_4F37C9B5315B7960041E8E0ADDA869128F08@qq.com>
-Subject: Re: [PATCH] ASoC: rt5682: Fix regulator enable/disable sequence
-Message-Id: <169625984853.65718.1048649527672207151.b4-ty@kernel.org>
-Date: Mon, 02 Oct 2023 16:17:28 +0100
+To: Shenghao Ding <shenghao-ding@ti.com>
+Cc: robh+dt@kernel.org, andriy.shevchenko@linux.intel.com,
+ lgirdwood@gmail.com, perex@perex.cz, pierre-louis.bossart@linux.intel.com,
+ kevin-lu@ti.com, 13916275206@139.com, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, liam.r.girdwood@intel.com,
+ mengdong.lin@intel.com, baojun.xu@ti.com, thomas.gfeller@q-drop.com,
+ peeyush@ti.com, navada@ti.com, tiwai@suse.de
+In-Reply-To: <20231002090434.1896-1-shenghao-ding@ti.com>
+References: <20231002090434.1896-1-shenghao-ding@ti.com>
+Subject: Re: [PATCH v1] ASoC: tas2781: fixed compiling issue in m68k
+Message-Id: <169625985375.65718.17717967920351925508.b4-ty@kernel.org>
+Date: Mon, 02 Oct 2023 16:17:33 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-0438c
-Message-ID-Hash: GISB42NQUCUN3KHOXGK4FXVV3YYIR2XQ
-X-Message-ID-Hash: GISB42NQUCUN3KHOXGK4FXVV3YYIR2XQ
+Message-ID-Hash: 25LEOF5BX2MFVC36SAS2GWBU7OOO57F5
+X-Message-ID-Hash: 25LEOF5BX2MFVC36SAS2GWBU7OOO57F5
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -82,7 +87,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GISB42NQUCUN3KHOXGK4FXVV3YYIR2XQ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/25LEOF5BX2MFVC36SAS2GWBU7OOO57F5/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -91,11 +96,11 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Sat, 30 Sep 2023 17:55:50 +0800, Zhang Shurong wrote:
-> This will attempt to disable the regulators if the initial enable fails
-> which is a bug.
-> 
-> Fix this bug by modifying the code to the correct sequence.
+On Mon, 02 Oct 2023 17:04:33 +0800, Shenghao Ding wrote:
+> fixed m68k compiling issue: mapping table can save code field; storing the
+> dev_idx as a member of block can reduce unnecessary  time and system
+> resource comsumption of dev_idx mapping every time the block data writing
+> to the dsp.
 > 
 > 
 
@@ -105,8 +110,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: rt5682: Fix regulator enable/disable sequence
-      commit: 892fbdb203945d887ad2a109a3700b091a8e3b97
+[1/1] ASoC: tas2781: fixed compiling issue in m68k
+      commit: 4c556d1ea5a771a91f946964d931b4974a6b917e
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
