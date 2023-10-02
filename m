@@ -4,118 +4,120 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8B6DAE7C4F4
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Oct 2023 07:49:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CBAB7E7C4F4
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Oct 2023 07:49:52 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B0CC2E10;
-	Thu,  5 Oct 2023 09:48:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B0CC2E10
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0568AE0F;
+	Thu,  5 Oct 2023 09:49:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0568AE0F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1696492179;
-	bh=gMNi9DNabSmzuXHfHwWyV508gW5QFPCosMp/KN7q980=;
-	h=Date:From:Subject:To:Cc:In-Reply-To:References:List-Id:
+	s=default; t=1696492191;
+	bh=lx526Rcn15uO715tPiN6irOnrYwVf8b0ODwF1k/aBNA=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=WtxMAq263/quY+WNiJKKU3ZMzlBH6T/0jF1gY6UbB4OxeZQKzQWjhWz0tphxg87ZN
-	 UQCsItoAuqX9cuGrZFSM4F51y/VBX6jLvvJedkWQPZPLYyoq9g5gCRLyEHYXIFOnhW
-	 fhin7yHLQSRmwvlrina1R6hAzO/ZVtN8GqSIMFUE=
+	b=B/E/PYyRNEKXNgAzqakSIg2cipg9h51ELDAs0gnhC44HfwXiK3LJbXoHVbPMVYA4o
+	 MGV/9wwp2gHH4sPhIp8AkvWzUvVO3/OaWfp9m0cSx4NJRlh8VjLE5vyhNLYL8z7L0v
+	 9UAcLaQliMMC1l1lp07ouJ6nM/2gBbNHNbRRXCK0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 51AA8F805C2; Thu,  5 Oct 2023 09:47:02 +0200 (CEST)
+	id 38FF7F805CA; Thu,  5 Oct 2023 09:47:03 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6334FF805BE;
-	Thu,  5 Oct 2023 09:47:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 64299F805C6;
+	Thu,  5 Oct 2023 09:47:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 788F5F80310; Mon,  2 Oct 2023 15:17:52 +0200 (CEST)
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com
- [IPv6:2a00:1450:4864:20::331])
+	id 4BB27F80549; Mon,  2 Oct 2023 16:00:22 +0200 (CEST)
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com
+ [IPv6:2a00:1450:4864:20::52b])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id BE243F800C1
-	for <alsa-devel@alsa-project.org>; Mon,  2 Oct 2023 15:17:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BE243F800C1
+	by alsa1.perex.cz (Postfix) with ESMTPS id 56D56F801EB
+	for <alsa-devel@alsa-project.org>; Mon,  2 Oct 2023 16:00:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 56D56F801EB
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20230601 header.b=dkoIykff
-Received: by mail-wm1-x331.google.com with SMTP id
- 5b1f17b1804b1-40666aa674fso18087985e9.0
+ unprotected) header.d=fairphone.com header.i=@fairphone.com
+ header.a=rsa-sha256 header.s=fair header.b=fGTt31vw
+Received: by mail-ed1-x52b.google.com with SMTP id
+ 4fb4d7f45d1cf-522bd411679so21667777a12.0
         for <alsa-devel@alsa-project.org>;
- Mon, 02 Oct 2023 06:17:42 -0700 (PDT)
+ Mon, 02 Oct 2023 07:00:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696252661; x=1696857461;
+        d=fairphone.com; s=fair; t=1696255215; x=1696860015;
  darn=alsa-project.org;
-        h=mime-version:references:in-reply-to:message-id:cc:to:subject:from
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=z+g2r1MHpKADoUhttLvqNozABTTCpwn69LleV+mBSZw=;
-        b=dkoIykffhFmbhG4gZxb9+PoxRjPVbz/qVHgp0poHS4tQ2xTkPb9UBTtEOfVYJrA5NP
-         eZMwM6ZwEDkfn29Rah606DPEJsoKQudPA0VfWeaxOxBtH2YmBLKfnyVQBSVjoQo/hvpP
-         +DR0jmbI7KkoS8VCflPDuig03P2ZYQCzFRt27Mh9tCigNaL+zznXZ+ncnwfYwxs7hx5l
-         0DNeuaF8tDs5NV/ixdqBj2pA7ZEEXuI26hA2zK+wBJIGbk4b8EfWPcbY8NKKNcn4F+Vb
-         YS9Uo40HAui9imuCDPyHPqrUkW2ItpZleBWr7yluUGZo92uQLHuL1NTNJf5xUwDvsa6/
-         Z4iw==
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=OHDvd7zBG9q3cQ18ekHgB5reLeuG+/B7KcSObggrkM4=;
+        b=fGTt31vwTuNzEFyMsN2MMZXewXpzTHv9C5oE/ihEoASqqpwjI3ftl35zsqfXEvBtmp
+         tYXkrmy7s8AptAqkUX8nBr5BG9Pvz2Xns/7giyYSt1RLaGb2IwbwNPx9TISthh45l0tN
+         BycedhELkAdb4afxQNn5OWcNg1ZYxKxQZMfl/c5djU5YORoLtYh+dNIs3Sjx4vo4za7B
+         5LdUzr0KJsrJwGaZMeg4mbEJlS35/C/wy4n/IAiYliDSxhx6J3GxFHzA6e8lLKRLTZtq
+         QDZ7frxH29xIWqbyutj5gWCiNWrKccPZhCtDn2QRTnn43WPHzePnnCIolSUD0m2auBpX
+         lfRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696252661; x=1696857461;
-        h=mime-version:references:in-reply-to:message-id:cc:to:subject:from
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=z+g2r1MHpKADoUhttLvqNozABTTCpwn69LleV+mBSZw=;
-        b=QD/3xVi0FAp4yJuAM94cmz60LFyOu4j/d14jh+h4NIO91n1wA/p053A+gZ9cqEXk3N
-         omIwVCfLrI2cevbjHjl7rEZbKx7MfPGSa8MneQA79iULOaut9vC0CgYRE1WPGATJHSuT
-         vRMBw+shOzMx1dGihO2ihXBTMPNgfvNwztxUYIgMH7W6/Rozkis1gdQ7m/xhu9A+WtIp
-         o+q3di7rLfiwn8XKX2zwmlby736NhfGmPh4pMpYZ5WBEqyj0eikP26sL9UtyJshBs55r
-         dmXtCu42RcosdPsy33ctwMke3vZWRK8rwa+R84KEpC7o8gLSZXE5NQ88FdtnEcLwMGpH
-         DaiA==
-X-Gm-Message-State: AOJu0YzK+4ZrIZ4R/4Br7RAeC9MnQT9ATU8ctYOaOnFdtHrbcBYhauiE
-	2A5B4JctZB07a1oZjVbFPm0=
+        d=1e100.net; s=20230601; t=1696255215; x=1696860015;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OHDvd7zBG9q3cQ18ekHgB5reLeuG+/B7KcSObggrkM4=;
+        b=BcRQZIaF12pPV3ORg0uwu0wophzrJm0asKo+NQcqQLjDz9LOrKBLuhPLmdMVizCl0D
+         ztAmGf3xPXm4dAshk9o7K9YidRRt8NkOBTXxtr6xIV+J4xEphVbmOb4/9bqdeIaeFtxU
+         GkO4HiTAbcMXFLb3fKkp7Q6X8ukT1DvjMQ9zOxaLICjDOulHZzcHrUa1a1ShWen2h06u
+         NoqibCNrY/0d9BQbNupAL2XFy8H1XU5oy5rtbn29BNCCRiqmUGVZkN9jiiJihWsYlAsD
+         5n6wZq/G46hdYqYvf2VIJYS6S1+DfeeLB1/7JCTLdMWNqeT2CSjzehMy38v6sNraeaxj
+         ZElA==
+X-Gm-Message-State: AOJu0YxTY6zD1K6M6qL2kTTTJ9S27dS6y1WXe8mRVGqolrx5Uzv/9NUR
+	QYtvpjiiPEfUHsb9Df9hOPZ6rA==
 X-Google-Smtp-Source: 
- AGHT+IGeZQu02JzP/Nlg3C7p7vx5VY6jCwGLZ0tAXK3iajF+JbhjNs9qkMjRAcg7uKIaJxyg3RvqMA==
-X-Received: by 2002:adf:ec47:0:b0:313:dee2:e052 with SMTP id
- w7-20020adfec47000000b00313dee2e052mr9195032wrn.26.1696252660381;
-        Mon, 02 Oct 2023 06:17:40 -0700 (PDT)
-Received: from yoga ([2001:638:904:ffe5:5742:c50f:bd0:6aa6])
+ AGHT+IEqousXbP5TTb7EJHs1BpXBUU8/Elaw2Sux5vGT5VflP/hLFD6ub63JjLQUdQbLqXFQKsz1/Q==
+X-Received: by 2002:a05:6402:160b:b0:531:3e89:1bef with SMTP id
+ f11-20020a056402160b00b005313e891befmr10451516edv.32.1696255215247;
+        Mon, 02 Oct 2023 07:00:15 -0700 (PDT)
+Received: from otso.luca.vpn.lucaweiss.eu
+ (144-178-202-138.static.ef-service.nl. [144.178.202.138])
         by smtp.gmail.com with ESMTPSA id
- t11-20020a5d42cb000000b0031431fb40fasm6907727wrr.89.2023.10.02.06.17.39
+ q13-20020a056402518d00b005346925a474sm9350377edd.43.2023.10.02.07.00.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Oct 2023 06:17:40 -0700 (PDT)
-Date: Mon, 02 Oct 2023 15:17:33 +0200
-From: Sven Frotscher <sven.frotscher@gmail.com>
-Subject: Re: [PATCH v4] ASoC: amd: yc: Fix non-functional mic on Lenovo 82YM
-To: Mark Brown <broonie@kernel.org>
-Cc: Linux regressions mailing list <regressions@lists.linux.dev>,
-	mario.limonciello@amd.com, git@augustwikerfors.se,
-	alsa-devel@alsa-project.org, lgirdwood@gmail.com,
-	linux-kernel@vger.kernel.org, stable@vger.kernel.org, Takashi Iwai
-	<tiwai@suse.com>
-Message-Id: <9XKW1S.IRRCIDM08XWX1@gmail.com>
-In-Reply-To: <89698b5f-a616-4f49-802a-21326a868c7f@sirena.org.uk>
-References: <20230927223758.18870-1-sven.frotscher@gmail.com>
-	<46560887-0b6e-42ac-96c3-b4dbc1d7cb61@leemhuis.info>
-	<4fa7d39d-dc34-4550-97fa-2b089f364cca@sirena.org.uk>
-	<541ac45b-8de7-4fa2-85ee-456d34e60aa9@leemhuis.info>
-	<64c78944-4d62-4eda-b92b-3b415fea3333@sirena.org.uk>
-	<65KW1S.A6C8VBV29YCM@gmail.com>
-	<89698b5f-a616-4f49-802a-21326a868c7f@sirena.org.uk>
-X-Mailer: geary/44.1
+        Mon, 02 Oct 2023 07:00:14 -0700 (PDT)
+From: Luca Weiss <luca.weiss@fairphone.com>
+Date: Mon, 02 Oct 2023 16:00:11 +0200
+Subject: [PATCH v2 1/2] ASoC: dt-bindings: awinic,aw88395: Remove
+ reset-gpios from AW88261
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-X-MailFrom: sven.frotscher@gmail.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20231002-aw88261-reset-v2-1-837cb1e7b95c@fairphone.com>
+References: <20231002-aw88261-reset-v2-0-837cb1e7b95c@fairphone.com>
+In-Reply-To: <20231002-aw88261-reset-v2-0-837cb1e7b95c@fairphone.com>
+To: Weidong Wang <wangweidong.a@awinic.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org, Luca Weiss <luca.weiss@fairphone.com>
+X-Mailer: b4 0.12.3
+X-MailFrom: luca.weiss@fairphone.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: 2MG5YAPIDPGYQS5W656ZOQPRDJNGRSDF
-X-Message-ID-Hash: 2MG5YAPIDPGYQS5W656ZOQPRDJNGRSDF
-X-Mailman-Approved-At: Thu, 05 Oct 2023 07:46:47 +0000
+Message-ID-Hash: 7V4CJM6D7AXKYA4VLD24EITDFZHHH7BG
+X-Message-ID-Hash: 7V4CJM6D7AXKYA4VLD24EITDFZHHH7BG
+X-Mailman-Approved-At: Thu, 05 Oct 2023 07:46:48 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2MG5YAPIDPGYQS5W656ZOQPRDJNGRSDF/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7V4CJM6D7AXKYA4VLD24EITDFZHHH7BG/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -124,24 +126,55 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+The AW88261 chip doesn't have a reset GPIO, so disallow providing
+reset-gpios.
 
+At the same time also don't keep reset-gpios required for AW88395. This
+is both because the Linux driver has it optional, and it also simplifies
+the bindings by not introducing another conditional.
 
->>  > Until someone tests or otherwise provides specific information on 
->> a
->>  > given machine we're just guessing about how it's wired up.
-> 
->>  What specific information are we talking about here? I have the 
->> 82YM in
->>  front of me and could help investigate.
-> 
-> We need to know what magic set of quirks makes the thing work.  Are 
-> you
-> saying that your patch doesn't actually do that?
+Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
+---
+ .../devicetree/bindings/sound/awinic,aw88395.yaml        | 16 ++++++++++++----
+ 1 file changed, 12 insertions(+), 4 deletions(-)
 
-It does.
+diff --git a/Documentation/devicetree/bindings/sound/awinic,aw88395.yaml b/Documentation/devicetree/bindings/sound/awinic,aw88395.yaml
+index b977d3de87cb..5d5ebc72b721 100644
+--- a/Documentation/devicetree/bindings/sound/awinic,aw88395.yaml
++++ b/Documentation/devicetree/bindings/sound/awinic,aw88395.yaml
+@@ -14,9 +14,6 @@ description:
+   digital Smart K audio amplifier with an integrated 10.25V
+   smart boost convert.
+ 
+-allOf:
+-  - $ref: dai-common.yaml#
+-
+ properties:
+   compatible:
+     enum:
+@@ -49,9 +46,20 @@ required:
+   - compatible
+   - reg
+   - '#sound-dai-cells'
+-  - reset-gpios
+   - awinic,audio-channel
+ 
++allOf:
++  - $ref: dai-common.yaml#
++  - if:
++      properties:
++        compatible:
++          contains:
++            enum:
++              - awinic,aw88261
++    then:
++      properties:
++        reset-gpios: false
++
+ unevaluatedProperties: false
+ 
+ examples:
 
-Maybe the non-quirk check (ll. 395-403, seems to be using ACPI) is too 
-specific? But I'm a bit out of my depth here, so I can't investigate 
-that by myself.
-
+-- 
+2.42.0
 
