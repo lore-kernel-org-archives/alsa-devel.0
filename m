@@ -4,77 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0F96BE784A4
-	for <alsa-devel@archiver.kernel.org>; Mon,  2 Oct 2023 11:53:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 907A9E7849A
+	for <alsa-devel@archiver.kernel.org>; Mon,  2 Oct 2023 11:56:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A5F41DF9;
-	Mon,  2 Oct 2023 13:53:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A5F41DF9
+	by alsa0.perex.cz (Postfix) with ESMTPS id A6A11E0F;
+	Mon,  2 Oct 2023 13:55:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A6A11E0F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1696247630;
-	bh=mD0QT0lkuP0r4ZV9BxCcQ5Sp1u63ujom7VHA8vIIfnQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1696247800;
+	bh=HwO5Na84aoxMs8pSLr9VExYDxk8Jtv1Gq8/kkq7Tvd8=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Ac+5+0hFuBIVBm0GjCVCR2KZjEW2IwwF0QVj+p5/8e2rwjwW3HV6Ujt6lM9MvnWwd
-	 odAx8wCuiX8eZLIENtTmTLuFKprTL30CFsTLk2v39GN6nTKOrNECMMWGhYKBMbnmj2
-	 Fb1q8rQN39Cr9UnSvJhUM71/OPv3XZwUsPYdLgg8=
+	b=tdvNGMbrE2IwpWp2PojDRGI3CNrjNh+CwcJzplid5E9ROP5fNm1VlX55ikukUca37
+	 FYqIu6iPBqSgO5/WawLId7I7YuN7B1jdhXQpzNFvvXsHzD6dseiliWNwfMQ4Li8Ljb
+	 ZJ0mwR+KPGALYhzO7vAXk6OvpEDDNcxLeMGqamQY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6E1A2F80557; Mon,  2 Oct 2023 13:52:29 +0200 (CEST)
+	id D23C4F800C1; Mon,  2 Oct 2023 13:55:19 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E4989F800C1;
-	Mon,  2 Oct 2023 13:52:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7F116F80310;
+	Mon,  2 Oct 2023 13:55:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2FE10F80310; Mon,  2 Oct 2023 13:52:26 +0200 (CEST)
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id A4DAAF80310; Mon,  2 Oct 2023 13:55:16 +0200 (CEST)
+Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net
+ [IPv6:2001:4b98:dc4:8::226])
+	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 6029AF800C1
-	for <alsa-devel@alsa-project.org>; Mon,  2 Oct 2023 13:52:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6029AF800C1
+	by alsa1.perex.cz (Postfix) with ESMTPS id 56797F801EB
+	for <alsa-devel@alsa-project.org>; Mon,  2 Oct 2023 13:55:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 56797F801EB
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=Axrne4HG
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 74101CE0EEF;
-	Mon,  2 Oct 2023 11:52:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D2F04C433C8;
-	Mon,  2 Oct 2023 11:52:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1696247532;
-	bh=mD0QT0lkuP0r4ZV9BxCcQ5Sp1u63ujom7VHA8vIIfnQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Axrne4HGDwfESYO2ByS4rSXEtSHeXhf9vW/ONBjwi6qspv5IbIE0zKhUoG0DYzCLB
-	 84YMqwGTgFdOWWA/NcIeWt4G6F+YjgR4tAj0hp51BQX+BGGSfxE5/Te8Wbq5pO1/dB
-	 HiM5dVdMCAmE73sW6Ji0OwjSEgotKJjFNSdjs+3kgJ1T6PqnknFEIGnNwWeGd0YmbD
-	 kImsO0h8bP6jtcBvw9GzM1rtMnXdUdFr5bnBEDgxkv4nw4WqeNIuGwaRGBDOjdeuNy
-	 kT2mklnaBQroIIW0k3OH6+cTGGmmN1rJrVVPVJ5nv6WOmYD1rMe2oc2F4VK5GEZ9F1
-	 vASKikm+Wttyg==
-Date: Mon, 2 Oct 2023 12:52:04 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Linux regressions mailing list <regressions@lists.linux.dev>
-Cc: Sven Frotscher <sven.frotscher@gmail.com>, mario.limonciello@amd.com,
-	git@augustwikerfors.se, alsa-devel@alsa-project.org,
-	lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
-Subject: Re: [PATCH v4] ASoC: amd: yc: Fix non-functional mic on Lenovo 82YM
-Message-ID: <4fa7d39d-dc34-4550-97fa-2b089f364cca@sirena.org.uk>
-References: <20230927223758.18870-1-sven.frotscher@gmail.com>
- <46560887-0b6e-42ac-96c3-b4dbc1d7cb61@leemhuis.info>
+ unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
+ header.s=gm1 header.b=Y+TMpJzr
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 7D7EAC0007;
+	Mon,  2 Oct 2023 11:54:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1696247707;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ZauemzlB2GLs7I7VeZeMr7YTRfLhZitHrMbmBgYpBFo=;
+	b=Y+TMpJzrSEayNtrQ1/UBUfMpH1c7s5l736WL9S3/lFbOXcx0BTUCPb/erG9k+osScJSt0y
+	2tbeBT7/SGnbvouwlGDLERC25y4ZcvayWFzdg/+PfokEDbKflSRhLVWeR40woW8xPlw8Ox
+	8YG1Fvh6sY+27HWsp2z15RKmQUl5kLV9dzDDPUB0zbgmVCPFeznmRQGhJQOZ2xTSYzAjGe
+	NoJzak3j4Py4dzMatBXdC8yNKY3MdQrC208MwQiapP6gCOc8Tx0NARPrBEWIeXgMu71pdE
+	KxUkEfL+NLoKzt+j+Ski75iX7InerKkxpp5uKvWbQdzBuBTRaaRAlf+3yYfmTA==
+Date: Mon, 2 Oct 2023 13:54:58 +0200
+From: Herve Codina <herve.codina@bootlin.com>
+To: kernel test robot <lkp@intel.com>
+Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
+ <pabeni@redhat.com>, Andrew Lunn <andrew@lunn.ch>, Rob Herring
+ <robh+dt@kernel.org>, Krzysztof Kozlowski <krzk@kernel.org>, Conor Dooley
+ <conor+dt@kernel.org>, Linus Walleij <linus.walleij@linaro.org>, Qiang Zhao
+ <qiang.zhao@nxp.com>, Li Yang <leoyang.li@nxp.com>, Liam Girdwood
+ <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela
+ <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Shengjiu Wang
+ <shengjiu.wang@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam
+ <festevam@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>, Christophe
+ Leroy <christophe.leroy@csgroup.eu>, Randy Dunlap <rdunlap@infradead.org>,
+ oe-kbuild-all@lists.linux.dev, netdev@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, Simon
+ Horman <horms@kernel.org>
+Subject: Re: [PATCH v7 25/30] dt-bindings: net: Add the Lantiq PEF2256
+ E1/T1/J1 framer
+Message-ID: <20231002135458.420f6ae4@bootlin.com>
+In-Reply-To: <202309291924.OBfdyhXb-lkp@intel.com>
+References: <20230928070652.330429-26-herve.codina@bootlin.com>
+	<202309291924.OBfdyhXb-lkp@intel.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="KGb+AMvjQ5LP9ojj"
-Content-Disposition: inline
-In-Reply-To: <46560887-0b6e-42ac-96c3-b4dbc1d7cb61@leemhuis.info>
-X-Cookie: Postage will be paid by addressee.
-Message-ID-Hash: U7SXTVN7LDRBU5ON6E7WBF7XEISOYYE2
-X-Message-ID-Hash: U7SXTVN7LDRBU5ON6E7WBF7XEISOYYE2
-X-MailFrom: broonie@kernel.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: herve.codina@bootlin.com
+Message-ID-Hash: NM6EFTAKJEOW3DV37T3XA74XLXOPGEVF
+X-Message-ID-Hash: NM6EFTAKJEOW3DV37T3XA74XLXOPGEVF
+X-MailFrom: herve.codina@bootlin.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -86,7 +98,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/U7SXTVN7LDRBU5ON6E7WBF7XEISOYYE2/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NM6EFTAKJEOW3DV37T3XA74XLXOPGEVF/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -95,39 +107,65 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+Hi Rob, all,
 
---KGb+AMvjQ5LP9ojj
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On Fri, 29 Sep 2023 20:04:44 +0800
+kernel test robot <lkp@intel.com> wrote:
 
-On Mon, Oct 02, 2023 at 11:32:48AM +0200, Linux regression tracking (Thorsten Leemhuis) wrote:
+> Hi Herve,
+> 
+> kernel test robot noticed the following build warnings:
+> 
+> [auto build test WARNING on linus/master]
+> [also build test WARNING on v6.6-rc3 next-20230929]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> 
+> url:    https://github.com/intel-lab-lkp/linux/commits/Herve-Codina/soc-fsl-cpm1-tsa-Fix-__iomem-addresses-declaration/20230928-151746
+> base:   linus/master
+> patch link:    https://lore.kernel.org/r/20230928070652.330429-26-herve.codina%40bootlin.com
+> patch subject: [PATCH v7 25/30] dt-bindings: net: Add the Lantiq PEF2256 E1/T1/J1 framer
+> compiler: loongarch64-linux-gcc (GCC) 13.2.0
+> reproduce: (https://download.01.org/0day-ci/archive/20230929/202309291924.OBfdyhXb-lkp@intel.com/reproduce)
+> 
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202309291924.OBfdyhXb-lkp@intel.com/
+> 
+> dtcheck warnings: (new ones prefixed by >>)
+> >> Documentation/devicetree/bindings/net/lantiq,pef2256.yaml: properties:lantiq,data-rate-bps: 'oneOf' conditional failed, one must be fixed:  
+>    	'type' is a required property
+>    		hint: A vendor boolean property can use "type: boolean"
+>    	Additional properties are not allowed ('default', 'enum' were unexpected)
+>    		hint: A vendor boolean property can use "type: boolean"
+>    	Additional properties are not allowed ('default' was unexpected)
+>    		hint: A vendor string property with exact values has an implicit type
+> >> 	Documentation/devicetree/bindings/net/lantiq,pef2256.yaml: properties:lantiq,data-rate-bps: 'oneOf' conditional failed, one must be fixed:  
+>    		'$ref' is a required property
+>    		'allOf' is a required property
+>    		hint: A vendor property needs a $ref to types.yaml
+>    		from schema $id: http://devicetree.org/meta-schemas/vendor-props.yaml#
+>    	2048000 is not of type 'string'
+>    		hint: A vendor string property with exact values has an implicit type
+>    	4096000 is not of type 'string'
+>    		hint: A vendor string property with exact values has an implicit type
+>    	8192000 is not of type 'string'
+>    		hint: A vendor string property with exact values has an implicit type
+> 
 
-> Makes me wonder: How many more such quirk entries will be needed? Will
-> we have all machines listed soon, or do we expect that future Lenovo
-> hardware will need entries as well? If it's the latter: are quirks
-> really the right solution here, or do they just hide some bug or then
-> need for code that automatically handles things?
+This issue is related to '-bps' standard suffix not yet available in the
+dt-schema release.
+The commit adding '-pbs' suffix is
+  commit 033d0b1 ("Add '-bps' as a standard unit suffix for bits per second")
+present in https://github.com/devicetree-org/dt-schema/
 
-x86 firmware descriptions are terrible, it's just an endless procession
-of quirks.  The model for ACPI is not to describe key information in the
-kernel and instead on Windows load device specific information from
-separately supplied tables.  On Linux that translates into these endless
-quirks, on Windows it's platform specific drivers for otherwise generic
-audio hardware.
+This point was previously discussed with Rob [1] and mentioned in the cover
+letter of the series.
 
---KGb+AMvjQ5LP9ojj
-Content-Type: application/pgp-signature; name="signature.asc"
+[1]: https://lore.kernel.org/linux-kernel/CAL_JsqJTruTExc=uHCPCp3q-fo+fB-wAJ-ggPpHpWcHSoGALdw@mail.gmail.com/
 
------BEGIN PGP SIGNATURE-----
+Best regards,
+Hervé
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmUaruMACgkQJNaLcl1U
-h9Bx7wf9FRyZSTh2EDOh9DlJhuxaY0I/WglGW1OTL05cnsL/2aJB17tn/OXVh6kV
-63H5ZQ7Pkeb2JjyglqakUciSCmVUFP3wZAj1m/OOuUyNB1RiVvtWe6JQJDfzEsIX
-QJoHO2nm2SGOmGy0JVOUcWDWXKxHo1L88+cimo7Sfj7yTLHBuRUMSqxpODOho1p6
-Y0KAYgGtzlgAhGLTc5mRkWep5r05zosEpTHVSmx4lpVVTMb8+vzYGym+py/ghoux
-G5b/wmqdWrVA69eGeyi5znMCXre8tzN0EujVE5C9Out07VJ4vpKG9tm9dMcSFNEg
-jiLZrMEwNviwo0TkT2n8pfasqmsXbg==
-=pKIL
------END PGP SIGNATURE-----
-
---KGb+AMvjQ5LP9ojj--
