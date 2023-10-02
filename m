@@ -4,73 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E7BE0E784BC
-	for <alsa-devel@archiver.kernel.org>; Mon,  2 Oct 2023 15:19:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B8331E784BC
+	for <alsa-devel@archiver.kernel.org>; Mon,  2 Oct 2023 15:19:31 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 564F8E76;
-	Mon,  2 Oct 2023 17:18:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 564F8E76
+	by alsa0.perex.cz (Postfix) with ESMTPS id A525DAE9;
+	Mon,  2 Oct 2023 17:18:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A525DAE9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1696259947;
-	bh=QyLUHxCnjq96dRqqAZ2R16rfPM/ceuxmjSOr/ybBiBU=;
+	s=default; t=1696259969;
+	bh=hF16LqSa4Syn4jn5dAWKbpzCRm2q1LVCGwoK56BnfY4=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=bp1memvEg8Nv79yp8fdIrsPORfx6GiFGddNvbSTC+eigzg6nmVf4vfcCpPfMpn52o
-	 Yp4OLq527vq/b2i4rZX/7KGia0Z97hW7so3vM6FvwtPH1HRVKNtkGGX+YPL9KJpRnX
-	 M6vUsYo2TSWYIB65qt4ZGXnujtM0S7q3GfGc4XWw=
+	b=uitW/JIH5IPAhZiSoVEZnQkkagmfAPZu6XFUF7S95XxnQtIxNhOUh/0vUhiqqd0Zd
+	 nbs+O9Nl8RnPL8YfWucOv3IpgpEMqyechw5gl/yr5qSa+0IumxR2jDr97SbMBCpABy
+	 nQkneiOalpFKHMNxrQ544jwA01z6xaUjqwx1Nx9c=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C5556F80588; Mon,  2 Oct 2023 17:17:54 +0200 (CEST)
+	id C0132F8058C; Mon,  2 Oct 2023 17:17:58 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3645FF80587;
-	Mon,  2 Oct 2023 17:17:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3A478F80589;
+	Mon,  2 Oct 2023 17:17:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 85A3CF80549; Mon,  2 Oct 2023 17:17:48 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	id 793DBF8057A; Mon,  2 Oct 2023 17:17:53 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id AF02DF80166
-	for <alsa-devel@alsa-project.org>; Mon,  2 Oct 2023 17:17:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AF02DF80166
+	by alsa1.perex.cz (Postfix) with ESMTPS id 3FB3FF80568
+	for <alsa-devel@alsa-project.org>; Mon,  2 Oct 2023 17:17:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3FB3FF80568
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=shb7TX2p
+ header.s=k20201202 header.b=chvy6+gE
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id C45F360C78;
-	Mon,  2 Oct 2023 15:17:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3FB3C433C7;
-	Mon,  2 Oct 2023 15:17:31 +0000 (UTC)
+	by ams.source.kernel.org (Postfix) with ESMTP id 94AFEB81181;
+	Mon,  2 Oct 2023 15:17:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6901C433C8;
+	Mon,  2 Oct 2023 15:17:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1696259853;
-	bh=QyLUHxCnjq96dRqqAZ2R16rfPM/ceuxmjSOr/ybBiBU=;
+	s=k20201202; t=1696259850;
+	bh=hF16LqSa4Syn4jn5dAWKbpzCRm2q1LVCGwoK56BnfY4=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=shb7TX2pHDxTEKlFWlXNf7G/y9RynF7jCe2sTyhieqYayrT8GFNgN5Ms8FsUjjlXr
-	 7mAUglbGkf4x9wdWlSM6ZT75sOaxvdG8rbFkmBv8UW+qqCVuy7u/27qLDoe+lUMEJi
-	 cOo/Lq9By4bWG7yB7M94s89Vdl18nX23j7kPeHiSaaVfjvgGCj72/A9hOApYv4mlSP
-	 ylBwSsEQrwPEiGhnRf95LIhCTdHrqYYcVnfVrpr9zcNjQ1IsNfESSzeah6YmCOOcfj
-	 NFcfzlO/Emx8z3pOLivStTFPTS2egqJFrhIjNvy8zJB4xzvBbxOnQlxXwqqhU1xJf1
-	 fYw5rKJaKcXOg==
+	b=chvy6+gEVKMrMyTwo76gNnMqZNgcqeIh0iCT+slnWvKswqcF2RysWxQb0BQlS06dr
+	 QVmasCtcr3hB+/LZ5OIXgt4k2tU3+/RsOUpEJsCKMXvU3t/BWJcdd9XBI4/1ZKeFmQ
+	 1/FHkTlRsVFpuNYehLzlvpqT6f+5IrQjVDMFzKlakeDBZXnHWuia392P4RaI9QdS/O
+	 3NIVUUDkY7aInCuLN1xAdp/qsGyapkLzIG6sZ7w3shP7pQn4MWFP0nnEKw21aptPfm
+	 armmcBXB8HwZqMBOsYJAkZ2NsV2piwnHngfTEJtWrGjYcBMgHTxBpWyz3obqfyM12g
+	 pHc6Srxhp+Kow==
 From: Mark Brown <broonie@kernel.org>
-To: =?utf-8?q?Amadeusz_S=C5=82awi=C5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
- Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
- alsa-devel@alsa-project.org, kernel test robot <lkp@intel.com>
-In-Reply-To: <20231002084629.903103-1-amadeuszx.slawinski@linux.intel.com>
-References: <20231002084629.903103-1-amadeuszx.slawinski@linux.intel.com>
-Subject: Re: [PATCH] ASoC: Intel: avs: Remove unused variable
-Message-Id: <169625985165.65718.11092639345516180535.b4-ty@kernel.org>
-Date: Mon, 02 Oct 2023 16:17:31 +0100
+To: oder_chiou@realtek.com, Zhang Shurong <zhang_shurong@foxmail.com>
+Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+In-Reply-To: <tencent_4F37C9B5315B7960041E8E0ADDA869128F08@qq.com>
+References: <tencent_4F37C9B5315B7960041E8E0ADDA869128F08@qq.com>
+Subject: Re: [PATCH] ASoC: rt5682: Fix regulator enable/disable sequence
+Message-Id: <169625984853.65718.1048649527672207151.b4-ty@kernel.org>
+Date: Mon, 02 Oct 2023 16:17:28 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-0438c
-Message-ID-Hash: 5TW7BPJPSKI45V7EKEE3XH2OKMLBIPPP
-X-Message-ID-Hash: 5TW7BPJPSKI45V7EKEE3XH2OKMLBIPPP
+Message-ID-Hash: GISB42NQUCUN3KHOXGK4FXVV3YYIR2XQ
+X-Message-ID-Hash: GISB42NQUCUN3KHOXGK4FXVV3YYIR2XQ
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -83,7 +82,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5TW7BPJPSKI45V7EKEE3XH2OKMLBIPPP/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GISB42NQUCUN3KHOXGK4FXVV3YYIR2XQ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -92,9 +91,11 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, 02 Oct 2023 10:46:29 +0200, Amadeusz Sławiński wrote:
-> Recent commit removed the only user of bus variable in
-> avs_dai_fe_prepare(), also remove the variable itself.
+On Sat, 30 Sep 2023 17:55:50 +0800, Zhang Shurong wrote:
+> This will attempt to disable the regulators if the initial enable fails
+> which is a bug.
+> 
+> Fix this bug by modifying the code to the correct sequence.
 > 
 > 
 
@@ -104,8 +105,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: Intel: avs: Remove unused variable
-      commit: 045059e4d3ce39104323fe01da61374ba73f31b3
+[1/1] ASoC: rt5682: Fix regulator enable/disable sequence
+      commit: 892fbdb203945d887ad2a109a3700b091a8e3b97
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
