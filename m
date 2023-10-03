@@ -4,77 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 34F45E7AD77
-	for <alsa-devel@archiver.kernel.org>; Tue,  3 Oct 2023 17:10:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C6455E7AD7B
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Oct 2023 17:10:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 41D36844;
-	Tue,  3 Oct 2023 19:09:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 41D36844
+	by alsa0.perex.cz (Postfix) with ESMTPS id 30288A4E;
+	Tue,  3 Oct 2023 19:09:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 30288A4E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1696353018;
-	bh=z0khdQB11BoA0tQ40lKmz5sxH1m9xC78cFe/yLn2g6o=;
+	s=default; t=1696353032;
+	bh=kBYAiYxCZBMuNQp6t0UViUuBF5g4qPZxoWT5u3Qpvd8=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=a0ebaUJVHK04HTHpZUc3cR/0QZm6G5K7WWPIHChX0J6/9MgMDvaAo0GeqtJby8PWk
-	 e0qJ3YN1dtWR5NQEe1yKsr5E356k2LuQcCN/WGp6BZwHVtSvRSXC67Cu80JF/J+bRG
-	 Mt8PMZsfHZvJrp3Si2JAJVNf5lnxYhdQtpAWjjUk=
+	b=aSW4YvYstWniwXcGGtdsILuQtV8bWNiky0mv7cW28EcSl7UgG+N4ILAAfiXPezGKN
+	 dK+y1cBjOAmxJoQLts89XWsUwhtxd9FIXOIAnT1oMuXUJMfgCUns1AzTEnrqzzuRRl
+	 diAs0Yi2swez6fPSBdTatd0vu5i/xMtif2V9vraQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 33AACF80553; Tue,  3 Oct 2023 19:08:51 +0200 (CEST)
+	id D9027F80578; Tue,  3 Oct 2023 19:08:52 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6147DF80130;
-	Tue,  3 Oct 2023 19:08:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 36E9FF80564;
+	Tue,  3 Oct 2023 19:08:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2B7A2F80551; Tue,  3 Oct 2023 19:08:45 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	id E7F4AF80549; Tue,  3 Oct 2023 19:08:45 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 8FE58F801EB
-	for <alsa-devel@alsa-project.org>; Tue,  3 Oct 2023 19:08:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8FE58F801EB
+	by alsa1.perex.cz (Postfix) with ESMTPS id E87A3F80130
+	for <alsa-devel@alsa-project.org>; Tue,  3 Oct 2023 19:08:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E87A3F80130
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=oIucdHji
+ header.s=k20201202 header.b=Efqav5Nh
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id B4516612DF;
-	Tue,  3 Oct 2023 17:08:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A67FCC433C8;
-	Tue,  3 Oct 2023 17:08:32 +0000 (UTC)
+	by ams.source.kernel.org (Postfix) with ESMTP id 67170B81A40;
+	Tue,  3 Oct 2023 17:08:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05099C433C7;
+	Tue,  3 Oct 2023 17:08:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1696352915;
-	bh=z0khdQB11BoA0tQ40lKmz5sxH1m9xC78cFe/yLn2g6o=;
+	s=k20201202; t=1696352919;
+	bh=kBYAiYxCZBMuNQp6t0UViUuBF5g4qPZxoWT5u3Qpvd8=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=oIucdHjiAoMeu9S2B2ofb7H1+u6bLJgvxIzwxoJhO5ggZBy5WKoRWI6T/dVPA55vU
-	 x8abIexv0M0heossk7yTWtHBnA4FXmaLLqsN/ypGorLlRpzY/2oIhdHjnnYE9ZA2Lb
-	 csq7Di/OPv8lTrB5UVU91m3/6IZZAm3RFPP/8yZz2ayqOCntxWpkcrnlkxbe1QrnFb
-	 PF2LCKBuCD2tEvmvRi6YpVntehrK9uC1+TOjXNPaSerqQfzDcfDD7YC2uMLnZufN2D
-	 6kbBR+Q67GVa9Ca7sv3l6UWKsCgY+/LRZC1iE3aHXM11qu5OXJDU5kJoAEfOUJKDWJ
-	 I20U96sourupg==
+	b=Efqav5Nhw1v8H5daBY3EBv2WnSNt3YVcM0EK9r5hgI75lA+I9WakzLVSSG92btlMh
+	 GvsApHqbd+enECQNbzlBMy9gmL+HqTxGzByAVgVoGuH5Bso4ReRbNaIhx2mDorfAwD
+	 xq1xpu0EesldtYNUIifikkXN7maUJgw3OaW0z3QrEurxG2wJ4h/q0/lVIJbrcOwHL3
+	 SJSbFll5inBoxMxcn6C1Qf0HXrJved4adQcBPkIM9Szp4atpgoXDHxFkYE+UrFWshO
+	 quOjqLdYiExAW46OxLaIlPbEQmbiv87n/XSRLaIlnqYQmNXhYXNkvBQnV8vSmrPU4U
+	 YJWe/l7dk3LTA==
 From: Mark Brown <broonie@kernel.org>
-To: Weidong Wang <wangweidong.a@awinic.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Luca Weiss <luca.weiss@fairphone.com>
-Cc: ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org
-In-Reply-To: <20231002-aw88261-reset-v2-0-837cb1e7b95c@fairphone.com>
-References: <20231002-aw88261-reset-v2-0-837cb1e7b95c@fairphone.com>
-Subject: Re: [PATCH v2 0/2] Remove reset GPIO for AW88261
-Message-Id: <169635291227.42044.6654746210996061480.b4-ty@kernel.org>
-Date: Tue, 03 Oct 2023 18:08:32 +0100
+To: Richard Fitzgerald <rf@opensource.cirrus.com>
+Cc: linux-kernel@vger.kernel.org, patches@opensource.cirrus.com,
+ alsa-devel@alsa-project.org, Simon Trimmer <simont@opensource.cirrus.com>
+In-Reply-To: <20231003093418.21600-1-rf@opensource.cirrus.com>
+References: <20231003093418.21600-1-rf@opensource.cirrus.com>
+Subject: Re: [PATCH] ASoC: cs35l56: Remove unused hibernate wake constants
+Message-Id: <169635291773.42044.3364380749891490318.b4-ty@kernel.org>
+Date: Tue, 03 Oct 2023 18:08:37 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-0438c
-Message-ID-Hash: LWGSZB6Q3NFCCBIMHOBXL57JORJ4FZRK
-X-Message-ID-Hash: LWGSZB6Q3NFCCBIMHOBXL57JORJ4FZRK
+Message-ID-Hash: WJXLBG2TR6Y7K2AXI4ITWGHEEGQI5UT6
+X-Message-ID-Hash: WJXLBG2TR6Y7K2AXI4ITWGHEEGQI5UT6
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -86,19 +81,17 @@ X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LWGSZB6Q3NFCCBIMHOBXL57JORJ4FZRK/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+Archived-At: <>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, 02 Oct 2023 16:00:10 +0200, Luca Weiss wrote:
-> The AW88261 chip doesn't have a reset gpio, so remove it from the
-> bindings and from the driver.
+On Tue, 03 Oct 2023 10:34:18 +0100, Richard Fitzgerald wrote:
+> The two CS35L56_HIBERNATE_WAKE_* constants in cs35l56.h aren't used by
+> any of the driver code.
 > 
 > 
 
@@ -108,10 +101,8 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: dt-bindings: awinic,aw88395: Remove reset-gpios from AW88261
-      commit: c7b94e8614e35f1919b51c23fe590884149ae341
-[2/2] ASoC: codecs: aw88261: Remove non-existing reset gpio
-      commit: 4eed047b76fa8f56af478ca7e6d56ca7e5330cf2
+[1/1] ASoC: cs35l56: Remove unused hibernate wake constants
+      commit: d4e1417bb9e675ea2e4d4a6f993e3a9ae8118ac8
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
