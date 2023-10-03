@@ -4,103 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 77A6EE7AD6E
-	for <alsa-devel@archiver.kernel.org>; Tue,  3 Oct 2023 15:55:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DA757E7AD76
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Oct 2023 15:58:44 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D951583E;
-	Tue,  3 Oct 2023 17:54:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D951583E
+	by alsa0.perex.cz (Postfix) with ESMTPS id B587584A;
+	Tue,  3 Oct 2023 17:57:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B587584A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1696348530;
-	bh=dlac5JEdOn3iSC+QHcakCchDr09xqsWChEI96yUxEGE=;
+	s=default; t=1696348722;
+	bh=QQf6ijVj+PyrKIDcuL9n9LbXefRYaf38N5/86AyT35k=;
 	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=qee3KvxI6hPr0qEmTjZz9intwh44eMYAElUSH6BYf8TZjvRxWqAiRtxEGVjDtwkhZ
-	 kPNAv4q2/qWhdexVjWSBoSuWkt8L4+GCqVYICWEC1R9qMokmxdbK0MjyRTyAq4Eyw7
-	 UyUHUpI7Mppq1dWj8GP74RKagqDqvtRFwkG7vMr0=
+	b=GigVuHVQfmj2wiFWvzFV3CcLNInAa4YCrACDxnxDJc1H5UDqJSAm8kD5h9wiOxgH0
+	 ZIl4ih3whIGG5W9xowQsD++dw9mZGDEPpnblBgQWuBmrKp+KSlkNdc86pq8m/eYWLq
+	 knz7rSnRoch/gloBPuH/DDOm6uzyOa6JR3PKNQE4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7C731F80310; Tue,  3 Oct 2023 17:54:40 +0200 (CEST)
+	id 96565F80166; Tue,  3 Oct 2023 17:57:31 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0B169F8047D;
-	Tue,  3 Oct 2023 17:54:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DCAF1F80558;
+	Tue,  3 Oct 2023 17:57:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B07C1F8047D; Tue,  3 Oct 2023 17:54:35 +0200 (CEST)
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com
- [IPv6:2a00:1450:4864:20::631])
+	id 16FBFF80551; Tue,  3 Oct 2023 17:57:27 +0200 (CEST)
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com
+ [IPv6:2a00:1450:4864:20::633])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id AC1C7F80166
-	for <alsa-devel@alsa-project.org>; Tue,  3 Oct 2023 17:54:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AC1C7F80166
+	by alsa1.perex.cz (Postfix) with ESMTPS id 1C516F80310
+	for <alsa-devel@alsa-project.org>; Tue,  3 Oct 2023 17:57:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1C516F80310
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=HS3nqi9u
-Received: by mail-ej1-x631.google.com with SMTP id
- a640c23a62f3a-9ad8bf9bfabso204528266b.3
+ header.s=google header.b=DLq7k4pZ
+Received: by mail-ej1-x633.google.com with SMTP id
+ a640c23a62f3a-99bdeae1d0aso198477966b.1
         for <alsa-devel@alsa-project.org>;
- Tue, 03 Oct 2023 08:54:27 -0700 (PDT)
+ Tue, 03 Oct 2023 08:57:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696348465; x=1696953265;
+        d=linaro.org; s=google; t=1696348635; x=1696953435;
  darn=alsa-project.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=9qwggqM5g4H2kMBZ1deteV2yt6E9yc4Vqh+Tp6Hnvgo=;
-        b=HS3nqi9u2LRAlIFp1fQYAt5K8RYMK0OWRAUTYUt7YiaemvIzeATIgv/g7l8eiaLYsq
-         KpVYzxosBaFDDWn00/Fg4C92L0ifAh4aLljbXvE4Cjgjnk0BZMo8lbk2snqC7QStCG1H
-         WbAm+SgQJHMe3QxrFWfTZgqmiYgI/1tALB9jwrPxGL46AeK+cFMFNXpMd8rW04UPPuxk
-         AoZnl/J0oVd1TCIOZZHNkkpFY0TM0NjuSXy1egCFAWj9oAUDpPKRm7GzsOcpxHtuAiFo
-         hLEvK0CzuicX9DTQnLGMCxq8PI4IiZet5mndV0TOx72JwXBTxsUIfSPYC9RIDQwaHj2A
-         2iXQ==
+        bh=umZ+8oKDYfik3oT0i9Ef96i8g6lg2rgWnjuQEEXA5OA=;
+        b=DLq7k4pZ0yxWU2HwAI0H+mVs2Hr/nvT6UWakvHCn0RwmcP/ZmD4Bdm+JuMhpiQw061
+         N8p6c+na4v6SOp2qIvQVRQIu6L2Cpzfzc5v0OG1vu/PYC2SMmavKNBEvdXDxwgXspLFO
+         7MlFPnuBxvqUocL1JT9MX7P6ct6Kd+PUxoVaVlH/5+zFZK2smIwx/DFssAlnVG/HW1k7
+         3v56T7qdhBA2TxQd2YkvNR9B3yf/LZoOay7MQy4/SncwE/zcDHdH3SMKLQOfRVrEI+pT
+         ko9g55Fk63RU23ra4pua+C4ih4yGZ/mufPgJyVxE2kVACaODe+ecVovCUSIgnwV9qYeD
+         a9sA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696348465; x=1696953265;
+        d=1e100.net; s=20230601; t=1696348635; x=1696953435;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=9qwggqM5g4H2kMBZ1deteV2yt6E9yc4Vqh+Tp6Hnvgo=;
-        b=GZf7KkhdyhxxFnLLEY2IW+Eeocsx/IIOJUGGk9qOBXo9UdGIttnyuwEWj94dq8AvZA
-         WVVCPr3LaIHyYj/2d+55iN1jtimdrfeBtvHw632lXqGkfBWaL+X5YCBXin5hzmhhwumy
-         45dYkh3ouUPg++hYUfm/7+nM3jwgB0JUwSJXMg2D59guHEFbeo3b4EiAENRelJzlzUlA
-         zYCXMhPOMxunpUtHtpM3FOyXd1wh+3zdhx9UkmC334lELp0W2AE7+EfHd/dPpc30MhXp
-         4E3Hp2o5CsGdi++aAWqwqriDffh6FaBp61bT2lUDm5Sl6k2UtH/HYyFMQUyNv0UHH4gP
-         tV2Q==
-X-Gm-Message-State: AOJu0YzUP2RCmytGfHxOuEh8pW5+7h7hGj5qqJVhHMNRe/L4ax/4tCAD
-	Re6TLQ6XZSmwGA4K2QI/e6tDrw==
+        bh=umZ+8oKDYfik3oT0i9Ef96i8g6lg2rgWnjuQEEXA5OA=;
+        b=sS2/DbIfivb2edlLCuTDkLh7BfoBWVtD9CZ3SYavn2QC9KzbVPLk8iLru0A+lkTR/h
+         EJtGleTN8zk/et5Za3avkmmcfV8PLfNnEmg/QpXnl3KFxsW0fZaXgf4mH3A4Toy7N+U1
+         ROJMw0G3qWf16m1rdw16eBvHLTvhtHEhvp2b5Wu0MZYHLiUXvtrvev2UqJ55mfUpvd5J
+         EZ8R3oroxMQYCQhJPLa3hhMyGfON1bgBV+4UKyoYVukIN6x1hlxULuV7zsN69dfz0Mjl
+         XX07oLwlmzIYBva3J/n7aXTAmTg6KfxGwYbv3rQ2arYvcsztmDvwX7UwrSwRtGk6mVr8
+         YioQ==
+X-Gm-Message-State: AOJu0Yz4MsO5DMrQigStL51IqLxKzT6ax3F7nNZMs+T8blQkHr0ouPDg
+	pe6quSS5urHVE2UH5YG691oebQ==
 X-Google-Smtp-Source: 
- AGHT+IH09d6DTdcKc37AqByhCIppHQNpciXplK+DYeKcZhmAvum3wYCeGF8amKbOLfAWBgKm2xynPQ==
-X-Received: by 2002:a17:906:5349:b0:9b2:9a0e:9973 with SMTP id
- j9-20020a170906534900b009b29a0e9973mr13823175ejo.42.1696348465487;
-        Tue, 03 Oct 2023 08:54:25 -0700 (PDT)
+ AGHT+IHdJHFnpnjzifSM5/sGMF/eTk/Jh1MeVpKW1pBhyHkKe/pZiH+yTfo51m2c9cQjrpdYVAyiRQ==
+X-Received: by 2002:a17:906:13:b0:9ae:588e:142 with SMTP id
+ 19-20020a170906001300b009ae588e0142mr14014095eja.67.1696348634904;
+        Tue, 03 Oct 2023 08:57:14 -0700 (PDT)
 Received: from krzk-bin.. (5-157-101-10.dyn.eolo.it. [5.157.101.10])
         by smtp.gmail.com with ESMTPSA id
- sa18-20020a170906edb200b0098733a40bb7sm1268948ejb.155.2023.10.03.08.54.24
+ w25-20020a170906481900b0099bc2d1429csm1288088ejq.72.2023.10.03.08.57.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Oct 2023 08:54:25 -0700 (PDT)
+        Tue, 03 Oct 2023 08:57:14 -0700 (PDT)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-	Banajit Goswami <bgoswami@quicinc.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
+To: Liam Girdwood <lgirdwood@gmail.com>,
 	Mark Brown <broonie@kernel.org>,
 	Jaroslav Kysela <perex@perex.cz>,
 	Takashi Iwai <tiwai@suse.com>,
-	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+	Banajit Goswami <bgoswami@quicinc.com>,
 	alsa-devel@alsa-project.org,
 	linux-kernel@vger.kernel.org
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	stable@vger.kernel.org
-Subject: [PATCH] ASoC: codecs: wsa-macro: fix uninitialized stack variables
- with name prefix
-Date: Tue,  3 Oct 2023 17:54:22 +0200
-Message-Id: <20231003155422.801160-1-krzysztof.kozlowski@linaro.org>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH 0/2] ASoC: codecs: fix widget name comparisons
+Date: Tue,  3 Oct 2023 17:57:08 +0200
+Message-Id: <20231003155710.821315-1-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: NFEHRW3NSAYBHGF6T32UGCRXR6KYKONM
-X-Message-ID-Hash: NFEHRW3NSAYBHGF6T32UGCRXR6KYKONM
+Message-ID-Hash: VMS2RUU5WRQ3YZ3QCY5DBRMAFFSIYADS
+X-Message-ID-Hash: VMS2RUU5WRQ3YZ3QCY5DBRMAFFSIYADS
 X-MailFrom: krzysztof.kozlowski@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -113,47 +110,35 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NFEHRW3NSAYBHGF6T32UGCRXR6KYKONM/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VMS2RUU5WRQ3YZ3QCY5DBRMAFFSIYADS/>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Driver compares widget name in wsa_macro_spk_boost_event() widget event
-callback, however it does not handle component's name prefix.  This
-leads to using uninitialized stack variables as registers and register
-values.  Handle gracefully such case.
+Hi,
 
-Fixes: 2c4066e5d428 ("ASoC: codecs: lpass-wsa-macro: add dapm widgets and route")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Some codec drivers compare widget names with strcmp, ignoring the component
+name prefix.  If prefix is used, the comparisons start failing.
+Add a helper to fix the issue.
 
----
+If the approach looks good, I will fix other codec drivers.
 
-This is a fix only for uninitialized values case.  The fix for including
-name prefixes will be sent separate, because I think it is not a stable
-material.  Happy to combine patches if needed.
----
- sound/soc/codecs/lpass-wsa-macro.c | 3 +++
- 1 file changed, 3 insertions(+)
+Best regards,
+Krzysztof
 
-diff --git a/sound/soc/codecs/lpass-wsa-macro.c b/sound/soc/codecs/lpass-wsa-macro.c
-index ec6859ec0d38..ea6e3fa7e9e1 100644
---- a/sound/soc/codecs/lpass-wsa-macro.c
-+++ b/sound/soc/codecs/lpass-wsa-macro.c
-@@ -1685,6 +1685,9 @@ static int wsa_macro_spk_boost_event(struct snd_soc_dapm_widget *w,
- 		boost_path_cfg1 = CDC_WSA_RX1_RX_PATH_CFG1;
- 		reg = CDC_WSA_RX1_RX_PATH_CTL;
- 		reg_mix = CDC_WSA_RX1_RX_PATH_MIX_CTL;
-+	} else {
-+		dev_warn(component->dev, "Incorrect widget name in the driver\n");
-+		return -EINVAL;
- 	}
- 
- 	switch (event) {
+Krzysztof Kozlowski (2):
+  ASoC: soc-dapm: Add helper for comparing widget name
+  ASoC: codecs: wsa-macro: handle component name prefix
+
+ include/sound/soc-dapm.h           |  1 +
+ sound/soc/codecs/lpass-wsa-macro.c |  4 ++--
+ sound/soc/soc-component.c          |  1 +
+ sound/soc/soc-dapm.c               | 12 ++++++++++++
+ 4 files changed, 16 insertions(+), 2 deletions(-)
+
 -- 
 2.34.1
 
