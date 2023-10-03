@@ -4,95 +4,104 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1FC90E7AD74
-	for <alsa-devel@archiver.kernel.org>; Tue,  3 Oct 2023 16:04:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1A694E7AD78
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Oct 2023 16:25:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6CCC7E8B;
-	Tue,  3 Oct 2023 18:03:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6CCC7E8B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 86EBA84A;
+	Tue,  3 Oct 2023 18:24:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 86EBA84A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1696349054;
-	bh=2DhAHBo+YbBdItb8HnA01InHv+0f3MquKuWsrN91pvQ=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1696350324;
+	bh=TNU9ipzGbwPhcDS9xrUC4LpxTUdjs0JhjZFYvHpGT0w=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=ryFE/NM8UQDtjo/1kpbr8FBPCQ46TzXlKBlkzy/cZgdM09BQBQWuojvCFmt9oJNhl
-	 l5shCc6QqgAzOY+b5x0vgMizi/dEcpfBZ3VJE7y1viSMM+oEp9waewkpqxVzUnY5Rm
-	 5gyDh6iMHPfB2DnjeaWiis+q4pfa6tkN+jipsv28=
+	b=GKpY313PrNrdwVQW1b9A3u3RTdFBAQc7UeuMuHWQm2StAtP1XOk+vnj+zRvh0Vvqb
+	 edKnHA69a8CN4+1XiYLjK2eYPMWu0W5K41o2Y8cX8CF/rfLzyFp5h6DDFJTPsCVCUC
+	 P4fPdq/NY3GM20VFnS+eE8c/R8XvlmDc/qIUD+rg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0A74AF80587; Tue,  3 Oct 2023 18:02:38 +0200 (CEST)
+	id 2DDA3F80558; Tue,  3 Oct 2023 18:23:57 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B4672F8058C;
-	Tue,  3 Oct 2023 18:02:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C97B9F801EB;
+	Tue,  3 Oct 2023 18:23:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2823CF80557; Tue,  3 Oct 2023 17:59:30 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+	id 29BA7F8047D; Tue,  3 Oct 2023 18:23:52 +0200 (CEST)
+Received: from mail-out.m-online.net (mail-out.m-online.net [212.18.0.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id A0904F80130
+	for <alsa-devel@alsa-project.org>; Tue,  3 Oct 2023 18:23:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A0904F80130
+Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
+	by mail-out.m-online.net (Postfix) with ESMTP id 4S0NRf3F6Lz1sB7V;
+	Tue,  3 Oct 2023 18:23:40 +0200 (CEST)
+Received: from localhost (dynscan1.mnet-online.de [192.168.6.68])
+	by mail.m-online.net (Postfix) with ESMTP id 4S0NRb4yb1z1qqlS;
+	Tue,  3 Oct 2023 18:23:39 +0200 (CEST)
+X-Virus-Scanned: amavis at mnet-online.de
+Received: from mail.mnet-online.de ([192.168.8.182])
+ by localhost (dynscan1.mail.m-online.net [192.168.6.68]) (amavis, port 10024)
+ with ESMTP id aP66i6RqkI-7; Tue,  3 Oct 2023 18:23:37 +0200 (CEST)
+X-Auth-Info: DEcWQ3O3Q8oqxyW+2oC9tHdwulLSJUIRdEt3IUmb5jjP2Lci+dS0J9Uj4ULe5Ygi
+Received: from igel.home (aftr-62-216-205-214.dynamic.mnet-online.de
+ [62.216.205.214])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C682FF80553
-	for <alsa-devel@alsa-project.org>; Tue,  3 Oct 2023 17:58:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C682FF80553
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=q0yACS9I
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 040F161298;
-	Tue,  3 Oct 2023 15:58:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4AAEC433CB;
-	Tue,  3 Oct 2023 15:58:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1696348710;
-	bh=2DhAHBo+YbBdItb8HnA01InHv+0f3MquKuWsrN91pvQ=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=q0yACS9I5mo04/f0p1lkuf9QE0h/FBp1VdvpIubCClTCduooBHTGsehbanfK6yFvr
-	 3d8ujJR0Gt/HlsJsczhxWFnef/uOGAfKSriVeQMl5hfqfrk6NOaLe+O5EaPctUWU1z
-	 +QSkqUWkWnPx+BvrCmKjWSkvqhDzubLJzNnqEFTPwpFpZg3UX6XdnBtW4No9ZVrsBG
-	 zMZKn/1N8amwOwczJjtASlirvoX3vZQl4towl66BWWGHiQUHRFrKy3C3auyGuRlF79
-	 mrk4YBN1ph1ItMh67p8ApqzWEsINR+BzKnV6LA8a9IpbAnCrnYR6A1Je6+1/Su5Ws5
-	 RKSGUTLwkQGzQ==
-Received: from johan by xi.lan with local (Exim 4.96)
-	(envelope-from <johan+linaro@kernel.org>)
-	id 1qnhnG-00074z-13;
-	Tue, 03 Oct 2023 17:58:42 +0200
-From: Johan Hovold <johan+linaro@kernel.org>
-To: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-	alsa-devel@alsa-project.org,
-	linux-kernel@vger.kernel.org,
-	Johan Hovold <johan+linaro@kernel.org>,
-	stable@vger.kernel.org
-Subject: [PATCH 6/7] ASoC: codecs: wcd938x-sdw: fix use after free on driver
- unbind
-Date: Tue,  3 Oct 2023 17:55:57 +0200
-Message-ID: <20231003155558.27079-7-johan+linaro@kernel.org>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20231003155558.27079-1-johan+linaro@kernel.org>
-References: <20231003155558.27079-1-johan+linaro@kernel.org>
+	by mail.mnet-online.de (Postfix) with ESMTPSA;
+	Tue,  3 Oct 2023 18:23:37 +0200 (CEST)
+Received: by igel.home (Postfix, from userid 1000)
+	id 690602C0052; Tue,  3 Oct 2023 18:23:37 +0200 (CEST)
+From: Andreas Schwab <schwab@linux-m68k.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: "Ding, Shenghao" <shenghao-ding@ti.com>,  "broonie@kernel.org"
+ <broonie@kernel.org>,  "robh+dt@kernel.org" <robh+dt@kernel.org>,
+  "andriy.shevchenko@linux.intel.com" <andriy.shevchenko@linux.intel.com>,
+  "lgirdwood@gmail.com" <lgirdwood@gmail.com>,  "perex@perex.cz"
+ <perex@perex.cz>,  "pierre-louis.bossart@linux.intel.com"
+ <pierre-louis.bossart@linux.intel.com>,  "Lu, Kevin" <kevin-lu@ti.com>,
+  "13916275206@139.com" <13916275206@139.com>,
+  "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+  "liam.r.girdwood@intel.com" <liam.r.girdwood@intel.com>,
+  "mengdong.lin@intel.com" <mengdong.lin@intel.com>,  "Xu, Baojun"
+ <baojun.xu@ti.com>,  "thomas.gfeller@q-drop.com"
+ <thomas.gfeller@q-drop.com>,  "Gupta, Peeyush" <peeyush@ti.com>,  "Navada
+ Kanyana, Mukund" <navada@ti.com>,  "tiwai@suse.de" <tiwai@suse.de>,  Arnd
+ Bergmann <arnd@arndb.de>,  linux-m68k <linux-m68k@lists.linux-m68k.org>
+Subject: Re: [EXTERNAL] Re: [PATCH v1] ASoC: tas2781: fixed compiling issue
+ in m68k
+In-Reply-To: 
+ <CAMuHMdXRGxnGpVHiB+Zvxq+G4K-BL8JsJGbG+7CNtJiqGwHOsQ@mail.gmail.com>
+	(Geert Uytterhoeven's message of "Tue, 3 Oct 2023 14:15:36 +0200")
+References: <20231002090434.1896-1-shenghao-ding@ti.com>
+	<CAMuHMdXr5oRgkFqYZnPe3Xdyq_QjtzhfL8Wa_e9JA0S1XhEhWw@mail.gmail.com>
+	<79c4d534ad20452c992d8ace138e4384@ti.com>
+	<CAMuHMdXRGxnGpVHiB+Zvxq+G4K-BL8JsJGbG+7CNtJiqGwHOsQ@mail.gmail.com>
+X-Yow: I am covered with pure vegetable oil and I am writing a best seller!
+Date: Tue, 03 Oct 2023 18:23:37 +0200
+Message-ID: <87v8bn3cae.fsf@igel.home>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: YR2ZMFJEMCGTMPXEQSY45UTAT3VAMQKC
-X-Message-ID-Hash: YR2ZMFJEMCGTMPXEQSY45UTAT3VAMQKC
-X-MailFrom: johan+linaro@kernel.org
-X-Mailman-Rule-Hits: nonmember-moderation
+Content-Type: text/plain
+Message-ID-Hash: 5NSWRR7VX63RSRXBWWH2ECWXATD76QYK
+X-Message-ID-Hash: 5NSWRR7VX63RSRXBWWH2ECWXATD76QYK
+X-MailFrom: whitebox@nefkom.net
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YR2ZMFJEMCGTMPXEQSY45UTAT3VAMQKC/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5NSWRR7VX63RSRXBWWH2ECWXATD76QYK/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -101,45 +110,15 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Make sure to deregister the component when the driver is being unbound
-and before the underlying device-managed resources are freed.
+On Okt 03 2023, Geert Uytterhoeven wrote:
 
-Fixes: 16572522aece ("ASoC: codecs: wcd938x-sdw: add SoundWire driver")
-Cc: stable@vger.kernel.org      # 5.14
-Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
----
- sound/soc/codecs/wcd938x-sdw.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+> Looks like the compiler is sharing the jump table at L95 for two
+> different switch() statements, but the PC-relative offset to refer to
+> the table is too large when using -m68000.  It works fine with -m68020.
 
-diff --git a/sound/soc/codecs/wcd938x-sdw.c b/sound/soc/codecs/wcd938x-sdw.c
-index 6951120057e5..1baea04480e2 100644
---- a/sound/soc/codecs/wcd938x-sdw.c
-+++ b/sound/soc/codecs/wcd938x-sdw.c
-@@ -1281,6 +1281,15 @@ static int wcd9380_probe(struct sdw_slave *pdev,
- 	return component_add(dev, &wcd938x_sdw_component_ops);
- }
- 
-+static int wcd9380_remove(struct sdw_slave *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+
-+	component_del(dev, &wcd938x_sdw_component_ops);
-+
-+	return 0;
-+}
-+
- static const struct sdw_device_id wcd9380_slave_id[] = {
- 	SDW_SLAVE_ENTRY(0x0217, 0x10d, 0),
- 	{},
-@@ -1320,6 +1329,7 @@ static const struct dev_pm_ops wcd938x_sdw_pm_ops = {
- 
- static struct sdw_driver wcd9380_codec_driver = {
- 	.probe	= wcd9380_probe,
-+	.remove	= wcd9380_remove,
- 	.ops = &wcd9380_slave_ops,
- 	.id_table = wcd9380_slave_id,
- 	.driver = {
+https://gcc.gnu.org/bugzilla/show_bug.cgi?id=104028
+
 -- 
-2.41.0
-
+Andreas Schwab, schwab@linux-m68k.org
+GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
+"And now for something completely different."
