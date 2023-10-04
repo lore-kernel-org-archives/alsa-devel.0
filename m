@@ -4,79 +4,144 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 56CB2E7C4F5
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Oct 2023 08:01:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0C649E7C4F4
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Oct 2023 08:01:22 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7263AEE4;
-	Thu,  5 Oct 2023 10:00:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7263AEE4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4E163FF9;
+	Thu,  5 Oct 2023 10:00:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4E163FF9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1696492862;
-	bh=WJocYPAyB1bcQhLubf27KQJMUy72Fq/6gayLT2+nBPk=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1696492880;
+	bh=9dUbRgklvda5FVHHBcOm36dosBKGFjjV2QFj/p5Kqbo=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=T69TLji5knuHi939u4nl4Cbu7nrO/L9i2jROgprGmwkGWn1tgriNdpH6wUn97o0yz
-	 oDfneUgPmAl0EVWOcxt8PBoJyydyWxZfJNu6sVJMDbDtuPVZxe+mdYNTcFLkYwt9po
-	 seahLCmuL3qmhgjRy7ib5xBzzJ8TxisJON3N7xpA=
+	b=OKO+MUIFJsHO5hQrbCtjQnhDnURMm+rvIvLbBv1Kibkdm1capWchjC8of5O9JxZiI
+	 f3IXdNl7EOJoFpaQRLy1zH61oEGuXKiHcye45figjn1LgROFntw/+dskgCGDh/NQ1Q
+	 MZHjKAuKLm23Rw9n/PoDTyoImIFoCN9pDRCbmeWk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 632C6F80589; Thu,  5 Oct 2023 09:54:04 +0200 (CEST)
+	id D0EBEF805B2; Thu,  5 Oct 2023 09:54:05 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id AF9DEF80578;
-	Thu,  5 Oct 2023 09:54:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 60A80F805A9;
+	Thu,  5 Oct 2023 09:54:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0B6A0F80310; Wed,  4 Oct 2023 16:56:49 +0200 (CEST)
-Received: from mblankhorst.nl (lankhorst.se
- [IPv6:2a02:2308:0:7ec:e79c:4e97:b6c4:f0ae])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	id 03A99F8047D; Wed,  4 Oct 2023 18:18:00 +0200 (CEST)
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com
+ [IPv6:2a00:1450:4864:20::52b])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 2996EF80567;
-	Wed,  4 Oct 2023 16:56:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2996EF80567
-From: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-To: alsa-devel@alsa-project.org
-Cc: Maarten Lankhorst <dev@lankhorst.se>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	Cezary Rojewski <cezary.rojewski@intel.com>,
-	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-	Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-	Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-	Bard Liao <yung-chuan.liao@linux.intel.com>,
-	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-	Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-	Mark Brown <broonie@kernel.org>,
-	Daniel Baluta <daniel.baluta@nxp.com>,
-	linux-kernel@vger.kernel.org,
-	sound-open-firmware@alsa-project.org,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Subject: [PATCH v6 07/12] ALSA: hda: i915: Allow xe as match for
- i915_component_master_match
-Date: Wed,  4 Oct 2023 16:55:35 +0200
-Message-Id: <20231004145540.32321-8-maarten.lankhorst@linux.intel.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20231004145540.32321-1-maarten.lankhorst@linux.intel.com>
-References: <20231004145540.32321-1-maarten.lankhorst@linux.intel.com>
+	by alsa1.perex.cz (Postfix) with ESMTPS id EEFA3F80130
+	for <alsa-devel@alsa-project.org>; Wed,  4 Oct 2023 18:17:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EEFA3F80130
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=tuxon.dev header.i=@tuxon.dev header.a=rsa-sha256
+ header.s=google header.b=e9UENVZQ
+Received: by mail-ed1-x52b.google.com with SMTP id
+ 4fb4d7f45d1cf-5363227cc80so3967987a12.3
+        for <alsa-devel@alsa-project.org>;
+ Wed, 04 Oct 2023 09:17:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tuxon.dev; s=google; t=1696436273; x=1697041073;
+ darn=alsa-project.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=IboRMXWE799EUNN9JDL2Tv/P+eapXOiA7kGcWk1PU9o=;
+        b=e9UENVZQOr1elonktcL4qwRTa4Lmq1lJx3uYTGTPs+QB30QGwpx0RABKghIM7SiaLR
+         0rNGvsEX5zDJ6r2e2MXmbVUkHtdq0M8ljmsF4GTta6KtCUxbO7gGx2NWeUQyaMSXPinH
+         fKeUrby+FVjd3L83oBUObsW/d4S5CZiwDMsoQMSD0H7co8LbKUxXRBtk+B5JxsiIX31t
+         YL9tI6vt97PNNRLQ9qyi5LUGa+KLiETg/G7NCOmrc6coq/3RmrDrukxMSTYk8pDpFWTQ
+         FiWy8Xmypx39Utje05AxBFJzUa4YRLm6AaXaLvz0HtntG07OK+MFzhfMRrJXv8074kK+
+         bjwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696436273; x=1697041073;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=IboRMXWE799EUNN9JDL2Tv/P+eapXOiA7kGcWk1PU9o=;
+        b=UbJtUlvXRTyQkjJWlEmtxy4+Xoxnqd7YAW5KPOi4E4LTZFJquNGJ9v1Z7TgX1khZZC
+         87r0tnaDqvW62PLFnKKZwOxPb61YNc6GKclPjFBj+Zvals9I6cKykBAEo5D0pLmmswJy
+         G0J8gspGJquNZJa7sBuf45oVEu7VvToHGadui67hPSA5e6fpCkOIzsyXjB/qoKGEgbDZ
+         rdsw17mWsNb2zTja/7EXhq6MdlFepD+6ZQzLhGyFTp6uEEybju2HLpokLIN7G1hREN20
+         ILhOSISFDwp5qaJmM5USCCZCx0K5hrLLPAPNwjFJWBL/q8sk2Pj4wgvstahMAlXi4vYO
+         DIVw==
+X-Gm-Message-State: AOJu0YwkgD76e6Pv0H9xzhOWV8aG8d+uIIeGqSMg+IpJdefs+Nbbf9Lz
+	KpzUvNmbx0zw9mnQw47I4/laYg==
+X-Google-Smtp-Source: 
+ AGHT+IGxOeqnR4/4kozPd8vGztjp/+DmdrVb7jcdZSkFUd46at+lIJgvhTUzH7MccQN+WduUqYwZjw==
+X-Received: by 2002:aa7:c508:0:b0:523:100b:462b with SMTP id
+ o8-20020aa7c508000000b00523100b462bmr2617775edq.5.1696436272722;
+        Wed, 04 Oct 2023 09:17:52 -0700 (PDT)
+Received: from [192.168.32.2] ([82.78.167.24])
+        by smtp.gmail.com with ESMTPSA id
+ r17-20020aa7d151000000b005346bebc2a5sm76257edo.86.2023.10.04.09.17.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Oct 2023 09:17:52 -0700 (PDT)
+Message-ID: <72fb244b-e4b8-4eb2-cb20-1d3d37f813ab@tuxon.dev>
+Date: Wed, 4 Oct 2023 19:17:48 +0300
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-MailFrom: mlankhorst@mblankhorst.nl
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v2 1/5] ASoC: Explicitly include correct DT includes
+Content-Language: en-US
+To: Rob Herring <robh@kernel.org>, Mark Brown <broonie@kernel.org>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ Peter Rosin <peda@axentia.se>, Lars-Peter Clausen <lars@metafoo.de>,
+ nuno.sa@analog.com, James Schulman <james.schulman@cirrus.com>,
+ David Rhodes <david.rhodes@cirrus.com>,
+ Richard Fitzgerald <rf@opensource.cirrus.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Shenghao Ding <shenghao-ding@ti.com>, Kevin Lu <kevin-lu@ti.com>,
+ Baojun Xu <baojun.xu@ti.com>, Oder Chiou <oder_chiou@realtek.com>,
+ Fabio Estevam <festevam@gmail.com>, Kiseok Jo <kiseok.jo@irondevice.com>,
+ Kevin Cernekee <cernekee@chromium.org>,
+ Shengjiu Wang <shengjiu.wang@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>,
+ Nicolin Chen <nicoleotsuka@gmail.com>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Banajit Goswami <bgoswami@quicinc.com>,
+ Nicolas Frattaroli <frattaroli.nicolas@gmail.com>,
+ Sylwester Nawrocki <s.nawrocki@samsung.com>,
+ Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+ Jarkko Nikula <jarkko.nikula@bitmer.com>,
+ Cezary Rojewski <cezary.rojewski@intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ Olivier Moysan <olivier.moysan@foss.st.com>,
+ Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org, Jernej Skrabec <jernej.skrabec@gmail.com>,
+ Charles Keepax <ckeepax@opensource.cirrus.com>
+References: <20231004-dt-asoc-header-cleanups-v2-0-e77765080cbc@kernel.org>
+ <20231004-dt-asoc-header-cleanups-v2-1-e77765080cbc@kernel.org>
+From: claudiu beznea <claudiu.beznea@tuxon.dev>
+In-Reply-To: <20231004-dt-asoc-header-cleanups-v2-1-e77765080cbc@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-MailFrom: claudiu.beznea@tuxon.dev
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: 4KFMXHPMJJVOWYU3VTOK6X67VA4VV4O4
-X-Message-ID-Hash: 4KFMXHPMJJVOWYU3VTOK6X67VA4VV4O4
-X-Mailman-Approved-At: Thu, 05 Oct 2023 07:53:59 +0000
+Message-ID-Hash: LJXDONBUU7XMAYAAXGUFEPNYLHH5LBNC
+X-Message-ID-Hash: LJXDONBUU7XMAYAAXGUFEPNYLHH5LBNC
+X-Mailman-Approved-At: Thu, 05 Oct 2023 07:54:00 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4KFMXHPMJJVOWYU3VTOK6X67VA4VV4O4/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LJXDONBUU7XMAYAAXGUFEPNYLHH5LBNC/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -85,36 +150,25 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Xe is a new driver for intel GPU's that shares the sound related code
-with i915.
 
-The modprobe mechanism is being replaced by the -EPROBE_DEFER mechanism,
-so we don't need to add a modprobe xe call. Adding this would have
-required a telepathy module to correctly guess whether to load i915 or
-xe.
 
-Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Reviewed-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- sound/hda/hdac_i915.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+On 04.10.2023 18:58, Rob Herring wrote:
+> The DT of_device.h and of_platform.h date back to the separate
+> of_platform_bus_type before it was merged into the regular platform bus.
+> As part of that merge prepping Arm DT support 13 years ago, they
+> "temporarily" include each other. They also include platform_device.h
+> and of.h. As a result, there's a pretty much random mix of those include
+> files used throughout the tree. In order to detangle these headers and
+> replace the implicit includes with struct declarations, users need to
+> explicitly include the correct includes.
+> 
+> Acked-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+> Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+> Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+>  sound/soc/atmel/atmel_wm8904.c                             | 1 -
+>  sound/soc/atmel/mchp-i2s-mcc.c                             | 2 +-
+>  sound/soc/atmel/tse850-pcm5142.c                           | 1 -
 
-diff --git a/sound/hda/hdac_i915.c b/sound/hda/hdac_i915.c
-index ffa35d7a367c..0765e5350e7b 100644
---- a/sound/hda/hdac_i915.c
-+++ b/sound/hda/hdac_i915.c
-@@ -115,7 +115,8 @@ static int i915_component_master_match(struct device *dev, int subcomponent,
- 	hdac_pci = to_pci_dev(bus->dev);
- 	i915_pci = to_pci_dev(dev);
- 
--	if (!strcmp(dev->driver->name, "i915") &&
-+	if ((!strcmp(dev->driver->name, "i915") ||
-+		 !strcmp(dev->driver->name, "xe")) &&
- 	    subcomponent == I915_COMPONENT_AUDIO &&
- 	    connectivity_check(i915_pci, hdac_pci))
- 		return 1;
--- 
-2.40.1
-
+Reviewed-by: Claudiu Beznea <claudiu.beznea@tuxon.dev> # for at91
