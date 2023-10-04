@@ -4,38 +4,38 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BD0B6E7C4F4
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Oct 2023 08:00:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B354E7C4F5
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Oct 2023 08:00:44 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A4E6EF73;
-	Thu,  5 Oct 2023 09:59:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A4E6EF73
+	by alsa0.perex.cz (Postfix) with ESMTPS id CC39CEA3;
+	Thu,  5 Oct 2023 09:59:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CC39CEA3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1696492833;
-	bh=c0K5PfwXvj5i4OX36zEOqWVSwq7ioJUKo95xlX50mCY=;
+	s=default; t=1696492842;
+	bh=K8qFC+A34oEcf8vUCdFm04BBoUs9Bf/zW4Kx81IocnU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=DuiVnoPv9cXvmasXykYT4Z9YgbHpnS/s2ZlcChSoB/YKKamSxxZWPIaxj48r3sN1S
-	 /shzkbraSYXroDU9GggLT3Ugl63okYyQKAM1JCSQBIwpnN6kMkKgIbItkseK1zi+wg
-	 J0DEjLwmHmLMe1MTXeEK37XOeX5IZnSUjmqEDD54=
+	b=FBGtIwWa7CfFp2RCHNRDsE/wM5M0wZFVjwi9iMhgrcJEx5r7QV7wBN3jjOMZsyKA/
+	 GFu15eaYgEpYPO8gHowi+84nW316ns/ZmD9KwP38HZ+1NXN1ZDbzok/Xyp0ZeZ+8mP
+	 e1X/t+YyIeWqWGjAWCt8ZDsoSBMcddshtccv9fAg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BAA51F806BB; Thu,  5 Oct 2023 09:53:23 +0200 (CEST)
+	id 11B20F806DC; Thu,  5 Oct 2023 09:53:25 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 38902F806D1;
-	Thu,  5 Oct 2023 09:53:23 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B5F9FF806D7;
+	Thu,  5 Oct 2023 09:53:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 617FBF80310; Wed,  4 Oct 2023 16:56:47 +0200 (CEST)
+	id 7900DF80310; Wed,  4 Oct 2023 16:56:48 +0200 (CEST)
 Received: from mblankhorst.nl (lankhorst.se
  [IPv6:2a02:2308:0:7ec:e79c:4e97:b6c4:f0ae])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 34E3FF80549;
-	Wed,  4 Oct 2023 16:56:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 34E3FF80549
+	by alsa1.perex.cz (Postfix) with ESMTPS id 7A775F8047D;
+	Wed,  4 Oct 2023 16:56:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7A775F8047D
 From: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
 To: alsa-devel@alsa-project.org
 Cc: Maarten Lankhorst <dev@lankhorst.se>,
@@ -53,9 +53,9 @@ Cc: Maarten Lankhorst <dev@lankhorst.se>,
 	linux-kernel@vger.kernel.org,
 	sound-open-firmware@alsa-project.org,
 	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Subject: [PATCH v6 04/12] ALSA: hda: Intel: Fix error handling in azx_probe()
-Date: Wed,  4 Oct 2023 16:55:32 +0200
-Message-Id: <20231004145540.32321-5-maarten.lankhorst@linux.intel.com>
+Subject: [PATCH v6 03/12] ASoC: SOF: Intel: hda: start splitting the probe
+Date: Wed,  4 Oct 2023 16:55:31 +0200
+Message-Id: <20231004145540.32321-4-maarten.lankhorst@linux.intel.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231004145540.32321-1-maarten.lankhorst@linux.intel.com>
 References: <20231004145540.32321-1-maarten.lankhorst@linux.intel.com>
@@ -67,15 +67,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: XXVBXBRORDSGMQPNDUKC2AFT5PSDRE4P
-X-Message-ID-Hash: XXVBXBRORDSGMQPNDUKC2AFT5PSDRE4P
-X-Mailman-Approved-At: Thu, 05 Oct 2023 07:53:12 +0000
+Message-ID-Hash: TFBETMQHAYF7PZM2EMHDCZTBUXAL5MTC
+X-Message-ID-Hash: TFBETMQHAYF7PZM2EMHDCZTBUXAL5MTC
+X-Mailman-Approved-At: Thu, 05 Oct 2023 07:53:13 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XXVBXBRORDSGMQPNDUKC2AFT5PSDRE4P/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TFBETMQHAYF7PZM2EMHDCZTBUXAL5MTC/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -84,28 +84,93 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add missing pci_set_drv to NULL call on error.
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
+This patch moves the initial parts of the probe to the probe_early()
+callback, which provides a much faster decision on whether the SOF
+driver shall deal with a specific platform or yield to other Intel
+drivers.
+
+This is a limited functionality change, the bigger change is to move
+the i915/Xe initialization to the probe_early().
+
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Acked-by: Mark Brown <broonie@kernel.org>
 ---
- sound/pci/hda/hda_intel.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/sof/intel/hda-common-ops.c |  1 +
+ sound/soc/sof/intel/hda.c            | 16 +++++++++++++---
+ sound/soc/sof/intel/hda.h            |  1 +
+ 3 files changed, 15 insertions(+), 3 deletions(-)
 
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index ca765ac4765f..b4ac0d43c09b 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -2176,6 +2176,7 @@ static int azx_probe(struct pci_dev *pci,
- 	return 0;
+diff --git a/sound/soc/sof/intel/hda-common-ops.c b/sound/soc/sof/intel/hda-common-ops.c
+index 8e1cd0babd32..1cc18fb2b75b 100644
+--- a/sound/soc/sof/intel/hda-common-ops.c
++++ b/sound/soc/sof/intel/hda-common-ops.c
+@@ -16,6 +16,7 @@
  
- out_free:
-+	pci_set_drvdata(pci, NULL);
- 	snd_card_free(card);
- 	return err;
+ struct snd_sof_dsp_ops sof_hda_common_ops = {
+ 	/* probe/remove/shutdown */
++	.probe_early	= hda_dsp_probe_early,
+ 	.probe		= hda_dsp_probe,
+ 	.remove		= hda_dsp_remove,
+ 
+diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
+index 15e6779efaa3..86a2571488bc 100644
+--- a/sound/soc/sof/intel/hda.c
++++ b/sound/soc/sof/intel/hda.c
+@@ -1118,11 +1118,10 @@ static irqreturn_t hda_dsp_interrupt_thread(int irq, void *context)
+ 	return IRQ_HANDLED;
  }
+ 
+-int hda_dsp_probe(struct snd_sof_dev *sdev)
++int hda_dsp_probe_early(struct snd_sof_dev *sdev)
+ {
+ 	struct pci_dev *pci = to_pci_dev(sdev->dev);
+ 	struct sof_intel_hda_dev *hdev;
+-	struct hdac_bus *bus;
+ 	const struct sof_intel_dsp_desc *chip;
+ 	int ret = 0;
+ 
+@@ -1162,6 +1161,17 @@ int hda_dsp_probe(struct snd_sof_dev *sdev)
+ 	sdev->pdata->hw_pdata = hdev;
+ 	hdev->desc = chip;
+ 
++err:
++	return ret;
++}
++
++int hda_dsp_probe(struct snd_sof_dev *sdev)
++{
++	struct pci_dev *pci = to_pci_dev(sdev->dev);
++	struct sof_intel_hda_dev *hdev = sdev->pdata->hw_pdata;
++	struct hdac_bus *bus;
++	int ret = 0;
++
+ 	hdev->dmic_dev = platform_device_register_data(sdev->dev, "dmic-codec",
+ 						       PLATFORM_DEVID_NONE,
+ 						       NULL, 0);
+@@ -1299,7 +1309,7 @@ int hda_dsp_probe(struct snd_sof_dev *sdev)
+ 	platform_device_unregister(hdev->dmic_dev);
+ 	iounmap(bus->remap_addr);
+ 	hda_codec_i915_exit(sdev);
+-err:
++
+ 	return ret;
+ }
+ 
+diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
+index 5c517ec57d4a..e13cdc933ca6 100644
+--- a/sound/soc/sof/intel/hda.h
++++ b/sound/soc/sof/intel/hda.h
+@@ -573,6 +573,7 @@ struct sof_intel_hda_stream {
+ /*
+  * DSP Core services.
+  */
++int hda_dsp_probe_early(struct snd_sof_dev *sdev);
+ int hda_dsp_probe(struct snd_sof_dev *sdev);
+ int hda_dsp_remove(struct snd_sof_dev *sdev);
+ int hda_dsp_core_power_up(struct snd_sof_dev *sdev, unsigned int core_mask);
 -- 
 2.40.1
 
