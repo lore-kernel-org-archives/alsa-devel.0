@@ -4,70 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 492C0E7C4F5
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Oct 2023 07:56:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 97CE3E7C4F4
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Oct 2023 07:56:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 93CEBE10;
-	Thu,  5 Oct 2023 09:55:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 93CEBE10
+	by alsa0.perex.cz (Postfix) with ESMTPS id B0D2D826;
+	Thu,  5 Oct 2023 09:55:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B0D2D826
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1696492566;
-	bh=Rsw+rLK4uzHM4l/7f5QgPzu4ERN2qLxiZjFE2tbUu8U=;
+	s=default; t=1696492575;
+	bh=UwmYmNSJ5N9bCYGOhkqk5VQCOP5kX+Bk4CRe0KBh2OU=;
 	h=Date:From:To:CC:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=CMx0TVMwoaZ6UKoP/R7vQ7ff6GE9bx96gsHQbbKAZ9x0pwAQvgtAhGaZ8haFSXyP6
-	 3E9fUsl3v2juiQX76xS0yIWqLfFWG8sd7mv3G0Ff81rvhQP0oJ1GU9wYQf6WeMLwlI
-	 ZEg8fWWH1K5K2DvqoqjYTZDxxBZp5ZgjkbIwZJXY=
+	b=MWhUhKl1ETjWwqz1qPt4rNpgPszJs9xQwZWCMQsxE7kDVKyTse62KXwnTQBsi/ccz
+	 S+8IshG3tL28okG5oRVySgmGgi+7HAsvEVmhhBuFZk6C3q9bUzzJwSUywUJ/VGN0ri
+	 PlNJ/5jacRnTGH+lbexJzkIySgce6c0Pq+5wNp/E=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D1C51F805B0; Thu,  5 Oct 2023 09:52:42 +0200 (CEST)
+	id 6ED22F805E1; Thu,  5 Oct 2023 09:52:45 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3253DF805C0;
-	Thu,  5 Oct 2023 09:52:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2BF77F805DA;
+	Thu,  5 Oct 2023 09:52:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0C014F8047D; Wed,  4 Oct 2023 10:28:50 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
+	id D7207F8047D; Wed,  4 Oct 2023 10:33:47 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C5127F800C1
-	for <alsa-devel@alsa-project.org>; Wed,  4 Oct 2023 10:28:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C5127F800C1
+	by alsa1.perex.cz (Postfix) with ESMTPS id 40D6AF800C1
+	for <alsa-devel@alsa-project.org>; Wed,  4 Oct 2023 10:33:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 40D6AF800C1
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=FkPSHjHT
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-	by mx0b-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id
- 3948ScCJ021667;
-	Wed, 4 Oct 2023 03:28:38 -0500
+ header.s=PODMain02222019 header.b=MKm1hEnL
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+	by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id
+ 39461LK5031802;
+	Wed, 4 Oct 2023 03:33:35 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
 	date:from:to:cc:subject:message-id:references:mime-version
-	:content-type:in-reply-to; s=PODMain02222019; bh=cx4j1u2cB/RSNNO
-	JLWI4IUS4jJGgAFRWe5mxjA6ot+c=; b=FkPSHjHTRZJ7+JgSxFK8tXOclrwQk6D
-	erGe55nCKmcgwS4pjnCa7kx1t0KIUQRtp6DiLVx44+462zqwJ8IHQxXw3IZS3qCK
-	dgoVBaX0bfhZaQm0BRHVtj0P6703R28AQy9Moikhz0h1Hk5FfaFO+6kD95DFY1n4
-	6OV+Nm6qkRSYAlc/A3eMbDBImbyhazxV2Ob1kCGGe1jsAo342KW2wxFmjc9kfXI5
-	uZVCADBJlHGRF/5hjD2uAdYyKdiCYm2rPazpPjo5nz/x5wiAxgTj0cBQUhiTkISf
-	HLO6AcCL2/hwACfFWus/kRMLo9mY4pCvdBfYY9IzNGhz9DH3nUAvmNQ==
+	:content-type:in-reply-to; s=PODMain02222019; bh=C03Kz69TBbxck4h
+	yYh7pZ/332ziUW1qlTgjfP8Qf2Tg=; b=MKm1hEnLBCfTn8s5VJjtjUgmfX/JTvm
+	+OrRe1LWGGwQbaoNRf2GWfGYSjE6o45VTn1nyuudObMD4lODrlfjwrOlZtVOx6Qh
+	37dHacwtaXA6jLq+M2WNBVm7MVHRQldFk2ZTFgTKQLNtyASpRXzz9EnpGq5mzSc1
+	mIMYUabBH9Wst4ROoD5x0QVA1i/N1k5SpI3r8ACY7STWH5NcYwovm835M+4Z/TW8
+	KlIAE8jw8j9AiyEpmE+APRK5qiC22T5sHotstaVVs1Lm9quG99MahE/rVrK66KPe
+	3huRn/gK94po0HHXw77W4HccUrAoZSUK4itBjTrTuVLYFTYwHrdWGyw==
 Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3teg3k55km-1
+	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3th2dt85sm-2
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 04 Oct 2023 03:28:38 -0500 (CDT)
+	Wed, 04 Oct 2023 03:33:35 -0500 (CDT)
 Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Wed, 4 Oct
- 2023 09:28:36 +0100
+ 2023 09:33:32 +0100
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.37 via Frontend
- Transport; Wed, 4 Oct 2023 09:28:36 +0100
+ Transport; Wed, 4 Oct 2023 09:33:32 +0100
 Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com
  [198.61.86.93])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 6973611AA;
-	Wed,  4 Oct 2023 08:28:36 +0000 (UTC)
-Date: Wed, 4 Oct 2023 08:28:36 +0000
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 4BC2AB06;
+	Wed,  4 Oct 2023 08:33:32 +0000 (UTC)
+Date: Wed, 4 Oct 2023 08:33:32 +0000
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
 To: Rob Herring <robh@kernel.org>
 CC: Claudiu Beznea <claudiu.beznea@tuxon.dev>,
@@ -148,17 +148,17 @@ CC: Claudiu Beznea <claudiu.beznea@tuxon.dev>,
         Alexandre Torgue <alexandre.torgue@foss.st.com>,
         <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
         <patches@opensource.cirrus.com>, <linuxppc-dev@lists.ozlabs.org>
-Subject: Re: [PATCH 1/5] ASoC: Explicitly include correct DT includes
-Message-ID: <20231004082836.GP103419@ediswmail.ad.cirrus.com>
+Subject: Re: [PATCH 2/5] ASoC: Drop unnecessary of_match_device() calls
+Message-ID: <20231004083332.GQ103419@ediswmail.ad.cirrus.com>
 References: <20231003-dt-asoc-header-cleanups-v1-0-308666806378@kernel.org>
- <20231003-dt-asoc-header-cleanups-v1-1-308666806378@kernel.org>
+ <20231003-dt-asoc-header-cleanups-v1-2-308666806378@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20231003-dt-asoc-header-cleanups-v1-1-308666806378@kernel.org>
+In-Reply-To: <20231003-dt-asoc-header-cleanups-v1-2-308666806378@kernel.org>
 User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-GUID: jGlpUZphMoUFhGT30mAikeonWPxMmR74
-X-Proofpoint-ORIG-GUID: jGlpUZphMoUFhGT30mAikeonWPxMmR74
+X-Proofpoint-ORIG-GUID: cvmrx7nPMYCDUdYHAhx7anCT9XLT2sn8
+X-Proofpoint-GUID: cvmrx7nPMYCDUdYHAhx7anCT9XLT2sn8
 X-Proofpoint-Spam-Reason: safe
 X-MailFrom: prvs=5641f542b1=ckeepax@opensource.cirrus.com
 X-Mailman-Rule-Hits: max-recipients
@@ -168,15 +168,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-size; news-moderation; no-subject; digests;
  suspicious-header
-Message-ID-Hash: XQKLIKTNVPM4KE6KTG2FMP7JXUZYGRF3
-X-Message-ID-Hash: XQKLIKTNVPM4KE6KTG2FMP7JXUZYGRF3
+Message-ID-Hash: BZMLH4VL3QQHDXPRHADE567WHAOLOLDC
+X-Message-ID-Hash: BZMLH4VL3QQHDXPRHADE567WHAOLOLDC
 X-Mailman-Approved-At: Thu, 05 Oct 2023 07:52:34 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XQKLIKTNVPM4KE6KTG2FMP7JXUZYGRF3/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BZMLH4VL3QQHDXPRHADE567WHAOLOLDC/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -185,20 +185,15 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, Oct 03, 2023 at 11:43:07AM -0500, Rob Herring wrote:
-> The DT of_device.h and of_platform.h date back to the separate
-> of_platform_bus_type before it was merged into the regular platform bus.
-> As part of that merge prepping Arm DT support 13 years ago, they
-> "temporarily" include each other. They also include platform_device.h
-> and of.h. As a result, there's a pretty much random mix of those include
-> files used throughout the tree. In order to detangle these headers and
-> replace the implicit includes with struct declarations, users need to
-> explicitly include the correct includes.
+On Tue, Oct 03, 2023 at 11:43:08AM -0500, Rob Herring wrote:
+> If probe is reached, we've already matched the device and in the case of
+> DT matching, the struct device_node pointer will be set. Therefore, there
+> is no need to call of_match_device() in probe.
 > 
 > Signed-off-by: Rob Herring <robh@kernel.org>
 > ---
 
-For the Wolfson/Cirrus bits:
+For the cirrus bits:
 
 Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 
