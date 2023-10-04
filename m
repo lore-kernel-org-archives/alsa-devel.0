@@ -4,58 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 11C2DE7C4D7
-	for <alsa-devel@archiver.kernel.org>; Wed,  4 Oct 2023 15:59:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 92DC3E7C4D9
+	for <alsa-devel@archiver.kernel.org>; Wed,  4 Oct 2023 16:00:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8C664868;
-	Wed,  4 Oct 2023 17:59:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8C664868
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9E19CE0E;
+	Wed,  4 Oct 2023 17:59:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9E19CE0E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1696435196;
-	bh=ylboaAOP5iTX8XEwtoUSV0rW1tp/b4lxY/XiePQ51Ds=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=XR/5LK34DNu+uK16wOSMo6eZI54VqNK+GedY8AkUU9uoFeeeKkUWRCpXiPJpSOeJn
-	 Ep5GCh4TSqh6LYaMOjmRysoXTnZOmUSSMjYqcoLvSEHepB8sDjAmC9WL6e402NOP8/
-	 rE9UQEgGTh1FtGfvq53WXf/57U2tILvqQzoddjJM=
+	s=default; t=1696435219;
+	bh=2U2BCkPOgUTh6aGnzeLvyBJcHFywZosekocMB8Uj2zs=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=gjwgAD4l1lYo/JYoWltyds5SEW5M+kwlV51ez+zVi8LdZkgHh2z7pfuLAMI8Zmx70
+	 1N8PhkGCqllXpygrBwuQFGy27NKI2hV32/7EBjRmPICZssakMCVKZIleH3s8mSX5jz
+	 +B3a8fSMiv/uASLl44izwR3BD91Dfw7o2jH2Xim8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9955FF80551; Wed,  4 Oct 2023 17:58:38 +0200 (CEST)
+	id B9B54F80568; Wed,  4 Oct 2023 17:58:40 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D1435F80551;
-	Wed,  4 Oct 2023 17:58:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B9D70F80557;
+	Wed,  4 Oct 2023 17:58:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8F642F80551; Wed,  4 Oct 2023 17:58:32 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+	id 9DFA7F80166; Wed,  4 Oct 2023 17:58:35 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7E4ACF80130
-	for <alsa-devel@alsa-project.org>; Wed,  4 Oct 2023 17:58:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7E4ACF80130
+	by alsa1.perex.cz (Postfix) with ESMTPS id F403DF80166
+	for <alsa-devel@alsa-project.org>; Wed,  4 Oct 2023 17:58:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F403DF80166
 Authentication-Results: alsa1.perex.cz;
 	dkim=fail reason="signature verification failed" (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=jitjZmoM
+ header.s=k20201202 header.b=Q3saF6ms
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 634FA615B3;
-	Wed,  4 Oct 2023 15:58:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A85BC433C7;
-	Wed,  4 Oct 2023 15:58:10 +0000 (UTC)
+	by ams.source.kernel.org (Postfix) with ESMTP id A3F17B81EDD;
+	Wed,  4 Oct 2023 15:58:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2BF73C433C8;
+	Wed,  4 Oct 2023 15:58:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1696435094;
-	bh=ylboaAOP5iTX8XEwtoUSV0rW1tp/b4lxY/XiePQ51Ds=;
-	h=From:To:Cc:Subject:Date:From;
-	b=jitjZmoMgvgnilERaHoq4cEGwSalI4t0aRA2S8aEAug+sKCKNMdCo6KdGVQ5+2KYs
-	 7bU1MPbmfBC6L7rgcUwUb2LnIOcjwy9gXyM2RO9Fz9yKfNGQ6Z0i4BOiA7oANgtbJr
-	 NfZTmPtzbbaEKH/Uuo4S5p6Sh7Pe7zJcRP8+1KEL7I2L2F4x4VqfJMlVtBJkg7EtIb
-	 FKIrkt90u+3Gjip7Lft/bp6MQ++mUDP9xR0ADtNl7K72EMIJ+jY2smBt/8M+a9sv0O
-	 tdRzTGFTw2BFxdTTdV+xosMbtaQqLVwsa2D1YiXZoBTzpYuKiNdmBcbv5hBtBaBRrf
-	 uCsWHLtj3Ca2w==
-Received: (nullmailer pid 3222232 invoked by uid 1000);
+	s=k20201202; t=1696435100;
+	bh=2U2BCkPOgUTh6aGnzeLvyBJcHFywZosekocMB8Uj2zs=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=Q3saF6msnn3X/eguqT5pPEIrhAEM46UQcwHA/rFDHm7H2EFzblIRdI5n0B6mjXqzz
+	 3YjysyPXf7/Qgr8mTcV3z3GGhjVHdj7cv6dPoefS1al9EiOjEr7T11n6KrDYrDmSl6
+	 OWJJbQS8r+TvqADnnSl/25eij2qZ92UePLoVD10uVk3Y2Ggf1xBq8N2DLIaaGbtwjg
+	 7zRrN/YAyCG0NgXMUIJQDlJVdGX8RSOThH2xRm9e5IOZn2z7ZdlfMI5zcc6ChQOBUt
+	 1pGsmn2T4JvvPVgyB6XYI4u4/axHslMh2N6XngYCH7XX+/81Cl3WEDfT+pKJnoMBXx
+	 jsdL7Ur3dRr5w==
+Received: (nullmailer pid 3222237 invoked by uid 1000);
 	Wed, 04 Oct 2023 15:58:09 -0000
 From: Rob Herring <robh@kernel.org>
 To: Mark Brown <broonie@kernel.org>,
@@ -91,16 +91,18 @@ To: Mark Brown <broonie@kernel.org>,
 Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
  linuxppc-dev@lists.ozlabs.org, Jernej Skrabec <jernej.skrabec@gmail.com>,
  Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: [PATCH v2 0/5] ASoC: DT matching and header cleanups
-Date: Wed,  4 Oct 2023 10:58:04 -0500
-Message-Id: <20231004-dt-asoc-header-cleanups-v2-0-e77765080cbc@kernel.org>
+Subject: [PATCH v2 2/5] ASoC: Drop unnecessary of_match_device() calls
+Date: Wed,  4 Oct 2023 10:58:06 -0500
+Message-Id: <20231004-dt-asoc-header-cleanups-v2-2-e77765080cbc@kernel.org>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20231004-dt-asoc-header-cleanups-v2-0-e77765080cbc@kernel.org>
+References: <20231004-dt-asoc-header-cleanups-v2-0-e77765080cbc@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 X-Mailer: b4 0.13-dev
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: ZZZLTZDXNROTEYAC3SU4T72ROW34J4KE
-X-Message-ID-Hash: ZZZLTZDXNROTEYAC3SU4T72ROW34J4KE
+Message-ID-Hash: HJV36N4FIR3CJW2JZR2M7EUAOTCOAVTZ
+X-Message-ID-Hash: HJV36N4FIR3CJW2JZR2M7EUAOTCOAVTZ
 X-MailFrom: SRS0=zsuR=FS=robh_at_kernel.org=rob@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -113,7 +115,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZZZLTZDXNROTEYAC3SU4T72ROW34J4KE/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HJV36N4FIR3CJW2JZR2M7EUAOTCOAVTZ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -122,198 +124,116 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-(trimmed the recipient list due to bounces on v1)
+If probe is reached, we've already matched the device and in the case of
+DT matching, the struct device_node pointer will be set. Therefore, there
+is no need to call of_match_device() in probe.
 
-This is a series is part of ongoing clean-ups related to device 
-matching and DT related implicit includes. Essentially of_device.h has 
-a bunch of implicit includes and generally isn't needed any nore except 
-for of_match_device(). As we also generally want to get rid of 
-of_match_device() as well, I've done that so we're not updating the 
-includes twice.
-
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 Signed-off-by: Rob Herring <robh@kernel.org>
 ---
-Changes in v2:
-- Add tags
-- Link to v1: https://lore.kernel.org/r/20231003-dt-asoc-header-cleanups-v1-0-308666806378@kernel.org
-- Link to v1 resend: https://lore.kernel.org/r/20231003-dt-asoc-header-cleanups-v1-0-05b5d6447e5a@kernel.org/
+ sound/soc/codecs/ak5386.c  |  7 ++-----
+ sound/soc/codecs/cs4271.c  | 22 ++++++----------------
+ sound/soc/codecs/tas5086.c |  6 +-----
+ 3 files changed, 9 insertions(+), 26 deletions(-)
 
----
-Rob Herring (5):
-      ASoC: Explicitly include correct DT includes
-      ASoC: Drop unnecessary of_match_device() calls
-      ASoC: da7218: Use i2c_get_match_data()
-      ASoC: qcom/lpass: Constify struct lpass_variant
-      ASoC: Use device_get_match_data()
+diff --git a/sound/soc/codecs/ak5386.c b/sound/soc/codecs/ak5386.c
+index 0c5e00679c7d..21a44476f48d 100644
+--- a/sound/soc/codecs/ak5386.c
++++ b/sound/soc/codecs/ak5386.c
+@@ -10,7 +10,6 @@
+ #include <linux/slab.h>
+ #include <linux/of.h>
+ #include <linux/of_gpio.h>
+-#include <linux/of_device.h>
+ #include <linux/regulator/consumer.h>
+ #include <sound/soc.h>
+ #include <sound/pcm.h>
+@@ -168,7 +167,6 @@ static int ak5386_probe(struct platform_device *pdev)
+ 	if (!priv)
+ 		return -ENOMEM;
+ 
+-	priv->reset_gpio = -EINVAL;
+ 	dev_set_drvdata(dev, priv);
+ 
+ 	for (i = 0; i < ARRAY_SIZE(supply_names); i++)
+@@ -179,9 +177,8 @@ static int ak5386_probe(struct platform_device *pdev)
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	if (of_match_device(of_match_ptr(ak5386_dt_ids), dev))
+-		priv->reset_gpio = of_get_named_gpio(dev->of_node,
+-						      "reset-gpio", 0);
++	priv->reset_gpio = of_get_named_gpio(dev->of_node,
++					     "reset-gpio", 0);
+ 
+ 	if (gpio_is_valid(priv->reset_gpio))
+ 		if (devm_gpio_request_one(dev, priv->reset_gpio,
+diff --git a/sound/soc/codecs/cs4271.c b/sound/soc/codecs/cs4271.c
+index 188b8b43c524..9e6f8a048dd5 100644
+--- a/sound/soc/codecs/cs4271.c
++++ b/sound/soc/codecs/cs4271.c
+@@ -15,7 +15,6 @@
+ #include <linux/delay.h>
+ #include <linux/gpio.h>
+ #include <linux/of.h>
+-#include <linux/of_device.h>
+ #include <linux/of_gpio.h>
+ #include <linux/regulator/consumer.h>
+ #include <sound/pcm.h>
+@@ -563,19 +562,12 @@ static int cs4271_component_probe(struct snd_soc_component *component)
+ 	struct cs4271_private *cs4271 = snd_soc_component_get_drvdata(component);
+ 	struct cs4271_platform_data *cs4271plat = component->dev->platform_data;
+ 	int ret;
+-	bool amutec_eq_bmutec = false;
++	bool amutec_eq_bmutec;
+ 
+-#ifdef CONFIG_OF
+-	if (of_match_device(cs4271_dt_ids, component->dev)) {
+-		if (of_get_property(component->dev->of_node,
+-				     "cirrus,amutec-eq-bmutec", NULL))
+-			amutec_eq_bmutec = true;
+-
+-		if (of_get_property(component->dev->of_node,
+-				     "cirrus,enable-soft-reset", NULL))
+-			cs4271->enable_soft_reset = true;
+-	}
+-#endif
++	amutec_eq_bmutec = of_property_read_bool(component->dev->of_node,
++						 "cirrus,amutec-eq-bmutec");
++	cs4271->enable_soft_reset = of_property_read_bool(component->dev->of_node,
++							  "cirrus,enable-soft-reset");
+ 
+ 	ret = regulator_bulk_enable(ARRAY_SIZE(cs4271->supplies),
+ 				    cs4271->supplies);
+@@ -655,9 +647,7 @@ static int cs4271_common_probe(struct device *dev,
+ 	if (!cs4271)
+ 		return -ENOMEM;
+ 
+-	if (of_match_device(cs4271_dt_ids, dev))
+-		cs4271->gpio_nreset =
+-			of_get_named_gpio(dev->of_node, "reset-gpio", 0);
++	cs4271->gpio_nreset = of_get_named_gpio(dev->of_node, "reset-gpio", 0);
+ 
+ 	if (cs4271plat)
+ 		cs4271->gpio_nreset = cs4271plat->gpio_nreset;
+diff --git a/sound/soc/codecs/tas5086.c b/sound/soc/codecs/tas5086.c
+index 60e59e993ba6..f52c14b43f28 100644
+--- a/sound/soc/codecs/tas5086.c
++++ b/sound/soc/codecs/tas5086.c
+@@ -940,11 +940,7 @@ static int tas5086_i2c_probe(struct i2c_client *i2c)
+ 
+ 	i2c_set_clientdata(i2c, priv);
+ 
+-	if (of_match_device(of_match_ptr(tas5086_dt_ids), dev)) {
+-		struct device_node *of_node = dev->of_node;
+-		gpio_nreset = of_get_named_gpio(of_node, "reset-gpio", 0);
+-	}
+-
++	gpio_nreset = of_get_named_gpio(dev->of_node, "reset-gpio", 0);
+ 	if (gpio_is_valid(gpio_nreset))
+ 		if (devm_gpio_request(dev, gpio_nreset, "TAS5086 Reset"))
+ 			gpio_nreset = -EINVAL;
 
- sound/soc/atmel/atmel_wm8904.c                     |  1 -
- sound/soc/atmel/mchp-i2s-mcc.c                     |  2 +-
- sound/soc/atmel/tse850-pcm5142.c                   |  1 -
- sound/soc/bcm/cygnus-ssp.c                         |  2 +-
- sound/soc/codecs/adau1701.c                        |  1 -
- sound/soc/codecs/adau1977-spi.c                    |  1 -
- sound/soc/codecs/ak4104.c                          |  2 +-
- sound/soc/codecs/ak4118.c                          |  2 +-
- sound/soc/codecs/ak4375.c                          |  2 +-
- sound/soc/codecs/ak4458.c                          |  2 +-
- sound/soc/codecs/ak4613.c                          |  2 +-
- sound/soc/codecs/ak4642.c                          |  2 +-
- sound/soc/codecs/ak5386.c                          |  7 +---
- sound/soc/codecs/ak5558.c                          |  2 +-
- sound/soc/codecs/cs35l32.c                         |  2 +-
- sound/soc/codecs/cs35l33.c                         |  2 -
- sound/soc/codecs/cs35l34.c                         |  2 +-
- sound/soc/codecs/cs35l35.c                         |  3 +-
- sound/soc/codecs/cs35l36.c                         |  3 +-
- sound/soc/codecs/cs35l41-i2c.c                     |  2 +-
- sound/soc/codecs/cs35l41.c                         |  1 -
- sound/soc/codecs/cs4270.c                          |  2 +-
- sound/soc/codecs/cs4271.c                          | 22 +++--------
- sound/soc/codecs/cs42l42.c                         |  1 -
- sound/soc/codecs/cs42l56.c                         |  2 +-
- sound/soc/codecs/cs42xx8-i2c.c                     |  2 +-
- sound/soc/codecs/cs43130.c                         |  3 +-
- sound/soc/codecs/cs4349.c                          |  2 +-
- sound/soc/codecs/da7213.c                          |  2 +-
- sound/soc/codecs/da7218.c                          | 29 +--------------
- sound/soc/codecs/da7218.h                          |  2 +-
- sound/soc/codecs/da7219.c                          |  2 +-
- sound/soc/codecs/da9055.c                          |  1 -
- sound/soc/codecs/es8328.c                          |  1 -
- sound/soc/codecs/gtm601.c                          |  2 +-
- sound/soc/codecs/lpass-macro-common.c              |  2 +-
- sound/soc/codecs/mt6351.c                          |  2 +-
- sound/soc/codecs/mt6358.c                          |  2 +-
- sound/soc/codecs/mt6359-accdet.c                   |  4 --
- sound/soc/codecs/mt6359.c                          |  2 +-
- sound/soc/codecs/nau8540.c                         |  2 +-
- sound/soc/codecs/pcm1681.c                         |  2 -
- sound/soc/codecs/rt715.c                           |  2 -
- sound/soc/codecs/sgtl5000.c                        |  2 +-
- sound/soc/codecs/sma1303.c                         |  2 +-
- sound/soc/codecs/sta32x.c                          |  3 +-
- sound/soc/codecs/sta350.c                          |  3 +-
- sound/soc/codecs/tas5086.c                         |  6 +--
- sound/soc/codecs/tas571x.c                         |  2 +-
- sound/soc/codecs/uda1334.c                         |  2 +-
- sound/soc/codecs/wm8510.c                          |  2 +-
- sound/soc/codecs/wm8523.c                          |  2 +-
- sound/soc/codecs/wm8524.c                          |  2 +-
- sound/soc/codecs/wm8580.c                          |  2 +-
- sound/soc/codecs/wm8711.c                          |  2 +-
- sound/soc/codecs/wm8728.c                          |  2 +-
- sound/soc/codecs/wm8731-i2c.c                      |  2 +-
- sound/soc/codecs/wm8731-spi.c                      |  2 +-
- sound/soc/codecs/wm8737.c                          |  2 +-
- sound/soc/codecs/wm8741.c                          |  2 +-
- sound/soc/codecs/wm8750.c                          |  2 +-
- sound/soc/codecs/wm8753.c                          |  2 +-
- sound/soc/codecs/wm8770.c                          |  2 +-
- sound/soc/codecs/wm8776.c                          |  2 +-
- sound/soc/codecs/wm8804.c                          |  1 -
- sound/soc/fsl/efika-audio-fabric.c                 |  4 +-
- sound/soc/fsl/fsl_aud2htx.c                        |  3 +-
- sound/soc/fsl/fsl_mqs.c                            |  2 +-
- sound/soc/fsl/fsl_rpmsg.c                          |  3 +-
- sound/soc/fsl/fsl_sai.c                            |  3 +-
- sound/soc/fsl/fsl_spdif.c                          |  4 +-
- sound/soc/fsl/imx-audmux.c                         |  1 -
- sound/soc/fsl/imx-card.c                           |  3 +-
- sound/soc/fsl/imx-rpmsg.c                          |  3 +-
- sound/soc/fsl/mpc5200_dma.c                        |  4 +-
- sound/soc/fsl/mpc5200_psc_ac97.c                   |  3 +-
- sound/soc/fsl/mpc5200_psc_i2s.c                    |  3 +-
- sound/soc/fsl/mpc8610_hpcd.c                       |  2 +-
- sound/soc/fsl/p1022_ds.c                           |  2 +-
- sound/soc/fsl/p1022_rdk.c                          |  2 +-
- sound/soc/fsl/pcm030-audio-fabric.c                |  3 +-
- sound/soc/generic/audio-graph-card.c               |  2 -
- sound/soc/generic/audio-graph-card2.c              |  2 -
- sound/soc/generic/simple-card.c                    |  2 +-
- sound/soc/generic/test-component.c                 |  2 +-
- sound/soc/intel/keembay/kmb_platform.c             | 13 +------
- sound/soc/mediatek/mt2701/mt2701-afe-pcm.c         |  2 -
- sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c |  2 +-
- .../mt8183/mt8183-mt6358-ts3a227-max98357.c        |  2 +-
- .../mt8186/mt8186-mt6366-da7219-max98357.c         |  2 +-
- .../mediatek/mt8186/mt8186-mt6366-rt1019-rt5682s.c |  2 +-
- sound/soc/mediatek/mt8188/mt8188-mt6359.c          |  2 +-
- .../mediatek/mt8192/mt8192-mt6359-rt1015-rt5682.c  |  2 +-
- sound/soc/mediatek/mt8195/mt8195-mt6359.c          |  2 +-
- sound/soc/mxs/mxs-saif.c                           |  1 -
- sound/soc/mxs/mxs-sgtl5000.c                       |  1 -
- sound/soc/qcom/apq8096.c                           |  2 +-
- sound/soc/qcom/lpass-apq8016.c                     |  6 +--
- sound/soc/qcom/lpass-cdc-dma.c                     |  2 +-
- sound/soc/qcom/lpass-cpu.c                         | 43 ++++++++++------------
- sound/soc/qcom/lpass-ipq806x.c                     |  2 +-
- sound/soc/qcom/lpass-platform.c                    | 36 +++++++++---------
- sound/soc/qcom/lpass-sc7180.c                      |  6 +--
- sound/soc/qcom/lpass-sc7280.c                      |  6 +--
- sound/soc/qcom/lpass.h                             |  2 +-
- sound/soc/qcom/qdsp6/q6apm-dai.c                   |  2 +-
- sound/soc/qcom/qdsp6/q6asm-dai.c                   |  2 +-
- sound/soc/qcom/qdsp6/q6dsp-lpass-clocks.c          |  1 -
- sound/soc/qcom/qdsp6/q6routing.c                   |  3 +-
- sound/soc/qcom/sc7180.c                            |  2 +-
- sound/soc/qcom/sc7280.c                            |  2 +-
- sound/soc/qcom/sc8280xp.c                          |  2 +-
- sound/soc/qcom/sdm845.c                            |  2 +-
- sound/soc/qcom/sm8250.c                            |  2 +-
- sound/soc/rockchip/rockchip_i2s.c                  |  8 ++--
- sound/soc/rockchip/rockchip_i2s_tdm.c              | 24 ++++--------
- sound/soc/rockchip/rockchip_max98090.c             |  3 +-
- sound/soc/rockchip/rockchip_pdm.c                  |  7 +---
- sound/soc/samsung/aries_wm8994.c                   |  1 -
- sound/soc/samsung/arndale.c                        |  2 +-
- sound/soc/samsung/i2s.c                            |  2 -
- sound/soc/samsung/midas_wm1811.c                   |  2 -
- sound/soc/samsung/odroid.c                         |  1 -
- sound/soc/samsung/smdk_wm8994.c                    | 28 ++------------
- sound/soc/samsung/snow.c                           |  1 -
- sound/soc/sh/fsi.c                                 |  1 -
- sound/soc/sh/rcar/core.c                           |  1 +
- sound/soc/sh/rcar/rsnd.h                           |  4 +-
- sound/soc/sh/rcar/src.c                            |  1 +
- sound/soc/sh/rcar/ssi.c                            |  2 +
- sound/soc/sh/rz-ssi.c                              |  1 -
- sound/soc/stm/stm32_i2s.c                          |  7 +---
- sound/soc/stm/stm32_sai.c                          |  8 ++--
- sound/soc/stm/stm32_sai_sub.c                      |  6 +--
- sound/soc/stm/stm32_spdifrx.c                      |  8 +---
- sound/soc/sunxi/sun4i-codec.c                      |  4 --
- sound/soc/sunxi/sun4i-i2s.c                        |  2 +-
- sound/soc/sunxi/sun4i-spdif.c                      |  3 +-
- sound/soc/sunxi/sun50i-codec-analog.c              |  3 +-
- sound/soc/sunxi/sun50i-dmic.c                      |  2 +-
- sound/soc/sunxi/sun8i-codec-analog.c               |  1 -
- sound/soc/sunxi/sun8i-codec.c                      |  2 +-
- sound/soc/tegra/tegra186_asrc.c                    |  3 +-
- sound/soc/tegra/tegra186_dspk.c                    |  2 +-
- sound/soc/tegra/tegra20_spdif.c                    |  2 +-
- sound/soc/tegra/tegra210_adx.c                     |  3 +-
- sound/soc/tegra/tegra210_amx.c                     | 10 +----
- sound/soc/tegra/tegra210_dmic.c                    |  2 +-
- sound/soc/tegra/tegra210_i2s.c                     |  2 +-
- sound/soc/tegra/tegra210_mixer.c                   |  3 +-
- sound/soc/tegra/tegra210_mvc.c                     |  3 +-
- sound/soc/tegra/tegra210_ope.c                     |  3 +-
- sound/soc/tegra/tegra210_peq.c                     |  1 -
- sound/soc/tegra/tegra210_sfc.c                     |  1 -
- sound/soc/tegra/tegra30_i2s.c                      |  1 -
- sound/soc/tegra/tegra_asoc_machine.c               |  1 -
- sound/soc/tegra/tegra_audio_graph_card.c           |  2 +-
- sound/soc/ti/davinci-evm.c                         |  7 +---
- sound/soc/ti/davinci-mcasp.c                       |  9 ++---
- sound/soc/ti/omap-dmic.c                           |  2 +-
- sound/soc/ti/omap-mcbsp.c                          | 10 ++---
- sound/soc/ti/omap-mcpdm.c                          |  2 +-
- 162 files changed, 205 insertions(+), 390 deletions(-)
----
-base-commit: c9f2baaa18b5ea8f006a2b3a616da9597c71d15e
-change-id: 20231003-dt-asoc-header-cleanups-87f2cf5a2205
-
-Best regards,
 -- 
-Rob Herring <robh@kernel.org>
+2.40.1
 
