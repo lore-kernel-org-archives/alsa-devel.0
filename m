@@ -4,185 +4,165 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CF286E7C4F5
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Oct 2023 07:59:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AD762E7C4F6
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Oct 2023 07:59:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 10BC7F12;
-	Thu,  5 Oct 2023 09:58:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 10BC7F12
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9AACCFC9;
+	Thu,  5 Oct 2023 09:58:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9AACCFC9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1696492755;
-	bh=ZRDZ0z4Gdtpd4t9mKPBGCyZbF9Ut6G4aFJF0Fb/EtUs=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=NnJD9wQI1cE+T/64VUgh1KGQCMv6mt4xG46LaOiofSC97ncevSwMoy+zO9aBtVjlQ
-	 kEcKP06wt1cpJiLDRUOqVXq1wZ4V4gYcamMqkZfv95d1V12zZcOZI1vwmrLNSEDDZ3
-	 NxGR4Xm4Ig8CpA+BqKo4W7OraP8gx7DcFgSyNt80=
+	s=default; t=1696492770;
+	bh=bzVgDtQ10tsDlJqxiQiksPmYfnHOvWmVfX6YPJqqN94=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=NUI/gdpBZXR+DdaFAD4uWF95Wyj3b83izmrZ1Ow2wZNYusOVvGNx1BA1tWGk9VWX1
+	 GoKpZWb0v+8ZjX0CwM64uJwUDDvf9YGxG7wwNM9B4+rPx9ErYxIR37uHTjttLqmJ4+
+	 yoHJe281SVTo6+/0zJu/cylWIeIW0+pAk1YqUZTE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A0ED9F80699; Thu,  5 Oct 2023 09:53:14 +0200 (CEST)
+	id 0D6F5F80697; Thu,  5 Oct 2023 09:53:16 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3BAC1F8069C;
-	Thu,  5 Oct 2023 09:53:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 30FA1F80567;
+	Thu,  5 Oct 2023 09:53:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 58DFDF80552; Thu,  5 Oct 2023 09:53:05 +0200 (CEST)
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com
- [IPv6:2a00:1450:4864:20::630])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 3BFB1F80553; Wed,  4 Oct 2023 16:56:19 +0200 (CEST)
+Received: from mblankhorst.nl (lankhorst.se
+ [IPv6:2a02:2308:0:7ec:e79c:4e97:b6c4:f0ae])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 87B47F8065A
-	for <alsa-devel@alsa-project.org>; Thu,  5 Oct 2023 09:52:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 87B47F8065A
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=vV/mSCoP
-Received: by mail-ej1-x630.google.com with SMTP id
- a640c23a62f3a-9b1ebc80d0aso120901266b.0
-        for <alsa-devel@alsa-project.org>;
- Thu, 05 Oct 2023 00:52:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696492373; x=1697097173;
- darn=alsa-project.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=2VPo73+NISdMnqKKa8YLMLwOayu51kTHaFGUFFnTf0g=;
-        b=vV/mSCoPCRL5vnIEJVkEQHfCTZSRDQrbNdePo/hreMhzK36P+rr+4gaI7nakrUivxX
-         G0mKWXopeILqUwOfNZ0z4VgNI/XfrzGiHxf0QBVYA9ppmWyhBGxVasuIOCNhQcni8JaE
-         LcQDtlHwJUJp1Nyb9ksJKFowI7Vd3GkG8TwOam4Zsy0YITm63bej01niVfDs2AEI6aZO
-         MaNZFeT30H9FUpQIDaqr9ScUxhl2/GjtHr3xxqrNQH/pV5R1jcQewfvAgqBZ7rkTH+P6
-         EbtZY5gu3bs7rEU4KV7ShqjrT+F1AubaxqMhaqrfLROc9XkV7CnF2064jnxith80LuKS
-         2tFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696492373; x=1697097173;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=2VPo73+NISdMnqKKa8YLMLwOayu51kTHaFGUFFnTf0g=;
-        b=YIc1nh5AjDdQ5TfaeWDTRFIYYjBPmW/J3kmQYA5LhEF2vtVU0164czzRr2Xy7kXFKM
-         4+G5W18sI3ohA7Nm0R1aYGbD+Y74oF4URoo0NOQL6eGY7DPEzSSAO6SoQMjDl4KIleiM
-         3aSyFLbDhTvBdUSJppSU1ptLnPdrXVRUoSw2V6sT2F3g77362Mt+vZkRm9O+iF7KzDDN
-         XWd3FjUFXxdLPMdwipMKzS8WzpymaYnlkr+JL6AttWLTiq8vxUq1gh0GNGjkDmTMNVsU
-         h4W4VHqnVeE/m0JxCzM0lZiHS0EZHhN98FUcCVwStVvPIaGMvvxXjuC8smrxs+XqVgc/
-         lJCg==
-X-Gm-Message-State: AOJu0Ywj+LZzM1uS3ZoMoDmub4dipa1sQ4d0dpdC54vtwMiQT8+cBjZo
-	kh7ylS6j+diuxFbK4uRcdJeuGQ==
-X-Google-Smtp-Source: 
- AGHT+IET4gtql0BEhc/DH8ss0kuES1cJOacsuqdH2Pa/FBh564Eq+POI0e557ksJTlua6yohWy5Dcw==
-X-Received: by 2002:a17:906:95:b0:9b2:7b89:8199 with SMTP id
- 21-20020a170906009500b009b27b898199mr3889937ejc.53.1696492373610;
-        Thu, 05 Oct 2023 00:52:53 -0700 (PDT)
-Received: from krzk-bin.. (5-157-101-10.dyn.eolo.it. [5.157.101.10])
-        by smtp.gmail.com with ESMTPSA id
- l12-20020a170906078c00b009b94fe3fc47sm722051ejc.159.2023.10.05.00.52.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Oct 2023 00:52:53 -0700 (PDT)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-	Banajit Goswami <bgoswami@quicinc.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
+	by alsa1.perex.cz (Postfix) with ESMTPS id 458A1F80130;
+	Wed,  4 Oct 2023 16:56:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 458A1F80130
+From: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+To: alsa-devel@alsa-project.org
+Cc: Maarten Lankhorst <dev@lankhorst.se>,
 	Jaroslav Kysela <perex@perex.cz>,
 	Takashi Iwai <tiwai@suse.com>,
-	alsa-devel@alsa-project.org,
-	linux-kernel@vger.kernel.org
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH v2 1/2] ASoC: qcom: explicitly include binding headers when
- used
-Date: Thu,  5 Oct 2023 09:52:49 +0200
-Message-Id: <20231005075250.88159-1-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
+	Cezary Rojewski <cezary.rojewski@intel.com>,
+	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+	Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+	Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+	Bard Liao <yung-chuan.liao@linux.intel.com>,
+	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+	Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+	Mark Brown <broonie@kernel.org>,
+	Daniel Baluta <daniel.baluta@nxp.com>,
+	linux-kernel@vger.kernel.org,
+	sound-open-firmware@alsa-project.org,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	=?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
+ <amadeuszx.slawinski@linux.intel.com>
+Subject: [PATCH v6 10/12] ASoC: Intel: Skylake: Move snd_hdac_i915_init to
+ before probe_work.
+Date: Wed,  4 Oct 2023 16:55:38 +0200
+Message-Id: <20231004145540.32321-11-maarten.lankhorst@linux.intel.com>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20231004145540.32321-1-maarten.lankhorst@linux.intel.com>
+References: <20231004145540.32321-1-maarten.lankhorst@linux.intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 4SZNBPDIX7ASEFTM3KNQMEMCZ6SLFL3L
-X-Message-ID-Hash: 4SZNBPDIX7ASEFTM3KNQMEMCZ6SLFL3L
-X-MailFrom: krzysztof.kozlowski@linaro.org
+X-MailFrom: mlankhorst@mblankhorst.nl
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: 5CUCD55LOLZHDPYYVFKTRPTVN5Q4LF3C
+X-Message-ID-Hash: 5CUCD55LOLZHDPYYVFKTRPTVN5Q4LF3C
+X-Mailman-Approved-At: Thu, 05 Oct 2023 07:53:12 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: <>
-List-Archive: <>
+Archived-At: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5CUCD55LOLZHDPYYVFKTRPTVN5Q4LF3C/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Few units use qcom,lpass.h binding headers but they rely on them being
-included through a different header.  Make the usage explicit which
-allows easier to find the users of a header.
+Now that we can use -EPROBE_DEFER, it's no longer required to spin off
+the snd_hdac_i915_init into a workqueue. It's likely the whole workqueue
+can be destroyed, but I don't have the means to test this.
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Removing the workqueue would simplify init even further, but is left
+as exercise for the reviewer.
 
+Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Acked-by: Mark Brown <broonie@kernel.org>
+Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Reviewed-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 ---
+ sound/soc/intel/skylake/skl.c | 31 +++++++++----------------------
+ 1 file changed, 9 insertions(+), 22 deletions(-)
 
-Changes in v2:
-1. New patch
----
- sound/soc/qcom/lpass-cdc-dma.c  | 1 +
- sound/soc/qcom/lpass-cpu.c      | 1 +
- sound/soc/qcom/lpass-platform.c | 1 +
- sound/soc/qcom/sc7280.c         | 1 +
- 4 files changed, 4 insertions(+)
-
-diff --git a/sound/soc/qcom/lpass-cdc-dma.c b/sound/soc/qcom/lpass-cdc-dma.c
-index 8221e2cbe35c..586f23049447 100644
---- a/sound/soc/qcom/lpass-cdc-dma.c
-+++ b/sound/soc/qcom/lpass-cdc-dma.c
-@@ -5,6 +5,7 @@
-  * lpass-cdc-dma.c -- ALSA SoC CDC DMA CPU DAI driver for QTi LPASS
-  */
+diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+index 4f7acb4f6680..24bdbe2a53be 100644
+--- a/sound/soc/intel/skylake/skl.c
++++ b/sound/soc/intel/skylake/skl.c
+@@ -783,23 +783,6 @@ static void skl_codec_create(struct hdac_bus *bus)
+ 	}
+ }
  
-+#include <dt-bindings/sound/qcom,lpass.h>
- #include <linux/clk.h>
- #include <linux/module.h>
- #include <linux/export.h>
-diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
-index 39571fed4001..d15039bb7f82 100644
---- a/sound/soc/qcom/lpass-cpu.c
-+++ b/sound/soc/qcom/lpass-cpu.c
-@@ -5,6 +5,7 @@
-  * lpass-cpu.c -- ALSA SoC CPU DAI driver for QTi LPASS
-  */
+-static int skl_i915_init(struct hdac_bus *bus)
+-{
+-	int err;
+-
+-	/*
+-	 * The HDMI codec is in GPU so we need to ensure that it is powered
+-	 * up and ready for probe
+-	 */
+-	err = snd_hdac_i915_init(bus, true);
+-	if (err < 0)
+-		return err;
+-
+-	snd_hdac_display_power(bus, HDA_CODEC_IDX_CONTROLLER, true);
+-
+-	return 0;
+-}
+-
+ static void skl_probe_work(struct work_struct *work)
+ {
+ 	struct skl_dev *skl = container_of(work, struct skl_dev, probe_work);
+@@ -807,11 +790,8 @@ static void skl_probe_work(struct work_struct *work)
+ 	struct hdac_ext_link *hlink;
+ 	int err;
  
-+#include <dt-bindings/sound/qcom,lpass.h>
- #include <linux/clk.h>
- #include <linux/kernel.h>
- #include <linux/module.h>
-diff --git a/sound/soc/qcom/lpass-platform.c b/sound/soc/qcom/lpass-platform.c
-index 73e3d39bd24c..5b99b41956ed 100644
---- a/sound/soc/qcom/lpass-platform.c
-+++ b/sound/soc/qcom/lpass-platform.c
-@@ -5,6 +5,7 @@
-  * lpass-platform.c -- ALSA SoC platform driver for QTi LPASS
-  */
+-	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI)) {
+-		err = skl_i915_init(bus);
+-		if (err < 0)
+-			return;
+-	}
++	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI))
++		snd_hdac_display_power(bus, HDA_CODEC_IDX_CONTROLLER, true);
  
-+#include <dt-bindings/sound/qcom,lpass.h>
- #include <linux/dma-mapping.h>
- #include <linux/export.h>
- #include <linux/kernel.h>
-diff --git a/sound/soc/qcom/sc7280.c b/sound/soc/qcom/sc7280.c
-index c23df4c8f341..095756883050 100644
---- a/sound/soc/qcom/sc7280.c
-+++ b/sound/soc/qcom/sc7280.c
-@@ -4,6 +4,7 @@
- //
- // ALSA SoC Machine driver for sc7280
+ 	skl_init_pci(skl);
+ 	skl_dum_set(bus);
+@@ -1075,10 +1055,17 @@ static int skl_probe(struct pci_dev *pci,
+ 		goto out_dsp_free;
+ 	}
  
-+#include <dt-bindings/sound/qcom,lpass.h>
- #include <linux/input.h>
- #include <linux/module.h>
- #include <linux/of_device.h>
++	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI)) {
++		err = snd_hdac_i915_init(bus, false);
++		if (err < 0)
++			goto out_dmic_unregister;
++	}
+ 	schedule_work(&skl->probe_work);
+ 
+ 	return 0;
+ 
++out_dmic_unregister:
++	skl_dmic_device_unregister(skl);
+ out_dsp_free:
+ 	skl_free_dsp(skl);
+ out_clk_free:
 -- 
-2.34.1
+2.40.1
 
