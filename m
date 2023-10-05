@@ -4,68 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EE56FE92701
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Oct 2023 13:57:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 28C97E92703
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Oct 2023 13:58:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 29CB9AE8;
-	Thu,  5 Oct 2023 15:56:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 29CB9AE8
+	by alsa0.perex.cz (Postfix) with ESMTPS id B8BD7E74;
+	Thu,  5 Oct 2023 15:57:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B8BD7E74
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1696514246;
-	bh=Clk1zZLcTD1RtS8dpxd9g0bTbs5O9DBW/U2ou7FQ7F8=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=sl9Cixenrl9ZQ5ANYTISnQiHiIAy3+JmrlRMFP8Wm/Zyt0z2w9HniNfVVd+719Nfh
-	 mYRqx+LSZ8Xruw1ROUlBU15wE8Og1dH85Vu5a834XopUFHqlMB2ixmS671ZN9OrhON
-	 Ahoh1DxJ3ie4SZch05eJx//N91J7FEVFKShU88ow=
+	s=default; t=1696514277;
+	bh=i4iN8vIWCvXquUGoamnGNC//zqN609TsIbCsAs7fUT4=;
+	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=KHdTKAmmGehQrRXVq/L11jgV+l6uXYtVWYs+KGrGOPxTdEf4eB/BRhqlxJ4Q+U8D5
+	 EHz9he1VpQs2T+PGOG7Gc6eF/AzdTc7oxNLR/CFlYnyYLyieQt3Y/ibUaFn14xHtzX
+	 w6pgaABPL3CnhfmJjGdbFXd0daIr52QlqY/SMcPs=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5B33FF801EB; Thu,  5 Oct 2023 15:56:15 +0200 (CEST)
+	id A7825F8055B; Thu,  5 Oct 2023 15:56:17 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9FF0CF801EB;
-	Thu,  5 Oct 2023 15:56:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BE8DFF80568;
+	Thu,  5 Oct 2023 15:56:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5763EF80549; Thu,  5 Oct 2023 15:56:10 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
+	id AA694F8047D; Thu,  5 Oct 2023 15:56:11 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 15895F801EB
-	for <alsa-devel@alsa-project.org>; Thu,  5 Oct 2023 15:56:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 15895F801EB
+	by alsa1.perex.cz (Postfix) with ESMTPS id 8892BF800C1
+	for <alsa-devel@alsa-project.org>; Thu,  5 Oct 2023 15:56:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8892BF800C1
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=muxLXexF
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-	by mx0b-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id
- 395B5dCC026417;
-	Thu, 5 Oct 2023 08:56:01 -0500
+ header.s=PODMain02222019 header.b=UnAH0sPk
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+	by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id
+ 3951p8YT007187;
+	Thu, 5 Oct 2023 08:56:02 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	PODMain02222019; bh=B/JJ0o25OMiXh7ZKoyzaRdrsMaOHfw5utqUGnF502pg=; b=
-	muxLXexFQVaTYS+OUnvK+vD3ePXj5MQNUN2XBNgkrDRrFPVVrN3ako5UbCtH6NjX
-	32FUqjFQvsP9n1UFGThiuoKX5e8h0CKPi7b3bUEy4ST29eOgV8dQvPPDfv4ZKAUg
-	230V/zLzHQble3AuLa5ICZT47+qjqXMcNYCD3PNyrqvAFl4IPosut2ZYbzld8SRf
-	q6pDBhwg0xqPlMQijO/cpQbChqFWcdx2/ggoXv3Pu1i6hr7+Rrp5JcPeOUg36hTG
-	Xl3yAWv5DSDPGBtR7WAcHUdGt1CRNnxRQ2OEwmgtbLiJe80oOV2FuV941Yh4Ck+V
-	rF58WUtAnsUOwHQdJ4ezVw==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3teg3k6uxw-1
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=PODMain02222019; bh=w
+	sRzsqS86v9R2io/BREZgZukOLd/Xh+KnitIp3oeSoM=; b=UnAH0sPkSxTewImPI
+	ixdmOh80k1bZYcAT7i9LUIK/BRFw3zr/i7bjvZahlSxQj72B2LrQog6reIXgYkHs
+	JBIYaDbhE4gaf3nwEq7RlHVcT6Y52IyC+ymumGlgbZr56Q430OceZQm+ZsyVGmPH
+	T5TjdVwRXJ3DE6AtongtGXwPmxFMUbqQ52LP4q8iNCsif0OJALKwIJ4SGHLSumFH
+	9Vz2tIkv6Kz1e7DfeMtFGppP06NlPJIz24Y4/rMuoFm+I+s9Vp6AeRJYArrjU3j4
+	dI8cDLPtW5989WrRn6qTHr5pv46h3gw2woFBI9a/SxqvMXHsFQhYqhDdWnLCrJ5C
+	9sjsw==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3th2dta81a-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 05 Oct 2023 08:56:01 -0500 (CDT)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+	Thu, 05 Oct 2023 08:56:02 -0500 (CDT)
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Thu, 5 Oct
- 2023 14:56:00 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.37 via Frontend
- Transport; Thu, 5 Oct 2023 14:55:59 +0100
+ 2023 14:55:59 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.37 via Frontend Transport; Thu, 5 Oct 2023 14:55:59 +0100
 Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id DDDB9356C;
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id D056B15B9;
 	Thu,  5 Oct 2023 13:55:59 +0000 (UTC)
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
 To: <broonie@kernel.org>
@@ -73,20 +72,19 @@ CC: <lgirdwood@gmail.com>, <robh+dt@kernel.org>,
         <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
         <alsa-devel@alsa-project.org>, <devicetree@vger.kernel.org>,
         <patches@opensource.cirrus.com>
-Subject: [PATCH 2/2] ASoC: cs42l43: Update values for bias sense
-Date: Thu, 5 Oct 2023 14:55:59 +0100
-Message-ID: <20231005135559.3117994-2-ckeepax@opensource.cirrus.com>
+Subject: [PATCH 1/2] ASoC: dt-bindings: cirrus,cs42l43: Update values for bias
+ sense
+Date: Thu, 5 Oct 2023 14:55:58 +0100
+Message-ID: <20231005135559.3117994-1-ckeepax@opensource.cirrus.com>
 X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231005135559.3117994-1-ckeepax@opensource.cirrus.com>
-References: <20231005135559.3117994-1-ckeepax@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: 2cXeees9VrZ9_8QpEIge3kkBQw2I4eKL
-X-Proofpoint-ORIG-GUID: 2cXeees9VrZ9_8QpEIge3kkBQw2I4eKL
+X-Proofpoint-ORIG-GUID: 6bYxe0ZonFxfqaawcLpN3SzVYUHHu6Id
+X-Proofpoint-GUID: 6bYxe0ZonFxfqaawcLpN3SzVYUHHu6Id
 X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: 3JBD6VYXKL6OGHZIGOSFWWNLLV2EEMV6
-X-Message-ID-Hash: 3JBD6VYXKL6OGHZIGOSFWWNLLV2EEMV6
+Message-ID-Hash: TMMODGMGFK55ZPQNHSIXBDCLV6VYH2KY
+X-Message-ID-Hash: TMMODGMGFK55ZPQNHSIXBDCLV6VYH2KY
 X-MailFrom: prvs=5642f9fbf5=ckeepax@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -98,8 +96,7 @@ X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3JBD6VYXKL6OGHZIGOSFWWNLLV2EEMV6/>
+Archived-At: <>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -114,22 +111,22 @@ have yet shipped so updating the binding will not cause any issues.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 ---
- sound/soc/codecs/cs42l43-jack.c | 2 +-
+ Documentation/devicetree/bindings/sound/cirrus,cs42l43.yaml | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/cs42l43-jack.c b/sound/soc/codecs/cs42l43-jack.c
-index 861f9ee671cdf..73454de068cf8 100644
---- a/sound/soc/codecs/cs42l43-jack.c
-+++ b/sound/soc/codecs/cs42l43-jack.c
-@@ -34,7 +34,7 @@ static const unsigned int cs42l43_accdet_db_ms[] = {
- static const unsigned int cs42l43_accdet_ramp_ms[] = { 10, 40, 90, 170 };
+diff --git a/Documentation/devicetree/bindings/sound/cirrus,cs42l43.yaml b/Documentation/devicetree/bindings/sound/cirrus,cs42l43.yaml
+index 4fa22fa70ace5..7f9d8c7a635a6 100644
+--- a/Documentation/devicetree/bindings/sound/cirrus,cs42l43.yaml
++++ b/Documentation/devicetree/bindings/sound/cirrus,cs42l43.yaml
+@@ -82,7 +82,7 @@ properties:
+     description:
+       Current at which the headset micbias sense clamp will engage, 0 to
+       disable.
+-    enum: [ 0, 14, 23, 41, 50, 60, 68, 86, 95 ]
++    enum: [ 0, 14, 24, 43, 52, 61, 71, 90, 99 ]
+     default: 14
  
- static const unsigned int cs42l43_accdet_bias_sense[] = {
--	14, 23, 41, 50, 60, 68, 86, 95, 0,
-+	14, 24, 43, 52, 61, 71, 90, 99, 0,
- };
- 
- static int cs42l43_find_index(struct cs42l43_codec *priv, const char * const prop,
+   cirrus,bias-ramp-ms:
 -- 
 2.39.2
 
