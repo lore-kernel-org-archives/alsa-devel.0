@@ -4,88 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 28C97E92703
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Oct 2023 13:58:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C98F0E92702
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Oct 2023 14:32:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B8BD7E74;
-	Thu,  5 Oct 2023 15:57:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B8BD7E74
+	by alsa0.perex.cz (Postfix) with ESMTPS id B56CADF1;
+	Thu,  5 Oct 2023 16:31:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B56CADF1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1696514277;
-	bh=i4iN8vIWCvXquUGoamnGNC//zqN609TsIbCsAs7fUT4=;
-	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=KHdTKAmmGehQrRXVq/L11jgV+l6uXYtVWYs+KGrGOPxTdEf4eB/BRhqlxJ4Q+U8D5
-	 EHz9he1VpQs2T+PGOG7Gc6eF/AzdTc7oxNLR/CFlYnyYLyieQt3Y/ibUaFn14xHtzX
-	 w6pgaABPL3CnhfmJjGdbFXd0daIr52QlqY/SMcPs=
+	s=default; t=1696516334;
+	bh=DoFeQ6eBTcgaK/XpIiIY5JInXpjcMVs2sQEJX4E1LaY=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=BiF3mMTpYDZ1IUBpaA04a5F9+Z8wIfYOAy63AqoejvGlVNTJVyspyJhieSh+cLb47
+	 qwOteonTwzfvWO+ZZj3rEQBoVTljVkDsC84fZXyvqZIsBAIRK83G7l/cr5K8xR0z+y
+	 8r9spinPmlsN/sCgVvdR9YHWEb3HgFUSyIN4/hKs=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A7825F8055B; Thu,  5 Oct 2023 15:56:17 +0200 (CEST)
+	id D11C6F80166; Thu,  5 Oct 2023 16:31:02 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id BE8DFF80568;
-	Thu,  5 Oct 2023 15:56:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6F5E4F8047D;
+	Thu,  5 Oct 2023 16:31:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AA694F8047D; Thu,  5 Oct 2023 15:56:11 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id EB706F8047D; Thu,  5 Oct 2023 16:30:57 +0200 (CEST)
+Received: from mail.insite.cz (smtp.ivitera.com [88.101.85.59])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 8892BF800C1
-	for <alsa-devel@alsa-project.org>; Thu,  5 Oct 2023 15:56:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8892BF800C1
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6358CF80166
+	for <alsa-devel@alsa-project.org>; Thu,  5 Oct 2023 16:30:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6358CF80166
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=UnAH0sPk
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-	by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id
- 3951p8YT007187;
-	Thu, 5 Oct 2023 08:56:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	from:to:cc:subject:date:message-id:mime-version
-	:content-transfer-encoding:content-type; s=PODMain02222019; bh=w
-	sRzsqS86v9R2io/BREZgZukOLd/Xh+KnitIp3oeSoM=; b=UnAH0sPkSxTewImPI
-	ixdmOh80k1bZYcAT7i9LUIK/BRFw3zr/i7bjvZahlSxQj72B2LrQog6reIXgYkHs
-	JBIYaDbhE4gaf3nwEq7RlHVcT6Y52IyC+ymumGlgbZr56Q430OceZQm+ZsyVGmPH
-	T5TjdVwRXJ3DE6AtongtGXwPmxFMUbqQ52LP4q8iNCsif0OJALKwIJ4SGHLSumFH
-	9Vz2tIkv6Kz1e7DfeMtFGppP06NlPJIz24Y4/rMuoFm+I+s9Vp6AeRJYArrjU3j4
-	dI8cDLPtW5989WrRn6qTHr5pv46h3gw2woFBI9a/SxqvMXHsFQhYqhDdWnLCrJ5C
-	9sjsw==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3th2dta81a-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 05 Oct 2023 08:56:02 -0500 (CDT)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Thu, 5 Oct
- 2023 14:55:59 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.37 via Frontend Transport; Thu, 5 Oct 2023 14:55:59 +0100
-Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id D056B15B9;
-	Thu,  5 Oct 2023 13:55:59 +0000 (UTC)
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-To: <broonie@kernel.org>
-CC: <lgirdwood@gmail.com>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <alsa-devel@alsa-project.org>, <devicetree@vger.kernel.org>,
-        <patches@opensource.cirrus.com>
-Subject: [PATCH 1/2] ASoC: dt-bindings: cirrus,cs42l43: Update values for bias
- sense
-Date: Thu, 5 Oct 2023 14:55:58 +0100
-Message-ID: <20231005135559.3117994-1-ckeepax@opensource.cirrus.com>
-X-Mailer: git-send-email 2.39.2
+	dkim=pass (1024-bit key,
+ unprotected) header.d=ivitera.com header.i=@ivitera.com header.a=rsa-sha256
+ header.s=mail header.b=RM728GTz;
+	dkim=pass (1024-bit key) header.d=ivitera.com header.i=@ivitera.com
+ header.a=rsa-sha256 header.s=mail header.b=RM728GTz
+Received: from localhost (localhost [127.0.0.1])
+	by mail.insite.cz (Postfix) with ESMTP id A27798234;
+	Thu,  5 Oct 2023 16:30:46 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=ivitera.com; s=mail;
+	t=1696516246; bh=DoFeQ6eBTcgaK/XpIiIY5JInXpjcMVs2sQEJX4E1LaY=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=RM728GTzVC/Fbdg8QrsjqKsZLv1y7Sp4bFfSjeFPuFvA1fLqNTjQX3z1BgOz90WST
+	 Uz1+YwMkzMpCw/SPkwdasSUQoHBlGvL9/9ga1HyiXkhH55Vl2QKsizcNmcWVAYPdPc
+	 WQhudcdhHpiYETF7AWMF0gwLm+LQuQqHVxAPCxrw=
+Received: from mail.insite.cz ([127.0.0.1])
+	by localhost (localhost [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id ha4U18s2QCdN; Thu,  5 Oct 2023 16:30:46 +0200 (CEST)
+Received: from [192.168.40.6] (unknown [192.168.100.40])
+	(Authenticated sender: pavel)
+	by mail.insite.cz (Postfix) with ESMTPSA id 3A7048334;
+	Thu,  5 Oct 2023 16:30:46 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=ivitera.com; s=mail;
+	t=1696516246; bh=DoFeQ6eBTcgaK/XpIiIY5JInXpjcMVs2sQEJX4E1LaY=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=RM728GTzVC/Fbdg8QrsjqKsZLv1y7Sp4bFfSjeFPuFvA1fLqNTjQX3z1BgOz90WST
+	 Uz1+YwMkzMpCw/SPkwdasSUQoHBlGvL9/9ga1HyiXkhH55Vl2QKsizcNmcWVAYPdPc
+	 WQhudcdhHpiYETF7AWMF0gwLm+LQuQqHVxAPCxrw=
+Message-ID: <004494f2-bd2b-9bdb-8f45-61b6aed6432b@ivitera.com>
+Date: Thu, 5 Oct 2023 16:30:45 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: 6bYxe0ZonFxfqaawcLpN3SzVYUHHu6Id
-X-Proofpoint-GUID: 6bYxe0ZonFxfqaawcLpN3SzVYUHHu6Id
-X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: TMMODGMGFK55ZPQNHSIXBDCLV6VYH2KY
-X-Message-ID-Hash: TMMODGMGFK55ZPQNHSIXBDCLV6VYH2KY
-X-MailFrom: prvs=5642f9fbf5=ckeepax@opensource.cirrus.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: RFC: usb: gadget: u_audio: Notifying gadget that host started
+ playback/capture?
+Content-Language: en-US
+To: Arun Raghavan <arun@arunraghavan.net>,
+ "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: Julian Scheel <julian@jusst.de>, Takashi Iwai <tiwai@suse.de>,
+ Ruslan Bilovol <ruslan.bilovol@gmail.com>,
+ Jerome Brunet <jbrunet@baylibre.com>
+References: <6ebc2456-a46b-bc47-da76-7a341414c1fb@ivitera.com>
+ <35766f0f-784d-d37a-6d07-665f9ee88331@ivitera.com>
+ <27b4b607-5d71-4e5d-a0ff-530c25752213@app.fastmail.com>
+ <4154b125-35c8-b15a-8706-54b9eb3cb5e0@ivitera.com>
+ <2504b014-08b2-4f39-83f6-5072b5ec4ea8@app.fastmail.com>
+From: Pavel Hofman <pavel.hofman@ivitera.com>
+In-Reply-To: <2504b014-08b2-4f39-83f6-5072b5ec4ea8@app.fastmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: CMSDTZ2E37DELDFBNBGOX7KVUBXWRIG3
+X-Message-ID-Hash: CMSDTZ2E37DELDFBNBGOX7KVUBXWRIG3
+X-MailFrom: pavel.hofman@ivitera.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -96,7 +100,8 @@ X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: <>
+Archived-At: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CMSDTZ2E37DELDFBNBGOX7KVUBXWRIG3/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -105,28 +110,63 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Due to an error in the datasheet the bias sense values currently don't
-match the hardware. Whilst this is a change to the binding no devices
-have yet shipped so updating the binding will not cause any issues.
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
----
- Documentation/devicetree/bindings/sound/cirrus,cs42l43.yaml | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Dne 05. 10. 23 v 1:15 Arun Raghavan napsal(a):
+> On Fri, 22 Sep 2023, at 3:09 AM, Pavel Hofman wrote:
+>> Dne 21. 09. 23 v 3:30 Arun Raghavan napsal(a):
+>>> Hi folks,
+>>>
+>>> On Fri, 1 Oct 2021, at 8:38 AM, Pavel Hofman wrote:
+>>>> Hi,
+>>>>
+>>>
+>>> Resurrecting this one -- is there any input on how we want to deal wit letting UAC gadgets know when the host is sending/receiving data?
+>>
+>> The current version uses the Playback/Capture Rate alsa ctls with
+>> notifications
+>> https://lore.kernel.org/all/20220121155308.48794-8-pavel.hofman@ivitera.com/
+>>
+>> Example of handling is e.g. https://github.com/pavhofman/gaudio_ctl ,
+>> the controller is being used in a number of projects, mostly DIY.
+>>
+>> Recently Qualcomm devs have submitted patches for alternative approach
+>> using uevents
+>> https://lore.kernel.org/lkml/2023050801-handshake-refusing-0367@gregkh/T/#mcd6b346f3ddab6ab34792be0141633bb362d168f
+>> and later versions. The detection is identical, monitoring change in
+>> altsetting from 0 to non zero and back (methods
+>> u_audio_[start/stop]_[capture/playback]), just a different means of
+>> communicating the events to userspace.
+>>
+>> Both methods (using the same principle) suffer from not knowing what's
+>> going on the host side and cannot differentiate between player really
+>> starting playback vs. UAC2 host driver or Pulseaudio shortly checking
+>> device availability. That's why the gaudio_ctl controller can debounce
+>> the playback/capture start
+>> https://github.com/pavhofman/gaudio_ctl#debouncing . But that is just an
+>> ugly workaround...
+> 
+> Thank you for the links, Pavel! This all makes sense.
+> 
+> I guess the uevent mechanism is more "general" than the ALSA ctl for clients that want to plug in, listen and do $something. Not sure if there are other pros/cons of either approach.
 
-diff --git a/Documentation/devicetree/bindings/sound/cirrus,cs42l43.yaml b/Documentation/devicetree/bindings/sound/cirrus,cs42l43.yaml
-index 4fa22fa70ace5..7f9d8c7a635a6 100644
---- a/Documentation/devicetree/bindings/sound/cirrus,cs42l43.yaml
-+++ b/Documentation/devicetree/bindings/sound/cirrus,cs42l43.yaml
-@@ -82,7 +82,7 @@ properties:
-     description:
-       Current at which the headset micbias sense clamp will engage, 0 to
-       disable.
--    enum: [ 0, 14, 23, 41, 50, 60, 68, 86, 95 ]
-+    enum: [ 0, 14, 24, 43, 52, 61, 71, 90, 99 ]
-     default: 14
- 
-   cirrus,bias-ramp-ms:
--- 
-2.39.2
+If the gadget defines multiple samplerates, the client must look at the 
+RATE alsa ctls for learn the actual rate requested by the host. The ctls 
+provide both the rate and notification of playback/capture start/stop at 
+the same time.
+
+For gadgets with a single fixed samplerate, the alsa ctl vs. uevents 
+methods are equivalent. Both may find their users and can be in the 
+gadget code, IMO.
+
+> 
+> I wonder if it might not be good to have some debouncing in the kernel rather than having every client have to implement this.
+
+I am afraid this would be a large feature (debouncing requires extra 
+threads), I have not even tried to push it through. Much better would be 
+having some nice solution instead of a workaround :-)
+
+With regards,
+
+Pavel.
+
 
