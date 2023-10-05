@@ -4,146 +4,109 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0C649E7C4F4
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Oct 2023 08:01:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3E7C1E93703
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Oct 2023 10:59:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4E163FF9;
-	Thu,  5 Oct 2023 10:00:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4E163FF9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4F053BC0;
+	Thu,  5 Oct 2023 12:58:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4F053BC0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1696492880;
-	bh=9dUbRgklvda5FVHHBcOm36dosBKGFjjV2QFj/p5Kqbo=;
+	s=default; t=1696503570;
+	bh=lpZA39v5SnIRDC7l7LsxZrl19vs2WsIC/6TcqgPdEjk=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=OKO+MUIFJsHO5hQrbCtjQnhDnURMm+rvIvLbBv1Kibkdm1capWchjC8of5O9JxZiI
-	 f3IXdNl7EOJoFpaQRLy1zH61oEGuXKiHcye45figjn1LgROFntw/+dskgCGDh/NQ1Q
-	 MZHjKAuKLm23Rw9n/PoDTyoImIFoCN9pDRCbmeWk=
+	b=Ep8PYfeEEWImHRS7zRI6U4hvkDXQm5O61+DM2edcwAjPRaOiarHciOtmwiL3xbYly
+	 KY55hl0V0Bnw3vcR29WMvHoQHIoxeXh27xbzWusosUUwH2DIYWsUbqyuRHmhkPzgpm
+	 eU2gUZfgOroyw4/Pro7S81OTqSn8lrr/U/AZnnvk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D0EBEF805B2; Thu,  5 Oct 2023 09:54:05 +0200 (CEST)
+	id C1150F80553; Thu,  5 Oct 2023 12:58:39 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 60A80F805A9;
-	Thu,  5 Oct 2023 09:54:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6A382F800C1;
+	Thu,  5 Oct 2023 12:58:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 03A99F8047D; Wed,  4 Oct 2023 18:18:00 +0200 (CEST)
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com
- [IPv6:2a00:1450:4864:20::52b])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 533ECF8047D; Thu,  5 Oct 2023 12:58:34 +0200 (CEST)
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id EEFA3F80130
-	for <alsa-devel@alsa-project.org>; Wed,  4 Oct 2023 18:17:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EEFA3F80130
+	by alsa1.perex.cz (Postfix) with ESMTPS id 4AA33F800C1;
+	Thu,  5 Oct 2023 12:58:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4AA33F800C1
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=tuxon.dev header.i=@tuxon.dev header.a=rsa-sha256
- header.s=google header.b=e9UENVZQ
-Received: by mail-ed1-x52b.google.com with SMTP id
- 4fb4d7f45d1cf-5363227cc80so3967987a12.3
-        for <alsa-devel@alsa-project.org>;
- Wed, 04 Oct 2023 09:17:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1696436273; x=1697041073;
- darn=alsa-project.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=IboRMXWE799EUNN9JDL2Tv/P+eapXOiA7kGcWk1PU9o=;
-        b=e9UENVZQOr1elonktcL4qwRTa4Lmq1lJx3uYTGTPs+QB30QGwpx0RABKghIM7SiaLR
-         0rNGvsEX5zDJ6r2e2MXmbVUkHtdq0M8ljmsF4GTta6KtCUxbO7gGx2NWeUQyaMSXPinH
-         fKeUrby+FVjd3L83oBUObsW/d4S5CZiwDMsoQMSD0H7co8LbKUxXRBtk+B5JxsiIX31t
-         YL9tI6vt97PNNRLQ9qyi5LUGa+KLiETg/G7NCOmrc6coq/3RmrDrukxMSTYk8pDpFWTQ
-         FiWy8Xmypx39Utje05AxBFJzUa4YRLm6AaXaLvz0HtntG07OK+MFzhfMRrJXv8074kK+
-         bjwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696436273; x=1697041073;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=IboRMXWE799EUNN9JDL2Tv/P+eapXOiA7kGcWk1PU9o=;
-        b=UbJtUlvXRTyQkjJWlEmtxy4+Xoxnqd7YAW5KPOi4E4LTZFJquNGJ9v1Z7TgX1khZZC
-         87r0tnaDqvW62PLFnKKZwOxPb61YNc6GKclPjFBj+Zvals9I6cKykBAEo5D0pLmmswJy
-         G0J8gspGJquNZJa7sBuf45oVEu7VvToHGadui67hPSA5e6fpCkOIzsyXjB/qoKGEgbDZ
-         rdsw17mWsNb2zTja/7EXhq6MdlFepD+6ZQzLhGyFTp6uEEybju2HLpokLIN7G1hREN20
-         ILhOSISFDwp5qaJmM5USCCZCx0K5hrLLPAPNwjFJWBL/q8sk2Pj4wgvstahMAlXi4vYO
-         DIVw==
-X-Gm-Message-State: AOJu0YwkgD76e6Pv0H9xzhOWV8aG8d+uIIeGqSMg+IpJdefs+Nbbf9Lz
-	KpzUvNmbx0zw9mnQw47I4/laYg==
-X-Google-Smtp-Source: 
- AGHT+IGxOeqnR4/4kozPd8vGztjp/+DmdrVb7jcdZSkFUd46at+lIJgvhTUzH7MccQN+WduUqYwZjw==
-X-Received: by 2002:aa7:c508:0:b0:523:100b:462b with SMTP id
- o8-20020aa7c508000000b00523100b462bmr2617775edq.5.1696436272722;
-        Wed, 04 Oct 2023 09:17:52 -0700 (PDT)
-Received: from [192.168.32.2] ([82.78.167.24])
-        by smtp.gmail.com with ESMTPSA id
- r17-20020aa7d151000000b005346bebc2a5sm76257edo.86.2023.10.04.09.17.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 04 Oct 2023 09:17:52 -0700 (PDT)
-Message-ID: <72fb244b-e4b8-4eb2-cb20-1d3d37f813ab@tuxon.dev>
-Date: Wed, 4 Oct 2023 19:17:48 +0300
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=VRL82jfi
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696503508; x=1728039508;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=lpZA39v5SnIRDC7l7LsxZrl19vs2WsIC/6TcqgPdEjk=;
+  b=VRL82jfiP1E9Y9TJrCYeyqRxrbwWcfaAYfnMCATYIPg89hnpdVWaG/8u
+   o5bZgvCH2HpEdd2J07s5lFZk3GB62wnQGusxaYgcS0LnOFzRcyojZYqvn
+   7AYOcqn/hluToUchUVoPBhcvg5N301eSTCFdhSDwHLmtMjXbsMyCXnXcR
+   XDoHgwdngX0uzpkqEszF7IjjIFnnRtKmw+EWlGlGsvBKpySuGGMg4vMml
+   u4eDMB8m2Tn7Xq6EXGrcG+UIkDggS/eNN4I+oLnomrbTN7ZOfS8T8lcdN
+   MnkG2ahaRsbmFjSZb3lD769Q4ZbJ5GfKQS8ldfzqIdGEnWQeoT+shz0Ae
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10853"; a="387340124"
+X-IronPort-AV: E=Sophos;i="6.03,202,1694761200";
+   d="scan'208";a="387340124"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 05 Oct 2023 03:58:21 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10853"; a="751739054"
+X-IronPort-AV: E=Sophos;i="6.03,202,1694761200";
+   d="scan'208";a="751739054"
+Received: from szeseong-mobl.gar.corp.intel.com (HELO [10.251.222.152])
+ ([10.251.222.152])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 05 Oct 2023 03:58:16 -0700
+Message-ID: <b4a010aa-b547-42ad-844f-849f287abd54@linux.intel.com>
+Date: Thu, 5 Oct 2023 13:58:26 +0300
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v2 1/5] ASoC: Explicitly include correct DT includes
-Content-Language: en-US
-To: Rob Herring <robh@kernel.org>, Mark Brown <broonie@kernel.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Peter Rosin <peda@axentia.se>, Lars-Peter Clausen <lars@metafoo.de>,
- nuno.sa@analog.com, James Schulman <james.schulman@cirrus.com>,
- David Rhodes <david.rhodes@cirrus.com>,
- Richard Fitzgerald <rf@opensource.cirrus.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Shenghao Ding <shenghao-ding@ti.com>, Kevin Lu <kevin-lu@ti.com>,
- Baojun Xu <baojun.xu@ti.com>, Oder Chiou <oder_chiou@realtek.com>,
- Fabio Estevam <festevam@gmail.com>, Kiseok Jo <kiseok.jo@irondevice.com>,
- Kevin Cernekee <cernekee@chromium.org>,
- Shengjiu Wang <shengjiu.wang@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>,
- Nicolin Chen <nicoleotsuka@gmail.com>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Banajit Goswami <bgoswami@quicinc.com>,
- Nicolas Frattaroli <frattaroli.nicolas@gmail.com>,
- Sylwester Nawrocki <s.nawrocki@samsung.com>,
- Peter Ujfalusi <peter.ujfalusi@gmail.com>,
- Jarkko Nikula <jarkko.nikula@bitmer.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>,
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 11/12] ASoC: SOF: Intel: Move binding to display driver
+ outside of deferred probe
+To: Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Cc: Alsa-devel <alsa-devel@alsa-project.org>,
+ Maarten Lankhorst <dev@lankhorst.se>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, Cezary Rojewski <cezary.rojewski@intel.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
  Bard Liao <yung-chuan.liao@linux.intel.com>,
  Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Olivier Moysan <olivier.moysan@foss.st.com>,
- Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org, Jernej Skrabec <jernej.skrabec@gmail.com>,
- Charles Keepax <ckeepax@opensource.cirrus.com>
-References: <20231004-dt-asoc-header-cleanups-v2-0-e77765080cbc@kernel.org>
- <20231004-dt-asoc-header-cleanups-v2-1-e77765080cbc@kernel.org>
-From: claudiu beznea <claudiu.beznea@tuxon.dev>
-In-Reply-To: <20231004-dt-asoc-header-cleanups-v2-1-e77765080cbc@kernel.org>
+ Mark Brown <broonie@kernel.org>, Daniel Baluta <daniel.baluta@nxp.com>,
+ linux-kernel@vger.kernel.org, sound-open-firmware@alsa-project.org
+References: <20231004145540.32321-1-maarten.lankhorst@linux.intel.com>
+ <20231004145540.32321-12-maarten.lankhorst@linux.intel.com>
+ <alpine.DEB.2.22.394.2310041953090.3390143@eliteleevi.tm.intel.com>
+Content-Language: en-US
+From: =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>
+In-Reply-To: 
+ <alpine.DEB.2.22.394.2310041953090.3390143@eliteleevi.tm.intel.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-MailFrom: claudiu.beznea@tuxon.dev
-X-Mailman-Rule-Hits: nonmember-moderation
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: MJ35HXJDWKPEK5XCZFHHU2NVW3H66H2R
+X-Message-ID-Hash: MJ35HXJDWKPEK5XCZFHHU2NVW3H66H2R
+X-MailFrom: peter.ujfalusi@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: LJXDONBUU7XMAYAAXGUFEPNYLHH5LBNC
-X-Message-ID-Hash: LJXDONBUU7XMAYAAXGUFEPNYLHH5LBNC
-X-Mailman-Approved-At: Thu, 05 Oct 2023 07:54:00 +0000
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LJXDONBUU7XMAYAAXGUFEPNYLHH5LBNC/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MJ35HXJDWKPEK5XCZFHHU2NVW3H66H2R/>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
@@ -152,23 +115,85 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 
 
-On 04.10.2023 18:58, Rob Herring wrote:
-> The DT of_device.h and of_platform.h date back to the separate
-> of_platform_bus_type before it was merged into the regular platform bus.
-> As part of that merge prepping Arm DT support 13 years ago, they
-> "temporarily" include each other. They also include platform_device.h
-> and of.h. As a result, there's a pretty much random mix of those include
-> files used throughout the tree. In order to detangle these headers and
-> replace the implicit includes with struct declarations, users need to
-> explicitly include the correct includes.
+On 04/10/2023 19:59, Kai Vehmanen wrote:
+> Hi,
 > 
-> Acked-by: Jernej Skrabec <jernej.skrabec@gmail.com>
-> Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-> Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
->  sound/soc/atmel/atmel_wm8904.c                             | 1 -
->  sound/soc/atmel/mchp-i2s-mcc.c                             | 2 +-
->  sound/soc/atmel/tse850-pcm5142.c                           | 1 -
+> I'm good with rest of the series, but one patch requires work.
+> 
+> On Wed, 4 Oct 2023, Maarten Lankhorst wrote:
+> 
+>> Now that we can use -EPROBE_DEFER, it's no longer required to spin off
+>> the snd_hdac_i915_init into a workqueue.
+>>
+>> Use the -EPROBE_DEFER mechanism instead, which must be returned in the
+>> probe function.
+>>
+>> The previously added probe_early can be used for this,
+>> and we also use the newly added remove_late for unbinding afterwards.
+> [...]
+>> --- a/sound/soc/sof/intel/hda-common-ops.c
+>> +++ b/sound/soc/sof/intel/hda-common-ops.c
+>> @@ -19,6 +19,7 @@ struct snd_sof_dsp_ops sof_hda_common_ops = {
+>>  	.probe_early	= hda_dsp_probe_early,
+>>  	.probe		= hda_dsp_probe,
+>>  	.remove		= hda_dsp_remove,
+>> +	.remove_late	= hda_dsp_remove_late,
+>>  
+>>  	/* Register IO uses direct mmio */
+>>  
+>> diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
+>> index 86a2571488bc..4eb7f04b8ae1 100644
+>> --- a/sound/soc/sof/intel/hda.c
+>> +++ b/sound/soc/sof/intel/hda.c
+>> @@ -1160,6 +1160,7 @@ int hda_dsp_probe_early(struct snd_sof_dev *sdev)
+>>  		return -ENOMEM;
+>>  	sdev->pdata->hw_pdata = hdev;
+>>  	hdev->desc = chip;
+>> +	ret = hda_init(sdev);
+>>  
+>>  err:
+>>  	return ret;
+> 
+> I don't think this works. The hda_codec_i915_init() errors are ignored in 
+> hda_init() so this never returns -EPROBE_DEFER.
+> 
+> So something like this is needed on top (tested quickly on one SOF 
+> machine and this blocks SOF load until i915 or xe driver is loaded):
+> 
+> --cut--
+> diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
+> index 9025bfaf6a7e..8b17c82dcc89 100644
+> --- a/sound/soc/sof/intel/hda.c
+> +++ b/sound/soc/sof/intel/hda.c
+> @@ -863,13 +863,20 @@ static int hda_init(struct snd_sof_dev *sdev)
+>         /* init i915 and HDMI codecs */
+>         ret = hda_codec_i915_init(sdev);
+>         if (ret < 0)
+> -               dev_warn(sdev->dev, "init of i915 and HDMI codec 
+> failed\n");
+> +               dev_warn(sdev->dev, "init of i915 and HDMI codec failed 
+> (%d)\n", ret);
 
-Reviewed-by: Claudiu Beznea <claudiu.beznea@tuxon.dev> # for at91
+we should not print anything or maximum dev_dbg in case of EPROBE_DEFER.
+
+> +
+> +       if (ret < 0 && ret != -ENODEV)
+> +               goto out;
+>  
+>         /* get controller capabilities */
+>         ret = hda_dsp_ctrl_get_caps(sdev);
+>         if (ret < 0)
+>                 dev_err(sdev->dev, "error: get caps error\n");
+>  
+> +out:
+> +       if (ret < 0)
+> +               iounmap(sof_to_bus(sdev)->remap_addr);
+> +
+>         return ret;
+>  }
+> --cut--
+> 
+> Br, Kai
+
+-- 
+Péter
