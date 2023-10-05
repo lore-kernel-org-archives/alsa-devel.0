@@ -4,116 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 76ABCE92FF9
-	for <alsa-devel@archiver.kernel.org>; Fri,  6 Oct 2023 09:15:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D6A20E92FFA
+	for <alsa-devel@archiver.kernel.org>; Fri,  6 Oct 2023 09:17:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 53DF8828;
-	Fri,  6 Oct 2023 11:14:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 53DF8828
+	by alsa0.perex.cz (Postfix) with ESMTPS id 14BE5852;
+	Fri,  6 Oct 2023 11:16:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 14BE5852
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1696583717;
-	bh=iV/9R80a0s5Pfp554nsDMDmgQ9E4nn7c4rJtmvT5+UI=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	s=default; t=1696583831;
+	bh=mpsTz++DaZJss3EYK4Hw0W0Qu8a0Xgrlxd9n/8GHMUM=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=EtlFZoGrsx7COv/3yFGLogwlUij0Wnyn80eqh4KcbCqB2Thzz8pHpLCIWmKfxQhZ7
-	 0AiWEARaneXENZMdH874jDLV20j/z5JWNutFM+yzF7r/f9fe5TAT5XGywWKACnVNDU
-	 KKimGmbveClbOYYUgpLV3CXLoRABXj/r2PJhqos0=
+	b=rXj2EQcZFAKcqVHkeHiymmqj0q08PjlPzcnlVYePzMDTHG0ld0Cd2mVwR+4knDg3i
+	 21VZZBIWVxq0VpsFIPO5j5D44EK+TAiU+lf9rTAtGSEODeqapab1bZuAsZw0mcSxvY
+	 PA9NJAHuX34wYODJ+xXWoG+r1AQSdI5YHEGbLgao=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B55F9F80130; Fri,  6 Oct 2023 11:14:26 +0200 (CEST)
+	id C1204F80553; Fri,  6 Oct 2023 11:15:50 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 600E0F8047D;
-	Fri,  6 Oct 2023 11:14:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E0CE0F801EB;
+	Fri,  6 Oct 2023 11:15:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 38833F8047D; Fri,  6 Oct 2023 11:14:22 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2001:67c:2178:6::1c])
+	id 2E5FEF8047D; Thu,  5 Oct 2023 13:26:26 +0200 (CEST)
+Received: from mblankhorst.nl (lankhorst.se [141.105.120.124])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 54753F801EB
-	for <alsa-devel@alsa-project.org>; Fri,  6 Oct 2023 11:14:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 54753F801EB
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=D2OG2T53;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=oUz6AEgx
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id C4B9C21878;
-	Fri,  6 Oct 2023 09:14:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1696583659;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=gl0+NHc5htZ4Tkar7BUm/HZZN3m+SeL6z/28Kd0Ifo4=;
-	b=D2OG2T532StiFn7CiZxVeB7t6uMhqWjo9FVP0XdD/bm8S/Svn5f90TtLJad+bnV0GPV8Cg
-	//TjvaWbLn0Wa4ODwph0UiaLB5ZitwTE14Dx9b89IfXxI/B2F9vlLwGMZFJmPvJXDmb4pt
-	+hUO9LxlxRfNUPPGtujC/0FO3VMZ314=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1696583659;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=gl0+NHc5htZ4Tkar7BUm/HZZN3m+SeL6z/28Kd0Ifo4=;
-	b=oUz6AEgxq5+9Awg8qFWOsIhvFn9i6wyls89QwARkd8EDK0FC0X2N2mw3ekZECRGXMBb/qU
-	BQI2rDhu585N9aCA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8CEAE13586;
-	Fri,  6 Oct 2023 09:14:19 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id ZkJLIevPH2UIMAAAMHmgww
-	(envelope-from <tiwai@suse.de>); Fri, 06 Oct 2023 09:14:19 +0000
-Date: Fri, 06 Oct 2023 11:14:19 +0200
-Message-ID: <87fs2ow1sk.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Cezary Rojewski <cezary.rojewski@intel.com>
-Cc: <broonie@kernel.org>,
-	<tiwai@suse.com>,
-	<alsa-devel@alsa-project.org>,
-	<perex@perex.cz>,
-	<amadeuszx.slawinski@linux.intel.com>,
-	<pierre-louis.bossart@linux.intel.com>,
-	<hdegoede@redhat.com>
-Subject: Re: [PATCH v3 0/4] ALSA: hda: Abstract and update HOST-stream setup
- procedure
-In-Reply-To: <bb4d4eb6-9bca-f007-da90-f38f910fa541@intel.com>
-References: <20230926080623.43927-1-cezary.rojewski@intel.com>
-	<87y1ggw36h.wl-tiwai@suse.de>
-	<bb4d4eb6-9bca-f007-da90-f38f910fa541@intel.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Message-ID-Hash: PNTA5DMUG52UO53EZ3AVVRRXFHZZLYP2
-X-Message-ID-Hash: PNTA5DMUG52UO53EZ3AVVRRXFHZZLYP2
-X-MailFrom: tiwai@suse.de
+	by alsa1.perex.cz (Postfix) with ESMTPS id 738F1F801EB;
+	Thu,  5 Oct 2023 13:26:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 738F1F801EB
+Message-ID: <ee92964c-c277-a258-5081-cf0a19ccff79@lankhorst.se>
+Date: Thu, 5 Oct 2023 13:26:18 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH v6 11/12] ASoC: SOF: Intel: Move binding to display driver
+ outside of deferred probe
+To: =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Cc: Alsa-devel <alsa-devel@alsa-project.org>, Jaroslav Kysela
+ <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ Cezary Rojewski <cezary.rojewski@intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Mark Brown <broonie@kernel.org>, Daniel Baluta <daniel.baluta@nxp.com>,
+ linux-kernel@vger.kernel.org, sound-open-firmware@alsa-project.org
+References: <20231004145540.32321-1-maarten.lankhorst@linux.intel.com>
+ <20231004145540.32321-12-maarten.lankhorst@linux.intel.com>
+ <alpine.DEB.2.22.394.2310041953090.3390143@eliteleevi.tm.intel.com>
+ <b4a010aa-b547-42ad-844f-849f287abd54@linux.intel.com>
+Content-Language: en-US
+From: Maarten Lankhorst <dev@lankhorst.se>
+In-Reply-To: <b4a010aa-b547-42ad-844f-849f287abd54@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-MailFrom: dev@lankhorst.se
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: CYCCV2ET3D4PIZDXGK2G3ZRQ2ID4KALC
+X-Message-ID-Hash: CYCCV2ET3D4PIZDXGK2G3ZRQ2ID4KALC
+X-Mailman-Approved-At: Fri, 06 Oct 2023 09:15:44 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PNTA5DMUG52UO53EZ3AVVRRXFHZZLYP2/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CYCCV2ET3D4PIZDXGK2G3ZRQ2ID4KALC/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -122,64 +87,72 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, 06 Oct 2023 11:01:44 +0200,
-Cezary Rojewski wrote:
-> 
-> On 2023-10-06 10:44 AM, Takashi Iwai wrote:
-> > On Tue, 26 Sep 2023 10:06:19 +0200,
-> > Cezary Rojewski wrote:
-> >> 
-> >> The patchset targets two intertwined topics:
-> >> 
-> >> The driver shall poll SDxFIFOS to ensure a valid value is set by the
-> >> controller after programming SDxFMT. Due to amount of users and
-> >> limited-number of configuration available in our CI when compared to
-> >> overall possibilities on the market, the check is non-blocking.
-> >> 
-> >> Second topic relates to stream setup procedure. The procedure differs
-> >> between HDAudio controller device revisions. Right now those differences
-> >> are handled directly by a platform driver. Existing top-level
-> >> 'if (pci->device == APL)' could be replaced by a abstraction in lower
-> >> parts of the code instead.
-> >> 
-> >> With that done, the two users are updated accordingly. In avs-driver
-> >> case, this updates the flow to the recommended one.
-> >> 
-> >> Changes in v3:
-> >> - fixed issues pointed out by scripts/kernel-doc
-> >> 
-> >> Changes in v2:
-> >> - fixed ->host_setup assignment in patch 02/04
-> >> 
-> >> Cezary Rojewski (4):
-> >>    ALSA: hda: Poll SDxFIFOS after programming SDxFMT
-> >>    ALSA: hda: Introduce HOST stream setup mechanism
-> >>    ASoC: Intel: avs: Use helper to setup HOST stream
-> >>    ASoC: Intel: Skylake: Use helper to setup HOST stream
-> > 
-> > Sorry for the late reaction, as I've been (still) off since the last
-> > week.
-> > 
-> > Now applied now to for-next branch.
-> 
-> Hello Takashi,
-> 
-> Now I'm the one sorry for the late replay - I've found two new things
-> when fixing the debug message (reported by me in patch 1/4).
-> - null-ptr-deref when assigning hdac_stream (when type=COUPLED)
-> - azx_dev->fifo_size is initialized incorrectly
-> 
-> It's good to debug things, you never know what you may find!
-> 
-> May I send v4 as a collective update? It would address the two above
-> and the false-positive debug message that appears when code-loading
-> AudioDSP firmware.
-
-As other patches have been already applied, could you submit the
-incremental fixes on top of v3 instead?  You can see the latest state
-in for-next branch of sound.git tree.
 
 
-thanks,
+On 2023-10-05 12:58, Péter Ujfalusi wrote:
+> 
+> 
+> On 04/10/2023 19:59, Kai Vehmanen wrote:
+>> Hi,
+>>
+>> I'm good with rest of the series, but one patch requires work.
+>>
+>> On Wed, 4 Oct 2023, Maarten Lankhorst wrote:
+>>
+>>> Now that we can use -EPROBE_DEFER, it's no longer required to spin off
+>>> the snd_hdac_i915_init into a workqueue.
+>>>
+>>> Use the -EPROBE_DEFER mechanism instead, which must be returned in the
+>>> probe function.
+>>>
+>>> The previously added probe_early can be used for this,
+>>> and we also use the newly added remove_late for unbinding afterwards.
+>> [...]
+>>> --- a/sound/soc/sof/intel/hda-common-ops.c
+>>> +++ b/sound/soc/sof/intel/hda-common-ops.c
+>>> @@ -19,6 +19,7 @@ struct snd_sof_dsp_ops sof_hda_common_ops = {
+>>>   	.probe_early	= hda_dsp_probe_early,
+>>>   	.probe		= hda_dsp_probe,
+>>>   	.remove		= hda_dsp_remove,
+>>> +	.remove_late	= hda_dsp_remove_late,
+>>>   
+>>>   	/* Register IO uses direct mmio */
+>>>   
+>>> diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
+>>> index 86a2571488bc..4eb7f04b8ae1 100644
+>>> --- a/sound/soc/sof/intel/hda.c
+>>> +++ b/sound/soc/sof/intel/hda.c
+>>> @@ -1160,6 +1160,7 @@ int hda_dsp_probe_early(struct snd_sof_dev *sdev)
+>>>   		return -ENOMEM;
+>>>   	sdev->pdata->hw_pdata = hdev;
+>>>   	hdev->desc = chip;
+>>> +	ret = hda_init(sdev);
+>>>   
+>>>   err:
+>>>   	return ret;
+>>
+>> I don't think this works. The hda_codec_i915_init() errors are ignored in
+>> hda_init() so this never returns -EPROBE_DEFER.
+>>
+>> So something like this is needed on top (tested quickly on one SOF
+>> machine and this blocks SOF load until i915 or xe driver is loaded):
+>>
+>> --cut--
+>> diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
+>> index 9025bfaf6a7e..8b17c82dcc89 100644
+>> --- a/sound/soc/sof/intel/hda.c
+>> +++ b/sound/soc/sof/intel/hda.c
+>> @@ -863,13 +863,20 @@ static int hda_init(struct snd_sof_dev *sdev)
+>>          /* init i915 and HDMI codecs */
+>>          ret = hda_codec_i915_init(sdev);
+>>          if (ret < 0)
+>> -               dev_warn(sdev->dev, "init of i915 and HDMI codec
+>> failed\n");
+>> +               dev_warn(sdev->dev, "init of i915 and HDMI codec failed
+>> (%d)\n", ret);
+> 
+> we should not print anything or maximum dev_dbg in case of EPROBE_DEFER.
+There's dev_err_probe, which is dev_err on error, or sets the reason for 
+deferred probe to the arguments if the error is -EPROBE_DEFER.
 
-Takashi
+~Maarten
