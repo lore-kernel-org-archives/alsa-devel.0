@@ -4,110 +4,160 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4117AE7C4F5
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Oct 2023 07:48:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3028EE9370C
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Oct 2023 20:12:50 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0FCDCDED;
-	Thu,  5 Oct 2023 09:47:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0FCDCDED
+	by alsa0.perex.cz (Postfix) with ESMTPS id B525E100;
+	Thu,  5 Oct 2023 22:11:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B525E100
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1696492089;
-	bh=n8c5VPqof5cSz/xeEzUcmLspOpPdFu7ZTPAoFiNDi+g=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1696536767;
+	bh=xMXEQU1IGBicOJ1EwLxmmKyQKoCs/CfJmnd52u9dOxk=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=vJMCHJITPvhv2iJLx1eANPUi2k9EdBdHv3wWcDSYi6AV2L+3Z24YbXlSPIH4ON+Ro
-	 fJZkT0lxeevL9+1c7rlwmdTPhau0iecwi5mRTgaLTTPz9C/Gveo0x2JzHW0knYA3mk
-	 +LmJy9dT3BDBpAZxRZ3r7q4LrfehkI0IJG8KbTnU=
+	b=t4AHgfuEdJkgM0vrR4MAIlYOm3y9f1s5OjS1TDSkwT2CSJIN7J3Ru8LFgjMR1d50H
+	 Pv25lPXfV3geQCl3x2rkNuQ5zjqNOba2iJIJXYuqit+6Mw1QV6ibn/Wi79Xbtd+n7j
+	 ewpEv+ZBtv7aZj9QRndrpSMgLDAEft0HH9/uvPkA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9B5B9F80166; Thu,  5 Oct 2023 09:46:49 +0200 (CEST)
+	id A64FAF800C1; Thu,  5 Oct 2023 22:11:26 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 07D87F800C1;
-	Thu,  5 Oct 2023 09:46:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id ECE4FF8047D;
+	Thu,  5 Oct 2023 22:11:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B827CF801D5; Fri, 29 Sep 2023 17:35:38 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	id 1C311F8047D; Thu,  5 Oct 2023 22:11:21 +0200 (CEST)
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com
+ [IPv6:2a00:1450:4864:20::531])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 0734FF8007C
-	for <alsa-devel@alsa-project.org>; Fri, 29 Sep 2023 17:35:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0734FF8007C
+	by alsa1.perex.cz (Postfix) with ESMTPS id 97B33F800C1
+	for <alsa-devel@alsa-project.org>; Thu,  5 Oct 2023 22:11:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 97B33F800C1
 Authentication-Results: alsa1.perex.cz;
-	dkim=fail reason="signature verification failed" (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=dLE9nEAz
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by ams.source.kernel.org (Postfix) with ESMTP id 68E34B81FF3;
-	Fri, 29 Sep 2023 15:35:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4186C433C7;
-	Fri, 29 Sep 2023 15:35:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1696001729;
-	bh=n8c5VPqof5cSz/xeEzUcmLspOpPdFu7ZTPAoFiNDi+g=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=dLE9nEAz7xekqFIavm5dEJULK3Af4aiyLsSYoYDepzYMqvw4BVd56r19mCA7b5ove
-	 YEWaLF6IxaIZpcLVg07pFTX5C8bu2DWEUlQy2TM3PZMnRVQ1eHzv7tZChTjYGAUpYK
-	 5rjIOl+kGt9fV0ruN3IkDiHN78H0wW6m4rxcLIxHP5bueH1MbBWdJXCW8KclvSlw/E
-	 NyyDtTE8ZoMz1nJRKZNonHppUVkdK7mv+8Px297LBx1RECgAPUEcg8MHOP+sQ7uVJd
-	 hyYm5Soq2Y0bJvcEGJBidVI1rjZAkeY+3gKimZgrdAkVdAKaNqrCsbYjhbO2zPKadh
-	 ox3UJzGXhqyQQ==
-Received: (nullmailer pid 3601354 invoked by uid 1000);
-	Fri, 29 Sep 2023 15:35:24 -0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+	dkim=pass (2048-bit key,
+ unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
+ header.s=google header.b=VdqIKo48
+Received: by mail-ed1-x531.google.com with SMTP id
+ 4fb4d7f45d1cf-533d6a8d6b6so2560879a12.2
+        for <alsa-devel@alsa-project.org>;
+ Thu, 05 Oct 2023 13:11:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1696536670; x=1697141470;
+ darn=alsa-project.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=j/3/+knuzgLAoWnY01Hayo7b0bCfG4V9Ch4NH4vXfgM=;
+        b=VdqIKo48mEVNQFGUiKnK5LiYPcM2oSr3bQbfCNz7aAX5AbimcPzwRvnWQDGjw9DdAc
+         qsX07BT9NcqB8Y4izKks1LYPSwA4x95oCzlHtMXOsR2ZRLECa1x87Gt6A8d7WdPJOth+
+         szbANvxZkIlUomD76rJW+fuiB6V9+iIjkSLRiRJp01AMrrJKJhhzBejgxFgNL/wR6Awb
+         O+5eQUo3X7mzgmKMwoayroMCcgTjEnKUUvMK4ezl0hpOmvWfOJsGtJrvMfSq7XHy+B5b
+         oXroYR1uuE9Dve+Q5yrKZnLBVddVTBQmIyzYpv8v+8GXHRLKp6cjifQLC7BLsUSl3iEr
+         /PEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696536670; x=1697141470;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=j/3/+knuzgLAoWnY01Hayo7b0bCfG4V9Ch4NH4vXfgM=;
+        b=g0/wqQTcgAdvbDUZ4IHgqWjBMr9ZsOAmw1USoLiY3Bo2n9zu5Qsys4+5Q3nWeXCX3l
+         DfnXQ+NqwBtXhquSkzlgcVINZlzrYw9kHe2FMa2GXQQtdhEYtxuv7Uc/5ryHwZbwxXC2
+         r2GqveXMrvP3r7JUDZQJJvaKSnlb75HVIAjdc809PszdZfBIOGngygPMM5HEbf1Vgc70
+         qZ/9ZrSuz/AodnPn+S7mYzz6mfA4gAwflayBFDbjImh1ILY3MIZCD3+c9B5l/4tt+jT5
+         1EOXQkKCJHueG++g3dbZXQ6RsOra+ZiJrT82ZPUV9ua50SHsPowVA7LDfjxPhH6cHwAS
+         JiNA==
+X-Gm-Message-State: AOJu0Yy87y1jiq1WHP05OBJsLJ7oUCcGSfmUKelcbODjt7kxUZ2eQH52
+	JLkTLWV7/2+pq8tVgbHrGlUsMA==
+X-Google-Smtp-Source: 
+ AGHT+IFd16teI/sR/ExzAEN6sDM3Pg0ONTI1zGf1AChALE6X8DhbmBZL/mUTPlJL7Pk+TtC7nwkDtg==
+X-Received: by 2002:aa7:c159:0:b0:530:b86f:9c3f with SMTP id
+ r25-20020aa7c159000000b00530b86f9c3fmr5176410edp.37.1696536670500;
+        Thu, 05 Oct 2023 13:11:10 -0700 (PDT)
+Received: from [192.168.1.197] (5-157-101-10.dyn.eolo.it. [5.157.101.10])
+        by smtp.gmail.com with ESMTPSA id
+ i13-20020a056402054d00b005231e3d89efsm1549705edx.31.2023.10.05.13.11.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 05 Oct 2023 13:11:10 -0700 (PDT)
+Message-ID: <18c05485-4e06-4cfe-a0cd-00750a6fe8e6@linaro.org>
+Date: Thu, 5 Oct 2023 22:11:09 +0200
 MIME-Version: 1.0
-From: Rob Herring <robh@kernel.org>
-To: Gatien Chevallier <gatien.chevallier@foss.st.com>
-Cc: arnd@kernel.org, linux-phy@lists.infradead.org,
-	linux-mmc@vger.kernel.org, dmaengine@vger.kernel.org,
-	robh+dt@kernel.org, jic23@kernel.org, davem@davemloft.net,
-	kuba@kernel.org, pabeni@redhat.com, linux-spi@vger.kernel.org,
-	linux-i2c@vger.kernel.org, olivier.moysan@foss.st.com,
-	linux-media@vger.kernel.org, krzysztof.kozlowski+dt@linaro.org,
-	Oleksii Moisieiev <oleksii_moisieiev@epam.com>, edumazet@google.com,
-	linux-stm32@st-md-mailman.stormreply.com, ulf.hansson@linaro.org,
-	richardcochran@gmail.com, will@kernel.org,
-	linux-crypto@vger.kernel.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, arnaud.pouliquen@foss.st.com,
-	linux-serial@vger.kernel.org, alexandre.torgue@foss.st.com,
-	Frank Rowand <frowand.list@gmail.com>, andi.shyti@kernel.org,
-	linux-usb@vger.kernel.org, peng.fan@oss.nxp.com, lee@kernel.org,
-	fabrice.gasnier@foss.st.com, conor+dt@kernel.org,
-	Oleksii_Moisieiev@epam.com, herbert@gondor.apana.org.au,
-	linux-arm-kernel@lists.infradead.org, catalin.marinas@arm.com,
-	al@alsa-project.org, sa-devel@alsa-project.org,
-	hugues.fruchet@foss.st.com, devicetree@vger.kernel.org,
-	linux-iio@vger.kernel.org, mchehab@kernel.org, vkoul@kernel.org,
-	gregkh@linuxfoundation.org
-In-Reply-To: <20230929142852.578394-2-gatien.chevallier@foss.st.com>
-References: <20230929142852.578394-1-gatien.chevallier@foss.st.com>
- <20230929142852.578394-2-gatien.chevallier@foss.st.com>
-Message-Id: <169600172184.3601218.2121908606358610119.robh@kernel.org>
-Subject: Re: [PATCH v5 01/11] dt-bindings: document generic access
- controller
-Date: Fri, 29 Sep 2023 10:35:24 -0500
-X-MailFrom: SRS0=CpPV=FN=robh_at_kernel.org=rob@kernel.org
-X-Mailman-Rule-Hits: implicit-dest
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] ASoC: dt-bindings: cirrus,cs42l43: Update values for
+ bias sense
+Content-Language: en-US
+To: Charles Keepax <ckeepax@opensource.cirrus.com>, broonie@kernel.org
+Cc: lgirdwood@gmail.com, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+ patches@opensource.cirrus.com
+References: <20231005135559.3117994-1-ckeepax@opensource.cirrus.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231005135559.3117994-1-ckeepax@opensource.cirrus.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: HXILLJAQW5VZEQ4DTHMMENHVGV5KKYPH
+X-Message-ID-Hash: HXILLJAQW5VZEQ4DTHMMENHVGV5KKYPH
+X-MailFrom: krzysztof.kozlowski@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; max-recipients; max-size; news-moderation; no-subject;
- digests; suspicious-header
-Message-ID-Hash: CGWEAT4TLYYYV3AMKZFVM2F7UFGLO6OO
-X-Message-ID-Hash: CGWEAT4TLYYYV3AMKZFVM2F7UFGLO6OO
-X-Mailman-Approved-At: Thu, 05 Oct 2023 07:46:43 +0000
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CGWEAT4TLYYYV3AMKZFVM2F7UFGLO6OO/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HXILLJAQW5VZEQ4DTHMMENHVGV5KKYPH/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -116,63 +166,20 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-
-On Fri, 29 Sep 2023 16:28:42 +0200, Gatien Chevallier wrote:
-> From: Oleksii Moisieiev <Oleksii_Moisieiev@epam.com>
+On 05/10/2023 15:55, Charles Keepax wrote:
+> Due to an error in the datasheet the bias sense values currently don't
+> match the hardware. Whilst this is a change to the binding no devices
+> have yet shipped so updating the binding will not cause any issues.
 > 
-> Introducing of the generic access controller bindings for the
-> access controller provider and consumer devices. Those bindings are
-> intended to allow a better handling of accesses to resources in a
-> hardware architecture supporting several compartments.
-> 
-> This patch is based on [1]. It is integrated in this patchset as it
-> provides a use-case for it.
-> 
-> Diffs with [1]:
-> 	- Rename feature-domain* properties to access-control* to narrow
-> 	  down the scope of the binding
-> 	- YAML errors and typos corrected.
-> 	- Example updated
-> 	- Some rephrasing in the binding description
-> 
-> [1]: https://lore.kernel.org/lkml/0c0a82bb-18ae-d057-562b
-> 
-> Signed-off-by: Oleksii Moisieiev <oleksii_moisieiev@epam.com>
-> Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
-> 
+> Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 > ---
-> Changes in V5:
-> 	- Diffs with [1]
-> 	- Discarded the [IGNORE] tag as the patch is now part of the
-> 	  patchset
-> 
->  .../access-controllers/access-controller.yaml | 90 +++++++++++++++++++
->  1 file changed, 90 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/access-controllers/access-controller.yaml
+>  Documentation/devicetree/bindings/sound/cirrus,cs42l43.yaml | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-yamllint warnings/errors:
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-dtschema/dtc warnings/errors:
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/access-controllers/access-controller.yaml: access-control-provider: missing type definition
-
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20230929142852.578394-2-gatien.chevallier@foss.st.com
-
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
+Best regards,
+Krzysztof
 
