@@ -4,92 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3FB95E81DFE
-	for <alsa-devel@archiver.kernel.org>; Fri,  6 Oct 2023 13:48:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AEE34E81DFE
+	for <alsa-devel@archiver.kernel.org>; Fri,  6 Oct 2023 13:48:24 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 15A4A1E3;
-	Fri,  6 Oct 2023 15:47:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 15A4A1E3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9F7E51F2;
+	Fri,  6 Oct 2023 15:47:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9F7E51F2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1696600081;
-	bh=1hpn3nP6r3zSnkayS0z7he39YlD32r29evSoMMc3ya8=;
-	h=From:Subject:Date:To:Cc:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=DsMFmmzuojxbd9Itgf/E6rDmm3hMhdY2/IgzViA+giFGAKr5eWRa3cRIrNmxagzw4
-	 TJYirHPrQEKW7gA+/VlYBhmM2sq5BKkmXMwoEjH/BicRY8cUoGjllkNnhf5RkZv5K4
-	 RaO53vk3oioWJUhH7Wi1vB5ASxR+woyLb+XANpvo=
+	s=default; t=1696600102;
+	bh=/GsmH7kzfcZF2ucmFjRSn36eSIfc//rHDAM6A6m6M0o=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=TCg/vDwpQQClwzyoVkxMDbWS2gVdqmFyJGgelIJuiMwnlUiw50e6slUriZMvbvwmu
+	 aIu08NMK9wd6KRRqDILHNCh1I6wwRckgkhuJ7eetxUtRlg55Rtg9srXXkXapUwVKiF
+	 +gqpik2fkIW3CP8uL7/RnQLsPyl1VR55fFlsCBPY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E03C6F80563; Fri,  6 Oct 2023 15:46:40 +0200 (CEST)
+	id 66AA8F80579; Fri,  6 Oct 2023 15:46:44 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2E638F80558;
-	Fri,  6 Oct 2023 15:46:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D3F4EF80568;
+	Fri,  6 Oct 2023 15:46:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 991E4F80557; Fri,  6 Oct 2023 15:46:35 +0200 (CEST)
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com
- [IPv6:2a00:1450:4864:20::231])
+	id 83582F8055A; Fri,  6 Oct 2023 15:46:38 +0200 (CEST)
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com
+ [IPv6:2a00:1450:4864:20::12f])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 9E4E6F80130
-	for <alsa-devel@alsa-project.org>; Fri,  6 Oct 2023 15:46:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9E4E6F80130
+	by alsa1.perex.cz (Postfix) with ESMTPS id A9AC3F8047D
+	for <alsa-devel@alsa-project.org>; Fri,  6 Oct 2023 15:46:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A9AC3F8047D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=LSYhMSlK
-Received: by mail-lj1-x231.google.com with SMTP id
- 38308e7fff4ca-2bff936e10fso38982261fa.1
+ header.s=google header.b=tH5Kf923
+Received: by mail-lf1-x12f.google.com with SMTP id
+ 2adb3069b0e04-5041d6d8b10so2782685e87.2
         for <alsa-devel@alsa-project.org>;
- Fri, 06 Oct 2023 06:46:28 -0700 (PDT)
+ Fri, 06 Oct 2023 06:46:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696599987; x=1697204787;
+        d=linaro.org; s=google; t=1696599989; x=1697204789;
  darn=alsa-project.org;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=iyIWSI35ioF9P5y4BP7rlGwfh5ltYmHyWesLeZ41VQA=;
-        b=LSYhMSlKDexknXfgc39EsV1QVl474tsWTtE9ksX9p19MZ5RG72x7jky/O6VuamlcZ9
-         OZKFlZWk0KwYU05EVKOPchztAX7HypU7ImHWPgT5DTvfB/NeMd1z5wMACKCrHJ1wIeA4
-         XWilqI3LLn2g7nJ4l7nyJTSQluFHynAO+w9q/V7/LKddt3VSfpeFRDm5S7vlavhPuRwh
-         L4Uf3CImKcsY9FyXjwmuRqw3PuTrV/3oyTaccRC0mHdkuvTcwBNDXun3zGiJFtI4k+s3
-         AWuWaGjNmFZOdqGzwqKdnrILEhYf5COFQVhyGXzmXloEJiMEz7SG4TPNUlWn/yauCz0L
-         FAMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696599987; x=1697204787;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=iyIWSI35ioF9P5y4BP7rlGwfh5ltYmHyWesLeZ41VQA=;
-        b=Wb5/KJa946wuUp9fo3y+fpVKyPZcWP6D4xTBpN6IdXzENTvPhYKtU8QgD5yjx6zBzt
-         iieKknEqSfTRjcs3s/xRrDMPI3Umk1koEfpwforCvgWWHHPo9/fqNV3Fd8k3VAXH8oRY
-         w1bd24NoNn0blizav5NY4Aan3DHVQ9YmQEuZCBXjJ+FWUN01gXhAwgXYIQ3dbXJg0hzx
-         cjwvuhiCb9cbiTdejmPalEwCNG5b+0nWo/a1gG+xcvyud99zlMKcBFxrwiHRZvmGYO6A
-         c+DD/mTarW8Vf00HOnw3r10V/oiUxzWMQQsW6n6NQod1pg1s/Zgp30c1J3ggVvZp4/UE
-         tfrQ==
-X-Gm-Message-State: AOJu0YwCEkrBFC4XFMvpUkm5bvR1eIIRIqvGKDQ/0OmXB9BkGW+mMYrc
-	bqGhHImJab9N+5pyOb0ItBk8mw==
+        bh=Gs9kODHBf7pe1hvttMIGP4XQeIHebOI3TikCUwTzhsU=;
+        b=tH5Kf923e4z5evzxnggkdigKSS7U74yYB8Rs9B+uahtMhkxC0VU3tcKWjsma7vCHuk
+         ZTeX3wLpNQ+UZE+H0XhY8UFrz8zRdv+eAmoQ5asayHiYVZ7+HbmN8AI8MF3Bu3ivFQYv
+         NvoSc7HYzOEdbd5ta216jV3Pyq7s1VVQGDE6/negWvQkkVSFHTM1FbTQjos3mUO6GTtQ
+         gchfzudqZBna7YpGrANS0gZP9hbjoCJzWGrePZdbfm2gJbFtkan5q8VVQgry2vQtp8j4
+         3hVn/pdoP9hfYE8ZC+VunUWpuJ8b1KPHzp6hiA/+/jrJ1c2L6vsLPAquIYqyo80/g6XQ
+         kihg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696599989; x=1697204789;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Gs9kODHBf7pe1hvttMIGP4XQeIHebOI3TikCUwTzhsU=;
+        b=O+XIBMS1hRx1fDMnKuu8Arq/Y8drngMm8eE30Eo5KrV2PzAtCn8WeMFla7O7TiS7C/
+         3d4HMm7bggiR6+PP5pSEiUKefvP2RQTCme+u16NirD3jY7MGCvs/G0qQLyFCCrQDZPKW
+         Ig+r3GC+iKHMN1YAEX5lwaYwENE0Pi+2Ps3LRagaNddbuLMGrT50TWlDTHDTE2EwAxLX
+         9gNEtcIquVYc6GQjFDppmtm1gPnaAXawTti1jvBBGZSXSpLaVs37CekVvoDsSuSRX+XH
+         ZsVmp9prmMqDzUw0X/lyQNgxrJbq3Nqb654e5NuDejDiPWV8KZv0T8GZERgHVRsguv2B
+         Jd1Q==
+X-Gm-Message-State: AOJu0YxMuN8f5ldEQ1AkDJ+kcwTqvn0jsLrNCrahoi8JYTTZkH0ij07u
+	6hV9N96lXgOwSlFTUv4mJMdhtl1an0WXNpb6x9M=
 X-Google-Smtp-Source: 
- AGHT+IHGZbYm5OyG87d6TAKeG9ICFcG1L5jBwIGzi+m4DbZK7DRyNC9xmJcbHkphJg8oT5Yn4KFEDw==
-X-Received: by 2002:a05:6512:313c:b0:500:96dd:f95a with SMTP id
- p28-20020a056512313c00b0050096ddf95amr4307682lfd.24.1696599987078;
-        Fri, 06 Oct 2023 06:46:27 -0700 (PDT)
+ AGHT+IGilaqLsNAkpUFN8HUXTZkEVfQxXSILLUJqpOsm7o4gtJ9UIFBnw+6Mj0Tl221lqSmXK7G3yQ==
+X-Received: by 2002:a05:6512:238a:b0:502:a588:6609 with SMTP id
+ c10-20020a056512238a00b00502a5886609mr9257631lfv.3.1696599989015;
+        Fri, 06 Oct 2023 06:46:29 -0700 (PDT)
 Received: from [127.0.1.1] ([85.235.12.238])
         by smtp.gmail.com with ESMTPSA id
- v25-20020a197419000000b004fe37199b87sm308733lfe.156.2023.10.06.06.46.26
+ v25-20020a197419000000b004fe37199b87sm308733lfe.156.2023.10.06.06.46.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Oct 2023 06:46:26 -0700 (PDT)
+        Fri, 06 Oct 2023 06:46:28 -0700 (PDT)
 From: Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH 0/8] Convert Mediatek ASoC codecs to use GPIO descriptors
-Date: Fri, 06 Oct 2023 15:46:23 +0200
-Message-Id: <20231006-descriptors-asoc-mediatek-v1-0-07fe79f337f5@linaro.org>
+Date: Fri, 06 Oct 2023 15:46:25 +0200
+Subject: [PATCH 2/8] ASoC: mediatek: mt2701-cs42448: Convert to GPIO
+ descriptors
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAK8PIGUC/x3MTQqEMAxA4atI1gZS/xZzlcFFbVMNopVEhgHx7
- haX3+K9C4xV2OBTXaD8E5O8F7i6grD4fWaUWAwNNa0jGjCyBZXjzGroLQfcOIo/eUVyoU2pI+r
- jBKU/lJP83/d3vO8Hdr86wWsAAAA=
+Message-Id: <20231006-descriptors-asoc-mediatek-v1-2-07fe79f337f5@linaro.org>
+References: <20231006-descriptors-asoc-mediatek-v1-0-07fe79f337f5@linaro.org>
+In-Reply-To: <20231006-descriptors-asoc-mediatek-v1-0-07fe79f337f5@linaro.org>
 To: Bartosz Golaszewski <brgl@bgdev.pl>, Andy Shevchenko <andy@kernel.org>,
  Matthias Brugger <matthias.bgg@gmail.com>,
  AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
@@ -99,8 +101,8 @@ Cc: linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
  alsa-devel@alsa-project.org, Linus Walleij <linus.walleij@linaro.org>
 X-Mailer: b4 0.12.3
-Message-ID-Hash: PPI3MPHBTODFMTWSUZ4TJLCUNK2MUZOR
-X-Message-ID-Hash: PPI3MPHBTODFMTWSUZ4TJLCUNK2MUZOR
+Message-ID-Hash: JPBKRP4P37LAXNB25FJMWEMPWXCXNIBU
+X-Message-ID-Hash: JPBKRP4P37LAXNB25FJMWEMPWXCXNIBU
 X-MailFrom: linus.walleij@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -113,7 +115,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PPI3MPHBTODFMTWSUZ4TJLCUNK2MUZOR/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JPBKRP4P37LAXNB25FJMWEMPWXCXNIBU/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -122,39 +124,109 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Convert over the Mediatek codecs to use GPIO descriptors.
-
-One few-liner affects gpiolib-of.h, I don't think there
-will be conflicts so I suggest that all of this can be
-merged through ASoC after review.
+The driver is pretty straight-forward to convert to use GPIO
+descriptors, however a separate patch is needed to accept
+the DT GPIO resources ending with "-gpio1" and "-gpio2"
+instead of the standard "-gpio" or "-gpios" name convention.
 
 Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 ---
-Linus Walleij (8):
-      gpiolib: of: Add quirk for mt2701-cs42448 ASoC sound
-      ASoC: mediatek: mt2701-cs42448: Convert to GPIO descriptors
-      ASoC: mt8173-max98090: Drop unused include
-      ASoC: mt8173-rt5650-rt5514: Drop unused includes
-      ASoC: mt8173-rt5650-rt5676: Drop unused includes
-      ASoC: mt8173-rt5650: Drop unused includes
-      ASoC: mt8186-mt6366-rt1019-rt5682s: Drop unused include
-      ASoC: mt8192-afe-gpio: Drop unused include
+ sound/soc/mediatek/mt2701/mt2701-cs42448.c | 54 ++++++++++++------------------
+ 1 file changed, 22 insertions(+), 32 deletions(-)
 
- drivers/gpio/gpiolib-of.c                          |  4 ++
- sound/soc/mediatek/mt2701/mt2701-cs42448.c         | 54 +++++++++-------------
- sound/soc/mediatek/mt8173/mt8173-max98090.c        |  1 -
- sound/soc/mediatek/mt8173/mt8173-rt5650-rt5514.c   |  2 -
- sound/soc/mediatek/mt8173/mt8173-rt5650-rt5676.c   |  2 -
- sound/soc/mediatek/mt8173/mt8173-rt5650.c          |  2 -
- sound/soc/mediatek/mt8186/mt8186-afe-gpio.c        |  1 -
- .../mediatek/mt8186/mt8186-mt6366-rt1019-rt5682s.c |  1 -
- sound/soc/mediatek/mt8192/mt8192-afe-gpio.c        |  1 -
- 9 files changed, 26 insertions(+), 42 deletions(-)
----
-base-commit: 0bb80ecc33a8fb5a682236443c1e740d5c917d1d
-change-id: 20231006-descriptors-asoc-mediatek-01c3ff4005db
+diff --git a/sound/soc/mediatek/mt2701/mt2701-cs42448.c b/sound/soc/mediatek/mt2701/mt2701-cs42448.c
+index 08ef109744c7..81b695a19dc7 100644
+--- a/sound/soc/mediatek/mt2701/mt2701-cs42448.c
++++ b/sound/soc/mediatek/mt2701/mt2701-cs42448.c
+@@ -10,16 +10,15 @@
+ #include <linux/module.h>
+ #include <sound/soc.h>
+ #include <linux/delay.h>
+-#include <linux/gpio.h>
++#include <linux/gpio/consumer.h>
+ #include <linux/pinctrl/consumer.h>
+-#include <linux/of_gpio.h>
+ 
+ #include "mt2701-afe-common.h"
+ 
+ struct mt2701_cs42448_private {
+ 	int i2s1_in_mux;
+-	int i2s1_in_mux_gpio_sel_1;
+-	int i2s1_in_mux_gpio_sel_2;
++	struct gpio_desc *i2s1_in_mux_sel_1;
++	struct gpio_desc *i2s1_in_mux_sel_2;
+ };
+ 
+ static const char * const i2sin_mux_switch_text[] = {
+@@ -53,20 +52,20 @@ static int mt2701_cs42448_i2sin1_mux_set(struct snd_kcontrol *kcontrol,
+ 
+ 	switch (ucontrol->value.integer.value[0]) {
+ 	case 0:
+-		gpio_set_value(priv->i2s1_in_mux_gpio_sel_1, 0);
+-		gpio_set_value(priv->i2s1_in_mux_gpio_sel_2, 0);
++		gpiod_set_value(priv->i2s1_in_mux_sel_1, 0);
++		gpiod_set_value(priv->i2s1_in_mux_sel_2, 0);
+ 		break;
+ 	case 1:
+-		gpio_set_value(priv->i2s1_in_mux_gpio_sel_1, 1);
+-		gpio_set_value(priv->i2s1_in_mux_gpio_sel_2, 0);
++		gpiod_set_value(priv->i2s1_in_mux_sel_1, 1);
++		gpiod_set_value(priv->i2s1_in_mux_sel_2, 0);
+ 		break;
+ 	case 2:
+-		gpio_set_value(priv->i2s1_in_mux_gpio_sel_1, 0);
+-		gpio_set_value(priv->i2s1_in_mux_gpio_sel_2, 1);
++		gpiod_set_value(priv->i2s1_in_mux_sel_1, 0);
++		gpiod_set_value(priv->i2s1_in_mux_sel_2, 1);
+ 		break;
+ 	case 3:
+-		gpio_set_value(priv->i2s1_in_mux_gpio_sel_1, 1);
+-		gpio_set_value(priv->i2s1_in_mux_gpio_sel_2, 1);
++		gpiod_set_value(priv->i2s1_in_mux_sel_1, 1);
++		gpiod_set_value(priv->i2s1_in_mux_sel_2, 1);
+ 		break;
+ 	default:
+ 		dev_warn(card->dev, "%s invalid setting\n", __func__);
+@@ -382,27 +381,18 @@ static int mt2701_cs42448_machine_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
+ 
+-	priv->i2s1_in_mux_gpio_sel_1 =
+-		of_get_named_gpio(dev->of_node, "i2s1-in-sel-gpio1", 0);
+-	if (gpio_is_valid(priv->i2s1_in_mux_gpio_sel_1)) {
+-		ret = devm_gpio_request(dev, priv->i2s1_in_mux_gpio_sel_1,
+-					"i2s1_in_mux_gpio_sel_1");
+-		if (ret)
+-			dev_warn(&pdev->dev, "%s devm_gpio_request fail %d\n",
+-				 __func__, ret);
+-		gpio_direction_output(priv->i2s1_in_mux_gpio_sel_1, 0);
+-	}
++	priv->i2s1_in_mux_sel_1 = devm_gpiod_get_optional(dev, "i2s1-in-sel-gpio1",
++							  GPIOD_OUT_LOW);
++	if (IS_ERR(priv->i2s1_in_mux_sel_1))
++		return dev_err_probe(dev, PTR_ERR(priv->i2s1_in_mux_sel_1),
++				     "error getting mux 1 selector\n");
++
++	priv->i2s1_in_mux_sel_2 = devm_gpiod_get_optional(dev, "i2s1-in-sel-gpio2",
++							  GPIOD_OUT_LOW);
++	if (IS_ERR(priv->i2s1_in_mux_sel_2))
++		return dev_err_probe(dev, PTR_ERR(priv->i2s1_in_mux_sel_2),
++				     "error getting mux 2 selector\n");
+ 
+-	priv->i2s1_in_mux_gpio_sel_2 =
+-		of_get_named_gpio(dev->of_node, "i2s1-in-sel-gpio2", 0);
+-	if (gpio_is_valid(priv->i2s1_in_mux_gpio_sel_2)) {
+-		ret = devm_gpio_request(dev, priv->i2s1_in_mux_gpio_sel_2,
+-					"i2s1_in_mux_gpio_sel_2");
+-		if (ret)
+-			dev_warn(&pdev->dev, "%s devm_gpio_request fail2 %d\n",
+-				 __func__, ret);
+-		gpio_direction_output(priv->i2s1_in_mux_gpio_sel_2, 0);
+-	}
+ 	snd_soc_card_set_drvdata(card, priv);
+ 
+ 	ret = devm_snd_soc_register_card(&pdev->dev, card);
 
-Best regards,
 -- 
-Linus Walleij <linus.walleij@linaro.org>
+2.34.1
 
