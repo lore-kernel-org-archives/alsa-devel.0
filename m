@@ -4,79 +4,116 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CFD18E92FFD
-	for <alsa-devel@archiver.kernel.org>; Sat,  7 Oct 2023 07:43:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2767EE92FFD
+	for <alsa-devel@archiver.kernel.org>; Sat,  7 Oct 2023 07:47:34 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 329691F6;
-	Sat,  7 Oct 2023 09:42:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 329691F6
+	by alsa0.perex.cz (Postfix) with ESMTPS id A70DE206;
+	Sat,  7 Oct 2023 09:46:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A70DE206
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1696664613;
-	bh=NHlc0dHNzUfeJpmN0hzFeJnwUQepAyVX5MqOsTmblLs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1696664852;
+	bh=LdrtZ43DSAsZ59IN4KiUVAR5cs3WbC45n622Kd5imJY=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=XZOLd8875iikDQQWfmuOzlcbf/oZrvtohop6qkLcByAzSdCNxolDbnPmRDkb8zFz0
-	 1PVAT+Q1uZaPU+5Gxi5pA2QEQ7jAMSY6j8R2mfqDhZiBg4lkTesSTGUSAss04+uEeG
-	 Y2cy3IKs24VXu9pKHdeW76wUN4TA0QNQiYSsUDOg=
+	b=UXM9yMmA0f7Fd0ytu9PQPERhLSNt50Eai+eMcgDjL4X3ejExFjQl+/cjuOtg80DBC
+	 bfg/a5edBP01KEkPcWFGco6sVUfiPGmgNmNu5j3iIeriJj8c1bxSLreYfFY2/8DKIw
+	 egAbnvLVVNeIAiWNGvT2Y1QErOZ+NvR5A9wrNJrk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D4CB9F8055A; Sat,  7 Oct 2023 09:42:13 +0200 (CEST)
+	id 988AFF80549; Sat,  7 Oct 2023 09:46:13 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7D91EF8047D;
-	Sat,  7 Oct 2023 09:42:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 51828F8047D;
+	Sat,  7 Oct 2023 09:46:13 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A99B5F8047D; Sat,  7 Oct 2023 09:42:09 +0200 (CEST)
-Received: from muru.com (muru.com [72.249.23.125])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1D74BF800C1
-	for <alsa-devel@alsa-project.org>; Sat,  7 Oct 2023 09:42:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1D74BF800C1
-Received: from localhost (localhost [127.0.0.1])
-	by muru.com (Postfix) with ESMTPS id 45F88809E;
-	Sat,  7 Oct 2023 07:42:01 +0000 (UTC)
-Date: Sat, 7 Oct 2023 10:41:59 +0300
-From: Tony Lindgren <tony@atomide.com>
-To: Andreas Kemnade <andreas@kemnade.info>
-Cc: =?utf-8?B?UMOpdGVy?= Ujfalusi <peter.ujfalusi@gmail.com>,
-	bcousson@baylibre.com, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
-	tiwai@suse.com, jarkko.nikula@bitmer.com, dmitry.torokhov@gmail.com,
-	linux-omap@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-Subject: Re: [PATCH 1/3] ASoC: ti: omap-mcbsp: Ignore errors for getting
- fck_src
-Message-ID: <20231007074159.GX34982@atomide.com>
-References: <20230705190324.355282-1-andreas@kemnade.info>
- <20230705190324.355282-2-andreas@kemnade.info>
- <7d58d52d-2087-45af-b29e-2515b63ead13@gmail.com>
- <20230920063353.GQ5285@atomide.com>
- <dac768d2-2c66-4d6b-b3d3-d1ef69103c76@gmail.com>
- <20230921121626.GT5285@atomide.com>
- <20231006102348.GK34982@atomide.com>
- <20231006213003.0fbac87a@aktux>
- <20231007062518.GM34982@atomide.com>
- <20231007091156.588d7ba1@aktux>
+	id C5999F8047D; Fri,  6 Oct 2023 20:03:05 +0200 (CEST)
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com
+ [IPv6:2a00:1450:4864:20::434])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 69D70F80130
+	for <alsa-devel@alsa-project.org>; Fri,  6 Oct 2023 20:03:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 69D70F80130
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20230601 header.b=QcOhZYM9
+Received: by mail-wr1-x434.google.com with SMTP id
+ ffacd0b85a97d-3175e1bb38cso376313f8f.1
+        for <alsa-devel@alsa-project.org>;
+ Fri, 06 Oct 2023 11:03:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696615379; x=1697220179;
+ darn=alsa-project.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=DW5DjcAJlISg3sn4dnbscxpT4hEh5MjXjjwSsYat0ec=;
+        b=QcOhZYM9bkFvN6qDRAHIUaWkjqJ0UWE8+Vsf/cJnRrQH9k0fR8Nxm7EClNcwac+p7u
+         JWz84vl0aKwb1G6482BGAeMF4q+Lo0sPxoxz+fOc58Pa6VaXEyq9JDMerQPt5LFp3x0j
+         SX79UVp2RqP9RVGcTsVkZXyULuYoeav9zilR6a8XvbIT6IENu4wIXLKdsfp57nmyL8ey
+         zH1yAemmssamJ5LN/pyQmvjip1Qz6X+jovKvtGoF6JmMytn1DS8mVeJNmCM4MOsa4qLC
+         n5inIiEM1O/YnjgTZ3A+F961GsBfM9U31SPtoXXLtkdg7SWax8yItyTz4+Z4OxaiNd1X
+         z5Cw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696615379; x=1697220179;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=DW5DjcAJlISg3sn4dnbscxpT4hEh5MjXjjwSsYat0ec=;
+        b=BYvYBMmlfYRsqGiwG40EERWXPf2voEvohpy9++FXzXT5MSVjrTfFvTYONdnXAQYZTm
+         ERx70xMwAFTE+FoEUwfBbe01PVXFn6euXHnAHe1E98HeCUJxyLjJnGuBYO55lxlXsqzZ
+         6SAT84TPj7njhLG0x01kcwDiRs4T6S893JDZymhI+/DzNvI2kAs544u3qKEf4guJhuTF
+         9dtUz7g+d1ljYH5TxmECjxNXIfnjGukiOFYfJSUaOksoUOG+FCo+tiOHCKsu6by3eXK3
+         VtX1hRJ06F8KaG3xGQ/f1iGyHyAopTTn83Z7L0c3SRBqdlOuSrN0ollQ0voXZIWJXuKX
+         yAMA==
+X-Gm-Message-State: AOJu0YxUuYD9itoHR0rblXumeXlO95BiOcsSioo/QtRcfceN7qDCMbFW
+	ihqNdRJILeiX97bKTX7/cY4=
+X-Google-Smtp-Source: 
+ AGHT+IE3rPgMYpXgMKooXH0DQLexRyaKcUcmKebwZM6Kl3hFNlUUhmaaSDA2KHIsA8aGt7JMQzno8A==
+X-Received: by 2002:a5d:5687:0:b0:317:73e3:cf41 with SMTP id
+ f7-20020a5d5687000000b0031773e3cf41mr7453777wrv.1.1696615378930;
+        Fri, 06 Oct 2023 11:02:58 -0700 (PDT)
+Received: from ?IPV6:2a01:4b00:e405:da00:cf04:a7d5:e45d:73bf?
+ ([2a01:4b00:e405:da00:cf04:a7d5:e45d:73bf])
+        by smtp.gmail.com with ESMTPSA id
+ v11-20020a5d6b0b000000b00324853fc8adsm2129192wrw.104.2023.10.06.11.02.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 06 Oct 2023 11:02:58 -0700 (PDT)
+Message-ID: <2fa1f433-326a-8eb6-b01e-e34ff82a2dd9@gmail.com>
+Date: Fri, 6 Oct 2023 19:02:56 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231007091156.588d7ba1@aktux>
-Message-ID-Hash: WNPHPWNIPDO654QHGMJT2O4RIKC4G2UT
-X-Message-ID-Hash: WNPHPWNIPDO654QHGMJT2O4RIKC4G2UT
-X-MailFrom: tony@atomide.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH 1/2] ALSA: aloop: Add support for the non-interleaved
+ access mode
+Content-Language: en-US
+To: Jaroslav Kysela <perex@perex.cz>, tiwai@suse.com
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+References: <20230927113555.14877-1-ivan.orlov0322@gmail.com>
+ <b9b2ea05-9d10-d263-f08a-5e3cf1f33a9d@perex.cz>
+From: Ivan Orlov <ivan.orlov0322@gmail.com>
+In-Reply-To: <b9b2ea05-9d10-d263-f08a-5e3cf1f33a9d@perex.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-MailFrom: ivan.orlov0322@gmail.com
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: TLOASCUSBU2QRXNUNRU6WHHD7IANM7GW
+X-Message-ID-Hash: TLOASCUSBU2QRXNUNRU6WHHD7IANM7GW
+X-Mailman-Approved-At: Sat, 07 Oct 2023 07:46:08 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WNPHPWNIPDO654QHGMJT2O4RIKC4G2UT/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TLOASCUSBU2QRXNUNRU6WHHD7IANM7GW/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -85,14 +122,48 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-* Andreas Kemnade <andreas@kemnade.info> [231007 07:12]:
-> Well, it is a regression caused by your fix. Without it (and not reverting
-> the already applied ignore patch), runtime is properly suspended. Don't know
-> why yet.
+On 10/5/23 08:23, Jaroslav Kysela wrote:
+> On 27. 09. 23 13:35, Ivan Orlov wrote:
+>> The current version of the loopback driver supports interleaved access
+>> mode only. This patch introduces support for the non-interleaved
+>> access mode.
+>>
+>> When in the interleaved mode, the 'copy_play_buf' function copies data
+>> from the playback to the capture buffer using one memcpy call. This call
+>> copies samples for multiple, interleaved channels.
+>>
+>> In the non-interleaved mode we have multiple channel buffers, so we have
+>> to perform multiple memcpy calls to copy samples channel after channel.
+>>
+>> Add new function called 'copy_play_buf_part_n', which copies a part of
+>> each channel buffer from playback to capture. Modify the 'copy_play_buf'
+>> to use the corresponding memory copy function(just memcpy /
+>> copy_play_buf_part_n) depending on the access mode.
+>>
+>> Signed-off-by: Ivan Orlov <ivan.orlov0322@gmail.com>
+> 
+> Nice extension. Thank you.
+> 
+>> +static void copy_play_buf_part_n(struct loopback_pcm *play, struct 
+>> loopback_pcm *capt,
+>> +                 unsigned int size, unsigned int src_off, unsigned 
+>> int dst_off)
+> 
+> I would probably prefer to have dst,src,size arguments to follow memcpy, 
+> but it's really nitpicking.
+> 
+> Reviewed-by: Jaroslav Kysela <perex@perex.cz>
+> 
+>                      Jaroslav
+> 
 
-We return early from omap2_mcbsp_set_clks_src() with IS_ERR(fck_src) and
-the runtime PM functions never get called?
+Hi Jaroslav,
 
-Regards,
+Thank you for the review!
 
-Tony
+I agree that parameters similar to the memcpy would look better than 
+that, I'll keep it in mind when I send the next patch :)
+
+--
+Kind regards,
+Ivan Orlov
