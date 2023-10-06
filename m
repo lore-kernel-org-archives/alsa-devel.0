@@ -4,105 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4555CE81DFE
-	for <alsa-devel@archiver.kernel.org>; Fri,  6 Oct 2023 13:50:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 37EE8E81E17
+	for <alsa-devel@archiver.kernel.org>; Fri,  6 Oct 2023 16:45:50 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 78ABA1ED;
-	Fri,  6 Oct 2023 15:49:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 78ABA1ED
+	by alsa0.perex.cz (Postfix) with ESMTPS id 524591E9;
+	Fri,  6 Oct 2023 18:44:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 524591E9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1696600213;
-	bh=hNwobKa48WJv//EchZDoR3HbTlqXpOazNxNUHgFwOlg=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=cnc3UscEAkDH9AWFMRhm18WEa4QtoocooYzEO9NJun40Crnmnxey6GBz5lW6k+KZP
-	 IJTar/A4wIJviOzSwPXaxLmkxiC5yjTmN5PRMcvzwep8v/fK6wYiNxUqyJoTpXJDGQ
-	 K1Ro14vgWI5uHfMWZE5cUYjhRD1jiqwVuP8Qc/gs=
+	s=default; t=1696610748;
+	bh=yvhNsLnwiyr48VtlTcC6g0J3+g5Eo4mUItGUwTt7yjo=;
+	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=sX4vd+sUUTsSSVu9rMzJsfryMzPe1DQDdxzhMuiEpzOq0W+8/1aa1cdTWFsCgeTft
+	 m4eXiceMD0YNY0K90ZaFYhXMzdpqT1r5uIJ7EW5Isi0HToFJXCWXSN3YC+3Fs7nLaW
+	 YWGNNy6gIrkZuAuknewCbr9jpGtXRiHyMegotNfg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8C39CF805E4; Fri,  6 Oct 2023 15:47:36 +0200 (CEST)
+	id 2A257F8055A; Fri,  6 Oct 2023 18:44:26 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1460CF805E4;
-	Fri,  6 Oct 2023 15:47:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9406FF801EB;
+	Fri,  6 Oct 2023 18:44:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0FDFAF80558; Fri,  6 Oct 2023 15:47:29 +0200 (CEST)
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com
- [IPv6:2a00:1450:4864:20::132])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id C4780F8047D; Fri,  6 Oct 2023 18:44:21 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 3F6FEF80551
-	for <alsa-devel@alsa-project.org>; Fri,  6 Oct 2023 15:46:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3F6FEF80551
+	by alsa1.perex.cz (Postfix) with ESMTPS id 351A0F80130
+	for <alsa-devel@alsa-project.org>; Fri,  6 Oct 2023 18:44:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 351A0F80130
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=c3MT7Oyp
-Received: by mail-lf1-x132.google.com with SMTP id
- 2adb3069b0e04-5046bf37daeso2812076e87.1
-        for <alsa-devel@alsa-project.org>;
- Fri, 06 Oct 2023 06:46:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696599991; x=1697204791;
- darn=alsa-project.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=yLHdfqqmxuwlIGJBiB8XcSmFMMCFwMYGv/NG27m7YvI=;
-        b=c3MT7OypBKgNEHROtyVLUd6tAf1XC7qKoSzFaw9gUbRtnN/932+3mVLMldbozSAHda
-         9fD6Y/CsDcVtgqfnVZNGFfsjoWsg+O3sUFo6rBmide+6bYzQZQWInO/0+4Gj/Lr8p3W4
-         VcfSt4vlhg53oXl3UNf3eA5SK5LqS9ma2LhckV6DkEAbqlKquDsFZoaxQgHLj/PIC0Xn
-         BikJ/w5XPCrnbo4U9zPa/je+jZjV5OTy3O/HUFgzMvO+Af3XXmVFKxhUxPHDZn31z83i
-         VhiUJI3t1caSfnrIfgWGIjL73DSa60PRxDZDbNQFn75SYGLt8a7KUBJi5fnaxcCTxEiV
-         1HzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696599991; x=1697204791;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yLHdfqqmxuwlIGJBiB8XcSmFMMCFwMYGv/NG27m7YvI=;
-        b=XAv/nyiO/xb6tnx9IlhfiD0oS/Nxltw4aFSOrnykcTtIq8De/xnPJjdZZU15dWYbrS
-         IbTE5m16ID2lIlmdqKB9NV91QknkgdHZ3X+F2RHAj22u3JHKcO3XcrWd/r4FjKruESwi
-         UOp2Z0ginr4i0JXaL+vG8jPvHBfuycgz7vAhmdV/TxO2V4gK0JEXTaAfq5PZKGoqICiG
-         3i1n3d49UrwxrvvWon4aiSed2OtjsGBS1FC5Ku2lnFMkv+GmURpMWyyvADIvqGyEyHne
-         68j8zMzyld96CohOC5pf99C/8fxceNgo9KLBoXbEbnIlTSYYZaO67XVcjthYs61NMvbo
-         xu4g==
-X-Gm-Message-State: AOJu0Yyn0O/z1fo+7KIucLd8Nx/5USYuyEBkY0jXSWwV6mufYXmcZH4a
-	dp4ObfkPZhGLQvQ372FSXUjPQULvrkjEJuAv2dY=
-X-Google-Smtp-Source: 
- AGHT+IHH6cMZMIc0p+3s1aNepbYLEIdwjOGFxWA8k3GZHEzIsKgLBMyNC5q7KJmT2KWbBpAGygbDMw==
-X-Received: by 2002:ac2:5e21:0:b0:502:ff3b:766f with SMTP id
- o1-20020ac25e21000000b00502ff3b766fmr6194209lfg.6.1696599991178;
-        Fri, 06 Oct 2023 06:46:31 -0700 (PDT)
-Received: from [127.0.1.1] ([85.235.12.238])
-        by smtp.gmail.com with ESMTPSA id
- v25-20020a197419000000b004fe37199b87sm308733lfe.156.2023.10.06.06.46.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Oct 2023 06:46:30 -0700 (PDT)
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Fri, 06 Oct 2023 15:46:27 +0200
-Subject: [PATCH 4/8] ASoC: mt8173-rt5650-rt5514: Drop unused includes
+ unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
+ header.s=PODMain02222019 header.b=hN1uLARq
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+	by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id
+ 3965fxui025983;
+	Fri, 6 Oct 2023 11:44:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=PODMain02222019; bh=p
+	H+b7cTnbRfSavq8cBv4h/A1y4bvx50yn5YvvvNOCj0=; b=hN1uLARqUxZxNaej5
+	5gux3uKBYvy/j2b8lnFGtq4n8vdSjuXAnXV/WZIHiS9XabcXwFE5sRogoiHpeBs0
+	UpYYbxzylxn54K2IkLihlN4tQOOjfc6GOf0YeJ/J7ZVi4+hWewm2uzNq9YEBLBFc
+	2x9nzxNKOH8n2iHpCTAnJ6qm4VoBKgiB6JcXmCe6txiPllpKKrXQooZGJX6xAK9p
+	cKdy9z4WUwinbqPVeOevciZE+9OCz4+hji5A5pDIXlW6yTxNt73Y7DjY/dWlJxbH
+	Td/obIFZ7TCI+6BSQv7vwTUseKAZtOUuLRoCdVcHsyOMilaGRkxf3SJynoRxpPWl
+	y5LZg==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3th2dtc30q-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 06 Oct 2023 11:44:10 -0500 (CDT)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Fri, 6 Oct
+ 2023 17:44:08 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.37 via Frontend
+ Transport; Fri, 6 Oct 2023 17:44:08 +0100
+Received: from work-debian.ad.cirrus.com (unknown [198.61.64.45])
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 0E3B2B2F;
+	Fri,  6 Oct 2023 16:44:08 +0000 (UTC)
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
+To: <broonie@kernel.org>
+CC: <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
+        <patches@opensource.cirrus.com>,
+        Richard Fitzgerald
+	<rf@opensource.cirrus.com>
+Subject: [PATCH] ASoC: cs35l56: Fix illegal use of init_completion()
+Date: Fri, 6 Oct 2023 17:44:05 +0100
+Message-ID: <20231006164405.253796-1-rf@opensource.cirrus.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231006-descriptors-asoc-mediatek-v1-4-07fe79f337f5@linaro.org>
-References: <20231006-descriptors-asoc-mediatek-v1-0-07fe79f337f5@linaro.org>
-In-Reply-To: <20231006-descriptors-asoc-mediatek-v1-0-07fe79f337f5@linaro.org>
-To: Bartosz Golaszewski <brgl@bgdev.pl>, Andy Shevchenko <andy@kernel.org>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
- alsa-devel@alsa-project.org, Linus Walleij <linus.walleij@linaro.org>
-X-Mailer: b4 0.12.3
-Message-ID-Hash: ZVQ2255CVDZTSAFXFNEYG3MAUXH6IAQE
-X-Message-ID-Hash: ZVQ2255CVDZTSAFXFNEYG3MAUXH6IAQE
-X-MailFrom: linus.walleij@linaro.org
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: y9UfC_QQ_r_8KptxzeJwrtZ5C0U7ECQu
+X-Proofpoint-GUID: y9UfC_QQ_r_8KptxzeJwrtZ5C0U7ECQu
+X-Proofpoint-Spam-Reason: safe
+Message-ID-Hash: UKJPGZFTFDBJJPVJRTQREDLMRVXQESAO
+X-Message-ID-Hash: UKJPGZFTFDBJJPVJRTQREDLMRVXQESAO
+X-MailFrom: prvs=5643372036=rf@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -114,7 +96,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZVQ2255CVDZTSAFXFNEYG3MAUXH6IAQE/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UKJPGZFTFDBJJPVJRTQREDLMRVXQESAO/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -123,29 +105,26 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-This driver includes the legacy GPIO header <linux/gpio.h> and
-<linux/of_gpio.h> but does not use any symbols from either of
-them so drop the includes.
+Fix cs35l56_patch() to call reinit_completion() to reinitialize
+the completion object.
 
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+It was incorrectly using init_completion().
+
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+Fixes: e49611252900 ("ASoC: cs35l56: Add driver for Cirrus Logic CS35L56")
 ---
- sound/soc/mediatek/mt8173/mt8173-rt5650-rt5514.c | 2 --
- 1 file changed, 2 deletions(-)
+ sound/soc/codecs/cs35l56.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/mediatek/mt8173/mt8173-rt5650-rt5514.c b/sound/soc/mediatek/mt8173/mt8173-rt5650-rt5514.c
-index e502cd1670ba..0204b461e291 100644
---- a/sound/soc/mediatek/mt8173/mt8173-rt5650-rt5514.c
-+++ b/sound/soc/mediatek/mt8173/mt8173-rt5650-rt5514.c
-@@ -7,8 +7,6 @@
-  */
+diff --git a/sound/soc/codecs/cs35l56.c b/sound/soc/codecs/cs35l56.c
+index 232af4e8faa4..8ccdd3f134a5 100644
+--- a/sound/soc/codecs/cs35l56.c
++++ b/sound/soc/codecs/cs35l56.c
+@@ -708,3 +708,3 @@ static void cs35l56_patch(struct cs35l56_private *cs35l56)
  
- #include <linux/module.h>
--#include <linux/gpio.h>
--#include <linux/of_gpio.h>
- #include <sound/soc.h>
- #include <sound/jack.h>
- #include "../../codecs/rt5645.h"
-
+-	init_completion(&cs35l56->init_completion);
++	reinit_completion(&cs35l56->init_completion);
+ 
 -- 
-2.34.1
+2.30.2
 
