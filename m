@@ -4,68 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C145BE936FB
-	for <alsa-devel@archiver.kernel.org>; Fri,  6 Oct 2023 11:12:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B08FDE936FB
+	for <alsa-devel@archiver.kernel.org>; Fri,  6 Oct 2023 11:12:44 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 11B64F0;
-	Fri,  6 Oct 2023 13:11:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 11B64F0
+	by alsa0.perex.cz (Postfix) with ESMTPS id C6E0B828;
+	Fri,  6 Oct 2023 13:11:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C6E0B828
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1696590748;
-	bh=+okZeCy4YEMvfRqP0z4i0l5cjxr9KbrkVDAGvXbHtRw=;
+	s=default; t=1696590762;
+	bh=bqOSyfytZTZ/0+klzRV33sy5WWdaXYikD4gJtQvmbhY=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=mQqZQHhXGndVGeeJcojwlKuspzdM7OtHslYyarfuAJ7YpG65rLM9KrjA0i6aB56WD
-	 zG3xbTnq3x+fbaZimbZL/1RrMlUQIFUQ9ThL/4PmW0iVoaJNKnK0XwwA5/kcSBVvuC
-	 q2/Amf1bPqHHk83X+6u8mju0SgA69K8dMfUXf5t0=
+	b=fNnj9Eefw3Oiz1qtPTrnp3sZ8rEMzS1W/BuOCOjYckuaD2bXKFLv3FQEY6OwUcRfl
+	 +TjRilwpXPkgLvRmhuUDfXFdGCp3pfMTYQbm8n8IioI+A5HXqPNek5c5t9EwSG8ziB
+	 5dUq5KJnWy7FrG/DpgISVIsyotwDOdWibRzJuOpg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B0001F80552; Fri,  6 Oct 2023 13:11:01 +0200 (CEST)
+	id 18A1EF80564; Fri,  6 Oct 2023 13:11:03 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id EDA32F8047D;
-	Fri,  6 Oct 2023 13:11:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 61C13F80564;
+	Fri,  6 Oct 2023 13:11:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 810DEF80553; Fri,  6 Oct 2023 13:10:55 +0200 (CEST)
+	id A1C66F80552; Fri,  6 Oct 2023 13:10:57 +0200 (CEST)
 Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 880F8F80166
-	for <alsa-devel@alsa-project.org>; Fri,  6 Oct 2023 13:10:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 880F8F80166
+	by alsa1.perex.cz (Postfix) with ESMTPS id B19FEF80310
+	for <alsa-devel@alsa-project.org>; Fri,  6 Oct 2023 13:10:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B19FEF80310
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=DpTv58/r
+ header.s=PODMain02222019 header.b=XcLCzlUy
 Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
 	by mx0b-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id
- 396An4mD006823;
+ 396An4mE006823;
 	Fri, 6 Oct 2023 06:10:44 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
 	:mime-version:content-transfer-encoding:content-type; s=
-	PODMain02222019; bh=0zBqGPEQTQ7H/6c/RrnU9opyRaEYN9jVzR4spOSXdYI=; b=
-	DpTv58/rHiV2u/LVDUIFqqlkCsb/+hcY0tyZznH4kN3eEALncTzco2Tg8GHr4WKL
-	RXDycWbUaNA4d35Mz8xofJ4CZDVOMEO1eRRfCgENbBASFK8zgU9LgeQaYaZV2lXj
-	aTKKhxkPgjB5GU3EnvXIlOFa3/FneiD8IKOBKy20fGDHjFDLSGG6kg3/Kb4kraV5
-	ryMk381rqeipdr6DUMhfe/eXG7EtrFBfVQDSvmw0sa1sS/lMqLfM/Ic4iZn1XmtP
-	EIVl5LoA0Hj0l1h4BG7H4jLnj9BHdXKuvBWjL3K9MxcE5OniFHFTtzOy5MbLf1iE
-	+fUVEWrkW/WqM0gA8Cve2g==
+	PODMain02222019; bh=g8oiQTo8bruK3bLc2ltLGw1QTSsNOM4NkrryXMd4wTo=; b=
+	XcLCzlUyVPBMMkJDA2uTe6duhysQotdFctsjKRKwrCv/5/YHRZanSHTZp3DlT39F
+	ySEzu6ZihTVgjr7U26jiYGpLsHOzWt0cEH8inqp94Os4xVGjtNh9H33U05+j7Ruw
+	HusqwGuJifvxWfy0wm73k3H6ozLwVdw5pFYLyvIW6oyxHGeHfjigvcKAl83bFmz9
+	0t+k6hejFgcMovblAPrZxBUjws4TkO4M8y3t6S6hFrL3hab8RcDGwyqq5Vrw0jDH
+	1I3JmAajQcC+yuzrW8yHtYblGEs5uIW4dfhSIzWmtWDtFVpO5f2slTfO+iOvnaMX
+	cyj0LPwDZDp2N85WA71d2Q==
 Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3teg3k812p-1
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3teg3k812p-2
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Fri, 06 Oct 2023 06:10:44 -0500 (CDT)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Fri, 6 Oct
- 2023 12:10:42 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.37 via Frontend Transport; Fri, 6 Oct 2023 12:10:42 +0100
+ 2023 12:10:43 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.37 via Frontend
+ Transport; Fri, 6 Oct 2023 12:10:43 +0100
 Received: from work-debian.ad.cirrus.com (unknown [198.61.64.45])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 4B69A15B9;
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 058C43575;
 	Fri,  6 Oct 2023 11:10:42 +0000 (UTC)
 From: Richard Fitzgerald <rf@opensource.cirrus.com>
 To: <broonie@kernel.org>
@@ -74,21 +74,20 @@ CC: <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
         Simon Trimmer
 	<simont@opensource.cirrus.com>,
         Richard Fitzgerald <rf@opensource.cirrus.com>
-Subject: [PATCH 1/4] ASoC: cs35l56: Change hibernate sequence to use allow
- auto hibernate
-Date: Fri, 6 Oct 2023 12:10:36 +0100
-Message-ID: <20231006111039.101914-2-rf@opensource.cirrus.com>
+Subject: [PATCH 3/4] ASoC: cs35l56: Enable low-power hibernation mode on i2c
+Date: Fri, 6 Oct 2023 12:10:38 +0100
+Message-ID: <20231006111039.101914-4-rf@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20231006111039.101914-1-rf@opensource.cirrus.com>
 References: <20231006111039.101914-1-rf@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: vuHgu9vlpzucuUgr3uO0ndyVgfLXYYqA
-X-Proofpoint-ORIG-GUID: vuHgu9vlpzucuUgr3uO0ndyVgfLXYYqA
+X-Proofpoint-GUID: kcUkljDucTnCyy5E_GLIs-2oIMLT0mAc
+X-Proofpoint-ORIG-GUID: kcUkljDucTnCyy5E_GLIs-2oIMLT0mAc
 X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: TWYJWR4HTGQWGZKHF6ENIM5K6HGSRO47
-X-Message-ID-Hash: TWYJWR4HTGQWGZKHF6ENIM5K6HGSRO47
+Message-ID-Hash: G52F3XFONQKBIHTQB7FCS67QAQ6VIPHV
+X-Message-ID-Hash: G52F3XFONQKBIHTQB7FCS67QAQ6VIPHV
 X-MailFrom: prvs=5643372036=rf@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -101,7 +100,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TWYJWR4HTGQWGZKHF6ENIM5K6HGSRO47/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/G52F3XFONQKBIHTQB7FCS67QAQ6VIPHV/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -112,62 +111,27 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Simon Trimmer <simont@opensource.cirrus.com>
 
-If the hardware uses SPI_MOSI, I2C_SCL or I2C_SDA as the wake source
-the bus activity of sending HIBERNATE_NOW will wake up the amps that
-were already put into hibernate.
-
-ALLOW_AUTO_HIBERNATE tells the firmware to hibernate itself after a
-timeout of a few seconds, giving the driver instances time to send this
-before any amps have gone into hibernate.
+This can now be re-enabled as the sequence to reliably wake the device
+has been implemented in the shared code.
 
 Signed-off-by: Simon Trimmer <simont@opensource.cirrus.com>
 Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 ---
- sound/soc/codecs/cs35l56-shared.c | 15 +++++----------
- 1 file changed, 5 insertions(+), 10 deletions(-)
+ sound/soc/codecs/cs35l56-i2c.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/codecs/cs35l56-shared.c b/sound/soc/codecs/cs35l56-shared.c
-index 01b6fa97b36b..68dc93b82789 100644
---- a/sound/soc/codecs/cs35l56-shared.c
-+++ b/sound/soc/codecs/cs35l56-shared.c
-@@ -439,7 +439,7 @@ EXPORT_SYMBOL_NS_GPL(cs35l56_is_fw_reload_needed, SND_SOC_CS35L56_SHARED);
+diff --git a/sound/soc/codecs/cs35l56-i2c.c b/sound/soc/codecs/cs35l56-i2c.c
+index 9e5670b09af6..7063c400e896 100644
+--- a/sound/soc/codecs/cs35l56-i2c.c
++++ b/sound/soc/codecs/cs35l56-i2c.c
+@@ -27,6 +27,7 @@ static int cs35l56_i2c_probe(struct i2c_client *client)
+ 		return -ENOMEM;
  
- static const struct reg_sequence cs35l56_hibernate_seq[] = {
- 	/* This must be the last register access */
--	REG_SEQ0(CS35L56_DSP_VIRTUAL1_MBOX_1, CS35L56_MBOX_CMD_HIBERNATE_NOW),
-+	REG_SEQ0(CS35L56_DSP_VIRTUAL1_MBOX_1, CS35L56_MBOX_CMD_ALLOW_AUTO_HIBERNATE),
- };
+ 	cs35l56->base.dev = dev;
++	cs35l56->base.can_hibernate = true;
  
- static const struct reg_sequence cs35l56_hibernate_wake_seq[] = {
-@@ -473,12 +473,6 @@ int cs35l56_runtime_suspend_common(struct cs35l56_base *cs35l56_base)
- 		return 0;
- 	}
- 
--	/*
--	 * Enable auto-hibernate. If it is woken by some other wake source
--	 * it will automatically return to hibernate.
--	 */
--	cs35l56_mbox_send(cs35l56_base, CS35L56_MBOX_CMD_ALLOW_AUTO_HIBERNATE);
--
- 	/*
- 	 * Must enter cache-only first so there can't be any more register
- 	 * accesses other than the controlled hibernate sequence below.
-@@ -545,11 +539,12 @@ int cs35l56_runtime_resume_common(struct cs35l56_base *cs35l56_base, bool is_sou
- 	return 0;
- 
- err:
--	regmap_write(cs35l56_base->regmap, CS35L56_DSP_VIRTUAL1_MBOX_1,
--		     CS35L56_MBOX_CMD_HIBERNATE_NOW);
--
- 	regcache_cache_only(cs35l56_base->regmap, true);
- 
-+	regmap_multi_reg_write_bypassed(cs35l56_base->regmap,
-+					cs35l56_hibernate_seq,
-+					ARRAY_SIZE(cs35l56_hibernate_seq));
-+
- 	return ret;
- }
- EXPORT_SYMBOL_NS_GPL(cs35l56_runtime_resume_common, SND_SOC_CS35L56_SHARED);
+ 	i2c_set_clientdata(client, cs35l56);
+ 	cs35l56->base.regmap = devm_regmap_init_i2c(client, regmap_config);
 -- 
 2.30.2
 
