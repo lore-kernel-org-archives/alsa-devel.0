@@ -4,76 +4,102 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B2185E92FF2
-	for <alsa-devel@archiver.kernel.org>; Fri,  6 Oct 2023 07:12:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4FB36E92FF8
+	for <alsa-devel@archiver.kernel.org>; Fri,  6 Oct 2023 08:37:22 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3B3FC1E4;
-	Fri,  6 Oct 2023 09:12:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3B3FC1E4
+	by alsa0.perex.cz (Postfix) with ESMTPS id BAE721DD;
+	Fri,  6 Oct 2023 10:36:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BAE721DD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1696576375;
-	bh=rM04QNF83DbXEdI05diJhC14LTLT2iGFWHeRrD+pYoU=;
-	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=UZlAdGowCBjh8D1ewdIQTjuPn23+EHgtf9ey2s3hgD4BvX9JrqQW50GpqNOdO7fjj
-	 9UiOPtHF4LlcN3e30VwAvuVabwYTBh4r04gK3ypNydsL8dCpu+dI5a72phFIrfowM5
-	 6xiuRwS9Vfni/yLdgs0Lm3pDdXPzv0MrnbjMyRwY=
+	s=default; t=1696581439;
+	bh=KtBfDnC5QE3SQefK/lpnA2k/F1dmertOLh45/HgIiZA=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=iKU19BpzoIa42aIX16VhaQDOgbSbg7evatwHJfjAFJy/j6YqdodFrG44DbuEtgAZe
+	 uFSudLrcRlr0ZMTUdnGWzJI3llhtExPOgjWE4Vr+BiwNrCvemX3la3TNcFcgWl5grU
+	 tMYNCFuNrqmicYrztq41HTXDHbA7sr7ffY4v+gJg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B817FF80310; Fri,  6 Oct 2023 09:11:33 +0200 (CEST)
+	id 6CBDBF8055A; Fri,  6 Oct 2023 10:36:19 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 42C02F8047D;
-	Fri,  6 Oct 2023 09:11:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 98F5CF80130;
+	Fri,  6 Oct 2023 10:36:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 12541F8047D; Fri,  6 Oct 2023 09:08:38 +0200 (CEST)
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+	id 6E9F4F8047D; Fri,  6 Oct 2023 10:36:09 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2001:67c:2178:6::1d])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D2337F801EB
-	for <alsa-devel@alsa-project.org>; Fri,  6 Oct 2023 09:08:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D2337F801EB
-X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 396786IT01526042,
- This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36506.realtek.com.tw[172.21.6.27])
-	by rtits2.realtek.com.tw (8.15.2/2.92/5.92) with ESMTPS id 396786IT01526042
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 6 Oct 2023 15:08:06 +0800
-Received: from RTEXDAG01.realtek.com.tw (172.21.6.100) by
- RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.17; Fri, 6 Oct 2023 15:08:06 +0800
-Received: from RTEXMBS01.realtek.com.tw (172.21.6.94) by
- RTEXDAG01.realtek.com.tw (172.21.6.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.7; Fri, 6 Oct 2023 15:08:05 +0800
-Received: from RTEXMBS01.realtek.com.tw ([fe80::9cb8:8d5:b6b3:213b]) by
- RTEXMBS01.realtek.com.tw ([fe80::9cb8:8d5:b6b3:213b%5]) with mapi id
- 15.01.2375.007; Fri, 6 Oct 2023 15:08:05 +0800
-From: Kailang <kailang@realtek.com>
-To: "Takashi Iwai (tiwai@suse.de)" <tiwai@suse.de>
-CC: " (alsa-devel@alsa-project.org)" <alsa-devel@alsa-project.org>
-Subject: Intel RVP board change model
-Thread-Topic: Intel RVP board change model
-Thread-Index: Adn4I3n7aoo5V46ZSiu2wz08AyJNDg==
-Date: Fri, 6 Oct 2023 07:08:05 +0000
-Message-ID: <28112f54c0c6496f97ac845645bc0256@realtek.com>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: yes
-x-originating-ip: [172.22.102.106]
-x-kse-serverinfo: RTEXDAG01.realtek.com.tw, 9
-x-kse-antispam-interceptor-info: fallback
-x-kse-antivirus-interceptor-info: fallback
-Content-Type: multipart/mixed;
-	boundary="_002_28112f54c0c6496f97ac845645bc0256realtekcom_"
-MIME-Version: 1.0
-X-KSE-AntiSpam-Interceptor-Info: fallback
-Message-ID-Hash: J42VEQMMZCZ5XHKWUJI55YEYWI25Y25V
-X-Message-ID-Hash: J42VEQMMZCZ5XHKWUJI55YEYWI25Y25V
-X-MailFrom: kailang@realtek.com
+	by alsa1.perex.cz (Postfix) with ESMTPS id 0DBC9F80130
+	for <alsa-devel@alsa-project.org>; Fri,  6 Oct 2023 10:35:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0DBC9F80130
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=wP2UXOhu;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=UhUaC8ON
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 6BDBF1F45F;
+	Fri,  6 Oct 2023 08:35:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1696581357;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ZGO2mlUqE3aPcsibFoQXFlBLId1U3oI6EbfB7CylCGI=;
+	b=wP2UXOhuOPQagS4qtjhTDzOcJuBmqZQagcfwVqH74ZrdSomM771xtKx2HusMgvXX2t8vRU
+	Q9AHM8DQNRsnBvPCfLO1SqNw1qChCJE18GgPl2qRrDiGhgBSIdPbpOsblcmopRWlMfflKq
+	I4NQSQxpUVFk6fNFzmnRcFF8SU296Io=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1696581357;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ZGO2mlUqE3aPcsibFoQXFlBLId1U3oI6EbfB7CylCGI=;
+	b=UhUaC8ONSa4MQOaXEnJZh82SKSYlYnn6Nro96QOl8VO42nDc7URMp0BCzwdElCIibJ+vrL
+	CSLUS6HXWR9G/QCg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2575F13A2E;
+	Fri,  6 Oct 2023 08:35:57 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id KvsuCO3GH2W+GQAAMHmgww
+	(envelope-from <tiwai@suse.de>); Fri, 06 Oct 2023 08:35:57 +0000
+Date: Fri, 06 Oct 2023 10:35:56 +0200
+Message-ID: <87zg0ww3kj.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Ma Ke <make_ruc2021@163.com>
+Cc: perex@perex.cz,
+	tiwai@suse.com,
+	mhocko@suse.com,
+	mgorman@techsingularity.net,
+	42.hyeyoo@gmail.com,
+	surenb@google.com,
+	alsa-devel@alsa-project.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] ALSA: pcm: oss: Fix race at SNDCTL_DSP_SETTRIGGER
+In-Reply-To: <20230921135837.3590897-1-make_ruc2021@163.com>
+References: <20230921135837.3590897-1-make_ruc2021@163.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Message-ID-Hash: IJMCNVVZMM7Z6NIWZMDQJAVD7J6HNCNR
+X-Message-ID-Hash: IJMCNVVZMM7Z6NIWZMDQJAVD7J6HNCNR
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -85,7 +111,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/J42VEQMMZCZ5XHKWUJI55YEYWI25Y25V/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IJMCNVVZMM7Z6NIWZMDQJAVD7J6HNCNR/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -94,61 +120,85 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
---_002_28112f54c0c6496f97ac845645bc0256realtekcom_
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+On Thu, 21 Sep 2023 15:58:37 +0200,
+Ma Ke wrote:
+> 
+> There is a small race window at snd_pcm_oss_set_trigger() that is
+> called from OSS PCM SNDCTL_DSP_SETTRIGGER ioctl; namely the function
+> calls snd_pcm_oss_make_ready() at first, then takes the params_lock
+> mutex for the rest. When the stream is set up again by another thread
+> between them, it leads to inconsistency, and may result in unexpected
+> results such as NULL dereference of OSS buffer as a fuzzer spotted
+> recently.
+> The fix is simply to cover snd_pcm_oss_make_ready() call into the same
+> params_lock mutex with snd_pcm_oss_make_ready_locked() variant.
 
-Hi Takashi,
+Sorry for the late response, as I've been (still) off since the last
+week.
 
-Intel RVP board has lose headset Mic issue via reboot state.
-Attach patch will solve it.
+The code change itself looks OK, but unlike the change (with almost
+same changelog) in commit 8423f0b6d513, this won't hit a serious
+problem like NULL dereference.  The code path merely sets
+runtime->oss.trigger and start_threshold flags, then issues the ioctl
+outside the lock.
 
-BR,
-Kailang
+Unless you really hit a problem with a fuzzer, the changelog is
+misleading and better to be rewritten.
 
---_002_28112f54c0c6496f97ac845645bc0256realtekcom_
-Content-Type: application/octet-stream; name="0000-Intel-rvp-board.patch"
-Content-Description: 0000-Intel-rvp-board.patch
-Content-Disposition: attachment; filename="0000-Intel-rvp-board.patch";
-	size=2042; creation-date="Tue, 03 Oct 2023 08:57:57 GMT";
-	modification-date="Fri, 06 Oct 2023 07:04:30 GMT"
-Content-Transfer-Encoding: base64
 
-RnJvbSAxMWUwNzI4ZTE2NmRkZGQ5YzU3OWQ3M2U2OGI5YWZjYzJjYzUyMTZkIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBLYWlsYW5nIFlhbmcgPGthaWxhbmdAcmVhbHRlay5jb20+CkRh
-dGU6IEZyaSwgNiBPY3QgMjAyMyAxNDo0NzozNyArMDgwMApTdWJqZWN0OiBbUEFUQ0hdIEFMU0E6
-IGhkYS9yZWFsdGVrOiBDaGFuZ2UgbW9kZWwgZm9yIEludGVsIFJWUCBib2FyZAoKSW50ZWwgUlZQ
-IGJvYXJkICgweDEyY2MpIGhhcyBIZWFkc2V0IE1pYyBpc3N1ZSBmb3IgcmVib290LgpJZiBzeXN0
-ZW0gcGx1Z2dlZCBoZWFkc2V0IHdoZW4gc3lzdGVtIHJlYm9vdCB0aGUgaGVhZHNldCBNaWMgd2Fz
-IGdvbmUuCgpGaXhlczoxYTkzZjEwYzViMTIgKCJBTFNBOiBoZGEvcmVhbHRlazogQWRkICJJbnRl
-bCBSZWZlcmVuY2UgYm9hcmQiIGFuZCAiTlVDIDEzIiBTU0lEIGluIHRoZSBBTEMyNTYiKQpTaWdu
-ZWQtb2ZmLWJ5OiBLYWlsYW5nIFlhbmcgPGthaWxhbmdAcmVhbHRlay5jb20+CmRpZmYgLS1naXQg
-YS9zb3VuZC9wY2kvaGRhL3BhdGNoX3JlYWx0ZWsuYyBiL3NvdW5kL3BjaS9oZGEvcGF0Y2hfcmVh
-bHRlay5jCmluZGV4IDc1MTc4M2YzYTE1Yy4uZGRjYjI2ZmQ4NjEyIDEwMDY0NAotLS0gYS9zb3Vu
-ZC9wY2kvaGRhL3BhdGNoX3JlYWx0ZWsuYworKysgYi9zb3VuZC9wY2kvaGRhL3BhdGNoX3JlYWx0
-ZWsuYwpAQCAtOTg1NCw3ICs5ODU0LDcgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBzbmRfcGNpX3F1
-aXJrIGFsYzI2OV9maXh1cF90YmxbXSA9IHsKIAlTTkRfUENJX1FVSVJLKDB4MTBlYywgMHgxMjRj
-LCAiSW50ZWwgUmVmZXJlbmNlIGJvYXJkIiwgQUxDMjk1X0ZJWFVQX0NIUk9NRV9CT09LKSwKIAlT
-TkRfUENJX1FVSVJLKDB4MTBlYywgMHgxMjUyLCAiSW50ZWwgUmVmZXJlbmNlIGJvYXJkIiwgQUxD
-Mjk1X0ZJWFVQX0NIUk9NRV9CT09LKSwKIAlTTkRfUENJX1FVSVJLKDB4MTBlYywgMHgxMjU0LCAi
-SW50ZWwgUmVmZXJlbmNlIGJvYXJkIiwgQUxDMjk1X0ZJWFVQX0NIUk9NRV9CT09LKSwKLQlTTkRf
-UENJX1FVSVJLKDB4MTBlYywgMHgxMmNjLCAiSW50ZWwgUmVmZXJlbmNlIGJvYXJkIiwgQUxDMjI1
-X0ZJWFVQX0hFQURTRVRfSkFDSyksCisJU05EX1BDSV9RVUlSSygweDEwZWMsIDB4MTJjYywgIklu
-dGVsIFJlZmVyZW5jZSBib2FyZCIsIEFMQzI5NV9GSVhVUF9DSFJPTUVfQk9PSyksCiAJU05EX1BD
-SV9RVUlSSygweDEwZjcsIDB4ODMzOCwgIlBhbmFzb25pYyBDRi1TWjYiLCBBTEMyNjlfRklYVVBf
-SEVBRFNFVF9NT0RFKSwKIAlTTkRfUENJX1FVSVJLKDB4MTQ0ZCwgMHhjMTA5LCAiU2Ftc3VuZyBB
-dGl2IGJvb2sgOSAoTlA5MDBYM0cpIiwgQUxDMjY5X0ZJWFVQX0lOVl9ETUlDKSwKIAlTTkRfUENJ
-X1FVSVJLKDB4MTQ0ZCwgMHhjMTY5LCAiU2Ftc3VuZyBOb3RlYm9vayA5IFBlbiAoTlA5MzBTQkUt
-SzAxVVMpIiwgQUxDMjk4X0ZJWFVQX1NBTVNVTkdfQU1QKSwKQEAgLTEwMDkxLDcgKzEwMDkxLDcg
-QEAgc3RhdGljIGNvbnN0IHN0cnVjdCBzbmRfcGNpX3F1aXJrIGFsYzI2OV9maXh1cF90YmxbXSA9
-IHsKIAlTTkRfUENJX1FVSVJLKDB4ODA4NiwgMHgyMDc0LCAiSW50ZWwgTlVDIDgiLCBBTEMyMzNf
-RklYVVBfSU5URUxfTlVDOF9ETUlDKSwKIAlTTkRfUENJX1FVSVJLKDB4ODA4NiwgMHgyMDgwLCAi
-SW50ZWwgTlVDIDggUnVnZ2VkIiwgQUxDMjU2X0ZJWFVQX0lOVEVMX05VQzhfUlVHR0VEKSwKIAlT
-TkRfUENJX1FVSVJLKDB4ODA4NiwgMHgyMDgxLCAiSW50ZWwgTlVDIDEwIiwgQUxDMjU2X0ZJWFVQ
-X0lOVEVMX05VQzEwKSwKLQlTTkRfUENJX1FVSVJLKDB4ODA4NiwgMHgzMDM4LCAiSW50ZWwgTlVD
-IDEzIiwgQUxDMjI1X0ZJWFVQX0hFQURTRVRfSkFDSyksCisJU05EX1BDSV9RVUlSSygweDgwODYs
-IDB4MzAzOCwgIkludGVsIE5VQyAxMyIsIEFMQzI5NV9GSVhVUF9DSFJPTUVfQk9PSyksCiAJU05E
-X1BDSV9RVUlSSygweGYxMTEsIDB4MDAwMSwgIkZyYW1ld29yayBMYXB0b3AiLCBBTEMyOTVfRklY
-VVBfRlJBTUVXT1JLX0xBUFRPUF9NSUNfTk9fUFJFU0VOQ0UpLAogCiAjaWYgMAo=
+thanks,
 
---_002_28112f54c0c6496f97ac845645bc0256realtekcom_--
+Takashi
+
+> 
+> Signed-off-by: Ma Ke <make_ruc2021@163.com>
+> ---
+>  sound/core/oss/pcm_oss.c | 20 ++++++++++----------
+>  1 file changed, 10 insertions(+), 10 deletions(-)
+> 
+> diff --git a/sound/core/oss/pcm_oss.c b/sound/core/oss/pcm_oss.c
+> index 728c211142d1..fd9d23c3684b 100644
+> --- a/sound/core/oss/pcm_oss.c
+> +++ b/sound/core/oss/pcm_oss.c
+> @@ -2083,21 +2083,16 @@ static int snd_pcm_oss_set_trigger(struct snd_pcm_oss_file *pcm_oss_file, int tr
+>  	psubstream = pcm_oss_file->streams[SNDRV_PCM_STREAM_PLAYBACK];
+>  	csubstream = pcm_oss_file->streams[SNDRV_PCM_STREAM_CAPTURE];
+>  
+> -	if (psubstream) {
+> -		err = snd_pcm_oss_make_ready(psubstream);
+> -		if (err < 0)
+> -			return err;
+> -	}
+> -	if (csubstream) {
+> -		err = snd_pcm_oss_make_ready(csubstream);
+> -		if (err < 0)
+> -			return err;
+> -	}
+>        	if (psubstream) {
+>        		runtime = psubstream->runtime;
+>  		cmd = 0;
+>  		if (mutex_lock_interruptible(&runtime->oss.params_lock))
+>  			return -ERESTARTSYS;
+> +		err = snd_pcm_oss_make_ready_locked(psubstream);
+> +		if (err < 0) {
+> +			mutex_unlock(&runtime->oss.params_lock);
+> +			return err;
+> +		}
+>  		if (trigger & PCM_ENABLE_OUTPUT) {
+>  			if (runtime->oss.trigger)
+>  				goto _skip1;
+> @@ -2128,6 +2123,11 @@ static int snd_pcm_oss_set_trigger(struct snd_pcm_oss_file *pcm_oss_file, int tr
+>  		cmd = 0;
+>  		if (mutex_lock_interruptible(&runtime->oss.params_lock))
+>  			return -ERESTARTSYS;
+> +		err = snd_pcm_oss_make_ready_locked(csubstream);
+> +		if (err < 0) {
+> +			mutex_unlock(&runtime->oss.params_lock);
+> +			return err;
+> +		}
+>  		if (trigger & PCM_ENABLE_INPUT) {
+>  			if (runtime->oss.trigger)
+>  				goto _skip2;
+> -- 
+> 2.37.2
+> 
