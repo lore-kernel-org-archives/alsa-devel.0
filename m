@@ -4,89 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 14E7CE936FC
-	for <alsa-devel@archiver.kernel.org>; Fri,  6 Oct 2023 11:13:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BDE70E936FC
+	for <alsa-devel@archiver.kernel.org>; Fri,  6 Oct 2023 11:13:37 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3594786E;
-	Fri,  6 Oct 2023 13:12:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3594786E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0725C83B;
+	Fri,  6 Oct 2023 13:12:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0725C83B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1696590790;
-	bh=/ZeLXjYF+qO09y8SwXVPJfeFgZDGpuzd6RCcyJidjjM=;
+	s=default; t=1696590816;
+	bh=uQXQSepVaQWeFBI6iPnh1Rk1V4cPYfKm5n09moTc3ME=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=ilNJhiQbOdimGanzv9FYftMzBpXyCtYNW0DUgll1UBQIJXqb6V+yW7UccyFj4BB+S
-	 C/OHfaJ8Zijvez8LhcjHAo3iolFeNgnAvN9tDxTGli0gDdDtzqi+vDi/SpihAF7WYM
-	 N0R1M7Cp/DBO8FfeklP30Qw0M5u7C0W1oVRv8Ltc=
+	b=m4/hOYjdg3aNbjMprV4oHFTEgUCIbZvQ4ERzlzr0P/yHTT09DtT4z2bIJNF4Df/C+
+	 3iLGR/QcAEKJdLyjGPtAUcxAK/MtZ8GIvhiJ8baYlo7gRmuuCjIPCpv1XEV3ZN34Bd
+	 Blohcivl79bWqa7w1/gBqizXSAUNG8G3DvQJA1kw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0CDA9F80589; Fri,  6 Oct 2023 13:11:28 +0200 (CEST)
+	id 4FA7EF805AF; Fri,  6 Oct 2023 13:11:32 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 55BD6F80589;
-	Fri,  6 Oct 2023 13:11:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D5873F805AD;
+	Fri,  6 Oct 2023 13:11:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7D10FF80589; Fri,  6 Oct 2023 13:11:24 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
+	id AF3E8F805A0; Fri,  6 Oct 2023 13:11:28 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D533FF80549
+	by alsa1.perex.cz (Postfix) with ESMTPS id 1BD3AF80551
 	for <alsa-devel@alsa-project.org>; Fri,  6 Oct 2023 13:10:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D533FF80549
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1BD3AF80551
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=PddZTK8F
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-	by mx0b-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id
- 396An4mF006823;
+ header.s=PODMain02222019 header.b=QPOi9KeQ
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+	by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id
+ 3965fxce025983;
 	Fri, 6 Oct 2023 06:10:45 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
 	:mime-version:content-transfer-encoding:content-type; s=
-	PODMain02222019; bh=n31ClrR7pAHjPb9Ka48kOGEYMP6+xN1DN1qSQpeBfl4=; b=
-	PddZTK8FflKwXLmBVeQPRdvarSPJ9RBGhnLcI5SzrrPi0E24dDEzzyAfPDK9LISE
-	Al23Ti7d7cwhyXuQFs/t+Gcii4M6O+GiPmXpPkSobjjcFe8Ctd4+Li23xg1B78Lu
-	AFxhbwd/APlNDs3RjehEOqdofA66GlHbqfgoQjkjNEPzVNfP05z7rgxCZzIm5I5b
-	PQFXufE06gveYUDJ9eapfS1vHt6DWz4b9NU7dfn9KHEq1dVTWk9NqHlDUSFFgXpw
-	q6hwmWJ+3KpxUfn5/W36P6zrfyHeV1GVoPthFvXrnEVj4m4Hz7oEzUIGLwA1iAwi
-	ZIR3xdfflOEoQ+LKmY/ZnQ==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3teg3k812p-3
+	PODMain02222019; bh=RlyXKyITjmeNbb6voK2kiPtwUMgBnTpkOA+RxMPoLIg=; b=
+	QPOi9KeQqQpZRQU+r2xbZi+XuvNxhBp7qpe46+J1LFQhcf0/TUgjngZ5WnC1dnW2
+	gYhQ9YcSo4/Lj6Y2CNNPiLvyLgp9tksCwUT7n2UHjSwcCk7B8jvZQvOrN+jAuAmB
+	mkDOMtxjmgHBp1/gPqjLCDucE+6LtoPA4bRyVzLcU1map4KgGMGOQe6x5UZ+XUq9
+	b5hk5qlUyPjs1Xrp5MRUW8y8yMEZCiPLlGJLrCSdMm30r0ftzWsDAO/Si20qGmW1
+	+JbzZHVcbOTPWMfXfIjlqOud9ngfcf2ITJdHQgORXlHAR60lE26Rc8JiLgtpPzFn
+	JDNBkwUumvXylA4ki2IZLQ==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3th2dtbmxb-2
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Fri, 06 Oct 2023 06:10:45 -0500 (CDT)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Fri, 6 Oct
- 2023 12:10:43 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.37 via Frontend Transport; Fri, 6 Oct 2023 12:10:43 +0100
+ 2023 12:10:42 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.37 via Frontend
+ Transport; Fri, 6 Oct 2023 12:10:42 +0100
 Received: from work-debian.ad.cirrus.com (unknown [198.61.64.45])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 6AE18357D;
-	Fri,  6 Oct 2023 11:10:43 +0000 (UTC)
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id A1CEA11AA;
+	Fri,  6 Oct 2023 11:10:42 +0000 (UTC)
 From: Richard Fitzgerald <rf@opensource.cirrus.com>
 To: <broonie@kernel.org>
 CC: <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
         <patches@opensource.cirrus.com>,
-        Richard Fitzgerald
-	<rf@opensource.cirrus.com>
-Subject: [PATCH 4/4] ASoC: cs35l56: Enable low-power hibernation mode on SPI
-Date: Fri, 6 Oct 2023 12:10:39 +0100
-Message-ID: <20231006111039.101914-5-rf@opensource.cirrus.com>
+        Simon Trimmer
+	<simont@opensource.cirrus.com>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>
+Subject: [PATCH 2/4] ASoC: cs35l56: Wake transactions need to be issued twice
+Date: Fri, 6 Oct 2023 12:10:37 +0100
+Message-ID: <20231006111039.101914-3-rf@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20231006111039.101914-1-rf@opensource.cirrus.com>
 References: <20231006111039.101914-1-rf@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: t_TLtslMzrYc01xR3S83o8_ipRHwwlvM
-X-Proofpoint-ORIG-GUID: t_TLtslMzrYc01xR3S83o8_ipRHwwlvM
+X-Proofpoint-ORIG-GUID: vfrFDBZ8iX4B25Cg-1VZgT8UXHnE1qt4
+X-Proofpoint-GUID: vfrFDBZ8iX4B25Cg-1VZgT8UXHnE1qt4
 X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: PHZELWFFU66KOGUR2WFQCLXYUMNTTIWI
-X-Message-ID-Hash: PHZELWFFU66KOGUR2WFQCLXYUMNTTIWI
+Message-ID-Hash: LO3R3OEN2ENVIJIMOYKJKFXI44BHJAZ6
+X-Message-ID-Hash: LO3R3OEN2ENVIJIMOYKJKFXI44BHJAZ6
 X-MailFrom: prvs=5643372036=rf@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -99,7 +100,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PHZELWFFU66KOGUR2WFQCLXYUMNTTIWI/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LO3R3OEN2ENVIJIMOYKJKFXI44BHJAZ6/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -108,27 +109,110 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hibernation can be enabled on SPI-connected devices now that
-the hibernate and wake sequences have been updated to work
-with wake-on-MOSI.
+From: Simon Trimmer <simont@opensource.cirrus.com>
 
+As the dummy wake is a toggling signal (either I2C or SPI activity) it
+is not guaranteed to meet the minimum asserted hold time for a wake
+signal. In this case the wake must guarantee rising edges separated by
+at least the minimum hold time.
+
+Signed-off-by: Simon Trimmer <simont@opensource.cirrus.com>
 Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 ---
- sound/soc/codecs/cs35l56-spi.c | 1 +
- 1 file changed, 1 insertion(+)
+ include/sound/cs35l56.h           |  1 +
+ sound/soc/codecs/cs35l56-shared.c | 51 +++++++++++++++++++++----------
+ 2 files changed, 36 insertions(+), 16 deletions(-)
 
-diff --git a/sound/soc/codecs/cs35l56-spi.c b/sound/soc/codecs/cs35l56-spi.c
-index 768ffe8213dc..b07b798b0b45 100644
---- a/sound/soc/codecs/cs35l56-spi.c
-+++ b/sound/soc/codecs/cs35l56-spi.c
-@@ -32,6 +32,7 @@ static int cs35l56_spi_probe(struct spi_device *spi)
- 	}
+diff --git a/include/sound/cs35l56.h b/include/sound/cs35l56.h
+index 762b96b29211..8c18e8b6d27d 100644
+--- a/include/sound/cs35l56.h
++++ b/include/sound/cs35l56.h
+@@ -243,6 +243,7 @@
+ #define CS35L56_HALO_STATE_POLL_US			1000
+ #define CS35L56_HALO_STATE_TIMEOUT_US			50000
+ #define CS35L56_RESET_PULSE_MIN_US			1100
++#define CS35L56_WAKE_HOLD_TIME_US			1000
  
- 	cs35l56->base.dev = &spi->dev;
-+	cs35l56->base.can_hibernate = true;
+ #define CS35L56_SDW1_PLAYBACK_PORT			1
+ #define CS35L56_SDW1_CAPTURE_PORT			3
+diff --git a/sound/soc/codecs/cs35l56-shared.c b/sound/soc/codecs/cs35l56-shared.c
+index 68dc93b82789..953ba066bab1 100644
+--- a/sound/soc/codecs/cs35l56-shared.c
++++ b/sound/soc/codecs/cs35l56-shared.c
+@@ -446,6 +446,32 @@ static const struct reg_sequence cs35l56_hibernate_wake_seq[] = {
+ 	REG_SEQ0(CS35L56_DSP_VIRTUAL1_MBOX_1, CS35L56_MBOX_CMD_WAKEUP),
+ };
  
- 	ret = cs35l56_common_probe(cs35l56);
- 	if (ret != 0)
++static void cs35l56_issue_wake_event(struct cs35l56_base *cs35l56_base)
++{
++	/*
++	 * Dummy transactions to trigger I2C/SPI auto-wake. Issue two
++	 * transactions to meet the minimum required time from the rising edge
++	 * to the last falling edge of wake.
++	 *
++	 * It uses bypassed write because we must wake the chip before
++	 * disabling regmap cache-only.
++	 *
++	 * This can NAK on I2C which will terminate the write sequence so the
++	 * single-write sequence is issued twice.
++	 */
++	regmap_multi_reg_write_bypassed(cs35l56_base->regmap,
++					cs35l56_hibernate_wake_seq,
++					ARRAY_SIZE(cs35l56_hibernate_wake_seq));
++
++	usleep_range(CS35L56_WAKE_HOLD_TIME_US, 2 * CS35L56_WAKE_HOLD_TIME_US);
++
++	regmap_multi_reg_write_bypassed(cs35l56_base->regmap,
++					cs35l56_hibernate_wake_seq,
++					ARRAY_SIZE(cs35l56_hibernate_wake_seq));
++
++	cs35l56_wait_control_port_ready();
++}
++
+ int cs35l56_runtime_suspend_common(struct cs35l56_base *cs35l56_base)
+ {
+ 	unsigned int val;
+@@ -500,17 +526,9 @@ int cs35l56_runtime_resume_common(struct cs35l56_base *cs35l56_base, bool is_sou
+ 	if (!cs35l56_base->can_hibernate)
+ 		goto out_sync;
+ 
+-	if (!is_soundwire) {
+-		/*
+-		 * Dummy transaction to trigger I2C/SPI auto-wake. This will NAK on I2C.
+-		 * Must be done before releasing cache-only.
+-		 */
+-		regmap_multi_reg_write_bypassed(cs35l56_base->regmap,
+-						cs35l56_hibernate_wake_seq,
+-						ARRAY_SIZE(cs35l56_hibernate_wake_seq));
+-
+-		cs35l56_wait_control_port_ready();
+-	}
++	/* Must be done before releasing cache-only */
++	if (!is_soundwire)
++		cs35l56_issue_wake_event(cs35l56_base);
+ 
+ out_sync:
+ 	regcache_cache_only(cs35l56_base->regmap, false);
+@@ -578,13 +596,14 @@ int cs35l56_hw_init(struct cs35l56_base *cs35l56_base)
+ 	unsigned int devid, revid, otpid, secured;
+ 
+ 	/*
+-	 * If the system is not using a reset_gpio then issue a
+-	 * dummy read to force a wakeup.
++	 * When the system is not using a reset_gpio ensure the device is
++	 * awake, otherwise the device has just been released from reset and
++	 * the driver must wait for the control port to become usable.
+ 	 */
+ 	if (!cs35l56_base->reset_gpio)
+-		regmap_read(cs35l56_base->regmap, CS35L56_DSP_VIRTUAL1_MBOX_1, &devid);
+-
+-	cs35l56_wait_control_port_ready();
++		cs35l56_issue_wake_event(cs35l56_base);
++	else
++		cs35l56_wait_control_port_ready();
+ 
+ 	/*
+ 	 * The HALO_STATE register is in different locations on Ax and B0
 -- 
 2.30.2
 
