@@ -4,116 +4,104 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A679AE94114
-	for <alsa-devel@archiver.kernel.org>; Fri,  6 Oct 2023 20:12:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E965CE94115
+	for <alsa-devel@archiver.kernel.org>; Fri,  6 Oct 2023 20:24:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D5085857;
-	Fri,  6 Oct 2023 22:11:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D5085857
+	by alsa0.perex.cz (Postfix) with ESMTPS id EEC311F2;
+	Fri,  6 Oct 2023 22:23:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EEC311F2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1696623147;
-	bh=SZG85+wa6q3Ku3xCwhronAk4Ahky2z2LqsHCsR3+wro=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
+	s=default; t=1696623869;
+	bh=Xmi5ddo42zY8xD/rYxJSEt+z2qmu6CIOL45QINGU9Ak=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=eLrhZvgeQayGnxbnjDLsSP0KATPSN1UtMJxjU2pCX76ZBM0FtNTf4Ud7JmGbUcQXx
-	 US1Eply3429S6adnR1d85LcfJuNDcUY/uipuXIMiDckwxBWSsPL9xKyPlPC9u++EYo
-	 LANahbW/FP4BIhdlkiQSXN2Ci7W80ZRT5qCcSaxU=
+	b=ICe00oQY8J99optKAdHstzggjINeW2TWaMQNY15u4x5vy1BsBG/+gRaR15Ub2CIER
+	 P14w8aYdeaDgxZsevlcxkQCSSXa6b59OL56iPLrhFgP4DyNVunJ3kdJIezMNI9Tab9
+	 CEWA0WL6LV0XtMRflz+Y+llcl6hV5/Vqbw1L/kTI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CE0D4F80578; Fri,  6 Oct 2023 22:10:17 +0200 (CEST)
+	id 26C5DF8047D; Fri,  6 Oct 2023 22:23:11 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 79CCAF805B4;
-	Fri,  6 Oct 2023 22:10:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D9C56F8047D;
+	Fri,  6 Oct 2023 22:23:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8A2A6F805B4; Fri,  6 Oct 2023 22:10:13 +0200 (CEST)
-Received: from mail-ot1-f48.google.com (mail-ot1-f48.google.com
- [209.85.210.48])
+	id 6D727F8047D; Fri,  6 Oct 2023 22:23:05 +0200 (CEST)
+Received: from mail-oo1-xc2a.google.com (mail-oo1-xc2a.google.com
+ [IPv6:2607:f8b0:4864:20::c2a])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 047FCF80578
-	for <alsa-devel@alsa-project.org>; Fri,  6 Oct 2023 22:09:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 047FCF80578
-Received: by mail-ot1-f48.google.com with SMTP id
- 46e09a7af769-6bd04558784so1697984a34.3
+	by alsa1.perex.cz (Postfix) with ESMTPS id 23029F80166
+	for <alsa-devel@alsa-project.org>; Fri,  6 Oct 2023 22:22:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 23029F80166
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (1024-bit key,
+ unprotected) header.d=chromium.org header.i=@chromium.org header.a=rsa-sha256
+ header.s=google header.b=iJ8B72vH
+Received: by mail-oo1-xc2a.google.com with SMTP id
+ 006d021491bc7-57be3d8e738so1332085eaf.1
         for <alsa-devel@alsa-project.org>;
- Fri, 06 Oct 2023 13:09:49 -0700 (PDT)
+ Fri, 06 Oct 2023 13:22:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1696623777; x=1697228577;
+ darn=alsa-project.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=v8kAE0L3XYT2zduhiLheo6/OoQQtkbHtadi2JLu6gYg=;
+        b=iJ8B72vHdlwj3UkXt3+1j873WMszI0+0TprJ/EWurtOsv2kPfFsylyZuir+B0jf0QJ
+         tZ1JvLyJD8/Nok96IdOPD/IqNYkEst1zF3wydAjDara9RUrk2WyqzH4q0zScNF8dj33e
+         +imnlBX+brfULPteRGVH/hP6AoDpuAf0n09Hw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696622987; x=1697227787;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=A+OCongk6Hb4BlpU4QfeNnEcgzo8GaBxo0N0PgFWYnw=;
-        b=xFdyPhvzp1EybVDIn7T4gKtYLBevFx6XNhhZWA9DAYtQeQ4aNYQ/hx7SG+m8V9UWtG
-         k6Ad8TGMaJoMMUqeSOlkCSlIFeJF9D0k7ePk94zMcB5+QMCqqDwchhxLhiEPHj3ci71k
-         BobSs6ltkeTspxDmJTJ+wwD9ZFile5OuU9OCeFy4opOSp/XVO20czsf6SmvQCJxG8i3j
-         F4zFtD+XoWi9xIb1CRU+iwPdZ2vJtPl2TCYdhjrgMdg7+lZwceoy5Lb7NeBGzz8XR00V
-         VviISMC46ZKM8FdzBvrF4fJ0jkad8e15+YDzKe24IQztmS9mGLdmPLvtKo19H8Ndwuyr
-         FZjw==
-X-Gm-Message-State: AOJu0YymDVszBPfPw6RTPUuYyUYc6+nNJGgMC1J/Dq55RWnZ4HmkvZif
-	shKtNsUNPNX+waTYzjVepfH7vV+xvg==
+        d=1e100.net; s=20230601; t=1696623777; x=1697228577;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=v8kAE0L3XYT2zduhiLheo6/OoQQtkbHtadi2JLu6gYg=;
+        b=lgmBtv7rIA1IlMETF4xZHHZqQB0fCq7wuOGfuFEeHxBquVNDlQP2L1nSAFjQWgsoax
+         Iy7lLjAaxgbEQZjrczqFspc6sDbAontabEfiHuSGUjRxFNvVj7MEWh0KxM1/wwXOK5oH
+         fDzzce8fh7oj6EfNeenvnOXI05El+XLPB88VQo8XfMv95mq2Fe+FwuhJXtKAkf4ga1qx
+         ewfEsF9joVc/9PDIZP8XXawpD4J802yE9m1YZzXz4B7yelEt9voaxFX9LfC38SdY1AVg
+         MyFg6/csec20Fh9SvXbBtWWbB4lQHFdntkUqdeiKkBZLVpMkhOjZL73UnQ7Yrx2kp140
+         Nw2A==
+X-Gm-Message-State: AOJu0YwtEHNRJHmjG3P0lL2fKjZECQqdID5vqv7sFljf+hz78hfNXrWm
+	Hl65D42CSgf8zX4VQm0KwXIVOexcVb5xfhSNRXI=
 X-Google-Smtp-Source: 
- AGHT+IH7p3RI8WF5mlWccwSKg4dOKG/CNbO8ToEojOS1DN/EOweO0LBTKMQmzqXXejIioJEYMYtiWA==
-X-Received: by 2002:a05:6830:1502:b0:6bf:1f5f:ed18 with SMTP id
- k2-20020a056830150200b006bf1f5fed18mr8505526otp.1.1696622987671;
-        Fri, 06 Oct 2023 13:09:47 -0700 (PDT)
-Received: from robh_at_kernel.org (66-90-144-107.dyn.grandenetworks.net.
- [66.90.144.107])
+ AGHT+IFJgYFdXQLoiEQmx+lFHyuC0qUrDFQKLIKGfw/wrLmvAN6GJdpM5ZD/9ihDG8TtTiEFnZjYhg==
+X-Received: by 2002:a05:6358:9691:b0:164:8742:525 with SMTP id
+ o17-20020a056358969100b0016487420525mr1346056rwa.17.1696623777190;
+        Fri, 06 Oct 2023 13:22:57 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net.
+ [198.0.35.241])
         by smtp.gmail.com with ESMTPSA id
- v8-20020a9d7d08000000b006c4be829aa8sm679959otn.44.2023.10.06.13.09.45
+ 19-20020a17090a1a1300b00273744e6eccsm4271576pjk.12.2023.10.06.13.22.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Oct 2023 13:09:47 -0700 (PDT)
-Received: (nullmailer pid 229129 invoked by uid 1000);
-	Fri, 06 Oct 2023 20:09:30 -0000
-From: Rob Herring <robh@kernel.org>
-Date: Fri, 06 Oct 2023 15:09:12 -0500
-Subject: [PATCH v3 3/5] ASoC: da7218: Use i2c_get_match_data()
+        Fri, 06 Oct 2023 13:22:56 -0700 (PDT)
+Date: Fri, 6 Oct 2023 13:22:55 -0700
+From: Kees Cook <keescook@chromium.org>
+To: Martin =?utf-8?Q?Povi=C5=A1er?= <povik+lin@cutebit.org>,
+	Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>, asahi@lists.linux.dev,
+	alsa-devel@alsa-project.org, Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
+	llvm@lists.linux.dev, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] ASoC: apple: mca: Annotate struct mca_data with
+ __counted_by
+Message-ID: <202310061321.E7247C52B@keescook>
+References: <20230922175050.work.819-kees@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231006-dt-asoc-header-cleanups-v3-3-13a4f0f7fee6@kernel.org>
-References: <20231006-dt-asoc-header-cleanups-v3-0-13a4f0f7fee6@kernel.org>
-In-Reply-To: <20231006-dt-asoc-header-cleanups-v3-0-13a4f0f7fee6@kernel.org>
-To: Mark Brown <broonie@kernel.org>,
- Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Peter Rosin <peda@axentia.se>,
-	Lars-Peter Clausen <lars@metafoo.de>, nuno.sa@analog.com,
-	James Schulman <james.schulman@cirrus.com>,
- David Rhodes <david.rhodes@cirrus.com>,
-	Richard Fitzgerald <rf@opensource.cirrus.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Shenghao Ding <shenghao-ding@ti.com>, Kevin Lu <kevin-lu@ti.com>,
- Baojun Xu <baojun.xu@ti.com>,
-	Oder Chiou <oder_chiou@realtek.com>, Fabio Estevam <festevam@gmail.com>,
-	Kiseok Jo <kiseok.jo@irondevice.com>, Kevin Cernekee <cernekee@chromium.org>,
-	Shengjiu Wang <shengjiu.wang@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>,
-	Nicolin Chen <nicoleotsuka@gmail.com>,
-	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Banajit Goswami <bgoswami@quicinc.com>,
-	Nicolas Frattaroli <frattaroli.nicolas@gmail.com>,
- Sylwester Nawrocki <s.nawrocki@samsung.com>,
-	Ban Tao <fengzheng923@gmail.com>, Peter Ujfalusi <peter.ujfalusi@gmail.com>,
-	Jarkko Nikula <jarkko.nikula@bitmer.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>,
-	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-	Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-	Bard Liao <yung-chuan.liao@linux.intel.com>,
-	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-	Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Olivier Moysan <olivier.moysan@foss.st.com>,
-	Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org
-X-Mailer: b4 0.13-dev
-Message-ID-Hash: AVJ7TSUD4VPEUURWBWFAOCRNKLCWLHIB
-X-Message-ID-Hash: AVJ7TSUD4VPEUURWBWFAOCRNKLCWLHIB
-X-MailFrom: robherring2@gmail.com
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230922175050.work.819-kees@kernel.org>
+Message-ID-Hash: 7QLAMMT7APF6KGZ53CKTJH7DNZQY3GNX
+X-Message-ID-Hash: 7QLAMMT7APF6KGZ53CKTJH7DNZQY3GNX
+X-MailFrom: keescook@chromium.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -125,7 +113,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AVJ7TSUD4VPEUURWBWFAOCRNKLCWLHIB/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7QLAMMT7APF6KGZ53CKTJH7DNZQY3GNX/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -134,94 +122,52 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Use preferred i2c_get_match_data() instead of of_match_device() and
-i2c_match_id() to get the driver match data. With this, adjust the
-includes to explicitly include the correct headers.
+On Fri, Sep 22, 2023 at 10:50:50AM -0700, Kees Cook wrote:
+> Prepare for the coming implementation by GCC and Clang of the __counted_by
+> attribute. Flexible array members annotated with __counted_by can have
+> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
+> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
+> functions).
+> 
+> As found with Coccinelle[1], add __counted_by for struct mca_data.
 
-Avoid using 0 for enum da7218_dev_id so that no match data can be
-distinguished.
+Friendly ping. Mark, can you pick this up please?
 
-Signed-off-by: Rob Herring <robh@kernel.org>
----
- sound/soc/codecs/da7218.c | 29 ++---------------------------
- sound/soc/codecs/da7218.h |  2 +-
- 2 files changed, 3 insertions(+), 28 deletions(-)
+Thanks!
 
-diff --git a/sound/soc/codecs/da7218.c b/sound/soc/codecs/da7218.c
-index 3f456b08b809..8aacd7350798 100644
---- a/sound/soc/codecs/da7218.c
-+++ b/sound/soc/codecs/da7218.c
-@@ -9,7 +9,7 @@
- 
- #include <linux/clk.h>
- #include <linux/i2c.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/regmap.h>
- #include <linux/slab.h>
- #include <linux/pm.h>
-@@ -2285,16 +2285,6 @@ static const struct of_device_id da7218_of_match[] = {
- };
- MODULE_DEVICE_TABLE(of, da7218_of_match);
- 
--static inline int da7218_of_get_id(struct device *dev)
--{
--	const struct of_device_id *id = of_match_device(da7218_of_match, dev);
--
--	if (id)
--		return (uintptr_t)id->data;
--	else
--		return -EINVAL;
--}
--
- static enum da7218_micbias_voltage
- 	da7218_of_micbias_lvl(struct snd_soc_component *component, u32 val)
- {
-@@ -3253,18 +3243,6 @@ static const struct regmap_config da7218_regmap_config = {
-  * I2C layer
-  */
- 
--static const struct i2c_device_id da7218_i2c_id[];
--
--static inline int da7218_i2c_get_id(struct i2c_client *i2c)
--{
--	const struct i2c_device_id *id = i2c_match_id(da7218_i2c_id, i2c);
--
--	if (id)
--		return (uintptr_t)id->driver_data;
--	else
--		return -EINVAL;
--}
--
- static int da7218_i2c_probe(struct i2c_client *i2c)
- {
- 	struct da7218_priv *da7218;
-@@ -3276,10 +3254,7 @@ static int da7218_i2c_probe(struct i2c_client *i2c)
- 
- 	i2c_set_clientdata(i2c, da7218);
- 
--	if (i2c->dev.of_node)
--		da7218->dev_id = da7218_of_get_id(&i2c->dev);
--	else
--		da7218->dev_id = da7218_i2c_get_id(i2c);
-+	da7218->dev_id = (uintptr_t)i2c_get_match_data(i2c);
- 
- 	if ((da7218->dev_id != DA7217_DEV_ID) &&
- 	    (da7218->dev_id != DA7218_DEV_ID)) {
-diff --git a/sound/soc/codecs/da7218.h b/sound/soc/codecs/da7218.h
-index 9ac2892092b5..7f6a4aea2c7a 100644
---- a/sound/soc/codecs/da7218.h
-+++ b/sound/soc/codecs/da7218.h
-@@ -1369,7 +1369,7 @@ enum da7218_sys_clk {
- };
- 
- enum da7218_dev_id {
--	DA7217_DEV_ID = 0,
-+	DA7217_DEV_ID = 1,
- 	DA7218_DEV_ID,
- };
- 
+-Kees
+
+> 
+> [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
+> 
+> Cc: "Martin Povišer" <povik+lin@cutebit.org>
+> Cc: Liam Girdwood <lgirdwood@gmail.com>
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: Jaroslav Kysela <perex@perex.cz>
+> Cc: Takashi Iwai <tiwai@suse.com>
+> Cc: asahi@lists.linux.dev
+> Cc: alsa-devel@alsa-project.org
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> ---
+>  sound/soc/apple/mca.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/sound/soc/apple/mca.c b/sound/soc/apple/mca.c
+> index ce77934f3eef..99e547ef95e6 100644
+> --- a/sound/soc/apple/mca.c
+> +++ b/sound/soc/apple/mca.c
+> @@ -161,7 +161,7 @@ struct mca_data {
+>  	struct mutex port_mutex;
+>  
+>  	int nclusters;
+> -	struct mca_cluster clusters[];
+> +	struct mca_cluster clusters[] __counted_by(nclusters);
+>  };
+>  
+>  static void mca_modify(struct mca_cluster *cl, int regoffset, u32 mask, u32 val)
+> -- 
+> 2.34.1
+> 
 
 -- 
-2.40.1
-
+Kees Cook
