@@ -4,100 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C6357E95A96
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Oct 2023 15:35:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E01CAE95A9E
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Oct 2023 15:55:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3B6B9E10;
-	Mon,  9 Oct 2023 17:34:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3B6B9E10
+	by alsa0.perex.cz (Postfix) with ESMTPS id 10293E0F;
+	Mon,  9 Oct 2023 17:54:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 10293E0F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1696865737;
-	bh=028i+ogXB7F2kcZGDEuBAzQV6ZwCoTjJCoT8Xzj9/P8=;
-	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=dNcNWMoZSrdEWx42jggHbuKhvi6CavlGucf7Gph+Ok7aux1X37xBwk1XpHWwQGP/G
-	 VTbppGn2EZ+8XyHjxHsnELSoxdRj8OqZ4fgQHUiqgGZLsKHTfh2w/3yUzZUaha+8UW
-	 VZXArR5Lv3R3QAfbjtsNGYAuUuM/DZ5L4ERAu+/A=
+	s=default; t=1696866936;
+	bh=WHvnIgHj274hBcwT1QygQFbhFy2/Vp+GehcfkDYv8jQ=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=rDkkLoYUXskZT8oQ7fytN51B6ugWGHVi2bd//9pGRuzpKsCyLHWkDesXgLUynZyVe
+	 SDvIRBAE/sXmDSre8exB4BLX1D5ERatcCYB+qulxTMDtVXVfWP0xS+kto/0cY4r1C8
+	 v6i/59KXf+BlKHZNDTbA7jBB3kCsRbKmrnkltblI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 04C6FF80557; Mon,  9 Oct 2023 17:34:36 +0200 (CEST)
+	id 7AFCCF80558; Mon,  9 Oct 2023 17:54:25 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 67B23F80130;
-	Mon,  9 Oct 2023 17:34:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3294EF802BE;
+	Mon,  9 Oct 2023 17:54:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6BAEAF802BE; Mon,  9 Oct 2023 17:34:30 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 4AA0FF8047D; Sat,  7 Oct 2023 10:35:20 +0200 (CEST)
+Received: from mail.andi.de1.cc (unknown [IPv6:2a02:c205:3004:2154::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
+ server-digest SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 8ABA6F80130
-	for <alsa-devel@alsa-project.org>; Mon,  9 Oct 2023 17:34:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8ABA6F80130
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=QsaUCaqh
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-	by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id
- 3998HnwY015992;
-	Mon, 9 Oct 2023 10:34:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	from:to:cc:subject:date:message-id:mime-version
-	:content-transfer-encoding:content-type; s=PODMain02222019; bh=Y
-	F8GMFdoqe5hznvMm3y2/t2RPeHrqis4CldRU1rABgw=; b=QsaUCaqh1Wbzs/Jt3
-	f+uizHqbTqVVG/3d3v3SYpbStO7gPr7zGJVJxmc4dnjHj2wXE1MrekR9+7+wzy0g
-	9/6u/eF+q0s7KcltCJjoWflfX16EdKiuqFPN30k9WVg+x9OOUNekPs0nmeEntNGN
-	ySUion/ca1y/+EEEvjC5MnQ3fmwUx+liiE+7/rK6cnOrpGwLDGUEJrlUgjqF/feW
-	mbGtAOTGWv6P9+n5nj45KDhGFX8N3NbbvALLcNqBKr5l9YhfZeTc7gsyEw9v5sGa
-	5QXEhl4OMq9X7cLxgw4py+XszGF0NcoTb531AV8nbSSHVeE4XTDKBwBN8j/fC6zJ
-	8mXnQ==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3tkhkc1tyh-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 09 Oct 2023 10:34:18 -0500 (CDT)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Mon, 9 Oct
- 2023 16:34:16 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.37 via Frontend
- Transport; Mon, 9 Oct 2023 16:34:16 +0100
-Received: from EDIN4L06LR3.ad.cirrus.com (EDIN4L06LR3.ad.cirrus.com
- [198.61.65.230])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id B14D5B06;
-	Mon,  9 Oct 2023 15:34:15 +0000 (UTC)
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
-To: <broonie@kernel.org>
-CC: <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
-        <alsa-devel@alsa-project.org>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>
-Subject: [PATCH] ASoC: cs35l56: ASP1 DOUT must default to Hi-Z when not
- transmitting
-Date: Mon, 9 Oct 2023 16:34:12 +0100
-Message-ID: <20231009153412.30380-1-rf@opensource.cirrus.com>
-X-Mailer: git-send-email 2.30.2
+	by alsa1.perex.cz (Postfix) with ESMTPS id ABDFEF801EB
+	for <alsa-devel@alsa-project.org>; Sat,  7 Oct 2023 10:35:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ABDFEF801EB
+Received: from p5dc58360.dip0.t-ipconnect.de ([93.197.131.96] helo=aktux)
+	by mail.andi.de1.cc with esmtpsa  (TLS1.3) tls
+ TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <andreas@kemnade.info>)
+	id 1qp2m5-004c4z-Ex; Sat, 07 Oct 2023 10:35:01 +0200
+Date: Sat, 7 Oct 2023 10:34:59 +0200
+From: Andreas Kemnade <andreas@kemnade.info>
+To: Tony Lindgren <tony@atomide.com>
+Cc: =?UTF-8?B?UMOpdGVy?= Ujfalusi <peter.ujfalusi@gmail.com>,
+ bcousson@baylibre.com, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
+ jarkko.nikula@bitmer.com, dmitry.torokhov@gmail.com,
+ linux-omap@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Subject: Re: [PATCH 1/3] ASoC: ti: omap-mcbsp: Ignore errors for getting
+ fck_src
+Message-ID: <20231007103459.29998aa8@aktux>
+In-Reply-To: <20231007074159.GX34982@atomide.com>
+References: <20230705190324.355282-1-andreas@kemnade.info>
+	<20230705190324.355282-2-andreas@kemnade.info>
+	<7d58d52d-2087-45af-b29e-2515b63ead13@gmail.com>
+	<20230920063353.GQ5285@atomide.com>
+	<dac768d2-2c66-4d6b-b3d3-d1ef69103c76@gmail.com>
+	<20230921121626.GT5285@atomide.com>
+	<20231006102348.GK34982@atomide.com>
+	<20231006213003.0fbac87a@aktux>
+	<20231007062518.GM34982@atomide.com>
+	<20231007091156.588d7ba1@aktux>
+	<20231007074159.GX34982@atomide.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.37; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: etGRMJSsjEDt_F24RyJ-U4IEtwZvHZzI
-X-Proofpoint-GUID: etGRMJSsjEDt_F24RyJ-U4IEtwZvHZzI
-X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: RJ7VN3YM2BBZGWHKLOULGCYGA6AXZIGY
-X-Message-ID-Hash: RJ7VN3YM2BBZGWHKLOULGCYGA6AXZIGY
-X-MailFrom: prvs=5646de3b35=rf@opensource.cirrus.com
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-MailFrom: andreas@kemnade.info
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: F263LPAM6OYSSRMA43G36C5BIMOKJHNZ
+X-Message-ID-Hash: F263LPAM6OYSSRMA43G36C5BIMOKJHNZ
+X-Mailman-Approved-At: Mon, 09 Oct 2023 15:54:20 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RJ7VN3YM2BBZGWHKLOULGCYGA6AXZIGY/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/F263LPAM6OYSSRMA43G36C5BIMOKJHNZ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -106,45 +94,20 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The ASP1 DOUT line must be defaulted to be high-impedance when
-it is not actually transmitting data for an active channel.
+On Sat, 7 Oct 2023 10:41:59 +0300
+Tony Lindgren <tony@atomide.com> wrote:
 
-In non-SoundWire modes ASP1 will usually be shared by multiple
-amps so each amp must only drive the line during the slot for
-an enabled TX channel.
+> * Andreas Kemnade <andreas@kemnade.info> [231007 07:12]:
+> > Well, it is a regression caused by your fix. Without it (and not reverting
+> > the already applied ignore patch), runtime is properly suspended. Don't know
+> > why yet.  
+> 
+> We return early from omap2_mcbsp_set_clks_src() with IS_ERR(fck_src) and
+> the runtime PM functions never get called?
+> 
+no, we do not. This patch we are talking about to do it in a better way made
+its way into mainline v6.6-rc1. The other pieces of sound support did not,
+they need rework.
 
-In SoundWire mode a custom firmware can use ASP1 as a secondary
-chip-to-chip audio link or as GPIO. It should be defaulted to
-high-impedance since by default the purpose of this pin is not
-known.
-
-Backport note:
-On kernel versions before 6.6 the cs35l56->base.regmap argument
-to regmap_set_bits() must be changed to cs35l56->regmap.
-
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-Fixes: e49611252900 ("ASoC: cs35l56: Add driver for Cirrus Logic CS35L56")
----
- sound/soc/codecs/cs35l56.c | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/sound/soc/codecs/cs35l56.c b/sound/soc/codecs/cs35l56.c
-index 8ccdd3f134a5..45b4de3eff94 100644
---- a/sound/soc/codecs/cs35l56.c
-+++ b/sound/soc/codecs/cs35l56.c
-@@ -1197,6 +1197,12 @@ int cs35l56_init(struct cs35l56_private *cs35l56)
- 	/* Registers could be dirty after soft reset or SoundWire enumeration */
- 	regcache_sync(cs35l56->base.regmap);
- 
-+	/* Set ASP1 DOUT to high-impedance when it is not transmitting audio data. */
-+	ret = regmap_set_bits(cs35l56->base.regmap, CS35L56_ASP1_CONTROL3,
-+			      CS35L56_ASP1_DOUT_HIZ_CTRL_MASK);
-+	if (ret)
-+		return dev_err_probe(cs35l56->base.dev, ret, "Failed to write ASP1_CONTROL3\n");
-+
- 	cs35l56->base.init_done = true;
- 	complete(&cs35l56->init_completion);
- 
--- 
-2.30.2
-
+Regards,
+Andreas
