@@ -4,72 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B8DDDE9413F
-	for <alsa-devel@archiver.kernel.org>; Sat,  7 Oct 2023 04:06:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9BA13E92FFC
+	for <alsa-devel@archiver.kernel.org>; Sat,  7 Oct 2023 06:27:11 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2571210E;
-	Sat,  7 Oct 2023 06:05:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2571210E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7F2041F7;
+	Sat,  7 Oct 2023 08:26:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7F2041F7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1696651578;
-	bh=na8ySLqEKzc9oa7oPW2GxxrO96pn/l00Ee9tK6OWbyI=;
-	h=From:To:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=W48Le2UwSFXhfvDwfOK5/8xs6jlubCpDeSSEweUJFxPCnDPbtw0hSx+jvTvyRJQzS
-	 b93ixLSAijO5U/1TeuHCDgviasYS+Fe9QVvdF7JkGIWhF41wOEG5c5CIWDvgu0fPR8
-	 lEg1OHN5B30Tk6SKyru6hdT07rsLyVNh3/trXNP4=
+	s=default; t=1696660027;
+	bh=CNZ0wKgDC4Gh2gjI9gy6d3502rRtBayhNQt2htM7Dow=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=t29P5F2YcPOXrtKxak5X4NPRHAGOxuoaTPj03dois7QYFaQnId7ARfozox7PDPS2w
+	 xtO2qGKrE4aqsNz3a+vpH5XlscmXVwCDO2xDUwlM2K5fwsxnQCVYf3vo9a0i/RZ0Ga
+	 Y0FE+3wuGdqwvEDLG6hvdqe1KVQHAq/AUijUDQx4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id F0323F80558; Sat,  7 Oct 2023 06:05:17 +0200 (CEST)
+	id DE9B7F800C1; Sat,  7 Oct 2023 08:26:16 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 36F8CF8047D;
-	Sat,  7 Oct 2023 06:05:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 820E6F8047D;
+	Sat,  7 Oct 2023 08:26:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5DFFAF8047D; Sat,  7 Oct 2023 06:03:06 +0200 (CEST)
-Received: from smtp-relay-canonical-0.canonical.com
- (smtp-relay-canonical-0.canonical.com [185.125.188.120])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E68C9F800C1
-	for <alsa-devel@alsa-project.org>; Sat,  7 Oct 2023 06:02:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E68C9F800C1
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=canonical.com header.i=@canonical.com
- header.a=rsa-sha256 header.s=20210705 header.b=ex5t5QSg
-Received: from hwang4-ThinkPad-T14s-Gen-2a.conference (1.general.hwang4.uk.vpn
- [10.172.195.16])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 6BAF63F6BD;
-	Sat,  7 Oct 2023 04:02:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20210705; t=1696651375;
-	bh=k4dsUA/Dhp76Qf8xTwmzgDUgQX3GyTjRoiBnCS5z5xs=;
-	h=From:To:Subject:Date:Message-Id:MIME-Version;
-	b=ex5t5QSgXSDkFr4pokoFM0Pchj8yG8IUlJd59KWGUKJKdo4MXG1hVv13FZyoglaUY
-	 kHG1PlzBAdF0xv/ez9RrHypS7nStId6VvIamuWGH2h8TvvVogbqcBizHZxH8H1Lx1o
-	 glRq6o2sP2WzsmdDgTGGiv/xUt82oslW5v/VfWOlhBDBiMOYRtzeX86a3WgqQL55su
-	 xrm0CtgBsAbtpg0kQ9ZWMU6ynRR/CRqlCsXtPlVlsU460q8PORmFJ/x0TcNR9Hlg2J
-	 dATMjUE21IPsqS97lQAZJ4bM95naxJ419kbJ/+Gi0b5ZfJOIW5rQopMoiNWaD21rlr
-	 F7fr2mIN1WbYg==
-From: Hui Wang <hui.wang@canonical.com>
-To: alsa-devel@alsa-project.org,
-	broonie@kernel.org
-Subject: [PATCH] ASoC: fsl-asoc-card: Add comment for mclk in the codec_priv
-Date: Sat,  7 Oct 2023 12:01:17 +0800
-Message-Id: <20231007040117.22446-1-hui.wang@canonical.com>
-X-Mailer: git-send-email 2.34.1
+	id 8849EF8047D; Sat,  7 Oct 2023 08:25:30 +0200 (CEST)
+Received: from muru.com (muru.com [72.249.23.125])
+	by alsa1.perex.cz (Postfix) with ESMTP id ADD7EF800C1
+	for <alsa-devel@alsa-project.org>; Sat,  7 Oct 2023 08:25:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ADD7EF800C1
+Received: from localhost (localhost [127.0.0.1])
+	by muru.com (Postfix) with ESMTPS id 7E0F980E0;
+	Sat,  7 Oct 2023 06:25:19 +0000 (UTC)
+Date: Sat, 7 Oct 2023 09:25:18 +0300
+From: Tony Lindgren <tony@atomide.com>
+To: Andreas Kemnade <andreas@kemnade.info>
+Cc: =?utf-8?B?UMOpdGVy?= Ujfalusi <peter.ujfalusi@gmail.com>,
+	bcousson@baylibre.com, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
+	tiwai@suse.com, jarkko.nikula@bitmer.com, dmitry.torokhov@gmail.com,
+	linux-omap@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Subject: Re: [PATCH 1/3] ASoC: ti: omap-mcbsp: Ignore errors for getting
+ fck_src
+Message-ID: <20231007062518.GM34982@atomide.com>
+References: <20230705190324.355282-1-andreas@kemnade.info>
+ <20230705190324.355282-2-andreas@kemnade.info>
+ <7d58d52d-2087-45af-b29e-2515b63ead13@gmail.com>
+ <20230920063353.GQ5285@atomide.com>
+ <dac768d2-2c66-4d6b-b3d3-d1ef69103c76@gmail.com>
+ <20230921121626.GT5285@atomide.com>
+ <20231006102348.GK34982@atomide.com>
+ <20231006213003.0fbac87a@aktux>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: AZHUISVMZ7LY4CMFQPK5E2SIFIVJG2QR
-X-Message-ID-Hash: AZHUISVMZ7LY4CMFQPK5E2SIFIVJG2QR
-X-MailFrom: hui.wang@canonical.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231006213003.0fbac87a@aktux>
+Message-ID-Hash: MTNWMIEF6YBJARD3CPYJZFWNWOGNJ5H5
+X-Message-ID-Hash: MTNWMIEF6YBJARD3CPYJZFWNWOGNJ5H5
+X-MailFrom: tony@atomide.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -81,7 +74,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AZHUISVMZ7LY4CMFQPK5E2SIFIVJG2QR/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MTNWMIEF6YBJARD3CPYJZFWNWOGNJ5H5/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -90,28 +83,60 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Otherwise a warning will be detected as below:
-warning: Function parameter or member 'mclk' not described in
-'codec_priv'
+* Andreas Kemnade <andreas@kemnade.info> [231006 19:30]:
+> On Fri, 6 Oct 2023 13:23:48 +0300
+> Tony Lindgren <tony@atomide.com> wrote:
+> > Here's what I think the regression fix for omap4 clocks would be, the
+> > old main_clk is not the same as the module clock that we get by default.
+> > If this looks OK I'll do a similar fix also for omap5.
+> > 
+> > Or is something else also needed?
+> > 
+> 
+> hmm,
+> audio output works, the waring is away, but something new is here:
 
-Fixes: 1075df4bdeb3 ("ASoC: fsl-asoc-card: add nau8822 support")
-Signed-off-by: Hui Wang <hui.wang@canonical.com>
----
- sound/soc/fsl/fsl-asoc-card.c | 1 +
- 1 file changed, 1 insertion(+)
+OK good to hear it works, I'll send out fixes for omap4 and 5, seems
+the runtime PM warning is something different.
 
-diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
-index 0957ff7c55c2..7518ab9d768e 100644
---- a/sound/soc/fsl/fsl-asoc-card.c
-+++ b/sound/soc/fsl/fsl-asoc-card.c
-@@ -41,6 +41,7 @@
+> omap-mcbsp 40124000.mcbsp: Runtime PM usage count underflow!
+> # cat /sys/bus/platform/devices/40124000.mcbsp/power/runtime_status 
+> active
+> 
+> even with no sound.
+
+I guess if the mcbsp instance is not used, runtime PM is enabled but
+pm_runtime_resume_and_get() is never called by ASoC?
+
+If so then the following might be a fix, not familiar with runtime PM
+done by ASoC though and not sure if some kind of locking would be
+needed here.
+
+Regards,
+
+Tony
+
+8< ------------------------
+diff --git a/sound/soc/ti/omap-mcbsp.c b/sound/soc/ti/omap-mcbsp.c
+index fdabed5133e83..b399d86f22777 100644
+--- a/sound/soc/ti/omap-mcbsp.c
++++ b/sound/soc/ti/omap-mcbsp.c
+@@ -74,14 +74,16 @@ static int omap2_mcbsp_set_clks_src(struct omap_mcbsp *mcbsp, u8 fck_src_id)
+ 		return 0;
+ 	}
  
- /**
-  * struct codec_priv - CODEC private data
-+ * @mclk: Main clock of the CODEC
-  * @mclk_freq: Clock rate of MCLK
-  * @free_freq: Clock rate of MCLK for hw_free()
-  * @mclk_id: MCLK (or main clock) id for set_sysclk()
--- 
-2.34.1
-
+-	pm_runtime_put_sync(mcbsp->dev);
++	if (mcbsp->active)
++		pm_runtime_put_sync(mcbsp->dev);
+ 
+ 	r = clk_set_parent(mcbsp->fclk, fck_src);
+ 	if (r)
+ 		dev_err(mcbsp->dev, "CLKS: could not clk_set_parent() to %s\n",
+ 			src);
+ 
+-	pm_runtime_get_sync(mcbsp->dev);
++	if (mcbsp->active)
++		pm_runtime_get_sync(mcbsp->dev);
+ 
+ 	clk_put(fck_src);
+ 
