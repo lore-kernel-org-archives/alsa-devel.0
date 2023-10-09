@@ -4,76 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EA742CD611E
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Oct 2023 18:37:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 091BBCD611E
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Oct 2023 18:38:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C32FFEC8;
-	Mon,  9 Oct 2023 20:36:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C32FFEC8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 45D28ED5;
+	Mon,  9 Oct 2023 20:37:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 45D28ED5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1696876646;
-	bh=cleXwwfg4OCGw1Kekzev2WGKdvehBL0Gc1xi4pIDrp0=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=hO6MGo6YZy/V3fwDFvamOEJNd9v4hVPOi9JUVw3XNg5d/bREz0olFvLG4yht08Ilq
-	 wdse8Jdyikl3v3BZRPBd04RMjR+10APMdjaIZSj5y+syF4buT5OJsH8tmO2cCgFe+r
-	 ErB8AFs+99AyMikDAs27549zASIwl/lgJuLU741Q=
+	s=default; t=1696876697;
+	bh=eK/IoEf0w1TEmPULmN+xgJZqbJo1CEPnj1s+f8XTlGs=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=JcQHRQbAxguhONV2HBCwalqV4YgHpBMdEATwFy91vY+Fbi87Dod7gCjedR/LN1A9Z
+	 kJ/yuKdtm6PrT0cvnZ/kEcl5hcI1tgqSOU53FDzuIgqzqdLtQrm41j9K+bnWEpIdhU
+	 DRGy34oiEGNLTzdnoDQ3PYDlZbGB0eRYQxh4paCw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1A388F80310; Mon,  9 Oct 2023 20:36:36 +0200 (CEST)
+	id 15D3DF8027B; Mon,  9 Oct 2023 20:36:38 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A164DF80130;
-	Mon,  9 Oct 2023 20:36:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 86639F8056F;
+	Mon,  9 Oct 2023 20:36:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AAFD5F80536; Mon,  9 Oct 2023 20:36:29 +0200 (CEST)
-Received: from sin.source.kernel.org (sin.source.kernel.org
- [IPv6:2604:1380:40e1:4800::1])
+	id 89C32F80536; Mon,  9 Oct 2023 20:36:31 +0200 (CEST)
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B84B3F80166
-	for <alsa-devel@alsa-project.org>; Mon,  9 Oct 2023 20:36:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B84B3F80166
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9E500F8027B
+	for <alsa-devel@alsa-project.org>; Mon,  9 Oct 2023 20:36:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9E500F8027B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=lRVKJnS8
+ header.s=k20201202 header.b=UOFngcAx
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 4FD4ACE19D1;
-	Mon,  9 Oct 2023 18:36:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2E92C433C8;
-	Mon,  9 Oct 2023 18:36:14 +0000 (UTC)
+	by sin.source.kernel.org (Postfix) with ESMTP id D1C46CE19B3;
+	Mon,  9 Oct 2023 18:36:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11B0EC433CA;
+	Mon,  9 Oct 2023 18:36:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1696876577;
-	bh=cleXwwfg4OCGw1Kekzev2WGKdvehBL0Gc1xi4pIDrp0=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=lRVKJnS86mkBgUwHEKu3kTFmSyz0+HRJuREm/e4ClHEh1+kRaNQ0DZNol8dHUriEU
-	 MNX+R3wWHACHrBArrmULIe7ymsvBD4q8CMJn11vgxPdNOc72FMylFe60KtEQEKXHaS
-	 T2Ujs52iMz2UKlImVbFCPfNuoA+lzj+nuJt7VwIn6uw72hhQvtLGQ2QAlfiSFmkNEc
-	 6UAA3hV9J73+xnqT4RgkckUG8QdipOceou+nwaYBhqAqdDrDSF1vAqzKi5mIee85OC
-	 d5ZFnpbbIEjUMv8z380k9BIVNG1LB+SHEeLJ685xGevfbyzZJ2Z/NIdFcXeqkMznXG
-	 hgebKbLav8evA==
+	s=k20201202; t=1696876583;
+	bh=eK/IoEf0w1TEmPULmN+xgJZqbJo1CEPnj1s+f8XTlGs=;
+	h=From:To:In-Reply-To:References:Subject:Date:From;
+	b=UOFngcAxK7Dhr8ECq4/J5Rh0XUxCGiy4Bbc1r9FM3FVadhVS3nXNYiJr/PcSrzs3E
+	 VIVwkWK1gc6ir19WjU3FBU6ptz/Iq1eTKwX7n2gG8Vt/hjm3KJXh2UpWLgpnMwOP2w
+	 CSgj1UABH86lYB/VS6orO+D36eNr0w8v4veBu6c4/wd1hD0sGt9R/w6ETXK1kw++u7
+	 NBJ5z9ahfs6OzFAlZRA5qQZ6AvODia1qv7yaa22FF6ox1GCBG3pCff9dBB5mxb0bOH
+	 SCwoznfVv5fMsX50lG9u2gIQ72CIwms22KL3cgbUI0YF46X1URlWFMPVR7SppV5FmE
+	 41Jj2ajf2PxMA==
 From: Mark Brown <broonie@kernel.org>
 To: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, Heiko Stuebner <heiko@sntech.de>,
- Linus Walleij <linus.walleij@linaro.org>
-Cc: alsa-devel@alsa-project.org, linux-gpio@vger.kernel.org,
- linux-rockchip@lists.infradead.org
-In-Reply-To: <20230929-descriptors-asoc-rockchip-v2-0-2d2c0e043aab@linaro.org>
-References: <20230929-descriptors-asoc-rockchip-v2-0-2d2c0e043aab@linaro.org>
-Subject: Re: [PATCH v2 0/4] Convert Rockchip ASoC drivers to GPIO
- descriptors
-Message-Id: <169687657441.138823.7986058351382162360.b4-ty@kernel.org>
-Date: Mon, 09 Oct 2023 19:36:14 +0100
+ Takashi Iwai <tiwai@suse.com>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Banajit Goswami <bgoswami@quicinc.com>, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org,
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20231003155710.821315-1-krzysztof.kozlowski@linaro.org>
+References: <20231003155710.821315-1-krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH 0/2] ASoC: codecs: fix widget name comparisons
+Message-Id: <169687658062.138823.3860753244741067413.b4-ty@kernel.org>
+Date: Mon, 09 Oct 2023 19:36:20 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-0438c
-Message-ID-Hash: IUWBDSHBW2IDLAXWMD6HBWBDLC6PMRU4
-X-Message-ID-Hash: IUWBDSHBW2IDLAXWMD6HBWBDLC6PMRU4
+Message-ID-Hash: BSBY44X7BCUQYFEG5LNAEM54YGEG3FMK
+X-Message-ID-Hash: BSBY44X7BCUQYFEG5LNAEM54YGEG3FMK
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -86,7 +84,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IUWBDSHBW2IDLAXWMD6HBWBDLC6PMRU4/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BSBY44X7BCUQYFEG5LNAEM54YGEG3FMK/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -95,11 +93,17 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, 29 Sep 2023 00:12:53 +0200, Linus Walleij wrote:
-> The Rockchip drivers are pretty straight-forward to convert
-> over to using GPIO descriptors.
+On Tue, 03 Oct 2023 17:57:08 +0200, Krzysztof Kozlowski wrote:
+> Some codec drivers compare widget names with strcmp, ignoring the component
+> name prefix.  If prefix is used, the comparisons start failing.
+> Add a helper to fix the issue.
 > 
+> If the approach looks good, I will fix other codec drivers.
 > 
+> Best regards,
+> Krzysztof
+> 
+> [...]
 
 Applied to
 
@@ -107,14 +111,10 @@ Applied to
 
 Thanks!
 
-[1/4] ASoC: rockchip: Convert RK3288 HDMI to GPIO descriptors
-      commit: 15b26d8165b39a07f038fb4d2b67a04c50463eb9
-[2/4] ASoC: rockchip: Drop includes from RK3399
-      commit: 3116dc2e16542d56bd173e90ce1893bed697a830
-[3/4] ASoC: rockchip: Drop includes from Rockchip MAX98090
-      commit: 7214141067922836b48157e8266335096a0ea4ea
-[4/4] ASoC: rockchip: Drop includes from Rockchip RT5645
-      commit: 329b017ccdf80cdcc3550f6caecbf2bc80a67432
+[1/2] ASoC: soc-dapm: Add helper for comparing widget name
+      commit: 76aca10ccb7c23a7b7a0d56e0bfde2c8cdddfe24
+[2/2] ASoC: codecs: wsa-macro: handle component name prefix
+      commit: c29e5263d32a6d0ec094d425ae7fef3fa8d4da1c
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
