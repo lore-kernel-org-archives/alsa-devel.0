@@ -4,107 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E5695CD6131
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Oct 2023 19:52:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E9FE4CD613C
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Oct 2023 21:25:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9201AEE6;
-	Mon,  9 Oct 2023 21:51:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9201AEE6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 11567EEA;
+	Mon,  9 Oct 2023 23:25:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 11567EEA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1696881169;
-	bh=A0xz3kxYosXOJXpCRvAUD8uTyrE2L/ZtJobCdIqS3s4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=bGbznMbHAzq7JE3kUbJ0HS06yr1DAyBh6Y5zJlKk/ju4Z9wFz8hp0ysSDif1b+o3P
-	 Fcu9bCWSfTjbaxsqB8B/3ANOdTUcotIzqatyff5uEWdAf2Grs3PvAcgD7C33SWfxQY
-	 uTWoZXOAaFqPyEN32BsYS0B5L+1yJytoPv628zFg=
+	s=default; t=1696886753;
+	bh=WDmw1Lkn0054EpRVmv+kdxletOsKLERQEoDJyoxjqdU=;
+	h=Date:From:To:Cc:Subject:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=UO0bEBjMF0RfPWxJRSB+r+FenrVyJdFqHP+YXW770l8lIrcuivVgLkiUoQs4Nc3Kd
+	 mlHuLE61IUsnuG8jDfi447Vy4T8kJaKWkh8cLGsRtk4uu5tS57ywjabSV1ubhyWJFt
+	 6D52iHElpCeyyJBjG3jfsAOwIT+9PFhjNgJeTgHg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BDA9EF80558; Mon,  9 Oct 2023 21:51:48 +0200 (CEST)
+	id C5E71F8027B; Mon,  9 Oct 2023 23:24:40 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 08D97F802BE;
-	Mon,  9 Oct 2023 21:51:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 591E0F802BE;
+	Mon,  9 Oct 2023 23:24:40 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 79549F802BE; Mon,  9 Oct 2023 21:51:45 +0200 (CEST)
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com
- [IPv6:2607:f8b0:4864:20::102d])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	id EBA5EF802BE; Mon,  9 Oct 2023 23:24:35 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 844ACF8015B
-	for <alsa-devel@alsa-project.org>; Mon,  9 Oct 2023 21:51:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 844ACF8015B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 19C6BF80166
+	for <alsa-devel@alsa-project.org>; Mon,  9 Oct 2023 23:24:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 19C6BF80166
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=chromium.org header.i=@chromium.org header.a=rsa-sha256
- header.s=google header.b=GH9t4jNX
-Received: by mail-pj1-x102d.google.com with SMTP id
- 98e67ed59e1d1-27ce160938fso128932a91.0
-        for <alsa-devel@alsa-project.org>;
- Mon, 09 Oct 2023 12:51:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1696881100; x=1697485900;
- darn=alsa-project.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=K2qK3/RPJGcH/Y4e4B3fj0OlYjfNOjt5OVjwpAAdhYw=;
-        b=GH9t4jNXJY08NqVdsgyzMzSOAr1BmUW77paKFNglVHj9HuJJ4qRLBRtLX7Mn87irk9
-         cGlcecU/IoNmoPP225j95oPGvP9+RtROU8xtaOrRsrkMIxl/zx2ewOYQ0qU/LKElvcJB
-         S0ah08fnjlIzzGgEkKbblR2kZhHZLz9Z5L67s=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696881100; x=1697485900;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=K2qK3/RPJGcH/Y4e4B3fj0OlYjfNOjt5OVjwpAAdhYw=;
-        b=OuqIOTkV8SKWf2OMLRgzBNQHWQbEIR7LhvgTAWLsyeprrwnfLtGVq3yt5/LXGiNISa
-         UD6Ew7+vHDnUjP+yVHXWdcxtSiXm+htoOjJGBAWGwP0go/8KYnAu1z1KY6+BA28Sb0YN
-         xo3R9uU4D4pRRt9aP2H78WNPJFpMYRNYAAmWZIQqfjxNzBKshEPSjfTxtnvCxoPSXAdU
-         gDEGnNM6+IGtwaQT/zr7eh/6Ytj6iPs2mzRBMJ2yVb2ILC7O49nJOW4jQonS53BLImzC
-         6uP1uHEgVJSIU5iZuc8GZ3vFvoHVGi0rpUcRA/sG2qMeH269xgGyo5Bcrt74q2K5ke8y
-         f6fw==
-X-Gm-Message-State: AOJu0YwQIz2DaNtjNdzw2ffX9o8/uc4h/Eo4BXrwyGcKER+iRpdRSfK6
-	hsaac9N5ETEcDNrdlP9OyCzMXSZWTjiZFcRjLxI=
-X-Google-Smtp-Source: 
- AGHT+IErKu5nijcGQNO4C5TTmPCzq/DLxiROmTLvRJ5rM8E6o7Mvo2fsCJGqYmjn1eMmUSEOjczf4w==
-X-Received: by 2002:a17:90b:4d8b:b0:27c:df02:88b3 with SMTP id
- oj11-20020a17090b4d8b00b0027cdf0288b3mr787340pjb.8.1696881099801;
-        Mon, 09 Oct 2023 12:51:39 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net.
- [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id
- ct19-20020a17090af59300b0026b3a86b0d5sm8806769pjb.33.2023.10.09.12.51.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Oct 2023 12:51:39 -0700 (PDT)
-Date: Mon, 9 Oct 2023 12:51:37 -0700
-From: Kees Cook <keescook@chromium.org>
-To: Mark Brown <broonie@kernel.org>
-Cc: Martin =?utf-8?Q?Povi=C5=A1er?= <povik+lin@cutebit.org>,
+	dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=BiPv9zXm
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by ams.source.kernel.org (Postfix) with ESMTP id 27438B817CA;
+	Mon,  9 Oct 2023 21:24:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23F99C433C8;
+	Mon,  9 Oct 2023 21:24:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1696886667;
+	bh=WDmw1Lkn0054EpRVmv+kdxletOsKLERQEoDJyoxjqdU=;
+	h=Date:From:To:Cc:Subject:From;
+	b=BiPv9zXmszOBPcmG48Mh6TvipxEcahZxzlDRsWXYqdepL9wT7+Vn8qAY5HJ7EjURU
+	 Qln+pgHxDCTi2UPs4OET/5c7iJUUFCiRHO9JGLHWFpXYeO5YDncD9yWizhmwYXue9h
+	 nv1dAFqV9lXnXi/h4ohvwqR4qqVOtG6G374XjNxV8VpxEECu5li51qs8W1IzE9gpR6
+	 E0Gksfg2Bm2vezhEWB4DcWlumpOW4kh5lq2tdYpBu0CQipPowOJtsU2v83LznaUWVe
+	 tWcDxfnoLtKHEtcaYW2Q3uimxCCZ5mwulbBSf0j4vWVnkisSiIP2YHWmc9JWBe1U5m
+	 /QHaWN9cUcofg==
+Date: Mon, 9 Oct 2023 15:24:23 -0600
+From: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To: Lars-Peter Clausen <lars@metafoo.de>,
+	Nuno =?iso-8859-1?Q?S=E1?= <nuno.sa@analog.com>,
 	Liam Girdwood <lgirdwood@gmail.com>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-	asahi@lists.linux.dev, alsa-devel@alsa-project.org,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
-	llvm@lists.linux.dev, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] ASoC: apple: mca: Annotate struct mca_data with
- __counted_by
-Message-ID: <202310091251.B877B4AF@keescook>
-References: <20230922175050.work.819-kees@kernel.org>
- <202310061321.E7247C52B@keescook>
- <6c7db067-78f2-4637-8064-3dc7c0489b90@sirena.org.uk>
- <202310090958.27F5025BDB@keescook>
- <6d665575-7658-4619-a763-438e0d3aaf2e@sirena.org.uk>
+	Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	linux-hardening@vger.kernel.org
+Subject: [PATCH][next] ASoC: sigmadsp: Add __counted_by for struct
+ sigmadsp_data and use struct_size()
+Message-ID: <ZSRvh1j2MVVhuOUv@work>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <6d665575-7658-4619-a763-438e0d3aaf2e@sirena.org.uk>
-Message-ID-Hash: QGD5AUPZWM6H4GI7E6B6U3GWGHJCJHTH
-X-Message-ID-Hash: QGD5AUPZWM6H4GI7E6B6U3GWGHJCJHTH
-X-MailFrom: keescook@chromium.org
+Message-ID-Hash: TGQ4KOSGJCY6QX6JYOS2MUMX5WNKCPPJ
+X-Message-ID-Hash: TGQ4KOSGJCY6QX6JYOS2MUMX5WNKCPPJ
+X-MailFrom: gustavoars@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -116,7 +85,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QGD5AUPZWM6H4GI7E6B6U3GWGHJCJHTH/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TGQ4KOSGJCY6QX6JYOS2MUMX5WNKCPPJ/>
 List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
@@ -124,15 +93,57 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, Oct 09, 2023 at 08:43:44PM +0100, Mark Brown wrote:
-> Off the top of my head I'd say wait at least three weeks for this sort
-> of patch before doing anything and then prefer to do a resend, that's
-> should avoid most issues.  If you're going to just apply things yourself
-> I'd suggest waiting for -rc6 or so before doing so (assuming the patches
-> were initially sent reasonably early), that does seem like a reasonable
-> backstop so things don't completely miss releases.
+Prepare for the coming implementation by GCC and Clang of the __counted_by
+attribute. Flexible array members annotated with __counted_by can have
+their accesses bounds-checked at run-time via CONFIG_UBSAN_BOUNDS (for
+array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
+functions).
 
-Okay, sounds good. Thanks for the clarification!
+While there, use struct_size() and size_sub() helpers, instead of the
+open-coded version, to calculate the size for the allocation of the
+whole flexible structure, including of course, the flexible-array
+member.
 
+This code was found with the help of Coccinelle, and audited and
+fixed manually.
+
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ sound/soc/codecs/sigmadsp.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/sound/soc/codecs/sigmadsp.c b/sound/soc/codecs/sigmadsp.c
+index b93c078a8040..56546e2394ab 100644
+--- a/sound/soc/codecs/sigmadsp.c
++++ b/sound/soc/codecs/sigmadsp.c
+@@ -43,7 +43,7 @@ struct sigmadsp_data {
+ 	uint32_t samplerates;
+ 	unsigned int addr;
+ 	unsigned int length;
+-	uint8_t data[];
++	uint8_t data[] __counted_by(length);
+ };
+ 
+ struct sigma_fw_chunk {
+@@ -270,7 +270,7 @@ static int sigma_fw_load_data(struct sigmadsp *sigmadsp,
+ 
+ 	length -= sizeof(*data_chunk);
+ 
+-	data = kzalloc(sizeof(*data) + length, GFP_KERNEL);
++	data = kzalloc(struct_size(data, data, length), GFP_KERNEL);
+ 	if (!data)
+ 		return -ENOMEM;
+ 
+@@ -413,7 +413,8 @@ static int process_sigma_action(struct sigmadsp *sigmadsp,
+ 		if (len < 3)
+ 			return -EINVAL;
+ 
+-		data = kzalloc(sizeof(*data) + len - 2, GFP_KERNEL);
++		data = kzalloc(struct_size(data, data, size_sub(len, 2)),
++			       GFP_KERNEL);
+ 		if (!data)
+ 			return -ENOMEM;
+ 
 -- 
-Kees Cook
+2.34.1
+
