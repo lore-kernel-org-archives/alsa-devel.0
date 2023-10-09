@@ -4,75 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 72C32CD611E
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Oct 2023 18:38:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 749CCCD611E
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Oct 2023 18:38:48 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CC2CFEE0;
-	Mon,  9 Oct 2023 20:37:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CC2CFEE0
+	by alsa0.perex.cz (Postfix) with ESMTPS id A4CFCEE7;
+	Mon,  9 Oct 2023 20:37:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A4CFCEE7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1696876704;
-	bh=OvUCm/3E4vQGGxaOWPx5pkG4KYY+4a8QMGU5u5En9VM=;
+	s=default; t=1696876726;
+	bh=+QPgU7tZbSjlQmBiszLV/gnTedCkn+UeSkKgZ9idR64=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=TrHSHGzIkNUXuXRsBX9wS7e5AEy31wYWs+u3m0EEALb8JX0lT1lHO4/jSIwIUVyvT
-	 aMUlnH4iQQBz9tThmndreeroFIkrgX8txWj7vbSJUojXlTwO3WtgfL8yHy6WbbnIN9
-	 /pzZDQU6kxtGzmihAZLM/Bho5wFtcAISp5IB24nQ=
+	b=VCtXlyKj7AjIbsNgbo1MJMcBCjY710RFyHtkSFUgq+RWPIHqe+rT3/EzMYItwwHGe
+	 3BPq6mZoa87YZI930RzaDlO80Yp6mREDvJ0qHG6Nm0xGK6cui7Tr9566u9ggnCHAU5
+	 L2PReUSxgDc8BaXaMotqgcfPX3bJ9vTGZ5UnMzuI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 87511F8057F; Mon,  9 Oct 2023 20:36:39 +0200 (CEST)
+	id 9C787F805A0; Mon,  9 Oct 2023 20:36:42 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2CD6AF80579;
-	Mon,  9 Oct 2023 20:36:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F14E5F805A0;
+	Mon,  9 Oct 2023 20:36:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 81107F80536; Mon,  9 Oct 2023 20:36:33 +0200 (CEST)
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+	id 0EE01F80310; Mon,  9 Oct 2023 20:36:34 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id CB1F3F80130
-	for <alsa-devel@alsa-project.org>; Mon,  9 Oct 2023 20:36:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CB1F3F80130
+	by alsa1.perex.cz (Postfix) with ESMTPS id 317C3F802BE
+	for <alsa-devel@alsa-project.org>; Mon,  9 Oct 2023 20:36:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 317C3F802BE
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=h8UU138Z
+ header.s=k20201202 header.b=HLmYl8yZ
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 1E90BCE19C3;
-	Mon,  9 Oct 2023 18:36:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F24CFC433CC;
-	Mon,  9 Oct 2023 18:36:17 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 307FE61313;
+	Mon,  9 Oct 2023 18:36:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA2B6C433C9;
+	Mon,  9 Oct 2023 18:36:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1696876580;
-	bh=OvUCm/3E4vQGGxaOWPx5pkG4KYY+4a8QMGU5u5En9VM=;
+	s=k20201202; t=1696876586;
+	bh=+QPgU7tZbSjlQmBiszLV/gnTedCkn+UeSkKgZ9idR64=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=h8UU138ZAULBx2K/a/pyweRcxOK0U1bwoJKf/Giz6U3OoNs9U7XyBOm7ypKDBOXa9
-	 uOHzgONzGGHXc2iEpbf+hp8i0jNcFuhc6uRiSbGmmVxQVqQEl53jeD8j6fpbNSiMoD
-	 U9GYrGPQqcab56dUNdCUPdU292k4eiS12mk0b9Dr5VanzlF5Hz6EOYkrXnnMIBS+Fb
-	 cu2tbQ38rmhzbxX/cmkXZK0AzxhDjKWoHwwziP8NzCA2MG9EGFhns3Dwko0Cn8KDpl
-	 0QO5Z+G81YFEC86m79WY9GcswD2kIu67/m5GaS0aXM4M1XUZI+TPfRUJ2f2aeRbYjz
-	 UqPRlMOSK653g==
+	b=HLmYl8yZrRs0G/Gqaiaz/D17bfLM+vyMebeuSGyKhdBjifE8CfnY8RG60C/OoC0cL
+	 HkwecJvwi1H6ATEJpvHoLR7oDXFfAusKzgDvdFIVGF6+spiH6zA2BVgl4WYrt5JTw/
+	 KGj2KuMWyMa1y+XeJSX+lfiDwT8zWHF3dQkZU1/1io0Y+DwkDCKCbVZQhmle38Lyy2
+	 qbbaWvaPQ9Gh6uDE2DkgCI1hRT2EioNC5rkOiSgzC3wcGriwknptLpnlNvb36tIyBy
+	 er9tmGpSet75PSLVl1X4b8Mkx9etSi16npbEb7JD2PYHXTAxRpJeQBsXU07qv8z4o9
+	 XJWc1Kh6NQ9ug==
 From: Mark Brown <broonie@kernel.org>
-To: Johan Hovold <johan+linaro@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20231003155558.27079-1-johan+linaro@kernel.org>
-References: <20231003155558.27079-1-johan+linaro@kernel.org>
-Subject: Re: [PATCH 0/7] ASoC: codecs: wcd938x: fix probe and bind error
- handling
-Message-Id: <169687657762.138823.756591490715328419.b4-ty@kernel.org>
-Date: Mon, 09 Oct 2023 19:36:17 +0100
+To: Daniel Mack <daniel@zonque.org>,
+ Dan Carpenter <dan.carpenter@linaro.org>
+Cc: Haojian Zhuang <haojian.zhuang@gmail.com>,
+ Robert Jarzmik <robert.jarzmik@free.fr>,
+ Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, linux-arm-kernel@lists.infradead.org,
+ alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org
+In-Reply-To: <84ac2313-1420-471a-b2cb-3269a2e12a7c@moroto.mountain>
+References: <84ac2313-1420-471a-b2cb-3269a2e12a7c@moroto.mountain>
+Subject: Re: [PATCH] ASoC: pxa: fix a memory leak in probe()
+Message-Id: <169687658335.138823.2904268371010439072.b4-ty@kernel.org>
+Date: Mon, 09 Oct 2023 19:36:23 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-0438c
-Message-ID-Hash: A6I5WQTMENELIQRMRGEROPXH46PJCXSG
-X-Message-ID-Hash: A6I5WQTMENELIQRMRGEROPXH46PJCXSG
+Message-ID-Hash: YEZO2VPCOQZJDI3GGTGZD6G2YUIGEBR4
+X-Message-ID-Hash: YEZO2VPCOQZJDI3GGTGZD6G2YUIGEBR4
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -85,7 +86,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/A6I5WQTMENELIQRMRGEROPXH46PJCXSG/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YEZO2VPCOQZJDI3GGTGZD6G2YUIGEBR4/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -94,16 +95,10 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, 03 Oct 2023 17:55:51 +0200, Johan Hovold wrote:
-> The wcd938x codec driver happily ignores error handling, something which
-> has bitten us in the past when we hit a probe deferral:
+On Thu, 05 Oct 2023 17:00:24 +0300, Dan Carpenter wrote:
+> Free the "priv" pointer before returning the error code.
 > 
-> 	https://lore.kernel.org/lkml/20230705123018.30903-1-johan+linaro@kernel.org/
 > 
-> Fix up the remaining probe and component bind paths that left resources
-> allocated and registered after errors to avoid similar future issues.
-> 
-> [...]
 
 Applied to
 
@@ -111,20 +106,8 @@ Applied to
 
 Thanks!
 
-[1/7] ASoC: codecs: wcd938x: drop bogus bind error handling
-      commit: bfbc79de60c53e5fed505390440b87ef59ee268c
-[2/7] ASoC: codecs: wcd938x: fix unbind tear down order
-      commit: fa2f8a991ba4aa733ac1c3b1be0c86148aa4c52c
-[3/7] ASoC: codecs: wcd938x: fix resource leaks on bind errors
-      commit: da29b94ed3547cee9d510d02eca4009f2de476cf
-[4/7] ASoC: codecs: wcd938x: fix regulator leaks on probe errors
-      commit: 69a026a2357ee69983690d07976de44ef26ee38a
-[5/7] ASoC: codecs: wcd938x: fix runtime PM imbalance on remove
-      commit: 3ebebb2c1eca92a15107b2d7aeff34196fd9e217
-[6/7] ASoC: codecs: wcd938x-sdw: fix use after free on driver unbind
-      commit: f0dfdcbe706462495d47982eecd13a61aabd644d
-[7/7] ASoC: codecs: wcd938x-sdw: fix runtime PM imbalance on probe errors
-      commit: c5c0383082eace13da2ffceeea154db2780165e7
+[1/1] ASoC: pxa: fix a memory leak in probe()
+      commit: aa6464edbd51af4a2f8db43df866a7642b244b5f
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
