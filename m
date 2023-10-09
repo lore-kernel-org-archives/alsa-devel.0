@@ -4,75 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E9FE4CD613C
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Oct 2023 21:25:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C21DECD613B
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Oct 2023 21:31:31 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 11567EEA;
-	Mon,  9 Oct 2023 23:25:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 11567EEA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 86068EE5;
+	Mon,  9 Oct 2023 23:30:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 86068EE5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1696886753;
-	bh=WDmw1Lkn0054EpRVmv+kdxletOsKLERQEoDJyoxjqdU=;
+	s=default; t=1696887089;
+	bh=hKpw9LZwyKaVS0FWXHmJymdA4SjptOQOm2bWj75OgPs=;
 	h=Date:From:To:Cc:Subject:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=UO0bEBjMF0RfPWxJRSB+r+FenrVyJdFqHP+YXW770l8lIrcuivVgLkiUoQs4Nc3Kd
-	 mlHuLE61IUsnuG8jDfi447Vy4T8kJaKWkh8cLGsRtk4uu5tS57ywjabSV1ubhyWJFt
-	 6D52iHElpCeyyJBjG3jfsAOwIT+9PFhjNgJeTgHg=
+	b=vST5B7ISguE+711dZlZn9G9rQbOaRvZ8+UuPCiQZvPsyts0K90qEJ/4kekFwBuGWe
+	 qzyXUR5pYdEPkKokN2AIW9pyMk5EcTi7qkYeJKbPsFNLNynMEyxSEGNM2cD6PDamHT
+	 ruPdXCSHDmUzor3WmPr65DdY9h1HwKV+Yznjasqw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C5E71F8027B; Mon,  9 Oct 2023 23:24:40 +0200 (CEST)
+	id EC92DF80557; Mon,  9 Oct 2023 23:30:38 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 591E0F802BE;
-	Mon,  9 Oct 2023 23:24:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7CEF6F802BE;
+	Mon,  9 Oct 2023 23:30:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id EBA5EF802BE; Mon,  9 Oct 2023 23:24:35 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+	id BCDEDF802BE; Mon,  9 Oct 2023 23:30:33 +0200 (CEST)
+Received: from sin.source.kernel.org (sin.source.kernel.org
+ [IPv6:2604:1380:40e1:4800::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 19C6BF80166
-	for <alsa-devel@alsa-project.org>; Mon,  9 Oct 2023 23:24:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 19C6BF80166
+	by alsa1.perex.cz (Postfix) with ESMTPS id 12223F80130
+	for <alsa-devel@alsa-project.org>; Mon,  9 Oct 2023 23:30:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 12223F80130
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=BiPv9zXm
+ header.s=k20201202 header.b=rT1qhpFp
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by ams.source.kernel.org (Postfix) with ESMTP id 27438B817CA;
-	Mon,  9 Oct 2023 21:24:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23F99C433C8;
-	Mon,  9 Oct 2023 21:24:26 +0000 (UTC)
+	by sin.source.kernel.org (Postfix) with ESMTP id DE9F7CE1A49;
+	Mon,  9 Oct 2023 21:30:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2D10C433C7;
+	Mon,  9 Oct 2023 21:30:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1696886667;
-	bh=WDmw1Lkn0054EpRVmv+kdxletOsKLERQEoDJyoxjqdU=;
+	s=k20201202; t=1696887021;
+	bh=hKpw9LZwyKaVS0FWXHmJymdA4SjptOQOm2bWj75OgPs=;
 	h=Date:From:To:Cc:Subject:From;
-	b=BiPv9zXmszOBPcmG48Mh6TvipxEcahZxzlDRsWXYqdepL9wT7+Vn8qAY5HJ7EjURU
-	 Qln+pgHxDCTi2UPs4OET/5c7iJUUFCiRHO9JGLHWFpXYeO5YDncD9yWizhmwYXue9h
-	 nv1dAFqV9lXnXi/h4ohvwqR4qqVOtG6G374XjNxV8VpxEECu5li51qs8W1IzE9gpR6
-	 E0Gksfg2Bm2vezhEWB4DcWlumpOW4kh5lq2tdYpBu0CQipPowOJtsU2v83LznaUWVe
-	 tWcDxfnoLtKHEtcaYW2Q3uimxCCZ5mwulbBSf0j4vWVnkisSiIP2YHWmc9JWBe1U5m
-	 /QHaWN9cUcofg==
-Date: Mon, 9 Oct 2023 15:24:23 -0600
+	b=rT1qhpFpqRiVqgpTZwUGexp2A+nUsN2ViOQjRqnwpV0V0OEDPncJ7UNSgaYVBGHsH
+	 qKxM3kOH+f9qJrEyWZPcguD95u3rmDjaCIF5AVOLgk5fP2yAOEmMMJtYd77KoXZrFw
+	 Wq6qTfZatu8Mlf81/v9INrgEXKTDHDPi5aCI+OO2PEAo9gx3ZRj1LmHA3FEQ4cIP+N
+	 YwNrvNLakxwSDssvtvd2pvR/7MhoZLyFiiR95n8xwK6qH/kqt1oL05VW5cl6ROxs9x
+	 fIomWW8LKuLgLPRQpFao87ba4zFOX2cCBX/2F8Q35XWeJEhC05ayqb8/jR9GpH/LE2
+	 BSFrwwIN8Vd5g==
+Date: Mon, 9 Oct 2023 15:30:17 -0600
 From: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To: Lars-Peter Clausen <lars@metafoo.de>,
-	Nuno =?iso-8859-1?Q?S=E1?= <nuno.sa@analog.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+	Banajit Goswami <bgoswami@quicinc.com>,
+	Andy Gross <agross@kernel.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc: alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
 	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
 	linux-hardening@vger.kernel.org
-Subject: [PATCH][next] ASoC: sigmadsp: Add __counted_by for struct
- sigmadsp_data and use struct_size()
-Message-ID: <ZSRvh1j2MVVhuOUv@work>
+Subject: [PATCH][next] soc: qcom: apr: Add __counted_by for struct apr_rx_buf
+ and use struct_size()
+Message-ID: <ZSRw6RNi3Crhd32H@work>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Message-ID-Hash: TGQ4KOSGJCY6QX6JYOS2MUMX5WNKCPPJ
-X-Message-ID-Hash: TGQ4KOSGJCY6QX6JYOS2MUMX5WNKCPPJ
+Message-ID-Hash: SSRFB47XSDO7BIRFXYDZKQHTX7LY4NXV
+X-Message-ID-Hash: SSRFB47XSDO7BIRFXYDZKQHTX7LY4NXV
 X-MailFrom: gustavoars@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -85,8 +86,9 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TGQ4KOSGJCY6QX6JYOS2MUMX5WNKCPPJ/>
-List-Archive: <>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SSRFB47XSDO7BIRFXYDZKQHTX7LY4NXV/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
@@ -99,50 +101,39 @@ their accesses bounds-checked at run-time via CONFIG_UBSAN_BOUNDS (for
 array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
 functions).
 
-While there, use struct_size() and size_sub() helpers, instead of the
-open-coded version, to calculate the size for the allocation of the
-whole flexible structure, including of course, the flexible-array
-member.
+While there, use struct_size() helper, instead of the open-coded
+version, to calculate the size for the allocation of the whole
+flexible structure, including of course, the flexible-array member.
 
 This code was found with the help of Coccinelle, and audited and
 fixed manually.
 
 Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 ---
- sound/soc/codecs/sigmadsp.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/soc/qcom/apr.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/sigmadsp.c b/sound/soc/codecs/sigmadsp.c
-index b93c078a8040..56546e2394ab 100644
---- a/sound/soc/codecs/sigmadsp.c
-+++ b/sound/soc/codecs/sigmadsp.c
-@@ -43,7 +43,7 @@ struct sigmadsp_data {
- 	uint32_t samplerates;
- 	unsigned int addr;
- 	unsigned int length;
--	uint8_t data[];
-+	uint8_t data[] __counted_by(length);
+diff --git a/drivers/soc/qcom/apr.c b/drivers/soc/qcom/apr.c
+index 30f81d6d9d9d..1f8b315576a4 100644
+--- a/drivers/soc/qcom/apr.c
++++ b/drivers/soc/qcom/apr.c
+@@ -41,7 +41,7 @@ struct packet_router {
+ struct apr_rx_buf {
+ 	struct list_head node;
+ 	int len;
+-	uint8_t buf[];
++	uint8_t buf[] __counted_by(len);
  };
  
- struct sigma_fw_chunk {
-@@ -270,7 +270,7 @@ static int sigma_fw_load_data(struct sigmadsp *sigmadsp,
+ /**
+@@ -171,7 +171,7 @@ static int apr_callback(struct rpmsg_device *rpdev, void *buf,
+ 		return -EINVAL;
+ 	}
  
- 	length -= sizeof(*data_chunk);
- 
--	data = kzalloc(sizeof(*data) + length, GFP_KERNEL);
-+	data = kzalloc(struct_size(data, data, length), GFP_KERNEL);
- 	if (!data)
+-	abuf = kzalloc(sizeof(*abuf) + len, GFP_ATOMIC);
++	abuf = kzalloc(struct_size(abuf, buf, len), GFP_ATOMIC);
+ 	if (!abuf)
  		return -ENOMEM;
- 
-@@ -413,7 +413,8 @@ static int process_sigma_action(struct sigmadsp *sigmadsp,
- 		if (len < 3)
- 			return -EINVAL;
- 
--		data = kzalloc(sizeof(*data) + len - 2, GFP_KERNEL);
-+		data = kzalloc(struct_size(data, data, size_sub(len, 2)),
-+			       GFP_KERNEL);
- 		if (!data)
- 			return -ENOMEM;
  
 -- 
 2.34.1
