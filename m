@@ -4,38 +4,38 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 10CB8E95A9F
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Oct 2023 16:00:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CD7B7E95A9E
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Oct 2023 16:00:53 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4688EEAC;
-	Mon,  9 Oct 2023 17:59:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4688EEAC
+	by alsa0.perex.cz (Postfix) with ESMTPS id CCD37ED3;
+	Mon,  9 Oct 2023 18:00:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CCD37ED3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1696867241;
-	bh=rR4Cp+z6DhKWoBBaz2UZNY12VP8uGClw26aas+pDfgw=;
+	s=default; t=1696867251;
+	bh=u2Z5LqkjMyoVBdlcTSHSEUmyVqo7HwaJ0MCj50wy3D4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=jE5pglofhp7BBk8qvVHZjaXRC/5xxUYBOQ1VYMX5tltklPXdouHdosEXFCh+fi1Tn
-	 rrMShvbOEzQB1GJAVyQZUZ8BWZv3In/P3tVuj01HV7rBDwjMTBURIziWw5F8CwA1kk
-	 7/n40hbKIeqWMSqSrBg93+XESZBDGF5bbpvKq9Xk=
+	b=bMvoFPlrCqhoCUxjV/HyDXvRPCL8h294gIKZPndwdboV1osINLe/3onz2/2Jeiw/L
+	 6mMNMtGMqn/d8HUb8682WI/fgU49Q5Opb+xCo9pfWl+rX1m49IPVLZYMQpIJXubjvQ
+	 vsLd23CPmDxVC7jQJsYXkQAvDpKsN4t/OVNosSJ8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DB821F805D5; Mon,  9 Oct 2023 17:57:41 +0200 (CEST)
+	id 44D08F805E0; Mon,  9 Oct 2023 17:57:43 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 03E37F805D5;
-	Mon,  9 Oct 2023 17:57:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 88225F805E2;
+	Mon,  9 Oct 2023 17:57:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 79F9DF80558; Mon,  9 Oct 2023 13:54:56 +0200 (CEST)
-Received: from mblankhorst.nl (lankhorst.se [141.105.120.124])
+	id 0CDD7F8055A; Mon,  9 Oct 2023 13:54:59 +0200 (CEST)
+Received: from mblankhorst.nl (lankhorst.se
+ [IPv6:2a02:2308:0:7ec:e79c:4e97:b6c4:f0ae])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 59532F8027B;
-	Mon,  9 Oct 2023 13:54:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 59532F8027B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 54697F80552;
+	Mon,  9 Oct 2023 13:54:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 54697F80552
 From: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
 To: alsa-devel@alsa-project.org
 Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
@@ -52,10 +52,9 @@ Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
 	Daniel Baluta <daniel.baluta@nxp.com>,
 	linux-kernel@vger.kernel.org,
 	sound-open-firmware@alsa-project.org
-Subject: [PATCH v7 01/13] ASoC: SOF: core: Ensure sof_ops_free() is still
- called when probe never ran.
-Date: Mon,  9 Oct 2023 13:54:25 +0200
-Message-Id: <20231009115437.99976-2-maarten.lankhorst@linux.intel.com>
+Subject: [PATCH v7 06/13] ALSA: hda: i915: Allow override of gpu binding.
+Date: Mon,  9 Oct 2023 13:54:30 +0200
+Message-Id: <20231009115437.99976-7-maarten.lankhorst@linux.intel.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231009115437.99976-1-maarten.lankhorst@linux.intel.com>
 References: <20231009115437.99976-1-maarten.lankhorst@linux.intel.com>
@@ -67,15 +66,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: NGXWXJHONOHVNTKXGNWXULAERZCMZFTI
-X-Message-ID-Hash: NGXWXJHONOHVNTKXGNWXULAERZCMZFTI
+Message-ID-Hash: YPRXZ7J77FHQI3UH2DPYSWL4QFORZH4E
+X-Message-ID-Hash: YPRXZ7J77FHQI3UH2DPYSWL4QFORZH4E
 X-Mailman-Approved-At: Mon, 09 Oct 2023 15:57:19 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NGXWXJHONOHVNTKXGNWXULAERZCMZFTI/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YPRXZ7J77FHQI3UH2DPYSWL4QFORZH4E/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -84,44 +83,57 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-In an effort to not call sof_ops_free twice, we stopped running it when
-probe was aborted.
+Selecting CONFIG_DRM selects CONFIG_VIDEO_NOMODESET, which exports
+video_firmware_drivers_only(). This can be used as a first
+approximation on whether i915 will be available. It's safe to use as
+this is only built when CONFIG_SND_HDA_I915 is selected by CONFIG_I915.
 
-Check the result of cancel_work_sync to see if this was the case.
+It's not completely fool proof, as you can boot with "nomodeset
+i915.modeset=1" to make i915 load regardless, or use
+"i915.force_probe=!*" to never load i915, but the common case of
+booting with nomodeset to disable all GPU drivers this will work as
+intended.
 
-Fixes: 31bb7bd9ffee ("ASoC: SOF: core: Only call sof_ops_free() on remove if the probe was successful")
-Cc: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Acked-by: Mark Brown <broonie@kernel.org>
+Because of this, we add an extra module parameter,
+snd_hda_core.gpu_bind that can be used to signal users intent.
+-1 follows nomodeset, 0 disables binding, 1 forces wait/-EPROBE_DEFER
+on binding.
+
+Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Reviewed-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/core.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ sound/hda/hdac_i915.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/sound/soc/sof/core.c b/sound/soc/sof/core.c
-index 2d1616b81485c..0938b259f7034 100644
---- a/sound/soc/sof/core.c
-+++ b/sound/soc/sof/core.c
-@@ -459,9 +459,10 @@ int snd_sof_device_remove(struct device *dev)
- 	struct snd_sof_dev *sdev = dev_get_drvdata(dev);
- 	struct snd_sof_pdata *pdata = sdev->pdata;
- 	int ret;
-+	bool aborted = false;
+diff --git a/sound/hda/hdac_i915.c b/sound/hda/hdac_i915.c
+index b428537f284c7..a4a712c795c3d 100644
+--- a/sound/hda/hdac_i915.c
++++ b/sound/hda/hdac_i915.c
+@@ -10,6 +10,12 @@
+ #include <sound/hdaudio.h>
+ #include <sound/hda_i915.h>
+ #include <sound/hda_register.h>
++#include <video/nomodeset.h>
++
++static int gpu_bind = -1;
++module_param(gpu_bind, int, 0644);
++MODULE_PARM_DESC(gpu_bind, "Whether to bind sound component to GPU "
++			   "(1=always, 0=never, -1=on nomodeset(default))");
  
- 	if (IS_ENABLED(CONFIG_SND_SOC_SOF_PROBE_WORK_QUEUE))
--		cancel_work_sync(&sdev->probe_work);
-+		aborted = cancel_work_sync(&sdev->probe_work);
+ /**
+  * snd_hdac_i915_set_bclk - Reprogram BCLK for HSW/BDW
+@@ -122,6 +128,9 @@ static int i915_gfx_present(struct pci_dev *hdac_pci)
+ {
+ 	struct pci_dev *display_dev = NULL;
  
- 	/*
- 	 * Unregister any registered client device first before IPC and debugfs
-@@ -487,6 +488,9 @@ int snd_sof_device_remove(struct device *dev)
- 		snd_sof_free_debug(sdev);
- 		snd_sof_remove(sdev);
- 		sof_ops_free(sdev);
-+	} else if (aborted) {
-+		/* probe_work never ran */
-+		sof_ops_free(sdev);
- 	}
- 
- 	/* release firmware */
++	if (!gpu_bind || (gpu_bind < 0 && video_firmware_drivers_only()))
++		return false;
++
+ 	for_each_pci_dev(display_dev) {
+ 		if (display_dev->vendor == PCI_VENDOR_ID_INTEL &&
+ 		    (display_dev->class >> 16) == PCI_BASE_CLASS_DISPLAY &&
 -- 
 2.39.2
 
