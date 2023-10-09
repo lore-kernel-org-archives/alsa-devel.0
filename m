@@ -4,37 +4,38 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2ED5FE95A9E
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Oct 2023 16:00:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 10CB8E95A9F
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Oct 2023 16:00:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 48916EAF;
-	Mon,  9 Oct 2023 17:59:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 48916EAF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4688EEAC;
+	Mon,  9 Oct 2023 17:59:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4688EEAC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1696867224;
-	bh=pd605UIlcdRh2KocdbVoH1c0KNm2o08hXSF1mh7sjRQ=;
+	s=default; t=1696867241;
+	bh=rR4Cp+z6DhKWoBBaz2UZNY12VP8uGClw26aas+pDfgw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=gy0FFtlDR702hK+oW0IabgxxKCe09cFKiqsllXE2HlJHmEWvf9Ns6wjdf6dqD3fkQ
-	 8F8pnlsKt/jXdP+XYlrIERw6bDWHkVUiYaoK4EeNhflUdJ56gJadWFzSDljYb46YRU
-	 YJtiVNw5G05Rx1LNM4p7Kx9oa5y+uEJPGc+3zCwI=
+	b=jE5pglofhp7BBk8qvVHZjaXRC/5xxUYBOQ1VYMX5tltklPXdouHdosEXFCh+fi1Tn
+	 rrMShvbOEzQB1GJAVyQZUZ8BWZv3In/P3tVuj01HV7rBDwjMTBURIziWw5F8CwA1kk
+	 7/n40hbKIeqWMSqSrBg93+XESZBDGF5bbpvKq9Xk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AF4DFF805C7; Mon,  9 Oct 2023 17:57:38 +0200 (CEST)
+	id DB821F805D5; Mon,  9 Oct 2023 17:57:41 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id DB03DF805C3;
-	Mon,  9 Oct 2023 17:57:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 03E37F805D5;
+	Mon,  9 Oct 2023 17:57:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E08F6F80558; Mon,  9 Oct 2023 13:54:54 +0200 (CEST)
+	id 79F9DF80558; Mon,  9 Oct 2023 13:54:56 +0200 (CEST)
 Received: from mblankhorst.nl (lankhorst.se [141.105.120.124])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E82ECF802BE;
-	Mon,  9 Oct 2023 13:54:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E82ECF802BE
+	by alsa1.perex.cz (Postfix) with ESMTPS id 59532F8027B;
+	Mon,  9 Oct 2023 13:54:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 59532F8027B
 From: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
 To: alsa-devel@alsa-project.org
 Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
@@ -51,9 +52,10 @@ Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
 	Daniel Baluta <daniel.baluta@nxp.com>,
 	linux-kernel@vger.kernel.org,
 	sound-open-firmware@alsa-project.org
-Subject: [PATCH v7 03/13] ASoC: SOF: Intel: hda: start splitting the probe
-Date: Mon,  9 Oct 2023 13:54:27 +0200
-Message-Id: <20231009115437.99976-4-maarten.lankhorst@linux.intel.com>
+Subject: [PATCH v7 01/13] ASoC: SOF: core: Ensure sof_ops_free() is still
+ called when probe never ran.
+Date: Mon,  9 Oct 2023 13:54:25 +0200
+Message-Id: <20231009115437.99976-2-maarten.lankhorst@linux.intel.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231009115437.99976-1-maarten.lankhorst@linux.intel.com>
 References: <20231009115437.99976-1-maarten.lankhorst@linux.intel.com>
@@ -65,15 +67,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: WC5HSNMQGKKBJHNYNQ53FKTDTKJNPNFZ
-X-Message-ID-Hash: WC5HSNMQGKKBJHNYNQ53FKTDTKJNPNFZ
+Message-ID-Hash: NGXWXJHONOHVNTKXGNWXULAERZCMZFTI
+X-Message-ID-Hash: NGXWXJHONOHVNTKXGNWXULAERZCMZFTI
 X-Mailman-Approved-At: Mon, 09 Oct 2023 15:57:19 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WC5HSNMQGKKBJHNYNQ53FKTDTKJNPNFZ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NGXWXJHONOHVNTKXGNWXULAERZCMZFTI/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -82,93 +84,44 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In an effort to not call sof_ops_free twice, we stopped running it when
+probe was aborted.
 
-This patch moves the initial parts of the probe to the probe_early()
-callback, which provides a much faster decision on whether the SOF
-driver shall deal with a specific platform or yield to other Intel
-drivers.
+Check the result of cancel_work_sync to see if this was the case.
 
-This is a limited functionality change, the bigger change is to move
-the i915/Xe initialization to the probe_early().
-
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Fixes: 31bb7bd9ffee ("ASoC: SOF: core: Only call sof_ops_free() on remove if the probe was successful")
+Cc: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Acked-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sof/intel/hda-common-ops.c |  1 +
- sound/soc/sof/intel/hda.c            | 16 +++++++++++++---
- sound/soc/sof/intel/hda.h            |  1 +
- 3 files changed, 15 insertions(+), 3 deletions(-)
+ sound/soc/sof/core.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/sof/intel/hda-common-ops.c b/sound/soc/sof/intel/hda-common-ops.c
-index 8e1cd0babd32c..1cc18fb2b75bb 100644
---- a/sound/soc/sof/intel/hda-common-ops.c
-+++ b/sound/soc/sof/intel/hda-common-ops.c
-@@ -16,6 +16,7 @@
+diff --git a/sound/soc/sof/core.c b/sound/soc/sof/core.c
+index 2d1616b81485c..0938b259f7034 100644
+--- a/sound/soc/sof/core.c
++++ b/sound/soc/sof/core.c
+@@ -459,9 +459,10 @@ int snd_sof_device_remove(struct device *dev)
+ 	struct snd_sof_dev *sdev = dev_get_drvdata(dev);
+ 	struct snd_sof_pdata *pdata = sdev->pdata;
+ 	int ret;
++	bool aborted = false;
  
- struct snd_sof_dsp_ops sof_hda_common_ops = {
- 	/* probe/remove/shutdown */
-+	.probe_early	= hda_dsp_probe_early,
- 	.probe		= hda_dsp_probe,
- 	.remove		= hda_dsp_remove,
+ 	if (IS_ENABLED(CONFIG_SND_SOC_SOF_PROBE_WORK_QUEUE))
+-		cancel_work_sync(&sdev->probe_work);
++		aborted = cancel_work_sync(&sdev->probe_work);
  
-diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
-index 15e6779efaa3b..86a2571488bcc 100644
---- a/sound/soc/sof/intel/hda.c
-+++ b/sound/soc/sof/intel/hda.c
-@@ -1118,11 +1118,10 @@ static irqreturn_t hda_dsp_interrupt_thread(int irq, void *context)
- 	return IRQ_HANDLED;
- }
+ 	/*
+ 	 * Unregister any registered client device first before IPC and debugfs
+@@ -487,6 +488,9 @@ int snd_sof_device_remove(struct device *dev)
+ 		snd_sof_free_debug(sdev);
+ 		snd_sof_remove(sdev);
+ 		sof_ops_free(sdev);
++	} else if (aborted) {
++		/* probe_work never ran */
++		sof_ops_free(sdev);
+ 	}
  
--int hda_dsp_probe(struct snd_sof_dev *sdev)
-+int hda_dsp_probe_early(struct snd_sof_dev *sdev)
- {
- 	struct pci_dev *pci = to_pci_dev(sdev->dev);
- 	struct sof_intel_hda_dev *hdev;
--	struct hdac_bus *bus;
- 	const struct sof_intel_dsp_desc *chip;
- 	int ret = 0;
- 
-@@ -1162,6 +1161,17 @@ int hda_dsp_probe(struct snd_sof_dev *sdev)
- 	sdev->pdata->hw_pdata = hdev;
- 	hdev->desc = chip;
- 
-+err:
-+	return ret;
-+}
-+
-+int hda_dsp_probe(struct snd_sof_dev *sdev)
-+{
-+	struct pci_dev *pci = to_pci_dev(sdev->dev);
-+	struct sof_intel_hda_dev *hdev = sdev->pdata->hw_pdata;
-+	struct hdac_bus *bus;
-+	int ret = 0;
-+
- 	hdev->dmic_dev = platform_device_register_data(sdev->dev, "dmic-codec",
- 						       PLATFORM_DEVID_NONE,
- 						       NULL, 0);
-@@ -1299,7 +1309,7 @@ int hda_dsp_probe(struct snd_sof_dev *sdev)
- 	platform_device_unregister(hdev->dmic_dev);
- 	iounmap(bus->remap_addr);
- 	hda_codec_i915_exit(sdev);
--err:
-+
- 	return ret;
- }
- 
-diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
-index 5c517ec57d4a2..e13cdc933ca6b 100644
---- a/sound/soc/sof/intel/hda.h
-+++ b/sound/soc/sof/intel/hda.h
-@@ -573,6 +573,7 @@ struct sof_intel_hda_stream {
- /*
-  * DSP Core services.
-  */
-+int hda_dsp_probe_early(struct snd_sof_dev *sdev);
- int hda_dsp_probe(struct snd_sof_dev *sdev);
- int hda_dsp_remove(struct snd_sof_dev *sdev);
- int hda_dsp_core_power_up(struct snd_sof_dev *sdev, unsigned int core_mask);
+ 	/* release firmware */
 -- 
 2.39.2
 
