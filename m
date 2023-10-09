@@ -4,67 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DFD74E95A91
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Oct 2023 08:54:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 04547E95A91
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Oct 2023 08:54:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1E4C2A4E;
-	Mon,  9 Oct 2023 10:53:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1E4C2A4E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 33382852;
+	Mon,  9 Oct 2023 10:53:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 33382852
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1696841647;
-	bh=MPdLVb/pvOTZLkwQXRDilr3q3ShdQdO9Sr5gzkHwXDs=;
+	s=default; t=1696841655;
+	bh=1gNhaObHCLIYEZDj3EhK4FrxanyZDjIo1h+E/Gzi1n4=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=LR9KK7S206JAFjE2pCCY7teBLgqfhjGZPY06THl1S2w4KZHqzST2iCduWmoKc6wCE
-	 AVAUVE+QkAo70fhZkslw95eoC0NmM4W4ciKiz98FZLTLiQQrVnKH2Ri3HPkQqDAyY2
-	 3flu9QI0Qr0r6m50Vt3unCj5BYyAq2yv3XlJWbmg=
+	b=VJhKmAp5aIcjAyFpoBgyMIJVSucvPyFg7HcDMsqaAlTJmylSSzWIBHWDR5IkDCV0e
+	 uPnpy9mN4A83TtX7+VlgfnsBn8hmVLTtxUsngxRX21ZltVT7pFv65M9xzMBPVYrSJW
+	 ocp3OfjNYvWeZTUaF9ZUdYRkL6nvz8xWGxmd0VOc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 917E0F805B3; Mon,  9 Oct 2023 10:51:46 +0200 (CEST)
+	id 437B4F805B0; Mon,  9 Oct 2023 10:51:49 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2CB96F8059F;
-	Mon,  9 Oct 2023 10:51:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B6447F805C2;
+	Mon,  9 Oct 2023 10:51:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 93708F80557; Mon,  9 Oct 2023 10:51:36 +0200 (CEST)
+	id 20F11F80589; Mon,  9 Oct 2023 10:51:41 +0200 (CEST)
 Received: from madras.collabora.co.uk (madras.collabora.co.uk
  [46.235.227.172])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A5252F802BE
-	for <alsa-devel@alsa-project.org>; Mon,  9 Oct 2023 10:51:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A5252F802BE
+	by alsa1.perex.cz (Postfix) with ESMTPS id 01E40F80580
+	for <alsa-devel@alsa-project.org>; Mon,  9 Oct 2023 10:51:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 01E40F80580
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=collabora.com header.i=@collabora.com
- header.a=rsa-sha256 header.s=mail header.b=jJ/dDJsK
+ header.a=rsa-sha256 header.s=mail header.b=T2qHtnQ8
 Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it
  [2.237.20.237])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
 	(Authenticated sender: kholk11)
-	by madras.collabora.co.uk (Postfix) with ESMTPSA id E9D1D66072A7;
-	Mon,  9 Oct 2023 09:51:27 +0100 (BST)
+	by madras.collabora.co.uk (Postfix) with ESMTPSA id DF581660708F;
+	Mon,  9 Oct 2023 09:51:37 +0100 (BST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1696841488;
-	bh=MPdLVb/pvOTZLkwQXRDilr3q3ShdQdO9Sr5gzkHwXDs=;
+	s=mail; t=1696841498;
+	bh=1gNhaObHCLIYEZDj3EhK4FrxanyZDjIo1h+E/Gzi1n4=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=jJ/dDJsKYGIO7JPg7gDYbl5cO1tGQ54DIuLQSnO2Gbza9F0vf5+Y3eDd8SIlg1kNn
-	 HRT18v12JJTvSgBz77n9QcIzmp1Sxt/CliQXn4bAZg90Zodi5C0W3qA89BmWJDp/F7
-	 b04d59JxjEqe48xEqBAMvjvg8A/NbEetEREK22AfsIzPyoG7AWnGLEajMk9mK+l1dz
-	 Gxi+NVU7QhhqH4Jn4Ogf/IirSSHrUFIcNRAaMzs/cZl4CVGiMUidhe2LkQ30cg5D3k
-	 A7JdL9/1XI/1ZLCJeNHYBA13x1hNfNCMkDLlX/WQ1XAFNhJANxbAaAfmOggRTFSLq6
-	 mAFp6pdpwn68Q==
-Message-ID: <d8fd9384-4db2-014c-c0fe-5cb150cb20ac@collabora.com>
-Date: Mon, 9 Oct 2023 10:51:26 +0200
+	b=T2qHtnQ8kryfd85e/V0SXXGnyo6tZ7ZqoyGsRS+B6S4aL1YlSfY1Of5dxlhl+Od6h
+	 GfGgeT48fUGv9e3sz6ghyS8HLIYHKdFmbI4WCPV7LWfRK61KmyA1qZTnD1Se1B+6gV
+	 Zoath4IUrRiBlDzP7qTxdfctpLV5gW5+G3sa6OVpg6A5+a8zyUFCl+bjwHRN+Di+Li
+	 aDio7E2mXB8UQWIo7YB49VM0A6Wh/Kp5Os3JP0UpsvAHWw0Dq8j6Z4lJLC5lt+Ot+y
+	 tOHwqsO1JdVvUkWPwM49+CVehRPcpSlgud7VRQjGTg1C+lr5Wf18AUgY4ifNOVMVbe
+	 fTF2KnSFcYNbQ==
+Message-ID: <6134be37-b1dd-d0df-6b45-00aced9e1685@collabora.com>
+Date: Mon, 9 Oct 2023 10:51:35 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.15.0
-Subject: Re: [PATCH 7/8] ASoC: mt8186-mt6366-rt1019-rt5682s: Drop unused
- include
+Subject: Re: [PATCH 3/8] ASoC: mt8173-max98090: Drop unused include
 Content-Language: en-US
 To: Linus Walleij <linus.walleij@linaro.org>,
  Bartosz Golaszewski <brgl@bgdev.pl>, Andy Shevchenko <andy@kernel.org>,
@@ -75,13 +74,13 @@ Cc: linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
  alsa-devel@alsa-project.org
 References: <20231006-descriptors-asoc-mediatek-v1-0-07fe79f337f5@linaro.org>
- <20231006-descriptors-asoc-mediatek-v1-7-07fe79f337f5@linaro.org>
+ <20231006-descriptors-asoc-mediatek-v1-3-07fe79f337f5@linaro.org>
 From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20231006-descriptors-asoc-mediatek-v1-7-07fe79f337f5@linaro.org>
+In-Reply-To: <20231006-descriptors-asoc-mediatek-v1-3-07fe79f337f5@linaro.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-ID-Hash: 34YKBTV5CLCJ7PJ4J6JL6SCPJARIUQH2
-X-Message-ID-Hash: 34YKBTV5CLCJ7PJ4J6JL6SCPJARIUQH2
+Message-ID-Hash: 655GWDCOLBAVH4PRMZ7IZA6GTBGP5VRQ
+X-Message-ID-Hash: 655GWDCOLBAVH4PRMZ7IZA6GTBGP5VRQ
 X-MailFrom: angelogioacchino.delregno@collabora.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -94,7 +93,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/34YKBTV5CLCJ7PJ4J6JL6SCPJARIUQH2/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/655GWDCOLBAVH4PRMZ7IZA6GTBGP5VRQ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -105,12 +104,11 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 Il 06/10/23 15:46, Linus Walleij ha scritto:
 > This driver includes the legacy GPIO header <linux/gpio.h> but
-> is not using any symbols from it. AFE has a custom GPIO
-> implementation that is not using the kernel GPIO framework,
-> so it need not include it either.
+> is not using any symbols from it. Drop the include.
 > 
 > Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 
 Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 Tested-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+
 
