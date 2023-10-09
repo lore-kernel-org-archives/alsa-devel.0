@@ -4,104 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 42BCDE95A8E
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Oct 2023 07:35:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D5BD6E95A8E
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Oct 2023 08:53:06 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 880D584B;
-	Mon,  9 Oct 2023 09:34:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 880D584B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 854D4844;
+	Mon,  9 Oct 2023 10:52:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 854D4844
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1696836906;
-	bh=uXlQSAfmtArxI0wO8qNKWV2PEJcM6NSiMmxFOuoCz+s=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1696841584;
+	bh=k9DxY2pZj9VNMIEbtEzEch2H2eOqQpTLPwo754uwNQI=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=ZNZMEYvnnB9Sg+NERK182jh72xe9JeN3O/lQoKVYX90wxTgPnwZj0h+td6+L+eIWR
-	 08FdjGc2JU/K/8nINZxBfiypRqtAxHodpguB5DqDv7od6R0prOHFK6QNbMEaB5WMUl
-	 wqEOjqvVxkJ1mnhIASRGev5IfGKZVzR7+WIQnRsk=
+	b=Qxhj7BPvaLg/PSUiHf+3Q2wk2+Wy8/PCfSSPycUxd6fjxm99So1+fmSrHjPoq5ab7
+	 HafaztHMFD2XUwX9zFgO812jtn1lL3O+NkSAoSNOIgSPpOgRKuFgFJ5XdnHk7LzPAq
+	 mjxiZ/TKegCw6d2oUxJF8EEABCJZOpp2hJePvbUM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AA35EF80130; Mon,  9 Oct 2023 09:34:06 +0200 (CEST)
+	id 32B10F80310; Mon,  9 Oct 2023 10:51:36 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 43B77F80166;
-	Mon,  9 Oct 2023 09:34:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 71350F80536;
+	Mon,  9 Oct 2023 10:51:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9B3B1F802BE; Mon,  9 Oct 2023 09:34:01 +0200 (CEST)
-Received: from mail-yw1-x1130.google.com (mail-yw1-x1130.google.com
- [IPv6:2607:f8b0:4864:20::1130])
+	id 8DE9DF80552; Mon,  9 Oct 2023 10:51:30 +0200 (CEST)
+Received: from madras.collabora.co.uk (madras.collabora.co.uk
+ [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 22DB7F80130
+	for <alsa-devel@alsa-project.org>; Mon,  9 Oct 2023 10:51:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 22DB7F80130
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=collabora.com header.i=@collabora.com
+ header.a=rsa-sha256 header.s=mail header.b=bRARrHT/
+Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it
+ [2.237.20.237])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 9B4FBF80130
-	for <alsa-devel@alsa-project.org>; Mon,  9 Oct 2023 09:33:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9B4FBF80130
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=Pnq9RGse
-Received: by mail-yw1-x1130.google.com with SMTP id
- 00721157ae682-59c215f2f4aso51257547b3.1
-        for <alsa-devel@alsa-project.org>;
- Mon, 09 Oct 2023 00:33:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696836832; x=1697441632;
- darn=alsa-project.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XP7xqMhAKNqUEZKvD5L9l4hvT2pSYO7u42JTWvOuPhA=;
-        b=Pnq9RGsejkwsU8/0RaHdTx7VgwWghmuDAhC4/qUAldIkGhXrKRco6f4JNjjEjPeAen
-         nVjIlo5li7Yi8Eb6+kbRFUbBOEshDz/YZu78ChcM68c28KajwWlUIRQUJuUX0o1OB7Wc
-         0y+MJ/5hej1vyqAOXOexKiD3ggljOdMxWmng3olSNorKPHmXCIRFEDzCCy+RIWXpXV/C
-         Uz48iUg+dxhXy+xtwJGqhM7c9mps+FUrO942qNM3/9undXduoEhWEu+3heowmX0AZRwO
-         5KOEhegvj+dfsytnif8WB4k39mZczzuqDCW8BRpdj0D3YFCAx4ITV2ue7XZCmpup27pQ
-         NttQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696836832; x=1697441632;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XP7xqMhAKNqUEZKvD5L9l4hvT2pSYO7u42JTWvOuPhA=;
-        b=SGqO4fsaf18qrhCfck8x0KMB9cOHMRB+FWtnqqxRuTJ68iHtiWCtE/3sUqAOG0XmUq
-         S5JkzfhWDWPgq6b9upkCtjvuOvUUQLe8H0bkzk9wm0wmKUWEXBX8v4nTe/EomrVsLPMP
-         S00QWtZRMQ0+9VevyCcCy9fWxnzEGUM5fJAUlWEJNfXcH1hHFdYZ/+Ecgncu+w7Q5Ik+
-         NXUHj/V2ywLfW//w9gX6rDxObNGGRcXsqksWRdkj/i6snS/8aTPPMZu7FBrCvE6HXmit
-         2/Yjmt1F3iVqBYn7It4flkvv4yzHQnIvqWYARW8HKlmSuTv+TtO0dL+Bp707YYIDcxHg
-         FwDw==
-X-Gm-Message-State: AOJu0YwChxp4oYEY3OgpU4dVxizlIf5cGn+d5q/Xt/GspBUVmYY837wW
-	rhD9+Lfz/7zONQbpN3um84NnempX2PW14h+uAUek9A==
-X-Google-Smtp-Source: 
- AGHT+IEDf+tWdei5nh9+KrKswBou7fmYuReydda8UjjPzL2odlFWlTYW4DCNoTjmggrOubAGLysy56eT9xq/AxYA+4k=
-X-Received: by 2002:a81:840e:0:b0:589:ca07:c963 with SMTP id
- u14-20020a81840e000000b00589ca07c963mr15807832ywf.42.1696836831997; Mon, 09
- Oct 2023 00:33:51 -0700 (PDT)
+	(Authenticated sender: kholk11)
+	by madras.collabora.co.uk (Postfix) with ESMTPSA id 7A803660708F;
+	Mon,  9 Oct 2023 09:51:20 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1696841481;
+	bh=k9DxY2pZj9VNMIEbtEzEch2H2eOqQpTLPwo754uwNQI=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=bRARrHT/3htPKK0RbfsYILUajqJ8xnE4AfA8k4NWozgsApd7HnLzwhD4a1qVaSxv6
+	 nj76yiKGeYsvyn/M/OeYmgUKOh/hMl+uppMl6d3FPSGx2LKAvEL3c9sTrEl7ZsIqN2
+	 PgsNGQDhd7i1CE1YJZnE2Qet9yJUwIMwR2pOmRrh950giBGlAGhmd8xoSx0znxR9ml
+	 kP1jnzscbYxXk9zZd6SMaQbl1pWczeBfK1oKYtC+8J8A537eekbp3ek2JDqrZhc4kz
+	 zQr8OP+IiByFOcM0VcElQI9NdHe9YFMpV0XqXsCziRlR8nAtPdddxcQNs45IAkcy2w
+	 QOszP5mjsRvsg==
+Message-ID: <85c73436-988e-2493-1b47-967481b279bd@collabora.com>
+Date: Mon, 9 Oct 2023 10:51:16 +0200
 MIME-Version: 1.0
-References: <20231006-descriptors-asoc-mediatek-v1-0-07fe79f337f5@linaro.org>
- <20231006-descriptors-asoc-mediatek-v1-1-07fe79f337f5@linaro.org>
- <CAMRc=MdY2DU1R5_Ntkhw6UP0Vp+uhyUvti72KChBQqSF1ruWPw@mail.gmail.com>
-In-Reply-To: 
- <CAMRc=MdY2DU1R5_Ntkhw6UP0Vp+uhyUvti72KChBQqSF1ruWPw@mail.gmail.com>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Mon, 9 Oct 2023 09:33:40 +0200
-Message-ID: 
- <CACRpkdb9fQUUq5_AOwXewiWfUjmu9r2SHHy-RSjfR_33znLiFQ@mail.gmail.com>
-Subject: Re: [PATCH 1/8] gpiolib: of: Add quirk for mt2701-cs42448 ASoC sound
-To: Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: Andy Shevchenko <andy@kernel.org>,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH 2/8] ASoC: mediatek: mt2701-cs42448: Convert to GPIO
+ descriptors
+Content-Language: en-US
+To: Linus Walleij <linus.walleij@linaro.org>,
+ Bartosz Golaszewski <brgl@bgdev.pl>, Andy Shevchenko <andy@kernel.org>,
  Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- linux-gpio@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org, alsa-devel@alsa-project.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Message-ID-Hash: A3KFV2JC5I2CBT25HZTWKWEKVTPACQMJ
-X-Message-ID-Hash: A3KFV2JC5I2CBT25HZTWKWEKVTPACQMJ
-X-MailFrom: linus.walleij@linaro.org
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
+ alsa-devel@alsa-project.org
+References: <20231006-descriptors-asoc-mediatek-v1-0-07fe79f337f5@linaro.org>
+ <20231006-descriptors-asoc-mediatek-v1-2-07fe79f337f5@linaro.org>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20231006-descriptors-asoc-mediatek-v1-2-07fe79f337f5@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: VQ4UTKJHTYIWFZXZ4N2WP3KFVN42SR7E
+X-Message-ID-Hash: VQ4UTKJHTYIWFZXZ4N2WP3KFVN42SR7E
+X-MailFrom: angelogioacchino.delregno@collabora.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -113,33 +96,21 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/A3KFV2JC5I2CBT25HZTWKWEKVTPACQMJ/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VQ4UTKJHTYIWFZXZ4N2WP3KFVN42SR7E/>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, Oct 9, 2023 at 9:09=E2=80=AFAM Bartosz Golaszewski <brgl@bgdev.pl> =
-wrote:
+Il 06/10/23 15:46, Linus Walleij ha scritto:
+> The driver is pretty straight-forward to convert to use GPIO
+> descriptors, however a separate patch is needed to accept
+> the DT GPIO resources ending with "-gpio1" and "-gpio2"
+> instead of the standard "-gpio" or "-gpios" name convention.
+> 
+> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 
-> > +#if IS_ENABLED(CONFIG_SND_SOC_MT2701_CS42448)
-> > +               { "i2s1-in-sel-gpio1",  NULL,   "mediatek,mt2701-cs4244=
-8-machine" },
-> > +               { "i2s1-in-sel-gpio2",  NULL,   "mediatek,mt2701-cs4244=
-8-machine" },
-> > +#endif
->
-> I suppose this is a run-time dependency only for the other patches?
-> Can I just pick it up into my tree?
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 
-You can, I was just thinking about bisectability and the low risk of collis=
-ions
-with other patches. (Actually no-one gets hurt if it's applied to both tree=
-s
-either, which IMO is perfectly fine in cases like this.)
-
-Yours,
-Linus Walleij
