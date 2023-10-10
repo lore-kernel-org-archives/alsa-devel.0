@@ -4,113 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8FBCACD80CA
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Oct 2023 13:04:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 95F87CD80D3
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Oct 2023 13:31:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 60AB0152D;
-	Tue, 10 Oct 2023 15:03:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 60AB0152D
+	by alsa0.perex.cz (Postfix) with ESMTPS id CD3971503;
+	Tue, 10 Oct 2023 15:30:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CD3971503
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1696943057;
-	bh=400VccJ48wba3l86Ti5Q2KzrvBdOlJHGfCQCFw/8u6w=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1696944657;
+	bh=+B4WseGrt1pWwwKou20nfZGYU2s54qm8dWwPLmdD2Ts=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=XN+6HYYek9QElMsEpakWWY7vLPk7zCGsy3RWnchlPX1Oa4NLvL2QRhkBSKoT3fdh5
-	 trm3z+H9yEgMVbiA2zpsfkxaqCeL7iNvvVYiMaCRQJQN5z7meMvKKB5Ohn+pRCSHyn
-	 5JDcZ6JUOvfefrmtARcaqNLUPLTwBX6quoa8QtLA=
+	b=lxifMtInaROrx9Tea7p//mv61mJGZne4MpkfxkSmsc6ocE3C0YwqDSQBi7Gn8vC9x
+	 8sYbvHnStOSgcQHhpQZ2EjDeWMtaU/VPg4ngE/AAuddPPxyPR+cyVBjvLyOIrx9NXb
+	 qLxAfvz+v0rBjhHTq/yADrNch3N0iKOKv+8n3low=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AFC2DF8057D; Tue, 10 Oct 2023 15:03:26 +0200 (CEST)
+	id 7C3C6F80310; Tue, 10 Oct 2023 15:29:43 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 06A77F80570;
-	Tue, 10 Oct 2023 15:03:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7CAB7F802BE;
+	Tue, 10 Oct 2023 15:29:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D9CD3F80536; Tue, 10 Oct 2023 15:03:21 +0200 (CEST)
-Received: from mx08-00178001.pphosted.com (mx08-00178001.pphosted.com
- [91.207.212.93])
+	id 20B93F802BE; Tue, 10 Oct 2023 15:29:38 +0200 (CEST)
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 0EAE9F80557
-	for <alsa-devel@alsa-project.org>; Tue, 10 Oct 2023 15:01:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0EAE9F80557
+	by alsa1.perex.cz (Postfix) with ESMTPS id 0FCEEF80166;
+	Tue, 10 Oct 2023 15:29:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0FCEEF80166
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=foss.st.com header.i=@foss.st.com header.a=rsa-sha256
- header.s=selector1 header.b=iDVFAsBf
-Received: from pps.filterd (m0369457.ppops.net [127.0.0.1])
-	by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id
- 39AD1D9e026805;
-	Tue, 10 Oct 2023 15:01:16 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	selector1; bh=RGJaBl/x86zxdxTx2G4ANQoK+FOZ0G63fSzbcLMuDxw=; b=iD
-	VFAsBfH7wkTtE0Knb6NzOStPi0TljNUikuYHvOa1ovM45J4uGRWAPu6omBleKLbr
-	5otJ+czLhvLSbf90i5mwwzWmy0v0sUJp3CTxkwVtpypm8WWh1iuVCmD1STFv85uZ
-	tnISMkUMHrtWYh4z/gQ8wsmt7DygCvQ5fOms6IROx7WPoWTtZ+MBHeKvIgKfn9xu
-	iA02plqBBiORs5SlLZFPhonNkrL72XA9zZrAZr7eKHSYGdKsVI9z11Tld5KFFggP
-	Zpb3/2dZFcjwGx71kt28MviP5J7lsHZ4c3HVg9N7wW75AKONzZpoWNkmw+q0mrDV
-	ehdVW/trp97WaolsHxSQ==
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3tkj9gt2v1-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 10 Oct 2023 15:01:16 +0200 (MEST)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id C9CCB10005A;
-	Tue, 10 Oct 2023 15:01:15 +0200 (CEST)
-Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id B9F93231518;
-	Tue, 10 Oct 2023 15:01:15 +0200 (CEST)
-Received: from localhost (10.201.20.32) by SHFDAG1NODE1.st.com (10.75.129.69)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 10 Oct
- 2023 15:01:15 +0200
-From: Gatien Chevallier <gatien.chevallier@foss.st.com>
-To: <Oleksii_Moisieiev@epam.com>, <gregkh@linuxfoundation.org>,
-        <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <alexandre.torgue@foss.st.com>,
-        <vkoul@kernel.org>, <jic23@kernel.org>, <olivier.moysan@foss.st.com>,
-        <arnaud.pouliquen@foss.st.com>, <mchehab@kernel.org>,
-        <fabrice.gasnier@foss.st.com>, <andi.shyti@kernel.org>,
-        <ulf.hansson@linaro.org>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>, <hugues.fruchet@foss.st.com>, <lee@kernel.org>,
-        <will@kernel.org>, <catalin.marinas@arm.com>, <arnd@kernel.org>,
-        <richardcochran@gmail.com>, Frank Rowand <frowand.list@gmail.com>,
-        <peng.fan@oss.nxp.com>
-CC: <linux-crypto@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>,
-        <dmaengine@vger.kernel.org>, <linux-i2c@vger.kernel.org>,
-        <linux-iio@vger.kernel.org>, <alsa-devel@alsa-project.org>,
-        <linux-media@vger.kernel.org>, <linux-mmc@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <linux-phy@lists.infradead.org>,
-        <linux-serial@vger.kernel.org>, <linux-spi@vger.kernel.org>,
-        <linux-usb@vger.kernel.org>,
-        Gatien Chevallier
-	<gatien.chevallier@foss.st.com>
-Subject: [PATCH v6 09/11] bus: etzpc: introduce ETZPC firewall controller
- driver
-Date: Tue, 10 Oct 2023 14:57:17 +0200
-Message-ID: <20231010125719.784627-10-gatien.chevallier@foss.st.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231010125719.784627-1-gatien.chevallier@foss.st.com>
-References: <20231010125719.784627-1-gatien.chevallier@foss.st.com>
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=FN0cZ96P
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696944571; x=1728480571;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=+B4WseGrt1pWwwKou20nfZGYU2s54qm8dWwPLmdD2Ts=;
+  b=FN0cZ96PwEDjNJT1wTCxIKsEpARMfuiMFiwoGNPwvZ5iFK0BziYfKGD8
+   ZD0exsfLJsfk8CtVYh5y4FdjkAriR/V34X3za5ovl8bT/YSOvWPoPCXoZ
+   ICD7kmMXxq4yc77qCJy3qscVZb1SFxddtR0sNprG3yhOH77JweSq03sc6
+   8qWu2Xuut/8Xlsb2R/Nx70OL+SZCLWpXip7V0iNknXae/UuUF9/k/wQRx
+   KfDmK+jHTubrD4nn1VQmL+5cngfUoAkz9sFsaG5Kr8F9XTTIAGV1iUljq
+   FvGBwy+beJT5/YR0Acmanaq8OiFqTuia2YyZaBJA9/LUBfu4ojKBuaVSr
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="384247933"
+X-IronPort-AV: E=Sophos;i="6.03,212,1694761200";
+   d="scan'208";a="384247933"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 10 Oct 2023 06:29:25 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="747071579"
+X-IronPort-AV: E=Sophos;i="6.03,212,1694761200";
+   d="scan'208";a="747071579"
+Received: from sssodhi-mobl.amr.corp.intel.com (HELO [10.212.38.18])
+ ([10.212.38.18])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 10 Oct 2023 06:29:23 -0700
+Message-ID: <2bac708f-40f9-4f02-a3ff-d5ab11e7ebe2@linux.intel.com>
+Date: Tue, 10 Oct 2023 09:29:22 -0400
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] ASoC: SOF: Convert to platform remove callback returning
+ void
+Content-Language: en-US
+To: Daniel Baluta <daniel.baluta@gmail.com>,
+ =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+Cc: Liam Girdwood <lgirdwood@gmail.com>,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Daniel Baluta <daniel.baluta@nxp.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>, Mark Brown
+ <broonie@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+ Sascha Hauer <s.hauer@pengutronix.de>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ sound-open-firmware@alsa-project.org, alsa-devel@alsa-project.org,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
+References: <20231009155945.285537-1-u.kleine-koenig@pengutronix.de>
+ <CAEnQRZBzEfwC3kgaUWty769L4wD-LGng5yUJwQR2_C4T0oJjxA@mail.gmail.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: 
+ <CAEnQRZBzEfwC3kgaUWty769L4wD-LGng5yUJwQR2_C4T0oJjxA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.201.20.32]
-X-ClientProxiedBy: SHFCAS1NODE2.st.com (10.75.129.73) To SHFDAG1NODE1.st.com
- (10.75.129.69)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-10_08,2023-10-10_01,2023-05-22_02
-Message-ID-Hash: KHM2BPHCTB5KQJZYFQ36GFLPVONLD76O
-X-Message-ID-Hash: KHM2BPHCTB5KQJZYFQ36GFLPVONLD76O
-X-MailFrom: prvs=86470762f1=gatien.chevallier@foss.st.com
+Message-ID-Hash: V5JREASDV2PI7S3V527E656TNFQB6NJ5
+X-Message-ID-Hash: V5JREASDV2PI7S3V527E656TNFQB6NJ5
+X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -122,7 +109,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KHM2BPHCTB5KQJZYFQ36GFLPVONLD76O/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/V5JREASDV2PI7S3V527E656TNFQB6NJ5/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -131,197 +118,34 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-ETZPC is a peripheral and memory firewall controller that filter accesses
-based on Arm TrustZone secure state and Arm CPU privilege execution level.
-It handles MCU isolation as well.
 
-Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
----
 
-Changes in V2:
-	- Add controller name
-	- Driver is now a module_platform_driver
-	- Use error code returned by stm32_firewall_populate_bus()
-	- Fix license
+On 10/10/23 07:00, Daniel Baluta wrote:
+> On Mon, Oct 9, 2023 at 7:03 PM Uwe Kleine-König
+> <u.kleine-koenig@pengutronix.de> wrote:
+>>
+>> The .remove() callback for a platform driver returns an int which makes
+>> many driver authors wrongly assume it's possible to do error handling by
+>> returning an error code. However the value returned is ignored (apart
+>> from emitting a warning) and this typically results in resource leaks.
+>>
+>> To improve here there is a quest to make the remove callback return
+>> void. In the first step of this quest all drivers are converted to
+>> .remove_new(), which already returns void. Eventually after all drivers
+>> are converted, .remove_new() will be renamed to .remove().
+>>
+>> The SOF platform drivers all use either sof_of_remove() or
+>> sof_acpi_remove() which both return zero unconditionally. Change these
+>> functions to return void and the drivers to use .remove_new(). There is
+>> no semantical change.
+>>
+>> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+> 
+> 
+> 
+> Reviewed-by: Daniel Baluta <daniel.baluta@nxp.com>
 
- MAINTAINERS               |   1 +
- drivers/bus/Makefile      |   2 +-
- drivers/bus/stm32_etzpc.c | 141 ++++++++++++++++++++++++++++++++++++++
- 3 files changed, 143 insertions(+), 1 deletion(-)
- create mode 100644 drivers/bus/stm32_etzpc.c
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index d6935b462c89..b24a9d57f897 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -20296,6 +20296,7 @@ F:	drivers/media/i2c/st-mipid02.c
- ST STM32 FIREWALL
- M:	Gatien Chevallier <gatien.chevallier@foss.st.com>
- S:	Maintained
-+F:	drivers/bus/stm32_etzpc.c
- F:	drivers/bus/stm32_firewall.c
- F:	drivers/bus/stm32_rifsc.c
- 
-diff --git a/drivers/bus/Makefile b/drivers/bus/Makefile
-index e50d18e1d141..cddd4984d6af 100644
---- a/drivers/bus/Makefile
-+++ b/drivers/bus/Makefile
-@@ -26,7 +26,7 @@ obj-$(CONFIG_OMAP_INTERCONNECT)	+= omap_l3_smx.o omap_l3_noc.o
- obj-$(CONFIG_OMAP_OCP2SCP)	+= omap-ocp2scp.o
- obj-$(CONFIG_QCOM_EBI2)		+= qcom-ebi2.o
- obj-$(CONFIG_QCOM_SSC_BLOCK_BUS)	+= qcom-ssc-block-bus.o
--obj-$(CONFIG_STM32_FIREWALL)	+= stm32_firewall.o stm32_rifsc.o
-+obj-$(CONFIG_STM32_FIREWALL)	+= stm32_firewall.o stm32_rifsc.o stm32_etzpc.o
- obj-$(CONFIG_SUN50I_DE2_BUS)	+= sun50i-de2.o
- obj-$(CONFIG_SUNXI_RSB)		+= sunxi-rsb.o
- obj-$(CONFIG_OF)		+= simple-pm-bus.o
-diff --git a/drivers/bus/stm32_etzpc.c b/drivers/bus/stm32_etzpc.c
-new file mode 100644
-index 000000000000..7fc0f16960be
---- /dev/null
-+++ b/drivers/bus/stm32_etzpc.c
-@@ -0,0 +1,141 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (C) 2023, STMicroelectronics - All Rights Reserved
-+ */
-+
-+#include <linux/bitfield.h>
-+#include <linux/bits.h>
-+#include <linux/device.h>
-+#include <linux/err.h>
-+#include <linux/init.h>
-+#include <linux/io.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/of_platform.h>
-+#include <linux/platform_device.h>
-+#include <linux/types.h>
-+
-+#include "stm32_firewall.h"
-+
-+/*
-+ * ETZPC registers
-+ */
-+#define ETZPC_DECPROT			0x10
-+#define ETZPC_HWCFGR			0x3F0
-+
-+/*
-+ * HWCFGR register
-+ */
-+#define ETZPC_HWCFGR_NUM_TZMA		GENMASK(7, 0)
-+#define ETZPC_HWCFGR_NUM_PER_SEC	GENMASK(15, 8)
-+#define ETZPC_HWCFGR_NUM_AHB_SEC	GENMASK(23, 16)
-+#define ETZPC_HWCFGR_CHUNKS1N4		GENMASK(31, 24)
-+
-+/*
-+ * ETZPC miscellaneous
-+ */
-+#define ETZPC_PROT_MASK			GENMASK(1, 0)
-+#define ETZPC_PROT_A7NS			0x3
-+#define ETZPC_DECPROT_SHIFT		1
-+
-+#define IDS_PER_DECPROT_REGS		16
-+
-+static int stm32_etzpc_grant_access(struct stm32_firewall_controller *ctrl, u32 firewall_id)
-+{
-+	u32 offset, reg_offset, sec_val;
-+
-+	if (firewall_id >= ctrl->max_entries) {
-+		dev_err(ctrl->dev, "Invalid sys bus ID %u", firewall_id);
-+		return -EINVAL;
-+	}
-+
-+	/* Check access configuration, 16 peripherals per register */
-+	reg_offset = ETZPC_DECPROT + 0x4 * (firewall_id / IDS_PER_DECPROT_REGS);
-+	offset = (firewall_id % IDS_PER_DECPROT_REGS) << ETZPC_DECPROT_SHIFT;
-+
-+	/* Verify peripheral is non-secure and attributed to cortex A7 */
-+	sec_val = (readl(ctrl->mmio + reg_offset) >> offset) & ETZPC_PROT_MASK;
-+	if (sec_val != ETZPC_PROT_A7NS) {
-+		dev_dbg(ctrl->dev, "Invalid bus configuration: reg_offset %#x, value %d\n",
-+			reg_offset, sec_val);
-+		return -EACCES;
-+	}
-+
-+	return 0;
-+}
-+
-+static void stm32_etzpc_release_access(struct stm32_firewall_controller *ctrl __maybe_unused,
-+				       u32 firewall_id __maybe_unused)
-+{
-+}
-+
-+static int stm32_etzpc_probe(struct platform_device *pdev)
-+{
-+	struct stm32_firewall_controller *etzpc_controller;
-+	struct device_node *np = pdev->dev.of_node;
-+	u32 nb_per, nb_master;
-+	struct resource *res;
-+	void __iomem *mmio;
-+	int rc;
-+
-+	etzpc_controller = devm_kzalloc(&pdev->dev, sizeof(*etzpc_controller), GFP_KERNEL);
-+	if (!etzpc_controller)
-+		return -ENOMEM;
-+
-+	mmio = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
-+	if (IS_ERR(mmio))
-+		return PTR_ERR(mmio);
-+
-+	etzpc_controller->dev = &pdev->dev;
-+	etzpc_controller->mmio = mmio;
-+	etzpc_controller->name = dev_driver_string(etzpc_controller->dev);
-+	etzpc_controller->type = STM32_PERIPHERAL_FIREWALL | STM32_MEMORY_FIREWALL;
-+	etzpc_controller->grant_access = stm32_etzpc_grant_access;
-+	etzpc_controller->release_access = stm32_etzpc_release_access;
-+
-+	/* Get number of etzpc entries*/
-+	nb_per = FIELD_GET(ETZPC_HWCFGR_NUM_PER_SEC,
-+			   readl(etzpc_controller->mmio + ETZPC_HWCFGR));
-+	nb_master = FIELD_GET(ETZPC_HWCFGR_NUM_AHB_SEC,
-+			      readl(etzpc_controller->mmio + ETZPC_HWCFGR));
-+	etzpc_controller->max_entries = nb_per + nb_master;
-+
-+	platform_set_drvdata(pdev, etzpc_controller);
-+
-+	rc = stm32_firewall_controller_register(etzpc_controller);
-+	if (rc) {
-+		dev_err(etzpc_controller->dev, "Couldn't register as a firewall controller: %d",
-+			rc);
-+		return rc;
-+	}
-+
-+	rc = stm32_firewall_populate_bus(etzpc_controller);
-+	if (rc) {
-+		dev_err(etzpc_controller->dev, "Couldn't populate ETZPC bus: %d",
-+			rc);
-+		return rc;
-+	}
-+
-+	/* Populate all allowed nodes */
-+	return of_platform_populate(np, NULL, NULL, &pdev->dev);
-+}
-+
-+static const struct of_device_id stm32_etzpc_of_match[] = {
-+	{ .compatible = "st,stm32-etzpc" },
-+	{}
-+};
-+MODULE_DEVICE_TABLE(of, stm32_etzpc_of_match);
-+
-+static struct platform_driver stm32_etzpc_driver = {
-+	.probe  = stm32_etzpc_probe,
-+	.driver = {
-+		.name = "stm32-etzpc",
-+		.of_match_table = stm32_etzpc_of_match,
-+	},
-+};
-+module_platform_driver(stm32_etzpc_driver);
-+
-+MODULE_AUTHOR("Gatien Chevallier <gatien.chevallier@foss.st.com>");
-+MODULE_DESCRIPTION("STMicroelectronics ETZPC driver");
-+MODULE_LICENSE("GPL");
--- 
-2.35.3
-
+FWIW I have a follow-up patch to convert the SOF remove ops to return
+void: https://github.com/thesofproject/linux/pull/4625
