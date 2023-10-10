@@ -4,150 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 83FAECD80D3
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Oct 2023 13:41:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 705B1CD80D5
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Oct 2023 13:46:08 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A2269152E;
-	Tue, 10 Oct 2023 15:40:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A2269152E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 914B01527;
+	Tue, 10 Oct 2023 15:45:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 914B01527
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1696945294;
-	bh=GmpPvDuFjqdv2xX9cM8lqTnYJqW59m5K4C0zDkiHUi0=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1696945566;
+	bh=9xPTWQGHuk7lel1oBbaTYPF5EiHw4wGQOqibEisQBec=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=ui0aazV8WiitLr86WRs37xia6I9f26nhsolq8jAJv1LuuqptdJeo37Z3JoDF0q416
-	 SjOqlyEDXMwrwumezqR8dkH8E5bEEBkUMFIjJ1CY8TZ2cp5BiLS2bZlvcfECuTwRR3
-	 yu6BGsVboVUfrfM8syHgkY32KbDxj4zPXnZHPQAU=
+	b=okqjWoHD0w1a4bmA2AMY+WByMvZzPgcMApCv41m1rMtCcD/kuNQymKvh8ZruhaqLP
+	 Hqo9RorGh1xGUGxy7FDOOttSFFCRlbRe3P0W22T0Xjasm3eLBSJRaWRUCta3sOtj3Z
+	 e9B3iLE5cu+oRFrqC5CUYb1HBoMtpK/FMzn6LKCU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1ADEAF805AD; Tue, 10 Oct 2023 15:39:40 +0200 (CEST)
+	id 3600DF80553; Tue, 10 Oct 2023 15:44:54 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 684F1F8057C;
-	Tue, 10 Oct 2023 15:39:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 81FFFF8027B;
+	Tue, 10 Oct 2023 15:44:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 389BDF80552; Tue, 10 Oct 2023 15:39:31 +0200 (CEST)
-Received: from EUR02-DB5-obe.outbound.protection.outlook.com
- (mail-db5eur02on2060d.outbound.protection.outlook.com
- [IPv6:2a01:111:f400:fe12::60d])
+	id CDC06F80310; Tue, 10 Oct 2023 15:44:49 +0200 (CEST)
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 492DDF8027B
-	for <alsa-devel@alsa-project.org>; Tue, 10 Oct 2023 15:39:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 492DDF8027B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 3CA2BF8019B
+	for <alsa-devel@alsa-project.org>; Tue, 10 Oct 2023 15:44:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3CA2BF8019B
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=nxp.com header.i=@nxp.com header.a=rsa-sha256
- header.s=selector2 header.b=mKeiOiPs
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=h3DlCGM+zm6bnDn+9U3qf4TVR8kAjOU/rl26i3iDJV+FllSqz1+YEgTMsOFUklYRU3DA04rcL/jsK3ak4AhSjloykWMfenHSTDi5MS7JdNP/dd9wu8TXFCORN+0qUr74rgtqzVEmXkbjAlL/GqdXqn96T4MNJf3ccLkmq+g+9c8z60xbnTLwKOvr9oixMM9q1R0mHAbwfrgvLrxZXUV5SK40km1HtwyawlB9vOkKc0DLTz+k5yhM8R/6L/SMZok6t/zzEKmwChpp7Vpyl1a1haTiqCKs+ryQs9usMBtOfvil4Wwsnk28nq9Sbv64uE7IT11hPiDUWCmUx0U+cfDVCQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=kWFgDR4XULeGsuvmgvI/uv22/Oc4M9BPQPVNwLll7DQ=;
- b=FOnO7F3nVyi4Hn63BUp9Ib0Sdw1qdqntzFdo0lRtouYx/3QpFiRE0l7GXzHWMJpWykwiB8bkwjuzrpm/hDQtmExmXJCEdDGdM0dzMG4FkX29Ef1F3iosCN00o4I1M6Pm8ZVKnbfkkLVV82vd3StMb4ZkJ1EGsb+RbC+ZGAX4QHehUgH7giFhNu3pRNYCLUhrviOXcBcE08RZK/79HF3yCwWsoQaM4Wd+r3n6I3gpWZd47dLvsOyvgy2h58AZReeT4WGS2M7nTSGCNJPhwnhtoFlNs0YmNcRiiz8RSryzNcQhM+BNxbx7Ab0momjynjPIS7Ka8/KUrUvOA6Uy9NTZyA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kWFgDR4XULeGsuvmgvI/uv22/Oc4M9BPQPVNwLll7DQ=;
- b=mKeiOiPsT7HMYWQuB+gxJj1khK3lRUqtL/j5Lr6yuo+BYgWJSDCxA+k1JnE8iODCNFCZDOJCWiWYawfGdSrNxzZi/VRzgzt7niIA1ld6dF81JhyifRYZ6z7tPmLXqsvyjhlBGtEil4TeIj1S5yziM/qoxkztp+clCbKn9rZ3HR4=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from DB9PR04MB9498.eurprd04.prod.outlook.com (2603:10a6:10:360::21)
- by GVXPR04MB9831.eurprd04.prod.outlook.com (2603:10a6:150:11c::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.36; Tue, 10 Oct
- 2023 13:39:11 +0000
-Received: from DB9PR04MB9498.eurprd04.prod.outlook.com
- ([fe80::51f9:b8d2:7ddd:c74f]) by DB9PR04MB9498.eurprd04.prod.outlook.com
- ([fe80::51f9:b8d2:7ddd:c74f%6]) with mapi id 15.20.6863.032; Tue, 10 Oct 2023
- 13:39:11 +0000
-From: Chancel Liu <chancel.liu@nxp.com>
-To: lgirdwood@gmail.com,
-	broonie@kernel.org,
-	robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org,
-	shawnguo@kernel.org,
-	s.hauer@pengutronix.de,
-	kernel@pengutronix.de,
-	festevam@gmail.com,
-	linux-imx@nxp.com,
-	devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	alsa-devel@alsa-project.org
-Cc: Chancel Liu <chancel.liu@nxp.com>
-Subject: [PATCH v2 1/3] arm64: dts: imx93: Add audio device nodes
-Date: Tue, 10 Oct 2023 21:38:36 +0800
-Message-Id: <20231010133838.799714-2-chancel.liu@nxp.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231010133838.799714-1-chancel.liu@nxp.com>
-References: <20231010133838.799714-1-chancel.liu@nxp.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SI2PR02CA0019.apcprd02.prod.outlook.com
- (2603:1096:4:195::13) To DB9PR04MB9498.eurprd04.prod.outlook.com
- (2603:10a6:10:360::21)
+	dkim=pass (2048-bit key,
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=S9cE0MAM
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696945483; x=1728481483;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=9xPTWQGHuk7lel1oBbaTYPF5EiHw4wGQOqibEisQBec=;
+  b=S9cE0MAMERON/RgOtOHvmrfPck3cVVoRPVqUNfLYCsnJLt2Ci1T3+7xF
+   ftnKGJQmQExBDEIldXxxe/Rd7rC3eqtPZWhgWi5z90nAqp6A4Z4KBapnh
+   ZL88ZXSlBAmGTCRoufiOv1Z32WY2ghIP2xmxZEZ4gLYbOBfq4MMt5EdWW
+   jp7ocJyuzoc3LtP9eDQq/3tWMBrGfrW45sjoY7js9CmSYjmgx+J2Vr8f5
+   moou3NZgNxcZbp2YEUTBQ1fkyCKR2rbPirfFGqTrxMPn8LKlO/s/SoiHb
+   vuVdHguaf3C9VC+yH6nLUmK3n4lL5fcX1SlviyC3MOpv1Fei/O/30rGVb
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="369460345"
+X-IronPort-AV: E=Sophos;i="6.03,212,1694761200";
+   d="scan'208";a="369460345"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 10 Oct 2023 06:44:35 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="753412647"
+X-IronPort-AV: E=Sophos;i="6.03,212,1694761200";
+   d="scan'208";a="753412647"
+Received: from sssodhi-mobl.amr.corp.intel.com (HELO [10.212.38.18])
+ ([10.212.38.18])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 10 Oct 2023 06:44:34 -0700
+Message-ID: <9482b3be-7ef9-4eee-8cc0-bd677aa807b3@linux.intel.com>
+Date: Tue, 10 Oct 2023 09:40:58 -0400
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DB9PR04MB9498:EE_|GVXPR04MB9831:EE_
-X-MS-Office365-Filtering-Correlation-Id: 5c577109-d742-4dae-9c18-08dbc99648e0
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	BxWQakRzHgk5TekYgwxVx4euBKEI/tEe2ycZzYqqtxZCwmcfSWrwPGqvQOgNwS1FoLnkkAcf80TcwqbM0Ea9DuAJrPkWRg/8INQRCIfF2ldP2P2cEjb18lR3kRfYLxgCiM5Z3rIO6qAaEOAmMfpxOq8AzX2X4xzSfIZh1mpsPbx+7TRoQaQCgFMk9NNJmvZxYsgOcJMyRXrultZrOmb+U4dx8jSbjCWLyS8tpD/RTEvZOtEIPZnAc+HTgU6fisDLiAblVInLSbKuEbhR+zuoQMpb3SaMwaHQANXGWdY/jVqHK5/c04qmQfosgG1No3ONbbbd9KZ6UHcDv/arlYqyr2d5lc0Fj1NbOezILNIkWYMhDm6ucde7iM3kYARSEkq1H7JB38gKD+jNSkmHP4pQtioNalRMExcfrQ/nCoOlZCRKSNuw2kucZNRtDtFraF0P+DGmYD5YGFR1eDhpWnzpFLe375Vkw8LYDAXe0oFlGoUUwnxXX2l4phL4umnAC/P+/sykcMVAvBVEvSNhoDSvbpKlqyVGbaHvrSvIx4OBBVIPLfgMuqHC7JPC0bIdGYtwsLlRFA/GHUh+QrHqOr4Ec+m3//O4DYx8y+mhPm8/9wixDt3aTSr+dcUVQRShb9RmfXLxDYbSrMp2wPk7NdDK/1EbDEzBJlVA7nftAfBralU=
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR04MB9498.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(396003)(366004)(346002)(39860400002)(136003)(230922051799003)(451199024)(64100799003)(186009)(1800799009)(86362001)(38350700002)(38100700002)(921005)(36756003)(2013699003)(2906002)(6512007)(52116002)(478600001)(6486002)(41300700001)(4326008)(8676002)(5660300002)(44832011)(6506007)(8936002)(6666004)(2616005)(1076003)(83380400001)(316002)(66476007)(66556008)(66946007)(7416002)(26005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?us-ascii?Q?7vrAqF+g91/goqUfCDGcZvNEXagIWMA4rxiIcnpA/zGtgXWKhnya/KZboUFk?=
- =?us-ascii?Q?JVXsmY/BzIjSfgusf3j/IHW3UB2foXkGOoLj+KW57fUitYXv9XWFGU1doAWD?=
- =?us-ascii?Q?HvY8NbAnHRPbXI6Z3WX9qb35OcHu7K0z7hsA3x1EFYCBciQW/6tOMPFwTwGM?=
- =?us-ascii?Q?1kyTULChQzRn4qL9iceZDDOF9zdnl27BmElxLTi+mmD8Mw/Po1FQxEqFP8ZE?=
- =?us-ascii?Q?+HrtUWJ1888Ch7F4mT5mw1oX7vMZimfHAxBKh+vidpuzwZRc+dCuLjQY1Vdn?=
- =?us-ascii?Q?UvFY5vxC+7/6+jfJ+INokmvzfyrmiSrDFfbjYTj/maxHR0w6BnxPtQBBGLzp?=
- =?us-ascii?Q?8aB0shJ61PMI8Rf9Pa2x5fFYQL0GDxwlwvFmI2X7qjFlZl/xAO54nZg9JQH1?=
- =?us-ascii?Q?PKFO2RKpzXFWnvsmPSJM7EK1yLCKQzI4Z4/Es1egJ/L8EyZ3L1j4FRn5Ogzm?=
- =?us-ascii?Q?9gkiUQdh02AhqfK1RiOeznsm5bG3uwp5Q7ZZIFzlhGLFgeO8i0gSdRp8MwyI?=
- =?us-ascii?Q?H6YuVayaCarPTyhLOFFknnnNSpdKCMnIndhFYSgu2rSiSVpoh7XMyDCNG8E8?=
- =?us-ascii?Q?ZZlsNAs1sS0ZyKG+j8xs8vb29Wm615+dVgjlDRdA6Vha6m09+vbSn+Qgk64D?=
- =?us-ascii?Q?FVBEW9Dma9jbUN7XDZtRF+eG8uMkqnZD1GvWVml5oJgoCF1yf9uCqoQdsDDc?=
- =?us-ascii?Q?88XJoyg+vNNfnRljHPddmPzQhF7Zk6/w9cD1ntrlH3JPTew+2y8Bb38m1U61?=
- =?us-ascii?Q?hGNuwUCM49QQbL+/J64NZArPlrjFPYefD9WyfWXpizvr2CboyFcUFoJZyEX4?=
- =?us-ascii?Q?V5dtOwfEv3BzryPQBQ3baZq1oC2Dk7cC1IyDId8f3ZY+GBm5XK3h1QX57o3L?=
- =?us-ascii?Q?Ty1lYohWu6EOuemFnXPBKYK0AwUwbpTrmQEldvoVQLjpa9y8HVUCwez7c17x?=
- =?us-ascii?Q?nAWuu1WReSR98UUpur1dSFGljiImwPkoBI1KezsoccjinlSvQUNXuuFjQBlJ?=
- =?us-ascii?Q?cH5BajQnGDBn3Rmf76t12LQjujmZYyQUaYO/v4jCIAMWKjH6ejwEIJ3Sv7N+?=
- =?us-ascii?Q?iX4rvWo1gwfR7Rj7iqoeiF3NBAwYkFUVIqcGuVO4JEnQg9hOI9aPBkTpDiIR?=
- =?us-ascii?Q?pp1r8M0F+0Il8dzwhvnB0dRY7GAJtaCBBgt4qed2MT2oI9Ehim5KWwF6mz6i?=
- =?us-ascii?Q?bP9i33cyha3nRC3A0BuGrLen/n4ivw7n0NTO8TpTsQ6qanSTziwamSwaD/9U?=
- =?us-ascii?Q?Kmv1Y5tzHFoQoHUK+jJfBCMn98t+Kku23r6UizLo1rxXYgFsMrJd3wdqXgpw?=
- =?us-ascii?Q?WpzcHiBTPBml661N7MnRulGGZqNluCB2q4/aN6fR3Fbfyryuyb916M5T6hv3?=
- =?us-ascii?Q?dxclI45NH7r78tERR2S29AkLmlBqboBl3mTiUcIvkIoKUcXUJxxH+vit4KgZ?=
- =?us-ascii?Q?1zVJm89FP6ohJw8wFR8eDn6Ac8KlUq9dHctxq/CTp7s3YyI5joHjs/gUPOld?=
- =?us-ascii?Q?RRQddKgwJOEUmcfrkL5CmPp+Zy5VYOsY+Bcjg30Gzl/l0qWeeihkZd1z3gKM?=
- =?us-ascii?Q?8h8oXUd3/+/rx3Qdf965+qET10ExF9VT99cG0yop?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 
- 5c577109-d742-4dae-9c18-08dbc99648e0
-X-MS-Exchange-CrossTenant-AuthSource: DB9PR04MB9498.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Oct 2023 13:39:10.9563
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 
- jl05N3L2cKVBGwjivQ35XO8uKS70DFFeHqU3LSXpu8uAtOYxlOqknOaKYVv6XPgTNfDe/mjF/vTHucUll5omuQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: GVXPR04MB9831
-Message-ID-Hash: UQ76XS4NGP2BFKXKFQF5ZBD6XDN3HSF2
-X-Message-ID-Hash: UQ76XS4NGP2BFKXKFQF5ZBD6XDN3HSF2
-X-MailFrom: chancel.liu@nxp.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/4] ASoC: makes CPU/Codec channel connection map more
+ generic
+Content-Language: en-US
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Mark Brown <broonie@kernel.org>, Bard Liao
+ <yung-chuan.liao@linux.intel.com>, bard.liao@intel.com
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+References: <87bkd78e88.wl-kuninori.morimoto.gx@renesas.com>
+ <87a5sr8e7n.wl-kuninori.morimoto.gx@renesas.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <87a5sr8e7n.wl-kuninori.morimoto.gx@renesas.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: IUCZQAYQQT3IG4RY5IBPOKMRTQJHW2QE
+X-Message-ID-Hash: IUCZQAYQQT3IG4RY5IBPOKMRTQJHW2QE
+X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -159,140 +96,272 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UQ76XS4NGP2BFKXKFQF5ZBD6XDN3HSF2/>
-List-Archive: <>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IUCZQAYQQT3IG4RY5IBPOKMRTQJHW2QE/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add audio devices nodes including SAI, MICFIL, XCVR and MQS.
 
-Signed-off-by: Chancel Liu <chancel.liu@nxp.com>
----
- arch/arm64/boot/dts/freescale/imx93.dtsi | 87 ++++++++++++++++++++++++
- 1 file changed, 87 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/freescale/imx93.dtsi b/arch/arm64/boot/dts/freescale/imx93.dtsi
-index f20dd18e0b65..a1310710080a 100644
---- a/arch/arm64/boot/dts/freescale/imx93.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx93.dtsi
-@@ -171,6 +171,18 @@ cm33: remoteproc-cm33 {
- 		status = "disabled";
- 	};
- 
-+	mqs1: mqs1 {
-+		compatible = "fsl,imx93-mqs";
-+		gpr = <&anomix_ns_gpr>;
-+		status = "disabled";
-+	};
-+
-+	mqs2: mqs2 {
-+		compatible = "fsl,imx93-mqs";
-+		gpr = <&wakeupmix_gpr>;
-+		status = "disabled";
-+	};
-+
- 	soc@0 {
- 		compatible = "simple-bus";
- 		#address-cells = <1>;
-@@ -366,6 +378,19 @@ flexcan1: can@443a0000 {
- 				status = "disabled";
- 			};
- 
-+			sai1: sai@443b0000 {
-+				compatible = "fsl,imx93-sai";
-+				reg = <0x443b0000 0x10000>;
-+				interrupts = <GIC_SPI 45 IRQ_TYPE_LEVEL_HIGH>;
-+				clocks = <&clk IMX93_CLK_SAI1_IPG>, <&clk IMX93_CLK_DUMMY>,
-+					 <&clk IMX93_CLK_SAI1_GATE>, <&clk IMX93_CLK_DUMMY>,
-+					 <&clk IMX93_CLK_DUMMY>;
-+				clock-names = "bus", "mclk0", "mclk1", "mclk2", "mclk3";
-+				dmas = <&edma1 22 0 1>, <&edma1 21 0 0>;
-+				dma-names = "rx", "tx";
-+				status = "disabled";
-+			};
-+
- 			iomuxc: pinctrl@443c0000 {
- 				compatible = "fsl,imx93-iomuxc";
- 				reg = <0x443c0000 0x10000>;
-@@ -446,6 +471,23 @@ tmu: tmu@44482000 {
- 				#thermal-sensor-cells = <1>;
- 			};
- 
-+			micfil: micfil@44520000 {
-+				compatible = "fsl,imx93-micfil";
-+				reg = <0x44520000 0x10000>;
-+				interrupts = <GIC_SPI 202 IRQ_TYPE_LEVEL_HIGH>,
-+					     <GIC_SPI 201 IRQ_TYPE_LEVEL_HIGH>,
-+					     <GIC_SPI 200 IRQ_TYPE_LEVEL_HIGH>,
-+					     <GIC_SPI 199 IRQ_TYPE_LEVEL_HIGH>;
-+				clocks = <&clk IMX93_CLK_PDM_IPG>,
-+					 <&clk IMX93_CLK_PDM_GATE>,
-+					 <&clk IMX93_CLK_AUDIO_PLL>,
-+					 <&clk IMX93_CLK_DUMMY>;
-+				clock-names = "ipg_clk", "ipg_clk_app",
-+					      "pll8k", "clkext3";
-+				dmas = <&edma1 29 0 5>;
-+				dma-names = "rx";
-+				status = "disabled";
-+			};
- 
- 			adc1: adc@44530000 {
- 				compatible = "nxp,imx93-adc";
-@@ -736,6 +778,51 @@ flexspi1: spi@425e0000 {
- 				status = "disabled";
- 			};
- 
-+			sai2: sai@42650000 {
-+				compatible = "fsl,imx93-sai";
-+				reg = <0x42650000 0x10000>;
-+				interrupts = <GIC_SPI 170 IRQ_TYPE_LEVEL_HIGH>;
-+				clocks = <&clk IMX93_CLK_SAI2_IPG>, <&clk IMX93_CLK_DUMMY>,
-+					 <&clk IMX93_CLK_SAI2_GATE>, <&clk IMX93_CLK_DUMMY>,
-+					 <&clk IMX93_CLK_DUMMY>;
-+				clock-names = "bus", "mclk0", "mclk1", "mclk2", "mclk3";
-+				dmas = <&edma2 59 0 1>, <&edma2 58 0 0>;
-+				dma-names = "rx", "tx";
-+				status = "disabled";
-+			};
-+
-+			sai3: sai@42660000 {
-+				compatible = "fsl,imx93-sai";
-+				reg = <0x42660000 0x10000>;
-+				interrupts = <GIC_SPI 171 IRQ_TYPE_LEVEL_HIGH>;
-+				clocks = <&clk IMX93_CLK_SAI3_IPG>, <&clk IMX93_CLK_DUMMY>,
-+					 <&clk IMX93_CLK_SAI3_GATE>, <&clk IMX93_CLK_DUMMY>,
-+					 <&clk IMX93_CLK_DUMMY>;
-+				clock-names = "bus", "mclk0", "mclk1", "mclk2", "mclk3";
-+				dmas = <&edma2 61 0 1>, <&edma2 60 0 0>;
-+				dma-names = "rx", "tx";
-+				status = "disabled";
-+			};
-+
-+			xcvr: xcvr@42680000 {
-+				compatible = "fsl,imx93-xcvr";
-+				reg = <0x42680000 0x800>,
-+				      <0x42680800 0x400>,
-+				      <0x42680c00 0x080>,
-+				      <0x42680e00 0x080>;
-+				reg-names = "ram", "regs", "rxfifo", "txfifo";
-+				interrupts = <GIC_SPI 203 IRQ_TYPE_LEVEL_HIGH>,
-+					     <GIC_SPI 204 IRQ_TYPE_LEVEL_HIGH>;
-+				clocks = <&clk IMX93_CLK_BUS_WAKEUP>,
-+					 <&clk IMX93_CLK_SPDIF_GATE>,
-+					 <&clk IMX93_CLK_DUMMY>,
-+					 <&clk IMX93_CLK_AUD_XCVR_GATE>;
-+				clock-names = "ipg", "phy", "spba", "pll_ipg";
-+				dmas = <&edma2 65 0 1>, <&edma2 66 0 0>;
-+				dma-names = "rx", "tx";
-+				status = "disabled";
-+			};
-+
- 			lpuart7: serial@42690000 {
- 				compatible = "fsl,imx93-lpuart", "fsl,imx8ulp-lpuart", "fsl,imx7ulp-lpuart";
- 				reg = <0x42690000 0x1000>;
--- 
-2.25.1
+On 10/9/23 21:21, Kuninori Morimoto wrote:
+> Current ASoC CPU:Codec = N:M connection is using connection mapping idea,
+> but it is used for CPU < Codec case only. We want to use it for any case.
+> 
+> By this patch, not only N:M connection, but all existing connection
+> (1:1, 1:N, N:N) will use same connection mapping.
+> Because it will use default mapping, no conversion patch is needed
+> to exising CPU/Codec drivers.
+> 
+> More over, CPU:Codec = M:N (M > N) also supported in the same time.
+> 
+> Link: https://lore.kernel.org/r/87fs6wuszr.wl-kuninori.morimoto.gx@renesas.com
+> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> ---
+>  include/sound/soc.h              | 48 ++++++++++++++++--
+>  sound/soc/intel/boards/sof_sdw.c | 14 +++---
+>  sound/soc/soc-core.c             | 83 ++++++++++++++++++++++++++++++++
+>  sound/soc/soc-dapm.c             | 47 +++++++-----------
+>  sound/soc/soc-pcm.c              | 73 +++++++++++++++-------------
+>  5 files changed, 191 insertions(+), 74 deletions(-)
+> 
+> diff --git a/include/sound/soc.h b/include/sound/soc.h
+> index 63b57f58cc569..13f1158df2b1e 100644
+> --- a/include/sound/soc.h
+> +++ b/include/sound/soc.h
+> @@ -655,8 +655,50 @@ struct snd_soc_dai_link_component {
+>  	struct of_phandle_args *dai_args;
+>  };
+>  
+> -struct snd_soc_dai_link_codec_ch_map {
+> -	unsigned int connected_cpu_id;
+> +/*
+> + * [dai_link->ch_maps Image sample]
+> + *
+> + * CPU0 <---> Codec0
+> + *
+> + *	.ch_maps is from CPU
+> + *
+> + *	.num_cpus   = 1;
+> + *	.num_codecs = 1;
+> + *	.connected_node = [0];
+> + *
+> + * CPU0 <---> Codec_x
+> + * CPU1 <---> Codec_y
+> + * CPU2 <---> Codec_z
+> + *
+> + *	.ch_maps is from CPU
+> + *
+> + *	.num_cpus   = 3;
+> + *	.num_codecs = 3;
+> + *	.connected_node = [x, y, z];
+> + *
+> + * CPU0 <---> Codec_x
+> + * CPU1 <-+-> Codec_y
+> + * CPU2 <-/
+> + *
+> + *	.ch_maps is from CPU
+> + *
+> + *	.num_cpus   = 3;
+> + *	.num_codecs = 2;
+> + *	.connected_node = [x, y, y];
+> + *
+> + *
+> + * CPU_x <---> Codec0
+> + * CPU_y <-+-> Codec1
+> + *	   \-> Codec2
+> + *
+> + *	.ch_maps is from Codec
+
+how would we know what the convention is? Is this based on the largest
+number of dais, so here num_codecs > num_cpus so we use a codec-centric
+convention? That would be worth explaining in clear text
+
+> + *
+> + *	.num_cpus   = 2;
+> + *	.num_codecs = 3;
+> + *	.connected_node = [x, y, y];
+> + */
+> +struct snd_soc_dai_link_ch_map {
+> +	unsigned int connected_node;
+
+connected_node is a scalar here and an array above. maybe split this
+patch between a rename and a functionality change?
+
+>  	unsigned int ch_mask;
+>  };
+>  
+> @@ -688,7 +730,7 @@ struct snd_soc_dai_link {
+>  	struct snd_soc_dai_link_component *codecs;
+>  	unsigned int num_codecs;
+>  
+> -	struct snd_soc_dai_link_codec_ch_map *codec_ch_maps;
+> +	struct snd_soc_dai_link_ch_map *ch_maps;
+>  	/*
+>  	 * You MAY specify the link's platform/PCM/DMA driver, either by
+>  	 * device name, or by DT/OF node, but not both. Some forms of link
+> diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
+> index 226a74a4c340f..7927b729866d9 100644
+> --- a/sound/soc/intel/boards/sof_sdw.c
+> +++ b/sound/soc/intel/boards/sof_sdw.c
+> @@ -579,7 +579,7 @@ int sdw_hw_params(struct snd_pcm_substream *substream,
+>  	int i;
+>  	int j;
+>  
+> -	if (!rtd->dai_link->codec_ch_maps)
+> +	if (!rtd->dai_link->ch_maps)
+>  		return 0;
+>  
+>  	/* Identical data will be sent to all codecs in playback */
+> @@ -607,9 +607,9 @@ int sdw_hw_params(struct snd_pcm_substream *substream,
+>  	 */
+>  	for_each_rtd_cpu_dais(rtd, i, cpu_dai) {
+>  		for_each_rtd_codec_dais(rtd, j, codec_dai) {
+> -			if (rtd->dai_link->codec_ch_maps[j].connected_cpu_id != i)
+> +			if (rtd->dai_link->ch_maps[j].connected_node != i)
+
+
+>  				continue;
+> -			rtd->dai_link->codec_ch_maps[j].ch_mask = ch_mask << (j * step);
+> +			rtd->dai_link->ch_maps[j].ch_mask = ch_mask << (j * step);
+>  		}
+>  	}
+>  	return 0;
+> @@ -1350,7 +1350,7 @@ static int get_slave_info(const struct snd_soc_acpi_link_adr *adr_link,
+>  	return 0;
+>  }
+>  
+> -static void set_dailink_map(struct snd_soc_dai_link_codec_ch_map *sdw_codec_ch_maps,
+> +static void set_dailink_map(struct snd_soc_dai_link_ch_map *sdw_codec_ch_maps,
+>  			    int codec_num, int cpu_num)
+>  {
+>  	int step;
+> @@ -1358,7 +1358,7 @@ static void set_dailink_map(struct snd_soc_dai_link_codec_ch_map *sdw_codec_ch_m
+>  
+>  	step = codec_num / cpu_num;
+>  	for (i = 0; i < codec_num; i++)
+> -		sdw_codec_ch_maps[i].connected_cpu_id = i / step;
+> +		sdw_codec_ch_maps[i].connected_node = i / step;
+>  }
+>  
+>  static const char * const type_strings[] = {"SimpleJack", "SmartAmp", "SmartMic"};
+> @@ -1453,7 +1453,7 @@ static int create_sdw_dailink(struct snd_soc_card *card, int *link_index,
+>  		*ignore_pch_dmic = true;
+>  
+>  	for_each_pcm_streams(stream) {
+> -		struct snd_soc_dai_link_codec_ch_map *sdw_codec_ch_maps;
+> +		struct snd_soc_dai_link_ch_map *sdw_codec_ch_maps;
+>  		char *name, *cpu_name;
+>  		int playback, capture;
+>  		static const char * const sdw_stream_name[] = {
+> @@ -1530,7 +1530,7 @@ static int create_sdw_dailink(struct snd_soc_card *card, int *link_index,
+>  		dai_links[*link_index].nonatomic = true;
+>  
+>  		set_dailink_map(sdw_codec_ch_maps, codec_num, cpu_dai_num);
+> -		dai_links[*link_index].codec_ch_maps = sdw_codec_ch_maps;
+> +		dai_links[*link_index].ch_maps = sdw_codec_ch_maps;
+>  		ret = set_codec_init_func(card, adr_link, dai_links + (*link_index)++,
+>  					  playback, group_id, adr_index, dai_index);
+>  		if (ret < 0) {
+> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+> index c305e94762c39..a4bb4c29331cf 100644
+> --- a/sound/soc/soc-core.c
+> +++ b/sound/soc/soc-core.c
+> @@ -1824,6 +1824,84 @@ int snd_soc_set_dmi_name(struct snd_soc_card *card, const char *flavour)
+>  EXPORT_SYMBOL_GPL(snd_soc_set_dmi_name);
+>  #endif /* CONFIG_DMI */
+>  
+> +#define MAX_DEFAULT_CONNECTION_MAP_SIZE 7
+
+why 7?
+
+> +static struct snd_soc_dai_link_ch_map default_connction_map1[MAX_DEFAULT_CONNECTION_MAP_SIZE] = {
+
+typo: connection
+
+this is repeated multiple times in comments below
+
+> +	{ .connected_node = 0 },
+> +	{ .connected_node = 1 },
+> +	{ .connected_node = 2 },
+> +	{ .connected_node = 3 },
+> +	{ .connected_node = 4 },
+> +	{ .connected_node = 5 },
+> +	{ .connected_node = 6 },
+> +};
+> +static struct snd_soc_dai_link_ch_map default_connction_map2[MAX_DEFAULT_CONNECTION_MAP_SIZE] = {
+> +	{ .connected_node = 0 },
+> +	{ .connected_node = 0 },
+> +	{ .connected_node = 0 },
+> +	{ .connected_node = 0 },
+> +	{ .connected_node = 0 },
+> +	{ .connected_node = 0 },
+> +	{ .connected_node = 0 },
+> +};
+> +
+> +static int snd_soc_compensate_connection_map(struct snd_soc_card *card)
+> +{
+> +	struct snd_soc_dai_link *dai_link;
+> +	int i, j, n, max;
+> +
+> +	/*
+> +	 * dai_link->ch_maps indicates how CPU/Codec are connected.
+> +	 * It will be a map seen from a larger number of DAI.
+> +	 * see
+> +	 *	soc.h :: [dai_link->ch_maps Image sample]
+> +	 */
+> +	for_each_card_prelinks(card, i, dai_link) {
+> +
+> +		/* it should have ch_maps if connection was N:M */
+> +		if (dai_link->num_cpus > 1 && dai_link->num_codecs > 1 &&
+> +		    dai_link->num_cpus != dai_link->num_codecs && !dai_link->ch_maps) {
+> +			dev_err(card->dev, "need to have ch_maps when N:M connction (%s)",
+> +				dai_link->name);
+> +			return -EINVAL;
+> +		}
+> +
+> +		/* do nothing if it has own maps */
+> +		if (dai_link->ch_maps)
+> +			goto sanity_check;
+> +
+> +		/* check default map size */
+> +		if (dai_link->num_cpus   > MAX_DEFAULT_CONNECTION_MAP_SIZE ||
+> +		    dai_link->num_codecs > MAX_DEFAULT_CONNECTION_MAP_SIZE) {
+> +			dev_err(card->dev, "soc-core.c needs update default_connction_maps");
+> +			return -EINVAL;
+> +		}
+> +
+> +		/* Compensate missing map for ... */
+> +		if (dai_link->num_cpus == dai_link->num_codecs)
+> +			dai_link->ch_maps = default_connction_map1; /* for 1:1 or N:N */
+> +		else
+> +			dai_link->ch_maps = default_connction_map2; /* for 1:N or N:1 */
+> +
+> +sanity_check:
+> +		if (dai_link->num_cpus >= dai_link->num_codecs) {
+> +			n   = dai_link->num_cpus;
+> +			max = dai_link->num_codecs;
+> +		} else {
+> +			n   = dai_link->num_codecs;
+> +			max = dai_link->num_cpus;
+> +		}
+> +
+> +		for (j = 0; j < n; j++)
+> +			if (dai_link->ch_maps[j].connected_node >= max) {
+> +				dev_err(card->dev, "strange connected_node (%d) was added to ch_maps",
+
+maybe elaborate on what "strange" might mean so that average users can
+figure this out?
+
+> +					dai_link->ch_maps[j].connected_node);
+> +				return -EINVAL;
+> +			}
+> +	}
+> +
+> +	return 0;
+> +}
+> +
 
