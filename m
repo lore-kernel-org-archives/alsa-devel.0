@@ -4,101 +4,115 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BCBF8CDB47E
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Oct 2023 23:48:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F311DCDB474
+	for <alsa-devel@archiver.kernel.org>; Sat, 14 Oct 2023 09:28:36 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8763985D;
-	Sat, 14 Oct 2023 01:47:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8763985D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0A850852;
+	Sat, 14 Oct 2023 11:27:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0A850852
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1697240893;
-	bh=I0Ybzefpb0f46pCoW0lXoe0QVolFQKp1by7iMXMV2ig=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=ExLK4PSHSgg+lrZ7Z9xTZLgmd0sNm83ofMvcHFgmL1QY3/+1NtSYpvKzLvyrwS5KP
-	 hUs9M3zgpD+fEPpUDgoADsrSKfH3ifwjSO2wi+ksr96XVZaYWu1IAzrRxN15C2P9JF
-	 y3CpfLEmtDG83h1kYqyrFCGcltNUfrEQ/VHDB60Q=
+	s=default; t=1697275715;
+	bh=TMz6D1ym4Zp2ZhQVY0RLRvSOPvyWKRZOANfx9ZyRtz4=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=TN+BaU+8ozeBRzXq3YHQQWPS/dc+ynbhHHFoPPw8gZ9vwYnaGWCcxbF5HNPRmGhGo
+	 zy8N4E+9nyiySvv8KQv+to4ojGL2oGMHXulVNzZa41LzagDW8DCMzlMG8WpgjG16lv
+	 r8yr+rw0fme6hspxx6K93m7bv3iMyFFcztSGYM/w=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 25738F80552; Sat, 14 Oct 2023 01:47:02 +0200 (CEST)
+	id 5AD49F80563; Sat, 14 Oct 2023 11:27:37 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 665F1F802BE;
-	Sat, 14 Oct 2023 01:47:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EA89CF8055A;
+	Sat, 14 Oct 2023 11:27:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 66FBCF802BE; Sat, 14 Oct 2023 01:46:58 +0200 (CEST)
-Received: from sin.source.kernel.org (sin.source.kernel.org
- [IPv6:2604:1380:40e1:4800::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	id 7C7DEF802BE; Tue, 10 Oct 2023 04:37:57 +0200 (CEST)
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com
+ [IPv6:2607:f8b0:4864:20::529])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D9047F8019B
-	for <alsa-devel@alsa-project.org>; Sat, 14 Oct 2023 01:46:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D9047F8019B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 8F6E1F8019B
+	for <alsa-devel@alsa-project.org>; Tue, 10 Oct 2023 04:37:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8F6E1F8019B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=lC51rbW1
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id B2C4ECE31C3;
-	Fri, 13 Oct 2023 23:46:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9BF9EC433C7;
-	Fri, 13 Oct 2023 23:46:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1697240810;
-	bh=I0Ybzefpb0f46pCoW0lXoe0QVolFQKp1by7iMXMV2ig=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=lC51rbW1gspwCMSFrJZZKpFXg7hwiUBH02usnJhD4v+VeActrNiPIFdHj9RlFhcIO
-	 OrnL8HaWjePfytoVvVqKd/HhDiXPeYY7lk1ZxdWxEXyatr1hXgkp9n7IUYwlypwC4n
-	 0M3CV7Pq+jjkV3gaxEHD0prKTp+saM5DxkDMl3AaXnHCsGYqbgbk2l/TbdBO63wZif
-	 7/CkacxbI+QhT3KnrqbGwNLiScxjQskkwXtU7yvDQsgk22IKrukuEL2XzEi104Npny
-	 SQbjMVZC/WNa2BVJiSItinrMu0FI0V/yIfzrTnEqNw9u6gyALZLXMsA+Y7QwuYWImc
-	 jms88xG498QjA==
-Date: Fri, 13 Oct 2023 16:46:47 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Herve Codina <herve.codina@bootlin.com>
-Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Andrew Lunn
- <andrew@lunn.ch>, Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- Lee Jones <lee@kernel.org>, Linus Walleij <linus.walleij@linaro.org>, Qiang
- Zhao <qiang.zhao@nxp.com>, Li Yang <leoyang.li@nxp.com>, Liam Girdwood
- <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela
- <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Shengjiu Wang
- <shengjiu.wang@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam
- <festevam@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>, Christophe
- Leroy <christophe.leroy@csgroup.eu>, Randy Dunlap <rdunlap@infradead.org>,
- netdev@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- alsa-devel@alsa-project.org, Simon Horman <horms@kernel.org>, Christophe
- JAILLET <christophe.jaillet@wanadoo.fr>, Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v8 00/30] Add support for QMC HDLC, framer
- infrastructure and PEF2256 framer
-Message-ID: <20231013164647.7855f09a@kernel.org>
-In-Reply-To: <20231011061437.64213-1-herve.codina@bootlin.com>
-References: <20231011061437.64213-1-herve.codina@bootlin.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: MIOCSZKMXIJ5BZJ4HYLSWECMCI6AVYHC
-X-Message-ID-Hash: MIOCSZKMXIJ5BZJ4HYLSWECMCI6AVYHC
-X-MailFrom: kuba@kernel.org
+ unprotected) header.d=huaqin-corp-partner-google-com.20230601.gappssmtp.com
+ header.i=@huaqin-corp-partner-google-com.20230601.gappssmtp.com
+ header.a=rsa-sha256 header.s=20230601 header.b=2aFbSJAA
+Received: by mail-pg1-x529.google.com with SMTP id
+ 41be03b00d2f7-5859b06509cso3192843a12.2
+        for <alsa-devel@alsa-project.org>;
+ Mon, 09 Oct 2023 19:37:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=huaqin-corp-partner-google-com.20230601.gappssmtp.com; s=20230601;
+ t=1696905469; x=1697510269; darn=alsa-project.org;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vwMzGrLMGnIP6xTSJsnj/5QIc3+rjUCw5fQXzXRcINA=;
+        b=2aFbSJAAYFJ/PmCvxLSiLK+gFC/JKqPQMBvIUS3uVzdk5RE5UfCJj5oVhE5xmD9vk7
+         /x1UZXaJuIHjJDg6/RBQaYGKSfsf1CqsF+fkIZhbmUr/TW8wj7YQSLG/aZYSSqp8QlYP
+         8wi/i1E29yu1iuMSsoeSIM2NdDHOeUhfdBcy58jhT/wyIezK+F/y/gYkzccrDOKUUVpT
+         GubMJHQumZuKMX6WrTNwHFWfZfcDAsqePRxXXi9K7fpEyRxad7ykKrdWN0bKOzklbLHN
+         ipm+Isd+bkrGoeTV6EStgqO4YQFU2mpIXz9sSC4AR/3kmdUtwnG5Ab70C+llowPnnXUM
+         svWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696905469; x=1697510269;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vwMzGrLMGnIP6xTSJsnj/5QIc3+rjUCw5fQXzXRcINA=;
+        b=TSBtsMIJHZUh2enBpzk/QZ3uPzwIYeQjJY7U4omAs+OBzqsFJtlcrwHjYSDB5ZODkM
+         bOE4iSFU7MKXvEMG8RV88VyWdTkIHSyeiG+30gWPlnWezwS5Wz75jC2GIHSVTZZJOYeT
+         7lhD+5hOpgrLDt4aDBCfTU1Cxsxn0QOEBiTsVkSMv7NCZkxSp8DX+s27MXnCxWa2r5Pc
+         iWUJXqL+35sYmqLJ27EFBsQty+zWTwC/P5RBSgHkdNasgFiJwaeInAeYIXr0cojmyEAp
+         ORtP95eapsIlw5U0uyPW+QX3GFtldeF6NwkNujNjE2PdZ6czYxONdSd4iP9EDhWIcUGM
+         1wJw==
+X-Gm-Message-State: AOJu0Yz1oTyKhpOIGmVBCFTsmB9OgRhD7hXLSIZL7q293fYTJohxfpWA
+	U8RIdtMKcmnKtOCrjq1Nppme7A==
+X-Google-Smtp-Source: 
+ AGHT+IHSUXpQekZePLA7IXZaVAW51VjZy1d1Xx5XdaJ+xX3W8eIPKm5wLCDKyhQk4zQTrVQpb/XnCA==
+X-Received: by 2002:a05:6a20:8e29:b0:15d:684d:f514 with SMTP id
+ y41-20020a056a208e2900b0015d684df514mr17489451pzj.6.1696905468506;
+        Mon, 09 Oct 2023 19:37:48 -0700 (PDT)
+Received: from ubuntu.huaqin.com ([101.78.151.205])
+        by smtp.gmail.com with ESMTPSA id
+ e1-20020a17090301c100b001c613091aeesm10269039plh.293.2023.10.09.19.37.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Oct 2023 19:37:48 -0700 (PDT)
+From: xiazhengqiao <xiazhengqiao@huaqin.corp-partner.google.com>
+To: lgirdwood@gmail.com,
+	broonie@kernel.org,
+	robh+dt@kernel.org,
+	matthias.bgg@gmail.com,
+	angelogioacchino.delregno@collabora.com,
+	perex@perex.cz,
+	trevor.wu@mediatek.com
+Cc: alsa-devel@alsa-project.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-mediatek@lists.infradead.org,
+	xiazhengqiao <xiazhengqiao@huaqin.corp-partner.google.com>
+Subject: [v5 0/2] ASoC: mediatek: mt8188-mt6359: add rt5682s support
+Date: Tue, 10 Oct 2023 10:37:36 +0800
+Message-Id: 
+ <20231010023738.8241-1-xiazhengqiao@huaqin.corp-partner.google.com>
+X-Mailer: git-send-email 2.17.1
+X-MailFrom: xiazhengqiao@huaqin.corp-partner.google.com
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: J3WPH6VQZEQKRKBZTZG2REFBU7YQYYOU
+X-Message-ID-Hash: J3WPH6VQZEQKRKBZTZG2REFBU7YQYYOU
+X-Mailman-Approved-At: Sat, 14 Oct 2023 09:24:38 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MIOCSZKMXIJ5BZJ4HYLSWECMCI6AVYHC/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/J3WPH6VQZEQKRKBZTZG2REFBU7YQYYOU/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -107,12 +121,41 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Wed, 11 Oct 2023 08:14:04 +0200 Herve Codina wrote:
-> Compare to the previous iteration
->   https://lore.kernel.org/linux-kernel/20230928070652.330429-1-herve.codina@bootlin.com/
-> This v8 series:
->  - Fixes a race condition
->  - Uses menuconfig instead of menu and hides CONFIG_GENERIC_FRAMER
->  - Performs minor changes
+To use RT5682S as the codec and MAX98390 as the amp, add a new
+sound card named mt8188_rt5682s.
 
-Which way will those patches go? Via some FSL SoC tree?
+Changes in v5:
+- PATCH 2/2: modify asoc_rtd_to_codec to snd_soc_rtd_to_codec and make it consistent with the latest revisions
+             remove common struct definitions like rt5682s_jack_pins,mt8188_rt5682s_widgets 
+             and mt8188_rt5682s_controls.
+- Link to v4: https://lore.kernel.org/all/9c28b84e-2d4e-7bc2-88f3-ad5b30d2c727@collabora.com/
+
+Changes in v4:
+- add more reviewers
+- Link to v3: https://patchwork.kernel.org/project/alsa-devel/patch/20230927033608.16920-2-xiazhengqiao@huaqin.corp-partner.google.com/ 
+              https://patchwork.kernel.org/project/alsa-devel/patch/20230927033608.16920-3-xiazhengqiao@huaqin.corp-partner.google.com/
+
+Changes in v3:
+- PATCH 2/2: modify mt8186_rt5682s_i2s_hw_params to mt8188_rt5682s_i2s_hw_params
+- Link to v2: https://lore.kernel.org/all/20230926040901.20338-3-xiazhengqiao@huaqin.corp-partner.google.com/ 
+              https://lore.kernel.org/all/20230926040901.20338-2-xiazhengqiao@huaqin.corp-partner.google.com/
+   
+Changes in v2:
+- PATCH 1/2: Modify mt8188_rt5682 to mt8188_rt5682s
+- PATCH 2/2: Modify all string "rt5682" to "rt5682s" and merge code 
+             in mt8188_fixup_controls
+- Link to v1: https://lore.kernel.org/all/20230925083847.1496-3-xiazhengqiao@huaqin.corp-partner.google.com/
+              https://lore.kernel.org/all/20230925083847.1496-2-xiazhengqiao@huaqin.corp-partner.google.com/
+
+xiazhengqiao (2):
+  ASoC: dt-bindings: mediatek,mt8188-mt6359: add RT5682S support
+  ASoC: mediatek: mt8188-mt6359: add rt5682s support
+
+ .../sound/mediatek,mt8188-mt6359.yaml         |   1 +
+ sound/soc/mediatek/Kconfig                    |   1 +
+ sound/soc/mediatek/mt8188/mt8188-mt6359.c     | 122 +++++++++++++++++-
+ 3 files changed, 122 insertions(+), 2 deletions(-)
+
+-- 
+2.17.1
+
