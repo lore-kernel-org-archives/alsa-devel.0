@@ -4,56 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 51E62CD68F9
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Oct 2023 08:01:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F0643CD6907
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Oct 2023 08:31:50 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 546D8103A;
-	Tue, 10 Oct 2023 10:00:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 546D8103A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7DEAE1060;
+	Tue, 10 Oct 2023 10:30:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7DEAE1060
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1696924886;
-	bh=AN7ELeTSudhhQMwXqFObqw5NBfIIZyn8BBnr1/0eo2Q=;
+	s=default; t=1696926706;
+	bh=p+T1Q0rqoGClJy+72BMBs9BUZqEcavRypdOwHINOMe4=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=dkOS4ZW4yV0oRoTfLVMkqA34eNI+JaRhXKhYGzSZ2oiSd8gk6WPlgIqQvXnYhVIqc
-	 QrgzCECCoEldUsVSNbXQ7NVCNfywoWpg3Hk7gG16XCH/ZInQs8rO8B5O10bkXsEvKW
-	 2SVyJxman5/qJ+R5ZBuY2KjO7lPWCAL7FxFBuTMo=
+	b=cspcqbzL/F2gD+fgZpyEOLlC0y0RQiVJjwovOLydisSb4G14zSIpQclDs8hbrmK9m
+	 RQLa1CipBdWKn6eikn/FxfDMwEyonxkSeK7oNmBlsuJwPWSOcIRk3/aadtMHQ4OkPw
+	 GFe+gcXzF891Z8pkNVxWIXEVGVCo8gYLGa3DivN0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A6510F80536; Tue, 10 Oct 2023 10:00:25 +0200 (CEST)
+	id CC323F80557; Tue, 10 Oct 2023 10:30:18 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id BFD3AF802BE;
-	Tue, 10 Oct 2023 10:00:23 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E924AF8027B;
+	Tue, 10 Oct 2023 10:30:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6E369F802BE; Tue, 10 Oct 2023 09:57:51 +0200 (CEST)
-Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net
- [IPv6:2001:4b98:dc4:8::226])
+	id AE380F80130; Tue, 10 Oct 2023 10:30:11 +0200 (CEST)
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net
+ [IPv6:2001:4b98:dc4:8::224])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id F2BC8F80166
-	for <alsa-devel@alsa-project.org>; Tue, 10 Oct 2023 09:57:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F2BC8F80166
+	by alsa1.perex.cz (Postfix) with ESMTPS id 61577F80166
+	for <alsa-devel@alsa-project.org>; Tue, 10 Oct 2023 10:30:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 61577F80166
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=UAlqB76M
-Received: by mail.gandi.net (Postfix) with ESMTPSA id D7D45C0017;
-	Tue, 10 Oct 2023 07:57:34 +0000 (UTC)
+ header.s=gm1 header.b=d2/GYvHB
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 182D9E0008;
+	Tue, 10 Oct 2023 08:29:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1696924659;
+	t=1696926600;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=8HGCDW6dA/uAJ0GZAXHKMPSuwZNEP4AsO/ZK/lFHFUk=;
-	b=UAlqB76MFympUYcFakSns2mIOgF13pHihMAEYgL1b92u9tsMq8XEVIkpDSc2USgjXn29Dj
-	teMJY1lY51yixmRurzbAu6X/It5Prspi6Id1Wa32QHK/EHhiboyV1E/GwksW+XgJBr/BD+
-	gMzW3HEboeZULdc0q/po4tOFO145hK5LVo9/hA9YMl3NC5d4IgxP0MpIywwHIVhWpcYl7C
-	742U/PmD0Bnm2nlDzGfyngXvb5P5pZawz1yZlpNRIWYKL94NO72XcNjZfdd26znmNKgahB
-	ft3/z9/2lF6GWH7GXWiTQEQSVY54kM8V13b7SYnq1pYaTJi9zxGcx8zm4m1HJA==
-Date: Tue, 10 Oct 2023 09:57:33 +0200
+	bh=NaOw8PSc0VULjmhxAa6nnKNT5QXhrjoUDdxFuVyTpCM=;
+	b=d2/GYvHBSkcMRXi9pmcOlLcCOzYlqnrIh22gZ99/gFbL/M7ys56o4fhkMnDPId8GrsjWCC
+	5ouyZmnYSGtztbw5b3KORr9N47KIDYuaBQUiGc3Xf/ZDdUH8+/jT/SFGq05ljDkT54hN13
+	hx19s0wFiBqyB6uDlurPSlGYgMd3j25Og2nZrBv+EZ8JoEtmpYOsJTJFZCGD6qgRxTFCDK
+	FZ/Gn35OaUtNi/MGYMXczmwjExd6qASdYRlrPa0Xtf0BY5UrQHKeqALrbgvp/3zYz4JUyV
+	QEMOADOF32CCiQH10GW8t3f+hFHXxsyHOaUNrGK7QRLSZ6PLjrkZyGoU9RNvDQ==
+Date: Tue, 10 Oct 2023 10:29:45 +0200
 From: Herve Codina <herve.codina@bootlin.com>
 To: Jakub Kicinski <kuba@kernel.org>
 Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
@@ -73,20 +73,21 @@ Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
  Horman <horms@kernel.org>, Christophe JAILLET
  <christophe.jaillet@wanadoo.fr>, Thomas Petazzoni
  <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v7 24/30] net: wan: Add framer framework support
-Message-ID: <20231010095733.6899abbb@bootlin.com>
-In-Reply-To: <20231006150810.09e2c1a9@kernel.org>
+Subject: Re: [PATCH v7 26/30] net: wan: framer: Add support for the Lantiq
+ PEF2256 framer
+Message-ID: <20231010102945.39c27b1d@bootlin.com>
+In-Reply-To: <20231006150252.6d45be95@kernel.org>
 References: <20230928070652.330429-1-herve.codina@bootlin.com>
-	<20230928070652.330429-25-herve.codina@bootlin.com>
-	<20231006150810.09e2c1a9@kernel.org>
+	<20230928070652.330429-27-herve.codina@bootlin.com>
+	<20231006150252.6d45be95@kernel.org>
 Organization: Bootlin
 X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-GND-Sasl: herve.codina@bootlin.com
-Message-ID-Hash: OTH3PY4MW5XWUMQTHAJ5QR5MH4NKUI4K
-X-Message-ID-Hash: OTH3PY4MW5XWUMQTHAJ5QR5MH4NKUI4K
+Message-ID-Hash: BUZENCHFHLMX7SFG7Q7GG2VMGZSYGNQQ
+X-Message-ID-Hash: BUZENCHFHLMX7SFG7Q7GG2VMGZSYGNQQ
 X-MailFrom: herve.codina@bootlin.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -99,7 +100,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OTH3PY4MW5XWUMQTHAJ5QR5MH4NKUI4K/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BUZENCHFHLMX7SFG7Q7GG2VMGZSYGNQQ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -108,67 +109,29 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi Jakub
+Hi Jakub,
 
-On Fri, 6 Oct 2023 15:08:10 -0700
+On Fri, 6 Oct 2023 15:02:52 -0700
 Jakub Kicinski <kuba@kernel.org> wrote:
 
-> On Thu, 28 Sep 2023 09:06:42 +0200 Herve Codina wrote:
-> > +menu "Framer Subsystem"
-> > +
-> > +config GENERIC_FRAMER
-> > +	bool "Framer Core"
-> > +	help
-> > +	  Generic Framer support.
-> > +	  A framer is a component in charge of an E1/T1 line interface.
-> > +	  Connected usually to a TDM bus, it converts TDM frames to/from E1/T1
-> > +	  frames. It also provides information related to the E1/T1 line.
-> > +	  Used with HDLC, the network can be reached through the E1/T1 line.
-> > +
-> > +	  This framework is designed to provide a generic interface for framer
-> > +	  devices present in the kernel. This layer will have the generic
-> > +	  API by which framer drivers can create framer using the framer
-> > +	  framework and framer users can obtain reference to the framer.
-> > +	  All the users of this framework should select this config.  
+> On Thu, 28 Sep 2023 09:06:44 +0200 Herve Codina wrote:
+> > +	for (i = 0; i < count; i++) {
+> > +		(audio_devs + i)->name = "framer-codec";
+> > +		(audio_devs + i)->of_compatible = compatible;
+> > +		(audio_devs + i)->id = i;  
 > 
-> maybe make the menu a menuconfig with info about framers but hide 
-> the GENERIC_FRAMER symbol? The driver 'select' it anyway, what's
-> the point of prompting the user..
+> Why not array notation?
 
-Yes, I will change in the next iteration.
+Will be change in the next iteration.
 
 > 
-> > +	if (WARN_ON(!dev))
-> > +		return ERR_PTR(-EINVAL);  
-> 
-> no defensive programming, let the kernel crash
-
-Will be changed.
-
-> 
-> > +	ret = framer_pm_runtime_get_sync(framer);
-> > +	if (ret < 0 && ret != -EOPNOTSUPP)
-> > +		goto err_pm_sync;
-> > +
-> > +	ret = 0; /* Override possible ret == -EOPNOTSUPP */  
-> 
-> This looks pointless given that ret is either overwritten or not used
-> later on
-
-Indeed. Will be removed in the next iteration.
-
-> 
-> > +	mutex_lock(&framer->mutex);
-> > +	if (framer->power_count == 0 && framer->ops->power_on) {
-> > +		ret = framer->ops->power_on(framer);
-> > +		if (ret < 0) {
-> > +			dev_err(&framer->dev, "framer poweron failed --> %d\n", ret);
-> > +			goto err_pwr_on;
-> > +		}
 > > +	}
-> > +	++framer->power_count;
-> > +	mutex_unlock(&framer->mutex);
-> > +	return 0;  
+> > +
+> > +	ret = mfd_add_devices(pef2256->dev, 0, audio_devs, count, NULL, 0, NULL);  
+> 
+> Should Lee be CCed for the MFD part?
+
+Will be added to the CC list.
 
 Best regards,
 Hervé
