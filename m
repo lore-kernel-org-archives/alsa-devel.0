@@ -4,86 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 48384CD80D5
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Oct 2023 13:46:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 13B85CD8CAF
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Oct 2023 18:37:02 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D4030152F;
-	Tue, 10 Oct 2023 15:45:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D4030152F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 957EA1519;
+	Tue, 10 Oct 2023 20:36:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 957EA1519
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1696945595;
-	bh=jdyUeEs7l/uynNOxW+chyX1CbsJ0ZsTalvF31kn6dYo=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	s=default; t=1696963020;
+	bh=yBzcSftJxEqCztLT9VvKOdDs1KwwRk5x/oGlnnB88nU=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=XdQpthqqWZL9PhP87m9IOqd0hZgSL5Y8YTVOSQz9pbf9JOtr5VZd0OyxHtpb4JawM
-	 7CDQVdG4P4Fcc18MQrWNrownqKgTbSkRXM+3wC0c+3nlHXoGkGDuwr8JW669L4qGJG
-	 +FiptM42ILUFwHTuu2Unh2Jj5t1pHqznzraS/z/E=
+	b=pdqYRHwCaENxpNN6isMi7nmwu87PlkEboTFrypwiMyUqjZ+j0dGpebGBmR20qFZDm
+	 5NulX6T/2x9guM97DmNxkeaJe+Dewo7JG/ie5sKmo4W7VBKbrMU9zrAGdCNw/cDYmI
+	 guGjNZcFs//7Sq7NHHte2J8wuSYeLOwp2YHHoe+I=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 357EAF80558; Tue, 10 Oct 2023 15:44:56 +0200 (CEST)
+	id 4155FF8055A; Tue, 10 Oct 2023 20:35:39 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8F350F8055B;
-	Tue, 10 Oct 2023 15:44:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0C861F802E8;
+	Tue, 10 Oct 2023 20:35:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DDA81F802BE; Tue, 10 Oct 2023 15:44:50 +0200 (CEST)
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id C428DF80166; Tue, 10 Oct 2023 20:33:40 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7B779F80166
-	for <alsa-devel@alsa-project.org>; Tue, 10 Oct 2023 15:44:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7B779F80166
+	by alsa1.perex.cz (Postfix) with ESMTPS id CECB1F80166
+	for <alsa-devel@alsa-project.org>; Tue, 10 Oct 2023 20:33:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CECB1F80166
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=OV4A/ORo
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696945485; x=1728481485;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=jdyUeEs7l/uynNOxW+chyX1CbsJ0ZsTalvF31kn6dYo=;
-  b=OV4A/ORoNARCvYPEdSCZyYwoxGra7fAl8HqO9tSnFhY9leezmVhOqBTa
-   hQ3kRQmhjrG3OSGd91oj7IaG4UZ+3Z7i9zEvZQR+FqSyByMQBL3r8t2n1
-   HGUUnTGSflmey5FFGCu0KEV7RMj4r1RmBVnv1GuIQxJpAWyrY9NnrTwOy
-   VYrMGheOJciurJpCkYRQhv57hSTAVOekqkXXAjsVe+UnI9cb9aMrvHcFl
-   2eJpAHQyAhj/rvzjuYoaSyLcFjtRNAhMaHW7RhPr6JyGEib+unxs9dO9v
-   zkqyErKx1RvvtPEPR5Crv7iZvmFy/AtDGnWpBhx1m79oWwmleRoS7ViRn
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="369460350"
-X-IronPort-AV: E=Sophos;i="6.03,212,1694761200";
-   d="scan'208";a="369460350"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Oct 2023 06:44:37 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="753412659"
-X-IronPort-AV: E=Sophos;i="6.03,212,1694761200";
-   d="scan'208";a="753412659"
-Received: from sssodhi-mobl.amr.corp.intel.com (HELO [10.212.38.18])
- ([10.212.38.18])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Oct 2023 06:44:35 -0700
-Message-ID: <4ee736cc-25cd-4e33-95b3-fb1607e9a998@linux.intel.com>
-Date: Tue, 10 Oct 2023 09:43:16 -0400
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=uZSxPeL7
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by ams.source.kernel.org (Postfix) with ESMTP id 7FA2FB81D92;
+	Tue, 10 Oct 2023 18:33:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A180C433CB;
+	Tue, 10 Oct 2023 18:33:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1696962800;
+	bh=yBzcSftJxEqCztLT9VvKOdDs1KwwRk5x/oGlnnB88nU=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=uZSxPeL7jvC+twuHGkChvxvZh7kTC91tPfhPIfrA6IjU5DNN/XjslTfuGyX2sJi0a
+	 l8iIJCtPj4pY32oJmInO/tLiHqApcgZmkkwNTMVEQzPW5SQIYi9wR9WIBpKV9wRUkW
+	 alIlET2yb7mki3Y2URFSIF0ZgLRO5MrekCF5w/ZNEuZsLe6ISR5QKZ0mB8/IXI0ToU
+	 Ie2XaeQfWqk/WH1bivlqo0L96rB46Y/YzoYKlooZRFwSPVD5Wqk8DJMzWhIzTrmMhB
+	 +acy/g4hW7DJy7bV/yJTCf+dJjyLJ3KXzYlUl6D8YdW8jSdfQIQBKymCTqI2Ve5KeU
+	 uIZDw+bJSOAxQ==
+From: Mark Brown <broonie@kernel.org>
+To: Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc: lgirdwood@gmail.com, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+ patches@opensource.cirrus.com
+In-Reply-To: <20231005135559.3117994-1-ckeepax@opensource.cirrus.com>
+References: <20231005135559.3117994-1-ckeepax@opensource.cirrus.com>
+Subject: Re: [PATCH 1/2] ASoC: dt-bindings: cirrus,cs42l43: Update values
+ for bias sense
+Message-Id: <169696279894.221758.959134819176975869.b4-ty@kernel.org>
+Date: Tue, 10 Oct 2023 19:33:18 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/4] ASoC: makes CPU/Codec channel connection map more
- generic
-Content-Language: en-US
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Mark Brown <broonie@kernel.org>, Bard Liao
- <yung-chuan.liao@linux.intel.com>, bard.liao@intel.com
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>
-References: <87bkd78e88.wl-kuninori.morimoto.gx@renesas.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <87bkd78e88.wl-kuninori.morimoto.gx@renesas.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-ID-Hash: ZSLIDYG3ARBVROM6FIV2JYQ7UDNRUF66
-X-Message-ID-Hash: ZSLIDYG3ARBVROM6FIV2JYQ7UDNRUF66
-X-MailFrom: pierre-louis.bossart@linux.intel.com
+X-Mailer: b4 0.13-dev-0438c
+Message-ID-Hash: 5WLCKR7B7VLMENWIY3UH2NHYIODU7CXH
+X-Message-ID-Hash: 5WLCKR7B7VLMENWIY3UH2NHYIODU7CXH
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -95,29 +86,48 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZSLIDYG3ARBVROM6FIV2JYQ7UDNRUF66/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5WLCKR7B7VLMENWIY3UH2NHYIODU7CXH/>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-
-
-On 10/9/23 21:20, Kuninori Morimoto wrote:
+On Thu, 05 Oct 2023 14:55:58 +0100, Charles Keepax wrote:
+> Due to an error in the datasheet the bias sense values currently don't
+> match the hardware. Whilst this is a change to the binding no devices
+> have yet shipped so updating the binding will not cause any issues.
 > 
-> Hi Mark
-> Cc Bard, Pierre-Louis
 > 
-> Current ASoC is supporting CPU/Codec = N:M (N < M) connection by using
-> ch_map idea. This patch expand that all connection uses this idea,
-> and no limit of N < M [1].
-> 
-> This patch is tested on Audio-Graph-Card2 with sample dtsi,
-> but needs Tested-by, at least from Intel.
 
-We can test the next version (comments in separate mail) but we don't
-have a configuration with more cpu dais than codec dais I am afraid, so
-the best we can contribute is a non-regression for the N < M case.
+Applied to
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+
+Thanks!
+
+[1/2] ASoC: dt-bindings: cirrus,cs42l43: Update values for bias sense
+      commit: 53ba32acb5ab137ba333c20e0c987bdd6273a366
+[2/2] ASoC: cs42l43: Update values for bias sense
+      commit: 99d426c6dd2d6f9734617ec12def856ee35b9218
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
