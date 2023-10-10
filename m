@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5AB77CD80D2
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Oct 2023 13:41:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 83FAECD80D3
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Oct 2023 13:41:36 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0216B1526;
-	Tue, 10 Oct 2023 15:40:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0216B1526
+	by alsa0.perex.cz (Postfix) with ESMTPS id A2269152E;
+	Tue, 10 Oct 2023 15:40:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A2269152E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1696945286;
-	bh=I/3gkiltMGlJS0Sm/VEfLsOwSz/+e+LbiyoY8Xy1fao=;
+	s=default; t=1696945294;
+	bh=GmpPvDuFjqdv2xX9cM8lqTnYJqW59m5K4C0zDkiHUi0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=tIpPmjfsEUBkjPRtfKyUF3vHExv0eR63MG1ohAYnI7TsPiNgIOPOC64dW6Xrg51Pc
-	 LFsSVb2I0AuyEB61hLy42lKSZmtfsaVaOTXdzNK1CXzSkIXPvU7utxjUSpyQzrG5Se
-	 2HQiGZ+fM960lVE0PPDgxNFvoK02GWjxv/5w1n1M=
+	b=ui0aazV8WiitLr86WRs37xia6I9f26nhsolq8jAJv1LuuqptdJeo37Z3JoDF0q416
+	 SjOqlyEDXMwrwumezqR8dkH8E5bEEBkUMFIjJ1CY8TZ2cp5BiLS2bZlvcfECuTwRR3
+	 yu6BGsVboVUfrfM8syHgkY32KbDxj4zPXnZHPQAU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2848CF80588; Tue, 10 Oct 2023 15:39:37 +0200 (CEST)
+	id 1ADEAF805AD; Tue, 10 Oct 2023 15:39:40 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7BCE1F8057C;
-	Tue, 10 Oct 2023 15:39:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 684F1F8057C;
+	Tue, 10 Oct 2023 15:39:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 86646F80558; Tue, 10 Oct 2023 15:39:31 +0200 (CEST)
+	id 389BDF80552; Tue, 10 Oct 2023 15:39:31 +0200 (CEST)
 Received: from EUR02-DB5-obe.outbound.protection.outlook.com
- (mail-db5eur02on2062e.outbound.protection.outlook.com
- [IPv6:2a01:111:f400:fe12::62e])
+ (mail-db5eur02on2060d.outbound.protection.outlook.com
+ [IPv6:2a01:111:f400:fe12::60d])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 3ECE3F802BE
-	for <alsa-devel@alsa-project.org>; Tue, 10 Oct 2023 15:39:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3ECE3F802BE
+	by alsa1.perex.cz (Postfix) with ESMTPS id 492DDF8027B
+	for <alsa-devel@alsa-project.org>; Tue, 10 Oct 2023 15:39:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 492DDF8027B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=nxp.com header.i=@nxp.com header.a=rsa-sha256
- header.s=selector2 header.b=SRWUh6Iq
+ header.s=selector2 header.b=mKeiOiPs
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WDd5vx5E5yxFStCfohqG77tDtvVzqXpvduhXnLkW+UlxLcoeHJVqRNQnMG+Gz4uplgw2FLs6LAspbmWIcZLUIKCuZcpHJlk63msldILB8ga+d65uoazG8WigWrl9RwJ7svTq0UM9Rki5UmtlZP7M7OZDHovd+X8nGXgLG4+dWCeGy9U3ISLY0ClKhvrxaysuRb553hLV1uLe0w8IWoyqxd4P2Rl2AAoYsm07oPkbFpxqU4lMopuJL19dn5LrGbkdyElTOOZ0QpSkmL/ZS69PrbQyrwwH8gNSJ+sn7eyesnqTdWBDey/BHYUNl64t75Cf/L9qEf3gTW/tSmiH/gt0hw==
+ b=h3DlCGM+zm6bnDn+9U3qf4TVR8kAjOU/rl26i3iDJV+FllSqz1+YEgTMsOFUklYRU3DA04rcL/jsK3ak4AhSjloykWMfenHSTDi5MS7JdNP/dd9wu8TXFCORN+0qUr74rgtqzVEmXkbjAlL/GqdXqn96T4MNJf3ccLkmq+g+9c8z60xbnTLwKOvr9oixMM9q1R0mHAbwfrgvLrxZXUV5SK40km1HtwyawlB9vOkKc0DLTz+k5yhM8R/6L/SMZok6t/zzEKmwChpp7Vpyl1a1haTiqCKs+ryQs9usMBtOfvil4Wwsnk28nq9Sbv64uE7IT11hPiDUWCmUx0U+cfDVCQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=CgD7xtr+AlJt7OTxlu0cjJdSBqzJFWnEsLHX7bDNbL4=;
- b=ZHty0I/Rx5LjjXnDYIRs+ropt6MA4gqaR7l2pZ0yrKhZzTe0NJjwXbRl9NQWEapvH+7KSzVrVwEKhyz8zRlFOn6/W6ZNC4jPpmbExQc6ZiocJSDki3q4x/ZppmuNdNHeA9i+LcRsd1alfkl5nG/U3TiHC02bV0GyMOZfwmdXgMTDpZT/jtfGl9vk3ClPT56G1NEJwYGewtfx3FXrjO3V1NEofWR0uIW5Xyikik7AgYTOgp6yoZeaQfqbgaYBqCXZhRnDDhHMDhCu6FmBI5454RveM0qivFGx8TSMSnxqAJoJqGTvM9X76IGkMMsQCAlrEdOfCzksnKAwMYiEVfEPhQ==
+ bh=kWFgDR4XULeGsuvmgvI/uv22/Oc4M9BPQPVNwLll7DQ=;
+ b=FOnO7F3nVyi4Hn63BUp9Ib0Sdw1qdqntzFdo0lRtouYx/3QpFiRE0l7GXzHWMJpWykwiB8bkwjuzrpm/hDQtmExmXJCEdDGdM0dzMG4FkX29Ef1F3iosCN00o4I1M6Pm8ZVKnbfkkLVV82vd3StMb4ZkJ1EGsb+RbC+ZGAX4QHehUgH7giFhNu3pRNYCLUhrviOXcBcE08RZK/79HF3yCwWsoQaM4Wd+r3n6I3gpWZd47dLvsOyvgy2h58AZReeT4WGS2M7nTSGCNJPhwnhtoFlNs0YmNcRiiz8RSryzNcQhM+BNxbx7Ab0momjynjPIS7Ka8/KUrUvOA6Uy9NTZyA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
  header.d=nxp.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CgD7xtr+AlJt7OTxlu0cjJdSBqzJFWnEsLHX7bDNbL4=;
- b=SRWUh6IqU4ZPuJu1wROAyUD/RS0/wiyzon9zhfNv0R+JwqwowAdXGnxECD6/tQ0KpO2wrdD4hPBFaNfxx2qmUdmGyADBcKwIDkfXGi5UEfJdK4UNsPeBjlcMe5zbjtIy8YNcPRoEV3aizeEDAyigVzixS2Gs7HOSJHSFWjuZl3w=
+ bh=kWFgDR4XULeGsuvmgvI/uv22/Oc4M9BPQPVNwLll7DQ=;
+ b=mKeiOiPsT7HMYWQuB+gxJj1khK3lRUqtL/j5Lr6yuo+BYgWJSDCxA+k1JnE8iODCNFCZDOJCWiWYawfGdSrNxzZi/VRzgzt7niIA1ld6dF81JhyifRYZ6z7tPmLXqsvyjhlBGtEil4TeIj1S5yziM/qoxkztp+clCbKn9rZ3HR4=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nxp.com;
 Received: from DB9PR04MB9498.eurprd04.prod.outlook.com (2603:10a6:10:360::21)
  by GVXPR04MB9831.eurprd04.prod.outlook.com (2603:10a6:150:11c::8) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.36; Tue, 10 Oct
- 2023 13:39:20 +0000
+ 2023 13:39:11 +0000
 Received: from DB9PR04MB9498.eurprd04.prod.outlook.com
  ([fe80::51f9:b8d2:7ddd:c74f]) by DB9PR04MB9498.eurprd04.prod.outlook.com
  ([fe80::51f9:b8d2:7ddd:c74f%6]) with mapi id 15.20.6863.032; Tue, 10 Oct 2023
- 13:39:20 +0000
+ 13:39:11 +0000
 From: Chancel Liu <chancel.liu@nxp.com>
 To: lgirdwood@gmail.com,
 	broonie@kernel.org,
@@ -81,10 +81,9 @@ To: lgirdwood@gmail.com,
 	linux-kernel@vger.kernel.org,
 	alsa-devel@alsa-project.org
 Cc: Chancel Liu <chancel.liu@nxp.com>
-Subject: [PATCH v2 3/3] ASoC: dt-bindings: fsl,mqs: Convert format to
- json-schema
-Date: Tue, 10 Oct 2023 21:38:38 +0800
-Message-Id: <20231010133838.799714-4-chancel.liu@nxp.com>
+Subject: [PATCH v2 1/3] arm64: dts: imx93: Add audio device nodes
+Date: Tue, 10 Oct 2023 21:38:36 +0800
+Message-Id: <20231010133838.799714-2-chancel.liu@nxp.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20231010133838.799714-1-chancel.liu@nxp.com>
 References: <20231010133838.799714-1-chancel.liu@nxp.com>
@@ -96,58 +95,58 @@ X-ClientProxiedBy: SI2PR02CA0019.apcprd02.prod.outlook.com
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: DB9PR04MB9498:EE_|GVXPR04MB9831:EE_
-X-MS-Office365-Filtering-Correlation-Id: 13b6ae65-6c5c-4f96-11cc-08dbc9964eb0
+X-MS-Office365-Filtering-Correlation-Id: 5c577109-d742-4dae-9c18-08dbc99648e0
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info: 
-	4DLeDKsX+1TZBSSHl5hCIS+G9G4hp70zIR/waP8+jgkuSHRTXpvfUlTklK2QbJhLGniHgVNURoVtVTMuDhLgPPLBBD8C2FczHLd9kCuel8tHukXT6RkBnuvc2gTN+0n+ZeALxRqcS5AjUtOqmPRb7pYgL7foGC1JkmQBN8xcDin5/ElY2yWRNY6v/LCoIl+WlejmpZUgH/jl6P3VEX0lxq2vtl0s1eLZ4hN7Kf689pSejRxcP7LwhN05SwyReQjRH8h5qlOCzxSoEyMhIMDfiqyjQV8b2sCTkT7vcjmlANEuFllkpCu40F77ntvsu0S9JzWdV+bQxTkRD+sEJg6fxQeMk5B5UAyYj4COXzFM3atkYt/LSPvB1RM+XXAXmGGdxaz0keKgLdfbwmKENGSgeBxnsx1oiAEC41/wf8nOpMWV50b/bKviKfnRs5rLr1HWHS0tZ/GGDUWLUEkVIjup8K/o2t69YFd+22FSu8DrOfaQbttEv54TlxGC/rZA47VqAKq+JaR9DOdgkr1v6OYdVBSIddhl+Sp3hQpGeFyoUm+yKJHb5U9QWhRz9A0rrXlxAB42aeE9VvnizDFAUWsILSNn8opKsTLh6MOxkqoXUa5GG7KXemi/Eccdx4D41ndM
+	BxWQakRzHgk5TekYgwxVx4euBKEI/tEe2ycZzYqqtxZCwmcfSWrwPGqvQOgNwS1FoLnkkAcf80TcwqbM0Ea9DuAJrPkWRg/8INQRCIfF2ldP2P2cEjb18lR3kRfYLxgCiM5Z3rIO6qAaEOAmMfpxOq8AzX2X4xzSfIZh1mpsPbx+7TRoQaQCgFMk9NNJmvZxYsgOcJMyRXrultZrOmb+U4dx8jSbjCWLyS8tpD/RTEvZOtEIPZnAc+HTgU6fisDLiAblVInLSbKuEbhR+zuoQMpb3SaMwaHQANXGWdY/jVqHK5/c04qmQfosgG1No3ONbbbd9KZ6UHcDv/arlYqyr2d5lc0Fj1NbOezILNIkWYMhDm6ucde7iM3kYARSEkq1H7JB38gKD+jNSkmHP4pQtioNalRMExcfrQ/nCoOlZCRKSNuw2kucZNRtDtFraF0P+DGmYD5YGFR1eDhpWnzpFLe375Vkw8LYDAXe0oFlGoUUwnxXX2l4phL4umnAC/P+/sykcMVAvBVEvSNhoDSvbpKlqyVGbaHvrSvIx4OBBVIPLfgMuqHC7JPC0bIdGYtwsLlRFA/GHUh+QrHqOr4Ec+m3//O4DYx8y+mhPm8/9wixDt3aTSr+dcUVQRShb9RmfXLxDYbSrMp2wPk7NdDK/1EbDEzBJlVA7nftAfBralU=
 X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR04MB9498.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(396003)(366004)(346002)(39860400002)(136003)(230922051799003)(451199024)(64100799003)(186009)(1800799009)(86362001)(38350700002)(38100700002)(921005)(36756003)(2906002)(6512007)(52116002)(478600001)(966005)(6486002)(41300700001)(4326008)(8676002)(5660300002)(44832011)(6506007)(8936002)(6666004)(2616005)(1076003)(83380400001)(316002)(66476007)(66556008)(66946007)(7416002)(26005);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR04MB9498.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(396003)(366004)(346002)(39860400002)(136003)(230922051799003)(451199024)(64100799003)(186009)(1800799009)(86362001)(38350700002)(38100700002)(921005)(36756003)(2013699003)(2906002)(6512007)(52116002)(478600001)(6486002)(41300700001)(4326008)(8676002)(5660300002)(44832011)(6506007)(8936002)(6666004)(2616005)(1076003)(83380400001)(316002)(66476007)(66556008)(66946007)(7416002)(26005);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?us-ascii?Q?84QAUXvUdIoWIlF6p1iJfI1GWDvxh8QrQKH9BzNkxaPNOoqskMjTNW9aF7xE?=
- =?us-ascii?Q?ccFbqFo+KMtZqkX9cjoQBBtZHdSWn6WkKkExNGydj88EryUX2etDrway8kKN?=
- =?us-ascii?Q?wUdABIhoSebq1nAzXEyFtSmB5iUVH+aeITpkOVdA14w0CF5k5fYu+Z4Y41mX?=
- =?us-ascii?Q?dnrYeiG2FqvnXtDYI+OMDtC5uh2d9lzJA3f9tes3Q1Pu6PXGbk0QbjUwXm4V?=
- =?us-ascii?Q?v4UvVn4gBA1gmm8CNBlvdTxbgj1Bo4n/OCfoCga7rTpndjL+orM4DvjA4ye3?=
- =?us-ascii?Q?wJ5VL97OQQA+cXquoaUO0po0YWVaEjpk1lIGWrmfswDzNbfz4wl15GJDacIN?=
- =?us-ascii?Q?iN5qIAegAtNhLC4tnkwOSryI50IM91k+aBNoG01WvUB87zMRhpmj4XGk2Sp3?=
- =?us-ascii?Q?WxUDDEdebbzVuJZwHGdLurEja/bUktaO5LCFDSxq7OXANnkIHt7BTfLuDnIl?=
- =?us-ascii?Q?f8i1NVfgwOr5WgqXp3Iyn+qAz5V+nrthskfBwddcj6rw1wsHrSa8+6Hz1/TP?=
- =?us-ascii?Q?dKlznBgAuWmpLAtsqGb4vooEjaslm6vfL0/4kTS/GsXydyzh0mrO04RjV7+a?=
- =?us-ascii?Q?2OKNzVosJG8z7KfRQjdyDP84BKYEQQw9EcmCKuUU1+jDpfBdW/mn3fDsFdCn?=
- =?us-ascii?Q?ruv4zenqpEVlCp5l+AxWFu0HglVwX0YCO2ZDS32fW62xMNFY/P1CyquaGd+S?=
- =?us-ascii?Q?myL8eXltut74TRUdpjO4Iye7i5N11WHiA4qAXb4LVaV+GNamNGl+Fl62Bo8U?=
- =?us-ascii?Q?iA8ARRnNNmHrBOwAhLnQ1AytQAYHCrSX/w7+ZkIRCHQhNROfGuFs0WzSjlOU?=
- =?us-ascii?Q?D2f0MGvjwxkQsNB+VCc/ujRS2KKwmi7A72+YEdh1zkKlTCoyrw+vh2HkeQHU?=
- =?us-ascii?Q?X8urN84Dbn4hQQ30OQjsZznnNaaLfUkeVwpw699trhwP4VNzotNfkKvggwvb?=
- =?us-ascii?Q?N0jgYSUFsL/0OHgahe4NHfuiuZrz/azrRYp4aPt2RL3VAz6cB8dwoIJ94FSn?=
- =?us-ascii?Q?s78PNEHoWMM00X7MaqtofF/3TMaN/FeyYx2dkLCNwxizLH822NizNX+on/PS?=
- =?us-ascii?Q?HgxOSgZUiHYTzXK9kRpFdT057Ni2LqSGCL7x5WqDft1SS8SYFWydKvkT1RHQ?=
- =?us-ascii?Q?U8pDAg/SM4lSGU5SQMJ1h44Q0sx4i5AG3yU453QBqjnrq+g1DksuxwTqp7K+?=
- =?us-ascii?Q?ktgEisomVw173kqlTyrIwMMvkqrivZ7eKsxM030eDzJrwd/gt6Dixbyiu8vU?=
- =?us-ascii?Q?po+FjKPD3jC/cikcUwS1G6QQ+Za2amol/HuHTfCTL5kjDPP1iq7mt05nmMO+?=
- =?us-ascii?Q?uHUa9ElFCZbOQ4jMSP1jb5/t/W9e8kVtysBFYh7T/h3A85ou+w/qBXqfKqiS?=
- =?us-ascii?Q?zwIQCGG+I9MpMPqPcfaZv3m6/6e/8KG8v5BwYdtbOP/n27xr3252hyG+xsTv?=
- =?us-ascii?Q?hsnlJxNL8pkiJEwQkolI337TwBOe4A9xczbFr9eEKa3WnBMgl/ZTK8yDwKCe?=
- =?us-ascii?Q?QBITk424qL9HBhtdFZVNP9x3MYhpOcxGfhk+9T9YZGslTcbx8+4jIkH6FBgK?=
- =?us-ascii?Q?SYTAfkZoD2BS+Rv/GV+CPc0CVMfmnUI2OIqw//6Q?=
+	=?us-ascii?Q?7vrAqF+g91/goqUfCDGcZvNEXagIWMA4rxiIcnpA/zGtgXWKhnya/KZboUFk?=
+ =?us-ascii?Q?JVXsmY/BzIjSfgusf3j/IHW3UB2foXkGOoLj+KW57fUitYXv9XWFGU1doAWD?=
+ =?us-ascii?Q?HvY8NbAnHRPbXI6Z3WX9qb35OcHu7K0z7hsA3x1EFYCBciQW/6tOMPFwTwGM?=
+ =?us-ascii?Q?1kyTULChQzRn4qL9iceZDDOF9zdnl27BmElxLTi+mmD8Mw/Po1FQxEqFP8ZE?=
+ =?us-ascii?Q?+HrtUWJ1888Ch7F4mT5mw1oX7vMZimfHAxBKh+vidpuzwZRc+dCuLjQY1Vdn?=
+ =?us-ascii?Q?UvFY5vxC+7/6+jfJ+INokmvzfyrmiSrDFfbjYTj/maxHR0w6BnxPtQBBGLzp?=
+ =?us-ascii?Q?8aB0shJ61PMI8Rf9Pa2x5fFYQL0GDxwlwvFmI2X7qjFlZl/xAO54nZg9JQH1?=
+ =?us-ascii?Q?PKFO2RKpzXFWnvsmPSJM7EK1yLCKQzI4Z4/Es1egJ/L8EyZ3L1j4FRn5Ogzm?=
+ =?us-ascii?Q?9gkiUQdh02AhqfK1RiOeznsm5bG3uwp5Q7ZZIFzlhGLFgeO8i0gSdRp8MwyI?=
+ =?us-ascii?Q?H6YuVayaCarPTyhLOFFknnnNSpdKCMnIndhFYSgu2rSiSVpoh7XMyDCNG8E8?=
+ =?us-ascii?Q?ZZlsNAs1sS0ZyKG+j8xs8vb29Wm615+dVgjlDRdA6Vha6m09+vbSn+Qgk64D?=
+ =?us-ascii?Q?FVBEW9Dma9jbUN7XDZtRF+eG8uMkqnZD1GvWVml5oJgoCF1yf9uCqoQdsDDc?=
+ =?us-ascii?Q?88XJoyg+vNNfnRljHPddmPzQhF7Zk6/w9cD1ntrlH3JPTew+2y8Bb38m1U61?=
+ =?us-ascii?Q?hGNuwUCM49QQbL+/J64NZArPlrjFPYefD9WyfWXpizvr2CboyFcUFoJZyEX4?=
+ =?us-ascii?Q?V5dtOwfEv3BzryPQBQ3baZq1oC2Dk7cC1IyDId8f3ZY+GBm5XK3h1QX57o3L?=
+ =?us-ascii?Q?Ty1lYohWu6EOuemFnXPBKYK0AwUwbpTrmQEldvoVQLjpa9y8HVUCwez7c17x?=
+ =?us-ascii?Q?nAWuu1WReSR98UUpur1dSFGljiImwPkoBI1KezsoccjinlSvQUNXuuFjQBlJ?=
+ =?us-ascii?Q?cH5BajQnGDBn3Rmf76t12LQjujmZYyQUaYO/v4jCIAMWKjH6ejwEIJ3Sv7N+?=
+ =?us-ascii?Q?iX4rvWo1gwfR7Rj7iqoeiF3NBAwYkFUVIqcGuVO4JEnQg9hOI9aPBkTpDiIR?=
+ =?us-ascii?Q?pp1r8M0F+0Il8dzwhvnB0dRY7GAJtaCBBgt4qed2MT2oI9Ehim5KWwF6mz6i?=
+ =?us-ascii?Q?bP9i33cyha3nRC3A0BuGrLen/n4ivw7n0NTO8TpTsQ6qanSTziwamSwaD/9U?=
+ =?us-ascii?Q?Kmv1Y5tzHFoQoHUK+jJfBCMn98t+Kku23r6UizLo1rxXYgFsMrJd3wdqXgpw?=
+ =?us-ascii?Q?WpzcHiBTPBml661N7MnRulGGZqNluCB2q4/aN6fR3Fbfyryuyb916M5T6hv3?=
+ =?us-ascii?Q?dxclI45NH7r78tERR2S29AkLmlBqboBl3mTiUcIvkIoKUcXUJxxH+vit4KgZ?=
+ =?us-ascii?Q?1zVJm89FP6ohJw8wFR8eDn6Ac8KlUq9dHctxq/CTp7s3YyI5joHjs/gUPOld?=
+ =?us-ascii?Q?RRQddKgwJOEUmcfrkL5CmPp+Zy5VYOsY+Bcjg30Gzl/l0qWeeihkZd1z3gKM?=
+ =?us-ascii?Q?8h8oXUd3/+/rx3Qdf965+qET10ExF9VT99cG0yop?=
 X-OriginatorOrg: nxp.com
 X-MS-Exchange-CrossTenant-Network-Message-Id: 
- 13b6ae65-6c5c-4f96-11cc-08dbc9964eb0
+ 5c577109-d742-4dae-9c18-08dbc99648e0
 X-MS-Exchange-CrossTenant-AuthSource: DB9PR04MB9498.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Oct 2023 13:39:20.7007
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Oct 2023 13:39:10.9563
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
 X-MS-Exchange-CrossTenant-UserPrincipalName: 
- Wdh87vkZqCKvKbb4/17S8M6Nz86yjOLxztbeJvxydduU4RnyzdKYXbk5Jn3jV8Ni33h24TfxTbvj5JxvBih6Eg==
+ jl05N3L2cKVBGwjivQ35XO8uKS70DFFeHqU3LSXpu8uAtOYxlOqknOaKYVv6XPgTNfDe/mjF/vTHucUll5omuQ==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: GVXPR04MB9831
-Message-ID-Hash: 6XZMVUXX2JZHAV3S7DPELEAL4LCR5SGF
-X-Message-ID-Hash: 6XZMVUXX2JZHAV3S7DPELEAL4LCR5SGF
+Message-ID-Hash: UQ76XS4NGP2BFKXKFQF5ZBD6XDN3HSF2
+X-Message-ID-Hash: UQ76XS4NGP2BFKXKFQF5ZBD6XDN3HSF2
 X-MailFrom: chancel.liu@nxp.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -160,187 +159,140 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6XZMVUXX2JZHAV3S7DPELEAL4LCR5SGF/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UQ76XS4NGP2BFKXKFQF5ZBD6XDN3HSF2/>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Convert NXP medium quality sound (MQS) device tree binding
-documentation to json-schema.
+Add audio devices nodes including SAI, MICFIL, XCVR and MQS.
 
 Signed-off-by: Chancel Liu <chancel.liu@nxp.com>
 ---
- .../devicetree/bindings/sound/fsl,mqs.txt     |  36 ------
- .../devicetree/bindings/sound/fsl,mqs.yaml    | 113 ++++++++++++++++++
- 2 files changed, 113 insertions(+), 36 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/sound/fsl,mqs.txt
- create mode 100644 Documentation/devicetree/bindings/sound/fsl,mqs.yaml
+ arch/arm64/boot/dts/freescale/imx93.dtsi | 87 ++++++++++++++++++++++++
+ 1 file changed, 87 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/fsl,mqs.txt b/Documentation/devicetree/bindings/sound/fsl,mqs.txt
-deleted file mode 100644
-index d66284b8bef2..000000000000
---- a/Documentation/devicetree/bindings/sound/fsl,mqs.txt
-+++ /dev/null
-@@ -1,36 +0,0 @@
--fsl,mqs audio CODEC
--
--Required properties:
--  - compatible : Must contain one of "fsl,imx6sx-mqs", "fsl,codec-mqs"
--		"fsl,imx8qm-mqs", "fsl,imx8qxp-mqs", "fsl,imx93-mqs".
--  - clocks : A list of phandles + clock-specifiers, one for each entry in
--	     clock-names
--  - clock-names : "mclk" - must required.
--		  "core" - required if compatible is "fsl,imx8qm-mqs", it
--		           is for register access.
--  - gpr : A phandle of General Purpose Registers in IOMUX Controller.
--	  Required if compatible is "fsl,imx6sx-mqs".
--
--Required if compatible is "fsl,imx8qm-mqs":
--  - power-domains: A phandle of PM domain provider node.
--  - reg: Offset and length of the register set for the device.
--
--Example:
--
--mqs: mqs {
--	compatible = "fsl,imx6sx-mqs";
--	gpr = <&gpr>;
--	clocks = <&clks IMX6SX_CLK_SAI1>;
--	clock-names = "mclk";
--	status = "disabled";
--};
--
--mqs: mqs@59850000 {
--	compatible = "fsl,imx8qm-mqs";
--	reg = <0x59850000 0x10000>;
--	clocks = <&clk IMX8QM_AUD_MQS_IPG>,
--		 <&clk IMX8QM_AUD_MQS_HMCLK>;
--	clock-names = "core", "mclk";
--	power-domains = <&pd_mqs0>;
--	status = "disabled";
--};
-diff --git a/Documentation/devicetree/bindings/sound/fsl,mqs.yaml b/Documentation/devicetree/bindings/sound/fsl,mqs.yaml
-new file mode 100644
-index 000000000000..c697b97f888e
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/fsl,mqs.yaml
-@@ -0,0 +1,113 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/fsl,mqs.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+diff --git a/arch/arm64/boot/dts/freescale/imx93.dtsi b/arch/arm64/boot/dts/freescale/imx93.dtsi
+index f20dd18e0b65..a1310710080a 100644
+--- a/arch/arm64/boot/dts/freescale/imx93.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx93.dtsi
+@@ -171,6 +171,18 @@ cm33: remoteproc-cm33 {
+ 		status = "disabled";
+ 	};
+ 
++	mqs1: mqs1 {
++		compatible = "fsl,imx93-mqs";
++		gpr = <&anomix_ns_gpr>;
++		status = "disabled";
++	};
 +
-+title: NXP Medium Quality Sound (MQS)
++	mqs2: mqs2 {
++		compatible = "fsl,imx93-mqs";
++		gpr = <&wakeupmix_gpr>;
++		status = "disabled";
++	};
 +
-+maintainers:
-+  - Shengjiu Wang <shengjiu.wang@nxp.com>
-+  - Chancel Liu <chancel.liu@nxp.com>
+ 	soc@0 {
+ 		compatible = "simple-bus";
+ 		#address-cells = <1>;
+@@ -366,6 +378,19 @@ flexcan1: can@443a0000 {
+ 				status = "disabled";
+ 			};
+ 
++			sai1: sai@443b0000 {
++				compatible = "fsl,imx93-sai";
++				reg = <0x443b0000 0x10000>;
++				interrupts = <GIC_SPI 45 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&clk IMX93_CLK_SAI1_IPG>, <&clk IMX93_CLK_DUMMY>,
++					 <&clk IMX93_CLK_SAI1_GATE>, <&clk IMX93_CLK_DUMMY>,
++					 <&clk IMX93_CLK_DUMMY>;
++				clock-names = "bus", "mclk0", "mclk1", "mclk2", "mclk3";
++				dmas = <&edma1 22 0 1>, <&edma1 21 0 0>;
++				dma-names = "rx", "tx";
++				status = "disabled";
++			};
 +
-+description: |
-+  Medium quality sound (MQS) is used to generate medium quality audio
-+  via a standard GPIO in the pinmux, allowing the user to connect
-+  stereo speakers or headphones to a power amplifier without an
-+  additional DAC chip.
+ 			iomuxc: pinctrl@443c0000 {
+ 				compatible = "fsl,imx93-iomuxc";
+ 				reg = <0x443c0000 0x10000>;
+@@ -446,6 +471,23 @@ tmu: tmu@44482000 {
+ 				#thermal-sensor-cells = <1>;
+ 			};
+ 
++			micfil: micfil@44520000 {
++				compatible = "fsl,imx93-micfil";
++				reg = <0x44520000 0x10000>;
++				interrupts = <GIC_SPI 202 IRQ_TYPE_LEVEL_HIGH>,
++					     <GIC_SPI 201 IRQ_TYPE_LEVEL_HIGH>,
++					     <GIC_SPI 200 IRQ_TYPE_LEVEL_HIGH>,
++					     <GIC_SPI 199 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&clk IMX93_CLK_PDM_IPG>,
++					 <&clk IMX93_CLK_PDM_GATE>,
++					 <&clk IMX93_CLK_AUDIO_PLL>,
++					 <&clk IMX93_CLK_DUMMY>;
++				clock-names = "ipg_clk", "ipg_clk_app",
++					      "pll8k", "clkext3";
++				dmas = <&edma1 29 0 5>;
++				dma-names = "rx";
++				status = "disabled";
++			};
+ 
+ 			adc1: adc@44530000 {
+ 				compatible = "nxp,imx93-adc";
+@@ -736,6 +778,51 @@ flexspi1: spi@425e0000 {
+ 				status = "disabled";
+ 			};
+ 
++			sai2: sai@42650000 {
++				compatible = "fsl,imx93-sai";
++				reg = <0x42650000 0x10000>;
++				interrupts = <GIC_SPI 170 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&clk IMX93_CLK_SAI2_IPG>, <&clk IMX93_CLK_DUMMY>,
++					 <&clk IMX93_CLK_SAI2_GATE>, <&clk IMX93_CLK_DUMMY>,
++					 <&clk IMX93_CLK_DUMMY>;
++				clock-names = "bus", "mclk0", "mclk1", "mclk2", "mclk3";
++				dmas = <&edma2 59 0 1>, <&edma2 58 0 0>;
++				dma-names = "rx", "tx";
++				status = "disabled";
++			};
 +
-+properties:
-+  compatible:
-+    enum:
-+      - fsl,imx6sx-mqs
-+      - fsl,codec-mqs
-+      - fsl,imx8qm-mqs
-+      - fsl,imx8qxp-mqs
-+      - fsl,imx93-mqs
++			sai3: sai@42660000 {
++				compatible = "fsl,imx93-sai";
++				reg = <0x42660000 0x10000>;
++				interrupts = <GIC_SPI 171 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&clk IMX93_CLK_SAI3_IPG>, <&clk IMX93_CLK_DUMMY>,
++					 <&clk IMX93_CLK_SAI3_GATE>, <&clk IMX93_CLK_DUMMY>,
++					 <&clk IMX93_CLK_DUMMY>;
++				clock-names = "bus", "mclk0", "mclk1", "mclk2", "mclk3";
++				dmas = <&edma2 61 0 1>, <&edma2 60 0 0>;
++				dma-names = "rx", "tx";
++				status = "disabled";
++			};
 +
-+  clocks:
-+    minItems: 1
-+    maxItems: 2
++			xcvr: xcvr@42680000 {
++				compatible = "fsl,imx93-xcvr";
++				reg = <0x42680000 0x800>,
++				      <0x42680800 0x400>,
++				      <0x42680c00 0x080>,
++				      <0x42680e00 0x080>;
++				reg-names = "ram", "regs", "rxfifo", "txfifo";
++				interrupts = <GIC_SPI 203 IRQ_TYPE_LEVEL_HIGH>,
++					     <GIC_SPI 204 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&clk IMX93_CLK_BUS_WAKEUP>,
++					 <&clk IMX93_CLK_SPDIF_GATE>,
++					 <&clk IMX93_CLK_DUMMY>,
++					 <&clk IMX93_CLK_AUD_XCVR_GATE>;
++				clock-names = "ipg", "phy", "spba", "pll_ipg";
++				dmas = <&edma2 65 0 1>, <&edma2 66 0 0>;
++				dma-names = "rx", "tx";
++				status = "disabled";
++			};
 +
-+  clock-names:
-+    minItems: 1
-+    maxItems: 2
-+
-+  gpr:
-+    $ref: /schemas/types.yaml#/definitions/phandle
-+    description: The phandle to the General Purpose Register (GPR) node
-+
-+  reg:
-+    maxItems: 1
-+
-+  power-domains:
-+    maxItems: 1
-+
-+  resets:
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - clocks
-+  - clock-names
-+
-+allOf:
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            const: fsl,imx8qm-mqs
-+    then:
-+      properties:
-+        clocks:
-+          items:
-+            - description: Master clock
-+            - description: Clock for register access
-+        clock-names:
-+          items:
-+            - const: mclk
-+            - const: core
-+      required:
-+        - reg
-+        - power-domains
-+    else:
-+      properties:
-+        clocks:
-+          items:
-+            - description: Master clock
-+        clock-names:
-+          items:
-+            - const: mclk
-+
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - fsl,imx6sx-mqs
-+              - fsl,imx93-mqs
-+    then:
-+      required:
-+        - gpr
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/clock/imx6sx-clock.h>
-+    mqs0: mqs {
-+        compatible = "fsl,imx6sx-mqs";
-+        gpr = <&gpr>;
-+        clocks = <&clks IMX6SX_CLK_SAI1>;
-+        clock-names = "mclk";
-+    };
-+
-+  - |
-+    #include <dt-bindings/firmware/imx/rsrc.h>
-+    mqs1: mqs@59850000 {
-+        compatible = "fsl,imx8qm-mqs";
-+        reg = <0x59850000 0x10000>;
-+        clocks = <&mqs0_lpcg 0>, <&mqs0_lpcg 1>;
-+        clock-names = "mclk", "core";
-+        power-domains = <&pd IMX_SC_R_MQS_0>;
-+    };
+ 			lpuart7: serial@42690000 {
+ 				compatible = "fsl,imx93-lpuart", "fsl,imx8ulp-lpuart", "fsl,imx7ulp-lpuart";
+ 				reg = <0x42690000 0x1000>;
 -- 
 2.25.1
 
