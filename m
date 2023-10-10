@@ -4,93 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E9F4ECD8CAC
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Oct 2023 18:44:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2D12CD8CB5
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Oct 2023 19:41:28 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E4D581541;
-	Tue, 10 Oct 2023 20:43:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E4D581541
+	by alsa0.perex.cz (Postfix) with ESMTPS id A8B951516;
+	Tue, 10 Oct 2023 21:40:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A8B951516
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1696963458;
-	bh=ldKKDLNL5IeRM0a07A6s6AJub50EGR8AJO6LTn0Obwg=;
+	s=default; t=1696966885;
+	bh=jLybmmqCIxDnVXPrUBWg4L5usGGWYSA0Tz28a1z32eI=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=r5tPc0lsNnZMzjM+kQHcht7LvbEhcGUapF+QuiQApijATS7UNfzq5ncSrAPKnID8t
-	 A30Jqhirg0aF10Dbqi/DH1cGmm6bpYWCBMPF85K3nCUWWf+ZkLqugPUKxTsIQSRHrX
-	 FfvwrOyWRPFO058sEr0HnEULFEhXMCz3L5NwT5GE=
+	b=vK9AxyVOo6SN/QB8vOlWOdLq18SvwHgQHyaERXTCLYQVVsnCEA6eSqRF5wLZeL5Ff
+	 Krp59wUhP78HBnSgXOfCeaajAm6xQrs/FebYNO8OvzLboGpwJUpA/PaFrDsVtTVzkB
+	 h3FNy0/N+KPVCBSKkjk0HWXXLN4BUtF4wlXH4SrY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7C2F1F80536; Tue, 10 Oct 2023 20:42:57 +0200 (CEST)
+	id 09C48F802E8; Tue, 10 Oct 2023 21:40:34 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5B9DAF80310;
-	Tue, 10 Oct 2023 20:42:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7EACAF802BE;
+	Tue, 10 Oct 2023 21:40:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CB4D1F80310; Tue, 10 Oct 2023 20:42:45 +0200 (CEST)
+	id 8C7B4F802BE; Tue, 10 Oct 2023 21:39:31 +0200 (CEST)
 Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 1709CF8027B
-	for <alsa-devel@alsa-project.org>; Tue, 10 Oct 2023 20:42:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1709CF8027B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 73B69F80166
+	for <alsa-devel@alsa-project.org>; Tue, 10 Oct 2023 21:39:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 73B69F80166
 Authentication-Results: alsa1.perex.cz;
-	dkim=fail reason="signature verification failed" (2048-bit key,
+	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=LqzM4D1M
+ header.s=k20201202 header.b=OhW6aqX9
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id C43AECE1DF1;
-	Tue, 10 Oct 2023 18:42:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 754C9C433CC;
-	Tue, 10 Oct 2023 18:42:13 +0000 (UTC)
+	by sin.source.kernel.org (Postfix) with ESMTP id 2D666CE1E52;
+	Tue, 10 Oct 2023 19:39:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 201B5C433C8;
+	Tue, 10 Oct 2023 19:39:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1696963337;
-	bh=ldKKDLNL5IeRM0a07A6s6AJub50EGR8AJO6LTn0Obwg=;
+	s=k20201202; t=1696966757;
+	bh=jLybmmqCIxDnVXPrUBWg4L5usGGWYSA0Tz28a1z32eI=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=LqzM4D1MlLdeXjle0S/VafEl40lMghLhLKm+9gJtf+ozhX1rdh7dMp9TxumYlErj6
-	 hfFl58cakIJNbknsQMdeOerVRiHoWTUZimBOIaMG2Er7wDuh+ofNCrIildBOEkgcyF
-	 iHst+Szlw1LPgbq0idM4X1NB53u3zx2lyIXz6XM9scQtjG/o0kAoQJz5cALTiLeS4h
-	 P6O/43fv9eqa2gfm+cl9uXuK8WPOBWHa+gVOYYWs0n9289SeXGnWrjjm8Uyv2M2J41
-	 MyzucIxozLIO/j0LhciFjLR46qrcTuYTics1mybYkX073932KlLSdDEBL0ov4kHqG8
-	 2tXMZTrLHMb7w==
-Received: (nullmailer pid 1358279 invoked by uid 1000);
-	Tue, 10 Oct 2023 18:42:12 -0000
-Date: Tue, 10 Oct 2023 13:42:12 -0500
+	b=OhW6aqX9qYWPUWDh37OuLKGEds1Y7s1JNlK96sq2lea69gtAuYyBX2UHuUwcaXK95
+	 zLhbTqJYwaovHiATNuAGy/MUR/Gg0JsxiQr9vmUheTGlJMzqNeFocPgWhdBL6MTOnp
+	 UDcWMNtPTTjPqQTloYsW3osT26E89Zn5H2pQYVYQaGLzp4c8zp5yRYbsDUB8nEKfPY
+	 +/sbb5C1vPCnXsDRH2ZDOu+FRU1vqIBO06uSaEOSQK5HOF0MZE1pzvPGc2CK4gTxOa
+	 njcpS2CjFU05n6LE+fj55Rdto71TywMmlhWyFeIcxXn8RhgEcEUXl991NqB62WqsU7
+	 WYLkmafY6SOkg==
+Received: (nullmailer pid 1426033 invoked by uid 1000);
+	Tue, 10 Oct 2023 19:39:15 -0000
+Date: Tue, 10 Oct 2023 14:39:15 -0500
 From: Rob Herring <robh@kernel.org>
-To: Gatien Chevallier <gatien.chevallier@foss.st.com>
-Cc: Oleksii_Moisieiev@epam.com, gregkh@linuxfoundation.org,
-	herbert@gondor.apana.org.au, davem@davemloft.net,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	alexandre.torgue@foss.st.com, vkoul@kernel.org, jic23@kernel.org,
-	olivier.moysan@foss.st.com, arnaud.pouliquen@foss.st.com,
-	mchehab@kernel.org, fabrice.gasnier@foss.st.com,
-	andi.shyti@kernel.org, ulf.hansson@linaro.org, edumazet@google.com,
-	kuba@kernel.org, pabeni@redhat.com, hugues.fruchet@foss.st.com,
-	lee@kernel.org, will@kernel.org, catalin.marinas@arm.com,
-	arnd@kernel.org, richardcochran@gmail.com,
-	Frank Rowand <frowand.list@gmail.com>, peng.fan@oss.nxp.com,
-	linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	dmaengine@vger.kernel.org, linux-i2c@vger.kernel.org,
-	linux-iio@vger.kernel.org, alsa-devel@alsa-project.org,
-	linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
-	netdev@vger.kernel.org, linux-p@alsa-project.org,
-	hy@lists.infradead.org, linux-serial@vger.kernel.org,
-	linux-spi@vger.kernel.org, linux-usb@vger.kernel.org
-Subject: Re: [PATCH v6 10/11] ARM: dts: stm32: add ETZPC as a system bus for
- STM32MP15x boards
-Message-ID: <20231010184212.GA1221641-robh@kernel.org>
-References: <20231010125719.784627-1-gatien.chevallier@foss.st.com>
- <20231010125719.784627-11-gatien.chevallier@foss.st.com>
+To: Chancel Liu <chancel.liu@nxp.com>
+Cc: conor+dt@kernel.org, s.hauer@pengutronix.de, broonie@kernel.org,
+ linux-kernel@vger.kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ devicetree@vger.kernel.org, linux-imx@nxp.com, shawnguo@kernel.org,
+ linux-arm-kernel@lists.infradead.org, lgirdwood@gmail.com,
+ alsa-devel@alsa-project.org, robh+dt@kernel.org, festevam@gmail.com,
+ kernel@pengutronix.de
+Subject: Re: [PATCH v2 3/3] ASoC: dt-bindings: fsl,mqs: Convert format to
+ json-schema
+Message-ID: <169696675468.1425993.2823968878328380539.robh@kernel.org>
+References: <20231010133838.799714-1-chancel.liu@nxp.com>
+ <20231010133838.799714-4-chancel.liu@nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231010125719.784627-11-gatien.chevallier@foss.st.com>
-Message-ID-Hash: QLFH5ZW7UDYLYV4OYFFJ7ONVPNJX7Q7V
-X-Message-ID-Hash: QLFH5ZW7UDYLYV4OYFFJ7ONVPNJX7Q7V
+In-Reply-To: <20231010133838.799714-4-chancel.liu@nxp.com>
+Message-ID-Hash: GKHYFZSS7IONV43CP2CMW7UFZ7CFDAIS
+X-Message-ID-Hash: GKHYFZSS7IONV43CP2CMW7UFZ7CFDAIS
 X-MailFrom: rob@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -103,7 +89,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QLFH5ZW7UDYLYV4OYFFJ7ONVPNJX7Q7V/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GKHYFZSS7IONV43CP2CMW7UFZ7CFDAIS/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -112,34 +98,19 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, Oct 10, 2023 at 02:57:18PM +0200, Gatien Chevallier wrote:
-> ETZPC is a firewall controller. Put all peripherals filtered by the
-> ETZPC as ETZPC subnodes and reference ETZPC as an
-> access-control-provider.
+
+On Tue, 10 Oct 2023 21:38:38 +0800, Chancel Liu wrote:
+> Convert NXP medium quality sound (MQS) device tree binding
+> documentation to json-schema.
 > 
-> For more information on which peripheral is securable or supports MCU
-> isolation, please read the STM32MP15 reference manual.
-> 
-> Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
+> Signed-off-by: Chancel Liu <chancel.liu@nxp.com>
 > ---
+>  .../devicetree/bindings/sound/fsl,mqs.txt     |  36 ------
+>  .../devicetree/bindings/sound/fsl,mqs.yaml    | 113 ++++++++++++++++++
+>  2 files changed, 113 insertions(+), 36 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/sound/fsl,mqs.txt
+>  create mode 100644 Documentation/devicetree/bindings/sound/fsl,mqs.yaml
 > 
-> Changes in V6:
->     	- Renamed access-controller to access-controllers
->     	- Removal of access-control-provider property
-> 
-> Changes in V5:
->     	- Renamed feature-domain* to access-control*
-> 
->  arch/arm/boot/dts/st/stm32mp151.dtsi  | 2756 +++++++++++++------------
->  arch/arm/boot/dts/st/stm32mp153.dtsi  |   52 +-
->  arch/arm/boot/dts/st/stm32mp15xc.dtsi |   19 +-
->  3 files changed, 1450 insertions(+), 1377 deletions(-)
 
-This is not reviewable. Change the indentation and any non-functional 
-change in one patch and then actual changes in another.
+Reviewed-by: Rob Herring <robh@kernel.org>
 
-This is also an ABI break. Though I'm not sure it's avoidable. All the 
-devices below the ETZPC node won't probe on existing kernel. A 
-simple-bus fallback for ETZPC node should solve that. 
-
-Rob
