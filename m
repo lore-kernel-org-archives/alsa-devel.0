@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 486DFCD68F2
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Oct 2023 04:41:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B3C4CCD68EC
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Oct 2023 04:49:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5E147FCF;
-	Tue, 10 Oct 2023 06:40:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5E147FCF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 81B44FCC;
+	Tue, 10 Oct 2023 06:48:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 81B44FCC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1696912864;
+	s=default; t=1696913358;
 	bh=oUzphqxxg+EP13V765LD9xmh5txU8wuSTa4iovxFpTw=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=Smdno051ZzAREuD66SK1G5dXu/FzZtKIqubSKzK+pPGggY5/2OBtYi7VozOlNUAcF
-	 aF2nUxTPMpx/ZDcOD7plhBmfNyCI0lKA/puplwZI1XA/bVi1YW0k+RDs3p/XzPXgSu
-	 YKA71iAGx5YdBXXWfBdxd4GZqXIu2AIc0q2TbFkc=
+	b=EERl7SJhLq7aV4cPiJOBh+5wA+mBGm7ysRbw5FpyErfKlI0hAwvDGE/QibpgRL6ib
+	 r+A5nrdTxoKoAgl5hdHdYPd9PjQ5bpVgr85OQZgFa6b15F5Q7qiz8/ocDBHXtTkhNZ
+	 +8bizV69/1Tb0HPMrRfzpWD9ph5GrjGcYH4PuhTo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 06C2BF80552; Tue, 10 Oct 2023 06:40:14 +0200 (CEST)
+	id AB9D2F8027B; Tue, 10 Oct 2023 06:48:27 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B68EBF802BE;
-	Tue, 10 Oct 2023 06:40:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 12D2EF802BE;
+	Tue, 10 Oct 2023 06:48:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id EC289F802BE; Tue, 10 Oct 2023 06:36:27 +0200 (CEST)
+	id C9692F802BE; Tue, 10 Oct 2023 06:48:20 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
  [207.180.221.201])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7941DF80166
-	for <alsa-devel@alsa-project.org>; Tue, 10 Oct 2023 06:36:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7941DF80166
+	by alsa1.perex.cz (Postfix) with ESMTP id D84D5F80166
+	for <alsa-devel@alsa-project.org>; Tue, 10 Oct 2023 06:47:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D84D5F80166
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1696912586388449192-webhooks-bot@alsa-project.org>
-References: <1696912586388449192-webhooks-bot@alsa-project.org>
-Subject: Undefined symbols in version sccripts are error in LLD-17 (by
+In-Reply-To: <1696913279324399471-webhooks-bot@alsa-project.org>
+References: <1696913279324399471-webhooks-bot@alsa-project.org>
+Subject: Undefined symbols in version sccripts are errors in LLD-17 (by
  default)
-Message-Id: <20231010043627.EC289F802BE@alsa1.perex.cz>
-Date: Tue, 10 Oct 2023 06:36:27 +0200 (CEST)
-Message-ID-Hash: OHXWCDR2I5QMWYO2X5VXG5HPPV3S4RLS
-X-Message-ID-Hash: OHXWCDR2I5QMWYO2X5VXG5HPPV3S4RLS
+Message-Id: <20231010044820.C9692F802BE@alsa1.perex.cz>
+Date: Tue, 10 Oct 2023 06:48:20 +0200 (CEST)
+Message-ID-Hash: GXRCT6UNJFMXEAN4VYWVE73FGWFOXDKK
+X-Message-ID-Hash: GXRCT6UNJFMXEAN4VYWVE73FGWFOXDKK
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -58,7 +58,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OHXWCDR2I5QMWYO2X5VXG5HPPV3S4RLS/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GXRCT6UNJFMXEAN4VYWVE73FGWFOXDKK/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
