@@ -4,76 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 13B85CD8CAF
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Oct 2023 18:37:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9E88DCD8CAC
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Oct 2023 18:39:39 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 957EA1519;
-	Tue, 10 Oct 2023 20:36:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 957EA1519
+	by alsa0.perex.cz (Postfix) with ESMTPS id 575251523;
+	Tue, 10 Oct 2023 20:38:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 575251523
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1696963020;
-	bh=yBzcSftJxEqCztLT9VvKOdDs1KwwRk5x/oGlnnB88nU=;
+	s=default; t=1696963177;
+	bh=men6Wwkv7/TKQYnqRezdvTojzHpVL+WgvG2tg1k2L9k=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=pdqYRHwCaENxpNN6isMi7nmwu87PlkEboTFrypwiMyUqjZ+j0dGpebGBmR20qFZDm
-	 5NulX6T/2x9guM97DmNxkeaJe+Dewo7JG/ie5sKmo4W7VBKbrMU9zrAGdCNw/cDYmI
-	 guGjNZcFs//7Sq7NHHte2J8wuSYeLOwp2YHHoe+I=
+	b=inzgtmlZJXkvtr0JKJ8zrhpoopSJew4kKtMx2hBHYU2U7+3HvBEGN/Q7AU3iN2iR+
+	 miy7+ZcjlTdYtDTmRtenWScGU6bXHp1Sgq9sM1ZwOpmZRE6215m2pWEoJT3M+Rp/pX
+	 GOAVkCeNTP/vrNEFcHC5c4nvpTgAQwmQApTew2pQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4155FF8055A; Tue, 10 Oct 2023 20:35:39 +0200 (CEST)
+	id 88BC3F8019B; Tue, 10 Oct 2023 20:38:09 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0C861F802E8;
-	Tue, 10 Oct 2023 20:35:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 43A4AF802BE;
+	Tue, 10 Oct 2023 20:38:09 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C428DF80166; Tue, 10 Oct 2023 20:33:40 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+	id DF697F80553; Tue, 10 Oct 2023 20:33:43 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id CECB1F80166
-	for <alsa-devel@alsa-project.org>; Tue, 10 Oct 2023 20:33:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CECB1F80166
+	by alsa1.perex.cz (Postfix) with ESMTPS id F1E27F802BE
+	for <alsa-devel@alsa-project.org>; Tue, 10 Oct 2023 20:33:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F1E27F802BE
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=uZSxPeL7
+ header.s=k20201202 header.b=G82dDx8Z
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by ams.source.kernel.org (Postfix) with ESMTP id 7FA2FB81D92;
-	Tue, 10 Oct 2023 18:33:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A180C433CB;
-	Tue, 10 Oct 2023 18:33:19 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 7EA7C617C2;
+	Tue, 10 Oct 2023 18:33:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16B6EC433C8;
+	Tue, 10 Oct 2023 18:33:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1696962800;
-	bh=yBzcSftJxEqCztLT9VvKOdDs1KwwRk5x/oGlnnB88nU=;
+	s=k20201202; t=1696962812;
+	bh=men6Wwkv7/TKQYnqRezdvTojzHpVL+WgvG2tg1k2L9k=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=uZSxPeL7jvC+twuHGkChvxvZh7kTC91tPfhPIfrA6IjU5DNN/XjslTfuGyX2sJi0a
-	 l8iIJCtPj4pY32oJmInO/tLiHqApcgZmkkwNTMVEQzPW5SQIYi9wR9WIBpKV9wRUkW
-	 alIlET2yb7mki3Y2URFSIF0ZgLRO5MrekCF5w/ZNEuZsLe6ISR5QKZ0mB8/IXI0ToU
-	 Ie2XaeQfWqk/WH1bivlqo0L96rB46Y/YzoYKlooZRFwSPVD5Wqk8DJMzWhIzTrmMhB
-	 +acy/g4hW7DJy7bV/yJTCf+dJjyLJ3KXzYlUl6D8YdW8jSdfQIQBKymCTqI2Ve5KeU
-	 uIZDw+bJSOAxQ==
+	b=G82dDx8ZVosZ4YpJULHQQGTHciFzpRkRuwllcAxqR9+m8qLIWzSSTXMsARDEpBJnn
+	 1ZWsnU6cckAfluy6Wr1P8lbFpjYHLrZ52qD0giScchSwSujTzvKjrH0uix3f9Y9Fz0
+	 e7fFvcQOQrKkAucFeFoiA99CL+tkVYqyRPE6ooS0hZWK8hkLA9xfr8xm0FHdTcCZ2B
+	 0hSJbSYIjyA18rRl9bOP7dyvT3s2ps90lXQ/llp7pLeziQyvH8Mg4NLfu6gUqDcUxa
+	 RWQD8YUendklehp9uryDzJrsazV4apLMOSj7PheWofCph59IMp/0YECRz+QnuBqFbI
+	 q/bYY7Bsr/bqw==
 From: Mark Brown <broonie@kernel.org>
-To: Charles Keepax <ckeepax@opensource.cirrus.com>
-Cc: lgirdwood@gmail.com, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
- patches@opensource.cirrus.com
-In-Reply-To: <20231005135559.3117994-1-ckeepax@opensource.cirrus.com>
-References: <20231005135559.3117994-1-ckeepax@opensource.cirrus.com>
-Subject: Re: [PATCH 1/2] ASoC: dt-bindings: cirrus,cs42l43: Update values
- for bias sense
-Message-Id: <169696279894.221758.959134819176975869.b4-ty@kernel.org>
-Date: Tue, 10 Oct 2023 19:33:18 +0100
+To: Richard Fitzgerald <rf@opensource.cirrus.com>
+Cc: linux-kernel@vger.kernel.org, patches@opensource.cirrus.com,
+ alsa-devel@alsa-project.org
+In-Reply-To: <20231009153412.30380-1-rf@opensource.cirrus.com>
+References: <20231009153412.30380-1-rf@opensource.cirrus.com>
+Subject: Re: [PATCH] ASoC: cs35l56: ASP1 DOUT must default to Hi-Z when not
+ transmitting
+Message-Id: <169696281081.221758.5630336947565213531.b4-ty@kernel.org>
+Date: Tue, 10 Oct 2023 19:33:30 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-0438c
-Message-ID-Hash: 5WLCKR7B7VLMENWIY3UH2NHYIODU7CXH
-X-Message-ID-Hash: 5WLCKR7B7VLMENWIY3UH2NHYIODU7CXH
+Message-ID-Hash: MLZERGHLVXWCLOVQY6G4O63TOGUOTZTN
+X-Message-ID-Hash: MLZERGHLVXWCLOVQY6G4O63TOGUOTZTN
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -86,20 +83,24 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5WLCKR7B7VLMENWIY3UH2NHYIODU7CXH/>
-List-Archive: <>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MLZERGHLVXWCLOVQY6G4O63TOGUOTZTN/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, 05 Oct 2023 14:55:58 +0100, Charles Keepax wrote:
-> Due to an error in the datasheet the bias sense values currently don't
-> match the hardware. Whilst this is a change to the binding no devices
-> have yet shipped so updating the binding will not cause any issues.
+On Mon, 09 Oct 2023 16:34:12 +0100, Richard Fitzgerald wrote:
+> The ASP1 DOUT line must be defaulted to be high-impedance when
+> it is not actually transmitting data for an active channel.
 > 
+> In non-SoundWire modes ASP1 will usually be shared by multiple
+> amps so each amp must only drive the line during the slot for
+> an enabled TX channel.
 > 
+> [...]
 
 Applied to
 
@@ -107,10 +108,8 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: dt-bindings: cirrus,cs42l43: Update values for bias sense
-      commit: 53ba32acb5ab137ba333c20e0c987bdd6273a366
-[2/2] ASoC: cs42l43: Update values for bias sense
-      commit: 99d426c6dd2d6f9734617ec12def856ee35b9218
+[1/1] ASoC: cs35l56: ASP1 DOUT must default to Hi-Z when not transmitting
+      commit: 1bba0badff0ede8dc51641cff4b153422baa3369
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
