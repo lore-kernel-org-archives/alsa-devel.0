@@ -4,58 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 63D3ECD8CAF
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Oct 2023 18:40:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B9D50CD8CAC
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Oct 2023 18:40:52 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 77BBA153E;
-	Tue, 10 Oct 2023 20:39:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 77BBA153E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 592511512;
+	Tue, 10 Oct 2023 20:40:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 592511512
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1696963241;
-	bh=TD+nNrMs7Ka9gbbvwhiSbbShWQAcXDb6ypAqBq/kzqM=;
+	s=default; t=1696963250;
+	bh=AcS8Zc9KTvC26PE2oyNEgA9mQE9nsQvcbnKUkaT2eCM=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=liKwfY+KH4328XBWiln1aYOHwEkVl4KKyPkh/jsUrBEKruLVsxIsAxXTu8MSbQ0ES
-	 2I1DfxzowhvTp9ddpPojEar8zhAgSId7A1tgQtK6Up64GWcFFukV2uMQRKQkdEKJtZ
-	 2S5ExTKUcvmtug5NYetVyaU3kiceRgZLXOPiLxGM=
+	b=SEHJZhQUOtkzoeWek/V2vtzn1tC4JXf92W/d+vh3mVitjEifcXiKY97JRQO1+psgS
+	 ++Tk9LWg7v/jP6/hVc4wfsU76bJrsN787AsxykNKvPcTLEbyjuY4roLeVUOPiRhNFE
+	 mCH9gIjFJhQvn4UUOxJnVdH+clxfZUzXFQdGwOx4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9E07BF805AA; Tue, 10 Oct 2023 20:38:30 +0200 (CEST)
+	id 243AAF805B6; Tue, 10 Oct 2023 20:38:32 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1805AF805AA;
-	Tue, 10 Oct 2023 20:38:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8C1D0F805B6;
+	Tue, 10 Oct 2023 20:38:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 68AA1F802BE; Tue, 10 Oct 2023 20:33:50 +0200 (CEST)
-Received: from sin.source.kernel.org (sin.source.kernel.org
- [IPv6:2604:1380:40e1:4800::1])
+	id 728C4F802BE; Tue, 10 Oct 2023 20:36:34 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E1341F80536
-	for <alsa-devel@alsa-project.org>; Tue, 10 Oct 2023 20:33:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E1341F80536
+	by alsa1.perex.cz (Postfix) with ESMTPS id 0DAF4F8027B
+	for <alsa-devel@alsa-project.org>; Tue, 10 Oct 2023 20:33:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0DAF4F8027B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=AQOWLjK2
+ header.s=k20201202 header.b=Y5GTX+7t
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 5914CCE1FB4;
-	Tue, 10 Oct 2023 18:33:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58551C433C7;
-	Tue, 10 Oct 2023 18:33:21 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 15BEF61460;
+	Tue, 10 Oct 2023 18:33:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7561BC433C7;
+	Tue, 10 Oct 2023 18:33:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1696962810;
-	bh=TD+nNrMs7Ka9gbbvwhiSbbShWQAcXDb6ypAqBq/kzqM=;
+	s=k20201202; t=1696962798;
+	bh=AcS8Zc9KTvC26PE2oyNEgA9mQE9nsQvcbnKUkaT2eCM=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=AQOWLjK2hbh4erAVcclHzik682RWE1TlLameD3PmoJ3Uo1EdHIJ3I8/svUjMmldVS
-	 XKGHGno3DQjgda+yYyDLV2RgAr+QriR0weN/s6GlrLt2EP2nrnM3k7FqjHSo4shDkw
-	 4YmAJnWUU4FAAo1DHwnLIb8T2QihDbJHWsAQp7ljuhV/SoB2Z783yD6vtQBBzc/IRQ
-	 0ur+GjZeh2BTN51SAEQ8MnAsJz1GmthDlzy8kQP5bEiQOBHYYqI08ijmcdvovR3rTe
-	 mdNfvNNct9aXKnVZ5lIyJsNKZBp2NOzY5e0WdSm6aWk8sQkZRfGYEl2Hl/agRRXcRK
-	 XSovxYLIK9kMw==
+	b=Y5GTX+7tmYMKeo+0sNLFdw9X7w9Irrvpg0L40MoMnxjxi4lUcnjplVGspHN/uhE7T
+	 TEUA9DMeD94c5POY54edefpOZiE81k/Weo0vQwTpklg6qHwYK61N9ItOk/W9XN2QL9
+	 l77yD4dc0m2we/ZipHpYDWnUAkIWjCTpo5cWYZUBt5tQQ1Vh0VzejjOtpt2++yzzK7
+	 s6JwD39leoiS+PIt0Q6CX6D2BtwbHbD4cQMkL7Ea0pywHdRF1XvdT4b/R+gGogDJ26
+	 V9umKUWklwqfRYDs/xap/gJA9XscjIxBS3C2mcTBBPy4UHclFJaDRBXqWyIphEyHYs
+	 /EqrJDudTh3OQ==
 From: Mark Brown <broonie@kernel.org>
 To: Claudiu Beznea <claudiu.beznea@tuxon.dev>,
  Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
@@ -74,7 +73,8 @@ To: Claudiu Beznea <claudiu.beznea@tuxon.dev>,
  Banajit Goswami <bgoswami@quicinc.com>,
  Nicolas Frattaroli <frattaroli.nicolas@gmail.com>,
  Sylwester Nawrocki <s.nawrocki@samsung.com>,
- Ban Tao <fengzheng923@gmail.com>, Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+ Ban Tao <"fengz heng923"@gmail.com>,
+ Peter Ujfalusi <peter.ujfalusi@gmail.com>,
  Jarkko Nikula <jarkko.nikula@bitmer.com>,
  Cezary Rojewski <cezary.rojewski@intel.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
@@ -90,17 +90,17 @@ To: Claudiu Beznea <claudiu.beznea@tuxon.dev>,
 Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
  linuxppc-dev@lists.ozlabs.org, Jernej Skrabec <jernej.skrabec@gmail.com>,
  Charles Keepax <ckeepax@opensource.cirrus.com>
-In-Reply-To: <20231006-dt-asoc-header-cleanups-v3-0-13a4f0f7fee6@kernel.org>
-References: <20231006-dt-asoc-header-cleanups-v3-0-13a4f0f7fee6@kernel.org>
-Subject: Re: [PATCH v3 0/5] ASoC: DT matching and header cleanups
-Message-Id: <169696280106.221758.12652834857695234139.b4-ty@kernel.org>
-Date: Tue, 10 Oct 2023 19:33:21 +0100
+In-Reply-To: <20231004-dt-asoc-header-cleanups-v2-0-e77765080cbc@kernel.org>
+References: <20231004-dt-asoc-header-cleanups-v2-0-e77765080cbc@kernel.org>
+Subject: Re: [PATCH v2 0/5] ASoC: DT matching and header cleanups
+Message-Id: <169696278799.221758.12785192823442242064.b4-ty@kernel.org>
+Date: Tue, 10 Oct 2023 19:33:07 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-0438c
-Message-ID-Hash: ETS6ZHNFRCFRLAOTJV6SXEBUYEYKFHWG
-X-Message-ID-Hash: ETS6ZHNFRCFRLAOTJV6SXEBUYEYKFHWG
+Message-ID-Hash: 5J5YZ3KFWIP54Q3LYGHTBUX34RDYIYDG
+X-Message-ID-Hash: 5J5YZ3KFWIP54Q3LYGHTBUX34RDYIYDG
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -112,7 +112,8 @@ X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: <>
+Archived-At: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5J5YZ3KFWIP54Q3LYGHTBUX34RDYIYDG/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -121,7 +122,7 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, 06 Oct 2023 15:09:09 -0500, Rob Herring wrote:
+On Wed, 04 Oct 2023 10:58:04 -0500, Rob Herring wrote:
 > (trimmed the recipient list due to bounces on v1)
 > 
 > This is a series is part of ongoing clean-ups related to device
