@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 83F9DCD6E5D
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Oct 2023 12:19:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8656ECD6E60
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Oct 2023 12:20:03 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C0B6D15C2;
-	Wed, 11 Oct 2023 14:19:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C0B6D15C2
+	by alsa0.perex.cz (Postfix) with ESMTPS id D137E166A;
+	Wed, 11 Oct 2023 14:19:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D137E166A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1697026795;
-	bh=GbOzPQQUOLORMqMhIRGHwtUKovXKoKrfzGwDUlXX9Ng=;
+	s=default; t=1697026801;
+	bh=5tXw1zmt1FTgGfifk2kSXRya/bnXNJZr9AL2wJXlois=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=FZNfiD1GtXIqXlUniGTjwn73DeqB2RSXRTEGVCnPtPl1BUnlCPV826xg9Ixai6WxK
-	 GJVFyl2GsAlAHvriBsPb9FxjvmQ2vrBLVWswq3+SMtr/+sLHbZhbj0oofUzgH7EuxA
-	 hkxWrclUY3fOQJg8koShYDum9ufVa7rVMdbgHcGc=
+	b=MoDnOS+qB70yxMNJJOhDmQXEXRYdUQIrc+OWnQ/k90i3Tg/xrmzuRX5HjOzeUp79w
+	 Ng/dcmRvw/vRpfL4atSNqivke9+HuT1gLJCPBKGLTsGWeXE0eMypz5xPk2XwdoLytg
+	 F9bmHPEKog5waFE2o1rbkVerd3/HbXSCAf5h2nUk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 97AE4F805BA; Wed, 11 Oct 2023 14:17:40 +0200 (CEST)
+	id 9C67EF805AA; Wed, 11 Oct 2023 14:17:42 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E16B5F805B5;
-	Wed, 11 Oct 2023 14:17:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E9C43F805C2;
+	Wed, 11 Oct 2023 14:17:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 37002F80568; Wed, 11 Oct 2023 14:17:25 +0200 (CEST)
+	id B036BF80563; Wed, 11 Oct 2023 14:17:26 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 4DCFAF8027B
-	for <alsa-devel@alsa-project.org>; Wed, 11 Oct 2023 14:17:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4DCFAF8027B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 17F25F80536
+	for <alsa-devel@alsa-project.org>; Wed, 11 Oct 2023 14:17:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 17F25F80536
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=Gqo0P6Ll
+ header.s=Intel header.b=JKoYfrQx
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697026641; x=1728562641;
+  t=1697026642; x=1728562642;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=GbOzPQQUOLORMqMhIRGHwtUKovXKoKrfzGwDUlXX9Ng=;
-  b=Gqo0P6Ll/dUN8NldgP9zfBh2puDm5MrENYIG27uXziphs/VBHMYllTAT
-   93ah6TIxWISlVPIfljqAt0th0SV49hhdjlNXjbhxHwKHVt49qua0OpZfN
-   OPhUruBb4Ejg7a72Ftn/Pe+Ukb7kFOea3mPfMlZoY+aBt5wJMrfHLII90
-   awUdJtd7wMDQ6sK2SvgQ4Zvjde2xC0IUymMP+fEP3K95Uimti0kCpM7/j
-   kfMkNWV6xcV3pdDGSFExrTAiVtf4kUiYSeJcJkobb2s1oSGgpdC/0A6jz
-   QIS1CpBwbDnxlf+e5dHyj7SrD3HU+DMD8W5I/6L9kLYKjqeXezoMvmO7D
+  bh=5tXw1zmt1FTgGfifk2kSXRya/bnXNJZr9AL2wJXlois=;
+  b=JKoYfrQxjUuoq1orIEuGL8VdpL7uO+CN+0DPaVqQTss1YMRUHQBMHJjQ
+   lsqKOwU2KpchHLL7nzJ9TS7PNFpnr3BSuCBIbV4OghD22Wkb64RTjMeNS
+   PhTPse6aEvEUJd/M6YC/O8yAD8NpPToM5n4lm05K8mDRLHyD/2BQQ/cgl
+   uqXbNI19ooJkb4NJaHe+IUeAil0ebOKQGuM9LWf6/OPRdhlW4W27JKhmR
+   x7HXnNVDGXPFjuzv82/+kvHO80uHY/pUV3l4WmTg386LT5sI73I2+KJbP
+   8VAQuOBbM2QoTSMizKCf3Wp4OgEmSSR2LWigl13a12OFNW0mz36X5z9v7
    Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="374988469"
+X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="374988485"
 X-IronPort-AV: E=Sophos;i="6.03,214,1694761200";
-   d="scan'208";a="374988469"
+   d="scan'208";a="374988485"
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
   by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 11 Oct 2023 05:17:11 -0700
+ 11 Oct 2023 05:17:14 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="747428403"
+X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="747428410"
 X-IronPort-AV: E=Sophos;i="6.03,214,1694761200";
-   d="scan'208";a="747428403"
+   d="scan'208";a="747428410"
 Received: from dev2 (HELO DEV2.igk.intel.com) ([10.237.148.94])
-  by orsmga007.jf.intel.com with ESMTP; 11 Oct 2023 05:17:10 -0700
+  by orsmga007.jf.intel.com with ESMTP; 11 Oct 2023 05:17:12 -0700
 From: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
  <amadeuszx.slawinski@linux.intel.com>
 To: Mark Brown <broonie@kernel.org>
@@ -72,18 +72,18 @@ Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
 	alsa-devel@alsa-project.org,
 	=?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
  <amadeuszx.slawinski@linux.intel.com>
-Subject: [PATCH 08/16] ASoC: Intel: avs: rt298: Validate machine board
+Subject: [PATCH 09/16] ASoC: Intel: avs: da7219: Validate machine board
  configuration
-Date: Wed, 11 Oct 2023 14:16:55 +0200
-Message-Id: <20231011121703.363652-9-amadeuszx.slawinski@linux.intel.com>
+Date: Wed, 11 Oct 2023 14:16:56 +0200
+Message-Id: <20231011121703.363652-10-amadeuszx.slawinski@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231011121703.363652-1-amadeuszx.slawinski@linux.intel.com>
 References: <20231011121703.363652-1-amadeuszx.slawinski@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: RW7QUC47VF4T5UNS47A3Q35ZGFMLOT4P
-X-Message-ID-Hash: RW7QUC47VF4T5UNS47A3Q35ZGFMLOT4P
+Message-ID-Hash: GTZZBIEUEYV2XHWFDHXPCG4N3DHCT4W6
+X-Message-ID-Hash: GTZZBIEUEYV2XHWFDHXPCG4N3DHCT4W6
 X-MailFrom: amadeuszx.slawinski@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -96,7 +96,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RW7QUC47VF4T5UNS47A3Q35ZGFMLOT4P/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GTZZBIEUEYV2XHWFDHXPCG4N3DHCT4W6/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -110,23 +110,23 @@ Allow for board to be used with TDMs.
 Reviewed-by: Cezary Rojewski <cezary.rojewski@intel.com>
 Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 ---
- sound/soc/intel/avs/boards/rt298.c | 18 ++++++++++++------
- 1 file changed, 12 insertions(+), 6 deletions(-)
+ sound/soc/intel/avs/boards/da7219.c | 17 ++++++++++++-----
+ 1 file changed, 12 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/intel/avs/boards/rt298.c b/sound/soc/intel/avs/boards/rt298.c
-index 3cd8057f0ed6..ea32a7690c8a 100644
---- a/sound/soc/intel/avs/boards/rt298.c
-+++ b/sound/soc/intel/avs/boards/rt298.c
-@@ -14,6 +14,7 @@
- #include <sound/soc.h>
- #include <sound/soc-acpi.h>
- #include "../../../codecs/rt298.h"
+diff --git a/sound/soc/intel/avs/boards/da7219.c b/sound/soc/intel/avs/boards/da7219.c
+index 2059d6156738..6060894954df 100644
+--- a/sound/soc/intel/avs/boards/da7219.c
++++ b/sound/soc/intel/avs/boards/da7219.c
+@@ -16,6 +16,7 @@
+ #include <sound/soc-dapm.h>
+ #include <uapi/linux/input-event-codes.h>
+ #include "../../../codecs/da7219.h"
 +#include "../utils.h"
  
- #define RT298_CODEC_DAI		"rt298-aif1"
+ #define DA7219_DAI_NAME		"da7219-hifi"
  
-@@ -131,7 +132,7 @@ static const struct snd_soc_ops avs_rt298_ops = {
- };
+@@ -164,7 +165,7 @@ avs_da7219_be_fixup(struct snd_soc_pcm_runtime *runrime, struct snd_pcm_hw_param
+ }
  
  static int avs_create_dai_link(struct device *dev, const char *platform_name, int ssp_port,
 -			       struct snd_soc_dai_link **dai_link)
@@ -134,11 +134,10 @@ index 3cd8057f0ed6..ea32a7690c8a 100644
  {
  	struct snd_soc_dai_link_component *platform;
  	struct snd_soc_dai_link *dl;
-@@ -143,13 +144,15 @@ static int avs_create_dai_link(struct device *dev, const char *platform_name, in
- 
+@@ -177,12 +178,15 @@ static int avs_create_dai_link(struct device *dev, const char *platform_name, in
  	platform->name = platform_name;
  
--	dl->name = devm_kasprintf(dev, GFP_KERNEL, "SSP%d-Codec", ssp_port);
+ 	dl->name = devm_kasprintf(dev, GFP_KERNEL, "SSP%d-Codec", ssp_port);
 +	dl->name = devm_kasprintf(dev, GFP_KERNEL,
 +				  AVS_STRING_FMT("SSP", "-Codec", ssp_port, tdm_slot));
  	dl->cpus = devm_kzalloc(dev, sizeof(*dl->cpus), GFP_KERNEL);
@@ -149,10 +148,10 @@ index 3cd8057f0ed6..ea32a7690c8a 100644
 -	dl->cpus->dai_name = devm_kasprintf(dev, GFP_KERNEL, "SSP%d Pin", ssp_port);
 +	dl->cpus->dai_name = devm_kasprintf(dev, GFP_KERNEL,
 +					    AVS_STRING_FMT("SSP", " Pin", ssp_port, tdm_slot));
- 	dl->codecs->name = devm_kasprintf(dev, GFP_KERNEL, "i2c-INT343A:00");
- 	dl->codecs->dai_name = devm_kasprintf(dev, GFP_KERNEL, RT298_CODEC_DAI);
+ 	dl->codecs->name = devm_kasprintf(dev, GFP_KERNEL, "i2c-DLGS7219:00");
+ 	dl->codecs->dai_name = devm_kasprintf(dev, GFP_KERNEL, DA7219_DAI_NAME);
  	if (!dl->cpus->dai_name || !dl->codecs->name || !dl->codecs->dai_name)
-@@ -201,13 +204,16 @@ static int avs_rt298_probe(struct platform_device *pdev)
+@@ -230,13 +234,16 @@ static int avs_da7219_probe(struct platform_device *pdev)
  	struct snd_soc_jack *jack;
  	struct device *dev = &pdev->dev;
  	const char *pname;
