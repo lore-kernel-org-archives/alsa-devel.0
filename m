@@ -4,55 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 15832CD98F3
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Oct 2023 06:19:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6E4C5CD98F3
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Oct 2023 06:19:46 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 77B7B152B;
-	Wed, 11 Oct 2023 08:18:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 77B7B152B
+	by alsa0.perex.cz (Postfix) with ESMTPS id B13E5153A;
+	Wed, 11 Oct 2023 08:18:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B13E5153A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1697005163;
-	bh=B2oaU4XYRMiLWt8pnWBbnPFrKahumzwTFZIHByDKHOk=;
+	s=default; t=1697005184;
+	bh=fSTDixOXC7lW4cZiLjI1z6bcmGZrjvdoUNd1MUhgAR8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=lQmMrrYD183ZPClV8k+YVjM4yB9H9p/CQAt+1ixJpaSFpbl1LhTv5KsHnf6LdX7DM
-	 MWfr+az6yg2gijf6eGK5MskqUZU+vAMxqiqvCyg3yQt+2ZME/Yh1QPKugniY2cbSOC
-	 qvLcHJa2bW8bl4nXwOFYdQrJIc2ih/klcEYejJgE=
+	b=J33I/RzDr0MU4kidrxhKwWv0XXFO8vgaQ0zzcAJPwiSTHWcKBAnJLJsHZNxIxpmPx
+	 h4ll3bqPRKyITkdkx+j0Qp+UZ/sEJ+1qUa1cBRuhmV1Wh7kEHXFDAqe/aDsIxzblty
+	 nsBM9dmxufvpnNpGTOS6TMqk+liRWC2a5QVn5BqY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 40BC7F805F0; Wed, 11 Oct 2023 08:15:49 +0200 (CEST)
+	id 695E0F80609; Wed, 11 Oct 2023 08:15:56 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 57C01F805F6;
-	Wed, 11 Oct 2023 08:15:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 57358F80603;
+	Wed, 11 Oct 2023 08:15:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 17481F805F0; Wed, 11 Oct 2023 08:15:40 +0200 (CEST)
+	id 4506AF805EF; Wed, 11 Oct 2023 08:15:42 +0200 (CEST)
 Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net
  [IPv6:2001:4b98:dc4:8::224])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 46CC2F805D6
-	for <alsa-devel@alsa-project.org>; Wed, 11 Oct 2023 08:15:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 46CC2F805D6
+	by alsa1.perex.cz (Postfix) with ESMTPS id 2B8E4F805E5
+	for <alsa-devel@alsa-project.org>; Wed, 11 Oct 2023 08:15:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2B8E4F805E5
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=BYZqmqh6
-Received: by mail.gandi.net (Postfix) with ESMTPA id B8782E0008;
-	Wed, 11 Oct 2023 06:15:24 +0000 (UTC)
+ header.s=gm1 header.b=elLQChkc
+Received: by mail.gandi.net (Postfix) with ESMTPA id E5911E0007;
+	Wed, 11 Oct 2023 06:15:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1697004928;
+	t=1697004935;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=T1VpXEDiEEj03z0lZbsi0RjHlrslWbdm5Y0c+1pg5eg=;
-	b=BYZqmqh62508Q//8TuaGDeXh9o1FzBQNHhXKLzI13x7I9+/e3vVTzDqAdIbo152e8a4qRF
-	YBzdEuejhjShkf1YBDWyC36mEaZgw+iJQZ8XUUPB7/1yD/pz84OlEp1WlC7xeudbhUDEoS
-	YbKRM+695/qBy7YRzZ8i5/qg3Dy/wZzPq/B9PR50U7HNkOr+1tL5DJKCasLbAiqgyZrN6D
-	39nEiE1k22J6JLd6VgD5jk/VXykM5JmQUcVywPh2q2dpV/L28jV6kZPppRHhHYfMza9kJm
-	zWAqbf8Qg+PindtWaoWqjkK2VgfuLKwhK3UzNowdS7G+iFNExB7Kaqv5/YfwfQ==
+	bh=rzUuWhRDgVHjZPWx1zQHs1eer0WBNpuWBkiimoMaxFw=;
+	b=elLQChkcPoTIoft8Zd5qjbXQ3UKcWCfHeINhuiwwwk5X9nICYkC0QapHBU+vysgIonLlWg
+	ULGXPZxrckCecUYUlJvu7PZn/pXGkCMvr5hoS1q9HJvkFVm9XeUBzBf94/XN9KGp4Xj8gi
+	KVnEts0BCvLKAiOK7HpuV4rnKKxbVY24Ig5k+p1tedw4oCBEzqRUDVKm/BqoUxWDrpAFmD
+	HT5miy6ZCzoNF1GB553ZcdKq63srK7mm63EglwgbYM4ZaSiyvMGn9sUCnM7KSHCh+pOQuq
+	VF5PsMgxtUEM+1ZeACeRTtHN7NekXZJ+uLB72WgxFSQpqBmgfJW3Wb3Wm4y1jw==
 From: Herve Codina <herve.codina@bootlin.com>
 To: Herve Codina <herve.codina@bootlin.com>,
 	"David S. Miller" <davem@davemloft.net>,
@@ -87,17 +87,18 @@ Cc: netdev@vger.kernel.org,
 	Simon Horman <horms@kernel.org>,
 	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: [PATCH v8 11/30] MAINTAINERS: Add the Freescale QMC HDLC driver entry
-Date: Wed, 11 Oct 2023 08:14:15 +0200
-Message-ID: <20231011061437.64213-12-herve.codina@bootlin.com>
+Subject: [PATCH v8 13/30] soc: fsl: cpm1: qmc: Rename qmc_setup_tsa* to
+ qmc_init_tsa*
+Date: Wed, 11 Oct 2023 08:14:17 +0200
+Message-ID: <20231011061437.64213-14-herve.codina@bootlin.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231011061437.64213-1-herve.codina@bootlin.com>
 References: <20231011061437.64213-1-herve.codina@bootlin.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-GND-Sasl: herve.codina@bootlin.com
-Message-ID-Hash: X65YZQXVLA4XB63QN33GWSX7XOIUWMAO
-X-Message-ID-Hash: X65YZQXVLA4XB63QN33GWSX7XOIUWMAO
+Message-ID-Hash: X5H2JMDTAQK7IS724CYRVG5HU46ZTUM7
+X-Message-ID-Hash: X5H2JMDTAQK7IS724CYRVG5HU46ZTUM7
 X-MailFrom: herve.codina@bootlin.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -110,7 +111,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/X65YZQXVLA4XB63QN33GWSX7XOIUWMAO/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/X5H2JMDTAQK7IS724CYRVG5HU46ZTUM7/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -119,32 +120,74 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-After contributing the driver, add myself as the maintainer for the
-Freescale QMC HDLC driver.
+qmc_setup_tsa* are called once at initialisation.
+They initialize the QMC TSA table.
+In order to introduce setup function later on for dynamic timeslots
+management, rename the function to avoid later confusion.
 
 Signed-off-by: Herve Codina <herve.codina@bootlin.com>
+Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
- MAINTAINERS | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/soc/fsl/qe/qmc.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 90f13281d297..8b987f2c8633 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -8364,6 +8364,13 @@ F:	Documentation/devicetree/bindings/soc/fsl/cpm_qe/fsl,cpm1-scc-qmc.yaml
- F:	drivers/soc/fsl/qe/qmc.c
- F:	include/soc/fsl/qe/qmc.h
+diff --git a/drivers/soc/fsl/qe/qmc.c b/drivers/soc/fsl/qe/qmc.c
+index 653d458b84b6..28acf4c8a141 100644
+--- a/drivers/soc/fsl/qe/qmc.c
++++ b/drivers/soc/fsl/qe/qmc.c
+@@ -919,7 +919,7 @@ static int qmc_of_parse_chans(struct qmc *qmc, struct device_node *np)
+ 	return qmc_check_chans(qmc);
+ }
  
-+FREESCALE QUICC ENGINE QMC HDLC DRIVER
-+M:	Herve Codina <herve.codina@bootlin.com>
-+L:	netdev@vger.kernel.org
-+L:	linuxppc-dev@lists.ozlabs.org
-+S:	Maintained
-+F:	drivers/net/wan/fsl_qmc_hdlc.c
-+
- FREESCALE QUICC ENGINE TSA DRIVER
- M:	Herve Codina <herve.codina@bootlin.com>
- L:	linuxppc-dev@lists.ozlabs.org
+-static int qmc_setup_tsa_64rxtx(struct qmc *qmc, const struct tsa_serial_info *info)
++static int qmc_init_tsa_64rxtx(struct qmc *qmc, const struct tsa_serial_info *info)
+ {
+ 	struct qmc_chan *chan;
+ 	unsigned int i;
+@@ -961,7 +961,7 @@ static int qmc_setup_tsa_64rxtx(struct qmc *qmc, const struct tsa_serial_info *i
+ 	return 0;
+ }
+ 
+-static int qmc_setup_tsa_32rx_32tx(struct qmc *qmc, const struct tsa_serial_info *info)
++static int qmc_init_tsa_32rx_32tx(struct qmc *qmc, const struct tsa_serial_info *info)
+ {
+ 	struct qmc_chan *chan;
+ 	unsigned int i;
+@@ -1019,7 +1019,7 @@ static int qmc_setup_tsa_32rx_32tx(struct qmc *qmc, const struct tsa_serial_info
+ 	return 0;
+ }
+ 
+-static int qmc_setup_tsa(struct qmc *qmc)
++static int qmc_init_tsa(struct qmc *qmc)
+ {
+ 	struct tsa_serial_info info;
+ 	int ret;
+@@ -1030,12 +1030,12 @@ static int qmc_setup_tsa(struct qmc *qmc)
+ 		return ret;
+ 
+ 	/*
+-	 * Setup one common 64 entries table or two 32 entries (one for Tx and
+-	 * one for Tx) according to assigned TS numbers.
++	 * Initialize one common 64 entries table or two 32 entries (one for Tx
++	 * and one for Tx) according to assigned TS numbers.
+ 	 */
+ 	return ((info.nb_tx_ts > 32) || (info.nb_rx_ts > 32)) ?
+-		qmc_setup_tsa_64rxtx(qmc, &info) :
+-		qmc_setup_tsa_32rx_32tx(qmc, &info);
++		qmc_init_tsa_64rxtx(qmc, &info) :
++		qmc_init_tsa_32rx_32tx(qmc, &info);
+ }
+ 
+ static int qmc_setup_chan_trnsync(struct qmc *qmc, struct qmc_chan *chan)
+@@ -1391,7 +1391,7 @@ static int qmc_probe(struct platform_device *pdev)
+ 	qmc_write32(qmc->scc_pram + QMC_GBL_C_MASK32, 0xDEBB20E3);
+ 	qmc_write16(qmc->scc_pram + QMC_GBL_C_MASK16, 0xF0B8);
+ 
+-	ret = qmc_setup_tsa(qmc);
++	ret = qmc_init_tsa(qmc);
+ 	if (ret)
+ 		goto err_tsa_serial_disconnect;
+ 
 -- 
 2.41.0
 
