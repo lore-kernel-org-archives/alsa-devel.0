@@ -4,79 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C05C4CD6E71
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Oct 2023 13:59:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6B1E2CD6E7E
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Oct 2023 15:09:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B588C16F3;
-	Wed, 11 Oct 2023 15:59:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B588C16F3
+	by alsa0.perex.cz (Postfix) with ESMTPS id D286D16FA;
+	Wed, 11 Oct 2023 17:08:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D286D16FA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1697032793;
-	bh=Sp/PMheWiBZvxLj/0wIt/cPGBYRP1fOe19OaWdOuP7o=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1697036945;
+	bh=8c7ow3r0v7L/3vxLn67gJ7U9jhG5P3D98ExqsyocpYw=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=O2RsNyyReOTx24af9r4rVnMJtUnql+8qKA5tWKEnRAXtIi2nZ7+Inj9OjBESsfr77
-	 6euZDJYGe4avKqzTtDz3JZk3cNYVV03jv0alzDK37ZH5DH2kzgCK2BIx6sSep7h1GA
-	 eGnO0dR/GeUgI7O90Qrkxd1oxm0Bs00w1tl3zf+s=
+	b=hQ2lQw+d4vm+kzZrH6EzU57JY0p4QUVrIKWfghS1QBqRWaWjAmH10TKgRKiu41bUG
+	 QvagZHZQJ8sqoo/YaUZ40s0BiJbD0ExD8/0ivLGHhQrCEP3vxIm79HdkmCtmGcbNWx
+	 w87d5qwJ6pk3vtsOWw2d8oTIa6RGjFfx/1Pt6AB4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3E1D2F80130; Wed, 11 Oct 2023 15:58:33 +0200 (CEST)
+	id CC1CDF8027B; Wed, 11 Oct 2023 17:07:46 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D5F31F80130;
-	Wed, 11 Oct 2023 15:58:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8D2C0F802BE;
+	Wed, 11 Oct 2023 17:07:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B0538F802BE; Wed, 11 Oct 2023 15:58:29 +0200 (CEST)
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id CDBC3F802BE; Wed, 11 Oct 2023 17:07:41 +0200 (CEST)
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C6953F80130
-	for <alsa-devel@alsa-project.org>; Wed, 11 Oct 2023 15:58:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C6953F80130
+	by alsa1.perex.cz (Postfix) with ESMTPS id 188ABF8015B
+	for <alsa-devel@alsa-project.org>; Wed, 11 Oct 2023 17:07:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 188ABF8015B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=U4d2nGXU
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 9A94ACE23E1;
-	Wed, 11 Oct 2023 13:58:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3F7CC433C8;
-	Wed, 11 Oct 2023 13:58:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1697032698;
-	bh=Sp/PMheWiBZvxLj/0wIt/cPGBYRP1fOe19OaWdOuP7o=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=U4d2nGXUeMqJkoePmQd/prAIA6PkiKZgJWdcv4G4rpsAtAAdLBXxqiVhgXNZpfdbn
-	 fLEAqrpw2CzBWkII/486PtevTzRMR9Hdy45sMgToCVeco1fFmZVDH4Yh04wP0p5sqv
-	 L3EIJ20S8X0FOhWUii3tqTVRVEdAFItfmuJy44Qk15Bgr4FA/RpkOChVxAtD2i2M+S
-	 +tCy1NawSjUGnkSRBwljfQg06axD9ZIX0e9XM+v0EBGwaKn9VwEhSVDtzJyaKHL8L+
-	 uBDN7V6NU5P9T262lg+dZgsdSXtNpGjlsG0jB7GKFQvPRTlOMWQngP5/SiuSlEPZCS
-	 Q9oXvTTzRYLCg==
-Date: Wed, 11 Oct 2023 14:58:14 +0100
-From: Conor Dooley <conor@kernel.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-	Mark Brown <broonie@kernel.org>,
-	Bard Liao <yung-chuan.liao@linux.intel.com>, bard.liao@intel.com,
-	Conor Dooley <conor+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Rob Herring <robh+dt@kernel.org>, alsa-devel@alsa-project.org,
-	devicetree@vger.kernel.org
-Subject: Re: [PATCH v2 4/4] dt-bindings: audio-graph-port: ch_maps property
-Message-ID: <20231011-crazily-mangy-2302e41eb743@spud>
-References: <87mswp1ytu.wl-kuninori.morimoto.gx@renesas.com>
- <87h6mx1yrp.wl-kuninori.morimoto.gx@renesas.com>
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=OWKn/u0z
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697036858; x=1728572858;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=8c7ow3r0v7L/3vxLn67gJ7U9jhG5P3D98ExqsyocpYw=;
+  b=OWKn/u0zaT1izW9c+TOTmVsqSP99CRRgZcQVyX8JfDpzgJpDr+kmxPFX
+   zU1vmbvHCXgMc/nQEqHYlkArDFWOF7I2046nMOm93d1U7Iq32Lrqzg/bl
+   RWOsxv2feSXA+87JOUy4HPtkjF5LBUzshuKyY22kZa3vgPbMEOn5KKEBi
+   /rDjzVA6nt6lwTfwJaSFeTvfKzbCPBIna7/S6Bv3KozpFITicpgERD3Ym
+   IPHY2MeS+exMxcAzdyOjT30pH3uYFDcrDIgaKw6P8yZFhyShcKt69dPl0
+   Ia9mg5g/5nbVf2asi0hs8KxlpiM+5SDoJ2CR5+BjGcyPv/EBwaCkmJOMB
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="415734245"
+X-IronPort-AV: E=Sophos;i="6.03,216,1694761200";
+   d="scan'208";a="415734245"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 11 Oct 2023 08:05:09 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="1001150966"
+X-IronPort-AV: E=Sophos;i="6.03,216,1694761200";
+   d="scan'208";a="1001150966"
+Received: from aslawinx-mobl.ger.corp.intel.com (HELO [10.94.0.91])
+ ([10.94.0.91])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 11 Oct 2023 08:05:07 -0700
+Message-ID: <836c70f3-7423-4321-84cf-31f54e42b163@linux.intel.com>
+Date: Wed, 11 Oct 2023 17:05:05 +0200
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="wtIfDz3Ei+OZ6nrI"
-Content-Disposition: inline
-In-Reply-To: <87h6mx1yrp.wl-kuninori.morimoto.gx@renesas.com>
-Message-ID-Hash: AASITLXUIWRQKG2XUZPPRODQTQSW75SU
-X-Message-ID-Hash: AASITLXUIWRQKG2XUZPPRODQTQSW75SU
-X-MailFrom: conor@kernel.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 02/16] ASoC: Intel: avs: Introduce helper functions for
+ SSP and TDM handling
+Content-Language: en-US
+To: Mark Brown <broonie@kernel.org>
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>, Takashi Iwai
+ <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
+ alsa-devel@alsa-project.org
+References: <20231011121703.363652-1-amadeuszx.slawinski@linux.intel.com>
+ <20231011121703.363652-3-amadeuszx.slawinski@linux.intel.com>
+From: =?UTF-8?Q?Amadeusz_S=C5=82awi=C5=84ski?=
+ <amadeuszx.slawinski@linux.intel.com>
+In-Reply-To: <20231011121703.363652-3-amadeuszx.slawinski@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: MK6L5WRI5IEFMV5IRYQTDQM5QWRYEAYL
+X-Message-ID-Hash: MK6L5WRI5IEFMV5IRYQTDQM5QWRYEAYL
+X-MailFrom: amadeuszx.slawinski@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -88,7 +97,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AASITLXUIWRQKG2XUZPPRODQTQSW75SU/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MK6L5WRI5IEFMV5IRYQTDQM5QWRYEAYL/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -97,62 +106,29 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+On 10/11/2023 2:16 PM, Amadeusz Sławiński wrote:
+> In quite a few places in code there are checks for number of SSPs
+> present on system, to reduce maintenance burden introduce helper
+> functions allowing to get SSP and TDM from machine board configuration.
+> 
+> Additionally in boards we use SSP and TDM to generate quite a few
+> strings, it could be done like:
+> if (tdms)
+> 	dl->name = devm_kasprintf(dev, GFP_KERNEL, "SSP%d:%d-Codec",
+> 		ssp_port, tdm_slot);
+> else
+> 	dl->name = devm_kasprintf(dev, GFP_KERNEL, "SSP%d-Codec",
+> 		ssp_port);
+> 
+> but quite quickly code ends up with spaghetti of similar if elses.
+> Instead introduce macro which can be used to generate correct string,
+> allowing to minimize code to something like:
+> dl->name = devm_kasprintf(dev, GFP_KERNEL, AVS_STRING_FMT("SSP", "-Codec",
+> 		ssp_port, tdm_slot));
+> 
+> Reviewed-by: Cezary Rojewski <cezary.rojewski@intel.com>
+> Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 
---wtIfDz3Ei+OZ6nrI
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hey,
-
-
-On Wed, Oct 11, 2023 at 06:03:38AM +0000, Kuninori Morimoto wrote:
-> This patch adds ch_maps property to enable handling CPU:Codec =3D N:M
-> connection.
-
-I only got this one patch, so I have no context at all for this change.
-Given that, and since I know almost nothing about sound stuff...
->=20
-> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> ---
->  Documentation/devicetree/bindings/sound/audio-graph-port.yaml | 2 ++
->  1 file changed, 2 insertions(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/sound/audio-graph-port.yam=
-l b/Documentation/devicetree/bindings/sound/audio-graph-port.yaml
-> index 60b5e3fd1115..dc663af784fd 100644
-> --- a/Documentation/devicetree/bindings/sound/audio-graph-port.yaml
-> +++ b/Documentation/devicetree/bindings/sound/audio-graph-port.yaml
-> @@ -19,6 +19,8 @@ definitions:
->      properties:
->        mclk-fs:
->          $ref: simple-card.yaml#/definitions/mclk-fs
-> +      ch_maps:
-
-=2E..I have absolutely no idea how I would populate "ch_maps" correctly.
-Please describe (in the binding) what this property actually does
-& how to use it. Also, properties use -s not _s.
-
-Thanks,
-Conor.
-
-> +        $ref: /schemas/types.yaml#/definitions/uint32-array
-> =20
->    endpoint-base:
->      allOf:
-> --=20
-> 2.25.1
->=20
-
---wtIfDz3Ei+OZ6nrI
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZSap9gAKCRB4tDGHoIJi
-0kgCAQDPR3AY6kld6KmEfsA9NpzoveO/c0PurdLJafcM+roPBwEAuteJVaW9IFsr
-mIb36oyEvwfSzfOs0ebjaPisw0JKZQ8=
-=mmUS
------END PGP SIGNATURE-----
-
---wtIfDz3Ei+OZ6nrI--
+And apparently we didn't catch that functions in header should be 
+static, which leads to linking problems when everything is built-in, I 
+will send v2 tomorrow.
