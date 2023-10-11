@@ -4,87 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9AE2CCD6E60
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Oct 2023 12:23:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 25AF5CD6E67
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Oct 2023 13:11:40 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DCFFC16BB;
-	Wed, 11 Oct 2023 14:22:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DCFFC16BB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8D25816DE;
+	Wed, 11 Oct 2023 15:10:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8D25816DE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1697026978;
-	bh=MNCqj+3y6qwDFuD72VqvmFh0zmno2m2RtrzbdBeTD3c=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1697029898;
+	bh=sIFPlEfgw5Tgf4SaAgi4BkayV92E8UWXht7jOG8M/TY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=ALnsNrFMN2lOE2La4O8mHO90RHCWc7a7KVeMFMAGcggNe1p4XA872hRJZIAHcroDS
-	 62Bnr7wOJikCFwiRHuas70ExPkLu+ycLx4VWRPJP9AC0YhzHX6YoysfoGddfryJwho
-	 qOoCTHM3UTXPUb9NPVkDY7SKpav1Y6gqijprTU04=
+	b=mycIEva/TYRag//dPQ6gzclZbSJq3Slao97seHOlK550gpdurSagi3c96yT7HIYfm
+	 LU1C11dEw5fyRObNC4mfhWucQ/gz4NIPfN7aams/upqMVUkPJOmyBIirD3gOo+m0qu
+	 GtFUhpWgDHS1njiyDyu0NM08UYOLK52Wqc0LULn4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7AE57F8057D; Wed, 11 Oct 2023 14:20:23 +0200 (CEST)
+	id ECD1CF80553; Wed, 11 Oct 2023 15:10:45 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D9225F8057D;
-	Wed, 11 Oct 2023 14:20:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 606DFF802BE;
+	Wed, 11 Oct 2023 15:10:45 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CFA13F80130; Wed, 11 Oct 2023 14:20:16 +0200 (CEST)
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 63344F802BE; Wed, 11 Oct 2023 15:10:39 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 0E2E2F80130
-	for <alsa-devel@alsa-project.org>; Wed, 11 Oct 2023 14:17:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0E2E2F80130
+	by alsa1.perex.cz (Postfix) with ESMTPS id 7A549F80130
+	for <alsa-devel@alsa-project.org>; Wed, 11 Oct 2023 15:10:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7A549F80130
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=h5eS6kWs
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697026636; x=1728562636;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=MNCqj+3y6qwDFuD72VqvmFh0zmno2m2RtrzbdBeTD3c=;
-  b=h5eS6kWspyUuQG3Ly7hexYy3XwgxyZWVr/fqK6ilMljnDmK7cRb+EV5S
-   YhimhUXHlp2abmH1E17kjoaUQpqZwqMHn5WWPh/dIPy54N8yegr3qa9kf
-   yJleI1rNzocJKHS1mUDtjDAG7eG7aYxyGF7Nn8UIeyxOZK0Tj27jR9r9Q
-   7GtYtvXrVGa3fmiWABCZPM5bP/UjwSTCodT5NrcfbCkD8VyVfc7iMy9r+
-   nxKrBzzwKKAsR+Yd99Y5B4WKkBVuYOB2uZIblfpthMPd4M6ZY9Kol0yeG
-   tnhrAkXGMP6cYUh7r7jH/Q3E5kYbpnqTVP2vgvhH5+zGuZ5faJPE07OCu
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="374988437"
-X-IronPort-AV: E=Sophos;i="6.03,214,1694761200";
-   d="scan'208";a="374988437"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 11 Oct 2023 05:17:07 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="747428387"
-X-IronPort-AV: E=Sophos;i="6.03,214,1694761200";
-   d="scan'208";a="747428387"
-Received: from dev2 (HELO DEV2.igk.intel.com) ([10.237.148.94])
-  by orsmga007.jf.intel.com with ESMTP; 11 Oct 2023 05:17:06 -0700
-From: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>
-To: Mark Brown <broonie@kernel.org>
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
-	Takashi Iwai <tiwai@suse.com>,
-	Jaroslav Kysela <perex@perex.cz>,
-	alsa-devel@alsa-project.org,
-	=?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>
-Subject: [PATCH 06/16] ASoC: Intel: avs: rt5682: Validate machine board
- configuration
-Date: Wed, 11 Oct 2023 14:16:53 +0200
-Message-Id: <20231011121703.363652-7-amadeuszx.slawinski@linux.intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231011121703.363652-1-amadeuszx.slawinski@linux.intel.com>
-References: <20231011121703.363652-1-amadeuszx.slawinski@linux.intel.com>
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=HDNMP1fz
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 7095460C4B;
+	Wed, 11 Oct 2023 13:10:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D715C433CC;
+	Wed, 11 Oct 2023 13:10:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1697029829;
+	bh=sIFPlEfgw5Tgf4SaAgi4BkayV92E8UWXht7jOG8M/TY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=HDNMP1fzW+mkOxIiBZGym3lqDR2cgtvoaMKjRJvkI8WQ4cCGsqw33axMJVGoFr+aY
+	 OnWmpIUSZPBmCpKpdZ2RFRATbXEe+jGwoeX94J3NfGYImgePxT6Wf6qg3vBB3+mYTs
+	 eOAR8kV6FlnZBrgJzC2xIwJ3Q1FV9x2z847w8FtfM53XQkH/8R0gprgJjsftiKU4o5
+	 JYbG8quTIfH8eWOEoiJmar6Fa2Lq89UmVwk1WVex4hSbmx3IUZa2UrcVbyFWBWD4iu
+	 h/NjWizQ/dEjy42TU5iX91+E/OYXMgqyat7DV5L2v5R92CH5f7LsrHhlHVoFuMaN/1
+	 rMcJ2ck3FIZ+A==
+Received: (nullmailer pid 4114505 invoked by uid 1000);
+	Wed, 11 Oct 2023 13:10:26 -0000
+Date: Wed, 11 Oct 2023 08:10:26 -0500
+From: Rob Herring <robh@kernel.org>
+To: Wesley Cheng <quic_wcheng@quicinc.com>
+Cc: konrad.dybcio@linaro.org, agross@kernel.org, devicetree@vger.kernel.org,
+ bgoswami@quicinc.com, broonie@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ lgirdwood@gmail.com, gregkh@linuxfoundation.org, andersson@kernel.org,
+ conor+dt@kernel.org, linux-usb@vger.kernel.org, mathias.nyman@intel.com,
+ perex@perex.cz, tiwai@suse.com, Thinh.Nguyen@synopsys.com,
+ linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ alsa-devel@alsa-project.org, srinivas.kandagatla@linaro.org
+Subject: Re: [PATCH v8 14/34] dt-bindings: usb: dwc3: Limit
+ num-hc-interrupters definition
+Message-ID: <20231011131026.GA4103742-robh@kernel.org>
+References: <20231011002146.1821-1-quic_wcheng@quicinc.com>
+ <20231011002146.1821-15-quic_wcheng@quicinc.com>
+ <169699146356.2560906.8654324582682669209.robh@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: CHEBMFWKZLMO5TOESWLW7HMCGIANMGQW
-X-Message-ID-Hash: CHEBMFWKZLMO5TOESWLW7HMCGIANMGQW
-X-MailFrom: amadeuszx.slawinski@linux.intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <169699146356.2560906.8654324582682669209.robh@kernel.org>
+Message-ID-Hash: AGWPYEN62XIOND3F4KXFVZEG3M2422CW
+X-Message-ID-Hash: AGWPYEN62XIOND3F4KXFVZEG3M2422CW
+X-MailFrom: rob@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -96,7 +91,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CHEBMFWKZLMO5TOESWLW7HMCGIANMGQW/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AGWPYEN62XIOND3F4KXFVZEG3M2422CW/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -105,77 +100,28 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Allow for board to be used with TDMs.
+On Tue, Oct 10, 2023 at 09:31:04PM -0500, Rob Herring wrote:
+> 
+> On Tue, 10 Oct 2023 17:21:26 -0700, Wesley Cheng wrote:
+> > Ensure that the number of XHCI secondary interrupters defined for a DWC3
+> > based implementation is limited to 8.  XHCI in general can potentially
+> > support up to 1024 interrupters.
+> > 
+> > Reviewed-by: Rob Herring <robh@kernel.org>
+> > Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
+> > ---
+> >  Documentation/devicetree/bindings/usb/snps,dwc3.yaml | 4 ++++
+> >  1 file changed, 4 insertions(+)
+> > 
+> 
+> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+> on your patch (DT_CHECKER_FLAGS is new in v5.13):
+> 
+> yamllint warnings/errors:
+> 
+> dtschema/dtc warnings/errors:
+> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/usb/snps,dwc3.yaml: num-hc-interrupters: missing type definition
 
-Reviewed-by: Cezary Rojewski <cezary.rojewski@intel.com>
-Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
----
- sound/soc/intel/avs/boards/rt5682.c | 18 ++++++++++++------
- 1 file changed, 12 insertions(+), 6 deletions(-)
+Patch 15 should come first.
 
-diff --git a/sound/soc/intel/avs/boards/rt5682.c b/sound/soc/intel/avs/boards/rt5682.c
-index f1c46c6abd9d..84e850c0b085 100644
---- a/sound/soc/intel/avs/boards/rt5682.c
-+++ b/sound/soc/intel/avs/boards/rt5682.c
-@@ -21,6 +21,7 @@
- #include <sound/soc-acpi.h>
- #include "../../common/soc-intel-quirks.h"
- #include "../../../codecs/rt5682.h"
-+#include "../utils.h"
- 
- #define AVS_RT5682_SSP_CODEC(quirk)	((quirk) & GENMASK(2, 0))
- #define AVS_RT5682_SSP_CODEC_MASK	(GENMASK(2, 0))
-@@ -203,7 +204,7 @@ avs_rt5682_be_fixup(struct snd_soc_pcm_runtime *runtime, struct snd_pcm_hw_param
- }
- 
- static int avs_create_dai_link(struct device *dev, const char *platform_name, int ssp_port,
--			       struct snd_soc_dai_link **dai_link)
-+			       int tdm_slot, struct snd_soc_dai_link **dai_link)
- {
- 	struct snd_soc_dai_link_component *platform;
- 	struct snd_soc_dai_link *dl;
-@@ -215,13 +216,15 @@ static int avs_create_dai_link(struct device *dev, const char *platform_name, in
- 
- 	platform->name = platform_name;
- 
--	dl->name = devm_kasprintf(dev, GFP_KERNEL, "SSP%d-Codec", ssp_port);
-+	dl->name = devm_kasprintf(dev, GFP_KERNEL,
-+				  AVS_STRING_FMT("SSP", "-Codec", ssp_port, tdm_slot));
- 	dl->cpus = devm_kzalloc(dev, sizeof(*dl->cpus), GFP_KERNEL);
- 	dl->codecs = devm_kzalloc(dev, sizeof(*dl->codecs), GFP_KERNEL);
- 	if (!dl->name || !dl->cpus || !dl->codecs)
- 		return -ENOMEM;
- 
--	dl->cpus->dai_name = devm_kasprintf(dev, GFP_KERNEL, "SSP%d Pin", ssp_port);
-+	dl->cpus->dai_name = devm_kasprintf(dev, GFP_KERNEL,
-+					    AVS_STRING_FMT("SSP", " Pin", ssp_port, tdm_slot));
- 	dl->codecs->name = devm_kasprintf(dev, GFP_KERNEL, "i2c-10EC5682:00");
- 	dl->codecs->dai_name = devm_kasprintf(dev, GFP_KERNEL, AVS_RT5682_CODEC_DAI_NAME);
- 	if (!dl->cpus->dai_name || !dl->codecs->name || !dl->codecs->dai_name)
-@@ -270,7 +273,7 @@ static int avs_rt5682_probe(struct platform_device *pdev)
- 	struct snd_soc_jack *jack;
- 	struct device *dev = &pdev->dev;
- 	const char *pname;
--	int ssp_port, ret;
-+	int ssp_port, tdm_slot, ret;
- 
- 	if (pdev->id_entry && pdev->id_entry->driver_data)
- 		avs_rt5682_quirk = (unsigned long)pdev->id_entry->driver_data;
-@@ -280,9 +283,12 @@ static int avs_rt5682_probe(struct platform_device *pdev)
- 
- 	mach = dev_get_platdata(dev);
- 	pname = mach->mach_params.platform;
--	ssp_port = __ffs(mach->mach_params.i2s_link_mask);
- 
--	ret = avs_create_dai_link(dev, pname, ssp_port, &dai_link);
-+	ret = avs_mach_get_ssp_tdm(dev, mach, &ssp_port, &tdm_slot);
-+	if (ret)
-+		return ret;
-+
-+	ret = avs_create_dai_link(dev, pname, ssp_port, tdm_slot, &dai_link);
- 	if (ret) {
- 		dev_err(dev, "Failed to create dai link: %d", ret);
- 		return ret;
--- 
-2.34.1
-
+Rob
