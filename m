@@ -4,70 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 86A0BCD98D9
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Oct 2023 00:30:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C4729CD98D9
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Oct 2023 00:30:34 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AF4E9ECA;
-	Wed, 11 Oct 2023 02:29:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AF4E9ECA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0C0D7EAE;
+	Wed, 11 Oct 2023 02:29:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0C0D7EAE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1696984216;
-	bh=Pb5flNQBuXS06Ga5RA47hpB+CxF3oN5rk144Lm3iWHA=;
+	s=default; t=1696984233;
+	bh=S5EybpnHhnT/MJz5VIVz5pA+KlG80RCakFHIuqD3Q74=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=mk6M0LncxfjeUMb7Ouv7wBzIg32p8zvEi2KtLIUqgl4ftuq/G8ZiCeWIBUTPhp/cW
-	 ZjWEOI78U9eHq4Q64cW8R/NlMS1eZVD5BpSTQSOBg5lZLd3vsyMycrFm6qXk+OkISu
-	 UZx/uSk5piPDHxpWhEMGmfUJbKLN+F09mWBDaIdM=
+	b=XjWIeBU3obbS0A5l5dyQVAqZGyqRmjkaMoW2I4ejq/HA1jRw9qIEDuEDhimyvGF8+
+	 YU6dASHyYLxay6GizQQUB1/qHt6HqdmwnaQKIGSMClXKR6QdDprblpzumRCcwTN4kE
+	 v7oAyYkgSyGoWuPTkdYb2DVPlqP3YksqvMrcNppU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 17C33F80685; Wed, 11 Oct 2023 02:24:29 +0200 (CEST)
+	id 067E8F8068A; Wed, 11 Oct 2023 02:24:32 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D8277F80683;
-	Wed, 11 Oct 2023 02:24:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E5B71F80688;
+	Wed, 11 Oct 2023 02:24:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7D7BDF8065B; Wed, 11 Oct 2023 02:24:22 +0200 (CEST)
+	id 656FAF80671; Wed, 11 Oct 2023 02:24:23 +0200 (CEST)
 Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com
  [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 9F5B8F8055C
-	for <alsa-devel@alsa-project.org>; Wed, 11 Oct 2023 02:22:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9F5B8F8055C
+	by alsa1.perex.cz (Postfix) with ESMTPS id BBB17F8057E
+	for <alsa-devel@alsa-project.org>; Wed, 11 Oct 2023 02:22:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BBB17F8057E
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
- header.s=qcppdkim1 header.b=S565xj1t
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+ header.s=qcppdkim1 header.b=AsoJOoYQ
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
 	by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 39B0Mctv007978;
+ 39B0McF6018070;
 	Wed, 11 Oct 2023 00:22:38 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-type; s=qcppdkim1;
- bh=9MdB2UaPJpsW3c367TGdC/biKeabpa3J5DqNgB8gRWM=;
- b=S565xj1t33M1CvsOXZsAhHYt7vMII0IIhEPKwFaRJ8r4aho1PjvWlS7tyd0zL1/fY9zo
- wukYy7VT/6eCMWbSlMFto5L7DU1ZtlE4xziVERNgOKttpTyKkHtvb7ZZ+eeNSkZWAAQb
- YXuQFjdhabeUBN7KmzJN/famL7px843cWJVfEpwfg+E0AZ/gDeiXtbtjK/axZbI3D0W3
- BpGclJdivg/vUdZa9oXPgAPLm3y18Tq2CXHbcZ9HvScTqBrOZsoED+2/qAQ7mfoPdK90
- ZKr9PN9o2geJLYft5nT+Y3cxsASNI7Z38Zor4T2C1DOEE6FNQxKOlTKTCLzcSS5lo5wQ eQ==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com
+ bh=3gBHabwBqqq6kLDsqXiZ5sw8OskG5Bpac3TWaz1Ue9M=;
+ b=AsoJOoYQRz57CMP3hU98d1dGFK+Kt/EkpigK68D+4TS0BsFQ9fi2/T+NKe59t3T5F2KD
+ 0iWBXA4ck7m0lVflBfhwJThw/m7rbhRA0tqJ2BwD4LWJZa0t8R7ZV7hqdaEx+BSpILfK
+ lIA+1I731kol9XyeU10TMqrsaenl7TaUBo8Uwqkq8SC4OMaZW+GFr2neXo3kDmSLm6zM
+ LKbbM1mOQEajl7Sklc19LctU+GM2+RxrvoCRvCp0xDIAcNzIerD9XSkJVODJkf9bgMu5
+ Fp7dvL7A3BsYsLOIsnD3FDh6itLUPJjAp5130cDPnQYCxC0zUEmmLGmlA6etZSfG266+ kg==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com
  [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tn492stc9-1
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tne0q08kt-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 11 Oct 2023 00:22:38 +0000
+	Wed, 11 Oct 2023 00:22:37 +0000
 Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com
  [10.47.209.197])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id
- 39B0MbeC027116
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id
+ 39B0Mb83000960
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Wed, 11 Oct 2023 00:22:37 GMT
 Received: from hu-wcheng-lv.qualcomm.com (10.49.16.6) by
  nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.36; Tue, 10 Oct 2023 17:22:37 -0700
+ 15.2.1118.36; Tue, 10 Oct 2023 17:22:36 -0700
 From: Wesley Cheng <quic_wcheng@quicinc.com>
 To: <mathias.nyman@intel.com>, <gregkh@linuxfoundation.org>,
         <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
@@ -79,10 +79,10 @@ To: <mathias.nyman@intel.com>, <gregkh@linuxfoundation.org>,
 CC: <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <alsa-devel@alsa-project.org>, <linux-arm-msm@vger.kernel.org>,
         <devicetree@vger.kernel.org>, Wesley Cheng <quic_wcheng@quicinc.com>
-Subject: [PATCH v8 27/34] ALSA: usb-audio: qcom: Populate PCM and USB chip
- information
-Date: Tue, 10 Oct 2023 17:21:39 -0700
-Message-ID: <20231011002146.1821-28-quic_wcheng@quicinc.com>
+Subject: [PATCH v8 25/34] ASoC: dt-bindings: Update example for enabling USB
+ offload on SM8250
+Date: Tue, 10 Oct 2023 17:21:37 -0700
+Message-ID: <20231011002146.1821-26-quic_wcheng@quicinc.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20231011002146.1821-1-quic_wcheng@quicinc.com>
 References: <20231011002146.1821-1-quic_wcheng@quicinc.com>
@@ -94,19 +94,19 @@ X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
  signatures=585085
-X-Proofpoint-GUID: GfjV5GolTDOdWBVaUtFjjvpxdapfsXAz
-X-Proofpoint-ORIG-GUID: GfjV5GolTDOdWBVaUtFjjvpxdapfsXAz
+X-Proofpoint-GUID: vmqOn23Ye-YWJbKAAlvCXOj4Up0svAbZ
+X-Proofpoint-ORIG-GUID: vmqOn23Ye-YWJbKAAlvCXOj4Up0svAbZ
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-10-10_19,2023-10-10_01,2023-05-22_02
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- mlxlogscore=639
- impostorscore=0 mlxscore=0 phishscore=0 adultscore=0 suspectscore=0
- spamscore=0 priorityscore=1501 malwarescore=0 clxscore=1015 bulkscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ malwarescore=0 bulkscore=0
+ spamscore=0 mlxscore=0 clxscore=1015 priorityscore=1501 phishscore=0
+ adultscore=0 impostorscore=0 suspectscore=0 lowpriorityscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2309180000 definitions=main-2310110001
-Message-ID-Hash: WA6O5QFF6MCIJIFTBSHGGWV4UQHFZYWP
-X-Message-ID-Hash: WA6O5QFF6MCIJIFTBSHGGWV4UQHFZYWP
+Message-ID-Hash: XKQ2POII5MOEIINDE33DMTCEGI7IQ7RG
+X-Message-ID-Hash: XKQ2POII5MOEIINDE33DMTCEGI7IQ7RG
 X-MailFrom: quic_wcheng@quicinc.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -119,7 +119,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WA6O5QFF6MCIJIFTBSHGGWV4UQHFZYWP/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XKQ2POII5MOEIINDE33DMTCEGI7IQ7RG/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -128,61 +128,39 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Currently, only the index to the USB SND card array is passed to the USB
-backend.  Pass through more information, specifically the USB SND card
-number and the number of PCM devices available.  This allows for the DPCM
-backend to determine what USB resources are available during situations,
-such as USB audio offloading.
+Add an example on enabling of USB offload for the Q6DSP.  The routing can
+be done by the mixer, which can pass the multimedia stream to the USB
+backend.
 
+Acked-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
 ---
- sound/usb/qcom/qc_audio_offload.c | 21 ++++++++++++++++++---
- 1 file changed, 18 insertions(+), 3 deletions(-)
+ .../devicetree/bindings/sound/qcom,sm8250.yaml    | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-diff --git a/sound/usb/qcom/qc_audio_offload.c b/sound/usb/qcom/qc_audio_offload.c
-index bd6b84f72c74..ae74098b41f5 100644
---- a/sound/usb/qcom/qc_audio_offload.c
-+++ b/sound/usb/qcom/qc_audio_offload.c
-@@ -173,6 +173,21 @@ enum usb_qmi_audio_format {
- 	USB_QMI_PCM_FORMAT_U32_BE,
- };
- 
-+static int usb_qmi_get_pcm_num(struct snd_usb_audio *chip, int direction)
-+{
-+	struct snd_usb_substream *subs = NULL;
-+	struct snd_usb_stream *as;
-+	int count = 0;
+diff --git a/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml b/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml
+index 262de7a60a73..13145e010ddf 100644
+--- a/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml
++++ b/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml
+@@ -220,6 +220,21 @@ examples:
+                 sound-dai = <&vamacro 0>;
+             };
+         };
 +
-+	list_for_each_entry(as, &chip->pcm_list, list) {
-+		subs = &as->substream[direction];
-+		if (subs->ep_num)
-+			count++;
-+	}
++        usb-dai-link {
++            link-name = "USB Playback";
++            cpu {
++                sound-dai = <&q6afedai USB_RX>;
++            };
 +
-+	return count;
-+}
++            codec {
++                sound-dai = <&usbdai USB_RX>;
++            };
 +
- static enum usb_qmi_audio_device_speed_enum_v01
- get_speed_info(enum usb_device_speed udev_speed)
- {
-@@ -1592,6 +1607,8 @@ static void qc_usb_audio_offload_probe(struct snd_usb_audio *chip)
++            platform {
++                sound-dai = <&q6routing>;
++            };
++        };
+     };
  
- 	sdev->card_idx = chip->card->number;
- 	sdev->chip_idx = chip->index;
-+	sdev->num_playback = usb_qmi_get_pcm_num(chip, 0);
-+	sdev->num_capture = usb_qmi_get_pcm_num(chip, 1);
- 	uadev[chip->card->number].sdev = sdev;
- 
- 	uaudio_qdev->last_card_num = chip->card->number;
-@@ -1706,10 +1723,8 @@ static void qc_usb_audio_offload_disconnect(struct snd_usb_audio *chip)
- 	mutex_unlock(&chip->mutex);
- 
- 	atomic_dec(&uaudio_qdev->qdev_in_use);
--	if (!atomic_read(&uaudio_qdev->qdev_in_use)) {
--		snd_soc_usb_disconnect(usb_get_usb_backend(udev));
-+	if (!atomic_read(&uaudio_qdev->qdev_in_use))
- 		qc_usb_audio_cleanup_qmi_dev();
--	}
- 	mutex_unlock(&qdev_mutex);
- }
- 
+   - |
