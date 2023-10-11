@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1B845CD6E5D
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Oct 2023 12:19:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 83F9DCD6E5D
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Oct 2023 12:19:57 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1CE00163F;
-	Wed, 11 Oct 2023 14:18:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1CE00163F
+	by alsa0.perex.cz (Postfix) with ESMTPS id C0B6D15C2;
+	Wed, 11 Oct 2023 14:19:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C0B6D15C2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1697026773;
-	bh=IcR2+alp7ZQ8W1Uf3jAEvOViV8wtUWhbVQLtTTY/Fu8=;
+	s=default; t=1697026795;
+	bh=GbOzPQQUOLORMqMhIRGHwtUKovXKoKrfzGwDUlXX9Ng=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=g72G7Fd0JCZqV9FqYPx6/9uDAXzQ2b/ahrlEPDoMma1kmJUrsA1FSGmOSC0uldOxi
-	 ZHGfLJNQeaCkzamKNlHPL87eXL89IgME9nmyLqj/V76i/9+bwmTEmdc1ZDuOYrUlGr
-	 DI3uAuPtoCy3T+zLXi2IFL1GTv9F/GgWrgdH5TqM=
+	b=FZNfiD1GtXIqXlUniGTjwn73DeqB2RSXRTEGVCnPtPl1BUnlCPV826xg9Ixai6WxK
+	 GJVFyl2GsAlAHvriBsPb9FxjvmQ2vrBLVWswq3+SMtr/+sLHbZhbj0oofUzgH7EuxA
+	 hkxWrclUY3fOQJg8koShYDum9ufVa7rVMdbgHcGc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4DACEF80589; Wed, 11 Oct 2023 14:17:38 +0200 (CEST)
+	id 97AE4F805BA; Wed, 11 Oct 2023 14:17:40 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7FF72F80589;
-	Wed, 11 Oct 2023 14:17:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E16B5F805B5;
+	Wed, 11 Oct 2023 14:17:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A2D6EF80553; Wed, 11 Oct 2023 14:17:22 +0200 (CEST)
+	id 37002F80568; Wed, 11 Oct 2023 14:17:25 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 5CB89F80310
-	for <alsa-devel@alsa-project.org>; Wed, 11 Oct 2023 14:17:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5CB89F80310
+	by alsa1.perex.cz (Postfix) with ESMTPS id 4DCFAF8027B
+	for <alsa-devel@alsa-project.org>; Wed, 11 Oct 2023 14:17:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4DCFAF8027B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=j/Ka3sV6
+ header.s=Intel header.b=Gqo0P6Ll
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697026637; x=1728562637;
+  t=1697026641; x=1728562641;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=IcR2+alp7ZQ8W1Uf3jAEvOViV8wtUWhbVQLtTTY/Fu8=;
-  b=j/Ka3sV64EMtTy9SKTAmBiYy9fMF6KUfQEB0KRWxCx3MIDwRaqkCXIu2
-   6GcEDibc2kZtxsuYquixo6x9xMQZ9oEHk2o09rSSl4OWnB+JT3ZuObNLQ
-   zjI3iAcn7A82hogvTHqW9e1QHEhLGv3O3qwDWNdfJIQPCb0RNoeIAbXE5
-   EXrsONlm4yOAcoNNv6X3tM9mQ9e9k2ZvAEGBj0L8INuRwZEgBx/kPBgqQ
-   OrJDy/VjUorzo0oT5HNXl5PrYRPTaREvxnEc9IYCUy7ZfMXZrJPE7yDWZ
-   YexeBzdcvwRVVOGLTvErRXA+iLb6cGw3ytC+nEAmSDOcFsHDrwT6ZzrCD
+  bh=GbOzPQQUOLORMqMhIRGHwtUKovXKoKrfzGwDUlXX9Ng=;
+  b=Gqo0P6Ll/dUN8NldgP9zfBh2puDm5MrENYIG27uXziphs/VBHMYllTAT
+   93ah6TIxWISlVPIfljqAt0th0SV49hhdjlNXjbhxHwKHVt49qua0OpZfN
+   OPhUruBb4Ejg7a72Ftn/Pe+Ukb7kFOea3mPfMlZoY+aBt5wJMrfHLII90
+   awUdJtd7wMDQ6sK2SvgQ4Zvjde2xC0IUymMP+fEP3K95Uimti0kCpM7/j
+   kfMkNWV6xcV3pdDGSFExrTAiVtf4kUiYSeJcJkobb2s1oSGgpdC/0A6jz
+   QIS1CpBwbDnxlf+e5dHyj7SrD3HU+DMD8W5I/6L9kLYKjqeXezoMvmO7D
    Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="374988361"
+X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="374988469"
 X-IronPort-AV: E=Sophos;i="6.03,214,1694761200";
-   d="scan'208";a="374988361"
+   d="scan'208";a="374988469"
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
   by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 11 Oct 2023 05:16:59 -0700
+ 11 Oct 2023 05:17:11 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="747428340"
+X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="747428403"
 X-IronPort-AV: E=Sophos;i="6.03,214,1694761200";
-   d="scan'208";a="747428340"
+   d="scan'208";a="747428403"
 Received: from dev2 (HELO DEV2.igk.intel.com) ([10.237.148.94])
-  by orsmga007.jf.intel.com with ESMTP; 11 Oct 2023 05:16:58 -0700
+  by orsmga007.jf.intel.com with ESMTP; 11 Oct 2023 05:17:10 -0700
 From: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
  <amadeuszx.slawinski@linux.intel.com>
 To: Mark Brown <broonie@kernel.org>
@@ -72,18 +72,18 @@ Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
 	alsa-devel@alsa-project.org,
 	=?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
  <amadeuszx.slawinski@linux.intel.com>
-Subject: [PATCH 02/16] ASoC: Intel: avs: Introduce helper functions for SSP
- and TDM handling
-Date: Wed, 11 Oct 2023 14:16:49 +0200
-Message-Id: <20231011121703.363652-3-amadeuszx.slawinski@linux.intel.com>
+Subject: [PATCH 08/16] ASoC: Intel: avs: rt298: Validate machine board
+ configuration
+Date: Wed, 11 Oct 2023 14:16:55 +0200
+Message-Id: <20231011121703.363652-9-amadeuszx.slawinski@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231011121703.363652-1-amadeuszx.slawinski@linux.intel.com>
 References: <20231011121703.363652-1-amadeuszx.slawinski@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: O66GQ5P2QVLIMCMAAXHBQQAW6ZPJNKYQ
-X-Message-ID-Hash: O66GQ5P2QVLIMCMAAXHBQQAW6ZPJNKYQ
+Message-ID-Hash: RW7QUC47VF4T5UNS47A3Q35ZGFMLOT4P
+X-Message-ID-Hash: RW7QUC47VF4T5UNS47A3Q35ZGFMLOT4P
 X-MailFrom: amadeuszx.slawinski@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -96,7 +96,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/O66GQ5P2QVLIMCMAAXHBQQAW6ZPJNKYQ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RW7QUC47VF4T5UNS47A3Q35ZGFMLOT4P/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -105,103 +105,73 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-In quite a few places in code there are checks for number of SSPs
-present on system, to reduce maintenance burden introduce helper
-functions allowing to get SSP and TDM from machine board configuration.
-
-Additionally in boards we use SSP and TDM to generate quite a few
-strings, it could be done like:
-if (tdms)
-	dl->name = devm_kasprintf(dev, GFP_KERNEL, "SSP%d:%d-Codec",
-		ssp_port, tdm_slot);
-else
-	dl->name = devm_kasprintf(dev, GFP_KERNEL, "SSP%d-Codec",
-		ssp_port);
-
-but quite quickly code ends up with spaghetti of similar if elses.
-Instead introduce macro which can be used to generate correct string,
-allowing to minimize code to something like:
-dl->name = devm_kasprintf(dev, GFP_KERNEL, AVS_STRING_FMT("SSP", "-Codec",
-		ssp_port, tdm_slot));
+Allow for board to be used with TDMs.
 
 Reviewed-by: Cezary Rojewski <cezary.rojewski@intel.com>
 Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 ---
- sound/soc/intel/avs/utils.h | 65 +++++++++++++++++++++++++++++++++++++
- 1 file changed, 65 insertions(+)
- create mode 100644 sound/soc/intel/avs/utils.h
+ sound/soc/intel/avs/boards/rt298.c | 18 ++++++++++++------
+ 1 file changed, 12 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/intel/avs/utils.h b/sound/soc/intel/avs/utils.h
-new file mode 100644
-index 000000000000..6123fab527ec
---- /dev/null
-+++ b/sound/soc/intel/avs/utils.h
-@@ -0,0 +1,65 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*
-+ * Copyright(c) 2023 Intel Corporation. All rights reserved.
-+ *
-+ * Authors: Cezary Rojewski <cezary.rojewski@intel.com>
-+ *          Amadeusz Slawinski <amadeuszx.slawinski@linux.intel.com>
-+ */
+diff --git a/sound/soc/intel/avs/boards/rt298.c b/sound/soc/intel/avs/boards/rt298.c
+index 3cd8057f0ed6..ea32a7690c8a 100644
+--- a/sound/soc/intel/avs/boards/rt298.c
++++ b/sound/soc/intel/avs/boards/rt298.c
+@@ -14,6 +14,7 @@
+ #include <sound/soc.h>
+ #include <sound/soc-acpi.h>
+ #include "../../../codecs/rt298.h"
++#include "../utils.h"
+ 
+ #define RT298_CODEC_DAI		"rt298-aif1"
+ 
+@@ -131,7 +132,7 @@ static const struct snd_soc_ops avs_rt298_ops = {
+ };
+ 
+ static int avs_create_dai_link(struct device *dev, const char *platform_name, int ssp_port,
+-			       struct snd_soc_dai_link **dai_link)
++			       int tdm_slot, struct snd_soc_dai_link **dai_link)
+ {
+ 	struct snd_soc_dai_link_component *platform;
+ 	struct snd_soc_dai_link *dl;
+@@ -143,13 +144,15 @@ static int avs_create_dai_link(struct device *dev, const char *platform_name, in
+ 
+ 	platform->name = platform_name;
+ 
+-	dl->name = devm_kasprintf(dev, GFP_KERNEL, "SSP%d-Codec", ssp_port);
++	dl->name = devm_kasprintf(dev, GFP_KERNEL,
++				  AVS_STRING_FMT("SSP", "-Codec", ssp_port, tdm_slot));
+ 	dl->cpus = devm_kzalloc(dev, sizeof(*dl->cpus), GFP_KERNEL);
+ 	dl->codecs = devm_kzalloc(dev, sizeof(*dl->codecs), GFP_KERNEL);
+ 	if (!dl->name || !dl->cpus || !dl->codecs)
+ 		return -ENOMEM;
+ 
+-	dl->cpus->dai_name = devm_kasprintf(dev, GFP_KERNEL, "SSP%d Pin", ssp_port);
++	dl->cpus->dai_name = devm_kasprintf(dev, GFP_KERNEL,
++					    AVS_STRING_FMT("SSP", " Pin", ssp_port, tdm_slot));
+ 	dl->codecs->name = devm_kasprintf(dev, GFP_KERNEL, "i2c-INT343A:00");
+ 	dl->codecs->dai_name = devm_kasprintf(dev, GFP_KERNEL, RT298_CODEC_DAI);
+ 	if (!dl->cpus->dai_name || !dl->codecs->name || !dl->codecs->dai_name)
+@@ -201,13 +204,16 @@ static int avs_rt298_probe(struct platform_device *pdev)
+ 	struct snd_soc_jack *jack;
+ 	struct device *dev = &pdev->dev;
+ 	const char *pname;
+-	int ssp_port, ret;
++	int ssp_port, tdm_slot, ret;
+ 
+ 	mach = dev_get_platdata(dev);
+ 	pname = mach->mach_params.platform;
+-	ssp_port = __ffs(mach->mach_params.i2s_link_mask);
+ 
+-	ret = avs_create_dai_link(dev, pname, ssp_port, &dai_link);
++	ret = avs_mach_get_ssp_tdm(dev, mach, &ssp_port, &tdm_slot);
++	if (ret)
++		return ret;
 +
-+#ifndef __SOUND_SOC_INTEL_AVS_UTILS_H
-+#define __SOUND_SOC_INTEL_AVS_UTILS_H
-+
-+#include <sound/soc-acpi.h>
-+
-+inline bool avs_mach_singular_ssp(struct snd_soc_acpi_mach *mach)
-+{
-+	return hweight_long(mach->mach_params.i2s_link_mask) == 1;
-+}
-+
-+inline u32 avs_mach_ssp_port(struct snd_soc_acpi_mach *mach)
-+{
-+	return __ffs(mach->mach_params.i2s_link_mask);
-+}
-+
-+inline bool avs_mach_singular_tdm(struct snd_soc_acpi_mach *mach, u32 port)
-+{
-+	unsigned long *tdms = mach->pdata;
-+
-+	return !tdms || (hweight_long(tdms[port]) == 1);
-+}
-+
-+inline u32 avs_mach_ssp_tdm(struct snd_soc_acpi_mach *mach, u32 port)
-+{
-+	unsigned long *tdms = mach->pdata;
-+
-+	return tdms ? __ffs(tdms[port]) : 0;
-+}
-+
-+inline int avs_mach_get_ssp_tdm(struct device *dev, struct snd_soc_acpi_mach *mach,
-+				int *ssp_port, int *tdm_slot)
-+{
-+	int port;
-+
-+	if (!avs_mach_singular_ssp(mach)) {
-+		dev_err(dev, "Invalid SSP configuration\n");
-+		return -EINVAL;
-+	}
-+	port = avs_mach_ssp_port(mach);
-+
-+	if (!avs_mach_singular_tdm(mach, port)) {
-+		dev_err(dev, "Invalid TDM configuration\n");
-+		return -EINVAL;
-+	}
-+	*ssp_port = port;
-+	*tdm_slot = avs_mach_ssp_tdm(mach, *ssp_port);
-+
-+	return 0;
-+}
-+
-+/*
-+ * Macro to easily generate format strings
-+ */
-+#define AVS_STRING_FMT(prefix, suffix, ssp, tdm) \
-+	(tdm) ? prefix "%d:%d" suffix : prefix "%d" suffix, (ssp), (tdm)
-+
-+#endif
++	ret = avs_create_dai_link(dev, pname, ssp_port, tdm_slot, &dai_link);
+ 	if (ret) {
+ 		dev_err(dev, "Failed to create dai link: %d", ret);
+ 		return ret;
 -- 
 2.34.1
 
