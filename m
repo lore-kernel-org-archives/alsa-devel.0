@@ -4,70 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 74FE4CD98D9
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Oct 2023 00:32:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5F157CD98D9
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Oct 2023 00:33:11 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5517CEDC;
-	Wed, 11 Oct 2023 02:32:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5517CEDC
+	by alsa0.perex.cz (Postfix) with ESMTPS id A37F4F03;
+	Wed, 11 Oct 2023 02:32:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A37F4F03
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1696984371;
-	bh=sQYIJ24MAshJtl0aYjaXmlxoxZTh6vVLe7gJ21Jvn4s=;
+	s=default; t=1696984389;
+	bh=2TQXo2YMYhg/mBJxKuqafaOEZef1g+SCKODQN1pqdkU=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=rSFWjbiHx7YhOdZpEOATe6eXnSCI7LL7nQmfqA6Ivwg5xVbQebgFOy3AyxuRpB8As
-	 s4y9ff6P5Nc1RbzPlrHdTRW7qmK2xZ61zHu9Ei67J66E1St5POIp2mCksynbimZ6wA
-	 dfSAI8UjIRxsMNVdiYRuSF5YCHgWVkk4ItjDkUbg=
+	b=dO4Ay52muINaibz/mlJcBFsRzHaFeR2NVsQGhY9JLYkaIWaDsQusRXmFt9HH2jW9D
+	 Oa8FAZlDvGD+lI4Px/sH1u0AqQwdhPwy2daWNaXEjHuNhCjdia6lKiy+pUBwMXLYz5
+	 FKyo4eJAPxIyNc6tyszlc6MeB4LShYfaDEBgaxHo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A729CF805CA; Wed, 11 Oct 2023 02:25:59 +0200 (CEST)
+	id 126B3F805E8; Wed, 11 Oct 2023 02:26:02 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B7DEEF805D4;
-	Wed, 11 Oct 2023 02:25:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 35A90F805E4;
+	Wed, 11 Oct 2023 02:26:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9B782F80310; Wed, 11 Oct 2023 02:25:52 +0200 (CEST)
+	id 4388DF80553; Wed, 11 Oct 2023 02:25:54 +0200 (CEST)
 Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com
  [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 75CDEF80553
-	for <alsa-devel@alsa-project.org>; Wed, 11 Oct 2023 02:22:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 75CDEF80553
+	by alsa1.perex.cz (Postfix) with ESMTPS id 2AC9CF802E8
+	for <alsa-devel@alsa-project.org>; Wed, 11 Oct 2023 02:22:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2AC9CF802E8
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
- header.s=qcppdkim1 header.b=XFqgxRlJ
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+ header.s=qcppdkim1 header.b=PkgY6PDU
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
 	by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 39B0EIgE023660;
+ 39B0Hdq0009244;
 	Wed, 11 Oct 2023 00:22:32 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-type; s=qcppdkim1;
- bh=ShOT7wUlq4YSDk3eE/eZp0TDwUGdTXEVDQn3CX7tZhs=;
- b=XFqgxRlJ4bKFPCHJkiTkkjooUuPUYJazYfR2Ff674DV6qpQo5Y4gDUMjBQdUUuZeN7Eh
- 9Npu6YhNXAtyuguG7U826Cp+NcMFG1huhVyTi4wEEypdwB/8rdlOMoVfw6d3brODFrV4
- ayC4XY8uhcnazQhaDKidMBcBt6SL/Iy1KnOzMNeMxKEfZOq7/psfbAJGGMalDU/JxDvT
- QXAaZZ7Pjpt57nZIYKSkvnEm578d/Pulgq2RcufK9PSlyjp1zNRO+OKiBbXdI7Ra63K4
- /KLLFvbQhiyiXNR8bGrVJQKFcClWn0WCQ9mMCysZdVbOzHwTeH91BIXV7sgZMrugoOuK sQ==
+ bh=/ZM8SPXr7udKkYr/SDUmnoP1IOgbHf5SfkdSPWJ27XA=;
+ b=PkgY6PDUSw3oScqB3z63Uz0/4Eg0GO/x/tgiipE0ozyok+R8RFxyLPomHJmjhv1dIFyK
+ 4q4jnT5qyRVgXtpskEy6ZsgQpDCTdUwg7Fo7jbKfvFizCWLPuC8DvCOuPI1+EGRFM6CY
+ WiDW2597LamAy0i0bBCuXy+pkGJ+RjqqCEZ35CaN4OQ/kD0C0BXZvmvaNATsoL+QcITY
+ FffaWDkjJWVeBuggATKUD+Lf6lgGsS6M95uYpqWf3Q11oellKJ//fL6ZyF/88lO53WUi
+ ctCXCrHJzldasT/mITwUgZk1zmQpDBViljdsJJvux1mTAtxFyBCeYEifstBxKJ9al11U Tg==
 Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com
  [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tn492stc3-1
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tne0q08kn-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 11 Oct 2023 00:22:32 +0000
+	Wed, 11 Oct 2023 00:22:31 +0000
 Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com
  [10.47.209.197])
 	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id
- 39B0MVXg027091
+ 39B0MVwY027066
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 11 Oct 2023 00:22:32 GMT
+	Wed, 11 Oct 2023 00:22:31 GMT
 Received: from hu-wcheng-lv.qualcomm.com (10.49.16.6) by
  nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.36; Tue, 10 Oct 2023 17:22:31 -0700
+ 15.2.1118.36; Tue, 10 Oct 2023 17:22:30 -0700
 From: Wesley Cheng <quic_wcheng@quicinc.com>
 To: <mathias.nyman@intel.com>, <gregkh@linuxfoundation.org>,
         <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
@@ -79,9 +79,10 @@ To: <mathias.nyman@intel.com>, <gregkh@linuxfoundation.org>,
 CC: <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <alsa-devel@alsa-project.org>, <linux-arm-msm@vger.kernel.org>,
         <devicetree@vger.kernel.org>, Wesley Cheng <quic_wcheng@quicinc.com>
-Subject: [PATCH v8 10/34] ASoC: qdsp6: q6afe: Increase APR timeout
-Date: Tue, 10 Oct 2023 17:21:22 -0700
-Message-ID: <20231011002146.1821-11-quic_wcheng@quicinc.com>
+Subject: [PATCH v8 08/34] ASoC: dt-bindings: qcom,q6dsp-lpass-ports: Add
+ USB_RX port
+Date: Tue, 10 Oct 2023 17:21:20 -0700
+Message-ID: <20231011002146.1821-9-quic_wcheng@quicinc.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20231011002146.1821-1-quic_wcheng@quicinc.com>
 References: <20231011002146.1821-1-quic_wcheng@quicinc.com>
@@ -93,19 +94,19 @@ X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
  signatures=585085
-X-Proofpoint-GUID: 4xFbDuxVWjOs1h3AIKqsiHK4gNrJxLhY
-X-Proofpoint-ORIG-GUID: 4xFbDuxVWjOs1h3AIKqsiHK4gNrJxLhY
+X-Proofpoint-GUID: 6VDB2GPGMH6MTwJ7tZRmCGQ9QYrijd5C
+X-Proofpoint-ORIG-GUID: 6VDB2GPGMH6MTwJ7tZRmCGQ9QYrijd5C
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-10-10_19,2023-10-10_01,2023-05-22_02
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- mlxlogscore=747
- impostorscore=0 mlxscore=0 phishscore=0 adultscore=0 suspectscore=0
- spamscore=0 priorityscore=1501 malwarescore=0 clxscore=1015 bulkscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ malwarescore=0 bulkscore=0
+ spamscore=0 mlxscore=0 clxscore=1015 priorityscore=1501 phishscore=0
+ adultscore=0 impostorscore=0 suspectscore=0 lowpriorityscore=0
+ mlxlogscore=813 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2309180000 definitions=main-2310110001
-Message-ID-Hash: MBFA2PPL3ARJ4AFVVEPUSY6YKHJZCMCU
-X-Message-ID-Hash: MBFA2PPL3ARJ4AFVVEPUSY6YKHJZCMCU
+Message-ID-Hash: LZNMJU2Y6U22DIEE54AWJEPDLOMZYVZ5
+X-Message-ID-Hash: LZNMJU2Y6U22DIEE54AWJEPDLOMZYVZ5
 X-MailFrom: quic_wcheng@quicinc.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -118,7 +119,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MBFA2PPL3ARJ4AFVVEPUSY6YKHJZCMCU/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LZNMJU2Y6U22DIEE54AWJEPDLOMZYVZ5/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -127,29 +128,25 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-For USB offloading situations, the AFE port start command will result in a
-QMI handshake between the Q6DSP and the main processor.  Depending on if
-the USB bus is suspended, this routine would require more time to complete,
-as resuming the USB bus has some overhead associated with it.  Increase the
-timeout to 3s to allow for sufficient time for the USB QMI stream enable
-handshake to complete.
+Q6DSP supports handling of USB playback audio data if USB audio offloading
+is enabled.  Add a new definition for the USB_RX AFE port, which is
+referenced when the AFE port is started.
 
-Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
 ---
- sound/soc/qcom/qdsp6/q6afe.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/dt-bindings/sound/qcom,q6dsp-lpass-ports.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/qcom/qdsp6/q6afe.c b/sound/soc/qcom/qdsp6/q6afe.c
-index f49c69472b5c..72c4e6fe20c4 100644
---- a/sound/soc/qcom/qdsp6/q6afe.c
-+++ b/sound/soc/qcom/qdsp6/q6afe.c
-@@ -365,7 +365,7 @@
- #define AFE_API_VERSION_SLOT_MAPPING_CONFIG	1
- #define AFE_API_VERSION_CODEC_DMA_CONFIG	1
+diff --git a/include/dt-bindings/sound/qcom,q6dsp-lpass-ports.h b/include/dt-bindings/sound/qcom,q6dsp-lpass-ports.h
+index 39f203256c4f..6d1ce7f5da51 100644
+--- a/include/dt-bindings/sound/qcom,q6dsp-lpass-ports.h
++++ b/include/dt-bindings/sound/qcom,q6dsp-lpass-ports.h
+@@ -139,6 +139,7 @@
+ #define DISPLAY_PORT_RX_5	133
+ #define DISPLAY_PORT_RX_6	134
+ #define DISPLAY_PORT_RX_7	135
++#define USB_RX			136
  
--#define TIMEOUT_MS 1000
-+#define TIMEOUT_MS 3000
- #define AFE_CMD_RESP_AVAIL	0
- #define AFE_CMD_RESP_NONE	1
- #define AFE_CLK_TOKEN		1024
+ #define LPASS_CLK_ID_PRI_MI2S_IBIT	1
+ #define LPASS_CLK_ID_PRI_MI2S_EBIT	2
