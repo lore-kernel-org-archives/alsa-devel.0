@@ -4,70 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 89FB9CD98E0
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Oct 2023 00:26:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C7578CD98D9
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Oct 2023 00:26:48 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 87470E80;
-	Wed, 11 Oct 2023 02:25:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 87470E80
+	by alsa0.perex.cz (Postfix) with ESMTPS id BE63DE84;
+	Wed, 11 Oct 2023 02:25:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BE63DE84
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1696983994;
-	bh=VkIaN8fZzSE5KPGMOhEgo9tz1pwtsL/NZjJ1DZTUXkM=;
+	s=default; t=1696984006;
+	bh=syC3iF5W5oXJEiSch1WDRPSigVwPTXDLI+G6uuGfPrg=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=OSTgSStQ7SUSKJ05aFMsipgwUrG8/NF7CG1Cn2jv5aKXcqmXa1yaV9D3twlyICG5G
-	 2E/NrgTNRXMkPfAx9H3uFGXCQXP7UCo4cF3aX+RRFRxy6Lo1OdP8SuGfx5HeJLyqeO
-	 /gh55E10uONh7aATjVV198MOV2VamA6/F6+BIMbs=
+	b=ZWndtx5b/XrWUJt8H/KcwfVqLzIWzMGzJJedIjV1Dn/rS9Vz914K+VaCXf2eGFia9
+	 o8gNrqdWt01vmQiDD/nkA4GITnptNagVrSMIRyo8PCZpFCSEKsUZetF/rlSSBcVmHy
+	 bcnV1JJSCJWgciIQm7UMduULSKIbIUN1VB7kBG3o=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 39893F80564; Wed, 11 Oct 2023 02:23:31 +0200 (CEST)
+	id 5B619F80608; Wed, 11 Oct 2023 02:23:34 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5C27BF805F4;
-	Wed, 11 Oct 2023 02:23:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BB56DF80603;
+	Wed, 11 Oct 2023 02:23:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3E6C9F805F4; Wed, 11 Oct 2023 02:23:26 +0200 (CEST)
+	id 2D18AF8055B; Wed, 11 Oct 2023 02:23:30 +0200 (CEST)
 Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com
  [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E898EF8055B
-	for <alsa-devel@alsa-project.org>; Wed, 11 Oct 2023 02:22:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E898EF8055B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6BB63F80564
+	for <alsa-devel@alsa-project.org>; Wed, 11 Oct 2023 02:22:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6BB63F80564
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
- header.s=qcppdkim1 header.b=QksJLDKl
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+ header.s=qcppdkim1 header.b=DrxJVvou
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
 	by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 39B0HHN4023331;
-	Wed, 11 Oct 2023 00:22:34 GMT
+ 39B0DMZ7024355;
+	Wed, 11 Oct 2023 00:22:30 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-type; s=qcppdkim1;
- bh=LSsdXL1BQITBnzKxySCb3lXlXADjWCyCv/TtVkZwEcY=;
- b=QksJLDKlJOcNf0xBkdWaRoG1in291kFfmbP0tqd6f5r2ENrAw7PogR3vNUi193Bq/jRp
- IrA+Lp5Tw2LCA16xM2qCPhGyc8g6MUA/yxYLZ2962ZRkWwpuA/k9Ybp4/wUOT7aGnXld
- W7ZLd83QXD+Pz4a3nGO6t2eNoSjJm/PWSk/BkVTW61fXiOQpRNfX88dJkgfclO0Png/f
- zk4QIXuAFOW1SzzSeU1YdK5WgddYyzGwJyCWLR7HEYmoN+RikxnAsQaSkFihnG/XEbYT
- 7pXY8wDCIKhfqUpjlzYkPI2aFoSM22cj1QKGKl/WQbnsBrCbcE/ZxokO3mtSLQJVslZB tA==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com
+ bh=BdTnDW5mxeHMgkXYB2RUopCASB+flHXeazzXFzW21BY=;
+ b=DrxJVvou9pilZiz0/QmM/gO2Aw7sDN1kYRHSkJ43jncIpu0IjzQRpy91OlFp7U56dDvq
+ ZpMImcpxAzKuBWKZQa3wS2aZs98MJ6RNQ/dJr5sfMZAFftSRmAilUdLtYf+e3Q7rPvJY
+ R0OgsMrpUGoJuI1jz1ews5YZnLEWx0CfRNtydT2hnMo8R1U5B1TSkmo470fp5NJ+Wv2Z
+ ekYgr2nwzOeCXONNsm4PexzQ2a+0A78blzXYtR4Ny9ve+t5o3jnPVbTpeZD3AeX9TfmQ
+ jtisLbpOyQG+5WL6Ta59v1hHJfmxuuECzevc1B3JrY2bkC8yTvh42iaf49MH4HcPQkmB Rw==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com
  [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tnfu903qn-1
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tngtp80t9-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 11 Oct 2023 00:22:34 +0000
+	Wed, 11 Oct 2023 00:22:30 +0000
 Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com
  [10.47.209.197])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id
- 39B0MYUO002181
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id
+ 39B0MTPx000915
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 11 Oct 2023 00:22:34 GMT
+	Wed, 11 Oct 2023 00:22:29 GMT
 Received: from hu-wcheng-lv.qualcomm.com (10.49.16.6) by
  nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.36; Tue, 10 Oct 2023 17:22:33 -0700
+ 15.2.1118.36; Tue, 10 Oct 2023 17:22:29 -0700
 From: Wesley Cheng <quic_wcheng@quicinc.com>
 To: <mathias.nyman@intel.com>, <gregkh@linuxfoundation.org>,
         <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
@@ -78,11 +78,13 @@ To: <mathias.nyman@intel.com>, <gregkh@linuxfoundation.org>,
         <Thinh.Nguyen@synopsys.com>
 CC: <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <alsa-devel@alsa-project.org>, <linux-arm-msm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, Wesley Cheng <quic_wcheng@quicinc.com>
-Subject: [PATCH v8 16/34] usb: dwc3: Specify maximum number of XHCI
- interrupters
-Date: Tue, 10 Oct 2023 17:21:28 -0700
-Message-ID: <20231011002146.1821-17-quic_wcheng@quicinc.com>
+        <devicetree@vger.kernel.org>,
+        Mathias Nyman <mathias.nyman@linux.intel.com>,
+        Wesley Cheng <quic_wcheng@quicinc.com>
+Subject: [PATCH v8 03/34] xhci: add helper to stop endpoint and wait for
+ completion
+Date: Tue, 10 Oct 2023 17:21:15 -0700
+Message-ID: <20231011002146.1821-4-quic_wcheng@quicinc.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20231011002146.1821-1-quic_wcheng@quicinc.com>
 References: <20231011002146.1821-1-quic_wcheng@quicinc.com>
@@ -94,19 +96,19 @@ X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
  signatures=585085
-X-Proofpoint-ORIG-GUID: CV1xNYdRoUmAcBqeX7oU8Sfbrev1a4ub
-X-Proofpoint-GUID: CV1xNYdRoUmAcBqeX7oU8Sfbrev1a4ub
+X-Proofpoint-ORIG-GUID: fV7AZv4ppia4oVJWmpEOh1g3duV6dfH8
+X-Proofpoint-GUID: fV7AZv4ppia4oVJWmpEOh1g3duV6dfH8
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-10-10_19,2023-10-10_01,2023-05-22_02
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- mlxlogscore=649 spamscore=0
- bulkscore=0 adultscore=0 malwarescore=0 suspectscore=0 clxscore=1015
- lowpriorityscore=0 impostorscore=0 priorityscore=1501 phishscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ suspectscore=0 adultscore=0
+ lowpriorityscore=0 clxscore=1011 phishscore=0 mlxlogscore=999
+ priorityscore=1501 bulkscore=0 impostorscore=0 mlxscore=0 malwarescore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2309180000 definitions=main-2310110001
-Message-ID-Hash: EPFAGXZKKCQ4CWMEJG25QTYBL6WYF4NJ
-X-Message-ID-Hash: EPFAGXZKKCQ4CWMEJG25QTYBL6WYF4NJ
+Message-ID-Hash: 4NPU5XWH4JYHLBRCWBEN6B7Z32FZX637
+X-Message-ID-Hash: 4NPU5XWH4JYHLBRCWBEN6B7Z32FZX637
 X-MailFrom: quic_wcheng@quicinc.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -119,7 +121,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/EPFAGXZKKCQ4CWMEJG25QTYBL6WYF4NJ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4NPU5XWH4JYHLBRCWBEN6B7Z32FZX637/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -128,102 +130,142 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Allow for the DWC3 host driver to pass along XHCI property that defines
-how many interrupters to allocate.  This is in relation for the number of
-event rings that can be potentially used by other processors within the
-system.
+From: Mathias Nyman <mathias.nyman@linux.intel.com>
 
+Expose xhci_stop_endpoint_sync() which is a synchronous variant of
+xhci_queue_stop_endpoint().  This is useful for client drivers that are
+using the secondary interrupters, and need to stop/clean up the current
+session.  The stop endpoint command handler will also take care of cleaning
+up the ring.
+
+Modifications to repurpose the new API into existing stop endpoint
+sequences was implemented by Wesley Cheng.
+
+Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
+Co-developed-by: Wesley Cheng <quic_wcheng@quicinc.com>
 Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
 ---
- drivers/usb/dwc3/core.c | 12 ++++++++++++
- drivers/usb/dwc3/core.h |  2 ++
- drivers/usb/dwc3/host.c |  5 ++++-
- 3 files changed, 18 insertions(+), 1 deletion(-)
+ drivers/usb/host/xhci.c | 61 ++++++++++++++++++++++++++++++-----------
+ drivers/usb/host/xhci.h |  2 ++
+ 2 files changed, 47 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
-index 44ee8526dc28..652171c2f244 100644
---- a/drivers/usb/dwc3/core.c
-+++ b/drivers/usb/dwc3/core.c
-@@ -1459,6 +1459,7 @@ static void dwc3_get_properties(struct dwc3 *dwc)
- 	u8			tx_thr_num_pkt_prd = 0;
- 	u8			tx_max_burst_prd = 0;
- 	u8			tx_fifo_resize_max_num;
-+	u16			num_hc_interrupters;
- 	const char		*usb_psy_name;
- 	int			ret;
- 
-@@ -1481,6 +1482,9 @@ static void dwc3_get_properties(struct dwc3 *dwc)
- 	 */
- 	tx_fifo_resize_max_num = 6;
- 
-+	/* default to a single XHCI interrupter */
-+	num_hc_interrupters = 1;
-+
- 	dwc->maximum_speed = usb_get_maximum_speed(dev);
- 	dwc->max_ssp_rate = usb_get_maximum_ssp_rate(dev);
- 	dwc->dr_mode = usb_get_dr_mode(dev);
-@@ -1532,6 +1536,12 @@ static void dwc3_get_properties(struct dwc3 *dwc)
- 				&tx_thr_num_pkt_prd);
- 	device_property_read_u8(dev, "snps,tx-max-burst-prd",
- 				&tx_max_burst_prd);
-+	device_property_read_u16(dev, "num-hc-interrupters",
-+				&num_hc_interrupters);
-+	/* DWC3 core allowed to have a max of 8 interrupters */
-+	if (num_hc_interrupters > 8)
-+		num_hc_interrupters = 8;
-+
- 	dwc->do_fifo_resize = device_property_read_bool(dev,
- 							"tx-fifo-resize");
- 	if (dwc->do_fifo_resize)
-@@ -1620,6 +1630,8 @@ static void dwc3_get_properties(struct dwc3 *dwc)
- 	dwc->imod_interval = 0;
- 
- 	dwc->tx_fifo_resize_max_num = tx_fifo_resize_max_num;
-+
-+	dwc->num_hc_interrupters = num_hc_interrupters;
+diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
+index 2c7b888d44fc..6465acca7c79 100644
+--- a/drivers/usb/host/xhci.c
++++ b/drivers/usb/host/xhci.c
+@@ -2760,6 +2760,47 @@ static int xhci_reserve_bandwidth(struct xhci_hcd *xhci,
+ 	return -ENOMEM;
  }
  
- /* check whether the core supports IMOD */
-diff --git a/drivers/usb/dwc3/core.h b/drivers/usb/dwc3/core.h
-index c6c87acbd376..2ce5e1e59380 100644
---- a/drivers/usb/dwc3/core.h
-+++ b/drivers/usb/dwc3/core.h
-@@ -1060,6 +1060,7 @@ struct dwc3_scratchpad_array {
-  * @tx_max_burst_prd: max periodic ESS transmit burst size
-  * @tx_fifo_resize_max_num: max number of fifos allocated during txfifo resize
-  * @clear_stall_protocol: endpoint number that requires a delayed status phase
-+ * @num_hc_interrupters: number of host controller interrupters
-  * @hsphy_interface: "utmi" or "ulpi"
-  * @connected: true when we're connected to a host, false otherwise
-  * @softconnect: true when gadget connect is called, false when disconnect runs
-@@ -1294,6 +1295,7 @@ struct dwc3 {
- 	u8			tx_max_burst_prd;
- 	u8			tx_fifo_resize_max_num;
- 	u8			clear_stall_protocol;
-+	u16			num_hc_interrupters;
- 
- 	const char		*hsphy_interface;
- 
-diff --git a/drivers/usb/dwc3/host.c b/drivers/usb/dwc3/host.c
-index 61f57fe5bb78..79ce359c342a 100644
---- a/drivers/usb/dwc3/host.c
-+++ b/drivers/usb/dwc3/host.c
-@@ -61,7 +61,7 @@ static int dwc3_host_get_irq(struct dwc3 *dwc)
- 
- int dwc3_host_init(struct dwc3 *dwc)
- {
--	struct property_entry	props[4];
-+	struct property_entry	props[5];
- 	struct platform_device	*xhci;
- 	int			ret, irq;
- 	int			prop_idx = 0;
-@@ -107,6 +107,9 @@ int dwc3_host_init(struct dwc3 *dwc)
- 	if (DWC3_VER_IS_WITHIN(DWC3, ANY, 300A))
- 		props[prop_idx++] = PROPERTY_ENTRY_BOOL("quirk-broken-port-ped");
- 
-+	props[prop_idx++] = PROPERTY_ENTRY_U16("num-hc-interrupters",
-+						dwc->num_hc_interrupters);
++/*
++ * Synchronous XHCI stop endpoint helper.  Issues the stop endpoint command and
++ * waits for the command completion before returning.
++ */
++int xhci_stop_endpoint_sync(struct xhci_hcd *xhci, struct xhci_virt_ep *ep, int suspend,
++			    gfp_t gfp_flags)
++{
++	struct xhci_command *command;
++	unsigned long flags;
++	int ret;
 +
- 	if (prop_idx) {
- 		ret = device_create_managed_software_node(&xhci->dev, props, NULL);
- 		if (ret) {
++	command = xhci_alloc_command(xhci, true, GFP_KERNEL);
++	if (!command)
++		return -ENOMEM;
++
++	spin_lock_irqsave(&xhci->lock, flags);
++	ret = xhci_queue_stop_endpoint(xhci, command, ep->vdev->slot_id,
++				       ep->ep_index, suspend);
++	if (ret < 0) {
++		spin_unlock_irqrestore(&xhci->lock, flags);
++		goto out;
++	}
++
++	xhci_ring_cmd_db(xhci);
++	spin_unlock_irqrestore(&xhci->lock, flags);
++
++	ret = wait_for_completion_timeout(command->completion, msecs_to_jiffies(3000));
++	if (!ret)
++		xhci_warn(xhci, "%s: Unable to stop endpoint.\n",
++				__func__);
++
++	if (command->status == COMP_COMMAND_ABORTED ||
++	    command->status == COMP_COMMAND_RING_STOPPED) {
++		xhci_warn(xhci, "Timeout while waiting for stop endpoint command\n");
++		ret = -ETIME;
++	}
++out:
++	xhci_free_command(xhci, command);
++
++	return ret;
++}
+ 
+ /* Issue a configure endpoint command or evaluate context command
+  * and wait for it to finish.
+@@ -3080,7 +3121,7 @@ static void xhci_endpoint_reset(struct usb_hcd *hcd,
+ 	struct xhci_virt_device *vdev;
+ 	struct xhci_virt_ep *ep;
+ 	struct xhci_input_control_ctx *ctrl_ctx;
+-	struct xhci_command *stop_cmd, *cfg_cmd;
++	struct xhci_command *cfg_cmd;
+ 	unsigned int ep_index;
+ 	unsigned long flags;
+ 	u32 ep_flag;
+@@ -3120,10 +3161,6 @@ static void xhci_endpoint_reset(struct usb_hcd *hcd,
+ 	if (ep_flag == SLOT_FLAG || ep_flag == EP0_FLAG)
+ 		return;
+ 
+-	stop_cmd = xhci_alloc_command(xhci, true, GFP_NOWAIT);
+-	if (!stop_cmd)
+-		return;
+-
+ 	cfg_cmd = xhci_alloc_command_with_ctx(xhci, true, GFP_NOWAIT);
+ 	if (!cfg_cmd)
+ 		goto cleanup;
+@@ -3146,23 +3183,16 @@ static void xhci_endpoint_reset(struct usb_hcd *hcd,
+ 		goto cleanup;
+ 	}
+ 
+-	err = xhci_queue_stop_endpoint(xhci, stop_cmd, udev->slot_id,
+-					ep_index, 0);
++	spin_unlock_irqrestore(&xhci->lock, flags);
++
++	err = xhci_stop_endpoint_sync(xhci, ep, 0, GFP_NOWAIT);
+ 	if (err < 0) {
+-		spin_unlock_irqrestore(&xhci->lock, flags);
+-		xhci_free_command(xhci, cfg_cmd);
+ 		xhci_dbg(xhci, "%s: Failed to queue stop ep command, %d ",
+ 				__func__, err);
+ 		goto cleanup;
+ 	}
+ 
+-	xhci_ring_cmd_db(xhci);
+-	spin_unlock_irqrestore(&xhci->lock, flags);
+-
+-	wait_for_completion(stop_cmd->completion);
+-
+ 	spin_lock_irqsave(&xhci->lock, flags);
+-
+ 	/* config ep command clears toggle if add and drop ep flags are set */
+ 	ctrl_ctx = xhci_get_input_control_ctx(cfg_cmd->in_ctx);
+ 	if (!ctrl_ctx) {
+@@ -3194,7 +3224,6 @@ static void xhci_endpoint_reset(struct usb_hcd *hcd,
+ 
+ 	xhci_free_command(xhci, cfg_cmd);
+ cleanup:
+-	xhci_free_command(xhci, stop_cmd);
+ 	spin_lock_irqsave(&xhci->lock, flags);
+ 	if (ep->ep_state & EP_SOFT_CLEAR_TOGGLE)
+ 		ep->ep_state &= ~EP_SOFT_CLEAR_TOGGLE;
+diff --git a/drivers/usb/host/xhci.h b/drivers/usb/host/xhci.h
+index 3bbb9f018529..f0e90fafdd19 100644
+--- a/drivers/usb/host/xhci.h
++++ b/drivers/usb/host/xhci.h
+@@ -2174,6 +2174,8 @@ void xhci_ring_doorbell_for_active_rings(struct xhci_hcd *xhci,
+ void xhci_cleanup_command_queue(struct xhci_hcd *xhci);
+ void inc_deq(struct xhci_hcd *xhci, struct xhci_ring *ring);
+ unsigned int count_trbs(u64 addr, u64 len);
++int xhci_stop_endpoint_sync(struct xhci_hcd *xhci, struct xhci_virt_ep *ep,
++			    int suspend, gfp_t gfp_flags);
+ 
+ /* xHCI roothub code */
+ void xhci_set_link_state(struct xhci_hcd *xhci, struct xhci_port *port,
