@@ -4,85 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 768E2CDB47E
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Oct 2023 19:16:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D960ACDB46E
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Oct 2023 19:16:34 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 94D26E8C;
-	Thu, 12 Oct 2023 21:15:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 94D26E8C
+	by alsa0.perex.cz (Postfix) with ESMTPS id EA78AE7A;
+	Thu, 12 Oct 2023 21:15:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EA78AE7A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1697138178;
-	bh=0URt3vABXKqeI1RoGGSyvCl2v7cE3o8yAFv6Xg/VBjw=;
+	s=default; t=1697138193;
+	bh=qu2W6Dqxr5OV6ED0i5GKf1xpm3HN0FfwmIe4uBCjKr4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=O/BS6Bg8m9hxBfLZ5QoRwbNHTW3917TXGwNXbtcPrF5hAHXOsiCTegC2kyd7Efeii
-	 7e03PxnU3MF/kkvVt2XGQ9r6xmAwZDponmJXvAHpup9414w/HbQCbw3OEiP2kztUf8
-	 rt6FyyarQm04KnyE8RcPL8wKpEMsaihDhSyDFll0=
+	b=j+wm8HMFjuFTcHatBjiKuCz8ziMWfHMpAYoEuVxS0Lprtxq1hnyW81Q6Kk7K9zdPF
+	 LLgFB5vq+3j84W6n+BvreenK/Z2kylys7wrCF9TfVdnEOXdy1FB/NKTAqhYRpKtlvE
+	 q7WYuqh5BtI7B1iKQUHY1gcDtDaruMVH01uO+k6U=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 858CAF805BB; Thu, 12 Oct 2023 21:10:58 +0200 (CEST)
+	id 8012BF8065E; Thu, 12 Oct 2023 21:11:00 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 104F0F805B4;
-	Thu, 12 Oct 2023 21:10:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A313BF805C2;
+	Thu, 12 Oct 2023 21:10:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 62DAFF80589; Thu, 12 Oct 2023 21:10:51 +0200 (CEST)
+	id 7EAA4F802E8; Thu, 12 Oct 2023 21:10:51 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 903A2F802E8
-	for <alsa-devel@alsa-project.org>; Thu, 12 Oct 2023 21:08:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 903A2F802E8
+	by alsa1.perex.cz (Postfix) with ESMTPS id E7367F80310
+	for <alsa-devel@alsa-project.org>; Thu, 12 Oct 2023 21:08:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E7367F80310
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=mNFdpXHh
+ header.s=Intel header.b=OqCpbnxE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
   t=1697137740; x=1728673740;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=0URt3vABXKqeI1RoGGSyvCl2v7cE3o8yAFv6Xg/VBjw=;
-  b=mNFdpXHhXvjkKKCcYZFbasYVO/C75xLTKfc5hzmSP1dsCh1WTM1F8ClH
-   qtXQwOV7Lwm+geAm0xAZqyrebxnpqLh18aj3rIvdnhW3Zs9F7BtYgvhAM
-   60FUBH2PNw/kbYWtFRazp1P/6KYWgL62IQ4Zy75rglJl3byc6xhZDKmtz
-   XCKGpB3SJkj6H1bjNF/Jbz0qhmIhkP63+vpVoCDZVQMAilAQbYPjv7Php
-   byBq+lZ9bMXVoQPeae0w5Pr+5sTsojJDyYkHOEJb0q4YrvY41HGQ1+bbv
-   dAG975wo6NpVnH1364irVjfePTZbADw52dl38d1kfrY2Kssn1C/4FjDhM
+  bh=qu2W6Dqxr5OV6ED0i5GKf1xpm3HN0FfwmIe4uBCjKr4=;
+  b=OqCpbnxEVGfY92+K2eQxHALoRmmm4IoxcXqESAPt5OzWgawZfKbz/5Ta
+   5sXV9QHK7Rem3JMGiPRBefCRq1KCbtPwGxWUP38TYiJfuvFjpQZzsn4DF
+   U9tJfoK0i9xPgrcNNzg8aTMxaQQSXX/Nu0kHV6Ef+fMGWTWuMEwzzpGCh
+   uZMrL1BYmmAtN3H7JM6gUWS4eqghDLgx1BdlzysL6SfRQkgZwovNB5Ltv
+   nr4mG3PU9jAJu5yeXJDG2LpYpEKmotQsfB99cnQv64dQUSusJZo345TeF
+   V1B+3x/j2ZSZwn9YHmubceb2gtZY1nXoC3UOXqensd/XW5UMXu+cmZeYz
    Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="416060180"
+X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="416060173"
 X-IronPort-AV: E=Sophos;i="6.03,219,1694761200";
-   d="scan'208";a="416060180"
+   d="scan'208";a="416060173"
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
   by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Oct 2023 12:08:41 -0700
+ 12 Oct 2023 12:08:39 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="845108062"
+X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="845108056"
 X-IronPort-AV: E=Sophos;i="6.03,219,1694761200";
-   d="scan'208";a="845108062"
+   d="scan'208";a="845108056"
 Received: from gchoudha-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.hsd1.md.comcast.net) ([10.212.114.241])
   by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Oct 2023 12:08:40 -0700
+ 12 Oct 2023 12:08:38 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de,
 	broonie@kernel.org,
-	Balamurugan C <balamurugan.c@intel.com>,
 	Bard Liao <yung-chuan.liao@linux.intel.com>,
+	Rander Wang <rander.wang@intel.com>,
 	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 05/23] ASoC: Intel: MTL: Add entry for HDMI-In capture support
- to non-I2S codec boards.
-Date: Thu, 12 Oct 2023 15:08:08 -0400
-Message-Id: <20231012190826.142619-6-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 03/23] ASoC: Intel: soc-acpi-intel-mtl-match: add rt713 rt1316
+ config
+Date: Thu, 12 Oct 2023 15:08:06 -0400
+Message-Id: <20231012190826.142619-4-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231012190826.142619-1-pierre-louis.bossart@linux.intel.com>
 References: <20231012190826.142619-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: IRMBWO6TUAYWLQBZMOH2TIYO4A7ZI6YC
-X-Message-ID-Hash: IRMBWO6TUAYWLQBZMOH2TIYO4A7ZI6YC
+Message-ID-Hash: BVLGKXD25Z32ZA3DZWO6VUY74IMHHQ5F
+X-Message-ID-Hash: BVLGKXD25Z32ZA3DZWO6VUY74IMHHQ5F
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -95,66 +95,123 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IRMBWO6TUAYWLQBZMOH2TIYO4A7ZI6YC/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BVLGKXD25Z32ZA3DZWO6VUY74IMHHQ5F/>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Balamurugan C <balamurugan.c@intel.com>
+From: Bard Liao <yung-chuan.liao@linux.intel.com>
 
-Adding HDMI-In capture support for the MTL products which doesn't have
-onboard I2S codec. But need to support HDMI-In capture via I2S and
-audio playback through HDMI/DP monitor.
+Adding rt713 jack + rt1316 amp + rt1713 dmic configuration support.
 
-Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Signed-off-by: Balamurugan C <balamurugan.c@intel.com>
+Reviewed-by: Rander Wang <rander.wang@intel.com>
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/boards/sof_ssp_amp.c              | 9 +++++++++
- sound/soc/intel/common/soc-acpi-intel-mtl-match.c | 6 ++++++
- 2 files changed, 15 insertions(+)
+ .../intel/common/soc-acpi-intel-mtl-match.c   | 66 +++++++++++++++++++
+ 1 file changed, 66 insertions(+)
 
-diff --git a/sound/soc/intel/boards/sof_ssp_amp.c b/sound/soc/intel/boards/sof_ssp_amp.c
-index e8447da24e59..22abcf9f7f74 100644
---- a/sound/soc/intel/boards/sof_ssp_amp.c
-+++ b/sound/soc/intel/boards/sof_ssp_amp.c
-@@ -512,6 +512,15 @@ static const struct platform_device_id board_ids[] = {
- 					SOF_NO_OF_HDMI_PLAYBACK(3) |
- 					SOF_HDMI_PLAYBACK_PRESENT),
- 	},
-+	{
-+		.name = "mtl_lt6911_hdmi_ssp",
-+		.driver_data = (kernel_ulong_t)(SOF_NO_OF_HDMI_CAPTURE_SSP(2) |
-+				SOF_HDMI_CAPTURE_1_SSP(0) |
-+				SOF_HDMI_CAPTURE_2_SSP(2) |
-+				SOF_SSP_HDMI_CAPTURE_PRESENT |
-+				SOF_NO_OF_HDMI_PLAYBACK(3) |
-+				SOF_HDMI_PLAYBACK_PRESENT),
-+	},
- 	{ }
- };
- MODULE_DEVICE_TABLE(platform, board_ids);
 diff --git a/sound/soc/intel/common/soc-acpi-intel-mtl-match.c b/sound/soc/intel/common/soc-acpi-intel-mtl-match.c
-index 5e8881bf0768..301b8142d554 100644
+index fbacabc93d6d..5e8881bf0768 100644
 --- a/sound/soc/intel/common/soc-acpi-intel-mtl-match.c
 +++ b/sound/soc/intel/common/soc-acpi-intel-mtl-match.c
-@@ -77,6 +77,12 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_mtl_machines[] = {
- 					SND_SOC_ACPI_TPLG_INTEL_SSP_MSB |
- 					SND_SOC_ACPI_TPLG_INTEL_DMIC_NUMBER,
- 	},
-+	/* place amp-only boards in the end of table */
-+	{
-+		.id = "INTC10B0",
-+		.drv_name = "mtl_lt6911_hdmi_ssp",
-+		.sof_tplg_filename = "sof-mtl-hdmi-ssp02.tplg",
-+	},
- 	{},
+@@ -158,6 +158,24 @@ static const struct snd_soc_acpi_adr_device rt1712_3_single_adr[] = {
+ 	}
  };
- EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_mtl_machines);
+ 
++static const struct snd_soc_acpi_adr_device rt713_0_single_adr[] = {
++	{
++		.adr = 0x000031025D071301ull,
++		.num_endpoints = 1,
++		.endpoints = &single_endpoint,
++		.name_prefix = "rt713"
++	}
++};
++
++static const struct snd_soc_acpi_adr_device rt1713_3_single_adr[] = {
++	{
++		.adr = 0x000331025D171301ull,
++		.num_endpoints = 1,
++		.endpoints = &single_endpoint,
++		.name_prefix = "rt713-dmic"
++	}
++};
++
+ static const struct snd_soc_acpi_adr_device mx8373_0_adr[] = {
+ 	{
+ 		.adr = 0x000023019F837300ull,
+@@ -200,6 +218,24 @@ static const struct snd_soc_acpi_adr_device rt1316_3_group1_adr[] = {
+ 	}
+ };
+ 
++static const struct snd_soc_acpi_adr_device rt1316_1_group2_adr[] = {
++	{
++		.adr = 0x000131025D131601ull,
++		.num_endpoints = 1,
++		.endpoints = &spk_l_endpoint,
++		.name_prefix = "rt1316-1"
++	}
++};
++
++static const struct snd_soc_acpi_adr_device rt1316_2_group2_adr[] = {
++	{
++		.adr = 0x000230025D131601ull,
++		.num_endpoints = 1,
++		.endpoints = &spk_r_endpoint,
++		.name_prefix = "rt1316-2"
++	}
++};
++
+ static const struct snd_soc_acpi_adr_device rt1318_1_group1_adr[] = {
+ 	{
+ 		.adr = 0x000130025D131801ull,
+@@ -356,6 +392,30 @@ static const struct snd_soc_acpi_link_adr mtl_sdw_rt1318_l12_rt714_l0[] = {
+ 	{}
+ };
+ 
++static const struct snd_soc_acpi_link_adr mtl_rt713_l0_rt1316_l12_rt1713_l3[] = {
++	{
++		.mask = BIT(0),
++		.num_adr = ARRAY_SIZE(rt713_0_single_adr),
++		.adr_d = rt713_0_single_adr,
++	},
++	{
++		.mask = BIT(1),
++		.num_adr = ARRAY_SIZE(rt1316_1_group2_adr),
++		.adr_d = rt1316_1_group2_adr,
++	},
++	{
++		.mask = BIT(2),
++		.num_adr = ARRAY_SIZE(rt1316_2_group2_adr),
++		.adr_d = rt1316_2_group2_adr,
++	},
++	{
++		.mask = BIT(3),
++		.num_adr = ARRAY_SIZE(rt1713_3_single_adr),
++		.adr_d = rt1713_3_single_adr,
++	},
++	{}
++};
++
+ static const struct snd_soc_acpi_adr_device mx8363_2_adr[] = {
+ 	{
+ 		.adr = 0x000230019F836300ull,
+@@ -435,6 +495,12 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_mtl_sdw_machines[] = {
+ 		.drv_name = "sof_sdw",
+ 		.sof_tplg_filename = "sof-mtl-rt715-rt711-rt1308-mono.tplg",
+ 	},
++	{
++		.link_mask = GENMASK(3, 0),
++		.links = mtl_rt713_l0_rt1316_l12_rt1713_l3,
++		.drv_name = "sof_sdw",
++		.sof_tplg_filename = "sof-mtl-rt713-l0-rt1316-l12-rt1713-l3.tplg",
++	},
+ 	{
+ 		.link_mask = BIT(3) | BIT(0),
+ 		.links = mtl_712_only,
 -- 
 2.39.2
 
