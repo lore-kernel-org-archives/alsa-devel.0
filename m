@@ -4,63 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7E521CDB46E
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Oct 2023 19:21:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7D840CDB47E
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Oct 2023 19:21:31 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9D761E80;
-	Thu, 12 Oct 2023 21:20:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9D761E80
+	by alsa0.perex.cz (Postfix) with ESMTPS id 85853DEC;
+	Thu, 12 Oct 2023 21:20:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 85853DEC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1697138477;
-	bh=sAHB7fmSUKevt1U+ojjUC0DYZuDwCCtdZ51toos2gaY=;
+	s=default; t=1697138489;
+	bh=BRnHlyoq7yAJKhSu9/5yVO9C4zmQi49Pg9h69jtLTV0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=sJx8BteOwHz7Ucry0ILEIMO4Z0hG6JIz0T6uxpXrN7KF89idI7CvW8VEBxonaNjDe
-	 qoJ0u57erpsghlKANh52hVGQuBFYaqeWfDgK2+K1Xas64IE6JSPeBBdMqLpd41hRh1
-	 Pyy97eKRGhm/FIgFnwl1UXUMK8QMR3u1t05appu4=
+	b=WBAjSYUoXoyfvqW46DlHZK3DBtFjpYq0nhk1RZyce1PjeZ97sFsuS9yT6ju9Fu8R4
+	 dO3eNtEHn0XAhdbQltpmfPPvjtf5CEruXAuCZ/2jDfdTy8p4kkrUyFti9+rOt1oTIo
+	 eWT1m4ekRjFLsnC2OKZgAUkiDHkm21PDslO0Erag=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9D2C2F8057A; Thu, 12 Oct 2023 21:19:25 +0200 (CEST)
+	id BCF33F80587; Thu, 12 Oct 2023 21:19:28 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0B151F8057B;
-	Thu, 12 Oct 2023 21:19:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4C90DF80587;
+	Thu, 12 Oct 2023 21:19:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CB311F80310; Thu, 12 Oct 2023 21:19:18 +0200 (CEST)
+	id DF62FF802BE; Thu, 12 Oct 2023 21:19:19 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D9791F8027B
-	for <alsa-devel@alsa-project.org>; Thu, 12 Oct 2023 21:19:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D9791F8027B
+	by alsa1.perex.cz (Postfix) with ESMTPS id A8405F8019B
+	for <alsa-devel@alsa-project.org>; Thu, 12 Oct 2023 21:19:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A8405F8019B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=c9pfFHSD
+ header.s=Intel header.b=Z1sK9QmL
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697138357; x=1728674357;
+  t=1697138356; x=1728674356;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=sAHB7fmSUKevt1U+ojjUC0DYZuDwCCtdZ51toos2gaY=;
-  b=c9pfFHSD3uXjiKIn4Hz+cB+gIQb1GkIL9kBTTDp+z1q1ckG1u/favRjQ
-   icxo4q2frPO6uYK5SesXq4QcP+ya66Hau5zvXyZscz44MYgyT+SnTmmGe
-   4f+shYHCUPFL35pNafoIkWDcZj33sg5SYTK8B+py76HAKyopGsHuJWfu0
-   xWGMEhLQT0C409R3CN1oVtx3jwokFwY1VW5z4skTUaUaIfZcBRHvzolRk
-   pzkcukBT0DBuP02WwxfzTkEVOBqJMrP9i9Mhbfo/OmDmw+s4U+qeGv+Kh
-   fm84x9RZun3y09IjoiKW2jskfrgQWIIHsz98bxsygDo6TRS5qLFE8Itex
+  bh=BRnHlyoq7yAJKhSu9/5yVO9C4zmQi49Pg9h69jtLTV0=;
+  b=Z1sK9QmL/du0dqHCOseRAOgTlIw69YYprQv5Nwv32K/it3tX1qvglEkP
+   qHtTzJG3jvMc9ZEJPA7anyrVhwwTlyhKPk/WCL5JcDDXRU2Esea3b7OsE
+   jN1SYGmgUKaXtMXVcxkbdRzjIL+2nRghUfuTJmh80FewNXuhShYBOGIhM
+   40BfMwU4uUTeJTNUy3TJKPMgyQhmJh1yjHlsxQjOGJsk/4gteJJrlW8NZ
+   BifeF/1rDlC604PuIANfo+AHwec+M7x/yvYUECo/xdNQvrzs3306iFA4s
+   qVCOS8hCXWkG6Qz3/xaqwtXx/Zen1o3lUxcneq2X+aQZfAiTMg6KG10Xs
    g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="383875368"
+X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="383875357"
 X-IronPort-AV: E=Sophos;i="6.03,219,1694761200";
-   d="scan'208";a="383875368"
+   d="scan'208";a="383875357"
 Received: from fmsmga006.fm.intel.com ([10.253.24.20])
   by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Oct 2023 12:19:01 -0700
+ 12 Oct 2023 12:19:00 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="1001628013"
+X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="1001628005"
 X-IronPort-AV: E=Sophos;i="6.03,219,1694761200";
-   d="scan'208";a="1001628013"
+   d="scan'208";a="1001628005"
 Received: from gchoudha-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.hsd1.md.comcast.net) ([10.212.114.241])
   by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
@@ -70,19 +70,19 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de,
 	broonie@kernel.org,
 	Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-	Seppo Ingalsuo <seppo.ingalsuo@linux.intel.com>,
-	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+	Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
 	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 3/4] ASoC: SOF: ipc4: Dump the notification payload
-Date: Thu, 12 Oct 2023 15:18:49 -0400
-Message-Id: <20231012191850.147140-4-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 2/4] ASoC: SOF: Intel: hda-dsp: Make sure that no irq handler
+ is pending before suspend
+Date: Thu, 12 Oct 2023 15:18:48 -0400
+Message-Id: <20231012191850.147140-3-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231012191850.147140-1-pierre-louis.bossart@linux.intel.com>
 References: <20231012191850.147140-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: TIUER3USCAI3LDT7JNDFAZRZATL74QCD
-X-Message-ID-Hash: TIUER3USCAI3LDT7JNDFAZRZATL74QCD
+Message-ID-Hash: Q7ONY7ZD7LUWC6FPV6ASUZSXEAY53CT5
+X-Message-ID-Hash: Q7ONY7ZD7LUWC6FPV6ASUZSXEAY53CT5
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -95,7 +95,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TIUER3USCAI3LDT7JNDFAZRZATL74QCD/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Q7ONY7ZD7LUWC6FPV6ASUZSXEAY53CT5/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -106,32 +106,43 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 
-Now that we have notifications with payload (kcontrol change
-notifications), it is time to add the payload dump on the rx path as well.
+In the existing IPC support, the reply to each IPC message is handled in
+an IRQ thread. The assumption is that the IRQ thread is scheduled without
+significant delays.
 
-Reviewed-by: Seppo Ingalsuo <seppo.ingalsuo@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+On an experimental (iow, buggy) kernel, the IRQ thread dealing with the
+reply to the last IPC message before powering-down the DSP can be delayed
+by several seconds. The IRQ thread will proceed with register accesses
+after the DSP is powered-down which results in a kernel crash.
+
+While the bug which causes the delay is not in the audio stack, we must
+handle such cases with defensive programming to avoid such crashes.
+
+Call synchronize_irq() before proceeding to power down the DSP to make
+sure that no irq thread is pending execution.
+
+Closes: https://github.com/thesofproject/linux/issues/4608
+Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/ipc4.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ sound/soc/sof/intel/hda-dsp.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/sound/soc/sof/ipc4.c b/sound/soc/sof/ipc4.c
-index 3f4d57dba972..8441f4ae4065 100644
---- a/sound/soc/sof/ipc4.c
-+++ b/sound/soc/sof/ipc4.c
-@@ -666,6 +666,10 @@ static void sof_ipc4_rx_msg(struct snd_sof_dev *sdev)
- 	sof_ipc4_log_header(sdev->dev, "ipc rx done ", ipc4_msg, true);
+diff --git a/sound/soc/sof/intel/hda-dsp.c b/sound/soc/sof/intel/hda-dsp.c
+index 44f39a520bb3..2445ae7f6b2e 100644
+--- a/sound/soc/sof/intel/hda-dsp.c
++++ b/sound/soc/sof/intel/hda-dsp.c
+@@ -699,6 +699,9 @@ static int hda_suspend(struct snd_sof_dev *sdev, bool runtime_suspend)
+ 	if (ret < 0)
+ 		return ret;
  
- 	if (data_size) {
-+		if (sof_debug_check_flag(SOF_DBG_DUMP_IPC_MESSAGE_PAYLOAD))
-+			sof_ipc4_dump_payload(sdev, ipc4_msg->data_ptr,
-+					      ipc4_msg->data_size);
++	/* make sure that no irq handler is pending before shutdown */
++	synchronize_irq(sdev->ipc_irq);
 +
- 		kfree(ipc4_msg->data_ptr);
- 		ipc4_msg->data_ptr = NULL;
- 		ipc4_msg->data_size = 0;
+ 	hda_codec_jack_wake_enable(sdev, runtime_suspend);
+ 
+ 	/* power down all hda links */
 -- 
 2.39.2
 
