@@ -4,84 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B5582CDB47E
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Oct 2023 19:11:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 41E56CDB46E
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Oct 2023 19:11:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A1AD1847;
-	Thu, 12 Oct 2023 21:10:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A1AD1847
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5325183B;
+	Thu, 12 Oct 2023 21:10:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5325183B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1697137879;
-	bh=J7jDGFClffbd+qauO6FlXUGv2hXLVhl/UXaH8Fezvb4=;
+	s=default; t=1697137901;
+	bh=U4KvNWDD4j/cATO2R9hRQEqu1e6gpnMn76GJaNJP2qM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=RQlmlyEpz5CcbrWHNq4TL3NwBekXJTkjn7eHqHaRwACRhtUKHpHzuZTKSkEdMHeMy
-	 qD8WeAE4lLcKWm0dqLx0aAWKJYM1TeJLA+7k04uNupL5a/1W3qrodavh/kpxalD42U
-	 CBzxYpgeXOOo/gbUrdL+3P268JUZ3OHZtOjCaqCI=
+	b=ShC5FuxriRPD9EQWwnfftmuHrFhy0LntZ4awdF5HRO97UVEGhbCGHKUkcNYsn/CeJ
+	 6s+Y6tz29srHsdHDxIZc29WRZ1FsRCT1mCvfws+8fVgDtBQBHdEb5CC7w5fe9RUTnA
+	 Kzb128PH2iWymO5LOznh6pxcv+DByUVHyH8c9mR4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A4E83F805B6; Thu, 12 Oct 2023 21:09:16 +0200 (CEST)
+	id F35D8F805CA; Thu, 12 Oct 2023 21:09:22 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id CD251F805B3;
-	Thu, 12 Oct 2023 21:09:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3E969F805C6;
+	Thu, 12 Oct 2023 21:09:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0436FF8057D; Thu, 12 Oct 2023 21:09:08 +0200 (CEST)
+	id 305DCF805C6; Thu, 12 Oct 2023 21:09:17 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 56C5FF802BE
-	for <alsa-devel@alsa-project.org>; Thu, 12 Oct 2023 21:08:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 56C5FF802BE
+	by alsa1.perex.cz (Postfix) with ESMTPS id 518E7F80536
+	for <alsa-devel@alsa-project.org>; Thu, 12 Oct 2023 21:09:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 518E7F80536
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=Ygtpvir1
+ header.s=Intel header.b=GfZNQmGe
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697137739; x=1728673739;
+  t=1697137741; x=1728673741;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=J7jDGFClffbd+qauO6FlXUGv2hXLVhl/UXaH8Fezvb4=;
-  b=Ygtpvir1QISBnsdVJ+VG6dG2iwl/FA8KOI271oySxsO+frOXmppEs2Nn
-   CC0wiIb0actHCngGClX945elinCEQFqm7amAJCOwJWNUx6Z6zN0TNUE47
-   kc1dgO9ubMwHwPLPEjJcoyDpgnskJtKMGqH5sM+/dCTb7wwhILlFWm/KF
-   jGIqgZI5Q74jgk11RA8pbQqeR5Yd8BJGQGk5P2Zv4TKZPkaI6c14rpgOe
-   hMok/Ibst1Lj2YBxVa172A4yYhEkIF09sb7FR6uhrB/IVocovUxeDrQfL
-   j+lAD8jSvf8qAIp2h19c7889pr21bMOxDXECVDB2NzKtafKKUV7rcQzWX
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="416060176"
+  bh=U4KvNWDD4j/cATO2R9hRQEqu1e6gpnMn76GJaNJP2qM=;
+  b=GfZNQmGeY1bSEh3tcv7QlSmxh8IJbiCgn8W3muGBIR2BOLu8I8lYgqU4
+   cFcobZC60J13nFh0eor2oX2vZhXKrK+/HacQQp5Twffb8WF3NApA8Ng8+
+   15a7I069+avJXiKVDCCu/XIeIBHTP6ILQ5NAunV/fUCu8h1ZT6mzJDbph
+   a0iQZfFtFDMxejWwDSAhXyRFrOZL36V+p4Qyy+92neT16FdrI8VLMOkTS
+   cI9CCsV9kEsKGD18wKNUtVEOcMrc271TvY2hfvDjpiDMqVK+gwxsnI24B
+   d12culnmq5eBbbYoZP9H/TBe/cAp7NSZuksGkSYBIZWlUgaSXq+u4cs8F
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="416060190"
 X-IronPort-AV: E=Sophos;i="6.03,219,1694761200";
-   d="scan'208";a="416060176"
+   d="scan'208";a="416060190"
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
   by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Oct 2023 12:08:40 -0700
+ 12 Oct 2023 12:08:43 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="845108057"
+X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="845108068"
 X-IronPort-AV: E=Sophos;i="6.03,219,1694761200";
-   d="scan'208";a="845108057"
+   d="scan'208";a="845108068"
 Received: from gchoudha-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.hsd1.md.comcast.net) ([10.212.114.241])
   by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Oct 2023 12:08:39 -0700
+ 12 Oct 2023 12:08:42 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de,
 	broonie@kernel.org,
+	Brent Lu <brent.lu@intel.com>,
 	Bard Liao <yung-chuan.liao@linux.intel.com>,
 	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 04/23] ASoC: Intel: sof_sdw_rt_sdca_jack_common: add rt713
- support
-Date: Thu, 12 Oct 2023 15:08:07 -0400
-Message-Id: <20231012190826.142619-5-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 07/23] ASoC: Intel: sof_cs42l42: remove hdac-hdmi support
+Date: Thu, 12 Oct 2023 15:08:10 -0400
+Message-Id: <20231012190826.142619-8-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231012190826.142619-1-pierre-louis.bossart@linux.intel.com>
 References: <20231012190826.142619-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: W5E2YZBMNOIQ4BVL2NV5M25X7OMLJJNW
-X-Message-ID-Hash: W5E2YZBMNOIQ4BVL2NV5M25X7OMLJJNW
+Message-ID-Hash: RT3Z2MRZTETDWR7QMIVOEPPYNYNFJZ7A
+X-Message-ID-Hash: RT3Z2MRZTETDWR7QMIVOEPPYNYNFJZ7A
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -94,7 +94,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/W5E2YZBMNOIQ4BVL2NV5M25X7OMLJJNW/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RT3Z2MRZTETDWR7QMIVOEPPYNYNFJZ7A/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -103,43 +103,152 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Bard Liao <yung-chuan.liao@linux.intel.com>
+From: Brent Lu <brent.lu@intel.com>
 
-Adding rt713 support to sof_sdw_rt_sdca_jack_common.c.
+Remove hdac-hdmi support code since we are now using
+snd-hda-codec-hdmi codec driver for hdmi.
 
-Fixes: fbaaf80d8cf6 ("ASoC: Intel: sof_sdw: add rt713 support")
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Signed-off-by: Brent Lu <brent.lu@intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/boards/sof_sdw_rt_sdca_jack_common.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ sound/soc/intel/boards/Kconfig       |  1 -
+ sound/soc/intel/boards/sof_cs42l42.c | 45 ++++------------------------
+ 2 files changed, 5 insertions(+), 41 deletions(-)
 
-diff --git a/sound/soc/intel/boards/sof_sdw_rt_sdca_jack_common.c b/sound/soc/intel/boards/sof_sdw_rt_sdca_jack_common.c
-index ef62ac5fdf55..65bbcee88d6d 100644
---- a/sound/soc/intel/boards/sof_sdw_rt_sdca_jack_common.c
-+++ b/sound/soc/intel/boards/sof_sdw_rt_sdca_jack_common.c
-@@ -58,6 +58,11 @@ static const struct snd_soc_dapm_route rt712_sdca_map[] = {
- 	{ "rt712 MIC2", NULL, "Headset Mic" },
+diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
+index fa3252b6f1bf..d130244c8705 100644
+--- a/sound/soc/intel/boards/Kconfig
++++ b/sound/soc/intel/boards/Kconfig
+@@ -514,7 +514,6 @@ config SND_SOC_INTEL_SOF_CS42L42_MACH
+ 	select SND_SOC_CS42L42
+ 	select SND_SOC_MAX98357A
+ 	select SND_SOC_DMIC
+-	select SND_SOC_HDAC_HDMI
+ 	select SND_SOC_INTEL_HDA_DSP_COMMON
+ 	select SND_SOC_INTEL_SOF_MAXIM_COMMON
+ 	select SND_SOC_INTEL_SOF_SSP_COMMON
+diff --git a/sound/soc/intel/boards/sof_cs42l42.c b/sound/soc/intel/boards/sof_cs42l42.c
+index 56582e561fb7..eeae65ac06c2 100644
+--- a/sound/soc/intel/boards/sof_cs42l42.c
++++ b/sound/soc/intel/boards/sof_cs42l42.c
+@@ -19,14 +19,11 @@
+ #include <sound/sof.h>
+ #include <sound/soc-acpi.h>
+ #include <dt-bindings/sound/cs42l42.h>
+-#include "../../codecs/hdac_hdmi.h"
+ #include "../common/soc-intel-quirks.h"
+ #include "hda_dsp_common.h"
+ #include "sof_maxim_common.h"
+ #include "sof_ssp_common.h"
+ 
+-#define NAME_SIZE 32
+-
+ #define SOF_CS42L42_SSP_CODEC(quirk)		((quirk) & GENMASK(2, 0))
+ #define SOF_CS42L42_SSP_CODEC_MASK		(GENMASK(2, 0))
+ #define SOF_CS42L42_SSP_AMP_SHIFT		4
+@@ -73,14 +70,11 @@ static unsigned long sof_cs42l42_quirk = SOF_CS42L42_SSP_CODEC(2);
+ struct sof_hdmi_pcm {
+ 	struct list_head head;
+ 	struct snd_soc_dai *codec_dai;
+-	struct snd_soc_jack hdmi_jack;
+-	int device;
  };
  
-+static const struct snd_soc_dapm_route rt713_sdca_map[] = {
-+	{ "Headphone", NULL, "rt713 HP" },
-+	{ "rt713 MIC2", NULL, "Headset Mic" },
-+};
-+
- static const struct snd_kcontrol_new rt_sdca_jack_controls[] = {
- 	SOC_DAPM_PIN_SWITCH("Headphone"),
- 	SOC_DAPM_PIN_SWITCH("Headset Mic"),
-@@ -109,6 +114,9 @@ static int rt_sdca_jack_rtd_init(struct snd_soc_pcm_runtime *rtd)
- 	} else if (strstr(component->name_prefix, "rt712")) {
- 		ret = snd_soc_dapm_add_routes(&card->dapm, rt712_sdca_map,
- 					      ARRAY_SIZE(rt712_sdca_map));
-+	} else if (strstr(component->name_prefix, "rt713")) {
-+		ret = snd_soc_dapm_add_routes(&card->dapm, rt713_sdca_map,
-+					      ARRAY_SIZE(rt713_sdca_map));
- 	} else {
- 		dev_err(card->dev, "%s is not supported\n", component->name_prefix);
+ struct sof_card_private {
+ 	struct snd_soc_jack headset_jack;
+ 	struct list_head hdmi_pcm_list;
+-	bool common_hdmi_codec_drv;
+ 	enum sof_ssp_codec codec_type;
+ 	enum sof_ssp_codec amp_type;
+ };
+@@ -95,8 +89,6 @@ static int sof_hdmi_init(struct snd_soc_pcm_runtime *rtd)
+ 	if (!pcm)
+ 		return -ENOMEM;
+ 
+-	/* dai_link id is 1:1 mapped to the PCM device */
+-	pcm->device = rtd->dai_link->id;
+ 	pcm->codec_dai = dai;
+ 
+ 	list_add_tail(&pcm->head, &ctx->hdmi_pcm_list);
+@@ -186,37 +178,14 @@ static int sof_card_late_probe(struct snd_soc_card *card)
+ {
+ 	struct sof_card_private *ctx = snd_soc_card_get_drvdata(card);
+ 	struct snd_soc_component *component = NULL;
+-	char jack_name[NAME_SIZE];
+ 	struct sof_hdmi_pcm *pcm;
+-	int err;
+ 
+ 	if (list_empty(&ctx->hdmi_pcm_list))
  		return -EINVAL;
+ 
+-	if (ctx->common_hdmi_codec_drv) {
+-		pcm = list_first_entry(&ctx->hdmi_pcm_list, struct sof_hdmi_pcm,
+-				       head);
+-		component = pcm->codec_dai->component;
+-		return hda_dsp_hdmi_build_controls(card, component);
+-	}
+-
+-	list_for_each_entry(pcm, &ctx->hdmi_pcm_list, head) {
+-		component = pcm->codec_dai->component;
+-		snprintf(jack_name, sizeof(jack_name),
+-			 "HDMI/DP, pcm=%d Jack", pcm->device);
+-		err = snd_soc_card_jack_new(card, jack_name,
+-					    SND_JACK_AVOUT, &pcm->hdmi_jack);
+-
+-		if (err)
+-			return err;
+-
+-		err = hdac_hdmi_jack_init(pcm->codec_dai, pcm->device,
+-					  &pcm->hdmi_jack);
+-		if (err < 0)
+-			return err;
+-	}
+-
+-	return hdac_hdmi_jack_port_init(component, &card->dapm);
++	pcm = list_first_entry(&ctx->hdmi_pcm_list, struct sof_hdmi_pcm, head);
++	component = pcm->codec_dai->component;
++	return hda_dsp_hdmi_build_controls(card, component);
+ }
+ 
+ static const struct snd_kcontrol_new sof_controls[] = {
+@@ -478,7 +447,7 @@ static int create_hdmi_dai_links(struct device *dev,
+ 		links[*id].num_codecs = 1;
+ 		links[*id].platforms = platform_component;
+ 		links[*id].num_platforms = ARRAY_SIZE(platform_component);
+-		links[*id].init = sof_hdmi_init;
++		links[*id].init = (i == 1) ? sof_hdmi_init : NULL;
+ 		links[*id].dpcm_playback = 1;
+ 		links[*id].no_pcm = 1;
+ 
+@@ -611,8 +580,8 @@ sof_card_dai_links_create(struct device *dev, enum sof_ssp_codec amp_type,
+ 
+ static int sof_audio_probe(struct platform_device *pdev)
+ {
++	struct snd_soc_acpi_mach *mach = pdev->dev.platform_data;
+ 	struct snd_soc_dai_link *dai_links;
+-	struct snd_soc_acpi_mach *mach;
+ 	struct sof_card_private *ctx;
+ 	int dmic_be_num, hdmi_num;
+ 	int ret, ssp_bt, ssp_amp, ssp_codec;
+@@ -624,8 +593,6 @@ static int sof_audio_probe(struct platform_device *pdev)
+ 	if (pdev->id_entry && pdev->id_entry->driver_data)
+ 		sof_cs42l42_quirk = (unsigned long)pdev->id_entry->driver_data;
+ 
+-	mach = pdev->dev.platform_data;
+-
+ 	ctx->codec_type = sof_ssp_detect_codec_type(&pdev->dev);
+ 	ctx->amp_type = sof_ssp_detect_amp_type(&pdev->dev);
+ 
+@@ -677,8 +644,6 @@ static int sof_audio_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		return ret;
+ 
+-	ctx->common_hdmi_codec_drv = mach->mach_params.common_hdmi_codec_drv;
+-
+ 	snd_soc_card_set_drvdata(&sof_audio_card_cs42l42, ctx);
+ 
+ 	return devm_snd_soc_register_card(&pdev->dev,
 -- 
 2.39.2
 
