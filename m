@@ -4,75 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0EB39CDB47E
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Oct 2023 17:44:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9543FCDB46E
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Oct 2023 17:44:44 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2FAF8839;
-	Thu, 12 Oct 2023 19:43:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2FAF8839
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8EB7C868;
+	Thu, 12 Oct 2023 19:43:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8EB7C868
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1697132646;
-	bh=Fp8zFin+F4gc5rMyPLTBEeTrhsHn8hjr1pRxpfiAZ1w=;
+	s=default; t=1697132677;
+	bh=3Rqje43f72angmkB/9A+IImplnlSOfXYr0ju7Rq6x6A=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=ffuyd+GRRlX22HXcC+PYtBkh0VajcQ0I96eRnufj6LbJPgnfCLSNAUt7XLMH9l59X
-	 ozCUrg9l2/Rq93Th2VS93WGVgGXnLGq2lJsXgsRW07q73KhHS6XQ2LYfniaUDa0P9V
-	 bbd2lmZmdgwV9w6YRtJI884meAdMJeuSJaCiLqo0=
+	b=Qe/KqL+vgjbosWK3Fzlp2R4xUOirKKlNunglKYsJAu9jSM6AWDDcVQAjEHfLCLo90
+	 MF/YF5itq/3dXD1h9UI2mmtRjOISztXVr0kOXbqrnvKw6RUHIMA3I+Qjt8fFvtzUf6
+	 lZ8oLEWycCtNDpvot++ogDhPJRSCPLGoujzLsngw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BEA4CF80553; Thu, 12 Oct 2023 19:42:55 +0200 (CEST)
+	id 34B0CF80568; Thu, 12 Oct 2023 19:42:56 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 26ADDF802BE;
-	Thu, 12 Oct 2023 19:42:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 90215F8055B;
+	Thu, 12 Oct 2023 19:42:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 25B4FF802E8; Thu, 12 Oct 2023 19:42:50 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+	id 3E5D4F802BE; Thu, 12 Oct 2023 19:42:52 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id F3388F8019B
-	for <alsa-devel@alsa-project.org>; Thu, 12 Oct 2023 19:42:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F3388F8019B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 84B54F80130
+	for <alsa-devel@alsa-project.org>; Thu, 12 Oct 2023 19:42:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 84B54F80130
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=Ws+CZfyu
+ header.s=k20201202 header.b=b6fHFi3i
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by ams.source.kernel.org (Postfix) with ESMTP id DD427B825B6;
-	Thu, 12 Oct 2023 17:42:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 21DBFC433C8;
-	Thu, 12 Oct 2023 17:42:38 +0000 (UTC)
+	by ams.source.kernel.org (Postfix) with ESMTP id 4F20DB825B8;
+	Thu, 12 Oct 2023 17:42:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06485C433C7;
+	Thu, 12 Oct 2023 17:42:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1697132560;
-	bh=Fp8zFin+F4gc5rMyPLTBEeTrhsHn8hjr1pRxpfiAZ1w=;
+	s=k20201202; t=1697132558;
+	bh=3Rqje43f72angmkB/9A+IImplnlSOfXYr0ju7Rq6x6A=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=Ws+CZfyuzASVbWlCdJcvUFdX5ykTlVsJKtbDlMZ3bxaMTMjrgwNk7TL5phCy+jhmy
-	 +B5BW+0YCZdaqjeJgmAxeZgBHY4QSokViNnSYReDLIu38TSHWUNWPFIdOj1IrDfRif
-	 vR9vBDYx4GIajWZfrDGiet96KglnXWGdONDzTghJRXdlvIf3pPYAbNjDTMBsX4chO1
-	 mNtF8SuTzfn/hEXEJRQQiYjQBGhokxXklCEim9VG8BDyRDYEqpoUVX65GSNJMP7vow
-	 yhll5O43N9beXqQ6ZfwkCKr3r7GEMY2V6wv1oNbOuaQ10CnjEvdWcf/Yta1QR/i8ni
-	 o3DSx6C32oRsQ==
+	b=b6fHFi3iY/oWT/KPevXnxEjuGPA8waGRRJYOLr45VcflxJfoMzMaTsANkJgcLxUzJ
+	 62lbBJ+rWh1H7G+0VlOVqGMZWXowgBx1jqC4dfkk1rdl1nX5jfH9IjaiWJm18UCast
+	 JiIr6k/ihu8WpEYusBGKDgKJ0HdyGJGNrF4d1jg/fuURQg2gLQGD35390RxUEjRrXs
+	 tkk6EmsC77g/25L7V1X7vIrzVPILbH3gloSqdMEzB5IFT7hDqv77MVmKc+2bKrkMEw
+	 tByn5g00wdvCJ98JOMsQVtKboa/Lq3Fg/aZjIpW61RjHOjTBWZPUbcyvhdro4IGbFy
+	 fFoIq5Hwu1jfA==
 From: Mark Brown <broonie@kernel.org>
-To: =?utf-8?q?Amadeusz_S=C5=82awi=C5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
- Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
- alsa-devel@alsa-project.org
-In-Reply-To: <20231012083514.492626-1-amadeuszx.slawinski@linux.intel.com>
-References: <20231012083514.492626-1-amadeuszx.slawinski@linux.intel.com>
-Subject: Re: [PATCH v2 00/16] Harden SSP boards and add TDM support
-Message-Id: <169713255885.343479.16650110902074371271.b4-ty@kernel.org>
-Date: Thu, 12 Oct 2023 18:42:38 +0100
+To: robh@kernel.org, Nathan Chancellor <nathan@kernel.org>
+Cc: lgirdwood@gmail.com, thierry.reding@gmail.com, jonathanh@nvidia.com,
+ ndesaulniers@google.com, trix@redhat.com, alsa-devel@alsa-project.org,
+ linux-tegra@vger.kernel.org, llvm@lists.linux.dev, patches@lists.linux.dev
+In-Reply-To: 
+ <20231011-asoc-tegra-fix-uninit-soc_data-v1-1-0ef0ab44cf48@kernel.org>
+References: 
+ <20231011-asoc-tegra-fix-uninit-soc_data-v1-1-0ef0ab44cf48@kernel.org>
+Subject: Re: [PATCH] ASoC: tegra: Fix -Wuninitialized in
+ tegra210_amx_platform_probe()
+Message-Id: <169713255573.343479.16669481673546969427.b4-ty@kernel.org>
+Date: Thu, 12 Oct 2023 18:42:35 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-0438c
-Message-ID-Hash: 45NL5F2VNESTLCPNDYIPMPU4XWOC2EC6
-X-Message-ID-Hash: 45NL5F2VNESTLCPNDYIPMPU4XWOC2EC6
+Message-ID-Hash: 3Y342JYRFXLK2LXZSX3H76XYWAKPX2EW
+X-Message-ID-Hash: 3Y342JYRFXLK2LXZSX3H76XYWAKPX2EW
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -85,7 +86,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/45NL5F2VNESTLCPNDYIPMPU4XWOC2EC6/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3Y342JYRFXLK2LXZSX3H76XYWAKPX2EW/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -94,19 +95,17 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, 12 Oct 2023 10:34:58 +0200, Amadeusz Sławiński wrote:
-> In quite a few places in code there are checks for number of SSPs
-> present on system, to reduce maintenance burden introduce helper
-> functions allowing to get SSP and TDM from machine board configuration.
+On Wed, 11 Oct 2023 13:21:51 -0700, Nathan Chancellor wrote:
+> Clang warns (or errors with CONFIG_WERROR=y):
 > 
-> Current mechanism replaces "%d" present in some routes and widget names
-> with SSP number. However there are also configurations which make use of
-> of TDM number, in which case expected behavior would be to have string
-> in form of SSP:TDM - see implementation of avs_i2s_platform_register()
-> in sound/soc/intel/avs/pcm.c. Implement custom function, which parses
-> string and make use of it when parsing topology. While at it make sure
-> that we generate dynamic names only if there is no multiple SSPs or TDMs
-> defined.
+>   sound/soc/tegra/tegra210_amx.c:553:10: error: variable 'soc_data' is uninitialized when used here [-Werror,-Wuninitialized]
+>     553 |                                             soc_data->regmap_conf);
+>         |                                             ^~~~~~~~
+> 
+> A refactoring removed the initialization of this variable but its use
+> was not updated. Use the soc_data value in the amx variable to resolve
+> the warning and remove the soc_data variable, as it is now entirely
+> unused.
 > 
 > [...]
 
@@ -116,38 +115,8 @@ Applied to
 
 Thanks!
 
-[01/16] ASoC: Intel: avs: Only create SSP%d snd_soc_dai_driver when requested
-        commit: 393648ce731b087f5a685044c9e41afb815421f7
-[02/16] ASoC: Intel: avs: Introduce helper functions for SSP and TDM handling
-        commit: 7a6debe0478596ac892ecf3cc336aacf09a9e4d8
-[03/16] ASoC: Intel: avs: Improve topology parsing of dynamic strings
-        commit: e6d50e474e45862096932edc31932fbbd5e8f1c7
-[04/16] ASoC: Intel: avs: i2s_test: Validate machine board configuration
-        commit: d3decc196afdce9456442e2bdc9033fd5d2d00b3
-[05/16] ASoC: Intel: avs: rt274: Validate machine board configuration
-        commit: b124d7cc6f3c08e5ae084e446e6ceff6c881c087
-[06/16] ASoC: Intel: avs: rt5682: Validate machine board configuration
-        commit: 2172c5b90d80aedc7cbe571e353ae45040e03a3b
-[07/16] ASoC: Intel: avs: max98357a: Validate machine board configuration
-        commit: 863e3f18d08bae9ffc70306e251f75bdee5e0674
-[08/16] ASoC: Intel: avs: rt298: Validate machine board configuration
-        commit: 060c0fd1afaec1d553fdd123ddd47368bd4b3a81
-[09/16] ASoC: Intel: avs: da7219: Validate machine board configuration
-        commit: fc332ea1176d72502e81a3e9d4ea3bce05e77398
-[10/16] ASoC: Intel: avs: es8336: Validate machine board configuration
-        commit: 8d5fed3312ebaa83338cf42746b29a01b9d3d13e
-[11/16] ASoC: Intel: avs: max98373: Validate machine board configuration
-        commit: a1ec836b17f7dea35f6b4b3a7c2ad4306da804c9
-[12/16] ASoC: Intel: avs: max98927: Validate machine board configuration
-        commit: ef91ae9e682c85e57861234db7d5ad9d071b889b
-[13/16] ASoC: Intel: avs: nau8825: Validate machine board configuration
-        commit: 70c101917aa1efa52a89dae5d5deee2a0c74de07
-[14/16] ASoC: Intel: avs: rt286: Validate machine board configuration
-        commit: cc7ea744970176134d48cc6e004ebe7c9a0bb3da
-[15/16] ASoC: Intel: avs: rt5663: Validate machine board configuration
-        commit: 797611b5ce62f12a2c0812c0e4e3a2fb6ee9fb47
-[16/16] ASoC: Intel: avs: ssm4567: Validate machine board configuration
-        commit: 5e07eb3ab981c5752c0e5ac324fbd166a12003ee
+[1/1] ASoC: tegra: Fix -Wuninitialized in tegra210_amx_platform_probe()
+      commit: 41cb1126bed152f7679417834ad7ea39f2252dfb
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
