@@ -4,77 +4,108 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9543FCDB46E
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Oct 2023 17:44:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 06256CDB46E
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Oct 2023 18:06:34 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8EB7C868;
-	Thu, 12 Oct 2023 19:43:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8EB7C868
+	by alsa0.perex.cz (Postfix) with ESMTPS id F05EC826;
+	Thu, 12 Oct 2023 20:05:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F05EC826
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1697132677;
-	bh=3Rqje43f72angmkB/9A+IImplnlSOfXYr0ju7Rq6x6A=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1697133992;
+	bh=7KsOpJq0UTg4bRkoCNsGsVXSkD9nVg1SYf7bxbhBtWg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Qe/KqL+vgjbosWK3Fzlp2R4xUOirKKlNunglKYsJAu9jSM6AWDDcVQAjEHfLCLo90
-	 MF/YF5itq/3dXD1h9UI2mmtRjOISztXVr0kOXbqrnvKw6RUHIMA3I+Qjt8fFvtzUf6
-	 lZ8oLEWycCtNDpvot++ogDhPJRSCPLGoujzLsngw=
+	b=Ho9Vo562Lab1Buh6vw86fafVutgJZNC+wmPuGTZegexoJ29rwVjyTTKsgC7PVjM+8
+	 vECXWtpNKWTaPPKx9R46ZlJuqAybBr0N4Vy65h03ANqE7dzZvUevjk7V8Av2z1Iam1
+	 CnGXPLCMb1Qb7fRdov+DKCFh5a9FDTaXxNbMJ5Bs=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 34B0CF80568; Thu, 12 Oct 2023 19:42:56 +0200 (CEST)
+	id C79FEF80553; Thu, 12 Oct 2023 20:05:12 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 90215F8055B;
-	Thu, 12 Oct 2023 19:42:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 89B0FF802BE;
+	Thu, 12 Oct 2023 20:05:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3E5D4F802BE; Thu, 12 Oct 2023 19:42:52 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	id 79D92F802BE; Thu, 12 Oct 2023 20:05:08 +0200 (CEST)
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com
+ [IPv6:2a00:1450:4864:20::534])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 84B54F80130
-	for <alsa-devel@alsa-project.org>; Thu, 12 Oct 2023 19:42:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 84B54F80130
+	by alsa1.perex.cz (Postfix) with ESMTPS id E250EF8015B
+	for <alsa-devel@alsa-project.org>; Thu, 12 Oct 2023 20:05:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E250EF8015B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=b6fHFi3i
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by ams.source.kernel.org (Postfix) with ESMTP id 4F20DB825B8;
-	Thu, 12 Oct 2023 17:42:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06485C433C7;
-	Thu, 12 Oct 2023 17:42:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1697132558;
-	bh=3Rqje43f72angmkB/9A+IImplnlSOfXYr0ju7Rq6x6A=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=b6fHFi3iY/oWT/KPevXnxEjuGPA8waGRRJYOLr45VcflxJfoMzMaTsANkJgcLxUzJ
-	 62lbBJ+rWh1H7G+0VlOVqGMZWXowgBx1jqC4dfkk1rdl1nX5jfH9IjaiWJm18UCast
-	 JiIr6k/ihu8WpEYusBGKDgKJ0HdyGJGNrF4d1jg/fuURQg2gLQGD35390RxUEjRrXs
-	 tkk6EmsC77g/25L7V1X7vIrzVPILbH3gloSqdMEzB5IFT7hDqv77MVmKc+2bKrkMEw
-	 tByn5g00wdvCJ98JOMsQVtKboa/Lq3Fg/aZjIpW61RjHOjTBWZPUbcyvhdro4IGbFy
-	 fFoIq5Hwu1jfA==
-From: Mark Brown <broonie@kernel.org>
-To: robh@kernel.org, Nathan Chancellor <nathan@kernel.org>
-Cc: lgirdwood@gmail.com, thierry.reding@gmail.com, jonathanh@nvidia.com,
- ndesaulniers@google.com, trix@redhat.com, alsa-devel@alsa-project.org,
- linux-tegra@vger.kernel.org, llvm@lists.linux.dev, patches@lists.linux.dev
-In-Reply-To: 
- <20231011-asoc-tegra-fix-uninit-soc_data-v1-1-0ef0ab44cf48@kernel.org>
-References: 
- <20231011-asoc-tegra-fix-uninit-soc_data-v1-1-0ef0ab44cf48@kernel.org>
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20230601 header.b=Nz18Y4lW
+Received: by mail-ed1-x534.google.com with SMTP id
+ 4fb4d7f45d1cf-53e08e439c7so1809607a12.0
+        for <alsa-devel@alsa-project.org>;
+ Thu, 12 Oct 2023 11:05:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697133903; x=1697738703;
+ darn=alsa-project.org;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QfIb1D07nfI+0Ch1761SwKK3aO/nbsGIC751epSoaTc=;
+        b=Nz18Y4lWR1JAgiKCAHNv90ZvZCi/wEdaCIjLwHHml8DKr91NemODxtwhb8jq6lnDj/
+         EtDuciBlvdJ2HyiA4qJqg3XkNhtbVCas1YujLAnOEbofT9t7z/RA91BK2p+9qBNVR0DQ
+         OO7xgLnrcTC5ta3if19+LNvs9hfWrk0PwCUv6QL9INkhbOmDszm019UMVGniP4W9frRK
+         g7NMnOxN13UABTr8XjyOV9dCT11kJhWFvB9z8xhZJfxF6FHw9a44pwuLklxHLvikf2+1
+         8cXdOn/4wCSH3oU3aFMRiHc8/5aRzkTatptQ+/RqVnRpDUzbXCRl8J2vzT8MnegppNYD
+         /cFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697133903; x=1697738703;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=QfIb1D07nfI+0Ch1761SwKK3aO/nbsGIC751epSoaTc=;
+        b=Km3yDrdfK69H9MkRYu1PXRa21vgIKA2ATmuBddb5GSq8vAKfwdgzcmVeAcSbfGsr6p
+         aeHxZ/eHO49egs4Xg4l8Sa45i4y1Khx2OGZWDRljVAMocgIlceVWt3Ydg1OY+ky9MoPG
+         qe2SReu7HXeqAGHXkLxGthNUh7SySaZNMvk4d/ggx2wqaUY+EbhwKWxuyit4l8mud9Cv
+         4D/xbEcqf3taDz627UKugtoebSP7yOGNVKYmgLwQC8sTm+Kh9t/lSa/vI6rAJfU5dzxD
+         q81J+SlR7ZFhHtaqFIrtNYIv71+ddU7aBVAleOb4iy4YeB9ONSmfxCh6HonOMp7H0bNb
+         w4uA==
+X-Gm-Message-State: AOJu0YxMzwP+KiZovKHUuovlyFL8EuviuRvOQuJ465l37+kkqf3k8tuD
+	d951Mxekxrn9rWX6qbtmSaiVE6hV5fY=
+X-Google-Smtp-Source: 
+ AGHT+IFdStcd3c2GGinYpRXye7AwYjUTLBoOWruKg6//W80bNpLA3+vpu34T9qw3GrF5BXwkZ696Ig==
+X-Received: by 2002:a17:906:310b:b0:9ae:5765:c134 with SMTP id
+ 11-20020a170906310b00b009ae5765c134mr22622471ejx.15.1697133902720;
+        Thu, 12 Oct 2023 11:05:02 -0700 (PDT)
+Received: from orome.fritz.box
+ (p200300e41f3f4900f22f74fffe1f3a53.dip0.t-ipconnect.de.
+ [2003:e4:1f3f:4900:f22f:74ff:fe1f:3a53])
+        by smtp.gmail.com with ESMTPSA id
+ a24-20020a170906685800b009828e26e519sm11289137ejs.122.2023.10.12.11.05.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Oct 2023 11:05:02 -0700 (PDT)
+Date: Thu, 12 Oct 2023 20:05:00 +0200
+From: Thierry Reding <thierry.reding@gmail.com>
+To: Nathan Chancellor <nathan@kernel.org>
+Cc: broonie@kernel.org, robh@kernel.org, lgirdwood@gmail.com,
+	jonathanh@nvidia.com, ndesaulniers@google.com, trix@redhat.com,
+	alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org,
+	llvm@lists.linux.dev, patches@lists.linux.dev
 Subject: Re: [PATCH] ASoC: tegra: Fix -Wuninitialized in
  tegra210_amx_platform_probe()
-Message-Id: <169713255573.343479.16669481673546969427.b4-ty@kernel.org>
-Date: Thu, 12 Oct 2023 18:42:35 +0100
+Message-ID: <ZSg1TEvIMu2qDzhm@orome.fritz.box>
+References: 
+ <20231011-asoc-tegra-fix-uninit-soc_data-v1-1-0ef0ab44cf48@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-0438c
-Message-ID-Hash: 3Y342JYRFXLK2LXZSX3H76XYWAKPX2EW
-X-Message-ID-Hash: 3Y342JYRFXLK2LXZSX3H76XYWAKPX2EW
-X-MailFrom: broonie@kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="edj+BPVW5o8cXPI2"
+Content-Disposition: inline
+In-Reply-To: 
+ <20231011-asoc-tegra-fix-uninit-soc_data-v1-1-0ef0ab44cf48@kernel.org>
+User-Agent: Mutt/2.2.12 (2023-09-09)
+Message-ID-Hash: NXRM6F3WQRGJWA74GA76Y224Z2CNAAMS
+X-Message-ID-Hash: NXRM6F3WQRGJWA74GA76Y224Z2CNAAMS
+X-MailFrom: thierry.reding@gmail.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -86,7 +117,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3Y342JYRFXLK2LXZSX3H76XYWAKPX2EW/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NXRM6F3WQRGJWA74GA76Y224Z2CNAAMS/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -95,45 +126,61 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Wed, 11 Oct 2023 13:21:51 -0700, Nathan Chancellor wrote:
-> Clang warns (or errors with CONFIG_WERROR=y):
-> 
->   sound/soc/tegra/tegra210_amx.c:553:10: error: variable 'soc_data' is uninitialized when used here [-Werror,-Wuninitialized]
->     553 |                                             soc_data->regmap_conf);
+
+--edj+BPVW5o8cXPI2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Oct 11, 2023 at 01:21:51PM -0700, Nathan Chancellor wrote:
+> Clang warns (or errors with CONFIG_WERROR=3Dy):
+>=20
+>   sound/soc/tegra/tegra210_amx.c:553:10: error: variable 'soc_data' is un=
+initialized when used here [-Werror,-Wuninitialized]
+>     553 |                                             soc_data->regmap_co=
+nf);
 >         |                                             ^~~~~~~~
-> 
+>=20
 > A refactoring removed the initialization of this variable but its use
 > was not updated. Use the soc_data value in the amx variable to resolve
 > the warning and remove the soc_data variable, as it is now entirely
 > unused.
-> 
-> [...]
+>=20
+> Closes: https://github.com/ClangBuiltLinux/linux/issues/1943
+> Fixes: 9958d85968ed ("ASoC: Use device_get_match_data()")
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+> ---
+>  sound/soc/tegra/tegra210_amx.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
 
-Applied to
+I see that Mark was quicker and this is already applied, but just for
+the record, this fixes an OOPS that I started seeing recently but hadn't
+gotten around to look at more closely, so I guess:
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+Tested-by: Thierry Reding <treding@nvidia.com>
 
-Thanks!
+And thanks!
 
-[1/1] ASoC: tegra: Fix -Wuninitialized in tegra210_amx_platform_probe()
-      commit: 41cb1126bed152f7679417834ad7ea39f2252dfb
+Thierry
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+--edj+BPVW5o8cXPI2
+Content-Type: application/pgp-signature; name="signature.asc"
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+-----BEGIN PGP SIGNATURE-----
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmUoNUwACgkQ3SOs138+
+s6FvjxAAsd5bwFFR8vGCLIUjLqquDW0xtQm0nZacYaJmO059dJTozlND+izhpVvt
+wwh1GxcniMG5Qg55FmxG82icd4V+3JmtKvCjSx32DO0CsdlOUg/JHTwifRI8mr2d
+9a45DaeInh8pCQpYiEf3EjPZ+vuoDH0YKivuJwL+UGcCTzWyuA4Aoh8NciHJASQw
+4Bwc3uq4dmvS/Ax2DgUO3/9hY0nEHT6o0Ke9xyPeQ+ZlBi9m304dY7Y53jNi8IWG
+p8BF62VBiLqDh3icmqFTVd7NuBdkhjDP3BFvv8WjKssC5dv/e+/3wZT6od4EBK3j
+ru+ZTDwzkx7sOuaS+UZ01D49LjCRS9Jq64XJxe1vUo5w97w297KanCgCIMo5AFQA
+brqk8n9t9EluL2hgSlT7PidybAvsFO59dfhh+IraBhKUIe0j1gmFLtqU6UIVGosb
+PoMqiQyuW29sLUABzGQY3zus38U8XI64DQC+nqAsrsvpSkwk5KgRdDqJ5DYhqVE1
+qbFzPC9ONgM21oDzSybEuN1hDG1fHhhrLg8vMjWTjyDQInsv0J+vpobpnzuAdhOX
+qVxYan5FyZThbet9v2/s/fK50P5S1+a9ShKSLlNkpAw9MLTrepd/SP9w7cw2ZLF2
+TGp2g902Pnle5sSbNPqTYrtbEx1+lnhCpJvee8+Uf3WwrTzZbAc=
+=WcBW
+-----END PGP SIGNATURE-----
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+--edj+BPVW5o8cXPI2--
