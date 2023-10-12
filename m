@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1CFF2CDB46E
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Oct 2023 19:12:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 13F01CDB47E
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Oct 2023 19:13:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6E6A4E72;
-	Thu, 12 Oct 2023 21:12:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6E6A4E72
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4AAB2857;
+	Thu, 12 Oct 2023 21:12:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4AAB2857
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1697137973;
-	bh=hI2AE8/v1W4S4jDaZGdK4AFzfRs9pPQMxX5qox6F6oE=;
+	s=default; t=1697137995;
+	bh=497SJBZuQqefj9DKkP1/C+SzKF9pg8FavpU1OQMuNGk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=raxiZA5SWMjqbjtGGtb1xPA1cGMTCySu8FYPBOT+Tg1bpdzqAGvM+NqjGamBfpM+7
-	 LKRcuWAJRiW2ug6kqQIv/YVRl6W7tQVxgnGosphEzN851ajRscDFYZkEflGKR+EHdZ
-	 nyMdmddFscHQUPhCb8nuwsohA6w+DTpgOgDqCdzA=
+	b=FmZmWUzlfPeFVGAMXcCfENPNLs/HBIv8n0AV1njb29axcjv98r11+eWA1/tIEcgr4
+	 pr6/+2TkpR9r9HdO9WYVZrUMOFowFsFA2Y3ACyLnrLWUVbfQumNMYEKX+3la4fJ10w
+	 QznwjAr5kXTP4QW7y2KBGVmBEVnp9DPYE2UUOnOE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A3CA9F805F4; Thu, 12 Oct 2023 21:09:41 +0200 (CEST)
+	id 1AE8FF8057A; Thu, 12 Oct 2023 21:09:42 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E405FF80567;
-	Thu, 12 Oct 2023 21:09:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 54AA9F8057A;
+	Thu, 12 Oct 2023 21:09:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9F87BF805D3; Thu, 12 Oct 2023 21:09:25 +0200 (CEST)
+	id 389C7F805D8; Thu, 12 Oct 2023 21:09:28 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D3717F8055A
-	for <alsa-devel@alsa-project.org>; Thu, 12 Oct 2023 21:09:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D3717F8055A
+	by alsa1.perex.cz (Postfix) with ESMTPS id EC012F8019B
+	for <alsa-devel@alsa-project.org>; Thu, 12 Oct 2023 21:09:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EC012F8019B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=N2byg8/l
+ header.s=Intel header.b=DhfCH549
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697137744; x=1728673744;
+  t=1697137745; x=1728673745;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=hI2AE8/v1W4S4jDaZGdK4AFzfRs9pPQMxX5qox6F6oE=;
-  b=N2byg8/lRw0gunbmHS/WP07InbalB+QraPRHE+DqCWUpG314aSZc7YoY
-   zrqcXNptT3da3tIT6DUJYFrq8P54nOK5/tEp9pEpjDpDbjyTex7WeFVCU
-   79PJ1tibO28dDEcOk9iuHNZ2x8tYVGq3+hLTRHjmrr82Pk5tnjYDMuU7K
-   OJev81NXkYJ9Z5499nAik/83lwnw6w+qxXNUJmijlux4Ysu0yqdiokigA
-   nvG25jooF8riSaVS8cQWfXoZltnRuLL2Aj8GHWDt+Kw4LCaxuZ93g1F4a
-   de742aZPoG4PXewmxe0jT3otkBjKicZYbqfv8D02za5B8uxDcXgz9eC93
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="416060210"
+  bh=497SJBZuQqefj9DKkP1/C+SzKF9pg8FavpU1OQMuNGk=;
+  b=DhfCH549jQKKmVdNX3jHdKonPL6HONiBAHCt6ajSVmy3WEE0EqxalMje
+   NBpN6NwzH/CT9yBxdOgYaclWC272yGIFO2VY2qDAExqQSXB9mJcuRuHSR
+   kqVA+KI7YSdKA6TKmbn4KIPjnKWbrcnFiAO1vQ4WONxGi8Cr3J8lLFelA
+   q+7zJ0F47VqRUkJybZqnmFsc3/1GId6a8QTbMUgqmsrPv8emDnkD0NV3D
+   orsk37t9iwcXw69IL36Xq+xK2r4eh74N0XroAPpq5tNjYfUnCwV86Ll7c
+   5VfbIfbBGPCGZDxefXrmkqnGaTpnBm6YorgdjHIF2mI8ugGoDMdtnNRa4
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="416060217"
 X-IronPort-AV: E=Sophos;i="6.03,219,1694761200";
-   d="scan'208";a="416060210"
+   d="scan'208";a="416060217"
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
   by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Oct 2023 12:08:48 -0700
+ 12 Oct 2023 12:08:49 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="845108087"
+X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="845108096"
 X-IronPort-AV: E=Sophos;i="6.03,219,1694761200";
-   d="scan'208";a="845108087"
+   d="scan'208";a="845108096"
 Received: from gchoudha-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.hsd1.md.comcast.net) ([10.212.114.241])
   by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Oct 2023 12:08:47 -0700
+ 12 Oct 2023 12:08:49 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de,
@@ -72,16 +72,17 @@ Cc: tiwai@suse.de,
 	Brent Lu <brent.lu@intel.com>,
 	Bard Liao <yung-chuan.liao@linux.intel.com>,
 	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 12/23] ASoC: Intel: sof_hdmi: add common header for HDMI
-Date: Thu, 12 Oct 2023 15:08:15 -0400
-Message-Id: <20231012190826.142619-13-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 14/23] ASoC: Intel: sof_da7219: use sof_hdmi_private to init
+ HDMI
+Date: Thu, 12 Oct 2023 15:08:17 -0400
+Message-Id: <20231012190826.142619-15-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231012190826.142619-1-pierre-louis.bossart@linux.intel.com>
 References: <20231012190826.142619-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 4Q62TEZEIO7QL7T6VMASEMJX6VUVW7IE
-X-Message-ID-Hash: 4Q62TEZEIO7QL7T6VMASEMJX6VUVW7IE
+Message-ID-Hash: 5Q767IGAG6IGCI7DY4KN6OETJDBQLV6U
+X-Message-ID-Hash: 5Q767IGAG6IGCI7DY4KN6OETJDBQLV6U
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -104,48 +105,99 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Brent Lu <brent.lu@intel.com>
 
-Add a common header for Intel HDMI dai link (idisp) initialization.
-Declare the sof_hdmi_private structure in machine driver private data
-and use it to initialize dai link.
+Use sof_hdmi_private structure instead of a link list of sof_hdmi_pcm
+structure for HDMI dai link initialization since hdac-hdmi support is
+removed.
 
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Signed-off-by: Brent Lu <brent.lu@intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/boards/sof_hdmi_common.h | 24 ++++++++++++++++++++++++
- 1 file changed, 24 insertions(+)
- create mode 100644 sound/soc/intel/boards/sof_hdmi_common.h
+ sound/soc/intel/boards/sof_da7219.c | 32 ++++++++++++-----------------
+ 1 file changed, 13 insertions(+), 19 deletions(-)
 
-diff --git a/sound/soc/intel/boards/sof_hdmi_common.h b/sound/soc/intel/boards/sof_hdmi_common.h
-new file mode 100644
-index 000000000000..1573e089c0e5
---- /dev/null
-+++ b/sound/soc/intel/boards/sof_hdmi_common.h
-@@ -0,0 +1,24 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*
-+ * Copyright(c) 2023 Intel Corporation.
-+ */
+diff --git a/sound/soc/intel/boards/sof_da7219.c b/sound/soc/intel/boards/sof_da7219.c
+index 03131cb495d1..6eb5a6144e97 100644
+--- a/sound/soc/intel/boards/sof_da7219.c
++++ b/sound/soc/intel/boards/sof_da7219.c
+@@ -16,6 +16,7 @@
+ #include <sound/sof.h>
+ #include "../../codecs/da7219.h"
+ #include "hda_dsp_common.h"
++#include "sof_hdmi_common.h"
+ #include "sof_maxim_common.h"
+ #include "sof_ssp_common.h"
+ 
+@@ -24,14 +25,9 @@
+ 
+ #define DIALOG_CODEC_DAI	"da7219-hifi"
+ 
+-struct hdmi_pcm {
+-	struct list_head head;
+-	struct snd_soc_dai *codec_dai;
+-};
+-
+ struct card_private {
+ 	struct snd_soc_jack headset_jack;
+-	struct list_head hdmi_pcm_list;
++	struct sof_hdmi_private hdmi;
+ 	enum sof_ssp_codec codec_type;
+ 	enum sof_ssp_codec amp_type;
+ 
+@@ -230,15 +226,8 @@ static int hdmi_init(struct snd_soc_pcm_runtime *rtd)
+ {
+ 	struct card_private *ctx = snd_soc_card_get_drvdata(rtd->card);
+ 	struct snd_soc_dai *dai = snd_soc_rtd_to_codec(rtd, 0);
+-	struct hdmi_pcm *pcm;
+ 
+-	pcm = devm_kzalloc(rtd->card->dev, sizeof(*pcm), GFP_KERNEL);
+-	if (!pcm)
+-		return -ENOMEM;
+-
+-	pcm->codec_dai = dai;
+-
+-	list_add_tail(&pcm->head, &ctx->hdmi_pcm_list);
++	ctx->hdmi.hdmi_comp = dai->component;
+ 
+ 	return 0;
+ }
+@@ -246,10 +235,14 @@ static int hdmi_init(struct snd_soc_pcm_runtime *rtd)
+ static int card_late_probe(struct snd_soc_card *card)
+ {
+ 	struct card_private *ctx = snd_soc_card_get_drvdata(card);
+-	struct hdmi_pcm *pcm;
+ 
+-	pcm = list_first_entry(&ctx->hdmi_pcm_list, struct hdmi_pcm, head);
+-	return hda_dsp_hdmi_build_controls(card, pcm->codec_dai->component);
++	if (!ctx->hdmi.idisp_codec)
++		return 0;
 +
-+#ifndef __SOF_HDMI_COMMON_H
-+#define __SOF_HDMI_COMMON_H
++	if (!ctx->hdmi.hdmi_comp)
++		return -EINVAL;
 +
-+#include <sound/soc.h>
++	return hda_dsp_hdmi_build_controls(card, ctx->hdmi.hdmi_comp);
+ }
+ 
+ SND_SOC_DAILINK_DEF(ssp0_pin,
+@@ -469,6 +462,9 @@ static int audio_probe(struct platform_device *pdev)
+ 	ctx->codec_type = sof_ssp_detect_codec_type(&pdev->dev);
+ 	ctx->amp_type = sof_ssp_detect_amp_type(&pdev->dev);
+ 
++	if (mach->mach_params.codec_mask & IDISP_CODEC_MASK)
++		ctx->hdmi.idisp_codec = true;
 +
-+#define IDISP_CODEC_MASK	0x4
-+
-+/*
-+ * sof_hdmi_private: data for Intel HDMI dai link (idisp) initialization
-+ *
-+ * @hdmi_comp: ASoC component of idisp codec
-+ * @idisp_codec: true to indicate idisp codec is present
-+ */
-+struct sof_hdmi_private {
-+	struct snd_soc_component *hdmi_comp;
-+	bool idisp_codec;
-+};
-+
-+#endif /* __SOF_HDMI_COMMON_H */
+ 	if (board_quirk & SOF_DA7219_JSL_BOARD) {
+ 		/* backward-compatible with existing devices */
+ 		switch (ctx->amp_type) {
+@@ -524,8 +520,6 @@ static int audio_probe(struct platform_device *pdev)
+ 
+ 	card_da7219.dai_link = dai_links;
+ 
+-	INIT_LIST_HEAD(&ctx->hdmi_pcm_list);
+-
+ 	card_da7219.dev = &pdev->dev;
+ 
+ 	ret = snd_soc_fixup_dai_links_platform_name(&card_da7219,
 -- 
 2.39.2
 
