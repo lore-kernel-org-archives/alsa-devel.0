@@ -4,79 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 17B84CDB46E
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Oct 2023 16:27:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0EB39CDB47E
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Oct 2023 17:44:08 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0ADE7844;
-	Thu, 12 Oct 2023 18:26:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0ADE7844
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2FAF8839;
+	Thu, 12 Oct 2023 19:43:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2FAF8839
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1697128026;
-	bh=9feK3ItMeeWwJ7VIPlyWwFyXf9aBwpQbldW6FpaCPok=;
+	s=default; t=1697132646;
+	bh=Fp8zFin+F4gc5rMyPLTBEeTrhsHn8hjr1pRxpfiAZ1w=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=RbtvWwIoYwJY2wpxU0Hbo5tKzIXJhSEH68JtFKj1qaqLsj14QH01gMNAn7lnLTnA0
-	 Ebw0D2mLK4xl6MAOz3GaqIP90ADDq55f/SHcgVyjN//+nWwopgF87ZvM6gQVx176aU
-	 RNjtheFO6c4Y05h00gY7kyBXmLIfVo1QVb1IxrEI=
+	b=ffuyd+GRRlX22HXcC+PYtBkh0VajcQ0I96eRnufj6LbJPgnfCLSNAUt7XLMH9l59X
+	 ozCUrg9l2/Rq93Th2VS93WGVgGXnLGq2lJsXgsRW07q73KhHS6XQ2LYfniaUDa0P9V
+	 bbd2lmZmdgwV9w6YRtJI884meAdMJeuSJaCiLqo0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 75DE9F80558; Thu, 12 Oct 2023 18:25:38 +0200 (CEST)
+	id BEA4CF80553; Thu, 12 Oct 2023 19:42:55 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C432CF8019B;
-	Thu, 12 Oct 2023 18:25:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 26ADDF802BE;
+	Thu, 12 Oct 2023 19:42:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 90D8EF802BE; Thu, 12 Oct 2023 18:25:32 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+	id 25B4FF802E8; Thu, 12 Oct 2023 19:42:50 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 46FAEF8019B
-	for <alsa-devel@alsa-project.org>; Thu, 12 Oct 2023 18:25:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 46FAEF8019B
+	by alsa1.perex.cz (Postfix) with ESMTPS id F3388F8019B
+	for <alsa-devel@alsa-project.org>; Thu, 12 Oct 2023 19:42:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F3388F8019B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=MmifaNqV
+ header.s=k20201202 header.b=Ws+CZfyu
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by ams.source.kernel.org (Postfix) with ESMTP id E5A6DB8253C;
-	Thu, 12 Oct 2023 16:25:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0CCC2C433C8;
-	Thu, 12 Oct 2023 16:25:22 +0000 (UTC)
+	by ams.source.kernel.org (Postfix) with ESMTP id DD427B825B6;
+	Thu, 12 Oct 2023 17:42:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 21DBFC433C8;
+	Thu, 12 Oct 2023 17:42:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1697127924;
-	bh=9feK3ItMeeWwJ7VIPlyWwFyXf9aBwpQbldW6FpaCPok=;
+	s=k20201202; t=1697132560;
+	bh=Fp8zFin+F4gc5rMyPLTBEeTrhsHn8hjr1pRxpfiAZ1w=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=MmifaNqVW0KF2jEk/QREfOeHUJJUTjUuR3z0Y7YzK/2lxDPf9rHQGgKgaHY65EXWd
-	 6A37+tC0FyDH0IMKT7Ape4MnoBEOrVGKvU4RIsui53qz7heLWtCnPICUmj+yprUCuc
-	 y/lmrDPTmwebPd65iJ+2z2dEr03L1Hpcz3dlzsPShupRgJsA9uNtbI5kUJgFNBtn7d
-	 dghuOJvsMkZXBhaHMk6fu7dC8hFFs0XdZmdQ5Bb22ZpEtUP8bd6Zg/l9lpQXRVsRPB
-	 8aRf5Ww2EVmOdoQ2W1uN02GQAhG+B8FMklmXGFFe2AFvS9TU9Ce270JNi0ElWgr3vt
-	 sYha2tz+uzW0Q==
-Received: (nullmailer pid 1188735 invoked by uid 1000);
-	Thu, 12 Oct 2023 16:25:22 -0000
+	b=Ws+CZfyuzASVbWlCdJcvUFdX5ykTlVsJKtbDlMZ3bxaMTMjrgwNk7TL5phCy+jhmy
+	 +B5BW+0YCZdaqjeJgmAxeZgBHY4QSokViNnSYReDLIu38TSHWUNWPFIdOj1IrDfRif
+	 vR9vBDYx4GIajWZfrDGiet96KglnXWGdONDzTghJRXdlvIf3pPYAbNjDTMBsX4chO1
+	 mNtF8SuTzfn/hEXEJRQQiYjQBGhokxXklCEim9VG8BDyRDYEqpoUVX65GSNJMP7vow
+	 yhll5O43N9beXqQ6ZfwkCKr3r7GEMY2V6wv1oNbOuaQ10CnjEvdWcf/Yta1QR/i8ni
+	 o3DSx6C32oRsQ==
+From: Mark Brown <broonie@kernel.org>
+To: =?utf-8?q?Amadeusz_S=C5=82awi=C5=84ski?=
+ <amadeuszx.slawinski@linux.intel.com>
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
+ Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
+ alsa-devel@alsa-project.org
+In-Reply-To: <20231012083514.492626-1-amadeuszx.slawinski@linux.intel.com>
+References: <20231012083514.492626-1-amadeuszx.slawinski@linux.intel.com>
+Subject: Re: [PATCH v2 00/16] Harden SSP boards and add TDM support
+Message-Id: <169713255885.343479.16650110902074371271.b4-ty@kernel.org>
+Date: Thu, 12 Oct 2023 18:42:38 +0100
+MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-MIME-Version: 1.0
-From: Rob Herring <robh@kernel.org>
-To: Eugen Hristev <eugen.hristev@collabora.com>
-Cc: angelogioacchino.delregno@collabora.com, devicetree@vger.kernel.org,
- kernel@collabora.com, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
- matthias.bgg@gmail.com, conor+dt@kernel.org, linux-kernel@vger.kernel.org,
- broonie@kernel.org, alsa-devel@alsa-project.org,
- linux-mediatek@lists.infradead.org, lgirdwood@gmail.com,
- linux-arm-kernel@lists.infradead.org
-In-Reply-To: <20231012151538.468893-1-eugen.hristev@collabora.com>
-References: <20231012151538.468893-1-eugen.hristev@collabora.com>
-Message-Id: <169712792200.1188719.6103742227495646067.robh@kernel.org>
-Subject: Re: [PATCH v3] dt-bindings: arm: mediatek: convert audsys and
- mt2701-afe-pcm to yaml
-Date: Thu, 12 Oct 2023 11:25:22 -0500
-Message-ID-Hash: PVB2KYJCZEHRIUNEFP3S2OEK7BK6AIKQ
-X-Message-ID-Hash: PVB2KYJCZEHRIUNEFP3S2OEK7BK6AIKQ
-X-MailFrom: rob@kernel.org
+X-Mailer: b4 0.13-dev-0438c
+Message-ID-Hash: 45NL5F2VNESTLCPNDYIPMPU4XWOC2EC6
+X-Message-ID-Hash: 45NL5F2VNESTLCPNDYIPMPU4XWOC2EC6
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -88,7 +85,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PVB2KYJCZEHRIUNEFP3S2OEK7BK6AIKQ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/45NL5F2VNESTLCPNDYIPMPU4XWOC2EC6/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -97,55 +94,77 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-
-On Thu, 12 Oct 2023 18:15:38 +0300, Eugen Hristev wrote:
-> Convert the mediatek,audsys binding to YAML, together with the associated
-> binding bindings/sound/mt2701-afe-pcm.yaml .
+On Thu, 12 Oct 2023 10:34:58 +0200, Amadeusz Sławiński wrote:
+> In quite a few places in code there are checks for number of SSPs
+> present on system, to reduce maintenance burden introduce helper
+> functions allowing to get SSP and TDM from machine board configuration.
 > 
-> Signed-off-by: Eugen Hristev <eugen.hristev@collabora.com>
-> ---
-> Changes in v3:
-> - not added Rb Conor Dooley since the patch was changed in a big essence
-> - As per review by Krzysztof, also convert the mt2701-afe-pcm and reference
-> the correct schema in the audsys binding.
+> Current mechanism replaces "%d" present in some routes and widget names
+> with SSP number. However there are also configurations which make use of
+> of TDM number, in which case expected behavior would be to have string
+> in form of SSP:TDM - see implementation of avs_i2s_platform_register()
+> in sound/soc/intel/avs/pcm.c. Implement custom function, which parses
+> string and make use of it when parsing topology. While at it make sure
+> that we generate dynamic names only if there is no multiple SSPs or TDMs
+> defined.
 > 
-> Changes in v2:
-> - remove comment reference to inexistent binding
-> 
-> 
->  .../bindings/arm/mediatek/mediatek,audsys.txt |  39 ---
->  .../arm/mediatek/mediatek,audsys.yaml         | 153 ++++++++++++
->  .../bindings/sound/mt2701-afe-pcm.txt         | 146 -----------
->  .../bindings/sound/mt2701-afe-pcm.yaml        | 229 ++++++++++++++++++
->  4 files changed, 382 insertions(+), 185 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/arm/mediatek/mediatek,audsys.txt
->  create mode 100644 Documentation/devicetree/bindings/arm/mediatek/mediatek,audsys.yaml
->  delete mode 100644 Documentation/devicetree/bindings/sound/mt2701-afe-pcm.txt
->  create mode 100644 Documentation/devicetree/bindings/sound/mt2701-afe-pcm.yaml
-> 
+> [...]
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+Applied to
 
-yamllint warnings/errors:
-./Documentation/devicetree/bindings/sound/mt2701-afe-pcm.yaml:11:4: [error] missing starting space in comment (comments)
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-dtschema/dtc warnings/errors:
+Thanks!
 
-doc reference errors (make refcheckdocs):
+[01/16] ASoC: Intel: avs: Only create SSP%d snd_soc_dai_driver when requested
+        commit: 393648ce731b087f5a685044c9e41afb815421f7
+[02/16] ASoC: Intel: avs: Introduce helper functions for SSP and TDM handling
+        commit: 7a6debe0478596ac892ecf3cc336aacf09a9e4d8
+[03/16] ASoC: Intel: avs: Improve topology parsing of dynamic strings
+        commit: e6d50e474e45862096932edc31932fbbd5e8f1c7
+[04/16] ASoC: Intel: avs: i2s_test: Validate machine board configuration
+        commit: d3decc196afdce9456442e2bdc9033fd5d2d00b3
+[05/16] ASoC: Intel: avs: rt274: Validate machine board configuration
+        commit: b124d7cc6f3c08e5ae084e446e6ceff6c881c087
+[06/16] ASoC: Intel: avs: rt5682: Validate machine board configuration
+        commit: 2172c5b90d80aedc7cbe571e353ae45040e03a3b
+[07/16] ASoC: Intel: avs: max98357a: Validate machine board configuration
+        commit: 863e3f18d08bae9ffc70306e251f75bdee5e0674
+[08/16] ASoC: Intel: avs: rt298: Validate machine board configuration
+        commit: 060c0fd1afaec1d553fdd123ddd47368bd4b3a81
+[09/16] ASoC: Intel: avs: da7219: Validate machine board configuration
+        commit: fc332ea1176d72502e81a3e9d4ea3bce05e77398
+[10/16] ASoC: Intel: avs: es8336: Validate machine board configuration
+        commit: 8d5fed3312ebaa83338cf42746b29a01b9d3d13e
+[11/16] ASoC: Intel: avs: max98373: Validate machine board configuration
+        commit: a1ec836b17f7dea35f6b4b3a7c2ad4306da804c9
+[12/16] ASoC: Intel: avs: max98927: Validate machine board configuration
+        commit: ef91ae9e682c85e57861234db7d5ad9d071b889b
+[13/16] ASoC: Intel: avs: nau8825: Validate machine board configuration
+        commit: 70c101917aa1efa52a89dae5d5deee2a0c74de07
+[14/16] ASoC: Intel: avs: rt286: Validate machine board configuration
+        commit: cc7ea744970176134d48cc6e004ebe7c9a0bb3da
+[15/16] ASoC: Intel: avs: rt5663: Validate machine board configuration
+        commit: 797611b5ce62f12a2c0812c0e4e3a2fb6ee9fb47
+[16/16] ASoC: Intel: avs: ssm4567: Validate machine board configuration
+        commit: 5e07eb3ab981c5752c0e5ac324fbd166a12003ee
 
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20231012151538.468893-1-eugen.hristev@collabora.com
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-pip3 install dtschema --upgrade
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
+Thanks,
+Mark
 
