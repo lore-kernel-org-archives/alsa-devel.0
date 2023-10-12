@@ -4,84 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E0750CDB46E
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Oct 2023 19:11:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B5582CDB47E
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Oct 2023 19:11:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 304FCAE9;
-	Thu, 12 Oct 2023 21:10:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 304FCAE9
+	by alsa0.perex.cz (Postfix) with ESMTPS id A1AD1847;
+	Thu, 12 Oct 2023 21:10:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A1AD1847
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1697137860;
-	bh=8EujTobaAE8ww0dHS5VSD5+tWKguWfBgrzqswiPk180=;
+	s=default; t=1697137879;
+	bh=J7jDGFClffbd+qauO6FlXUGv2hXLVhl/UXaH8Fezvb4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=TyCSFIGdwjY6TEpXJ8nmDazt9i2FqSY6DcrP7zd/lJ1Jvjl7FtTW56g6aPb70dSUk
-	 qM2bsi2J5Qya/CQpLHrisMjNjvSkkO9PRrtpEgDaw3Rarlh7uajr4nPX5FpL/cqMA8
-	 VkJILrHZzRGUp/zwZOoiPIeB68RdZDGilqqD/Cdg=
+	b=RQlmlyEpz5CcbrWHNq4TL3NwBekXJTkjn7eHqHaRwACRhtUKHpHzuZTKSkEdMHeMy
+	 qD8WeAE4lLcKWm0dqLx0aAWKJYM1TeJLA+7k04uNupL5a/1W3qrodavh/kpxalD42U
+	 CBzxYpgeXOOo/gbUrdL+3P268JUZ3OHZtOjCaqCI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C222BF805B2; Thu, 12 Oct 2023 21:09:12 +0200 (CEST)
+	id A4E83F805B6; Thu, 12 Oct 2023 21:09:16 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 26686F80579;
-	Thu, 12 Oct 2023 21:09:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CD251F805B3;
+	Thu, 12 Oct 2023 21:09:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 50AA1F8027B; Thu, 12 Oct 2023 21:09:07 +0200 (CEST)
+	id 0436FF8057D; Thu, 12 Oct 2023 21:09:08 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7C8BCF8027B
-	for <alsa-devel@alsa-project.org>; Thu, 12 Oct 2023 21:08:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7C8BCF8027B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 56C5FF802BE
+	for <alsa-devel@alsa-project.org>; Thu, 12 Oct 2023 21:08:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 56C5FF802BE
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=S+eVGWdn
+ header.s=Intel header.b=Ygtpvir1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697137738; x=1728673738;
+  t=1697137739; x=1728673739;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=8EujTobaAE8ww0dHS5VSD5+tWKguWfBgrzqswiPk180=;
-  b=S+eVGWdnPDxmYxLBXhTryz/CIOTDB3RkD80lDitZEsX2GgCWyeiKxN8m
-   sl3uE12I2Jma/5GD0o1Jio/bvsW06+s36sAe4r+5M8M2T1GHZT28BfCuO
-   R5l6FIBq6qIP9RBGB+ZZieSWllpLpwibdkl7TeH1w01I5u4o4/2yeUmGL
-   eFFtggbyZrTIvviGMt0XLHs3lXrLk98vp58+QWgTKvzdZacVdWjKQS6Aw
-   kKc1zTqNS/yfBywF2bcUcwLHOBAUDnyjYvNtJTwDKxVc5ZbePFZPeOvoc
-   B+uUEzQRj1znS1aFhcqbxJY5U0IyDNkT1XGipmdduI9ZLW1a3qd7nKsR1
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="416060169"
+  bh=J7jDGFClffbd+qauO6FlXUGv2hXLVhl/UXaH8Fezvb4=;
+  b=Ygtpvir1QISBnsdVJ+VG6dG2iwl/FA8KOI271oySxsO+frOXmppEs2Nn
+   CC0wiIb0actHCngGClX945elinCEQFqm7amAJCOwJWNUx6Z6zN0TNUE47
+   kc1dgO9ubMwHwPLPEjJcoyDpgnskJtKMGqH5sM+/dCTb7wwhILlFWm/KF
+   jGIqgZI5Q74jgk11RA8pbQqeR5Yd8BJGQGk5P2Zv4TKZPkaI6c14rpgOe
+   hMok/Ibst1Lj2YBxVa172A4yYhEkIF09sb7FR6uhrB/IVocovUxeDrQfL
+   j+lAD8jSvf8qAIp2h19c7889pr21bMOxDXECVDB2NzKtafKKUV7rcQzWX
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="416060176"
 X-IronPort-AV: E=Sophos;i="6.03,219,1694761200";
-   d="scan'208";a="416060169"
+   d="scan'208";a="416060176"
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
   by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Oct 2023 12:08:38 -0700
+ 12 Oct 2023 12:08:40 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="845108044"
+X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="845108057"
 X-IronPort-AV: E=Sophos;i="6.03,219,1694761200";
-   d="scan'208";a="845108044"
+   d="scan'208";a="845108057"
 Received: from gchoudha-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.hsd1.md.comcast.net) ([10.212.114.241])
   by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Oct 2023 12:08:37 -0700
+ 12 Oct 2023 12:08:39 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de,
 	broonie@kernel.org,
 	Bard Liao <yung-chuan.liao@linux.intel.com>,
 	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 02/23] ASoC: Intel: soc-acpi-intel-rpl-match: add
- rt711-l0-rt1316-l12 support
-Date: Thu, 12 Oct 2023 15:08:05 -0400
-Message-Id: <20231012190826.142619-3-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 04/23] ASoC: Intel: sof_sdw_rt_sdca_jack_common: add rt713
+ support
+Date: Thu, 12 Oct 2023 15:08:07 -0400
+Message-Id: <20231012190826.142619-5-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231012190826.142619-1-pierre-louis.bossart@linux.intel.com>
 References: <20231012190826.142619-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: QD5MUVEZPYU6IFNHWO4FT6DGCDGTD2YK
-X-Message-ID-Hash: QD5MUVEZPYU6IFNHWO4FT6DGCDGTD2YK
+Message-ID-Hash: W5E2YZBMNOIQ4BVL2NV5M25X7OMLJJNW
+X-Message-ID-Hash: W5E2YZBMNOIQ4BVL2NV5M25X7OMLJJNW
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -94,7 +94,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QD5MUVEZPYU6IFNHWO4FT6DGCDGTD2YK/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/W5E2YZBMNOIQ4BVL2NV5M25X7OMLJJNW/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -105,57 +105,41 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 
-Another configuration that doesn't support DMIC.
+Adding rt713 support to sof_sdw_rt_sdca_jack_common.c.
 
+Fixes: fbaaf80d8cf6 ("ASoC: Intel: sof_sdw: add rt713 support")
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- .../intel/common/soc-acpi-intel-rpl-match.c   | 25 +++++++++++++++++++
- 1 file changed, 25 insertions(+)
+ sound/soc/intel/boards/sof_sdw_rt_sdca_jack_common.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/sound/soc/intel/common/soc-acpi-intel-rpl-match.c b/sound/soc/intel/common/soc-acpi-intel-rpl-match.c
-index b0ffade5bb08..19cfdcdbfdf7 100644
---- a/sound/soc/intel/common/soc-acpi-intel-rpl-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-rpl-match.c
-@@ -246,6 +246,25 @@ static const struct snd_soc_acpi_link_adr rpl_sdw_rt711_link2_rt1316_link01[] =
- 	{}
+diff --git a/sound/soc/intel/boards/sof_sdw_rt_sdca_jack_common.c b/sound/soc/intel/boards/sof_sdw_rt_sdca_jack_common.c
+index ef62ac5fdf55..65bbcee88d6d 100644
+--- a/sound/soc/intel/boards/sof_sdw_rt_sdca_jack_common.c
++++ b/sound/soc/intel/boards/sof_sdw_rt_sdca_jack_common.c
+@@ -58,6 +58,11 @@ static const struct snd_soc_dapm_route rt712_sdca_map[] = {
+ 	{ "rt712 MIC2", NULL, "Headset Mic" },
  };
  
-+static const struct snd_soc_acpi_link_adr rpl_sdw_rt711_link0_rt1316_link12[] = {
-+	{
-+		.mask = BIT(0),
-+		.num_adr = ARRAY_SIZE(rt711_sdca_0_adr),
-+		.adr_d = rt711_sdca_0_adr,
-+	},
-+	{
-+		.mask = BIT(1),
-+		.num_adr = ARRAY_SIZE(rt1316_1_group1_adr),
-+		.adr_d = rt1316_1_group1_adr,
-+	},
-+	{
-+		.mask = BIT(2),
-+		.num_adr = ARRAY_SIZE(rt1316_2_group1_adr),
-+		.adr_d = rt1316_2_group1_adr,
-+	},
-+	{}
++static const struct snd_soc_dapm_route rt713_sdca_map[] = {
++	{ "Headphone", NULL, "rt713 HP" },
++	{ "rt713 MIC2", NULL, "Headset Mic" },
 +};
 +
- static const struct snd_soc_acpi_link_adr rpl_sdw_rt711_link0_rt1318_link12_rt714_link3[] = {
- 	{
- 		.mask = BIT(0),
-@@ -459,6 +478,12 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_rpl_sdw_machines[] = {
- 		.drv_name = "sof_sdw",
- 		.sof_tplg_filename = "sof-rpl-rt711-l0-rt1318-l12-rt714-l3.tplg",
- 	},
-+	{
-+		.link_mask = 0x7, /* rt711 on link0 & two rt1316s on link1 and link2 */
-+		.links = rpl_sdw_rt711_link0_rt1316_link12,
-+		.drv_name = "sof_sdw",
-+		.sof_tplg_filename = "sof-rpl-rt711-l0-rt1316-l12.tplg",
-+	},
- 	{
- 		.link_mask = 0x7, /* rt711 on link0 & two rt1318s on link1 and link2 */
- 		.links = rpl_sdw_rt711_link0_rt1318_link12,
+ static const struct snd_kcontrol_new rt_sdca_jack_controls[] = {
+ 	SOC_DAPM_PIN_SWITCH("Headphone"),
+ 	SOC_DAPM_PIN_SWITCH("Headset Mic"),
+@@ -109,6 +114,9 @@ static int rt_sdca_jack_rtd_init(struct snd_soc_pcm_runtime *rtd)
+ 	} else if (strstr(component->name_prefix, "rt712")) {
+ 		ret = snd_soc_dapm_add_routes(&card->dapm, rt712_sdca_map,
+ 					      ARRAY_SIZE(rt712_sdca_map));
++	} else if (strstr(component->name_prefix, "rt713")) {
++		ret = snd_soc_dapm_add_routes(&card->dapm, rt713_sdca_map,
++					      ARRAY_SIZE(rt713_sdca_map));
+ 	} else {
+ 		dev_err(card->dev, "%s is not supported\n", component->name_prefix);
+ 		return -EINVAL;
 -- 
 2.39.2
 
