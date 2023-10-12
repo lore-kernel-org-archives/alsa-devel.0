@@ -4,79 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8F938CDB46E
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Oct 2023 19:17:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 78F2BCDB46E
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Oct 2023 19:17:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7BC2EEAE;
-	Thu, 12 Oct 2023 21:16:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7BC2EEAE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5BEA684B;
+	Thu, 12 Oct 2023 21:16:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5BEA684B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1697138220;
-	bh=eWhx52dvj7ErNOhpIj4kABCScCV6M6c1kHfOvaM9i3M=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=P1ut2eZr1onXSfgo45QZHe5xuSzXRv4vE2tXkBLwclKeGfy/LICUbkgaYMjn1FDL2
-	 RZOdf0acIyZyUoMnPHgWuhRMuuRKdusnOO8+BMBjSzVcI9eqXPVjvg7eZLI1GrHKpb
-	 aSyQzIgWkgbb49AwVYiCf6FMWewLgvpTK5VRzS2Q=
+	s=default; t=1697138234;
+	bh=/t9Tz9FfN1QhWixMWFpN+8BOu45ZEKgkLXi/fx1aH4s=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=Lrm+FaGxzMKdKvhfCZ36Tu2NDZi9jcpsLnigGAuKQ/hmAhefyWZKXvRtp7xQ+eM1z
+	 4DsUo+/zGxInPbxlcAJ6r1LHojdJJd3Q3vTwal2EapvVFxR74LsK6z5eBckAYzi+EO
+	 uiWNkms3ggI5M1UlrobEaM3cSA6QiaJloIAEl57I=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5A970F80568; Thu, 12 Oct 2023 21:13:36 +0200 (CEST)
+	id 18888F80589; Thu, 12 Oct 2023 21:13:45 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 03D7BF80567;
-	Thu, 12 Oct 2023 21:13:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AB3A6F8027B;
+	Thu, 12 Oct 2023 21:13:45 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4C76EF80536; Thu, 12 Oct 2023 21:13:31 +0200 (CEST)
+	id 551CFF8055A; Thu, 12 Oct 2023 21:13:42 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id DF4CBF8015B
-	for <alsa-devel@alsa-project.org>; Thu, 12 Oct 2023 21:13:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DF4CBF8015B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 38BAFF8015B
+	for <alsa-devel@alsa-project.org>; Thu, 12 Oct 2023 21:13:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 38BAFF8015B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=BXSv7YH0
+ header.s=Intel header.b=JQ8+aM9d
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697138010; x=1728674010;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=eWhx52dvj7ErNOhpIj4kABCScCV6M6c1kHfOvaM9i3M=;
-  b=BXSv7YH0qDZAHuZSHdnjnrP30WBmCIBB/5SmuHxTXFQwNhfc5epNdhUO
-   do0l++hZoYrx0nKEkj09c1mQaSYO72D8eKXbGR1pOHHqR6OjKE/FCfs/r
-   LfRD4SkQG6IYwX2v/zMOlk243zZIjU+WZTQdarv1DYL41YsS4FAmdZs77
-   H8G/yFzaRbj/g+VAjp76rnttnPgkdB0Y/dl+7dm72RxhKoinG3WUm9GZo
-   lqcr6vpo6lRKTsrO5dWWMSKiqKth6LuvWY70t1GpYsATNmAasEH34Nsft
-   X9NgyB4darfSjYRzp9s1iTq70XM57EpeY09fP9b15Q2jGFCNUEaWN11R/
+  t=1697138012; x=1728674012;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=/t9Tz9FfN1QhWixMWFpN+8BOu45ZEKgkLXi/fx1aH4s=;
+  b=JQ8+aM9dfIrVen7ZVuINXG1k4I0YLeTAd66V1Jl2smfSf1hy52A0zT4r
+   TB32Vl8hAxA3qVUYWq1TmQNrMREixutT4ZpdfMLCv4M93IomIjhj1R3O5
+   MOflo0Y4+mM190Ozvus4r0ZS8J6E/trIv8VPcES3ve++R2Hg2dtFsIlvR
+   +OiDHQ3IltIvaZOvwzTyrJf1E7g1wrJ9oTyw1dGf0B3kW9CJY+xOLbQ4d
+   vEAFoQtTJ8of6WkmXslQ3PkURZhIi9ln0R6Xn84dGCX455B4H8L6zq6lX
+   qVnmeV6ToBp7fsnY4QUqqAvqPEg+27g3wea3T/BpcSuKxm3oXpM1QpT6g
    w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="382249207"
+X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="382249214"
 X-IronPort-AV: E=Sophos;i="6.03,219,1694761200";
-   d="scan'208";a="382249207"
+   d="scan'208";a="382249214"
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
   by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Oct 2023 12:13:25 -0700
+ 12 Oct 2023 12:13:27 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="704295148"
+X-IronPort-AV: E=McAfee;i="6600,9927,10861"; a="704295166"
 X-IronPort-AV: E=Sophos;i="6.03,219,1694761200";
-   d="scan'208";a="704295148"
+   d="scan'208";a="704295166"
 Received: from gchoudha-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.hsd1.md.comcast.net) ([10.212.114.241])
   by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Oct 2023 12:13:24 -0700
+ 12 Oct 2023 12:13:26 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de,
 	broonie@kernel.org,
+	Bard Liao <yung-chuan.liao@linux.intel.com>,
+	Rander Wang <rander.wang@intel.com>,
 	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 0/2] ASoC: codecs: rt715*: update misleading error log
-Date: Thu, 12 Oct 2023 15:13:13 -0400
-Message-Id: <20231012191315.145411-1-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 2/2] ASoC: rt715: reorder the argument in error log
+Date: Thu, 12 Oct 2023 15:13:15 -0400
+Message-Id: <20231012191315.145411-3-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20231012191315.145411-1-pierre-louis.bossart@linux.intel.com>
+References: <20231012191315.145411-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: JVZEMZMYRVUTHJL4L6HYHE6SLBCQPUXO
-X-Message-ID-Hash: JVZEMZMYRVUTHJL4L6HYHE6SLBCQPUXO
+Message-ID-Hash: XWDIJOWAS45JDV3ZPTIFWYS4ZCL754I4
+X-Message-ID-Hash: XWDIJOWAS45JDV3ZPTIFWYS4ZCL754I4
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -89,7 +94,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JVZEMZMYRVUTHJL4L6HYHE6SLBCQPUXO/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XWDIJOWAS45JDV3ZPTIFWYS4ZCL754I4/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -98,16 +103,33 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Improve two errors logs which report bad information.
+From: Bard Liao <yung-chuan.liao@linux.intel.com>
 
-Bard Liao (2):
-  ASoC: rt715-sdca: reorder the argument in error log
-  ASoC: rt715: reorder the argument in error log
+"Failed to set private value: ffffffea <= 6100000 24832" is confusing.
+It should be "Failed to set private value: 6100000 <= 24832 -22"
 
- sound/soc/codecs/rt715-sdca.c | 4 ++--
- sound/soc/codecs/rt715.c      | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+Reviewed-by: Rander Wang <rander.wang@intel.com>
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+ sound/soc/codecs/rt715.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
+diff --git a/sound/soc/codecs/rt715.c b/sound/soc/codecs/rt715.c
+index ed0af0213d60..9f732a5abd53 100644
+--- a/sound/soc/codecs/rt715.c
++++ b/sound/soc/codecs/rt715.c
+@@ -40,8 +40,8 @@ static int rt715_index_write(struct regmap *regmap, unsigned int reg,
+ 
+ 	ret = regmap_write(regmap, addr, value);
+ 	if (ret < 0) {
+-		pr_err("Failed to set private value: %08x <= %04x %d\n", ret,
+-			addr, value);
++		pr_err("Failed to set private value: %08x <= %04x %d\n",
++		       addr, value, ret);
+ 	}
+ 
+ 	return ret;
 -- 
 2.39.2
 
