@@ -4,83 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8B928CDB482
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Oct 2023 16:16:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 625E3CDB482
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Oct 2023 17:10:58 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D9A8C83B;
-	Fri, 13 Oct 2023 18:15:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D9A8C83B
+	by alsa0.perex.cz (Postfix) with ESMTPS id BC21884A;
+	Fri, 13 Oct 2023 19:10:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BC21884A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1697213785;
-	bh=eZ+fvPLkMyb+DJfFUnuMWJsRKI1Y554XSjCKOcKo0bw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1697217056;
+	bh=3wWndav4ZOCHssO3po2sHt5o1oR+9DzcNiui7hMgrFo=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Z5Zm/qkyJZDWkDu4AvCyzhUargIXDReAB28kfLfPX6mCKvwEhBDSZZjmfUCpjVvQe
-	 cR/rtiH5NIBwBTCrz1rEJ0yPAREfVpSRMfCfvaa7eF5nsWm/4ehc2d5BjIc8A+bfw+
-	 S7yd+KmvWwbpkZLnCQ97m40ngsg5WJDIR/nxT8fI=
+	b=PQ6Hv+3qGZ/aA7XPMGCPbzsq3W7AuLPCwgPnlYg9rat5VT4M3ghLvj1D8ck0CICS2
+	 8BizHA+P6ijw8kB2K3T061ixuFJYoO5KKQJ+hjJMJpo15e6QZ5SU6DRxMQGxYB7rcN
+	 uKw/EHQmx2er6JFvxQJ2ozn9B/WognmVzz1SCX58=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 71F5FF802E8; Fri, 13 Oct 2023 18:15:29 +0200 (CEST)
+	id 8863FF802E8; Fri, 13 Oct 2023 19:09:34 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id BCA84F802BE;
-	Fri, 13 Oct 2023 18:15:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AAFBAF802BE;
+	Fri, 13 Oct 2023 19:09:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 75D03F802BE; Fri, 13 Oct 2023 18:13:45 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+	id A690AF8019B; Fri, 13 Oct 2023 19:08:35 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id F04BFF8015B
-	for <alsa-devel@alsa-project.org>; Fri, 13 Oct 2023 18:13:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F04BFF8015B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 08368F8019B
+	for <alsa-devel@alsa-project.org>; Fri, 13 Oct 2023 19:07:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 08368F8019B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=KHTGGbsS
+ header.s=k20201202 header.b=QEd18nDG
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by ams.source.kernel.org (Postfix) with ESMTP id C3442B82BA2;
-	Fri, 13 Oct 2023 16:12:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18B01C433C8;
-	Fri, 13 Oct 2023 16:12:37 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 1A6EE620EE;
+	Fri, 13 Oct 2023 17:07:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8DD3C433C9;
+	Fri, 13 Oct 2023 17:07:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1697213560;
-	bh=eZ+fvPLkMyb+DJfFUnuMWJsRKI1Y554XSjCKOcKo0bw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=KHTGGbsSkL6J3HabN3JEbUMbtfWYVI+0YkRkcWfsynfc1mr/Un8+/xkFMUYNPT2VZ
-	 sYFk2sMnK8RJNENBt5m9VlwBeQvJgYNHbpJ6opUh6572YB8Z5hyYWRZE5GER1Pu+fL
-	 7yaefd6AV1raTSy+XU3HLJQbdw5X7h8RmmDl1ETDRzVK4FACVvT87ij/F/+dDTvtba
-	 3ahRbpEvVnobrvdLe4ce5uyRvNSYNLN9gsxRpcIyhiEihXj1MeAQGAOf4j4kd/foAT
-	 yiAcmMp4Iap6+dIybibxd3Bqmy1UXYBMtyGbDYFsrhpu8f2JaF8uGOw41rPS1M7EFK
-	 kQB5fooRvJwDA==
-Date: Fri, 13 Oct 2023 17:12:35 +0100
-From: Conor Dooley <conor@kernel.org>
-To: Mark Brown <broonie@kernel.org>
-Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-	Bard Liao <yung-chuan.liao@linux.intel.com>, bard.liao@intel.com,
-	Conor Dooley <conor+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Rob Herring <robh+dt@kernel.org>, alsa-devel@alsa-project.org,
-	devicetree@vger.kernel.org
-Subject: Re: [PATCH v3 4/4] dt-bindings: audio-graph-port: add ch-maps
- property
-Message-ID: <20231013-planner-irate-8e411cc54a48@spud>
-References: <877cnsy6bl.wl-kuninori.morimoto.gx@renesas.com>
- <871qe0y6aq.wl-kuninori.morimoto.gx@renesas.com>
- <20231012-storage-directory-548905001d10@spud>
- <87wmvr8ioy.wl-kuninori.morimoto.gx@renesas.com>
- <ZSllNtm4ZnUnkiV2@finisterre.sirena.org.uk>
+	s=k20201202; t=1697216873;
+	bh=3wWndav4ZOCHssO3po2sHt5o1oR+9DzcNiui7hMgrFo=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=QEd18nDGg3PlWg/kExXRgCEwLslpwFpdnyVZOc91kgGIh4CI0nEqOgd9fVytb4RBt
+	 SLGVp8U5Hql9fdkKQykXAK/Me5wxc3QRfJOHY5b6EFpaH4UiTtKV/BvmbA2wPaTPTE
+	 y2+uqcWLegrdb5DLjRjENyxSQEp1OZ+BjcGrPxTIkTMQEtnNEIevg9mYD9GxxHXLGM
+	 kNDmmHjynx0rK6t7eiUeyZVDY90vILXeMZin+SOJHY4Parmumf42pX2dqDsNx3cD1Y
+	 gUIwORhH7RdEBsNCQi+6KGpAvSlLuYgV7PRWjahEZU2U138anAH/8x0O8IYxeLMonj
+	 ntcaEjRu4TWEw==
+From: Mark Brown <broonie@kernel.org>
+To: lgirdwood@gmail.com, shumingf@realtek.com
+Cc: alsa-devel@alsa-project.org, lars@metafoo.de, flove@realtek.com,
+ oder_chiou@realtek.com, jack.yu@realtek.com, derek.fang@realtek.com
+In-Reply-To: <20231013094525.715518-1-shumingf@realtek.com>
+References: <20231013094525.715518-1-shumingf@realtek.com>
+Subject: Re: [PATCH] ASoC: rt5650: fix the wrong result of key button
+Message-Id: <169721687276.2968842.6312386154323823475.b4-ty@kernel.org>
+Date: Fri, 13 Oct 2023 18:07:52 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="YKanpJSQoSs+i+/r"
-Content-Disposition: inline
-In-Reply-To: <ZSllNtm4ZnUnkiV2@finisterre.sirena.org.uk>
-Message-ID-Hash: PAOTC3L7IQL65MN5VTGRKFJHAZR5SYXF
-X-Message-ID-Hash: PAOTC3L7IQL65MN5VTGRKFJHAZR5SYXF
-X-MailFrom: conor@kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-0438c
+Message-ID-Hash: 255TO2JXEGIVOHJAMW634UVPYMYP7MNP
+X-Message-ID-Hash: 255TO2JXEGIVOHJAMW634UVPYMYP7MNP
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -92,7 +82,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PAOTC3L7IQL65MN5VTGRKFJHAZR5SYXF/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/255TO2JXEGIVOHJAMW634UVPYMYP7MNP/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -101,63 +91,36 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+On Fri, 13 Oct 2023 17:45:25 +0800, shumingf@realtek.com wrote:
+> The RT5650 should enable a power setting for button detection to avoid the wrong result.
+> 
+> 
 
---YKanpJSQoSs+i+/r
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Applied to
 
-On Fri, Oct 13, 2023 at 04:41:42PM +0100, Mark Brown wrote:
-> On Fri, Oct 13, 2023 at 12:33:34AM +0000, Kuninori Morimoto wrote:
->=20
-> > > > +      ch-maps:
-> > > > +        $ref: /schemas/types.yaml#/definitions/uint32-array
->=20
-> > > I only got this one patch, so I have no context at all for this chang=
-e.
-> > > Given that, and since I know almost nothing about sound stuff...
-> > (snip)
-> > > ...I have absolutely no idea how I would populate "ch_maps" correctly.
-> > > Please describe (in the binding) what this property actually does
-> > > & how to use it. Also, properties use -s not _s.
->=20
-> > Some Sound want to use multiple connections between CPUs (N) and Codecs=
- (M).
-> > Current audio-graph-card2 driver is already supporting 1:N / N:1 / N:N
-> > connections, this patch expand it.
->=20
-> Some of this explanation needs to go into the binding - someone reading
-> the binding should really be able to figure out what numbers to put in
-> there without looking at the code.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-Absolutely :)
+Thanks!
 
-> > ch-maps =3D <0 0 1> means,=20
-> > 	cpu0 <-> codec0
-> > 	cpu1 <-> codec0
-> > 	cpu2 <-> codec1
+[1/1] ASoC: rt5650: fix the wrong result of key button
+      commit: f88dfbf333b3661faff996bb03af2024d907b76a
 
-What happens when you want to convey that codec0 & codec1 are both
-connected to cpu0 & codec2 is connected to cpu1?
-How would that be described in a DT?
-Or is that not something anyone would even want to do?
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-> > Thank you for your help !!
->=20
-> So probably somthing along the lines of saying "there should be one
-> element in the array for each CPU DAI, this should be the CODEC number
-> to route to" (that's probably still a bit unclear but roughly that).
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---YKanpJSQoSs+i+/r
-Content-Type: application/pgp-signature; name="signature.asc"
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
------BEGIN PGP SIGNATURE-----
+Thanks,
+Mark
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZSlscwAKCRB4tDGHoIJi
-0mMmAP9Nb483b0dBaBUFHXG0WX2fOcV2+9tOiuO5YHM7z5uF2wD/c5bcMJsmpzS0
-yqb+QJFoKLGVpbitjhIhLtUc975zRgk=
-=88E7
------END PGP SIGNATURE-----
-
---YKanpJSQoSs+i+/r--
