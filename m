@@ -4,76 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C9F44CDB484
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Oct 2023 17:11:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C49B8CDB47E
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Oct 2023 17:38:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B0BDA85D;
-	Fri, 13 Oct 2023 19:10:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B0BDA85D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1B25484A;
+	Fri, 13 Oct 2023 19:38:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1B25484A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1697217075;
-	bh=skmjxOUJLbI5ygBC/KBxQoBx8cL7mS97WiCTqeCHlYw=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=IbbcwBiVHK5M+C+LYYTEKUb/kGbpEIdNs2qoc1L28u85qBvJ8205RTvEAidTNjhfj
-	 BG37HPvCERiTEq1TQppYc7IDw/Zxz3fSDix/31SRPXlPNIJVmLf70LlVPX3L/eu3+t
-	 rJ9YysnTj8DJujOPz9CLQB86SYQFIwdabEZMeHM4=
+	s=default; t=1697218734;
+	bh=HJT283gufmNTKZ1HBQ/5iGWVvMQLBiV0kx1VBpmJJ2o=;
+	h=From:Date:Subject:To:Cc:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=RiSNf5XD1N6DJnzY1xnVtKzr1151mO+WPj0oSf+dkTnw9lZrE5gwoZPAXCAOAxtkc
+	 FLl7jJjbmOm6+4gg2bCrVyLgwkbOSZGiney8UAAWBJn8Rx6VeS5mjO6Ik58rxJeHDh
+	 7433K3QxEHbp4NG4RUq09lJDp3GMt7+ubEOtAWX8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5FDDAF80557; Fri, 13 Oct 2023 19:09:35 +0200 (CEST)
+	id 91EB4F8019B; Fri, 13 Oct 2023 19:37:54 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 29764F8055B;
-	Fri, 13 Oct 2023 19:09:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 08710F802BE;
+	Fri, 13 Oct 2023 19:37:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 62193F8019B; Fri, 13 Oct 2023 19:09:07 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+	id D856EF802BE; Fri, 13 Oct 2023 19:37:48 +0200 (CEST)
+Received: from sin.source.kernel.org (sin.source.kernel.org
+ [IPv6:2604:1380:40e1:4800::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B9B6FF8027B
-	for <alsa-devel@alsa-project.org>; Fri, 13 Oct 2023 19:07:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B9B6FF8027B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 448C1F8019B
+	for <alsa-devel@alsa-project.org>; Fri, 13 Oct 2023 19:37:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 448C1F8019B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=f6itFyHD
+ header.s=k20201202 header.b=Hh2dLgaV
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id B917B61017;
-	Fri, 13 Oct 2023 17:07:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61657C433C7;
-	Fri, 13 Oct 2023 17:07:49 +0000 (UTC)
+	by sin.source.kernel.org (Postfix) with ESMTP id 0799FCE3209;
+	Fri, 13 Oct 2023 17:37:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA7FEC433C8;
+	Fri, 13 Oct 2023 17:37:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1697216871;
-	bh=skmjxOUJLbI5ygBC/KBxQoBx8cL7mS97WiCTqeCHlYw=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=f6itFyHDrYdvbyZDsMDWGzFqb8O7C8l63+AVPb89k+uKG7H6Rvft++laXaoArqLyJ
-	 2+yq94fOPSwOcYFthT/z0U/qbCE6s5tOF7gHjzjFExqPTsaId1RsXf4lP5VQtUbxlW
-	 ExM2c1nJpmnh/3vOy7xDjDZZ3uQl9WdjlM3158a5p7G+FYQOKwI/QW8pMuBmqJdEZY
-	 0JxPZYEPAWkXzdmtaJkINQaASZCkyZ2edMrUp8iZeRMDrtUY6gtBYvlqfUnYzB9217
-	 8RXgih72ubhgM3RDJsApIUZwrPbuUaLzNEFifpBktdMPG34uc4G7kzzWHayp1AGg3s
-	 nS+G1QYVCljDg==
+	s=k20201202; t=1697218658;
+	bh=HJT283gufmNTKZ1HBQ/5iGWVvMQLBiV0kx1VBpmJJ2o=;
+	h=From:Date:Subject:To:Cc:From;
+	b=Hh2dLgaVMsg08SS9GArO1W/6DeLTcXQhQ5sUQbYuB26xBHcm48kAyKz28jwDPPkF/
+	 OEwu1nH+YpE9d0Yfvm1bVR5exlTowmYY4KjepN07FD7NZ2hfCwsOwguvuorkH24hX5
+	 eUJHm+cwxKiyRstBVYfj9pRBNSgjBpMi0qKCrl4tVn2pSDZNC8jsSo5mOu8BvC0PpQ
+	 ZuQqpA5O0P6YoyrLVCGjf84zgEcr2I0umirU/hT78DLnpURA0H+wpdxb9EOJ2cwuwY
+	 +wh+eF9L406GFV2sw0AKgytpy/UuHo23vISKpMj2+/3eod5vizMR6n1Vt7lLWyD/U3
+	 tP0BRGaxgw0YA==
 From: Mark Brown <broonie@kernel.org>
-To: Roy Chateau <roy.chateau@mep-info.com>
-Cc: Shenghao Ding <shenghao-ding@ti.com>, Kevin Lu <kevin-lu@ti.com>,
- Baojun Xu <baojun.xu@ti.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20231013110239.473123-1-roy.chateau@mep-info.com>
-References: <20231013110239.473123-1-roy.chateau@mep-info.com>
-Subject: Re: [PATCH] ASoC: codecs: tas2780: Fix log of failed reset via
- I2C.
-Message-Id: <169721687019.2968842.13695931645768185437.b4-ty@kernel.org>
-Date: Fri, 13 Oct 2023 18:07:50 +0100
+Date: Fri, 13 Oct 2023 18:37:33 +0100
+Subject: [PATCH] ASoC: dwc: Fix non-DT instantiation
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+Message-Id: <20231013-asoc-fix-dwc-v1-1-63211bb746b9@kernel.org>
+X-B4-Tracking: v=1; b=H4sIAFyAKWUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDI2NDA0Nj3cTi/GTdtMwK3ZTyZF0DMyNLk0TjFGMzc1MloJaColSgFNi46Nj
+ aWgBOVaAjXgAAAA==
+To: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, Xingyu Wu <xingyu.wu@starfivetech.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ Mark Brown <broonie@kernel.org>
 X-Mailer: b4 0.13-dev-0438c
-Message-ID-Hash: 2E4CPLRHLMUPA5CISGONJA2SAKNSHOQQ
-X-Message-ID-Hash: 2E4CPLRHLMUPA5CISGONJA2SAKNSHOQQ
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1128; i=broonie@kernel.org;
+ h=from:subject:message-id; bh=HJT283gufmNTKZ1HBQ/5iGWVvMQLBiV0kx1VBpmJJ2o=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBlKYBgq42EeqOZ620pMX7z5W9hELZSAYwy4YNTO
+ S+uXAn88ZiJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZSmAYAAKCRAk1otyXVSH
+ 0NgfB/4xxyVdMMJQWFk24fk2jmqzHiHSBcyUZxRVj8niv5wH4r3RjJx6aZToR776cRsXQfCR228
+ ZD4MHe/kyNV4aIpS7dpt3vU9eDVaugyovL1FJMPbrgXKokQNlqAQevLZgmzDCl2aknq2dgNxhjA
+ h/j1ZAWqFFXrpd62ntGfmMaXX2SyGTpneB9rJ47egALZo2lXuqY+bHnxNUKajLHJoV9SfVYgxux
+ myxewmqBUBmJA8FXtTjguqwdGxtF5iFbWtW6+HNEwCcY109lNthgo8omZbfDC4QOv9jc2+eUAGT
+ pS6eOJ6X0ehJAUa0f9Fz2PjQeZkZBnG/MAP5pW+JQOpEB4UL
+X-Developer-Key: i=broonie@kernel.org; a=openpgp;
+ fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
+Message-ID-Hash: 3EUJW2PQ63EIR3FCE3M5T5LOJ7WGHBFD
+X-Message-ID-Hash: 3EUJW2PQ63EIR3FCE3M5T5LOJ7WGHBFD
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -86,7 +95,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2E4CPLRHLMUPA5CISGONJA2SAKNSHOQQ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3EUJW2PQ63EIR3FCE3M5T5LOJ7WGHBFD/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -95,36 +104,36 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, 13 Oct 2023 13:02:39 +0200, Roy Chateau wrote:
-> Correctly log failures of reset via I2C.
-> 
-> 
+Commit d6d6c513f5d2 ("ASoC: dwc: Use ops to get platform data")
+converted the DesignWare I2S driver to use a DT specific function to
+obtain platform data but this breaks at least non-DT systems such as
+AMD.  Revert it.
 
-Applied to
+Fixes: d6d6c513f5d2 ("ASoC: dwc: Use ops to get platform data")
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/dwc/dwc-i2s.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+diff --git a/sound/soc/dwc/dwc-i2s.c b/sound/soc/dwc/dwc-i2s.c
+index 2ff619a29655..c04466f5492e 100644
+--- a/sound/soc/dwc/dwc-i2s.c
++++ b/sound/soc/dwc/dwc-i2s.c
+@@ -917,7 +917,7 @@ static int jh7110_i2stx0_clk_cfg(struct i2s_clk_config_data *config)
+ 
+ static int dw_i2s_probe(struct platform_device *pdev)
+ {
+-	const struct i2s_platform_data *pdata = of_device_get_match_data(&pdev->dev);
++	const struct i2s_platform_data *pdata = pdev->dev.platform_data;
+ 	struct dw_i2s_dev *dev;
+ 	struct resource *res;
+ 	int ret, irq;
 
-Thanks!
+---
+base-commit: fbfe616ad40c06d68b83b657a94cd2e709dda37b
+change-id: 20231013-asoc-fix-dwc-06294a3d3675
 
-[1/1] ASoC: codecs: tas2780: Fix log of failed reset via I2C.
-      commit: 4e9a429ae80657bdc502d3f5078e2073656ec5fd
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+Best regards,
+-- 
+Mark Brown <broonie@kernel.org>
 
