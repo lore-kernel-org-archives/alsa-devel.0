@@ -4,76 +4,127 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 17622CDB482
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Oct 2023 09:15:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 647E2CDB482
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Oct 2023 09:16:16 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EE8F584A;
-	Fri, 13 Oct 2023 11:15:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EE8F584A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 298D0E7A;
+	Fri, 13 Oct 2023 11:15:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 298D0E7A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1697188554;
-	bh=QFjbNabZmAH/NrcK4t/DK9/pQZVGs98hlEG4pYqT1Fw=;
-	h=From:To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=MWfr+D0RWy0E6RE44T/xqUZi03dP3PhBBnCo8P+AX5alf1ljvd4rYx6H5RTgS6kps
-	 eKLysPcq9yiP+tuwbI+99N3W3JETakLb2Q32alr8KTh9tFwJVlkbMOf6gvIjaw93XZ
-	 JnY1LW/Q6I+6oYu9swsrB6P+FPSHqaVLTmvXT4J8=
+	s=default; t=1697188574;
+	bh=5WjPqQRfjVS0FEJKsuD/gBa+/p/RPvoZNjSd6DRi/I8=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=oI6v9mia7Ja4yj+T6B9VBTNDxobBoEvd+QvskzjIyLSbjSuGrKEfQHts7N6S35Gxu
+	 AY3B5+LZtw14+eQTxC3+HBogg4jdG5z6eQw6vF7JMsUqozrrXlYqnqqBNY1pf0ue5W
+	 dijfedpLa0C4DRshUOsMmPg4tFtHYp2MTmYn6ZW0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BB440F805EC; Fri, 13 Oct 2023 11:12:33 +0200 (CEST)
+	id 64C01F80567; Fri, 13 Oct 2023 11:15:23 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3C1C6F805E5;
-	Fri, 13 Oct 2023 11:12:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EA40EF80536;
+	Fri, 13 Oct 2023 11:15:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1DBF9F802BE; Fri, 13 Oct 2023 11:11:57 +0200 (CEST)
-Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 0524AF80310; Fri, 13 Oct 2023 11:15:17 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 476D3F80310
-	for <alsa-devel@alsa-project.org>; Fri, 13 Oct 2023 11:09:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 476D3F80310
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 9845E1A19F2;
-	Fri, 13 Oct 2023 11:09:03 +0200 (CEST)
-Received: from aprdc01srsp001v.ap-rdc01.nxp.com
- (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
-	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 5F4C01A156F;
-	Fri, 13 Oct 2023 11:09:03 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net
- [10.192.224.44])
-	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 655F21802200;
-	Fri, 13 Oct 2023 17:09:01 +0800 (+08)
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
-To: hverkuil@xs4all.nl,
-	sakari.ailus@iki.fi,
-	tfiga@chromium.org,
-	m.szyprowski@samsung.com,
-	mchehab@kernel.org,
-	linux-media@vger.kernel.org,
+	by alsa1.perex.cz (Postfix) with ESMTPS id 35C66F80166;
+	Fri, 13 Oct 2023 11:15:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 35C66F80166
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=lLi3T9YO;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=eCWLIDHO
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id C174921871;
+	Fri, 13 Oct 2023 09:15:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1697188510;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=efOBm3e13ZjEOj+ZGaXSfOb0Hkfg1ATCQXj1BE9CT/M=;
+	b=lLi3T9YOusq8Wctbl0n66KEIJZRhNfDyerrLnb7Pe1zQWNzFKaPw2kLCiAhooVCe2YxEbv
+	LwUWxooe0UHbboAP+gPikEwlO0HmLPtg5nwJbGOADV8AR/+U2X7OuBwexobfmYdT9m/kyc
+	JfyncHoug92gPyW4WDtR13Ah14H0yyc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1697188510;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=efOBm3e13ZjEOj+ZGaXSfOb0Hkfg1ATCQXj1BE9CT/M=;
+	b=eCWLIDHO5dkzaxRvzaXYHOIOJKMneeEod4anzkMO5Ri2hw3Qyp2EW6bVrXKOds4pW+o/po
+	Mu3gwtC1+/Y2qYAw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 733411358F;
+	Fri, 13 Oct 2023 09:15:10 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id zEk2G54KKWU/DQAAMHmgww
+	(envelope-from <tiwai@suse.de>); Fri, 13 Oct 2023 09:15:10 +0000
+Date: Fri, 13 Oct 2023 11:15:09 +0200
+Message-ID: <87il7aopcy.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Cc: alsa-devel@alsa-project.org,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	Cezary Rojewski <cezary.rojewski@intel.com>,
+	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+	Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+	Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+	Bard Liao <yung-chuan.liao@linux.intel.com>,
+	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+	Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+	Mark Brown <broonie@kernel.org>,
+	Daniel Baluta <daniel.baluta@nxp.com>,
 	linux-kernel@vger.kernel.org,
-	shengjiu.wang@gmail.com,
-	Xiubo.Lee@gmail.com,
-	festevam@gmail.com,
-	nicoleotsuka@gmail.com,
-	lgirdwood@gmail.com,
-	broonie@kernel.org,
-	perex@perex.cz,
-	tiwai@suse.com,
-	alsa-devel@alsa-project.org,
-	linuxppc-dev@lists.ozlabs.org
-Subject: [RFC PATCH v6 03/11] ASoC: fsl_asrc: move fsl_asrc_common.h to
- include/sound
-Date: Fri, 13 Oct 2023 16:30:57 +0800
-Message-Id: <1697185865-27528-4-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1697185865-27528-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1697185865-27528-1-git-send-email-shengjiu.wang@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
-Message-ID-Hash: MEYEJHKRHJVKEAOAITKWDISQC2O4LXB3
-X-Message-ID-Hash: MEYEJHKRHJVKEAOAITKWDISQC2O4LXB3
-X-MailFrom: shengjiu.wang@nxp.com
+	sound-open-firmware@alsa-project.org
+Subject: Re: [PATCH v7 01/13] ASoC: SOF: core: Ensure sof_ops_free() is still
+ called when probe never ran.
+In-Reply-To: <20231009115437.99976-2-maarten.lankhorst@linux.intel.com>
+References: <20231009115437.99976-1-maarten.lankhorst@linux.intel.com>
+	<20231009115437.99976-2-maarten.lankhorst@linux.intel.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spamd-Result: default: False [-3.10 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-3.00)[-1.000];
+	 MIME_GOOD(-0.10)[text/plain];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-1.00)[-1.000];
+	 RCPT_COUNT_TWELVE(0.00)[15];
+	 MID_CONTAINS_FROM(1.00)[];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_COUNT_TWO(0.00)[2];
+	 RCVD_TLS_ALL(0.00)[]
+Message-ID-Hash: WR45YG6HIG2WX5RLQ6L77HYNWTBBIFHQ
+X-Message-ID-Hash: WR45YG6HIG2WX5RLQ6L77HYNWTBBIFHQ
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -85,7 +136,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MEYEJHKRHJVKEAOAITKWDISQC2O4LXB3/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WR45YG6HIG2WX5RLQ6L77HYNWTBBIFHQ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -94,61 +145,57 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Move fsl_asrc_common.h to include/sound that it can be
-included from other drivers.
+On Mon, 09 Oct 2023 13:54:25 +0200,
+Maarten Lankhorst wrote:
+> 
+> In an effort to not call sof_ops_free twice, we stopped running it when
+> probe was aborted.
+> 
+> Check the result of cancel_work_sync to see if this was the case.
+> 
+> Fixes: 31bb7bd9ffee ("ASoC: SOF: core: Only call sof_ops_free() on remove if the probe was successful")
+> Cc: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+> Acked-by: Mark Brown <broonie@kernel.org>
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
- {sound/soc/fsl => include/sound}/fsl_asrc_common.h | 0
- sound/soc/fsl/fsl_asrc.h                           | 2 +-
- sound/soc/fsl/fsl_asrc_dma.c                       | 2 +-
- sound/soc/fsl/fsl_easrc.h                          | 2 +-
- 4 files changed, 3 insertions(+), 3 deletions(-)
- rename {sound/soc/fsl => include/sound}/fsl_asrc_common.h (100%)
+Your Signed-off-by tag is missing.
 
-diff --git a/sound/soc/fsl/fsl_asrc_common.h b/include/sound/fsl_asrc_common.h
-similarity index 100%
-rename from sound/soc/fsl/fsl_asrc_common.h
-rename to include/sound/fsl_asrc_common.h
-diff --git a/sound/soc/fsl/fsl_asrc.h b/sound/soc/fsl/fsl_asrc.h
-index 1c492eb237f5..66544624de7b 100644
---- a/sound/soc/fsl/fsl_asrc.h
-+++ b/sound/soc/fsl/fsl_asrc.h
-@@ -10,7 +10,7 @@
- #ifndef _FSL_ASRC_H
- #define _FSL_ASRC_H
- 
--#include  "fsl_asrc_common.h"
-+#include  <sound/fsl_asrc_common.h>
- 
- #define ASRC_M2M_INPUTFIFO_WML		0x4
- #define ASRC_M2M_OUTPUTFIFO_WML		0x2
-diff --git a/sound/soc/fsl/fsl_asrc_dma.c b/sound/soc/fsl/fsl_asrc_dma.c
-index 05a7d1588d20..b034fee3f1f4 100644
---- a/sound/soc/fsl/fsl_asrc_dma.c
-+++ b/sound/soc/fsl/fsl_asrc_dma.c
-@@ -12,7 +12,7 @@
- #include <sound/dmaengine_pcm.h>
- #include <sound/pcm_params.h>
- 
--#include "fsl_asrc_common.h"
-+#include <sound/fsl_asrc_common.h>
- 
- #define FSL_ASRC_DMABUF_SIZE	(256 * 1024)
- 
-diff --git a/sound/soc/fsl/fsl_easrc.h b/sound/soc/fsl/fsl_easrc.h
-index c9f770862662..a24e540876a4 100644
---- a/sound/soc/fsl/fsl_easrc.h
-+++ b/sound/soc/fsl/fsl_easrc.h
-@@ -9,7 +9,7 @@
- #include <sound/asound.h>
- #include <linux/dma/imx-dma.h>
- 
--#include "fsl_asrc_common.h"
-+#include <sound/fsl_asrc_common.h>
- 
- /* EASRC Register Map */
- 
--- 
-2.34.1
+Could you resubmit?
 
+
+thanks,
+
+Takashi
+
+> ---
+>  sound/soc/sof/core.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+> 
+> diff --git a/sound/soc/sof/core.c b/sound/soc/sof/core.c
+> index 2d1616b81485c..0938b259f7034 100644
+> --- a/sound/soc/sof/core.c
+> +++ b/sound/soc/sof/core.c
+> @@ -459,9 +459,10 @@ int snd_sof_device_remove(struct device *dev)
+>  	struct snd_sof_dev *sdev = dev_get_drvdata(dev);
+>  	struct snd_sof_pdata *pdata = sdev->pdata;
+>  	int ret;
+> +	bool aborted = false;
+>  
+>  	if (IS_ENABLED(CONFIG_SND_SOC_SOF_PROBE_WORK_QUEUE))
+> -		cancel_work_sync(&sdev->probe_work);
+> +		aborted = cancel_work_sync(&sdev->probe_work);
+>  
+>  	/*
+>  	 * Unregister any registered client device first before IPC and debugfs
+> @@ -487,6 +488,9 @@ int snd_sof_device_remove(struct device *dev)
+>  		snd_sof_free_debug(sdev);
+>  		snd_sof_remove(sdev);
+>  		sof_ops_free(sdev);
+> +	} else if (aborted) {
+> +		/* probe_work never ran */
+> +		sof_ops_free(sdev);
+>  	}
+>  
+>  	/* release firmware */
+> -- 
+> 2.39.2
+> 
