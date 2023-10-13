@@ -4,44 +4,45 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B4093CDB47E
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Oct 2023 10:44:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 489F6CDB483
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Oct 2023 10:44:35 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DD928826;
-	Fri, 13 Oct 2023 12:43:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DD928826
+	by alsa0.perex.cz (Postfix) with ESMTPS id 40FCD857;
+	Fri, 13 Oct 2023 12:43:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 40FCD857
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1697193851;
-	bh=zqNaDxvsWwEb9aJcx7ajPMh4R3eECRLYG9LwAz488y0=;
-	h=From:To:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=IsWcNJz+CDzM6/T+KgKdUxCQEnw0URpUPHzCpz7tBaSKmxzmRyN/iMSLolJozIFVv
-	 y6AyzIMWXEzCq2btCrBJcL/C73IaLK+FOHLyO/ZHZZ7KH+MI2m2MxXo8ir8JnCtiUl
-	 LX1Mnh7yv1mDaEhUXEPRJK/nD/iF1vCCfp0VPBy4=
+	s=default; t=1697193873;
+	bh=mILfmO/BxDrzYMqQg3NVAr/5DO1JJ+E4vgJS5HunMec=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=i6kCQgYVrKEqZV5iA1YiijIceeNrJUw6cf5HVlls7Wkb+45K6AdriAfkEC184g6tE
+	 1nibIqdwBBAOFfrFZvGGTI7K9oXTDbeeUfJDYbTglhRvarQBj+m6jCpZV6Po+22It3
+	 qmIySHPOQghQCH9kBkS+8XyBqucL7WdWVsu7lBm4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1BE4FF80552; Fri, 13 Oct 2023 12:42:51 +0200 (CEST)
+	id 1997DF80571; Fri, 13 Oct 2023 12:42:54 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 259FFF80166;
-	Fri, 13 Oct 2023 12:42:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A0D2EF8055C;
+	Fri, 13 Oct 2023 12:42:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BEFA6F802E8; Fri, 13 Oct 2023 12:42:46 +0200 (CEST)
-Received: from out28-74.mail.aliyun.com (out28-74.mail.aliyun.com
- [115.124.28.74])
+	id 817EFF802BE; Fri, 13 Oct 2023 12:42:48 +0200 (CEST)
+Received: from out28-197.mail.aliyun.com (out28-197.mail.aliyun.com
+ [115.124.28.197])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 93A43F8019B
-	for <alsa-devel@alsa-project.org>; Fri, 13 Oct 2023 12:42:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 93A43F8019B
+	by alsa1.perex.cz (Postfix) with ESMTPS id F27AFF80166
+	for <alsa-devel@alsa-project.org>; Fri, 13 Oct 2023 12:42:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F27AFF80166
 X-Alimail-AntiSpam: 
- AC=CONTINUE;BC=0.251197|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.00428145-6.11179e-05-0.995657;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047213;MF=wangweidong.a@awinic.com;NM=1;PH=DS;RN=25;RT=25;SR=0;TI=SMTPD_---.V-L310G_1697193742;
+ AC=CONTINUE;BC=0.4424414|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0223272-0.000603026-0.97707;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047192;MF=wangweidong.a@awinic.com;NM=1;PH=DS;RN=25;RT=25;SR=0;TI=SMTPD_---.V-L318f_1697193750;
 Received: from ubuntu-VirtualBox..(mailfrom:wangweidong.a@awinic.com
- fp:SMTPD_---.V-L310G_1697193742)
+ fp:SMTPD_---.V-L318f_1697193750)
           by smtp.aliyun-inc.com;
-          Fri, 13 Oct 2023 18:42:29 +0800
+          Fri, 13 Oct 2023 18:42:37 +0800
 From: wangweidong.a@awinic.com
 To: lgirdwood@gmail.com,
 	broonie@kernel.org,
@@ -68,14 +69,16 @@ To: lgirdwood@gmail.com,
 	alsa-devel@alsa-project.org,
 	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH V1 0/3] ASoC: codecs: Add aw88399 amplifier driver
-Date: Fri, 13 Oct 2023 18:42:17 +0800
-Message-ID: <20231013104220.279953-1-wangweidong.a@awinic.com>
+Subject: [PATCH V1 1/3] ASoC: dt-bindings: Add schema for "awinic,aw88399"
+Date: Fri, 13 Oct 2023 18:42:18 +0800
+Message-ID: <20231013104220.279953-2-wangweidong.a@awinic.com>
 X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20231013104220.279953-1-wangweidong.a@awinic.com>
+References: <20231013104220.279953-1-wangweidong.a@awinic.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: F7PTES2775RGGZAWE437NULGHHADY23O
-X-Message-ID-Hash: F7PTES2775RGGZAWE437NULGHHADY23O
+Message-ID-Hash: NAN7RFWFIOKUTMKAQWHUGO6OB6HPBOEC
+X-Message-ID-Hash: NAN7RFWFIOKUTMKAQWHUGO6OB6HPBOEC
 X-MailFrom: wangweidong.a@awinic.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -88,7 +91,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/F7PTES2775RGGZAWE437NULGHHADY23O/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NAN7RFWFIOKUTMKAQWHUGO6OB6HPBOEC/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -101,27 +104,23 @@ From: Weidong Wang <wangweidong.a@awinic.com>
 
 Add the awinic,aw88399 property to the awinic,aw88395.yaml file.
 
-Add i2c and amplifier registration for
-aw88399 and their associated operation functions.
+Signed-off-by: Weidong Wang <wangweidong.a@awinic.com>
+---
+ Documentation/devicetree/bindings/sound/awinic,aw88395.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
-Weidong Wang (3):
-  ASoC: dt-bindings: Add schema for "awinic,aw88399"
-  ASoC: codecs: Add code for bin parsing compatible with aw88399
-  ASoC: codecs: Add aw88399 amplifier driver
-
- .../bindings/sound/awinic,aw88395.yaml        |    1 +
- sound/soc/codecs/Kconfig                      |   14 +
- sound/soc/codecs/Makefile                     |    2 +
- sound/soc/codecs/aw88395/aw88395_lib.c        |    3 +
- sound/soc/codecs/aw88395/aw88395_reg.h        |    1 +
- sound/soc/codecs/aw88399.c                    | 1964 +++++++++++++++++
- sound/soc/codecs/aw88399.h                    |  615 ++++++
- 7 files changed, 2600 insertions(+)
- create mode 100644 sound/soc/codecs/aw88399.c
- create mode 100644 sound/soc/codecs/aw88399.h
-
-
-base-commit: ce583d5fb9d3f4e20473b9d5619d51ea3cc92283
+diff --git a/Documentation/devicetree/bindings/sound/awinic,aw88395.yaml b/Documentation/devicetree/bindings/sound/awinic,aw88395.yaml
+index 4051c2538caf..db36b01206b7 100644
+--- a/Documentation/devicetree/bindings/sound/awinic,aw88395.yaml
++++ b/Documentation/devicetree/bindings/sound/awinic,aw88395.yaml
+@@ -22,6 +22,7 @@ properties:
+     enum:
+       - awinic,aw88395
+       - awinic,aw88261
++      - awinic,aw88399
+ 
+   reg:
+     maxItems: 1
 -- 
 2.41.0
 
