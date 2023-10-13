@@ -4,47 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1F7B9CDB483
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Oct 2023 09:14:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EA1B5CDB47E
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Oct 2023 09:14:50 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D4E55E0D;
-	Fri, 13 Oct 2023 11:13:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D4E55E0D
+	by alsa0.perex.cz (Postfix) with ESMTPS id D1F4CA4D;
+	Fri, 13 Oct 2023 11:13:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D1F4CA4D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1697188465;
-	bh=aNOdGAd+o3YHO3/+UDm3qA4TpiauDtvPFqNyhE6WGDE=;
+	s=default; t=1697188488;
+	bh=bw1hT4mALZmwCoVYztQUPlyD3UjcBf5mESvjtF8l90Y=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=nYagkwfAc4oXOCJyeF8RAkMv0OeUEnNohSsV8AmaO6eO6HvXrqP6sfep7mGK06nqt
-	 LHiBgZAbI0ly+FeMqtH5zOgiYVHRm6qK/iq926/FoCvVjJSOkuJFYISiwjsxeuxuQ7
-	 4Qg2gTLsBYSbZrB94wG43rHhQoiO4buXX/XO/SAg=
+	b=m6mxUnIp6lJAUTIYZJ2bRPSjfLEj+XMXnYXmAJ7tQbWYeNUMGWAJUrwh9MoRzlwU8
+	 3JNmZ/lBFPBQghF+EIjcVK3dfHPORTHPEPtdmKzTYqelmaiGcLyFJ8VTCK4f/5LM6R
+	 czpxl1GceCLSCAFiA57p7CEOL3Oo7kN4yGGohmgY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5F2CCF805A9; Fri, 13 Oct 2023 11:12:22 +0200 (CEST)
+	id 3301BF805B6; Fri, 13 Oct 2023 11:12:25 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id BC91AF805AA;
-	Fri, 13 Oct 2023 11:12:21 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 95025F805AC;
+	Fri, 13 Oct 2023 11:12:24 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2C889F80536; Fri, 13 Oct 2023 11:09:37 +0200 (CEST)
-Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
+	id 350CBF80536; Fri, 13 Oct 2023 11:09:47 +0200 (CEST)
+Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 18B48F80552
-	for <alsa-devel@alsa-project.org>; Fri, 13 Oct 2023 11:09:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 18B48F80552
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id B0C48201A42;
-	Fri, 13 Oct 2023 11:09:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 248FBF80166
+	for <alsa-devel@alsa-project.org>; Fri, 13 Oct 2023 11:09:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 248FBF80166
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id B8E4A1A1558;
+	Fri, 13 Oct 2023 11:09:15 +0200 (CEST)
 Received: from aprdc01srsp001v.ap-rdc01.nxp.com
  (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
-	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 4A7702015BB;
-	Fri, 13 Oct 2023 11:09:12 +0200 (CEST)
+	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 505D61A1555;
+	Fri, 13 Oct 2023 11:09:15 +0200 (CEST)
 Received: from localhost.localdomain (shlinux2.ap.freescale.net
  [10.192.224.44])
-	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 46E4F183ACAE;
-	Fri, 13 Oct 2023 17:09:10 +0800 (+08)
+	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 555C41802200;
+	Fri, 13 Oct 2023 17:09:13 +0800 (+08)
 From: Shengjiu Wang <shengjiu.wang@nxp.com>
 To: hverkuil@xs4all.nl,
 	sakari.ailus@iki.fi,
@@ -63,15 +63,16 @@ To: hverkuil@xs4all.nl,
 	tiwai@suse.com,
 	alsa-devel@alsa-project.org,
 	linuxppc-dev@lists.ozlabs.org
-Subject: [RFC PATCH v6 09/11] media: uapi: Add audio rate controls support
-Date: Fri, 13 Oct 2023 16:31:03 +0800
-Message-Id: <1697185865-27528-10-git-send-email-shengjiu.wang@nxp.com>
+Subject: [RFC PATCH v6 11/11] media: viaudm2m: add virtual driver for audio
+ memory to memory
+Date: Fri, 13 Oct 2023 16:31:05 +0800
+Message-Id: <1697185865-27528-12-git-send-email-shengjiu.wang@nxp.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1697185865-27528-1-git-send-email-shengjiu.wang@nxp.com>
 References: <1697185865-27528-1-git-send-email-shengjiu.wang@nxp.com>
 X-Virus-Scanned: ClamAV using ClamSMTP
-Message-ID-Hash: WBMSIQDQVBC3DLROI6UHMV3QCS64SPQK
-X-Message-ID-Hash: WBMSIQDQVBC3DLROI6UHMV3QCS64SPQK
+Message-ID-Hash: KIX6BXLLYKA4L7MPX6C327ZK4AU2226S
+X-Message-ID-Hash: KIX6BXLLYKA4L7MPX6C327ZK4AU2226S
 X-MailFrom: shengjiu.wang@nxp.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -84,7 +85,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WBMSIQDQVBC3DLROI6UHMV3QCS64SPQK/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KIX6BXLLYKA4L7MPX6C327ZK4AU2226S/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -93,234 +94,766 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Fixed point controls are used by the user to configure
-the audio sample rate to driver.
+Audio memory to memory virtual driver use video memory to memory
+virtual driver vim2m.c as example. The main difference is
+device type is VFL_TYPE_AUDIO and device cap type is V4L2_CAP_AUDIO_M2M.
 
-Add V4L2_CID_ASRC_SOURCE_RATE and V4L2_CID_ASRC_DEST_RATE
-new IDs for ASRC rate control.
+The device_run function is a dummy function, which is simply
+copy the data from input buffer to output buffer.
 
 Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 ---
- .../userspace-api/media/v4l/common.rst        |  1 +
- .../media/v4l/ext-ctrls-fixed-point.rst       | 36 +++++++++++++++++++
- .../media/v4l/vidioc-g-ext-ctrls.rst          |  4 +++
- .../media/v4l/vidioc-queryctrl.rst            |  7 ++++
- .../media/videodev2.h.rst.exceptions          |  1 +
- drivers/media/v4l2-core/v4l2-ctrls-core.c     |  5 +++
- drivers/media/v4l2-core/v4l2-ctrls-defs.c     |  4 +++
- include/media/v4l2-ctrls.h                    |  2 ++
- include/uapi/linux/v4l2-controls.h            | 13 +++++++
- include/uapi/linux/videodev2.h                |  3 ++
- 10 files changed, 76 insertions(+)
- create mode 100644 Documentation/userspace-api/media/v4l/ext-ctrls-fixed-point.rst
+ drivers/media/test-drivers/Kconfig    |   9 +
+ drivers/media/test-drivers/Makefile   |   1 +
+ drivers/media/test-drivers/viaudm2m.c | 707 ++++++++++++++++++++++++++
+ 3 files changed, 717 insertions(+)
+ create mode 100644 drivers/media/test-drivers/viaudm2m.c
 
-diff --git a/Documentation/userspace-api/media/v4l/common.rst b/Documentation/userspace-api/media/v4l/common.rst
-index ea0435182e44..35707edffb13 100644
---- a/Documentation/userspace-api/media/v4l/common.rst
-+++ b/Documentation/userspace-api/media/v4l/common.rst
-@@ -52,6 +52,7 @@ applicable to all devices.
-     ext-ctrls-fm-rx
-     ext-ctrls-detect
-     ext-ctrls-colorimetry
-+    ext-ctrls-fixed-point
-     fourcc
-     format
-     planar-apis
-diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-fixed-point.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-fixed-point.rst
+diff --git a/drivers/media/test-drivers/Kconfig b/drivers/media/test-drivers/Kconfig
+index 459b433e9fae..143d829e1b67 100644
+--- a/drivers/media/test-drivers/Kconfig
++++ b/drivers/media/test-drivers/Kconfig
+@@ -17,6 +17,15 @@ config VIDEO_VIM2M
+ 	  This is a virtual test device for the memory-to-memory driver
+ 	  framework.
+ 
++config VIDEO_VIAUDM2M
++	tristate "Virtual Memory-to-Memory Driver For Audio"
++	depends on VIDEO_DEV
++	select VIDEOBUF2_VMALLOC
++	select V4L2_MEM2MEM_DEV
++	help
++	  This is a virtual audio test device for the memory-to-memory driver
++	  framework.
++
+ source "drivers/media/test-drivers/vicodec/Kconfig"
+ source "drivers/media/test-drivers/vimc/Kconfig"
+ source "drivers/media/test-drivers/vivid/Kconfig"
+diff --git a/drivers/media/test-drivers/Makefile b/drivers/media/test-drivers/Makefile
+index 740714a4584d..a39d27eb53fa 100644
+--- a/drivers/media/test-drivers/Makefile
++++ b/drivers/media/test-drivers/Makefile
+@@ -10,6 +10,7 @@ obj-$(CONFIG_DVB_VIDTV) += vidtv/
+ 
+ obj-$(CONFIG_VIDEO_VICODEC) += vicodec/
+ obj-$(CONFIG_VIDEO_VIM2M) += vim2m.o
++obj-$(CONFIG_VIDEO_VIAUDM2M) += viaudm2m.o
+ obj-$(CONFIG_VIDEO_VIMC) += vimc/
+ obj-$(CONFIG_VIDEO_VIVID) += vivid/
+ obj-$(CONFIG_VIDEO_VISL) += visl/
+diff --git a/drivers/media/test-drivers/viaudm2m.c b/drivers/media/test-drivers/viaudm2m.c
 new file mode 100644
-index 000000000000..2ef6e250580c
+index 000000000000..5fefd616b6c8
 --- /dev/null
-+++ b/Documentation/userspace-api/media/v4l/ext-ctrls-fixed-point.rst
-@@ -0,0 +1,36 @@
-+.. SPDX-License-Identifier: GFDL-1.1-no-invariants-or-later
-+
-+.. _fixed-point-controls:
-+
-+***************************
-+Fixed Point Control Reference
-+***************************
-+
-+These controls are intended to support an asynchronous sample
-+rate converter.
-+
-+.. _v4l2-audio-asrc:
-+
-+``V4L2_CID_ASRC_SOURCE_RATE``
-+    sets the resampler source rate.
-+
-+``V4L2_CID_ASRC_DEST_RATE``
-+    sets the resampler destination rate.
-+
-+.. c:type:: v4l2_ctrl_fixed_point
-+
-+.. cssclass:: longtable
-+
-+.. tabularcolumns:: |p{1.5cm}|p{5.8cm}|p{10.0cm}|
-+
-+.. flat-table:: struct v4l2_ctrl_fixed_point
-+    :header-rows:  0
-+    :stub-columns: 0
-+    :widths:       1 1 2
-+
-+    * - __u32
-+      - ``integer``
-+      - integer part of fixed point value.
-+    * - __s32
-+      - ``fractional``
-+      - fractional part of fixed point value, which is Q31.
-diff --git a/Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst b/Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst
-index f9f73530a6be..1811dabf5c74 100644
---- a/Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst
-+++ b/Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst
-@@ -295,6 +295,10 @@ still cause this situation.
-       - ``p_av1_film_grain``
-       - A pointer to a struct :c:type:`v4l2_ctrl_av1_film_grain`. Valid if this control is
-         of type ``V4L2_CTRL_TYPE_AV1_FILM_GRAIN``.
-+    * - struct :c:type:`v4l2_ctrl_fixed_point` *
-+      - ``p_fixed_point``
-+      - A pointer to a struct :c:type:`v4l2_ctrl_fixed_point`. Valid if this control is
-+        of type ``V4L2_CTRL_TYPE_FIXED_POINT``.
-     * - void *
-       - ``ptr``
-       - A pointer to a compound type which can be an N-dimensional array
-diff --git a/Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst b/Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst
-index 4d38acafe8e1..9285f4f39eed 100644
---- a/Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst
-+++ b/Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst
-@@ -549,6 +549,13 @@ See also the examples in :ref:`control`.
-       - n/a
-       - A struct :c:type:`v4l2_ctrl_av1_film_grain`, containing AV1 Film Grain
-         parameters for stateless video decoders.
-+    * - ``V4L2_CTRL_TYPE_FIXED_POINT``
-+      - n/a
-+      - n/a
-+      - n/a
-+      - A struct :c:type:`v4l2_ctrl_fixed_point`, containing parameter which has
-+        integer part and fractional part, i.e. audio sample rate.
-+
- 
- .. raw:: latex
- 
-diff --git a/Documentation/userspace-api/media/videodev2.h.rst.exceptions b/Documentation/userspace-api/media/videodev2.h.rst.exceptions
-index e61152bb80d1..2faa5a2015eb 100644
---- a/Documentation/userspace-api/media/videodev2.h.rst.exceptions
-+++ b/Documentation/userspace-api/media/videodev2.h.rst.exceptions
-@@ -167,6 +167,7 @@ replace symbol V4L2_CTRL_TYPE_AV1_SEQUENCE :c:type:`v4l2_ctrl_type`
- replace symbol V4L2_CTRL_TYPE_AV1_TILE_GROUP_ENTRY :c:type:`v4l2_ctrl_type`
- replace symbol V4L2_CTRL_TYPE_AV1_FRAME :c:type:`v4l2_ctrl_type`
- replace symbol V4L2_CTRL_TYPE_AV1_FILM_GRAIN :c:type:`v4l2_ctrl_type`
-+replace symbol V4L2_CTRL_TYPE_FIXED_POINT :c:type:`v4l2_ctrl_type`
- 
- # V4L2 capability defines
- replace define V4L2_CAP_VIDEO_CAPTURE device-capabilities
-diff --git a/drivers/media/v4l2-core/v4l2-ctrls-core.c b/drivers/media/v4l2-core/v4l2-ctrls-core.c
-index a662fb60f73f..7a616ac91059 100644
---- a/drivers/media/v4l2-core/v4l2-ctrls-core.c
-+++ b/drivers/media/v4l2-core/v4l2-ctrls-core.c
-@@ -1168,6 +1168,8 @@ static int std_validate_compound(const struct v4l2_ctrl *ctrl, u32 idx,
- 		if (!area->width || !area->height)
- 			return -EINVAL;
- 		break;
-+	case V4L2_CTRL_TYPE_FIXED_POINT:
-+		break;
- 
- 	default:
- 		return -EINVAL;
-@@ -1868,6 +1870,9 @@ static struct v4l2_ctrl *v4l2_ctrl_new(struct v4l2_ctrl_handler *hdl,
- 	case V4L2_CTRL_TYPE_AREA:
- 		elem_size = sizeof(struct v4l2_area);
- 		break;
-+	case V4L2_CTRL_TYPE_FIXED_POINT:
-+		elem_size = sizeof(struct v4l2_ctrl_fixed_point);
-+		break;
- 	default:
- 		if (type < V4L2_CTRL_COMPOUND_TYPES)
- 			elem_size = sizeof(s32);
-diff --git a/drivers/media/v4l2-core/v4l2-ctrls-defs.c b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
-index 8696eb1cdd61..d8f232df6b6a 100644
---- a/drivers/media/v4l2-core/v4l2-ctrls-defs.c
-+++ b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
-@@ -1602,6 +1602,10 @@ void v4l2_ctrl_fill(u32 id, const char **name, enum v4l2_ctrl_type *type,
- 	case V4L2_CID_COLORIMETRY_HDR10_MASTERING_DISPLAY:
- 		*type = V4L2_CTRL_TYPE_HDR10_MASTERING_DISPLAY;
- 		break;
-+	case V4L2_CID_ASRC_SOURCE_RATE:
-+	case V4L2_CID_ASRC_DEST_RATE:
-+		*type = V4L2_CTRL_TYPE_FIXED_POINT;
-+		break;
- 	default:
- 		*type = V4L2_CTRL_TYPE_INTEGER;
- 		break;
-diff --git a/include/media/v4l2-ctrls.h b/include/media/v4l2-ctrls.h
-index 59679a42b3e7..645e4cccafc7 100644
---- a/include/media/v4l2-ctrls.h
-+++ b/include/media/v4l2-ctrls.h
-@@ -56,6 +56,7 @@ struct video_device;
-  * @p_av1_tile_group_entry:	Pointer to an AV1 tile group entry structure.
-  * @p_av1_frame:		Pointer to an AV1 frame structure.
-  * @p_av1_film_grain:		Pointer to an AV1 film grain structure.
-+ * @p_fixed_point:		Pointer to a struct v4l2_ctrl_fixed_point.
-  * @p:				Pointer to a compound value.
-  * @p_const:			Pointer to a constant compound value.
-  */
-@@ -89,6 +90,7 @@ union v4l2_ctrl_ptr {
- 	struct v4l2_ctrl_av1_tile_group_entry *p_av1_tile_group_entry;
- 	struct v4l2_ctrl_av1_frame *p_av1_frame;
- 	struct v4l2_ctrl_av1_film_grain *p_av1_film_grain;
-+	struct v4l2_ctrl_fixed_point *p_fixed_point;
- 	void *p;
- 	const void *p_const;
- };
-diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4l2-controls.h
-index c3604a0a3e30..91096259e3ea 100644
---- a/include/uapi/linux/v4l2-controls.h
-+++ b/include/uapi/linux/v4l2-controls.h
-@@ -112,6 +112,8 @@ enum v4l2_colorfx {
- 
- /* last CID + 1 */
- #define V4L2_CID_LASTP1                         (V4L2_CID_BASE+44)
-+#define V4L2_CID_ASRC_SOURCE_RATE		(V4L2_CID_BASE + 45)
-+#define V4L2_CID_ASRC_DEST_RATE			(V4L2_CID_BASE + 46)
- 
- /* USER-class private control IDs */
- 
-@@ -3488,4 +3490,15 @@ struct v4l2_ctrl_av1_film_grain {
- #define V4L2_CID_MPEG_MFC51_BASE        V4L2_CID_CODEC_MFC51_BASE
- #endif
- 
-+/**
-+ * struct v4l2_ctrl_fixed_point - fixed point parameter.
-+ *
-+ * @rate_integer: integer part of fixed point value.
-+ * @rate_fractional: fractional part of fixed point value
++++ b/drivers/media/test-drivers/viaudm2m.c
+@@ -0,0 +1,707 @@
++// SPDX-License-Identifier: GPL-2.0+
++/*
++ * A virtual v4l2-mem2mem example for audio device.
 + */
-+struct v4l2_ctrl_fixed_point {
-+	__u32 integer;
-+	__u32 fractional;
++
++#include <linux/module.h>
++#include <linux/delay.h>
++#include <linux/fs.h>
++#include <linux/sched.h>
++#include <linux/slab.h>
++
++#include <linux/platform_device.h>
++#include <media/v4l2-mem2mem.h>
++#include <media/v4l2-device.h>
++#include <media/v4l2-ioctl.h>
++#include <media/v4l2-ctrls.h>
++#include <media/v4l2-event.h>
++#include <media/videobuf2-vmalloc.h>
++#include <sound/dmaengine_pcm.h>
++
++MODULE_DESCRIPTION("Virtual device for audio mem2mem testing");
++MODULE_LICENSE("GPL");
++MODULE_VERSION("0.1");
++MODULE_ALIAS("audio_mem2mem_testdev");
++
++static unsigned int debug;
++module_param(debug, uint, 0644);
++MODULE_PARM_DESC(debug, "debug level");
++
++#define MEM2MEM_NAME "viaudm2m"
++
++#define dprintk(dev, lvl, fmt, arg...) \
++	v4l2_dbg(lvl, debug, &(dev)->v4l2_dev, "%s: " fmt, __func__, ## arg)
++
++#define SAMPLE_NUM 4096
++
++static void audm2m_dev_release(struct device *dev)
++{}
++
++static struct platform_device audm2m_pdev = {
++	.name		= MEM2MEM_NAME,
++	.dev.release	= audm2m_dev_release,
 +};
 +
- #endif
-diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
-index 2ac7b989394c..3ef32c09c2fa 100644
---- a/include/uapi/linux/videodev2.h
-+++ b/include/uapi/linux/videodev2.h
-@@ -1888,6 +1888,7 @@ struct v4l2_ext_control {
- 		struct v4l2_ctrl_av1_tile_group_entry __user *p_av1_tile_group_entry;
- 		struct v4l2_ctrl_av1_frame __user *p_av1_frame;
- 		struct v4l2_ctrl_av1_film_grain __user *p_av1_film_grain;
-+		struct v4l2_ctrl_fixed_point __user *p_fixed_point;
- 		void __user *ptr;
- 	};
- } __attribute__ ((packed));
-@@ -1966,6 +1967,8 @@ enum v4l2_ctrl_type {
- 	V4L2_CTRL_TYPE_AV1_TILE_GROUP_ENTRY = 0x281,
- 	V4L2_CTRL_TYPE_AV1_FRAME	    = 0x282,
- 	V4L2_CTRL_TYPE_AV1_FILM_GRAIN	    = 0x283,
++struct audm2m_fmt {
++	u32	fourcc;
++	snd_pcm_format_t        format;
++};
 +
-+	V4L2_CTRL_TYPE_FIXED_POINT          = 0x290,
- };
- 
- /*  Used in the VIDIOC_QUERYCTRL ioctl for querying controls */
++static struct audm2m_fmt formats[] = {
++	{
++		.fourcc = V4L2_AUDIO_FMT_S8,
++	},
++	{
++		.fourcc = V4L2_AUDIO_FMT_S16_LE,
++	},
++	{
++		.fourcc = V4L2_AUDIO_FMT_U16_LE,
++	},
++	{
++		.fourcc = V4L2_AUDIO_FMT_S24_LE,
++	},
++	{
++		.fourcc = V4L2_AUDIO_FMT_S24_3LE,
++	},
++	{
++		.fourcc = V4L2_AUDIO_FMT_U24_LE,
++	},
++	{
++		.fourcc = V4L2_AUDIO_FMT_U24_3LE,
++	},
++	{
++		.fourcc = V4L2_AUDIO_FMT_S32_LE,
++	},
++	{
++		.fourcc = V4L2_AUDIO_FMT_U32_LE,
++	},
++	{
++		.fourcc = V4L2_AUDIO_FMT_S20_3LE,
++	},
++	{
++		.fourcc = V4L2_AUDIO_FMT_U20_3LE,
++	},
++};
++
++#define NUM_FORMATS ARRAY_SIZE(formats)
++
++/* Per-queue, driver-specific private data */
++struct audm2m_q_data {
++	unsigned int		rate;
++	unsigned int		channels;
++	unsigned int		buffersize;
++	struct audm2m_fmt	*fmt;
++};
++
++enum {
++	V4L2_M2M_SRC = 0,
++	V4L2_M2M_DST = 1,
++};
++
++static struct audm2m_fmt *find_format(u32 fourcc)
++{
++	struct audm2m_fmt *fmt;
++	unsigned int k;
++
++	for (k = 0; k < NUM_FORMATS; k++) {
++		fmt = &formats[k];
++		if (fmt->fourcc == fourcc)
++			break;
++	}
++
++	if (k == NUM_FORMATS)
++		return NULL;
++
++	formats[k].format = (__force snd_pcm_format_t)v4l2_fourcc_to_audfmt(formats[k].fourcc);
++
++	return &formats[k];
++}
++
++struct audm2m_dev {
++	struct v4l2_device	v4l2_dev;
++	struct video_device	vfd;
++
++	struct mutex		dev_mutex;
++
++	struct v4l2_m2m_dev	*m2m_dev;
++};
++
++struct audm2m_ctx {
++	struct v4l2_fh		fh;
++	struct audm2m_dev	*dev;
++
++	struct mutex		vb_mutex;
++
++	/* Source and destination queue data */
++	struct audm2m_q_data   q_data[2];
++};
++
++static inline struct audm2m_ctx *file2ctx(struct file *file)
++{
++	return container_of(file->private_data, struct audm2m_ctx, fh);
++}
++
++static struct audm2m_q_data *get_q_data(struct audm2m_ctx *ctx,
++					enum v4l2_buf_type type)
++{
++	if (type == V4L2_BUF_TYPE_AUDIO_OUTPUT)
++		return &ctx->q_data[V4L2_M2M_SRC];
++	return &ctx->q_data[V4L2_M2M_DST];
++}
++
++static const char *type_name(enum v4l2_buf_type type)
++{
++	if (type == V4L2_BUF_TYPE_AUDIO_OUTPUT)
++		return "Output";
++	return "Capture";
++}
++
++/*
++ * mem2mem callbacks
++ */
++
++/*
++ * device_run() - prepares and starts the device
++ */
++static void device_run(void *priv)
++{
++	struct audm2m_ctx *ctx = priv;
++	struct audm2m_dev *audm2m_dev;
++	struct vb2_v4l2_buffer *src_buf, *dst_buf;
++	struct audm2m_q_data *q_data_src, *q_data_dst;
++	int src_size, dst_size;
++
++	audm2m_dev = ctx->dev;
++
++	q_data_src = get_q_data(ctx, V4L2_BUF_TYPE_AUDIO_OUTPUT);
++	if (!q_data_src)
++		return;
++
++	q_data_dst = get_q_data(ctx, V4L2_BUF_TYPE_AUDIO_CAPTURE);
++	if (!q_data_dst)
++		return;
++
++	src_buf = v4l2_m2m_next_src_buf(ctx->fh.m2m_ctx);
++	dst_buf = v4l2_m2m_next_dst_buf(ctx->fh.m2m_ctx);
++
++	/* Process the conversion */
++	src_size = vb2_get_plane_payload(&src_buf->vb2_buf, 0);
++
++	if (src_size > q_data_dst->buffersize)
++		dst_size = q_data_dst->buffersize;
++	else
++		dst_size = src_size;
++
++	memcpy(vb2_plane_vaddr(&dst_buf->vb2_buf, 0),
++	       vb2_plane_vaddr(&src_buf->vb2_buf, 0),
++	       dst_size);
++
++	vb2_set_plane_payload(&dst_buf->vb2_buf, 0, dst_size);
++
++	src_buf = v4l2_m2m_src_buf_remove(ctx->fh.m2m_ctx);
++	dst_buf = v4l2_m2m_dst_buf_remove(ctx->fh.m2m_ctx);
++
++	v4l2_m2m_buf_done(src_buf, VB2_BUF_STATE_DONE);
++	v4l2_m2m_buf_done(dst_buf, VB2_BUF_STATE_DONE);
++	v4l2_m2m_job_finish(audm2m_dev->m2m_dev, ctx->fh.m2m_ctx);
++}
++
++static int audm2m_querycap(struct file *file, void *priv,
++			   struct v4l2_capability *cap)
++{
++	strscpy(cap->driver, MEM2MEM_NAME, sizeof(cap->driver));
++	strscpy(cap->card, MEM2MEM_NAME, sizeof(cap->card));
++	snprintf(cap->bus_info, sizeof(cap->bus_info),
++		 "platform:%s", MEM2MEM_NAME);
++
++	return 0;
++}
++
++static int enum_fmt(struct v4l2_fmtdesc *f)
++{
++	int i, num;
++	struct audm2m_fmt *fmt;
++
++	num = 0;
++
++	for (i = 0; i < NUM_FORMATS; ++i) {
++		if (num == f->index)
++			break;
++		/*
++		 * Correct type but haven't reached our index yet,
++		 * just increment per-type index
++		 */
++		++num;
++	}
++
++	if (i < NUM_FORMATS) {
++		/* Format found */
++		fmt = &formats[i];
++		f->pixelformat = fmt->fourcc;
++		return 0;
++	}
++
++	/* Format not found */
++	return -EINVAL;
++}
++
++static int audm2m_enum_fmt_audio_cap(struct file *file, void *priv,
++				     struct v4l2_fmtdesc *f)
++{
++	return enum_fmt(f);
++}
++
++static int audm2m_enum_fmt_audio_out(struct file *file, void *priv,
++				     struct v4l2_fmtdesc *f)
++{
++	return enum_fmt(f);
++}
++
++static int audm2m_g_fmt(struct audm2m_ctx *ctx, struct v4l2_format *f)
++{
++	struct vb2_queue *vq;
++	struct audm2m_q_data *q_data;
++
++	vq = v4l2_m2m_get_vq(ctx->fh.m2m_ctx, f->type);
++	if (!vq)
++		return -EINVAL;
++
++	q_data = get_q_data(ctx, f->type);
++	if (!q_data)
++		return -EINVAL;
++
++	f->fmt.audio.audioformat = q_data->fmt->fourcc;
++	f->fmt.audio.channels	= q_data->channels;
++	f->fmt.audio.buffersize = q_data->buffersize;
++
++	return 0;
++}
++
++static int audm2m_g_fmt_audio_out(struct file *file, void *priv,
++				  struct v4l2_format *f)
++{
++	return audm2m_g_fmt(file2ctx(file), f);
++}
++
++static int audm2m_g_fmt_audio_cap(struct file *file, void *priv,
++				  struct v4l2_format *f)
++{
++	return audm2m_g_fmt(file2ctx(file), f);
++}
++
++static int audm2m_try_fmt(struct v4l2_format *f, struct audm2m_fmt *fmt)
++{
++	if (f->fmt.audio.channels < 1)
++		f->fmt.audio.channels = 1;
++	else if (f->fmt.audio.channels > 8)
++		f->fmt.audio.channels = 8;
++
++	f->fmt.audio.buffersize = f->fmt.audio.channels *
++				  snd_pcm_format_physical_width(fmt->format) *
++				  SAMPLE_NUM;
++	return 0;
++}
++
++static int audm2m_try_fmt_audio_cap(struct file *file, void *priv,
++				    struct v4l2_format *f)
++{
++	struct audm2m_fmt *fmt;
++
++	fmt = find_format(f->fmt.audio.audioformat);
++	if (!fmt) {
++		f->fmt.audio.audioformat = formats[0].fourcc;
++		fmt = find_format(f->fmt.audio.audioformat);
++	}
++
++	return audm2m_try_fmt(f, fmt);
++}
++
++static int audm2m_try_fmt_audio_out(struct file *file, void *priv,
++				    struct v4l2_format *f)
++{
++	struct audm2m_fmt *fmt;
++
++	fmt = find_format(f->fmt.audio.audioformat);
++	if (!fmt) {
++		f->fmt.audio.audioformat = formats[0].fourcc;
++		fmt = find_format(f->fmt.audio.audioformat);
++	}
++
++	return audm2m_try_fmt(f, fmt);
++}
++
++static int audm2m_s_fmt(struct audm2m_ctx *ctx, struct v4l2_format *f)
++{
++	struct audm2m_q_data *q_data;
++	struct vb2_queue *vq;
++
++	vq = v4l2_m2m_get_vq(ctx->fh.m2m_ctx, f->type);
++	if (!vq)
++		return -EINVAL;
++
++	q_data = get_q_data(ctx, f->type);
++	if (!q_data)
++		return -EINVAL;
++
++	if (vb2_is_busy(vq)) {
++		v4l2_err(&ctx->dev->v4l2_dev, "%s queue busy\n", __func__);
++		return -EBUSY;
++	}
++
++	q_data->fmt	= find_format(f->fmt.audio.audioformat);
++	q_data->channels = f->fmt.audio.channels;
++	q_data->buffersize = q_data->channels *
++			     snd_pcm_format_physical_width(q_data->fmt->format) *
++			     SAMPLE_NUM;
++
++	dprintk(ctx->dev, 1,
++		"Format for type %s: %d/%d, fmt: %c%c%c%c\n",
++		type_name(f->type), q_data->rate,
++		q_data->channels,
++		(q_data->fmt->fourcc & 0xff),
++		(q_data->fmt->fourcc >>  8) & 0xff,
++		(q_data->fmt->fourcc >> 16) & 0xff,
++		(q_data->fmt->fourcc >> 24) & 0xff);
++
++	return 0;
++}
++
++static int audm2m_s_fmt_audio_cap(struct file *file, void *priv,
++				  struct v4l2_format *f)
++{
++	int ret;
++
++	ret = audm2m_try_fmt_audio_cap(file, priv, f);
++	if (ret)
++		return ret;
++
++	return audm2m_s_fmt(file2ctx(file), f);
++}
++
++static int audm2m_s_fmt_audio_out(struct file *file, void *priv,
++				  struct v4l2_format *f)
++{
++	int ret;
++
++	ret = audm2m_try_fmt_audio_out(file, priv, f);
++	if (ret)
++		return ret;
++
++	return audm2m_s_fmt(file2ctx(file), f);
++}
++
++static const struct v4l2_ioctl_ops audm2m_ioctl_ops = {
++	.vidioc_querycap		= audm2m_querycap,
++
++	.vidioc_enum_fmt_audio_cap	= audm2m_enum_fmt_audio_cap,
++	.vidioc_g_fmt_audio_cap		= audm2m_g_fmt_audio_cap,
++	.vidioc_try_fmt_audio_cap	= audm2m_try_fmt_audio_cap,
++	.vidioc_s_fmt_audio_cap		= audm2m_s_fmt_audio_cap,
++
++	.vidioc_enum_fmt_audio_out	= audm2m_enum_fmt_audio_out,
++	.vidioc_g_fmt_audio_out		= audm2m_g_fmt_audio_out,
++	.vidioc_try_fmt_audio_out	= audm2m_try_fmt_audio_out,
++	.vidioc_s_fmt_audio_out		= audm2m_s_fmt_audio_out,
++
++	.vidioc_reqbufs			= v4l2_m2m_ioctl_reqbufs,
++	.vidioc_querybuf		= v4l2_m2m_ioctl_querybuf,
++	.vidioc_qbuf			= v4l2_m2m_ioctl_qbuf,
++	.vidioc_dqbuf			= v4l2_m2m_ioctl_dqbuf,
++	.vidioc_prepare_buf		= v4l2_m2m_ioctl_prepare_buf,
++	.vidioc_create_bufs		= v4l2_m2m_ioctl_create_bufs,
++	.vidioc_expbuf			= v4l2_m2m_ioctl_expbuf,
++
++	.vidioc_streamon		= v4l2_m2m_ioctl_streamon,
++	.vidioc_streamoff		= v4l2_m2m_ioctl_streamoff,
++
++	.vidioc_subscribe_event		= v4l2_ctrl_subscribe_event,
++	.vidioc_unsubscribe_event	= v4l2_event_unsubscribe,
++};
++
++/*
++ * Queue operations
++ */
++static int audm2m_queue_setup(struct vb2_queue *vq,
++			      unsigned int *nbuffers,
++			      unsigned int *nplanes,
++			      unsigned int sizes[],
++			      struct device *alloc_devs[])
++{
++	struct audm2m_ctx *ctx = vb2_get_drv_priv(vq);
++	struct audm2m_q_data *q_data;
++
++	q_data = get_q_data(ctx, vq->type);
++
++	if (*nplanes)
++		return sizes[0] < q_data->buffersize ? -EINVAL : 0;
++
++	*nplanes = 1;
++	sizes[0] = q_data->buffersize;
++
++	dprintk(ctx->dev, 1, "%s: get %d buffer(s) of size %d each.\n",
++		type_name(vq->type), *nplanes, sizes[0]);
++
++	return 0;
++}
++
++static void audm2m_buf_queue(struct vb2_buffer *vb)
++{
++	struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
++	struct audm2m_ctx *ctx = vb2_get_drv_priv(vb->vb2_queue);
++
++	v4l2_m2m_buf_queue(ctx->fh.m2m_ctx, vbuf);
++}
++
++static void audm2m_stop_streaming(struct vb2_queue *q)
++{
++	struct audm2m_ctx *ctx = vb2_get_drv_priv(q);
++	struct vb2_v4l2_buffer *vbuf;
++
++	for (;;) {
++		if (V4L2_TYPE_IS_OUTPUT(q->type))
++			vbuf = v4l2_m2m_src_buf_remove(ctx->fh.m2m_ctx);
++		else
++			vbuf = v4l2_m2m_dst_buf_remove(ctx->fh.m2m_ctx);
++		if (!vbuf)
++			return;
++		v4l2_m2m_buf_done(vbuf, VB2_BUF_STATE_ERROR);
++	}
++}
++
++static const struct vb2_ops audm2m_qops = {
++	.queue_setup	 = audm2m_queue_setup,
++	.buf_queue	 = audm2m_buf_queue,
++	.stop_streaming  = audm2m_stop_streaming,
++	.wait_prepare	 = vb2_ops_wait_prepare,
++	.wait_finish	 = vb2_ops_wait_finish,
++};
++
++static int queue_init(void *priv, struct vb2_queue *src_vq,
++		      struct vb2_queue *dst_vq)
++{
++	struct audm2m_ctx *ctx = priv;
++	int ret;
++
++	src_vq->type = V4L2_BUF_TYPE_AUDIO_OUTPUT;
++	src_vq->io_modes = VB2_MMAP | VB2_DMABUF;
++	src_vq->drv_priv = ctx;
++	src_vq->buf_struct_size = sizeof(struct v4l2_m2m_buffer);
++	src_vq->ops = &audm2m_qops;
++	src_vq->mem_ops = &vb2_vmalloc_memops;
++	src_vq->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_COPY;
++	src_vq->lock = &ctx->vb_mutex;
++	src_vq->min_buffers_needed = 1;
++
++	ret = vb2_queue_init(src_vq);
++	if (ret)
++		return ret;
++
++	dst_vq->type = V4L2_BUF_TYPE_AUDIO_CAPTURE;
++	dst_vq->io_modes = VB2_MMAP | VB2_DMABUF;
++	dst_vq->drv_priv = ctx;
++	dst_vq->buf_struct_size = sizeof(struct v4l2_m2m_buffer);
++	dst_vq->ops = &audm2m_qops;
++	dst_vq->mem_ops = &vb2_vmalloc_memops;
++	dst_vq->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_COPY;
++	dst_vq->lock = &ctx->vb_mutex;
++	dst_vq->min_buffers_needed = 1;
++
++	return vb2_queue_init(dst_vq);
++}
++
++/*
++ * File operations
++ */
++static int audm2m_open(struct file *file)
++{
++	struct audm2m_dev *dev = video_drvdata(file);
++	struct audm2m_ctx *ctx = NULL;
++	int width;
++	int rc = 0;
++
++	if (mutex_lock_interruptible(&dev->dev_mutex))
++		return -ERESTARTSYS;
++	ctx = kzalloc(sizeof(*ctx), GFP_KERNEL);
++	if (!ctx) {
++		rc = -ENOMEM;
++		goto open_unlock;
++	}
++
++	v4l2_fh_init(&ctx->fh, video_devdata(file));
++	file->private_data = &ctx->fh;
++	ctx->dev = dev;
++
++	ctx->q_data[V4L2_M2M_SRC].fmt = &formats[0];
++	ctx->q_data[V4L2_M2M_SRC].rate = 8000;
++	ctx->q_data[V4L2_M2M_SRC].channels = 2;
++
++	/* Fix to 4096 samples */
++	width = snd_pcm_format_physical_width(formats[0].format);
++	ctx->q_data[V4L2_M2M_SRC].buffersize = SAMPLE_NUM * 2 * width;
++	ctx->q_data[V4L2_M2M_DST] = ctx->q_data[V4L2_M2M_SRC];
++
++	ctx->fh.m2m_ctx = v4l2_m2m_ctx_init(dev->m2m_dev, ctx, &queue_init);
++
++	mutex_init(&ctx->vb_mutex);
++
++	if (IS_ERR(ctx->fh.m2m_ctx)) {
++		rc = PTR_ERR(ctx->fh.m2m_ctx);
++
++		v4l2_fh_exit(&ctx->fh);
++		kfree(ctx);
++		goto open_unlock;
++	}
++
++	v4l2_fh_add(&ctx->fh);
++
++	dprintk(dev, 1, "Created instance: %p, m2m_ctx: %p\n",
++		ctx, ctx->fh.m2m_ctx);
++
++open_unlock:
++	mutex_unlock(&dev->dev_mutex);
++	return rc;
++}
++
++static int audm2m_release(struct file *file)
++{
++	struct audm2m_dev *dev = video_drvdata(file);
++	struct audm2m_ctx *ctx = file2ctx(file);
++
++	dprintk(dev, 1, "Releasing instance %p\n", ctx);
++
++	v4l2_fh_del(&ctx->fh);
++	v4l2_fh_exit(&ctx->fh);
++	mutex_lock(&dev->dev_mutex);
++	v4l2_m2m_ctx_release(ctx->fh.m2m_ctx);
++	mutex_unlock(&dev->dev_mutex);
++	kfree(ctx);
++
++	return 0;
++}
++
++static void audm2m_device_release(struct video_device *vdev)
++{
++	struct audm2m_dev *dev = container_of(vdev, struct audm2m_dev, vfd);
++
++	v4l2_device_unregister(&dev->v4l2_dev);
++	v4l2_m2m_release(dev->m2m_dev);
++
++	kfree(dev);
++}
++
++static const struct v4l2_file_operations audm2m_fops = {
++	.owner		= THIS_MODULE,
++	.open		= audm2m_open,
++	.release	= audm2m_release,
++	.poll		= v4l2_m2m_fop_poll,
++	.unlocked_ioctl	= video_ioctl2,
++	.mmap		= v4l2_m2m_fop_mmap,
++};
++
++static const struct video_device audm2m_videodev = {
++	.name		= MEM2MEM_NAME,
++	.vfl_dir	= VFL_DIR_M2M,
++	.fops		= &audm2m_fops,
++	.ioctl_ops	= &audm2m_ioctl_ops,
++	.minor		= -1,
++	.release	= audm2m_device_release,
++	.device_caps	= V4L2_CAP_AUDIO_M2M | V4L2_CAP_STREAMING,
++};
++
++static const struct v4l2_m2m_ops m2m_ops = {
++	.device_run	= device_run,
++};
++
++static int audm2m_probe(struct platform_device *pdev)
++{
++	struct audm2m_dev *dev;
++	struct video_device *vfd;
++	int ret;
++
++	dev = kzalloc(sizeof(*dev), GFP_KERNEL);
++	if (!dev)
++		return -ENOMEM;
++
++	ret = v4l2_device_register(&pdev->dev, &dev->v4l2_dev);
++	if (ret)
++		goto error_free;
++
++	mutex_init(&dev->dev_mutex);
++
++	dev->vfd = audm2m_videodev;
++	vfd = &dev->vfd;
++	vfd->lock = &dev->dev_mutex;
++	vfd->v4l2_dev = &dev->v4l2_dev;
++
++	video_set_drvdata(vfd, dev);
++	v4l2_info(&dev->v4l2_dev,
++		  "Device registered as /dev/v4l-audio%d\n", vfd->num);
++
++	platform_set_drvdata(pdev, dev);
++
++	dev->m2m_dev = v4l2_m2m_init(&m2m_ops);
++	if (IS_ERR(dev->m2m_dev)) {
++		v4l2_err(&dev->v4l2_dev, "Failed to init mem2mem device\n");
++		ret = PTR_ERR(dev->m2m_dev);
++		dev->m2m_dev = NULL;
++		goto error_dev;
++	}
++
++	ret = video_register_device(vfd, VFL_TYPE_AUDIO, 0);
++	if (ret) {
++		v4l2_err(&dev->v4l2_dev, "Failed to register video device\n");
++		goto error_m2m;
++	}
++
++	return 0;
++
++error_m2m:
++	v4l2_m2m_release(dev->m2m_dev);
++error_dev:
++	v4l2_device_unregister(&dev->v4l2_dev);
++error_free:
++	kfree(dev);
++
++	return ret;
++}
++
++static void audm2m_remove(struct platform_device *pdev)
++{
++	struct audm2m_dev *dev = platform_get_drvdata(pdev);
++
++	v4l2_info(&dev->v4l2_dev, "Removing " MEM2MEM_NAME);
++
++	video_unregister_device(&dev->vfd);
++}
++
++static struct platform_driver audm2m_pdrv = {
++	.probe		= audm2m_probe,
++	.remove_new	= audm2m_remove,
++	.driver		= {
++		.name	= MEM2MEM_NAME,
++	},
++};
++
++static void __exit audm2m_exit(void)
++{
++	platform_driver_unregister(&audm2m_pdrv);
++	platform_device_unregister(&audm2m_pdev);
++}
++
++static int __init audm2m_init(void)
++{
++	int ret;
++
++	ret = platform_device_register(&audm2m_pdev);
++	if (ret)
++		return ret;
++
++	ret = platform_driver_register(&audm2m_pdrv);
++	if (ret)
++		platform_device_unregister(&audm2m_pdev);
++
++	return ret;
++}
++
++module_init(audm2m_init);
++module_exit(audm2m_exit);
 -- 
 2.34.1
 
