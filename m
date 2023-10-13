@@ -4,77 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CE2AFCDB47E
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Oct 2023 09:47:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B4093CDB47E
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Oct 2023 10:44:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A6995209;
-	Fri, 13 Oct 2023 11:46:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A6995209
+	by alsa0.perex.cz (Postfix) with ESMTPS id DD928826;
+	Fri, 13 Oct 2023 12:43:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DD928826
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1697190438;
-	bh=N4iDnIoM1D87PLQ+wNKvN/uIg6Bab37Bsry769sDhOo=;
-	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	s=default; t=1697193851;
+	bh=zqNaDxvsWwEb9aJcx7ajPMh4R3eECRLYG9LwAz488y0=;
+	h=From:To:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=RfYH+ictBUGmbMYxsdH5APvTqSWbBnooBXjiJsbXRvejGaGNHjBsYRkMuZA5jqGbt
-	 uYFEwIMKsZfD4+J2Z+/MC8cp9Zl5rv4VWROA8VurpjFv2YK8DaJDGGiXk5gPl9IzdL
-	 XCCtbuM+uEr2DaC2x5KgWGJmigqqZ4FTYqeLn4hg=
+	b=IsWcNJz+CDzM6/T+KgKdUxCQEnw0URpUPHzCpz7tBaSKmxzmRyN/iMSLolJozIFVv
+	 y6AyzIMWXEzCq2btCrBJcL/C73IaLK+FOHLyO/ZHZZ7KH+MI2m2MxXo8ir8JnCtiUl
+	 LX1Mnh7yv1mDaEhUXEPRJK/nD/iF1vCCfp0VPBy4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 23D56F8015B; Fri, 13 Oct 2023 11:45:59 +0200 (CEST)
+	id 1BE4FF80552; Fri, 13 Oct 2023 12:42:51 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9059BF802BE;
-	Fri, 13 Oct 2023 11:45:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 259FFF80166;
+	Fri, 13 Oct 2023 12:42:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BDC3CF802BE; Fri, 13 Oct 2023 11:45:52 +0200 (CEST)
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+	id BEFA6F802E8; Fri, 13 Oct 2023 12:42:46 +0200 (CEST)
+Received: from out28-74.mail.aliyun.com (out28-74.mail.aliyun.com
+ [115.124.28.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 6C8F3F8015B
-	for <alsa-devel@alsa-project.org>; Fri, 13 Oct 2023 11:45:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6C8F3F8015B
-X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 39D9jZt452637961,
- This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
-	by rtits2.realtek.com.tw (8.15.2/2.92/5.92) with ESMTPS id 39D9jZt452637961
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 13 Oct 2023 17:45:35 +0800
-Received: from RTEXMBS01.realtek.com.tw (172.21.6.94) by
- RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.32; Fri, 13 Oct 2023 17:45:33 +0800
-Received: from sw-server.localdomain (172.22.102.1) by
- RTEXMBS01.realtek.com.tw (172.21.6.94) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.7; Fri, 13 Oct 2023 17:45:32 +0800
-From: <shumingf@realtek.com>
-To: <broonie@kernel.org>, <lgirdwood@gmail.com>
-CC: <alsa-devel@alsa-project.org>, <lars@metafoo.de>, <flove@realtek.com>,
-        <oder_chiou@realtek.com>, <jack.yu@realtek.com>,
-        <derek.fang@realtek.com>, Shuming Fan <shumingf@realtek.com>
-Subject: [PATCH] ASoC: rt5650: fix the wrong result of key button
-Date: Fri, 13 Oct 2023 17:45:25 +0800
-Message-ID: <20231013094525.715518-1-shumingf@realtek.com>
-X-Mailer: git-send-email 2.34.1
+	by alsa1.perex.cz (Postfix) with ESMTPS id 93A43F8019B
+	for <alsa-devel@alsa-project.org>; Fri, 13 Oct 2023 12:42:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 93A43F8019B
+X-Alimail-AntiSpam: 
+ AC=CONTINUE;BC=0.251197|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.00428145-6.11179e-05-0.995657;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047213;MF=wangweidong.a@awinic.com;NM=1;PH=DS;RN=25;RT=25;SR=0;TI=SMTPD_---.V-L310G_1697193742;
+Received: from ubuntu-VirtualBox..(mailfrom:wangweidong.a@awinic.com
+ fp:SMTPD_---.V-L310G_1697193742)
+          by smtp.aliyun-inc.com;
+          Fri, 13 Oct 2023 18:42:29 +0800
+From: wangweidong.a@awinic.com
+To: lgirdwood@gmail.com,
+	broonie@kernel.org,
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	perex@perex.cz,
+	tiwai@suse.com,
+	wangweidong.a@awinic.com,
+	herve.codina@bootlin.com,
+	shumingf@realtek.com,
+	rf@opensource.cirrus.com,
+	arnd@arndb.de,
+	13916275206@139.com,
+	ryans.lee@analog.com,
+	linus.walleij@linaro.org,
+	ckeepax@opensource.cirrus.com,
+	fido_max@inbox.ru,
+	sebastian.reichel@collabora.com,
+	colin.i.king@gmail.com,
+	liweilei@awinic.com,
+	trix@redhat.com,
+	dan.carpenter@linaro.org,
+	alsa-devel@alsa-project.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH V1 0/3] ASoC: codecs: Add aw88399 amplifier driver
+Date: Fri, 13 Oct 2023 18:42:17 +0800
+Message-ID: <20231013104220.279953-1-wangweidong.a@awinic.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [172.22.102.1]
-X-ClientProxiedBy: RTEXH36505.realtek.com.tw (172.21.6.25) To
- RTEXMBS01.realtek.com.tw (172.21.6.94)
-X-KSE-ServerInfo: RTEXMBS01.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
-Message-ID-Hash: 3DLMZPLOGAWGEZY26H7GSY64RWVAZUBH
-X-Message-ID-Hash: 3DLMZPLOGAWGEZY26H7GSY64RWVAZUBH
-X-MailFrom: shumingf@realtek.com
+Message-ID-Hash: F7PTES2775RGGZAWE437NULGHHADY23O
+X-Message-ID-Hash: F7PTES2775RGGZAWE437NULGHHADY23O
+X-MailFrom: wangweidong.a@awinic.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -86,7 +88,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3DLMZPLOGAWGEZY26H7GSY64RWVAZUBH/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/F7PTES2775RGGZAWE437NULGHHADY23O/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -95,28 +97,31 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Shuming Fan <shumingf@realtek.com>
+From: Weidong Wang <wangweidong.a@awinic.com>
 
-The RT5650 should enable a power setting for button detection to avoid the wrong result.
+Add the awinic,aw88399 property to the awinic,aw88395.yaml file.
 
-Signed-off-by: Shuming Fan <shumingf@realtek.com>
----
- sound/soc/codecs/rt5645.c | 2 ++
- 1 file changed, 2 insertions(+)
+Add i2c and amplifier registration for
+aw88399 and their associated operation functions.
 
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index 1a137ca3f496..7938b52d741d 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -3257,6 +3257,8 @@ int rt5645_set_jack_detect(struct snd_soc_component *component,
- 				RT5645_GP1_PIN_IRQ, RT5645_GP1_PIN_IRQ);
- 		regmap_update_bits(rt5645->regmap, RT5645_GEN_CTRL1,
- 				RT5645_DIG_GATE_CTRL, RT5645_DIG_GATE_CTRL);
-+		regmap_update_bits(rt5645->regmap, RT5645_DEPOP_M1,
-+				RT5645_HP_CB_MASK, RT5645_HP_CB_PU);
- 	}
- 	rt5645_irq(0, rt5645);
- 
+Weidong Wang (3):
+  ASoC: dt-bindings: Add schema for "awinic,aw88399"
+  ASoC: codecs: Add code for bin parsing compatible with aw88399
+  ASoC: codecs: Add aw88399 amplifier driver
+
+ .../bindings/sound/awinic,aw88395.yaml        |    1 +
+ sound/soc/codecs/Kconfig                      |   14 +
+ sound/soc/codecs/Makefile                     |    2 +
+ sound/soc/codecs/aw88395/aw88395_lib.c        |    3 +
+ sound/soc/codecs/aw88395/aw88395_reg.h        |    1 +
+ sound/soc/codecs/aw88399.c                    | 1964 +++++++++++++++++
+ sound/soc/codecs/aw88399.h                    |  615 ++++++
+ 7 files changed, 2600 insertions(+)
+ create mode 100644 sound/soc/codecs/aw88399.c
+ create mode 100644 sound/soc/codecs/aw88399.h
+
+
+base-commit: ce583d5fb9d3f4e20473b9d5619d51ea3cc92283
 -- 
-2.34.1
+2.41.0
 
