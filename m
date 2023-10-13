@@ -4,58 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 27C86CDB483
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Oct 2023 13:20:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5EA60CDB47E
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Oct 2023 13:21:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9AA3883B;
-	Fri, 13 Oct 2023 15:19:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9AA3883B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0760B857;
+	Fri, 13 Oct 2023 15:20:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0760B857
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1697203234;
-	bh=tfwxO8vY/5VZ2f6n/V/bDl2PR5lkSh2hbmTloas/vbU=;
+	s=default; t=1697203258;
+	bh=VcB5/8seKLmFDKdT+kSos3+IFwbNg0oQ1SdCP/8TYHY=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=h4L4HRL/lZS3FZ7/kmU0GC5IC6uX7GY+QAj+NGar9UyUi9KXn8uSxJ4Rd0UXB8itE
-	 0mq6Wg+N8rYgA3kJ6LnT/VzlX7tVlHWt6x4ZhSrCBS9akceC6aSAYciQR5DFWOXWrR
-	 8ezmOpB6Q0SNHXIB/h/Clq+qK2367ttF7DxlEbwY=
+	b=j5OkmEcnFpidzRSu2Hvm4aFGwTrRcQKctrhUISTTiuTV/fh/DiDrW6msHMFNNFayX
+	 wVBYGH+yf+Qc69yHt0ixZPLE1SMEBOtup7+u+PHIYlHQC47iOJmdzXa0FNhp1/TzD4
+	 b98J4P4lTU5zKcx+wHgqmMQBHXymnmRH+zaicCj0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C7789F80558; Fri, 13 Oct 2023 15:19:16 +0200 (CEST)
+	id 53D10F80552; Fri, 13 Oct 2023 15:19:58 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 38E84F802BE;
-	Fri, 13 Oct 2023 15:19:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CFA4AF80553;
+	Fri, 13 Oct 2023 15:19:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 20112F802BE; Fri, 13 Oct 2023 15:19:11 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+	id C117AF80553; Fri, 13 Oct 2023 15:19:53 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id AAE52F8019B
-	for <alsa-devel@alsa-project.org>; Fri, 13 Oct 2023 15:18:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AAE52F8019B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 1FB5EF802E8
+	for <alsa-devel@alsa-project.org>; Fri, 13 Oct 2023 15:19:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1FB5EF802E8
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=Z8l/+Xh+
+ header.s=k20201202 header.b=cbcC9b27
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by ams.source.kernel.org (Postfix) with ESMTP id 07B83B82AEC;
-	Fri, 13 Oct 2023 13:18:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B380EC433C8;
-	Fri, 13 Oct 2023 13:18:50 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id B29C7620BE;
+	Fri, 13 Oct 2023 13:19:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC540C433C8;
+	Fri, 13 Oct 2023 13:19:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1697203131;
-	bh=tfwxO8vY/5VZ2f6n/V/bDl2PR5lkSh2hbmTloas/vbU=;
+	s=k20201202; t=1697203174;
+	bh=VcB5/8seKLmFDKdT+kSos3+IFwbNg0oQ1SdCP/8TYHY=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Z8l/+Xh+FfwFx+l9WHwzf+CivJ/aQqq9Ob4RuihtTBUpYiOuTy3Tr2sDTy8Hpah8a
-	 6xRRSLejv5k1mSGCuNEr9qde5MZaS9RjAz7zqKULnjRQzGCyM9KAggY1mVEWE6RvrR
-	 rU4XNPMhlHO8C1AoNLlpT/QoQEGY0EZS74Pkzj/GxgY/++gt4bBzD02xnAzPzYPF5D
-	 rOZvCL2jrS6V3YYoJuEQu0d15U95vNTmj0N/QwdvZTctYGALnn7ATPm/GwyHAGN5BR
-	 YRCs5xpVpvJzuojfHyS4mMnfWRu/75PUjo2zQHsyWLo1FhOlINZfK0f1AMYPZlGIdl
-	 u2p1k4sUiA0Dw==
-Date: Fri, 13 Oct 2023 14:18:41 +0100
+	b=cbcC9b27ZdXTw0KnKGi8PnmGOavWx2Gz8d4m0p5n5/7E9X9+vyu7GPIfIrdLFl0Ab
+	 35RfJ7QgW6JBMdhQjh7UBRa8hJtxuUoCwY8bRJzqyD6b1xlBjtnXvRRlUi8Xx0oQkh
+	 MZ/Qcs7Ef2LmSkA3+Lp1tuqd7o13UbsXF0jfVrIeWAGf5/dYkAL0b6drKRqjhZOFo7
+	 EX0sL86XrC0M3KG88/RmOilU7l/LUjqACrD+sCn6YR3H3U+8y+3v+hgFfpqud6oIPJ
+	 dVsxrvWMCWP/jLVu4rABekQRNayIT8VF/I1TCf0YaCxqg5/iJkhXLAgtNkhoVQ0mfK
+	 8VqTw0G2zuBMQ==
+Date: Fri, 13 Oct 2023 14:19:25 +0100
 From: Mark Brown <broonie@kernel.org>
 To: Shengjiu Wang <shengjiu.wang@nxp.com>
 Cc: hverkuil@xs4all.nl, sakari.ailus@iki.fi, tfiga@chromium.org,
@@ -65,19 +66,19 @@ Cc: hverkuil@xs4all.nl, sakari.ailus@iki.fi, tfiga@chromium.org,
 	nicoleotsuka@gmail.com, lgirdwood@gmail.com, perex@perex.cz,
 	tiwai@suse.com, alsa-devel@alsa-project.org,
 	linuxppc-dev@lists.ozlabs.org
-Subject: Re: [RFC PATCH v6 01/11] ASoC: fsl_asrc: define functions for memory
- to memory usage
-Message-ID: <ZSlDsZ+pFoefpYKF@finisterre.sirena.org.uk>
+Subject: Re: [RFC PATCH v6 02/11] ASoC: fsl_easrc: define functions for
+ memory to memory usage
+Message-ID: <ZSlD3ee9x3JsZL7f@finisterre.sirena.org.uk>
 References: <1697185865-27528-1-git-send-email-shengjiu.wang@nxp.com>
- <1697185865-27528-2-git-send-email-shengjiu.wang@nxp.com>
+ <1697185865-27528-3-git-send-email-shengjiu.wang@nxp.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="TrxnhrhreJ8i5XbB"
+	protocol="application/pgp-signature"; boundary="ytqlM95q5yypPr0Y"
 Content-Disposition: inline
-In-Reply-To: <1697185865-27528-2-git-send-email-shengjiu.wang@nxp.com>
+In-Reply-To: <1697185865-27528-3-git-send-email-shengjiu.wang@nxp.com>
 X-Cookie: Save energy:  Drive a smaller shell.
-Message-ID-Hash: UB2M2B237YKFWLWFJVFJJFAJZD5CXFOF
-X-Message-ID-Hash: UB2M2B237YKFWLWFJVFJJFAJZD5CXFOF
+Message-ID-Hash: 5NLP3LNE7EVLSQEF32SOHX5OA5M3GUOU
+X-Message-ID-Hash: 5NLP3LNE7EVLSQEF32SOHX5OA5M3GUOU
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -90,9 +91,8 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UB2M2B237YKFWLWFJVFJJFAJZD5CXFOF/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5NLP3LNE7EVLSQEF32SOHX5OA5M3GUOU/>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
@@ -100,29 +100,29 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 
---TrxnhrhreJ8i5XbB
+--ytqlM95q5yypPr0Y
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Oct 13, 2023 at 04:30:55PM +0800, Shengjiu Wang wrote:
+On Fri, Oct 13, 2023 at 04:30:56PM +0800, Shengjiu Wang wrote:
 > ASRC can be used on memory to memory case, define several
-> functions for m2m usage.
+> functions for m2m usage and export them as function pointer.
 
 Acked-by: Mark Brown <broonie@kernel.org>
 
---TrxnhrhreJ8i5XbB
+--ytqlM95q5yypPr0Y
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmUpQ7AACgkQJNaLcl1U
-h9DVYgf/XvHmqiuXmRoN0U7tMZzo7WP+CLOA/DjYORoGLnjZnxp9vShIZ3Rb3yBD
-zAFWBQlLSw1/NGqOUbgPbCEKjzACGAK/iDrvtmWuwK3Md03mHwm9dVlzDbHo/KsB
-XEpVnISg49uAdGRDldGYcLhNUJmylglwuHdBQHUXTDXoubZlIKq3Y8lkO2UE++1F
-JJWM51XbIJDShikbunKjiKnY9HwIsoIIYMzgXw26s7W3M5O/zmYJT4t9BWiOq/I/
-eKiHLARnegDruQcOWp324f+MGV7eLtpOSB4oppydGT4532XH81CvdbBblFMsnyJH
-h/YIjT8VFxVlIr6Wl9uEdHuKTTOPow==
-=mvxU
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmUpQ9wACgkQJNaLcl1U
+h9DNngf+M3/aOmhL3QysiOuRsmxBgDZuzkyGRwIBeMdlNnRJ7VM13CfbjkJ0D8Ju
+ku9ojR2jE52TiXcKQIoyv4iD+gMIndsFMEOEEI8x984ZsUVkd0HR/L6YtiL5g2qI
+y523Dzyvy5kggmINayFGOBActp7aD7hzGUgJ2EqknrmhztzFMoDM/wpvunBAC/+z
+2rSabJ8Ss7YcNAyXd619KZFpf2bNoGEXOvMWZLm3lUidNJfMsSzzbVfivTrBByyR
+wDY98oN/ssmkuUAMKKGJtyimFc86LHl4VFzOHk88+srmpiE7P8o6iLRu4ioJ8IYW
+5VMlKcs7NwJyryTiAvEKLcp6harRFQ==
+=oQdR
 -----END PGP SIGNATURE-----
 
---TrxnhrhreJ8i5XbB--
+--ytqlM95q5yypPr0Y--
