@@ -4,58 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C609CCDB47E
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Oct 2023 13:24:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CEC3FCDB47E
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Oct 2023 13:41:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BBD5084B;
-	Fri, 13 Oct 2023 15:23:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BBD5084B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5783084B;
+	Fri, 13 Oct 2023 15:40:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5783084B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1697203470;
-	bh=0VLSmUiBT4OXSKoUDLazEOxnT0ZGOzCtUjBBnsTitwc=;
+	s=default; t=1697204479;
+	bh=Daw0oV8avVvs3EF+zKAfgZ1+IJkL9210R2usowvEsyQ=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=JHczoEpkJdwxqiFi3UDO4/lCa2H4uWqBPzsKMvmT/1qw9qTk2cspAJcoxBzi/3pUV
-	 8XKiTYrdRBSVrhSQwmtG4xXcuZYHLoBVawx70n7aJrZGQJq6vsOHQl7VyjyJLUWqhO
-	 2SxM8O8LGfYxZ0zu37IJL5bHDfcoEsKxFQLWA6F0=
+	b=ho6f8HP8Ef/Hiv7eeRsnD9fLlz8cPjnxdIi+ED0bcJ+iITNyef/QHlwUCIo0IFpBe
+	 l/dFiSTZY7vTSJsoAZkMltoRX3CUrnZcf7eWh+l9CsIRDEP48n+68EAGbGdGszk9Am
+	 zYwvUwcIJoaS8G3Qj8KyqxjrxmyK5GGA5W94mJ7o=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8ADCDF80310; Fri, 13 Oct 2023 15:23:11 +0200 (CEST)
+	id 71C52F80310; Fri, 13 Oct 2023 15:39:52 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E910EF8027B;
-	Fri, 13 Oct 2023 15:23:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C6C8EF80166;
+	Fri, 13 Oct 2023 15:39:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 53B13F802BE; Fri, 13 Oct 2023 15:23:07 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+	id 20BFFF802BE; Fri, 13 Oct 2023 15:39:46 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 9B9E2F80536
-	for <alsa-devel@alsa-project.org>; Fri, 13 Oct 2023 15:21:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9B9E2F80536
+	by alsa1.perex.cz (Postfix) with ESMTPS id 16A74F8015B
+	for <alsa-devel@alsa-project.org>; Fri, 13 Oct 2023 15:39:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 16A74F8015B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=FCNmsHwY
+ header.s=k20201202 header.b=ecS4BIyR
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 1EB006207B;
-	Fri, 13 Oct 2023 13:21:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28F36C433C7;
-	Fri, 13 Oct 2023 13:21:16 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id B4330620F4;
+	Fri, 13 Oct 2023 13:39:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2B98C433C8;
+	Fri, 13 Oct 2023 13:39:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1697203277;
-	bh=0VLSmUiBT4OXSKoUDLazEOxnT0ZGOzCtUjBBnsTitwc=;
+	s=k20201202; t=1697204376;
+	bh=Daw0oV8avVvs3EF+zKAfgZ1+IJkL9210R2usowvEsyQ=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=FCNmsHwYJDmN5iKapkMHyrE6IvjJehLUtF23l9lcZRkuXgX9C4vGhRXlUJnuLZHKC
-	 r1BfmIkhWnnKwt7JBe6RIFm4sAbdwqfzn472ct1nN9o4Jh627dKLX+7mI1RiVkaTFA
-	 0QMZk3rZbth7fy+Jm9AZOC87fIq4wdRah9E2HMwKxQQmZI0CyYvGvLwGvaC9hageEq
-	 xzljsZRXZK8b/bN/XwiXVLrPkNJMfUn8+71BzNDU0toxYPQpgWz7U09RMlFxK+se26
-	 +Wa7xV8ZB1sypDRyE263R3NYJrszF/YuFfq6fAhcoOH5U2VT4RaGWKVCRyg/u9HYXg
-	 2Rec5SLOYS76g==
-Date: Fri, 13 Oct 2023 14:21:08 +0100
+	b=ecS4BIyRUjVKqpOSwmbEMFgD2mkLOzob8z36DLk5NsjL5pWRpaaju8vuB9gNGo6/7
+	 INLiteok8petspSUsj39GF9S+2co8eF0YKXXl7EB7A5b5GBCxf3fTgbxMOUB3dn15Y
+	 TY0i9gTt+bG41cpVQP3Dgi0zNFwa3uJBa++LH96mWvHpSn4minfwop6nMhtvOCXCc0
+	 2px4dX0/TIek+xAxyTwYjsfWVBYnRdgWOR4TZ75Optn1KfAcMBBoSiNOlzQassi019
+	 vuw1EJuhmlIA9YKgpXDKKCcb8orSY35b3hbRQH9hu3myUUj9qGOUuKnYK0LW5acBri
+	 fn/2gS7YyC5aQ==
+Date: Fri, 13 Oct 2023 14:39:27 +0100
 From: Mark Brown <broonie@kernel.org>
 To: Shengjiu Wang <shengjiu.wang@nxp.com>
 Cc: hverkuil@xs4all.nl, sakari.ailus@iki.fi, tfiga@chromium.org,
@@ -65,18 +65,19 @@ Cc: hverkuil@xs4all.nl, sakari.ailus@iki.fi, tfiga@chromium.org,
 	nicoleotsuka@gmail.com, lgirdwood@gmail.com, perex@perex.cz,
 	tiwai@suse.com, alsa-devel@alsa-project.org,
 	linuxppc-dev@lists.ozlabs.org
-Subject: Re: [RFC PATCH v6 04/11] ASoC: fsl_asrc: register m2m platform device
-Message-ID: <ZSlERK8gRFUOusqf@finisterre.sirena.org.uk>
+Subject: Re: [RFC PATCH v6 05/11] ASoC: fsl_easrc: register m2m platform
+ device
+Message-ID: <ZSlH8BW8yr+WJFK0@finisterre.sirena.org.uk>
 References: <1697185865-27528-1-git-send-email-shengjiu.wang@nxp.com>
- <1697185865-27528-5-git-send-email-shengjiu.wang@nxp.com>
+ <1697185865-27528-6-git-send-email-shengjiu.wang@nxp.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="wC1z3YN8nkgTz/wR"
+	protocol="application/pgp-signature"; boundary="UKDVDCqpnMS86zNZ"
 Content-Disposition: inline
-In-Reply-To: <1697185865-27528-5-git-send-email-shengjiu.wang@nxp.com>
+In-Reply-To: <1697185865-27528-6-git-send-email-shengjiu.wang@nxp.com>
 X-Cookie: Save energy:  Drive a smaller shell.
-Message-ID-Hash: FZEZV3E52YKSS65PZN7TKY2IDUCCU4QB
-X-Message-ID-Hash: FZEZV3E52YKSS65PZN7TKY2IDUCCU4QB
+Message-ID-Hash: Q3VQ4RWCTRMY3MMPZ7DEYESOQXEDNVQ5
+X-Message-ID-Hash: Q3VQ4RWCTRMY3MMPZ7DEYESOQXEDNVQ5
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -89,7 +90,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FZEZV3E52YKSS65PZN7TKY2IDUCCU4QB/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Q3VQ4RWCTRMY3MMPZ7DEYESOQXEDNVQ5/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -99,33 +100,29 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 
---wC1z3YN8nkgTz/wR
+--UKDVDCqpnMS86zNZ
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Oct 13, 2023 at 04:30:58PM +0800, Shengjiu Wang wrote:
-> Register m2m platform device, that user can
+On Fri, Oct 13, 2023 at 04:30:59PM +0800, Shengjiu Wang wrote:
+> Register m2m platform device,that user can
 > use M2M feature.
->=20
-> Defined platform data structure and platform
-> driver name.
 
 Acked-by: Mark Brown <broonie@kernel.org>
 
---wC1z3YN8nkgTz/wR
+--UKDVDCqpnMS86zNZ
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmUpREMACgkQJNaLcl1U
-h9B0vgf+NIJEhKtL7g30+vSPZtbkBvnhTzPAcFV3zcMUZxT5QqDaOUcJVcQhn8fG
-JRFW4lt71Z8bMABFCkoA/YghAFfzI5wLaxkzZgJT5B62Txw5tI9m8U4G2/LZt7y3
-MM9ZP6KAzESEb3Xzc5I6DNPcXP13RiAijK4UzIvFmZZvn1htGzK3Fw0Lw9I5JIAT
-oIIVQ8xaI107q2cuzxoBQ0bORi3UUCHL1f4g/YHxt7LHcdaXyZN6QoJ4jk4C2Qwi
-5OtfvG14FnnM110KqTRVL7X9ZDeDq5d9EhhAgTqrzUDmvb2Pv0JY4mUbONiG63JU
-nhIyQqDJ8Ri8cgDk2OVf/sXHx8XT+g==
-=zNQc
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmUpSI4ACgkQJNaLcl1U
+h9D3Mgf+PDdKi3n9C0kflM9CvsKjX5j3rfiOo6oGsIA4yaHNFonDmjLM+iJAGM0x
+QTPAK5TwHUOu2fZ9wQHo7FKNTV7OPH5h8VuU+wQjWc9Ftg4kgmqbAEfFsw/EEjaz
+k4J8zpD1c+B4iF3NNAKaJu+6HIkx6bcffkDCaUqtFEjewvc7mjNZNBnsL+rilyhy
+z7/tS6VfFD5Skjl5xG1x+Kh9XO0ziRJSfUNNEGzRFFzK73GngtE0Reh8qN4aNNXg
+1BhBUoDRS0Qczjt/Cb9YXTaicRJBvHEMTLz/6vl/sMlUhweBrLXWuX0rwDwR6MT5
+2tMlxCViUMgG/ug9JJOB6acfEQVwBw==
+=3R9J
 -----END PGP SIGNATURE-----
 
---wC1z3YN8nkgTz/wR--
+--UKDVDCqpnMS86zNZ--
