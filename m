@@ -4,47 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BB0D8CDB47E
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Oct 2023 09:13:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C42BCCDB47E
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Oct 2023 09:13:57 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D2C9B868;
-	Fri, 13 Oct 2023 11:12:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D2C9B868
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9CA2485D;
+	Fri, 13 Oct 2023 11:13:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9CA2485D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1697188404;
-	bh=2Ko+bJnGSkxHP4LHNLRLc1PtmbLyesbFxQ1GK4rcYR8=;
+	s=default; t=1697188434;
+	bh=Eaxe2NBn1GGJbDkH+9OstrO0jni9s8YALY/FnQk9U6U=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=b6oY81zh7eKsw4zaUzZmRQ7mzn7D7M4CH8qzQ/FoFAndeJoE3AdOJaDGN77r+K4QB
-	 NSdhmiMzKjIi7UYUV/SGcsvsjtQOCkCCKf4aAHhvHgD7b4o5iLxlYVVkEuuD31ikoA
-	 nnK+qzayD3DIHb2OZJQTf1zCS2goj6T+uaw3CeEE=
+	b=NRXtyCHd0EkB/XeqlviJR4PsrjT/lsKNzxZmz5/3XeybVH1faFYzZ62JyNAkFbJYa
+	 5++q1svSsxUACboA5MGar3cyAxv6t0RQn8dz7YUkjmEYf39m8jSsoJXZGpMl0Jj0V/
+	 9t8AkBAq+9Er0y8TgadexTBK1mkApfjzftWWY83s=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 00200F802BE; Fri, 13 Oct 2023 11:12:12 +0200 (CEST)
+	id ACD5BF8055C; Fri, 13 Oct 2023 11:12:15 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 51D31F80536;
-	Fri, 13 Oct 2023 11:12:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4E7DDF8055A;
+	Fri, 13 Oct 2023 11:12:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 57FF2F8055A; Fri, 13 Oct 2023 11:09:16 +0200 (CEST)
-Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
+	id 83776F8055A; Fri, 13 Oct 2023 11:09:18 +0200 (CEST)
+Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id AE66DF8027B
-	for <alsa-devel@alsa-project.org>; Fri, 13 Oct 2023 11:09:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AE66DF8027B
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 4FA451A1558;
-	Fri, 13 Oct 2023 11:09:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 1E43BF80536
+	for <alsa-devel@alsa-project.org>; Fri, 13 Oct 2023 11:09:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1E43BF80536
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 0D19F201CF2;
+	Fri, 13 Oct 2023 11:09:08 +0200 (CEST)
 Received: from aprdc01srsp001v.ap-rdc01.nxp.com
  (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
-	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id DDAEB1A1555;
-	Fri, 13 Oct 2023 11:09:01 +0200 (CEST)
+	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id C6EEF201D0A;
+	Fri, 13 Oct 2023 11:09:07 +0200 (CEST)
 Received: from localhost.localdomain (shlinux2.ap.freescale.net
  [10.192.224.44])
-	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id E8D7D181D0E5;
-	Fri, 13 Oct 2023 17:08:59 +0800 (+08)
+	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id D0AE2181D0E5;
+	Fri, 13 Oct 2023 17:09:05 +0800 (+08)
 From: Shengjiu Wang <shengjiu.wang@nxp.com>
 To: hverkuil@xs4all.nl,
 	sakari.ailus@iki.fi,
@@ -63,16 +63,16 @@ To: hverkuil@xs4all.nl,
 	tiwai@suse.com,
 	alsa-devel@alsa-project.org,
 	linuxppc-dev@lists.ozlabs.org
-Subject: [RFC PATCH v6 02/11] ASoC: fsl_easrc: define functions for memory to
- memory usage
-Date: Fri, 13 Oct 2023 16:30:56 +0800
-Message-Id: <1697185865-27528-3-git-send-email-shengjiu.wang@nxp.com>
+Subject: [RFC PATCH v6 06/11] media: uapi: Add V4L2_CAP_AUDIO_M2M capability
+ flag
+Date: Fri, 13 Oct 2023 16:31:00 +0800
+Message-Id: <1697185865-27528-7-git-send-email-shengjiu.wang@nxp.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1697185865-27528-1-git-send-email-shengjiu.wang@nxp.com>
 References: <1697185865-27528-1-git-send-email-shengjiu.wang@nxp.com>
 X-Virus-Scanned: ClamAV using ClamSMTP
-Message-ID-Hash: UI6ZXK2WSMECS3ADIQSY5MFMWL4YQ4PA
-X-Message-ID-Hash: UI6ZXK2WSMECS3ADIQSY5MFMWL4YQ4PA
+Message-ID-Hash: XJKSZTWD7ZXMA7QN32DPBDTTGHL56JF4
+X-Message-ID-Hash: XJKSZTWD7ZXMA7QN32DPBDTTGHL56JF4
 X-MailFrom: shengjiu.wang@nxp.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -85,7 +85,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UI6ZXK2WSMECS3ADIQSY5MFMWL4YQ4PA/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XJKSZTWD7ZXMA7QN32DPBDTTGHL56JF4/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -94,248 +94,55 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-ASRC can be used on memory to memory case, define several
-functions for m2m usage and export them as function pointer.
+V4L2_CAP_AUDIO_M2M is similar to V4L2_CAP_VIDEO_M2M flag.
+
+It is used for audio memory to memory case.
 
 Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 ---
- sound/soc/fsl/fsl_easrc.c | 193 ++++++++++++++++++++++++++++++++++++++
- sound/soc/fsl/fsl_easrc.h |   4 +
- 2 files changed, 197 insertions(+)
+ Documentation/userspace-api/media/v4l/vidioc-querycap.rst    | 3 +++
+ Documentation/userspace-api/media/videodev2.h.rst.exceptions | 1 +
+ include/uapi/linux/videodev2.h                               | 1 +
+ 3 files changed, 5 insertions(+)
 
-diff --git a/sound/soc/fsl/fsl_easrc.c b/sound/soc/fsl/fsl_easrc.c
-index ba62995c909a..dc603bb383e2 100644
---- a/sound/soc/fsl/fsl_easrc.c
-+++ b/sound/soc/fsl/fsl_easrc.c
-@@ -1861,6 +1861,190 @@ static int fsl_easrc_get_fifo_addr(u8 dir, enum asrc_pair_index index)
- 	return REG_EASRC_FIFO(dir, index);
- }
+diff --git a/Documentation/userspace-api/media/v4l/vidioc-querycap.rst b/Documentation/userspace-api/media/v4l/vidioc-querycap.rst
+index 6c57b8428356..0b3cefefc86b 100644
+--- a/Documentation/userspace-api/media/v4l/vidioc-querycap.rst
++++ b/Documentation/userspace-api/media/v4l/vidioc-querycap.rst
+@@ -259,6 +259,9 @@ specification the ioctl returns an ``EINVAL`` error code.
+         video topology configuration, including which I/O entity is routed to
+         the input/output, is configured by userspace via the Media Controller.
+         See :ref:`media_controller`.
++    * - ``V4L2_CAP_AUDIO_M2M``
++      - 0x40000000
++      - The device supports the audio Memory-To-Memory interface.
+     * - ``V4L2_CAP_DEVICE_CAPS``
+       - 0x80000000
+       - The driver fills the ``device_caps`` field. This capability can
+diff --git a/Documentation/userspace-api/media/videodev2.h.rst.exceptions b/Documentation/userspace-api/media/videodev2.h.rst.exceptions
+index 3e58aac4ef0b..da6d0b8e4c2c 100644
+--- a/Documentation/userspace-api/media/videodev2.h.rst.exceptions
++++ b/Documentation/userspace-api/media/videodev2.h.rst.exceptions
+@@ -197,6 +197,7 @@ replace define V4L2_CAP_META_OUTPUT device-capabilities
+ replace define V4L2_CAP_DEVICE_CAPS device-capabilities
+ replace define V4L2_CAP_TOUCH device-capabilities
+ replace define V4L2_CAP_IO_MC device-capabilities
++replace define V4L2_CAP_AUDIO_M2M device-capabilities
  
-+/* Get sample numbers in FIFO */
-+static unsigned int fsl_easrc_get_output_fifo_size(struct fsl_asrc_pair *pair)
-+{
-+	struct fsl_asrc *asrc = pair->asrc;
-+	enum asrc_pair_index index = pair->index;
-+	u32 val;
-+
-+	regmap_read(asrc->regmap, REG_EASRC_SFS(index), &val);
-+	val &= EASRC_SFS_NSGO_MASK;
-+
-+	return val >> EASRC_SFS_NSGO_SHIFT;
-+}
-+
-+static int fsl_easrc_m2m_prepare(struct fsl_asrc_pair *pair)
-+{
-+	struct fsl_easrc_ctx_priv *ctx_priv = pair->private;
-+	struct fsl_asrc *asrc = pair->asrc;
-+	struct device *dev = &asrc->pdev->dev;
-+	int ret;
-+
-+	ctx_priv->in_params.sample_rate = pair->rate[IN];
-+	ctx_priv->in_params.sample_format = pair->sample_format[IN];
-+	ctx_priv->out_params.sample_rate = pair->rate[OUT];
-+	ctx_priv->out_params.sample_format = pair->sample_format[OUT];
-+
-+	ctx_priv->in_params.fifo_wtmk = FSL_EASRC_INPUTFIFO_WML;
-+	ctx_priv->out_params.fifo_wtmk = FSL_EASRC_OUTPUTFIFO_WML;
-+	/* Fill the right half of the re-sampler with zeros */
-+	ctx_priv->rs_init_mode = 0x2;
-+	/* Zero fill the right half of the prefilter */
-+	ctx_priv->pf_init_mode = 0x2;
-+
-+	ret = fsl_easrc_set_ctx_format(pair,
-+				       &ctx_priv->in_params.sample_format,
-+				       &ctx_priv->out_params.sample_format);
-+	if (ret) {
-+		dev_err(dev, "failed to set context format: %d\n", ret);
-+		return ret;
-+	}
-+
-+	ret = fsl_easrc_config_context(asrc, pair->index);
-+	if (ret) {
-+		dev_err(dev, "failed to config context %d\n", ret);
-+		return ret;
-+	}
-+
-+	ctx_priv->in_params.iterations = 1;
-+	ctx_priv->in_params.group_len = pair->channels;
-+	ctx_priv->in_params.access_len = pair->channels;
-+	ctx_priv->out_params.iterations = 1;
-+	ctx_priv->out_params.group_len = pair->channels;
-+	ctx_priv->out_params.access_len = pair->channels;
-+
-+	ret = fsl_easrc_set_ctx_organziation(pair);
-+	if (ret) {
-+		dev_err(dev, "failed to set fifo organization\n");
-+		return ret;
-+	}
-+
-+	/* The context start flag */
-+	pair->first_convert = 1;
-+	return 0;
-+}
-+
-+static int fsl_easrc_m2m_start(struct fsl_asrc_pair *pair)
-+{
-+	/* start context once */
-+	if (pair->first_convert) {
-+		fsl_easrc_start_context(pair);
-+		pair->first_convert = 0;
-+	}
-+
-+	return 0;
-+}
-+
-+static int fsl_easrc_m2m_stop(struct fsl_asrc_pair *pair)
-+{
-+	/* Stop pair/context */
-+	if (!pair->first_convert) {
-+		fsl_easrc_stop_context(pair);
-+		pair->first_convert = 1;
-+	}
-+
-+	return 0;
-+}
-+
-+/* calculate capture data length according to output data length and sample rate */
-+static int fsl_easrc_m2m_calc_out_len(struct fsl_asrc_pair *pair, int input_buffer_length)
-+{
-+	struct fsl_asrc *easrc = pair->asrc;
-+	struct fsl_easrc_priv *easrc_priv = easrc->private;
-+	struct fsl_easrc_ctx_priv *ctx_priv = pair->private;
-+	unsigned int in_rate = ctx_priv->in_params.norm_rate;
-+	unsigned int out_rate = ctx_priv->out_params.norm_rate;
-+	unsigned int channels = pair->channels;
-+	unsigned int in_samples, out_samples;
-+	unsigned int in_width, out_width;
-+	unsigned int out_length;
-+	unsigned int frac_bits;
-+	u64 val1, val2;
-+
-+	switch (easrc_priv->rs_num_taps) {
-+	case EASRC_RS_32_TAPS:
-+		/* integer bits = 5; */
-+		frac_bits = 39;
-+		break;
-+	case EASRC_RS_64_TAPS:
-+		/* integer bits = 6; */
-+		frac_bits = 38;
-+		break;
-+	case EASRC_RS_128_TAPS:
-+		/* integer bits = 7; */
-+		frac_bits = 37;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	val1 = (u64)in_rate << frac_bits;
-+	do_div(val1, out_rate);
-+	val1 = val1 + (ctx_priv->ratio_mod << (frac_bits - 31));
-+
-+	in_width = snd_pcm_format_physical_width(ctx_priv->in_params.sample_format) / 8;
-+	out_width = snd_pcm_format_physical_width(ctx_priv->out_params.sample_format) / 8;
-+
-+	ctx_priv->in_filled_len += input_buffer_length;
-+	if (ctx_priv->in_filled_len <= ctx_priv->in_filled_sample * in_width * channels) {
-+		out_length = 0;
-+	} else {
-+		in_samples = ctx_priv->in_filled_len / (in_width * channels) -
-+			     ctx_priv->in_filled_sample;
-+
-+		/* right shift 12 bit to make ratio in 32bit space */
-+		val2 = (u64)in_samples << (frac_bits - 12);
-+		val1 = val1 >> 12;
-+		do_div(val2, val1);
-+		out_samples = val2;
-+
-+		out_length = out_samples * out_width * channels;
-+		ctx_priv->in_filled_len = ctx_priv->in_filled_sample * in_width * channels;
-+	}
-+
-+	return out_length;
-+}
-+
-+static int fsl_easrc_m2m_get_maxburst(u8 dir, struct fsl_asrc_pair *pair)
-+{
-+	struct fsl_easrc_ctx_priv *ctx_priv = pair->private;
-+
-+	if (dir == IN)
-+		return ctx_priv->in_params.fifo_wtmk * pair->channels;
-+	else
-+		return ctx_priv->out_params.fifo_wtmk * pair->channels;
-+}
-+
-+static int fsl_easrc_m2m_pair_suspend(struct fsl_asrc_pair *pair)
-+{
-+	fsl_easrc_stop_context(pair);
-+
-+	return 0;
-+}
-+
-+static int fsl_easrc_m2m_pair_resume(struct fsl_asrc_pair *pair)
-+{
-+	struct fsl_easrc_ctx_priv *ctx_priv = pair->private;
-+
-+	pair->first_convert = 1;
-+	ctx_priv->in_filled_len = 0;
-+
-+	return 0;
-+}
-+
-+/* val is Q31 */
-+static int fsl_easrc_m2m_set_ratio_mod(struct fsl_asrc_pair *pair, int val)
-+{
-+	struct fsl_easrc_ctx_priv *ctx_priv = pair->private;
-+	struct fsl_asrc *easrc = pair->asrc;
-+
-+	ctx_priv->ratio_mod += val;
-+	regmap_write(easrc->regmap, REG_EASRC_RUC(pair->index), EASRC_RSUC_RS_RM(val));
-+
-+	return 0;
-+}
-+
- static const struct of_device_id fsl_easrc_dt_ids[] = {
- 	{ .compatible = "fsl,imx8mn-easrc",},
- 	{}
-@@ -1926,6 +2110,15 @@ static int fsl_easrc_probe(struct platform_device *pdev)
- 	easrc->release_pair = fsl_easrc_release_context;
- 	easrc->get_fifo_addr = fsl_easrc_get_fifo_addr;
- 	easrc->pair_priv_size = sizeof(struct fsl_easrc_ctx_priv);
-+	easrc->m2m_prepare = fsl_easrc_m2m_prepare;
-+	easrc->m2m_start = fsl_easrc_m2m_start;
-+	easrc->m2m_stop = fsl_easrc_m2m_stop;
-+	easrc->get_output_fifo_size = fsl_easrc_get_output_fifo_size;
-+	easrc->m2m_calc_out_len = fsl_easrc_m2m_calc_out_len;
-+	easrc->m2m_get_maxburst = fsl_easrc_m2m_get_maxburst;
-+	easrc->m2m_pair_suspend = fsl_easrc_m2m_pair_suspend;
-+	easrc->m2m_pair_resume = fsl_easrc_m2m_pair_resume;
-+	easrc->m2m_set_ratio_mod = fsl_easrc_m2m_set_ratio_mod;
+ # V4L2 pix flags
+ replace define V4L2_PIX_FMT_PRIV_MAGIC :c:type:`v4l2_pix_format`
+diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
+index 78260e5d9985..3decf7d73870 100644
+--- a/include/uapi/linux/videodev2.h
++++ b/include/uapi/linux/videodev2.h
+@@ -508,6 +508,7 @@ struct v4l2_capability {
+ #define V4L2_CAP_TOUCH                  0x10000000  /* Is a touch device */
  
- 	easrc_priv->rs_num_taps = EASRC_RS_32_TAPS;
- 	easrc_priv->const_coeff = 0x3FF0000000000000;
-diff --git a/sound/soc/fsl/fsl_easrc.h b/sound/soc/fsl/fsl_easrc.h
-index 7c70dac52713..c9f770862662 100644
---- a/sound/soc/fsl/fsl_easrc.h
-+++ b/sound/soc/fsl/fsl_easrc.h
-@@ -601,6 +601,8 @@ struct fsl_easrc_slot {
-  * @out_missed_sample: sample missed in output
-  * @st1_addexp: exponent added for stage1
-  * @st2_addexp: exponent added for stage2
-+ * @ratio_mod: update ratio
-+ * @in_filled_len: input filled length
-  */
- struct fsl_easrc_ctx_priv {
- 	struct fsl_easrc_io_params in_params;
-@@ -618,6 +620,8 @@ struct fsl_easrc_ctx_priv {
- 	int out_missed_sample;
- 	int st1_addexp;
- 	int st2_addexp;
-+	int ratio_mod;
-+	unsigned int in_filled_len;
- };
+ #define V4L2_CAP_IO_MC			0x20000000  /* Is input/output controlled by the media controller */
++#define V4L2_CAP_AUDIO_M2M              0x40000000  /* audio memory to memory */
  
- /**
+ #define V4L2_CAP_DEVICE_CAPS            0x80000000  /* sets device capabilities field */
+ 
 -- 
 2.34.1
 
