@@ -4,48 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7438ACDB482
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Oct 2023 18:40:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 94F46CDB47E
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Oct 2023 19:20:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 39A7182B;
-	Fri, 13 Oct 2023 20:39:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 39A7182B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2543E1F4;
+	Fri, 13 Oct 2023 21:19:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2543E1F4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1697222410;
-	bh=0d0TVr6eu9rs2cM5ho64sPG4whYqV0peA+dRStgX/vk=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=m/2rgUYVRyCajMrdMb4Gd5FfeZOqwzYQMkVnytnI7v4eA3laBhUSut4y1FVEjKj1L
-	 m7SVN2ttAFOzpt5TnBqgtfGJLJVtVskpndqYI5sJT1tOhENmGunnR0PyMLCmNQHnuv
-	 qrbK1QUZunDm7zB4gDz51IaEqv/Vn8lr8z3za2WU=
+	s=default; t=1697224831;
+	bh=sh12Tmk02dttwiKlHd4emXQh6M+LZUocDGA1gHCo9+k=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=aUDYDBCXVGmBXUgWz7IejALWR1jr8BOfusqC8IP0g6FJhDtYUj7p7te2zI1SziXhe
+	 2C+eGGe2hcVOLPQDVUcputtfF2gro+YC5KX98Oi2ANz3ePAjTud9AYSy09MaQ4xgQk
+	 OJUvAT09kJKncBeVVCkvb4wGizZoFV26CElaIJKI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 19D50F80553; Fri, 13 Oct 2023 20:38:48 +0200 (CEST)
+	id 3BBEAF80552; Fri, 13 Oct 2023 21:19:21 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id AB7D4F802BE;
-	Fri, 13 Oct 2023 20:38:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D156BF802BE;
+	Fri, 13 Oct 2023 21:19:20 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 62A0EF802BE; Fri, 13 Oct 2023 20:37:07 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
- [207.180.221.201])
-	by alsa1.perex.cz (Postfix) with ESMTP id DD593F8015B
-	for <alsa-devel@alsa-project.org>; Fri, 13 Oct 2023 20:37:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DD593F8015B
+	id B406CF802BE; Fri, 13 Oct 2023 21:19:16 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id AB41FF8015B
+	for <alsa-devel@alsa-project.org>; Fri, 13 Oct 2023 21:18:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AB41FF8015B
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=Qd2R1G7T
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 55C11621C9;
+	Fri, 13 Oct 2023 19:18:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4BC77C433C8;
+	Fri, 13 Oct 2023 19:18:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1697224737;
+	bh=sh12Tmk02dttwiKlHd4emXQh6M+LZUocDGA1gHCo9+k=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=Qd2R1G7T0AS08lW2b5gtWVhjIwvN/shlLldJMJ2kwRoU1owQ1b/qmhQI1CbVZgXyF
+	 2Ujd2jNIsubpp61NOckhSZ2sUoKjq60os0DbQudgTv7Mj/SwFnQhlb3q6/pyhp0f+m
+	 135geFqH20PE8I9oGcPF+75i7UlPxk0wboC5IqyEwazSGqk4+AlydpTLSEGC032JUC
+	 OQSBFpvKZQikhEA6arCMoFzwK7V/DXIks6GUdroU9T+Xj97Y4dQdwNydTqsFqRe2Xx
+	 qpmpxrd2Gsy2kaF1pGwT1J8WD1SCKYYu+0LPIv24pfGorM8dL60FJpuI3X/EXbDNvi
+	 qCfAg+I7V56CA==
+From: Mark Brown <broonie@kernel.org>
+To: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, Xingyu Wu <xingyu.wu@starfivetech.com>,
+ Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20231013-asoc-fix-dwc-v1-1-63211bb746b9@kernel.org>
+References: <20231013-asoc-fix-dwc-v1-1-63211bb746b9@kernel.org>
+Subject: Re: [PATCH] ASoC: dwc: Fix non-DT instantiation
+Message-Id: <169722473509.2978444.10926248070491002211.b4-ty@kernel.org>
+Date: Fri, 13 Oct 2023 20:18:55 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-From: GitHub pull_request - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1697222220332857847-webhooks-bot@alsa-project.org>
-References: <1697222220332857847-webhooks-bot@alsa-project.org>
-Subject: configure.ac: fix UMP support detection
-Message-Id: <20231013183707.62A0EF802BE@alsa1.perex.cz>
-Date: Fri, 13 Oct 2023 20:37:07 +0200 (CEST)
-Message-ID-Hash: PTAZFEHZK67LRFNUTCAB32RSJEVVKDD7
-X-Message-ID-Hash: PTAZFEHZK67LRFNUTCAB32RSJEVVKDD7
-X-MailFrom: github@alsa-project.org
+X-Mailer: b4 0.13-dev-0438c
+Message-ID-Hash: OBOU4QBFPQ6PJFELPLSVGD67LWU72KTW
+X-Message-ID-Hash: OBOU4QBFPQ6PJFELPLSVGD67LWU72KTW
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -57,7 +83,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PTAZFEHZK67LRFNUTCAB32RSJEVVKDD7/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OBOU4QBFPQ6PJFELPLSVGD67LWU72KTW/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -66,16 +92,39 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-utils pull request #240 was opened from bkuhls:
+On Fri, 13 Oct 2023 18:37:33 +0100, Mark Brown wrote:
+> Commit d6d6c513f5d2 ("ASoC: dwc: Use ops to get platform data")
+> converted the DesignWare I2S driver to use a DT specific function to
+> obtain platform data but this breaks at least non-DT systems such as
+> AMD.  Revert it.
+> 
+> 
 
-https://github.com/alsa-project/alsa-utils/commit/b399fb85a919636b7da34e8bcf17f484dd9046f7 added usage of alsa/ump_msg.h without checking whether alsa-lib was compiled with rawmidi support:
-https://github.com/alsa-project/alsa-lib/blob/master/include/Makefile.am#L37
+Applied to
 
-Fixes a build error when alsa-lib was compiled with --disable-rawmidi
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-aplaymidi.c:34:10: fatal error: alsa/ump_msg.h: No such file or directory
-   34 | #include <alsa/ump_msg.h>
+Thanks!
 
-Request URL   : https://github.com/alsa-project/alsa-utils/pull/240
-Patch URL     : https://github.com/alsa-project/alsa-utils/pull/240.patch
-Repository URL: https://github.com/alsa-project/alsa-utils
+[1/1] ASoC: dwc: Fix non-DT instantiation
+      commit: 9c97790a07dc4f9bdc6e1701003dc9b86f749c71
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
