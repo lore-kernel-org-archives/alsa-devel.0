@@ -4,82 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 78DDDCDB47E
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Oct 2023 22:22:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E73ECCDB47E
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Oct 2023 22:23:02 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 613B2868;
-	Sat, 14 Oct 2023 00:22:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 613B2868
+	by alsa0.perex.cz (Postfix) with ESMTPS id 29FF7836;
+	Sat, 14 Oct 2023 00:22:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 29FF7836
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1697235772;
-	bh=BokPyYVG7aD1G6y+f2Y3dpkMLyYMGoIrNwIoPdZNxhU=;
+	s=default; t=1697235781;
+	bh=TllgjmOjMn10IcS4j2LTAf95NQP1JOMB2P4WeNA3glA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=A/wqy8gcaQvOQXq1+PRFe/1ikwlkT4AfcNxePawK3goKk9dbnzSeGWQmOnSVa7DXu
-	 7qXudCMy7GczWGyx82NgzA9bSly5XWf5Er1wtYYYiTOB5rvn0ECzzYSGic9l3pA5cQ
-	 n/ioxYiUU+g1CC3xOKB+z1305/loFCYNvpkAoRoM=
+	b=NykeJ+VNhAJ7AR6F0Z3wwC5VHsOjp1sfGUcehg01Dq7iUkMcnAQbK5xSLlKEKHiel
+	 AMIhbg/TKD7uD2N53iwEmeceXsIeQRgrfRInJYWCW6R/EoDmq9U/AY04poQlBDku0A
+	 m1awsCvTyw1c237MlDy5DdBeQhNu1/CUZzAFHCXU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AE901F8055B; Sat, 14 Oct 2023 00:21:14 +0200 (CEST)
+	id B1FD3F80571; Sat, 14 Oct 2023 00:21:15 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id CC833F8055C;
-	Sat, 14 Oct 2023 00:21:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 320FDF8057E;
+	Sat, 14 Oct 2023 00:21:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BC234F80553; Sat, 14 Oct 2023 00:20:30 +0200 (CEST)
+	id 6D484F802E8; Sat, 14 Oct 2023 00:20:32 +0200 (CEST)
 Received: from metis.whiteo.stw.pengutronix.de
  (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
  server-digest SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 6C01BF8019B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 0059BF802BE
 	for <alsa-devel@alsa-project.org>; Sat, 14 Oct 2023 00:20:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6C01BF8019B
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0059BF802BE
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <ukl@pengutronix.de>)
-	id 1qrQVw-0003uJ-Oe; Sat, 14 Oct 2023 00:20:12 +0200
+	id 1qrQVv-0003u2-Mh; Sat, 14 Oct 2023 00:20:11 +0200
 Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls
  TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <ukl@pengutronix.de>)
-	id 1qrQVv-001URH-QI; Sat, 14 Oct 2023 00:20:11 +0200
+	id 1qrQVu-001UR1-MZ; Sat, 14 Oct 2023 00:20:10 +0200
 Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
 	(envelope-from <ukl@pengutronix.de>)
-	id 1qrQVv-00FrH8-Gt; Sat, 14 Oct 2023 00:20:11 +0200
+	id 1qrQVu-00FrGo-DA; Sat, 14 Oct 2023 00:20:10 +0200
 From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
 To: Liam Girdwood <lgirdwood@gmail.com>,
 	Mark Brown <broonie@kernel.org>
-Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-	Banajit Goswami <bgoswami@quicinc.com>,
+Cc: Nicolas Frattaroli <frattaroli.nicolas@gmail.com>,
 	Jaroslav Kysela <perex@perex.cz>,
 	Takashi Iwai <tiwai@suse.com>,
+	Heiko Stuebner <heiko@sntech.de>,
+	linux-rockchip@lists.infradead.org,
 	alsa-devel@alsa-project.org,
+	linux-arm-kernel@lists.infradead.org,
 	kernel@pengutronix.de
-Subject: [PATCH 6/7] ASoC: qcom: lpass: Make
- asoc_qcom_lpass_cpu_platform_remove() return void
-Date: Sat, 14 Oct 2023 00:19:52 +0200
-Message-ID: <20231013221945.1489203-15-u.kleine-koenig@pengutronix.de>
+Subject: [PATCH 1/7] ASoC: rockchip: i2s_tdm: Convert to platform remove
+ callback returning void
+Date: Sat, 14 Oct 2023 00:19:47 +0200
+Message-ID: <20231013221945.1489203-10-u.kleine-koenig@pengutronix.de>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231013221945.1489203-9-u.kleine-koenig@pengutronix.de>
 References: <20231013221945.1489203-9-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4609;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1807;
  i=u.kleine-koenig@pengutronix.de; h=from:subject;
- bh=BokPyYVG7aD1G6y+f2Y3dpkMLyYMGoIrNwIoPdZNxhU=;
- b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlKcKIHGuYjXU1i9+OotCiM7vj8dtN06tcNWRmK
- YB0FsHkHWqJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZSnCiAAKCRCPgPtYfRL+
- TuYiB/9ewUPtxKy4ZiOX12ybpMfu6IjmIsrMwtEiR44mDb0DncgLYSo4G3phjYPsrgtCkQqegTI
- J9A7C6WIC2K4jNYrA1SHOr5JcRMNOBkaAee9HpAAie44ZtZqm3FDRYtRvrwV2LJHpkz9IrYX+DB
- REHPpcbHMT0Bj0eY8NxqfXVDr1cQITuvYC23sgFEYLFUEwG2nC1MYIwu3TFIXuYJt8Cl5p8Y5Ey
- H6BFn6P1H37nH34bxnbFUqUL8FmeNz60FjQJl7NEwTI9ugxgMaEGyO3MTippynDJ9JsDj+9E8Zb
- yw7BFUKQ447f0AcbqG97Vj76SLhU2EuUflLhXdorE+/Xi3or
+ bh=TllgjmOjMn10IcS4j2LTAf95NQP1JOMB2P4WeNA3glA=;
+ b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlKcKCP/NXhj0+ihQ+srsUX95YXpJG5+0IZy8Iu
+ eZgljftmt2JATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZSnCggAKCRCPgPtYfRL+
+ TmSFB/4sT4DJ034kWuvTwoq22jsYVgiW1Q7xzIWZcBuAX2Spwetg9y0flIXxPLCfAj+yn+6uBZw
+ 1o/nympFzyUhMsxc48WTFX2j7o2sQW4NNLhB3xfA/T/H71MnXZb92R/VKs9WSJc6QcDzXD+bNus
+ Ff9Wf3PMWoIUPIKq5vpxEDqavSeewxK7m4F40Cr/cYk2wn2ONgGNeFQDfMUOK8wgzJceCF1fTIW
+ mL6dDSi3cszIQHnHcmt4O/x5laqTFEPvk4RbqOcsNDA+h0ZouQMBthj1yl1gbLF7zeZ5NwsPqWs
+ O5Pxu+sVWG/iQ/d7JgfWF3pWYmhAtPmZ5ZUJtpFT1dJR6ahL
 X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp;
  fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
 Content-Transfer-Encoding: 8bit
@@ -88,8 +90,8 @@ X-SA-Exim-Mail-From: ukl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de);
  SAEximRunCond expanded to false
 X-PTX-Original-Recipient: alsa-devel@alsa-project.org
-Message-ID-Hash: ZMJPQNK52DNYJCUYJGGGMZPEBWFHOTLX
-X-Message-ID-Hash: ZMJPQNK52DNYJCUYJGGGMZPEBWFHOTLX
+Message-ID-Hash: WCC37J7WFPQMSBE3J4S52XCKU67NEVWD
+X-Message-ID-Hash: WCC37J7WFPQMSBE3J4S52XCKU67NEVWD
 X-MailFrom: ukl@pengutronix.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -102,7 +104,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZMJPQNK52DNYJCUYJGGGMZPEBWFHOTLX/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WCC37J7WFPQMSBE3J4S52XCKU67NEVWD/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -113,112 +115,49 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 The .remove() callback for a platform driver returns an int which makes
 many driver authors wrongly assume it's possible to do error handling by
-returning an error code.  However the value returned is (mostly) ignored
+returning an error code. However the value returned is (mostly) ignored
 and this typically results in resource leaks. To improve here there is a
 quest to make the remove callback return void. In the first step of this
 quest all drivers are converted to .remove_new() which already returns
 void.
 
-asoc_qcom_lpass_cpu_platform_remove() returned zero unconditionally.
-Make it return void instead and convert all users to struct
-platform_device::remove_new().
+Trivially convert this driver from always returning zero in the remove
+callback to the void returning variant.
 
 Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 ---
- sound/soc/qcom/lpass-apq8016.c | 2 +-
- sound/soc/qcom/lpass-cpu.c     | 5 +----
- sound/soc/qcom/lpass-ipq806x.c | 2 +-
- sound/soc/qcom/lpass-sc7180.c  | 2 +-
- sound/soc/qcom/lpass-sc7280.c  | 2 +-
- sound/soc/qcom/lpass.h         | 2 +-
- 6 files changed, 6 insertions(+), 9 deletions(-)
+ sound/soc/rockchip/rockchip_i2s_tdm.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/qcom/lpass-apq8016.c b/sound/soc/qcom/lpass-apq8016.c
-index 8ce75b442b64..8e58e814a95f 100644
---- a/sound/soc/qcom/lpass-apq8016.c
-+++ b/sound/soc/qcom/lpass-apq8016.c
-@@ -300,7 +300,7 @@ static struct platform_driver apq8016_lpass_cpu_platform_driver = {
- 		.of_match_table	= of_match_ptr(apq8016_lpass_cpu_device_id),
- 	},
- 	.probe	= asoc_qcom_lpass_cpu_platform_probe,
--	.remove	= asoc_qcom_lpass_cpu_platform_remove,
-+	.remove_new = asoc_qcom_lpass_cpu_platform_remove,
- };
- module_platform_driver(apq8016_lpass_cpu_platform_driver);
- 
-diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
-index ba8fa7919884..88b80ed45c66 100644
---- a/sound/soc/qcom/lpass-cpu.c
-+++ b/sound/soc/qcom/lpass-cpu.c
-@@ -1274,15 +1274,12 @@ int asoc_qcom_lpass_cpu_platform_probe(struct platform_device *pdev)
+diff --git a/sound/soc/rockchip/rockchip_i2s_tdm.c b/sound/soc/rockchip/rockchip_i2s_tdm.c
+index 7e996550d1df..5c51dbef6e86 100644
+--- a/sound/soc/rockchip/rockchip_i2s_tdm.c
++++ b/sound/soc/rockchip/rockchip_i2s_tdm.c
+@@ -1714,14 +1714,12 @@ static int rockchip_i2s_tdm_probe(struct platform_device *pdev)
+ 	return ret;
  }
- EXPORT_SYMBOL_GPL(asoc_qcom_lpass_cpu_platform_probe);
  
--int asoc_qcom_lpass_cpu_platform_remove(struct platform_device *pdev)
-+void asoc_qcom_lpass_cpu_platform_remove(struct platform_device *pdev)
+-static int rockchip_i2s_tdm_remove(struct platform_device *pdev)
++static void rockchip_i2s_tdm_remove(struct platform_device *pdev)
  {
- 	struct lpass_data *drvdata = platform_get_drvdata(pdev);
+ 	if (!pm_runtime_status_suspended(&pdev->dev))
+ 		i2s_tdm_runtime_suspend(&pdev->dev);
  
- 	if (drvdata->variant->exit)
- 		drvdata->variant->exit(pdev);
--
+ 	pm_runtime_disable(&pdev->dev);
 -
 -	return 0;
  }
- EXPORT_SYMBOL_GPL(asoc_qcom_lpass_cpu_platform_remove);
  
-diff --git a/sound/soc/qcom/lpass-ipq806x.c b/sound/soc/qcom/lpass-ipq806x.c
-index bbe9f11d7780..e0e9ad35821c 100644
---- a/sound/soc/qcom/lpass-ipq806x.c
-+++ b/sound/soc/qcom/lpass-ipq806x.c
-@@ -172,7 +172,7 @@ static struct platform_driver ipq806x_lpass_cpu_platform_driver = {
- 		.of_match_table	= of_match_ptr(ipq806x_lpass_cpu_device_id),
- 	},
- 	.probe	= asoc_qcom_lpass_cpu_platform_probe,
--	.remove	= asoc_qcom_lpass_cpu_platform_remove,
-+	.remove_new = asoc_qcom_lpass_cpu_platform_remove,
- };
- module_platform_driver(ipq806x_lpass_cpu_platform_driver);
+ static int __maybe_unused rockchip_i2s_tdm_suspend(struct device *dev)
+@@ -1756,7 +1754,7 @@ static const struct dev_pm_ops rockchip_i2s_tdm_pm_ops = {
  
-diff --git a/sound/soc/qcom/lpass-sc7180.c b/sound/soc/qcom/lpass-sc7180.c
-index 1b0c04b210ce..22063b834554 100644
---- a/sound/soc/qcom/lpass-sc7180.c
-+++ b/sound/soc/qcom/lpass-sc7180.c
-@@ -315,7 +315,7 @@ static struct platform_driver sc7180_lpass_cpu_platform_driver = {
- 		.pm = &sc7180_lpass_pm_ops,
- 	},
- 	.probe = asoc_qcom_lpass_cpu_platform_probe,
--	.remove = asoc_qcom_lpass_cpu_platform_remove,
-+	.remove_new = asoc_qcom_lpass_cpu_platform_remove,
- 	.shutdown = asoc_qcom_lpass_cpu_platform_shutdown,
- };
- 
-diff --git a/sound/soc/qcom/lpass-sc7280.c b/sound/soc/qcom/lpass-sc7280.c
-index 7cd3e291382a..47c622327a8d 100644
---- a/sound/soc/qcom/lpass-sc7280.c
-+++ b/sound/soc/qcom/lpass-sc7280.c
-@@ -445,7 +445,7 @@ static struct platform_driver sc7280_lpass_cpu_platform_driver = {
- 		.pm = &sc7280_lpass_pm_ops,
- 	},
- 	.probe = asoc_qcom_lpass_cpu_platform_probe,
--	.remove = asoc_qcom_lpass_cpu_platform_remove,
-+	.remove_new = asoc_qcom_lpass_cpu_platform_remove,
- 	.shutdown = asoc_qcom_lpass_cpu_platform_shutdown,
- };
- 
-diff --git a/sound/soc/qcom/lpass.h b/sound/soc/qcom/lpass.h
-index aab60540563a..2f222bd4ffcc 100644
---- a/sound/soc/qcom/lpass.h
-+++ b/sound/soc/qcom/lpass.h
-@@ -399,7 +399,7 @@ struct lpass_pcm_data {
- 
- /* register the platform driver from the CPU DAI driver */
- int asoc_qcom_lpass_platform_register(struct platform_device *);
--int asoc_qcom_lpass_cpu_platform_remove(struct platform_device *pdev);
-+void asoc_qcom_lpass_cpu_platform_remove(struct platform_device *pdev);
- void asoc_qcom_lpass_cpu_platform_shutdown(struct platform_device *pdev);
- int asoc_qcom_lpass_cpu_platform_probe(struct platform_device *pdev);
- extern const struct snd_soc_dai_ops asoc_qcom_lpass_cpu_dai_ops;
+ static struct platform_driver rockchip_i2s_tdm_driver = {
+ 	.probe = rockchip_i2s_tdm_probe,
+-	.remove = rockchip_i2s_tdm_remove,
++	.remove_new = rockchip_i2s_tdm_remove,
+ 	.driver = {
+ 		.name = DRV_NAME,
+ 		.of_match_table = of_match_ptr(rockchip_i2s_tdm_match),
 -- 
 2.42.0
 
