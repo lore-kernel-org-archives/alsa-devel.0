@@ -4,60 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8CCA4CDB47E
-	for <alsa-devel@archiver.kernel.org>; Sun, 15 Oct 2023 12:35:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 82A5ECDB483
+	for <alsa-devel@archiver.kernel.org>; Sun, 15 Oct 2023 13:44:46 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7256885D;
-	Sun, 15 Oct 2023 14:34:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7256885D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7CCD89F6;
+	Sun, 15 Oct 2023 15:43:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7CCD89F6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1697373319;
-	bh=WWiIshGZv9u5a+nnLpkpT/7YAWtjIZIi3WG29wEQ6EQ=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=YqrqRMbyYIDzj8fXg75Z1058BFyaIoz4g9Vm2EtnOqXupIhbpebPui0lsfn4Bqo4H
-	 hXD59zEepmUXMLlqgDbQ3NZvdlgZ/7VefgZ73wKJZ5ndigjtbdgURQGwSrWZeboZ0y
-	 CpL/uGjbukrNwC7t7BGktNeAmJ5N+xOpTHqcxjPs=
+	s=default; t=1697377483;
+	bh=+4YoH1QFIVI3P+xT+ytVMPTZTLwuk4rucPpWirZR76o=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=Pqb7cS3fc5GmOOPFwLhnmnhVMO6FBddFeWxuZNngcKjEdzRN2qn/y4Hqm7DMiwy91
+	 mnxsAhxirQnSQ+3P42g1FiIQt58r+05CN0bBry5yq732uQhcwNhO1rGWtxaQLEoTuE
+	 Ci+/2lz+j3TAR/hqhB4tFPF5UGdrMiDiMT5dgEDI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 009FFF8027B; Sun, 15 Oct 2023 14:33:59 +0200 (CEST)
+	id A6BEBF80236; Sun, 15 Oct 2023 15:43:31 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A1CDBF8025F;
-	Sun, 15 Oct 2023 14:33:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 263EBF8025F;
+	Sun, 15 Oct 2023 15:43:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D10DDF8025F; Sun, 15 Oct 2023 14:30:14 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
- [207.180.221.201])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0BC1BF80166
-	for <alsa-devel@alsa-project.org>; Sun, 15 Oct 2023 14:30:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0BC1BF80166
+	id 3BC5EF80536; Sat, 14 Oct 2023 19:29:01 +0200 (CEST)
+Received: from srv01.abscue.de (abscue.de [89.58.28.240])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id CC369F80130
+	for <alsa-devel@alsa-project.org>; Sat, 14 Oct 2023 19:28:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CC369F80130
+Received: from srv01.abscue.de (localhost [127.0.0.1])
+	by spamfilter.srv.local (Postfix) with ESMTP id 265CB1C0729;
+	Sat, 14 Oct 2023 19:28:51 +0200 (CEST)
+Received: from fluffy-mammal.fritz.box
+ (dslb-088-078-204-065.088.078.pools.vodafone-ip.de [88.78.204.65])
+	by srv01.abscue.de (Postfix) with ESMTPSA id C34E91C0728;
+	Sat, 14 Oct 2023 19:28:50 +0200 (CEST)
+From: =?UTF-8?q?Otto=20Pfl=C3=BCger?= <otto.pflueger@abscue.de>
+To: linux-arm-msm@vger.kernel.org
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+	Banajit Goswami <bgoswami@quicinc.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	alsa-devel@alsa-project.org,
+	~postmarketos/upstreaming@lists.sr.ht,
+	=?UTF-8?q?Otto=20Pfl=C3=BCger?= <otto.pflueger@abscue.de>
+Subject: [PATCH 0/3] ASoC: qcom: check ADSP version when setting clocks
+Date: Sat, 14 Oct 2023 19:26:21 +0200
+Message-Id: <20231014172624.75301-1-otto.pflueger@abscue.de>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub pull_request - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1697373009016794205-webhooks-bot@alsa-project.org>
-References: <1697373009016794205-webhooks-bot@alsa-project.org>
-Subject: Use stdint.h types
-Message-Id: <20231015123014.D10DDF8025F@alsa1.perex.cz>
-Date: Sun, 15 Oct 2023 14:30:14 +0200 (CEST)
-Message-ID-Hash: EAO6BOFD2FTU2ML7FAC4MS7WCWN5PGD4
-X-Message-ID-Hash: EAO6BOFD2FTU2ML7FAC4MS7WCWN5PGD4
-X-MailFrom: github@alsa-project.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-MailFrom: otto.pflueger@abscue.de
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: DXHX3U4575OQQHWFZOYQP3R246UK4XZP
+X-Message-ID-Hash: DXHX3U4575OQQHWFZOYQP3R246UK4XZP
+X-Mailman-Approved-At: Sun, 15 Oct 2023 13:43:25 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/EAO6BOFD2FTU2ML7FAC4MS7WCWN5PGD4/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DXHX3U4575OQQHWFZOYQP3R246UK4XZP/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -66,12 +81,48 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-firmware pull request #10 was opened from thesamesam:
+The apq8016_sbc driver currently works on APQ8016 and MSM8916 devices. It
+should also work on MSM8909 (and newer SoCs like MSM8917 and MSM8953 if
+the quinary MI2S line is added); however, newer devices with these SoCs
+ship with newer firmware that uses a different interface for controlling
+the digital codec and bit clocks, which causes the driver to fail because
+it cannot set LPAIF_BIT_CLK.
 
-u_int_* aren't standard, but uint* are. Use those instead for musl compat.
+In order to fix this problem, modify the LPAIF_* clock implementation in
+the qdsp6 driver to use the newer clock API if a newer firmware version is
+detected. This seems to be a better solution than exposing the firmware
+version to other drivers like apq8016_sbc and forcing them to figure out
+which clock to use.
 
-Bug: https://bugs.gentoo.org/832969
+On MSM8916, a hack is currently used to control the LPAIF_DIG_CLK directly
+through the GCC driver, but on devices with the newer firmware, the
+INTERNAL_DIGITAL_CODEC_CORE clock provided by q6afe-clocks in the qdsp6
+driver can be used instead. Add a fallback to make this clock work with
+the older firmware too, allowing one to specify it as the codec's "mclk"
+in the device tree:
 
-Request URL   : https://github.com/alsa-project/alsa-firmware/pull/10
-Patch URL     : https://github.com/alsa-project/alsa-firmware/pull/10.patch
-Repository URL: https://github.com/alsa-project/alsa-firmware
+  compatible = "qcom,msm8916-wcd-digital-codec";
+  clocks = <&xo_board>,
+           <&q6afecc LPASS_CLK_ID_INTERNAL_DIGITAL_CODEC_CORE
+                     LPASS_CLK_ATTRIBUTE_COUPLE_NO>;
+  clock-names = "ahbix", "mclk";
+  assigned-clocks = <&q6afecc LPASS_CLK_ID_INTERNAL_DIGITAL_CODEC_CORE
+                              LPASS_CLK_ATTRIBUTE_COUPLE_NO>;
+  assigned-clock-rates = <9600000>;
+
+This works both on MSM8916 and on the newer SoCs mentioned above.
+
+Otto Pflüger (3):
+  ASoC: qcom: q6core: expose ADSP core firmware version
+  ASoC: qcom: q6afe: check ADSP version when setting clocks
+  ASoC: qcom: q6afe: remove "port already open" error
+
+ sound/soc/qcom/qdsp6/q6afe.c  | 85 +++++++++++++++++++++++++++++++++--
+ sound/soc/qcom/qdsp6/q6core.c | 61 +++++++++++++++++++++++++
+ sound/soc/qcom/qdsp6/q6core.h |  9 ++++
+ 3 files changed, 152 insertions(+), 3 deletions(-)
+
+
+base-commit: e3b18f7200f45d66f7141136c25554ac1e82009b
+-- 
+2.39.2
