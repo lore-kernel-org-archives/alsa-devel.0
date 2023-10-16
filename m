@@ -4,77 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 93438CDB465
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Oct 2023 18:57:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 11FE2CDB465
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Oct 2023 20:23:39 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AFF9D850;
-	Mon, 16 Oct 2023 20:56:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AFF9D850
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1136E84A;
+	Mon, 16 Oct 2023 22:22:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1136E84A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1697482651;
-	bh=QcyXCskRPbOnWPMhi0EFFGjPvt4mFSLqbM7WXj8RRTk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1697487817;
+	bh=bSmdHrG3bhRAyum9Je5fAbE8VOKLZwWPcGLEs9vgOVQ=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=L4Vp3emkFmHmsLmhG5KTkUOG2HV0p3wFhG9PiKM2PqUddEHa7K1jmoaNH+pQ8lV4i
-	 aNb+pNSwBqeoPuwV6MCwWRaO7cihMCJmefsJuDg8vLz8iLFybau2wg4PA0iARN5nX7
-	 78Ya/IGqhD1LU4WPYGA/2EHBN+kf7u+Y2YyvYYeI=
+	b=Z/+cafS9GncmIWoRA7zDvZRw70sPH2Gy1lR6R8RezPPrB9lYDKjKsxFN1835OBL+M
+	 mg97mUpnHnnzvzuxBR656lzvCbH0FngfdEKVHqqcmwhObcc6vm/cyP+ZuEq9QuAyqk
+	 0VodI7Nr6ZBcnXuOoxvgEvyYPzvcolfackqxN4Kc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0C4D8F80236; Mon, 16 Oct 2023 20:56:20 +0200 (CEST)
+	id 7E5F5F80552; Mon, 16 Oct 2023 22:22:17 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 76AF5F8025F;
-	Mon, 16 Oct 2023 20:56:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3870BF8025F;
+	Mon, 16 Oct 2023 22:22:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B9545F8025F; Mon, 16 Oct 2023 20:56:14 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	id AA11EF8025F; Mon, 16 Oct 2023 22:22:12 +0200 (CEST)
+Received: from mail-oo1-f46.google.com (mail-oo1-f46.google.com
+ [209.85.161.46])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 0233CF80236
-	for <alsa-devel@alsa-project.org>; Mon, 16 Oct 2023 20:56:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0233CF80236
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=uq+dK+u9
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 677A660F0C;
-	Mon, 16 Oct 2023 18:56:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 621C1C433C8;
-	Mon, 16 Oct 2023 18:56:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1697482565;
-	bh=QcyXCskRPbOnWPMhi0EFFGjPvt4mFSLqbM7WXj8RRTk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=uq+dK+u9sQe6i12LxkLFZefC/LT+F/9isgSSyVWofETmERrXFkhy+LsslGY1SPxQV
-	 aNRQG0xZYpZ5jC6v9GY7QL8u18a2CRGqIQeCyx/x5cfK82FJAT/K4vFTT6ykOqVrHj
-	 BTmOtqrkGGTIw/ICGxhPbbQEM0fD7lZJ1BBaGjpsN1bCnC5HQq6DbRLUtRo1ZYux0I
-	 ZFSJ69pSRxIexDVunyOx81Qn45YSlFJ25gPmSVu2bpvMCU7WOoKBI4Uv1sqWVE0zIL
-	 oicyw/lhvaWlRK9akRu/yLwe5GlYv1URMtVBfGARefOiL3KaPRvTHfWfUqsOBfK4bb
-	 JKL4Bgp1crJmg==
-Date: Mon, 16 Oct 2023 11:59:52 -0700
-From: Bjorn Andersson <andersson@kernel.org>
-To: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-	Banajit Goswami <bgoswami@quicinc.com>, Andy Gross <agross@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>, alsa-devel@alsa-project.org,
- linux-arm-msm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH][next] soc: qcom: apr: Add __counted_by for struct
- apr_rx_buf and use struct_size()
-Message-ID: <arc5clw7z2avnt2tbw5mw6lvrj3kjebmuarju4uqc2hxtuv7ow@htiko7yh3oyf>
-References: <ZSRw6RNi3Crhd32H@work>
+	by alsa1.perex.cz (Postfix) with ESMTPS id 01926F800C9
+	for <alsa-devel@alsa-project.org>; Mon, 16 Oct 2023 22:22:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 01926F800C9
+Received: by mail-oo1-f46.google.com with SMTP id
+ 006d021491bc7-57bbb38d5d4so2774061eaf.2
+        for <alsa-devel@alsa-project.org>;
+ Mon, 16 Oct 2023 13:22:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697487722; x=1698092522;
+        h=date:subject:message-id:references:in-reply-to:cc:to:from
+         :mime-version:content-transfer-encoding:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=n8Ejd5Pa0+899H+ST1facS1EVWLpMPKF/gO5qmwkR4w=;
+        b=Ahwh0vzneWxLCF/6aRYjtED6z22FYHGgfzLSlP421Pl35ZKZmHE6zIdubDZktKmfAd
+         Jf5b9zuoRPgTfSJYaUsY0zCEzNOcFb7LNEaQlznvJl4GOcATI3Y0IXHDx+wQHdtfGRkX
+         06jJ5osBnMJJZgz/KVGy2LIRv2XS3Yazk5Q5bAYH/oaBwQ9V+gw+RIYDOnqkVcTQkv5s
+         1w0Jui6/Wv0r/5EFniDUb5KefcQ01MH854VX01dVKadtJcSIkeEptAajseRvLxblARsX
+         f7QBTCag7jcYavEZjaGk35DaOD7v41dY3EoCD15pkSiGGNVuLeeEEsJYFm6ljBio13hY
+         NdxA==
+X-Gm-Message-State: AOJu0YxQcWm4+MAQwHJiMhVtqK/oRCTknRCD8pf0xDMruUaAJDXQrvtA
+	BpaoL4ZOQYWZU5kEAscyFw==
+X-Google-Smtp-Source: 
+ AGHT+IGEYagCHsUBCuyxmcGOPHRUwWB7THaDN4+NC/pbptGn33Manj5wy9VEGgn9ovwHhqVg4gR47g==
+X-Received: by 2002:a4a:4245:0:b0:57b:469d:8af6 with SMTP id
+ i5-20020a4a4245000000b0057b469d8af6mr112518ooj.4.1697487722620;
+        Mon, 16 Oct 2023 13:22:02 -0700 (PDT)
+Received: from robh_at_kernel.org (66-90-144-107.dyn.grandenetworks.net.
+ [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id
+ o10-20020a9d718a000000b006c4e71a022bsm1199otj.52.2023.10.16.13.22.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Oct 2023 13:22:01 -0700 (PDT)
+Received: (nullmailer pid 3615546 invoked by uid 1000);
+	Mon, 16 Oct 2023 20:22:01 -0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZSRw6RNi3Crhd32H@work>
-Message-ID-Hash: QW7ESWCCVKZWAFQ4GP7PZW36C5Y3B3C7
-X-Message-ID-Hash: QW7ESWCCVKZWAFQ4GP7PZW36C5Y3B3C7
-X-MailFrom: andersson@kernel.org
+From: Rob Herring <robh@kernel.org>
+To: Eugen Hristev <eugen.hristev@collabora.com>
+Cc: broonie@kernel.org, lgirdwood@gmail.com,
+ linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
+ conor+dt@kernel.org, matthias.bgg@gmail.com, linux-kernel@vger.kernel.org,
+ kernel@collabora.com, devicetree@vger.kernel.org,
+ linux-mediatek@lists.infradead.org, angelogioacchino.delregno@collabora.com,
+ robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org
+In-Reply-To: <20231016151553.5336-1-eugen.hristev@collabora.com>
+References: <20231016151553.5336-1-eugen.hristev@collabora.com>
+Message-Id: <169748772099.3615502.6790888257320558610.robh@kernel.org>
+Subject: Re: [PATCH v6] dt-bindings: arm: mediatek: convert audsys and
+ mt2701-afe-pcm to yaml
+Date: Mon, 16 Oct 2023 15:22:01 -0500
+Message-ID-Hash: 3QJHKNUZMFD642BQDT54MPFIWZJ5ST3R
+X-Message-ID-Hash: 3QJHKNUZMFD642BQDT54MPFIWZJ5ST3R
+X-MailFrom: robherring2@gmail.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -86,7 +99,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QW7ESWCCVKZWAFQ4GP7PZW36C5Y3B3C7/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3QJHKNUZMFD642BQDT54MPFIWZJ5ST3R/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -95,50 +108,76 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, Oct 09, 2023 at 03:30:17PM -0600, Gustavo A. R. Silva wrote:
-> Prepare for the coming implementation by GCC and Clang of the __counted_by
-> attribute. Flexible array members annotated with __counted_by can have
-> their accesses bounds-checked at run-time via CONFIG_UBSAN_BOUNDS (for
-> array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-> functions).
-> 
-> While there, use struct_size() helper, instead of the open-coded
-> version, to calculate the size for the allocation of the whole
-> flexible structure, including of course, the flexible-array member.
-> 
-> This code was found with the help of Coccinelle, and audited and
-> fixed manually.
-> 
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-Applied, thanks.
-
+On Mon, 16 Oct 2023 18:15:53 +0300, Eugen Hristev wrote:
+> Convert the mediatek,audsys binding to YAML, together with the associated
+> binding bindings/sound/mt2701-afe-pcm.yaml .
+> 
+> Signed-off-by: Eugen Hristev <eugen.hristev@collabora.com>
+> Reviewed-by: Rob Herring <robh@kernel.org>
 > ---
->  drivers/soc/qcom/apr.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> Changes in v6:
+> - renamed mt2701-audio.yaml to mediatek,mt2701-audio.yaml
+> - add Rb Rob Herring
 > 
-> diff --git a/drivers/soc/qcom/apr.c b/drivers/soc/qcom/apr.c
-> index 30f81d6d9d9d..1f8b315576a4 100644
-> --- a/drivers/soc/qcom/apr.c
-> +++ b/drivers/soc/qcom/apr.c
-> @@ -41,7 +41,7 @@ struct packet_router {
->  struct apr_rx_buf {
->  	struct list_head node;
->  	int len;
-> -	uint8_t buf[];
-> +	uint8_t buf[] __counted_by(len);
->  };
->  
->  /**
-> @@ -171,7 +171,7 @@ static int apr_callback(struct rpmsg_device *rpdev, void *buf,
->  		return -EINVAL;
->  	}
->  
-> -	abuf = kzalloc(sizeof(*abuf) + len, GFP_ATOMIC);
-> +	abuf = kzalloc(struct_size(abuf, buf, len), GFP_ATOMIC);
->  	if (!abuf)
->  		return -ENOMEM;
->  
-> -- 
-> 2.34.1
+> Changes in v5:
+> - removed example for mt2701-audio
+> - renamed mt2701-afe-pcm to mt2701-audio
+> - added clock cells as required, removed reg from required, in audsys binding
+> - removed reference comment in mt2701-audio
+> - removed assigned clocks from mt2701-audio
 > 
+> Changes in v4:
+> - fix error reported by Rob's bot :
+> ./Documentation/devicetree/bindings/sound/mt2701-afe-pcm.yaml:11:4: [error] missing starting space in comment (comments)
+> 
+> Changes in v3:
+> - not added Rb Conor Dooley since the patch was changed in a big essence
+> - As per review by Krzysztof, also convert the mt2701-afe-pcm and reference
+> the correct schema in the audsys binding.
+> 
+> Changes in v2:
+> - remove comment reference to inexistent binding
+> 
+> 
+> 
+>  .../bindings/arm/mediatek/mediatek,audsys.txt |  39 -----
+>  .../arm/mediatek/mediatek,audsys.yaml         | 153 ++++++++++++++++++
+>  .../bindings/sound/mediatek,mt2701-audio.yaml | 117 ++++++++++++++
+>  .../bindings/sound/mt2701-afe-pcm.txt         | 146 -----------------
+>  4 files changed, 270 insertions(+), 185 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/arm/mediatek/mediatek,audsys.txt
+>  create mode 100644 Documentation/devicetree/bindings/arm/mediatek/mediatek,audsys.yaml
+>  create mode 100644 Documentation/devicetree/bindings/sound/mediatek,mt2701-audio.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/sound/mt2701-afe-pcm.txt
+> 
+
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
+
+yamllint warnings/errors:
+
+dtschema/dtc warnings/errors:
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/arm/mediatek/mediatek,audsys.yaml:
+Error in referenced schema matching $id: http://devicetree.org/schemas/sound/mt2701-audio.yaml
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/sound/mediatek,mt2701-audio.yaml: $id: Cannot determine base path from $id, relative path/filename doesn't match actual path or filename
+ 	 $id: http://devicetree.org/schemas/sound/mt2701-audio.yaml
+ 	file: /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/sound/mediatek,mt2701-audio.yaml
+
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20231016151553.5336-1-eugen.hristev@collabora.com
+
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
+
