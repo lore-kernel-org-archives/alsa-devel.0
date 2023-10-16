@@ -4,76 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B595FCDB482
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Oct 2023 11:22:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1EB4ACDB465
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Oct 2023 12:00:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 54423DE5;
-	Mon, 16 Oct 2023 13:21:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 54423DE5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4FA0A857;
+	Mon, 16 Oct 2023 13:59:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4FA0A857
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1697455357;
-	bh=16AKyUtoR6pajVMK2yQqNyWfjYnlASTn9I445Ew14Ys=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1697457617;
+	bh=EESOofAGoz0NJ85srEifh5w8COAeKPVtpl6yq3ANTCE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=m9B3RqIARuiAwLkhr6H3eYTIWV2xJBUujNjLZB/yH3TkDhORzXaPei8y2CbzkSDj/
-	 y3DDJYv/LX0pANl7TOpbdJzrKc0sYviEHBkoL6igOguehQlhwvtdQu9SzegF0AD/mI
-	 K9rXR5Nmb5ziVdzh9TLKxcPqezMVcaw0PcZ7kx6o=
+	b=Wp2D0SgS7u/HQiYwGv0LU7dxGOvlXY4ddScgqPt3Mct7XHYDQMAhXgbO0/cQvdPUX
+	 ANQZJ0m/KDETElUpzKDUZKJ4O/BMBSACs3eFD989v8MMmxS0K16uiNfoRkKE8Ktlh7
+	 rOtgV3JOCbHcaFjsY8CQ5RUOvvxZP+a8G8Q+mel4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0E2DDF8032D; Mon, 16 Oct 2023 13:21:38 +0200 (CEST)
+	id 03C82F800C9; Mon, 16 Oct 2023 13:58:49 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A5D52F8032D;
-	Mon, 16 Oct 2023 13:21:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 773E0F800C9;
+	Mon, 16 Oct 2023 13:58:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AC1CFF80558; Mon, 16 Oct 2023 13:21:34 +0200 (CEST)
-Received: from sin.source.kernel.org (sin.source.kernel.org
- [IPv6:2604:1380:40e1:4800::1])
+	id 48E9AF8025F; Mon, 16 Oct 2023 13:58:44 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B7CD5F8055A
-	for <alsa-devel@alsa-project.org>; Mon, 16 Oct 2023 13:20:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B7CD5F8055A
+	by alsa1.perex.cz (Postfix) with ESMTPS id 109AAF800C9
+	for <alsa-devel@alsa-project.org>; Mon, 16 Oct 2023 13:58:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 109AAF800C9
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=hkubut12
+ header.s=k20201202 header.b=Y31U7l5i
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id DA802CE13B2;
-	Mon, 16 Oct 2023 11:20:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86AD7C433C7;
-	Mon, 16 Oct 2023 11:20:51 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 8527560F0D;
+	Mon, 16 Oct 2023 11:58:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C462C433C7;
+	Mon, 16 Oct 2023 11:58:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1697455253;
-	bh=16AKyUtoR6pajVMK2yQqNyWfjYnlASTn9I445Ew14Ys=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=hkubut12CrO/Qcv23mT30wM0jPVRvGJc37oVA6Pm04PApR1waoyd/uMTC0fmO/w9Z
-	 7AhQXLhcAYZpN80ROqCLJHFP3zuc/kEHxw3Ioccydb0BLDE+6vJaRAv9jf0pteXZJd
-	 tPFGleEVYr6Re0Kve0mlP1B+hDVVpy5wW3bFBjdmmmz9PCt+pubXLkM0CAoLxz/7be
-	 eVfBgHLNcJxPTsuA1koDBbp8zqfKNym6yH9x4pL8p+g5AY4YLPypM2/M4+3u3FBNNY
-	 szGy52OO4whI96ILxhyoBOwpFOQwhs5Vxep/HYZkzsFGm01VC+SErtA4+lBlmZCJQG
-	 r8awHMLd2hnYg==
-From: Vinod Koul <vkoul@kernel.org>
-To: alsa-devel@alsa-project.org,
- Bard Liao <yung-chuan.liao@linux.intel.com>
-Cc: vinod.koul@linaro.org, linux-kernel@vger.kernel.org,
- pierre-louis.bossart@linux.intel.com, bard.liao@intel.com
-In-Reply-To: <20231013010812.114216-1-yung-chuan.liao@linux.intel.com>
-References: <20231013010812.114216-1-yung-chuan.liao@linux.intel.com>
-Subject: Re: [PATCH] soundwire: bus: improve error handling for clock stop
- prepare/deprepare
-Message-Id: <169745525118.217856.10954000456240343694.b4-ty@kernel.org>
-Date: Mon, 16 Oct 2023 16:50:51 +0530
+	s=k20201202; t=1697457509;
+	bh=EESOofAGoz0NJ85srEifh5w8COAeKPVtpl6yq3ANTCE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Y31U7l5iU6fQUg3L0jXo9GwzTkJDEY+e2mdZcP5NqGiN1lrL/pVj6A2L/uNPuv0UO
+	 zbTU40Kt3ftbIJLn7L2xbKjOcnMj0k0p+nkZQhwnMSIWv7V2V2NK/zcO8gJt4j3daD
+	 wbpxUiMFsnD/AcQD4gszG99sEeXVRlzgE609wIHz3vo16LwRx55KJhS4gS4oJ+Mi4k
+	 2el9EK0gyKARui7sUQXrl60X10sfAxFR83haLmSbZOeksFMbDQVtd3Cx/q/mVmTQV7
+	 7G0u95GkvqOYaeC6oUCZCy+81zFMPF7n6i5rX82N5FRLr1TiOaPjW04mqEB3XevyIE
+	 JInxUqv450MXg==
+Date: Mon, 16 Oct 2023 12:58:21 +0100
+From: Mark Brown <broonie@kernel.org>
+To: wangweidong.a@awinic.com
+Cc: 13916275206@139.com, alsa-devel@alsa-project.org, arnd@arndb.de,
+	ckeepax@opensource.cirrus.com, colin.i.king@gmail.com,
+	conor+dt@kernel.org, dan.carpenter@linaro.org,
+	devicetree@vger.kernel.org, fido_max@inbox.ru,
+	herve.codina@bootlin.com, krzysztof.kozlowski+dt@linaro.org,
+	lgirdwood@gmail.com, linus.walleij@linaro.org,
+	linux-kernel@vger.kernel.org, liweilei@awinic.com, perex@perex.cz,
+	rf@opensource.cirrus.com, robh+dt@kernel.org, ryans.lee@analog.com,
+	sebastian.reichel@collabora.com, shumingf@realtek.com,
+	tiwai@suse.com, trix@redhat.com, yijiangtao@awinic.com
+Subject: Re: [PATCH V1 3/3] ASoC: codecs: Add aw88399 amplifier driver
+Message-ID: <38cab9a5-4fdf-4b50-b4e0-6a63beacab11@sirena.org.uk>
+References: <ZSlP8GvTAOe35peC@finisterre.sirena.org.uk>
+ <20231016081017.46963-1-wangweidong.a@awinic.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.3
-Message-ID-Hash: MMTU2HEUWW7IINUDPALSJ6PIIUSQBP5R
-X-Message-ID-Hash: MMTU2HEUWW7IINUDPALSJ6PIIUSQBP5R
-X-MailFrom: vkoul@kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="I2KqOEZVLNH8WqF7"
+Content-Disposition: inline
+In-Reply-To: <20231016081017.46963-1-wangweidong.a@awinic.com>
+X-Cookie: If you're happy, you're successful.
+Message-ID-Hash: YW747T5BTUVRNZ6VRWPZCVWY2MD7DNBS
+X-Message-ID-Hash: YW747T5BTUVRNZ6VRWPZCVWY2MD7DNBS
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -85,7 +92,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MMTU2HEUWW7IINUDPALSJ6PIIUSQBP5R/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YW747T5BTUVRNZ6VRWPZCVWY2MD7DNBS/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -95,27 +102,46 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 
-On Fri, 13 Oct 2023 09:08:12 +0800, Bard Liao wrote:
-> The same logic is used for clock stop prepare and deprepare, and
-> having different logs for the two steps helps identify problems.
-> 
-> In addition, when the "NotFinished" bit remains set, the error
-> handling is not quite right:
-> 
-> a) for the clock stop prepare, the error is handled at the caller
-> level, and the error is ignored: there's no good reason to prevent the
-> pm_runtime suspend from happening. Throwing an error that is later
-> ignored is confusing.
-> 
-> [...]
+--I2KqOEZVLNH8WqF7
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Applied, thanks!
+On Mon, Oct 16, 2023 at 04:10:17PM +0800, wangweidong.a@awinic.com wrote:
+> On Fri, Oct 13, 2023 at 03:10:56 PM +0100, broonie@kernel.org wrote:
 
-[1/1] soundwire: bus: improve error handling for clock stop prepare/deprepare
-      commit: ff435da4cc8b6137be9f0b6b4a9af095590d4b8c
+> >> +static int aw_dev_dsp_update_container(struct aw_device *aw_dev,
+> >> +			unsigned char *data, unsigned int len, unsigned short base)
+> >> +{
+> >> +	int i, ret;
+> >> +
+> >> +#ifdef AW88399_DSP_I2C_WRITES
+> >> +	u32 tmp_len;
 
-Best regards,
--- 
-~Vinod
+> > This looks like debug code which can hopefully be removed in favour of
+> > the regmap implementation?
 
+> Thank you very much, but this is not a debugging statement, This is designed
+> to be compatible with different platforms that may not support continuous
+> writing.
 
+If this is needed for platform comaptibility then it needs to be
+something selected at runtime, ideally regmap would be able to hide
+whatever's going on but perhaps the register address loading complicates
+things there.
+
+--I2KqOEZVLNH8WqF7
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmUtJVwACgkQJNaLcl1U
+h9DeUAf9GxJLIrDPtoBWNfziL7xDN8MMHR4vboUOGd/9/eMsg6et0MCSu+5QzwaZ
+oTvhMCnN1w5fQjm182eLWMKbnZ/NeuwVfsgyqaGEuP8JW/2+Tct7ag8LEZadlpcz
+fnPjeDA5YMMTeVeNplkojJmFfaJjLuggt7o6xwKp36/ZV6AJlhj29y+LK+snV8eL
+77jQR75a+ZU2OYdy8GAUaN8HS4cv8ln6U0YcGxlNjrF+VLOqfy7d2abbdBYPRkis
+arUpxgW+qXYLpR53CyZGQnbWGXMpWyEZBiIGWNXuxq+IFstrOTyIUp/K4FWJ5t2A
+YBUyyUaSuiFQNQGYb2V3IaV2khuftg==
+=tkTS
+-----END PGP SIGNATURE-----
+
+--I2KqOEZVLNH8WqF7--
