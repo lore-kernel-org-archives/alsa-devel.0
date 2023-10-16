@@ -4,78 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 238A3CDB474
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Oct 2023 15:35:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DEE36CDB482
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Oct 2023 15:35:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 70312A4B;
-	Mon, 16 Oct 2023 17:34:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 70312A4B
+	by alsa0.perex.cz (Postfix) with ESMTPS id D05CD82B;
+	Mon, 16 Oct 2023 17:34:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D05CD82B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1697470521;
-	bh=ReLBlkdX/Ih5s92nu5iD07eefwL3bPoRMnTYOk9amZc=;
+	s=default; t=1697470536;
+	bh=iafXWt7V9IPqM10GE1vGARg468BFy6oj+6v1ELEAsUc=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=WpgDA91z2PDPCX9MjOXNjqt5SUmHTeU+dq7dU6VvSx1Tj2LbuhnVFPk7/BFwYjcSm
-	 uctU5w4ThOIJOCy7WYBuOx/yfyzvwaEhhy2p4bbE4spa6nZG/kKT3Wamw2luLTTuxy
-	 H4VWLX9J0XqEnlVoIjHbi9/XqmQ90nA5iYhwsD1M=
+	b=f30CpyGYTQnKOuhHupghaJIiwOh/dRz5+JzqapQrjfEiFe5YZOwpReV19sB4Vt+1p
+	 uJn5qkK8DOn8z36UbmZxABxQYB9Ll/tdEqKhLl+PUua5Enb1hCdWLEomBbriK9U6sh
+	 VQONo11ECz1B1T26zo2/eRvkH8YHVUXqSzzZ6ri4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 586FDF8055C; Mon, 16 Oct 2023 17:33:41 +0200 (CEST)
+	id AF5D2F80579; Mon, 16 Oct 2023 17:33:42 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id F3541F80557;
-	Mon, 16 Oct 2023 17:33:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5682DF80579;
+	Mon, 16 Oct 2023 17:33:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 360BDF8032D; Mon, 16 Oct 2023 17:33:37 +0200 (CEST)
-Received: from sin.source.kernel.org (sin.source.kernel.org
- [IPv6:2604:1380:40e1:4800::1])
+	id 25966F8025F; Mon, 16 Oct 2023 17:33:39 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D757FF8024E
-	for <alsa-devel@alsa-project.org>; Mon, 16 Oct 2023 17:33:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D757FF8024E
+	by alsa1.perex.cz (Postfix) with ESMTPS id 30A6BF8019B
+	for <alsa-devel@alsa-project.org>; Mon, 16 Oct 2023 17:33:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 30A6BF8019B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=YwQ2Blf0
+ header.s=k20201202 header.b=NviQlzra
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 4ADA3CE17E0;
-	Mon, 16 Oct 2023 15:33:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC103C433C8;
-	Mon, 16 Oct 2023 15:33:22 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id B817560FF9;
+	Mon, 16 Oct 2023 15:33:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 944CFC433CA;
+	Mon, 16 Oct 2023 15:33:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1697470404;
-	bh=ReLBlkdX/Ih5s92nu5iD07eefwL3bPoRMnTYOk9amZc=;
+	s=k20201202; t=1697470408;
+	bh=iafXWt7V9IPqM10GE1vGARg468BFy6oj+6v1ELEAsUc=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=YwQ2Blf0JX3WRi+CsGYYqK+p3IfDkg4CRhEaIuGeSvR0S14R+Y7SJHvYyk+IkTFHt
-	 m+Wz7pA8uSrYinvoDUimMJFSZxk4EeWM5vniF9VnzEypA16j8ardzeW5wL/5b51eSU
-	 rfPVeuWw31RPYENCGvCBtcE7DVaddwsopMBWfC/a7PGQl93l2aM3t6r5txboT/dudS
-	 xzwp2QpqBZR+6ddwDT+0nFyHY/2fvOugNvOL20249udCTifgyc6L3uvTuL1pd2MYhN
-	 a9V8BV6QyNQmb8XaZnCRdUzerR4gebGzGpikomjLjVVCGbYvzF1RE+ZsxULK9MwpJh
-	 D9TCFXwWaXhKw==
+	b=NviQlzrahSuWSK69arwyv+u4tgOuNr9HbCBbZHERiV58UGgtz9q6vn40MqeiXlJZU
+	 s73VGVmzapMOZUtWF8XoMoaNmvT8+NmIWUHmgGbmKt4sZfPcJj+EXHbxvPLuoS6hk+
+	 rMGrhXRMIda899B1DUgYjBNnNIutoWjQClSlvz28ROuJ7oSz5HV2GxCe8gZCd+lSUE
+	 ASxlE8lHgN1Lpt4FDGr5IKV0qRM5lF0d1+Q0jhgiOpZEvz1QHT67cE3uh0A+DhDPbB
+	 EJvI+2a15XvI5ESjiU6f1ZnjB+Ar2sejhcof4AOc0TTpbML9RhRUDYTWdRXRQ7eY68
+	 wG4mnX0XoKd9Q==
 From: Mark Brown <broonie@kernel.org>
-To: Lars-Peter Clausen <lars@metafoo.de>,
- =?utf-8?q?Nuno_S=C3=A1?= <nuno.sa@analog.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>,
- "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- linux-hardening@vger.kernel.org
-In-Reply-To: <ZSRvh1j2MVVhuOUv@work>
-References: <ZSRvh1j2MVVhuOUv@work>
-Subject: Re: [PATCH][next] ASoC: sigmadsp: Add __counted_by for struct
- sigmadsp_data and use struct_size()
-Message-Id: <169747040242.42352.2081584730958275030.b4-ty@kernel.org>
-Date: Mon, 16 Oct 2023 16:33:22 +0100
+To: alsa-devel@alsa-project.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de
+In-Reply-To: <20231012191850.147140-1-pierre-louis.bossart@linux.intel.com>
+References: <20231012191850.147140-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 0/4] ASoC: SOF: misc updates for 6.7
+Message-Id: <169747040730.42352.15383367335561890399.b4-ty@kernel.org>
+Date: Mon, 16 Oct 2023 16:33:27 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-0438c
-Message-ID-Hash: I3MB2I3KHKUCJOPL66NRJYFEHJG47LNG
-X-Message-ID-Hash: I3MB2I3KHKUCJOPL66NRJYFEHJG47LNG
+Message-ID-Hash: XGAWAYUNBJ2SCLHRDJRJNC4NQR5AGEZX
+X-Message-ID-Hash: XGAWAYUNBJ2SCLHRDJRJNC4NQR5AGEZX
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -88,7 +82,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/I3MB2I3KHKUCJOPL66NRJYFEHJG47LNG/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XGAWAYUNBJ2SCLHRDJRJNC4NQR5AGEZX/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -97,17 +91,17 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, 09 Oct 2023 15:24:23 -0600, Gustavo A. R. Silva wrote:
-> Prepare for the coming implementation by GCC and Clang of the __counted_by
-> attribute. Flexible array members annotated with __counted_by can have
-> their accesses bounds-checked at run-time via CONFIG_UBSAN_BOUNDS (for
-> array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-> functions).
+On Thu, 12 Oct 2023 15:18:46 -0400, Pierre-Louis Bossart wrote:
+> New PCI ID, one fix for a delayed IRQ thread causing issues, one
+> update for debug and one follow-up cleanup for the .remove callback.
 > 
-> While there, use struct_size() and size_sub() helpers, instead of the
-> open-coded version, to calculate the size for the allocation of the
-> whole flexible structure, including of course, the flexible-array
-> member.
+> Arun T (1):
+>   ASoC: SOF: Intel: pci-mtl: use ARL specific firmware definitions
+> 
+> Peter Ujfalusi (2):
+>   ASoC: SOF: Intel: hda-dsp: Make sure that no irq handler is pending
+>     before suspend
+>   ASoC: SOF: ipc4: Dump the notification payload
 > 
 > [...]
 
@@ -117,8 +111,14 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: sigmadsp: Add __counted_by for struct sigmadsp_data and use struct_size()
-      commit: 4f88c72b2479cca4a0d4de89b4cbb6f1b37ee96d
+[1/4] ASoC: SOF: Intel: pci-mtl: use ARL specific firmware definitions
+      commit: 3851831f529ec3d7b2c7708b2579bfc00d43733c
+[2/4] ASoC: SOF: Intel: hda-dsp: Make sure that no irq handler is pending before suspend
+      commit: 576a0b71b5b479008dacb3047a346625040f5ac6
+[3/4] ASoC: SOF: ipc4: Dump the notification payload
+      commit: a2d952ba90de2197a27e1443b783265a91760507
+[4/4] ASoC: SOF: make .remove callback return void
+      commit: e4d09de3919bb0ed5327acb238e849f3287f2706
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
