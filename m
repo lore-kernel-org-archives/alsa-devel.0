@@ -4,87 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2F060C41513
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Oct 2023 15:11:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0E879CDB482
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Oct 2023 15:35:02 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DA5B382B;
-	Mon, 16 Oct 2023 17:10:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DA5B382B
+	by alsa0.perex.cz (Postfix) with ESMTPS id EA6E8850;
+	Mon, 16 Oct 2023 17:34:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EA6E8850
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1697469079;
-	bh=W3tQUD2O0totxiUjTJWLharFLlo5nyAojbztvq3jKs8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1697470500;
+	bh=PDwaCZiywX84dEhKOQHXwOCiGgsEuoporLHXK9SIazw=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=bfC1KI1JTxc1cZIYb/DWRqQ8xa3QeL3u1sNYomWM/cbGUT60Jzvld4km3USEhrgwc
-	 SDJLJCUrGQyVmhN7C9rR66Z96fgsOc3gXKVMYm6JS0nHIJ9mjPza41W5i87Py48cWm
-	 j2oKtYjIvknHsvJlcqekIzz+KPQRAG+ehK50G/4I=
+	b=EihPhfmnHszCgSc8Y7KsEWyI61OyneBcEiWiDQH2QUofn8BbxE4StxDMjSR3Xarq2
+	 vxgS7SaXxFbvAd3Derk9wz6egoBreqNkpRjYbyhxQDi6TDXK4lx0o5M3N+n/d+90Op
+	 zmNuviue5sY/Xup8tejd8dkmtA5RwWdozzUIyCXI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3F72BF800C9; Mon, 16 Oct 2023 17:10:28 +0200 (CEST)
+	id 2D363F80536; Mon, 16 Oct 2023 17:33:40 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E5857F800C9;
-	Mon, 16 Oct 2023 17:10:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7E19FF8025F;
+	Mon, 16 Oct 2023 17:33:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3F8D8F8025F; Mon, 16 Oct 2023 17:10:23 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	id 24BAAF80536; Mon, 16 Oct 2023 17:33:34 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 67709F8019B
-	for <alsa-devel@alsa-project.org>; Mon, 16 Oct 2023 17:10:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 67709F8019B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 47610F80236
+	for <alsa-devel@alsa-project.org>; Mon, 16 Oct 2023 17:33:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 47610F80236
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256
- header.s=mimecast20190719 header.b=HOPYqSEN
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1697469007;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=WTW0Rivv2CDIEeQzaLmCKM27EeQ8yJt+yTxxIuYzeAI=;
-	b=HOPYqSENE7pOoxvUGizHwhX2zq+53FfiKzHzGqC8LLt/4fC/cx1/YMoOdDAVUqIPvhH1u2
-	JMko9dX/sLY3S8hiCPPn2HtpWRzCv/C2tCMRQ6ao7lG/vt1LG6qp1gtg94hp4xm3eri0xR
-	m9XG2ZGBLrUTNFWN5r2H12l/9k4muYU=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-659-0wo0sAQFPrK79Tqz-173vA-1; Mon, 16 Oct 2023 11:10:03 -0400
-X-MC-Unique: 0wo0sAQFPrK79Tqz-173vA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com
- [10.11.54.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id EC1F9185A7B9;
-	Mon, 16 Oct 2023 15:10:02 +0000 (UTC)
-Received: from localhost (unknown [10.39.195.59])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id E095B63F45;
-	Mon, 16 Oct 2023 15:10:01 +0000 (UTC)
-Date: Mon, 16 Oct 2023 11:10:00 -0400
-From: Stefan Hajnoczi <stefanha@redhat.com>
-To: Matias Ezequiel Vara Larsen <mvaralar@redhat.com>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: anton.yakovlev@opensynergy.com, mst@redhat.com,
-	virtualization@lists.linux-foundation.org,
-	alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-	pbonzini@redhat.com, sgarzare@redhat.com,
-	manos.pitsidianakis@linaro.org, mripard@redhat.com
-Subject: Re: [RFC PATCH] ALSA: virtio: use copy and fill_silence callbacks
-Message-ID: <20231016151000.GE119987@fedora>
-References: <ZSgMeoMx6NX2zCx/@fedora>
+	dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=qhX7cbow
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by ams.source.kernel.org (Postfix) with ESMTP id 5C12DB816BF;
+	Mon, 16 Oct 2023 15:33:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05D12C433C9;
+	Mon, 16 Oct 2023 15:33:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1697470405;
+	bh=PDwaCZiywX84dEhKOQHXwOCiGgsEuoporLHXK9SIazw=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=qhX7cbowvLlKsFMJHWwWLSy3xmBH/XiU2gkcAdVEnz0ymRwRKKen/DNdRtJKEcvL4
+	 Tj+lnDpKIR9aunS5IZ3RtvxCWBRJv5te1fr77adHAjwNJ6M0pdockYgQVYLxES4Sjv
+	 4RxURGl904yzUyu8qiqf3eO27TVSMSKW4+TBiGuibSsUZliMHgY/YvTvwL23fI1G1P
+	 w94p3LUsXieJjANcQ9/ChdF23AiKgEk84H3MG9EIxCcIc+NHNsZ9c/b/+rsacD1j1v
+	 Gaolsoe6j5a3ljw8k9gxHA29jkW5E/fo81Z+2kInnoU5PYB7dOEuSkN6ZdwlLeSb6M
+	 yC0oEYPNJM6cw==
+From: Mark Brown <broonie@kernel.org>
+To: alsa-devel@alsa-project.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de
+In-Reply-To: <20231012190826.142619-1-pierre-louis.bossart@linux.intel.com>
+References: <20231012190826.142619-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 00/23] ASoC: Intel: boards: updates for 6.7
+Message-Id: <169747040474.42352.10858393300196087635.b4-ty@kernel.org>
+Date: Mon, 16 Oct 2023 16:33:24 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="2bIKyQX3Vt+C2epg"
-Content-Disposition: inline
-In-Reply-To: <ZSgMeoMx6NX2zCx/@fedora>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.5
-Message-ID-Hash: ASR73UJLDKDYATLTCXGWNVQXTWUEXP4L
-X-Message-ID-Hash: ASR73UJLDKDYATLTCXGWNVQXTWUEXP4L
-X-MailFrom: stefanha@redhat.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-0438c
+Message-ID-Hash: AYFFY5XTTL5TJ5T5AV37DXP3NQPEGFK7
+X-Message-ID-Hash: AYFFY5XTTL5TJ5T5AV37DXP3NQPEGFK7
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -96,7 +83,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ASR73UJLDKDYATLTCXGWNVQXTWUEXP4L/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AYFFY5XTTL5TJ5T5AV37DXP3NQPEGFK7/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -105,404 +92,85 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+On Thu, 12 Oct 2023 15:08:03 -0400, Pierre-Louis Bossart wrote:
+> A couple of new boards, one DMI quirk fix and a nice cleanup from
+> Brent Lu to make all HDMI stuff common across drivers.
+> 
+> Balamurugan C (1):
+>   ASoC: Intel: MTL: Add entry for HDMI-In capture support to non-I2S
+>     codec boards.
+> 
+> [...]
 
---2bIKyQX3Vt+C2epg
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Applied to
 
-On Thu, Oct 12, 2023 at 05:10:50PM +0200, Matias Ezequiel Vara Larsen wrote:
-> This commit replaces the mmap mechanism with the copy() and
-> fill_silence() callbacks for both capturing and playback for the
-> virtio-sound driver. This change is required to prevent the updating of
-> the content of a buffer that is already in the available ring.
->=20
-> The current mechanism splits a dma buffer into descriptors that are
-> exposed to the device. This dma buffer is shared with the user
-> application. When the device consumes a buffer, the driver moves the
-> request from the used ring to available ring.
->=20
-> The driver exposes the buffer to the device without knowing if the
-> content has been updated from the user. The section 2.8.21.1 of the
-> virtio spec states that: "The device MAY access the descriptor chains
-> the driver created and the memory they refer to immediately". If the
-> device picks up buffers from the available ring just after it is
-> notified, it happens that the content may be old.
->=20
-> By providing the copy() callback, the driver first updates the content
-> of the buffer, and then, exposes the buffer to the device by enqueuing
-> it in the available ring. Thus, device always picks up a buffer that is
-> updated.
->=20
-> For capturing, the driver starts by exposing all the available buffers
-> to device. After device updates the content of a buffer, it enqueues it
-> in the used ring. It is only after the copy() for capturing is issued
-> that the driver re-enqueues the buffer in the available ring.
->=20
-> Note that the copy() function assumes that user is always writing a
-> period. Testing shows that this is true but I may be wrong. This RFC
-> aims at clarifying this.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-This sounds like an ALSA driver API question.
+Thanks!
 
-Jaroslav and Takashi: Any thoughts?
+[01/23] ASoC: Intel: sof_sdw: update HP Omen match
+        commit: a5172ef251f03eb18bed9e3f9a5c093679f29e1b
+[02/23] ASoC: Intel: soc-acpi-intel-rpl-match: add rt711-l0-rt1316-l12 support
+        commit: 43e354dada62c0425db900f327a6e11babefcf5c
+[03/23] ASoC: Intel: soc-acpi-intel-mtl-match: add rt713 rt1316 config
+        commit: e70ca580e9c8d59bc8cf70cb15546da5aecff3a0
+[04/23] ASoC: Intel: sof_sdw_rt_sdca_jack_common: add rt713 support
+        commit: b6d6e5abf64562985fdbbdbdfe8088cde634d834
+[05/23] ASoC: Intel: MTL: Add entry for HDMI-In capture support to non-I2S codec boards.
+        commit: e5bc0a508881eed7a328dd4dd3efad733d90912c
+[06/23] ASoC: Intel: sof_sdw_rt712_sdca: construct cards->components by name_prefix
+        commit: 5124d08d0ea49c7f4dda989827d0959e58a22150
+[07/23] ASoC: Intel: sof_cs42l42: remove hdac-hdmi support
+        commit: 8e7377d66e6885c9256f82cb0c1f009d91e6efb8
+[08/23] ASoC: Intel: sof_da7219: remove hdac-hdmi support
+        commit: b6019b583066e5237f7e0fd11e63bb9896596dde
+[09/23] ASoC: Intel: sof_nau8825: remove hdac-hdmi support
+        commit: 3f95969ec478ffd0c40544b1611e82271926377a
+[10/23] ASoC: Intel: sof_rt5682: remove hdac-hdmi support
+        commit: 3de206a431deec55190e8bd434cff8cb9d2cfc31
+[11/23] ASoC: Intel: sof_ssp_amp: remove hdac-hdmi support
+        commit: 64b9f311865c72fa1b692db1500c8c07db9347b7
+[12/23] ASoC: Intel: sof_hdmi: add common header for HDMI
+        commit: 3ceb66edd6911b251f2406fa2044daa8d9f00d73
+[13/23] ASoC: Intel: sof_cs42l42: use sof_hdmi_private to init HDMI
+        commit: 9b61ac56dd0546d67babfa3babe134cb26895ab6
+[14/23] ASoC: Intel: sof_da7219: use sof_hdmi_private to init HDMI
+        commit: fa76fcad1d7fa43725814abba503b02871eefd5a
+[15/23] ASoC: Intel: sof_nau8825: use sof_hdmi_private to init HDMI
+        commit: 44267e97d0d8899deb8f0db1924b3461f88a2029
+[16/23] ASoC: Intel: sof_rt5682: use sof_hdmi_private to init HDMI
+        commit: d8fc817632c8bfb40ddb623d8e52fcc13eca78e4
+[17/23] ASoC: Intel: sof_sdw: use sof_hdmi_private to init HDMI
+        commit: 5cfe9ed22e4bb87d9d63383b12a3df025a54387d
+[18/23] ASoC: Intel: sof_ssp_amp: use sof_hdmi_private to init HDMI
+        commit: edb3fea37f37218010002a5b42daf1a6402f8d90
+[19/23] ASoC: Intel: board_helpers: new module for common functions
+        commit: 7368ae921b1c717bc1a208182995a3804da9f337
+[20/23] ASoC: Intel: sof_cs42l42: use common module for HDMI link
+        commit: c9314526ffe8daf70853e406ff96265baf9295a2
+[21/23] ASoC: Intel: sof_nau8825: use common module for HDMI link
+        commit: 498a4da506a286d9b75e07d375bd928c806d3416
+[22/23] ASoC: Intel: sof_rt5682: use common module for HDMI link
+        commit: 89cadbd8d8628a372aa8ffaf45b629b630111563
+[23/23] ASoC: Intel: sof_ssp_amp: use common module for HDMI link
+        commit: 3e1756f461edc995fc6f137b4f16d78a6d515385
 
-Stefan
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
->=20
-> Signed-off-by: Matias Ezequiel Vara Larsen <mvaralar@redhat.com>
-> ---
->  sound/virtio/virtio_pcm.c     | 11 ++--
->  sound/virtio/virtio_pcm.h     |  9 +++-
->  sound/virtio/virtio_pcm_msg.c | 50 ++++++++++++++++---
->  sound/virtio/virtio_pcm_ops.c | 94 +++++++++++++++++++++++++++++++----
->  4 files changed, 137 insertions(+), 27 deletions(-)
->=20
-> diff --git a/sound/virtio/virtio_pcm.c b/sound/virtio/virtio_pcm.c
-> index c10d91fff2fb..bfe982952303 100644
-> --- a/sound/virtio/virtio_pcm.c
-> +++ b/sound/virtio/virtio_pcm.c
-> @@ -104,8 +104,6 @@ static int virtsnd_pcm_build_hw(struct virtio_pcm_sub=
-stream *vss,
->  	 * only message-based transport.
->  	 */
->  	vss->hw.info =3D
-> -		SNDRV_PCM_INFO_MMAP |
-> -		SNDRV_PCM_INFO_MMAP_VALID |
->  		SNDRV_PCM_INFO_BATCH |
->  		SNDRV_PCM_INFO_BLOCK_TRANSFER |
->  		SNDRV_PCM_INFO_INTERLEAVED |
-> @@ -471,12 +469,11 @@ int virtsnd_pcm_build_devs(struct virtio_snd *snd)
->  			for (kss =3D ks->substream; kss; kss =3D kss->next)
->  				vs->substreams[kss->number]->substream =3D kss;
-> =20
-> -			snd_pcm_set_ops(vpcm->pcm, i, &virtsnd_pcm_ops);
-> +			if (i =3D=3D SNDRV_PCM_STREAM_CAPTURE)
-> +				snd_pcm_set_ops(vpcm->pcm, i, &virtsnd_pcm_capture_ops);
-> +			else
-> +				snd_pcm_set_ops(vpcm->pcm, i, &virtsnd_pcm_playback_ops);
->  		}
-> -
-> -		snd_pcm_set_managed_buffer_all(vpcm->pcm,
-> -					       SNDRV_DMA_TYPE_VMALLOC, NULL,
-> -					       0, 0);
->  	}
-> =20
->  	return 0;
-> diff --git a/sound/virtio/virtio_pcm.h b/sound/virtio/virtio_pcm.h
-> index 062eb8e8f2cf..1c1106ec971f 100644
-> --- a/sound/virtio/virtio_pcm.h
-> +++ b/sound/virtio/virtio_pcm.h
-> @@ -50,6 +50,8 @@ struct virtio_pcm_substream {
->  	struct work_struct elapsed_period;
->  	spinlock_t lock;
->  	size_t buffer_bytes;
-> +	u8 *buffer;
-> +	size_t buffer_sz;
->  	size_t hw_ptr;
->  	bool xfer_enabled;
->  	bool xfer_xrun;
-> @@ -90,7 +92,8 @@ struct virtio_pcm {
->  	struct virtio_pcm_stream streams[SNDRV_PCM_STREAM_LAST + 1];
->  };
-> =20
-> -extern const struct snd_pcm_ops virtsnd_pcm_ops;
-> +extern const struct snd_pcm_ops virtsnd_pcm_playback_ops;
-> +extern const struct snd_pcm_ops virtsnd_pcm_capture_ops;
-> =20
->  int virtsnd_pcm_validate(struct virtio_device *vdev);
-> =20
-> @@ -117,7 +120,9 @@ int virtsnd_pcm_msg_alloc(struct virtio_pcm_substream=
- *vss,
-> =20
->  void virtsnd_pcm_msg_free(struct virtio_pcm_substream *vss);
-> =20
-> -int virtsnd_pcm_msg_send(struct virtio_pcm_substream *vss);
-> +int virtsnd_pcm_msg_send(struct virtio_pcm_substream *vss, bool single);
-> +
-> +int virtsnd_pcm_msg_send_locked(struct virtio_pcm_substream *vss, bool s=
-ingle);
-> =20
->  unsigned int virtsnd_pcm_msg_pending_num(struct virtio_pcm_substream *vs=
-s);
-> =20
-> diff --git a/sound/virtio/virtio_pcm_msg.c b/sound/virtio/virtio_pcm_msg.c
-> index aca2dc1989ba..9a5f9814cb62 100644
-> --- a/sound/virtio/virtio_pcm_msg.c
-> +++ b/sound/virtio/virtio_pcm_msg.c
-> @@ -132,7 +132,6 @@ static void virtsnd_pcm_sg_from(struct scatterlist *s=
-gs, int nsgs, u8 *data,
->  int virtsnd_pcm_msg_alloc(struct virtio_pcm_substream *vss,
->  			  unsigned int periods, unsigned int period_bytes)
->  {
-> -	struct snd_pcm_runtime *runtime =3D vss->substream->runtime;
->  	unsigned int i;
-> =20
->  	vss->msgs =3D kcalloc(periods, sizeof(*vss->msgs), GFP_KERNEL);
-> @@ -142,7 +141,7 @@ int virtsnd_pcm_msg_alloc(struct virtio_pcm_substream=
- *vss,
->  	vss->nmsgs =3D periods;
-> =20
->  	for (i =3D 0; i < periods; ++i) {
-> -		u8 *data =3D runtime->dma_area + period_bytes * i;
-> +		u8 *data =3D vss->buffer + period_bytes * i;
->  		int sg_num =3D virtsnd_pcm_sg_num(data, period_bytes);
->  		struct virtio_pcm_msg *msg;
-> =20
-> @@ -186,10 +185,12 @@ void virtsnd_pcm_msg_free(struct virtio_pcm_substre=
-am *vss)
->  /**
->   * virtsnd_pcm_msg_send() - Send asynchronous I/O messages.
->   * @vss: VirtIO PCM substream.
-> + * @single: true to enqueue a single message, false to enqueue all of th=
-em.
->   *
->   * All messages are organized in an ordered circular list. Each time the
-> - * function is called, all currently non-enqueued messages are added to =
-the
-> - * virtqueue. For this, the function keeps track of two values:
-> + * function is called, first non-enqueued message is added to the virtqu=
-eue.
-> + * When single is True, only the first message is enqueued. When False, =
-all the
-> + * available messages are enqueued.  The function keeps track of two val=
-ues:
->   *
->   *   msg_last_enqueued =3D index of the last enqueued message,
->   *   msg_count =3D # of pending messages in the virtqueue.
-> @@ -198,7 +199,7 @@ void virtsnd_pcm_msg_free(struct virtio_pcm_substream=
- *vss)
->   *          spinlocks to be held by caller.
->   * Return: 0 on success, -errno on failure.
->   */
-> -int virtsnd_pcm_msg_send(struct virtio_pcm_substream *vss)
-> +int virtsnd_pcm_msg_send(struct virtio_pcm_substream *vss, bool single)
->  {
->  	struct snd_pcm_runtime *runtime =3D vss->substream->runtime;
->  	struct virtio_snd *snd =3D vss->snd;
-> @@ -211,6 +212,13 @@ int virtsnd_pcm_msg_send(struct virtio_pcm_substream=
- *vss)
->  	i =3D (vss->msg_last_enqueued + 1) % runtime->periods;
->  	n =3D runtime->periods - vss->msg_count;
-> =20
-> +	if (single) {
-> +		if (n < 1)
-> +			return -EFAULT;
-> +
-> +		n =3D 1;
-> +	}
-> +
->  	for (; n; --n, i =3D (i + 1) % runtime->periods) {
->  		struct virtio_pcm_msg *msg =3D vss->msgs[i];
->  		struct scatterlist *psgs[] =3D {
-> @@ -250,6 +258,36 @@ int virtsnd_pcm_msg_send(struct virtio_pcm_substream=
- *vss)
->  	return 0;
->  }
-> =20
-> +/**
-> + * virtsnd_pcm_msg_send_locked() - Send asynchronous I/O messages.
-> + * @vss: VirtIO PCM substream.
-> + * @single: true to enqueue a single message, false to enqueue all of th=
-em.
-> + *
-> + * This function holds the tx/rx queue and the VirtIO substream spinlocks
-> + * before calling virtsnd_pcm_msg_send(). This is a wrapper function to =
-ease
-> + * the invocation of virtsnd_pcm_msg_send().
-> + *
-> + * Context: Any context.
-> + * Return: 0 on success, -errno on failure.
-> + */
-> +
-> +int virtsnd_pcm_msg_send_locked(struct virtio_pcm_substream *vss, bool s=
-ingle)
-> +{
-> +	struct virtio_snd_queue *queue;
-> +	int rc;
-> +	unsigned long flags;
-> +
-> +	queue =3D virtsnd_pcm_queue(vss);
-> +
-> +	spin_lock_irqsave(&queue->lock, flags);
-> +	spin_lock(&vss->lock);
-> +	rc =3D virtsnd_pcm_msg_send(vss, single);
-> +	spin_unlock(&vss->lock);
-> +	spin_unlock_irqrestore(&queue->lock, flags);
-> +
-> +	return rc;
-> +}
-> +
->  /**
->   * virtsnd_pcm_msg_pending_num() - Returns the number of pending I/O mes=
-sages.
->   * @vss: VirtIO substream.
-> @@ -320,8 +358,6 @@ static void virtsnd_pcm_msg_complete(struct virtio_pc=
-m_msg *msg,
->  					le32_to_cpu(msg->status.latency_bytes));
-> =20
->  		schedule_work(&vss->elapsed_period);
-> -
-> -		virtsnd_pcm_msg_send(vss);
->  	} else if (!vss->msg_count) {
->  		wake_up_all(&vss->msg_empty);
->  	}
-> diff --git a/sound/virtio/virtio_pcm_ops.c b/sound/virtio/virtio_pcm_ops.c
-> index f8bfb87624be..a208439dbff8 100644
-> --- a/sound/virtio/virtio_pcm_ops.c
-> +++ b/sound/virtio/virtio_pcm_ops.c
-> @@ -238,6 +238,11 @@ static int virtsnd_pcm_hw_params(struct snd_pcm_subs=
-tream *substream,
->  	 */
->  	virtsnd_pcm_msg_free(vss);
-> =20
-> +	vss->buffer_sz =3D params_buffer_bytes(hw_params);
-> +	vss->buffer =3D alloc_pages_exact(vss->buffer_sz, GFP_KERNEL);
-> +	if (!vss->buffer)
-> +		return -ENOMEM;
-> +
->  	return virtsnd_pcm_msg_alloc(vss, params_periods(hw_params),
->  				     params_period_bytes(hw_params));
->  }
-> @@ -257,6 +262,11 @@ static int virtsnd_pcm_hw_free(struct snd_pcm_substr=
-eam *substream)
->  	if (!virtsnd_pcm_msg_pending_num(vss))
->  		virtsnd_pcm_msg_free(vss);
-> =20
-> +	if (vss->buffer) {
-> +		free_pages_exact(vss->buffer, vss->buffer_sz);
-> +		vss->buffer =3D NULL;
-> +	}
-> +
->  	return 0;
->  }
-> =20
-> @@ -331,15 +341,18 @@ static int virtsnd_pcm_trigger(struct snd_pcm_subst=
-ream *substream, int command)
->  	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
->  		queue =3D virtsnd_pcm_queue(vss);
-> =20
-> -		spin_lock_irqsave(&queue->lock, flags);
-> -		spin_lock(&vss->lock);
-> -		rc =3D virtsnd_pcm_msg_send(vss);
-> -		if (!rc)
-> -			vss->xfer_enabled =3D true;
-> -		spin_unlock(&vss->lock);
-> -		spin_unlock_irqrestore(&queue->lock, flags);
-> -		if (rc)
-> -			return rc;
-> +		// The buffers should be exposed first during capturing so that
-> +		// the device can consume them. Capturing cannot begin
-> +		// otherwise.
-> +		if (vss->direction =3D=3D SNDRV_PCM_STREAM_CAPTURE) {
-> +			rc =3D virtsnd_pcm_msg_send_locked(vss, false);
-> +			if (rc)
-> +				return rc;
-> +		}
-> +
-> +		spin_lock_irqsave(&vss->lock, flags);
-> +		vss->xfer_enabled =3D true;
-> +		spin_unlock_irqrestore(&vss->lock, flags);
-> =20
->  		msg =3D virtsnd_pcm_ctl_msg_alloc(vss, VIRTIO_SND_R_PCM_START,
->  						GFP_KERNEL);
-> @@ -450,8 +463,66 @@ virtsnd_pcm_pointer(struct snd_pcm_substream *substr=
-eam)
->  	return hw_ptr;
->  }
-> =20
-> -/* PCM substream operators map. */
-> -const struct snd_pcm_ops virtsnd_pcm_ops =3D {
-> +static int virtsnd_pcm_pb_copy(struct snd_pcm_substream *substream,
-> +			       int channel, unsigned long pos, struct iov_iter
-> +			       *src, unsigned long count)
-> +{
-> +	struct virtio_pcm_substream *vss =3D snd_pcm_substream_chip(substream);
-> +
-> +	if (unlikely(pos + count > vss->buffer_sz))
-> +		return -EINVAL;
-> +
-> +	if (copy_from_iter(vss->buffer + pos, count, src) !=3D count)
-> +		return -EFAULT;
-> +
-> +	return virtsnd_pcm_msg_send_locked(vss, true);
-> +}
-> +
-> +static int virtsnd_pcm_cap_copy(struct snd_pcm_substream *substream,
-> +				int channel, unsigned long pos, struct iov_iter
-> +				*dst, unsigned long count)
-> +{
-> +	struct virtio_pcm_substream *vss =3D snd_pcm_substream_chip(substream);
-> +
-> +	if (unlikely(pos + count > vss->buffer_sz))
-> +		return -EINVAL;
-> +
-> +	if (copy_to_iter(vss->buffer + pos, count, dst) !=3D count)
-> +		return -EFAULT;
-> +
-> +	return virtsnd_pcm_msg_send_locked(vss, true);
-> +}
-> +
-> +static int virtsnd_pcm_pb_silence(struct snd_pcm_substream *substream, i=
-nt channel,
-> +				  unsigned long pos, unsigned long count)
-> +{
-> +	struct virtio_pcm_substream *vss =3D snd_pcm_substream_chip(substream);
-> +
-> +	if (unlikely(pos + count > vss->buffer_sz))
-> +		return -EINVAL;
-> +
-> +	memset(vss->buffer + pos, 0, count);
-> +
-> +	return virtsnd_pcm_msg_send_locked(vss, true);
-> +}
-> +
-> +/* PCM substream operators map for playback. */
-> +const struct snd_pcm_ops virtsnd_pcm_playback_ops =3D {
-> +	.open =3D virtsnd_pcm_open,
-> +	.close =3D virtsnd_pcm_close,
-> +	.ioctl =3D snd_pcm_lib_ioctl,
-> +	.hw_params =3D virtsnd_pcm_hw_params,
-> +	.hw_free =3D virtsnd_pcm_hw_free,
-> +	.prepare =3D virtsnd_pcm_prepare,
-> +	.trigger =3D virtsnd_pcm_trigger,
-> +	.sync_stop =3D virtsnd_pcm_sync_stop,
-> +	.pointer =3D virtsnd_pcm_pointer,
-> +	.copy =3D virtsnd_pcm_pb_copy,
-> +	.fill_silence =3D virtsnd_pcm_pb_silence,
-> +};
-> +
-> +/* PCM substream operators map for capturing. */
-> +const struct snd_pcm_ops virtsnd_pcm_capture_ops =3D {
->  	.open =3D virtsnd_pcm_open,
->  	.close =3D virtsnd_pcm_close,
->  	.ioctl =3D snd_pcm_lib_ioctl,
-> @@ -461,4 +532,5 @@ const struct snd_pcm_ops virtsnd_pcm_ops =3D {
->  	.trigger =3D virtsnd_pcm_trigger,
->  	.sync_stop =3D virtsnd_pcm_sync_stop,
->  	.pointer =3D virtsnd_pcm_pointer,
-> +	.copy =3D virtsnd_pcm_cap_copy,
->  };
->=20
-> base-commit: 8a749fd1a8720d4619c91c8b6e7528c0a355c0aa
-> --=20
-> 2.41.0
->=20
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
---2bIKyQX3Vt+C2epg
-Content-Type: application/pgp-signature; name="signature.asc"
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
------BEGIN PGP SIGNATURE-----
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmUtUkgACgkQnKSrs4Gr
-c8h2MggAmu4aWu/BxOEggrXE29NyIVj/q1baCcKeGZ4dJceL5iQqH1XP9Ous2adH
-ewJYeAJ57MvB50OahXwIOTV4iKgVvL+s28jbxRaZo6AQYQu6zpM4Q6e1O0iey1YO
-F9ID3WOWLKlr6amDK1l6Pnr6QrdPhCvyJZ0UpBa5jxAOH3qVJ2FWbX26eIXHPjRW
-7jFFqJo9o4hpQ/RDlf87k3CSogRqAstOma39FlQPiPPP7Xwx90Eu7RcyURMRhAGd
-RGb7RYaPCw/PpOQd24mHo/ZLI5ChkRKaeuMLVMFsWxGGi7NObSAkpA0BDA4Fo4WK
-0gP2/IEgW/cRSOY6j2qW9lzTsXcS4Q==
-=Sm0W
------END PGP SIGNATURE-----
-
---2bIKyQX3Vt+C2epg--
+Thanks,
+Mark
 
