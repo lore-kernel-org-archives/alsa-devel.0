@@ -4,78 +4,112 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5B9F0CDB474
-	for <alsa-devel@archiver.kernel.org>; Tue, 17 Oct 2023 17:41:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 83EF0CDB474
+	for <alsa-devel@archiver.kernel.org>; Tue, 17 Oct 2023 20:02:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 84EB9A4D;
-	Tue, 17 Oct 2023 19:40:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 84EB9A4D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 19969857;
+	Tue, 17 Oct 2023 22:01:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 19969857
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1697564505;
-	bh=tbY7wgGRlO6v5IUjQhW+hckUTRT1IP/RqORMcLcgk+8=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1697572960;
+	bh=xsrqlCo9nB8uSepKFshBtnuActvHSKavI+XtSt1G9Kk=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=qBWceMDthuM8hrDFc0hghPJbWno/msENOHRck65BWZBXySr4nj5GtsWmQPkgZ6grG
-	 OWuC/gjCKm7VC1uV6dJBexeBZSqTB0Wn4StyOqhwczfpvC44uwsyu09w7ionvcDOuu
-	 1is6fhId7K5YmQNKXtyt6se8s0DU0TTAGK4eqATo=
+	b=Wgdp+gUAn5c0+8Y6FNYAwyRrHjsdxSsnkVaEPmOQij7bq6wLQHx0oWahR8H/lL6nq
+	 pxoRyTbUNHza+jw4Dmlo75XqKxxi3oNMEbITDrJqDj0jqnkOvpgej2GJEwX16kY3B/
+	 frJlnifVWzP9dIIDglKSeCYgwJtUAjD3Ow/Vue3E=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 48921F8056F; Tue, 17 Oct 2023 19:40:06 +0200 (CEST)
+	id 1C002F805A1; Tue, 17 Oct 2023 22:01:39 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 83BEFF8055B;
-	Tue, 17 Oct 2023 19:40:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6E580F8027B;
+	Tue, 17 Oct 2023 22:01:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 59B02F8025F; Tue, 17 Oct 2023 19:40:00 +0200 (CEST)
-Received: from sin.source.kernel.org (sin.source.kernel.org
- [IPv6:2604:1380:40e1:4800::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 1E2E7F8057D; Tue, 17 Oct 2023 22:01:34 +0200 (CEST)
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com
+ [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id BE0EFF80166
-	for <alsa-devel@alsa-project.org>; Tue, 17 Oct 2023 19:39:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BE0EFF80166
+	by alsa1.perex.cz (Postfix) with ESMTPS id 16379F80166
+	for <alsa-devel@alsa-project.org>; Tue, 17 Oct 2023 22:01:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 16379F80166
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=SwIVnnEe
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id AFE89CE204B;
-	Tue, 17 Oct 2023 17:39:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A258C433C8;
-	Tue, 17 Oct 2023 17:39:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1697564384;
-	bh=tbY7wgGRlO6v5IUjQhW+hckUTRT1IP/RqORMcLcgk+8=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=SwIVnnEeSl3s6cGRsKx8rDN9O6cfILhT9uiTQpr4+svVReYz3okZbW6PfgYQMJf1t
-	 hKZAZNxjj8ersJiDzQoE5PFs8vUL+zpznTSuDprjCVQQ3ZI3fadEJ7VgD7qxTj6CnW
-	 2c6On+F5wHiovG2jjc1ye3vC5heV90Y0CkXbFdvnI5p8Oqa/MYjaGnfFDQNuQO8cKW
-	 Anbb7VaLIV2t6N9Etk15JCVoX9ZSmP6oUfqk3pBHVsmVJX4Lbpax8hPVcq/iLMx6p3
-	 +Q9X9hDttPCdj7BTRjY4iiTDqJj9UowiDqhORG6r2xKD0WpkxugEpyRLI0dXpyBt+e
-	 t+pwuWqzFJUfA==
-From: Mark Brown <broonie@kernel.org>
-To: Liam Girdwood <lgirdwood@gmail.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Daniel Beer <daniel.beer@igorinstitute.com>, Rob Herring <robh@kernel.org>
-Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-In-Reply-To: <20231016155547.2973853-1-robh@kernel.org>
-References: <20231016155547.2973853-1-robh@kernel.org>
-Subject: Re: [PATCH] ASoC: dt-bindings: tas5805m: Disallow undefined
- properties
-Message-Id: <169756438301.1863854.2005606398222182933.b4-ty@kernel.org>
-Date: Tue, 17 Oct 2023 18:39:43 +0100
+ unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
+ header.s=qcppdkim1 header.b=LMVpNN5L
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 39HJRv3G031259;
+	Tue, 17 Oct 2023 20:01:21 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com;
+ h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type; s=qcppdkim1;
+ bh=2u2Hw4cQxnaiuMAYd+x/zUYluVwUQV8zR7nL/DLubdM=;
+ b=LMVpNN5Lzmc1d12scQ7zxYxmwiZTXQhR9nTBgBHb7/Y1xhDKM+ZUjmtV9iVjGlPUDjqd
+ 6epT2i6vv54wRQrkOAoaVvIRIRyDnavYrakWY+P4I7CuVtEUOfjTw5ARtftvi/mxrwUe
+ mxl0Gyyn8lyv/R21r16CTFsmAa4Jh4MSYxwIrJfby2/bFWF7OVo9MHh2tLTnTAwBCmb1
+ oJ1UP5aoXgvuxatQcOEvFsNNLZ7bFmGKjauj9mMTvloA3tQ2QtXDfXVHMKCAEzf58CUM
+ ajJcDU0dXtXELz2XMgKUMGqE3SIRVdGihMQZwL+8klf8orGF6EOD9LyS4UX5wfQ03X8b iQ==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com
+ [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tsnej9qhh-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 17 Oct 2023 20:01:20 +0000
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com
+ [10.47.209.197])
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id
+ 39HK1J0d010264
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 17 Oct 2023 20:01:19 GMT
+Received: from hu-wcheng-lv.qualcomm.com (10.49.16.6) by
+ nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.39; Tue, 17 Oct 2023 13:01:19 -0700
+From: Wesley Cheng <quic_wcheng@quicinc.com>
+To: <mathias.nyman@intel.com>, <gregkh@linuxfoundation.org>,
+        <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
+        <tiwai@suse.com>, <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <srinivas.kandagatla@linaro.org>, <bgoswami@quicinc.com>,
+        <Thinh.Nguyen@synopsys.com>
+CC: <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <alsa-devel@alsa-project.org>, <linux-arm-msm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        Mathias Nyman <mathias.nyman@linux.intel.com>,
+        Wesley Cheng <quic_wcheng@quicinc.com>
+Subject: [PATCH v9 01/34] xhci: split free interrupter into separate remove
+ and free parts
+Date: Tue, 17 Oct 2023 13:00:36 -0700
+Message-ID: <20231017200109.11407-2-quic_wcheng@quicinc.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20231017200109.11407-1-quic_wcheng@quicinc.com>
+References: <20231017200109.11407-1-quic_wcheng@quicinc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-0438c
-Message-ID-Hash: 5WORZ7L3I3MUVPIDHFMDCJZ3JJDG24WG
-X-Message-ID-Hash: 5WORZ7L3I3MUVPIDHFMDCJZ3JJDG24WG
-X-MailFrom: broonie@kernel.org
+Content-Type: text/plain
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
+ signatures=585085
+X-Proofpoint-GUID: zutR5yPPknOWcT9Gq93-GGlpYtwcJ1pN
+X-Proofpoint-ORIG-GUID: zutR5yPPknOWcT9Gq93-GGlpYtwcJ1pN
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-17_03,2023-10-17_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ clxscore=1015 spamscore=0
+ bulkscore=0 impostorscore=0 mlxscore=0 lowpriorityscore=0 suspectscore=0
+ priorityscore=1501 phishscore=0 malwarescore=0 mlxlogscore=936
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310170169
+Message-ID-Hash: NMUEJ7FVXREV53IMNG7PTBR3PZE23O4L
+X-Message-ID-Hash: NMUEJ7FVXREV53IMNG7PTBR3PZE23O4L
+X-MailFrom: quic_wcheng@quicinc.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -87,7 +121,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5WORZ7L3I3MUVPIDHFMDCJZ3JJDG24WG/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NMUEJ7FVXREV53IMNG7PTBR3PZE23O4L/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -96,41 +130,87 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, 16 Oct 2023 10:55:47 -0500, Rob Herring wrote:
-> Device specific bindings should not allow undefined properties. This is
-> accomplished in json-schema with 'additionalProperties: false'.
-> 
-> Examples should be last in the schema, so move additionalProperties up
-> while we're here.
-> 
-> 
-> [...]
+From: Mathias Nyman <mathias.nyman@linux.intel.com>
 
-Applied to
+The current function that both removes and frees an interrupter isn't
+optimal when using several interrupters. The array of interrupters need
+to be protected with a lock while removing interrupters, but the default
+xhci spin lock can't be used while freeing the interrupters event ring
+segment table as dma_free_coherent() should be called with IRQs enabled.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+There is no need to free the interrupter under the lock, so split this
+code into separate unlocked free part, and a lock protected remove part.
 
-Thanks!
+Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
+Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
+---
+ drivers/usb/host/xhci-mem.c | 32 +++++++++++++++++++++-----------
+ 1 file changed, 21 insertions(+), 11 deletions(-)
 
-[1/1] ASoC: dt-bindings: tas5805m: Disallow undefined properties
-      commit: 086357275fc7635c5a2856c667b3d2f7604403fa
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+diff --git a/drivers/usb/host/xhci-mem.c b/drivers/usb/host/xhci-mem.c
+index 0a37f0d511cf..0994ca9fba44 100644
+--- a/drivers/usb/host/xhci-mem.c
++++ b/drivers/usb/host/xhci-mem.c
+@@ -1797,23 +1797,14 @@ int xhci_alloc_erst(struct xhci_hcd *xhci,
+ }
+ 
+ static void
+-xhci_free_interrupter(struct xhci_hcd *xhci, struct xhci_interrupter *ir)
++xhci_remove_interrupter(struct xhci_hcd *xhci, struct xhci_interrupter *ir)
+ {
+-	struct device *dev = xhci_to_hcd(xhci)->self.sysdev;
+-	size_t erst_size;
+ 	u64 tmp64;
+ 	u32 tmp;
+ 
+ 	if (!ir)
+ 		return;
+ 
+-	erst_size = sizeof(struct xhci_erst_entry) * ir->erst.num_entries;
+-	if (ir->erst.entries)
+-		dma_free_coherent(dev, erst_size,
+-				  ir->erst.entries,
+-				  ir->erst.erst_dma_addr);
+-	ir->erst.entries = NULL;
+-
+ 	/*
+ 	 * Clean out interrupter registers except ERSTBA. Clearing either the
+ 	 * low or high 32 bits of ERSTBA immediately causes the controller to
+@@ -1828,10 +1819,28 @@ xhci_free_interrupter(struct xhci_hcd *xhci, struct xhci_interrupter *ir)
+ 		tmp64 &= (u64) ERST_PTR_MASK;
+ 		xhci_write_64(xhci, tmp64, &ir->ir_set->erst_dequeue);
+ 	}
++}
++
++static void
++xhci_free_interrupter(struct xhci_hcd *xhci, struct xhci_interrupter *ir)
++{
++	struct device *dev = xhci_to_hcd(xhci)->self.sysdev;
++	size_t erst_size;
++
++	if (!ir)
++		return;
++
++	erst_size = sizeof(struct xhci_erst_entry) * ir->erst.num_entries;
++	if (ir->erst.entries)
++		dma_free_coherent(dev, erst_size,
++				  ir->erst.entries,
++				  ir->erst.erst_dma_addr);
++	ir->erst.entries = NULL;
+ 
+-	/* free interrrupter event ring */
++	/* free interrupter event ring */
+ 	if (ir->event_ring)
+ 		xhci_ring_free(xhci, ir->event_ring);
++
+ 	ir->event_ring = NULL;
+ 
+ 	kfree(ir);
+@@ -1844,6 +1853,7 @@ void xhci_mem_cleanup(struct xhci_hcd *xhci)
+ 
+ 	cancel_delayed_work_sync(&xhci->cmd_timer);
+ 
++	xhci_remove_interrupter(xhci, xhci->interrupter);
+ 	xhci_free_interrupter(xhci, xhci->interrupter);
+ 	xhci->interrupter = NULL;
+ 	xhci_dbg_trace(xhci, trace_xhci_dbg_init, "Freed primary event ring");
