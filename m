@@ -4,73 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B4878CDB482
-	for <alsa-devel@archiver.kernel.org>; Tue, 17 Oct 2023 23:27:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 71FC6CDB474
+	for <alsa-devel@archiver.kernel.org>; Tue, 17 Oct 2023 23:27:50 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1B07584A;
-	Wed, 18 Oct 2023 01:26:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1B07584A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 67C50DF0;
+	Wed, 18 Oct 2023 01:26:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 67C50DF0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1697585248;
-	bh=Jfwi6zOwIf92FmGVyVBCRV0UI9mYK0d0yD+xgDrknf4=;
+	s=default; t=1697585268;
+	bh=xwQ0iV/rBOQYg8kGL3cqHi/fxn3tom61XgY6fDIexWM=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=vq/fYrJ2+Togodz0jIJGG3SpeJ1KvWRri/JWClWXpwq6bVtqjOgML1huUVGhXTCc+
-	 5hxu29qzl5fGwGjm+ZCoV5vQ6/KDwJaxs2J+PqIvENuEXhZRoiNoHYgJ0gaxZ40PB7
-	 4HQNJx1j0RCdeE5WbYSJciskD2z6iUPJiMOHz/78=
+	b=IoJIgtJQl0ay4X5sJZVmu9v1sri5GGaXlcsHendVZSnGvsIVqMnXJ1NalGtjG2crV
+	 4eyjlcVG0nFlAcv/3Cevl38vYN7RHeu3+Y+ZYDT/BySj2avIVtJkDs1OWDZ4hipsCR
+	 X1+4v97WHeBYj0Z9J2hgvMTpWME1kQZ+y4Lzlh4c=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CFF97F80600; Wed, 18 Oct 2023 01:23:54 +0200 (CEST)
+	id 5AC7CF80609; Wed, 18 Oct 2023 01:23:56 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 597A2F805F9;
-	Wed, 18 Oct 2023 01:23:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E090BF80603;
+	Wed, 18 Oct 2023 01:23:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 60424F805AE; Wed, 18 Oct 2023 01:23:42 +0200 (CEST)
+	id D8C65F805BD; Wed, 18 Oct 2023 01:23:43 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 4F481F80552
+	by alsa1.perex.cz (Postfix) with ESMTPS id 21E40F80564
 	for <alsa-devel@alsa-project.org>; Wed, 18 Oct 2023 01:23:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4F481F80552
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 21E40F80564
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=JVCKDx8h
+ header.s=Intel header.b=dO2REhrk
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697585013; x=1729121013;
+  t=1697585014; x=1729121014;
   h=message-id:date:mime-version:subject:to:cc:references:
    from:in-reply-to:content-transfer-encoding;
-  bh=Jfwi6zOwIf92FmGVyVBCRV0UI9mYK0d0yD+xgDrknf4=;
-  b=JVCKDx8hLpxfdp8mapQTBHlAuSkSTTXYgvqXGhxTjNHFQmPsw5pCF9n0
-   NRNMqb1/xv2Y55rSs5358NRPnTZ1PYU7DfztPL4mdC1jwmaO8BBtVWizu
-   ZqW8bbMK+97pfWZ4tIIcHvTYCmWZYj6rl/iCuyVw1YDtecqcRghVf+uNy
-   7PQ38f03cTfbXkh6PFyoy0LGOEpjGfCbGPe4Yxw494vVP3CzlaeKLf7lt
-   TFM/Tg4jsBTuPyImErvPCbdl7abb/xXEN8uo04R8u+k1uGbHEmCTUJdSH
-   xqLMlUPQ3Vm2dXfrLD43cU4ijSy97MfSlwrS3dI8UA+3JqIXP0bv21/UX
+  bh=xwQ0iV/rBOQYg8kGL3cqHi/fxn3tom61XgY6fDIexWM=;
+  b=dO2REhrkRRPtHLkYLwgjXrC0kCuSbrHBccplzihbN+cqPVPSiMHbTOqX
+   c1d8Y8k3mPx44x9yNXy76D+BqgE1FCpnv6M/nSqZW36FvJ0isT4DTgbuH
+   WbwiTVkjj+Ie5pfCtcPAtEswUZ9a+NWoVGdqBYEMdg9P2o8G8guUICLiI
+   6u6Nrjd5cbBWdv5o2Zqx7vMrU7v9femr8pxcVQXCoOWAH3u9LQWfXnbO9
+   lNtljY36tGELpsOgDts+8s/VelT+smknkSbHsTqUPdUtxsYjtAYm95Oy1
+   2O7RyGIQTG1VHrRIjXwACVoY0YA8H8akBxtAz3DIRyhHjNixIbbu2jsP+
    g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="384778239"
+X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="384778251"
 X-IronPort-AV: E=Sophos;i="6.03,233,1694761200";
-   d="scan'208";a="384778239"
+   d="scan'208";a="384778251"
 Received: from fmsmga004.fm.intel.com ([10.253.24.48])
   by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 17 Oct 2023 16:23:31 -0700
+ 17 Oct 2023 16:23:32 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="826637523"
+X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="826637527"
 X-IronPort-AV: E=Sophos;i="6.03,233,1694761200";
-   d="scan'208";a="826637523"
+   d="scan'208";a="826637527"
 Received: from asprado-mobl2.amr.corp.intel.com (HELO [10.212.55.179])
  ([10.212.55.179])
   by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 17 Oct 2023 16:23:30 -0700
-Message-ID: <97c16b75-1277-41f1-a0b6-293e76dbcb7f@linux.intel.com>
-Date: Tue, 17 Oct 2023 18:07:15 -0500
+ 17 Oct 2023 16:23:31 -0700
+Message-ID: <b503058d-e23f-4a63-99b8-f0a62b2a2557@linux.intel.com>
+Date: Tue, 17 Oct 2023 18:11:57 -0500
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v9 33/34] ALSA: usb-audio: Allow for rediscovery of
- connected USB SND devices
+Subject: Re: [PATCH v9 34/34] ASoC: usb: Rediscover USB SND devices on USB
+ port add
 Content-Language: en-US
 To: Wesley Cheng <quic_wcheng@quicinc.com>, mathias.nyman@intel.com,
  gregkh@linuxfoundation.org, lgirdwood@gmail.com, broonie@kernel.org,
@@ -83,13 +83,13 @@ Cc: linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
  alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
  devicetree@vger.kernel.org
 References: <20231017200109.11407-1-quic_wcheng@quicinc.com>
- <20231017200109.11407-34-quic_wcheng@quicinc.com>
+ <20231017200109.11407-35-quic_wcheng@quicinc.com>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20231017200109.11407-34-quic_wcheng@quicinc.com>
+In-Reply-To: <20231017200109.11407-35-quic_wcheng@quicinc.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-ID-Hash: ONS4QESCEFSNW5SM3DCGCLU7SL4XGDVY
-X-Message-ID-Hash: ONS4QESCEFSNW5SM3DCGCLU7SL4XGDVY
+Message-ID-Hash: ZWS5WUA6JJCRPVHGNQXQOZTKYQRWF6YW
+X-Message-ID-Hash: ZWS5WUA6JJCRPVHGNQXQOZTKYQRWF6YW
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -102,7 +102,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ONS4QESCEFSNW5SM3DCGCLU7SL4XGDVY/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZWS5WUA6JJCRPVHGNQXQOZTKYQRWF6YW/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -114,74 +114,39 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 
 On 10/17/23 15:01, Wesley Cheng wrote:
-> In case of notifying SND platform drivers of connection events, some of
-> these use cases, such as offloading, require an ASoC USB backend device to
-> be initialized before the events can be handled.  If the USB backend device
-> has not yet been probed, this leads to missing initial USB audio device
-> connection events.
+> In case the USB backend device has not been initialized/probed, USB SND
+> device connections can still occur.  When the USB backend is eventually
+> made available, previous USB SND device connections are not communicated to
+> the USB backend.  Call snd_usb_rediscover_devices() to generate the connect
+> callbacks for all USB SND devices connected.  This will allow for the USB
+> backend to be updated with the current set of devices available.
 > 
-> Expose an API that traverses the usb_chip array for connected devices, and
-> to call the respective connection callback registered to the SND platform
-> driver.
+> The chip array entries are all populated and removed while under the
+> register_mutex, so going over potential race conditions:
 > 
-> Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
-> ---
->  sound/usb/card.c | 19 +++++++++++++++++++
->  sound/usb/card.h |  2 ++
->  2 files changed, 21 insertions(+)
+> Thread#1:
+>   q6usb_component_probe()
+>     --> snd_soc_usb_add_port()
+>       --> snd_usb_rediscover_devices()
+>         --> mutex_lock(register_mutex)
 > 
-> diff --git a/sound/usb/card.c b/sound/usb/card.c
-> index 88f431917c15..7d3f470754ca 100644
-> --- a/sound/usb/card.c
-> +++ b/sound/usb/card.c
-> @@ -202,6 +202,25 @@ struct snd_usb_stream *snd_usb_find_suppported_substream(int card_idx,
->  }
->  EXPORT_SYMBOL_GPL(snd_usb_find_suppported_substream);
->  
-> +/*
-> + * in case the platform driver was not ready at the time of USB SND
-> + * device connect, expose an API to discover all connected USB devices
-> + * so it can populate any dependent resources/structures.
+> Thread#2
+>   --> usb_audio_disconnect()
+>     --> mutex_lock(register_mutex)
+> 
+> So either thread#1 or thread#2 will complete first.  If
+> 
+> Thread#1 completes before thread#2:
+>   SOC USB will notify DPCM backend of the device connection.  Shortly
+>   after, once thread#2 runs, we will get a disconnect event for the
+>   connected device.
+> 
+> Thread#2 completes before thread#1:
+>   Then during snd_usb_rediscover_devices() it won't notify of any
+>   connection for that particular chip index.
+Looks like you are assuming the regular USB audio stuff is probed first?
 
-it's really unclear how the "platform driver was not ready at the time
-of USB SND device connect" condition can be detected. It's my
-understanding that we should never assume any specific order or timing
-on platform driver probes. And things should also work if a driver is
-unbound.
+What if it's not the case? Have you tested with a manual 'blacklist' and
+"modprobe" sequence long after all the DSP stuff is initialized?
 
-> + */
-> +void snd_usb_rediscover_devices(void)
-> +{
-> +	int i;
-> +
-> +	mutex_lock(&register_mutex);
-> +	for (i = 0; i < SNDRV_CARDS; i++) {
-> +		if (usb_chip[i])
-> +			if (platform_ops && platform_ops->connect_cb)
-> +				platform_ops->connect_cb(usb_chip[i]);
-> +	}
-> +	mutex_unlock(&register_mutex);
-> +}
-> +EXPORT_SYMBOL_GPL(snd_usb_rediscover_devices);
-> +
->  /*
->   * disconnect streams
->   * called from usb_audio_disconnect()
-> diff --git a/sound/usb/card.h b/sound/usb/card.h
-> index 01f7e10f30f4..c0aeda17ed69 100644
-> --- a/sound/usb/card.h
-> +++ b/sound/usb/card.h
-> @@ -221,11 +221,13 @@ int snd_usb_unregister_platform_ops(void);
->  #if IS_ENABLED(CONFIG_SND_USB_AUDIO)
->  struct snd_usb_stream *snd_usb_find_suppported_substream(int card_idx,
->  			struct snd_pcm_hw_params *params, int direction);
-> +void snd_usb_rediscover_devices(void);
->  #else
->  static struct snd_usb_stream *snd_usb_find_suppported_substream(int card_idx,
->  			struct snd_pcm_hw_params *params, int direction)
->  {
->  	return NULL;
->  }
-> +static void snd_usb_rediscover_devices(void) { }
->  #endif /* IS_ENABLED(CONFIG_SND_USB_AUDIO) */
->  #endif /* __USBAUDIO_CARD_H */
+It really reminds me of audio+display issues, and the same opens apply IMHO.
