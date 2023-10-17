@@ -4,70 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 799E5CDB483
-	for <alsa-devel@archiver.kernel.org>; Tue, 17 Oct 2023 20:04:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7E7ABCDB482
+	for <alsa-devel@archiver.kernel.org>; Tue, 17 Oct 2023 20:04:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DBAEC200;
-	Tue, 17 Oct 2023 22:03:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DBAEC200
+	by alsa0.perex.cz (Postfix) with ESMTPS id A644FDE5;
+	Tue, 17 Oct 2023 22:03:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A644FDE5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1697573050;
-	bh=zVp6bPiJqumP0MemEef2s14w3tZci4+XahoXbOo+CfE=;
+	s=default; t=1697573057;
+	bh=LhKYhuMAC43qHAgXsPT+XHuyLtoz/W7VWkbepbQqfC0=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=YnPaKg88b6wS+jPCzOW1TkRJXFIRQIpnkMGglNZS4ARuMGwtfdhIEcOi60BL5Vhf2
-	 olSH8pK4lIT53+oWcnL9E4uS6hLwcbgUTFmr0gSQwx2P3sADsQUPfn/Pnk3gD/z6/3
-	 37UdBb6nt29MtW/4svXhVd4ZS3hlGUQuNMIqcscY=
+	b=YmZDhTY7U2cIccFGMus8qQSp187CeG96867ye3LwxDBP2M8cRs5DFW4Of8aqE9+Kj
+	 KRaxNhRNVwRPNwdzpcGw6qIxA+zrzWquA9q1qHFy1pCCReypqDkSoa1M/8U9WKv7UC
+	 AzOm7AOIvNp+N3e5DHW5/Hx3Ag/uGBog2pIDf89E=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C4178F805D4; Tue, 17 Oct 2023 22:01:55 +0200 (CEST)
+	id B5A1DF805A8; Tue, 17 Oct 2023 22:01:59 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4FE51F805D2;
-	Tue, 17 Oct 2023 22:01:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 119C7F805DF;
+	Tue, 17 Oct 2023 22:01:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6D175F805C8; Tue, 17 Oct 2023 22:01:51 +0200 (CEST)
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com
- [205.220.168.131])
+	id 24E3EF805A8; Tue, 17 Oct 2023 22:01:54 +0200 (CEST)
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com
+ [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 27F6FF80558
-	for <alsa-devel@alsa-project.org>; Tue, 17 Oct 2023 22:01:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 27F6FF80558
+	by alsa1.perex.cz (Postfix) with ESMTPS id DB822F8032D
+	for <alsa-devel@alsa-project.org>; Tue, 17 Oct 2023 22:01:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DB822F8032D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
- header.s=qcppdkim1 header.b=jLkMtfHD
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+ header.s=qcppdkim1 header.b=PgNcdh+9
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
 	by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 39HK0qZf031333;
+ 39HJtKs5019843;
 	Tue, 17 Oct 2023 20:01:23 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-type; s=qcppdkim1;
- bh=soLP1wxYe/Q2Qo2eRZtDOZ0+xrFrE1vGLjGfET0ejzk=;
- b=jLkMtfHDjDnWqp3fyDKlOl02WfzZO48J1EgAcR5wwffz2LLjA8q3XIEwm6Oo9agcu3he
- jZ2PRFxZcxVTlcKN1plqZXrI7caUHxNW8miPr5uVfXWZmYlgy0O+ewRznM5mIcHLhMTr
- gNcQjpKlx0rNkpY7QoNiaD9nn/xEsnmrZQt5bf0m4Vlbf98yXGxOtA/L0bZ3Ibtu16SE
- rZ5joLOcv0YrpSnEwNThozzW2fFugAOVBu3wg000ABhDD4O+QfaEwvEgHVov6RrfuU4Q
- BtzFEQkCey3FWaQ7zwhqxT6qkjln/yXGUkIOCF5GbwI2MHktIoG4MTnU4tpWmv9Z5M0O bg==
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com
+ bh=emjVpavNYFllGYHBvf0hIAg/rkU2/Nq+QSY608vLq1I=;
+ b=PgNcdh+9+aveQs4958PuP5YGqNYK+CmkRsSimQbejZp6uNA2RUQ5SP2MRKgvLM3b4bNg
+ WzZAaHmdmD0ZfGtF3jBp+ME0qiJoj9B6cVV2P8nzsww5aXVA+bE+D60AZbr1QWtfm5zY
+ 8NjXqPItg1VZr3z3kkkL/Fmxi58APHk5G9DS/JRN8CUHKDEIcbxVIo1WIwrAVgzK7dNU
+ PHomRmcnK+90w+WURtJ9ZD2zH/jBIl0XM76sS+gOQN2yP5soedZPvdVMwonXcp+63ehD
+ XZCPhpqSPteZqe6b1a9vZVqsXouX2H1ijT7Upn9zlOOfy8WEKtuk6BwNDuu5iM0qZZkw ZA==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com
  [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tsv0v0vj3-1
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tsnej9qhm-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Tue, 17 Oct 2023 20:01:23 +0000
 Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com
  [10.47.209.197])
-	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id
- 39HK1MYB003229
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id
+ 39HK1MTD010274
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 17 Oct 2023 20:01:23 GMT
+	Tue, 17 Oct 2023 20:01:22 GMT
 Received: from hu-wcheng-lv.qualcomm.com (10.49.16.6) by
  nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.39; Tue, 17 Oct 2023 13:01:22 -0700
+ 15.2.1118.39; Tue, 17 Oct 2023 13:01:21 -0700
 From: Wesley Cheng <quic_wcheng@quicinc.com>
 To: <mathias.nyman@intel.com>, <gregkh@linuxfoundation.org>,
         <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
@@ -79,10 +79,9 @@ To: <mathias.nyman@intel.com>, <gregkh@linuxfoundation.org>,
 CC: <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <alsa-devel@alsa-project.org>, <linux-arm-msm@vger.kernel.org>,
         <devicetree@vger.kernel.org>, Wesley Cheng <quic_wcheng@quicinc.com>
-Subject: [PATCH v9 12/34] ALSA: usb-audio: Introduce USB SND platform op
- callbacks
-Date: Tue, 17 Oct 2023 13:00:47 -0700
-Message-ID: <20231017200109.11407-13-quic_wcheng@quicinc.com>
+Subject: [PATCH v9 09/34] ASoC: qcom: qdsp6: Introduce USB AFE port to q6dsp
+Date: Tue, 17 Oct 2023 13:00:44 -0700
+Message-ID: <20231017200109.11407-10-quic_wcheng@quicinc.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20231017200109.11407-1-quic_wcheng@quicinc.com>
 References: <20231017200109.11407-1-quic_wcheng@quicinc.com>
@@ -94,19 +93,19 @@ X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
  signatures=585085
-X-Proofpoint-ORIG-GUID: 1MIfYKag9KQl4Kbj5I1Ac2WGtC5AF37f
-X-Proofpoint-GUID: 1MIfYKag9KQl4Kbj5I1Ac2WGtC5AF37f
+X-Proofpoint-GUID: HpR4DijNW3TKjBP-nx9T4uapw9zlT9aj
+X-Proofpoint-ORIG-GUID: HpR4DijNW3TKjBP-nx9T4uapw9zlT9aj
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-10-17_03,2023-10-17_01,2023-05-22_02
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- clxscore=1015
- priorityscore=1501 malwarescore=0 phishscore=0 mlxscore=0 mlxlogscore=936
- impostorscore=0 bulkscore=0 spamscore=0 lowpriorityscore=0 suspectscore=0
+ clxscore=1015 spamscore=0
+ bulkscore=0 impostorscore=0 mlxscore=0 lowpriorityscore=0 suspectscore=0
+ priorityscore=1501 phishscore=0 malwarescore=0 mlxlogscore=999
  adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310170170
-Message-ID-Hash: FG3VHHJ4GYJ2SPYI2P326HRYJAYDIM6F
-X-Message-ID-Hash: FG3VHHJ4GYJ2SPYI2P326HRYJAYDIM6F
+ engine=8.12.0-2309180000 definitions=main-2310170169
+Message-ID-Hash: SQRMSAKIUDQOIZ6L7MT24FC6Z3N4OMP4
+X-Message-ID-Hash: SQRMSAKIUDQOIZ6L7MT24FC6Z3N4OMP4
 X-MailFrom: quic_wcheng@quicinc.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -119,7 +118,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FG3VHHJ4GYJ2SPYI2P326HRYJAYDIM6F/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SQRMSAKIUDQOIZ6L7MT24FC6Z3N4OMP4/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -128,132 +127,528 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Allow for different platforms to be notified on USB SND connect/disconnect
-seqeunces.  This allows for platform USB SND modules to properly initialize
-and populate internal structures with references to the USB SND chip
-device.
+The QC ADSP is able to support USB playback endpoints, so that the main
+application processor can be placed into lower CPU power modes.  This adds
+the required AFE port configurations and port start command to start an
+audio session.
+
+Specifically, the QC ADSP can support all potential endpoints that are
+exposed by the audio data interface.  This includes, feedback endpoints
+(both implicit and explicit) as well as the isochronous (data) endpoints.
+The size of audio samples sent per USB frame (microframe) will be adjusted
+based on information received on the feedback endpoint.
 
 Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
 ---
- sound/usb/card.c | 60 ++++++++++++++++++++++++++++++++++++++++++++++++
- sound/usb/card.h |  9 ++++++++
- 2 files changed, 69 insertions(+)
+ sound/soc/qcom/qdsp6/q6afe-dai.c         |  56 +++++++
+ sound/soc/qcom/qdsp6/q6afe.c             | 183 ++++++++++++++++++++++-
+ sound/soc/qcom/qdsp6/q6afe.h             |  35 ++++-
+ sound/soc/qcom/qdsp6/q6dsp-lpass-ports.c |  23 +++
+ sound/soc/qcom/qdsp6/q6dsp-lpass-ports.h |   1 +
+ sound/soc/qcom/qdsp6/q6routing.c         |   9 ++
+ 6 files changed, 305 insertions(+), 2 deletions(-)
 
-diff --git a/sound/usb/card.c b/sound/usb/card.c
-index 1b2edc0fd2e9..1ef6d144aa51 100644
---- a/sound/usb/card.c
-+++ b/sound/usb/card.c
-@@ -118,6 +118,49 @@ MODULE_PARM_DESC(skip_validation, "Skip unit descriptor validation (default: no)
- static DEFINE_MUTEX(register_mutex);
- static struct snd_usb_audio *usb_chip[SNDRV_CARDS];
- static struct usb_driver usb_audio_driver;
-+static struct snd_usb_platform_ops *platform_ops;
-+
-+/*
-+ * Register platform specific operations that will be notified on events
-+ * which occur in USB SND.  The platform driver can utilize this path to
-+ * enable features, such as USB audio offloading, which allows for audio data
-+ * to be queued by an audio DSP.
-+ *
-+ * Only one set of platform operations can be registered to USB SND.  The
-+ * platform register operation is protected by the register_mutex.
-+ */
-+int snd_usb_register_platform_ops(struct snd_usb_platform_ops *ops)
-+{
-+	int ret;
-+
-+	mutex_lock(&register_mutex);
-+	if (platform_ops) {
-+		ret = -EEXIST;
-+		goto out;
-+	}
-+
-+	platform_ops = ops;
-+out:
-+	mutex_unlock(&register_mutex);
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(snd_usb_register_platform_ops);
-+
-+/*
-+ * Unregisters the current set of platform operations.  This allows for
-+ * a new set to be registered if required.
-+ *
-+ * The platform unregister operation is protected by the register_mutex.
-+ */
-+int snd_usb_unregister_platform_ops(void)
-+{
-+	mutex_lock(&register_mutex);
-+	platform_ops = NULL;
-+	mutex_unlock(&register_mutex);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(snd_usb_unregister_platform_ops);
- 
- /*
-  * disconnect streams
-@@ -910,7 +953,11 @@ static int usb_audio_probe(struct usb_interface *intf,
- 	chip->num_interfaces++;
- 	usb_set_intfdata(intf, chip);
- 	atomic_dec(&chip->active);
-+
-+	if (platform_ops && platform_ops->connect_cb)
-+		platform_ops->connect_cb(chip);
- 	mutex_unlock(&register_mutex);
-+
- 	return 0;
- 
-  __error:
-@@ -947,6 +994,9 @@ static void usb_audio_disconnect(struct usb_interface *intf)
- 	card = chip->card;
- 
- 	mutex_lock(&register_mutex);
-+	if (platform_ops && platform_ops->disconnect_cb)
-+		platform_ops->disconnect_cb(chip);
-+
- 	if (atomic_inc_return(&chip->shutdown) == 1) {
- 		struct snd_usb_stream *as;
- 		struct snd_usb_endpoint *ep;
-@@ -1090,6 +1140,11 @@ static int usb_audio_suspend(struct usb_interface *intf, pm_message_t message)
- 		chip->system_suspend = chip->num_suspended_intf;
- 	}
- 
-+	mutex_lock(&register_mutex);
-+	if (platform_ops && platform_ops->suspend_cb)
-+		platform_ops->suspend_cb(intf, message);
-+	mutex_unlock(&register_mutex);
-+
+diff --git a/sound/soc/qcom/qdsp6/q6afe-dai.c b/sound/soc/qcom/qdsp6/q6afe-dai.c
+index 3faa7e0eb0dd..e46c064253d7 100644
+--- a/sound/soc/qcom/qdsp6/q6afe-dai.c
++++ b/sound/soc/qcom/qdsp6/q6afe-dai.c
+@@ -91,6 +91,40 @@ static int q6hdmi_hw_params(struct snd_pcm_substream *substream,
  	return 0;
  }
  
-@@ -1130,6 +1185,11 @@ static int usb_audio_resume(struct usb_interface *intf)
- 
- 	snd_usb_midi_v2_resume_all(chip);
- 
-+	mutex_lock(&register_mutex);
-+	if (platform_ops && platform_ops->resume_cb)
-+		platform_ops->resume_cb(intf);
-+	mutex_unlock(&register_mutex);
++static int q6usb_hw_params(struct snd_pcm_substream *substream,
++			   struct snd_pcm_hw_params *params,
++			   struct snd_soc_dai *dai)
++{
++	struct q6afe_dai_data *dai_data = dev_get_drvdata(dai->dev);
++	int channels = params_channels(params);
++	int rate = params_rate(params);
++	struct q6afe_usb_cfg *usb = &dai_data->port_config[dai->id].usb_audio;
 +
-  out:
- 	if (chip->num_suspended_intf == chip->system_suspend) {
- 		snd_power_change_state(chip->card, SNDRV_CTL_POWER_D0);
-diff --git a/sound/usb/card.h b/sound/usb/card.h
-index 6ec95b2edf86..2884912adc96 100644
---- a/sound/usb/card.h
-+++ b/sound/usb/card.h
-@@ -207,4 +207,13 @@ struct snd_usb_stream {
- 	struct list_head list;
++	usb->sample_rate = rate;
++	usb->num_channels = channels;
++
++	switch (params_format(params)) {
++	case SNDRV_PCM_FORMAT_U16_LE:
++	case SNDRV_PCM_FORMAT_S16_LE:
++	case SNDRV_PCM_FORMAT_SPECIAL:
++		usb->bit_width = 16;
++		break;
++	case SNDRV_PCM_FORMAT_S24_LE:
++	case SNDRV_PCM_FORMAT_S24_3LE:
++		usb->bit_width = 24;
++		break;
++	case SNDRV_PCM_FORMAT_S32_LE:
++		usb->bit_width = 32;
++		break;
++	default:
++		dev_err(dai->dev, "%s: invalid format %d\n",
++			__func__, params_format(params));
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
+ static int q6i2s_hw_params(struct snd_pcm_substream *substream,
+ 			   struct snd_pcm_hw_params *params,
+ 			   struct snd_soc_dai *dai)
+@@ -391,6 +425,10 @@ static int q6afe_dai_prepare(struct snd_pcm_substream *substream,
+ 		q6afe_cdc_dma_port_prepare(dai_data->port[dai->id],
+ 					   &dai_data->port_config[dai->id].dma_cfg);
+ 		break;
++	case USB_RX:
++		q6afe_usb_port_prepare(dai_data->port[dai->id],
++				       &dai_data->port_config[dai->id].usb_audio);
++		break;
+ 	default:
+ 		return -EINVAL;
+ 	}
+@@ -617,6 +655,9 @@ static const struct snd_soc_dapm_route q6afe_dapm_routes[] = {
+ 	{"TX_CODEC_DMA_TX_5", NULL, "TX_CODEC_DMA_TX_5 Capture"},
+ 	{"RX_CODEC_DMA_RX_6 Playback", NULL, "RX_CODEC_DMA_RX_6"},
+ 	{"RX_CODEC_DMA_RX_7 Playback", NULL, "RX_CODEC_DMA_RX_7"},
++
++	/* USB playback AFE port receives data for playback, hence use the RX port */
++	{"USB Playback", NULL, "USB_RX"},
  };
  
-+struct snd_usb_platform_ops {
-+	void (*connect_cb)(struct snd_usb_audio *chip);
-+	void (*disconnect_cb)(struct snd_usb_audio *chip);
-+	void (*suspend_cb)(struct usb_interface *intf, pm_message_t message);
-+	void (*resume_cb)(struct usb_interface *intf);
+ static int msm_dai_q6_dai_probe(struct snd_soc_dai *dai)
+@@ -644,6 +685,18 @@ static int msm_dai_q6_dai_remove(struct snd_soc_dai *dai)
+ 	return 0;
+ }
+ 
++static const struct snd_soc_dai_ops q6usb_ops = {
++	.probe		= msm_dai_q6_dai_probe,
++	.prepare	= q6afe_dai_prepare,
++	.hw_params	= q6usb_hw_params,
++	.shutdown	= q6afe_dai_shutdown,
++	/*
++	 * Startup callback not needed, as AFE port start command passes the PCM
++	 * parameters within the AFE command, which is provided by the PCM core
++	 * during the prepare() stage.
++	 */
 +};
 +
-+int snd_usb_register_platform_ops(struct snd_usb_platform_ops *ops);
-+int snd_usb_unregister_platform_ops(void);
- #endif /* __USBAUDIO_CARD_H */
+ static const struct snd_soc_dai_ops q6hdmi_ops = {
+ 	.probe			= msm_dai_q6_dai_probe,
+ 	.remove			= msm_dai_q6_dai_remove,
+@@ -942,6 +995,8 @@ static const struct snd_soc_dapm_widget q6afe_dai_widgets[] = {
+ 		0, SND_SOC_NOPM, 0, 0),
+ 	SND_SOC_DAPM_AIF_IN("RX_CODEC_DMA_RX_7", "NULL",
+ 		0, SND_SOC_NOPM, 0, 0),
++
++	SND_SOC_DAPM_AIF_IN("USB_RX", NULL, 0, SND_SOC_NOPM, 0, 0),
+ };
+ 
+ static const struct snd_soc_component_driver q6afe_dai_component = {
+@@ -1056,6 +1111,7 @@ static int q6afe_dai_dev_probe(struct platform_device *pdev)
+ 	cfg.q6i2s_ops = &q6i2s_ops;
+ 	cfg.q6tdm_ops = &q6tdm_ops;
+ 	cfg.q6dma_ops = &q6dma_ops;
++	cfg.q6usb_ops = &q6usb_ops;
+ 	dais = q6dsp_audio_ports_set_config(dev, &cfg, &num_dais);
+ 
+ 	return devm_snd_soc_register_component(dev, &q6afe_dai_component, dais, num_dais);
+diff --git a/sound/soc/qcom/qdsp6/q6afe.c b/sound/soc/qcom/qdsp6/q6afe.c
+index 919e326b9462..f49c69472b5c 100644
+--- a/sound/soc/qcom/qdsp6/q6afe.c
++++ b/sound/soc/qcom/qdsp6/q6afe.c
+@@ -34,6 +34,8 @@
+ #define AFE_MODULE_TDM			0x0001028A
+ 
+ #define AFE_PARAM_ID_CDC_SLIMBUS_SLAVE_CFG 0x00010235
++#define AFE_PARAM_ID_USB_AUDIO_DEV_PARAMS    0x000102A5
++#define AFE_PARAM_ID_USB_AUDIO_DEV_LPCM_FMT 0x000102AA
+ 
+ #define AFE_PARAM_ID_LPAIF_CLK_CONFIG	0x00010238
+ #define AFE_PARAM_ID_INT_DIGITAL_CDC_CLK_CONFIG	0x00010239
+@@ -43,6 +45,7 @@
+ #define AFE_PARAM_ID_TDM_CONFIG	0x0001029D
+ #define AFE_PARAM_ID_PORT_SLOT_MAPPING_CONFIG	0x00010297
+ #define AFE_PARAM_ID_CODEC_DMA_CONFIG	0x000102B8
++#define AFE_PARAM_ID_USB_AUDIO_CONFIG    0x000102A4
+ #define AFE_CMD_REMOTE_LPASS_CORE_HW_VOTE_REQUEST	0x000100f4
+ #define AFE_CMD_RSP_REMOTE_LPASS_CORE_HW_VOTE_REQUEST   0x000100f5
+ #define AFE_CMD_REMOTE_LPASS_CORE_HW_DEVOTE_REQUEST	0x000100f6
+@@ -71,12 +74,16 @@
+ #define AFE_PORT_CONFIG_I2S_WS_SRC_INTERNAL	0x1
+ #define AFE_LINEAR_PCM_DATA				0x0
+ 
++#define AFE_API_MINOR_VERSION_USB_AUDIO_CONFIG 0x1
+ 
+ /* Port IDs */
+ #define AFE_API_VERSION_HDMI_CONFIG	0x1
+ #define AFE_PORT_ID_MULTICHAN_HDMI_RX	0x100E
+ #define AFE_PORT_ID_HDMI_OVER_DP_RX	0x6020
+ 
++/* USB AFE port */
++#define AFE_PORT_ID_USB_RX                       0x7000
++
+ #define AFE_API_VERSION_SLIMBUS_CONFIG 0x1
+ /* Clock set API version */
+ #define AFE_API_VERSION_CLOCK_SET 1
+@@ -512,12 +519,109 @@ struct afe_param_id_cdc_dma_cfg {
+ 	u16	active_channels_mask;
+ } __packed;
+ 
++struct afe_param_id_usb_cfg {
++/* Minor version used for tracking USB audio device configuration.
++ * Supported values: AFE_API_MINOR_VERSION_USB_AUDIO_CONFIG
++ */
++	u32                  cfg_minor_version;
++/* Sampling rate of the port.
++ * Supported values:
++ * - AFE_PORT_SAMPLE_RATE_8K
++ * - AFE_PORT_SAMPLE_RATE_11025
++ * - AFE_PORT_SAMPLE_RATE_12K
++ * - AFE_PORT_SAMPLE_RATE_16K
++ * - AFE_PORT_SAMPLE_RATE_22050
++ * - AFE_PORT_SAMPLE_RATE_24K
++ * - AFE_PORT_SAMPLE_RATE_32K
++ * - AFE_PORT_SAMPLE_RATE_44P1K
++ * - AFE_PORT_SAMPLE_RATE_48K
++ * - AFE_PORT_SAMPLE_RATE_96K
++ * - AFE_PORT_SAMPLE_RATE_192K
++ */
++	u32                  sample_rate;
++/* Bit width of the sample.
++ * Supported values: 16, 24
++ */
++	u16                  bit_width;
++/* Number of channels.
++ * Supported values: 1 and 2
++ */
++	u16                  num_channels;
++/* Data format supported by the USB. The supported value is
++ * 0 (#AFE_USB_AUDIO_DATA_FORMAT_LINEAR_PCM).
++ */
++	u16                  data_format;
++/* this field must be 0 */
++	u16                  reserved;
++/* device token of actual end USB audio device */
++	u32                  dev_token;
++/* endianness of this interface */
++	u32                   endian;
++/* service interval */
++	u32                  service_interval;
++} __packed;
++
++/**
++ * struct afe_param_id_usb_audio_dev_params
++ * @cfg_minor_version: Minor version used for tracking USB audio device
++ * configuration.
++ * Supported values:
++ *     AFE_API_MINOR_VERSION_USB_AUDIO_CONFIG
++ * @dev_token: device token of actual end USB audio device
++ **/
++struct afe_param_id_usb_audio_dev_params {
++	u32	cfg_minor_version;
++	u32	dev_token;
++} __packed;
++
++/**
++ * struct afe_param_id_usb_audio_dev_lpcm_fmt
++ * @cfg_minor_version: Minor version used for tracking USB audio device
++ * configuration.
++ * Supported values:
++ *     AFE_API_MINOR_VERSION_USB_AUDIO_CONFIG
++ * @endian: endianness of this interface
++ **/
++struct afe_param_id_usb_audio_dev_lpcm_fmt {
++	u32	cfg_minor_version;
++	u32	endian;
++} __packed;
++
++/**
++ * struct afe_param_id_usb_audio_dev_latency_mode
++ * @cfg_minor_version: Minor version used for tracking USB audio device
++ * configuration.
++ * Supported values:
++ *     AFE_API_MINOR_VERSION_USB_AUDIO_LATENCY_MODE
++ * @mode: latency mode for the USB audio device
++ **/
++struct afe_param_id_usb_audio_dev_latency_mode {
++	u32	minor_version;
++	u32	mode;
++} __packed;
++
++#define AFE_PARAM_ID_USB_AUDIO_SVC_INTERVAL     0x000102B7
++
++/**
++ * struct afe_param_id_usb_audio_svc_interval
++ * @cfg_minor_version: Minor version used for tracking USB audio device
++ * configuration.
++ * Supported values:
++ *     AFE_API_MINOR_VERSION_USB_AUDIO_CONFIG
++ * @svc_interval: service interval
++ **/
++struct afe_param_id_usb_audio_svc_interval {
++	u32	cfg_minor_version;
++	u32	svc_interval;
++} __packed;
++
+ union afe_port_config {
+ 	struct afe_param_id_hdmi_multi_chan_audio_cfg hdmi_multi_ch;
+ 	struct afe_param_id_slimbus_cfg           slim_cfg;
+ 	struct afe_param_id_i2s_cfg	i2s_cfg;
+ 	struct afe_param_id_tdm_cfg	tdm_cfg;
+ 	struct afe_param_id_cdc_dma_cfg	dma_cfg;
++	struct afe_param_id_usb_cfg usb_cfg;
+ } __packed;
+ 
+ 
+@@ -832,6 +936,7 @@ static struct afe_port_map port_maps[AFE_PORT_MAX] = {
+ 				RX_CODEC_DMA_RX_6, 1, 1},
+ 	[RX_CODEC_DMA_RX_7] = { AFE_PORT_ID_RX_CODEC_DMA_RX_7,
+ 				RX_CODEC_DMA_RX_7, 1, 1},
++	[USB_RX] = { AFE_PORT_ID_USB_RX, USB_RX, 1, 1},
+ };
+ 
+ static void q6afe_port_free(struct kref *ref)
+@@ -1289,6 +1394,79 @@ void q6afe_tdm_port_prepare(struct q6afe_port *port,
+ }
+ EXPORT_SYMBOL_GPL(q6afe_tdm_port_prepare);
+ 
++static int afe_port_send_usb_dev_param(struct q6afe_port *port, struct q6afe_usb_cfg *cfg)
++{
++	union afe_port_config *pcfg = &port->port_cfg;
++	struct afe_param_id_usb_audio_dev_params usb_dev;
++	struct afe_param_id_usb_audio_dev_lpcm_fmt lpcm_fmt;
++	struct afe_param_id_usb_audio_svc_interval svc_int;
++	int ret = 0;
++
++	if (!pcfg) {
++		dev_err(port->afe->dev, "%s: Error, no configuration data\n", __func__);
++		ret = -EINVAL;
++		goto exit;
++	}
++
++	memset(&usb_dev, 0, sizeof(usb_dev));
++	memset(&lpcm_fmt, 0, sizeof(lpcm_fmt));
++	memset(&svc_int, 0, sizeof(svc_int));
++
++	usb_dev.cfg_minor_version = AFE_API_MINOR_VERSION_USB_AUDIO_CONFIG;
++	ret = q6afe_port_set_param_v2(port, &usb_dev,
++				      AFE_PARAM_ID_USB_AUDIO_DEV_PARAMS,
++				      AFE_MODULE_AUDIO_DEV_INTERFACE, sizeof(usb_dev));
++	if (ret) {
++		dev_err(port->afe->dev, "%s: AFE device param cmd failed %d\n",
++			__func__, ret);
++		goto exit;
++	}
++
++	lpcm_fmt.cfg_minor_version = AFE_API_MINOR_VERSION_USB_AUDIO_CONFIG;
++	lpcm_fmt.endian = pcfg->usb_cfg.endian;
++	ret = q6afe_port_set_param_v2(port, &lpcm_fmt,
++				      AFE_PARAM_ID_USB_AUDIO_DEV_LPCM_FMT,
++				      AFE_MODULE_AUDIO_DEV_INTERFACE, sizeof(lpcm_fmt));
++	if (ret) {
++		dev_err(port->afe->dev, "%s: AFE device param cmd LPCM_FMT failed %d\n",
++			__func__, ret);
++		goto exit;
++	}
++
++	svc_int.cfg_minor_version = AFE_API_MINOR_VERSION_USB_AUDIO_CONFIG;
++	svc_int.svc_interval = pcfg->usb_cfg.service_interval;
++	ret = q6afe_port_set_param_v2(port, &svc_int,
++				      AFE_PARAM_ID_USB_AUDIO_SVC_INTERVAL,
++				      AFE_MODULE_AUDIO_DEV_INTERFACE, sizeof(svc_int));
++	if (ret)
++		dev_err(port->afe->dev, "%s: AFE device param cmd svc_interval failed %d\n",
++			__func__, ret);
++
++exit:
++	return ret;
++}
++
++/**
++ * q6afe_usb_port_prepare() - Prepare usb afe port.
++ *
++ * @port: Instance of afe port
++ * @cfg: USB configuration for the afe port
++ *
++ */
++void q6afe_usb_port_prepare(struct q6afe_port *port,
++			     struct q6afe_usb_cfg *cfg)
++{
++	union afe_port_config *pcfg = &port->port_cfg;
++
++	pcfg->usb_cfg.cfg_minor_version = AFE_API_MINOR_VERSION_USB_AUDIO_CONFIG;
++	pcfg->usb_cfg.sample_rate = cfg->sample_rate;
++	pcfg->usb_cfg.num_channels = cfg->num_channels;
++	pcfg->usb_cfg.bit_width = cfg->bit_width;
++
++	afe_port_send_usb_dev_param(port, cfg);
++}
++EXPORT_SYMBOL_GPL(q6afe_usb_port_prepare);
++
+ /**
+  * q6afe_hdmi_port_prepare() - Prepare hdmi afe port.
+  *
+@@ -1611,7 +1789,10 @@ struct q6afe_port *q6afe_port_get_from_id(struct device *dev, int id)
+ 		break;
+ 	case AFE_PORT_ID_WSA_CODEC_DMA_RX_0 ... AFE_PORT_ID_RX_CODEC_DMA_RX_7:
+ 		cfg_type = AFE_PARAM_ID_CODEC_DMA_CONFIG;
+-	break;
++		break;
++	case AFE_PORT_ID_USB_RX:
++		cfg_type = AFE_PARAM_ID_USB_AUDIO_CONFIG;
++		break;
+ 	default:
+ 		dev_err(dev, "Invalid port id 0x%x\n", port_id);
+ 		return ERR_PTR(-EINVAL);
+diff --git a/sound/soc/qcom/qdsp6/q6afe.h b/sound/soc/qcom/qdsp6/q6afe.h
+index 30fd77e2f458..ef47b4ae9e27 100644
+--- a/sound/soc/qcom/qdsp6/q6afe.h
++++ b/sound/soc/qcom/qdsp6/q6afe.h
+@@ -5,7 +5,7 @@
+ 
+ #include <dt-bindings/sound/qcom,q6afe.h>
+ 
+-#define AFE_PORT_MAX		129
++#define AFE_PORT_MAX		137
+ 
+ #define MSM_AFE_PORT_TYPE_RX 0
+ #define MSM_AFE_PORT_TYPE_TX 1
+@@ -205,6 +205,36 @@ struct q6afe_cdc_dma_cfg {
+ 	u16	active_channels_mask;
+ };
+ 
++/**
++ * struct q6afe_usb_cfg
++ * @cfg_minor_version: Minor version used for tracking USB audio device
++ * configuration.
++ * Supported values:
++ *     AFE_API_MINOR_VERSION_USB_AUDIO_CONFIG
++ * @sample_rate: Sampling rate of the port
++ *    Supported values:
++ *      AFE_PORT_SAMPLE_RATE_8K
++ *      AFE_PORT_SAMPLE_RATE_11025
++ *      AFE_PORT_SAMPLE_RATE_12K
++ *      AFE_PORT_SAMPLE_RATE_16K
++ *      AFE_PORT_SAMPLE_RATE_22050
++ *      AFE_PORT_SAMPLE_RATE_24K
++ *      AFE_PORT_SAMPLE_RATE_32K
++ *      AFE_PORT_SAMPLE_RATE_44P1K
++ *      AFE_PORT_SAMPLE_RATE_48K
++ *      AFE_PORT_SAMPLE_RATE_96K
++ *      AFE_PORT_SAMPLE_RATE_192K
++ * @bit_width: Bit width of the sample.
++ *    Supported values: 16, 24
++ * @num_channels: Number of channels
++ *    Supported values: 1, 2
++ **/
++struct q6afe_usb_cfg {
++	u32	cfg_minor_version;
++	u32     sample_rate;
++	u16	bit_width;
++	u16	num_channels;
++};
+ 
+ struct q6afe_port_config {
+ 	struct q6afe_hdmi_cfg hdmi;
+@@ -212,6 +242,7 @@ struct q6afe_port_config {
+ 	struct q6afe_i2s_cfg i2s_cfg;
+ 	struct q6afe_tdm_cfg tdm;
+ 	struct q6afe_cdc_dma_cfg dma_cfg;
++	struct q6afe_usb_cfg usb_audio;
+ };
+ 
+ struct q6afe_port;
+@@ -221,6 +252,8 @@ int q6afe_port_start(struct q6afe_port *port);
+ int q6afe_port_stop(struct q6afe_port *port);
+ void q6afe_port_put(struct q6afe_port *port);
+ int q6afe_get_port_id(int index);
++void q6afe_usb_port_prepare(struct q6afe_port *port,
++			     struct q6afe_usb_cfg *cfg);
+ void q6afe_hdmi_port_prepare(struct q6afe_port *port,
+ 			    struct q6afe_hdmi_cfg *cfg);
+ void q6afe_slim_port_prepare(struct q6afe_port *port,
+diff --git a/sound/soc/qcom/qdsp6/q6dsp-lpass-ports.c b/sound/soc/qcom/qdsp6/q6dsp-lpass-ports.c
+index 4919001de08b..4a96b11f7fd1 100644
+--- a/sound/soc/qcom/qdsp6/q6dsp-lpass-ports.c
++++ b/sound/soc/qcom/qdsp6/q6dsp-lpass-ports.c
+@@ -97,6 +97,26 @@
+ 	}
+ 
+ static struct snd_soc_dai_driver q6dsp_audio_fe_dais[] = {
++	{
++		.playback = {
++			.stream_name = "USB Playback",
++			.rates = SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_11025 |
++					SNDRV_PCM_RATE_16000 | SNDRV_PCM_RATE_22050 |
++					SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 |
++					SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_96000 |
++					SNDRV_PCM_RATE_192000,
++			.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S16_BE |
++					SNDRV_PCM_FMTBIT_U16_LE | SNDRV_PCM_FMTBIT_U16_BE |
++					SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S24_BE |
++					SNDRV_PCM_FMTBIT_U24_LE | SNDRV_PCM_FMTBIT_U24_BE,
++			.channels_min = 1,
++			.channels_max = 2,
++			.rate_min =	8000,
++			.rate_max = 192000,
++		},
++		.id = USB_RX,
++		.name = "USB_RX",
++	},
+ 	{
+ 		.playback = {
+ 			.stream_name = "HDMI Playback",
+@@ -624,6 +644,9 @@ struct snd_soc_dai_driver *q6dsp_audio_ports_set_config(struct device *dev,
+ 		case WSA_CODEC_DMA_RX_0 ... RX_CODEC_DMA_RX_7:
+ 			q6dsp_audio_fe_dais[i].ops = cfg->q6dma_ops;
+ 			break;
++		case USB_RX:
++			q6dsp_audio_fe_dais[i].ops = cfg->q6usb_ops;
++			break;
+ 		default:
+ 			break;
+ 		}
+diff --git a/sound/soc/qcom/qdsp6/q6dsp-lpass-ports.h b/sound/soc/qcom/qdsp6/q6dsp-lpass-ports.h
+index 7f052c8a1257..d8dde6dd0aca 100644
+--- a/sound/soc/qcom/qdsp6/q6dsp-lpass-ports.h
++++ b/sound/soc/qcom/qdsp6/q6dsp-lpass-ports.h
+@@ -11,6 +11,7 @@ struct q6dsp_audio_port_dai_driver_config {
+ 	const struct snd_soc_dai_ops *q6i2s_ops;
+ 	const struct snd_soc_dai_ops *q6tdm_ops;
+ 	const struct snd_soc_dai_ops *q6dma_ops;
++	const struct snd_soc_dai_ops *q6usb_ops;
+ };
+ 
+ struct snd_soc_dai_driver *q6dsp_audio_ports_set_config(struct device *dev,
+diff --git a/sound/soc/qcom/qdsp6/q6routing.c b/sound/soc/qcom/qdsp6/q6routing.c
+index bba07899f8fc..a57f45950ae3 100644
+--- a/sound/soc/qcom/qdsp6/q6routing.c
++++ b/sound/soc/qcom/qdsp6/q6routing.c
+@@ -514,6 +514,9 @@ static int msm_routing_put_audio_mixer(struct snd_kcontrol *kcontrol,
+ 	return 1;
+ }
+ 
++static const struct snd_kcontrol_new usb_mixer_controls[] = {
++	Q6ROUTING_RX_MIXERS(USB_RX) };
++
+ static const struct snd_kcontrol_new hdmi_mixer_controls[] = {
+ 	Q6ROUTING_RX_MIXERS(HDMI_RX) };
+ 
+@@ -949,6 +952,10 @@ static const struct snd_soc_dapm_widget msm_qdsp6_widgets[] = {
+ 	SND_SOC_DAPM_MIXER("MultiMedia8 Mixer", SND_SOC_NOPM, 0, 0,
+ 		mmul8_mixer_controls, ARRAY_SIZE(mmul8_mixer_controls)),
+ 
++	SND_SOC_DAPM_MIXER("USB Mixer", SND_SOC_NOPM, 0, 0,
++			   usb_mixer_controls,
++			   ARRAY_SIZE(usb_mixer_controls)),
++
+ };
+ 
+ static const struct snd_soc_dapm_route intercon[] = {
+@@ -1042,6 +1049,8 @@ static const struct snd_soc_dapm_route intercon[] = {
+ 	{"MM_UL6", NULL, "MultiMedia6 Mixer"},
+ 	{"MM_UL7", NULL, "MultiMedia7 Mixer"},
+ 	{"MM_UL8", NULL, "MultiMedia8 Mixer"},
++
++	Q6ROUTING_RX_DAPM_ROUTE("USB Mixer", "USB_RX"),
+ };
+ 
+ static int routing_hw_params(struct snd_soc_component *component,
