@@ -4,73 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 14C2FCDB482
-	for <alsa-devel@archiver.kernel.org>; Tue, 17 Oct 2023 23:27:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B4878CDB482
+	for <alsa-devel@archiver.kernel.org>; Tue, 17 Oct 2023 23:27:29 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3F394AE9;
-	Wed, 18 Oct 2023 01:26:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3F394AE9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1B07584A;
+	Wed, 18 Oct 2023 01:26:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1B07584A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1697585233;
-	bh=ZMpdPFeaFAxYR/4q025izaH0wmquZAWUlNrQl8oKEZE=;
+	s=default; t=1697585248;
+	bh=Jfwi6zOwIf92FmGVyVBCRV0UI9mYK0d0yD+xgDrknf4=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Of1XdSSBc9Xi2Bj3BzIyx6eWlUKFtALgdSg6ZwGXyljPa7cGJ4jMM9SyT5gbcgd1d
-	 6DASXyKoFWrnIKK5aiq8A8d9ih77SGrRS+OSygINHV41ABv6HtO6hugnhAcDPy6EUQ
-	 BkGf+Qo6mhLnDlPH3kSYRA57GGulcOf7xJBGMzK8=
+	b=vq/fYrJ2+Togodz0jIJGG3SpeJ1KvWRri/JWClWXpwq6bVtqjOgML1huUVGhXTCc+
+	 5hxu29qzl5fGwGjm+ZCoV5vQ6/KDwJaxs2J+PqIvENuEXhZRoiNoHYgJ0gaxZ40PB7
+	 4HQNJx1j0RCdeE5WbYSJciskD2z6iUPJiMOHz/78=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 03E7AF805F1; Wed, 18 Oct 2023 01:23:52 +0200 (CEST)
+	id CFF97F80600; Wed, 18 Oct 2023 01:23:54 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 751BCF805ED;
-	Wed, 18 Oct 2023 01:23:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 597A2F805F9;
+	Wed, 18 Oct 2023 01:23:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2C4E4F805B0; Wed, 18 Oct 2023 01:23:41 +0200 (CEST)
+	id 60424F805AE; Wed, 18 Oct 2023 01:23:42 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 334ECF800C9
-	for <alsa-devel@alsa-project.org>; Wed, 18 Oct 2023 01:23:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 334ECF800C9
+	by alsa1.perex.cz (Postfix) with ESMTPS id 4F481F80552
+	for <alsa-devel@alsa-project.org>; Wed, 18 Oct 2023 01:23:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4F481F80552
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=lE2zzfBt
+ header.s=Intel header.b=JVCKDx8h
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697585012; x=1729121012;
+  t=1697585013; x=1729121013;
   h=message-id:date:mime-version:subject:to:cc:references:
    from:in-reply-to:content-transfer-encoding;
-  bh=ZMpdPFeaFAxYR/4q025izaH0wmquZAWUlNrQl8oKEZE=;
-  b=lE2zzfBtEN/bX9/+NkGlNXgCWO/2+LIQBpRqTAimQFar3nAuIaRspKW9
-   Bz10mrc/9lV9gtzh46yRuXW7PdWUhqkbCDMhD3ob24IixZZDfB5X2KIMT
-   zZPNORxuKZ+7zJbNnRljK36ZqLBLhvE1bDea02Kv9whYFVbtbcCj6pCIa
-   N3kPmzemD7aDjJLlJGJYHOtjfEax5sVSQ7eadEZ2G8bEzIwu7Ujhi//wl
-   qG2mJZfI1YuHMNJzoC37aMuMQ7qGYXKZe9jw8SEbhUmn6j7CUg0UGfB/A
-   qDnfpdMe/AqPJ9Zt75a1TLIVQkCpQXXMk17mjJi2WG4GnU9oN1VBQ3OSq
+  bh=Jfwi6zOwIf92FmGVyVBCRV0UI9mYK0d0yD+xgDrknf4=;
+  b=JVCKDx8hLpxfdp8mapQTBHlAuSkSTTXYgvqXGhxTjNHFQmPsw5pCF9n0
+   NRNMqb1/xv2Y55rSs5358NRPnTZ1PYU7DfztPL4mdC1jwmaO8BBtVWizu
+   ZqW8bbMK+97pfWZ4tIIcHvTYCmWZYj6rl/iCuyVw1YDtecqcRghVf+uNy
+   7PQ38f03cTfbXkh6PFyoy0LGOEpjGfCbGPe4Yxw494vVP3CzlaeKLf7lt
+   TFM/Tg4jsBTuPyImErvPCbdl7abb/xXEN8uo04R8u+k1uGbHEmCTUJdSH
+   xqLMlUPQ3Vm2dXfrLD43cU4ijSy97MfSlwrS3dI8UA+3JqIXP0bv21/UX
    g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="384778222"
+X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="384778239"
 X-IronPort-AV: E=Sophos;i="6.03,233,1694761200";
-   d="scan'208";a="384778222"
+   d="scan'208";a="384778239"
 Received: from fmsmga004.fm.intel.com ([10.253.24.48])
   by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 17 Oct 2023 16:23:30 -0700
+ 17 Oct 2023 16:23:31 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="826637517"
+X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="826637523"
 X-IronPort-AV: E=Sophos;i="6.03,233,1694761200";
-   d="scan'208";a="826637517"
+   d="scan'208";a="826637523"
 Received: from asprado-mobl2.amr.corp.intel.com (HELO [10.212.55.179])
  ([10.212.55.179])
   by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 17 Oct 2023 16:23:28 -0700
-Message-ID: <34d0ce88-e006-43d3-bab3-c884c997de4c@linux.intel.com>
-Date: Tue, 17 Oct 2023 18:03:13 -0500
+ 17 Oct 2023 16:23:30 -0700
+Message-ID: <97c16b75-1277-41f1-a0b6-293e76dbcb7f@linux.intel.com>
+Date: Tue, 17 Oct 2023 18:07:15 -0500
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v9 31/34] ASoC: qcom: qdsp6: Add headphone jack for
- offload connection status
+Subject: Re: [PATCH v9 33/34] ALSA: usb-audio: Allow for rediscovery of
+ connected USB SND devices
 Content-Language: en-US
 To: Wesley Cheng <quic_wcheng@quicinc.com>, mathias.nyman@intel.com,
  gregkh@linuxfoundation.org, lgirdwood@gmail.com, broonie@kernel.org,
@@ -83,13 +83,13 @@ Cc: linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
  alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
  devicetree@vger.kernel.org
 References: <20231017200109.11407-1-quic_wcheng@quicinc.com>
- <20231017200109.11407-32-quic_wcheng@quicinc.com>
+ <20231017200109.11407-34-quic_wcheng@quicinc.com>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20231017200109.11407-32-quic_wcheng@quicinc.com>
+In-Reply-To: <20231017200109.11407-34-quic_wcheng@quicinc.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-ID-Hash: SRI6273UQVXBM76JMG4QMUWGFGI4FBNH
-X-Message-ID-Hash: SRI6273UQVXBM76JMG4QMUWGFGI4FBNH
+Message-ID-Hash: ONS4QESCEFSNW5SM3DCGCLU7SL4XGDVY
+X-Message-ID-Hash: ONS4QESCEFSNW5SM3DCGCLU7SL4XGDVY
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -102,7 +102,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SRI6273UQVXBM76JMG4QMUWGFGI4FBNH/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ONS4QESCEFSNW5SM3DCGCLU7SL4XGDVY/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -114,39 +114,74 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 
 On 10/17/23 15:01, Wesley Cheng wrote:
-> The headphone jack framework has a well defined infrastructure for
-> notifying userspace entities through input devices.  Expose a jack device
-> that carries information about if an offload capable device is connected.
-> Applications can further identify specific offloading information through
-> other SND kcontrols.
-
-maybe I am mistaken but if you expose a jack, is there not a need to
-implement a .set_jack callback in the component driver?
-
->  static void q6usb_connector_control_init(struct snd_soc_component *component)
->  {
-> +	struct q6usb_port_data *data = dev_get_drvdata(component->dev);
->  	int ret;
+> In case of notifying SND platform drivers of connection events, some of
+> these use cases, such as offloading, require an ASoC USB backend device to
+> be initialized before the events can be handled.  If the USB backend device
+> has not yet been probed, this leads to missing initial USB audio device
+> connection events.
+> 
+> Expose an API that traverses the usb_chip array for connected devices, and
+> to call the respective connection callback registered to the SND platform
+> driver.
+> 
+> Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
+> ---
+>  sound/usb/card.c | 19 +++++++++++++++++++
+>  sound/usb/card.h |  2 ++
+>  2 files changed, 21 insertions(+)
+> 
+> diff --git a/sound/usb/card.c b/sound/usb/card.c
+> index 88f431917c15..7d3f470754ca 100644
+> --- a/sound/usb/card.c
+> +++ b/sound/usb/card.c
+> @@ -202,6 +202,25 @@ struct snd_usb_stream *snd_usb_find_suppported_substream(int card_idx,
+>  }
+>  EXPORT_SYMBOL_GPL(snd_usb_find_suppported_substream);
 >  
->  	ret = snd_ctl_add(component->card->snd_card,
-> @@ -290,6 +293,11 @@ static void q6usb_connector_control_init(struct snd_soc_component *component)
->  				snd_ctl_new1(&q6usb_offload_dev_ctrl, component));
->  	if (ret < 0)
->  		return;
+> +/*
+> + * in case the platform driver was not ready at the time of USB SND
+> + * device connect, expose an API to discover all connected USB devices
+> + * so it can populate any dependent resources/structures.
+
+it's really unclear how the "platform driver was not ready at the time
+of USB SND device connect" condition can be detected. It's my
+understanding that we should never assume any specific order or timing
+on platform driver probes. And things should also work if a driver is
+unbound.
+
+> + */
+> +void snd_usb_rediscover_devices(void)
+> +{
+> +	int i;
 > +
-> +	ret = snd_soc_card_jack_new(component->card, "USB offload",
-> +					SND_JACK_HEADSET, &data->hs_jack);
-> +	if (ret)
-> +		return;
-
-Also if you report a jack then usually there's a difference between
-SND_JACK_HEADPHONE and SND_JACK_HEADSET - where the latter case hints at
-capture support.
-
-Clearly you don't have capture support for now, so should this be
-SND_JACK_HEADPHONE ?
-
-I must say I still don't get how this entire patchset would be used, for
-playback userspace *may* use offload but for any sort of voice call then
-userspace *shall* rely on the legacy USB card. Is this not a
-show-stopper for CRAS or PipeWire?
+> +	mutex_lock(&register_mutex);
+> +	for (i = 0; i < SNDRV_CARDS; i++) {
+> +		if (usb_chip[i])
+> +			if (platform_ops && platform_ops->connect_cb)
+> +				platform_ops->connect_cb(usb_chip[i]);
+> +	}
+> +	mutex_unlock(&register_mutex);
+> +}
+> +EXPORT_SYMBOL_GPL(snd_usb_rediscover_devices);
+> +
+>  /*
+>   * disconnect streams
+>   * called from usb_audio_disconnect()
+> diff --git a/sound/usb/card.h b/sound/usb/card.h
+> index 01f7e10f30f4..c0aeda17ed69 100644
+> --- a/sound/usb/card.h
+> +++ b/sound/usb/card.h
+> @@ -221,11 +221,13 @@ int snd_usb_unregister_platform_ops(void);
+>  #if IS_ENABLED(CONFIG_SND_USB_AUDIO)
+>  struct snd_usb_stream *snd_usb_find_suppported_substream(int card_idx,
+>  			struct snd_pcm_hw_params *params, int direction);
+> +void snd_usb_rediscover_devices(void);
+>  #else
+>  static struct snd_usb_stream *snd_usb_find_suppported_substream(int card_idx,
+>  			struct snd_pcm_hw_params *params, int direction)
+>  {
+>  	return NULL;
+>  }
+> +static void snd_usb_rediscover_devices(void) { }
+>  #endif /* IS_ENABLED(CONFIG_SND_USB_AUDIO) */
+>  #endif /* __USBAUDIO_CARD_H */
