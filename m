@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 39815CDB474
-	for <alsa-devel@archiver.kernel.org>; Tue, 17 Oct 2023 20:06:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EDCFFCDB474
+	for <alsa-devel@archiver.kernel.org>; Tue, 17 Oct 2023 20:06:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 748D4E88;
-	Tue, 17 Oct 2023 22:05:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 748D4E88
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1C469200;
+	Tue, 17 Oct 2023 22:05:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1C469200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1697573189;
-	bh=qaH/HFiTFMfm1dmNfmHlvrMLYUNoe0aiGroTC5UKSRA=;
+	s=default; t=1697573206;
+	bh=z+VW+aUTyh8Un4oRZwMKhqWxl1dlS4WGX89Gs14JbFY=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=G+IxTM0EFug6dpf/2ccGDCGNwWGPbn2HSzFo2UGqYzC9HwBP+paovBmDcW0xnHsQq
-	 EKcE4e3/YXZK6t+ASdO/LE2y7mNCQPcFheyLNSjnBdRrgdoCxqPPEL3IMrbECL5+l9
-	 vRSFyxQIQq5rUayRh/4KM6deemlb3YManEIw44a4=
+	b=ocszQMxg4c/gjlWrTM9+PtqWmLH6bju81rGl6eGRR/QISwO+pzT65Weq6JjQYq8ln
+	 vgXEBzmivPK0AVcutmpCpG8Ku7SNujq4GihhANteSCq8EGOvsf1fuRyPPGpAcRtFzj
+	 CgzWPPm8hsL5DiJdavsw3wAo6hnwFeroXXnKbiJc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id ABF81F8063B; Tue, 17 Oct 2023 22:02:28 +0200 (CEST)
+	id C2C80F80655; Tue, 17 Oct 2023 22:02:30 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E5E1FF80631;
-	Tue, 17 Oct 2023 22:02:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C9BBCF80632;
+	Tue, 17 Oct 2023 22:02:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 05639F8060E; Tue, 17 Oct 2023 22:02:17 +0200 (CEST)
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com
- [205.220.168.131])
+	id D6921F80568; Tue, 17 Oct 2023 22:02:18 +0200 (CEST)
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com
+ [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 683CCF80567
+	by alsa1.perex.cz (Postfix) with ESMTPS id 758EDF80568
 	for <alsa-devel@alsa-project.org>; Tue, 17 Oct 2023 22:01:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 683CCF80567
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 758EDF80568
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
- header.s=qcppdkim1 header.b=Nj7RVrrw
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+ header.s=qcppdkim1 header.b=jhYdP2bS
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
 	by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 39HIt1P0023133;
+ 39HDDlT1009936;
 	Tue, 17 Oct 2023 20:01:27 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-type; s=qcppdkim1;
- bh=ob93bqxahOMEufwrgeaLvvgzI4mtSXSHT7C0WZfYQpA=;
- b=Nj7RVrrwgbXS/fBNK4iEUU6n4t4J4Kx1sQIbTFsv/CN4WD4DJNEDbo/FNXwcK2UzoCEi
- WH3AgQrRQKJPJO8cZ1g5/IAqM1F8xpppTbIFjk1xeZNiDS2VXVnnHkNvBjaAIGx4vTAM
- XBjbcBWctxE4sf+qbaNhlDqC/U5zrQ33J/qSiAusZmWTeAuyC6mRfn9aIgA1QwCod6H+
- 0S0EppbvplRYTzUdZeka7D56gyBm4J/dZiAzjNYWGr8AvYzg+cStDh8e/s8G71KyxzPH
- Xzg9QNTzH9onr2iD5hZDBwP3VRySwgrQ/+KpJ78898UnyPrMkNdpWvtv3K6HM3QZCQLP Xg==
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com
+ bh=Shqo9s0lYRwfd+WgaNXsqGc7coVeRQUHUyu7Rj3csx0=;
+ b=jhYdP2bSa0fPqo9XRDkHLnPosihRotDmzVPMtN9hi3Xgl20wPsreZ28BweFagfcd31yA
+ yP4wAGAqwJIM2sqW03BjqzjB8mMgr7uN0gofFHUGB1uS6iVQnC2f4pgXtTF+ig04huq0
+ KBZzOajguRF4X82reW2ISshx6IxBAL7alzYySzZwIl0AxCeGPer9jsHNep4kHNyUq35z
+ So5yNf4IxXQrD6H0mKTayj7jDVa2n4sGwUajeC7izmtxFJN9Wu/FNAPpTcr9M4IHuS0Z
+ 74oUdOL9RUoCDCKzDICuOQdhetJ0pOlfifJsmYMQjozW2vC+0LtS4kTPXxHWa2Mal8ug Vg==
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com
  [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tstv9s1d8-1
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tsnej9qj1-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Tue, 17 Oct 2023 20:01:26 +0000
 Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com
  [10.47.209.197])
-	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id
- 39HK1Q4i003283
+	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id
+ 39HK1P3U018697
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 17 Oct 2023 20:01:26 GMT
+	Tue, 17 Oct 2023 20:01:25 GMT
 Received: from hu-wcheng-lv.qualcomm.com (10.49.16.6) by
  nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
@@ -79,10 +79,9 @@ To: <mathias.nyman@intel.com>, <gregkh@linuxfoundation.org>,
 CC: <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <alsa-devel@alsa-project.org>, <linux-arm-msm@vger.kernel.org>,
         <devicetree@vger.kernel.org>, Wesley Cheng <quic_wcheng@quicinc.com>
-Subject: [PATCH v9 22/34] ASoC: qcom: qdsp6: Ensure PCM format is supported by
- USB audio device
-Date: Tue, 17 Oct 2023 13:00:57 -0700
-Message-ID: <20231017200109.11407-23-quic_wcheng@quicinc.com>
+Subject: [PATCH v9 21/34] ASoC: usb: Add PCM format check API for USB backend
+Date: Tue, 17 Oct 2023 13:00:56 -0700
+Message-ID: <20231017200109.11407-22-quic_wcheng@quicinc.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20231017200109.11407-1-quic_wcheng@quicinc.com>
 References: <20231017200109.11407-1-quic_wcheng@quicinc.com>
@@ -94,19 +93,19 @@ X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
  signatures=585085
-X-Proofpoint-GUID: rZNjdndqSzofB6dRbqOPB0jSHGdVefPR
-X-Proofpoint-ORIG-GUID: rZNjdndqSzofB6dRbqOPB0jSHGdVefPR
+X-Proofpoint-GUID: SVF9sih1d-q6cJ4BYBtetbINXPX5d87M
+X-Proofpoint-ORIG-GUID: SVF9sih1d-q6cJ4BYBtetbINXPX5d87M
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-10-17_03,2023-10-17_01,2023-05-22_02
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- spamscore=0 phishscore=0
- priorityscore=1501 mlxlogscore=970 impostorscore=0 suspectscore=0
- adultscore=0 lowpriorityscore=0 bulkscore=0 malwarescore=0 clxscore=1015
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310170170
-Message-ID-Hash: 2HLTT2IL4QUCO6R7PK3TV5RJONRXLMNI
-X-Message-ID-Hash: 2HLTT2IL4QUCO6R7PK3TV5RJONRXLMNI
+ clxscore=1015 spamscore=0
+ bulkscore=0 impostorscore=0 mlxscore=0 lowpriorityscore=0 suspectscore=0
+ priorityscore=1501 phishscore=0 malwarescore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310170169
+Message-ID-Hash: 4YHHHVK5I2YUTKGNNPQSJSQTXY7Q5GXL
+X-Message-ID-Hash: 4YHHHVK5I2YUTKGNNPQSJSQTXY7Q5GXL
 X-MailFrom: quic_wcheng@quicinc.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -119,7 +118,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2HLTT2IL4QUCO6R7PK3TV5RJONRXLMNI/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4YHHHVK5I2YUTKGNNPQSJSQTXY7Q5GXL/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -128,28 +127,52 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Check for if the PCM format is supported during the hw_params callback.  If
-the profile is not supported then the userspace ALSA entity will receive an
-error, and can take further action.
+Introduce a check for if a particular PCM format is supported by the USB
+audio device connected.  If the USB audio device does not have an audio
+profile which can support the requested format, then notify the USB
+backend.
 
 Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
 ---
- sound/soc/qcom/qdsp6/q6usb.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ include/sound/soc-usb.h |  3 +++
+ sound/soc/soc-usb.c     | 13 +++++++++++++
+ 2 files changed, 16 insertions(+)
 
-diff --git a/sound/soc/qcom/qdsp6/q6usb.c b/sound/soc/qcom/qdsp6/q6usb.c
-index dd664ad41668..329a7d4a3c01 100644
---- a/sound/soc/qcom/qdsp6/q6usb.c
-+++ b/sound/soc/qcom/qdsp6/q6usb.c
-@@ -44,7 +44,10 @@ static int q6usb_hw_params(struct snd_pcm_substream *substream,
- 			   struct snd_pcm_hw_params *params,
- 			   struct snd_soc_dai *dai)
- {
--	return 0;
-+	struct q6usb_port_data *data = dev_get_drvdata(dai->dev);
-+	int direction = substream->stream;
-+
-+	return snd_soc_usb_find_format(data->active_idx, params, direction);
- }
+diff --git a/include/sound/soc-usb.h b/include/sound/soc-usb.h
+index 58c686f4f7ba..c6ddc055c4cd 100644
+--- a/include/sound/soc-usb.h
++++ b/include/sound/soc-usb.h
+@@ -37,6 +37,9 @@ struct snd_soc_usb {
+ 	void *priv_data;
+ };
  
- static const struct snd_soc_dai_ops q6usb_ops = {
++int snd_soc_usb_find_format(int card_idx, struct snd_pcm_hw_params *params,
++			int direction);
++
+ int snd_soc_usb_connect(struct device *usbdev, struct snd_soc_usb_device *sdev);
+ int snd_soc_usb_disconnect(struct device *usbdev, struct snd_soc_usb_device *sdev);
+ void *snd_soc_usb_find_priv_data(struct device *usbdev);
+diff --git a/sound/soc/soc-usb.c b/sound/soc/soc-usb.c
+index 73b1bcc3b506..7407678a993e 100644
+--- a/sound/soc/soc-usb.c
++++ b/sound/soc/soc-usb.c
+@@ -63,6 +63,19 @@ void *snd_soc_usb_find_priv_data(struct device *dev)
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_usb_find_priv_data);
+ 
++int snd_soc_usb_find_format(int card_idx, struct snd_pcm_hw_params *params,
++			int direction)
++{
++	struct snd_usb_stream *as;
++
++	as = snd_usb_find_suppported_substream(card_idx, params, direction);
++	if (!as)
++		return -EOPNOTSUPP;
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(snd_soc_usb_find_format);
++
+ /**
+  * snd_soc_usb_add_port() - Add a USB backend port
+  * @dev: USB backend device
