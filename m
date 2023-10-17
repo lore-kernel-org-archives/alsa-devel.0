@@ -4,73 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C848ECDB474
-	for <alsa-devel@archiver.kernel.org>; Tue, 17 Oct 2023 23:25:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 58EE9CDB482
+	for <alsa-devel@archiver.kernel.org>; Tue, 17 Oct 2023 23:25:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D040FA4A;
-	Wed, 18 Oct 2023 01:24:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D040FA4A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 362FEDF1;
+	Wed, 18 Oct 2023 01:24:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 362FEDF1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1697585117;
-	bh=PybxR5OOHdCgOEo4oG6IoDqdttwVJEzqeA+hF47prLE=;
+	s=default; t=1697585130;
+	bh=KOWPP1PSMoIxt93fKxE8ER0QAdyM8P4EOniZbIxKM6g=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=AP+thGjYm2u5NPNTnIrlNaKHNR8wAl620pexXNM0tHDBv23PMVP7tJo7islTPTGRo
-	 Evd9Xtgml8WY3BFCigXAKlSwexY93a6LDzIIpXhGHjJwfkEqf81dXBoTL1B6e7oZ/7
-	 fU/iqqNZyvCNVbdNupkJufS+tl5mEfEDwi1dqr6A=
+	b=OItvAXcvza0xqhD3t/0xgNia2ahGEu81Z0dAm6ibjx2FjZ5GxAG1iKSPEX98GMQof
+	 5INPejEIrrzNNUbHjFMnRXNK2E63J+/lyT7NGs5BFdKsittNg/WiEg//Q8v5UVWocZ
+	 m9qDNrgx2ZkCyEziP4vdmSc+0+XFEu120ZHU4Fbg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 348F1F80587; Wed, 18 Oct 2023 01:23:38 +0200 (CEST)
+	id A8699F805AD; Wed, 18 Oct 2023 01:23:40 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1A3C2F80589;
-	Wed, 18 Oct 2023 01:23:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CB159F805A1;
+	Wed, 18 Oct 2023 01:23:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A2130F80578; Wed, 18 Oct 2023 01:23:30 +0200 (CEST)
+	id C0611F80571; Wed, 18 Oct 2023 01:23:32 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 982EFF800C9
-	for <alsa-devel@alsa-project.org>; Wed, 18 Oct 2023 01:23:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 982EFF800C9
+	by alsa1.perex.cz (Postfix) with ESMTPS id 64FE1F80552
+	for <alsa-devel@alsa-project.org>; Wed, 18 Oct 2023 01:23:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 64FE1F80552
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=WWJ+tgSk
+ header.s=Intel header.b=U0FM4sVR
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697585000; x=1729121000;
+  t=1697585004; x=1729121004;
   h=message-id:date:mime-version:subject:to:cc:references:
    from:in-reply-to:content-transfer-encoding;
-  bh=PybxR5OOHdCgOEo4oG6IoDqdttwVJEzqeA+hF47prLE=;
-  b=WWJ+tgSkdhyQ14f5gTusAdwnrsE94nWdAoifKR7V6LPIKY4OaG4I4a8v
-   dYJ9a+wLzqGaSXzWVn8y9Ek4ZJUYLMEh+1hvO2ERaWcLUmVuV7wvejHxM
-   UMWdqzl+NEOrsefECFUFMLVLYGKlJL4ic2VZMY6Zvg7LLrqK64LhnBRKq
-   QSVSL1nLH+3MhZgkQtwCzzyKlWuWxKVTmQFhr8KxYEv3AKEOGnk8WuVdB
-   Q8al2gQXH/ys8DTjKTvHygAYOpew8mWPxwXyvPzUx207t4E80OMBkTjtz
-   J61ren1euQWx0fEI6OU5efQMBNNtcDQZemZslQe7zLQ9Q8WnOCu61CraN
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="384778039"
+  bh=KOWPP1PSMoIxt93fKxE8ER0QAdyM8P4EOniZbIxKM6g=;
+  b=U0FM4sVRlsI0t5ScSPVthJsOfXytfPvx/9oPQFESIah15dXXzgdYsGo4
+   h5cqlPpxNwbVAnJffIhK2S/AxE0AtMSCWtNpLECl1vvLZspNbHR4+sqWe
+   trE3rtXNRFvNNZfsjNchI1QyTNrspI6zWqE8Y8u8FKjN9fVhb6OFsWF3u
+   kZ86LPTCxpc5GXLIr7AWwwnjiN9z2s7abV2ynQKouUK54XaiKQsEPV3gO
+   BnEcHAciTdFe00WkxZFtyb4Pvie31jJimU5Ji3DXhb1qToEed5walkIdo
+   DfQZ2xuHxa0OXW7grdXEedJr7Wdy+Juq4SzI2yp0BRgopC9DEL8fuGyJJ
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="384778133"
 X-IronPort-AV: E=Sophos;i="6.03,233,1694761200";
-   d="scan'208";a="384778039"
+   d="scan'208";a="384778133"
 Received: from fmsmga004.fm.intel.com ([10.253.24.48])
   by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 17 Oct 2023 16:23:13 -0700
+ 17 Oct 2023 16:23:21 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="826637438"
+X-IronPort-AV: E=McAfee;i="6600,9927,10866"; a="826637475"
 X-IronPort-AV: E=Sophos;i="6.03,233,1694761200";
-   d="scan'208";a="826637438"
+   d="scan'208";a="826637475"
 Received: from asprado-mobl2.amr.corp.intel.com (HELO [10.212.55.179])
  ([10.212.55.179])
   by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 17 Oct 2023 16:23:11 -0700
-Message-ID: <7aa4ea87-9d1f-400a-bcc5-b56e5b4500c6@linux.intel.com>
-Date: Tue, 17 Oct 2023 16:32:48 -0500
+ 17 Oct 2023 16:23:20 -0700
+Message-ID: <a8dc2a3a-27a2-40d6-9e67-6ea475701e44@linux.intel.com>
+Date: Tue, 17 Oct 2023 17:37:20 -0500
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v9 09/34] ASoC: qcom: qdsp6: Introduce USB AFE port to
- q6dsp
+Subject: Re: [PATCH v9 23/34] ALSA: usb-audio: Prevent starting of audio
+ stream if in use
 Content-Language: en-US
 To: Wesley Cheng <quic_wcheng@quicinc.com>, mathias.nyman@intel.com,
  gregkh@linuxfoundation.org, lgirdwood@gmail.com, broonie@kernel.org,
@@ -83,13 +83,13 @@ Cc: linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
  alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
  devicetree@vger.kernel.org
 References: <20231017200109.11407-1-quic_wcheng@quicinc.com>
- <20231017200109.11407-10-quic_wcheng@quicinc.com>
+ <20231017200109.11407-24-quic_wcheng@quicinc.com>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20231017200109.11407-10-quic_wcheng@quicinc.com>
+In-Reply-To: <20231017200109.11407-24-quic_wcheng@quicinc.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-ID-Hash: CA6SF3ULJZQKFHFVTVTNUYS2Y5MWYWNQ
-X-Message-ID-Hash: CA6SF3ULJZQKFHFVTVTNUYS2Y5MWYWNQ
+Message-ID-Hash: OKURAUDG6BYVAPPS55S5O3UPCPRE46M2
+X-Message-ID-Hash: OKURAUDG6BYVAPPS55S5O3UPCPRE46M2
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -102,7 +102,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CA6SF3ULJZQKFHFVTVTNUYS2Y5MWYWNQ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OKURAUDG6BYVAPPS55S5O3UPCPRE46M2/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -114,164 +114,138 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 
 On 10/17/23 15:00, Wesley Cheng wrote:
-> The QC ADSP is able to support USB playback endpoints, so that the main
-
-playback only?
-
-> application processor can be placed into lower CPU power modes.  This adds
-> the required AFE port configurations and port start command to start an
-> audio session.
+> With USB audio offloading, an audio session is started from the ASoC
+> platform sound card and PCM devices.  Likewise, the USB SND path is still
+> readily available for use, in case the non-offload path is desired.  In
+> order to prevent the two entities from attempting to use the USB bus,
+> introduce a flag that determines when either paths are in use.
 > 
-> Specifically, the QC ADSP can support all potential endpoints that are
-> exposed by the audio data interface.  This includes, feedback endpoints
-> (both implicit and explicit) as well as the isochronous (data) endpoints.
+> If a PCM device is already in use, the check will return an error to
+> userspace notifying that the stream is currently busy.  This ensures that
+> only one path is using the USB substream.
+> 
+> Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
+> ---
+>  sound/usb/card.h                  |  1 +
+>  sound/usb/pcm.c                   | 19 +++++++++++++++++--
+>  sound/usb/qcom/qc_audio_offload.c | 15 ++++++++++++++-
 
-implicit feedback means support for capture. This is confusing...
+should this be split in a generic part and a more specific qcom patch?
 
-> +static int q6usb_hw_params(struct snd_pcm_substream *substream,
-> +			   struct snd_pcm_hw_params *params,
-> +			   struct snd_soc_dai *dai)
-> +{
-> +	struct q6afe_dai_data *dai_data = dev_get_drvdata(dai->dev);
-> +	int channels = params_channels(params);
-> +	int rate = params_rate(params);
-> +	struct q6afe_usb_cfg *usb = &dai_data->port_config[dai->id].usb_audio;
-> +
-> +	usb->sample_rate = rate;
-> +	usb->num_channels = channels;
-> +
-> +	switch (params_format(params)) {
-> +	case SNDRV_PCM_FORMAT_U16_LE:
-> +	case SNDRV_PCM_FORMAT_S16_LE:
-> +	case SNDRV_PCM_FORMAT_SPECIAL:
-
-what does FORMAT_SPECIAL mean? the only other reference I see to this is
-related to SLIMbus, not sure how this is related?
-
-> +		usb->bit_width = 16;
-> +		break;
-> +	case SNDRV_PCM_FORMAT_S24_LE:
-> +	case SNDRV_PCM_FORMAT_S24_3LE:
-> +		usb->bit_width = 24;
-> +		break;
-> +	case SNDRV_PCM_FORMAT_S32_LE:
-> +		usb->bit_width = 32;
-> +		break;
-> +	default:
-> +		dev_err(dai->dev, "%s: invalid format %d\n",
-> +			__func__, params_format(params));
-> +		return -EINVAL;
+>  3 files changed, 32 insertions(+), 3 deletions(-)
+> 
+> diff --git a/sound/usb/card.h b/sound/usb/card.h
+> index e26292363cf0..01f7e10f30f4 100644
+> --- a/sound/usb/card.h
+> +++ b/sound/usb/card.h
+> @@ -164,6 +164,7 @@ struct snd_usb_substream {
+>  	unsigned int pkt_offset_adj;	/* Bytes to drop from beginning of packets (for non-compliant devices) */
+>  	unsigned int stream_offset_adj;	/* Bytes to drop from beginning of stream (for non-compliant devices) */
+>  
+> +	unsigned int opened:1;		/* pcm device opened */
+>  	unsigned int running: 1;	/* running status */
+>  	unsigned int period_elapsed_pending;	/* delay period handling */
+>  
+> diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
+> index 3adb09ce1702..c2cb52cd5d23 100644
+> --- a/sound/usb/pcm.c
+> +++ b/sound/usb/pcm.c
+> @@ -1241,8 +1241,15 @@ static int snd_usb_pcm_open(struct snd_pcm_substream *substream)
+>  	struct snd_usb_stream *as = snd_pcm_substream_chip(substream);
+>  	struct snd_pcm_runtime *runtime = substream->runtime;
+>  	struct snd_usb_substream *subs = &as->substream[direction];
+> +	struct snd_usb_audio *chip = subs->stream->chip;
+>  	int ret;
+>  
+> +	mutex_lock(&chip->mutex);
+> +	if (subs->opened) {
+> +		mutex_unlock(&chip->mutex);
+> +		return -EBUSY;
 > +	}
 > +
-> +	return 0;
-> +}
-
-> @@ -617,6 +655,9 @@ static const struct snd_soc_dapm_route q6afe_dapm_routes[] = {
->  	{"TX_CODEC_DMA_TX_5", NULL, "TX_CODEC_DMA_TX_5 Capture"},
->  	{"RX_CODEC_DMA_RX_6 Playback", NULL, "RX_CODEC_DMA_RX_6"},
->  	{"RX_CODEC_DMA_RX_7 Playback", NULL, "RX_CODEC_DMA_RX_7"},
-> +
-> +	/* USB playback AFE port receives data for playback, hence use the RX port */
-> +	{"USB Playback", NULL, "USB_RX"},
-
-Capture for implicit feedback?
-
->  };
+>  	runtime->hw = snd_usb_hardware;
+>  	/* need an explicit sync to catch applptr update in low-latency mode */
+>  	if (direction == SNDRV_PCM_STREAM_PLAYBACK &&
+> @@ -1259,13 +1266,17 @@ static int snd_usb_pcm_open(struct snd_pcm_substream *substream)
 >  
->  static int msm_dai_q6_dai_probe(struct snd_soc_dai *dai)
-> @@ -644,6 +685,18 @@ static int msm_dai_q6_dai_remove(struct snd_soc_dai *dai)
->  	return 0;
+>  	ret = setup_hw_info(runtime, subs);
+>  	if (ret < 0)
+> -		return ret;
+> +		goto out;
+>  	ret = snd_usb_autoresume(subs->stream->chip);
+>  	if (ret < 0)
+> -		return ret;
+> +		goto out;
+>  	ret = snd_media_stream_init(subs, as->pcm, direction);
+>  	if (ret < 0)
+>  		snd_usb_autosuspend(subs->stream->chip);
+> +	subs->opened = 1;
+> +out:
+> +	mutex_unlock(&chip->mutex);
+> +
+>  	return ret;
 >  }
 >  
-> +static const struct snd_soc_dai_ops q6usb_ops = {
-> +	.probe		= msm_dai_q6_dai_probe,
-> +	.prepare	= q6afe_dai_prepare,
-> +	.hw_params	= q6usb_hw_params,
-
-this is rather confusing with two different layers used for hw_params
-and prepare? Additional comments or explanations wouldn't hurt.
-
-> +	.shutdown	= q6afe_dai_shutdown,
-> +	/*
-> +	 * Startup callback not needed, as AFE port start command passes the PCM
-> +	 * parameters within the AFE command, which is provided by the PCM core
-> +	 * during the prepare() stage.
-
-This doesn't really explain why you need a shutdown?
-
-
-> + * struct afe_param_id_usb_audio_dev_latency_mode
-> + * @cfg_minor_version: Minor version used for tracking USB audio device
-> + * configuration.
-> + * Supported values:
-> + *     AFE_API_MINOR_VERSION_USB_AUDIO_LATENCY_MODE
-> + * @mode: latency mode for the USB audio device
-
-what are the different latency modes? and is this related to the latency
-reporting that was added in the USB2 audio class IIRC?
-
-> +static int afe_port_send_usb_dev_param(struct q6afe_port *port, struct q6afe_usb_cfg *cfg)
-> +{
-> +	union afe_port_config *pcfg = &port->port_cfg;
-> +	struct afe_param_id_usb_audio_dev_params usb_dev;
-> +	struct afe_param_id_usb_audio_dev_lpcm_fmt lpcm_fmt;
-> +	struct afe_param_id_usb_audio_svc_interval svc_int;
-> +	int ret = 0;
-
-useless init overridden...
+> @@ -1274,6 +1285,7 @@ static int snd_usb_pcm_close(struct snd_pcm_substream *substream)
+>  	int direction = substream->stream;
+>  	struct snd_usb_stream *as = snd_pcm_substream_chip(substream);
+>  	struct snd_usb_substream *subs = &as->substream[direction];
+> +	struct snd_usb_audio *chip = subs->stream->chip;
+>  	int ret;
+>  
+>  	snd_media_stop_pipeline(subs);
+> @@ -1287,6 +1299,9 @@ static int snd_usb_pcm_close(struct snd_pcm_substream *substream)
+>  
+>  	subs->pcm_substream = NULL;
+>  	snd_usb_autosuspend(subs->stream->chip);
+> +	mutex_lock(&chip->mutex);
+> +	subs->opened = 0;
+> +	mutex_unlock(&chip->mutex);
+>  
+>  	return 0;
+>  }
+> diff --git a/sound/usb/qcom/qc_audio_offload.c b/sound/usb/qcom/qc_audio_offload.c
+> index 320ce3a6688f..bd6b84f72c74 100644
+> --- a/sound/usb/qcom/qc_audio_offload.c
+> +++ b/sound/usb/qcom/qc_audio_offload.c
+> @@ -1413,12 +1413,17 @@ static void handle_uaudio_stream_req(struct qmi_handle *handle,
+>  		goto response;
+>  	}
+>  
+> +	mutex_lock(&chip->mutex);
+>  	if (req_msg->enable) {
+> -		if (info_idx < 0 || chip->system_suspend) {
+> +		if (info_idx < 0 || chip->system_suspend || subs->opened) {
+>  			ret = -EBUSY;
+> +			mutex_unlock(&chip->mutex);
 > +
-> +	if (!pcfg) {
-> +		dev_err(port->afe->dev, "%s: Error, no configuration data\n", __func__);
-> +		ret = -EINVAL;
-> +		goto exit;
-> +	}
-> +
-> +	memset(&usb_dev, 0, sizeof(usb_dev));
-> +	memset(&lpcm_fmt, 0, sizeof(lpcm_fmt));
-> +	memset(&svc_int, 0, sizeof(svc_int));
-> +
-> +	usb_dev.cfg_minor_version = AFE_API_MINOR_VERSION_USB_AUDIO_CONFIG;
-> +	ret = q6afe_port_set_param_v2(port, &usb_dev,
-
-.... here
-
-> +				      AFE_PARAM_ID_USB_AUDIO_DEV_PARAMS,
-> +				      AFE_MODULE_AUDIO_DEV_INTERFACE, sizeof(usb_dev));
-> +	if (ret) {
-> +		dev_err(port->afe->dev, "%s: AFE device param cmd failed %d\n",
-> +			__func__, ret);
-> +		goto exit;
-> +	}
-> +
-> +	lpcm_fmt.cfg_minor_version = AFE_API_MINOR_VERSION_USB_AUDIO_CONFIG;
-> +	lpcm_fmt.endian = pcfg->usb_cfg.endian;
-> +	ret = q6afe_port_set_param_v2(port, &lpcm_fmt,
-> +				      AFE_PARAM_ID_USB_AUDIO_DEV_LPCM_FMT,
-> +				      AFE_MODULE_AUDIO_DEV_INTERFACE, sizeof(lpcm_fmt));
-> +	if (ret) {
-> +		dev_err(port->afe->dev, "%s: AFE device param cmd LPCM_FMT failed %d\n",
-> +			__func__, ret);
-> +		goto exit;
-> +	}
-> +
-> +	svc_int.cfg_minor_version = AFE_API_MINOR_VERSION_USB_AUDIO_CONFIG;
-> +	svc_int.svc_interval = pcfg->usb_cfg.service_interval;
-> +	ret = q6afe_port_set_param_v2(port, &svc_int,
-> +				      AFE_PARAM_ID_USB_AUDIO_SVC_INTERVAL,
-> +				      AFE_MODULE_AUDIO_DEV_INTERFACE, sizeof(svc_int));
-> +	if (ret)
-> +		dev_err(port->afe->dev, "%s: AFE device param cmd svc_interval failed %d\n",
-> +			__func__, ret);
-> +
-> +exit:
-> +	return ret;
-> +}
-
-> -#define AFE_PORT_MAX		129
-> +#define AFE_PORT_MAX		137
-
-does this mean 8 ports are reserved for USB?
-
-Or is this 137 just a random index coming from the AFE design?
-
-
+>  			goto response;
+>  		}
+> +		subs->opened = 1;
+>  	}
+> +	mutex_unlock(&chip->mutex);
+>  
+>  	if (req_msg->service_interval_valid) {
+>  		ret = get_data_interval_from_si(subs,
+> @@ -1440,6 +1445,11 @@ static void handle_uaudio_stream_req(struct qmi_handle *handle,
+>  		if (!ret)
+>  			ret = prepare_qmi_response(subs, req_msg, &resp,
+>  					info_idx);
+> +		if (ret < 0) {
+> +			mutex_lock(&chip->mutex);
+> +			subs->opened = 0;
+> +			mutex_unlock(&chip->mutex);
+> +		}
+>  	} else {
+>  		info = &uadev[pcm_card_num].info[info_idx];
+>  		if (info->data_ep_pipe) {
+> @@ -1463,6 +1473,9 @@ static void handle_uaudio_stream_req(struct qmi_handle *handle,
+>  		}
+>  
+>  		disable_audio_stream(subs);
+> +		mutex_lock(&chip->mutex);
+> +		subs->opened = 0;
+> +		mutex_unlock(&chip->mutex);
+>  	}
+>  
+>  response:
