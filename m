@@ -4,70 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 12CD0CDB474
-	for <alsa-devel@archiver.kernel.org>; Tue, 17 Oct 2023 20:05:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C1555CDB474
+	for <alsa-devel@archiver.kernel.org>; Tue, 17 Oct 2023 20:05:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 05B8CBC0;
-	Tue, 17 Oct 2023 22:04:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 05B8CBC0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 31957AE9;
+	Tue, 17 Oct 2023 22:04:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 31957AE9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1697573101;
-	bh=8m3CZnp318W9Cdg2Zji2CdTaZ7vTqCwTs9XJbJCHHOA=;
+	s=default; t=1697573109;
+	bh=8YEBwJty5d/XxzZG7HGGadc5+/YywJgoHwqmD3HhuGE=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=hfOsylcuKRDoUZEd00sIk7JFl27X5LbzD7rqBgQQV/j38pM+EkWFHK07DDmvaDUBJ
-	 XivSkXD0rR47fejR0FrHNekgfKCvDudgVrWsaW3m/qk8l3m/UsJzSG0GJcC5yUpWIF
-	 jpTlJRsRMWf+tZoHIp7d9aFjAK6OS6ROwWdA7Dl8=
+	b=VJwtl+jXsG9WWlgsXPaouJI8FlbfDcy9vcijsZKKKQC2w46V0ITOf+ghKJU+HLQJJ
+	 DYHWT4wyBYbdNkUbM/khDvCQyNXApolFxuKOz3/ddg4QOkjwdZFdX+2EvulHljnmIK
+	 O0xo54v9267kUitgkROVz3OLFezCkyNFBBVgz2bc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E80D9F805F0; Tue, 17 Oct 2023 22:02:08 +0200 (CEST)
+	id C18AAF805FD; Tue, 17 Oct 2023 22:02:11 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E83F1F805F0;
-	Tue, 17 Oct 2023 22:02:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 48230F805FD;
+	Tue, 17 Oct 2023 22:02:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DA7B5F805ED; Tue, 17 Oct 2023 22:02:02 +0200 (CEST)
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com
- [205.220.180.131])
+	id E5F34F805EB; Tue, 17 Oct 2023 22:02:04 +0200 (CEST)
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com
+ [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7CE27F80553
-	for <alsa-devel@alsa-project.org>; Tue, 17 Oct 2023 22:01:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7CE27F80553
+	by alsa1.perex.cz (Postfix) with ESMTPS id 325D8F8055A
+	for <alsa-devel@alsa-project.org>; Tue, 17 Oct 2023 22:01:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 325D8F8055A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
- header.s=qcppdkim1 header.b=chr9nKnN
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+ header.s=qcppdkim1 header.b=eY0lEPQl
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
 	by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 39HHTFGi018025;
-	Tue, 17 Oct 2023 20:01:25 GMT
+ 39HJBC41021446;
+	Tue, 17 Oct 2023 20:01:24 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-type; s=qcppdkim1;
- bh=v88cF5DfrmQ11xFFw1qondVS974WsoPZKgPh8eL+d3w=;
- b=chr9nKnNKujmLQwhyV7RrsC/7LAV1iYKdI3TrwDGf8iyQLOV24l7hjowHwVJRnAwmIBl
- 1+t97h1Q4gBZOYniOF5gVJTMcI1tc16EIYrBoMXdVhcAtZCY0t8Sr+oWFTBHngL+z3EI
- hW3HHGnM2+nZdthcJG8O8s28EHvmNfrKokwHeWrHAsHk0RUbXHJg2p9TBWBlbjCYEZtc
- eF3YZP8fOdqKc/e4QdZt8kBteFrw8HiPeDXBoi6F2GWYfpFo/eWw3MhB0SWKQJSvF3v7
- ZuuxguclhibVVcoEEsmqqovYEZk9AihCJEF1wQmp8nx/KHY6x1dfDMHsNqiu9Ct9xrax jw==
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com
+ bh=eMuCxRzjFJNCzXTHvKDH/OMHNktU6HnB8lTCQMc4++s=;
+ b=eY0lEPQlTHR0AsklKA1T2rZieYEXOfI7IG5aeLcaUUFxhdqIvHouICkVUTq4JAUg375K
+ eSbk0djvVW69V3VF23MV2ME8Jv1StnQfREANkkDRAeXxGNPVVQyF3IDduFUGMWxhlIs2
+ ApSRsfAFZx4fLJFq/l7/pW+AtYBfXkL+is71aXD63CbJM/xt+lwrZ2iRbl1fbYtQndke
+ 2TKzsUH4XxjPdtS1lMcuFehbxRltltMAWJEf6Iwe1ECBiFhcSeM1KN1t+SYjyHALXraQ
+ lULDXvVb+dTQOZaZEJqtDmO8/AZNe1beL9sjRZGQM2nrLpZ02BHsoM+9oXPLYV3SXwsF eA==
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com
  [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tsnej9qhw-1
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tsvxwrpuv-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 17 Oct 2023 20:01:25 +0000
+	Tue, 17 Oct 2023 20:01:24 +0000
 Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com
  [10.47.209.197])
-	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id
- 39HK1OPQ004928
+	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id
+ 39HK1NSd003239
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 17 Oct 2023 20:01:24 GMT
+	Tue, 17 Oct 2023 20:01:23 GMT
 Received: from hu-wcheng-lv.qualcomm.com (10.49.16.6) by
  nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.39; Tue, 17 Oct 2023 13:01:24 -0700
+ 15.2.1118.39; Tue, 17 Oct 2023 13:01:23 -0700
 From: Wesley Cheng <quic_wcheng@quicinc.com>
 To: <mathias.nyman@intel.com>, <gregkh@linuxfoundation.org>,
         <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
@@ -79,10 +79,10 @@ To: <mathias.nyman@intel.com>, <gregkh@linuxfoundation.org>,
 CC: <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <alsa-devel@alsa-project.org>, <linux-arm-msm@vger.kernel.org>,
         <devicetree@vger.kernel.org>, Wesley Cheng <quic_wcheng@quicinc.com>
-Subject: [PATCH v9 17/34] usb: host: xhci-plat: Set XHCI max interrupters if
- property is present
-Date: Tue, 17 Oct 2023 13:00:52 -0700
-Message-ID: <20231017200109.11407-18-quic_wcheng@quicinc.com>
+Subject: [PATCH v9 14/34] dt-bindings: usb: xhci: Add num-hc-interrupters
+ definition
+Date: Tue, 17 Oct 2023 13:00:49 -0700
+Message-ID: <20231017200109.11407-15-quic_wcheng@quicinc.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20231017200109.11407-1-quic_wcheng@quicinc.com>
 References: <20231017200109.11407-1-quic_wcheng@quicinc.com>
@@ -94,19 +94,19 @@ X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
  signatures=585085
-X-Proofpoint-GUID: ecUZL-cWma4ea1_O_yOElHVeHEq_UQIf
-X-Proofpoint-ORIG-GUID: ecUZL-cWma4ea1_O_yOElHVeHEq_UQIf
+X-Proofpoint-GUID: hsa3c5Zj25sZYvRQvW1yhpxNf40ZXJwF
+X-Proofpoint-ORIG-GUID: hsa3c5Zj25sZYvRQvW1yhpxNf40ZXJwF
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-10-17_03,2023-10-17_01,2023-05-22_02
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- clxscore=1015 spamscore=0
- bulkscore=0 impostorscore=0 mlxscore=0 lowpriorityscore=0 suspectscore=0
- priorityscore=1501 phishscore=0 malwarescore=0 mlxlogscore=996
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310170169
-Message-ID-Hash: OJDX5XCECMRYFZKFCLAFGXBUD3GJGLGL
-X-Message-ID-Hash: OJDX5XCECMRYFZKFCLAFGXBUD3GJGLGL
+ priorityscore=1501
+ malwarescore=0 impostorscore=0 adultscore=0 clxscore=1015 mlxscore=0
+ suspectscore=0 phishscore=0 mlxlogscore=621 lowpriorityscore=0 spamscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310170170
+Message-ID-Hash: BUXXJADYSULEXMY3YQYEKWRT5DCQXS5V
+X-Message-ID-Hash: BUXXJADYSULEXMY3YQYEKWRT5DCQXS5V
 X-MailFrom: quic_wcheng@quicinc.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -118,8 +118,7 @@ X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OJDX5XCECMRYFZKFCLAFGXBUD3GJGLGL/>
+Archived-At: <>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -128,25 +127,30 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Some platforms may want to limit the number of XHCI interrupters allocated.
-This is passed to xhci-plat as a device property.  Ensure that this is read
-and the max_interrupters field is set.
+Add the definition for how many interrupts the XHCI host controller should
+allocate.  XHCI can potentially support up to 1024 interrupters, which
+implementations may want to limit.
 
+Reviewed-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
 ---
- drivers/usb/host/xhci-plat.c | 2 ++
- 1 file changed, 2 insertions(+)
+ Documentation/devicetree/bindings/usb/usb-xhci.yaml | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/usb/host/xhci-plat.c b/drivers/usb/host/xhci-plat.c
-index 28218c8f1837..d01318f89278 100644
---- a/drivers/usb/host/xhci-plat.c
-+++ b/drivers/usb/host/xhci-plat.c
-@@ -251,6 +251,8 @@ int xhci_plat_probe(struct platform_device *pdev, struct device *sysdev, const s
+diff --git a/Documentation/devicetree/bindings/usb/usb-xhci.yaml b/Documentation/devicetree/bindings/usb/usb-xhci.yaml
+index 180a261c3e8f..4238ae896ef6 100644
+--- a/Documentation/devicetree/bindings/usb/usb-xhci.yaml
++++ b/Documentation/devicetree/bindings/usb/usb-xhci.yaml
+@@ -29,6 +29,12 @@ properties:
+     description: Interrupt moderation interval
+     default: 5000
  
- 		device_property_read_u32(tmpdev, "imod-interval-ns",
- 					 &xhci->imod_interval);
-+		device_property_read_u16(tmpdev, "num-hc-interrupters",
-+					 &xhci->max_interrupters);
- 	}
++  num-hc-interrupters:
++    description: Maximum number of interrupters to allocate
++    $ref: /schemas/types.yaml#/definitions/uint16
++    minimum: 1
++    maximum: 1024
++
+ additionalProperties: true
  
- 	hcd->usb_phy = devm_usb_get_phy_by_phandle(sysdev, "usb-phy", 0);
+ examples:
