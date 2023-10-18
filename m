@@ -4,85 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 626A4CDB482
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Oct 2023 14:15:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4A206C41513
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Oct 2023 14:15:34 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 897F1E72;
-	Wed, 18 Oct 2023 16:14:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 897F1E72
+	by alsa0.perex.cz (Postfix) with ESMTPS id 366B8852;
+	Wed, 18 Oct 2023 16:14:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 366B8852
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1697638509;
-	bh=o835cioGCeIzTvaQ/vboZK8CwlJSyJTR5vu8n4XyvDA=;
+	s=default; t=1697638532;
+	bh=Gsovutsyfar+JfL4/SkAYHJpb42XHNzbvNfzmg5s2gg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=tth1Vna/J+F5zkFRxgJS24owzZA7reE3ZQp9RwPi+GyXeRE2AGV8Jg67DxNnJtiGl
-	 5yhTpfbX1E4vtSinJWHRQt4KToaKjJpTHbbefoS1fGE4SybKpyDIoYE2nygNhe30Fw
-	 /10FmLmWonhswpPyrahs2uH2/alNWZYm2fJXxFPY=
+	b=rXda37eZfH+8MkeJ2xc5qOuoQkyd7gmrdZDAPEpdpU69FUli0IYWdWy/v+YVOREOj
+	 Qd3HmzjeUvJPdaHD5GLuqvPRIpEAq0m8qvzL+u0YZVwaibyJ4Mn74byEns0hWjr1F8
+	 D5sHwxNHFNz+79BUgHI0uxhqsj4JgKoet1uNE9N8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3C40FF8055B; Wed, 18 Oct 2023 16:12:59 +0200 (CEST)
+	id 78340F80552; Wed, 18 Oct 2023 16:13:38 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D5898F8055B;
-	Wed, 18 Oct 2023 16:12:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A0D39F80553;
+	Wed, 18 Oct 2023 16:13:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1D48BF8055B; Wed, 18 Oct 2023 16:12:56 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+	id 4A39DF80553; Wed, 18 Oct 2023 16:13:35 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B8686F8024E
-	for <alsa-devel@alsa-project.org>; Wed, 18 Oct 2023 16:12:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B8686F8024E
+	by alsa1.perex.cz (Postfix) with ESMTPS id 4243BF80557
+	for <alsa-devel@alsa-project.org>; Wed, 18 Oct 2023 16:13:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4243BF80557
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=ajn800bV
+ header.s=k20201202 header.b=ST+W4HFz
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by ams.source.kernel.org (Postfix) with ESMTP id AE2D8B82357;
-	Wed, 18 Oct 2023 14:12:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0464C433C9;
-	Wed, 18 Oct 2023 14:12:46 +0000 (UTC)
+	by ams.source.kernel.org (Postfix) with ESMTP id 944B7B82357;
+	Wed, 18 Oct 2023 14:13:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4B54C433CC;
+	Wed, 18 Oct 2023 14:13:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1697638368;
-	bh=o835cioGCeIzTvaQ/vboZK8CwlJSyJTR5vu8n4XyvDA=;
+	s=k20201202; t=1697638411;
+	bh=Gsovutsyfar+JfL4/SkAYHJpb42XHNzbvNfzmg5s2gg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ajn800bVBYoMeNYKkiG9lCQMtkp//mqh+9bDT2VdB98sE2B2v89LvUhcK+uK5XR5S
-	 fWdcw8tWhoveRjHwVld4MVtMnp1/c+6cZJGmQyp2FaWL11aI7WuGEQproD7OgYLITP
-	 mmf0hntEryHdiVZyJzX0mCeElFMbbSwH0cM4rNmMVv5N1B/ogVUaPE8wkqU6/g0UZ7
-	 6lWk5kHJBbIMETqqGEjAD1ItxrrOwHINqWJDwRpIZ8a5mFSSa4hm9S0znSiPhA3co8
-	 ozB3WQ61RgXjcN9NpgWhJsdQAlIDDPA4G4jaJXx+tN7HjeJf+S/EKQrOK+QIfv9PFT
-	 oxEljDSDns/eg==
+	b=ST+W4HFzD9Dh8FinGGsXe4qUn7/XECbizB5pW+DH9YYb4OUcaPGqS2VZIBjCaPFaP
+	 DT1rRiMbbyX/35JTlG9CHKMK8bxB1208bHd48Yvf91jlZ/MTfr6RfdZSRrtd5Fo7r1
+	 X1Gk9Ki3S4LIe802FHCaTmlMIEFfL3Bnnbwf1vf8gyDm/VA4Ej83KGTbI2faTx099s
+	 TBrtd7rnLo0nPnfkFe+WmZ8TMPHK2coHXjrogQzPllIvePkTfPGoP3ImhQH8hPi730
+	 Hs5q3yST7bznyJ1Z0LClLm/R6/WPJjZ8rzQ96epS2jL6ILyc+nHKuUvfzpOlt878Qx
+	 Mit3CHRsz395g==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Christos Skevis <xristos.thes@gmail.com>,
-	Takashi Iwai <tiwai@suse.de>,
+Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+	kernel test robot <lkp@intel.com>,
+	Dan Carpenter <dan.carpenter@linaro.org>,
+	Mark Brown <broonie@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
+	lgirdwood@gmail.com,
 	perex@perex.cz,
 	tiwai@suse.com,
-	peter.ujfalusi@linux.intel.com,
-	maciej.szmigiero@oracle.com,
-	jussi@sonarnerd.net,
-	john@keeping.me.uk,
-	whalechang@google.com,
+	herve.codina@bootlin.com,
+	christophe.leroy@csgroup.eu,
+	spujar@nvidia.com,
+	astrid.rost@axis.com,
+	aidanmacdonald.0x0@gmail.com,
 	alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 6.5 22/31] ALSA: usb-audio: Fix microphone sound on
- Nexigo webcam.
-Date: Wed, 18 Oct 2023 10:11:39 -0400
-Message-Id: <20231018141151.1334501-22-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.1 02/19] ASoC: simple-card: fixup
+ asoc_simple_probe() error handling
+Date: Wed, 18 Oct 2023 10:13:04 -0400
+Message-Id: <20231018141323.1334898-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20231018141151.1334501-1-sashal@kernel.org>
-References: <20231018141151.1334501-1-sashal@kernel.org>
+In-Reply-To: <20231018141323.1334898-1-sashal@kernel.org>
+References: <20231018141323.1334898-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.5.7
+X-stable-base: Linux 6.1.58
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: DFRI77K44EOND62RK63K5PAZWXV64SOL
-X-Message-ID-Hash: DFRI77K44EOND62RK63K5PAZWXV64SOL
+Message-ID-Hash: RMUPQYMRMEAHTNBGITP5SR6LZCQ6Q33H
+X-Message-ID-Hash: RMUPQYMRMEAHTNBGITP5SR6LZCQ6Q33H
 X-MailFrom: sashal@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -95,7 +97,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DFRI77K44EOND62RK63K5PAZWXV64SOL/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RMUPQYMRMEAHTNBGITP5SR6LZCQ6Q33H/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -104,140 +106,83 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Christos Skevis <xristos.thes@gmail.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-[ Upstream commit 4a63e68a295187ae3c1cb3fa0c583c96a959714f ]
+[ Upstream commit 41bae58df411f9accf01ea660730649b2fab1dab ]
 
-I own an external usb Webcam, model NexiGo N930AF, which had low mic volume and
-inconsistent sound quality. Video works as expected.
+asoc_simple_probe() is used for both "DT probe" (A) and "platform probe"
+(B). It uses "goto err" when error case, but it is not needed for
+"platform probe" case (B). Thus it is using "return" directly there.
 
-(snip)
-[  +0.047857] usb 5-1: new high-speed USB device number 2 using xhci_hcd
-[  +0.003406] usb 5-1: New USB device found, idVendor=1bcf, idProduct=2283, bcdDevice=12.17
-[  +0.000007] usb 5-1: New USB device strings: Mfr=1, Product=2, SerialNumber=3
-[  +0.000004] usb 5-1: Product: NexiGo N930AF FHD Webcam
-[  +0.000003] usb 5-1: Manufacturer: SHENZHEN AONI ELECTRONIC CO., LTD
-[  +0.000004] usb 5-1: SerialNumber: 20201217011
-[  +0.003900] usb 5-1: Found UVC 1.00 device NexiGo N930AF FHD Webcam (1bcf:2283)
-[  +0.025726] usb 5-1: 3:1: cannot get usb sound sample rate freq at ep 0x86
-[  +0.071482] usb 5-1: 3:2: cannot get usb sound sample rate freq at ep 0x86
-[  +0.004679] usb 5-1: 3:3: cannot get usb sound sample rate freq at ep 0x86
-[  +0.051607] usb 5-1: Warning! Unlikely big volume range (=4096), cval->res is probably wrong.
-[  +0.000005] usb 5-1: [7] FU [Mic Capture Volume] ch = 1, val = 0/4096/1
+	static int asoc_simple_probe(...)
+	{
+ ^		if (...) {
+ |			...
+(A)			if (ret < 0)
+ |				goto err;
+ v		} else {
+ ^			...
+ |			if (ret < 0)
+(B)				return -Exxx;
+ v		}
 
-Set up quirk cval->res to 16 for 256 levels,
-Set GET_SAMPLE_RATE quirk flag to stop trying to get the sample rate.
-Confirmed that happened anyway later due to the backoff mechanism, after 3 failures
+		...
+ ^		if (ret < 0)
+(C)			goto err;
+ v		...
 
-All audio stream on device interfaces share the same values,
-apart from wMaxPacketSize and tSamFreq :
+	err:
+(D)		simple_util_clean_reference(card);
 
-(snip)
-Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        3
-      bAlternateSetting       3
-      bNumEndpoints           1
-      bInterfaceClass         1 Audio
-      bInterfaceSubClass      2 Streaming
-      bInterfaceProtocol      0
-      iInterface              0
-      AudioStreaming Interface Descriptor:
-        bLength                 7
-        bDescriptorType        36
-        bDescriptorSubtype      1 (AS_GENERAL)
-        bTerminalLink           8
-        bDelay                  1 frames
-        wFormatTag         0x0001 PCM
-      AudioStreaming Interface Descriptor:
-        bLength                11
-        bDescriptorType        36
-        bDescriptorSubtype      2 (FORMAT_TYPE)
-        bFormatType             1 (FORMAT_TYPE_I)
-        bNrChannels             1
-        bSubframeSize           2
-        bBitResolution         16
-        bSamFreqType            1 Discrete
-        tSamFreq[ 0]        44100
-      Endpoint Descriptor:
-        bLength                 9
-        bDescriptorType         5
-        bEndpointAddress     0x86  EP 6 IN
-        bmAttributes            5
-          Transfer Type            Isochronous
-          Synch Type               Asynchronous
-          Usage Type               Data
-        wMaxPacketSize     0x005c  1x 92 bytes
-        bInterval               4
-        bRefresh                0
-        bSynchAddress           0
-        AudioStreaming Endpoint Descriptor:
-          bLength                 7
-          bDescriptorType        37
-          bDescriptorSubtype      1 (EP_GENERAL)
-          bmAttributes         0x01
-            Sampling Frequency
-          bLockDelayUnits         0 Undefined
-          wLockDelay         0x0000
-(snip)
+		return ret;
+	}
 
-Based on the usb data about manufacturer, SPCA2281B3 is the most likely controller IC
-Manufacturer does not provide link for datasheet nor detailed specs.
-No way to confirm if the firmware supports any other way of getting the sample rate.
+Both case are using (C) part, and it calls (D) when err case.
+But (D) will do nothing for (B) case.
+Because of these behavior, current code itself is not wrong,
+but is confusable, and more, static analyzing tool will warning on
+(B) part (should use goto err).
 
-Testing patch provides consistent good sound recording quality and volume range.
+To avoid static analyzing tool warning, this patch uses "goto err"
+on (B) part.
 
-(snip)
-[  +0.045764] usb 5-1: new high-speed USB device number 2 using xhci_hcd
-[  +0.106290] usb 5-1: New USB device found, idVendor=1bcf, idProduct=2283, bcdDevice=12.17
-[  +0.000006] usb 5-1: New USB device strings: Mfr=1, Product=2, SerialNumber=3
-[  +0.000004] usb 5-1: Product: NexiGo N930AF FHD Webcam
-[  +0.000003] usb 5-1: Manufacturer: SHENZHEN AONI ELECTRONIC CO., LTD
-[  +0.000004] usb 5-1: SerialNumber: 20201217011
-[  +0.043700] usb 5-1: set resolution quirk: cval->res = 16
-[  +0.002585] usb 5-1: Found UVC 1.00 device NexiGo N930AF FHD Webcam (1bcf:2283)
-
-Signed-off-by: Christos Skevis <xristos.thes@gmail.com>
-Link: https://lore.kernel.org/r/20231006155330.399393-1-xristos.thes@gmail.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Link: https://lore.kernel.org/r/87o7hy7mlh.wl-kuninori.morimoto.gx@renesas.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/usb/mixer.c  | 7 +++++++
- sound/usb/quirks.c | 2 ++
- 2 files changed, 9 insertions(+)
+ sound/soc/generic/simple-card.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-index 9105ec623120a..783a2493707ea 100644
---- a/sound/usb/mixer.c
-+++ b/sound/usb/mixer.c
-@@ -1204,6 +1204,13 @@ static void volume_control_quirks(struct usb_mixer_elem_info *cval,
- 			cval->res = 16;
+diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
+index fbb682747f598..a8bc4e45816df 100644
+--- a/sound/soc/generic/simple-card.c
++++ b/sound/soc/generic/simple-card.c
+@@ -678,10 +678,12 @@ static int asoc_simple_probe(struct platform_device *pdev)
+ 		struct snd_soc_dai_link *dai_link = priv->dai_link;
+ 		struct simple_dai_props *dai_props = priv->dai_props;
+ 
++		ret = -EINVAL;
++
+ 		cinfo = dev->platform_data;
+ 		if (!cinfo) {
+ 			dev_err(dev, "no info for asoc-simple-card\n");
+-			return -EINVAL;
++			goto err;
  		}
- 		break;
-+	case USB_ID(0x1bcf, 0x2283): /* NexiGo N930AF FHD Webcam */
-+		if (!strcmp(kctl->id.name, "Mic Capture Volume")) {
-+			usb_audio_info(chip,
-+				"set resolution quirk: cval->res = 16\n");
-+			cval->res = 16;
-+		}
-+		break;
- 	}
- }
  
-diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
-index d4bbef70d2f7b..4e64842245e19 100644
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -2177,6 +2177,8 @@ static const struct usb_audio_quirk_flags_table quirk_flags_table[] = {
- 		   QUIRK_FLAG_FIXED_RATE),
- 	DEVICE_FLG(0x0ecb, 0x2069, /* JBL Quantum810 Wireless */
- 		   QUIRK_FLAG_FIXED_RATE),
-+	DEVICE_FLG(0x1bcf, 0x2283, /* NexiGo N930AF FHD Webcam */
-+		   QUIRK_FLAG_GET_SAMPLE_RATE),
+ 		if (!cinfo->name ||
+@@ -690,7 +692,7 @@ static int asoc_simple_probe(struct platform_device *pdev)
+ 		    !cinfo->platform ||
+ 		    !cinfo->cpu_dai.name) {
+ 			dev_err(dev, "insufficient asoc_simple_card_info settings\n");
+-			return -EINVAL;
++			goto err;
+ 		}
  
- 	/* Vendor matches */
- 	VENDOR_FLG(0x045e, /* MS Lifecam */
+ 		cpus			= dai_link->cpus;
 -- 
 2.40.1
 
