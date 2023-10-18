@@ -4,55 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 82BB2CDB47E
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Oct 2023 14:17:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 92659CDB47E
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Oct 2023 14:17:54 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 45F77DE5;
-	Wed, 18 Oct 2023 16:16:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 45F77DE5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 34F2BE96;
+	Wed, 18 Oct 2023 16:17:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 34F2BE96
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1697638655;
-	bh=xhe2Gk9/so7Dk4aG/o7O2fARwvb4ekg9Yn1UVfoNetc=;
+	s=default; t=1697638672;
+	bh=mfNwd8a18pGzt/476le4pukhmP7xf/WAildRBkKKafA=;
 	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=FyxDy/zp2zkWX9GbBe/BKN+uz/l+0ujhIzagyVIvkqNuJHiDWROOFxkL++u2qi57R
-	 Clf8Dvvany1mcQD0X0H76MoWcfrfaWBFQ10W3rJLg/C+Fol/uray+pCz1wdqT5QGhO
-	 tP243CUR9/gjLx2Wg47LwaYqfZhh+Bc6yDCSKwps=
+	b=t9zLT+vVXT7/SAE45WhyJCjSI07l/RBaqz/6AIoy91tafXU/nyQJaA6IMNG+6bor6
+	 OO3Nm4Qh3aNDYiE7K9iCbBuNgRw2CL5XVSsU9dCn8KeZ5lQu83oAd0RXkN5SwFNVEU
+	 rlqTtP9Ik9QoXgrFGRE7ZQiaWOGcDhDI+pq1qF3Q=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AAF6DF8024E; Wed, 18 Oct 2023 16:16:07 +0200 (CEST)
+	id 436A9F80580; Wed, 18 Oct 2023 16:16:24 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 60733F80536;
-	Wed, 18 Oct 2023 16:16:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DC962F80579;
+	Wed, 18 Oct 2023 16:16:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id EBD44F8032D; Wed, 18 Oct 2023 16:16:03 +0200 (CEST)
+	id 461DFF80564; Wed, 18 Oct 2023 16:16:20 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 69C4FF8024E
-	for <alsa-devel@alsa-project.org>; Wed, 18 Oct 2023 16:15:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 69C4FF8024E
+	by alsa1.perex.cz (Postfix) with ESMTPS id 73497F8027B
+	for <alsa-devel@alsa-project.org>; Wed, 18 Oct 2023 16:16:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 73497F8027B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=JtgKlnQZ
+ header.s=k20201202 header.b=loM5Ep0B
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 1ADE661812;
-	Wed, 18 Oct 2023 14:15:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35874C433AB;
-	Wed, 18 Oct 2023 14:15:50 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 60004617EF;
+	Wed, 18 Oct 2023 14:16:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E840C433C9;
+	Wed, 18 Oct 2023 14:16:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1697638551;
-	bh=xhe2Gk9/so7Dk4aG/o7O2fARwvb4ekg9Yn1UVfoNetc=;
+	s=k20201202; t=1697638577;
+	bh=mfNwd8a18pGzt/476le4pukhmP7xf/WAildRBkKKafA=;
 	h=From:To:Cc:Subject:Date:From;
-	b=JtgKlnQZLhkRaJ4tXrr7Ay95pAFRLkMkfSJEFyDMu1fCc/ESZZv97JG1PHHlZYd2g
-	 KtErJ9E4Nz2LI0kBS4b6FLzW4oYO2soCgpfe3uHV8liXBom5dlEktKGozA7/tGsrN/
-	 kmagNMxZQxBm2zlTZZbtWNagdiNYABBnE6BgerPP6MgxZCS6fJBWX1Asz7L/AFM56R
-	 yZRluvCrFo6z1pEkIN4ZHe0UY9CddZyitlP8xdf/zA9qoBRgeHRCEahhyG+t9KExUN
-	 5vU9mVmn2Nb0yxBTrBUr2y0DU/LPAiEkWCBfvIN82ywvblSId9Upe7Y0qGZ6bwr/Fy
-	 62P1rnc+/dnnw==
+	b=loM5Ep0BKd1itNamwAUkp0Jqptl05SFilNLMZuRvU5H3mgbCEBDfwDLNqE7r/ReAd
+	 NVv+YVn6KCgaJSDySUbRimuON8yBydsNn4Y9R6AgPWI11eeVZwvmlF0wvEA5yrP+Ay
+	 9XEuzjYtMmwy/QcEBetCEdNQCpk9Djri8oRy1SGEv3dMq0GlNr/JCa1aFCnlWYK6Kc
+	 IVhwMPz47KkCCDGnAp4/mVxx7w+CHN9FW3UN13/cnY5eh6OldmuuESr4SmqljDedHP
+	 28bEn/cLVOkADYnBIcqWThi73+1tCiTUw2hjGPxF8qAb+x9WurnXaDZumJerL/2lJL
+	 5+8v/F/THh07w==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -65,23 +65,22 @@ Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
 	perex@perex.cz,
 	tiwai@suse.com,
 	herve.codina@bootlin.com,
-	spujar@nvidia.com,
-	christophe.leroy@csgroup.eu,
 	astrid.rost@axis.com,
+	christophe.leroy@csgroup.eu,
 	aidanmacdonald.0x0@gmail.com,
 	alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 4.19 1/7] ASoC: simple-card: fixup asoc_simple_probe()
+Subject: [PATCH AUTOSEL 4.14 1/7] ASoC: simple-card: fixup asoc_simple_probe()
  error handling
-Date: Wed, 18 Oct 2023 10:15:40 -0400
-Message-Id: <20231018141548.1335665-1-sashal@kernel.org>
+Date: Wed, 18 Oct 2023 10:16:06 -0400
+Message-Id: <20231018141613.1335848-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 4.19.296
+X-stable-base: Linux 4.14.327
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: HEQB67AI7SPDSH42R4I4PGZEBQ3ALC2J
-X-Message-ID-Hash: HEQB67AI7SPDSH42R4I4PGZEBQ3ALC2J
+Message-ID-Hash: IBUFLK4NHZCHLDZP27RF2E5TFCMWLG7P
+X-Message-ID-Hash: IBUFLK4NHZCHLDZP27RF2E5TFCMWLG7P
 X-MailFrom: sashal@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -94,7 +93,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HEQB67AI7SPDSH42R4I4PGZEBQ3ALC2J/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IBUFLK4NHZCHLDZP27RF2E5TFCMWLG7P/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -154,10 +153,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 4 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
-index 64bf3560c1d1c..7567ee380283e 100644
+index 6959a74a6f491..c5db2d9d44edd 100644
 --- a/sound/soc/generic/simple-card.c
 +++ b/sound/soc/generic/simple-card.c
-@@ -404,10 +404,12 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
+@@ -441,10 +441,12 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
  	} else {
  		struct asoc_simple_card_info *cinfo;
  
@@ -171,7 +170,7 @@ index 64bf3560c1d1c..7567ee380283e 100644
  		}
  
  		if (!cinfo->name ||
-@@ -416,7 +418,7 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
+@@ -453,7 +455,7 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
  		    !cinfo->platform ||
  		    !cinfo->cpu_dai.name) {
  			dev_err(dev, "insufficient asoc_simple_card_info settings\n");
