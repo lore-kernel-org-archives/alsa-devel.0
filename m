@@ -4,87 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0D7DECDB47E
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Oct 2023 14:16:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1CE08C46CA1
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Oct 2023 14:17:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2D31BDEF;
-	Wed, 18 Oct 2023 16:16:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2D31BDEF
+	by alsa0.perex.cz (Postfix) with ESMTPS id E6DDCE87;
+	Wed, 18 Oct 2023 16:16:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E6DDCE87
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1697638611;
-	bh=796xjHRgACtWtfW3sAcxykDptmTcmm4wRc2jV6UgKrk=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=pQr48NEPJDiFEZZghAX6izrzt1xsCdNFKbscSw6Bpf3kzHUALCRSSnt8cGzVuItHw
-	 Gv6AnQ8UthSrychst6SYBqZ7BGYp/4Yf25Y5zUTQqURAkMz4UrgJ5SnvYqF8HJpjlu
-	 toPx/aVmKKLsT020v4awZ0BFDQwyyLQI5PhgtX2c=
+	s=default; t=1697638619;
+	bh=Yn57Ag2OKGJtanQWylEtemHP6MhQcFPm09SQigVKxTE=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=qHTbcWw0AeacpXSMkkISNKEW5PuIEjQrYHJW6FggyK/PUjHiiSz3Ce6D8nmnLh31g
+	 Vf3LSU5gIfCP8Kx2yhgsid9bneO+cbF9iXtLEY4D6ALmPdWbxHgzdzZVA6zwYZzhdl
+	 2unMXJvCICLcQp3bp8zbPMJwXbigiksQdVlRJu/4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5C854F805AF; Wed, 18 Oct 2023 16:14:48 +0200 (CEST)
+	id 00685F805BF; Wed, 18 Oct 2023 16:14:51 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id AEC1FF80558;
-	Wed, 18 Oct 2023 16:14:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 53020F80589;
+	Wed, 18 Oct 2023 16:14:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C0BE9F805B2; Wed, 18 Oct 2023 16:14:43 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+	id 7BD04F80571; Wed, 18 Oct 2023 16:14:44 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7D856F8025F
-	for <alsa-devel@alsa-project.org>; Wed, 18 Oct 2023 16:13:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7D856F8025F
+	by alsa1.perex.cz (Postfix) with ESMTPS id 76983F80564
+	for <alsa-devel@alsa-project.org>; Wed, 18 Oct 2023 16:14:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 76983F80564
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=NjR+kwOL
+ header.s=k20201202 header.b=FmqJ/r9b
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by ams.source.kernel.org (Postfix) with ESMTP id E71DDB82357;
-	Wed, 18 Oct 2023 14:13:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA447C433CA;
-	Wed, 18 Oct 2023 14:13:25 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 2FECB61806;
+	Wed, 18 Oct 2023 14:14:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49ECCC433CC;
+	Wed, 18 Oct 2023 14:14:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1697638407;
-	bh=796xjHRgACtWtfW3sAcxykDptmTcmm4wRc2jV6UgKrk=;
-	h=From:To:Cc:Subject:Date:From;
-	b=NjR+kwOLLCeYBUugVTiR2hBOx9Atkk6nXgECb9mfn+ryOM58c20dpD3BiPXukFxYb
-	 UvyoJplG655wbX3LhLqqcmL6ywxRWDAppDwIHVFoHkUCoCkmp2Gy4YMXwOqb97FGKI
-	 cDtE1CvAAte4A7xaLYHmj8FuVGnfrLWa6xht+Quu9Icrt24gburP/+t1GlHhx76/E7
-	 V/8EGzamVK4k+Mm1rfxKLaR63AXouaDUAq9a4UKOjAnt/E5QgpwwVNrQfX820sfRpc
-	 uBH3woeozgSQ9rAhLy1sgx9QIv9yLAqJXBXI1G+i4Gs+dZrgSjESMx/YHBxQYL10le
-	 iJQ23O00Ak6aw==
+	s=k20201202; t=1697638469;
+	bh=Yn57Ag2OKGJtanQWylEtemHP6MhQcFPm09SQigVKxTE=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=FmqJ/r9bmGlTTuYCaHV/0abW6sYcPSIfpYI+NhZLuJXqh/tdTRKKx0VvsuG++H5Fe
+	 cASlC4FSYgvaDnz6+Dax3Vsk8c66k5QLrVNRVg7Uqjk6MmQ8WIUINIKu6rlOPJ6vqE
+	 qiUXJr36tdK4Z7TiT6NhX4tKDCMiyZPAEeF8F23M/tAYxaAoZgVHett6noY0YbgH5d
+	 lcCulye/a8iYH6hO0dcq5fCqebrWBwrt2OqynPuTLvquigQDiPbiDAReQxISaalZLz
+	 txMiSTaXHHayvGp5jGGpUilqqszu8/EpxkTOVGY3ZCdLbhYamF2Az3WxRoJvgYsOo+
+	 AB9vh4tQVq9NA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-	Chao Song <chao.song@linux.intel.com>,
-	Bard Liao <yung-chuan.liao@linux.intel.com>,
-	Mark Brown <broonie@kernel.org>,
+Cc: WhaleChang <whalechang@google.com>,
+	Takashi Iwai <tiwai@suse.de>,
 	Sasha Levin <sashal@kernel.org>,
-	cezary.rojewski@intel.com,
-	liam.r.girdwood@linux.intel.com,
-	peter.ujfalusi@linux.intel.com,
-	ranjani.sridharan@linux.intel.com,
-	kai.vehmanen@linux.intel.com,
 	perex@perex.cz,
 	tiwai@suse.com,
-	ckeepax@opensource.cirrus.com,
-	gongjun.song@intel.com,
-	uday.m.bhat@intel.com,
+	jussi@sonarnerd.net,
+	aichao@kylinos.cn,
+	ltyl@hem-e.com,
+	john@keeping.me.uk,
 	alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 6.1 01/19] ASoC: Intel: sof_sdw: add support for SKU
- 0B14
-Date: Wed, 18 Oct 2023 10:13:03 -0400
-Message-Id: <20231018141323.1334898-1-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 05/14] ALSA: usb-audio: Fix microphone sound on
+ Opencomm2 Headset
+Date: Wed, 18 Oct 2023 10:14:05 -0400
+Message-Id: <20231018141416.1335165-5-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20231018141416.1335165-1-sashal@kernel.org>
+References: <20231018141416.1335165-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.1.58
+X-stable-base: Linux 5.15.135
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: VPDKLQRNXMO2XSDNXSEPOUAAGHO5A6JG
-X-Message-ID-Hash: VPDKLQRNXMO2XSDNXSEPOUAAGHO5A6JG
+Message-ID-Hash: OIAGBZKGW6XCHGTX5OBJASNEZTWYGFKY
+X-Message-ID-Hash: OIAGBZKGW6XCHGTX5OBJASNEZTWYGFKY
 X-MailFrom: sashal@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -97,7 +93,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VPDKLQRNXMO2XSDNXSEPOUAAGHO5A6JG/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OIAGBZKGW6XCHGTX5OBJASNEZTWYGFKY/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -106,44 +102,46 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+From: WhaleChang <whalechang@google.com>
 
-[ Upstream commit fb0b8d299781be8d46b3612aa96cef28da0d93f4 ]
+[ Upstream commit 6a83d6f3bb3c329a73e3483651fb77b78bac1878 ]
 
-One more missing SKU in the list.
+When a Opencomm2 Headset is connected to a Bluetooth USB dongle,
+the audio playback functions properly, but the microphone does not work.
 
-Closes: https://github.com/thesofproject/linux/issues/4543
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Chao Song <chao.song@linux.intel.com>
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Link: https://lore.kernel.org/r/20230919092125.1922468-1-yung-chuan.liao@linux.intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+In the dmesg logs, there are messages indicating that the init_pitch
+function fails when the capture process begins.
+
+The microphone only functions when the ep pitch control is not set.
+
+Toggling the pitch control off bypasses the init_piatch function
+and allows the microphone to work.
+
+Signed-off-by: WhaleChang <whalechang@google.com>
+Link: https://lore.kernel.org/r/20231006044852.4181022-1-whalechang@google.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/intel/boards/sof_sdw.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ sound/usb/quirks.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
-index 414ac90273810..985012f2003e2 100644
---- a/sound/soc/intel/boards/sof_sdw.c
-+++ b/sound/soc/intel/boards/sof_sdw.c
-@@ -347,6 +347,16 @@ static const struct dmi_system_id sof_sdw_quirk_table[] = {
- 		/* No Jack */
- 		.driver_data = (void *)SOF_SDW_TGL_HDMI,
- 	},
-+	{
-+		.callback = sof_sdw_quirk_cb,
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc"),
-+			DMI_EXACT_MATCH(DMI_PRODUCT_SKU, "0B14"),
-+		},
-+		/* No Jack */
-+		.driver_data = (void *)SOF_SDW_TGL_HDMI,
-+	},
-+
- 	{
- 		.callback = sof_sdw_quirk_cb,
- 		.matches = {
+diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+index 8de572e774ddc..6d87f58d1b005 100644
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -1725,7 +1725,11 @@ void snd_usb_audioformat_attributes_quirk(struct snd_usb_audio *chip,
+ 		/* mic works only when ep packet size is set to wMaxPacketSize */
+ 		fp->attributes |= UAC_EP_CS_ATTR_FILL_MAX;
+ 		break;
+-
++	case USB_ID(0x3511, 0x2b1e): /* Opencomm2 UC USB Bluetooth dongle */
++		/* mic works only when ep pitch control is not set */
++		if (stream == SNDRV_PCM_STREAM_CAPTURE)
++			fp->attributes &= ~UAC_EP_CS_ATTR_PITCH_CONTROL;
++		break;
+ 	}
+ }
+ 
 -- 
 2.40.1
 
