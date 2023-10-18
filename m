@@ -4,84 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A2D6CCDB47E
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Oct 2023 14:16:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0D7DECDB47E
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Oct 2023 14:16:53 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C6165E0D;
-	Wed, 18 Oct 2023 16:15:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C6165E0D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2D31BDEF;
+	Wed, 18 Oct 2023 16:16:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2D31BDEF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1697638593;
-	bh=o+7gCIMFWumcttxAXJYyOmrU3M5hjNZke0ch/ryC5EI=;
+	s=default; t=1697638611;
+	bh=796xjHRgACtWtfW3sAcxykDptmTcmm4wRc2jV6UgKrk=;
 	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=AqVB/GffuEHaq4Gz7TNHnigi61Tj1gMpYDNiDQz9fwUUroREHAYiGsr14Yn7JaEPs
-	 jPndjRNSlnOwuKjCrESXbZ882/9JOxKVSYgnCfKlUM4U0xWi3Y6MX5zlkKbOAA0Hew
-	 WzpgSwGuoQk3uMn8CgSQnk1Yj73q3OczJUh1qQmM=
+	b=pQr48NEPJDiFEZZghAX6izrzt1xsCdNFKbscSw6Bpf3kzHUALCRSSnt8cGzVuItHw
+	 Gv6AnQ8UthSrychst6SYBqZ7BGYp/4Yf25Y5zUTQqURAkMz4UrgJ5SnvYqF8HJpjlu
+	 toPx/aVmKKLsT020v4awZ0BFDQwyyLQI5PhgtX2c=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6D35DF805A8; Wed, 18 Oct 2023 16:14:28 +0200 (CEST)
+	id 5C854F805AF; Wed, 18 Oct 2023 16:14:48 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E3A56F8059F;
-	Wed, 18 Oct 2023 16:14:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AEC1FF80558;
+	Wed, 18 Oct 2023 16:14:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 53ED4F8059F; Wed, 18 Oct 2023 16:14:24 +0200 (CEST)
+	id C0BE9F805B2; Wed, 18 Oct 2023 16:14:43 +0200 (CEST)
 Received: from ams.source.kernel.org (ams.source.kernel.org
  [IPv6:2604:1380:4601:e00::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 82C40F80558
-	for <alsa-devel@alsa-project.org>; Wed, 18 Oct 2023 16:14:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 82C40F80558
+	by alsa1.perex.cz (Postfix) with ESMTPS id 7D856F8025F
+	for <alsa-devel@alsa-project.org>; Wed, 18 Oct 2023 16:13:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7D856F8025F
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=VPjsCjAd
+ header.s=k20201202 header.b=NjR+kwOL
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by ams.source.kernel.org (Postfix) with ESMTP id 0613BB823D7;
-	Wed, 18 Oct 2023 14:14:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 740A5C433CD;
-	Wed, 18 Oct 2023 14:14:18 +0000 (UTC)
+	by ams.source.kernel.org (Postfix) with ESMTP id E71DDB82357;
+	Wed, 18 Oct 2023 14:13:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA447C433CA;
+	Wed, 18 Oct 2023 14:13:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1697638460;
-	bh=o+7gCIMFWumcttxAXJYyOmrU3M5hjNZke0ch/ryC5EI=;
+	s=k20201202; t=1697638407;
+	bh=796xjHRgACtWtfW3sAcxykDptmTcmm4wRc2jV6UgKrk=;
 	h=From:To:Cc:Subject:Date:From;
-	b=VPjsCjAdDVn8Mlxzqs28RVQatmCPs0I12BvYmIHefJxcgHg113VGypM37Ykf39EO9
-	 QWEXqKv47Ml6eic0IraoACJkZ/Mt99Cm9GxslfRJnySTN/+ls0vLBOO4AQxm3Pf2QD
-	 3T/WqzLvacxjBwJ91WN77+f1rhopMfAGYbeT4dekv6nOU38LlS6E1AwG/bwtLVN6bu
-	 q2Bfz9MiBEoMF4meLhSWubY4UpJrFWsLs/cmhwJdhrrXYBIyQI1OoTbKP9aMmRNIZS
-	 qlma2etsO77gFn293fZx0RbrBSfqKbGELv4ZMYtj15JNA9v7U5Bao3u/pOAXLjADtC
-	 3kyGZNoLqEHUg==
+	b=NjR+kwOLLCeYBUugVTiR2hBOx9Atkk6nXgECb9mfn+ryOM58c20dpD3BiPXukFxYb
+	 UvyoJplG655wbX3LhLqqcmL6ywxRWDAppDwIHVFoHkUCoCkmp2Gy4YMXwOqb97FGKI
+	 cDtE1CvAAte4A7xaLYHmj8FuVGnfrLWa6xht+Quu9Icrt24gburP/+t1GlHhx76/E7
+	 V/8EGzamVK4k+Mm1rfxKLaR63AXouaDUAq9a4UKOjAnt/E5QgpwwVNrQfX820sfRpc
+	 uBH3woeozgSQ9rAhLy1sgx9QIv9yLAqJXBXI1G+i4Gs+dZrgSjESMx/YHBxQYL10le
+	 iJQ23O00Ak6aw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-	kernel test robot <lkp@intel.com>,
-	Dan Carpenter <dan.carpenter@linaro.org>,
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+	Chao Song <chao.song@linux.intel.com>,
+	Bard Liao <yung-chuan.liao@linux.intel.com>,
 	Mark Brown <broonie@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	lgirdwood@gmail.com,
+	cezary.rojewski@intel.com,
+	liam.r.girdwood@linux.intel.com,
+	peter.ujfalusi@linux.intel.com,
+	ranjani.sridharan@linux.intel.com,
+	kai.vehmanen@linux.intel.com,
 	perex@perex.cz,
 	tiwai@suse.com,
-	herve.codina@bootlin.com,
-	spujar@nvidia.com,
-	aidanmacdonald.0x0@gmail.com,
-	astrid.rost@axis.com,
+	ckeepax@opensource.cirrus.com,
+	gongjun.song@intel.com,
+	uday.m.bhat@intel.com,
 	alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 5.15 01/14] ASoC: simple-card: fixup
- asoc_simple_probe() error handling
-Date: Wed, 18 Oct 2023 10:14:01 -0400
-Message-Id: <20231018141416.1335165-1-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.1 01/19] ASoC: Intel: sof_sdw: add support for SKU
+ 0B14
+Date: Wed, 18 Oct 2023 10:13:03 -0400
+Message-Id: <20231018141323.1334898-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.15.135
+X-stable-base: Linux 6.1.58
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: LRGHSZEW7NNBHJEAIWBBVPSAP3ID4CNT
-X-Message-ID-Hash: LRGHSZEW7NNBHJEAIWBBVPSAP3ID4CNT
+Message-ID-Hash: VPDKLQRNXMO2XSDNXSEPOUAAGHO5A6JG
+X-Message-ID-Hash: VPDKLQRNXMO2XSDNXSEPOUAAGHO5A6JG
 X-MailFrom: sashal@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -94,7 +97,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LRGHSZEW7NNBHJEAIWBBVPSAP3ID4CNT/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VPDKLQRNXMO2XSDNXSEPOUAAGHO5A6JG/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -103,83 +106,44 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-[ Upstream commit 41bae58df411f9accf01ea660730649b2fab1dab ]
+[ Upstream commit fb0b8d299781be8d46b3612aa96cef28da0d93f4 ]
 
-asoc_simple_probe() is used for both "DT probe" (A) and "platform probe"
-(B). It uses "goto err" when error case, but it is not needed for
-"platform probe" case (B). Thus it is using "return" directly there.
+One more missing SKU in the list.
 
-	static int asoc_simple_probe(...)
-	{
- ^		if (...) {
- |			...
-(A)			if (ret < 0)
- |				goto err;
- v		} else {
- ^			...
- |			if (ret < 0)
-(B)				return -Exxx;
- v		}
-
-		...
- ^		if (ret < 0)
-(C)			goto err;
- v		...
-
-	err:
-(D)		simple_util_clean_reference(card);
-
-		return ret;
-	}
-
-Both case are using (C) part, and it calls (D) when err case.
-But (D) will do nothing for (B) case.
-Because of these behavior, current code itself is not wrong,
-but is confusable, and more, static analyzing tool will warning on
-(B) part (should use goto err).
-
-To avoid static analyzing tool warning, this patch uses "goto err"
-on (B) part.
-
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Link: https://lore.kernel.org/r/87o7hy7mlh.wl-kuninori.morimoto.gx@renesas.com
+Closes: https://github.com/thesofproject/linux/issues/4543
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Chao Song <chao.song@linux.intel.com>
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Link: https://lore.kernel.org/r/20230919092125.1922468-1-yung-chuan.liao@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/generic/simple-card.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ sound/soc/intel/boards/sof_sdw.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
-index 283aa21879aa5..95e4c53cd90c7 100644
---- a/sound/soc/generic/simple-card.c
-+++ b/sound/soc/generic/simple-card.c
-@@ -680,10 +680,12 @@ static int asoc_simple_probe(struct platform_device *pdev)
- 		struct snd_soc_dai_link *dai_link = priv->dai_link;
- 		struct simple_dai_props *dai_props = priv->dai_props;
- 
-+		ret = -EINVAL;
+diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
+index 414ac90273810..985012f2003e2 100644
+--- a/sound/soc/intel/boards/sof_sdw.c
++++ b/sound/soc/intel/boards/sof_sdw.c
+@@ -347,6 +347,16 @@ static const struct dmi_system_id sof_sdw_quirk_table[] = {
+ 		/* No Jack */
+ 		.driver_data = (void *)SOF_SDW_TGL_HDMI,
+ 	},
++	{
++		.callback = sof_sdw_quirk_cb,
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc"),
++			DMI_EXACT_MATCH(DMI_PRODUCT_SKU, "0B14"),
++		},
++		/* No Jack */
++		.driver_data = (void *)SOF_SDW_TGL_HDMI,
++	},
 +
- 		cinfo = dev->platform_data;
- 		if (!cinfo) {
- 			dev_err(dev, "no info for asoc-simple-card\n");
--			return -EINVAL;
-+			goto err;
- 		}
- 
- 		if (!cinfo->name ||
-@@ -692,7 +694,7 @@ static int asoc_simple_probe(struct platform_device *pdev)
- 		    !cinfo->platform ||
- 		    !cinfo->cpu_dai.name) {
- 			dev_err(dev, "insufficient asoc_simple_card_info settings\n");
--			return -EINVAL;
-+			goto err;
- 		}
- 
- 		cpus			= dai_link->cpus;
+ 	{
+ 		.callback = sof_sdw_quirk_cb,
+ 		.matches = {
 -- 
 2.40.1
 
