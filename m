@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C01D0CDB465
-	for <alsa-devel@archiver.kernel.org>; Thu, 19 Oct 2023 17:37:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8A644CDB465
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 Oct 2023 17:37:49 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 02465A4D;
-	Thu, 19 Oct 2023 19:36:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 02465A4D
+	by alsa0.perex.cz (Postfix) with ESMTPS id B40C6DFA;
+	Thu, 19 Oct 2023 19:36:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B40C6DFA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1697737055;
-	bh=1yf54dellcqsfaGDqZHU10FeruGNInLonMi8h0y1HMc=;
+	s=default; t=1697737067;
+	bh=UZw8c8lePrR6c5zXowSz3roHTeecjN2ZGJPcxGBPDtQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=imAsGw8SndVFdyFz5TBGNogG9QmMnRKkACzpNbyyVssSUEbTHEB3M+aU7zciPAqiB
-	 WEeUkntwr0ORr644QVOsfBgTNwcBCNDc1sVmM4PgvRE/Wg+5GVsDge/5sMBELeuQt0
-	 l6QQsLplCCYGGtSwqMpOgtSBPsZceFp8Jir2vdQQ=
+	b=HkVckFTTiVOCLEbskQ3PuaKvzD4Lq2G0kzBkxZIyBvO/A6asTYFp9/cnfXjwZ9VXY
+	 w57sBUbHmqoLAzijcPYwPY58y05BYodPQaBpRwyGyZzOcCmAmTSv7xwfV2OnCPU03e
+	 XuupsPEvWKU26I0vFEmVxtIGIKg6Vmvn0n6CbdIY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6B227F805C6; Thu, 19 Oct 2023 19:34:56 +0200 (CEST)
+	id 46A42F805C7; Thu, 19 Oct 2023 19:34:59 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id EA227F805C2;
-	Thu, 19 Oct 2023 19:34:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 03697F805D3;
+	Thu, 19 Oct 2023 19:34:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1E0EDF805A9; Thu, 19 Oct 2023 19:34:48 +0200 (CEST)
+	id B4942F805B5; Thu, 19 Oct 2023 19:34:51 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 13B8BF80536
-	for <alsa-devel@alsa-project.org>; Thu, 19 Oct 2023 19:34:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 13B8BF80536
+	by alsa1.perex.cz (Postfix) with ESMTPS id 38A82F80557
+	for <alsa-devel@alsa-project.org>; Thu, 19 Oct 2023 19:34:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 38A82F80557
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=JA/BgPZn
+ header.s=Intel header.b=fz7fhsjw
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697736875; x=1729272875;
+  t=1697736878; x=1729272878;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=1yf54dellcqsfaGDqZHU10FeruGNInLonMi8h0y1HMc=;
-  b=JA/BgPZnO9gMnkzmVW1CVb9ucyTj7aOfCA7Y8MOhsodMnbla8ODPAQLV
-   g9s/BeVni6sPQhzpi1voLOIaBOPDHCSA5lvGzBJS25AQYNThIL/xNym3w
-   qeZ9oN5Inz06WzflV6SCEUP3UP0JyiVt5rxVkm+CKGpjWisix0Q6vltDr
-   uPNE2QJMNo+paa5bYbohQaMUIEAcRT+e7D7/H/npZxYIMM33p+aSKbNN1
-   8KVICBdmCkV7DGS2YC38w0BybTatkmZFCAWEUi7i3XpEo1Q2OhcnsUkk6
-   n/8itKnoL5fddIq4AhmhopEAZ3ZjF4pEYrgwrW6R9WKj52tgTUOpoy/uQ
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="7884349"
+  bh=UZw8c8lePrR6c5zXowSz3roHTeecjN2ZGJPcxGBPDtQ=;
+  b=fz7fhsjwfLenohXQcUqj3c4Eab1KJvOpj2vrNfjPcwt2iyouHZEDKjCM
+   9tI9LQdvzThc5OZMEHKknIktvDRUvbjvo/O3uKViSPMfzAd/WjyOTWi/b
+   /Gl2zQxNFV85Iiuq4Ow5WxJMn0g43uLhQc+bpFCFM9qNWQB6kYygcoCUb
+   r4G1mIA/fak7yGn/qntI/UVJIZ7xNnfns+A7ijxUKXVMx/xDZ5hpOWF1I
+   IbBIvOgouRH4RzlAdyl5pfoDobi4LeaLYnPGFrr3NBkMshx7O6GWSZYhs
+   HykKTiAaqy3HjYe/nIavnzUc5yOdOWJxz8QR7QPzhKlSoiMnU+RvvSSn2
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="7884380"
 X-IronPort-AV: E=Sophos;i="6.03,237,1694761200";
-   d="scan'208";a="7884349"
+   d="scan'208";a="7884380"
 Received: from orsmga001.jf.intel.com ([10.7.209.18])
   by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Oct 2023 10:34:27 -0700
+ 19 Oct 2023 10:34:31 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="792090676"
+X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="792090736"
 X-IronPort-AV: E=Sophos;i="6.03,237,1694761200";
-   d="scan'208";a="792090676"
+   d="scan'208";a="792090736"
 Received: from jihao1-mobl.amr.corp.intel.com (HELO pbossart-mobl3.intel.com)
  ([10.213.163.144])
   by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Oct 2023 10:34:26 -0700
+ 19 Oct 2023 10:34:29 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de,
@@ -72,17 +72,17 @@ Cc: tiwai@suse.de,
 	Brent Lu <brent.lu@intel.com>,
 	Bard Liao <yung-chuan.liao@linux.intel.com>,
 	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 06/10] ASoC: Intel: board_helpers: support dmic link
- initialization
-Date: Thu, 19 Oct 2023 12:34:07 -0500
-Message-Id: <20231019173411.166759-7-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 10/10] ASoC: Intel: sof_ssp_amp: use common module for DMIC
+ links
+Date: Thu, 19 Oct 2023 12:34:11 -0500
+Message-Id: <20231019173411.166759-11-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231019173411.166759-1-pierre-louis.bossart@linux.intel.com>
 References: <20231019173411.166759-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 4SFSZX6TXZ3DMTVBPBZRBCFFVZ2VVNQR
-X-Message-ID-Hash: 4SFSZX6TXZ3DMTVBPBZRBCFFVZ2VVNQR
+Message-ID-Hash: 7SFHWGJ2IVPBZ544JPMTMEWGTHWYIHTF
+X-Message-ID-Hash: 7SFHWGJ2IVPBZ544JPMTMEWGTHWYIHTF
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -95,7 +95,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4SFSZX6TXZ3DMTVBPBZRBCFFVZ2VVNQR/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7SFHWGJ2IVPBZ544JPMTMEWGTHWYIHTF/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -106,167 +106,143 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Brent Lu <brent.lu@intel.com>
 
-Add functions for machine drivers to initialize dmic01 and dmic16k DAI
-links.
+Use intel_board module for dmic01 and dmic16k DAI link initialization.
 
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Signed-off-by: Brent Lu <brent.lu@intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/boards/sof_board_helpers.c | 92 ++++++++++++++++++++++
- sound/soc/intel/boards/sof_board_helpers.h | 10 +++
- 2 files changed, 102 insertions(+)
+ sound/soc/intel/boards/sof_ssp_amp.c | 65 +++++++++-------------------
+ 1 file changed, 21 insertions(+), 44 deletions(-)
 
-diff --git a/sound/soc/intel/boards/sof_board_helpers.c b/sound/soc/intel/boards/sof_board_helpers.c
-index 627742ce84bd..ce2967850c2d 100644
---- a/sound/soc/intel/boards/sof_board_helpers.c
-+++ b/sound/soc/intel/boards/sof_board_helpers.c
-@@ -36,9 +36,49 @@ int sof_intel_board_card_late_probe(struct snd_soc_card *card)
- }
- EXPORT_SYMBOL_NS(sof_intel_board_card_late_probe, SND_SOC_INTEL_SOF_BOARD_HELPERS);
+diff --git a/sound/soc/intel/boards/sof_ssp_amp.c b/sound/soc/intel/boards/sof_ssp_amp.c
+index 23c0d507789c..137ba64254bc 100644
+--- a/sound/soc/intel/boards/sof_ssp_amp.c
++++ b/sound/soc/intel/boards/sof_ssp_amp.c
+@@ -70,15 +70,6 @@ static const struct dmi_system_id chromebook_platforms[] = {
+ 	{},
+ };
  
-+/*
-+ * DMIC DAI Link
-+ */
-+static const struct snd_soc_dapm_widget dmic_widgets[] = {
-+	SND_SOC_DAPM_MIC("SoC DMIC", NULL),
-+};
-+
-+static const struct snd_soc_dapm_route dmic_routes[] = {
-+	{"DMic", NULL, "SoC DMIC"},
-+};
-+
-+static int dmic_init(struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct snd_soc_card *card = rtd->card;
-+	int ret;
-+
-+	ret = snd_soc_dapm_new_controls(&card->dapm, dmic_widgets,
-+					ARRAY_SIZE(dmic_widgets));
-+	if (ret) {
-+		dev_err(rtd->dev, "fail to add dmic widgets, ret %d\n", ret);
-+		return ret;
-+	}
-+
-+	ret = snd_soc_dapm_add_routes(&card->dapm, dmic_routes,
-+				      ARRAY_SIZE(dmic_routes));
-+	if (ret) {
-+		dev_err(rtd->dev, "fail to add dmic routes, ret %d\n", ret);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
- /*
-  * DAI Link Helpers
-  */
-+static struct snd_soc_dai_link_component dmic_component[] = {
-+	{
-+		.name = "dmic-codec",
-+		.dai_name = "dmic-hifi",
-+	}
-+};
-+
- static struct snd_soc_dai_link_component platform_component[] = {
- 	{
- 		/* name might be overridden during probe */
-@@ -46,6 +86,58 @@ static struct snd_soc_dai_link_component platform_component[] = {
+-static const struct snd_soc_dapm_widget sof_ssp_amp_dapm_widgets[] = {
+-	SND_SOC_DAPM_MIC("SoC DMIC", NULL),
+-};
+-
+-static const struct snd_soc_dapm_route sof_ssp_amp_dapm_routes[] = {
+-	/* digital mics */
+-	{"DMic", NULL, "SoC DMIC"},
+-};
+-
+ static int sof_card_late_probe(struct snd_soc_card *card)
+ {
+ 	return sof_intel_board_card_late_probe(card);
+@@ -87,10 +78,6 @@ static int sof_card_late_probe(struct snd_soc_card *card)
+ static struct snd_soc_card sof_ssp_amp_card = {
+ 	.name         = "ssp_amp",
+ 	.owner        = THIS_MODULE,
+-	.dapm_widgets = sof_ssp_amp_dapm_widgets,
+-	.num_dapm_widgets = ARRAY_SIZE(sof_ssp_amp_dapm_widgets),
+-	.dapm_routes = sof_ssp_amp_dapm_routes,
+-	.num_dapm_routes = ARRAY_SIZE(sof_ssp_amp_dapm_routes),
+ 	.fully_routed = true,
+ 	.late_probe = sof_card_late_probe,
+ };
+@@ -102,17 +89,11 @@ static struct snd_soc_dai_link_component platform_component[] = {
  	}
  };
  
-+int sof_intel_board_set_dmic_link(struct device *dev,
-+				  struct snd_soc_dai_link *link, int be_id,
-+				  enum sof_dmic_be_type be_type)
-+{
-+	struct snd_soc_dai_link_component *cpus;
-+
-+	/* cpus */
-+	cpus = devm_kzalloc(dev, sizeof(struct snd_soc_dai_link_component),
-+			    GFP_KERNEL);
-+	if (!cpus)
-+		return -ENOMEM;
-+
-+	switch (be_type) {
-+	case SOF_DMIC_01:
-+		dev_dbg(dev, "link %d: dmic01\n", be_id);
-+
-+		link->name = "dmic01";
-+		cpus->dai_name = "DMIC01 Pin";
-+		break;
-+	case SOF_DMIC_16K:
-+		dev_dbg(dev, "link %d: dmic16k\n", be_id);
-+
-+		link->name = "dmic16k";
-+		cpus->dai_name = "DMIC16k Pin";
-+		break;
-+	default:
-+		dev_err(dev, "invalid be type %d\n", be_type);
-+		return -EINVAL;
-+	}
-+
-+	link->cpus = cpus;
-+	link->num_cpus = 1;
-+
-+	/* codecs */
-+	link->codecs = dmic_component;
-+	link->num_codecs = ARRAY_SIZE(dmic_component);
-+
-+	/* platforms */
-+	link->platforms = platform_component;
-+	link->num_platforms = ARRAY_SIZE(platform_component);
-+
-+	link->id = be_id;
-+	if (be_type == SOF_DMIC_01)
-+		link->init = dmic_init;
-+	link->ignore_suspend = 1;
-+	link->no_pcm = 1;
-+	link->dpcm_capture = 1;
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_NS(sof_intel_board_set_dmic_link, SND_SOC_INTEL_SOF_BOARD_HELPERS);
-+
- int sof_intel_board_set_intel_hdmi_link(struct device *dev,
- 					struct snd_soc_dai_link *link, int be_id,
- 					int hdmi_id, bool idisp_codec)
-diff --git a/sound/soc/intel/boards/sof_board_helpers.h b/sound/soc/intel/boards/sof_board_helpers.h
-index 7a15ddaa3a2c..df99f576c1d8 100644
---- a/sound/soc/intel/boards/sof_board_helpers.h
-+++ b/sound/soc/intel/boards/sof_board_helpers.h
-@@ -28,6 +28,7 @@ struct sof_rt5682_private {
-  * @hdmi: init data for hdmi dai link
-  * @codec_type: type of headset codec
-  * @amp_type: type of speaker amplifier
-+ * @dmic_be_num: number of Intel PCH DMIC BE link
-  * @hdmi_num: number of Intel HDMI BE link
-  * @rt5682: private data for rt5682 machine driver
-  */
-@@ -38,6 +39,7 @@ struct sof_card_private {
- 	enum sof_ssp_codec codec_type;
- 	enum sof_ssp_codec amp_type;
+-static struct snd_soc_dai_link_component dmic_component[] = {
+-	{
+-		.name = "dmic-codec",
+-		.dai_name = "dmic-hifi",
+-	}
+-};
+-
+ /* BE ID defined in sof-tgl-rt1308-hdmi-ssp.m4 */
+ #define HDMI_IN_BE_ID		0
+ #define SPK_BE_ID		2
+ #define DMIC01_BE_ID		3
++#define DMIC16K_BE_ID		4
+ #define INTEL_HDMI_BE_ID	5
  
-+	int dmic_be_num;
- 	int hdmi_num;
- 
- 	union {
-@@ -45,8 +47,16 @@ struct sof_card_private {
- 	};
- };
- 
-+enum sof_dmic_be_type {
-+	SOF_DMIC_01,
-+	SOF_DMIC_16K,
-+};
+ static struct snd_soc_dai_link *
+@@ -207,28 +188,23 @@ sof_card_dai_links_create(struct device *dev, enum sof_ssp_codec amp_type,
+ 	/* dmic */
+ 	if (dmic_be_num > 0) {
+ 		/* at least we have dmic01 */
+-		links[id].name = "dmic01";
+-		links[id].cpus = &cpus[id];
+-		links[id].cpus->dai_name = "DMIC01 Pin";
+-		if (dmic_be_num > 1) {
+-			/* set up 2 BE links at most */
+-			links[id + 1].name = "dmic16k";
+-			links[id + 1].cpus = &cpus[id + 1];
+-			links[id + 1].cpus->dai_name = "DMIC16k Pin";
+-			dmic_be_num = 2;
+-		}
++		be_id = fixed_be ? DMIC01_BE_ID : id;
++		ret = sof_intel_board_set_dmic_link(dev, &links[id], be_id,
++						    SOF_DMIC_01);
++		if (ret)
++			return NULL;
 +
- int sof_intel_board_card_late_probe(struct snd_soc_card *card);
++		id++;
+ 	}
  
-+int sof_intel_board_set_dmic_link(struct device *dev,
-+				  struct snd_soc_dai_link *link, int be_id,
-+				  enum sof_dmic_be_type be_type);
- int sof_intel_board_set_intel_hdmi_link(struct device *dev,
- 					struct snd_soc_dai_link *link, int be_id,
- 					int hdmi_id, bool idisp_codec);
+-	for (i = 0; i < dmic_be_num; i++) {
+-		links[id].id = fixed_be ? (DMIC01_BE_ID + i) : id;
+-		links[id].num_cpus = 1;
+-		links[id].codecs = dmic_component;
+-		links[id].num_codecs = ARRAY_SIZE(dmic_component);
+-		links[id].platforms = platform_component;
+-		links[id].num_platforms = ARRAY_SIZE(platform_component);
+-		links[id].ignore_suspend = 1;
+-		links[id].dpcm_capture = 1;
+-		links[id].no_pcm = 1;
++	if (dmic_be_num > 1) {
++		/* set up 2 BE links at most */
++		be_id = fixed_be ? DMIC16K_BE_ID : id;
++		ret = sof_intel_board_set_dmic_link(dev, &links[id], be_id,
++						    SOF_DMIC_16K);
++		if (ret)
++			return NULL;
++
+ 		id++;
+ 	}
+ 
+@@ -278,7 +254,6 @@ static int sof_ssp_amp_probe(struct platform_device *pdev)
+ 	struct snd_soc_acpi_mach *mach = pdev->dev.platform_data;
+ 	struct snd_soc_dai_link *dai_links;
+ 	struct sof_card_private *ctx;
+-	int dmic_be_num = 0;
+ 	int ret, ssp_codec;
+ 
+ 	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_KERNEL);
+@@ -291,12 +266,14 @@ static int sof_ssp_amp_probe(struct platform_device *pdev)
+ 	ctx->amp_type = sof_ssp_detect_amp_type(&pdev->dev);
+ 
+ 	if (dmi_check_system(chromebook_platforms) || mach->mach_params.dmic_num > 0)
+-		dmic_be_num = 2;
++		ctx->dmic_be_num = 2;
++	else
++		ctx->dmic_be_num = 0;
+ 
+ 	ssp_codec = sof_ssp_amp_quirk & SOF_AMPLIFIER_SSP_MASK;
+ 
+ 	/* set number of dai links */
+-	sof_ssp_amp_card.num_links = dmic_be_num;
++	sof_ssp_amp_card.num_links = ctx->dmic_be_num;
+ 
+ 	if (ctx->amp_type != CODEC_NONE)
+ 		sof_ssp_amp_card.num_links++;
+@@ -324,7 +301,7 @@ static int sof_ssp_amp_probe(struct platform_device *pdev)
+ 		sof_ssp_amp_card.num_links++;
+ 
+ 	dai_links = sof_card_dai_links_create(&pdev->dev, ctx->amp_type,
+-					      ssp_codec, dmic_be_num,
++					      ssp_codec, ctx->dmic_be_num,
+ 					      ctx->hdmi_num,
+ 					      ctx->hdmi.idisp_codec);
+ 	if (!dai_links)
 -- 
 2.39.2
 
