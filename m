@@ -4,89 +4,113 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 366E3CDB47E
-	for <alsa-devel@archiver.kernel.org>; Fri, 20 Oct 2023 07:02:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 21104CDB47E
+	for <alsa-devel@archiver.kernel.org>; Fri, 20 Oct 2023 07:04:03 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8BA81844;
-	Fri, 20 Oct 2023 09:01:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8BA81844
+	by alsa0.perex.cz (Postfix) with ESMTPS id 75D62857;
+	Fri, 20 Oct 2023 09:03:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 75D62857
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1697785320;
-	bh=i4mTARCVWP8DkJ2Otpts6FP0G4A/z5hhPw3/uPcBoM8=;
-	h=Date:To:Cc:References:From:Subject:In-Reply-To:List-Id:
+	s=default; t=1697785441;
+	bh=v/PWIrwK7yjVyTLCrAnW4DXLe2PtvDZ2eghjerodrKw=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=HuUrMeWVC0O4dhXonYfUJIpD7/yXopylF5PHJvTBVu5Fg9qHaNAaoy62qo8DjLjRz
-	 eJWNPX9A/WLXbH26mFGAUfujOmbGeQjIF1vDkQhGKVhcfTLiSemO7DVfqbOL93wb0t
-	 eFQagFBmVUTHUqKy0Ql0M3ddjEZoqL9tqIa3XcS0=
+	b=uZ7sNi3C3JIMkTzs6F5hqCx/Xgwumvy16d22i+YcbP6H3j1JgqW1tjmVYqkMvYOPh
+	 LKzNcBZWVsO5HG5QfEzoe9J19DdsX2/x5aS6/oLmgcOBsPaAmILNV3QYcfuQ/XmUNz
+	 qbeQnN+7kFZur500OoXgOE9bzmNchh1vNWk13gys=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 80C74F80557; Fri, 20 Oct 2023 09:00:41 +0200 (CEST)
+	id 32447F8032D; Fri, 20 Oct 2023 09:03:11 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2E39DF800C9;
-	Fri, 20 Oct 2023 09:00:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3CA15F8027B;
+	Fri, 20 Oct 2023 09:03:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 94C9DF8025F; Fri, 20 Oct 2023 09:00:36 +0200 (CEST)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7919BF8019B
-	for <alsa-devel@alsa-project.org>; Fri, 20 Oct 2023 09:00:30 +0200 (CEST)
-Received: from mail1.perex.cz (localhost [127.0.0.1])
-	by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 207E41A5C;
-	Fri, 20 Oct 2023 09:00:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 207E41A5C
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
-	t=1697785229; bh=BkE5d1CevKdet4YeuqW2oQyL+Ncc7thsyUdHwizdmYo=;
-	h=Date:To:Cc:References:From:Subject:In-Reply-To:From;
-	b=KXln3Pefkqp2D4iAC67i6sIxr8ebf88H2yKgVb0+E53j+aBuBjKzKkNSyt3arEdw2
-	 HaIiePS/3AgD/9unt5y97HNRAMWUHobMQhTOOEBmZaYCc/iSjH8TsBKoCv5UyaMHBZ
-	 GKaZB/YDeCRsLL17LV4i5xP8rKHyBPVsAzSpeKok=
-Received: from [192.168.100.98] (unknown [192.168.100.98])
+	id 2831CF8025F; Thu, 19 Oct 2023 18:43:46 +0200 (CEST)
+Received: from mail-yw1-x112d.google.com (mail-yw1-x112d.google.com
+ [IPv6:2607:f8b0:4864:20::112d])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	(Authenticated sender: perex)
-	by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
-	Fri, 20 Oct 2023 09:00:25 +0200 (CEST)
-Message-ID: <003be6b3-63eb-d850-2805-0a8ed6cf5b18@perex.cz>
-Date: Fri, 20 Oct 2023 09:00:24 +0200
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6ABC3F80166
+	for <alsa-devel@alsa-project.org>; Thu, 19 Oct 2023 18:43:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6ABC3F80166
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (1024-bit key,
+ unprotected) header.d=chromium.org header.i=@chromium.org header.a=rsa-sha256
+ header.s=google header.b=n9eqEmZw
+Received: by mail-yw1-x112d.google.com with SMTP id
+ 00721157ae682-5a82f176860so79046637b3.1
+        for <alsa-devel@alsa-project.org>;
+ Thu, 19 Oct 2023 09:43:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1697733820; x=1698338620;
+ darn=alsa-project.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=v/PWIrwK7yjVyTLCrAnW4DXLe2PtvDZ2eghjerodrKw=;
+        b=n9eqEmZwpUTKG6ZN+F5ANWJRSsrXiBLUUVuX9srzJTHpgVwFyYtSPLlw9tksIFEpik
+         gS1xCBbsV5JFbDCUmnDYvUOEojQpQ5GPfGQAR3m7OMcBoI7s9sA7GiqeczXDqx2t8JMI
+         nQNpzg/mKZQgPwdjys/IEOzF0rvCn1qGhqzj8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697733820; x=1698338620;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=v/PWIrwK7yjVyTLCrAnW4DXLe2PtvDZ2eghjerodrKw=;
+        b=Q+OU6xHScHIGT9itES2C80EHncB4qqcxrIcShUq1DygCogdx9z/JOVp0Vi753gZdub
+         JkqXLQK6mmBAHDeXVxF47TzAlZV8nQ4vTnXvculZqiKHT5T7mO0Sw1Nosf5RYT0sI/BQ
+         EvbQy2FwxN1J6RbJWPlfUUVL2IuWMi70oJKHLLLDrER40oZIeZxmbXrRudxrpUYdMI/O
+         NR4Gxysoe5WpBNglSHB0loFc4n0VsheYIBP0AlYC2jTQUyXdeOLGLb3Stp0FU0fldizt
+         HZbCkkb27ZfnF2/XuzqTioof+JfmMMzIDsE6Cze1n6NccCru4XBJ2IM3IZIhKAKuBmKO
+         pdvg==
+X-Gm-Message-State: AOJu0YzATyAC2uZfHnIOSAhq/sRNr5hsTDuQNnwDq67U4/ZmXs44fddi
+	I35Y8R818eWyPbBNFfihMJEJ3gN8Us54mRaCDz+jIg==
+X-Google-Smtp-Source: 
+ AGHT+IFd62ic0pQJCqoncPJxXabGcZf4KKud86nThgMjLPEjjH97+UYqiqAisRJM3jhW+CQVFLq1IPqoZ7FHOmR54B0=
+X-Received: by 2002:a0d:d789:0:b0:595:8e80:30ef with SMTP id
+ z131-20020a0dd789000000b005958e8030efmr2679766ywd.51.1697733820608; Thu, 19
+ Oct 2023 09:43:40 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Content-Language: en-US
-To: Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
- Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de
-References: <20231017-coroner-blurt-edffe8@meerkat>
- <8f62db8c-b10c-0256-a56c-28b998d1a3bc@perex.cz>
- <20231019-posture-cache-fe060b@meerkat>
- <9879e427-5dd0-43ee-bacb-0b0b452ea348@sirena.org.uk>
- <20231019-extinct-importer-8e3fce@meerkat>
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: Migrating this list to a different platform (take 2)
-In-Reply-To: <20231019-extinct-importer-8e3fce@meerkat>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: UJC6DA2FQVDSRLAGVMF5SOWGF32GNSSS
-X-Message-ID-Hash: UJC6DA2FQVDSRLAGVMF5SOWGF32GNSSS
-X-MailFrom: perex@perex.cz
+References: <20231018235944.1860717-1-markhas@chromium.org>
+ <7b08520e-8f36-45a1-9b7a-316a33c8e8c4@linux.intel.com>
+In-Reply-To: <7b08520e-8f36-45a1-9b7a-316a33c8e8c4@linux.intel.com>
+From: Mark Hasemeyer <markhas@chromium.org>
+Date: Thu, 19 Oct 2023 10:43:29 -0600
+Message-ID: 
+ <CANg-bXDvZ00ZHEgbUf1NwDrOKfDF4vpBOxZ4hGEp-ohs6-pZpw@mail.gmail.com>
+Subject: Re: [PATCH v1] ALSA: hda: intel-dsp-config: Fix JSL Chromebook quirk
+ detection
+To: =?UTF-8?B?QW1hZGV1c3ogU8WCYXdpxYRza2k=?=
+ <amadeuszx.slawinski@linux.intel.com>
+Cc: LKML <linux-kernel@vger.kernel.org>,
+	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+ Guenter Roeck <linux@roeck-us.net>, stable@vger.kernel.org,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Brady Norander <bradynorander@gmail.com>,
+	Jaroslav Kysela <perex@perex.cz>, Mark Brown <broonie@kernel.org>,
+	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Takashi Iwai <tiwai@suse.com>,
+	alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="UTF-8"
+X-MailFrom: markhas@chromium.org
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: ZKKL3AWTC72IHBYLW6L4NTQJWFUVFO2H
+X-Message-ID-Hash: ZKKL3AWTC72IHBYLW6L4NTQJWFUVFO2H
+X-Mailman-Approved-At: Fri, 20 Oct 2023 07:03:06 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UJC6DA2FQVDSRLAGVMF5SOWGF32GNSSS/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZKKL3AWTC72IHBYLW6L4NTQJWFUVFO2H/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -95,31 +119,13 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 19. 10. 23 18:25, Konstantin Ryabitsev wrote:
-> On Thu, Oct 19, 2023 at 03:34:18PM +0100, Mark Brown wrote:
->>> There's a third option -- instead of migrating the alsa-devel list, we can
->>> migrate all activity to linux-sound@vger.kernel.org. It's an existing list
->>> that currently sees about 5 messages a year (and most of them are cc'd to
->>> alsa-devel anyway).
->>
->> That would definitely work well from my point of view.
-> 
-> Okay, since it doesn't really affect anything, I've reconfigured the patchwork
-> side of things to accept patches sent both to alsa-devel and linux-sound. If
-> you do want to go down the route of shifting everything towards linux-sound,
-> the next step (once everyone is in agreement), is to make the changes to
-> MAINTAINERS. You don't have to do all subsystems at once, you can start with
-> the SOUND subsystem to trial things out and then shift others if everything is
-> working correctly.
+> I would assume that platform that has DMI_SYS_VENDOR set to "Google",
+> also has DMI_BIOS_VERSION set to "Google", so perhaps just replace
+> DMI_SYS_VENDOR match with DMI_BIOS_VERSION, to keep table small? Or is
+> that not a case?
 
-If it's an overall agreement, we can move the driver related threads and the 
-patch handling to linux-sound mailing list and keep alsa-devel list for the 
-user space packages and the project related discussions. I'll send an initial 
-patch for MAINTAINERS ASAP.
-
-						Jaroslav
-
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
-
+That is the case. But I'm inclined to keep it for two reasons:
+1. There is precedent in the kernel to use DMI_SYS_VENDOR=="Google"
+for Chromebook detection.
+2. If the coreboot version schema for Chromebooks were to change, this
+check would fail for all JSL Chromebooks instead of just a few models.
