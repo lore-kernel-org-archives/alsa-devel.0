@@ -4,86 +4,120 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 93BD3CDB465
-	for <alsa-devel@archiver.kernel.org>; Thu, 19 Oct 2023 17:38:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 744FBCDB465
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 Oct 2023 18:44:08 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C54C3BC0;
-	Thu, 19 Oct 2023 19:37:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C54C3BC0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 563F984B;
+	Thu, 19 Oct 2023 20:43:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 563F984B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1697737119;
-	bh=zGGP93Orvj8T3+JJztvqW239On7FSYEnBF7CPHLskpM=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1697741045;
+	bh=EVBcqP8B2TKh9Pq3xwKBVtf2sLnCT3Lz4s5bqLteSGc=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=HFo8O3lFtUYjln2noYCmn9hCT/qY98tQ78Tg8uJLBSdGnkf1APjSCzlBZKjLqfiVK
-	 gVESgCm2TjDToH+rGKCYShXkk9OEzeuwu4FIYDuWpB8oEAy2taLDkkPVIN38Mrjyb8
-	 kAtRDjAj0YToQqYVHH34jX/2iof6v8NAZfjwu7a4=
+	b=RiuxfLWflhfNlyraYbBzBEEi0Ns/stXMn5s7Nsa6sm+Gn0ZvlSj55siQCnb3G0xVu
+	 4y7molm8cwmWdBcJEi81oCRAg68Tothz311XrwIt+4y4sQRakDZXEVgr2pB4baczsq
+	 zovxWwT8eETpefWcqdxjcfp0HRQvmM7C2a55S3TM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2D26AF80589; Thu, 19 Oct 2023 19:37:17 +0200 (CEST)
+	id 91A27F8019B; Thu, 19 Oct 2023 20:42:44 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B26AAF8057C;
-	Thu, 19 Oct 2023 19:37:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A1888F8025F;
+	Thu, 19 Oct 2023 20:42:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id F1489F80564; Thu, 19 Oct 2023 19:37:11 +0200 (CEST)
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+	id 910C3F8025F; Thu, 19 Oct 2023 20:42:37 +0200 (CEST)
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com
+ [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 437A3F800C9
-	for <alsa-devel@alsa-project.org>; Thu, 19 Oct 2023 19:34:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 437A3F800C9
+	by alsa1.perex.cz (Postfix) with ESMTPS id 1EE99F8019B
+	for <alsa-devel@alsa-project.org>; Thu, 19 Oct 2023 20:42:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1EE99F8019B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=QNMkzVjR
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697736877; x=1729272877;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=zGGP93Orvj8T3+JJztvqW239On7FSYEnBF7CPHLskpM=;
-  b=QNMkzVjRgUFFNFb05pwVxCUeH1WQyOoQY56M8Go+k4sJAN9+wfftmW7e
-   Ijw4qFiOUa1CrjTyBqmDzcMN9qNwyaQMcKGSWwcxI6aIAUB7kHugJ7qvH
-   UGjniY5m0GSXHSSk3rocYGWBjnDc4rVyFZfuPX2C/xmV1xTxJevpb4AOD
-   BeaDmbYHkjYdMTFkg0gnmgB2ObLiD713wIJ0OpV/P5ixTrthoQw36R1GW
-   w9Hsq7+sOFQ+sNIrL3ronk1lFHqk2n/fVFhFmx8iWFWMIPGE/9LymLE/w
-   wY8jv0rz6PPIEy91Np2NJz6kZDGNvsNk6pkv3L02C4dbhptHONSB6Vs4w
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="7884377"
-X-IronPort-AV: E=Sophos;i="6.03,237,1694761200";
-   d="scan'208";a="7884377"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Oct 2023 10:34:30 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="792090727"
-X-IronPort-AV: E=Sophos;i="6.03,237,1694761200";
-   d="scan'208";a="792090727"
-Received: from jihao1-mobl.amr.corp.intel.com (HELO pbossart-mobl3.intel.com)
- ([10.213.163.144])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Oct 2023 10:34:28 -0700
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de,
-	broonie@kernel.org,
-	Brent Lu <brent.lu@intel.com>,
-	Bard Liao <yung-chuan.liao@linux.intel.com>,
-	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 09/10] ASoC: Intel: sof_rt5682: use common module for DMIC
- links
-Date: Thu, 19 Oct 2023 12:34:10 -0500
-Message-Id: <20231019173411.166759-10-pierre-louis.bossart@linux.intel.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231019173411.166759-1-pierre-louis.bossart@linux.intel.com>
-References: <20231019173411.166759-1-pierre-louis.bossart@linux.intel.com>
+ unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
+ header.s=qcppdkim1 header.b=nT+MmY2W
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 39JHLeYc017772;
+	Thu, 19 Oct 2023 18:42:24 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com;
+ h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=+WYtO5cbSnOWSh4A3pWMM/G3dupE15Bp2QKlH1BzWsI=;
+ b=nT+MmY2WzSPKW196i552YTH0gwyJZGiZFYXUqprsFbil4DZFgftzvGeEKVvtUYaJAuGA
+ huN0YQQjWNiQxTBRtKOTZeBhCEfRJ1tMhBBBn7ly5a3/CJTqGGw6q0F0Nu/bhogk/eCj
+ dfhBZz7M3gqqWRzcleJk5qT2TAhsNipbDp/VXxkTMsMcD29Los9LHhRUmivk5de8tn8V
+ yUDhfQI/UejhX4nCJS0olgOh9OQ2mlPz/qjuiigwRt3EuzxQQlq0Bvaq6drtH1jC7Olb
+ TiTHgqy7GkJ4x4/67NmIiTiOQHtSafjQysNEJEmO3wUiaO/dksSr0JLXefRGG4iasLzO IQ==
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com
+ [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ttg82ums4-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 19 Oct 2023 18:42:24 +0000
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com
+ [10.47.209.197])
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id
+ 39JIgNob007271
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 19 Oct 2023 18:42:23 GMT
+Received: from [10.110.99.208] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Thu, 19 Oct
+ 2023 11:42:22 -0700
+Message-ID: <c39df4c7-ea78-0505-a8d9-db41119fc977@quicinc.com>
+Date: Thu, 19 Oct 2023 11:42:22 -0700
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+Subject: Re: [PATCH v9 09/34] ASoC: qcom: qdsp6: Introduce USB AFE port to
+ q6dsp
+Content-Language: en-US
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        <mathias.nyman@intel.com>, <gregkh@linuxfoundation.org>,
+        <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
+        <tiwai@suse.com>, <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <srinivas.kandagatla@linaro.org>, <bgoswami@quicinc.com>,
+        <Thinh.Nguyen@synopsys.com>
+CC: <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <alsa-devel@alsa-project.org>, <linux-arm-msm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>
+References: <20231017200109.11407-1-quic_wcheng@quicinc.com>
+ <20231017200109.11407-10-quic_wcheng@quicinc.com>
+ <7aa4ea87-9d1f-400a-bcc5-b56e5b4500c6@linux.intel.com>
+ <c72bcf47-af0b-8819-1c30-06b51358381e@quicinc.com>
+ <2f05708e-3ee8-472e-a24f-6f3eb118133c@linux.intel.com>
+ <fcaa93ba-3ca4-5a18-d3bd-afebe8def327@quicinc.com>
+ <ec25bb67-6c83-430b-bc79-234c03801250@linux.intel.com>
+From: Wesley Cheng <quic_wcheng@quicinc.com>
+In-Reply-To: <ec25bb67-6c83-430b-bc79-234c03801250@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: P4SISW54MS7SG2JZL6NOOZQTHB23R4Z4
-X-Message-ID-Hash: P4SISW54MS7SG2JZL6NOOZQTHB23R4Z4
-X-MailFrom: pierre-louis.bossart@linux.intel.com
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
+ signatures=585085
+X-Proofpoint-GUID: k5nkufEfbNCtKUCx8FQH5sYfnPcPKmKk
+X-Proofpoint-ORIG-GUID: k5nkufEfbNCtKUCx8FQH5sYfnPcPKmKk
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-19_17,2023-10-19_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_spam policy=outbound score=65
+ clxscore=1015 impostorscore=0
+ mlxlogscore=-26 spamscore=65 priorityscore=1501 adultscore=0 bulkscore=0
+ mlxscore=65 suspectscore=0 lowpriorityscore=0 phishscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
+ definitions=main-2310190159
+Message-ID-Hash: S5ABINUB7BMHRC5NER5EPIY6OMIAUSRL
+X-Message-ID-Hash: S5ABINUB7BMHRC5NER5EPIY6OMIAUSRL
+X-MailFrom: quic_wcheng@quicinc.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -95,7 +129,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/P4SISW54MS7SG2JZL6NOOZQTHB23R4Z4/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/S5ABINUB7BMHRC5NER5EPIY6OMIAUSRL/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -104,174 +138,49 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Brent Lu <brent.lu@intel.com>
+Hi Pierre,
 
-Use intel_board module for dmic01 and dmic16k DAI link initialization.
+On 10/18/2023 6:00 PM, Pierre-Louis Bossart wrote:
+> 
+> 
+>>>>>> Specifically, the QC ADSP can support all potential endpoints that are
+>>>>>> exposed by the audio data interface.  This includes, feedback
+>>>>>> endpoints
+>>>>>> (both implicit and explicit) as well as the isochronous (data)
+>>>>>> endpoints.
+>>>>>
+>>>>> implicit feedback means support for capture. This is confusing...
+>>>>>
+>>>>
+>>>> I mean, a USB device can expose a capture path, but as of now, we won't
+>>>> enable the offloading to the audio DSP for it.  However, if we're
+>>>> executing playback, and device does support implicit feedback, we will
+>>>> pass that along to the audio DSP to utilize.
+>>>
+>>> Not following. Implicit feedback means a capture stream *SHALL* be
+>>> started. Are you saying this capture stream is hidden and handled at the
+>>> DSP level only? If yes, what prevents you from exposing the capture
+>>> stream to userspace as well?
+>>>
+>>> I must be missing something.
+>>>
+>>
+>> My understanding is that with implicit feedback endpoints, it allows for
+>> another data endpoint in the opposite direction to be utilized as a
+>> feedback endpoint (versus having to expose another EP, such as in the
+>> case of explicit feedback).  For example, if we are enabling the
+>> playback path (and the device does have a capture data ep) then the data
+>> ep used for the capture path can be used.
+> 
+> That's right, so all the plumbing is enabled for the capture path...
+> Making a decision to discard the data is very odd, all the work has
+> already been done at lower levels, so why not expose the captured data?
+> 
 
-Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Signed-off-by: Brent Lu <brent.lu@intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- sound/soc/intel/boards/sof_rt5682.c | 81 ++++++-----------------------
- 1 file changed, 17 insertions(+), 64 deletions(-)
+So that would be at the USB level, but from the audio DSP end, there are 
+still things that need to be enabled to route the data properly.  For 
+feedback endpoints, the data we're actually sending won't involve the 
+audio streaming side of things on the DSP.
 
-diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
-index 1e90dff61b9b..06ad15af46de 100644
---- a/sound/soc/intel/boards/sof_rt5682.c
-+++ b/sound/soc/intel/boards/sof_rt5682.c
-@@ -503,10 +503,6 @@ static const struct snd_soc_dapm_widget sof_widgets[] = {
- 	SND_SOC_DAPM_SPK("Right Spk", NULL),
- };
- 
--static const struct snd_soc_dapm_widget dmic_widgets[] = {
--	SND_SOC_DAPM_MIC("SoC DMIC", NULL),
--};
--
- static const struct snd_soc_dapm_route sof_map[] = {
- 	/* HP jack connectors - unknown if we have jack detection */
- 	{ "Headphone Jack", NULL, "HPOL" },
-@@ -522,11 +518,6 @@ static const struct snd_soc_dapm_route rt5650_spk_dapm_routes[] = {
- 	{ "Right Spk", NULL, "SPOR" },
- };
- 
--static const struct snd_soc_dapm_route dmic_map[] = {
--	/* digital mics */
--	{"DMic", NULL, "SoC DMIC"},
--};
--
- static int rt5650_spk_init(struct snd_soc_pcm_runtime *rtd)
- {
- 	struct snd_soc_card *card = rtd->card;
-@@ -540,28 +531,6 @@ static int rt5650_spk_init(struct snd_soc_pcm_runtime *rtd)
- 	return ret;
- }
- 
--static int dmic_init(struct snd_soc_pcm_runtime *rtd)
--{
--	struct snd_soc_card *card = rtd->card;
--	int ret;
--
--	ret = snd_soc_dapm_new_controls(&card->dapm, dmic_widgets,
--					ARRAY_SIZE(dmic_widgets));
--	if (ret) {
--		dev_err(card->dev, "DMic widget addition failed: %d\n", ret);
--		/* Don't need to add routes if widget addition failed */
--		return ret;
--	}
--
--	ret = snd_soc_dapm_add_routes(&card->dapm, dmic_map,
--				      ARRAY_SIZE(dmic_map));
--
--	if (ret)
--		dev_err(card->dev, "DMic map addition failed: %d\n", ret);
--
--	return ret;
--}
--
- /* sof audio machine driver for rt5682 codec */
- static struct snd_soc_card sof_audio_card_rt5682 = {
- 	.name = "rt5682", /* the sof- prefix is added by the core */
-@@ -601,13 +570,6 @@ static struct snd_soc_dai_link_component rt5650_components[] = {
- 	}
- };
- 
--static struct snd_soc_dai_link_component dmic_component[] = {
--	{
--		.name = "dmic-codec",
--		.dai_name = "dmic-hifi",
--	}
--};
--
- static struct snd_soc_dai_link *
- sof_card_dai_links_create(struct device *dev, enum sof_ssp_codec codec_type,
- 			  enum sof_ssp_codec amp_type, int ssp_codec,
-@@ -692,29 +654,21 @@ sof_card_dai_links_create(struct device *dev, enum sof_ssp_codec codec_type,
- 	/* dmic */
- 	if (dmic_be_num > 0) {
- 		/* at least we have dmic01 */
--		links[id].name = "dmic01";
--		links[id].cpus = &cpus[id];
--		links[id].cpus->dai_name = "DMIC01 Pin";
--		links[id].init = dmic_init;
--		if (dmic_be_num > 1) {
--			/* set up 2 BE links at most */
--			links[id + 1].name = "dmic16k";
--			links[id + 1].cpus = &cpus[id + 1];
--			links[id + 1].cpus->dai_name = "DMIC16k Pin";
--			dmic_be_num = 2;
--		}
-+		ret = sof_intel_board_set_dmic_link(dev, &links[id], id,
-+						    SOF_DMIC_01);
-+		if (ret)
-+			return NULL;
-+
-+		id++;
- 	}
- 
--	for (i = 0; i < dmic_be_num; i++) {
--		links[id].id = id;
--		links[id].num_cpus = 1;
--		links[id].codecs = dmic_component;
--		links[id].num_codecs = ARRAY_SIZE(dmic_component);
--		links[id].platforms = platform_component;
--		links[id].num_platforms = ARRAY_SIZE(platform_component);
--		links[id].ignore_suspend = 1;
--		links[id].dpcm_capture = 1;
--		links[id].no_pcm = 1;
-+	if (dmic_be_num > 1) {
-+		/* set up 2 BE links at most */
-+		ret = sof_intel_board_set_dmic_link(dev, &links[id], id,
-+						    SOF_DMIC_16K);
-+		if (ret)
-+			return NULL;
-+
- 		id++;
- 	}
- 
-@@ -865,7 +819,6 @@ static int sof_audio_probe(struct platform_device *pdev)
- 	struct snd_soc_acpi_mach *mach = pdev->dev.platform_data;
- 	struct snd_soc_dai_link *dai_links;
- 	struct sof_card_private *ctx;
--	int dmic_be_num;
- 	int ret, ssp_amp, ssp_codec;
- 
- 	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_KERNEL);
-@@ -891,7 +844,7 @@ static int sof_audio_probe(struct platform_device *pdev)
- 
- 	if (soc_intel_is_byt() || soc_intel_is_cht()) {
- 		ctx->rt5682.is_legacy_cpu = true;
--		dmic_be_num = 0;
-+		ctx->dmic_be_num = 0;
- 		/* HDMI is not supported by SOF on Baytrail/CherryTrail */
- 		ctx->hdmi_num = 0;
- 		/* default quirk for legacy cpu */
-@@ -899,7 +852,7 @@ static int sof_audio_probe(struct platform_device *pdev)
- 						SOF_RT5682_MCLK_BYTCHT_EN |
- 						SOF_RT5682_SSP_CODEC(2);
- 	} else {
--		dmic_be_num = 2;
-+		ctx->dmic_be_num = 2;
- 		ctx->hdmi_num = (sof_rt5682_quirk & SOF_RT5682_NUM_HDMIDEV_MASK) >>
- 			 SOF_RT5682_NUM_HDMIDEV_SHIFT;
- 		/* default number of HDMI DAI's */
-@@ -938,7 +891,7 @@ static int sof_audio_probe(struct platform_device *pdev)
- 	ssp_codec = sof_rt5682_quirk & SOF_RT5682_SSP_CODEC_MASK;
- 
- 	/* compute number of dai links */
--	sof_audio_card_rt5682.num_links = 1 + dmic_be_num + ctx->hdmi_num;
-+	sof_audio_card_rt5682.num_links = 1 + ctx->dmic_be_num + ctx->hdmi_num;
- 
- 	if (ctx->amp_type != CODEC_NONE)
- 		sof_audio_card_rt5682.num_links++;
-@@ -953,7 +906,7 @@ static int sof_audio_probe(struct platform_device *pdev)
- 
- 	dai_links = sof_card_dai_links_create(&pdev->dev, ctx->codec_type,
- 					      ctx->amp_type, ssp_codec, ssp_amp,
--					      dmic_be_num, ctx->hdmi_num,
-+					      ctx->dmic_be_num, ctx->hdmi_num,
- 					      ctx->hdmi.idisp_codec,
- 					      ctx->rt5682.is_legacy_cpu);
- 	if (!dai_links)
--- 
-2.39.2
-
+Thanks
+Wesley Cheng
