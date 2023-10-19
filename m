@@ -4,63 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0772ECDB465
-	for <alsa-devel@archiver.kernel.org>; Thu, 19 Oct 2023 17:37:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01BD7CDB465
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 Oct 2023 17:37:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D022D852;
-	Thu, 19 Oct 2023 19:36:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D022D852
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3E999DEF;
+	Thu, 19 Oct 2023 19:36:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3E999DEF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1697737021;
-	bh=RdD+F+x24vXfLV6mR5hwiNCO9FTu9ZbSLJaLVxMYXBI=;
+	s=default; t=1697737037;
+	bh=tdh4KoDxxJej97u6871PjSA90yS9LrArazZhIbPZ0b4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=vdCGxJ1rlGjQxgwQ13beeGcqA3L66EfjnIyz9KZqT/wStWF7tHfGvyIVizKSzrZZa
-	 +HQL7R9PcV0V37VBhX8VXMLOG9bRPW/rhQkOv96ZXY153pgHBmaGruerNh4cgUos6j
-	 6jGp/j9dtbZp46EVfDCo6986lPMFm8+rGSMhuu18=
+	b=WLJ+wxSEvWdYSWNJIWj91Hkyr8Ky5DRVEdPeAi5Wi4dEfkOihukrllqIIiJkd85R+
+	 1b/S9SMZ1AaB3oCjyGhqLsHfqpjP9ZPQgA5cx94YSPjOZ0EU2+ZkytdJRfODtMEQJO
+	 5l2AWJEkhTwJvE1KuVDC+18IclFFhOwbbBphKqXA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7483AF805B0; Thu, 19 Oct 2023 19:34:51 +0200 (CEST)
+	id 78CA8F805BE; Thu, 19 Oct 2023 19:34:53 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E154EF80536;
-	Thu, 19 Oct 2023 19:34:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D063CF80557;
+	Thu, 19 Oct 2023 19:34:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9A2FAF8057D; Thu, 19 Oct 2023 19:34:42 +0200 (CEST)
+	id A02EFF8059F; Thu, 19 Oct 2023 19:34:44 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B2AA5F8032D
+	by alsa1.perex.cz (Postfix) with ESMTPS id D88C7F8024E
 	for <alsa-devel@alsa-project.org>; Thu, 19 Oct 2023 19:34:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B2AA5F8032D
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D88C7F8024E
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=ecAjkfeS
+ header.s=Intel header.b=hjzn+6Cn
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
   t=1697736873; x=1729272873;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=RdD+F+x24vXfLV6mR5hwiNCO9FTu9ZbSLJaLVxMYXBI=;
-  b=ecAjkfeSf3j8mNhRDcSeGPWjB+/dIny6f1+lNuhkL+EVHQ5NKD4ZwfFB
-   zgrsxvmm//Z28wKJ724dOzz8o95D3dnD1n4PiqeVqPmlO7awmmxnOOEPX
-   vObUsuju9f8SdtxgtgdR+9kzjqJnfQfV51Qxp4OKzov902wxDPT0+99Ny
-   DvpXyAaqm2hH5qucrDKArgt9jyQzOpCNtsWG0QnbnhoLuNiCEqVDHofGJ
-   rpDs4HTDyxyBaQ03pI8YLpz+9CkFSKr8OOKUOEnzi6g9QKG8oT51xfrYk
-   YaC+VnGtUDzascpJ8Eysop/HQqMzMOPacq+yN9FyAG/+4kgFIUPgOYPnB
+  bh=tdh4KoDxxJej97u6871PjSA90yS9LrArazZhIbPZ0b4=;
+  b=hjzn+6CnmizL+DZwafrHa6WZHO7/j3cFYwWga9Fd1mRQw0deG8gp2U35
+   UnAFSy9jAIne7sO6vcc8rHgtSJsRnz7CtdcofS5NmA3BslPEiG1ZWpS0L
+   OAklsoQVHTuxf5x+v4VZXpY+mySyXTUwzK9+pOnQGNMgNaGQsC4jEHiEQ
+   +lDJHSrHQWCRq4JAdIp8IEW5ZyA10Ip40qdlcQry0YhY9mqU3Buh+94HT
+   J3clQvzBP9Pq3dFXffUbVQpOp6T3ynnkzi+/yitw2MLf4Vf/PStn/4K3T
+   F7cheh1tLbwSLp3ZUZsue+csSGUtZwN9ikXNR82BCWzgZkAp/u+RX0cHI
    w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="7884336"
+X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="7884343"
 X-IronPort-AV: E=Sophos;i="6.03,237,1694761200";
-   d="scan'208";a="7884336"
+   d="scan'208";a="7884343"
 Received: from orsmga001.jf.intel.com ([10.7.209.18])
   by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Oct 2023 10:34:26 -0700
+ 19 Oct 2023 10:34:27 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="792090646"
+X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="792090656"
 X-IronPort-AV: E=Sophos;i="6.03,237,1694761200";
-   d="scan'208";a="792090646"
+   d="scan'208";a="792090656"
 Received: from jihao1-mobl.amr.corp.intel.com (HELO pbossart-mobl3.intel.com)
  ([10.213.163.144])
   by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
@@ -69,20 +69,20 @@ From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de,
 	broonie@kernel.org,
-	Charles Keepax <ckeepax@opensource.cirrus.com>,
+	Terry Cheong <htcheong@chromium.org>,
 	Bard Liao <yung-chuan.liao@linux.intel.com>,
 	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 04/10] ASoC: intel: sof_sdw: Move the builtin microphones to
- dataport 1
-Date: Thu, 19 Oct 2023 12:34:05 -0500
-Message-Id: <20231019173411.166759-5-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 05/10] ASoC: Intel: sof_nau8825: add RPL support for MAX98360A
+ amp
+Date: Thu, 19 Oct 2023 12:34:06 -0500
+Message-Id: <20231019173411.166759-6-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231019173411.166759-1-pierre-louis.bossart@linux.intel.com>
 References: <20231019173411.166759-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: VJKLME332VR6ZGTXP7NZCHIXC44Q3NRA
-X-Message-ID-Hash: VJKLME332VR6ZGTXP7NZCHIXC44Q3NRA
+Message-ID-Hash: XSGB6HU7SUBD5LCQPI44ZVBGP3QCHGVE
+X-Message-ID-Hash: XSGB6HU7SUBD5LCQPI44ZVBGP3QCHGVE
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -95,7 +95,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VJKLME332VR6ZGTXP7NZCHIXC44Q3NRA/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XSGB6HU7SUBD5LCQPI44ZVBGP3QCHGVE/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -104,49 +104,59 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
+From: Terry Cheong <htcheong@chromium.org>
 
-cs42l43 supports 4 hardwired microphones, but only supports up to 2
-microphone headsets. Only dataport 1 can support 4 channel capture,
-but that is currently used for the headset microphone. Switch things
-around such that DP1 is used for the builtin mics and DP2 is used for
-the headset microphones.
+Adding support back to RPL devices that lost audio after the RPL/ADL
+split. The hardware configuration is:
+
+SSP0: NAU88L25/NAU88L25YGB codec
+SSP1: MAX98360A amplifier
 
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Signed-off-by: Terry Cheong <htcheong@chromium.org>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/boards/sof_sdw.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ sound/soc/intel/boards/sof_nau8825.c              | 8 ++++++++
+ sound/soc/intel/common/soc-acpi-intel-rpl-match.c | 7 +++++++
+ 2 files changed, 15 insertions(+)
 
-diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
-index ad1d01ebbcd9..3312ad8a563b 100644
---- a/sound/soc/intel/boards/sof_sdw.c
-+++ b/sound/soc/intel/boards/sof_sdw.c
-@@ -939,16 +939,16 @@ static struct sof_sdw_codec_info codec_info_list[] = {
- 			{
- 				.direction = {false, true},
- 				.dai_name = "cs42l43-dp1",
--				.dai_type = SOF_SDW_DAI_TYPE_JACK,
--				.dailink = {SDW_UNUSED_DAI_ID, SDW_JACK_IN_DAI_ID},
--			},
--			{
--				.direction = {false, true},
--				.dai_name = "cs42l43-dp2",
- 				.dai_type = SOF_SDW_DAI_TYPE_MIC,
- 				.dailink = {SDW_UNUSED_DAI_ID, SDW_DMIC_DAI_ID},
- 				.init = sof_sdw_cs42l43_dmic_init,
--			}
-+			},
-+			{
-+				.direction = {false, true},
-+				.dai_name = "cs42l43-dp2",
-+				.dai_type = SOF_SDW_DAI_TYPE_JACK,
-+				.dailink = {SDW_UNUSED_DAI_ID, SDW_JACK_IN_DAI_ID},
-+			},
- 		},
- 		.dai_num = 3,
+diff --git a/sound/soc/intel/boards/sof_nau8825.c b/sound/soc/intel/boards/sof_nau8825.c
+index 116281262859..44f5c359ae95 100644
+--- a/sound/soc/intel/boards/sof_nau8825.c
++++ b/sound/soc/intel/boards/sof_nau8825.c
+@@ -553,6 +553,14 @@ static const struct platform_device_id board_ids[] = {
+ 					SOF_BT_OFFLOAD_SSP(2) |
+ 					SOF_SSP_BT_OFFLOAD_PRESENT),
  	},
++	{
++		.name = "rpl_mx98360a_8825",
++		.driver_data = (kernel_ulong_t)(SOF_NAU8825_SSP_CODEC(0) |
++					SOF_NAU8825_SSP_AMP(1) |
++					SOF_NAU8825_NUM_HDMIDEV(4) |
++					SOF_BT_OFFLOAD_SSP(2) |
++					SOF_SSP_BT_OFFLOAD_PRESENT),
++	},
+ 	{
+ 		.name = "rpl_nau8318_8825",
+ 		.driver_data = (kernel_ulong_t)(SOF_NAU8825_SSP_CODEC(0) |
+diff --git a/sound/soc/intel/common/soc-acpi-intel-rpl-match.c b/sound/soc/intel/common/soc-acpi-intel-rpl-match.c
+index 19cfdcdbfdf7..5b6f57e3a583 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-rpl-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-rpl-match.c
+@@ -407,6 +407,13 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_rpl_machines[] = {
+ 		.quirk_data = &rpl_max98373_amp,
+ 		.sof_tplg_filename = "sof-rpl-max98373-nau8825.tplg",
+ 	},
++	{
++		.id = "10508825",
++		.drv_name = "rpl_mx98360a_8825",
++		.machine_quirk = snd_soc_acpi_codec_list,
++		.quirk_data = &rpl_max98360a_amp,
++		.sof_tplg_filename = "sof-rpl-max98360a-nau8825.tplg",
++	},
+ 	{
+ 		.id = "10508825",
+ 		.drv_name = "rpl_nau8318_8825",
 -- 
 2.39.2
 
