@@ -4,76 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D8BA7CDB47E
-	for <alsa-devel@archiver.kernel.org>; Fri, 20 Oct 2023 07:04:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 39B55CDB474
+	for <alsa-devel@archiver.kernel.org>; Fri, 20 Oct 2023 07:14:49 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A0A54868;
-	Fri, 20 Oct 2023 09:03:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A0A54868
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2404683B;
+	Fri, 20 Oct 2023 09:13:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2404683B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1697785479;
-	bh=1qSyF6jW+62ZpbFqpj/OvHRXsXpCYeJLWhXZBQkHJAw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=Ii0y0ocHg4qKop+eqUuLcY+M3ATpcsmOX3+0f5u37jIf7KntyqMsscIsNu9eyoNc5
-	 soT6dXV3ssY4AVTj9fl9Rcu2T/NYYNRfb8aLmOkaiIGawBpG7SaZ3xNn5sHWSnnUiv
-	 qDfUMPWLg3fDUuroaonj8EPIDc85CUSjYseY1OwA=
+	s=default; t=1697786087;
+	bh=48rGZC2ugBpwSS7GwDlCpsQH1wcswmY/hZO0szR1pxE=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=au0bhCfSb/ySWjCagv+i/Cfo6/TKNKbyZ56DZVudXRosC6kejma7VbHwcVcFkV6bK
+	 C24ciZu73BbJVDUe5aYevPeqNbC15UGp6QY07G6uAj8RRoXwP9ddncDEfCDPa3U8en
+	 Dco9hmxdHMdAlQi8ItkhKoV95TlZ8H19T8km2quM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 845B8F8055C; Fri, 20 Oct 2023 09:03:12 +0200 (CEST)
+	id AF3A1F8024E; Fri, 20 Oct 2023 09:13:27 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 401D2F80563;
-	Fri, 20 Oct 2023 09:03:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6538EF8024E;
+	Fri, 20 Oct 2023 09:13:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 16200F8025F; Thu, 19 Oct 2023 19:27:37 +0200 (CEST)
-Received: from srv01.abscue.de (abscue.de
- [IPv6:2a03:4000:63:bf5:4817:8eff:feeb:8ac7])
+	id 2DA67F8025F; Fri, 20 Oct 2023 09:13:23 +0200 (CEST)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 41A15F80166
-	for <alsa-devel@alsa-project.org>; Thu, 19 Oct 2023 19:27:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 41A15F80166
-Received: from srv01.abscue.de (localhost [127.0.0.1])
-	by spamfilter.srv.local (Postfix) with ESMTP id 1E44F1C0612;
-	Thu, 19 Oct 2023 19:27:28 +0200 (CEST)
-Date: Thu, 19 Oct 2023 19:27:21 +0200
-From: Otto =?iso-8859-1?Q?Pfl=FCger?= <otto.pflueger@abscue.de>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: Otto =?iso-8859-1?Q?Pfl=FCger?= <otto.pflueger@abscue.de>,
-	linux-arm-msm@vger.kernel.org,
-	Banajit Goswami <bgoswami@quicinc.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org,
-	~postmarketos/upstreaming@lists.sr.ht
-Subject: Re: [PATCH 2/3] ASoC: qcom: q6afe: check ADSP version when setting
- clocks
-Message-ID: <ZTFm+ZqCH8wcIhs/@abscue.de>
-References: <20231014172624.75301-1-otto.pflueger@abscue.de>
- <20231014172624.75301-3-otto.pflueger@abscue.de>
- <7aca4eff-edb9-2ae5-1146-68e4530f76be@linaro.org>
+	by alsa1.perex.cz (Postfix) with ESMTPS id D540FF8019B
+	for <alsa-devel@alsa-project.org>; Fri, 20 Oct 2023 09:13:14 +0200 (CEST)
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+	by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 42D4F1A5C;
+	Fri, 20 Oct 2023 09:13:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 42D4F1A5C
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+	t=1697785993; bh=VchgZE6L1KVI0pHeq9XJIXZ06OoCWpE7+3egrvwIXgs=;
+	h=From:To:Cc:Subject:Date:From;
+	b=stgR9GdlhMzrCnwD9BS6GSOaSfTzGaVfiHpd4HdcAtWZL98B8rFjfRCUc+v8yCr7t
+	 dl02u6czymKMNVusYnOjSHbuIs/ZkrUswzIgvtRsUbcwD4s6t7e8ZlJlEsnW3Fq1+f
+	 WZUh+78B/N/KGawFcluGj3xdG7MlJvTSVsrQakUo=
+Received: from p1gen4.perex-int.cz (unknown [192.168.100.98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	(Authenticated sender: perex)
+	by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+	Fri, 20 Oct 2023 09:13:06 +0200 (CEST)
+From: Jaroslav Kysela <perex@perex.cz>
+To: ALSA development <alsa-devel@alsa-project.org>
+Cc: Takashi Iwai <tiwai@suse.de>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	Mark Brown <broonie@kernel.org>,
+	Ivan Orlov <ivan.orlov0322@gmail.com>,
+	Konstantin Ryabitsev <konstantin@linuxfoundation.org>
+Subject: [PATCH] MAINTAINERS: ALSA: change mailing list to linux-sound on vger
+Date: Fri, 20 Oct 2023 09:12:47 +0200
+Message-ID: <20231020071247.973909-1-perex@perex.cz>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7aca4eff-edb9-2ae5-1146-68e4530f76be@linaro.org>
-X-MailFrom: otto.pflueger@abscue.de
-X-Mailman-Rule-Hits: nonmember-moderation
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: JZKOHUIHOMGBRRDLN4MZS7BEQDIOFEXN
+X-Message-ID-Hash: JZKOHUIHOMGBRRDLN4MZS7BEQDIOFEXN
+X-MailFrom: perex@perex.cz
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: 664ZQW6ZRSZZAYJS52KE5OEHOFZRSHUA
-X-Message-ID-Hash: 664ZQW6ZRSZZAYJS52KE5OEHOFZRSHUA
-X-Mailman-Approved-At: Fri, 20 Oct 2023 07:03:08 +0000
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/664ZQW6ZRSZZAYJS52KE5OEHOFZRSHUA/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JZKOHUIHOMGBRRDLN4MZS7BEQDIOFEXN/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -82,91 +89,63 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-[...]
+As discussed on alsa-devel mailing list [1], it is useful to have an open
+mailing list to avoid moderation delays for the kernel patch work. Use
+linux-sound mailing list for kernel driver related threads.
 
-> 
-> <---
-> > +		port = q6afe_port_get_from_id(dev, PRIMARY_MI2S_RX);
-> > +		if (IS_ERR(port))
-> > +			return PTR_ERR(port);
-> > +
-> > +		dcfg.i2s_cfg_minor_version = AFE_API_VERSION_I2S_CONFIG;
-> > +		dcfg.clk_val = freq;
-> > +		dcfg.clk_root = 5;
-> > +		ret = q6afe_set_digital_codec_core_clock(port, &dcfg);
-> > +
-> > +		q6afe_port_put(port);
-> --->
-> 
-> Could you pl explain what are we doing in this snippet?
-> 
-> Isn't this what is exactly done in q6afe_mi2s_set_sysclk(LPAIF_DIG_CLK...)
-> 
-> 
+In the first stage, change the list for the ALSA core, ASoC and tests.
 
-Yes, this is the same, except that q6afe_mi2s_set_sysclk is in
-q6afe-dai.c and relies on being part of the DAI, while this is called
-from q6afe-clocks.c in a context which doesn't necessarily require a DAI
-to be present, e.g. if q6afe-clocks is used as a simple clock controller
-without any DAIs defined in the device tree.
+[1] https://lore.kernel.org/alsa-devel/20231019-posture-cache-fe060b@meerkat/
 
-Setting the digital codec clock always requires a port, but it isn't
-relevant which port is used here because there is usually only one
-codec clock.
+Cc: Takashi Iwai <tiwai@suse.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Ivan Orlov <ivan.orlov0322@gmail.com>
+Cc: Konstantin Ryabitsev <konstantin@linuxfoundation.org>
+Signed-off-by: Jaroslav Kysela <perex@perex.cz>
+---
+ MAINTAINERS | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-> 
-> 
-> > +		return ret;
-> > +	}
-> > +
-> >   	cset.clk_set_minor_version = AFE_API_VERSION_CLOCK_SET;
-> >   	cset.clk_id = clk_id;
-> >   	cset.clk_freq_in_hz = freq;
-> > @@ -1124,6 +1150,41 @@ int q6afe_set_lpass_clock(struct device *dev, int clk_id, int attri,
-> >   }
-> >   EXPORT_SYMBOL_GPL(q6afe_set_lpass_clock);
-> ...
-> 
-> >   int q6afe_port_set_sysclk(struct q6afe_port *port, int clk_id,
-> >   			  int clk_src, int clk_root,
-> >   			  unsigned int freq, int dir)
-> > @@ -1133,6 +1194,26 @@ int q6afe_port_set_sysclk(struct q6afe_port *port, int clk_id,
-> >   	struct afe_digital_clk_cfg dcfg = {0,};
-> >   	int ret;
-> > +	if (q6core_get_adsp_version() >= Q6_ADSP_VERSION_2_7) {
-> > +		/* Always use the new clock API on newer platforms. */
-> > +		switch (clk_id) {
-> > +		case LPAIF_DIG_CLK:
-> > +			clk_src = Q6AFE_LPASS_CLK_ATTRIBUTE_COUPLE_NO;
-> > +			clk_root = Q6AFE_LPASS_CLK_ROOT_DEFAULT;
-> > +			clk_id = Q6AFE_LPASS_CLK_ID_INTERNAL_DIGITAL_CODEC_CORE;
-> > +			break;
-> > +		case LPAIF_BIT_CLK:
-> > +			clk_src = Q6AFE_LPASS_CLK_ATTRIBUTE_COUPLE_NO;
-> > +			clk_root = Q6AFE_LPASS_CLK_ROOT_DEFAULT;
-> > +			clk_id = q6afe_get_v2_bit_clk_id(port);
-> > +			if (clk_id < 0)
-> > +				return clk_id;
-> > +			break;
-> > +		default:
-> > +			break;
-> > +		}
-> > +	}
-> 
-> This should be probably done in machine driver or q6afe-dai, not in q6afe.
-> 
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 7a7bd8bd80e9..007c0b204df7 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -20061,7 +20061,7 @@ F:	include/linux/sony-laptop.h
+ SOUND
+ M:	Jaroslav Kysela <perex@perex.cz>
+ M:	Takashi Iwai <tiwai@suse.com>
+-L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
++L:	linux-sound@vger.kernel.org
+ S:	Maintained
+ W:	http://www.alsa-project.org/
+ Q:	http://patchwork.kernel.org/project/alsa-devel/list/
+@@ -20074,7 +20074,7 @@ F:	tools/testing/selftests/alsa
+ 
+ SOUND - ALSA SELFTESTS
+ M:	Mark Brown <broonie@kernel.org>
+-L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
++L:	linux-sound@vger.kernel.org
+ L:	linux-kselftest@vger.kernel.org
+ S:	Supported
+ F:	tools/testing/selftests/alsa
+@@ -20100,7 +20100,7 @@ F:	sound/soc/soc-generic-dmaengine-pcm.c
+ SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEMENT (ASoC)
+ M:	Liam Girdwood <lgirdwood@gmail.com>
+ M:	Mark Brown <broonie@kernel.org>
+-L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
++L:	linux-sound@vger.kernel.org
+ S:	Supported
+ W:	http://alsa-project.org/main/index.php/ASoC
+ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git
+@@ -22931,7 +22931,7 @@ F:	fs/vboxsf/*
+ 
+ VIRTUAL PCM TEST DRIVER
+ M:	Ivan Orlov <ivan.orlov0322@gmail.com>
+-L:	alsa-devel@alsa-project.org
++L:	linux-sound@vger.kernel.org
+ S:	Maintained
+ F:	Documentation/sound/cards/pcmtest.rst
+ F:	sound/drivers/pcmtest.c
+-- 
+2.41.0
 
-I'll put it in q6afe-dai since this fits nicely into the switch
-statement in q6afe_mi2s_set_sysclk.
-
-As stated in the cover letter, I don't think adding this to the machine
-driver is the best option. The LPAIF_* clocks look simple and generic
-enough to be usable by different drivers, and making those drivers care
-about different clock versions in the firmware doesn't seem right.
-
-
-> 
-> > +
-> >   	switch (clk_id) {
-> >   	case LPAIF_DIG_CLK:
-> >   		dcfg.i2s_cfg_minor_version = AFE_API_VERSION_I2S_CONFIG;
