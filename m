@@ -4,39 +4,40 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B833ECDB474
-	for <alsa-devel@archiver.kernel.org>; Fri, 20 Oct 2023 13:14:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4C34ACDB474
+	for <alsa-devel@archiver.kernel.org>; Fri, 20 Oct 2023 13:15:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E0372DEC;
-	Fri, 20 Oct 2023 15:13:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E0372DEC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 10AD5DEE;
+	Fri, 20 Oct 2023 15:14:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 10AD5DEE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1697807686;
-	bh=Se48mX1RIsOWJHEdvv2rMdzW08ORSpxMdT6dr3hoWng=;
-	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=fzAZak2yC7i6dbhjNlFuiQwpRx3yXtr/3WbLFsQQg9GI4T1D3lbfubJXVrP3SVLI5
-	 hL7QYO4qtHCW3EfHvMxQ+nEsqhpfkUJNBQiPV1sq5v6GJhiXj+qOGsQM6INJh+6QXR
-	 Tap2Djuce4mrtZGZG55Tdctlb58h+mKPq1Bw+s6o=
+	s=default; t=1697807705;
+	bh=bq5q1GCASx/F7qnvwngisEQLZyNY5fz4pkDm+2A4orc=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=Czy02Asg1kvqUV4VHTMKsX/kuiXlPQi5xNYVXPB07nSylf2W5KBm6XUyuZR5hcEO9
+	 FogrOSxTaaJeEJ46NLsytBxNxwpC+K5125tCI+X9/3RyQQ7xo8bpRDUw9R17K9DHLm
+	 tbJsX3lhRgN7E4y4LF7PKFfV1AjgstsDAp9lA7PQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 753F7F805B4; Fri, 20 Oct 2023 15:12:39 +0200 (CEST)
+	id AD989F805BB; Fri, 20 Oct 2023 15:12:41 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E5D33F80236;
-	Fri, 20 Oct 2023 15:12:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E0282F805BB;
+	Fri, 20 Oct 2023 15:12:40 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1DFB9F8032D; Fri, 20 Oct 2023 11:51:16 +0200 (CEST)
+	id 820DEF8019B; Fri, 20 Oct 2023 11:51:20 +0200 (CEST)
 Received: from mg.richtek.com (mg.richtek.com [220.130.44.152])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8938EF8019B
+	by alsa1.perex.cz (Postfix) with ESMTP id 57186F8025F
 	for <alsa-devel@alsa-project.org>; Fri, 20 Oct 2023 11:51:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8938EF8019B
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 57186F8025F
 X-MailGates: (SIP:2,PASS,NONE)(compute_score:DELIVER,40,3)
 Received: from 192.168.10.46
-	by mg.richtek.com with MailGates ESMTPS Server V6.0(1461497:0:AUTH_RELAY)
+	by mg.richtek.com with MailGates ESMTPS Server V6.0(1461490:0:AUTH_RELAY)
 	(envelope-from <cy_huang@richtek.com>)
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256/256);
- Fri, 20 Oct 2023 17:50:36 +0800 (CST)
+ Fri, 20 Oct 2023 17:50:37 +0800 (CST)
 Received: from ex4.rt.l (192.168.10.47) by ex3.rt.l (192.168.10.46) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.25; Fri, 20 Oct
@@ -50,10 +51,13 @@ CC: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
 	Takashi Iwai <tiwai@suse.com>, ChiYuan Huang <cy_huang@richtek.com>, Allen
  Lin <allen_lin@richtek.com>, <alsa-devel@alsa-project.org>,
 	<linux-kernel@vger.kernel.org>
-Subject: [PATCH 0/3] ASoC: codecs: rtq9128: Several application fixes
-Date: Fri, 20 Oct 2023 17:50:32 +0800
-Message-ID: <1697795435-5858-1-git-send-email-cy_huang@richtek.com>
+Subject: [PATCH 3/3] ASoC: codecs: rtq9128: Fix TKA470B E1 version amp on
+ sequence
+Date: Fri, 20 Oct 2023 17:50:35 +0800
+Message-ID: <1697795435-5858-4-git-send-email-cy_huang@richtek.com>
 X-Mailer: git-send-email 1.8.3.1
+In-Reply-To: <1697795435-5858-1-git-send-email-cy_huang@richtek.com>
+References: <1697795435-5858-1-git-send-email-cy_huang@richtek.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-MailFrom: prvs=165218EEE3=cy_huang@richtek.com
@@ -62,15 +66,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: SJXAHMVKUCD3KNSI55WH57KUAL7KVLO2
-X-Message-ID-Hash: SJXAHMVKUCD3KNSI55WH57KUAL7KVLO2
+Message-ID-Hash: LR5ZELRWG7UZ35DNN7WAPSULKGI4JCOU
+X-Message-ID-Hash: LR5ZELRWG7UZ35DNN7WAPSULKGI4JCOU
 X-Mailman-Approved-At: Fri, 20 Oct 2023 13:12:22 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SJXAHMVKUCD3KNSI55WH57KUAL7KVLO2/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LR5ZELRWG7UZ35DNN7WAPSULKGI4JCOU/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -81,19 +85,151 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: ChiYuan Huang <cy_huang@richtek.com>
 
-This patch series fix several issues that comes from the real
-application.
+For E1 sample, there's the current bias issue. Some undocumented RGs
+should be runtime controlled during the DAPM flow to prevent the
+abnormal false alarm protection latchup.
 
-ChiYuan Huang (3):
-  ASoC: codecs: rtq9128: Fix string compare in DAPM event callback
-  ASoC: codecs: rtq9128: Fix TDM enable and DAI format control flow
-  ASoC: codecs: rtq9128: Fix TKA470B E1 version amp on sequence
+Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
+---
+Hi,
+  Our E1 sample is evaluated by some end customer. Alghouth it's not the
+final MP version. But to be compatible with the engineering sample, this
+fix can solve the amp on issue.
+---
+ sound/soc/codecs/rtq9128.c | 57 ++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 54 insertions(+), 3 deletions(-)
 
- sound/soc/codecs/rtq9128.c | 130 ++++++++++++++++++++++++++-----------
- 1 file changed, 93 insertions(+), 37 deletions(-)
-
-
-base-commit: ca34c962d70ab42fb578a36103ba7b8bb01f1f9b
+diff --git a/sound/soc/codecs/rtq9128.c b/sound/soc/codecs/rtq9128.c
+index 8a61a8a32db1..5d75dc63492b 100644
+--- a/sound/soc/codecs/rtq9128.c
++++ b/sound/soc/codecs/rtq9128.c
+@@ -63,6 +63,7 @@ struct rtq9128_data {
+ 	int tdm_slots;
+ 	int tdm_slot_width;
+ 	bool tdm_input_data2_select;
++	bool tka470b_e1_ver;
+ };
+ 
+ struct rtq9128_init_reg {
+@@ -171,7 +172,7 @@ static bool rtq9128_is_writeable_reg(struct device *dev, unsigned int reg)
+ 	case 0x80 ... 0x8B:
+ 	case 0xA0 ... 0xAD:
+ 	case 0xB0 ... 0xBA:
+-	case 0xC0:
++	case 0xC0 ... 0xC1:
+ 	case 0xD0 ... 0xDE:
+ 	case 0xE0 ... 0xE5:
+ 	case 0xF0 ... 0xF3:
+@@ -283,6 +284,33 @@ static const struct snd_kcontrol_new rtq9128_snd_ctrls[] = {
+ 	SOC_ENUM("DVDD UV Threshold Select", rtq9128_dvdduv_select_enum),
+ };
+ 
++static int rtq9128_int_power_event(struct snd_soc_dapm_widget *w, struct snd_kcontrol *kcontrol,
++				   int event)
++{
++	struct snd_soc_component *comp = snd_soc_dapm_to_component(w->dapm);
++	struct rtq9128_data *data = snd_soc_component_get_drvdata(comp);
++	int ret;
++
++	dev_dbg(comp->dev, "%s: event %d, ver %d\n", __func__, event, data->tka470b_e1_ver);
++
++	if (!data->tka470b_e1_ver)
++		return 0;
++
++	if (event == SND_SOC_DAPM_POST_PMU) {
++		ret = snd_soc_component_write(comp, 0xB9, 0x03);
++		if (ret)
++			return ret;
++
++		return snd_soc_component_write(comp, 0xC1, 0);
++	}
++
++	ret = snd_soc_component_write(comp, 0xA1, 0x02);
++	if (ret)
++		return ret;
++
++	return snd_soc_component_write(comp, 0xA8, 0x01);
++}
++
+ static int rtq9128_dac_power_event(struct snd_soc_dapm_widget *w, struct snd_kcontrol *kcontrol,
+ 				   int event)
+ {
+@@ -320,6 +348,8 @@ static int rtq9128_dac_power_event(struct snd_soc_dapm_widget *w, struct snd_kco
+ }
+ 
+ static const struct snd_soc_dapm_widget rtq9128_dapm_widgets[] = {
++	SND_SOC_DAPM_SUPPLY("PWR", SND_SOC_NOPM, 0, 0, rtq9128_int_power_event,
++			    SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_POST_PMD),
+ 	SND_SOC_DAPM_DAC_E("DAC1", NULL, SND_SOC_NOPM, 0, 0, rtq9128_dac_power_event,
+ 			   SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_POST_PMD),
+ 	SND_SOC_DAPM_DAC_E("DAC2", NULL, SND_SOC_NOPM, 0, 0, rtq9128_dac_power_event,
+@@ -339,6 +369,10 @@ static const struct snd_soc_dapm_route rtq9128_dapm_routes[] = {
+ 	{ "DAC2", NULL, "Playback" },
+ 	{ "DAC3", NULL, "Playback" },
+ 	{ "DAC4", NULL, "Playback" },
++	{ "DAC1", NULL, "PWR" },
++	{ "DAC2", NULL, "PWR" },
++	{ "DAC3", NULL, "PWR" },
++	{ "DAC4", NULL, "PWR" },
+ 	{ "OUT1", NULL, "DAC1" },
+ 	{ "OUT2", NULL, "DAC2" },
+ 	{ "OUT3", NULL, "DAC3" },
+@@ -358,9 +392,7 @@ static const struct rtq9128_init_reg rtq9128_tka470b_tables[] = {
+ 	{ 0x70, 0x11 },
+ 	{ 0x75, 0x1F },
+ 	{ 0xB6, 0x03 },
+-	{ 0xB9, 0x03 },
+ 	{ 0xB8, 0x03 },
+-	{ 0xC1, 0xFF },
+ 	{ 0xF8, 0x72 },
+ 	{ 0x30, 0x180 },
+ };
+@@ -387,6 +419,7 @@ static const struct rtq9128_init_reg rtq9128_dl_tables[] = {
+ 
+ static int rtq9128_component_probe(struct snd_soc_component *comp)
+ {
++	struct rtq9128_data *data = snd_soc_component_get_drvdata(comp);
+ 	const struct rtq9128_init_reg *table, *curr;
+ 	size_t table_size;
+ 	unsigned int val;
+@@ -398,6 +431,7 @@ static int rtq9128_component_probe(struct snd_soc_component *comp)
+ 
+ 	switch (FIELD_GET(RTQ9128_DIE_CHECK_MASK, val)) {
+ 	case RTQ9128_TKA470B_VAL:
++		data->tka470b_e1_ver = true;
+ 		table = rtq9128_tka470b_tables;
+ 		table_size = ARRAY_SIZE(rtq9128_tka470b_tables);
+ 		break;
+@@ -626,12 +660,29 @@ static int rtq9128_dai_hw_params(struct snd_pcm_substream *stream, struct snd_pc
+ 
+ static int rtq9128_dai_mute_stream(struct snd_soc_dai *dai, int mute, int stream)
+ {
++	struct rtq9128_data *data = snd_soc_dai_get_drvdata(dai);
+ 	struct snd_soc_component *comp = dai->component;
+ 	struct device *dev = dai->dev;
+ 	int ret;
+ 
+ 	dev_dbg(dev, "%s: mute (%d), stream (%d)\n", __func__, mute, stream);
+ 
++	if (data->tka470b_e1_ver && !mute) {
++		ret = snd_soc_component_write(comp, 0xB9, 0x02);
++		if (ret)
++			return ret;
++
++		usleep_range(10000, 11000);
++
++		ret = snd_soc_component_write(comp, 0xA1, 0xF2);
++		if (ret)
++			return ret;
++
++		ret = snd_soc_component_write(comp, 0xA8, 0x00);
++		if (ret)
++			return ret;
++	}
++
+ 	ret = snd_soc_component_write_field(comp, RTQ9128_REG_DSP_EN, RTQ9128_MSMUTE_MASK,
+ 					    mute ? 1 : 0);
+ 	return ret < 0 ? ret : 0;
 -- 
 2.34.1
 
