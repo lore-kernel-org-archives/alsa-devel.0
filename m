@@ -4,47 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 53103CDB474
-	for <alsa-devel@archiver.kernel.org>; Fri, 20 Oct 2023 10:13:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6736CCDB474
+	for <alsa-devel@archiver.kernel.org>; Fri, 20 Oct 2023 10:13:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A32DC1D7;
-	Fri, 20 Oct 2023 12:12:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A32DC1D7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 70454A4A;
+	Fri, 20 Oct 2023 12:12:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 70454A4A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1697796779;
-	bh=1jRbii/BkNUjq+lDVdVo8qO8tE5vxzWSxzyfm6hmtlA=;
+	s=default; t=1697796792;
+	bh=lBHgs/DVa1/8Ergrmo/veYp88qntXAvpdm7iYHGzP9c=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=fYSzlPCkTUAOQN7AsBJhXj2eDx4dZ7epR9v6y7AK68CpQFK+gK+9WPoqFmQi34vMk
-	 Vk6jvC1TGNdLR8v7EmWJRUhdvLrQsmnex2T2AYsC8SJBsZiviFruV900zgft8ieOhQ
-	 v6YJHZjjJZKTLqj0DkWgvTr/E/97hdmJUkrsfJHk=
+	b=iR3l9OD2HjH5PBI22JiTQIzcVo1/ErLEN/AjCqr3C464x2LIdKSh72uOPOXnJBYBY
+	 8ahCXR62yv0/u200qnKeEp6Zfo3yGlwFVoFaKt1/jcY+X5ESMGgbdhJoX3LHLAW9OL
+	 cpk4jOo6vKJHsjXPLs4RXoc3Rap7Mej06YtiOW1c=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2A518F805F4; Fri, 20 Oct 2023 12:09:32 +0200 (CEST)
+	id 8D481F805FF; Fri, 20 Oct 2023 12:09:34 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C23A7F805F0;
-	Fri, 20 Oct 2023 12:09:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id ADF27F8055A;
+	Fri, 20 Oct 2023 12:09:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A391AF805C0; Fri, 20 Oct 2023 12:09:18 +0200 (CEST)
+	id E2381F805BD; Fri, 20 Oct 2023 12:09:19 +0200 (CEST)
 Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 44642F8056F
-	for <alsa-devel@alsa-project.org>; Fri, 20 Oct 2023 12:09:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 44642F8056F
+	by alsa1.perex.cz (Postfix) with ESMTPS id 2D659F8025F
+	for <alsa-devel@alsa-project.org>; Fri, 20 Oct 2023 12:09:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2D659F8025F
 Received: from inva021.nxp.com (localhost [127.0.0.1])
-	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id D61C1201E8A;
-	Fri, 20 Oct 2023 12:09:04 +0200 (CEST)
+	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id BFE7D200895;
+	Fri, 20 Oct 2023 12:09:03 +0200 (CEST)
 Received: from aprdc01srsp001v.ap-rdc01.nxp.com
  (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
-	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 732DD201E75;
-	Fri, 20 Oct 2023 12:09:04 +0200 (CEST)
+	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 5BBC1201E84;
+	Fri, 20 Oct 2023 12:09:03 +0200 (CEST)
 Received: from localhost.localdomain (shlinux2.ap.freescale.net
  [10.192.224.44])
-	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id D8E3D181D0E5;
-	Fri, 20 Oct 2023 18:09:02 +0800 (+08)
+	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 61F1B1834898;
+	Fri, 20 Oct 2023 18:09:01 +0800 (+08)
 From: Shengjiu Wang <shengjiu.wang@nxp.com>
 To: hverkuil@xs4all.nl,
 	sakari.ailus@iki.fi,
@@ -63,15 +63,15 @@ To: hverkuil@xs4all.nl,
 	tiwai@suse.com,
 	alsa-devel@alsa-project.org,
 	linuxppc-dev@lists.ozlabs.org
-Subject: [RFC PATCH v7 11/13] media: uapi: Add audio rate controls support
-Date: Fri, 20 Oct 2023 17:30:30 +0800
-Message-Id: <1697794232-2607-12-git-send-email-shengjiu.wang@nxp.com>
+Subject: [RFC PATCH v7 10/13] media: uapi: Add V4L2_CTRL_TYPE_FIXED_POINT
+Date: Fri, 20 Oct 2023 17:30:29 +0800
+Message-Id: <1697794232-2607-11-git-send-email-shengjiu.wang@nxp.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1697794232-2607-1-git-send-email-shengjiu.wang@nxp.com>
 References: <1697794232-2607-1-git-send-email-shengjiu.wang@nxp.com>
 X-Virus-Scanned: ClamAV using ClamSMTP
-Message-ID-Hash: 34IVLCZBNRTOH3M5NRBV3XIJVWVB65X5
-X-Message-ID-Hash: 34IVLCZBNRTOH3M5NRBV3XIJVWVB65X5
+Message-ID-Hash: NTPWJUPYUG3EGNDLOMRO4UXXDWWSJLRK
+X-Message-ID-Hash: NTPWJUPYUG3EGNDLOMRO4UXXDWWSJLRK
 X-MailFrom: shengjiu.wang@nxp.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -84,7 +84,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/34IVLCZBNRTOH3M5NRBV3XIJVWVB65X5/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NTPWJUPYUG3EGNDLOMRO4UXXDWWSJLRK/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -93,89 +93,109 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add V4L2_CID_M2M_AUDIO_SOURCE_RATE and V4L2_CID_M2M_AUDIO_DEST_RATE
-new IDs for rate control.
-
-Add V4L2_CID_M2M_AUDIO_SOURCE_RATE_OFFSET and
-V4L2_CID_M2M_AUDIO_DEST_RATE_OFFSET for clock drift.
+Fixed point controls are used by the user to configure
+a fixed point value in 64bits, which Q31.32 format.
 
 Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 ---
- .../media/v4l/ext-ctrls-audio-m2m.rst          | 18 ++++++++++++++++++
- drivers/media/v4l2-core/v4l2-ctrls-defs.c      | 12 ++++++++++++
- include/uapi/linux/v4l2-controls.h             |  5 +++++
- 3 files changed, 35 insertions(+)
+ Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst  | 6 ++++++
+ .../userspace-api/media/videodev2.h.rst.exceptions          | 1 +
+ drivers/media/v4l2-core/v4l2-ctrls-api.c                    | 5 ++++-
+ drivers/media/v4l2-core/v4l2-ctrls-core.c                   | 2 ++
+ include/uapi/linux/videodev2.h                              | 1 +
+ 5 files changed, 14 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-audio-m2m.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-audio-m2m.rst
-index 82d2ecedbfee..e6972a2d3b17 100644
---- a/Documentation/userspace-api/media/v4l/ext-ctrls-audio-m2m.rst
-+++ b/Documentation/userspace-api/media/v4l/ext-ctrls-audio-m2m.rst
-@@ -19,3 +19,21 @@ Audio M2M Control IDs
-     The Audio M2M class descriptor. Calling
-     :ref:`VIDIOC_QUERYCTRL` for this control will
-     return a description of this control class.
-+
-+.. _v4l2-audio-asrc:
-+
-+``V4L2_CID_M2M_AUDIO_SOURCE_RATE``
-+    Sets the audio source rate, unit is (Hz)
-+
-+``V4L2_CID_M2M_AUDIO_DEST_RATE``
-+    Sets the audio destination rate, unit is (Hz)
-+
-+``V4L2_CID_M2M_AUDIO_SOURCE_RATE_OFFSET``
-+    Sets the offset for audio source rate, unit is (Hz).
-+    Offset expresses the drift of clock if there is. It is
-+    equal to real rate minus ideal rate.
-+
-+``V4L2_CID_M2M_AUDIO_DEST_RATE_OFFSET``
-+    Sets the offset for audio destination rate, unit is (Hz)
-+    Offset expresses the drift of clock if there is. It is
-+    equal to real rate minus ideal rate.
-diff --git a/drivers/media/v4l2-core/v4l2-ctrls-defs.c b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
-index 2a85ea3dc92f..b695cbdd1f6e 100644
---- a/drivers/media/v4l2-core/v4l2-ctrls-defs.c
-+++ b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
-@@ -1245,6 +1245,10 @@ const char *v4l2_ctrl_get_name(u32 id)
+diff --git a/Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst b/Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst
+index 4d38acafe8e1..2e15db0779f2 100644
+--- a/Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst
++++ b/Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst
+@@ -549,6 +549,12 @@ See also the examples in :ref:`control`.
+       - n/a
+       - A struct :c:type:`v4l2_ctrl_av1_film_grain`, containing AV1 Film Grain
+         parameters for stateless video decoders.
++    * - ``V4L2_CTRL_TYPE_FIXED_POINT``
++      - n/a
++      - n/a
++      - n/a
++      - A struct :c:type:`v4l2_ctrl_fixed_point`, containing parameter which is
++        Q31.32 format.
  
- 	/* Audio M2M controls */
- 	case V4L2_CID_M2M_AUDIO_CLASS:  return "Audio M2M Controls";
-+	case V4L2_CID_M2M_AUDIO_SOURCE_RATE:	return "Audio Source Sample Rate";
-+	case V4L2_CID_M2M_AUDIO_DEST_RATE:	return "Audio Dest Sample Rate";
-+	case V4L2_CID_M2M_AUDIO_SOURCE_RATE_OFFSET:	return "Audio Source Sample Rate Offset";
-+	case V4L2_CID_M2M_AUDIO_DEST_RATE_OFFSET:	return "Audio Dest Sample Rate Offset";
- 	default:
- 		return NULL;
- 	}
-@@ -1606,6 +1610,14 @@ void v4l2_ctrl_fill(u32 id, const char **name, enum v4l2_ctrl_type *type,
- 	case V4L2_CID_COLORIMETRY_HDR10_MASTERING_DISPLAY:
- 		*type = V4L2_CTRL_TYPE_HDR10_MASTERING_DISPLAY;
- 		break;
-+	case V4L2_CID_M2M_AUDIO_SOURCE_RATE:
-+	case V4L2_CID_M2M_AUDIO_DEST_RATE:
-+		*type = V4L2_CTRL_TYPE_INTEGER_MENU;
-+		break;
-+	case V4L2_CID_M2M_AUDIO_SOURCE_RATE_OFFSET:
-+	case V4L2_CID_M2M_AUDIO_DEST_RATE_OFFSET:
-+		*type = V4L2_CTRL_TYPE_FIXED_POINT;
-+		break;
- 	default:
- 		*type = V4L2_CTRL_TYPE_INTEGER;
- 		break;
-diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4l2-controls.h
-index eb0f0a76f867..d433c6f0b533 100644
---- a/include/uapi/linux/v4l2-controls.h
-+++ b/include/uapi/linux/v4l2-controls.h
-@@ -3498,4 +3498,9 @@ struct v4l2_ctrl_av1_film_grain {
- #define V4L2_CID_M2M_AUDIO_CLASS_BASE  (V4L2_CTRL_CLASS_M2M_AUDIO | 0x900)
- #define V4L2_CID_M2M_AUDIO_CLASS       (V4L2_CTRL_CLASS_M2M_AUDIO | 1)
+ .. raw:: latex
  
-+#define V4L2_CID_M2M_AUDIO_SOURCE_RATE	(V4L2_CID_M2M_AUDIO_CLASS_BASE + 0)
-+#define V4L2_CID_M2M_AUDIO_DEST_RATE	(V4L2_CID_M2M_AUDIO_CLASS_BASE + 1)
-+#define V4L2_CID_M2M_AUDIO_SOURCE_RATE_OFFSET	(V4L2_CID_M2M_AUDIO_CLASS_BASE + 2)
-+#define V4L2_CID_M2M_AUDIO_DEST_RATE_OFFSET	(V4L2_CID_M2M_AUDIO_CLASS_BASE + 3)
-+
- #endif
+diff --git a/Documentation/userspace-api/media/videodev2.h.rst.exceptions b/Documentation/userspace-api/media/videodev2.h.rst.exceptions
+index e61152bb80d1..2faa5a2015eb 100644
+--- a/Documentation/userspace-api/media/videodev2.h.rst.exceptions
++++ b/Documentation/userspace-api/media/videodev2.h.rst.exceptions
+@@ -167,6 +167,7 @@ replace symbol V4L2_CTRL_TYPE_AV1_SEQUENCE :c:type:`v4l2_ctrl_type`
+ replace symbol V4L2_CTRL_TYPE_AV1_TILE_GROUP_ENTRY :c:type:`v4l2_ctrl_type`
+ replace symbol V4L2_CTRL_TYPE_AV1_FRAME :c:type:`v4l2_ctrl_type`
+ replace symbol V4L2_CTRL_TYPE_AV1_FILM_GRAIN :c:type:`v4l2_ctrl_type`
++replace symbol V4L2_CTRL_TYPE_FIXED_POINT :c:type:`v4l2_ctrl_type`
+ 
+ # V4L2 capability defines
+ replace define V4L2_CAP_VIDEO_CAPTURE device-capabilities
+diff --git a/drivers/media/v4l2-core/v4l2-ctrls-api.c b/drivers/media/v4l2-core/v4l2-ctrls-api.c
+index 002ea6588edf..e6a0fb8d6791 100644
+--- a/drivers/media/v4l2-core/v4l2-ctrls-api.c
++++ b/drivers/media/v4l2-core/v4l2-ctrls-api.c
+@@ -57,6 +57,7 @@ static int ptr_to_user(struct v4l2_ext_control *c,
+ 		return copy_to_user(c->string, ptr.p_char, len + 1) ?
+ 		       -EFAULT : 0;
+ 	case V4L2_CTRL_TYPE_INTEGER64:
++	case V4L2_CTRL_TYPE_FIXED_POINT:
+ 		c->value64 = *ptr.p_s64;
+ 		break;
+ 	default:
+@@ -132,6 +133,7 @@ static int user_to_new(struct v4l2_ext_control *c, struct v4l2_ctrl *ctrl)
+ 
+ 	switch (ctrl->type) {
+ 	case V4L2_CTRL_TYPE_INTEGER64:
++	case V4L2_CTRL_TYPE_FIXED_POINT:
+ 		*ctrl->p_new.p_s64 = c->value64;
+ 		break;
+ 	case V4L2_CTRL_TYPE_STRING:
+@@ -540,7 +542,8 @@ static int validate_ctrls(struct v4l2_ext_controls *cs,
+ 		 */
+ 		if (ctrl->is_ptr)
+ 			continue;
+-		if (ctrl->type == V4L2_CTRL_TYPE_INTEGER64)
++		if (ctrl->type == V4L2_CTRL_TYPE_INTEGER64 ||
++		    ctrl->type == V4L2_CTRL_TYPE_FIXED_POINT)
+ 			p_new.p_s64 = &cs->controls[i].value64;
+ 		else
+ 			p_new.p_s32 = &cs->controls[i].value;
+diff --git a/drivers/media/v4l2-core/v4l2-ctrls-core.c b/drivers/media/v4l2-core/v4l2-ctrls-core.c
+index a662fb60f73f..9d50df0d9874 100644
+--- a/drivers/media/v4l2-core/v4l2-ctrls-core.c
++++ b/drivers/media/v4l2-core/v4l2-ctrls-core.c
+@@ -1187,6 +1187,7 @@ static int std_validate_elem(const struct v4l2_ctrl *ctrl, u32 idx,
+ 	case V4L2_CTRL_TYPE_INTEGER:
+ 		return ROUND_TO_RANGE(ptr.p_s32[idx], u32, ctrl);
+ 	case V4L2_CTRL_TYPE_INTEGER64:
++	case V4L2_CTRL_TYPE_FIXED_POINT:
+ 		/*
+ 		 * We can't use the ROUND_TO_RANGE define here due to
+ 		 * the u64 divide that needs special care.
+@@ -1779,6 +1780,7 @@ static struct v4l2_ctrl *v4l2_ctrl_new(struct v4l2_ctrl_handler *hdl,
+ 	/* Prefill elem_size for all types handled by std_type_ops */
+ 	switch ((u32)type) {
+ 	case V4L2_CTRL_TYPE_INTEGER64:
++	case V4L2_CTRL_TYPE_FIXED_POINT:
+ 		elem_size = sizeof(s64);
+ 		break;
+ 	case V4L2_CTRL_TYPE_STRING:
+diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
+index 4ef08b3a9e39..ef8913d561bf 100644
+--- a/include/uapi/linux/videodev2.h
++++ b/include/uapi/linux/videodev2.h
+@@ -1903,6 +1903,7 @@ enum v4l2_ctrl_type {
+ 	V4L2_CTRL_TYPE_STRING        = 7,
+ 	V4L2_CTRL_TYPE_BITMASK       = 8,
+ 	V4L2_CTRL_TYPE_INTEGER_MENU  = 9,
++	V4L2_CTRL_TYPE_FIXED_POINT   = 10,
+ 
+ 	/* Compound types are >= 0x0100 */
+ 	V4L2_CTRL_COMPOUND_TYPES     = 0x0100,
 -- 
 2.34.1
 
