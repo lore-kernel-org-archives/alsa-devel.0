@@ -4,89 +4,102 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9675FC001DF
-	for <alsa-devel@archiver.kernel.org>; Fri, 20 Oct 2023 22:33:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DAE60C001DF
+	for <alsa-devel@archiver.kernel.org>; Fri, 20 Oct 2023 23:20:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E484F84B;
-	Sat, 21 Oct 2023 00:32:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E484F84B
+	by alsa0.perex.cz (Postfix) with ESMTPS id AFAB182B;
+	Sat, 21 Oct 2023 01:19:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AFAB182B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1697841201;
-	bh=ktERwyBLEExIXBgzNyFt6G5y7R4k1hF6zHPNDQ9AZUk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1697844028;
+	bh=yqnO0GyCPQQeD5I0B1DjoMIOhZkBapig4j5yRoqsCBU=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=ZzMXrQXV7r3Dbtkw7CETOkmRrwU9ipl+BKTTjhcT8veboE7VYZ9iJem5aaCuECZpN
-	 7qNa7KFT+tZFnca44BjBI9gLepHoEj5TYqRKp2pKUKX4ygrPUcSqG6hrA8GBUun/LC
-	 L5mPh3Wz2/KbWiBzm8QufcPC8gnuYxR0wVnEIDXo=
+	b=DleVmTlcoioqkKdiMUZKVlxFS7ZS7gmvI1oD4peUA72dNzQc4Py7EbqFRML9lXMfe
+	 7M+D0PKOzfRXf/d475AI+P9jU4MzLsFudm4RBuWyz5djYJlbdaCTyuM1rOSvUt9Jie
+	 WkTDSS7TMyIToNJCKtn8qyw1SGCJKc4JDK1x0Y4E=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id EC6E5F8025F; Sat, 21 Oct 2023 00:31:59 +0200 (CEST)
+	id 46245F800C9; Sat, 21 Oct 2023 01:19:38 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id EB827F8025F;
-	Sat, 21 Oct 2023 00:31:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1E245F800C9;
+	Sat, 21 Oct 2023 01:19:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8E3E8F8025F; Sat, 21 Oct 2023 00:31:53 +0200 (CEST)
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 78758F8025F; Sat, 21 Oct 2023 01:19:32 +0200 (CEST)
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com
+ [IPv6:2a00:1450:4864:20::130])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id BF4DCF80166
-	for <alsa-devel@alsa-project.org>; Sat, 21 Oct 2023 00:31:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BF4DCF80166
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9436FF80236
+	for <alsa-devel@alsa-project.org>; Sat, 21 Oct 2023 01:19:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9436FF80236
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=UdJdutxG
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697841104; x=1729377104;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=ktERwyBLEExIXBgzNyFt6G5y7R4k1hF6zHPNDQ9AZUk=;
-  b=UdJdutxGrz0VRVeWCI0FlIFCVp8x6cuy8uHamDermTDt6f6xFk0CdUAO
-   NNmnMeUv9xF6uYU4VNoYBY0cneRbMCuN5oUONY5eOFr6COFVHyMfs7P86
-   wjGU0FfAXrRk7DbWkE0Bbce816Ooh5I93rgtkr5DGDV9wVM+CjrDXL07I
-   gf4Cg7bGdNieR+M9tjX3gfRL4WnjrwGWdvQ+GA08uaA1r1PwaZw2ryCKx
-   gIRTUKOh5YxxFlbtBzq7iV46w/5PHwaA2gsMncmqU4gX7yacs1Z2na6hu
-   roM3pSZoZShCBwCbBGbulY5z7ISE2G9rpNV1QB2qIl3SlHcXpyUkhydu6
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10869"; a="450813633"
-X-IronPort-AV: E=Sophos;i="6.03,239,1694761200";
-   d="scan'208";a="450813633"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 Oct 2023 15:31:37 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10869"; a="827864456"
-X-IronPort-AV: E=Sophos;i="6.03,239,1694761200";
-   d="scan'208";a="827864456"
-Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
-  by fmsmga004.fm.intel.com with ESMTP; 20 Oct 2023 15:31:32 -0700
-Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1qty1i-000438-1S;
-	Fri, 20 Oct 2023 22:31:30 +0000
-Date: Sat, 21 Oct 2023 06:30:33 +0800
-From: kernel test robot <lkp@intel.com>
-To: Chancel Liu <chancel.liu@nxp.com>, lgirdwood@gmail.com,
-	broonie@kernel.org, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-	festevam@gmail.com, linux-imx@nxp.com, devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	alsa-devel@alsa-project.org
-Cc: oe-kbuild-all@lists.linux.dev, Chancel Liu <chancel.liu@nxp.com>
-Subject: Re: [PATCH v2 1/3] arm64: dts: imx93: Add audio device nodes
-Message-ID: <202310210636.dtEPMrF8-lkp@intel.com>
-References: <20231010133838.799714-2-chancel.liu@nxp.com>
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20230601 header.b=eCSMDsrm
+Received: by mail-lf1-x130.google.com with SMTP id
+ 2adb3069b0e04-507c8316abcso1703323e87.1
+        for <alsa-devel@alsa-project.org>;
+ Fri, 20 Oct 2023 16:19:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697843964; x=1698448764;
+ darn=alsa-project.org;
+        h=mime-version:references:in-reply-to:message-id:date:subject:cc:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Gd+y1EVP7Tnl3Fn7df202mdRXZ1tRrmqlbxFbYLZtrg=;
+        b=eCSMDsrmH7NUtH3v/EMOIIaPtg0DaW6DkvJ9dF7StYi0HltFs/4372vW5n7y/e1oE9
+         7/2FdKTcF+0W7YXAMCcZl2QkaFSmzsBaRPJnOUyySArp++K0/Rq7GKNY36JsiUDIM2ji
+         +oDuGwJA3DCXG9Dq5/yGtqR26cmYqGYcD3BvffOtip0U/CvNNia6lg/h9Wi7KoICUcfa
+         hiatpWmnst24EFQxc/BedQaZnwcUcBCe+flZYL37F6xru5vB7kZrQK/whSX7od+piUOr
+         Rq+SjxKTC0qKVbzQwxWGPVbZC5Y0lvxbcIkCtuPrgSV7QN5/oKhvtGTGbB0UNj6FvI6w
+         vjbg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697843964; x=1698448764;
+        h=mime-version:references:in-reply-to:message-id:date:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Gd+y1EVP7Tnl3Fn7df202mdRXZ1tRrmqlbxFbYLZtrg=;
+        b=OborQJQKRqxfUJwkk/HNxblSQjKbams2wymFg7ETXg7aovmd3xX/86ipzAveWb53l4
+         mpJUWRsnfhaMlw+xsl9h+PQoxSmgsSmpsUsq13u9spSHzQKKjMruHnSrCxx7higEUIVh
+         llAqJq95nG9Ai/lVczwhDcAUwJcsRwS0ULkbaxtQY26yAwomVMJBttu3t/KaiemU6Qir
+         x1WQmlABdLxnAOyVkhJ9ZL6aslRAjsq6x9KsXpNnjg1a6Cx9Vu0/sobq4shTn+MWpNhG
+         tRT6YxPb8iq0R0g1hYmLvZBJ9araTMYhxYoVa+gUE0NFu1kvKGX+0WQ7aFaNC7LofNmF
+         m+/g==
+X-Gm-Message-State: AOJu0YyH0qV+7BovwMgzYlX6IzfcngYT5p4yxRo6mnluLrOAH2Jkgu5N
+	wMSMCK8MRTJ7K6YgYyeWJdA=
+X-Google-Smtp-Source: 
+ AGHT+IFbO5a9uW2x8EMaPxKrNZYl8CKdmOJba3kWXFwTKqv6/E/6iwbLLAWd+A/kzuWQwx8SQFHmdA==
+X-Received: by 2002:ac2:4183:0:b0:507:9f51:acee with SMTP id
+ z3-20020ac24183000000b005079f51aceemr2101993lfh.22.1697843963947;
+        Fri, 20 Oct 2023 16:19:23 -0700 (PDT)
+Received: from dell.localnet (77-255-201-154.dynamic.inetia.pl.
+ [77.255.201.154])
+        by smtp.gmail.com with ESMTPSA id
+ 24-20020ac24858000000b0050797006048sm576424lfy.68.2023.10.20.16.19.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Oct 2023 16:19:22 -0700 (PDT)
+From: Janusz Krzysztofik <jmkrzyszt@gmail.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ASoC: ti: ams-delta: Allow it to be test compiled
+Date: Sat, 21 Oct 2023 01:19:20 +0200
+Message-ID: <13380212.uLZWGnKmhe@dell>
+In-Reply-To: <9bbab4c8-f616-4abc-9eee-022c19c6921d@sirena.org.uk>
+References: 
+ <20231008135601.542356-1-jmkrzyszt@gmail.com>
+ <9bbab4c8-f616-4abc-9eee-022c19c6921d@sirena.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231010133838.799714-2-chancel.liu@nxp.com>
-Message-ID-Hash: UH3QO4SZE7MI33LZ5BAC443CNHJYY44M
-X-Message-ID-Hash: UH3QO4SZE7MI33LZ5BAC443CNHJYY44M
-X-MailFrom: lkp@intel.com
+Content-Type: multipart/signed; boundary="nextPart2913659.e9J7NaK4W3";
+ micalg="pgp-sha256"; protocol="application/pgp-signature"
+Message-ID-Hash: 6O6Y4W2P2MTBARRSDL4DSG2R5XNSBLTQ
+X-Message-ID-Hash: 6O6Y4W2P2MTBARRSDL4DSG2R5XNSBLTQ
+X-MailFrom: jmkrzyszt@gmail.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -98,7 +111,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UH3QO4SZE7MI33LZ5BAC443CNHJYY44M/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6O6Y4W2P2MTBARRSDL4DSG2R5XNSBLTQ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -107,33 +120,55 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi Chancel,
+--nextPart2913659.e9J7NaK4W3
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"; protected-headers="v1"
+From: Janusz Krzysztofik <jmkrzyszt@gmail.com>
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: ti: ams-delta: Allow it to be test compiled
+Date: Sat, 21 Oct 2023 01:19:20 +0200
+Message-ID: <13380212.uLZWGnKmhe@dell>
+In-Reply-To: <9bbab4c8-f616-4abc-9eee-022c19c6921d@sirena.org.uk>
+MIME-Version: 1.0
 
-kernel test robot noticed the following build errors:
+On Thursday, 19 October 2023 13:40:57 CEST Mark Brown wrote:
+> On Sun, Oct 08, 2023 at 03:53:10PM +0200, Janusz Krzysztofik wrote:
+> > The driver is now built only when MACH_AMS_DELTA is selected, which
+> > requires a very specific selection of ARCH settings.  As a consequence, it
+> > gets very little attention from build-bots, if not none.
+> 
+> Acked-by: Mark Brown <broonie@kernel.org>
 
-[auto build test ERROR on robh/for-next]
-[also build test ERROR on broonie-sound/for-next linus/master v6.6-rc6 next-20231020]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Hi Mark,
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Chancel-Liu/arm64-dts-imx93-Add-audio-device-nodes/20231010-214443
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git for-next
-patch link:    https://lore.kernel.org/r/20231010133838.799714-2-chancel.liu%40nxp.com
-patch subject: [PATCH v2 1/3] arm64: dts: imx93: Add audio device nodes
-config: arm64-defconfig (https://download.01.org/0day-ci/archive/20231021/202310210636.dtEPMrF8-lkp@intel.com/config)
-compiler: aarch64-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231021/202310210636.dtEPMrF8-lkp@intel.com/reproduce)
+Thanks for your Ack.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310210636.dtEPMrF8-lkp@intel.com/
+Since the fix required for successful compilation of the ams-delta ASoC 
+driver already reached v6.6, my former suggestion to pass this change also 
+via Greg's tty tree is probably no longer vital.
 
-All errors (new ones prefixed by >>):
+Thanks,
+Janusz
 
->> ERROR: Input tree has errors, aborting (use -f to force output)
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+--nextPart2913659.e9J7NaK4W3
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEnyr6IsGnTYAeAkHJ2WqSnltsjBoFAmUzCvgACgkQ2WqSnlts
+jBpNFAf9FNv7JXlsqK4cead1KZEZ3CLVzOWvKWgquVyK21Rf35wQOfJvzlWTXSeB
+J/GS5Jdb399q0uSGJ0H9tN7E2kUQ7A3EffqHigsjDsmUlJamS00OFWlw93CpZlKB
+11TtR6hrxxXoCoDZXmzYLvCac0+AZ6moIQ0mJqY6AlBho4QNAxPafvwaQ1bzAkmA
+v39as9EopIOAaH8XYgX2fnQruN8jY7s9dhZwoO7VzpzcQliwakIxE2fGbXpnh45s
+k0BHkOLJgF2z2nj2PekKh1vnGw0757dytIAUpPu/j/jtTA6AI94bTTEYMQHTWjaz
+fDCU+8ORkRns59sg882e2rnWGjh73A==
+=m2Dz
+-----END PGP SIGNATURE-----
+
+--nextPart2913659.e9J7NaK4W3--
+
+
+
