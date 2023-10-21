@@ -4,86 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 90C4FC001E0
-	for <alsa-devel@archiver.kernel.org>; Sat, 21 Oct 2023 21:20:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3CF65C001E0
+	for <alsa-devel@archiver.kernel.org>; Sat, 21 Oct 2023 21:20:57 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CF989A4D;
-	Sat, 21 Oct 2023 23:19:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CF989A4D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 73027AE9;
+	Sat, 21 Oct 2023 23:20:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 73027AE9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1697923220;
-	bh=2edbmpSdse6QTiLHLppAasj437TKMZKAa3xMDMFPF7w=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=vPuCLq5PbgKjms94oOKdiQRaan7XwddyOLIYX21cBZurETGKVT2gCi9iOOr2LVgdH
-	 eP/jyFd6a0B89IwEdBDD8FeQfuHqb9GZjZPQx3IQMljWJImwqrtJOaWX3q5MhIUQf5
-	 fOpO7LoSUhwAQOR32dR6yrnyvLvJoo2Y5miZlRRo=
+	s=default; t=1697923255;
+	bh=7SGCURhw2jVnrog23BIXPuyKmEQcLkr8o166R7Bj4g4=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=H/DZ9XlXbjL8yqsAifpQpJuobSVb0XZw+ZsCXYWzibybHs5VuheZDiH8SI30CdKjl
+	 c2JiRLwxqFaMbSv+1Ae0nAX1oA1g9i2hIJLOSLeA/uca3V1ZnyAwi61OH68f3G1LxP
+	 +LrPlkJraJS20heOwI27o7YjUjFhoA7+ynGqYsoc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1618BF805C5; Sat, 21 Oct 2023 23:17:40 +0200 (CEST)
+	id 4683BF8032D; Sat, 21 Oct 2023 23:20:05 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id BC7E7F805C2;
-	Sat, 21 Oct 2023 23:17:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A2F02F8024E;
+	Sat, 21 Oct 2023 23:20:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A031BF8032D; Sat, 21 Oct 2023 23:17:27 +0200 (CEST)
+	id E11C1F80558; Sat, 21 Oct 2023 23:19:42 +0200 (CEST)
 Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7A6E7F80236
-	for <alsa-devel@alsa-project.org>; Sat, 21 Oct 2023 23:17:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7A6E7F80236
+	by alsa1.perex.cz (Postfix) with ESMTPS id 3AEA9F8025F
+	for <alsa-devel@alsa-project.org>; Sat, 21 Oct 2023 23:15:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3AEA9F8025F
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256
- header.s=mimecast20190719 header.b=CvKHccB/
+ header.s=mimecast20190719 header.b=YaBNCEh/
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1697923043;
+	s=mimecast20190719; t=1697922952;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=LKIpXFjJGu8ZCvqGwQ7X9xX+JXHtZVL88aOSAPD8uy4=;
-	b=CvKHccB/JuiCm9u2p4KQxPwqv/I3dVkPz63Mua3j8HZiRyB9DlenvZG0F89QbPG6wliXQD
-	aRwRoUHLBuvCNfPqP55RyzYenBVb6k+igBxC/jNuFCl4J7MnMquFfRUrDPkpdpaVsy5gzJ
-	VSxFdK4Yz+aahGYlmn19f4ziD/ZWj2I=
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=O1S0o+gZP4oU9FO33hpUekrK/zcyOaTTRWXeWMH/Hk8=;
+	b=YaBNCEh/4B+usCzfwaumCAhhEEGxEAQuPMO4msigj59KygeO+7kYnNqG2k9CqhXb9FXjBf
+	Vfz55e3y7Hx89XWfYaDDEiTCTep8DlGfrvgZsnhqneMkNdrA7UbRKGgq7mJH17Hsu4KRd0
+	Act3+wTc2+JzWHVpkuWx4tqgrC2/R3E=
 Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
  [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-197-G2LxyWCJPe27CvUfdF63ng-1; Sat, 21 Oct 2023 17:17:20 -0400
-X-MC-Unique: G2LxyWCJPe27CvUfdF63ng-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com
- [10.11.54.4])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest
- SHA256)
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-588-UITuBRfTO1CtwqT0DKvChQ-1; Sat, 21 Oct 2023 17:15:45 -0400
+X-MC-Unique: UITuBRfTO1CtwqT0DKvChQ-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com
+ [10.11.54.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id EBA31857F8C;
-	Sat, 21 Oct 2023 21:17:19 +0000 (UTC)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 39F8C10201E3;
+	Sat, 21 Oct 2023 21:15:45 +0000 (UTC)
 Received: from localhost.localdomain (unknown [10.39.192.56])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 159732026D4C;
-	Sat, 21 Oct 2023 21:17:18 +0000 (UTC)
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 3E712492BFB;
+	Sat, 21 Oct 2023 21:15:44 +0000 (UTC)
 From: Hans de Goede <hdegoede@redhat.com>
 To: Cezary Rojewski <cezary.rojewski@intel.com>,
 	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
 	Liam Girdwood <lgirdwood@gmail.com>,
+	Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
 	Mark Brown <broonie@kernel.org>
 Cc: Hans de Goede <hdegoede@redhat.com>,
 	alsa-devel@alsa-project.org
-Subject: [PATCH] ASoC: soc-core.c: Log components string to help with UCM
- profile development
-Date: Sat, 21 Oct 2023 23:17:10 +0200
-Message-ID: <20231021211710.115239-1-hdegoede@redhat.com>
+Subject: [PATCH 2/6] ASoC: Intel: bytcr_wm5102: Add support for Lenovo Yoga
+ Tab 3 Pro YT3-X90
+Date: Sat, 21 Oct 2023 23:15:29 +0200
+Message-ID: <20231021211534.114991-2-hdegoede@redhat.com>
+In-Reply-To: <20231021211534.114991-1-hdegoede@redhat.com>
+References: <20231021211534.114991-1-hdegoede@redhat.com>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
 X-Mimecast-Spam-Score: 0
 X-Mimecast-Originator: redhat.com
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain; charset="US-ASCII"; x-default=true
-Message-ID-Hash: EZYDIJI7E5VPWF2OTKXQYPVL36D4YE4L
-X-Message-ID-Hash: EZYDIJI7E5VPWF2OTKXQYPVL36D4YE4L
+Message-ID-Hash: RGYC2CBWTTRFF7FA44AYPJHWHVOZQOSJ
+X-Message-ID-Hash: RGYC2CBWTTRFF7FA44AYPJHWHVOZQOSJ
 X-MailFrom: hdegoede@redhat.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -96,7 +99,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/EZYDIJI7E5VPWF2OTKXQYPVL36D4YE4L/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RGYC2CBWTTRFF7FA44AYPJHWHVOZQOSJ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -105,34 +108,44 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Various ASoC board/card drivers use a components string to communicate
-to userspace which output (speakers / headphones) and input (internal mic /
-headset mic) routes have been setup by the card driver so that the UCM
-profiles can dynamically adjust to this.
+The Lenovo Yoga Tab 3 Pro YT3-X90 x86 tablet, which ships with Android
+with a custom kernel as factory OS, does not list the used WM5102 codec
+inside its DSDT.
 
-ATM it is sort of hard to figure out what the component string has
-actually been set to by the kernel. Log the components string set on
-the snd_soc_card to help with UCM profile development.
+So acpi_dev_get_first_match_dev() is going to fail on this board.
+Fallback to using "spi-$(mach->id)" as codec device name in this case
+to allow bytcr_wm5102 to work on these tablets.
 
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
-An alternative solution would be to add this to the asoc debugfs.
----
- sound/soc/soc-core.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/intel/boards/bytcr_wm5102.c | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index cc442c52cdea..7d199251c6c5 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -2154,6 +2154,7 @@ static int snd_soc_bind_card(struct snd_soc_card *card)
- 				card->name, ret);
- 			goto probe_end;
- 		}
-+		dev_info(card->dev, "components: %s\n", card->components);
+diff --git a/sound/soc/intel/boards/bytcr_wm5102.c b/sound/soc/intel/boards/bytcr_wm5102.c
+index 5c9e06ed1a53..cf77a12b6a10 100644
+--- a/sound/soc/intel/boards/bytcr_wm5102.c
++++ b/sound/soc/intel/boards/bytcr_wm5102.c
+@@ -413,14 +413,15 @@ static int snd_byt_wm5102_mc_probe(struct platform_device *pdev)
+ 	 */
+ 	mach = dev->platform_data;
+ 	adev = acpi_dev_get_first_match_dev(mach->id, NULL, -1);
+-	if (!adev) {
+-		dev_err(dev, "Error cannot find acpi-dev for codec\n");
+-		return -ENOENT;
++	if (adev) {
++		snprintf(codec_name, sizeof(codec_name), "spi-%s", acpi_dev_name(adev));
++		acpi_dev_put(adev);
++	} else {
++		/* Special case for when the codec is missing from the DSTD */
++		strscpy(codec_name, "spi1.0", sizeof(codec_name));
  	}
+-	snprintf(codec_name, sizeof(codec_name), "spi-%s", acpi_dev_name(adev));
  
- 	ret = snd_soc_card_late_probe(card);
+ 	codec_dev = bus_find_device_by_name(&spi_bus_type, NULL, codec_name);
+-	acpi_dev_put(adev);
+ 	if (!codec_dev)
+ 		return -EPROBE_DEFER;
+ 
 -- 
 2.41.0
 
