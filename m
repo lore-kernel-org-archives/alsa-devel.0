@@ -4,87 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F082EC0032E
-	for <alsa-devel@archiver.kernel.org>; Sat, 21 Oct 2023 21:20:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7D076C0032E
+	for <alsa-devel@archiver.kernel.org>; Sat, 21 Oct 2023 21:20:11 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 81EA3868;
-	Sat, 21 Oct 2023 23:19:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 81EA3868
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8B9EF86E;
+	Sat, 21 Oct 2023 23:19:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8B9EF86E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1697923200;
-	bh=+pNMnpzWGGHTQuKIvYKjrfTVwdqNerVSRiSh1iXZQkw=;
+	s=default; t=1697923209;
+	bh=d90zV1FwGOHMfeuTORYtL1/GvpN+vil/AfP3t+hunS8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=UlnWa3I/lenrio1QYc1MMbZHaA90QViSjP4onnh/m0pj0OgCqewdZb/vMwXunftLV
-	 CrKQZSWJnYZIrpEHpbzCzlVKFVQ/X9zZ/hs0W9QH+YGy7hLuFzN0xwm1wt0rUmkzwp
-	 P6TAo8M7936uTPq1f1PiGU9QBG+GVRuBoWvpsSb4=
+	b=V6CLRewk0xZkQK7ExWiNTptiGL4zc/t4v5ysOVczv3XMka025B8oxjwtmADkVdvET
+	 HkKtLjWAY0gG1Ef0v1xopi+79A3LzkmnsD/TVlyXZEC8kK+n0QWXVK/QvGc9qELvXb
+	 z3mDQxCxn5f6nI1kAK2MESevn7nW6PaYrRvVEGj4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D37A3F805B4; Sat, 21 Oct 2023 23:17:36 +0200 (CEST)
+	id 67E00F805AE; Sat, 21 Oct 2023 23:17:38 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4722CF805AC;
-	Sat, 21 Oct 2023 23:17:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D62AFF805AE;
+	Sat, 21 Oct 2023 23:17:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 93F31F80536; Sat, 21 Oct 2023 23:16:39 +0200 (CEST)
+	id 369BEF8032D; Sat, 21 Oct 2023 23:17:10 +0200 (CEST)
 Received: from us-smtp-delivery-124.mimecast.com
  (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 10128F8024E
-	for <alsa-devel@alsa-project.org>; Sat, 21 Oct 2023 23:16:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 10128F8024E
+	by alsa1.perex.cz (Postfix) with ESMTPS id 0F301F80236
+	for <alsa-devel@alsa-project.org>; Sat, 21 Oct 2023 23:15:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0F301F80236
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256
- header.s=mimecast20190719 header.b=WAYPAqmk
+ header.s=mimecast20190719 header.b=ZJ23plhx
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1697922990;
+	s=mimecast20190719; t=1697922951;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=sYIcrz+NKRCM2GaEfcfFX8xws03XcisOZo0WIBAaPg0=;
-	b=WAYPAqmkCHRt6ZgW7Y2n7SBv5OxUZ7MkBKOt45gtKLrUXitkse1IEMUwVxf/nBEx57KzCT
-	qYHrU+gKvrLBnckMYkvEcteXDgD3p9sILO+YQvDlKhGwk3JCp9g1E8zIqirwi7wdAjTDM3
-	ywTwC9waTPDyNO5b6HFGSpDhieoxqG0=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-490-hhC0UEjfNoKps3K_gg_n7Q-1; Sat, 21 Oct 2023 17:16:25 -0400
-X-MC-Unique: hhC0UEjfNoKps3K_gg_n7Q-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com
- [10.11.54.9])
+	bh=lzsW9jybZyYBzCnaH97UsSWR4LiukPiyEvQVVzWre3c=;
+	b=ZJ23plhxx3X36IOCMH/F4oyTFhDFIGVgIkfOVj2QtOvnNEfvwQeiMT3LNjCNarmuuHfx8q
+	c0rpxxO4WPLKJWyXlMEeRt41h4RpfLpSzmCR0pvj/D7tsQNALvzOTZ+cGt3EGb2zVvUGHL
+	xlR8+cOz899QoqTuwonf8X0e0w6U6bc=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-594-glJD_Ht6NGusQZOludX_AA-1; Sat, 21 Oct 2023 17:15:47 -0400
+X-MC-Unique: glJD_Ht6NGusQZOludX_AA-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com
+ [10.11.54.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B73783804073;
-	Sat, 21 Oct 2023 21:16:24 +0000 (UTC)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 7E46688B767;
+	Sat, 21 Oct 2023 21:15:46 +0000 (UTC)
 Received: from localhost.localdomain (unknown [10.39.192.56])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id EEA8B492BD9;
-	Sat, 21 Oct 2023 21:16:23 +0000 (UTC)
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 6C853492BFB;
+	Sat, 21 Oct 2023 21:15:45 +0000 (UTC)
 From: Hans de Goede <hdegoede@redhat.com>
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-	Bard Liao <bard.liao@intel.com>,
-	alsa-devel@alsa-project.org,
-	Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH alsa-ucm-conf 2/2] bytcr-wm5102: Add support for different
- microphone routes
-Date: Sat, 21 Oct 2023 23:16:14 +0200
-Message-ID: <20231021211614.115152-2-hdegoede@redhat.com>
-In-Reply-To: <20231021211614.115152-1-hdegoede@redhat.com>
-References: <20231021211614.115152-1-hdegoede@redhat.com>
+To: Cezary Rojewski <cezary.rojewski@intel.com>,
+	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+	Mark Brown <broonie@kernel.org>
+Cc: Hans de Goede <hdegoede@redhat.com>,
+	alsa-devel@alsa-project.org
+Subject: [PATCH 3/6] ASoC: Intel: bytcr_wm5102: Add BYT_WM5102_SSP2 quirk
+Date: Sat, 21 Oct 2023 23:15:30 +0200
+Message-ID: <20231021211534.114991-3-hdegoede@redhat.com>
+In-Reply-To: <20231021211534.114991-1-hdegoede@redhat.com>
+References: <20231021211534.114991-1-hdegoede@redhat.com>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
 X-Mimecast-Spam-Score: 0
 X-Mimecast-Originator: redhat.com
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain; charset="US-ASCII"; x-default=true
-Message-ID-Hash: LJSAXVZOW55X3N53SHYWQMCHNU2UKQH4
-X-Message-ID-Hash: LJSAXVZOW55X3N53SHYWQMCHNU2UKQH4
+Message-ID-Hash: KWF4FUFFEVY23YSC2QEEIHO7S66JQOUK
+X-Message-ID-Hash: KWF4FUFFEVY23YSC2QEEIHO7S66JQOUK
 X-MailFrom: hdegoede@redhat.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -97,7 +98,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LJSAXVZOW55X3N53SHYWQMCHNU2UKQH4/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KWF4FUFFEVY23YSC2QEEIHO7S66JQOUK/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -106,128 +107,210 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Unlike all designs supported sofar the Lenovo Yoga Tab 3 YT3-X90 does not
-have its internal microphone (intmic) on IN3L with the headset microphone
-on IN1L. Instead this tablet has the intmic on IN1L and the hsmic on IN2L.
+Add the standard intel board file quirk mechanism also used in many
+other intel board drivers and add a BYT_WM5102_SSP2 quirk setting
+for designs using SSP2 instead of SSP0.
 
-Add IN1-InternalMic.conf and IN2-HeadsetMic.conf config snippets
-under ucm2/codecs/wm5102/ for this and check the components string
-to determine which microphone routes should be used.
+And enable the new BYT_WM5102_SSP2 quirk on Cherry Trail devices
+since those always use SSP2.
+
+The logging of the quirks uses dev_info_once() because probe() may run
+multiple times because of snd_soc_register_card() returning -EPROBE_DEFER.
 
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- ucm2/Intel/bytcr-wm5102/HiFi.conf       | 22 ++++++++++++++++++++--
- ucm2/codecs/wm5102/EnableSeq.conf       |  3 ++-
- ucm2/codecs/wm5102/IN1-InternalMic.conf | 23 +++++++++++++++++++++++
- ucm2/codecs/wm5102/IN2-HeadsetMic.conf  | 24 ++++++++++++++++++++++++
- 4 files changed, 69 insertions(+), 3 deletions(-)
- create mode 100644 ucm2/codecs/wm5102/IN1-InternalMic.conf
- create mode 100644 ucm2/codecs/wm5102/IN2-HeadsetMic.conf
+ sound/soc/intel/boards/bytcr_wm5102.c | 93 +++++++++++++++++++++++----
+ 1 file changed, 80 insertions(+), 13 deletions(-)
 
-diff --git a/ucm2/Intel/bytcr-wm5102/HiFi.conf b/ucm2/Intel/bytcr-wm5102/HiFi.conf
-index 2afc757..46ef7d1 100644
---- a/ucm2/Intel/bytcr-wm5102/HiFi.conf
-+++ b/ucm2/Intel/bytcr-wm5102/HiFi.conf
-@@ -32,5 +32,23 @@ If.spk {
- }
+diff --git a/sound/soc/intel/boards/bytcr_wm5102.c b/sound/soc/intel/boards/bytcr_wm5102.c
+index cf77a12b6a10..51682137c4a8 100644
+--- a/sound/soc/intel/boards/bytcr_wm5102.c
++++ b/sound/soc/intel/boards/bytcr_wm5102.c
+@@ -15,6 +15,7 @@
+ #include <linux/init.h>
+ #include <linux/module.h>
+ #include <linux/moduleparam.h>
++#include <linux/platform_data/x86/soc.h>
+ #include <linux/platform_device.h>
+ #include <linux/slab.h>
+ #include <linux/spi/spi.h>
+@@ -37,6 +38,21 @@ struct byt_wm5102_private {
+ 	struct gpio_desc *spkvdd_en_gpio;
+ };
  
- Include.hp.File "/codecs/wm5102/HeadPhones.conf"
--Include.mic.File "/codecs/wm5102/IN3-InternalMic.conf"
--Include.headset.File "/codecs/wm5102/IN1-HeadsetMic.conf"
++/* Bits 0-15 are reserved for things like an input-map */
++#define BYT_WM5102_SSP2			BIT(16)
 +
-+If.intmic {
-+	Condition {
-+		Type String
-+		Haystack "${CardComponents}"
-+		Needle "cfg-intmic:in1l"
-+	}
-+	True.Include.intmic1.File "/codecs/wm5102/IN1-InternalMic.conf"
-+	False.Include.intmic3.File "/codecs/wm5102/IN3-InternalMic.conf"
++static unsigned long quirk;
++
++static int quirk_override = -1;
++module_param_named(quirk, quirk_override, int, 0444);
++MODULE_PARM_DESC(quirk, "Board-specific quirk override");
++
++static void log_quirks(struct device *dev)
++{
++	if (quirk & BYT_WM5102_SSP2)
++		dev_info_once(dev, "quirk SSP2 enabled");
 +}
 +
-+If.hsmic {
-+	Condition {
-+		Type String
-+		Haystack "${CardComponents}"
-+		Needle "cfg-hsmic:in2l"
-+	}
-+	True.Include.hsmic2.File "/codecs/wm5102/IN2-HeadsetMic.conf"
-+	False.Include.hsmic1.File "/codecs/wm5102/IN1-HeadsetMic.conf"
-+}
-diff --git a/ucm2/codecs/wm5102/EnableSeq.conf b/ucm2/codecs/wm5102/EnableSeq.conf
-index 87cb3bb..11166c0 100644
---- a/ucm2/codecs/wm5102/EnableSeq.conf
-+++ b/ucm2/codecs/wm5102/EnableSeq.conf
-@@ -7,8 +7,9 @@ EnableSequence [
- 	cset "name='HPOUT2L Input 1' AIF1RX1"
- 	cset "name='HPOUT2R Input 1' AIF1RX2"
+ static int byt_wm5102_spkvdd_power_event(struct snd_soc_dapm_widget *w,
+ 	struct snd_kcontrol *kcontrol, int event)
+ {
+@@ -166,14 +182,24 @@ static const struct snd_soc_dapm_route byt_wm5102_audio_map[] = {
+ 	{"Headset Mic", NULL, "MICBIAS1"},
+ 	{"Headset Mic", NULL, "MICBIAS2"},
+ 	{"IN1L", NULL, "Headset Mic"},
++};
  
--	# Both mics are quite soft by default, boost then
-+	# mics are quite soft by default, boost then
- 	cset "name='IN1L Volume' 28"
-+	cset "name='IN2L Volume' 28"
- 	cset "name='IN3L Volume' 28"
++static const struct snd_soc_dapm_route bytcr_wm5102_ssp0_map[] = {
+ 	{"AIF1 Playback", NULL, "ssp0 Tx"},
+ 	{"ssp0 Tx", NULL, "modem_out"},
+-
+ 	{"modem_in", NULL, "ssp0 Rx"},
+ 	{"ssp0 Rx", NULL, "AIF1 Capture"},
+ };
  
- 	cset "name='Headphone Switch' off"
-diff --git a/ucm2/codecs/wm5102/IN1-InternalMic.conf b/ucm2/codecs/wm5102/IN1-InternalMic.conf
-new file mode 100644
-index 0000000..d9a70ce
---- /dev/null
-+++ b/ucm2/codecs/wm5102/IN1-InternalMic.conf
-@@ -0,0 +1,23 @@
-+SectionDevice."Mic" {
-+	Comment "Internal Microphone"
++static const struct snd_soc_dapm_route bytcr_wm5102_ssp2_map[] = {
++	{"AIF1 Playback", NULL, "ssp2 Tx"},
++	{"ssp2 Tx", NULL, "codec_out0"},
++	{"ssp2 Tx", NULL, "codec_out1"},
++	{"codec_in0", NULL, "ssp2 Rx"},
++	{"codec_in1", NULL, "ssp2 Rx"},
++	{"ssp2 Rx", NULL, "AIF1 Capture"},
++};
 +
-+	ConflictingDevice [
-+		"Headset"
-+	]
-+
-+	EnableSequence [
-+		cset "name='AIF1TX1 Input 1' IN1L"
-+		cset "name='AIF1TX2 Input 1' IN1L"
-+
-+		cset "name='Internal Mic Switch' on"
-+	]
-+
-+	DisableSequence [
-+		cset "name='Internal Mic Switch' off"
-+	]
-+
-+	Value {
-+		CapturePriority 100
-+		CapturePCM "hw:${CardId}"
+ static const struct snd_kcontrol_new byt_wm5102_controls[] = {
+ 	SOC_DAPM_PIN_SWITCH("Headphone"),
+ 	SOC_DAPM_PIN_SWITCH("Headset Mic"),
+@@ -202,7 +228,8 @@ static int byt_wm5102_init(struct snd_soc_pcm_runtime *runtime)
+ 	struct snd_soc_card *card = runtime->card;
+ 	struct byt_wm5102_private *priv = snd_soc_card_get_drvdata(card);
+ 	struct snd_soc_component *component = asoc_rtd_to_codec(runtime, 0)->component;
+-	int ret, jack_type;
++	const struct snd_soc_dapm_route *custom_map = NULL;
++	int ret, jack_type, num_routes = 0;
+ 
+ 	card->dapm.idle_bias_off = true;
+ 
+@@ -213,6 +240,17 @@ static int byt_wm5102_init(struct snd_soc_pcm_runtime *runtime)
+ 		return ret;
+ 	}
+ 
++	if (quirk & BYT_WM5102_SSP2) {
++		custom_map = bytcr_wm5102_ssp2_map;
++		num_routes = ARRAY_SIZE(bytcr_wm5102_ssp2_map);
++	} else {
++		custom_map = bytcr_wm5102_ssp0_map;
++		num_routes = ARRAY_SIZE(bytcr_wm5102_ssp0_map);
 +	}
-+}
-diff --git a/ucm2/codecs/wm5102/IN2-HeadsetMic.conf b/ucm2/codecs/wm5102/IN2-HeadsetMic.conf
-new file mode 100644
-index 0000000..8fbbcb1
---- /dev/null
-+++ b/ucm2/codecs/wm5102/IN2-HeadsetMic.conf
-@@ -0,0 +1,24 @@
-+SectionDevice."Headset" {
-+	Comment "Headset Microphone"
++	ret = snd_soc_dapm_add_routes(&card->dapm, custom_map, num_routes);
++	if (ret)
++		return ret;
 +
-+	ConflictingDevice [
-+		"Mic"
-+	]
-+
-+	EnableSequence [
-+		cset "name='AIF1TX1 Input 1' IN2L"
-+		cset "name='AIF1TX2 Input 1' IN2L"
-+
-+		cset "name='Headset Mic Switch' on"
-+	]
-+
-+	DisableSequence [
-+		cset "name='Headset Mic Switch' off"
-+	]
-+
-+	Value {
-+		CapturePriority 200
-+		CapturePCM "hw:${CardId}"
-+		JackControl "Headset Mic Jack"
+ 	/*
+ 	 * The firmware might enable the clock at boot (this information
+ 	 * may or may not be reflected in the enable clock register).
+@@ -253,7 +291,7 @@ static int byt_wm5102_codec_fixup(struct snd_soc_pcm_runtime *rtd,
+ 						      SNDRV_PCM_HW_PARAM_RATE);
+ 	struct snd_interval *channels = hw_param_interval(params,
+ 							  SNDRV_PCM_HW_PARAM_CHANNELS);
+-	int ret;
++	int ret, bits;
+ 
+ 	/* The DSP will convert the FE rate to 48k, stereo */
+ 	rate->min = 48000;
+@@ -261,8 +299,15 @@ static int byt_wm5102_codec_fixup(struct snd_soc_pcm_runtime *rtd,
+ 	channels->min = 2;
+ 	channels->max = 2;
+ 
+-	/* set SSP0 to 16-bit */
+-	params_set_format(params, SNDRV_PCM_FORMAT_S16_LE);
++	if (quirk & BYT_WM5102_SSP2) {
++		/* set SSP2 to 24-bit */
++		params_set_format(params, SNDRV_PCM_FORMAT_S24_LE);
++		bits = 24;
++	} else {
++		/* set SSP0 to 16-bit */
++		params_set_format(params, SNDRV_PCM_FORMAT_S16_LE);
++		bits = 16;
 +	}
-+}
+ 
+ 	/*
+ 	 * Default mode for SSP configuration is TDM 4 slot, override config
+@@ -278,7 +323,7 @@ static int byt_wm5102_codec_fixup(struct snd_soc_pcm_runtime *rtd,
+ 		return ret;
+ 	}
+ 
+-	ret = snd_soc_dai_set_tdm_slot(asoc_rtd_to_cpu(rtd, 0), 0x3, 0x3, 2, 16);
++	ret = snd_soc_dai_set_tdm_slot(asoc_rtd_to_cpu(rtd, 0), 0x3, 0x3, 2, bits);
+ 	if (ret) {
+ 		dev_err(rtd->dev, "Error setting I2S config: %d\n", ret);
+ 		return ret;
+@@ -345,12 +390,9 @@ static struct snd_soc_dai_link byt_wm5102_dais[] = {
+ 		/* back ends */
+ 	{
+ 		/*
+-		 * This must be named SSP2-Codec even though this machine driver
+-		 * always uses SSP0. Most machine drivers support both and dynamically
+-		 * update the dailink to point to SSP0 or SSP2, while keeping the name
+-		 * as "SSP2-Codec". The SOF tplg files hardcode the "SSP2-Codec" even
+-		 * in the byt-foo-ssp0.tplg versions because the other machine-drivers
+-		 * use "SSP2-Codec" even when SSP0 is used.
++		 * This dailink is updated dynamically to point to SSP0 or SSP2.
++		 * Yet its name is always kept as "SSP2-Codec" because the SOF
++		 * tplg files hardcode "SSP2-Codec" even in byt-foo-ssp0.tplg.
+ 		 */
+ 		.name = "SSP2-Codec",
+ 		.id = 0,
+@@ -393,8 +435,9 @@ static int snd_byt_wm5102_mc_probe(struct platform_device *pdev)
+ 	const char *platform_name;
+ 	struct acpi_device *adev;
+ 	struct device *codec_dev;
++	int dai_index = 0;
+ 	bool sof_parent;
+-	int ret;
++	int i, ret;
+ 
+ 	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
+ 	if (!priv)
+@@ -441,6 +484,26 @@ static int snd_byt_wm5102_mc_probe(struct platform_device *pdev)
+ 		return dev_err_probe(dev, ret, "getting spkvdd-GPIO\n");
+ 	}
+ 
++	if (soc_intel_is_cht()) {
++		/* On CHT default to SSP2 */
++		quirk = BYT_WM5102_SSP2;
++	}
++	if (quirk_override != -1) {
++		dev_info_once(dev, "Overriding quirk 0x%lx => 0x%x\n",
++			      quirk, quirk_override);
++		quirk = quirk_override;
++	}
++	log_quirks(dev);
++
++	/* find index of codec dai */
++	for (i = 0; i < ARRAY_SIZE(byt_wm5102_dais); i++) {
++		if (!strcmp(byt_wm5102_dais[i].codecs->name,
++			    "wm5102-codec")) {
++			dai_index = i;
++			break;
++		}
++	}
++
+ 	/* override platform name, if required */
+ 	byt_wm5102_card.dev = dev;
+ 	platform_name = mach->mach_params.platform;
+@@ -448,6 +511,10 @@ static int snd_byt_wm5102_mc_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		goto out_put_gpio;
+ 
++	/* override SSP port, if required */
++	if (quirk & BYT_WM5102_SSP2)
++		byt_wm5102_dais[dai_index].cpus->dai_name = "ssp2-port";
++
+ 	/* set card and driver name and pm-ops */
+ 	sof_parent = snd_soc_acpi_sof_parent(dev);
+ 	if (sof_parent) {
 -- 
 2.41.0
 
