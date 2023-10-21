@@ -4,102 +4,118 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DAE60C001DF
-	for <alsa-devel@archiver.kernel.org>; Fri, 20 Oct 2023 23:20:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5AABDC001E0
+	for <alsa-devel@archiver.kernel.org>; Sat, 21 Oct 2023 08:00:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AFAB182B;
-	Sat, 21 Oct 2023 01:19:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AFAB182B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 60E4484D;
+	Sat, 21 Oct 2023 09:59:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 60E4484D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1697844028;
-	bh=yqnO0GyCPQQeD5I0B1DjoMIOhZkBapig4j5yRoqsCBU=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1697875204;
+	bh=MMHq48gleOw2iwXh0tYldIg+Sej4AjXb9Yf72opNS8Q=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=DleVmTlcoioqkKdiMUZKVlxFS7ZS7gmvI1oD4peUA72dNzQc4Py7EbqFRML9lXMfe
-	 7M+D0PKOzfRXf/d475AI+P9jU4MzLsFudm4RBuWyz5djYJlbdaCTyuM1rOSvUt9Jie
-	 WkTDSS7TMyIToNJCKtn8qyw1SGCJKc4JDK1x0Y4E=
+	b=WH+aWSaG83oyPRJjTQIsO+AkyLn03e9Tz6dDQlYl/y4buQLJtoApMw4/Flwcx+7LW
+	 52YITxnaYL8j8h7RAxZ7FzsnlM/5zZWxsMjhvCTo/JdvOi3LSWPTAQ1iWrvjJbyuPq
+	 zNivi/hSMbskKESLN3073GgQh3V4zRZMJPDwNrCo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 46245F800C9; Sat, 21 Oct 2023 01:19:38 +0200 (CEST)
+	id 8B2D8F80558; Sat, 21 Oct 2023 09:58:46 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1E245F800C9;
-	Sat, 21 Oct 2023 01:19:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 24935F8032D;
+	Sat, 21 Oct 2023 09:58:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 78758F8025F; Sat, 21 Oct 2023 01:19:32 +0200 (CEST)
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com
- [IPv6:2a00:1450:4864:20::130])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	id E7A30F8025F; Sat, 21 Oct 2023 09:56:55 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2001:67c:2178:6::1d])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 9436FF80236
-	for <alsa-devel@alsa-project.org>; Sat, 21 Oct 2023 01:19:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9436FF80236
+	by alsa1.perex.cz (Postfix) with ESMTPS id 5417BF80236
+	for <alsa-devel@alsa-project.org>; Sat, 21 Oct 2023 09:56:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5417BF80236
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20230601 header.b=eCSMDsrm
-Received: by mail-lf1-x130.google.com with SMTP id
- 2adb3069b0e04-507c8316abcso1703323e87.1
-        for <alsa-devel@alsa-project.org>;
- Fri, 20 Oct 2023 16:19:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697843964; x=1698448764;
- darn=alsa-project.org;
-        h=mime-version:references:in-reply-to:message-id:date:subject:cc:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Gd+y1EVP7Tnl3Fn7df202mdRXZ1tRrmqlbxFbYLZtrg=;
-        b=eCSMDsrmH7NUtH3v/EMOIIaPtg0DaW6DkvJ9dF7StYi0HltFs/4372vW5n7y/e1oE9
-         7/2FdKTcF+0W7YXAMCcZl2QkaFSmzsBaRPJnOUyySArp++K0/Rq7GKNY36JsiUDIM2ji
-         +oDuGwJA3DCXG9Dq5/yGtqR26cmYqGYcD3BvffOtip0U/CvNNia6lg/h9Wi7KoICUcfa
-         hiatpWmnst24EFQxc/BedQaZnwcUcBCe+flZYL37F6xru5vB7kZrQK/whSX7od+piUOr
-         Rq+SjxKTC0qKVbzQwxWGPVbZC5Y0lvxbcIkCtuPrgSV7QN5/oKhvtGTGbB0UNj6FvI6w
-         vjbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697843964; x=1698448764;
-        h=mime-version:references:in-reply-to:message-id:date:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Gd+y1EVP7Tnl3Fn7df202mdRXZ1tRrmqlbxFbYLZtrg=;
-        b=OborQJQKRqxfUJwkk/HNxblSQjKbams2wymFg7ETXg7aovmd3xX/86ipzAveWb53l4
-         mpJUWRsnfhaMlw+xsl9h+PQoxSmgsSmpsUsq13u9spSHzQKKjMruHnSrCxx7higEUIVh
-         llAqJq95nG9Ai/lVczwhDcAUwJcsRwS0ULkbaxtQY26yAwomVMJBttu3t/KaiemU6Qir
-         x1WQmlABdLxnAOyVkhJ9ZL6aslRAjsq6x9KsXpNnjg1a6Cx9Vu0/sobq4shTn+MWpNhG
-         tRT6YxPb8iq0R0g1hYmLvZBJ9araTMYhxYoVa+gUE0NFu1kvKGX+0WQ7aFaNC7LofNmF
-         m+/g==
-X-Gm-Message-State: AOJu0YyH0qV+7BovwMgzYlX6IzfcngYT5p4yxRo6mnluLrOAH2Jkgu5N
-	wMSMCK8MRTJ7K6YgYyeWJdA=
-X-Google-Smtp-Source: 
- AGHT+IFbO5a9uW2x8EMaPxKrNZYl8CKdmOJba3kWXFwTKqv6/E/6iwbLLAWd+A/kzuWQwx8SQFHmdA==
-X-Received: by 2002:ac2:4183:0:b0:507:9f51:acee with SMTP id
- z3-20020ac24183000000b005079f51aceemr2101993lfh.22.1697843963947;
-        Fri, 20 Oct 2023 16:19:23 -0700 (PDT)
-Received: from dell.localnet (77-255-201-154.dynamic.inetia.pl.
- [77.255.201.154])
-        by smtp.gmail.com with ESMTPSA id
- 24-20020ac24858000000b0050797006048sm576424lfy.68.2023.10.20.16.19.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Oct 2023 16:19:22 -0700 (PDT)
-From: Janusz Krzysztofik <jmkrzyszt@gmail.com>
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=gOtgRH0r;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=0a3K30d4
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 134191F6E6;
+	Sat, 21 Oct 2023 07:56:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1697875006;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=loqil4vVJkXdsf1K2sGLuBM3hJxxy8jiM2dwi9PKjpc=;
+	b=gOtgRH0rvf+XQ79V374pRXWaW2ZJlGg97mM9VU2hyMZ0DqhdB2Gb4ms1f/rQPqD7/+FAvN
+	vMEG82FZd2DOMgaJcC1MXfk3kQBIY1foQ8DsDzkVdxPb7HFAvLKoNbnhWFOuKQJs7YxIbt
+	wtPtmO4rYzYvdTfRdhdx+/0yz5hTCSA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1697875006;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=loqil4vVJkXdsf1K2sGLuBM3hJxxy8jiM2dwi9PKjpc=;
+	b=0a3K30d4SzGKE4GSjkb1U0bZFcBQ3JlZ9ANuQm6QYDIvFOe3sgCQNXHrZLPkwzvJAHBbua
+	91oX78rBku/Qe3Aw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E6A8013A2A;
+	Sat, 21 Oct 2023 07:56:45 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id gPZWNz2EM2XcHQAAMHmgww
+	(envelope-from <tiwai@suse.de>); Sat, 21 Oct 2023 07:56:45 +0000
+Date: Sat, 21 Oct 2023 09:56:45 +0200
+Message-ID: <87h6mkif2a.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
 To: Mark Brown <broonie@kernel.org>
-Cc: Peter Ujfalusi <peter.ujfalusi@gmail.com>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ASoC: ti: ams-delta: Allow it to be test compiled
-Date: Sat, 21 Oct 2023 01:19:20 +0200
-Message-ID: <13380212.uLZWGnKmhe@dell>
-In-Reply-To: <9bbab4c8-f616-4abc-9eee-022c19c6921d@sirena.org.uk>
-References: 
- <20231008135601.542356-1-jmkrzyszt@gmail.com>
- <9bbab4c8-f616-4abc-9eee-022c19c6921d@sirena.org.uk>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart2913659.e9J7NaK4W3";
- micalg="pgp-sha256"; protocol="application/pgp-signature"
-Message-ID-Hash: 6O6Y4W2P2MTBARRSDL4DSG2R5XNSBLTQ
-X-Message-ID-Hash: 6O6Y4W2P2MTBARRSDL4DSG2R5XNSBLTQ
-X-MailFrom: jmkrzyszt@gmail.com
+Cc: Liam Girdwood <lgirdwood@gmail.com>,
+	alsa-devel@alsa-project.org
+Subject: Re: [GIT PULL] ASoC updates for v6.7
+In-Reply-To: <20231020212909.268F5C433C7@smtp.kernel.org>
+References: <20231020212909.268F5C433C7@smtp.kernel.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spamd-Result: default: False [-9.64 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 RCPT_COUNT_THREE(0.00)[3];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 REPLY(-4.00)[];
+	 NEURAL_HAM_LONG(-3.00)[-1.000];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-1.00)[-1.000];
+	 MID_CONTAINS_FROM(1.00)[];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_COUNT_TWO(0.00)[2];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-2.54)[97.94%];
+	 FREEMAIL_CC(0.00)[gmail.com,alsa-project.org]
+Message-ID-Hash: XDAXOW5XMRNBAG3YH6XB4TEVEWOBFMHZ
+X-Message-ID-Hash: XDAXOW5XMRNBAG3YH6XB4TEVEWOBFMHZ
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -111,7 +127,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6O6Y4W2P2MTBARRSDL4DSG2R5XNSBLTQ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XDAXOW5XMRNBAG3YH6XB4TEVEWOBFMHZ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -120,55 +136,40 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
---nextPart2913659.e9J7NaK4W3
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"; protected-headers="v1"
-From: Janusz Krzysztofik <jmkrzyszt@gmail.com>
-To: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: ti: ams-delta: Allow it to be test compiled
-Date: Sat, 21 Oct 2023 01:19:20 +0200
-Message-ID: <13380212.uLZWGnKmhe@dell>
-In-Reply-To: <9bbab4c8-f616-4abc-9eee-022c19c6921d@sirena.org.uk>
-MIME-Version: 1.0
-
-On Thursday, 19 October 2023 13:40:57 CEST Mark Brown wrote:
-> On Sun, Oct 08, 2023 at 03:53:10PM +0200, Janusz Krzysztofik wrote:
-> > The driver is now built only when MACH_AMS_DELTA is selected, which
-> > requires a very specific selection of ARCH settings.  As a consequence, it
-> > gets very little attention from build-bots, if not none.
+On Fri, 20 Oct 2023 23:28:58 +0200,
+Mark Brown wrote:
 > 
-> Acked-by: Mark Brown <broonie@kernel.org>
+> The following changes since commit 99d426c6dd2d6f9734617ec12def856ee35b9218:
+> 
+>   ASoC: cs42l43: Update values for bias sense (2023-10-10 12:50:40 +0100)
+> 
+> are available in the Git repository at:
+> 
+>   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-v6.7
+> 
+> for you to fetch changes up to 45f1b12e0366a750d65e92307685964488a3b6f4:
+> 
+>   ASoC: Intel: more machine driver updates for 6.7 (2023-10-19 21:02:18 +0100)
+> 
+> ----------------------------------------------------------------
+> ASoC: Updates for v6.7
+> 
+> This is quite a large set of changes but mostly due to API cleanups and
+> in driver specific ways rather than due to anything subsystem wide.
+> Highlights include:
+> 
+>  - Standardisation of API prefixes on snd_soc_, removing asoc_.
+>  - GPIO API usage improvements.
+>  - Support for HDA patches.
+>  - Lots of work on SOF, including crash dump support.
+>  - Support for AMD platforms with es83xx, Awinc AT87390, many Intel
+>    platforms, many Mediatek platforms, Qualcomm SM6115,  Richtek RTQ9128
+>    and Texas Instruments TAS575x.
 
-Hi Mark,
+Thanks, pulled now.
 
-Thanks for your Ack.
-
-Since the fix required for successful compilation of the ams-delta ASoC 
-driver already reached v6.6, my former suggestion to pass this change also 
-via Greg's tty tree is probably no longer vital.
-
-Thanks,
-Janusz
-
-
---nextPart2913659.e9J7NaK4W3
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEnyr6IsGnTYAeAkHJ2WqSnltsjBoFAmUzCvgACgkQ2WqSnlts
-jBpNFAf9FNv7JXlsqK4cead1KZEZ3CLVzOWvKWgquVyK21Rf35wQOfJvzlWTXSeB
-J/GS5Jdb399q0uSGJ0H9tN7E2kUQ7A3EffqHigsjDsmUlJamS00OFWlw93CpZlKB
-11TtR6hrxxXoCoDZXmzYLvCac0+AZ6moIQ0mJqY6AlBho4QNAxPafvwaQ1bzAkmA
-v39as9EopIOAaH8XYgX2fnQruN8jY7s9dhZwoO7VzpzcQliwakIxE2fGbXpnh45s
-k0BHkOLJgF2z2nj2PekKh1vnGw0757dytIAUpPu/j/jtTA6AI94bTTEYMQHTWjaz
-fDCU+8ORkRns59sg882e2rnWGjh73A==
-=m2Dz
------END PGP SIGNATURE-----
-
---nextPart2913659.e9J7NaK4W3--
-
+Now we can apply a cleanup to make the remaining remove_late callback
+void.  I'm going to submit the patch later.
 
 
+Takashi
