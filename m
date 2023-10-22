@@ -4,91 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DB772C0032E
-	for <alsa-devel@archiver.kernel.org>; Sat, 21 Oct 2023 21:21:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ABCA7C0032E
+	for <alsa-devel@archiver.kernel.org>; Sun, 22 Oct 2023 09:27:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2284EDEF;
-	Sat, 21 Oct 2023 23:20:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2284EDEF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8904E84D;
+	Sun, 22 Oct 2023 11:26:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8904E84D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1697923266;
-	bh=kz7rWTmE0KpnS2UO/aEwsPdd5nHUd2efkTLXB8FDr4Y=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1697966838;
+	bh=NQQQgzz6og9mMTFgzJlbMK2C3lBdNE/tpZtnuq/Tqvc=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=A5NEoPsdMCcB5GynhAj3ILHhuzDzAoH0PzZD8dbk38GZJVye1OatyXmAOIyacabqM
-	 NBEbPrIE4TlKdNi3ZPqGwfZF/tt4Pn4p6o8HEsKebughs0Ne207xxwgGjHpOF9V9Ha
-	 8+F33CnDAlvGWhseiaxKMtZNQEyF/5j8d5Ot0e+g=
+	b=ji48GlTpCUPRkVe13jHXWvALWkuMtjUCi3HWxjBOkCWps/961zu+s6h/IKq9nVenF
+	 N2MlCEv+anmd5hM/G7VTpKJwnEi6OB2wTMf4nIUvnLfq13vorRbzNqktAWJOMoyQ/9
+	 LwyQSqqHC/io96FAqsCSFW5HrYeYYpt+sE3HkV7E=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9EBC6F8024E; Sat, 21 Oct 2023 23:20:11 +0200 (CEST)
+	id A27E2F80553; Sun, 22 Oct 2023 11:26:00 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id BFD0DF8056F;
-	Sat, 21 Oct 2023 23:20:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 08FC0F804F3;
+	Sun, 22 Oct 2023 11:26:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 66F8CF8027B; Sat, 21 Oct 2023 23:19:42 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	id E0783F804F3; Sun, 22 Oct 2023 11:21:52 +0200 (CEST)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 14D7DF8027B
-	for <alsa-devel@alsa-project.org>; Sat, 21 Oct 2023 23:15:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 14D7DF8027B
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256
- header.s=mimecast20190719 header.b=GbwnugBe
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1697922953;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nU8iPa82O5AHx58qnfiVc4gIA4n1aCdJD/7eQMb12Z8=;
-	b=GbwnugBejZYeK8bkXr3Ey3qgm+6ldpARxTccWmj7tRz5dezfiQOiEGzEMm8FU/jJ/eNOvv
-	1nDe/JOwuD29iEq0IW4+76TtdES/qSIOcK611cTI/ro20exukkrSwEa+3Cqxrjbnq4/5be
-	jIqLIEmDWAWr1NC63OE562Erex/1e60=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-634-0eAW35G0N_2260owBk0aOg-1; Sat,
- 21 Oct 2023 17:15:49 -0400
-X-MC-Unique: 0eAW35G0N_2260owBk0aOg-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com
- [10.11.54.10])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest
+	by alsa1.perex.cz (Postfix) with ESMTPS id E2ED7F80134
+	for <alsa-devel@alsa-project.org>; Sun, 22 Oct 2023 11:21:45 +0200 (CEST)
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+	by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 1D03A1A5C;
+	Sun, 22 Oct 2023 11:21:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 1D03A1A5C
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+	t=1697966504; bh=kDvZqnWj3eg12SaNbsAgK/Ky150jsg2QYxz8l5xU/+Y=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=z4/N+aJBvPDXSpWUg1RaF7YRTlr1imZFZp5dBT70uG2kP7QVJQvnxXRx4OukQGCgU
+	 fepKl7vrGs+OYjGbj3QLZ5xM6Qsvb6PyOOCThhJasg8RoGdxmbyp9T8lvrAnl4M+cQ
+	 GAeOgdNqOj5r0Hd5PrSlTJNpGzif8nZmsBaw9X+0=
+Received: from [192.168.100.98] (unknown [192.168.100.98])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id DCD2D1C05ED4;
-	Sat, 21 Oct 2023 21:15:48 +0000 (UTC)
-Received: from localhost.localdomain (unknown [10.39.192.56])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id E2498492BFB;
-	Sat, 21 Oct 2023 21:15:47 +0000 (UTC)
-From: Hans de Goede <hdegoede@redhat.com>
-To: Cezary Rojewski <cezary.rojewski@intel.com>,
-	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-	Mark Brown <broonie@kernel.org>
-Cc: Hans de Goede <hdegoede@redhat.com>,
-	alsa-devel@alsa-project.org
-Subject: [PATCH 5/6] ASoC: Intel: bytcr_wm5102: Add BYT_WM5102_OUT_MAP quirk
-Date: Sat, 21 Oct 2023 23:15:32 +0200
-Message-ID: <20231021211534.114991-5-hdegoede@redhat.com>
-In-Reply-To: <20231021211534.114991-1-hdegoede@redhat.com>
-References: <20231021211534.114991-1-hdegoede@redhat.com>
+	(Authenticated sender: perex)
+	by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+	Sun, 22 Oct 2023 11:21:38 +0200 (CEST)
+Message-ID: <3dbee1fa-87c2-d6ee-64d3-f2c97928797d@perex.cz>
+Date: Sun, 22 Oct 2023 11:21:37 +0200
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain; charset="US-ASCII"; x-default=true
-Message-ID-Hash: ZHXFOEUZ7PIWAVY6QC6CBJNUI7GCOJQQ
-X-Message-ID-Hash: ZHXFOEUZ7PIWAVY6QC6CBJNUI7GCOJQQ
-X-MailFrom: hdegoede@redhat.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] ASoC: soc-core.c: Log components string to help with UCM
+ profile development
+Content-Language: en-US
+To: Hans de Goede <hdegoede@redhat.com>,
+ Cezary Rojewski <cezary.rojewski@intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
+References: <20231021211710.115239-1-hdegoede@redhat.com>
+From: Jaroslav Kysela <perex@perex.cz>
+In-Reply-To: <20231021211710.115239-1-hdegoede@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: WO2CLYEKTEUYBC7PGGFAK6YYDFPVBD27
+X-Message-ID-Hash: WO2CLYEKTEUYBC7PGGFAK6YYDFPVBD27
+X-MailFrom: perex@perex.cz
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -100,7 +85,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZHXFOEUZ7PIWAVY6QC6CBJNUI7GCOJQQ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WO2CLYEKTEUYBC7PGGFAK6YYDFPVBD27/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -109,172 +94,22 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Some x86 WM5102 designs don't use the SPK pins for speaker output
-instead they use the HPOUT2L + HPOUT2R for the speakers.
+On 21. 10. 23 23:17, Hans de Goede wrote:
+> Various ASoC board/card drivers use a components string to communicate
+> to userspace which output (speakers / headphones) and input (internal mic /
+> headset mic) routes have been setup by the card driver so that the UCM
+> profiles can dynamically adjust to this.
+> 
+> ATM it is sort of hard to figure out what the component string has
+> actually been set to by the kernel. Log the components string set on
+> the snd_soc_card to help with UCM profile development.
 
-Add an BYT_WM5102_OUT_MAP quirk mechanism to allow selecting
-between 2 output maps, one for the speakers on the SPK output pins
-and one for the speakers on the HPOUT2 pins.
+I don't think that it's hard to invoke command like 'amixer -c 0 info' to view 
+the components string.
 
-The new HPOUT2 map is enabled by default on CHT because this is used on
-the Lenovo Yoga Tab 3 YT3-X90 model which is the only Cherry Trail design
-currently supported. If different CHT designs turn up which need different
-output maps we can add DMI quirks to select a different map later.
+					Jaroslav
 
-The userspace UCM profile also needs to know about this so
-setup a components string with this info too.
-
-While at it also drop the unused "Line Out" route.
-
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
----
- sound/soc/intel/boards/bytcr_wm5102.c | 72 +++++++++++++++++++++++----
- 1 file changed, 63 insertions(+), 9 deletions(-)
-
-diff --git a/sound/soc/intel/boards/bytcr_wm5102.c b/sound/soc/intel/boards/bytcr_wm5102.c
-index 622ee3079f26..d1664d7e6443 100644
---- a/sound/soc/intel/boards/bytcr_wm5102.c
-+++ b/sound/soc/intel/boards/bytcr_wm5102.c
-@@ -10,6 +10,7 @@
-  */
- 
- #include <linux/acpi.h>
-+#include <linux/bitfield.h>
- #include <linux/clk.h>
- #include <linux/device.h>
- #include <linux/init.h>
-@@ -37,10 +38,17 @@ struct byt_wm5102_private {
- 	int mclk_freq;
- };
- 
--/* Bits 0-15 are reserved for things like an input-map */
-+/* Bits 0-3 are reserved for the input-map */
-+#define BYT_WM5102_OUT_MAP		GENMASK(7, 4)
- #define BYT_WM5102_SSP2			BIT(16)
- #define BYT_WM5102_MCLK_19_2MHZ		BIT(17)
- 
-+/* Note these values are pre-shifted for easy use of setting quirks */
-+enum {
-+	BYT_WM5102_SPK_SPK_MAP		= FIELD_PREP_CONST(BYT_WM5102_OUT_MAP, 0),
-+	BYT_WM5102_SPK_HPOUT2_MAP	= FIELD_PREP_CONST(BYT_WM5102_OUT_MAP, 1),
-+};
-+
- static unsigned long quirk;
- 
- static int quirk_override = -1;
-@@ -49,6 +57,20 @@ MODULE_PARM_DESC(quirk, "Board-specific quirk override");
- 
- static void log_quirks(struct device *dev)
- {
-+	switch (quirk & BYT_WM5102_OUT_MAP) {
-+	case BYT_WM5102_SPK_SPK_MAP:
-+		dev_info_once(dev, "quirk SPK_SPK_MAP enabled\n");
-+		break;
-+	case BYT_WM5102_SPK_HPOUT2_MAP:
-+		dev_info_once(dev, "quirk SPK_HPOUT2_MAP enabled\n");
-+		break;
-+	default:
-+		dev_warn_once(dev, "quirk sets invalid output map: 0x%lx, defaulting to SPK_SPK_MAP\n",
-+			      quirk & BYT_WM5102_OUT_MAP);
-+		quirk &= ~BYT_WM5102_OUT_MAP;
-+		quirk |= BYT_WM5102_SPK_SPK_MAP;
-+		break;
-+	}
- 	if (quirk & BYT_WM5102_SSP2)
- 		dev_info_once(dev, "quirk SSP2 enabled");
- 	if (quirk & BYT_WM5102_MCLK_19_2MHZ)
-@@ -164,12 +186,6 @@ static const struct snd_soc_dapm_route byt_wm5102_audio_map[] = {
- 	{"Headset Mic", NULL, "Platform Clock"},
- 	{"Internal Mic", NULL, "Platform Clock"},
- 	{"Speaker", NULL, "Platform Clock"},
--	{"Line Out", NULL, "Platform Clock"},
--
--	{"Speaker", NULL, "SPKOUTLP"},
--	{"Speaker", NULL, "SPKOUTLN"},
--	{"Speaker", NULL, "SPKOUTRP"},
--	{"Speaker", NULL, "SPKOUTRN"},
- 	{"Speaker", NULL, "Speaker VDD"},
- 
- 	{"Headphone", NULL, "HPOUT1L"},
-@@ -203,6 +219,18 @@ static const struct snd_soc_dapm_route bytcr_wm5102_ssp2_map[] = {
- 	{"ssp2 Rx", NULL, "AIF1 Capture"},
- };
- 
-+static const struct snd_soc_dapm_route byt_wm5102_spk_spk_map[] = {
-+	{"Speaker", NULL, "SPKOUTLP"},
-+	{"Speaker", NULL, "SPKOUTLN"},
-+	{"Speaker", NULL, "SPKOUTRP"},
-+	{"Speaker", NULL, "SPKOUTRN"},
-+};
-+
-+static const struct snd_soc_dapm_route byt_wm5102_spk_hpout2_map[] = {
-+	{"Speaker", NULL, "HPOUT2L"},
-+	{"Speaker", NULL, "HPOUT2R"},
-+};
-+
- static const struct snd_kcontrol_new byt_wm5102_controls[] = {
- 	SOC_DAPM_PIN_SWITCH("Headphone"),
- 	SOC_DAPM_PIN_SWITCH("Headset Mic"),
-@@ -243,6 +271,20 @@ static int byt_wm5102_init(struct snd_soc_pcm_runtime *runtime)
- 		return ret;
- 	}
- 
-+	switch (quirk & BYT_WM5102_OUT_MAP) {
-+	case BYT_WM5102_SPK_SPK_MAP:
-+		custom_map = byt_wm5102_spk_spk_map;
-+		num_routes = ARRAY_SIZE(byt_wm5102_spk_spk_map);
-+		break;
-+	case BYT_WM5102_SPK_HPOUT2_MAP:
-+		custom_map = byt_wm5102_spk_hpout2_map;
-+		num_routes = ARRAY_SIZE(byt_wm5102_spk_hpout2_map);
-+		break;
-+	}
-+	ret = snd_soc_dapm_add_routes(&card->dapm, custom_map, num_routes);
-+	if (ret)
-+		return ret;
-+
- 	if (quirk & BYT_WM5102_SSP2) {
- 		custom_map = bytcr_wm5102_ssp2_map;
- 		num_routes = ARRAY_SIZE(bytcr_wm5102_ssp2_map);
-@@ -434,8 +476,11 @@ static struct snd_soc_card byt_wm5102_card = {
- 	.fully_routed = true,
- };
- 
-+static char byt_wm5102_components[64]; /* = "cfg-spk:* cfg-int-mic:* cfg-hs-mic:* ..." */
-+
- static int snd_byt_wm5102_mc_probe(struct platform_device *pdev)
- {
-+	static const char * const out_map_name[] = { "spk", "hpout2" };
- 	char codec_name[SND_ACPI_I2C_ID_LEN];
- 	struct device *dev = &pdev->dev;
- 	struct byt_wm5102_private *priv;
-@@ -493,8 +538,13 @@ static int snd_byt_wm5102_mc_probe(struct platform_device *pdev)
- 	}
- 
- 	if (soc_intel_is_cht()) {
--		/* On CHT default to SSP2 */
--		quirk = BYT_WM5102_SSP2 | BYT_WM5102_MCLK_19_2MHZ;
-+		/*
-+		 * CHT always uses SSP2 and 19.2 MHz; and
-+		 * the one currently supported CHT design uses HPOUT2 as
-+		 * speaker output.
-+		 */
-+		quirk = BYT_WM5102_SSP2 | BYT_WM5102_MCLK_19_2MHZ |
-+			BYT_WM5102_SPK_HPOUT2_MAP;
- 	}
- 	if (quirk_override != -1) {
- 		dev_info_once(dev, "Overriding quirk 0x%lx => 0x%x\n",
-@@ -503,6 +553,10 @@ static int snd_byt_wm5102_mc_probe(struct platform_device *pdev)
- 	}
- 	log_quirks(dev);
- 
-+	snprintf(byt_wm5102_components, sizeof(byt_wm5102_components),
-+		 "cfg-spk:%s", out_map_name[FIELD_GET(BYT_WM5102_OUT_MAP, quirk)]);
-+	byt_wm5102_card.components = byt_wm5102_components;
-+
- 	/* find index of codec dai */
- 	for (i = 0; i < ARRAY_SIZE(byt_wm5102_dais); i++) {
- 		if (!strcmp(byt_wm5102_dais[i].codecs->name,
 -- 
-2.41.0
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
 
