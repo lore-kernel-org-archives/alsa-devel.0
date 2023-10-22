@@ -4,86 +4,116 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DD46DC001DF
-	for <alsa-devel@archiver.kernel.org>; Sun, 22 Oct 2023 10:04:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 28DDEC001DF
+	for <alsa-devel@archiver.kernel.org>; Sun, 22 Oct 2023 12:54:34 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 577076C1;
-	Sun, 22 Oct 2023 12:03:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 577076C1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0A6A8846;
+	Sun, 22 Oct 2023 14:53:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0A6A8846
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1697969048;
-	bh=7PsMWbaVMedcFn6pPH+/OzV5PSechVS/ScQduga9eQk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1697979272;
+	bh=7WK6x0DalcDHfRBw45qm1uftJFNrcz+wp52p6Q+J4tg=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Tt8b8aXuz4s7S1bd9ZDm+x5QI9mUByleIp0OUSh57fpITP3n6hu7uod1zqAGpSwrU
-	 NJK+vJygfjaM1zhDZG5YmfQ+STvqwsKKcz0NwZavk+aIAGAa46yBJgNuiL+H6VDvA7
-	 GdaVZMwsHEoplDnlrHr7Zq3VptEn1KtjHT1FGp/o=
+	b=RPJGp1//WSYj19gWYYR8Fqt49Y0y/WzTiCkLFEAriuij3ZF8cwHbJCcVWNHDW2Vn/
+	 XdGFndvj855bakZElinaY12JXcH6AwU9ijlhccsghVneuHZxq7iYZqpRVXwlFgULt6
+	 1l4xpt7SOe5HrGITNTEW2hWvnKEVW4qQAbNx4TYw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 17BC4F80536; Sun, 22 Oct 2023 12:02:48 +0200 (CEST)
+	id 8C280F804F3; Sun, 22 Oct 2023 14:53:12 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A168CF804F3;
-	Sun, 22 Oct 2023 12:02:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1B0ABF804F3;
+	Sun, 22 Oct 2023 14:53:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 47906F804F3; Sun, 22 Oct 2023 12:00:28 +0200 (CEST)
-Received: from sin.source.kernel.org (sin.source.kernel.org
- [IPv6:2604:1380:40e1:4800::1])
+	id 66059F804F3; Sun, 22 Oct 2023 14:53:06 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 60C61F8024E
-	for <alsa-devel@alsa-project.org>; Sun, 22 Oct 2023 12:00:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 60C61F8024E
+	by alsa1.perex.cz (Postfix) with ESMTPS id 190DDF8024E
+	for <alsa-devel@alsa-project.org>; Sun, 22 Oct 2023 14:52:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 190DDF8024E
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=FLa/vHW7
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id A5C7CCE190B;
-	Sun, 22 Oct 2023 10:00:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48913C433C7;
-	Sun, 22 Oct 2023 10:00:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1697968813;
-	bh=7PsMWbaVMedcFn6pPH+/OzV5PSechVS/ScQduga9eQk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=FLa/vHW7t8aqno59J8dt7ReYX8iDpAuNnwvWrlchV/dNSytiLmDRXjqasn6wdZfhk
-	 hV+jNBGwOT+sXnjm7yMLdAhMCFi2vfSikzVUwjp+xu5F+lDFKAo/1xhHbJG19yBCCT
-	 u5dBv5n7TsQlKrPbV3q/oNx4XbKb7cpayC7x9noJCcJGUV8bE4EUX+lZh+Z1kmiL+J
-	 DyxNt3kT5d0Qh6rkMpm4BkWKjPFwdfsRUV2a6vtfbXTkfgrDjGAEXbMeirAqIStS9z
-	 dUYV6L9LMJdnG0eujR0GuqeINj+D3/pHBDG+fz+zbbL3ozNoHFnYSqVzK8rYU+3eqv
-	 T7FKjtPcjtZIA==
-Date: Sun, 22 Oct 2023 11:00:07 +0100
-From: Conor Dooley <conor@kernel.org>
-To: Nikita Travkin <nikita@trvn.ru>
-Cc: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-	Banajit Goswami <bgoswami@quicinc.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-	jenneron@postmarketos.org, linux-arm-msm@vger.kernel.org,
-	alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] ASoC: dt-bindings: qcom,sm8250: Add
- sc7180-qdsp6-sndcard
-Message-ID: <20231022-snowy-flashily-0c814247e557@spud>
-References: <20231020-sc7180-qdsp-sndcard-v1-0-157706b7d06f@trvn.ru>
- <20231020-sc7180-qdsp-sndcard-v1-1-157706b7d06f@trvn.ru>
+	dkim=pass (1024-bit key,
+ unprotected) header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256
+ header.s=mimecast20190719 header.b=c25RfbE9
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1697979177;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=8mNmvCbAT0TAM9wjamIFYDBn/ptBM0XM2ykNLILbdd8=;
+	b=c25RfbE9a9Oy2zsscUTKd3w0QVy7DzUEgBe6R4XLzpY7dVzg1KhVBCLzzE5v/1ObtFBScG
+	JFIhHRbHKCfUuaoRZm+pigY+oUGKX7BIlMqJ61Q9bV84+VU0wuAoP1XSVm3i2/WMbUoTwY
+	nx32muUUhULhkd1igxP6taXYwGrIL1k=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-568-JemylddfNhe2pxjUKGMcKQ-1; Sun, 22 Oct 2023 08:52:45 -0400
+X-MC-Unique: JemylddfNhe2pxjUKGMcKQ-1
+Received: by mail-ed1-f71.google.com with SMTP id
+ 4fb4d7f45d1cf-53e2acda9d6so1421881a12.2
+        for <alsa-devel@alsa-project.org>;
+ Sun, 22 Oct 2023 05:52:44 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697979164; x=1698583964;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=8mNmvCbAT0TAM9wjamIFYDBn/ptBM0XM2ykNLILbdd8=;
+        b=aAWu+2S7LGpBWQ+xEfS5jBMytovspwO3HHslLAGE4D3VnRLnKijhOAAvMJ6FOPI5fR
+         CUutEAVjGzszjGKzmHgPb1T3AOXI/xl0DcDbMz34eHAxY8+/SYVj7yp+MX8Ie8lUyP86
+         46mX9SZvC12AAcPI8kxz3MMvU411qPagxrVT4KBOXyx3D9pRki7nzMQvGYU0WXeCfpmk
+         BKYixwjKXgs0OULtFcDCFk4gfE9RnOv7KjJ1p8r7cDgt37yOgV2Axin+e6ZHsj1kXgQP
+         6BW+2u0FwUFUta0eKoCzO8kFbLd0z1z4tmDXSitsiOogYGx783V5fbHf9amJ2ynVJTAm
+         wvCw==
+X-Gm-Message-State: AOJu0YwCzJKbSevONSfI8LHALGgKFBDQ1pdViSkdkyWcHzoSwwGCkr+O
+	pYuO5nEb2GgReMqIPMZTZAfZdpEScVLbcTkQDCqKshEV0W64UHnR3deBS5uLeJQcaSzf5GjSBeY
+	hqT3rEzFxYRPSsApULCjD2fY=
+X-Received: by 2002:a50:d597:0:b0:53e:395:59d with SMTP id
+ v23-20020a50d597000000b0053e0395059dmr3971446edi.8.1697979164119;
+        Sun, 22 Oct 2023 05:52:44 -0700 (PDT)
+X-Google-Smtp-Source: 
+ AGHT+IFJmw82cpfTbR81uCD3ZzvLbXt3p1PBviiV+OKdZVawJZSBxjiQxak51anrS2JvH1t8HMVnGA==
+X-Received: by 2002:a50:d597:0:b0:53e:395:59d with SMTP id
+ v23-20020a50d597000000b0053e0395059dmr3971433edi.8.1697979163817;
+        Sun, 22 Oct 2023 05:52:43 -0700 (PDT)
+Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec?
+ (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl.
+ [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
+        by smtp.gmail.com with ESMTPSA id
+ d23-20020a50cd57000000b0053defc8c15asm4899921edj.51.2023.10.22.05.52.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 22 Oct 2023 05:52:42 -0700 (PDT)
+Message-ID: <a07c183f-76cd-6cc9-5eba-0fd6a62dad3a@redhat.com>
+Date: Sun, 22 Oct 2023 14:52:41 +0200
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="nNQF1DonWtR70u/D"
-Content-Disposition: inline
-In-Reply-To: <20231020-sc7180-qdsp-sndcard-v1-1-157706b7d06f@trvn.ru>
-Message-ID-Hash: TM6CL4VANZJIAKSJNBIXNVHEZ7IE2ZCO
-X-Message-ID-Hash: TM6CL4VANZJIAKSJNBIXNVHEZ7IE2ZCO
-X-MailFrom: conor@kernel.org
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] ASoC: soc-core.c: Log components string to help with UCM
+ profile development
+To: Jaroslav Kysela <perex@perex.cz>,
+ Cezary Rojewski <cezary.rojewski@intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
+References: <20231021211710.115239-1-hdegoede@redhat.com>
+ <3dbee1fa-87c2-d6ee-64d3-f2c97928797d@perex.cz>
+From: Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <3dbee1fa-87c2-d6ee-64d3-f2c97928797d@perex.cz>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+Content-Language: en-US, nl
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: J2KCZXIRQL7DM7OKWS6LTC3YWMEGWNFK
+X-Message-ID-Hash: J2KCZXIRQL7DM7OKWS6LTC3YWMEGWNFK
+X-MailFrom: hdegoede@redhat.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -95,7 +125,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TM6CL4VANZJIAKSJNBIXNVHEZ7IE2ZCO/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/J2KCZXIRQL7DM7OKWS6LTC3YWMEGWNFK/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -104,54 +134,28 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+Hi Jaroslav,
 
---nNQF1DonWtR70u/D
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 10/22/23 11:21, Jaroslav Kysela wrote:
+> On 21. 10. 23 23:17, Hans de Goede wrote:
+>> Various ASoC board/card drivers use a components string to communicate
+>> to userspace which output (speakers / headphones) and input (internal mic /
+>> headset mic) routes have been setup by the card driver so that the UCM
+>> profiles can dynamically adjust to this.
+>>
+>> ATM it is sort of hard to figure out what the component string has
+>> actually been set to by the kernel. Log the components string set on
+>> the snd_soc_card to help with UCM profile development.
+> 
+> I don't think that it's hard to invoke command like 'amixer -c 0 info' to view the components string.
 
-On Fri, Oct 20, 2023 at 08:33:46PM +0500, Nikita Travkin wrote:
-> sc7180 can make use of the adsp-baked soundcard, add relevant compatible
-> to the documentation.
->=20
-> Signed-off-by: Nikita Travkin <nikita@trvn.ru>
+Ah I wasn't aware that this info could be easily retrieved with
+'amixer -c # info'.
 
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
+But since I know now I don't need this patch anymore, so lets drop this patch.
 
-Thanks,
-COnor.
+Regards,
 
-> ---
->  Documentation/devicetree/bindings/sound/qcom,sm8250.yaml | 1 +
->  1 file changed, 1 insertion(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml b/D=
-ocumentation/devicetree/bindings/sound/qcom,sm8250.yaml
-> index 262de7a60a73..e082a4fe095d 100644
-> --- a/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml
-> +++ b/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml
-> @@ -25,6 +25,7 @@ properties:
->            - qcom,apq8016-sbc-sndcard
->            - qcom,msm8916-qdsp6-sndcard
->            - qcom,qrb5165-rb5-sndcard
-> +          - qcom,sc7180-qdsp6-sndcard
->            - qcom,sc8280xp-sndcard
->            - qcom,sdm845-sndcard
->            - qcom,sm8250-sndcard
->=20
-> --=20
-> 2.41.0
->=20
+Hans
 
---nNQF1DonWtR70u/D
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZTTypwAKCRB4tDGHoIJi
-0gl5AP0X+bwFzAyHiu5r1O6UFDt6fXJWOpKG7KiyYT2H/ADLfQEAv0d2OZNJEAOh
-3R4ScbuFOliRrkzghDPBebpGO59z+A0=
-=XI4e
------END PGP SIGNATURE-----
-
---nNQF1DonWtR70u/D--
