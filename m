@@ -4,96 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 76730C25B46
-	for <alsa-devel@archiver.kernel.org>; Mon, 23 Oct 2023 18:41:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 08FD7C25B48
+	for <alsa-devel@archiver.kernel.org>; Mon, 23 Oct 2023 18:46:11 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B0799868;
-	Mon, 23 Oct 2023 20:40:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B0799868
+	by alsa0.perex.cz (Postfix) with ESMTPS id 75D2493A;
+	Mon, 23 Oct 2023 20:45:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 75D2493A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1698086500;
-	bh=7I76GhrFH1ankannClmf806vy5yk8xmXcsOuatft2C8=;
+	s=default; t=1698086769;
+	bh=jDwciitYmk8u5u8zSmhyK5TzvFy4ruKbgSjxwCQTnn4=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=WCmNqhfbNt/WMwVIq1P9NUaxc/vaVLUVsyo3AZuT5P4owoorColoUYjQKTseoA0Ga
-	 M9rhKow34vgUQZMYY97X8bxn6iJGpGRLC8oDOPn7Bch5MHsMytA7G+qpA++t+ETJ0D
-	 kqGuq9DxPRlBTqvrop/iZz+pK0r+lVrKfG7HvFsk=
+	b=WVqZW8rBQHE9+XgCLJ1IXxVy+MQzBRwNGoQ0aLSnKtx5VH7kh3Jlf4QAXlE4ApDJU
+	 ExWZFD/RWvnIlRNqt83HJw/cfLzESD8veqvlDCHPPL+00jRkYvf07mUFB1z9EUdl1A
+	 JzLsu3Cf6PeuWYNMviqItLUau3q+XqyNuYV3FZI0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B3A3CF8055A; Mon, 23 Oct 2023 20:40:28 +0200 (CEST)
+	id 00C20F80557; Mon, 23 Oct 2023 20:45:18 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1990FF80552;
-	Mon, 23 Oct 2023 20:40:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BB1FFF804F3;
+	Mon, 23 Oct 2023 20:45:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BCB32F804F3; Mon, 23 Oct 2023 20:40:23 +0200 (CEST)
+	id CD439F804F3; Mon, 23 Oct 2023 20:45:15 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 18E57F8024E;
-	Mon, 23 Oct 2023 20:40:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 18E57F8024E
+	by alsa1.perex.cz (Postfix) with ESMTPS id 60768F8024E
+	for <alsa-devel@alsa-project.org>; Mon, 23 Oct 2023 20:45:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 60768F8024E
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=lMZGd3l9
+ header.s=Intel header.b=HbsFlgC4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698086419; x=1729622419;
+  t=1698086713; x=1729622713;
   h=message-id:date:mime-version:subject:to:cc:references:
    from:in-reply-to:content-transfer-encoding;
-  bh=7I76GhrFH1ankannClmf806vy5yk8xmXcsOuatft2C8=;
-  b=lMZGd3l9sk4+OaCKKSULF0dCOm2k5AQmVq6Pfie2WqD3/nqisjZh6j6o
-   4oD7MrtLxWXrS6nokXHtw4fDT5jdX1wFGSFrCW0vOydt/qh0xK5+HsZQ3
-   2jGq6yHXZuHVpFff4B5Bi45gBBHNch3JKapJaghWFc7Juhs2t4/eEzUxU
-   lJS9TMZTmGagDsF9d7ANvt6xDFjJcVTG9ZUqcVHAt0Ij9ovyRA0rKE+SO
-   bIR6pkOV9tQuIk+I+JuUUuZjf8Gkoa7qlBJ7zR8P9OGViq8sm1p4lZrAS
-   WisEyRHQqCGsxUFcVz8jYiVdCLDEYwFauGq8mDWqpTlUfLc7aUDKpwqAm
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10872"; a="390788529"
+  bh=jDwciitYmk8u5u8zSmhyK5TzvFy4ruKbgSjxwCQTnn4=;
+  b=HbsFlgC434nJ2kuYpQaKYnyDKhZBzxLnFHKByoyD1cuTszmO3RyXKgBl
+   lK05Gb7bbAJv3G6cwZY/St57lw0hv3c5Sn/TUUpRzPGWWfz5ooKqw5VY+
+   OSmWs634F1qvWGpfy8e6L9ixpEoFdnvMFaVR3nfEVVB4uX6HvkEMfptqL
+   AexmpBOlvkOfKCy2o4i8rHrq/TcKKciisRb4IomhhVC5bTW1jBQuN5cvl
+   2YDSmm2SCYjloL424djWhHUXaOvXjaQNxHkY9NKbBHxFVCQoXB5ioc9mp
+   jKyP25MUtPfdQia57crP8Rmq04qnUVYKma00IU8nc3brBUnQRHTYIARRQ
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10872"; a="390789272"
 X-IronPort-AV: E=Sophos;i="6.03,246,1694761200";
-   d="scan'208";a="390788529"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+   d="scan'208";a="390789272"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
   by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 23 Oct 2023 11:40:11 -0700
+ 23 Oct 2023 11:45:09 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10872"; a="824048819"
+X-IronPort-AV: E=McAfee;i="6600,9927,10872"; a="848857211"
 X-IronPort-AV: E=Sophos;i="6.03,246,1694761200";
-   d="scan'208";a="824048819"
+   d="scan'208";a="848857211"
 Received: from weiyiwil-mobl.amr.corp.intel.com (HELO [10.212.122.211])
  ([10.212.122.211])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 23 Oct 2023 11:40:02 -0700
-Message-ID: <fb7cf366-b659-4321-b81b-ca76704a85ab@linux.intel.com>
-Date: Fri, 20 Oct 2023 16:21:27 -0500
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 23 Oct 2023 11:45:09 -0700
+Message-ID: <fb56b3fd-769c-4524-acf4-3324424c4b5a@linux.intel.com>
+Date: Mon, 23 Oct 2023 13:45:08 -0500
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1] ALSA: SOF: sof-pci-dev: Fix community key quirk
- detection
+Subject: Re: [PATCH 1/6] ASoC: Intel: soc-acpi-cht: Add Lenovo Yoga Tab 3 Pro
+ YT3-X90 quirk
 Content-Language: en-US
-To: Curtis Malainey <cujomalainey@google.com>,
- Mark Hasemeyer <markhas@chromium.org>
-Cc: LKML <linux-kernel@vger.kernel.org>,
- Curtis Malainey <cujomalainey@chromium.org>, stable@vger.kernel.org,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- Daniel Baluta <daniel.baluta@nxp.com>, Jaroslav Kysela <perex@perex.cz>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+To: Hans de Goede <hdegoede@redhat.com>,
+ Cezary Rojewski <cezary.rojewski@intel.com>,
+ Liam Girdwood <lgirdwood@gmail.com>,
  Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
- sound-open-firmware@alsa-project.org
-References: 
- <20231020145953.v1.1.Iaf5702dc3f8af0fd2f81a22ba2da1a5e15b3604c@changeid>
- <CAOReqxhrhzWh-aO5kt-7yqcfX9CbHW-WBgBAqQ9FqeUj-h1o=A@mail.gmail.com>
+ Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
+References: <20231021211534.114991-1-hdegoede@redhat.com>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: 
- <CAOReqxhrhzWh-aO5kt-7yqcfX9CbHW-WBgBAqQ9FqeUj-h1o=A@mail.gmail.com>
+In-Reply-To: <20231021211534.114991-1-hdegoede@redhat.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: BJYVAQHKACPXOSTTAHQXX3OZCGE7T5H3
-X-Message-ID-Hash: BJYVAQHKACPXOSTTAHQXX3OZCGE7T5H3
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: PD5EE54LPH2MEUG3G3BLZETBT7KS3HM7
+X-Message-ID-Hash: PD5EE54LPH2MEUG3G3BLZETBT7KS3HM7
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -106,7 +97,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BJYVAQHKACPXOSTTAHQXX3OZCGE7T5H3/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PD5EE54LPH2MEUG3G3BLZETBT7KS3HM7/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -116,20 +107,21 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 
-> On Fri, Oct 20, 2023 at 2:00 PM Mark Hasemeyer <markhas@chromium.org> wrote:
->>
->> Some Chromebooks do not populate the product family DMI value resulting
->> in firmware load failures.
->>
->> Add another quirk detection entry that looks for "Google" in the BIOS
->> version. Theoretically, PRODUCT_FAMILY could be replaced with
->> BIOS_VERSION, but it is left as a quirk to be conservative.
->>
->> Cc: stable@vger.kernel.org
->> Signed-off-by: Mark Hasemeyer <markhas@chromium.org>
+
+On 10/21/23 16:15, Hans de Goede wrote:
+> The Lenovo Yoga Tab 3 Pro YT3-X90 x86 tablet, which ships with Android with
+> a custom kernel as factory OS, does not list the used WM5102 codec inside
+> its DSDT.
 > 
-> Acked-by: Curtis Malainey <cujomalainey@chromium.org>
+> Workaround this with a new snd_soc_acpi_intel_baytrail_machines[] entry
+> which matches on the SST id instead of the codec id like nocodec does,
+> combined with using a machine_quirk callback which returns NULL on
+> other machines to skip the new entry on other machines.
 
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+The work-around sounds fine, but out of curiosity what causes the codec
+driver to probe if there's no ACPI HID?
 
-Now let's see how the machine drivers need to be updated...
+Really wondering how we avoid the -517 error code with the deferred
+probe never completing because the codec driver never probed and
+registered the needed components?
+
