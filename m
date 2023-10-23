@@ -4,78 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 35E17C001E0
-	for <alsa-devel@archiver.kernel.org>; Mon, 23 Oct 2023 16:56:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3C5FAC25B46
+	for <alsa-devel@archiver.kernel.org>; Mon, 23 Oct 2023 18:36:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AE488850;
-	Mon, 23 Oct 2023 18:55:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AE488850
+	by alsa0.perex.cz (Postfix) with ESMTPS id 661EA857;
+	Mon, 23 Oct 2023 20:35:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 661EA857
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1698080209;
-	bh=Hpe7ekaJs73CJgZf5fhyangHoKF2l+kv/gkvQP5ZgmA=;
+	s=default; t=1698086188;
+	bh=mxVaLf3SUAkIWLdEpZT8qhdQisgiaf1e9hz+ZutW38w=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Ctiix6cQeJ9UT/y/b+zbaYr8QWRMWf1cIynDPKRSCTn3CMkUOPeOgKU8mkyl29ic3
-	 IxITN9ipGIn07mGAh2TKi+rCgdy1AdKr0NtMbp7lC1dYPk3JuuV9Y5mVCRoOByg2De
-	 qPpYWJPXnJ3FA3OvETAPxZxxGtJL1Kq/7jPEVsdU=
+	b=QNt2tn1rFcFFzufBeOYDgOgYDp0i0CiI5RxNbb0QDokyzn+0gfdiTiPHhQ1KAUqwa
+	 0HSrqQyJ/jpM3AJ7dqMTYqHi8QZ3bEbN9/Y7q+MAnfkF/WGOsrjdzQiY+gh0SFN2sA
+	 MpVLxMD26vFSNVhPuDRGtMH+lhueN3/5eo+OLOLs=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 36A45F80134; Mon, 23 Oct 2023 18:55:31 +0200 (CEST)
+	id 4695DF80027; Mon, 23 Oct 2023 20:35:07 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id BF232F804F3;
-	Mon, 23 Oct 2023 18:55:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id ECCF0F80027;
+	Mon, 23 Oct 2023 20:35:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 97979F804F3; Mon, 23 Oct 2023 18:55:28 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+	id 3F4B3F804F3; Mon, 23 Oct 2023 20:35:02 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id EF0B2F80134
-	for <alsa-devel@alsa-project.org>; Mon, 23 Oct 2023 18:55:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EF0B2F80134
+	by alsa1.perex.cz (Postfix) with ESMTPS id 859C6F80027
+	for <alsa-devel@alsa-project.org>; Mon, 23 Oct 2023 20:34:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 859C6F80027
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=YhmS5jI0
+ header.s=k20201202 header.b=XVsLuEdg
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 77DCC625CB;
-	Mon, 23 Oct 2023 16:55:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2FF1CC433C7;
-	Mon, 23 Oct 2023 16:55:18 +0000 (UTC)
+	by ams.source.kernel.org (Postfix) with ESMTP id 33690B82076;
+	Mon, 23 Oct 2023 18:34:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75EDFC433C7;
+	Mon, 23 Oct 2023 18:34:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1698080121;
-	bh=Hpe7ekaJs73CJgZf5fhyangHoKF2l+kv/gkvQP5ZgmA=;
+	s=k20201202; t=1698086094;
+	bh=mxVaLf3SUAkIWLdEpZT8qhdQisgiaf1e9hz+ZutW38w=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=YhmS5jI05JwAioYZMc0FUT+5OFTFXShOEqQJCKnqWdA2tAS9QqOYhjLqNVCKDlATx
-	 LJuHsmtQA55nvPrV/HcQ/b9Jhm+9gxHsIdrIfw3r8LIN/8c6eC84kpEkNXkV2/GCLL
-	 XsfhMmfaq+u34YgutzjKqJKxiplQUcdVW+cU4e6ZS9B0XKhhVgwoTBlaCJ16UcuaOm
-	 sZWNJ7jzyjTUDsoEh6WRqtlh60agRqnpxxgxfPCbB2+6bTRTGvKLV6+zzMvbcXKXjj
-	 /cUNJ5GU+3B6KJgT9LeG58dn66g2hGW2tfTq6Mkq5JS9pFWm1c+ezfplQif+GuHKNz
-	 qUIldiPM+LTLQ==
-Date: Mon, 23 Oct 2023 17:55:15 +0100
-From: Conor Dooley <conor@kernel.org>
-To: Seven Lee <wtli@nuvoton.com>
-Cc: broonie@kernel.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	robh+dt@kernel.org, conor+dt@kernel.org, YHCHuang@nuvoton.com,
-	KCHSU0@nuvoton.com, CTLIN0@nuvoton.com, SJLIN0@nuvoton.com,
-	scott6986@gmail.com, supercraig0719@gmail.com, dardar923@gmail.com
-Subject: Re: [PATCH 1/2] ASoC: dt-bindings: nau8821: Add DMIC slew rate
- selection
-Message-ID: <20231023-company-coziness-0b50388abfaa@spud>
-References: <20231023021537.617980-1-wtli@nuvoton.com>
+	b=XVsLuEdg5TCsQL6y3nSbofgAqsEQdCYFHBVeiYhadeZx/Sta+WbyMNW9pgW+O1ydS
+	 9CdMNxy91JKwuLSVn/6VyBTmepaweHPq+AlD7kO/8Z03bWiebwgXD1vLHL/DiDXrl6
+	 sfQ9CUrry4jIWGcwpWpExo8QYpJVR7PBnZxtOZB/0KziBT+gtIQa4MuOXxRz7pm9hh
+	 AKJKlfCniOyiPpninrwDoZV9pGF6VL+bUJN8WZtpuPIk1F5p2knqv+P9u2FDhxjNRV
+	 eNxqUaGh9faCajcLWnQNtyc44R8rLMOVStDUrTL823g6mWF09QeJ4ybQXFOq6O6V9Z
+	 C2vawlTTx60BQ==
+Date: Mon, 23 Oct 2023 19:34:50 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org,
+	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+	Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Subject: Re: [PATCH for-next] ASoC: SOF: Make return of remove_late void, too
+Message-ID: <990885fe-4fff-430a-af3f-6136b6c4a9c9@sirena.org.uk>
+References: <20231023153605.863-1-tiwai@suse.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="6XhV5INvunCnaq1A"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="SRzaipjvYrsLhIOp"
 Content-Disposition: inline
-In-Reply-To: <20231023021537.617980-1-wtli@nuvoton.com>
-Message-ID-Hash: CHXDG6O7H7WODSYGRBKLQ564SKS2UW7F
-X-Message-ID-Hash: CHXDG6O7H7WODSYGRBKLQ564SKS2UW7F
-X-MailFrom: conor@kernel.org
+In-Reply-To: <20231023153605.863-1-tiwai@suse.de>
+X-Cookie: Never reveal your best argument.
+Message-ID-Hash: F7Z4NWTDZCYRHACD2NH7IBVMSYFVE5GV
+X-Message-ID-Hash: F7Z4NWTDZCYRHACD2NH7IBVMSYFVE5GV
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -87,7 +85,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CHXDG6O7H7WODSYGRBKLQ564SKS2UW7F/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/F7Z4NWTDZCYRHACD2NH7IBVMSYFVE5GV/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -97,67 +95,34 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 
---6XhV5INvunCnaq1A
+--SRzaipjvYrsLhIOp
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hey,
-
-On Mon, Oct 23, 2023 at 10:15:36AM +0800, Seven Lee wrote:
-> Add input with DMIC slew rate selection
+On Mon, Oct 23, 2023 at 05:36:05PM +0200, Takashi Iwai wrote:
+> Like the change we've done for remove callback, the newly introduced
+> remove_late callback should be changed to void return, too.
 >=20
-> Signed-off-by: Seven Lee <wtli@nuvoton.com>
-> ---
->  .../devicetree/bindings/sound/nuvoton,nau8821.yaml         | 7 +++++++
->  1 file changed, 7 insertions(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/sound/nuvoton,nau8821.yaml=
- b/Documentation/devicetree/bindings/sound/nuvoton,nau8821.yaml
-> index 3e54abd4ca74..5f7f2eed4834 100644
-> --- a/Documentation/devicetree/bindings/sound/nuvoton,nau8821.yaml
-> +++ b/Documentation/devicetree/bindings/sound/nuvoton,nau8821.yaml
-> @@ -89,6 +89,12 @@ properties:
->      $ref: /schemas/types.yaml#/definitions/uint32
->      default: 3072000
-> =20
-> +  nuvoton,dmic-slew-rate-selection:
-> +    description: number from 0 to 7 that sets DMIC slew rate.
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    maximum: 7
-> +    default: 0
+> Fixes: 17baaa1f950b ("ASoC: SOF: core: Add probe_early and remove_late ca=
+llbacks")
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
 
-I'd much rather this was an enum of possible values in $unit, than what
-appears to be values you want to write to a register.
+Acked-by: Mark Brown <broonie@kernel.org>
 
-Cheers,
-Conor.
-
-> +
->    nuvoton,left-input-single-end:
->      description: Enable left input with single-ended settings if set.
->          For the headset mic application, the single-ended control is
-> @@ -127,6 +133,7 @@ examples:
->              nuvoton,jack-insert-debounce =3D <7>;
->              nuvoton,jack-eject-debounce =3D <0>;
->              nuvoton,dmic-clk-threshold =3D <3072000>;
-> +            nuvoton,dmic-slew-rate-selection=3D <0>;
->              #sound-dai-cells =3D <0>;
->          };
->      };
-> --=20
-> 2.25.1
->=20
-
---6XhV5INvunCnaq1A
+--SRzaipjvYrsLhIOp
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZTalcwAKCRB4tDGHoIJi
-0lUgAP0dICzYGKOkFJyrsYF0Pcon1DPv052uYcDE0imGelULMQD9FUUVcAFtlJFy
-ayCgZF3Du2NWFIzNgjEbBbFyfd77GQQ=
-=7mpV
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmU2vMkACgkQJNaLcl1U
+h9Bibgf/ccVE7pnkfCj7jX5zedFtfnVNNcGk6gjSYqQ6I2+S7nsFQIZBRcV+rkNw
+QBD/0ljxtSNqcJ7TF1cW94hckrF9uvllIm2J2Yim1/VIWYlmiInebyqcNTU/N+tx
+2zmHpDtF53zsdUR8Wzl5WSR5ea4Zz5klpsIn6zOlpGC2ZKfgXhqsAk8DL/SiEmX7
+KokRSsf6lUgu5qsey3uPD1FkQoWD0MaxsuECXoHVUI2N4DG1RfuyAdBouNES350m
+TBbY29DulbACaFGtnVCVqMqyYW6dllTSJytbvgeHo0qufNuXHy51x/D43kt0ERCj
+gYWlIEORW+mNMGV8iY2H799HeQ77Fw==
+=TjlJ
 -----END PGP SIGNATURE-----
 
---6XhV5INvunCnaq1A--
+--SRzaipjvYrsLhIOp--
