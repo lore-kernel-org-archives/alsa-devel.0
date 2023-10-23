@@ -4,84 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 15664C001E0
-	for <alsa-devel@archiver.kernel.org>; Mon, 23 Oct 2023 10:00:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CCAFAC001E0
+	for <alsa-devel@archiver.kernel.org>; Mon, 23 Oct 2023 10:00:37 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 466F9E9A;
-	Mon, 23 Oct 2023 11:59:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 466F9E9A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 07F67EA0;
+	Mon, 23 Oct 2023 11:59:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 07F67EA0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1698055219;
-	bh=pykBYUeyGmLpMLya3KYa/eooDqdhJ2+KUocu953QcuY=;
+	s=default; t=1698055236;
+	bh=RcSEfi9+6KkNkFc+DB/j4AL/7U7XuX1do84BI9frLzg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=HfFFS6X+6di/Pb4qHvJDHOtqzUIXoYjic7gyXqNZtaIeEk8SussOCtFU7j325I1Fb
-	 Kswvtdaq0etO5Me/xTqCwJw1X2fWO4N+wuPoAka4Y+3fyHaHh+/+cxhthU8683aXgp
-	 6aVJlef5rBul3L/tdmF8YBNGofnaJkLku0PYU0lk=
+	b=AOg5mL4OYi2QhaKXVj1sDYEkBMnezfM/kNU86N6WRCrn25JkSQCvGbtyxoWpAXxnX
+	 FjktpSujAXkE07LIyPwhHEBQaEUhzlTrc1snwZk6kfnaqMMuMBBCQjCWpieMlQgP4b
+	 bTVyc3P5LNoN2/YYcsaijXI3gO0rygrVfsyhBB8A=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4837AF80639; Mon, 23 Oct 2023 11:55:35 +0200 (CEST)
+	id 8F810F8063E; Mon, 23 Oct 2023 11:55:37 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id AA6B6F80630;
-	Mon, 23 Oct 2023 11:55:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A2987F8063E;
+	Mon, 23 Oct 2023 11:55:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2C010F805E9; Mon, 23 Oct 2023 11:55:13 +0200 (CEST)
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com
- [IPv6:2a00:1450:4864:20::42e])
+	id 20EC3F805EC; Mon, 23 Oct 2023 11:55:18 +0200 (CEST)
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com
+ [IPv6:2a00:1450:4864:20::42d])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 4474EF805D9
-	for <alsa-devel@alsa-project.org>; Mon, 23 Oct 2023 11:55:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4474EF805D9
+	by alsa1.perex.cz (Postfix) with ESMTPS id 0B47DF805EC
+	for <alsa-devel@alsa-project.org>; Mon, 23 Oct 2023 11:55:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0B47DF805EC
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=GWf7H9uf
-Received: by mail-wr1-x42e.google.com with SMTP id
- ffacd0b85a97d-32db188e254so2253435f8f.0
+ header.s=google header.b=h+6BvQx8
+Received: by mail-wr1-x42d.google.com with SMTP id
+ ffacd0b85a97d-32da4ffd7e5so1725556f8f.0
         for <alsa-devel@alsa-project.org>;
- Mon, 23 Oct 2023 02:55:09 -0700 (PDT)
+ Mon, 23 Oct 2023 02:55:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698054909; x=1698659709;
+        d=linaro.org; s=google; t=1698054911; x=1698659711;
  darn=alsa-project.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ZC07USduWdC7NjdC5xCXcdF31ciW6Iy95zkt28zTytw=;
-        b=GWf7H9ufoDe9b6wFLyDN7FhHhcO6FxQ7QZxhSqSIRR4Vbzv/EK3IummkQ2WcYcAkYA
-         NNZWE7PFsHtlUXGErgDkUpaMdssDvm456N0cd1D6BSTVjVmHuP92ExvqSXCJSKo9jtN5
-         bp8FxTLi2mm6/mq9t1nuWg9Y4+dFeiGQ9n+yR458zG/rgJMdeeAU/mSIkcKmCjdHtiGk
-         sjsDliTyUTRlswkSX28jO3mAAZgYH9d2m5r14dZnjYSNV1HcfgO1DtcI4tOz1+GkZ9VI
-         SxIUxrZf/i5YCfrOQYLy/ehtvL1NImyGEtwwKLjcJKtYTFUjEQ2Zd0e3MVUyhYUS5GM3
-         ZRRg==
+        bh=G81EZhNEBfjywIhuDWJjtpTXYP61176MP839Y8OZoG8=;
+        b=h+6BvQx80gwcMKMTxcT8PnRai20cxYbbhTYjhCwtCEu+o0NDbxxJ74UhatPreWt4my
+         Ug05d91w0khW9avfOfDTIFVnQPfQ1VopGwZT0WKMDulBQSeMeR+3kmuFQ288FLxHCcjX
+         d+kXhjkuZM9WVvkBqtd0kD9+jBXlyAjQLqEoRalnaSnG7vhiAcaDVzXPcK6d+ByS9uPf
+         7jaqptiu+ZoSeuwTCnnWXyqeMMI4EcnVuGT6Jdnf0rhOf45Xx4wWMSZLYlIGekvZTOff
+         QQRjZw5Nk2sQalxqXDV50HGYZtUSp8oXSc+lfyM+p2zHI++lnjsY/w5pciUwQMgqi00/
+         ND8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698054909; x=1698659709;
+        d=1e100.net; s=20230601; t=1698054911; x=1698659711;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ZC07USduWdC7NjdC5xCXcdF31ciW6Iy95zkt28zTytw=;
-        b=qMS+VTzgYyuUxm3fIkiQ8V9FE5fde5rnC/iuA2leUU7RrZ4yud/DkQBAQ4J4REkOm4
-         6CTX4PVkOxDtgWzmmLVeH1WBd8y38nLU8NgNuNC4ykuWEkUn+LdPWFdayTDLLVZRgKcS
-         Nb3ra1HTAuFIGwLnzKGVU3ZPGF7IXIt4QTB5EosUR9QzzxWoZ5qBU86DDN7cMx2WlnBA
-         fWF4q4KZkUD10E6scch95tcdHWFbZvqxPB8cERMvN3oClhzkhsHk4Alnrr19hNBMMxHs
-         IsIZEKiAVR1aUS5GuAg904TYuDv26jgKx/se1kHe17h5/4wYh6aDtsz+835y+IO4p42T
-         UkIg==
-X-Gm-Message-State: AOJu0YzIuLuR9GJRFuF0FJYOHgPn2y8cByD8oVbfijSRL8Rw6PtcO8/E
-	7vwj5hgVZljtCELy2YmSxv4IsQ==
+        bh=G81EZhNEBfjywIhuDWJjtpTXYP61176MP839Y8OZoG8=;
+        b=qXbryqy/SOPu2lOhuuIMQ4Sl+MPc0c4evRJYDkE9zRjcwmbYG7xoFg643kl7gp+YjR
+         oREYsE5dVgsMbnh4i0j1mTtGn8VSnfLnVjnxX1MrnDyImBcC5V81XICQPEOrSvOM3bqC
+         xZtlXLUJfrhsZv6q4yquxYd9LZoCQsMNMXKmZ1u+loVDCnhFMKIRoLgdh25TN2S9MVOO
+         Ehk6rKH4gt71GwMRiMS0XYjgzMKPnAxiRAyOGQxjG2updIgTX9fy7qJXZ8PFfJBQb9L3
+         05dLnWfO2VO/zAuoxqDMJbJG8TFscHaSqH3oxUXrYNBg7K6sS8io/h2W/nD/qQqt0Sx7
+         ijJQ==
+X-Gm-Message-State: AOJu0YyANSjFtDbHbiJYKBLGz0XdCe0jm6c/Qj+s2mbg6hcOoFKUge/1
+	LzmUyCw4mQGPspg0umJMD3Fkuw==
 X-Google-Smtp-Source: 
- AGHT+IEj7uxeA3nMNUo9sdq2wgfqK3o3A7RdYb9gMk09HGqmRvuI7EP8mG67nJpViU+BpTyEwFeWzQ==
-X-Received: by 2002:adf:e80a:0:b0:32d:8c6d:cda4 with SMTP id
- o10-20020adfe80a000000b0032d8c6dcda4mr6419354wrm.43.1698054909354;
-        Mon, 23 Oct 2023 02:55:09 -0700 (PDT)
+ AGHT+IF2iXpBOUlnIxhQVTQ1O4HJJuZY9k94V739kocrPuR1iW5RroQxWCPWTyJ4Y36tYCQLJLsx0Q==
+X-Received: by 2002:adf:a499:0:b0:32d:a3f7:f0dd with SMTP id
+ g25-20020adfa499000000b0032da3f7f0ddmr10781049wrb.25.1698054911534;
+        Mon, 23 Oct 2023 02:55:11 -0700 (PDT)
 Received: from krzk-bin.. ([178.197.218.126])
         by smtp.gmail.com with ESMTPSA id
- u14-20020a5d468e000000b00323330edbc7sm7428801wrq.20.2023.10.23.02.55.07
+ u14-20020a5d468e000000b00323330edbc7sm7428801wrq.20.2023.10.23.02.55.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Oct 2023 02:55:08 -0700 (PDT)
+        Mon, 23 Oct 2023 02:55:11 -0700 (PDT)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To: Liam Girdwood <lgirdwood@gmail.com>,
 	Mark Brown <broonie@kernel.org>,
@@ -104,17 +104,16 @@ To: Liam Girdwood <lgirdwood@gmail.com>,
 	linux-mediatek@lists.infradead.org,
 	linux-tegra@vger.kernel.org
 Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [RFT PATCH 16/17] ASoC: samsung: speyside: Handle component name
- prefix
-Date: Mon, 23 Oct 2023 11:54:27 +0200
-Message-Id: <20231023095428.166563-17-krzysztof.kozlowski@linaro.org>
+Subject: [RFT PATCH 17/17] ASoC: tegra: machine: Handle component name prefix
+Date: Mon, 23 Oct 2023 11:54:28 +0200
+Message-Id: <20231023095428.166563-18-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231023095428.166563-1-krzysztof.kozlowski@linaro.org>
 References: <20231023095428.166563-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: JQEBYESTB5KFJ2IBFAMZBVL7CTCAPAX4
-X-Message-ID-Hash: JQEBYESTB5KFJ2IBFAMZBVL7CTCAPAX4
+Message-ID-Hash: TN2N2ATWZBIXBDCHDIMRAJCNFFVEKLHU
+X-Message-ID-Hash: TN2N2ATWZBIXBDCHDIMRAJCNFFVEKLHU
 X-MailFrom: krzysztof.kozlowski@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -127,7 +126,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JQEBYESTB5KFJ2IBFAMZBVL7CTCAPAX4/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TN2N2ATWZBIXBDCHDIMRAJCNFFVEKLHU/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -141,25 +140,41 @@ to include also the component's name prefix.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- sound/soc/samsung/speyside.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/tegra/tegra_asoc_machine.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/samsung/speyside.c b/sound/soc/samsung/speyside.c
-index 43519572dc69..79476e8eb680 100644
---- a/sound/soc/samsung/speyside.c
-+++ b/sound/soc/samsung/speyside.c
-@@ -111,9 +111,9 @@ static int speyside_jack_polarity;
- static int speyside_get_micbias(struct snd_soc_dapm_widget *source,
- 				struct snd_soc_dapm_widget *sink)
- {
--	if (speyside_jack_polarity && (strcmp(source->name, "MICB1") == 0))
-+	if (speyside_jack_polarity && (snd_soc_dapm_widget_name_cmp(source, "MICB1") == 0))
- 		return 1;
--	if (!speyside_jack_polarity && (strcmp(source->name, "MICB2") == 0))
-+	if (!speyside_jack_polarity && (snd_soc_dapm_widget_name_cmp(source, "MICB2") == 0))
- 		return 1;
+diff --git a/sound/soc/tegra/tegra_asoc_machine.c b/sound/soc/tegra/tegra_asoc_machine.c
+index 3caadee9584f..192e9692bdf2 100644
+--- a/sound/soc/tegra/tegra_asoc_machine.c
++++ b/sound/soc/tegra/tegra_asoc_machine.c
+@@ -81,19 +81,23 @@ static int tegra_machine_event(struct snd_soc_dapm_widget *w,
+ 	struct snd_soc_dapm_context *dapm = w->dapm;
+ 	struct tegra_machine *machine = snd_soc_card_get_drvdata(dapm->card);
  
- 	return 0;
+-	if (!strcmp(w->name, "Int Spk") || !strcmp(w->name, "Speakers"))
++	if (!snd_soc_dapm_widget_name_cmp(w, "Int Spk") ||
++	    !snd_soc_dapm_widget_name_cmp(w, "Speakers"))
+ 		gpiod_set_value_cansleep(machine->gpiod_spkr_en,
+ 					 SND_SOC_DAPM_EVENT_ON(event));
+ 
+-	if (!strcmp(w->name, "Mic Jack") || !strcmp(w->name, "Headset Mic"))
++	if (!snd_soc_dapm_widget_name_cmp(w, "Mic Jack") ||
++	    !snd_soc_dapm_widget_name_cmp(w, "Headset Mic"))
+ 		gpiod_set_value_cansleep(machine->gpiod_ext_mic_en,
+ 					 SND_SOC_DAPM_EVENT_ON(event));
+ 
+-	if (!strcmp(w->name, "Int Mic") || !strcmp(w->name, "Internal Mic 2"))
++	if (!snd_soc_dapm_widget_name_cmp(w, "Int Mic") ||
++	    !snd_soc_dapm_widget_name_cmp(w, "Internal Mic 2"))
+ 		gpiod_set_value_cansleep(machine->gpiod_int_mic_en,
+ 					 SND_SOC_DAPM_EVENT_ON(event));
+ 
+-	if (!strcmp(w->name, "Headphone") || !strcmp(w->name, "Headphone Jack"))
++	if (!snd_soc_dapm_widget_name_cmp(w, "Headphone") ||
++	    !snd_soc_dapm_widget_name_cmp(w, "Headphone Jack"))
+ 		gpiod_set_value_cansleep(machine->gpiod_hp_mute,
+ 					 !SND_SOC_DAPM_EVENT_ON(event));
+ 
 -- 
 2.34.1
 
