@@ -4,86 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 56D5DC00A8F
-	for <alsa-devel@archiver.kernel.org>; Tue, 24 Oct 2023 13:58:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C8928C07545
+	for <alsa-devel@archiver.kernel.org>; Tue, 24 Oct 2023 14:25:59 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4A66DE0F;
-	Tue, 24 Oct 2023 15:57:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4A66DE0F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 315F886E;
+	Tue, 24 Oct 2023 16:25:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 315F886E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1698155899;
-	bh=Oyeshsu+3nlIQS5tap59rxnoqILKp80Kfvs4IZctQV8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1698157557;
+	bh=L++4CmKz6BsAhZ7VdgtQs3hUhOH7wFF41ckdSy07qs0=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=mGhhT3u5NjKMWdJo4yzMhqZhZIZOyxPQXdKMkw572If1DpFX47dhLQ3nj8gTCm7A2
-	 Gv7a0OFP7V9IgdmuDMFIxHFg0EOR5bdijmthFFtClikZa0ai80QpshdBvcQF2lIbTY
-	 B6dzwETKFxblH4hCreQ8aKggXq6O0M+Pudu+o/IQ=
+	b=NG45ntEC2g6Y9t+wQTvjL0FTg0Dl8jFMjLIf2M2Z5Uvnwfze/IUGJPHLBdTqHYS/q
+	 spMVulik4lJgjzH7Mboi6tK1NKotTxguYY6w2JAh7lavj8ZXHVhuM2YE8oRVJ6M741
+	 NyAI9tQrFx7jRYW6XEjcZv56amWmqSeObpZXx8xM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 06DFAF80165; Tue, 24 Oct 2023 15:57:27 +0200 (CEST)
+	id 66C34F8019B; Tue, 24 Oct 2023 16:24:30 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8BCB1F8019B;
-	Tue, 24 Oct 2023 15:57:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D4824F80165;
+	Tue, 24 Oct 2023 16:24:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4FC51F80165; Tue, 24 Oct 2023 15:57:24 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	id 733C5F80165; Tue, 24 Oct 2023 16:24:25 +0200 (CEST)
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 16BA0F80152
-	for <alsa-devel@alsa-project.org>; Tue, 24 Oct 2023 15:57:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 16BA0F80152
+	by alsa1.perex.cz (Postfix) with ESMTPS id 310C6F8012B
+	for <alsa-devel@alsa-project.org>; Tue, 24 Oct 2023 16:24:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 310C6F8012B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=d5N1S6c9
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by ams.source.kernel.org (Postfix) with ESMTP id 522A6B8260D;
-	Tue, 24 Oct 2023 13:57:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6496CC433C8;
-	Tue, 24 Oct 2023 13:57:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1698155835;
-	bh=Oyeshsu+3nlIQS5tap59rxnoqILKp80Kfvs4IZctQV8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=d5N1S6c9YyOAV0iwXf6CX/0DsLAIne/tc7jISV3tbnn1Xg7BKibB8yah3532yZbYl
-	 LVP0884kUs5wV3VpfhmAE57jaykHRCLfmidjdDvu3S00VmJcymG2h5PECNrCeEgBCK
-	 t6KUcPYoTGAEr+x2l988NFVZ7HYVwsV6u76zjcG+AHDaO7HEJSjkd8JiBpNuN+nd3L
-	 9C6tsjtwpz4kP9yTUbjOS4qq7qzJ2maIYOpxkLyUn9NYAptAXWbegzRggyfpUO+6AN
-	 Pd/uEzLHSH3PO5D4tQmkyYYP68Bf/jsAFTOGiQrPKhUZz86hJAivWJMc9aq5qHWV53
-	 k2OzL9x53xXQQ==
-Date: Tue, 24 Oct 2023 14:57:03 +0100
-From: Mark Brown <broonie@kernel.org>
-To: wangweidong.a@awinic.com
-Cc: 13916275206@139.com, ajye_huang@compal.corp-partner.google.com,
-	alsa-devel@alsa-project.org, arnd@arndb.de,
-	ckeepax@opensource.cirrus.com, colin.i.king@gmail.com,
-	conor+dt@kernel.org, dan.carpenter@linaro.org,
-	devicetree@vger.kernel.org, harshit.m.mogalapalli@oracle.com,
-	herve.codina@bootlin.com, krzysztof.kozlowski+dt@linaro.org,
-	lgirdwood@gmail.com, linus.walleij@linaro.org,
-	linux-kernel@vger.kernel.org, liweilei@awinic.com, perex@perex.cz,
-	rf@opensource.cirrus.com, robh+dt@kernel.org, ryans.lee@analog.com,
-	sebastian.reichel@collabora.com, shumingf@realtek.com,
-	tiwai@suse.com, trix@redhat.com, yijiangtao@awinic.com
-Subject: Re: [PATCH V2 3/4] ASoC: codecs: Add code for bin parsing compatible
- with aw88399
-Message-ID: <06c14b04-28df-4374-80e3-91e40bc53a84@sirena.org.uk>
-References: <21bfa0bb-d936-402d-9ca9-6bcf181a0f35@sirena.org.uk>
- <20231024071929.88898-1-wangweidong.a@awinic.com>
- <27dd3dfb-7a40-4e26-b8c2-e432c30a0eea@sirena.org.uk>
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=KD6qbqeu
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698157459; x=1729693459;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=L++4CmKz6BsAhZ7VdgtQs3hUhOH7wFF41ckdSy07qs0=;
+  b=KD6qbqeuCQIknOeDl0Y/CZRxwm5bh2WAG0JX2YqUdfs0kG73QyKfQaBE
+   OPoo85+kVR9++mHlRCSlpcBS1Giq8wkYll+U8K/PGAUn6yMUAjPiZamuL
+   2gXfpQyMpTmKZCQ+ZcPzYm0Pi3CwbMamp0RGvAYtHUqbcMxrwfBS2M4I7
+   YGuzvd7RFp5Di7Ufq9ePwH44z9lX6JWxqrouu+7PPAAwPorMgvNygN2Mu
+   XJoKNtpcd7J1lHNKinh0rqLH5x6J1SdxqnIKEmdSsv40XI5M7KM26hOAB
+   6pMHNktQXZ999/sIbSSiV4RpjMKDOKtEYRANoTLyox+pwamp+WSq3tGi/
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10873"; a="386873693"
+X-IronPort-AV: E=Sophos;i="6.03,248,1694761200";
+   d="scan'208";a="386873693"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 24 Oct 2023 07:24:07 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10873"; a="758491431"
+X-IronPort-AV: E=Sophos;i="6.03,248,1694761200";
+   d="scan'208";a="758491431"
+Received: from pwali-mobl.amr.corp.intel.com (HELO [10.209.188.4])
+ ([10.209.188.4])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 24 Oct 2023 07:24:05 -0700
+Message-ID: <3ce60545-ba2b-48cc-903d-288d761f2fe3@linux.intel.com>
+Date: Tue, 24 Oct 2023 09:24:05 -0500
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="8pwjO5vU2sNKk1cW"
-Content-Disposition: inline
-In-Reply-To: <27dd3dfb-7a40-4e26-b8c2-e432c30a0eea@sirena.org.uk>
-X-Cookie: 1 bulls, 3 cows.
-Message-ID-Hash: 7P5TQQ62VOBJ2PE3IANZBPR2NRP5UOLV
-X-Message-ID-Hash: 7P5TQQ62VOBJ2PE3IANZBPR2NRP5UOLV
-X-MailFrom: broonie@kernel.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 1/5] ASoC: makes CPU/Codec channel connection map more
+ generic
+Content-Language: en-US
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Mark Brown <broonie@kernel.org>, Bard Liao
+ <yung-chuan.liao@linux.intel.com>, bard.liao@intel.com,
+ Conor Dooley <conor+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Rob Herring <robh+dt@kernel.org>, Jerome Brunet <jbrunet@baylibre.com>
+Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org
+References: <874jihlx44.wl-kuninori.morimoto.gx@renesas.com>
+ <8734y1lx3m.wl-kuninori.morimoto.gx@renesas.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <8734y1lx3m.wl-kuninori.morimoto.gx@renesas.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: XCD526QRNHIPPR7EK73PJDVPCSIHA3QC
+X-Message-ID-Hash: XCD526QRNHIPPR7EK73PJDVPCSIHA3QC
+X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -95,7 +99,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7P5TQQ62VOBJ2PE3IANZBPR2NRP5UOLV/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XCD526QRNHIPPR7EK73PJDVPCSIHA3QC/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -105,56 +109,113 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 
---8pwjO5vU2sNKk1cW
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Oct 24, 2023 at 01:42:13PM +0100, Mark Brown wrote:
-> On Tue, Oct 24, 2023 at 03:19:28PM +0800, wangweidong.a@awinic.com wrote:
->=20
-> > I generated the patch based on the mainline branch,=20
-> > Why would there be a conflict? I know that I made a change to
-> > this file when I committed aw87390 and that=20
-> > the change was in the Linux-next branch, but the two=20
-> > changes are in different parts of the file.
->=20
-> I don't know off hand, I didn't check in detail.  It's possible someone
-> else sent a fix that's been applied and is causing the issue - if you
-> check out my branch and try to apply the patches hopefully you can
-> figure out what the problem was.
+On 10/23/23 00:35, Kuninori Morimoto wrote:
+> Current ASoC CPU:Codec = N:M connection is using connection mapping idea,
+> but it is used for N < M case only. We want to use it for any case.
+> 
+> By this patch, not only N:M connection, but all existing connection
+> (1:1, 1:N, N:N) will use same connection mapping. Then, because it will
+> use default mapping, no conversion patch is needed to exising drivers.
+> 
+> More over, CPU:Codec = N:M (N > M) also supported in the same time.
+> 
+> ch_maps array will has CPU/Codec index by this patch.
+> 
+> Image
+> 	CPU0 <---> Codec0
+> 	CPU1 <-+-> Codec1
+> 	CPU2 <-/
+> 
+> ch_map
+> 	ch_map[0].cpu = 0	ch_map[0].codec = 0
+> 	ch_map[1].cpu = 1	ch_map[1].codec = 1
+> 	ch_map[2].cpu = 2	ch_map[2].codec = 1
+> 
+> Link: https://lore.kernel.org/r/87fs6wuszr.wl-kuninori.morimoto.gx@renesas.com
+> Link: https://lore.kernel.org/r/878r7yqeo4.wl-kuninori.morimoto.gx@renesas.com
+> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-diff --cc sound/soc/codecs/aw88395/aw88395_lib.c
-index a0a429ca9768,bc72a7487048..000000000000
---- a/sound/soc/codecs/aw88395/aw88395_lib.c
-+++ b/sound/soc/codecs/aw88395/aw88395_lib.c
-@@@ -705,7 -703,8 +705,12 @@@ static int aw_dev_load_cfg_by_hdr(struc
- =20
-  	switch (aw_dev->chip_id) {
-  	case AW88395_CHIP_ID:
-++<<<<<<< HEAD
- +		ret =3D aw88395_dev_cfg_get_valid_prof(aw_dev, all_prof_info);
-++=3D=3D=3D=3D=3D=3D=3D
-+ 	case AW88399_CHIP_ID:
-+ 		ret =3D aw88395_dev_cfg_get_valid_prof(aw_dev, *all_prof_info);
-++>>>>>>> ASoC: codecs: Add code for bin parsing compatible with aw88399
-  		if (ret < 0)
-  			goto exit;
-  		break;
+The Intel CI did not detect any issues with this patch, see
+https://github.com/thesofproject/linux/pull/4632, so
 
---8pwjO5vU2sNKk1cW
-Content-Type: application/pgp-signature; name="signature.asc"
+Tested-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
------BEGIN PGP SIGNATURE-----
+Note however the -W1 error below
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmU3zS4ACgkQJNaLcl1U
-h9C84wf6A8/ybskNPO37rh5jdOHSRnk16Rpxur8QRnJuK/ZiwFJ5FNqhiV4xzTPQ
-Smyf3ybs1qAdjjoOU9s5uE7t12mM1WToJKbLTh6zTK7C2spMskJ6kOE6504rIPsO
-ENa1bBT0j82fhcr/5HlE0mEV+vC/OkO6QweaT49fKNZZvSeWBpWoarb1uek8BMQV
-9tHl/F6wv69njL9oOpQebGK3Gi5HtU1B1RTou/5uYVjvS04z1tvsxhAxc50r9VsH
-Czq/YM2o88Mu1CDZhFDdZLWpk+AZ9VoeywXrHs3K1VAmH2ybtf1v3TcW+kl1eLDE
-sa2vbi1HvYROcxJqiCVJTOSMHL1g4A==
-=gAPs
------END PGP SIGNATURE-----
 
---8pwjO5vU2sNKk1cW--
+> +static int snd_soc_compensate_channel_connection_map(struct snd_soc_card *card,
+> +						     struct snd_soc_dai_link *dai_link)
+> +{
+> +	struct snd_soc_dai_link_ch_map *ch_maps;
+> +	int i, max;
+
+sound/soc/soc-core.c: In function
+‘snd_soc_compensate_channel_connection_map’:
+sound/soc/soc-core.c:1050:16: error: variable ‘max’ set but not used
+[-Werror=unused-but-set-variable]
+ 1050 |         int i, max;
+      |                ^~~
+
+> +	/*
+> +	 * dai_link->ch_maps indicates how CPU/Codec are connected.
+> +	 * It will be a map seen from a larger number of DAI.
+> +	 * see
+> +	 *	soc.h :: [dai_link->ch_maps Image sample]
+> +	 */
+> +
+> +	/* it should have ch_maps if connection was N:M */
+> +	if (dai_link->num_cpus > 1 && dai_link->num_codecs > 1 &&
+> +	    dai_link->num_cpus != dai_link->num_codecs && !dai_link->ch_maps) {
+> +		dev_err(card->dev, "need to have ch_maps when N:M connction (%s)",
+> +			dai_link->name);
+> +		return -EINVAL;
+> +	}
+> +
+> +	/* do nothing if it has own maps */
+> +	if (dai_link->ch_maps)
+> +		goto sanity_check;
+> +
+> +	/* check default map size */
+> +	if (dai_link->num_cpus   > MAX_DEFAULT_CH_MAP_SIZE ||
+> +	    dai_link->num_codecs > MAX_DEFAULT_CH_MAP_SIZE) {
+> +		dev_err(card->dev, "soc-core.c needs update default_connection_maps");
+> +		return -EINVAL;
+> +	}
+> +
+> +	/* Compensate missing map for ... */
+> +	if (dai_link->num_cpus == dai_link->num_codecs)
+> +		dai_link->ch_maps = default_ch_map_sync;	/* for 1:1 or N:N */
+> +	else if (dai_link->num_cpus <  dai_link->num_codecs)
+> +		dai_link->ch_maps = default_ch_map_1cpu;	/* for 1:N */
+> +	else
+> +		dai_link->ch_maps = default_ch_map_1codec;	/* for N:1 */
+> +
+> +sanity_check:
+> +	max = min(dai_link->num_cpus, dai_link->num_codecs);
+
+sound/soc/soc-core.c: In function
+‘snd_soc_compensate_channel_connection_map’:
+sound/soc/soc-core.c:1050:16: error: variable ‘max’ set but not used
+[-Werror=unused-but-set-variable]
+ 1050 |         int i, max;
+      |                ^~~
+> +
+> +	dev_dbg(card->dev, "dai_link %s\n", dai_link->stream_name);
+> +	for_each_link_ch_maps(dai_link, i, ch_maps) {
+> +		if ((ch_maps->cpu   >= dai_link->num_cpus) ||
+> +		    (ch_maps->codec >= dai_link->num_codecs)) {
+> +			dev_err(card->dev,
+> +				"unexpected dai_link->ch_maps[%d] index (cpu(%d/%d) codec(%d/%d))",
+> +				i,
+> +				ch_maps->cpu,	dai_link->num_cpus,
+> +				ch_maps->codec,	dai_link->num_codecs);
+> +			return -EINVAL;
+> +		}
+> +
+> +		dev_dbg(card->dev, "  [%d] cpu%d <-> codec%d\n",
+> +			i, ch_maps->cpu, ch_maps->codec);
+> +	}
+> +
+> +	return 0;
+> +}
