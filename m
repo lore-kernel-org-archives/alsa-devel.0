@@ -4,41 +4,41 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3443FC00A8F
-	for <alsa-devel@archiver.kernel.org>; Tue, 24 Oct 2023 07:19:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B405BC00A8F
+	for <alsa-devel@archiver.kernel.org>; Tue, 24 Oct 2023 07:19:31 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B2E1F857;
-	Tue, 24 Oct 2023 09:18:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B2E1F857
+	by alsa0.perex.cz (Postfix) with ESMTPS id EBEB5A4A;
+	Tue, 24 Oct 2023 09:18:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EBEB5A4A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1698131948;
-	bh=wVaV05JC2h9V4Nb2rklsReefb+NMQUs5I+qpnse/8PY=;
+	s=default; t=1698131970;
+	bh=qDApE+/+Uek8eDNf5MPMzbnznXBBGK+GTzQINyrtSYs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=gxtTswh9lkUuF4cSK+YWtE4WJNw+kixbrY731VZAHSW2xuRBn5bE/v/mH3aIorcWx
-	 aZiYvLN7/h96/CF2jjiFlu6ePiKccBtUzc678pG0hPbfGGi4VDbnAwQXeQySHY6AzD
-	 OHk6BbKezvBJMkisav0dVGW/r7lPveptyeoh0qUs=
+	b=MtAQuoOOiPut+4yIuM4pg9BfN+/YJ09Afo1wAFLR0Mc5TVJWmcjYgRNHw/C241Dbc
+	 GNlVpjmUG0fysx8el+japrKBVFWiK4bpVaEX9eXGZ00MVJRaCn8dgj7lPAOn3nnCeJ
+	 dhQVd2e7dGUpnwP6yZerdgYykhYOmfiGP07e7W+k=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 32AF0F80224; Tue, 24 Oct 2023 09:17:48 +0200 (CEST)
+	id D0661F80558; Tue, 24 Oct 2023 09:17:50 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A464AF8012B;
-	Tue, 24 Oct 2023 09:17:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1DBB2F8055B;
+	Tue, 24 Oct 2023 09:17:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D4504F80165; Tue, 24 Oct 2023 09:15:08 +0200 (CEST)
-Received: from out28-171.mail.aliyun.com (out28-171.mail.aliyun.com
- [115.124.28.171])
-	by alsa1.perex.cz (Postfix) with ESMTP id 94B97F80157
-	for <alsa-devel@alsa-project.org>; Tue, 24 Oct 2023 09:14:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 94B97F80157
+	id 7DC25F8019B; Tue, 24 Oct 2023 09:15:14 +0200 (CEST)
+Received: from out28-97.mail.aliyun.com (out28-97.mail.aliyun.com
+ [115.124.28.97])
+	by alsa1.perex.cz (Postfix) with ESMTP id 1B38AF8014B
+	for <alsa-devel@alsa-project.org>; Tue, 24 Oct 2023 09:15:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1B38AF8014B
 X-Alimail-AntiSpam: 
- AC=CONTINUE;BC=0.4766644|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0224115-0.000603498-0.976985;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047203;MF=wangweidong.a@awinic.com;NM=1;PH=DS;RN=28;RT=28;SR=0;TI=SMTPD_---.V6azpte_1698131673;
+ AC=CONTINUE;BC=0.3180432|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_alarm|0.00854121-0.000347876-0.991111;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047187;MF=wangweidong.a@awinic.com;NM=1;PH=DS;RN=27;RT=27;SR=0;TI=SMTPD_---.V6azq2U_1698131681;
 Received: from ubuntu-VirtualBox..(mailfrom:wangweidong.a@awinic.com
- fp:SMTPD_---.V6azpte_1698131673)
+ fp:SMTPD_---.V6azq2U_1698131681)
           by smtp.aliyun-inc.com;
-          Tue, 24 Oct 2023 15:14:41 +0800
+          Tue, 24 Oct 2023 15:14:48 +0800
 From: wangweidong.a@awinic.com
 To: broonie@kernel.org
 Cc: 13916275206@139.com,
@@ -66,19 +66,18 @@ Cc: 13916275206@139.com,
 	tiwai@suse.com,
 	trix@redhat.com,
 	wangweidong.a@awinic.com,
-	yijiangtao@awinic.com,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH V2 1/4] ASoC: dt-bindings: Add schema for "awinic,aw88399"
-Date: Tue, 24 Oct 2023 15:14:16 +0800
-Message-ID: <20231024071419.85647-2-wangweidong.a@awinic.com>
+	yijiangtao@awinic.com
+Subject: [PATCH V2 2/4] ASoC: codecs: Modify max_register usage error
+Date: Tue, 24 Oct 2023 15:14:17 +0800
+Message-ID: <20231024071419.85647-3-wangweidong.a@awinic.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231024071419.85647-1-wangweidong.a@awinic.com>
 References: <21bfa0bb-d936-402d-9ca9-6bcf181a0f35@sirena.org.uk>
  <20231024071419.85647-1-wangweidong.a@awinic.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: O6FWBJBGHYJHEEWMN4AHSP2FERE7QUXL
-X-Message-ID-Hash: O6FWBJBGHYJHEEWMN4AHSP2FERE7QUXL
+Message-ID-Hash: XOAEYCPGNLARVX7T3WAGGJIHTHUTDFRK
+X-Message-ID-Hash: XOAEYCPGNLARVX7T3WAGGJIHTHUTDFRK
 X-MailFrom: wangweidong.a@awinic.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -91,7 +90,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/O6FWBJBGHYJHEEWMN4AHSP2FERE7QUXL/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XOAEYCPGNLARVX7T3WAGGJIHTHUTDFRK/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -102,26 +101,28 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Weidong Wang <wangweidong.a@awinic.com>
 
-Add the awinic,aw88399 property to the awinic,aw88395.yaml file.
+Modify the value of max_register, otherwirse
+the AW88261_EFRL1_REG register will not be
+accessible.
 
 Signed-off-by: Weidong Wang <wangweidong.a@awinic.com>
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- Documentation/devicetree/bindings/sound/awinic,aw88395.yaml | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/codecs/aw88261.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/awinic,aw88395.yaml b/Documentation/devicetree/bindings/sound/awinic,aw88395.yaml
-index 4051c2538caf..db36b01206b7 100644
---- a/Documentation/devicetree/bindings/sound/awinic,aw88395.yaml
-+++ b/Documentation/devicetree/bindings/sound/awinic,aw88395.yaml
-@@ -22,6 +22,7 @@ properties:
-     enum:
-       - awinic,aw88395
-       - awinic,aw88261
-+      - awinic,aw88399
- 
-   reg:
-     maxItems: 1
+diff --git a/sound/soc/codecs/aw88261.c b/sound/soc/codecs/aw88261.c
+index a697b5006b45..0db7a0a3c179 100644
+--- a/sound/soc/codecs/aw88261.c
++++ b/sound/soc/codecs/aw88261.c
+@@ -20,7 +20,7 @@
+ static const struct regmap_config aw88261_remap_config = {
+ 	.val_bits = 16,
+ 	.reg_bits = 8,
+-	.max_register = AW88261_REG_MAX - 1,
++	.max_register = AW88261_REG_MAX,
+ 	.reg_format_endian = REGMAP_ENDIAN_LITTLE,
+ 	.val_format_endian = REGMAP_ENDIAN_BIG,
+ };
 -- 
 2.41.0
 
