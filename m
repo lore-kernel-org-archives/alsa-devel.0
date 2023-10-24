@@ -4,41 +4,45 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B405BC00A8F
-	for <alsa-devel@archiver.kernel.org>; Tue, 24 Oct 2023 07:19:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A697CC00A8F
+	for <alsa-devel@archiver.kernel.org>; Tue, 24 Oct 2023 07:19:39 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EBEB5A4A;
-	Tue, 24 Oct 2023 09:18:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EBEB5A4A
+	by alsa0.perex.cz (Postfix) with ESMTPS id ADBF7AE8;
+	Tue, 24 Oct 2023 09:18:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ADBF7AE8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1698131970;
-	bh=qDApE+/+Uek8eDNf5MPMzbnznXBBGK+GTzQINyrtSYs=;
+	s=default; t=1698131977;
+	bh=IQsmccv3E5ik2v3vIqQ3eHf0yLvpXzYj0d36D4i6FVM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=MtAQuoOOiPut+4yIuM4pg9BfN+/YJ09Afo1wAFLR0Mc5TVJWmcjYgRNHw/C241Dbc
-	 GNlVpjmUG0fysx8el+japrKBVFWiK4bpVaEX9eXGZ00MVJRaCn8dgj7lPAOn3nnCeJ
-	 dhQVd2e7dGUpnwP6yZerdgYykhYOmfiGP07e7W+k=
+	b=IZAtMMB+6L6faUlwzp0M9eaXxRCRUfbFxWvEBgEOSs8NbDbZhOws+eRWtftlwi1zZ
+	 OGxHWwixQUjDHB3Y8LdeN4rUl4P/XPLNSNxhNzb1FL/hyGYpzfT0Zn3U//uFUJA8V+
+	 z9WOGmaV824uPR5WIThqNgQiSijYus+92mvjxcpM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D0661F80558; Tue, 24 Oct 2023 09:17:50 +0200 (CEST)
+	id 13F87F8057F; Tue, 24 Oct 2023 09:17:53 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1DBB2F8055B;
-	Tue, 24 Oct 2023 09:17:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7E845F80578;
+	Tue, 24 Oct 2023 09:17:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7DC25F8019B; Tue, 24 Oct 2023 09:15:14 +0200 (CEST)
-Received: from out28-97.mail.aliyun.com (out28-97.mail.aliyun.com
- [115.124.28.97])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1B38AF8014B
-	for <alsa-devel@alsa-project.org>; Tue, 24 Oct 2023 09:15:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1B38AF8014B
+	id 71A6DF8012B; Tue, 24 Oct 2023 09:15:16 +0200 (CEST)
+Received: from out28-100.mail.aliyun.com (out28-100.mail.aliyun.com
+ [115.124.28.100])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 583D7F8012B
+	for <alsa-devel@alsa-project.org>; Tue, 24 Oct 2023 09:15:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 583D7F8012B
 X-Alimail-AntiSpam: 
- AC=CONTINUE;BC=0.3180432|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_alarm|0.00854121-0.000347876-0.991111;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047187;MF=wangweidong.a@awinic.com;NM=1;PH=DS;RN=27;RT=27;SR=0;TI=SMTPD_---.V6azq2U_1698131681;
+ AC=CONTINUE;BC=0.08838684|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.00825157-0.000204018-0.991544;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047188;MF=wangweidong.a@awinic.com;NM=1;PH=DS;RN=27;RT=27;SR=0;TI=SMTPD_---.V6azqD8_1698131689;
 Received: from ubuntu-VirtualBox..(mailfrom:wangweidong.a@awinic.com
- fp:SMTPD_---.V6azq2U_1698131681)
+ fp:SMTPD_---.V6azqD8_1698131689)
           by smtp.aliyun-inc.com;
-          Tue, 24 Oct 2023 15:14:48 +0800
+          Tue, 24 Oct 2023 15:14:57 +0800
 From: wangweidong.a@awinic.com
 To: broonie@kernel.org
 Cc: 13916275206@139.com,
@@ -67,17 +71,18 @@ Cc: 13916275206@139.com,
 	trix@redhat.com,
 	wangweidong.a@awinic.com,
 	yijiangtao@awinic.com
-Subject: [PATCH V2 2/4] ASoC: codecs: Modify max_register usage error
-Date: Tue, 24 Oct 2023 15:14:17 +0800
-Message-ID: <20231024071419.85647-3-wangweidong.a@awinic.com>
+Subject: [PATCH V2 3/4] ASoC: codecs: Add code for bin parsing compatible with
+ aw88399
+Date: Tue, 24 Oct 2023 15:14:18 +0800
+Message-ID: <20231024071419.85647-4-wangweidong.a@awinic.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231024071419.85647-1-wangweidong.a@awinic.com>
 References: <21bfa0bb-d936-402d-9ca9-6bcf181a0f35@sirena.org.uk>
  <20231024071419.85647-1-wangweidong.a@awinic.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: XOAEYCPGNLARVX7T3WAGGJIHTHUTDFRK
-X-Message-ID-Hash: XOAEYCPGNLARVX7T3WAGGJIHTHUTDFRK
+Message-ID-Hash: MECVQ6GUC743JUINHPE7XY3WENIKSZF6
+X-Message-ID-Hash: MECVQ6GUC743JUINHPE7XY3WENIKSZF6
 X-MailFrom: wangweidong.a@awinic.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -90,7 +95,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XOAEYCPGNLARVX7T3WAGGJIHTHUTDFRK/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MECVQ6GUC743JUINHPE7XY3WENIKSZF6/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -101,27 +106,55 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Weidong Wang <wangweidong.a@awinic.com>
 
-Modify the value of max_register, otherwirse
-the AW88261_EFRL1_REG register will not be
-accessible.
+Add aw88399 compatible code to the aw88395_lib.c file
+so that it can parse aw88399's bin file.
 
 Signed-off-by: Weidong Wang <wangweidong.a@awinic.com>
+Reviewed-by: Herve Codina <herve.codina@bootlin.com>
 ---
- sound/soc/codecs/aw88261.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/aw88395/aw88395_lib.c | 3 +++
+ sound/soc/codecs/aw88395/aw88395_reg.h | 1 +
+ 2 files changed, 4 insertions(+)
 
-diff --git a/sound/soc/codecs/aw88261.c b/sound/soc/codecs/aw88261.c
-index a697b5006b45..0db7a0a3c179 100644
---- a/sound/soc/codecs/aw88261.c
-+++ b/sound/soc/codecs/aw88261.c
-@@ -20,7 +20,7 @@
- static const struct regmap_config aw88261_remap_config = {
- 	.val_bits = 16,
- 	.reg_bits = 8,
--	.max_register = AW88261_REG_MAX - 1,
-+	.max_register = AW88261_REG_MAX,
- 	.reg_format_endian = REGMAP_ENDIAN_LITTLE,
- 	.val_format_endian = REGMAP_ENDIAN_BIG,
+diff --git a/sound/soc/codecs/aw88395/aw88395_lib.c b/sound/soc/codecs/aw88395/aw88395_lib.c
+index 87dd0ccade4c..bc72a7487048 100644
+--- a/sound/soc/codecs/aw88395/aw88395_lib.c
++++ b/sound/soc/codecs/aw88395/aw88395_lib.c
+@@ -703,6 +703,7 @@ static int aw_dev_load_cfg_by_hdr(struct aw_device *aw_dev,
+ 
+ 	switch (aw_dev->chip_id) {
+ 	case AW88395_CHIP_ID:
++	case AW88399_CHIP_ID:
+ 		ret = aw88395_dev_cfg_get_valid_prof(aw_dev, *all_prof_info);
+ 		if (ret < 0)
+ 			goto exit;
+@@ -791,6 +792,7 @@ static int aw_get_dev_scene_count_v1(struct aw_device *aw_dev, struct aw_contain
+ 
+ 	switch (aw_dev->chip_id) {
+ 	case AW88395_CHIP_ID:
++	case AW88399_CHIP_ID:
+ 		for (i = 0; i < cfg_hdr->ddt_num; ++i) {
+ 			if ((cfg_dde[i].data_type == ACF_SEC_TYPE_MULTIPLE_BIN) &&
+ 			    (aw_dev->chip_id == cfg_dde[i].chip_id) &&
+@@ -832,6 +834,7 @@ static int aw_get_default_scene_count_v1(struct aw_device *aw_dev,
+ 
+ 	switch (aw_dev->chip_id) {
+ 	case AW88395_CHIP_ID:
++	case AW88399_CHIP_ID:
+ 		for (i = 0; i < cfg_hdr->ddt_num; ++i) {
+ 			if ((cfg_dde[i].data_type == ACF_SEC_TYPE_MULTIPLE_BIN) &&
+ 			    (aw_dev->chip_id == cfg_dde[i].chip_id) &&
+diff --git a/sound/soc/codecs/aw88395/aw88395_reg.h b/sound/soc/codecs/aw88395/aw88395_reg.h
+index e7a7c02efaf3..63d2bac85715 100644
+--- a/sound/soc/codecs/aw88395/aw88395_reg.h
++++ b/sound/soc/codecs/aw88395/aw88395_reg.h
+@@ -95,6 +95,7 @@
+ #define AW88395_TM_REG			(0x7C)
+ 
+ enum aw88395_id {
++	AW88399_CHIP_ID = 0x2183,
+ 	AW88395_CHIP_ID = 0x2049,
+ 	AW88261_CHIP_ID = 0x2113,
  };
 -- 
 2.41.0
