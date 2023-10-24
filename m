@@ -4,43 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8555DC00A8F
-	for <alsa-devel@archiver.kernel.org>; Tue, 24 Oct 2023 08:56:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B879AC25B47
+	for <alsa-devel@archiver.kernel.org>; Tue, 24 Oct 2023 09:27:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5D294A4C;
-	Tue, 24 Oct 2023 10:56:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5D294A4C
+	by alsa0.perex.cz (Postfix) with ESMTPS id F2ACB852;
+	Tue, 24 Oct 2023 11:26:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F2ACB852
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1698137813;
-	bh=VI/Y25XEqSA3SbhcywY0RAYmG7kmKXN4kUFw9lzcX+k=;
+	s=default; t=1698139643;
+	bh=eyPjnlFwB9ESs7GpmfTaYODwRkcUD8KIZ9RhyRcSESQ=;
 	h=Date:Subject:To:References:From:In-Reply-To:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=cbd3YBlJXb68wT4VQNtfzgyRZEhYaaR1KE/uYLTiZ25WYVQk0iXnq/DQS4nfn7Rq6
-	 GBO57YkBWKYOEbU0K6Te4o+ZgLmbbhNar8IpSztWhqCdEP2UGoLQshwmNoMwMTDLSz
-	 xI1tuFSUYVgAmvLyXY828uF2MfBjSPZLTOGxX4Xo=
+	b=hv/XrBtZ19TgJpE9jecuLYNotRdKL1PYjk/A+rZbGAdDjoWCVEdgM1asDjP69q+z6
+	 9S3/slg2Iarka0q4+bow5F0mR5O63/5oBk3qCgyHt8BNlohho1F2Yq6DLJ7VqbwyG8
+	 QlAAfCNraXlh1To2fWfLiiVly2Bs9auS/+s9yA0E=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4F0C8F805A0; Tue, 24 Oct 2023 10:54:57 +0200 (CEST)
+	id 65F87F80165; Tue, 24 Oct 2023 11:26:32 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id CD6B3F80580;
-	Tue, 24 Oct 2023 10:54:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DCEA1F8014B;
+	Tue, 24 Oct 2023 11:26:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9B41FF80157; Tue, 24 Oct 2023 10:54:49 +0200 (CEST)
+	id C7C14F8019B; Tue, 24 Oct 2023 11:26:27 +0200 (CEST)
 Received: from madras.collabora.co.uk (madras.collabora.co.uk
- [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+ [46.235.227.172])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 8D2CAF8019B
-	for <alsa-devel@alsa-project.org>; Tue, 24 Oct 2023 10:54:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8D2CAF8019B
+	by alsa1.perex.cz (Postfix) with ESMTPS id A0109F8012B
+	for <alsa-devel@alsa-project.org>; Tue, 24 Oct 2023 11:26:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A0109F8012B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=collabora.com header.i=@collabora.com
- header.a=rsa-sha256 header.s=mail header.b=j90A8ETr
+ header.a=rsa-sha256 header.s=mail header.b=hO+1C/+j
 Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it
  [2.237.20.237])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
@@ -48,46 +48,39 @@ Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it
  SHA256)
 	(No client certificate requested)
 	(Authenticated sender: kholk11)
-	by madras.collabora.co.uk (Postfix) with ESMTPSA id 5BEDE6607331;
-	Tue, 24 Oct 2023 09:54:41 +0100 (BST)
+	by madras.collabora.co.uk (Postfix) with ESMTPSA id 51CEE66072F6;
+	Tue, 24 Oct 2023 10:26:24 +0100 (BST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1698137682;
-	bh=VI/Y25XEqSA3SbhcywY0RAYmG7kmKXN4kUFw9lzcX+k=;
+	s=mail; t=1698139584;
+	bh=eyPjnlFwB9ESs7GpmfTaYODwRkcUD8KIZ9RhyRcSESQ=;
 	h=Date:Subject:To:References:From:In-Reply-To:From;
-	b=j90A8ETr4geEi4CEGY63sExDY6LWoWzC9w34VLmFbz0Ax27274b3bX6FLA5Yla7Ye
-	 NrvHZFwdSWyZFEV1FV2AkxkUpE/uT/dcNVpASPz2NOgr+WmX53SHpee81XPUdzxx2T
-	 VQrE89O2dlVmhg74VaAI77C0/JKZytqyKv4VQx6T2O7VnWSvnBxTvNhJa1E9dwWeTq
-	 dwgAX6K71QVhXaU102he57qygE3ubL4CBtJIrP9dUER7mAYpixoOZotRZltP4yRR8X
-	 qzAC91kVbLPsz9qwuKOIR60Tec2gtPiWVDY8EgQtgbpDBHbWPazJHQ7YNTsAUiuzFq
-	 u+TOsYfNg1szA==
-Message-ID: <72e5b30e-d65b-4530-ba6e-31082a059cb1@collabora.com>
-Date: Tue, 24 Oct 2023 10:54:41 +0200
+	b=hO+1C/+jaErCZfqqRqqHjQGulYk7w+MiPuEXZESWII4l4TeGM2pBldxFcFW19gn7B
+	 3YChhT37kbYsi+kfHnsit30kt4IUo9mBODAXgp78Wlzadhrwjvm1Hr5cOO/6yTC/bz
+	 N5vyzsgTOZ4Bh7A95FqPVDljYsgfape72asxOLXeDr19EIQwmAbxs/eH/1VYMZqvTp
+	 DGwamU3f8Ctw26km+JgtI8tRE38IGmSAEvbjzNSiE3NCltwidvqAMTg5mp9NLmnxAv
+	 lvsJGdFGEA78M9JGVMuOuh16RFwI7zRje8UKg67zYb9is2oAQzPjTjRmitabihpUpm
+	 5EeTQZD9eOUVQ==
+Message-ID: <1d524b37-f95a-4f36-b78a-dcf865c1a922@collabora.com>
+Date: Tue, 24 Oct 2023 11:26:24 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFT PATCH 12/17] ASoC: mediatek: mt8183: Handle component name
- prefix
+Subject: Re: [PATCH v2 2/3] ASoC: mediatek: mt7986: remove the
+ mt7986_wm8960_priv structure
 Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Lars-Peter Clausen <lars@metafoo.de>, =?UTF-8?Q?Nuno_S=C3=A1?=
- <nuno.sa@analog.com>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Banajit Goswami <bgoswami@quicinc.com>, Oder Chiou <oder_chiou@realtek.com>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- Sylwester Nawrocki <s.nawrocki@samsung.com>,
- Thierry Reding <thierry.reding@gmail.com>,
- Jonathan Hunter <jonathanh@nvidia.com>, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, patches@opensource.cirrus.com,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
- linux-tegra@vger.kernel.org
-References: <20231023095428.166563-1-krzysztof.kozlowski@linaro.org>
- <20231023095428.166563-13-krzysztof.kozlowski@linaro.org>
+To: Maso Huang <maso.huang@mediatek.com>, Liam Girdwood
+ <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Matthias Brugger <matthias.bgg@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org
+References: <20231024035019.11732-1-maso.huang@mediatek.com>
+ <20231024035019.11732-3-maso.huang@mediatek.com>
 From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20231023095428.166563-13-krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20231024035019.11732-3-maso.huang@mediatek.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-ID-Hash: AETUJQTWYUXCRVUOO3CCAURAHX2PQCMR
-X-Message-ID-Hash: AETUJQTWYUXCRVUOO3CCAURAHX2PQCMR
+Message-ID-Hash: IP22ND5P7FJB3MEN22ANUZOYP2DNLOKM
+X-Message-ID-Hash: IP22ND5P7FJB3MEN22ANUZOYP2DNLOKM
 X-MailFrom: angelogioacchino.delregno@collabora.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -100,7 +93,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AETUJQTWYUXCRVUOO3CCAURAHX2PQCMR/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IP22ND5P7FJB3MEN22ANUZOYP2DNLOKM/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -109,12 +102,10 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Il 23/10/23 11:54, Krzysztof Kozlowski ha scritto:
-> Use snd_soc_dapm_widget_name_cmp() helper when comparing widget names,
-> to include also the component's name prefix.
+Il 24/10/23 05:50, Maso Huang ha scritto:
+> Remove the mt7986_wm8960_priv structure.
 > 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> Signed-off-by: Maso Huang <maso.huang@mediatek.com>
 
 Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-
 
