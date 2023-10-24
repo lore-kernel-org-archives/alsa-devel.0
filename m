@@ -4,116 +4,117 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D53ABC07545
-	for <alsa-devel@archiver.kernel.org>; Tue, 24 Oct 2023 08:48:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 90F66C07545
+	for <alsa-devel@archiver.kernel.org>; Tue, 24 Oct 2023 08:48:54 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 95D7D86E;
-	Tue, 24 Oct 2023 10:47:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 95D7D86E
+	by alsa0.perex.cz (Postfix) with ESMTPS id ABC06DEC;
+	Tue, 24 Oct 2023 10:48:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ABC06DEC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1698137307;
-	bh=uSJlIzNFJrZrtbejN9uximHiLF0JXHM5sHYHCpZl5/M=;
-	h=Date:From:To:Cc:Subject:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=ct73Vf36WArQfnJdOtYW+f99qEp241US/+lTQmEQGhoOG07D3Ii16NiiEsBQMZTjd
-	 h3bWMyY2tjmBgTtOtCYtvBkf538cDSB5U1pOMghNoy5Mb2G9muZK7ioZ+/l0Jb7+Sw
-	 MnIWk+6eaCTzw1vDdg8vvTJ1vymqlRVFQmaojvyc=
+	s=default; t=1698137331;
+	bh=CFKa03cgt/AOOgj++H5pOxt7eL6aR9PJfLITWqq5rhI=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=upgl12IpvSjWv8lXHnX7hy1fa18ggjEKRV8HohARJLOUrgYlBy3T/o0apW3om7QRG
+	 Ips9CyyvzMsEs/8vnmDesLHuo699DdUABqayh96n020PKiGESrfJWB5qXqUDvV9DHS
+	 GOxrjC8m+nPkjeySMzrglhiyB2sI/KAhmeeDGO5g=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DFA5CF80165; Tue, 24 Oct 2023 10:47:08 +0200 (CEST)
+	id 0A1FBF8057B; Tue, 24 Oct 2023 10:47:19 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3ADF2F8012B;
-	Tue, 24 Oct 2023 10:47:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6DD1AF80537;
+	Tue, 24 Oct 2023 10:47:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 86DA9F804F3; Mon, 23 Oct 2023 17:07:30 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	id ADB42F8028D; Tue, 24 Oct 2023 05:51:48 +0200 (CEST)
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D953DF8024E
-	for <alsa-devel@alsa-project.org>; Mon, 23 Oct 2023 17:07:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D953DF8024E
+	by alsa1.perex.cz (Postfix) with ESMTPS id C139FF80165
+	for <alsa-devel@alsa-project.org>; Tue, 24 Oct 2023 05:50:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C139FF80165
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
- unprotected) header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256
- header.s=mimecast20190719 header.b=bqP3igib
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1698073635;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-	bh=cK9l2C0A+pqfOsEmA8BmMsk1GVm50G4Oa7jxSgBxcvs=;
-	b=bqP3igibDGB/Q9bKaD+voMnibPBMbmbh9790k2lI9frNeK/68ldV6NOggGthvW6H/2/147
-	y87B3A4CFCla4/uD2nB9zQizMjD/hBNqCPW2Y9wnrr5LncqBreRv7apEnnhQ/mg2+WL6+v
-	rxGdSXTXu+0JoPrHMT6uLgyhvhFMpDc=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-301-KSkuE0XBMWO_OvqOomdB8Q-1; Mon, 23 Oct 2023 11:07:02 -0400
-X-MC-Unique: KSkuE0XBMWO_OvqOomdB8Q-1
-Received: by mail-qv1-f69.google.com with SMTP id
- 6a1803df08f44-66d38d57f49so44307016d6.0
-        for <alsa-devel@alsa-project.org>;
- Mon, 23 Oct 2023 08:07:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698073622; x=1698678422;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cK9l2C0A+pqfOsEmA8BmMsk1GVm50G4Oa7jxSgBxcvs=;
-        b=SnsaXpjiaB+72fsHHz7LGTmxy2ON+eTrLzCmwUL9WPw75fA/NRgYBocDYTO0RlKanw
-         xgqJXihysOSRbGvt2ILVYS86J7V8zAbQRMwuL6CgkyX2QkB1T/HrP8XE2RxIH9GLlbHt
-         9utB+YzXBS0KwYa8sCbNdEwjHb85GcNQKg97H/AK2xcUx6cVtIZ/GTvSkXCxBqoJ9Ham
-         hT1dStFzlJ/kphwazzdA3++sIYNdJ7kaL57XVOZIEKVqHtV2aWnAeQ+mPECCAULLScX/
-         AyQu00O3K5dhW13Weguxq6BwkZOH03IC60VguS49Wofz0uKb6m14Hh4y/Lzb9ir6bvJO
-         b3GA==
-X-Gm-Message-State: AOJu0YwZalSmYH5SVq23CIhgc+/2DQo+zPsgOguxTK2lW3d87JIwX7y5
-	vfGQty+3tDomGjDXnRyrMIxlHl9PUqx92+wUQSp2rE3eSeXtni9Rn4V5cAyMVL/d2LUm3M9Hlpd
-	YMqqlQx5d3Q3NMCOEtBCqCu4=
-X-Received: by 2002:a05:6214:c45:b0:66d:3a89:813c with SMTP id
- r5-20020a0562140c4500b0066d3a89813cmr13347561qvj.53.1698073622074;
-        Mon, 23 Oct 2023 08:07:02 -0700 (PDT)
-X-Google-Smtp-Source: 
- AGHT+IEUikCH+Dp3bAYPy/wefX94Xe9wxmONu1VfG8SxnmNbO1aSlUkA4XJgvxB5KhmZ12CHc/+ghg==
-X-Received: by 2002:a05:6214:c45:b0:66d:3a89:813c with SMTP id
- r5-20020a0562140c4500b0066d3a89813cmr13347518qvj.53.1698073621591;
-        Mon, 23 Oct 2023 08:07:01 -0700 (PDT)
-Received: from fedora ([2a01:e0a:257:8c60:80f1:cdf8:48d0:b0a1])
-        by smtp.gmail.com with ESMTPSA id
- l19-20020a056214029300b0065afe8f149asm2873910qvv.69.2023.10.23.08.06.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Oct 2023 08:07:01 -0700 (PDT)
-Date: Mon, 23 Oct 2023 17:06:57 +0200
-From: Matias Ezequiel Vara Larsen <mvaralar@redhat.com>
-To: anton.yakovlev@opensynergy.com, mst@redhat.com
-Cc: mvaralar@redhat.com, perex@perex.cz, tiwai@suse.com,
-	virtualization@lists.linux-foundation.org,
-	alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-	pbonzini@redhat.com, stefanha@redhat.com, sgarzare@redhat.com,
-	manos.pitsidianakis@linaro.org, mripard@redhat.com
-Subject: [PATCH v3] ALSA: virtio: use ack callback
-Message-ID: <ZTaMEUZUTrRRUD6y@fedora>
+ unprotected) header.d=mediatek.com header.i=@mediatek.com header.a=rsa-sha256
+ header.s=dk header.b=CJXfn8d/
+X-UUID: 85b63340722011ee8051498923ad61e6-20231024
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=mediatek.com; s=dk;
+	h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From;
+ bh=7BreaDgCH7mRp5CSo98g29nYk3nW8Yu1AIFy53p6Y/I=;
+	b=CJXfn8d/wyUDfFeGKn9UG1PQazyiexpxAbXW8E17y95LARaiPHHM6GuDZRb9sIfXKfG3PuFOZpV+ijayl1GzZiOpnxyhGHOoiCiMCO7JVYJhVce2m7y5fsqeiIAuQr3jX/Rg31/nSDp0oVNemIlh16z9A3MGlnaqazGlPHOwEio=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.32,REQID:e8b26b00-aa94-4de8-8fd4-eb0983131630,IP:0,U
+	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+	release,TS:0
+X-CID-META: VersionHash:5f78ec9,CLOUDID:b7a58d94-10ce-4e4b-85c2-c9b5229ff92b,B
+	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+	RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
+	DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR
+X-UUID: 85b63340722011ee8051498923ad61e6-20231024
+Received: from mtkmbs11n2.mediatek.inc [(172.21.101.187)] by
+ mailgw02.mediatek.com
+	(envelope-from <maso.huang@mediatek.com>)
+	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+	with ESMTP id 1306072661; Tue, 24 Oct 2023 11:50:50 +0800
+Received: from mtkmbs11n2.mediatek.inc (172.21.101.187) by
+ mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Tue, 24 Oct 2023 11:50:48 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
+ mtkmbs11n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Tue, 24 Oct 2023 11:50:48 +0800
+From: Maso Huang <maso.huang@mediatek.com>
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+	Matthias Brugger <matthias.bgg@gmail.com>, AngeloGioacchino Del Regno
+	<angelogioacchino.delregno@collabora.com>, Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>, <alsa-devel@alsa-project.org>,
+	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-mediatek@lists.infradead.org>
+CC: Maso Huang <maso.huang@mediatek.com>
+Subject: [PATCH v2 2/3] ASoC: mediatek: mt7986: remove the mt7986_wm8960_priv
+ structure
+Date: Tue, 24 Oct 2023 11:50:18 +0800
+Message-ID: <20231024035019.11732-3-maso.huang@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <20231024035019.11732-1-maso.huang@mediatek.com>
+References: <20231024035019.11732-1-maso.huang@mediatek.com>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-MailFrom: mvaralar@redhat.com
+Content-Type: text/plain
+X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-AS-Result: No-10--2.396400-8.000000
+X-TMASE-MatchedRID: fmS20tPE9ksZ9uxgtDtJQgPZZctd3P4BCt59Uh3p/NUKogmGusPLb7uA
+	YZFvH/IiJ7vDzKaAUziGwpg7pPpeGdEdmUPXI8FxRnmgWPGIUuN9LQinZ4QefPcjNeVeWlqY+gt
+	Hj7OwNO34ZhR52Rc1agOckpztc5q9DTKwjifCv/JaBY1H+rGnJmceWHNlxh0NYxCRwJSgalga8k
+	2hFPMqR5nyvuWwh3WTLDv877bId1VPpulV5YAHJ0ma3zYT97IFAYfQIAUhBayZvmCbKVb49sZL6
+	x5U/HridGByp+zdaDg=
+X-TM-AS-User-Approved-Sender: No
+X-TM-AS-User-Blocked-Sender: No
+X-TMASE-Result: 10--2.396400-8.000000
+X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-SNTS-SMTP: 
+ F482FDE8C42D897BE79991F8C5C7B1E56E94812EDF60B7011729E2E99BD7179F2000:8
+X-MailFrom: maso.huang@mediatek.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: B2HMXM5XXRN3JG3C22XCNJS7Q2OUAAYU
-X-Message-ID-Hash: B2HMXM5XXRN3JG3C22XCNJS7Q2OUAAYU
-X-Mailman-Approved-At: Tue, 24 Oct 2023 08:47:03 +0000
+Message-ID-Hash: B536HWNPU2SLAROPJPC5BSVBTFHJUWFE
+X-Message-ID-Hash: B536HWNPU2SLAROPJPC5BSVBTFHJUWFE
+X-Mailman-Approved-At: Tue, 24 Oct 2023 08:47:14 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/B2HMXM5XXRN3JG3C22XCNJS7Q2OUAAYU/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/B536HWNPU2SLAROPJPC5BSVBTFHJUWFE/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -122,321 +123,104 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-This commit uses the ack() callback to determine when a buffer has been
-updated, then exposes it to guest.
+Remove the mt7986_wm8960_priv structure.
 
-The current mechanism splits a dma buffer into descriptors that are
-exposed to the device. This dma buffer is shared with the user
-application. When the device consumes a buffer, the driver moves the
-request from the used ring to available ring.
-
-The driver exposes the buffer to the device without knowing if the
-content has been updated from the user. The section 2.8.21.1 of the
-virtio spec states that: "The device MAY access the descriptor chains
-the driver created and the memory they refer to immediately". If the
-device picks up buffers from the available ring just after it is
-notified, it happens that the content may be old.
-
-When the ack() callback is invoked, the driver exposes only the buffers
-that have already been updated, i.e., enqueued in the available ring.
-Thus, the device always picks up a buffer that is updated.
-
-For capturing, the driver starts by exposing all the available buffers
-to device. After device updates the content of a buffer, it enqueues it
-in the used ring. It is only after the ack() for capturing is issued
-that the driver re-enqueues the buffer in the available ring.
-
-Co-developed-by: Anton Yakovlev <anton.yakovlev@opensynergy.com>
-Signed-off-by: Anton Yakovlev <anton.yakovlev@opensynergy.com>
-Signed-off-by: Matias Ezequiel Vara Larsen <mvaralar@redhat.com>
+Signed-off-by: Maso Huang <maso.huang@mediatek.com>
 ---
-Changelog:
-v2 -> v3:
- * Use ack() callback instead of copy()/fill_silence()
- * Change commit name
- * Rewrite commit message
- * Remove virtsnd_pcm_msg_send_locked()
- * Use single callback for both capture and playback
- * Fix kernel test robot warnings regarding documentation
- * v2 patch at:
-   https://lore.kernel.org/lkml/87y1fzkq8c.wl-tiwai@suse.de/T/
-v1 -> v2:
- * Use snd_pcm_set_managed_buffer_all()for buffer allocation/freeing.
- * Make virtsnd_pcm_msg_send() generic by specifying the offset and size
-   for the modified part of the buffer; this way no assumptions need to
-   be made.
- * Disable SNDRV_PCM_INFO_NO_REWINDS since now only sequential
-   reading/writing of frames is supported.
- * Correct comment at virtsnd_pcm_msg_send().
- * v1 patch at:
-   https://lore.kernel.org/lkml/20231016151000.GE119987@fedora/t/
+ sound/soc/mediatek/mt7986/mt7986-wm8960.c | 33 +++++++++--------------
+ 1 file changed, 12 insertions(+), 21 deletions(-)
 
- sound/virtio/virtio_pcm.c     |  1 +
- sound/virtio/virtio_pcm.h     |  6 ++-
- sound/virtio/virtio_pcm_msg.c | 80 ++++++++++++++++++++---------------
- sound/virtio/virtio_pcm_ops.c | 30 +++++++++++--
- 4 files changed, 79 insertions(+), 38 deletions(-)
-
-diff --git a/sound/virtio/virtio_pcm.c b/sound/virtio/virtio_pcm.c
-index c10d91fff2fb..9cc5a95b4913 100644
---- a/sound/virtio/virtio_pcm.c
-+++ b/sound/virtio/virtio_pcm.c
-@@ -124,6 +124,7 @@ static int virtsnd_pcm_build_hw(struct virtio_pcm_substream *vss,
- 	values = le64_to_cpu(info->formats);
+diff --git a/sound/soc/mediatek/mt7986/mt7986-wm8960.c b/sound/soc/mediatek/mt7986/mt7986-wm8960.c
+index f6b9794b7229..c1390b373410 100644
+--- a/sound/soc/mediatek/mt7986/mt7986-wm8960.c
++++ b/sound/soc/mediatek/mt7986/mt7986-wm8960.c
+@@ -12,11 +12,6 @@
  
- 	vss->hw.formats = 0;
-+	vss->appl_ptr = 0;
+ #include "mt7986-afe-common.h"
  
- 	for (i = 0; i < ARRAY_SIZE(g_v2a_format_map); ++i)
- 		if (values & (1ULL << i)) {
-diff --git a/sound/virtio/virtio_pcm.h b/sound/virtio/virtio_pcm.h
-index 062eb8e8f2cf..ea3c2845ae9b 100644
---- a/sound/virtio/virtio_pcm.h
-+++ b/sound/virtio/virtio_pcm.h
-@@ -27,6 +27,7 @@ struct virtio_pcm_msg;
-  *        substream operators.
-  * @buffer_bytes: Current buffer size in bytes.
-  * @hw_ptr: Substream hardware pointer value in bytes [0 ... buffer_bytes).
-+ * @appl_ptr: Substream application pointer value in bytes [0 ... buffer_bytes).
-  * @xfer_enabled: Data transfer state (0 - off, 1 - on).
-  * @xfer_xrun: Data underflow/overflow state (0 - no xrun, 1 - xrun).
-  * @stopped: True if the substream is stopped and must be released on the device
-@@ -51,13 +52,13 @@ struct virtio_pcm_substream {
- 	spinlock_t lock;
- 	size_t buffer_bytes;
- 	size_t hw_ptr;
-+	size_t appl_ptr;
- 	bool xfer_enabled;
- 	bool xfer_xrun;
- 	bool stopped;
- 	bool suspended;
- 	struct virtio_pcm_msg **msgs;
- 	unsigned int nmsgs;
--	int msg_last_enqueued;
- 	unsigned int msg_count;
- 	wait_queue_head_t msg_empty;
- };
-@@ -117,7 +118,8 @@ int virtsnd_pcm_msg_alloc(struct virtio_pcm_substream *vss,
- 
- void virtsnd_pcm_msg_free(struct virtio_pcm_substream *vss);
- 
--int virtsnd_pcm_msg_send(struct virtio_pcm_substream *vss);
-+int virtsnd_pcm_msg_send(struct virtio_pcm_substream *vss, unsigned long offset,
-+			 unsigned long bytes);
- 
- unsigned int virtsnd_pcm_msg_pending_num(struct virtio_pcm_substream *vss);
- 
-diff --git a/sound/virtio/virtio_pcm_msg.c b/sound/virtio/virtio_pcm_msg.c
-index aca2dc1989ba..106e8e847746 100644
---- a/sound/virtio/virtio_pcm_msg.c
-+++ b/sound/virtio/virtio_pcm_msg.c
-@@ -155,7 +155,6 @@ int virtsnd_pcm_msg_alloc(struct virtio_pcm_substream *vss,
- 			    sizeof(msg->xfer));
- 		sg_init_one(&msg->sgs[PCM_MSG_SG_STATUS], &msg->status,
- 			    sizeof(msg->status));
--		msg->length = period_bytes;
- 		virtsnd_pcm_sg_from(&msg->sgs[PCM_MSG_SG_DATA], sg_num, data,
- 				    period_bytes);
- 
-@@ -181,66 +180,81 @@ void virtsnd_pcm_msg_free(struct virtio_pcm_substream *vss)
- 
- 	vss->msgs = NULL;
- 	vss->nmsgs = 0;
-+	vss->appl_ptr = 0;
- }
- 
- /**
-  * virtsnd_pcm_msg_send() - Send asynchronous I/O messages.
-  * @vss: VirtIO PCM substream.
-+ * @offset: starting position that has been updated
-+ * @bytes: number of bytes that has been updated
-  *
-  * All messages are organized in an ordered circular list. Each time the
-  * function is called, all currently non-enqueued messages are added to the
-- * virtqueue. For this, the function keeps track of two values:
-- *
-- *   msg_last_enqueued = index of the last enqueued message,
-- *   msg_count = # of pending messages in the virtqueue.
-+ * virtqueue. For this, the function uses offset and bytes to calculate the
-+ * messages that need to be added.
-  *
-  * Context: Any context. Expects the tx/rx queue and the VirtIO substream
-  *          spinlocks to be held by caller.
-  * Return: 0 on success, -errno on failure.
-  */
--int virtsnd_pcm_msg_send(struct virtio_pcm_substream *vss)
-+int virtsnd_pcm_msg_send(struct virtio_pcm_substream *vss, unsigned long offset,
-+			 unsigned long bytes)
- {
--	struct snd_pcm_runtime *runtime = vss->substream->runtime;
- 	struct virtio_snd *snd = vss->snd;
- 	struct virtio_device *vdev = snd->vdev;
- 	struct virtqueue *vqueue = virtsnd_pcm_queue(vss)->vqueue;
--	int i;
--	int n;
-+	unsigned long period_bytes = snd_pcm_lib_period_bytes(vss->substream);
-+	unsigned long start, end, i;
-+	unsigned int msg_count = vss->msg_count;
- 	bool notify = false;
-+	int rc;
- 
--	i = (vss->msg_last_enqueued + 1) % runtime->periods;
--	n = runtime->periods - vss->msg_count;
-+	start = offset / period_bytes;
-+	end = (offset + bytes - 1) / period_bytes;
- 
--	for (; n; --n, i = (i + 1) % runtime->periods) {
-+	for (i = start; i <= end; i++) {
- 		struct virtio_pcm_msg *msg = vss->msgs[i];
- 		struct scatterlist *psgs[] = {
- 			&msg->sgs[PCM_MSG_SG_XFER],
- 			&msg->sgs[PCM_MSG_SG_DATA],
- 			&msg->sgs[PCM_MSG_SG_STATUS]
- 		};
--		int rc;
+-struct mt7986_wm8960_priv {
+-	struct device_node *platform_node;
+-	struct device_node *codec_node;
+-};
 -
--		msg->xfer.stream_id = cpu_to_le32(vss->sid);
--		memset(&msg->status, 0, sizeof(msg->status));
--
--		if (vss->direction == SNDRV_PCM_STREAM_PLAYBACK)
--			rc = virtqueue_add_sgs(vqueue, psgs, 2, 1, msg,
--					       GFP_ATOMIC);
--		else
--			rc = virtqueue_add_sgs(vqueue, psgs, 1, 2, msg,
--					       GFP_ATOMIC);
--
--		if (rc) {
--			dev_err(&vdev->dev,
--				"SID %u: failed to send I/O message\n",
--				vss->sid);
--			return rc;
-+		unsigned long n;
-+
-+		n = period_bytes - (offset % period_bytes);
-+		if (n > bytes)
-+			n = bytes;
-+
-+		msg->length += n;
-+		if (msg->length == period_bytes) {
-+			msg->xfer.stream_id = cpu_to_le32(vss->sid);
-+			memset(&msg->status, 0, sizeof(msg->status));
-+
-+			if (vss->direction == SNDRV_PCM_STREAM_PLAYBACK)
-+				rc = virtqueue_add_sgs(vqueue, psgs, 2, 1, msg,
-+						       GFP_ATOMIC);
-+			else
-+				rc = virtqueue_add_sgs(vqueue, psgs, 1, 2, msg,
-+						       GFP_ATOMIC);
-+
-+			if (rc) {
-+				dev_err(&vdev->dev,
-+					"SID %u: failed to send I/O message\n",
-+					vss->sid);
-+				return rc;
-+			}
-+
-+			vss->msg_count++;
+ static const struct snd_soc_dapm_widget mt7986_wm8960_widgets[] = {
+ 	SND_SOC_DAPM_HP("Headphone", NULL),
+ 	SND_SOC_DAPM_MIC("AMIC", NULL),
+@@ -92,20 +87,18 @@ static int mt7986_wm8960_machine_probe(struct platform_device *pdev)
+ 	struct snd_soc_card *card = &mt7986_wm8960_card;
+ 	struct snd_soc_dai_link *dai_link;
+ 	struct device_node *platform, *codec;
+-	struct mt7986_wm8960_priv *priv;
++	struct device_node *platform_dai_node, *codec_dai_node;
+ 	int ret, i;
+ 
+-	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
+-	if (!priv)
+-		return -ENOMEM;
++	card->dev = &pdev->dev;
+ 
+ 	platform = of_get_child_by_name(pdev->dev.of_node, "platform");
+ 
+ 	if (platform) {
+-		priv->platform_node = of_parse_phandle(platform, "sound-dai", 0);
++		platform_dai_node = of_parse_phandle(platform, "sound-dai", 0);
+ 		of_node_put(platform);
+ 
+-		if (!priv->platform_node) {
++		if (!platform_dai_node) {
+ 			dev_err(&pdev->dev, "Failed to parse platform/sound-dai property\n");
+ 			return -EINVAL;
  		}
- 
--		vss->msg_last_enqueued = i;
--		vss->msg_count++;
-+		offset = 0;
-+		bytes -= n;
+@@ -117,24 +110,22 @@ static int mt7986_wm8960_machine_probe(struct platform_device *pdev)
+ 	for_each_card_prelinks(card, i, dai_link) {
+ 		if (dai_link->platforms->name)
+ 			continue;
+-		dai_link->platforms->of_node = priv->platform_node;
++		dai_link->platforms->of_node = platform_dai_node;
  	}
  
-+	if (msg_count == vss->msg_count)
-+		return 0;
-+
- 	if (!(vss->features & (1U << VIRTIO_SND_PCM_F_MSG_POLLING)))
- 		notify = virtqueue_kick_prepare(vqueue);
- 
-@@ -309,6 +323,8 @@ static void virtsnd_pcm_msg_complete(struct virtio_pcm_msg *msg,
- 	if (vss->hw_ptr >= vss->buffer_bytes)
- 		vss->hw_ptr -= vss->buffer_bytes;
- 
-+	msg->length = 0;
-+
- 	vss->xfer_xrun = false;
- 	vss->msg_count--;
- 
-@@ -320,8 +336,6 @@ static void virtsnd_pcm_msg_complete(struct virtio_pcm_msg *msg,
- 					le32_to_cpu(msg->status.latency_bytes));
- 
- 		schedule_work(&vss->elapsed_period);
+-	card->dev = &pdev->dev;
 -
--		virtsnd_pcm_msg_send(vss);
- 	} else if (!vss->msg_count) {
- 		wake_up_all(&vss->msg_empty);
- 	}
-diff --git a/sound/virtio/virtio_pcm_ops.c b/sound/virtio/virtio_pcm_ops.c
-index f8bfb87624be..21cde37ecfa3 100644
---- a/sound/virtio/virtio_pcm_ops.c
-+++ b/sound/virtio/virtio_pcm_ops.c
-@@ -282,7 +282,6 @@ static int virtsnd_pcm_prepare(struct snd_pcm_substream *substream)
+ 	codec = of_get_child_by_name(pdev->dev.of_node, "codec");
  
- 		vss->buffer_bytes = snd_pcm_lib_buffer_bytes(substream);
- 		vss->hw_ptr = 0;
--		vss->msg_last_enqueued = -1;
+ 	if (codec) {
+-		priv->codec_node = of_parse_phandle(codec, "sound-dai", 0);
++		codec_dai_node = of_parse_phandle(codec, "sound-dai", 0);
+ 		of_node_put(codec);
+ 
+-		if (!priv->codec_node) {
+-			of_node_put(priv->platform_node);
++		if (!codec_dai_node) {
++			of_node_put(platform_dai_node);
+ 			dev_err(&pdev->dev, "Failed to parse codec/sound-dai property\n");
+ 			return -EINVAL;
+ 		}
  	} else {
- 		struct snd_pcm_runtime *runtime = substream->runtime;
- 		unsigned int buffer_bytes = snd_pcm_lib_buffer_bytes(substream);
-@@ -324,7 +323,7 @@ static int virtsnd_pcm_trigger(struct snd_pcm_substream *substream, int command)
- 	struct virtio_snd_queue *queue;
- 	struct virtio_snd_msg *msg;
- 	unsigned long flags;
--	int rc;
-+	int rc = 0;
+-		of_node_put(priv->platform_node);
++		of_node_put(platform_dai_node);
+ 		dev_err(&pdev->dev, "Property 'codec' missing or invalid\n");
+ 		return -EINVAL;
+ 	}
+@@ -142,7 +133,7 @@ static int mt7986_wm8960_machine_probe(struct platform_device *pdev)
+ 	for_each_card_prelinks(card, i, dai_link) {
+ 		if (dai_link->codecs->name)
+ 			continue;
+-		dai_link->codecs->of_node = priv->codec_node;
++		dai_link->codecs->of_node = codec_dai_node;
+ 	}
  
- 	switch (command) {
- 	case SNDRV_PCM_TRIGGER_START:
-@@ -333,7 +332,8 @@ static int virtsnd_pcm_trigger(struct snd_pcm_substream *substream, int command)
+ 	ret = snd_soc_of_parse_audio_routing(card, "audio-routing");
+@@ -158,8 +149,8 @@ static int mt7986_wm8960_machine_probe(struct platform_device *pdev)
+ 	}
  
- 		spin_lock_irqsave(&queue->lock, flags);
- 		spin_lock(&vss->lock);
--		rc = virtsnd_pcm_msg_send(vss);
-+		if (vss->direction == SNDRV_PCM_STREAM_CAPTURE)
-+			rc = virtsnd_pcm_msg_send(vss, 0, vss->buffer_bytes);
- 		if (!rc)
- 			vss->xfer_enabled = true;
- 		spin_unlock(&vss->lock);
-@@ -450,6 +450,29 @@ virtsnd_pcm_pointer(struct snd_pcm_substream *substream)
- 	return hw_ptr;
+ err_of_node_put:
+-	of_node_put(priv->codec_node);
+-	of_node_put(priv->platform_node);
++	of_node_put(platform_dai_node);
++	of_node_put(codec_dai_node);
+ 	return ret;
  }
  
-+static int virtsnd_pcm_ack(struct snd_pcm_substream *substream)
-+{
-+	struct virtio_pcm_substream *vss = snd_pcm_substream_chip(substream);
-+	struct virtio_snd_queue *queue = virtsnd_pcm_queue(vss);
-+	unsigned long flags;
-+	struct snd_pcm_runtime *runtime = vss->substream->runtime;
-+	ssize_t appl_pos = frames_to_bytes(runtime, runtime->control->appl_ptr);
-+	ssize_t buf_size = frames_to_bytes(runtime, runtime->buffer_size);
-+	int rc;
-+
-+	spin_lock_irqsave(&queue->lock, flags);
-+	spin_lock(&vss->lock);
-+
-+	ssize_t bytes = (appl_pos - vss->appl_ptr) % buf_size;
-+
-+	rc = virtsnd_pcm_msg_send(vss, vss->appl_ptr % buf_size, bytes);
-+	vss->appl_ptr += bytes;
-+
-+	spin_unlock(&vss->lock);
-+	spin_unlock_irqrestore(&queue->lock, flags);
-+	return rc;
-+}
-+
- /* PCM substream operators map. */
- const struct snd_pcm_ops virtsnd_pcm_ops = {
- 	.open = virtsnd_pcm_open,
-@@ -461,4 +484,5 @@ const struct snd_pcm_ops virtsnd_pcm_ops = {
- 	.trigger = virtsnd_pcm_trigger,
- 	.sync_stop = virtsnd_pcm_sync_stop,
- 	.pointer = virtsnd_pcm_pointer,
-+	.ack = virtsnd_pcm_ack,
- };
-
-base-commit: 8a749fd1a8720d4619c91c8b6e7528c0a355c0aa
 -- 
-2.41.0
+2.18.0
 
