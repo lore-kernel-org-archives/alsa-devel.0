@@ -4,75 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CF5F8C00A8F
-	for <alsa-devel@archiver.kernel.org>; Tue, 24 Oct 2023 13:56:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C50A8C25B6E
+	for <alsa-devel@archiver.kernel.org>; Tue, 24 Oct 2023 13:57:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E4FBC86E;
-	Tue, 24 Oct 2023 15:55:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E4FBC86E
+	by alsa0.perex.cz (Postfix) with ESMTPS id E6C94A4D;
+	Tue, 24 Oct 2023 15:56:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E6C94A4D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1698155806;
-	bh=ZwRGvdK1vLRyYCBNB8H0GmRZoD2LA6Gw+YOD+d7uvu0=;
+	s=default; t=1698155829;
+	bh=AHpxByLGl3li07TI+Dtas7HsEV5VlBynUrNCqNQb+/M=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=cxeW5+LvkHjNB0qLg95dosiJGLIxIwekiwlKOwDnVta5u7AUX3pdMmufVVOXUIpbW
-	 rx+BAYd7RH7XX9Nw7POE1IUJz9Jm8+NdhaK2AyDYZV6ocG4yO2Cn4E8Wo7JaNNnikN
-	 1MO9b+t4h3zMhFIFFZqHEmhu3QUZD4lzNql5Umq4=
+	b=ltaqKyRQiF3bS4kVdq46rLxOmfWdSBB3d9FwHfU4SydGezKQQ3DJt5jvm2eRe9Q7R
+	 LPDQ5acgCW6jU+Jn9uI86GlM/xEuRAfX2+7ClBy19I6cV71FD4geRe9CqmABhhsK98
+	 savUbsGh8QNrdJ0ivbeyw3mU5mwugB5RLAqt9Jlc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 54E17F8055A; Tue, 24 Oct 2023 15:55:27 +0200 (CEST)
+	id 2082EF80571; Tue, 24 Oct 2023 15:55:29 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B0353F80224;
-	Tue, 24 Oct 2023 15:55:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 66A6CF80558;
+	Tue, 24 Oct 2023 15:55:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 73757F80224; Tue, 24 Oct 2023 15:55:21 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+	id 4E405F8019B; Tue, 24 Oct 2023 15:55:23 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 1FDB5F8012B
-	for <alsa-devel@alsa-project.org>; Tue, 24 Oct 2023 15:55:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1FDB5F8012B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 43C91F80157
+	for <alsa-devel@alsa-project.org>; Tue, 24 Oct 2023 15:55:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 43C91F80157
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=NxD9Ggy+
+ header.s=k20201202 header.b=rrlLVjS7
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by ams.source.kernel.org (Postfix) with ESMTP id A30B8B82487;
+	by dfw.source.kernel.org (Postfix) with ESMTP id 999AF6145E;
+	Tue, 24 Oct 2023 13:55:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 78A83C433CA;
 	Tue, 24 Oct 2023 13:55:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CAB6BC433D9;
-	Tue, 24 Oct 2023 13:55:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1698155712;
-	bh=ZwRGvdK1vLRyYCBNB8H0GmRZoD2LA6Gw+YOD+d7uvu0=;
+	s=k20201202; t=1698155715;
+	bh=AHpxByLGl3li07TI+Dtas7HsEV5VlBynUrNCqNQb+/M=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=NxD9Ggy+9A7RNU1Bjgd9K1z8hWPbQi879G28Ip41uwiWe84uVlCmqllbF9PsZlh0d
-	 G2rydM2Pm8bPxq1DGXAswrBQZaiBbtD2nUQOq/dVx5Pe+M5aMmb3ce+hLcuhcpm99n
-	 IBA6YnK4LsJEuNRmBOYuEghoNzNXPErkIBxjHaPUOHv1v7qVBy0MthbcJ1+gwhZ8TN
-	 h9yAceinSkCQwzwPw8MHnSgTlhdJXuXwl97QknJRHl8UEhqKYWOP4McA0UZK58HDoH
-	 g4kDqFM2pCzLdXK7VuOeMRZCRt9fIJak9Q0FPTgpZp7THk5I2meWR09NCmKYrks+Ee
-	 5AhaJ8ROchJgQ==
+	b=rrlLVjS7xpN+RZQY27zkSRj6n31atsPnmMkcwe/Q3L4hBD83hOqbtS9/weQSeh/oT
+	 onwcvUxUZQnw/lCqd/BFIeVXU2xDUHOMslMhbd+Sxpqh5ycYUezWGDQSqa8rjwW9mw
+	 1JSkJh3VjexEHnEFVX+RSb46hjt3J4n5BEQPdnzr1sOLWI3OzTpIKhwlG67oyFAlcq
+	 wUpbExP1eyfzPsAM8MHBvxNBkE7eqVMq74f7KwCwNBuQhfBxAQZ4bqoDL8k7+7UOnq
+	 cdv0uTar5BfKcfUsDnmHNGF4SgRbAxBgBFsCIGNXDiOt7PvcPAdgV65lQYzXRn+bjg
+	 4S98dWLtCGbog==
 From: Mark Brown <broonie@kernel.org>
-To: shengjiu.wang@gmail.com, Zhang Shurong <zhang_shurong@foxmail.com>
-Cc: Xiubo.Lee@gmail.com, festevam@gmail.com, nicoleotsuka@gmail.com,
- lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
- alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org,
- linux-kernel@vger.kernel.org
-In-Reply-To: <tencent_C0D62E6D89818179A02A04A0C248F0DDC40A@qq.com>
-References: <tencent_C0D62E6D89818179A02A04A0C248F0DDC40A@qq.com>
-Subject: Re: [PATCH v2] ASoC: fsl: Fix PM disable depth imbalance in
- fsl_easrc_probe
-Message-Id: <169815570943.69390.931793622764684694.b4-ty@kernel.org>
-Date: Tue, 24 Oct 2023 14:55:09 +0100
+To: alsa-devel@alsa-project.org, Chris Morgan <macroalpha82@gmail.com>
+Cc: tiwai@suse.com, perex@perex.cz, lgirdwood@gmail.com,
+ Chris Morgan <macromorgan@hotmail.com>
+In-Reply-To: <20231020171539.65513-1-macroalpha82@gmail.com>
+References: <20231020171539.65513-1-macroalpha82@gmail.com>
+Subject: Re: [PATCH] ASoC: es8328: Use rounded rate for es8328_set_sysclk()
+Message-Id: <169815571307.69390.13890270991415169654.b4-ty@kernel.org>
+Date: Tue, 24 Oct 2023 14:55:13 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-0438c
-Message-ID-Hash: QKFISSQZ5467XFHS4W6LVLV3IVTUZ43R
-X-Message-ID-Hash: QKFISSQZ5467XFHS4W6LVLV3IVTUZ43R
+Message-ID-Hash: UO7OSDUVX3MTF2BXECOYOORS43TALQ6Q
+X-Message-ID-Hash: UO7OSDUVX3MTF2BXECOYOORS43TALQ6Q
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -85,7 +82,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QKFISSQZ5467XFHS4W6LVLV3IVTUZ43R/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UO7OSDUVX3MTF2BXECOYOORS43TALQ6Q/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -94,13 +91,17 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, 12 Oct 2023 21:03:15 +0800, Zhang Shurong wrote:
-> The pm_runtime_enable will increase power disable depth. Thus
-> a pairing decrement is needed on the error handling path to
-> keep it balanced according to context. We fix it by calling
-> pm_runtime_disable when error returns.
+On Fri, 20 Oct 2023 12:15:39 -0500, Chris Morgan wrote:
+> I have a board (RK3588 based) that sets the sysclk to 12287999. The
+> es8328 driver fails to match this to the 12288000 rate and fails to
+> load. Allow the rate comparison to work if the frequency is within
+> 100hz by dividing it by 100 and rounding it, then multiplying it back
+> by 100.
 > 
+> Note the 100hz value was chosen arbitrarily by me, but it has only
+> been tested with a 1hz difference.
 > 
+> [...]
 
 Applied to
 
@@ -108,8 +109,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: fsl: Fix PM disable depth imbalance in fsl_easrc_probe
-      commit: 9e630efb5a4af56fdb15aa10405f5cfd3f5f5b83
+[1/1] ASoC: es8328: Use rounded rate for es8328_set_sysclk()
+      commit: 18562fc36c21d572582049e6259c43bf1a01f3e0
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
