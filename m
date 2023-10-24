@@ -4,72 +4,102 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C50A8C25B6E
-	for <alsa-devel@archiver.kernel.org>; Tue, 24 Oct 2023 13:57:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ABFDBC07545
+	for <alsa-devel@archiver.kernel.org>; Tue, 24 Oct 2023 13:57:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E6C94A4D;
-	Tue, 24 Oct 2023 15:56:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E6C94A4D
+	by alsa0.perex.cz (Postfix) with ESMTPS id CD036DEC;
+	Tue, 24 Oct 2023 15:56:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CD036DEC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1698155829;
-	bh=AHpxByLGl3li07TI+Dtas7HsEV5VlBynUrNCqNQb+/M=;
+	s=default; t=1698155843;
+	bh=cZbYI/PBQsT9LNq45eFs68cYG4oY4r/yIQ/LLW2m7RE=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=ltaqKyRQiF3bS4kVdq46rLxOmfWdSBB3d9FwHfU4SydGezKQQ3DJt5jvm2eRe9Q7R
-	 LPDQ5acgCW6jU+Jn9uI86GlM/xEuRAfX2+7ClBy19I6cV71FD4geRe9CqmABhhsK98
-	 savUbsGh8QNrdJ0ivbeyw3mU5mwugB5RLAqt9Jlc=
+	b=KGq2o3g456lP0Iy4P8wbgfadszcLp0unXhHpPZibVArqkTy6Cb+6SGmFCsgTT2YvN
+	 xRUmeihaiRsR5tduN1kgIQGjkeyNXm5zODvyutsRE+ebNUM3QbaMpGGtbRjccBVc6h
+	 SVjbDEWmxrDqgJYd5lZBFjkTLibkVGmRzMA6apms=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2082EF80571; Tue, 24 Oct 2023 15:55:29 +0200 (CEST)
+	id 3F8ABF80570; Tue, 24 Oct 2023 15:55:33 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 66A6CF80558;
-	Tue, 24 Oct 2023 15:55:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7A10BF80157;
+	Tue, 24 Oct 2023 15:55:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4E405F8019B; Tue, 24 Oct 2023 15:55:23 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	id C046CF80563; Tue, 24 Oct 2023 15:55:27 +0200 (CEST)
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 43C91F80157
-	for <alsa-devel@alsa-project.org>; Tue, 24 Oct 2023 15:55:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 43C91F80157
+	by alsa1.perex.cz (Postfix) with ESMTPS id 01181F80152
+	for <alsa-devel@alsa-project.org>; Tue, 24 Oct 2023 15:55:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 01181F80152
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=rrlLVjS7
+ header.s=k20201202 header.b=oNxsO5a8
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 999AF6145E;
-	Tue, 24 Oct 2023 13:55:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 78A83C433CA;
-	Tue, 24 Oct 2023 13:55:13 +0000 (UTC)
+	by sin.source.kernel.org (Postfix) with ESMTP id AC0E6CE2CB7;
+	Tue, 24 Oct 2023 13:55:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3B571C433C8;
+	Tue, 24 Oct 2023 13:54:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1698155715;
-	bh=AHpxByLGl3li07TI+Dtas7HsEV5VlBynUrNCqNQb+/M=;
+	s=k20201202; t=1698155709;
+	bh=cZbYI/PBQsT9LNq45eFs68cYG4oY4r/yIQ/LLW2m7RE=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=rrlLVjS7xpN+RZQY27zkSRj6n31atsPnmMkcwe/Q3L4hBD83hOqbtS9/weQSeh/oT
-	 onwcvUxUZQnw/lCqd/BFIeVXU2xDUHOMslMhbd+Sxpqh5ycYUezWGDQSqa8rjwW9mw
-	 1JSkJh3VjexEHnEFVX+RSb46hjt3J4n5BEQPdnzr1sOLWI3OzTpIKhwlG67oyFAlcq
-	 wUpbExP1eyfzPsAM8MHBvxNBkE7eqVMq74f7KwCwNBuQhfBxAQZ4bqoDL8k7+7UOnq
-	 cdv0uTar5BfKcfUsDnmHNGF4SgRbAxBgBFsCIGNXDiOt7PvcPAdgV65lQYzXRn+bjg
-	 4S98dWLtCGbog==
+	b=oNxsO5a8CMTvXpm1/o/piO8VDoB+uC2HKz4aC1VSOLtcKSLe7zJjF62UZ1UdQOHiJ
+	 lq1w2fiw7OJuKB9nVvJzokKdR8slxwZ8MEFaK08Wq1V8LYKG1qtpdRaa+4QZwoYVCI
+	 dbDYf7fX5SsfGJDj50CZ0lIoy85orJHuOlftSEeEHvbUMh2kWC2JoTgP8wB3DSEVR0
+	 qniPwOSKhe2zIcR8zflVLjQxdEZW8shUh4XfjGInVzNxFd89NeeDPiyybyShybjRip
+	 rjIJYAj9R8F1jlhwOZ2tNNovxUNjqjdbsGipx+XvMsjOO9rQbPMJ4YpV8tsWfXeo37
+	 SaomGAu4q3Z1A==
 From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org, Chris Morgan <macroalpha82@gmail.com>
-Cc: tiwai@suse.com, perex@perex.cz, lgirdwood@gmail.com,
- Chris Morgan <macromorgan@hotmail.com>
-In-Reply-To: <20231020171539.65513-1-macroalpha82@gmail.com>
-References: <20231020171539.65513-1-macroalpha82@gmail.com>
-Subject: Re: [PATCH] ASoC: es8328: Use rounded rate for es8328_set_sysclk()
-Message-Id: <169815571307.69390.13890270991415169654.b4-ty@kernel.org>
-Date: Tue, 24 Oct 2023 14:55:13 +0100
+To: Liam Girdwood <lgirdwood@gmail.com>,
+ =?utf-8?q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+Cc: Nicolas Frattaroli <frattaroli.nicolas@gmail.com>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ Heiko Stuebner <heiko@sntech.de>, linux-rockchip@lists.infradead.org,
+ alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org,
+ kernel@pengutronix.de, James Schulman <james.schulman@cirrus.com>,
+ David Rhodes <david.rhodes@cirrus.com>,
+ Richard Fitzgerald <rf@opensource.cirrus.com>,
+ patches@opensource.cirrus.com, Hal Feng <hal.feng@starfivetech.com>,
+ Xingyu Wu <xingyu.wu@starfivetech.com>,
+ Thierry Reding <thierry.reding@gmail.com>,
+ Jonathan Hunter <jonathanh@nvidia.com>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Rob Herring <robh@kernel.org>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Wang Yufen <wangyufen@huawei.com>,
+ Aidan MacDonald <aidanmacdonald.0x0@gmail.com>,
+ Jernej Skrabec <jernej.skrabec@gmail.com>,
+ Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+ Astrid Rost <astrid.rost@axis.com>,
+ Robert Hancock <robert.hancock@calian.com>,
+ Herve Codina <herve.codina@bootlin.com>, Sameer Pujar <spujar@nvidia.com>,
+ linux-tegra@vger.kernel.org, Jerome Brunet <jbrunet@baylibre.com>,
+ Neil Armstrong <neil.armstrong@linaro.org>,
+ Kevin Hilman <khilman@baylibre.com>,
+ Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+ linux-amlogic@lists.infradead.org,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Banajit Goswami <bgoswami@quicinc.com>,
+ Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+ Masami Hiramatsu <mhiramat@kernel.org>
+In-Reply-To: <20231013221945.1489203-9-u.kleine-koenig@pengutronix.de>
+References: <20231013221945.1489203-9-u.kleine-koenig@pengutronix.de>
+Subject: Re: [PATCH 0/7] ASoc: Another series to convert to struct
+ platform_driver:remove_new()
+Message-Id: <169815569778.69390.11911007930896172841.b4-ty@kernel.org>
+Date: Tue, 24 Oct 2023 14:54:57 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Mailer: b4 0.13-dev-0438c
-Message-ID-Hash: UO7OSDUVX3MTF2BXECOYOORS43TALQ6Q
-X-Message-ID-Hash: UO7OSDUVX3MTF2BXECOYOORS43TALQ6Q
+Message-ID-Hash: HEWSC2JQWBCPTPHGZG2KCJZFM6ZCS6JY
+X-Message-ID-Hash: HEWSC2JQWBCPTPHGZG2KCJZFM6ZCS6JY
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -82,7 +112,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UO7OSDUVX3MTF2BXECOYOORS43TALQ6Q/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HEWSC2JQWBCPTPHGZG2KCJZFM6ZCS6JY/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -91,15 +121,15 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, 20 Oct 2023 12:15:39 -0500, Chris Morgan wrote:
-> I have a board (RK3588 based) that sets the sysclk to 12287999. The
-> es8328 driver fails to match this to the 12288000 rate and fails to
-> load. Allow the rate comparison to work if the frequency is within
-> 100hz by dividing it by 100 and rounding it, then multiplying it back
-> by 100.
+On Sat, 14 Oct 2023 00:19:46 +0200, Uwe Kleine-König wrote:
+> this is another series to convert ASoC drivers to use struct
+> platform_driver:remove_new(). The rockchip one was already send before
+> but with a wrong subject prefix, the cs42l43 driver is newer than the
+> last series. The remaining five patches are for driver combos that my
+> coccinelle patch failed to detect before.
 > 
-> Note the 100hz value was chosen arbitrarily by me, but it has only
-> been tested with a 1hz difference.
+> Best regards
+> Uwe
 > 
 > [...]
 
@@ -109,8 +139,20 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: es8328: Use rounded rate for es8328_set_sysclk()
-      commit: 18562fc36c21d572582049e6259c43bf1a01f3e0
+[1/7] ASoC: rockchip: i2s_tdm: Convert to platform remove callback returning void
+      commit: 46dd58bef32dea55b663141858ca1659a85a1505
+[2/7] ASoC: cs42l43: Convert to platform remove callback returning void
+      commit: 491a1132f5cb77c8f1abb44d9928f8f184fc3df7
+[3/7] ASoC: starfive/jh7110-pwmdac: Convert to platform remove callback returning void
+      commit: 6b02f5a6f1853c6d5f73b000afbc177f5ee59d9e
+[4/7] ASoC: simple-card-utils: Make simple_util_remove() return void
+      commit: 393df6f321c757d164fa412b7eae527a8e2acb75
+[5/7] ASoC: meson: Make meson_card_remove() return void
+      commit: 8210f496c3e12410fa240c7fbc63f71ef78e253f
+[6/7] ASoC: qcom: lpass: Make asoc_qcom_lpass_cpu_platform_remove() return void
+      commit: d0cc676c426d1958989fac2a0d45179fb9992f0a
+[7/7] ASoC: uniphier: Make uniphier_aio_remove() return void
+      commit: 7242265213893e053457240f833d06ecd75b7ab3
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
