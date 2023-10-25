@@ -4,116 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 55BE6C0032E
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 Oct 2023 14:21:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 17756C0032E
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 Oct 2023 14:37:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7D4EC825;
-	Wed, 25 Oct 2023 16:20:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7D4EC825
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6B90C1EC;
+	Wed, 25 Oct 2023 16:36:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6B90C1EC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1698243703;
-	bh=YPxAOTUhUKwtwp1XXgLyfx0MtIYdqhU8AsvP6K/wWOA=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	s=default; t=1698244628;
+	bh=33Ei53Pw07lbJnyj6aukh4h2LQQRmq6mgRq79CxhxLk=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=UzXLtRN3URTjpyEKxjGvGAhlmt9PtvCIQ8gcq8vUcSWwCVRBMLrubuphanONXmhS6
-	 llm2qT076l3Dp57kHbttGIS/fnKcTZ+xxrDnHkQiHv110IEYj8PqTfg4sn+Dyjw/du
-	 fnnUdAlyFyGy5x6aATcV5N0AjIA77P0uf284b+kc=
+	b=h5XENjuVC3y5Q8lUSqWhZqnMfj8LPMhXERdKiKp8AuFeL+Khk9DgUe8h3Wyme8yAH
+	 GEcVI63LdLKNV4yP5HbOrbGU3uwoFnCL+nL9mpbCEjH2ZHbjQWZ/Wre6Vv2vtcyyaG
+	 oqBccnCgq9Vf/VH+C5+5lDXKr2DjMRgtGnZpE4lM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E548EF8012B; Wed, 25 Oct 2023 16:20:24 +0200 (CEST)
+	id 1622DF80563; Wed, 25 Oct 2023 16:35:50 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4532BF80165;
-	Wed, 25 Oct 2023 16:20:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B71B3F8028D;
+	Wed, 25 Oct 2023 16:35:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8EBCCF80165; Wed, 25 Oct 2023 16:20:20 +0200 (CEST)
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com
- [IPv6:2a00:1450:4864:20::12b])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	id 8299AF8028D; Wed, 25 Oct 2023 16:35:42 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 87779F80152
-	for <alsa-devel@alsa-project.org>; Wed, 25 Oct 2023 16:20:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 87779F80152
+	by alsa1.perex.cz (Postfix) with ESMTPS id 67B23F8010B
+	for <alsa-devel@alsa-project.org>; Wed, 25 Oct 2023 16:35:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 67B23F8010B
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20230601 header.b=UQl1EYu2
-Received: by mail-lf1-x12b.google.com with SMTP id
- 2adb3069b0e04-507bd19eac8so8456915e87.0
-        for <alsa-devel@alsa-project.org>;
- Wed, 25 Oct 2023 07:20:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698243611; x=1698848411;
- darn=alsa-project.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=KXdFX0UY5tniJLRDcl1ufSs5c/hl+EfLWW5bDdsq8SA=;
-        b=UQl1EYu2e8LXVX+pLvdq17KPec7jGCeESj63ZZSM/qR904T3oDOWAnKcKFqCB2rJYh
-         7TMikIzSEKMzEAXoCUvvqyTtH+FksV9sx1ZYXS5Kx5sGqZpZtN1ODpAa2iLrAAsGO8Gj
-         3dD3GgFuQZ9r5VLhVi3uWpkVNjjw9wAovQkCYYzEwuCoZIkvc/TtSNaaeLw9U0CNBj1S
-         Y3xf0tm7IBnyhnsi/qjPZUsxDs2vKvWwNtocvIUXkbdCoMmTuCxqDcfFAzDJxQB6UZVx
-         RYV2EYjiJg0JU7SXaW4+dLQa9KLvFF7fkX0FQ7cxhdSPz0iXRkfKOlgOx51LgVhK3vd9
-         iq6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698243611; x=1698848411;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=KXdFX0UY5tniJLRDcl1ufSs5c/hl+EfLWW5bDdsq8SA=;
-        b=gjBOGK/zADO5sT4hWTa6lFv7ampGNd7+c/ACAPfJbbDzOHYgxW22jjiOHBhh6WSpgd
-         GsKyS2MFuE6ldz/s3W6E7iTWRiKyXUd1DKQ9XKhfH09g3Gji2WjWWvXOM/6xtAp1qMTm
-         4J3+1CKLlv6mxTCr7GwRkbM7DRIaHJXfe+EKw/0ynQCi/vlVecrdag62qh63kxgilLvq
-         9YYjkh29BxE//nis+i5ZGYzq3tDnfvHdEIvSAtFov6J+Sv1tp9IA9DuUlgxNc/dqkbpQ
-         VcDGLmrTxL6hXCm/0xsz9rLRGDa1gv3/zdqSJut4TMbJtt/BpXms6T7DxD5bSz/+tXPN
-         m00Q==
-X-Gm-Message-State: AOJu0YzohANFHtc9+G+IAFTVhD+MCL8Q2zj45QZ5JPffiahkPj3rplS8
-	BIizJjaNSv5ADmYtH6y4Omw=
-X-Google-Smtp-Source: 
- AGHT+IHCJiQ2e6pDH3+U3/wVqmKSJcAM0uK7m8zA5flWq6iZTKh/qG9TOso4O1h1Ce74ljz0EvAsIw==
-X-Received: by 2002:ac2:5550:0:b0:503:258f:fd1b with SMTP id
- l16-20020ac25550000000b00503258ffd1bmr11409838lfk.18.1698243610440;
-        Wed, 25 Oct 2023 07:20:10 -0700 (PDT)
-Received: from [192.168.76.157] (85-76-164-65-nat.elisa-mobile.fi.
- [85.76.164.65])
-        by smtp.gmail.com with ESMTPSA id
- x13-20020ac25dcd000000b005041ce44bbdsm2568600lfq.5.2023.10.25.07.20.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 25 Oct 2023 07:20:09 -0700 (PDT)
-Message-ID: <a0db9dbb-df0e-406a-9a88-2a6968ec1469@gmail.com>
-Date: Wed, 25 Oct 2023 17:21:12 +0300
+	dkim=pass (1024-bit key,
+ unprotected) header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256
+ header.s=mimecast20190719 header.b=Njwfzhf2
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1698244528;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=2lGqqRsr6YPHOgQy0n6CqCNB06Eoj6aeWiDhog8eUUY=;
+	b=Njwfzhf2EtW4UqqKOVNh41Cx0NMQVaYi7IWd5DmQJpcWy5p4MYc2R40GJP/yZJVATHx3L4
+	9tolkpAVXg9MfSdVz0iBQEPOeZCMe30+Gihq3xGwvqUW101TSdrfcVdTNkwqNatTArcTsg
+	lwYR7bdSO0MtKXTTSULNIfUZY32pz0I=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-688-4Nl8AtWSNb-QMypukBeVVA-1; Wed, 25 Oct 2023 10:35:26 -0400
+X-MC-Unique: 4Nl8AtWSNb-QMypukBeVVA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com
+ [10.11.54.4])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E7964857CF1;
+	Wed, 25 Oct 2023 14:35:24 +0000 (UTC)
+Received: from localhost.localdomain (unknown [10.39.192.127])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id EAA5A2026D4C;
+	Wed, 25 Oct 2023 14:35:23 +0000 (UTC)
+From: Hans de Goede <hdegoede@redhat.com>
+To: Cezary Rojewski <cezary.rojewski@intel.com>,
+	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+	Mark Brown <broonie@kernel.org>
+Cc: Hans de Goede <hdegoede@redhat.com>,
+	alsa-devel@alsa-project.org
+Subject: [PATCH v2 2/4] ASoC: Intel: bytcr_wm5102: Add BYT_WM5102_MCLK_19_2MHZ
+ quirk
+Date: Wed, 25 Oct 2023 16:35:11 +0200
+Message-ID: <20231025143513.291753-3-hdegoede@redhat.com>
+In-Reply-To: <20231025143513.291753-1-hdegoede@redhat.com>
+References: <20231025143513.291753-1-hdegoede@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/3] ASoC: ti: omap-mcbsp: Ignore errors for getting
- fck_src
-To: Andreas Kemnade <andreas@kemnade.info>
-Cc: Tony Lindgren <tony@atomide.com>, bcousson@baylibre.com,
- robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
- jarkko.nikula@bitmer.com, dmitry.torokhov@gmail.com,
- linux-omap@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-References: <20230705190324.355282-1-andreas@kemnade.info>
- <20230705190324.355282-2-andreas@kemnade.info>
- <7d58d52d-2087-45af-b29e-2515b63ead13@gmail.com>
- <20230920063353.GQ5285@atomide.com>
- <dac768d2-2c66-4d6b-b3d3-d1ef69103c76@gmail.com>
- <20230921121626.GT5285@atomide.com> <20231006102348.GK34982@atomide.com>
- <20231006213003.0fbac87a@aktux> <20231007062518.GM34982@atomide.com>
- <20231007091156.588d7ba1@aktux>
- <db511d14-f2fe-4b4e-bd13-223e7a33f933@gmail.com>
- <20231013132503.25d63933@aktux>
-Content-Language: en-US
-From: =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>
-In-Reply-To: <20231013132503.25d63933@aktux>
-Content-Type: text/plain; charset=UTF-8
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: OL7CKS7EWBM5TM42ZUZQT2U4S3P2HTU5
-X-Message-ID-Hash: OL7CKS7EWBM5TM42ZUZQT2U4S3P2HTU5
-X-MailFrom: peter.ujfalusi@gmail.com
+Content-Type: text/plain; charset="US-ASCII"; x-default=true
+Message-ID-Hash: PENFM4U2XVPMCB4UHW2I52RP26CG447M
+X-Message-ID-Hash: PENFM4U2XVPMCB4UHW2I52RP26CG447M
+X-MailFrom: hdegoede@redhat.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -125,55 +101,109 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OL7CKS7EWBM5TM42ZUZQT2U4S3P2HTU5/>
-List-Archive: <>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PENFM4U2XVPMCB4UHW2I52RP26CG447M/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+The Cherry Trail SoC only supports 19200000 as clk-frequency for
+the pmc_plt_clk used for the audio codec.
 
-On 13/10/2023 14:25, Andreas Kemnade wrote:
->> I guess it is because of the pm_runtime_put_sync() in the
->> omap2_mcbsp_set_clks_src() around the fclk re-parenting.
->> That is a bit dubious thing for sure. We need to disable the device to
->> be able to re-parent the fclk but if we disable the device it is going
->> to be powered down, right? I think we have appropriate context handling,
->> so it might work, but it is certainly not a rock solid code... If you
->> have a stream running already, you don't really want to kill the McBSP.
->>
-> Ok, so if the device is powered of at omap2_mcbsp_set_clks_src() 
-> we get the usage count underflow, and the counter is incremented
-> immediately again in the runtime put function. So things get out of balance...
-> I'll check Tony's fix here.
-> 
->> The problem is that this mux is outside of the McBSP IP, so we need a
->> system level (iow, clk API) way to change it runtime.
->>
->> What is the machine driver where this happens? If you set the sysclk in
->> hw_params of the machine driver, it will be OK, but if you do that in
->> probe time then it is likely going to fail as you experienced
->>
-> As you see in the other patches of this series,
-> it is a simple-audio-card with a tlv320aic3x codec
-> in combination with the mcbsp.
+Add a BYT_WM5102_MCLK_19_2MHZ quirk for this and enable this
+by default on Cherry Trail SoCs.
 
-To be honest I would be happier if we can just remove the whole
-omap2_mcbsp_set_clks_src() and leave the CLKS source selection outside
-of the driver.
-But omap3pandora is selecting external clock as parent
-(OMAP_MCBSP_SYSCLK_CLKS_EXT - in hw_params, so it actually works) and I
-don't know what happens if this functionality is removed. Likely going
-to break Pandora.
-That is fixable, but what worries me is this comment and code:
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/sound/soc/ti/omap-mcbsp.c#n388
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+---
+ sound/soc/intel/boards/bytcr_wm5102.c | 18 +++++++++++++-----
+ 1 file changed, 13 insertions(+), 5 deletions(-)
 
-Which is added by me a long time ago:
-e386615c01d37 ("ASoC: omap-mcbsp: When closing the port select PRCM
-source for CLKS signal")
-
-I'm not sure if this is possible to do in any other way.
-
+diff --git a/sound/soc/intel/boards/bytcr_wm5102.c b/sound/soc/intel/boards/bytcr_wm5102.c
+index 932a5523b682..05a07b25e0f2 100644
+--- a/sound/soc/intel/boards/bytcr_wm5102.c
++++ b/sound/soc/intel/boards/bytcr_wm5102.c
+@@ -27,8 +27,6 @@
+ #include "../../codecs/wm5102.h"
+ #include "../atom/sst-atom-controls.h"
+ 
+-#define MCLK_FREQ		25000000
+-
+ #define WM5102_MAX_SYSCLK_4K	49152000 /* max sysclk for 4K family */
+ #define WM5102_MAX_SYSCLK_11025	45158400 /* max sysclk for 11.025K family */
+ 
+@@ -36,10 +34,12 @@ struct byt_wm5102_private {
+ 	struct snd_soc_jack jack;
+ 	struct clk *mclk;
+ 	struct gpio_desc *spkvdd_en_gpio;
++	int mclk_freq;
+ };
+ 
+ /* Bits 0-15 are reserved for things like an input-map */
+ #define BYT_WM5102_SSP2			BIT(16)
++#define BYT_WM5102_MCLK_19_2MHZ		BIT(17)
+ 
+ static unsigned long quirk;
+ 
+@@ -51,6 +51,8 @@ static void log_quirks(struct device *dev)
+ {
+ 	if (quirk & BYT_WM5102_SSP2)
+ 		dev_info_once(dev, "quirk SSP2 enabled");
++	if (quirk & BYT_WM5102_MCLK_19_2MHZ)
++		dev_info_once(dev, "quirk MCLK 19.2MHz enabled");
+ }
+ 
+ static int byt_wm5102_spkvdd_power_event(struct snd_soc_dapm_widget *w,
+@@ -68,6 +70,7 @@ static int byt_wm5102_spkvdd_power_event(struct snd_soc_dapm_widget *w,
+ static int byt_wm5102_prepare_and_enable_pll1(struct snd_soc_dai *codec_dai, int rate)
+ {
+ 	struct snd_soc_component *codec_component = codec_dai->component;
++	struct byt_wm5102_private *priv = snd_soc_card_get_drvdata(codec_component->card);
+ 	int sr_mult = ((rate % 4000) == 0) ?
+ 		(WM5102_MAX_SYSCLK_4K / rate) :
+ 		(WM5102_MAX_SYSCLK_11025 / rate);
+@@ -79,7 +82,7 @@ static int byt_wm5102_prepare_and_enable_pll1(struct snd_soc_dai *codec_dai, int
+ 
+ 	/* Configure the FLL1 PLL before selecting it */
+ 	ret = snd_soc_dai_set_pll(codec_dai, WM5102_FLL1, ARIZONA_CLK_SRC_MCLK1,
+-				  MCLK_FREQ, rate * sr_mult);
++				  priv->mclk_freq, rate * sr_mult);
+ 	if (ret) {
+ 		dev_err(codec_component->dev, "Error setting PLL: %d\n", ret);
+ 		return ret;
+@@ -251,6 +254,11 @@ static int byt_wm5102_init(struct snd_soc_pcm_runtime *runtime)
+ 	if (ret)
+ 		return ret;
+ 
++	if (quirk & BYT_WM5102_MCLK_19_2MHZ)
++		priv->mclk_freq = 19200000;
++	else
++		priv->mclk_freq = 25000000;
++
+ 	/*
+ 	 * The firmware might enable the clock at boot (this information
+ 	 * may or may not be reflected in the enable clock register).
+@@ -263,7 +271,7 @@ static int byt_wm5102_init(struct snd_soc_pcm_runtime *runtime)
+ 	if (!ret)
+ 		clk_disable_unprepare(priv->mclk);
+ 
+-	ret = clk_set_rate(priv->mclk, MCLK_FREQ);
++	ret = clk_set_rate(priv->mclk, priv->mclk_freq);
+ 	if (ret) {
+ 		dev_err(card->dev, "Error setting MCLK rate: %d\n", ret);
+ 		return ret;
+@@ -486,7 +494,7 @@ static int snd_byt_wm5102_mc_probe(struct platform_device *pdev)
+ 
+ 	if (soc_intel_is_cht()) {
+ 		/* On CHT default to SSP2 */
+-		quirk = BYT_WM5102_SSP2;
++		quirk = BYT_WM5102_SSP2 | BYT_WM5102_MCLK_19_2MHZ;
+ 	}
+ 	if (quirk_override != -1) {
+ 		dev_info_once(dev, "Overriding quirk 0x%lx => 0x%x\n",
 -- 
-Péter
+2.41.0
+
