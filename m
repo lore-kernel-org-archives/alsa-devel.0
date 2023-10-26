@@ -4,76 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E9CF1C25B67
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Oct 2023 15:10:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CBFECC25B67
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Oct 2023 15:13:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3B58D84A;
-	Thu, 26 Oct 2023 17:09:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3B58D84A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0390784D;
+	Thu, 26 Oct 2023 17:12:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0390784D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1698333042;
-	bh=yFCeUvYUN8ddW5lXFRkDIKczNrKiL8ahYwXjs+NIZKE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1698333189;
+	bh=cxODEnMO4778yY18WaIb5R8VLHNJEiwUh5aRzxmJgNc=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=POFN1SkaUb2PzybsM7G+ZuAiElfnQI4mvIENY1T6OQGFnt2fDhLmTtpe1yydHgqcs
-	 oraFc1HF2mR57G0/26GNApWSlM8khdSWB3x4PWeSJ9LXRvLRUtiwmZPxraWIPAnyx5
-	 tQdAHtQfOz0iUKCdRoTxYsb37l8eVQI86ajloavo=
+	b=gzlTTQ97P9qy5rINhkJee7Q1HQJDWXwofspJmeIPcgjD3ai8PQCSXPOJ0tYASidMM
+	 /YKxevyYz9QkQQExee7ByaAI6BqARjYZgBjB/Se7lQb2KWzHTK1eGmD1Bl8bNz78H0
+	 SY/B3Aj2RT50ebAIp+hIsSge+h3X4TUAggcUG/1o=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0ED00F80563; Thu, 26 Oct 2023 17:09:52 +0200 (CEST)
+	id B58F9F8024E; Thu, 26 Oct 2023 17:12:18 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C8F16F80224;
-	Thu, 26 Oct 2023 17:09:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 68B3DF80224;
+	Thu, 26 Oct 2023 17:12:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E6B61F8020D; Thu, 26 Oct 2023 17:09:48 +0200 (CEST)
+	id 53E0DF8019B; Thu, 26 Oct 2023 17:12:16 +0200 (CEST)
 Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 3E6CFF80152
-	for <alsa-devel@alsa-project.org>; Thu, 26 Oct 2023 17:09:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3E6CFF80152
+	by alsa1.perex.cz (Postfix) with ESMTPS id D7954F8010B
+	for <alsa-devel@alsa-project.org>; Thu, 26 Oct 2023 17:12:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D7954F8010B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=UGjKSJXg
+ header.s=k20201202 header.b=At/OXXwc
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by ams.source.kernel.org (Postfix) with ESMTP id 242E3B80BA1;
-	Thu, 26 Oct 2023 15:09:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 850A2C433C8;
-	Thu, 26 Oct 2023 15:09:42 +0000 (UTC)
+	by ams.source.kernel.org (Postfix) with ESMTP id 33303B80BA1;
+	Thu, 26 Oct 2023 15:12:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28133C433C7;
+	Thu, 26 Oct 2023 15:12:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1698332984;
-	bh=yFCeUvYUN8ddW5lXFRkDIKczNrKiL8ahYwXjs+NIZKE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=UGjKSJXgr1kKDUyBqpmKI4u63Y1D3+ATox6a9sFyG8bTXklDrSPk0un68G/IEpTrY
-	 xRl9pKhjg6Apujz783DfKuKOMmuhqEDmLNH895Y5S0bK8ExZEM+j88oy7pZztRNfj4
-	 s+F6x9iZkpZXVRMwT7n2vwTViltYp444oIS14sq5vtD0z3upWaA2Dw6wKwmloIoiWv
-	 HPmDRsiieiUGrmbyWFaC10HjWHmofhgtOfMrJWa9P+CbIcYHvgwWZR+Q3E6pVOG2Gu
-	 mrzB0//dIcwdKipr7w4jeHvDg6F70BJWG4ATBock1yAlUENgzanSE0X3wQumtDJ73B
-	 eaS0wmPCTIqaw==
-Date: Thu, 26 Oct 2023 16:09:39 +0100
+	s=k20201202; t=1698333132;
+	bh=cxODEnMO4778yY18WaIb5R8VLHNJEiwUh5aRzxmJgNc=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=At/OXXwcPSr7L5TiGR9U+5gydhYj7ahmCUdWL/Xstax0T8JOoqYsL243KzWxAG+zC
+	 WqMB7ebYD2nV7xOVIXthxnYGCyoczvhy8i2slBEs04ZCpwc0oi7UAUeU/QdfYHBOOu
+	 CSxn8/JWdvHg7B12oUUpJeuiGTg508YOVawrl0vNBkoZd8XYl4FxEKM+Us5GiytmM3
+	 8bLUEx4xZHE0NDIBSJEsJz4P3AeNNvfOOESZO8ysbISeCQb09vqAJMEWPhwDOnv139
+	 EH6m7u87kR8gEENrqAumKuLshQiC/UF6NHAGz93TilvoHXQIApdLCAGm0nRmdEuZ/Z
+	 Q0rL2hTSpqB1A==
 From: Mark Brown <broonie@kernel.org>
-To: Stefan Binding <sbinding@opensource.cirrus.com>
-Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-	alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-	linux-sound@vger.kernel.org, patches@opensource.cirrus.com
-Subject: Re: [PATCH v1 8/8] ASoC: cs35l41: Detect CSPL errors when sending
- CSPL commands
-Message-ID: <baeccbb4-5015-454d-a60e-861f67ce0f3d@sirena.org.uk>
-References: <20231026150558.2105827-1-sbinding@opensource.cirrus.com>
- <20231026150558.2105827-9-sbinding@opensource.cirrus.com>
+To: cezary.rojewski@intel.com, pierre-louis.bossart@linux.intel.com,
+ liam.r.girdwood@linux.intel.com, peter.ujfalusi@linux.intel.com,
+ yung-chuan.liao@linux.intel.com, ranjani.sridharan@linux.intel.com,
+ kai.vehmanen@linux.intel.com, perex@perex.cz, tiwai@suse.com,
+ Su Hui <suhui@nfschina.com>
+Cc: zhangyiqun@phytium.com.cn, amadeuszx.slawinski@linux.intel.com,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ kernel-janitors@vger.kernel.org
+In-Reply-To: <20231020092619.210520-1-suhui@nfschina.com>
+References: <20231020092619.210520-1-suhui@nfschina.com>
+Subject: Re: [PATCH] ASoC: Intel: Skylake: add an error code check in
+ skl_pcm_trigger
+Message-Id: <169833312844.133649.16742223419669591458.b4-ty@kernel.org>
+Date: Thu, 26 Oct 2023 16:12:08 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="0HftNnHLLsLtjwh6"
-Content-Disposition: inline
-In-Reply-To: <20231026150558.2105827-9-sbinding@opensource.cirrus.com>
-X-Cookie: I'm also against BODY-SURFING!!
-Message-ID-Hash: Q7C7ZWKRTSHS3B2MPBSGYUMROJLMFVBX
-X-Message-ID-Hash: Q7C7ZWKRTSHS3B2MPBSGYUMROJLMFVBX
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-0438c
+Message-ID-Hash: RZB2U2N53JHHGK2CEP5DDL6RAWK5LRVX
+X-Message-ID-Hash: RZB2U2N53JHHGK2CEP5DDL6RAWK5LRVX
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -86,7 +87,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Q7C7ZWKRTSHS3B2MPBSGYUMROJLMFVBX/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RZB2U2N53JHHGK2CEP5DDL6RAWK5LRVX/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -95,34 +96,37 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+On Fri, 20 Oct 2023 17:26:20 +0800, Su Hui wrote:
+> skl_decoupled_trigger() can return error code like -EPIPE if failed,
+> add check for this.
+> 
+> 
 
---0HftNnHLLsLtjwh6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Applied to
 
-On Thu, Oct 26, 2023 at 04:05:58PM +0100, Stefan Binding wrote:
-> The existing code checks for the correct state transition after sending
-> a command. However, it is possible for the message box to return -1,
-> which indicates an error, if an error has occurred in the firmware.
-> We can detect if the error has occurred, and return a different error.
-> In addition, there is no recovering from a CSPL error, so the retry
-> mechanism is not needed in this case, and we can return immediately.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-Acked-by: Mark Brown <broonie@kernel.org>
+Thanks!
 
---0HftNnHLLsLtjwh6
-Content-Type: application/pgp-signature; name="signature.asc"
+[1/1] ASoC: Intel: Skylake: add an error code check in skl_pcm_trigger
+      commit: f5c7bc7a1fad4e1e8d3d29d71dd9f430a3350f42
 
------BEGIN PGP SIGNATURE-----
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmU6gTIACgkQJNaLcl1U
-h9BNxgf9ERaHvIciC5wdcj6QKeS1hbJ/n9tkYPUFkD6jh60PrHm5MdAnEPokRYyE
-gjiT8Y1t/MDRw8oVp+LMQvUFoMvmIxfkcNic9ks0VN5zdXt5wmZYCUZb3mowY7lC
-SCUwOrtZLVJutWMc16v+wl0Gc0MmeTFue30PsxCvh2FIGdqiDnE0cPJe3c+1II9T
-F9R5bwaYdYsGFjnCmWw6RmNWK+f8UYUqW6u/CyrcMg26hsMAPuBEG6zSkaORJIKF
-uvxh+d6vUKAe3SBz81iT1pYFy5Ets+13lUQ+0KPKL2GjMdWzHqm4qJ23mk9z8La3
-rgrQHeA4m+PAVqlZhZ3ZfWypxPvVdg==
-=JNLG
------END PGP SIGNATURE-----
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
---0HftNnHLLsLtjwh6--
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
