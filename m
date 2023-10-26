@@ -4,68 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5CA65C25B48
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Oct 2023 15:07:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 42B4CC25B48
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Oct 2023 15:08:04 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2234A850;
-	Thu, 26 Oct 2023 17:06:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2234A850
+	by alsa0.perex.cz (Postfix) with ESMTPS id 04C1693A;
+	Thu, 26 Oct 2023 17:07:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 04C1693A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1698332869;
-	bh=MEhN2Si2/Oagqxuuq5w2D22SEWnFIemuGqoAmnQ1v6Q=;
-	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=DOZOOdeI9zZ+BKMATYHHxD5byUdkmohak+131d1QiucPu7MMmsS60zJ6KXDPInoVS
-	 z+lHPitb/o5ms4kefV25qALEYNf4UIEoGCfZbwmWE3ltv+/pKIqDQLeDyVceC98iJ0
-	 lPWlAId6AUjoIzA+ssxs6VA1eHZbGqNZ+te7eCnE=
+	s=default; t=1698332883;
+	bh=w/WBIzk1c8Px22k6L+s4Kg78OXA0Ud9fG9jpz0Igzac=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=KG8RY+y/RwZHcZN11hK8tma25DwCSW4KQMRjCbf4BpshQE4GNaNLhippPBJWJWW7c
+	 vwU4aZZHoN3KJDquZPcWU8gXCF47ecHNBnoKDS+kGLpGgukFIi40YG0v//pUccH45e
+	 vBqG2RcBNTIlMGajoDxArMqd5xz+8APXMNBfyaXA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 33F29F80557; Thu, 26 Oct 2023 17:06:23 +0200 (CEST)
+	id 41FC9F80165; Thu, 26 Oct 2023 17:06:24 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1CD6EF8055B;
-	Thu, 26 Oct 2023 17:06:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 34D7AF8056F;
+	Thu, 26 Oct 2023 17:06:24 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 17F47F8028D; Thu, 26 Oct 2023 17:06:18 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
+	id 5B815F8028D; Thu, 26 Oct 2023 17:06:20 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 660E4F8010B
-	for <alsa-devel@alsa-project.org>; Thu, 26 Oct 2023 17:06:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 660E4F8010B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 1A795F8019B
+	for <alsa-devel@alsa-project.org>; Thu, 26 Oct 2023 17:06:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1A795F8019B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=jrV7jYJA
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-	by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id
- 39Q5GUrd011654;
-	Thu, 26 Oct 2023 10:06:09 -0500
+ header.s=PODMain02222019 header.b=KvitG4L1
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+	by mx0b-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id
+ 39QF2DtX011762;
+	Thu, 26 Oct 2023 10:06:12 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	from:to:cc:subject:date:message-id:mime-version
-	:content-transfer-encoding:content-type; s=PODMain02222019; bh=6
-	OqnnMnxJr4U6WGGgQd0My1SNKbdKPtvtXT6+Ya2O+w=; b=jrV7jYJA47WRNbE0z
-	2BY5jlstA3CBlsRUt0M7HJK+kqW2d5enPocIEVmQzQ/OXDUkhTOI4RTkmbLe5/Y+
-	Q1Vn3uWbxHdLO4UrU+Njig4NwZ4Zf16WdL0Upi8y2WvbYmPGs1SZqbIlU+5465fW
-	KPL5bKr3HNYkpcEkE7HNVPTdT+FQIqy5kAvpeE9rEAz+tcddriRDIG3UaAf5Y0of
-	JcDD0I43BGMoevqtN1lOI+jg82mBQAQvsCYATLAv5ltchrcNAG3QfJUfoZzGRsfj
-	iVfzF5xSTKiDnmWnBtPFmYvXUsKJLrS1mM3Ah5gWigHGDq81/0RKQ2YCgYPLlzk4
-	LS5/A==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3tvc1x94k9-1
+	from:to:cc:subject:date:message-id:in-reply-to:references
+	:mime-version:content-transfer-encoding:content-type; s=
+	PODMain02222019; bh=P2RZ5FPl+x4KIbUrLBvQodtbr+Kus6IGLLMqcPJmaeY=; b=
+	KvitG4L1GV+7ZfKxNWN2mxEFrAf1OxqyEMvuS2j5d10rTK1ttAjT3if8guwQUEhe
+	FkjQtu8KLhfeaxBAgW1FqV9zYmxn7ZB+FLDM+3v9zy9GKFjOUWEGoICZjrS7b/Hn
+	upRUgOYVed7K/ng/GW2nEieN/ogKDH5I1jL0ugy4GqZzi2pY9YFerD21lt1j26ci
+	ZsIuyd/VlsZy2ObrDfTN3jw9vdDDZx6CUknvTvTDfRqhbsijaW8ZfRo5l9TKWe+n
+	ywRvJrvOsDVKU8y3X/4myxbO8iH+727YGY2pYv+/0IXGBnYVuqTXGcav+AvtzN9o
+	M8haN7gnf6lXFB2XWkqcbg==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3tvb2j6tep-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 26 Oct 2023 10:06:09 -0500 (CDT)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+	Thu, 26 Oct 2023 10:06:11 -0500 (CDT)
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Thu, 26 Oct
- 2023 16:06:07 +0100
+ 2023 16:06:09 +0100
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
  anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.37 via Frontend Transport; Thu, 26 Oct 2023 16:06:07 +0100
+ 15.2.1118.37 via Frontend Transport; Thu, 26 Oct 2023 16:06:09 +0100
 Received: from sbinding-cirrus-dsktp2.ad.cirrus.com (unknown [198.90.238.177])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 1C75E2A1;
-	Thu, 26 Oct 2023 15:06:07 +0000 (UTC)
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 681BF11AA;
+	Thu, 26 Oct 2023 15:06:09 +0000 (UTC)
 From: Stefan Binding <sbinding@opensource.cirrus.com>
 To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
         "Mark
@@ -74,18 +75,21 @@ CC: <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
         <linux-sound@vger.kernel.org>, <patches@opensource.cirrus.com>,
         "Stefan
  Binding" <sbinding@opensource.cirrus.com>
-Subject: [PATCH v1 0/8] System Suspend fixes and improvements for CS35L41 HDA
-Date: Thu, 26 Oct 2023 16:05:50 +0100
-Message-ID: <20231026150558.2105827-1-sbinding@opensource.cirrus.com>
+Subject: [PATCH v1 8/8] ASoC: cs35l41: Detect CSPL errors when sending CSPL
+ commands
+Date: Thu, 26 Oct 2023 16:05:58 +0100
+Message-ID: <20231026150558.2105827-9-sbinding@opensource.cirrus.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231026150558.2105827-1-sbinding@opensource.cirrus.com>
+References: <20231026150558.2105827-1-sbinding@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: CwLOw8q_guIXhoM-B7Ilyqhyfv-NQ2Rm
-X-Proofpoint-ORIG-GUID: CwLOw8q_guIXhoM-B7Ilyqhyfv-NQ2Rm
+X-Proofpoint-GUID: 2mnMNV1ezLHzUEslcCyFHivS6CNyn6IL
+X-Proofpoint-ORIG-GUID: 2mnMNV1ezLHzUEslcCyFHivS6CNyn6IL
 X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: 6WIG5QT4JMT3W2CFC2OJ6XJ2EDD7SREI
-X-Message-ID-Hash: 6WIG5QT4JMT3W2CFC2OJ6XJ2EDD7SREI
+Message-ID-Hash: ETVRHJ5F3ANXK7UW2SQAWS4FG3Z7BKOL
+X-Message-ID-Hash: ETVRHJ5F3ANXK7UW2SQAWS4FG3Z7BKOL
 X-MailFrom: prvs=56633e4941=sbinding@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -98,7 +102,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6WIG5QT4JMT3W2CFC2OJ6XJ2EDD7SREI/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ETVRHJ5F3ANXK7UW2SQAWS4FG3Z7BKOL/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -107,45 +111,48 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-There is a report of a single laptop which uses CS35L41 HDA having an
-issue with System Suspend. This particular laptop uses S3 (Deep) Sleep.
-The reported issue states that when the laptop resumes from a system
-suspend, audio no longer works.
+The existing code checks for the correct state transition after sending
+a command. However, it is possible for the message box to return -1,
+which indicates an error, if an error has occurred in the firmware.
+We can detect if the error has occurred, and return a different error.
+In addition, there is no recovering from a CSPL error, so the retry
+mechanism is not needed in this case, and we can return immediately.
 
-The root cause of this issue is due to the CS35L41 being returned to us
-in an unexpected state after a suspend/resume cycle.
-When the driver resumes, it expects the parts to have been reset, which
-leads to issues with audio and firmware loading.
+Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
+---
+ include/sound/cs35l41.h        | 2 ++
+ sound/soc/codecs/cs35l41-lib.c | 5 +++++
+ 2 files changed, 7 insertions(+)
 
-To prevent this issue, and the possibility of similar issues, patches
-2-5 force the driver to reset during probe, system suspend, and system
-resume, which ensures that the part is always in the correct state.
-Patches 6-8 are improvements in the suspend and firmware loading code,
-which makes it easier to detect issues in the future, as well as
-simplifiying the suspend code.
-
-Patch 1 is a fix for an incorrect configuration for the HP Zbook Fury
-17, which is the laptop which had the original issue.
-
-Stefan Binding (8):
-  ALSA: hda: cs35l41: Use reset label to get GPIO for HP Zbook Fury 17
-    G9
-  ALSA: hda: cs35l41: Assert reset before system suspend
-  ALSA: hda: cs35l41: Assert Reset prior to de-asserting in probe and
-    system resume
-  ALSA: hda: cs35l41: Run boot process during resume callbacks
-  ALSA: hda: cs35l41: Force a software reset after hardware reset
-  ALSA: hda: cs35l41: Do not unload firmware before reset in system
-    suspend
-  ALSA: hda: cs35l41: Check CSPL state after loading firmware
-  ASoC: cs35l41: Detect CSPL errors when sending CSPL commands
-
- include/sound/cs35l41.h              |   3 +
- sound/pci/hda/cs35l41_hda.c          | 170 +++++++++++++++++----------
- sound/pci/hda/cs35l41_hda_property.c |  11 +-
- sound/soc/codecs/cs35l41-lib.c       |   6 +
- 4 files changed, 124 insertions(+), 66 deletions(-)
-
+diff --git a/include/sound/cs35l41.h b/include/sound/cs35l41.h
+index 80df80fe31e2..043f8ac65dbf 100644
+--- a/include/sound/cs35l41.h
++++ b/include/sound/cs35l41.h
+@@ -816,6 +816,8 @@ struct cs35l41_otp_map_element_t {
+ };
+ 
+ enum cs35l41_cspl_mbox_status {
++	CSPL_MBOX_STS_ERROR = U32_MAX,
++	CSPL_MBOX_STS_ERROR2 = 0x00ffffff, // firmware not always sign-extending 24-bit value
+ 	CSPL_MBOX_STS_RUNNING = 0,
+ 	CSPL_MBOX_STS_PAUSED = 1,
+ 	CSPL_MBOX_STS_RDY_FOR_REINIT = 2,
+diff --git a/sound/soc/codecs/cs35l41-lib.c b/sound/soc/codecs/cs35l41-lib.c
+index ddedb7e63cb6..4569e4f7cf7e 100644
+--- a/sound/soc/codecs/cs35l41-lib.c
++++ b/sound/soc/codecs/cs35l41-lib.c
+@@ -1474,6 +1474,11 @@ int cs35l41_set_cspl_mbox_cmd(struct device *dev, struct regmap *regmap,
+ 			continue;
+ 		}
+ 
++		if (sts == CSPL_MBOX_STS_ERROR || sts == CSPL_MBOX_STS_ERROR2) {
++			dev_err(dev, "CSPL Error Detected\n");
++			return -EINVAL;
++		}
++
+ 		if (!cs35l41_check_cspl_mbox_sts(cmd, sts))
+ 			dev_dbg(dev, "[%u] cmd %u returned invalid sts %u", i, cmd, sts);
+ 		else
 -- 
 2.34.1
 
