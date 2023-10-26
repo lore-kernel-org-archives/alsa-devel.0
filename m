@@ -4,93 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B9338C25B6B
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Oct 2023 15:10:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E9CF1C25B67
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Oct 2023 15:10:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BE801E11;
-	Thu, 26 Oct 2023 17:09:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BE801E11
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3B58D84A;
+	Thu, 26 Oct 2023 17:09:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3B58D84A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1698333011;
-	bh=tfhftKsoLRYrjE2h6VK/g5frPbfbK/BcuYyMVN4Z+8Q=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1698333042;
+	bh=yFCeUvYUN8ddW5lXFRkDIKczNrKiL8ahYwXjs+NIZKE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=CflJsvixgiPjhEpU2faSucnllZzkYlXc+1D5+uB8akdob5GBNVTSfKIr4D1nW0LBP
-	 T3s7KXxbBk7VrbLXux/+pVlmg6vV7ns8krPukKHThNlFrBumfhMZ8y2TqvKhj/BuE1
-	 Q+7oRC2fXMhaooqfrgo9AhW1Br7HwyyRJy/tp3Y0=
+	b=POFN1SkaUb2PzybsM7G+ZuAiElfnQI4mvIENY1T6OQGFnt2fDhLmTtpe1yydHgqcs
+	 oraFc1HF2mR57G0/26GNApWSlM8khdSWB3x4PWeSJ9LXRvLRUtiwmZPxraWIPAnyx5
+	 tQdAHtQfOz0iUKCdRoTxYsb37l8eVQI86ajloavo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A01F1F80580; Thu, 26 Oct 2023 17:09:07 +0200 (CEST)
+	id 0ED00F80563; Thu, 26 Oct 2023 17:09:52 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id DD672F80580;
-	Thu, 26 Oct 2023 17:09:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C8F16F80224;
+	Thu, 26 Oct 2023 17:09:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4E49FF8055A; Thu, 26 Oct 2023 17:09:00 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id E6B61F8020D; Thu, 26 Oct 2023 17:09:48 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 72C7EF8019B
-	for <alsa-devel@alsa-project.org>; Thu, 26 Oct 2023 17:06:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 72C7EF8019B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 3E6CFF80152
+	for <alsa-devel@alsa-project.org>; Thu, 26 Oct 2023 17:09:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3E6CFF80152
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=CqmUOW1Q
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-	by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id
- 39Q5GUrk011654;
-	Thu, 26 Oct 2023 10:06:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	PODMain02222019; bh=aVS/k/o9GgQrl9MbNJJRmT2pCbqgdTBbMvRC49HEs3I=; b=
-	CqmUOW1QFN+R8yYC1KTnwLmwDmYXbhma6M7+oX2skXH2fwCrvPIXlp3yvJtd8hZ9
-	A0pyADUxlmRqQiz9aygmctQXY6waCu8g0FNnwQFU+gAZVIeIRMUAzoiJ2WfHruqp
-	0mLSxpUtVWItzUQoH/8/hsuzkIUpWF0wFZctGjL7Q0la8LAsGiWjJGwIVMw8coHW
-	sBhFsVpz6whzm2AKTm50X09iU1xO2fyqql3XKAbSQcgAUs084kL2LFrRZDcrJh4j
-	0qAqxMeLSQOB6Xu+DRs1YlJBDuwvkhitVJ/5Y3tXQ99qaSvwWO1SvrepEPJBQM0g
-	Tx5/QLdHn2MyLy3T2pqH0w==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3tvc1x94k9-7
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 26 Oct 2023 10:06:17 -0500 (CDT)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Thu, 26 Oct
- 2023 16:06:09 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.37 via Frontend
- Transport; Thu, 26 Oct 2023 16:06:09 +0100
-Received: from sbinding-cirrus-dsktp2.ad.cirrus.com (unknown [198.90.238.177])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id CD6D7357D;
-	Thu, 26 Oct 2023 15:06:08 +0000 (UTC)
-From: Stefan Binding <sbinding@opensource.cirrus.com>
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        "Mark
- Brown" <broonie@kernel.org>
-CC: <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
-        <linux-sound@vger.kernel.org>, <patches@opensource.cirrus.com>,
-        "Stefan
- Binding" <sbinding@opensource.cirrus.com>
-Subject: [PATCH v1 6/8] ALSA: hda: cs35l41: Do not unload firmware before
- reset in system suspend
-Date: Thu, 26 Oct 2023 16:05:56 +0100
-Message-ID: <20231026150558.2105827-7-sbinding@opensource.cirrus.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231026150558.2105827-1-sbinding@opensource.cirrus.com>
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=UGjKSJXg
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by ams.source.kernel.org (Postfix) with ESMTP id 242E3B80BA1;
+	Thu, 26 Oct 2023 15:09:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 850A2C433C8;
+	Thu, 26 Oct 2023 15:09:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1698332984;
+	bh=yFCeUvYUN8ddW5lXFRkDIKczNrKiL8ahYwXjs+NIZKE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=UGjKSJXgr1kKDUyBqpmKI4u63Y1D3+ATox6a9sFyG8bTXklDrSPk0un68G/IEpTrY
+	 xRl9pKhjg6Apujz783DfKuKOMmuhqEDmLNH895Y5S0bK8ExZEM+j88oy7pZztRNfj4
+	 s+F6x9iZkpZXVRMwT7n2vwTViltYp444oIS14sq5vtD0z3upWaA2Dw6wKwmloIoiWv
+	 HPmDRsiieiUGrmbyWFaC10HjWHmofhgtOfMrJWa9P+CbIcYHvgwWZR+Q3E6pVOG2Gu
+	 mrzB0//dIcwdKipr7w4jeHvDg6F70BJWG4ATBock1yAlUENgzanSE0X3wQumtDJ73B
+	 eaS0wmPCTIqaw==
+Date: Thu, 26 Oct 2023 16:09:39 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Stefan Binding <sbinding@opensource.cirrus.com>
+Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+	linux-sound@vger.kernel.org, patches@opensource.cirrus.com
+Subject: Re: [PATCH v1 8/8] ASoC: cs35l41: Detect CSPL errors when sending
+ CSPL commands
+Message-ID: <baeccbb4-5015-454d-a60e-861f67ce0f3d@sirena.org.uk>
 References: <20231026150558.2105827-1-sbinding@opensource.cirrus.com>
+ <20231026150558.2105827-9-sbinding@opensource.cirrus.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: 77tcB9QBMrf3J9m3UWL9pZxdtnLaMN5E
-X-Proofpoint-ORIG-GUID: 77tcB9QBMrf3J9m3UWL9pZxdtnLaMN5E
-X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: 35DGQPEGQRJNKARZMRTJKUAAPSIXE5DX
-X-Message-ID-Hash: 35DGQPEGQRJNKARZMRTJKUAAPSIXE5DX
-X-MailFrom: prvs=56633e4941=sbinding@opensource.cirrus.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="0HftNnHLLsLtjwh6"
+Content-Disposition: inline
+In-Reply-To: <20231026150558.2105827-9-sbinding@opensource.cirrus.com>
+X-Cookie: I'm also against BODY-SURFING!!
+Message-ID-Hash: Q7C7ZWKRTSHS3B2MPBSGYUMROJLMFVBX
+X-Message-ID-Hash: Q7C7ZWKRTSHS3B2MPBSGYUMROJLMFVBX
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -102,7 +86,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/35DGQPEGQRJNKARZMRTJKUAAPSIXE5DX/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Q7C7ZWKRTSHS3B2MPBSGYUMROJLMFVBX/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -111,66 +95,34 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Given the part is about to reset due to system suspend, and we are
-already in hibernate, there is no need to wake up the amp, just to get
-it ready to be reset. We just need to ensure cs_dsp is ready for reset
-by resetting the states.
 
-Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
----
- sound/pci/hda/cs35l41_hda.c | 33 ++++-----------------------------
- 1 file changed, 4 insertions(+), 29 deletions(-)
+--0HftNnHLLsLtjwh6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/sound/pci/hda/cs35l41_hda.c b/sound/pci/hda/cs35l41_hda.c
-index 9746c64ff0dd..69303888be1a 100644
---- a/sound/pci/hda/cs35l41_hda.c
-+++ b/sound/pci/hda/cs35l41_hda.c
-@@ -760,41 +760,16 @@ int cs35l41_verify_id(struct cs35l41_hda *cs35l41, unsigned int *regid, unsigned
- 
- static int cs35l41_ready_for_reset(struct cs35l41_hda *cs35l41)
- {
--	int ret = 0;
--
- 	mutex_lock(&cs35l41->fw_mutex);
- 	if (cs35l41->firmware_running) {
--
--		regcache_cache_only(cs35l41->regmap, false);
--
--		ret = cs35l41_exit_hibernate(cs35l41->dev, cs35l41->regmap);
--		if (ret) {
--			dev_warn(cs35l41->dev, "Unable to exit Hibernate.");
--			goto err;
--		}
--
--		/* Test key needs to be unlocked to allow the OTP settings to re-apply */
--		cs35l41_test_key_unlock(cs35l41->dev, cs35l41->regmap);
--		ret = regcache_sync(cs35l41->regmap);
--		cs35l41_test_key_lock(cs35l41->dev, cs35l41->regmap);
--		if (ret) {
--			dev_err(cs35l41->dev, "Failed to restore register cache: %d\n", ret);
--			goto err;
--		}
--
--		if (cs35l41->hw_cfg.bst_type == CS35L41_EXT_BOOST)
--			cs35l41_init_boost(cs35l41->dev, cs35l41->regmap, &cs35l41->hw_cfg);
--
--		cs35l41_shutdown_dsp(cs35l41);
--		cs35l41_safe_reset(cs35l41->regmap, cs35l41->hw_cfg.bst_type);
-+		cs35l41->cs_dsp.running = false;
-+		cs35l41->cs_dsp.booted = false;
-+		cs35l41->firmware_running = false;
- 	}
--err:
--	regcache_cache_only(cs35l41->regmap, true);
- 	regcache_mark_dirty(cs35l41->regmap);
--
- 	mutex_unlock(&cs35l41->fw_mutex);
- 
--	return ret;
-+	return 0;
- }
- 
- static int cs35l41_system_suspend_prep(struct device *dev)
--- 
-2.34.1
+On Thu, Oct 26, 2023 at 04:05:58PM +0100, Stefan Binding wrote:
+> The existing code checks for the correct state transition after sending
+> a command. However, it is possible for the message box to return -1,
+> which indicates an error, if an error has occurred in the firmware.
+> We can detect if the error has occurred, and return a different error.
+> In addition, there is no recovering from a CSPL error, so the retry
+> mechanism is not needed in this case, and we can return immediately.
 
+Acked-by: Mark Brown <broonie@kernel.org>
+
+--0HftNnHLLsLtjwh6
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmU6gTIACgkQJNaLcl1U
+h9BNxgf9ERaHvIciC5wdcj6QKeS1hbJ/n9tkYPUFkD6jh60PrHm5MdAnEPokRYyE
+gjiT8Y1t/MDRw8oVp+LMQvUFoMvmIxfkcNic9ks0VN5zdXt5wmZYCUZb3mowY7lC
+SCUwOrtZLVJutWMc16v+wl0Gc0MmeTFue30PsxCvh2FIGdqiDnE0cPJe3c+1II9T
+F9R5bwaYdYsGFjnCmWw6RmNWK+f8UYUqW6u/CyrcMg26hsMAPuBEG6zSkaORJIKF
+uvxh+d6vUKAe3SBz81iT1pYFy5Ets+13lUQ+0KPKL2GjMdWzHqm4qJ23mk9z8La3
+rgrQHeA4m+PAVqlZhZ3ZfWypxPvVdg==
+=JNLG
+-----END PGP SIGNATURE-----
+
+--0HftNnHLLsLtjwh6--
