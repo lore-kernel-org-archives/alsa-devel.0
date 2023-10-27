@@ -4,116 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1169BC25B67
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Oct 2023 10:35:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7E75AC25B47
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Oct 2023 10:39:49 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 67880AE9;
-	Fri, 27 Oct 2023 12:34:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 67880AE9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 19F25AEA;
+	Fri, 27 Oct 2023 12:38:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 19F25AEA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1698402934;
-	bh=15KNZnmcVkibTtn0X+sFaZtV6SKfDLgyWFZkhqPRhw0=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=FxVgOAPOUz4wrYj1DWtTxvfuzhwW4uDJu+jcZdK5utCJRrEo641ZnsSbxeDmXXX+u
-	 d3eqxs8jiRtm/vDUfeKQwqBVPcEwmfiXe8RigdJ1oRl+0f6OSVUyhkrFImsA6R7Eil
-	 Qt1/SHoV6ekm0Im/rIpC+FhZdI0Bu2TgkECRTw2c=
+	s=default; t=1698403186;
+	bh=wI0mwt7sqTL8dmrGQBVp5uPpTi5gVqncM4ZFyn5JE0o=;
+	h=Subject:From:To:Date:In-Reply-To:References:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=EiOzVbsxjcRF2DCP9Ygipjb84S8IWUGGOv4bjnDZAMZbvC9SItMv4TqGj4NII5ebx
+	 sb1DBYcYgtqkOqo7Fuubf8IwL1EPAsyuWAE8q4UTg2W4KOmbweawYnO4YQGqU4QZOo
+	 juqa/mf8OLROv0nfPgy4F1imr4KHIStyojQr+LD8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 918E9F8019B; Fri, 27 Oct 2023 12:34:43 +0200 (CEST)
+	id 8D7BEF80557; Fri, 27 Oct 2023 12:38:25 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 211BCF8019B;
-	Fri, 27 Oct 2023 12:34:43 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 17E6DF8019B;
+	Fri, 27 Oct 2023 12:38:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C831BF8019B; Fri, 27 Oct 2023 12:34:37 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A6F64F8012B
-	for <alsa-devel@alsa-project.org>; Fri, 27 Oct 2023 12:34:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A6F64F8012B
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=CIBAc3x7;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=NY5QUAYc
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id D450521AFB;
-	Fri, 27 Oct 2023 10:34:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1698402868;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pXB1Vb14kOU6d7gNmdGMsie6xUdluembpQff2Dnn5NA=;
-	b=CIBAc3x7bxs3JxiE36WwJlnpyCWOXUoyUp+EAEmUwWt66TNEi4GisgvR/BexJ/joYMQqc8
-	BnqQiFHOqndPNTXgzRAVxl/W52Q9V70JoRzWy8W5ApsiQQdhu86mh3DCuTHgvvovmThdDN
-	a8dHmypELKhkoZJLE0m4Lyi73YldlQg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1698402868;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pXB1Vb14kOU6d7gNmdGMsie6xUdluembpQff2Dnn5NA=;
-	b=NY5QUAYcFlBwLvrvzA4kEf81jAczgh4JM8aol88L9dvTpX0rfY5Fnx9z0lgAXeYiUlacjR
-	Dij5PxynofHfFRDg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AB5FC1358C;
-	Fri, 27 Oct 2023 10:34:28 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id Lx7EKDSSO2VDfgAAMHmgww
-	(envelope-from <tiwai@suse.de>); Fri, 27 Oct 2023 10:34:28 +0000
-Date: Fri, 27 Oct 2023 12:34:29 +0200
-Message-ID: <878r7oxsju.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: "Geoffrey D. Bennett" <g@b4.vu>
-Cc: Takashi Iwai <tiwai@suse.com>,
-	alsa-devel@alsa-project.org
-Subject: Re: [PATCH] ALSA: scarlett2: Add missing check with firmware version
- control
-In-Reply-To: <ZTuKcXajVnuelBEb@m.b4.vu>
-References: <ZTuKcXajVnuelBEb@m.b4.vu>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spamd-Result: default: False [-10.09 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 RCPT_COUNT_THREE(0.00)[3];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 REPLY(-4.00)[];
-	 NEURAL_HAM_LONG(-3.00)[-1.000];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-1.00)[-1.000];
-	 MID_CONTAINS_FROM(1.00)[];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_COUNT_TWO(0.00)[2];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-2.99)[99.96%]
-Message-ID-Hash: OUQQJZ72P3CHJT4FKKOX6DTCWMWDB5IB
-X-Message-ID-Hash: OUQQJZ72P3CHJT4FKKOX6DTCWMWDB5IB
-X-MailFrom: tiwai@suse.de
+	id DE23DF8019B; Fri, 27 Oct 2023 12:38:20 +0200 (CEST)
+Received: from mailman-web.alsa-project.org (mailman-web.alsa-project.org
+ [10.254.200.11])
+	by alsa1.perex.cz (Postfix) with ESMTP id D1079F8012B
+	for <alsa-devel@alsa-project.org>; Fri, 27 Oct 2023 12:38:20 +0200 (CEST)
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: Re: [alsa-devel] echo-cancellation plugin advice?
+From: f.antonini@tiesse.com
+To: alsa-devel@alsa-project.org
+Date: Fri, 27 Oct 2023 10:38:20 -0000
+Message-ID: <169840310085.21.3458972256504699984@mailman-web.alsa-project.org>
+In-Reply-To: <s5hsjfbneiu.wl%tiwai@suse.de>
+References: <s5hsjfbneiu.wl%tiwai@suse.de>
+User-Agent: HyperKitty on https://mailman.alsa-project.org/
+Message-ID-Hash: TXZQV55QSZDZNYGL4G3OFFAORIXJRQSJ
+X-Message-ID-Hash: TXZQV55QSZDZNYGL4G3OFFAORIXJRQSJ
+X-MailFrom: f.antonini@tiesse.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -125,7 +57,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OUQQJZ72P3CHJT4FKKOX6DTCWMWDB5IB/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TXZQV55QSZDZNYGL4G3OFFAORIXJRQSJ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -134,15 +66,12 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, 27 Oct 2023 12:01:21 +0200,
-Geoffrey D. Bennett wrote:
-> 
-> scarlett2_add_firmware_version_ctl() may return an error, but the
-> return value was not being checked. Add the missing check.
-> 
-> Signed-off-by: Geoffrey D. Bennett <g@b4.vu>
+Hi Everyone
 
-Thanks, applied with Fixes tag.
+I arrived at this thread because I need to implement an acoustic echo canceller based on the Speex library. I think that the Speex plugin available under 'alsa-plugins' repository would be the best starting point, but I need to provide as input both the streams (input and output).
+For what I understand the current implementation provides just one input (the audio stream coming from the MIC) and so it can't remove the echo of the playback audio. It works as a filter as explained before. Right?
+Please can you suggest some hints provide both the recording source and the playback stream as one input to an ALSA plugin? Is it doable anyhow?
 
+Thanks in advance for your help
 
-Takashi
+Fabio Antonini
