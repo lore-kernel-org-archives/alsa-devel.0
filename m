@@ -4,47 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DF4E1C25B47
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Oct 2023 11:19:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EA1F0C25B67
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Oct 2023 11:19:35 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E611DE7B;
-	Fri, 27 Oct 2023 13:18:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E611DE7B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 22BDEE91;
+	Fri, 27 Oct 2023 13:18:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 22BDEE91
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1698405560;
-	bh=TeLYi50/KW0LxZzoVeHF7RQ8ofZT2ZWvMojjqBjDl6c=;
+	s=default; t=1698405574;
+	bh=ImzNxqs0xkj2U6J7gTa9sJdI5GGIwkLF3v5xPj/nHYQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=Bit7p1UfHNrEdSkoEX/G30jpCULMqNTHPAyCBwDhYkSmvMcpcllLbZ6gwBSKLLLZ6
-	 Ot1bFC3YhpNzPWoLZlOMklJT+Ne/nNlKUBJR3dN1/wv3j8NtwGc3ETtJNe8v/Xc3Ay
-	 hRZ6VtLBDaqgXrN+WVQaItYr32wPG0ipIDNdoDXA=
+	b=gW9SmDr5XRi6qevsykSzW6Kg9i18zR60EuL1gN6fHXiGz0VB4MOBjr/69m72uyELO
+	 8peELhsdUqXpBONRXvuih/Oe+U97C1IKNI4POzNRkzdx4uziKkUL1mFcHbptpIFVoK
+	 lESnUAqki7vD7ebxzwQQuK9lgG3S9yz5Szl6LuG0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B029DF8059F; Fri, 27 Oct 2023 13:17:31 +0200 (CEST)
+	id 71680F805A0; Fri, 27 Oct 2023 13:17:36 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 68CF1F8057B;
-	Fri, 27 Oct 2023 13:17:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 08072F805AA;
+	Fri, 27 Oct 2023 13:17:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5F175F8055A; Fri, 27 Oct 2023 13:17:26 +0200 (CEST)
+	id EAEB4F805A1; Fri, 27 Oct 2023 13:17:31 +0200 (CEST)
 Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 316BBF8010B
-	for <alsa-devel@alsa-project.org>; Fri, 27 Oct 2023 13:14:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 316BBF8010B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 7A425F8020D
+	for <alsa-devel@alsa-project.org>; Fri, 27 Oct 2023 13:14:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7A425F8020D
 Received: from inva021.nxp.com (localhost [127.0.0.1])
-	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id CCE86201F98;
-	Fri, 27 Oct 2023 13:14:39 +0200 (CEST)
+	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 21E51201F9B;
+	Fri, 27 Oct 2023 13:14:38 +0200 (CEST)
 Received: from aprdc01srsp001v.ap-rdc01.nxp.com
  (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
-	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 7FE00201F97;
-	Fri, 27 Oct 2023 13:14:39 +0200 (CEST)
+	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 82AD4201F97;
+	Fri, 27 Oct 2023 13:14:37 +0200 (CEST)
 Received: from localhost.localdomain (shlinux2.ap.freescale.net
  [10.192.224.44])
-	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 4F2CB180327D;
-	Fri, 27 Oct 2023 19:14:37 +0800 (+08)
+	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id D1745180031E;
+	Fri, 27 Oct 2023 19:14:35 +0800 (+08)
 From: Shengjiu Wang <shengjiu.wang@nxp.com>
 To: hverkuil@xs4all.nl,
 	sakari.ailus@iki.fi,
@@ -63,15 +63,15 @@ To: hverkuil@xs4all.nl,
 	tiwai@suse.com,
 	alsa-devel@alsa-project.org,
 	linuxppc-dev@lists.ozlabs.org
-Subject: [RFC PATCH v8 05/13] ASoC: fsl_easrc: register m2m platform device
-Date: Fri, 27 Oct 2023 18:35:40 +0800
-Message-Id: <1698402948-10618-6-git-send-email-shengjiu.wang@nxp.com>
+Subject: [RFC PATCH v8 04/13] ASoC: fsl_asrc: register m2m platform device
+Date: Fri, 27 Oct 2023 18:35:39 +0800
+Message-Id: <1698402948-10618-5-git-send-email-shengjiu.wang@nxp.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1698402948-10618-1-git-send-email-shengjiu.wang@nxp.com>
 References: <1698402948-10618-1-git-send-email-shengjiu.wang@nxp.com>
 X-Virus-Scanned: ClamAV using ClamSMTP
-Message-ID-Hash: 44C6EO4FI2ZKYZO7I4VTH3DKAKWNAACI
-X-Message-ID-Hash: 44C6EO4FI2ZKYZO7I4VTH3DKAKWNAACI
+Message-ID-Hash: H4W24B2WMSMHN4HEPSWJ7JFO3W3C7LS2
+X-Message-ID-Hash: H4W24B2WMSMHN4HEPSWJ7JFO3W3C7LS2
 X-MailFrom: shengjiu.wang@nxp.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -84,7 +84,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/44C6EO4FI2ZKYZO7I4VTH3DKAKWNAACI/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/H4W24B2WMSMHN4HEPSWJ7JFO3W3C7LS2/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -93,57 +93,110 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Register m2m platform device,that user can
+Register m2m platform device, that user can
 use M2M feature.
+
+Defined platform data structure and platform
+driver name.
 
 Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 Acked-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/fsl_easrc.c | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+ include/sound/fsl_asrc_common.h | 23 +++++++++++++++++++++++
+ sound/soc/fsl/fsl_asrc.c        | 18 ++++++++++++++++++
+ 2 files changed, 41 insertions(+)
 
-diff --git a/sound/soc/fsl/fsl_easrc.c b/sound/soc/fsl/fsl_easrc.c
-index 0b9f3df8efc2..07e7475db7f3 100644
---- a/sound/soc/fsl/fsl_easrc.c
-+++ b/sound/soc/fsl/fsl_easrc.c
-@@ -2075,6 +2075,7 @@ MODULE_DEVICE_TABLE(of, fsl_easrc_dt_ids);
- static int fsl_easrc_probe(struct platform_device *pdev)
+diff --git a/include/sound/fsl_asrc_common.h b/include/sound/fsl_asrc_common.h
+index 3b53d366182f..c709b8906929 100644
+--- a/include/sound/fsl_asrc_common.h
++++ b/include/sound/fsl_asrc_common.h
+@@ -71,6 +71,7 @@ struct fsl_asrc_pair {
+  * @dma_params_rx: DMA parameters for receive channel
+  * @dma_params_tx: DMA parameters for transmit channel
+  * @pdev: platform device pointer
++ * @m2m_pdev: m2m platform device pointer
+  * @regmap: regmap handler
+  * @paddr: physical address to the base address of registers
+  * @mem_clk: clock source to access register
+@@ -103,6 +104,7 @@ struct fsl_asrc {
+ 	struct snd_dmaengine_dai_dma_data dma_params_rx;
+ 	struct snd_dmaengine_dai_dma_data dma_params_tx;
+ 	struct platform_device *pdev;
++	struct platform_device *m2m_pdev;
+ 	struct regmap *regmap;
+ 	unsigned long paddr;
+ 	struct clk *mem_clk;
+@@ -139,6 +141,27 @@ struct fsl_asrc {
+ 	void *private;
+ };
+ 
++/**
++ * struct fsl_asrc_m2m_pdata - platform data
++ * @asrc: pointer to struct fsl_asrc
++ * @fmt_in: input sample format
++ * @fmt_out: output sample format
++ * @chan_min: minimum channel number
++ * @chan_max: maximum channel number
++ * @rate_min: minimum rate
++ * @rate_max: maximum rete
++ */
++struct fsl_asrc_m2m_pdata {
++	struct fsl_asrc *asrc;
++	u64 fmt_in;
++	u64 fmt_out;
++	int chan_min;
++	int chan_max;
++	int rate_min;
++	int rate_max;
++};
++
++#define M2M_DRV_NAME "fsl_asrc_m2m"
+ #define DRV_NAME "fsl-asrc-dai"
+ extern struct snd_soc_component_driver fsl_asrc_component;
+ 
+diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
+index 7d8643ee0ba0..5ecb5d869607 100644
+--- a/sound/soc/fsl/fsl_asrc.c
++++ b/sound/soc/fsl/fsl_asrc.c
+@@ -1187,6 +1187,7 @@ static int fsl_asrc_runtime_suspend(struct device *dev);
+ static int fsl_asrc_probe(struct platform_device *pdev)
  {
- 	struct fsl_easrc_priv *easrc_priv;
+ 	struct device_node *np = pdev->dev.of_node;
 +	struct fsl_asrc_m2m_pdata m2m_pdata;
- 	struct device *dev = &pdev->dev;
- 	struct fsl_asrc *easrc;
+ 	struct fsl_asrc_priv *asrc_priv;
+ 	struct fsl_asrc *asrc;
  	struct resource *res;
-@@ -2190,11 +2191,29 @@ static int fsl_easrc_probe(struct platform_device *pdev)
- 		return ret;
+@@ -1368,6 +1369,18 @@ static int fsl_asrc_probe(struct platform_device *pdev)
+ 		goto err_pm_get_sync;
  	}
  
-+	m2m_pdata.asrc = easrc;
-+	m2m_pdata.fmt_in = FSL_EASRC_FORMATS;
-+	m2m_pdata.fmt_out = FSL_EASRC_FORMATS | SNDRV_PCM_FMTBIT_IEC958_SUBFRAME_LE;
-+	m2m_pdata.rate_min = 8000;
-+	m2m_pdata.rate_max = 768000;
++	m2m_pdata.asrc = asrc;
++	m2m_pdata.fmt_in = FSL_ASRC_FORMATS;
++	m2m_pdata.fmt_out = FSL_ASRC_FORMATS | SNDRV_PCM_FMTBIT_S8;
++	m2m_pdata.rate_min = 5512;
++	m2m_pdata.rate_max = 192000;
 +	m2m_pdata.chan_min = 1;
-+	m2m_pdata.chan_max = 32;
-+	easrc->m2m_pdev = platform_device_register_data(&pdev->dev,
-+							M2M_DRV_NAME,
-+							PLATFORM_DEVID_AUTO,
-+							&m2m_pdata,
-+							sizeof(m2m_pdata));
-+
++	m2m_pdata.chan_max = 10;
++	asrc->m2m_pdev = platform_device_register_data(&pdev->dev,
++						       M2M_DRV_NAME,
++						       PLATFORM_DEVID_AUTO,
++						       &m2m_pdata,
++						       sizeof(m2m_pdata));
  	return 0;
- }
  
- static void fsl_easrc_remove(struct platform_device *pdev)
+ err_pm_get_sync:
+@@ -1380,6 +1393,11 @@ static int fsl_asrc_probe(struct platform_device *pdev)
+ 
+ static void fsl_asrc_remove(struct platform_device *pdev)
  {
-+	struct fsl_asrc *easrc = dev_get_drvdata(&pdev->dev);
++	struct fsl_asrc *asrc = dev_get_drvdata(&pdev->dev);
 +
-+	if (easrc->m2m_pdev && !IS_ERR(easrc->m2m_pdev))
-+		platform_device_unregister(easrc->m2m_pdev);
++	if (asrc->m2m_pdev && !IS_ERR(asrc->m2m_pdev))
++		platform_device_unregister(asrc->m2m_pdev);
 +
  	pm_runtime_disable(&pdev->dev);
- }
- 
+ 	if (!pm_runtime_status_suspended(&pdev->dev))
+ 		fsl_asrc_runtime_suspend(&pdev->dev);
 -- 
 2.34.1
 
