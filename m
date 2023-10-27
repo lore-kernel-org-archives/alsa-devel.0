@@ -4,159 +4,129 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 80E44C25B47
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Oct 2023 06:53:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5443CC25B67
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Oct 2023 08:23:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E5B8CAEA;
-	Fri, 27 Oct 2023 08:52:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E5B8CAEA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 73661AE9;
+	Fri, 27 Oct 2023 10:22:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 73661AE9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1698389605;
-	bh=SCNmXq7Ptie0LI3Yxb0UJJYwMBSju8ihHjTKPqLl07Q=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	s=default; t=1698395016;
+	bh=cYKnpEp7d6aLoMZuQpZbbMS1TgNujtcL2qAOl39D4cI=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=krCcv053hbuBpSIQG5nZIise0T0F+WYaPXikneZqy7k6yzddUBXo6fBGZnzHIGjfG
-	 mcsgNxuHNqw1WoJ4QLTs0EJiiKwtsahFv7Sa838OYSO119Ph+hFTkTtDRKNzgMLyO7
-	 +jGorP+4VlTgEaPk38pkB1AteZe93l12cU6QL5Bo=
+	b=VhF1hJzdMY1rzPXPrzf8eEVctKzCuhbcPjn14BHUxH9vfjw22JjJ3VXE9GGJzDK8m
+	 OT1/GpT6OMbJRIIQN7wRMJWlI4ZDC7vq/5LAhQE3B9WB1TJJ6SqqjEsd563iSzUMZ8
+	 SEj9PUk1c1Ws23A5fgwHYTSRexicdJSQhrB7bKo4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3ADF8F8028D; Fri, 27 Oct 2023 08:52:14 +0200 (CEST)
+	id 58E0CF8019B; Fri, 27 Oct 2023 10:22:18 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id CE0BEF8010B;
-	Fri, 27 Oct 2023 08:52:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D86C5F8019B;
+	Fri, 27 Oct 2023 10:22:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 58725F8019B; Fri, 27 Oct 2023 08:52:06 +0200 (CEST)
-Received: from EUR05-VI1-obe.outbound.protection.outlook.com
- (mail-vi1eur05on20702.outbound.protection.outlook.com
- [IPv6:2a01:111:f400:7d00::702])
+	id 62949F80224; Fri, 27 Oct 2023 10:22:12 +0200 (CEST)
+Received: from APC01-SG2-obe.outbound.protection.outlook.com
+ (mail-sgaapc01hn2231.outbound.protection.outlook.com [52.100.164.231])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 68596F8012B
-	for <alsa-devel@alsa-project.org>; Fri, 27 Oct 2023 08:51:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 68596F8012B
+	by alsa1.perex.cz (Postfix) with ESMTPS id C7A64F8014B
+	for <alsa-devel@alsa-project.org>; Fri, 27 Oct 2023 10:22:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C7A64F8014B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
- unprotected) header.d=mysnt.onmicrosoft.com header.i=@mysnt.onmicrosoft.com
- header.a=rsa-sha256 header.s=selector2-mysnt-onmicrosoft-com
- header.b=Nxgxyw8h
+ unprotected) header.d=nuvoton.com header.i=@nuvoton.com header.a=rsa-sha256
+ header.s=selector1 header.b=fGw7LAOF
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=l+MKFdhOT/Tk/BE3B+ErTYGY8dcKgGYw6Ex8xFZCuM1yWV75vb0euP3HRGqt0Od59y0KwvwdJdGY2KuRcQg/m9dgrGGtCvxzbgmAPmtE6XTHaiFX9D5yn39f+FpuCPvy8tmMuBuBJCMmRGc6kAMwfdpTQNcIWMzgEy7vfgiuYudwVF7fIGz903sQu63TVUXDu/lcpGqLk/8fUVsIG1Ln8lshV9/MVPKNpXSos/PWZ2JThlFdVQF6BZ8F+1mZPfYj3/Cdk8brT5BiWySdYHtRrTx2jlbU/LxitB9qrsru6/qbJ5NbTvu5xA3i7WkGr+euGBJhdfBTQ+6IjnRrPRqsPw==
+ b=ID0oWwjR8p4jaVwbziCM9AiMxtABnVNzAkIv/M6EkxKThpK9ylJAA8czxZ4lRRgShaXej0xeoyJzhhPZt/HapKpxqZ+VEU4M3ivcPr57X4d39d8hEIWnZ0yUa6Qg1b4yYHW6xQ33NjH/GNn2bo7RrCA8YOsNcNNictNui3Mw9D4Dx8YS97a28ppz3kuG+HA4qaFuUBKGQqqBTprV6W8gQ5iX/o6DZbPN0p8G48Vf1CBKJJ4Qq/uzS/yTdOCiTEo9OasalTjSuJJYdMYiyA5yO8V/w/hDX669UWPktRZpUVbAn6odppqOLUrpxZOr5PG6RsS0eLFMhGDFfYqAKHiqTg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=b2MRnDrbb5KyElhHtjuWNn8Louiip72gKgPmSRe2XbQ=;
- b=gU67u/0BVKyF0c0h8LWn/IA2enlxXQoLIzroDLnCOr2eADi4Qq2fqKr9ku2P505xIDeQnOvjGkiCkrXAxNQQZh03VNRCOu6aS3ZvDCJp9OZwSr6sl3CGQoIubJYVwwssm1pHwYld6zyufZ7gieucoURFMEW28NUrcojpfwUtb3nLIT3qyQyPwrvK4Q0BT5gM/gKZkfWDkSDbVLnOXcLO+Ra8ZDBK48hAFXqosJzek4N/gLViCbAKZmn/0ijRQiEOcvMLgFwOoCtN4HMNZCcmeXQ2lF9zMAtLF/b0BgvKSzMYW45E7ChbeP56PPVW/85O5DxRg+TjNMwJMiCEpeqgcQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=kontron.de; dmarc=pass action=none header.from=kontron.de;
- dkim=pass header.d=kontron.de; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mysnt.onmicrosoft.com;
- s=selector2-mysnt-onmicrosoft-com;
+ bh=wX2jBTP5sV1ADRwrexOSmKBqHTLl6/PX36w7GH0BnrU=;
+ b=XfWUYC7y714ijYlXLRHGDE5IUiSKw+eMeaxtwlxDl+qqVI6QVHkLwhANigURkdbmJYuKfhHLK4PYOz6/GMtfHEFGPsbyVOe4f3rCoZpruU8cDP8Ygu2ef3CZMyiBTpwPjyohwfpfkcJyOUrCxKT6aP8CAJJ8HqSn7NvhcglDvQDd1RPb8E0K7LWCE/R05KDixK8duOi/bik/SsdzXyiOarN1xzOsDbKq4lvjqcP5yEnwR6XGidIRr+nK4ai3xhTX2rkWJcQFInmIPj7zaRsK8WZE1UXvri9KlwlZicVEEBytwPWrHuKtVvX+4B2kW602ZQX9ZWS7dmnwJbi3xw6Syw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 175.98.123.7) smtp.rcpttodomain=kernel.org smtp.mailfrom=nuvoton.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=nuvoton.com; dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nuvoton.com;
+ s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=b2MRnDrbb5KyElhHtjuWNn8Louiip72gKgPmSRe2XbQ=;
- b=Nxgxyw8hjf2hj3NzAsvAqyDipssPhgQb2h8gF3D0Cly3SBIVgopzAhdeHMKjyTXs+a2Epu9zRlVTF6+/zGyuMGfj32tZ36wPRm0we8NT2WUfgo6G3zPt6o1fJPBtuPNZLyRw3HUpISAMN+88Rf2w+PIMM6bxjjfoP7CoUHCgrE8=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=kontron.de;
-Received: from PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:102:263::10)
- by PA4PR10MB5513.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:102:26e::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.22; Fri, 27 Oct
- 2023 06:51:54 +0000
-Received: from PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::27ba:9922:8d12:7b3d]) by PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::27ba:9922:8d12:7b3d%5]) with mapi id 15.20.6933.022; Fri, 27 Oct 2023
- 06:51:53 +0000
-Message-ID: <abf335aa-1366-4c66-80f1-86e273143702@kontron.de>
-Date: Fri, 27 Oct 2023 08:51:49 +0200
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/4] spi: spi-fsl-qspi: Add support for rx data sample
- point adjustment
-To: kernel test robot <lkp@intel.com>, Eberhard Stoll <estl@gmx.net>,
- Han Xu <han.xu@nxp.com>, linux-kernel@vger.kernel.org,
- linux-spi@vger.kernel.org, Mark Brown <broonie@kernel.org>
-Cc: oe-kbuild-all@lists.linux.dev, Eberhard Stoll
- <eberhard.stoll@kontron.de>,
- Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>,
- Amit Kumar Mahapatra via Alsa-devel <alsa-devel@alsa-project.org>,
- Michal Simek <monstr@monstr.eu>, Rob Herring <robh@kernel.org>,
- =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
- Yang Yingliang <yangyingliang@huawei.com>
-References: <20231026152316.2729575-5-estl@gmx.net>
- <202310270332.mcbckKCr-lkp@intel.com>
-Content-Language: en-US, de-DE
-From: Frieder Schrempf <frieder.schrempf@kontron.de>
-In-Reply-To: <202310270332.mcbckKCr-lkp@intel.com>
-Content-Type: text/plain; charset=UTF-8
-X-ClientProxiedBy: FR4P281CA0249.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:f5::19) To PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:102:263::10)
+ bh=wX2jBTP5sV1ADRwrexOSmKBqHTLl6/PX36w7GH0BnrU=;
+ b=fGw7LAOFOwUEqwIvgVobOzH5Vi+tCT7tf1jXtqmiw87fbAiW8fUdx84Xm0eanV+PSzXaeN8rrJnvgn3c9Z8Z1bqr3FGon+a95km4ElBhfGmQSs9Tblf+tRjUQG4pM1P03WOuw0ccLD7VzYnHBoM6NA3FvIId+AcoBAPa6Mnx2Bw=
+Received: from SG2P153CA0050.APCP153.PROD.OUTLOOK.COM (2603:1096:4:c6::19) by
+ KL1PR03MB7598.apcprd03.prod.outlook.com (2603:1096:820:e0::12) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6933.19; Fri, 27 Oct 2023 08:21:58 +0000
+Received: from HK2PEPF00006FB5.apcprd02.prod.outlook.com
+ (2603:1096:4:c6:cafe::95) by SG2P153CA0050.outlook.office365.com
+ (2603:1096:4:c6::19) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.11 via Frontend
+ Transport; Fri, 27 Oct 2023 08:21:58 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 175.98.123.7)
+ smtp.mailfrom=nuvoton.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nuvoton.com;
+Received-SPF: Pass (protection.outlook.com: domain of nuvoton.com designates
+ 175.98.123.7 as permitted sender) receiver=protection.outlook.com;
+ client-ip=175.98.123.7; helo=NTHCCAS04.nuvoton.com; pr=C
+Received: from NTHCCAS04.nuvoton.com (175.98.123.7) by
+ HK2PEPF00006FB5.mail.protection.outlook.com (10.167.8.11) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.20.6838.22 via Frontend Transport; Fri, 27 Oct 2023 08:21:57 +0000
+Received: from NTHCCAS01.nuvoton.com (10.1.8.28) by NTHCCAS04.nuvoton.com
+ (10.1.8.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.14; Fri, 27
+ Oct 2023 16:21:56 +0800
+Received: from localhost.localdomain (10.11.36.27) by NTHCCAS01.nuvoton.com
+ (10.1.8.28) with Microsoft SMTP Server id 15.1.2375.34 via Frontend
+ Transport; Fri, 27 Oct 2023 16:21:56 +0800
+From: Seven Lee <wtli@nuvoton.com>
+To: <broonie@kernel.org>
+CC: <lgirdwood@gmail.com>, <alsa-devel@alsa-project.org>,
+	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<robh+dt@kernel.org>, <conor+dt@kernel.org>, <YHCHuang@nuvoton.com>,
+	<KCHSU0@nuvoton.com>, <CTLIN0@nuvoton.com>, <SJLIN0@nuvoton.com>,
+	<scott6986@gmail.com>, <supercraig0719@gmail.com>, <dardar923@gmail.com>,
+	<wtli@nuvoton.com>
+Subject: [PATCH v2 1/2] ASoC: dt-bindings: nau8821: Add DMIC slew rate
+ selection
+Date: Fri, 27 Oct 2023 16:21:43 +0800
+Message-ID: <20231027082144.639369-2-wtli@nuvoton.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20231027082144.639369-1-wtli@nuvoton.com>
+References: <20231027082144.639369-1-wtli@nuvoton.com>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-NotSetDelaration: True
+X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PA4PR10MB5681:EE_|PA4PR10MB5513:EE_
-X-MS-Office365-Filtering-Correlation-Id: 89e8c010-b281-49f6-a471-08dbd6b93438
+X-MS-TrafficTypeDiagnostic: HK2PEPF00006FB5:EE_|KL1PR03MB7598:EE_
+X-MS-Office365-Filtering-Correlation-Id: ef874de0-f1e8-4f4f-778a-08dbd6c5c96a
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info: 
-	uK3TAe0YUJpkGvHufF6TO6BqQns6UsYdT574+u8LFlm9Pro83CWZcKLAuG2Vec8bZseIzKnlMHyTjlFXGUso9e8hn2HC9xwc92BqaU1RW5+yp/IiGVED0Xpt88zubXHw/gMu88YjDv1pE3y9AAq5IOtYvrPncjEZDfuwqkRauHOlD4/v3ZbWBIAQSJqcp2nrGSCWSnWLx1u2F0X1UlnDEMBeQ7YZL9OSbzQTrr24EdMyaRNAqhLBi2s/UfG7gD9zKNU2y+ECIRhNks8I6DW8bBYA9rcCj5o+uVOB18M0Ms+E+zF1wFb1ml3MWNnOvKzxH6LicD5fPBQTPZ8eW4f9qTlq29mklSg5NDuu1tTZLjVjTGUJEgqn+rhwMmF3zURAMNY4tWFaXmn/DT5fF4KuWcIIJ4tMELV2gDdtywz1K5wqHJL4YPeZpvBq9aEgjiR32MX3XGBeThyHcLSzCemyTqDUQWFRGlM3NqSJkB5Y1z7kDFq6swjcI2MWUpL0uTJ/XesCXW1HSYF3Ijke/9b+7W77G/D99bl37sCRBYPcH14qpbns7eMDeajV+ayki2K6Anq1KaPD6dChmuBF4cVIZ9m2RGnHHw1w/b3tf7G+ESkRou02WczulhIQmVZ9b8gCqZ0Epuj8l2WlWy+jXtnbEjLS9jpxAZcedpkOw67AYZP8RhGJDUAIsyL5Y6RupXot
+	qxUosP54cmCwcQD/q/P3EKUJYHwb13Kg1uyGSfJlID+wVOjo/zc6u1+vSEzk3UzkF9mDB92+zdKDAlWs8GkTV0YunjeDIDNHp4yAzkBo3i3UGKYVl8zc+3ecaTRVO9IvhNyiXttSXFUN4Z0VB87Kbk8y/KGHCZdXTEttLkthjwcGxuMInAKAtoBFwN7WlQmKcbhw33rCi2o5XpBEu6+/OwooV1yt453jAcSi9KmhMzO9BGap4NkfBMhylgfAO+TY5XdE/2sOw3Dc+LiPYeIiY8LY7Di22E7+B0ht+eZhLtUoAmGnB6Wg8Td/VWm4dv4Kh5E9Urq5rxUQe8yrFPszisCupkbitBI5EZOnLDVAnOlgIrrpllCT4pMus+ONXR4/FLBwXsXYEYXORslaq5OyGvDWVs7d/PEdMFG9do/9z9WYovjroUd+9yt2GVRfSLCdjjBZt1xTHFgAImZgA+uc/ZgYWnbWtnYAIEgO7KZ7xiCrFIHPkYXXTK8YpGmG4P/OPy9tFQO3h0Km7uTL9uLGd5i6seqrjtqlqgRsFCk/0e205JMteDM2mrX17OE9J1grrydAzalxMT75balFbIFafyL7Uggjgk2NPEgMsnEDlxVOLaJ84cjkypUeaWkkdP2St96aGJJWH9JTHmxf5vH5V15y1KLvo0Pcmoty2QvUvxPj9wc9VcqeRErDUelIZ52r7X6aaxcQSZB0YjauLXj/WpXjQ02M/2unpFg50a9zkJOQRgXjTW/S/qI6PEJz6f90O2z9/+qmp1gL6liu7nM3oK8k55Tn58b9OJ+nO3Lu6XQtLXaCLC0ijWpmX3PiuydsxMfmchryI1FcUBnJWkz7csnLZkQHeYZyJp25aBv1NDk=
 X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(346002)(366004)(136003)(376002)(396003)(39860400002)(230922051799003)(230273577357003)(230173577357003)(451199024)(186009)(1800799009)(64100799003)(53546011)(45080400002)(6666004)(6506007)(38100700002)(31696002)(86362001)(36756003)(83380400001)(2616005)(6512007)(26005)(7416002)(316002)(66946007)(54906003)(66556008)(66476007)(44832011)(41300700001)(31686004)(5660300002)(6486002)(110136005)(2906002)(966005)(478600001)(8676002)(4326008)(8936002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?utf-8?B?dzZQRUJuZnZRc1JhVUlLL2Rqdms4SUlQOFh1UTBKcVRYTGFMaU5TQ0svMmRT?=
- =?utf-8?B?K2NaV09tQ2laYnBIV1VZK0ViYUVhV2FiWGVzT3RzdU96U0lhV0RYNGVVRWZy?=
- =?utf-8?B?d3ZJQ01YbTM3ZDhhK0p3azVvcnI5SU8zOE1IRjZiOHdyRlRBelJOWVJ1bGQ5?=
- =?utf-8?B?WkJsMjJVMWIzVEE2aytEQjlITEI4QjlHZVJNM2tLL2lOTDM3dUVyeGNvL3Fa?=
- =?utf-8?B?WXUvNlBmZFkxaHdOc0tYVUR4SVFzbW85V1pLQWd0TklRQVZNa3JSNC92aWQ1?=
- =?utf-8?B?SFc4bHhBNlByV1hJeHRla1k1OWlLNnlqRmd2YVRuUHBUWVFIZ3ptOEZKQklu?=
- =?utf-8?B?S1gwZ04vUzdxVzZyaHJwZkYzTEhlanFRTW5nSXdKdEFWb2lsYkhmQ3RoWmtv?=
- =?utf-8?B?Qmg2eEhlWUFMQndqTVQyTURzYXJQWC94NHdiVGZoOWFOTVN2bDVVcDUrMTVm?=
- =?utf-8?B?RlI4eFdDcUlMdjlZbkdQbzdTYW9udjZOcmQ4U3VVTmRxUEEyVmhIODMyZXBL?=
- =?utf-8?B?c2cwcENNQm90N08xTTYyaG8zaXA0SU5ETnN2ek5PR1Z3NUZrUnQ4ZWVaYThJ?=
- =?utf-8?B?OVRSL3ZKcGJVV3hYMEwxNlVGcVVEN2ZYSHFPUFh5TEtIVDFqVFZSWmp0UG96?=
- =?utf-8?B?c1NGME81U3RlUThBWU1UUWhXWlBlN2VQZUNaZlNZSmZSeHlWVWNjWmxkK1ZF?=
- =?utf-8?B?Wk1zTGlGVkVYMkZwd1dVVEM1b0xFMEhVYW1oekxnajV5alAyQUs4ckRnalhk?=
- =?utf-8?B?bDQ1dk9uV1BHTUhXZHRPN09JdlhaREtJODMxaTdZdld2UWNLKy9yc1VVVFoz?=
- =?utf-8?B?U2ZxVFYyamdyUTlBc0V4NlRldnZzWkJEY04zc2tDOXFpdGNMQmRoYnBWSFQ3?=
- =?utf-8?B?U1cwalUrbGVia1NLQ3JBN0hISjh3b1BGazVVaWF5V0tkT3pjV0NzY3N3WmZS?=
- =?utf-8?B?M3llaXA3M0Y3ZUFMQkZvVGtzN1VONURGS3B4UU9WcWc0ZDErVEw5RFc2UC9O?=
- =?utf-8?B?OXlCbHhwdFJ5ZytlRlR5Vkxxc2NRakcwVXlmWTg4MUx1REEwVjJ5bmZ1Wk1I?=
- =?utf-8?B?WjVDNVV0SmwxYk05b1lzcTNFVFlGVWJzSjlQa1BpUWhUWnlFcUROQWFkaG13?=
- =?utf-8?B?THdwZGtyZk5VKzM5VTlmQnJCOUpNeE5hU29vMXc3QXBDM1BNUysxRExSc05Y?=
- =?utf-8?B?aENQemVCaGIwNXRSWUNQN1NaVmtRVDZ3cm91LzAwTXpNOHZGS2t2N21RMFN6?=
- =?utf-8?B?QVc4ek5BNkxEWURrbTJtNHhRV3c2ZmhGdzBUU1hJaG9BK1FRWmp6SDV3a0JZ?=
- =?utf-8?B?V2tDTHNRajZ1ejNMS3M5cmZGVDJCVFVqZ3JEWnFGdDkycElZcldHenNna01W?=
- =?utf-8?B?S0hFU0xlaUY1RUdwbjZhRWRNWS92UUxaSWRvZUwwSVZwYnVFS05vRUpPWnVa?=
- =?utf-8?B?bjFRWWVYMEx4ZTg5L1g0Ui9CdjNWcTJvVVFnK3lwMEtkQXYzNVdqTmdpWHFp?=
- =?utf-8?B?UVNsRGUwTlFaS0FOZzJVQTF5dGNtOTJ1T2Y5Q0U5Ulo3dG8yWVdUNVl0U2t3?=
- =?utf-8?B?SGtzWDZjUkRyMmltdUZxSVNuNGVTK054TTFFaHhiMFFiOUEvWk84TFlWRmo5?=
- =?utf-8?B?NnhwNUt4Mi9tMHdLRFplRXN6bUN5VzgzQVY3QjRaT2RnZ1Yzb0g0ZnNqbnBz?=
- =?utf-8?B?OGhFa2k1QURFcFk3L2JKQk1SZ1NYM0srY2llUTQ2eTk5UmdtZ2ZCVlpDamZk?=
- =?utf-8?B?ZjBiYmJDNy8zL05EZndaUWdUbUplaHcxbWdpT3VQYjNYZ1QvSmgxNWl6eFpN?=
- =?utf-8?B?Y2pDVlNoUVFGTjZFK2dpZWRncmt0RmRBZmsvVWtSdCt5ckF5WmR4MDlTRHdS?=
- =?utf-8?B?d3h5am1wVTdqakdwZXVpcndaaVc1UWQvOXJzMUJuTGNnaDJPZlhxcHVIMm1N?=
- =?utf-8?B?MmNBNC9hTHVUODF5OUNRTHRFVFh1NjlNZWVwTSszOW9KZmxuLzd5UWQvcE1O?=
- =?utf-8?B?UkFqK1lXbTVIUXdXZ2I1aXpOdWVYUEd3RTNxemhKM2NWZTROS3ZlcHo0WVpq?=
- =?utf-8?B?SkRyeHd2QmxjcXBYSUtBRnF1K2o1TzRjbFovS0lQM3ZMdTRiUGZBVXFzeE1Y?=
- =?utf-8?B?QUl3aWdGQ0JRc09LUnNQbDdlWUF6VVRFdUNPRmZoeUo2MHA5ZXFLSGtlaXR5?=
- =?utf-8?B?M3c9PQ==?=
-X-OriginatorOrg: kontron.de
-X-MS-Exchange-CrossTenant-Network-Message-Id: 
- 89e8c010-b281-49f6-a471-08dbd6b93438
-X-MS-Exchange-CrossTenant-AuthSource: PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Oct 2023 06:51:53.8826
+	CIP:175.98.123.7;CTRY:TW;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:NTHCCAS04.nuvoton.com;PTR:175-98-123-7.static.tfn.net.tw;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(136003)(376002)(346002)(396003)(230922051799003)(186009)(5400799018)(64100799003)(82310400011)(451199024)(1800799009)(40470700004)(46966006)(36840700001)(26005)(336012)(34020700004)(426003)(1076003)(107886003)(2616005)(47076005)(356005)(82740400003)(81166007)(36756003)(86362001)(36860700001)(40480700001)(40460700003)(8676002)(4326008)(6916009)(8936002)(54906003)(41300700001)(5660300002)(7416002)(2906002)(316002)(6666004)(70586007)(70206006)(478600001)(12100799048);DIR:OUT;SFP:1501;
+X-OriginatorOrg: nuvoton.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Oct 2023 08:21:57.8843
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8c9d3c97-3fd9-41c8-a2b1-646f3942daf1
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 
- XG8nkqJB7hlRN0fqA5DbGmNMalfvhOkH6EkGiWYeI1dg1hxBLMhQqFKBt6gmJLQ/cVvVzUXZ5Q3gtgyE8wJolH9I919o2GEDhEamDInFkcA=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA4PR10MB5513
-Message-ID-Hash: OXFFPSOHHV27UPWCYZRLNHSJUNDRHWVT
-X-Message-ID-Hash: OXFFPSOHHV27UPWCYZRLNHSJUNDRHWVT
-X-MailFrom: frieder.schrempf@kontron.de
+X-MS-Exchange-CrossTenant-Network-Message-Id: 
+ ef874de0-f1e8-4f4f-778a-08dbd6c5c96a
+X-MS-Exchange-CrossTenant-Id: a3f24931-d403-4b4a-94f1-7d83ac638e07
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: 
+ TenantId=a3f24931-d403-4b4a-94f1-7d83ac638e07;Ip=[175.98.123.7];Helo=[NTHCCAS04.nuvoton.com]
+X-MS-Exchange-CrossTenant-AuthSource: 
+	HK2PEPF00006FB5.apcprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: KL1PR03MB7598
+Message-ID-Hash: IJXV3FCEMUFLRRDKGY6JW224Z2MPAR4A
+X-Message-ID-Hash: IJXV3FCEMUFLRRDKGY6JW224Z2MPAR4A
+X-MailFrom: WTLI@nuvoton.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -168,7 +138,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OXFFPSOHHV27UPWCYZRLNHSJUNDRHWVT/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IJXV3FCEMUFLRRDKGY6JW224Z2MPAR4A/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -177,32 +147,39 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 26.10.23 22:03, kernel test robot wrote:
-> Hi Eberhard,
-> 
-> kernel test robot noticed the following build warnings:
-> 
-> [auto build test WARNING on 05d3ef8bba77c1b5f98d941d8b2d4aeab8118ef1]
-> 
-> url:    https://github.com/intel-lab-lkp/linux/commits/Eberhard-Stoll/spi-Add-parameter-for-clock-to-rx-delay/20231026-232547
-> base:   05d3ef8bba77c1b5f98d941d8b2d4aeab8118ef1
-> patch link:    https://lore.kernel.org/r/20231026152316.2729575-5-estl%40gmx.net
-> patch subject: [PATCH 4/4] spi: spi-fsl-qspi: Add support for rx data sample point adjustment
-> config: m68k-allyesconfig (https://download.01.org/0day-ci/archive/20231027/202310270332.mcbckKCr-lkp@intel.com/config)
-> compiler: m68k-linux-gcc (GCC) 13.2.0
-> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231027/202310270332.mcbckKCr-lkp@intel.com/reproduce)
-> 
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202310270332.mcbckKCr-lkp@intel.com/
-> 
-> All warnings (new ones prefixed by >>):
-> 
->    drivers/spi/spi-fsl-qspi.c: In function 'fsl_qspi_select_mem':
->>> drivers/spi/spi-fsl-qspi.c:558:38: warning: suggest parentheses around comparison in operand of '|' [-Wparentheses]
->      558 |         if (chip->rx_sample_delay_ns != spi->rx_sample_delay_ns |
->          |             ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~
+Add input with DMIC slew rate selection
 
-IIRC, when I prepared the patches for sending "checkpatch.pl --strict"
-suggested to remove the parentheses here. Seems a bit inconsistent...
+Signed-off-by: Seven Lee <wtli@nuvoton.com>
+---
+ .../devicetree/bindings/sound/nuvoton,nau8821.yaml        | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/sound/nuvoton,nau8821.yaml b/Documentation/devicetree/bindings/sound/nuvoton,nau8821.yaml
+index 3e54abd4ca74..01028b7ff85c 100644
+--- a/Documentation/devicetree/bindings/sound/nuvoton,nau8821.yaml
++++ b/Documentation/devicetree/bindings/sound/nuvoton,nau8821.yaml
+@@ -89,6 +89,13 @@ properties:
+     $ref: /schemas/types.yaml#/definitions/uint32
+     default: 3072000
+ 
++  nuvoton,dmic-slew-rate-selection:
++    description: the number from 0 to 7 that sets the DMIC slew rate.
++        The unit is mV/ns. 0 is the slowest, and 7 is the fastest.
++    $ref: /schemas/types.yaml#/definitions/uint32
++    maximum: 7
++    default: 0
++
+   nuvoton,left-input-single-end:
+     description: Enable left input with single-ended settings if set.
+         For the headset mic application, the single-ended control is
+@@ -127,6 +134,7 @@ examples:
+             nuvoton,jack-insert-debounce = <7>;
+             nuvoton,jack-eject-debounce = <0>;
+             nuvoton,dmic-clk-threshold = <3072000>;
++            nuvoton,dmic-slew-rate-selection= <0>;
+             #sound-dai-cells = <0>;
+         };
+     };
+-- 
+2.25.1
+
