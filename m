@@ -4,88 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A9DA5C25B67
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Oct 2023 11:07:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 556CFC25B47
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Oct 2023 11:16:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 026A6DF9;
-	Fri, 27 Oct 2023 13:06:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 026A6DF9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 631FCDE5;
+	Fri, 27 Oct 2023 13:15:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 631FCDE5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1698404848;
-	bh=VTDWqQn4GnA0fMwpjo1lFZPwjmU0ta8ZumGxGF2HtNs=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=J5XWIUVkVgPJjkAbsppitc+vPoqCtwJsuYd28kr7TkUOoffpYsTxD+TnWZ0QRgqVJ
-	 L+2QvkzmIJSYU9ecsej4N66qKrCJsloMPkc6Al7FSdUYz1kZngI+LBzI19a5ixUxNL
-	 l3zEDlIMTcJA7qVVOnHeNcysjWFZQ8ic4H62N9IE=
+	s=default; t=1698405373;
+	bh=s9HWliWtftg4+bKn+CWaYdfa7oPrVcMgpc7mTziTlBw=;
+	h=From:To:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=cfUHIF7sVTjJbDry8D2zYTD9ENVv5CIEeroquMWWWLzbdvcG2tMeursps3oRyrYY7
+	 rA0LCXLewHLQSFnCU0vxIpo/fzf9mFUsbq5kEIiDR6+1XCLdNS71dqp9ptaD9H8J+N
+	 Wz9Td6WV2DxJPbVXPzRJG4jAIskGnjfjDBdZUHxA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 106B7F80571; Fri, 27 Oct 2023 13:05:47 +0200 (CEST)
+	id C1C4BF8055A; Fri, 27 Oct 2023 13:14:45 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id BF73FF80578;
-	Fri, 27 Oct 2023 13:05:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 12BC8F80558;
+	Fri, 27 Oct 2023 13:14:45 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A34FCF80578; Fri, 27 Oct 2023 13:05:44 +0200 (CEST)
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+	id 006B5F8028D; Fri, 27 Oct 2023 13:14:40 +0200 (CEST)
+Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D461CF80165
-	for <alsa-devel@alsa-project.org>; Fri, 27 Oct 2023 13:05:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D461CF80165
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=nE1juoeB
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698404737; x=1729940737;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=VTDWqQn4GnA0fMwpjo1lFZPwjmU0ta8ZumGxGF2HtNs=;
-  b=nE1juoeBIl3tqWyKQDGWP1n5SReywJA8m20hO7PiRWQk4zBK9lfMXs5O
-   7oh+zVxYRF6obHtnGnuzLCJ7qo0k0xjAPUVMG79IxrEpigxtJhT/taUnN
-   WcX3sAC66QHC5zQOfLPF1Z/Fd7z328m/zcLSoOQkp4ws8VEoV6PPGS/qa
-   IqP5k2u5NrUTxtZHIQYhOLIc4tjG4bpwV/jz5pJT188CG5g1CQm2h0Fje
-   L3fP1GjR1xz4B3RnxqvMOlONfqmUvHhqoWAGBfpup/P8tNe6heWMQFHro
-   3BR53p+iUFscR8clQ+PwvwFoNaAezFVF155V+w6httIBQRntw+EBE5nhQ
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10875"; a="418866472"
-X-IronPort-AV: E=Sophos;i="6.03,256,1694761200";
-   d="scan'208";a="418866472"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Oct 2023 04:05:30 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10875"; a="736054987"
-X-IronPort-AV: E=Sophos;i="6.03,256,1694761200";
-   d="scan'208";a="736054987"
-Received: from dev2.igk.intel.com ([10.237.148.94])
-  by orsmga006.jf.intel.com with ESMTP; 27 Oct 2023 04:05:28 -0700
-From: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>
-To: Mark Brown <broonie@kernel.org>
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
-	Takashi Iwai <tiwai@suse.com>,
-	Jaroslav Kysela <perex@perex.cz>,
+	by alsa1.perex.cz (Postfix) with ESMTPS id 71680F8010B
+	for <alsa-devel@alsa-project.org>; Fri, 27 Oct 2023 13:14:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 71680F8010B
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id B1BA91A0967;
+	Fri, 27 Oct 2023 13:14:32 +0200 (CEST)
+Received: from aprdc01srsp001v.ap-rdc01.nxp.com
+ (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
+	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 277F81A0791;
+	Fri, 27 Oct 2023 13:14:32 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net
+ [10.192.224.44])
+	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id ED07B180031E;
+	Fri, 27 Oct 2023 19:14:29 +0800 (+08)
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
+To: hverkuil@xs4all.nl,
+	sakari.ailus@iki.fi,
+	tfiga@chromium.org,
+	m.szyprowski@samsung.com,
+	mchehab@kernel.org,
+	linux-media@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	shengjiu.wang@gmail.com,
+	Xiubo.Lee@gmail.com,
+	festevam@gmail.com,
+	nicoleotsuka@gmail.com,
+	lgirdwood@gmail.com,
+	broonie@kernel.org,
+	perex@perex.cz,
+	tiwai@suse.com,
 	alsa-devel@alsa-project.org,
-	linux-sound@vger.kernel.org,
-	=?UTF-8?q?=C5=81ukasz=20Majczak?= <lma@chromium.org>,
-	=?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>
-Subject: [PATCH 1/2] ASoC: Intel: avs: Add rt5514 machine board
-Date: Fri, 27 Oct 2023 13:05:36 +0200
-Message-Id: <20231027110537.2103712-2-amadeuszx.slawinski@linux.intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231027110537.2103712-1-amadeuszx.slawinski@linux.intel.com>
-References: <20231027110537.2103712-1-amadeuszx.slawinski@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: DKBI6MFWBNI7EVT3GA4PTKYMSCXE7423
-X-Message-ID-Hash: DKBI6MFWBNI7EVT3GA4PTKYMSCXE7423
-X-MailFrom: amadeuszx.slawinski@linux.intel.com
+	linuxppc-dev@lists.ozlabs.org
+Subject: [RFC PATCH v8 00/13] Add audio support in v4l2 framework
+Date: Fri, 27 Oct 2023 18:35:35 +0800
+Message-Id: <1698402948-10618-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
+Message-ID-Hash: BJ45YSCH7TMTAWGRYPEKNGAZ3ZFAF33E
+X-Message-ID-Hash: BJ45YSCH7TMTAWGRYPEKNGAZ3ZFAF33E
+X-MailFrom: shengjiu.wang@nxp.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -97,7 +81,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DKBI6MFWBNI7EVT3GA4PTKYMSCXE7423/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BJ45YSCH7TMTAWGRYPEKNGAZ3ZFAF33E/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -106,251 +90,136 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-To support AVS-rt5514 configuration add machine board connecting AVS
-platform component driver with rt5514 codec one.
+Audio signal processing also has the requirement for memory to
+memory similar as Video.
 
-Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
----
- sound/soc/intel/avs/boards/Kconfig  |  10 ++
- sound/soc/intel/avs/boards/Makefile |   2 +
- sound/soc/intel/avs/boards/rt5514.c | 187 ++++++++++++++++++++++++++++
- 3 files changed, 199 insertions(+)
- create mode 100644 sound/soc/intel/avs/boards/rt5514.c
+This asrc memory to memory (memory ->asrc->memory) case is a non
+real time use case.
 
-diff --git a/sound/soc/intel/avs/boards/Kconfig b/sound/soc/intel/avs/boards/Kconfig
-index 07353d37ecae..00b0f6c176d6 100644
---- a/sound/soc/intel/avs/boards/Kconfig
-+++ b/sound/soc/intel/avs/boards/Kconfig
-@@ -125,6 +125,16 @@ config SND_SOC_INTEL_AVS_MACH_RT298
- 	   Say Y or m if you have such a device. This is a recommended option.
- 	   If unsure select "N".
- 
-+config SND_SOC_INTEL_AVS_MACH_RT5514
-+	tristate "rt5514 in I2S mode"
-+	depends on I2C
-+	depends on MFD_INTEL_LPSS || COMPILE_TEST
-+	select SND_SOC_RT5514
-+	help
-+	   This adds support for ASoC machine driver with RT5514 I2S audio codec.
-+	   Say Y or m if you have such a device. This is a recommended option.
-+	   If unsure select "N".
-+
- config SND_SOC_INTEL_AVS_MACH_RT5663
- 	tristate "rt5663 in I2S mode"
- 	depends on I2C
-diff --git a/sound/soc/intel/avs/boards/Makefile b/sound/soc/intel/avs/boards/Makefile
-index 34347bcd1e7d..0ff21d55be24 100644
---- a/sound/soc/intel/avs/boards/Makefile
-+++ b/sound/soc/intel/avs/boards/Makefile
-@@ -13,6 +13,7 @@ snd-soc-avs-probe-objs := probe.o
- snd-soc-avs-rt274-objs := rt274.o
- snd-soc-avs-rt286-objs := rt286.o
- snd-soc-avs-rt298-objs := rt298.o
-+snd-soc-avs-rt5514-objs := rt5514.o
- snd-soc-avs-rt5663-objs := rt5663.o
- snd-soc-avs-rt5682-objs := rt5682.o
- snd-soc-avs-ssm4567-objs := ssm4567.o
-@@ -30,6 +31,7 @@ obj-$(CONFIG_SND_SOC_INTEL_AVS_MACH_PROBE) += snd-soc-avs-probe.o
- obj-$(CONFIG_SND_SOC_INTEL_AVS_MACH_RT274) += snd-soc-avs-rt274.o
- obj-$(CONFIG_SND_SOC_INTEL_AVS_MACH_RT286) += snd-soc-avs-rt286.o
- obj-$(CONFIG_SND_SOC_INTEL_AVS_MACH_RT298) += snd-soc-avs-rt298.o
-+obj-$(CONFIG_SND_SOC_INTEL_AVS_MACH_RT5514) += snd-soc-avs-rt5514.o
- obj-$(CONFIG_SND_SOC_INTEL_AVS_MACH_RT5663) += snd-soc-avs-rt5663.o
- obj-$(CONFIG_SND_SOC_INTEL_AVS_MACH_RT5682) += snd-soc-avs-rt5682.o
- obj-$(CONFIG_SND_SOC_INTEL_AVS_MACH_SSM4567) += snd-soc-avs-ssm4567.o
-diff --git a/sound/soc/intel/avs/boards/rt5514.c b/sound/soc/intel/avs/boards/rt5514.c
-new file mode 100644
-index 000000000000..ad486a52e5e3
---- /dev/null
-+++ b/sound/soc/intel/avs/boards/rt5514.c
-@@ -0,0 +1,187 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+//
-+// Copyright(c) 2021-2023 Intel Corporation. All rights reserved.
-+//
-+// Authors: Cezary Rojewski <cezary.rojewski@intel.com>
-+//          Amadeusz Slawinski <amadeuszx.slawinski@linux.intel.com>
-+//
-+
-+#include <linux/clk.h>
-+#include <linux/input.h>
-+#include <linux/module.h>
-+#include <sound/jack.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+#include <sound/soc.h>
-+#include <sound/soc-acpi.h>
-+#include "../../../codecs/rt5514.h"
-+#include "../utils.h"
-+
-+#define RT5514_CODEC_DAI	"rt5514-aif1"
-+
-+static const struct snd_soc_dapm_widget card_widgets[] = {
-+	SND_SOC_DAPM_MIC("DMIC", NULL),
-+};
-+
-+static const struct snd_soc_dapm_route card_base_routes[] = {
-+	/* DMIC */
-+	{ "DMIC1L", NULL, "DMIC" },
-+	{ "DMIC1R", NULL, "DMIC" },
-+	{ "DMIC2L", NULL, "DMIC" },
-+	{ "DMIC2R", NULL, "DMIC" },
-+};
-+
-+static int avs_rt5514_codec_init(struct snd_soc_pcm_runtime *runtime)
-+{
-+	int ret = snd_soc_dapm_ignore_suspend(&runtime->card->dapm, "DMIC");
-+
-+	if (ret)
-+		dev_err(runtime->dev, "DMIC - Ignore suspend failed = %d\n", ret);
-+
-+	return ret;
-+}
-+
-+static int avs_rt5514_be_fixup(struct snd_soc_pcm_runtime *runtime,
-+			       struct snd_pcm_hw_params *params)
-+{
-+	struct snd_interval *rate, *channels;
-+	struct snd_mask *fmt;
-+
-+	rate = hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
-+	channels = hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
-+	fmt = hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
-+
-+	rate->min = rate->max = 48000;
-+	channels->min = channels->max = 4;
-+
-+	snd_mask_none(fmt);
-+	snd_mask_set_format(fmt, SNDRV_PCM_FORMAT_S16_LE);
-+
-+	return 0;
-+}
-+
-+static int avs_rt5514_hw_params(struct snd_pcm_substream *substream,
-+				struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = snd_soc_substream_to_rtd(substream);
-+	struct snd_soc_dai *codec_dai = snd_soc_rtd_to_codec(rtd, 0);
-+	int ret;
-+
-+	ret = snd_soc_dai_set_tdm_slot(codec_dai, 0xF, 0, 8, 16);
-+	if (ret < 0) {
-+		dev_err(rtd->dev, "set TDM slot err:%d\n", ret);
-+		return ret;
-+	}
-+
-+	ret = snd_soc_dai_set_sysclk(codec_dai, RT5514_SCLK_S_MCLK, 24576000, SND_SOC_CLOCK_IN);
-+	if (ret < 0)
-+		dev_err(rtd->dev, "set sysclk err: %d\n", ret);
-+
-+	return ret;
-+}
-+
-+static const struct snd_soc_ops avs_rt5514_ops = {
-+	.hw_params = avs_rt5514_hw_params,
-+};
-+
-+static int avs_create_dai_link(struct device *dev, const char *platform_name, int ssp_port,
-+			       int tdm_slot, struct snd_soc_dai_link **dai_link)
-+{
-+	struct snd_soc_dai_link_component *platform;
-+	struct snd_soc_dai_link *dl;
-+
-+	dl = devm_kzalloc(dev, sizeof(*dl), GFP_KERNEL);
-+	platform = devm_kzalloc(dev, sizeof(*platform), GFP_KERNEL);
-+	if (!dl || !platform)
-+		return -ENOMEM;
-+
-+	platform->name = platform_name;
-+
-+	dl->name = devm_kasprintf(dev, GFP_KERNEL,
-+				  AVS_STRING_FMT("SSP", "-Codec", ssp_port, tdm_slot));
-+	dl->cpus = devm_kzalloc(dev, sizeof(*dl->cpus), GFP_KERNEL);
-+	dl->codecs = devm_kzalloc(dev, sizeof(*dl->codecs), GFP_KERNEL);
-+	if (!dl->name || !dl->cpus || !dl->codecs)
-+		return -ENOMEM;
-+
-+	dl->cpus->dai_name = devm_kasprintf(dev, GFP_KERNEL,
-+					    AVS_STRING_FMT("SSP", " Pin", ssp_port, tdm_slot));
-+	dl->codecs->name = devm_kasprintf(dev, GFP_KERNEL, "i2c-10EC5514:00");
-+	dl->codecs->dai_name = devm_kasprintf(dev, GFP_KERNEL, RT5514_CODEC_DAI);
-+	if (!dl->cpus->dai_name || !dl->codecs->name || !dl->codecs->dai_name)
-+		return -ENOMEM;
-+
-+	dl->num_cpus = 1;
-+	dl->num_codecs = 1;
-+	dl->platforms = platform;
-+	dl->num_platforms = 1;
-+	dl->id = 0;
-+	dl->dai_fmt = SND_SOC_DAIFMT_DSP_B | SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS;
-+	dl->init = avs_rt5514_codec_init;
-+	dl->be_hw_params_fixup = avs_rt5514_be_fixup;
-+	dl->nonatomic = 1;
-+	dl->no_pcm = 1;
-+	dl->dpcm_capture = 1;
-+	dl->ops = &avs_rt5514_ops;
-+
-+	*dai_link = dl;
-+
-+	return 0;
-+}
-+
-+static int avs_rt5514_probe(struct platform_device *pdev)
-+{
-+	struct snd_soc_dai_link *dai_link;
-+	struct snd_soc_acpi_mach *mach;
-+	struct snd_soc_card *card;
-+	struct device *dev = &pdev->dev;
-+	const char *pname;
-+	int ssp_port, tdm_slot, ret;
-+
-+	mach = dev_get_platdata(dev);
-+	pname = mach->mach_params.platform;
-+
-+	ret = avs_mach_get_ssp_tdm(dev, mach, &ssp_port, &tdm_slot);
-+	if (ret)
-+		return ret;
-+
-+	ret = avs_create_dai_link(dev, pname, ssp_port, tdm_slot, &dai_link);
-+	if (ret) {
-+		dev_err(dev, "Failed to create dai link: %d", ret);
-+		return ret;
-+	}
-+
-+	card = devm_kzalloc(dev, sizeof(*card), GFP_KERNEL);
-+	if (!card)
-+		return -ENOMEM;
-+
-+	card->name = "avs_rt5514";
-+	card->dev = dev;
-+	card->owner = THIS_MODULE;
-+	card->dai_link = dai_link;
-+	card->num_links = 1;
-+	card->dapm_widgets = card_widgets;
-+	card->num_dapm_widgets = ARRAY_SIZE(card_widgets);
-+	card->dapm_routes = card_base_routes;
-+	card->num_dapm_routes = ARRAY_SIZE(card_base_routes);
-+	card->fully_routed = true;
-+
-+	ret = snd_soc_fixup_dai_links_platform_name(card, pname);
-+	if (ret)
-+		return ret;
-+
-+	return devm_snd_soc_register_card(dev, card);
-+}
-+
-+static struct platform_driver avs_rt5514_driver = {
-+	.probe = avs_rt5514_probe,
-+	.driver = {
-+		.name = "avs_rt5514",
-+		.pm = &snd_soc_pm_ops,
-+	},
-+};
-+
-+module_platform_driver(avs_rt5514_driver);
-+
-+MODULE_LICENSE("GPL");
-+MODULE_ALIAS("platform:avs_rt5514");
+User fills the input buffer to the asrc module, after conversion, then asrc
+sends back the output buffer to user. So it is not a traditional ALSA playback
+and capture case.
+
+It is a specific use case,  there is no reference in current kernel.
+v4l2 memory to memory is the closed implementation,  v4l2 current
+support video, image, radio, tuner, touch devices, so it is not
+complicated to add support for this specific audio case.
+
+Because we had implemented the "memory -> asrc ->i2s device-> codec"
+use case in ALSA.  Now the "memory->asrc->memory" needs
+to reuse the code in asrc driver, so the first 3 patches is for refining
+the code to make it can be shared by the "memory->asrc->memory"
+driver.
+
+The main change is in the v4l2 side, A /dev/vl4-audioX will be created,
+user applications only use the ioctl of v4l2 framework.
+
+Other change is to add memory to memory support for two kinds of i.MX ASRC
+module.
+
+changes in v8:
+- refine V4L2_CAP_AUDIO_M2M to be 0x00000008
+- update doc for FIXED_POINT
+- address comments for imx-asrc
+
+changes in v7:
+- add acked-by from Mark
+- separate commit for fixed point, m2m audio class, audio rate controls
+- use INTEGER_MENU for rate,  FIXED_POINT for rate offset
+- remove used fmts
+- address other comments for Hans
+
+changes in v6:
+- use m2m_prepare/m2m_unprepare/m2m_start/m2m_stop to replace
+  m2m_start_part_one/m2m_stop_part_one, m2m_start_part_two/m2m_stop_part_two.
+- change V4L2_CTRL_TYPE_ASRC_RATE to V4L2_CTRL_TYPE_FIXED_POINT
+- fix warning by kernel test rebot
+- remove some unused format V4L2_AUDIO_FMT_XX
+- Get SNDRV_PCM_FORMAT from V4L2_AUDIO_FMT in driver.
+- rename audm2m to viaudm2m.
+
+changes in v5:
+- remove V4L2_AUDIO_FMT_LPCM
+- define audio pixel format like V4L2_AUDIO_FMT_S8...
+- remove rate and format in struct v4l2_audio_format.
+- Add V4L2_CID_ASRC_SOURCE_RATE and V4L2_CID_ASRC_DEST_RATE controls
+- updata document accordingly.
+
+changes in v4:
+- update document style
+- separate V4L2_AUDIO_FMT_LPCM and V4L2_CAP_AUDIO_M2M in separate commit
+
+changes in v3:
+- Modify documents for adding audio m2m support
+- Add audio virtual m2m driver
+- Defined V4L2_AUDIO_FMT_LPCM format type for audio.
+- Defined V4L2_CAP_AUDIO_M2M capability type for audio m2m case.
+- with modification in v4l-utils, pass v4l2-compliance test.
+
+changes in v2:
+- decouple the implementation in v4l2 and ALSA
+- implement the memory to memory driver as a platfrom driver
+  and move it to driver/media
+- move fsl_asrc_common.h to include/sound folder
+
+Shengjiu Wang (13):
+  ASoC: fsl_asrc: define functions for memory to memory usage
+  ASoC: fsl_easrc: define functions for memory to memory usage
+  ASoC: fsl_asrc: move fsl_asrc_common.h to include/sound
+  ASoC: fsl_asrc: register m2m platform device
+  ASoC: fsl_easrc: register m2m platform device
+  media: uapi: Add V4L2_CAP_AUDIO_M2M capability flag
+  media: v4l2: Add audio capture and output support
+  media: uapi: Define audio sample format fourcc type
+  media: uapi: Add V4L2_CTRL_CLASS_M2M_AUDIO
+  media: uapi: Add V4L2_CTRL_TYPE_FIXED_POINT
+  media: uapi: Add audio rate controls support
+  media: imx-asrc: Add memory to memory driver
+  media: vim2m_audio: add virtual driver for audio memory to memory
+
+ .../userspace-api/media/v4l/buffer.rst        |    6 +
+ .../userspace-api/media/v4l/common.rst        |    1 +
+ .../media/v4l/dev-audio-mem2mem.rst           |   71 +
+ .../userspace-api/media/v4l/devices.rst       |    1 +
+ .../media/v4l/ext-ctrls-audio-m2m.rst         |   41 +
+ .../userspace-api/media/v4l/pixfmt-audio.rst  |   87 ++
+ .../userspace-api/media/v4l/pixfmt.rst        |    1 +
+ .../media/v4l/vidioc-enum-fmt.rst             |    2 +
+ .../media/v4l/vidioc-g-ext-ctrls.rst          |   17 +-
+ .../userspace-api/media/v4l/vidioc-g-fmt.rst  |    4 +
+ .../media/v4l/vidioc-querycap.rst             |    3 +
+ .../media/v4l/vidioc-queryctrl.rst            |    9 +-
+ .../media/videodev2.h.rst.exceptions          |    4 +
+ .../media/common/videobuf2/videobuf2-v4l2.c   |    4 +
+ drivers/media/platform/nxp/Kconfig            |   12 +
+ drivers/media/platform/nxp/Makefile           |    1 +
+ drivers/media/platform/nxp/imx-asrc.c         | 1186 +++++++++++++++++
+ drivers/media/test-drivers/Kconfig            |    9 +
+ drivers/media/test-drivers/Makefile           |    1 +
+ drivers/media/test-drivers/vim2m_audio.c      |  680 ++++++++++
+ drivers/media/v4l2-core/v4l2-ctrls-api.c      |    5 +-
+ drivers/media/v4l2-core/v4l2-ctrls-core.c     |    2 +
+ drivers/media/v4l2-core/v4l2-ctrls-defs.c     |   16 +
+ drivers/media/v4l2-core/v4l2-dev.c            |   17 +
+ drivers/media/v4l2-core/v4l2-ioctl.c          |   66 +
+ include/media/v4l2-dev.h                      |    2 +
+ include/media/v4l2-ioctl.h                    |   34 +
+ .../fsl => include/sound}/fsl_asrc_common.h   |   60 +
+ include/uapi/linux/v4l2-controls.h            |    9 +
+ include/uapi/linux/videodev2.h                |   42 +
+ sound/soc/fsl/fsl_asrc.c                      |  144 ++
+ sound/soc/fsl/fsl_asrc.h                      |    4 +-
+ sound/soc/fsl/fsl_asrc_dma.c                  |    2 +-
+ sound/soc/fsl/fsl_easrc.c                     |  233 ++++
+ sound/soc/fsl/fsl_easrc.h                     |    6 +-
+ 35 files changed, 2771 insertions(+), 11 deletions(-)
+ create mode 100644 Documentation/userspace-api/media/v4l/dev-audio-mem2mem.rst
+ create mode 100644 Documentation/userspace-api/media/v4l/ext-ctrls-audio-m2m.rst
+ create mode 100644 Documentation/userspace-api/media/v4l/pixfmt-audio.rst
+ create mode 100644 drivers/media/platform/nxp/imx-asrc.c
+ create mode 100644 drivers/media/test-drivers/vim2m_audio.c
+ rename {sound/soc/fsl => include/sound}/fsl_asrc_common.h (60%)
+
 -- 
 2.34.1
 
