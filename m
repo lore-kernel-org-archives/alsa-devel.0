@@ -4,64 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ADFA8C25B67
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Oct 2023 11:07:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 88B34C25B67
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Oct 2023 11:07:22 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C9FE7BC0;
-	Fri, 27 Oct 2023 13:06:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C9FE7BC0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 73C00DF6;
+	Fri, 27 Oct 2023 13:06:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 73C00DF6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1698404826;
-	bh=5WhEmsKf7FralyoMJxUWZggzvDbNaA86yLnvkXMcEow=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=YIiVSxv6tB8dzfA8dtCSpnepp1MRV0BsCBEE5A7HeEder03NUECVh8r5QO8vS2qZG
-	 tnaxrq+j88uPjN39sfrzlgcqstm62wtOMeEDOl/ok7sIQ9YgIo3EFZ7gPe2MFEI56w
-	 9cXPFm+rglJDLk1AlNoOR3zDXhx+DWc+5fPSTqPQ=
+	s=default; t=1698404840;
+	bh=fOfitkbsDWDdgR7///RvDABbFaiYSzh0npo5N5wdWdg=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=b3JI9bTardqCT+igrcUt/R7H9UjHVnBQltzgj5DbPJ1/4eoUNN8/D1Xb93KL0GLVm
+	 Suisx313Czb1azdM2yteYWyuPX77eEMmvPvfl4zhGC6DWRgXRbOhb5gNQfxP2Q7Xs4
+	 MfXrQNMyzpqHK6tDyXQwu5QH9hTR1vKaUZ6epN5I=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AEFD1F8028D; Fri, 27 Oct 2023 13:05:39 +0200 (CEST)
+	id 8B8C2F8056F; Fri, 27 Oct 2023 13:05:40 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0C03CF8010B;
-	Fri, 27 Oct 2023 13:05:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 76F7BF8055C;
+	Fri, 27 Oct 2023 13:05:40 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 30FB5F8020D; Fri, 27 Oct 2023 13:05:35 +0200 (CEST)
+	id 4F124F8012B; Fri, 27 Oct 2023 13:05:37 +0200 (CEST)
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 2311AF8010B
-	for <alsa-devel@alsa-project.org>; Fri, 27 Oct 2023 13:05:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2311AF8010B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 1CA67F8012B
+	for <alsa-devel@alsa-project.org>; Fri, 27 Oct 2023 13:05:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1CA67F8012B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=fOC75Y9u
+ header.s=Intel header.b=KHXZmyzW
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698404732; x=1729940732;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=5WhEmsKf7FralyoMJxUWZggzvDbNaA86yLnvkXMcEow=;
-  b=fOC75Y9uzHwoNj1Zj2EYjkB20CC7eZ5OEEmZeKFOwGB2gMo0ZJt88LCG
-   /Cy003mrXMrlldu8FMrzdJeT18SLQD5cEXZqlFfYuqKX343+8pZ1tZddM
-   jzOMmW5U+bbewT27/7hU70bH87vhsryU3bpEVMToZHXIKLSas/9p6Yr6S
-   uEe5OlOYYmYhtcaZHeqaQFYfdXNwDG+oL/UsMU5Iuy5gqUa/CGrqxTME2
-   Px+hx86uv7d2iVErhNqyxoqO17BQRk1rXK2SnSqUinCVJdf/3onYWWIhX
-   F11k9mB3nCzSGNaxy/8y2dCdpVtK8gVSEHrfGj6kuN1FVS/ARzp9vIkjx
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10875"; a="418866463"
+  t=1698404734; x=1729940734;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=fOfitkbsDWDdgR7///RvDABbFaiYSzh0npo5N5wdWdg=;
+  b=KHXZmyzWW61V+0QNSnx7LqoQakJUpO5DJ8PMQ/TUKWUmi/FwZcWHi2NT
+   8HwGUWHxxEFXeqHQtWF8obIUrYdw35kWNsUgEbSV4k12v6wgzZyMt1ZT2
+   jxVH8aUbpe6kB3QaipNXjKX/wD3RpUF1Y5n+tL1DFPvUE25uQm5BpILES
+   ZkVVvKp1WTg6GkufOMy5E6beDr2llFDNB2ZhivwE5LVncvcEwbwKiOfyO
+   3sWr9BFOy8dosce0qGdNFpCAuLlf+X1tQiyhDQC4IkrzV0c47TUJdiZ6u
+   3by7Rv4b7VNCwKww1xkHWda2Ddvb9jz1Fj+4s5RvgH6DCgXw6kHBdfBRQ
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10875"; a="418866481"
 X-IronPort-AV: E=Sophos;i="6.03,256,1694761200";
-   d="scan'208";a="418866463"
+   d="scan'208";a="418866481"
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
   by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Oct 2023 04:05:28 -0700
+ 27 Oct 2023 04:05:32 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10875"; a="736054979"
+X-IronPort-AV: E=McAfee;i="6600,9927,10875"; a="736054991"
 X-IronPort-AV: E=Sophos;i="6.03,256,1694761200";
-   d="scan'208";a="736054979"
+   d="scan'208";a="736054991"
 Received: from dev2.igk.intel.com ([10.237.148.94])
-  by orsmga006.jf.intel.com with ESMTP; 27 Oct 2023 04:05:26 -0700
+  by orsmga006.jf.intel.com with ESMTP; 27 Oct 2023 04:05:30 -0700
 From: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
  <amadeuszx.slawinski@linux.intel.com>
 To: Mark Brown <broonie@kernel.org>
@@ -73,15 +74,17 @@ Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
 	=?UTF-8?q?=C5=81ukasz=20Majczak?= <lma@chromium.org>,
 	=?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
  <amadeuszx.slawinski@linux.intel.com>
-Subject: [PATCH 0/2] ASoC: Intel: avs: Add support for rt5514 codec
-Date: Fri, 27 Oct 2023 13:05:35 +0200
-Message-Id: <20231027110537.2103712-1-amadeuszx.slawinski@linux.intel.com>
+Subject: [PATCH 2/2] ASoC: Intel: avs: Add rt5514 machine board
+Date: Fri, 27 Oct 2023 13:05:37 +0200
+Message-Id: <20231027110537.2103712-3-amadeuszx.slawinski@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231027110537.2103712-1-amadeuszx.slawinski@linux.intel.com>
+References: <20231027110537.2103712-1-amadeuszx.slawinski@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 56O5NTFQZM6XDB2MNJYDZYRKWP4BBCMP
-X-Message-ID-Hash: 56O5NTFQZM6XDB2MNJYDZYRKWP4BBCMP
+Message-ID-Hash: WYHRPDKXORIBQ6WFQ3BOHM3AJBCQWMBS
+X-Message-ID-Hash: WYHRPDKXORIBQ6WFQ3BOHM3AJBCQWMBS
 X-MailFrom: amadeuszx.slawinski@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -94,7 +97,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/56O5NTFQZM6XDB2MNJYDZYRKWP4BBCMP/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WYHRPDKXORIBQ6WFQ3BOHM3AJBCQWMBS/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -103,21 +106,35 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-There are machines which use codec rt5514 as DMIC, add support for them.
+In order to support Eve chromebooks add rt5514 configuration to board
+lookup table. rt5514 is used for capture in DMIC configuration on SSP 0
+and TDM 1.
 
-Amadeusz Sławiński (2):
-  ASoC: Intel: avs: Add rt5514 machine board
-  ASoC: Intel: avs: Add rt5514 machine board
+Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
+---
+ sound/soc/intel/avs/board_selection.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
- sound/soc/intel/avs/board_selection.c |   9 ++
- sound/soc/intel/avs/boards/Kconfig    |  10 ++
- sound/soc/intel/avs/boards/Makefile   |   2 +
- sound/soc/intel/avs/boards/rt5514.c   | 187 ++++++++++++++++++++++++++
- 4 files changed, 208 insertions(+)
- create mode 100644 sound/soc/intel/avs/boards/rt5514.c
-
-
-base-commit: 00236a89602f7b67016bd1d9bc63079f2c0f0a8d
+diff --git a/sound/soc/intel/avs/board_selection.c b/sound/soc/intel/avs/board_selection.c
+index c10fff705496..8e91eece992d 100644
+--- a/sound/soc/intel/avs/board_selection.c
++++ b/sound/soc/intel/avs/board_selection.c
+@@ -135,6 +135,15 @@ static struct snd_soc_acpi_mach avs_kbl_i2s_machines[] = {
+ 		},
+ 		.tplg_filename = "max98927-tplg.bin",
+ 	},
++	{
++		.id = "10EC5514",
++		.drv_name = "avs_rt5514",
++		.mach_params = {
++			.i2s_link_mask = AVS_SSP(0),
++		},
++		.pdata = (unsigned long[]){ 0x2, 0, 0, 0, 0, 0 }, /* SSP0 TDMs */
++		.tplg_filename = "rt5514-tplg.bin",
++	},
+ 	{
+ 		.id = "10EC5663",
+ 		.drv_name = "avs_rt5663",
 -- 
 2.34.1
 
