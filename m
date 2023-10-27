@@ -4,47 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 29D9DC25B67
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Oct 2023 11:17:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01D61C25B67
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Oct 2023 11:17:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2263DE8D;
-	Fri, 27 Oct 2023 13:16:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2263DE8D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2777EE7B;
+	Fri, 27 Oct 2023 13:16:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2777EE7B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1698405441;
-	bh=AVX+rLxQ5Co6gt/+zQxXDPWbz9VuJ4XhMFgF8fjGlVM=;
+	s=default; t=1698405466;
+	bh=b2NwS36qOsnR30IJpVkR3HsmeLXaOH6NnIecBbP8Yd4=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=RJwD7zYu0LZTqExTXyhYfgUkUEzWYul59eMtFfh3LqHfYi8n8U27v8bH+9uY4ZOrA
-	 vPsdKTNQenbp/VPbyU/GhvP3rvY8DQ6P93wgphh3JD2wLfE3YtClDUNbrNhFR0BzIk
-	 LiOgW69hG6j8sZTgqw3vFxn0gZmJ9t7dg2OadJpM=
+	b=SulUOd/OTi8ZE2ohhJeaUndZ9wdavq63AiPwu4B/yG3zBLuye2qNSqwz12LO7Ur5e
+	 rBsic9HcETQdNnfsaX5OkCdYLPmStxHgAaJaYF3/4Ddliyhd/DhWNfp2xdGhO1+Dfp
+	 WDAai+RXi0xdQbb62j2ZI5Tgy5rR0aeeXTd7vky8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E1E9FF805D4; Fri, 27 Oct 2023 13:15:08 +0200 (CEST)
+	id DF5DCF805E0; Fri, 27 Oct 2023 13:15:12 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2F90EF805C5;
-	Fri, 27 Oct 2023 13:15:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C517FF805D3;
+	Fri, 27 Oct 2023 13:15:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 53D44F805B5; Fri, 27 Oct 2023 13:15:02 +0200 (CEST)
+	id E7402F805C5; Fri, 27 Oct 2023 13:15:07 +0200 (CEST)
 Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E6648F80567
-	for <alsa-devel@alsa-project.org>; Fri, 27 Oct 2023 13:14:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E6648F80567
+	by alsa1.perex.cz (Postfix) with ESMTPS id BF57FF80165
+	for <alsa-devel@alsa-project.org>; Fri, 27 Oct 2023 13:14:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BF57FF80165
 Received: from inva021.nxp.com (localhost [127.0.0.1])
-	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 8C0BA2010E7;
-	Fri, 27 Oct 2023 13:14:44 +0200 (CEST)
+	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 6ED91201102;
+	Fri, 27 Oct 2023 13:14:47 +0200 (CEST)
 Received: from aprdc01srsp001v.ap-rdc01.nxp.com
  (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
-	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id F3D3A201F9D;
-	Fri, 27 Oct 2023 13:14:43 +0200 (CEST)
+	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id D8905201F9A;
+	Fri, 27 Oct 2023 13:14:46 +0200 (CEST)
 Received: from localhost.localdomain (shlinux2.ap.freescale.net
  [10.192.224.44])
-	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id B611C183AD25;
-	Fri, 27 Oct 2023 19:14:41 +0800 (+08)
+	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id ABB29180327D;
+	Fri, 27 Oct 2023 19:14:44 +0800 (+08)
 From: Shengjiu Wang <shengjiu.wang@nxp.com>
 To: hverkuil@xs4all.nl,
 	sakari.ailus@iki.fi,
@@ -63,16 +63,15 @@ To: hverkuil@xs4all.nl,
 	tiwai@suse.com,
 	alsa-devel@alsa-project.org,
 	linuxppc-dev@lists.ozlabs.org
-Subject: [RFC PATCH v8 08/13] media: uapi: Define audio sample format fourcc
- type
-Date: Fri, 27 Oct 2023 18:35:43 +0800
-Message-Id: <1698402948-10618-9-git-send-email-shengjiu.wang@nxp.com>
+Subject: [RFC PATCH v8 10/13] media: uapi: Add V4L2_CTRL_TYPE_FIXED_POINT
+Date: Fri, 27 Oct 2023 18:35:45 +0800
+Message-Id: <1698402948-10618-11-git-send-email-shengjiu.wang@nxp.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1698402948-10618-1-git-send-email-shengjiu.wang@nxp.com>
 References: <1698402948-10618-1-git-send-email-shengjiu.wang@nxp.com>
 X-Virus-Scanned: ClamAV using ClamSMTP
-Message-ID-Hash: BX5ACUGQNFDW7UXNNU5UDBU745H2GXAX
-X-Message-ID-Hash: BX5ACUGQNFDW7UXNNU5UDBU745H2GXAX
+Message-ID-Hash: OAJYG2YTQ76UHPHFOTWHIKIUYUAJBNAT
+X-Message-ID-Hash: OAJYG2YTQ76UHPHFOTWHIKIUYUAJBNAT
 X-MailFrom: shengjiu.wang@nxp.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -85,7 +84,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BX5ACUGQNFDW7UXNNU5UDBU745H2GXAX/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OAJYG2YTQ76UHPHFOTWHIKIUYUAJBNAT/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -94,184 +93,154 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The audio sample format definition is from alsa,
-the header file is include/uapi/sound/asound.h, but
-don't include this header file directly, because in
-user space, there is another copy in alsa-lib.
-There will be conflict in userspace for include
-videodev2.h & asound.h and asoundlib.h
-
-Here still use the fourcc format.
+Fixed point controls are used by the user to configure
+a fixed point value in 64bits, which Q31.32 format.
 
 Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 ---
- .../userspace-api/media/v4l/pixfmt-audio.rst  | 87 +++++++++++++++++++
- .../userspace-api/media/v4l/pixfmt.rst        |  1 +
- drivers/media/v4l2-core/v4l2-ioctl.c          | 13 +++
- include/uapi/linux/videodev2.h                | 23 +++++
- 4 files changed, 124 insertions(+)
- create mode 100644 Documentation/userspace-api/media/v4l/pixfmt-audio.rst
+ .../userspace-api/media/v4l/vidioc-g-ext-ctrls.rst  | 13 +++++++------
+ .../userspace-api/media/v4l/vidioc-queryctrl.rst    |  9 ++++++++-
+ .../userspace-api/media/videodev2.h.rst.exceptions  |  1 +
+ drivers/media/v4l2-core/v4l2-ctrls-api.c            |  5 ++++-
+ drivers/media/v4l2-core/v4l2-ctrls-core.c           |  2 ++
+ include/uapi/linux/videodev2.h                      |  1 +
+ 6 files changed, 23 insertions(+), 8 deletions(-)
 
-diff --git a/Documentation/userspace-api/media/v4l/pixfmt-audio.rst b/Documentation/userspace-api/media/v4l/pixfmt-audio.rst
-new file mode 100644
-index 000000000000..04b4a7fbd8f4
---- /dev/null
-+++ b/Documentation/userspace-api/media/v4l/pixfmt-audio.rst
-@@ -0,0 +1,87 @@
-+.. SPDX-License-Identifier: GFDL-1.1-no-invariants-or-later
-+
-+.. _pixfmt-audio:
-+
-+*************
-+Audio Formats
-+*************
-+
-+These formats are used for :ref:`audiomem2mem` interface only.
-+
-+.. tabularcolumns:: |p{5.8cm}|p{1.2cm}|p{10.3cm}|
-+
-+.. cssclass:: longtable
-+
-+.. flat-table:: Audio Format
-+    :header-rows:  1
-+    :stub-columns: 0
-+    :widths:       3 1 4
-+
-+    * - Identifier
-+      - Code
-+      - Details
-+    * .. _V4L2-AUDIO-FMT-S8:
-+
-+      - ``V4L2_AUDIO_FMT_S8``
-+      - 'S8'
-+      - Corresponds to SNDRV_PCM_FORMAT_S8 in ALSA
-+    * .. _V4L2-AUDIO-FMT-S16-LE:
-+
-+      - ``V4L2_AUDIO_FMT_S16_LE``
-+      - 'S16_LE'
-+      - Corresponds to SNDRV_PCM_FORMAT_S16_LE in ALSA
-+    * .. _V4L2-AUDIO-FMT-U16-LE:
-+
-+      - ``V4L2_AUDIO_FMT_U16_LE``
-+      - 'U16_LE'
-+      - Corresponds to SNDRV_PCM_FORMAT_U16_LE in ALSA
-+    * .. _V4L2-AUDIO-FMT-S24-LE:
-+
-+      - ``V4L2_AUDIO_FMT_S24_LE``
-+      - 'S24_LE'
-+      - Corresponds to SNDRV_PCM_FORMAT_S24_LE in ALSA
-+    * .. _V4L2-AUDIO-FMT-U24-LE:
-+
-+      - ``V4L2_AUDIO_FMT_U24_LE``
-+      - 'U24_LE'
-+      - Corresponds to SNDRV_PCM_FORMAT_U24_LE in ALSA
-+    * .. _V4L2-AUDIO-FMT-S32-LE:
-+
-+      - ``V4L2_AUDIO_FMT_S32_LE``
-+      - 'S32_LE'
-+      - Corresponds to SNDRV_PCM_FORMAT_S32_LE in ALSA
-+    * .. _V4L2-AUDIO-FMT-U32-LE:
-+
-+      - ``V4L2_AUDIO_FMT_U32_LE``
-+      - 'U32_LE'
-+      - Corresponds to SNDRV_PCM_FORMAT_U32_LE in ALSA
-+    * .. _V4L2-AUDIO-FMT-FLOAT-LE:
-+
-+      - ``V4L2_AUDIO_FMT_FLOAT_LE``
-+      - 'FLOAT_LE'
-+      - Corresponds to SNDRV_PCM_FORMAT_FLOAT_LE in ALSA
-+    * .. _V4L2-AUDIO-FMT-IEC958-SUBFRAME-LE:
-+
-+      - ``V4L2_AUDIO_FMT_IEC958_SUBFRAME_LE``
-+      - 'IEC958_SUBFRAME_LE'
-+      - Corresponds to SNDRV_PCM_FORMAT_IEC958_SUBFRAME_LE in ALSA
-+    * .. _V4L2-AUDIO-FMT-S24-3LE:
-+
-+      - ``V4L2_AUDIO_FMT_S24_3LE``
-+      - 'S24_3LE'
-+      - Corresponds to SNDRV_PCM_FORMAT_S24_3LE in ALSA
-+    * .. _V4L2-AUDIO-FMT-U24-3LE:
-+
-+      - ``V4L2_AUDIO_FMT_U24_3LE``
-+      - 'U24_3LE'
-+      - Corresponds to SNDRV_PCM_FORMAT_U24_3LE in ALSA
-+    * .. _V4L2-AUDIO-FMT-S20-3LE:
-+
-+      - ``V4L2_AUDIO_FMT_S20_3LE``
-+      - 'S20_3LE'
-+      - Corresponds to SNDRV_PCM_FORMAT_S24_3LE in ALSA
-+    * .. _V4L2-AUDIO-FMT-U20-3LE:
-+
-+      - ``V4L2_AUDIO_FMT_U20_3LE``
-+      - 'U20_3LE'
-+      - Corresponds to SNDRV_PCM_FORMAT_U20_3LE in ALSA
-diff --git a/Documentation/userspace-api/media/v4l/pixfmt.rst b/Documentation/userspace-api/media/v4l/pixfmt.rst
-index 11dab4a90630..2eb6fdd3b43d 100644
---- a/Documentation/userspace-api/media/v4l/pixfmt.rst
-+++ b/Documentation/userspace-api/media/v4l/pixfmt.rst
-@@ -36,3 +36,4 @@ see also :ref:`VIDIOC_G_FBUF <VIDIOC_G_FBUF>`.)
-     colorspaces
-     colorspaces-defs
-     colorspaces-details
-+    pixfmt-audio
-diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
-index 1bb03794922a..c86633b82038 100644
---- a/drivers/media/v4l2-core/v4l2-ioctl.c
-+++ b/drivers/media/v4l2-core/v4l2-ioctl.c
-@@ -1471,6 +1471,19 @@ static void v4l_fill_fmtdesc(struct v4l2_fmtdesc *fmt)
- 	case V4L2_PIX_FMT_Y210:		descr = "10-bit YUYV Packed"; break;
- 	case V4L2_PIX_FMT_Y212:		descr = "12-bit YUYV Packed"; break;
- 	case V4L2_PIX_FMT_Y216:		descr = "16-bit YUYV Packed"; break;
-+	case V4L2_AUDIO_FMT_S8:		descr = "8-bit Signed"; break;
-+	case V4L2_AUDIO_FMT_S16_LE:	descr = "16-bit Signed LE"; break;
-+	case V4L2_AUDIO_FMT_U16_LE:		descr = "16-bit Unsigned LE"; break;
-+	case V4L2_AUDIO_FMT_S24_LE:		descr = "24(32)-bit Signed LE"; break;
-+	case V4L2_AUDIO_FMT_U24_LE:		descr = "24(32)-bit Unsigned LE"; break;
-+	case V4L2_AUDIO_FMT_S32_LE:		descr = "32-bit Signed LE"; break;
-+	case V4L2_AUDIO_FMT_U32_LE:		descr = "32-bit Unsigned LE"; break;
-+	case V4L2_AUDIO_FMT_FLOAT_LE:		descr = "32-bit Float LE"; break;
-+	case V4L2_AUDIO_FMT_IEC958_SUBFRAME_LE:	descr = "32-bit IEC958 LE"; break;
-+	case V4L2_AUDIO_FMT_S24_3LE:		descr = "24(24)-bit Signed LE"; break;
-+	case V4L2_AUDIO_FMT_U24_3LE:		descr = "24(24)-bit Unsigned LE"; break;
-+	case V4L2_AUDIO_FMT_S20_3LE:		descr = "20(24)-bit Signed LE"; break;
-+	case V4L2_AUDIO_FMT_U20_3LE:		descr = "20(24)-bit Unsigned LE"; break;
+diff --git a/Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst b/Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst
+index e8475f9fd2cf..e7e5d78dc11e 100644
+--- a/Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst
++++ b/Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst
+@@ -162,13 +162,13 @@ still cause this situation.
+     * - __s32
+       - ``value``
+       - New value or current value. Valid if this control is not of type
+-	``V4L2_CTRL_TYPE_INTEGER64`` and ``V4L2_CTRL_FLAG_HAS_PAYLOAD`` is
+-	not set.
++	``V4L2_CTRL_TYPE_INTEGER64``, ``V4L2_CTRL_TYPE_FIXED_POINT`` and
++	``V4L2_CTRL_FLAG_HAS_PAYLOAD`` is not set.
+     * - __s64
+       - ``value64``
+       - New value or current value. Valid if this control is of type
+-	``V4L2_CTRL_TYPE_INTEGER64`` and ``V4L2_CTRL_FLAG_HAS_PAYLOAD`` is
+-	not set.
++	``V4L2_CTRL_TYPE_INTEGER64``, ``V4L2_CTRL_TYPE_FIXED_POINT`` and
++	``V4L2_CTRL_FLAG_HAS_PAYLOAD`` is not set.
+     * - char *
+       - ``string``
+       - A pointer to a string. Valid if this control is of type
+@@ -193,8 +193,9 @@ still cause this situation.
+     * - __s64 *
+       - ``p_s64``
+       - A pointer to a matrix control of signed 64-bit values. Valid if
+-        this control is of type ``V4L2_CTRL_TYPE_INTEGER64`` and
+-        ``V4L2_CTRL_FLAG_HAS_PAYLOAD`` is set.
++        this control is of type ``V4L2_CTRL_TYPE_INTEGER64``,
++        ``V4L2_CTRL_TYPE_FIXED_POINT`` and ``V4L2_CTRL_FLAG_HAS_PAYLOAD``
++        is set.
+     * - struct :c:type:`v4l2_area` *
+       - ``p_area``
+       - A pointer to a struct :c:type:`v4l2_area`. Valid if this control is
+diff --git a/Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst b/Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst
+index 4d38acafe8e1..f3995ec57044 100644
+--- a/Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst
++++ b/Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst
+@@ -235,7 +235,8 @@ See also the examples in :ref:`control`.
+       - ``default_value``
+       - The default value of a ``V4L2_CTRL_TYPE_INTEGER``, ``_INTEGER64``,
+ 	``_BOOLEAN``, ``_BITMASK``, ``_MENU``, ``_INTEGER_MENU``, ``_U8``
+-	or ``_U16`` control. Not valid for other types of controls.
++	``_FIXED_POINT`` or ``_U16`` control. Not valid for other types of
++	controls.
  
+ 	.. note::
+ 
+@@ -549,6 +550,12 @@ See also the examples in :ref:`control`.
+       - n/a
+       - A struct :c:type:`v4l2_ctrl_av1_film_grain`, containing AV1 Film Grain
+         parameters for stateless video decoders.
++    * - ``V4L2_CTRL_TYPE_FIXED_POINT``
++      - any
++      - any
++      - any
++      - A 64-bit integer valued control, containing parameter which is
++        Q31.32 format.
+ 
+ .. raw:: latex
+ 
+diff --git a/Documentation/userspace-api/media/videodev2.h.rst.exceptions b/Documentation/userspace-api/media/videodev2.h.rst.exceptions
+index e61152bb80d1..2faa5a2015eb 100644
+--- a/Documentation/userspace-api/media/videodev2.h.rst.exceptions
++++ b/Documentation/userspace-api/media/videodev2.h.rst.exceptions
+@@ -167,6 +167,7 @@ replace symbol V4L2_CTRL_TYPE_AV1_SEQUENCE :c:type:`v4l2_ctrl_type`
+ replace symbol V4L2_CTRL_TYPE_AV1_TILE_GROUP_ENTRY :c:type:`v4l2_ctrl_type`
+ replace symbol V4L2_CTRL_TYPE_AV1_FRAME :c:type:`v4l2_ctrl_type`
+ replace symbol V4L2_CTRL_TYPE_AV1_FILM_GRAIN :c:type:`v4l2_ctrl_type`
++replace symbol V4L2_CTRL_TYPE_FIXED_POINT :c:type:`v4l2_ctrl_type`
+ 
+ # V4L2 capability defines
+ replace define V4L2_CAP_VIDEO_CAPTURE device-capabilities
+diff --git a/drivers/media/v4l2-core/v4l2-ctrls-api.c b/drivers/media/v4l2-core/v4l2-ctrls-api.c
+index 002ea6588edf..e6a0fb8d6791 100644
+--- a/drivers/media/v4l2-core/v4l2-ctrls-api.c
++++ b/drivers/media/v4l2-core/v4l2-ctrls-api.c
+@@ -57,6 +57,7 @@ static int ptr_to_user(struct v4l2_ext_control *c,
+ 		return copy_to_user(c->string, ptr.p_char, len + 1) ?
+ 		       -EFAULT : 0;
+ 	case V4L2_CTRL_TYPE_INTEGER64:
++	case V4L2_CTRL_TYPE_FIXED_POINT:
+ 		c->value64 = *ptr.p_s64;
+ 		break;
  	default:
- 		/* Compressed formats */
+@@ -132,6 +133,7 @@ static int user_to_new(struct v4l2_ext_control *c, struct v4l2_ctrl *ctrl)
+ 
+ 	switch (ctrl->type) {
+ 	case V4L2_CTRL_TYPE_INTEGER64:
++	case V4L2_CTRL_TYPE_FIXED_POINT:
+ 		*ctrl->p_new.p_s64 = c->value64;
+ 		break;
+ 	case V4L2_CTRL_TYPE_STRING:
+@@ -540,7 +542,8 @@ static int validate_ctrls(struct v4l2_ext_controls *cs,
+ 		 */
+ 		if (ctrl->is_ptr)
+ 			continue;
+-		if (ctrl->type == V4L2_CTRL_TYPE_INTEGER64)
++		if (ctrl->type == V4L2_CTRL_TYPE_INTEGER64 ||
++		    ctrl->type == V4L2_CTRL_TYPE_FIXED_POINT)
+ 			p_new.p_s64 = &cs->controls[i].value64;
+ 		else
+ 			p_new.p_s32 = &cs->controls[i].value;
+diff --git a/drivers/media/v4l2-core/v4l2-ctrls-core.c b/drivers/media/v4l2-core/v4l2-ctrls-core.c
+index a662fb60f73f..9d50df0d9874 100644
+--- a/drivers/media/v4l2-core/v4l2-ctrls-core.c
++++ b/drivers/media/v4l2-core/v4l2-ctrls-core.c
+@@ -1187,6 +1187,7 @@ static int std_validate_elem(const struct v4l2_ctrl *ctrl, u32 idx,
+ 	case V4L2_CTRL_TYPE_INTEGER:
+ 		return ROUND_TO_RANGE(ptr.p_s32[idx], u32, ctrl);
+ 	case V4L2_CTRL_TYPE_INTEGER64:
++	case V4L2_CTRL_TYPE_FIXED_POINT:
+ 		/*
+ 		 * We can't use the ROUND_TO_RANGE define here due to
+ 		 * the u64 divide that needs special care.
+@@ -1779,6 +1780,7 @@ static struct v4l2_ctrl *v4l2_ctrl_new(struct v4l2_ctrl_handler *hdl,
+ 	/* Prefill elem_size for all types handled by std_type_ops */
+ 	switch ((u32)type) {
+ 	case V4L2_CTRL_TYPE_INTEGER64:
++	case V4L2_CTRL_TYPE_FIXED_POINT:
+ 		elem_size = sizeof(s64);
+ 		break;
+ 	case V4L2_CTRL_TYPE_STRING:
 diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
-index 1e06ac73b6fa..cf8c44595a1d 100644
+index cf8c44595a1d..9482ac66a675 100644
 --- a/include/uapi/linux/videodev2.h
 +++ b/include/uapi/linux/videodev2.h
-@@ -843,6 +843,29 @@ struct v4l2_pix_format {
- #define V4L2_META_FMT_RK_ISP1_PARAMS	v4l2_fourcc('R', 'K', '1', 'P') /* Rockchip ISP1 3A Parameters */
- #define V4L2_META_FMT_RK_ISP1_STAT_3A	v4l2_fourcc('R', 'K', '1', 'S') /* Rockchip ISP1 3A Statistics */
+@@ -1903,6 +1903,7 @@ enum v4l2_ctrl_type {
+ 	V4L2_CTRL_TYPE_STRING        = 7,
+ 	V4L2_CTRL_TYPE_BITMASK       = 8,
+ 	V4L2_CTRL_TYPE_INTEGER_MENU  = 9,
++	V4L2_CTRL_TYPE_FIXED_POINT   = 10,
  
-+/*
-+ * Audio-data formats
-+ * All these audio formats use a fourcc starting with 'AU'
-+ * followed by the SNDRV_PCM_FORMAT_ value from asound.h.
-+ */
-+#define V4L2_AUDIO_FMT_S8			v4l2_fourcc('A', 'U', '0', '0')
-+#define V4L2_AUDIO_FMT_S16_LE			v4l2_fourcc('A', 'U', '0', '2')
-+#define V4L2_AUDIO_FMT_U16_LE			v4l2_fourcc('A', 'U', '0', '4')
-+#define V4L2_AUDIO_FMT_S24_LE			v4l2_fourcc('A', 'U', '0', '6')
-+#define V4L2_AUDIO_FMT_U24_LE			v4l2_fourcc('A', 'U', '0', '8')
-+#define V4L2_AUDIO_FMT_S32_LE			v4l2_fourcc('A', 'U', '1', '0')
-+#define V4L2_AUDIO_FMT_U32_LE			v4l2_fourcc('A', 'U', '1', '2')
-+#define V4L2_AUDIO_FMT_FLOAT_LE			v4l2_fourcc('A', 'U', '1', '4')
-+#define V4L2_AUDIO_FMT_IEC958_SUBFRAME_LE	v4l2_fourcc('A', 'U', '1', '8')
-+#define V4L2_AUDIO_FMT_S24_3LE			v4l2_fourcc('A', 'U', '3', '2')
-+#define V4L2_AUDIO_FMT_U24_3LE			v4l2_fourcc('A', 'U', '3', '4')
-+#define V4L2_AUDIO_FMT_S20_3LE			v4l2_fourcc('A', 'U', '3', '6')
-+#define V4L2_AUDIO_FMT_U20_3LE			v4l2_fourcc('A', 'U', '3', '8')
-+
-+#define v4l2_fourcc_to_audfmt(fourcc)	\
-+	(__force snd_pcm_format_t)(((((fourcc) >> 16) & 0xff) - '0') * 10  \
-+				   + ((((fourcc) >> 24) & 0xff) - '0'))
-+
- /* priv field value to indicates that subsequent fields are valid. */
- #define V4L2_PIX_FMT_PRIV_MAGIC		0xfeedcafe
- 
+ 	/* Compound types are >= 0x0100 */
+ 	V4L2_CTRL_COMPOUND_TYPES     = 0x0100,
 -- 
 2.34.1
 
