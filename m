@@ -4,93 +4,104 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DA132C25B67
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Oct 2023 12:13:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C1053C25B47
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Oct 2023 16:25:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8012AA4A;
-	Fri, 27 Oct 2023 14:12:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8012AA4A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 55E43DEB;
+	Fri, 27 Oct 2023 18:24:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 55E43DEB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1698408802;
-	bh=GufLd68JrWWCWbA9FffHZI8Ui49NvQRStWT72Nq8TtU=;
+	s=default; t=1698423912;
+	bh=RV0fLu2/76u6vHIzDmwynMS7JHnsLAajtz19VSfeVOg=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=RjPmX4TVBmLCBS1ajfKkZ7os5NsgZZRfyVo/28gxLHcSc9fcw8cgsF+1EX0ry3L/a
-	 VVCNKe456I7nGbAhChBVS7me6o8lcUPuRoBaKeNmPQ2BHkzkChCsdkkrV9GoOCY+53
-	 r9dXALzRbVp1IMWL9NZwW/2ZtJbRcFJRqI4XUm7E=
+	b=Ms+n2WQZ7dUSBLFQSkX6NsN1FieqjneiKtVVKoV2H+rvMuxQoLk8Egxn5wC2T7Jh4
+	 YB8TYPmG4Ne4gaQZifUUp4JEyC1Ffmn47wSd5ZcapfwwdFobbi810k6PoVIzu3tfzb
+	 g5coQZFmOy4xlbUdXGOJ74ijYQ2yHmgmAczdhq5Y=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C9D5FF80165; Fri, 27 Oct 2023 14:11:55 +0200 (CEST)
+	id 5BD3EF8020D; Fri, 27 Oct 2023 18:23:51 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 564F0F8019B;
-	Fri, 27 Oct 2023 14:11:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C7CE6F80165;
+	Fri, 27 Oct 2023 18:23:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CD8AFF8019B; Fri, 27 Oct 2023 14:11:51 +0200 (CEST)
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+	id 5479DF80165; Fri, 27 Oct 2023 18:23:46 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 2C3E3F8014B
-	for <alsa-devel@alsa-project.org>; Fri, 27 Oct 2023 14:11:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2C3E3F8014B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 18B3BF8014B
+	for <alsa-devel@alsa-project.org>; Fri, 27 Oct 2023 18:23:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 18B3BF8014B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=DLMivdta
+ header.s=k20201202 header.b=IU7qEilM
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 194F0CE3CE1;
-	Fri, 27 Oct 2023 12:11:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49A3DC433C8;
-	Fri, 27 Oct 2023 12:11:42 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 6EA3661283;
+	Fri, 27 Oct 2023 16:23:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76439C433C8;
+	Fri, 27 Oct 2023 16:23:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1698408702;
-	bh=GufLd68JrWWCWbA9FffHZI8Ui49NvQRStWT72Nq8TtU=;
+	s=k20201202; t=1698423820;
+	bh=RV0fLu2/76u6vHIzDmwynMS7JHnsLAajtz19VSfeVOg=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=DLMivdtaqZC7ceLgIAqQWKilUrU612Jp4J85/xgMihgp4sM9mah4DWNw6XMSZL468
-	 8pPHx/xKmOedmJknI6rFWgAOquFzrfH7YvR0e0aAG8iDayO4TM9vXqAIKh8DLCiKMO
-	 a4bJ3V86lzAMNnBv1EZNS4Xm3dti8iksEJi6Pu6Z4kJ4lAiBcgVLQVSt7yaWL8NMqR
-	 Z3umw/STegj1sfLdR87es900k1S7FPMfju32aNHxNkXJZ76tzn1KoT4DicPighgqB0
-	 0zcahF/Om7LUGByaNc8KZSqOoJrTrxi8eR2H1fDX7lmYKNREJ+hfExU/T6nFur3uFl
-	 qW4JZfnNMq8BA==
-Received: from johan by xi.lan with local (Exim 4.96)
-	(envelope-from <johan@kernel.org>)
-	id 1qwLhA-0007So-0P;
-	Fri, 27 Oct 2023 14:12:08 +0200
-Date: Fri, 27 Oct 2023 14:12:08 +0200
-From: Johan Hovold <johan@kernel.org>
-To: Amadeusz =?utf-8?B?U8WCYXdpxYRza2k=?=
- <amadeuszx.slawinski@linux.intel.com>
-Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-	broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
-	lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
-	alsa-devel@alsa-project.org
-Subject: Re: [RFC PATCH 0/2] ASoC: soc-dai: add flag to mute and unmute
- stream during trigger.
-Message-ID: <ZTupGPUQg0j1aGjW@hovoldconsulting.com>
-References: <20231027105747.32450-1-srinivas.kandagatla@linaro.org>
- <54c44548-c2e4-466d-bfe4-b48db9e5d20c@linux.intel.com>
+	b=IU7qEilM3rjTamN9SMxER6aUSRpZdMoz/+fHY92Dt76/9ffAeHhbVhzh21bxT9Nhr
+	 TTivbhtISZ84ujdJapLPZSVjSRCFDPrm9A/Jwx7Unkblfk4P44BeJgEmdx6T4rM5TQ
+	 69AlxOyNjOFZ4Ke0feuowcdMXX3LZqvCUHjtKiG1VHg9bPhsqXTfcvqg2tgqP2X+Hz
+	 urnbYckxizt9/uwYeBanT+oaeLXWzbuZrnX2cPm+nKO0pl6/K9f4ga5fBmeh/Ypg9m
+	 atfZCvQLatkV0GDuEBZvO1jdwZkRwH6BXHmrE70tsSz2v696kmIjkIbZj0y2cC8C3g
+	 /RuBmNZxo0tVg==
+Date: Fri, 27 Oct 2023 17:23:36 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Mario Limonciello <mario.limonciello@amd.com>
+Cc: Krzysztof Kozlowski <krzk@kernel.org>,
+	Syed Saba Kareem <Syed.SabaKareem@amd.com>,
+	alsa-devel@alsa-project.org, Vijendar.Mukunda@amd.com,
+	Basavaraj.Hiregoudar@amd.com, Sunil-kumar.Dommati@amd.com,
+	venkataprasad.potturu@amd.com, arungopal.kondaveeti@amd.com,
+	mastan.katragadda@amd.com, juan.martinez@amd.com,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	Marian Postevca <posteuca@mutex.one>,
+	Alper Nebi Yasak <alpernebiyasak@gmail.com>,
+	Claudiu Beznea <claudiu.beznea@microchip.com>,
+	Gaosheng Cui <cuigaosheng1@huawei.com>,
+	Jarkko Nikula <jarkko.nikula@bitmer.com>,
+	open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 09/13] ASoC: amd: acp: add machine driver support for pdm
+ use case
+Message-ID: <ZTvkCAYsrS62/82u@finisterre.sirena.org.uk>
+References: <20231021145110.478744-1-Syed.SabaKareem@amd.com>
+ <20231021145110.478744-9-Syed.SabaKareem@amd.com>
+ <4d5a4c67-2f4b-4111-b98b-ef575543fa6e@kernel.org>
+ <3ec97548-1f91-49d0-adfb-4f8051ca9a97@amd.com>
+ <f8f8017c-4e76-4d70-918f-d7cb45186184@kernel.org>
+ <c0ea139c-9861-4ea1-b547-6e3c380301b3@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="F5X28b0ZPx7dDZpr"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <54c44548-c2e4-466d-bfe4-b48db9e5d20c@linux.intel.com>
-Message-ID-Hash: NCWUWCTQ33PR34KEPLVO2DYJSXCKQW3P
-X-Message-ID-Hash: NCWUWCTQ33PR34KEPLVO2DYJSXCKQW3P
-X-MailFrom: johan@kernel.org
-X-Mailman-Rule-Hits: nonmember-moderation
+In-Reply-To: <c0ea139c-9861-4ea1-b547-6e3c380301b3@amd.com>
+X-Cookie: Save energy:  Drive a smaller shell.
+Message-ID-Hash: QZUW5DAK6A575WB5L3NHCODWW2M3AZO5
+X-Message-ID-Hash: QZUW5DAK6A575WB5L3NHCODWW2M3AZO5
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NCWUWCTQ33PR34KEPLVO2DYJSXCKQW3P/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QZUW5DAK6A575WB5L3NHCODWW2M3AZO5/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -99,35 +110,39 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, Oct 27, 2023 at 02:00:13PM +0200, Amadeusz Sławiński wrote:
 
-> Have you tried something like:
-> diff --git a/sound/soc/codecs/wsa883x.c b/sound/soc/codecs/wsa883x.c
-> index e40d583a1ce6..f02362cf95dc 100644
-> --- a/sound/soc/codecs/wsa883x.c
-> +++ b/sound/soc/codecs/wsa883x.c
-> @@ -1229,6 +1229,8 @@ static int wsa883x_spkr_event(struct 
-> snd_soc_dapm_widget *w,
->                  snd_soc_component_write_field(component, 
-> WSA883X_VBAT_ADC_FLT_CTL,
->  
-> WSA883X_VBAT_ADC_COEF_SEL_MASK,
->  
-> WSA883X_VBAT_ADC_COEF_F_1DIV2);
-> +               snd_soc_component_write_field(component, WSA883X_DRE_CTL_1,
-> +                                             WSA883X_DRE_GAIN_EN_MASK, 0);
->                  snd_soc_component_write_field(component, 
-> WSA883X_PA_FSM_CTL,
->  
-> WSA883X_GLOBAL_PA_EN_MASK, 0);
->                  snd_soc_component_write_field(component, 
-> WSA883X_PDM_WD_CTL,
-> 
-> 
-> As it is one thing from wsa883x_digital_mute() which seems missing in 
-> SND_SOC_DAPM_PRE_PMD switch case, so it seems to leave GAIN always enabled?
+--F5X28b0ZPx7dDZpr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Since I had the test setup ready, I tried the above quickly but it
-doesn't seem to make any difference.
+On Fri, Oct 27, 2023 at 10:54:47AM -0500, Mario Limonciello wrote:
 
-Johan
+> What would actually go into MODULE_DEVICE_TABLE?
+
+> The platform devices created are contingent upon what was found during the
+> top level ACP driver probe.  You don't want all the "child" platform drivers
+> to load unless they're needed.
+
+You want
+
+	MODULE_DEVICE_TABLE(platform, board_ids);
+
+which is effectively the same as all the MODULE_ALIAS items you have
+there (which can be removed).
+
+--F5X28b0ZPx7dDZpr
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmU75AcACgkQJNaLcl1U
+h9AMNgf+K4oW7ZrMTMIcX7t1TwQoWNyZMYtETdiOm7VKUfS7pub9BGO3pKJa3oFo
+JgemoHmiM+XrK6SJtNr6+UstjZXH0S3LzN9fD5hu7Xlzn38slkvdv3gUd4J/pct/
+6/MKQp/Is54DVkuMxYoMx7Pq1v+9R4bwI0RprFxfNtRWedJuDED4IHnGBJ/j3nfj
+qWWoZHkKxuQM4A+AMSpo/O+KRohtvOwUAZTBxwUFXxaj3tGpJ4aNQwN7nxcsN5hl
+t6jH5P0kzl2uGoy899M84AHyyI37vGxTDMrjobYDSXxNOojIIyAbHlRQbNSK2rf8
+GN0aZEw0+VJBCdOtyXgnO+Vpkwjpsw==
+=QVIL
+-----END PGP SIGNATURE-----
+
+--F5X28b0ZPx7dDZpr--
