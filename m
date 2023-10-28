@@ -4,74 +4,121 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5C824C25B48
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Oct 2023 22:56:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 42DDBC0032E
+	for <alsa-devel@archiver.kernel.org>; Sat, 28 Oct 2023 08:51:44 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 159B7E11;
-	Sat, 28 Oct 2023 00:56:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 159B7E11
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4C752AE9;
+	Sat, 28 Oct 2023 10:50:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4C752AE9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1698447416;
-	bh=WWpolZdlpae3gSp7g8pZghxt2V4LxG6S+F6aIwOouQs=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1698483102;
+	bh=+5DSt9wHxLvQLygUWVX0VDmhoJIQ0W33QNNTdVhekRo=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=X0jEqoJzzmSYtV2ohvXGg9CPEp3Ww9GC9H3zcz61YthTDi4iwfUTQqY9YX7PTD9l+
-	 RRMta2BHDqfTlZtu3TobKCNsB94vGbML9RPhAN+MibgX8wt5pPOKi7ZwGOn01bULhv
-	 9mU6/MKBJHE2I0S1ByAapHq74JOl0z0Wk7fkQoOo=
+	b=Jyjfi/CJtb9rdkU/bjB/gzzlX9fO/1HQ4GfkcghY78bbt73B3eh6k12Y26TYC7g6c
+	 2ULWJMkB6tXLGGfGcaYYxzAS/B9PXJWlSs4KAk37bV3t7izjy2wNd7f6xvh3VBiblZ
+	 GRAY2Bfd6fuxUeXhCzh5SjQe/5j3Zi7xOAoyELc8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2190EF80579; Sat, 28 Oct 2023 00:55:08 +0200 (CEST)
+	id 6EB75F8020D; Sat, 28 Oct 2023 10:50:15 +0200 (CEST)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6DE58F80578;
-	Sat, 28 Oct 2023 00:55:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0A999F8019B;
+	Sat, 28 Oct 2023 10:50:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0BF06F80165; Sat, 28 Oct 2023 00:55:03 +0200 (CEST)
+	id 8189FF8019B; Sat, 28 Oct 2023 10:47:08 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C2869F8010B
-	for <alsa-devel@alsa-project.org>; Sat, 28 Oct 2023 00:54:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C2869F8010B
+	by alsa1.perex.cz (Postfix) with ESMTPS id F2BA7F80152
+	for <alsa-devel@alsa-project.org>; Sat, 28 Oct 2023 10:47:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F2BA7F80152
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=F787CzRP
+ header.s=k20201202 header.b=suMgm95S
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 373A261E7E;
-	Fri, 27 Oct 2023 22:54:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF4E7C433C8;
-	Fri, 27 Oct 2023 22:54:49 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 8024E60DF9;
+	Sat, 28 Oct 2023 08:46:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F0C6C433C7;
+	Sat, 28 Oct 2023 08:46:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1698447290;
-	bh=WWpolZdlpae3gSp7g8pZghxt2V4LxG6S+F6aIwOouQs=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=F787CzRP/l/RTiZYpq8WfYJ43EcsPNvtyiCx4G3n2iZn/dr0UW34wT6cdMsWj1sra
-	 udJV5iSsc0YysSHfzSHySlhb84bkVRUxKUvQoCgKuvQkUFcapOsqnGIggrQ3VuatD9
-	 wB2nXn2+fUDs4Xl4FTxuJ1AS0i4XjSWwP9+RMnapDNR2FV4wiJv3/NyeU2T0/H6KcZ
-	 KsABch9BgkL2Vfa7K2w5KnDqecH8MKfnuZnHb6nC4uoEGf6gZv+r46pKtfEVyZjPo0
-	 9KVONkeHLDwibwO+gzALLXWyqEgDq/p/x/j7+Qrn1fz/qr0Wz4WnmeQTBuy1A6WE3b
-	 tigR7MbjNOPJA==
-From: Mark Brown <broonie@kernel.org>
-To: Dan Carpenter <dan.carpenter@linaro.org>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>
-In-Reply-To: <87wmv9q632.wl-kuninori.morimoto.gx@renesas.com>
-References: <87wmv9q632.wl-kuninori.morimoto.gx@renesas.com>
-Subject: Re: (subset) [PATCH 0/2] ASoC: ams-delta.c: use component after
- check
-Message-Id: <169844728949.3013518.16732731655530708204.b4-ty@kernel.org>
-Date: Fri, 27 Oct 2023 23:54:49 +0100
+	s=k20201202; t=1698482818;
+	bh=+5DSt9wHxLvQLygUWVX0VDmhoJIQ0W33QNNTdVhekRo=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=suMgm95Sc6S1/IPQNNtB9IUbE8SjfcdRsWhjl38LLXBNk2O1wYt27P2Y9EOLpmSqf
+	 FHBBJ4oG5/UOhcMrDmdX8fotupoTbE2GqnH9ABfVPYBV3kYKV277UR5DkWA1OQwBZD
+	 0gOycdzMPGl7sfWkYU8//bXPMn5XH0dqZRXbfokK4z5OIqRfwvzJxh1IniKrr76qd3
+	 wDuCL28zWmUKpe8PO1n5orkUwx+ms0qlIVxGXF4XLdVnptmye9iiZ2VX5zomFm+Nm0
+	 /GNJJJVRFSkhAlluDbIKgBlAxjv2B5JgPOBE0cWbi7bnIYbYB8n5tweMaAYvWvN30v
+	 pWaNnl0bofwGQ==
+Message-ID: <db8fb570-0532-45d2-b0dd-adfb8727f258@kernel.org>
+Date: Sat, 28 Oct 2023 10:46:55 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-0438c
-Message-ID-Hash: IACIXG7XPWFWDJFCD4BTZIKH3XFPSWL6
-X-Message-ID-Hash: IACIXG7XPWFWDJFCD4BTZIKH3XFPSWL6
-X-MailFrom: broonie@kernel.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] ASoC: Intel: avs: Add rt5514 machine board
+Content-Language: en-US
+To: =?UTF-8?Q?Amadeusz_S=C5=82awi=C5=84ski?=
+ <amadeuszx.slawinski@linux.intel.com>, Mark Brown <broonie@kernel.org>
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>, Takashi Iwai
+ <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
+ alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
+ =?UTF-8?Q?=C5=81ukasz_Majczak?= <lma@chromium.org>
+References: <20231027110537.2103712-1-amadeuszx.slawinski@linux.intel.com>
+ <20231027110537.2103712-2-amadeuszx.slawinski@linux.intel.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <20231027110537.2103712-2-amadeuszx.slawinski@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: XHEW7UMZXGUH627KNKJDBLGZVUNVDZPQ
+X-Message-ID-Hash: XHEW7UMZXGUH627KNKJDBLGZVUNVDZPQ
+X-MailFrom: krzk@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -83,7 +130,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IACIXG7XPWFWDJFCD4BTZIKH3XFPSWL6/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XHEW7UMZXGUH627KNKJDBLGZVUNVDZPQ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -92,43 +139,37 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, 27 Oct 2023 00:09:23 +0000, Kuninori Morimoto wrote:
-> This patch-set fixup ams-delta.c's 2 warning/error.
+On 27/10/2023 13:05, Amadeusz Sławiński wrote:
+> To support AVS-rt5514 configuration add machine board connecting AVS
+> platform component driver with rt5514 codec one.
 > 
-> [1/2] is for compile error of .receive_buf = cx81801_receive,
-> [2/2] is for static checker warnings
-> 
-> Kuninori Morimoto (2):
->   ASoC: ams-delta.c: fixup cx81801_receive() parameter
->   ASoC: ams-delta.c: use component after check
-> 
-> [...]
+> Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
+> ---
+>  sound/soc/intel/avs/boards/Kconfig  |  10 ++
+>  sound/soc/intel/avs/boards/Makefile |   2 +
+>  sound/soc/intel/avs/boards/rt5514.c | 187 ++++++++++++++++++++++++++++
+>  3 files changed, 199 insertions(+)
+>  create mode 100644 sound/soc/intel/avs/boards/rt5514.c
 
-Applied to
+...
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+> +
+> +static struct platform_driver avs_rt5514_driver = {
+> +	.probe = avs_rt5514_probe,
+> +	.driver = {
+> +		.name = "avs_rt5514",
+> +		.pm = &snd_soc_pm_ops,
+> +	},
+> +};
+> +
+> +module_platform_driver(avs_rt5514_driver);
+> +
+> +MODULE_LICENSE("GPL");
+> +MODULE_ALIAS("platform:avs_rt5514");
 
-Thanks!
+You should not need MODULE_ALIAS() in normal cases. If you need it,
+usually it means your device ID table is wrong.
 
-[2/2] ASoC: ams-delta.c: use component after check
-      commit: bd0f7498bc9084d8cccc5484cd004b40f314b763
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+Best regards,
+Krzysztof
 
