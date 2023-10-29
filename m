@@ -4,73 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 81F57C4332F
-	for <alsa-devel@archiver.kernel.org>; Sun, 29 Oct 2023 22:57:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EE240C4167D
+	for <alsa-devel@archiver.kernel.org>; Sun, 29 Oct 2023 22:57:59 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 344CCDEB;
-	Sun, 29 Oct 2023 23:57:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 344CCDEB
+	by alsa0.perex.cz (Postfix) with ESMTPS id CBDE5DEE;
+	Sun, 29 Oct 2023 23:57:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CBDE5DEE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1698620270;
-	bh=+bbdb76ajqheViTiDz9DJe1J0LziQ/6Wy3/LI6rVYx8=;
+	s=default; t=1698620277;
+	bh=YP/Bagg/FmJOMvQhIt3xBhDBmQHqsMT6vRhRKIcACBY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=bASWSzRjld73nacTU67oVEOgMFuumbxbDhdHfRg1Vg/w0oTTIEu5XS18qcg0QNdpo
-	 KbcBGTnKOzqFWxbeTbxWIiilKgg7OxWgHTFCwDUBIigzH52HhdSrte2XAU1gGL3zTO
-	 yii33BIIbE0kO3705xZKLZb/uKqLwksV8srw5/m4=
+	b=qlvuD5Ch+up2W7wzm0RwM7t2Cui6vh8jxclChQNTLXP/fB6waRJBGJ2OL7t//OeA3
+	 5hcneBOsakR7eKC8caDSso0VzO4IL012v/iU7LialLuVFXwH9HDb2rrKMtti42JLsK
+	 ONY+BQcW+YFsYHSnJyeEeU/vbP0rrUaeoNAx1V8Y=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DBA30F8020D; Sun, 29 Oct 2023 23:56:58 +0100 (CET)
+	id 70D8FF8055A; Sun, 29 Oct 2023 23:57:01 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7E3FAF80494;
-	Sun, 29 Oct 2023 23:56:58 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id EB21FF80578;
+	Sun, 29 Oct 2023 23:57:00 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 964C8F8055B; Sun, 29 Oct 2023 23:55:49 +0100 (CET)
-Received: from sin.source.kernel.org (sin.source.kernel.org
- [IPv6:2604:1380:40e1:4800::1])
+	id 05B17F80578; Sun, 29 Oct 2023 23:56:16 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id CE228F80494
-	for <alsa-devel@alsa-project.org>; Sun, 29 Oct 2023 23:55:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CE228F80494
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6F783F80494
+	for <alsa-devel@alsa-project.org>; Sun, 29 Oct 2023 23:56:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6F783F80494
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=DD2ZqOPU
+ header.s=k20201202 header.b=IbKWAu/Q
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 9B191CE1197;
-	Sun, 29 Oct 2023 22:55:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1CEB6C43395;
-	Sun, 29 Oct 2023 22:55:38 +0000 (UTC)
+	by ams.source.kernel.org (Postfix) with ESMTP id 78FD3B80707;
+	Sun, 29 Oct 2023 22:56:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BEC49C43397;
+	Sun, 29 Oct 2023 22:56:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1698620139;
-	bh=+bbdb76ajqheViTiDz9DJe1J0LziQ/6Wy3/LI6rVYx8=;
+	s=k20201202; t=1698620168;
+	bh=YP/Bagg/FmJOMvQhIt3xBhDBmQHqsMT6vRhRKIcACBY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=DD2ZqOPUQ4dWNHmQvLW7m9YQkFr3zIxKM79zwtOjvKxD13Oofe/RO0FZhGBkehaXu
-	 yP9bpWLfpIBJnGX4LTBQ+PWbd2B74GcSXbmK7N5auXTXYIBgv4eDgoRtGFvZVAL1u0
-	 bkRiEBAD+P1LzTBhYvuxte4jAr03dn3juUjtynLCtpJeC/1rnlheuh+FecWFLhsSi6
-	 7iCoPUQvhGPrS4AveT2T3GPNzaC00vhVBf4pwtbpeDkpB1CHXvBNYqiKKgCrYB/EzE
-	 1R/l5caqEO0cfn2VHU5nYsITDH1q1WxyxdF2yBWhlRB4hSkxKD0x6SoGvOgR80s0Rh
-	 1WGEBAYKVVefQ==
+	b=IbKWAu/Qc0Mg5kGqTfTYH6w2YCyhKwnv/fIZiFBTTy2IW1BZi5xcuyBpU56eo0Y8H
+	 31gzECFAbH2jtQFCltuxJkXlvQCMvDOFB+8LGrW4Y9C8SjG92+1HFZeSkpyvYqwIaX
+	 KgyZEJ51Z+LMuJRF1sIOi1lQ9XDpsDIqIFOHpMW5Hd521UscsHNzfborkK+ix3m+Lh
+	 VBm4I0KL61Ks0KafE+OGZ8wLYcU/fVFztt2TtBzH6XyXiRTLCCRN4yMGAbeLjPmq8f
+	 DIf0uFgv88XGSFd/pHrBZX+AmBYBbvgpZl3VdLTzDwA3o5vVojZfELUf2Ng9MEhWld
+	 XAZgsfsn8PbWA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Shuming Fan <shumingf@realtek.com>,
+Cc: David Rau <David.Rau.opensource@dm.renesas.com>,
 	Mark Brown <broonie@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	oder_chiou@realtek.com,
+	support.opensource@diasemi.com,
 	lgirdwood@gmail.com,
 	perex@perex.cz,
 	tiwai@suse.com,
 	alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 6.5 28/52] ASoC: rt5650: fix the wrong result of key
- button
-Date: Sun, 29 Oct 2023 18:53:15 -0400
-Message-ID: <20231029225441.789781-28-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.5 37/52] ASoC: da7219: Correct the process of
+ setting up Gnd switch in AAD
+Date: Sun, 29 Oct 2023 18:53:24 -0400
+Message-ID: <20231029225441.789781-37-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231029225441.789781-1-sashal@kernel.org>
 References: <20231029225441.789781-1-sashal@kernel.org>
@@ -79,8 +79,8 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.5.9
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: A6SMOPQCD5L4YXXW74DXWWZY5CA7UVGG
-X-Message-ID-Hash: A6SMOPQCD5L4YXXW74DXWWZY5CA7UVGG
+Message-ID-Hash: DYZMVTRRMZGDF5O4XZV2EKGOO6UATB64
+X-Message-ID-Hash: DYZMVTRRMZGDF5O4XZV2EKGOO6UATB64
 X-MailFrom: sashal@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -93,7 +93,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/A6SMOPQCD5L4YXXW74DXWWZY5CA7UVGG/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DYZMVTRRMZGDF5O4XZV2EKGOO6UATB64/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -102,33 +102,58 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Shuming Fan <shumingf@realtek.com>
+From: David Rau <David.Rau.opensource@dm.renesas.com>
 
-[ Upstream commit f88dfbf333b3661faff996bb03af2024d907b76a ]
+[ Upstream commit e8ecffd9962fe051d53a0761921b26d653b3df6b ]
 
-The RT5650 should enable a power setting for button detection to avoid the wrong result.
+Enable Gnd switch to improve stability when Jack insert event
+occurs, and then disable Gnd switch after Jack type detection
+is finished.
 
-Signed-off-by: Shuming Fan <shumingf@realtek.com>
-Link: https://lore.kernel.org/r/20231013094525.715518-1-shumingf@realtek.com
+Signed-off-by: David Rau <David.Rau.opensource@dm.renesas.com>
+Link: https://lore.kernel.org/r/20231017021258.5929-1-David.Rau.opensource@dm.renesas.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/rt5645.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/codecs/da7219-aad.c | 11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index a506d940a2ead..fae04e9fae4e7 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -3251,6 +3251,8 @@ int rt5645_set_jack_detect(struct snd_soc_component *component,
- 				RT5645_GP1_PIN_IRQ, RT5645_GP1_PIN_IRQ);
- 		regmap_update_bits(rt5645->regmap, RT5645_GEN_CTRL1,
- 				RT5645_DIG_GATE_CTRL, RT5645_DIG_GATE_CTRL);
-+		regmap_update_bits(rt5645->regmap, RT5645_DEPOP_M1,
-+				RT5645_HP_CB_MASK, RT5645_HP_CB_PU);
- 	}
- 	rt5645_irq(0, rt5645);
+diff --git a/sound/soc/codecs/da7219-aad.c b/sound/soc/codecs/da7219-aad.c
+index 581b334a6631d..3bbe850916493 100644
+--- a/sound/soc/codecs/da7219-aad.c
++++ b/sound/soc/codecs/da7219-aad.c
+@@ -59,9 +59,6 @@ static void da7219_aad_btn_det_work(struct work_struct *work)
+ 	bool micbias_up = false;
+ 	int retries = 0;
  
+-	/* Disable ground switch */
+-	snd_soc_component_update_bits(component, 0xFB, 0x01, 0x00);
+-
+ 	/* Drive headphones/lineout */
+ 	snd_soc_component_update_bits(component, DA7219_HP_L_CTRL,
+ 			    DA7219_HP_L_AMP_OE_MASK,
+@@ -155,9 +152,6 @@ static void da7219_aad_hptest_work(struct work_struct *work)
+ 		tonegen_freq_hptest = cpu_to_le16(DA7219_AAD_HPTEST_RAMP_FREQ_INT_OSC);
+ 	}
+ 
+-	/* Disable ground switch */
+-	snd_soc_component_update_bits(component, 0xFB, 0x01, 0x00);
+-
+ 	/* Ensure gain ramping at fastest rate */
+ 	gain_ramp_ctrl = snd_soc_component_read(component, DA7219_GAIN_RAMP_CTRL);
+ 	snd_soc_component_write(component, DA7219_GAIN_RAMP_CTRL, DA7219_GAIN_RAMP_RATE_X8);
+@@ -421,6 +415,11 @@ static irqreturn_t da7219_aad_irq_thread(int irq, void *data)
+ 			 * handle a removal, and we can check at the end of
+ 			 * hptest if we have a valid result or not.
+ 			 */
++
++			cancel_delayed_work_sync(&da7219_aad->jack_det_work);
++			/* Disable ground switch */
++			snd_soc_component_update_bits(component, 0xFB, 0x01, 0x00);
++
+ 			if (statusa & DA7219_JACK_TYPE_STS_MASK) {
+ 				report |= SND_JACK_HEADSET;
+ 				mask |=	SND_JACK_HEADSET | SND_JACK_LINEOUT;
 -- 
 2.42.0
 
