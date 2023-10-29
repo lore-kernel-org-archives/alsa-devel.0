@@ -4,72 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 60B01C4167B
-	for <alsa-devel@archiver.kernel.org>; Sun, 29 Oct 2023 22:57:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E6063C4332F
+	for <alsa-devel@archiver.kernel.org>; Sun, 29 Oct 2023 22:57:28 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1DE34950;
-	Sun, 29 Oct 2023 23:56:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1DE34950
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0F732A4D;
+	Sun, 29 Oct 2023 23:56:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0F732A4D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1698620225;
-	bh=Ntf0w8qRyYGhdO1CgTARNydagiZ086VTsRI5WB97xJw=;
+	s=default; t=1698620247;
+	bh=3WqHVuQmYqKjH49ZdI3DyMGWGcEBUXr7RFhzrjTJFhY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=BTDbqhH5mZoJNwTsW7cH0q6s1I5UAbBmeJSYvX84ZLVNqx8PPixfA9xYik8WOZUCc
-	 sYRF4lNJyOX3bH3eH2cd/6tVwMoAUd5wlHw2H3gtsow7gBtkVqr1TnVhP2E325gJMg
-	 l5Fscjbk3Fh12RSFLJ+3talkgRfPxqQx3NCeLrPw=
+	b=YYg3pTnQS2eXoLzxerQssX3n6IeazxtRn4vkYyZMvJFHA8FTcLINSMiKzc+iEtEx8
+	 Efqsf83TqLUINTLylXPbmNNhoSyNbIyAaQvqzxFYV75FgzZ/+E1+xSxaW/xZvUmROG
+	 u3OechnhzOk6hV9p2PpcWv+yaL3S9gccqZwZytuk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3E337F80290; Sun, 29 Oct 2023 23:55:45 +0100 (CET)
+	id 9C04FF80431; Sun, 29 Oct 2023 23:55:51 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 89055F80290;
-	Sun, 29 Oct 2023 23:55:43 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id F348DF8055B;
+	Sun, 29 Oct 2023 23:55:50 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 49886F80290; Sun, 29 Oct 2023 23:55:23 +0100 (CET)
+	id 01B8CF80563; Sun, 29 Oct 2023 23:55:46 +0100 (CET)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org
  [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 791ECF8014B
-	for <alsa-devel@alsa-project.org>; Sun, 29 Oct 2023 23:55:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 791ECF8014B
+	by alsa1.perex.cz (Postfix) with ESMTPS id A7F03F80431
+	for <alsa-devel@alsa-project.org>; Sun, 29 Oct 2023 23:55:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A7F03F80431
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=SZgeRFAJ
+ header.s=k20201202 header.b=TD5CqIn0
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 36E2960E8C;
-	Sun, 29 Oct 2023 22:55:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F12A0C433CB;
-	Sun, 29 Oct 2023 22:55:07 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 3B2CA60E83;
+	Sun, 29 Oct 2023 22:55:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99EE3C433C9;
+	Sun, 29 Oct 2023 22:55:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1698620109;
-	bh=Ntf0w8qRyYGhdO1CgTARNydagiZ086VTsRI5WB97xJw=;
+	s=k20201202; t=1698620140;
+	bh=3WqHVuQmYqKjH49ZdI3DyMGWGcEBUXr7RFhzrjTJFhY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=SZgeRFAJAkg0yLUb4VgRNFFLuZ9dhhVQfszxduV77bRLdEVZog8YC3YUgdVq8+va5
-	 N0Zf6L0Yi2tBglCYWiJHutmEiG4Ra8NfYZwVgpMr3GhAaB0+foNsnidf6xDcN4z4b0
-	 FRgOhWSlxcr+/dv91/H03ZY2375gqv8CFeh2UjuFANwqviLibxDFRwop7ZNpHTKQul
-	 gowKGz377FgPNwULTDsELzrKbv9atujqHpGLenTorqZb3a+Hy7vmjAiHSmcfCG3ZCX
-	 SsSezLm8QAKBKp6Oz2Y5fHV544xpauHXVmD7VWWfAsHyb+zab8tLPHW1JbubNnANVT
-	 A4ZOuMeHnwGMA==
+	b=TD5CqIn0imcIWVLJ/3i+5GeO4pHgAQq3nAC1hyMiQNNefLP/PSB21A7t334zLICbS
+	 D/7JXhphfMqfa+GlogfibeIUMQnts6QdGffKgs2WDtSJVX8LYkNdtO6b8F2XwCLZc1
+	 I1uvRIO/dsKse+KZpU09OWUvqJb3/pul+qqi3yMKb8ciCWyPxB16p8/lZt+ozvQEIM
+	 ztgMVC5wkyVtgMWodzPs+Esszyp2sbvefqef09Cv/u0kVnPhTooYU/0kTLOAq1GNCj
+	 7Uvgf9i9F0v/yuChg724ctBO7+DWT66IIItTZv6LGaqFb4cl2vEskCjWDWkN9SZkqt
+	 Fjb7aKd6L/Nzg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+Cc: Roy Chateau <roy.chateau@mep-info.com>,
 	Mark Brown <broonie@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
+	shenghao-ding@ti.com,
+	kevin-lu@ti.com,
+	baojun.xu@ti.com,
 	lgirdwood@gmail.com,
 	perex@perex.cz,
 	tiwai@suse.com,
 	alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 6.5 18/52] ASoC: soc-dapm: Add helper for comparing
- widget name
-Date: Sun, 29 Oct 2023 18:53:05 -0400
-Message-ID: <20231029225441.789781-18-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.5 29/52] ASoC: codecs: tas2780: Fix log of failed
+ reset via I2C.
+Date: Sun, 29 Oct 2023 18:53:16 -0400
+Message-ID: <20231029225441.789781-29-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231029225441.789781-1-sashal@kernel.org>
 References: <20231029225441.789781-1-sashal@kernel.org>
@@ -78,8 +80,8 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.5.9
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: MJEZZRUUIQNANMDBYS44MVECABUPHQKI
-X-Message-ID-Hash: MJEZZRUUIQNANMDBYS44MVECABUPHQKI
+Message-ID-Hash: WGAMA446JIHPH4CFIQBZ7AFTSCK5TD4B
+X-Message-ID-Hash: WGAMA446JIHPH4CFIQBZ7AFTSCK5TD4B
 X-MailFrom: sashal@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -92,7 +94,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MJEZZRUUIQNANMDBYS44MVECABUPHQKI/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WGAMA446JIHPH4CFIQBZ7AFTSCK5TD4B/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -101,72 +103,33 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+From: Roy Chateau <roy.chateau@mep-info.com>
 
-[ Upstream commit 76aca10ccb7c23a7b7a0d56e0bfde2c8cdddfe24 ]
+[ Upstream commit 4e9a429ae80657bdc502d3f5078e2073656ec5fd ]
 
-Some drivers use one event callback for multiple widgets but still need
-to perform a bit different actions based on actual widget.  This is done
-by comparing widget name, however drivers tend to miss possible name
-prefix.  Add a helper to solve common mistakes.
+Correctly log failures of reset via I2C.
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Link: https://lore.kernel.org/r/20231003155710.821315-2-krzysztof.kozlowski@linaro.org
+Signed-off-by: Roy Chateau <roy.chateau@mep-info.com>
+Link: https://lore.kernel.org/r/20231013110239.473123-1-roy.chateau@mep-info.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/sound/soc-dapm.h  |  1 +
- sound/soc/soc-component.c |  1 +
- sound/soc/soc-dapm.c      | 12 ++++++++++++
- 3 files changed, 14 insertions(+)
+ sound/soc/codecs/tas2780.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
-index 87f8e1793af15..295d63437e4d8 100644
---- a/include/sound/soc-dapm.h
-+++ b/include/sound/soc-dapm.h
-@@ -423,6 +423,7 @@ void snd_soc_dapm_connect_dai_link_widgets(struct snd_soc_card *card);
+diff --git a/sound/soc/codecs/tas2780.c b/sound/soc/codecs/tas2780.c
+index 86bd6c18a9440..41076be238542 100644
+--- a/sound/soc/codecs/tas2780.c
++++ b/sound/soc/codecs/tas2780.c
+@@ -39,7 +39,7 @@ static void tas2780_reset(struct tas2780_priv *tas2780)
+ 		usleep_range(2000, 2050);
+ 	}
  
- int snd_soc_dapm_update_dai(struct snd_pcm_substream *substream,
- 			    struct snd_pcm_hw_params *params, struct snd_soc_dai *dai);
-+int snd_soc_dapm_widget_name_cmp(struct snd_soc_dapm_widget *widget, const char *s);
- 
- /* dapm path setup */
- int snd_soc_dapm_new_widgets(struct snd_soc_card *card);
-diff --git a/sound/soc/soc-component.c b/sound/soc/soc-component.c
-index 4356cc320fea0..10b5fe5a3af85 100644
---- a/sound/soc/soc-component.c
-+++ b/sound/soc/soc-component.c
-@@ -242,6 +242,7 @@ int snd_soc_component_notify_control(struct snd_soc_component *component,
- 	char name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
- 	struct snd_kcontrol *kctl;
- 
-+	/* When updating, change also snd_soc_dapm_widget_name_cmp() */
- 	if (component->name_prefix)
- 		snprintf(name, ARRAY_SIZE(name), "%s %s", component->name_prefix, ctl);
- 	else
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 3091e8160bad7..5fd32185fe63d 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -2726,6 +2726,18 @@ int snd_soc_dapm_update_dai(struct snd_pcm_substream *substream,
- }
- EXPORT_SYMBOL_GPL(snd_soc_dapm_update_dai);
- 
-+int snd_soc_dapm_widget_name_cmp(struct snd_soc_dapm_widget *widget, const char *s)
-+{
-+	struct snd_soc_component *component = snd_soc_dapm_to_component(widget->dapm);
-+	const char *wname = widget->name;
-+
-+	if (component->name_prefix)
-+		wname += strlen(component->name_prefix) + 1; /* plus space */
-+
-+	return strcmp(wname, s);
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_dapm_widget_name_cmp);
-+
- /*
-  * dapm_update_widget_flags() - Re-compute widget sink and source flags
-  * @w: The widget for which to update the flags
+-	snd_soc_component_write(tas2780->component, TAS2780_SW_RST,
++	ret = snd_soc_component_write(tas2780->component, TAS2780_SW_RST,
+ 				TAS2780_RST);
+ 	if (ret)
+ 		dev_err(tas2780->dev, "%s:errCode:0x%x Reset error!\n",
 -- 
 2.42.0
 
