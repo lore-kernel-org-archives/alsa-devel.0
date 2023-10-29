@@ -4,57 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 783A9C4167D
-	for <alsa-devel@archiver.kernel.org>; Sun, 29 Oct 2023 23:00:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5DDD1C4332F
+	for <alsa-devel@archiver.kernel.org>; Sun, 29 Oct 2023 23:00:48 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9713BE10;
-	Sun, 29 Oct 2023 23:59:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9713BE10
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1C81BE72;
+	Sun, 29 Oct 2023 23:59:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1C81BE72
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1698620433;
-	bh=nPnEdg2P7HZ2zulvM+Lr9IKqD+Kha2HAZogg3tbnRd8=;
+	s=default; t=1698620446;
+	bh=Xk3/KL1/p/7aPW6+tG0rfglenLkveedb3INbBGFMFs4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=VJP4cODhwIt7ut+Ue0pU0abNkh2l3C3pB3KcVVcg7zwf98ksk7pIKTL+k7NM9o1t7
-	 2qCvWgkzhzrZo+ScQ8VfDw3XmbTfBAUhED2RQN0WqLxivjlWXvG3SQRk1Zuuik2op0
-	 CNiVS3l1JBQ85a0IUmL8tCZhy/8/ND8BhhhVj1+U=
+	b=rBrBhN8OFzwPYO13iZLmUPg2kdQkJsSc2PbCYd1qeu/e7/gyCfYP0foc5VujDPfgJ
+	 P/ZhlclbSi6VELiG3GUmxdHf7TmDirgIGzrVLmGFmHgBc7u0+u0A1rfVpchmmXpZkI
+	 3Pfa6Eh6Sdb/hi5M73BNonJ8MxXfw/bMzkMpDx+4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9A482F8057D; Sun, 29 Oct 2023 23:59:27 +0100 (CET)
+	id 70B27F805A8; Sun, 29 Oct 2023 23:59:45 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 12225F8055C;
-	Sun, 29 Oct 2023 23:59:27 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 204DEF80579;
+	Sun, 29 Oct 2023 23:59:45 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4E020F8055C; Sun, 29 Oct 2023 23:59:23 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+	id CFB79F80537; Sun, 29 Oct 2023 23:59:41 +0100 (CET)
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E43D0F80152
-	for <alsa-devel@alsa-project.org>; Sun, 29 Oct 2023 23:55:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E43D0F80152
+	by alsa1.perex.cz (Postfix) with ESMTPS id EFC3BF80425
+	for <alsa-devel@alsa-project.org>; Sun, 29 Oct 2023 23:59:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EFC3BF80425
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=SKNnra53
+ header.s=k20201202 header.b=SIQDVKCA
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by ams.source.kernel.org (Postfix) with ESMTP id 4801AB80735;
-	Sun, 29 Oct 2023 22:55:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7918DC43395;
-	Sun, 29 Oct 2023 22:55:09 +0000 (UTC)
+	by sin.source.kernel.org (Postfix) with ESMTP id B1355CE125B;
+	Sun, 29 Oct 2023 22:59:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C03E8C4163C;
+	Sun, 29 Oct 2023 22:59:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1698620110;
-	bh=nPnEdg2P7HZ2zulvM+Lr9IKqD+Kha2HAZogg3tbnRd8=;
+	s=k20201202; t=1698620374;
+	bh=Xk3/KL1/p/7aPW6+tG0rfglenLkveedb3INbBGFMFs4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=SKNnra53aJnH5LkjH7TnbN36G19SDOIsPmqPX/mzeHEr5Dlu7kCQTBiGPpcfjyYx5
-	 zsnbdqCM5Gsxo15cdswUze3rMcvuvw+92DDcNZMBmG5NiZS6jML2N8moeouNaI5WTr
-	 eXO70JZKujC+niabRc9B+HKEp6LATY5PZyj1Vkkqgx4lDuDD790ag8o0kwcqN/Y1Qo
-	 0xtGpPGEILPWrKVHbiQFvbCZUCIyqYenAtqvUntxJ6Jsp0S+mvwn5m3jYrZIFXLSGN
-	 9pSaUnboqKI61o3P4Cv73iK6QoJBMzhJmvO44dwAYZhqAVLpOWPwFICXv54l7Yzdxt
-	 ReFFY4Hz2z97g==
+	b=SIQDVKCAUsmWG7V4E7dhkZ8TQaTcNSFKLD/BtBgfSK6lMk82IdyQy7quAP6KjyCXa
+	 y6O9P+wfTo236GiJ3RsLinuEXbED0ZqBz3aI5M0Evsw3nrH0qn7+sIVHlq5ZJXmJcQ
+	 raqGguXiEPxeZH6++v+AKRckAOWNPwW3TrE8yRiEBhfKwJaWrx3EgDrek4xBlGnchp
+	 RMzuw60voiDkGmm50pxZtFEaefg8jXacphSub6xrJmAH6Csfur4vuLXSxUH+tZswla
+	 /9izNVJNViie9YaDYBA9eDXpCOrmYARU7nigGPpfljNKXbkPOIbmkz1PPLLtnSc+Nw
+	 gX17ipzr8+Uyg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -67,20 +67,20 @@ Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
 	perex@perex.cz,
 	tiwai@suse.com,
 	alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 6.5 19/52] ASoC: codecs: wsa-macro: handle component
+Subject: [PATCH AUTOSEL 5.15 13/28] ASoC: codecs: wsa-macro: handle component
  name prefix
-Date: Sun, 29 Oct 2023 18:53:06 -0400
-Message-ID: <20231029225441.789781-19-sashal@kernel.org>
+Date: Sun, 29 Oct 2023 18:58:48 -0400
+Message-ID: <20231029225916.791798-13-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231029225441.789781-1-sashal@kernel.org>
-References: <20231029225441.789781-1-sashal@kernel.org>
+In-Reply-To: <20231029225916.791798-1-sashal@kernel.org>
+References: <20231029225916.791798-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.5.9
+X-stable-base: Linux 5.15.137
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: Z4CQQWE6GQWBUKSGICAKLZAGHBPLULTV
-X-Message-ID-Hash: Z4CQQWE6GQWBUKSGICAKLZAGHBPLULTV
+Message-ID-Hash: 7ATTMYMMIYHANQYJX3HBZVP32LD7T4R4
+X-Message-ID-Hash: 7ATTMYMMIYHANQYJX3HBZVP32LD7T4R4
 X-MailFrom: sashal@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -93,7 +93,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Z4CQQWE6GQWBUKSGICAKLZAGHBPLULTV/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7ATTMYMMIYHANQYJX3HBZVP32LD7T4R4/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -119,10 +119,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/codecs/lpass-wsa-macro.c b/sound/soc/codecs/lpass-wsa-macro.c
-index 8ba7dc89daaaa..4b82ecbd92cd2 100644
+index dd1a8b7bc794c..643ddf7dd6c5d 100644
 --- a/sound/soc/codecs/lpass-wsa-macro.c
 +++ b/sound/soc/codecs/lpass-wsa-macro.c
-@@ -1675,12 +1675,12 @@ static int wsa_macro_spk_boost_event(struct snd_soc_dapm_widget *w,
+@@ -1668,12 +1668,12 @@ static int wsa_macro_spk_boost_event(struct snd_soc_dapm_widget *w,
  	u16 boost_path_ctl, boost_path_cfg1;
  	u16 reg, reg_mix;
  
