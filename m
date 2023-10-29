@@ -4,74 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E6063C4332F
-	for <alsa-devel@archiver.kernel.org>; Sun, 29 Oct 2023 22:57:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 81F57C4332F
+	for <alsa-devel@archiver.kernel.org>; Sun, 29 Oct 2023 22:57:52 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0F732A4D;
-	Sun, 29 Oct 2023 23:56:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0F732A4D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 344CCDEB;
+	Sun, 29 Oct 2023 23:57:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 344CCDEB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1698620247;
-	bh=3WqHVuQmYqKjH49ZdI3DyMGWGcEBUXr7RFhzrjTJFhY=;
+	s=default; t=1698620270;
+	bh=+bbdb76ajqheViTiDz9DJe1J0LziQ/6Wy3/LI6rVYx8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=YYg3pTnQS2eXoLzxerQssX3n6IeazxtRn4vkYyZMvJFHA8FTcLINSMiKzc+iEtEx8
-	 Efqsf83TqLUINTLylXPbmNNhoSyNbIyAaQvqzxFYV75FgzZ/+E1+xSxaW/xZvUmROG
-	 u3OechnhzOk6hV9p2PpcWv+yaL3S9gccqZwZytuk=
+	b=bASWSzRjld73nacTU67oVEOgMFuumbxbDhdHfRg1Vg/w0oTTIEu5XS18qcg0QNdpo
+	 KbcBGTnKOzqFWxbeTbxWIiilKgg7OxWgHTFCwDUBIigzH52HhdSrte2XAU1gGL3zTO
+	 yii33BIIbE0kO3705xZKLZb/uKqLwksV8srw5/m4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9C04FF80431; Sun, 29 Oct 2023 23:55:51 +0100 (CET)
+	id DBA30F8020D; Sun, 29 Oct 2023 23:56:58 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id F348DF8055B;
-	Sun, 29 Oct 2023 23:55:50 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7E3FAF80494;
+	Sun, 29 Oct 2023 23:56:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 01B8CF80563; Sun, 29 Oct 2023 23:55:46 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+	id 964C8F8055B; Sun, 29 Oct 2023 23:55:49 +0100 (CET)
+Received: from sin.source.kernel.org (sin.source.kernel.org
+ [IPv6:2604:1380:40e1:4800::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A7F03F80431
-	for <alsa-devel@alsa-project.org>; Sun, 29 Oct 2023 23:55:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A7F03F80431
+	by alsa1.perex.cz (Postfix) with ESMTPS id CE228F80494
+	for <alsa-devel@alsa-project.org>; Sun, 29 Oct 2023 23:55:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CE228F80494
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=TD5CqIn0
+ header.s=k20201202 header.b=DD2ZqOPU
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 3B2CA60E83;
-	Sun, 29 Oct 2023 22:55:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99EE3C433C9;
+	by sin.source.kernel.org (Postfix) with ESMTP id 9B191CE1197;
 	Sun, 29 Oct 2023 22:55:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1CEB6C43395;
+	Sun, 29 Oct 2023 22:55:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1698620140;
-	bh=3WqHVuQmYqKjH49ZdI3DyMGWGcEBUXr7RFhzrjTJFhY=;
+	s=k20201202; t=1698620139;
+	bh=+bbdb76ajqheViTiDz9DJe1J0LziQ/6Wy3/LI6rVYx8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=TD5CqIn0imcIWVLJ/3i+5GeO4pHgAQq3nAC1hyMiQNNefLP/PSB21A7t334zLICbS
-	 D/7JXhphfMqfa+GlogfibeIUMQnts6QdGffKgs2WDtSJVX8LYkNdtO6b8F2XwCLZc1
-	 I1uvRIO/dsKse+KZpU09OWUvqJb3/pul+qqi3yMKb8ciCWyPxB16p8/lZt+ozvQEIM
-	 ztgMVC5wkyVtgMWodzPs+Esszyp2sbvefqef09Cv/u0kVnPhTooYU/0kTLOAq1GNCj
-	 7Uvgf9i9F0v/yuChg724ctBO7+DWT66IIItTZv6LGaqFb4cl2vEskCjWDWkN9SZkqt
-	 Fjb7aKd6L/Nzg==
+	b=DD2ZqOPUQ4dWNHmQvLW7m9YQkFr3zIxKM79zwtOjvKxD13Oofe/RO0FZhGBkehaXu
+	 yP9bpWLfpIBJnGX4LTBQ+PWbd2B74GcSXbmK7N5auXTXYIBgv4eDgoRtGFvZVAL1u0
+	 bkRiEBAD+P1LzTBhYvuxte4jAr03dn3juUjtynLCtpJeC/1rnlheuh+FecWFLhsSi6
+	 7iCoPUQvhGPrS4AveT2T3GPNzaC00vhVBf4pwtbpeDkpB1CHXvBNYqiKKgCrYB/EzE
+	 1R/l5caqEO0cfn2VHU5nYsITDH1q1WxyxdF2yBWhlRB4hSkxKD0x6SoGvOgR80s0Rh
+	 1WGEBAYKVVefQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Roy Chateau <roy.chateau@mep-info.com>,
+Cc: Shuming Fan <shumingf@realtek.com>,
 	Mark Brown <broonie@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	shenghao-ding@ti.com,
-	kevin-lu@ti.com,
-	baojun.xu@ti.com,
+	oder_chiou@realtek.com,
 	lgirdwood@gmail.com,
 	perex@perex.cz,
 	tiwai@suse.com,
 	alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 6.5 29/52] ASoC: codecs: tas2780: Fix log of failed
- reset via I2C.
-Date: Sun, 29 Oct 2023 18:53:16 -0400
-Message-ID: <20231029225441.789781-29-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.5 28/52] ASoC: rt5650: fix the wrong result of key
+ button
+Date: Sun, 29 Oct 2023 18:53:15 -0400
+Message-ID: <20231029225441.789781-28-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231029225441.789781-1-sashal@kernel.org>
 References: <20231029225441.789781-1-sashal@kernel.org>
@@ -80,8 +79,8 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.5.9
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: WGAMA446JIHPH4CFIQBZ7AFTSCK5TD4B
-X-Message-ID-Hash: WGAMA446JIHPH4CFIQBZ7AFTSCK5TD4B
+Message-ID-Hash: A6SMOPQCD5L4YXXW74DXWWZY5CA7UVGG
+X-Message-ID-Hash: A6SMOPQCD5L4YXXW74DXWWZY5CA7UVGG
 X-MailFrom: sashal@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -94,7 +93,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WGAMA446JIHPH4CFIQBZ7AFTSCK5TD4B/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/A6SMOPQCD5L4YXXW74DXWWZY5CA7UVGG/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -103,33 +102,33 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Roy Chateau <roy.chateau@mep-info.com>
+From: Shuming Fan <shumingf@realtek.com>
 
-[ Upstream commit 4e9a429ae80657bdc502d3f5078e2073656ec5fd ]
+[ Upstream commit f88dfbf333b3661faff996bb03af2024d907b76a ]
 
-Correctly log failures of reset via I2C.
+The RT5650 should enable a power setting for button detection to avoid the wrong result.
 
-Signed-off-by: Roy Chateau <roy.chateau@mep-info.com>
-Link: https://lore.kernel.org/r/20231013110239.473123-1-roy.chateau@mep-info.com
+Signed-off-by: Shuming Fan <shumingf@realtek.com>
+Link: https://lore.kernel.org/r/20231013094525.715518-1-shumingf@realtek.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/tas2780.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/rt5645.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/codecs/tas2780.c b/sound/soc/codecs/tas2780.c
-index 86bd6c18a9440..41076be238542 100644
---- a/sound/soc/codecs/tas2780.c
-+++ b/sound/soc/codecs/tas2780.c
-@@ -39,7 +39,7 @@ static void tas2780_reset(struct tas2780_priv *tas2780)
- 		usleep_range(2000, 2050);
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index a506d940a2ead..fae04e9fae4e7 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -3251,6 +3251,8 @@ int rt5645_set_jack_detect(struct snd_soc_component *component,
+ 				RT5645_GP1_PIN_IRQ, RT5645_GP1_PIN_IRQ);
+ 		regmap_update_bits(rt5645->regmap, RT5645_GEN_CTRL1,
+ 				RT5645_DIG_GATE_CTRL, RT5645_DIG_GATE_CTRL);
++		regmap_update_bits(rt5645->regmap, RT5645_DEPOP_M1,
++				RT5645_HP_CB_MASK, RT5645_HP_CB_PU);
  	}
+ 	rt5645_irq(0, rt5645);
  
--	snd_soc_component_write(tas2780->component, TAS2780_SW_RST,
-+	ret = snd_soc_component_write(tas2780->component, TAS2780_SW_RST,
- 				TAS2780_RST);
- 	if (ret)
- 		dev_err(tas2780->dev, "%s:errCode:0x%x Reset error!\n",
 -- 
 2.42.0
 
