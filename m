@@ -4,84 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A1AF1C4167D
-	for <alsa-devel@archiver.kernel.org>; Sun, 29 Oct 2023 23:00:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 783A9C4167D
+	for <alsa-devel@archiver.kernel.org>; Sun, 29 Oct 2023 23:00:35 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A1EA7DEF;
-	Sun, 29 Oct 2023 23:59:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A1EA7DEF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9713BE10;
+	Sun, 29 Oct 2023 23:59:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9713BE10
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1698620424;
-	bh=I75dT+BpB934kNxmKXsCPFa+j1/Qlrodb8hUDyZG7FY=;
+	s=default; t=1698620433;
+	bh=nPnEdg2P7HZ2zulvM+Lr9IKqD+Kha2HAZogg3tbnRd8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=PPnz/L3WB+81tbeGZ7fjSKdT4U9bGyw10Pd2NyPA8YQiSm7Yl6ID0FeqaUJ9xhgNz
-	 i14xYJ3wXctrgId2ITsfI7nVTx5D7ee/Kqxu0zBr39sUR9nVT4Zn6hCI5h0ygFqLa6
-	 ks58AqyhiGYrqC8fQ+q730CmFczmtUajvTBptnAQ=
+	b=VJP4cODhwIt7ut+Ue0pU0abNkh2l3C3pB3KcVVcg7zwf98ksk7pIKTL+k7NM9o1t7
+	 2qCvWgkzhzrZo+ScQ8VfDw3XmbTfBAUhED2RQN0WqLxivjlWXvG3SQRk1Zuuik2op0
+	 CNiVS3l1JBQ85a0IUmL8tCZhy/8/ND8BhhhVj1+U=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id EBF20F80558; Sun, 29 Oct 2023 23:59:03 +0100 (CET)
+	id 9A482F8057D; Sun, 29 Oct 2023 23:59:27 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B335DF80557;
-	Sun, 29 Oct 2023 23:59:03 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 12225F8055C;
+	Sun, 29 Oct 2023 23:59:27 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 02FB7F80564; Sun, 29 Oct 2023 23:58:59 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+	id 4E020F8055C; Sun, 29 Oct 2023 23:59:23 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id BCFF7F80558
-	for <alsa-devel@alsa-project.org>; Sun, 29 Oct 2023 23:58:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BCFF7F80558
+	by alsa1.perex.cz (Postfix) with ESMTPS id E43D0F80152
+	for <alsa-devel@alsa-project.org>; Sun, 29 Oct 2023 23:55:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E43D0F80152
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=io5y1OIF
+ header.s=k20201202 header.b=SKNnra53
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by ams.source.kernel.org (Postfix) with ESMTP id 58A1BB8072F;
-	Sun, 29 Oct 2023 22:58:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0F1AC4167E;
-	Sun, 29 Oct 2023 22:58:09 +0000 (UTC)
+	by ams.source.kernel.org (Postfix) with ESMTP id 4801AB80735;
+	Sun, 29 Oct 2023 22:55:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7918DC43395;
+	Sun, 29 Oct 2023 22:55:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1698620291;
-	bh=I75dT+BpB934kNxmKXsCPFa+j1/Qlrodb8hUDyZG7FY=;
+	s=k20201202; t=1698620110;
+	bh=nPnEdg2P7HZ2zulvM+Lr9IKqD+Kha2HAZogg3tbnRd8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=io5y1OIFonc7nUKhBg1jItAJVZbZxKdmegf7jb5Hm8bfM8qjk0gI9wP4w2WyJvftt
-	 73HiRGbVan5xfv2mvLib0xxnoFfSC5sCdwq11F0IduxRh2QdI64lXj8OF4mJLi3hN7
-	 UjVZnfKZ/qVhQw+IG8s4y5civ3XNMZviQ23rFA1tNIJ5WYChj2RzpDRXi+RNh0LUK9
-	 WpTb5ootMnnflKvakQw1Fc12wdlP4v1tQFIZEqKtGn3e7A4puZI0rCdfaAnnCBTakT
-	 tDx7NqGrxcmMUi36IPzZ1Ul0pGpNcjVg9N9qwsaXlA+Lib2bLkZ0pTIciSPzdmqDLA
-	 aFpXtg/hfn+RA==
+	b=SKNnra53aJnH5LkjH7TnbN36G19SDOIsPmqPX/mzeHEr5Dlu7kCQTBiGPpcfjyYx5
+	 zsnbdqCM5Gsxo15cdswUze3rMcvuvw+92DDcNZMBmG5NiZS6jML2N8moeouNaI5WTr
+	 eXO70JZKujC+niabRc9B+HKEp6LATY5PZyj1Vkkqgx4lDuDD790ag8o0kwcqN/Y1Qo
+	 0xtGpPGEILPWrKVHbiQFvbCZUCIyqYenAtqvUntxJ6Jsp0S+mvwn5m3jYrZIFXLSGN
+	 9pSaUnboqKI61o3P4Cv73iK6QoJBMzhJmvO44dwAYZhqAVLpOWPwFICXv54l7Yzdxt
+	 ReFFY4Hz2z97g==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Roy Chateau <roy.chateau@mep-info.com>,
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
 	Mark Brown <broonie@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	shenghao-ding@ti.com,
-	kevin-lu@ti.com,
-	baojun.xu@ti.com,
+	srinivas.kandagatla@linaro.org,
+	bgoswami@quicinc.com,
 	lgirdwood@gmail.com,
 	perex@perex.cz,
 	tiwai@suse.com,
 	alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 6.1 21/39] ASoC: codecs: tas2780: Fix log of failed
- reset via I2C.
-Date: Sun, 29 Oct 2023 18:56:53 -0400
-Message-ID: <20231029225740.790936-21-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.5 19/52] ASoC: codecs: wsa-macro: handle component
+ name prefix
+Date: Sun, 29 Oct 2023 18:53:06 -0400
+Message-ID: <20231029225441.789781-19-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231029225740.790936-1-sashal@kernel.org>
-References: <20231029225740.790936-1-sashal@kernel.org>
+In-Reply-To: <20231029225441.789781-1-sashal@kernel.org>
+References: <20231029225441.789781-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.1.60
+X-stable-base: Linux 6.5.9
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: COHMD6M4BAM5BOQFJMVY2T7CTUPYRHXJ
-X-Message-ID-Hash: COHMD6M4BAM5BOQFJMVY2T7CTUPYRHXJ
+Message-ID-Hash: Z4CQQWE6GQWBUKSGICAKLZAGHBPLULTV
+X-Message-ID-Hash: Z4CQQWE6GQWBUKSGICAKLZAGHBPLULTV
 X-MailFrom: sashal@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -94,7 +93,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/COHMD6M4BAM5BOQFJMVY2T7CTUPYRHXJ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Z4CQQWE6GQWBUKSGICAKLZAGHBPLULTV/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -103,33 +102,41 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Roy Chateau <roy.chateau@mep-info.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-[ Upstream commit 4e9a429ae80657bdc502d3f5078e2073656ec5fd ]
+[ Upstream commit c29e5263d32a6d0ec094d425ae7fef3fa8d4da1c ]
 
-Correctly log failures of reset via I2C.
+When comparing widget names in wsa_macro_spk_boost_event(), consider
+also the component's name prefix.  Otherwise the WSA codec won't have
+proper mixer setup resulting in no sound playback through speakers.
 
-Signed-off-by: Roy Chateau <roy.chateau@mep-info.com>
-Link: https://lore.kernel.org/r/20231013110239.473123-1-roy.chateau@mep-info.com
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Link: https://lore.kernel.org/r/20231003155710.821315-3-krzysztof.kozlowski@linaro.org
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/tas2780.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/lpass-wsa-macro.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/tas2780.c b/sound/soc/codecs/tas2780.c
-index afdf0c863aa10..a2d27410bbefa 100644
---- a/sound/soc/codecs/tas2780.c
-+++ b/sound/soc/codecs/tas2780.c
-@@ -39,7 +39,7 @@ static void tas2780_reset(struct tas2780_priv *tas2780)
- 		usleep_range(2000, 2050);
- 	}
+diff --git a/sound/soc/codecs/lpass-wsa-macro.c b/sound/soc/codecs/lpass-wsa-macro.c
+index 8ba7dc89daaaa..4b82ecbd92cd2 100644
+--- a/sound/soc/codecs/lpass-wsa-macro.c
++++ b/sound/soc/codecs/lpass-wsa-macro.c
+@@ -1675,12 +1675,12 @@ static int wsa_macro_spk_boost_event(struct snd_soc_dapm_widget *w,
+ 	u16 boost_path_ctl, boost_path_cfg1;
+ 	u16 reg, reg_mix;
  
--	snd_soc_component_write(tas2780->component, TAS2780_SW_RST,
-+	ret = snd_soc_component_write(tas2780->component, TAS2780_SW_RST,
- 				TAS2780_RST);
- 	if (ret)
- 		dev_err(tas2780->dev, "%s:errCode:0x%x Reset error!\n",
+-	if (!strcmp(w->name, "WSA_RX INT0 CHAIN")) {
++	if (!snd_soc_dapm_widget_name_cmp(w, "WSA_RX INT0 CHAIN")) {
+ 		boost_path_ctl = CDC_WSA_BOOST0_BOOST_PATH_CTL;
+ 		boost_path_cfg1 = CDC_WSA_RX0_RX_PATH_CFG1;
+ 		reg = CDC_WSA_RX0_RX_PATH_CTL;
+ 		reg_mix = CDC_WSA_RX0_RX_PATH_MIX_CTL;
+-	} else if (!strcmp(w->name, "WSA_RX INT1 CHAIN")) {
++	} else if (!snd_soc_dapm_widget_name_cmp(w, "WSA_RX INT1 CHAIN")) {
+ 		boost_path_ctl = CDC_WSA_BOOST1_BOOST_PATH_CTL;
+ 		boost_path_cfg1 = CDC_WSA_RX1_RX_PATH_CFG1;
+ 		reg = CDC_WSA_RX1_RX_PATH_CTL;
 -- 
 2.42.0
 
