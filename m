@@ -4,82 +4,101 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9FCE5C4332F
-	for <alsa-devel@archiver.kernel.org>; Sun, 29 Oct 2023 23:03:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7EA2FC4167B
+	for <alsa-devel@archiver.kernel.org>; Mon, 30 Oct 2023 01:58:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8674FE73;
-	Mon, 30 Oct 2023 00:02:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8674FE73
+	by alsa0.perex.cz (Postfix) with ESMTPS id D76B3A4B;
+	Mon, 30 Oct 2023 02:57:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D76B3A4B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1698620602;
-	bh=UorGZaRu3pXU86xiJG3a+pN7P41s7nCtF42DcKfujvo=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1698631103;
+	bh=k/R7e9J8BS2nE/IRwdoC5mRH9YUNbtrIBrUbCb1d5rc=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=AQsuMMShkdvHZlIS/WdCqmtpc/BSpnArJu9k/+XwiyNN9xxNnTl++4f50PnXBXotY
-	 b4C132Sjt5LINrQ+XzJqG/OGvXbuacQZHDDfbEVpmzMTZccBBXp00qGcCcppUYKm0p
-	 yNJIcQETibt4rX9jkooOiBzcW7yLA1uZtxx2QzT8=
+	b=dhDAALTs+lMQOFDaHpudBsFTbfMMR0PC6M1brDVguyuZ+EVGzg7vaw4fgjfl7qEi1
+	 Yvchx9PAQw337uZQQSXdaEdjzbLM2R0AVIM1V7zd4DlrBhwLJeGNEofh6tYcxQffNb
+	 pS+hS09ikKoWcxgB1r34AzW7O6ih6Ara+0eVDJdY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5BBEBF8016D; Mon, 30 Oct 2023 00:02:32 +0100 (CET)
+	id BA312F80557; Mon, 30 Oct 2023 02:56:56 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 20B3CF80431;
-	Mon, 30 Oct 2023 00:02:32 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 65952F800FA;
+	Mon, 30 Oct 2023 02:56:55 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 20034F80425; Mon, 30 Oct 2023 00:02:29 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	id B792FF8016D; Mon, 30 Oct 2023 02:56:49 +0100 (CET)
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com
+ [IPv6:2607:f8b0:4864:20::102b])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E722FF8016D
-	for <alsa-devel@alsa-project.org>; Mon, 30 Oct 2023 00:02:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E722FF8016D
+	by alsa1.perex.cz (Postfix) with ESMTPS id BC7D9F800FA
+	for <alsa-devel@alsa-project.org>; Mon, 30 Oct 2023 02:56:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BC7D9F800FA
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=HN2LA5zL
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 4D25160E08;
-	Sun, 29 Oct 2023 23:02:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 13A78C116B5;
-	Sun, 29 Oct 2023 23:02:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1698620545;
-	bh=UorGZaRu3pXU86xiJG3a+pN7P41s7nCtF42DcKfujvo=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=HN2LA5zL0qs0MCiMHtBWJG9F4O0mkVoy+vJC6ncnM5+61kVUXsqaZSjDhSXlEXY13
-	 /7ppLPfNqR8L24UoHJyPOIHirNaDhTXitarc4u9HHjVWU5CqYfYOO6YjRhsdfiYXKJ
-	 8bdCWcMbusal5ZyllPGBOaGpijsSVkr1Gdn75rUbqdzvWvUYO8LgYslROWqJIrp1fz
-	 Wurdi2DiTMiB0ueIHfZ90UMt4PHIQ3lRVo552MMScQs4FgbwJdCzaMxMznq7cB3lYl
-	 xjpk+coXzt7rniumH+KvgdGTGcFttqtGiTN+Cc1I2QI+eSYOB8TblelT+ZQqjhuqur
-	 5d98rrFvzHUHA==
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Cc: Shuming Fan <shumingf@realtek.com>,
-	Mark Brown <broonie@kernel.org>,
-	Sasha Levin <sashal@kernel.org>,
-	oder_chiou@realtek.com,
-	lgirdwood@gmail.com,
-	perex@perex.cz,
-	tiwai@suse.com,
-	alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 4.14 06/11] ASoC: rt5650: fix the wrong result of key
- button
-Date: Sun, 29 Oct 2023 19:01:57 -0400
-Message-ID: <20231029230213.793581-6-sashal@kernel.org>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231029230213.793581-1-sashal@kernel.org>
-References: <20231029230213.793581-1-sashal@kernel.org>
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20230601 header.b=UY4ohv7E
+Received: by mail-pj1-x102b.google.com with SMTP id
+ 98e67ed59e1d1-28023eadc70so916430a91.2
+        for <alsa-devel@alsa-project.org>;
+ Sun, 29 Oct 2023 18:56:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698630994; x=1699235794;
+ darn=alsa-project.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sXRLwnyvcfy6jE/MUWoW/Yby9B0gy2TfIvcPthNvb0k=;
+        b=UY4ohv7EpIixUCcUT5Z+6tpzMsD8dk/hi6GZqITy+E1SizYkoaDGw1lg4Qy+iXh2Q0
+         KfI4fnvzTlKy9His1rj+17ZwQ/qjwVE8ll9kla/7rRqiGgXkz2s//1g4TzeDeoBlhTU6
+         T3tmgZMf3Vj+GRvxcQenL43ltuXYyuBeq7AL+gwr/Vu2vNbC0F+F4GYXJJsCxr7XSvBJ
+         xCjuvND1y70UaR0RJoOLegHZiSZwZGJlpDtYyDquvtQ8BISgsxNTqhwMZ/D3tynOrRUa
+         zf7eCsmud5ly03dtHcm29DNAiNqMvw9xBuhP0nlxJ4ilNWgO8Ss2cKNtUkTo8F0ifz0i
+         W5Xg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698630994; x=1699235794;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sXRLwnyvcfy6jE/MUWoW/Yby9B0gy2TfIvcPthNvb0k=;
+        b=rDbDVY5YV4VSCiDBP+ZZX+kDVAtTZYp6JJVBKTVh0fqdZpJGxwrvUPM3bXoA6Y2WAO
+         yuZbuzvDZ5sIY0Y5mRDMAlE71W1cz4uT2FO7nNNW/GQ2o/MWMHqQl05ifBgGum4JLVKF
+         W8n3Gkh9EOy/bMU+HB0c251ua6Fpr2X2c6eebHO3QJhZNB1rXqcw/G16s+q4i8avKn4t
+         NQT2fdn2xkqA3zn5ZkLcuYbCAeAdc9F9x1owPurI8gmWg2rz0FgMV12blozaQ9DOS2oJ
+         gmEnGU8oOHjf1UPndTlbHkIGjw0k2WTI5Mz/lipjG0F9YlXAnQeFpA7KSOiFzrfvMltt
+         zi/Q==
+X-Gm-Message-State: AOJu0YyvuGF0lO4VCZ/BClvGVaYKNP8LWpEIH9Yca2DQ7nSGQPjl7qs6
+	9JPBGxdM2rBFrkjC4Pdb8NSGFDsjxGtQ1gIFbI8=
+X-Google-Smtp-Source: 
+ AGHT+IGAB1+4aLMMfdrAGAJeVPLx3vXyPUzK5aU43XjGbCGprf4okqXxvQKJ4QuTuO9/Vq869iPZgyjlym6LTFzzngQ=
+X-Received: by 2002:a17:90a:357:b0:27d:5964:4eec with SMTP id
+ 23-20020a17090a035700b0027d59644eecmr5885791pjf.1.1698630993867; Sun, 29 Oct
+ 2023 18:56:33 -0700 (PDT)
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 4.14.328
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: M5KADADXJEJQH67IAQRGL2HLAWZNUOX5
-X-Message-ID-Hash: M5KADADXJEJQH67IAQRGL2HLAWZNUOX5
-X-MailFrom: sashal@kernel.org
+References: <1698402948-10618-1-git-send-email-shengjiu.wang@nxp.com>
+ <c1cfa3e0-6e5d-4e1d-b6e0-4d1045196a11@xs4all.nl>
+In-Reply-To: <c1cfa3e0-6e5d-4e1d-b6e0-4d1045196a11@xs4all.nl>
+From: Shengjiu Wang <shengjiu.wang@gmail.com>
+Date: Mon, 30 Oct 2023 09:56:22 +0800
+Message-ID: 
+ <CAA+D8AOCujL-eD2-chqHAW7UN7UmLrO6CWRd7d6wTCPP8=VyfA@mail.gmail.com>
+Subject: Re: [RFC PATCH v8 00/13] Add audio support in v4l2 framework
+To: Hans Verkuil <hverkuil@xs4all.nl>
+Cc: Shengjiu Wang <shengjiu.wang@nxp.com>, sakari.ailus@iki.fi,
+ tfiga@chromium.org,
+	m.szyprowski@samsung.com, mchehab@kernel.org, linux-media@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Xiubo.Lee@gmail.com, festevam@gmail.com,
+	nicoleotsuka@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
+	perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
+	linuxppc-dev@lists.ozlabs.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Message-ID-Hash: D3KGZFAMA22AF4BCQ2BAAY2C26ZFNYK4
+X-Message-ID-Hash: D3KGZFAMA22AF4BCQ2BAAY2C26ZFNYK4
+X-MailFrom: shengjiu.wang@gmail.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -91,7 +110,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/M5KADADXJEJQH67IAQRGL2HLAWZNUOX5/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/D3KGZFAMA22AF4BCQ2BAAY2C26ZFNYK4/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -100,33 +119,163 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Shuming Fan <shumingf@realtek.com>
+On Fri, Oct 27, 2023 at 7:18=E2=80=AFPM Hans Verkuil <hverkuil@xs4all.nl> w=
+rote:
+>
+> Hi Shengjiu,
+>
+> Is there a reason why this series is still marked RFC?
+>
+> Just wondering about that.
 
-[ Upstream commit f88dfbf333b3661faff996bb03af2024d907b76a ]
+In the very beginning I started this series with RFC, So
+I still use RFC now...
 
-The RT5650 should enable a power setting for button detection to avoid the wrong result.
-
-Signed-off-by: Shuming Fan <shumingf@realtek.com>
-Link: https://lore.kernel.org/r/20231013094525.715518-1-shumingf@realtek.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- sound/soc/codecs/rt5645.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index 01de25813c72b..822c42101c3f0 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -3220,6 +3220,8 @@ int rt5645_set_jack_detect(struct snd_soc_codec *codec,
- 				RT5645_GP1_PIN_IRQ, RT5645_GP1_PIN_IRQ);
- 		regmap_update_bits(rt5645->regmap, RT5645_GEN_CTRL1,
- 				RT5645_DIG_GATE_CTRL, RT5645_DIG_GATE_CTRL);
-+		regmap_update_bits(rt5645->regmap, RT5645_DEPOP_M1,
-+				RT5645_HP_CB_MASK, RT5645_HP_CB_PU);
- 	}
- 	rt5645_irq(0, rt5645);
- 
--- 
-2.42.0
-
+Best regards
+Wang shengjiu
+>
+> Regards,
+>
+>         Hans
+>
+> On 27/10/2023 12:35, Shengjiu Wang wrote:
+> > Audio signal processing also has the requirement for memory to
+> > memory similar as Video.
+> >
+> > This asrc memory to memory (memory ->asrc->memory) case is a non
+> > real time use case.
+> >
+> > User fills the input buffer to the asrc module, after conversion, then =
+asrc
+> > sends back the output buffer to user. So it is not a traditional ALSA p=
+layback
+> > and capture case.
+> >
+> > It is a specific use case,  there is no reference in current kernel.
+> > v4l2 memory to memory is the closed implementation,  v4l2 current
+> > support video, image, radio, tuner, touch devices, so it is not
+> > complicated to add support for this specific audio case.
+> >
+> > Because we had implemented the "memory -> asrc ->i2s device-> codec"
+> > use case in ALSA.  Now the "memory->asrc->memory" needs
+> > to reuse the code in asrc driver, so the first 3 patches is for refinin=
+g
+> > the code to make it can be shared by the "memory->asrc->memory"
+> > driver.
+> >
+> > The main change is in the v4l2 side, A /dev/vl4-audioX will be created,
+> > user applications only use the ioctl of v4l2 framework.
+> >
+> > Other change is to add memory to memory support for two kinds of i.MX A=
+SRC
+> > module.
+> >
+> > changes in v8:
+> > - refine V4L2_CAP_AUDIO_M2M to be 0x00000008
+> > - update doc for FIXED_POINT
+> > - address comments for imx-asrc
+> >
+> > changes in v7:
+> > - add acked-by from Mark
+> > - separate commit for fixed point, m2m audio class, audio rate controls
+> > - use INTEGER_MENU for rate,  FIXED_POINT for rate offset
+> > - remove used fmts
+> > - address other comments for Hans
+> >
+> > changes in v6:
+> > - use m2m_prepare/m2m_unprepare/m2m_start/m2m_stop to replace
+> >   m2m_start_part_one/m2m_stop_part_one, m2m_start_part_two/m2m_stop_par=
+t_two.
+> > - change V4L2_CTRL_TYPE_ASRC_RATE to V4L2_CTRL_TYPE_FIXED_POINT
+> > - fix warning by kernel test rebot
+> > - remove some unused format V4L2_AUDIO_FMT_XX
+> > - Get SNDRV_PCM_FORMAT from V4L2_AUDIO_FMT in driver.
+> > - rename audm2m to viaudm2m.
+> >
+> > changes in v5:
+> > - remove V4L2_AUDIO_FMT_LPCM
+> > - define audio pixel format like V4L2_AUDIO_FMT_S8...
+> > - remove rate and format in struct v4l2_audio_format.
+> > - Add V4L2_CID_ASRC_SOURCE_RATE and V4L2_CID_ASRC_DEST_RATE controls
+> > - updata document accordingly.
+> >
+> > changes in v4:
+> > - update document style
+> > - separate V4L2_AUDIO_FMT_LPCM and V4L2_CAP_AUDIO_M2M in separate commi=
+t
+> >
+> > changes in v3:
+> > - Modify documents for adding audio m2m support
+> > - Add audio virtual m2m driver
+> > - Defined V4L2_AUDIO_FMT_LPCM format type for audio.
+> > - Defined V4L2_CAP_AUDIO_M2M capability type for audio m2m case.
+> > - with modification in v4l-utils, pass v4l2-compliance test.
+> >
+> > changes in v2:
+> > - decouple the implementation in v4l2 and ALSA
+> > - implement the memory to memory driver as a platfrom driver
+> >   and move it to driver/media
+> > - move fsl_asrc_common.h to include/sound folder
+> >
+> > Shengjiu Wang (13):
+> >   ASoC: fsl_asrc: define functions for memory to memory usage
+> >   ASoC: fsl_easrc: define functions for memory to memory usage
+> >   ASoC: fsl_asrc: move fsl_asrc_common.h to include/sound
+> >   ASoC: fsl_asrc: register m2m platform device
+> >   ASoC: fsl_easrc: register m2m platform device
+> >   media: uapi: Add V4L2_CAP_AUDIO_M2M capability flag
+> >   media: v4l2: Add audio capture and output support
+> >   media: uapi: Define audio sample format fourcc type
+> >   media: uapi: Add V4L2_CTRL_CLASS_M2M_AUDIO
+> >   media: uapi: Add V4L2_CTRL_TYPE_FIXED_POINT
+> >   media: uapi: Add audio rate controls support
+> >   media: imx-asrc: Add memory to memory driver
+> >   media: vim2m_audio: add virtual driver for audio memory to memory
+> >
+> >  .../userspace-api/media/v4l/buffer.rst        |    6 +
+> >  .../userspace-api/media/v4l/common.rst        |    1 +
+> >  .../media/v4l/dev-audio-mem2mem.rst           |   71 +
+> >  .../userspace-api/media/v4l/devices.rst       |    1 +
+> >  .../media/v4l/ext-ctrls-audio-m2m.rst         |   41 +
+> >  .../userspace-api/media/v4l/pixfmt-audio.rst  |   87 ++
+> >  .../userspace-api/media/v4l/pixfmt.rst        |    1 +
+> >  .../media/v4l/vidioc-enum-fmt.rst             |    2 +
+> >  .../media/v4l/vidioc-g-ext-ctrls.rst          |   17 +-
+> >  .../userspace-api/media/v4l/vidioc-g-fmt.rst  |    4 +
+> >  .../media/v4l/vidioc-querycap.rst             |    3 +
+> >  .../media/v4l/vidioc-queryctrl.rst            |    9 +-
+> >  .../media/videodev2.h.rst.exceptions          |    4 +
+> >  .../media/common/videobuf2/videobuf2-v4l2.c   |    4 +
+> >  drivers/media/platform/nxp/Kconfig            |   12 +
+> >  drivers/media/platform/nxp/Makefile           |    1 +
+> >  drivers/media/platform/nxp/imx-asrc.c         | 1186 +++++++++++++++++
+> >  drivers/media/test-drivers/Kconfig            |    9 +
+> >  drivers/media/test-drivers/Makefile           |    1 +
+> >  drivers/media/test-drivers/vim2m_audio.c      |  680 ++++++++++
+> >  drivers/media/v4l2-core/v4l2-ctrls-api.c      |    5 +-
+> >  drivers/media/v4l2-core/v4l2-ctrls-core.c     |    2 +
+> >  drivers/media/v4l2-core/v4l2-ctrls-defs.c     |   16 +
+> >  drivers/media/v4l2-core/v4l2-dev.c            |   17 +
+> >  drivers/media/v4l2-core/v4l2-ioctl.c          |   66 +
+> >  include/media/v4l2-dev.h                      |    2 +
+> >  include/media/v4l2-ioctl.h                    |   34 +
+> >  .../fsl =3D> include/sound}/fsl_asrc_common.h   |   60 +
+> >  include/uapi/linux/v4l2-controls.h            |    9 +
+> >  include/uapi/linux/videodev2.h                |   42 +
+> >  sound/soc/fsl/fsl_asrc.c                      |  144 ++
+> >  sound/soc/fsl/fsl_asrc.h                      |    4 +-
+> >  sound/soc/fsl/fsl_asrc_dma.c                  |    2 +-
+> >  sound/soc/fsl/fsl_easrc.c                     |  233 ++++
+> >  sound/soc/fsl/fsl_easrc.h                     |    6 +-
+> >  35 files changed, 2771 insertions(+), 11 deletions(-)
+> >  create mode 100644 Documentation/userspace-api/media/v4l/dev-audio-mem=
+2mem.rst
+> >  create mode 100644 Documentation/userspace-api/media/v4l/ext-ctrls-aud=
+io-m2m.rst
+> >  create mode 100644 Documentation/userspace-api/media/v4l/pixfmt-audio.=
+rst
+> >  create mode 100644 drivers/media/platform/nxp/imx-asrc.c
+> >  create mode 100644 drivers/media/test-drivers/vim2m_audio.c
+> >  rename {sound/soc/fsl =3D> include/sound}/fsl_asrc_common.h (60%)
+> >
+>
