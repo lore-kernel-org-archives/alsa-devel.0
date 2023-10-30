@@ -4,116 +4,117 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9A4B8C4332F
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Nov 2023 16:25:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 782F1C4332F
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Nov 2023 16:26:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C8463EC5;
-	Fri,  3 Nov 2023 17:25:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C8463EC5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 63231ED9;
+	Fri,  3 Nov 2023 17:25:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 63231ED9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1699028754;
-	bh=seCUVWtCCcmJ/XTWam1et+aH6NGI2wbqVJrjcuwqBts=;
-	h=Date:To:Cc:From:Subject:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=oVkjDI1W7qo/w41Mta4cuQkBN3WjQzAzL4oSQjCHBi4KrYgfM9e+DdFu7+V4XYpYK
-	 A3MZC5R2L+coLq8GI4LeNaEehwOVX0xTCAXvJw/HOlvPZdwFJeU5u4VpVXyUwht2S4
-	 QSwxcD91PKtoD5QU+ApKQJTiQd58gerW6ivygwe8=
+	s=default; t=1699028757;
+	bh=GHWL46G8NXkoKAdE2/pXu93JSdaBuXUlUxnrvTJOdOY=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=hSGUpmKzEmr5CYaaiOXhLU988YCWp8dF942W29n6BC1ZXH0plQvubHc09wzQFtHeY
+	 mLlYp3TcUfbtJ//2CZLPgRhKvx0awyOGlgmALlvVVekrOPcP3KS5umYS4E9DggnXa1
+	 Ya1Q9DlXknRG4Ske1iXxAJhytoxOPduvysiTr0MQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7883DF8055B; Fri,  3 Nov 2023 17:25:04 +0100 (CET)
+	id 2D417F80579; Fri,  3 Nov 2023 17:25:07 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D0831F8016D;
-	Fri,  3 Nov 2023 17:25:03 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 920FFF80570;
+	Fri,  3 Nov 2023 17:25:06 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 988F7F8016D; Mon, 30 Oct 2023 19:59:05 +0100 (CET)
-Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com
- [IPv6:2607:f8b0:4864:20::12d])
+	id D0BB6F8016D; Mon, 30 Oct 2023 21:46:27 +0100 (CET)
+Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com
+ [IPv6:2607:f8b0:4864:20::229])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D4708F800FA
-	for <alsa-devel@alsa-project.org>; Mon, 30 Oct 2023 19:58:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D4708F800FA
+	by alsa1.perex.cz (Postfix) with ESMTPS id 14818F80152
+	for <alsa-devel@alsa-project.org>; Mon, 30 Oct 2023 21:46:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 14818F80152
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20230601 header.b=Jm/se8vp
-Received: by mail-il1-x12d.google.com with SMTP id
- e9e14a558f8ab-351610727adso1827005ab.0
+ header.s=20230601 header.b=nDlD/wpW
+Received: by mail-oi1-x229.google.com with SMTP id
+ 5614622812f47-3b2e22f1937so2729974b6e.1
         for <alsa-devel@alsa-project.org>;
- Mon, 30 Oct 2023 11:58:56 -0700 (PDT)
+ Mon, 30 Oct 2023 13:46:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698692334; x=1699297134;
+        d=gmail.com; s=20230601; t=1698698779; x=1699303579;
  darn=alsa-project.org;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ib4hWYqy3xNJl0QRkrHS+EQAyDQg24oqh98TyujegYM=;
-        b=Jm/se8vp9RAi1eId54E/ih1n4joXKI6YYsWkreMZCas2Z8yuIZZO86oc4X9r8TBy3P
-         aq+PGnqoU+Jq7t4egrylsQP0DHxrg/PqW4T0WAB4pYUI0hKrMN62oV0MNzGcWZJTgh6G
-         wrX3QdFWnlcH+UgmnfKShdAvpbrjBYmuyme3wFqBnvaJH+a3JqevWLdES9ierb1uZuDA
-         XVgDoLS2lo7k34P2hahi1glZFnxbz5nRrKNC0pq8dLLmqQB72qRBXNYGAKZX7mJ+Nmmw
-         Lhh1vAnNn/AMu3dJXZJpsnHKXJ3bXXH1ktkxmP/0ratxmSOTpuWa/+d9cXY/oGO7BhuK
-         Cbrw==
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=GHWL46G8NXkoKAdE2/pXu93JSdaBuXUlUxnrvTJOdOY=;
+        b=nDlD/wpWZ66dp83jF5QAZJv2elp4Z+K1dfMi45qBg+YYwV9pVtMgr8lc8f+KyxcKAN
+         HasMh+jEARnRWBUemVGhtMBp6NY1CZntM0fvM3MsLyI6K01g/66YjO81n1MY9hINrteL
+         WiWI3djYgcWdEp3Nh2sQZutvB+3SCsvp6Mw7Kxz6UXMmudzLokTM1KNIPywoKImdjSHq
+         4VrYPDxYg8dkAqhT7Oqv791or7gxbcr6FH9o4rIKOfO6FARkE7st0bxB1Bz4+06EdLDs
+         w26uteMQkfEbKMGcwHuCFuObjPYxdHaiPw6c7PYmmYwmDANyrGIrHCOezEHeEwsHlC/8
+         v+RA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698692334; x=1699297134;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=ib4hWYqy3xNJl0QRkrHS+EQAyDQg24oqh98TyujegYM=;
-        b=mn+z5u4PS5xtiSQkM/v/fAreIjNEO251yK4iyqCG/d9NRM/1PrpEajIzTkTZTs8nyi
-         0TmW2SlnvVcncpR4jNFMQ3pSR1oh/TipglKzI2YWMff3weQWwJXpWshAgcsyYtkat7wd
-         YoOKBnrh/aAyC5hkxCYooc0jNSYzHvcSqzKCWxBveIiNVq8NW7a/EJBNI4yjESU7Nz0L
-         9ZSI2KUEhaQz5XDmI/Bl7CFfcb2UkdTwro+lDw/RIjnD5I0PtT5e4oEbdMsu+nxkMMDd
-         XCxZ32I06HN+wonhgicLaYN/cLjyBKnmK9KvmQdQwXFlw5J/qV5nLne7PcSVU3HofGQ3
-         /peA==
-X-Gm-Message-State: AOJu0YykShyiBXtMSxXNq0MsqAELqgx4dBiaZkiCVUcnvMIa8goWllF7
-	Ogy1jnPtw3CbOG2PJoBKxW8=
+        d=1e100.net; s=20230601; t=1698698779; x=1699303579;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=GHWL46G8NXkoKAdE2/pXu93JSdaBuXUlUxnrvTJOdOY=;
+        b=Flse2di5umVv3LL3/JKUK5szUjdm2WJcbZISfjxn4pk/xnH5Z9uWHguLs58O7boJrF
+         qRFab6CPc4+bKdNj+5Wzt6OC8rKjiCBRwyvFh8iOvNB8cELNciOPZNzJFP2wrWmHVN+s
+         /4elxvYCEGD+fnm8m/hD18tHGHvm146C0Sp6Z5NZng3eL28N1ASthYWZ8oUp1pbb4nps
+         oQqhCEcoGe3fd0inKSQ7tlvkvRhfrioTlPdrHr/5HvAJi/uemWtXe83EpYQHUaLNk+uw
+         WOuRT3GmS/Qdlbr/SS+Ky21EhRZc4zh5bfzo5kzg46g254mqgXq9tXFlDDLXqSWipNel
+         gpXA==
+X-Gm-Message-State: AOJu0YxAqAm2w+1Xh+nAlZ/q+fOyBz+W+BPcdmBQj4B3vrSmn8EocNvX
+	YEAAZK2gncdbqflSTkCEEQjYNcQNXztUhW9zO4Y=
 X-Google-Smtp-Source: 
- AGHT+IHTXBjdU2JVa1Y5xfA9ehT1aBnweJbHPmw18ifW40iqGSvqPI500VL4jLaKSM2ZPIWlYLhIhg==
-X-Received: by 2002:a5d:8b13:0:b0:79a:c487:2711 with SMTP id
- k19-20020a5d8b13000000b0079ac4872711mr10733086ion.0.1698692334159;
-        Mon, 30 Oct 2023 11:58:54 -0700 (PDT)
-Received: from [10.69.0.11] (c-68-55-100-39.hsd1.mi.comcast.net.
- [68.55.100.39])
-        by smtp.gmail.com with ESMTPSA id
- m38-20020a056638272600b0042b6940b793sm2317203jav.17.2023.10.30.11.58.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Oct 2023 11:58:53 -0700 (PDT)
-Message-ID: <2f5ffc3b-01be-413d-843e-8654d953f56f@gmail.com>
-Date: Mon, 30 Oct 2023 14:58:52 -0400
+ AGHT+IH7Dib57XvDiKMu/5BfJ4q/bfY6Uc5iK24QoDCMGMXOqPPDiJXdm5FbY1GzK8H6oKpjuiUed0mr05G7KpFVtas=
+X-Received: by 2002:a05:6808:8f6:b0:3ae:511e:179e with SMTP id
+ d22-20020a05680808f600b003ae511e179emr10833202oic.54.1698698778622; Mon, 30
+ Oct 2023 13:46:18 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>,
- alsa-devel@alsa-project.org
-Cc: linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>
-From: Brady Norander <bradynorander@gmail.com>
-Subject: [PATCH v2] ALSA: hda: intel-dsp-cfg: Use AVS driver on SKL/KBL/APL
- Chromebooks
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-MailFrom: bradynorander@gmail.com
+References: <20230913053343.119798-1-poseaydone@ya.ru>
+ <c36c2c196670a36f32cc776869e91f710c237400.camel@gmail.com>
+ <282881698597547@mail.yandex.ru>
+In-Reply-To: <282881698597547@mail.yandex.ru>
+From: Matthew Pisoni <mmpisoni@gmail.com>
+Date: Mon, 30 Oct 2023 15:46:07 -0500
+Message-ID: 
+ <CAJgVWNfTO_8bcOnbNC4mXdignS5Z8beQUDxjQkQ+R7BfBiVnzQ@mail.gmail.com>
+Subject: Re: [PATCH] patch_realtek: Splitting the UX3402 into two separate
+ models.
+To: =?UTF-8?B?0JDRgNGB0LXQvdC40Lkg0JrQvdGP0LfQtdCy?= <poseaydone@ya.ru>
+Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ "Luke D. Jones" <luke@ljones.dev>,
+	Stefan Binding <sbinding@opensource.cirrus.com>,
+ Andy Chi <andy.chi@canonical.com>,
+	Shenghao Ding <shenghao-ding@ti.com>,
+ Matthew Anderson <ruinairas1992@gmail.com>,
+	Luka Guzenko <l.guzenko@web.de>, Yuchi Yang <yangyuchi66@gmail.com>,
+	Vitaly Rodionov <vitalyr@opensource.cirrus.com>,
+ Yang Yingliang <yangyingliang@huawei.com>,
+	"alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-MailFrom: mmpisoni@gmail.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: SNSE6ZQWHEQG262DSCCKPY2BCJH6UEY4
-X-Message-ID-Hash: SNSE6ZQWHEQG262DSCCKPY2BCJH6UEY4
+Message-ID-Hash: OFMWYFMSNA6GM47JGXVG2DHFHNNP4AR7
+X-Message-ID-Hash: OFMWYFMSNA6GM47JGXVG2DHFHNNP4AR7
 X-Mailman-Approved-At: Fri, 03 Nov 2023 16:25:00 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SNSE6ZQWHEQG262DSCCKPY2BCJH6UEY4/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OFMWYFMSNA6GM47JGXVG2DHFHNNP4AR7/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -122,110 +123,16 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The legacy SKL driver no longer works properly on these Chromebook
-platforms. Use the new AVS driver by default instead.
+Okay so how would I go about getting the following line added to the
+patch_realtek file?
 
-Signed-off-by: Brady Norander <bradynorander@gmail.com>
----
-v2: Only use quirk if AVS is enabled
-  sound/hda/intel-dsp-config.c | 26 +++++++++++++++++---------
-  1 file changed, 17 insertions(+), 9 deletions(-)
+SND_PCI_QUIRK(0x1043, 0x1f62, "ASUS UX7602ZM",
+ALC245_FIXUP_CS35L41_SPI_2)
 
-diff --git a/sound/hda/intel-dsp-config.c b/sound/hda/intel-dsp-config.c
-index 756fa0aa69bb..e056aca01900 100644
---- a/sound/hda/intel-dsp-config.c
-+++ b/sound/hda/intel-dsp-config.c
-@@ -16,10 +16,11 @@
-  static int dsp_driver;
+It works on my machine I own that model I would just like it added as
+other models have been so I don't need to continue to patch the kernel
+module when it's already been effectively fixed for others.
+This thread looked like you all were discussing modifications to that
+file for this issue so I thought it might be a good place to start.
 
-  module_param(dsp_driver, int, 0444);
--MODULE_PARM_DESC(dsp_driver, "Force the DSP driver for Intel DSP 
-(0=auto, 1=legacy, 2=SST, 3=SOF)");
-+MODULE_PARM_DESC(dsp_driver, "Force the DSP driver for Intel DSP 
-(0=auto, 1=legacy, 2=SST, 3=SOF, 4=AVS)");
-
-  #define FLAG_SST			BIT(0)
-  #define FLAG_SOF			BIT(1)
-+#define FLAG_AVS			BIT(2)
-  #define FLAG_SST_ONLY_IF_DMIC		BIT(15)
-  #define FLAG_SOF_ONLY_IF_DMIC		BIT(16)
-  #define FLAG_SOF_ONLY_IF_SOUNDWIRE	BIT(17)
-@@ -56,7 +57,7 @@ static const struct config_entry config_table[] = {
-  /*
-   * Apollolake (Broxton-P)
-   * the legacy HDAudio driver is used except on Up Squared (SOF) and
-- * Chromebooks (SST), as well as devices based on the ES8336 codec
-+ * Chromebooks (AVS), as well as devices based on the ES8336 codec
-   */
-  #if IS_ENABLED(CONFIG_SND_SOC_SOF_APOLLOLAKE)
-  	{
-@@ -79,9 +80,9 @@ static const struct config_entry config_table[] = {
-  		.codec_hid =  &essx_83x6,
-  	},
-  #endif
--#if IS_ENABLED(CONFIG_SND_SOC_INTEL_APL)
-+#if IS_ENABLED(CONFIG_SND_SOC_INTEL_AVS)
-  	{
--		.flags = FLAG_SST,
-+		.flags = FLAG_AVS,
-  		.device = PCI_DEVICE_ID_INTEL_HDA_APL,
-  		.dmi_table = (const struct dmi_system_id []) {
-  			{
-@@ -96,13 +97,13 @@ static const struct config_entry config_table[] = {
-  #endif
-  /*
-   * Skylake and Kabylake use legacy HDAudio driver except for Google
-- * Chromebooks (SST)
-+ * Chromebooks (AVS)
-   */
-
-  /* Sunrise Point-LP */
--#if IS_ENABLED(CONFIG_SND_SOC_INTEL_SKL)
-+#if IS_ENABLED(CONFIG_SND_SOC_INTEL_AVS)
-  	{
--		.flags = FLAG_SST,
-+		.flags = FLAG_AVS,
-  		.device = PCI_DEVICE_ID_INTEL_HDA_SKL_LP,
-  		.dmi_table = (const struct dmi_system_id []) {
-  			{
-@@ -114,15 +115,17 @@ static const struct config_entry config_table[] = {
-  			{}
-  		}
-  	},
-+#endif
-+#if IS_ENABLED(CONFIG_SND_SOC_INTEL_SKL)
-  	{
-  		.flags = FLAG_SST | FLAG_SST_ONLY_IF_DMIC,
-  		.device = PCI_DEVICE_ID_INTEL_HDA_SKL_LP,
-  	},
-  #endif
-  /* Kabylake-LP */
--#if IS_ENABLED(CONFIG_SND_SOC_INTEL_KBL)
-+#if IS_ENABLED(CONFIG_SND_SOC_INTEL_AVS)
-  	{
--		.flags = FLAG_SST,
-+		.flags = FLAG_AVS,
-  		.device = PCI_DEVICE_ID_INTEL_HDA_KBL_LP,
-  		.dmi_table = (const struct dmi_system_id []) {
-  			{
-@@ -134,6 +137,8 @@ static const struct config_entry config_table[] = {
-  			{}
-  		}
-  	},
-+#endif
-+#if IS_ENABLED(CONFIG_SND_SOC_INTEL_KBL)
-  	{
-  		.flags = FLAG_SST | FLAG_SST_ONLY_IF_DMIC,
-  		.device = PCI_DEVICE_ID_INTEL_HDA_KBL_LP,
-@@ -667,6 +672,9 @@ int snd_intel_dsp_driver_probe(struct pci_dev *pci)
-  		}
-  	}
-
-+	if (cfg->flags & FLAG_AVS)
-+		return SND_INTEL_DSP_DRIVER_AVS;
-+
-  	return SND_INTEL_DSP_DRIVER_LEGACY;
-  }
-  EXPORT_SYMBOL_GPL(snd_intel_dsp_driver_probe);
--- 
-2.42.0
+Thank you!
