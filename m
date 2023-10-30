@@ -4,74 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D6B5BC4332F
-	for <alsa-devel@archiver.kernel.org>; Mon, 30 Oct 2023 10:38:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A372AC4332F
+	for <alsa-devel@archiver.kernel.org>; Mon, 30 Oct 2023 11:31:04 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 16532AEA;
-	Mon, 30 Oct 2023 11:37:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 16532AEA
+	by alsa0.perex.cz (Postfix) with ESMTPS id D887AAE9;
+	Mon, 30 Oct 2023 12:30:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D887AAE9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1698662316;
-	bh=QOSGZdiYo3StJZ3rn8b/EwEaZCxPpK9VQ5PWqdO1KIc=;
-	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=NCE0DGjBHNefVKYznl9B+KQi+bBy3mF65HE4FXYhhwZlMT2rDUH4DuQuO6UYeciR6
-	 yDLvommQ7QrrZy4W5yV/+GWb2N6KPR7eBVOIMIb8O9dGyh0UJy8nfd0+l1EAjdPpi7
-	 n+KzELwfQEBxPSm8FGiFEgGYNPbpeZuaSIXeODdQ=
+	s=default; t=1698665461;
+	bh=9KW1ryeBCpESKKmbGR2EzdR09efOy6RrSVRolR3kwW0=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=tz11DRC1+5WdfNVxHeqWVyOtG+zVZ++RL09fBHZ768tRXWEcdABtWr4y2cz/5sYpg
+	 R+nn4xBJaYCA8bEwO3WQ3nrkvVXsRNYYUMsFLe8GWFyEPjIqwKYfgfd5IO6ZIRwyAx
+	 PPsgdJ9OxUf7AS+4cXTM5dtd8muylvkn+oPm8pAQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AF2B4F80494; Mon, 30 Oct 2023 11:37:16 +0100 (CET)
+	id 4CBA7F80166; Mon, 30 Oct 2023 12:30:11 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4F32EF8014B;
-	Mon, 30 Oct 2023 11:37:16 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id AB0AAF8016D;
+	Mon, 30 Oct 2023 12:30:10 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9E95AF8016D; Mon, 30 Oct 2023 11:37:10 +0100 (CET)
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id EAF83F8016D; Mon, 30 Oct 2023 12:30:04 +0100 (CET)
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 0603AF80152
-	for <alsa-devel@alsa-project.org>; Mon, 30 Oct 2023 11:37:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0603AF80152
-X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 39UAapwU73008100,
- This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36506.realtek.com.tw[172.21.6.27])
-	by rtits2.realtek.com.tw (8.15.2/2.93/5.92) with ESMTPS id 39UAapwU73008100
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 30 Oct 2023 18:36:51 +0800
-Received: from RTEXMBS01.realtek.com.tw (172.21.6.94) by
- RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.17; Mon, 30 Oct 2023 18:36:51 +0800
-Received: from sw-server.localdomain (172.22.102.1) by
- RTEXMBS01.realtek.com.tw (172.21.6.94) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.7; Mon, 30 Oct 2023 18:36:51 +0800
-From: <shumingf@realtek.com>
-To: <broonie@kernel.org>, <lgirdwood@gmail.com>
-CC: <alsa-devel@alsa-project.org>, <lars@metafoo.de>, <flove@realtek.com>,
-        <oder_chiou@realtek.com>, <jack.yu@realtek.com>,
-        <derek.fang@realtek.com>, <bard.liao@intel.com>,
-        Shuming Fan <shumingf@realtek.com>
-Subject: [PATCH] ASoC: rt712-sdca: fix speaker route missing issue
-Date: Mon, 30 Oct 2023 18:36:44 +0800
-Message-ID: <20231030103644.1787948-1-shumingf@realtek.com>
-X-Mailer: git-send-email 2.34.1
+	by alsa1.perex.cz (Postfix) with ESMTPS id 1A126F800FA
+	for <alsa-devel@alsa-project.org>; Mon, 30 Oct 2023 12:29:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1A126F800FA
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=YIi/Ysdf
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698665398; x=1730201398;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=9KW1ryeBCpESKKmbGR2EzdR09efOy6RrSVRolR3kwW0=;
+  b=YIi/YsdfVUOVDa1An8k4dtYqkwcadVf/g0x/iduvarZ3Ffbr5Evp8Nu8
+   8CIPyynfkikc9e2c/P9X/JlyjfvaJcOLH5hHWP7KgX8Y8pK1obtBScPy4
+   o5/jQGdQuDu3sl3DSPijOXKpJwVdZUmLVq4dRWQinPcF7PVmsJ4kbGYnH
+   B2ci+a4ppUnsM/XyJDwmEpuxQsDBHZLO6cteYhwuu9PGZdcMmP+9Xe8AQ
+   zdIPaSMCEYkl2UmYs75GK5d8a599cMkWh9RNW0T5BN2VpciuCjbJ8jWwY
+   lwqfUh1BegkevJZPRzna4x5hmdYWZui3jmUiiOswNQuEB9nJaDOTyGxK/
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10878"; a="918725"
+X-IronPort-AV: E=Sophos;i="6.03,263,1694761200";
+   d="scan'208";a="918725"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 30 Oct 2023 04:29:48 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10878"; a="883835297"
+X-IronPort-AV: E=Sophos;i="6.03,263,1694761200";
+   d="scan'208";a="883835297"
+Received: from yungchua-mobl2.ccr.corp.intel.com (HELO [10.92.2.114])
+ ([10.92.2.114])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 30 Oct 2023 04:29:45 -0700
+Message-ID: <610122ec-0b4b-46c4-a768-23cf07b0e48f@linux.intel.com>
+Date: Mon, 30 Oct 2023 19:29:35 +0800
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] ASoC: rt712-sdca: fix speaker route missing issue
+Content-Language: en-US
+To: shumingf@realtek.com, broonie@kernel.org, lgirdwood@gmail.com
+Cc: alsa-devel@alsa-project.org, lars@metafoo.de, flove@realtek.com,
+ oder_chiou@realtek.com, jack.yu@realtek.com, derek.fang@realtek.com,
+ bard.liao@intel.com
+References: <20231030103644.1787948-1-shumingf@realtek.com>
+From: "Liao, Bard" <yung-chuan.liao@linux.intel.com>
+In-Reply-To: <20231030103644.1787948-1-shumingf@realtek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [172.22.102.1]
-X-ClientProxiedBy: RTEXH36506.realtek.com.tw (172.21.6.27) To
- RTEXMBS01.realtek.com.tw (172.21.6.94)
-X-KSE-ServerInfo: RTEXMBS01.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
-Message-ID-Hash: RVJWN525CXR7SXO2I37U4KCDDOHHBYJW
-X-Message-ID-Hash: RVJWN525CXR7SXO2I37U4KCDDOHHBYJW
-X-MailFrom: shumingf@realtek.com
+Message-ID-Hash: YJJ73ZYDY24TOS7P4P7FIHSCFAF4SDPV
+X-Message-ID-Hash: YJJ73ZYDY24TOS7P4P7FIHSCFAF4SDPV
+X-MailFrom: yung-chuan.liao@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -83,7 +94,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RVJWN525CXR7SXO2I37U4KCDDOHHBYJW/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YJJ73ZYDY24TOS7P4P7FIHSCFAF4SDPV/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -92,48 +103,53 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Shuming Fan <shumingf@realtek.com>
 
-Sometimes the codec probe would be called earlier than the hardware initialization.
-Therefore, the speaker route should be added before the the first_hw_init check.
+On 2023/10/30 下午 06:36, shumingf@realtek.com wrote:
+> From: Shuming Fan <shumingf@realtek.com>
+>
+> Sometimes the codec probe would be called earlier than the hardware initialization.
+> Therefore, the speaker route should be added before the the first_hw_init check.
+>
+> Signed-off-by: Shuming Fan <shumingf@realtek.com>
 
-Signed-off-by: Shuming Fan <shumingf@realtek.com>
----
- sound/soc/codecs/rt712-sdca.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+Do we need
 
-diff --git a/sound/soc/codecs/rt712-sdca.c b/sound/soc/codecs/rt712-sdca.c
-index 7077ff6ba1f4..6954fbe7ec5f 100644
---- a/sound/soc/codecs/rt712-sdca.c
-+++ b/sound/soc/codecs/rt712-sdca.c
-@@ -963,13 +963,6 @@ static int rt712_sdca_probe(struct snd_soc_component *component)
- 	rt712_sdca_parse_dt(rt712, &rt712->slave->dev);
- 	rt712->component = component;
- 
--	if (!rt712->first_hw_init)
--		return 0;
--
--	ret = pm_runtime_resume(component->dev);
--	if (ret < 0 && ret != -EACCES)
--		return ret;
--
- 	/* add SPK route */
- 	if (rt712->hw_id != RT712_DEV_ID_713) {
- 		snd_soc_add_component_controls(component,
-@@ -980,6 +973,13 @@ static int rt712_sdca_probe(struct snd_soc_component *component)
- 			rt712_sdca_spk_dapm_routes, ARRAY_SIZE(rt712_sdca_spk_dapm_routes));
- 	}
- 
-+	if (!rt712->first_hw_init)
-+		return 0;
-+
-+	ret = pm_runtime_resume(component->dev);
-+	if (ret < 0 && ret != -EACCES)
-+		return ret;
-+
- 	return 0;
- }
- 
--- 
-2.34.1
+Fixes: f3da2ed110e2 ("ASoC: rt1712-sdca: enable pm_runtime in probe, 
+keep status as 'suspended'")?
 
+> ---
+>   sound/soc/codecs/rt712-sdca.c | 14 +++++++-------
+>   1 file changed, 7 insertions(+), 7 deletions(-)
+>
+> diff --git a/sound/soc/codecs/rt712-sdca.c b/sound/soc/codecs/rt712-sdca.c
+> index 7077ff6ba1f4..6954fbe7ec5f 100644
+> --- a/sound/soc/codecs/rt712-sdca.c
+> +++ b/sound/soc/codecs/rt712-sdca.c
+> @@ -963,13 +963,6 @@ static int rt712_sdca_probe(struct snd_soc_component *component)
+>   	rt712_sdca_parse_dt(rt712, &rt712->slave->dev);
+>   	rt712->component = component;
+>   
+> -	if (!rt712->first_hw_init)
+> -		return 0;
+> -
+> -	ret = pm_runtime_resume(component->dev);
+> -	if (ret < 0 && ret != -EACCES)
+> -		return ret;
+> -
+>   	/* add SPK route */
+>   	if (rt712->hw_id != RT712_DEV_ID_713) {
+>   		snd_soc_add_component_controls(component,
+> @@ -980,6 +973,13 @@ static int rt712_sdca_probe(struct snd_soc_component *component)
+>   			rt712_sdca_spk_dapm_routes, ARRAY_SIZE(rt712_sdca_spk_dapm_routes));
+>   	}
+>   
+> +	if (!rt712->first_hw_init)
+> +		return 0;
+> +
+> +	ret = pm_runtime_resume(component->dev);
+> +	if (ret < 0 && ret != -EACCES)
+> +		return ret;
+> +
+>   	return 0;
+>   }
+>   
