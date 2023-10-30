@@ -4,151 +4,102 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0E5C4C4332F
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Nov 2023 16:24:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 343B4C4332F
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Nov 2023 16:24:34 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9EECDEB4;
-	Fri,  3 Nov 2023 17:23:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9EECDEB4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 711D6EAE;
+	Fri,  3 Nov 2023 17:23:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 711D6EAE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1699028655;
-	bh=dJvScpy2L+3WHD/3TsfLGFJjcGrfCJJTcUyd0rXEp7A=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=nJS+ahM3Mplu3wgVMAPxdIo37+r8qrNFDcMZVIHdCRcTDxXhXBhd94dPiL6wrYKGd
-	 Axsx7mUFx6SdvxC3I0M8/pl49CXUOZdvL8iK0zBqDIwj/Vj4MjbUko39RITIrr9xq1
-	 8OOuuo8KwJqYtVMsUZ/KFYQbpnJa+N744zhYJy6o=
+	s=default; t=1699028671;
+	bh=uKZy0kVXxLU+accOicAHjZvWdexcnrM7HBMYCjD5Hmg=;
+	h=Date:Subject:To:References:From:In-Reply-To:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=W6iGn8n3DJjGoHl22pDjDvroqroX/hDAnT34B/qWdTUooYvVQVTm46MCL6FcxoUj9
+	 8vmZ+VjbCeZF9clRnMoNI5bAKXy5b8Bz/Ns1FIBAHeYMuz24y3uDjRTGZm6Ye0VjNX
+	 yomA/t719w7KtSPv/zFvVKjdbEf+N6Of++8swKoc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2E9E5F80568; Fri,  3 Nov 2023 17:23:24 +0100 (CET)
+	id 49BFCF80567; Fri,  3 Nov 2023 17:23:26 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8F438F80567;
-	Fri,  3 Nov 2023 17:23:23 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 75FDDF8057B;
+	Fri,  3 Nov 2023 17:23:25 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 880C7F8016D; Mon, 30 Oct 2023 08:08:54 +0100 (CET)
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com
- [205.220.165.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id AB5C6F8016D; Mon, 30 Oct 2023 18:29:28 +0100 (CET)
+Received: from relay01.th.seeweb.it (relay01.th.seeweb.it
+ [IPv6:2001:4b7a:2000:18::162])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id BC597F800FA
-	for <alsa-devel@alsa-project.org>; Mon, 30 Oct 2023 08:08:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BC597F800FA
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=oracle.com header.i=@oracle.com header.a=rsa-sha256
- header.s=corp-2023-03-30 header.b=mfaMaHN/
-Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 39U3ee5e010986;
-	Mon, 30 Oct 2023 07:08:42 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com;
- h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding;
- s=corp-2023-03-30; bh=aIxu7yh5wYJuZc53Lt9scwP9Vbcx6BNPRaxSyYFe7Jw=;
- b=mfaMaHN/z/yI+4q9NdIbisvzvXWPd+stfg1t+PKV3kaFfyEj5FShwbjY/twn8c5LFZ7h
- JJtPriCzO/tIa2j9ls7wlK/842S69B+zoo3komTP0gItpumrnxvu7IZpC9ozMQwHPOb1
- TWVB1/64pnDgXZvEEI9ZJ2dtvi0v8P9nzBOTrnhsPYHEbtdZI4K41NU3UqZsqys8LxuG
- nrgJyCnPzFvhKhWUZbpkLyrKgu7qFqHefjO3WVMoCJyr5GMwCYfR4LSbFigYDeSAnLAW
- jt2NGTpiR3eOQRqxZyth4Gz9J4MFnx6R1ExPj5pL7eaAzekRy+Rlwevdq3p4sY86V5gv DQ==
-Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com
- (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3u0s7bt2jk-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 30 Oct 2023 07:08:42 +0000
-Received: from pps.filterd
- (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19)
- with ESMTP id 39U6hbXV030752;
-	Mon, 30 Oct 2023 07:08:40 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id
- 3u0rra4qt0-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 30 Oct 2023 07:08:40 +0000
-Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com
- (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39U78eAF024650;
-	Mon, 30 Oct 2023 07:08:40 GMT
-Received: from ca-dev112.us.oracle.com (ca-dev112.us.oracle.com
- [10.129.136.47])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id
- 3u0rra4qrs-1;
-	Mon, 30 Oct 2023 07:08:40 +0000
-From: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
-To: James Schulman <james.schulman@cirrus.com>,
-        David Rhodes <david.rhodes@cirrus.com>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        Stefan Binding <sbinding@opensource.cirrus.com>,
-        alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
-        linux-kernel@vger.kernel.org
-Cc: dan.carpenter@linaro.org, kernel-janitors@vger.kernel.org,
-        error27@gmail.com, harshit.m.mogalapalli@oracle.com
-Subject: [PATCH next] ALSA: hda: cs35l41: Fix missing error code in
- cs35l41_smart_amp()
-Date: Mon, 30 Oct 2023 00:08:36 -0700
-Message-ID: <20231030070836.3234385-1-harshit.m.mogalapalli@oracle.com>
-X-Mailer: git-send-email 2.42.0
+	by alsa1.perex.cz (Postfix) with ESMTPS id AE660F800FA
+	for <alsa-devel@alsa-project.org>; Mon, 30 Oct 2023 18:29:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AE660F800FA
+Received: from [192.168.133.160]
+ (178235177091.dynamic-4-waw-k-1-1-0.vectranet.pl [178.235.177.91])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by m-r1.th.seeweb.it (Postfix) with ESMTPSA id 1CA072016C;
+	Mon, 30 Oct 2023 18:29:15 +0100 (CET)
+Message-ID: <aed5ddf8-8b78-4b63-9241-85b20c26b805@somainline.org>
+Date: Mon, 30 Oct 2023 18:29:14 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-30_05,2023-10-27_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0
- suspectscore=0 spamscore=0
- phishscore=0 mlxlogscore=999 adultscore=0 mlxscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2310240000
- definitions=main-2310300052
-X-Proofpoint-GUID: bc-zOkdmnKuRWRdTO1gCctbjFzAf-h0D
-X-Proofpoint-ORIG-GUID: bc-zOkdmnKuRWRdTO1gCctbjFzAf-h0D
-X-MailFrom: harshit.m.mogalapalli@oracle.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V3 0/3] ASoC: codecs: Add aw88399 amplifier driver
+To: wangweidong.a@awinic.com, lgirdwood@gmail.com, broonie@kernel.org,
+ robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ perex@perex.cz, tiwai@suse.com, herve.codina@bootlin.com,
+ shumingf@realtek.com, rf@opensource.cirrus.com, arnd@arndb.de,
+ 13916275206@139.com, ryans.lee@analog.com, linus.walleij@linaro.org,
+ ckeepax@opensource.cirrus.com, ajye_huang@compal.corp-partner.google.com,
+ fido_max@inbox.ru, liweilei@awinic.com, yijiangtao@awinic.com,
+ trix@redhat.com, colin.i.king@gmail.com, dan.carpenter@linaro.org,
+ alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20231025112625.959587-1-wangweidong.a@awinic.com>
+Content-Language: en-US
+From: Konrad Dybcio <konrad.dybcio@somainline.org>
+In-Reply-To: <20231025112625.959587-1-wangweidong.a@awinic.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-MailFrom: konrad.dybcio@somainline.org
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: KVY22OFQNTK7UPMZP2UXSGGGB3OG443A
-X-Message-ID-Hash: KVY22OFQNTK7UPMZP2UXSGGGB3OG443A
-X-Mailman-Approved-At: Fri, 03 Nov 2023 16:23:17 +0000
+Message-ID-Hash: HORARE3LKX3UCS44GSUMZI3JN63PQTVI
+X-Message-ID-Hash: HORARE3LKX3UCS44GSUMZI3JN63PQTVI
+X-Mailman-Approved-At: Fri, 03 Nov 2023 16:23:18 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KVY22OFQNTK7UPMZP2UXSGGGB3OG443A/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HORARE3LKX3UCS44GSUMZI3JN63PQTVI/>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-When firmware status is invalid, assign -EINVAL to ret as ret is '0' at
-that point and returning success is incorrect when firmware status is
-invalid.
 
-Fixes: a51d8ba03a4f ("ALSA: hda: cs35l41: Check CSPL state after loading firmware")
-Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
----
-This is found using smatch and only compile tested.
----
- sound/pci/hda/cs35l41_hda.c | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/sound/pci/hda/cs35l41_hda.c b/sound/pci/hda/cs35l41_hda.c
-index 496ff6a9d300..09f8d8fa4c71 100644
---- a/sound/pci/hda/cs35l41_hda.c
-+++ b/sound/pci/hda/cs35l41_hda.c
-@@ -1042,6 +1042,7 @@ static int cs35l41_smart_amp(struct cs35l41_hda *cs35l41)
- 	default:
- 		dev_err(cs35l41->dev, "Firmware status is invalid: %u\n",
- 			fw_status);
-+		ret = -EINVAL;
- 		goto clean_dsp;
- 	}
- 
--- 
-2.39.3
+On 25.10.2023 13:26, wangweidong.a@awinic.com wrote:
+> From: Weidong Wang <wangweidong.a@awinic.com>
+> 
+> Add the awinic,aw88399 property to the awinic,aw88395.yaml file.
+> 
+> Add i2c and amplifier registration for
+> aw88399 and their associated operation functions.
+Hi!
 
+Just out of interest, do you folks have any plans to add support
+for CHIP_ID 0x1852?
+
+Konrad
