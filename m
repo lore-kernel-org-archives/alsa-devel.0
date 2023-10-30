@@ -4,56 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 48D34C4332F
-	for <alsa-devel@archiver.kernel.org>; Mon, 30 Oct 2023 05:26:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 83F84C4332F
+	for <alsa-devel@archiver.kernel.org>; Mon, 30 Oct 2023 08:51:59 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 65D8FA4B;
-	Mon, 30 Oct 2023 06:25:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 65D8FA4B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7C9C9A4A;
+	Mon, 30 Oct 2023 09:51:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7C9C9A4A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1698643587;
-	bh=Mqn3rsr9s+F26WEnT9DSH+0oK3TcYgO8P7joFGRFFiQ=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=nAA+aj5pDbQxwM9zKGL4dZC8XeS7zQyD4/akCbpRkqloUPhnFtbePn/TE0020Z2pI
-	 REHOSszoVQXXj4DLjGtNKJUP9+UsLWvP2QWwdCITdtvbTUW6043Cmu8WciteTF8UR/
-	 QPgnYrbkYStb74gFGZpOnF0c3+OC/3cU6a0DCd/U=
+	s=default; t=1698655916;
+	bh=8Svl2OIef/iELg/Wu3PXi8qtvE9agVW+eXmQX0CeRqo=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=mHx2lAC5vsXNSUCbbR48Tss1wLGYONDthKxXzkCwIB+cY+olNxi7VA/nz9Ok5lwVy
+	 YO/prsgvn5IIwmiLCuZZKlBALbS9mJiJqQzPshPnCeT9PRfChdkd3G6RnmwbcZ7dDK
+	 yydyc0TI5Ds53oyajZX+uKNwumcg/uJMRW6o+9HM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5565CF80494; Mon, 30 Oct 2023 06:25:27 +0100 (CET)
+	id DE158F800FA; Mon, 30 Oct 2023 09:51:05 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D59C7F8016D;
-	Mon, 30 Oct 2023 06:25:25 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5F99AF800FA;
+	Mon, 30 Oct 2023 09:51:05 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5B455F8016D; Mon, 30 Oct 2023 06:24:07 +0100 (CET)
-Received: from muru.com (muru.com [72.249.23.125])
-	by alsa1.perex.cz (Postfix) with ESMTP id 618DDF8014B
-	for <alsa-devel@alsa-project.org>; Mon, 30 Oct 2023 06:24:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 618DDF8014B
-Received: from hillo.muru.com (localhost [127.0.0.1])
-	by muru.com (Postfix) with ESMTP id 0746380EE;
-	Mon, 30 Oct 2023 05:23:55 +0000 (UTC)
-From: Tony Lindgren <tony@atomide.com>
-To: Peter Ujfalusi <peter.ujfalusi@gmail.com>,
-	Jarkko Nikula <jarkko.nikula@bitmer.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>
-Cc: Andreas Kemnade <andreas@kemnade.info>,
-	alsa-devel@alsa-project.org,
-	linux-omap@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: ti: omap-mcbsp: Fix runtime PM underflow warnings
-Date: Mon, 30 Oct 2023 07:23:38 +0200
-Message-ID: <20231030052340.13415-1-tony@atomide.com>
-X-Mailer: git-send-email 2.42.0
+	id 7BB01F8016D; Mon, 30 Oct 2023 09:48:53 +0100 (CET)
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 55156F8014B
+	for <alsa-devel@alsa-project.org>; Mon, 30 Oct 2023 09:48:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 55156F8014B
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=HzqpBsB4
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698655727; x=1730191727;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=8Svl2OIef/iELg/Wu3PXi8qtvE9agVW+eXmQX0CeRqo=;
+  b=HzqpBsB4LGmDZokpnlZFuaXUQEztrLRqSEK8HWT72NKoVdrJj/tlU6n8
+   UqFtczv6WHt3roWOpRq7cQjNNs26KRO1FO5fnjUHrEIrh7ell+DR1koBr
+   uAPgQt9RDTfkbfQb5xh9gnKXdMGAf2JxSQsmrEo0Ic+r8RJjp/26odNp+
+   fAEx9OuluKgs4OjatW65R1Q9CVeSIAwkOndnFx/WMLWquFWsMddaRUQk/
+   L+7E4/2o2dZg5aUyznmDI5FXuVS2cUgW3rZs1hUYYXXwHvUtHQkYUIKpd
+   K1KJVzz6pVbB9B2D0DaEw0hqE2N73MH5obEsK0U2WGLQKb8HUzxSo+MX1
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10878"; a="900605"
+X-IronPort-AV: E=Sophos;i="6.03,263,1694761200";
+   d="scan'208";a="900605"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 30 Oct 2023 01:48:41 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10878"; a="850848905"
+X-IronPort-AV: E=Sophos;i="6.03,263,1694761200";
+   d="scan'208";a="850848905"
+Received: from aslawinx-mobl.ger.corp.intel.com (HELO [10.94.0.91])
+ ([10.94.0.91])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 30 Oct 2023 01:48:37 -0700
+Message-ID: <95e0e4a0-edff-43f6-a58b-f2324b730a99@linux.intel.com>
+Date: Mon, 30 Oct 2023 09:48:35 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 66CARZQO4TEYKLBUWKMG4U7XKFVEIN24
-X-Message-ID-Hash: 66CARZQO4TEYKLBUWKMG4U7XKFVEIN24
-X-MailFrom: tony@atomide.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] ALSA: hda: intel-dsp-cfg: Use AVS driver on SKL/KBL/APL
+ Chromebooks
+Content-Language: en-US
+To: Brady Norander <bradynorander@gmail.com>, Takashi Iwai <tiwai@suse.com>,
+ Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org,
+ Cezary Rojewski <cezary.rojewski@intel.com>
+Cc: linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+References: <ZTz9orCylVwn3Pye@arch>
+From: =?UTF-8?Q?Amadeusz_S=C5=82awi=C5=84ski?=
+ <amadeuszx.slawinski@linux.intel.com>
+In-Reply-To: <ZTz9orCylVwn3Pye@arch>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: NGDJGHEESMR25NTRVCKULZEN7TT5TGOR
+X-Message-ID-Hash: NGDJGHEESMR25NTRVCKULZEN7TT5TGOR
+X-MailFrom: amadeuszx.slawinski@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -65,7 +99,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/66CARZQO4TEYKLBUWKMG4U7XKFVEIN24/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NGDJGHEESMR25NTRVCKULZEN7TT5TGOR/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -74,36 +108,84 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-We need to check for an active device as otherwise we get warnings
-for some mcbsp instances for "Runtime PM usage count underflow!".
+On 10/28/2023 2:25 PM, Brady Norander wrote:
+> The legacy SKL driver no longer works properly on these Chromebook
+> platforms. Use the new AVS driver by default instead.
+> 
+> Signed-off-by: Brady Norander <bradynorander@gmail.com>
+> ---
+>   sound/hda/intel-dsp-config.c | 16 ++++++++++------
+>   1 file changed, 10 insertions(+), 6 deletions(-)
+> 
+> diff --git a/sound/hda/intel-dsp-config.c b/sound/hda/intel-dsp-config.c
+> index 756fa0aa69bb..1045be1fd441 100644
+> --- a/sound/hda/intel-dsp-config.c
+> +++ b/sound/hda/intel-dsp-config.c
+> @@ -16,10 +16,11 @@
+>   static int dsp_driver;
+>   
+>   module_param(dsp_driver, int, 0444);
+> -MODULE_PARM_DESC(dsp_driver, "Force the DSP driver for Intel DSP (0=auto, 1=legacy, 2=SST, 3=SOF)");
+> +MODULE_PARM_DESC(dsp_driver, "Force the DSP driver for Intel DSP (0=auto, 1=legacy, 2=SST, 3=SOF, 4=AVS)");
+>   
+>   #define FLAG_SST			BIT(0)
+>   #define FLAG_SOF			BIT(1)
+> +#define FLAG_AVS			BIT(2)
+>   #define FLAG_SST_ONLY_IF_DMIC		BIT(15)
+>   #define FLAG_SOF_ONLY_IF_DMIC		BIT(16)
+>   #define FLAG_SOF_ONLY_IF_SOUNDWIRE	BIT(17)
+> @@ -56,7 +57,7 @@ static const struct config_entry config_table[] = {
+>   /*
+>    * Apollolake (Broxton-P)
+>    * the legacy HDAudio driver is used except on Up Squared (SOF) and
+> - * Chromebooks (SST), as well as devices based on the ES8336 codec
+> + * Chromebooks (AVS), as well as devices based on the ES8336 codec
+>    */
+>   #if IS_ENABLED(CONFIG_SND_SOC_SOF_APOLLOLAKE)
+>   	{
+> @@ -81,7 +82,7 @@ static const struct config_entry config_table[] = {
+>   #endif
+>   #if IS_ENABLED(CONFIG_SND_SOC_INTEL_APL)
+>   	{
+> -		.flags = FLAG_SST,
+> +		.flags = FLAG_AVS,
+>   		.device = PCI_DEVICE_ID_INTEL_HDA_APL,
+>   		.dmi_table = (const struct dmi_system_id []) {
+>   			{
+> @@ -96,13 +97,13 @@ static const struct config_entry config_table[] = {
+>   #endif
+>   /*
+>    * Skylake and Kabylake use legacy HDAudio driver except for Google
+> - * Chromebooks (SST)
+> + * Chromebooks (AVS)
+>    */
+>   
+>   /* Sunrise Point-LP */
+>   #if IS_ENABLED(CONFIG_SND_SOC_INTEL_SKL)
+>   	{
+> -		.flags = FLAG_SST,
+> +		.flags = FLAG_AVS,
+>   		.device = PCI_DEVICE_ID_INTEL_HDA_SKL_LP,
+>   		.dmi_table = (const struct dmi_system_id []) {
+>   			{
+> @@ -122,7 +123,7 @@ static const struct config_entry config_table[] = {
+>   /* Kabylake-LP */
+>   #if IS_ENABLED(CONFIG_SND_SOC_INTEL_KBL)
+>   	{
+> -		.flags = FLAG_SST,
+> +		.flags = FLAG_AVS,
+>   		.device = PCI_DEVICE_ID_INTEL_HDA_KBL_LP,
+>   		.dmi_table = (const struct dmi_system_id []) {
+>   			{
+> @@ -667,6 +668,9 @@ int snd_intel_dsp_driver_probe(struct pci_dev *pci)
+>   		}
+>   	}
+>   
+> +	if (cfg->flags & FLAG_AVS)
+> +		return SND_INTEL_DSP_DRIVER_AVS;
+> +
+>   	return SND_INTEL_DSP_DRIVER_LEGACY;
+>   }
+>   EXPORT_SYMBOL_GPL(snd_intel_dsp_driver_probe);
 
-Reported-by: Andreas Kemnade <andreas@kemnade.info>
-Signed-off-by: Tony Lindgren <tony@atomide.com>
----
- sound/soc/ti/omap-mcbsp.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/ti/omap-mcbsp.c b/sound/soc/ti/omap-mcbsp.c
---- a/sound/soc/ti/omap-mcbsp.c
-+++ b/sound/soc/ti/omap-mcbsp.c
-@@ -74,14 +74,16 @@ static int omap2_mcbsp_set_clks_src(struct omap_mcbsp *mcbsp, u8 fck_src_id)
- 		return 0;
- 	}
- 
--	pm_runtime_put_sync(mcbsp->dev);
-+	if (mcbsp->active)
-+		pm_runtime_put_sync(mcbsp->dev);
- 
- 	r = clk_set_parent(mcbsp->fclk, fck_src);
- 	if (r)
- 		dev_err(mcbsp->dev, "CLKS: could not clk_set_parent() to %s\n",
- 			src);
- 
--	pm_runtime_get_sync(mcbsp->dev);
-+	if (mcbsp->active)
-+		pm_runtime_get_sync(mcbsp->dev);
- 
- 	clk_put(fck_src);
- 
--- 
-2.42.0
++ Cezary
