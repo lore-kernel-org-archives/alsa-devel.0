@@ -4,87 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 539F2C4332F
-	for <alsa-devel@archiver.kernel.org>; Mon, 30 Oct 2023 17:42:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7D510C4332F
+	for <alsa-devel@archiver.kernel.org>; Mon, 30 Oct 2023 19:21:35 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8FF97A4B;
-	Mon, 30 Oct 2023 18:41:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8FF97A4B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7CC58950;
+	Mon, 30 Oct 2023 20:20:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7CC58950
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1698687757;
-	bh=HQPbEJwDYJoTRJSOJp2zhcD6tw8Fd/fvwRJqyc7v2D0=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	s=default; t=1698693692;
+	bh=2/AkVrexR/JZ05pQV2i1gYvGNuV3Dwqm9KVT5lmWsow=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=NPIIaUxSwjqwHzOzPzhwPhh3Uvuzw8trmbpNXPuqTD79bgJqpk9Y2HPmKVFBLBbNn
-	 m7scsJK9VKiTwiMG1d4cPwJYOXkXTT4lRVmR5ZkKBPPipa7/nl2a2eBaehhWlpmLQN
-	 yfYM3DSv5+rJtnAaFZXHeinYdrsn4jOC11t6WPNM=
+	b=g4ZTyewoL4NI6NvuwihIUoXEMMyWdoMLpWWgJO4zV41CsogRBi6gDT4Hc1bHHG8yF
+	 aqHFvUEHB3aM7OFERaJqDQJsz9Acd4gleKeKmjVmKmo/GMQRIZdetnG8ZAQKLViTMa
+	 VMFAQVa/TmhABh4O4bSRfqKwiWOitilB47Fl5xyw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 69D01F8016D; Mon, 30 Oct 2023 18:41:18 +0100 (CET)
+	id D1F48F8020D; Mon, 30 Oct 2023 20:20:41 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B74B6F8016D;
-	Mon, 30 Oct 2023 18:41:17 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A0205F8020D;
+	Mon, 30 Oct 2023 20:20:41 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 20FE7F8016D; Mon, 30 Oct 2023 18:41:13 +0100 (CET)
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 3AF4DF8020D; Mon, 30 Oct 2023 20:20:38 +0100 (CET)
+Received: from sin.source.kernel.org (sin.source.kernel.org
+ [IPv6:2604:1380:40e1:4800::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7AAB5F8014B
-	for <alsa-devel@alsa-project.org>; Mon, 30 Oct 2023 18:41:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7AAB5F8014B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 5ABC9F8014B
+	for <alsa-devel@alsa-project.org>; Mon, 30 Oct 2023 20:20:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5ABC9F8014B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=eA42OAlg
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698687667; x=1730223667;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=HQPbEJwDYJoTRJSOJp2zhcD6tw8Fd/fvwRJqyc7v2D0=;
-  b=eA42OAlgSy3h051sZQmYkkfgaMeuGTZYD+aXispD+Nr/cuwn6JOBNGJq
-   WkfmDc+VQndVHusfYzKpIFNCN4mVpEodb1WxvXRHeTKVnEK4N2RF1xcPc
-   M69a5Je/Yqgc8Avw48psWZ82tw2Uy1WGQ7GCiSxYcS5mNCAtUYPee/z3n
-   dLbO83fCl/ChOabrq7mqfG72QosR4cezd+fjgyOltf6nvbdZCBnZ74w/g
-   J6DutoNEdHWT974rEwWvVfZcg3Xg4GEwY1LShf72eVnnOCZlqBpA/uTpJ
-   Kvq8L8wPSoSynLpWopQTsanHTdwGeFnGrjYUhjWzFM9Q7TKKZ4AXnt7hb
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="9652517"
-X-IronPort-AV: E=Sophos;i="6.03,263,1694761200";
-   d="scan'208";a="9652517"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 30 Oct 2023 10:41:01 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="710163443"
-X-IronPort-AV: E=Sophos;i="6.03,263,1694761200";
-   d="scan'208";a="710163443"
-Received: from wezedi-mobl1.amr.corp.intel.com (HELO [10.212.223.192])
- ([10.212.223.192])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 30 Oct 2023 10:40:59 -0700
-Message-ID: <9b94488e-206d-419b-92ed-e70aab11907b@linux.intel.com>
-Date: Mon, 30 Oct 2023 12:40:58 -0500
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=MECrVJea
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sin.source.kernel.org (Postfix) with ESMTP id 4341DCE0B26;
+	Mon, 30 Oct 2023 19:20:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D07C3C433C8;
+	Mon, 30 Oct 2023 19:20:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1698693625;
+	bh=2/AkVrexR/JZ05pQV2i1gYvGNuV3Dwqm9KVT5lmWsow=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=MECrVJeaJQC/0R+9DGzfSEbAPTwEj13FUBlJTrbfoq03rmpvluF9xyOpYxTFIQFmf
+	 eZ5R7l+BSqM+t0G/yW+R0PJbCbQV2sNHt9/hcaBwol1aYQJVBNfvIE4Fu69TE1/Rtv
+	 p0SgLcOqBmHTxfd1HHb6LS4p8kx/hwgFjZ4wUhxZXUzaWg/F/L2kV673C8CUEIgaZa
+	 3mwkUHVGXmWMlymc0FimQKyXBm1hYPvM+9cn/So0hYbyttNGTwsKTgLfkORrxWbRB1
+	 TJ5BwSLYVSgjF8M66mGnETfIi5iHzmv8zlr9EwuHKuwtFj4fl544bwH2CkfFWyElyN
+	 4LB1xzx2Hr2vA==
+From: Mark Brown <broonie@kernel.org>
+To: Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+ Jarkko Nikula <jarkko.nikula@bitmer.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, Tony Lindgren <tony@atomide.com>
+Cc: Andreas Kemnade <andreas@kemnade.info>, alsa-devel@alsa-project.org,
+ linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20231030052340.13415-1-tony@atomide.com>
+References: <20231030052340.13415-1-tony@atomide.com>
+Subject: Re: [PATCH] ASoC: ti: omap-mcbsp: Fix runtime PM underflow
+ warnings
+Message-Id: <169869362256.44249.15039737144512154634.b4-ty@kernel.org>
+Date: Mon, 30 Oct 2023 19:20:22 +0000
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] ASoC: tas2783: Add source files for tas2783 driver.
-Content-Language: en-US
-To: Mark Brown <broonie@kernel.org>
-Cc: Baojun Xu <baojun.xu@ti.com>, lgirdwood@gmail.com, perex@perex.cz,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kevin-lu@ti.com,
- shenghao-ding@ti.com, peeyush@ti.com, navada@ti.com, tiwai@suse.de
-References: <20231028092409.96813-1-baojun.xu@ti.com>
- <7f4465c1-5e8e-4c5f-bbff-d2c930326986@linux.intel.com>
- <9d922584-288a-4b73-83ef-477d1bc58521@sirena.org.uk>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <9d922584-288a-4b73-83ef-477d1bc58521@sirena.org.uk>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-ID-Hash: PX3BC5H4UT5KM5HYZT57OFGSRUSTFM3J
-X-Message-ID-Hash: PX3BC5H4UT5KM5HYZT57OFGSRUSTFM3J
-X-MailFrom: pierre-louis.bossart@linux.intel.com
+X-Mailer: b4 0.13-dev-0438c
+Message-ID-Hash: NGTHFIC75P5L6UAREJNJEYMCI3CHMIRJ
+X-Message-ID-Hash: NGTHFIC75P5L6UAREJNJEYMCI3CHMIRJ
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -96,7 +87,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PX3BC5H4UT5KM5HYZT57OFGSRUSTFM3J/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NGTHFIC75P5L6UAREJNJEYMCI3CHMIRJ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -105,56 +96,37 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-
-
-On 10/30/23 12:20, Mark Brown wrote:
-> On Mon, Oct 30, 2023 at 11:05:39AM -0500, Pierre-Louis Bossart wrote:
+On Mon, 30 Oct 2023 07:23:38 +0200, Tony Lindgren wrote:
+> We need to check for an active device as otherwise we get warnings
+> for some mcbsp instances for "Runtime PM usage count underflow!".
 > 
->>> +static bool tas2783_readable_register(struct device *dev, unsigned int reg)
->>> +{
->>> +	switch (reg) {
->>> +	case 0x000 ... 0x080:	/* Data port 0. */
 > 
->> No, this is wrong. All the data port 'standard' registers are "owned" by
->> the SoundWire core and handled during the port prepare/configure/bank
->> switch routines. Do not use them for regmap.
-> 
->> In other words, you *shall* only define vendor-specific registers in
->> this codec driver.
-> 
-> This seems to come up a moderate amount and is an understandable thing
-> to do - could you (or someone else who knows SoundWire) perhaps send a
-> patch for the regmap SoundWire integration which does some validation
-> here during registration and at least prints a warning?
 
-Good suggestion, we could indeed check that the registers are NOT in the
-range [0,0xBF] for all ports - only the range [0xC0..FF] is allowed for
-implementation-defined values. I'll try to cook something up.
+Applied to
 
-> Also worth noting that the default is going to be that the registers are
-> readable if the driver doesn't configure anything at all so perhaps at
-> least for just readability this might be worth revisiting.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-Having the interrupt registers as readable could be problematic, there's
-a known race condition where the drivers need to do a read after a
-write, and I am a bit worried if we have two agents reading the same
-thing. It's the only case I am aware of where a read establishes a state.
+Thanks!
 
->>> +static const struct snd_soc_dapm_widget tasdevice_dapm_widgets[] = {
->>> +	SND_SOC_DAPM_AIF_IN("ASI", "ASI Playback", 0, SND_SOC_NOPM, 0, 0),
->>> +	SND_SOC_DAPM_AIF_OUT("ASI OUT", "ASI Capture", 0, SND_SOC_NOPM,
->>> +		0, 0),
->>> +	SND_SOC_DAPM_SPK("SPK", NULL),
->>> +	SND_SOC_DAPM_OUTPUT("OUT"),
->>> +	SND_SOC_DAPM_INPUT("DMIC")
->>> +};
-> 
->> Can you clarify what "ASI" is?
-> 
-> ASI seems to be a fairly commonly used name in TI devices...  In general
-> naming that corresponds to the datasheet should be fine, especially for
-> internal only things like this sort of DAPM widget.  I'd guess it's
-> something like Audio Serial Interface but not actually gone and looked.
+[1/1] ASoC: ti: omap-mcbsp: Fix runtime PM underflow warnings
+      commit: fbb74e56378d8306f214658e3d525a8b3f000c5a
 
-I was only asking was the acronym stood for to make it easier to
-look-up. Not asking for any technical details.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
