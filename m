@@ -4,86 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E41E6C4332F
-	for <alsa-devel@archiver.kernel.org>; Tue, 31 Oct 2023 11:11:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5C95EC4332F
+	for <alsa-devel@archiver.kernel.org>; Tue, 31 Oct 2023 13:27:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1B1B3950;
-	Tue, 31 Oct 2023 12:10:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1B1B3950
+	by alsa0.perex.cz (Postfix) with ESMTPS id A12D8950;
+	Tue, 31 Oct 2023 14:26:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A12D8950
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1698750658;
-	bh=qvrwnc35erdZoVBiQV02YhA2bWWfgE0gKFuh2GpCkNs=;
+	s=default; t=1698758861;
+	bh=qq7ptxnKbInbBcr1W798zXlNpA2qLRG2+BBdxliCEnY=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=eex/j/EYqXjzrIrJjKY9AEaNqJJYIY3XSUSd3fQRVi80/7+N8nYqzx2PCjiiSaKS4
-	 +yE7rnPYKT4l6ejDzVO3merbhZjam1KCoKLWCkNFxm8V36k2pScagTYIONrEwrPvi9
-	 o6uQp2jLtsIBkvIpLe6y7OPf0LWBJAq5Okc0CGFo=
+	b=jaLDd+2S4Su1xxOid5cbFzq2stm1PR3VOkQOdVQIpYeAfHPAGoWH1CyO0o3ltPWcQ
+	 IaZa+f9HaodLTUoFhhRL2I/ZbVKBlOF0WitfpkzMRvRz06jZlxQxHSE+q2KzcLIC4j
+	 cnHLb8GNyv25T3WFm/suzCJzflxB+7MkV2Onwjxw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1516BF8020D; Tue, 31 Oct 2023 12:09:30 +0100 (CET)
+	id 07354F80557; Tue, 31 Oct 2023 14:26:40 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 949D2F8020D;
-	Tue, 31 Oct 2023 12:09:30 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 481EDF8020D;
+	Tue, 31 Oct 2023 14:26:40 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C3186F8020D; Tue, 31 Oct 2023 12:09:25 +0100 (CET)
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 0C4FFF8016D; Tue, 31 Oct 2023 14:26:23 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 6ED4BF80152
-	for <alsa-devel@alsa-project.org>; Tue, 31 Oct 2023 12:09:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6ED4BF80152
+	by alsa1.perex.cz (Postfix) with ESMTPS id DF3FBF8016D
+	for <alsa-devel@alsa-project.org>; Tue, 31 Oct 2023 14:25:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DF3FBF8016D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=Zm+AlSuT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698750556; x=1730286556;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=qvrwnc35erdZoVBiQV02YhA2bWWfgE0gKFuh2GpCkNs=;
-  b=Zm+AlSuT35Q8oBUutxiJr0IQ+GZft/k2GgIrLTIrXf2/bnYmdHk5M0g/
-   Qhl6rOIR1//K7JtIi2N13N7RsaWjCn2HTpBEW1ZwWHInovH0kk+mD3MP+
-   IMy0fsXCyNjxnvmIb6guNx+gZyy3qdqhlKLwu9tS3nFmdQz+dwQSip+fw
-   ZNQnULMHdyQwWz4JfUPAAysDoIAPr/mznjvCmopxNcobYXXbLLcdBh2S9
-   fmohYI9UNlUQUJsZci9szRExZVm2mw7o6GmgFFvFkhj6i9fkyl0irE7cu
-   2ePn99R2LSrxuf7XXCcg4D/vJBjQ2YuFPL0+rMD5HBvLk+3OUzSS0waE6
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10879"; a="373316758"
-X-IronPort-AV: E=Sophos;i="6.03,265,1694761200";
-   d="scan'208";a="373316758"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 31 Oct 2023 04:09:11 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.03,265,1694761200";
-   d="scan'208";a="8298958"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by orviesa001.jf.intel.com with ESMTP; 31 Oct 2023 04:09:08 -0700
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1qxmcL-00007a-1t;
-	Tue, 31 Oct 2023 11:09:05 +0000
-Date: Tue, 31 Oct 2023 19:08:36 +0800
-From: kernel test robot <lkp@intel.com>
-To: Baojun Xu <baojun.xu@ti.com>, broonie@kernel.org, lgirdwood@gmail.com,
-	perex@perex.cz
-Cc: oe-kbuild-all@lists.linux.dev, pierre-louis.bossart@linux.intel.com,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=BM1BqC55
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by ams.source.kernel.org (Postfix) with ESMTP id 056F6B80E7A;
+	Tue, 31 Oct 2023 13:25:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 03AE6C433C7;
+	Tue, 31 Oct 2023 13:25:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1698758746;
+	bh=qq7ptxnKbInbBcr1W798zXlNpA2qLRG2+BBdxliCEnY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=BM1BqC55qMoBKLr4lIAjs4LsMPAIUFPF4+s1Yhzs7kcm5VbypZVdvuffLI4ZcSDex
+	 SjQ4besqJuUByyUI3DE78AJaM/r81ujC1H4qYPZOZhrPimB+woPWOLyAuwd5LBmkr7
+	 9UqEktCZDZj5YEHWdxptuKNGN7ogJtDl6OBo1h+i56handReipJkWz+VB7muJ0++oR
+	 vgGCCCttnioxK9bZRNv4DNZ94pUhLTL5W9cPeZY5b4jzDZjkFDRqeq0fEm/KOYKnPm
+	 +8aKW5p5//v0sMBjuJ/RHXsZLY5BDsNWelKDJtSTYY/An0skZxC73WGa1uMXYboG5p
+	 R6UogIprXd+8w==
+Date: Tue, 31 Oct 2023 13:25:41 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Baojun Xu <baojun.xu@ti.com>, lgirdwood@gmail.com, perex@perex.cz,
 	alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-	kevin-lu@ti.com, shenghao-ding@ti.com, baojun.xu@ti.com,
-	peeyush@ti.com, navada@ti.com, tiwai@suse.de
+	kevin-lu@ti.com, shenghao-ding@ti.com, peeyush@ti.com,
+	navada@ti.com, tiwai@suse.de
 Subject: Re: [PATCH v3] ASoC: tas2783: Add source files for tas2783 driver.
-Message-ID: <202310311857.BgEnJVnO-lkp@intel.com>
+Message-ID: <a7a19e35-6cae-4077-9423-4c450b088351@sirena.org.uk>
 References: <20231028092409.96813-1-baojun.xu@ti.com>
+ <7f4465c1-5e8e-4c5f-bbff-d2c930326986@linux.intel.com>
+ <9d922584-288a-4b73-83ef-477d1bc58521@sirena.org.uk>
+ <9b94488e-206d-419b-92ed-e70aab11907b@linux.intel.com>
+ <85890ed8-0ab3-4b14-879b-be9f0c760db8@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="yHndlsctv1XDmSuG"
 Content-Disposition: inline
-In-Reply-To: <20231028092409.96813-1-baojun.xu@ti.com>
-Message-ID-Hash: Q5B6KEGNKX5657WDXSI3NCUO4DXAMMPM
-X-Message-ID-Hash: Q5B6KEGNKX5657WDXSI3NCUO4DXAMMPM
-X-MailFrom: lkp@intel.com
+In-Reply-To: <85890ed8-0ab3-4b14-879b-be9f0c760db8@linux.intel.com>
+X-Cookie: Is it clean in other dimensions?
+Message-ID-Hash: VXLYYTUNGNK2YKPVEOT3XQQSKS65G4DR
+X-Message-ID-Hash: VXLYYTUNGNK2YKPVEOT3XQQSKS65G4DR
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -95,7 +89,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Q5B6KEGNKX5657WDXSI3NCUO4DXAMMPM/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VXLYYTUNGNK2YKPVEOT3XQQSKS65G4DR/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -104,35 +98,83 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi Baojun,
 
-kernel test robot noticed the following build errors:
+--yHndlsctv1XDmSuG
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-[auto build test ERROR on broonie-sound/for-next]
-[also build test ERROR on linus/master v6.6 next-20231030]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+On Mon, Oct 30, 2023 at 04:05:09PM -0500, Pierre-Louis Bossart wrote:
+> On 10/30/23 12:40, Pierre-Louis Bossart wrote:
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Baojun-Xu/ASoC-tas2783-Add-source-files-for-tas2783-driver/20231028-172643
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-patch link:    https://lore.kernel.org/r/20231028092409.96813-1-baojun.xu%40ti.com
-patch subject: [PATCH v3] ASoC: tas2783: Add source files for tas2783 driver.
-config: nios2-allyesconfig (https://download.01.org/0day-ci/archive/20231031/202310311857.BgEnJVnO-lkp@intel.com/config)
-compiler: nios2-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231031/202310311857.BgEnJVnO-lkp@intel.com/reproduce)
+> >>>> +static bool tas2783_readable_register(struct device *dev, unsigned =
+int reg)
+> >>>> +{
+> >>>> +	switch (reg) {
+> >>>> +	case 0x000 ... 0x080:	/* Data port 0. */
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310311857.BgEnJVnO-lkp@intel.com/
+> >>> No, this is wrong. All the data port 'standard' registers are "owned"=
+ by
+> >>> the SoundWire core and handled during the port prepare/configure/bank
+> >>> switch routines. Do not use them for regmap.
 
-All errors (new ones prefixed by >>):
+> >> This seems to come up a moderate amount and is an understandable thing
+> >> to do - could you (or someone else who knows SoundWire) perhaps send a
+> >> patch for the regmap SoundWire integration which does some validation
+> >> here during registration and at least prints a warning?
 
-   nios2-linux-ld: sound/soc/codecs/tas2783-sdw.o: in function `tas2783_calibration.isra.0':
-   tas2783-sdw.c:(.text+0xd48): undefined reference to `efi'
->> nios2-linux-ld: tas2783-sdw.c:(.text+0xd50): undefined reference to `efi'
+> > Good suggestion, we could indeed check that the registers are NOT in the
+> > range [0,0xBF] for all ports - only the range [0xC0..FF] is allowed for
+> > implementation-defined values. I'll try to cook something up.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> After checking, the following ranges are invalid for codec drivers:
+
+> for address < 0x1000
+> LSB =3D 0x00 - 0xBF standard or reserved
+
+> 0x1800 =E2=80=93 0x1FFF reserved
+> 0x48000000 - 0xFFFFFFFF reserved
+
+That's a huge range...  I think the concern is more the standard ranges
+than the reserved ranges isn't it?  That's the bit that the SoundWire
+core or other generic code will be actively managing.
+
+> is the recommendation to check the regmap_config and its 'yes_ranges'?
+
+> Presumably if the range_min or range_max is within the invalid values
+> above then the configuration can be tagged as problematic in the dmesg
+> log or rejected with an error code?
+
+That would work for drivers that use that, but note that drivers can
+just provide a function here so you pretty much need to probe each
+individual register.  It's done that way because we figured when the
+interface was originally defined that the compiler would probably
+generate better code from a switch statement in most cases than us
+trying to fine tune an algorithm.  Probing like that is going to be
+unsustaniable for the full ranges above but shouldn't be too bad for the
+potentially standard bits, we could guard it with a config option if
+it's noticable.
+
+Another option would be a kselftest that looks at the readable registers
+in debugfs, we do build up a cache of the readable ranges there when the
+access map or register contents are first read.  That's potentially less
+visible but OTOH easier to ask for on review, I was debating asking for
+mixer-test output on all CODEC driver submissions (similar to what the
+media subsystem does with their validation suite).
+
+--yHndlsctv1XDmSuG
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVBAFQACgkQJNaLcl1U
+h9BHYQf5AZkATJTk5YajSzfaGkwvtsde8Po44shkOllZMOUSxo9fruicL4Z1HN69
+EGKaH+ZTowx2MVJ20Ox/z3q8DxoL0Zh1PHxZ8NRlNPRjFvfUwoerBsUw4cU3as1t
+q395xPyGjgiWcItoFUdUZ/ICEUZQmnvt/LZ1srqbt3ilYwkIdvlv1UWwomn59fu9
+upm5dSEK1MFKsctigmYsJsaNNcshJlyNNjJqjUp6AhRnUILOkPQmzkJm6QX0VVX+
+YS/gIGB7Cpnkaqkc7fGIPDcHNpv6TAiP6sTOmuiZohxLaXIxD7Xi762cHI+8OXBE
+L+CGjNOEo/fGrgPKGVgqUaPDTh2ZwA==
+=c9sg
+-----END PGP SIGNATURE-----
+
+--yHndlsctv1XDmSuG--
