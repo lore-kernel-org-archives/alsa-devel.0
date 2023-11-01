@@ -4,88 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 322A4C4332F
-	for <alsa-devel@archiver.kernel.org>; Wed,  1 Nov 2023 02:56:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0D741C4167B
+	for <alsa-devel@archiver.kernel.org>; Wed,  1 Nov 2023 03:14:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 985AC829;
-	Wed,  1 Nov 2023 03:55:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 985AC829
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7CA30829;
+	Wed,  1 Nov 2023 04:13:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7CA30829
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1698807395;
-	bh=+0QQZX4ufmhKKyNTf+FqSEe/lCskBDaNtYRGTteebDM=;
-	h=From:To:CC:Subject:Date:References:In-Reply-To:List-Id:
+	s=default; t=1698808459;
+	bh=pM0oorGug54lY/c2fHGqNnBquIZpI5piHbm5wrZRB1w=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=TNxS0MPKPnndAmfA0i7K1I14O0N0WzNJ2MT/65Cdaiy1Wayi5FMGZN5Cli05dW05k
-	 W9XFS1ujwGlV+PV0BqCXygzp6rnwEAhmbvNzC6jvujNUC+3RxetdLaLC7bYDVsNPCl
-	 AueHEmPySDRxqfEY7tuDYDU+cmxtqE4aU5BZwCg0=
+	b=fHSEI6rlLg6/b3bkaSDnzT7c6bv7TLhzOqIIg92veVzPv7qW0XcqKcWJqWmz/Y0f4
+	 WGmE1bzrSbx0EclsnL5vwHEXko7j09/HXK3Zz62RGJqdsnMz75MvxPxOYmuvfscQ5Z
+	 mhh8WLU4oWFmSXXNelNge/1iZ10/nUQKdcnhkRRo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BBDE5F80290; Wed,  1 Nov 2023 03:55:14 +0100 (CET)
+	id 226CCF8020D; Wed,  1 Nov 2023 04:12:58 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 11DF6F8014B;
-	Wed,  1 Nov 2023 03:55:14 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6B1A3F8020D;
+	Wed,  1 Nov 2023 04:12:57 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4C89BF8020D; Wed,  1 Nov 2023 03:52:53 +0100 (CET)
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	id B98FBF8020D; Wed,  1 Nov 2023 04:12:49 +0100 (CET)
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com
+ [IPv6:2607:f8b0:4864:20::635])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 1BF4EF80166
-	for <alsa-devel@alsa-project.org>; Wed,  1 Nov 2023 03:52:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1BF4EF80166
-X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 3A12qKWI1933200,
- This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
-	by rtits2.realtek.com.tw (8.15.2/2.93/5.92) with ESMTPS id 3A12qKWI1933200
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 1 Nov 2023 10:52:20 +0800
-Received: from RTEXMBS03.realtek.com.tw (172.21.6.96) by
- RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.32; Wed, 1 Nov 2023 10:52:20 +0800
-Received: from RTEXMBS01.realtek.com.tw (172.21.6.94) by
- RTEXMBS03.realtek.com.tw (172.21.6.96) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.7; Wed, 1 Nov 2023 10:52:20 +0800
-Received: from RTEXMBS01.realtek.com.tw ([fe80::9cb8:8d5:b6b3:213b]) by
- RTEXMBS01.realtek.com.tw ([fe80::9cb8:8d5:b6b3:213b%5]) with mapi id
- 15.01.2375.007; Wed, 1 Nov 2023 10:52:20 +0800
-From: Jack Yu <jack.yu@realtek.com>
-To: Mark Brown <broonie@kernel.org>
-CC: "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        "alsa-devel@alsa-project.org"
-	<alsa-devel@alsa-project.org>,
-        "lars@metafoo.de" <lars@metafoo.de>,
-        "Flove(HsinFu)" <flove@realtek.com>,
-        Oder Chiou <oder_chiou@realtek.com>,
-        =?big5?B?U2h1bWluZyBbrVOu0bvKXQ==?= <shumingf@realtek.com>,
-        =?big5?B?RGVyZWsgW6TovHe4cV0=?= <derek.fang@realtek.com>
-Subject: RE: [PATCH] ASoC: rt5682s: Add LDO control for dacref
-Thread-Topic: [PATCH] ASoC: rt5682s: Add LDO control for dacref
-Thread-Index: AdoLnxfzq2sgR5TmTQSKtWXvf3qdiQAHDIaAABwFcPA=
-Date: Wed, 1 Nov 2023 02:52:20 +0000
-Message-ID: <28cf2cfcd7b047519811e201da2c2f9f@realtek.com>
-References: <496805f7ca084e9dbcf7140cbe83ed4b@realtek.com>
- <ad79bd27-5c1f-48b9-b0b5-bb5c48cbd56c@sirena.org.uk>
-In-Reply-To: <ad79bd27-5c1f-48b9-b0b5-bb5c48cbd56c@sirena.org.uk>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-x-originating-ip: [172.22.102.102]
-x-kse-serverinfo: RTEXMBS03.realtek.com.tw, 9
-x-kse-antivirus-attachment-filter-interceptor-info: license violation
-Content-Type: text/plain; charset="big5"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
-Message-ID-Hash: ZLDFTEBSJEXYGHT4KIQNAUGO7VWCYDDW
-X-Message-ID-Hash: ZLDFTEBSJEXYGHT4KIQNAUGO7VWCYDDW
-X-MailFrom: jack.yu@realtek.com
+	by alsa1.perex.cz (Postfix) with ESMTPS id 0751DF80166
+	for <alsa-devel@alsa-project.org>; Wed,  1 Nov 2023 04:12:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0751DF80166
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20230601 header.b=KIPOUaVe
+Received: by mail-pl1-x635.google.com with SMTP id
+ d9443c01a7336-1cc53d0030fso3656635ad.0
+        for <alsa-devel@alsa-project.org>;
+ Tue, 31 Oct 2023 20:12:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698808355; x=1699413155;
+ darn=alsa-project.org;
+        h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=3Cpu8FCcyc2A7F5+NmDvHW8HgcRWKPKesIFO/S6SbPU=;
+        b=KIPOUaVeLspFPiomL+4zyt02FvHZj15Jvcapt/q/54Knvn0G++zPeJorfg3F+k9HxD
+         kxtHi5ogSfJQ/qyh0xNP9cFwJbGGjl79KGFfgM2DvXGZiYHvQvoJUjlhTs89F9PyP9bz
+         qGheaS3n7GGbXQpCN4E/OeYOKpdJg2MNhwFjAn7VnpKMQOtH0jnaR1NnfqIhVBQS4KVR
+         pIpDIyASCafYuhDy34bCGEy/2ISZOfs0hAPIUjQOSMjC+5jwLqvETLzI0pl6ZYkg+wfj
+         tSTJvamxQ6ykqVy4XoNZ/IGrpBssUjZggv62ar4SPfxPbsXOlpnaj7oaL3OKcWIf3yN0
+         Ctfw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698808355; x=1699413155;
+        h=references:in-reply-to:message-id:date:subject:cc:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3Cpu8FCcyc2A7F5+NmDvHW8HgcRWKPKesIFO/S6SbPU=;
+        b=YuSuqIu8d6C4FMjrGj4t9glPGoFn/Yu4WjLT4J6R4pwWDWuNhK0HByaHLyU1kO93YP
+         zy2EUbcvrd72S4wB9yER+2yUu2v364nNgzw+8gF9czGQD7GGt8poRm8a5oSU5OfgZTmh
+         ZgG4vhlYT+RQkInXiUsYagaQ4jwg7qYnisrXg2S6tGRztkO+WebtqJswBBLn4v2zUOYy
+         PjSZfJVpRaXbzFY0JY9xjxbEsxBGE/XCXlLX7ufQaroDr7/mO+nMM5WShCRbAPxj7mYy
+         8G9ykLWVJwrzRiyt6tWpWoDDYCs30hoLwhxni/KjSclPICdXaCiOwmHlYsWnIa1t3O7t
+         Sczg==
+X-Gm-Message-State: AOJu0YwpB5SgQlhkQzU406xAk+eJfwer0A+G3p+94JaB+UpHE2FnH5GM
+	GxwUWx5h9wDCDaTu2ZhmOieX3NQj2xIaUw==
+X-Google-Smtp-Source: 
+ AGHT+IGbolJOALJUQOgcfIzeXGsPJVyfOu1RbcM8idZu5sBMUi3xPlnRx8BtFbTpMl6d645lcjOGjg==
+X-Received: by 2002:a17:902:db11:b0:1c6:362:3553 with SMTP id
+ m17-20020a170902db1100b001c603623553mr5802943plx.31.1698808354886;
+        Tue, 31 Oct 2023 20:12:34 -0700 (PDT)
+Received: from zy-virtual-machine.localdomain ([116.232.53.74])
+        by smtp.gmail.com with ESMTPSA id
+ e18-20020a17090301d200b001cc32f46757sm269022plh.107.2023.10.31.20.12.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 31 Oct 2023 20:12:34 -0700 (PDT)
+From: Zhu Ning <zhuning0077@gmail.com>
+To: alsa-devel@alsa-project.org,
+	broonie@kernel.org
+Cc: tiwai@suse.com,
+	amadeuszx.slawinski@linux.intel.com,
+	yangxiaohua@everest-semi.com,
+	zhuning@everest-semi.com,
+	zhangyi@everest-semi.com
+Subject: RE: [PATCH 2/3] ASoC: codecs: ES8326: Changing initialisation and
+ broadcasting
+Date: Wed,  1 Nov 2023 11:12:31 +0800
+Message-Id: <20231101031231.90879-1-zhuning0077@gmail.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <3efaf177-f9f3-48c7-b5c9-d4530d350c0f@linux.intel.com>
+References: <3efaf177-f9f3-48c7-b5c9-d4530d350c0f@linux.intel.com>
+Message-ID-Hash: JHJZVBZDYI6EIGPNT2DG2G6SMHT32EGN
+X-Message-ID-Hash: JHJZVBZDYI6EIGPNT2DG2G6SMHT32EGN
+X-MailFrom: zhuning0077@gmail.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -97,7 +109,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZLDFTEBSJEXYGHT4KIQNAUGO7VWCYDDW/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JHJZVBZDYI6EIGPNT2DG2G6SMHT32EGN/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -106,24 +118,18 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBNYXJrIEJyb3duIDxicm9vbmll
-QGtlcm5lbC5vcmc+DQo+IFNlbnQ6IFR1ZXNkYXksIE9jdG9iZXIgMzEsIDIwMjMgOTozMCBQTQ0K
-PiBUbzogSmFjayBZdSA8amFjay55dUByZWFsdGVrLmNvbT4NCj4gQ2M6IGxnaXJkd29vZEBnbWFp
-bC5jb207IGFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZzsgbGFyc0BtZXRhZm9vLmRlOw0KPiBG
-bG92ZShIc2luRnUpIDxmbG92ZUByZWFsdGVrLmNvbT47IE9kZXIgQ2hpb3UgPG9kZXJfY2hpb3VA
-cmVhbHRlay5jb20+Ow0KPiBTaHVtaW5nIFutU67Ru8pdIDxzaHVtaW5nZkByZWFsdGVrLmNvbT47
-IERlcmVrIFuk6Lx3uHFdDQo+IDxkZXJlay5mYW5nQHJlYWx0ZWsuY29tPg0KPiBTdWJqZWN0OiBS
-ZTogW1BBVENIXSBBU29DOiBydDU2ODJzOiBBZGQgTERPIGNvbnRyb2wgZm9yIGRhY3JlZg0KPiAN
-Cj4gT24gVHVlLCBPY3QgMzEsIDIwMjMgYXQgMDI6MDg6MTBBTSArMDAwMCwgSmFjayBZdSB3cm90
-ZToNCj4gDQo+ID4gKy8qIExETyBvdXRwdXQgc2VsZWN0ICovDQo+ID4gK3N0YXRpYyBjb25zdCBj
-aGFyICogY29uc3QgcnQ1Njgyc19sZG9fb3V0cHV0X3NlbGVjdFtdID0gew0KPiA+ICsJIjEuNjA3
-ViIsICIxLjVWIiwgIjEuNDA2ViIsICIxLjczMVYiDQo+ID4gK307DQo+IA0KPiBUaGlzIGZlZWxz
-IGxpa2Ugc29tZXRoaW5nIHRoYXQgbWlnaHQgYmUgYSBiZXR0ZXIgZml0IGZvciBmaXJtd2FyZSBi
-YXNlZA0KPiBzZWxlY3Rpb24gLSBob3cgd291bGQgc29tZW9uZSBzZXQgYSB2YWx1ZSBmb3IgdGhp
-cywgYW5kIHdoeSBtaWdodCBpdCB2YXJ5IGF0DQo+IHJ1bnRpbWU/ICBJJ20gYSBiaXQgdW5jbGVh
-ciBhcyB0byB3aGF0IHRoZSBjb250cm9sIGRvZXMgc28gdGhpcyBtaWdodCBiZSB0aGUNCj4gYmVz
-dCB0aGluZyBidXQgcGVyaGFwcyBub3QuDQoNClRoaXMgY29udHJvbCBpcyBhZGRlZCBmb3Igc3Bl
-Y2lmaWMgY3VzdG9tZXJzLCBpdCB3b24ndCBiZSBjaGFuZ2VkIGR1cmluZyBydW50aW1lLCANCmJ1
-dCB3aWxsIGJlIHNldCBpbiB0aGUgaW5pdGlhbGl6YXRpb24gcmVnYXJkaW5nIHRvIGRpZmZlcmVu
-dCBjdXN0b21lcnMsIA0KdGhleSdsbCBzZXQgaXQgaW4gdGhlaXIgb3duIHVjbSBhbmQgaGF2ZSBh
-bHJlYWR5IGJlZW4gdmVyaWZpZWQgYnkgY3VzdG9tZXJzLg0K
+> > New chip versions require new initialisation and playback processes.
+> > Changing the initialisation and playback process for better results
+> Are the old chip versions in production systems or were they just in
+> prototypes? If end users might have the old chip versions do we need to
+> have runtime detection of which chip version is in use or are the old
+> chip versions going to work well with the new sequences? If there
+> aren't end users or if their systems will continue to work well it's
+> fine but the above makes it sound like older chips might need the older
+> sequences.
+> Please do try to keep your commit messages wrapped at less than 80
+> columns as covered in submitting-patches.rst.
+
+The old chip versions are in production systems.The old chip versions 
+are going to work well with the new sequences.We've tested this with 
+version_v0 and version_v3 chips under the new sequence and they both pass.
