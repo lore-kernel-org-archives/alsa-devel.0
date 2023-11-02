@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9D6A7C4332F
-	for <alsa-devel@archiver.kernel.org>; Thu,  2 Nov 2023 12:49:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ABC84C4332F
+	for <alsa-devel@archiver.kernel.org>; Thu,  2 Nov 2023 12:49:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8CFF4A4B;
-	Thu,  2 Nov 2023 13:48:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8CFF4A4B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7CB75741;
+	Thu,  2 Nov 2023 13:48:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7CB75741
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1698929346;
-	bh=pvx2Tsy/xYO/RWmsBHWxJQY1Zl9TLuaqfX0Rk0bqjOM=;
+	s=default; t=1698929359;
+	bh=SmW1+mxdDXdxsDvM6/CrA9dDmVY6nBagCWTEsBBjzoI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=vKFgn1ctGkuR5ELol4oHslQ+3vq/yayy+1kyC2qtkaQ8XAvdsSTK419g6JqcOLXsK
-	 IHL7+QVFSUm2+ZogsS939J7I0EguD+Bk4RMQsbhEKgIJIhw/8HZlpIUzveLs/fd7nV
-	 haXRQwSJwvuEKX/uJOIRccy1BxJqJKFS1Zm/Irjc=
+	b=m9GuKSAjPSNCxqA/38AwAMoWdPu/inTuwFNbOqfGCS6Q6KqoSL38bt4VEm1BcQT2K
+	 aymYgit2gy0jMY2zpcoK6JHd0XIaugPwP4g+aR09Um2naP6t6P/yIKVeuwgObzbb5Z
+	 F4mfWYFHUMeu+5h94QXZ31aUQPPv12I+TJ2ypvd8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 56CE9F8057C; Thu,  2 Nov 2023 13:47:24 +0100 (CET)
+	id A2609F80579; Thu,  2 Nov 2023 13:47:26 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3B13EF80578;
-	Thu,  2 Nov 2023 13:47:24 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 70927F80580;
+	Thu,  2 Nov 2023 13:47:25 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BDF1DF8003C; Thu,  2 Nov 2023 13:47:16 +0100 (CET)
+	id 79E91F80558; Thu,  2 Nov 2023 13:47:17 +0100 (CET)
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 66771F8003C
-	for <alsa-devel@alsa-project.org>; Thu,  2 Nov 2023 13:47:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 66771F8003C
+	by alsa1.perex.cz (Postfix) with ESMTPS id 63EFCF80494
+	for <alsa-devel@alsa-project.org>; Thu,  2 Nov 2023 13:47:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 63EFCF80494
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=iSYaZj+V
+ header.s=Intel header.b=cikBBO+h
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698929230; x=1730465230;
+  t=1698929232; x=1730465232;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=pvx2Tsy/xYO/RWmsBHWxJQY1Zl9TLuaqfX0Rk0bqjOM=;
-  b=iSYaZj+VIGzIfzuWelglZLH7sPgfSJhKTYM2Ok97QzkeR+ddVlegDS6J
-   Lh4A7f5qG8VykGMaxjZmEZsawKjEFin8DH3lFf4SaimZE0RypPpPwZKs2
-   BgfcuMm1v1fkJKvcGTU9cF7DRNpFZVkMhttfpq4aoRXv+1qe1/tVXljl/
-   Tz7JSx0U5KSK6WPbUkp/jEfuQsCz5mGhpWgoYE3ASx2F69SUWycyP+D95
-   Ws6rMFBhSEgUDtvKljV2CMFpFoV68MU2aXwKS9653iqxfHmKVQ3EjX++q
-   gP4vOnKxBYD/zj6atGN8ugE8KZ0ZHT1WKk/oRFqcS5PxeU6kxXo8BMAWK
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10881"; a="7343473"
+  bh=SmW1+mxdDXdxsDvM6/CrA9dDmVY6nBagCWTEsBBjzoI=;
+  b=cikBBO+hlNiN2lHRjom34mVqmDu89g5lkl2PKQNiw9wObzI/eWGMpk5f
+   EL8xFdXQKO9943fm4XGsvaaa0GdhbdRx0ANmPUpoGbSm8FY4YqFSDiY1q
+   Vo+f6To2OUuicbnhNRPWkQu5cj48Wu97+kNRcg+gzz1o4DeYk7gioV5fb
+   lovXZsjRYP/IDlqLpESqozVyU5uGpH2GrD2rHPLkPi2zmvjuw8lfwclz+
+   qYG4Y7YBB+4Mr1Y7n1ZqFTQ1nCvbYDqrM+W0u6HNSrhQGtvQMMq6QzyQI
+   ixT3mmI/VCLSGz9TvSAL4iUMO7L4DAc5PyzO93+0kkC0h93aDdTqRNs6U
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10881"; a="7343484"
 X-IronPort-AV: E=Sophos;i="6.03,271,1694761200";
-   d="scan'208";a="7343473"
+   d="scan'208";a="7343484"
 Received: from fmsmga006.fm.intel.com ([10.253.24.20])
   by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Nov 2023 05:47:05 -0700
+ 02 Nov 2023 05:47:09 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10881"; a="1008454725"
+X-IronPort-AV: E=McAfee;i="6600,9927,10881"; a="1008454734"
 X-IronPort-AV: E=Sophos;i="6.03,271,1694761200";
-   d="scan'208";a="1008454725"
+   d="scan'208";a="1008454734"
 Received: from dev2 (HELO DEV2.igk.intel.com) ([10.237.148.94])
-  by fmsmga006.fm.intel.com with ESMTP; 02 Nov 2023 05:47:02 -0700
+  by fmsmga006.fm.intel.com with ESMTP; 02 Nov 2023 05:47:07 -0700
 From: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
  <amadeuszx.slawinski@linux.intel.com>
 To: Mark Brown <broonie@kernel.org>
@@ -74,17 +74,17 @@ Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
 	Krzysztof Kozlowski <krzk@kernel.org>,
 	=?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
  <amadeuszx.slawinski@linux.intel.com>
-Subject: [PATCH 01/17] ASoC: Intel: avs: da7219: Add proper id_table
-Date: Thu,  2 Nov 2023 13:46:56 +0100
-Message-Id: <20231102124712.2549327-2-amadeuszx.slawinski@linux.intel.com>
+Subject: [PATCH 03/17] ASoC: Intel: avs: es8336: Add proper id_table
+Date: Thu,  2 Nov 2023 13:46:58 +0100
+Message-Id: <20231102124712.2549327-4-amadeuszx.slawinski@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231102124712.2549327-1-amadeuszx.slawinski@linux.intel.com>
 References: <20231102124712.2549327-1-amadeuszx.slawinski@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: TW5DIRTAWYF4G5R6ND5XKGMYWEMXZB26
-X-Message-ID-Hash: TW5DIRTAWYF4G5R6ND5XKGMYWEMXZB26
+Message-ID-Hash: HVNCAUDFBRSJVZ2IOAFDSTTOH37MGVA2
+X-Message-ID-Hash: HVNCAUDFBRSJVZ2IOAFDSTTOH37MGVA2
 X-MailFrom: amadeuszx.slawinski@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -97,7 +97,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TW5DIRTAWYF4G5R6ND5XKGMYWEMXZB26/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HVNCAUDFBRSJVZ2IOAFDSTTOH37MGVA2/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -112,39 +112,38 @@ Suggested-by: Krzysztof Kozlowski <krzk@kernel.org>
 Reviewed-by: Cezary Rojewski <cezary.rojewski@intel.com>
 Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 ---
- sound/soc/intel/avs/boards/da7219.c | 10 +++++++++-
+ sound/soc/intel/avs/boards/es8336.c | 10 +++++++++-
  1 file changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/avs/boards/da7219.c b/sound/soc/intel/avs/boards/da7219.c
-index 6060894954df..c018f84fe025 100644
---- a/sound/soc/intel/avs/boards/da7219.c
-+++ b/sound/soc/intel/avs/boards/da7219.c
-@@ -277,16 +277,24 @@ static int avs_da7219_probe(struct platform_device *pdev)
+diff --git a/sound/soc/intel/avs/boards/es8336.c b/sound/soc/intel/avs/boards/es8336.c
+index f972ef64d284..1090082e7d5b 100644
+--- a/sound/soc/intel/avs/boards/es8336.c
++++ b/sound/soc/intel/avs/boards/es8336.c
+@@ -307,15 +307,23 @@ static int avs_es8336_probe(struct platform_device *pdev)
  	return devm_snd_soc_register_card(dev, card);
  }
  
-+static const struct platform_device_id avs_da7219_driver_ids[] = {
++static const struct platform_device_id avs_es8336_driver_ids[] = {
 +	{
-+		.name = "avs_da7219",
++		.name = "avs_es8336",
 +	},
 +	{},
 +};
-+MODULE_DEVICE_TABLE(platform, avs_da7219_driver_ids);
++MODULE_DEVICE_TABLE(platform, avs_es8336_driver_ids);
 +
- static struct platform_driver avs_da7219_driver = {
- 	.probe = avs_da7219_probe,
+ static struct platform_driver avs_es8336_driver = {
+ 	.probe = avs_es8336_probe,
  	.driver = {
- 		.name = "avs_da7219",
+ 		.name = "avs_es8336",
  		.pm = &snd_soc_pm_ops,
  	},
-+	.id_table = avs_da7219_driver_ids,
++	.id_table = avs_es8336_driver_ids,
  };
  
- module_platform_driver(avs_da7219_driver);
+ module_platform_driver(avs_es8336_driver);
  
- MODULE_AUTHOR("Cezary Rojewski <cezary.rojewski@intel.com>");
  MODULE_LICENSE("GPL");
--MODULE_ALIAS("platform:avs_da7219");
+-MODULE_ALIAS("platform:avs_es8336");
 -- 
 2.34.1
 
