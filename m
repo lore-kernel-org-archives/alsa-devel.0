@@ -4,136 +4,154 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BC819C4167B
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Nov 2023 16:30:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 11A21C4332F
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Nov 2023 16:31:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0B1B9E7E;
-	Fri,  3 Nov 2023 17:29:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0B1B9E7E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3B80FE81;
+	Fri,  3 Nov 2023 17:30:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3B80FE81
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1699029041;
-	bh=bsX/h5msFTGfIK/3nHBvj1OVUmL34ALaWs8kCTn0dtE=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=mxXIasuTKevQrg+TIgrNtca6FxYkcFJq3rV4yuWCojNMZCTJutnPbzo8OdlcfRU+c
-	 8FIII4U1EoUd5mgodvPoGMHUuYoGcXrdBjGVGaBYp2iavm+OLkbs/ycUK9l0A2jKNK
-	 gNCGdOo1eE95le0a6XbPHQjp4fDNhLVw25G/EMaA=
+	s=default; t=1699029058;
+	bh=B4f9gfNCb0R3FOBzKEiBOAlW2H3Az9cyoly0CjbDIQA=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=MdwBu30ZGmuvliTIvsFsc4WOgoLaaOROlY3h04apBoknJW7TYDlCKF34NeEbijEB4
+	 BDT1LaYFqsQFWwm4AmCOrP1i8XnLpTul3ZTlqen42XWtqceysiVvpP03LgWgoF/xmF
+	 9+AydgzMrjPuWJgdpqAaY5U5F393f8cCHw7adzfY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E59DFF80606; Fri,  3 Nov 2023 17:27:14 +0100 (CET)
+	id E163BF80614; Fri,  3 Nov 2023 17:27:18 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 077AFF80602;
-	Fri,  3 Nov 2023 17:27:14 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 484BAF8060E;
+	Fri,  3 Nov 2023 17:27:18 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 59239F8020D; Thu,  2 Nov 2023 16:21:13 +0100 (CET)
-Received: from mx.skole.hr (mx1.hosting.skole.hr [161.53.165.185])
+	id 1D7DBF80290; Thu,  2 Nov 2023 20:03:58 +0100 (CET)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id AC24EF80425
-	for <alsa-devel@alsa-project.org>; Thu,  2 Nov 2023 16:21:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AC24EF80425
-Received: from mx1.hosting.skole.hr (localhost.localdomain [127.0.0.1])
-	by mx.skole.hr (mx.skole.hr) with ESMTP id 3242D83416;
-	Thu,  2 Nov 2023 16:21:02 +0100 (CET)
-From: =?UTF-8?q?Duje=20Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
-To: Michael Turquette <mturquette@baylibre.com>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Tony Lindgren <tony@atomide.com>,
-	=?UTF-8?q?Duje=20Mihanovi=C4=87?= <duje.mihanovic@skole.hr>,
-	Daniel Mack <daniel@zonque.org>,
-	Haojian Zhuang <haojian.zhuang@gmail.com>,
-	Robert Jarzmik <robert.jarzmik@free.fr>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	Leo Yan <leoy@marvell.com>,
-	Zhangfei Gao <zhangfei.gao@marvell.com>,
-	Lubomir Rintel <lkundrak@v3.sk>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Kees Cook <keescook@chromium.org>,
-	Tony Luck <tony.luck@intel.com>,
-	"Guilherme G . Piccoli" <gpiccoli@igalia.com>
-Cc: linux-clk@vger.kernel.org,
+	by alsa1.perex.cz (Postfix) with ESMTPS id DB0E7F8014B
+	for <alsa-devel@alsa-project.org>; Thu,  2 Nov 2023 20:03:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DB0E7F8014B
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (1024-bit key,
+ unprotected) header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256
+ header.s=mimecast20190719 header.b=HBJ4spvI
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1698951806;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=m+72lU2is0RjPg3Ej03EzBiDP42Tb65So4vdSCepZ9s=;
+	b=HBJ4spvI5WLl3FTgKWfkN4GE+RJNqyZDS91rnR9xdlYHlZLHBmuiG9YshKPQRVSwRp7YUN
+	phrm1RiyGhorPyUskqvUs8GjukgXCsh++87VNtZZMsEAZz5JZs2/nizZh2/mri9BfQh/Kx
+	7bJQrlQLGXnuxmMqaZ+5n93O9O1eBIs=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-166-DYCt1PSNO72-B89UGxujdA-1; Thu, 02 Nov 2023 15:03:23 -0400
+X-MC-Unique: DYCt1PSNO72-B89UGxujdA-1
+Received: by mail-wr1-f69.google.com with SMTP id
+ ffacd0b85a97d-32fabf96aa5so168095f8f.0
+        for <alsa-devel@alsa-project.org>;
+ Thu, 02 Nov 2023 12:03:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698951802; x=1699556602;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=m+72lU2is0RjPg3Ej03EzBiDP42Tb65So4vdSCepZ9s=;
+        b=GStM8BErItPR5y85rDFjKiOzpIXHotVlSwB/Mf1jhBYi8yYLnoBSVIOyOUe22Ey9fi
+         hMuK2pdVoaJVGy7BLFUVGh/hysYnJnvpui8U2SB8cXjBWDvDpGTzCMNsKFEKMZ6vrNBK
+         gnjVs24KUced4bpMzPnXepzOTlQvEHUsBvVlw1n1En8+zphe9ckb76C9h6KEeg4nMoe4
+         GShZFcQSppjvUczrv14yuWobJoQbfnUDYco7hJLggwor2H+dtDL1P2luV+gb1ptIOmxi
+         BGaw4lAMD/SZqdGO3dGhl7RigPDoL+I8bF+SuuFBDiDKHSkjFCrzqt83ci0J+9Oy8+i/
+         jnNg==
+X-Gm-Message-State: AOJu0YyLQAc6U+mBn5xcZhjjCMF5JpTvDRiCSkRjgUKQA4GVFoNqIVEX
+	s//IK5fEC5+C/hbkK54sBHePN4RD3RQorAf3dR5E54zcZv+GemcfKfyfuqAdAqss8zxuC112L3N
+	Jempb8Zz2rf2Tc4wp4fN5bzk=
+X-Received: by 2002:a5d:5c11:0:b0:32f:8a45:93a7 with SMTP id
+ cc17-20020a5d5c11000000b0032f8a4593a7mr9124226wrb.0.1698951802590;
+        Thu, 02 Nov 2023 12:03:22 -0700 (PDT)
+X-Google-Smtp-Source: 
+ AGHT+IFUPZRT8I8iw/CcEcUptKDDx7966nYE1/uugb6+QE4ZoKiWbmft1KG9gyqtzE1rFEHqmKpeCw==
+X-Received: by 2002:a5d:5c11:0:b0:32f:8a45:93a7 with SMTP id
+ cc17-20020a5d5c11000000b0032f8a4593a7mr9124209wrb.0.1698951802240;
+        Thu, 02 Nov 2023 12:03:22 -0700 (PDT)
+Received: from pstanner-thinkpadt14sgen1.remote.csb
+ ([2001:9e8:32c5:d600:227b:d2ff:fe26:2a7a])
+        by smtp.gmail.com with ESMTPSA id
+ l22-20020adfa396000000b0032f7d1e2c7csm62660wrb.95.2023.11.02.12.03.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Nov 2023 12:03:21 -0700 (PDT)
+From: Philipp Stanner <pstanner@redhat.com>
+To: Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org,
 	linux-kernel@vger.kernel.org,
-	linux-gpio@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-omap@vger.kernel.org,
-	alsa-devel@alsa-project.org,
-	linux-hardening@vger.kernel.org,
-	phone-devel@vger.kernel.org,
-	~postmarketos/upstreaming@lists.sr.ht,
-	Karel Balej <balejk@matfyz.cz>
-Subject: [PATCH v7 10/10] MAINTAINERS: add myself as Marvell PXA1908
- maintainer
-Date: Thu,  2 Nov 2023 16:20:33 +0100
-Message-ID: <20231102152033.5511-5-duje.mihanovic@skole.hr>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231102152033.5511-1-duje.mihanovic@skole.hr>
-References: <20231102152033.5511-1-duje.mihanovic@skole.hr>
+	Philipp Stanner <pstanner@redhat.com>,
+	Dave Airlie <airlied@redhat.com>
+Subject: [PATCH] sound/isa/wavefront: copy userspace array safely
+Date: Thu,  2 Nov 2023 20:03:10 +0100
+Message-ID: <20231102190309.50891-2-pstanner@redhat.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
 Content-Transfer-Encoding: 8bit
-X-MailFrom: duje.mihanovic@skole.hr
+Content-Type: text/plain; charset="US-ASCII"; x-default=true
+X-MailFrom: pstanner@redhat.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: J4HZGSESWPX2LEIT54LEQMQUPUYTPL54
-X-Message-ID-Hash: J4HZGSESWPX2LEIT54LEQMQUPUYTPL54
+Message-ID-Hash: CUYXW7AWWZQR6X7I5UHSRD5IR4EM3PPE
+X-Message-ID-Hash: CUYXW7AWWZQR6X7I5UHSRD5IR4EM3PPE
 X-Mailman-Approved-At: Fri, 03 Nov 2023 16:27:07 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/J4HZGSESWPX2LEIT54LEQMQUPUYTPL54/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+Archived-At: <>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add myself as the maintainer for Marvell PXA1908 SoC support.
+wavefront_fx.c utilizes memdup_user() to copy a userspace array. This
+does not check for an overflow.
 
-Signed-off-by: Duje Mihanović <duje.mihanovic@skole.hr>
+Use the new wrapper memdup_array_user() to copy the array more safely.
+
+Suggested-by: Dave Airlie <airlied@redhat.com>
+Signed-off-by: Philipp Stanner <pstanner@redhat.com>
 ---
- MAINTAINERS | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ sound/isa/wavefront/wavefront_fx.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 2894f0777537..092e73d9de90 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -2331,6 +2331,15 @@ F:	drivers/irqchip/irq-mvebu-*
- F:	drivers/pinctrl/mvebu/
- F:	drivers/rtc/rtc-armada38x.c
- 
-+ARM/Marvell PXA1908 SOC support
-+M:	Duje Mihanović <duje.mihanovic@skole.hr>
-+L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
-+S:	Maintained
-+T:	git https://gitlab.com/LegoLivesMatter/linux
-+F:	arch/arm64/boot/dts/marvell/pxa1908*
-+F:	drivers/clk/mmp/clk-of-pxa1908.c
-+F:	include/dt-bindings/clock/marvell,pxa1908.h
-+
- ARM/Mediatek RTC DRIVER
- M:	Eddie Huang <eddie.huang@mediatek.com>
- M:	Sean Wang <sean.wang@mediatek.com>
+diff --git a/sound/isa/wavefront/wavefront_fx.c b/sound/isa/wavefront/wavefront_fx.c
+index 3c21324b2a0e..0273b7dfaf12 100644
+--- a/sound/isa/wavefront/wavefront_fx.c
++++ b/sound/isa/wavefront/wavefront_fx.c
+@@ -191,9 +191,9 @@ snd_wavefront_fx_ioctl (struct snd_hwdep *sdev, struct file *file,
+ 					    "> 512 bytes to FX\n");
+ 				return -EIO;
+ 			}
+-			page_data = memdup_user((unsigned char __user *)
+-						r.data[3],
+-						r.data[2] * sizeof(short));
++			page_data = memdup_array_user((unsigned char __user *)
++						      r.data[3],
++						      r.data[2], sizeof(short));
+ 			if (IS_ERR(page_data))
+ 				return PTR_ERR(page_data);
+ 			pd = page_data;
 -- 
-2.42.0
-
+2.41.0
 
