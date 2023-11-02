@@ -4,39 +4,40 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AE021C4332F
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Nov 2023 16:29:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 907C6C4167D
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Nov 2023 16:30:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D3AE8AE8;
-	Fri,  3 Nov 2023 17:28:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D3AE8AE8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 717EDA4D;
+	Fri,  3 Nov 2023 17:29:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 717EDA4D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1699028979;
-	bh=sQ38kshLYACTrXrWVRjogfck8npKBiMFbq8d63/p4PA=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=HlCD5TD5TghjoIi2ZxGeos59bM8Eb9PQ/VbEGDC3h3/qJWmUNkLxRRE3PPOzM0QUC
-	 7Qx5sRct8IrFq/+Djz7bhxQPV5C3nzzu9V11gmNd+C1rlOZ3C5t9ppASPySfgghpPk
-	 lRO47W6hSaTf3jZX02mLNDx6A5XrRL7nMM+PMrsw=
+	s=default; t=1699028999;
+	bh=KOD7+UYGXJbJmBE9EFpA9hqL+HhKsFz2rAItTqguz6k=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=kTkX2Bn8/qb7mEm9WMufnygjIhyaFesadh/WiVhgbAfJOfJ6TycskeCiql7+E+4RJ
+	 VlKOUN+7p6didOAeoMOlxwV4xvANEJ2FC0lorjfhmcYp9Uq8SOsUJK0ynXGX4KjCFb
+	 XXkkJHCeQm6GF71BD+HP1d94Dat1yFQr5pzJ+MWc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7B2B4F805F0; Fri,  3 Nov 2023 17:26:37 +0100 (CET)
+	id 545A2F805F2; Fri,  3 Nov 2023 17:26:40 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id ABE9CF805E9;
-	Fri,  3 Nov 2023 17:26:36 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 64223F8055C;
+	Fri,  3 Nov 2023 17:26:39 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 93B42F80290; Thu,  2 Nov 2023 16:20:54 +0100 (CET)
-Received: from mx.skole.hr (mx1.hosting.skole.hr [161.53.165.185])
+	id AF1A9F80290; Thu,  2 Nov 2023 16:20:56 +0100 (CET)
+Received: from mx.skole.hr (mx2.hosting.skole.hr [161.53.165.186])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id BC0BAF80152
-	for <alsa-devel@alsa-project.org>; Thu,  2 Nov 2023 16:20:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BC0BAF80152
-Received: from mx1.hosting.skole.hr (localhost.localdomain [127.0.0.1])
-	by mx.skole.hr (mx.skole.hr) with ESMTP id A56FD83FE9;
-	Thu,  2 Nov 2023 16:20:48 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTPS id A2B54F8014B
+	for <alsa-devel@alsa-project.org>; Thu,  2 Nov 2023 16:20:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A2B54F8014B
+Received: from mx2.hosting.skole.hr (localhost.localdomain [127.0.0.1])
+	by mx.skole.hr (mx.skole.hr) with ESMTP id 6F387848E4;
+	Thu,  2 Nov 2023 16:20:53 +0100 (CET)
 From: =?UTF-8?q?Duje=20Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
 To: Michael Turquette <mturquette@baylibre.com>,
 	Stephen Boyd <sboyd@kernel.org>,
@@ -72,11 +73,13 @@ Cc: linux-clk@vger.kernel.org,
 	phone-devel@vger.kernel.org,
 	~postmarketos/upstreaming@lists.sr.ht,
 	Karel Balej <balejk@matfyz.cz>,
-	kernel test robot <lkp@intel.com>
-Subject: [PATCH v7 06/10] ASoC: pxa: Suppress SSPA on ARM64
-Date: Thu,  2 Nov 2023 16:20:29 +0100
-Message-ID: <20231102152033.5511-1-duje.mihanovic@skole.hr>
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH v7 07/10] dt-bindings: marvell: Document PXA1908 SoC
+Date: Thu,  2 Nov 2023 16:20:30 +0100
+Message-ID: <20231102152033.5511-2-duje.mihanovic@skole.hr>
 X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20231102152033.5511-1-duje.mihanovic@skole.hr>
+References: <20231102152033.5511-1-duje.mihanovic@skole.hr>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -86,47 +89,45 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: AMTEZJSICP43HUCT27PLF5VJGIES7BOA
-X-Message-ID-Hash: AMTEZJSICP43HUCT27PLF5VJGIES7BOA
+Message-ID-Hash: 2KQXK3XXTQILDUY6CNQ57SNXKKZCNL2C
+X-Message-ID-Hash: 2KQXK3XXTQILDUY6CNQ57SNXKKZCNL2C
 X-Mailman-Approved-At: Fri, 03 Nov 2023 16:26:08 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AMTEZJSICP43HUCT27PLF5VJGIES7BOA/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+Archived-At: <>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The SSPA driver currently seems to generate ARM32 assembly, which causes
-build errors when building a kernel for an ARM64 ARCH_MMP platform.
+Add dt binding for the Marvell PXA1908 SoC.
 
-Fixes: fa375d42f0e5 ("ASoC: mmp: add sspa support")
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202310230518.zs9Qpg3j-lkp@intel.com/
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Signed-off-by: Duje Mihanović <duje.mihanovic@skole.hr>
 ---
- sound/soc/pxa/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ Documentation/devicetree/bindings/arm/mrvl/mrvl.yaml | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/sound/soc/pxa/Kconfig b/sound/soc/pxa/Kconfig
-index e6bca9070953..8ebce669e4a7 100644
---- a/sound/soc/pxa/Kconfig
-+++ b/sound/soc/pxa/Kconfig
-@@ -33,7 +33,7 @@ config SND_PXA_SOC_SSP
+diff --git a/Documentation/devicetree/bindings/arm/mrvl/mrvl.yaml b/Documentation/devicetree/bindings/arm/mrvl/mrvl.yaml
+index 4c43eaf3632e..f73bb8ec3a1a 100644
+--- a/Documentation/devicetree/bindings/arm/mrvl/mrvl.yaml
++++ b/Documentation/devicetree/bindings/arm/mrvl/mrvl.yaml
+@@ -35,6 +35,11 @@ properties:
+           - enum:
+               - dell,wyse-ariel
+           - const: marvell,mmp3
++      - description: PXA1908 based boards
++        items:
++          - enum:
++              - samsung,coreprimevelte
++          - const: marvell,pxa1908
  
- config SND_MMP_SOC_SSPA
- 	tristate "SoC Audio via MMP SSPA ports"
--	depends on ARCH_MMP
-+	depends on ARCH_MMP && ARM
- 	select SND_SOC_GENERIC_DMAENGINE_PCM
- 	select SND_ARM
- 	help
+ additionalProperties: true
+ 
 -- 
 2.42.0
 
