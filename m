@@ -4,120 +4,105 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 812DBC4332F
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Nov 2023 16:27:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2C91C4332F
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Nov 2023 16:28:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 64BD2ED7;
-	Fri,  3 Nov 2023 17:27:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 64BD2ED7
+	by alsa0.perex.cz (Postfix) with ESMTPS id D65FAEEE;
+	Fri,  3 Nov 2023 17:27:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D65FAEEE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1699028872;
-	bh=F7p790G6tsjaA0g2cv/3tmRS63mAasG0hm45lFjpIYM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1699028879;
+	bh=gDz9DNjmf/NtG1HPMa9yEQN3HSBfRLiYwJNjSo2avOc=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=qN2aLLldkL+oxW307aVI7vXp1fouJwQLTfFmJqQLsj3izoIS2efhhYq3i4p5boW12
-	 TlqOSQ3QZcZEDSyZ6kXnH6o5VxttTVUVT9IKCSJnCk1Q4faF42x5j5Pa1jgEOazg48
-	 kmr7Los/Y3u/7g4gq8VgBJPzD9EBrc8i7VogVKFI=
+	b=spzE7iDfOTCeErTIsOmmnCrfTQ9+ixb7U3yu5HYA/grYEOMFRYuRQD09vNndDfG35
+	 zwwZTSeEu1WvIWe5JTBjTvQEUKU0YxD8RYeEZUdD4WXVIzKdw5UZYqK2tQmLTrdvlj
+	 r7dMRyXhx9zO0Zfog+j9nO4xyOPCpc4ayIVJShDw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3AA38F80579; Fri,  3 Nov 2023 17:26:15 +0100 (CET)
+	id DFC2CF8059F; Fri,  3 Nov 2023 17:26:18 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 80687F80571;
-	Fri,  3 Nov 2023 17:26:14 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5DD4FF8057C;
+	Fri,  3 Nov 2023 17:26:18 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1BF53F80152; Wed,  1 Nov 2023 08:30:17 +0100 (CET)
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com
- [IPv6:2a00:1450:4864:20::62a])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	id 75976F80558; Thu,  2 Nov 2023 16:12:15 +0100 (CET)
+Received: from mx.skole.hr (mx1.hosting.skole.hr [161.53.165.185])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D195FF80152
-	for <alsa-devel@alsa-project.org>; Wed,  1 Nov 2023 08:30:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D195FF80152
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=lo4R69Yu
-Received: by mail-ej1-x62a.google.com with SMTP id
- a640c23a62f3a-9d224dca585so559512466b.1
-        for <alsa-devel@alsa-project.org>;
- Wed, 01 Nov 2023 00:30:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698823806; x=1699428606;
- darn=alsa-project.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=CW/G19QSts/AS5IHtohcgFR0rmH2Gai+NgYGEXSnqko=;
-        b=lo4R69YulW7LcK1W/cPPiX/OMs5YEAgcNZb3YbH1QMLgKhxD+NpRttgagOXqqNdWNG
-         7uDX2116KxrthF0FG+2Io57Wg8dM/YCBx/G/sxK9V1rjErGI7YTKkM9VkyP6knef05Qg
-         KLCQe5QUI/h73cHkqP7BV8FHxLaThtZFnYp53/Y1jB0R5tndRIjKYS28WGH4HTkNdWbg
-         1Az68uSSUf62PSI1JLH8Ki1sTS/e5ct3jCtbOSFiCRcft4tJbNIgL/FcV+5v/h475O4O
-         ioJDIuRRia3rIAmZUzQuUmeKKSW7kfHZ1z5NelLh5dTypmj7KZfDHCn/mPkzY+/lpSKb
-         5zXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698823806; x=1699428606;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CW/G19QSts/AS5IHtohcgFR0rmH2Gai+NgYGEXSnqko=;
-        b=rqoCamzT/qFPbEdBSG3sOiBzKuwoO5T6qRhGrALrocRweWo2NkAuXoU/zeVXilKbm3
-         ROF68a+xCksMHvGu3saa4XLeyE6xW0eTyfuw9RHDJ508KydNsYQEyQVChOdMqYFTkKfM
-         HktgQ/tdRclcBvojZ951/BY1NStAlLAjxeoqX/ZRnnOiMsTFw4pWpTeynNeRiqYoGEUz
-         NwPJhKz9rU+UHZeYGwy2MJhzrbM76a60mvba0oKg+LYCyUy1YHq48nfZzziZPex7YgK/
-         xo/FdvooLBJc3yFU+YfU5nU3I0V0OkJRbtP6dFpn03NRX6EUV44s02ckyU4Ud3TPGajj
-         5i5A==
-X-Gm-Message-State: AOJu0YwLDZqqW/THHv3JaZedjb1lqCXEWtNm1lrBQm6oN1ZDN5PfE5TI
-	QCJCmvDiLHxVKwrZ1jEtiiQvYg==
-X-Google-Smtp-Source: 
- AGHT+IHn5OBLKdIBm9gYlbbPmKG0d7lUTKDYbGWt1aIcMqZvCFT1JsaADE8XNZhwlrSvfLYDhRJBlA==
-X-Received: by 2002:a17:907:7f9e:b0:99c:6692:7f76 with SMTP id
- qk30-20020a1709077f9e00b0099c66927f76mr1413901ejc.16.1698823805746;
-        Wed, 01 Nov 2023 00:30:05 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id
- v9-20020a17090606c900b0098f33157e7dsm2044256ejb.82.2023.11.01.00.30.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Nov 2023 00:30:05 -0700 (PDT)
-Date: Wed, 1 Nov 2023 10:30:02 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Syed Saba Kareem <Syed.SabaKareem@amd.com>
-Cc: broonie@kernel.org, alsa-devel@alsa-project.org,
-	Vijendar.Mukunda@amd.com, Basavaraj.Hiregoudar@amd.com,
-	Sunil-kumar.Dommati@amd.com, mario.limonciello@amd.com,
-	venkataprasad.potturu@amd.com, arungopal.kondaveeti@amd.com,
-	mastan.katragadda@amd.com, juan.martinez@amd.com,
-	amadeuszx.slawinski@linux.intel.com,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-	Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-	open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 3/3] ASoC: amd: acp: fix for i2s mode register field
- update
-Message-ID: <8b61e318-7734-4bcf-ae17-59128058e5b7@kadam.mountain>
-References: <20231031135949.1064581-1-Syed.SabaKareem@amd.com>
- <20231031135949.1064581-3-Syed.SabaKareem@amd.com>
+	by alsa1.perex.cz (Postfix) with ESMTPS id 114EBF8003C
+	for <alsa-devel@alsa-project.org>; Thu,  2 Nov 2023 16:12:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 114EBF8003C
+Received: from mx1.hosting.skole.hr (localhost.localdomain [127.0.0.1])
+	by mx.skole.hr (mx.skole.hr) with ESMTP id E136283668;
+	Thu,  2 Nov 2023 16:12:03 +0100 (CET)
+From: =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
+Date: Thu, 02 Nov 2023 16:11:07 +0100
+Subject: [PATCH v7 01/10] clk: mmp: Switch to use struct u32_fract instead
+ of custom one
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231031135949.1064581-3-Syed.SabaKareem@amd.com>
-X-MailFrom: dan.carpenter@linaro.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Message-Id: <20231102-pxa1908-lkml-v7-1-cabb1a0cb52b@skole.hr>
+References: <20231102-pxa1908-lkml-v7-0-cabb1a0cb52b@skole.hr>
+In-Reply-To: <20231102-pxa1908-lkml-v7-0-cabb1a0cb52b@skole.hr>
+To: Michael Turquette <mturquette@baylibre.com>,
+ Stephen Boyd <sboyd@kernel.org>, Linus Walleij <linus.walleij@linaro.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Tony Lindgren <tony@atomide.com>,
+ =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>,
+ Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
+ Robert Jarzmik <robert.jarzmik@free.fr>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ Leo Yan <leoy@marvell.com>, Zhangfei Gao <zhangfei.gao@marvell.com>,
+ Lubomir Rintel <lkundrak@v3.sk>, Catalin Marinas <catalin.marinas@arm.com>,
+ Will Deacon <will@kernel.org>, Kees Cook <keescook@chromium.org>,
+ Tony Luck <tony.luck@intel.com>,
+ "Guilherme G. Piccoli" <gpiccoli@igalia.com>
+Cc: linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
+ alsa-devel@alsa-project.org, linux-hardening@vger.kernel.org,
+ phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
+ Karel Balej <balejk@matfyz.cz>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=openpgp-sha256; l=10456;
+ i=duje.mihanovic@skole.hr; h=from:subject:message-id;
+ bh=sqxBtjyINvn8G7N2wkQVSk/v1B3ysA2Koysxb18POPo=;
+ b=owEBbQKS/ZANAwAIAZoRnrBCLZbhAcsmYgBlQ7w43Yv6bShtALLqUOTgGZ9xZ1XbQVL+J01Ms
+ vZP5e/w5mCJAjMEAAEIAB0WIQRT351NnD/hEPs2LXiaEZ6wQi2W4QUCZUO8OAAKCRCaEZ6wQi2W
+ 4RNHEACJpEbEwC7DEhsqO819dHKppa9ECj93d8A29xKR+vKQic/vuCi/2fjPpGcQ8ChwYaadBit
+ n8oxARJbFSfymJGOgsXMTFAZRSrwmgViGWK9Yu/uTfXA9kkN05edf04x5Trt5JQwJhFjvfX5pxI
+ gI/ByFnkYGZPQQ0diHt5TUmAD2XEvLYk+wMYL0zwGu/Poqakj8zi9YEoqXho2nnNvN1SuUEBrDe
+ UUP4BG24CtRbk/x6yUmN6XJk7fMEtwNqModtsjuYBmGq9V8T0gqj3Yjf5BXTuR1EnyDlcYDIP8+
+ Gtbw3EfUgqlA+v1uFi4dTEuBckyoVssyRriYT0jlw1NQCg323TRCRCgG6LMt7gPQ2YDmW959qmF
+ TqycEbJbFK6phdYbSkpgbeWR1VcKU1rugeJa4OApcO4JdUSJ2GohB/ZKx7IBzr2ERd5U7ef8fn1
+ Law71WiTYQzDI3zzZzzBXjlvs17wyvj7JJPFpa8QoEiJQzzyv3MBZ1U8i3/nhVDaGO/EoIamRNZ
+ eRb+iBd1Ylb64uZPdQPeduRBFnQ+I4xLU6p/KwsUb5jD1D6xCHALGAlm0k2kZXBIu0NMHqnQIeA
+ 7u/b40omg9P6w8F8VUsWfr/WkgjQqPEkNiiztByqk3lBx6Jvxvmg3T6cIsb/e4oTUSa6mmRL+TQ
+ US1dFmMs/VoMnfA==
+X-Developer-Key: i=duje.mihanovic@skole.hr; a=openpgp;
+ fpr=53DF9D4D9C3FE110FB362D789A119EB0422D96E1
+X-MailFrom: duje.mihanovic@skole.hr
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: L7D3ATGVRQPZUCWY2OAWS66WRSMRUDQH
-X-Message-ID-Hash: L7D3ATGVRQPZUCWY2OAWS66WRSMRUDQH
+Message-ID-Hash: VTGLK3I4HR6YHP5LR5B7QRSXW6MLHWEC
+X-Message-ID-Hash: VTGLK3I4HR6YHP5LR5B7QRSXW6MLHWEC
 X-Mailman-Approved-At: Fri, 03 Nov 2023 16:26:07 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/L7D3ATGVRQPZUCWY2OAWS66WRSMRUDQH/>
+Archived-At: <>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -126,30 +111,298 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, Oct 31, 2023 at 07:29:34PM +0530, Syed Saba Kareem wrote:
-> I2S mode register field will be set to 1 when tdm mode is enabled.
-> Update the I2S mode field based on tdm_mode flag check.
-> 
-> This will fix below smatch checker warning.
-> 
-> sound/soc/amd/acp/acp-i2s.c:59 acp_set_i2s_clk()
-> 	warn: odd binop '0x0 & 0x2'
-> 
-> Fixes: 40f74d5f09d7 ("ASoC: amd: acp: refactor acp i2s clock
-> 	generation code")
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-I saw this yesterday but didn't comment because I didn't want you to
-have to redo the patch.  Mark, of course, also saw it and didn't ask you
-to redo it.  And now it's applied.
+The struct mmp_clk_factor_tbl repeats the generic struct u32_fract.
+Kill the custom one and use the generic one instead.
 
-But for the future, these Fixes tags should be on one line and in the
-tags section of the commit message.  (It's in chronological order).
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Tested-by: Duje Mihanović <duje.mihanovic@skole.hr>
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Duje Mihanović <duje.mihanovic@skole.hr>
+---
+ drivers/clk/mmp/clk-frac.c       | 57 ++++++++++++++++++++--------------------
+ drivers/clk/mmp/clk-of-mmp2.c    | 26 +++++++++---------
+ drivers/clk/mmp/clk-of-pxa168.c  |  4 +--
+ drivers/clk/mmp/clk-of-pxa1928.c |  6 ++---
+ drivers/clk/mmp/clk-of-pxa910.c  |  4 +--
+ drivers/clk/mmp/clk.h            | 10 +++----
+ 6 files changed, 51 insertions(+), 56 deletions(-)
 
-Fixes: 40f74d5f09d7 ("ASoC: amd: acp: refactor acp i2s clock generation code")
-Reported-By: Dan Carpenter <dan.carpenter@linaro.org>
-Signed-off-by: Syed Saba Kareem <Syed.SabaKareem@amd.com>
-Signed-off-by: Mark Brown
+diff --git a/drivers/clk/mmp/clk-frac.c b/drivers/clk/mmp/clk-frac.c
+index 1b90867b60c4..6556f6ada2e8 100644
+--- a/drivers/clk/mmp/clk-frac.c
++++ b/drivers/clk/mmp/clk-frac.c
+@@ -26,14 +26,15 @@ static long clk_factor_round_rate(struct clk_hw *hw, unsigned long drate,
+ {
+ 	struct mmp_clk_factor *factor = to_clk_factor(hw);
+ 	u64 rate = 0, prev_rate;
++	struct u32_fract *d;
+ 	int i;
+ 
+ 	for (i = 0; i < factor->ftbl_cnt; i++) {
+-		prev_rate = rate;
+-		rate = *prate;
+-		rate *= factor->ftbl[i].den;
+-		do_div(rate, factor->ftbl[i].num * factor->masks->factor);
++		d = &factor->ftbl[i];
+ 
++		prev_rate = rate;
++		rate = (u64)(*prate) * d->denominator;
++		do_div(rate, d->numerator * factor->masks->factor);
+ 		if (rate > drate)
+ 			break;
+ 	}
+@@ -52,23 +53,22 @@ static unsigned long clk_factor_recalc_rate(struct clk_hw *hw,
+ {
+ 	struct mmp_clk_factor *factor = to_clk_factor(hw);
+ 	struct mmp_clk_factor_masks *masks = factor->masks;
+-	unsigned int val, num, den;
++	struct u32_fract d;
++	unsigned int val;
+ 	u64 rate;
+ 
+ 	val = readl_relaxed(factor->base);
+ 
+ 	/* calculate numerator */
+-	num = (val >> masks->num_shift) & masks->num_mask;
++	d.numerator = (val >> masks->num_shift) & masks->num_mask;
+ 
+ 	/* calculate denominator */
+-	den = (val >> masks->den_shift) & masks->den_mask;
+-
+-	if (!den)
++	d.denominator = (val >> masks->den_shift) & masks->den_mask;
++	if (!d.denominator)
+ 		return 0;
+ 
+-	rate = parent_rate;
+-	rate *= den;
+-	do_div(rate, num * factor->masks->factor);
++	rate = (u64)parent_rate * d.denominator;
++	do_div(rate, d.numerator * factor->masks->factor);
+ 
+ 	return rate;
+ }
+@@ -82,18 +82,18 @@ static int clk_factor_set_rate(struct clk_hw *hw, unsigned long drate,
+ 	int i;
+ 	unsigned long val;
+ 	unsigned long flags = 0;
++	struct u32_fract *d;
+ 	u64 rate = 0;
+ 
+ 	for (i = 0; i < factor->ftbl_cnt; i++) {
+-		rate = prate;
+-		rate *= factor->ftbl[i].den;
+-		do_div(rate, factor->ftbl[i].num * factor->masks->factor);
++		d = &factor->ftbl[i];
+ 
++		rate = (u64)prate * d->denominator;
++		do_div(rate, d->numerator * factor->masks->factor);
+ 		if (rate > drate)
+ 			break;
+ 	}
+-	if (i > 0)
+-		i--;
++	d = i ? &factor->ftbl[i - 1] : &factor->ftbl[0];
+ 
+ 	if (factor->lock)
+ 		spin_lock_irqsave(factor->lock, flags);
+@@ -101,10 +101,10 @@ static int clk_factor_set_rate(struct clk_hw *hw, unsigned long drate,
+ 	val = readl_relaxed(factor->base);
+ 
+ 	val &= ~(masks->num_mask << masks->num_shift);
+-	val |= (factor->ftbl[i].num & masks->num_mask) << masks->num_shift;
++	val |= (d->numerator & masks->num_mask) << masks->num_shift;
+ 
+ 	val &= ~(masks->den_mask << masks->den_shift);
+-	val |= (factor->ftbl[i].den & masks->den_mask) << masks->den_shift;
++	val |= (d->denominator & masks->den_mask) << masks->den_shift;
+ 
+ 	writel_relaxed(val, factor->base);
+ 
+@@ -118,7 +118,8 @@ static int clk_factor_init(struct clk_hw *hw)
+ {
+ 	struct mmp_clk_factor *factor = to_clk_factor(hw);
+ 	struct mmp_clk_factor_masks *masks = factor->masks;
+-	u32 val, num, den;
++	struct u32_fract d;
++	u32 val;
+ 	int i;
+ 	unsigned long flags = 0;
+ 
+@@ -128,23 +129,22 @@ static int clk_factor_init(struct clk_hw *hw)
+ 	val = readl(factor->base);
+ 
+ 	/* calculate numerator */
+-	num = (val >> masks->num_shift) & masks->num_mask;
++	d.numerator = (val >> masks->num_shift) & masks->num_mask;
+ 
+ 	/* calculate denominator */
+-	den = (val >> masks->den_shift) & masks->den_mask;
++	d.denominator = (val >> masks->den_shift) & masks->den_mask;
+ 
+ 	for (i = 0; i < factor->ftbl_cnt; i++)
+-		if (den == factor->ftbl[i].den && num == factor->ftbl[i].num)
++		if (d.denominator == factor->ftbl[i].denominator &&
++		    d.numerator == factor->ftbl[i].numerator)
+ 			break;
+ 
+ 	if (i >= factor->ftbl_cnt) {
+ 		val &= ~(masks->num_mask << masks->num_shift);
+-		val |= (factor->ftbl[0].num & masks->num_mask) <<
+-			masks->num_shift;
++		val |= (factor->ftbl[0].numerator & masks->num_mask) << masks->num_shift;
+ 
+ 		val &= ~(masks->den_mask << masks->den_shift);
+-		val |= (factor->ftbl[0].den & masks->den_mask) <<
+-			masks->den_shift;
++		val |= (factor->ftbl[0].denominator & masks->den_mask) << masks->den_shift;
+ 	}
+ 
+ 	if (!(val & masks->enable_mask) || i >= factor->ftbl_cnt) {
+@@ -168,8 +168,7 @@ static const struct clk_ops clk_factor_ops = {
+ struct clk *mmp_clk_register_factor(const char *name, const char *parent_name,
+ 		unsigned long flags, void __iomem *base,
+ 		struct mmp_clk_factor_masks *masks,
+-		struct mmp_clk_factor_tbl *ftbl,
+-		unsigned int ftbl_cnt, spinlock_t *lock)
++		struct u32_fract *ftbl, unsigned int ftbl_cnt, spinlock_t *lock)
+ {
+ 	struct mmp_clk_factor *factor;
+ 	struct clk_init_data init;
+diff --git a/drivers/clk/mmp/clk-of-mmp2.c b/drivers/clk/mmp/clk-of-mmp2.c
+index eaad36ee323d..a4f15cee630e 100644
+--- a/drivers/clk/mmp/clk-of-mmp2.c
++++ b/drivers/clk/mmp/clk-of-mmp2.c
+@@ -143,9 +143,9 @@ static struct mmp_clk_factor_masks uart_factor_masks = {
+ 	.den_shift = 0,
+ };
+ 
+-static struct mmp_clk_factor_tbl uart_factor_tbl[] = {
+-	{.num = 8125, .den = 1536},	/*14.745MHZ */
+-	{.num = 3521, .den = 689},	/*19.23MHZ */
++static struct u32_fract uart_factor_tbl[] = {
++	{ .numerator = 8125, .denominator = 1536 },	/* 14.745MHZ */
++	{ .numerator = 3521, .denominator =  689 },	/* 19.23MHZ */
+ };
+ 
+ static struct mmp_clk_factor_masks i2s_factor_masks = {
+@@ -157,16 +157,16 @@ static struct mmp_clk_factor_masks i2s_factor_masks = {
+ 	.enable_mask = 0xd0000000,
+ };
+ 
+-static struct mmp_clk_factor_tbl i2s_factor_tbl[] = {
+-	{.num = 24868, .den =  511},	/*  2.0480 MHz */
+-	{.num = 28003, .den =  793},	/*  2.8224 MHz */
+-	{.num = 24941, .den = 1025},	/*  4.0960 MHz */
+-	{.num = 28003, .den = 1586},	/*  5.6448 MHz */
+-	{.num = 31158, .den = 2561},	/*  8.1920 MHz */
+-	{.num = 16288, .den = 1845},	/* 11.2896 MHz */
+-	{.num = 20772, .den = 2561},	/* 12.2880 MHz */
+-	{.num =  8144, .den = 1845},	/* 22.5792 MHz */
+-	{.num = 10386, .den = 2561},	/* 24.5760 MHz */
++static struct u32_fract i2s_factor_tbl[] = {
++	{ .numerator = 24868, .denominator =  511 },	/*  2.0480 MHz */
++	{ .numerator = 28003, .denominator =  793 },	/*  2.8224 MHz */
++	{ .numerator = 24941, .denominator = 1025 },	/*  4.0960 MHz */
++	{ .numerator = 28003, .denominator = 1586 },	/*  5.6448 MHz */
++	{ .numerator = 31158, .denominator = 2561 },	/*  8.1920 MHz */
++	{ .numerator = 16288, .denominator = 1845 },	/* 11.2896 MHz */
++	{ .numerator = 20772, .denominator = 2561 },	/* 12.2880 MHz */
++	{ .numerator =  8144, .denominator = 1845 },	/* 22.5792 MHz */
++	{ .numerator = 10386, .denominator = 2561 },	/* 24.5760 MHz */
+ };
+ 
+ static DEFINE_SPINLOCK(acgr_lock);
+diff --git a/drivers/clk/mmp/clk-of-pxa168.c b/drivers/clk/mmp/clk-of-pxa168.c
+index fb0df64cf053..ab5f83e77305 100644
+--- a/drivers/clk/mmp/clk-of-pxa168.c
++++ b/drivers/clk/mmp/clk-of-pxa168.c
+@@ -106,8 +106,8 @@ static struct mmp_clk_factor_masks uart_factor_masks = {
+ 	.den_shift = 0,
+ };
+ 
+-static struct mmp_clk_factor_tbl uart_factor_tbl[] = {
+-	{.num = 8125, .den = 1536},	/*14.745MHZ */
++static struct u32_fract uart_factor_tbl[] = {
++	{ .numerator = 8125, .denominator = 1536 },	/* 14.745MHZ */
+ };
+ 
+ static void pxa168_pll_init(struct pxa168_clk_unit *pxa_unit)
+diff --git a/drivers/clk/mmp/clk-of-pxa1928.c b/drivers/clk/mmp/clk-of-pxa1928.c
+index 9def4b5f10e9..ebb6e278eda3 100644
+--- a/drivers/clk/mmp/clk-of-pxa1928.c
++++ b/drivers/clk/mmp/clk-of-pxa1928.c
+@@ -61,9 +61,9 @@ static struct mmp_clk_factor_masks uart_factor_masks = {
+ 	.den_shift = 0,
+ };
+ 
+-static struct mmp_clk_factor_tbl uart_factor_tbl[] = {
+-	{.num = 832, .den = 234},	/*58.5MHZ */
+-	{.num = 1, .den = 1},		/*26MHZ */
++static struct u32_fract uart_factor_tbl[] = {
++	{ .numerator = 832, .denominator = 234 },	/* 58.5MHZ */
++	{ .numerator =   1, .denominator =   1 },	/* 26MHZ */
+ };
+ 
+ static void pxa1928_pll_init(struct pxa1928_clk_unit *pxa_unit)
+diff --git a/drivers/clk/mmp/clk-of-pxa910.c b/drivers/clk/mmp/clk-of-pxa910.c
+index 7a38c424782e..fe65e7bdb411 100644
+--- a/drivers/clk/mmp/clk-of-pxa910.c
++++ b/drivers/clk/mmp/clk-of-pxa910.c
+@@ -86,8 +86,8 @@ static struct mmp_clk_factor_masks uart_factor_masks = {
+ 	.den_shift = 0,
+ };
+ 
+-static struct mmp_clk_factor_tbl uart_factor_tbl[] = {
+-	{.num = 8125, .den = 1536},	/*14.745MHZ */
++static struct u32_fract uart_factor_tbl[] = {
++	{ .numerator = 8125, .denominator = 1536 },	/* 14.745MHZ */
+ };
+ 
+ static void pxa910_pll_init(struct pxa910_clk_unit *pxa_unit)
+diff --git a/drivers/clk/mmp/clk.h b/drivers/clk/mmp/clk.h
+index 55ac05379781..c83cec169ddc 100644
+--- a/drivers/clk/mmp/clk.h
++++ b/drivers/clk/mmp/clk.h
+@@ -3,6 +3,7 @@
+ #define __MACH_MMP_CLK_H
+ 
+ #include <linux/clk-provider.h>
++#include <linux/math.h>
+ #include <linux/pm_domain.h>
+ #include <linux/clkdev.h>
+ 
+@@ -20,16 +21,11 @@ struct mmp_clk_factor_masks {
+ 	unsigned int enable_mask;
+ };
+ 
+-struct mmp_clk_factor_tbl {
+-	unsigned int num;
+-	unsigned int den;
+-};
+-
+ struct mmp_clk_factor {
+ 	struct clk_hw hw;
+ 	void __iomem *base;
+ 	struct mmp_clk_factor_masks *masks;
+-	struct mmp_clk_factor_tbl *ftbl;
++	struct u32_fract *ftbl;
+ 	unsigned int ftbl_cnt;
+ 	spinlock_t *lock;
+ };
+@@ -37,7 +33,7 @@ struct mmp_clk_factor {
+ extern struct clk *mmp_clk_register_factor(const char *name,
+ 		const char *parent_name, unsigned long flags,
+ 		void __iomem *base, struct mmp_clk_factor_masks *masks,
+-		struct mmp_clk_factor_tbl *ftbl, unsigned int ftbl_cnt,
++		struct u32_fract *ftbl, unsigned int ftbl_cnt,
+ 		spinlock_t *lock);
+ 
+ /* Clock type "mix" */
 
-regards,
-dan carpenter
+-- 
+2.42.0
+
 
