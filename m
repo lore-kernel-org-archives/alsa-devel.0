@@ -4,154 +4,127 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 11A21C4332F
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Nov 2023 16:31:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A7335C4167B
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Nov 2023 17:53:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3B80FE81;
-	Fri,  3 Nov 2023 17:30:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3B80FE81
+	by alsa0.perex.cz (Postfix) with ESMTPS id CA287825;
+	Fri,  3 Nov 2023 18:52:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CA287825
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1699029058;
-	bh=B4f9gfNCb0R3FOBzKEiBOAlW2H3Az9cyoly0CjbDIQA=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=MdwBu30ZGmuvliTIvsFsc4WOgoLaaOROlY3h04apBoknJW7TYDlCKF34NeEbijEB4
-	 BDT1LaYFqsQFWwm4AmCOrP1i8XnLpTul3ZTlqen42XWtqceysiVvpP03LgWgoF/xmF
-	 9+AydgzMrjPuWJgdpqAaY5U5F393f8cCHw7adzfY=
+	s=default; t=1699033998;
+	bh=O/YdEpiL2K2rKu9WYjNvnKVztAqX9GCzc4BkIprUDXg=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=FbIAxoty+Xkab7EoQKjs9bIr2eEY4ef/IwqDweSKIfBE4WPhh+rW9EriCFx5+pqfd
+	 a9eV0vxHkcuvqamLXMWH1gPaz9CTfyOUpWqeG/qEprYanzuGouJHWsLupdU4krDJRX
+	 WUrZUIzQpeKkZPyfmuPacVApoLhil5FFqHnzEkZA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E163BF80614; Fri,  3 Nov 2023 17:27:18 +0100 (CET)
+	id F2411F80494; Fri,  3 Nov 2023 18:52:00 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 484BAF8060E;
-	Fri,  3 Nov 2023 17:27:18 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 80723F80290;
+	Fri,  3 Nov 2023 18:52:00 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1D7DBF80290; Thu,  2 Nov 2023 20:03:58 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id DB0E7F8014B
-	for <alsa-devel@alsa-project.org>; Thu,  2 Nov 2023 20:03:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DB0E7F8014B
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256
- header.s=mimecast20190719 header.b=HBJ4spvI
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1698951806;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=m+72lU2is0RjPg3Ej03EzBiDP42Tb65So4vdSCepZ9s=;
-	b=HBJ4spvI5WLl3FTgKWfkN4GE+RJNqyZDS91rnR9xdlYHlZLHBmuiG9YshKPQRVSwRp7YUN
-	phrm1RiyGhorPyUskqvUs8GjukgXCsh++87VNtZZMsEAZz5JZs2/nizZh2/mri9BfQh/Kx
-	7bJQrlQLGXnuxmMqaZ+5n93O9O1eBIs=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-166-DYCt1PSNO72-B89UGxujdA-1; Thu, 02 Nov 2023 15:03:23 -0400
-X-MC-Unique: DYCt1PSNO72-B89UGxujdA-1
-Received: by mail-wr1-f69.google.com with SMTP id
- ffacd0b85a97d-32fabf96aa5so168095f8f.0
-        for <alsa-devel@alsa-project.org>;
- Thu, 02 Nov 2023 12:03:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698951802; x=1699556602;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=m+72lU2is0RjPg3Ej03EzBiDP42Tb65So4vdSCepZ9s=;
-        b=GStM8BErItPR5y85rDFjKiOzpIXHotVlSwB/Mf1jhBYi8yYLnoBSVIOyOUe22Ey9fi
-         hMuK2pdVoaJVGy7BLFUVGh/hysYnJnvpui8U2SB8cXjBWDvDpGTzCMNsKFEKMZ6vrNBK
-         gnjVs24KUced4bpMzPnXepzOTlQvEHUsBvVlw1n1En8+zphe9ckb76C9h6KEeg4nMoe4
-         GShZFcQSppjvUczrv14yuWobJoQbfnUDYco7hJLggwor2H+dtDL1P2luV+gb1ptIOmxi
-         BGaw4lAMD/SZqdGO3dGhl7RigPDoL+I8bF+SuuFBDiDKHSkjFCrzqt83ci0J+9Oy8+i/
-         jnNg==
-X-Gm-Message-State: AOJu0YyLQAc6U+mBn5xcZhjjCMF5JpTvDRiCSkRjgUKQA4GVFoNqIVEX
-	s//IK5fEC5+C/hbkK54sBHePN4RD3RQorAf3dR5E54zcZv+GemcfKfyfuqAdAqss8zxuC112L3N
-	Jempb8Zz2rf2Tc4wp4fN5bzk=
-X-Received: by 2002:a5d:5c11:0:b0:32f:8a45:93a7 with SMTP id
- cc17-20020a5d5c11000000b0032f8a4593a7mr9124226wrb.0.1698951802590;
-        Thu, 02 Nov 2023 12:03:22 -0700 (PDT)
-X-Google-Smtp-Source: 
- AGHT+IFUPZRT8I8iw/CcEcUptKDDx7966nYE1/uugb6+QE4ZoKiWbmft1KG9gyqtzE1rFEHqmKpeCw==
-X-Received: by 2002:a5d:5c11:0:b0:32f:8a45:93a7 with SMTP id
- cc17-20020a5d5c11000000b0032f8a4593a7mr9124209wrb.0.1698951802240;
-        Thu, 02 Nov 2023 12:03:22 -0700 (PDT)
-Received: from pstanner-thinkpadt14sgen1.remote.csb
- ([2001:9e8:32c5:d600:227b:d2ff:fe26:2a7a])
-        by smtp.gmail.com with ESMTPSA id
- l22-20020adfa396000000b0032f7d1e2c7csm62660wrb.95.2023.11.02.12.03.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Nov 2023 12:03:21 -0700 (PDT)
-From: Philipp Stanner <pstanner@redhat.com>
-To: Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>
-Cc: alsa-devel@alsa-project.org,
-	linux-kernel@vger.kernel.org,
-	Philipp Stanner <pstanner@redhat.com>,
-	Dave Airlie <airlied@redhat.com>
-Subject: [PATCH] sound/isa/wavefront: copy userspace array safely
-Date: Thu,  2 Nov 2023 20:03:10 +0100
-Message-ID: <20231102190309.50891-2-pstanner@redhat.com>
-X-Mailer: git-send-email 2.41.0
+	id A5F56F80290; Fri,  3 Nov 2023 18:51:56 +0100 (CET)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by alsa1.perex.cz (Postfix) with ESMTP id 519CFF8016D
+	for <alsa-devel@alsa-project.org>; Fri,  3 Nov 2023 18:51:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 519CFF8016D
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 77F962F4;
+	Fri,  3 Nov 2023 10:52:29 -0700 (PDT)
+Received: from [10.57.81.32] (unknown [10.57.81.32])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7D4DC3F738;
+	Fri,  3 Nov 2023 10:51:41 -0700 (PDT)
+Message-ID: <1cbc6def-8255-4a13-99b0-145d3f8ffcac@arm.com>
+Date: Fri, 3 Nov 2023 17:51:39 +0000
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v7 08/10] arm64: Kconfig.platforms: Add config for Marvell
+ PXA1908 platform
+Content-Language: en-GB
+To: =?UTF-8?Q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>,
+ Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
+ <sboyd@kernel.org>, Linus Walleij <linus.walleij@linaro.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Tony Lindgren <tony@atomide.com>,
+ Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
+ Robert Jarzmik <robert.jarzmik@free.fr>, Liam Girdwood
+ <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ Leo Yan <leoy@marvell.com>, Zhangfei Gao <zhangfei.gao@marvell.com>,
+ Lubomir Rintel <lkundrak@v3.sk>, Catalin Marinas <catalin.marinas@arm.com>,
+ Will Deacon <will@kernel.org>, Kees Cook <keescook@chromium.org>,
+ Tony Luck <tony.luck@intel.com>, "Guilherme G . Piccoli"
+ <gpiccoli@igalia.com>
+Cc: linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
+ alsa-devel@alsa-project.org, linux-hardening@vger.kernel.org,
+ phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
+ Karel Balej <balejk@matfyz.cz>
+References: <20231102152033.5511-1-duje.mihanovic@skole.hr>
+ <20231102152033.5511-3-duje.mihanovic@skole.hr>
+ <ffb08cc2-705a-468e-b6d2-9ce591c08ab4@arm.com> <2919185.e9J7NaK4W3@radijator>
+From: Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <2919185.e9J7NaK4W3@radijator>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain; charset="US-ASCII"; x-default=true
-X-MailFrom: pstanner@redhat.com
-X-Mailman-Rule-Hits: nonmember-moderation
+Message-ID-Hash: 4UIVWE6B24QBEM36QGC46OGGRMDYLEFK
+X-Message-ID-Hash: 4UIVWE6B24QBEM36QGC46OGGRMDYLEFK
+X-MailFrom: robin.murphy@arm.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: CUYXW7AWWZQR6X7I5UHSRD5IR4EM3PPE
-X-Message-ID-Hash: CUYXW7AWWZQR6X7I5UHSRD5IR4EM3PPE
-X-Mailman-Approved-At: Fri, 03 Nov 2023 16:27:07 +0000
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: <>
-List-Archive: <>
+Archived-At: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4UIVWE6B24QBEM36QGC46OGGRMDYLEFK/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-wavefront_fx.c utilizes memdup_user() to copy a userspace array. This
-does not check for an overflow.
+On 2023-11-03 5:02 pm, Duje Mihanović wrote:
+> On Friday, November 3, 2023 4:34:54 PM CET Robin Murphy wrote:
+>> On 2023-11-02 3:20 pm, Duje Mihanović wrote:
+>>> +config ARCH_MMP
+>>> +	bool "Marvell MMP SoC Family"
+>>> +	select ARM_GIC
+>>> +	select ARM_ARCH_TIMER
+>>> +	select ARM_SMMU
+>>
+>> NAK, not only is selecting user-visible symbols generally frowned upon,
+>> and ignoring their dependencies even worse, but for a multiplatform
+>> kernel the user may well want this to be a module.
+>>
+>> If having the SMMU driver built-in is somehow fundamentally required for
+>> this platform to boot, that would represent much bigger problems.
+> 
+> The SoC can boot without SMMU and PDMA, but not GIC, pinctrl or the arch
+> timer. I see that most other SoCs still select drivers and frameworks they
+> presumably need for booting, with the exceptions of ARCH_BITMAIN, ARCH_LG1K
+> and a couple others. Which of these two options should I go for?
 
-Use the new wrapper memdup_array_user() to copy the array more safely.
+Well, you don't really need to select ARM_GIC or ARM_ARCH_TIMER here 
+either, since those are already selected by ARM64 itself. Keeping 
+PINCTRL_SINGLE is fair, although you should also select PINCTRL as its 
+dependency.
 
-Suggested-by: Dave Airlie <airlied@redhat.com>
-Signed-off-by: Philipp Stanner <pstanner@redhat.com>
----
- sound/isa/wavefront/wavefront_fx.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+As an additional nit, the file seems to be primarily ordered by symbol 
+name, so it might be nice to slip ARCH_MMC in between ARCH_MESON and 
+ARCH_MVEBU.
 
-diff --git a/sound/isa/wavefront/wavefront_fx.c b/sound/isa/wavefront/wavefront_fx.c
-index 3c21324b2a0e..0273b7dfaf12 100644
---- a/sound/isa/wavefront/wavefront_fx.c
-+++ b/sound/isa/wavefront/wavefront_fx.c
-@@ -191,9 +191,9 @@ snd_wavefront_fx_ioctl (struct snd_hwdep *sdev, struct file *file,
- 					    "> 512 bytes to FX\n");
- 				return -EIO;
- 			}
--			page_data = memdup_user((unsigned char __user *)
--						r.data[3],
--						r.data[2] * sizeof(short));
-+			page_data = memdup_array_user((unsigned char __user *)
-+						      r.data[3],
-+						      r.data[2], sizeof(short));
- 			if (IS_ERR(page_data))
- 				return PTR_ERR(page_data);
- 			pd = page_data;
--- 
-2.41.0
-
+Cheers,
+Robin.
