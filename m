@@ -4,73 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5F12CC4332F
-	for <alsa-devel@archiver.kernel.org>; Mon,  6 Nov 2023 14:43:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 991AEC4332F
+	for <alsa-devel@archiver.kernel.org>; Mon,  6 Nov 2023 14:43:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3B6C986F;
-	Mon,  6 Nov 2023 15:42:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3B6C986F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0AEA3844;
+	Mon,  6 Nov 2023 15:42:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0AEA3844
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1699281818;
-	bh=Blf0199Gw4mvSrXSKGGBH3/GGxGUXwzOd/XtE3qOLdM=;
+	s=default; t=1699281826;
+	bh=nX/Ie0anw1ndgN0YJjqHJnFFjUKSdxLFOe79el+klzo=;
 	h=Date:Subject:To:References:From:In-Reply-To:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=qGM1mZdOuzv6bRsnLXsKPye/2FAoawpDeCXqeQWbJ/SkRxjWoMf14cUqi+J6Ekb3g
-	 L6HJqd3rBEkCTbreLNkqQplaG4pK60yh+/WeUpSZE21gzF+qxwoNCnyUl17ajMKn6i
-	 9OFhfzyjmiAxvQMACJiQLIEssjcOiLbykVmtIrcw=
+	b=EU4C5rFry3xo0lnKWpsvTlAKj22wtN5JzPBFis8+T9gfR3UlMBHfWpJBkq+b5n1rx
+	 5OuXJzAlIyzQLVjHC9Iwtj5nWAZZtDDLe5qfVrhsgfewWSdKeZwfW651l1g0zxZNuD
+	 n05G6bwf2OkoBHEU5Jb0NQO0hqHwF72SuwSWhi/M=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4DC59F80578; Mon,  6 Nov 2023 15:42:20 +0100 (CET)
+	id 9FC52F80100; Mon,  6 Nov 2023 15:42:25 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C54CDF80564;
-	Mon,  6 Nov 2023 15:42:19 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 58D47F8016D;
+	Mon,  6 Nov 2023 15:42:25 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 62724F80567; Mon,  6 Nov 2023 15:42:14 +0100 (CET)
+	id 2909BF8057A; Mon,  6 Nov 2023 15:42:21 +0100 (CET)
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7346FF800ED
-	for <alsa-devel@alsa-project.org>; Mon,  6 Nov 2023 15:42:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7346FF800ED
+	by alsa1.perex.cz (Postfix) with ESMTPS id 7901BF8055C
+	for <alsa-devel@alsa-project.org>; Mon,  6 Nov 2023 15:42:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7901BF8055C
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=eBJmI5Xy
+ header.s=Intel header.b=EenvUySz
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699281723; x=1730817723;
+  t=1699281725; x=1730817725;
   h=message-id:date:mime-version:subject:to:references:from:
    in-reply-to:content-transfer-encoding;
-  bh=Blf0199Gw4mvSrXSKGGBH3/GGxGUXwzOd/XtE3qOLdM=;
-  b=eBJmI5XyP4l0n2l304Hzr0QPauUTagyNbmHDL52En9+N2ZMGZZf2T/gz
-   zRdE+BTYHUl8DKqiY5UT6zgQuuOVvBwVEujUdCw9FhHCKlwF1q0Zu4r3z
-   /VgPYPNfLdfLsHbXpDTEp+lTQhLWAfVb3c4yf2ZuCasjzQDpg/4vA08YE
-   TzmCcy4nIZvpcBdFDdhChlukvS7dt/BlVOWd9oWPymWtlPX7D8l0uu5kH
-   qyNBt5DQY1i9CcWfjlRR2jyPRxzH+Dj4G7IMW3uOBsk9jWzV7qQRjZVNh
-   qoj/zJ7pbgcwEPeVxEGPMr663ZyPCxPrerDZvnkKtI5hhZTMniQY5Jn+8
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="379677761"
+  bh=nX/Ie0anw1ndgN0YJjqHJnFFjUKSdxLFOe79el+klzo=;
+  b=EenvUySzZMY8a1P9P9PU1hAoZaEsE3C5zZtEQlQ75j8Su4If2pMCztYb
+   RoU3K+vI2ZYIHLHT9VfmaaqSL6Wpev3xTgM2tO/SMg4rfkWbF8nSD26Jh
+   HyHsgWZn4AjMbxiIm0JMBOZE3+yxZJN1DK3Fb712m1+u1itqWBocLje0p
+   VkMngCKapbuhOpND3v6Kr2dfPLJb6qRB9hBPKF8ehD8NdVtWXLfOk2e93
+   T+FQiW71g2PbR3M9b5FkVLRU5JI61I8HfbcvDaPEgtAlVORo6t9g/y7W/
+   eJ7YoRTAJvXr0DIE4AZySrW03hiPdmhC8V0rk6j33HdzzoXM5R1A5aQJ6
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="379677772"
 X-IronPort-AV: E=Sophos;i="6.03,281,1694761200";
-   d="scan'208";a="379677761"
+   d="scan'208";a="379677772"
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
   by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 06 Nov 2023 06:41:58 -0800
+ 06 Nov 2023 06:41:59 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="1093799387"
+X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="1093799396"
 X-IronPort-AV: E=Sophos;i="6.03,281,1694761200";
-   d="scan'208";a="1093799387"
+   d="scan'208";a="1093799396"
 Received: from dpidwerb-mobl.amr.corp.intel.com (HELO [10.209.77.27])
  ([10.209.77.27])
   by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 06 Nov 2023 06:41:56 -0800
-Message-ID: <df6715a5-9e8d-4cbd-a654-2a18a021ff99@linux.intel.com>
-Date: Fri, 3 Nov 2023 10:29:13 -0500
+ 06 Nov 2023 06:41:58 -0800
+Message-ID: <30f0f5ef-a148-444f-924f-594f4cbd48a4@linux.intel.com>
+Date: Fri, 3 Nov 2023 10:39:42 -0500
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/3] soundwire: qcom: drop unneeded DAI .set_stream
- callback
+Subject: Re: [PATCH 3/3] ASoC: codecs: wsa884x: check if set_stream is called
+ for proper bus
 Content-Language: en-US
 To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
  Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
@@ -83,14 +83,15 @@ To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
  Takashi Iwai <tiwai@suse.com>, linux-arm-msm@vger.kernel.org,
  alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 References: <20231025144601.268645-1-krzysztof.kozlowski@linaro.org>
- <322002af-09e8-4d4c-bc85-81654c6b5f9d@linux.intel.com>
- <7af13415-ca58-4084-9aea-f805cf266bb8@linaro.org>
+ <20231025144601.268645-3-krzysztof.kozlowski@linaro.org>
+ <8b9db87b-0f61-4824-acf1-6b5ebdf45e63@linux.intel.com>
+ <160752cb-7772-4b1d-9096-8be25e76213c@linaro.org>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <7af13415-ca58-4084-9aea-f805cf266bb8@linaro.org>
+In-Reply-To: <160752cb-7772-4b1d-9096-8be25e76213c@linaro.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-ID-Hash: VABIX2NS3UBXIESLG7ZPON7CSXLHUD3L
-X-Message-ID-Hash: VABIX2NS3UBXIESLG7ZPON7CSXLHUD3L
+Message-ID-Hash: 44VGGTOQ2NF3Q7SDT6KTIPKSZBHN6UIP
+X-Message-ID-Hash: 44VGGTOQ2NF3Q7SDT6KTIPKSZBHN6UIP
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -103,7 +104,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VABIX2NS3UBXIESLG7ZPON7CSXLHUD3L/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/44VGGTOQ2NF3Q7SDT6KTIPKSZBHN6UIP/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -113,33 +114,93 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 
->>> Qualcomm Soundwire controller drivers do not support multi-link setups,
->>> so DAI .set_stream() callback will not be used.  What's more, if called
->>> it will overwrite the sdw_stream_runtime runtime set in DAI .startup
->>> (qcom_swrm_startup()) causing issues (unsupported multi-link error) when
->>> two Soundwire controllers are passed as codec DAIs.
->>
->> This last sentence is confusing at best.
->>
->> A controller can have one or more managers, each of whom can have one or
->> more peripherals.
->>
->> only peripherals should expose codec DAIs, managers should expose CPU DAIs.
->>
->> Put differently, the controller is the host part while the peripheral is
->> the codec part. "controllers passed as codec DAIs" is not really
->> possible, or this was a typo?
+
+
+> We have two Soundwire controllers swr0 and swr3, each with two WSA884x
+> speakers (codecs):
 > 
-> No, it wasn't a typo. Take a look here:
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/arm64/boot/dts/qcom/sc8280xp-lenovo-thinkpad-x13s.dts#n1023
+> -------------
+> &swr0 {
+> 	status = "okay";
 > 
-> The <&swr0 0> is the controller, although probably I should call it
-> manager, but in case of Qualcomm I think they are 1-to-1.
+> 	left_woofer: speaker@0,0 {
+> 		compatible = "sdw20217020400";
+> 		reg = <0 0>;
+> 		// ...
+> 	};
+> 
+> 	/* WSA8845, Left Tweeter */
+> 	left_tweeter: speaker@0,1 {
+> 		compatible = "sdw20217020400";
+> 		reg = <0 1>;
+> 		// ...
+> 	};
+> };
+> 
+> &swr3 {
+> 	status = "okay";
+> 
+> 	/* WSA8845, Right Woofer */
+> 	right_woofer: speaker@0,0 {
+> 		compatible = "sdw20217020400";
+> 		reg = <0 0>;
+> 		// ...
+> 	};
+> 
+> 	/* WSA8845, Right Tweeter */
+> 	right_tweeter: speaker@0,1 {
+> 		compatible = "sdw20217020400";
+> 		reg = <0 1>;
+> 		// ...
+> 	};
+> };
+> -------------
+> 
+> Now, for four-speaker playback, we have sound card with links like:
+> 
+> -------------
+> wsa-dai-link {
+> 	link-name = "WSA Playback";
+> 
+> 	cpu {
+> 		sound-dai = <&q6apmbedai WSA_CODEC_DMA_RX_0>;
+> 	};
+> 
+> 	codec {
+> 		sound-dai = <&left_woofer>, <&left_tweeter>,
+> 			    <&swr0 0>, <&lpass_wsamacro 0>,
+> 			    <&right_woofer>, <&right_tweeter>,
+> 			    <&swr3 0>, <&lpass_wsa2macro 0>;
+> 	};
+> 
+> 	platform {
+> 		sound-dai = <&q6apm>;
+> 	};
+> };
+> -------------
+> 
+> We need to prepare the stream for all four speakers and two soundwire
+> controllers (so two different soundwire buses), however without the
+> patches here, the stream (sdw_stream_runtime *sruntime) right
+> woofer/twitter is set to swr0 (the other bus!). But it should stay as
+> swr3 (their bus).
+> 
+> Does it help a bit? I hope I am able to properly explain it.
 
-Is this a case where the SoundWire manager is part of a codec?
+The configuration seems fine, but the problem is the
+"sdw_stream_runtime" definition.
 
-In that case, how are the SoundWire peripheral modeled?
+You need *ONE* sdw_stream_runtime, and multiple m_rt contexts added in
+the linked lists of this sdw_stream_runtime. In other words, you need to
+call sdw_stream_add_master() twice, for swr0 and swr3 respectively.
 
-The .set_stream callback was really meant to be used when you have a CPU
-DAI for the manager and a codec DAI for the peripheral(s). This seems to
-be a different configuration where CPU and codec DAIs are mixed.
+Put differently, a sdw_stream_runtime does not point to a specific bus,
+it provides a top-level structure which can use multiple buses.
+
+The best way to allocate the sdw_stream_runtime is to rely on the
+dailink .startup callback. From the description above that's where you
+have all the needed information, and then each DAI .startup (or
+hw_params) can call sdw_stream_add_master() to update the linked lists.
+
+
+
