@@ -4,119 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4276FC4332F
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Nov 2023 07:22:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 21DDDC4167B
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Nov 2023 09:56:02 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 74F88829;
-	Fri,  3 Nov 2023 08:21:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 74F88829
+	by alsa0.perex.cz (Postfix) with ESMTPS id 00931846;
+	Fri,  3 Nov 2023 10:55:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 00931846
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1698996167;
-	bh=8aiC4jU02YqW+IMeKHwXzGJ9vFasE9crraGtrirbH+c=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	s=default; t=1699005360;
+	bh=kZLyniI7vHEHbNQremGd8rky9rPiswgCy0abFg8lEig=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=caelEkWZRK9VgnO7I6Z8i5OgQON4hMKT1ws0TThiWa1XzmL25aWVT5L9majzPe46v
-	 0HCWOBfWIzKfEVoFEhsCEXvtmf8TQzU0lXn4AMMKacvrQTCb1UJ/boouof9hBbc1ze
-	 fu02QfiKDHBU5BFoknFdnzr/k85usd2fL5kifmlg=
+	b=hBFXvth4D7HoelfbhXh5sEuY1vDEoBPVEqptTbqyDzgNVMnfb0qmKo71VA3t/B+Pz
+	 2I+LAc0cKMAzdmnYfIyZdD3lKLDkSF1GITc0/J96glQlYlPv4+gGQ3VOdbKVJfGUXg
+	 t4EtipOBUQ/3b3kwHY/0d+Qg8o5muqen1LW8Lghk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6262BF8055A; Fri,  3 Nov 2023 08:21:54 +0100 (CET)
+	id DF307F8020D; Fri,  3 Nov 2023 10:55:08 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 686ACF80290;
-	Fri,  3 Nov 2023 08:21:53 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 658DDF80494;
+	Fri,  3 Nov 2023 10:55:08 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E61BDF80290; Fri,  3 Nov 2023 08:20:34 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+	id 5A54CF80537; Fri,  3 Nov 2023 10:55:03 +0100 (CET)
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 8DDF0F8014B
-	for <alsa-devel@alsa-project.org>; Fri,  3 Nov 2023 08:20:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8DDF0F8014B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 1C1C7F80290;
+	Fri,  3 Nov 2023 10:54:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1C1C7F80290
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=bEb0Qmlb
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by ams.source.kernel.org (Postfix) with ESMTP id 064DFB81DDA;
-	Fri,  3 Nov 2023 07:20:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52B89C433C8;
-	Fri,  3 Nov 2023 07:20:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1698996027;
-	bh=8aiC4jU02YqW+IMeKHwXzGJ9vFasE9crraGtrirbH+c=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=bEb0QmlbwR5kb3GHr6sueDF0S6/+vl8Jel3ZggmhN99+5rZgnbusl2cVfQ3pEt3Jr
-	 QdEQOdI+PRg+AGD2KrcvRakUa4MqABUgQ5vvTLswfNSiKQFDcb/SC2IoKrA2lUZzgb
-	 ufHUN6HbI6rXkWSksYjT9S903/udWtp8dc4OJ1CY0LgTRSEqbAe4sdDvp8EGzSs+C2
-	 4EPSNTMhIto/fom/nbjLK+zBfa+mqJWumKFFs5u9xY522w78d/uw66M+o2nsExK3zu
-	 MZ5Vsd2TlDOWy0VaBNQblL4XWyAGXYOTfyf3VidmJaK5h200WTfpqgvOASx8YXmHOC
-	 2V01Fw9uG6NKQ==
-Message-ID: <3996b764-a156-4312-9881-4600e43340f9@kernel.org>
-Date: Fri, 3 Nov 2023 08:20:22 +0100
+	dkim=pass (1024-bit key,
+ unprotected) header.d=mediatek.com header.i=@mediatek.com header.a=rsa-sha256
+ header.s=dk header.b=PjnIbpzb
+X-UUID: 02addc667a2f11eea33bb35ae8d461a2-20231103
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=mediatek.com; s=dk;
+	h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From;
+ bh=I0Dqa79Xnh2YmZD1oFINboyDlJ0ERnJFDZ0JQm5t2bc=;
+	b=PjnIbpzbkT/927symx1E6USn2UB70EDD0H6ovqxsTrlA1n3Fb4eI/umuJnddGUCuHtmhRwz5C0nTdc4M0pw/WxfgZN4C7mlB2PmpdvbeD09wKqdCkY3G4goVBFk7yuspuAkS56pRAPpaK+zuJkXp2OzkP23gaOdnDN5DhEszm8E=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.33,REQID:d46f80be-d5fe-41f3-aeb4-2719447a3f70,IP:0,U
+	RL:0,TC:0,Content:-25,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
+	N:release,TS:-25
+X-CID-META: VersionHash:364b77b,CLOUDID:a85ea55f-c89d-4129-91cb-8ebfae4653fc,B
+	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+	RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
+	DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR
+X-UUID: 02addc667a2f11eea33bb35ae8d461a2-20231103
+Received: from mtkmbs13n1.mediatek.inc [(172.21.101.193)] by
+ mailgw01.mediatek.com
+	(envelope-from <trevor.wu@mediatek.com>)
+	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+	with ESMTP id 1817119744; Fri, 03 Nov 2023 17:54:42 +0800
+Received: from mtkmbs13n1.mediatek.inc (172.21.101.193) by
+ mtkmbs13n2.mediatek.inc (172.21.101.108) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Fri, 3 Nov 2023 17:54:41 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
+ mtkmbs13n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Fri, 3 Nov 2023 17:54:41 +0800
+From: Trevor Wu <trevor.wu@mediatek.com>
+To: <pierre-louis.bossart@linux.intel.com>, <peter.ujfalusi@linux.intel.com>,
+	<yung-chuan.liao@linux.intel.com>, <ranjani.sridharan@linux.intel.com>,
+	<kai.vehmanen@linux.intel.com>, <daniel.baluta@nxp.com>,
+	<broonie@kernel.org>, <lgirdwood@gmail.com>, <tiwai@suse.com>,
+	<perex@perex.cz>, <matthias.bgg@gmail.com>,
+	<angelogioacchino.delregno@collabora.com>
+CC: <trevor.wu@mediatek.com>, <yc.hung@mediatek.com>,
+	<sound-open-firmware@alsa-project.org>, <alsa-devel@alsa-project.org>,
+	<linux-mediatek@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: [PATCH 2/3] ASoC: SOF: mediatek: mt8186: clean up unused code
+Date: Fri, 3 Nov 2023 17:54:31 +0800
+Message-ID: <20231103095433.10475-3-trevor.wu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <20231103095433.10475-1-trevor.wu@mediatek.com>
+References: <20231103095433.10475-1-trevor.wu@mediatek.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 00/17] ASoC: Intel: avs: Properly identify boards
-To: =?UTF-8?Q?Amadeusz_S=C5=82awi=C5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>, Mark Brown <broonie@kernel.org>
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>, Takashi Iwai
- <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
- alsa-devel@alsa-project.org, linux-sound@vger.kernel.org
-References: <20231102124712.2549327-1-amadeuszx.slawinski@linux.intel.com>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Autocrypt: addr=krzk@kernel.org; keydata=
- xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
- cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
- JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
- gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
- J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
- NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
- BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
- vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
- Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
- TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzSVLcnp5c3p0b2Yg
- S296bG93c2tpIDxrcnprQGtlcm5lbC5vcmc+wsGVBBMBCgA/AhsDBgsJCAcDAgYVCAIJCgsE
- FgIDAQIeAQIXgBYhBJvQfg4MUfjVlne3VBuTQ307QWKbBQJgPO8PBQkUX63hAAoJEBuTQ307
- QWKbBn8P+QFxwl7pDsAKR1InemMAmuykCHl+XgC0LDqrsWhAH5TYeTVXGSyDsuZjHvj+FRP+
- gZaEIYSw2Yf0e91U9HXo3RYhEwSmxUQ4Fjhc9qAwGKVPQf6YuQ5yy6pzI8brcKmHHOGrB3tP
- /MODPt81M1zpograAC2WTDzkICfHKj8LpXp45PylD99J9q0Y+gb04CG5/wXs+1hJy/dz0tYy
- iua4nCuSRbxnSHKBS5vvjosWWjWQXsRKd+zzXp6kfRHHpzJkhRwF6ArXi4XnQ+REnoTfM5Fk
- VmVmSQ3yFKKePEzoIriT1b2sXO0g5QXOAvFqB65LZjXG9jGJoVG6ZJrUV1MVK8vamKoVbUEe
- 0NlLl/tX96HLowHHoKhxEsbFzGzKiFLh7hyboTpy2whdonkDxpnv/H8wE9M3VW/fPgnL2nPe
- xaBLqyHxy9hA9JrZvxg3IQ61x7rtBWBUQPmEaK0azW+l3ysiNpBhISkZrsW3ZUdknWu87nh6
- eTB7mR7xBcVxnomxWwJI4B0wuMwCPdgbV6YDUKCuSgRMUEiVry10xd9KLypR9Vfyn1AhROrq
- AubRPVeJBf9zR5UW1trJNfwVt3XmbHX50HCcHdEdCKiT9O+FiEcahIaWh9lihvO0ci0TtVGZ
- MCEtaCE80Q3Ma9RdHYB3uVF930jwquplFLNF+IBCn5JRzsFNBFVDXDQBEADNkrQYSREUL4D3
- Gws46JEoZ9HEQOKtkrwjrzlw/tCmqVzERRPvz2Xg8n7+HRCrgqnodIYoUh5WsU84N03KlLue
- MNsWLJBvBaubYN4JuJIdRr4dS4oyF1/fQAQPHh8Thpiz0SAZFx6iWKB7Qrz3OrGCjTPcW6ei
- OMheesVS5hxietSmlin+SilmIAPZHx7n242u6kdHOh+/SyLImKn/dh9RzatVpUKbv34eP1wA
- GldWsRxbf3WP9pFNObSzI/Bo3kA89Xx2rO2roC+Gq4LeHvo7ptzcLcrqaHUAcZ3CgFG88CnA
- 6z6lBZn0WyewEcPOPdcUB2Q7D/NiUY+HDiV99rAYPJztjeTrBSTnHeSBPb+qn5ZZGQwIdUW9
- YegxWKvXXHTwB5eMzo/RB6vffwqcnHDoe0q7VgzRRZJwpi6aMIXLfeWZ5Wrwaw2zldFuO4Dt
- 91pFzBSOIpeMtfgb/Pfe/a1WJ/GgaIRIBE+NUqckM+3zJHGmVPqJP/h2Iwv6nw8U+7Yyl6gU
- BLHFTg2hYnLFJI4Xjg+AX1hHFVKmvl3VBHIsBv0oDcsQWXqY+NaFahT0lRPjYtrTa1v3tem/
- JoFzZ4B0p27K+qQCF2R96hVvuEyjzBmdq2esyE6zIqftdo4MOJho8uctOiWbwNNq2U9pPWmu
- 4vXVFBYIGmpyNPYzRm0QPwARAQABwsF8BBgBCgAmAhsMFiEEm9B+DgxR+NWWd7dUG5NDfTtB
- YpsFAmA872oFCRRflLYACgkQG5NDfTtBYpvScw/9GrqBrVLuJoJ52qBBKUBDo4E+5fU1bjt0
- Gv0nh/hNJuecuRY6aemU6HOPNc2t8QHMSvwbSF+Vp9ZkOvrM36yUOufctoqON+wXrliEY0J4
- ksR89ZILRRAold9Mh0YDqEJc1HmuxYLJ7lnbLYH1oui8bLbMBM8S2Uo9RKqV2GROLi44enVt
- vdrDvo+CxKj2K+d4cleCNiz5qbTxPUW/cgkwG0lJc4I4sso7l4XMDKn95c7JtNsuzqKvhEVS
- oic5by3fbUnuI0cemeizF4QdtX2uQxrP7RwHFBd+YUia7zCcz0//rv6FZmAxWZGy5arNl6Vm
- lQqNo7/Poh8WWfRS+xegBxc6hBXahpyUKphAKYkah+m+I0QToCfnGKnPqyYIMDEHCS/RfqA5
- t8F+O56+oyLBAeWX7XcmyM6TGeVfb+OZVMJnZzK0s2VYAuI0Rl87FBFYgULdgqKV7R7WHzwD
- uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
- 7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
- 5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
-In-Reply-To: <20231102124712.2549327-1-amadeuszx.slawinski@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: INFWGUS4DAFALVAF7GAYEV3AYWB3EMNT
-X-Message-ID-Hash: INFWGUS4DAFALVAF7GAYEV3AYWB3EMNT
-X-MailFrom: krzk@kernel.org
+Content-Type: text/plain
+X-MTK: N
+Message-ID-Hash: P2B76MK3CDWIGKJYKQ2BM64AIC74HPEK
+X-Message-ID-Hash: P2B76MK3CDWIGKJYKQ2BM64AIC74HPEK
+X-MailFrom: trevor.wu@mediatek.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -128,7 +104,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/INFWGUS4DAFALVAF7GAYEV3AYWB3EMNT/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/P2B76MK3CDWIGKJYKQ2BM64AIC74HPEK/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -137,34 +113,89 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 02/11/2023 13:46, Amadeusz Sławiński wrote:
-> Instead of using MODULE_ALIAS() to load boards, add proper device id
-> table and use MODULE_DEVICE_TABLE() macro to create board alias.
-> 
-> Amadeusz Sławiński (17):
->   ASoC: Intel: avs: da7219: Add proper id_table
->   ASoC: Intel: avs: dmic: Add proper id_table
->   ASoC: Intel: avs: es8336: Add proper id_table
->   ASoC: Intel: avs: hdaudio: Add proper id_table
->   ASoC: Intel: avs: i2s_test: Add proper id_table
->   ASoC: Intel: avs: max98357a: Add proper id_table
->   ASoC: Intel: avs: max98373: Add proper id_table
->   ASoC: Intel: avs: max98927: Add proper id_table
->   ASoC: Intel: avs: nau8825: Add proper id_table
->   ASoC: Intel: avs: probe: Add proper id_table
->   ASoC: Intel: avs: rt274: Add proper id_table
->   ASoC: Intel: avs: rt286: Add proper id_table
->   ASoC: Intel: avs: rt298: Add proper id_table
->   ASoC: Intel: avs: rt5514: Add proper id_table
->   ASoC: Intel: avs: rt5663: Add proper id_table
->   ASoC: Intel: avs: rt5682: Add proper id_table
->   ASoC: Intel: avs: ssm4567: Add proper id_table
-> 
+Since there are some variables that are no longer being used, we remove
+the code that was implemented for those variables.
 
-For entire series:
+Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
+Reviewed-by: Yaochun Hung <yc.hung@mediatek.com>
+---
+ sound/soc/sof/mediatek/mt8186/mt8186.c | 49 --------------------------
+ 1 file changed, 49 deletions(-)
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-
-Best regards,
-Krzysztof
+diff --git a/sound/soc/sof/mediatek/mt8186/mt8186.c b/sound/soc/sof/mediatek/mt8186/mt8186.c
+index b69fa788b16f..0d2d7d697de0 100644
+--- a/sound/soc/sof/mediatek/mt8186/mt8186.c
++++ b/sound/soc/sof/mediatek/mt8186/mt8186.c
+@@ -96,29 +96,6 @@ static int platform_parse_resource(struct platform_device *pdev, void *data)
+ 	struct mtk_adsp_chip_info *adsp = data;
+ 	int ret;
+ 
+-	mem_region = of_parse_phandle(dev->of_node, "memory-region", 0);
+-	if (!mem_region) {
+-		dev_err(dev, "no dma memory-region phandle\n");
+-		return -ENODEV;
+-	}
+-
+-	ret = of_address_to_resource(mem_region, 0, &res);
+-	of_node_put(mem_region);
+-	if (ret) {
+-		dev_err(dev, "of_address_to_resource dma failed\n");
+-		return ret;
+-	}
+-
+-	dev_dbg(dev, "DMA %pR\n", &res);
+-
+-	adsp->pa_shared_dram = (phys_addr_t)res.start;
+-	adsp->shared_size = resource_size(&res);
+-	if (adsp->pa_shared_dram & DRAM_REMAP_MASK) {
+-		dev_err(dev, "adsp shared dma memory(%#x) is not 4K-aligned\n",
+-			(u32)adsp->pa_shared_dram);
+-		return -EINVAL;
+-	}
+-
+ 	ret = of_reserved_mem_device_init(dev);
+ 	if (ret) {
+ 		dev_err(dev, "of_reserved_mem_device_init failed\n");
+@@ -248,26 +225,6 @@ static int adsp_memory_remap_init(struct snd_sof_dev *sdev, struct mtk_adsp_chip
+ 	return 0;
+ }
+ 
+-static int adsp_shared_base_ioremap(struct platform_device *pdev, void *data)
+-{
+-	struct device *dev = &pdev->dev;
+-	struct mtk_adsp_chip_info *adsp = data;
+-
+-	/* remap shared-dram base to be non-cachable */
+-	adsp->shared_dram = devm_ioremap(dev, adsp->pa_shared_dram,
+-					 adsp->shared_size);
+-	if (!adsp->shared_dram) {
+-		dev_err(dev, "failed to ioremap base %pa size %#x\n",
+-			adsp->shared_dram, adsp->shared_size);
+-		return -ENOMEM;
+-	}
+-
+-	dev_dbg(dev, "shared-dram vbase=%p, phy addr :%pa,  size=%#x\n",
+-		adsp->shared_dram, &adsp->pa_shared_dram, adsp->shared_size);
+-
+-	return 0;
+-}
+-
+ static int mt8186_run(struct snd_sof_dev *sdev)
+ {
+ 	u32 adsp_bootup_addr;
+@@ -324,12 +281,6 @@ static int mt8186_dsp_probe(struct snd_sof_dev *sdev)
+ 
+ 	priv->adsp->va_dram = sdev->bar[SOF_FW_BLK_TYPE_SRAM];
+ 
+-	ret = adsp_shared_base_ioremap(pdev, priv->adsp);
+-	if (ret) {
+-		dev_err(sdev->dev, "adsp_shared_base_ioremap fail!\n");
+-		return ret;
+-	}
+-
+ 	sdev->bar[DSP_REG_BAR] = priv->adsp->va_cfgreg;
+ 	sdev->bar[DSP_SECREG_BAR] = priv->adsp->va_secreg;
+ 	sdev->bar[DSP_BUSREG_BAR] = priv->adsp->va_busreg;
+-- 
+2.18.0
 
