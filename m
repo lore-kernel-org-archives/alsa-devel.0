@@ -4,111 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 641B3C4167D
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Nov 2023 16:23:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D5A78C4332F
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Nov 2023 16:23:23 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 875BC850;
-	Fri,  3 Nov 2023 17:22:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 875BC850
+	by alsa0.perex.cz (Postfix) with ESMTPS id E54A5EA6;
+	Fri,  3 Nov 2023 17:22:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E54A5EA6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1699028585;
-	bh=HFf0jnK9iK25j0qBoJQeFFZNdnbnq1K7qEfacrGVaoU=;
-	h=Date:From:To:Cc:Subject:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=ojV5g9ArWy6mDXJBoTfCqlUMVIJPQaZHxcM1bpImvk8ZBirTJfYUYziekPthEuAKW
-	 kjrah5XsXsPVdBZEiGE+93s5jov4wws6uw41pCQ8YUbRihjoRrtsgDXPG1AkAcJU78
-	 iWxUjc9YSTWPGgUtOB2LXtrvtESAefooo4E3b0Uo=
+	s=default; t=1699028601;
+	bh=kjdDsewq7/Uih5g1eAdb2BVmOlhcgA7XLihAWsdtKOY=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=q1G1Gf4f8xW4NGwpCMzK5ISGd28DzMRt34UuZk13Z2BIwH/fGB8l1EEC+GzQKURvL
+	 Y1N1zx3WHb+K00HNVt0C417xLkSLzCxVQ9vqUOtidr693drz84pL9rkY+SEtSUGfjh
+	 XhvKsB8mYue+IW+bpZZRouMnxhXEnC5h712EhSNw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 151CAF805B2; Fri,  3 Nov 2023 17:20:18 +0100 (CET)
+	id 601C7F8003C; Fri,  3 Nov 2023 17:20:24 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0DE1CF805AA;
-	Fri,  3 Nov 2023 17:20:18 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 93EA6F8020D;
+	Fri,  3 Nov 2023 17:20:23 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C6555F8019B; Sat, 28 Oct 2023 14:25:18 +0200 (CEST)
-Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com
- [IPv6:2607:f8b0:4864:20::12b])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 85374F80152
-	for <alsa-devel@alsa-project.org>; Sat, 28 Oct 2023 14:25:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 85374F80152
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20230601 header.b=XE5YagKG
-Received: by mail-il1-x12b.google.com with SMTP id
- e9e14a558f8ab-3575732df7fso348685ab.0
-        for <alsa-devel@alsa-project.org>;
- Sat, 28 Oct 2023 05:25:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698495909; x=1699100709;
- darn=alsa-project.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=vSxHFmesFAB9kTq2jfm6itRE/8cOOBEbwEMaK6v6h14=;
-        b=XE5YagKG6+l1KhXg/dlnndlLSAo0bWrhUOteWym2MkeGi9uGLg6MESR66VzNDMuLN3
-         aZxWwedt/PY99gVrZYVdw4v6aatLd4HCLetGgy+9DroeSw17kIXLnanR3xBjdTwhSND+
-         jBz3H9QtYePN3DRhN/29bSMXnhfSfXoIScq34OO6N08vqwjlvgOsTuCQetxEQhT3BsV4
-         op4H1pyYOdXJxs+s/RWfjRYX1m9Ps8/BmrfFcXdsfWB7MyUtIfI2LIJ/s+eeFH2MSPRd
-         7UxnGdwbOVSY8Z6LLMAEl1sYj9CsVkUPTVwKzCrduejnJxegcHftlmIK8VlbnxXsPhnl
-         jCGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698495909; x=1699100709;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vSxHFmesFAB9kTq2jfm6itRE/8cOOBEbwEMaK6v6h14=;
-        b=tR02CwVr4UnDCKRM24kkDqATSn2PAIRS5z6LryLx1Wngfq6mJpv+3/KQwOdOFDVhZC
-         jXyFN2Uq3lWF2PnR6rzWNv4qMjRCC5mtmNg4IapPkbUUEwBOz9zBTIaUCz1zSoveoS9t
-         OX+WIwEzjd+UAFoswa6LGYF5YfopCf8X14YZsvip3rWTkD409lJJcEDj133Ss0kGdKKD
-         gwzqPQWvhurK/13uj+KgkjMAB5yGUHnifw/0jHtXM+MvS4yi1r9tc9KGzkqkXAqFhmRy
-         vg5ohkJPEkI6AIYMJuSdNQ0Lh/iC6e5RNNb0zgpXumzBLnjGGKKfx4JsNtbklQLjCIfH
-         2tiQ==
-X-Gm-Message-State: AOJu0YzqNhccjB/GNBFCWICsllKd9r0H84hia79w0rVoatozdInRnGzr
-	xLDy7CJUWICu2UFnOdzKf/8=
-X-Google-Smtp-Source: 
- AGHT+IE4kmyNAp8GEi2qsVg0bMr/n6b2Qf8SbxEfHgzlYw4xUY53hPB/urxzfzaWyXZAuOjSw4jtVA==
-X-Received: by 2002:a05:6e02:218a:b0:359:a6d:bcf6 with SMTP id
- j10-20020a056e02218a00b003590a6dbcf6mr918480ila.1.1698495908891;
-        Sat, 28 Oct 2023 05:25:08 -0700 (PDT)
-Received: from arch (c-68-55-100-39.hsd1.mi.comcast.net. [68.55.100.39])
-        by smtp.gmail.com with ESMTPSA id
- w4-20020a056e021a6400b003579f927291sm1108075ilv.38.2023.10.28.05.25.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 28 Oct 2023 05:25:08 -0700 (PDT)
-Date: Sat, 28 Oct 2023 08:25:06 -0400
-From: Brady Norander <bradynorander@gmail.com>
-To: Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>,
-	alsa-devel@alsa-project.org
-Cc: linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>,
-	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-	Bard Liao <yung-chuan.liao@linux.intel.com>,
-	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-	Amadeusz =?utf-8?B?U8WCYXdpxYRza2k=?= <amadeuszx.slawinski@linux.intel.com>
-Subject: [PATCH] ALSA: hda: intel-dsp-cfg: Use AVS driver on SKL/KBL/APL
- Chromebooks
-Message-ID: <ZTz9orCylVwn3Pye@arch>
+	id 0D777F805AA; Fri,  3 Nov 2023 17:20:18 +0100 (CET)
+Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
+ [207.180.221.201])
+	by alsa1.perex.cz (Postfix) with ESMTP id 501DBF8016D
+	for <alsa-devel@alsa-project.org>; Fri,  3 Nov 2023 17:20:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 501DBF8016D
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-MailFrom: bradynorander@gmail.com
-X-Mailman-Rule-Hits: nonmember-moderation
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub pull_request - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1699028405927824736-webhooks-bot@alsa-project.org>
+References: <1699028405927824736-webhooks-bot@alsa-project.org>
+Subject: Documentation: Add ucm URL
+Message-Id: <20231103162019.0D777F805AA@alsa1.perex.cz>
+Date: Fri,  3 Nov 2023 17:20:18 +0100 (CET)
+Message-ID-Hash: AML5M4Q4WTVPHRAPOSEP2UXVYPATUNXV
+X-Message-ID-Hash: AML5M4Q4WTVPHRAPOSEP2UXVYPATUNXV
+X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: 6XIFOC4TX4KVNNDRQMUQYNZWX4V5X7ZQ
-X-Message-ID-Hash: 6XIFOC4TX4KVNNDRQMUQYNZWX4V5X7ZQ
-X-Mailman-Approved-At: Fri, 03 Nov 2023 16:20:07 +0000
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6XIFOC4TX4KVNNDRQMUQYNZWX4V5X7ZQ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AML5M4Q4WTVPHRAPOSEP2UXVYPATUNXV/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -117,84 +66,14 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The legacy SKL driver no longer works properly on these Chromebook
-platforms. Use the new AVS driver by default instead.
+alsa-project/alsa-ucm-conf pull request #366 was opened from broukema:
 
-Signed-off-by: Brady Norander <bradynorander@gmail.com>
----
- sound/hda/intel-dsp-config.c | 16 ++++++++++------
- 1 file changed, 10 insertions(+), 6 deletions(-)
+This commit adds the main alsa-ucm-conf documentation URL to PinePhone.conf, and clarifies the relevance of the other three URLs.
 
-diff --git a/sound/hda/intel-dsp-config.c b/sound/hda/intel-dsp-config.c
-index 756fa0aa69bb..1045be1fd441 100644
---- a/sound/hda/intel-dsp-config.c
-+++ b/sound/hda/intel-dsp-config.c
-@@ -16,10 +16,11 @@
- static int dsp_driver;
- 
- module_param(dsp_driver, int, 0444);
--MODULE_PARM_DESC(dsp_driver, "Force the DSP driver for Intel DSP (0=auto, 1=legacy, 2=SST, 3=SOF)");
-+MODULE_PARM_DESC(dsp_driver, "Force the DSP driver for Intel DSP (0=auto, 1=legacy, 2=SST, 3=SOF, 4=AVS)");
- 
- #define FLAG_SST			BIT(0)
- #define FLAG_SOF			BIT(1)
-+#define FLAG_AVS			BIT(2)
- #define FLAG_SST_ONLY_IF_DMIC		BIT(15)
- #define FLAG_SOF_ONLY_IF_DMIC		BIT(16)
- #define FLAG_SOF_ONLY_IF_SOUNDWIRE	BIT(17)
-@@ -56,7 +57,7 @@ static const struct config_entry config_table[] = {
- /*
-  * Apollolake (Broxton-P)
-  * the legacy HDAudio driver is used except on Up Squared (SOF) and
-- * Chromebooks (SST), as well as devices based on the ES8336 codec
-+ * Chromebooks (AVS), as well as devices based on the ES8336 codec
-  */
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_APOLLOLAKE)
- 	{
-@@ -81,7 +82,7 @@ static const struct config_entry config_table[] = {
- #endif
- #if IS_ENABLED(CONFIG_SND_SOC_INTEL_APL)
- 	{
--		.flags = FLAG_SST,
-+		.flags = FLAG_AVS,
- 		.device = PCI_DEVICE_ID_INTEL_HDA_APL,
- 		.dmi_table = (const struct dmi_system_id []) {
- 			{
-@@ -96,13 +97,13 @@ static const struct config_entry config_table[] = {
- #endif
- /*
-  * Skylake and Kabylake use legacy HDAudio driver except for Google
-- * Chromebooks (SST)
-+ * Chromebooks (AVS)
-  */
- 
- /* Sunrise Point-LP */
- #if IS_ENABLED(CONFIG_SND_SOC_INTEL_SKL)
- 	{
--		.flags = FLAG_SST,
-+		.flags = FLAG_AVS,
- 		.device = PCI_DEVICE_ID_INTEL_HDA_SKL_LP,
- 		.dmi_table = (const struct dmi_system_id []) {
- 			{
-@@ -122,7 +123,7 @@ static const struct config_entry config_table[] = {
- /* Kabylake-LP */
- #if IS_ENABLED(CONFIG_SND_SOC_INTEL_KBL)
- 	{
--		.flags = FLAG_SST,
-+		.flags = FLAG_AVS,
- 		.device = PCI_DEVICE_ID_INTEL_HDA_KBL_LP,
- 		.dmi_table = (const struct dmi_system_id []) {
- 			{
-@@ -667,6 +668,9 @@ int snd_intel_dsp_driver_probe(struct pci_dev *pci)
- 		}
- 	}
- 
-+	if (cfg->flags & FLAG_AVS)
-+		return SND_INTEL_DSP_DRIVER_AVS;
-+
- 	return SND_INTEL_DSP_DRIVER_LEGACY;
- }
- EXPORT_SYMBOL_GPL(snd_intel_dsp_driver_probe);
--- 
-2.42.0
+While in principle it could be argued that anyone editing ucm2 .conf files should RTFM, in practice everybody's busy and will not always find which documentation is the most useful and up-to-date. This commit aims to help people identify where they can expect to find the most useful+up-to-date info so that they can understand the current roles of the various types of sections of the config files, and file bug reports if behaviour of alsa-lib software differs from what's described in the documentation.
 
+This merge request should hopefully be uncontroversial. :)
+
+Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/366
+Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/366.patch
+Repository URL: https://github.com/alsa-project/alsa-ucm-conf
