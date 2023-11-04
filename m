@@ -4,48 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 002CAC4332F
-	for <alsa-devel@archiver.kernel.org>; Sat,  4 Nov 2023 12:25:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B4082C4332F
+	for <alsa-devel@archiver.kernel.org>; Sat,  4 Nov 2023 14:26:22 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5D9E8823;
-	Sat,  4 Nov 2023 13:25:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5D9E8823
+	by alsa0.perex.cz (Postfix) with ESMTPS id 76A9C828;
+	Sat,  4 Nov 2023 15:25:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 76A9C828
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1699100755;
-	bh=hTBWud1WiUKp6Avuu9voneiNNJXiv6jNooi+NDU8PLM=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=JkWeGAZ9YwEzb7IZuv97iDiYf/DigUJbUo3P07sbc3ZRV8MY9LHYEKgVPHkVsfjWG
-	 xWPXT5IfZekM1TzhvJvApYWiUyl6qY/k7Cbck5XP7BnEBVejNcO0kM2WXCpK96+ElN
-	 fz/RyXbgXdZMEYbpHsGV96FXejG+qmXrVZKqOvXc=
+	s=default; t=1699107979;
+	bh=cJWB87nOyYTPRO4fDffAOWzCQn+1/8jz0SK8FjeR1tI=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=f06kBof3geiJq6PLrAzttRTjfs9+pf61RxE50fH+p0TEnXeqpmfyyFP+C2Q3O09ol
+	 0/Y/chBPLIDXZ/3lyakfHs2u78ELSbIQKj/2X9Bf8SfABZIVxQFGno5mUIik2ufd+O
+	 6t5kWL5KFi3RokGcc/QI6Ztx2QvDy8Pcf55Vl+Mo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 60126F80558; Sat,  4 Nov 2023 13:24:29 +0100 (CET)
+	id 26DC5F80563; Sat,  4 Nov 2023 15:25:01 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1B7CCF8014B;
-	Sat,  4 Nov 2023 13:24:29 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A968AF80557;
+	Sat,  4 Nov 2023 15:25:00 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2B64EF8020D; Sat,  4 Nov 2023 13:22:20 +0100 (CET)
-Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
- [207.180.221.201])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4C02FF8014B
-	for <alsa-devel@alsa-project.org>; Sat,  4 Nov 2023 13:22:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4C02FF8014B
+	id E7FC4F80557; Sat,  4 Nov 2023 15:24:55 +0100 (CET)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 91C16F8003C
+	for <alsa-devel@alsa-project.org>; Sat,  4 Nov 2023 15:24:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 91C16F8003C
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (1024-bit key,
+ unprotected) header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256
+ header.s=mimecast20190719 header.b=gLEoGr+a
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1699107886;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=FjLibaee7ve80/nVwEtTtrHgkP3g0wts6ERGTigb2dQ=;
+	b=gLEoGr+aYSMZAQts6ttfZPXKJCGGVz2WJPlHA+uQ03+k0bdRwzjFvoUQNgIK4qfzQHDeI6
+	zjSq9dZ13M9fjLSv5FVS6BwjBki3BaF0D7Rh4j6oKipooXo6SuSDU48c1IEYyGY3Up5dc6
+	doWvPRq+pageXF4R2Yy0CIrDmgr/Uv4=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-606-VgoU7bdYP6qLLrCfwRo9WQ-1; Sat,
+ 04 Nov 2023 10:24:44 -0400
+X-MC-Unique: VgoU7bdYP6qLLrCfwRo9WQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com
+ [10.11.54.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B44EB380627D;
+	Sat,  4 Nov 2023 14:24:43 +0000 (UTC)
+Received: from shalem.redhat.com (unknown [10.39.192.2])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 1384B25C0;
+	Sat,  4 Nov 2023 14:24:39 +0000 (UTC)
+From: Hans de Goede <hdegoede@redhat.com>
+To: Cezary Rojewski <cezary.rojewski@intel.com>,
+	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+	Mark Brown <broonie@kernel.org>
+Cc: Hans de Goede <hdegoede@redhat.com>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	David Yang <yangxiaohua@everest-semi.com>,
+	alsa-devel@alsa-project.org
+Subject: [PATCH 0/4] ASoC: Intel: bytcht_es8316: Determine quirks/routing
+ through ACPI DSM
+Date: Sat,  4 Nov 2023 15:24:35 +0100
+Message-ID: <20231104142439.21983-1-hdegoede@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1699100536390785456-webhooks-bot@alsa-project.org>
-References: <1699100536390785456-webhooks-bot@alsa-project.org>
-Subject: [dmix] time for a default up to 8 channels?
-Message-Id: <20231104122220.2B64EF8020D@alsa1.perex.cz>
-Date: Sat,  4 Nov 2023 13:22:20 +0100 (CET)
-Message-ID-Hash: ODUED4HKCXFWXWKATJSLNXL4JEXPE5VN
-X-Message-ID-Hash: ODUED4HKCXFWXWKATJSLNXL4JEXPE5VN
-X-MailFrom: github@alsa-project.org
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="US-ASCII"; x-default=true
+Message-ID-Hash: KIRIZ6XI6GXRH2IUVN2CBEHNQ4DIXVKF
+X-Message-ID-Hash: KIRIZ6XI6GXRH2IUVN2CBEHNQ4DIXVKF
+X-MailFrom: hdegoede@redhat.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -57,7 +99,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ODUED4HKCXFWXWKATJSLNXL4JEXPE5VN/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KIRIZ6XI6GXRH2IUVN2CBEHNQ4DIXVKF/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -66,11 +108,58 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-lib issue #362 was opened from sylware:
+Hi All,
 
-Isn't the time for dmix to try to configure by default the audio hardware with as many channels as possible up to 8 (at min 48/44.1 kHz, 16bits/float32)?
+This takes some of the work done to auto-configure quirks/routing for
+ESS83xx codecs by getting the info from ACPI from:
+https://github.com/thesofproject/linux/pull/4112
 
-The channel map should be fine nowadays, shouldn't it?
+And then builds on top of this to add auto-configuration to
+the bytcht_es8316 board driver.
 
-Issue URL     : https://github.com/alsa-project/alsa-lib/issues/362
-Repository URL: https://github.com/alsa-project/alsa-lib
+Note compared to the pull-request, which deals with the ES8336, this
+series deals with the ES8316 (for which I have several devices to test
+on) and this moves all handling from the codec driver to the board
+driver where this IMHO belongs.
+
+After this series audio now works properly on a CHT Chuwi Hi12 tablet
+without needing to add an extra quirk for that model.
+
+This has also been tested on the following devices, where things
+are unchanged from before (the ACPI autoconfiguration gives the
+same results as the old defaults) :
+
+Onda V80 plus (CHT)
+GP-electronic T701 (BYT)
+
+I also tested this on a Nanote UMPC-01, here the _DSM result
+for PLATFORM_SPK_TYPE_ARG wrongly returns 1 (mono) while
+the device actually has 2 speakers, so this model needs to keep
+its DMI quirk.
+
+Regards,
+
+Hans
+
+
+Hans de Goede (2):
+  ASoC: Intel: bytcht_es8316: Add is_bytcr helper variable
+  ASoC: Intel: bytcht_es8316: Determine quirks/routing with codec-dev
+    ACPI DSM
+
+Pierre-Louis Bossart (2):
+  ASoC: Intel: es83xx: add ACPI DSM helper module
+  ASoC: Intel: bytcht_es8316: Dump basic _DSM information
+
+ sound/soc/intel/boards/Kconfig             |   5 +
+ sound/soc/intel/boards/Makefile            |   2 +
+ sound/soc/intel/boards/bytcht_es8316.c     |  71 +++-
+ sound/soc/intel/boards/es83xx-dsm-common.c |  89 +++++
+ sound/soc/intel/boards/es83xx-dsm-common.h | 393 +++++++++++++++++++++
+ 5 files changed, 557 insertions(+), 3 deletions(-)
+ create mode 100644 sound/soc/intel/boards/es83xx-dsm-common.c
+ create mode 100644 sound/soc/intel/boards/es83xx-dsm-common.h
+
+-- 
+2.41.0
+
