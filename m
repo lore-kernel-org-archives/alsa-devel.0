@@ -4,94 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EBFA4C4332F
-	for <alsa-devel@archiver.kernel.org>; Sat,  4 Nov 2023 14:27:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 14FA3C4332F
+	for <alsa-devel@archiver.kernel.org>; Sun,  5 Nov 2023 20:47:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 29ABB844;
-	Sat,  4 Nov 2023 15:26:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 29ABB844
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4497B829;
+	Sun,  5 Nov 2023 21:46:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4497B829
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1699108053;
-	bh=A6QLdzKlDqJ529pEFiBEV3qoCpU6rfwIHVJoIwdelg0=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1699217236;
+	bh=DFEnBoAZfjHsPxHG7Pn6/C8BILMOVrXxGrVVO4Ir0M0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=fmPk4x7jwQ0MwDPvGFyT65sQ8LwwCzYJ5HtYGhMVEgE5UzdO0FXarms1nh2zYlPl9
-	 n1lMxqPf/31q8/3+irFg/VKfMgTAtu52MlG+2tjS+G2iVXgQJhcmqYdTi4NHIkF5Kh
-	 uKDNldzEJE9p58gb5vTLepydFLcAaVVnfY46T7mw=
+	b=gRWY0oldh52JEEJiulH2otjYWvoByUNUGLYgqO5v8sSVEanNha6+qVaZuN1i4NH6r
+	 DQ0Bxz7Q3lsmryDILQUOcVbdS4dMvqJg8Av24LwlavVz8CHewgF2K+Y9o91Zx+uxKx
+	 kwtylmorskK7uc08rbRywKMMQXCIkW/mZ8x+I8AY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C8A2DF805B2; Sat,  4 Nov 2023 15:25:38 +0100 (CET)
+	id A6285F80558; Sun,  5 Nov 2023 21:46:25 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 26C2DF805AB;
-	Sat,  4 Nov 2023 15:25:38 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5622BF8016D;
+	Sun,  5 Nov 2023 21:46:24 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4C7E1F80579; Sat,  4 Nov 2023 15:25:34 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 3EEB3F8016D; Sun,  5 Nov 2023 21:45:15 +0100 (CET)
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 43CBDF80425
-	for <alsa-devel@alsa-project.org>; Sat,  4 Nov 2023 15:24:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 43CBDF80425
+	by alsa1.perex.cz (Postfix) with ESMTPS id 458C1F80100
+	for <alsa-devel@alsa-project.org>; Sun,  5 Nov 2023 21:45:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 458C1F80100
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256
- header.s=mimecast20190719 header.b=HOoMQSjp
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1699107893;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=cPdUGB+6KgX+P+fCWntbspetyUcQnoq8BlftZyb4d00=;
-	b=HOoMQSjpH2qjNex3mk9jewCVTepAxnzvv2cjeDKkww5y7uO4LJBKOHmMbt9k5jaw+tqtkE
-	JNxrSfHPooaz+MocSgSxDVOCye9U4TEzbOPwygMVKe+VjFsUl0hB8kUP84VSyZ2S5Y34Sd
-	xomP8Gev8gPMdFFFdWk88ZFS9uO4xC8=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-12-Lg0m9ocmMh-Mj2rbplD2ew-1; Sat,
- 04 Nov 2023 10:24:50 -0400
-X-MC-Unique: Lg0m9ocmMh-Mj2rbplD2ew-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com
- [10.11.54.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 76F481C0515D;
-	Sat,  4 Nov 2023 14:24:49 +0000 (UTC)
-Received: from shalem.redhat.com (unknown [10.39.192.2])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 44BE525C0;
-	Sat,  4 Nov 2023 14:24:48 +0000 (UTC)
-From: Hans de Goede <hdegoede@redhat.com>
-To: Cezary Rojewski <cezary.rojewski@intel.com>,
-	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-	Mark Brown <broonie@kernel.org>
-Cc: Hans de Goede <hdegoede@redhat.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	David Yang <yangxiaohua@everest-semi.com>,
-	alsa-devel@alsa-project.org
-Subject: [PATCH 4/4] ASoC: Intel: bytcht_es8316: Determine quirks/routing with
- codec-dev ACPI DSM
-Date: Sat,  4 Nov 2023 15:24:39 +0100
-Message-ID: <20231104142439.21983-5-hdegoede@redhat.com>
-In-Reply-To: <20231104142439.21983-1-hdegoede@redhat.com>
-References: <20231104142439.21983-1-hdegoede@redhat.com>
+	dkim=pass (2048-bit key,
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=OHdwYwwV
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699217105; x=1730753105;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=DFEnBoAZfjHsPxHG7Pn6/C8BILMOVrXxGrVVO4Ir0M0=;
+  b=OHdwYwwVxKWirF88uhOktHHCxKMrYWboSd34niJTt6zwuIUugJF0E0aV
+   ldl5XiiDJ+jofvIWuHxnpyxKv51W0liaQi8v5LAIkiIoFbjOB8zN77mMk
+   NVlVFRD/zfEMzJQo8mGwlb0I12r76jqPzZFXNip3mhvS16N6hyglhQSwD
+   DrxUY7bJ04AMJclzMd5dDKjWC8zf1PobAkYE91Ov9l2lrOj8yP+dBbcq1
+   wd1RI7iqY5m8+0i9BgogoDHgWSESCBWDRfZdO7WDg9A1Siex38f1AAunt
+   0sO2g6YYDyu2lZ8FX+cqWV8cf6ebVqagyTelwVRH0mNFur4AQDlipIh3K
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10885"; a="388991516"
+X-IronPort-AV: E=Sophos;i="6.03,279,1694761200";
+   d="scan'208";a="388991516"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 05 Nov 2023 12:45:01 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10885"; a="762133802"
+X-IronPort-AV: E=Sophos;i="6.03,279,1694761200";
+   d="scan'208";a="762133802"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by orsmga002.jf.intel.com with ESMTP; 05 Nov 2023 12:44:58 -0800
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1qzjzL-0005mC-32;
+	Sun, 05 Nov 2023 20:44:55 +0000
+Date: Mon, 6 Nov 2023 04:44:17 +0800
+From: kernel test robot <lkp@intel.com>
+To: Ivan Orlov <ivan.orlov0322@gmail.com>, perex@perex.cz, tiwai@suse.com,
+	corbet@lwn.net
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	Ivan Orlov <ivan.orlov0322@gmail.com>, alsa-devel@alsa-project.org,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	gregkh@linuxfoundation.org
+Subject: Re: [PATCH v2 2/2] ALSA: Add new driver for Marian M2 sound card
+Message-ID: <202311060403.591giMV8-lkp@intel.com>
+References: <20230918181044.7257-2-ivan.orlov0322@gmail.com>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain; charset="US-ASCII"; x-default=true
-Message-ID-Hash: BKCVHL233GCIZH2JB2S5KTZAMTK53KTG
-X-Message-ID-Hash: BKCVHL233GCIZH2JB2S5KTZAMTK53KTG
-X-MailFrom: hdegoede@redhat.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230918181044.7257-2-ivan.orlov0322@gmail.com>
+Message-ID-Hash: SML4JE4B3UVFR6FTPIEIWXJPIVBFHPIG
+X-Message-ID-Hash: SML4JE4B3UVFR6FTPIEIWXJPIVBFHPIG
+X-MailFrom: lkp@intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -103,7 +96,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BKCVHL233GCIZH2JB2S5KTZAMTK53KTG/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SML4JE4B3UVFR6FTPIEIWXJPIVBFHPIG/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -112,111 +105,99 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add support for querying the same ACPI Device-Specific-Method (DSM) as
-Windows uses to determine things like speaker and mic routing.
+Hi Ivan,
 
-This avoids the need to add DMI quirks for each new ESS8316 tablet model.
+kernel test robot noticed the following build warnings:
 
-This has been tested on the following devices:
+[auto build test WARNING on tiwai-sound/for-next]
+[also build test WARNING on tiwai-sound/for-linus linus/master v6.6 next-20231103]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-1. Chuwi Hi12 CHT with stereo speakers and IN2-mic-map,
-   this avoids the need to add a DMI quirk for this model.
+url:    https://github.com/intel-lab-lkp/linux/commits/Ivan-Orlov/ALSA-Add-new-driver-for-Marian-M2-sound-card/20230919-021236
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git for-next
+patch link:    https://lore.kernel.org/r/20230918181044.7257-2-ivan.orlov0322%40gmail.com
+patch subject: [PATCH v2 2/2] ALSA: Add new driver for Marian M2 sound card
+config: i386-allyesconfig (https://download.01.org/0day-ci/archive/20231106/202311060403.591giMV8-lkp@intel.com/config)
+compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231106/202311060403.591giMV8-lkp@intel.com/reproduce)
 
-2. Nanote UMPC-01 CHT with stereo speakers and IN1-mic-map,
-   the existing DMI quirk is still necessary because of a bug
-   in the DSM return values for the speakers (it returns mono).
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311060403.591giMV8-lkp@intel.com/
 
-3. Onda V80 plus CHT with mono speaker and IN1-mic-map,
-   DSM set quirks match the previously used defaults.
+All warnings (new ones prefixed by >>):
 
-4. GP-electronic T701 BYT with mono speaker and IN2-mic-map,
-   DSM set quirks match the previously used defaults.
+   sound/pci/marianm2.c:466:6: warning: variable 'buffer_frames' set but not used [-Wunused-but-set-variable]
+           int buffer_frames;
+               ^
+>> sound/pci/marianm2.c:472:11: warning: variable 'speedmode' is used uninitialized whenever 'if' condition is false [-Wsometimes-uninitialized]
+           else if (params_rate(params) < RATE_FAST)
+                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   sound/pci/marianm2.c:475:6: note: uninitialized use occurs here
+           if (speedmode > marian->desc->speedmode_max) {
+               ^~~~~~~~~
+   sound/pci/marianm2.c:472:7: note: remove the 'if' if its condition is always true
+           else if (params_rate(params) < RATE_FAST)
+                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   sound/pci/marianm2.c:465:24: note: initialize the variable 'speedmode' to silence this warning
+           unsigned int speedmode;
+                                 ^
+                                  = 0
+   2 warnings generated.
 
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
----
- sound/soc/intel/boards/bytcht_es8316.c | 62 ++++++++++++++++++++++++++
- 1 file changed, 62 insertions(+)
 
-diff --git a/sound/soc/intel/boards/bytcht_es8316.c b/sound/soc/intel/boards/bytcht_es8316.c
-index 1cdb1ae31a93..5ca3d41112dc 100644
---- a/sound/soc/intel/boards/bytcht_es8316.c
-+++ b/sound/soc/intel/boards/bytcht_es8316.c
-@@ -462,6 +462,66 @@ static const struct dmi_system_id byt_cht_es8316_quirk_table[] = {
- 	{}
- };
- 
-+static int byt_cht_es8316_get_quirks_from_dsm(struct byt_cht_es8316_private *priv,
-+					      bool is_bytcr)
-+{
-+	int ret, val1, val2, dsm_quirk = 0;
-+
-+	if (is_bytcr)
-+		dsm_quirk |= BYT_CHT_ES8316_SSP0;
-+
-+	ret = es83xx_dsm(priv->codec_dev, PLATFORM_MAINMIC_TYPE_ARG, &val1);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = es83xx_dsm(priv->codec_dev, PLATFORM_HPMIC_TYPE_ARG, &val2);
-+	if (ret < 0)
-+		return ret;
-+
-+	if (val1 == PLATFORM_MIC_AMIC_LIN1RIN1 && val2 == PLATFORM_MIC_AMIC_LIN2RIN2) {
-+		dsm_quirk |= BYT_CHT_ES8316_INTMIC_IN1_MAP;
-+	} else if (val1 == PLATFORM_MIC_AMIC_LIN2RIN2 && val2 == PLATFORM_MIC_AMIC_LIN1RIN1) {
-+		dsm_quirk |= BYT_CHT_ES8316_INTMIC_IN2_MAP;
-+	} else {
-+		dev_warn(priv->codec_dev, "Unknown mic settings mainmic 0x%02x hpmic 0x%02x\n",
-+			 val1, val2);
-+		return -EINVAL;
-+	}
-+
-+	ret = es83xx_dsm(priv->codec_dev, PLATFORM_SPK_TYPE_ARG, &val1);
-+	if (ret < 0)
-+		return ret;
-+
-+	switch (val1) {
-+	case PLATFORM_SPK_MONO:
-+		dsm_quirk |= BYT_CHT_ES8316_MONO_SPEAKER;
-+		break;
-+	case PLATFORM_SPK_STEREO:
-+		break;
-+	default:
-+		dev_warn(priv->codec_dev, "Unknown speaker setting 0x%02x\n", val1);
-+		return -EINVAL;
-+	}
-+
-+	ret = es83xx_dsm(priv->codec_dev, PLATFORM_HPDET_INV_ARG, &val1);
-+	if (ret < 0)
-+		return ret;
-+
-+	switch (val1) {
-+	case PLATFORM_HPDET_NORMAL:
-+		break;
-+	case PLATFORM_HPDET_INVERTED:
-+		dsm_quirk |= BYT_CHT_ES8316_JD_INVERTED;
-+		break;
-+	default:
-+		dev_warn(priv->codec_dev, "Unknown hpdet-inv setting 0x%02x\n", val1);
-+		return -EINVAL;
-+	}
-+
-+	quirk = dsm_quirk;
-+	return 0;
-+}
-+
- static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
-@@ -528,6 +588,8 @@ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
- 	dmi_id = dmi_first_match(byt_cht_es8316_quirk_table);
- 	if (dmi_id) {
- 		quirk = (unsigned long)dmi_id->driver_data;
-+	} else if (!byt_cht_es8316_get_quirks_from_dsm(priv, is_bytcr)) {
-+		dev_info(dev, "Using ACPI DSM info for quirks\n");
- 	} else if (is_bytcr) {
- 		/* On BYTCR default to SSP0, internal-mic-in2-map, mono-spk */
- 		quirk = BYT_CHT_ES8316_SSP0 | BYT_CHT_ES8316_INTMIC_IN2_MAP |
+vim +472 sound/pci/marianm2.c
+
+   460	
+   461	static int snd_marian_hw_params(struct snd_pcm_substream *substream,
+   462					struct snd_pcm_hw_params *params)
+   463	{
+   464		struct marian_card *marian = snd_pcm_substream_chip(substream);
+   465		unsigned int speedmode;
+ > 466		int buffer_frames;
+   467	
+   468		buffer_frames = SUBSTREAM_BUF_SIZE / M2_FRAME_SIZE;
+   469	
+   470		if (params_rate(params) < RATE_SLOW)
+   471			speedmode = SPEEDMODE_SLOW;
+ > 472		else if (params_rate(params) < RATE_FAST)
+   473			speedmode = SPEEDMODE_FAST;
+   474	
+   475		if (speedmode > marian->desc->speedmode_max) {
+   476			dev_err(marian->card->dev,
+   477				"Requested rate (%u Hz) higher than card's maximum\n",
+   478				params_rate(params));
+   479			_snd_pcm_hw_param_setempty(params, SNDRV_PCM_HW_PARAM_RATE);
+   480			return -EBUSY;
+   481		}
+   482	
+   483		spin_lock(&marian->reglock);
+   484		if (marian->desc->set_speedmode)
+   485			marian->desc->set_speedmode(marian, speedmode);
+   486		else
+   487			marian_generic_set_speedmode(marian, speedmode);
+   488	
+   489		marian->detune = 0;
+   490	
+   491		marian_generic_set_dco(marian, params_rate(params), 0);
+   492		spin_unlock(&marian->reglock);
+   493	
+   494		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+   495			snd_pcm_set_runtime_buffer(substream, &marian->playback_buf);
+   496		else
+   497			snd_pcm_set_runtime_buffer(substream, &marian->capture_buf);
+   498	
+   499		// apply optional card specific hw constraints
+   500		if (marian->desc->hw_constraints_func)
+   501			marian->desc->hw_constraints_func(marian, substream, params);
+   502	
+   503		return 0;
+   504	}
+   505	
+
 -- 
-2.41.0
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
