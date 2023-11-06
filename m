@@ -4,99 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EDC4BC4332F
-	for <alsa-devel@archiver.kernel.org>; Mon,  6 Nov 2023 11:00:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DA08EC4332F
+	for <alsa-devel@archiver.kernel.org>; Mon,  6 Nov 2023 13:05:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EA3B2201;
-	Mon,  6 Nov 2023 11:59:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EA3B2201
+	by alsa0.perex.cz (Postfix) with ESMTPS id D0732846;
+	Mon,  6 Nov 2023 14:04:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D0732846
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1699268398;
-	bh=Sg8f81K8kk3/SHGG8dWL3FhrCJtkIiWJ0jEsgKtTGhg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1699275897;
+	bh=tvuETolrhSYwQGmU50Kms37nVGRMVAfF+sc+bKCkR5Y=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=D1Ub31aSefobIVI63wleo5NR86DlW06WlJwWgnlZRuc+y5OdJnuWOmbvTz/RA2Qf8
-	 61nYx38KL+f//5Z5GhWo5cJz0l79hbD8FTQBVT61sGfOewojxAvPU00k0H7UG3dQxx
-	 wsMTYmOoYVhuOpfH0bNVqt2g5+Bs7WtOUEVAb/VU=
+	b=N7YapeWQJki13Kx5BMOldqrXAdi4HjBaso81M0ggPfU2lXHrUnjFNVHxRbmm4XQTA
+	 +en0wPColkDn85GyTfwKoXQMomZhX9Y8Jl78sH1Z+bFtoGXj/tb45slvSIzOOpTE5H
+	 clgDP+99g5erxfWfo10HClyzf31hiEOrRkT4eonA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AEAE4F80558; Mon,  6 Nov 2023 11:59:05 +0100 (CET)
+	id 9214EF80100; Mon,  6 Nov 2023 14:03:47 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3E522F8016D;
-	Mon,  6 Nov 2023 11:59:05 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 35A5AF80100;
+	Mon,  6 Nov 2023 14:03:47 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 403C1F8016D; Mon,  6 Nov 2023 11:59:01 +0100 (CET)
+	id 52FE6F801F5; Mon,  6 Nov 2023 14:03:41 +0100 (CET)
 Received: from sin.source.kernel.org (sin.source.kernel.org
  [IPv6:2604:1380:40e1:4800::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id EFCE7F80125
-	for <alsa-devel@alsa-project.org>; Mon,  6 Nov 2023 11:58:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EFCE7F80125
+	by alsa1.perex.cz (Postfix) with ESMTPS id C41DCF800ED
+	for <alsa-devel@alsa-project.org>; Mon,  6 Nov 2023 14:03:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C41DCF800ED
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=Th/nT6Ve
+ header.s=k20201202 header.b=fGSmUVsZ
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 94F58CE09B1;
-	Mon,  6 Nov 2023 10:58:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2AD3EC433C7;
-	Mon,  6 Nov 2023 10:58:49 +0000 (UTC)
+	by sin.source.kernel.org (Postfix) with ESMTP id 0068BCE0B24;
+	Mon,  6 Nov 2023 13:03:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8481C433C8;
+	Mon,  6 Nov 2023 13:03:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1699268329;
-	bh=Sg8f81K8kk3/SHGG8dWL3FhrCJtkIiWJ0jEsgKtTGhg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Th/nT6VeS2zk1OlULtw+APVIYXcTssnx5cdpxe9RWD0rBicD+1gbBEBPHnoIJ2JxS
-	 y0BaJK13gBKtKqEq76LNJbcJooPSje3Rwa686by63MpTCvKZ9nW0vsP+ImT+OBHxlT
-	 /nq79xJlOCrCMBfTp/K2hw05nNLWY9683dIA1GR968Irjlhm1oNjc/Q7Rh5/ujtfpE
-	 EJyXp/JtyEqTP9GYp16IRj+3RmdFZfOV5og+MqYW5QDIk7bLhEYHgjdSpFJKPghEE1
-	 8DyuRWRhuQF5tpNI71knoBGV9foel4lRcP/XoizdI/dUMengOwxo81jAxXZMKfiSbY
-	 cDmyD6XWbes/Q==
-Date: Mon, 6 Nov 2023 10:58:46 +0000
+	s=k20201202; t=1699275811;
+	bh=tvuETolrhSYwQGmU50Kms37nVGRMVAfF+sc+bKCkR5Y=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=fGSmUVsZj3YqNPEPJ6n5tf0SkZoxwAJRvId189ljL97gzh8LlaaCB8wlw7BSZGxJX
+	 4Wmjzm3pcT7odjTzds59ex/i+/NdKNC4ZRKpbynMf9GL5svnjJUD4865kHdo9bv1Ud
+	 mNtSnA7zLw66ig+A/K7R5qje2BmbjuGcCjPmoeiE9JPRGxMFJnL4sfKNEjzdKGN/1o
+	 ptVsbOEYbOa/ikOL9zLw8TPYppejcYt6mR2gr6YAQtZxEPhAqqB9UshoEDDFNw+sXi
+	 iIgj4T7hrpe0i0uEWnwUk9zpVZpN6tSDNahgwy0TK4psWicVqbLHN3FLOery8e1X8t
+	 JLfzH+McJFmrg==
 From: Mark Brown <broonie@kernel.org>
-To: Duje =?utf-8?Q?Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
-Cc: Robin Murphy <robin.murphy@arm.com>,
-	Michael Turquette <mturquette@baylibre.com>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Tony Lindgren <tony@atomide.com>, Daniel Mack <daniel@zonque.org>,
-	Haojian Zhuang <haojian.zhuang@gmail.com>,
-	Robert Jarzmik <robert.jarzmik@free.fr>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-	Leo Yan <leoy@marvell.com>, Zhangfei Gao <zhangfei.gao@marvell.com>,
-	Lubomir Rintel <lkundrak@v3.sk>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Kees Cook <keescook@chromium.org>,
-	Tony Luck <tony.luck@intel.com>,
-	"Guilherme G . Piccoli" <gpiccoli@igalia.com>,
-	linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
-	alsa-devel@alsa-project.org, linux-hardening@vger.kernel.org,
-	phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
-	Karel Balej <balejk@matfyz.cz>, kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH v7 06/10] ASoC: pxa: Suppress SSPA on ARM64
-Message-ID: <ZUjG5tUrBvm6PDvB@finisterre.sirena.org.uk>
-References: <20231102152033.5511-1-duje.mihanovic@skole.hr>
- <dc7aaff0-f767-494e-9a3a-40fcacc1674e@sirena.org.uk>
- <3b4ac48b-e29d-415f-89f1-6d354f18c4a4@arm.com>
- <4855402.GXAFRqVoOG@radijator>
+To: alsa-devel@alsa-project.org, Syed Saba Kareem <Syed.SabaKareem@amd.com>
+Cc: Vijendar.Mukunda@amd.com, Basavaraj.Hiregoudar@amd.com,
+ Sunil-kumar.Dommati@amd.com, mario.limonciello@amd.com,
+ venkataprasad.potturu@amd.com, arungopal.kondaveeti@amd.com,
+ mastan.katragadda@amd.com, juan.martinez@amd.com,
+ amadeuszx.slawinski@linux.intel.com, dan.carpenter@linaro.org,
+ Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, Nicolas Ferre <nicolas.ferre@microchip.com>,
+ =?utf-8?q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Yang Li <yang.lee@linux.alibaba.com>,
+ open list <linux-kernel@vger.kernel.org>
+In-Reply-To: <20231031135949.1064581-1-Syed.SabaKareem@amd.com>
+References: <20231031135949.1064581-1-Syed.SabaKareem@amd.com>
+Subject: Re: [PATCH 1/3] ASoC: amd: acp: Fix for indentation issue
+Message-Id: <169927580618.3037292.18150963657719003157.b4-ty@kernel.org>
+Date: Mon, 06 Nov 2023 13:03:26 +0000
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="cDAfE28G8f8xdnBg"
-Content-Disposition: inline
-In-Reply-To: <4855402.GXAFRqVoOG@radijator>
-X-Cookie: Save energy:  Drive a smaller shell.
-Message-ID-Hash: QSZJUNK6LFUDZF76MXZ63BZMCH6HU5MZ
-X-Message-ID-Hash: QSZJUNK6LFUDZF76MXZ63BZMCH6HU5MZ
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-0438c
+Message-ID-Hash: LR4FC3KYYLOUN7LVUUN5LCQAVWMBOWXL
+X-Message-ID-Hash: LR4FC3KYYLOUN7LVUUN5LCQAVWMBOWXL
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -109,7 +92,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QSZJUNK6LFUDZF76MXZ63BZMCH6HU5MZ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LR4FC3KYYLOUN7LVUUN5LCQAVWMBOWXL/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -118,41 +101,43 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+On Tue, 31 Oct 2023 19:29:32 +0530, Syed Saba Kareem wrote:
+> Fix indentation issue reported in acp70_pcm_resume() function.
+> 
+> Fixes: e84db124cb21 (ASoC: amd: acp: Add pci legacy driver support
+> 	for acp7.0 platform")
+> 
+> 
 
---cDAfE28G8f8xdnBg
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Applied to
 
-On Fri, Nov 03, 2023 at 05:58:05PM +0100, Duje Mihanovi=C4=87 wrote:
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-> I just looked at it again and it looks like no code in sound/soc/pxa/* or=
-=20
-> sound/arm/pxa* depends on AACI in any way. Therefore, I believe that to f=
-ix=20
-> this correctly, I would have to remove "select SND_ARM" from sound/soc/px=
-a/
-> Kconfig and optionally move the PXA2xx code out of sound/arm/ and into so=
-und/
-> soc/pxa/. Is this correct? If so, I'd also split that fix into a separate=
-=20
-> series.
+Thanks!
 
-There's the pxa-ac97 driver to consider...
+[1/3] ASoC: amd: acp: Fix for indentation issue
+      (no commit info)
+[2/3] ASoC: amd: acp: correct the format order
+      (no commit info)
+[3/3] ASoC: amd: acp: fix for i2s mode register field update
+      commit: ed2232d49187cebc007ecf4e6374069b11ab3219
 
---cDAfE28G8f8xdnBg
-Content-Type: application/pgp-signature; name="signature.asc"
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
------BEGIN PGP SIGNATURE-----
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVIxuUACgkQJNaLcl1U
-h9AeGAf/c2+d+tcgxFoSAkZXFPkCaz/eMgb8h+BgUpxjiuIheHzsxvbKE0zqEpob
-LLb77Y8RJuFjRED+1HDwewAzExBafqDv6jOitYbrJDCL+ERlb72HhaWK7jrSvo9y
-OjupBMTVvmLY0W64K7Vb2NM0T2/OIxrKApBbEMUxxpEagmmM1I09erf7m1Gi0Sfl
-31oZwOnmH810ZaG0mtQuZijawmCMSuEnpl0vjhrQe0D8mSieZRdlT8IdpMVN7sm+
-IZ6qvIh644bG7uf1E9a0QV6eM9ziLMDdId1h4W3hCTssoFesy9wWw6dV2mZiKrat
-/yjpAz05qMaAFLHi45RxQYjqwdAKQw==
-=jjeN
------END PGP SIGNATURE-----
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---cDAfE28G8f8xdnBg--
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
