@@ -4,97 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3CC7BC4332F
-	for <alsa-devel@archiver.kernel.org>; Mon,  6 Nov 2023 10:43:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CA975C4167D
+	for <alsa-devel@archiver.kernel.org>; Mon,  6 Nov 2023 10:43:05 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2623086F;
-	Mon,  6 Nov 2023 11:42:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2623086F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9B3D2950;
+	Mon,  6 Nov 2023 11:42:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9B3D2950
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1699267381;
-	bh=vd5YW4KLFIfIobi6uZbsgtcVcLeruWFYRPMzBtcVP7o=;
+	s=default; t=1699267382;
+	bh=z8El7XnzsiVMEZRG8J2wsXjW2H7YOphx7Ff0K6YK5JA=;
 	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=OZwJBsGXX0RkMUnD0Qiq33w+P9QcYVxJVgqEyhD3u1Y2h02Ed5LE6eUw9s+7fOg3u
-	 71GKYtpRXI/QcBWJZTYuVFI0lBYDlcN4dcEkIwUJPQyQzy84mMj7hQ8ozFyD+YI+x0
-	 Kt+uHb46vEhNNkzVIixYlsOnKT6Ll6741bVJlDMY=
+	b=kN0v413kG00l9lcd9bV4mcJenWjmP8+bi9w4yddP4MEW0LmR0m7PuH6vELQa+x5RP
+	 9F/uCU7Az/+hK+oBbNUHJpTBt/xXUqcNK0/vtOuEK6mlrfY+S9MYyyIbnP0vbaDcdN
+	 ROqV/OvxAVbmZ9XPjXJSfs0lEFcVJ3ht38K33q+c=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 78F7AF80567; Mon,  6 Nov 2023 11:41:19 +0100 (CET)
+	id 99D40F80578; Mon,  6 Nov 2023 11:41:19 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 08487F80557;
-	Mon,  6 Nov 2023 11:41:18 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A06C2F80125;
+	Mon,  6 Nov 2023 11:41:17 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 939ECF8016D; Mon,  6 Nov 2023 11:40:29 +0100 (CET)
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com
- [IPv6:2a00:1450:4864:20::635])
+	id 5F476F8016D; Mon,  6 Nov 2023 11:37:36 +0100 (CET)
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com
+ [IPv6:2a00:1450:4864:20::42a])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E7197F80100
-	for <alsa-devel@alsa-project.org>; Mon,  6 Nov 2023 11:40:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E7197F80100
+	by alsa1.perex.cz (Postfix) with ESMTPS id 1FFAAF80100
+	for <alsa-devel@alsa-project.org>; Mon,  6 Nov 2023 11:37:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1FFAAF80100
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=baylibre-com.20230601.gappssmtp.com
  header.i=@baylibre-com.20230601.gappssmtp.com header.a=rsa-sha256
- header.s=20230601 header.b=Agf443aT
-Received: by mail-ej1-x635.google.com with SMTP id
- a640c23a62f3a-9d2e7726d5bso631419566b.0
+ header.s=20230601 header.b=m9V320iL
+Received: by mail-wr1-x42a.google.com with SMTP id
+ ffacd0b85a97d-32fb1d757f7so2244491f8f.0
         for <alsa-devel@alsa-project.org>;
- Mon, 06 Nov 2023 02:40:22 -0800 (PST)
+ Mon, 06 Nov 2023 02:37:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1699267221;
- x=1699872021; darn=alsa-project.org;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1699267048;
+ x=1699871848; darn=alsa-project.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Nbjwm+H7hl2EuKWl07XyZwpvz3KlHSIgvjF5mlsdjpY=;
-        b=Agf443aTS6YGjx33Y/aU1rNeEHzWeAWCDALF6T75yh8u0+u+bz3Q8aSLeoGZN0bBMC
-         MKQYNU4qiWAMiSf3GaYcQx9tfZn3qU77p9iSIwr9vLLTrlRD2AX5xLRlN97eC+R5kVfr
-         MukmuBDGN6m+sUbZjwINPidJWQt55NiB68OLbI9HAPXYsEUaVHx8iKUYgpEEL764m8+B
-         VCDqNeb6//DRW7c8G1VcxjULQDBTrduD2Zw39rYDdK18jsrHcTNCHzythvTdkrdXDRIK
-         C5yLlEzi79kLsBtdgC1fJ73me8pEMidMkMCJVUcCcPDTKwWMKMyZHsJiAf72cXgZX3a3
-         jS5g==
+        bh=9kyxum5YNhiGFDrnxvukFQjBtUh2qLRYWx5QnJK2YXc=;
+        b=m9V320iLIVt7sI5Tc7qQPJTPfv2r4gVF7y0aEOXgXHD0kiVsVYKMyeCXmDsk0V2hUy
+         QdApE9onhUFDm+wZgvZhSM8JKRjB/dt1G+t71cK8PsL/RriOpfoccDkf40/LsMsPOXK5
+         hjbnoarK0bDH0v9+p4KEs7sE+/vQsTJnWoMaJOly8PUSXId9jHHugoEsttB66qAtu+yh
+         OyMvR0cfYdVPwhR8QA0mj18UBB07FKJQ3Ka73H7TuL/IgLYdR8zQ10l7kH8pTOKp5b9h
+         teYQcSMY9XvpF0vQFJufZ4iArscTZAjkKdzQscbTJS8Nd/c82TdXAlTqxCq5z0kjSFOW
+         dVEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699267221; x=1699872021;
+        d=1e100.net; s=20230601; t=1699267048; x=1699871848;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Nbjwm+H7hl2EuKWl07XyZwpvz3KlHSIgvjF5mlsdjpY=;
-        b=FMCr7aCH7zTupqxN8VyQ6q4S2OhjjIHNH2OHtT4ueC7pTsykcZMnHAafps189JAGEJ
-         7+hTO+wIV9RSUm7BhUh6lbvGwcNzbYuIN4IdszJM+mM6g5NglHgCtREcCYfYwPqRaEOH
-         ahQbFyw3PQO1B1Gb+PmOmT6qpDjS97Ebk18jvjtr1QIP+8388dz+NmS79p2ODPN24y7l
-         eyeQWOG1bQcG7sgLhgWRNcTxucGRyiia7n34TcyjwEPsLoY6lWsEkpHp+xHaR2j+/VKv
-         p3Sk2/8+rF0njoYA+jRVemTwbSqF14RJWqNC6t5zMGWg+52pOpWxIwW7z0QMN0HVjtnj
-         LO2Q==
-X-Gm-Message-State: AOJu0Yzp05XkeCfjxh/4uTLP9sbA+aJ/YuBZxtlofeJr7mrZaMicSDJg
-	7h3TIyK0uV5ao78ccK3SaGd5iQ==
+        bh=9kyxum5YNhiGFDrnxvukFQjBtUh2qLRYWx5QnJK2YXc=;
+        b=qBAtbjrygJWxw75AIC3yBjAadODYmi0POIdqELgqC1eudUYm1DtzMbMC1xBBraAgpx
+         pHOhIOZY2Exww95wuzY695xQWHaTUs4nQW9/Leu/5sTd/4KijkgTUNCerEBEkOsSylL8
+         ZyeeKDrZPJEuRp5C90zdOElMHUkY9r1TyNsqWRq0tqqnT00ZLRMNYYFNX3IjUHb7bpAT
+         YJzrMTB4INmpPMbgp+K56H3LSqNjnlppBcSHXRVhuOq0az9sOsCQko08ekixn3Gcg31x
+         zIvTlmbFpXGQqfXYQGPE41zygsbNtG+MV5NJPO8uAAZabyK1w0f8fKOIcywQcUdrdjXw
+         8eTg==
+X-Gm-Message-State: AOJu0YxNf4qq8KjH6o9xqH4g8DBLGHWsVwsXsEFi4Khr8kgd4Q3HSoEJ
+	QtEAk37BHkvxdKmONyhTsJuExw==
 X-Google-Smtp-Source: 
- AGHT+IFQSEFW+kjzHL4YbOTboiy3Yei2pf8q/XEntCqWzMhAJfuTxx5YjXpbFrmK/nM3l/YHOn5kig==
-X-Received: by 2002:a17:906:d554:b0:9ae:5db5:13d with SMTP id
- cr20-20020a170906d55400b009ae5db5013dmr14948952ejc.72.1699267221002;
-        Mon, 06 Nov 2023 02:40:21 -0800 (PST)
+ AGHT+IHdcanmjp6niY0sMoZF7bwPXZ4XAjqJnCGHA2okTmCF7vPefs2OEigl43Ieu5XrrkMeoA4vXg==
+X-Received: by 2002:adf:eb0a:0:b0:32d:884b:7403 with SMTP id
+ s10-20020adfeb0a000000b0032d884b7403mr20244809wrn.66.1699267047784;
+        Mon, 06 Nov 2023 02:37:27 -0800 (PST)
 Received: from toaster.lan ([2a01:e0a:3c5:5fb1:fabf:ec8c:b644:5d3])
         by smtp.googlemail.com with ESMTPSA id
- jg2-20020a05600ca00200b004065daba6casm11876137wmb.46.2023.11.06.02.40.20
+ h3-20020a5d5043000000b0032dba85ea1bsm9106950wrt.75.2023.11.06.02.37.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Nov 2023 02:40:20 -0800 (PST)
+        Mon, 06 Nov 2023 02:37:27 -0800 (PST)
 From: Jerome Brunet <jbrunet@baylibre.com>
 To: Mark Brown <broonie@kernel.org>
 Cc: Jerome Brunet <jbrunet@baylibre.com>,
 	alsa-devel@alsa-project.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: hdmi-codec: register hpd callback on component probe
-Date: Mon,  6 Nov 2023 11:40:11 +0100
-Message-ID: <20231106104013.704356-1-jbrunet@baylibre.com>
+Subject: [PATCH] ASoC: dapm: fix clock get name
+Date: Mon,  6 Nov 2023 11:37:09 +0100
+Message-ID: <20231106103712.703962-1-jbrunet@baylibre.com>
 X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
 X-Patchwork-Bot: notify
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: JQUHWUAPPM5X52OXECTVPCNXHDEONJJZ
-X-Message-ID-Hash: JQUHWUAPPM5X52OXECTVPCNXHDEONJJZ
+Message-ID-Hash: LSNBGRKFWNUDYJBK2SF7NHDJN2QE3YGA
+X-Message-ID-Hash: LSNBGRKFWNUDYJBK2SF7NHDJN2QE3YGA
 X-MailFrom: jbrunet@baylibre.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -107,7 +107,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JQUHWUAPPM5X52OXECTVPCNXHDEONJJZ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LSNBGRKFWNUDYJBK2SF7NHDJN2QE3YGA/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -116,76 +116,28 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The HDMI hotplug callback to the hdmi-codec is currently registered when
-jack is set.
+The name currently used to get the clock includes the dapm prefix.
+It should use the name as provided to the widget, without the prefix.
 
-The hotplug not only serves to report the ASoC jack state but also to get
-the ELD. It should be registered when the component probes instead, so it
-does not depend on the card driver registering a jack for the HDMI to
-properly report the ELD.
-
-Fixes: 25ce4f2b3593 ("ASoC: hdmi-codec: Get ELD in before reporting plugged event")
+Fixes: 3caac759681e ("ASoC: soc-dapm.c: fixup snd_soc_dapm_new_control_unlocked() error handling")
 Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
 ---
- sound/soc/codecs/hdmi-codec.c | 27 +++++++++++++++++++--------
- 1 file changed, 19 insertions(+), 8 deletions(-)
+ sound/soc/soc-dapm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
-index 09eef6042aad..20da1eaa4f1c 100644
---- a/sound/soc/codecs/hdmi-codec.c
-+++ b/sound/soc/codecs/hdmi-codec.c
-@@ -877,18 +877,13 @@ static int hdmi_codec_set_jack(struct snd_soc_component *component,
- 			       void *data)
- {
- 	struct hdmi_codec_priv *hcp = snd_soc_component_get_drvdata(component);
--	int ret = -ENOTSUPP;
- 
- 	if (hcp->hcd.ops->hook_plugged_cb) {
- 		hcp->jack = jack;
--		ret = hcp->hcd.ops->hook_plugged_cb(component->dev->parent,
--						    hcp->hcd.data,
--						    plugged_cb,
--						    component->dev);
--		if (ret)
--			hcp->jack = NULL;
-+		return 0;
- 	}
--	return ret;
-+
-+	return -ENOTSUPP;
- }
- 
- static int hdmi_dai_spdif_probe(struct snd_soc_dai *dai)
-@@ -982,6 +977,21 @@ static int hdmi_of_xlate_dai_id(struct snd_soc_component *component,
- 	return ret;
- }
- 
-+static int hdmi_probe(struct snd_soc_component *component)
-+{
-+	struct hdmi_codec_priv *hcp = snd_soc_component_get_drvdata(component);
-+	int ret = 0;
-+
-+	if (hcp->hcd.ops->hook_plugged_cb) {
-+		ret = hcp->hcd.ops->hook_plugged_cb(component->dev->parent,
-+						    hcp->hcd.data,
-+						    plugged_cb,
-+						    component->dev);
-+	}
-+
-+	return ret;
-+}
-+
- static void hdmi_remove(struct snd_soc_component *component)
- {
- 	struct hdmi_codec_priv *hcp = snd_soc_component_get_drvdata(component);
-@@ -992,6 +1002,7 @@ static void hdmi_remove(struct snd_soc_component *component)
- }
- 
- static const struct snd_soc_component_driver hdmi_driver = {
-+	.probe			= hdmi_probe,
- 	.remove			= hdmi_remove,
- 	.dapm_widgets		= hdmi_widgets,
- 	.num_dapm_widgets	= ARRAY_SIZE(hdmi_widgets),
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 4e2beda6f9bf..3844f777c87b 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -3670,7 +3670,7 @@ snd_soc_dapm_new_control_unlocked(struct snd_soc_dapm_context *dapm,
+ 		dapm_pinctrl_event(w, NULL, SND_SOC_DAPM_POST_PMD);
+ 		break;
+ 	case snd_soc_dapm_clock_supply:
+-		w->clk = devm_clk_get(dapm->dev, w->name);
++		w->clk = devm_clk_get(dapm->dev, widget->name);
+ 		if (IS_ERR(w->clk)) {
+ 			ret = PTR_ERR(w->clk);
+ 			goto request_failed;
 -- 
 2.42.0
 
