@@ -4,82 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E853AC4332F
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Nov 2023 10:45:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F00CCC4332F
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Nov 2023 10:46:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4244974C;
-	Wed,  8 Nov 2023 11:44:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4244974C
+	by alsa0.perex.cz (Postfix) with ESMTPS id E25D884B;
+	Wed,  8 Nov 2023 11:45:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E25D884B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1699440332;
-	bh=AyLQCLU2X46/ZycRif1EZurFjQeuSY/k1tMBeCN4eS8=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=mXkcxS6mQutkY5APMiiJGOS7EabkQuhLXY03lr/k21ma2gWaZI/DM3vJzDBgLDMgw
-	 2gbSGw/ypdPqT2lJH1TSW7n5C4ncGzgupwyaYgDsoPw4fLi8gUKzWWRpBX6OYlArCP
-	 LY16cAKBbJ1F+so01Foh+b4unUVnPyOPCiprWo/o=
+	s=default; t=1699440358;
+	bh=lHH8yfPYS9VPvIWNCxyGTGPC/4jVkKzOBYhH5KtzC2s=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=SINpGndZjog0sYJootY8JtCHlxYZQxZ9zR8UHgo2Vp1N7iDA8ITc9IoK1/9Rm2RwB
+	 SWO+cmITTR0jck6T1pff2qBmyt2zu/qunJNOox4av2l2hc/m9DWB881JMYF0xem3lr
+	 4WashgmptCPp8smfoFAzKFz6JwXQ5hcSDOcRXr88=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 72F88F80558; Wed,  8 Nov 2023 11:44:13 +0100 (CET)
+	id D897DF80570; Wed,  8 Nov 2023 11:44:17 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5F089F801F5;
-	Wed,  8 Nov 2023 11:44:13 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B6ECDF80578;
+	Wed,  8 Nov 2023 11:44:16 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A7F7FF804DA; Wed,  8 Nov 2023 11:44:07 +0100 (CET)
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com
- [IPv6:2a00:1450:4864:20::32f])
+	id D7394F804DA; Wed,  8 Nov 2023 11:44:09 +0100 (CET)
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com
+ [IPv6:2a00:1450:4864:20::334])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 49F89F800ED
-	for <alsa-devel@alsa-project.org>; Wed,  8 Nov 2023 11:43:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 49F89F800ED
+	by alsa1.perex.cz (Postfix) with ESMTPS id D0A4CF80169
+	for <alsa-devel@alsa-project.org>; Wed,  8 Nov 2023 11:44:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D0A4CF80169
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=roqpFb53
-Received: by mail-wm1-x32f.google.com with SMTP id
- 5b1f17b1804b1-4083cd3917eso51187115e9.3
+ header.s=google header.b=DWO5RKmC
+Received: by mail-wm1-x334.google.com with SMTP id
+ 5b1f17b1804b1-40907b82ab9so3609345e9.1
         for <alsa-devel@alsa-project.org>;
- Wed, 08 Nov 2023 02:43:55 -0800 (PST)
+ Wed, 08 Nov 2023 02:44:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699440235; x=1700045035;
+        d=linaro.org; s=google; t=1699440242; x=1700045042;
  darn=alsa-project.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=VTczEAqOVbvVARsgwQf+QqYx6Pwq1efdiOYWiIKMhjk=;
-        b=roqpFb53CY4h9FbQ3L4Tuz41Qf7Lmm42vlfIxUuwDdNDw4+CoMzbFGb/ULlXsMlhku
-         KBlA+HXW232DzpmAtEltPPQ2ybOUwVKo1RLX1BNVQbjO6oa34xQ5D8StAb+oxdJjZgav
-         u/AID8Qtopn5XWrGhVDz/J9RMUBVGUlOtYztIKe/RxNROUoPlsKSchy9RX71rYAjQxlU
-         A7aLXSVWvDaVUrmceQoNkApNs2eZpzRqaP0nCn5jh7wMx4N0+LR+MXxBl4wSfVc3EHaM
-         Ev3jJ1dxO+giNBid9gJul2hZALxEGGDjKW1A6CNTkbiD7oyhzgYPlDaWlOoJuix65+Zy
-         ej0A==
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1RgzV0IV23WRll6q2E++ToH69k3tzXfaVshdvzq8RwE=;
+        b=DWO5RKmCfrJiJsmu8ZKQdLzdFLRxCIRT0RB7dbunu6wFQnnOeT5vdB8DmAho03rh9K
+         TqabH9wWVpf2GoeNUjEy8qPyVQUWh8TazYpjb/heNi1VDTy7DWhTMA+GdmpMOvRqji0D
+         0x0R1LP/3fpeSSEs12BytIIo/pkdzdqC+pKX6RXaIQhn41QF9rxE8PjUQdBeZM9IpeVg
+         iEM1khVmTWzGFyqnP4jrDwjWwd8kkGXWE2c6DsQNQwiOj5PMwVEmCWe16ojePesFJ3+Y
+         14lK9gkREqZ6LV27m/cnVIbHzXa9XrfvklZimOK0HwhWjTqxcleAwFL3ApL1PMLMTAeW
+         nxiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699440235; x=1700045035;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=VTczEAqOVbvVARsgwQf+QqYx6Pwq1efdiOYWiIKMhjk=;
-        b=PRtqnSXC/oYDlG0RYrQFcyHA2yritDHo6vROXAc70pj+ZTTviVGRrXawe2DPCM8xWR
-         j919h/8xrHCTF8VS5STlcOVmwtc8BO+Kz3pdZFpNBSdOQ3YIKzGlEMAJKXDhN9cNjTuR
-         qw1VaUqygSVIO9RLrHV4/lvSAKET7CN3LrucgskoSWjLOs0EKI8sN/Cg3ZTwMTX6Chh/
-         FxZ/upFPDhZMa0yq3GnEDYrCTyFCq6D8Xy6qewo0Zl+3vxVWKtYiFEf66ACVgok24470
-         awAGeTPqvITl5Pqh/UTdrRjRlm5aXMId2qQloWhvMKMO8szRLmdlsN04YN8ta7164IA/
-         BbFg==
-X-Gm-Message-State: AOJu0YyOAc7KYaAwzOMXHyImitx+hHXfHpOxlLQ4zp+/Z0ZqKwc2isQ5
-	I7baydh82Eevj9QTMWHZ92N3GA==
+        d=1e100.net; s=20230601; t=1699440243; x=1700045043;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1RgzV0IV23WRll6q2E++ToH69k3tzXfaVshdvzq8RwE=;
+        b=BSiuRBvZMkKzbyqmt91kpwZf0DyqfOw5YzgnHy6YVQ6HjS9cIhzlwc37hkGIwsdRsx
+         54+D7dq3P+2rhUV/uvwHsFpvgY0+MXyH4pISNo5mIJIOvKom3Z73vQTBEtTPeIVHrSTo
+         HGQwxzjdaBFrSBlY4MZpcsrq6NCfx4pjdWgiX122vvkZX2+yZ7C5CRmzg5Ie+JsY1j68
+         +lwVLkQIrVRxjHnoTpFw6MlIjg9yjgAAG3/tvk42C69VDTSY+QSJJ+bPVsaXeQMfa84b
+         m/HBjcZ76xyDP46FfR4lpQ9oIAmyt4nb8rc9/vfjMN6jZrlfuGvpse8JT5REmuB2qcl8
+         hYOg==
+X-Gm-Message-State: AOJu0YwiB9hwPRswtbWGtGEgaP+jC28OU1z1Fm15wVVf24ieFu3dT3wt
+	u5OTpAZ/RA2BGZm19F5I09+/8g==
 X-Google-Smtp-Source: 
- AGHT+IHiDWmBeuBOZUqxDCJkN9irswNWvo/qNXRb1omqiS2LAbu6ncxcqqv9pqzxYLbz6uacwStwug==
-X-Received: by 2002:a05:600c:5113:b0:405:336b:8307 with SMTP id
- o19-20020a05600c511300b00405336b8307mr1360908wms.7.1699440234966;
-        Wed, 08 Nov 2023 02:43:54 -0800 (PST)
+ AGHT+IHPP+/pDFxlh9Psi/Jca/likZzzh/njk10M+c59wDGroA/smDDkbgNQyV6CWfAIY9RQJ9LQTQ==
+X-Received: by 2002:a05:600c:474a:b0:405:3924:3cad with SMTP id
+ w10-20020a05600c474a00b0040539243cadmr1830807wmo.15.1699440242620;
+        Wed, 08 Nov 2023 02:44:02 -0800 (PST)
 Received: from krzk-bin.. ([178.197.218.126])
         by smtp.gmail.com with ESMTPSA id
- fj12-20020a05600c0c8c00b004094c5d92bdsm19377377wmb.31.2023.11.08.02.43.51
+ fj12-20020a05600c0c8c00b004094c5d92bdsm19377377wmb.31.2023.11.08.02.43.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Nov 2023 02:43:54 -0800 (PST)
+        Wed, 08 Nov 2023 02:44:02 -0800 (PST)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To: David Airlie <airlied@gmail.com>,
 	Daniel Vetter <daniel@ffwll.ch>,
@@ -123,15 +125,17 @@ To: David Airlie <airlied@gmail.com>,
 	alsa-devel@alsa-project.org,
 	linux-sound@vger.kernel.org
 Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH 00/17] dt-bindings: samsung: add specific compatibles for
+Subject: [PATCH 02/17] dt-bindings: i2c: exynos5: add specific compatibles for
  existing SoC
-Date: Wed,  8 Nov 2023 11:43:26 +0100
-Message-Id: <20231108104343.24192-1-krzysztof.kozlowski@linaro.org>
+Date: Wed,  8 Nov 2023 11:43:28 +0100
+Message-Id: <20231108104343.24192-3-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231108104343.24192-1-krzysztof.kozlowski@linaro.org>
+References: <20231108104343.24192-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: P7MU53AYOXWKRPYGKK5TW64WHR2SLN4C
-X-Message-ID-Hash: P7MU53AYOXWKRPYGKK5TW64WHR2SLN4C
+Message-ID-Hash: GICT2SXVJJ6AOSHDSVYLBTEBL5JCAM25
+X-Message-ID-Hash: GICT2SXVJJ6AOSHDSVYLBTEBL5JCAM25
 X-MailFrom: krzysztof.kozlowski@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -144,7 +148,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/P7MU53AYOXWKRPYGKK5TW64WHR2SLN4C/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GICT2SXVJJ6AOSHDSVYLBTEBL5JCAM25/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -153,94 +157,61 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi,
-
-Merging
-=======
-I propose to take entire patchset through my tree (Samsung SoC), because:
-1. Next cycle two new SoCs will be coming (Google GS101 and ExynosAutov920), so
-   they will touch the same lines in some of the DT bindings (not all, though).
-   It is reasonable for me to take the bindings for the new SoCs, to have clean
-   `make dtbs_check` on the new DTS.
-2. Having it together helps me to have clean `make dtbs_check` within my tree
-   on the existing DTS.
-3. No drivers are affected by this change.
-4. I plan to do the same for Tesla FSD and Exynos ARM32 SoCs, thus expect
-   follow up patchsets.
-
-If folks agree, please kindly Ack the patches.
-
-Description
-===========
-Samsung Exynos SoCs reuse several devices from older designs, thus historically
-we kept the old (block's) compatible only.  This works fine and there is no bug
-here, however guidelines expressed in
+Samsung Exynos SoC reuses several devices from older designs, thus
+historically we kept the old (block's) compatible only.  This works fine
+and there is no bug here, however guidelines expressed in
 Documentation/devicetree/bindings/writing-bindings.rst state that:
 1. Compatibles should be specific.
 2. We should add new compatibles in case of bugs or features.
 
-Add compatibles specific to each SoC in front of all old-SoC-like compatibles.
-This will also help reviews of new code using existing DTS as template.  No
-functional impact on Linux drivers behavior.
+Add compatibles specific to each SoC in front of all old-SoC-like
+compatibles.
 
-Future
-======
-If reasonable, I will do similar work for Tesla FSD and ARMv7/ARM32 Exynos
-bindings and DTS.
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-Best regards,
-Krzysztof
+---
 
-Krzysztof Kozlowski (17):
-  dt-bindings: hwinfo: samsung,exynos-chipid: add specific compatibles
-    for existing SoC
-  dt-bindings: i2c: exynos5: add specific compatibles for existing SoC
-  dt-bindings: i2c: samsung,s3c2410-i2c: add specific compatibles for
-    existing SoC
-  dt-bindings: mmc: samsung,exynos-dw-mshc: add specific compatibles for
-    existing SoC
-  dt-bindings: pinctrl: samsung: add specific compatibles for existing
-    SoC
-  dt-bindings: rtc: s3c-rtc: add specific compatibles for existing SoC
-  dt-bindings: serial: samsung: add specific compatibles for existing
-    SoC
-  dt-bindings: samsung: exynos-pmu: add specific compatibles for
-    existing SoC
-  dt-bindings: gpu: arm,mali-midgard: add specific compatibles for
-    existing Exynos SoC
-  dt-bindings: iio: samsung,exynos-adc: add specific compatibles for
-    existing SoC
-  ASoC: dt-bindings: samsung-i2s: add specific compatibles for existing
-    SoC
-  dt-bindings: pwm: samsung: add specific compatibles for existing SoC
-  arm64: dts: exynos5433: add specific compatibles to several blocks
-  arm64: dts: exynos7: add specific compatibles to several blocks
-  arm64: dts: exynos7885: add specific compatibles to several blocks
-  arm64: dts: exynos850: add specific compatibles to several blocks
-  arm64: dts: exynosautov9: add specific compatibles to several blocks
+I propose to take the patch through Samsung SoC (me). See cover letter
+for explanation.
+---
+ Documentation/devicetree/bindings/i2c/i2c-exynos5.yaml | 10 +++++++++-
+ .../devicetree/bindings/soc/samsung/exynos-usi.yaml    |  2 +-
+ 2 files changed, 10 insertions(+), 2 deletions(-)
 
- .../bindings/gpu/arm,mali-midgard.yaml        |  5 ++
- .../hwinfo/samsung,exynos-chipid.yaml         | 17 +++++-
- .../devicetree/bindings/i2c/i2c-exynos5.yaml  | 10 +++-
- .../bindings/i2c/samsung,s3c2410-i2c.yaml     | 22 ++++---
- .../bindings/iio/adc/samsung,exynos-adc.yaml  | 29 +++++----
- .../mfd/samsung,exynos5433-lpass.yaml         |  2 +-
- .../bindings/mmc/samsung,exynos-dw-mshc.yaml  | 25 +++++---
- .../samsung,pinctrl-wakeup-interrupt.yaml     | 24 +++++---
- .../bindings/pinctrl/samsung,pinctrl.yaml     |  3 +-
- .../devicetree/bindings/pwm/pwm-samsung.yaml  |  2 +
- .../devicetree/bindings/rtc/s3c-rtc.yaml      |  5 ++
- .../bindings/serial/samsung_uart.yaml         | 14 ++++-
- .../bindings/soc/samsung/exynos-pmu.yaml      |  6 ++
- .../bindings/soc/samsung/exynos-usi.yaml      |  2 +-
- .../bindings/sound/samsung-i2s.yaml           | 19 +++---
- arch/arm64/boot/dts/exynos/exynos5433.dtsi    | 60 ++++++++++++-------
- arch/arm64/boot/dts/exynos/exynos7.dtsi       | 18 +++---
- arch/arm64/boot/dts/exynos/exynos7885.dtsi    | 45 +++++++++-----
- arch/arm64/boot/dts/exynos/exynos850.dtsi     | 34 ++++++-----
- arch/arm64/boot/dts/exynos/exynosautov9.dtsi  |  6 +-
- 20 files changed, 233 insertions(+), 115 deletions(-)
-
+diff --git a/Documentation/devicetree/bindings/i2c/i2c-exynos5.yaml b/Documentation/devicetree/bindings/i2c/i2c-exynos5.yaml
+index 3e52a0db6c41..c1f5d2cb7709 100644
+--- a/Documentation/devicetree/bindings/i2c/i2c-exynos5.yaml
++++ b/Documentation/devicetree/bindings/i2c/i2c-exynos5.yaml
+@@ -25,7 +25,15 @@ properties:
+           - samsung,exynos5250-hsi2c    # Exynos5250 and Exynos5420
+           - samsung,exynos5260-hsi2c    # Exynos5260
+           - samsung,exynos7-hsi2c       # Exynos7
+-          - samsung,exynosautov9-hsi2c  # ExynosAutoV9 and Exynos850
++          - samsung,exynosautov9-hsi2c
++      - items:
++          - enum:
++              - samsung,exynos5433-hsi2c
++          - const: samsung,exynos7-hsi2c
++      - items:
++          - enum:
++              - samsung,exynos850-hsi2c
++          - const: samsung,exynosautov9-hsi2c
+       - const: samsung,exynos5-hsi2c    # Exynos5250 and Exynos5420
+         deprecated: true
+ 
+diff --git a/Documentation/devicetree/bindings/soc/samsung/exynos-usi.yaml b/Documentation/devicetree/bindings/soc/samsung/exynos-usi.yaml
+index a6836904a4f8..5b7ab69546c4 100644
+--- a/Documentation/devicetree/bindings/soc/samsung/exynos-usi.yaml
++++ b/Documentation/devicetree/bindings/soc/samsung/exynos-usi.yaml
+@@ -155,7 +155,7 @@ examples:
+         };
+ 
+         hsi2c_0: i2c@13820000 {
+-            compatible = "samsung,exynosautov9-hsi2c";
++            compatible = "samsung,exynos850-hsi2c", "samsung,exynosautov9-hsi2c";
+             reg = <0x13820000 0xc0>;
+             interrupts = <GIC_SPI 227 IRQ_TYPE_LEVEL_HIGH>;
+             #address-cells = <1>;
 -- 
 2.34.1
 
