@@ -4,106 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8B75DC4332F
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Nov 2023 11:16:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 571A1C41535
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Nov 2023 12:18:49 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 022D1846;
-	Wed,  8 Nov 2023 12:15:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 022D1846
+	by alsa0.perex.cz (Postfix) with ESMTPS id B6C3B210;
+	Wed,  8 Nov 2023 13:17:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B6C3B210
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1699442161;
-	bh=Lk0pA+4yV4mhpZnp/fI6zRxtKJr5fn82b4N3T5jG4/0=;
+	s=default; t=1699445927;
+	bh=7V/UrnIoKR1hXQNmM3fHYk4TXHGghxFBDI9RetIrR3U=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=IuD7VBiULR7wAWRzR7lxDFP0k/7e2ZIWbKUP1j0L+yoLsc7IR21HdGAyKb3BqL/MM
-	 5uiKk7h+Kli2xmkGYwhy+RcXGxORomsIi4VwDK5l+1/Na+pNGYMnlyI9+P2WkIv4Gv
-	 NPWU1ecOSX/sjSU5TUzayhGUQ7L7FqGQiBAF+G2c=
+	b=as4rH6b30CcuM2HbhyM2/sDTMpFNzdehcUDmdZ8hSZp298i8ZVtGh8DnB2gtwP1Go
+	 D3MpEz/qjFRadzdBa8ur7Xqla+9jpMPJ8Ih2QJqObjrio51rZ2VuUukxJXSx/3Vj2Q
+	 gcRd/Je5GMpfBHAdcpnUxiQSvJXMgrRJLTPx91Ao=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D5F78F80558; Wed,  8 Nov 2023 12:14:43 +0100 (CET)
+	id DEBB5F8016D; Wed,  8 Nov 2023 13:17:47 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 37789F80152;
-	Wed,  8 Nov 2023 12:14:43 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 34CE5F8016D;
+	Wed,  8 Nov 2023 13:17:47 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 78B18F8016D; Wed,  8 Nov 2023 12:14:38 +0100 (CET)
-Received: from metis.whiteo.stw.pengutronix.de
- (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+	id CAD22F8016D; Wed,  8 Nov 2023 13:17:41 +0100 (CET)
+Received: from sin.source.kernel.org (sin.source.kernel.org
+ [IPv6:2604:1380:40e1:4800::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
- server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D13BAF80152
-	for <alsa-devel@alsa-project.org>; Wed,  8 Nov 2023 12:14:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D13BAF80152
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps
- (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1r0gVI-0006Zu-GZ; Wed, 08 Nov 2023 12:13:48 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls
- TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1r0gVF-007WPs-EG; Wed, 08 Nov 2023 12:13:45 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1r0gVF-00F8iX-3y; Wed, 08 Nov 2023 12:13:45 +0100
-Date: Wed, 8 Nov 2023 12:13:44 +0100
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+	by alsa1.perex.cz (Postfix) with ESMTPS id EDE35F800ED
+	for <alsa-devel@alsa-project.org>; Wed,  8 Nov 2023 13:17:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EDE35F800ED
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=lTnF/3Eu
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sin.source.kernel.org (Postfix) with ESMTP id 7DFD1CE1037;
+	Wed,  8 Nov 2023 12:17:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A168C433C8;
+	Wed,  8 Nov 2023 12:17:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1699445843;
+	bh=7V/UrnIoKR1hXQNmM3fHYk4TXHGghxFBDI9RetIrR3U=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=lTnF/3EunAy/n/EtkQHaJx3vItL4cSDVDLs/F9tkv5i7pc0qpx9Ljy0DdpI9RNMUj
+	 y+4ePbrg5HnrgO1qS6jnxhqG7uAnuxEN5M85JJg+3cO6OIM0QseItr2gK/riow4nYO
+	 GtyTOe6EKUEw+3c0A2sGr6ANhuzP9MDpdxttFp07scZCfMVYn7V81E9oUMoD9asPJZ
+	 LE5BxKejmYHkTjJ1BSpXqScS1UW/gu9/YXbBr4KN4f7QHEHq8PYzAE7tUw40KifrKV
+	 loQGxwzW062JR+Bic9nBu+j+mvNX/LyMtwzCcdQbvRmGB29igTeQJ2q5BRz+CpznHE
+	 ckiETsNNJvO5Q==
+Date: Wed, 8 Nov 2023 12:17:16 +0000
+From: Conor Dooley <conor@kernel.org>
 To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
 	Rob Herring <robh+dt@kernel.org>,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
 	Conor Dooley <conor+dt@kernel.org>,
-	Alim Akhtar <alim.akhtar@samsung.com>,
-	Andi Shyti <andi.shyti@kernel.org>,
-	Jonathan Cameron <jic23@kernel.org>,
-	Lars-Peter Clausen <lars@metafoo.de>, Lee Jones <lee@kernel.org>,
-	Ulf Hansson <ulf.hansson@linaro.org>,
-	Tomasz Figa <tomasz.figa@gmail.com>,
-	Sylwester Nawrocki <s.nawrocki@samsung.com>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Alessandro Zummo <a.zummo@towertech.it>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jiri Slaby <jirislaby@kernel.org>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Jaehoon Chung <jh80.chung@samsung.com>,
-	Sam Protsenko <semen.protsenko@linaro.org>,
-	dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-samsung-soc@vger.kernel.org, linux-i2c@vger.kernel.org,
-	linux-iio@vger.kernel.org, linux-mmc@vger.kernel.org,
-	linux-gpio@vger.kernel.org, linux-pwm@vger.kernel.org,
-	linux-rtc@vger.kernel.org, linux-serial@vger.kernel.org,
-	alsa-devel@alsa-project.org, linux-sound@vger.kernel.org
-Subject: Re: [PATCH 12/17] dt-bindings: pwm: samsung: add specific
- compatibles for existing SoC
-Message-ID: <20231108111344.sxb6ehxmm6wwknal@pengutronix.de>
-References: <20231108104343.24192-1-krzysztof.kozlowski@linaro.org>
- <20231108104343.24192-13-krzysztof.kozlowski@linaro.org>
+	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+	Banajit Goswami <bgoswami@quicinc.com>,
+	Andy Gross <agross@kernel.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Ryan Lee <ryans.lee@analog.com>, linux-sound@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
+	Neil Armstrong <neil.armstrong@linaro.org>
+Subject: Re: [PATCH] ASoC: dt-bindings: use "soundwire" as controller's node
+ name in examples
+Message-ID: <20231108-outback-composed-c620cd86c234@spud>
+References: <20231107101610.13728-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="s5lmtu7dwemwa3xs"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="6PrPU5pOkEEUIIG5"
 Content-Disposition: inline
-In-Reply-To: <20231108104343.24192-13-krzysztof.kozlowski@linaro.org>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de);
- SAEximRunCond expanded to false
-X-PTX-Original-Recipient: alsa-devel@alsa-project.org
-Message-ID-Hash: 6DCR3B6R2LI4WZFLANTKRP5R73DIU5PY
-X-Message-ID-Hash: 6DCR3B6R2LI4WZFLANTKRP5R73DIU5PY
-X-MailFrom: ukl@pengutronix.de
+In-Reply-To: <20231107101610.13728-1-krzysztof.kozlowski@linaro.org>
+Message-ID-Hash: 2DEQWUZBGQQVKTCBJRFUFO2OLLWNPLQR
+X-Message-ID-Hash: 2DEQWUZBGQQVKTCBJRFUFO2OLLWNPLQR
+X-MailFrom: conor@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -115,7 +95,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6DCR3B6R2LI4WZFLANTKRP5R73DIU5PY/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2DEQWUZBGQQVKTCBJRFUFO2OLLWNPLQR/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -125,55 +105,85 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 
---s5lmtu7dwemwa3xs
-Content-Type: text/plain; charset=iso-8859-1
+--6PrPU5pOkEEUIIG5
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hello,
-
-On Wed, Nov 08, 2023 at 11:43:38AM +0100, Krzysztof Kozlowski wrote:
-> Samsung Exynos SoC reuses several devices from older designs, thus
-> historically we kept the old (block's) compatible only.  This works fine
-> and there is no bug here, however guidelines expressed in
-> Documentation/devicetree/bindings/writing-bindings.rst state that:
-> 1. Compatibles should be specific.
-> 2. We should add new compatibles in case of bugs or features.
+On Tue, Nov 07, 2023 at 11:16:10AM +0100, Krzysztof Kozlowski wrote:
+> Soundwire Devicetree bindings expect the Soundwire controller device
+> node to be named just "soundwire".  Correct examples, so the incorrect
+> code will not be re-used.
 >=20
-> Add compatibles specific to each SoC in front of all old-SoC-like
-> compatibles.
->=20
+> Reported-by: Neil Armstrong <neil.armstrong@linaro.org>
 > Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->=20
+
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
+
+FWIW, there are a few instances of "soundwire-controller" in qcom
+devicetrees that you might also want to change.
+
 > ---
+>  Documentation/devicetree/bindings/sound/adi,max98363.yaml | 2 +-
+>  Documentation/devicetree/bindings/sound/qcom,wsa883x.yaml | 2 +-
+>  Documentation/devicetree/bindings/sound/qcom,wsa8840.yaml | 2 +-
+>  3 files changed, 3 insertions(+), 3 deletions(-)
 >=20
-> I propose to take the patch through Samsung SoC (me). See cover letter
-> for explanation.
+> diff --git a/Documentation/devicetree/bindings/sound/adi,max98363.yaml b/=
+Documentation/devicetree/bindings/sound/adi,max98363.yaml
+> index a844b63f3930..c388cda56011 100644
+> --- a/Documentation/devicetree/bindings/sound/adi,max98363.yaml
+> +++ b/Documentation/devicetree/bindings/sound/adi,max98363.yaml
+> @@ -39,7 +39,7 @@ unevaluatedProperties: false
+> =20
+>  examples:
+>    - |
+> -    soundwire-controller@3250000 {
+> +    soundwire@3250000 {
+>          #address-cells =3D <2>;
+>          #size-cells =3D <0>;
+>          reg =3D <0x3250000 0x2000>;
+> diff --git a/Documentation/devicetree/bindings/sound/qcom,wsa883x.yaml b/=
+Documentation/devicetree/bindings/sound/qcom,wsa883x.yaml
+> index ba572a7f4f3c..8e462cdf0018 100644
+> --- a/Documentation/devicetree/bindings/sound/qcom,wsa883x.yaml
+> +++ b/Documentation/devicetree/bindings/sound/qcom,wsa883x.yaml
+> @@ -52,7 +52,7 @@ examples:
+>    - |
+>      #include <dt-bindings/gpio/gpio.h>
+> =20
+> -    soundwire-controller@3250000 {
+> +    soundwire@3250000 {
+>          #address-cells =3D <2>;
+>          #size-cells =3D <0>;
+>          reg =3D <0x3250000 0x2000>;
+> diff --git a/Documentation/devicetree/bindings/sound/qcom,wsa8840.yaml b/=
+Documentation/devicetree/bindings/sound/qcom,wsa8840.yaml
+> index e6723c9e312a..d717017b0fdb 100644
+> --- a/Documentation/devicetree/bindings/sound/qcom,wsa8840.yaml
+> +++ b/Documentation/devicetree/bindings/sound/qcom,wsa8840.yaml
+> @@ -48,7 +48,7 @@ examples:
+>    - |
+>      #include <dt-bindings/gpio/gpio.h>
+> =20
+> -    soundwire-controller {
+> +    soundwire {
+>          #address-cells =3D <2>;
+>          #size-cells =3D <0>;
+> =20
+> --=20
+> 2.34.1
+>=20
 
-Fine for me
-
-Acked-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---s5lmtu7dwemwa3xs
+--6PrPU5pOkEEUIIG5
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmVLbWgACgkQj4D7WH0S
-/k4a8ggAisMgSiojK34WM6Ei36Y1XLO8kOH1f//AzrO0UDibn0Zhvw287OngrOIl
-CkuyoKGazHXmGIDsSdfrCQkrUwkl0yIZY+W1FmlVnQCiFFJZ/VnDSR36w2jBKhn6
-Ds8GC5ZH/OCt0rHTiNJyRzDB+fw3/4A9//8AYffoXTNeELJwwE83KwkCutYtYPXT
-QSndSYIMX179M7Fk7C8gYoWAsU3YJrj4CgWSIc1nBIRRktBqTRbouRMFIY2lrFZ+
-R0boATVIMFI1BYsaGbn57pzYX2tAcnlRjthQ+4Nf3/rg+QdQxAJ3ejALN5acqqhd
-T9no5cHCm6UbLQwxWtECYc4IZn3dyQ==
-=4AYg
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZUt8TAAKCRB4tDGHoIJi
+0jpSAP48y9NqKH1qbbnEmCHyS9qNSJNgiOaoUevxsgcpPscGzwEAqFquFreorzyT
+zAoJ1HXSZDG4PAhSwyJDUwtZ/wPGhQE=
+=CPNX
 -----END PGP SIGNATURE-----
 
---s5lmtu7dwemwa3xs--
+--6PrPU5pOkEEUIIG5--
