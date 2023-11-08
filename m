@@ -4,122 +4,109 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AFE71C4332F
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Nov 2023 12:31:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8E6DEC4332F
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Nov 2023 12:40:50 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A5C6C844;
-	Wed,  8 Nov 2023 13:30:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A5C6C844
+	by alsa0.perex.cz (Postfix) with ESMTPS id EE8A0844;
+	Wed,  8 Nov 2023 13:39:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EE8A0844
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1699446697;
-	bh=qV41VErzNkhUep5JKv5gk/MPa/tjVq1ZVQyXhiGegoU=;
-	h=From:To:Cc:In-Reply-To:Subject:Date:References:List-Id:
+	s=default; t=1699447248;
+	bh=HYLBtaP4bsKUIGKNt2595IGi4v7RE6IV73g0i3oEkmQ=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=JTVAhZA2Ovh2mArqH0HOH9hinSAt1WDTtZIjlFh3C3CF1SlPO7MDh466WAJeSXI+K
-	 AQMM0ievFWn3tz/g8nvnzEdEuCKJXqbHinrZc/YdIldTrZEchHU+4yXlyASgSbrKHi
-	 jF+peKjBPj1XQqFTIvB4sZo9IvlO/ZLXG/+FRRt4=
+	b=OoLgjAlS6tXPb6sPRykWiFewew/rIymTbmRKFtU4H6aMhBAtIAhYCZZMYgbVRI+fP
+	 HieuQOKAaz+O/5sqHF59WOdFEPqBjim515GfLotpww2joXpt1JLtnM5vC4y6estWy8
+	 hpLlVlDhtx/84ClBOfsTN67DqY4TCMjCQT5EKcKM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id F3BE5F8016D; Wed,  8 Nov 2023 13:30:20 +0100 (CET)
+	id D6014F80549; Wed,  8 Nov 2023 13:39:30 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 98BE4F80100;
-	Wed,  8 Nov 2023 13:30:20 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9DF2EF8016D;
+	Wed,  8 Nov 2023 13:39:30 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AC0E6F8016D; Wed,  8 Nov 2023 13:30:16 +0100 (CET)
-Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+	id 87F60F8016D; Wed,  8 Nov 2023 13:39:26 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 9BDDEF80100
-	for <alsa-devel@alsa-project.org>; Wed,  8 Nov 2023 13:30:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9BDDEF80100
+	by alsa1.perex.cz (Postfix) with ESMTPS id 53F33F80100
+	for <alsa-devel@alsa-project.org>; Wed,  8 Nov 2023 13:39:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 53F33F80100
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
- unprotected) header.d=samsung.com header.i=@samsung.com header.a=rsa-sha256
- header.s=mail20170921 header.b=mo6Gx1e7
-Received: from epcas2p1.samsung.com (unknown [182.195.41.53])
-	by mailout1.samsung.com (KnoxPortal) with ESMTP id
- 20231108123002epoutp01b7e73f9fe4bdd4ba4dac42f9b9199789~Vpa4_X8WM2862728627epoutp01i
-	for <alsa-devel@alsa-project.org>; Wed,  8 Nov 2023 12:30:02 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com
- 20231108123002epoutp01b7e73f9fe4bdd4ba4dac42f9b9199789~Vpa4_X8WM2862728627epoutp01i
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1699446602;
-	bh=GT4MUGZ7w69dWPxfmZ+r7fGQzcdedGrlD2k7PVxqXyA=;
-	h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-	b=mo6Gx1e7so0YEH1PVNhRZBa/RddDmjXNomk0aaWYTfLgcRtMq+FM5kYY388HyPSZH
-	 41ao8XhQYCbSR6qotcK8IRBkTbK67SYC1RDRJqDlXZvmo/9QrQUZim0pbo3zNyFEE0
-	 fCsR1HtT/RSczG8ZizoYx1GiIWs2KNcwJNNCzvK8=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-	epcas2p1.samsung.com (KnoxPortal) with ESMTP id
-	20231108123001epcas2p1f034e8149eeb30c43e73adc22054b7c3~Vpa4iLAGp1945519455epcas2p1l;
-	Wed,  8 Nov 2023 12:30:01 +0000 (GMT)
-Received: from epcpadp3 (unknown [182.195.40.17]) by epsnrtp3.localdomain
-	(Postfix) with ESMTP id 4SQPYP4pHzz4x9Pw; Wed,  8 Nov 2023 12:30:01 +0000
-	(GMT)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-	epcas2p2.samsung.com (KnoxPortal) with ESMTPA id
-	20231108121427epcas2p258dc03460150a32e64598c4a3b8eb8c7~VpNSTOgW00153401534epcas2p2L;
-	Wed,  8 Nov 2023 12:14:27 +0000 (GMT)
-Received: from epsmgmc1p1new.samsung.com (unknown [182.195.42.40]) by
-	epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-	20231108121427epsmtrp2e0308bc4eac587934a70b7eeef4b6492~VpNSSjffK1488514885epsmtrp2k;
-	Wed,  8 Nov 2023 12:14:27 +0000 (GMT)
-X-AuditID: b6c32a28-a2ffe70000001cc8-16-654b7ba3a165
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-	epsmgmc1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-	4A.17.07368.3AB7B456; Wed,  8 Nov 2023 21:14:27 +0900 (KST)
-Received: from KORDO035882 (unknown [12.36.182.71]) by epsmtip2.samsung.com
-	(KnoxPortal) with ESMTPA id
-	20231108121427epsmtip26025d156d56010e8bfae64f8a2af6420~VpNSF-atg1819418194epsmtip2j;
-	Wed,  8 Nov 2023 12:14:27 +0000 (GMT)
-From: =?ks_c_5601-1987?B?sK29xcf8?= <s47.kang@samsung.com>
-To: "'Takashi Iwai'" <tiwai@suse.de>
-Cc: <kuninori.morimoto.gx@renesas.com>, <alsa-devel@alsa-project.org>,
-	<lgirdwood@gmail.com>, <pierre-louis.bossart@linux.intel.com>,
-	<broonie@kernel.org>, <cpgs@samsung.com>, <pilsun.jang@samsung.com>,
-	<seungbin.lee@samsung.com>, <donghee.moon@samsung.com>
-In-Reply-To: <87y1f9r705.wl-tiwai@suse.de>
-Subject: RE: [PATCH] ALSA: core: Replace mutex_lock with mutex_trylock
-Date: Wed, 8 Nov 2023 21:14:15 +0900
-Message-ID: <1891546521.01699446601660.JavaMail.epsvc@epcpadp3>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="ks_c_5601-1987"
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQJDXg4QMlnaDFKz6mJIV5RzCYoNswIslky8AhUiAhqve6/PoA==
-Content-Language: ko
-X-Brightmail-Tracker: 
- H4sIAAAAAAAAA+NgFprJIsWRmVeSWpSXmKPExsWy7bCSvO7iau9Ugw07eCyuXDzEZDH14RM2
-	i5eHNC0ufTrPbvHq8C5Gi29XOpgsfv1/xmRx9OJiJouJd1+zW7zc/IbJgctjw+cmNo+ds+6y
-	e2xa1cnmMe9koMe3MxNZPPq2rGL02Hy6OoA9issmJTUnsyy1SN8ugSvj+742xoKrIhU/jss2
-	MF4Q6GLk4JAQMJG4csi2i5GLQ0hgN6PE3sl3WbsYOYHiEhLfdn5lgbCFJe63HGGFKHrGKPHk
-	/W6wIjYBK4m7TVPYQGwRARWJp73rmECKmAUmMklc+HgBrFtIYB2jxNS3HiA2p4CWxJuWfnYQ
-	W1jATeLmpwNgzSxAzeuebAYbyitgKfF0400WCFtQ4uTMJ2A2M9CljYe7oWx5ie1v5zBDXKcg
-	8fPpMlaII5wkHhy+wQRRIyIxu7ONeQKj8Cwko2YhGTULyahZSFoWMLKsYpRMLSjOTc9NNiww
-	zEst1ytOzC0uzUvXS87P3cQIjj0tjR2M9+b/0zvEyMTBeIhRgoNZSYT3r71HqhBvSmJlVWpR
-	fnxRaU5q8SFGaQ4WJXFewxmzU4QE0hNLUrNTUwtSi2CyTBycUg1MT25c2eE8T9Bw3nW/2/wT
-	9Qu17qoccbD4ucUv7clypZMRD/oWdFd+723VZb6bX5hzRe7Ay7urVxiYzIjyF3vq1pdxx8mB
-	tUA05YHyzwuH3DhuGXK9j2z6lOcltjE5T5P1kDJ3vDLH3+9Sy9XdG4ODOivkf/34HpKjzakl
-	er1mz7f86pou33J7lkq+cLsdO85Y+hn0GDtounX5LXd4KtIpd2vd7gkGUwq8/s5uOGnY8qxX
-	12KiZuXHSE+bX7kPd+5ftnT1G171RX0vWtP6X9fl7Dwhfep/1790FdZDxz6kTgthKp7B05fp
-	+1Vlps9Jaz4N/R3TkxcxrO7Yr59+JufW/sN/DmlsFPJeYlnbskiJpTgj0VCLuag4EQC4ytvd
-	LAMAAA==
-X-CMS-MailID: 20231108121427epcas2p258dc03460150a32e64598c4a3b8eb8c7
-X-Msg-Generator: CA
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-CMS-TYPE: 102P
-X-CPGSPASS: Y
-X-Hop-Count: 3
-X-CMS-RootMailID: 20231107081810epcas2p27a897426580fce6f0884cffb256b2aaf
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=lkHkclyr;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=hRjTcE9k
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id C0DB51F8AA;
+	Wed,  8 Nov 2023 12:39:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1699447162;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=caTSVkX7DWg9efIwdAHVnURh+gmnfRTacrd+wM1pTjM=;
+	b=lkHkclyrTqcppb3bmNISYV/4HMRWVr0q6mrsiyi5RaP8v5AA3TA2OMaUSzWbqZvKNy2lNj
+	Shj2UBQXu+r4wpRMdJWatUECk2AgqcnKDRAAaNaeaizjjIrrxR3mbxgZ9UQ2hkLwbn1t+h
+	Vaq40fzotu6sH+5ip7rG17cLW+AJe/k=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1699447162;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=caTSVkX7DWg9efIwdAHVnURh+gmnfRTacrd+wM1pTjM=;
+	b=hRjTcE9kr7PNoeMS8E73MPUljlowzU67kn0PfSKxs6ytAHOvmKZ6ReM9+zkOcLfdMPsM/j
+	t0dOSm2+u2yp7RBQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 97329133F5;
+	Wed,  8 Nov 2023 12:39:22 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id zQZoJHqBS2W4MAAAMHmgww
+	(envelope-from <tiwai@suse.de>); Wed, 08 Nov 2023 12:39:22 +0000
+Date: Wed, 08 Nov 2023 13:39:22 +0100
+Message-ID: <87edh0ctc5.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: =?EUC-KR?B?sK29xcf8?= <s47.kang@samsung.com>
+Cc: <kuninori.morimoto.gx@renesas.com>,
+	<alsa-devel@alsa-project.org>,
+	<lgirdwood@gmail.com>,
+	<pierre-louis.bossart@linux.intel.com>,
+	<broonie@kernel.org>,
+	<cpgs@samsung.com>,
+	<pilsun.jang@samsung.com>,
+	<seungbin.lee@samsung.com>,
+	<donghee.moon@samsung.com>
+Subject: Re: [PATCH] ALSA: core: Replace mutex_lock with mutex_trylock
+In-Reply-To: <1891546521.01699446601660.JavaMail.epsvc@epcpadp3>
 References: 
  <CGME20231107081810epcas2p27a897426580fce6f0884cffb256b2aaf@epcas2p2.samsung.com>
 	<664457955.21699345385931.JavaMail.epsvc@epcpadp4>
 	<87y1f9r705.wl-tiwai@suse.de>
-Message-ID-Hash: H5JNT7MNYD3FAMM5LACJU6KFTGPGI5S6
-X-Message-ID-Hash: H5JNT7MNYD3FAMM5LACJU6KFTGPGI5S6
-X-MailFrom: s47.kang@samsung.com
+	<1891546521.01699446601660.JavaMail.epsvc@epcpadp3>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=EUC-KR
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: 2RZFDHSG4RDRXNR56W3JR5LK34QB4JZR
+X-Message-ID-Hash: 2RZFDHSG4RDRXNR56W3JR5LK34QB4JZR
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -131,7 +118,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/H5JNT7MNYD3FAMM5LACJU6KFTGPGI5S6/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2RZFDHSG4RDRXNR56W3JR5LK34QB4JZR/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -140,91 +127,35 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-> Thanks for the patch.  But this change may break the current working
-> behavior; e.g. when two proc reads are running concurrently, one would
-> be aborted unexpectedly.
+On Wed, 08 Nov 2023 13:14:15 +0100,
+°­½ÅÇü wrote:
 > 
-> IIUC, the problem is the call of proc_remove(), and this call itself
-> can be outside the global mutex.
+> > Thanks for the patch.  But this change may break the current working
+> > behavior; e.g. when two proc reads are running concurrently, one would
+> > be aborted unexpectedly.
+> > 
+> > IIUC, the problem is the call of proc_remove(), and this call itself
+> > can be outside the global mutex.
+> > 
+> > Could you check whether the patch below works instead?  (Note that
+> > it's only compile-tested.)  It makes the proc_remove() called at
+> > first, then clearing the internal entries.  The function was renamed
+> > accordingly for avoiding confusion, too.
+> > 
+> > 
+> > Takashi
 > 
-> Could you check whether the patch below works instead?  (Note that
-> it's only compile-tested.)  It makes the proc_remove() called at
-> first, then clearing the internal entries.  The function was renamed
-> accordingly for avoiding confusion, too.
-> 
-> 
-> Takashi
+> You are right. My patch is just for avoiding the deadlock. 
+> It may lead to other problem instead the deadlock(e.g. USB sound card
+> registration failure)
+> Your patch works well without any problems.
+> But I can't confirm that the problem is solved or not.
+> because the issue has occurred only once until now.
+> (Test method: USB insertion / removal during a call)
 
-You are right. My patch is just for avoiding the deadlock. 
-It may lead to other problem instead the deadlock(e.g. USB sound card
-registration failure)
-Your patch works well without any problems.
-But I can't confirm that the problem is solved or not.
-because the issue has occurred only once until now.
-(Test method: USB insertion / removal during a call)
-
-
-> 
-> --- a/sound/core/info.c
-> +++ b/sound/core/info.c
-> @@ -56,7 +56,7 @@ struct snd_info_private_data {
->  };
->  
->  static int snd_info_version_init(void);
-> -static void snd_info_disconnect(struct snd_info_entry *entry);
-> +static void snd_info_clear_entries(struct snd_info_entry *entry);
->  
-> /*
->  
-> @@ -569,11 +569,16 @@ void snd_info_card_disconnect(struct snd_card *card)
->  {
->  	if (!card)
->  		return;
-> -	mutex_lock(&info_mutex);
-> +
->  	proc_remove(card->proc_root_link);
-> -	card->proc_root_link = NULL;
->  	if (card->proc_root)
-> -		snd_info_disconnect(card->proc_root);
-> +		proc_remove(card->proc_root->p);
-> +
-> +	mutex_lock(&info_mutex);
-> +	if (card->proc_root)
-> +		snd_info_clear_entries(card->proc_root);
-> +	card->proc_root_link = NULL;
-> +	card->proc_root = NULL;
->  	mutex_unlock(&info_mutex);
-> }
->  
-> @@ -745,15 +750,14 @@ struct snd_info_entry
-*snd_info_create_card_entry(struct snd_card *card,
->  }
->  EXPORT_SYMBOL(snd_info_create_card_entry);
->  
-> -static void snd_info_disconnect(struct snd_info_entry *entry)
-> +static void snd_info_clear_entries(struct snd_info_entry *entry)
->  {
->  	struct snd_info_entry *p;
->  
->  	if (!entry->p)
->  		return;
->  	list_for_each_entry(p, &entry->children, list)
-> -		snd_info_disconnect(p);
-> -	proc_remove(entry->p);
-> +		snd_info_clear_entries(p);
->  	entry->p = NULL;
->  }
->  
-> @@ -770,8 +774,9 @@ void snd_info_free_entry(struct snd_info_entry *
-entry)
->  	if (!entry)
->  		return;
->  	if (entry->p) {
-> +		proc_remove(entry->p);
->  		mutex_lock(&info_mutex);
-> -		snd_info_disconnect(entry);
-> +		snd_info_clear_entries(entry);
->  		mutex_unlock(&info_mutex);
->  	}
+Maybe you can reproduce it more easily by adding some delay
+(e.g. ssleep(2)) before mutex_lock() in snd_info_entry_open().
+Then it's easier to cause a race.
 
 
+Takashi
