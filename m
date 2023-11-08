@@ -4,84 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 72C72C4332F
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Nov 2023 10:47:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C5CF3C4167D
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Nov 2023 10:47:35 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A5483E0D;
-	Wed,  8 Nov 2023 11:46:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A5483E0D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6283DA4B;
+	Wed,  8 Nov 2023 11:46:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6283DA4B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1699440432;
-	bh=+h7xlBltId5iC5AEgRx2yNUxeGIgqDeyEoypL7cPCu8=;
+	s=default; t=1699440453;
+	bh=oukpvjMJogNfgdHJA312lEp8JIXrG9+VFBzx8EHrZAg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=QrTxuxXVSp0xx0fkwaCMtFXXgWLdCwYlz9/1la0FYFnxnM1z5o9+DfP5iU1V+lUzi
-	 1lzZ2QM+tcsE76iQGwZ2IGRGNdyjqXwlRoDme0l+ehhE+43ogIuZAflruNZr7VEdbc
-	 aQE6cf2s5WZHSOTEPfpsGh7Tr/G3iQqrVYZM7SRY=
+	b=ucWJWGt9O7+Y8/FJVjqPEG6zFDemZpp10wl4Y3JAqGoVv2o3Lhyjt+w3UkQXV2mnn
+	 TJ/j9dNq3u05qql+DYheGsywXiCnn3s+fxF2EHaf27spz1inGZjPetibEePpp7wTQh
+	 a6wrTzkczwPFDYxF+DJJ/N8lDJ8D8D9mxlYBTTfk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 06C44F805C1; Wed,  8 Nov 2023 11:44:26 +0100 (CET)
+	id B8309F805D4; Wed,  8 Nov 2023 11:44:34 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 32B2BF805C3;
-	Wed,  8 Nov 2023 11:44:26 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C678EF805D2;
+	Wed,  8 Nov 2023 11:44:33 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3DB7EF805AC; Wed,  8 Nov 2023 11:44:22 +0100 (CET)
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com
- [IPv6:2a00:1450:4864:20::330])
+	id 8FDB9F805D2; Wed,  8 Nov 2023 11:44:29 +0100 (CET)
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com
+ [IPv6:2a00:1450:4864:20::331])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 20697F80589
-	for <alsa-devel@alsa-project.org>; Wed,  8 Nov 2023 11:44:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 20697F80589
+	by alsa1.perex.cz (Postfix) with ESMTPS id 7FC64F805C8
+	for <alsa-devel@alsa-project.org>; Wed,  8 Nov 2023 11:44:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7FC64F805C8
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=zRGOGpS1
-Received: by mail-wm1-x330.google.com with SMTP id
- 5b1f17b1804b1-40859c466efso48582315e9.3
+ header.s=google header.b=evhot+Sm
+Received: by mail-wm1-x331.google.com with SMTP id
+ 5b1f17b1804b1-4083f613272so57235305e9.1
         for <alsa-devel@alsa-project.org>;
- Wed, 08 Nov 2023 02:44:18 -0800 (PST)
+ Wed, 08 Nov 2023 02:44:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699440258; x=1700045058;
+        d=linaro.org; s=google; t=1699440265; x=1700045065;
  darn=alsa-project.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=TGrUPXldQQyi7i1y6HTuSgGxtg81Z3Wiq2G+ebaMhpQ=;
-        b=zRGOGpS1UPglYpz/L4lwdzlCRoh35DNb6p3lcOg4CyK/UonIGk+6EKYyELdTdcs9Cz
-         E9wv68UYUnQY5JuoxnKCrTrBgWUPjSy4Z+7BDlAPfBuHnxt5lvHNlfxBX5tbcKT66Uba
-         IhBohKHQfPlG7D4GORKmt91M5BLbG7ZaNhcotnPYA4vGpRcrUVSVM264W5J7IRtzyCXz
-         m6AWo9JGfoD6EW+HxRIJ45gZMEUtHdIcuJqULID/dXE3xDmQoaP/QBq0U8uAJXw9NZCg
-         7GcgngQ+SbZmy2okoWMkW1I/JI6AD78xUJhoZ23BcoWJR3D3Bo5yD7i8djmatIGie8GD
-         3VYQ==
+        bh=PV5diolHzkDYNZO8WufyA3F1OzLH/Kn/j0r7E3RxmpI=;
+        b=evhot+SmItXuf5HreMahq1cauQoXEkxyYDcMfkAkUYCRwkxC2IUCxrS32RGGBg8qbM
+         i9ph9x6p8nONIu9c007ql97FXMsY1P3Xcnnr/ppN/I9+yWEB3N1jHVyVCkNZpdLJKmoy
+         bOr9ch5LEHBqgIzl6e2Vxno9YboltjPbjdu6X1ipNEO3g3uZzcsMrRm9wax/4NzsPX2U
+         bsZXLEkd3nlXGWpDhpwO0klfzoXexJI31WWmUMEy3pLIg9uCa+6cF5T9NmTt1N5vLNTG
+         QAiEpsWI+IiCethrTzufPE5PsvBrQDImNAyZ84v1h0G4C6a01bBNnG35zcvO050y91qW
+         kNBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699440258; x=1700045058;
+        d=1e100.net; s=20230601; t=1699440265; x=1700045065;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=TGrUPXldQQyi7i1y6HTuSgGxtg81Z3Wiq2G+ebaMhpQ=;
-        b=BfwsZh+dTlgrTFetW2hHVkc4exsVW6B5x5Gg11CtxMzmjXZJxzocXinBE4KpmHt6jN
-         +nQa69BH02xazDBiBc3UA9hOTbVT5VEZhni8nFDw7/wJXLzLLX4mjbByfKjNFDU3CROm
-         jFxm44tKeQwspBfoZZ7mWyPm/v/bSMb02id8Dcx8/b7UXIJApqQsCXDlgFRudufum1uC
-         nwvizax5GWwh6P+jIZoFZqr9qFFppysgkOyrRRYVj/E54F/33Jpbd8tOK/+fMh2tl+kj
-         W4ElJ87nOoaaZW2GP0ISHPBOVrQ4dCPqq20SnyELnqOM263PzAJjkMei7vnh62OMqfy1
-         sGFg==
-X-Gm-Message-State: AOJu0Yx/ZciDfNJ9Th2+eSreZmu8rjH8+WyJERXeO5HORTK/LvGqJLVj
-	cOXyX145vyAuEJw3Vz5volvXdg==
+        bh=PV5diolHzkDYNZO8WufyA3F1OzLH/Kn/j0r7E3RxmpI=;
+        b=ChEmEsf7Jg78Rlml9Ew8HCoE/GKAAON6q5rUYPQnVM89CLJF1ooCrKM/xEoL0apOid
+         /5P0brbIPr38YTSwpAxG+lujCjCDB7scMOMR6vGvCah6Wu2tEzJT58AzEWtxC5EYKTAs
+         9Is88O4u9wA7EUqX0A+41oJzRPqyQ8Lhk4Q0gmRC7GVfeRiAL8XSqh3t+V+9Tn8JW6hZ
+         iYkHABRANQOD/Pxcce7geimiT514uEULngZP1OfXbyeaCINZWq+DkHZsq6mZNJHjUBDd
+         /uLjBSbpq6KItvOCFX17mwuD2RaWFBr+qKDq1hHz9POdw5uD9fl3Ilgl4dvsGrUthRtC
+         nOXA==
+X-Gm-Message-State: AOJu0YxechVomEPef+dMdAL4XuxmPk2X4O3ifNQ+eeYGx80BILKYq6ZS
+	m5QdJ0go995LZenyBuKRtk7EIg==
 X-Google-Smtp-Source: 
- AGHT+IGzkWzdSSfC10gvMcrdr+HWpovdFD2tWKhVyooAAzLg7iLljfH0hHjLNTv+Bpu3NP726JCxaA==
-X-Received: by 2002:a05:600c:3553:b0:406:c6de:2bea with SMTP id
- i19-20020a05600c355300b00406c6de2beamr1367091wmq.17.1699440257975;
-        Wed, 08 Nov 2023 02:44:17 -0800 (PST)
+ AGHT+IE6LA57XGwizIDEYldEFclmufoWGtfeboQZQs5v6tX5jMVi5UnfB4CCXBaPubn6aW9Tzqj6ag==
+X-Received: by 2002:a05:600c:1f8f:b0:406:81e9:ad0c with SMTP id
+ je15-20020a05600c1f8f00b0040681e9ad0cmr1347385wmb.41.1699440265563;
+        Wed, 08 Nov 2023 02:44:25 -0800 (PST)
 Received: from krzk-bin.. ([178.197.218.126])
         by smtp.gmail.com with ESMTPSA id
- fj12-20020a05600c0c8c00b004094c5d92bdsm19377377wmb.31.2023.11.08.02.44.14
+ fj12-20020a05600c0c8c00b004094c5d92bdsm19377377wmb.31.2023.11.08.02.44.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Nov 2023 02:44:17 -0800 (PST)
+        Wed, 08 Nov 2023 02:44:25 -0800 (PST)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To: David Airlie <airlied@gmail.com>,
 	Daniel Vetter <daniel@ffwll.ch>,
@@ -125,17 +125,17 @@ To: David Airlie <airlied@gmail.com>,
 	alsa-devel@alsa-project.org,
 	linux-sound@vger.kernel.org
 Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH 06/17] dt-bindings: rtc: s3c-rtc: add specific compatibles for
- existing SoC
-Date: Wed,  8 Nov 2023 11:43:32 +0100
-Message-Id: <20231108104343.24192-7-krzysztof.kozlowski@linaro.org>
+Subject: [PATCH 08/17] dt-bindings: samsung: exynos-pmu: add specific
+ compatibles for existing SoC
+Date: Wed,  8 Nov 2023 11:43:34 +0100
+Message-Id: <20231108104343.24192-9-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231108104343.24192-1-krzysztof.kozlowski@linaro.org>
 References: <20231108104343.24192-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: KT3JIXM6P73EFQ5UL5ALTGELG2M3D6JC
-X-Message-ID-Hash: KT3JIXM6P73EFQ5UL5ALTGELG2M3D6JC
+Message-ID-Hash: 52POKW2SCZ57GUQPSDNJDT6T7QWSWNIM
+X-Message-ID-Hash: 52POKW2SCZ57GUQPSDNJDT6T7QWSWNIM
 X-MailFrom: krzysztof.kozlowski@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -148,8 +148,9 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KT3JIXM6P73EFQ5UL5ALTGELG2M3D6JC/>
-List-Archive: <>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/52POKW2SCZ57GUQPSDNJDT6T7QWSWNIM/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
@@ -173,25 +174,26 @@ Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 I propose to take the patch through Samsung SoC (me). See cover letter
 for explanation.
 ---
- Documentation/devicetree/bindings/rtc/s3c-rtc.yaml | 5 +++++
- 1 file changed, 5 insertions(+)
+ .../devicetree/bindings/soc/samsung/exynos-pmu.yaml         | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/rtc/s3c-rtc.yaml b/Documentation/devicetree/bindings/rtc/s3c-rtc.yaml
-index d51b236939bf..bf4e11d6dffb 100644
---- a/Documentation/devicetree/bindings/rtc/s3c-rtc.yaml
-+++ b/Documentation/devicetree/bindings/rtc/s3c-rtc.yaml
-@@ -17,6 +17,11 @@ properties:
-           - samsung,s3c2416-rtc
-           - samsung,s3c2443-rtc
-           - samsung,s3c6410-rtc
+diff --git a/Documentation/devicetree/bindings/soc/samsung/exynos-pmu.yaml b/Documentation/devicetree/bindings/soc/samsung/exynos-pmu.yaml
+index e1d716df5dfa..6492e92586d9 100644
+--- a/Documentation/devicetree/bindings/soc/samsung/exynos-pmu.yaml
++++ b/Documentation/devicetree/bindings/soc/samsung/exynos-pmu.yaml
+@@ -48,6 +48,12 @@ properties:
+               - samsung,exynos850-pmu
+               - samsung-s5pv210-pmu
+           - const: syscon
 +      - items:
 +          - enum:
-+              - samsung,exynos7-rtc
-+              - samsung,exynos850-rtc
-+          - const: samsung,s3c6410-rtc
-       - const: samsung,exynos3250-rtc
-         deprecated: true
- 
++              - samsung,exynos7885-pmu
++              - samsung,exynosautov9-pmu
++          - const: samsung,exynos7-pmu
++          - const: syscon
+       - items:
+           - enum:
+               - samsung,exynos3250-pmu
 -- 
 2.34.1
 
