@@ -4,84 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C88B6C04FDE
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Nov 2023 10:47:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 789B7C4167B
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Nov 2023 10:47:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id ACEAA844;
-	Wed,  8 Nov 2023 11:46:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ACEAA844
+	by alsa0.perex.cz (Postfix) with ESMTPS id 48F81E7A;
+	Wed,  8 Nov 2023 11:47:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 48F81E7A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1699440466;
-	bh=tvkXSaRpDx+LQn2Wp8WlC7XjtALFUXsDGz5cTqm/o5w=;
+	s=default; t=1699440473;
+	bh=fgKzasrAiRceEVpAlnIdT0NL+CQuKMPFjmwATzISNDg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=SLUUSyeBaprF1zKgoGi254FpEmm4YshKYO+9xhsoaVMboa9WkjhO+kaNkrZJ2SmDh
-	 0EuJQaNb5eTObijytdnvtZAMxWIlpGhcnG9GvuNt9GfbFjIIcZhRPkfVWGzBNG160l
-	 BmURXs9SSFgGRuoChSmr/66lozQHgto86tKAo0/8=
+	b=tLAxGa2QSrvq8pdf47iHl1obX4/65ZvwwJ+OZeJMdFLIKuX0XrvP3XlEGhallUGXS
+	 FPaa9gnmW+i1AZWs6eMf2GmGn17DT7c1KxoXQvPc6v+xQQS+mfv0rnW1j3sYYrbERd
+	 92Rz8XDgg/aTcLgCUjimdNGn5biIoQGyx2iBv2W0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4E91CF805E0; Wed,  8 Nov 2023 11:44:35 +0100 (CET)
+	id 0B72FF805E6; Wed,  8 Nov 2023 11:44:38 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 43240F805D8;
-	Wed,  8 Nov 2023 11:44:35 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9AE9AF805E6;
+	Wed,  8 Nov 2023 11:44:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7BAE6F805CB; Wed,  8 Nov 2023 11:44:31 +0100 (CET)
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com
- [IPv6:2a00:1450:4864:20::231])
+	id DFBACF805C8; Wed,  8 Nov 2023 11:44:33 +0100 (CET)
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com
+ [IPv6:2a00:1450:4864:20::336])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 07550F805BE
-	for <alsa-devel@alsa-project.org>; Wed,  8 Nov 2023 11:44:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 07550F805BE
+	by alsa1.perex.cz (Postfix) with ESMTPS id 572B0F805C4
+	for <alsa-devel@alsa-project.org>; Wed,  8 Nov 2023 11:44:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 572B0F805C4
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=VYa/ua1l
-Received: by mail-lj1-x231.google.com with SMTP id
- 38308e7fff4ca-2c501bd6ff1so94533611fa.3
+ header.s=google header.b=tUg65+8G
+Received: by mail-wm1-x336.google.com with SMTP id
+ 5b1f17b1804b1-4079ed65582so49889625e9.1
         for <alsa-devel@alsa-project.org>;
- Wed, 08 Nov 2023 02:44:23 -0800 (PST)
+ Wed, 08 Nov 2023 02:44:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699440262; x=1700045062;
+        d=linaro.org; s=google; t=1699440269; x=1700045069;
  darn=alsa-project.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=932+POzuiCpVd1FMO8emES7304xq1CZHsFhbsNym7D8=;
-        b=VYa/ua1lwRcS4amdN+U8DK/CjOEG8NGqjSNGbl1CkcuPfS4UW208LHbb6joLR97y2j
-         yVLJ0rSpUPnpA9/JZFmDvFGtdJnMVAxId+T4SFOD9ZVLTj6bs75XY+VXzfrSZqUjUAa6
-         Gi9OFq0IBNqLSFyxbavUadwidSFtqYbzlRFwn3Awp3uI2Pvu5m8fchFgrPPle8F/AUeT
-         6uShsekAGZSKkVm2vPeFtAaxIY6hzNTr4/+PBwc/gfqKVsVhctS3i5eF2c+yZ3QCbomg
-         bii73TWlFfLp6Q9OQrhe7mC2OrdYOLglT+KXtjbeWcJAa8KfIN0CsBuAl0xRjhP+LDvY
-         oqfw==
+        bh=KctpUSdWE/54mxPRyNTPmujVIdTxIZHiWXcrFdF3THY=;
+        b=tUg65+8GxC/oc35N0BVHMqlf3e4mBZKpMOiKUb7fHHNS+MybDU7sJwnFsXzgoEQaNX
+         uiP3SVkglxhrehEOysLlnAUsghVfol6cnGXHsyamgegx9sXBOUz2NB/gppzuZXMc2TuY
+         xDm+osLnAhHkmJuI9Bsl9BvA6YIGjVPjgvV94js70nAtDu3cv6HiHyLqqfDj2cYvhTra
+         WMY+IGKdwv9LTtmqeDPpMWkwUWzbH/Teu/WE6fEGtawWDtgeHV0kmVE61raDQ6xnijrg
+         7Uz5PHO1FZFo+e8I5/5HppRcCSAvjlKyEqpP3AR2JJ+YutEZvOmmqE8NCNLJSMbRZ7Ve
+         sOeg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699440262; x=1700045062;
+        d=1e100.net; s=20230601; t=1699440269; x=1700045069;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=932+POzuiCpVd1FMO8emES7304xq1CZHsFhbsNym7D8=;
-        b=mymqRTF88u5KzwV4jFTOJrOlLpOLwJFco3sAX8tEcWrHDKxvdGnffkc14ksQH5soJF
-         ucByB4HXdGIUYzLZCy/eqj3w4zc2uWVCv8lPSs3mxkTQBqWRlN3kZhcHjqbaqklJOzQC
-         SbwAuZ39NpdSVUvvH1HExI2bylYlLjgmCy7pskHkcI11zlhepuqFKkK1spV143jk/LEZ
-         a/ViSJgVdVwGOqkhwltj97yk+ChZ9W/e2iruSOBujRGc5uZTmYsAIOJfH4w5ATnInmjH
-         q+Dj8awURETxcDS+Hf9L84ImkYn4zDFoRgEoHlLiuM1anQwu26Xq23kMYR+7wVQunSD7
-         Y+ag==
-X-Gm-Message-State: AOJu0YxgEuNF7QJ3bbrCLwJvUi71bmbenbi6kA1rTtpa3PzuMtaD9ieo
-	PeJ+Fe2eZB00IUGmSbGMSMdXZA==
+        bh=KctpUSdWE/54mxPRyNTPmujVIdTxIZHiWXcrFdF3THY=;
+        b=CrHfQiPXE2m1aQgFTK/VO6md7xBOmtQ2y0mPDCn8W2bfpHC6mn74fM0l9UE1RX0goS
+         8PUcq7MvSbBlHPr4kSdmWZaUFBbBPKg03pAzKzXLZZdpLt4eXp8/TqvzLxp9Da3f0niZ
+         BgoTW5en897neX3b1f+3iJMgA+C+cHHRLDNcDGarg/+BeoMhl6e7+12KfunqhKyTpD6U
+         JAwJYLVKEUliZUQ3e4Rx6Q/PhQoMNGuKwchlIATQuCZJ2HM0C74bMmNTB3ppbWxRl09Y
+         qqpqs86/T/Yp2bjG4mDVCmMbRzPXygca8gqw2+PGlXeCOnUu+wuY3+3vv2M5LUwkun+/
+         nF8g==
+X-Gm-Message-State: AOJu0YwsYdIY6cSJWsIwaNFxylf+Tr9fCl5qVtCZscPVPZYHirusgBKk
+	hH7B4qm/YL1etf+bPoUuDA0CmQ==
 X-Google-Smtp-Source: 
- AGHT+IGCpSGI0CR0667rdoPAw+/9BwGIOQ5vf5WLNiqXBsw+h3xPKE36aRvV/bSi7NnLY3zOJHYzOg==
-X-Received: by 2002:a05:651c:504:b0:2c5:14e3:f1b8 with SMTP id
- o4-20020a05651c050400b002c514e3f1b8mr1507701ljp.7.1699440261813;
-        Wed, 08 Nov 2023 02:44:21 -0800 (PST)
+ AGHT+IHzwZ3ZbfxwsqY/KR9bhuCoW2rtwV2Pv+17xFR8bqeY33bUZ7438zeD8MQhwfV4phLl2aoutg==
+X-Received: by 2002:a05:600c:1c82:b0:406:53aa:7a5f with SMTP id
+ k2-20020a05600c1c8200b0040653aa7a5fmr1423336wms.10.1699440269098;
+        Wed, 08 Nov 2023 02:44:29 -0800 (PST)
 Received: from krzk-bin.. ([178.197.218.126])
         by smtp.gmail.com with ESMTPSA id
- fj12-20020a05600c0c8c00b004094c5d92bdsm19377377wmb.31.2023.11.08.02.44.18
+ fj12-20020a05600c0c8c00b004094c5d92bdsm19377377wmb.31.2023.11.08.02.44.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Nov 2023 02:44:21 -0800 (PST)
+        Wed, 08 Nov 2023 02:44:28 -0800 (PST)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To: David Airlie <airlied@gmail.com>,
 	Daniel Vetter <daniel@ffwll.ch>,
@@ -125,17 +125,17 @@ To: David Airlie <airlied@gmail.com>,
 	alsa-devel@alsa-project.org,
 	linux-sound@vger.kernel.org
 Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH 07/17] dt-bindings: serial: samsung: add specific compatibles
- for existing SoC
-Date: Wed,  8 Nov 2023 11:43:33 +0100
-Message-Id: <20231108104343.24192-8-krzysztof.kozlowski@linaro.org>
+Subject: [PATCH 09/17] dt-bindings: gpu: arm,mali-midgard: add specific
+ compatibles for existing Exynos SoC
+Date: Wed,  8 Nov 2023 11:43:35 +0100
+Message-Id: <20231108104343.24192-10-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231108104343.24192-1-krzysztof.kozlowski@linaro.org>
 References: <20231108104343.24192-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: CBGVTZG735FCR33MUBUQF2Y2FF4SNXFD
-X-Message-ID-Hash: CBGVTZG735FCR33MUBUQF2Y2FF4SNXFD
+Message-ID-Hash: QT7V3JRAB7SMAE6VIMXK3VDWPHI3XPR5
+X-Message-ID-Hash: QT7V3JRAB7SMAE6VIMXK3VDWPHI3XPR5
 X-MailFrom: krzysztof.kozlowski@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -148,7 +148,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CBGVTZG735FCR33MUBUQF2Y2FF4SNXFD/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QT7V3JRAB7SMAE6VIMXK3VDWPHI3XPR5/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -167,9 +167,6 @@ Documentation/devicetree/bindings/writing-bindings.rst state that:
 Add compatibles specific to each SoC in front of all old-SoC-like
 compatibles.
 
-Re-shuffle also the entries in compatibles, so the one-compatible-enum
-is the first.
-
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
 ---
@@ -177,41 +174,25 @@ Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 I propose to take the patch through Samsung SoC (me). See cover letter
 for explanation.
 ---
- .../devicetree/bindings/serial/samsung_uart.yaml   | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
+ Documentation/devicetree/bindings/gpu/arm,mali-midgard.yaml | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/serial/samsung_uart.yaml b/Documentation/devicetree/bindings/serial/samsung_uart.yaml
-index ac60ab1e35e3..0d0215b23ab7 100644
---- a/Documentation/devicetree/bindings/serial/samsung_uart.yaml
-+++ b/Documentation/devicetree/bindings/serial/samsung_uart.yaml
-@@ -18,9 +18,6 @@ description: |+
- properties:
-   compatible:
-     oneOf:
--      - items:
--          - const: samsung,exynosautov9-uart
--          - const: samsung,exynos850-uart
-       - enum:
-           - apple,s5l-uart
-           - axis,artpec8-uart
-@@ -29,6 +26,17 @@ properties:
-           - samsung,exynos4210-uart
-           - samsung,exynos5433-uart
-           - samsung,exynos850-uart
+diff --git a/Documentation/devicetree/bindings/gpu/arm,mali-midgard.yaml b/Documentation/devicetree/bindings/gpu/arm,mali-midgard.yaml
+index ca02baba5526..0801da33a385 100644
+--- a/Documentation/devicetree/bindings/gpu/arm,mali-midgard.yaml
++++ b/Documentation/devicetree/bindings/gpu/arm,mali-midgard.yaml
+@@ -40,6 +40,11 @@ properties:
+               - rockchip,rk3288-mali
+               - samsung,exynos5433-mali
+           - const: arm,mali-t760
 +      - items:
 +          - enum:
-+              - samsung,exynos7-uart
-+          - const: samsung,exynos4210-uart
-+      - items:
-+          - enum:
-+              - samsung,exynos7885-uart
-+          - const: samsung,exynos5433-uart
-+      - items:
-+          - const: samsung,exynosautov9-uart
-+          - const: samsung,exynos850-uart
- 
-   reg:
-     maxItems: 1
++              - samsung,exynos7-mali
++          - const: samsung,exynos5433-mali
++          - const: arm,mali-t760
+       - items:
+           - enum:
+               - rockchip,rk3399-mali
 -- 
 2.34.1
 
