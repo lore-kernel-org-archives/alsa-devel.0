@@ -4,87 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5DB13C4332F
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Nov 2023 10:50:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8B75DC4332F
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Nov 2023 11:16:03 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1B22AEB3;
-	Wed,  8 Nov 2023 11:49:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1B22AEB3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 022D1846;
+	Wed,  8 Nov 2023 12:15:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 022D1846
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1699440606;
-	bh=4S77OPRs3PzHTzLtUQzXxkftBhaihdLVQzLKOVXEIlc=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1699442161;
+	bh=Lk0pA+4yV4mhpZnp/fI6zRxtKJr5fn82b4N3T5jG4/0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Hv63i3GQ5Hzo/ztBeES0ZBpUELmXvUxKpIeZ14yLG9jxAzIv1y++bo/bO5HWEcA/W
-	 oWIAGXW/YBUk5pgkcg6qOK9STPGL6QPTmX9zVF2gochvVhtbWNkEufOv+TZWvsn2Al
-	 GcUe6CFhY9Ie/mjbLuF2Jgifjv0CzHYulR95m3zI=
+	b=IuD7VBiULR7wAWRzR7lxDFP0k/7e2ZIWbKUP1j0L+yoLsc7IR21HdGAyKb3BqL/MM
+	 5uiKk7h+Kli2xmkGYwhy+RcXGxORomsIi4VwDK5l+1/Na+pNGYMnlyI9+P2WkIv4Gv
+	 NPWU1ecOSX/sjSU5TUzayhGUQ7L7FqGQiBAF+G2c=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 598C9F8057C; Wed,  8 Nov 2023 11:47:13 +0100 (CET)
+	id D5F78F80558; Wed,  8 Nov 2023 12:14:43 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id BB122F8057A;
-	Wed,  8 Nov 2023 11:47:12 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 37789F80152;
+	Wed,  8 Nov 2023 12:14:43 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 544CCF804DA; Wed,  8 Nov 2023 11:47:05 +0100 (CET)
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com
- [IPv6:2a00:1450:4864:20::332])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 78B18F8016D; Wed,  8 Nov 2023 12:14:38 +0100 (CET)
+Received: from metis.whiteo.stw.pengutronix.de
+ (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
+ server-digest SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 991E6F80611
-	for <alsa-devel@alsa-project.org>; Wed,  8 Nov 2023 11:44:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 991E6F80611
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=MrwR/Igb
-Received: by mail-wm1-x332.google.com with SMTP id
- 5b1f17b1804b1-408425c7c10so49330025e9.0
-        for <alsa-devel@alsa-project.org>;
- Wed, 08 Nov 2023 02:44:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699440295; x=1700045095;
- darn=alsa-project.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OiAO0adnMyNF0SV0wXdB73+0Srf6bBOK8Pyx7Wvcg2U=;
-        b=MrwR/Igbb3jQYCEko+KEebjlTlwMk5ofxlTeJ1p1hhxPC72+05YaAq3p/YugFd2X/1
-         qQaBr/chj8E/ckSbzo2wS2zExMegKVcZk5lhB2xKHJn85Q3775gCOJ32no4KbQjHorB+
-         CMqOxVF3/IVOsrxR+gRNMO7fwo5H4Ru8xht25B+WejdgJkSoCNsjG1QODpucZasv4MhV
-         Uf6xZiGWsbUzAxPN9mzlCfmStklLI/X7U/VoWq5+PQXLASiXqkIxgXw/GHVDDdDnPTWU
-         aemYx+BNqXO9GC8ZlAALBUTd0g8R8gcVneYmrzuTSURVeEklkMwFvbpPi0uC1dxXr/Fc
-         sEfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699440295; x=1700045095;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OiAO0adnMyNF0SV0wXdB73+0Srf6bBOK8Pyx7Wvcg2U=;
-        b=K8P2NWDCdBx1Eiq8koJ+dHq49cLLcc5+kPw2J6njMpmueIQ0Ce+dQyUGCRUES/Iqgd
-         6B8OvlDKE9I6tuw1NB7iuIRD6+wW1En6eUNAwyenK0HFh7wIbevhuHAMf/qK7BxOUCU0
-         YYNyLLYhFNPnDGKhFzd6j+wC3SY6UzUpwyWldxLyh++fkcz3acIlwASyEn0gdmWv3t+Y
-         AxBmrn+Le/VTkAWhFsVLvcGVAbAmZ3CV8hGu/z+e6aw2A6ttFOrTYzB1RxxjbCzhBigi
-         Koe1z99HiOGfyTWNVsNmUxWND6tQv0oivlR/x+aIwhT9aJaAjPXKOn0CmygcZ/HeZ3aN
-         0ESA==
-X-Gm-Message-State: AOJu0YxcM3R9DBn5tgbE1aCHccoJRtcCXDYww57LeQ3SvqOed5UbD5xy
-	OuOxwSK6sLXn4O35k0+XhVczYA==
-X-Google-Smtp-Source: 
- AGHT+IFMjHNlMfI+x+SLTi21K9VV//VF9yXBQvAS9XyT4BRmKii2VKYmn0LzJzdq1styizIpZ4+txQ==
-X-Received: by 2002:a05:600c:46d1:b0:405:49aa:d578 with SMTP id
- q17-20020a05600c46d100b0040549aad578mr1455335wmo.37.1699440295256;
-        Wed, 08 Nov 2023 02:44:55 -0800 (PST)
-Received: from krzk-bin.. ([178.197.218.126])
-        by smtp.gmail.com with ESMTPSA id
- fj12-20020a05600c0c8c00b004094c5d92bdsm19377377wmb.31.2023.11.08.02.44.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Nov 2023 02:44:54 -0800 (PST)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
+	by alsa1.perex.cz (Postfix) with ESMTPS id D13BAF80152
+	for <alsa-devel@alsa-project.org>; Wed,  8 Nov 2023 12:14:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D13BAF80152
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps
+ (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1r0gVI-0006Zu-GZ; Wed, 08 Nov 2023 12:13:48 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls
+ TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1r0gVF-007WPs-EG; Wed, 08 Nov 2023 12:13:45 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1r0gVF-00F8iX-3y; Wed, 08 Nov 2023 12:13:45 +0100
+Date: Wed, 8 Nov 2023 12:13:44 +0100
+From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
 	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
 	Maxime Ripard <mripard@kernel.org>,
 	Thomas Zimmermann <tzimmermann@suse.de>,
@@ -94,14 +65,12 @@ To: David Airlie <airlied@gmail.com>,
 	Alim Akhtar <alim.akhtar@samsung.com>,
 	Andi Shyti <andi.shyti@kernel.org>,
 	Jonathan Cameron <jic23@kernel.org>,
-	Lars-Peter Clausen <lars@metafoo.de>,
-	Lee Jones <lee@kernel.org>,
+	Lars-Peter Clausen <lars@metafoo.de>, Lee Jones <lee@kernel.org>,
 	Ulf Hansson <ulf.hansson@linaro.org>,
 	Tomasz Figa <tomasz.figa@gmail.com>,
 	Sylwester Nawrocki <s.nawrocki@samsung.com>,
 	Linus Walleij <linus.walleij@linaro.org>,
 	Thierry Reding <thierry.reding@gmail.com>,
-	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
 	Alessandro Zummo <a.zummo@towertech.it>,
 	Alexandre Belloni <alexandre.belloni@bootlin.com>,
 	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -110,33 +79,31 @@ To: David Airlie <airlied@gmail.com>,
 	Mark Brown <broonie@kernel.org>,
 	Jaehoon Chung <jh80.chung@samsung.com>,
 	Sam Protsenko <semen.protsenko@linaro.org>,
-	dri-devel@lists.freedesktop.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-samsung-soc@vger.kernel.org,
-	linux-i2c@vger.kernel.org,
-	linux-iio@vger.kernel.org,
-	linux-mmc@vger.kernel.org,
-	linux-gpio@vger.kernel.org,
-	linux-pwm@vger.kernel.org,
-	linux-rtc@vger.kernel.org,
-	linux-serial@vger.kernel.org,
-	alsa-devel@alsa-project.org,
-	linux-sound@vger.kernel.org
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH 16/17] arm64: dts: exynos850: add specific compatibles to
- several blocks
-Date: Wed,  8 Nov 2023 11:43:42 +0100
-Message-Id: <20231108104343.24192-17-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231108104343.24192-1-krzysztof.kozlowski@linaro.org>
+	dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-samsung-soc@vger.kernel.org, linux-i2c@vger.kernel.org,
+	linux-iio@vger.kernel.org, linux-mmc@vger.kernel.org,
+	linux-gpio@vger.kernel.org, linux-pwm@vger.kernel.org,
+	linux-rtc@vger.kernel.org, linux-serial@vger.kernel.org,
+	alsa-devel@alsa-project.org, linux-sound@vger.kernel.org
+Subject: Re: [PATCH 12/17] dt-bindings: pwm: samsung: add specific
+ compatibles for existing SoC
+Message-ID: <20231108111344.sxb6ehxmm6wwknal@pengutronix.de>
 References: <20231108104343.24192-1-krzysztof.kozlowski@linaro.org>
+ <20231108104343.24192-13-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: NYXCEBLSI5TLHLZNO7WUCE344JJ2ZMEP
-X-Message-ID-Hash: NYXCEBLSI5TLHLZNO7WUCE344JJ2ZMEP
-X-MailFrom: krzysztof.kozlowski@linaro.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="s5lmtu7dwemwa3xs"
+Content-Disposition: inline
+In-Reply-To: <20231108104343.24192-13-krzysztof.kozlowski@linaro.org>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de);
+ SAEximRunCond expanded to false
+X-PTX-Original-Recipient: alsa-devel@alsa-project.org
+Message-ID-Hash: 6DCR3B6R2LI4WZFLANTKRP5R73DIU5PY
+X-Message-ID-Hash: 6DCR3B6R2LI4WZFLANTKRP5R73DIU5PY
+X-MailFrom: ukl@pengutronix.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -148,7 +115,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NYXCEBLSI5TLHLZNO7WUCE344JJ2ZMEP/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6DCR3B6R2LI4WZFLANTKRP5R73DIU5PY/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -157,158 +124,56 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Exynos850 reuses several devices from older designs, thus historically
-we kept the old (block's) compatible only.  This works fine and there is
-no bug here, however guidelines expressed in
-Documentation/devicetree/bindings/writing-bindings.rst state that:
-1. Compatibles should be specific.
-2. We should add new compatibles in case of bugs or features.
 
-Add compatibles specific to Exynos850 in front of all old-SoC-like
-compatibles.  This will also help reviews of new code using existing
-DTS as template.  No functional impact on Linux drivers behavior.
+--s5lmtu7dwemwa3xs
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
----
- arch/arm64/boot/dts/exynos/exynos850.dtsi | 34 +++++++++++++----------
- 1 file changed, 20 insertions(+), 14 deletions(-)
+Hello,
 
-diff --git a/arch/arm64/boot/dts/exynos/exynos850.dtsi b/arch/arm64/boot/dts/exynos/exynos850.dtsi
-index 53104e65b9c6..df5ea43ebcad 100644
---- a/arch/arm64/boot/dts/exynos/exynos850.dtsi
-+++ b/arch/arm64/boot/dts/exynos/exynos850.dtsi
-@@ -396,7 +396,7 @@ pinctrl_aud: pinctrl@14a60000 {
- 		};
- 
- 		rtc: rtc@11a30000 {
--			compatible = "samsung,s3c6410-rtc";
-+			compatible = "samsung,exynos850-rtc", "samsung,s3c6410-rtc";
- 			reg = <0x11a30000 0x100>;
- 			interrupts = <GIC_SPI 57 IRQ_TYPE_LEVEL_HIGH>,
- 				     <GIC_SPI 58 IRQ_TYPE_LEVEL_HIGH>;
-@@ -406,7 +406,8 @@ rtc: rtc@11a30000 {
- 		};
- 
- 		mmc_0: mmc@12100000 {
--			compatible = "samsung,exynos7-dw-mshc-smu";
-+			compatible = "samsung,exynos850-dw-mshc-smu",
-+				     "samsung,exynos7-dw-mshc-smu";
- 			reg = <0x12100000 0x2000>;
- 			interrupts = <GIC_SPI 452 IRQ_TYPE_LEVEL_HIGH>;
- 			#address-cells = <1>;
-@@ -419,7 +420,7 @@ mmc_0: mmc@12100000 {
- 		};
- 
- 		i2c_0: i2c@13830000 {
--			compatible = "samsung,s3c2440-i2c";
-+			compatible = "samsung,exynos850-i2c", "samsung,s3c2440-i2c";
- 			reg = <0x13830000 0x100>;
- 			interrupts = <GIC_SPI 196 IRQ_TYPE_LEVEL_HIGH>;
- 			#address-cells = <1>;
-@@ -432,7 +433,7 @@ i2c_0: i2c@13830000 {
- 		};
- 
- 		i2c_1: i2c@13840000 {
--			compatible = "samsung,s3c2440-i2c";
-+			compatible = "samsung,exynos850-i2c", "samsung,s3c2440-i2c";
- 			reg = <0x13840000 0x100>;
- 			interrupts = <GIC_SPI 197 IRQ_TYPE_LEVEL_HIGH>;
- 			#address-cells = <1>;
-@@ -445,7 +446,7 @@ i2c_1: i2c@13840000 {
- 		};
- 
- 		i2c_2: i2c@13850000 {
--			compatible = "samsung,s3c2440-i2c";
-+			compatible = "samsung,exynos850-i2c", "samsung,s3c2440-i2c";
- 			reg = <0x13850000 0x100>;
- 			interrupts = <GIC_SPI 198 IRQ_TYPE_LEVEL_HIGH>;
- 			#address-cells = <1>;
-@@ -458,7 +459,7 @@ i2c_2: i2c@13850000 {
- 		};
- 
- 		i2c_3: i2c@13860000 {
--			compatible = "samsung,s3c2440-i2c";
-+			compatible = "samsung,exynos850-i2c", "samsung,s3c2440-i2c";
- 			reg = <0x13860000 0x100>;
- 			interrupts = <GIC_SPI 199 IRQ_TYPE_LEVEL_HIGH>;
- 			#address-cells = <1>;
-@@ -471,7 +472,7 @@ i2c_3: i2c@13860000 {
- 		};
- 
- 		i2c_4: i2c@13870000 {
--			compatible = "samsung,s3c2440-i2c";
-+			compatible = "samsung,exynos850-i2c", "samsung,s3c2440-i2c";
- 			reg = <0x13870000 0x100>;
- 			interrupts = <GIC_SPI 200 IRQ_TYPE_LEVEL_HIGH>;
- 			#address-cells = <1>;
-@@ -485,7 +486,7 @@ i2c_4: i2c@13870000 {
- 
- 		/* I2C_5 (also called CAM_PMIC_I2C in TRM) */
- 		i2c_5: i2c@13880000 {
--			compatible = "samsung,s3c2440-i2c";
-+			compatible = "samsung,exynos850-i2c", "samsung,s3c2440-i2c";
- 			reg = <0x13880000 0x100>;
- 			interrupts = <GIC_SPI 201 IRQ_TYPE_LEVEL_HIGH>;
- 			#address-cells = <1>;
-@@ -499,7 +500,7 @@ i2c_5: i2c@13880000 {
- 
- 		/* I2C_6 (also called MOTOR_I2C in TRM) */
- 		i2c_6: i2c@13890000 {
--			compatible = "samsung,s3c2440-i2c";
-+			compatible = "samsung,exynos850-i2c", "samsung,s3c2440-i2c";
- 			reg = <0x13890000 0x100>;
- 			interrupts = <GIC_SPI 202 IRQ_TYPE_LEVEL_HIGH>;
- 			#address-cells = <1>;
-@@ -640,7 +641,8 @@ usi_hsi2c_0: usi@138a00c0 {
- 			status = "disabled";
- 
- 			hsi2c_0: i2c@138a0000 {
--				compatible = "samsung,exynosautov9-hsi2c";
-+				compatible = "samsung,exynos850-hsi2c",
-+					     "samsung,exynosautov9-hsi2c";
- 				reg = <0x138a0000 0xc0>;
- 				interrupts = <GIC_SPI 193 IRQ_TYPE_LEVEL_HIGH>;
- 				#address-cells = <1>;
-@@ -668,7 +670,8 @@ usi_hsi2c_1: usi@138b00c0 {
- 			status = "disabled";
- 
- 			hsi2c_1: i2c@138b0000 {
--				compatible = "samsung,exynosautov9-hsi2c";
-+				compatible = "samsung,exynos850-hsi2c",
-+					     "samsung,exynosautov9-hsi2c";
- 				reg = <0x138b0000 0xc0>;
- 				interrupts = <GIC_SPI 194 IRQ_TYPE_LEVEL_HIGH>;
- 				#address-cells = <1>;
-@@ -696,7 +699,8 @@ usi_hsi2c_2: usi@138c00c0 {
- 			status = "disabled";
- 
- 			hsi2c_2: i2c@138c0000 {
--				compatible = "samsung,exynosautov9-hsi2c";
-+				compatible = "samsung,exynos850-hsi2c",
-+					     "samsung,exynosautov9-hsi2c";
- 				reg = <0x138c0000 0xc0>;
- 				interrupts = <GIC_SPI 195 IRQ_TYPE_LEVEL_HIGH>;
- 				#address-cells = <1>;
-@@ -738,7 +742,8 @@ usi_cmgp0: usi@11d000c0 {
- 			status = "disabled";
- 
- 			hsi2c_3: i2c@11d00000 {
--				compatible = "samsung,exynosautov9-hsi2c";
-+				compatible = "samsung,exynos850-hsi2c",
-+					     "samsung,exynosautov9-hsi2c";
- 				reg = <0x11d00000 0xc0>;
- 				interrupts = <GIC_SPI 62 IRQ_TYPE_LEVEL_HIGH>;
- 				#address-cells = <1>;
-@@ -778,7 +783,8 @@ usi_cmgp1: usi@11d200c0 {
- 			status = "disabled";
- 
- 			hsi2c_4: i2c@11d20000 {
--				compatible = "samsung,exynosautov9-hsi2c";
-+				compatible = "samsung,exynos850-hsi2c",
-+					     "samsung,exynosautov9-hsi2c";
- 				reg = <0x11d20000 0xc0>;
- 				interrupts = <GIC_SPI 63 IRQ_TYPE_LEVEL_HIGH>;
- 				#address-cells = <1>;
--- 
-2.34.1
+On Wed, Nov 08, 2023 at 11:43:38AM +0100, Krzysztof Kozlowski wrote:
+> Samsung Exynos SoC reuses several devices from older designs, thus
+> historically we kept the old (block's) compatible only.  This works fine
+> and there is no bug here, however guidelines expressed in
+> Documentation/devicetree/bindings/writing-bindings.rst state that:
+> 1. Compatibles should be specific.
+> 2. We should add new compatibles in case of bugs or features.
+>=20
+> Add compatibles specific to each SoC in front of all old-SoC-like
+> compatibles.
+>=20
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+>=20
+> ---
+>=20
+> I propose to take the patch through Samsung SoC (me). See cover letter
+> for explanation.
 
+Fine for me
+
+Acked-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--s5lmtu7dwemwa3xs
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmVLbWgACgkQj4D7WH0S
+/k4a8ggAisMgSiojK34WM6Ei36Y1XLO8kOH1f//AzrO0UDibn0Zhvw287OngrOIl
+CkuyoKGazHXmGIDsSdfrCQkrUwkl0yIZY+W1FmlVnQCiFFJZ/VnDSR36w2jBKhn6
+Ds8GC5ZH/OCt0rHTiNJyRzDB+fw3/4A9//8AYffoXTNeELJwwE83KwkCutYtYPXT
+QSndSYIMX179M7Fk7C8gYoWAsU3YJrj4CgWSIc1nBIRRktBqTRbouRMFIY2lrFZ+
+R0boATVIMFI1BYsaGbn57pzYX2tAcnlRjthQ+4Nf3/rg+QdQxAJ3ejALN5acqqhd
+T9no5cHCm6UbLQwxWtECYc4IZn3dyQ==
+=4AYg
+-----END PGP SIGNATURE-----
+
+--s5lmtu7dwemwa3xs--
