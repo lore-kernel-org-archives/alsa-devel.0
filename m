@@ -4,183 +4,108 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B6604C4332F
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Nov 2023 18:07:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 02E3DC4332F
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Nov 2023 18:49:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 77A1F828;
-	Thu,  9 Nov 2023 19:06:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 77A1F828
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4A011828;
+	Thu,  9 Nov 2023 19:48:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4A011828
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1699553265;
-	bh=+s1GQ6cxkAoMLjQHQuQK7i4/jrzq4jIiFYnAJpIQAEg=;
-	h=From:To:In-Reply-To:Subject:Date:References:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=WI4N45kJKaq4RTJvIaIE/v05f/iyrLsgbmQSMBYZWq8bQx7rrveD5SmHbO+lO1hqy
-	 ckalUfK3HPnlrn2Eo4r73NNaeAeOvRgxRKCQBmPix3J/B8dhKIEERkDlsAFDuSaoQG
-	 impCQ3HPSS25aTduzzGgxpF+jZgczU7VAs/SGYqE=
+	s=default; t=1699555780;
+	bh=NCXbenS1L3Qe6e/ss5KgHEU40eBHqXGrOb2hVPXVeDI=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=tOEN8B/9Wd0LNDA8LUeZeqPL0jM53q2va0S/oqQPnjSZJjF0U0Ve6YPRZHOXG9i/P
+	 R3UoGM0Z+sXbk63tI9RxHwuPmW+SWd4LqkgqEhel73R7oJEL7XouMUGX2JbPUx9POL
+	 sE6+cY/iKgjyVSdPr2Hvk3Onj8s+Oi2XY7d/PrD8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4AA80F8055B; Thu,  9 Nov 2023 19:06:29 +0100 (CET)
+	id 8FD08F80557; Thu,  9 Nov 2023 19:48:21 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 94CB6F80169;
-	Thu,  9 Nov 2023 19:06:28 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B54D5F80169;
+	Thu,  9 Nov 2023 19:48:20 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D7AB2F80169; Thu,  9 Nov 2023 19:06:24 +0100 (CET)
-Received: from mailout2.samsung.com (mailout2.samsung.com [203.254.224.25])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+	id 2880FF80169; Thu,  9 Nov 2023 14:33:54 +0100 (CET)
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com
+ [IPv6:2a00:1450:4864:20::629])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A0F0CF80125
-	for <alsa-devel@alsa-project.org>; Thu,  9 Nov 2023 19:06:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A0F0CF80125
+	by alsa1.perex.cz (Postfix) with ESMTPS id 5E4C6F80152
+	for <alsa-devel@alsa-project.org>; Thu,  9 Nov 2023 14:33:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5E4C6F80152
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=samsung.com header.i=@samsung.com header.a=rsa-sha256
- header.s=mail20170921 header.b=fZJV8SvM
-Received: from epcas5p2.samsung.com (unknown [182.195.41.40])
-	by mailout2.samsung.com (KnoxPortal) with ESMTP id
- 20231109180604epoutp0203d5183f1c25af849c509750f8f2a288~WBpkvgpMu0327303273epoutp02F;
-	Thu,  9 Nov 2023 18:06:04 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com
- 20231109180604epoutp0203d5183f1c25af849c509750f8f2a288~WBpkvgpMu0327303273epoutp02F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1699553164;
-	bh=+s1GQ6cxkAoMLjQHQuQK7i4/jrzq4jIiFYnAJpIQAEg=;
-	h=From:To:In-Reply-To:Subject:Date:References:From;
-	b=fZJV8SvM9AfYAMlrJAfY9poiOHXvmFKyFZdqqynP0HbcsJUE0WsGeEHJmrPBoEOyv
-	 uOxFNNfpAPIaMnLjFlEZEzqtGgOwfkouJWYMZ6t/3eX/dS9Q3bYz/lFUO2FueC3+D9
-	 Pr5T+j3Roa4XMe6ST/Zt60H6RGOgnO3fH8pZCDpw=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-	epcas5p3.samsung.com (KnoxPortal) with ESMTP id
-	20231109180603epcas5p3e7b62e16ea0b7ef816115bef9ceda331~WBpkQ5v2s2548325483epcas5p33;
-	Thu,  9 Nov 2023 18:06:03 +0000 (GMT)
-Received: from epsmges5p1new.samsung.com (unknown [182.195.38.180]) by
-	epsnrtp3.localdomain (Postfix) with ESMTP id 4SR8yf2CFmz4x9Pp; Thu,  9 Nov
-	2023 18:06:02 +0000 (GMT)
-Received: from epcas5p1.samsung.com ( [182.195.41.39]) by
-	epsmges5p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-	76.D0.09634.A8F1D456; Fri, 10 Nov 2023 03:06:02 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-	epcas5p3.samsung.com (KnoxPortal) with ESMTPA id
-	20231109180601epcas5p35d2a5cf24cd906dede19c27213ad49df~WBpiOm5-92217322173epcas5p3w;
-	Thu,  9 Nov 2023 18:06:01 +0000 (GMT)
-Received: from epsmgmcp1.samsung.com (unknown [182.195.42.82]) by
-	epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-	20231109180601epsmtrp1783e1075e75b37e27b73c9f8317adad1~WBpiKb3q02657326573epsmtrp1R;
-	Thu,  9 Nov 2023 18:06:01 +0000 (GMT)
-X-AuditID: b6c32a49-eebff700000025a2-47-654d1f8aa957
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-	epsmgmcp1.samsung.com (Symantec Messaging Gateway) with SMTP id
-	8F.16.18939.98F1D456; Fri, 10 Nov 2023 03:06:01 +0900 (KST)
-Received: from INBRO000447 (unknown [107.122.12.5]) by epsmtip2.samsung.com
-	(KnoxPortal) with ESMTPA id
-	20231109180556epsmtip22b32d0e0ae0460b24729fae93c0cf165~WBpdFE6PW2620526205epsmtip2P;
-	Thu,  9 Nov 2023 18:05:56 +0000 (GMT)
-From: "Alim Akhtar" <alim.akhtar@samsung.com>
-To: "'Krzysztof Kozlowski'" <krzysztof.kozlowski@linaro.org>, "'David
- Airlie'" <airlied@gmail.com>, "'Daniel Vetter'" <daniel@ffwll.ch>, "'Maarten
- Lankhorst'" <maarten.lankhorst@linux.intel.com>, "'Maxime Ripard'"
-	<mripard@kernel.org>, "'Thomas Zimmermann'" <tzimmermann@suse.de>, "'Rob
- Herring'" <robh+dt@kernel.org>, "'Krzysztof Kozlowski'"
-	<krzysztof.kozlowski+dt@linaro.org>, "'Conor Dooley'" <conor+dt@kernel.org>,
-	"'Andi Shyti'" <andi.shyti@kernel.org>, "'Jonathan Cameron'"
-	<jic23@kernel.org>, "'Lars-Peter Clausen'" <lars@metafoo.de>, "'Lee Jones'"
-	<lee@kernel.org>, "'Ulf Hansson'" <ulf.hansson@linaro.org>, "'Tomasz	Figa'"
-	<tomasz.figa@gmail.com>, "'Sylwester Nawrocki'" <s.nawrocki@samsung.com>,
-	"'Linus Walleij'" <linus.walleij@linaro.org>, "'Thierry Reding'"
-	<thierry.reding@gmail.com>, =?utf-8?Q?'Uwe_Kleine-K=C3=B6nig'?=
-	<u.kleine-koenig@pengutronix.de>, "'Alessandro Zummo'"
-	<a.zummo@towertech.it>, "'Alexandre Belloni'"
-	<alexandre.belloni@bootlin.com>, "'Greg Kroah-Hartman'"
-	<gregkh@linuxfoundation.org>, "'Jiri Slaby'" <jirislaby@kernel.org>, "'Liam
- Girdwood'" <lgirdwood@gmail.com>, "'Mark Brown'" <broonie@kernel.org>,
-	"'Jaehoon	Chung'" <jh80.chung@samsung.com>, "'Sam Protsenko'"
-	<semen.protsenko@linaro.org>, <dri-devel@lists.freedesktop.org>,
-	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-samsung-soc@vger.kernel.org>,
-	<linux-i2c@vger.kernel.org>, <linux-iio@vger.kernel.org>,
-	<linux-mmc@vger.kernel.org>, <linux-gpio@vger.kernel.org>,
-	<linux-pwm@vger.kernel.org>, <linux-rtc@vger.kernel.org>,
-	<linux-serial@vger.kernel.org>, <alsa-devel@alsa-project.org>,
-	<linux-sound@vger.kernel.org>
-In-Reply-To: <20231108104343.24192-3-krzysztof.kozlowski@linaro.org>
-Subject: RE: [PATCH 02/17] dt-bindings: i2c: exynos5: add specific
- compatibles for existing SoC
-Date: Thu, 9 Nov 2023 23:35:54 +0530
-Message-ID: <02bb01da1337$65caf5e0$3160e1a0$@samsung.com>
+	dkim=pass (2048-bit key,
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20230601 header.b=ZuDfHmFI
+Received: by mail-ej1-x629.google.com with SMTP id
+ a640c23a62f3a-9d0b4dfd60dso136611166b.1
+        for <alsa-devel@alsa-project.org>;
+ Thu, 09 Nov 2023 05:33:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699536814; x=1700141614;
+ darn=alsa-project.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=f6vvIDiFOvQlW7b+j+gCsKL4XHEcs023e878kBSn+io=;
+        b=ZuDfHmFIFAJhXQbQ6v3jkq6l9lpdwEJGU+n3Tllis8r8KuqjebWGKAUIW+yYCdhlKi
+         aUBzmz0cC8bu4mwugyUPXDKGLuxhZJ8S5uJc3LmdNEWnNnVE2qQ4AeNM7yf9K8zLfMeN
+         gxoXu6fLMIcc51pRaACjxwggcBlcYUXTgIXB6WnK4rXC2z7CS3UhDlJHlKYIC6RCr5IO
+         9aEA8WbiOoelKqamEN5sIPshxueC/3LmLQa5346xDW+p6/krkQg13Bwo82veRNtTy2gD
+         qVZwChXZdi3LGM++1bOMQHtfClaOb9nt9S7SYOgAO20TA9+CLcMJFeTuJp1AewrShPB4
+         o0Mg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699536814; x=1700141614;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=f6vvIDiFOvQlW7b+j+gCsKL4XHEcs023e878kBSn+io=;
+        b=mwA7wPdj44UYJzNJdI8LkMVdmRuL4UY5+b9RIKH2TDtrA27HRe885SMaFDRNjMRcfy
+         3S4AfcHN1BBtLfc6DFfmlfOL25pFXySnbiaKYY/Q1BZTJNDp60LJASfi5RYhG+ik5uqZ
+         uYJlT6faDtVMiAHWyRB0XI7Butk+NXFbD+PhllpMR48fFDe2pWv/PYECmcLvXGye79pH
+         r7tTd4nyYCxdxHXnh2n+cT8+X1Mte8iL8vhwXItA8tuOCU8FERJQ4Ey0SVZpo+vczHNy
+         F59su6MtMyf+RrPD+jUbLxUY5DANk6juLjY4r5QTyPtBP02w1j00k2XKqbYic7Awz8By
+         hyNg==
+X-Gm-Message-State: AOJu0Yzeg+ebbGFak/ehrXkrNy2c6y0uPHJbN8wjP4snRL7Ct9zVOEt8
+	ub3CDUA1bPW5fHwYIO3pDRF8XZgyhmF7qEYDuA==
+X-Google-Smtp-Source: 
+ AGHT+IH/pQPsu4jcr4tPiNAagFyu34m7Rys8x5jjWc7qYt85ck0AdZfXDbHfo6yB+hjcnrkkGLjt1T/MNU1aM4RcHzc=
+X-Received: by 2002:a17:907:d1f:b0:9e2:af56:c375 with SMTP id
+ gn31-20020a1709070d1f00b009e2af56c375mr4621158ejc.52.1699536814141; Thu, 09
+ Nov 2023 05:33:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQGWJB6kbFUwx2+cGuz2YrV1SxstmQJIJYa1AlRjzhGw1UCPMA==
-Content-Language: en-us
-X-Brightmail-Tracker: 
- H4sIAAAAAAAAA01Te1BUZRSf7+59LBR0A8IvKqRNxyB5rAF920CIMnZDZXAifNC0rHBdGGDZ
-	2QU0bUaDXBDkFaK08lAhkBXCeA2gZK085DEo8YqEeBYQCAkKrsDQLtfM/37nd37n+51zvjl8
-	ntk8ZcUPlUWxCpkkXEAa49W3bbfYJ27cyzpdbCdRQWcPhe70XcFQ/Gwhhbo7tRgaepwAUObI
-	OIlK6jswtFadzkN5DR0E6n48R6K4/DIS/fZURaDhWA2GZnPeRCmTIzxUP11FoYKMPALVqC7j
-	aLE7AUPnVoowVD7WS6CKvBWAElYfAZTbMIujrrpsEjWspQI0OKgBqOlaN4my7v6Eofb8ZArl
-	/HWOhy4/rMKR6kwhgU7XN1Do9kw8gSZS9BJdXS6ONHX69ypn0gl0Pz0DoObS/dttmesLsSST
-	W3KCqV+8hDO16kGKKdecIZmB3pt6vmUfcyunhGKGkpoxpqLgJFMwoyWY1FUnJqVSA5iKthPM
-	hVwdxiyUW/vSh8LcQlhJMKuwYWVBkcGhMqm7YPen4p1iF1cnob1QhD4Q2MgkEay7wGuPr/2u
-	0HD9ggU2MZLwaD3lK1EqBY4fuSkio6NYm5BIZZS7gJUHh8ud5Q5KSYQyWiZ1kLFRHwqdnLa5
-	6IWBYSE/XsXl7cJjJcN14BTocUwERnxIO8PspV95BmxG3wAwfvVgIjDW43kA+79vJJ4Ha2PZ
-	ehV/vSKxVczxtQA+Sh3BuWASwLa8JsLwFEnbw5p8FWlIWNA3TGDXrVHckDCiveC9+AuYAZvT
-	EvhgMXOdx+lN8On12HXehBbB2sVvAIdfhS3fja9rePR7sPDyNI/r2wbq/iwkDB1Z0Dtg59dy
-	TrIBTjU2UAZfSNcbwybN1Wd6L5g6EYdz2Bz+3VxJcdgKTqWqKG4yBl5ZseLoEPigqAxw2AP+
-	3J2NGyQ82haW1TlyVqYweXkc4ypNYILKjFNvhnGzPc+M3oDpSUkEhxmo7j1PcavqBHBgQUOk
-	ARv1C0OqXxhS/cI06v+dLwFcA15n5coIKat0kQtl7NHnvx0UGVEO1o/P7pMaMDj8j4MWYHyg
-	BZDPE1iY3HPew5qZBEu+PM4qIsWK6HBWqQUu+s2n86xeC4rUX68sSix0Fjk5u7q6OovedxUK
-	NphMn84JNqOlkig2jGXlrOK/OoxvZHUKK7dLCqtZ9txYkexV6dns/0oiyusv3Oph6p9Gfrsj
-	AHylzJpW89/W7VNNWor8wo5o/QuWRyytbx/yptzzmzZjbwVu6yhlPvPuO5zsQHi8e2zLWOp2
-	44NVk3eWPKMHU45X96uWNvsHaItNi3U7ha0WRTHmoR6i0iwscyumC6fF2JPdUr8vGjzNE3xq
-	BlZ0qPDzAd6B0rujAZbv3G9esmybOB84d81vqqk1xLo79KFiO1q07/Gu/qNm7rB0mbLOOCqW
-	xv8wvNHYZ28feTjIT7Kp9eLH9mcaW6pvunf5FTcKe+fP9jxxG2UtQn8PSkt46cguxYGY5iG7
-	PJHPyV/297wc3JHrK8CVIRKhHU+hlPwL3AsNxgUFAAA=
-X-Brightmail-Tracker: 
- H4sIAAAAAAAAA02SbUxTVwCGd+43TbrdVRx3VAoWYgARZHPZcS5qJj/uD5lTpia6BSrcFLYC
-	zW1hU2MGVcvHHB9DhpZRZDTFlapQKF+hG5ZqVRwDrTAURJyABoLbgGYorKM0W/j35H2f8+ac
-	5FCo6DYeSKVlqDk+Q6aQEgKspVsavKkgOJ7bbLgqgYb+eyS8MfgDAvNmjCR09dsRODqfD2D5
-	2BMCmm29CPS0lKKw2tGLQ9f8cwKerL1CwN9eaHH4SGNC4EzVOlj0dAyFtikrCQ1l1Ths09Zg
-	0O3KR+DZxToEWn4fwGFT9SKA+UtzAOodMxi82/E9AR2eYgBHRkwAXq93EfDcrz8h8HbtNySs
-	mjiLwpo/rRjUFhhxeNrmIGH3dB4OJ4uWlYUOPQZNHct7zdOlOHxQWgag89LBnRFsw6yGYPXm
-	46zNfQFj23UjJGsxFRDs8EDncn5zL/tzlZlkR792ImyT4SvWMG3H2eKlzWxRswmwTT3H2Qr9
-	AsLOWiQf0YcE76dwirRsjo/ZniRIdTnNpPJM2JePut0gB4wGFQKKYugtTOGtxEIgoER0K2C+
-	7bCDQuC3nIuZwcYS0sdrmB//mSR90gRgRlobcW9B0JuYtlot4WV/ekjI9Azv8Um/AMbqOIV6
-	Cz86junLq0C8vIZOZKw2D+ZljA5jXjRoVnIhvZVpd58CPn6duXn+yYqD0huZ8aHx/9lYM4X6
-	bhTCLIwbce8L/OkPmP5cpU8JYJ5dc5AlQKRbtaRbtaRbtaRbdeQCwExgLadUpcvTk5Wx0SpZ
-	uiorQx6dnJluASsfLnJfGzBeWYq2A4QCdsBQqNRf2LdlNycSpsiOHuP4zEQ+S8Gp7EBMYdIA
-	YaiiIEVEy2Vq7nOOU3L8fy1C+QXmIAcElYt/bAiJUKvj+LmiXj7s5Xv40fMhor/eUu+4u35o
-	f9/a/R++M9DUbHotTS5+80bOrbmu+ofXxCec8Gpv+7bWoIqYNn1NzB6jIbSk585T/4/nB69H
-	fvd8QnLATSTNPJ4wiDURe8vkLYFpc+aL998+UnIp1PxGud/LhNKEIa2e8hw5/HdU9cWN8Zcr
-	1y/yFsnWispRYb0rPnXXofHs4vCp3V3OT3Z8au16BW0tD351XWdAruLhu8nYg8oWIrdxw0Ld
-	44xnJwcC9JrMscSwfbHbEsLR7jue05LAnSd25ZwLj2qIrovabuatks77kwfPJGU5Lld9kW3O
-	x2c/Cxo+fC8u65jNI8VUqbLYSJRXyf4FqdWDf98DAAA=
-X-CMS-MailID: 20231109180601epcas5p35d2a5cf24cd906dede19c27213ad49df
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-CMS-TYPE: 105P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20231108104407epcas5p4c52f140b035727b6110ff7d3c0f81bc0
-References: <20231108104343.24192-1-krzysztof.kozlowski@linaro.org>
-	<CGME20231108104407epcas5p4c52f140b035727b6110ff7d3c0f81bc0@epcas5p4.samsung.com>
-	<20231108104343.24192-3-krzysztof.kozlowski@linaro.org>
-Message-ID-Hash: SMYBKIY6PQUK5V2Z2QSO6OLTAWKRULP5
-X-Message-ID-Hash: SMYBKIY6PQUK5V2Z2QSO6OLTAWKRULP5
-X-MailFrom: alim.akhtar@samsung.com
+References: 
+ <CAHiQ-bDGx89vWjtqrnH4FtO-JF9XUWMgwCpR4nusC9Zvw=bN7Q@mail.gmail.com>
+ <87sf5fpe7j.wl-tiwai@suse.de>
+In-Reply-To: <87sf5fpe7j.wl-tiwai@suse.de>
+From: "vitaly.torshyn@gmail.com" <vitaly.torshyn@gmail.com>
+Date: Thu, 9 Nov 2023 15:33:21 +0200
+Message-ID: 
+ <CAHiQ-bA-vhk4vhxUGRVk7dLrDECmjqA38C=jSj7iYHr=RL+0TQ@mail.gmail.com>
+Subject: Re: [PATCH 1/1] ALSA: HDA: Asus UM5302LA: Added quirks for
+ cs35L41/10431A83 on i2c bus
+To: Takashi Iwai <tiwai@suse.de>
+Cc: perex@perex.cz, alsa-devel@alsa-project.org
+Content-Type: multipart/mixed; boundary="0000000000001705ae0609b840b7"
+X-MailFrom: vitaly.torshyn@gmail.com
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: P3VSC3FMZ4BVGJU4FOSDJGOPHZLD2YRD
+X-Message-ID-Hash: P3VSC3FMZ4BVGJU4FOSDJGOPHZLD2YRD
+X-Mailman-Approved-At: Thu, 09 Nov 2023 18:48:16 +0000
+X-Content-Filtered-By: Mailman/MimeDel 3.3.8
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SMYBKIY6PQUK5V2Z2QSO6OLTAWKRULP5/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/P3VSC3FMZ4BVGJU4FOSDJGOPHZLD2YRD/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -189,93 +114,178 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+--0000000000001705ae0609b840b7
+Content-Type: text/plain; charset="UTF-8"
+
+Dear Takashi,
+
+Thanks a lot for the quick review.
+My idea was to keep "similar" devices' quirks close to each other but I do
+agree that using PCI SSID makes more sense.
+
+Please find the updated version of the patch attached.
+
+Vitalii
+---
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 58006c8bc..a28d078c9 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -7444,6 +7444,7 @@ enum {
+       ALC287_FIXUP_THINKPAD_I2S_SPK,
+       ALC287_FIXUP_MG_RTKC_CSAMP_CS35L41_I2C_THINKPAD,
+       ALC2XX_FIXUP_HEADSET_MIC,
++       ALC294_FIXUP_CS35L41_I2C_2
+};
+
+/* A special fixup for Lenovo C940 and Yoga Duet 7;
+@@ -9552,6 +9553,11 @@ static const struct hda_fixup alc269_fixups[] = {
+               .type = HDA_FIXUP_FUNC,
+               .v.func = alc_fixup_headset_mic,
+       },
++       [ALC294_FIXUP_CS35L41_I2C_2] = {
++               .type = HDA_FIXUP_FUNC,
++               .v.func = cs35l41_fixup_i2c_two,
++       },
++
+};
+
+static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+@@ -9913,6 +9919,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[]
+= {
+       SND_PCI_QUIRK(0x1043, 0x19e1, "ASUS UX581LV",
+ALC295_FIXUP_ASUS_MIC_NO_PRESENCE),
+       SND_PCI_QUIRK(0x1043, 0x1a13, "Asus G73Jw",
+ALC269_FIXUP_ASUS_G73JW),
+       SND_PCI_QUIRK(0x1043, 0x1a30, "ASUS X705UD", ALC256_FIXUP_ASUS_MIC),
++       SND_PCI_QUIRK(0x1043, 0x1a83, "ASUS UM5302LA",
+ALC294_FIXUP_CS35L41_I2C_2),
+       SND_PCI_QUIRK(0x1043, 0x1a8f, "ASUS UX582ZS",
+ALC245_FIXUP_CS35L41_SPI_2),
+       SND_PCI_QUIRK(0x1043, 0x1b11, "ASUS UX431DA",
+ALC294_FIXUP_ASUS_COEF_1B),
+       SND_PCI_QUIRK(0x1043, 0x1b13, "Asus U41SV", ALC269_FIXUP_INV_DMIC),
 
 
-> -----Original Message-----
-> From: Krzysztof Kozlowski <krzysztof.kozlowski=40linaro.org>
-> Sent: Wednesday, November 8, 2023 4:13 PM
-> To: David Airlie <airlied=40gmail.com>; Daniel Vetter <daniel=40ffwll.ch>=
-;
-> Maarten Lankhorst <maarten.lankhorst=40linux.intel.com>; Maxime Ripard
-> <mripard=40kernel.org>; Thomas Zimmermann <tzimmermann=40suse.de>;
-> Rob Herring <robh+dt=40kernel.org>; Krzysztof Kozlowski
-> <krzysztof.kozlowski+dt=40linaro.org>; Conor Dooley
-> <conor+dt=40kernel.org>; Alim Akhtar <alim.akhtar=40samsung.com>; Andi
-> Shyti <andi.shyti=40kernel.org>; Jonathan Cameron <jic23=40kernel.org>; L=
-ars-
-> Peter Clausen <lars=40metafoo.de>; Lee Jones <lee=40kernel.org>; Ulf
-> Hansson <ulf.hansson=40linaro.org>; Tomasz Figa <tomasz.figa=40gmail.com>=
-;
-> Sylwester Nawrocki <s.nawrocki=40samsung.com>; Linus Walleij
-> <linus.walleij=40linaro.org>; Thierry Reding <thierry.reding=40gmail.com>=
-; Uwe
-> Kleine-K=C3=B6nig=20<u.kleine-koenig=40pengutronix.de>;=20Alessandro=20Zu=
-mmo=0D=0A>=20<a.zummo=40towertech.it>;=20Alexandre=20Belloni=0D=0A>=20<alex=
-andre.belloni=40bootlin.com>;=20Greg=20Kroah-Hartman=0D=0A>=20<gregkh=40lin=
-uxfoundation.org>;=20Jiri=20Slaby=20<jirislaby=40kernel.org>;=20Liam=0D=0A>=
-=20Girdwood=20<lgirdwood=40gmail.com>;=20Mark=20Brown=20<broonie=40kernel.o=
-rg>;=0D=0A>=20Jaehoon=20Chung=20<jh80.chung=40samsung.com>;=20Sam=20Protsen=
-ko=0D=0A>=20<semen.protsenko=40linaro.org>;=20dri-devel=40lists.freedesktop=
-.org;=0D=0A>=20devicetree=40vger.kernel.org;=20linux-kernel=40vger.kernel.o=
-rg;=20linux-arm-=0D=0A>=20kernel=40lists.infradead.org;=20linux-samsung-soc=
-=40vger.kernel.org;=20linux-=0D=0A>=20i2c=40vger.kernel.org;=20linux-iio=40=
-vger.kernel.org;=20linux-mmc=40vger.kernel.org;=0D=0A>=20linux-gpio=40vger.=
-kernel.org;=20linux-pwm=40vger.kernel.org;=20linux-=0D=0A>=20rtc=40vger.ker=
-nel.org;=20linux-serial=40vger.kernel.org;=20alsa-devel=40alsa-=0D=0A>=20pr=
-oject.org;=20linux-sound=40vger.kernel.org=0D=0A>=20Cc:=20Krzysztof=20Kozlo=
-wski=20<krzysztof.kozlowski=40linaro.org>=0D=0A>=20Subject:=20=5BPATCH=2002=
-/17=5D=20dt-bindings:=20i2c:=20exynos5:=20add=20specific=20compatibles=20fo=
-r=0D=0A>=20existing=20SoC=0D=0A>=20=0D=0A>=20Samsung=20Exynos=20SoC=20reuse=
-s=20several=20devices=20from=20older=20designs,=20thus=0D=0A>=20historicall=
-y=20we=20kept=20the=20old=20(block's)=20compatible=20only.=20=20This=20work=
-s=20fine=20and=0D=0A>=20there=20is=20no=20bug=20here,=20however=20guideline=
-s=20expressed=20in=0D=0A>=20Documentation/devicetree/bindings/writing-bindi=
-ngs.rst=20state=20that:=0D=0A>=201.=20Compatibles=20should=20be=20specific.=
-=0D=0A>=202.=20We=20should=20add=20new=20compatibles=20in=20case=20of=20bug=
-s=20or=20features.=0D=0A>=20=0D=0A>=20Add=20compatibles=20specific=20to=20e=
-ach=20SoC=20in=20front=20of=20all=20old-SoC-like=20compatibles.=0D=0A>=20=
-=0D=0A>=20Signed-off-by:=20Krzysztof=20Kozlowski=20<krzysztof.kozlowski=40l=
-inaro.org>=0D=0A>=20=0D=0A>=20---=0D=0A>=20=0D=0A>=20I=20propose=20to=20tak=
-e=20the=20patch=20through=20Samsung=20SoC=20(me).=20See=20cover=20letter=20=
-for=0D=0A>=20explanation.=0D=0A>=20---=0D=0A>=20=20Documentation/devicetree=
-/bindings/i2c/i2c-exynos5.yaml=20=7C=2010=20+++++++++-=0D=0A>=20=20.../devi=
-cetree/bindings/soc/samsung/exynos-usi.yaml=20=20=20=20=7C=20=202=20+-=0D=
-=0A>=20=202=20files=20changed,=2010=20insertions(+),=202=20deletions(-)=0D=
-=0A>=20=0D=0A>=20diff=20--git=20a/Documentation/devicetree/bindings/i2c/i2c=
--exynos5.yaml=0D=0A>=20b/Documentation/devicetree/bindings/i2c/i2c-exynos5.=
-yaml=0D=0A>=20index=203e52a0db6c41..c1f5d2cb7709=20100644=0D=0A>=20---=20a/=
-Documentation/devicetree/bindings/i2c/i2c-exynos5.yaml=0D=0A>=20+++=20b/Doc=
-umentation/devicetree/bindings/i2c/i2c-exynos5.yaml=0D=0A>=20=40=40=20-25,7=
-=20+25,15=20=40=40=20properties:=0D=0A>=20=20=20=20=20=20=20=20=20=20=20=20=
--=20samsung,exynos5250-hsi2c=20=20=20=20=23=20Exynos5250=20and=20Exynos5420=
-=0D=0A>=20=20=20=20=20=20=20=20=20=20=20=20-=20samsung,exynos5260-hsi2c=20=
-=20=20=20=23=20Exynos5260=0D=0A>=20=20=20=20=20=20=20=20=20=20=20=20-=20sam=
-sung,exynos7-hsi2c=20=20=20=20=20=20=20=23=20Exynos7=0D=0A>=20-=20=20=20=20=
-=20=20=20=20=20=20-=20samsung,exynosautov9-hsi2c=20=20=23=20ExynosAutoV9=20=
-and=20Exynos850=0D=0A>=20+=20=20=20=20=20=20=20=20=20=20-=20samsung,exynosa=
-utov9-hsi2c=0D=0A>=20+=20=20=20=20=20=20-=20items:=0D=0A>=20+=20=20=20=20=
-=20=20=20=20=20=20-=20enum:=0D=0A>=20+=20=20=20=20=20=20=20=20=20=20=20=20=
-=20=20-=20samsung,exynos5433-hsi2c=0D=0A>=20+=20=20=20=20=20=20=20=20=20=20=
--=20const:=20samsung,exynos7-hsi2c=0D=0A>=20+=20=20=20=20=20=20-=20items:=
-=0D=0A>=20+=20=20=20=20=20=20=20=20=20=20-=20enum:=0D=0A>=20+=20=20=20=20=
-=20=20=20=20=20=20=20=20=20=20-=20samsung,exynos850-hsi2c=0D=0ADoes=20this=
-=20need=20an=20entry=20in=20allOf:?=20to=20indicate=20exynos850=20also=20ha=
-s=202=20clocks?=0D=0A=0D=0A>=20+=20=20=20=20=20=20=20=20=20=20-=20const:=20=
-samsung,exynosautov9-hsi2c=0D=0A>=20=20=20=20=20=20=20=20-=20const:=20samsu=
-ng,exynos5-hsi2c=20=20=20=20=23=20Exynos5250=20and=20Exynos5420=0D=0A>=20=
-=20=20=20=20=20=20=20=20=20deprecated:=20true=0D=0A>=20=0D=0A>=20diff=20--g=
-it=20a/Documentation/devicetree/bindings/soc/samsung/exynos-=0D=0A>=20usi.y=
-aml=20b/Documentation/devicetree/bindings/soc/samsung/exynos-=0D=0A>=20usi.=
-yaml=0D=0A>=20index=20a6836904a4f8..5b7ab69546c4=20100644=0D=0A>=20---=20a/=
-Documentation/devicetree/bindings/soc/samsung/exynos-usi.yaml=0D=0A>=20+++=
-=20b/Documentation/devicetree/bindings/soc/samsung/exynos-usi.yaml=0D=0A>=
-=20=40=40=20-155,7=20+155,7=20=40=40=20examples:=0D=0A>=20=20=20=20=20=20=
-=20=20=20=20=7D;=0D=0A>=20=0D=0A>=20=20=20=20=20=20=20=20=20=20hsi2c_0:=20i=
-2c=4013820000=20=7B=0D=0A>=20-=20=20=20=20=20=20=20=20=20=20=20=20compatibl=
-e=20=3D=20=22samsung,exynosautov9-hsi2c=22;=0D=0A>=20+=20=20=20=20=20=20=20=
-=20=20=20=20=20compatible=20=3D=20=22samsung,exynos850-hsi2c=22,=0D=0A>=20+=
-=20=22samsung,exynosautov9-hsi2c=22;=0D=0A>=20=20=20=20=20=20=20=20=20=20=
-=20=20=20=20reg=20=3D=20<0x13820000=200xc0>;=0D=0A>=20=20=20=20=20=20=20=20=
-=20=20=20=20=20=20interrupts=20=3D=20<GIC_SPI=20227=20IRQ_TYPE_LEVEL_HIGH>;=
-=0D=0A>=20=20=20=20=20=20=20=20=20=20=20=20=20=20=23address-cells=20=3D=20<=
-1>;=0D=0A>=20--=0D=0A>=202.34.1=0D=0A=0D=0A=0D=0A
+
+
+On Thu, 9 Nov 2023 at 09:40, Takashi Iwai <tiwai@suse.de> wrote:
+
+> On Thu, 09 Nov 2023 01:22:57 +0100,
+> vitaly.torshyn@gmail.com wrote:
+> >
+> >
+> > Hi Takashi,
+> >
+> > Proposed patch fixes initialization of CSC3551 on the UM5302LA laptop.
+> > Patching DSDT table is not required since ASUS did added _DSD entry.
+> > Nothing new introduced but reused work started by Stefan B.
+> >
+> > Currently there is no official firmware available for 10431A83 on cirrus
+> git
+> > unfortunately.
+> > For testing used 104317f3 (which is also seems on i2c bus):
+> >
+> > $ cd /lib/firmware/cirrus/ && \
+> > for fw in $(find ./ -name '*104317f3*'); do newfw=$(echo $fw | sed
+> 's/104317f3
+> > /10431a83/g'); echo echo "$fw -> $newfw"; ln -s $f $newfw; done
+> >
+> > With the patch applied to 6.6.0 and obviously symlinks to 104317F3 FW,
+> > speakers works and to my susrprise they sound quite good and loud without
+> > distortion.
+> >
+> > Probably confirmation from cirrus team is needed on firmware.
+> >
+> > Signed-off-by: Vitalii Torshyn <vitaly.torshyn@gmail.com>
+>
+> Thanks for the patch.
+> The change looks almost fine, but only one thing:
+>
+> > @@ -9937,6 +9943,7 @@ static const struct snd_pci_quirk
+> alc269_fixup_tbl[] = {
+> >       SND_PCI_QUIRK(0x1043, 0x1c52, "ASUS Zephyrus G15 2022",
+> ALC289_FIXUP_ASUS_GA401),
+> >       SND_PCI_QUIRK(0x1043, 0x1f11, "ASUS Zephyrus G14",
+> ALC289_FIXUP_ASUS_GA401),
+> >       SND_PCI_QUIRK(0x1043, 0x1f12, "ASUS UM5302",
+> ALC287_FIXUP_CS35L41_I2C_2),
+> > +     SND_PCI_QUIRK(0x1043, 0x1a83, "ASUS UM5302LA",
+> ALC294_FIXUP_CS35L41_I2C_2),
+>
+> The entry is sorted in PCI SSID order.  Please put at the right
+> position.
+>
+>
+> thanks,
+>
+> Takashi
+>
+
+--0000000000001705ae0609b840b7
+Content-Type: text/x-patch; charset="US-ASCII";
+	name="0002-Subject-PATCH-ALSA-HDA-Asus-UM5302LA-Added-quirks-fo.patch"
+Content-Disposition: attachment;
+	filename="0002-Subject-PATCH-ALSA-HDA-Asus-UM5302LA-Added-quirks-fo.patch"
+Content-Transfer-Encoding: base64
+Content-ID: <f_lor8afdq0>
+X-Attachment-Id: f_lor8afdq0
+
+RnJvbSA4YzY0MzJlNzlmNTY2OWE3ZWQ0ODA2OWRiMGE5MmVkZDY5ZDJiMDk1IE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBWaXRhbGlpIFRvcnNoeW4gPHZpdGFseS50b3JzaHluQGdtYWls
+LmNvbT4KRGF0ZTogVGh1LCA5IE5vdiAyMDIzIDAxOjEzOjU0ICswMjAwClN1YmplY3Q6IFtQQVRD
+SCAxLzFdIEFMU0E6IEhEQTogQXN1cyBVTTUzMDJMQTogQWRkZWQgcXVpcmtzIGZvciBjczM1TDQx
+LzEwNDMxQTgzIG9uIGkyYyBidXMKVG86IHRpd2FpQHN1c2UuZGUKQ2M6IHBlcmV4QHBlcmV4LmN6
+LGFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpNSU1FLVZlcnNpb246IDEuMApDb250ZW50LVR5
+cGU6IG11bHRpcGFydC9taXhlZDsgYm91bmRhcnk9Ii0tLS0tLS0tLS0tLWFsc2EtaGRhLWNzMzVs
+NDEtYXN1cy11bTUzMDJsYS1maXgucGF0Y2giCgpUaGlzIGlzIGEgbXVsdGktcGFydCBtZXNzYWdl
+IGluIE1JTUUgZm9ybWF0LgotLS0tLS0tLS0tLS0tLWFsc2EtaGRhLWNzMzVsNDEtYXN1cy11bTUz
+MDJsYS1maXgucGF0Y2gKQ29udGVudC1UeXBlOiB0ZXh0L3BsYWluOyBjaGFyc2V0PVVURi04OyBm
+b3JtYXQ9Zml4ZWQKQ29udGVudC1UcmFuc2Zlci1FbmNvZGluZzogOGJpdApIaSBUYWthc2hpLAoK
+UHJvcG9zZWQgcGF0Y2ggZml4ZXMgaW5pdGlhbGl6YXRpb24gb2YgQ1NDMzU1MSBvbiB0aGUgVU01
+MzAyTEEgbGFwdG9wLgpQYXRjaGluZyBEU0RUIHRhYmxlIGlzIG5vdCByZXF1aXJlZCBzaW5jZSBB
+U1VTIGRpZCBhZGRlZCBfRFNEIGVudHJ5LgpOb3RoaW5nIG5ldyBpbnRyb2R1Y2VkIGJ1dCByZXVz
+ZWQgd29yayBzdGFydGVkIGJ5IFN0ZWZhbiBCLgoKQ3VycmVudGx5IHRoZXJlIGlzIG5vIG9mZmlj
+aWFsIGZpcm13YXJlIGF2YWlsYWJsZSBmb3IgMTA0MzFBODMgb24gY2lycnVzIGdpdCB1bmZvcnR1
+bmF0ZWx5LgpGb3IgdGVzdGluZyB1c2VkIDEwNDMxN2YzICh3aGljaCBpcyBhbHNvIHNlZW1zIG9u
+IGkyYyBidXMpOgoKJCBjZCAvbGliL2Zpcm13YXJlL2NpcnJ1cy8gJiYgXApmb3IgZncgaW4gJChm
+aW5kIC4vIC1uYW1lICcqMTA0MzE3ZjMqJyk7IGRvIG5ld2Z3PSQoZWNobyAkZncgfCBzZWQgJ3Mv
+MTA0MzE3ZjMvMTA0MzFhODMvZycpOyBlY2hvIGVjaG8gIiRmdyAtPiAkbmV3ZnciOyBsbiAtcyAk
+ZiAkbmV3Znc7IGRvbmUKCldpdGggdGhlIHBhdGNoIGFwcGxpZWQgdG8gNi42LjAgYW5kIG9idmlv
+dXNseSBzeW1saW5rcyB0byAxMDQzMTdGMyBGVywgc3BlYWtlcnMgd29ya3MgYW5kIHRvIG15IHN1
+c3JwcmlzZSB0aGV5IHNvdW5kIHF1aXRlIGdvb2QgYW5kIGxvdWQgd2l0aG91dCBkaXN0b3J0aW9u
+LgoKUHJvYmFibHkgY29uZmlybWF0aW9uIGZyb20gY2lycnVzIHRlYW0gaXMgbmVlZGVkIG9uIGZp
+cm13YXJlLgoKU2lnbmVkLW9mZi1ieTogVml0YWxpaSBUb3JzaHluIDx2aXRhbHkudG9yc2h5bkBn
+bWFpbC5jb20+Ci0tLQogc291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMgfCA3ICsrKysrKysK
+IDEgZmlsZSBjaGFuZ2VkLCA3IGluc2VydGlvbnMoKykKCgotLS0tLS0tLS0tLS0tLWFsc2EtaGRh
+LWNzMzVsNDEtYXN1cy11bTUzMDJsYS1maXgucGF0Y2gKQ29udGVudC1UeXBlOiB0ZXh0L3gtcGF0
+Y2g7IG5hbWU9IjAwMDEtU3ViamVjdC1QQVRDSC1BTFNBLUhEQS1Bc3VzLVVNNTMwMkxBLUFkZGVk
+LXF1aXJrcy1mby5wYXRjaCIKQ29udGVudC1UcmFuc2Zlci1FbmNvZGluZzogOGJpdApDb250ZW50
+LURpc3Bvc2l0aW9uOiBhdHRhY2htZW50OyBmaWxlbmFtZT0iMDAwMS1TdWJqZWN0LVBBVENILUFM
+U0EtSERBLUFzdXMtVU01MzAyTEEtQWRkZWQtcXVpcmtzLWZvLnBhdGNoIgoKZGlmZiAtLWdpdCBh
+L3NvdW5kL3BjaS9oZGEvcGF0Y2hfcmVhbHRlay5jIGIvc291bmQvcGNpL2hkYS9wYXRjaF9yZWFs
+dGVrLmMKaW5kZXggNTgwMDZjOGJjLi5hMjhkMDc4YzkgMTAwNjQ0Ci0tLSBhL3NvdW5kL3BjaS9o
+ZGEvcGF0Y2hfcmVhbHRlay5jCisrKyBiL3NvdW5kL3BjaS9oZGEvcGF0Y2hfcmVhbHRlay5jCkBA
+IC03NDQ0LDYgKzc0NDQsNyBAQCBlbnVtIHsKIAlBTEMyODdfRklYVVBfVEhJTktQQURfSTJTX1NQ
+SywKIAlBTEMyODdfRklYVVBfTUdfUlRLQ19DU0FNUF9DUzM1TDQxX0kyQ19USElOS1BBRCwKIAlB
+TEMyWFhfRklYVVBfSEVBRFNFVF9NSUMsCisJQUxDMjk0X0ZJWFVQX0NTMzVMNDFfSTJDXzIKIH07
+CiAKIC8qIEEgc3BlY2lhbCBmaXh1cCBmb3IgTGVub3ZvIEM5NDAgYW5kIFlvZ2EgRHVldCA3OwpA
+QCAtOTU1Miw2ICs5NTUzLDExIEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3QgaGRhX2ZpeHVwIGFsYzI2
+OV9maXh1cHNbXSA9IHsKIAkJLnR5cGUgPSBIREFfRklYVVBfRlVOQywKIAkJLnYuZnVuYyA9IGFs
+Y19maXh1cF9oZWFkc2V0X21pYywKIAl9LAorCVtBTEMyOTRfRklYVVBfQ1MzNUw0MV9JMkNfMl0g
+PSB7CisJCS50eXBlID0gSERBX0ZJWFVQX0ZVTkMsCisJCS52LmZ1bmMgPSBjczM1bDQxX2ZpeHVw
+X2kyY190d28sCisJfSwKKwogfTsKIAogc3RhdGljIGNvbnN0IHN0cnVjdCBzbmRfcGNpX3F1aXJr
+IGFsYzI2OV9maXh1cF90YmxbXSA9IHsKQEAgLTk5MTMsNiArOTkxOSw3IEBAIHN0YXRpYyBjb25z
+dCBzdHJ1Y3Qgc25kX3BjaV9xdWlyayBhbGMyNjlfZml4dXBfdGJsW10gPSB7CiAJU05EX1BDSV9R
+VUlSSygweDEwNDMsIDB4MTllMSwgIkFTVVMgVVg1ODFMViIsIEFMQzI5NV9GSVhVUF9BU1VTX01J
+Q19OT19QUkVTRU5DRSksCiAJU05EX1BDSV9RVUlSSygweDEwNDMsIDB4MWExMywgIkFzdXMgRzcz
+SnciLCBBTEMyNjlfRklYVVBfQVNVU19HNzNKVyksCiAJU05EX1BDSV9RVUlSSygweDEwNDMsIDB4
+MWEzMCwgIkFTVVMgWDcwNVVEIiwgQUxDMjU2X0ZJWFVQX0FTVVNfTUlDKSwKKwlTTkRfUENJX1FV
+SVJLKDB4MTA0MywgMHgxYTgzLCAiQVNVUyBVTTUzMDJMQSIsIEFMQzI5NF9GSVhVUF9DUzM1TDQx
+X0kyQ18yKSwKIAlTTkRfUENJX1FVSVJLKDB4MTA0MywgMHgxYThmLCAiQVNVUyBVWDU4MlpTIiwg
+QUxDMjQ1X0ZJWFVQX0NTMzVMNDFfU1BJXzIpLAogCVNORF9QQ0lfUVVJUksoMHgxMDQzLCAweDFi
+MTEsICJBU1VTIFVYNDMxREEiLCBBTEMyOTRfRklYVVBfQVNVU19DT0VGXzFCKSwKIAlTTkRfUENJ
+X1FVSVJLKDB4MTA0MywgMHgxYjEzLCAiQXN1cyBVNDFTViIsIEFMQzI2OV9GSVhVUF9JTlZfRE1J
+QyksCgotLS0tLS0tLS0tLS0tLWFsc2EtaGRhLWNzMzVsNDEtYXN1cy11bTUzMDJsYS1maXgucGF0
+Y2gtLQoKCg==
+--0000000000001705ae0609b840b7--
