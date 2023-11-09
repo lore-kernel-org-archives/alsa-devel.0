@@ -4,110 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 54238C4332F
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Nov 2023 14:18:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 12365C4332F
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Nov 2023 15:25:31 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CFEA683A;
-	Thu,  9 Nov 2023 15:17:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CFEA683A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5DF25741;
+	Thu,  9 Nov 2023 16:24:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5DF25741
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1699539488;
-	bh=jg7JzmMEy0cFxyXgWZPtlJ500vC9wrC8bv3u3XSCdV0=;
+	s=default; t=1699543529;
+	bh=NIEumJyJmbmB/ccC4gvq40iR6HjLrkzh6Pu6m+nDgXo=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=EMkwSYM7xkvT61mP7LXCCAs65H6BrZrK1D/du8LRP9kKkSJ3hBVZI1nBckQsWwqi8
-	 fH44I5cKoOYrK9pIqq7c2BJ0vnOOiQzlVbe7F/tzR28DWdnlEdxQxjm1KB46pZPQDk
-	 zpVA/w6SN06prW83I/JfKeKwqr35IZIW/Xwsjr+Q=
+	b=jkED9FwnZ6M0ygI79WrE05YXiBkiRKh96nrqQcEyc9kqLhLdImzHtktznm2MF7ezz
+	 XYjJCMnvPdiwhAUEFXxXy5GtT/V4bZRq2Y+u5mjjtU1SMfIcVa5m/qjHIrNyxrNSbT
+	 YgValJ5y7falBlhBC64+rP3lCnLveYxU9cnIy5zw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AF6D4F8055A; Thu,  9 Nov 2023 15:16:58 +0100 (CET)
+	id 02280F801F5; Thu,  9 Nov 2023 16:24:11 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 67A0DF8016D;
-	Thu,  9 Nov 2023 15:16:58 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6C778F801F5;
+	Thu,  9 Nov 2023 16:24:11 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2DBD6F8016D; Thu,  9 Nov 2023 15:16:55 +0100 (CET)
+	id 9845EF80169; Thu,  9 Nov 2023 16:24:06 +0100 (CET)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de
  [IPv6:2001:67c:2178:6::1d])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 1BEB4F80152
-	for <alsa-devel@alsa-project.org>; Thu,  9 Nov 2023 15:16:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1BEB4F80152
+	by alsa1.perex.cz (Postfix) with ESMTPS id 129A7F800ED
+	for <alsa-devel@alsa-project.org>; Thu,  9 Nov 2023 16:24:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 129A7F800ED
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=O1SKWGbG;
+ header.s=susede2_rsa header.b=AX6//s2h;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=/rK29Dys
+ header.s=susede2_ed25519 header.b=sGI+3L4J
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 6EA2E1F8B3;
-	Thu,  9 Nov 2023 14:16:42 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 4515F1F8B3;
+	Thu,  9 Nov 2023 15:24:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1699539402;
+	t=1699543440;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=g/jVBnVWK0SM/uXc8av6/ruC2uAa8hAihIHkJrhyXVA=;
-	b=O1SKWGbGshAsYq88FqAlrfDEkFsJcQ2uh4o0tBQyqB0uNh6biMLOjk1tjZ/9q+d+JVDGei
-	4TP6YD/XgfFuTy+AkF2CKeUrxChc9mobcxDuXyqiwgtVydzpS0ZGqwlOUyGIOnLL2qkgv+
-	G2gmze4xrtcwoqa4hydzm6JvgO4GDHM=
+	bh=ZvmlhQ7BA4pksq2hWlAaCMOjMJihL8/Vw8k+MsBKlV4=;
+	b=AX6//s2hqHuTrXRA9wrl13UgzDU0KLe8szLA+MbJJBtUj7M4lI+F/ZpKX2RXry5fs715ch
+	oXZoJo/lRUgrxzuEuF/p15MBGGSg4ZFI5blrfMF1HPQh6Zwry7oZb8sBdYXkAJi4oTEFna
+	7B/KAN+xUGT2n+tiJkpxaDv9kaKgqFY=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1699539402;
+	s=susede2_ed25519; t=1699543440;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=g/jVBnVWK0SM/uXc8av6/ruC2uAa8hAihIHkJrhyXVA=;
-	b=/rK29DysvvUFNHgp3MHEqQRebCFqMAHgoGfv2SMgeQh9rPpXdZq4Pg3pn0zySDRZRK4m93
-	3nxrMAZivcZVU0DQ==
+	bh=ZvmlhQ7BA4pksq2hWlAaCMOjMJihL8/Vw8k+MsBKlV4=;
+	b=sGI+3L4JVtETmsesvZJbl+rV1gp+lEXMHBZJgmGIDj4wCGpF/sX2mDbNk7Kc+TmyBekxxD
+	gCGqOklafC3JGQAg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2DA04138E5;
-	Thu,  9 Nov 2023 14:16:42 +0000 (UTC)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 25D6813524;
+	Thu,  9 Nov 2023 15:24:00 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id xAAfCsrpTGX4aAAAMHmgww
-	(envelope-from <tiwai@suse.de>); Thu, 09 Nov 2023 14:16:42 +0000
-Date: Thu, 09 Nov 2023 15:16:41 +0100
-Message-ID: <87o7g3roza.wl-tiwai@suse.de>
+	id gdFXCJD5TGU/CgAAMHmgww
+	(envelope-from <tiwai@suse.de>); Thu, 09 Nov 2023 15:24:00 +0000
+Date: Thu, 09 Nov 2023 16:23:59 +0100
+Message-ID: <87fs1frlv4.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: =?EUC-KR?B?sK29xcf8?= <s47.kang@samsung.com>
-Cc: <kuninori.morimoto.gx@renesas.com>,
-	<alsa-devel@alsa-project.org>,
-	<lgirdwood@gmail.com>,
-	<pierre-louis.bossart@linux.intel.com>,
-	<broonie@kernel.org>,
-	<cpgs@samsung.com>,
-	<pilsun.jang@samsung.com>,
-	<seungbin.lee@samsung.com>,
-	<donghee.moon@samsung.com>
-Subject: Re: [PATCH] ALSA: core: Replace mutex_lock with mutex_trylock
-In-Reply-To: <87edh0ctc5.wl-tiwai@suse.de>
+To: "vitaly.torshyn@gmail.com" <vitaly.torshyn@gmail.com>
+Cc: perex@perex.cz,
+	alsa-devel@alsa-project.org
+Subject: Re: [PATCH 1/1] [Patch v2] ALSA: HDA: Asus UM5302LA: Added quirks for
+ cs35L41/10431A83 on i2c bus
+In-Reply-To: 
+ <CAHiQ-bCMPpCJ8eOYAaVVoqGkFixS1qTgSS4xfbZvL4oZV9LYew@mail.gmail.com>
 References: 
- <CGME20231107081810epcas2p27a897426580fce6f0884cffb256b2aaf@epcas2p2.samsung.com>
-	<664457955.21699345385931.JavaMail.epsvc@epcpadp4>
-	<87y1f9r705.wl-tiwai@suse.de>
-	<1891546521.01699446601660.JavaMail.epsvc@epcpadp3>
-	<87edh0ctc5.wl-tiwai@suse.de>
+ <CAHiQ-bCMPpCJ8eOYAaVVoqGkFixS1qTgSS4xfbZvL4oZV9LYew@mail.gmail.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=EUC-KR
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: UVPYIOPB4P5AXRJD6JEEPO3F63G537W7
-X-Message-ID-Hash: UVPYIOPB4P5AXRJD6JEEPO3F63G537W7
+Content-Type: text/plain; charset=US-ASCII
+Message-ID-Hash: GUUDTBBMKFHABFYJVMS6TTPCEGVPW6QK
+X-Message-ID-Hash: GUUDTBBMKFHABFYJVMS6TTPCEGVPW6QK
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -120,7 +108,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UVPYIOPB4P5AXRJD6JEEPO3F63G537W7/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GUUDTBBMKFHABFYJVMS6TTPCEGVPW6QK/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -129,45 +117,42 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Wed, 08 Nov 2023 13:39:22 +0100,
-Takashi Iwai wrote:
+On Thu, 09 Nov 2023 15:36:55 +0100,
+vitaly.torshyn@gmail.com wrote:
 > 
-> On Wed, 08 Nov 2023 13:14:15 +0100,
-> °­½ÅÇü wrote:
-> > 
-> > > Thanks for the patch.  But this change may break the current working
-> > > behavior; e.g. when two proc reads are running concurrently, one would
-> > > be aborted unexpectedly.
-> > > 
-> > > IIUC, the problem is the call of proc_remove(), and this call itself
-> > > can be outside the global mutex.
-> > > 
-> > > Could you check whether the patch below works instead?  (Note that
-> > > it's only compile-tested.)  It makes the proc_remove() called at
-> > > first, then clearing the internal entries.  The function was renamed
-> > > accordingly for avoiding confusion, too.
-> > > 
-> > > 
-> > > Takashi
-> > 
-> > You are right. My patch is just for avoiding the deadlock. 
-> > It may lead to other problem instead the deadlock(e.g. USB sound card
-> > registration failure)
-> > Your patch works well without any problems.
-> > But I can't confirm that the problem is solved or not.
-> > because the issue has occurred only once until now.
-> > (Test method: USB insertion / removal during a call)
 > 
-> Maybe you can reproduce it more easily by adding some delay
-> (e.g. ssleep(2)) before mutex_lock() in snd_info_entry_open().
+> Hi Takashi,
+> 
+> Proposed second revision of the patch that fixes the initialization of CSC3551
+> on the UM5302LA laptop.
+> Patching the DSDT table is not required since ASUS did add _DSD entry.
+> Nothing new introduced but reused work started by Stefan B.
+> 
+> Currently there is no official firmware available for 10431A83 on cirrus git
+> unfortunately.
+> For testing used 104317f3 (which is also seems on i2c bus):
+> 
+> $ cd /lib/firmware/cirrus/ && \
+> for fw in $(find ./ -name '*104317f3*'); do newfw=$(echo $fw | sed 's/104317f3
+> /10431a83/g'); echo echo "$fw -> $newfw"; ln -s $f $newfw; done
+> 
+> With the patch applied to 6.6.0 and obviously symlinks to 104317F3 FW,
+> speakers work and to my surprise they sound quite good and loud without
+> distortion.
+> 
+> Probably confirmation from the cirrus team is needed on firmware.
+> 
+> Signed-off-by: Vitalii Torshyn <vitaly.torshyn@gmail.com>
 
-... in our case, it's rather snd_info_text_entry_open().
+Now I merged the patch, but at the next time, please try avoiding MIME
+patches.  I had to edit and modify manually.  At best, try to submit
+via git-send-email.
 
-> Then it's easier to cause a race.
+Also, please update the patch for the latest sound.git tree at the
+next time, too.  There was a conflicting update and the manual
+adjustment was needed.
 
-I could actually reproduce the bug with the extra delay, and confirmed
-that my patch works around it.
-I'm going to submit a proper patch.
 
+thanks,
 
 Takashi
