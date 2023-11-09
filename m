@@ -4,108 +4,102 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 02E3DC4332F
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Nov 2023 18:49:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2E627C4332F
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Nov 2023 18:50:05 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4A011828;
-	Thu,  9 Nov 2023 19:48:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4A011828
+	by alsa0.perex.cz (Postfix) with ESMTPS id DB77B846;
+	Thu,  9 Nov 2023 19:49:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DB77B846
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1699555780;
-	bh=NCXbenS1L3Qe6e/ss5KgHEU40eBHqXGrOb2hVPXVeDI=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=tOEN8B/9Wd0LNDA8LUeZeqPL0jM53q2va0S/oqQPnjSZJjF0U0Ve6YPRZHOXG9i/P
-	 R3UoGM0Z+sXbk63tI9RxHwuPmW+SWd4LqkgqEhel73R7oJEL7XouMUGX2JbPUx9POL
-	 sE6+cY/iKgjyVSdPr2Hvk3Onj8s+Oi2XY7d/PrD8=
+	s=default; t=1699555802;
+	bh=mM0T96SwN8/D//UPA/dentG25xjYB6baVYfl9VICYtY=;
+	h=From:Date:Subject:To:Cc:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=Me6bKV5yIH2ErvrGJIron3GvGn2VUPwvtm597JabdN9TFNicHR0H1FVjL0BK4VN9M
+	 Qf675daMuSo1YN6Hnsy1vOpzeFM+8cMRDM6yxUybrHWt1e3BAGVpu01i5NKcXcko+Z
+	 kHJ5Nj+5Y9gU3mR+qiIiliLZbbJIewALyElUrh78=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8FD08F80557; Thu,  9 Nov 2023 19:48:21 +0100 (CET)
+	id 2DB1FF80567; Thu,  9 Nov 2023 19:48:25 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B54D5F80169;
-	Thu,  9 Nov 2023 19:48:20 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 55C3BF8055A;
+	Thu,  9 Nov 2023 19:48:25 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2880FF80169; Thu,  9 Nov 2023 14:33:54 +0100 (CET)
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com
- [IPv6:2a00:1450:4864:20::629])
+	id 2E821F80169; Thu,  9 Nov 2023 15:37:20 +0100 (CET)
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com
+ [IPv6:2a00:1450:4864:20::533])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 5E4C6F80152
-	for <alsa-devel@alsa-project.org>; Thu,  9 Nov 2023 14:33:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5E4C6F80152
+	by alsa1.perex.cz (Postfix) with ESMTPS id 96F08F80152
+	for <alsa-devel@alsa-project.org>; Thu,  9 Nov 2023 15:37:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 96F08F80152
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20230601 header.b=ZuDfHmFI
-Received: by mail-ej1-x629.google.com with SMTP id
- a640c23a62f3a-9d0b4dfd60dso136611166b.1
+ header.s=20230601 header.b=TfNcPkNr
+Received: by mail-ed1-x533.google.com with SMTP id
+ 4fb4d7f45d1cf-53d8320f0easo1444222a12.3
         for <alsa-devel@alsa-project.org>;
- Thu, 09 Nov 2023 05:33:35 -0800 (PST)
+ Thu, 09 Nov 2023 06:37:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699536814; x=1700141614;
+        d=gmail.com; s=20230601; t=1699540628; x=1700145428;
  darn=alsa-project.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=f6vvIDiFOvQlW7b+j+gCsKL4XHEcs023e878kBSn+io=;
-        b=ZuDfHmFIFAJhXQbQ6v3jkq6l9lpdwEJGU+n3Tllis8r8KuqjebWGKAUIW+yYCdhlKi
-         aUBzmz0cC8bu4mwugyUPXDKGLuxhZJ8S5uJc3LmdNEWnNnVE2qQ4AeNM7yf9K8zLfMeN
-         gxoXu6fLMIcc51pRaACjxwggcBlcYUXTgIXB6WnK4rXC2z7CS3UhDlJHlKYIC6RCr5IO
-         9aEA8WbiOoelKqamEN5sIPshxueC/3LmLQa5346xDW+p6/krkQg13Bwo82veRNtTy2gD
-         qVZwChXZdi3LGM++1bOMQHtfClaOb9nt9S7SYOgAO20TA9+CLcMJFeTuJp1AewrShPB4
-         o0Mg==
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=vrg2ES1PmI3IKoG/O0Bj3+dLZEbYy0uZpb2wcc3HMXA=;
+        b=TfNcPkNr8MtkXuq974mMn+zpOEDWo/nD5sIwW3XPfhy2QOo2sD26HOto8pl0SWIDQ6
+         ye973O5VzPhP/ze9aJvsmjc1JXmc7E827x/gKrRnrWrlYNKzvMC99ZJ9QbRpE8zpNQT+
+         u9hgRLGi7r12XEiDewYSS4zhFlgTaymNnocYumfNCWT0nF2LvHcei5J251T9pX8DqiEj
+         McW6+9XH1eDfG2SxRXZgZV78SXezGXgwrT/QK5ufjsXYA7VDYZPohBnFxcFMXLt7bM5M
+         2DXv40/V3QyRNecbYqFXAJt1k1/7j4ScrnKoVqFJ61vz2/UFg6NCAUSl7yx5BE1UihtZ
+         s39Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699536814; x=1700141614;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=f6vvIDiFOvQlW7b+j+gCsKL4XHEcs023e878kBSn+io=;
-        b=mwA7wPdj44UYJzNJdI8LkMVdmRuL4UY5+b9RIKH2TDtrA27HRe885SMaFDRNjMRcfy
-         3S4AfcHN1BBtLfc6DFfmlfOL25pFXySnbiaKYY/Q1BZTJNDp60LJASfi5RYhG+ik5uqZ
-         uYJlT6faDtVMiAHWyRB0XI7Butk+NXFbD+PhllpMR48fFDe2pWv/PYECmcLvXGye79pH
-         r7tTd4nyYCxdxHXnh2n+cT8+X1Mte8iL8vhwXItA8tuOCU8FERJQ4Ey0SVZpo+vczHNy
-         F59su6MtMyf+RrPD+jUbLxUY5DANk6juLjY4r5QTyPtBP02w1j00k2XKqbYic7Awz8By
-         hyNg==
-X-Gm-Message-State: AOJu0Yzeg+ebbGFak/ehrXkrNy2c6y0uPHJbN8wjP4snRL7Ct9zVOEt8
-	ub3CDUA1bPW5fHwYIO3pDRF8XZgyhmF7qEYDuA==
+        d=1e100.net; s=20230601; t=1699540628; x=1700145428;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=vrg2ES1PmI3IKoG/O0Bj3+dLZEbYy0uZpb2wcc3HMXA=;
+        b=ngaOtaRnjvL4nEAmoY3qALNRvqzHhGmgaSc1Eth3yPjiDBsJKnwFfmcNkE0ZXNkSwt
+         N0vkNeupn7FQcnrH5IOVX6mgPoJZVkSNgAOYl7YQTidAGf7xVW3d6HEeDTU8QhImPeSI
+         W9TLmOzya9epWbK77htKt8L4uM40jZ6lYNHuQrbW+TRrGP9lqstfAwxb5rVAeTnxlTCy
+         thTAdjLwtja+W5Zn494edhBxNTg/AJmmoerbgjxE1uWUW4Tpz8G/TmclulH1ruKOzxkj
+         gqrBFxH20UQFmgYSsZPJRO9Ho6NWLw/U2GrnvTlVfx5ruTcYsekpzlhOCrOMkdAMIyYY
+         akvw==
+X-Gm-Message-State: AOJu0YyLBs+cM4G9AizxQsrt58wW/801P9JDyMzcoTLgboumrAHyHTTl
+	wm9llOS1JHl8FqDXvDyGMCNXz7c0NFwxH/JH7w==
 X-Google-Smtp-Source: 
- AGHT+IH/pQPsu4jcr4tPiNAagFyu34m7Rys8x5jjWc7qYt85ck0AdZfXDbHfo6yB+hjcnrkkGLjt1T/MNU1aM4RcHzc=
-X-Received: by 2002:a17:907:d1f:b0:9e2:af56:c375 with SMTP id
- gn31-20020a1709070d1f00b009e2af56c375mr4621158ejc.52.1699536814141; Thu, 09
- Nov 2023 05:33:34 -0800 (PST)
+ AGHT+IFUgkBiEnFe6Fy0WMZ11SUz8PZ7KuidCfKNU3mGU0dccQ1kG6X8d3ttUjys9zQfWprIiuuN/8A6aQO92Y2XpFY=
+X-Received: by 2002:a17:907:a183:b0:9dd:f5ba:856d with SMTP id
+ om3-20020a170907a18300b009ddf5ba856dmr3244335ejc.62.1699540627720; Thu, 09
+ Nov 2023 06:37:07 -0800 (PST)
 MIME-Version: 1.0
-References: 
- <CAHiQ-bDGx89vWjtqrnH4FtO-JF9XUWMgwCpR4nusC9Zvw=bN7Q@mail.gmail.com>
- <87sf5fpe7j.wl-tiwai@suse.de>
-In-Reply-To: <87sf5fpe7j.wl-tiwai@suse.de>
 From: "vitaly.torshyn@gmail.com" <vitaly.torshyn@gmail.com>
-Date: Thu, 9 Nov 2023 15:33:21 +0200
+Date: Thu, 9 Nov 2023 16:36:55 +0200
 Message-ID: 
- <CAHiQ-bA-vhk4vhxUGRVk7dLrDECmjqA38C=jSj7iYHr=RL+0TQ@mail.gmail.com>
-Subject: Re: [PATCH 1/1] ALSA: HDA: Asus UM5302LA: Added quirks for
+ <CAHiQ-bCMPpCJ8eOYAaVVoqGkFixS1qTgSS4xfbZvL4oZV9LYew@mail.gmail.com>
+Subject: [PATCH 1/1] [Patch v2] ALSA: HDA: Asus UM5302LA: Added quirks for
  cs35L41/10431A83 on i2c bus
 To: Takashi Iwai <tiwai@suse.de>
 Cc: perex@perex.cz, alsa-devel@alsa-project.org
-Content-Type: multipart/mixed; boundary="0000000000001705ae0609b840b7"
+Content-Type: multipart/mixed; boundary="00000000000065a72d0609b923ca"
 X-MailFrom: vitaly.torshyn@gmail.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: P3VSC3FMZ4BVGJU4FOSDJGOPHZLD2YRD
-X-Message-ID-Hash: P3VSC3FMZ4BVGJU4FOSDJGOPHZLD2YRD
-X-Mailman-Approved-At: Thu, 09 Nov 2023 18:48:16 +0000
+Message-ID-Hash: 562VP4M6KAEXZJ34ICRDOLXFPWLOZ4LK
+X-Message-ID-Hash: 562VP4M6KAEXZJ34ICRDOLXFPWLOZ4LK
+X-Mailman-Approved-At: Thu, 09 Nov 2023 18:48:21 +0000
 X-Content-Filtered-By: Mailman/MimeDel 3.3.8
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/P3VSC3FMZ4BVGJU4FOSDJGOPHZLD2YRD/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/562VP4M6KAEXZJ34ICRDOLXFPWLOZ4LK/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -114,122 +108,78 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
---0000000000001705ae0609b840b7
+--00000000000065a72d0609b923ca
 Content-Type: text/plain; charset="UTF-8"
 
-Dear Takashi,
+Hi Takashi,
 
-Thanks a lot for the quick review.
-My idea was to keep "similar" devices' quirks close to each other but I do
-agree that using PCI SSID makes more sense.
+Proposed second revision of the patch that fixes the initialization of
+CSC3551 on the UM5302LA laptop.
+Patching the DSDT table is not required since ASUS did add _DSD entry.
+Nothing new introduced but reused work started by Stefan B.
 
-Please find the updated version of the patch attached.
+Currently there is no official firmware available for 10431A83 on cirrus
+git unfortunately.
+For testing used 104317f3 (which is also seems on i2c bus):
 
-Vitalii
+$ cd /lib/firmware/cirrus/ && \
+for fw in $(find ./ -name '*104317f3*'); do newfw=$(echo $fw | sed
+'s/104317f3/10431a83/g'); echo echo "$fw -> $newfw"; ln -s $f $newfw; done
+
+With the patch applied to 6.6.0 and obviously symlinks to 104317F3 FW,
+speakers work and to my surprise they sound quite good and loud without
+distortion.
+
+Probably confirmation from the cirrus team is needed on firmware.
+
+Signed-off-by: Vitalii Torshyn <vitaly.torshyn@gmail.com>
 ---
 diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
 index 58006c8bc..a28d078c9 100644
 --- a/sound/pci/hda/patch_realtek.c
 +++ b/sound/pci/hda/patch_realtek.c
 @@ -7444,6 +7444,7 @@ enum {
-       ALC287_FIXUP_THINKPAD_I2S_SPK,
-       ALC287_FIXUP_MG_RTKC_CSAMP_CS35L41_I2C_THINKPAD,
-       ALC2XX_FIXUP_HEADSET_MIC,
-+       ALC294_FIXUP_CS35L41_I2C_2
+<----->ALC287_FIXUP_THINKPAD_I2S_SPK,
+<----->ALC287_FIXUP_MG_RTKC_CSAMP_CS35L41_I2C_THINKPAD,
+<----->ALC2XX_FIXUP_HEADSET_MIC,
++<----->ALC294_FIXUP_CS35L41_I2C_2
 };
-
+.
 /* A special fixup for Lenovo C940 and Yoga Duet 7;
 @@ -9552,6 +9553,11 @@ static const struct hda_fixup alc269_fixups[] = {
-               .type = HDA_FIXUP_FUNC,
-               .v.func = alc_fixup_headset_mic,
-       },
-+       [ALC294_FIXUP_CS35L41_I2C_2] = {
-+               .type = HDA_FIXUP_FUNC,
-+               .v.func = cs35l41_fixup_i2c_two,
-+       },
+<-----><------>.type = HDA_FIXUP_FUNC,
+<-----><------>.v.func = alc_fixup_headset_mic,
+<----->},
++<----->[ALC294_FIXUP_CS35L41_I2C_2] = {
++<-----><------>.type = HDA_FIXUP_FUNC,
++<-----><------>.v.func = cs35l41_fixup_i2c_two,
++<----->},
 +
 };
-
+.
 static const struct snd_pci_quirk alc269_fixup_tbl[] = {
 @@ -9913,6 +9919,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[]
 = {
-       SND_PCI_QUIRK(0x1043, 0x19e1, "ASUS UX581LV",
+<----->SND_PCI_QUIRK(0x1043, 0x19e1, "ASUS UX581LV",
 ALC295_FIXUP_ASUS_MIC_NO_PRESENCE),
-       SND_PCI_QUIRK(0x1043, 0x1a13, "Asus G73Jw",
-ALC269_FIXUP_ASUS_G73JW),
-       SND_PCI_QUIRK(0x1043, 0x1a30, "ASUS X705UD", ALC256_FIXUP_ASUS_MIC),
-+       SND_PCI_QUIRK(0x1043, 0x1a83, "ASUS UM5302LA",
+<----->SND_PCI_QUIRK(0x1043, 0x1a13, "Asus G73Jw", ALC269_FIXUP_ASUS_G73JW),
+<----->SND_PCI_QUIRK(0x1043, 0x1a30, "ASUS X705UD", ALC256_FIXUP_ASUS_MIC),
++<----->SND_PCI_QUIRK(0x1043, 0x1a83, "ASUS UM5302LA",
 ALC294_FIXUP_CS35L41_I2C_2),
-       SND_PCI_QUIRK(0x1043, 0x1a8f, "ASUS UX582ZS",
+<----->SND_PCI_QUIRK(0x1043, 0x1a8f, "ASUS UX582ZS",
 ALC245_FIXUP_CS35L41_SPI_2),
-       SND_PCI_QUIRK(0x1043, 0x1b11, "ASUS UX431DA",
+<----->SND_PCI_QUIRK(0x1043, 0x1b11, "ASUS UX431DA",
 ALC294_FIXUP_ASUS_COEF_1B),
-       SND_PCI_QUIRK(0x1043, 0x1b13, "Asus U41SV", ALC269_FIXUP_INV_DMIC),
+<----->SND_PCI_QUIRK(0x1043, 0x1b13, "Asus U41SV", ALC269_FIXUP_INV_DMIC),
 
-
-
-
-On Thu, 9 Nov 2023 at 09:40, Takashi Iwai <tiwai@suse.de> wrote:
-
-> On Thu, 09 Nov 2023 01:22:57 +0100,
-> vitaly.torshyn@gmail.com wrote:
-> >
-> >
-> > Hi Takashi,
-> >
-> > Proposed patch fixes initialization of CSC3551 on the UM5302LA laptop.
-> > Patching DSDT table is not required since ASUS did added _DSD entry.
-> > Nothing new introduced but reused work started by Stefan B.
-> >
-> > Currently there is no official firmware available for 10431A83 on cirrus
-> git
-> > unfortunately.
-> > For testing used 104317f3 (which is also seems on i2c bus):
-> >
-> > $ cd /lib/firmware/cirrus/ && \
-> > for fw in $(find ./ -name '*104317f3*'); do newfw=$(echo $fw | sed
-> 's/104317f3
-> > /10431a83/g'); echo echo "$fw -> $newfw"; ln -s $f $newfw; done
-> >
-> > With the patch applied to 6.6.0 and obviously symlinks to 104317F3 FW,
-> > speakers works and to my susrprise they sound quite good and loud without
-> > distortion.
-> >
-> > Probably confirmation from cirrus team is needed on firmware.
-> >
-> > Signed-off-by: Vitalii Torshyn <vitaly.torshyn@gmail.com>
->
-> Thanks for the patch.
-> The change looks almost fine, but only one thing:
->
-> > @@ -9937,6 +9943,7 @@ static const struct snd_pci_quirk
-> alc269_fixup_tbl[] = {
-> >       SND_PCI_QUIRK(0x1043, 0x1c52, "ASUS Zephyrus G15 2022",
-> ALC289_FIXUP_ASUS_GA401),
-> >       SND_PCI_QUIRK(0x1043, 0x1f11, "ASUS Zephyrus G14",
-> ALC289_FIXUP_ASUS_GA401),
-> >       SND_PCI_QUIRK(0x1043, 0x1f12, "ASUS UM5302",
-> ALC287_FIXUP_CS35L41_I2C_2),
-> > +     SND_PCI_QUIRK(0x1043, 0x1a83, "ASUS UM5302LA",
-> ALC294_FIXUP_CS35L41_I2C_2),
->
-> The entry is sorted in PCI SSID order.  Please put at the right
-> position.
->
->
-> thanks,
->
-> Takashi
->
-
---0000000000001705ae0609b840b7
+--00000000000065a72d0609b923ca
 Content-Type: text/x-patch; charset="US-ASCII";
 	name="0002-Subject-PATCH-ALSA-HDA-Asus-UM5302LA-Added-quirks-fo.patch"
 Content-Disposition: attachment;
 	filename="0002-Subject-PATCH-ALSA-HDA-Asus-UM5302LA-Added-quirks-fo.patch"
 Content-Transfer-Encoding: base64
-Content-ID: <f_lor8afdq0>
-X-Attachment-Id: f_lor8afdq0
+Content-ID: <f_loral30a0>
+X-Attachment-Id: f_loral30a0
 
 RnJvbSA4YzY0MzJlNzlmNTY2OWE3ZWQ0ODA2OWRiMGE5MmVkZDY5ZDJiMDk1IE1vbiBTZXAgMTcg
 MDA6MDA6MDAgMjAwMQpGcm9tOiBWaXRhbGlpIFRvcnNoeW4gPHZpdGFseS50b3JzaHluQGdtYWls
@@ -288,4 +238,4 @@ MTEsICJBU1VTIFVYNDMxREEiLCBBTEMyOTRfRklYVVBfQVNVU19DT0VGXzFCKSwKIAlTTkRfUENJ
 X1FVSVJLKDB4MTA0MywgMHgxYjEzLCAiQXN1cyBVNDFTViIsIEFMQzI2OV9GSVhVUF9JTlZfRE1J
 QyksCgotLS0tLS0tLS0tLS0tLWFsc2EtaGRhLWNzMzVsNDEtYXN1cy11bTUzMDJsYS1maXgucGF0
 Y2gtLQoKCg==
---0000000000001705ae0609b840b7--
+--00000000000065a72d0609b923ca--
