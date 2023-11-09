@@ -4,101 +4,99 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 13EC1C4332F
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Nov 2023 23:40:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 92F7CC4167B
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Nov 2023 07:42:37 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3D103828;
-	Thu,  9 Nov 2023 00:39:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3D103828
+	by alsa0.perex.cz (Postfix) with ESMTPS id EB4EDDF;
+	Thu,  9 Nov 2023 08:41:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EB4EDDF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1699486832;
-	bh=lgaMG9SE8xr1h0jd/J59eB/Gs/1kHNsX/vyv61WNWtQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1699515755;
+	bh=+snO3mI/ZLxIUIe7aWkHTOAUfHxW6GlLNJsiIhxyqSk=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=DwgSm5jrPQpXckzktJwvXo9THrVQJ6Cgw6ZnsDwQFOCiBSPvorCi1ml9OZjHZKoDz
-	 o8swC/80sKLkPUJqNMfsb0ve45o7m8rdDtOfD2D4L6UCFHhIF/q6T3IAlfTl3ww5kU
-	 zvW5KiXGYK1uqPieX1OF/GLc1ywAP+k4CBtRAWT0=
+	b=MxIgbIE+/PSOf/vcwkiUkJIDXLyD2albbq9GR9tQeKKcn8UxSMI0lKfTp5AIBGOfO
+	 1yjIvrvC97AFhW6FiYtwmsWlti8qV4Uze7XWyvr7CHBKY49EbNsxsoLowaltPEV6/z
+	 psZO/u7FRpWEHEsgWn+U106lbefwCxx7CaPO2W8I=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D7975F80564; Thu,  9 Nov 2023 00:39:19 +0100 (CET)
+	id D82DBF801F5; Thu,  9 Nov 2023 08:41:42 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 166D3F8016D;
-	Thu,  9 Nov 2023 00:39:19 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B6B43F80169;
+	Thu,  9 Nov 2023 08:41:41 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 76104F8016D; Thu,  9 Nov 2023 00:39:11 +0100 (CET)
-Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net
- [IPv6:2001:4b98:dc4:8::221])
-	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+	id C5739F80169; Thu,  9 Nov 2023 08:40:11 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2001:67c:2178:6::1c])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 34084F80125
-	for <alsa-devel@alsa-project.org>; Thu,  9 Nov 2023 00:38:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 34084F80125
+	by alsa1.perex.cz (Postfix) with ESMTPS id 5094AF80125
+	for <alsa-devel@alsa-project.org>; Thu,  9 Nov 2023 08:40:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5094AF80125
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=N5+lAS1Q
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 1BEB6240002;
-	Wed,  8 Nov 2023 23:38:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1699486737;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=HuGwlq22;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=lRv6wMKv
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 788CC21984;
+	Thu,  9 Nov 2023 07:40:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1699515601;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ZWGdlfzeQ997IaAZInKpU2sKbuC+Orz4F3vDh0PjvMg=;
-	b=N5+lAS1QuxDD2SdkvbVdLw6qWEExpftDZPduFcY4jvX3tX20kCAWoNxKTCbZRtf9w+ouLF
-	l4fKQQcmYAJfL8NzZdxIG/Zw2NQvea1Blg8JDbZhLzGFqwUFZSMLAZQbKEtgh+f0oxmK4T
-	EpVXWt1UurkD/XfaaScPMdGHnbdIhAsxc8NUUIWyZcFHTWS+vs9cASEwT34LE+hQQNy3eN
-	0IDd6wLXmMcmnxq54uddsLKPdwBZzrwtOTy4lTn/ffsBGYKNJFjj8vvBRXDFioGx8SKIzF
-	K8zpiBozZs5QOnMp5PMhArdwmbRirW7GuvBX/PaIdsbwc92dALc61l+dNbST7Q==
-Date: Thu, 9 Nov 2023 00:38:54 +0100
-From: Alexandre Belloni <alexandre.belloni@bootlin.com>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Alim Akhtar <alim.akhtar@samsung.com>,
-	Andi Shyti <andi.shyti@kernel.org>,
-	Jonathan Cameron <jic23@kernel.org>,
-	Lars-Peter Clausen <lars@metafoo.de>, Lee Jones <lee@kernel.org>,
-	Ulf Hansson <ulf.hansson@linaro.org>,
-	Tomasz Figa <tomasz.figa@gmail.com>,
-	Sylwester Nawrocki <s.nawrocki@samsung.com>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
-	Alessandro Zummo <a.zummo@towertech.it>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jiri Slaby <jirislaby@kernel.org>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Jaehoon Chung <jh80.chung@samsung.com>,
-	Sam Protsenko <semen.protsenko@linaro.org>,
-	dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-samsung-soc@vger.kernel.org, linux-i2c@vger.kernel.org,
-	linux-iio@vger.kernel.org, linux-mmc@vger.kernel.org,
-	linux-gpio@vger.kernel.org, linux-pwm@vger.kernel.org,
-	linux-rtc@vger.kernel.org, linux-serial@vger.kernel.org,
-	alsa-devel@alsa-project.org, linux-sound@vger.kernel.org
-Subject: Re: [PATCH 06/17] dt-bindings: rtc: s3c-rtc: add specific
- compatibles for existing SoC
-Message-ID: <202311082338542f79f576@mail.local>
-References: <20231108104343.24192-1-krzysztof.kozlowski@linaro.org>
- <20231108104343.24192-7-krzysztof.kozlowski@linaro.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231108104343.24192-7-krzysztof.kozlowski@linaro.org>
-X-GND-Sasl: alexandre.belloni@bootlin.com
-Message-ID-Hash: BXNIFZS5WQUT2THS5WPLHZCYQBS53HP5
-X-Message-ID-Hash: BXNIFZS5WQUT2THS5WPLHZCYQBS53HP5
-X-MailFrom: alexandre.belloni@bootlin.com
+	bh=dTSlwQpCOB+u4tOhqmFHzGfLOGQH1harYrmMv3/vG0w=;
+	b=HuGwlq22HCv5p3LlwSGxcWC7ibwOpgatK/TlpslC9KpE2rL4glJo273j8Gm3IfNp/IdvAy
+	hfy6JATMrdtYDOGgQNk7b8cYYv8a2WvJTsrL+h4g6LstLadYiDdvs6FNjqHSkLdZhEtExX
+	m7Nc8INX05fNEaOUxSa3RJg1B+oNLoI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1699515601;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=dTSlwQpCOB+u4tOhqmFHzGfLOGQH1harYrmMv3/vG0w=;
+	b=lRv6wMKvQO/LRkznvgYD1FpvNZfxmGXRtZDR3Qcjdj4/q80o3wRXBvDoQ31yvhji3NVvRv
+	ikAsws7ydo4MQPDg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 537DD138E5;
+	Thu,  9 Nov 2023 07:40:01 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id UrRiE9GMTGWeHQAAMHmgww
+	(envelope-from <tiwai@suse.de>); Thu, 09 Nov 2023 07:40:01 +0000
+Date: Thu, 09 Nov 2023 08:40:00 +0100
+Message-ID: <87sf5fpe7j.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: "vitaly.torshyn@gmail.com" <vitaly.torshyn@gmail.com>
+Cc: perex@perex.cz,
+	alsa-devel@alsa-project.org
+Subject: Re: [PATCH 1/1] ALSA: HDA: Asus UM5302LA: Added quirks for
+ cs35L41/10431A83 on i2c bus
+In-Reply-To: 
+ <CAHiQ-bDGx89vWjtqrnH4FtO-JF9XUWMgwCpR4nusC9Zvw=bN7Q@mail.gmail.com>
+References: 
+ <CAHiQ-bDGx89vWjtqrnH4FtO-JF9XUWMgwCpR4nusC9Zvw=bN7Q@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Message-ID-Hash: JMQPB2I4TDDKZCMFUTC3DLKZYTWJW2QF
+X-Message-ID-Hash: JMQPB2I4TDDKZCMFUTC3DLKZYTWJW2QF
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -110,7 +108,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BXNIFZS5WQUT2THS5WPLHZCYQBS53HP5/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JMQPB2I4TDDKZCMFUTC3DLKZYTWJW2QF/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -119,51 +117,45 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 08/11/2023 11:43:32+0100, Krzysztof Kozlowski wrote:
-> Samsung Exynos SoC reuses several devices from older designs, thus
-> historically we kept the old (block's) compatible only.  This works fine
-> and there is no bug here, however guidelines expressed in
-> Documentation/devicetree/bindings/writing-bindings.rst state that:
-> 1. Compatibles should be specific.
-> 2. We should add new compatibles in case of bugs or features.
+On Thu, 09 Nov 2023 01:22:57 +0100,
+vitaly.torshyn@gmail.com wrote:
 > 
-> Add compatibles specific to each SoC in front of all old-SoC-like
-> compatibles.
 > 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+> Hi Takashi,
+> 
+> Proposed patch fixes initialization of CSC3551 on the UM5302LA laptop.
+> Patching DSDT table is not required since ASUS did added _DSD entry.
+> Nothing new introduced but reused work started by Stefan B.
+> 
+> Currently there is no official firmware available for 10431A83 on cirrus git
+> unfortunately.
+> For testing used 104317f3 (which is also seems on i2c bus):
+> 
+> $ cd /lib/firmware/cirrus/ && \
+> for fw in $(find ./ -name '*104317f3*'); do newfw=$(echo $fw | sed 's/104317f3
+> /10431a83/g'); echo echo "$fw -> $newfw"; ln -s $f $newfw; done
+> 
+> With the patch applied to 6.6.0 and obviously symlinks to 104317F3 FW,
+> speakers works and to my susrprise they sound quite good and loud without
+> distortion.
+> 
+> Probably confirmation from cirrus team is needed on firmware.
+> 
+> Signed-off-by: Vitalii Torshyn <vitaly.torshyn@gmail.com>
 
-> 
-> ---
-> 
-> I propose to take the patch through Samsung SoC (me). See cover letter
-> for explanation.
-> ---
->  Documentation/devicetree/bindings/rtc/s3c-rtc.yaml | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/rtc/s3c-rtc.yaml b/Documentation/devicetree/bindings/rtc/s3c-rtc.yaml
-> index d51b236939bf..bf4e11d6dffb 100644
-> --- a/Documentation/devicetree/bindings/rtc/s3c-rtc.yaml
-> +++ b/Documentation/devicetree/bindings/rtc/s3c-rtc.yaml
-> @@ -17,6 +17,11 @@ properties:
->            - samsung,s3c2416-rtc
->            - samsung,s3c2443-rtc
->            - samsung,s3c6410-rtc
-> +      - items:
-> +          - enum:
-> +              - samsung,exynos7-rtc
-> +              - samsung,exynos850-rtc
-> +          - const: samsung,s3c6410-rtc
->        - const: samsung,exynos3250-rtc
->          deprecated: true
->  
-> -- 
-> 2.34.1
-> 
-> 
+Thanks for the patch.
+The change looks almost fine, but only one thing:
 
--- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+> @@ -9937,6 +9943,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+>  	SND_PCI_QUIRK(0x1043, 0x1c52, "ASUS Zephyrus G15 2022", ALC289_FIXUP_ASUS_GA401),
+>  	SND_PCI_QUIRK(0x1043, 0x1f11, "ASUS Zephyrus G14", ALC289_FIXUP_ASUS_GA401),
+>  	SND_PCI_QUIRK(0x1043, 0x1f12, "ASUS UM5302", ALC287_FIXUP_CS35L41_I2C_2),
+> +	SND_PCI_QUIRK(0x1043, 0x1a83, "ASUS UM5302LA", ALC294_FIXUP_CS35L41_I2C_2),
+
+The entry is sorted in PCI SSID order.  Please put at the right
+position.
+
+
+thanks,
+
+Takashi
