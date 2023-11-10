@@ -4,94 +4,171 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C5BBCC4332F
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Nov 2023 11:45:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7CAEC4332F
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Nov 2023 11:46:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DF91A846;
-	Mon, 13 Nov 2023 12:44:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DF91A846
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8B8B9850;
+	Mon, 13 Nov 2023 12:45:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8B8B9850
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1699875918;
-	bh=af4nFw1Ng+vE1VtaSl3G/+mH1mCl5X/mKOH0BalXcQU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1699875958;
+	bh=xaQpxwcfEp7MW+c5R0eiL/Z92p+AQB3rRJVRpNDaqv0=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=E/+pIP4gSOwD2RqjemLFYH5muAgQkPj8trwGqM11aO72vILyYI5F6/XJ3HS056Ry+
-	 Xp9wfoD+kOIYDhvuOWPGpn9ojh+jBJ1ssYT+JLyphE+e+7mNCwu4Tj855jUi4vk7SW
-	 d1RG6YQ9I24gfAni3WS2Dk0SALiGEyA7eLtb4z/4=
+	b=evvHUgLgXbrE+dxLMHE0EwclDlBdFufdCaFiVJ+NoYFd0OGS5lEzsiHHfZRrMb7AC
+	 gHYO+PufiaEg2sRZ199toCxDo+PoqxNBUTiCt5ee2XTySCKqjOo3NvMWDyQbM/ZRWW
+	 LLRK4Gqk+IIqqjAW4Ak/IH7NAeYEfB2RbBldqqt4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A84D2F80551; Mon, 13 Nov 2023 12:43:59 +0100 (CET)
+	id DCE72F801D5; Mon, 13 Nov 2023 12:45:07 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 50AECF801D5;
-	Mon, 13 Nov 2023 12:43:59 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id EAD0FF801D5;
+	Mon, 13 Nov 2023 12:45:06 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BE26DF801D5; Mon, 13 Nov 2023 12:43:55 +0100 (CET)
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com
- [213.167.242.64])
+	id 3051EF80169; Fri, 10 Nov 2023 20:29:22 +0100 (CET)
+Received: from mx.skole.hr (mx1.hosting.skole.hr [161.53.165.185])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 46D29F800ED
-	for <alsa-devel@alsa-project.org>; Mon, 13 Nov 2023 12:43:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 46D29F800ED
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=ideasonboard.com header.i=@ideasonboard.com
- header.a=rsa-sha256 header.s=mail header.b=gJTyTC+k
-Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi
- [213.243.189.158])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 5CC4E10A;
-	Mon, 13 Nov 2023 12:43:25 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1699875805;
-	bh=af4nFw1Ng+vE1VtaSl3G/+mH1mCl5X/mKOH0BalXcQU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=gJTyTC+k9OJR/UVotA8y6eyAxoIJnPTFUr9nbIm7YgtzFuGVDm44HEduVaEi+CYm/
-	 zQTow2SDQEgJM+iuA8g2ueyRFmTiDvmHg9QTede+6+Ua3t24lD2LZRCxAjrqk90bVn
-	 HqYQulmTfV8+sk3oYRCK1jGz1mP18CbGfcMooCwY=
-Date: Mon, 13 Nov 2023 13:43:57 +0200
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To: Sakari Ailus <sakari.ailus@iki.fi>
-Cc: Hans Verkuil <hverkuil@xs4all.nl>,
-	Shengjiu Wang <shengjiu.wang@nxp.com>, tfiga@chromium.org,
-	m.szyprowski@samsung.com, mchehab@kernel.org,
-	linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-	shengjiu.wang@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
-	nicoleotsuka@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
-	perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
-	linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH v9 10/15] media: uapi: Add V4L2_CTRL_TYPE_FIXED_POINT
-Message-ID: <20231113114357.GD24338@pendragon.ideasonboard.com>
-References: <1699595289-25773-1-git-send-email-shengjiu.wang@nxp.com>
- <1699595289-25773-11-git-send-email-shengjiu.wang@nxp.com>
- <4cd6b593-2376-4cbc-a7c8-d3eb36a2f7a0@xs4all.nl>
- <20231113104238.GA13981@pendragon.ideasonboard.com>
- <6a3e7eb9-505c-4cfb-8a86-a8947a2e44d5@xs4all.nl>
- <20231113110754.GB24338@pendragon.ideasonboard.com>
- <3e898664-cbfc-4892-9765-37b66891643b@xs4all.nl>
- <ZVIIc-fi32ZxIi-p@valkosipuli.retiisi.eu>
+	by alsa1.perex.cz (Postfix) with ESMTPS id E3309F80152
+	for <alsa-devel@alsa-project.org>; Fri, 10 Nov 2023 20:29:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E3309F80152
+Received: from mx1.hosting.skole.hr (localhost.localdomain [127.0.0.1])
+	by mx.skole.hr (mx.skole.hr) with ESMTP id 2F694848CC;
+	Fri, 10 Nov 2023 20:29:10 +0100 (CET)
+From: Duje =?utf-8?B?TWloYW5vdmnEhw==?= <duje.mihanovic@skole.hr>
+To: Mark Brown <broonie@kernel.org>
+Cc: Robin Murphy <robin.murphy@arm.com>,
+ Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>,
+ Linus Walleij <linus.walleij@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Tony Lindgren <tony@atomide.com>,
+ Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
+ Robert Jarzmik <robert.jarzmik@free.fr>, Liam Girdwood <lgirdwood@gmail.com>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ Leo Yan <leoy@marvell.com>, Zhangfei Gao <zhangfei.gao@marvell.com>,
+ Lubomir Rintel <lkundrak@v3.sk>, Catalin Marinas <catalin.marinas@arm.com>,
+ Will Deacon <will@kernel.org>, Kees Cook <keescook@chromium.org>,
+ Tony Luck <tony.luck@intel.com>,
+ "Guilherme G . Piccoli" <gpiccoli@igalia.com>, linux-clk@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-omap@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-hardening@vger.kernel.org, phone-devel@vger.kernel.org,
+ ~postmarketos/upstreaming@lists.sr.ht, Karel Balej <balejk@matfyz.cz>
+Subject: Re: [PATCH v7 06/10] ASoC: pxa: Suppress SSPA on ARM64
+Date: Fri, 10 Nov 2023 20:28:56 +0100
+Message-ID: <1880732.tdWV9SEqCh@radijator>
+In-Reply-To: <ZUjG5tUrBvm6PDvB@finisterre.sirena.org.uk>
+References: 
+ <20231102152033.5511-1-duje.mihanovic@skole.hr>
+ <4855402.GXAFRqVoOG@radijator> <ZUjG5tUrBvm6PDvB@finisterre.sirena.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <ZVIIc-fi32ZxIi-p@valkosipuli.retiisi.eu>
-Message-ID-Hash: WMC6OGOODGUXVUQQ6RYJ2U4U2Y3H5XUI
-X-Message-ID-Hash: WMC6OGOODGUXVUQQ6RYJ2U4U2Y3H5XUI
-X-MailFrom: laurent.pinchart@ideasonboard.com
+Autocrypt: addr=duje.mihanovic@skole.hr;
+ keydata=
+ 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
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
+X-MailFrom: duje.mihanovic@skole.hr
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: ZAAQLVLYZOANAI7MGVCAFDWP3C7HB7CJ
+X-Message-ID-Hash: ZAAQLVLYZOANAI7MGVCAFDWP3C7HB7CJ
+X-Mailman-Approved-At: Mon, 13 Nov 2023 11:45:01 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WMC6OGOODGUXVUQQ6RYJ2U4U2Y3H5XUI/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZAAQLVLYZOANAI7MGVCAFDWP3C7HB7CJ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -100,119 +177,29 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, Nov 13, 2023 at 11:28:51AM +0000, Sakari Ailus wrote:
-> Hi Hans,
-> 
-> On Mon, Nov 13, 2023 at 12:24:14PM +0100, Hans Verkuil wrote:
-> > On 13/11/2023 12:07, Laurent Pinchart wrote:
-> > > On Mon, Nov 13, 2023 at 11:56:49AM +0100, Hans Verkuil wrote:
-> > >> On 13/11/2023 11:42, Laurent Pinchart wrote:
-> > >>> On Mon, Nov 13, 2023 at 11:29:09AM +0100, Hans Verkuil wrote:
-> > >>>> Hi Shengjiu,
-> > >>>>
-> > >>>> On 10/11/2023 06:48, Shengjiu Wang wrote:
-> > >>>>> Fixed point controls are used by the user to configure
-> > >>>>> a fixed point value in 64bits, which Q31.32 format.
-> > >>>>>
-> > >>>>> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-> > >>>>
-> > >>>> This patch adds a new control type. This is something that also needs to be
-> > >>>> tested by v4l2-compliance, and for that we need to add support for this to
-> > >>>> one of the media test-drivers. The best place for that is the vivid driver,
-> > >>>> since that has already a bunch of test controls for other control types.
-> > >>>>
-> > >>>> See e.g. VIVID_CID_INTEGER64 in vivid-ctrls.c.
-> > >>>>
-> > >>>> Can you add a patch adding a fixed point test control to vivid?
-> > >>>
-> > >>> I don't think V4L2_CTRL_TYPE_FIXED_POINT is a good idea. This seems to
-> > >>> relate more to units than control types. We have lots of fixed-point
-> > >>> values in controls already, using the 32-bit and 64-bit integer control
-> > >>> types. They use various locations for the decimal point, depending on
-> > >>> the control. If we want to make this more explicit to users, we should
-> > >>> work on adding unit support to the V4L2 controls.
-> > >>
-> > >> "Fixed Point" is not a unit, it's a type. 'Db', 'Hz' etc. are units.
-> > > 
-> > > It's not a unit, but I think it's related to units. My point is that,
-> > > without units support, I don't see why we need a formal definition of
-> > > fixed-point types, and why this series couldn't just use
-> > > VIVID_CID_INTEGER64. Drivers already interpret VIVID_CID_INTEGER64
-> > > values as they see fit.
-> > 
-> > They do? That's new to me. A quick grep for V4L2_CTRL_TYPE_INTEGER64
-> > (I assume you meant that rather than VIVID_CID_INTEGER64) shows that it
+On Monday, November 6, 2023 11:58:46 AM CET Mark Brown wrote:
+> On Fri, Nov 03, 2023 at 05:58:05PM +0100, Duje Mihanovi=C4=87 wrote:
+> > I just looked at it again and it looks like no code in sound/soc/pxa/* =
+or
+> > sound/arm/pxa* depends on AACI in any way. Therefore, I believe that to=
+=20
+fix
+> > this correctly, I would have to remove "select SND_ARM" from sound/soc/
+pxa/
+> > Kconfig and optionally move the PXA2xx code out of sound/arm/ and into
+> > sound/
+> > soc/pxa/. Is this correct? If so, I'd also split that fix into a separa=
+te
+> > series.
+>=20
+> There's the pxa-ac97 driver to consider...
 
-Yes, I meant V4L2_CTRL_TYPE_INTEGER64. Too hasty copy & paste :-)
+Can you elaborate? As far as I can tell there are 2 drivers named pxa2xx-ac=
+97=20
+in sound/{arm,soc/pxa} and neither one has any dependency on AACI.=20
 
-> > is always interpreted as a 64 bit integer and nothing else. As it should.
-
-The most common case for control handling in drivers is taking the
-integer value and converting it to a register value, using
-device-specific encoding of the register value. It can be a fixed-point
-format or something else, depending on the device. My point is that
-drivers routinely convert a "plain" integer to something else, and that
-has never been considered as a cause of concern. I don't see why it
-would be different in this series.
-
-> > And while we do not have support for units (other than the documentation),
-> > we do have type support in the form of V4L2_CTRL_TYPE_*.
-> > 
-> > >> A quick "git grep -i "fixed point" Documentation/userspace-api/media/'
-> > >> only shows a single driver specific control (dw100.rst).
-> > >>
-> > >> I'm not aware of other controls in mainline that use fixed point.
-> > > 
-> > > The analog gain control for sensors for instance.
-> > 
-> > Not really. The documentation is super vague:
-> > 
-> > V4L2_CID_ANALOGUE_GAIN (integer)
-> > 
-> > 	Analogue gain is gain affecting all colour components in the pixel matrix. The
-> > 	gain operation is performed in the analogue domain before A/D conversion.
-> > 
-> > And the integer is just a range. Internally it might map to some fixed
-> > point value, but userspace won't see that, it's hidden in the driver AFAICT.
-
-It's hidden so well that libcamera has a database of the sensor it
-supports, with formulas to map a real gain value to the
-V4L2_CID_ANALOGUE_GAIN control. The encoding of the integer value does
-matter, and the kernel doesn't expose it. We may or may not consider
-that as a shortcoming of the V4L2 control API, but in any case it's the
-situation we have today.
-
-> I wonder if Laurent meant digital gain.
-
-No, I meant analog. It applies to digital gain too though.
-
-> Those are often Q numbers. The practice there has been that the default
-> value yields gain of 1.
-> 
-> There are probably many other examples in controls where something being
-> controlled isn't actually an integer while integer controls are still being
-> used for the purpose.
-
-A good summary of my opinion :-)
-
-> Instead of this patch, I'd prefer to have a way to express the meaning of
-> the control value, be it a Q number or something else, and do that
-> independently of the type of the control.
-
-Agreed.
-
-> > In the case of this particular series the control type is really a fixed point
-> > value with a documented unit (Hz). It really is not something you want to
-> > use type INTEGER64 for.
-> > 
-> > >> Note that V4L2_CTRL_TYPE_FIXED_POINT is a Q31.32 format. By setting
-> > >> min/max/step you can easily map that to just about any QN.M format where
-> > >> N <= 31 and M <= 32.
-> > >>
-> > >> In the case of dw100 it is a bit different in that it is quite specialized
-> > >> and it had to fit in 16 bits.
-
--- 
 Regards,
+Duje
 
-Laurent Pinchart
+
+
