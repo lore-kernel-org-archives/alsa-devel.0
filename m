@@ -4,47 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C54E2C4332F
-	for <alsa-devel@archiver.kernel.org>; Fri, 10 Nov 2023 06:33:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 05BAFC4332F
+	for <alsa-devel@archiver.kernel.org>; Fri, 10 Nov 2023 06:33:36 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2F85184A;
-	Fri, 10 Nov 2023 07:32:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2F85184A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 31489886;
+	Fri, 10 Nov 2023 07:32:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 31489886
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1699597999;
-	bh=AVX+rLxQ5Co6gt/+zQxXDPWbz9VuJ4XhMFgF8fjGlVM=;
+	s=default; t=1699598014;
+	bh=Uy1ivt/VHlrDGmYGkinH6T68GnqZh3IYi+wNQEKkm8g=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=unJ18K67Fj00QLPljmCLK8YGSGSa12PAq2Zk45VjqtYGwmeWymWiMON7OJdk5FUVB
-	 gpLUYVijttc99MeZDovk+OWpeMedbtB2T9zVzQZJ6IXsUps0mvykPlcA2EDH/HkcA5
-	 /9zfy0dzQF9AagnFG6AdPO955EoOvUBA4Jds5erU=
+	b=aNJFdLvrrRq6fL6tU5SrU1QVqv4WmNKJIrLcukCJduFiUsqEmI/w18J2tm61ZC8Up
+	 1Tu24jTWbPJynXEOaVKDcgJX6M8oIlVZ21FPPGDYAFOGNjRxLgS7zI3CBy9/mzmwcY
+	 LJlBXC+y7X5SXelFMlE4i0Z5baRFFxSYRpmmXejQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 71789F805C1; Fri, 10 Nov 2023 07:31:24 +0100 (CET)
+	id 13B3EF805D5; Fri, 10 Nov 2023 07:31:27 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C3E2EF805BF;
-	Fri, 10 Nov 2023 07:31:23 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6FA04F805C9;
+	Fri, 10 Nov 2023 07:31:26 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6BBE5F80549; Fri, 10 Nov 2023 07:28:41 +0100 (CET)
-Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
+	id E9F29F80549; Fri, 10 Nov 2023 07:28:43 +0100 (CET)
+Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 3258EF8055B
-	for <alsa-devel@alsa-project.org>; Fri, 10 Nov 2023 07:28:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3258EF8055B
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 84D9C1A0C46;
-	Fri, 10 Nov 2023 07:28:04 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTPS id D2594F8055C
+	for <alsa-devel@alsa-project.org>; Fri, 10 Nov 2023 07:28:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D2594F8055C
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 731C9200AF3;
+	Fri, 10 Nov 2023 07:28:10 +0100 (CET)
 Received: from aprdc01srsp001v.ap-rdc01.nxp.com
  (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
-	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 2262E1A1C92;
-	Fri, 10 Nov 2023 07:28:04 +0100 (CET)
+	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 0DCC4201C42;
+	Fri, 10 Nov 2023 07:28:10 +0100 (CET)
 Received: from localhost.localdomain (shlinux2.ap.freescale.net
  [10.192.224.44])
-	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 32035183AD46;
-	Fri, 10 Nov 2023 14:28:02 +0800 (+08)
+	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 18AB9183AD44;
+	Fri, 10 Nov 2023 14:28:08 +0800 (+08)
 From: Shengjiu Wang <shengjiu.wang@nxp.com>
 To: hverkuil@xs4all.nl,
 	sakari.ailus@iki.fi,
@@ -63,15 +63,15 @@ To: hverkuil@xs4all.nl,
 	tiwai@suse.com,
 	alsa-devel@alsa-project.org,
 	linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH v9 08/15] media: uapi: Define audio sample format fourcc type
-Date: Fri, 10 Nov 2023 13:48:02 +0800
-Message-Id: <1699595289-25773-9-git-send-email-shengjiu.wang@nxp.com>
+Subject: [PATCH v9 12/15] media: uapi: Declare interface types for Audio
+Date: Fri, 10 Nov 2023 13:48:06 +0800
+Message-Id: <1699595289-25773-13-git-send-email-shengjiu.wang@nxp.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1699595289-25773-1-git-send-email-shengjiu.wang@nxp.com>
 References: <1699595289-25773-1-git-send-email-shengjiu.wang@nxp.com>
 X-Virus-Scanned: ClamAV using ClamSMTP
-Message-ID-Hash: UYFGX7XIAX6YPX32QPXDQOOUIAUUL665
-X-Message-ID-Hash: UYFGX7XIAX6YPX32QPXDQOOUIAUUL665
+Message-ID-Hash: FDISUFNSA2PHY7WDTAFWWIOW2NIBFGIK
+X-Message-ID-Hash: FDISUFNSA2PHY7WDTAFWWIOW2NIBFGIK
 X-MailFrom: shengjiu.wang@nxp.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -84,7 +84,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UYFGX7XIAX6YPX32QPXDQOOUIAUUL665/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FDISUFNSA2PHY7WDTAFWWIOW2NIBFGIK/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -93,184 +93,83 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The audio sample format definition is from alsa,
-the header file is include/uapi/sound/asound.h, but
-don't include this header file directly, because in
-user space, there is another copy in alsa-lib.
-There will be conflict in userspace for include
-videodev2.h & asound.h and asoundlib.h
-
-Here still use the fourcc format.
+Declare the interface types that will be used by Audio.
+The type is MEDIA_INTF_T_V4L_AUDIO.
 
 Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 ---
- .../userspace-api/media/v4l/pixfmt-audio.rst  | 87 +++++++++++++++++++
- .../userspace-api/media/v4l/pixfmt.rst        |  1 +
- drivers/media/v4l2-core/v4l2-ioctl.c          | 13 +++
- include/uapi/linux/videodev2.h                | 23 +++++
- 4 files changed, 124 insertions(+)
- create mode 100644 Documentation/userspace-api/media/v4l/pixfmt-audio.rst
+ .../userspace-api/media/mediactl/media-types.rst    |  4 ++++
+ drivers/media/v4l2-core/v4l2-dev.c                  |  4 ++++
+ drivers/media/v4l2-core/v4l2-mem2mem.c              | 13 +++++++++----
+ include/uapi/linux/media.h                          |  1 +
+ 4 files changed, 18 insertions(+), 4 deletions(-)
 
-diff --git a/Documentation/userspace-api/media/v4l/pixfmt-audio.rst b/Documentation/userspace-api/media/v4l/pixfmt-audio.rst
-new file mode 100644
-index 000000000000..04b4a7fbd8f4
---- /dev/null
-+++ b/Documentation/userspace-api/media/v4l/pixfmt-audio.rst
-@@ -0,0 +1,87 @@
-+.. SPDX-License-Identifier: GFDL-1.1-no-invariants-or-later
-+
-+.. _pixfmt-audio:
-+
-+*************
-+Audio Formats
-+*************
-+
-+These formats are used for :ref:`audiomem2mem` interface only.
-+
-+.. tabularcolumns:: |p{5.8cm}|p{1.2cm}|p{10.3cm}|
-+
-+.. cssclass:: longtable
-+
-+.. flat-table:: Audio Format
-+    :header-rows:  1
-+    :stub-columns: 0
-+    :widths:       3 1 4
-+
-+    * - Identifier
-+      - Code
-+      - Details
-+    * .. _V4L2-AUDIO-FMT-S8:
-+
-+      - ``V4L2_AUDIO_FMT_S8``
-+      - 'S8'
-+      - Corresponds to SNDRV_PCM_FORMAT_S8 in ALSA
-+    * .. _V4L2-AUDIO-FMT-S16-LE:
-+
-+      - ``V4L2_AUDIO_FMT_S16_LE``
-+      - 'S16_LE'
-+      - Corresponds to SNDRV_PCM_FORMAT_S16_LE in ALSA
-+    * .. _V4L2-AUDIO-FMT-U16-LE:
-+
-+      - ``V4L2_AUDIO_FMT_U16_LE``
-+      - 'U16_LE'
-+      - Corresponds to SNDRV_PCM_FORMAT_U16_LE in ALSA
-+    * .. _V4L2-AUDIO-FMT-S24-LE:
-+
-+      - ``V4L2_AUDIO_FMT_S24_LE``
-+      - 'S24_LE'
-+      - Corresponds to SNDRV_PCM_FORMAT_S24_LE in ALSA
-+    * .. _V4L2-AUDIO-FMT-U24-LE:
-+
-+      - ``V4L2_AUDIO_FMT_U24_LE``
-+      - 'U24_LE'
-+      - Corresponds to SNDRV_PCM_FORMAT_U24_LE in ALSA
-+    * .. _V4L2-AUDIO-FMT-S32-LE:
-+
-+      - ``V4L2_AUDIO_FMT_S32_LE``
-+      - 'S32_LE'
-+      - Corresponds to SNDRV_PCM_FORMAT_S32_LE in ALSA
-+    * .. _V4L2-AUDIO-FMT-U32-LE:
-+
-+      - ``V4L2_AUDIO_FMT_U32_LE``
-+      - 'U32_LE'
-+      - Corresponds to SNDRV_PCM_FORMAT_U32_LE in ALSA
-+    * .. _V4L2-AUDIO-FMT-FLOAT-LE:
-+
-+      - ``V4L2_AUDIO_FMT_FLOAT_LE``
-+      - 'FLOAT_LE'
-+      - Corresponds to SNDRV_PCM_FORMAT_FLOAT_LE in ALSA
-+    * .. _V4L2-AUDIO-FMT-IEC958-SUBFRAME-LE:
-+
-+      - ``V4L2_AUDIO_FMT_IEC958_SUBFRAME_LE``
-+      - 'IEC958_SUBFRAME_LE'
-+      - Corresponds to SNDRV_PCM_FORMAT_IEC958_SUBFRAME_LE in ALSA
-+    * .. _V4L2-AUDIO-FMT-S24-3LE:
-+
-+      - ``V4L2_AUDIO_FMT_S24_3LE``
-+      - 'S24_3LE'
-+      - Corresponds to SNDRV_PCM_FORMAT_S24_3LE in ALSA
-+    * .. _V4L2-AUDIO-FMT-U24-3LE:
-+
-+      - ``V4L2_AUDIO_FMT_U24_3LE``
-+      - 'U24_3LE'
-+      - Corresponds to SNDRV_PCM_FORMAT_U24_3LE in ALSA
-+    * .. _V4L2-AUDIO-FMT-S20-3LE:
-+
-+      - ``V4L2_AUDIO_FMT_S20_3LE``
-+      - 'S20_3LE'
-+      - Corresponds to SNDRV_PCM_FORMAT_S24_3LE in ALSA
-+    * .. _V4L2-AUDIO-FMT-U20-3LE:
-+
-+      - ``V4L2_AUDIO_FMT_U20_3LE``
-+      - 'U20_3LE'
-+      - Corresponds to SNDRV_PCM_FORMAT_U20_3LE in ALSA
-diff --git a/Documentation/userspace-api/media/v4l/pixfmt.rst b/Documentation/userspace-api/media/v4l/pixfmt.rst
-index 11dab4a90630..2eb6fdd3b43d 100644
---- a/Documentation/userspace-api/media/v4l/pixfmt.rst
-+++ b/Documentation/userspace-api/media/v4l/pixfmt.rst
-@@ -36,3 +36,4 @@ see also :ref:`VIDIOC_G_FBUF <VIDIOC_G_FBUF>`.)
-     colorspaces
-     colorspaces-defs
-     colorspaces-details
-+    pixfmt-audio
-diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
-index 1bb03794922a..c86633b82038 100644
---- a/drivers/media/v4l2-core/v4l2-ioctl.c
-+++ b/drivers/media/v4l2-core/v4l2-ioctl.c
-@@ -1471,6 +1471,19 @@ static void v4l_fill_fmtdesc(struct v4l2_fmtdesc *fmt)
- 	case V4L2_PIX_FMT_Y210:		descr = "10-bit YUYV Packed"; break;
- 	case V4L2_PIX_FMT_Y212:		descr = "12-bit YUYV Packed"; break;
- 	case V4L2_PIX_FMT_Y216:		descr = "16-bit YUYV Packed"; break;
-+	case V4L2_AUDIO_FMT_S8:		descr = "8-bit Signed"; break;
-+	case V4L2_AUDIO_FMT_S16_LE:	descr = "16-bit Signed LE"; break;
-+	case V4L2_AUDIO_FMT_U16_LE:		descr = "16-bit Unsigned LE"; break;
-+	case V4L2_AUDIO_FMT_S24_LE:		descr = "24(32)-bit Signed LE"; break;
-+	case V4L2_AUDIO_FMT_U24_LE:		descr = "24(32)-bit Unsigned LE"; break;
-+	case V4L2_AUDIO_FMT_S32_LE:		descr = "32-bit Signed LE"; break;
-+	case V4L2_AUDIO_FMT_U32_LE:		descr = "32-bit Unsigned LE"; break;
-+	case V4L2_AUDIO_FMT_FLOAT_LE:		descr = "32-bit Float LE"; break;
-+	case V4L2_AUDIO_FMT_IEC958_SUBFRAME_LE:	descr = "32-bit IEC958 LE"; break;
-+	case V4L2_AUDIO_FMT_S24_3LE:		descr = "24(24)-bit Signed LE"; break;
-+	case V4L2_AUDIO_FMT_U24_3LE:		descr = "24(24)-bit Unsigned LE"; break;
-+	case V4L2_AUDIO_FMT_S20_3LE:		descr = "20(24)-bit Signed LE"; break;
-+	case V4L2_AUDIO_FMT_U20_3LE:		descr = "20(24)-bit Unsigned LE"; break;
+diff --git a/Documentation/userspace-api/media/mediactl/media-types.rst b/Documentation/userspace-api/media/mediactl/media-types.rst
+index 0ffeece1e0c8..3f0bcb18a5ca 100644
+--- a/Documentation/userspace-api/media/mediactl/media-types.rst
++++ b/Documentation/userspace-api/media/mediactl/media-types.rst
+@@ -322,6 +322,10 @@ Types and flags used to represent the media graph elements
+        -  Device node interface for Touch device (V4L)
+        -  typically, /dev/v4l-touch?
  
++    *  -  ``MEDIA_INTF_T_V4L_AUDIO``
++       -  Device node interface for Audio device (V4L)
++       -  typically, /dev/v4l-audio?
++
+     *  -  ``MEDIA_INTF_T_ALSA_PCM_CAPTURE``
+        -  Device node interface for ALSA PCM Capture
+        -  typically, /dev/snd/pcmC?D?c
+diff --git a/drivers/media/v4l2-core/v4l2-dev.c b/drivers/media/v4l2-core/v4l2-dev.c
+index b92c760b611a..c3a7d974db26 100644
+--- a/drivers/media/v4l2-core/v4l2-dev.c
++++ b/drivers/media/v4l2-core/v4l2-dev.c
+@@ -842,6 +842,10 @@ static int video_register_media_controller(struct video_device *vdev)
+ 		intf_type = MEDIA_INTF_T_V4L_SUBDEV;
+ 		/* Entity will be created via v4l2_device_register_subdev() */
+ 		break;
++	case VFL_TYPE_AUDIO:
++		intf_type = MEDIA_INTF_T_V4L_AUDIO;
++		/* Entity will be created via v4l2_device_register_subdev() */
++		break;
  	default:
- 		/* Compressed formats */
-diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
-index 1e06ac73b6fa..cf8c44595a1d 100644
---- a/include/uapi/linux/videodev2.h
-+++ b/include/uapi/linux/videodev2.h
-@@ -843,6 +843,29 @@ struct v4l2_pix_format {
- #define V4L2_META_FMT_RK_ISP1_PARAMS	v4l2_fourcc('R', 'K', '1', 'P') /* Rockchip ISP1 3A Parameters */
- #define V4L2_META_FMT_RK_ISP1_STAT_3A	v4l2_fourcc('R', 'K', '1', 'S') /* Rockchip ISP1 3A Statistics */
+ 		return 0;
+ 	}
+diff --git a/drivers/media/v4l2-core/v4l2-mem2mem.c b/drivers/media/v4l2-core/v4l2-mem2mem.c
+index 0cc30397fbad..bf41d112b742 100644
+--- a/drivers/media/v4l2-core/v4l2-mem2mem.c
++++ b/drivers/media/v4l2-core/v4l2-mem2mem.c
+@@ -1134,10 +1134,15 @@ int v4l2_m2m_register_media_controller(struct v4l2_m2m_dev *m2m_dev,
+ 	if (ret)
+ 		goto err_rm_links0;
  
-+/*
-+ * Audio-data formats
-+ * All these audio formats use a fourcc starting with 'AU'
-+ * followed by the SNDRV_PCM_FORMAT_ value from asound.h.
-+ */
-+#define V4L2_AUDIO_FMT_S8			v4l2_fourcc('A', 'U', '0', '0')
-+#define V4L2_AUDIO_FMT_S16_LE			v4l2_fourcc('A', 'U', '0', '2')
-+#define V4L2_AUDIO_FMT_U16_LE			v4l2_fourcc('A', 'U', '0', '4')
-+#define V4L2_AUDIO_FMT_S24_LE			v4l2_fourcc('A', 'U', '0', '6')
-+#define V4L2_AUDIO_FMT_U24_LE			v4l2_fourcc('A', 'U', '0', '8')
-+#define V4L2_AUDIO_FMT_S32_LE			v4l2_fourcc('A', 'U', '1', '0')
-+#define V4L2_AUDIO_FMT_U32_LE			v4l2_fourcc('A', 'U', '1', '2')
-+#define V4L2_AUDIO_FMT_FLOAT_LE			v4l2_fourcc('A', 'U', '1', '4')
-+#define V4L2_AUDIO_FMT_IEC958_SUBFRAME_LE	v4l2_fourcc('A', 'U', '1', '8')
-+#define V4L2_AUDIO_FMT_S24_3LE			v4l2_fourcc('A', 'U', '3', '2')
-+#define V4L2_AUDIO_FMT_U24_3LE			v4l2_fourcc('A', 'U', '3', '4')
-+#define V4L2_AUDIO_FMT_S20_3LE			v4l2_fourcc('A', 'U', '3', '6')
-+#define V4L2_AUDIO_FMT_U20_3LE			v4l2_fourcc('A', 'U', '3', '8')
-+
-+#define v4l2_fourcc_to_audfmt(fourcc)	\
-+	(__force snd_pcm_format_t)(((((fourcc) >> 16) & 0xff) - '0') * 10  \
-+				   + ((((fourcc) >> 24) & 0xff) - '0'))
-+
- /* priv field value to indicates that subsequent fields are valid. */
- #define V4L2_PIX_FMT_PRIV_MAGIC		0xfeedcafe
+-	/* Create video interface */
+-	m2m_dev->intf_devnode = media_devnode_create(mdev,
+-			MEDIA_INTF_T_V4L_VIDEO, 0,
+-			VIDEO_MAJOR, vdev->minor);
++	if (vdev->vfl_type == VFL_TYPE_AUDIO)
++		m2m_dev->intf_devnode = media_devnode_create(mdev,
++				MEDIA_INTF_T_V4L_AUDIO, 0,
++				VIDEO_MAJOR, vdev->minor);
++	else
++		/* Create video interface */
++		m2m_dev->intf_devnode = media_devnode_create(mdev,
++				MEDIA_INTF_T_V4L_VIDEO, 0,
++				VIDEO_MAJOR, vdev->minor);
+ 	if (!m2m_dev->intf_devnode) {
+ 		ret = -ENOMEM;
+ 		goto err_rm_links1;
+diff --git a/include/uapi/linux/media.h b/include/uapi/linux/media.h
+index 1c80b1d6bbaf..9ff6dec7393a 100644
+--- a/include/uapi/linux/media.h
++++ b/include/uapi/linux/media.h
+@@ -260,6 +260,7 @@ struct media_links_enum {
+ #define MEDIA_INTF_T_V4L_SUBDEV			(MEDIA_INTF_T_V4L_BASE + 3)
+ #define MEDIA_INTF_T_V4L_SWRADIO		(MEDIA_INTF_T_V4L_BASE + 4)
+ #define MEDIA_INTF_T_V4L_TOUCH			(MEDIA_INTF_T_V4L_BASE + 5)
++#define MEDIA_INTF_T_V4L_AUDIO			(MEDIA_INTF_T_V4L_BASE + 6)
  
+ #define MEDIA_INTF_T_ALSA_BASE			0x00000300
+ #define MEDIA_INTF_T_ALSA_PCM_CAPTURE		(MEDIA_INTF_T_ALSA_BASE)
 -- 
 2.34.1
 
