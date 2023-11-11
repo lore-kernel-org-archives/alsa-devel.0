@@ -4,145 +4,171 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1E3EAC4332F
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Nov 2023 11:52:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2C46EC4332F
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Nov 2023 11:53:06 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 75FA6209;
-	Mon, 13 Nov 2023 12:51:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 75FA6209
+	by alsa0.perex.cz (Postfix) with ESMTPS id 352B4852;
+	Mon, 13 Nov 2023 12:52:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 352B4852
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1699876354;
-	bh=Os4KBIFKBrhxCNe2iV6sYOSUCifSAC9wTubOo6x2YGA=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:List-Id:
+	s=default; t=1699876384;
+	bh=Wy3io7lR0x7aTmiDeBvV4IPzU9NSzZe9Og1xTcIC65k=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=MJu5E8cnYt5NeDnxy4qk6bieGqWA6rnSRZe42yEN+wV6svW5TVGwt/N7M+DSJ5hIH
-	 xDAyA3FOhSy7iViBGougKRBtaonjC58GIwnbCKCza7ahGrAICUpL4pz5cJu3k10vBq
-	 9Hvw7xYCFv5TptWK1DbQfmJaiKyIWPULwyTpYrn8=
+	b=L62+tJq4eZf6FpBoopHxlTpXDetogcwYvv2SFGfdLCCy895gFMyqYrKUJ015vrRk/
+	 I8ojE8oeTaToiq/J2hN7ymhk9Pu2O3+RfZQwkuT5NWD+TbAraUk+nu7eEatGlj5JAS
+	 qFEuO1jt4gLIVmsM/c062qYBFy3Iz89L86z+gwCY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3C96DF80557; Mon, 13 Nov 2023 12:51:23 +0100 (CET)
+	id 2D5C9F80563; Mon, 13 Nov 2023 12:51:25 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 91954F801D5;
-	Mon, 13 Nov 2023 12:51:22 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5BB49F8055A;
+	Mon, 13 Nov 2023 12:51:25 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5EAD0F80169; Sat, 11 Nov 2023 19:18:44 +0100 (CET)
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com
- [IPv6:2a00:1450:4864:20::131])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	id E1996F80169; Sat, 11 Nov 2023 22:02:00 +0100 (CET)
+Received: from mx.skole.hr (mx2.hosting.skole.hr [161.53.165.186])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 4FE23F80125
-	for <alsa-devel@alsa-project.org>; Sat, 11 Nov 2023 19:18:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4FE23F80125
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20230601 header.b=LDdvFff8
-Received: by mail-lf1-x131.google.com with SMTP id
- 2adb3069b0e04-507a29c7eefso4161548e87.1
-        for <alsa-devel@alsa-project.org>;
- Sat, 11 Nov 2023 10:18:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699726712; x=1700331512;
- darn=alsa-project.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Os4KBIFKBrhxCNe2iV6sYOSUCifSAC9wTubOo6x2YGA=;
-        b=LDdvFff8BvCCgnZj8Y+MH0xDRm6xSSNpgVbmwAEwv3CFEkjZM+ZvLN98ufwY1BXadh
-         bBvnAlPQvjliXTde7TzPKG682dWZMnpIkMof0V2uyvBeyYupVE66EnqKJyB/WjERqaix
-         65kei+Uk04BO0Q9BsxX8+1VaOKylBuXYdwGtL4VCCnwpEZ3RTtD83UgWlaNdfuXg6KPF
-         sR79/Ro5fsDrovb4agzBlSnOfw4NCkBGxbpr4ezk8mMss9Yf+fbRAwbie68Q9X6s4Klr
-         AGM9AWLNDcCXM/K51XnPeJBCwJiESDA0zKdgWmZSKP0RwNGvlp7shkDAmNecpni1PCm4
-         cMkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699726712; x=1700331512;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Os4KBIFKBrhxCNe2iV6sYOSUCifSAC9wTubOo6x2YGA=;
-        b=ccth6kFTne6SbpUCu6aELpFYg6cM/J0furs9BQUJVdkL9R+R4oPVzGJ2XqAuxGtJCE
-         G4t+PgjCStNGgDXJ9fw6JU0+fNnigqyNvYH0ImBxqhM96I+puQt041IJtaWZU0RiPiA8
-         MfLAQ3qevdaXetjLR8kqtMGKxuS23PJ4+ft/dtFC96YstEmnRkrkEiaFN6AFGzzQWyK1
-         PuWXOPBtQhNNx7mmlIpXaymTaTnyG9IYZPQGt87OfiJYH+SMQhEuvYNCck6gsKrpkrZL
-         dwgjfRVEc/ZrrXGwiRrOdBNZt4BzlbquUjsdeN20v8Aq22dksjE7T2afqrNdWhTJw8V4
-         zvoQ==
-X-Gm-Message-State: AOJu0YzIxCDCG3d6nKhJ5omfgXOcXT/s2WNc9sYXmWRiN5JHyAmxOhsx
-	lOiX+rmHmYQCmbevsdE12Xk=
-X-Google-Smtp-Source: 
- AGHT+IGWSLvEEWKMjKSkylq9sGZ0KV/8c86kVFIgYc1m0RkjmWY37s2qpjH05vtA3bG5UrjESvvwcA==
-X-Received: by 2002:a05:6512:2399:b0:500:be57:ce53 with SMTP id
- c25-20020a056512239900b00500be57ce53mr2275395lfv.42.1699726711568;
-        Sat, 11 Nov 2023 10:18:31 -0800 (PST)
-Received: from giga-mm.home ([2a02:1210:8629:800:82ee:73ff:feb8:99e3])
-        by smtp.gmail.com with ESMTPSA id
- n20-20020a170906b31400b009e656ce2930sm1403421ejz.60.2023.11.11.10.18.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 11 Nov 2023 10:18:30 -0800 (PST)
-Message-ID: <80ed91bb971516638fa1793d648939815eba7630.camel@gmail.com>
-Subject: Re: [PATCH v3 14/42] power: reset: Add a driver for the ep93xx reset
-From: Alexander Sverdlin <alexander.sverdlin@gmail.com>
-To: Andy Shevchenko <andy@kernel.org>, nikita.shubin@maquefel.me
-Cc: Hartley Sweeten <hsweeten@visionengravers.com>, Lennert Buytenhek
- <kernel@wantstofly.org>, Russell King <linux@armlinux.org.uk>, Lukasz
- Majewski <lukma@denx.de>, Linus Walleij <linus.walleij@linaro.org>, Bartosz
- Golaszewski <brgl@bgdev.pl>, Rob Herring <robh+dt@kernel.org>, Krzysztof
- Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
- <conor+dt@kernel.org>,  Michael Turquette <mturquette@baylibre.com>,
- Stephen Boyd <sboyd@kernel.org>, Daniel Lezcano
- <daniel.lezcano@linaro.org>,  Thomas Gleixner <tglx@linutronix.de>,
- Alessandro Zummo <a.zummo@towertech.it>, Alexandre Belloni
- <alexandre.belloni@bootlin.com>, Wim Van Sebroeck <wim@linux-watchdog.org>,
-  Guenter Roeck <linux@roeck-us.net>, Sebastian Reichel <sre@kernel.org>,
- Thierry Reding <thierry.reding@gmail.com>, Uwe
- =?ISO-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>, Mark
- Brown <broonie@kernel.org>, "David S. Miller" <davem@davemloft.net>, Eric
- Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,  Paolo
- Abeni <pabeni@redhat.com>, Vinod Koul <vkoul@kernel.org>, Miquel Raynal
- <miquel.raynal@bootlin.com>,  Richard Weinberger <richard@nod.at>, Vignesh
- Raghavendra <vigneshr@ti.com>, Damien Le Moal <dlemoal@kernel.org>, Sergey
- Shtylyov <s.shtylyov@omp.ru>, Dmitry Torokhov <dmitry.torokhov@gmail.com>,
- Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
- soc@kernel.org, Liam Girdwood <lgirdwood@gmail.com>,  Jaroslav Kysela
- <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Michael Peters
- <mpeters@embeddedts.com>, Kris Bahnsen <kris@embeddedts.com>,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
- linux-clk@vger.kernel.org, linux-rtc@vger.kernel.org,
- linux-watchdog@vger.kernel.org, linux-pm@vger.kernel.org,
- linux-pwm@vger.kernel.org, linux-spi@vger.kernel.org,
- netdev@vger.kernel.org,  dmaengine@vger.kernel.org,
- linux-mtd@lists.infradead.org,  linux-ide@vger.kernel.org,
- linux-input@vger.kernel.org,  alsa-devel@alsa-project.org
-Date: Sat, 11 Nov 2023 19:18:28 +0100
-In-Reply-To: <ZLq0Z0QgBdCoDpV+@smile.fi.intel.com>
-References: <20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me>
-	 <20230605-ep93xx-v3-14-3d63a5f1103e@maquefel.me>
-	 <ZLq0Z0QgBdCoDpV+@smile.fi.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 
+	by alsa1.perex.cz (Postfix) with ESMTPS id EF82FF80100
+	for <alsa-devel@alsa-project.org>; Sat, 11 Nov 2023 22:01:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EF82FF80100
+Received: from mx2.hosting.skole.hr (localhost.localdomain [127.0.0.1])
+	by mx.skole.hr (mx.skole.hr) with ESMTP id AEE1584C41;
+	Sat, 11 Nov 2023 22:01:53 +0100 (CET)
+From: Duje =?utf-8?B?TWloYW5vdmnEhw==?= <duje.mihanovic@skole.hr>
+To: Mark Brown <broonie@kernel.org>
+Cc: Robin Murphy <robin.murphy@arm.com>,
+ Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>,
+ Linus Walleij <linus.walleij@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Tony Lindgren <tony@atomide.com>,
+ Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
+ Robert Jarzmik <robert.jarzmik@free.fr>, Liam Girdwood <lgirdwood@gmail.com>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ Leo Yan <leoy@marvell.com>, Zhangfei Gao <zhangfei.gao@marvell.com>,
+ Lubomir Rintel <lkundrak@v3.sk>, Catalin Marinas <catalin.marinas@arm.com>,
+ Will Deacon <will@kernel.org>, Kees Cook <keescook@chromium.org>,
+ Tony Luck <tony.luck@intel.com>,
+ "Guilherme G . Piccoli" <gpiccoli@igalia.com>, linux-clk@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-omap@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-hardening@vger.kernel.org, phone-devel@vger.kernel.org,
+ ~postmarketos/upstreaming@lists.sr.ht, Karel Balej <balejk@matfyz.cz>
+Subject: Re: [PATCH v7 06/10] ASoC: pxa: Suppress SSPA on ARM64
+Date: Sat, 11 Nov 2023 22:01:39 +0100
+Message-ID: <6002023.lOV4Wx5bFT@radijator>
+In-Reply-To: <ZU9n5Y8DxZt4QYRO@finisterre.sirena.org.uk>
+References: 
+ <20231102152033.5511-1-duje.mihanovic@skole.hr>
+ <1880732.tdWV9SEqCh@radijator> <ZU9n5Y8DxZt4QYRO@finisterre.sirena.org.uk>
 MIME-Version: 1.0
-X-MailFrom: alexander.sverdlin@gmail.com
-X-Mailman-Rule-Hits: max-recipients
+Autocrypt: addr=duje.mihanovic@skole.hr;
+ keydata=
+ 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
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
+X-MailFrom: duje.mihanovic@skole.hr
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-size; news-moderation; no-subject; digests;
- suspicious-header
-Message-ID-Hash: CKSEEVBTIPUGUEAEYCX3HERKNYR2RAKF
-X-Message-ID-Hash: CKSEEVBTIPUGUEAEYCX3HERKNYR2RAKF
-X-Mailman-Approved-At: Mon, 13 Nov 2023 11:51:19 +0000
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: HN2J7SXFBXKGDZG7IW57VQIM343GBVGE
+X-Message-ID-Hash: HN2J7SXFBXKGDZG7IW57VQIM343GBVGE
+X-Mailman-Approved-At: Mon, 13 Nov 2023 11:51:20 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CKSEEVBTIPUGUEAEYCX3HERKNYR2RAKF/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HN2J7SXFBXKGDZG7IW57VQIM343GBVGE/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -151,31 +177,22 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi Andy,
-
-On Fri, 2023-07-21 at 19:37 +0300, Andy Shevchenko wrote:
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0/* Issue the reboot */
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0ep93xx_devcfg_set_clear(priv=
-->map, EP93XX_SYSCON_DEVCFG_SWRST, 0x00);
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0ep93xx_devcfg_set_clear(priv=
-->map, 0x00, EP93XX_SYSCON_DEVCFG_SWRST);
+On Saturday, November 11, 2023 12:39:17 PM CET Mark Brown wrote:
+> On Fri, Nov 10, 2023 at 08:28:56PM +0100, Duje Mihanovi=C4=87 wrote:
+> > Can you elaborate? As far as I can tell there are 2 drivers named
+> > pxa2xx-ac97
+> > in sound/{arm,soc/pxa} and neither one has any dependency on AACI.
 >=20
->=20
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0mdelay(1000);
->=20
-> Atomic?! Such a huge delay must be explained, esp. why it's atomic.
+> They do both share a lot of library code and the one in sound/arm has no
+> dependency on ASoC so I don't understand why you're suggesting moving it
+> to sound/soc.
 
-atomic or not, SoC is supposed to reset itself here.
-However there is an errata [1] and the SoC can lockup instead.
-So even pr_emerg() makes sense to me.
+Right. Do you have any objections on removing "select SND_ARM" from=20
+SND_MMP_SOC_SSPA?
 
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0pr_emerg("Unable to restart =
-system\n");
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return NOTIFY_DONE;
+Regards,
+Duje
 
-[1] http://web.archive.org/web/20161130230727/http://www.cirrus.com/en/pubs=
-/appNote/AN258REV2.pdf
 
---=20
-Alexander Sverdlin.
+
 
