@@ -4,145 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5F050C4167B
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Nov 2023 11:53:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C1D15C4332F
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Nov 2023 11:53:28 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A5C53A4B;
-	Mon, 13 Nov 2023 12:52:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A5C53A4B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0E53984B;
+	Mon, 13 Nov 2023 12:52:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0E53984B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1699876395;
-	bh=BjJpwKGCecxdkQ5LjdaCff64J4ZeBO10oL7F7MwcVn4=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=EhiOey4fZA7TcDKpfxYEKobor8zHvaWR3tAhDwncGHPwBfUuATbgvFfEDs/1KFnMT
-	 hjnocnLxPd621h+T/Cue8JG+VNif2o2JVmb6FilKDlJKIcAH4SWpZ23RB5eD/H54QM
-	 JGJ2BVP6E4KDhs1vWeK2WeD8fB7y9FtOPtcm6RFU=
+	s=default; t=1699876407;
+	bh=NO6iBNKNfNUugqsYw00HHj0Pi/Qh12m9Ysv3bf3ht74=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=XtJw0qfU8JjXWNoBne4P61qu2IF5zO3MlxVobXEoQwRRRdmGXfhlmfP5S/1D+bAWu
+	 7KYOSwHrq2APUZPZqiBpxuWPkaTcbZ3gX/pOOLMtabPFurDf3Q5qPIQp8G4/+mvXpP
+	 YPnjCf4LF1OMZTyBnqf2DR3wY+aA3NJvBJ++P02I=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CED03F80578; Mon, 13 Nov 2023 12:51:28 +0100 (CET)
+	id BD68FF805A0; Mon, 13 Nov 2023 12:51:30 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id F2CA5F80578;
-	Mon, 13 Nov 2023 12:51:27 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 15930F8056F;
+	Mon, 13 Nov 2023 12:51:30 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7187BF80169; Sat, 11 Nov 2023 22:33:56 +0100 (CET)
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com
- [IPv6:2a00:1450:4864:20::32f])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	id 465B9F801D5; Sun, 12 Nov 2023 17:22:30 +0100 (CET)
+Received: from mail.malych.org (gateway.malych.org [185.150.1.6])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 6F5C6F800ED
-	for <alsa-devel@alsa-project.org>; Sat, 11 Nov 2023 22:33:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6F5C6F800ED
+	by alsa1.perex.cz (Postfix) with ESMTPS id 79ED7F80166
+	for <alsa-devel@alsa-project.org>; Sun, 12 Nov 2023 17:22:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 79ED7F80166
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20230601 header.b=OHBB5G6+
-Received: by mail-wm1-x32f.google.com with SMTP id
- 5b1f17b1804b1-408382da7f0so25426535e9.0
-        for <alsa-devel@alsa-project.org>;
- Sat, 11 Nov 2023 13:33:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699738422; x=1700343222;
- darn=alsa-project.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=BjJpwKGCecxdkQ5LjdaCff64J4ZeBO10oL7F7MwcVn4=;
-        b=OHBB5G6+A29NbkjXFExZ1QeSsguD/s2ZcLipy3+/BRwF2ubWRiH5higDxohIWTcS1q
-         WvAWRwa99qaqlzMSJEOSvp+5C2orKlq+gwBXLXx/m1//wu7whmMu/b1n2hkq60OeChQ7
-         IGYiAUTCsuAT0+EhKg1fs+60fZhlOUmHGlkrLtTejkgZdeaQ6glEaN/iGMkwPtd4nZze
-         OfCb1ZMke40yyhvYZrnLkrbidXLeLO0Ijr12i/g96VxEDrOy5w5h4AiKukC/ZgUU3wwI
-         SBF6qYJy5ZtFtLxJL2fyx5gKReo4BI4k/Lrp8NtIgq87UopdylKb+RjFaLN8BHsX7eoE
-         ORmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699738422; x=1700343222;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=BjJpwKGCecxdkQ5LjdaCff64J4ZeBO10oL7F7MwcVn4=;
-        b=VN9iGv9FzW9ehzOBiqDg+IKzFEOG9w/qYXblX4VLtUd58EsYemYdKXUqvqfxBB6KOA
-         CS9s6aF0k7WYoRrVecf0LmQPKqA8+nXL5Jy8hrH9w9rrpO7nRBMzET9QMvAXicSpJkoQ
-         2Q/YaLbgdyoDt2sNodoTfuJnTSlYeWKkazRBDQcRKkCKS+6sq9YeMwQrzf3+Kipdhg4w
-         gR9Z1nbS/bYk8DENwAToAiQB+roYgSlmS+izKOEmw1jDctZzSWkwm6bNtzS+49fd+nTx
-         eaw4ZaGka+y55dI+TQ62HaUAwFHLM9OzVs6v92/qE+z9CfDnkQ745nUUORqGlW64H90c
-         0ySg==
-X-Gm-Message-State: AOJu0Yyp5ok/T5vcHhnvmh2CxRvJXzyj8VLKBKEIxXEMl1mbA/LZ72N/
-	hWplX6eue/Ry/6r2xC7LmAM=
-X-Google-Smtp-Source: 
- AGHT+IGcspAIBmQE8uECroiT5zYPxAfvcuIKjKOjZDZOhwNchFn+oYO8zOgLHmFyk1hPD+Lg8347oA==
-X-Received: by 2002:a05:600c:5121:b0:408:57bb:ef96 with SMTP id
- o33-20020a05600c512100b0040857bbef96mr2147252wms.30.1699738422278;
-        Sat, 11 Nov 2023 13:33:42 -0800 (PST)
-Received: from giga-mm.home ([2a02:1210:8629:800:82ee:73ff:feb8:99e3])
-        by smtp.gmail.com with ESMTPSA id
- be14-20020a05600c1e8e00b00401b242e2e6sm8935242wmb.47.2023.11.11.13.33.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 11 Nov 2023 13:33:41 -0800 (PST)
-Message-ID: <c49f77492cacc5a30079720af58a9f2fca761609.camel@gmail.com>
-Subject: Re: [PATCH v3 07/42] soc: Add SoC driver for Cirrus ep93xx
-From: Alexander Sverdlin <alexander.sverdlin@gmail.com>
-To: Andy Shevchenko <andy@kernel.org>, nikita.shubin@maquefel.me
-Cc: Hartley Sweeten <hsweeten@visionengravers.com>, Lennert Buytenhek
- <kernel@wantstofly.org>, Russell King <linux@armlinux.org.uk>, Lukasz
- Majewski <lukma@denx.de>, Linus Walleij <linus.walleij@linaro.org>, Bartosz
- Golaszewski <brgl@bgdev.pl>, Rob Herring <robh+dt@kernel.org>, Krzysztof
- Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
- <conor+dt@kernel.org>,  Michael Turquette <mturquette@baylibre.com>,
- Stephen Boyd <sboyd@kernel.org>, Daniel Lezcano
- <daniel.lezcano@linaro.org>,  Thomas Gleixner <tglx@linutronix.de>,
- Alessandro Zummo <a.zummo@towertech.it>, Alexandre Belloni
- <alexandre.belloni@bootlin.com>, Wim Van Sebroeck <wim@linux-watchdog.org>,
-  Guenter Roeck <linux@roeck-us.net>, Sebastian Reichel <sre@kernel.org>,
- Thierry Reding <thierry.reding@gmail.com>, Uwe
- =?ISO-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>, Mark
- Brown <broonie@kernel.org>, "David S. Miller" <davem@davemloft.net>, Eric
- Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,  Paolo
- Abeni <pabeni@redhat.com>, Vinod Koul <vkoul@kernel.org>, Miquel Raynal
- <miquel.raynal@bootlin.com>,  Richard Weinberger <richard@nod.at>, Vignesh
- Raghavendra <vigneshr@ti.com>, Damien Le Moal <dlemoal@kernel.org>, Sergey
- Shtylyov <s.shtylyov@omp.ru>, Dmitry Torokhov <dmitry.torokhov@gmail.com>,
- Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
- soc@kernel.org, Liam Girdwood <lgirdwood@gmail.com>,  Jaroslav Kysela
- <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Michael Peters
- <mpeters@embeddedts.com>, Kris Bahnsen <kris@embeddedts.com>,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
- linux-clk@vger.kernel.org, linux-rtc@vger.kernel.org,
- linux-watchdog@vger.kernel.org, linux-pm@vger.kernel.org,
- linux-pwm@vger.kernel.org, linux-spi@vger.kernel.org,
- netdev@vger.kernel.org,  dmaengine@vger.kernel.org,
- linux-mtd@lists.infradead.org,  linux-ide@vger.kernel.org,
- linux-input@vger.kernel.org,  alsa-devel@alsa-project.org
-Date: Sat, 11 Nov 2023 22:33:38 +0100
-In-Reply-To: <ZLqSo6B5cJXVRJS/@smile.fi.intel.com>
-References: <20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me>
-	 <20230605-ep93xx-v3-7-3d63a5f1103e@maquefel.me>
-	 <ZLqSo6B5cJXVRJS/@smile.fi.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 
+ unprotected) header.d=malych.org header.i=@malych.org header.a=rsa-sha256
+ header.s=dkim header.b=Phh/Vnfa
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon)
+ with ESMTPSA id 26600AA8CD6;
+	Sun, 12 Nov 2023 17:22:16 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=malych.org; s=dkim;
+	t=1699806140; h=from:subject:date:message-id:to:cc:mime-version:
+	 content-transfer-encoding; bh=GCMcwORUQRqnOz5c+Ffs4hnmtdMXVgc71+oi7qf57u4=;
+	b=Phh/Vnfayf2BhHSEnRVnm4+0OyCygXAyK2uaqmb853MmN8UKBvHHd/N6g97QHlXE9xYJYL
+	CT7+ptW5z9wBmHsAe4coPnZe8Tp8jchI7p2VGSFsQS3mq5RPI7TyA/DAoEY4Y1wRdszYVp
+	4Ypq63caFwGIEXQwtyolY+9TmnG33d80nN8zd5I48KbwByqLrnoqUbHXQL5SAtVCE1fJKO
+	FckDRaIAVhTgPHLOYl43uapCudbpdxfjnBsOQuTGOFJJBaYEuZ6e4TkDnuMzsTQWpYLYzj
+	ENjZS9WZkbxHiM2nYTrGeM1Mt4hbVyz0cnG/6u/S6G4P+p3/agf+cJJzt1TTmA==
+From: Matus Malych <matus@malych.org>
+To: tiwai@suse.com
+Cc: alsa-devel@alsa-project.org,
+	linux-kernel@vger.kernel.org,
+	Matus Malych <matus@malych.org>
+Subject: [PATCH] ALSA: hda/realtek: Enable Mute LED on HP 255 G10
+Date: Sun, 12 Nov 2023 17:18:22 +0100
+Message-Id: <20231112161821.6754-1-matus@malych.org>
 MIME-Version: 1.0
-X-MailFrom: alexander.sverdlin@gmail.com
-X-Mailman-Rule-Hits: max-recipients
+Content-Transfer-Encoding: 8bit
+X-Last-TLS-Session-Version: TLSv1.3
+X-MailFrom: matus@malych.org
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-size; news-moderation; no-subject; digests;
- suspicious-header
-Message-ID-Hash: O3VBG6ZG64IIGTUKDLMBFJDOIR3BFAHE
-X-Message-ID-Hash: O3VBG6ZG64IIGTUKDLMBFJDOIR3BFAHE
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: YCBFO7M2X2UMEZXKXUSHHRIA47VSVL5F
+X-Message-ID-Hash: YCBFO7M2X2UMEZXKXUSHHRIA47VSVL5F
 X-Mailman-Approved-At: Mon, 13 Nov 2023 11:51:20 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/O3VBG6ZG64IIGTUKDLMBFJDOIR3BFAHE/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YCBFO7M2X2UMEZXKXUSHHRIA47VSVL5F/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -151,50 +84,26 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hello Andy,
+HP 255 G10 has a mute LED that can be made to work using quirk
+ALC236_FIXUP_HP_MUTE_LED_COEFBIT2. Enable already existing quirk.
 
-On Fri, 2023-07-21 at 17:13 +0300, Andy Shevchenko wrote:
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0spin_lock_irqsave(&ep93xx_sw=
-lock, flags);
-> > +
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0regmap_read(map, EP93XX_SYSC=
-ON_DEVCFG, &val);
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0val &=3D ~clear_bits;
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0val |=3D set_bits;
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0regmap_write(map, EP93XX_SYS=
-CON_SWLOCK, EP93XX_SWLOCK_MAGICK);
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0regmap_write(map, EP93XX_SYS=
-CON_DEVCFG, val);
->=20
-> Is this sequence a must?
-> I.o.w. can you first supply magic and then update devcfg?
->=20
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0spin_unlock_irqrestore(&ep93=
-xx_swlock, flags);
->=20
-> ...
->=20
-> > +void ep93xx_swlocked_update_bits(struct regmap *map, unsigned int reg,
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unsigned int mask, unsigned int =
-val)
-> > +{
->=20
-> Same Q as above.
+Signed-off-by: Matus Malych <matus@malych.org>
+---
+ sound/pci/hda/patch_realtek.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-EP93xx User Manual [1] has most verbose description of SWLock for ADC
-block:
-"Writing 0xAA to this register will unlock all locked registers until the
-next block access. The ARM lock instruction prefix should be used for the
-two consequtive write cycles when writing to locked chip registers."
-
-One may conclude that RmW (two accesses to the particular block) sequence
-is not appropriate.
-
-[1]=C2=A0https://cdn.embeddedts.com/resource-attachments/ts-7000_ep9301-ug.=
-pdf=20
-
---=20
-Alexander Sverdlin.
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index cdd808e02b44..bda4e9cb8f98 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -9833,6 +9833,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x103c, 0x88d0, "HP Pavilion 15-eh1xxx (mainboard 88D0)", ALC287_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x8902, "HP OMEN 16", ALC285_FIXUP_HP_MUTE_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x890e, "HP 255 G8 Notebook PC", ALC236_FIXUP_HP_MUTE_LED_COEFBIT2),
++	SND_PCI_QUIRK(0x103c, 0x8b2f, "HP 255 15.6 inch G10 Notebook PC", ALC236_FIXUP_HP_MUTE_LED_COEFBIT2),
+ 	SND_PCI_QUIRK(0x103c, 0x8919, "HP Pavilion Aero Laptop 13-be0xxx", ALC287_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x896d, "HP ZBook Firefly 16 G9", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x896e, "HP EliteBook x360 830 G9", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
+-- 
+2.34.1
 
