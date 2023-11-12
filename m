@@ -4,60 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C1D15C4332F
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Nov 2023 11:53:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7F55C4332F
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Nov 2023 11:53:54 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0E53984B;
-	Mon, 13 Nov 2023 12:52:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0E53984B
+	by alsa0.perex.cz (Postfix) with ESMTPS id E3B12820;
+	Mon, 13 Nov 2023 12:53:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E3B12820
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1699876407;
-	bh=NO6iBNKNfNUugqsYw00HHj0Pi/Qh12m9Ysv3bf3ht74=;
+	s=default; t=1699876433;
+	bh=flFHCHrjeMGH364fzvA3+5ijnFeGZeUEGP5HYPtPK6s=;
 	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=XtJw0qfU8JjXWNoBne4P61qu2IF5zO3MlxVobXEoQwRRRdmGXfhlmfP5S/1D+bAWu
-	 7KYOSwHrq2APUZPZqiBpxuWPkaTcbZ3gX/pOOLMtabPFurDf3Q5qPIQp8G4/+mvXpP
-	 YPnjCf4LF1OMZTyBnqf2DR3wY+aA3NJvBJ++P02I=
+	b=UjeTsu4Qm0FYnoh/tU5ySwDSdojio/uXed1NOuVJ9MlaHOqI7hVBD8EvFpfcXzd6u
+	 w5UOMBzYWprm70eMQNEVulw5AOPWwZ30Fihg6/UzCpt+hIyuCZDJ2PAK5Uvyk+YVrt
+	 aus67aBHtu1pfeGIzCmIzXC6FmJ2slROPPP8A5Xs=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BD68FF805A0; Mon, 13 Nov 2023 12:51:30 +0100 (CET)
+	id 2D611F805B5; Mon, 13 Nov 2023 12:51:34 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 15930F8056F;
-	Mon, 13 Nov 2023 12:51:30 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 12B9BF805AA;
+	Mon, 13 Nov 2023 12:51:34 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 465B9F801D5; Sun, 12 Nov 2023 17:22:30 +0100 (CET)
+	id 450C5F801D5; Sun, 12 Nov 2023 17:55:06 +0100 (CET)
 Received: from mail.malych.org (gateway.malych.org [185.150.1.6])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 79ED7F80166
-	for <alsa-devel@alsa-project.org>; Sun, 12 Nov 2023 17:22:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 79ED7F80166
+	by alsa1.perex.cz (Postfix) with ESMTPS id 7F260F80152
+	for <alsa-devel@alsa-project.org>; Sun, 12 Nov 2023 17:55:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7F260F80152
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=malych.org header.i=@malych.org header.a=rsa-sha256
- header.s=dkim header.b=Phh/Vnfa
+ header.s=dkim header.b=c9Duai2M
 Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon)
- with ESMTPSA id 26600AA8CD6;
-	Sun, 12 Nov 2023 17:22:16 +0100 (CET)
+ with ESMTPSA id C641FAA8CB4;
+	Sun, 12 Nov 2023 17:54:55 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=malych.org; s=dkim;
-	t=1699806140; h=from:subject:date:message-id:to:cc:mime-version:
-	 content-transfer-encoding; bh=GCMcwORUQRqnOz5c+Ffs4hnmtdMXVgc71+oi7qf57u4=;
-	b=Phh/Vnfayf2BhHSEnRVnm4+0OyCygXAyK2uaqmb853MmN8UKBvHHd/N6g97QHlXE9xYJYL
-	CT7+ptW5z9wBmHsAe4coPnZe8Tp8jchI7p2VGSFsQS3mq5RPI7TyA/DAoEY4Y1wRdszYVp
-	4Ypq63caFwGIEXQwtyolY+9TmnG33d80nN8zd5I48KbwByqLrnoqUbHXQL5SAtVCE1fJKO
-	FckDRaIAVhTgPHLOYl43uapCudbpdxfjnBsOQuTGOFJJBaYEuZ6e4TkDnuMzsTQWpYLYzj
-	ENjZS9WZkbxHiM2nYTrGeM1Mt4hbVyz0cnG/6u/S6G4P+p3/agf+cJJzt1TTmA==
+	t=1699808097; h=from:subject:date:message-id:to:cc:mime-version:
+	 content-transfer-encoding; bh=eAC0I710PoxZTn/0/FlbsP7dzbrDcfhVJ7sO0L74N+k=;
+	b=c9Duai2M6qcLDSGPMzZ/Bf1UAzUk4vXkd2iF/GWzkYtp7NnrThRvqnnuux8PCzvMbdus3h
+	i8YmCEQvAP8EqxvmyNWxSICuC48PiA6ozBcceyIRLdYOCY3ze9qWCQSsOimbAFdH6AOzYP
+	vS33q3jy09MyZQ4HLnrMneiYNqkxiqEJuXTYHDbunVaJARDLB6dcjYq1Mrc6tl1xTo9H2v
+	8EzzJcQfdI+kNsODv/YivN5Sgi45WgKztyUC62zKRgqvlX6+yI2iYkG43LAx2bRAB/WSfH
+	dm1V8kCN2+TGF9/5Mt9C9kERW7Qy8WOSDfI/W0MekL5Z9WGCSNQvMmW+uj90aA==
 From: Matus Malych <matus@malych.org>
-To: tiwai@suse.com
+To: Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org,
 	linux-kernel@vger.kernel.org,
 	Matus Malych <matus@malych.org>
-Subject: [PATCH] ALSA: hda/realtek: Enable Mute LED on HP 255 G10
-Date: Sun, 12 Nov 2023 17:18:22 +0100
-Message-Id: <20231112161821.6754-1-matus@malych.org>
+Subject: [PATCH] ASoC: amd: yc: Add HP 255 G10 into quirk table
+Date: Sun, 12 Nov 2023 17:54:04 +0100
+Message-Id: <20231112165403.3221-1-matus@malych.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Last-TLS-Session-Version: TLSv1.3
@@ -67,15 +66,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: YCBFO7M2X2UMEZXKXUSHHRIA47VSVL5F
-X-Message-ID-Hash: YCBFO7M2X2UMEZXKXUSHHRIA47VSVL5F
+Message-ID-Hash: L6RCVXZGDED7MGX4XASIVYULT772MJ2H
+X-Message-ID-Hash: L6RCVXZGDED7MGX4XASIVYULT772MJ2H
 X-Mailman-Approved-At: Mon, 13 Nov 2023 11:51:20 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YCBFO7M2X2UMEZXKXUSHHRIA47VSVL5F/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/L6RCVXZGDED7MGX4XASIVYULT772MJ2H/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -84,26 +83,32 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-HP 255 G10 has a mute LED that can be made to work using quirk
-ALC236_FIXUP_HP_MUTE_LED_COEFBIT2. Enable already existing quirk.
+HP 255 G10's internal microphone array can be made
+to work by adding it to the quirk table.
 
 Signed-off-by: Matus Malych <matus@malych.org>
 ---
- sound/pci/hda/patch_realtek.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/amd/yc/acp6x-mach.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index cdd808e02b44..bda4e9cb8f98 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -9833,6 +9833,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x103c, 0x88d0, "HP Pavilion 15-eh1xxx (mainboard 88D0)", ALC287_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x8902, "HP OMEN 16", ALC285_FIXUP_HP_MUTE_LED),
- 	SND_PCI_QUIRK(0x103c, 0x890e, "HP 255 G8 Notebook PC", ALC236_FIXUP_HP_MUTE_LED_COEFBIT2),
-+	SND_PCI_QUIRK(0x103c, 0x8b2f, "HP 255 15.6 inch G10 Notebook PC", ALC236_FIXUP_HP_MUTE_LED_COEFBIT2),
- 	SND_PCI_QUIRK(0x103c, 0x8919, "HP Pavilion Aero Laptop 13-be0xxx", ALC287_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x896d, "HP ZBook Firefly 16 G9", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x896e, "HP EliteBook x360 830 G9", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
+diff --git a/sound/soc/amd/yc/acp6x-mach.c b/sound/soc/amd/yc/acp6x-mach.c
+index 15a864dcd7bd..e2a510443bf1 100644
+--- a/sound/soc/amd/yc/acp6x-mach.c
++++ b/sound/soc/amd/yc/acp6x-mach.c
+@@ -367,6 +367,13 @@ static const struct dmi_system_id yc_acp_quirk_table[] = {
+ 			DMI_MATCH(DMI_BOARD_NAME, "8A3E"),
+ 		}
+ 	},
++	{
++		.driver_data = &acp6x_card,
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "HP"),
++			DMI_MATCH(DMI_BOARD_NAME, "8B2F"),
++		}
++	},
+ 	{
+ 		.driver_data = &acp6x_card,
+ 		.matches = {
 -- 
 2.34.1
 
