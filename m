@@ -4,74 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B6BCC4332F
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Nov 2023 14:08:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BC51EC4332F
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Nov 2023 14:08:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C8890BC0;
-	Mon, 13 Nov 2023 15:07:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C8890BC0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 52AD682A;
+	Mon, 13 Nov 2023 15:07:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 52AD682A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1699884479;
-	bh=vTMYffes98zdDzbW5PW6PMn758Eh1TJV6fxNVpAjtjo=;
+	s=default; t=1699884503;
+	bh=SDRkAHDc9itV6f8oK3mmT3NDiKoKnApjwxqUguLBXSc=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=JolHQeAqN+2fIz9wYmTlkHz6J1Ck4Oq5tg+CVu5h9XO6BAosNfNnXnvZDv70ylLdf
-	 TXEbC24gdq4Ov1p6YBHzpzGAp8TbbaUeWNemBVgdiUvQnC3g7hhetqzt60OkIvK5Gj
-	 Tx20xQNXysoYZ+XYjVp/x0P8KwHXlzJ/qNmI+suc=
+	b=hkhozWJqVf7GStTs+ZNzE/hvrGOrpctUf3KE4TuuLSCqrD/ytRrrC94FmjUgzvtXx
+	 1LhH5I7nnlngIFD722wXylfnl1iiJp48l3ZQhl/tlWoNnudlOW9HpSwN4FBF3rEkNM
+	 DgLfQd57ZK8T606hilbQ5fpS3HU6w1aUiwlPgdqU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0C0A4F805A1; Mon, 13 Nov 2023 15:05:56 +0100 (CET)
+	id C7770F805B0; Mon, 13 Nov 2023 15:05:58 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1CE97F8057F;
-	Mon, 13 Nov 2023 15:05:56 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1E889F805AA;
+	Mon, 13 Nov 2023 15:05:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 266FBF8055C; Mon, 13 Nov 2023 15:05:51 +0100 (CET)
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+	id 33C23F80571; Mon, 13 Nov 2023 15:05:52 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 6D3D6F800ED
-	for <alsa-devel@alsa-project.org>; Mon, 13 Nov 2023 15:05:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6D3D6F800ED
+	by alsa1.perex.cz (Postfix) with ESMTPS id D55E1F801D5
+	for <alsa-devel@alsa-project.org>; Mon, 13 Nov 2023 15:05:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D55E1F801D5
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=Rn9Aq9fX
+ header.s=k20201202 header.b=eQ39f0kf
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 9CBBACE138F;
-	Mon, 13 Nov 2023 14:05:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7B4BC433C8;
-	Mon, 13 Nov 2023 14:05:16 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 250E360F0B;
+	Mon, 13 Nov 2023 14:05:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2037CC433C8;
+	Mon, 13 Nov 2023 14:05:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1699884318;
-	bh=vTMYffes98zdDzbW5PW6PMn758Eh1TJV6fxNVpAjtjo=;
+	s=k20201202; t=1699884328;
+	bh=SDRkAHDc9itV6f8oK3mmT3NDiKoKnApjwxqUguLBXSc=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=Rn9Aq9fXICUwKhugQRtPzzZbtIuCL67Jd/ESWpboiwsmI8SnebWLvgnt26IaT+hbW
-	 l4yFrAh/DXE3sBPvawFCFSCQ4SlHqgTN53pL+PmLh+ax7WJZjqcq29Q9TKIg5e7mN7
-	 Ytt0vn15BlGQJ1CBAkfRsDE5O8e8w2+CNpt0MD98AYGoykn+n7zoasFWjf6EOq7S4Y
-	 68Jah3/Nc1R53kr8hYAFwh2GFPal8V13XK3nzVjfiJ+6jRrUpcrtUhAGNLpMRBKYLU
-	 MjSAFRsJXISdYTZNS1trHsbS9Lv8cBx2ukjxONjAkhtWTREq0rVRqqeUEEAZumTtKN
-	 jjlFulqF28htw==
+	b=eQ39f0kfOVpu/qAfrUSSjm1/kH70Wjyj/nuLbKGQjmmxpZrAUk4atDwXMiHA8aNvQ
+	 9AX1Ti9j5L8+cYg3vAmMEjhlmzid81xcWJW74eOZjr7A3oJR6zWo3SWROpvNFBm3wr
+	 p8QUEdK9Q2+4frfLTj6U1vR0yWmJxKMtztCK42b9Jaj6kskprL4qRxraFhIQgZ/vMe
+	 my2VtyxAR+XtUu8s+f5pHlnKF9iyjLYXsVgcxLAV2ti/5THFhpakJNVpPBBGVM/Guk
+	 nK3JmHmtqyAV+ZlPQQvn/hF4QFNsXeU4mqpbO0UcTuIFJwwEpR1BEotN1urJiumaW5
+	 72PNTTxKhDcTg==
 From: Mark Brown <broonie@kernel.org>
-To: =?utf-8?q?Amadeusz_S=C5=82awi=C5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
- Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
- alsa-devel@alsa-project.org, linux-sound@vger.kernel.org
-In-Reply-To: <20231026113549.1897368-1-amadeuszx.slawinski@linux.intel.com>
-References: <20231026113549.1897368-1-amadeuszx.slawinski@linux.intel.com>
-Subject: Re: [PATCH] ASoC: dapm: Simplify widget clone
-Message-Id: <169988431615.3280890.12635214679835055069.b4-ty@kernel.org>
-Date: Mon, 13 Nov 2023 14:05:16 +0000
+To: Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Banajit Goswami <bgoswami@quicinc.com>, Andy Gross <agross@kernel.org>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Ryan Lee <ryans.lee@analog.com>,
+ linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-arm-msm@vger.kernel.org,
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Neil Armstrong <neil.armstrong@linaro.org>
+In-Reply-To: <20231107101610.13728-1-krzysztof.kozlowski@linaro.org>
+References: <20231107101610.13728-1-krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH] ASoC: dt-bindings: use "soundwire" as controller's
+ node name in examples
+Message-Id: <169988432341.3280890.10229585948785487186.b4-ty@kernel.org>
+Date: Mon, 13 Nov 2023 14:05:23 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-0438c
-Message-ID-Hash: 7HEYY2CNCS5H3R6Q5WIVPYQ2BRFNFKYS
-X-Message-ID-Hash: 7HEYY2CNCS5H3R6Q5WIVPYQ2BRFNFKYS
+Message-ID-Hash: 7FSMNUWQFGSWDZZ6VAWHWSRAH2TRXJGE
+X-Message-ID-Hash: 7FSMNUWQFGSWDZZ6VAWHWSRAH2TRXJGE
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -84,7 +92,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7HEYY2CNCS5H3R6Q5WIVPYQ2BRFNFKYS/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7FSMNUWQFGSWDZZ6VAWHWSRAH2TRXJGE/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -93,11 +101,10 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, 26 Oct 2023 13:35:49 +0200, Amadeusz Sławiński wrote:
-> New DAPM widgets are created based on a provided template. When cloning
-> the data, the name and stream name also need to be cloned. Currently the
-> data and the names are initialized in different places. Simplify the
-> code by having entire initialization in one place.
+On Tue, 07 Nov 2023 11:16:10 +0100, Krzysztof Kozlowski wrote:
+> Soundwire Devicetree bindings expect the Soundwire controller device
+> node to be named just "soundwire".  Correct examples, so the incorrect
+> code will not be re-used.
 > 
 > 
 
@@ -107,8 +114,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: dapm: Simplify widget clone
-      commit: 79323dc80318aab6c2d05abdbcf88f09b50522c5
+[1/1] ASoC: dt-bindings: use "soundwire" as controller's node name in examples
+      commit: dc29d3d253f1f3513a916f0b4271569223860c71
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
