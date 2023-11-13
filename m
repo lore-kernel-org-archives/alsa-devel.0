@@ -4,34 +4,34 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 26D84C4332F
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Nov 2023 11:54:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 961F5C4332F
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Nov 2023 11:54:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id ED48DBC0;
-	Mon, 13 Nov 2023 12:53:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ED48DBC0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 81B1FAE9;
+	Mon, 13 Nov 2023 12:53:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 81B1FAE9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1699876456;
-	bh=SATDo3tdJq8o3lqyMHRjvzwyAALZZ5eaDEcLHh+gXXM=;
+	s=default; t=1699876471;
+	bh=lDqcI2KsIlo10Ck+ZPOV5s70FarucKgN3KhWdYTZylo=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Ux6c4C4euzbQ+F2j8uJ9/1EF2JKs3uIEqsfTbqCO+xpC31Wm6JeR0cw/Gv/ssvC1h
-	 rgiUqB7duhWScjVIDcEyKVJq8T7K1nsfsNh9y64P1Y+41Lii1F3MHPxtK0h6+Rl1MB
-	 rMjZMewlTrz4yXlEUWqzlRgOHIddC7KSljNFmBIA=
+	b=lvMWPSiDeJf1UI+4RWLJioYwIAEbLpeo/G6J2wc/3e4W0+6ME31KTqdjiOTKjC+5Y
+	 XX3oYK0d96lW3RFHcivoVExO0PgkxBpqGuDja/85pZVXpl+d8aXfu9zz0asosPKVvr
+	 mNv0jfhqSXGyb2NKXRS10cisgR17/mHs21w0YaGY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6BA64F805C3; Mon, 13 Nov 2023 12:51:39 +0100 (CET)
+	id BC4E5F805D5; Mon, 13 Nov 2023 12:51:41 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id CCA6DF805C5;
-	Mon, 13 Nov 2023 12:51:38 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 49108F805C4;
+	Mon, 13 Nov 2023 12:51:41 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DA691F80249; Mon, 13 Nov 2023 08:57:09 +0100 (CET)
+	id 3CB4CF801D5; Mon, 13 Nov 2023 08:57:14 +0100 (CET)
 Received: from mg.richtek.com (mg.richtek.com [220.130.44.152])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2C040F801D5
+	by alsa1.perex.cz (Postfix) with ESMTP id EB340F8022B
 	for <alsa-devel@alsa-project.org>; Mon, 13 Nov 2023 08:56:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2C040F801D5
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EB340F8022B
 X-MailGates: (SIP:2,PASS,NONE)(compute_score:DELIVER,40,3)
 Received: from 192.168.10.47
 	by mg.richtek.com with MailGates ESMTPS Server V6.0(1769606:0:AUTH_RELAY)
@@ -51,10 +51,10 @@ To: Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi
 CC: Liam Girdwood <lgirdwood@gmail.com>, Oder Chiou <oder_chiou@realtek.com>,
 	ChiYuan Huang <cy_huang@richtek.com>, Allen Lin <allen_lin@richtek.com>,
 	<alsa-devel@alsa-project.org>
-Subject: [PATCH v1 3/3] ASoC: codecs: rtq9128: Fix E1 eng version amp on
- sequence
-Date: Mon, 13 Nov 2023 15:56:16 +0800
-Message-ID: <1699862176-23710-4-git-send-email-cy_huang@richtek.com>
+Subject: [PATCH v1 2/3] ASoC: codecs: rtq9128: Fix TDM enable and DAI format
+ control flow
+Date: Mon, 13 Nov 2023 15:56:15 +0800
+Message-ID: <1699862176-23710-3-git-send-email-cy_huang@richtek.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1699862176-23710-1-git-send-email-cy_huang@richtek.com>
 References: <1699862176-23710-1-git-send-email-cy_huang@richtek.com>
@@ -66,15 +66,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: TJJASY4ZAGWF7Q5VKV5TYEFCRU2VD6I4
-X-Message-ID-Hash: TJJASY4ZAGWF7Q5VKV5TYEFCRU2VD6I4
+Message-ID-Hash: QMURWLPRV5IFLN7Y54RJSK5EB6OHWK24
+X-Message-ID-Hash: QMURWLPRV5IFLN7Y54RJSK5EB6OHWK24
 X-Mailman-Approved-At: Mon, 13 Nov 2023 11:51:21 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TJJASY4ZAGWF7Q5VKV5TYEFCRU2VD6I4/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QMURWLPRV5IFLN7Y54RJSK5EB6OHWK24/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -85,146 +85,129 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: ChiYuan Huang <cy_huang@richtek.com>
 
-For E1 eng sample, there's the current bias issue. Some undocumented RGs
-should be runtime controlled during the DAPM flow to prevent the
-abnormal false alarm protection latchup.
+To enable TDM mode, the current control flow limits the function
+calling order should be 'set_tdm_slot->set_dai_fmt'. But not all
+platform sound card like as simeple card to follow this design.
+To bypass this limit, adjust the DAI format setting in runtime
+'hw_param' callback.
 
 Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
 ---
- sound/soc/codecs/rtq9128.c | 57 ++++++++++++++++++++++++++++++++++++--
- 1 file changed, 54 insertions(+), 3 deletions(-)
+ sound/soc/codecs/rtq9128.c | 67 ++++++++++++++++++++------------------
+ 1 file changed, 36 insertions(+), 31 deletions(-)
 
 diff --git a/sound/soc/codecs/rtq9128.c b/sound/soc/codecs/rtq9128.c
-index aa3eadecd974..b1b889cbbc6f 100644
+index bda64f9eeb62..aa3eadecd974 100644
 --- a/sound/soc/codecs/rtq9128.c
 +++ b/sound/soc/codecs/rtq9128.c
-@@ -63,6 +63,7 @@ struct rtq9128_data {
+@@ -59,6 +59,7 @@
+ 
+ struct rtq9128_data {
+ 	struct gpio_desc *enable;
++	unsigned int daifmt;
  	int tdm_slots;
  	int tdm_slot_width;
  	bool tdm_input_data2_select;
-+	bool tka470b_e1_ver;
- };
- 
- struct rtq9128_init_reg {
-@@ -171,7 +172,7 @@ static bool rtq9128_is_writeable_reg(struct device *dev, unsigned int reg)
- 	case 0x80 ... 0x8B:
- 	case 0xA0 ... 0xAD:
- 	case 0xB0 ... 0xBA:
--	case 0xC0:
-+	case 0xC0 ... 0xC1:
- 	case 0xD0 ... 0xDE:
- 	case 0xE0 ... 0xE5:
- 	case 0xF0 ... 0xF3:
-@@ -283,6 +284,33 @@ static const struct snd_kcontrol_new rtq9128_snd_ctrls[] = {
- 	SOC_ENUM("DVDD UV Threshold Select", rtq9128_dvdduv_select_enum),
- };
- 
-+static int rtq9128_int_power_event(struct snd_soc_dapm_widget *w, struct snd_kcontrol *kcontrol,
-+				   int event)
-+{
-+	struct snd_soc_component *comp = snd_soc_dapm_to_component(w->dapm);
-+	struct rtq9128_data *data = snd_soc_component_get_drvdata(comp);
-+	int ret;
-+
-+	dev_dbg(comp->dev, "%s: event %d, ver %d\n", __func__, event, data->tka470b_e1_ver);
-+
-+	if (!data->tka470b_e1_ver)
-+		return 0;
-+
-+	if (event == SND_SOC_DAPM_POST_PMU) {
-+		ret = snd_soc_component_write(comp, 0xB9, 0x03);
-+		if (ret)
-+			return ret;
-+
-+		return snd_soc_component_write(comp, 0xC1, 0);
-+	}
-+
-+	ret = snd_soc_component_write(comp, 0xA1, 0x02);
-+	if (ret)
-+		return ret;
-+
-+	return snd_soc_component_write(comp, 0xA8, 0x01);
-+}
-+
- static int rtq9128_dac_power_event(struct snd_soc_dapm_widget *w, struct snd_kcontrol *kcontrol,
- 				   int event)
+@@ -441,10 +442,7 @@ static const struct snd_soc_component_driver rtq9128_comp_driver = {
+ static int rtq9128_dai_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
  {
-@@ -320,6 +348,8 @@ static int rtq9128_dac_power_event(struct snd_soc_dapm_widget *w, struct snd_kco
+ 	struct rtq9128_data *data = snd_soc_dai_get_drvdata(dai);
+-	struct snd_soc_component *comp = dai->component;
+ 	struct device *dev = dai->dev;
+-	unsigned int audfmt, fmtval;
+-	int ret;
+ 
+ 	dev_dbg(dev, "%s: fmt 0x%8x\n", __func__, fmt);
+ 
+@@ -454,35 +452,10 @@ static int rtq9128_dai_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 		return -EINVAL;
+ 	}
+ 
+-	fmtval = fmt & SND_SOC_DAIFMT_FORMAT_MASK;
+-	if (data->tdm_slots && fmtval != SND_SOC_DAIFMT_DSP_A && fmtval != SND_SOC_DAIFMT_DSP_B) {
+-		dev_err(dev, "TDM is used, format only support DSP_A or DSP_B\n");
+-		return -EINVAL;
+-	}
++	/* Store here and will be used in runtime hw_params for DAI format setting */
++	data->daifmt = fmt;
+ 
+-	switch (fmtval) {
+-	case SND_SOC_DAIFMT_I2S:
+-		audfmt = 8;
+-		break;
+-	case SND_SOC_DAIFMT_LEFT_J:
+-		audfmt = 9;
+-		break;
+-	case SND_SOC_DAIFMT_RIGHT_J:
+-		audfmt = 10;
+-		break;
+-	case SND_SOC_DAIFMT_DSP_A:
+-		audfmt = data->tdm_slots ? 12 : 11;
+-		break;
+-	case SND_SOC_DAIFMT_DSP_B:
+-		audfmt = data->tdm_slots ? 4 : 3;
+-		break;
+-	default:
+-		dev_err(dev, "Unsupported format 0x%8x\n", fmt);
+-		return -EINVAL;
+-	}
+-
+-	ret = snd_soc_component_write_field(comp, RTQ9128_REG_I2S_OPT, RTQ9128_AUDFMT_MASK, audfmt);
+-	return ret < 0 ? ret : 0;
++	return 0;
  }
  
- static const struct snd_soc_dapm_widget rtq9128_dapm_widgets[] = {
-+	SND_SOC_DAPM_SUPPLY("PWR", SND_SOC_NOPM, 0, 0, rtq9128_int_power_event,
-+			    SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_POST_PMD),
- 	SND_SOC_DAPM_DAC_E("DAC1", NULL, SND_SOC_NOPM, 0, 0, rtq9128_dac_power_event,
- 			   SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_POST_PMD),
- 	SND_SOC_DAPM_DAC_E("DAC2", NULL, SND_SOC_NOPM, 0, 0, rtq9128_dac_power_event,
-@@ -339,6 +369,10 @@ static const struct snd_soc_dapm_route rtq9128_dapm_routes[] = {
- 	{ "DAC2", NULL, "Playback" },
- 	{ "DAC3", NULL, "Playback" },
- 	{ "DAC4", NULL, "Playback" },
-+	{ "DAC1", NULL, "PWR" },
-+	{ "DAC2", NULL, "PWR" },
-+	{ "DAC3", NULL, "PWR" },
-+	{ "DAC4", NULL, "PWR" },
- 	{ "OUT1", NULL, "DAC1" },
- 	{ "OUT2", NULL, "DAC2" },
- 	{ "OUT3", NULL, "DAC3" },
-@@ -358,9 +392,7 @@ static const struct rtq9128_init_reg rtq9128_tka470b_tables[] = {
- 	{ 0x70, 0x11 },
- 	{ 0x75, 0x1F },
- 	{ 0xB6, 0x03 },
--	{ 0xB9, 0x03 },
- 	{ 0xB8, 0x03 },
--	{ 0xC1, 0xFF },
- 	{ 0xF8, 0x72 },
- 	{ 0x30, 0x180 },
- };
-@@ -387,6 +419,7 @@ static const struct rtq9128_init_reg rtq9128_dl_tables[] = {
- 
- static int rtq9128_component_probe(struct snd_soc_component *comp)
- {
-+	struct rtq9128_data *data = snd_soc_component_get_drvdata(comp);
- 	const struct rtq9128_init_reg *table, *curr;
- 	size_t table_size;
- 	unsigned int val;
-@@ -402,6 +435,7 @@ static int rtq9128_component_probe(struct snd_soc_component *comp)
- 
- 	switch (FIELD_GET(RTQ9128_DIE_CHECK_MASK, val)) {
- 	case RTQ9128_TKA470B_VAL:
-+		data->tka470b_e1_ver = true;
- 		table = rtq9128_tka470b_tables;
- 		table_size = ARRAY_SIZE(rtq9128_tka470b_tables);
- 		break;
-@@ -630,12 +664,29 @@ static int rtq9128_dai_hw_params(struct snd_pcm_substream *stream, struct snd_pc
- 
- static int rtq9128_dai_mute_stream(struct snd_soc_dai *dai, int mute, int stream)
- {
-+	struct rtq9128_data *data = snd_soc_dai_get_drvdata(dai);
+ static int rtq9128_dai_set_tdm_slot(struct snd_soc_dai *dai, unsigned int tx_mask,
+@@ -558,10 +531,38 @@ static int rtq9128_dai_hw_params(struct snd_pcm_substream *stream, struct snd_pc
+ 	unsigned int width, slot_width, bitrate, audbit, dolen;
  	struct snd_soc_component *comp = dai->component;
  	struct device *dev = dai->dev;
++	unsigned int fmtval, audfmt;
  	int ret;
  
- 	dev_dbg(dev, "%s: mute (%d), stream (%d)\n", __func__, mute, stream);
+ 	dev_dbg(dev, "%s: width %d\n", __func__, params_width(param));
  
-+	if (data->tka470b_e1_ver && !mute) {
-+		ret = snd_soc_component_write(comp, 0xB9, 0x02);
-+		if (ret)
-+			return ret;
-+
-+		usleep_range(10000, 11000);
-+
-+		ret = snd_soc_component_write(comp, 0xA1, 0xF2);
-+		if (ret)
-+			return ret;
-+
-+		ret = snd_soc_component_write(comp, 0xA8, 0x00);
-+		if (ret)
-+			return ret;
++	fmtval = FIELD_GET(SND_SOC_DAIFMT_FORMAT_MASK, data->daifmt);
++	if (data->tdm_slots && fmtval != SND_SOC_DAIFMT_DSP_A && fmtval != SND_SOC_DAIFMT_DSP_B) {
++		dev_err(dev, "TDM is used, format only support DSP_A or DSP_B\n");
++		return -EINVAL;
 +	}
 +
- 	ret = snd_soc_component_write_field(comp, RTQ9128_REG_DSP_EN, RTQ9128_MSMUTE_MASK,
- 					    mute ? 1 : 0);
- 	return ret < 0 ? ret : 0;
++	switch (fmtval) {
++	case SND_SOC_DAIFMT_I2S:
++		audfmt = 8;
++		break;
++	case SND_SOC_DAIFMT_LEFT_J:
++		audfmt = 9;
++		break;
++	case SND_SOC_DAIFMT_RIGHT_J:
++		audfmt = 10;
++		break;
++	case SND_SOC_DAIFMT_DSP_A:
++		audfmt = data->tdm_slots ? 12 : 11;
++		break;
++	case SND_SOC_DAIFMT_DSP_B:
++		audfmt = data->tdm_slots ? 4 : 3;
++		break;
++	default:
++		dev_err(dev, "Unsupported format 0x%8x\n", fmtval);
++		return -EINVAL;
++	}
++
+ 	switch (width = params_width(param)) {
+ 	case 16:
+ 		audbit = 0;
+@@ -615,6 +616,10 @@ static int rtq9128_dai_hw_params(struct snd_pcm_substream *stream, struct snd_pc
+ 		return -EINVAL;
+ 	}
+ 
++	ret = snd_soc_component_write_field(comp, RTQ9128_REG_I2S_OPT, RTQ9128_AUDFMT_MASK, audfmt);
++	if (ret < 0)
++		return ret;
++
+ 	ret = snd_soc_component_write_field(comp, RTQ9128_REG_I2S_OPT, RTQ9128_AUDBIT_MASK, audbit);
+ 	if (ret < 0)
+ 		return ret;
 -- 
 2.34.1
 
