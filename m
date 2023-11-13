@@ -4,73 +4,150 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DC7CFC4332F
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Nov 2023 11:55:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 19150C4332F
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Nov 2023 11:56:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E4843844;
-	Mon, 13 Nov 2023 12:55:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E4843844
+	by alsa0.perex.cz (Postfix) with ESMTPS id 167A8A4A;
+	Mon, 13 Nov 2023 12:55:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 167A8A4A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1699876555;
-	bh=O/H4pXONTMALA1QjUwNy+JHYX5HbyQNxYPYG7/ZQK5w=;
-	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=dfzfwxMzCcYveV764Frnx/wVJzSGe/QnI4xUB+AphLmHXNuXa7VRsMM5it4AlWTMx
-	 LFSGo77GGvLW6bYn6aeRn1Jsm3yozWLV+q7e6Yd3+XQF3B04aOLVPv6q++Ko8GLqRe
-	 G6mWM9a+ka7HZrwogL7rAHa1wP1lCGKDAE4lHIOw=
+	s=default; t=1699876586;
+	bh=+RhEdhW/dKFA6xVa++OD9WhGhMLkWfXewwpIA75edCc=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=OSbbDK00pcesn5jlzKYO7zi93UcfmsTXG/kRAFpiM9FZzOFQa+v3YSXsYONvuFHQ7
+	 hPrCZhzy+6IJvLxGTFdtzNK/0O3iXgB6p/og9NHq8urqi7pjFuiWP5RROMgLQXJg35
+	 W7qEVOlYcl9AzbPOF6IvmIMXXb8uNMUuU1bu5yuo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 091A7F80557; Mon, 13 Nov 2023 12:54:45 +0100 (CET)
+	id 1F849F80571; Mon, 13 Nov 2023 12:54:46 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 66C07F80557;
-	Mon, 13 Nov 2023 12:54:44 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5A3D9F8055A;
+	Mon, 13 Nov 2023 12:54:46 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 40AF0F8016E; Mon, 13 Nov 2023 08:59:17 +0100 (CET)
-Received: from mg.richtek.com (mg.richtek.com [220.130.44.152])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2679FF8016E
-	for <alsa-devel@alsa-project.org>; Mon, 13 Nov 2023 08:56:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2679FF8016E
-X-MailGates: (SIP:2,PASS,NONE)(compute_score:DELIVER,40,3)
-Received: from 192.168.10.47
-	by mg.richtek.com with MailGates ESMTPS Server V6.0(1769628:0:AUTH_RELAY)
-	(envelope-from <cy_huang@richtek.com>)
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256/256);
- Mon, 13 Nov 2023 15:56:18 +0800 (CST)
-Received: from ex4.rt.l (192.168.10.47) by ex4.rt.l (192.168.10.47) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.27; Mon, 13 Nov
- 2023 15:56:18 +0800
-Received: from linuxcarl2.richtek.com (192.168.10.154) by ex4.rt.l
- (192.168.10.45) with Microsoft SMTP Server id 15.2.1258.27 via Frontend
- Transport; Mon, 13 Nov 2023 15:56:18 +0800
-From: <cy_huang@richtek.com>
-To: Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi
- Iwai <tiwai@suse.com>
-CC: Liam Girdwood <lgirdwood@gmail.com>, Oder Chiou <oder_chiou@realtek.com>,
-	ChiYuan Huang <cy_huang@richtek.com>, Allen Lin <allen_lin@richtek.com>,
-	<alsa-devel@alsa-project.org>
-Subject: [PATCH v1 0/3] rtq9128: Fix user reported issues
-Date: Mon, 13 Nov 2023 15:56:13 +0800
-Message-ID: <1699862176-23710-1-git-send-email-cy_huang@richtek.com>
-X-Mailer: git-send-email 1.8.3.1
+	id DF9BAF801D5; Mon, 13 Nov 2023 11:00:35 +0100 (CET)
+Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com
+ [IPv6:2607:f8b0:4864:20::f34])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 44B30F80152
+	for <alsa-devel@alsa-project.org>; Mon, 13 Nov 2023 11:00:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 44B30F80152
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20230601 header.b=CETYW+Z6
+Received: by mail-qv1-xf34.google.com with SMTP id
+ 6a1803df08f44-66d0ceba445so22074986d6.0
+        for <alsa-devel@alsa-project.org>;
+ Mon, 13 Nov 2023 02:00:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699869626; x=1700474426;
+ darn=alsa-project.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JbOR8jc4vESBCIxoa+hxCKP6qo+nQDlXSDfPg0qKWS8=;
+        b=CETYW+Z6V30edWbAOXyVg7X1XQRcug24iSPM12dP9AzossEcGGhG/BBMBPIk4NL+yW
+         Jd3i8IPc7S+uFe9mj4g2bjL0HBrR0hA5clyqRHV0OWOnVQ7067wurOvK/IlOSwuMWT9i
+         3pyi/6l1XmQgbOzzCZ41oHQuydDwgf215Qj6jWGxD1mEwpD8mPlUGhvvTjJJnRO58qJL
+         h3rb5DsXDmwGSWmjLD62FBZmFCtmWBdyAOFtSMPLHWQXff7hz4a7jwEJRhSidKkpf2KU
+         ZdqPDA+g6070PbrDI6JVEaCWv9O0dS9cHp6CGP18zt+6FzS9/I4s5IxK6aadTvLSw2bw
+         jVfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699869626; x=1700474426;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=JbOR8jc4vESBCIxoa+hxCKP6qo+nQDlXSDfPg0qKWS8=;
+        b=D4GsvDYtga0TSmw/sXvZiItZIQudexpxL6HYzUGCR96vMd74N+7rpJFADSqal6WucZ
+         z09HkU/OFq13UMnCQ4e5SoqyY4hEycnKBQZjfwBCET1WVImCwpbflHceAl2fCNRy3G5j
+         2LdUtXqwx7qs/fhG+YOqFrF4ZQB6jwdhPYn4wKqdaJZ1yC2v2bVE3EA1TR2NP2a3WYaf
+         3wS2avAOht/ltj7UbxOYFG1DmQACuXoP/gNe8f94cp5VzzLAN2mup5fyV9hbuxFeg5BY
+         zSTO9UXbG41C7ykoi1RmU946ogTyOMD1myEt0VPVvvtNuHPZO60STt8yvqw/R5IM4pNo
+         FoGw==
+X-Gm-Message-State: AOJu0YwRpBbkTjY1Q8iU3cfOHf6NRRuegwLOLn6PT5iD1hBkzhGXTWML
+	gvFY/CxQ+GGdKlighLYds0bPogX06p9wJS7nQ/g=
+X-Google-Smtp-Source: 
+ AGHT+IGCUr7PujFC+poPa2QrZRvWL4HOk1bJVQMa23HsF2MY33M5q50/7KY3Uea2911BZ50MrpHn+FMZq5R37QecRrw=
+X-Received: by 2002:ad4:45b4:0:b0:658:1eec:408a with SMTP id
+ y20-20020ad445b4000000b006581eec408amr4664228qvu.40.1699869626386; Mon, 13
+ Nov 2023 02:00:26 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MailFrom: prvs=1680C42439=cy_huang@richtek.com
-X-Mailman-Rule-Hits: nonmember-moderation
+References: <20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me>
+ <20230605-ep93xx-v3-14-3d63a5f1103e@maquefel.me>
+ <ZLq0Z0QgBdCoDpV+@smile.fi.intel.com>
+ <80ed91bb971516638fa1793d648939815eba7630.camel@gmail.com>
+In-Reply-To: <80ed91bb971516638fa1793d648939815eba7630.camel@gmail.com>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Date: Mon, 13 Nov 2023 11:59:49 +0200
+Message-ID: 
+ <CAHp75VeYHscM-r94kTrpH44W=OGVq+qoNNQZoVrR5_n-_K_Xsw@mail.gmail.com>
+Subject: Re: [PATCH v3 14/42] power: reset: Add a driver for the ep93xx reset
+To: Alexander Sverdlin <alexander.sverdlin@gmail.com>
+Cc: Andy Shevchenko <andy@kernel.org>, nikita.shubin@maquefel.me,
+	Hartley Sweeten <hsweeten@visionengravers.com>,
+ Lennert Buytenhek <kernel@wantstofly.org>,
+	Russell King <linux@armlinux.org.uk>, Lukasz Majewski <lukma@denx.de>,
+	Linus Walleij <linus.walleij@linaro.org>,
+ Bartosz Golaszewski <brgl@bgdev.pl>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+	Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>,
+	Daniel Lezcano <daniel.lezcano@linaro.org>,
+ Thomas Gleixner <tglx@linutronix.de>,
+	Alessandro Zummo <a.zummo@towertech.it>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Wim Van Sebroeck <wim@linux-watchdog.org>,
+ Guenter Roeck <linux@roeck-us.net>,
+	Sebastian Reichel <sre@kernel.org>,
+ Thierry Reding <thierry.reding@gmail.com>,
+	=?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+	Mark Brown <broonie@kernel.org>, "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>,
+	Vinod Koul <vkoul@kernel.org>, Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Damien Le Moal <dlemoal@kernel.org>,
+	Sergey Shtylyov <s.shtylyov@omp.ru>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+	Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+ soc@kernel.org,
+	Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>,
+	Michael Peters <mpeters@embeddedts.com>, Kris Bahnsen <kris@embeddedts.com>,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-clk@vger.kernel.org, linux-rtc@vger.kernel.org,
+	linux-watchdog@vger.kernel.org, linux-pm@vger.kernel.org,
+	linux-pwm@vger.kernel.org, linux-spi@vger.kernel.org, netdev@vger.kernel.org,
+	dmaengine@vger.kernel.org, linux-mtd@lists.infradead.org,
+	linux-ide@vger.kernel.org, linux-input@vger.kernel.org,
+	alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-MailFrom: andy.shevchenko@gmail.com
+X-Mailman-Rule-Hits: max-recipients
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: 7XIQXUJJH6V3EIUI7TBR3ABAE4G74AM7
-X-Message-ID-Hash: 7XIQXUJJH6V3EIUI7TBR3ABAE4G74AM7
-X-Mailman-Approved-At: Mon, 13 Nov 2023 11:54:40 +0000
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-size; news-moderation; no-subject; digests;
+ suspicious-header
+Message-ID-Hash: 54YH457PFHFUGNU7NH35O4JWCNRSPB5R
+X-Message-ID-Hash: 54YH457PFHFUGNU7NH35O4JWCNRSPB5R
+X-Mailman-Approved-At: Mon, 13 Nov 2023 11:54:41 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7XIQXUJJH6V3EIUI7TBR3ABAE4G74AM7/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/54YH457PFHFUGNU7NH35O4JWCNRSPB5R/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -79,23 +156,32 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: ChiYuan Huang <cy_huang@richtek.com>
+On Sat, Nov 11, 2023 at 8:18=E2=80=AFPM Alexander Sverdlin
+<alexander.sverdlin@gmail.com> wrote:
+> On Fri, 2023-07-21 at 19:37 +0300, Andy Shevchenko wrote:
 
-Refersh the patch series based on the below previous one
-https://lore.kernel.org/lkml/1697795435-5858-1-git-send-email-cy_huang@richtek.com/
+...
 
-RTQ9128 fixes for pm_runtime/tdm_usage/E1 Sample amp on sequence
+> > > +       mdelay(1000);
+> >
+> > Atomic?! Such a huge delay must be explained, esp. why it's atomic.
+>
+> atomic or not, SoC is supposed to reset itself here.
+> However there is an errata [1] and the SoC can lockup instead.
 
-ChiYuan Huang (3):
-  ASoC: codecs: rtq9128: Fix PM_RUNTIME usage
-  ASoC: codecs: rtq9128: Fix TDM enable and DAI format control flow
-  ASoC: codecs: rtq9128: Fix E1 eng version amp on sequence
+Good, and what I'm saying is that this piece of code must have a
+comment explaining this.
 
- sound/soc/codecs/rtq9128.c | 130 +++++++++++++++++++++++++++----------
- 1 file changed, 95 insertions(+), 35 deletions(-)
+> So even pr_emerg() makes sense to me.
 
+This is irrelevant to the comment.
 
-base-commit: a60a609b7f548050d1e84c7aa1c0a57d5d7e22d5
--- 
-2.34.1
+> > > +       pr_emerg("Unable to restart system\n");
+> > > +       return NOTIFY_DONE;
+>
+> [1] http://web.archive.org/web/20161130230727/http://www.cirrus.com/en/pu=
+bs/appNote/AN258REV2.pdf
 
+--=20
+With Best Regards,
+Andy Shevchenko
