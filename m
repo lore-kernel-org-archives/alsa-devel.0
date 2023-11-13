@@ -4,74 +4,129 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2603EC4332F
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Nov 2023 12:00:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4A1AFC4332F
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Nov 2023 12:06:46 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 10ACEE81;
-	Mon, 13 Nov 2023 12:59:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 10ACEE81
+	by alsa0.perex.cz (Postfix) with ESMTPS id CD2E0A4C;
+	Mon, 13 Nov 2023 13:05:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CD2E0A4C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1699876802;
-	bh=uMQtcBYZCAOKV3yfL45EtYgLvUe+/iu5OtQtaIe2flo=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1699877203;
+	bh=oO0lKHoxixpzVP0J10u//TsCe/v7agni7u+cYDmx2bU=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=iD9byV5nMBP3hFhT1Ygasbrsf9zdcJxIBKK4/Oqmgwoq9/RtrUELtlMcONX1+YYOW
-	 X0mg04Zrvq9cE20kiVWRHuhmTa/rEm4RS7FdccTc9ca8lgAg3M41kIXKL0hfVXTNEV
-	 i+SxFkRAD+jtxOB5rGy4UNn4Nlu4KNUZ6CaLVFng=
+	b=IXdUWXYBq981QI/SRTTOTAohEUPbK1T0FpmJuNdBmok6xHDSKMfTeuybOya0Fd6dI
+	 CUo+TMgovmbRYg06rfROcM536O75Bv/zmqyUcxMhm++Gro07B+0S4LR+TTFxb1XbWZ
+	 D0jx9pZXxKUrnA+0mucCrTvEIsbGMKxwmsD8Zjnc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AFB33F805E0; Mon, 13 Nov 2023 12:57:46 +0100 (CET)
+	id C435AF80549; Mon, 13 Nov 2023 13:05:33 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 17685F805C0;
-	Mon, 13 Nov 2023 12:57:46 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 224B6F80093;
+	Mon, 13 Nov 2023 13:05:33 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BF9DDF801D5; Mon, 13 Nov 2023 11:25:29 +0100 (CET)
+	id 6AD92F801D5; Mon, 13 Nov 2023 13:05:27 +0100 (CET)
 Received: from ams.source.kernel.org (ams.source.kernel.org
  [IPv6:2604:1380:4601:e00::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 37F8CF8016E
-	for <alsa-devel@alsa-project.org>; Mon, 13 Nov 2023 11:22:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 37F8CF8016E
+	by alsa1.perex.cz (Postfix) with ESMTPS id E2110F80093
+	for <alsa-devel@alsa-project.org>; Mon, 13 Nov 2023 13:05:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E2110F80093
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by ams.source.kernel.org (Postfix) with ESMTP id 85AD5B80D26;
-	Mon, 13 Nov 2023 10:22:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38849C433C9;
-	Mon, 13 Nov 2023 10:22:17 +0000 (UTC)
-From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-To: linux-media@vger.kernel.org
-Cc: Shengjiu Wang <shengjiu.wang@nxp.com>,
-	alsa-devel@alsa-project.org,
-	Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Subject: [PATCH 7/8] v4l2-compliance: add support for v4l-audioX devices
-Date: Mon, 13 Nov 2023 11:18:48 +0100
-Message-ID: 
- <a8fd6d68b4754863a4eb917100f352b5a1d10688.1699870530.git.hverkuil-cisco@xs4all.nl>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: 
- <7889c22b922214ebcc0e62feeeb167b40d5042ec.1699870530.git.hverkuil-cisco@xs4all.nl>
-References: 
- <7889c22b922214ebcc0e62feeeb167b40d5042ec.1699870530.git.hverkuil-cisco@xs4all.nl>
+	by ams.source.kernel.org (Postfix) with ESMTP id 9A5F5B80B48;
+	Mon, 13 Nov 2023 12:05:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87BA5C433C7;
+	Mon, 13 Nov 2023 12:05:14 +0000 (UTC)
+Message-ID: <da6efe14-c00d-4bf4-bf61-dd4ed39c5c60@xs4all.nl>
+Date: Mon, 13 Nov 2023 13:05:12 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-MailFrom: SRS0=a+Jp=G2=xs4all.nl=hverkuil-cisco@kernel.org
-X-Mailman-Rule-Hits: nonmember-moderation
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v9 10/15] media: uapi: Add V4L2_CTRL_TYPE_FIXED_POINT
+Content-Language: en-US, nl
+To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ Sakari Ailus <sakari.ailus@iki.fi>
+Cc: Shengjiu Wang <shengjiu.wang@nxp.com>, tfiga@chromium.org,
+ m.szyprowski@samsung.com, mchehab@kernel.org, linux-media@vger.kernel.org,
+ linux-kernel@vger.kernel.org, shengjiu.wang@gmail.com, Xiubo.Lee@gmail.com,
+ festevam@gmail.com, nicoleotsuka@gmail.com, lgirdwood@gmail.com,
+ broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
+ alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org
+References: <1699595289-25773-1-git-send-email-shengjiu.wang@nxp.com>
+ <1699595289-25773-11-git-send-email-shengjiu.wang@nxp.com>
+ <4cd6b593-2376-4cbc-a7c8-d3eb36a2f7a0@xs4all.nl>
+ <20231113104238.GA13981@pendragon.ideasonboard.com>
+ <6a3e7eb9-505c-4cfb-8a86-a8947a2e44d5@xs4all.nl>
+ <20231113110754.GB24338@pendragon.ideasonboard.com>
+ <3e898664-cbfc-4892-9765-37b66891643b@xs4all.nl>
+ <ZVIIc-fi32ZxIi-p@valkosipuli.retiisi.eu>
+ <20231113114357.GD24338@pendragon.ideasonboard.com>
+From: Hans Verkuil <hverkuil@xs4all.nl>
+Autocrypt: addr=hverkuil@xs4all.nl; keydata=
+ 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
+In-Reply-To: <20231113114357.GD24338@pendragon.ideasonboard.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: DYLEAQOYVFHRUU6OF2CIF34VKPJ5XQDS
+X-Message-ID-Hash: DYLEAQOYVFHRUU6OF2CIF34VKPJ5XQDS
+X-MailFrom: SRS0=oXme=G2=xs4all.nl=hverkuil@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: ARUTZLIBYPG4CKWR7L5U74XGKKKP4DLL
-X-Message-ID-Hash: ARUTZLIBYPG4CKWR7L5U74XGKKKP4DLL
-X-Mailman-Approved-At: Mon, 13 Nov 2023 11:57:20 +0000
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ARUTZLIBYPG4CKWR7L5U74XGKKKP4DLL/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DYLEAQOYVFHRUU6OF2CIF34VKPJ5XQDS/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -80,261 +135,148 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Support compliance testing of v4l-audioX devices.
+On 13/11/2023 12:43, Laurent Pinchart wrote:
+> On Mon, Nov 13, 2023 at 11:28:51AM +0000, Sakari Ailus wrote:
+>> Hi Hans,
+>>
+>> On Mon, Nov 13, 2023 at 12:24:14PM +0100, Hans Verkuil wrote:
+>>> On 13/11/2023 12:07, Laurent Pinchart wrote:
+>>>> On Mon, Nov 13, 2023 at 11:56:49AM +0100, Hans Verkuil wrote:
+>>>>> On 13/11/2023 11:42, Laurent Pinchart wrote:
+>>>>>> On Mon, Nov 13, 2023 at 11:29:09AM +0100, Hans Verkuil wrote:
+>>>>>>> Hi Shengjiu,
+>>>>>>>
+>>>>>>> On 10/11/2023 06:48, Shengjiu Wang wrote:
+>>>>>>>> Fixed point controls are used by the user to configure
+>>>>>>>> a fixed point value in 64bits, which Q31.32 format.
+>>>>>>>>
+>>>>>>>> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+>>>>>>>
+>>>>>>> This patch adds a new control type. This is something that also needs to be
+>>>>>>> tested by v4l2-compliance, and for that we need to add support for this to
+>>>>>>> one of the media test-drivers. The best place for that is the vivid driver,
+>>>>>>> since that has already a bunch of test controls for other control types.
+>>>>>>>
+>>>>>>> See e.g. VIVID_CID_INTEGER64 in vivid-ctrls.c.
+>>>>>>>
+>>>>>>> Can you add a patch adding a fixed point test control to vivid?
+>>>>>>
+>>>>>> I don't think V4L2_CTRL_TYPE_FIXED_POINT is a good idea. This seems to
+>>>>>> relate more to units than control types. We have lots of fixed-point
+>>>>>> values in controls already, using the 32-bit and 64-bit integer control
+>>>>>> types. They use various locations for the decimal point, depending on
+>>>>>> the control. If we want to make this more explicit to users, we should
+>>>>>> work on adding unit support to the V4L2 controls.
+>>>>>
+>>>>> "Fixed Point" is not a unit, it's a type. 'Db', 'Hz' etc. are units.
+>>>>
+>>>> It's not a unit, but I think it's related to units. My point is that,
+>>>> without units support, I don't see why we need a formal definition of
+>>>> fixed-point types, and why this series couldn't just use
+>>>> VIVID_CID_INTEGER64. Drivers already interpret VIVID_CID_INTEGER64
+>>>> values as they see fit.
+>>>
+>>> They do? That's new to me. A quick grep for V4L2_CTRL_TYPE_INTEGER64
+>>> (I assume you meant that rather than VIVID_CID_INTEGER64) shows that it
+> 
+> Yes, I meant V4L2_CTRL_TYPE_INTEGER64. Too hasty copy & paste :-)
+> 
+>>> is always interpreted as a 64 bit integer and nothing else. As it should.
+> 
+> The most common case for control handling in drivers is taking the
+> integer value and converting it to a register value, using
+> device-specific encoding of the register value. It can be a fixed-point
+> format or something else, depending on the device. My point is that
+> drivers routinely convert a "plain" integer to something else, and that
+> has never been considered as a cause of concern. I don't see why it
+> would be different in this series.
+> 
+>>> And while we do not have support for units (other than the documentation),
+>>> we do have type support in the form of V4L2_CTRL_TYPE_*.
+>>>
+>>>>> A quick "git grep -i "fixed point" Documentation/userspace-api/media/'
+>>>>> only shows a single driver specific control (dw100.rst).
+>>>>>
+>>>>> I'm not aware of other controls in mainline that use fixed point.
+>>>>
+>>>> The analog gain control for sensors for instance.
+>>>
+>>> Not really. The documentation is super vague:
+>>>
+>>> V4L2_CID_ANALOGUE_GAIN (integer)
+>>>
+>>> 	Analogue gain is gain affecting all colour components in the pixel matrix. The
+>>> 	gain operation is performed in the analogue domain before A/D conversion.
+>>>
+>>> And the integer is just a range. Internally it might map to some fixed
+>>> point value, but userspace won't see that, it's hidden in the driver AFAICT.
+> 
+> It's hidden so well that libcamera has a database of the sensor it
+> supports, with formulas to map a real gain value to the
+> V4L2_CID_ANALOGUE_GAIN control. The encoding of the integer value does
+> matter, and the kernel doesn't expose it. We may or may not consider
+> that as a shortcoming of the V4L2 control API, but in any case it's the
+> situation we have today.
+> 
+>> I wonder if Laurent meant digital gain.
+> 
+> No, I meant analog. It applies to digital gain too though.
+> 
+>> Those are often Q numbers. The practice there has been that the default
+>> value yields gain of 1.
+>>
+>> There are probably many other examples in controls where something being
+>> controlled isn't actually an integer while integer controls are still being
+>> used for the purpose.
+> 
+> A good summary of my opinion :-)
 
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
----
- utils/v4l2-compliance/v4l2-compliance.1.in  |  7 ++++++
- utils/v4l2-compliance/v4l2-compliance.cpp   | 16 +++++++++---
- utils/v4l2-compliance/v4l2-compliance.h     |  3 ++-
- utils/v4l2-compliance/v4l2-test-buffers.cpp | 10 +++++---
- utils/v4l2-compliance/v4l2-test-formats.cpp | 28 +++++++++++++++++++++
- utils/v4l2-compliance/v4l2-test-media.cpp   |  1 +
- 6 files changed, 57 insertions(+), 8 deletions(-)
+And that works fine as long as userspace doesn't need to know what the value
+actually means.
 
-diff --git a/utils/v4l2-compliance/v4l2-compliance.1.in b/utils/v4l2-compliance/v4l2-compliance.1.in
-index 89d7e482..f798da3a 100644
---- a/utils/v4l2-compliance/v4l2-compliance.1.in
-+++ b/utils/v4l2-compliance/v4l2-compliance.1.in
-@@ -81,6 +81,13 @@ Otherwise if \fB-z\fR was specified earlier, then \fI<dev>\fR is the entity name
- or interface ID (if prefixed with 0x) as found in the topology of the media device
- with the bus info string as specified by the \fB-z\fR option.
- .TP
-+\fB\-A\fR, \fB\-\-audio\-device\fR \fI<dev>\fR
-+Use device \fI<dev>\fR as the audio memory-2-memory device. If \fI<dev>\fR is a number,
-+then /dev/v4l-audio\fI<dev>\fR is used.
-+Otherwise if \fB-z\fR was specified earlier, then \fI<dev>\fR is the entity name
-+or interface ID (if prefixed with 0x) as found in the topology of the media device
-+with the bus info string as specified by the \fB-z\fR option.
-+.TP
- \fB\-u\fR, \fB\-\-subdev\-device\fR \fI<dev>\fR
- Use device \fI<dev>\fR as the v4l-subdevX device. If \fI<dev>\fR is a number, then /dev/v4l-subdev\fI<dev>\fR is used.
- Otherwise if \fB-z\fR was specified earlier, then \fI<dev>\fR is the entity name
-diff --git a/utils/v4l2-compliance/v4l2-compliance.cpp b/utils/v4l2-compliance/v4l2-compliance.cpp
-index 29475d6b..f751b01e 100644
---- a/utils/v4l2-compliance/v4l2-compliance.cpp
-+++ b/utils/v4l2-compliance/v4l2-compliance.cpp
-@@ -43,6 +43,7 @@
-    case is used to retrieve a setting. */
- enum Option {
- 	OptStreamAllIO = 'a',
-+	OptSetAudioDevice = 'A',
- 	OptStreamAllColorTest = 'c',
- 	OptColor = 'C',
- 	OptSetDevice = 'd',
-@@ -124,6 +125,7 @@ static struct option long_options[] = {
- 	{"subdev-device", required_argument, nullptr, OptSetSubDevDevice},
- 	{"expbuf-device", required_argument, nullptr, OptSetExpBufDevice},
- 	{"touch-device", required_argument, nullptr, OptSetTouchDevice},
-+	{"audio-device", required_argument, nullptr, OptSetAudioDevice},
- 	{"media-device", required_argument, nullptr, OptSetMediaDevice},
- 	{"media-device-only", required_argument, nullptr, OptSetMediaDeviceOnly},
- 	{"media-bus-info", required_argument, nullptr, OptMediaBusInfo},
-@@ -198,6 +200,10 @@ static void usage()
- 	printf("                     Use device <dev> as the touch device.\n");
- 	printf("                     If <dev> starts with a digit, then /dev/v4l-touch<dev> is used.\n");
- 	printf("                     See the -d description of how <dev> is used in combination with -z.\n");
-+	printf("  -A, --audio-device <dev>\n");
-+	printf("                     Use device <dev> as the audio M2M device.\n");
-+	printf("                     If <dev> starts with a digit, then /dev/v4l-audio<dev> is used.\n");
-+	printf("                     See the -d description of how <dev> is used in combination with -z.\n");
- 	printf("  -u, --subdev-device <dev>\n");
- 	printf("                     Use device <dev> as the v4l-subdev device.\n");
- 	printf("                     If <dev> starts with a digit, then /dev/v4l-subdev<dev> is used.\n");
-@@ -639,7 +645,7 @@ static int testCap(struct node *node)
- 			V4L2_CAP_SDR_OUTPUT | V4L2_CAP_SLICED_VBI_OUTPUT |
- 			V4L2_CAP_MODULATOR | V4L2_CAP_META_OUTPUT;
- 	const __u32 overlay_caps = V4L2_CAP_VIDEO_OVERLAY | V4L2_CAP_VIDEO_OUTPUT_OVERLAY;
--	const __u32 m2m_caps = V4L2_CAP_VIDEO_M2M | V4L2_CAP_VIDEO_M2M_MPLANE;
-+	const __u32 m2m_caps = V4L2_CAP_VIDEO_M2M | V4L2_CAP_VIDEO_M2M_MPLANE | V4L2_CAP_AUDIO_M2M;
- 	const __u32 io_caps = V4L2_CAP_STREAMING | V4L2_CAP_READWRITE;
- 	const __u32 mplane_caps = V4L2_CAP_VIDEO_CAPTURE_MPLANE | V4L2_CAP_VIDEO_OUTPUT_MPLANE |
- 		V4L2_CAP_VIDEO_M2M_MPLANE;
-@@ -982,6 +988,7 @@ void testNode(struct node &node, struct node &node_m2m_cap, struct node &expbuf_
- 	node.is_radio = type == MEDIA_TYPE_RADIO;
- 	node.is_sdr = type == MEDIA_TYPE_SDR;
- 	node.is_touch = type == MEDIA_TYPE_TOUCH;
-+	node.is_audio = type == MEDIA_TYPE_AUDIO;
- 
- 	if (node.is_v4l2()) {
- 		doioctl(&node, VIDIOC_QUERYCAP, &vcap);
-@@ -1034,13 +1041,13 @@ void testNode(struct node &node, struct node &node_m2m_cap, struct node &expbuf_
- 			 V4L2_CAP_VIDEO_CAPTURE_MPLANE | V4L2_CAP_VIDEO_M2M_MPLANE |
- 			 V4L2_CAP_VIDEO_M2M | V4L2_CAP_SLICED_VBI_CAPTURE |
- 			 V4L2_CAP_RDS_CAPTURE | V4L2_CAP_SDR_CAPTURE |
--			 V4L2_CAP_META_CAPTURE))
-+			 V4L2_CAP_META_CAPTURE | V4L2_CAP_AUDIO_M2M))
- 		node.can_capture = true;
- 	if (node.g_caps() & (V4L2_CAP_VIDEO_OUTPUT | V4L2_CAP_VBI_OUTPUT |
- 			 V4L2_CAP_VIDEO_OUTPUT_MPLANE | V4L2_CAP_VIDEO_M2M_MPLANE |
- 			 V4L2_CAP_VIDEO_M2M | V4L2_CAP_SLICED_VBI_OUTPUT |
- 			 V4L2_CAP_RDS_OUTPUT | V4L2_CAP_SDR_OUTPUT |
--			 V4L2_CAP_META_OUTPUT))
-+			 V4L2_CAP_META_OUTPUT | V4L2_CAP_AUDIO_M2M))
- 		node.can_output = true;
- 	if (node.g_caps() & (V4L2_CAP_VIDEO_CAPTURE_MPLANE | V4L2_CAP_VIDEO_OUTPUT_MPLANE |
- 			 V4L2_CAP_VIDEO_M2M_MPLANE))
-@@ -1693,6 +1700,9 @@ int main(int argc, char **argv)
- 		case OptSetTouchDevice:
- 			device = make_devname(optarg, "v4l-touch", media_bus_info);
- 			break;
-+		case OptSetAudioDevice:
-+			device = make_devname(optarg, "v4l-audio", media_bus_info);
-+			break;
- 		case OptSetSubDevDevice:
- 			device = make_devname(optarg, "v4l-subdev", media_bus_info);
- 			break;
-diff --git a/utils/v4l2-compliance/v4l2-compliance.h b/utils/v4l2-compliance/v4l2-compliance.h
-index 7e3860c8..1e83fba3 100644
---- a/utils/v4l2-compliance/v4l2-compliance.h
-+++ b/utils/v4l2-compliance/v4l2-compliance.h
-@@ -102,7 +102,7 @@ using frmsizes_count_map = std::map<__u32, unsigned>;
- 
- struct base_node;
- 
--#define V4L2_BUF_TYPE_LAST V4L2_BUF_TYPE_META_OUTPUT
-+#define V4L2_BUF_TYPE_LAST V4L2_BUF_TYPE_AUDIO_OUTPUT
- 
- struct base_node {
- 	bool is_video;
-@@ -111,6 +111,7 @@ struct base_node {
- 	bool is_sdr;
- 	bool is_meta;
- 	bool is_touch;
-+	bool is_audio;
- 	bool is_m2m;
- 	bool is_io_mc;
- 	bool is_planar;
-diff --git a/utils/v4l2-compliance/v4l2-test-buffers.cpp b/utils/v4l2-compliance/v4l2-test-buffers.cpp
-index 6d592c9b..d5c8d17c 100644
---- a/utils/v4l2-compliance/v4l2-test-buffers.cpp
-+++ b/utils/v4l2-compliance/v4l2-test-buffers.cpp
-@@ -235,12 +235,14 @@ public:
- 		if (v4l_type_is_output(g_type()))
- 			fill_output_buf(fill_bytesused);
- 		err = node->qbuf(*this);
--		if (err == 0 &&
--		    v4l_type_is_video(g_type()) && v4l_type_is_output(g_type())) {
--			fail_on_test(g_field() == V4L2_FIELD_ANY);
-+		if (err)
-+			return err;
-+		if (v4l_type_is_output(g_type())) {
-+			if (v4l_type_is_video(g_type()))
-+				fail_on_test(g_field() == V4L2_FIELD_ANY);
- 			buffer_info[g_timestamp()] = buf;
- 		}
--		return err;
-+		return 0;
- 	}
- 	int qbuf(node *node, const cv4l_queue &q)
- 	{
-diff --git a/utils/v4l2-compliance/v4l2-test-formats.cpp b/utils/v4l2-compliance/v4l2-test-formats.cpp
-index 8a16613c..adec678a 100644
---- a/utils/v4l2-compliance/v4l2-test-formats.cpp
-+++ b/utils/v4l2-compliance/v4l2-test-formats.cpp
-@@ -43,6 +43,8 @@ static constexpr __u32 buftype2cap[] = {
- 	V4L2_CAP_SDR_OUTPUT,
- 	V4L2_CAP_META_CAPTURE,
- 	V4L2_CAP_META_OUTPUT,
-+	V4L2_CAP_AUDIO_M2M,
-+	V4L2_CAP_AUDIO_M2M,
- };
- 
- static int testEnumFrameIntervals(struct node *node, __u32 pixfmt,
-@@ -330,6 +332,8 @@ int testEnumFormats(struct node *node)
- 		case V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE:
- 		case V4L2_BUF_TYPE_SDR_CAPTURE:
- 		case V4L2_BUF_TYPE_SDR_OUTPUT:
-+		case V4L2_BUF_TYPE_AUDIO_CAPTURE:
-+		case V4L2_BUF_TYPE_AUDIO_OUTPUT:
- 			if (ret && (node->g_caps() & buftype2cap[type]))
- 				return fail("%s cap set, but no %s formats defined\n",
- 						buftype2s(type).c_str(), buftype2s(type).c_str());
-@@ -447,6 +451,7 @@ static int testFormatsType(struct node *node, int ret,  unsigned type, struct v4
- 	struct v4l2_sliced_vbi_format &sliced = fmt.fmt.sliced;
- 	struct v4l2_sdr_format &sdr = fmt.fmt.sdr;
- 	struct v4l2_meta_format &meta = fmt.fmt.meta;
-+	struct v4l2_audio_format &audio = fmt.fmt.audio;
- 	unsigned min_data_samples;
- 	unsigned min_sampling_rate;
- 	v4l2_std_id std;
-@@ -591,6 +596,13 @@ static int testFormatsType(struct node *node, int ret,  unsigned type, struct v4
- 					meta.dataformat, fcc2s(meta.dataformat).c_str(), type);
- 		fail_on_test(meta.buffersize == 0);
- 		break;
-+	case V4L2_BUF_TYPE_AUDIO_CAPTURE:
-+	case V4L2_BUF_TYPE_AUDIO_OUTPUT:
-+		if (map.find(audio.audioformat) == map.end())
-+			return fail("audioformat %08x (%s) for buftype %d not reported by ENUM_FMT\n",
-+					audio.audioformat, fcc2s(audio.audioformat).c_str(), type);
-+		fail_on_test(audio.buffersize == 0);
-+		break;
- 	case V4L2_BUF_TYPE_PRIVATE:
- 		break;
- 	}
-@@ -626,6 +638,8 @@ int testGetFormats(struct node *node)
- 		case V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE:
- 		case V4L2_BUF_TYPE_SDR_CAPTURE:
- 		case V4L2_BUF_TYPE_SDR_OUTPUT:
-+		case V4L2_BUF_TYPE_AUDIO_CAPTURE:
-+		case V4L2_BUF_TYPE_AUDIO_OUTPUT:
- 			if (ret && (node->g_caps() & buftype2cap[type]))
- 				return fail("%s cap set, but no %s formats defined\n",
- 					buftype2s(type).c_str(), buftype2s(type).c_str());
-@@ -703,6 +717,9 @@ static bool matchFormats(const struct v4l2_format &f1, const struct v4l2_format
- 	case V4L2_BUF_TYPE_META_CAPTURE:
- 	case V4L2_BUF_TYPE_META_OUTPUT:
- 		return !memcmp(&f1.fmt.meta, &f2.fmt.meta, sizeof(f1.fmt.meta));
-+	case V4L2_BUF_TYPE_AUDIO_CAPTURE:
-+	case V4L2_BUF_TYPE_AUDIO_OUTPUT:
-+		return !memcmp(&f1.fmt.audio, &f2.fmt.audio, sizeof(f1.fmt.audio));
- 
- 	}
- 	return false;
-@@ -782,6 +799,10 @@ int testTryFormats(struct node *node)
- 			case V4L2_BUF_TYPE_META_OUTPUT:
- 				pixelformat = fmt.fmt.meta.dataformat;
- 				break;
-+			case V4L2_BUF_TYPE_AUDIO_CAPTURE:
-+			case V4L2_BUF_TYPE_AUDIO_OUTPUT:
-+				pixelformat = fmt.fmt.audio.audioformat;
-+				break;
- 			case V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE:
- 			case V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE:
- 				pixelformat = fmt.fmt.pix_mp.pixelformat;
-@@ -860,6 +881,9 @@ static int testM2MFormats(struct node *node)
- 	fail_on_test(node->g_fmt(fmt_out, out_type));
- 	fail_on_test(node->g_fmt(fmt_cap, cap_type));
- 
-+	if (node->has_audio_m2m())
-+		return 0;
-+
- 	/*
- 	 * JPEG codec have fixed colorspace, so these tests
- 	 * are different compared to other m2m devices.
-@@ -1132,6 +1156,10 @@ int testSetFormats(struct node *node)
- 			case V4L2_BUF_TYPE_META_OUTPUT:
- 				pixelformat = fmt_set.fmt.meta.dataformat;
- 				break;
-+			case V4L2_BUF_TYPE_AUDIO_CAPTURE:
-+			case V4L2_BUF_TYPE_AUDIO_OUTPUT:
-+				pixelformat = fmt_set.fmt.audio.audioformat;
-+				break;
- 			case V4L2_BUF_TYPE_SDR_CAPTURE:
- 			case V4L2_BUF_TYPE_SDR_OUTPUT:
- 				pixelformat = fmt_set.fmt.sdr.pixelformat;
-diff --git a/utils/v4l2-compliance/v4l2-test-media.cpp b/utils/v4l2-compliance/v4l2-test-media.cpp
-index 52ab7fb8..ee1d03e0 100644
---- a/utils/v4l2-compliance/v4l2-test-media.cpp
-+++ b/utils/v4l2-compliance/v4l2-test-media.cpp
-@@ -573,6 +573,7 @@ void walkTopology(struct node &node, struct node &expbuf_node,
- 		case MEDIA_TYPE_RADIO:
- 		case MEDIA_TYPE_SDR:
- 		case MEDIA_TYPE_TOUCH:
-+		case MEDIA_TYPE_AUDIO:
- 		case MEDIA_TYPE_SUBDEV:
- 			break;
- 		default:
--- 
-2.42.0
+That's not the case here. The control is really a fractional Hz value:
+
++``V4L2_CID_M2M_AUDIO_SOURCE_RATE_OFFSET (fixed point)``
++    Sets the offset from the audio source sample rate, unit is Hz.
++    The offset compensates for any clock drift. The actual source audio sample
++    rate is the ideal source audio sample rate from
++    ``V4L2_CID_M2M_AUDIO_SOURCE_RATE`` plus this fixed point offset.
+
+> 
+>> Instead of this patch, I'd prefer to have a way to express the meaning of
+>> the control value, be it a Q number or something else, and do that
+>> independently of the type of the control.
+
+Huh? How is that different from the type of the control? You have integers
+(one type) and fixed point (another type).
+
+Or do you want a more general V4L2_CTRL_TYPE_ that specifies the N.M values
+explicitly?
+
+I think the main reason why we use integer controls for gain is that we
+never had a fixed point control type and you could get away with that in
+user space for that particular use-case.
+
+Based on the V4L2_CID_NOTIFY_GAINS documentation the gain value can typically
+be calculated as (value / default_value), but that won't work for a rate offset
+control as above, or for e.g. CSC matrices for color converters.
+
+Regards,
+
+	Hans
+
+> 
+> Agreed.
+> 
+>>> In the case of this particular series the control type is really a fixed point
+>>> value with a documented unit (Hz). It really is not something you want to
+>>> use type INTEGER64 for.
+>>>
+>>>>> Note that V4L2_CTRL_TYPE_FIXED_POINT is a Q31.32 format. By setting
+>>>>> min/max/step you can easily map that to just about any QN.M format where
+>>>>> N <= 31 and M <= 32.
+>>>>>
+>>>>> In the case of dw100 it is a bit different in that it is quite specialized
+>>>>> and it had to fit in 16 bits.
+> 
 
