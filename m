@@ -4,83 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BC51EC4332F
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Nov 2023 14:08:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D4A4CC4332F
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Nov 2023 15:15:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 52AD682A;
-	Mon, 13 Nov 2023 15:07:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 52AD682A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 73C64820;
+	Mon, 13 Nov 2023 16:15:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 73C64820
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1699884503;
-	bh=SDRkAHDc9itV6f8oK3mmT3NDiKoKnApjwxqUguLBXSc=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=hkhozWJqVf7GStTs+ZNzE/hvrGOrpctUf3KE4TuuLSCqrD/ytRrrC94FmjUgzvtXx
-	 1LhH5I7nnlngIFD722wXylfnl1iiJp48l3ZQhl/tlWoNnudlOW9HpSwN4FBF3rEkNM
-	 DgLfQd57ZK8T606hilbQ5fpS3HU6w1aUiwlPgdqU=
+	s=default; t=1699888552;
+	bh=deLOTaBW/iaEMoVKLnR9wO4xInhmC0yGZE65Y2AzjGc=;
+	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=JpDC7lEtxnCxYsVDZudlXWLDumamoUMeUdJ//0Xq44zq8XD6BR7O9cqm4Du8d82cZ
+	 GPDWjK8LUs2zgvBey5gNgl13AIgng2YUFWgLff4pqMXupIYoTprbZlPzyAAHc/23nW
+	 ZkyC0dzhMuV8HopZdC45ShRACbOKe7us+hjUwXOc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C7770F805B0; Mon, 13 Nov 2023 15:05:58 +0100 (CET)
+	id 8BA0EF801D5; Mon, 13 Nov 2023 16:15:01 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1E889F805AA;
-	Mon, 13 Nov 2023 15:05:58 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8FF9BF801D5;
+	Mon, 13 Nov 2023 16:15:00 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 33C23F80571; Mon, 13 Nov 2023 15:05:52 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id DB5E6F801D5; Mon, 13 Nov 2023 16:14:55 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D55E1F801D5
-	for <alsa-devel@alsa-project.org>; Mon, 13 Nov 2023 15:05:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D55E1F801D5
+	by alsa1.perex.cz (Postfix) with ESMTPS id E362BF80093
+	for <alsa-devel@alsa-project.org>; Mon, 13 Nov 2023 16:14:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E362BF80093
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=eQ39f0kf
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 250E360F0B;
-	Mon, 13 Nov 2023 14:05:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2037CC433C8;
-	Mon, 13 Nov 2023 14:05:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1699884328;
-	bh=SDRkAHDc9itV6f8oK3mmT3NDiKoKnApjwxqUguLBXSc=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=eQ39f0kfOVpu/qAfrUSSjm1/kH70Wjyj/nuLbKGQjmmxpZrAUk4atDwXMiHA8aNvQ
-	 9AX1Ti9j5L8+cYg3vAmMEjhlmzid81xcWJW74eOZjr7A3oJR6zWo3SWROpvNFBm3wr
-	 p8QUEdK9Q2+4frfLTj6U1vR0yWmJxKMtztCK42b9Jaj6kskprL4qRxraFhIQgZ/vMe
-	 my2VtyxAR+XtUu8s+f5pHlnKF9iyjLYXsVgcxLAV2ti/5THFhpakJNVpPBBGVM/Guk
-	 nK3JmHmtqyAV+ZlPQQvn/hF4QFNsXeU4mqpbO0UcTuIFJwwEpR1BEotN1urJiumaW5
-	 72PNTTxKhDcTg==
-From: Mark Brown <broonie@kernel.org>
-To: Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Banajit Goswami <bgoswami@quicinc.com>, Andy Gross <agross@kernel.org>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>, Ryan Lee <ryans.lee@analog.com>,
- linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-arm-msm@vger.kernel.org,
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Neil Armstrong <neil.armstrong@linaro.org>
-In-Reply-To: <20231107101610.13728-1-krzysztof.kozlowski@linaro.org>
-References: <20231107101610.13728-1-krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH] ASoC: dt-bindings: use "soundwire" as controller's
- node name in examples
-Message-Id: <169988432341.3280890.10229585948785487186.b4-ty@kernel.org>
-Date: Mon, 13 Nov 2023 14:05:23 +0000
+ unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
+ header.s=PODMain02222019 header.b=PEi3vfzH
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+	by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id
+ 3ADAT6Eh011217;
+	Mon, 13 Nov 2023 09:14:45 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=PODMain02222019; bh=p
+	38ySnFRvL6llTjVYyh96cM1irV/9ZZTyvEh7ACPMt8=; b=PEi3vfzH7ZZND/GhH
+	OyeYTy+FzxSYj3DPhYjCQqCU8ORXcmmCy+1BnBjzQUxJ8oWzSUSt72gzaOyOg8MS
+	DsMZrugwZq95kHTCzgkNNwYnAxHJDuyj9Fau97qqvRcbzRnJHXoHeK3jVOF3Ueby
+	jE3/uXiyJ9R0wYb0ULOY/rgxJJFkKI6fLNlyetJCT1rALYw3U9T+hAeFGRRdTX5j
+	tSDHSxjcXZYVzhjZ+m+tXbNbmu/+RQWYJaOI66ZZoYvb4l34BqzGbTJffJ6Fgsiu
+	LfMpcNA9h91iuPDt9INzi186uGocSwoLaqOHbqqwAEbW4jyUc+qawYsuWccFrZkY
+	lcdRA==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3ua7w2j1f7-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 13 Nov 2023 09:14:44 -0600 (CST)
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Mon, 13 Nov
+ 2023 15:14:29 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.39 via Frontend Transport; Mon, 13 Nov 2023 15:14:29 +0000
+Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 455E811CC;
+	Mon, 13 Nov 2023 15:14:29 +0000 (UTC)
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+To: <broonie@kernel.org>
+CC: <lgirdwood@gmail.com>, <alsa-devel@alsa-project.org>,
+        <patches@opensource.cirrus.com>
+Subject: [PATCH] ASoC: cs42l43: Add missing static from runtime PM ops
+Date: Mon, 13 Nov 2023 15:14:29 +0000
+Message-ID: <20231113151429.1554139-1-ckeepax@opensource.cirrus.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-0438c
-Message-ID-Hash: 7FSMNUWQFGSWDZZ6VAWHWSRAH2TRXJGE
-X-Message-ID-Hash: 7FSMNUWQFGSWDZZ6VAWHWSRAH2TRXJGE
-X-MailFrom: broonie@kernel.org
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: _rjETcmdbroXoQ8SRb31qtpjyo2BOu1L
+X-Proofpoint-GUID: _rjETcmdbroXoQ8SRb31qtpjyo2BOu1L
+X-Proofpoint-Spam-Reason: safe
+Message-ID-Hash: OUXWJ55SBZII45JIY75AADJW4TG2F5CV
+X-Message-ID-Hash: OUXWJ55SBZII45JIY75AADJW4TG2F5CV
+X-MailFrom: prvs=6681151699=ckeepax@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -92,7 +94,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7FSMNUWQFGSWDZZ6VAWHWSRAH2TRXJGE/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OUXWJ55SBZII45JIY75AADJW4TG2F5CV/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -101,38 +103,29 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, 07 Nov 2023 11:16:10 +0100, Krzysztof Kozlowski wrote:
-> Soundwire Devicetree bindings expect the Soundwire controller device
-> node to be named just "soundwire".  Correct examples, so the incorrect
-> code will not be re-used.
-> 
-> 
+Fixes: 2b59332ead54 ("ASoC: cs42l43: Use new-style PM runtime macros")
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202311091824.5z6PROGZ-lkp@intel.com/
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+---
+ sound/soc/codecs/cs42l43.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Applied to
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-
-Thanks!
-
-[1/1] ASoC: dt-bindings: use "soundwire" as controller's node name in examples
-      commit: dc29d3d253f1f3513a916f0b4271569223860c71
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+diff --git a/sound/soc/codecs/cs42l43.c b/sound/soc/codecs/cs42l43.c
+index d62c9f26c6325..5c98343ebf71b 100644
+--- a/sound/soc/codecs/cs42l43.c
++++ b/sound/soc/codecs/cs42l43.c
+@@ -2251,8 +2251,8 @@ static int cs42l43_codec_runtime_resume(struct device *dev)
+ 	return 0;
+ }
+ 
+-DEFINE_RUNTIME_DEV_PM_OPS(cs42l43_codec_pm_ops, NULL,
+-			  cs42l43_codec_runtime_resume, NULL);
++static DEFINE_RUNTIME_DEV_PM_OPS(cs42l43_codec_pm_ops, NULL,
++				 cs42l43_codec_runtime_resume, NULL);
+ 
+ static const struct platform_device_id cs42l43_codec_id_table[] = {
+ 	{ "cs42l43-codec", },
+-- 
+2.39.2
 
