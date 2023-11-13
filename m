@@ -4,79 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 00DAFC4332F
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Nov 2023 14:07:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B6BCC4332F
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Nov 2023 14:08:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3A1ACA4D;
-	Mon, 13 Nov 2023 15:06:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3A1ACA4D
+	by alsa0.perex.cz (Postfix) with ESMTPS id C8890BC0;
+	Mon, 13 Nov 2023 15:07:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C8890BC0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1699884457;
-	bh=BImJbQdyy8K/BwKo67blmm2PDHtl8GBMMx8PUF5IKjI=;
+	s=default; t=1699884479;
+	bh=vTMYffes98zdDzbW5PW6PMn758Eh1TJV6fxNVpAjtjo=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=S4NRRnaz5P2AdC8T0gHHKQE7ReN0o0m3+Jb7mryOFEIbm1/ycXiwJ+6JUPsf+VXwU
-	 H5W2H/0XNevmPoZR5TMDftj1lkzDri2QPwGQqytKmy0qF4unVo4vx/qTUjanKQGSvF
-	 MrueqWZJyqEIg8+8MTNg5HhwjIM5my5pl3pgXBJM=
+	b=JolHQeAqN+2fIz9wYmTlkHz6J1Ck4Oq5tg+CVu5h9XO6BAosNfNnXnvZDv70ylLdf
+	 TXEbC24gdq4Ov1p6YBHzpzGAp8TbbaUeWNemBVgdiUvQnC3g7hhetqzt60OkIvK5Gj
+	 Tx20xQNXysoYZ+XYjVp/x0P8KwHXlzJ/qNmI+suc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B9BE7F80571; Mon, 13 Nov 2023 15:05:54 +0100 (CET)
+	id 0C0A4F805A1; Mon, 13 Nov 2023 15:05:56 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 37621F80578;
-	Mon, 13 Nov 2023 15:05:54 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1CE97F8057F;
+	Mon, 13 Nov 2023 15:05:56 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E334AF80249; Mon, 13 Nov 2023 15:05:48 +0100 (CET)
-Received: from sin.source.kernel.org (sin.source.kernel.org
- [IPv6:2604:1380:40e1:4800::1])
+	id 266FBF8055C; Mon, 13 Nov 2023 15:05:51 +0100 (CET)
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A433CF8016E
-	for <alsa-devel@alsa-project.org>; Mon, 13 Nov 2023 15:05:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A433CF8016E
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6D3D6F800ED
+	for <alsa-devel@alsa-project.org>; Mon, 13 Nov 2023 15:05:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6D3D6F800ED
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=Drbs0YDG
+ header.s=k20201202 header.b=Rn9Aq9fX
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id D3130CE14E9;
-	Mon, 13 Nov 2023 14:05:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7D8CEC433C9;
-	Mon, 13 Nov 2023 14:05:28 +0000 (UTC)
+	by sin.source.kernel.org (Postfix) with ESMTP id 9CBBACE138F;
+	Mon, 13 Nov 2023 14:05:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7B4BC433C8;
+	Mon, 13 Nov 2023 14:05:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1699884331;
-	bh=BImJbQdyy8K/BwKo67blmm2PDHtl8GBMMx8PUF5IKjI=;
+	s=k20201202; t=1699884318;
+	bh=vTMYffes98zdDzbW5PW6PMn758Eh1TJV6fxNVpAjtjo=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=Drbs0YDGgEsOUazwUsnBEIw4aoWbnNZQOWwkHKSyFutPSiDzEvqO+Wqr+EBcEWb90
-	 +15VhmbfYsGx/LopTqZg1fRWozFvBr8a0Ex7/WQI0ShRjp682Bm7M39SAcWnCwMSw9
-	 504WJ/b4SNY6nE+NTUTBFiRDerz2fxO1/NBf6aWVvUj+PV0Cz4RaZNjO2lAxRKuzjK
-	 WtYgtYybkdGkLsQ9dGw2R6048DQFux+DHvW17Y/DSLTCU1MUKGFpnjB51D0pNKIzVl
-	 20qyKVlu53f2KIFf16Y6rfJ4viBI+ZwF3JWTWTPcK7B15iCK2z6r6XZPJLILQkcw0k
-	 fNsazvLHCl0FQ==
+	b=Rn9Aq9fXICUwKhugQRtPzzZbtIuCL67Jd/ESWpboiwsmI8SnebWLvgnt26IaT+hbW
+	 l4yFrAh/DXE3sBPvawFCFSCQ4SlHqgTN53pL+PmLh+ax7WJZjqcq29Q9TKIg5e7mN7
+	 Ytt0vn15BlGQJ1CBAkfRsDE5O8e8w2+CNpt0MD98AYGoykn+n7zoasFWjf6EOq7S4Y
+	 68Jah3/Nc1R53kr8hYAFwh2GFPal8V13XK3nzVjfiJ+6jRrUpcrtUhAGNLpMRBKYLU
+	 MjSAFRsJXISdYTZNS1trHsbS9Lv8cBx2ukjxONjAkhtWTREq0rVRqqeUEEAZumTtKN
+	 jjlFulqF28htw==
 From: Mark Brown <broonie@kernel.org>
-To: Liam Girdwood <lgirdwood@gmail.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Geert Uytterhoeven <geert+renesas@glider.be>,
- Magnus Damm <magnus.damm@gmail.com>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Rob Herring <robh@kernel.org>
-Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org
-In-Reply-To: <20231101140923.16344-2-robh@kernel.org>
-References: <20231101140923.16344-2-robh@kernel.org>
-Subject: Re: [PATCH] ASoC: dt-bindings: Simplify port schema
-Message-Id: <169988432788.3280890.8324291358177866186.b4-ty@kernel.org>
-Date: Mon, 13 Nov 2023 14:05:27 +0000
+To: =?utf-8?q?Amadeusz_S=C5=82awi=C5=84ski?=
+ <amadeuszx.slawinski@linux.intel.com>
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
+ Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
+ alsa-devel@alsa-project.org, linux-sound@vger.kernel.org
+In-Reply-To: <20231026113549.1897368-1-amadeuszx.slawinski@linux.intel.com>
+References: <20231026113549.1897368-1-amadeuszx.slawinski@linux.intel.com>
+Subject: Re: [PATCH] ASoC: dapm: Simplify widget clone
+Message-Id: <169988431615.3280890.12635214679835055069.b4-ty@kernel.org>
+Date: Mon, 13 Nov 2023 14:05:16 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Mailer: b4 0.13-dev-0438c
-Message-ID-Hash: ASILCELKSKALDRZ63HCLHJJYWIYCPXKE
-X-Message-ID-Hash: ASILCELKSKALDRZ63HCLHJJYWIYCPXKE
+Message-ID-Hash: 7HEYY2CNCS5H3R6Q5WIVPYQ2BRFNFKYS
+X-Message-ID-Hash: 7HEYY2CNCS5H3R6Q5WIVPYQ2BRFNFKYS
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -89,7 +84,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ASILCELKSKALDRZ63HCLHJJYWIYCPXKE/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7HEYY2CNCS5H3R6Q5WIVPYQ2BRFNFKYS/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -98,15 +93,13 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Wed, 01 Nov 2023 09:09:22 -0500, Rob Herring wrote:
-> The use of 'definitions' is not necessary and also problematic because the
-> dtschema tools don't process 'definitions' resulting in this spurious
-> warning:
+On Thu, 26 Oct 2023 13:35:49 +0200, Amadeusz Sławiński wrote:
+> New DAPM widgets are created based on a provided template. When cloning
+> the data, the name and stream name also need to be cloned. Currently the
+> data and the names are initialized in different places. Simplify the
+> code by having entire initialization in one place.
 > 
-> Documentation/devicetree/bindings/sound/renesas,rsnd.example.dtb: sound@ec500000: port:endpoint: Unevaluated properties are not allowed ('phandle' was unexpected)
->         from schema $id: http://devicetree.org/schemas/sound/renesas,rsnd.yaml#
 > 
-> [...]
 
 Applied to
 
@@ -114,8 +107,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: dt-bindings: Simplify port schema
-      commit: 6d02f355c3d2fe86f503793e4df09898e9f9e703
+[1/1] ASoC: dapm: Simplify widget clone
+      commit: 79323dc80318aab6c2d05abdbcf88f09b50522c5
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
