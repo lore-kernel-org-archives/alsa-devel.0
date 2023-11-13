@@ -4,74 +4,150 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 81FD7C4332F
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Nov 2023 11:59:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D363DC4332F
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Nov 2023 11:59:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7FCC6A4A;
-	Mon, 13 Nov 2023 12:58:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7FCC6A4A
+	by alsa0.perex.cz (Postfix) with ESMTPS id B79D684B;
+	Mon, 13 Nov 2023 12:58:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B79D684B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1699876744;
-	bh=nqPlvdt+mOJGlFPheRhyF+ziMl2H+4kpaUZ2LB9iSOU=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1699876757;
+	bh=I/GNNmnd9KPAt/3KR9nGlyj4w6Z5obO7WVLloEcZzkc=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=ihuA3Nmqh79Bu88wG1ETPgZn6sV0HXBEESc6ki/KXPU8guSFKym5JanWQYkPhvicN
-	 ND23yPpcMlc2tq/GdKiJhN5LE5lhyjGIiOqagXb+bkmQQXRGrA+gW3CFCq7GUEOb3e
-	 6ChDACpcBjrtZCwofaGM+FpcWPw9SFYpcbzP5Wyg=
+	b=DeW8tTyDdU82hIRMHLOU463IGBEHkXIJenLp5arpxQKjKK2Y4fvfzGTMWGhhJtoys
+	 tb55qSVSjFysZSVKbPHOq94Kekcuv+g5ZINHib5ZlkL5EVdAGT/Y+c6rJPS4IVxZ9k
+	 rHB9iUaUSGddvQ2gOgQ4d/mJfKGHotIDcAqPdv4k=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C79E1F8059F; Mon, 13 Nov 2023 12:57:32 +0100 (CET)
+	id 695F4F8058C; Mon, 13 Nov 2023 12:57:35 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 08CF4F8058C;
-	Mon, 13 Nov 2023 12:57:32 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E3A31F805AD;
+	Mon, 13 Nov 2023 12:57:34 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 90029F8022B; Mon, 13 Nov 2023 11:22:32 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	id DABF8F80249; Mon, 13 Nov 2023 11:23:38 +0100 (CET)
+Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com
+ [IPv6:2607:f8b0:4864:20::112c])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 995D2F80549
-	for <alsa-devel@alsa-project.org>; Mon, 13 Nov 2023 11:22:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 995D2F80549
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by ams.source.kernel.org (Postfix) with ESMTP id F3639B80D28;
-	Mon, 13 Nov 2023 10:22:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A338EC433CB;
-	Mon, 13 Nov 2023 10:22:18 +0000 (UTC)
-From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-To: linux-media@vger.kernel.org
-Cc: Shengjiu Wang <shengjiu.wang@nxp.com>,
-	alsa-devel@alsa-project.org,
-	Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Subject: [PATCH 8/8] test-media: add vim2m-audio test
-Date: Mon, 13 Nov 2023 11:18:49 +0100
-Message-ID: 
- <56cdfc8a975b2daef707011c42de00ffa893ae0b.1699870530.git.hverkuil-cisco@xs4all.nl>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: 
- <7889c22b922214ebcc0e62feeeb167b40d5042ec.1699870530.git.hverkuil-cisco@xs4all.nl>
-References: 
- <7889c22b922214ebcc0e62feeeb167b40d5042ec.1699870530.git.hverkuil-cisco@xs4all.nl>
+	by alsa1.perex.cz (Postfix) with ESMTPS id F3BE4F80152
+	for <alsa-devel@alsa-project.org>; Mon, 13 Nov 2023 11:23:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F3BE4F80152
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20230601 header.b=cQvYjLgO
+Received: by mail-yw1-x112c.google.com with SMTP id
+ 00721157ae682-5a7d9d357faso46936707b3.0
+        for <alsa-devel@alsa-project.org>;
+ Mon, 13 Nov 2023 02:23:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699871012; x=1700475812;
+ darn=alsa-project.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ISelrhUz+tUwTPOpVjAn5G1ABI4YmRZvCmOYJcKmy7Q=;
+        b=cQvYjLgO1WurBXuITM0zishMFc8WPIOD8lz83ptI5WAM84+2yI3pG39xb2v2WXeP25
+         ZO+/hkf93BBV5sqi2e1w07/CnmhpdzidcEGLRBkez5zqgQrHqe2dkqVTjWtOIZIREDYa
+         AT0BXxGqo3ALB/Gqq/uhRZOGQR5Stn0WFj/50uHS6QXXvO1ihsR0XV8+dYwZEsFKnenO
+         VMqJ92G3tkvaMczhxlOMGIuJeqi41nmxMFEbJk5fiy25+nI127zBNR1unX6SDevhbaIv
+         GxE5F4ao8dke97cGlWFlHIudUB9YFw7BdLhUVAI78jQh8sS+eWWPHAxbkxDirzxKRsDk
+         1D+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699871012; x=1700475812;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ISelrhUz+tUwTPOpVjAn5G1ABI4YmRZvCmOYJcKmy7Q=;
+        b=nh7Bv7kBm/nDY/Y8zT1PaMCYkAW9QIVmzG4XX3VCUWj5hghNv3+iFqP90DVvSf/P81
+         Kix/QdX2t7krxg4M+a+zG4TH/BwZQID1z2BhxUZMPabS8lKobtf2VwE7rskuEQ5xbtTm
+         V9fNN91HKoAIzqZ4h1cd1WUeB9cyNxswkUNF4oNieaX8tKKr9hh+/VuvgDdo0UThOAyp
+         pesxXoREuBsfh6bFyeFkIdAqZADmmpRigGY6kUUviEvwxNZhFUfm6MVng3Z4CxWD1kR5
+         Fn6rQWT+pvlN3s30ML8hdbt1t+b9v/6PnH4ElrZ1twqNpgwCV3/w3HWrZCp4poiFbMft
+         +jLw==
+X-Gm-Message-State: AOJu0Ywq03qmwP4uP1+P3aPN/4UNE/kFFrJ4+M2Ds4E7WB1r1efu6GLY
+	LmcMBFf6qCvZ8Na2LgHvUPW8xDz3cpQh5r/UxKU=
+X-Google-Smtp-Source: 
+ AGHT+IGeFMq6OPRYVFpLBqn7U8F7RLctOzbaeZinyDCceNJQA9yzq0afSM1d3lxBYSz248sE7pBipt1geSP2uWLF31w=
+X-Received: by 2002:a81:4782:0:b0:5a7:a817:be43 with SMTP id
+ u124-20020a814782000000b005a7a817be43mr6070415ywa.6.1699871011907; Mon, 13
+ Nov 2023 02:23:31 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-MailFrom: SRS0=a+Jp=G2=xs4all.nl=hverkuil-cisco@kernel.org
-X-Mailman-Rule-Hits: nonmember-moderation
+References: <20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me>
+ <20230605-ep93xx-v3-14-3d63a5f1103e@maquefel.me>
+ <ZLq0Z0QgBdCoDpV+@smile.fi.intel.com>
+ <fcfdc6f05926db494ea0105e5523cc21ecfdf4e7.camel@gmail.com>
+In-Reply-To: <fcfdc6f05926db494ea0105e5523cc21ecfdf4e7.camel@gmail.com>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Date: Mon, 13 Nov 2023 12:22:56 +0200
+Message-ID: 
+ <CAHp75VcsF8GtmE2iDf2xPWi7U5WXhi1ZFUSeA_Y+TfHQn72Jrg@mail.gmail.com>
+Subject: Re: [PATCH v3 14/42] power: reset: Add a driver for the ep93xx reset
+To: Alexander Sverdlin <alexander.sverdlin@gmail.com>
+Cc: Andy Shevchenko <andy@kernel.org>, nikita.shubin@maquefel.me,
+	Hartley Sweeten <hsweeten@visionengravers.com>,
+ Lennert Buytenhek <kernel@wantstofly.org>,
+	Russell King <linux@armlinux.org.uk>, Lukasz Majewski <lukma@denx.de>,
+	Linus Walleij <linus.walleij@linaro.org>,
+ Bartosz Golaszewski <brgl@bgdev.pl>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+	Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>,
+	Daniel Lezcano <daniel.lezcano@linaro.org>,
+ Thomas Gleixner <tglx@linutronix.de>,
+	Alessandro Zummo <a.zummo@towertech.it>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Wim Van Sebroeck <wim@linux-watchdog.org>,
+ Guenter Roeck <linux@roeck-us.net>,
+	Sebastian Reichel <sre@kernel.org>,
+ Thierry Reding <thierry.reding@gmail.com>,
+	=?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+	Mark Brown <broonie@kernel.org>, "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>,
+	Vinod Koul <vkoul@kernel.org>, Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Damien Le Moal <dlemoal@kernel.org>,
+	Sergey Shtylyov <s.shtylyov@omp.ru>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+	Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+ soc@kernel.org,
+	Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>,
+	Michael Peters <mpeters@embeddedts.com>, Kris Bahnsen <kris@embeddedts.com>,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-clk@vger.kernel.org, linux-rtc@vger.kernel.org,
+	linux-watchdog@vger.kernel.org, linux-pm@vger.kernel.org,
+	linux-pwm@vger.kernel.org, linux-spi@vger.kernel.org, netdev@vger.kernel.org,
+	dmaengine@vger.kernel.org, linux-mtd@lists.infradead.org,
+	linux-ide@vger.kernel.org, linux-input@vger.kernel.org,
+	alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-MailFrom: andy.shevchenko@gmail.com
+X-Mailman-Rule-Hits: max-recipients
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: MAZS5A4QBITV7WZNGTUDHDNMLCFHGQOX
-X-Message-ID-Hash: MAZS5A4QBITV7WZNGTUDHDNMLCFHGQOX
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-size; news-moderation; no-subject; digests;
+ suspicious-header
+Message-ID-Hash: EDICJNAC72CRYPC4TWCKXUVORILZGSNJ
+X-Message-ID-Hash: EDICJNAC72CRYPC4TWCKXUVORILZGSNJ
 X-Mailman-Approved-At: Mon, 13 Nov 2023 11:57:19 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MAZS5A4QBITV7WZNGTUDHDNMLCFHGQOX/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/EDICJNAC72CRYPC4TWCKXUVORILZGSNJ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -80,152 +156,31 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Run v4l2-compliance for the vim2m-audio driver.
+On Mon, Nov 13, 2023 at 12:07=E2=80=AFPM Alexander Sverdlin
+<alexander.sverdlin@gmail.com> wrote:
+> On Fri, 2023-07-21 at 19:37 +0300, Andy Shevchenko wrote:
+> > > +       /* Issue the reboot */
+>             ^^^^^^^^^^^^^^^^^^^^^^
+> This is the relevant comment, one can extend it, but looks already quite
+> informative considering EP93XX_SYSCON_DEVCFG_SWRST register name.
 
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
----
- contrib/test/test-media | 88 ++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 86 insertions(+), 2 deletions(-)
+This does not explain the necessity of the mdelay() below.
 
-diff --git a/contrib/test/test-media b/contrib/test/test-media
-index afe20760..1186f02f 100755
---- a/contrib/test/test-media
-+++ b/contrib/test/test-media
-@@ -7,6 +7,7 @@
- vidtv=0
- vivid=0
- vim2m=0
-+vim2m_audio=0
- vimc=0
- vicodec=0
- cec=0
-@@ -53,13 +54,14 @@ if [ -z "$1" ]; then
- 	echo Test Targets:
- 	echo "vivid: test the vivid driver"
- 	echo "vim2m: test the vim2m driver"
-+	echo "vim2m-audio: test the vim2m-audio driver"
- 	echo "vimc: test the vimc driver"
- 	echo "vicodec: test the vicodec driver"
- 	echo "vidtv: test the vidtv driver"
- 	echo "cec: adds the vivid CEC compliance tests, except for the CEC standby/wakeup tests."
- 	echo "cec-pwr: adds the vivid CEC compliance tests, including the CEC standby/wakeup tests."
--	echo "all: equals 'vivid vim2m vimc vicodec vidtv cec cec-pwr'"
--	echo "mc: equals 'vivid vim2m vimc vicodec vidtv'"
-+	echo "all: equals 'vivid vim2m vim2m-audio vimc vicodec vidtv cec cec-pwr'"
-+	echo "mc: equals 'vivid vim2m vim2m-audio vimc vicodec vidtv'"
- 	exit 0
- fi
- 
-@@ -116,6 +118,7 @@ while [ ! -z "$1" ]; do
- 		vidtv=1
- 		vivid=1
- 		vim2m=1
-+		vim2m_audio=1
- 		vimc=1
- 		vicodec=1
- 		cec=1
-@@ -124,6 +127,7 @@ while [ ! -z "$1" ]; do
- 	mc)
- 		vivid=1
- 		vim2m=1
-+		vim2m_audio=1
- 		vimc=1
- 		vicodec=1
- 		vidtv=1
-@@ -137,6 +141,9 @@ while [ ! -z "$1" ]; do
- 	vim2m)
- 		vim2m=1
- 		;;
-+	vim2m-audio)
-+		vim2m_audio=1
-+		;;
- 	vimc)
- 		vimc=1
- 		;;
-@@ -421,6 +428,83 @@ if [ $vim2m -eq 1 -a $setup -eq 0 ]; then
- 	echo
- fi
- 
-+
-+if [ $vim2m_audio -eq 1 ]; then
-+	rmmod vim2m-audio 2&>/dev/null
-+	modprobe vim2m-audio
-+	sleep $modprobe_time
-+	dmesg -n notice
-+
-+	if ! $v4l2_ctl -z platform:vim2m-audio ; then
-+		echo "FAIL: the vim2m-audio module failed to load" | tee -a $tmp
-+		echo "Grand Total for vim2m-audio: Succeeded: 0, Failed: 1, Warnings: 0" | tee -a $tmp
-+		echo "Final Summary: 1, Succeeded: 0, Failed: 1, Warnings: 0"
-+		rmmod vivid
-+		exit 0
-+	fi
-+fi
-+
-+if [ $vim2m_audio -eq 1 -a $setup -eq 0 ]; then
-+	echo
-+	echo vim2m-audio compliance tests | tee /dev/kmsg
-+	echo
-+	date
-+	stdbuf -oL $v4l2_compliance -m platform:vim2m-audio -z platform:vivid-002 -e vivid-002-vid-cap -s10 -P -a 2>&1 | tee -a $tmp
-+	echo
-+	echo
-+	echo
-+	echo
-+	echo
-+	echo
-+	echo
-+	echo
-+	echo
-+	echo unbind vim2m-audio | tee /dev/kmsg
-+	echo
-+	echo -n vim2m-audio.0 >/sys/bus/platform/drivers/vim2m-audio/unbind
-+	sleep $unbind_time
-+	echo
-+	echo rebind vim2m-audio | tee /dev/kmsg
-+	echo
-+	echo -n vim2m-audio.0 >/sys/bus/platform/drivers/vim2m-audio/bind
-+	sleep 1
-+	echo
-+	echo second unbind vim2m-audio | tee /dev/kmsg
-+	echo
-+	for i in `$v4l2_ctl -z platform:vim2m-audio --list-devices`; do
-+		let "t = 1 + $RANDOM / 4096"
-+		echo $i: sleep ${t}s
-+		sleep $t <$i &
-+	done
-+	sleep 1
-+	echo
-+	echo -n vim2m-audio.0 >/sys/bus/platform/drivers/vim2m-audio/unbind
-+	sleep $reunbind_time
-+	echo
-+	echo rmmod vim2m-audio | tee /dev/kmsg
-+	echo
-+	rmmod vim2m-audio
-+	sleep $rmmod_time
-+	if [ $kmemleak -eq 1 ]; then
-+		echo
-+		echo kmemleak results for vim2m-audio:
-+		echo
-+		echo scan >/sys/kernel/debug/kmemleak
-+		cat /sys/kernel/debug/kmemleak
-+		echo
-+		echo end of kmemleak results
-+		echo clear >/sys/kernel/debug/kmemleak
-+	fi
-+	echo
-+	echo
-+	echo
-+	echo
-+	echo
-+	echo
-+	echo
-+	echo
-+fi
-+
- if [ $vimc -eq 1 ]; then
- 	rmmod vimc 2&>/dev/null
- 	modprobe vimc
--- 
-2.42.0
+> But Nikita would be able to include more verbose comment if
+> you'd have a suggestion.
 
+Please,add one.
+
+> > > +       ep93xx_devcfg_set_clear(priv->map, EP93XX_SYSCON_DEVCFG_SWRST=
+, 0x00);
+> > > +       ep93xx_devcfg_set_clear(priv->map, 0x00, EP93XX_SYSCON_DEVCFG=
+_SWRST);
+> >
+> >
+> > > +       mdelay(1000);
+> >
+> > Atomic?! Such a huge delay must be explained, esp. why it's atomic.
+
+--=20
+With Best Regards,
+Andy Shevchenko
