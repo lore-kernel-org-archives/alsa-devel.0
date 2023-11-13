@@ -4,77 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7F55C4332F
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Nov 2023 11:53:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1AB40C4332F
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Nov 2023 11:54:02 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E3B12820;
-	Mon, 13 Nov 2023 12:53:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E3B12820
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6101A93A;
+	Mon, 13 Nov 2023 12:53:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6101A93A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1699876433;
-	bh=flFHCHrjeMGH364fzvA3+5ijnFeGZeUEGP5HYPtPK6s=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=UjeTsu4Qm0FYnoh/tU5ySwDSdojio/uXed1NOuVJ9MlaHOqI7hVBD8EvFpfcXzd6u
-	 w5UOMBzYWprm70eMQNEVulw5AOPWwZ30Fihg6/UzCpt+hIyuCZDJ2PAK5Uvyk+YVrt
-	 aus67aBHtu1pfeGIzCmIzXC6FmJ2slROPPP8A5Xs=
+	s=default; t=1699876440;
+	bh=x6wqAroYwJ+l0RxC2ighdL/P7qfEsMBX+kYscYwm+rc=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=n9nepRZR2OOt/nvHwldjuruCSOfdFGZq/VwPBrV3AFon+Ywrk4u8tupcSeCW1lvRc
+	 b90Z2UatcFkm2Jw8/uzXIkD1Tc+e8UXrBzPrZMpCCO6P759iSy4RCet9t2A2COBmnK
+	 SYAy/iL+9CRfobHWjMA6DCX+4yL2rRJsl7NZIvXI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2D611F805B5; Mon, 13 Nov 2023 12:51:34 +0100 (CET)
+	id 10B57F805BD; Mon, 13 Nov 2023 12:51:37 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 12B9BF805AA;
-	Mon, 13 Nov 2023 12:51:34 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5995DF805BB;
+	Mon, 13 Nov 2023 12:51:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 450C5F801D5; Sun, 12 Nov 2023 17:55:06 +0100 (CET)
-Received: from mail.malych.org (gateway.malych.org [185.150.1.6])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7F260F80152
-	for <alsa-devel@alsa-project.org>; Sun, 12 Nov 2023 17:55:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7F260F80152
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=malych.org header.i=@malych.org header.a=rsa-sha256
- header.s=dkim header.b=c9Duai2M
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon)
- with ESMTPSA id C641FAA8CB4;
-	Sun, 12 Nov 2023 17:54:55 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=malych.org; s=dkim;
-	t=1699808097; h=from:subject:date:message-id:to:cc:mime-version:
-	 content-transfer-encoding; bh=eAC0I710PoxZTn/0/FlbsP7dzbrDcfhVJ7sO0L74N+k=;
-	b=c9Duai2M6qcLDSGPMzZ/Bf1UAzUk4vXkd2iF/GWzkYtp7NnrThRvqnnuux8PCzvMbdus3h
-	i8YmCEQvAP8EqxvmyNWxSICuC48PiA6ozBcceyIRLdYOCY3ze9qWCQSsOimbAFdH6AOzYP
-	vS33q3jy09MyZQ4HLnrMneiYNqkxiqEJuXTYHDbunVaJARDLB6dcjYq1Mrc6tl1xTo9H2v
-	8EzzJcQfdI+kNsODv/YivN5Sgi45WgKztyUC62zKRgqvlX6+yI2iYkG43LAx2bRAB/WSfH
-	dm1V8kCN2+TGF9/5Mt9C9kERW7Qy8WOSDfI/W0MekL5Z9WGCSNQvMmW+uj90aA==
-From: Matus Malych <matus@malych.org>
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org,
-	linux-kernel@vger.kernel.org,
-	Matus Malych <matus@malych.org>
-Subject: [PATCH] ASoC: amd: yc: Add HP 255 G10 into quirk table
-Date: Sun, 12 Nov 2023 17:54:04 +0100
-Message-Id: <20231112165403.3221-1-matus@malych.org>
+	id C786DF802E8; Mon, 13 Nov 2023 08:56:58 +0100 (CET)
+Received: from mg.richtek.com (mg.richtek.com [220.130.44.152])
+	by alsa1.perex.cz (Postfix) with ESMTP id D187CF80152
+	for <alsa-devel@alsa-project.org>; Mon, 13 Nov 2023 08:56:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D187CF80152
+X-MailGates: (SIP:2,PASS,NONE)(compute_score:DELIVER,40,3)
+Received: from 192.168.10.47
+	by mg.richtek.com with MailGates ESMTPS Server V6.0(1769628:0:AUTH_RELAY)
+	(envelope-from <cy_huang@richtek.com>)
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256/256);
+ Mon, 13 Nov 2023 15:56:18 +0800 (CST)
+Received: from ex4.rt.l (192.168.10.47) by ex4.rt.l (192.168.10.47) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.27; Mon, 13 Nov
+ 2023 15:56:18 +0800
+Received: from linuxcarl2.richtek.com (192.168.10.154) by ex4.rt.l
+ (192.168.10.45) with Microsoft SMTP Server id 15.2.1258.27 via Frontend
+ Transport; Mon, 13 Nov 2023 15:56:18 +0800
+From: <cy_huang@richtek.com>
+To: Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi
+ Iwai <tiwai@suse.com>
+CC: Liam Girdwood <lgirdwood@gmail.com>, Oder Chiou <oder_chiou@realtek.com>,
+	ChiYuan Huang <cy_huang@richtek.com>, Allen Lin <allen_lin@richtek.com>,
+	<alsa-devel@alsa-project.org>
+Subject: [PATCH v1 1/3] ASoC: codecs: rtq9128: Fix PM_RUNTIME usage
+Date: Mon, 13 Nov 2023 15:56:14 +0800
+Message-ID: <1699862176-23710-2-git-send-email-cy_huang@richtek.com>
+X-Mailer: git-send-email 1.8.3.1
+In-Reply-To: <1699862176-23710-1-git-send-email-cy_huang@richtek.com>
+References: <1699862176-23710-1-git-send-email-cy_huang@richtek.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Last-TLS-Session-Version: TLSv1.3
-X-MailFrom: matus@malych.org
+Content-Type: text/plain
+X-MailFrom: prvs=1680C42439=cy_huang@richtek.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: L6RCVXZGDED7MGX4XASIVYULT772MJ2H
-X-Message-ID-Hash: L6RCVXZGDED7MGX4XASIVYULT772MJ2H
+Message-ID-Hash: H74EKX6T7B4JSXXZL7T6CUTDIWVQL76R
+X-Message-ID-Hash: H74EKX6T7B4JSXXZL7T6CUTDIWVQL76R
 X-Mailman-Approved-At: Mon, 13 Nov 2023 11:51:20 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/L6RCVXZGDED7MGX4XASIVYULT772MJ2H/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/H74EKX6T7B4JSXXZL7T6CUTDIWVQL76R/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -83,32 +82,33 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-HP 255 G10's internal microphone array can be made
-to work by adding it to the quirk table.
+From: ChiYuan Huang <cy_huang@richtek.com>
 
-Signed-off-by: Matus Malych <matus@malych.org>
+If 'pm_runtime_resume_and_get' is used, must check the return value to
+prevent the active count not matched problem.
+
+Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
 ---
- sound/soc/amd/yc/acp6x-mach.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ sound/soc/codecs/rtq9128.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/amd/yc/acp6x-mach.c b/sound/soc/amd/yc/acp6x-mach.c
-index 15a864dcd7bd..e2a510443bf1 100644
---- a/sound/soc/amd/yc/acp6x-mach.c
-+++ b/sound/soc/amd/yc/acp6x-mach.c
-@@ -367,6 +367,13 @@ static const struct dmi_system_id yc_acp_quirk_table[] = {
- 			DMI_MATCH(DMI_BOARD_NAME, "8A3E"),
- 		}
- 	},
-+	{
-+		.driver_data = &acp6x_card,
-+		.matches = {
-+			DMI_MATCH(DMI_BOARD_VENDOR, "HP"),
-+			DMI_MATCH(DMI_BOARD_NAME, "8B2F"),
-+		}
-+	},
- 	{
- 		.driver_data = &acp6x_card,
- 		.matches = {
+diff --git a/sound/soc/codecs/rtq9128.c b/sound/soc/codecs/rtq9128.c
+index c22b047115cc..bda64f9eeb62 100644
+--- a/sound/soc/codecs/rtq9128.c
++++ b/sound/soc/codecs/rtq9128.c
+@@ -391,7 +391,11 @@ static int rtq9128_component_probe(struct snd_soc_component *comp)
+ 	unsigned int val;
+ 	int i, ret;
+ 
+-	pm_runtime_resume_and_get(comp->dev);
++	ret = pm_runtime_resume_and_get(comp->dev);
++	if (ret < 0) {
++		dev_err(comp->dev, "Failed to resume device (%d)\n", ret);
++		return ret;
++	}
+ 
+ 	val = snd_soc_component_read(comp, RTQ9128_REG_EFUSE_DATA);
+ 
 -- 
 2.34.1
 
