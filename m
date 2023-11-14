@@ -4,120 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3E76CC4332F
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Nov 2023 13:11:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 71F42C4332F
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Nov 2023 13:41:06 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EA7C7844;
-	Tue, 14 Nov 2023 14:10:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EA7C7844
+	by alsa0.perex.cz (Postfix) with ESMTPS id C3AA474C;
+	Tue, 14 Nov 2023 14:40:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C3AA474C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1699967499;
-	bh=m2t4Fk2edOJevVKKr4YE7CtuM9i/6plOHjG4logDpBg=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	s=default; t=1699969263;
+	bh=IxbnVp92CtiiW6TO1K5s/oZfAKHXB6pZjhSjijIYkm4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=JAHcshiWRIOvM3OsRlxcUFwr1MJLFeuOP0dI/Kc49rWiWUlMl9tomABJ+3WPaRnu8
-	 FSNC0P5c3YpurP+xH4HuIURwg/Q5yJj8ytkvo+8zYS2au/K3SN+mWA/9l/D3ZKtiSB
-	 Ygug6RpLff1h9riCE5A+wJO5dGVni79ntJdDAH1o=
+	b=Zru6Vk4CLk+dlksMvR3s1HLkKw4VJRdlmR707jF6pU9rnBf0UdbzUD94G7hNebGiK
+	 FLdxIEQgRa7CgULZZtPnuM9BXylwBMKRz+2hgosDkGQ1xSOtw2ZlT+8mX1Bi4uL74D
+	 GQhNBixAj5P9bjfMqBA9pfPuqluT2+7zubSvV9iM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B150FF8022B; Tue, 14 Nov 2023 14:10:21 +0100 (CET)
+	id 2B59DF80152; Tue, 14 Nov 2023 14:40:13 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6592CF802E8;
-	Tue, 14 Nov 2023 14:10:21 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D868CF801D5;
+	Tue, 14 Nov 2023 14:40:12 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 71FF0F801D5; Tue, 14 Nov 2023 14:10:17 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2001:67c:2178:6::1d])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id A8A97F801D5; Tue, 14 Nov 2023 14:40:09 +0100 (CET)
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C9811F80093
-	for <alsa-devel@alsa-project.org>; Tue, 14 Nov 2023 14:10:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C9811F80093
+	by alsa1.perex.cz (Postfix) with ESMTPS id 21251F80093
+	for <alsa-devel@alsa-project.org>; Tue, 14 Nov 2023 14:40:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 21251F80093
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=pGL5QXsf;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=en1gL9Pq
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 6BD0E1F86A;
-	Tue, 14 Nov 2023 13:10:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1699967409;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UdKGYYZPHz9oLSF/GPQkv/zIiz3pCkDlwsJZ0EvwJbg=;
-	b=pGL5QXsf/7kDX/csv7iPatJ1hr20Ed7DP93tWdxUz9c0HRzODX0L8kKo8O2lfowVVYkOlQ
-	nXMWwt9f9EpC0WsNK1lJF9HjQKqASfQIRabPjeETRtF4VUWLTCHECDCZQ6dOyoiPqBjTr4
-	jV7hYDADDTyEKAVq5R+yP50+CFeozsw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1699967409;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UdKGYYZPHz9oLSF/GPQkv/zIiz3pCkDlwsJZ0EvwJbg=;
-	b=en1gL9PqCX6jpKmEy0HXVI/fVksJKcxwkpwHalI+ttO5VUlyvm74JxEJHY6PtG/kVX1zjo
-	lY5ul88kqei5LqDw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3F90B13460;
-	Tue, 14 Nov 2023 13:10:09 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id eX2dDrFxU2XeAwAAMHmgww
-	(envelope-from <tiwai@suse.de>); Tue, 14 Nov 2023 13:10:09 +0000
-Date: Tue, 14 Nov 2023 14:10:08 +0100
-Message-ID: <87r0kstr9r.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Richard Fitzgerald <rf@opensource.cirrus.com>
-Cc: <tiwai@suse.com>,
-	<alsa-devel@alsa-project.org>,
-	<linux-sound@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>,
-	<patches@opensource.cirrus.com>,
-	"Simon Trimmer" <simont@opensource.cirrus.com>
-Subject: Re: [PATCH RESEND] ALSA: hda: cs35l56: Enable low-power hibernation
- mode on i2c
-In-Reply-To: <20231113164029.1156669-1-rf@opensource.cirrus.com>
-References: <20231113164029.1156669-1-rf@opensource.cirrus.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spamd-Result: default: False [-3.12 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-3.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-1.00)[-1.000];
-	 RCPT_COUNT_SEVEN(0.00)[7];
-	 MID_CONTAINS_FROM(1.00)[];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_COUNT_TWO(0.00)[2];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.02)[52.16%]
-Message-ID-Hash: PZ36YCZC2WS2DAD64ROFIHHXUPZ33GUA
-X-Message-ID-Hash: PZ36YCZC2WS2DAD64ROFIHHXUPZ33GUA
-X-MailFrom: tiwai@suse.de
+	dkim=pass (2048-bit key,
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=M+oXnx9l
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699969207; x=1731505207;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=IxbnVp92CtiiW6TO1K5s/oZfAKHXB6pZjhSjijIYkm4=;
+  b=M+oXnx9lTewXRPuW6udtfr5vy7lit1eD2fN+oBsj5QZWJtt82qbnuj9f
+   RLOcKymJYJA+iNB3ThTyEy6SuTMI0izz37N/i5OnOVzOPIPUoGV6ZgC4Y
+   5frnPGLfZG4qUndCqomwf3aVpcmSgrgJqJV/58+mDppQtB77NxTMXJScH
+   ZJdHS9n7mqP+wORMKBF+2wkyaakGVS99UG6kh0h4amUKdfisWDNz4bApr
+   UhqrtKkibviZcWmVoTk329rEIZYznQB1m4Ir6Z2BKbMTWRsaUI+8yIVWb
+   EjXWRUedRZ/ORWeOgJj6X46B5rgBVUJhieimkb5hnPziRpQr2bw/YrncP
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10894"; a="370853404"
+X-IronPort-AV: E=Sophos;i="6.03,302,1694761200";
+   d="scan'208";a="370853404"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 14 Nov 2023 05:40:01 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10894"; a="758176952"
+X-IronPort-AV: E=Sophos;i="6.03,302,1694761200";
+   d="scan'208";a="758176952"
+Received: from stinkpipe.fi.intel.com (HELO stinkbox) ([10.237.72.74])
+  by orsmga007.jf.intel.com with SMTP; 14 Nov 2023 05:39:58 -0800
+Received: by stinkbox (sSMTP sendmail emulation);
+ Tue, 14 Nov 2023 15:39:57 +0200
+Date: Tue, 14 Nov 2023 15:39:57 +0200
+From: Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+To: Jani Nikula <jani.nikula@linux.intel.com>
+Cc: maarten.lankhorst@linux.intel.com, Takashi Iwai <tiwai@suse.de>,
+	intel-gfx@lists.freedesktop.org, intel-xe@lists.freedesktop.org,
+	alsa-devel@alsa-project.org,
+	"Saarinen, Jani" <jani.saarinen@intel.com>,
+	"Kurmi, Suresh Kumar" <suresh.kumar.kurmi@intel.com>
+Subject: Re: [Intel-xe] [PATCH 11/14] ALSA: hda/intel: Move
+ snd_hdac_i915_init to before probe_work.
+Message-ID: <ZVN4rQjLxROOjTE-@intel.com>
+References: <20231002193847.7134-1-maarten.lankhorst@linux.intel.com>
+ <20231002193847.7134-11-maarten.lankhorst@linux.intel.com>
+ <ZVNUxZzCGcxQzqJX@intel.com>
+ <87bkbwsebl.fsf@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87bkbwsebl.fsf@intel.com>
+X-Patchwork-Hint: comment
+Message-ID-Hash: 6ZFWCEDZME7JOAIXKAQS7BLP4JKBJ43R
+X-Message-ID-Hash: 6ZFWCEDZME7JOAIXKAQS7BLP4JKBJ43R
+X-MailFrom: ville.syrjala@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -129,7 +100,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PZ36YCZC2WS2DAD64ROFIHHXUPZ33GUA/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6ZFWCEDZME7JOAIXKAQS7BLP4JKBJ43R/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -138,25 +109,30 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, 13 Nov 2023 17:40:29 +0100,
-Richard Fitzgerald wrote:
+On Tue, Nov 14, 2023 at 02:35:10PM +0200, Jani Nikula wrote:
+> On Tue, 14 Nov 2023, Ville Syrjälä <ville.syrjala@linux.intel.com> wrote:
+> > On Mon, Oct 02, 2023 at 09:38:44PM +0200, maarten.lankhorst@linux.intel.com wrote:
+> >> From: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+> >> 
+> >> Now that we can use -EPROBE_DEFER, it's no longer required to spin off
+> >> the snd_hdac_i915_init into a workqueue.
+> >> 
+> >> Use the -EPROBE_DEFER mechanism instead, which must be returned in the
+> >> probe function.
+> >
+> > This completely broke i915 audio!
+> >
+> > I also can't see any trace of this stuff ever being posted to 
+> > intel-gfx so it never went through the CI.
+> >
+> > Please fix or revert ASAP.
 > 
-> From: Simon Trimmer <simont@opensource.cirrus.com>
+> Cc: Jani, Suresh
 > 
-> This can now be re-enabled as the sequence to reliably wake the device
-> has been implemented in the shared ASoC code.
-> 
-> This has a functional dependency on commit 3df761bdbc8b
-> ("ASoC: cs35l56: Wake transactions need to be issued twice")
-> 
-> To protect against this, enabling hibernation is conditional on
-> CS35L56_WAKE_HOLD_TIME_US being defined, which indicates that the new
-> hibernation sequences are available.
-> 
-> Signed-off-by: Simon Trimmer <simont@opensource.cirrus.com>
-> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+> Ville, please file a bug at gitlab so we can track this, thanks.
 
-Thanks, applied.
+https://gitlab.freedesktop.org/drm/intel/-/issues/9671
 
-
-Takashi
+-- 
+Ville Syrjälä
+Intel
