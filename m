@@ -4,73 +4,41 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EFAEAC07548
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Nov 2023 13:11:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1F661C46CD3
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Nov 2023 13:22:57 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 37AD3829;
-	Wed, 15 Nov 2023 14:10:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 37AD3829
+	by alsa0.perex.cz (Postfix) with ESMTPS id D8336828;
+	Wed, 15 Nov 2023 14:22:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D8336828
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1700053864;
-	bh=q69noF+4OOqrwFOS3+eqaFGlskwc0zXa8OPh6dnisWM=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=YtPIvCdHw3Omn69ic33JiAn2JRE2sHBX3ISh76c+hV2fR8ksZDqlAZKyseJhzx5n9
-	 9VFuAmXPN8kS6dz5BUaiiCqY/dbJ9DuorrEiU1RePsAD/lpu1Ce4HRJW8gitbgi/u1
-	 5TX9yaJdSs7Tco0to/4M+RDFcTLxCT3PHatT/nYU=
+	s=default; t=1700054575;
+	bh=a2Uu8UI8V0vvRA3hscoyzszAisM9xQQnRCyxHTEGNwM=;
+	h=Subject:From:To:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:Date:From;
+	b=RY7HwqqpF/Ccw43Hf1nrMM6pbjJzDXxARTcLSMCR7kbxZr09IfJcloPxiRgSD7u9S
+	 pss8s7O99c9NYAofLHELTjMia4Ms2uOaM5waVtVIYQSd2uwjvkhpaZnlVExcYUE4mS
+	 IcQjjY8QcJkWgtU9ki0h6YIBf5OjFTInKXcHcshw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id ED5ADF80557; Wed, 15 Nov 2023 14:09:46 +0100 (CET)
+	id 2A127F80551; Wed, 15 Nov 2023 14:21:38 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7CA58F800ED;
-	Wed, 15 Nov 2023 14:09:46 +0100 (CET)
-Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C14E6F801D5; Wed, 15 Nov 2023 10:54:57 +0100 (CET)
-Received: from mail.nfschina.com (unknown [42.101.60.195])
-	by alsa1.perex.cz (Postfix) with SMTP id BC9EEF80166
-	for <alsa-devel@alsa-project.org>; Wed, 15 Nov 2023 10:54:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BC9EEF80166
-Received: from localhost.localdomain (unknown [180.167.10.98])
-	by mail.nfschina.com (Maildata Gateway V2.8.8) with ESMTPA id 35B63602806DA;
-	Wed, 15 Nov 2023 17:54:40 +0800 (CST)
-X-MD-Sfrom: suhui@nfschina.com
-X-MD-SrcIP: 180.167.10.98
-From: Su Hui <suhui@nfschina.com>
-To: vkoul@kernel.org,
-	yung-chuan.liao@linux.intel.com,
-	pierre-louis.bossart@linux.intel.com,
-	sanyog.r.kale@intel.com,
-	nathan@kernel.org,
-	ndesaulniers@google.com,
-	trix@redhat.com
-Cc: Su Hui <suhui@nfschina.com>,
-	alsa-devel@alsa-project.org,
-	linux-kernel@vger.kernel.org,
-	llvm@lists.linux.dev,
-	kernel-janitors@vger.kernel.org
-Subject: [PATCH] soundwire: amd: add an error code check in
- amd_sdw_clock_stop_exit
-Date: Wed, 15 Nov 2023 17:54:08 +0800
-Message-Id: <20231115095407.1059704-1-suhui@nfschina.com>
-X-Mailer: git-send-email 2.30.2
+	by alsa1.perex.cz (Postfix) with ESMTP id A55EBF801D5;
+	Wed, 15 Nov 2023 14:21:37 +0100 (CET)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-MailFrom: suhui@nfschina.com
-X-Mailman-Rule-Hits: nonmember-moderation
-X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
- loop; banned-address; member-moderation;
- header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: 2R2LLAJZ6VYXKUXEXC4KOTE6SUI5JRAW
-X-Message-ID-Hash: 2R2LLAJZ6VYXKUXEXC4KOTE6SUI5JRAW
-X-Mailman-Approved-At: Wed, 15 Nov 2023 13:09:41 +0000
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Subject: [PATCH] ALSA: hda: i915: Alays handle -EPROBE_DEFER
+From: maarten.lankhorst@linux.intel.com
+To: alsa-devel@alsa-project.org
+Message-ID: <20231115123625.74286-1-maarten.lankhorst@linux.intel.com>
+X-Mailman-Approved-At: Wed, 15 Nov 2023 13:21:33 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2R2LLAJZ6VYXKUXEXC4KOTE6SUI5JRAW/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SL5F25YFLEQSDFUY3WUSOV7KC5ZPTL7R/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -78,31 +46,7 @@ List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
+Date: Wed, 15 Nov 2023 14:21:38 +0100 (CET)
 
-Clang static analyzer complains that value stored to 'ret' is never read.
-Add an error code check and print an error message if 'readl_poll_timeout'
-failed.
-
-Signed-off-by: Su Hui <suhui@nfschina.com>
----
- drivers/soundwire/amd_manager.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/drivers/soundwire/amd_manager.c b/drivers/soundwire/amd_manager.c
-index 3a99f6dcdfaf..f391b541f4b7 100644
---- a/drivers/soundwire/amd_manager.c
-+++ b/drivers/soundwire/amd_manager.c
-@@ -1029,6 +1029,10 @@ static int amd_sdw_clock_stop_exit(struct amd_sdw_manager *amd_manager)
- 		ret = readl_poll_timeout(amd_manager->mmio + ACP_SW_CLK_RESUME_CTRL, val,
- 					 (val & AMD_SDW_CLK_RESUME_DONE), ACP_DELAY_US,
- 					 AMD_SDW_TIMEOUT);
-+		if (ret)
-+			dev_err(amd_manager->dev, "%s: timed out: %pe\n", __func__,
-+				ERR_PTR(ret));
-+
- 		if (val & AMD_SDW_CLK_RESUME_DONE) {
- 			writel(0, amd_manager->mmio + ACP_SW_CLK_RESUME_CTRL);
- 			ret = sdw_bus_exit_clk_stop(&amd_manager->bus);
--- 
-2.30.2
-
+The content of this message was lost. It was probably cross-posted to
+multiple lists and previously handled on another list.
