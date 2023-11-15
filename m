@@ -4,75 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CD421C4332F
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Nov 2023 21:58:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5F2C3C07548
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Nov 2023 03:36:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1D901827;
-	Tue, 14 Nov 2023 22:57:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1D901827
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1C514827;
+	Wed, 15 Nov 2023 04:35:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1C514827
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1699999087;
-	bh=8xS18Ma/+3T2V2LYZQQLK15YfxKiDnZfkN8DH27iGdk=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=WgD/nbQ5ZEt9+9ZKGNqmFHAkwhYhHudlnVf/+yDJPtBrG32VXiAjS7kgp0qUqetgD
-	 2jX1dCWGq4A2Em5TPka9shciB29w2wr/JGZZ2KgKmHaPr5h8N8/BRrt8VEdfsJ4hyS
-	 zHnanYAGRPmSBNicp0Tmqp2VuhePv15O9G1SrLdc=
+	s=default; t=1700019367;
+	bh=Aid9O+Bkm+8g5JHHpfOl4STD3ksch9koNvRL1NPegw0=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=VMx9FO9ns1aXDdZUupfomMda1yVkQ4KU+OOUtxWmBzp3O7Lrj1w3PmrEy4ZyQFtBA
+	 y3l+Im7LzmT1GGR2ClPiL3eFc5w9/Iqd8NT3DRyxIpdoZf3sRwwtPJX/0Md6CmnptY
+	 8Q2Q5kcE+3qwZ+CFCHR6XurVgB1/s56+gKw0fQF0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0EDF3F80249; Tue, 14 Nov 2023 22:56:49 +0100 (CET)
+	id A969BF8016E; Wed, 15 Nov 2023 04:35:08 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 57593F801D5;
-	Tue, 14 Nov 2023 22:56:49 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 13CB2F801D5;
+	Wed, 15 Nov 2023 04:35:08 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BF4E2F801D5; Tue, 14 Nov 2023 22:56:43 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+	id 58700F801D5; Wed, 15 Nov 2023 04:34:29 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 21857F80166
-	for <alsa-devel@alsa-project.org>; Tue, 14 Nov 2023 22:56:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 21857F80166
+	by alsa1.perex.cz (Postfix) with ESMTPS id 8EC30F80166
+	for <alsa-devel@alsa-project.org>; Wed, 15 Nov 2023 04:34:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8EC30F80166
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=hpHXE/h4
+ header.s=k20201202 header.b=LORo8Fz7
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by ams.source.kernel.org (Postfix) with ESMTP id E7A92B8166D;
-	Tue, 14 Nov 2023 21:56:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B48A9C433C8;
-	Tue, 14 Nov 2023 21:56:32 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 5B81061222;
+	Wed, 15 Nov 2023 03:34:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA41AC433C7;
+	Wed, 15 Nov 2023 03:34:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1699998994;
-	bh=8xS18Ma/+3T2V2LYZQQLK15YfxKiDnZfkN8DH27iGdk=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=hpHXE/h4JUfJV13izlNpDfYTskIs+Ks1Ks80yucxJ7f5vobrOA+ycNb9TGphgNRz8
-	 r/JA08+33OR40GszEcI0EYsa2UuQtDhPSycVZyKsmWBSYzkFOUAxII9lyz9FAVTpaD
-	 Gub9fBpXCoqbG8wsFGs2yM7rnxP5BpwDpccUbCg0tS92DETjDYi5vJFJYnCmyQ/NQT
-	 kJ2gf/hzTyKnQxnl4KiEbozNWqxDVoJV92GlT6Os76iYUCaV69Zng8VUrzGRKtYcLH
-	 S8/brx8gydWXLeKH9XZXB8s44MMWH0TC+WbQP3LrVeC5tLQO4EmGlgeYc4Z2cS8d4O
-	 lA2JjpO4uqUBg==
-From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com, Jack Yu <jack.yu@realtek.com>
-Cc: alsa-devel@alsa-project.org, lars@metafoo.de,
- "Flove(HsinFu)" <flove@realtek.com>, Oder Chiou <oder_chiou@realtek.com>,
- =?utf-8?q?Shuming_=5B=E8=8C=83=E6=9B=B8=E9=8A=98=5D?= <shumingf@realtek.com>,
- =?utf-8?q?Derek_=5B=E6=96=B9=E5=BE=B7=E7=BE=A9=5D?= <derek.fang@realtek.com>
-In-Reply-To: <62cad4e51c044108bad872ab349e36f8@realtek.com>
-References: <62cad4e51c044108bad872ab349e36f8@realtek.com>
-Subject: Re: [PATCH v2] ASoC: rt5682s: Add LDO output selection for dacref
-Message-Id: <169999899245.141821.11994247889425687867.b4-ty@kernel.org>
-Date: Tue, 14 Nov 2023 21:56:32 +0000
+	s=k20201202; t=1700019257;
+	bh=Aid9O+Bkm+8g5JHHpfOl4STD3ksch9koNvRL1NPegw0=;
+	h=From:To:Cc:Subject:Date:From;
+	b=LORo8Fz70Op9wkllJfW9BDGR5Vy24R8HRLdfULZas/7vqQMEX/wxCw5FMfA/kbuqf
+	 jwvYrV37xx5kb6oS31KJxdtLTIE9p24OF4nvEf+wE2E3ovI+qx5LXrevV4/1q0FaUw
+	 ej0XI259j7anp8BCpX6m9ZxH2aodr5oynUdcaPv0Mr0ZVvQ7izxynv22aiOaagrCrg
+	 hDeQVPxO4fzcASg+8qUUJgsR4BITMrjUWoHRg1dSDcrKXpznGD4YMo+XV9K0KyvfR0
+	 UJCZSUcAd11y3WE0Bl4PjkqptLK8ClAOZU6kGJ6ilcEporAItSbOSPtD8WLGKmFLOf
+	 MPuyGAF4jjakQ==
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Cc: Tony Lindgren <tony@atomide.com>,
+	Andreas Kemnade <andreas@kemnade.info>,
+	Mark Brown <broonie@kernel.org>,
+	Sasha Levin <sashal@kernel.org>,
+	peter.ujfalusi@gmail.com,
+	jarkko.nikula@bitmer.com,
+	lgirdwood@gmail.com,
+	perex@perex.cz,
+	tiwai@suse.com,
+	alsa-devel@alsa-project.org,
+	linux-omap@vger.kernel.org,
+	linux-sound@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 1/6] ASoC: ti: omap-mcbsp: Fix runtime PM
+ underflow warnings
+Date: Tue, 14 Nov 2023 22:33:35 -0500
+Message-ID: <20231115033350.1228588-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-0438c
-Message-ID-Hash: EYRFZWKTRXZA6QGOEYULJHWDDBRXUEC6
-X-Message-ID-Hash: EYRFZWKTRXZA6QGOEYULJHWDDBRXUEC6
-X-MailFrom: broonie@kernel.org
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 6.6.1
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: F7HDZNVRCKRBJSF6ZKAPIS5C2AFJHWDZ
+X-Message-ID-Hash: F7HDZNVRCKRBJSF6ZKAPIS5C2AFJHWDZ
+X-MailFrom: sashal@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -84,7 +94,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/EYRFZWKTRXZA6QGOEYULJHWDDBRXUEC6/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/F7HDZNVRCKRBJSF6ZKAPIS5C2AFJHWDZ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -93,36 +103,45 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, 13 Nov 2023 10:37:15 +0000, Jack Yu wrote:
-> Add LDO output selection for dacref.
-> 
-> 
+From: Tony Lindgren <tony@atomide.com>
 
-Applied to
+[ Upstream commit fbb74e56378d8306f214658e3d525a8b3f000c5a ]
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+We need to check for an active device as otherwise we get warnings
+for some mcbsp instances for "Runtime PM usage count underflow!".
 
-Thanks!
+Reported-by: Andreas Kemnade <andreas@kemnade.info>
+Signed-off-by: Tony Lindgren <tony@atomide.com>
+Link: https://lore.kernel.org/r/20231030052340.13415-1-tony@atomide.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ sound/soc/ti/omap-mcbsp.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-[1/1] ASoC: rt5682s: Add LDO output selection for dacref
-      commit: 577d71544871b075a25a09e4c5aa31008850c0a8
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+diff --git a/sound/soc/ti/omap-mcbsp.c b/sound/soc/ti/omap-mcbsp.c
+index fdabed5133e83..b399d86f22777 100644
+--- a/sound/soc/ti/omap-mcbsp.c
++++ b/sound/soc/ti/omap-mcbsp.c
+@@ -74,14 +74,16 @@ static int omap2_mcbsp_set_clks_src(struct omap_mcbsp *mcbsp, u8 fck_src_id)
+ 		return 0;
+ 	}
+ 
+-	pm_runtime_put_sync(mcbsp->dev);
++	if (mcbsp->active)
++		pm_runtime_put_sync(mcbsp->dev);
+ 
+ 	r = clk_set_parent(mcbsp->fclk, fck_src);
+ 	if (r)
+ 		dev_err(mcbsp->dev, "CLKS: could not clk_set_parent() to %s\n",
+ 			src);
+ 
+-	pm_runtime_get_sync(mcbsp->dev);
++	if (mcbsp->active)
++		pm_runtime_get_sync(mcbsp->dev);
+ 
+ 	clk_put(fck_src);
+ 
+-- 
+2.42.0
 
