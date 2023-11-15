@@ -4,90 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 05671C072A2
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Nov 2023 16:23:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 253C7C072A2
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Nov 2023 16:31:58 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3E501DED;
-	Wed, 15 Nov 2023 17:22:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3E501DED
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3BE52950;
+	Wed, 15 Nov 2023 17:31:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3BE52950
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1700065411;
-	bh=qiExyu90Cq/HbD3o2gkQoEdc/4Iw5tQXJFjvK3q4EJ4=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1700065916;
+	bh=XSWLyJxFTqyYvobQOApnn9qgzueYzqYkv2eVyB9iQuM=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Ud934bHmjipBUl7+8lSknFm5YzwiPs2xMIFE7rOVn/ULRvBaIxrev3eBgWLD10TBH
-	 0IFsNa/jO8Lcg3w1J6RUbya3WGx9h+GRJo6/HKsubFQZeQON3FTjhzbb6S8S3kUAz4
-	 naVCww8dqEYcZ08UeuJOpBbY0tlAPiC4xOOnBMDI=
+	b=kWQOMCMh2MVg3dFY4P7YmSyeT0B+RbPq+UfFAwS0OgjkNQXu0rNS7hBrCqS9/qicS
+	 GO7KrCu6ft3dNe6aYJnaqYvgOzr7EQYz91041cJrkTzDaxIgGkDbDKFlPLMqH40Msy
+	 DHIkF8Jx1S6dgV8iZZ6Z9YIHrZWB80dlW7RaTE/Q=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3B84BF8057E; Wed, 15 Nov 2023 17:21:48 +0100 (CET)
+	id 7C48AF8022B; Wed, 15 Nov 2023 17:30:37 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A3408F8057A;
-	Wed, 15 Nov 2023 17:21:47 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 081DDF801D5;
+	Wed, 15 Nov 2023 17:30:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D807CF8016E; Wed, 15 Nov 2023 17:21:41 +0100 (CET)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
+	id C0DE6F801D5; Wed, 15 Nov 2023 17:28:18 +0100 (CET)
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A8648F801D5
-	for <alsa-devel@alsa-project.org>; Wed, 15 Nov 2023 17:21:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A8648F801D5
+	by alsa1.perex.cz (Postfix) with ESMTPS id 7EA50F80093
+	for <alsa-devel@alsa-project.org>; Wed, 15 Nov 2023 17:28:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7EA50F80093
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=IueTENVK
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-	by mx0b-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id
- 3AF8RK0F026572;
-	Wed, 15 Nov 2023 10:21:28 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	PODMain02222019; bh=a7I08N5kAT1zqid6xYrms9BDvcQ623HvfcpTQaqkqnY=; b=
-	IueTENVKESbdqAKubScWTbgIa1xCeqMHt82OLrq9LFYa3YY7RFWHcmcMnVB9SpR7
-	MUJqdm2REcfxd0504I79P73oIZMo64D2xJcS3paGtB7z5/d8dhq8wa7u3VPtdylq
-	KepUynmEEf9N4zKogDP1N1Gr4G1nYJo/bOwp0Iqzio/+d+PA5yn/452wlbzrxl6m
-	YA5DuZO4WZhNH+utCOG28mtr1Jkv/EeCaykvvBxb9eytcaQMkklhrSuz3TaWv7Nt
-	o7nx9X1SDmFx4jlQlRmhkmw7CJL+iMdtTRa5o+I1JKIHclUEz1E0pO9/rhn+UE9y
-	Gewvr3F/nBJrtb0He7RkqQ==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3ua6wpcxwt-3
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 15 Nov 2023 10:21:28 -0600 (CST)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Wed, 15 Nov
- 2023 16:21:25 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.39 via Frontend Transport; Wed, 15 Nov 2023 16:21:25 +0000
-Received: from sbinding-cirrus-dsktp2.ad.cirrus.com (unknown [198.90.238.232])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 4565246B;
-	Wed, 15 Nov 2023 16:21:25 +0000 (UTC)
-From: Stefan Binding <sbinding@opensource.cirrus.com>
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-CC: <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
-        <patches@opensource.cirrus.com>, <linux-sound@vger.kernel.org>,
-        "Stefan
- Binding" <sbinding@opensource.cirrus.com>
-Subject: [PATCH v1 2/2] ALSA: hda/realtek: Add quirks for HP Laptops
-Date: Wed, 15 Nov 2023 16:21:16 +0000
-Message-ID: <20231115162116.494968-3-sbinding@opensource.cirrus.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231115162116.494968-1-sbinding@opensource.cirrus.com>
-References: <20231115162116.494968-1-sbinding@opensource.cirrus.com>
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=TTEp7dkh
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700065688; x=1731601688;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=XSWLyJxFTqyYvobQOApnn9qgzueYzqYkv2eVyB9iQuM=;
+  b=TTEp7dkhQlQ5Ph61lxzxhDlBf8RhktZQWqmPJ12rbkuKtRouDw/gJb7q
+   1C4/2ftAsljj6mU2qZAshq2oy0Aytm9vVPxtofBWW41H93EsM93seYlFS
+   SA2eabDLP+ASlWnX7gvMH7Zh0to/srbLvlutaQ5xM7CAhHRTqNCnhS2p5
+   95vq8xoJVvpjs32HiR67rRH2jXmcybQ62hF/r7QLdUgBX+fkfvAy7qgJz
+   0giNUSKLtRcuMa1AIWUVCgrod46kLfm6DWLa9jO3SM3wvINz9dzq2I6ll
+   JJeNz90zB/FY8rW0Di6Di48BxPvRc6EXkSiAEMn0+3HUBGj477UdVEIlc
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="370252757"
+X-IronPort-AV: E=Sophos;i="6.03,305,1694761200";
+   d="scan'208";a="370252757"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 15 Nov 2023 08:27:58 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="855690652"
+X-IronPort-AV: E=Sophos;i="6.03,305,1694761200";
+   d="scan'208";a="855690652"
+Received: from ipaliych-mobl2.amr.corp.intel.com (HELO [10.212.183.137])
+ ([10.212.183.137])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 15 Nov 2023 08:27:56 -0800
+Message-ID: <3e461bb5-fa6b-4729-8ff5-ccc1d2887066@linux.intel.com>
+Date: Wed, 15 Nov 2023 08:44:16 -0600
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: 2cYhn20Awiq-WucaqU4uBrRgcZAE9ZIa
-X-Proofpoint-ORIG-GUID: 2cYhn20Awiq-WucaqU4uBrRgcZAE9ZIa
-X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: WCHPQ4UF4MY4L2CVJ4HYLX22PNRHPSN4
-X-Message-ID-Hash: WCHPQ4UF4MY4L2CVJ4HYLX22PNRHPSN4
-X-MailFrom: prvs=66833364fe=sbinding@opensource.cirrus.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] soundwire: amd: add an error code check in
+ amd_sdw_clock_stop_exit
+To: Su Hui <suhui@nfschina.com>, vkoul@kernel.org,
+ yung-chuan.liao@linux.intel.com, sanyog.r.kale@intel.com, nathan@kernel.org,
+ ndesaulniers@google.com, trix@redhat.com,
+ Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ llvm@lists.linux.dev, kernel-janitors@vger.kernel.org
+References: <20231115095407.1059704-1-suhui@nfschina.com>
+Content-Language: en-US
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20231115095407.1059704-1-suhui@nfschina.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: YSZHNZRABRE4BNRXB6WO66PCZQX7PYMV
+X-Message-ID-Hash: YSZHNZRABRE4BNRXB6WO66PCZQX7PYMV
+X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -99,7 +97,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WCHPQ4UF4MY4L2CVJ4HYLX22PNRHPSN4/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YSZHNZRABRE4BNRXB6WO66PCZQX7PYMV/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -108,28 +106,38 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-These HP laptops use Realtek HDA codec combined with 2 or 4 CS35L41
-Amplifiers using SPI with Internal Boost.
 
-Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
----
- sound/pci/hda/patch_realtek.c | 3 +++
- 1 file changed, 3 insertions(+)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index a1e124370283..5618b1d9bfd1 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -9902,6 +9902,9 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x103c, 0x8c70, "HP EliteBook 835 G11", ALC287_FIXUP_CS35L41_I2C_2_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x8c71, "HP EliteBook 845 G11", ALC287_FIXUP_CS35L41_I2C_2_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x8c72, "HP EliteBook 865 G11", ALC287_FIXUP_CS35L41_I2C_2_HP_GPIO_LED),
-+	SND_PCI_QUIRK(0x103c, 0x8ca4, "HP ZBook Fury", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
-+	SND_PCI_QUIRK(0x103c, 0x8ca7, "HP ZBook Fury", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
-+	SND_PCI_QUIRK(0x103c, 0x8cf5, "HP ZBook Studio 16", ALC245_FIXUP_CS35L41_SPI_4_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x1043, 0x103e, "ASUS X540SA", ALC256_FIXUP_ASUS_MIC),
- 	SND_PCI_QUIRK(0x1043, 0x103f, "ASUS TX300", ALC282_FIXUP_ASUS_TX300),
- 	SND_PCI_QUIRK(0x1043, 0x106d, "Asus K53BE", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
--- 
-2.34.1
+On 11/15/23 03:54, Su Hui wrote:
+> Clang static analyzer complains that value stored to 'ret' is never read.
+> Add an error code check and print an error message if 'readl_poll_timeout'
+> failed.
+> 
+> Signed-off-by: Su Hui <suhui@nfschina.com>
+> ---
+>  drivers/soundwire/amd_manager.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/drivers/soundwire/amd_manager.c b/drivers/soundwire/amd_manager.c
+> index 3a99f6dcdfaf..f391b541f4b7 100644
+> --- a/drivers/soundwire/amd_manager.c
+> +++ b/drivers/soundwire/amd_manager.c
+> @@ -1029,6 +1029,10 @@ static int amd_sdw_clock_stop_exit(struct amd_sdw_manager *amd_manager)
+>  		ret = readl_poll_timeout(amd_manager->mmio + ACP_SW_CLK_RESUME_CTRL, val,
+>  					 (val & AMD_SDW_CLK_RESUME_DONE), ACP_DELAY_US,
+>  					 AMD_SDW_TIMEOUT);
+> +		if (ret)
+> +			dev_err(amd_manager->dev, "%s: timed out: %pe\n", __func__,
+> +				ERR_PTR(ret));
 
+Is this really the desired behavior?
+
+This patch fixes the static analysis issue by logging the error code,
+but does it make sense to continue resuming here and trying to exit from
+the clock stop mode?
+
+At this point a bus reset might be a more relevant behavior...
+
+>  		if (val & AMD_SDW_CLK_RESUME_DONE) {
+>  			writel(0, amd_manager->mmio + ACP_SW_CLK_RESUME_CTRL);
+>  			ret = sdw_bus_exit_clk_stop(&amd_manager->bus);
