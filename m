@@ -4,127 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 266DEC54FB9
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Nov 2023 11:19:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 95BD8C197A0
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Nov 2023 11:23:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3938B852;
-	Thu, 16 Nov 2023 12:19:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3938B852
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6256E828;
+	Thu, 16 Nov 2023 12:22:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6256E828
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1700133590;
-	bh=PYuLWqWIvuzoTh9zLT3pDQjY0fceUqdyLBejuAD2FK4=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	s=default; t=1700133799;
+	bh=x7hSpdmxDwHku0Gw3Nt2H2k9NcxA8uREnviOjleLnKM=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=LyEn4Jfa7QkWL28ZJcc8vGrKYvvMmDKkKRzvviRg/pZQ4nKC4j7a0hhRfHlN2cVKC
-	 FNUkEgESD/GqBcnqZ75SdQLh9tyDQ8NQf69U8u0QZh5450jq7lvPrdMSMBQiSaQ+zb
-	 HiLVcekBOD67EjLVauP33sjo4n816onZVY0pzVcM=
+	b=RGyw0G9HQ/1h2eQVPZ+NCVZFhOiiZaok1DpxV1bCX7OnmsSJK0T3zjXE3YxCGsovH
+	 3w6r90VUSJ0mFbF3P1yGneftNBNQzQ4ewrJPXXR6RrjjzCu2POSfEWsBw83ELkQ/nL
+	 WC6J90ovEh59LT8FidkQjs2OBGHrNkqc5moez0qc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 05E6FF8022B; Thu, 16 Nov 2023 12:18:25 +0100 (CET)
+	id B80D0F80551; Thu, 16 Nov 2023 12:21:59 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C125AF800ED;
-	Thu, 16 Nov 2023 12:18:24 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 253EFF80558;
+	Thu, 16 Nov 2023 12:21:59 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D5BBDF80549; Thu, 16 Nov 2023 12:15:40 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id CEBF5F802E8; Thu, 16 Nov 2023 12:21:52 +0100 (CET)
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 3D23FF8016E
-	for <alsa-devel@alsa-project.org>; Thu, 16 Nov 2023 12:15:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3D23FF8016E
+	by alsa1.perex.cz (Postfix) with ESMTPS id A28E4F80166
+	for <alsa-devel@alsa-project.org>; Thu, 16 Nov 2023 12:21:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A28E4F80166
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=NURLVtFg
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id C2D0E61982;
-	Thu, 16 Nov 2023 11:15:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A6D8C433C7;
-	Thu, 16 Nov 2023 11:15:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1700133330;
-	bh=PYuLWqWIvuzoTh9zLT3pDQjY0fceUqdyLBejuAD2FK4=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=NURLVtFgFJIc4O32AKjINLEyPmXpbOm5VoIoTocP6FVkvw7UyoBnZTT/mJE07X9Yv
-	 TPoeK0s9WKGinXgkHWFLsAbxwxUWxDYykWgj8unq854qtBAxvTv0bJkFP9/CceN3s2
-	 t49DCPOGtPFbdT+1WjppKc2UGgEpJAHCAv8urdiXOQpH/Pf9rJX0+JvsgmqudV2vzX
-	 skfCmSulOrOT+cftBvSVL659PU+UHie3OK8i/FqS5PAOL3rCl9VUtjYW3OUlpBW43i
-	 IjOMcH0mQwZ5K5gHyt8Ot1wdUeGD3J9IVaefl11Frb5dnRBQNJ+CLTyOFlD3A2y2ad
-	 guoGpF/DnTCpA==
-Message-ID: <a6e39566-f872-4bae-83e4-212e75e705dc@kernel.org>
-Date: Thu, 16 Nov 2023 12:15:21 +0100
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=i7Zj4J0Y
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700133702; x=1731669702;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=x7hSpdmxDwHku0Gw3Nt2H2k9NcxA8uREnviOjleLnKM=;
+  b=i7Zj4J0YUJS60Q8KY4mRVDnkqHQN+JOg/L2MhZ8t7MMY+BMT5SiEFr45
+   LWF/yw4VLxyJUFgeHvVRSIoFuiuR278R+8pm0apWwkXW3hNfX+DtUYF85
+   d+gn9BN+AIROHxGaRWpSX3cGbv7t+jgssnrUQ2C9CAJiJe20gQTLlLfCy
+   xQ9oQHdfPmViBfRcOt4sFbDGQJa7I9QZUr2n5l4TzjYqWFN6gLW6T2JiF
+   AtMW1W4BFeIw6tnOXyvI2j9NDAOWT269VaozFe11uvH/pxP2MK8Q4gbWO
+   lVwb+lGcSO1pNDvYm+tlxtNqDJDpOujvLU4f64Lm2CEF2VbtX50gTUnBx
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="457561949"
+X-IronPort-AV: E=Sophos;i="6.03,308,1694761200";
+   d="scan'208";a="457561949"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 16 Nov 2023 03:21:38 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.03,308,1694761200";
+   d="scan'208";a="6698214"
+Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
+  by fmviesa002.fm.intel.com with ESMTP; 16 Nov 2023 03:21:34 -0800
+From: Cezary Rojewski <cezary.rojewski@intel.com>
+To: broonie@kernel.org,
+	tiwai@suse.com,
+	perex@perex.cz
+Cc: alsa-devel@alsa-project.org,
+	linux-sound@vger.kernel.org,
+	amadeuszx.slawinski@linux.intel.com,
+	pierre-louis.bossart@linux.intel.com,
+	hdegoede@redhat.com,
+	Cezary Rojewski <cezary.rojewski@intel.com>
+Subject: [PATCH v4 01/16] ALSA: pcm: Introduce MSBITS subformat interface
+Date: Thu, 16 Nov 2023 12:22:40 +0100
+Message-Id: <20231116112255.1584795-2-cezary.rojewski@intel.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20231116112255.1584795-1-cezary.rojewski@intel.com>
+References: <20231116112255.1584795-1-cezary.rojewski@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v9 14/15] media: imx-asrc: Add memory to memory driver
-To: Shengjiu Wang <shengjiu.wang@gmail.com>
-Cc: Shengjiu Wang <shengjiu.wang@nxp.com>, hverkuil@xs4all.nl,
- sakari.ailus@iki.fi, tfiga@chromium.org, m.szyprowski@samsung.com,
- mchehab@kernel.org, linux-media@vger.kernel.org,
- linux-kernel@vger.kernel.org, Xiubo.Lee@gmail.com, festevam@gmail.com,
- nicoleotsuka@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
- perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
- linuxppc-dev@lists.ozlabs.org
-References: <1699595289-25773-1-git-send-email-shengjiu.wang@nxp.com>
- <1699595289-25773-15-git-send-email-shengjiu.wang@nxp.com>
- <70821f4c-d0f8-4a35-b664-0823bf430816@kernel.org>
- <CAA+D8ANiNr0DVNP4eiTGVzvYGxTJJBjJocW++x0A9GDEbNTqRA@mail.gmail.com>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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 fv0=
-In-Reply-To: 
- <CAA+D8ANiNr0DVNP4eiTGVzvYGxTJJBjJocW++x0A9GDEbNTqRA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: 6HQ3WOIXLHSL3KU2OVSVK2SGXSIQHDT5
-X-Message-ID-Hash: 6HQ3WOIXLHSL3KU2OVSVK2SGXSIQHDT5
-X-MailFrom: krzk@kernel.org
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: I4PQJRD4IUFR6ZB5G6WN3S2OJBWLZHS3
+X-Message-ID-Hash: I4PQJRD4IUFR6ZB5G6WN3S2OJBWLZHS3
+X-MailFrom: cezary.rojewski@intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -136,7 +94,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6HQ3WOIXLHSL3KU2OVSVK2SGXSIQHDT5/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/I4PQJRD4IUFR6ZB5G6WN3S2OJBWLZHS3/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -145,23 +103,206 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 16/11/2023 09:32, Shengjiu Wang wrote:
+From: Jaroslav Kysela <perex@perex.cz>
 
->>> +MODULE_DESCRIPTION("Freescale ASRC M2M driver");
->>> +MODULE_ALIAS("platform:" M2M_DRV_NAME);
->>
->> You should not need MODULE_ALIAS() in normal cases. If you need it,
->> usually it means your device ID table is wrong (e.g. misses either
->> entries or MODULE_DEVICE_TABLE()). MODULE_ALIAS() is not a substitute
->> for incomplete ID table.
-> 
-> 
-> This driver don't have MODULE_DEVICE_TABLE.  it is only registered
-> by platform_device_register_data().
+Improve granularity of format selection for S32/U32 formats by adding
+constants representing 20, 24 and MAX most significant bits.
 
-Which is the problem. I thought I made myself clear but if it is not the
-case: drop MODULE_ALIAS.
+The MAX means the maximum number of significant bits which can
+the physical format hold. For 32-bit formats, MAX is related
+to 32 bits. For 8-bit formats, MAX is related to 8 bits etc.
 
-Best regards,
-Krzysztof
+The drivers may use snd_pcm_hw_constraint_subformats with
+a simple format -> subformats table.
+
+Acked-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Jaroslav Kysela <perex@perex.cz>
+Co-developed-by: Cezary Rojewski <cezary.rojewski@intel.com>
+Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
+---
+ include/sound/pcm.h               |  7 ++++
+ include/uapi/sound/asound.h       |  7 ++--
+ sound/core/pcm.c                  |  3 ++
+ sound/core/pcm_native.c           | 55 +++++++++++++++++++++++++++++--
+ tools/include/uapi/sound/asound.h |  7 ++--
+ 5 files changed, 73 insertions(+), 6 deletions(-)
+
+diff --git a/include/sound/pcm.h b/include/sound/pcm.h
+index 2a815373dac1..cc175c623dac 100644
+--- a/include/sound/pcm.h
++++ b/include/sound/pcm.h
+@@ -32,6 +32,7 @@
+ struct snd_pcm_hardware {
+ 	unsigned int info;		/* SNDRV_PCM_INFO_* */
+ 	u64 formats;			/* SNDRV_PCM_FMTBIT_* */
++	u32 subformats;			/* for S32_LE, SNDRV_PCM_SUBFMTBIT_* */
+ 	unsigned int rates;		/* SNDRV_PCM_RATE_* */
+ 	unsigned int rate_min;		/* min rate */
+ 	unsigned int rate_max;		/* max rate */
+@@ -217,6 +218,12 @@ struct snd_pcm_ops {
+ #define SNDRV_PCM_FMTBIT_U20		SNDRV_PCM_FMTBIT_U20_BE
+ #endif
+ 
++#define _SNDRV_PCM_SUBFMTBIT(fmt)	BIT((__force int)SNDRV_PCM_SUBFORMAT_##fmt)
++#define SNDRV_PCM_SUBFMTBIT_STD		_SNDRV_PCM_SUBFMTBIT(STD)
++#define SNDRV_PCM_SUBFMTBIT_MSBITS_MAX	_SNDRV_PCM_SUBFMTBIT(MSBITS_MAX)
++#define SNDRV_PCM_SUBFMTBIT_MSBITS_20	_SNDRV_PCM_SUBFMTBIT(MSBITS_20)
++#define SNDRV_PCM_SUBFMTBIT_MSBITS_24	_SNDRV_PCM_SUBFMTBIT(MSBITS_24)
++
+ struct snd_pcm_file {
+ 	struct snd_pcm_substream *substream;
+ 	int no_compat_mmap;
+diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
+index f9939da41122..d5b9cfbd9cea 100644
+--- a/include/uapi/sound/asound.h
++++ b/include/uapi/sound/asound.h
+@@ -142,7 +142,7 @@ struct snd_hwdep_dsp_image {
+  *                                                                           *
+  *****************************************************************************/
+ 
+-#define SNDRV_PCM_VERSION		SNDRV_PROTOCOL_VERSION(2, 0, 15)
++#define SNDRV_PCM_VERSION		SNDRV_PROTOCOL_VERSION(2, 0, 16)
+ 
+ typedef unsigned long snd_pcm_uframes_t;
+ typedef signed long snd_pcm_sframes_t;
+@@ -267,7 +267,10 @@ typedef int __bitwise snd_pcm_format_t;
+ 
+ typedef int __bitwise snd_pcm_subformat_t;
+ #define	SNDRV_PCM_SUBFORMAT_STD		((__force snd_pcm_subformat_t) 0)
+-#define	SNDRV_PCM_SUBFORMAT_LAST	SNDRV_PCM_SUBFORMAT_STD
++#define	SNDRV_PCM_SUBFORMAT_MSBITS_MAX	((__force snd_pcm_subformat_t) 1)
++#define	SNDRV_PCM_SUBFORMAT_MSBITS_20	((__force snd_pcm_subformat_t) 2)
++#define	SNDRV_PCM_SUBFORMAT_MSBITS_24	((__force snd_pcm_subformat_t) 3)
++#define	SNDRV_PCM_SUBFORMAT_LAST	SNDRV_PCM_SUBFORMAT_MSBITS_24
+ 
+ #define SNDRV_PCM_INFO_MMAP		0x00000001	/* hardware supports mmap */
+ #define SNDRV_PCM_INFO_MMAP_VALID	0x00000002	/* period data are valid during transfer */
+diff --git a/sound/core/pcm.c b/sound/core/pcm.c
+index 20bb2d7c8d4b..c4bc15f048b6 100644
+--- a/sound/core/pcm.c
++++ b/sound/core/pcm.c
+@@ -265,6 +265,9 @@ static const char * const snd_pcm_access_names[] = {
+ 
+ static const char * const snd_pcm_subformat_names[] = {
+ 	SUBFORMAT(STD), 
++	SUBFORMAT(MSBITS_MAX),
++	SUBFORMAT(MSBITS_20),
++	SUBFORMAT(MSBITS_24),
+ };
+ 
+ static const char * const snd_pcm_tstamp_mode_names[] = {
+diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+index f610b08f5a2b..5a9faa701059 100644
+--- a/sound/core/pcm_native.c
++++ b/sound/core/pcm_native.c
+@@ -479,6 +479,7 @@ static int fixup_unreferenced_params(struct snd_pcm_substream *substream,
+ {
+ 	const struct snd_interval *i;
+ 	const struct snd_mask *m;
++	struct snd_mask *m_rw;
+ 	int err;
+ 
+ 	if (!params->msbits) {
+@@ -487,6 +488,22 @@ static int fixup_unreferenced_params(struct snd_pcm_substream *substream,
+ 			params->msbits = snd_interval_value(i);
+ 	}
+ 
++	if (params->msbits) {
++		m = hw_param_mask_c(params, SNDRV_PCM_HW_PARAM_FORMAT);
++		if (snd_mask_single(m)) {
++			snd_pcm_format_t format = (__force snd_pcm_format_t)snd_mask_min(m);
++
++			if (snd_pcm_format_linear(format) &&
++			    snd_pcm_format_width(format) != params->msbits) {
++				m_rw = hw_param_mask(params, SNDRV_PCM_HW_PARAM_SUBFORMAT);
++				snd_mask_reset(m_rw,
++					       (__force unsigned)SNDRV_PCM_SUBFORMAT_MSBITS_MAX);
++				if (snd_mask_empty(m_rw))
++					return -EINVAL;
++			}
++		}
++	}
++
+ 	if (!params->rate_den) {
+ 		i = hw_param_interval_c(params, SNDRV_PCM_HW_PARAM_RATE);
+ 		if (snd_interval_single(i)) {
+@@ -2483,6 +2500,41 @@ static int snd_pcm_hw_rule_buffer_bytes_max(struct snd_pcm_hw_params *params,
+ 	return snd_interval_refine(hw_param_interval(params, rule->var), &t);
+ }		
+ 
++static int snd_pcm_hw_rule_subformats(struct snd_pcm_hw_params *params,
++				      struct snd_pcm_hw_rule *rule)
++{
++	struct snd_mask *sfmask = hw_param_mask(params, SNDRV_PCM_HW_PARAM_SUBFORMAT);
++	struct snd_mask *fmask = hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
++	u32 *subformats = rule->private;
++	snd_pcm_format_t f;
++	struct snd_mask m;
++
++	snd_mask_none(&m);
++	/* All PCMs support at least the default STD subformat. */
++	snd_mask_set(&m, (__force unsigned)SNDRV_PCM_SUBFORMAT_STD);
++
++	pcm_for_each_format(f) {
++		if (!snd_mask_test(fmask, (__force unsigned)f))
++			continue;
++
++		if (f == SNDRV_PCM_FORMAT_S32_LE)
++			m.bits[0] |= *subformats;
++		else if (snd_pcm_format_linear(f))
++			snd_mask_set(&m, (__force unsigned)SNDRV_PCM_SUBFORMAT_MSBITS_MAX);
++	}
++
++	return snd_mask_refine(sfmask, &m);
++}
++
++static int snd_pcm_hw_constraint_subformats(struct snd_pcm_runtime *runtime,
++					   unsigned int cond, u32 *subformats)
++{
++	return snd_pcm_hw_rule_add(runtime, cond, -1,
++				   snd_pcm_hw_rule_subformats, (void *)subformats,
++				   SNDRV_PCM_HW_PARAM_SUBFORMAT,
++				   SNDRV_PCM_HW_PARAM_FORMAT, -1);
++}
++
+ static int snd_pcm_hw_constraints_init(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+@@ -2634,8 +2686,7 @@ static int snd_pcm_hw_constraints_complete(struct snd_pcm_substream *substream)
+ 	if (err < 0)
+ 		return err;
+ 
+-	err = snd_pcm_hw_constraint_mask(runtime, SNDRV_PCM_HW_PARAM_SUBFORMAT,
+-					 PARAM_MASK_BIT(SNDRV_PCM_SUBFORMAT_STD));
++	err = snd_pcm_hw_constraint_subformats(runtime, 0, &hw->subformats);
+ 	if (err < 0)
+ 		return err;
+ 
+diff --git a/tools/include/uapi/sound/asound.h b/tools/include/uapi/sound/asound.h
+index f9939da41122..d5b9cfbd9cea 100644
+--- a/tools/include/uapi/sound/asound.h
++++ b/tools/include/uapi/sound/asound.h
+@@ -142,7 +142,7 @@ struct snd_hwdep_dsp_image {
+  *                                                                           *
+  *****************************************************************************/
+ 
+-#define SNDRV_PCM_VERSION		SNDRV_PROTOCOL_VERSION(2, 0, 15)
++#define SNDRV_PCM_VERSION		SNDRV_PROTOCOL_VERSION(2, 0, 16)
+ 
+ typedef unsigned long snd_pcm_uframes_t;
+ typedef signed long snd_pcm_sframes_t;
+@@ -267,7 +267,10 @@ typedef int __bitwise snd_pcm_format_t;
+ 
+ typedef int __bitwise snd_pcm_subformat_t;
+ #define	SNDRV_PCM_SUBFORMAT_STD		((__force snd_pcm_subformat_t) 0)
+-#define	SNDRV_PCM_SUBFORMAT_LAST	SNDRV_PCM_SUBFORMAT_STD
++#define	SNDRV_PCM_SUBFORMAT_MSBITS_MAX	((__force snd_pcm_subformat_t) 1)
++#define	SNDRV_PCM_SUBFORMAT_MSBITS_20	((__force snd_pcm_subformat_t) 2)
++#define	SNDRV_PCM_SUBFORMAT_MSBITS_24	((__force snd_pcm_subformat_t) 3)
++#define	SNDRV_PCM_SUBFORMAT_LAST	SNDRV_PCM_SUBFORMAT_MSBITS_24
+ 
+ #define SNDRV_PCM_INFO_MMAP		0x00000001	/* hardware supports mmap */
+ #define SNDRV_PCM_INFO_MMAP_VALID	0x00000002	/* period data are valid during transfer */
+-- 
+2.25.1
 
