@@ -4,64 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4242BC54FB9
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Nov 2023 11:24:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 24149C54FB9
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Nov 2023 11:24:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 002C9DF6;
-	Thu, 16 Nov 2023 12:23:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 002C9DF6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7A43D829;
+	Thu, 16 Nov 2023 12:23:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7A43D829
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1700133868;
-	bh=VuYlq/FCccFmDGVaizE1u1dTXFhtVM3x9r1OKSKW4tI=;
+	s=default; t=1700133879;
+	bh=kbupxWkleH9GdPSf9XvomWn0I/aCj77+qUF28ZlW3tc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=sit0ZvsP36BoDd2gnV8ZKZ+jIOMlzwoYaKrOFdq/BuL9Vau5sJajqeC+q/2PuLjdS
-	 dIwC52BNzvCM//m3ZGa0tRdnEatziL7P6mj36yyLihJnYukdI4k7rR2d4bvOwLJriI
-	 V/rj+BpWkESb6oKpQhKY2TneW6PrSUavsg0vhHN4=
+	b=n8b2+Da/VXIJ6pi2mNoz6V/ANHKKOF1gUv0PDFJU5n/6UHy764mgDXzs4x/Zp+L9C
+	 gyvWQKAz4ZimJBvhMD8p3M7A21XlNk0/g9YdA2u37UCsD/oxqe+TzuBdImLOfK5Nvb
+	 IMMUCQ9xsuyK+RBGu86VyNgVk0g23Cf9pb9gwzH4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id F153DF805B0; Thu, 16 Nov 2023 12:22:20 +0100 (CET)
+	id B76FDF805C3; Thu, 16 Nov 2023 12:22:23 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D1ED1F805AD;
-	Thu, 16 Nov 2023 12:22:18 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C921FF805BD;
+	Thu, 16 Nov 2023 12:22:21 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 17710F80589; Thu, 16 Nov 2023 12:22:13 +0100 (CET)
+	id EB4B0F8057F; Thu, 16 Nov 2023 12:22:13 +0100 (CET)
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A3CA5F801D5
-	for <alsa-devel@alsa-project.org>; Thu, 16 Nov 2023 12:21:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A3CA5F801D5
+	by alsa1.perex.cz (Postfix) with ESMTPS id 1C11DF8055C
+	for <alsa-devel@alsa-project.org>; Thu, 16 Nov 2023 12:22:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1C11DF8055C
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=POToFsCr
+ header.s=Intel header.b=bz51cOzt
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700133704; x=1731669704;
+  t=1700133722; x=1731669722;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=VuYlq/FCccFmDGVaizE1u1dTXFhtVM3x9r1OKSKW4tI=;
-  b=POToFsCr+Jv8zMT1TjbFAr6a3fWZSaa7ysB5KkHHTsDsL/86MrcISZ4c
-   qxM0JqbcL/2gVH5X99Bvx8sDYuyHlyhZcbYWApTW6JZ3N/vkT+dm4Qmkn
-   b9gSuENMbvulcpQBpx8BP+rVqHVfqliCIoSi1meUsyRoGx0qcaQI4PvKE
-   5uHPpOohjiX5FzWr0Q71ZBHO371XESNqcROYRA/d4r4AGFhjb/rC9Sg0Z
-   y8QEFLAAhmqTN6jNRRsggsDxGxsBiuP1lzsQjmIiuinlYUeYnj51LHZoo
-   Bt06SNgJ0An+p1nKoL4WcnRHHVmcTT+XfcFfAUAbLa8D1HjKIAuOPKGH/
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="457561958"
+  bh=kbupxWkleH9GdPSf9XvomWn0I/aCj77+qUF28ZlW3tc=;
+  b=bz51cOztdq9E4T7ZdWsVTDoCnQo8lYzaIGWIJj2wKNXIiKwtYsNBq50H
+   xT5UyaCdDStFUp4QAmoIxl6r3GvikHtEipuBJQO6GVl4YsntQ1wH/LFBW
+   AX5yMtzbe/jQimc6h7iCMQxAgRv5irQ8m80UHgsDdVCCHZdoYRTTktSgb
+   X+C9DK66kZekiEG150BkXEhY4JIl5AnA4pt5+zSvUCwNjnYoEIX1C9QY2
+   kwIpwDWDRXKFPTP2lbzN1smlRYT9P9gqexTCSaMuX7FpZpWeHAi4yCCv+
+   aJaYyDglstlU2R4kcNkd8OshLf2RLAaXL1dv8hA2308oC+jFRldZt1ENe
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="457562024"
 X-IronPort-AV: E=Sophos;i="6.03,308,1694761200";
-   d="scan'208";a="457561958"
+   d="scan'208";a="457562024"
 Received: from fmviesa002.fm.intel.com ([10.60.135.142])
   by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 Nov 2023 03:21:40 -0800
+ 16 Nov 2023 03:21:59 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.03,308,1694761200";
-   d="scan'208";a="6698217"
+   d="scan'208";a="6698240"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
-  by fmviesa002.fm.intel.com with ESMTP; 16 Nov 2023 03:21:38 -0800
+  by fmviesa002.fm.intel.com with ESMTP; 16 Nov 2023 03:21:57 -0800
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: broonie@kernel.org,
 	tiwai@suse.com,
@@ -72,16 +72,17 @@ Cc: alsa-devel@alsa-project.org,
 	pierre-louis.bossart@linux.intel.com,
 	hdegoede@redhat.com,
 	Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: [PATCH v4 02/16] ALSA: hda: Honor subformat when querying PCMs
-Date: Thu, 16 Nov 2023 12:22:41 +0100
-Message-Id: <20231116112255.1584795-3-cezary.rojewski@intel.com>
+Subject: [PATCH v4 09/16] ASoC: codecs: hdac_hda: Switch to new stream-format
+ interface
+Date: Thu, 16 Nov 2023 12:22:48 +0100
+Message-Id: <20231116112255.1584795-10-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20231116112255.1584795-1-cezary.rojewski@intel.com>
 References: <20231116112255.1584795-1-cezary.rojewski@intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: UUWHIWWALQMI6KBF6A76FYWC6QVTRZTH
-X-Message-ID-Hash: UUWHIWWALQMI6KBF6A76FYWC6QVTRZTH
+Message-ID-Hash: IG2JCKBQBX67YZMF5UH4XOCBJJU2U7EX
+X-Message-ID-Hash: IG2JCKBQBX67YZMF5UH4XOCBJJU2U7EX
 X-MailFrom: cezary.rojewski@intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -94,7 +95,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UUWHIWWALQMI6KBF6A76FYWC6QVTRZTH/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IG2JCKBQBX67YZMF5UH4XOCBJJU2U7EX/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -103,201 +104,41 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Update mechanism for querying supported PCMs to allow for granular
-format selection when container size is 32 bits. Currently always the
-highest bit depth is selected, regardless of how many actual formats
-codec in question supports.
+To provide option for selecting different bit-per-sample than just the
+maximum one, use the new format calculation mechanism.
 
 Acked-by: Mark Brown <broonie@kernel.org>
-Co-developed-by: Jaroslav Kysela <perex@perex.cz>
-Signed-off-by: Jaroslav Kysela <perex@perex.cz>
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 ---
- include/sound/hda_codec.h    |  5 ++--
- include/sound/hdaudio.h      |  3 ++-
- sound/hda/hdac_device.c      | 45 ++++++++++++++++++++----------------
- sound/pci/hda/hda_codec.c    |  2 ++
- sound/pci/hda/patch_hdmi.c   |  1 +
- sound/soc/codecs/hdac_hdmi.c |  3 ++-
- 6 files changed, 35 insertions(+), 24 deletions(-)
+ sound/soc/codecs/hdac_hda.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-diff --git a/include/sound/hda_codec.h b/include/sound/hda_codec.h
-index 5497dc9c396a..9c94ba7c183d 100644
---- a/include/sound/hda_codec.h
-+++ b/include/sound/hda_codec.h
-@@ -141,6 +141,7 @@ struct hda_pcm_stream {
- 	hda_nid_t nid;	/* default NID to query rates/formats/bps, or set up */
- 	u32 rates;	/* supported rates */
- 	u64 formats;	/* supported formats (SNDRV_PCM_FMTBIT_) */
-+	u32 subformats;	/* for S32_LE format, SNDRV_PCM_SUBFMTBIT_* */
- 	unsigned int maxbps;	/* supported max. bit per sample */
- 	const struct snd_pcm_chmap_elem *chmap; /* chmap to override */
- 	struct hda_pcm_ops ops;
-@@ -448,8 +449,8 @@ void __snd_hda_codec_cleanup_stream(struct hda_codec *codec, hda_nid_t nid,
- #define snd_hda_codec_cleanup_stream(codec, nid) \
- 	__snd_hda_codec_cleanup_stream(codec, nid, 0)
+diff --git a/sound/soc/codecs/hdac_hda.c b/sound/soc/codecs/hdac_hda.c
+index 355f30779a34..c08375672661 100644
+--- a/sound/soc/codecs/hdac_hda.c
++++ b/sound/soc/codecs/hdac_hda.c
+@@ -215,18 +215,16 @@ static int hdac_hda_dai_hw_params(struct snd_pcm_substream *substream,
+ 	struct hdac_hda_priv *hda_pvt;
+ 	unsigned int format_val;
+ 	unsigned int maxbps;
++	unsigned int bps;
  
--#define snd_hda_query_supported_pcm(codec, nid, ratesp, fmtsp, bpsp) \
--	snd_hdac_query_supported_pcm(&(codec)->core, nid, ratesp, fmtsp, bpsp)
-+#define snd_hda_query_supported_pcm(codec, nid, ratesp, fmtsp, subfmtp, bpsp) \
-+	snd_hdac_query_supported_pcm(&(codec)->core, nid, ratesp, fmtsp, subfmtp, bpsp)
- #define snd_hda_is_supported_format(codec, nid, fmt) \
- 	snd_hdac_is_supported_format(&(codec)->core, nid, fmt)
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+ 		maxbps = dai->driver->playback.sig_bits;
+ 	else
+ 		maxbps = dai->driver->capture.sig_bits;
++	bps = snd_hdac_stream_format_bps(params_format(params), SNDRV_PCM_SUBFORMAT_STD, maxbps);
  
-diff --git a/include/sound/hdaudio.h b/include/sound/hdaudio.h
-index dd7c87bbc613..7cfea9e7f6e4 100644
---- a/include/sound/hdaudio.h
-+++ b/include/sound/hdaudio.h
-@@ -146,7 +146,8 @@ unsigned int snd_hdac_calc_stream_format(unsigned int rate,
- 					 unsigned int maxbps,
- 					 unsigned short spdif_ctls);
- int snd_hdac_query_supported_pcm(struct hdac_device *codec, hda_nid_t nid,
--				u32 *ratesp, u64 *formatsp, unsigned int *bpsp);
-+				 u32 *ratesp, u64 *formatsp, u32 *subformatsp,
-+				 unsigned int *bpsp);
- bool snd_hdac_is_supported_format(struct hdac_device *codec, hda_nid_t nid,
- 				  unsigned int format);
- 
-diff --git a/sound/hda/hdac_device.c b/sound/hda/hdac_device.c
-index bbf7bcdb449a..cde4d5c33771 100644
---- a/sound/hda/hdac_device.c
-+++ b/sound/hda/hdac_device.c
-@@ -817,15 +817,17 @@ static unsigned int query_stream_param(struct hdac_device *codec, hda_nid_t nid)
-  * @nid: NID to query
-  * @ratesp: the pointer to store the detected rate bitflags
-  * @formatsp: the pointer to store the detected formats
-+ * @subformatsp: the pointer to store the detected subformats for S32_LE format
-  * @bpsp: the pointer to store the detected format widths
-  *
-- * Queries the supported PCM rates and formats.  The NULL @ratesp, @formatsp
-- * or @bsps argument is ignored.
-+ * Queries the supported PCM rates and formats.  The NULL @ratesp, @formatsp,
-+ * @subformatsp or @bpsp argument is ignored.
-  *
-  * Returns 0 if successful, otherwise a negative error code.
-  */
- int snd_hdac_query_supported_pcm(struct hdac_device *codec, hda_nid_t nid,
--				 u32 *ratesp, u64 *formatsp, unsigned int *bpsp)
-+				 u32 *ratesp, u64 *formatsp, u32 *subformatsp,
-+				 unsigned int *bpsp)
- {
- 	unsigned int i, val, wcaps;
- 
-@@ -848,9 +850,10 @@ int snd_hdac_query_supported_pcm(struct hdac_device *codec, hda_nid_t nid,
- 		*ratesp = rates;
- 	}
- 
--	if (formatsp || bpsp) {
--		u64 formats = 0;
-+	if (formatsp || subformatsp || bpsp) {
- 		unsigned int streams, bps;
-+		u32 subformats = 0;
-+		u64 formats = 0;
- 
- 		streams = query_stream_param(codec, nid);
- 		if (!streams)
-@@ -866,24 +869,24 @@ int snd_hdac_query_supported_pcm(struct hdac_device *codec, hda_nid_t nid,
- 				formats |= SNDRV_PCM_FMTBIT_S16_LE;
- 				bps = 16;
- 			}
--			if (wcaps & AC_WCAP_DIGITAL) {
--				if (val & AC_SUPPCM_BITS_32)
-+			if (val & AC_SUPPCM_BITS_20) {
-+				formats |= SNDRV_PCM_FMTBIT_S32_LE;
-+				subformats |= SNDRV_PCM_SUBFMTBIT_MSBITS_20;
-+				bps = 20;
-+			}
-+			if (val & AC_SUPPCM_BITS_24) {
-+				formats |= SNDRV_PCM_FMTBIT_S32_LE;
-+				subformats |= SNDRV_PCM_SUBFMTBIT_MSBITS_24;
-+				bps = 24;
-+			}
-+			if (val & AC_SUPPCM_BITS_32) {
-+				if (wcaps & AC_WCAP_DIGITAL) {
- 					formats |= SNDRV_PCM_FMTBIT_IEC958_SUBFRAME_LE;
--				if (val & (AC_SUPPCM_BITS_20|AC_SUPPCM_BITS_24))
-+				} else {
- 					formats |= SNDRV_PCM_FMTBIT_S32_LE;
--				if (val & AC_SUPPCM_BITS_24)
--					bps = 24;
--				else if (val & AC_SUPPCM_BITS_20)
--					bps = 20;
--			} else if (val & (AC_SUPPCM_BITS_20|AC_SUPPCM_BITS_24|
--					  AC_SUPPCM_BITS_32)) {
--				formats |= SNDRV_PCM_FMTBIT_S32_LE;
--				if (val & AC_SUPPCM_BITS_32)
-+					subformats |= SNDRV_PCM_SUBFMTBIT_MSBITS_MAX;
- 					bps = 32;
--				else if (val & AC_SUPPCM_BITS_24)
--					bps = 24;
--				else if (val & AC_SUPPCM_BITS_20)
--					bps = 20;
-+				}
- 			}
- 		}
- #if 0 /* FIXME: CS4206 doesn't work, which is the only codec supporting float */
-@@ -911,6 +914,8 @@ int snd_hdac_query_supported_pcm(struct hdac_device *codec, hda_nid_t nid,
- 		}
- 		if (formatsp)
- 			*formatsp = formats;
-+		if (subformatsp)
-+			*subformatsp = subformats;
- 		if (bpsp)
- 			*bpsp = bps;
- 	}
-diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index 01718b1fc9a7..12f02cdc9659 100644
---- a/sound/pci/hda/hda_codec.c
-+++ b/sound/pci/hda/hda_codec.c
-@@ -3163,6 +3163,7 @@ static int set_pcm_default_values(struct hda_codec *codec,
- 		err = snd_hda_query_supported_pcm(codec, info->nid,
- 				info->rates ? NULL : &info->rates,
- 				info->formats ? NULL : &info->formats,
-+				info->subformats ? NULL : &info->subformats,
- 				info->maxbps ? NULL : &info->maxbps);
- 		if (err < 0)
- 			return err;
-@@ -3757,6 +3758,7 @@ int snd_hda_multi_out_analog_open(struct hda_codec *codec,
- 			snd_hda_query_supported_pcm(codec, mout->dig_out_nid,
- 						    &mout->spdif_rates,
- 						    &mout->spdif_formats,
-+						    NULL,
- 						    &mout->spdif_maxbps);
- 		}
- 		mutex_lock(&codec->spdif_mutex);
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index 1cde2a69bdb4..687b8b8fd7ac 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -1977,6 +1977,7 @@ static int hdmi_add_cvt(struct hda_codec *codec, hda_nid_t cvt_nid)
- 	err = snd_hda_query_supported_pcm(codec, cvt_nid,
- 					  &per_cvt->rates,
- 					  &per_cvt->formats,
-+					  NULL,
- 					  &per_cvt->maxbps);
- 	if (err < 0)
- 		return err;
-diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-index b9c5ffbfb5ba..3e4f632d8665 100644
---- a/sound/soc/codecs/hdac_hdmi.c
-+++ b/sound/soc/codecs/hdac_hdmi.c
-@@ -670,6 +670,7 @@ hdac_hdmi_query_cvt_params(struct hdac_device *hdev, struct hdac_hdmi_cvt *cvt)
- 	err = snd_hdac_query_supported_pcm(hdev, cvt->nid,
- 			&cvt->params.rates,
- 			&cvt->params.formats,
-+			NULL,
- 			&cvt->params.maxbps);
- 	if (err < 0)
- 		dev_err(&hdev->dev,
-@@ -1577,7 +1578,7 @@ static int hdac_hdmi_create_dais(struct hdac_device *hdev,
- 
- 	list_for_each_entry(cvt, &hdmi->cvt_list, head) {
- 		ret = snd_hdac_query_supported_pcm(hdev, cvt->nid,
--					&rates,	&formats, &bps);
-+					&rates,	&formats, NULL, &bps);
- 		if (ret)
- 			return ret;
- 
+ 	hda_pvt = snd_soc_component_get_drvdata(component);
+-	format_val = snd_hdac_calc_stream_format(params_rate(params),
+-						 params_channels(params),
+-						 params_format(params),
+-						 maxbps,
+-						 0);
++	format_val = snd_hdac_stream_format(params_channels(params), bps, params_rate(params));
+ 	if (!format_val) {
+ 		dev_err(dai->dev,
+ 			"invalid format_val, rate=%d, ch=%d, format=%d, maxbps=%d\n",
 -- 
 2.25.1
 
