@@ -4,47 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7386CC54FB9
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Nov 2023 15:12:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 378DBC5ACB3
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Nov 2023 15:12:57 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DEFA882A;
-	Thu, 16 Nov 2023 16:11:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DEFA882A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2112984D;
+	Thu, 16 Nov 2023 16:12:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2112984D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1700147546;
-	bh=vpIk+d+EKb9VIhCyJQckunqyjoGDvOBXNDUHuPTMUaQ=;
+	s=default; t=1700147570;
+	bh=/+xWGGCzmaoOUKhsUpu4G5KdqTCciaQJsSingFJKV9I=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=TAiVaBpj+SNelihj0IarokGfGls6QXIm74Yk5FxkXFXiLNU3TXwvnF5YmSNGrx/I5
-	 zTq8YVIRJHs4L0jz1E1Uz0zBqex1iepzZOB5Nk/cPT2G9obT7GQluHxJ3Ss4nJTiDH
-	 pF+CbO6jAr5madTnaJHexau4cfM4yFnWAyeoXZx0=
+	b=WHmhMxnAK1Ph9AduR6hgvKdETEEHPmwKfPUeXk5+/MveSMttLMp6JItUW+IIMntHm
+	 hyuzylG/nVN6k97dQEEOq9OI7u2mVdhHlIVaGw8R7HDez6xAlDp6zzQelwXn5BHRo9
+	 CxtFupEpS8Nj4Q2g7xTP3ChI8kqgHNNZX7Dqj7E8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 26BAAF80551; Thu, 16 Nov 2023 16:11:09 +0100 (CET)
+	id 8409DF80558; Thu, 16 Nov 2023 16:11:47 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B1642F8022B;
-	Thu, 16 Nov 2023 16:11:08 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3817EF80558;
+	Thu, 16 Nov 2023 16:11:47 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0E40CF8022B; Thu, 16 Nov 2023 16:11:02 +0100 (CET)
+	id 7404BF80558; Thu, 16 Nov 2023 16:11:43 +0100 (CET)
 Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id EFAE3F80152
-	for <alsa-devel@alsa-project.org>; Thu, 16 Nov 2023 16:10:51 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTPS id EAE6BF800ED
+	for <alsa-devel@alsa-project.org>; Thu, 16 Nov 2023 16:10:52 +0100 (CET)
 Received: from mail1.perex.cz (localhost [127.0.0.1])
-	by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 132E411F6;
-	Thu, 16 Nov 2023 16:10:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 132E411F6
+	by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id DC2D8D1D;
+	Thu, 16 Nov 2023 16:10:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz DC2D8D1D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
-	t=1700147450; bh=7WdWbjf263yw52YO6ov9rN5zrGwXG9WccfEl0WUj/HE=;
+	t=1700147451; bh=SZ1nePWGW7AIQTx2yNLYhLAXbiAN2IywqrnyFUu6HyY=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=kngu/yTHBsmVfwrK3vREGq/0ogIjZ8IiOwPfQHUeOqMESNgS/Fw8iVFBecV7mKgXB
-	 FA8+jnYpgUEvaJAuCMZ8s1MHIYGhpn7iuQ/9YBmenyoeahGucyOauP+uK0Do1xTyMm
-	 EhdRE1PqpcC51CSjBLzfsO0JXcl16lM53OxDzs1A=
+	b=bN+zLs1tewqwOmICqoyp5EXeKdkixam5ZobbSorKfOBU/dz8C62AoywDWzAbKMtsH
+	 FR1DFyedzZNyurJmHIaVtz2BDkOpgNvNH9OIaIC2gQN2foDwJ7e5uFFHzcCjbTVPBT
+	 ByIbw5YkgE4pceGMIzJjRfcib/vF+cE7tNc5bHt0=
 Received: from [192.168.100.98] (unknown [192.168.100.98])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
@@ -52,12 +52,12 @@ Received: from [192.168.100.98] (unknown [192.168.100.98])
 	(No client certificate requested)
 	(Authenticated sender: perex)
 	by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
-	Thu, 16 Nov 2023 16:10:42 +0100 (CET)
-Message-ID: <25101e2a-58d0-423e-9983-f5df5ba16466@perex.cz>
-Date: Thu, 16 Nov 2023 16:10:41 +0100
+	Thu, 16 Nov 2023 16:10:43 +0100 (CET)
+Message-ID: <f4d510a8-de37-494d-b7a8-61770da1db93@perex.cz>
+Date: Thu, 16 Nov 2023 16:10:43 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 01/16] ALSA: pcm: Introduce MSBITS subformat interface
+Subject: Re: [PATCH v4 04/16] ALSA: hda: Upgrade stream-format infrastructure
 Content-Language: en-US
 To: Cezary Rojewski <cezary.rojewski@intel.com>, broonie@kernel.org,
  tiwai@suse.com
@@ -65,7 +65,7 @@ Cc: alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
  amadeuszx.slawinski@linux.intel.com, pierre-louis.bossart@linux.intel.com,
  hdegoede@redhat.com
 References: <20231116112255.1584795-1-cezary.rojewski@intel.com>
- <20231116112255.1584795-2-cezary.rojewski@intel.com>
+ <20231116112255.1584795-5-cezary.rojewski@intel.com>
 From: Jaroslav Kysela <perex@perex.cz>
 Autocrypt: addr=perex@perex.cz; keydata=
  xsFNBFvNeCsBEACUu2ZgwoGXmVFGukNPWjA68/7eMWI7AvNHpekSGv3z42Iy4DGZabs2Jtvk
@@ -110,11 +110,11 @@ Autocrypt: addr=perex@perex.cz; keydata=
  k8vz1gDNeG7HOIh46GnKIrQiUXVzAuUvM5vI9YaW3YRNTcn3pguQRt+Tl9Y6G+j+yvuLL173
  m4zRUU6DOygmpQAVYSOJvKAJ07AhQGaWAAi5msM6BcTU4YGcpW7FHr6+xaFDlRHzf1lkvavX
  WoxP1IA1DFuBMeYMzfyi4qDWjXc+C51ZaQd39EulYMh+JVaWRoY=
-In-Reply-To: <20231116112255.1584795-2-cezary.rojewski@intel.com>
+In-Reply-To: <20231116112255.1584795-5-cezary.rojewski@intel.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-ID-Hash: FVHMUHECK3OO7VNEL3NKDBVVODKO3UG6
-X-Message-ID-Hash: FVHMUHECK3OO7VNEL3NKDBVVODKO3UG6
+Message-ID-Hash: FKGB3CJNO47WUC25HZZBYWLVQQPUHIUS
+X-Message-ID-Hash: FKGB3CJNO47WUC25HZZBYWLVQQPUHIUS
 X-MailFrom: perex@perex.cz
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -127,7 +127,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FVHMUHECK3OO7VNEL3NKDBVVODKO3UG6/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FKGB3CJNO47WUC25HZZBYWLVQQPUHIUS/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -137,40 +137,20 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 On 16. 11. 23 12:22, Cezary Rojewski wrote:
-> From: Jaroslav Kysela <perex@perex.cz>
+> Introduce a set of functions that ultimately facilite SDxFMT-related
+> calculations in atomic manner:
 > 
-> Improve granularity of format selection for S32/U32 formats by adding
-> constants representing 20, 24 and MAX most significant bit >
-> The MAX means the maximum number of significant bits which can
-> the physical format hold. For 32-bit formats, MAX is related
-> to 32 bits. For 8-bit formats, MAX is related to 8 bits etc.
-> 
-> The drivers may use snd_pcm_hw_constraint_subformats with
-> a simple format -> subformats table.
+> First, introduce snd_pcm_subformat_width() and snd_pcm_hw_params_bps()
+> helpers that separate the base functionality from the HDAudio-specific
+> one.
 
-I am afraid, the above sentence is no more correct and the current code does 
-not follow my original idea. It's a bit step back to the initial code. But I 
-admit that from the API POV, it's workable now (with the added refine 
-mechanism for one format).
+I think, snd_pcm_subformat_width() should be implemented only as static helper 
+for now. There are no users and only snd_pcm_hw_params_bps() makes sense for 
+callers (format & subformat must be passed together).
 
-As noted several times, this is not my preferred implementation (I would keep 
-only the constraint function which will be called by drivers on demand in the 
-ALSA PCM core code). The latest proposed simplification may be applied in the 
-ASoC core (store S32_LE subformat mask in snd_soc_pcm_runtime and install this 
-intersected constraint for FE PCM - user space). Something like ASoC core does 
-for the msbits constraint.
-
-If nobody else thinks that it's a good direction, please, add a note to the 
-comment that this implementation (extend snd_pcm_hardware structure) is a 
-compromise for the ASoC code with details.
-
-> +		if (f == SNDRV_PCM_FORMAT_S32_LE)
-
-Missing mask check: (f == SNDRV_PCM_FORMAT_S32_LE && *subformats)
-
-Otherwise the MSBITS_MAX won't be set for S32_LE by default.
-
-> +			m.bits[0] |= *subformats;
+Also note that _bps is mostly used for bits-per-second in the computer world, 
+so maybe _bpsam may be used here to pay more attention by readers, but it's 
+just my optional proposal. Maybe my head has some "fixed wiring" for this :)
 
 				Jaroslav
 
