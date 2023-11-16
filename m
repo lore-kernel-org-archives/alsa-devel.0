@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6D505C54FB9
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Nov 2023 15:35:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 34F34C197A0
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Nov 2023 15:35:54 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1F13EDF;
-	Thu, 16 Nov 2023 16:34:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1F13EDF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 12353886;
+	Thu, 16 Nov 2023 16:35:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 12353886
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1700148929;
-	bh=0EwvY1Ubt0pHp3BgS2MzL3aPuW3KfF3kis4J0fLkSTA=;
+	s=default; t=1700148953;
+	bh=7WgpEuBjKE+VXHBeFeMx0PyJhnlsfgrJs67JTp08Hm0=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=WSEGvzaDpIV7o6fM6RvCAEDGtXIQZVvPRoSt3+sJhAZGKp73hAKHrJVfEb/XqfAl+
-	 TyGZqzIZKJsmwWhyGYAGe+IyItQlOgSQofyKjrQBofZ2hVmyQBr5yezcnBPY67BaDg
-	 Sdo/6sZ7+MLarTBAb8AuA494fd3XwitOYNPuNQ8A=
+	b=N9NED6hqK0vnL77gPxnCJhL6abnIiocKXyGKtixoXXQwFwf6NGrrYTgXrfrU1cnDS
+	 zUZwuLcNq74pLq7ipR4qcRLasb4lxvdIyWaeSC8HFYRSi2X5OjxAtjdqsiPW/86Ksu
+	 1BJevdIA5kCnJxt4EgfDW+VNgXMlM3nQjXB22qkI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C9BBBF8055C; Thu, 16 Nov 2023 16:34:11 +0100 (CET)
+	id 25DC7F8055B; Thu, 16 Nov 2023 16:34:20 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 62570F801D5;
-	Thu, 16 Nov 2023 16:34:11 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D437AF8055A;
+	Thu, 16 Nov 2023 16:34:19 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A8323F801D5; Thu, 16 Nov 2023 16:34:05 +0100 (CET)
+	id 3847BF8055A; Thu, 16 Nov 2023 16:34:16 +0100 (CET)
 Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
  [207.180.221.201])
-	by alsa1.perex.cz (Postfix) with ESMTP id EF6C0F800ED
-	for <alsa-devel@alsa-project.org>; Thu, 16 Nov 2023 16:33:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EF6C0F800ED
+	by alsa1.perex.cz (Postfix) with ESMTP id 75118F80551
+	for <alsa-devel@alsa-project.org>; Thu, 16 Nov 2023 16:34:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 75118F80551
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
+From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1700148837793172836-webhooks-bot@alsa-project.org>
-References: <1700148837793172836-webhooks-bot@alsa-project.org>
+In-Reply-To: <1700148854364809036-webhooks-bot@alsa-project.org>
+References: <1700148854364809036-webhooks-bot@alsa-project.org>
 Subject: Speaker volume control doesn't work by default on Lenovo Yoga 7 (AMD
  7840hs)
-Message-Id: <20231116153405.A8323F801D5@alsa1.perex.cz>
-Date: Thu, 16 Nov 2023 16:34:05 +0100 (CET)
-Message-ID-Hash: ZENCFTV4XPTAX5NSSBB7AGOPLYTOY3GD
-X-Message-ID-Hash: ZENCFTV4XPTAX5NSSBB7AGOPLYTOY3GD
+Message-Id: <20231116153416.3847BF8055A@alsa1.perex.cz>
+Date: Thu, 16 Nov 2023 16:34:16 +0100 (CET)
+Message-ID-Hash: 46XM653Q5I23VDXXUX7SS5WURBWSAEPM
+X-Message-ID-Hash: 46XM653Q5I23VDXXUX7SS5WURBWSAEPM
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -58,7 +58,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZENCFTV4XPTAX5NSSBB7AGOPLYTOY3GD/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/46XM653Q5I23VDXXUX7SS5WURBWSAEPM/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -67,9 +67,9 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-lib issue #366 was opened from smaug----:
+alsa-project/alsa-lib issue #366 was edited from smaug----:
 
-(Not sure which alsa-repo is the correct one for this issue, or is this even a Fedora issue)
+(Not sure which alsa-repo is the correct one for this issue, or is this perhaps a Fedora issue)
 By default controlling headphone output volume works, but speaker output seems to be either muted or very loud. 
 
 The following tweak fixes the issue.
