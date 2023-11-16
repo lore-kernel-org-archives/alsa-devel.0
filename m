@@ -4,100 +4,118 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D8C99C197A0
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Nov 2023 13:49:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7386CC54FB9
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Nov 2023 15:12:29 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5A33E82A;
-	Thu, 16 Nov 2023 14:48:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5A33E82A
+	by alsa0.perex.cz (Postfix) with ESMTPS id DEFA882A;
+	Thu, 16 Nov 2023 16:11:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DEFA882A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1700142555;
-	bh=jZX5UedwGiD0BJrRpmk8hFt7URJ/cC3cmoyLgPZt3jI=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1700147546;
+	bh=vpIk+d+EKb9VIhCyJQckunqyjoGDvOBXNDUHuPTMUaQ=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=IIx6ObNF9b2Y/8CJnYmGWsL5xnoQxEWz5bmcUgNCt/DwTIpKATOFRc6VEl4X6CkWs
-	 AQxnH/kTeaek4b/tfs2G+xpMGIMKiYgxTyxasYql4W4WkGCQ1952lJlesjGoIaqXG5
-	 az6Oi7BKAJMiAfEaxli3fktDUVfPdHbQvNT4xMbI=
+	b=TAiVaBpj+SNelihj0IarokGfGls6QXIm74Yk5FxkXFXiLNU3TXwvnF5YmSNGrx/I5
+	 zTq8YVIRJHs4L0jz1E1Uz0zBqex1iepzZOB5Nk/cPT2G9obT7GQluHxJ3Ss4nJTiDH
+	 pF+CbO6jAr5madTnaJHexau4cfM4yFnWAyeoXZx0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6BBD0F80166; Thu, 16 Nov 2023 14:48:23 +0100 (CET)
+	id 26BAAF80551; Thu, 16 Nov 2023 16:11:09 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id CB0E0F801D5;
-	Thu, 16 Nov 2023 14:48:22 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B1642F8022B;
+	Thu, 16 Nov 2023 16:11:08 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 94C6BF801D5; Thu, 16 Nov 2023 14:46:56 +0100 (CET)
-Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com
- [209.85.128.177])
+	id 0E40CF8022B; Thu, 16 Nov 2023 16:11:02 +0100 (CET)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id EFAE3F80152
+	for <alsa-devel@alsa-project.org>; Thu, 16 Nov 2023 16:10:51 +0100 (CET)
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+	by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 132E411F6;
+	Thu, 16 Nov 2023 16:10:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 132E411F6
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+	t=1700147450; bh=7WdWbjf263yw52YO6ov9rN5zrGwXG9WccfEl0WUj/HE=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=kngu/yTHBsmVfwrK3vREGq/0ogIjZ8IiOwPfQHUeOqMESNgS/Fw8iVFBecV7mKgXB
+	 FA8+jnYpgUEvaJAuCMZ8s1MHIYGhpn7iuQ/9YBmenyoeahGucyOauP+uK0Do1xTyMm
+	 EhdRE1PqpcC51CSjBLzfsO0JXcl16lM53OxDzs1A=
+Received: from [192.168.100.98] (unknown [192.168.100.98])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 9BDC4F80166
-	for <alsa-devel@alsa-project.org>; Thu, 16 Nov 2023 14:46:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9BDC4F80166
-Received: by mail-yw1-f177.google.com with SMTP id
- 00721157ae682-5a7afd45199so9351857b3.0
-        for <alsa-devel@alsa-project.org>;
- Thu, 16 Nov 2023 05:46:50 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700142408; x=1700747208;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZMksHTtyECe9fxBa+1TFlBB1X6sF0c8fgEakoogEF3w=;
-        b=v70LKQkEH+x9/eGZJX7lKNr0dQMg/M+t0I4fg3uPqRFr12kJBblatfXFG/J8aXwfhg
-         D9XO7R8Aemzm7UsmdlFHjVdW/atYyB9FQC7EHH2+wllEq9qTTWygWxdKUDdwl9QoeE4H
-         dZSSiHRjVklXlAR1qPZ5f0f7eOL865oo4EOfQXftXVdO7mq9bf5YifX7BJMKAbrXqiwW
-         wSqfpgVezTFRunO2RYmbTRFCU46H3nj1epbCdFcNIyaljVhsrXD7U/LCtIXj+SAUCks/
-         ZS0F0KlUZoiGCCsposupuGqeBSL/LcDzUuHhhkf6jdYugtvguR0T3YWz+ZdMTa+Jhslz
-         gQlA==
-X-Gm-Message-State: AOJu0YyikwUvIXLuTEGUWH+QKx1F4XMOv6jqeLNbGpQT80Urztl7IJuB
-	JLcMwmmgeY36d4U0TiA+IjRFh6/e77zzAw==
-X-Google-Smtp-Source: 
- AGHT+IETxGUXoxYPP/TZRUfLEOaaLlwPz0mpo05T0glEsli4jB8Ug0rg/HSjqyUBNVMBz3PuEh9cAw==
-X-Received: by 2002:a0d:e28e:0:b0:586:9f6c:4215 with SMTP id
- l136-20020a0de28e000000b005869f6c4215mr16771143ywe.33.1700142408581;
-        Thu, 16 Nov 2023 05:46:48 -0800 (PST)
-Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com.
- [209.85.128.174])
-        by smtp.gmail.com with ESMTPSA id
- i6-20020a0ddf06000000b005a7a92a62besm1008198ywe.8.2023.11.16.05.46.48
-        for <alsa-devel@alsa-project.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Nov 2023 05:46:48 -0800 (PST)
-Received: by mail-yw1-f174.google.com with SMTP id
- 00721157ae682-5a87ac9d245so9122247b3.3
-        for <alsa-devel@alsa-project.org>;
- Thu, 16 Nov 2023 05:46:48 -0800 (PST)
-X-Received: by 2002:a25:b4b:0:b0:d9a:be79:c902 with SMTP id
- 72-20020a250b4b000000b00d9abe79c902mr15874410ybl.53.1700142408226; Thu, 16
- Nov 2023 05:46:48 -0800 (PST)
+	(Authenticated sender: perex)
+	by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+	Thu, 16 Nov 2023 16:10:42 +0100 (CET)
+Message-ID: <25101e2a-58d0-423e-9983-f5df5ba16466@perex.cz>
+Date: Thu, 16 Nov 2023 16:10:41 +0100
 MIME-Version: 1.0
-References: <20231115213358.33400-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20231115213358.33400-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 16 Nov 2023 14:46:36 +0100
-X-Gmail-Original-Message-ID: 
- <CAMuHMdVGL8-jpUV9M+J_EhcB7=XfyesreFBPf6Jtvg6Cq_2xTA@mail.gmail.com>
-Message-ID: 
- <CAMuHMdVGL8-jpUV9M+J_EhcB7=XfyesreFBPf6Jtvg6Cq_2xTA@mail.gmail.com>
-Subject: Re: [PATCH] ASoC: dt-bindings: renesas,rz-ssi: Document RZ/Five SoC
-To: Prabhakar <prabhakar.csengg@gmail.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
-	Magnus Damm <magnus.damm@gmail.com>, alsa-devel@alsa-project.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-renesas-soc@vger.kernel.org, Biju Das <biju.das.jz@bp.renesas.com>,
-	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Message-ID-Hash: LI6KY3VJFLXKL6TMJM3OJJYLEI7RZOAG
-X-Message-ID-Hash: LI6KY3VJFLXKL6TMJM3OJJYLEI7RZOAG
-X-MailFrom: geert.uytterhoeven@gmail.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 01/16] ALSA: pcm: Introduce MSBITS subformat interface
+Content-Language: en-US
+To: Cezary Rojewski <cezary.rojewski@intel.com>, broonie@kernel.org,
+ tiwai@suse.com
+Cc: alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
+ amadeuszx.slawinski@linux.intel.com, pierre-louis.bossart@linux.intel.com,
+ hdegoede@redhat.com
+References: <20231116112255.1584795-1-cezary.rojewski@intel.com>
+ <20231116112255.1584795-2-cezary.rojewski@intel.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Autocrypt: addr=perex@perex.cz; keydata=
+ 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
+In-Reply-To: <20231116112255.1584795-2-cezary.rojewski@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: FVHMUHECK3OO7VNEL3NKDBVVODKO3UG6
+X-Message-ID-Hash: FVHMUHECK3OO7VNEL3NKDBVVODKO3UG6
+X-MailFrom: perex@perex.cz
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -109,7 +127,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LI6KY3VJFLXKL6TMJM3OJJYLEI7RZOAG/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FVHMUHECK3OO7VNEL3NKDBVVODKO3UG6/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -118,33 +136,45 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Wed, Nov 15, 2023 at 10:34=E2=80=AFPM Prabhakar <prabhakar.csengg@gmail.=
-com> wrote:
-> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
->
-> The SSI block on the RZ/Five SoC is identical to one found on the RZ/G2UL
-> SoC. "renesas,r9a07g043-ssi" compatible string will be used on the RZ/Fiv=
-e
-> SoC so to make this clear and to keep this file consistent, update the
-> comment to include RZ/Five SoC.
->
-> No driver changes are required as generic compatible string
-> "renesas,rz-ssi" will be used as a fallback on RZ/Five SoC.
->
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+On 16. 11. 23 12:22, Cezary Rojewski wrote:
+> From: Jaroslav Kysela <perex@perex.cz>
+> 
+> Improve granularity of format selection for S32/U32 formats by adding
+> constants representing 20, 24 and MAX most significant bit >
+> The MAX means the maximum number of significant bits which can
+> the physical format hold. For 32-bit formats, MAX is related
+> to 32 bits. For 8-bit formats, MAX is related to 8 bits etc.
+> 
+> The drivers may use snd_pcm_hw_constraint_subformats with
+> a simple format -> subformats table.
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+I am afraid, the above sentence is no more correct and the current code does 
+not follow my original idea. It's a bit step back to the initial code. But I 
+admit that from the API POV, it's workable now (with the added refine 
+mechanism for one format).
 
-Gr{oetje,eeting}s,
+As noted several times, this is not my preferred implementation (I would keep 
+only the constraint function which will be called by drivers on demand in the 
+ALSA PCM core code). The latest proposed simplification may be applied in the 
+ASoC core (store S32_LE subformat mask in snd_soc_pcm_runtime and install this 
+intersected constraint for FE PCM - user space). Something like ASoC core does 
+for the msbits constraint.
 
-                        Geert
+If nobody else thinks that it's a good direction, please, add a note to the 
+comment that this implementation (extend snd_pcm_hardware structure) is a 
+compromise for the ASoC code with details.
 
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-.org
+> +		if (f == SNDRV_PCM_FORMAT_S32_LE)
 
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+Missing mask check: (f == SNDRV_PCM_FORMAT_S32_LE && *subformats)
+
+Otherwise the MSBITS_MAX won't be set for S32_LE by default.
+
+> +			m.bits[0] |= *subformats;
+
+				Jaroslav
+
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+
