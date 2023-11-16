@@ -4,134 +4,162 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2BDFC197A0
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Nov 2023 12:10:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 80DD0C197A0
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Nov 2023 12:29:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0B3FBE9C;
-	Fri, 17 Nov 2023 13:09:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0B3FBE9C
+	by alsa0.perex.cz (Postfix) with ESMTPS id A997E886;
+	Fri, 17 Nov 2023 13:28:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A997E886
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1700223033;
-	bh=KrbWSQWPPUMpCRene8GcMdlw3nPyDCDvm7JjzqUBxv4=;
+	s=default; t=1700224178;
+	bh=8EIEvY//QnP7FHYGTBlprZTcDayJtV4xDnxYXKxN66E=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=os/UuSdp6SjEKNXR4/I9QcEglUA6f91CMEeBVHY9pKn0SXAK4t+r2yLC9KrGRw+L0
-	 tIHUpvOrW8pWMF1/gOEIRQX0qlsLtFcat4Kwe1uOP79ih1fgRtzOkZ3a21O3KOPttb
-	 zhKhymPhs+4n0tSoDPb7skDt+X6BbbXix2TzlO48=
+	b=gRZDRCVV/lmPsR38kgZBOcGLO2ZUD/atlBNKWbKzJCgbLXrP4EX7bZ23P5TVAexp1
+	 kgYjbSTrx10J67qrpm2nARE+lnZ14aZnQlAmxzEN2UQXKuoAHm4nxjbBaca6qENCtm
+	 z5jfK5bLeGq/HJUzmZXQ1ynimnqCuQ0+7rekghIU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 72EFBF805B3; Fri, 17 Nov 2023 13:08:13 +0100 (CET)
+	id BE289F8016E; Fri, 17 Nov 2023 13:28:22 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D3581F805B2;
-	Fri, 17 Nov 2023 13:08:12 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 30FB1F8016E;
+	Fri, 17 Nov 2023 13:28:21 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 06CD3F805B2; Fri, 17 Nov 2023 13:08:07 +0100 (CET)
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	id 42DADF801D5; Thu, 16 Nov 2023 19:36:14 +0100 (CET)
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com
+ [IPv6:2a00:1450:4864:20::236])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id F14FBF805AB
-	for <alsa-devel@alsa-project.org>; Fri, 17 Nov 2023 13:07:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F14FBF805AB
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id AAAC3CE2426;
-	Fri, 17 Nov 2023 12:07:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6799C433C7;
-	Fri, 17 Nov 2023 12:07:45 +0000 (UTC)
-Message-ID: <6badc94c-c414-40d7-a9d7-8b3fc86d8d98@xs4all.nl>
-Date: Fri, 17 Nov 2023 13:07:44 +0100
+	by alsa1.perex.cz (Postfix) with ESMTPS id 0BB62F80152
+	for <alsa-devel@alsa-project.org>; Thu, 16 Nov 2023 19:36:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0BB62F80152
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20230601 header.b=FAumbqZo
+Received: by mail-lj1-x236.google.com with SMTP id
+ 38308e7fff4ca-2c5039d4e88so15415261fa.3
+        for <alsa-devel@alsa-project.org>;
+ Thu, 16 Nov 2023 10:36:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700159763; x=1700764563;
+ darn=alsa-project.org;
+        h=in-reply-to:autocrypt:from:content-language:references:cc:to
+         :subject:user-agent:mime-version:date:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=yIlFonLjzCyWNPF0XSY5in6JQp88jtw/YSTV9e8ZqPA=;
+        b=FAumbqZow+GmMxOuPHu7xzr5DVaIhkTABGJR61LeJE7A8qZk9H42/CpBL7/XdlS3mn
+         a4BycDTZDULo/ykoOSCWGqMdXBF1BD3w62tq5J0cecW9BEOJBBzN+tAlaS2TqmFW9dkK
+         uqV8BB2R6E4VXV6m56m5yHpjdeRbjDy6nuh5KJld45fsoIaFW5jr5zStmQk+NqNs9+O1
+         bFxfr+unNklRFQlur+9ZV0ta+xX3/LkPHW/mMjuES9/wOn+dvP8OCKP35hDG3crAfkGR
+         Ur1YNqKKhe0zMS2mkEuoy8HKszj5n521n7ok1xHg6QaQFkO/00QEn1l9cLd6mnBtPaQG
+         mXEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700159763; x=1700764563;
+        h=in-reply-to:autocrypt:from:content-language:references:cc:to
+         :subject:user-agent:mime-version:date:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=yIlFonLjzCyWNPF0XSY5in6JQp88jtw/YSTV9e8ZqPA=;
+        b=t+qTbyswVByLH+3v9NpiPMbWSRa+cCfWWbwL+XKn0hbOtXgP9hL39T0Tf+VO8zVxne
+         ajnL57gHqFKB2rkZl0hi2rN7PaCsFU7pChvo2F2fdMZw7uAkxUvA5IVrafgy/fO2aEf7
+         JRzEL2srSVk7bNHaqRZYg1aerBBWxmmqlGjyHt1FMHsBdHzLxXp7rpqIHH1r2x+vB5tw
+         EWGfE1GxxCaZBp7oDIt1HQU1/7AN58BXS0Mgf4WaUQDjrOUf25odLRGJJMPjSiDGsKI4
+         lZveywYQzpuzsayUEaflF3i52ysCNGyHbTATvI/XDKZq2mNOWhnlDoGvsYRXCsZLsUil
+         MkOw==
+X-Gm-Message-State: AOJu0YwuQtc7QSZWEKvnE4bHJQrTmbAudSHjB85zpqsYkCPzZyewqBEy
+	YhoQDN8GdktYl+XeFxsh9oQ=
+X-Google-Smtp-Source: 
+ AGHT+IEzRlLFe78bRabXn1LUASTNO6XFVl0tfBEgWnytfpAWKq4drUqkv+OpUg6r2dZj8GiO3ZvlZQ==
+X-Received: by 2002:a05:651c:86:b0:2c5:9a5:a1c2 with SMTP id
+ 6-20020a05651c008600b002c509a5a1c2mr8291927ljq.30.1700159763121;
+        Thu, 16 Nov 2023 10:36:03 -0800 (PST)
+Received: from ?IPV6:2003:d3:8f2b:ca00:a8b9:be5c:5958:4eb3?
+ (p200300d38f2bca00a8b9be5c59584eb3.dip0.t-ipconnect.de.
+ [2003:d3:8f2b:ca00:a8b9:be5c:5958:4eb3])
+        by smtp.gmail.com with ESMTPSA id
+ t13-20020a05600c450d00b004094e565e71sm127178wmo.23.2023.11.16.10.36.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 16 Nov 2023 10:36:02 -0800 (PST)
+Content-Type: multipart/mixed; boundary="------------8RvdfuZ5GyNIBIsC5wTYBJDm"
+Message-ID: <251c1bea-8250-40dd-bdea-1cd739d1e77a@gmail.com>
+Date: Thu, 16 Nov 2023 19:36:00 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v9 10/15] media: uapi: Add V4L2_CTRL_TYPE_FIXED_POINT
-Content-Language: en-US, nl
-To: Shengjiu Wang <shengjiu.wang@gmail.com>
-Cc: Shengjiu Wang <shengjiu.wang@nxp.com>, Sakari Ailus
- <sakari.ailus@iki.fi>, m.szyprowski@samsung.com, mchehab@kernel.org,
- linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
- Xiubo.Lee@gmail.com, festevam@gmail.com, nicoleotsuka@gmail.com,
- lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
- alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org,
- Tomasz Figa <tfiga@chromium.org>,
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-References: <6a3e7eb9-505c-4cfb-8a86-a8947a2e44d5@xs4all.nl>
- <20231113110754.GB24338@pendragon.ideasonboard.com>
- <3e898664-cbfc-4892-9765-37b66891643b@xs4all.nl>
- <ZVIIc-fi32ZxIi-p@valkosipuli.retiisi.eu>
- <20231113114357.GD24338@pendragon.ideasonboard.com>
- <da6efe14-c00d-4bf4-bf61-dd4ed39c5c60@xs4all.nl>
- <20231113124412.GA18974@pendragon.ideasonboard.com>
- <b35601f7-8bb2-4317-a8f7-6fbf81572943@xs4all.nl>
- <20231115105518.GD13826@pendragon.ideasonboard.com>
- <a67491c0-4fdf-4472-852c-e75f5e1d67af@xs4all.nl>
- <20231115114931.GE13826@pendragon.ideasonboard.com>
- <CAAFQd5BkCR=tYvmfjkOeTnjnccmURt8kEtiRee9CYqcz+FGHfg@mail.gmail.com>
- <7626e0f8-ce31-469e-b49c-f2fba664756f@xs4all.nl>
- <CAA+D8ANb6A9eh=MQR9+7sZi5jet+7RSHt6TdZqPz5EK6pBs3mA@mail.gmail.com>
-From: Hans Verkuil <hverkuil@xs4all.nl>
-Autocrypt: addr=hverkuil@xs4all.nl; keydata=
- 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
-In-Reply-To: 
- <CAA+D8ANb6A9eh=MQR9+7sZi5jet+7RSHt6TdZqPz5EK6pBs3mA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: BU5DBINUCI3DIWFGZVQZ6AOMTTDEMZPX
-X-Message-ID-Hash: BU5DBINUCI3DIWFGZVQZ6AOMTTDEMZPX
-X-MailFrom: SRS0=P6zk=G6=xs4all.nl=hverkuil@kernel.org
+Subject: Re: Fwd: acp3x: Missing product ID for Thinkpad T14s Gen2 AMD Ryzen 7
+ PRO 5850U
+To: Bagas Sanjaya <bagasdotme@gmail.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Linux Sound System <linux-sound@vger.kernel.org>,
+ Linux ALSA Development <alsa-devel@alsa-project.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+References: <8bd0e77f-720b-4804-bbd8-477bd7df938e@gmail.com>
+Content-Language: en-US
+From: Oliver Sieber <ollisieber@gmail.com>
+Autocrypt: addr=ollisieber@gmail.com; keydata=
+ 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
+ Mi8tCaN/OlNrmLQZ1vgYMQ==
+In-Reply-To: <8bd0e77f-720b-4804-bbd8-477bd7df938e@gmail.com>
+X-MailFrom: ollisieber@gmail.com
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: SKU7LBCQA3UDQS2DR5IAOVGCGZKVBVKN
+X-Message-ID-Hash: SKU7LBCQA3UDQS2DR5IAOVGCGZKVBVKN
+X-Mailman-Approved-At: Fri, 17 Nov 2023 12:28:12 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: <>
+Archived-At: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SKU7LBCQA3UDQS2DR5IAOVGCGZKVBVKN/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -140,294 +168,61 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Here is an RFC patch adding support for 'fraction_bits'. It's lacking
-documentation, but it can be used for testing.
+This is a multi-part message in MIME format.
+--------------8RvdfuZ5GyNIBIsC5wTYBJDm
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-It was rather a pain logging fixed point number in a reasonable format,
-but I think it is OK.
+Hi,
 
-In userspace (where you can use floating point) it is a lot easier:
+thanks for your fast answer. I added my proposed patch as attachment.
 
-printf("%.*g\n", fraction_bits, (double)v * (1.0 / (1ULL << fraction_bits)));
+Please be aware that this is my first kernel patch.
 
-I decided to only expose fraction_bits in struct v4l2_query_ext_ctrl.
-I could add it to struct v4l2_queryctrl, but I did not think that was
-necessary. Other opinions are welcome.
+Thanks a lot!
 
-In the meantime, let me know if this works for your patch series. If it
-does, then I can clean this up.
+On 16.11.23 12:10, Bagas Sanjaya wrote:
+> Hi,
+>
+> I notice a bug report on Bugzilla [1]. Quoting from it:
+>
+>> Hey,sound/soc/amd/renoir/rn-pci-acp3x.c has a hard-coded list of quirks. It seems like some product IDs may be missing. In my case, I am using a Lenovo Thinkpad t14s gen2 with an AMD Ryzen 7 PRO 5850U.
+>> My audio output is fine but my internal microphone cannot be found.
+>>
+>> Running `dmidecode` yields:
+>>
+>> Handle 0x000F, DMI type 1, 27 bytes
+>> System Information
+>> 	Manufacturer: LENOVO
+>> 	Product Name: 20XGS1KT02
+>> 	Version: ThinkPad T14s Gen 2a
+>>
+>> Could it be that one may have to add the product ID "20XGS1KT02" to the hard-coded list of quirks in rn-pci-acp3x.c?
+>>
+>>
+>> It seems as there have been similar problems in the past, e.g. https://bugzilla.kernel.org/show_bug.cgi?id=216270.
+> See Bugzilla for the full thread.
+>
+> ollisieber, can you send the quirk patch?
+>
+> Thanks.
+>
+> [1]: https://bugzilla.kernel.org/show_bug.cgi?id=218148
+>
+--------------8RvdfuZ5GyNIBIsC5wTYBJDm
+Content-Type: text/x-patch; charset=UTF-8; name="patch.diff"
+Content-Disposition: attachment; filename="patch.diff"
+Content-Transfer-Encoding: base64
 
-Regards,
+ZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9hbWQvcmVub2lyL3JuLXBjaS1hY3AzeC5jIGIvc291
+bmQvc29jL2FtZC9yZW5vaXIvcm4tcGNpLWFjcDN4LmMKaW5kZXggYjM4MTJiNzBmNWY5Li43
+NTRlMjRkNTVlNmYgMTAwNjQ0Ci0tLSBhL3NvdW5kL3NvYy9hbWQvcmVub2lyL3JuLXBjaS1h
+Y3AzeC5jCisrKyBiL3NvdW5kL3NvYy9hbWQvcmVub2lyL3JuLXBjaS1hY3AzeC5jCkBAIC0x
+OTksNiArMTk5LDEzIEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3QgZG1pX3N5c3RlbV9pZCBybl9h
+Y3BfcXVpcmtfdGFibGVbXSA9IHsKIAkJCURNSV9FWEFDVF9NQVRDSChETUlfQk9BUkRfTkFN
+RSwgIjIwTkxDVE8xV1ciKSwKIAkJfQogCX0sCisJeworCQkvKiBMZW5vdm8gVGhpbmtQYWQg
+VDE0cyBHZW4gMiAqLworCQkubWF0Y2hlcyA9IHsKKwkJCURNSV9FWEFDVF9NQVRDSChETUlf
+Qk9BUkRfVkVORE9SLCAiTEVOT1ZPIiksCisJCQlETUlfRVhBQ1RfTUFUQ0goRE1JX0JPQVJE
+X05BTUUsICIyMFhHUzFLVDAyIiksCisJCX0KKwl9LAogCXt9CiB9OwogCg==
 
-	Hans
-
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
----
- drivers/media/v4l2-core/v4l2-ctrls-api.c  |  1 +
- drivers/media/v4l2-core/v4l2-ctrls-core.c | 72 +++++++++++++++++++----
- include/media/v4l2-ctrls.h                |  7 ++-
- include/uapi/linux/videodev2.h            | 20 ++++++-
- 4 files changed, 85 insertions(+), 15 deletions(-)
-
-diff --git a/drivers/media/v4l2-core/v4l2-ctrls-api.c b/drivers/media/v4l2-core/v4l2-ctrls-api.c
-index 002ea6588edf..3132df315b17 100644
---- a/drivers/media/v4l2-core/v4l2-ctrls-api.c
-+++ b/drivers/media/v4l2-core/v4l2-ctrls-api.c
-@@ -1101,6 +1101,7 @@ int v4l2_query_ext_ctrl(struct v4l2_ctrl_handler *hdl, struct v4l2_query_ext_ctr
- 	qc->elems = ctrl->elems;
- 	qc->nr_of_dims = ctrl->nr_of_dims;
- 	memcpy(qc->dims, ctrl->dims, qc->nr_of_dims * sizeof(qc->dims[0]));
-+	qc->fraction_bits = ctrl->fraction_bits;
- 	qc->minimum = ctrl->minimum;
- 	qc->maximum = ctrl->maximum;
- 	qc->default_value = ctrl->default_value;
-diff --git a/drivers/media/v4l2-core/v4l2-ctrls-core.c b/drivers/media/v4l2-core/v4l2-ctrls-core.c
-index a662fb60f73f..0e08a371af5c 100644
---- a/drivers/media/v4l2-core/v4l2-ctrls-core.c
-+++ b/drivers/media/v4l2-core/v4l2-ctrls-core.c
-@@ -252,12 +252,42 @@ void v4l2_ctrl_type_op_init(const struct v4l2_ctrl *ctrl, u32 from_idx,
- }
- EXPORT_SYMBOL(v4l2_ctrl_type_op_init);
-
-+static void v4l2_ctrl_log_fp(s64 v, unsigned int fraction_bits)
-+{
-+	s64 i = v4l2_fp_integer(v, fraction_bits);
-+	s64 f = v4l2_fp_fraction(v, fraction_bits);
-+
-+	if (!f) {
-+		pr_cont("%lld", i);
-+	} else if (fraction_bits < 20) {
-+		u64 div = 1ULL << fraction_bits;
-+
-+		if (!i && f < 0)
-+			pr_cont("-%lld/%llu", -f, div);
-+		else if (!i)
-+			pr_cont("%lld/%llu", f, div);
-+		else if (i < 0 || f < 0)
-+			pr_cont("-%lld-%llu/%llu", -i, -f, div);
-+		else
-+			pr_cont("%lld+%llu/%llu", i, f, div);
-+	} else {
-+		if (!i && f < 0)
-+			pr_cont("-%lld/(2^%u)", -f, fraction_bits);
-+		else if (!i)
-+			pr_cont("%lld/(2^%u)", f, fraction_bits);
-+		else if (i < 0 || f < 0)
-+			pr_cont("-%lld-%llu/(2^%u)", -i, -f, fraction_bits);
-+		else
-+			pr_cont("%lld+%llu/(2^%u)", i, f, fraction_bits);
-+	}
-+}
-+
- void v4l2_ctrl_type_op_log(const struct v4l2_ctrl *ctrl)
- {
- 	union v4l2_ctrl_ptr ptr = ctrl->p_cur;
-
- 	if (ctrl->is_array) {
--		unsigned i;
-+		unsigned int i;
-
- 		for (i = 0; i < ctrl->nr_of_dims; i++)
- 			pr_cont("[%u]", ctrl->dims[i]);
-@@ -266,7 +296,10 @@ void v4l2_ctrl_type_op_log(const struct v4l2_ctrl *ctrl)
-
- 	switch (ctrl->type) {
- 	case V4L2_CTRL_TYPE_INTEGER:
--		pr_cont("%d", *ptr.p_s32);
-+		if (!ctrl->fraction_bits)
-+			pr_cont("%d", *ptr.p_s32);
-+		else
-+			v4l2_ctrl_log_fp(*ptr.p_s32, ctrl->fraction_bits);
- 		break;
- 	case V4L2_CTRL_TYPE_BOOLEAN:
- 		pr_cont("%s", *ptr.p_s32 ? "true" : "false");
-@@ -281,19 +314,31 @@ void v4l2_ctrl_type_op_log(const struct v4l2_ctrl *ctrl)
- 		pr_cont("0x%08x", *ptr.p_s32);
- 		break;
- 	case V4L2_CTRL_TYPE_INTEGER64:
--		pr_cont("%lld", *ptr.p_s64);
-+		if (!ctrl->fraction_bits)
-+			pr_cont("%lld", *ptr.p_s64);
-+		else
-+			v4l2_ctrl_log_fp(*ptr.p_s64, ctrl->fraction_bits);
- 		break;
- 	case V4L2_CTRL_TYPE_STRING:
- 		pr_cont("%s", ptr.p_char);
- 		break;
- 	case V4L2_CTRL_TYPE_U8:
--		pr_cont("%u", (unsigned)*ptr.p_u8);
-+		if (!ctrl->fraction_bits)
-+			pr_cont("%u", (unsigned int)*ptr.p_u8);
-+		else
-+			v4l2_ctrl_log_fp((unsigned int)*ptr.p_u8, ctrl->fraction_bits);
- 		break;
- 	case V4L2_CTRL_TYPE_U16:
--		pr_cont("%u", (unsigned)*ptr.p_u16);
-+		if (!ctrl->fraction_bits)
-+			pr_cont("%u", (unsigned int)*ptr.p_u16);
-+		else
-+			v4l2_ctrl_log_fp((unsigned int)*ptr.p_u16, ctrl->fraction_bits);
- 		break;
- 	case V4L2_CTRL_TYPE_U32:
--		pr_cont("%u", (unsigned)*ptr.p_u32);
-+		if (!ctrl->fraction_bits)
-+			pr_cont("%u", (unsigned int)*ptr.p_u32);
-+		else
-+			v4l2_ctrl_log_fp((unsigned int)*ptr.p_u32, ctrl->fraction_bits);
- 		break;
- 	case V4L2_CTRL_TYPE_H264_SPS:
- 		pr_cont("H264_SPS");
-@@ -1752,7 +1797,7 @@ static struct v4l2_ctrl *v4l2_ctrl_new(struct v4l2_ctrl_handler *hdl,
- 			u32 id, const char *name, enum v4l2_ctrl_type type,
- 			s64 min, s64 max, u64 step, s64 def,
- 			const u32 dims[V4L2_CTRL_MAX_DIMS], u32 elem_size,
--			u32 flags, const char * const *qmenu,
-+			u32 fraction_bits, u32 flags, const char * const *qmenu,
- 			const s64 *qmenu_int, const union v4l2_ctrl_ptr p_def,
- 			void *priv)
- {
-@@ -1939,6 +1984,7 @@ static struct v4l2_ctrl *v4l2_ctrl_new(struct v4l2_ctrl_handler *hdl,
- 	ctrl->name = name;
- 	ctrl->type = type;
- 	ctrl->flags = flags;
-+	ctrl->fraction_bits = fraction_bits;
- 	ctrl->minimum = min;
- 	ctrl->maximum = max;
- 	ctrl->step = step;
-@@ -2037,7 +2083,7 @@ struct v4l2_ctrl *v4l2_ctrl_new_custom(struct v4l2_ctrl_handler *hdl,
- 	ctrl = v4l2_ctrl_new(hdl, cfg->ops, cfg->type_ops, cfg->id, name,
- 			type, min, max,
- 			is_menu ? cfg->menu_skip_mask : step, def,
--			cfg->dims, cfg->elem_size,
-+			cfg->dims, cfg->elem_size, cfg->fraction_bits,
- 			flags, qmenu, qmenu_int, cfg->p_def, priv);
- 	if (ctrl)
- 		ctrl->is_private = cfg->is_private;
-@@ -2062,7 +2108,7 @@ struct v4l2_ctrl *v4l2_ctrl_new_std(struct v4l2_ctrl_handler *hdl,
- 		return NULL;
- 	}
- 	return v4l2_ctrl_new(hdl, ops, NULL, id, name, type,
--			     min, max, step, def, NULL, 0,
-+			     min, max, step, def, NULL, 0, 0,
- 			     flags, NULL, NULL, ptr_null, NULL);
- }
- EXPORT_SYMBOL(v4l2_ctrl_new_std);
-@@ -2095,7 +2141,7 @@ struct v4l2_ctrl *v4l2_ctrl_new_std_menu(struct v4l2_ctrl_handler *hdl,
- 		return NULL;
- 	}
- 	return v4l2_ctrl_new(hdl, ops, NULL, id, name, type,
--			     0, max, mask, def, NULL, 0,
-+			     0, max, mask, def, NULL, 0, 0,
- 			     flags, qmenu, qmenu_int, ptr_null, NULL);
- }
- EXPORT_SYMBOL(v4l2_ctrl_new_std_menu);
-@@ -2127,7 +2173,7 @@ struct v4l2_ctrl *v4l2_ctrl_new_std_menu_items(struct v4l2_ctrl_handler *hdl,
- 		return NULL;
- 	}
- 	return v4l2_ctrl_new(hdl, ops, NULL, id, name, type,
--			     0, max, mask, def, NULL, 0,
-+			     0, max, mask, def, NULL, 0, 0,
- 			     flags, qmenu, NULL, ptr_null, NULL);
-
- }
-@@ -2149,7 +2195,7 @@ struct v4l2_ctrl *v4l2_ctrl_new_std_compound(struct v4l2_ctrl_handler *hdl,
- 		return NULL;
- 	}
- 	return v4l2_ctrl_new(hdl, ops, NULL, id, name, type,
--			     min, max, step, def, NULL, 0,
-+			     min, max, step, def, NULL, 0, 0,
- 			     flags, NULL, NULL, p_def, NULL);
- }
- EXPORT_SYMBOL(v4l2_ctrl_new_std_compound);
-@@ -2173,7 +2219,7 @@ struct v4l2_ctrl *v4l2_ctrl_new_int_menu(struct v4l2_ctrl_handler *hdl,
- 		return NULL;
- 	}
- 	return v4l2_ctrl_new(hdl, ops, NULL, id, name, type,
--			     0, max, 0, def, NULL, 0,
-+			     0, max, 0, def, NULL, 0, 0,
- 			     flags, NULL, qmenu_int, ptr_null, NULL);
- }
- EXPORT_SYMBOL(v4l2_ctrl_new_int_menu);
-diff --git a/include/media/v4l2-ctrls.h b/include/media/v4l2-ctrls.h
-index 59679a42b3e7..c35514c5bf88 100644
---- a/include/media/v4l2-ctrls.h
-+++ b/include/media/v4l2-ctrls.h
-@@ -211,7 +211,8 @@ typedef void (*v4l2_ctrl_notify_fnc)(struct v4l2_ctrl *ctrl, void *priv);
-  *		except for dynamic arrays. In that case it is in the range of
-  *		1 to @p_array_alloc_elems.
-  * @dims:	The size of each dimension.
-- * @nr_of_dims:The number of dimensions in @dims.
-+ * @nr_of_dims: The number of dimensions in @dims.
-+ * @fraction_bits: The number of fraction bits for fixed point values.
-  * @menu_skip_mask: The control's skip mask for menu controls. This makes it
-  *		easy to skip menu items that are not valid. If bit X is set,
-  *		then menu item X is skipped. Of course, this only works for
-@@ -228,6 +229,7 @@ typedef void (*v4l2_ctrl_notify_fnc)(struct v4l2_ctrl *ctrl, void *priv);
-  *		:math:`ceil(\frac{maximum - minimum}{step}) + 1`.
-  *		Used only if the @type is %V4L2_CTRL_TYPE_INTEGER_MENU.
-  * @flags:	The control's flags.
-+ * @fraction_bits: The number of fraction bits for fixed point values.
-  * @priv:	The control's private pointer. For use by the driver. It is
-  *		untouched by the control framework. Note that this pointer is
-  *		not freed when the control is deleted. Should this be needed
-@@ -286,6 +288,7 @@ struct v4l2_ctrl {
- 	u32 new_elems;
- 	u32 dims[V4L2_CTRL_MAX_DIMS];
- 	u32 nr_of_dims;
-+	u32 fraction_bits;
- 	union {
- 		u64 step;
- 		u64 menu_skip_mask;
-@@ -426,6 +429,7 @@ struct v4l2_ctrl_handler {
-  * @dims:	The size of each dimension.
-  * @elem_size:	The size in bytes of the control.
-  * @flags:	The control's flags.
-+ * @fraction_bits: The number of fraction bits for fixed point values.
-  * @menu_skip_mask: The control's skip mask for menu controls. This makes it
-  *		easy to skip menu items that are not valid. If bit X is set,
-  *		then menu item X is skipped. Of course, this only works for
-@@ -455,6 +459,7 @@ struct v4l2_ctrl_config {
- 	u32 dims[V4L2_CTRL_MAX_DIMS];
- 	u32 elem_size;
- 	u32 flags;
-+	u32 fraction_bits;
- 	u64 menu_skip_mask;
- 	const char * const *qmenu;
- 	const s64 *qmenu_int;
-diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
-index c3d4e490ce7c..26ecac19722a 100644
---- a/include/uapi/linux/videodev2.h
-+++ b/include/uapi/linux/videodev2.h
-@@ -1944,9 +1944,27 @@ struct v4l2_query_ext_ctrl {
- 	__u32                elems;
- 	__u32                nr_of_dims;
- 	__u32                dims[V4L2_CTRL_MAX_DIMS];
--	__u32		     reserved[32];
-+	__u32                fraction_bits;
-+	__u32		     reserved[31];
- };
-
-+static inline __s64 v4l2_fp_compose(__s64 i, __s64 f, unsigned int fraction_bits)
-+{
-+	return (i << fraction_bits) + f;
-+}
-+
-+static inline __s64 v4l2_fp_integer(__s64 v, unsigned int fraction_bits)
-+{
-+	return v / (1LL << fraction_bits);
-+}
-+
-+static inline __s64 v4l2_fp_fraction(__s64 v, unsigned int fraction_bits)
-+{
-+	__u64 mask = (1ULL << fraction_bits) - 1;
-+
-+	return v < 0 ? -((-v) & mask) : (v & mask);
-+}
-+
- /*  Used in the VIDIOC_QUERYMENU ioctl for querying menu items */
- struct v4l2_querymenu {
- 	__u32		id;
--- 
-2.42.0
-
-
+--------------8RvdfuZ5GyNIBIsC5wTYBJDm--
