@@ -4,85 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5AFD4C54FB9
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Nov 2023 11:27:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D8C99C197A0
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Nov 2023 13:49:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BFA47E84;
-	Thu, 16 Nov 2023 12:26:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BFA47E84
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5A33E82A;
+	Thu, 16 Nov 2023 14:48:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5A33E82A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1700134056;
-	bh=COz68ZhPZ9s+oshEHWSClsXhqaoZSHQ6Qkxhh6zidgM=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1700142555;
+	bh=jZX5UedwGiD0BJrRpmk8hFt7URJ/cC3cmoyLgPZt3jI=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=MmthCztN4Gdk2SBZfOKRk8U0V4TUJxf1+9OYpI+xlfL+IJzIDs1vz9zsAXKX13IHK
-	 PPXT/8Fzx7G92+9nmCc3G5pXKszyxrfKlfw70IGEQ1FjHD2ZTcGkyh21ijZtun67hM
-	 83vohRxlfz+CxlhA175mGiWy+caxshmfL2S8LUj0=
+	b=IIx6ObNF9b2Y/8CJnYmGWsL5xnoQxEWz5bmcUgNCt/DwTIpKATOFRc6VEl4X6CkWs
+	 AQxnH/kTeaek4b/tfs2G+xpMGIMKiYgxTyxasYql4W4WkGCQ1952lJlesjGoIaqXG5
+	 az6Oi7BKAJMiAfEaxli3fktDUVfPdHbQvNT4xMbI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E9E73F8058C; Thu, 16 Nov 2023 12:26:08 +0100 (CET)
+	id 6BBD0F80166; Thu, 16 Nov 2023 14:48:23 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B024AF80166;
-	Thu, 16 Nov 2023 12:26:08 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CB0E0F801D5;
+	Thu, 16 Nov 2023 14:48:22 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1D89FF8022B; Thu, 16 Nov 2023 12:26:03 +0100 (CET)
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 94C6BF801D5; Thu, 16 Nov 2023 14:46:56 +0100 (CET)
+Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com
+ [209.85.128.177])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 1EDF6F8022B
-	for <alsa-devel@alsa-project.org>; Thu, 16 Nov 2023 12:21:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1EDF6F8022B
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=lSQ4LjDz
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700133707; x=1731669707;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=COz68ZhPZ9s+oshEHWSClsXhqaoZSHQ6Qkxhh6zidgM=;
-  b=lSQ4LjDzUElH1rqGanNz+QBWJmhLp35s7fLRTIEYYA9kFZ8+cEfZUbaj
-   UsNXhyhc6TMncHdk3yNSL3LAC+ccRSQjjucdaHVx2Fzuy+Atb2b/vW2yo
-   v43WvBppx4JAVbYGPyyBrpptQquzsOC7a2px3neG55glt8/e0rB4oSGJU
-   Us3rteoOYkOJD5QZyiMD0U09UmkzFqoFlEh8FSYxAhTJpoYs/gNbW+M8C
-   czIpBd6EDsAf2S0VvBMSGDLgDHNeMgEtLEsNgbUnkYFMlHtPnFiZuLtbc
-   3oLLY2RuE0cNu3sNiMwTFrKK2oj/M0YI0KzfdBc7THOr/VcM4tCr2cbHv
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="457561969"
-X-IronPort-AV: E=Sophos;i="6.03,308,1694761200";
-   d="scan'208";a="457561969"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 Nov 2023 03:21:44 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.03,308,1694761200";
-   d="scan'208";a="6698221"
-Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
-  by fmviesa002.fm.intel.com with ESMTP; 16 Nov 2023 03:21:41 -0800
-From: Cezary Rojewski <cezary.rojewski@intel.com>
-To: broonie@kernel.org,
-	tiwai@suse.com,
-	perex@perex.cz
-Cc: alsa-devel@alsa-project.org,
-	linux-sound@vger.kernel.org,
-	amadeuszx.slawinski@linux.intel.com,
-	pierre-louis.bossart@linux.intel.com,
-	hdegoede@redhat.com,
-	Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: [PATCH v4 03/16] ASoC: pcm: Honor subformat when configuring runtime
-Date: Thu, 16 Nov 2023 12:22:42 +0100
-Message-Id: <20231116112255.1584795-4-cezary.rojewski@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231116112255.1584795-1-cezary.rojewski@intel.com>
-References: <20231116112255.1584795-1-cezary.rojewski@intel.com>
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9BDC4F80166
+	for <alsa-devel@alsa-project.org>; Thu, 16 Nov 2023 14:46:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9BDC4F80166
+Received: by mail-yw1-f177.google.com with SMTP id
+ 00721157ae682-5a7afd45199so9351857b3.0
+        for <alsa-devel@alsa-project.org>;
+ Thu, 16 Nov 2023 05:46:50 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700142408; x=1700747208;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZMksHTtyECe9fxBa+1TFlBB1X6sF0c8fgEakoogEF3w=;
+        b=v70LKQkEH+x9/eGZJX7lKNr0dQMg/M+t0I4fg3uPqRFr12kJBblatfXFG/J8aXwfhg
+         D9XO7R8Aemzm7UsmdlFHjVdW/atYyB9FQC7EHH2+wllEq9qTTWygWxdKUDdwl9QoeE4H
+         dZSSiHRjVklXlAR1qPZ5f0f7eOL865oo4EOfQXftXVdO7mq9bf5YifX7BJMKAbrXqiwW
+         wSqfpgVezTFRunO2RYmbTRFCU46H3nj1epbCdFcNIyaljVhsrXD7U/LCtIXj+SAUCks/
+         ZS0F0KlUZoiGCCsposupuGqeBSL/LcDzUuHhhkf6jdYugtvguR0T3YWz+ZdMTa+Jhslz
+         gQlA==
+X-Gm-Message-State: AOJu0YyikwUvIXLuTEGUWH+QKx1F4XMOv6jqeLNbGpQT80Urztl7IJuB
+	JLcMwmmgeY36d4U0TiA+IjRFh6/e77zzAw==
+X-Google-Smtp-Source: 
+ AGHT+IETxGUXoxYPP/TZRUfLEOaaLlwPz0mpo05T0glEsli4jB8Ug0rg/HSjqyUBNVMBz3PuEh9cAw==
+X-Received: by 2002:a0d:e28e:0:b0:586:9f6c:4215 with SMTP id
+ l136-20020a0de28e000000b005869f6c4215mr16771143ywe.33.1700142408581;
+        Thu, 16 Nov 2023 05:46:48 -0800 (PST)
+Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com.
+ [209.85.128.174])
+        by smtp.gmail.com with ESMTPSA id
+ i6-20020a0ddf06000000b005a7a92a62besm1008198ywe.8.2023.11.16.05.46.48
+        for <alsa-devel@alsa-project.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 16 Nov 2023 05:46:48 -0800 (PST)
+Received: by mail-yw1-f174.google.com with SMTP id
+ 00721157ae682-5a87ac9d245so9122247b3.3
+        for <alsa-devel@alsa-project.org>;
+ Thu, 16 Nov 2023 05:46:48 -0800 (PST)
+X-Received: by 2002:a25:b4b:0:b0:d9a:be79:c902 with SMTP id
+ 72-20020a250b4b000000b00d9abe79c902mr15874410ybl.53.1700142408226; Thu, 16
+ Nov 2023 05:46:48 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 73P7NVGH6XLGQZZBGDUIOJGCDJMZZZBS
-X-Message-ID-Hash: 73P7NVGH6XLGQZZBGDUIOJGCDJMZZZBS
-X-MailFrom: cezary.rojewski@intel.com
+References: <20231115213358.33400-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20231115213358.33400-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Thu, 16 Nov 2023 14:46:36 +0100
+X-Gmail-Original-Message-ID: 
+ <CAMuHMdVGL8-jpUV9M+J_EhcB7=XfyesreFBPf6Jtvg6Cq_2xTA@mail.gmail.com>
+Message-ID: 
+ <CAMuHMdVGL8-jpUV9M+J_EhcB7=XfyesreFBPf6Jtvg6Cq_2xTA@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: dt-bindings: renesas,rz-ssi: Document RZ/Five SoC
+To: Prabhakar <prabhakar.csengg@gmail.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+	Magnus Damm <magnus.damm@gmail.com>, alsa-devel@alsa-project.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-renesas-soc@vger.kernel.org, Biju Das <biju.das.jz@bp.renesas.com>,
+	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Message-ID-Hash: LI6KY3VJFLXKL6TMJM3OJJYLEI7RZOAG
+X-Message-ID-Hash: LI6KY3VJFLXKL6TMJM3OJJYLEI7RZOAG
+X-MailFrom: geert.uytterhoeven@gmail.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -94,7 +109,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/73P7NVGH6XLGQZZBGDUIOJGCDJMZZZBS/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LI6KY3VJFLXKL6TMJM3OJJYLEI7RZOAG/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -103,83 +118,33 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Subformat options are ignored when setting up hardware parameters and
-assigning PCM stream capabilities. Account for them to allow for
-granular format selection.
+On Wed, Nov 15, 2023 at 10:34=E2=80=AFPM Prabhakar <prabhakar.csengg@gmail.=
+com> wrote:
+> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+>
+> The SSI block on the RZ/Five SoC is identical to one found on the RZ/G2UL
+> SoC. "renesas,r9a07g043-ssi" compatible string will be used on the RZ/Fiv=
+e
+> SoC so to make this clear and to keep this file consistent, update the
+> comment to include RZ/Five SoC.
+>
+> No driver changes are required as generic compatible string
+> "renesas,rz-ssi" will be used as a fallback on RZ/Five SoC.
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
-As there is only one user currently (format S32_LE), subformat is
-represented by a simple u32 and stores flags only for that one user
-alone. Such approach allows for alloc/free-less code until there are
-more users on the horizon.
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-Acked-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
----
- include/sound/soc.h |  1 +
- sound/soc/soc-pcm.c | 10 ++++++++++
- 2 files changed, 11 insertions(+)
+Gr{oetje,eeting}s,
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 7792c393e238..ccc31bc41e92 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -620,6 +620,7 @@ enum snd_soc_trigger_order {
- struct snd_soc_pcm_stream {
- 	const char *stream_name;
- 	u64 formats;			/* SNDRV_PCM_FMTBIT_* */
-+	u32 subformats;			/* for S32_LE format, SNDRV_PCM_SUBFMTBIT_* */
- 	unsigned int rates;		/* SNDRV_PCM_RATE_* */
- 	unsigned int rate_min;		/* min rate */
- 	unsigned int rate_max;		/* max rate */
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 323e4d7b6adf..9d688917cce2 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -554,6 +554,12 @@ static void soc_pcm_hw_update_format(struct snd_pcm_hardware *hw,
- 	hw->formats &= p->formats;
- }
- 
-+static void soc_pcm_hw_update_subformat(struct snd_pcm_hardware *hw,
-+					struct snd_soc_pcm_stream *p)
-+{
-+	hw->subformats &= p->subformats;
-+}
-+
- /**
-  * snd_soc_runtime_calc_hw() - Calculate hw limits for a PCM stream
-  * @rtd: ASoC PCM runtime
-@@ -592,6 +598,7 @@ int snd_soc_runtime_calc_hw(struct snd_soc_pcm_runtime *rtd,
- 		soc_pcm_hw_update_chan(hw, cpu_stream);
- 		soc_pcm_hw_update_rate(hw, cpu_stream);
- 		soc_pcm_hw_update_format(hw, cpu_stream);
-+		soc_pcm_hw_update_subformat(hw, cpu_stream);
- 	}
- 	cpu_chan_min = hw->channels_min;
- 	cpu_chan_max = hw->channels_max;
-@@ -613,6 +620,7 @@ int snd_soc_runtime_calc_hw(struct snd_soc_pcm_runtime *rtd,
- 		soc_pcm_hw_update_chan(hw, codec_stream);
- 		soc_pcm_hw_update_rate(hw, codec_stream);
- 		soc_pcm_hw_update_format(hw, codec_stream);
-+		soc_pcm_hw_update_subformat(hw, codec_stream);
- 	}
- 
- 	/* Verify both a valid CPU DAI and a valid CODEC DAI were found */
-@@ -1713,6 +1721,7 @@ static void dpcm_runtime_setup_fe(struct snd_pcm_substream *substream)
- 		soc_pcm_hw_update_rate(hw, cpu_stream);
- 		soc_pcm_hw_update_chan(hw, cpu_stream);
- 		soc_pcm_hw_update_format(hw, cpu_stream);
-+		soc_pcm_hw_update_subformat(hw, cpu_stream);
- 	}
- 
- }
-@@ -1750,6 +1759,7 @@ static void dpcm_runtime_setup_be_format(struct snd_pcm_substream *substream)
- 			codec_stream = snd_soc_dai_get_pcm_stream(dai, stream);
- 
- 			soc_pcm_hw_update_format(hw, codec_stream);
-+			soc_pcm_hw_update_subformat(hw, codec_stream);
- 		}
- 	}
- }
--- 
-2.25.1
+                        Geert
 
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+.org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
