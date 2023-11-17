@@ -4,119 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CC2CEC072A2
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Nov 2023 14:06:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F14CAC072A2
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Nov 2023 14:14:53 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C91F5886;
-	Fri, 17 Nov 2023 15:06:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C91F5886
+	by alsa0.perex.cz (Postfix) with ESMTPS id C568F83A;
+	Fri, 17 Nov 2023 15:14:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C568F83A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1700230015;
-	bh=45U4h7tQ009FE8OA0oACt5b/otD3JwAqThkmZcV9sJw=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	s=default; t=1700230491;
+	bh=Z4GiqdxrhyDiVPHNOBK1nrqs/sqGLNXqcz1EWsGnAqM=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=iQ8g54pHVx5cuh01Tk9QgjhcxTflq8FbQTrNEsJi90R2pQGydZj4CrYlStiZTSDMR
-	 lVfVcoUx7Cq0KPN4G9W1MtgExCyS4xVinPxe673TWcODrIl62VP/FRfv57+srL/d+M
-	 +pT8RjuXddTlo48n6ixMi6BGBCe9/qUwRJMg3+sM=
+	b=F5SiJctp0qIlS1OA3XTI0TwBa2Y/jVmrzTAWQm9XFweoTKIa46YNLumTzlAjWVzyg
+	 5PoZVmGuhhVQy8joLTp3JxkG305OzijZ3ti9vJgKzWq/co3jhFp3tPcFPlt9sk8McR
+	 tmtmbW9g7eIVo6echvnH4sGmePGPyfoppX+MHSwk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B8C89F80249; Fri, 17 Nov 2023 15:05:39 +0100 (CET)
+	id DB760F8055C; Fri, 17 Nov 2023 15:14:00 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 58DA4F80093;
-	Fri, 17 Nov 2023 15:05:39 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 63C9EF80557;
+	Fri, 17 Nov 2023 15:14:00 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 41929F801D5; Fri, 17 Nov 2023 15:05:35 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 11DD3F80549; Fri, 17 Nov 2023 15:13:56 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B0491F80093
-	for <alsa-devel@alsa-project.org>; Fri, 17 Nov 2023 15:05:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B0491F80093
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by ams.source.kernel.org (Postfix) with ESMTP id F2198B81F9D;
-	Fri, 17 Nov 2023 14:05:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55397C433C7;
-	Fri, 17 Nov 2023 14:05:16 +0000 (UTC)
-Message-ID: <4e0e0e79-91a8-49b5-874d-784d51003021@xs4all.nl>
-Date: Fri, 17 Nov 2023 15:05:14 +0100
+	by alsa1.perex.cz (Postfix) with ESMTPS id E5C41F80093
+	for <alsa-devel@alsa-project.org>; Fri, 17 Nov 2023 15:13:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E5C41F80093
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
+ header.s=PODMain02222019 header.b=ZSBOZnkq
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+	by mx0b-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id
+ 3AH7fERx025627;
+	Fri, 17 Nov 2023 08:13:48 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+	from:to:cc:subject:date:message-id:in-reply-to:references
+	:mime-version:content-transfer-encoding:content-type; s=
+	PODMain02222019; bh=eQHPmKVYs9Cxq8bgVHJlqm/zIEmuE52dOPPbKaZHA6w=; b=
+	ZSBOZnkqT87yPiuSy+d12hKuHYilyKARVa/3rMuBYkBOMg1rnhzSFcVvDSL5J2uj
+	w129rkzizESKiu7XQS25EAv7pMjMK/P9Q/CVbbDqqpXF0NwFR46QTWIyzzE3XTRi
+	QkC4dzk3KpHc5wirY7RUyu6bkzir0blOLlFGLCbELYAEc/XcWHuxrgYZ+aDfywp0
+	bIIaMLU68sBIv/dJX0Cas1pnGsOk07MBnYiHG4dT97u14lsbMG8LxkqqDf7izaTM
+	pPZEfCiIHg7s5GCkbklEe9Vrjev7kMP6BcDEzSVWQNphIGS8HWaymktnZ0ZDmrTm
+	ud+M08cqa+15zG7fiGY0fg==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3ua6wpfjs8-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 17 Nov 2023 08:13:48 -0600 (CST)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Fri, 17 Nov
+ 2023 14:13:46 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.39 via Frontend
+ Transport; Fri, 17 Nov 2023 14:13:46 +0000
+Received: from upx-tgl-008-ubuntu.ad.cirrus.com
+ (upx-tgl-008-ubuntu.ad.cirrus.com [198.90.251.167])
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id D8F1A3582;
+	Fri, 17 Nov 2023 14:13:46 +0000 (UTC)
+From: Maciej Strozek <mstrozek@opensource.cirrus.com>
+To: Mark Brown <broonie@kernel.org>
+CC: James Schulman <james.schulman@cirrus.com>,
+        David Rhodes
+	<david.rhodes@cirrus.com>,
+        Liam Girdwood <lgirdwood@gmail.com>, <alsa-devel@alsa-project.org>,
+        <patches@opensource.cirrus.com>, <linux-sound@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Maciej Strozek
+	<mstrozek@opensource.cirrus.com>
+Subject: [PATCH 3/7] ASoC: cs43130: Allow configuration of bit clock and frame
+ inversion
+Date: Fri, 17 Nov 2023 14:13:40 +0000
+Message-ID: <20231117141344.64320-4-mstrozek@opensource.cirrus.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231117141344.64320-1-mstrozek@opensource.cirrus.com>
+References: <20231117141344.64320-1-mstrozek@opensource.cirrus.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v9 10/15] media: uapi: Add V4L2_CTRL_TYPE_FIXED_POINT
-Content-Language: en-US, nl
-To: Sakari Ailus <sakari.ailus@iki.fi>
-Cc: Shengjiu Wang <shengjiu.wang@gmail.com>,
- Shengjiu Wang <shengjiu.wang@nxp.com>, m.szyprowski@samsung.com,
- mchehab@kernel.org, linux-media@vger.kernel.org,
- linux-kernel@vger.kernel.org, Xiubo.Lee@gmail.com, festevam@gmail.com,
- nicoleotsuka@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
- perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
- linuxppc-dev@lists.ozlabs.org, Tomasz Figa <tfiga@chromium.org>,
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-References: <da6efe14-c00d-4bf4-bf61-dd4ed39c5c60@xs4all.nl>
- <20231113124412.GA18974@pendragon.ideasonboard.com>
- <b35601f7-8bb2-4317-a8f7-6fbf81572943@xs4all.nl>
- <20231115105518.GD13826@pendragon.ideasonboard.com>
- <a67491c0-4fdf-4472-852c-e75f5e1d67af@xs4all.nl>
- <20231115114931.GE13826@pendragon.ideasonboard.com>
- <CAAFQd5BkCR=tYvmfjkOeTnjnccmURt8kEtiRee9CYqcz+FGHfg@mail.gmail.com>
- <7626e0f8-ce31-469e-b49c-f2fba664756f@xs4all.nl>
- <CAA+D8ANb6A9eh=MQR9+7sZi5jet+7RSHt6TdZqPz5EK6pBs3mA@mail.gmail.com>
- <6badc94c-c414-40d7-a9d7-8b3fc86d8d98@xs4all.nl>
- <ZVdlmRlpW7ebrjQO@valkosipuli.retiisi.eu>
-From: Hans Verkuil <hverkuil@xs4all.nl>
-Autocrypt: addr=hverkuil@xs4all.nl; keydata=
- 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
-In-Reply-To: <ZVdlmRlpW7ebrjQO@valkosipuli.retiisi.eu>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: MFQWNRSSQXDDRPIEYYNC3LVKPBL7QV44
-X-Message-ID-Hash: MFQWNRSSQXDDRPIEYYNC3LVKPBL7QV44
-X-MailFrom: SRS0=P6zk=G6=xs4all.nl=hverkuil@kernel.org
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: 3Twmk12_ptNpSR9cgVrow_2OwfaJ63fc
+X-Proofpoint-ORIG-GUID: 3Twmk12_ptNpSR9cgVrow_2OwfaJ63fc
+X-Proofpoint-Spam-Reason: safe
+Message-ID-Hash: QWVO5BEL3RJXTZQFVGLJPWZORRPYT3W5
+X-Message-ID-Hash: QWVO5BEL3RJXTZQFVGLJPWZORRPYT3W5
+X-MailFrom: prvs=668552b693=mstrozek@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -128,7 +105,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MFQWNRSSQXDDRPIEYYNC3LVKPBL7QV44/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QWVO5BEL3RJXTZQFVGLJPWZORRPYT3W5/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -137,343 +114,91 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 17/11/2023 14:07, Sakari Ailus wrote:
-> Hi Hans,
-> 
-> Thank you for the patch.
-> 
-> On Fri, Nov 17, 2023 at 01:07:44PM +0100, Hans Verkuil wrote:
->> Here is an RFC patch adding support for 'fraction_bits'. It's lacking
->> documentation, but it can be used for testing.
->>
->> It was rather a pain logging fixed point number in a reasonable format,
->> but I think it is OK.
->>
->> In userspace (where you can use floating point) it is a lot easier:
->>
->> printf("%.*g\n", fraction_bits, (double)v * (1.0 / (1ULL << fraction_bits)));
-> 
-> I wonder if we could add a printk() format specifier for this. Doesn't need
-> to be done right now though, just an idea.
-> 
->>
->> I decided to only expose fraction_bits in struct v4l2_query_ext_ctrl.
->> I could add it to struct v4l2_queryctrl, but I did not think that was
->> necessary. Other opinions are welcome.
->>
->> In the meantime, let me know if this works for your patch series. If it
->> does, then I can clean this up.
->>
->> Regards,
->>
->> 	Hans
->>
->> Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
->> ---
->>  drivers/media/v4l2-core/v4l2-ctrls-api.c  |  1 +
->>  drivers/media/v4l2-core/v4l2-ctrls-core.c | 72 +++++++++++++++++++----
->>  include/media/v4l2-ctrls.h                |  7 ++-
->>  include/uapi/linux/videodev2.h            | 20 ++++++-
->>  4 files changed, 85 insertions(+), 15 deletions(-)
->>
->> diff --git a/drivers/media/v4l2-core/v4l2-ctrls-api.c b/drivers/media/v4l2-core/v4l2-ctrls-api.c
->> index 002ea6588edf..3132df315b17 100644
->> --- a/drivers/media/v4l2-core/v4l2-ctrls-api.c
->> +++ b/drivers/media/v4l2-core/v4l2-ctrls-api.c
->> @@ -1101,6 +1101,7 @@ int v4l2_query_ext_ctrl(struct v4l2_ctrl_handler *hdl, struct v4l2_query_ext_ctr
->>  	qc->elems = ctrl->elems;
->>  	qc->nr_of_dims = ctrl->nr_of_dims;
->>  	memcpy(qc->dims, ctrl->dims, qc->nr_of_dims * sizeof(qc->dims[0]));
->> +	qc->fraction_bits = ctrl->fraction_bits;
->>  	qc->minimum = ctrl->minimum;
->>  	qc->maximum = ctrl->maximum;
->>  	qc->default_value = ctrl->default_value;
->> diff --git a/drivers/media/v4l2-core/v4l2-ctrls-core.c b/drivers/media/v4l2-core/v4l2-ctrls-core.c
->> index a662fb60f73f..0e08a371af5c 100644
->> --- a/drivers/media/v4l2-core/v4l2-ctrls-core.c
->> +++ b/drivers/media/v4l2-core/v4l2-ctrls-core.c
->> @@ -252,12 +252,42 @@ void v4l2_ctrl_type_op_init(const struct v4l2_ctrl *ctrl, u32 from_idx,
->>  }
->>  EXPORT_SYMBOL(v4l2_ctrl_type_op_init);
->>
->> +static void v4l2_ctrl_log_fp(s64 v, unsigned int fraction_bits)
->> +{
->> +	s64 i = v4l2_fp_integer(v, fraction_bits);
->> +	s64 f = v4l2_fp_fraction(v, fraction_bits);
->> +
->> +	if (!f) {
->> +		pr_cont("%lld", i);
->> +	} else if (fraction_bits < 20) {
->> +		u64 div = 1ULL << fraction_bits;
->> +
->> +		if (!i && f < 0)
->> +			pr_cont("-%lld/%llu", -f, div);
->> +		else if (!i)
->> +			pr_cont("%lld/%llu", f, div);
->> +		else if (i < 0 || f < 0)
->> +			pr_cont("-%lld-%llu/%llu", -i, -f, div);
->> +		else
->> +			pr_cont("%lld+%llu/%llu", i, f, div);
->> +	} else {
->> +		if (!i && f < 0)
->> +			pr_cont("-%lld/(2^%u)", -f, fraction_bits);
->> +		else if (!i)
->> +			pr_cont("%lld/(2^%u)", f, fraction_bits);
->> +		else if (i < 0 || f < 0)
->> +			pr_cont("-%lld-%llu/(2^%u)", -i, -f, fraction_bits);
->> +		else
->> +			pr_cont("%lld+%llu/(2^%u)", i, f, fraction_bits);
->> +	}
->> +}
->> +
->>  void v4l2_ctrl_type_op_log(const struct v4l2_ctrl *ctrl)
->>  {
->>  	union v4l2_ctrl_ptr ptr = ctrl->p_cur;
->>
->>  	if (ctrl->is_array) {
->> -		unsigned i;
->> +		unsigned int i;
->>
->>  		for (i = 0; i < ctrl->nr_of_dims; i++)
->>  			pr_cont("[%u]", ctrl->dims[i]);
->> @@ -266,7 +296,10 @@ void v4l2_ctrl_type_op_log(const struct v4l2_ctrl *ctrl)
->>
->>  	switch (ctrl->type) {
->>  	case V4L2_CTRL_TYPE_INTEGER:
->> -		pr_cont("%d", *ptr.p_s32);
->> +		if (!ctrl->fraction_bits)
->> +			pr_cont("%d", *ptr.p_s32);
->> +		else
->> +			v4l2_ctrl_log_fp(*ptr.p_s32, ctrl->fraction_bits);
->>  		break;
->>  	case V4L2_CTRL_TYPE_BOOLEAN:
->>  		pr_cont("%s", *ptr.p_s32 ? "true" : "false");
->> @@ -281,19 +314,31 @@ void v4l2_ctrl_type_op_log(const struct v4l2_ctrl *ctrl)
->>  		pr_cont("0x%08x", *ptr.p_s32);
->>  		break;
->>  	case V4L2_CTRL_TYPE_INTEGER64:
->> -		pr_cont("%lld", *ptr.p_s64);
->> +		if (!ctrl->fraction_bits)
->> +			pr_cont("%lld", *ptr.p_s64);
->> +		else
->> +			v4l2_ctrl_log_fp(*ptr.p_s64, ctrl->fraction_bits);
->>  		break;
->>  	case V4L2_CTRL_TYPE_STRING:
->>  		pr_cont("%s", ptr.p_char);
->>  		break;
->>  	case V4L2_CTRL_TYPE_U8:
->> -		pr_cont("%u", (unsigned)*ptr.p_u8);
->> +		if (!ctrl->fraction_bits)
->> +			pr_cont("%u", (unsigned int)*ptr.p_u8);
->> +		else
->> +			v4l2_ctrl_log_fp((unsigned int)*ptr.p_u8, ctrl->fraction_bits);
->>  		break;
->>  	case V4L2_CTRL_TYPE_U16:
->> -		pr_cont("%u", (unsigned)*ptr.p_u16);
->> +		if (!ctrl->fraction_bits)
->> +			pr_cont("%u", (unsigned int)*ptr.p_u16);
->> +		else
->> +			v4l2_ctrl_log_fp((unsigned int)*ptr.p_u16, ctrl->fraction_bits);
->>  		break;
->>  	case V4L2_CTRL_TYPE_U32:
->> -		pr_cont("%u", (unsigned)*ptr.p_u32);
->> +		if (!ctrl->fraction_bits)
->> +			pr_cont("%u", (unsigned int)*ptr.p_u32);
->> +		else
->> +			v4l2_ctrl_log_fp((unsigned int)*ptr.p_u32, ctrl->fraction_bits);
->>  		break;
->>  	case V4L2_CTRL_TYPE_H264_SPS:
->>  		pr_cont("H264_SPS");
->> @@ -1752,7 +1797,7 @@ static struct v4l2_ctrl *v4l2_ctrl_new(struct v4l2_ctrl_handler *hdl,
->>  			u32 id, const char *name, enum v4l2_ctrl_type type,
->>  			s64 min, s64 max, u64 step, s64 def,
->>  			const u32 dims[V4L2_CTRL_MAX_DIMS], u32 elem_size,
->> -			u32 flags, const char * const *qmenu,
->> +			u32 fraction_bits, u32 flags, const char * const *qmenu,
->>  			const s64 *qmenu_int, const union v4l2_ctrl_ptr p_def,
->>  			void *priv)
->>  {
->> @@ -1939,6 +1984,7 @@ static struct v4l2_ctrl *v4l2_ctrl_new(struct v4l2_ctrl_handler *hdl,
->>  	ctrl->name = name;
->>  	ctrl->type = type;
->>  	ctrl->flags = flags;
->> +	ctrl->fraction_bits = fraction_bits;
->>  	ctrl->minimum = min;
->>  	ctrl->maximum = max;
->>  	ctrl->step = step;
->> @@ -2037,7 +2083,7 @@ struct v4l2_ctrl *v4l2_ctrl_new_custom(struct v4l2_ctrl_handler *hdl,
->>  	ctrl = v4l2_ctrl_new(hdl, cfg->ops, cfg->type_ops, cfg->id, name,
->>  			type, min, max,
->>  			is_menu ? cfg->menu_skip_mask : step, def,
->> -			cfg->dims, cfg->elem_size,
->> +			cfg->dims, cfg->elem_size, cfg->fraction_bits,
->>  			flags, qmenu, qmenu_int, cfg->p_def, priv);
->>  	if (ctrl)
->>  		ctrl->is_private = cfg->is_private;
->> @@ -2062,7 +2108,7 @@ struct v4l2_ctrl *v4l2_ctrl_new_std(struct v4l2_ctrl_handler *hdl,
->>  		return NULL;
->>  	}
->>  	return v4l2_ctrl_new(hdl, ops, NULL, id, name, type,
->> -			     min, max, step, def, NULL, 0,
->> +			     min, max, step, def, NULL, 0, 0,
->>  			     flags, NULL, NULL, ptr_null, NULL);
->>  }
->>  EXPORT_SYMBOL(v4l2_ctrl_new_std);
->> @@ -2095,7 +2141,7 @@ struct v4l2_ctrl *v4l2_ctrl_new_std_menu(struct v4l2_ctrl_handler *hdl,
->>  		return NULL;
->>  	}
->>  	return v4l2_ctrl_new(hdl, ops, NULL, id, name, type,
->> -			     0, max, mask, def, NULL, 0,
->> +			     0, max, mask, def, NULL, 0, 0,
->>  			     flags, qmenu, qmenu_int, ptr_null, NULL);
->>  }
->>  EXPORT_SYMBOL(v4l2_ctrl_new_std_menu);
->> @@ -2127,7 +2173,7 @@ struct v4l2_ctrl *v4l2_ctrl_new_std_menu_items(struct v4l2_ctrl_handler *hdl,
->>  		return NULL;
->>  	}
->>  	return v4l2_ctrl_new(hdl, ops, NULL, id, name, type,
->> -			     0, max, mask, def, NULL, 0,
->> +			     0, max, mask, def, NULL, 0, 0,
->>  			     flags, qmenu, NULL, ptr_null, NULL);
->>
->>  }
->> @@ -2149,7 +2195,7 @@ struct v4l2_ctrl *v4l2_ctrl_new_std_compound(struct v4l2_ctrl_handler *hdl,
->>  		return NULL;
->>  	}
->>  	return v4l2_ctrl_new(hdl, ops, NULL, id, name, type,
->> -			     min, max, step, def, NULL, 0,
->> +			     min, max, step, def, NULL, 0, 0,
->>  			     flags, NULL, NULL, p_def, NULL);
->>  }
->>  EXPORT_SYMBOL(v4l2_ctrl_new_std_compound);
->> @@ -2173,7 +2219,7 @@ struct v4l2_ctrl *v4l2_ctrl_new_int_menu(struct v4l2_ctrl_handler *hdl,
->>  		return NULL;
->>  	}
->>  	return v4l2_ctrl_new(hdl, ops, NULL, id, name, type,
->> -			     0, max, 0, def, NULL, 0,
->> +			     0, max, 0, def, NULL, 0, 0,
->>  			     flags, NULL, qmenu_int, ptr_null, NULL);
->>  }
->>  EXPORT_SYMBOL(v4l2_ctrl_new_int_menu);
->> diff --git a/include/media/v4l2-ctrls.h b/include/media/v4l2-ctrls.h
->> index 59679a42b3e7..c35514c5bf88 100644
->> --- a/include/media/v4l2-ctrls.h
->> +++ b/include/media/v4l2-ctrls.h
->> @@ -211,7 +211,8 @@ typedef void (*v4l2_ctrl_notify_fnc)(struct v4l2_ctrl *ctrl, void *priv);
->>   *		except for dynamic arrays. In that case it is in the range of
->>   *		1 to @p_array_alloc_elems.
->>   * @dims:	The size of each dimension.
->> - * @nr_of_dims:The number of dimensions in @dims.
->> + * @nr_of_dims: The number of dimensions in @dims.
->> + * @fraction_bits: The number of fraction bits for fixed point values.
->>   * @menu_skip_mask: The control's skip mask for menu controls. This makes it
->>   *		easy to skip menu items that are not valid. If bit X is set,
->>   *		then menu item X is skipped. Of course, this only works for
->> @@ -228,6 +229,7 @@ typedef void (*v4l2_ctrl_notify_fnc)(struct v4l2_ctrl *ctrl, void *priv);
->>   *		:math:`ceil(\frac{maximum - minimum}{step}) + 1`.
->>   *		Used only if the @type is %V4L2_CTRL_TYPE_INTEGER_MENU.
->>   * @flags:	The control's flags.
->> + * @fraction_bits: The number of fraction bits for fixed point values.
->>   * @priv:	The control's private pointer. For use by the driver. It is
->>   *		untouched by the control framework. Note that this pointer is
->>   *		not freed when the control is deleted. Should this be needed
->> @@ -286,6 +288,7 @@ struct v4l2_ctrl {
->>  	u32 new_elems;
->>  	u32 dims[V4L2_CTRL_MAX_DIMS];
->>  	u32 nr_of_dims;
->> +	u32 fraction_bits;
->>  	union {
->>  		u64 step;
->>  		u64 menu_skip_mask;
->> @@ -426,6 +429,7 @@ struct v4l2_ctrl_handler {
->>   * @dims:	The size of each dimension.
->>   * @elem_size:	The size in bytes of the control.
->>   * @flags:	The control's flags.
->> + * @fraction_bits: The number of fraction bits for fixed point values.
->>   * @menu_skip_mask: The control's skip mask for menu controls. This makes it
->>   *		easy to skip menu items that are not valid. If bit X is set,
->>   *		then menu item X is skipped. Of course, this only works for
->> @@ -455,6 +459,7 @@ struct v4l2_ctrl_config {
->>  	u32 dims[V4L2_CTRL_MAX_DIMS];
->>  	u32 elem_size;
->>  	u32 flags;
->> +	u32 fraction_bits;
->>  	u64 menu_skip_mask;
->>  	const char * const *qmenu;
->>  	const s64 *qmenu_int;
->> diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
->> index c3d4e490ce7c..26ecac19722a 100644
->> --- a/include/uapi/linux/videodev2.h
->> +++ b/include/uapi/linux/videodev2.h
->> @@ -1944,9 +1944,27 @@ struct v4l2_query_ext_ctrl {
->>  	__u32                elems;
->>  	__u32                nr_of_dims;
->>  	__u32                dims[V4L2_CTRL_MAX_DIMS];
->> -	__u32		     reserved[32];
->> +	__u32                fraction_bits;
-> 
-> u8 would suffice. Not that we'd be short of space but still...
-> 
->> +	__u32		     reserved[31];
->>  };
->>
->> +static inline __s64 v4l2_fp_compose(__s64 i, __s64 f, unsigned int fraction_bits)
->> +{
->> +	return (i << fraction_bits) + f;
->> +}
->> +
->> +static inline __s64 v4l2_fp_integer(__s64 v, unsigned int fraction_bits)
->> +{
->> +	return v / (1LL << fraction_bits);
-> 
-> Why not just:
-> 
-> 	return v >> fraction_bits;
+Signed-off-by: Maciej Strozek <mstrozek@opensource.cirrus.com>
+---
+ sound/soc/codecs/cs43130.c | 42 ++++++++++++++++++++++++++++++++++++--
+ sound/soc/codecs/cs43130.h |  1 +
+ 2 files changed, 41 insertions(+), 2 deletions(-)
 
-That works if v >= 0, but not for v < 0. Getting this right for negative
-fixed point values was rather tricky. Actually, it is still wrong if
-fraction_bits == 63. This works:
-
-static inline long long v4l2_fp_integer(long long v, unsigned int fraction_bits)
-{
-        if (fraction_bits >= 63)
-                return v < 0 ? -1 : 0;
-        return v / (1ULL << fraction_bits);
-}
-
-> 
-> I'd use macros so you could use whatever control types with this without
-> casting. E.g.
-> 
-> #define V4L2_FP_INTEGER(v, fraction_bits) ((v) >> fraction_bits)
-> 
-> A more generic way to expose this could be to have base and exponent, the
-> base being 2 in this case. Just an idea. This would of course be a little
-> bit more difficult to use.
-
-To be honest, I am not at all certain this should be in a public header.
-I am inclined to drop it, especially since in userspace you can just use
-floating point operations which makes working with fixed point a lot easier.
-
-The code to extract the integer and fraction part is really only relevant
-when logging the fixed point value.
-
-Regards,
-
-	Hans
-
-> 
->> +}
->> +
->> +static inline __s64 v4l2_fp_fraction(__s64 v, unsigned int fraction_bits)
->> +{
->> +	__u64 mask = (1ULL << fraction_bits) - 1;
->> +
->> +	return v < 0 ? -((-v) & mask) : (v & mask);
->> +}
->> +
->>  /*  Used in the VIDIOC_QUERYMENU ioctl for querying menu items */
->>  struct v4l2_querymenu {
->>  	__u32		id;
-> 
+diff --git a/sound/soc/codecs/cs43130.c b/sound/soc/codecs/cs43130.c
+index d8ec325b9cc9..62647045d8c4 100644
+--- a/sound/soc/codecs/cs43130.c
++++ b/sound/soc/codecs/cs43130.c
+@@ -595,6 +595,27 @@ static int cs43130_set_sp_fmt(int dai_id, unsigned int bitwidth_sclk,
+ 		return -EINVAL;
+ 	}
+ 
++	switch (cs43130->dais[dai_id].dai_invert) {
++	case SND_SOC_DAIFMT_NB_NF:
++		sclk_edge = 1;
++		lrck_edge = 0;
++		break;
++	case SND_SOC_DAIFMT_IB_NF:
++		sclk_edge = 0;
++		lrck_edge = 0;
++		break;
++	case SND_SOC_DAIFMT_NB_IF:
++		sclk_edge = 1;
++		lrck_edge = 1;
++		break;
++	case SND_SOC_DAIFMT_IB_IF:
++		sclk_edge = 0;
++		lrck_edge = 1;
++		break;
++	default:
++		return -EINVAL;
++	}
++
+ 	switch (cs43130->dais[dai_id].dai_mode) {
+ 	case SND_SOC_DAIFMT_CBS_CFS:
+ 		dai_mode_val = 0;
+@@ -607,8 +628,6 @@ static int cs43130_set_sp_fmt(int dai_id, unsigned int bitwidth_sclk,
+ 	}
+ 
+ 	frm_size = bitwidth_sclk * params_channels(params);
+-	sclk_edge = 1;
+-	lrck_edge = 0;
+ 	loc_ch1 = 0;
+ 	loc_ch2 = bitwidth_sclk * (params_channels(params) - 1);
+ 
+@@ -1483,6 +1502,25 @@ static int cs43130_pcm_set_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
+ 		return -EINVAL;
+ 	}
+ 
++	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
++	case SND_SOC_DAIFMT_NB_NF:
++		cs43130->dais[codec_dai->id].dai_invert = SND_SOC_DAIFMT_NB_NF;
++		break;
++	case SND_SOC_DAIFMT_IB_NF:
++		cs43130->dais[codec_dai->id].dai_invert = SND_SOC_DAIFMT_IB_NF;
++		break;
++	case SND_SOC_DAIFMT_NB_IF:
++		cs43130->dais[codec_dai->id].dai_invert = SND_SOC_DAIFMT_NB_IF;
++		break;
++	case SND_SOC_DAIFMT_IB_IF:
++		cs43130->dais[codec_dai->id].dai_invert = SND_SOC_DAIFMT_IB_IF;
++		break;
++	default:
++		dev_err(cs43130->dev, "Unsupported invert mode 0x%x\n",
++			fmt & SND_SOC_DAIFMT_INV_MASK);
++		return -EINVAL;
++	}
++
+ 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
+ 	case SND_SOC_DAIFMT_I2S:
+ 		cs43130->dais[codec_dai->id].dai_format = SND_SOC_DAIFMT_I2S;
+diff --git a/sound/soc/codecs/cs43130.h b/sound/soc/codecs/cs43130.h
+index 90e8895275e7..c7b2708aebcd 100644
+--- a/sound/soc/codecs/cs43130.h
++++ b/sound/soc/codecs/cs43130.h
+@@ -497,6 +497,7 @@ struct cs43130_dai {
+ 	unsigned int			sclk;
+ 	unsigned int			dai_format;
+ 	unsigned int			dai_mode;
++	unsigned int			dai_invert;
+ };
+ 
+ struct	cs43130_private {
+-- 
+2.34.1
 
