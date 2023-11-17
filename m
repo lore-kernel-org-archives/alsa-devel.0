@@ -4,69 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B34BDC197A0
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Nov 2023 14:16:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9DC62C197A0
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Nov 2023 14:16:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B6A9FDF6;
-	Fri, 17 Nov 2023 15:15:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B6A9FDF6
+	by alsa0.perex.cz (Postfix) with ESMTPS id DCC7893A;
+	Fri, 17 Nov 2023 15:15:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DCC7893A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1700230567;
-	bh=vG/llSBtFE3mcFyYgV6MSAyGo2lYnAbbP8C0sIgg29Q=;
-	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=YwjdDI31GFZn1qsRdhOomAZCiTWTkH3fxSMdua9YzBzTtm8znj9blPUg+s0/pXMyg
-	 OrjQaOqBZT/7EmTnhDMO3KH8mNYzZ9IfFh+h1fsB9o29xuqJZLnbiNBPrxMzv6lGdu
-	 zPQxqCeNtLoddFynx9cTK2eTDPMV4espbUijGbww=
+	s=default; t=1700230588;
+	bh=DP9rtR2NnfQdLpn2ciM7P3EbdUVTo2eu8B1kq47NCWw=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=AuE0J4FXdkj6kcDsu6DlCqEUDvV4VcjE21afnl7Pz2k+09DalT1xWz5MacZHEBqXI
+	 MRiI280ebIa22U30bNiZNH7nkEtYtXHIRvZMvMauPaFqLFPrKXfWt2u3wo906b06AW
+	 71dAPRIGis9oowacjzu45/M6Hq3YiqSsRLrucMPI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 63F8DF8059F; Fri, 17 Nov 2023 15:14:09 +0100 (CET)
+	id 52739F805B4; Fri, 17 Nov 2023 15:14:11 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 69D71F805A1;
-	Fri, 17 Nov 2023 15:14:08 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E4334F8058C;
+	Fri, 17 Nov 2023 15:14:10 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 16ED8F80549; Fri, 17 Nov 2023 15:14:00 +0100 (CET)
+	id 116E5F80563; Fri, 17 Nov 2023 15:14:02 +0100 (CET)
 Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 4E245F8022B
-	for <alsa-devel@alsa-project.org>; Fri, 17 Nov 2023 15:13:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4E245F8022B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 3A657F8016E
+	for <alsa-devel@alsa-project.org>; Fri, 17 Nov 2023 15:13:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3A657F8016E
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=S7y+KHND
+ header.s=PODMain02222019 header.b=Q+vz0Z0s
 Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
 	by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id
- 3AH8IefK017599;
-	Fri, 17 Nov 2023 08:13:51 -0600
+ 3AH8IefO017599;
+	Fri, 17 Nov 2023 08:13:54 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	from:to:cc:subject:date:message-id:mime-version
-	:content-transfer-encoding:content-type; s=PODMain02222019; bh=F
-	wPEmYl6wbAvf5HjePnJT1k0yWGDTyNaKGDv//NqY0c=; b=S7y+KHNDlGvP5McII
-	R7J5BOt/RQmu57E/ZrwWpws8PZ+/lFJp05S9gt+eHLwhpUT9e40eQbyaggRjXE1D
-	S/pLbTmd6Z1wnpfA8Fd2iTtMfqVclm+85mg8Pk/FnH6JMLx0NMQKEiaNP9xdLrt7
-	0FVjGuE7jRskK7S3Kv0WtKnKcv3ZxcnfHsXa702D8eFXTNF/jx0iciCnv7GO/opg
-	f7xXNXqMAUnCeOcBLdOAqIGZDTj1OiSUfnkIyTZpb9SunvAwlqb4qZNZ8r52s2Ez
-	QZc5CDwdRRzJDqVPmKJ3vtJ1TotYAbEVRosSfoaTlUH34wIFHcUrfl51hd6BVhMZ
-	7GCxg==
+	from:to:cc:subject:date:message-id:in-reply-to:references
+	:mime-version:content-transfer-encoding:content-type; s=
+	PODMain02222019; bh=M6W+QVktOBh17HSN1EqFh0hC5Sn5ODIVhO8qEILw3CI=; b=
+	Q+vz0Z0sPPk3Oq84zc6ryjNjyQ9+dNZ20e35fOfvatApQXucmpa4hFn59rDoMdwa
+	sUru9OKW/aAMa5iNlfUGfSZzbu0CaFfi2q2jgcYjoWSW1zq0SwSTZt74kgEXLYmO
+	fWY6KpzUkViYRzXKmt4Cm/LbXuLPA/iDqUATGzQTO/DVDu2UndM4dK8CXXGNl1ai
+	ZDnXMyOGpHQMsi1+mF/mK+6eswRIBIS7crFOJ8IIta2q65gFY9zkRGTttqfxbMhr
+	1yD1UsLLfXg1t4JRDUsoABOllzA+t7LdFsctoD3DZIwQdDRB8iaHiFv1Y+b+rPbK
+	W7WsgVdQAbFnVN1n4/BH0Q==
 Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3ua7w2qj86-3
+	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3ua7w2qj86-7
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 17 Nov 2023 08:13:50 -0600 (CST)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
+	Fri, 17 Nov 2023 08:13:54 -0600 (CST)
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Fri, 17 Nov
- 2023 14:13:46 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.39 via Frontend
- Transport; Fri, 17 Nov 2023 14:13:46 +0000
+ 2023 14:13:47 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.39 via Frontend Transport; Fri, 17 Nov 2023 14:13:47 +0000
 Received: from upx-tgl-008-ubuntu.ad.cirrus.com
  (upx-tgl-008-ubuntu.ad.cirrus.com [198.90.251.167])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id A49A915A0;
-	Fri, 17 Nov 2023 14:13:46 +0000 (UTC)
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 21C3E15B9;
+	Fri, 17 Nov 2023 14:13:47 +0000 (UTC)
 From: Maciej Strozek <mstrozek@opensource.cirrus.com>
 To: Mark Brown <broonie@kernel.org>
 CC: James Schulman <james.schulman@cirrus.com>,
@@ -77,18 +78,21 @@ CC: James Schulman <james.schulman@cirrus.com>,
         <linux-kernel@vger.kernel.org>,
         Maciej Strozek
 	<mstrozek@opensource.cirrus.com>
-Subject: [PATCH 0/7] ASoC: cs43130: Fixes and improvements
-Date: Fri, 17 Nov 2023 14:13:37 +0000
-Message-ID: <20231117141344.64320-1-mstrozek@opensource.cirrus.com>
+Subject: [PATCH 7/7] ASoC:cs43130: Add switch to control normal and alt hp
+ inputs
+Date: Fri, 17 Nov 2023 14:13:44 +0000
+Message-ID: <20231117141344.64320-8-mstrozek@opensource.cirrus.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231117141344.64320-1-mstrozek@opensource.cirrus.com>
+References: <20231117141344.64320-1-mstrozek@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: saRXQWLGibz-4ixkRKO05Tbv7HBcjCFf
-X-Proofpoint-GUID: saRXQWLGibz-4ixkRKO05Tbv7HBcjCFf
+X-Proofpoint-ORIG-GUID: HHy7PmnneZgXiJqVC4NCra9DsHWE9Gp0
+X-Proofpoint-GUID: HHy7PmnneZgXiJqVC4NCra9DsHWE9Gp0
 X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: 4BT7BZFFHORXKLSAJRGHZCXYOU73WJCH
-X-Message-ID-Hash: 4BT7BZFFHORXKLSAJRGHZCXYOU73WJCH
+Message-ID-Hash: VYWSSCCR5JSF6PYVX3X72JGKW6CSA2VL
+X-Message-ID-Hash: VYWSSCCR5JSF6PYVX3X72JGKW6CSA2VL
 X-MailFrom: prvs=668552b693=mstrozek@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -101,31 +105,61 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4BT7BZFFHORXKLSAJRGHZCXYOU73WJCH/>
-List-Archive: <>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VYWSSCCR5JSF6PYVX3X72JGKW6CSA2VL/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-This patchset aims to add minor fixes (first two patches) and
-introduce general improvements to the driver (rest of the patches)
+Make sure these inputs are mutually exclusive as recommended by the
+datasheet
 
-Maciej Strozek (7):
-  ASoC: cs43130: Fix the position of const qualifier
-  ASoC: cs43130: Fix incorrect frame delay configuration
-  ASoC: cs43130: Allow configuration of bit clock and frame inversion
-  ASoC: cs43130: Store device in private struct and use it more
-    consistently
-  ASoC: cs43130: Add handling of ACPI
-  ASoC: cs43130: Allow driver to work without IRQ thread
-  ASoC:cs43130: Add switch to control normal and alt hp inputs
+Signed-off-by: Maciej Strozek <mstrozek@opensource.cirrus.com>
+---
+ sound/soc/codecs/cs43130.c | 16 ++++++++++++----
+ 1 file changed, 12 insertions(+), 4 deletions(-)
 
- sound/soc/codecs/cs43130.c | 311 ++++++++++++++++++++++++-------------
- sound/soc/codecs/cs43130.h |   3 +
- 2 files changed, 204 insertions(+), 110 deletions(-)
-
---
+diff --git a/sound/soc/codecs/cs43130.c b/sound/soc/codecs/cs43130.c
+index 1e7c32eedc7b..8b77bd7fa907 100644
+--- a/sound/soc/codecs/cs43130.c
++++ b/sound/soc/codecs/cs43130.c
+@@ -1419,7 +1419,15 @@ static int cs43130_hpin_event(struct snd_soc_dapm_widget *w,
+ 	return 0;
+ }
+ 
++static const char * const bypass_mux_text[] = {
++	"Internal",
++	"Alternative",
++};
++static SOC_ENUM_SINGLE_DECL(bypass_enum, SND_SOC_NOPM, 0, bypass_mux_text);
++static const struct snd_kcontrol_new bypass_ctrl = SOC_DAPM_ENUM("Switch", bypass_enum);
++
+ static const struct snd_soc_dapm_widget digital_hp_widgets[] = {
++	SND_SOC_DAPM_MUX("Bypass Switch", SND_SOC_NOPM, 0, 0, &bypass_ctrl),
+ 	SND_SOC_DAPM_OUTPUT("HPOUTA"),
+ 	SND_SOC_DAPM_OUTPUT("HPOUTB"),
+ 
+@@ -1472,13 +1480,13 @@ static const struct snd_soc_dapm_route digital_hp_routes[] = {
+ 	{"DSD", NULL, "XSPIN DSD"},
+ 	{"HiFi DAC", NULL, "ASPIN PCM"},
+ 	{"HiFi DAC", NULL, "DSD"},
+-	{"HPOUTA", NULL, "HiFi DAC"},
+-	{"HPOUTB", NULL, "HiFi DAC"},
++	{"Bypass Switch", "Internal", "HiFi DAC"},
++	{"HPOUTA", NULL, "Bypass Switch"},
++	{"HPOUTB", NULL, "Bypass Switch"},
+ };
+ 
+ static const struct snd_soc_dapm_route analog_hp_routes[] = {
+-	{"HPOUTA", NULL, "Analog Playback"},
+-	{"HPOUTB", NULL, "Analog Playback"},
++	{"Bypass Switch", "Alternative", "Analog Playback"},
+ };
+ 
+ static struct snd_soc_dapm_route all_hp_routes[
+-- 
 2.34.1
 
