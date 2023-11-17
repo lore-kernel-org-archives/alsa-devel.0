@@ -4,87 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6C4C6C197A0
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Nov 2023 12:08:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 14530C197A0
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Nov 2023 12:09:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 98803E7D;
-	Fri, 17 Nov 2023 13:07:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 98803E7D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 35BDAE85;
+	Fri, 17 Nov 2023 13:08:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 35BDAE85
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1700222919;
-	bh=JNdqCpXJsVXxWZqG2ZZwRtS/8lxxiBHyZBSn0pv8dTw=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	s=default; t=1700222945;
+	bh=ofp6qsWJo8pit7+9OWh+cDzDtDP+7gf7Ilpc5kY/DS8=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Yo+L66NfbEOxc/v965wtYpfkNLa9RDvI+DzkRu7m6MRV4tdxkJ5OVKu9P7xqVW8A4
-	 LMCgD4edGruqw+NR476EU0wZDRIjt7fVqWbWeMFdEkE1r+iU0Dx6ITdWKN6s2lR6+B
-	 QJx/TnxZrwK2zwBUbtSOp+/Ky9ORtIPs9nWoUI7Y=
+	b=HPxZiWkIiOid2t/euvfjcK25nGa8/upK0GMw7XHRmFep4z2E9DKWqeKdEtnU+MeVH
+	 NkJ9ErglJLe2scgZMtzvMXT31kxAZYuDEDG9USqtCSWvXN05TNi3gdGKGqeJiGDE/+
+	 Drhze5Y75VS4a67Cv58oFKEnGZ5tuVlb2x4rBUUs=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B2BE1F805FC; Fri, 17 Nov 2023 13:05:19 +0100 (CET)
+	id 7D643F8060C; Fri, 17 Nov 2023 13:05:23 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 66586F805FD;
-	Fri, 17 Nov 2023 13:05:18 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4F70CF80609;
+	Fri, 17 Nov 2023 13:05:21 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D4D0EF805ED; Fri, 17 Nov 2023 13:05:11 +0100 (CET)
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+	id 188BFF805F6; Fri, 17 Nov 2023 13:05:15 +0100 (CET)
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id F0D95F8057A;
-	Fri, 17 Nov 2023 13:04:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F0D95F8057A
+	by alsa1.perex.cz (Postfix) with ESMTPS id 77236F8057B
+	for <alsa-devel@alsa-project.org>; Fri, 17 Nov 2023 13:04:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 77236F8057B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=QaUkC7oS
+ header.s=Intel header.b=IvJJDS/d
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
   t=1700222678; x=1731758678;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=JNdqCpXJsVXxWZqG2ZZwRtS/8lxxiBHyZBSn0pv8dTw=;
-  b=QaUkC7oSLpRI4RUdtSMLyHjRYXGIW/9q4iVIZXG6cdypunQDcYAW8+ja
-   Hz9haXgQdjjEXB7v5bzYWUVHmPVgsj8s6O9vDv5IPx/WbCi/+VwLSIR/f
-   Oix+fH2YaoUVVFZSB5cTNwjIyv8dE7QT1BK6Q19qyyFzdWwwvlniTOjDK
-   Oy+MW3atB8sYAJK8orVvXkQe9zsFOWe3x4/stc/gB3T3t7PrVd29faEX2
-   B/aBu4yqp06i/n6vyO3z102dRYJKxRlwHI22c1eTcEVRispBqJwaJekL9
-   Bg/PiwDBtegTKYO2/MF5u2PT7mIghNbWxNtgu3tRcmFKh5ZazoO20Xqvr
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10896"; a="4372335"
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=ofp6qsWJo8pit7+9OWh+cDzDtDP+7gf7Ilpc5kY/DS8=;
+  b=IvJJDS/d7eEndfYAdNxBqk+/P9XOYVeXEBaHVPgwXvlG7mUTdqyh2FOj
+   DpvrIblMhuqPypE/umLA3QWGhLQ9Au2ImzKeA034g3FSxupYNeHksF39Z
+   3p8R1nLVRGHz+fY1wKU/GrRC3cAuDdCgfI4QTi1glMH6dM5xfT49rn/0x
+   UoLDgpviCpDSwXV3Cf6yQjmF+bT5l3OA1bsldmRAGIv1O5oMacsRYDXQV
+   XCTlmzYYCPRZ4tMHQEF8BPmFfyO+VllFqZAg7LGUQUdaHrN0+1wiB8Osh
+   llziHQH4nQwnHDnV89ocMDHpfR1cVo9hmhccPjcCV83H7p7DwsEbfapx3
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10896"; a="381675315"
 X-IronPort-AV: E=Sophos;i="6.04,206,1695711600";
-   d="scan'208";a="4372335"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 17 Nov 2023 04:04:31 -0800
+   d="scan'208";a="381675315"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 17 Nov 2023 04:04:36 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10896"; a="1012918245"
+X-IronPort-AV: E=McAfee;i="6600,9927,10896"; a="883110229"
 X-IronPort-AV: E=Sophos;i="6.04,206,1695711600";
-   d="scan'208";a="1012918245"
-Received: from mwevers-mobl1.ger.corp.intel.com (HELO [10.249.44.74])
- ([10.249.44.74])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 17 Nov 2023 04:04:28 -0800
-Message-ID: <aec61f67-6b4f-49e6-b458-c332983a0ad6@linux.intel.com>
-Date: Fri, 17 Nov 2023 14:04:58 +0200
+   d="scan'208";a="883110229"
+Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
+  by fmsmga002.fm.intel.com with ESMTP; 17 Nov 2023 04:04:34 -0800
+From: Cezary Rojewski <cezary.rojewski@intel.com>
+To: broonie@kernel.org,
+	tiwai@suse.com,
+	perex@perex.cz
+Cc: alsa-devel@alsa-project.org,
+	linux-sound@vger.kernel.org,
+	amadeuszx.slawinski@linux.intel.com,
+	pierre-louis.bossart@linux.intel.com,
+	hdegoede@redhat.com,
+	Cezary Rojewski <cezary.rojewski@intel.com>
+Subject: [PATCH v5 15/16] ASoC: Intel: avs: Kill S24_LE format
+Date: Fri, 17 Nov 2023 13:06:09 +0100
+Message-Id: <20231117120610.1755254-16-cezary.rojewski@intel.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20231117120610.1755254-1-cezary.rojewski@intel.com>
+References: <20231117120610.1755254-1-cezary.rojewski@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ASoC: SOF: icp3-dtrace: Fix wrong kfree() usage
-Content-Language: en-US
-To: Kamil Duljas <kamil.duljas@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
- Jaroslav Kysela <perex@perex.cz>, Cezary Rojewski
- <cezary.rojewski@intel.com>,
- =?UTF-8?Q?Amadeusz_S=C5=82awi=C5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>, sound-open-firmware@alsa-project.org
-References: <20231116220102.2097-2-kamil.duljas@gmail.com>
-From: =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>
-In-Reply-To: <20231116220102.2097-2-kamil.duljas@gmail.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 2NYKT4YJRQE26I2TAAECDR2DEC3HN7W5
-X-Message-ID-Hash: 2NYKT4YJRQE26I2TAAECDR2DEC3HN7W5
-X-MailFrom: peter.ujfalusi@linux.intel.com
+Message-ID-Hash: OORKCKPZWCPRUCAOXHBRQ3V6LYY6O2LK
+X-Message-ID-Hash: OORKCKPZWCPRUCAOXHBRQ3V6LYY6O2LK
+X-MailFrom: cezary.rojewski@intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -96,7 +95,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2NYKT4YJRQE26I2TAAECDR2DEC3HN7W5/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OORKCKPZWCPRUCAOXHBRQ3V6LYY6O2LK/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -105,54 +104,112 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+Eliminate all occurrences of S24_LE within PCM code, both HOST and LINK
+side. Replace those with MSBITS subformats to allow for granular
+selection when S32_LE is the format of choice.
 
+Acked-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
+---
+ sound/soc/intel/avs/pcm.c      | 20 +++++++++++++++-----
+ sound/soc/intel/avs/topology.c | 13 ++++++++++++-
+ 2 files changed, 27 insertions(+), 6 deletions(-)
 
-On 17/11/2023 00:01, Kamil Duljas wrote:
-> trace_filter_parse() allocs memory for *out and when
-> -ENOMEM is returned, caller function, dfsentry_trace_filter_write()
-> trying to freed this memory.
-> 
-> After this patch, the memory is freed in trace_filter_parse()
-> before -EINVAL returned. In caller function removed kfree(elms)
-> from error label
-
-I think the original code was cleaner:
-the elems is always freed up in dfsentry_trace_filter_write() in one place.
-kfree(NULL); is not an error, it is handled correctly
-
-> 
-> Signed-off-by: Kamil Duljas <kamil.duljas@gmail.com>
-> ---
->  sound/soc/sof/ipc3-dtrace.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/sound/soc/sof/ipc3-dtrace.c b/sound/soc/sof/ipc3-dtrace.c
-> index 0dca139322f3..93b189c2d2ee 100644
-> --- a/sound/soc/sof/ipc3-dtrace.c
-> +++ b/sound/soc/sof/ipc3-dtrace.c
-> @@ -137,6 +137,7 @@ static int trace_filter_parse(struct snd_sof_dev *sdev, char *string,
->  			dev_err(sdev->dev,
->  				"Parsing filter entry '%s' failed with %d\n",
->  				entry, entry_len);
-> +			kfree(*out);
->  			return -EINVAL;
->  		}
->  	}
-> @@ -208,13 +209,13 @@ static ssize_t dfsentry_trace_filter_write(struct file *file, const char __user
->  		ret = ipc3_trace_update_filter(sdev, num_elems, elems);
->  		if (ret < 0) {
->  			dev_err(sdev->dev, "Filter update failed: %d\n", ret);
-> +			kfree(elems);
->  			goto error;
->  		}
->  	}
->  	ret = count;
->  error:
->  	kfree(string);
-> -	kfree(elems);
->  	return ret;
->  }
->  
-
+diff --git a/sound/soc/intel/avs/pcm.c b/sound/soc/intel/avs/pcm.c
+index f586a804099a..b6c48f88ca85 100644
+--- a/sound/soc/intel/avs/pcm.c
++++ b/sound/soc/intel/avs/pcm.c
+@@ -1073,8 +1073,10 @@ static const struct snd_pcm_hardware avs_pcm_hardware = {
+ 				  SNDRV_PCM_INFO_RESUME |
+ 				  SNDRV_PCM_INFO_NO_PERIOD_WAKEUP,
+ 	.formats		= SNDRV_PCM_FMTBIT_S16_LE |
+-				  SNDRV_PCM_FMTBIT_S24_LE |
+ 				  SNDRV_PCM_FMTBIT_S32_LE,
++	.subformats		= SNDRV_PCM_SUBFMTBIT_MSBITS_20 |
++				  SNDRV_PCM_SUBFMTBIT_MSBITS_24 |
++				  SNDRV_PCM_SUBFMTBIT_MSBITS_MAX,
+ 	.buffer_bytes_max	= AZX_MAX_BUF_SIZE,
+ 	.period_bytes_min	= 128,
+ 	.period_bytes_max	= AZX_MAX_BUF_SIZE / 2,
+@@ -1225,8 +1227,10 @@ static const struct snd_soc_dai_driver i2s_dai_template = {
+ 		.rates		= SNDRV_PCM_RATE_8000_192000 |
+ 				  SNDRV_PCM_RATE_KNOT,
+ 		.formats	= SNDRV_PCM_FMTBIT_S16_LE |
+-				  SNDRV_PCM_FMTBIT_S24_LE |
+ 				  SNDRV_PCM_FMTBIT_S32_LE,
++		.subformats	= SNDRV_PCM_SUBFMTBIT_MSBITS_20 |
++				  SNDRV_PCM_SUBFMTBIT_MSBITS_24 |
++				  SNDRV_PCM_SUBFMTBIT_MSBITS_MAX,
+ 	},
+ 	.capture = {
+ 		.channels_min	= 1,
+@@ -1234,8 +1238,10 @@ static const struct snd_soc_dai_driver i2s_dai_template = {
+ 		.rates		= SNDRV_PCM_RATE_8000_192000 |
+ 				  SNDRV_PCM_RATE_KNOT,
+ 		.formats	= SNDRV_PCM_FMTBIT_S16_LE |
+-				  SNDRV_PCM_FMTBIT_S24_LE |
+ 				  SNDRV_PCM_FMTBIT_S32_LE,
++		.subformats	= SNDRV_PCM_SUBFMTBIT_MSBITS_20 |
++				  SNDRV_PCM_SUBFMTBIT_MSBITS_24 |
++				  SNDRV_PCM_SUBFMTBIT_MSBITS_MAX,
+ 	},
+ };
+ 
+@@ -1310,16 +1316,20 @@ static const struct snd_soc_dai_driver hda_cpu_dai = {
+ 		.channels_max	= 8,
+ 		.rates		= SNDRV_PCM_RATE_8000_192000,
+ 		.formats	= SNDRV_PCM_FMTBIT_S16_LE |
+-				  SNDRV_PCM_FMTBIT_S24_LE |
+ 				  SNDRV_PCM_FMTBIT_S32_LE,
++		.subformats	= SNDRV_PCM_SUBFMTBIT_MSBITS_20 |
++				  SNDRV_PCM_SUBFMTBIT_MSBITS_24 |
++				  SNDRV_PCM_SUBFMTBIT_MSBITS_MAX,
+ 	},
+ 	.capture = {
+ 		.channels_min	= 1,
+ 		.channels_max	= 8,
+ 		.rates		= SNDRV_PCM_RATE_8000_192000,
+ 		.formats	= SNDRV_PCM_FMTBIT_S16_LE |
+-				  SNDRV_PCM_FMTBIT_S24_LE |
+ 				  SNDRV_PCM_FMTBIT_S32_LE,
++		.subformats	= SNDRV_PCM_SUBFMTBIT_MSBITS_20 |
++				  SNDRV_PCM_SUBFMTBIT_MSBITS_24 |
++				  SNDRV_PCM_SUBFMTBIT_MSBITS_MAX,
+ 	},
+ };
+ 
+diff --git a/sound/soc/intel/avs/topology.c b/sound/soc/intel/avs/topology.c
+index c74e9d622e4c..778236d3fd28 100644
+--- a/sound/soc/intel/avs/topology.c
++++ b/sound/soc/intel/avs/topology.c
+@@ -1514,8 +1514,16 @@ static int avs_dai_load(struct snd_soc_component *comp, int index,
+ 			struct snd_soc_dai_driver *dai_drv, struct snd_soc_tplg_pcm *pcm,
+ 			struct snd_soc_dai *dai)
+ {
+-	if (pcm)
++	u32 fe_subformats = SNDRV_PCM_SUBFMTBIT_MSBITS_20 |
++			    SNDRV_PCM_SUBFMTBIT_MSBITS_24 |
++			    SNDRV_PCM_SUBFMTBIT_MSBITS_MAX;
++
++	if (pcm) {
+ 		dai_drv->ops = &avs_dai_fe_ops;
++		dai_drv->capture.subformats = fe_subformats;
++		dai_drv->playback.subformats = fe_subformats;
++	}
++
+ 	return 0;
+ }
+ 
+@@ -1534,6 +1542,9 @@ static int avs_link_load(struct snd_soc_component *comp, int index, struct snd_s
+ 		/* Open LINK (BE) pipes last and close them first to prevent xruns. */
+ 		link->trigger[0] = SND_SOC_DPCM_TRIGGER_PRE;
+ 		link->trigger[1] = SND_SOC_DPCM_TRIGGER_PRE;
++	} else {
++		/* Do not ignore codec capabilities. */
++		link->dpcm_merged_format = 1;
+ 	}
+ 
+ 	return 0;
 -- 
-Péter
+2.25.1
+
