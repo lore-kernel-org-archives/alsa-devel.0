@@ -4,148 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 11507C2BB3F
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Nov 2023 15:58:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 41C05C197A0
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Nov 2023 16:17:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D8934950;
-	Mon, 20 Nov 2023 16:57:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D8934950
+	by alsa0.perex.cz (Postfix) with ESMTPS id BE5A2A4A;
+	Mon, 20 Nov 2023 17:16:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BE5A2A4A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1700495898;
-	bh=s0UiQxWIxM5lhZVOwYVf/nk6rknPjJKXTITqwxtE3r8=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=iobwUE05nXXmesHS4C3PCWsrwCIlxzjIrnWDeLZPsxmCO7SnZTImTEm23TnzPftuY
-	 Q7wpMikPvnB++QsWGrpTtP0XRojGPzZgV1+V4H/VukTRuoZIAt2j7zZ1UKA3JzuWzQ
-	 dOWI4S8fV8IGxM5kbVp1PexeEo3aEMQJ2hW96VfM=
+	s=default; t=1700497056;
+	bh=VnCctKqPNvv1LWUN2xfce6kTqvg8gV39mvXihleZQ/k=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=hAU2LXMd0KpIYLsSqh07EgW3aVnO+pI7/uLxm9PXr9NOMl/9cXMsSPGK8WqpUGlt0
+	 Lsl8IKuzDnFw+Mox7AclRmSlRJwMSFQr8vDFF4w+jhz4y6dznVtVQv43xw9VqJ97fx
+	 rWPjTyawJTXHnRyPrSwrTtnLvImncDlpPX+rYthY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 97FA8F80551; Mon, 20 Nov 2023 16:57:19 +0100 (CET)
+	id 44AB5F80549; Mon, 20 Nov 2023 17:16:19 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 50282F80114;
-	Mon, 20 Nov 2023 16:57:19 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2126FF80254;
+	Mon, 20 Nov 2023 17:16:18 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 37036F80254; Mon, 20 Nov 2023 16:57:16 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 8152FF801D5; Fri, 17 Nov 2023 18:09:42 +0100 (CET)
+Received: from air.basealt.ru (air.basealt.ru [194.107.17.39])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 944C6F80114
-	for <alsa-devel@alsa-project.org>; Mon, 20 Nov 2023 16:57:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 944C6F80114
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=w587o13F;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=T0YT1AJB
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id B65E721910;
-	Mon, 20 Nov 2023 15:57:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1700495830;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=F7PHDpnVy2lTG03bseJP/V2+jncktgxQQFaSuIPkBLk=;
-	b=w587o13FK81/QgJpA3yBbGce9j7RBg0tucqm7mquwIwtcAZKcXRZsRTx+xfohbeXVQMjol
-	5rRx1mMOTTrdhQxw2cqFJvSV6na1ofukBnpgBDH/R6mnLLAmUi/ZBwaCsPedCdz96Z9fJ4
-	N+K2sO2TnX3T00B7UzkiVdDSvhX+yAg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1700495830;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=F7PHDpnVy2lTG03bseJP/V2+jncktgxQQFaSuIPkBLk=;
-	b=T0YT1AJBtw9kX1YM4GoSpd7lH71ue+bwhpIBHLhaseE00YMdulNbNahoIZAeNDv5JIFSuJ
-	eqXrUidF0/NL8sDQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 518D4134AD;
-	Mon, 20 Nov 2023 15:57:10 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id bR32EtaBW2XmWQAAMHmgww
-	(envelope-from <tiwai@suse.de>); Mon, 20 Nov 2023 15:57:10 +0000
-Date: Mon, 20 Nov 2023 16:57:09 +0100
-Message-ID: <877cmcpgdm.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Yury Norov <yury.norov@gmail.com>
-Cc: linux-kernel@vger.kernel.org,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	Daniel Mack <zonque@gmail.com>,
-	Cezary Rojewski <cezary.rojewski@intel.com>,
-	Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-	Kees Cook <keescook@chromium.org>,
-	linux-sound@vger.kernel.org,
-	alsa-devel@alsa-project.org,
-	Jan Kara <jack@suse.cz>,
-	Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
-	Matthew Wilcox <willy@infradead.org>,
-	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Maxim Kuvyrkov <maxim.kuvyrkov@linaro.org>,
-	Alexey Klimov <klimov.linux@gmail.com>
-Subject: Re: [PATCH 30/34] ALSA: use atomic find_bit() functions where
- applicable
-In-Reply-To: <20231118155105.25678-31-yury.norov@gmail.com>
-References: <20231118155105.25678-1-yury.norov@gmail.com>
-	<20231118155105.25678-31-yury.norov@gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spamd-Result: default: False [1.20 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 BAYES_HAM(-0.00)[21.87%];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCPT_COUNT_TWELVE(0.00)[17];
-	 MID_CONTAINS_FROM(1.00)[];
-	 FREEMAIL_TO(0.00)[gmail.com];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 FREEMAIL_CC(0.00)[vger.kernel.org,perex.cz,suse.com,gmail.com,intel.com,linux.intel.com,chromium.org,alsa-project.org,suse.cz,alu.unizg.hr,infradead.org,rasmusvillemoes.dk,linaro.org];
-	 RCVD_COUNT_TWO(0.00)[2];
-	 SUSPICIOUS_RECIPS(1.50)[]
-Message-ID-Hash: RJ6QL4CRAQSBIEF6RONR2TLNDPKJTB4E
-X-Message-ID-Hash: RJ6QL4CRAQSBIEF6RONR2TLNDPKJTB4E
-X-MailFrom: tiwai@suse.de
+	by alsa1.perex.cz (Postfix) with ESMTPS id 18F9BF80093
+	for <alsa-devel@alsa-project.org>; Fri, 17 Nov 2023 18:09:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 18F9BF80093
+Received: by air.basealt.ru (Postfix, from userid 490)
+	id ED4C12F2022C; Fri, 17 Nov 2023 17:09:34 +0000 (UTC)
+Received: from altlinux.malta.altlinux.ru (obninsk.basealt.ru [217.15.195.17])
+	by air.basealt.ru (Postfix) with ESMTPSA id 1F6E42F2021D;
+	Fri, 17 Nov 2023 17:09:33 +0000 (UTC)
+From: kovalev@altlinux.org
+To: alsa-devel@alsa-project.org,
+	tiwai@suse.com,
+	perex@perex.cz,
+	kailang@realtek.com
+Cc: Vasiliy Kovalev <kovalev@altlinux.org>
+Subject: [PATCH] ALSA: hda - Fix speaker and headset mic pin config for CHUWI
+ CoreBook XPro
+Date: Fri, 17 Nov 2023 20:09:23 +0300
+Message-Id: <20231117170923.106822-1-kovalev@altlinux.org>
+X-Mailer: git-send-email 2.33.8
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-MailFrom: kovalev@altlinux.org
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: XTDYE757LIPZNN4KLUTBG6N6OHGHEDT6
+X-Message-ID-Hash: XTDYE757LIPZNN4KLUTBG6N6OHGHEDT6
+X-Mailman-Approved-At: Mon, 20 Nov 2023 16:16:01 +0000
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RJ6QL4CRAQSBIEF6RONR2TLNDPKJTB4E/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XTDYE757LIPZNN4KLUTBG6N6OHGHEDT6/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -154,20 +74,51 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Sat, 18 Nov 2023 16:51:01 +0100,
-Yury Norov wrote:
-> 
-> ALSA code tests each bit in bitmaps in a for() loop. Switch it to
-> dedicated atomic find_bit() API.
-> 
-> Signed-off-by: Yury Norov <yury.norov@gmail.com>
+From: Vasiliy Kovalev <kovalev@altlinux.org>
 
-Through a quick glance, both changes look OK.
-Feel free to take my ack
+This patch corrected the speaker and headset mic pin config to the more
+appropriate values.
 
-Acked-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Vasiliy Kovalev <kovalev@altlinux.org>
+---
+ sound/pci/hda/patch_realtek.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 0163d4c7fdda83..19828cf4b60b57 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -7096,6 +7096,7 @@ enum {
+ 	ALC290_FIXUP_SUBWOOFER_HSJACK,
+ 	ALC269_FIXUP_THINKPAD_ACPI,
+ 	ALC269_FIXUP_DMIC_THINKPAD_ACPI,
++	ALC269VB_FIXUP_CHUWI_COREBOOK_XPRO,
+ 	ALC255_FIXUP_ACER_MIC_NO_PRESENCE,
+ 	ALC255_FIXUP_ASUS_MIC_NO_PRESENCE,
+ 	ALC255_FIXUP_DELL1_MIC_NO_PRESENCE,
+@@ -7442,6 +7443,14 @@ static const struct hda_fixup alc269_fixups[] = {
+ 		.type = HDA_FIXUP_FUNC,
+ 		.v.func = alc269_fixup_pincfg_U7x7_headset_mic,
+ 	},
++	[ALC269VB_FIXUP_CHUWI_COREBOOK_XPRO] = {
++		.type = HDA_FIXUP_PINS,
++		.v.pins = (const struct hda_pintbl[]) {
++			{ 0x18, 0x03a19020 }, /* headset mic */
++			{ 0x1b, 0x90170150 }, /* speaker */
++			{ }
++		},
++	},
+ 	[ALC269_FIXUP_AMIC] = {
+ 		.type = HDA_FIXUP_PINS,
+ 		.v.pins = (const struct hda_pintbl[]) {
+@@ -10007,6 +10016,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1d72, 0x1901, "RedmiBook 14", ALC256_FIXUP_ASUS_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1d72, 0x1945, "Redmi G", ALC256_FIXUP_ASUS_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1d72, 0x1947, "RedmiBook Air", ALC255_FIXUP_XIAOMI_HEADSET_MIC),
++	SND_PCI_QUIRK(0x2782, 0x0232, "CHUWI CoreBook XPro", ALC269VB_FIXUP_CHUWI_COREBOOK_XPRO),
+ 	SND_PCI_QUIRK(0x8086, 0x2074, "Intel NUC 8", ALC233_FIXUP_INTEL_NUC8_DMIC),
+ 	SND_PCI_QUIRK(0x8086, 0x2080, "Intel NUC 8 Rugged", ALC256_FIXUP_INTEL_NUC8_RUGGED),
+ 	SND_PCI_QUIRK(0x8086, 0x2081, "Intel NUC 10", ALC256_FIXUP_INTEL_NUC10),
+-- 
+2.33.8
 
-thanks,
-
-Takashi
