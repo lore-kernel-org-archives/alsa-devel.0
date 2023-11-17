@@ -4,108 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8545EC072A2
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Nov 2023 15:58:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F1C3BC47071
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Nov 2023 16:37:49 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F3AB9DE5;
-	Fri, 17 Nov 2023 16:57:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F3AB9DE5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 66C0A93A;
+	Fri, 17 Nov 2023 17:36:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 66C0A93A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1700236701;
-	bh=z88J+0FAgkWhymn0CNiT9mAHIqXzgxwGVyjDH5OOAys=;
-	h=Date:From:To:CC:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1700239067;
+	bh=y6Shd7bmKCsekpBRoYhpQ2ZpMh78XJxTVe4sGB2BHac=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=K9W9elOte4L1mSrLBRbKCn+WVGjjjcdGCjQf/63X79yhMQiGr2yBgePhftgXSoVmd
-	 JfjGEMnEcSzAv/LV8UEJZlVoc+Rb6WiL1eSWUD4kmfCJCAez56OFj7GCbmNYinJRbW
-	 JztDFX2rQkOR+P5Ic2KTNM0kktVActvDC8FWkVGU=
+	b=ro2jwknYFAp/HTgmFR3/ffD+u2hkysjZwTlgJkDxTCnoKrzr9tm7o7/SWVh/CKPr4
+	 HHMyo2k13+2OvG9iqSxLCcTDhjFx46qPcshFHJwswa6G6fw5PANXZkWfP2zABDXCgI
+	 mVOJ/ESoarV8YkO7jpvYqb5NsBuHcbADuR1gPjl8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0F18BF80563; Fri, 17 Nov 2023 16:56:40 +0100 (CET)
+	id A38E0F8055B; Fri, 17 Nov 2023 17:36:31 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0540CF80558;
-	Fri, 17 Nov 2023 16:56:40 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id EDA08F80093;
+	Fri, 17 Nov 2023 17:36:30 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A14F6F801D5; Fri, 17 Nov 2023 16:54:10 +0100 (CET)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 1558AF802E8; Fri, 17 Nov 2023 17:36:26 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 1715AF80152
-	for <alsa-devel@alsa-project.org>; Fri, 17 Nov 2023 16:53:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1715AF80152
+	by alsa1.perex.cz (Postfix) with ESMTPS id C5410F80093
+	for <alsa-devel@alsa-project.org>; Fri, 17 Nov 2023 17:36:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C5410F80093
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=AGM0Slwu
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-	by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id
- 3AHFqPD0014089;
-	Fri, 17 Nov 2023 09:53:56 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	date:from:to:cc:subject:message-id:references:mime-version
-	:content-type:in-reply-to; s=PODMain02222019; bh=qcmoqM99WUT5mR4
-	4BmGtdcfqukhABXd6uBe07IyrQRE=; b=AGM0SlwusSlH9E1NPc0M7AEAgKk3qYB
-	qahD0GReg2zT48lm2KuZsCyD7G7xQzKSA1cSAg8/XFRmYqeuA7azrET+cMLkZVIS
-	mzYiIprojjDLKU9DSaqL81qPrtNA+m/klhJhSGRYxqXk/CCfIQf9+bEWgU6R4y9g
-	CxsW448ENb8IPH+clKPIq50qrnakhVtYTaMsJrsOBVbMfoccWNfMOlE1kSf7LMpt
-	rmlKaAQKPmTIhLhkZ7wm3D75Vf212FXN7eqq7abfc6+ev1OC5gZszlda47EPxmny
-	lCpQKnp+/PW2lvQkT7OJLFZNFECi3psy/h2rd5qxOGSKkaBs0Mp3rvA==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3ua7w2qp27-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 17 Nov 2023 09:53:55 -0600 (CST)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Fri, 17 Nov
- 2023 15:53:53 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.39 via Frontend Transport; Fri, 17 Nov 2023 15:53:53 +0000
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com
- [198.61.86.93])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 9F8B1B12;
-	Fri, 17 Nov 2023 15:53:53 +0000 (UTC)
-Date: Fri, 17 Nov 2023 15:53:53 +0000
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=WG0Grb75
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 52B2A61DB0;
+	Fri, 17 Nov 2023 16:36:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76D0DC433C9;
+	Fri, 17 Nov 2023 16:36:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1700238976;
+	bh=y6Shd7bmKCsekpBRoYhpQ2ZpMh78XJxTVe4sGB2BHac=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=WG0Grb750dwkd6qBwm5RB8YkQ4mrl5JAMjtpfNcuKssNdb9OFAXz5WSD1cW2RBtc8
+	 ClVZ3YDwldl+qYkE1FOjKn/WsD+PpkuS3Yl7yGRorawaOkEt8KIDS96SkhL+IQCDkp
+	 uXNgQgoQWmAVXE6fdypg0aPN0VzVlCrIz9Sa1KlV+bnaAiqtNa8ka1FPlp24rezmVN
+	 BF9cUwKKWGxy+RpUfjQw9WGTXZzQzBAWFm7DziGEA9fMuutr3/WDyQTiT16XTMDnjd
+	 9MCPWsP+YbQuMjWKYRcTEasvcdYbJdvbxYRxBVPMS7EodVsrZqNgB5MUEW3zPjsAlC
+	 koOKG9Jof7kBg==
+Date: Fri, 17 Nov 2023 16:36:13 +0000
+From: Mark Brown <broonie@kernel.org>
 To: Maciej Strozek <mstrozek@opensource.cirrus.com>
-CC: Mark Brown <broonie@kernel.org>,
-        James Schulman
-	<james.schulman@cirrus.com>,
-        David Rhodes <david.rhodes@cirrus.com>,
-        "Liam
- Girdwood" <lgirdwood@gmail.com>, <alsa-devel@alsa-project.org>,
-        <patches@opensource.cirrus.com>, <linux-sound@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 0/7] ASoC: cs43130: Fixes and improvements
-Message-ID: <20231117155353.GG32655@ediswmail.ad.cirrus.com>
+Cc: James Schulman <james.schulman@cirrus.com>,
+	David Rhodes <david.rhodes@cirrus.com>,
+	Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org,
+	patches@opensource.cirrus.com, linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 6/7] ASoC: cs43130: Allow driver to work without IRQ
+ thread
+Message-ID: <ZVeWfefrEQJIx0YL@finisterre.sirena.org.uk>
 References: <20231117141344.64320-1-mstrozek@opensource.cirrus.com>
+ <20231117141344.64320-7-mstrozek@opensource.cirrus.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="jNsZootFS+OqjmoX"
 Content-Disposition: inline
-In-Reply-To: <20231117141344.64320-1-mstrozek@opensource.cirrus.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-ORIG-GUID: 0x5K93HMr0eactcOtCnesHZrrH9SZOeO
-X-Proofpoint-GUID: 0x5K93HMr0eactcOtCnesHZrrH9SZOeO
-X-Proofpoint-Spam-Reason: safe
-X-MailFrom: prvs=668542f8db=ckeepax@opensource.cirrus.com
-X-Mailman-Rule-Hits: implicit-dest
+In-Reply-To: <20231117141344.64320-7-mstrozek@opensource.cirrus.com>
+X-Cookie: Slow day.  Practice crawling.
+Message-ID-Hash: EWHFEKNIV3OIFIPQ5GUJG5PAAMJAO7G3
+X-Message-ID-Hash: EWHFEKNIV3OIFIPQ5GUJG5PAAMJAO7G3
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; max-recipients; max-size; news-moderation; no-subject;
- digests; suspicious-header
-Message-ID-Hash: TMW3WF4ZLB2IUZM6KVALE7BLISASPQ5W
-X-Message-ID-Hash: TMW3WF4ZLB2IUZM6KVALE7BLISASPQ5W
-X-Mailman-Approved-At: Fri, 17 Nov 2023 15:56:33 +0000
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TMW3WF4ZLB2IUZM6KVALE7BLISASPQ5W/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/EWHFEKNIV3OIFIPQ5GUJG5PAAMJAO7G3/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -114,29 +98,35 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, Nov 17, 2023 at 02:13:37PM +0000, Maciej Strozek wrote:
-> This patchset aims to add minor fixes (first two patches) and
-> introduce general improvements to the driver (rest of the patches)
-> 
-> Maciej Strozek (7):
->   ASoC: cs43130: Fix the position of const qualifier
->   ASoC: cs43130: Fix incorrect frame delay configuration
->   ASoC: cs43130: Allow configuration of bit clock and frame inversion
->   ASoC: cs43130: Store device in private struct and use it more
->     consistently
->   ASoC: cs43130: Add handling of ACPI
->   ASoC: cs43130: Allow driver to work without IRQ thread
->   ASoC:cs43130: Add switch to control normal and alt hp inputs
-> 
->  sound/soc/codecs/cs43130.c | 311 ++++++++++++++++++++++++-------------
->  sound/soc/codecs/cs43130.h |   3 +
->  2 files changed, 204 insertions(+), 110 deletions(-)
-> 
-> --
 
-Series looks good to me:
+--jNsZootFS+OqjmoX
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+On Fri, Nov 17, 2023 at 02:13:43PM +0000, Maciej Strozek wrote:
+> Signed-off-by: Maciej Strozek <mstrozek@opensource.cirrus.com>
+> ---
+>  sound/soc/codecs/cs43130.c | 56 +++++++++++++++++++++++++++++++-------
+>  sound/soc/codecs/cs43130.h |  1 +
+>  2 files changed, 47 insertions(+), 10 deletions(-)
 
-Thanks,
-Charles
+Why?  This isn't some obvious fix, you need to write a changelog
+motivating open coding interrupt handling if there's some reason for
+doing that.
+
+--jNsZootFS+OqjmoX
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVXlngACgkQJNaLcl1U
+h9AIgAf/YwFU+24iTCyBD2p7T4hTxXe88GHpeNfoDy4xmZqQ93P5hdHXUVgC/dPC
+YyQ10xS2vXHlTdHUF61h7mI8sK7SQ19P+1bdNGEKc5JDok4qKxG8k9PxWlbS09n+
+uOGhfpKyH326+gLfbNn5PyDg8O5JG8w0rCDSq4xEaeR0Vw1eMmNB8Ub1TCUlNvtB
+sI6xGKkyi7gw8kqk8tQza69iPYJNXsIW4ar/oM6FjH3ZjzPhDS8ZKMEbJWGhtUda
+YsYIk47TfXUs0f+bZNRcmhYUnTJfdy8VgHQSrSKp9Lmb51q6q2sqhS+Ah3icNlJU
+uwTHiuhzkeufob+mFz0/IyIqoKcA+g==
+=qhs0
+-----END PGP SIGNATURE-----
+
+--jNsZootFS+OqjmoX--
