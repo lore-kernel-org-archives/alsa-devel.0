@@ -4,75 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 03815C072A2
-	for <alsa-devel@archiver.kernel.org>; Sat, 18 Nov 2023 00:35:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 76927C072A2
+	for <alsa-devel@archiver.kernel.org>; Sat, 18 Nov 2023 00:49:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 35DFDA4A;
-	Sat, 18 Nov 2023 01:34:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 35DFDA4A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 294FE1E8;
+	Sat, 18 Nov 2023 01:48:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 294FE1E8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1700267714;
-	bh=J/goLqTyDEI22Ut/pwCL/UNJNymwPHdELhT+G8VnytQ=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1700268555;
+	bh=t57+RslQFeKnJM3h8s2TI3ZEoZEyxEDagVoPEqzUmqw=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=sG5z7/nrpM2i90vxRxzsdcpZxTHExpKxyl3CdSiNRZ8IUZBlcClhd/vIe2CxsjR4t
-	 +mm35hBROcbXMZTHTyHO01Fl+pd/Pc9Ruxl42imYRqyXO1PfVX25CO2fV9J2AWo/kw
-	 U2K+gv59UDtdpJ13pArA2kWXwxGyFPS8kbbfHCbk=
+	b=hD5l3REhS3nC4Kbf4fYzMNP9g6pTA/FXp3yER4lg92mYXjqZqOGzi43bAw+yKOzBy
+	 JRTuV7zLD0GE2l1B0vetX328Mio1ZNcAkjJtQdlgXpMGAHNjQ6nIWWjyoUDNzLiUGz
+	 bcXlkMWo9Stt7oAzJojHM6AvyvbwaOHkm5FbGZ3w=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AE760F801D5; Sat, 18 Nov 2023 01:33:57 +0100 (CET)
+	id 8C1A6F80551; Sat, 18 Nov 2023 01:48:23 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5394CF801D5;
-	Sat, 18 Nov 2023 01:33:56 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C16C0F800ED;
+	Sat, 18 Nov 2023 01:48:22 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 25D09F801D5; Sat, 18 Nov 2023 01:33:07 +0100 (CET)
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+	id AA2C0F801D5; Sat, 18 Nov 2023 01:48:08 +0100 (CET)
+Received: from sin.source.kernel.org (sin.source.kernel.org
+ [IPv6:2604:1380:40e1:4800::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id BE7CBF800ED
-	for <alsa-devel@alsa-project.org>; Sat, 18 Nov 2023 01:32:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BE7CBF800ED
+	by alsa1.perex.cz (Postfix) with ESMTPS id B19D2F800ED
+	for <alsa-devel@alsa-project.org>; Sat, 18 Nov 2023 01:47:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B19D2F800ED
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=GPiqFDYA
+ header.s=k20201202 header.b=IQs7w7qt
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 287D8CE25D0;
-	Sat, 18 Nov 2023 00:32:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7BCAEC433C7;
-	Sat, 18 Nov 2023 00:32:51 +0000 (UTC)
+	by sin.source.kernel.org (Postfix) with ESMTP id A0994CE263D;
+	Sat, 18 Nov 2023 00:47:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8519BC433C9;
+	Sat, 18 Nov 2023 00:47:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1700267573;
-	bh=J/goLqTyDEI22Ut/pwCL/UNJNymwPHdELhT+G8VnytQ=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=GPiqFDYAW0CqmUbyqiFkERP5VRvZBQF7q5NignjIU5v0FN4+iof5qOgc05JmE+cl9
-	 +b0/ebkAsyeEP+mG//lbtrLx1ima9e8uvV4JTCjJPaWRMBcr9Ma40PfulYWWzmOn+F
-	 ypf1cE3rHxNFxJ2Cx4aMTtFDLe6c6ERUFrYUtRVmiea/+XXP4HcpqRGQsKTOifPsR6
-	 yVkyTaj4MHY/qQbsa5PdDmjn0657lzyp+mb4prD7g7oDxcTL2xLtkg+IpFlxDiE5ve
-	 sjOG1kW9oMOcbwqgNeiTEuCEUPuokojpuug6rlHiLA6TFoRZWiFydSc+voUB14Z5nN
-	 THDZFWY+NWsyw==
-From: Mark Brown <broonie@kernel.org>
-To: Maciej Strozek <mstrozek@opensource.cirrus.com>
-Cc: James Schulman <james.schulman@cirrus.com>,
- David Rhodes <david.rhodes@cirrus.com>, Liam Girdwood <lgirdwood@gmail.com>,
- alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
- linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20231117141344.64320-1-mstrozek@opensource.cirrus.com>
-References: <20231117141344.64320-1-mstrozek@opensource.cirrus.com>
-Subject: Re: (subset) [PATCH 0/7] ASoC: cs43130: Fixes and improvements
-Message-Id: <170026757145.1646674.10200174783594509637.b4-ty@kernel.org>
-Date: Sat, 18 Nov 2023 00:32:51 +0000
+	s=k20201202; t=1700268468;
+	bh=t57+RslQFeKnJM3h8s2TI3ZEoZEyxEDagVoPEqzUmqw=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=IQs7w7qtKk/3FDjQkfTHKofphFehwcjkn9sjAVqiiHlSDHnFUcUkqWO8Pgy3/zFmE
+	 AYMxPhjIt2GLa120lU8rpSUpci65qybU5kUTOhFbIfkFH3RLmL0sN3R9pYs16YqCSF
+	 XRxSzYGV2+s2rvQbEXVZ4MHsne/RFlWGj9KeEMZjxZdhMEnzuEyTkQv/OnyofsMWZZ
+	 CaTDitfbHF8ZXhHsP7bVr9bMIlJ4g2xPv9dMUPOon34EIUZXPEStD4TybsNM0X4xAW
+	 O8zkdi3a45WxLIZPa8lYBeydEX+isHSwUwieWbWg0ggRi230gqABIRCwmK0BxaEy1j
+	 Q5HjtqnDzNerw==
+Date: Fri, 17 Nov 2023 16:47:46 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Herve Codina <herve.codina@bootlin.com>
+Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Andrew Lunn
+ <andrew@lunn.ch>, Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+ Lee Jones <lee@kernel.org>, Linus Walleij <linus.walleij@linaro.org>, Qiang
+ Zhao <qiang.zhao@nxp.com>, Li Yang <leoyang.li@nxp.com>, Liam Girdwood
+ <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela
+ <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Shengjiu Wang
+ <shengjiu.wang@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam
+ <festevam@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>, Christophe
+ Leroy <christophe.leroy@csgroup.eu>, Randy Dunlap <rdunlap@infradead.org>,
+ netdev@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ alsa-devel@alsa-project.org, Simon Horman <horms@kernel.org>, Christophe
+ JAILLET <christophe.jaillet@wanadoo.fr>, Thomas Petazzoni
+ <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH v9 00/27] Add support for QMC HDLC, framer
+ infrastructure and PEF2256 framer
+Message-ID: <20231117164746.0589e955@kernel.org>
+In-Reply-To: <20231115144007.478111-1-herve.codina@bootlin.com>
+References: <20231115144007.478111-1-herve.codina@bootlin.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-0438c
-Message-ID-Hash: MDPH33PSIQSLN23HOBM3FXNQQAD5EY5N
-X-Message-ID-Hash: MDPH33PSIQSLN23HOBM3FXNQQAD5EY5N
-X-MailFrom: broonie@kernel.org
+Message-ID-Hash: IDIVGKXBOBFNFCC527MDF5QCDLDOZQC2
+X-Message-ID-Hash: IDIVGKXBOBFNFCC527MDF5QCDLDOZQC2
+X-MailFrom: kuba@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -84,7 +98,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MDPH33PSIQSLN23HOBM3FXNQQAD5EY5N/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IDIVGKXBOBFNFCC527MDF5QCDLDOZQC2/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -93,57 +107,12 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, 17 Nov 2023 14:13:37 +0000, Maciej Strozek wrote:
-> This patchset aims to add minor fixes (first two patches) and
-> introduce general improvements to the driver (rest of the patches)
+On Wed, 15 Nov 2023 15:39:36 +0100 Herve Codina wrote:
+>    - Removed Patches 6, 7 and 8 (patches applied)
 > 
-> Maciej Strozek (7):
->   ASoC: cs43130: Fix the position of const qualifier
->   ASoC: cs43130: Fix incorrect frame delay configuration
->   ASoC: cs43130: Allow configuration of bit clock and frame inversion
->   ASoC: cs43130: Store device in private struct and use it more
->     consistently
->   ASoC: cs43130: Add handling of ACPI
->   ASoC: cs43130: Allow driver to work without IRQ thread
->   ASoC:cs43130: Add switch to control normal and alt hp inputs
-> 
-> [...]
+>    - Patches 7, 20, 21, 23 (patches 10, 23, 24, 26 in v8)
+>      Add 'Acked-by: Jakub Kicinski <kuba@kernel.org>'
 
-Applied to
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-
-Thanks!
-
-[1/7] ASoC: cs43130: Fix the position of const qualifier
-      commit: e7f289a59e76a5890a57bc27b198f69f175f75d9
-[2/7] ASoC: cs43130: Fix incorrect frame delay configuration
-      commit: aa7e8e5e4011571022dc06e4d7a2f108feb53d1a
-[3/7] ASoC: cs43130: Allow configuration of bit clock and frame inversion
-      (no commit info)
-[4/7] ASoC: cs43130: Store device in private struct and use it more consistently
-      commit: 552206add94dd7977bad32c37eba16e23756a0f9
-[5/7] ASoC: cs43130: Add handling of ACPI
-      commit: ce7944b73e7729dc702b6741cff2b26886bb723c
-[7/7] ASoC:cs43130: Add switch to control normal and alt hp inputs
-      commit: 9158221bf2aa5f7bfb916452c079b2fe63ca76e8
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+I thought someone (Mark?) asked for the networking stuff to be put 
+on a branch. If that's still the preference - is it possible to factor
+these out as a standalone series, too?  Will they build on their own?
