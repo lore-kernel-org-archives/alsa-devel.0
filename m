@@ -4,105 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 68E31C072A2
-	for <alsa-devel@archiver.kernel.org>; Sun, 19 Nov 2023 08:25:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7E7B0C072A2
+	for <alsa-devel@archiver.kernel.org>; Sun, 19 Nov 2023 10:46:58 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AD165845;
-	Sun, 19 Nov 2023 09:24:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AD165845
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8D0E1A4C;
+	Sun, 19 Nov 2023 11:46:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8D0E1A4C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1700382314;
-	bh=0NkMhkkV+cUo97yEBokAzfARPMt+tQWy8S0Z8qalPik=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=R6tWXC49XK9mjU0MEDmBnMCrO33wNwVct25H9Ivj4y4LxPeuJ/ni7Su82MnOum5uk
-	 duoCbQjl7vq4OKeWAGDJ8VNmW0RG5HG4Nyb+wiMSOENUNP0f2Yqf3PEmnCJxiW0GeI
-	 sIDUCT782iczNwGeF54lXW10NwuIgPcRfs8P3mLM=
+	s=default; t=1700390815;
+	bh=LuAH999HjXH3km0oMdV2rCG9vQpGzLaP6SyUnjL6y6A=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=QTfM+Q+mZwW5AZACyrMfB6MMCCxMpa1dOPrx1NEJ9lGPH/RSZFCPIVlz3+k2Ly1gX
+	 DY8C0hQRrp3y1NB1/1+g2cPahK/tQH99Ha7fTkldv1Hsv6BmtvT5MqQLR9/e53mwuJ
+	 uX3cphgnJmM6IMMKIPWt2kYzbqEAxLO6/kbPUV1g=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 478AEF80254; Sun, 19 Nov 2023 09:24:24 +0100 (CET)
+	id DD2C1F80246; Sun, 19 Nov 2023 11:45:38 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id DB470F80166;
-	Sun, 19 Nov 2023 09:24:22 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7C603F80249;
+	Sun, 19 Nov 2023 11:45:38 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 63F72F80254; Sun, 19 Nov 2023 09:17:06 +0100 (CET)
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 7AF9FF80254; Sun, 19 Nov 2023 11:45:31 +0100 (CET)
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com
+ [209.85.221.52])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C82D1F80166
-	for <alsa-devel@alsa-project.org>; Sun, 19 Nov 2023 09:16:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C82D1F80166
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=SSj0hc8n
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700381818; x=1731917818;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=0NkMhkkV+cUo97yEBokAzfARPMt+tQWy8S0Z8qalPik=;
-  b=SSj0hc8nyIHsAuNrKeA1sXtx0bk8Ah5nyTo/A9DrCeMtECD+hnE14W42
-   zGitROOxvOkZTMZ+EW97hZU2ewhYbVlbM9o4KFKGMSpkx1eZ5GIBvka9U
-   A9Infh+6HOjtV5IKKWLkAUuso/JJTeLJsyrTBK0wyRiKzcNKzXH5zXvJB
-   W5VYHz2AD0vgnY7BVqCw/AF7o22PUF8Ic/NgfGh5jvdZWhsXf8Hz875D4
-   NHbhXidGDgPbGcVkUsLsVuLp2bNiPFYwvV359mNVOaYVy7MXdwruOPf3Z
-   pibVmiT8eX9Y8hdw17t5s0bg0WycZyy9/IYy+/7O/YEzhp4W96UJoZAws
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10898"; a="381866517"
-X-IronPort-AV: E=Sophos;i="6.04,210,1695711600";
-   d="scan'208";a="381866517"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Nov 2023 00:16:51 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10898"; a="759536758"
-X-IronPort-AV: E=Sophos;i="6.04,210,1695711600";
-   d="scan'208";a="759536758"
-Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
-  by orsmga007.jf.intel.com with ESMTP; 19 Nov 2023 00:16:43 -0800
-Received: from kbuild by b8de5498638e with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1r4cyv-0004pL-1K;
-	Sun, 19 Nov 2023 08:16:41 +0000
-Date: Sun, 19 Nov 2023 16:16:33 +0800
-From: kernel test robot <lkp@intel.com>
-To: Herve Codina <herve.codina@bootlin.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Andrew Lunn <andrew@lunn.ch>, Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzk@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>, Lee Jones <lee@kernel.org>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Qiang Zhao <qiang.zhao@nxp.com>, Li Yang <leoyang.li@nxp.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	Shengjiu Wang <shengjiu.wang@gmail.com>,
-	Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <festevam@gmail.com>,
+	by alsa1.perex.cz (Postfix) with ESMTPS id E4F0AF80093
+	for <alsa-devel@alsa-project.org>; Sun, 19 Nov 2023 11:45:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E4F0AF80093
+Received: by mail-wr1-f52.google.com with SMTP id
+ ffacd0b85a97d-3316a4bc37dso1329906f8f.2
+        for <alsa-devel@alsa-project.org>;
+ Sun, 19 Nov 2023 02:45:24 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700390724; x=1700995524;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Uy7JYUOTRdSJldSNKwdRHiPwhZnAINoOplh1pqVKi5s=;
+        b=UD1uJ5iX0IkdV9iqj84AqfTUlmTV2X7OikkxUDf6z7uw9xj1Yw8q2k6szmbVeWnt0K
+         /4Th7Zs+8v9g4WXdHz7JhbX0XDLoL1+qTnHBYKsz9npgh4xGlnXXVpoPjjBL//EUvGt/
+         0hRjGFiBAtAEXrX1MUB7uV1z6x7oJen3KWC15IK8znn2UwP4fSEuCDs8oW7YZRAjuz3z
+         qG19zYVN1q/ODzk0qaW7a4yUveIwr4qKCObEeTPprg0scc1aa1SDxBVwHWdW/p/BK26w
+         B3RJ8SuYit79QzmA1MHXW1t7avjhJt0m9kXKAHn6ioKNmkFJrQ5ISJ69SgwH8qq5Xgw7
+         5POA==
+X-Gm-Message-State: AOJu0YzkspdMxeePbqy36cj61artf3uxGSCf+tszCteE/vmsu2zuVJnE
+	r4/h6C+1cBmVFE+NYtm1fA0=
+X-Google-Smtp-Source: 
+ AGHT+IEC7OHQQ63+OIiNP/Y2msXT2JNv/AQECBNiGuXXWvbCMXs8Ertliu/zFXa6ljnqxG8GsPh0NQ==
+X-Received: by 2002:adf:d1c6:0:b0:332:c6be:f327 with SMTP id
+ b6-20020adfd1c6000000b00332c6bef327mr127636wrd.61.1700390723581;
+        Sun, 19 Nov 2023 02:45:23 -0800 (PST)
+Received: from ryzen.lan (cpc87451-finc19-2-0-cust61.4-2.cable.virginm.net.
+ [82.11.51.62])
+        by smtp.gmail.com with ESMTPSA id
+ az30-20020adfe19e000000b00332c36b6563sm1502211wrb.101.2023.11.19.02.45.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 19 Nov 2023 02:45:22 -0800 (PST)
+From: Lucas Tanure <tanure@linux.com>
+To: Shengjiu Wang <shengjiu.wang@gmail.com>,
+	Xiubo Li <Xiubo.Lee@gmail.com>,
+	Fabio Estevam <festevam@gmail.com>,
 	Nicolin Chen <nicoleotsuka@gmail.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Randy Dunlap <rdunlap@infradead.org>
-Cc: Paul Gazzillo <paul@pgazz.com>,
-	Necip Fazil Yildiran <fazilyildiran@gmail.com>,
-	oe-kbuild-all@lists.linux.dev, netdev@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org
-Subject: Re: [PATCH v9 23/27] net: wan: framer: Add support for the Lantiq
- PEF2256 framer
-Message-ID: <202311191651.ayfggTMD-lkp@intel.com>
-References: <20231115144007.478111-24-herve.codina@bootlin.com>
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Lucas Tanure <tanure@linux.com>
+Subject: [PATCH] ASoC: fsl_mqs: Remove duplicate linux/of.h header
+Date: Sun, 19 Nov 2023 10:45:14 +0000
+Message-ID: <20231119104514.25536-1-tanure@linux.com>
+X-Mailer: git-send-email 2.42.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231115144007.478111-24-herve.codina@bootlin.com>
-Message-ID-Hash: 2CGJVEQUJC34467WQZ3U2ZG4KV6ZD3OJ
-X-Message-ID-Hash: 2CGJVEQUJC34467WQZ3U2ZG4KV6ZD3OJ
-X-MailFrom: lkp@intel.com
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: GN4WMJIQMEDBET3KAIDFITADHT3JFO3Y
+X-Message-ID-Hash: GN4WMJIQMEDBET3KAIDFITADHT3JFO3Y
+X-MailFrom: tanurelinux@gmail.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -114,7 +99,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2CGJVEQUJC34467WQZ3U2ZG4KV6ZD3OJ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GN4WMJIQMEDBET3KAIDFITADHT3JFO3Y/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -123,36 +108,26 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi Herve,
+Remove linux/of.h as is included more than once.
+Reported by make includecheck.
 
-kernel test robot noticed the following build warnings:
+Signed-off-by: Lucas Tanure <tanure@linux.com>
+---
+ sound/soc/fsl/fsl_mqs.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-[auto build test WARNING on broonie-sound/for-next]
-[also build test WARNING on linusw-pinctrl/devel linusw-pinctrl/for-next robh/for-next linus/master v6.7-rc1 next-20231117]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Herve-Codina/soc-fsl-cpm1-tsa-Fix-__iomem-addresses-declaration/20231115-224517
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-patch link:    https://lore.kernel.org/r/20231115144007.478111-24-herve.codina%40bootlin.com
-patch subject: [PATCH v9 23/27] net: wan: framer: Add support for the Lantiq PEF2256 framer
-config: s390-kismet-CONFIG_MFD_CORE-CONFIG_FRAMER_PEF2256-0-0 (https://download.01.org/0day-ci/archive/20231119/202311191651.ayfggTMD-lkp@intel.com/config)
-reproduce: (https://download.01.org/0day-ci/archive/20231119/202311191651.ayfggTMD-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311191651.ayfggTMD-lkp@intel.com/
-
-kismet warnings: (new ones prefixed by >>)
->> kismet: WARNING: unmet direct dependencies detected for MFD_CORE when selected by FRAMER_PEF2256
-   
-   WARNING: unmet direct dependencies detected for MFD_CORE
-     Depends on [n]: HAS_IOMEM [=n]
-     Selected by [y]:
-     - FRAMER_PEF2256 [=y] && NETDEVICES [=y] && WAN [=y] && FRAMER [=y] && OF [=y]
-
+diff --git a/sound/soc/fsl/fsl_mqs.c b/sound/soc/fsl/fsl_mqs.c
+index f2d74ec05cdf..86704ba5f6f0 100644
+--- a/sound/soc/fsl/fsl_mqs.c
++++ b/sound/soc/fsl/fsl_mqs.c
+@@ -10,7 +10,6 @@
+ #include <linux/moduleparam.h>
+ #include <linux/mfd/syscon.h>
+ #include <linux/mfd/syscon/imx6q-iomuxc-gpr.h>
+-#include <linux/of.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/of.h>
+ #include <linux/pm.h>
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.42.1
+
