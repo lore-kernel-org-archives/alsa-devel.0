@@ -4,97 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 50C18C54E76
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Nov 2023 09:59:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6F9CCC197A0
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Nov 2023 10:44:04 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CE1BA839;
-	Mon, 20 Nov 2023 10:58:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CE1BA839
+	by alsa0.perex.cz (Postfix) with ESMTPS id C2B09AE8;
+	Mon, 20 Nov 2023 11:43:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C2B09AE8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1700474377;
-	bh=5P4iX1pCt4fNCoExnayWFUozY5cibqaJikimPWI2k6Q=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=RBsMy/2ZlTEUkcbTcg6L0WRaUUN3cxQ5HYmV2a1VCWkE6IDNWRo4tzLHdm5bVMhJe
-	 Jv2ZNjsIup3gIELbmrWctKMdskW9EDi+pgQ5vwMORdA8lBB4pR+huWJK7w6ZUAYzIp
-	 VFMGtsjutiwKJD/sUqRP3Gch8jf28fdS8egdXwis=
+	s=default; t=1700477041;
+	bh=0NgbIQHhT6jNt8+M2POsiChgW48IBa5vJHsMCvwWqis=;
+	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=gLS0KZG69cmTUvRLYK//L+74b+35T1dIon5G3O0HSXNb13BZjjqf4yIW0hYzdaS5s
+	 TX5d858Pq91idijCy/w67NeO8Be9aiJBr14beLNvR6IHSBvXOMlNC/UdQVeNyhJL87
+	 3y2oQBmzOw6XUv7YBKqFeyblFFkjqKPhffFT7Dco=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DBC26F80093; Mon, 20 Nov 2023 10:58:21 +0100 (CET)
+	id CC8CBF80551; Mon, 20 Nov 2023 11:42:43 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 87AA9F80093;
-	Mon, 20 Nov 2023 10:58:21 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 31931F80254;
+	Mon, 20 Nov 2023 11:42:43 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4722BF80254; Mon, 20 Nov 2023 10:58:18 +0100 (CET)
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com
- [IPv6:2a00:1450:4864:20::52f])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 58A98F80254; Mon, 20 Nov 2023 11:42:38 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A1681F80114
-	for <alsa-devel@alsa-project.org>; Mon, 20 Nov 2023 10:58:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A1681F80114
+	by alsa1.perex.cz (Postfix) with ESMTPS id 05A84F80114
+	for <alsa-devel@alsa-project.org>; Mon, 20 Nov 2023 11:42:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 05A84F80114
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20230601 header.b=kH3EchnJ
-Received: by mail-ed1-x52f.google.com with SMTP id
- 4fb4d7f45d1cf-548d1f8b388so600411a12.0
-        for <alsa-devel@alsa-project.org>;
- Mon, 20 Nov 2023 01:58:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700474289; x=1701079089;
- darn=alsa-project.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kx8KGcst8hZnUB0atywBnApo9bOB5kKeKwi0TRtSy2w=;
-        b=kH3EchnJe++N0Hoo0JOEANSX/lqqSLsDawOSpBTQwDzJ5m7e2OOvFbKQXZoNwQByxx
-         cvnew8Fxw0wDW2DCtfZUu62poKUL16qY9k1kzx6O7xPgAJnssCYq3GnqFigsHwm32T9G
-         iuY5dm8IEZGX4aZ6wYwzcX4lsH33csvEMjozNI70mgFspMf2GPUtI9jE0dk9+fQE7D4P
-         w4zcj97ZaF2TfNW8bbFVlTBmynWX9T2fxALI9/TPizvVd/60kygTEXOv2w07ta4Rd90t
-         SH5fW8LDJ8AA1Gc3KzN0NVU3lWrM4pmstYs/ZV31uhTjN2MJkf5Z+w6FReSL2j/kwwhq
-         33jg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700474289; x=1701079089;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kx8KGcst8hZnUB0atywBnApo9bOB5kKeKwi0TRtSy2w=;
-        b=LKIu13xgABs7WSXY7VGgykGMeSxVJqpQbEJyNRIRrAHD+Ul0vtRi1KzI935fNe8u3c
-         iEz0j7UF8usmEEc4942Og8oAgRHwlDmPoiEVgsXwVy9FBF3c74F2T+sbJelof6dEI+7p
-         KlVNj8nb+jVsLr0NCMallECuBBPoEo5kA+oMPYzJnJOkAiDxrPJsJOiTu9iU0y4++QOj
-         33vWoF38/wbUIdNXl1BKu+nSXmbbEwxnneXu3zHA4Zy0XcVuokNVjZlgKAaeH3yuvnSS
-         gwKQxmlB6S1/QkeGaLNsLCChHltwhMe0xfujwDq+Mt4p7lRp9kT3Fr//6ohrdyhb4zFv
-         qZ2w==
-X-Gm-Message-State: AOJu0YxMyrrHBCPInR7hxxDRIH0MzkIEg+6I/06v5U3FejR0WxjF2XtC
-	WwQSTaE9IZboxA6f1e2G4LFXDz61QZv4/JIjZG4=
-X-Google-Smtp-Source: 
- AGHT+IGE1+uZH2w9ZEXVg+Vvn0R0pdA5KZgF+DVi3C22NcbI+PLG2Hwpgza/u8FK/NadtggaoT3ouXzwkHgGuamnAQU=
-X-Received: by 2002:a50:fb0c:0:b0:53d:eca9:742e with SMTP id
- d12-20020a50fb0c000000b0053deca9742emr4790550edq.9.1700474289055; Mon, 20 Nov
- 2023 01:58:09 -0800 (PST)
+ unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
+ header.s=PODMain02222019 header.b=BTJQ//Ak
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+	by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id
+ 3AK6oXQc014560;
+	Mon, 20 Nov 2023 04:42:26 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=PODMain02222019; bh=Q
+	nKDSoljUFXrzRR/u1NiJJkj1yGGpZS1WlDMjC/Kvsk=; b=BTJQ//Ak1jfYU35qu
+	JPOEtG+wP9BFBc2BKoVfv6c5jrvLIumuBvTUwWCi+sF2yfHurXrEEv0+7HQ49E69
+	8EEtLsYjR0ozlKBBMFu1X82IzvVx/bUhe1hiiaHPbvO0Hg9/a533TWJ1tguHT95X
+	d/gYp7mlbQh5BcW2ySIWoarmM5iJU78UyvC/wEHIbSOy7txtDn70iWt9okD5P+nV
+	Gay9Wsjs3Wu7XIFbEv7nKSO2idp4dBlH3Gk39zD0jAq0c2z+/u8bc2/YHOQUquiT
+	IJxFcS4cUKzRNq6tSCAjQnB0Pg3wm5zQnEAIev2IbmAY4ptkbkilyBY10MomVDP+
+	fQMsA==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3ueuj29p3x-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 20 Nov 2023 04:42:25 -0600 (CST)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Mon, 20 Nov
+ 2023 10:42:23 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.39 via Frontend
+ Transport; Mon, 20 Nov 2023 10:42:23 +0000
+Received: from upx-tgl-008-ubuntu.ad.cirrus.com
+ (upx-tgl-008-ubuntu.ad.cirrus.com [198.90.251.167])
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 978A6B12;
+	Mon, 20 Nov 2023 10:42:23 +0000 (UTC)
+From: Maciej Strozek <mstrozek@opensource.cirrus.com>
+To: Mark Brown <broonie@kernel.org>
+CC: James Schulman <james.schulman@cirrus.com>,
+        David Rhodes
+	<david.rhodes@cirrus.com>,
+        Liam Girdwood <lgirdwood@gmail.com>, <alsa-devel@alsa-project.org>,
+        <patches@opensource.cirrus.com>, <linux-sound@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Maciej Strozek
+	<mstrozek@opensource.cirrus.com>
+Subject: [PATCH v2 6/7] ASoC: cs43130: Allow driver to work without IRQ thread
+Date: Mon, 20 Nov 2023 10:41:53 +0000
+Message-ID: <20231120104153.76248-1-mstrozek@opensource.cirrus.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20231117163900.766996-1-daniel.baluta@oss.nxp.com>
- <874jhh2g8s.wl-kuninori.morimoto.gx@renesas.com>
-In-Reply-To: <874jhh2g8s.wl-kuninori.morimoto.gx@renesas.com>
-From: Daniel Baluta <daniel.baluta@gmail.com>
-Date: Mon, 20 Nov 2023 11:57:56 +0200
-Message-ID: 
- <CAEnQRZBb0ZJk7aTaji-xH2jEs7QiTaoXTuS5_K-ruSaxpEnWdw@mail.gmail.com>
-Subject: Re: [RFC PATCH] ASoC: simple-card: Use dai_id from node description
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Daniel Baluta <daniel.baluta@oss.nxp.com>, broonie@kernel.org,
-	alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-	iuliana.prodan@nxp.com, shengjiu.wang@nxp.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Message-ID-Hash: LNKYB7KBVVSYNAQOOHIHSM454D3RK6NO
-X-Message-ID-Hash: LNKYB7KBVVSYNAQOOHIHSM454D3RK6NO
-X-MailFrom: daniel.baluta@gmail.com
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: jZqzVRSxffeY3nz0j56nbOsuMT_4BWL9
+X-Proofpoint-GUID: jZqzVRSxffeY3nz0j56nbOsuMT_4BWL9
+X-Proofpoint-Spam-Reason: safe
+Message-ID-Hash: BJY7VPGIOOB2JTYJRIP2X4DTJSP7J2DT
+X-Message-ID-Hash: BJY7VPGIOOB2JTYJRIP2X4DTJSP7J2DT
+X-MailFrom: prvs=668862412b=mstrozek@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -106,7 +101,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LNKYB7KBVVSYNAQOOHIHSM454D3RK6NO/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BJY7VPGIOOB2JTYJRIP2X4DTJSP7J2DT/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -115,74 +110,132 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hello Morimoto-san,
+This is to support systems without physical IRQ connection. The device
+only requires the IRQ for a couple of internal delays, this polling
+mechanism is a fallback when no IRQ is specified.
 
-On Mon, Nov 20, 2023 at 6:36=E2=80=AFAM Kuninori Morimoto
-<kuninori.morimoto.gx@renesas.com> wrote:
->
->
-> Hi Daniel, Mark
->
-> > We can specify DAI id using reg property. When dts
-> > node has only 1 DAI simple-card always assumes that DAI id is 0.
-> >
-> > But this is not correct in the case of SOF for example which adds DAIs
-> > staticaly (See definition of snd_soc_dai_driver in sound/soc/sof/imx/im=
-x8m.c)
-> (snip)
-> > -     args.args_count =3D (of_graph_get_endpoint_count(node) > 1);
-> > +     args.args_count =3D (of_graph_get_endpoint_count(node) >=3D 1);
->
-> If my understanding was correct, for example you want to use 2nd DAI
-> but your DT has only 1 port (thus, it is using reg property) ?
+Signed-off-by: Maciej Strozek <mstrozek@opensource.cirrus.com>
+---
+V1 -> V2: Add changelog message
 
-Yes.
+ sound/soc/codecs/cs43130.c | 56 +++++++++++++++++++++++++++++++-------
+ sound/soc/codecs/cs43130.h |  1 +
+ 2 files changed, 47 insertions(+), 10 deletions(-)
 
->
-> Current simple utils is assuming (1) DT has all DAI settings, (2) having
-> reg property is option.
->
-> But current DT requests reg property.
-> So maybe it is good time to remove non-reg-property support ?
+diff --git a/sound/soc/codecs/cs43130.c b/sound/soc/codecs/cs43130.c
+index fd39328579fb..1e7c32eedc7b 100644
+--- a/sound/soc/codecs/cs43130.c
++++ b/sound/soc/codecs/cs43130.c
+@@ -326,6 +326,43 @@ static int cs43130_set_pll(struct snd_soc_component *component, int pll_id, int
+ 	return ret;
+ }
 
-I have no problem removing non-reg-property support. This will work
-for me. Will later send a patch.
++static int cs43130_wait_for_completion(struct cs43130_private *cs43130, struct completion *to_poll,
++					int time)
++{
++	int stickies, offset, flag;
++	int ret = 0;
++
++	if (cs43130->has_irq_line) {
++		ret = wait_for_completion_timeout(to_poll, msecs_to_jiffies(time));
++	} else {
++		if (to_poll == &cs43130->xtal_rdy) {
++			offset = 0;
++			flag = CS43130_XTAL_RDY_INT;
++		} else if (to_poll == &cs43130->pll_rdy) {
++			offset = 0;
++			flag = CS43130_PLL_RDY_INT;
++		} else if (to_poll == &cs43130->hpload_evt) {
++			offset = 3;
++			flag = CS43130_HPLOAD_NO_DC_INT | CS43130_HPLOAD_UNPLUG_INT |
++				CS43130_HPLOAD_OOR_INT | CS43130_HPLOAD_AC_INT |
++				CS43130_HPLOAD_DC_INT | CS43130_HPLOAD_ON_INT |
++				CS43130_HPLOAD_OFF_INT;
++		} else {
++			return 0;
++		}
++
++		ret = regmap_read_poll_timeout(cs43130->regmap, CS43130_INT_STATUS_1 + offset,
++					       stickies, (stickies & flag),
++					       1000, time * 1000);
++
++		/*
++		 * Return 0 for an timeout/error to be consistent with wait_for_completion_timeout
++		 */
++		ret = !ret;
++	}
++	return ret;
++}
++
+ static int cs43130_change_clksrc(struct snd_soc_component *component,
+ 				 enum cs43130_mclk_src_sel src)
+ {
+@@ -364,8 +401,7 @@ static int cs43130_change_clksrc(struct snd_soc_component *component,
+ 					   CS43130_XTAL_RDY_INT_MASK, 0);
+ 			regmap_update_bits(cs43130->regmap, CS43130_PWDN_CTL,
+ 					   CS43130_PDN_XTAL_MASK, 0);
+-			ret = wait_for_completion_timeout(&cs43130->xtal_rdy,
+-							  msecs_to_jiffies(100));
++			ret = cs43130_wait_for_completion(cs43130, &cs43130->xtal_rdy, 100);
+ 			regmap_update_bits(cs43130->regmap, CS43130_INT_MASK_1,
+ 					   CS43130_XTAL_RDY_INT_MASK,
+ 					   1 << CS43130_XTAL_RDY_INT_SHIFT);
+@@ -400,8 +436,7 @@ static int cs43130_change_clksrc(struct snd_soc_component *component,
+ 					   CS43130_XTAL_RDY_INT_MASK, 0);
+ 			regmap_update_bits(cs43130->regmap, CS43130_PWDN_CTL,
+ 					   CS43130_PDN_XTAL_MASK, 0);
+-			ret = wait_for_completion_timeout(&cs43130->xtal_rdy,
+-							  msecs_to_jiffies(100));
++			ret = cs43130_wait_for_completion(cs43130, &cs43130->xtal_rdy, 100);
+ 			regmap_update_bits(cs43130->regmap, CS43130_INT_MASK_1,
+ 					   CS43130_XTAL_RDY_INT_MASK,
+ 					   1 << CS43130_XTAL_RDY_INT_SHIFT);
+@@ -416,8 +451,7 @@ static int cs43130_change_clksrc(struct snd_soc_component *component,
+ 				   CS43130_PLL_RDY_INT_MASK, 0);
+ 		regmap_update_bits(cs43130->regmap, CS43130_PWDN_CTL,
+ 				   CS43130_PDN_PLL_MASK, 0);
+-		ret = wait_for_completion_timeout(&cs43130->pll_rdy,
+-						  msecs_to_jiffies(100));
++		ret = cs43130_wait_for_completion(cs43130, &cs43130->pll_rdy, 100);
+ 		regmap_update_bits(cs43130->regmap, CS43130_INT_MASK_1,
+ 				   CS43130_PLL_RDY_INT_MASK,
+ 				   1 << CS43130_PLL_RDY_INT_SHIFT);
+@@ -2040,8 +2074,8 @@ static int cs43130_hpload_proc(struct cs43130_private *cs43130,
+ 	regmap_multi_reg_write(cs43130->regmap, seq,
+ 			       seq_size);
 
-I want to understand how current non-reg-property support works.
+-	ret = wait_for_completion_timeout(&cs43130->hpload_evt,
+-					  msecs_to_jiffies(1000));
++	ret = cs43130_wait_for_completion(cs43130, &cs43130->hpload_evt, 1000);
++
+ 	regmap_read(cs43130->regmap, CS43130_INT_MASK_4, &msk);
+ 	if (!ret) {
+ 		dev_err(cs43130->dev, "Timeout waiting for HPLOAD interrupt\n");
+@@ -2545,8 +2579,10 @@ static int cs43130_i2c_probe(struct i2c_client *client)
+ 					IRQF_ONESHOT | IRQF_TRIGGER_LOW,
+ 					"cs43130", cs43130);
+ 	if (ret != 0) {
+-		dev_err(cs43130->dev, "Failed to request IRQ: %d\n", ret);
+-		goto err;
++		dev_dbg(cs43130->dev, "Failed to request IRQ: %d, will poll instead\n", ret);
++		cs43130->has_irq_line = 0;
++	} else {
++		cs43130->has_irq_line = 1;
+ 	}
 
-I'm looking at commit 73b17f1a65c881fc ("SoC: simple-card-utils:
-support snd_soc_get_dai_id()").
+ 	cs43130->mclk_int_src = CS43130_MCLK_SRC_RCO;
+diff --git a/sound/soc/codecs/cs43130.h b/sound/soc/codecs/cs43130.h
+index d3f595bbd3ba..dbdb5b262f1b 100644
+--- a/sound/soc/codecs/cs43130.h
++++ b/sound/soc/codecs/cs43130.h
+@@ -508,6 +508,7 @@ struct	cs43130_private {
+ 	struct gpio_desc		*reset_gpio;
+ 	unsigned int			dev_id; /* codec device ID */
+ 	int				xtal_ibias;
++	bool				has_irq_line;
 
-So, the reg property was introduced for cases where we can have ports
-of different types? E.g
-In the case of HDMI we can have Audio ports and Video ports? And we
-need reg property in order
-to get the correct DAI id?
+ 	/* shared by both DAIs */
+ 	struct mutex			clk_mutex;
+--
+2.34.1
 
-I don't understand how DAI id is currently computed if we don't  have
-the reg property and also
-we have Non HDMI sound case:
-
-Here is the code:
-
-=C2=BB       /*
-=C2=BB        * Non HDMI sound case, counting port/endpoint on its DT
-=C2=BB        * is enough. Let's count it.
-=C2=BB        */
-=C2=BB       i =3D 0;
-=C2=BB       id =3D -1;
-=C2=BB       for_each_endpoint_of_node(node, endpoint) {
-=C2=BB       =C2=BB       if (endpoint =3D=3D ep)
-=C2=BB       =C2=BB       =C2=BB       id =3D i;
-=C2=BB       =C2=BB       i++;
-=C2=BB       }
-
-=C2=BB       of_node_put(node);
-
-
-So, this code assumes that the DAI id is exactly the number of the port, ri=
-ght?
-But this is wrong if we have a component (port) with multiple DAIs attached=
-.
-
-Daniel.
