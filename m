@@ -4,47 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4461FC54E76
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Nov 2023 08:25:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1B274C54E76
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Nov 2023 08:31:03 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BAC0FAE8;
-	Mon, 20 Nov 2023 09:25:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BAC0FAE8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 86C6E84B;
+	Mon, 20 Nov 2023 09:30:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 86C6E84B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1700468750;
-	bh=xjwOl+EiL520bbqvnqkBS8lF8XypGRF08JMu1eGSpnY=;
+	s=default; t=1700469061;
+	bh=MKFLVR3yjRzHPa8Qmbh8woIpvuOTajnbGLekRF7lm0Q=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=IwX+ZekJW7BRfrNeQMzqiQkGF4aqkXUxmkWV2XpJqsRsaTtJaZmDDhHCbQBv5PATL
-	 JOX3aJ2eEJUBkny1w9ZqcZulJcDQq13EI6nWNODqp8SesYFnROFfaFpou1XahF05MZ
-	 0ZzvV2/FqaGi8v7nrwyD7wC7RIaQ2ccXn28K+Yuo=
+	b=ppL8l935Nj5Sf5nWbYTzN57sJSX+BiEAjQG+CrkgoMtyaVJbsNy7amymaoX68wxBb
+	 UxrRXML5amhZv9MBc1zI2aEJBVkYgCn+rxz5q7Vnd6xPed7qUcYY2t4Yma4cQyHswk
+	 1cYftOoeL3V6dQyd7KQ0dXFOOUe/1wlgoZHTa5XM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 55B1AF8055B; Mon, 20 Nov 2023 08:49:06 +0100 (CET)
+	id 3A773F8055A; Mon, 20 Nov 2023 08:50:57 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E2B59F80310;
-	Mon, 20 Nov 2023 08:49:05 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BB3F2F80564;
+	Mon, 20 Nov 2023 08:50:56 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A6CD1F80310; Mon, 20 Nov 2023 08:46:51 +0100 (CET)
+	id DB42AF8047D; Mon, 20 Nov 2023 08:47:24 +0100 (CET)
 Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
  [207.180.221.201])
-	by alsa1.perex.cz (Postfix) with ESMTP id D25DDF80254
-	for <alsa-devel@alsa-project.org>; Mon, 20 Nov 2023 08:46:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D25DDF80254
+	by alsa1.perex.cz (Postfix) with ESMTP id DCBDAF80246
+	for <alsa-devel@alsa-project.org>; Mon, 20 Nov 2023 08:47:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DCBDAF80246
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
+From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1700466401577362776-webhooks-bot@alsa-project.org>
-References: <1700466401577362776-webhooks-bot@alsa-project.org>
+In-Reply-To: <1700466442830705404-webhooks-bot@alsa-project.org>
+References: <1700466442830705404-webhooks-bot@alsa-project.org>
 Subject: snd_pcm_readn hangs at record & playback on same device
-Message-Id: <20231120074651.A6CD1F80310@alsa1.perex.cz>
-Date: Mon, 20 Nov 2023 08:46:51 +0100 (CET)
-Message-ID-Hash: TUP2KSOBC6ZUA5EYILNRTB4RA3VHLM25
-X-Message-ID-Hash: TUP2KSOBC6ZUA5EYILNRTB4RA3VHLM25
+Message-Id: <20231120074724.DB42AF8047D@alsa1.perex.cz>
+Date: Mon, 20 Nov 2023 08:47:24 +0100 (CET)
+Message-ID-Hash: ODJEZSGYRLSJL5ESDWZW2QZR7D4M27WL
+X-Message-ID-Hash: ODJEZSGYRLSJL5ESDWZW2QZR7D4M27WL
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -57,7 +57,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TUP2KSOBC6ZUA5EYILNRTB4RA3VHLM25/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ODJEZSGYRLSJL5ESDWZW2QZR7D4M27WL/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -66,12 +66,13 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-lib issue #368 was opened from nodemand:
+alsa-project/alsa-lib issue #368 was edited from nodemand:
 
 I'm on a RPi5 4GB running Raspberry Pi OS 64bit Bookworm and my application hangs on snd_pcm_readn when I try to read and write to the same device. This occurs on an IQAudio Codec Zero sound card and on a HifiBerry DAC+ADC Pro as well. When I select a USB sound card as the output and one of the others described for input everything works like it should. 
 
 Here is my code:
-`
+
+```
 #include <alsa/asoundlib.h>
 #include <alsa/control.h>
 #include <stdio.h>
@@ -264,7 +265,7 @@ int main(int argc, char **argv) {
 
 	return 0;
 }
-`
+```
 
 Issue URL     : https://github.com/alsa-project/alsa-lib/issues/368
 Repository URL: https://github.com/alsa-project/alsa-lib
