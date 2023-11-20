@@ -4,114 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5761AC197A0
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Nov 2023 16:20:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5B7C6C2BB3F
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Nov 2023 16:21:09 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1ADCEEA0;
-	Mon, 20 Nov 2023 17:20:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1ADCEEA0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 040C4EA5;
+	Mon, 20 Nov 2023 17:20:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 040C4EA5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1700497256;
-	bh=UdovXj9eRG/y3npf2/dSirveIPiB9jm8ntA/K6kRWGw=;
-	h=Date:From:To:CC:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1700497267;
+	bh=zPI+e21nyYjzMEzKo0SN9jHwcF4lz+sz54brvdC2b8U=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=ZNrxOInr/1p4jV9RaambiK3Ml9EJYG5X2DfHclguo9CMWB3oAfqSOSM9qTAGIm2v3
-	 en0YAsVBTbFbxAWJ8aqi5EgV+WAPe+f+9MXn1yQaWv6OsWnPDqtvIRm+haqci+t1QE
-	 cxUAQYu7LYn90RA5COxQuJpHuZzF3xk5UlJa5xiQ=
+	b=Fbyu4i/tTuAaHjXYK+JEwggtjFfV/IG+KqVZE44nJ38wHu3msipYk82QN5YHebhHY
+	 hftTckrCPuIwj7MI7jh2INaXAa1ckSqgcGKStpt6iL2IjLd1tXMRwTsugVmVpAICAh
+	 szvEmCndfNBBil4hdkityyHbRhPAIWBVB9BJAbVY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 26253F80606; Mon, 20 Nov 2023 17:17:35 +0100 (CET)
+	id 58ED2F8056F; Mon, 20 Nov 2023 17:20:02 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9C43AF8057C;
-	Mon, 20 Nov 2023 17:17:34 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 853B3F8056F;
+	Mon, 20 Nov 2023 17:20:01 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7BB09F805E5; Mon, 20 Nov 2023 17:16:51 +0100 (CET)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id D1D35F80567; Mon, 20 Nov 2023 17:19:57 +0100 (CET)
+Received: from sin.source.kernel.org (sin.source.kernel.org
+ [IPv6:2604:1380:40e1:4800::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A6983F805D8
-	for <alsa-devel@alsa-project.org>; Mon, 20 Nov 2023 17:16:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A6983F805D8
+	by alsa1.perex.cz (Postfix) with ESMTPS id 31C81F8057D
+	for <alsa-devel@alsa-project.org>; Mon, 20 Nov 2023 17:19:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 31C81F8057D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=I0W+9Ho3
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-	by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id
- 3AK6oXeG014560;
-	Mon, 20 Nov 2023 10:16:40 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	date:from:to:cc:subject:message-id:references:mime-version
-	:content-type:content-transfer-encoding:in-reply-to; s=
-	PODMain02222019; bh=Ywj1kdPjKsuou2fy1TtXc2Xqs1GoaBvw35slxNV/7EU=; b=
-	I0W+9Ho3GB8GYvDBtlhm2uf1mZEPslXeitaQMajmsf12ZhhLVOpVQUHGBrJupnJp
-	Dz2oWe61n9xMvfXJgupn5XGhizv14uUkV6mXyz5GSJ/fg3NLIxmBi0V8UYS6Ychp
-	R6iF3xeMArWUgFMJK76c49zRKWe80FJLl6igniopbKC6FbGNTscgcbQvUqEojx9o
-	I60+yu+5fZwSc2ecVz1fA34acwQ0Rvs+fhuK0ozUTIODJVQl7RnFDkN0x1Sb+QhX
-	7BvzroAn+AKFyRnnBA6VtcrptqcrG48m3MJ7pP2rN3TwHM1+A8ej7R+p0uSQlgZv
-	hvJ//3d1Lo4LcB+zD8VGZA==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3ueuj2a1e2-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 20 Nov 2023 10:16:40 -0600 (CST)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Mon, 20 Nov
- 2023 16:16:38 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.39 via Frontend Transport; Mon, 20 Nov 2023 16:16:38 +0000
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com
- [198.61.86.93])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 31900357F;
-	Mon, 20 Nov 2023 16:16:38 +0000 (UTC)
-Date: Mon, 20 Nov 2023 16:16:38 +0000
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-To: Mark Brown <broonie@kernel.org>
-CC: Maciej Strozek <mstrozek@opensource.cirrus.com>,
-        James Schulman
-	<james.schulman@cirrus.com>,
-        David Rhodes <david.rhodes@cirrus.com>,
-        "Liam
- Girdwood" <lgirdwood@gmail.com>, <alsa-devel@alsa-project.org>,
-        <patches@opensource.cirrus.com>, <linux-sound@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=qVfwlp5S
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sin.source.kernel.org (Postfix) with ESMTP id 15688CE140E;
+	Mon, 20 Nov 2023 16:19:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A59DC433C7;
+	Mon, 20 Nov 2023 16:19:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1700497154;
+	bh=zPI+e21nyYjzMEzKo0SN9jHwcF4lz+sz54brvdC2b8U=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=qVfwlp5SdtqhwP0I976PJXdYckjEzGyjN+RE3ELyFK7teO6jAbhxVTrCooKQB9nng
+	 zCfdh+UNzp9UCbPlQY9B/BCMD+iD9ioAll3bUx6eMkBbImbnJBwA84uOMZwzUox+Be
+	 WZ+Ah2o2yJAc5A+WiBCz2abU+qU/N3HEPgh3c2NVY0Z7gNnxVTN8I0n4Z0HU4oRQ8+
+	 zcOK6BnRK9ERuCnol1itwwR4wKHne7OGHiIvuNZn2bTCuITKekA8fLKlMRLRniMSGQ
+	 Aud55stw529Z91f2S4F2Qai/Ss8MkHxxETyz69isFfiXRx0F7uH/xIYDTKcmcth/1j
+	 Mz2x3yEeSc72Q==
+Date: Mon, 20 Nov 2023 16:19:09 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc: Maciej Strozek <mstrozek@opensource.cirrus.com>,
+	James Schulman <james.schulman@cirrus.com>,
+	David Rhodes <david.rhodes@cirrus.com>,
+	Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org,
+	patches@opensource.cirrus.com, linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org
 Subject: Re: [PATCH v3] ASoC: cs43130: Allow driver to work without IRQ
  connection
-Message-ID: <20231120161638.GJ32655@ediswmail.ad.cirrus.com>
+Message-ID: <d13f5857-f386-46b0-9bdd-d832b35617c0@sirena.org.uk>
 References: <20231120141734.76679-1-mstrozek@opensource.cirrus.com>
  <7248897a-0b59-4cdc-9915-d3297f2d6efe@sirena.org.uk>
  <261e118d-529b-0ce0-5524-d24d767fa92f@opensource.cirrus.com>
  <c031657a-a1ec-44eb-8885-afee68d7523b@sirena.org.uk>
+ <20231120161638.GJ32655@ediswmail.ad.cirrus.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="rzS+1eaHwgk3+pb4"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <c031657a-a1ec-44eb-8885-afee68d7523b@sirena.org.uk>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-ORIG-GUID: o5eMkHLJNbnn67w0gTWh6TXQS7nIHgxj
-X-Proofpoint-GUID: o5eMkHLJNbnn67w0gTWh6TXQS7nIHgxj
-X-Proofpoint-Spam-Reason: safe
-X-MailFrom: prvs=66884bf062=ckeepax@opensource.cirrus.com
-X-Mailman-Rule-Hits: implicit-dest
+In-Reply-To: <20231120161638.GJ32655@ediswmail.ad.cirrus.com>
+X-Cookie: <Manoj> I *like* the chicken
+Message-ID-Hash: A2NZBYRQJZFZJLCRAB4EBF732KOVLMAN
+X-Message-ID-Hash: A2NZBYRQJZFZJLCRAB4EBF732KOVLMAN
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; max-recipients; max-size; news-moderation; no-subject;
- digests; suspicious-header
-Message-ID-Hash: PV5XQP6XXWTA6Y7SKAYFYJRM6DX63PLC
-X-Message-ID-Hash: PV5XQP6XXWTA6Y7SKAYFYJRM6DX63PLC
-X-Mailman-Approved-At: Mon, 20 Nov 2023 16:17:30 +0000
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PV5XQP6XXWTA6Y7SKAYFYJRM6DX63PLC/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/A2NZBYRQJZFZJLCRAB4EBF732KOVLMAN/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -120,33 +102,40 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, Nov 20, 2023 at 03:54:14PM +0000, Mark Brown wrote:
-> On Mon, Nov 20, 2023 at 03:46:26PM +0000, Maciej Strozek wrote:
-> > W dniu 20/11/2023 o 14:40, Mark Brown pisze:
-> 
-> > > > +		} else {
-> > > > +			return 0;
-> > > > +		}
-> 
-> > > Is it a bug to call this function without to_poll set to something
-> > > known?  This will just silently ignore it which seems wrong and is
-> > > inconsitent with the handling in the interrupt case which will wait for
-> > > the the completion to be signalled and report a timeout on error.
-> 
-> > In interrupt case 0 means timeout (and calling function should expect 0 as
-> > error/timeout), so the only inconsistency I see is in not waiting before
-> > returning a timeout, but that would be needlessly wasting time?
-> > Do you think adding a debug print or a comment would help here?
-> 
-> It seems like a clear code bug if this is ever called with an unknown
-> completion, I'd expect a WARN_ON_ONCE() there.  The lack of a delay is
-> potentially going to affect how any error handling works which doesn't
-> feel ideal though the users look fine right now.
 
-I guess perhaps another option might be to not stick so strictly
-to the wait_for_completion_timeout API. This function could
-return an -EINVAL here and a -ETIMEDOUT for a timeout then the
-callers could be updated accordingly.
+--rzS+1eaHwgk3+pb4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Thanks,
-Charles
+On Mon, Nov 20, 2023 at 04:16:38PM +0000, Charles Keepax wrote:
+> On Mon, Nov 20, 2023 at 03:54:14PM +0000, Mark Brown wrote:
+
+> > It seems like a clear code bug if this is ever called with an unknown
+> > completion, I'd expect a WARN_ON_ONCE() there.  The lack of a delay is
+> > potentially going to affect how any error handling works which doesn't
+> > feel ideal though the users look fine right now.
+
+> I guess perhaps another option might be to not stick so strictly
+> to the wait_for_completion_timeout API. This function could
+> return an -EINVAL here and a -ETIMEDOUT for a timeout then the
+> callers could be updated accordingly.
+
+Yes, that'd help with clarity in terms of the interface - the completion
+API is a bit non-standard here.
+
+--rzS+1eaHwgk3+pb4
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVbhvwACgkQJNaLcl1U
+h9DTugf/Xo+maNejN5Jyb9v31+Y+fHdHGg1J8zN/OqLLyg4DRlqQvEHLQ0Z4gc2O
+bFjezKAU1O/mblEtNuyzjXwdnSIsDlEs0eeISe+iaHEJo9OLpvObin3ChBrVbT4o
+lmFIYeP5eWNcNlAKZd9y+tr+S9puRpVPZASSH0/QUOtfQYpO5vmlNZyynqqSUhdg
+NKi2XzdLK3xLKDM55bP2RTS4TDhOe4O5VJWdVRDu59m+6Und1K1rIubf0GRaIpHQ
+h9SycOlh0X2BRRBBQEqoCgE2R/vWBS9NhCban4yRN2ZOfdlfAqsEFvEWJ5utLkpR
+yAEkAerxrkLam35ISNijLA4euRO1Uw==
+=Qcqi
+-----END PGP SIGNATURE-----
+
+--rzS+1eaHwgk3+pb4--
