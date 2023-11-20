@@ -4,121 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8A4BFC197A0
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Nov 2023 11:38:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EB6F3C197A0
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Nov 2023 12:33:34 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 60EB9DEB;
-	Mon, 20 Nov 2023 12:37:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 60EB9DEB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 42EE984B;
+	Mon, 20 Nov 2023 13:32:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 42EE984B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1700480312;
-	bh=5x6kyzSTZiaGQWuAf87bWWJpnSe+cALoTU1F0WR76vA=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	s=default; t=1700483612;
+	bh=VpMPOPnBOLwfyHymSSUGd+phFrwbtBpjEwHwsuBlbMk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=D/WxDmsNIvWuMLgk4/fG77B0Vjyh30Udap2AxK0G0FBlfLawPEAc59PuL7WouTSiy
-	 Q83uIrFgt19ynleBbEthQ/a3CxrrzRwPMCzzvYzuJaD6XnNGQ/U99LADRT2H26MAXD
-	 RcViBbHPkp1RNR71hZ0l9IQ8fwL62jyWZ4sbuDOQ=
+	b=a7qJ9gVuZesv1/VJJLRZJP7VxW29d3oFcAQjDpmNOtYZcVQzxjJUBeReaN2IO9LLa
+	 fv6VwWAnl6iyDouZB0dAm7pRhQ3CNBQWgvlaapu4ndhT5SAbCWatNAMbqS6jf620T3
+	 Ew4TGnSqkS/ZcVRn6QJXNEQzasAirv+joivCDQ9Y=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id F1308F8055A; Mon, 20 Nov 2023 12:37:41 +0100 (CET)
+	id 3A87FF80310; Mon, 20 Nov 2023 13:32:16 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 49B2BF80310;
-	Mon, 20 Nov 2023 12:37:41 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BA8CAF80254;
+	Mon, 20 Nov 2023 13:32:15 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3D4EBF80310; Mon, 20 Nov 2023 12:37:38 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+	id A3C38F80254; Mon, 20 Nov 2023 13:32:10 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 5FB42F80093
-	for <alsa-devel@alsa-project.org>; Mon, 20 Nov 2023 12:37:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5FB42F80093
+	by alsa1.perex.cz (Postfix) with ESMTPS id 7704BF80114
+	for <alsa-devel@alsa-project.org>; Mon, 20 Nov 2023 13:32:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7704BF80114
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=E7EQxner;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=WqY1QIIK
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id EADC721904;
-	Mon, 20 Nov 2023 11:37:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1700480253;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=9XtkkkpmPUqOV5wGnu9VXko/EkG5FheGW/d/tOMb0r0=;
-	b=E7EQxnerNqx/xhapJYSCpse58nlaIvZ2aWhEJxdr1YdQ8Bln+apuPte6Ba6U7RV6BR9rVJ
-	fEMV62ErQiR9i0pDsMEUgs41jUmW+p7C+xYumHPPgpd8D/8rnb9ZNwGfdqtN1CWLg2CumG
-	PyELPZUF2BFsUfwN4mle1mnQ1Bhh93I=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1700480253;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=9XtkkkpmPUqOV5wGnu9VXko/EkG5FheGW/d/tOMb0r0=;
-	b=WqY1QIIKSNjauUCtaetBn8RuVnrBxvgBnBVQ2nKjGxScjrNFVTyqhyKNe/0ma/kfZfK+SU
-	AHD5/iskRcZhKnCg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B051F13499;
-	Mon, 20 Nov 2023 11:37:33 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id NwNEKv1EW2UEPQAAMHmgww
-	(envelope-from <tiwai@suse.de>); Mon, 20 Nov 2023 11:37:33 +0000
-Date: Mon, 20 Nov 2023 12:37:33 +0100
-Message-ID: <87zfz8psea.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Stefan Binding <sbinding@opensource.cirrus.com>
-Cc: Mark Brown <broonie@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>,
-	"Takashi Iwai" <tiwai@suse.com>,
-	<alsa-devel@alsa-project.org>,
-	<linux-sound@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>,
-	<patches@opensource.cirrus.com>
-Subject: Re: [PATCH v2 0/2] ALSA: cs35l41: prevent old firmwares using
- unsupported commands
-In-Reply-To: <20231117163609.823627-1-sbinding@opensource.cirrus.com>
-References: <20231117163609.823627-1-sbinding@opensource.cirrus.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spamd-Result: default: False [-0.88 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-0.999];
-	 RCPT_COUNT_SEVEN(0.00)[8];
-	 MID_CONTAINS_FROM(1.00)[];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_COUNT_TWO(0.00)[2];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.58)[81.44%]
-Message-ID-Hash: B4LYWZROFCDBMUCLAMVWU5IOSQJHXJP3
-X-Message-ID-Hash: B4LYWZROFCDBMUCLAMVWU5IOSQJHXJP3
-X-MailFrom: tiwai@suse.de
+	dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=MWDhq05V
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id CA6E76116E;
+	Mon, 20 Nov 2023 12:32:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2356EC433C7;
+	Mon, 20 Nov 2023 12:31:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1700483521;
+	bh=VpMPOPnBOLwfyHymSSUGd+phFrwbtBpjEwHwsuBlbMk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=MWDhq05VMoKau5vnLggUuY/d5j9oy9QIWFlMqRLO1Ag3AFMP3y5Is71d0hvAxBF84
+	 XRUR5gewxyQNWKd2Kv51/jmCh2dxJMgJEZ7RIGGM5tTJ4bDiduTmT/FttJk6ocf2tF
+	 ynZPwUCZv6vJYvK9ttzi6DHE4OH7uJUPqrGpxWRpni82g+91CMPL54c/YC4CqX0Y4f
+	 /hrF0FFYxHeupA1TQ4DniLGIskO9eRS9wGm4npBqLbcT9ktwVwzAfqV6zsepBdLjuL
+	 xomg1+0KiacXGP1uZ4I8kCW0g9vjeK4xFFp87CQWIZj4ePZWmDPcJ0zWjlQHLVukzC
+	 Z+g0CUVLpdnog==
+Date: Mon, 20 Nov 2023 12:31:56 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Maciej Strozek <mstrozek@opensource.cirrus.com>
+Cc: James Schulman <james.schulman@cirrus.com>,
+	David Rhodes <david.rhodes@cirrus.com>,
+	Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org,
+	patches@opensource.cirrus.com, linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 6/7] ASoC: cs43130: Allow driver to work without IRQ
+ thread
+Message-ID: <7d8bf03f-e9a5-405b-8753-a360f46a04df@sirena.org.uk>
+References: <20231120104153.76248-1-mstrozek@opensource.cirrus.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="EzncKgt07jbCVykN"
+Content-Disposition: inline
+In-Reply-To: <20231120104153.76248-1-mstrozek@opensource.cirrus.com>
+X-Cookie: <Manoj> I *like* the chicken
+Message-ID-Hash: WFTS3GXD5ADCL4XE6PIMX7PVQOVB34EW
+X-Message-ID-Hash: WFTS3GXD5ADCL4XE6PIMX7PVQOVB34EW
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -130,7 +88,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/B4LYWZROFCDBMUCLAMVWU5IOSQJHXJP3/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WFTS3GXD5ADCL4XE6PIMX7PVQOVB34EW/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -139,31 +97,37 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, 17 Nov 2023 17:36:07 +0100,
-Stefan Binding wrote:
-> 
-> Some systems use older firmware which does not support newer commands
-> which are used to enable external boost. For those systems, we can
-> workaround this by writing the registers directly.
-> 
-> We can use the firmware version, stored inside cs_dsp, to determine
-> whether or not the command is supported.
-> To achieve this, it requires a cleanup in the api, to pass the cs_dsp
-> struct into the function.
-> 
-> We can also remove the redundant boolean firmware_running from the HDA
-> driver, and use the equivalent state inside cs_dsp.
-> 
-> Changes since V1:
-> - Added fixes tag to all patches
-> - patches rebased after v6.7 release
-> 
-> Stefan Binding (2):
->   ALSA: hda: cs35l41: Remove unnecessary boolean state variable
->     firmware_running
->   ALSA: cs35l41: Fix for old systems which do not support command
 
-Both patches applied now.  Thanks.
+--EzncKgt07jbCVykN
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
+On Mon, Nov 20, 2023 at 10:41:53AM +0000, Maciej Strozek wrote:
+> This is to support systems without physical IRQ connection. The device
+> only requires the IRQ for a couple of internal delays, this polling
+> mechanism is a fallback when no IRQ is specified.
 
-Takashi
+Your changelog here doesn't describe the change - is then intention here
+to remove the IRQ thread (and presumably open code?) or to make
+interrupts entirely optional?
+
+I'm assuming there aren't six more patches in this series?  The whole
+point in numbering patches is to order things, if you're only sending
+one patch you don't need numbering at all.
+
+--EzncKgt07jbCVykN
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVbUbsACgkQJNaLcl1U
+h9C57gf+OEQRsK3uPH+3kIvhWgpooIAYMV7UzScIDl8wRnQhxGviU2Oct85qI5cG
+P1zEHfPMM/oqJbwUOF3W1jkhGYNkMxyF5gNoWuF4aZwiyW2jYPXwp/DPNt91Ahbr
++fvedg7bLZHzBTJ2jCWdTlNVMuUetCFafrbTbIYJnAGMKO3j+Sp0HEyT2/kfHx9J
+Nfq4TDOTUbN/sOoL/UzpIMCqgGhDl6P1hjtm2EV64zJ1XFxrzzfVetRpaO4+Avgn
+NfDBNsJjEZk6c3usl0u/fLbS3SxYkgqRtZXqKqlwHQcyqVLApgFmgv6aN59QaKdO
+kCAiub3Df+k7nUtAs/AKR4iZLf924w==
+=Nli+
+-----END PGP SIGNATURE-----
+
+--EzncKgt07jbCVykN--
