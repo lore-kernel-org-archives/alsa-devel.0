@@ -4,75 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0B41FC197A0
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Nov 2023 19:21:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3C1CAC197A0
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Nov 2023 19:23:04 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 178A6AE8;
-	Mon, 20 Nov 2023 20:21:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 178A6AE8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 36BB2DF1;
+	Mon, 20 Nov 2023 20:22:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 36BB2DF1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1700508108;
-	bh=7l/BJemceh+NKK3sSMzDbS+2RzVYcr6sgFQMzStHspU=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1700508182;
+	bh=2aUp4hFQlLqMEsSFhngQ+sfVIS5arskcjqcdj3YPsdU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=U45VQFeeRbkMOUQHnMF5CHs6KiTJ8AEO54eaBq6J/xECF6tOTMI9oQOAt5kKSUqR6
-	 iji5lF+jRre62VDspSoP76TnMA1YNQGIlqlqgjzOzD2rxRiGnHjszlyETmalOWkLti
-	 JoMoc/vSKqHBzQQqhAIjDWu85Y3ef/lkkHpMzDYE=
+	b=T4W5hS3XiZKEypgrzGu3O8TKPHovZUjHrMjb9tvRojgsKKqhg+3XcaRB+d/O+WEc3
+	 MRlC/IosVWBHOx3GYfFafhRzZaqBCVZAaA1E5uyoY7HkUaRIC/7VFJQ28gpvQRbEQB
+	 bOHXhx54goabiF3bXP0kdIj0zLk5nOwRc/tynEsE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B55AEF80558; Mon, 20 Nov 2023 20:21:11 +0100 (CET)
+	id B07BCF8057E; Mon, 20 Nov 2023 20:22:19 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 44D97F80589;
-	Mon, 20 Nov 2023 20:21:11 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 626FEF80580;
+	Mon, 20 Nov 2023 20:22:19 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 38B90F802E8; Mon, 20 Nov 2023 20:21:07 +0100 (CET)
-Received: from sin.source.kernel.org (sin.source.kernel.org
- [IPv6:2604:1380:40e1:4800::1])
+	id 78D0CF802E8; Mon, 20 Nov 2023 20:22:15 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 4C488F80254
-	for <alsa-devel@alsa-project.org>; Mon, 20 Nov 2023 20:18:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4C488F80254
+	by alsa1.perex.cz (Postfix) with ESMTPS id 0F08DF80093
+	for <alsa-devel@alsa-project.org>; Mon, 20 Nov 2023 20:22:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0F08DF80093
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=KTUjuRog
+ header.s=k20201202 header.b=dcV4yGLW
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 46767CE1692;
-	Mon, 20 Nov 2023 19:18:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C05A4C433C8;
-	Mon, 20 Nov 2023 19:18:49 +0000 (UTC)
+	by ams.source.kernel.org (Postfix) with ESMTP id A59ECB81B05;
+	Mon, 20 Nov 2023 19:22:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3EF37C433C8;
+	Mon, 20 Nov 2023 19:22:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1700507931;
-	bh=7l/BJemceh+NKK3sSMzDbS+2RzVYcr6sgFQMzStHspU=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=KTUjuRogANol7OYCdPyp7ohz8lnqc/2AsUFiCtytA6PVPb6xDLTlsKHiEdVGaYnkV
-	 OpCB+CLx/yhopSc7sgbvGlk9LUu4AGp+qnp9NxfO4Qe/7/zMqyNlyafre1aPb8tKOJ
-	 lgLl5+JWl6PohkmCvaIQUvXdcqVw7g3Ed+PRwS8QIKG2Wd4vWFrsI3BoZFU7MmoB1S
-	 drWAxY+46M5W5RaDa8p0n1cAcR1gy3gV0Rf1jWX6+Mo2PzqlnMTlo+5JGt34NfNziL
-	 Qv2I1Mriclg0NTXbA68HjMgwQOMj+ezvYHE09HJpR4pjlNoN6Rd0pBkoZAw53JyeL9
-	 YSToaWCcFKj4Q==
+	s=k20201202; t=1700508131;
+	bh=2aUp4hFQlLqMEsSFhngQ+sfVIS5arskcjqcdj3YPsdU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=dcV4yGLWK2gd5PNmevD1kVTLVXpFfviSxckPidzOa2JWLOgko3w48x3HzKev+5iGp
+	 mItw7ctOvCPg27iwQPQuMfoz5uFZYhUBwH9ako5qQG+fqCFVUzXOwSpNqWtxMNhjGd
+	 pnABTOtCWMibZ0TGMKkho1hBWudgq7TMsLhKq3Dc1CDxTPOGvINoVe4/Qj/o9qPiKb
+	 B9anjKd61F9tv8VWGiPRyb8/TMmAQi1feX+UxyWP7f9WM14oPOS5u8Z2QzV3V6pLw+
+	 aN4H4Fjc2OM6h5fxhrUlCXzVdk01kjKKr0NfGo16JBiIra9n1NmFIDg8VslAmtQ0Xy
+	 RSn/936gkA3cQ==
+Date: Mon, 20 Nov 2023 19:22:06 +0000
 From: Mark Brown <broonie@kernel.org>
-To: David Lin <CTLIN0@nuvoton.com>
-Cc: lgirdwood@gmail.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, YHCHuang@nuvoton.com, KCHSU0@nuvoton.com,
- WTLI@nuvoton.com, SJLIN0@nuvoton.com, ctlin0.linux@gmail.com
-In-Reply-To: <20231120084227.1766633-1-CTLIN0@nuvoton.com>
-References: <20231120084227.1766633-1-CTLIN0@nuvoton.com>
-Subject: Re: [PATCH] ASoC: nau8810: Fix incorrect type in assignment and
- cast to restricted __be16
-Message-Id: <170050792951.1294254.14784272204812613089.b4-ty@kernel.org>
-Date: Mon, 20 Nov 2023 19:18:49 +0000
+To: Maciej Strozek <mstrozek@opensource.cirrus.com>
+Cc: James Schulman <james.schulman@cirrus.com>,
+	David Rhodes <david.rhodes@cirrus.com>,
+	Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org,
+	patches@opensource.cirrus.com, linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] ASoC: cs43130: Allow driver to work without IRQ
+ connection
+Message-ID: <7429d3e8-ff23-41ae-8717-b7f6091b1995@sirena.org.uk>
+References: <20231120141734.76679-1-mstrozek@opensource.cirrus.com>
+ <170050793178.1294254.1258854570735859586.b4-ty@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-0438c
-Message-ID-Hash: 6WPFGDD67QJHHJZAN3F2I52ELSH3W6LS
-X-Message-ID-Hash: 6WPFGDD67QJHHJZAN3F2I52ELSH3W6LS
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="sbwRwMg36TnlCFW1"
+Content-Disposition: inline
+In-Reply-To: <170050793178.1294254.1258854570735859586.b4-ty@kernel.org>
+X-Cookie: I have become me without my consent.
+Message-ID-Hash: MZYAUKBL3F7HDGBMK6QLI3EHFJTYMKDD
+X-Message-ID-Hash: MZYAUKBL3F7HDGBMK6QLI3EHFJTYMKDD
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -85,7 +89,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6WPFGDD67QJHHJZAN3F2I52ELSH3W6LS/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MZYAUKBL3F7HDGBMK6QLI3EHFJTYMKDD/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -94,45 +98,45 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, 20 Nov 2023 16:42:28 +0800, David Lin wrote:
-> This issue is reproduced when W=1 build in compiler gcc-12.
-> The following are sparse warnings:
-> 
-> sound/soc/codecs/nau8810.c:183:25: sparse: warning: incorrect type in assignment
-> sound/soc/codecs/nau8810.c:183:25: sparse: expected int
-> sound/soc/codecs/nau8810.c:183:25: sparse: got restricted __be16
-> sound/soc/codecs/nau8810.c:219:25: sparse: warning: cast to restricted __be16
-> sound/soc/codecs/nau8810.c:219:25: sparse: warning: cast to restricted __be16
-> sound/soc/codecs/nau8810.c:219:25: sparse: warning: cast to restricted __be16
-> sound/soc/codecs/nau8810.c:219:25: sparse: warning: cast to restricted __be16
-> 
-> [...]
 
-Applied to
+--sbwRwMg36TnlCFW1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+On Mon, Nov 20, 2023 at 07:18:51PM +0000, Mark Brown wrote:
+> On Mon, 20 Nov 2023 14:17:34 +0000, Maciej Strozek wrote:
+> > Add a polling mechanism that will keep the driver operational even in
+> > absence of physical IRQ connection. If IRQ line is detected, the driver
+> > will continue working as usual, in case of missing IRQ line it will
+> > fallback to the polling mechanism introduced in this change.
+> > This will support users which choose not to connect an IRQ line as it
+> > is not critical to part's operation.
+> >=20
+> > [...]
+>=20
+> Applied to
+>=20
+>    https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-=
+next
+>=20
+> Thanks!
 
-Thanks!
+Sorry, this was done in error - dropped it.  Sorry for the noise.
 
-[1/1] ASoC: nau8810: Fix incorrect type in assignment and cast to restricted __be16
-      commit: af524e9dcb43f5914cecb3a3f4b79081d2e3f7f8
+--sbwRwMg36TnlCFW1
+Content-Type: application/pgp-signature; name="signature.asc"
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+-----BEGIN PGP SIGNATURE-----
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVbsd0ACgkQJNaLcl1U
+h9Cl8gf9GgraVzbnKi3XHA7coVE5UYqFfYsUnE3OGiGtVlcIDScqqrQ5yX+UO8RT
+RI4wJi6DO0g2ts4d9YKg53I7AQrmn1ouyFqggijC50nM9UPWmEFBPNew9fe9qvRM
+6w2eZJQcGt1XrcN5e9TuEf24Pj72NQClQnYiWLfGfWq0mLcBJlQj0J6bUXBsYeHN
+pU1GhM6OFrxrg1uiEXg6WUupMfKMDEqUHpT1zvBvLhVNs6cwSLwZoQ26LxS2QXoS
+ccxORza+wdqsBbg68+sdouidwQpGVbk/1Ghn8m+nTD5Nvt6RISP+h7xuiUo7ZAaK
+msoVu0O2q9MTl1jCBy6GLaZolfcPqw==
+=QH8Q
+-----END PGP SIGNATURE-----
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+--sbwRwMg36TnlCFW1--
