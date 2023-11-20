@@ -4,66 +4,118 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D23BBC197A0
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Nov 2023 10:46:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A12A0C54E76
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Nov 2023 11:37:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 65EFFA4E;
-	Mon, 20 Nov 2023 11:45:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 65EFFA4E
+	by alsa0.perex.cz (Postfix) with ESMTPS id DA073AE8;
+	Mon, 20 Nov 2023 12:36:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DA073AE8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1700477189;
-	bh=4YacgHpWoFm1TTR4Bfb8AIVrWUbD+9qbt8YY841WMLo=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=g+cCEisps49zyEsTq/9anFupN2AUpQ0Bcd1mmZLVvK3nsSZOseIaSVf5hv19kolDh
-	 s7JJj/6tA54T8d+uG8gKOpxVzn3N9WioA6IZI0Aax0B6rYfmqZjAzLRMcnSrzeR08/
-	 2DOvRiSaj2GIiOx3eXolywjciHltViyFxkMQc0WM=
+	s=default; t=1700480265;
+	bh=SD5wPJH5B8FfXcXr+J2g2YyeMV3RJZz6Rikzcq2gQu8=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=sI+sMAMwDJNp4BrTzhLKazPE8SvcIDhrY9LsHYcST+WM4Ezw7LAeyYrSRPBRCRF/g
+	 3Z+3Nx3mw7J2lwIyHOeD/OQoJrMJ5ixOW50rvfIDsqKvXJa3dU3R43wIpFkyNl2G+r
+	 J6L6dOmLBgpjAcS7PSByx82p9AvVa29MXEhUQVHo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id EBD4EF8055A; Mon, 20 Nov 2023 11:45:38 +0100 (CET)
+	id 52552F80249; Mon, 20 Nov 2023 12:36:27 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7728AF802E8;
-	Mon, 20 Nov 2023 11:45:38 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DB948F80093;
+	Mon, 20 Nov 2023 12:36:26 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 05145F802E8; Mon, 20 Nov 2023 11:45:35 +0100 (CET)
-Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 7B012F80254; Mon, 20 Nov 2023 12:36:21 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 80C94F80114
-	for <alsa-devel@alsa-project.org>; Mon, 20 Nov 2023 11:45:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 80C94F80114
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id C70501A0CB9;
-	Mon, 20 Nov 2023 11:45:28 +0100 (CET)
-Received: from aprdc01srsp001v.ap-rdc01.nxp.com
- (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
-	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 907641A0C96;
-	Mon, 20 Nov 2023 11:45:28 +0100 (CET)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net
- [10.192.224.44])
-	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 11B72180222F;
-	Mon, 20 Nov 2023 18:45:27 +0800 (+08)
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
-To: nicoleotsuka@gmail.com,
-	Xiubo.Lee@gmail.com,
-	festevam@gmail.com,
-	shengjiu.wang@gmail.com,
-	lgirdwood@gmail.com,
-	broonie@kernel.org,
-	perex@perex.cz,
+	by alsa1.perex.cz (Postfix) with ESMTPS id AB0C9F80114
+	for <alsa-devel@alsa-project.org>; Mon, 20 Nov 2023 12:36:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AB0C9F80114
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=vrNXytII;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=BVBA354i
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id A280B1F88F;
+	Mon, 20 Nov 2023 11:36:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1700480174;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=c9gGTkqNqd3Lu6N2clnP+eluZfcfYNjbPQtq7BHlQMo=;
+	b=vrNXytIIiK2Y0jqA83Ygv/TP9h9MSNJ5mCndmn1QzTCpgGfs58tieKjsB/1mOCWAjK4aUZ
+	fwYSdksyZNeOmxEWKGofccPgBW8dxHdqTWtMUnElhT8yYac5HJ1x6ejcR6FYvxQS1W98Sp
+	lZJ17/6NGOe0ysMIgqO0ueu61/PjUm4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1700480174;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=c9gGTkqNqd3Lu6N2clnP+eluZfcfYNjbPQtq7BHlQMo=;
+	b=BVBA354iPlPVLqGDzFSfKI++/gcI1cYcDLILR+orSA13NO7c4O2ex3mZ6eyXcUbLahjt7W
+	E+/SMQT2c92jIzBg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7E84813499;
+	Mon, 20 Nov 2023 11:36:14 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id SJ8GHq5EW2VKPAAAMHmgww
+	(envelope-from <tiwai@suse.de>); Mon, 20 Nov 2023 11:36:14 +0000
+Date: Mon, 20 Nov 2023 12:36:14 +0100
+Message-ID: <871qckr70x.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: kovalev@altlinux.org
+Cc: alsa-devel@alsa-project.org,
 	tiwai@suse.com,
-	alsa-devel@alsa-project.org
-Cc: linuxppc-dev@lists.ozlabs.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: fsl_sai: Fix no frame sync clock issue on i.MX8MP
-Date: Mon, 20 Nov 2023 18:05:35 +0800
-Message-Id: <1700474735-3863-1-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
-Message-ID-Hash: 72U5OWDKGEW6K72VOXJFVKXJUXOXX6JF
-X-Message-ID-Hash: 72U5OWDKGEW6K72VOXJFVKXJUXOXX6JF
-X-MailFrom: shengjiu.wang@nxp.com
+	perex@perex.cz,
+	kailang@realtek.com
+Subject: Re: [PATCH] ALSA: hda - Fix speaker and headset mic pin config for
+ CHUWI CoreBook XPro
+In-Reply-To: <20231117170923.106822-1-kovalev@altlinux.org>
+References: <20231117170923.106822-1-kovalev@altlinux.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spamd-Result: default: False [-0.46 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-0.97)[-0.975];
+	 MIME_GOOD(-0.10)[text/plain];
+	 TO_DN_NONE(0.00)[];
+	 RCPT_COUNT_FIVE(0.00)[5];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 MID_CONTAINS_FROM(1.00)[];
+	 NEURAL_SPAM_SHORT(1.65)[0.551];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_COUNT_TWO(0.00)[2];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-2.04)[95.29%]
+Message-ID-Hash: CM42HVL3L77LYGJFBA3Z62YIQIDUTD2C
+X-Message-ID-Hash: CM42HVL3L77LYGJFBA3Z62YIQIDUTD2C
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -75,7 +127,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/72U5OWDKGEW6K72VOXJFVKXJUXOXX6JF/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CM42HVL3L77LYGJFBA3Z62YIQIDUTD2C/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -84,59 +136,17 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On i.MX8MP, when the TERE and FSD_MSTR enabled before configuring
-the word width, there will be no frame sync clock issue, because
-old word width impact the generation of frame sync.
+On Fri, 17 Nov 2023 18:09:23 +0100,
+kovalev@altlinux.org wrote:
+> 
+> From: Vasiliy Kovalev <kovalev@altlinux.org>
+> 
+> This patch corrected the speaker and headset mic pin config to the more
+> appropriate values.
+> 
+> Signed-off-by: Vasiliy Kovalev <kovalev@altlinux.org>
 
-TERE enabled earlier only for i.MX8MP case for the hardware limitation,
-So need to disable FSD_MSTR before configuring word width, then enable
-FSD_MSTR bit for this specific case.
+Thanks, applied now.
 
-Fixes: 3e4a82612998 ("ASoC: fsl_sai: MCLK bind with TX/RX enable bit")
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
- sound/soc/fsl/fsl_sai.c | 21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
 
-diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-index 79e7c6b98a75..32bbe5056a63 100644
---- a/sound/soc/fsl/fsl_sai.c
-+++ b/sound/soc/fsl/fsl_sai.c
-@@ -673,6 +673,20 @@ static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
- 			   FSL_SAI_CR3_TRCE_MASK,
- 			   FSL_SAI_CR3_TRCE((dl_cfg[dl_cfg_idx].mask[tx] & trce_mask)));
- 
-+	/*
-+	 * When the TERE and FSD_MSTR enabled before configuring the word width
-+	 * There will be no frame sync clock issue, because word width impact
-+	 * the generation of frame sync clock.
-+	 *
-+	 * TERE enabled earlier only for i.MX8MP case for the hardware limitation,
-+	 * We need to disable FSD_MSTR before configuring word width, then enable
-+	 * FSD_MSTR bit for this specific case.
-+	 */
-+	if (sai->soc_data->mclk_with_tere && sai->mclk_direction_output &&
-+	    !sai->is_consumer_mode)
-+		regmap_update_bits(sai->regmap, FSL_SAI_xCR4(tx, ofs),
-+				   FSL_SAI_CR4_FSD_MSTR, 0);
-+
- 	regmap_update_bits(sai->regmap, FSL_SAI_xCR4(tx, ofs),
- 			   FSL_SAI_CR4_SYWD_MASK | FSL_SAI_CR4_FRSZ_MASK |
- 			   FSL_SAI_CR4_CHMOD_MASK,
-@@ -680,6 +694,13 @@ static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
- 	regmap_update_bits(sai->regmap, FSL_SAI_xCR5(tx, ofs),
- 			   FSL_SAI_CR5_WNW_MASK | FSL_SAI_CR5_W0W_MASK |
- 			   FSL_SAI_CR5_FBT_MASK, val_cr5);
-+
-+	/* Enable FSD_MSTR after configuring word width */
-+	if (sai->soc_data->mclk_with_tere && sai->mclk_direction_output &&
-+	    !sai->is_consumer_mode)
-+		regmap_update_bits(sai->regmap, FSL_SAI_xCR4(tx, ofs),
-+				   FSL_SAI_CR4_FSD_MSTR, FSL_SAI_CR4_FSD_MSTR);
-+
- 	regmap_write(sai->regmap, FSL_SAI_xMR(tx),
- 		     ~0UL - ((1 << min(channels, slots)) - 1));
- 
--- 
-2.34.1
-
+Takashi
