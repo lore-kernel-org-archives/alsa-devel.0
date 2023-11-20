@@ -4,108 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1034EC2BB3F
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Nov 2023 19:08:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0D55AC197A0
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Nov 2023 19:19:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BF717DEE;
-	Mon, 20 Nov 2023 20:08:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BF717DEE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 46076A4B;
+	Mon, 20 Nov 2023 20:19:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 46076A4B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1700507325;
-	bh=FpvpcXsF6QOAKDHyNhoncj99puNYtYw/t4txj7sygec=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1700507981;
+	bh=j06BuuFm+JMAFgBv4pra+sWaWElq3RAU0IqrIOtdgg0=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=MDCbxu+HRDuIiDsasmk1Qe3afOWa8CfzZEzsG9uNaP0eAI6OxpkiegjCK7nButhox
-	 YkQ0Yr824/f3AYGLWG06F8OLPD8AjeMMhihMzeEpZnap5sLOGDgkSxQZutyaymQldM
-	 cxefRc5QIgi3+CyMse+vwHQ3kB7AwaTaZ4wNxIvM=
+	b=VUibLNX+qeq7GBkVHLoL9OZmDBETTBvKYO8euECzxgXJI81gn3qj/TPfW2I4WpILz
+	 VP7HgCIl7S9UNrKcgNgTAlsG9Kr8ynDK7KzsvyLJ+JqP0MbpOcfQQGAEK/WygE8sGb
+	 ecyOU/qgxt2Ebw5mGWUl+/S7n2G0+UzyUdyH3vK4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A015EF805BF; Mon, 20 Nov 2023 20:07:59 +0100 (CET)
+	id 94B51F8059F; Mon, 20 Nov 2023 20:19:09 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id AFC9AF805C6;
-	Mon, 20 Nov 2023 20:07:58 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 33DA9F80589;
+	Mon, 20 Nov 2023 20:19:09 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 263ACF802E8; Mon, 20 Nov 2023 20:07:54 +0100 (CET)
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com
- [IPv6:2a00:1450:4864:20::631])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	id 03DCDF80310; Mon, 20 Nov 2023 20:19:04 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 9D393F80093
-	for <alsa-devel@alsa-project.org>; Mon, 20 Nov 2023 20:07:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9D393F80093
+	by alsa1.perex.cz (Postfix) with ESMTPS id 1F6F1F80249
+	for <alsa-devel@alsa-project.org>; Mon, 20 Nov 2023 20:18:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1F6F1F80249
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=RZ5lHyyc
-Received: by mail-ej1-x631.google.com with SMTP id
- a640c23a62f3a-9ae2cc4d17eso647039766b.1
-        for <alsa-devel@alsa-project.org>;
- Mon, 20 Nov 2023 11:07:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700507265; x=1701112065;
- darn=alsa-project.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fcghsarjrS3tHRySGsk8wGm4K++pTmTjyafJFK3g/Cs=;
-        b=RZ5lHyyc1Ww2wMwhj1iR3I2zEa+LNgN221kcnt1VuY9kgrpydVyHfADkb2mEUCEw5X
-         Powtvw/A3VnQaWcykgZjglyrk0D00+n0EE8bMs/hdIowhSpNUG1aeRAy/+bhKmxCoNFy
-         xTVJzhw5vOkby4I33IB2KFx7cpMga4+swDmk5jLjahe/h17iNy3Fu45KNJdb16htTEts
-         h5JB2pAXG6wuIOna2puNFliVFtztdRxwjeE+YtyGMHApBOCho3KeuezCOkOOmtTnQV8v
-         9RNSyRtfqBzfmrbYvveOVhQgY0iFtkiD8+35IWDn7zOmOhgpc+U0ZsIKfBmqgIzvYVWH
-         AvgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700507265; x=1701112065;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fcghsarjrS3tHRySGsk8wGm4K++pTmTjyafJFK3g/Cs=;
-        b=ElEtmCDwMKP7Qizshwy8NChKjAbKRAYSBg0s44QJq2+4ok0rbLEsXUndkgMQ2sVQNd
-         BZtOGXVBa7Mts08Z8057pREvdf6rVcSGrhHQ/W2QND7jTFsnbVVrp2xBSmEOXvFzHdJS
-         V3jOp5SkOJJRl+kAVpUVhpPgwzGP4gHuoqETeZEVlyvg07ACPi17m5wzdS0VTeLvYtix
-         73zgMmiq9eYmgn1uW8XwR2C0y4KGc6EXlOpupOgtgRPqs52KlOfLGVQJ8WMMLeYZbYUP
-         YKBlja5j3vZYIaiwWgz2h/NZlnpf/mCR6jPnJpTznRTy/5Mq8726eFtOxMU+6CYbADmG
-         wv+g==
-X-Gm-Message-State: AOJu0Yz7NWFb+wu1XTDYb2jbAScnI4hNOu8jpvK2QdEpas/K0HzW891u
-	phJormfVq5cdiRjyxXiPfkynRA==
-X-Google-Smtp-Source: 
- AGHT+IFzePfbHnSU85wD/UiMsfBrFBH+dK0SBJM1TR0leyATrt8D374mvtWaZJyFxdwoOqbJ+3B6KA==
-X-Received: by 2002:a17:906:3f18:b0:9fe:aacb:bf6a with SMTP id
- c24-20020a1709063f1800b009feaacbbf6amr2737368ejj.69.1700507264786;
-        Mon, 20 Nov 2023 11:07:44 -0800 (PST)
-Received: from krzk-bin.. ([178.197.222.11])
-        by smtp.gmail.com with ESMTPSA id
- a18-20020a1709066d5200b00977cad140a8sm4177521ejt.218.2023.11.20.11.07.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Nov 2023 11:07:44 -0800 (PST)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Andy Gross <agross@kernel.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Vinod Koul <vkoul@kernel.org>,
-	Bard Liao <yung-chuan.liao@linux.intel.com>,
-	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-	Sanyog Kale <sanyog.r.kale@intel.com>,
-	linux-arm-msm@vger.kernel.org,
-	alsa-devel@alsa-project.org,
-	linux-kernel@vger.kernel.org
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH 2/2] soundwire: qcom: move sconfig in
- qcom_swrm_stream_alloc_ports() out of critical section
-Date: Mon, 20 Nov 2023 20:07:40 +0100
-Message-Id: <20231120190740.339350-2-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231120190740.339350-1-krzysztof.kozlowski@linaro.org>
-References: <20231120190740.339350-1-krzysztof.kozlowski@linaro.org>
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=TSlNZY5d
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id EA66361480;
+	Mon, 20 Nov 2023 19:18:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11DFAC433C7;
+	Mon, 20 Nov 2023 19:18:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1700507933;
+	bh=j06BuuFm+JMAFgBv4pra+sWaWElq3RAU0IqrIOtdgg0=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=TSlNZY5dLL0aWTx5yWgFDonGBMRY4LB9UryaSoU+Ae0/2k0AFYBJd9Ix60IuPHPPQ
+	 eZh6zdjsJ/ZoeshQFbfLPRmf9LWKCodu6lJ/zbcN8mJRsrlqtJu8aZx9LyrDM0ox3X
+	 k/okPit3L7AJcWCRiPND0FFDqYhD2WAlh94vLQ2T+xObb6tPNtm4jpJLR3CDNpRzA+
+	 3dYFpywA88gU4Ckv/4TAcUG7968ZFnyX4gyhJIHiPDw63XkRHvmHMiEfLa8OMXSPSA
+	 hDKVMT6mO5VMvJIKp5LDymu2KK+hwlJo08pjQ1aY3BO7flV8MtAPqUhQZPhjqmKJFR
+	 vNoCQFQS0M3qw==
+From: Mark Brown <broonie@kernel.org>
+To: Maciej Strozek <mstrozek@opensource.cirrus.com>
+Cc: James Schulman <james.schulman@cirrus.com>,
+ David Rhodes <david.rhodes@cirrus.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
+ linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20231120141734.76679-1-mstrozek@opensource.cirrus.com>
+References: <20231120141734.76679-1-mstrozek@opensource.cirrus.com>
+Subject: Re: [PATCH v3] ASoC: cs43130: Allow driver to work without IRQ
+ connection
+Message-Id: <170050793178.1294254.1258854570735859586.b4-ty@kernel.org>
+Date: Mon, 20 Nov 2023 19:18:51 +0000
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 63MADI2ZPNTL6M2XLZ6QYU4M6HFIESBF
-X-Message-ID-Hash: 63MADI2ZPNTL6M2XLZ6QYU4M6HFIESBF
-X-MailFrom: krzysztof.kozlowski@linaro.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-0438c
+Message-ID-Hash: GBAJMSGW46W2EVIZ6OKQDWVGDR6KSQNQ
+X-Message-ID-Hash: GBAJMSGW46W2EVIZ6OKQDWVGDR6KSQNQ
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -117,7 +85,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/63MADI2ZPNTL6M2XLZ6QYU4M6HFIESBF/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GBAJMSGW46W2EVIZ6OKQDWVGDR6KSQNQ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -126,56 +94,41 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Setting members of local variable "sconfig" in
-qcom_swrm_stream_alloc_ports() does not depend on any earlier code in
-this function, so can be moved up before the critical section.  This
-makes the code a bit easier to follow because critical section is
-smaller.
+On Mon, 20 Nov 2023 14:17:34 +0000, Maciej Strozek wrote:
+> Add a polling mechanism that will keep the driver operational even in
+> absence of physical IRQ connection. If IRQ line is detected, the driver
+> will continue working as usual, in case of missing IRQ line it will
+> fallback to the polling mechanism introduced in this change.
+> This will support users which choose not to connect an IRQ line as it
+> is not critical to part's operation.
+> 
+> [...]
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
----
- drivers/soundwire/qcom.c | 21 +++++++++++----------
- 1 file changed, 11 insertions(+), 10 deletions(-)
+Applied to
 
-diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
-index 754870a4a047..e9a52c1bd359 100644
---- a/drivers/soundwire/qcom.c
-+++ b/drivers/soundwire/qcom.c
-@@ -1160,6 +1160,17 @@ static int qcom_swrm_stream_alloc_ports(struct qcom_swrm_ctrl *ctrl,
- 	int maxport, pn, nports = 0, ret = 0;
- 	unsigned int m_port;
- 
-+	if (direction == SNDRV_PCM_STREAM_CAPTURE)
-+		sconfig.direction = SDW_DATA_DIR_TX;
-+	else
-+		sconfig.direction = SDW_DATA_DIR_RX;
-+
-+	/* hw parameters wil be ignored as we only support PDM */
-+	sconfig.ch_count = 1;
-+	sconfig.frame_rate = params_rate(params);
-+	sconfig.type = stream->type;
-+	sconfig.bps = 1;
-+
- 	mutex_lock(&ctrl->port_lock);
- 	list_for_each_entry(m_rt, &stream->master_list, stream_node) {
- 		if (m_rt->direction == SDW_DATA_DIR_RX) {
-@@ -1193,16 +1204,6 @@ static int qcom_swrm_stream_alloc_ports(struct qcom_swrm_ctrl *ctrl,
- 		}
- 	}
- 
--	if (direction == SNDRV_PCM_STREAM_CAPTURE)
--		sconfig.direction = SDW_DATA_DIR_TX;
--	else
--		sconfig.direction = SDW_DATA_DIR_RX;
--
--	/* hw parameters wil be ignored as we only support PDM */
--	sconfig.ch_count = 1;
--	sconfig.frame_rate = params_rate(params);
--	sconfig.type = stream->type;
--	sconfig.bps = 1;
- 	sdw_stream_add_master(&ctrl->bus, &sconfig, pconfig,
- 			      nports, stream);
- out:
--- 
-2.34.1
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+
+Thanks!
+
+[1/1] ASoC: cs43130: Allow driver to work without IRQ connection
+      commit: 009eab8baa4d46c2b20d0c2c1cbdba61c81829e4
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
 
