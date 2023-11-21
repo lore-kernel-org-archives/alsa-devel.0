@@ -4,175 +4,134 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 93990C61DF7
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Nov 2023 13:59:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 28DBAC61DF7
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Nov 2023 14:40:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 735C5E82;
-	Thu, 23 Nov 2023 14:58:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 735C5E82
+	by alsa0.perex.cz (Postfix) with ESMTPS id B5202E7F;
+	Thu, 23 Nov 2023 15:40:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B5202E7F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1700747949;
-	bh=D2adyotlsXK6a7ePwRi5+1Xn1u1JpAHjXHMO4A+Xb8E=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	s=default; t=1700750415;
+	bh=S4q/1U/7OnsVm5T9b1Jb8iUwXyi+utV5ntjMRjVpFSE=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=D5vhtzECGzbj43RehKVUZ6I7mN/wibFViP9Ed1pbHqj5ZwFXzo45lpaYg3+/ryGaJ
-	 ghwpqvS83lLeK6rqTvW7MzI9ItKpoakglqD4Y4tQcSLDzefkKM2obtRu4ok0ljOYvB
-	 fAPdRjvlbNa/yi7/AyjkaUPi5VIocWvI2HAD2aDs=
+	b=eDCErbY3n1HFv+r/lmbB99GXelWUeB5CKlk6KnlQmeR1iKfFM8GpbjfyoFMpnFema
+	 SpiWlZ05JfIwnhafc+/3TwEfPawGaz6UX3VdYu3yUVogbp7wp2WoFwXpVF3Ig4AGp9
+	 pXdVsQiury6zei+a+XzonQQPOIQoeQFAxHj99aBI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DA68AF80568; Thu, 23 Nov 2023 14:58:37 +0100 (CET)
+	id 14ABBF8057A; Thu, 23 Nov 2023 15:39:44 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 51898F8055C;
-	Thu, 23 Nov 2023 14:58:37 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 54762F80093;
+	Thu, 23 Nov 2023 15:39:44 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B7D61F802E8; Thu, 23 Nov 2023 14:58:32 +0100 (CET)
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com
- (mail-bn7nam10on20623.outbound.protection.outlook.com
- [IPv6:2a01:111:f400:7e8a::623])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id CE7D5F802E8; Tue, 21 Nov 2023 18:48:59 +0100 (CET)
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com
+ [IPv6:2607:f8b0:4864:20::536])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 52262F80166
-	for <alsa-devel@alsa-project.org>; Thu, 23 Nov 2023 14:58:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 52262F80166
+	by alsa1.perex.cz (Postfix) with ESMTPS id EEDB2F80166
+	for <alsa-devel@alsa-project.org>; Tue, 21 Nov 2023 18:48:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EEDB2F80166
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=amd.com header.i=@amd.com header.a=rsa-sha256
- header.s=selector1 header.b=EX9/vTfh
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=h+J05tgt9SRBiIUHQqJ+s2C3uaz3Orr2/DPXnUVD+jazpaCBI7KDVD2sI4yVx/MMqZCnZkbgydVpIbg8hmuvaAB/2cN26SuSK4OBQTFEw9I2ziqXINdp82Njt346IL81QfYvQ16O+tGofxYNzStE1DsCpOD+W8adyHBJ2gs51aK0wBbpez8guhyskon4SZdPalpE/DG9/OOWVsuzhMeZO4h2T0DfQmtP1MH4SNmRh8fwK9yEIEDGUYsezg1txzpJ1EcBmfVYTMfoilxHLTkW6rKKk1E6AfIGLMS3Ne7m2AiYmy4PGSFlgXH2dC9eH3lDnSYfD4/asg1IGDCZX84bjQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=qE+dDhi3KcrAhtsJyuq2xfWswqmmhHG2eLlsQz7xLHE=;
- b=Pe97bIQQ3gBDLxr9Q9kM01+cvBn9Esds/xyDVPpxX+GB1Lbl6x9U7Zg5AFV3vzalqRMXOc9THf5XtYz0AlVVleVrwkF6earsHQm0CIIRwpraVW6jmMvGr//+kPMymFOpMEfBdo+WZr10aPTJxfXYR1TW9Vv8yjbQ2NweouOj6WTHB9C1DGFSqLZS3Se+k55cya+4gcLS7DJRu42Dj/hHscqi5TSv0sXGkl7k+OTxaMvbeGSBwCfD11LSv9bRVIoWUbAZo5GrAO2LnvuGyNFZbC+hc9fwVWg44sW3WrReD5WEwh9OvpFM54w5u93E8LzUSPtyxIlI5fuDb0ZL06tpwg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qE+dDhi3KcrAhtsJyuq2xfWswqmmhHG2eLlsQz7xLHE=;
- b=EX9/vTfhnT0RiWNyFhajDSx36F2WzHIG4T2iJ4rnsiy2oPvn66d///0RkpuAq4BFhTrjKj9+eiJ0e6eDsT2MQYnajiHYy2hoPnELfMxvRaNRjsc+LnDRKDAuWzlR3mjt17lZ4DtUGhmN1B82yG+6sf2O7lBlz3NbKWO6q33migk=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from MN2PR12MB3661.namprd12.prod.outlook.com (2603:10b6:208:169::31)
- by PH0PR12MB8774.namprd12.prod.outlook.com (2603:10b6:510:28e::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.20; Thu, 23 Nov
- 2023 13:58:16 +0000
-Received: from MN2PR12MB3661.namprd12.prod.outlook.com
- ([fe80::6d62:cc7:cf1d:86eb]) by MN2PR12MB3661.namprd12.prod.outlook.com
- ([fe80::6d62:cc7:cf1d:86eb%7]) with mapi id 15.20.7025.020; Thu, 23 Nov 2023
- 13:58:16 +0000
-Message-ID: <ac9d4f7b-c7af-4d21-b0b8-d0f188b94b0f@amd.com>
-Date: Thu, 23 Nov 2023 19:28:06 +0530
-User-Agent: Mozilla Thunderbird
-Subject: Re: Regression apparently caused by commit
- 088a40980efbc2c449b72f0f2c7ebd82f71d08e2 "ASoC: amd: acp: add pm ops support
- for acp pci driver"
-Content-Language: en-US
-To: Marian Postevca <posteuca@mutex.one>,
- Linux regressions mailing list <regressions@lists.linux.dev>,
- Bagas Sanjaya <bagasdotme@gmail.com>,
- Syed Saba Kareem <Syed.SabaKareem@amd.com>
-Cc: broonie@kernel.org, alsa-devel@alsa-project.org,
- Vijendar.Mukunda@amd.com, Basavaraj.Hiregoudar@amd.com,
- Sunil-kumar.Dommati@amd.com, Liam Girdwood <lgirdwood@gmail.com>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Yang Yingliang <yangyingliang@huawei.com>,
- Venkata Prasad Potturu <venkataprasad.potturu@amd.com>,
- V sujith kumar Reddy <Vsujithkumar.Reddy@amd.com>,
- ye xingchen <ye.xingchen@zte.com.cn>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <87a5v8szhc.fsf@mutex.one> <ZUQssoD2rUHSYQ2v@debian.me>
- <610d562f-0bbc-485c-ad63-9534fa4ba937@amd.com>
- <d002ad6f-d908-4cf6-afcf-bf0989418e72@leemhuis.info>
- <6085d2e3-f28e-4d1d-9863-8275931430e6@amd.com> <87fs0x4fn7.fsf@mutex.one>
-From: syed saba kareem <ssabakar@amd.com>
-In-Reply-To: <87fs0x4fn7.fsf@mutex.one>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: PN2PR01CA0213.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:c01:ea::7) To MN2PR12MB3661.namprd12.prod.outlook.com
- (2603:10b6:208:169::31)
+	dkim=pass (2048-bit key,
+ unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
+ header.s=google header.b=R7TDtfZY
+Received: by mail-pg1-x536.google.com with SMTP id
+ 41be03b00d2f7-5c194b111d6so4505208a12.0
+        for <alsa-devel@alsa-project.org>;
+ Tue, 21 Nov 2023 09:48:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700588920; x=1701193720;
+ darn=alsa-project.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=EAK/ItuSDRPVMNR15AwNhdUvFP+x071LcAQ3w3yTJs0=;
+        b=R7TDtfZY6vna6M+0vNgahUR0866++X3UroA5b6Its10BOD+qXJQKHEv35SlxOwx+2f
+         DrvgcE3lFxqsokgUDrjfSIwzDDEja58c+GujJCJbe8L0ET3dxcJVqQfrZZmLF3FDNFW0
+         /UyGeL8QDhSg+w9uxTRxVWOrvqcnUNtE+9OFLrd/IYh52xw0aFBMK1O2+e3uzrgBcCo4
+         O7s3rT4OTD1Fav9xTpUFYYv3xpk9ZMWp3opVgCPasYrEEEqp0TEbvVipnXGlXz0I22sO
+         1CsuFR126AlGy8+tvNeiObEE6Hg6UZC260dEOzEgtHn6QMCCNtRJy214E/wxlh8CnRyI
+         XXLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700588920; x=1701193720;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=EAK/ItuSDRPVMNR15AwNhdUvFP+x071LcAQ3w3yTJs0=;
+        b=EtfHohtKDod2HAW1xS/Mz4bz1O1X/xeJyTksdhph3X+IUQLekn13Xr5HlwrVltlodF
+         OvTztPUFPUo6RAmU/d4Ei90mFIc6KO/9QmZPRR0uO9Vx3Ew/NqehKym/atL231uYiZh2
+         4o2W4rIqSp4f+ix+cVpuc2iXpZRPV88/cPz49XqoTRo/G3nlr6PTpeDHQDjBoBxq6Dp7
+         szmr/Hv817Wyy1GZQRWrXPy06F0UiA2ExanJ3hGlJpZmRZek50XNEYg1gaT1fJC1KnkH
+         RwSKVxt+CdYCV5DvcVbYTao2Tlq0XFpzTG+8ClTCgtMC4DWwv0lFPI44GFOjTgV2kveL
+         kjkw==
+X-Gm-Message-State: AOJu0YxysrG23YN49Hggm4khQJLSaoTf/YYM02gOfgpLmTlRp0/g0SHX
+	c22r7FcGqR8wYIMvmDlxnc200irFhlgc3OYXYxL29w==
+X-Google-Smtp-Source: 
+ AGHT+IGsVYAziCjXoCBHiftycTLKlFRj+F3xZDSfXKxIguYqxWX7xqT/er/I16AqY0h4UFWzZ5qHqodRZyjJQpRXSA8=
+X-Received: by 2002:a05:6a20:4306:b0:187:5be4:67e2 with SMTP id
+ h6-20020a056a20430600b001875be467e2mr16406256pzk.53.1700588920073; Tue, 21
+ Nov 2023 09:48:40 -0800 (PST)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN2PR12MB3661:EE_|PH0PR12MB8774:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4b3c6daa-405a-400d-d299-08dbec2c3dcd
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	Pw90a6Uv9ny0TndwizQLTj87eWFSJXFHdRjkZWFEYsav7XXLfa97xIXNkUVIjc4ZmvmBKi2tALkDg5ZKSOgww1JCt+Wj1hn1F2uK/8MYAPw1Jv9QpIqxxGKiINsCEOf74KVL7sp3KaAOdxnNBcNUV5rnBVL2rFaCLzjdNw+TARf8aejSV43JuHFkpNYzZivMZJIq3pkF1Pegv+ntrFvCUHwWIg0H4tgLGe/iGoDOaTzo8+WTU62uXqq/hKJxIcWBxZflDPmPAUGGhGmUuz6N6vtE8DKpvTUNHr+WWGEZZ3bas0wkSq0Ocwv0MESrzO75CY9lNw9HA0mF9Rv1Hnzpt4iUGFR5ndosoCS5ekW5ZmnSa1ucnceFB3JYj7ZWiSI4r/0DdDjY495UU1pc8EIhZvxHpVFHi94F/FrAis8bykIKLUAvRd4kogphxIgFplK1aeKAeQeirHhXvBkvuwK3rh/1IuvzYKLaHDh0pYmAnT08vcuzjoOFUUTa3dCMQrAERU/ss5HbCamObU1g4Bo5g+bEGgW2dRQf8kjWwLr4bB3duWuHStO59Q8SqmFVHmimgbHGrsM7/m8u5Lus33NG72fvFO0daiWqYyQ+OuExWZPd5BfJDlx+Ym8P4deJdksUnc7lD9llbEB9M4g9434Iqsk5M+AKEqCXgHe85yxfSehkWxra56JWcFELZLDh3nEn
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3661.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(396003)(376002)(366004)(39860400002)(136003)(230922051799003)(1800799012)(64100799003)(451199024)(186009)(5660300002)(7416002)(2906002)(4326008)(8936002)(8676002)(41300700001)(66556008)(316002)(66476007)(6636002)(54906003)(66946007)(110136005)(6666004)(478600001)(6506007)(6486002)(966005)(53546011)(31686004)(26005)(2616005)(6512007)(38100700002)(36756003)(31696002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?utf-8?B?NTFTQVhKc3ZIdTlSQVR2N2lFZktHWnh3ZmFVNVk5Rit2WXJYRXdFVWVhSnBU?=
- =?utf-8?B?ZTFBM0pkbElWODB2VVpVN2wvK1EvdUJsTk83T1FlL2FRRG1MYUtiQWVxeGxZ?=
- =?utf-8?B?UkdxQnhCd3NaTzRiNXBQRTV1VytvR1Q5K3pSNnJQdDQ4Z1BNN2NQV2Z5V1gz?=
- =?utf-8?B?ZGRRcVliRUN5NjZWdEpYd0pXT2xhRFVEdzdGSzZwei90WXBJbEwzc3JpdU1r?=
- =?utf-8?B?SUhTZW5jVTBabnJ2OGpJL1BiYWFRS1lmV0RycmlibU04NmNqaGNLRE9qOSs0?=
- =?utf-8?B?OThnY0R3R1NrOXJmUERraGdTOHlEd1dyUW40T2gxSHlwb3NwbGcyeDg4Z1hz?=
- =?utf-8?B?QkMwZDRTazR5S0EzSSt3K3pjcTNmNElsYUFSUytTdCt0YnFCUUZwZW5OOUJo?=
- =?utf-8?B?ZlZaWEF3WE1PSjZOZmRMUTZOV1RyUUVzUXpGeHJheHNsUnMycTl6dmpuMXRo?=
- =?utf-8?B?UFJVTmhMU2NaRTc1SGVVRHkxOHVFMzd1ckVpWWlLK3pucURtTXMwelg2YzRB?=
- =?utf-8?B?ajVOU0NGRDNXS3d4Rm1aTklSVU1DdzB3VmQ3Yzc4d1NuZEcxRE9jYjZqbjRB?=
- =?utf-8?B?c0JJaDZ3Ri9la0c0TmN5UmtTamhsWUhYNCtGWktlUGVFWEo3dVFWRWpaSzAw?=
- =?utf-8?B?TlNsN2d2ajNzS3pmNW5xaFYyVEhkTDVISmpPSWNTRWF3clJQZWdPdnMyNnJ2?=
- =?utf-8?B?TkZXWTd4bGxpa0VWL3EzcnZkYnQ2WW9EcjloelpZQlFwdGQ4UTFSTS9WMDFv?=
- =?utf-8?B?NlVDaEFiT1E3a1hxcHhmeDdQRnBUa1FzeEw5bkVram9DSzgwT1BiTE1aUnRu?=
- =?utf-8?B?SnVUNS95aXh2V2ZtWWhvRjcvcDlNTnIyWlE4OHdSUGhES0ozTG5jb09ZLzVI?=
- =?utf-8?B?K2RzMmoxaHNBR1hFeTBjT2l6SVlFZk9BbXBKZVpLRTBlLzFxeWxjS253K3RL?=
- =?utf-8?B?ejVTTUJORWxSc0V5WUUyV1FvbzgyMkY1T3hZaXd4R1VuNWRUN29yVWpNcTU1?=
- =?utf-8?B?U3FzcEJDaFN5bGRURGpaZlU0em0yWS9ISWVtQXpGYXozZEk4cHhvYW5WNGps?=
- =?utf-8?B?Q0JrbFEweXh1N2RtbktRMTZ6eFEvNXN5MDlpTzlQMFBYdkZNYy9EN1BkU21Y?=
- =?utf-8?B?dEVmYXg3eDloZ1I0eHRBRk9kNmpRcStWVGNrcEtlUGE5REM0bm8wMVJGbk0z?=
- =?utf-8?B?RG1DazlEOFl5UUE2dGJvT0ljUXRTZzB4YzJZQVRPZVg1d1lVUzRROWVJckVB?=
- =?utf-8?B?V09GaE9JNWNrRkJPKzVkcElEQWRvdmZWc1lzN2VDZDB1ekUvQlYyME1FL050?=
- =?utf-8?B?ZzZ6cFRhb1E2KzUzRERuREJXRVpFTkNFY2dyYWptNDM0NE9neGxIUWVEVXJW?=
- =?utf-8?B?UkpXU3Jmazc3ZUQ4YTMvVTMrczJzQ0owQWJZTXV2YnV5UTRmZ3FtZXozanBw?=
- =?utf-8?B?RmtPWkxjZXZhcVo5bFVvTHlvbEF0MXdPV1o4T09jc2N2eUxxL3lxc2dWNHBY?=
- =?utf-8?B?Ty90NGZVZzAzcDdSaHFPT0t1WkM2QXFzYXAzQ1VmT29xdDZ4ZThxZFhyK0Z5?=
- =?utf-8?B?ZG90ZGZOTmorb3FmNjdZaDcvcURUR2RzVkZHV0JiZWhDSm5qTmFWOVVPYUNZ?=
- =?utf-8?B?TmFYUU1yUkd2ZGZrRXVIMkNLZTJqZnhWcmxLUXE1OWQ0Vy9QV1J0c29JYTY4?=
- =?utf-8?B?K0lRd20xWi9tWHdkd3Vsck9DNDZIcElWeHVLVkQ2cCtDTGFtNFFTSHVWUVdL?=
- =?utf-8?B?b2YybDRCdGJ0d1dINkxTZ2kwUmkydi90UnFCM1BRb3NmV3Y0V2NCaWtXbW9o?=
- =?utf-8?B?Rks2TWwxWWVpRUNDTnNGYlp2WTZzVWtNTGhpeE1BNmpwTHhicHMzQU9vZ0FZ?=
- =?utf-8?B?Rit4Vm1BMHZlQ2xMaUlvTGhmR2VGbDBoMURGZko1OEttdjBURDFNbG5KQ2hD?=
- =?utf-8?B?cm80M0ZoVXJIUTNqVEdlVHYreGUrWWZvZXIrK09WcVhyZ3FpSmdwNEtEOWpP?=
- =?utf-8?B?N0NIQUZBV3FTT05FTnVZZUJYUW1lNmZraWx6ZDczTGVUYmpJZU5vNWdVSjhQ?=
- =?utf-8?B?L2t2MFpxMmppZkRwbzkvVElIczNoRnpXN25XZGdYVFFtUmV6dDZUOHZtY0Fi?=
- =?utf-8?Q?JRE60jJsJjjGQQgb8nedEb8Dt?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 
- 4b3c6daa-405a-400d-d299-08dbec2c3dcd
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3661.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Nov 2023 13:58:16.6299
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 
- DEMeBAjEuiVd2FBS/LDsdGRCRKP1QYu8dXV3GlhzVHzDpwnD/tIlSMwzlNQnISxkJ/Anm9FExCLpnjPzhHUDkg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB8774
-Message-ID-Hash: 6FFIVT2D4TMPYFP2GAYL56GMMKT5EKCR
-X-Message-ID-Hash: 6FFIVT2D4TMPYFP2GAYL56GMMKT5EKCR
-X-MailFrom: Syed.SabaKareem@amd.com
+References: <20231108104343.24192-1-krzysztof.kozlowski@linaro.org>
+ <20231108104343.24192-17-krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20231108104343.24192-17-krzysztof.kozlowski@linaro.org>
+From: Sam Protsenko <semen.protsenko@linaro.org>
+Date: Tue, 21 Nov 2023 11:48:29 -0600
+Message-ID: 
+ <CAPLW+4nkrMwc9GiQyn7ojaPz_50NQ3vAcMt9+tOzpHfq7G7+Tg@mail.gmail.com>
+Subject: Re: [PATCH 16/17] arm64: dts: exynos850: add specific compatibles to
+ several blocks
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>, Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+	Alim Akhtar <alim.akhtar@samsung.com>, Andi Shyti <andi.shyti@kernel.org>,
+	Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>,
+ Lee Jones <lee@kernel.org>,
+	Ulf Hansson <ulf.hansson@linaro.org>, Tomasz Figa <tomasz.figa@gmail.com>,
+	Sylwester Nawrocki <s.nawrocki@samsung.com>,
+ Linus Walleij <linus.walleij@linaro.org>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	=?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+	Alessandro Zummo <a.zummo@towertech.it>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Jiri Slaby <jirislaby@kernel.org>,
+	Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+	Jaehoon Chung <jh80.chung@samsung.com>, dri-devel@lists.freedesktop.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org,
+	linux-i2c@vger.kernel.org, linux-iio@vger.kernel.org,
+	linux-mmc@vger.kernel.org, linux-gpio@vger.kernel.org,
+	linux-pwm@vger.kernel.org, linux-rtc@vger.kernel.org,
+	linux-serial@vger.kernel.org, alsa-devel@alsa-project.org,
+	linux-sound@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-MailFrom: semen.protsenko@linaro.org
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: DEDWYHLVYVMAFAPYVHMJCNMWJBNVSXL5
+X-Message-ID-Hash: DEDWYHLVYVMAFAPYVHMJCNMWJBNVSXL5
+X-Mailman-Approved-At: Thu, 23 Nov 2023 14:39:38 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6FFIVT2D4TMPYFP2GAYL56GMMKT5EKCR/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DEDWYHLVYVMAFAPYVHMJCNMWJBNVSXL5/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -181,41 +140,188 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-
-On 11/23/23 03:25, Marian Postevca wrote:
-> syed saba kareem <ssabakar@amd.com> writes:
+On Wed, Nov 8, 2023 at 4:44=E2=80=AFAM Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
 >
->> Hi , We have up streamed the patch it is in review.
->>
->> Please find the below link for the patch details.
->>
->> https://patchwork.kernel.org/project/alsa-devel/patch/20231113123345.2196504-2-Syed.SabaKareem@amd.com/
->>
-> Sorry maybe I'm not understanding here something, when you are saying
-> that the patch is in review, where is this review being done?
+> Exynos850 reuses several devices from older designs, thus historically
+> we kept the old (block's) compatible only.  This works fine and there is
+> no bug here, however guidelines expressed in
+> Documentation/devicetree/bindings/writing-bindings.rst state that:
+> 1. Compatibles should be specific.
+> 2. We should add new compatibles in case of bugs or features.
 >
-> As far as I can tell Mark Brown only pulled the first patch from your
-> series:
+> Add compatibles specific to Exynos850 in front of all old-SoC-like
+> compatibles.  This will also help reviews of new code using existing
+> DTS as template.  No functional impact on Linux drivers behavior.
+>
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> ---
 
-We got comments for the second patch and we addressed them.
+Reviewed-by: Sam Protsenko <semen.protsenko@linaro.org>
 
-It seems it may be stuck at review stage as one patch got merged.
-
-Will resend the patch again.
-
-You can find the received review comments for the patch in the below link.
-
-https://patchwork.kernel.org/project/alsa-devel/patch/20231113123345.2196504-2-Syed.SabaKareem@amd.com/
-
->> Applied to
->>
->>     https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
->>
->> Thanks!
->>
->> [1/2] ASoC: amd: acp: add Kconfig options for acp7.0 based platform driver
->>        commit: d3534684ada99ef8c0899eb28c62b4462483ee19
->> [2/2] ASoC: amd: acp: add pm ops support for renoir platform
->>        (no commit info)
->>
-> I don't see the second patch in for-next.
+>  arch/arm64/boot/dts/exynos/exynos850.dtsi | 34 +++++++++++++----------
+>  1 file changed, 20 insertions(+), 14 deletions(-)
+>
+> diff --git a/arch/arm64/boot/dts/exynos/exynos850.dtsi b/arch/arm64/boot/=
+dts/exynos/exynos850.dtsi
+> index 53104e65b9c6..df5ea43ebcad 100644
+> --- a/arch/arm64/boot/dts/exynos/exynos850.dtsi
+> +++ b/arch/arm64/boot/dts/exynos/exynos850.dtsi
+> @@ -396,7 +396,7 @@ pinctrl_aud: pinctrl@14a60000 {
+>                 };
+>
+>                 rtc: rtc@11a30000 {
+> -                       compatible =3D "samsung,s3c6410-rtc";
+> +                       compatible =3D "samsung,exynos850-rtc", "samsung,=
+s3c6410-rtc";
+>                         reg =3D <0x11a30000 0x100>;
+>                         interrupts =3D <GIC_SPI 57 IRQ_TYPE_LEVEL_HIGH>,
+>                                      <GIC_SPI 58 IRQ_TYPE_LEVEL_HIGH>;
+> @@ -406,7 +406,8 @@ rtc: rtc@11a30000 {
+>                 };
+>
+>                 mmc_0: mmc@12100000 {
+> -                       compatible =3D "samsung,exynos7-dw-mshc-smu";
+> +                       compatible =3D "samsung,exynos850-dw-mshc-smu",
+> +                                    "samsung,exynos7-dw-mshc-smu";
+>                         reg =3D <0x12100000 0x2000>;
+>                         interrupts =3D <GIC_SPI 452 IRQ_TYPE_LEVEL_HIGH>;
+>                         #address-cells =3D <1>;
+> @@ -419,7 +420,7 @@ mmc_0: mmc@12100000 {
+>                 };
+>
+>                 i2c_0: i2c@13830000 {
+> -                       compatible =3D "samsung,s3c2440-i2c";
+> +                       compatible =3D "samsung,exynos850-i2c", "samsung,=
+s3c2440-i2c";
+>                         reg =3D <0x13830000 0x100>;
+>                         interrupts =3D <GIC_SPI 196 IRQ_TYPE_LEVEL_HIGH>;
+>                         #address-cells =3D <1>;
+> @@ -432,7 +433,7 @@ i2c_0: i2c@13830000 {
+>                 };
+>
+>                 i2c_1: i2c@13840000 {
+> -                       compatible =3D "samsung,s3c2440-i2c";
+> +                       compatible =3D "samsung,exynos850-i2c", "samsung,=
+s3c2440-i2c";
+>                         reg =3D <0x13840000 0x100>;
+>                         interrupts =3D <GIC_SPI 197 IRQ_TYPE_LEVEL_HIGH>;
+>                         #address-cells =3D <1>;
+> @@ -445,7 +446,7 @@ i2c_1: i2c@13840000 {
+>                 };
+>
+>                 i2c_2: i2c@13850000 {
+> -                       compatible =3D "samsung,s3c2440-i2c";
+> +                       compatible =3D "samsung,exynos850-i2c", "samsung,=
+s3c2440-i2c";
+>                         reg =3D <0x13850000 0x100>;
+>                         interrupts =3D <GIC_SPI 198 IRQ_TYPE_LEVEL_HIGH>;
+>                         #address-cells =3D <1>;
+> @@ -458,7 +459,7 @@ i2c_2: i2c@13850000 {
+>                 };
+>
+>                 i2c_3: i2c@13860000 {
+> -                       compatible =3D "samsung,s3c2440-i2c";
+> +                       compatible =3D "samsung,exynos850-i2c", "samsung,=
+s3c2440-i2c";
+>                         reg =3D <0x13860000 0x100>;
+>                         interrupts =3D <GIC_SPI 199 IRQ_TYPE_LEVEL_HIGH>;
+>                         #address-cells =3D <1>;
+> @@ -471,7 +472,7 @@ i2c_3: i2c@13860000 {
+>                 };
+>
+>                 i2c_4: i2c@13870000 {
+> -                       compatible =3D "samsung,s3c2440-i2c";
+> +                       compatible =3D "samsung,exynos850-i2c", "samsung,=
+s3c2440-i2c";
+>                         reg =3D <0x13870000 0x100>;
+>                         interrupts =3D <GIC_SPI 200 IRQ_TYPE_LEVEL_HIGH>;
+>                         #address-cells =3D <1>;
+> @@ -485,7 +486,7 @@ i2c_4: i2c@13870000 {
+>
+>                 /* I2C_5 (also called CAM_PMIC_I2C in TRM) */
+>                 i2c_5: i2c@13880000 {
+> -                       compatible =3D "samsung,s3c2440-i2c";
+> +                       compatible =3D "samsung,exynos850-i2c", "samsung,=
+s3c2440-i2c";
+>                         reg =3D <0x13880000 0x100>;
+>                         interrupts =3D <GIC_SPI 201 IRQ_TYPE_LEVEL_HIGH>;
+>                         #address-cells =3D <1>;
+> @@ -499,7 +500,7 @@ i2c_5: i2c@13880000 {
+>
+>                 /* I2C_6 (also called MOTOR_I2C in TRM) */
+>                 i2c_6: i2c@13890000 {
+> -                       compatible =3D "samsung,s3c2440-i2c";
+> +                       compatible =3D "samsung,exynos850-i2c", "samsung,=
+s3c2440-i2c";
+>                         reg =3D <0x13890000 0x100>;
+>                         interrupts =3D <GIC_SPI 202 IRQ_TYPE_LEVEL_HIGH>;
+>                         #address-cells =3D <1>;
+> @@ -640,7 +641,8 @@ usi_hsi2c_0: usi@138a00c0 {
+>                         status =3D "disabled";
+>
+>                         hsi2c_0: i2c@138a0000 {
+> -                               compatible =3D "samsung,exynosautov9-hsi2=
+c";
+> +                               compatible =3D "samsung,exynos850-hsi2c",
+> +                                            "samsung,exynosautov9-hsi2c"=
+;
+>                                 reg =3D <0x138a0000 0xc0>;
+>                                 interrupts =3D <GIC_SPI 193 IRQ_TYPE_LEVE=
+L_HIGH>;
+>                                 #address-cells =3D <1>;
+> @@ -668,7 +670,8 @@ usi_hsi2c_1: usi@138b00c0 {
+>                         status =3D "disabled";
+>
+>                         hsi2c_1: i2c@138b0000 {
+> -                               compatible =3D "samsung,exynosautov9-hsi2=
+c";
+> +                               compatible =3D "samsung,exynos850-hsi2c",
+> +                                            "samsung,exynosautov9-hsi2c"=
+;
+>                                 reg =3D <0x138b0000 0xc0>;
+>                                 interrupts =3D <GIC_SPI 194 IRQ_TYPE_LEVE=
+L_HIGH>;
+>                                 #address-cells =3D <1>;
+> @@ -696,7 +699,8 @@ usi_hsi2c_2: usi@138c00c0 {
+>                         status =3D "disabled";
+>
+>                         hsi2c_2: i2c@138c0000 {
+> -                               compatible =3D "samsung,exynosautov9-hsi2=
+c";
+> +                               compatible =3D "samsung,exynos850-hsi2c",
+> +                                            "samsung,exynosautov9-hsi2c"=
+;
+>                                 reg =3D <0x138c0000 0xc0>;
+>                                 interrupts =3D <GIC_SPI 195 IRQ_TYPE_LEVE=
+L_HIGH>;
+>                                 #address-cells =3D <1>;
+> @@ -738,7 +742,8 @@ usi_cmgp0: usi@11d000c0 {
+>                         status =3D "disabled";
+>
+>                         hsi2c_3: i2c@11d00000 {
+> -                               compatible =3D "samsung,exynosautov9-hsi2=
+c";
+> +                               compatible =3D "samsung,exynos850-hsi2c",
+> +                                            "samsung,exynosautov9-hsi2c"=
+;
+>                                 reg =3D <0x11d00000 0xc0>;
+>                                 interrupts =3D <GIC_SPI 62 IRQ_TYPE_LEVEL=
+_HIGH>;
+>                                 #address-cells =3D <1>;
+> @@ -778,7 +783,8 @@ usi_cmgp1: usi@11d200c0 {
+>                         status =3D "disabled";
+>
+>                         hsi2c_4: i2c@11d20000 {
+> -                               compatible =3D "samsung,exynosautov9-hsi2=
+c";
+> +                               compatible =3D "samsung,exynos850-hsi2c",
+> +                                            "samsung,exynosautov9-hsi2c"=
+;
+>                                 reg =3D <0x11d20000 0xc0>;
+>                                 interrupts =3D <GIC_SPI 63 IRQ_TYPE_LEVEL=
+_HIGH>;
+>                                 #address-cells =3D <1>;
+> --
+> 2.34.1
+>
