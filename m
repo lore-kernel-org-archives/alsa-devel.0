@@ -4,92 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7E037C5ACB3
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Nov 2023 07:45:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ECEB4C5ACB3
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Nov 2023 08:18:36 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 28C6CDF2;
-	Tue, 21 Nov 2023 08:44:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 28C6CDF2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 61328DF9;
+	Tue, 21 Nov 2023 09:18:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 61328DF9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1700552709;
-	bh=UF1VNK1HfbZxsAU2pecJYw22EDeDawdfjbHoG6omKJg=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=WCtFl6L0eyYDWBMSac1PPgW1zrq25Wt69OxEw4WkD8c0wVIuwnK0Lzu79viOTcdev
-	 U8SphX1BHQNbLvfnhc+PePBw7Zw3wQzyw22BkmTUhMQtHLKMJ7A6e3CfWN0sdLP7oy
-	 SX1w5sZZ1sTObRBvyDbCc0lcelZaXZeydRmPAlFo=
+	s=default; t=1700554714;
+	bh=0L0z4h5AY4KihDSelppAW2K1axTC56rRuhTMiS9AScs=;
+	h=From:To:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=NC7GtuWCj7ITgMNqeLtnJSPL4KWtB6ehx6Gv9506er5mu35uowYf/Oqxqb4a4kM7L
+	 Aa9muySoa/+CKUD5nfD/I41exHUA8k+1ZBDGWsYbGMPnWRvaJKKJ6AVMwe1ppCZxBf
+	 U0wQXfWymXl/xFA76/BPpub6CDbBkQyf6LJUH3UY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9489AF8057E; Tue, 21 Nov 2023 08:44:37 +0100 (CET)
+	id 272A6F805A9; Tue, 21 Nov 2023 09:17:47 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1D681F80587;
-	Tue, 21 Nov 2023 08:44:37 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7E7F5F805AC;
+	Tue, 21 Nov 2023 09:17:46 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A90B7F802E8; Tue, 21 Nov 2023 08:43:46 +0100 (CET)
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net
- [IPv6:2001:4b98:dc4:8::225])
-	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+	id 5DA52F8055A; Tue, 21 Nov 2023 09:17:41 +0100 (CET)
+Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 33601F80166
-	for <alsa-devel@alsa-project.org>; Tue, 21 Nov 2023 08:43:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 33601F80166
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=dT42X7ba
-Received: by mail.gandi.net (Postfix) with ESMTPSA id B32381C0015;
-	Tue, 21 Nov 2023 07:43:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1700552615;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=t3xCJjkxWbDTmhyET+JWYTIEBodqcC4r6MWWY/ifhBQ=;
-	b=dT42X7baSXiBorHZH4H94BtPqndNDcp8eqbqRa5/266PjA697mrwQZuiFMOFV3bqC+LFYf
-	JD9t8zFm7iJBbo/uCf/mKJjOP3PTC3GmJI37eI7GTOjuJ8ITZp/wQUz3EpxNLl97kL/Ydd
-	npP0GpYKiS9dmO5mpmTMbiXDcLLjlmnLf9w/QSqE/jx7Nk+ez5MHwmRVfmhMUj3fQVPeVf
-	1mjEET4IRfcoEu+gEy02lqEJPcaybC3vZ0djc8RWppQTbNOLGdI5ALeXmq/2hlPmpc12Dm
-	w/HPmiPybkosUJleovl4ltfmbt1SZUteSF/8l7z5wxKTA+iJ8rqKQbSTnAEgQg==
-Date: Tue, 21 Nov 2023 08:43:30 +0100
-From: Herve Codina <herve.codina@bootlin.com>
-To: Mark Brown <broonie@kernel.org>, Qiang Zhao <qiang.zhao@nxp.com>, Li
- Yang <leoyang.li@nxp.com>
-Cc: Jakub Kicinski <kuba@kernel.org>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Paolo Abeni
- <pabeni@redhat.com>, Andrew Lunn <andrew@lunn.ch>, Rob Herring
- <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- Lee Jones <lee@kernel.org>, Linus Walleij <linus.walleij@linaro.org>, Liam
- Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi
- Iwai <tiwai@suse.com>, Shengjiu Wang <shengjiu.wang@gmail.com>, Xiubo Li
- <Xiubo.Lee@gmail.com>, Fabio Estevam <festevam@gmail.com>, Nicolin Chen
- <nicoleotsuka@gmail.com>, Christophe Leroy <christophe.leroy@csgroup.eu>,
- Randy Dunlap <rdunlap@infradead.org>, netdev@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, Simon
- Horman <horms@kernel.org>, Christophe JAILLET
- <christophe.jaillet@wanadoo.fr>, Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v9 00/27] Add support for QMC HDLC, framer
- infrastructure and PEF2256 framer
-Message-ID: <20231121084330.4064bf14@bootlin.com>
-In-Reply-To: <573c9ca1-a560-4f7a-ba21-80673a2e162e@sirena.org.uk>
-References: <20231115144007.478111-1-herve.codina@bootlin.com>
-	<20231117164746.0589e955@kernel.org>
-	<573c9ca1-a560-4f7a-ba21-80673a2e162e@sirena.org.uk>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: herve.codina@bootlin.com
-Message-ID-Hash: YURXSV26I2YWTVHGFMF45ETXHLJGWHER
-X-Message-ID-Hash: YURXSV26I2YWTVHGFMF45ETXHLJGWHER
-X-MailFrom: herve.codina@bootlin.com
+	by alsa1.perex.cz (Postfix) with ESMTPS id E046DF80249
+	for <alsa-devel@alsa-project.org>; Tue, 21 Nov 2023 09:17:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E046DF80249
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 2F456200EEA;
+	Tue, 21 Nov 2023 09:17:31 +0100 (CET)
+Received: from aprdc01srsp001v.ap-rdc01.nxp.com
+ (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
+	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id BDA8620005B;
+	Tue, 21 Nov 2023 09:17:30 +0100 (CET)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net
+ [10.192.224.44])
+	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id C626D1802201;
+	Tue, 21 Nov 2023 16:17:28 +0800 (+08)
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
+To: hverkuil@xs4all.nl,
+	sakari.ailus@iki.fi,
+	tfiga@chromium.org,
+	m.szyprowski@samsung.com,
+	mchehab@kernel.org,
+	linux-media@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	shengjiu.wang@gmail.com,
+	Xiubo.Lee@gmail.com,
+	festevam@gmail.com,
+	nicoleotsuka@gmail.com,
+	lgirdwood@gmail.com,
+	broonie@kernel.org,
+	perex@perex.cz,
+	tiwai@suse.com,
+	alsa-devel@alsa-project.org,
+	linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH v10 00/14] Add audio support in v4l2 framework
+Date: Tue, 21 Nov 2023 15:37:21 +0800
+Message-Id: <1700552255-5364-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
+Message-ID-Hash: GSUQLI2UF5U5VBGFBQHDPZ4NAQ5J5YKH
+X-Message-ID-Hash: GSUQLI2UF5U5VBGFBQHDPZ4NAQ5J5YKH
+X-MailFrom: shengjiu.wang@nxp.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -101,7 +81,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YURXSV26I2YWTVHGFMF45ETXHLJGWHER/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GSUQLI2UF5U5VBGFBQHDPZ4NAQ5J5YKH/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -110,44 +90,150 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi Mark, Jakub, Qiang, Li,
+Audio signal processing also has the requirement for memory to
+memory similar as Video.
 
-On Mon, 20 Nov 2023 13:30:08 +0000
-Mark Brown <broonie@kernel.org> wrote:
+This asrc memory to memory (memory ->asrc->memory) case is a non
+real time use case.
 
-> On Fri, Nov 17, 2023 at 04:47:46PM -0800, Jakub Kicinski wrote:
-> > On Wed, 15 Nov 2023 15:39:36 +0100 Herve Codina wrote:  
-> > >    - Removed Patches 6, 7 and 8 (patches applied)
-> > > 
-> > >    - Patches 7, 20, 21, 23 (patches 10, 23, 24, 26 in v8)
-> > >      Add 'Acked-by: Jakub Kicinski <kuba@kernel.org>'  
-> 
-> > I thought someone (Mark?) asked for the networking stuff to be put 
-> > on a branch. If that's still the preference - is it possible to factor
-> > these out as a standalone series, too?  Will they build on their own?  
-> 
-> Yes, can we *please* at least get the generic non-driver bits of this
-> series moving - they seem uncontroversial as far as I can see and are a
-> tiny portion of the overall 20 patches.  Patches 21-23 look like they
-> can go on a branch in the net tree?
+User fills the input buffer to the asrc module, after conversion, then asrc
+sends back the output buffer to user. So it is not a traditional ALSA playback
+and capture case.
 
-Patch 21 is the framer infrastructure.
-Patches 22-25 are the driver for the PEF2256 framer.
-Note that patch 24 is the pinmux part of the framer and, IHMO, can be
-taken too.
-Patch 23 need to be fixed (kernel test robot). The fix will be quite
-minor (depends on HAS_IOMEM on the Kconfig file).
+It is a specific use case,  there is no reference in current kernel.
+v4l2 memory to memory is the closed implementation,  v4l2 current
+support video, image, radio, tuner, touch devices, so it is not
+complicated to add support for this specific audio case.
 
-For the SoC part (QUICC ENGINE QMC and TSA), what will be the plan ? 
-Qiang, Li, any opinion ?
+Because we had implemented the "memory -> asrc ->i2s device-> codec"
+use case in ALSA.  Now the "memory->asrc->memory" needs
+to reuse the code in asrc driver, so the first 3 patches is for refining
+the code to make it can be shared by the "memory->asrc->memory"
+driver.
 
-I plan to send the v10 with the patch 23 fixed.
-Based on that v10, some patches (21 to 25 at least) could be applied and
-I will remove them for the future v11.
-I think it will be easier to follow if I iterate on the series removing
-patches as soon as they are applied.
+The main change is in the v4l2 side, A /dev/vl4-audioX will be created,
+user applications only use the ioctl of v4l2 framework.
 
-Of course, please, let me know if this is not the right way to do.
+Other change is to add memory to memory support for two kinds of i.MX ASRC
+module.
 
-Best regards,
-Hervé
+changes in v10
+- remove FIXED_POINT type
+- change code base on media: v4l2-ctrls: add support for fraction_bits
+- fix issue reported by kernel test robot
+- remove module_alias
+
+changes in v9:
+- add MEDIA_ENT_F_PROC_AUDIO_RESAMPLER.
+- add MEDIA_INTF_T_V4L_AUDIO
+- add media controller support
+- refine the vim2m-audio to support 8k<->16k conversion.
+
+changes in v8:
+- refine V4L2_CAP_AUDIO_M2M to be 0x00000008
+- update doc for FIXED_POINT
+- address comments for imx-asrc
+
+changes in v7:
+- add acked-by from Mark
+- separate commit for fixed point, m2m audio class, audio rate controls
+- use INTEGER_MENU for rate,  FIXED_POINT for rate offset
+- remove used fmts
+- address other comments for Hans
+
+changes in v6:
+- use m2m_prepare/m2m_unprepare/m2m_start/m2m_stop to replace
+  m2m_start_part_one/m2m_stop_part_one, m2m_start_part_two/m2m_stop_part_two.
+- change V4L2_CTRL_TYPE_ASRC_RATE to V4L2_CTRL_TYPE_FIXED_POINT
+- fix warning by kernel test rebot
+- remove some unused format V4L2_AUDIO_FMT_XX
+- Get SNDRV_PCM_FORMAT from V4L2_AUDIO_FMT in driver.
+- rename audm2m to viaudm2m.
+
+changes in v5:
+- remove V4L2_AUDIO_FMT_LPCM
+- define audio pixel format like V4L2_AUDIO_FMT_S8...
+- remove rate and format in struct v4l2_audio_format.
+- Add V4L2_CID_ASRC_SOURCE_RATE and V4L2_CID_ASRC_DEST_RATE controls
+- updata document accordingly.
+
+changes in v4:
+- update document style
+- separate V4L2_AUDIO_FMT_LPCM and V4L2_CAP_AUDIO_M2M in separate commit
+
+changes in v3:
+- Modify documents for adding audio m2m support
+- Add audio virtual m2m driver
+- Defined V4L2_AUDIO_FMT_LPCM format type for audio.
+- Defined V4L2_CAP_AUDIO_M2M capability type for audio m2m case.
+- with modification in v4l-utils, pass v4l2-compliance test.
+
+changes in v2:
+- decouple the implementation in v4l2 and ALSA
+- implement the memory to memory driver as a platfrom driver
+  and move it to driver/media
+- move fsl_asrc_common.h to include/sound folder
+
+Shengjiu Wang (14):
+  ASoC: fsl_asrc: define functions for memory to memory usage
+  ASoC: fsl_easrc: define functions for memory to memory usage
+  ASoC: fsl_asrc: move fsl_asrc_common.h to include/sound
+  ASoC: fsl_asrc: register m2m platform device
+  ASoC: fsl_easrc: register m2m platform device
+  media: uapi: Add V4L2_CAP_AUDIO_M2M capability flag
+  media: v4l2: Add audio capture and output support
+  media: uapi: Define audio sample format fourcc type
+  media: uapi: Add V4L2_CTRL_CLASS_M2M_AUDIO
+  media: uapi: Add audio rate controls support
+  media: uapi: Declare interface types for Audio
+  media: uapi: Add an entity type for audio resampler
+  media: imx-asrc: Add memory to memory driver
+  media: vim2m-audio: add virtual driver for audio memory to memory
+
+ .../media/mediactl/media-types.rst            |   11 +
+ .../userspace-api/media/v4l/buffer.rst        |    6 +
+ .../userspace-api/media/v4l/common.rst        |    1 +
+ .../media/v4l/dev-audio-mem2mem.rst           |   71 +
+ .../userspace-api/media/v4l/devices.rst       |    1 +
+ .../media/v4l/ext-ctrls-audio-m2m.rst         |   41 +
+ .../userspace-api/media/v4l/pixfmt-audio.rst  |   87 ++
+ .../userspace-api/media/v4l/pixfmt.rst        |    1 +
+ .../media/v4l/vidioc-enum-fmt.rst             |    2 +
+ .../media/v4l/vidioc-g-ext-ctrls.rst          |    4 +
+ .../userspace-api/media/v4l/vidioc-g-fmt.rst  |    4 +
+ .../media/v4l/vidioc-querycap.rst             |    3 +
+ .../media/videodev2.h.rst.exceptions          |    3 +
+ .../media/common/videobuf2/videobuf2-v4l2.c   |    4 +
+ drivers/media/platform/nxp/Kconfig            |   13 +
+ drivers/media/platform/nxp/Makefile           |    1 +
+ drivers/media/platform/nxp/imx-asrc.c         | 1264 +++++++++++++++++
+ drivers/media/test-drivers/Kconfig            |   11 +
+ drivers/media/test-drivers/Makefile           |    1 +
+ drivers/media/test-drivers/vim2m-audio.c      |  799 +++++++++++
+ drivers/media/v4l2-core/v4l2-compat-ioctl32.c |    9 +
+ drivers/media/v4l2-core/v4l2-ctrls-defs.c     |   10 +
+ drivers/media/v4l2-core/v4l2-dev.c            |   21 +
+ drivers/media/v4l2-core/v4l2-ioctl.c          |   66 +
+ drivers/media/v4l2-core/v4l2-mem2mem.c        |   13 +-
+ include/media/v4l2-dev.h                      |    2 +
+ include/media/v4l2-ioctl.h                    |   34 +
+ .../fsl => include/sound}/fsl_asrc_common.h   |   60 +
+ include/uapi/linux/media.h                    |    2 +
+ include/uapi/linux/v4l2-controls.h            |    9 +
+ include/uapi/linux/videodev2.h                |   41 +
+ sound/soc/fsl/fsl_asrc.c                      |  144 ++
+ sound/soc/fsl/fsl_asrc.h                      |    4 +-
+ sound/soc/fsl/fsl_asrc_dma.c                  |    2 +-
+ sound/soc/fsl/fsl_easrc.c                     |  233 +++
+ sound/soc/fsl/fsl_easrc.h                     |    6 +-
+ 36 files changed, 2977 insertions(+), 7 deletions(-)
+ create mode 100644 Documentation/userspace-api/media/v4l/dev-audio-mem2mem.rst
+ create mode 100644 Documentation/userspace-api/media/v4l/ext-ctrls-audio-m2m.rst
+ create mode 100644 Documentation/userspace-api/media/v4l/pixfmt-audio.rst
+ create mode 100644 drivers/media/platform/nxp/imx-asrc.c
+ create mode 100644 drivers/media/test-drivers/vim2m-audio.c
+ rename {sound/soc/fsl => include/sound}/fsl_asrc_common.h (60%)
+
+-- 
+2.34.1
+
