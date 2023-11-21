@@ -4,47 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 166FAC54FB9
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Nov 2023 08:19:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AC12DC54FB9
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Nov 2023 08:19:36 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4EB78A4D;
-	Tue, 21 Nov 2023 09:19:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4EB78A4D
+	by alsa0.perex.cz (Postfix) with ESMTPS id E9CB9E74;
+	Tue, 21 Nov 2023 09:19:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E9CB9E74
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1700554763;
-	bh=ImzNxqs0xkj2U6J7gTa9sJdI5GGIwkLF3v5xPj/nHYQ=;
+	s=default; t=1700554774;
+	bh=y57KTw+HLUkE9Uid0yA3ED9KklD/HGmuVSk1KuWu+0M=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=gIMHV/IeQdfdHVuXPW/OMhtOzT7TIyzNsMjucqgHHIE7xhXojkb2pjD1uiZZ2uGY3
-	 qkLUmuO5JVG65OsZ86/NE6aFIngMdutnlBp6brR3Ol/qkr6UnX/jGvtqGslHz96utd
-	 9i7+XY9LEGBCTpRGj5yGbEPMq+H7BEzK/LcP+xo4=
+	b=kc0yc7t+vOIfOq+qjTvRnzpARz7dR5gnV08ULCbTzEUcCxZXq1xM5+NG4RVn6wdr1
+	 y0KiQQtwhDnIA23LZq/ZQkxJhloCQq3z+5TECUMVKaqgFdgoQViLsrSM70qpc+h3RT
+	 O0vm0q+rDmG9TD8ehCpsKS+Qlu8ECkiJCv/GvVPA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AD184F805FE; Tue, 21 Nov 2023 09:18:34 +0100 (CET)
+	id 329F1F8060D; Tue, 21 Nov 2023 09:18:35 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 609D1F805FD;
-	Tue, 21 Nov 2023 09:18:33 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 23B1DF8061B;
+	Tue, 21 Nov 2023 09:18:35 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 51485F805E1; Tue, 21 Nov 2023 09:17:56 +0100 (CET)
+	id CE47AF80563; Tue, 21 Nov 2023 09:18:01 +0100 (CET)
 Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 0FCD7F80310
-	for <alsa-devel@alsa-project.org>; Tue, 21 Nov 2023 09:17:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0FCD7F80310
+	by alsa1.perex.cz (Postfix) with ESMTPS id DA589F80558
+	for <alsa-devel@alsa-project.org>; Tue, 21 Nov 2023 09:17:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DA589F80558
 Received: from inva020.nxp.com (localhost [127.0.0.1])
-	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 5F5DF1A03D0;
-	Tue, 21 Nov 2023 09:17:37 +0100 (CET)
+	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 89EB61A044B;
+	Tue, 21 Nov 2023 09:17:42 +0100 (CET)
 Received: from aprdc01srsp001v.ap-rdc01.nxp.com
  (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
-	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id F15571A03FC;
-	Tue, 21 Nov 2023 09:17:36 +0100 (CET)
+	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 272691A036B;
+	Tue, 21 Nov 2023 09:17:42 +0100 (CET)
 Received: from localhost.localdomain (shlinux2.ap.freescale.net
  [10.192.224.44])
-	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id A8CA61802201;
-	Tue, 21 Nov 2023 16:17:34 +0800 (+08)
+	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 8943D183ACAD;
+	Tue, 21 Nov 2023 16:17:40 +0800 (+08)
 From: Shengjiu Wang <shengjiu.wang@nxp.com>
 To: hverkuil@xs4all.nl,
 	sakari.ailus@iki.fi,
@@ -63,15 +63,15 @@ To: hverkuil@xs4all.nl,
 	tiwai@suse.com,
 	alsa-devel@alsa-project.org,
 	linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH v10 04/14] ASoC: fsl_asrc: register m2m platform device
-Date: Tue, 21 Nov 2023 15:37:25 +0800
-Message-Id: <1700552255-5364-5-git-send-email-shengjiu.wang@nxp.com>
+Subject: [PATCH v10 08/14] media: uapi: Define audio sample format fourcc type
+Date: Tue, 21 Nov 2023 15:37:29 +0800
+Message-Id: <1700552255-5364-9-git-send-email-shengjiu.wang@nxp.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1700552255-5364-1-git-send-email-shengjiu.wang@nxp.com>
 References: <1700552255-5364-1-git-send-email-shengjiu.wang@nxp.com>
 X-Virus-Scanned: ClamAV using ClamSMTP
-Message-ID-Hash: SFIWGNDSBSO5Z4WDXDOE5VYI7PUFANT6
-X-Message-ID-Hash: SFIWGNDSBSO5Z4WDXDOE5VYI7PUFANT6
+Message-ID-Hash: 6OT75QFAQETH2LWU6MD3FIINE3P63OFI
+X-Message-ID-Hash: 6OT75QFAQETH2LWU6MD3FIINE3P63OFI
 X-MailFrom: shengjiu.wang@nxp.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -84,7 +84,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SFIWGNDSBSO5Z4WDXDOE5VYI7PUFANT6/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6OT75QFAQETH2LWU6MD3FIINE3P63OFI/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -93,110 +93,184 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Register m2m platform device, that user can
-use M2M feature.
+The audio sample format definition is from alsa,
+the header file is include/uapi/sound/asound.h, but
+don't include this header file directly, because in
+user space, there is another copy in alsa-lib.
+There will be conflict in userspace for include
+videodev2.h & asound.h and asoundlib.h
 
-Defined platform data structure and platform
-driver name.
+Here still use the fourcc format.
 
 Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-Acked-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/fsl_asrc_common.h | 23 +++++++++++++++++++++++
- sound/soc/fsl/fsl_asrc.c        | 18 ++++++++++++++++++
- 2 files changed, 41 insertions(+)
+ .../userspace-api/media/v4l/pixfmt-audio.rst  | 87 +++++++++++++++++++
+ .../userspace-api/media/v4l/pixfmt.rst        |  1 +
+ drivers/media/v4l2-core/v4l2-ioctl.c          | 13 +++
+ include/uapi/linux/videodev2.h                | 23 +++++
+ 4 files changed, 124 insertions(+)
+ create mode 100644 Documentation/userspace-api/media/v4l/pixfmt-audio.rst
 
-diff --git a/include/sound/fsl_asrc_common.h b/include/sound/fsl_asrc_common.h
-index 3b53d366182f..c709b8906929 100644
---- a/include/sound/fsl_asrc_common.h
-+++ b/include/sound/fsl_asrc_common.h
-@@ -71,6 +71,7 @@ struct fsl_asrc_pair {
-  * @dma_params_rx: DMA parameters for receive channel
-  * @dma_params_tx: DMA parameters for transmit channel
-  * @pdev: platform device pointer
-+ * @m2m_pdev: m2m platform device pointer
-  * @regmap: regmap handler
-  * @paddr: physical address to the base address of registers
-  * @mem_clk: clock source to access register
-@@ -103,6 +104,7 @@ struct fsl_asrc {
- 	struct snd_dmaengine_dai_dma_data dma_params_rx;
- 	struct snd_dmaengine_dai_dma_data dma_params_tx;
- 	struct platform_device *pdev;
-+	struct platform_device *m2m_pdev;
- 	struct regmap *regmap;
- 	unsigned long paddr;
- 	struct clk *mem_clk;
-@@ -139,6 +141,27 @@ struct fsl_asrc {
- 	void *private;
- };
+diff --git a/Documentation/userspace-api/media/v4l/pixfmt-audio.rst b/Documentation/userspace-api/media/v4l/pixfmt-audio.rst
+new file mode 100644
+index 000000000000..04b4a7fbd8f4
+--- /dev/null
++++ b/Documentation/userspace-api/media/v4l/pixfmt-audio.rst
+@@ -0,0 +1,87 @@
++.. SPDX-License-Identifier: GFDL-1.1-no-invariants-or-later
++
++.. _pixfmt-audio:
++
++*************
++Audio Formats
++*************
++
++These formats are used for :ref:`audiomem2mem` interface only.
++
++.. tabularcolumns:: |p{5.8cm}|p{1.2cm}|p{10.3cm}|
++
++.. cssclass:: longtable
++
++.. flat-table:: Audio Format
++    :header-rows:  1
++    :stub-columns: 0
++    :widths:       3 1 4
++
++    * - Identifier
++      - Code
++      - Details
++    * .. _V4L2-AUDIO-FMT-S8:
++
++      - ``V4L2_AUDIO_FMT_S8``
++      - 'S8'
++      - Corresponds to SNDRV_PCM_FORMAT_S8 in ALSA
++    * .. _V4L2-AUDIO-FMT-S16-LE:
++
++      - ``V4L2_AUDIO_FMT_S16_LE``
++      - 'S16_LE'
++      - Corresponds to SNDRV_PCM_FORMAT_S16_LE in ALSA
++    * .. _V4L2-AUDIO-FMT-U16-LE:
++
++      - ``V4L2_AUDIO_FMT_U16_LE``
++      - 'U16_LE'
++      - Corresponds to SNDRV_PCM_FORMAT_U16_LE in ALSA
++    * .. _V4L2-AUDIO-FMT-S24-LE:
++
++      - ``V4L2_AUDIO_FMT_S24_LE``
++      - 'S24_LE'
++      - Corresponds to SNDRV_PCM_FORMAT_S24_LE in ALSA
++    * .. _V4L2-AUDIO-FMT-U24-LE:
++
++      - ``V4L2_AUDIO_FMT_U24_LE``
++      - 'U24_LE'
++      - Corresponds to SNDRV_PCM_FORMAT_U24_LE in ALSA
++    * .. _V4L2-AUDIO-FMT-S32-LE:
++
++      - ``V4L2_AUDIO_FMT_S32_LE``
++      - 'S32_LE'
++      - Corresponds to SNDRV_PCM_FORMAT_S32_LE in ALSA
++    * .. _V4L2-AUDIO-FMT-U32-LE:
++
++      - ``V4L2_AUDIO_FMT_U32_LE``
++      - 'U32_LE'
++      - Corresponds to SNDRV_PCM_FORMAT_U32_LE in ALSA
++    * .. _V4L2-AUDIO-FMT-FLOAT-LE:
++
++      - ``V4L2_AUDIO_FMT_FLOAT_LE``
++      - 'FLOAT_LE'
++      - Corresponds to SNDRV_PCM_FORMAT_FLOAT_LE in ALSA
++    * .. _V4L2-AUDIO-FMT-IEC958-SUBFRAME-LE:
++
++      - ``V4L2_AUDIO_FMT_IEC958_SUBFRAME_LE``
++      - 'IEC958_SUBFRAME_LE'
++      - Corresponds to SNDRV_PCM_FORMAT_IEC958_SUBFRAME_LE in ALSA
++    * .. _V4L2-AUDIO-FMT-S24-3LE:
++
++      - ``V4L2_AUDIO_FMT_S24_3LE``
++      - 'S24_3LE'
++      - Corresponds to SNDRV_PCM_FORMAT_S24_3LE in ALSA
++    * .. _V4L2-AUDIO-FMT-U24-3LE:
++
++      - ``V4L2_AUDIO_FMT_U24_3LE``
++      - 'U24_3LE'
++      - Corresponds to SNDRV_PCM_FORMAT_U24_3LE in ALSA
++    * .. _V4L2-AUDIO-FMT-S20-3LE:
++
++      - ``V4L2_AUDIO_FMT_S20_3LE``
++      - 'S20_3LE'
++      - Corresponds to SNDRV_PCM_FORMAT_S24_3LE in ALSA
++    * .. _V4L2-AUDIO-FMT-U20-3LE:
++
++      - ``V4L2_AUDIO_FMT_U20_3LE``
++      - 'U20_3LE'
++      - Corresponds to SNDRV_PCM_FORMAT_U20_3LE in ALSA
+diff --git a/Documentation/userspace-api/media/v4l/pixfmt.rst b/Documentation/userspace-api/media/v4l/pixfmt.rst
+index 11dab4a90630..2eb6fdd3b43d 100644
+--- a/Documentation/userspace-api/media/v4l/pixfmt.rst
++++ b/Documentation/userspace-api/media/v4l/pixfmt.rst
+@@ -36,3 +36,4 @@ see also :ref:`VIDIOC_G_FBUF <VIDIOC_G_FBUF>`.)
+     colorspaces
+     colorspaces-defs
+     colorspaces-details
++    pixfmt-audio
+diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
+index 1bb03794922a..c86633b82038 100644
+--- a/drivers/media/v4l2-core/v4l2-ioctl.c
++++ b/drivers/media/v4l2-core/v4l2-ioctl.c
+@@ -1471,6 +1471,19 @@ static void v4l_fill_fmtdesc(struct v4l2_fmtdesc *fmt)
+ 	case V4L2_PIX_FMT_Y210:		descr = "10-bit YUYV Packed"; break;
+ 	case V4L2_PIX_FMT_Y212:		descr = "12-bit YUYV Packed"; break;
+ 	case V4L2_PIX_FMT_Y216:		descr = "16-bit YUYV Packed"; break;
++	case V4L2_AUDIO_FMT_S8:		descr = "8-bit Signed"; break;
++	case V4L2_AUDIO_FMT_S16_LE:	descr = "16-bit Signed LE"; break;
++	case V4L2_AUDIO_FMT_U16_LE:		descr = "16-bit Unsigned LE"; break;
++	case V4L2_AUDIO_FMT_S24_LE:		descr = "24(32)-bit Signed LE"; break;
++	case V4L2_AUDIO_FMT_U24_LE:		descr = "24(32)-bit Unsigned LE"; break;
++	case V4L2_AUDIO_FMT_S32_LE:		descr = "32-bit Signed LE"; break;
++	case V4L2_AUDIO_FMT_U32_LE:		descr = "32-bit Unsigned LE"; break;
++	case V4L2_AUDIO_FMT_FLOAT_LE:		descr = "32-bit Float LE"; break;
++	case V4L2_AUDIO_FMT_IEC958_SUBFRAME_LE:	descr = "32-bit IEC958 LE"; break;
++	case V4L2_AUDIO_FMT_S24_3LE:		descr = "24(24)-bit Signed LE"; break;
++	case V4L2_AUDIO_FMT_U24_3LE:		descr = "24(24)-bit Unsigned LE"; break;
++	case V4L2_AUDIO_FMT_S20_3LE:		descr = "20(24)-bit Signed LE"; break;
++	case V4L2_AUDIO_FMT_U20_3LE:		descr = "20(24)-bit Unsigned LE"; break;
  
-+/**
-+ * struct fsl_asrc_m2m_pdata - platform data
-+ * @asrc: pointer to struct fsl_asrc
-+ * @fmt_in: input sample format
-+ * @fmt_out: output sample format
-+ * @chan_min: minimum channel number
-+ * @chan_max: maximum channel number
-+ * @rate_min: minimum rate
-+ * @rate_max: maximum rete
+ 	default:
+ 		/* Compressed formats */
+diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
+index e9958b9c9b06..86761910bda9 100644
+--- a/include/uapi/linux/videodev2.h
++++ b/include/uapi/linux/videodev2.h
+@@ -843,6 +843,29 @@ struct v4l2_pix_format {
+ #define V4L2_META_FMT_RK_ISP1_PARAMS	v4l2_fourcc('R', 'K', '1', 'P') /* Rockchip ISP1 3A Parameters */
+ #define V4L2_META_FMT_RK_ISP1_STAT_3A	v4l2_fourcc('R', 'K', '1', 'S') /* Rockchip ISP1 3A Statistics */
+ 
++/*
++ * Audio-data formats
++ * All these audio formats use a fourcc starting with 'AU'
++ * followed by the SNDRV_PCM_FORMAT_ value from asound.h.
 + */
-+struct fsl_asrc_m2m_pdata {
-+	struct fsl_asrc *asrc;
-+	u64 fmt_in;
-+	u64 fmt_out;
-+	int chan_min;
-+	int chan_max;
-+	int rate_min;
-+	int rate_max;
-+};
++#define V4L2_AUDIO_FMT_S8			v4l2_fourcc('A', 'U', '0', '0')
++#define V4L2_AUDIO_FMT_S16_LE			v4l2_fourcc('A', 'U', '0', '2')
++#define V4L2_AUDIO_FMT_U16_LE			v4l2_fourcc('A', 'U', '0', '4')
++#define V4L2_AUDIO_FMT_S24_LE			v4l2_fourcc('A', 'U', '0', '6')
++#define V4L2_AUDIO_FMT_U24_LE			v4l2_fourcc('A', 'U', '0', '8')
++#define V4L2_AUDIO_FMT_S32_LE			v4l2_fourcc('A', 'U', '1', '0')
++#define V4L2_AUDIO_FMT_U32_LE			v4l2_fourcc('A', 'U', '1', '2')
++#define V4L2_AUDIO_FMT_FLOAT_LE			v4l2_fourcc('A', 'U', '1', '4')
++#define V4L2_AUDIO_FMT_IEC958_SUBFRAME_LE	v4l2_fourcc('A', 'U', '1', '8')
++#define V4L2_AUDIO_FMT_S24_3LE			v4l2_fourcc('A', 'U', '3', '2')
++#define V4L2_AUDIO_FMT_U24_3LE			v4l2_fourcc('A', 'U', '3', '4')
++#define V4L2_AUDIO_FMT_S20_3LE			v4l2_fourcc('A', 'U', '3', '6')
++#define V4L2_AUDIO_FMT_U20_3LE			v4l2_fourcc('A', 'U', '3', '8')
 +
-+#define M2M_DRV_NAME "fsl_asrc_m2m"
- #define DRV_NAME "fsl-asrc-dai"
- extern struct snd_soc_component_driver fsl_asrc_component;
- 
-diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
-index 7d8643ee0ba0..5ecb5d869607 100644
---- a/sound/soc/fsl/fsl_asrc.c
-+++ b/sound/soc/fsl/fsl_asrc.c
-@@ -1187,6 +1187,7 @@ static int fsl_asrc_runtime_suspend(struct device *dev);
- static int fsl_asrc_probe(struct platform_device *pdev)
- {
- 	struct device_node *np = pdev->dev.of_node;
-+	struct fsl_asrc_m2m_pdata m2m_pdata;
- 	struct fsl_asrc_priv *asrc_priv;
- 	struct fsl_asrc *asrc;
- 	struct resource *res;
-@@ -1368,6 +1369,18 @@ static int fsl_asrc_probe(struct platform_device *pdev)
- 		goto err_pm_get_sync;
- 	}
- 
-+	m2m_pdata.asrc = asrc;
-+	m2m_pdata.fmt_in = FSL_ASRC_FORMATS;
-+	m2m_pdata.fmt_out = FSL_ASRC_FORMATS | SNDRV_PCM_FMTBIT_S8;
-+	m2m_pdata.rate_min = 5512;
-+	m2m_pdata.rate_max = 192000;
-+	m2m_pdata.chan_min = 1;
-+	m2m_pdata.chan_max = 10;
-+	asrc->m2m_pdev = platform_device_register_data(&pdev->dev,
-+						       M2M_DRV_NAME,
-+						       PLATFORM_DEVID_AUTO,
-+						       &m2m_pdata,
-+						       sizeof(m2m_pdata));
- 	return 0;
- 
- err_pm_get_sync:
-@@ -1380,6 +1393,11 @@ static int fsl_asrc_probe(struct platform_device *pdev)
- 
- static void fsl_asrc_remove(struct platform_device *pdev)
- {
-+	struct fsl_asrc *asrc = dev_get_drvdata(&pdev->dev);
++#define v4l2_fourcc_to_audfmt(fourcc)	\
++	(__force snd_pcm_format_t)(((((fourcc) >> 16) & 0xff) - '0') * 10  \
++				   + ((((fourcc) >> 24) & 0xff) - '0'))
 +
-+	if (asrc->m2m_pdev && !IS_ERR(asrc->m2m_pdev))
-+		platform_device_unregister(asrc->m2m_pdev);
-+
- 	pm_runtime_disable(&pdev->dev);
- 	if (!pm_runtime_status_suspended(&pdev->dev))
- 		fsl_asrc_runtime_suspend(&pdev->dev);
+ /* priv field value to indicates that subsequent fields are valid. */
+ #define V4L2_PIX_FMT_PRIV_MAGIC		0xfeedcafe
+ 
 -- 
 2.34.1
 
