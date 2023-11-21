@@ -4,47 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 992B9C5ACB3
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Nov 2023 08:21:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C8810C5ACB3
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Nov 2023 08:22:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CC10DDEB;
-	Tue, 21 Nov 2023 09:21:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CC10DDEB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 42B33DF8;
+	Tue, 21 Nov 2023 09:22:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 42B33DF8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1700554917;
-	bh=TZs89gaEwBtL7Jp0z1BSY3eL8QKxCs3ZMAekuipAUNc=;
+	s=default; t=1700554939;
+	bh=NZRW6tzTmDle8kSotz8FaxRCcE6d0Ym/4Gh5ibq+z7o=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=Vd5KZOywbh9FACQ54VIXFzsHW9S9EB++0PQLoKvL7aOs6a4VAqqYNHkaw4qIytkzg
-	 JcAsPF4p13HX039iY/cfSYlOiu1cMDttHVJVixy0N92Yl4MLCx3w8Gt/yKCCPk3sSD
-	 QAMlWzc4E1ohQZpagcAY0V6zDunOABgIrzh+6UWE=
+	b=C9UTVeXZapQknekEhDYuW1OzCGbvfB5N+4iMhPSRk4uhWtnO31PqlZ8+IoLStCh0R
+	 V4n5CvemRi0lC8v7xIk+9bHpOWHQH7KrlJzufOIlVnZ6mDaQeZt+PcY7a/HxADuKw9
+	 1bLN3woJN61Q7nwKm59vqKXvzS93tTPAnORp3OwU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E8231F805D2; Tue, 21 Nov 2023 09:19:49 +0100 (CET)
+	id 9C0ECF80611; Tue, 21 Nov 2023 09:19:54 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 98FBEF805F4;
-	Tue, 21 Nov 2023 09:19:49 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1D749F80613;
+	Tue, 21 Nov 2023 09:19:54 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 88A88F80579; Tue, 21 Nov 2023 09:19:45 +0100 (CET)
-Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
+	id E2F77F8057F; Tue, 21 Nov 2023 09:19:47 +0100 (CET)
+Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B0503F8047D
-	for <alsa-devel@alsa-project.org>; Tue, 21 Nov 2023 09:17:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B0503F8047D
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 6CDDF1A0433;
-	Tue, 21 Nov 2023 09:17:39 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTPS id BB376F802E8
+	for <alsa-devel@alsa-project.org>; Tue, 21 Nov 2023 09:17:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BB376F802E8
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 66751200EEF;
+	Tue, 21 Nov 2023 09:17:35 +0100 (CET)
 Received: from aprdc01srsp001v.ap-rdc01.nxp.com
  (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
-	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 356AE1A03BB;
-	Tue, 21 Nov 2023 09:17:39 +0100 (CET)
+	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 2DC7D20005B;
+	Tue, 21 Nov 2023 09:17:35 +0100 (CET)
 Received: from localhost.localdomain (shlinux2.ap.freescale.net
  [10.192.224.44])
-	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 98606183AD51;
-	Tue, 21 Nov 2023 16:17:37 +0800 (+08)
+	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 36764180327D;
+	Tue, 21 Nov 2023 16:17:33 +0800 (+08)
 From: Shengjiu Wang <shengjiu.wang@nxp.com>
 To: hverkuil@xs4all.nl,
 	sakari.ailus@iki.fi,
@@ -63,15 +63,16 @@ To: hverkuil@xs4all.nl,
 	tiwai@suse.com,
 	alsa-devel@alsa-project.org,
 	linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH v10 06/14] media: uapi: Add V4L2_CAP_AUDIO_M2M capability flag
-Date: Tue, 21 Nov 2023 15:37:27 +0800
-Message-Id: <1700552255-5364-7-git-send-email-shengjiu.wang@nxp.com>
+Subject: [PATCH v10 03/14] ASoC: fsl_asrc: move fsl_asrc_common.h to
+ include/sound
+Date: Tue, 21 Nov 2023 15:37:24 +0800
+Message-Id: <1700552255-5364-4-git-send-email-shengjiu.wang@nxp.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1700552255-5364-1-git-send-email-shengjiu.wang@nxp.com>
 References: <1700552255-5364-1-git-send-email-shengjiu.wang@nxp.com>
 X-Virus-Scanned: ClamAV using ClamSMTP
-Message-ID-Hash: KI6TT2JLQASB6HMZUN32OWE6IRYBVULK
-X-Message-ID-Hash: KI6TT2JLQASB6HMZUN32OWE6IRYBVULK
+Message-ID-Hash: 3QZ4WU3I2WYPQVYSZPUTYLZKLGWRZGII
+X-Message-ID-Hash: 3QZ4WU3I2WYPQVYSZPUTYLZKLGWRZGII
 X-MailFrom: shengjiu.wang@nxp.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -84,7 +85,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KI6TT2JLQASB6HMZUN32OWE6IRYBVULK/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3QZ4WU3I2WYPQVYSZPUTYLZKLGWRZGII/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -93,55 +94,62 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-V4L2_CAP_AUDIO_M2M is similar to V4L2_CAP_VIDEO_M2M flag.
-
-It is used for audio memory to memory case.
+Move fsl_asrc_common.h to include/sound that it can be
+included from other drivers.
 
 Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+Acked-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/userspace-api/media/v4l/vidioc-querycap.rst    | 3 +++
- Documentation/userspace-api/media/videodev2.h.rst.exceptions | 1 +
- include/uapi/linux/videodev2.h                               | 1 +
- 3 files changed, 5 insertions(+)
+ {sound/soc/fsl => include/sound}/fsl_asrc_common.h | 0
+ sound/soc/fsl/fsl_asrc.h                           | 2 +-
+ sound/soc/fsl/fsl_asrc_dma.c                       | 2 +-
+ sound/soc/fsl/fsl_easrc.h                          | 2 +-
+ 4 files changed, 3 insertions(+), 3 deletions(-)
+ rename {sound/soc/fsl => include/sound}/fsl_asrc_common.h (100%)
 
-diff --git a/Documentation/userspace-api/media/v4l/vidioc-querycap.rst b/Documentation/userspace-api/media/v4l/vidioc-querycap.rst
-index 6c57b8428356..1c0d97bf192a 100644
---- a/Documentation/userspace-api/media/v4l/vidioc-querycap.rst
-+++ b/Documentation/userspace-api/media/v4l/vidioc-querycap.rst
-@@ -173,6 +173,9 @@ specification the ioctl returns an ``EINVAL`` error code.
- 	interface. A video overlay device typically stores captured images
- 	directly in the video memory of a graphics card, with hardware
- 	clipping and scaling.
-+    * - ``V4L2_CAP_AUDIO_M2M``
-+      - 0x00000008
-+      - The device supports the audio Memory-To-Memory interface.
-     * - ``V4L2_CAP_VBI_CAPTURE``
-       - 0x00000010
-       - The device supports the :ref:`Raw VBI Capture <raw-vbi>`
-diff --git a/Documentation/userspace-api/media/videodev2.h.rst.exceptions b/Documentation/userspace-api/media/videodev2.h.rst.exceptions
-index 3e58aac4ef0b..da6d0b8e4c2c 100644
---- a/Documentation/userspace-api/media/videodev2.h.rst.exceptions
-+++ b/Documentation/userspace-api/media/videodev2.h.rst.exceptions
-@@ -197,6 +197,7 @@ replace define V4L2_CAP_META_OUTPUT device-capabilities
- replace define V4L2_CAP_DEVICE_CAPS device-capabilities
- replace define V4L2_CAP_TOUCH device-capabilities
- replace define V4L2_CAP_IO_MC device-capabilities
-+replace define V4L2_CAP_AUDIO_M2M device-capabilities
+diff --git a/sound/soc/fsl/fsl_asrc_common.h b/include/sound/fsl_asrc_common.h
+similarity index 100%
+rename from sound/soc/fsl/fsl_asrc_common.h
+rename to include/sound/fsl_asrc_common.h
+diff --git a/sound/soc/fsl/fsl_asrc.h b/sound/soc/fsl/fsl_asrc.h
+index 1c492eb237f5..66544624de7b 100644
+--- a/sound/soc/fsl/fsl_asrc.h
++++ b/sound/soc/fsl/fsl_asrc.h
+@@ -10,7 +10,7 @@
+ #ifndef _FSL_ASRC_H
+ #define _FSL_ASRC_H
  
- # V4L2 pix flags
- replace define V4L2_PIX_FMT_PRIV_MAGIC :c:type:`v4l2_pix_format`
-diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
-index 3813212a5cd3..eb5911719734 100644
---- a/include/uapi/linux/videodev2.h
-+++ b/include/uapi/linux/videodev2.h
-@@ -473,6 +473,7 @@ struct v4l2_capability {
- #define V4L2_CAP_VIDEO_CAPTURE		0x00000001  /* Is a video capture device */
- #define V4L2_CAP_VIDEO_OUTPUT		0x00000002  /* Is a video output device */
- #define V4L2_CAP_VIDEO_OVERLAY		0x00000004  /* Can do video overlay */
-+#define V4L2_CAP_AUDIO_M2M		0x00000008  /* audio memory to memory */
- #define V4L2_CAP_VBI_CAPTURE		0x00000010  /* Is a raw VBI capture device */
- #define V4L2_CAP_VBI_OUTPUT		0x00000020  /* Is a raw VBI output device */
- #define V4L2_CAP_SLICED_VBI_CAPTURE	0x00000040  /* Is a sliced VBI capture device */
+-#include  "fsl_asrc_common.h"
++#include  <sound/fsl_asrc_common.h>
+ 
+ #define ASRC_M2M_INPUTFIFO_WML		0x4
+ #define ASRC_M2M_OUTPUTFIFO_WML		0x2
+diff --git a/sound/soc/fsl/fsl_asrc_dma.c b/sound/soc/fsl/fsl_asrc_dma.c
+index f501f47242fb..f067bf1ecea7 100644
+--- a/sound/soc/fsl/fsl_asrc_dma.c
++++ b/sound/soc/fsl/fsl_asrc_dma.c
+@@ -12,7 +12,7 @@
+ #include <sound/dmaengine_pcm.h>
+ #include <sound/pcm_params.h>
+ 
+-#include "fsl_asrc_common.h"
++#include <sound/fsl_asrc_common.h>
+ 
+ #define FSL_ASRC_DMABUF_SIZE	(256 * 1024)
+ 
+diff --git a/sound/soc/fsl/fsl_easrc.h b/sound/soc/fsl/fsl_easrc.h
+index c9f770862662..a24e540876a4 100644
+--- a/sound/soc/fsl/fsl_easrc.h
++++ b/sound/soc/fsl/fsl_easrc.h
+@@ -9,7 +9,7 @@
+ #include <sound/asound.h>
+ #include <linux/dma/imx-dma.h>
+ 
+-#include "fsl_asrc_common.h"
++#include <sound/fsl_asrc_common.h>
+ 
+ /* EASRC Register Map */
+ 
 -- 
 2.34.1
 
