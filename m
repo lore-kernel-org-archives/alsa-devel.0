@@ -4,92 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0EB90C61D99
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Nov 2023 15:42:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6E80BC61D97
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Nov 2023 16:36:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0B771AE9;
-	Wed, 22 Nov 2023 16:42:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0B771AE9
+	by alsa0.perex.cz (Postfix) with ESMTPS id CD0BFA4B;
+	Wed, 22 Nov 2023 17:36:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CD0BFA4B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1700667735;
-	bh=nb+vxqjeyabcUI2vBsYP+73P7f/0NpuXBP4xRLAjd7A=;
+	s=default; t=1700670975;
+	bh=jCiTz/EXMjTK7h50oLUFZRF0/L+XtJW869Se4hheoo8=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=es/2T+vOLkXGgdgu5M18iu8FYf2q3bkVNuPVa1SNcQwolwuRrLMarZeXcrV3pmS0m
-	 nS9r9BHq07ywmt2IO8Cd1vYI0poALljlTbEe4Hts+kT8r/RvEvAYd2+KLQxIMobZHF
-	 j7uemBwtt+hO8+2iaRoiuBtOG1jIT5v3n+CS5Ux0=
+	b=qtXWWgMPnVPvZISRmgpDdn2Z850gZtayK5C5359HsmfgYPREcUYM26+92zSbV7iHr
+	 /5S2f3MHL9Q/0xANZ8LG9Bl7W1R/I9iv6AVzWSfHIsC0CuevZIaUtToQK0ujYwCP2a
+	 6Vpp38ANa9I/0qgix/mD1L1Zvw3IiOIxzRG++N+g=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A4452F8055B; Wed, 22 Nov 2023 16:41:43 +0100 (CET)
+	id BC16BF80580; Wed, 22 Nov 2023 17:35:38 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2F21AF8056F;
-	Wed, 22 Nov 2023 16:41:43 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 021D2F80558;
+	Wed, 22 Nov 2023 17:35:38 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BED7DF802E8; Wed, 22 Nov 2023 16:41:36 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	id 48FF2F802E8; Wed, 22 Nov 2023 17:35:33 +0100 (CET)
+Received: from sin.source.kernel.org (sin.source.kernel.org
+ [IPv6:2604:1380:40e1:4800::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 12630F80246
-	for <alsa-devel@alsa-project.org>; Wed, 22 Nov 2023 16:41:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 12630F80246
+	by alsa1.perex.cz (Postfix) with ESMTPS id F1462F80166
+	for <alsa-devel@alsa-project.org>; Wed, 22 Nov 2023 17:35:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F1462F80166
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=BBTuAfhe
+	dkim=pass (1024-bit key,
+ unprotected) header.d=linuxfoundation.org header.i=@linuxfoundation.org
+ header.a=rsa-sha256 header.s=korg header.b=tdswrvCw
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 3D8BC61C5A;
-	Wed, 22 Nov 2023 15:41:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4BC11C433CD;
-	Wed, 22 Nov 2023 15:41:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1700667683;
-	bh=nb+vxqjeyabcUI2vBsYP+73P7f/0NpuXBP4xRLAjd7A=;
+	by sin.source.kernel.org (Postfix) with ESMTP id D5BCACE2122;
+	Wed, 22 Nov 2023 16:35:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5419BC433C7;
+	Wed, 22 Nov 2023 16:35:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1700670920;
+	bh=jCiTz/EXMjTK7h50oLUFZRF0/L+XtJW869Se4hheoo8=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=BBTuAfhePpAotX7sRSqIyitfMkRt+aflL8y0NeRPu/6y8rucwCNTj5e3HzqmtmchV
-	 5j2g1w3B5cXxxpSGUESksw5sS32gyNtJNwxbVbq2DizpTz7JiCNfN58/UXpEiYwNi3
-	 QC51V/vyzOT0+dogzVgjEfH+9QjcAzNDe8n1QVpribmvrhyQjdZeaWYQ7d2GBNMwyT
-	 Kn0Pt3SS1Iv4O1OMeFxLfEDaYZ64qb1oJ4lIycwKFV0EeWXm3H9oWZIzpwZnpmG0e2
-	 IHO/pvW3UcLwS1b989ZaksrlU63RrN0ZgE0eLqQKBad7csdka4mJTU/Ufz4npRWNSL
-	 4B9cH0yUTP/jA==
-Received: from johan by xi.lan with local (Exim 4.96.2)
-	(envelope-from <johan@kernel.org>)
-	id 1r5pM9-0002ln-2i;
-	Wed, 22 Nov 2023 16:41:38 +0100
-Date: Wed, 22 Nov 2023 16:41:37 +0100
-From: Johan Hovold <johan@kernel.org>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Sasha Levin <sashal@kernel.org>
-Cc: broonie@kernel.org, perex@perex.cz, tiwai@suse.com, lgirdwood@gmail.com,
-	linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+	b=tdswrvCwTn9UiolI/R1GeO15xjfDbw9qg/vxvCO2iqQ/vIUsgl5zsytITMtjc2FTc
+	 PvjMenX9wATuJT8g07U+ekyS3KfsEQ6rQ5CWZ7v7S6VshBXmBMvc5Tcs0xgGwLaeK/
+	 kwzJ5iUspmITa5oJkHe8fjqHmjVo1+5Sd/GCTsSQ=
+Date: Wed, 22 Nov 2023 16:35:17 +0000
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Johan Hovold <johan@kernel.org>
+Cc: Sasha Levin <sashal@kernel.org>, broonie@kernel.org, perex@perex.cz,
+	tiwai@suse.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
+	alsa-devel@alsa-project.org,
 	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
 	stable@vger.kernel.org
 Subject: Re: [RFC PATCH 0/2] ASoC: soc-dai: add flag to mute and unmute
  stream during trigger.
-Message-ID: <ZV4hMR8oGQBSbnMl@hovoldconsulting.com>
+Message-ID: <2023112225-crop-uncle-9097@gregkh>
 References: <20231027105747.32450-1-srinivas.kandagatla@linaro.org>
  <ZTukaxUhgY4WLgEs@hovoldconsulting.com>
+ <ZV4hMR8oGQBSbnMl@hovoldconsulting.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZTukaxUhgY4WLgEs@hovoldconsulting.com>
-Message-ID-Hash: 5L6X2H2JXZAVWJ4YEXS5IQPYZDUV7ZZK
-X-Message-ID-Hash: 5L6X2H2JXZAVWJ4YEXS5IQPYZDUV7ZZK
-X-MailFrom: johan@kernel.org
-X-Mailman-Rule-Hits: nonmember-moderation
+In-Reply-To: <ZV4hMR8oGQBSbnMl@hovoldconsulting.com>
+Message-ID-Hash: FSO67ANYVPBJE2HEKK7IMLEQROJQ6LZS
+X-Message-ID-Hash: FSO67ANYVPBJE2HEKK7IMLEQROJQ6LZS
+X-MailFrom: gregkh@linuxfoundation.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5L6X2H2JXZAVWJ4YEXS5IQPYZDUV7ZZK/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FSO67ANYVPBJE2HEKK7IMLEQROJQ6LZS/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -98,39 +94,42 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi Greg and Sasha,
-
-On Fri, Oct 27, 2023 at 01:52:11PM +0200, Johan Hovold wrote:
-> On Fri, Oct 27, 2023 at 11:57:45AM +0100, Srinivas Kandagatla wrote:
-> > Click/Pop Noise was a long pending issue with WSA Codecs which are prone
-> > to accumlate DC when ports are active but without any data streams.
-> > There are multiple places in the current setup, where this could happen
-> > in both startup as well as shutdown path.
+On Wed, Nov 22, 2023 at 04:41:37PM +0100, Johan Hovold wrote:
+> Hi Greg and Sasha,
+> 
+> On Fri, Oct 27, 2023 at 01:52:11PM +0200, Johan Hovold wrote:
+> > On Fri, Oct 27, 2023 at 11:57:45AM +0100, Srinivas Kandagatla wrote:
+> > > Click/Pop Noise was a long pending issue with WSA Codecs which are prone
+> > > to accumlate DC when ports are active but without any data streams.
+> > > There are multiple places in the current setup, where this could happen
+> > > in both startup as well as shutdown path.
+> > > 
+> > > This patchset adds a new flag mute_unmute_on_trigger to dai_ops to let
+> > > generic code do the mute/unmute on trigger.
+> > > 
+> > > This patches help fix those issues by making sure the PA is Muted/Unmuted
+> > > inline with the stream start/stop events.
+> > >
+> > > Srinivas Kandagatla (2):
+> > >   ASoC: soc-dai: add flag to mute and unmute stream during trigger
+> > >   ASoC: codecs: wsa883x: make use of new mute_unmute_on_trigger flag
 > > 
-> > This patchset adds a new flag mute_unmute_on_trigger to dai_ops to let
-> > generic code do the mute/unmute on trigger.
+> > I've verified that this fixes the pop sounds when starting and stopping
+> > a stream on the X13s, even if the click sound when killing pulseaudio
+> > (e.g. on reboot) is still there (as with the previous fixes).
 > > 
-> > This patches help fix those issues by making sure the PA is Muted/Unmuted
-> > inline with the stream start/stop events.
-> >
-> > Srinivas Kandagatla (2):
-> >   ASoC: soc-dai: add flag to mute and unmute stream during trigger
-> >   ASoC: codecs: wsa883x: make use of new mute_unmute_on_trigger flag
+> > Tested-by: Johan Hovold <johan+linaro@kernel.org>
+> > 
+> > If these are accepted, can we get them backported to 6.5 as well?
 > 
-> I've verified that this fixes the pop sounds when starting and stopping
-> a stream on the X13s, even if the click sound when killing pulseaudio
-> (e.g. on reboot) is still there (as with the previous fixes).
+> These fixes are now in 6.7-rc1 as
 > 
-> Tested-by: Johan Hovold <johan+linaro@kernel.org>
-> 
-> If these are accepted, can we get them backported to 6.5 as well?
+> 	f0220575e65a ("ASoC: soc-dai: add flag to mute and unmute stream during trigger")
 
-These fixes are now in 6.7-rc1 as
+This doesn't backport cleanly, can you provide a working backport?
 
-	f0220575e65a ("ASoC: soc-dai: add flag to mute and unmute stream during trigger")
-	805ce81826c8 ("ASoC: codecs: wsa883x: make use of new mute_unmute_on_trigger flag")
+> 	805ce81826c8 ("ASoC: codecs: wsa883x: make use of new mute_unmute_on_trigger flag")
 
-As these fix a loud scary crackling noise on the Lenovo ThinkPad X13s,
-is it possible to get these backported at least to stable 6.6 and 6.5?
+Now queued up, thanks.
 
-Johan
+greg k-h
