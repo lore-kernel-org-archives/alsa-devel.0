@@ -4,148 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 965C0C61D92
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Nov 2023 03:41:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DB567C61D92
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Nov 2023 08:09:36 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B875EDF2;
-	Wed, 22 Nov 2023 04:40:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B875EDF2
+	by alsa0.perex.cz (Postfix) with ESMTPS id AA793A4A;
+	Wed, 22 Nov 2023 09:09:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AA793A4A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1700624463;
-	bh=d98HcfsOl8Ma6uZ+320vB7d8vNIsnH1jz1q4eRLOuxA=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=LcSfstAspTIQiCmX7Pg7vBARRYnFeq0JrtbFLjBMcLfBcrMtryHAMArSvp8aR8/OQ
-	 6Ghmiq2U1we5bFqI9PuBK7CJTRAmePr/2dHMIvJyNJ+v30mXM9eX2PQYEeWKyDePvo
-	 0vIgc/7Yk+YnLgfbgNqoVzlCvI8PISkZXbaoT/6M=
+	s=default; t=1700640574;
+	bh=o0K75WfTF9xbYZBWmxytSLkjKCoVBrvub2OJ04FW8hg=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=GYY7SUfzLAjIJoJghrtnVyheheR8uix7J1CaCLzbNAlQc+yPStmXuC7N4qpj9ei/B
+	 PFeq2pBFtkfo+UQ/8hmlVSKL1Q8XnEUb1Y1vJ3ndoDNeKh52rjhAlnO4l0AvdlTFSV
+	 qOSIozisccU2ssJaGsB38j5bd3jP9BCWSg7soqIQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 83AF5F80580; Wed, 22 Nov 2023 04:40:31 +0100 (CET)
+	id 819F2F8058C; Wed, 22 Nov 2023 09:08:57 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id F160CF80571;
-	Wed, 22 Nov 2023 04:40:30 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 16547F802E8;
+	Wed, 22 Nov 2023 09:08:57 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CE88BF802E8; Wed, 22 Nov 2023 04:39:20 +0100 (CET)
-Received: from JPN01-OS0-obe.outbound.protection.outlook.com
- (mail-os0jpn01on20701.outbound.protection.outlook.com
- [IPv6:2a01:111:f403:201a::701])
+	id DF4C2F8055C; Wed, 22 Nov 2023 09:04:08 +0100 (CET)
+Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 9D259F80093
-	for <alsa-devel@alsa-project.org>; Wed, 22 Nov 2023 04:39:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9D259F80093
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=renesas.com header.i=@renesas.com header.a=rsa-sha256
- header.s=selector1 header.b=lXf7M5mA
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dz49gjY15xvcr108EyrKEIA1Z0c+mVZYYEpPhmlXfU4Q18iS2gMClZxfQNJgwfTSB7UHvIiwYmF3RWeIMT6cGva5G2h0QfU6YzCOA+hVpoXrNjGeLfLSUR5VMyMuKPd4lhZfehbiC7bep4PSpV2C+C/IzL67xIgT9ikXc8/dX9H4L1ZetmOnejhg/gAgSGux1jzZk+//wtF2EpTxZYwcWfJN9VTIMe9wG/QWbjrgtWgBD3QstcoPkBftDjW7zwxbkbuzvdvAdEFzDOtzxPH0IwNLOLJnsEN9M3ZDtiihO9VbRhcCB9s8Rc4Q4GFQ2NeCjRh95UgneR2oStCVSabAhg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=FMxsqSZpjcaeaiHjF58SgRDCva2dKXaSUVNl2hsgcRY=;
- b=QkL/AhgoBwXKjo4Ipcc6UN+KW29Gphbp2QqCYYZAfhHm8Uvt6uUVmogR4vZxIvxCIr2SYNTeynmwmQtSlHE/vPhPz+//TlDzpRiEv7/pG7FfCMAoKVD4vcu5leHThImn6rg13Jmtrs+HIqCZ1IynLT30OCBkMU72iCxaXd/W7u3NUsFUmTo7F/iH1QlPxRkV9+/QT7xrirRuRCzNOaupc3wIqJEEzprlP3BxjKwZSvfm4qw9lvkJe43eEkyj5OHpnqRhC90IDAe4MQQa8J/KhAAQZbdcimMKnJIyAFQZtUCIXXCSVmv4eBV8svZpO99cIYfuzo0Qq4BlWFjD/6hDyA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=renesas.com; dmarc=pass action=none header.from=renesas.com;
- dkim=pass header.d=renesas.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=renesas.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FMxsqSZpjcaeaiHjF58SgRDCva2dKXaSUVNl2hsgcRY=;
- b=lXf7M5mAlO4h9R3bG9nDnbozsLqcBpnQcXukvxdic984Kg1GJGc4QheE7NEjk3vhJA9R6x/v2GU4H/sR0Yw1x1ELGI05HkVMKZGW3CsLWFiyUUP0XQ6e8NFlzxphduL0ORdB8HTBifPVwsbG4k3yX5Bwmfd6JFOvYW5XWphfN6g=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=renesas.com;
-Received: from TYCPR01MB10914.jpnprd01.prod.outlook.com
- (2603:1096:400:3a9::11) by TYCPR01MB11224.jpnprd01.prod.outlook.com
- (2603:1096:400:3bf::7) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.18; Wed, 22 Nov
- 2023 03:39:02 +0000
-Received: from TYCPR01MB10914.jpnprd01.prod.outlook.com
- ([fe80::16b3:a84d:faa6:4846]) by TYCPR01MB10914.jpnprd01.prod.outlook.com
- ([fe80::16b3:a84d:faa6:4846%6]) with mapi id 15.20.7025.017; Wed, 22 Nov 2023
- 03:39:02 +0000
-Message-ID: <878r6qh2y1.wl-kuninori.morimoto.gx@renesas.com>
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Daniel Baluta <daniel.baluta@gmail.com>
-Cc: Daniel Baluta <daniel.baluta@oss.nxp.com>,
-	"broonie@kernel.org" <broonie@kernel.org>,
-	"alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"iuliana.prodan@nxp.com" <iuliana.prodan@nxp.com>,
-	"shengjiu.wang@nxp.com" <shengjiu.wang@nxp.com>
-Subject: Re: [RFC PATCH] ASoC: simple-card: Use dai_id from node description
-In-Reply-To: 
- <CAEnQRZD8zbgRzBrx+iHTbDqG5tOedNLyJByNNtSHTRtxFsgyGw@mail.gmail.com>
-References: <20231117163900.766996-1-daniel.baluta@oss.nxp.com>
-	<874jhh2g8s.wl-kuninori.morimoto.gx@renesas.com>
-	<CAEnQRZBb0ZJk7aTaji-xH2jEs7QiTaoXTuS5_K-ruSaxpEnWdw@mail.gmail.com>
-	<TYCPR01MB109142FEC8F77CFFE3930456CD4B4A@TYCPR01MB10914.jpnprd01.prod.outlook.com>
-	<CAEnQRZD8zbgRzBrx+iHTbDqG5tOedNLyJByNNtSHTRtxFsgyGw@mail.gmail.com>
-User-Agent: Wanderlust/2.15.9 Emacs/27.1 Mule/6.0
-Content-Type: text/plain; charset=US-ASCII
-Date: Wed, 22 Nov 2023 03:39:02 +0000
-X-ClientProxiedBy: TYWP286CA0014.JPNP286.PROD.OUTLOOK.COM
- (2603:1096:400:178::20) To TYCPR01MB10914.jpnprd01.prod.outlook.com
- (2603:1096:400:3a9::11)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: TYCPR01MB10914:EE_|TYCPR01MB11224:EE_
-X-MS-Office365-Filtering-Correlation-Id: 60ad8021-bd38-4a28-58bb-08dbeb0c920c
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	lCc2ZZVSxGuRQ3nzkX4O3YXLxITo2kcB29qz+MATwnHrI+WfMEMnEvlmZqg1SAvlx6+fbU1B8GVMKybrsuAg4qa5hCXeM5IPPdHE2bGhPqXu/oZ4l5EIzCDQG3GOpb9xQHLijSIlN5V6164/udDa/O+h4/rtH4dNpDkYqlFqKW2nJnOIAb8YPl47yN0AFTtnbmLq3xP9FS7896+XT6J5krCtOgT+gQ9DyXH13A9PCAdTUlUnPmsBTFKJh0gL/EC8H3q/e4Hkj8LiJWeriyLXaQw2YEyhmzgZa1tAY91qcDxp+dD25l2iTwE8SdKRmOW3k39cJxU4/4yNJfhI94hKx56vmen7kiJh0QKyFdKd0UzK9gadeSb2Ye4JA90iPIzlS1My82mu8ZCOvg4pBv69D7LUO+eoDOfyebmA3X9IKROVGGiweGj4sM8R2V7t7FxVzZdm4z/YD//NIx7JH7q00US061M0C6Xic11fCyRwI0toLncOLQGUBZ/kwCOm0oe8N6+llvk0kNWnXJvEinDUp6BoNMZgopb31BCVoJE3BeN7jtXJyPji6tYrCm2hPrEXswy8terFySdOxnYQC7lljoXDNg7b+yjoI6SPj8Yh+mxusTlulJ2uYkL+OfcyadWD5Z8XoiX5BRh5r+/Ar1104w==
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYCPR01MB10914.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(376002)(136003)(366004)(346002)(396003)(230922051799003)(1800799012)(64100799003)(451199024)(186009)(52116002)(26005)(478600001)(2616005)(6506007)(6512007)(38350700005)(38100700002)(36756003)(86362001)(8676002)(4326008)(2906002)(54906003)(66556008)(4744005)(83380400001)(5660300002)(66476007)(66946007)(41300700001)(6916009)(8936002)(316002)(6486002)(21314003);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?us-ascii?Q?0+A/jfH3I3Hl7IiWK3aQbR5LIDNPw0gitJWSaodwCDJomGRGR0mQFZoxCybu?=
- =?us-ascii?Q?Fyi1rKuiVsiwE6QF2xyZ0FWlyiIlIg67vxf8jQmSfkke4EXTr8oTfL1U78Xx?=
- =?us-ascii?Q?iVG3zMw96icFUK1bIUsIEF8Ca/ewaaHrMW0bJPZ12dfKSre9xzSuz4FNgQK/?=
- =?us-ascii?Q?HV/yqHlNCDJ/BPoplbjUw3CNQT1xzdsSafn0mAY7mM+eT8GXwjiPp9oa6t1M?=
- =?us-ascii?Q?xGHltnu7WqLmAjw4oWD2Mf62FbEnztxgEGFtV8jid7hbj/w7b9xXc337OfS8?=
- =?us-ascii?Q?3mv42s9kyKc3t7Ilwmpi+2oaGmehPPjdphclATll8xNIRInf/h2fjiq8HxH1?=
- =?us-ascii?Q?wkqqu91cyuBKHeCByl7SYaTtR0hd6DBDSxFwj+bNUnOMaiMswowLsJZV2e0Q?=
- =?us-ascii?Q?35sxdoybNTo4FpwDLpYLxhvEQI91u/hOB90weAR9ER3sNB3+azS2UP1rl0uB?=
- =?us-ascii?Q?8NyGql85wDNr7UacBjEindMbZgJPFb4XyqKIscLJLT1NF7LTsylPSZxdRbiV?=
- =?us-ascii?Q?vBc9JZFF/YpcWAZ2gGTUsJz7eu2xVI1rwlaMJJNqMbx/egMjs4FMxOrmXYqT?=
- =?us-ascii?Q?gCZO4dz/gunPyi1lAZJe4HPkGjMKj7jcpdcDkkkhybvOm8g43uj/ehqs8JeK?=
- =?us-ascii?Q?19L0x6cw0UdnR6vFjx0cOIlae27YxRFV02/kuwqgoVXkrJ2Qnde0wIKHGGDF?=
- =?us-ascii?Q?nO+I7Ql/lWgsn98BIhWmHcEGAZLmDtlhteQLehsrI/D3mXHo1pqcyu7IFNZY?=
- =?us-ascii?Q?cL/h5n1pZ/1Zu6JZhsrXR+k3kZqexTquh/EShR9Qb6rIWB3+SCfsWPpWMkN1?=
- =?us-ascii?Q?ajILT3egyJSF0OXTkIorvfdTSVn2zSRYxbu3oDRsvVDGj3Xx8dko6Mu1odLZ?=
- =?us-ascii?Q?0M+SdQJcWgDbvQMZ/E3+AaXnHM/eZHpfyJx7qcAnyKgk/mBEI9CCXsl1yeIB?=
- =?us-ascii?Q?WOZwFSl5GlGUyKiXfVaRNkd21xJNyl+ZEWKPF7P5ddjH0l3ZAcL/Li3BVugS?=
- =?us-ascii?Q?EdxbBYkawFmIYRbWK1Vouj9pbDdUtZrCYFM3tdAKM/nUeMhjVWB+eg5Sal+l?=
- =?us-ascii?Q?74592KvZwLxn2tV17QQnnQprIZFezrQLQlPEBR6nbD9JOPIECursDSYb1HOG?=
- =?us-ascii?Q?ORje4qox23rfE72iZHaCyyQeVk0CRaZftHsBMputgQorQtKH2iVluLt115Wo?=
- =?us-ascii?Q?IQMlDXwtxZ7cUmelnkai7N6GtkADPkHlTpBgbIT6ylFCp5dq+yZyFLirBfX+?=
- =?us-ascii?Q?mw9xJbWf66cpS82tNU0NcITJnLrKspDdALYz9k2o+nqHL3nVQTxpy95S6Fpn?=
- =?us-ascii?Q?XOD9BZHOSYK6Idz553NxY77kzoRsntz2SsdeLZwlXoPMyt+A9RQZ+7X/OJRQ?=
- =?us-ascii?Q?pUIEEzj+Fs8c41GL/S7dr1qevFznXgPhGSb8JXYiyKpTIHdhVqdhkmQ6+wt3?=
- =?us-ascii?Q?m0t81evSDKVYt7H68Jb13LyhDv8i2PEeyZTsNzFqe0ldIOfCa7mBhRJgH7d4?=
- =?us-ascii?Q?b4vBRm6YTj230GCWmWXqI8dDhxgZuo4Yla8jhQh4rul6jsmbeyzN3NSigSHQ?=
- =?us-ascii?Q?g/JEowWfW1FujHMTXuhLF/sKIvwqH10mhqfosaDNhz5tsIms5/qwNfIkTafK?=
- =?us-ascii?Q?dcxcNXL76iycA2qlU5dOgl8=3D?=
-X-OriginatorOrg: renesas.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 
- 60ad8021-bd38-4a28-58bb-08dbeb0c920c
-X-MS-Exchange-CrossTenant-AuthSource: TYCPR01MB10914.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Nov 2023 03:39:02.6892
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 53d82571-da19-47e4-9cb4-625a166a4a2a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 
- iglFpBPvGNWQN5OdBhB0IKb6KSBhZ20YvBCzzNrMlYdWfMZ50FmwToWEl1dkgVXL/8CoYmO1xxp+gdqmzpfGv+9uRNOuuyjduuZeltL6GwWR0c07IEi8lv9dysF2irU1
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYCPR01MB11224
-Message-ID-Hash: PO7L3BSGN5PANV32G3UT34Y4WG4J2W7K
-X-Message-ID-Hash: PO7L3BSGN5PANV32G3UT34Y4WG4J2W7K
-X-MailFrom: kuninori.morimoto.gx@renesas.com
+	by alsa1.perex.cz (Postfix) with ESMTPS id B94A7F80254
+	for <alsa-devel@alsa-project.org>; Wed, 22 Nov 2023 09:03:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B94A7F80254
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 07D2520173C;
+	Wed, 22 Nov 2023 09:03:56 +0100 (CET)
+Received: from aprdc01srsp001v.ap-rdc01.nxp.com
+ (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
+	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 9487B2011A5;
+	Wed, 22 Nov 2023 09:03:55 +0100 (CET)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net
+ [10.192.224.44])
+	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 976CF1834870;
+	Wed, 22 Nov 2023 16:03:53 +0800 (+08)
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
+To: hverkuil@xs4all.nl,
+	sakari.ailus@iki.fi,
+	tfiga@chromium.org,
+	m.szyprowski@samsung.com,
+	mchehab@kernel.org,
+	linux-media@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	shengjiu.wang@gmail.com,
+	Xiubo.Lee@gmail.com,
+	festevam@gmail.com,
+	nicoleotsuka@gmail.com,
+	lgirdwood@gmail.com,
+	broonie@kernel.org,
+	perex@perex.cz,
+	tiwai@suse.com,
+	alsa-devel@alsa-project.org,
+	linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH v11 01/15] ASoC: fsl_asrc: define functions for memory to
+ memory usage
+Date: Wed, 22 Nov 2023 15:23:44 +0800
+Message-Id: <1700637838-6743-2-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1700637838-6743-1-git-send-email-shengjiu.wang@nxp.com>
+References: <1700637838-6743-1-git-send-email-shengjiu.wang@nxp.com>
+X-Virus-Scanned: ClamAV using ClamSMTP
+Message-ID-Hash: F5CWOEIGABUCU5EZV4DU5SRNPU4KOY46
+X-Message-ID-Hash: F5CWOEIGABUCU5EZV4DU5SRNPU4KOY46
+X-MailFrom: shengjiu.wang@nxp.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -157,7 +85,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PO7L3BSGN5PANV32G3UT34Y4WG4J2W7K/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/F5CWOEIGABUCU5EZV4DU5SRNPU4KOY46/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -166,34 +94,254 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+ASRC can be used on memory to memory case, define several
+functions for m2m usage.
 
-Hi Daniel
+m2m_prepare: prepare for the start step
+m2m_start: the start step
+m2m_unprepare: unprepare for stop step, optional
+m2m_stop: stop step
+m2m_check_format: check format is supported or not
+m2m_calc_out_len: calculate output length according to input length
+m2m_get_maxburst: burst size for dma
+m2m_pair_suspend: suspend function of pair, optional.
+m2m_pair_resume: resume function of pair
+get_output_fifo_size: get remaining data size in FIFO
 
-> > But hmm... in your case, you need to setup 2ports, and use 2nd port
-> > is assumed approach.
-> > Why you don't setup full port ? Do you have some reason ??
-(snip)
-> Now, I want to write a DTS description where my DAI link uses
-> Component 0 (CPU) (with its DAI index 1) connected with Component 1
-> (codec) (with its DAI index 0).
-
-Thank you for indicating your DTS.
-
-So in imx8m_dai case, it has total 3 DAIs, and you want to use reg = 1.
-In such case, your DTS need to have like below, if my understanding was
-correct.
-
-	dsp: dsp@3b6e8000 {
-		ports {
-			     port@0 { reg = <0>;         endpoint { /* not used */ };  };
-			cpu: port@1 { reg = <1>; cpu_ep: endpoint { remote-endpoint = <xxx>; }; };
-			     port@2 { reg = <2>;         endpoint { /* not used */ };  };
-		};
-	};
-
-
-Thank you for your help !!
-
-Best regards
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+Acked-by: Mark Brown <broonie@kernel.org>
 ---
-Kuninori Morimoto
+ sound/soc/fsl/fsl_asrc.c        | 126 ++++++++++++++++++++++++++++++++
+ sound/soc/fsl/fsl_asrc.h        |   2 +
+ sound/soc/fsl/fsl_asrc_common.h |  37 ++++++++++
+ 3 files changed, 165 insertions(+)
+
+diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
+index b793263291dc..7d8643ee0ba0 100644
+--- a/sound/soc/fsl/fsl_asrc.c
++++ b/sound/soc/fsl/fsl_asrc.c
+@@ -1063,6 +1063,124 @@ static int fsl_asrc_get_fifo_addr(u8 dir, enum asrc_pair_index index)
+ 	return REG_ASRDx(dir, index);
+ }
+ 
++/* Get sample numbers in FIFO */
++static unsigned int fsl_asrc_get_output_fifo_size(struct fsl_asrc_pair *pair)
++{
++	struct fsl_asrc *asrc = pair->asrc;
++	enum asrc_pair_index index = pair->index;
++	u32 val;
++
++	regmap_read(asrc->regmap, REG_ASRFST(index), &val);
++
++	val &= ASRFSTi_OUTPUT_FIFO_MASK;
++
++	return val >> ASRFSTi_OUTPUT_FIFO_SHIFT;
++}
++
++static int fsl_asrc_m2m_prepare(struct fsl_asrc_pair *pair)
++{
++	struct fsl_asrc_pair_priv *pair_priv = pair->private;
++	struct fsl_asrc *asrc = pair->asrc;
++	struct device *dev = &asrc->pdev->dev;
++	struct asrc_config config;
++	int ret;
++
++	/* fill config */
++	config.pair = pair->index;
++	config.channel_num = pair->channels;
++	config.input_sample_rate = pair->rate[IN];
++	config.output_sample_rate = pair->rate[OUT];
++	config.input_format = pair->sample_format[IN];
++	config.output_format = pair->sample_format[OUT];
++	config.inclk = INCLK_NONE;
++	config.outclk = OUTCLK_ASRCK1_CLK;
++
++	pair_priv->config = &config;
++	ret = fsl_asrc_config_pair(pair, true);
++	if (ret) {
++		dev_err(dev, "failed to config pair: %d\n", ret);
++		return ret;
++	}
++
++	pair->first_convert = 1;
++
++	return 0;
++}
++
++static int fsl_asrc_m2m_start(struct fsl_asrc_pair *pair)
++{
++	if (pair->first_convert) {
++		fsl_asrc_start_pair(pair);
++		pair->first_convert = 0;
++	}
++	/*
++	 * Clear DMA request during the stall state of ASRC:
++	 * During STALL state, the remaining in input fifo would never be
++	 * smaller than the input threshold while the output fifo would not
++	 * be bigger than output one. Thus the DMA request would be cleared.
++	 */
++	fsl_asrc_set_watermarks(pair, ASRC_FIFO_THRESHOLD_MIN,
++				ASRC_FIFO_THRESHOLD_MAX);
++
++	/* Update the real input threshold to raise DMA request */
++	fsl_asrc_set_watermarks(pair, ASRC_M2M_INPUTFIFO_WML,
++				ASRC_M2M_OUTPUTFIFO_WML);
++
++	return 0;
++}
++
++static int fsl_asrc_m2m_stop(struct fsl_asrc_pair *pair)
++{
++	if (!pair->first_convert) {
++		fsl_asrc_stop_pair(pair);
++		pair->first_convert = 1;
++	}
++
++	return 0;
++}
++
++/* calculate capture data length according to output data length and sample rate */
++static int fsl_asrc_m2m_calc_out_len(struct fsl_asrc_pair *pair, int input_buffer_length)
++{
++	unsigned int in_width, out_width;
++	unsigned int channels = pair->channels;
++	unsigned int in_samples, out_samples;
++	unsigned int out_length;
++
++	in_width = snd_pcm_format_physical_width(pair->sample_format[IN]) / 8;
++	out_width = snd_pcm_format_physical_width(pair->sample_format[OUT]) / 8;
++
++	in_samples = input_buffer_length / in_width / channels;
++	out_samples = pair->rate[OUT] * in_samples / pair->rate[IN];
++	out_length = (out_samples - ASRC_OUTPUT_LAST_SAMPLE) * out_width * channels;
++
++	return out_length;
++}
++
++static int fsl_asrc_m2m_get_maxburst(u8 dir, struct fsl_asrc_pair *pair)
++{
++	struct fsl_asrc *asrc = pair->asrc;
++	struct fsl_asrc_priv *asrc_priv = asrc->private;
++	int wml = (dir == IN) ? ASRC_M2M_INPUTFIFO_WML : ASRC_M2M_OUTPUTFIFO_WML;
++
++	if (!asrc_priv->soc->use_edma)
++		return wml * pair->channels;
++	else
++		return 1;
++}
++
++static int fsl_asrc_m2m_pair_resume(struct fsl_asrc_pair *pair)
++{
++	struct fsl_asrc *asrc = pair->asrc;
++	int i;
++
++	for (i = 0; i < pair->channels * 4; i++)
++		regmap_write(asrc->regmap, REG_ASRDI(pair->index), 0);
++
++	pair->first_convert = 1;
++	return 0;
++}
++
+ static int fsl_asrc_runtime_resume(struct device *dev);
+ static int fsl_asrc_runtime_suspend(struct device *dev);
+ 
+@@ -1147,6 +1265,14 @@ static int fsl_asrc_probe(struct platform_device *pdev)
+ 	asrc->get_fifo_addr = fsl_asrc_get_fifo_addr;
+ 	asrc->pair_priv_size = sizeof(struct fsl_asrc_pair_priv);
+ 
++	asrc->m2m_prepare = fsl_asrc_m2m_prepare;
++	asrc->m2m_start = fsl_asrc_m2m_start;
++	asrc->m2m_stop = fsl_asrc_m2m_stop;
++	asrc->get_output_fifo_size = fsl_asrc_get_output_fifo_size;
++	asrc->m2m_calc_out_len = fsl_asrc_m2m_calc_out_len;
++	asrc->m2m_get_maxburst = fsl_asrc_m2m_get_maxburst;
++	asrc->m2m_pair_resume = fsl_asrc_m2m_pair_resume;
++
+ 	if (of_device_is_compatible(np, "fsl,imx35-asrc")) {
+ 		asrc_priv->clk_map[IN] = input_clk_map_imx35;
+ 		asrc_priv->clk_map[OUT] = output_clk_map_imx35;
+diff --git a/sound/soc/fsl/fsl_asrc.h b/sound/soc/fsl/fsl_asrc.h
+index 86d2422ad606..1c492eb237f5 100644
+--- a/sound/soc/fsl/fsl_asrc.h
++++ b/sound/soc/fsl/fsl_asrc.h
+@@ -12,6 +12,8 @@
+ 
+ #include  "fsl_asrc_common.h"
+ 
++#define ASRC_M2M_INPUTFIFO_WML		0x4
++#define ASRC_M2M_OUTPUTFIFO_WML		0x2
+ #define ASRC_DMA_BUFFER_NUM		2
+ #define ASRC_INPUTFIFO_THRESHOLD	32
+ #define ASRC_OUTPUTFIFO_THRESHOLD	32
+diff --git a/sound/soc/fsl/fsl_asrc_common.h b/sound/soc/fsl/fsl_asrc_common.h
+index 7e1c13ca37f1..3b53d366182f 100644
+--- a/sound/soc/fsl/fsl_asrc_common.h
++++ b/sound/soc/fsl/fsl_asrc_common.h
+@@ -34,6 +34,12 @@ enum asrc_pair_index {
+  * @pos: hardware pointer position
+  * @req_dma_chan: flag to release dev_to_dev chan
+  * @private: pair private area
++ * @complete: dma task complete
++ * @sample_format: format of m2m
++ * @rate: rate of m2m
++ * @buf_len: buffer length of m2m
++ * @first_convert: start of conversion
++ * @req_pair: flag for request pair
+  */
+ struct fsl_asrc_pair {
+ 	struct fsl_asrc *asrc;
+@@ -49,6 +55,14 @@ struct fsl_asrc_pair {
+ 	bool req_dma_chan;
+ 
+ 	void *private;
++
++	/* used for m2m */
++	struct completion complete[2];
++	snd_pcm_format_t sample_format[2];
++	unsigned int rate[2];
++	unsigned int buf_len[2];
++	unsigned int first_convert;
++	bool req_pair;
+ };
+ 
+ /**
+@@ -72,6 +86,16 @@ struct fsl_asrc_pair {
+  * @request_pair: function pointer
+  * @release_pair: function pointer
+  * @get_fifo_addr: function pointer
++ * @m2m_prepare: function pointer
++ * @m2m_start: function pointer
++ * @m2m_unprepare: function pointer
++ * @m2m_stop: function pointer
++ * @m2m_calc_out_len: function pointer
++ * @m2m_get_maxburst: function pointer
++ * @m2m_pair_suspend: function pointer
++ * @m2m_pair_resume: function pointer
++ * @m2m_set_ratio_mod: function pointer
++ * @get_output_fifo_size: function pointer
+  * @pair_priv_size: size of pair private struct.
+  * @private: private data structure
+  */
+@@ -97,6 +121,19 @@ struct fsl_asrc {
+ 	int (*request_pair)(int channels, struct fsl_asrc_pair *pair);
+ 	void (*release_pair)(struct fsl_asrc_pair *pair);
+ 	int (*get_fifo_addr)(u8 dir, enum asrc_pair_index index);
++
++	int (*m2m_prepare)(struct fsl_asrc_pair *pair);
++	int (*m2m_start)(struct fsl_asrc_pair *pair);
++	int (*m2m_unprepare)(struct fsl_asrc_pair *pair);
++	int (*m2m_stop)(struct fsl_asrc_pair *pair);
++
++	int (*m2m_calc_out_len)(struct fsl_asrc_pair *pair, int input_buffer_length);
++	int (*m2m_get_maxburst)(u8 dir, struct fsl_asrc_pair *pair);
++	int (*m2m_pair_suspend)(struct fsl_asrc_pair *pair);
++	int (*m2m_pair_resume)(struct fsl_asrc_pair *pair);
++	int (*m2m_set_ratio_mod)(struct fsl_asrc_pair *pair, int val);
++
++	unsigned int (*get_output_fifo_size)(struct fsl_asrc_pair *pair);
+ 	size_t pair_priv_size;
+ 
+ 	void *private;
+-- 
+2.34.1
+
