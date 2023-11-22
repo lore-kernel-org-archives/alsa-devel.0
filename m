@@ -4,47 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DB406C072A2
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Nov 2023 08:11:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 96691C61D92
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Nov 2023 08:12:06 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 43844DEE;
-	Wed, 22 Nov 2023 09:11:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 43844DEE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0BEF7E10;
+	Wed, 22 Nov 2023 09:11:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0BEF7E10
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1700640704;
-	bh=7X9Bd1opLuXj+GGluY7cbJpqNijaZVO8ojsOVPmhCNA=;
+	s=default; t=1700640725;
+	bh=VaXRAskkFkAJw41Tn/lspCXQ8BIFl4AFIBp+GzUUtiM=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=j4TCCnVswppiWO4m8T5gb2+F0Y14+FOHQSCDWb+SWQeCQIJuXW0/22+Soy4AFWoT4
-	 V1nEkYAeHHQ2TPr6cldyPR2juBQ4pGeLIoTIiYXzODU43QKf8e63ZhfV+B1eNOcrxK
-	 UbFS13gedwdjokhLNz4uNB1Z8g0RQGzA4fEV6Otw=
+	b=B4d+G/b16SY48Ovg+nfuNpxxxoiKtU9LZmD1KqvmYs+8WHn8HBt2o8NKjXkRppZjG
+	 dKcDZxfA+DFqUxFPyHDun2RziOwd+mov2A2dUmsho8aTwe0+VORiS2YDRgcuWwz4ws
+	 6m5/AL9tVG+NKSbJhinF5fve69coIcdUGavh7Wlo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E9539F805F3; Wed, 22 Nov 2023 09:10:44 +0100 (CET)
+	id D8503F8061D; Wed, 22 Nov 2023 09:10:46 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 80736F805DA;
-	Wed, 22 Nov 2023 09:10:44 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C6D47F80611;
+	Wed, 22 Nov 2023 09:10:45 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 10E44F80558; Wed, 22 Nov 2023 09:04:34 +0100 (CET)
+	id 3EF2CF80551; Wed, 22 Nov 2023 09:04:36 +0100 (CET)
 Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 32ABFF80254
-	for <alsa-devel@alsa-project.org>; Wed, 22 Nov 2023 09:04:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 32ABFF80254
+	by alsa1.perex.cz (Postfix) with ESMTPS id 2B8FFF80093
+	for <alsa-devel@alsa-project.org>; Wed, 22 Nov 2023 09:04:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2B8FFF80093
 Received: from inva021.nxp.com (localhost [127.0.0.1])
-	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id D00832011A5;
-	Wed, 22 Nov 2023 09:04:07 +0100 (CET)
+	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id CE3FB20174A;
+	Wed, 22 Nov 2023 09:04:10 +0100 (CET)
 Received: from aprdc01srsp001v.ap-rdc01.nxp.com
  (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
-	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 6817020119C;
-	Wed, 22 Nov 2023 09:04:07 +0100 (CET)
+	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 5EA70201748;
+	Wed, 22 Nov 2023 09:04:10 +0100 (CET)
 Received: from localhost.localdomain (shlinux2.ap.freescale.net
  [10.192.224.44])
-	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 6E4C7181D0E2;
-	Wed, 22 Nov 2023 16:04:05 +0800 (+08)
+	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 62C201834870;
+	Wed, 22 Nov 2023 16:04:08 +0800 (+08)
 From: Shengjiu Wang <shengjiu.wang@nxp.com>
 To: hverkuil@xs4all.nl,
 	sakari.ailus@iki.fi,
@@ -63,15 +63,15 @@ To: hverkuil@xs4all.nl,
 	tiwai@suse.com,
 	alsa-devel@alsa-project.org,
 	linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH v11 09/15] media: uapi: Add V4L2_CTRL_CLASS_M2M_AUDIO
-Date: Wed, 22 Nov 2023 15:23:52 +0800
-Message-Id: <1700637838-6743-10-git-send-email-shengjiu.wang@nxp.com>
+Subject: [PATCH v11 11/15] media: uapi: Declare interface types for Audio
+Date: Wed, 22 Nov 2023 15:23:54 +0800
+Message-Id: <1700637838-6743-12-git-send-email-shengjiu.wang@nxp.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1700637838-6743-1-git-send-email-shengjiu.wang@nxp.com>
 References: <1700637838-6743-1-git-send-email-shengjiu.wang@nxp.com>
 X-Virus-Scanned: ClamAV using ClamSMTP
-Message-ID-Hash: XKLVRN4TLMWAYC5MTI2EQVSMA7622DG4
-X-Message-ID-Hash: XKLVRN4TLMWAYC5MTI2EQVSMA7622DG4
+Message-ID-Hash: B3GFF35ZOUNYVVELWQEMP3MQLKUE3XM5
+X-Message-ID-Hash: B3GFF35ZOUNYVVELWQEMP3MQLKUE3XM5
 X-MailFrom: shengjiu.wang@nxp.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -84,7 +84,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XKLVRN4TLMWAYC5MTI2EQVSMA7622DG4/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/B3GFF35ZOUNYVVELWQEMP3MQLKUE3XM5/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -93,118 +93,91 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The Audio M2M class includes controls for audio memory-to-memory
-use cases. The controls can be used for audio codecs, audio
-preprocessing, audio postprocessing.
+Declare the interface types that will be used by Audio.
+The type is MEDIA_INTF_T_V4L_AUDIO.
 
 Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 ---
- .../userspace-api/media/v4l/common.rst        |  1 +
- .../media/v4l/ext-ctrls-audio-m2m.rst         | 21 +++++++++++++++++++
- .../media/v4l/vidioc-g-ext-ctrls.rst          |  4 ++++
- drivers/media/v4l2-core/v4l2-ctrls-defs.c     |  4 ++++
- include/uapi/linux/v4l2-controls.h            |  4 ++++
- 5 files changed, 34 insertions(+)
- create mode 100644 Documentation/userspace-api/media/v4l/ext-ctrls-audio-m2m.rst
+ .../userspace-api/media/mediactl/media-types.rst    |  5 +++++
+ drivers/media/v4l2-core/v4l2-dev.c                  |  4 ++++
+ drivers/media/v4l2-core/v4l2-mem2mem.c              | 13 +++++++++----
+ include/uapi/linux/media.h                          |  1 +
+ 4 files changed, 19 insertions(+), 4 deletions(-)
 
-diff --git a/Documentation/userspace-api/media/v4l/common.rst b/Documentation/userspace-api/media/v4l/common.rst
-index ea0435182e44..d5366e96a596 100644
---- a/Documentation/userspace-api/media/v4l/common.rst
-+++ b/Documentation/userspace-api/media/v4l/common.rst
-@@ -52,6 +52,7 @@ applicable to all devices.
-     ext-ctrls-fm-rx
-     ext-ctrls-detect
-     ext-ctrls-colorimetry
-+    ext-ctrls-audio-m2m
-     fourcc
-     format
-     planar-apis
-diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-audio-m2m.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-audio-m2m.rst
-new file mode 100644
-index 000000000000..82d2ecedbfee
---- /dev/null
-+++ b/Documentation/userspace-api/media/v4l/ext-ctrls-audio-m2m.rst
-@@ -0,0 +1,21 @@
-+.. SPDX-License-Identifier: GFDL-1.1-no-invariants-or-later
-+
-+.. _audiom2m-controls:
-+
-+***************************
-+Audio M2M Control Reference
-+***************************
-+
-+The Audio M2M class includes controls for audio memory-to-memory
-+use cases. The controls can be used for audio codecs, audio
-+preprocessing, audio postprocessing.
-+
-+Audio M2M Control IDs
-+-----------------------
-+
-+.. _audiom2m-control-id:
-+
-+``V4L2_CID_M2M_AUDIO_CLASS (class)``
-+    The Audio M2M class descriptor. Calling
-+    :ref:`VIDIOC_QUERYCTRL` for this control will
-+    return a description of this control class.
-diff --git a/Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst b/Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst
-index f9f73530a6be..e8475f9fd2cf 100644
---- a/Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst
-+++ b/Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst
-@@ -480,6 +480,10 @@ still cause this situation.
-       - 0xa50000
-       - The class containing colorimetry controls. These controls are
- 	described in :ref:`colorimetry-controls`.
-+    * - ``V4L2_CTRL_CLASS_M2M_AUDIO``
-+      - 0xa60000
-+      - The class containing audio m2m controls. These controls are
-+	described in :ref:`audiom2m-controls`.
+diff --git a/Documentation/userspace-api/media/mediactl/media-types.rst b/Documentation/userspace-api/media/mediactl/media-types.rst
+index 0ffeece1e0c8..f0880aea41d6 100644
+--- a/Documentation/userspace-api/media/mediactl/media-types.rst
++++ b/Documentation/userspace-api/media/mediactl/media-types.rst
+@@ -265,6 +265,7 @@ Types and flags used to represent the media graph elements
+ .. _MEDIA-INTF-T-V4L-SUBDEV:
+ .. _MEDIA-INTF-T-V4L-SWRADIO:
+ .. _MEDIA-INTF-T-V4L-TOUCH:
++.. _MEDIA-INTF-T-V4L-AUDIO:
+ .. _MEDIA-INTF-T-ALSA-PCM-CAPTURE:
+ .. _MEDIA-INTF-T-ALSA-PCM-PLAYBACK:
+ .. _MEDIA-INTF-T-ALSA-CONTROL:
+@@ -322,6 +323,10 @@ Types and flags used to represent the media graph elements
+        -  Device node interface for Touch device (V4L)
+        -  typically, /dev/v4l-touch?
  
- Return Value
- ============
-diff --git a/drivers/media/v4l2-core/v4l2-ctrls-defs.c b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
-index 8696eb1cdd61..2a85ea3dc92f 100644
---- a/drivers/media/v4l2-core/v4l2-ctrls-defs.c
-+++ b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
-@@ -1242,6 +1242,9 @@ const char *v4l2_ctrl_get_name(u32 id)
- 	case V4L2_CID_COLORIMETRY_CLASS:	return "Colorimetry Controls";
- 	case V4L2_CID_COLORIMETRY_HDR10_CLL_INFO:		return "HDR10 Content Light Info";
- 	case V4L2_CID_COLORIMETRY_HDR10_MASTERING_DISPLAY:	return "HDR10 Mastering Display";
++    *  -  ``MEDIA_INTF_T_V4L_AUDIO``
++       -  Device node interface for Audio device (V4L)
++       -  typically, /dev/v4l-audio?
 +
-+	/* Audio M2M controls */
-+	case V4L2_CID_M2M_AUDIO_CLASS:  return "Audio M2M Controls";
+     *  -  ``MEDIA_INTF_T_ALSA_PCM_CAPTURE``
+        -  Device node interface for ALSA PCM Capture
+        -  typically, /dev/snd/pcmC?D?c
+diff --git a/drivers/media/v4l2-core/v4l2-dev.c b/drivers/media/v4l2-core/v4l2-dev.c
+index b92c760b611a..c3a7d974db26 100644
+--- a/drivers/media/v4l2-core/v4l2-dev.c
++++ b/drivers/media/v4l2-core/v4l2-dev.c
+@@ -842,6 +842,10 @@ static int video_register_media_controller(struct video_device *vdev)
+ 		intf_type = MEDIA_INTF_T_V4L_SUBDEV;
+ 		/* Entity will be created via v4l2_device_register_subdev() */
+ 		break;
++	case VFL_TYPE_AUDIO:
++		intf_type = MEDIA_INTF_T_V4L_AUDIO;
++		/* Entity will be created via v4l2_device_register_subdev() */
++		break;
  	default:
- 		return NULL;
+ 		return 0;
  	}
-@@ -1451,6 +1454,7 @@ void v4l2_ctrl_fill(u32 id, const char **name, enum v4l2_ctrl_type *type,
- 	case V4L2_CID_DETECT_CLASS:
- 	case V4L2_CID_CODEC_STATELESS_CLASS:
- 	case V4L2_CID_COLORIMETRY_CLASS:
-+	case V4L2_CID_M2M_AUDIO_CLASS:
- 		*type = V4L2_CTRL_TYPE_CTRL_CLASS;
- 		/* You can neither read nor write these */
- 		*flags |= V4L2_CTRL_FLAG_READ_ONLY | V4L2_CTRL_FLAG_WRITE_ONLY;
-diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4l2-controls.h
-index 68db66d4aae8..7d318065a33d 100644
---- a/include/uapi/linux/v4l2-controls.h
-+++ b/include/uapi/linux/v4l2-controls.h
-@@ -30,6 +30,7 @@
- #define V4L2_CTRL_CLASS_DETECT		0x00a30000	/* Detection controls */
- #define V4L2_CTRL_CLASS_CODEC_STATELESS 0x00a40000	/* Stateless codecs controls */
- #define V4L2_CTRL_CLASS_COLORIMETRY	0x00a50000	/* Colorimetry controls */
-+#define V4L2_CTRL_CLASS_M2M_AUDIO	0x00a60000	/* Audio M2M controls */
+diff --git a/drivers/media/v4l2-core/v4l2-mem2mem.c b/drivers/media/v4l2-core/v4l2-mem2mem.c
+index 0cc30397fbad..bf41d112b742 100644
+--- a/drivers/media/v4l2-core/v4l2-mem2mem.c
++++ b/drivers/media/v4l2-core/v4l2-mem2mem.c
+@@ -1134,10 +1134,15 @@ int v4l2_m2m_register_media_controller(struct v4l2_m2m_dev *m2m_dev,
+ 	if (ret)
+ 		goto err_rm_links0;
  
- /* User-class control IDs */
+-	/* Create video interface */
+-	m2m_dev->intf_devnode = media_devnode_create(mdev,
+-			MEDIA_INTF_T_V4L_VIDEO, 0,
+-			VIDEO_MAJOR, vdev->minor);
++	if (vdev->vfl_type == VFL_TYPE_AUDIO)
++		m2m_dev->intf_devnode = media_devnode_create(mdev,
++				MEDIA_INTF_T_V4L_AUDIO, 0,
++				VIDEO_MAJOR, vdev->minor);
++	else
++		/* Create video interface */
++		m2m_dev->intf_devnode = media_devnode_create(mdev,
++				MEDIA_INTF_T_V4L_VIDEO, 0,
++				VIDEO_MAJOR, vdev->minor);
+ 	if (!m2m_dev->intf_devnode) {
+ 		ret = -ENOMEM;
+ 		goto err_rm_links1;
+diff --git a/include/uapi/linux/media.h b/include/uapi/linux/media.h
+index 1c80b1d6bbaf..9ff6dec7393a 100644
+--- a/include/uapi/linux/media.h
++++ b/include/uapi/linux/media.h
+@@ -260,6 +260,7 @@ struct media_links_enum {
+ #define MEDIA_INTF_T_V4L_SUBDEV			(MEDIA_INTF_T_V4L_BASE + 3)
+ #define MEDIA_INTF_T_V4L_SWRADIO		(MEDIA_INTF_T_V4L_BASE + 4)
+ #define MEDIA_INTF_T_V4L_TOUCH			(MEDIA_INTF_T_V4L_BASE + 5)
++#define MEDIA_INTF_T_V4L_AUDIO			(MEDIA_INTF_T_V4L_BASE + 6)
  
-@@ -3485,6 +3486,9 @@ struct v4l2_ctrl_av1_film_grain {
- 	__u8 reserved[4];
- };
- 
-+#define V4L2_CID_M2M_AUDIO_CLASS_BASE  (V4L2_CTRL_CLASS_M2M_AUDIO | 0x900)
-+#define V4L2_CID_M2M_AUDIO_CLASS       (V4L2_CTRL_CLASS_M2M_AUDIO | 1)
-+
- /* MPEG-compression definitions kept for backwards compatibility */
- #ifndef __KERNEL__
- #define V4L2_CTRL_CLASS_MPEG            V4L2_CTRL_CLASS_CODEC
+ #define MEDIA_INTF_T_ALSA_BASE			0x00000300
+ #define MEDIA_INTF_T_ALSA_PCM_CAPTURE		(MEDIA_INTF_T_ALSA_BASE)
 -- 
 2.34.1
 
