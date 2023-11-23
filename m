@@ -4,89 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 191A0C5AD4C
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Nov 2023 10:58:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7DB1DC61D85
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Nov 2023 10:58:52 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 583D3E88;
-	Thu, 23 Nov 2023 11:58:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 583D3E88
+	by alsa0.perex.cz (Postfix) with ESMTPS id C1949DF9;
+	Thu, 23 Nov 2023 11:58:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C1949DF9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1700737104;
-	bh=bhy5X8J4bW3JUFkqLxglSaxiMjPGwfUWdoi1ZbNd59Q=;
+	s=default; t=1700737130;
+	bh=QlEMx+TsFOPoBFeZNCrkKIWwlNxeYvuABO9DeJx76Ag=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=RuRIc5Ubseew2KN+UsQcOkt+UUmszFxEmUUs7oT0Qw4cPubNc0D1VykM7Ncfg3ue+
-	 ueAHKeEDA3eF8lmstEr10EJB1Sd+I3mP0oXQWWDYr3fyVn72vjZcE56aDqsCBBGQno
-	 gtESv8IqESbvKbjqq/0m12owzqF9eOX3Qr0QIois=
+	b=UQ5jRJioPnAaADbxtoOhWsjpqIVEre5dKUEIZ2T+wD9TeOusH06vHlyU6GkFBPwLY
+	 dhp8OUMRTH+uZTh4czKCHXAkzqqHleWbAqWibd7FJdm6ZJ89CYo55IFGCDZ20gobha
+	 E2F5U2pavR30YF1qSdneY+DEipNJ/fp+6F4rN/Pg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 573D2F80589; Thu, 23 Nov 2023 11:57:53 +0100 (CET)
+	id BECFBF80564; Thu, 23 Nov 2023 11:58:30 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C0963F80588;
-	Thu, 23 Nov 2023 11:57:52 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 73FD7F80588;
+	Thu, 23 Nov 2023 11:58:30 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A4349F802E8; Thu, 23 Nov 2023 11:57:47 +0100 (CET)
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com
- [IPv6:2a00:1450:4864:20::42c])
+	id 285E0F802E8; Thu, 23 Nov 2023 11:58:26 +0100 (CET)
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com
+ [IPv6:2a00:1450:4864:20::334])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 63F11F80093
-	for <alsa-devel@alsa-project.org>; Thu, 23 Nov 2023 11:57:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 63F11F80093
+	by alsa1.perex.cz (Postfix) with ESMTPS id C1DD1F80093
+	for <alsa-devel@alsa-project.org>; Thu, 23 Nov 2023 11:58:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C1DD1F80093
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=Z89H+np7
-Received: by mail-wr1-x42c.google.com with SMTP id
- ffacd0b85a97d-3316bb1303bso415487f8f.0
+ header.s=google header.b=Cos0uwzL
+Received: by mail-wm1-x334.google.com with SMTP id
+ 5b1f17b1804b1-40839652b97so4399475e9.3
         for <alsa-devel@alsa-project.org>;
- Thu, 23 Nov 2023 02:57:42 -0800 (PST)
+ Thu, 23 Nov 2023 02:58:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700737061; x=1701341861;
+        d=linaro.org; s=google; t=1700737101; x=1701341901;
  darn=alsa-project.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=+y8GqhplESEfvOMr6yusQxqrSvhQKePmum3wvwP/q1E=;
-        b=Z89H+np7I893p+Fzlq7m/ID9uzg0ShfuKDlf4fgPZeXUCN1pw3SA45NAeay2pEPMt/
-         5tYco/olKLSt9zuLsS14I8QrSbsLRIf1KuVFBG9nxsKa6o0s+CbBHvY1vq/r4o5W4IsZ
-         ixFZjaL0mFXggnGK/CxeV86Ozs1kyI4y5yhaaIlhEzBIobnxj5qmUHxXIpKpvH6Sb2S6
-         Ic8B4edAWsfDYLftXVFT92Vm7CtB21gVqeCVeVyXHD/M0EWrI8nishLKuIAn1ZMLZFnT
-         lkGDLTdRSaR8UcwwBILcW8tMN9seulIAJtwDgyJrzt82DuGpVD6Yk+DTqRT1vyMI3UWu
-         VA9Q==
+        bh=tqBAdO1zKF8ljfRCPt++e5LSU5ewUNxfyiSB8BZlHv8=;
+        b=Cos0uwzLvVj2xTHywo5LbDJthzjufD1lC87I53viz+Q0+yxiiYLVBmTKHFLsCfvd1g
+         vSNdQdGbEGzCR6/UD+AfDpVughNHZ834PkWJVDIOeWGoJtQ0aCF4rmqWA+3rA372vaOo
+         48olgEYyE+gEeavAwV2q7902N2WXXQPLlwl4imdu0FVYkSplM54vAIshIQuipYrHnPYl
+         XZg2/5HYQpPVJ23O9CVej8IAX6qO+35teB5uRngl33uPyKCqL+WiCktjthQsqRi7Pj20
+         2wIXiH8vG78z2WOoAXxfaDIt4g7IZw/rlmxORgCFcj7t9Q9rnSiz4DEB119IfOXKcq+k
+         vdhQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700737061; x=1701341861;
+        d=1e100.net; s=20230601; t=1700737101; x=1701341901;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+y8GqhplESEfvOMr6yusQxqrSvhQKePmum3wvwP/q1E=;
-        b=nysfEqTe/cYc/YBzBOfeschktF8WNpGzzj26qqxX1tKy5ZPjWAelKBnzYBF7P/wLMq
-         gglOnybm8RE5h0J71Js/MRI+7iMswD8vb47oet6g+jBFMNQqTW+YyxKhz1w+EZarDqjY
-         pEjuWS+Y7Y12oqzxEk7T/TT8mCPaKaASY9OtKaE7JdnlmN+wfugN6CxRH5fu8dV6RC8t
-         q2a3BgprHWweQKZn60bOuw+kfsrXJWWU4m1/VJtAjU6gqaJ7mzVYmeD4x3IprOXCNP3y
-         zoWsjMJs7zOaGVmVIBfmBg/nDpe2lpcNdjlYd6aTODqv/pVqjoNVj0MJmMTvF4mGCkgC
-         6UJQ==
-X-Gm-Message-State: AOJu0YxEFlrEWrIxC+vVN7jDHbdBtMwwO1hREvxV7Bh/1wCrBNM/plrn
-	xTu/3fZaL8OU93IPGaaOBtDNHw==
+        bh=tqBAdO1zKF8ljfRCPt++e5LSU5ewUNxfyiSB8BZlHv8=;
+        b=GrsaJBqCG8mfv9suhnYCRRZnOs60bzeShHhJclUMZsTUmg5AvTxK5izldmjvFea86F
+         hTQLmDQV3zNdI4I0hJXlLZvd9rNoDsgp9n+JZ27r4CI528WuPBtvTkkW7HaY0C4ye277
+         20f0bkvFmdggLiR3Waay5BXUiTH0uqRkHafDzwenoXps0zfHpS5aHaDQBOiWiKRLLrkg
+         mk8jgybY1VkzTmXbXSDdv5Trnd/mxHARaGnKhzqtrKhkxIc/Mfp6Gi5wYw+52UVmW5f0
+         Tev6sEqKNmovSCbFE57zWy/nKpvGVOKSRzW0cmZXHt8+Pum3AXghoxSYsUABtU6Xwtmh
+         YZxg==
+X-Gm-Message-State: AOJu0YwwEYmUusZTyLqKyKk1uH8GHm6c3TajhuVSkajd31sscY36FV1y
+	KfcVO433ZMPJufn4u4wC1/9OxA==
 X-Google-Smtp-Source: 
- AGHT+IFobX8x5JuXdPLKT7AZWEuvVw5rHD4gknMa/X0TH24W9CCMFaJ5M0eNMQY2ARLhbwdrcBTKQA==
-X-Received: by 2002:adf:db02:0:b0:332:cc85:70ce with SMTP id
- s2-20020adfdb02000000b00332cc8570cemr2239543wri.33.1700737061193;
-        Thu, 23 Nov 2023 02:57:41 -0800 (PST)
+ AGHT+IELTh4W/0QfNa+Lv0THyhTcZGP5fMjTa/b5guLAwCq4ZLSHuz9cdQCs/FgTb+jDmOXapE1JAQ==
+X-Received: by 2002:adf:ee8b:0:b0:331:3426:4c2c with SMTP id
+ b11-20020adfee8b000000b0033134264c2cmr3627632wro.41.1700737101658;
+        Thu, 23 Nov 2023 02:58:21 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.218.100])
         by smtp.gmail.com with ESMTPSA id
- c11-20020a5d4f0b000000b00332e67d6564sm185067wru.67.2023.11.23.02.57.39
+ c11-20020a5d4f0b000000b00332e67d6564sm185067wru.67.2023.11.23.02.58.19
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 23 Nov 2023 02:57:40 -0800 (PST)
-Message-ID: <2bf64582-b7c6-469a-858a-f83b2d50f12a@linaro.org>
-Date: Thu, 23 Nov 2023 11:57:38 +0100
+        Thu, 23 Nov 2023 02:58:21 -0800 (PST)
+Message-ID: <479c16ce-da90-4571-bd08-b592d63f06cf@linaro.org>
+Date: Thu, 23 Nov 2023 11:58:19 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 1/2] soundwire: bus: introduce controller_id
+Subject: Re: [RFC PATCH 2/2] soundwire: fix initializing sysfs for same
+ devices on different buses
 Content-Language: en-US
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  alsa-devel@alsa-project.org, srinivas.kandagatla@linaro.org
@@ -96,7 +97,7 @@ Cc: tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org,
  <pombredanne@nexb.com>, linux-kernel@vger.kernel.org,
  stable@vger.kernel.org, Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 References: <20231017160933.12624-1-pierre-louis.bossart@linux.intel.com>
- <20231017160933.12624-2-pierre-louis.bossart@linux.intel.com>
+ <20231017160933.12624-3-pierre-louis.bossart@linux.intel.com>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -142,11 +143,11 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231017160933.12624-2-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20231017160933.12624-3-pierre-louis.bossart@linux.intel.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-ID-Hash: S5OPDPZSZIRWEPMERVKHLW2HQWU74G3D
-X-Message-ID-Hash: S5OPDPZSZIRWEPMERVKHLW2HQWU74G3D
+Message-ID-Hash: WDCDJ2JZZDZWWHEJCIHH5HU54DJRLTIG
+X-Message-ID-Hash: WDCDJ2JZZDZWWHEJCIHH5HU54DJRLTIG
 X-MailFrom: krzysztof.kozlowski@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -159,7 +160,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/S5OPDPZSZIRWEPMERVKHLW2HQWU74G3D/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WDCDJ2JZZDZWWHEJCIHH5HU54DJRLTIG/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -169,30 +170,36 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 On 17/10/2023 18:09, Pierre-Louis Bossart wrote:
-> The existing SoundWire support misses a clear Controller/Manager
-> hiearchical definition to deal with all variants across SOC vendors.
+> From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 > 
-> a) Intel platforms have one controller with 4 or more Managers.
-> b) AMD platforms have two controllers with one Manager each, but due
-> to BIOS issues use two different link_id values within the scope of a
-> single controller.
-> c) QCOM platforms have one or more controller with one Manager each.
+> If same devices with same device IDs are present on different soundwire
+> buses, the probe fails due to conflicting device names and sysfs
+> entries:
 > 
-> This patch adds a 'controller_id' which can be set by higher
-> levels. If assigned to -1, the controller_id will be set to the
-> system-unique IDA-assigned bus->id.
+>   sysfs: cannot create duplicate filename '/bus/soundwire/devices/sdw:0:0217:0204:00:0'
 > 
-> The main change is that the bus->id is no longer used for any device
-> name, which makes the definition completely predictable and not
-> dependent on any enumeration order. The bus->id is only used to insert
-> the Managers in the stream rt context.
+> The link ID is 0 for both devices, so they should be differentiated by
+> the controller ID. Add the controller ID so, the device names and sysfs entries look
+> like:
 > 
+>   sdw:1:0:0217:0204:00:0 -> ../../../devices/platform/soc@0/6ab0000.soundwire-controller/sdw-master-1-0/sdw:1:0:0217:0204:00:0
+>   sdw:3:0:0217:0204:00:0 -> ../../../devices/platform/soc@0/6b10000.soundwire-controller/sdw-master-3-0/sdw:3:0:0217:0204:00:0
+> 
+> [PLB changes: use bus->controller_id instead of bus->id]
+> 
+> Fixes: 7c3cd189b86d ("soundwire: Add Master registration")
+> Cc: <stable@vger.kernel.org>
 > Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 > Reviewed-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+> Co-developed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 > Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+
+The order of SoB is not correct. Author's goes before co-developed.
 
 
 Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+
 Tested-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
 Best regards,
