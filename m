@@ -4,77 +4,106 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F804C5AD4C
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Nov 2023 10:38:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D7107C5AD4C
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Nov 2023 10:51:02 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B86BDE84;
-	Thu, 23 Nov 2023 11:38:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B86BDE84
+	by alsa0.perex.cz (Postfix) with ESMTPS id AC038AE8;
+	Thu, 23 Nov 2023 11:50:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AC038AE8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1700735895;
-	bh=YJV1iTKu6qPVsvyoYVWKMbnX3fgFVStil93e7chH+c0=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1700736660;
+	bh=2TNr5suhlug4FJwWgjhyZ4SkmH9fv8zhO2pg01u5KTw=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=I8ObRO0g5rrbLh4wwchEE7QQAESdKM0t2oWdLHXXN/gC4iZ4aOniNrrX/1Y9ClSK9
-	 /xBTPWeOWAfHzsw+HTq3BYCSJgjKBfpi7lOQPO62RscJmhtzysO5Vz5Wq5MFn1aAHl
-	 0giJ15rHc1ANpTozf3f0uJO4CjMlFkTLsR6HZ/6A=
+	b=M41loOF4+6i5xNQSuGKBWyR/0okCv/0D8jHoj1Xk1NZfkPAuODbKyulh+AmjjdIKR
+	 +p/aNd9HrMo9IXChWFX4j3GpfNf/vlthIAb1bVAX0nZq9ahqCYtCWBfAqUt0LUjF0G
+	 AysIL/vrFQo2a2Y3OUPRJAeoo5YHHNKa2ofB9V7g=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B854DF805C7; Thu, 23 Nov 2023 11:37:23 +0100 (CET)
+	id C62C6F8059F; Thu, 23 Nov 2023 11:50:29 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2E3BEF8055A;
-	Thu, 23 Nov 2023 11:37:23 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 621BEF80589;
+	Thu, 23 Nov 2023 11:50:29 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1ED64F802E8; Thu, 23 Nov 2023 11:37:18 +0100 (CET)
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	id C54C1F802E8; Thu, 23 Nov 2023 11:50:24 +0100 (CET)
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com
+ [IPv6:2a00:1450:4864:20::135])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 2D7C1F80093
-	for <alsa-devel@alsa-project.org>; Thu, 23 Nov 2023 11:37:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2D7C1F80093
+	by alsa1.perex.cz (Postfix) with ESMTPS id EA5B4F80093
+	for <alsa-devel@alsa-project.org>; Thu, 23 Nov 2023 11:50:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EA5B4F80093
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=ToKrq8Ve
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id E6238CE26C5;
-	Thu, 23 Nov 2023 10:36:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 78887C433C8;
-	Thu, 23 Nov 2023 10:36:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1700735815;
-	bh=YJV1iTKu6qPVsvyoYVWKMbnX3fgFVStil93e7chH+c0=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=ToKrq8VebgxJYQoU3Uy6NHNhbYGYHQhLdaROjeNY784kt9VR+IDqJl/f7ZirUFbVn
-	 SQwk+omW31fjS72+nlQezRXwfaTw8nR2UDNC++WicNJZg6uzW9tJu1Hipj453M6EBh
-	 1FUc1Ope7A5VXVozj3FoI0GCMSBN99KkDzL57018+SqQfFV3bEWfehNfhUc5+Kv+Co
-	 f7S6iHywU1pvPyilVBDZEVJkJ8v3+6BrIPYEoaJeUTOzJUClwEmLRBSXgPhLQtrSZM
-	 EGt5yuUGsEi8zbQhkiJfCjQRyKYf0FkVi7msxOetGyBHLu7p/Gt58Fi5lW8c7wsuVK
-	 CFwJ3nKjprupQ==
-From: Mark Brown <broonie@kernel.org>
-To: shengjiu.wang@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
- nicoleotsuka@gmail.com, james.schulman@cirrus.com, david.rhodes@cirrus.com,
- rf@opensource.cirrus.com, Michael Ellerman <mpe@ellerman.id.au>
-Cc: linuxppc-dev@lists.ozlabs.org, perex@perex.cz, tiwai@suse.com,
- alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
- patches@opensource.cirrus.com, paul.gortmaker@windriver.com
-In-Reply-To: <20231122062712.2250426-1-mpe@ellerman.id.au>
-References: <20231122062712.2250426-1-mpe@ellerman.id.au>
-Subject: Re: (subset) [PATCH 1/2] ASoC: fsl: mpc8610_hpcd: Remove unused
- driver
-Message-Id: <170073581102.2204618.3021059947930734828.b4-ty@kernel.org>
-Date: Thu, 23 Nov 2023 10:36:51 +0000
+ unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
+ header.s=google header.b=jWZqCEzY
+Received: by mail-lf1-x135.google.com with SMTP id
+ 2adb3069b0e04-507bd19eac8so915704e87.0
+        for <alsa-devel@alsa-project.org>;
+ Thu, 23 Nov 2023 02:50:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700736618; x=1701341418;
+ darn=alsa-project.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=XWkmW4NrpVSDSfoG84SGLgZ1/3hG8w7uFZangWvkPCQ=;
+        b=jWZqCEzYoRKw+arKx5GF2OzDs0YMnRWJpsgJXy4cGJ51ktXN10242KmhzJ+JBkZW6A
+         qSZrukwNcMLyQGkgSyCMVCXXWHuPWy4wp/5igWxNplgKyFOZofERHSjmuErrqq1xpUwz
+         qpOdRRc0HXp/wS1ZtXOVNRQTuO2xl8xdLajzUNnvQ/perYdwSBoijTG6XP31uwh5m4vR
+         weKwgnSKlnR+cQVCRgdigUc61EeRB4JwaejG9FZ/pLE9qmXCbmyrYnKHSORRCupPWm0c
+         atH+0+V3PvLdylEaaDwNN3/nl1zapHGYlafrBxRgR/phGIGdl9kWdKM8jRizIoFZw9WU
+         E3mg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700736618; x=1701341418;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=XWkmW4NrpVSDSfoG84SGLgZ1/3hG8w7uFZangWvkPCQ=;
+        b=j6ea68DoktGefb+Dj2YE3eBwdiZKZObsSnK7ivOM/Qv0gI4o65gwrlvGUtfDUW8/ic
+         1VH+ahc8CxbywNYX3Fnnk5xDRbfzkufy29VQeuddHVcavtk230hJ2da2YD7mF234f86f
+         jj6wwm6Fk9d42dqmo1ZrO1TWKn2x6qzZc9q+YBPvn8c5ovoFQ+/jpWZ3p6mS4DSVMdJ7
+         h9DMRNU/rYXpJhbOCD3LC2BnTgyH3tdwSF9pBW7McvXsS2c5bIOCmhz9QxV7nhLdcFd+
+         Zzqz1F4i5y0iVIE5yiotZfQYRQnoP4oSU5Nep17DFgi5DBxSaa4T3MGSyOAZfeSAHq+K
+         9Yjg==
+X-Gm-Message-State: AOJu0YxCqwmXdoEtPiusTelkANoH8KeVZk1nv7rp9L3z0hEMyTcyNO1N
+	x3gmDfddjHR+FiQaTE+EndA32w==
+X-Google-Smtp-Source: 
+ AGHT+IHs5fP4IJLm3ak/VIWnkrN0Owt9/emtxBJyhldyhhI3EgXhn0P5nCSx7knmRJy61a6y/XgPFA==
+X-Received: by 2002:a19:3814:0:b0:509:8e81:1aa4 with SMTP id
+ f20-20020a193814000000b005098e811aa4mr2882944lfa.39.1700736617662;
+        Thu, 23 Nov 2023 02:50:17 -0800 (PST)
+Received: from [192.168.86.103] ([5.133.47.210])
+        by smtp.googlemail.com with ESMTPSA id
+ j27-20020a170906255b00b009e5db336137sm619208ejb.196.2023.11.23.02.50.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 23 Nov 2023 02:50:17 -0800 (PST)
+Message-ID: <9c5b1503-4dba-4ac1-8fef-9b28fb8bd4b5@linaro.org>
+Date: Thu, 23 Nov 2023 10:50:15 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 0/2] soundwire: introduce controller ID
+Content-Language: en-US
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, broonie@kernel.org, vkoul@kernel.org,
+ gregkh@linuxfoundation.org, Bard liao <yung-chuan.liao@linux.intel.com>,
+ Jaroslav Kysela <perex@perex.cz>,
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Philippe Ombredanne <pombredanne@nexb.com>, linux-kernel@vger.kernel.org,
+ stable@vger.kernel.org
+References: <20231017160933.12624-1-pierre-louis.bossart@linux.intel.com>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+In-Reply-To: <20231017160933.12624-1-pierre-louis.bossart@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-0438c
-Message-ID-Hash: OMTBMN45JFMJZGRN6PIR4FHKV5KWDZEN
-X-Message-ID-Hash: OMTBMN45JFMJZGRN6PIR4FHKV5KWDZEN
-X-MailFrom: broonie@kernel.org
+Message-ID-Hash: AIYT7M3ZJ4XD7NWFJVKAYMIHLZZE5TE3
+X-Message-ID-Hash: AIYT7M3ZJ4XD7NWFJVKAYMIHLZZE5TE3
+X-MailFrom: srinivas.kandagatla@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -86,7 +115,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OMTBMN45JFMJZGRN6PIR4FHKV5KWDZEN/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AIYT7M3ZJ4XD7NWFJVKAYMIHLZZE5TE3/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -95,39 +124,41 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Wed, 22 Nov 2023 17:27:11 +1100, Michael Ellerman wrote:
-> The mpc8610_hpcd.c driver depends on CONFIG_MPC8610_HPCD which was
-> removed in commit 248667f8bbde ("powerpc: drop HPCD/MPC8610 evaluation
-> platform support"). That makes the driver unbuildable and unusable, so
-> remove it.
+
+
+On 17/10/2023 17:09, Pierre-Louis Bossart wrote:
+> This patchset is an alternate proposal to the solution suggested in
+> [1], which breaks Intel machine drivers.
 > 
+> The only difference is to use a known controller ID instead of an IDA,
+> which wouldn't work with the hard-coded device name.
 > 
+> This patchset was tested on Intel and AMD platforms, testing on
+> Qualcomm platforms is required - hence the RFC status.
+> 
+> [1] https://lore.kernel.org/alsa-devel/20231004130243.493617-1-krzysztof.kozlowski@linaro.org/
 
-Applied to
+Tested on X13s.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+Tested-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-Thanks!
 
-[1/2] ASoC: fsl: mpc8610_hpcd: Remove unused driver
-      commit: b1cea462a79316bd619173f1ded8b28202b5ce3a
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+--srini
+> 
+> Krzysztof Kozlowski (1):
+>    soundwire: fix initializing sysfs for same devices on different buses
+> 
+> Pierre-Louis Bossart (1):
+>    soundwire: bus: introduce controller_id
+> 
+>   drivers/soundwire/amd_manager.c     |  8 ++++++++
+>   drivers/soundwire/bus.c             |  4 ++++
+>   drivers/soundwire/debugfs.c         |  2 +-
+>   drivers/soundwire/intel_auxdevice.c |  3 +++
+>   drivers/soundwire/master.c          |  2 +-
+>   drivers/soundwire/qcom.c            |  3 +++
+>   drivers/soundwire/slave.c           | 12 ++++++------
+>   include/linux/soundwire/sdw.h       |  4 +++-
+>   sound/soc/intel/boards/sof_sdw.c    |  4 ++--
+>   9 files changed, 31 insertions(+), 11 deletions(-)
+> 
