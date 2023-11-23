@@ -4,110 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B5473C5AD4C
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Nov 2023 14:41:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B1A14C61DF7
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Nov 2023 14:42:16 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 20229E9A;
-	Thu, 23 Nov 2023 15:41:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 20229E9A
+	by alsa0.perex.cz (Postfix) with ESMTPS id D0341E9A;
+	Thu, 23 Nov 2023 15:42:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D0341E9A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1700750514;
-	bh=5MhT1TVk55kBpSiBvsQYP3NzkoQryQoHcrsBjVVmcwE=;
-	h=Date:From:To:CC:Subject:References:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=fXzldtMbzBEGC5SlIj2FOgNAauI9Lza/iROsCJjPkZCcnkgpQ3+6pnj8Sdw3pMlOH
-	 0SldNHesrO+7Bx3jm+Ed4t4TEZSJnOzJJ2qZ5K7El+FGWhuBXszF7iEaf6bue7oito
-	 GuoJhZ56jn7RTs7rlDcdrUTKdddvZg+DEybiVnC0=
+	s=default; t=1700750534;
+	bh=WrlkDDOdGx/vzhzzJ4MuFMR5nH+u9dDbMfncfgV45sY=;
+	h=From:Subject:To:Date:Reply-To:List-Id:List-Archive:List-Help:
+	 List-Owner:List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=YEkCBNAplCqq7uelK+JuKnrcbs1muuUvGMnwstTYV9qj2HIY+kzv7p9iOxgX0Fuja
+	 lICeT3pAfoCNVn3ThGvlhW69hFUpoCwvA8KBq9Hm+lTw0R6ttl0pt0ygLxKOp540+G
+	 jryhSSV6by/wnz5spnIwbGNxCpnJx2JVdUKO+U4U=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3083EF80677; Thu, 23 Nov 2023 15:39:57 +0100 (CET)
+	id D724FF806AE; Thu, 23 Nov 2023 15:40:00 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 92248F80699;
-	Thu, 23 Nov 2023 15:39:56 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 28717F806B7;
+	Thu, 23 Nov 2023 15:40:00 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AA367F802E8; Thu, 23 Nov 2023 11:52:10 +0100 (CET)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 97E5EF80249
-	for <alsa-devel@alsa-project.org>; Thu, 23 Nov 2023 11:52:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 97E5EF80249
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=CYdZNzfq
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-	by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id
- 3AN5lWrm021272;
-	Thu, 23 Nov 2023 04:52:05 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	date:from:to:cc:subject:message-id:references:mime-version
-	:content-type:in-reply-to; s=PODMain02222019; bh=RSshxsOe/WpI9Zh
-	vx3znWw9Og1R8TvaJz6zt8sGGClA=; b=CYdZNzfqonmbYuLq5QqkJdfsvc9DRix
-	siAT998YsCAn+2jS2Of1dNeua5XrpyLaSlpNNS6WgF4S3Xl5v74O7KPrvOaASjwh
-	p8zaDsKjk73Dlb/9WtcAW/Is3uanjPbHk5TJJj7N5u0nJWA1+RG2DKIbQ6c2w6Jw
-	PWV/XaH7u4d6SOZDtKtWAJSU2Kf5r1jT0a/D/EmTCGiwryfaPlMwUeNH2MSs5K4b
-	5LFIA4BwCMYpuFs4HwlUVAKZFO0lB4MvRJmi6fFArTXspRkg62I/0JreYUMvAJCu
-	oeMjo3dk3AW2YqkPSAmb8s5T/KtdfyECeWNVQRRyQD8pfsmq0di8ssQ==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3ueuj2dmwn-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 23 Nov 2023 04:52:05 -0600 (CST)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Thu, 23 Nov
- 2023 10:52:03 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.39 via Frontend
- Transport; Thu, 23 Nov 2023 10:52:03 +0000
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com
- [198.61.86.93])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 27074357F;
-	Thu, 23 Nov 2023 10:52:03 +0000 (UTC)
-Date: Thu, 23 Nov 2023 10:52:03 +0000
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-To: Maciej Strozek <mstrozek@opensource.cirrus.com>
-CC: Mark Brown <broonie@kernel.org>,
-        James Schulman
-	<james.schulman@cirrus.com>,
-        David Rhodes <david.rhodes@cirrus.com>,
-        "Liam
- Girdwood" <lgirdwood@gmail.com>, <alsa-devel@alsa-project.org>,
-        <patches@opensource.cirrus.com>, <linux-sound@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5] ASoC: cs43130: Allow driver to work without IRQ
- connection
-Message-ID: <20231123105203.GP32655@ediswmail.ad.cirrus.com>
-References: <20231123090658.10418-1-mstrozek@opensource.cirrus.com>
- <20231123104624.GO32655@ediswmail.ad.cirrus.com>
+	id 8A0C0F802E8; Thu, 23 Nov 2023 15:39:15 +0100 (CET)
+Received: from info.lhuio.top (unknown [124.221.61.131])
+	by alsa1.perex.cz (Postfix) with ESMTP id BA75CF80166
+	for <alsa-devel@alsa-project.org>; Thu, 23 Nov 2023 15:38:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BA75CF80166
+Received: from CN-20190104CRIG (113.77.101.145) by info.lhuio.top id
+ hbtht60e97c1 for <alsa-devel@alsa-project.org>;
+ Thu, 23 Nov 2023 22:37:15 +0800 (envelope-from <Aaron4@taliuie.top>)
+From: "WinstarLighting" <marvin@winstarled.net>
+Subject: 3.99USD for 18W 160lm/W T8 Tube,  8.99USD for 36W 140lm/W LED
+ Triproof Light,  17.12USD for 100W UFO Lights   |  2023-11-23 22:39:32
+To: alsa-devel@alsa-project.org
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20231123104624.GO32655@ediswmail.ad.cirrus.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-ORIG-GUID: qKX3GwV0qDWZUXbT5DPlthRZsCGgZXz2
-X-Proofpoint-GUID: qKX3GwV0qDWZUXbT5DPlthRZsCGgZXz2
-X-Proofpoint-Spam-Reason: safe
-X-MailFrom: prvs=6691092e0a=ckeepax@opensource.cirrus.com
-X-Mailman-Rule-Hits: implicit-dest
+Sender: Aaron4@taliuie.top
+Date: Thu, 23 Nov 2023 22:39:32 +0800
+Message-Id: <20231123143915.8A0C0F802E8@alsa1.perex.cz>
+X-MailFrom: Aaron4@taliuie.top
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; max-recipients; max-size; news-moderation; no-subject;
- digests; suspicious-header
-Message-ID-Hash: DWYBTGZDBSKUKWBVYLR2F6YKJ5QBKP32
-X-Message-ID-Hash: DWYBTGZDBSKUKWBVYLR2F6YKJ5QBKP32
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: BG66EZK7B4AXNNIQVOVHYWX3YSSTQ6LK
+X-Message-ID-Hash: BG66EZK7B4AXNNIQVOVHYWX3YSSTQ6LK
 X-Mailman-Approved-At: Thu, 23 Nov 2023 14:39:41 +0000
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+Content-Disposition: inline
+X-Content-Filtered-By: Mailman/MimeDel 3.3.9
 X-Mailman-Version: 3.3.9
 Precedence: list
+Reply-To: marvin@winstarled.net
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DWYBTGZDBSKUKWBVYLR2F6YKJ5QBKP32/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BG66EZK7B4AXNNIQVOVHYWX3YSSTQ6LK/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -116,21 +70,47 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, Nov 23, 2023 at 10:46:24AM +0000, Charles Keepax wrote:
-> On Thu, Nov 23, 2023 at 09:06:58AM +0000, Maciej Strozek wrote:
-> > Add a polling mechanism that will keep the driver operational even in
-> > absence of physical IRQ connection. If IRQ line is detected, the driver
-> > will continue working as usual, in case of missing IRQ line it will
-> > fallback to the polling mechanism introduced in this change.
-> > This will support users which choose not to connect an IRQ line as it
-> > is not critical to part's operation.
-> > 
-> > Signed-off-by: Maciej Strozek <mstrozek@opensource.cirrus.com>
-> > ---
-> 
-> Sorry hang on this doesn't apply to Mark's tree, will need a v6.
+Your reader does not support HTML
+Dear Manager,
 
-No that is me being a moron, apologies ignore this noise.
+Good day, nice to talk with you again.
 
-Thanks,
-Charles
+We are a manufactory, produce LED Lights around 14 years, there have some hotsales model recommend to you.
+
+LED UFO Highbay Light:
+1) 100W 150lm/w, Lifud Driver, Flicker Free, 5 years ==== 17.12USD/PCS
+2) 150W 150lm/w, Lifud Driver, Flicker Free, 5 years ==== 19.84USD/PCS
+3) 200W 150lm/w, Lifud Driver, Flicker Free, 5 years ==== 24.60USD/PCS
+4) Input Voltage: AC100-277V, 50/60Hz 
+
+Switch CCT&Power LED Triproof Light:
+
+1) 120cm/4ft 140lm/w, Switch CCT&Power, 5 years ==== 8.99USD/PCS
+2) 150cm/5ft 140lm/w, Switch CCT&Power, 5 years ==== 11.43USD/PCS
+3) Switch Power for 120cm/4ft: 20W-28W-36W
+4) Switch Power for 150cm/5ft: 35W-42W-50W
+5) Switch CCT Color: 3000K - 4000K - 6000K
+6) Input Voltage: AC100-277V, 50/60Hz
+
+Switch CCT&Power LED T8 Tube Light:
+
+1) 120cm/4ft 160lm/w, Switch CCT&Power, 5 years ==== 3.99USD/PCS
+2) 150cm/5ft 160lm/w, Switch CCT&Power, 5 years ==== 4.99USD/PCS
+3) Switch Power for 120cm/4ft: 12W - 15W - 18W
+4) Switch Power for 150cm/5ft: 18W - 20W - 25W
+5) Switch CCT Color: 3000K - 4000K - 6000K
+6) Input Voltage: AC100-277V, 50/60Hz
+
+Extra Service for choice:
+1) Laser your logo
+2) Label with your logo or use your design label
+3) Outer carton can printing your company name or logo
+
+Datasheet and quota can share to you check if you are interesting.
+
+Awaiting to your reply !
+
+Best regards
+Winstar Power Technology Limited
+Marvin | +86 15013475147 | Skype: marvin20121110
+2023-11-23 22:39:32
