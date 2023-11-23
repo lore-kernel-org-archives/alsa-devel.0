@@ -4,150 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EAC07C61D97
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Nov 2023 16:08:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 04F16C61D97
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Nov 2023 17:19:45 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3A7A3E76;
-	Thu, 23 Nov 2023 17:08:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3A7A3E76
+	by alsa0.perex.cz (Postfix) with ESMTPS id 825B1AEA;
+	Thu, 23 Nov 2023 18:19:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 825B1AEA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1700755711;
-	bh=46KmYg4P5waGvF/F7Nu1/1Ow9d8p5jb2uqWHQyJLSj4=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1700759983;
+	bh=EvzPaWl4rEWWAqN92zDuxih44+QveIo6CQqfvVtHmxQ=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Cl99NeFxaUj6fsl184yvRjDL59jhVNiJ5zyY3zu+KpVM/Xd9Wb5D6n7vw0WPToNsE
-	 9BSbth7TuYu37Js9xyEy0TF5VyDyRNKFDm+0FkwzzQCSEs6bDzSvpjGj4AMS5OaVG9
-	 4oWefjvA4oyRXV/+nQy0KJakuYBmUMsfMKpL2RMA=
+	b=in4xde1a9L1iBzfLHalKoy7VOv2TeRuqqkoPAz8lSEZwg0k76Twd/uIntmL+1gWye
+	 QkwmROxk5agO/Og7hn0USH63dDtqg4cVnYft565uGhXJtX6DBLcZZo1Ys1RUIvGkhI
+	 Yf2YjVaoMuVLVolkObAJ6MK1uTYF5uAnfgvgqETY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A4FAFF805E9; Thu, 23 Nov 2023 17:07:31 +0100 (CET)
+	id 93037F80567; Thu, 23 Nov 2023 18:19:10 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 31098F805B4;
-	Thu, 23 Nov 2023 17:07:31 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id EB2CBF8047D;
+	Thu, 23 Nov 2023 18:19:08 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 53B35F80166; Thu, 23 Nov 2023 17:07:24 +0100 (CET)
-Received: from EUR05-DB8-obe.outbound.protection.outlook.com
- (mail-db8eur05on20620.outbound.protection.outlook.com
- [IPv6:2a01:111:f400:7e1a::620])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 14866F80249; Thu, 23 Nov 2023 18:05:54 +0100 (CET)
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E6845F80166
-	for <alsa-devel@alsa-project.org>; Thu, 23 Nov 2023 17:07:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E6845F80166
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9A9CFF80249
+	for <alsa-devel@alsa-project.org>; Thu, 23 Nov 2023 18:00:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9A9CFF80249
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com
- header.a=rsa-sha256 header.s=selector2-NXP1-onmicrosoft-com header.b=KLYMVDtw
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=h24skFTIQvDD+2ZPelxQQ7ZheIusWE+bTKv4TDyywItkE8TdKrKktLOAoFZnhlEzG2/rCnHIbmLrPwEM5sbRATd9UmDMbjB7VDjYO/x/lQnE2MKtVGZCfwhfKjqW/s4yib7FjKMw/4IUcthlIlDXnLsBcglda4y2rqxUSL4SkcHI0KxpqqdDp6fzHmHnmgt7EaxBw9M9+sEdumhoEGvMi0IdUIfWKcOz577DGHlmZVzCUxj4bZNgg45pOjHpJjvRTVwBauMBk8smswi+A/wDdG9FnKEi2nNN1pyrq4A35P8eKiTXAfigCQ5KvXbnlR2mGuzraiJe2rDTpAhj2Bs/Pg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=/H2VP17dgAu1wWSI+Qvs2YKovPiyKKYFumKe+HuuTD0=;
- b=AKAp1KsDtCTNSR/7HlvApE5QXzJBDFB8jAPojUWuejkjd+FznuMwr5sWR3/UfLykTff0uvmCVYvHfMlsa7bv7bjOfrOAGIhXbROkGNG4XDHPV1oqhu0NIK1MX9bkMiYtZlAFvb/ntpwYoVAycx7kJ6FmbhpMPlMVVgmrLb0Ol7GKka45ckBFn6RHtAv6Ajli8DR5IbgD7z9ODF9E2T/6fNDzu4er5iVdr6SvLF01HJp7Gs6/bnq/3D7D9t4aeCkFeLWUsIsoGXx1+t9uckUGHFGip6BQbNoFmrBNKLCuFsajjIxWVvvguQoA6lkcIxze3CL9VRZlVeA7SGR/fV/LKQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector2-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/H2VP17dgAu1wWSI+Qvs2YKovPiyKKYFumKe+HuuTD0=;
- b=KLYMVDtwFu2BQxkcuxxKbUbIXerL/TSj2Kf2V5Gwo37IbgWKvj+hRKsv1+MHO2jX7iayAbzhXt1I6WEk4A0/ZQ5bn2us+tYo2xGPn/kJcaSuVXW+T78VRDhC7W28zL93DN9fzwqMlc5QcyEBUyMqWmF17CgWdoLNsskq1qM3rfw=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=oss.nxp.com;
-Received: from VI1PR04MB5151.eurprd04.prod.outlook.com (2603:10a6:803:61::28)
- by PAXPR04MB9399.eurprd04.prod.outlook.com (2603:10a6:102:2b3::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.12; Thu, 23 Nov
- 2023 16:07:14 +0000
-Received: from VI1PR04MB5151.eurprd04.prod.outlook.com
- ([fe80::c688:1f14:2ab1:c78a]) by VI1PR04MB5151.eurprd04.prod.outlook.com
- ([fe80::c688:1f14:2ab1:c78a%4]) with mapi id 15.20.7025.019; Thu, 23 Nov 2023
- 16:07:14 +0000
-From: Daniel Baluta <daniel.baluta@oss.nxp.com>
-To: broonie@kernel.org,
-	linux-kernel@vger.kernel.org,
-	alsa-devel@alsa-project.org
-Cc: linux-sound@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	kuninori.morimoto.gx@renesas.com,
-	daniel.baluta@gmail.com,
-	robh+dt@kernel.org,
-	iuliana.prodan@nxp.com,
-	shengjiu.wang@nxp.com,
-	linux-imx@nxp.com
-Subject: [PATCH v3 1/2] ASoC: audio-graph-card2: Introduce
- playback-only/capture only DAI link flags
-Date: Thu, 23 Nov 2023 18:06:54 +0200
-Message-Id: <20231123160655.188428-2-daniel.baluta@oss.nxp.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231123160655.188428-1-daniel.baluta@oss.nxp.com>
-References: <20231123160655.188428-1-daniel.baluta@oss.nxp.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: MR1P264CA0146.FRAP264.PROD.OUTLOOK.COM
- (2603:10a6:501:54::7) To VI1PR04MB5151.eurprd04.prod.outlook.com
- (2603:10a6:803:61::28)
+	dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=Ut51JJ2B
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sin.source.kernel.org (Postfix) with ESMTP id 96292CE2B3B;
+	Thu, 23 Nov 2023 17:00:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9510EC43397;
+	Thu, 23 Nov 2023 17:00:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1700758802;
+	bh=EvzPaWl4rEWWAqN92zDuxih44+QveIo6CQqfvVtHmxQ=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=Ut51JJ2B31MOyFR3mR2gsVC1yQJUTnd2mInxrcNp6lXSoTIHMr6anHzBixsognlP/
+	 ATUOchYc+UKMA3zGAjkvppOWxiokiEu+uYPaPnrIONO3YRtkruLyAPzVSPfE7AbIC+
+	 9lUSCrewRfLkLgcJuUdg7g/PTXgt2KrVVWoa5opbf1RM6E64gBDR7zT+JWZs5YZrhP
+	 K2P4DYJMZ23yHKAv4XGHHdTH2RgRZlq58RuieGmAJDlewM/gSB95zR8oInLZOGVoco
+	 ls0t1bfjcfvhoZi46iN1OJXzxbMkEhK8YevIhDGzFxvEDtJZX+2Go4raS8IAfTKBeg
+	 SX/kMRMjp42TQ==
+From: Mark Brown <broonie@kernel.org>
+To: Maciej Strozek <mstrozek@opensource.cirrus.com>
+Cc: James Schulman <james.schulman@cirrus.com>,
+ David Rhodes <david.rhodes@cirrus.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
+ linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20231123090658.10418-1-mstrozek@opensource.cirrus.com>
+References: <20231123090658.10418-1-mstrozek@opensource.cirrus.com>
+Subject: Re: [PATCH v5] ASoC: cs43130: Allow driver to work without IRQ
+ connection
+Message-Id: <170075880043.2448402.15081787699005605640.b4-ty@kernel.org>
+Date: Thu, 23 Nov 2023 17:00:00 +0000
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: VI1PR04MB5151:EE_|PAXPR04MB9399:EE_
-X-MS-Office365-Filtering-Correlation-Id: 60b72a40-64a6-4583-da6b-08dbec3e41ee
-X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	iZ6dYxhhx1HQ2PBqkgWMxJcwFBx2ZmS7uI7hO4T0658YN1S+BJ1vut8GXxa7NA4CLqzAF5L47LA5KrSyJfGvOotcIIkfjpRZrPByBxw/LViE37aeFuK0s/VXzYHQfvO5QpwVa98xbnvwg31J2ScFa+CSpVLRU9XE9MU2WvWU/zjxlmwODEjV0eHpmaxy6GG+CrxFSGC0Wp9X/9EKmhFnupd/c1cwATxGi1hgMeW3YSLFWIw9et0rBge4ueljA1OXVTf1krKaQgGtDD2ON0tEYNP7zctmVKJJhQ8x+vD3nO4BrX/+Z66+zXFAP0U3Ms/rlz0FYGHzZ/jdsTEnBogwbliSfg5KNsC1eH4oSMRylZIsQeC3rQS5j6SJ1H0ZYxyqtJQ0YOGd2yyuwmQE4QW5WKflwxJ7HR06DZbCZHlN70WmxG8wvIZJR7oYb5jwEdFng7JVvFe9mG5/CjHZMSN5itU75txc0Q8b5msPg66L44Yrm8eA4wjxYMFw+VDk/5HZNiUZArpJl0NcxRp4yuHrv5na2euq3+Ml6RIpW6hYSg9lwqPcXqcsYQFiuuoH9nVd3FPCpQB1sgRIpcgYULMA//rpIMCCDWRBUSklfR45DV10OXtVTcdEQJxarXry4q+PUlQG+kBt670+mmHJ+WnHAg==
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5151.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(346002)(376002)(136003)(366004)(396003)(230922051799003)(186009)(1800799012)(64100799003)(451199024)(86362001)(44832011)(5660300002)(38100700002)(1076003)(26005)(83380400001)(6666004)(6506007)(316002)(52116002)(6512007)(2616005)(4326008)(66476007)(66556008)(66946007)(8676002)(8936002)(38350700005)(41300700001)(2013699003)(6486002)(478600001)(2906002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?us-ascii?Q?YeKLJ4ZW3nfCqWQZDqKgRWk/UIijh3RdLzNdlRsW18rdtjc+/Mf6rXw9AMze?=
- =?us-ascii?Q?UvsJ9AqWI9K4chXFvrWaOBm1YPav+HOo4fwZiIDOQLtC5JClLOMxiUtRahPf?=
- =?us-ascii?Q?8r8et7kWRTN0eJjx+CFbFf2+w4F9kKRgiqAmcKvZpb9o8Bd7nbM3ct6AG7jl?=
- =?us-ascii?Q?4hDcLUs5y5M5ezYUd6lfnob/mCu45RINUW5Lfrk3KNL1b8nEXXBnovWN+uws?=
- =?us-ascii?Q?PvNMka3g564mfE2SFUebDfSqL08WJjS/LXWSk/k4vHI21bXH0iUzCssAPyD1?=
- =?us-ascii?Q?3J0txvr378dZ/CqLd+LtKbjIJ4hizozrlpQOJ4z5IyWfo1V1Hj+Fd0IMzqXm?=
- =?us-ascii?Q?mJgZMaFpe7YCs4mQDUPNkgZ8fctpZSuIQYb1/Ff9ke+aWxrvg2opBA43P/Zh?=
- =?us-ascii?Q?U2IRmdJfckGC+931MN5FbRUzkf8JWoS7h1HYqskYFFzi3dGethR2a37EwbKc?=
- =?us-ascii?Q?CpoHFn76oF64Q4mueyc9hFQdB+xGjmCApO1SPMzTvbWOcRElqtgKaQWGZwR3?=
- =?us-ascii?Q?/TMs7mMc3XG9n0vEPQT372Ec7h0FYE9w6+59fA7oYVtEISedUqj+qHByg1oR?=
- =?us-ascii?Q?zfPKTgl7iFyDo+auJ2osGGWkjF4XXA6HtYwllGRtgLFe18O6LpDFjhQW4waX?=
- =?us-ascii?Q?ZlgV7JvsaaCOWC+cJ9tp/tfeC61DIuqAlgtzfiRCWYp5+7CoaoaV+kvU/39T?=
- =?us-ascii?Q?Eay4Kpk/siOBS0V0k8djrJiujil7qgZGzAKg9dGTSbEOyvF0w0nmOAngnOjJ?=
- =?us-ascii?Q?iwQueyApJrFH0oSEp0yO5Lhx57i/LhuepyFx8xaZfyRuDRpF1gCL34iQuU76?=
- =?us-ascii?Q?EkmUfG26H0TpbvV9AS1kEdycefNifd1niznHxnh7osQmZdB1juD/ASiOYZ+d?=
- =?us-ascii?Q?TUEVLGz77GaFJFS9L6vYCJJ6E+DGtaU3SQjRd6A19w447ZEiP4SJ7udOl9+w?=
- =?us-ascii?Q?mQQWmvmxz8cx07tmXfnnRbwXGu1ebNCyDpiVB5A7bF2//9RCiNvPHXzn6mtv?=
- =?us-ascii?Q?RA13NJ2FY8odocdLQH9crCOKXTcU+8EqIIpMoGmV06KHqeBNTzeOggb3vR9y?=
- =?us-ascii?Q?Y7XjAMIijpnw41LGWekEYlHcsCEmmnynPsXr42oyp0rYdcOBTH5hbxwM9BfR?=
- =?us-ascii?Q?kLScQYzmLBkMZrzLvGdL9H0zlLTf4Wb70SCW4b7aosmqWPEi83pf103lsmlT?=
- =?us-ascii?Q?9lw5y+6NhrQ9Doo7NxEjpKpGe4oSeLxClDjC3J63KMDetSXoXmyGh7d4w9qM?=
- =?us-ascii?Q?ufkr+sbEQ9Qe2oduxBEfiASwCC8zIDkw1lzkbvyTcH3BV0kCGTREXIOfTvlo?=
- =?us-ascii?Q?33uSpWOZMXaJyVlAd19ru6sKIlq/xDmIdrYxXvt6A+x2OX6ID+uRhdukOfbC?=
- =?us-ascii?Q?esRBARQiOB+2ajALQQ0/EgpX+nBKroPK6Xkm8LYGnUi1nF39H7lA74yNhnPM?=
- =?us-ascii?Q?by1WVb2cpblBGrRxgUM7ZWdYTER8sxNnk/XXiHkMP9/dDf3VthS0u8ok90qU?=
- =?us-ascii?Q?J1rkpvk/adjJu9zi2ma2KeFJhi8BUKJZdnKjDKcwC47T/teCVTfUAPHYdueS?=
- =?us-ascii?Q?d7aTQxGpNg7nYsTCGWi61wxeqnCqWxc90ZXYxVif?=
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 
- 60b72a40-64a6-4583-da6b-08dbec3e41ee
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5151.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Nov 2023 16:07:14.4094
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 
- pjVNQ1K1dj3niuIPWvGaq/w29NtpTc1IEBLlXEmpHaGEVXezx3sJq6Jv7GRBVeXkkzhEMGJgYYClu4RDv6RYyQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR04MB9399
-Message-ID-Hash: O77GIVQCXY2O5OX7JFTTO6JMR5FHFE2B
-X-Message-ID-Hash: O77GIVQCXY2O5OX7JFTTO6JMR5FHFE2B
-X-MailFrom: daniel.baluta@oss.nxp.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-0438c
+Message-ID-Hash: XNYHVJMANBWHGWLV2RPKG6ZO45KJO6OU
+X-Message-ID-Hash: XNYHVJMANBWHGWLV2RPKG6ZO45KJO6OU
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -158,92 +84,51 @@ X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: <>
-List-Archive: <>
+Archived-At: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XNYHVJMANBWHGWLV2RPKG6ZO45KJO6OU/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Daniel Baluta <daniel.baluta@nxp.com>
+On Thu, 23 Nov 2023 09:06:58 +0000, Maciej Strozek wrote:
+> Add a polling mechanism that will keep the driver operational even in
+> absence of physical IRQ connection. If IRQ line is detected, the driver
+> will continue working as usual, in case of missing IRQ line it will
+> fallback to the polling mechanism introduced in this change.
+> This will support users which choose not to connect an IRQ line as it
+> is not critical to part's operation.
+> 
+> [...]
 
-We need this to signal that DAI link supports only one direction that
-can only be either playback or capture.
----
- include/sound/simple_card_utils.h     |  3 +++
- sound/soc/generic/audio-graph-card2.c |  6 ++++++
- sound/soc/generic/simple-card-utils.c | 19 +++++++++++++++++++
- 3 files changed, 28 insertions(+)
+Applied to
 
-diff --git a/include/sound/simple_card_utils.h b/include/sound/simple_card_utils.h
-index e5da10b4c43b..ad67957b7b48 100644
---- a/include/sound/simple_card_utils.h
-+++ b/include/sound/simple_card_utils.h
-@@ -195,6 +195,9 @@ int graph_util_is_ports0(struct device_node *port);
- int graph_util_parse_dai(struct device *dev, struct device_node *ep,
- 			 struct snd_soc_dai_link_component *dlc, int *is_single_link);
- 
-+int graph_util_parse_link_direction(struct device_node *np,
-+				    bool *is_playback_only, bool *is_capture_only);
-+
- #ifdef DEBUG
- static inline void simple_util_debug_dai(struct simple_util_priv *priv,
- 					 char *name,
-diff --git a/sound/soc/generic/audio-graph-card2.c b/sound/soc/generic/audio-graph-card2.c
-index 7146611df730..04c2eac881c2 100644
---- a/sound/soc/generic/audio-graph-card2.c
-+++ b/sound/soc/generic/audio-graph-card2.c
-@@ -597,6 +597,7 @@ static void graph_link_init(struct simple_util_priv *priv,
- 	struct device_node *ep;
- 	struct device_node *ports;
- 	unsigned int daifmt = 0, daiclk = 0;
-+	bool playback_only = 0, capture_only = 0;
- 	unsigned int bit_frame = 0;
- 
- 	if (graph_lnk_is_multi(port)) {
-@@ -635,6 +636,11 @@ static void graph_link_init(struct simple_util_priv *priv,
- 	if (is_cpu_node)
- 		daiclk = snd_soc_daifmt_clock_provider_flipped(daiclk);
- 
-+	graph_util_parse_link_direction(port, &playback_only, &capture_only);
-+
-+	dai_link->playback_only = playback_only;
-+	dai_link->capture_only = capture_only;
-+
- 	dai_link->dai_fmt	= daifmt | daiclk;
- 	dai_link->init		= simple_util_dai_init;
- 	dai_link->ops		= &graph_ops;
-diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
-index cfa70a56ff0f..9006ef5e95f5 100644
---- a/sound/soc/generic/simple-card-utils.c
-+++ b/sound/soc/generic/simple-card-utils.c
-@@ -1129,6 +1129,25 @@ int graph_util_parse_dai(struct device *dev, struct device_node *ep,
- }
- EXPORT_SYMBOL_GPL(graph_util_parse_dai);
- 
-+int graph_util_parse_link_direction(struct device_node *np,
-+				    bool *playback_only, bool *capture_only)
-+{
-+	bool is_playback_only = false;
-+	bool is_capture_only = false;
-+
-+	is_playback_only = of_property_read_bool(np, "playback-only");
-+	is_capture_only = of_property_read_bool(np, "capture-only");
-+
-+	if (is_playback_only && is_capture_only)
-+		return -EINVAL;
-+
-+	*playback_only = is_playback_only;
-+	*capture_only = is_capture_only;
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(graph_util_parse_link_direction);
-+
- /* Module information */
- MODULE_AUTHOR("Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>");
- MODULE_DESCRIPTION("ALSA SoC Simple Card Utils");
--- 
-2.25.1
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+
+Thanks!
+
+[1/1] ASoC: cs43130: Allow driver to work without IRQ connection
+      commit: fa91703dc2e010e48a230dc92967cb5ae23f8680
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
 
