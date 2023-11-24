@@ -4,88 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8B09CC61D97
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Nov 2023 13:58:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D19C2C61D97
+	for <alsa-devel@archiver.kernel.org>; Fri, 24 Nov 2023 14:18:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 728A6E85;
-	Fri, 24 Nov 2023 14:58:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 728A6E85
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6D6A7AE8;
+	Fri, 24 Nov 2023 15:17:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6D6A7AE8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1700834315;
-	bh=cRtP+/fvLp2mZi9KFWBi6Hcoa/TFerpYhlbAz1Ua5uY=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1700835478;
+	bh=umb1lq+7x0di4GkTWElfAJiKHuYnyynTpxF8V0VWQ14=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=QbUkKlHzmBmaQIBGsk4owRrG7X1pTRb0BML3AOrKBtfP1mBBpnsC3DekfP0z3WtA2
-	 3a3tJ2316t7XOuBb56KEHcsfXvghp6thRfbaM+dBq+gtAVxoPRtViZcijvIg7Ks+qI
-	 X9Z11Hv38zG9GCKmcvG87ZllsI7mX+XwIFk2fLtc=
+	b=aAnz72GDpNNwLauI5IOKqJcBwGFdviqzN87unMVOLSyfR/JXJmdULgcslz933oTLh
+	 35vYoCq8rUJDoVY/MtTxbkn77UiUIEem95gXQ85kG8s8mnvQoT1kOjoHzbr98r2j+l
+	 +OG6zUVALCGnd/MzGiR+wJnlgkKEIiX4ZJjbIwvc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 781A9F805EB; Fri, 24 Nov 2023 14:57:38 +0100 (CET)
+	id 012EAF8057F; Fri, 24 Nov 2023 15:17:25 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B6C52F805F1;
-	Fri, 24 Nov 2023 14:57:37 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8D2D9F8057A;
+	Fri, 24 Nov 2023 15:17:25 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D082BF805A8; Fri, 24 Nov 2023 14:57:33 +0100 (CET)
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id BC10DF802E8; Fri, 24 Nov 2023 15:17:19 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 2C2DBF80249
-	for <alsa-devel@alsa-project.org>; Fri, 24 Nov 2023 14:57:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2C2DBF80249
+	by alsa1.perex.cz (Postfix) with ESMTPS id BECC4F80246
+	for <alsa-devel@alsa-project.org>; Fri, 24 Nov 2023 15:17:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BECC4F80246
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=mVwzq/tU
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700834245; x=1732370245;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=cRtP+/fvLp2mZi9KFWBi6Hcoa/TFerpYhlbAz1Ua5uY=;
-  b=mVwzq/tUA/9iCj44ROMYZsS37Wfy8lpWrzc4wYV1y5qkkn3gL6Q/HZHG
-   n7yEgC+Z+sUDilZu4enHe8L8HChvUZFSYIUE513wzfj35B57dX6f8AmLv
-   ZOdU56/BTm5MkvDbu0lDp93bCWlOK5sITeveMedKfxlKdzqamROLDLMYS
-   lHrdMD0mogo01eAdC8JAZ93+XQPEZRfzSo7akNn8IzMf+gp4M8Cn1Ur02
-   b6xHJJx/fEUwziY4YRILpyEGWejX42J2BgiBZdcuisZP3r3NM5NJI+v19
-   eN/NPXe5AggnZNRCHoVPnqDmYnq1/3ehFK7w9UZYfwkn6Cx3Blvc8yTW4
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10904"; a="372590358"
-X-IronPort-AV: E=Sophos;i="6.04,224,1695711600";
-   d="scan'208";a="372590358"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 24 Nov 2023 05:57:14 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10904"; a="858397227"
-X-IronPort-AV: E=Sophos;i="6.04,224,1695711600";
-   d="scan'208";a="858397227"
-Received: from barumuga-mobl1.ger.corp.intel.com (HELO
- pujfalus-desk.ger.corp.intel.com) ([10.252.58.182])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 24 Nov 2023 05:57:12 -0800
-From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-To: lgirdwood@gmail.com,
-	broonie@kernel.org
-Cc: alsa-devel@alsa-project.org,
-	linux-sound@vger.kernel.org,
-	pierre-louis.bossart@linux.intel.com,
-	kai.vehmanen@linux.intel.com,
-	ranjani.sridharan@linux.intel.com
-Subject: [PATCH 1/2] ASoC: SOF: ipc4-topology: Add core_mask in struct
- snd_sof_pipeline
-Date: Fri, 24 Nov 2023 15:57:42 +0200
-Message-ID: <20231124135743.24674-2-peter.ujfalusi@linux.intel.com>
-X-Mailer: git-send-email 2.42.1
-In-Reply-To: <20231124135743.24674-1-peter.ujfalusi@linux.intel.com>
-References: <20231124135743.24674-1-peter.ujfalusi@linux.intel.com>
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=rW0B7dko
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 95A2D6228C;
+	Fri, 24 Nov 2023 14:17:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5556C433CD;
+	Fri, 24 Nov 2023 14:17:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1700835431;
+	bh=umb1lq+7x0di4GkTWElfAJiKHuYnyynTpxF8V0VWQ14=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=rW0B7dkoDAMXF3C8b51xqQYnjp/0ej9P/oNncvvL07WENujuurblmbxVjJSwx7wmB
+	 9KKHcOIYNeCVw4zCJhk5eB9xPYx1FC6SzFhublw39agOIs9ybkipKrUVf8kWaoPQB1
+	 5Oz0ulLztmqTP5R8wxPh9L8QI+4CmGvYsrs5ti0tb2QmZes7KUvcsXl0xtptfsqCVP
+	 BAGOB7XRL3w0YUYz1YRDr2amdMod2abgiEEgaFMdczTGqoUdW1zB0kkvS+cAK2mjcR
+	 fbj52ldJjgY/aKo/vWb0aCc5aaJOuscmUqgjnVk5MCYQih0+KJMbjPQZdsubDy3NQA
+	 WKH/df1ixMCvA==
+Date: Fri, 24 Nov 2023 14:17:08 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Daniel Baluta <daniel.baluta@oss.nxp.com>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+	linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
+	kuninori.morimoto.gx@renesas.com, daniel.baluta@gmail.com,
+	robh+dt@kernel.org, iuliana.prodan@nxp.com, shengjiu.wang@nxp.com,
+	linux-imx@nxp.com
+Subject: Re: [PATCH v3 1/2] ASoC: audio-graph-card2: Introduce
+ playback-only/capture only DAI link flags
+Message-ID: <ZWCwZNzWZNIefNjB@finisterre.sirena.org.uk>
+References: <20231123160655.188428-1-daniel.baluta@oss.nxp.com>
+ <20231123160655.188428-2-daniel.baluta@oss.nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 6VOESRVQ7QHK5Y22DFRFUA6LIYSW4JBZ
-X-Message-ID-Hash: 6VOESRVQ7QHK5Y22DFRFUA6LIYSW4JBZ
-X-MailFrom: peter.ujfalusi@linux.intel.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="KPJm13OYvLGl9q7Q"
+Content-Disposition: inline
+In-Reply-To: <20231123160655.188428-2-daniel.baluta@oss.nxp.com>
+X-Cookie: Slow day.  Practice crawling.
+Message-ID-Hash: TO7KNLFAPOLJXALAQTIBQUDGZEFOGKEC
+X-Message-ID-Hash: TO7KNLFAPOLJXALAQTIBQUDGZEFOGKEC
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -97,7 +88,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6VOESRVQ7QHK5Y22DFRFUA6LIYSW4JBZ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TO7KNLFAPOLJXALAQTIBQUDGZEFOGKEC/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -106,121 +97,38 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 
-With IPC4, a pipeline may contain multiple modules in the data
-processing domain and they can be scheduled to run on different cores.
-Add a new field in struct snd_sof_pipeline to keep track of all the
-cores that are associated with the modules in the pipeline. Set the
-pipeline core mask for IPC3 when initializing the pipeline widget IPC
-structure. For IPC4, set the core mark when initializing the pipeline
-widget and initializing processing modules in the data processing domain.
+--KPJm13OYvLGl9q7Q
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
----
- sound/soc/sof/ipc3-topology.c | 2 ++
- sound/soc/sof/ipc4-topology.c | 9 +++++++++
- sound/soc/sof/sof-audio.h     | 2 ++
- 3 files changed, 13 insertions(+)
+On Thu, Nov 23, 2023 at 06:06:54PM +0200, Daniel Baluta wrote:
+> From: Daniel Baluta <daniel.baluta@nxp.com>
+>=20
+> We need this to signal that DAI link supports only one direction that
+> can only be either playback or capture.
+> ---
 
-diff --git a/sound/soc/sof/ipc3-topology.c b/sound/soc/sof/ipc3-topology.c
-index 7a4932c152a9..8c999e7721f2 100644
---- a/sound/soc/sof/ipc3-topology.c
-+++ b/sound/soc/sof/ipc3-topology.c
-@@ -505,6 +505,7 @@ static int sof_ipc3_widget_setup_comp_mixer(struct snd_sof_widget *swidget)
- static int sof_ipc3_widget_setup_comp_pipeline(struct snd_sof_widget *swidget)
- {
- 	struct snd_soc_component *scomp = swidget->scomp;
-+	struct snd_sof_pipeline *spipe = swidget->spipe;
- 	struct sof_ipc_pipe_new *pipeline;
- 	struct snd_sof_widget *comp_swidget;
- 	int ret;
-@@ -557,6 +558,7 @@ static int sof_ipc3_widget_setup_comp_pipeline(struct snd_sof_widget *swidget)
- 		swidget->dynamic_pipeline_widget);
- 
- 	swidget->core = pipeline->core;
-+	spipe->core_mask |= BIT(pipeline->core);
- 
- 	return 0;
- 
-diff --git a/sound/soc/sof/ipc4-topology.c b/sound/soc/sof/ipc4-topology.c
-index b24a64377f68..19f36db30979 100644
---- a/sound/soc/sof/ipc4-topology.c
-+++ b/sound/soc/sof/ipc4-topology.c
-@@ -656,6 +656,7 @@ static int sof_ipc4_widget_setup_comp_pipeline(struct snd_sof_widget *swidget)
- {
- 	struct snd_soc_component *scomp = swidget->scomp;
- 	struct sof_ipc4_pipeline *pipeline;
-+	struct snd_sof_pipeline *spipe = swidget->spipe;
- 	int ret;
- 
- 	pipeline = kzalloc(sizeof(*pipeline), GFP_KERNEL);
-@@ -670,6 +671,7 @@ static int sof_ipc4_widget_setup_comp_pipeline(struct snd_sof_widget *swidget)
- 	}
- 
- 	swidget->core = pipeline->core_id;
-+	spipe->core_mask |= BIT(pipeline->core_id);
- 
- 	if (pipeline->use_chain_dma) {
- 		dev_dbg(scomp->dev, "Set up chain DMA for %s\n", swidget->widget->name);
-@@ -797,6 +799,7 @@ static int sof_ipc4_widget_setup_comp_mixer(struct snd_sof_widget *swidget)
- static int sof_ipc4_widget_setup_comp_src(struct snd_sof_widget *swidget)
- {
- 	struct snd_soc_component *scomp = swidget->scomp;
-+	struct snd_sof_pipeline *spipe = swidget->spipe;
- 	struct sof_ipc4_src *src;
- 	int ret;
- 
-@@ -819,6 +822,8 @@ static int sof_ipc4_widget_setup_comp_src(struct snd_sof_widget *swidget)
- 		goto err;
- 	}
- 
-+	spipe->core_mask |= BIT(swidget->core);
-+
- 	dev_dbg(scomp->dev, "SRC sink rate %d\n", src->sink_rate);
- 
- 	ret = sof_ipc4_widget_setup_msg(swidget, &src->msg);
-@@ -864,6 +869,7 @@ static int sof_ipc4_widget_setup_comp_process(struct snd_sof_widget *swidget)
- {
- 	struct snd_soc_component *scomp = swidget->scomp;
- 	struct sof_ipc4_fw_module *fw_module;
-+	struct snd_sof_pipeline *spipe = swidget->spipe;
- 	struct sof_ipc4_process *process;
- 	void *cfg;
- 	int ret;
-@@ -920,6 +926,9 @@ static int sof_ipc4_widget_setup_comp_process(struct snd_sof_widget *swidget)
- 
- 	sof_ipc4_widget_update_kcontrol_module_id(swidget);
- 
-+	/* set pipeline core mask to keep track of the core the module is scheduled to run on */
-+	spipe->core_mask |= BIT(swidget->core);
-+
- 	return 0;
- free_base_cfg_ext:
- 	kfree(process->base_config_ext);
-diff --git a/sound/soc/sof/sof-audio.h b/sound/soc/sof/sof-audio.h
-index 99c940b22538..8874ee5f557f 100644
---- a/sound/soc/sof/sof-audio.h
-+++ b/sound/soc/sof/sof-audio.h
-@@ -481,6 +481,7 @@ struct snd_sof_widget {
-  * @paused_count: Count of number of PCM's that have started and have currently paused this
- 		  pipeline
-  * @complete: flag used to indicate that pipeline set up is complete.
-+ * @core_mask: Mask containing target cores for all modules in the pipeline
-  * @list: List item in sdev pipeline_list
-  */
- struct snd_sof_pipeline {
-@@ -488,6 +489,7 @@ struct snd_sof_pipeline {
- 	int started_count;
- 	int paused_count;
- 	int complete;
-+	unsigned long core_mask;
- 	struct list_head list;
- };
- 
--- 
-2.42.1
+You've not provided a Signed-off-by for this so I can't do anything with
+it, please see Documentation/process/submitting-patches.rst for details
+on what this is and why it's important.
 
+It'd be good if the changelog explained why we need this.
+
+--KPJm13OYvLGl9q7Q
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVgsGMACgkQJNaLcl1U
+h9CQZAf8CQihmPYaPIZSCRjd6wUATVjtfC2gIaucJq69pLgqmWIvLjsCCAnqqJbM
+MlwcKVML2trFRWXG+bvNrIdtXLGr7/Hp0MiksG6oPuJsfKLdNPIEyKF17QYKs2iq
+gPonNRnz5xePhFu3JWPJGbzeSu/kf2uq4mXOH7iwEBRmZFS35chTGBX5Shvrbvx2
+UoNoyzy1nynNEAmplvYuqCvwXa6WD5UiwbgjMoIXy9UeD7tlytbxxUjdhSRPIq0e
+cAfvAczOcivL6kSw079o4UGhAEOlU+fvm1YOn2QFoGQvlmQFtyBxhd02KhwKXfXL
+7FxvwpPzuNJ2xjWnnIR3bf0Tlk11qw==
+=c549
+-----END PGP SIGNATURE-----
+
+--KPJm13OYvLGl9q7Q--
