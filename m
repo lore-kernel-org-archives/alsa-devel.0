@@ -4,86 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E7068C4167B
-	for <alsa-devel@archiver.kernel.org>; Sun, 26 Nov 2023 17:42:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 16045C4167B
+	for <alsa-devel@archiver.kernel.org>; Sun, 26 Nov 2023 17:46:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 045BDDF0;
-	Sun, 26 Nov 2023 18:42:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 045BDDF0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 29AF3828;
+	Sun, 26 Nov 2023 18:46:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 29AF3828
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1701020531;
-	bh=jygK3m4dePtvC8Z9tovuq2DxPcynYuqyVRBo+q368VA=;
-	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=Xv0r0337t7IM93GpQZlY6gix5vgk+Pf58I1D3QvDxxjWd1aJBJfuuqvYrKmj5pZHB
-	 Dy/KVRalb3IG9CJLFiykfqi3ZRhTWf/8enbRq9BzKsgBs2bXbtfiNU7t4IbeMzHIOg
-	 d4m9Nd4KrYNzK4JF6GWL1nyhHuUBJ4aYe3pofWhI=
+	s=default; t=1701020805;
+	bh=pdHonYLusTRGZEOfzFAp2afE6FK+l8F2xdjNx4sdXiE=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=mqXAZqaC1FMv5aqOz41/c54jIBMK69wx6eDVY85ZhArNratVt5duFji/wTZ+c60/1
+	 g3dL3A0L5EebgNdu5U5KPHXCAI+ry1VRUhX83mX/5zbBYpRZN6ZOmDuSZsUfcFLca5
+	 avp2ta7RlAAazlnpBDj3k8JY4CTDApEbHabOUAUI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CD6F2F805B4; Sun, 26 Nov 2023 18:41:29 +0100 (CET)
+	id 900AAF805AB; Sun, 26 Nov 2023 18:46:07 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 21918F805BE;
-	Sun, 26 Nov 2023 18:41:29 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id AE297F80589;
+	Sun, 26 Nov 2023 18:46:07 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 27779F8047D; Sat, 25 Nov 2023 10:22:11 +0100 (CET)
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com
- (mail-mw2nam04on20619.outbound.protection.outlook.com
- [IPv6:2a01:111:f400:7e8c::619])
+	id 42A24F80254; Sat, 25 Nov 2023 10:22:15 +0100 (CET)
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com
+ (mail-bn1nam02on20608.outbound.protection.outlook.com
+ [IPv6:2a01:111:f400:7eb2::608])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id AEB52F80166
-	for <alsa-devel@alsa-project.org>; Sat, 25 Nov 2023 10:21:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AEB52F80166
+	by alsa1.perex.cz (Postfix) with ESMTPS id 51A75F802E8
+	for <alsa-devel@alsa-project.org>; Sat, 25 Nov 2023 10:22:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 51A75F802E8
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=amd.com header.i=@amd.com header.a=rsa-sha256
- header.s=selector1 header.b=yDrY78bt
+ header.s=selector1 header.b=HKHoXOCa
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jaH0UML3Ok5VkMJ08+qg7Gk8Gjbul0/DMeurEjFBCBOCxTndgRWA/vwdTRuf4kVCPGsPyrZh6ZuwKpXH1bUtpExzuSXrw26V2M+cEgiQVCwqTPdQYTSgNG9wndRf/2unk5mbhCc2JnyniumaNG/HPXbKBmArn5/+Yp834hsmmRcAp+lRaiPVLNqII/GbgECbtHQtjm64oEETRpk2wD3m8+UNGB7ileipPDxtVBB1BpTjsV+ZW5OuRSQcEJAZ27K+NXhy5rjTBqvlKRkcEJZW7436roU8HV4uFPY/L2m0FvJtI3yDZeE0nPM/SL/U2LxknlKibt3XFOW46O9qtHytqg==
+ b=RrrhuV+FHHSSsUKxlUla2b5d5XiBVkW3PrQjBNaNdMHJMou5UnpmHu6ArL5SoKVclBs2uMQWGqnjxcLwNPQ2PzGm7stWVqH82SZJ6SFOIVVWAtPxde2wTqV+yRJTG289evCpgU/9bBw2Jk5xJ6ZWscjMdB0z2NxBlcpcp6scpbTimyeaydVwLvkGO9MQw9/tdeuDKhlaqpSgeTkr2h4a8JFtziqqNDj0W9fcl+K7+Tv8yNfHQTxhJ9UZjtdzwJQxoQF3PIuYLweJF0YJGaghMnouEwuqcnx2wPLK/0c9SQ6BysyH/CqL3MfsBE5moQ3PXQ5Uk2dPJ9Erxfw5QHawig==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=NOcXqCj/Ujdo7ubKiSjoRigKz4vONyHsJeJ/DMgGmdU=;
- b=bj5EGfhPxFTpbRqXxeydPTL1kPVhnTiKt89pSwPO6Pw6siZwZ6AVozq5n0tDBd9/e838aIGSo9e21GQO5aEI1HOzwtg7kKig7EJw+3hegcZ5hlE7wUwhQ/VRD3p9vJZX6E0Cn+JD8r8S0PEp0SmezL3N5sNNLXTCGdK6bojHpDOghHPG1E9Ir/w/3u/dUxsNepvwTziXGIqvWeXwUAM3HHMT6Zy5exlGh6x3otzh1o6MW+4wSb3n5FHbu/QnRP5rzmIojACycZ+RXVn1hFbailjwuI+ioK0Rm85fsatbzzrAJAXEFOvYpxZvVZkyzsp86ahV9a8Mmq1YlBSZVgVR8A==
+ bh=zdhmBIv20tzFedbudL60rKhNQSi9GXwtyqdd+i/jiJQ=;
+ b=NFHdawyb+AaNzxjG/vahJFotUHGK/zvV8hI70pfF897M938f7de9smqGVgDqEPMYt4FPVt0FOCR1LIdYvGWCaN1BhxythMPkyZMQnz71iaDnsYdeALYZH2zYk4ZcyS7NVbn2KBrkMT7PY0pkLeRybPCYgW5hwFhs0pe81geCy26sleGqJmZzEUrM4zd6lQXj/zZ2Hjm8AROj1wkEmiZ5SKIW5arzA3Ii9Jm6w6aMfEy2D79o4rVe3YmuXBbpcTWL9lTaz8rwRx0iwWeROLEGBPvXtfx6uRwTNv3Vli7AsBvlfV0mEvGvXLAgBa8bjVaavDmdr3XECc2cPBdPsjJJ0Q==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
  (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
  dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NOcXqCj/Ujdo7ubKiSjoRigKz4vONyHsJeJ/DMgGmdU=;
- b=yDrY78bt53PAcTlRXeB8FDj6J4I6wSJPQ9dO+/SXvIitVBlid5HbtKMBwFHXxav7oNdhLG62XnQFejptLV06gbKFycXO6kVMxkoql2oWLQj9tLPtAJoYLuG4v5gFlc6mqh9AnTgbIhoz9Pq13IGfFyE9oNN0ns45aRNY1LSQOg8=
-Received: from DM6PR06CA0062.namprd06.prod.outlook.com (2603:10b6:5:54::39) by
- BY5PR12MB4179.namprd12.prod.outlook.com (2603:10b6:a03:211::8) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7025.24; Sat, 25 Nov 2023 09:21:47 +0000
-Received: from CY4PEPF0000E9D7.namprd05.prod.outlook.com
- (2603:10b6:5:54:cafe::ff) by DM6PR06CA0062.outlook.office365.com
- (2603:10b6:5:54::39) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.24 via Frontend
- Transport; Sat, 25 Nov 2023 09:21:47 +0000
+ bh=zdhmBIv20tzFedbudL60rKhNQSi9GXwtyqdd+i/jiJQ=;
+ b=HKHoXOCaLcyWQ9K5RWi/3f5Lhisc/fxWe+K7w0dvBplnRdoA5YgZt4PWxn6ur9JbsXWHlonUekDvvpKLeJlx+ctDSsK8Nxw+rEL0R673SCtxeDyos/XISTkYDArneCV4TxBBbp3LtYbqnd2ModT3eE/Wk/gM4c5kbyyUwsV5LbA=
+Received: from DM6PR11CA0065.namprd11.prod.outlook.com (2603:10b6:5:14c::42)
+ by SA3PR12MB7806.namprd12.prod.outlook.com (2603:10b6:806:31d::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.21; Sat, 25 Nov
+ 2023 09:22:00 +0000
+Received: from DS1PEPF00017097.namprd05.prod.outlook.com
+ (2603:10b6:5:14c:cafe::cc) by DM6PR11CA0065.outlook.office365.com
+ (2603:10b6:5:14c::42) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.21 via Frontend
+ Transport; Sat, 25 Nov 2023 09:22:00 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=amd.com;
 Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
  165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
-Received: from SATLEXMB03.amd.com (165.204.84.17) by
- CY4PEPF0000E9D7.mail.protection.outlook.com (10.167.241.78) with Microsoft
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ DS1PEPF00017097.mail.protection.outlook.com (10.167.18.101) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7046.17 via Frontend Transport; Sat, 25 Nov 2023 09:21:46 +0000
-Received: from SATLEXMB05.amd.com (10.181.40.146) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
+ 15.20.7046.17 via Frontend Transport; Sat, 25 Nov 2023 09:22:00 +0000
+Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Sat, 25 Nov
- 2023 03:21:46 -0600
-Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB05.amd.com
- (10.181.40.146) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Sat, 25 Nov
- 2023 03:21:45 -0600
+ 2023 03:21:59 -0600
 Received: from xhdakumarma40u.xilinx.com (10.180.168.240) by
  SATLEXMB03.amd.com (10.181.40.144) with Microsoft SMTP Server id 15.1.2507.34
- via Frontend Transport; Sat, 25 Nov 2023 03:21:39 -0600
+ via Frontend Transport; Sat, 25 Nov 2023 03:21:53 -0600
 From: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
 To: <broonie@kernel.org>, <tudor.ambarus@linaro.org>, <pratyush@kernel.org>,
 	<miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
@@ -98,51 +96,53 @@ CC: <linux-spi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
 	<patches@opensource.cirrus.com>, <linux-sound@vger.kernel.org>,
 	<git@amd.com>, <amitrkcian2002@gmail.com>, Amit Kumar Mahapatra
 	<amit.kumar-mahapatra@amd.com>
-Subject: [PATCH v11 00/10] spi: Add support for stacked/parallel memories
-Date: Sat, 25 Nov 2023 14:51:27 +0530
-Message-ID: <20231125092137.2948-1-amit.kumar-mahapatra@amd.com>
+Subject: [PATCH v11 02/10] ALSA: hda/cs35l56: Use set/get APIs to access
+ spi->chip_select
+Date: Sat, 25 Nov 2023 14:51:29 +0530
+Message-ID: <20231125092137.2948-3-amit.kumar-mahapatra@amd.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20231125092137.2948-1-amit.kumar-mahapatra@amd.com>
+References: <20231125092137.2948-1-amit.kumar-mahapatra@amd.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000E9D7:EE_|BY5PR12MB4179:EE_
-X-MS-Office365-Filtering-Correlation-Id: 90b9c222-9a76-4186-eb47-08dbed97f2a8
+X-MS-TrafficTypeDiagnostic: DS1PEPF00017097:EE_|SA3PR12MB7806:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9656d20e-dd54-47a7-dcd0-08dbed97fa75
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info: 
-	QriRegH0EdXlaEFmG2V/BAjzuJ3Uts8uxf4hq38QZ84MiCgxyLCjC6YPFLznD7CIDsyS5QOdAdlFu0/Q74qttSxG/TInHOYLQEgne8jVke7ALHzZyCpt/X86sttIf9ASLbUKbR6GwMapOMIbVycvKCjXcbDqgJuCPqXbH/0bmgDHnqfqFHwgCySqVlej/+1I9h4qoN0ILVLC762s+tNR46PWnBJojPgwFKnWVIikYkgXRA4a+7HGXWnukIFRjSLA+QXajD+mAXVKL+HQhF59/y8IbqcC5bOm3iVBfXf9PHle+cLL++7xkcgT3a4OB6bEQ+h3quiomi0LSSXf8CDbbJs7qjhG0R7LJe3EGVcEx0QTGIzygaF3WyMyITriYfCSIZloGnu3Tj7gipEQaYg8N73+MhF+08ohjVjtltJayUp1Hr/oaQDon3WRm6A9aXmjMPXvdakJzrog1c0qxmV7F19wGKu6N+HCZ6ui5okiUP1poN/w7KvhDl99lArmgVHgBunU0H/2YJLHwGZXx1yKG6EgRkB/EI57skDg2+GC15R6oyLaJVlJSv3+0f48s/Qzi2YnqoC7JbI3a/Y/vEzKuePHaDT6jc2t9ANJthN56J7edNwQ2buv1Oz7fSzHsdLp2jBNNUh/zbsdTsGxw5oD5ncBqchT1b3lVSZnCJac5pjaLFxXW5Auxa5/Fvg/gVA+mEXHdsUtuKuRwRinmpVEhmepV37qW4VRUQ8dGwhcmannA3bqv71kLTCEemOwtCjYTNEJdgYh5x2ryDG+Ul83NJndfslHycXENEqFw4XrPlbfcZOzZyX2Nwcm4wAt/n15VGr79XP1JaaP7sdFyODwe3zvw3nNrCkMSgZKVcZNYS4=
+	4WxtTJ0A2Ar/SWsYOW106lL1o33LtkJkVPzGXxUo94RNoTU1OQwFhX5Uwth4cBfYScuMqNH/ff+/3juoN7jP6izjee2YsQRm36/Ukj8tPomG1xhJLEyP1dg+HXcpV2dFir7HzmmCYoWofOxbTZ18/d5mXv83n17QPfMk0qF3QbU6p5eLqLVHQsCnIouQYOmqBmZFnUEyLwu+4SIEkXO1nOF70He9Eq4I3irLk8CBMRQEMWzkTmAkSQvoG4nxjTa/rKfNWWvGIUMJrjLAY1Aj23h4GTX28y8+zxWqhn0gmTj0uSBRMr1FfRWnmWDAtdIT+aXi8b4q5IULTGw5cpV05kpdtHLmXes+UaIrlkHQIVJiqxKsNXMgLRpYK+k3LT0VIiIpUCsfiuBIdag8/PZerKvxSoW18SNpkf/d8TxOtKX0XWiBc62xSes/q1m7IGUARjU3H67MS2Gh2uvSPAvdRMm019OtrKQRpZqM22MNBd6RjMNB9TyxpVVxiKlTh4GOnzqCqGnjQUIaQ1DhM81U0yr4GsltfcxKEn7c9EKWhjSSPTeM36R8YSuUVzcw/L3AOdh1exRdJV5nV586GOlZNH5HosO1uiNZdQnpW5AznHY2L4N99P4ao10ecWhBdYVaqJkApmCqzIDWcMq9GcuGooq03JbPgpir7bH/mBZ1HuL5wZoxOYPa7JidDijoFwsiFfl0CJX42YgKfG7U/ZfwP/t4VG15Fm5pczfenb+k9ktr/eFoldMFLPvnVAbW7wPAgvPNPFnurFbey9N2B9NIovSoN1am/xCS0Ms5WtzZWEg=
 X-Forefront-Antispam-Report: 
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(346002)(396003)(39850400004)(376002)(136003)(230173577357003)(230922051799003)(230273577357003)(1800799012)(64100799003)(82310400011)(451199024)(186009)(46966006)(36840700001)(40470700004)(2906002)(7416002)(70586007)(70206006)(110136005)(54906003)(41300700001)(8936002)(8676002)(316002)(478600001)(966005)(6666004)(5660300002)(4326008)(2616005)(336012)(426003)(26005)(1076003)(83380400001)(47076005)(40480700001)(36860700001)(86362001)(40460700003)(356005)(81166007)(36756003)(82740400003)(921008)(36900700001);DIR:OUT;SFP:1101;
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(396003)(376002)(136003)(346002)(230922051799003)(186009)(451199024)(64100799003)(82310400011)(1800799012)(40470700004)(36840700001)(46966006)(316002)(70206006)(54906003)(70586007)(110136005)(40460700003)(82740400003)(921008)(4744005)(2906002)(5660300002)(7416002)(36756003)(356005)(81166007)(8676002)(8936002)(4326008)(26005)(86362001)(36860700001)(6666004)(336012)(426003)(1076003)(41300700001)(2616005)(40480700001)(478600001)(47076005)(83380400001)(36900700001);DIR:OUT;SFP:1101;
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Nov 2023 09:21:46.8964
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Nov 2023 09:22:00.0148
  (UTC)
 X-MS-Exchange-CrossTenant-Network-Message-Id: 
- 90b9c222-9a76-4186-eb47-08dbed97f2a8
+ 9656d20e-dd54-47a7-dcd0-08dbed97fa75
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: 
- TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
+ TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
 X-MS-Exchange-CrossTenant-AuthSource: 
-	CY4PEPF0000E9D7.namprd05.prod.outlook.com
+	DS1PEPF00017097.namprd05.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4179
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR12MB7806
 X-MailFrom: amit.kumar-mahapatra@amd.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: BSE6RY3YY4JP6I5ENMQKB7LXKQ7UMAPA
-X-Message-ID-Hash: BSE6RY3YY4JP6I5ENMQKB7LXKQ7UMAPA
+Message-ID-Hash: QI5FAPGRTNUFMUGR6FNFJ27TIVGFH4GL
+X-Message-ID-Hash: QI5FAPGRTNUFMUGR6FNFJ27TIVGFH4GL
 X-Mailman-Approved-At: Sun, 26 Nov 2023 17:37:49 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BSE6RY3YY4JP6I5ENMQKB7LXKQ7UMAPA/>
+Archived-At: <>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -151,154 +151,30 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-This patch series updated the spi-nor, spi core and the AMD-Xilinx GQSPI 
-driver to add stacked and parallel memories support.
+In preparation for adding multiple CS support for a device, set/get
+functions were introduces accessing spi->chip_select in
+'commit 303feb3cc06a ("spi: Add APIs in spi core to set/get
+spi->chip_select and spi->cs_gpiod")'.
+Replace spi->chip_select with spi_get_chipselect() API.
 
-The first nine patches
-https://lore.kernel.org/all/20230119185342.2093323-1-amit.kumar-mahapatra@amd.com/
-https://lore.kernel.org/all/20230310173217.3429788-2-amit.kumar-mahapatra@amd.com/
-https://lore.kernel.org/all/20230310173217.3429788-3-amit.kumar-mahapatra@amd.com/
-https://lore.kernel.org/all/20230310173217.3429788-4-amit.kumar-mahapatra@amd.com/
-https://lore.kernel.org/all/20230310173217.3429788-5-amit.kumar-mahapatra@amd.com/
-https://lore.kernel.org/all/20230310173217.3429788-6-amit.kumar-mahapatra@amd.com/
-https://lore.kernel.org/all/20230310173217.3429788-7-amit.kumar-mahapatra@amd.com/
-https://lore.kernel.org/all/20230310173217.3429788-8-amit.kumar-mahapatra@amd.com/
-https://lore.kernel.org/all/20230310173217.3429788-9-amit.kumar-mahapatra@amd.com/
-of the previous series got applied to
-https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git
-for-next But the rest of the patches in the series did not get applied as 
-failure was reported for spi driver with GPIO CS, so send the remaining 
-patches in the series after rebasing it on top of for-next branch and 
-fixing the issue.
-
-CS GPIO is not tested on our hardware, but it has been tested by @Stefan 
-https://lore.kernel.org/all/005001da1efc$619ad5a0$24d080e0$@opensource.cirrus.com/
+Signed-off-by: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
 ---
-BRANCH: for-next
+ sound/pci/hda/cs35l56_hda_spi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Changes in v11:
-- Rebased patch series on top of latest for-next branch.
-- Added a new patch(1/10) to replace spi->chip_select with
-  spi_get_chipselect() call in tps6594-spi.c.
-- Added a new patch(2/10) to replace spi->chip_select with
-  spi_get_chipseletc() call in cs35l56_hda_spi.c.
-- In spi.c initialized unused CS[] to 0xff and spi->cs_index_mask
-  to 0x01 in all flows.
-- Updated spi_dev_check() to compare the CS of old spi device with
-  the new spi device CS.
-- Updated cover letter description to add information regarding GPIO CS
-  testing and added Stefen's Tested-by tag in 3/10 patch.
-
-Changes in v10:
- - Rebased patch series on top of latest for-next branch and fixed
-   merge conflicts.
-
-Changes in v9:
-- Updated 1/8 patch description to add an high-level overview of
-  parallel(multi-cs) & stacked design.
-- Initialized all unused CS to 0xFF.
-- Moved CS check from spi_add_device() to __spi_add_device().
-- Updated __spi_add_device() to check to make sure that multiple logical CS
-  don't map to the same physical CS and same physical CS doesn't map to
-  different logical CS.
-- Updated 1/8, 5/8 & 7/8 to support arbitrary number of flash devices
-  connected in parallel or stacked mode.
-- Updated documentation for chip_select.
-- Added a new spi-nor structure member nor->num_flash to keep track of the
-  number of flashes connected.
-- Added a new patch in the series 4/8 to move write_enable call just before
-  spi_mem ops call in SPI-NOR.
-- Added comments in SPI core & SPI-NOR.
-- Rebased the patch series on top of the latest for-next branch.
-
-Changes in v8:
-- Updated __spi_add_device() and spi_set_cs() to fix spi driver failure
-  with GPIO CS.
-- Rebased the patch series on top of latest for-next branch and fixed
-  merge conflicts.
-- Updated cover letter description to add information regarding GPIO CS
-  testing and request Stefan to provide his Tested-by tag for 1/7 patch.
-- Updated 1/7 patch description.
-
-Changes in v7:
-- Updated spi_dev_check() to avoid failures for spi driver GPIO CS and
-  moved the error message from __spi_add_device() to spi_dev_check().
-- Resolved code indentation issue in spi_set_cs().
-- In spi_set_cs() call spi_delay_exec( ) once if the controller supports
-  multi cs with both the CS backed by GPIO.
-- Updated __spi_validate()to add checks for both the GPIO CS.
-- Replaced cs_index_mask bit mask with SPI_CS_CNT_MAX.
-- Updated struct spi_controller to represent multi CS capability of the
-  spi controller through a flag bit SPI_CONTROLLER_MULTI_CS instead of
-  a boolen structure member "multi_cs_cap".
-- Updated 1/7 patch description .
-
-Changes in v6:
-- Rebased on top of latest v6.3-rc1 and fixed merge conflicts in
-  spi-mpc512x-psc.c, sfdp.c, spansion.c files and removed spi-omap-100k.c.
-- Updated spi_dev_check( ) to reject new devices if any one of the
-  chipselect is used by another device.
-
-Changes in v5:
-- Rebased the patches on top of v6.3-rc1 and fixed the merge conflicts.
-- Fixed compilation warnings in spi-sh-msiof.c with shmobile_defconfig
-
-Changes in v4:
-- Fixed build error in spi-pl022.c file - reported by Mark.
-- Fixed build error in spi-sn-f-ospi.c file.
-- Added Reviewed-by: Serge Semin <fancer.lancer@gmail.com> tag.
-- Added two more patches to replace spi->chip_select with API calls in
-  mpc832x_rdb.c & cs35l41_hda_spi.c files.
-
-Changes in v3:
-- Rebased the patches on top of
-  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
-- Added a patch to convert spi_nor_otp_region_len(nor) &
-  spi_nor_otp_n_regions(nor) macros into inline functions
-- Added Reviewed-by & Acked-by tags
-
-Changes in v2:
-- Rebased the patches on top of v6.2-rc1
-- Created separate patch to add get & set APIs for spi->chip_select &
-  spi->cs_gpiod, and replaced all spi->chip_select and spi->cs_gpiod
-  references with the API calls.
-- Created separate patch to add get & set APIs for nor->params.
----
-Amit Kumar Mahapatra (10):
-  mfd: tps6594: Use set/get APIs to access spi->chip_select
-  ALSA: hda/cs35l56: Use set/get APIs to access spi->chip_select
-  spi: Add multi-cs memories support in SPI core
-  mtd: spi-nor: Convert macros with inline functions
-  mtd: spi-nor: Add APIs to set/get nor->params
-  mtd: spi-nor: Move write enable inside specific write & erase APIs
-  mtd: spi-nor: Add stacked memories support in spi-nor
-  spi: spi-zynqmp-gqspi: Add stacked memories support in GQSPI driver
-  mtd: spi-nor: Add parallel memories support in spi-nor
-  spi: spi-zynqmp-gqspi: Add parallel memories support in GQSPI driver
-
- drivers/mfd/tps6594-spi.c        |   2 +-
- drivers/mtd/spi-nor/atmel.c      |  17 +-
- drivers/mtd/spi-nor/core.c       | 683 +++++++++++++++++++++++++------
- drivers/mtd/spi-nor/core.h       |   8 +
- drivers/mtd/spi-nor/debugfs.c    |   4 +-
- drivers/mtd/spi-nor/gigadevice.c |   4 +-
- drivers/mtd/spi-nor/issi.c       |  11 +-
- drivers/mtd/spi-nor/macronix.c   |  10 +-
- drivers/mtd/spi-nor/micron-st.c  |  35 +-
- drivers/mtd/spi-nor/otp.c        |  48 ++-
- drivers/mtd/spi-nor/sfdp.c       |  33 +-
- drivers/mtd/spi-nor/spansion.c   |  57 +--
- drivers/mtd/spi-nor/sst.c        |   7 +-
- drivers/mtd/spi-nor/swp.c        |  25 +-
- drivers/mtd/spi-nor/winbond.c    |   2 +-
- drivers/mtd/spi-nor/xilinx.c     |  18 +-
- drivers/spi/spi-zynqmp-gqspi.c   |  58 ++-
- drivers/spi/spi.c                | 259 ++++++++++--
- include/linux/mtd/spi-nor.h      |  21 +-
- include/linux/spi/spi.h          |  51 ++-
- sound/pci/hda/cs35l56_hda_spi.c  |   2 +-
- 21 files changed, 1085 insertions(+), 270 deletions(-)
-
+diff --git a/sound/pci/hda/cs35l56_hda_spi.c b/sound/pci/hda/cs35l56_hda_spi.c
+index 756aec342eab..1c5cb3b1e2c3 100644
+--- a/sound/pci/hda/cs35l56_hda_spi.c
++++ b/sound/pci/hda/cs35l56_hda_spi.c
+@@ -29,7 +29,7 @@ static int cs35l56_hda_spi_probe(struct spi_device *spi)
+ 		return ret;
+ 	}
+ 
+-	ret = cs35l56_hda_common_probe(cs35l56, spi->chip_select);
++	ret = cs35l56_hda_common_probe(cs35l56, spi_get_chipselect(spi, 0));
+ 	if (ret)
+ 		return ret;
+ 	ret = cs35l56_irq_request(&cs35l56->base, spi->irq);
 -- 
 2.17.1
 
