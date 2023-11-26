@@ -4,92 +4,140 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 658A3C4167B
-	for <alsa-devel@archiver.kernel.org>; Sun, 26 Nov 2023 21:43:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2373DC4167B
+	for <alsa-devel@archiver.kernel.org>; Sun, 26 Nov 2023 23:19:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A5AD684B;
-	Sun, 26 Nov 2023 22:43:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A5AD684B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9C22D847;
+	Mon, 27 Nov 2023 00:19:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9C22D847
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1701035013;
-	bh=f9bIfmtodZyBNrhMK9WGhnCwbhtaU7A0tWrejetrgkg=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=dd2GWYHlLoQLsMpH8F9oJPPvy1xJHjlq0vJP74T4F8//64ZERNO/Yy1aAcnEqCiE8
-	 YQ5vHv/lW4b70oeISxVP+cBckJyvu8YM5FtZqQHrfYKelq11em45ycZzG7QUr9Da2n
-	 54bSA6bojbcpNc6c8ez/NLpN1/YpCxt6wKv+9Ltk=
+	s=default; t=1701040779;
+	bh=16QMdcjTM97bK/JAqN1SGyVTUOf7k3nqEz/yR30FqOs=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=L3MUTuqFl/ZDbunWpflxqe1WEVeLQcOw3tsx5x7wxg1Jk4LJg+xzCLb94aXeZSM1v
+	 73F5xVHqvQU1YwutNL3VubazTNTbUtX2nGD9Nqvdukn0vq2pWXXyOThOJQzzufjWif
+	 hyqFTKpxflXUSFJ5McHYMCOiwk1RAZeixSGKHAxY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7095AF80589; Sun, 26 Nov 2023 22:43:07 +0100 (CET)
+	id AD5DBF80579; Mon, 27 Nov 2023 00:19:08 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 05B6BF80104;
-	Sun, 26 Nov 2023 22:43:07 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BEE8EF8055C;
+	Mon, 27 Nov 2023 00:19:07 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A424EF8055A; Sun, 26 Nov 2023 22:43:02 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 306B1F801D5; Mon, 27 Nov 2023 00:19:00 +0100 (CET)
+Received: from JPN01-TYC-obe.outbound.protection.outlook.com
+ (mail-tycjpn01on20700.outbound.protection.outlook.com
+ [IPv6:2a01:111:f403:2019::700])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 61CDBF80236
-	for <alsa-devel@alsa-project.org>; Sun, 26 Nov 2023 22:40:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 61CDBF80236
+	by alsa1.perex.cz (Postfix) with ESMTPS id DBE5CF8007E
+	for <alsa-devel@alsa-project.org>; Mon, 27 Nov 2023 00:18:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DBE5CF8007E
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
- unprotected) header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256
- header.s=mimecast20190719 header.b=BdVlcsv/
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1701034847;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=E/1zPXh5r5BteYqi/DiejJLkRlMOmkKGzOmrWyZypG4=;
-	b=BdVlcsv/eOVHVnunjUFRkpK6mHo9cO8Z7K7rqUVRelArt4UL1loenCmqG5Ar3KT2Mput6T
-	oHLQzZzbF3O7W+CaQmnapIsi2u1743I+r+Nw6NkE9Ky8yKGhB3F7VDLzCssxKkcyk2eOwJ
-	6CsU3o4XG0kbi0v+FrEtfSD2ot4u1QU=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-45-PpaWYhhdPFGXQ0gnba0WSQ-1; Sun,
- 26 Nov 2023 16:40:40 -0500
-X-MC-Unique: PpaWYhhdPFGXQ0gnba0WSQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com
- [10.11.54.7])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id D38F92806662;
-	Sun, 26 Nov 2023 21:40:39 +0000 (UTC)
-Received: from localhost.localdomain (unknown [10.39.192.41])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id C29561C060B0;
-	Sun, 26 Nov 2023 21:40:38 +0000 (UTC)
-From: Hans de Goede <hdegoede@redhat.com>
-To: Cezary Rojewski <cezary.rojewski@intel.com>,
-	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-	Mark Brown <broonie@kernel.org>
-Cc: Hans de Goede <hdegoede@redhat.com>,
-	Oder Chiou <oder_chiou@realtek.com>,
-	alsa-devel@alsa-project.org
-Subject: [PATCH 4/7] ASoC: rt5645: Add rt5645_get_pdata() helper
-Date: Sun, 26 Nov 2023 22:40:21 +0100
-Message-ID: <20231126214024.300505-5-hdegoede@redhat.com>
-In-Reply-To: <20231126214024.300505-1-hdegoede@redhat.com>
-References: <20231126214024.300505-1-hdegoede@redhat.com>
+ unprotected) header.d=renesas.com header.i=@renesas.com header.a=rsa-sha256
+ header.s=selector1 header.b=NnDyD/zr
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UGcqd/UYCYpRwFeH2jQpPTs95/olgXSgC06eaMbxwXHhLFykz4UlXz7oJuouDN1qvoIdESCNn5WQtlbnu/wwVm53c1ZpjWLOwFZ8KCMjZH/m2HYx4qw1T6KzE2Ez9XR8JAUjTNcHP3gSVZb/7bpeIz5K5UNlHPl1QTZSGgWCmVkuSrGtNTVRFwt0+1udyQ9ANFLYF5iD0FvvVbvw38xloyC7eRps8oJPYNHuv8MSaucShmpKxN0mp9cM7CBCFwaw2b7NHqHAgfyFUqgX9+sniCoUpNz+vA/1qnis6YuTTBNqwb0SR99xMmIexF280XzyUjxsByOB0qTcdegYqUSlDg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=RckmT2UsYUG39vchSETBKPdKxNjetgQHcP1wYag1KAc=;
+ b=cNkN70UpUzaAgvhZtG3oZxwkc8yFF+lH6SMzradVkbxyfD+7G+8mNFKHZCd2UO2iTycK6izjDZ6Gw8C/fGrZBt3LhSVcFJ7mzhehYSfIKdnSZErJEWEzsFpjLt5wlbdKTp9xckpZjs6I+dowG4EiCZH5gKe4tyGZWerPwgl7KH4lKz4VW3OdA0Yj+h0RagmbrEdWGz1yl6bLJeqzhLED4xmBY905AwCRmrxg6ijKF4EP6CwmKgsmulpQc5ZCc8Cbk0PfX9FEWeuBWQre5xrFa9bdmDkNLQVddLvbaYWhEGEiH3kSibRsYFcr926h8N0ISY/EELop7CLB6tAX+Xd1sg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=renesas.com; dmarc=pass action=none header.from=renesas.com;
+ dkim=pass header.d=renesas.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=renesas.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RckmT2UsYUG39vchSETBKPdKxNjetgQHcP1wYag1KAc=;
+ b=NnDyD/zreB3741Cl6rF0Vt8F1LShrAIQgCMQe0VVZWXyhrWGD8lx8ByqcnBxQFdUfwIq6pfwiYCwGfLZM1XjGr7A6LahWUmrkyR0MoPJS0LAv/qjTRtfbqK0PM+PR2OwWn/foSl+YKCovRKS6m0c93vOQ+82KwZmraKXqa5eZYk=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=renesas.com;
+Received: from TYCPR01MB10914.jpnprd01.prod.outlook.com
+ (2603:1096:400:3a9::11) by OSRPR01MB11697.jpnprd01.prod.outlook.com
+ (2603:1096:604:230::5) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.27; Sun, 26 Nov
+ 2023 23:18:39 +0000
+Received: from TYCPR01MB10914.jpnprd01.prod.outlook.com
+ ([fe80::16b3:a84d:faa6:4846]) by TYCPR01MB10914.jpnprd01.prod.outlook.com
+ ([fe80::16b3:a84d:faa6:4846%6]) with mapi id 15.20.7025.022; Sun, 26 Nov 2023
+ 23:18:39 +0000
+Message-ID: <87ttp8w1bk.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Mark Brown <broonie@kernel.org>, Bard Liao <yung-chuan.liao@linux.intel.com>,
+ bard.liao@intel.com, Conor Dooley <conor+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Rob Herring <robh+dt@kernel.org>, Jerome Brunet <jbrunet@baylibre.com>
+Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org
+Subject: [PATCH v7 resend 0/5] ASoC: makes CPU/Codec channel connection map
+ more generic
+User-Agent: Wanderlust/2.15.9 Emacs/27.1 Mule/6.0
+Content-Type: text/plain; charset=US-ASCII
+Date: Sun, 26 Nov 2023 23:18:39 +0000
+X-ClientProxiedBy: TYAPR03CA0010.apcprd03.prod.outlook.com
+ (2603:1096:404:14::22) To TYCPR01MB10914.jpnprd01.prod.outlook.com
+ (2603:1096:400:3a9::11)
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain; charset="US-ASCII"; x-default=true
-Message-ID-Hash: LWGRFNNI5QNB6DYQNLGCQKYW4RVLT52X
-X-Message-ID-Hash: LWGRFNNI5QNB6DYQNLGCQKYW4RVLT52X
-X-MailFrom: hdegoede@redhat.com
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: TYCPR01MB10914:EE_|OSRPR01MB11697:EE_
+X-MS-Office365-Filtering-Correlation-Id: 275d7001-3303-4844-b74f-08dbeed60603
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	oolEAwRlS6fOZ0XA/MU/FJD32OT4DglPezp5kp/BMluJtJqYGcKDDRGT+7Wm+VYnWtCSoj3Rax2a/k6/k75f7y9QxcPacpCar7FHdX/SFarhORI4iRVlmmTPeAkH6+v1tU+dA0uUZbysHKBjAtv75OO+so2R/xXdLbUv8/C8Os/Aq/1doKhP1CGmJeQpIZNEQ1D7SYHw797WxE0s4mnDV+uk7SgzclvdJJzEVvHXiKs8t17NNr7xfxjtXdZxbhNv+dw1RWeJMgzRdaVC/LaLXgDSObQ7orkgPYhULqx8e4wCN7C/D45JYUfSdwdvo2tfCzWsih25zBCUBnKjTA6dkRcrtKcCE3YKW+tBScmShYiCd37LLin9LHrokiy8eRGlfl5gHKovBpFdv4alxVn1zd+qLBs+ttU8CGvTvEVM2kCbOstfMqKbm+hQ6SHD8bjORm0Qv+1YJDAnGorP9hlsvA6DH08FRci2jpqje7UqAxGaf/q4URkeo3qenDHja7/1tndSsxJmebHPd5NsyyMiYjAdl/fB3tkcPS6HN7ePMPf6WTLXCEG50Kmz3Df8kC6ad6VSMBBTAwDIZVEZlpAEktaL5eBWCNzhIzTC4NlswrIgMkkeLOjnWeospfHz39JdKhtUIX3dI8uikuyC1x5d9WGd1G8X65VqBxDXYAvf01SvB4F43hOd/2E7OprIF8g1vDc5zLZgSvuArYBRe9yDQg==
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYCPR01MB10914.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(396003)(376002)(136003)(366004)(346002)(230922051799003)(230273577357003)(230173577357003)(1800799012)(186009)(451199024)(64100799003)(7416002)(4326008)(2906002)(8676002)(8936002)(41300700001)(26005)(66476007)(110136005)(316002)(66946007)(66556008)(6512007)(52116002)(5660300002)(2616005)(6506007)(83380400001)(966005)(86362001)(38100700002)(38350700005)(19627235002)(6486002)(478600001)(36756003)(41533002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?us-ascii?Q?8Qy69rOB8HMYS8Sz6hBG9b5xtuqvhupi2XbeHwHfTe5inuxH4TETX8hHeahg?=
+ =?us-ascii?Q?dwVbTyNZUO+s7DxfwHtaMHHuFHzYCCY30BgnlKaSR5H5oSselXCQWQcqeTKC?=
+ =?us-ascii?Q?HyVMRvY4ecuC9SJMerDdrLnNBQsY1SrnfWVWtf0BpwWXQktThqIQAbZIaXNN?=
+ =?us-ascii?Q?vwJZ9eyrbNQ3WymbGu8NgVrm/IULZj27zgdJpU2oS3VsAQjBMzNnVHK+E1xJ?=
+ =?us-ascii?Q?koLaqzjpMwFykKyFIwgpffDAC0m854bMccGkF9LdiBiXy0ArzX1ZccU+MtFI?=
+ =?us-ascii?Q?3EN1I28KJz+yk2ruQwnbwVX0bWMO7w7hskAc5uKQPf8ndd2jAhXrPDYFiPsF?=
+ =?us-ascii?Q?ExMJvKQeLlyaeeyxWH1Yjmtp/R7NVosPWtPng/T+rkHU6qnbCRDjK5/SDd9o?=
+ =?us-ascii?Q?ArIxaos+lFEnpP2PC9Hfr+8lmQudG9QapJ9OUGBuSNHEop+1sSJQzUzh9/0g?=
+ =?us-ascii?Q?FbV9UKjniNawqRQI976bl0ZBRwcPODVWKXtJ2hBq8R4Q4sn1Ys44bTHfuAj1?=
+ =?us-ascii?Q?FIaoQqKKEgzS/80Itwy39Zx46u8OK6oTK8OWp2g02HzHNQdXrylJ8Gc3Bz+L?=
+ =?us-ascii?Q?9DY54cY6Lyx6XJU6JYzlLSIrTwM2YP9elTLtW2veSS6JDptWUcSrLZkwy11n?=
+ =?us-ascii?Q?BUEENlBMAjj/7Mnl1YxW2TOHix8u0DDNWb/PXZ7WE5niAPNUGpP8K8X8BKXz?=
+ =?us-ascii?Q?XMTaDRy3DoOfbYhuGqQH/tymmmsJDzd/8f00b7D1jH8eN6HMOufDSFSpSD2A?=
+ =?us-ascii?Q?qa+qriHnvq27rgol+aSTy8T4PCpsY2/KoVcobmripDHxDgDVeBxoWtisoTze?=
+ =?us-ascii?Q?JZ0QkbPehLopQ1W7FMW3cShK3JKYPcUJIm6VcfBo2JDFdeRrrpjdhQbUOhli?=
+ =?us-ascii?Q?k8kWe2tC4NUhOn03CV4GDBDDO0VIe8SsoUShJMpROXAYa39PY5oS5deVsAoR?=
+ =?us-ascii?Q?macRPgi/vhUUjnbJ01f5M++Jc4Cnj+MCOib7s4MXllSAGLhcPrETOFUacxeN?=
+ =?us-ascii?Q?YYmJsBVHa80z7igXQX2es3E8glRRRYq8yMb/3ctcRle+5isRvETPVjHzlO8v?=
+ =?us-ascii?Q?06HtsAhCy/5LsFAIyzIqOYpXXr4V7cJTnD+YRQNVsRQ7lCKTRg84iPcjVt9I?=
+ =?us-ascii?Q?XRlnmi4qAKuqJNY5VowrPnBWLj7Gs6f7QRuoqLcIUVX2MkOHynB4xVrORCxJ?=
+ =?us-ascii?Q?fvEy9E28+BBZcjJ7ifq4rrpuoPmxiv4nzYsWg2NaszPrDtOYZ5H1UQsi7W+v?=
+ =?us-ascii?Q?q4xP/Zymdt0NT+eXdWqBv4i+dwyqcFdRwuLcCdnwbsoznAjl1rvbtvuq40Hc?=
+ =?us-ascii?Q?NvPeWI8SdS7z04m2lXxOjfZYZKANj6s7eB22UZyUttFelszZ3lHbOgOlrOzE?=
+ =?us-ascii?Q?eEXHmKFThrOJD8HdwPm62192SItNfkel0FviRiuKu5QdYQoOUDhxiDIZPT+p?=
+ =?us-ascii?Q?vw9v1eK7g4gaFvbJhW44EeBfQjLiNoSS3uiGISr8P/T1O05XyCZgzxYkDFq3?=
+ =?us-ascii?Q?6yk7yv2tIhRzSkEPvwMmkwCuooUFg3AZs6UAPQ72/tl3fewbYyNEglRkBOZv?=
+ =?us-ascii?Q?tIOH/vujj58eiQO+jaz4FiM2Av1NKNpZ5DEi26BEIovSzY2t4ke6KeY3idVJ?=
+ =?us-ascii?Q?40u12GDEDKIgtuv4XyDYaCg=3D?=
+X-OriginatorOrg: renesas.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 
+ 275d7001-3303-4844-b74f-08dbeed60603
+X-MS-Exchange-CrossTenant-AuthSource: TYCPR01MB10914.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Nov 2023 23:18:39.6908
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 53d82571-da19-47e4-9cb4-625a166a4a2a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 
+ bs8ITDf6FX48CMYei3vYF235STGKh5OOT/2Dpva2/NVfxqEZZ4gW9l/0TlmLoygfx5BbtyUfF87dz89OiYH8ioJyzF1NWVKK3vlw48dN96UJef6+ky9NEAoYeQt9VDq2
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: OSRPR01MB11697
+Message-ID-Hash: YWQ4UTWJOKPS6K2ROMENMZODAQXUET3F
+X-Message-ID-Hash: YWQ4UTWJOKPS6K2ROMENMZODAQXUET3F
+X-MailFrom: kuninori.morimoto.gx@renesas.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -101,7 +149,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LWGRFNNI5QNB6DYQNLGCQKYW4RVLT52X/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YWQ4UTWJOKPS6K2ROMENMZODAQXUET3F/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -110,87 +158,69 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add a rt5645_get_pdata() helper function which retreives the platform-data
-and overrides it with the quirks module parameter if that is set.
 
-This is a preparation patch for adding the rt5645_components() function.
+Hi Mark
+Cc Bard, Pierre-Louis, Jerome, DT-ML
 
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
----
- sound/soc/codecs/rt5645.c | 51 ++++++++++++++++++++-------------------
- 1 file changed, 26 insertions(+), 25 deletions(-)
+This is v7 patch-set.
+2 weeks past, this is resend patch-set.
 
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index 7d0ad5650b44..f79a447eaffe 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -3877,10 +3877,33 @@ static void rt5645_parse_dt(struct device *dev, struct rt5645_platform_data *pda
- 	device_property_read_u32(dev, "realtek,jd-mode", &pdata->jd_mode);
- }
- 
-+static void rt5645_get_pdata(struct device *codec_dev, struct rt5645_platform_data *pdata)
-+{
-+	const struct dmi_system_id *dmi_data;
-+
-+	dmi_data = dmi_first_match(dmi_platform_data);
-+	if (dmi_data) {
-+		dev_info(codec_dev, "Detected %s platform\n", dmi_data->ident);
-+		*pdata = *((struct rt5645_platform_data *)dmi_data->driver_data);
-+	} else if (rt5645_check_dp(codec_dev)) {
-+		rt5645_parse_dt(codec_dev, pdata);
-+	} else {
-+		*pdata = jd_mode3_platform_data;
-+	}
-+
-+	if (quirk != -1) {
-+		pdata->in2_diff = QUIRK_IN2_DIFF(quirk);
-+		pdata->level_trigger_irq = QUIRK_LEVEL_IRQ(quirk);
-+		pdata->inv_jd1_1 = QUIRK_INV_JD1_1(quirk);
-+		pdata->inv_hp_pol = QUIRK_INV_HP_POL(quirk);
-+		pdata->jd_mode = QUIRK_JD_MODE(quirk);
-+		pdata->dmic1_data_pin = QUIRK_DMIC1_DATA_PIN(quirk);
-+		pdata->dmic2_data_pin = QUIRK_DMIC2_DATA_PIN(quirk);
-+	}
-+}
-+
- static int rt5645_i2c_probe(struct i2c_client *i2c)
- {
--	struct rt5645_platform_data *pdata = NULL;
--	const struct dmi_system_id *dmi_data;
- 	struct rt5645_priv *rt5645;
- 	int ret, i;
- 	unsigned int val;
-@@ -3893,29 +3916,7 @@ static int rt5645_i2c_probe(struct i2c_client *i2c)
- 
- 	rt5645->i2c = i2c;
- 	i2c_set_clientdata(i2c, rt5645);
--
--	dmi_data = dmi_first_match(dmi_platform_data);
--	if (dmi_data) {
--		dev_info(&i2c->dev, "Detected %s platform\n", dmi_data->ident);
--		pdata = dmi_data->driver_data;
--	}
--
--	if (pdata)
--		rt5645->pdata = *pdata;
--	else if (rt5645_check_dp(&i2c->dev))
--		rt5645_parse_dt(&i2c->dev, &rt5645->pdata);
--	else
--		rt5645->pdata = jd_mode3_platform_data;
--
--	if (quirk != -1) {
--		rt5645->pdata.in2_diff = QUIRK_IN2_DIFF(quirk);
--		rt5645->pdata.level_trigger_irq = QUIRK_LEVEL_IRQ(quirk);
--		rt5645->pdata.inv_jd1_1 = QUIRK_INV_JD1_1(quirk);
--		rt5645->pdata.inv_hp_pol = QUIRK_INV_HP_POL(quirk);
--		rt5645->pdata.jd_mode = QUIRK_JD_MODE(quirk);
--		rt5645->pdata.dmic1_data_pin = QUIRK_DMIC1_DATA_PIN(quirk);
--		rt5645->pdata.dmic2_data_pin = QUIRK_DMIC2_DATA_PIN(quirk);
--	}
-+	rt5645_get_pdata(&i2c->dev, &rt5645->pdata);
- 
- 	if (has_acpi_companion(&i2c->dev)) {
- 		if (cht_rt5645_gpios) {
+Current ASoC is supporting CPU/Codec = N:M (N < M) connection by using
+ch_map idea. This patch-set expands it that all connection uses this idea,
+and no longer N < M limit [1][2].
+
+Link: https://lore.kernel.org/r/87fs6wuszr.wl-kuninori.morimoto.gx@renesas.com [1]
+Link: https://lore.kernel.org/r/878r7yqeo4.wl-kuninori.morimoto.gx@renesas.com [2]
+
+ASoC core code ([PATCH 1/5]) is same as v6 and it was tested by Pierre-Louis,
+and Jerome. Big change on v7 is basically for Audio-Graph-Card2.
+
+v6 -> v7
+	- use "endpoint" for N:M connection instead of ch-map-idx on Audio-Graph-Card2
+
+v5 -> v6
+	- tidyup some warnings
+	- rename "ch-map-idx" -> "channel-map-index"
+	- Update "channel-map-index" description
+	- add Tested-by from Pierre-Louis / Jerome
+
+v4 -> v5
+	- use cpu/codec index on ch_maps
+	- separate card2 sample DT patch into prepare and new feature
+	- ch-maps -> ch-map-idx on DT
+
+v3 -> v4
+	- add Jerome on To
+	- add "description" on "ch-maps"
+
+v2 -> v3
+	- tidyup comment
+	- use more clear connection image on DT
+	- "ch_maps" -> "ch-maps" on DT
+	- Add DT maintainer on "To:" for all patches
+
+v1 -> v2
+	- makes CPU/Codec connection relation clear on comment/sample
+	- fixup type "connction" -> "connection"
+	- makes error message clear
+
+
+Kuninori Morimoto (5):
+  ASoC: makes CPU/Codec channel connection map more generic
+  ASoC: audio-graph-card2: use better image for Multi connection
+  ASoC: audio-graph-card2: add CPU:Codec = N:M support
+  ASoC: audio-graph-card2-custom-sample: Add connection image
+  ASoC: audio-graph-card2-custom-sample: add CPU/Codec = N:M sample
+
+ include/sound/soc.h                           |  56 ++-
+ .../audio-graph-card2-custom-sample.dtsi      | 380 ++++++++++++++++--
+ sound/soc/generic/audio-graph-card2.c         | 277 ++++++++++---
+ sound/soc/intel/boards/sof_sdw.c              |  28 +-
+ sound/soc/soc-core.c                          |  95 ++++-
+ sound/soc/soc-dapm.c                          |  45 +--
+ sound/soc/soc-pcm.c                           |  44 +-
+ 7 files changed, 754 insertions(+), 171 deletions(-)
+
 -- 
-2.41.0
+2.25.1
 
