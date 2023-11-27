@@ -4,62 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8D14FC4167B
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Nov 2023 18:33:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0C825C4167B
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Nov 2023 18:42:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C1020A4C;
-	Mon, 27 Nov 2023 19:33:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C1020A4C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 79B60A4D;
+	Mon, 27 Nov 2023 19:42:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 79B60A4D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1701110001;
-	bh=ii26YioRm1dVaNmafDquet6vORNU5vVrSjgLkugEVf4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1701110546;
+	bh=t/U4i/4g24Q1NaSjgGg1AJ5lREjmE/Glz7Quo6T5yL0=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=TUd6Plj2SoaoBez9Cid2lelb8KjHOWh6qRAnlgQPr+q1ZUjiCkftf5EH2/687amRN
-	 uTwnAd+yQdrdrGp+etKEBYJWebcW0yGUeMi3mEWY/RZ/GAWwUgeQNkKYEJ44FLpZF8
-	 HHgIzHiCKYKRDV5MoKywBCNylI+00I6W2JscKqFs=
+	b=L8mvLC0v6tuBf3psGDINw6bwVzlxgJsN/MtEbL4Y1+yuVvRVKh3EXokeHbE7tbo8C
+	 A5LJ0OzyyzPV75j50PnUYtofMJ9zlzHDyeUI8NeURgsQEyRUQaUdzXswtXPxbF2RF8
+	 3QD/r56GWf3XdKNoQbSVTBhksQX/nIwnVL4zMeKU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BA358F80580; Mon, 27 Nov 2023 19:32:50 +0100 (CET)
+	id 2D7A1F80589; Mon, 27 Nov 2023 19:41:55 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4462AF80571;
-	Mon, 27 Nov 2023 19:32:50 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D4F4BF8059F;
+	Mon, 27 Nov 2023 19:41:54 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4329FF801D5; Mon, 27 Nov 2023 19:32:45 +0100 (CET)
-Received: from m.b4.vu (m.b4.vu [203.16.231.148])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 688C6F80236; Mon, 27 Nov 2023 19:41:51 +0100 (CET)
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 6B0F4F800F5
-	for <alsa-devel@alsa-project.org>; Mon, 27 Nov 2023 19:32:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6B0F4F800F5
-Received: by m.b4.vu (Postfix, from userid 1000)
-	id 5CE5A604F550; Tue, 28 Nov 2023 05:02:26 +1030 (ACDT)
-Date: Tue, 28 Nov 2023 05:02:26 +1030
-From: "Geoffrey D. Bennett" <g@b4.vu>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-	alsa-devel@alsa-project.org, linux-sound@vger.kernel.org
-Subject: Re: [PATCH RFC v2] ALSA: scarlett2: Add ioctls for user-space access
-Message-ID: <ZWTgusFsOUfb90Xt@m.b4.vu>
-References: <ZSqehHhedJQY9h/1@m.b4.vu>
- <76c1526d-78be-92d2-cf2b-148278394575@perex.cz>
- <ZS0tajzKr68CZ5uA@m.b4.vu>
- <123242ed-c343-dab8-fed1-9f5d2da44d7a@perex.cz>
- <ZS1asqF0cXRUzBwb@m.b4.vu>
- <87edhtn0r2.wl-tiwai@suse.de>
- <ZVpHX33vfzdjpH0z@m.b4.vu>
- <871qcfqnht.wl-tiwai@suse.de>
+	by alsa1.perex.cz (Postfix) with ESMTPS id 5F3CCF8007E
+	for <alsa-devel@alsa-project.org>; Mon, 27 Nov 2023 19:41:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5F3CCF8007E
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=MonTVkoh
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701110506; x=1732646506;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=t/U4i/4g24Q1NaSjgGg1AJ5lREjmE/Glz7Quo6T5yL0=;
+  b=MonTVkoh7Gzvyfpy96pjRy/cDq0xcJ54K3hcs9UMMt3+mh3RxzfNKI9y
+   ugHYcvrppIMhOhkpH91x4t8DKi2bVIpi+zB8yty7eXFTj1hTPb7PJ0cNl
+   b1kt9EA0E7IS+yFYxltV1cK6Kc0cZFugIhzrARlSaRDgFuWRMn3uP5R5A
+   D7gS/ZBYSxZgGVez7OtTIbSxTbj2P8P2Pnoyh5alc3ETCFTC7e4XLLo4J
+   M0RDEydx0oSYmrYDlVEtZdKdEWdaQrtvX+eAntC/VMZ7ze/+4SAwsEoaK
+   BWTcFX/jxSE/hzGKVgIev2JQSqs6y19ohjHgqY8+5IJMdlEJfO9Elf1yW
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="392517684"
+X-IronPort-AV: E=Sophos;i="6.04,231,1695711600";
+   d="scan'208";a="392517684"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 27 Nov 2023 10:41:41 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="891820922"
+X-IronPort-AV: E=Sophos;i="6.04,231,1695711600";
+   d="scan'208";a="891820922"
+Received: from alanpai-mobl.amr.corp.intel.com (HELO [10.209.65.171])
+ ([10.209.65.171])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 27 Nov 2023 10:41:40 -0800
+Message-ID: <cb768f03-9d46-432e-ad67-8ff1ef075385@linux.intel.com>
+Date: Mon, 27 Nov 2023 11:36:35 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <871qcfqnht.wl-tiwai@suse.de>
-Message-ID-Hash: CYHPVIXRSDADN4K6BYV2GKSOXZJV6YTQ
-X-Message-ID-Hash: CYHPVIXRSDADN4K6BYV2GKSOXZJV6YTQ
-X-MailFrom: g@b4.vu
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 6/7] ASoC: Intel: soc-acpi-intel-tgl-match: add cs42l43
+ and cs56l56 support
+Content-Language: en-US
+To: Richard Fitzgerald <rf@opensource.cirrus.com>,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>, lgirdwood@gmail.com,
+ broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
+ kai.vehmanen@linux.intel.com, ranjani.sridharan@linux.intel.com,
+ cezary.rojewski@intel.com, yung-chuan.liao@linux.intel.com,
+ ckeepax@opensource.cirrus.com, yong.zhi@intel.com, chao.song@linux.intel.com
+References: <20231127133448.18449-1-peter.ujfalusi@linux.intel.com>
+ <20231127133448.18449-7-peter.ujfalusi@linux.intel.com>
+ <9660e9df-2061-4b2c-ba59-5e6f8a61f07d@opensource.cirrus.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <9660e9df-2061-4b2c-ba59-5e6f8a61f07d@opensource.cirrus.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: XQCCDLRO5W4RUKA6PIJBEM66KMAIP3SF
+X-Message-ID-Hash: XQCCDLRO5W4RUKA6PIJBEM66KMAIP3SF
+X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -71,7 +100,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CYHPVIXRSDADN4K6BYV2GKSOXZJV6YTQ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XQCCDLRO5W4RUKA6PIJBEM66KMAIP3SF/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -80,160 +109,94 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi Takashi,
 
-On Fri, Nov 24, 2023 at 02:39:26PM +0100, Takashi Iwai wrote:
-> On Sun, 19 Nov 2023 18:35:27 +0100,
-> Geoffrey D. Bennett wrote:
-> > 
-> > Hi Jaroslav, Takashi,
-> > 
-> > I took your feedback onboard about not providing generic access to the
-> > scarlett2_usb() function from user-space.
-> > 
-> > After a few iterations, I've come up with this hwdep interface to
-> > support reset-to-factory-defaults, reset-to-factory-firmware, and
-> > firmware-update in a safe way:
-> > 
-> > -----8<-----8<-----8<-----8<-----8<-----8<-----8<-----8<-----8<-----
-> > 
-> > /* Get protocol version */
-> > #define SCARLETT2_IOCTL_PVERSION _IOR('S', 0x60, int)
-> > 
-> > /* Reboot */
-> > #define SCARLETT2_IOCTL_REBOOT _IO('S', 0x61)
-> > 
-> > /* Select flash segment */
-> > #define SCARLETT2_SEGMENT_ID_SETTINGS 0
-> > #define SCARLETT2_SEGMENT_ID_FIRMWARE 1
-> > #define SCARLETT2_SEGMENT_ID_COUNT 2
-> > 
-> > #define SCARLETT2_IOCTL_SELECT_FLASH_SEGMENT _IOW('S', 0x62, int)
-> > 
-> > /* Erase selected flash segment */
-> > #define SCARLETT2_IOCTL_ERASE_FLASH_SEGMENT _IO('S', 0x63)
-> > 
-> > /* Get selected flash segment erase progress
-> >  * 1 through to num_blocks, or 255 for complete
-> >  */
-> > struct scarlett2_flash_segment_erase_progress {
-> >         unsigned char progress;
-> >         unsigned char num_blocks;
-> > };
-> > #define SCARLETT2_IOCTL_GET_ERASE_PROGRESS \
-> >         _IOR('S', 0x64, struct scarlett2_flash_segment_erase_progress)
-> > 
-> > -----8<-----8<-----8<-----8<-----8<-----8<-----8<-----8<-----8<-----
-> > 
-> > Does that look reasonable to you?
-> > 
-> > Broadly, it's used like this:
-> > 
-> > Reset to factory default configuration:
-> > 
-> > - ioctl select_flash_segment SCARLETT2_SEGMENT_ID_SETTINGS
-> > - ioctl erase_flash_segment
-> > - ioctl get_erase_progress (optional)
+>> +static const struct snd_soc_acpi_adr_device cs35l56_0_adr[] = {
+>> +    {
+>> +        .adr = 0x00003301FA355601ull,
+>> +        .num_endpoints = 1,
+>> +        .endpoints = &spk_r_endpoint,
 > 
-> So the erase operation is asynchronous?  This sounds a bit dangerous.
-> Will the driver block further conflicting operations until the erase
-> finishes?
-
-Yes it is asynchronous. I've made it so that it's not dangerous by
-locking out any conflicting operations:
-- Mixer operations that require device access return EBUSY
-- The hwdep is marked as exclusive so other processes can't use it
-- Subsequent hwdep operations (if get_erase_progress wasn't called)
-  will block until the erase is complete
-
-> > Erase firmware (reverts to factory firmware which is stored in a
-> > different flash segment, inaccessible from these ioctls):
-> > 
-> > - ioctl select_flash_segment SCARLETT2_SEGMENT_ID_FIRMWARE
-> > - ioctl erase_flash_segment
-> > - ioctl get_erase_progress (optional)
-> > 
-> > Upload new firmware:
-> > 
-> > - write() <- a bunch of these, only permitted after the previous erase
-> >   step was completed
+> Assigning CS35L56 to "left" or "right" endpoints might be confusing.
+> All CS35L56 in a system receive both left and right channels and by
+> default they output a mono-mix of left+right.
 > 
-> The write op must accept partial writes, and it becomes cumbersome.
-> Can it be a one-shot ioctl, too?
+> The left/right of an amp is determined by the firmware file (.bin) that
+> is loaded and the current settings of the "Posture" ALSA control. So
+> this amp might be the left channel after a .bin is loaded.
 
-I considered one-shot ioctls, but as the erase & write operations take
-some seconds, then it is not possible to provide feedback to the
-end-user while the erase & write operations happen.
+That's a problem if the kernel does not know which amplifier is on which
+side, no? How would one change the balance if this information is known
+only within a binary/opaque firmware?
 
-> > On completion:
-> > 
-> > - ioctl reboot
-> > 
-> > To confirm that this interface is sufficient, I have implemented it in
-> > the scarlett2 driver and written a user-space utility which can
-> > perform all the above operations.
-> > 
-> > I will clean up the implementation a bit and then submit for review;
-> > just wanted to share the interface first in case you have any comments
-> > at this point.
+> It would be better to have generic names for the endpoint that don't
+> imply position, for example:
 > 
-> IMO, from the user POV, it's easier to have per-purpose ioctls,
-> instead of combining multiple ioctl sequences.  Of course, it won't
-> scale too much, but for the limited number of operations, it's
-> clearer.
+> group1_spk1_endpoint
+> group1_spk2_endpoint
+> group1_spk3_endpoint
+> group1_spk4_endpoint.
+
+The notion of endpoint is completely half-baked today and the settings
+used have no bearing on the behavior and user-experience. I am inches
+away from sending a patch that removes all of the endpoint definitions,
+we can re-add them if/when we can get the information from platform
+firmware.
+
+>> +        .name_prefix = "cs35l56-8"
 > 
-> That is, we can provide just a few ioctls for reset-to-factory,
-> reset-to-something-else, and update.
+> Can these prefixes be "AMPn" to match the CS35L41, CS35L51 and
+> CS35L56-hda driver? This prefix is used to find the matching firmware
+> files and our naming convention for these has been cs35lxx-xxxx-ampn
 > 
-> But, if you need asynchronous operations inevitably by some reason,
-> it's a different story, though.
+> Is there anything that depends on the prefixes being "cs35l56-n" ?
 
-Just to provide progress feedback to the end-user.
+IIRC this name_prefix is just used for the codec_conf and hence for
+control names/UCM. At some point userspace/driver need to know if amp5
+is left or right.
 
-I've written the CLI tool using the proposed ioctl interface, and it
-works nicely:
+We can certainly align on conventions but the values set in this ACPI
+match table will not be used for firmware download - different scope.
 
-https://github.com/geoffreybennett/scarlett2
-
-[g@fedora ~]$ time scarlett2 update
-Selected device Scarlett 4th Gen Solo
-Found firmware version 2115 for Scarlett 4th Gen Solo:
-  /usr/lib/firmware/scarlett2/scarlett2-1235-8218-2115.bin
-Updating Scarlett 4th Gen Solo from firmware version 1974 to 2115
-Resetting configuration to factory default...
-Erase progress: Done!
-Erasing upgrade firmware...
-Erase progress: Done!
-Firmware write progress: Done!
-Rebooting interface...
-
-real    0m5.919s
-user    0m0.007s
-sys     0m0.034s
-
-The user experience would not be as nice with one-shot ioctls. And
-using ioctls which block for a long time would make using them from
-the GUI https://github.com/geoffreybennett/alsa-scarlett-gui/ rather
-awkward. None of the other operations on the interface block for an
-appreciable amount of time.
-
-I've got a first draft of firmware update and Scarlett 4th Gen support
-that I am sharing with others to test now. It's 48 commits, divided
-into:
-- 5 commits to add extra checks that are missing
-- 5 commits for firmware management
-- 20 commits refactoring the existing driver to allow Scarlett 4th Gen
-  support to be added
-- 18 commits adding the support (although the underlying Gen 4
-  protocol is the same as the other series, there are many new
-  different types of controls)
-
-I've put those commits on this branch:
-https://github.com/geoffreybennett/scarlett-gen2/tree/scarlett-gen4
-
-Do you want me to share all 48 commits on the mailing list at once? Or
-maybe just the first 5+5 commits for now and the rest after I get some
-feedback from others?
-
-Thanks,
-Geoffrey.
+>> +    },
+>> +    {
+>> +        .adr = 0x00003201FA355601ull,
+>> +        .num_endpoints = 1,
+>> +        .endpoints = &spk_3_endpoint,
+>> +        .name_prefix = "cs35l56-7"
+>> +    }
+>> +};
+>> +
+>> +static const struct snd_soc_acpi_adr_device cs35l56_1_adr[] = {
+>> +    {
+>> +        .adr = 0x00013701FA355601ull,
+>> +        .num_endpoints = 1,
+>> +        .endpoints = &spk_l_endpoint,
+>> +        .name_prefix = "cs35l56-1"
+>> +    },
+>> +    {
+>> +        .adr = 0x00013601FA355601ull,
+>> +        .num_endpoints = 1,
+>> +        .endpoints = &spk_2_endpoint,
+>> +        .name_prefix = "cs35l56-2"
+>> +    }
+>> +};
+>> +
+>> +static const struct snd_soc_acpi_link_adr tgl_cs42l43_cs35l56[] = {
+>> +    {
+>> +        .mask = BIT(3),
+>> +        .num_adr = ARRAY_SIZE(cs42l43_3_adr),
+>> +        .adr_d = cs42l43_3_adr,
+>> +    },
+>> +    {
+>> +        .mask = BIT(0),
+>> +        .num_adr = ARRAY_SIZE(cs35l56_0_adr),
+>> +        .adr_d = cs35l56_0_adr,
+>> +    },
+>> +    {
+>> +        .mask = BIT(1),
+>> +        .num_adr = ARRAY_SIZE(cs35l56_1_adr),
+>> +        .adr_d = cs35l56_1_adr,
+>> +    },
+>> +    {}
+>> +};
+>> +
