@@ -4,151 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B643FC07CB1
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Nov 2023 15:33:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C8AEFC4167B
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Nov 2023 15:36:08 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 01D29BC0;
-	Mon, 27 Nov 2023 16:33:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 01D29BC0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 65B8282B;
+	Mon, 27 Nov 2023 16:35:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 65B8282B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1701099218;
-	bh=5inwWuXYV/4uFhke7lUGT/pMDtcXNYcMpBmcMWzLQP0=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=HnzB/sAmpYzowIEHYXp9lTfP8ByfS7eMGv0GuuAw6vhTA2P0N3CHIzmRdq6oH0yPx
-	 twPeuGJeDC1rsILlgmMUAS61fJQ57Mw8lJENZQTYk1sa/3e9Ciss4ZvSD0gKBOwl9T
-	 +V5ry4/mX0GiFSN4RJes2wkDdX5BDhzhpJpmzcFc=
+	s=default; t=1701099366;
+	bh=DnuZYLWYd8c/ZxtUMdiIWIakOzys/wENomS92f8ugsQ=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=hdmqqrlnl0jPaet8nNZWvbL6TU5EePq7y4Zbj/8fXcxmwNd90BtPw0mpM7jRbVmFW
+	 KZxHKhzwSbFf/tEpNKXKU3sG19p64bvhNDKLyB4hZktPfJfaiu+R+eKTPAAoZq8V/8
+	 aVcR1ZD8sDh+2hyV7O2mhPeaHs8vpOvudD/TulPM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 89EBEF8057D; Mon, 27 Nov 2023 16:33:07 +0100 (CET)
+	id 8AA6FF80588; Mon, 27 Nov 2023 16:35:30 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B07A0F80571;
-	Mon, 27 Nov 2023 16:33:06 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 39695F80588;
+	Mon, 27 Nov 2023 16:35:30 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CC8D4F801D5; Mon, 27 Nov 2023 16:32:59 +0100 (CET)
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com
- (mail-dm6nam12on20616.outbound.protection.outlook.com
- [IPv6:2a01:111:f400:fe59::616])
+	id 5F9B0F8025A; Mon, 27 Nov 2023 16:35:25 +0100 (CET)
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 6FBCBF8007E
-	for <alsa-devel@alsa-project.org>; Mon, 27 Nov 2023 16:32:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6FBCBF8007E
+	by alsa1.perex.cz (Postfix) with ESMTPS id B654FF8007E
+	for <alsa-devel@alsa-project.org>; Mon, 27 Nov 2023 16:35:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B654FF8007E
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=amd.com header.i=@amd.com header.a=rsa-sha256
- header.s=selector1 header.b=pE5g1gai
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PsCsQwY4akAMg/AktgWExIrre1ysXKCKpZn6fhTWLWvDEG1FqFgBZKkslM1fnsCT2Vv8us3fEhSO7528S92fnGR+XYyf0vZl6wJvrPANqw3OO76Jh61BZvnPTnK5igSzqeYBsCtPo+LEraYtJ+0Vjl0It1ocsfs2zMtMD/QN4vp+gsysrUgvvFyiSkVzbB17qx3jFRnegw2XbHhqNmaiJJJjtL3iGHKNdRcZYZcBbYXMl5IkohyCvmlxuv/tIN9cRmfiTGnWc3mLgZgrVtqE9C3XWwbiznOpho0WMDAeca7Q7oj7Q3Rma5urrHFR2+ZEFHJF9/PttYvuzWu/BxktlQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=MmtmsfpAu3Q19HT58qzh2GOSyoryLbFV6SBY5phTCaA=;
- b=Z2IT85lXq4iGJcYdiMAmrG6i0L68UqinZGHyhns4Hdc8EzORzaX6sNuq4kaMwz9XSmNHfduIrNirykl5xNVPEwg/eQpUjeCEghNkQA/mVTQ48WwdHmUX2ByRJ34uW0R3vSVJKiwQcVpHN8qvLXpW+EV688RJjeOueI+6omuac7Tdl4kWFYr7yM7Md4L1m3TywbRkqBcNpaAuO06gmzjyT5qvfuw70uhp8IOh7TpzmV4N+k6jw9ce4kGh2q5PA4oXq8kJ9aZAZpkpMB5NtQG5xEIDOpspN8Up3nOT4jLwiVBgE9FuQ0wpxsYCjsLTNrJvqV0cwpD4IaxP27iVY/mySw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MmtmsfpAu3Q19HT58qzh2GOSyoryLbFV6SBY5phTCaA=;
- b=pE5g1gaiYfGRHtRmkxSxDxIfnILw0u3b1bF3wVCX3HEeWCplaf7pxEyoqQzXrFta7XOgLE7ijFRkp2g5TkXr/83OmN78tHo+/r0zqbrDiT4DpSxnrMezlUu+MjHTXxd1SO4gWkTPoyzs7MWAagKv2GJCVX4wOUp0iEMVbroNsfo=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from MN0PR12MB6101.namprd12.prod.outlook.com (2603:10b6:208:3cb::10)
- by BN9PR12MB5212.namprd12.prod.outlook.com (2603:10b6:408:11d::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.29; Mon, 27 Nov
- 2023 15:32:45 +0000
-Received: from MN0PR12MB6101.namprd12.prod.outlook.com
- ([fe80::83d7:9c4f:4d9b:1f2a]) by MN0PR12MB6101.namprd12.prod.outlook.com
- ([fe80::83d7:9c4f:4d9b:1f2a%5]) with mapi id 15.20.7025.022; Mon, 27 Nov 2023
- 15:32:45 +0000
-Message-ID: <08590a87-e10c-4d05-9c4f-39d170a17832@amd.com>
-Date: Mon, 27 Nov 2023 09:32:43 -0600
-User-Agent: Mozilla Thunderbird
-Subject: Re: ASoC: amd: yc: Fix non-functional mic on ASUS E1504FA
-Content-Language: en-US
-To: Malcolm Hart <malcolm@5harts.com>, Mark Brown <broonie@kernel.org>
-Cc: Sven Frotscher <sven.frotscher@gmail.com>, git@augustwikerfors.se,
- alsa-devel@alsa-project.org, lgirdwood@gmail.com,
- linux-kernel@vger.kernel.org, regressions@lists.linux.dev,
- stable@vger.kernel.org
-References: <b9dd23931ee8709a63d884e4bd012723c9563f39.camel@5harts.com>
- <ZWSckMPyqJl4Ebib@finisterre.sirena.org.uk> <87leajgqz1.fsf@5harts.com>
-From: Mario Limonciello <mario.limonciello@amd.com>
-In-Reply-To: <87leajgqz1.fsf@5harts.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SN1PR12CA0055.namprd12.prod.outlook.com
- (2603:10b6:802:20::26) To MN0PR12MB6101.namprd12.prod.outlook.com
- (2603:10b6:208:3cb::10)
+	dkim=pass (2048-bit key,
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=EAKXQ+of
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701099320; x=1732635320;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=DnuZYLWYd8c/ZxtUMdiIWIakOzys/wENomS92f8ugsQ=;
+  b=EAKXQ+ofecX6zusH293HMVpnaO1BXvainH0TXLzOMWX1TVNFH63BKmIC
+   2H75oKKUFOwmj8Dd6n0dRJLSfHMG06pQCxUW+UkcZrxBBbkDjWb5o2ZhX
+   RoQ7zqoTtZqk/SJb8P6uWRtDlSM5pxo/+biVKCoqSFpDgjVUUjpw7L0QQ
+   nK5i8wDakEXnQRgCTNDgbl+RuRqymptbIF7dXZsYKF2ia6MGKWXJxu9oW
+   yuhcpJUqMoYQ/e9u12mL1eAL4uHgYK4fErru2Gg+NPX+TvLk/JSvQFLul
+   4ia85OQuzAQNWCQzDtdFO8ZxegKlxfZQybeQF+CqSO98Mj6RMCYxLZAiz
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="372894355"
+X-IronPort-AV: E=Sophos;i="6.04,231,1695711600";
+   d="scan'208";a="372894355"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 27 Nov 2023 07:26:22 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="771956122"
+X-IronPort-AV: E=Sophos;i="6.04,231,1695711600";
+   d="scan'208";a="771956122"
+Received: from acornagl-mobl.ger.corp.intel.com (HELO
+ pujfalus-desk.ger.corp.intel.com) ([10.252.58.144])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 27 Nov 2023 07:26:19 -0800
+From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+To: lgirdwood@gmail.com,
+	broonie@kernel.org
+Cc: alsa-devel@alsa-project.org,
+	linux-sound@vger.kernel.org,
+	pierre-louis.bossart@linux.intel.com,
+	kai.vehmanen@linux.intel.com,
+	ranjani.sridharan@linux.intel.com,
+	yung-chuan.liao@linux.intel.com,
+	chao.song@linux.intel.com
+Subject: [PATCH 00/27] ASoC: Intel: Link handling rework and fixes
+Date: Mon, 27 Nov 2023 17:26:27 +0200
+Message-ID: <20231127152654.28204-1-peter.ujfalusi@linux.intel.com>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN0PR12MB6101:EE_|BN9PR12MB5212:EE_
-X-MS-Office365-Filtering-Correlation-Id: 6e141aaa-5ca8-4499-773e-08dbef5e1aa7
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	OjPJkVofyZvsh33RExE/T9v16gBmUPxKwrtMg804IPOP1eDw0DnhUwRFmUxIoX1FSVV7brYIiaaSBM30LkjMulCMHgQEFCue9WWaQCnttnYfD2wQK9oEfTHkrdWRSBpBuXcLL/M+i51DX1UND57Rx1fHQEs5JwjLHgqHNX4P04g7gGcQ8Waxxni/C9FXTYjWCPL+gtaIl2MG4vX3fPaTAeiaOGu2nzNcTG4RYMMZIz30nOOPtWXxbeQLCQ8sv6X4q3az7mMBoxObfNVrG4pRSjn6+BZn4PoxFBKZ0z9kfpf4dRmCfIitIPYMtkvuAJ7nDIJn6W+xbOPkFuOWvwuCc5d+/pTFMpStQwhfmW8Vuz2zte6RjM2rgnX18/tirP8LCeKFyBNUFk7qJ/qNrP1eoZQQikDUudoWObl2aBSXSZx+XWve3BTHySGmltPFGVy81kR48r8Z27n/96SnbU5QjpOLMTEB+0cItFuAezPovylcHW7OP7LKNXIeR3SBoPO7+1VlyGhqUPoXnLBanC7csnySofXrrAupmgwFkAmsN9+ZobgLFtEP/MNhpKLrFUbkWsiv+JUiq3PNTnDURnhgJug6zAyxMGRmCSvhp+mM9NMARCK+grUyc8J9YKeSIy9Zh+OGYVLB/e2Rq3nFpw7U3g==
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR12MB6101.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(376002)(396003)(39860400002)(366004)(346002)(230922051799003)(64100799003)(186009)(451199024)(1800799012)(53546011)(2616005)(26005)(478600001)(6506007)(6512007)(83380400001)(2906002)(4326008)(5660300002)(41300700001)(66476007)(66556008)(66946007)(966005)(6486002)(8676002)(8936002)(44832011)(316002)(110136005)(38100700002)(86362001)(36756003)(31696002)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?utf-8?B?NUxTcm9PN2l3SnhEaGx4M2hjVGdVd1BITmV5NTR5N1Byb1lKaGQ3L0J3SThW?=
- =?utf-8?B?NUhWOUg2V1VVMXY3NnBVWVdpNkp0ajd4dDBPZmtrcVhuM2lkUXhXYmw1N3Mz?=
- =?utf-8?B?VjF2WlVocW5LWE9NWW0xb1FZNWJlaGtKcHBiKysyaVhXVUgwaDQyN3VrNWtK?=
- =?utf-8?B?TUxqT1NKajlNeTJ2ZW5XUHF5b0Rjd20wYTlqVnpBVnU1NVZ2ZTlIMlhlN29j?=
- =?utf-8?B?TXgxS3lPcG1ZRTBXdzFMbFovNW4xdjlhTFNXelMvekp3cmpVNXcrWWhpQjVC?=
- =?utf-8?B?WGZWS2hzcGZIUHFnd0xRcUVxZ0Rtd1BpbSt3d0k0emFIb3BaQ2diZkRSOThr?=
- =?utf-8?B?U0d2Tk1haTh4SGZZcU1WU2ZiSlRqaEtCRmY2NnVzeWg1TXhxNitLZlVvcWhm?=
- =?utf-8?B?VVZRamdJK1Q3TG4vQkZjcDc0TVJtVmwydEtIck1yM1pVWkl0SWdrTFhmVXY4?=
- =?utf-8?B?MUJHM2lYdG0vREgzamZ1TFEybUtZTDlrVkFJQzJNa2ROb2ZyNTluZnU1ZGJB?=
- =?utf-8?B?dUNmYTluRENEZVZUSFp5b01NRmgzT1pBVUZKRW5qQWdlc05rdVR3dWNqemVr?=
- =?utf-8?B?NVZjbE55WjJLWVh4c3N5Rzd3ZW9VTlpYeHdadGdCaG1TVHpxQStmbi9HdnhJ?=
- =?utf-8?B?bU1zTGl0czlUVjJ1MjJMOWc3bm1QTVIyQnU2b2ZYOXBqV3VkYkZiYk1rZ2tN?=
- =?utf-8?B?YnBFV25VVHB0WDZTVnJiVjJ4YmtNcVpqK05mNlIzNU45K0pHUlFaRm1IWEV2?=
- =?utf-8?B?cklybVpFNkJsbGV0dC94eHk4OU1kcnQzWVg2TkVXVzk3WHRjb1FEM3pELzEx?=
- =?utf-8?B?a2l0Q3hDY3RsQk9zR05GZ2pzbkhHdlFoeFE5RjltaENxellwUUYrYWx6RWNv?=
- =?utf-8?B?V3E3WW5uSUk4bldvRyt4K0ZGWnFETW9Db3BVMjdCZlRaM0RSZDZnZFpoVVll?=
- =?utf-8?B?QmwraHV6ZlQvRE5KUndJRlllL2o5cThRVWY5Rk95Q0NtQUZmakd4bWxmNEh5?=
- =?utf-8?B?Njl4OE9qSWd4aUFsZWk4U004Skp6OG41TDhwQ1k3UU5FcFEySEhNQmtlOXBl?=
- =?utf-8?B?OXhKR1dwZjRSYk9Ed2tLUno1MjF5dTdYYkN0L1U3SlpVVm5STVI2aDNhS21L?=
- =?utf-8?B?TmtYbGgvQmlOWEhzWlo2SFF1SGtqWmhVOWcyemdMLzhEVUFtcVRHUHJHdklj?=
- =?utf-8?B?SkxUVHpkakp1c0FNT3lYak1pdnA2NDZwN1gzUUd5NEpzUWxkUmk0TXhMcm5I?=
- =?utf-8?B?RWVtWVVuVXpxUHVPQWgxd2l2b0drcVBxUW1ZWE1KMlBXeDBwdFNObHdMTSti?=
- =?utf-8?B?Y3ZtckdLb0JXVEQ4WGU0WUlCZFFVTm9UYzBYcVZhcHJrWTExVHc4KzZudSth?=
- =?utf-8?B?aGtZVCtiNTFzL1FWUDd0U1pYYUNGY0RQWGhLRkl6RlorKys3bWdObWRLemJu?=
- =?utf-8?B?UDNwMmU0TDRWOWtuZjF3Y0o2bCtTQ24xRTRWRE1CQjBQWUpoUE9ibEFiMnBO?=
- =?utf-8?B?N0RGUk9kUjY0UzJDM05aODdlWUhmSncvQjVXNy8vVWtNbXcyWmRvc2tEUnUy?=
- =?utf-8?B?TGl6enRRamZaSkxFZERoK1NQU1h0UkxNY0xlRWF5R3BvcHF4cTZjV09qeHJZ?=
- =?utf-8?B?dkNvTldKWWxGVWtSNG9TM0tUVlFTUjMyZzdUVERQZG1kUjQ1TEdJRm5qTW1l?=
- =?utf-8?B?ak1yUnN0dk5jTnovMFJHbUwvcEhmTmhYZ1FPOFYvb1lra1NQaDY2S3QrYkIw?=
- =?utf-8?B?NW5PYnhWOVRXV29KRnZKaXV6T1ZEVHJRRThGWk53RXNkVEV2SnBVakN4UXhn?=
- =?utf-8?B?c2l4dng3RVJINjZPdng1alVvcUcxSFFPb3ZzN0RmWVdJTWkvNi93K2p4YXZs?=
- =?utf-8?B?SFJJalNqMk1oRGM0SUFRa0VkbVp4eE9aNVluYVdLcGZGRG9QajlmUGpTTlNy?=
- =?utf-8?B?akpETnVJWUhqOU45QXFzdEpSNGRpcWk2dnM3OEcvVy9SOVpPMy9SSGR6dnpt?=
- =?utf-8?B?ZWhIUkJMbnVoMi9FUXorNXlBcGNFNzhwZXhmc3BlM05pRkNlMWREbnNHdUhN?=
- =?utf-8?B?VGNaTmtnODY2eC8vSUNQUWxwWkY4MitQaUY5RjJiektEMWl3SXV3bU1QZTN3?=
- =?utf-8?Q?+MkJ1NcjCwM3tzdKsJNjOlGJq?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 
- 6e141aaa-5ca8-4499-773e-08dbef5e1aa7
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR12MB6101.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Nov 2023 15:32:45.7744
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 
- iRJhmxz4fiyLN1rg5syIt8uOhIbH2fFcAt0DjTCrdvFF3v1nmu1d6/lmWuCk//ftZQeX6gGddGDTF9lglgVpTg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR12MB5212
-Message-ID-Hash: OD76FJLINF4GAVSQV5ZKUMW4NS7AA6VJ
-X-Message-ID-Hash: OD76FJLINF4GAVSQV5ZKUMW4NS7AA6VJ
-X-MailFrom: Mario.Limonciello@amd.com
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: LQYSSPR5US2KKLOGYOKGJ3UZBKEXEXZP
+X-Message-ID-Hash: LQYSSPR5US2KKLOGYOKGJ3UZBKEXEXZP
+X-MailFrom: peter.ujfalusi@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -160,7 +94,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OD76FJLINF4GAVSQV5ZKUMW4NS7AA6VJ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LQYSSPR5US2KKLOGYOKGJ3UZBKEXEXZP/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -169,68 +103,60 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 11/27/2023 09:23, Malcolm Hart wrote:
-> 
->  From da1e023a39987c1bc2d5b27ecf659d61d9a4724c Mon Sep 17 00:00:00 2001
-> From: foolishhart <62256078+foolishhart@users.noreply.github.com>
-> Date: Mon, 27 Nov 2023 11:51:04 +0000
-> Subject: [PATCH] Update acp6x-mach.c
-> 
-> Added 	ASUSTeK COMPUTER INC  "E1504FA" to quirks file to enable microphone array on ASUS Vivobook GO 15.
+Hi,
 
-You're missing a Signed-off-by: tag.
-Also as this should be going to stable you should have a tag for:
+SOF board updates for 6.8 including few small fix and the majority is to add
+generic helpers for codec, amp, BT offload, HDMI-In and DAI link generation
+among various machine drivers.
 
-Cc: stable@vger.kernel.org
+Regards,
+Peter
+---
+Bard Liao (2):
+  ASoC: Intel: sof_maxim_common: add else between 2 if test
+  ASoC: Intel: sof_maxim_common: check return value
 
-> ---
->   sound/soc/amd/yc/acp6x-mach.c | 7 +++++++
->   1 file changed, 7 insertions(+)
-> 
-> diff --git a/sound/soc/amd/yc/acp6x-mach.c b/sound/soc/amd/yc/acp6x-mach.c
-> index 15a864dcd7bd3a..3babb17a56bb55 100644
-> --- a/sound/soc/amd/yc/acp6x-mach.c
-> +++ b/sound/soc/amd/yc/acp6x-mach.c
-> @@ -283,6 +283,13 @@ static const struct dmi_system_id yc_acp_quirk_table[] = {
->   			DMI_MATCH(DMI_PRODUCT_NAME, "M6500RC"),
->   		}
->   	},
-> +	{
-> +		.driver_data = &acp6x_card,
-> +		.matches = {
-> +			DMI_MATCH(DMI_BOARD_VENDOR, "ASUSTeK COMPUTER INC."),
-> +			DMI_MATCH(DMI_PRODUCT_NAME, "E1504FA"),
-> +		}
-> +	},
->   	{
->   		.driver_data = &acp6x_card,
->   		.matches = {
-> 
-> 
-> 
-> 
-> 
-> Mark Brown <broonie@kernel.org> writes:
-> 
->> [[PGP Signed Part:Undecided]]
->> On Mon, Nov 27, 2023 at 12:24:59PM +0000, Malcolm Hart wrote:
->>> Like other ASUS models the Asus Vivobook E1504FA requires an entry in
->>> the quirk list to enable the internal microphone.
->>>
->>> Showing
->>> with 7 additions and 0 deletions.
->>> 7 changes: 7 additions & 0 deletions 7
->>> sound/soc/amd/yc/acp6x-mach.c
->>> @@ -283,6 +283,13 @@ static const struct dmi_system_id
->>> yc_acp_quirk_table[] = {
->>
->> The patch appears to have been unusably corrupted by your e-mail
->> software and is also missing a Signed-off-by.  See email-cleints.rst for
->> some suggestions on configuring things, or it might be worth looking
->> into b4 and it's web submission endpoint:
->>
->>     https://b4.docs.kernel.org/en/latest/
->>
->> [[End of PGP Signed Part]]
-> 
+Brent Lu (24):
+  ASoC: Intel: sof_ssp_amp: remove dead code
+  ASoC: Intel: ssp-common: get codec name function
+  ASoC: Intel: board_helpers: support codec link initialization
+  ASoC: Intel: sof_cs42l42: use common module for codec link
+  ASoC: Intel: sof_nau8825: use common module for codec link
+  ASoC: Intel: sof_rt5682: use common module for codec link
+  ASoC: Intel: board_helpers: support amp link initialization
+  ASoC: Intel: sof_cs42l42: use common module for amp link
+  ASoC: Intel: sof_nau8825: use common module for amp link
+  ASoC: Intel: sof_rt5682: use common module for amp link
+  ASoC: Intel: sof_ssp_amp: use common module for amp link
+  ASoC: Intel: sof_ssp_amp: rename function parameter
+  ASoC: Intel: board_helpers: support BT offload link initialization
+  ASoC: Intel: sof_cs42l42: use common module for BT offload link
+  ASoC: Intel: sof_nau8825: use common module for BT offload link
+  ASoC: Intel: sof_rt5682: use common module for BT offload link
+  ASoC: Intel: sof_ssp_amp: use common module for BT offload link
+  ASoC: Intel: sof_ssp_amp: simplify HDMI-In quirks
+  ASoC: Intel: board_helpers: support HDMI-In link initialization
+  ASoC: Intel: sof_rt5682: use common module for HDMI-In link
+  ASoC: Intel: sof_ssp_amp: use common module for HDMI-In link
+  ASoC: Intel: board_helpers: support DAI link array generation
+  ASoC: Intel: sof_nau8825: use common module for DAI link generation
+  ASoC: Intel: sof_rt5682: use common module for DAI link generation
+
+Chao Song (1):
+  ASoC: Intel: cht_bsw_rt5672: check return value
+
+ sound/soc/intel/boards/cht_bsw_rt5672.c    |   8 +-
+ sound/soc/intel/boards/sof_board_helpers.c | 330 +++++++++++++++++++++
+ sound/soc/intel/boards/sof_board_helpers.h |  31 ++
+ sound/soc/intel/boards/sof_cs42l42.c       | 229 ++++----------
+ sound/soc/intel/boards/sof_maxim_common.c  |  13 +-
+ sound/soc/intel/boards/sof_nau8825.c       | 224 ++++----------
+ sound/soc/intel/boards/sof_rt5682.c        | 328 ++++++--------------
+ sound/soc/intel/boards/sof_ssp_amp.c       | 160 ++++------
+ sound/soc/intel/boards/sof_ssp_common.c    |  21 ++
+ sound/soc/intel/boards/sof_ssp_common.h    |   1 +
+ 10 files changed, 653 insertions(+), 692 deletions(-)
+
+-- 
+2.43.0
 
