@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 29C43C4167B
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Nov 2023 15:42:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 47260C4167B
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Nov 2023 15:43:11 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6C35AEB1;
-	Mon, 27 Nov 2023 16:42:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6C35AEB1
+	by alsa0.perex.cz (Postfix) with ESMTPS id CEF06E7B;
+	Mon, 27 Nov 2023 16:42:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CEF06E7B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1701099773;
-	bh=zyYJlFkKqB0EVboHd0HVXx2hTiGrmgC9jgqUPqfWYO4=;
+	s=default; t=1701099788;
+	bh=XN9Bit659jWYf1A4adc2T7hIVcb934urLyq20ChKjNQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=J8LISaX5UcMVz0J2DTK70ldWUsg/qsfUNyPK7bIUIBGMleXg1b2olJi/0XrWmuawI
-	 W3dIVrgnwtI7MHN2JHa1udbq4d1bkPJ+QCrK7WtkvY0l/L6BXkZgT4w86zCWR/kRDm
-	 +GkGAYbS9fpSgbVjfBCbpPOfI3sE/kFKxBHJVIpI=
+	b=srlab2TLJcSsYQhM9Czqw8I164mynsasEBXy0u7PjzgE//q4lJh+Tx1fAa0Z/lPfT
+	 iLOmxmAZZBLfpWenKhZEL1clp2axIn51kSu35HQvX6mtASclcGiRAi/yj4YLz9qym4
+	 RaT44Koh08H4w8iTEIWcmmCADf2O5H8/tWK+54bU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 38F35F89793; Mon, 27 Nov 2023 16:36:32 +0100 (CET)
+	id 15638F80632; Mon, 27 Nov 2023 16:36:47 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C53C5F89788;
-	Mon, 27 Nov 2023 16:36:32 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CEE4DF80617;
+	Mon, 27 Nov 2023 16:36:47 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A3386F8968A; Mon, 27 Nov 2023 16:36:19 +0100 (CET)
+	id 74B65F805F6; Mon, 27 Nov 2023 16:36:43 +0100 (CET)
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B7202F8081A
-	for <alsa-devel@alsa-project.org>; Mon, 27 Nov 2023 16:35:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B7202F8081A
+	by alsa1.perex.cz (Postfix) with ESMTPS id D4EABF80246
+	for <alsa-devel@alsa-project.org>; Mon, 27 Nov 2023 16:35:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D4EABF80246
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=Oe/a+P9X
+ header.s=Intel header.b=Nz+XuKIb
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701099360; x=1732635360;
+  t=1701099325; x=1732635325;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=zyYJlFkKqB0EVboHd0HVXx2hTiGrmgC9jgqUPqfWYO4=;
-  b=Oe/a+P9XUA+2No2a7wL7HK1CNL1+97hUMolxsLyU2Exum1N/7tKwpF/3
-   noyaYLZtCYLaXqJOw7JhsxeXCGy1lJIsZbQgvUTTltQzQI4fkBpqMH24U
-   N06D28F/Ta7oTZ1JhtaRQgioSGH6L7vf3OWoX6FmzpGIMRnvPm542yEy1
-   uE/82Fa+LDhtSveYrP6anQpoFnrsi83k7BTHxkDGRbdRGvPYDwE0oHMdR
-   x1JZWoGG5kZ9tvF1vos3VpNdZI5+qEYwBH8iQp1ktPDPIRuyMRoCuR3BW
-   1rCC5Gr97YaooxgrlU/gw3q3aqiNY4MdhfLhN+49pd4e16vji02vMeain
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="372894694"
+  bh=XN9Bit659jWYf1A4adc2T7hIVcb934urLyq20ChKjNQ=;
+  b=Nz+XuKIbZw37YK7Nz8EkXWzl/KcpEjkGyTEotQvfy3DTb1UVRQRxMECF
+   OB34g3Fwv9Z4HGgt/M0tG512DLenEOHEPRgy6vsB90YqZhywbFdmnL7u4
+   FuXOVnShc0il2yKPbyKtpRIXoTYl9HDU1rJNDoLMdrgMumjdNW7wCj3L8
+   hXVKZiv5mPM+iNXeffzylb6JUdiv1e6Qug8RCaXWWzOT8h0WCPhyXKCKJ
+   F1EIEOe+ci1c8k/qcWdJJvKo5HOwQndkecNqfiLrew7R7J3SqkkxJTTWu
+   6XvZh+aKUfnpzPFdnNmSS0Wvhg2DnE3WpgyFpMEW1FuOvwkvMn25u/mI1
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="372894401"
 X-IronPort-AV: E=Sophos;i="6.04,231,1695711600";
-   d="scan'208";a="372894694"
+   d="scan'208";a="372894401"
 Received: from fmsmga007.fm.intel.com ([10.253.24.52])
   by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Nov 2023 07:27:37 -0800
+ 27 Nov 2023 07:26:32 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="771957225"
+X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="771956326"
 X-IronPort-AV: E=Sophos;i="6.04,231,1695711600";
-   d="scan'208";a="771957225"
+   d="scan'208";a="771956326"
 Received: from acornagl-mobl.ger.corp.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.252.58.144])
   by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Nov 2023 07:27:34 -0800
+ 27 Nov 2023 07:26:30 -0800
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com,
 	broonie@kernel.org
@@ -75,17 +75,16 @@ Cc: alsa-devel@alsa-project.org,
 	ranjani.sridharan@linux.intel.com,
 	yung-chuan.liao@linux.intel.com,
 	chao.song@linux.intel.com
-Subject: [PATCH 27/27] ASoC: Intel: sof_rt5682: use common module for DAI link
- generation
-Date: Mon, 27 Nov 2023 17:26:54 +0200
-Message-ID: <20231127152654.28204-28-peter.ujfalusi@linux.intel.com>
+Subject: [PATCH 04/27] ASoC: Intel: cht_bsw_rt5672: check return value
+Date: Mon, 27 Nov 2023 17:26:31 +0200
+Message-ID: <20231127152654.28204-5-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231127152654.28204-1-peter.ujfalusi@linux.intel.com>
 References: <20231127152654.28204-1-peter.ujfalusi@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: BXSC5TEEPVNGXPEHHOX5MB4GND7TUWKB
-X-Message-ID-Hash: BXSC5TEEPVNGXPEHHOX5MB4GND7TUWKB
+Message-ID-Hash: VEQ546G4I63LZC6HD2TI6LGXWADO5EVB
+X-Message-ID-Hash: VEQ546G4I63LZC6HD2TI6LGXWADO5EVB
 X-MailFrom: peter.ujfalusi@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -98,7 +97,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BXSC5TEEPVNGXPEHHOX5MB4GND7TUWKB/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VEQ546G4I63LZC6HD2TI6LGXWADO5EVB/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -107,315 +106,38 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Brent Lu <brent.lu@intel.com>
+From: Chao Song <chao.song@linux.intel.com>
 
-Use intel_board module to generate DAI link array and update
-num_links field in snd_soc_card structure.
+Set codec sysclk could fail and return error, add
+error check for it.
 
-Signed-off-by: Brent Lu <brent.lu@intel.com>
-Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Signed-off-by: Chao Song <chao.song@linux.intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 ---
- sound/soc/intel/boards/sof_rt5682.c | 242 +++++++++-------------------
- 1 file changed, 75 insertions(+), 167 deletions(-)
+ sound/soc/intel/boards/cht_bsw_rt5672.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
-index d353ad758c60..cd50f26d1edb 100644
---- a/sound/soc/intel/boards/sof_rt5682.c
-+++ b/sound/soc/intel/boards/sof_rt5682.c
-@@ -563,52 +563,45 @@ static struct snd_soc_dai_link_component rt5650_components[] = {
- 	}
- };
- 
--static struct snd_soc_dai_link *
--sof_card_dai_links_create(struct device *dev, enum sof_ssp_codec codec_type,
--			  enum sof_ssp_codec amp_type, int ssp_codec,
--			  int ssp_amp, int dmic_be_num, int hdmi_num,
--			  bool idisp_codec, bool is_legacy_cpu)
-+static int
-+sof_card_dai_links_create(struct device *dev, struct snd_soc_card *card,
-+			  struct sof_card_private *ctx)
- {
--	struct snd_soc_dai_link *links;
--	int i;
--	int id = 0;
- 	int ret;
- 
--	links = devm_kcalloc(dev, sof_audio_card_rt5682.num_links,
--			    sizeof(struct snd_soc_dai_link), GFP_KERNEL);
--	if (!links)
--		goto devm_err;
--
--	/* codec SSP */
--	ret = sof_intel_board_set_codec_link(dev, &links[id], id, codec_type,
--					     ssp_codec);
-+	ret = sof_intel_board_set_dai_link(dev, card, ctx);
- 	if (ret)
--		return NULL;
-+		return ret;
-+
-+	if (!ctx->codec_link) {
-+		dev_err(dev, "codec link not available");
-+		return -EINVAL;
-+	}
- 
--	/* codec-specific fields */
--	switch (codec_type) {
-+	/* codec-specific fields for headphone codec */
-+	switch (ctx->codec_type) {
- 	case CODEC_RT5650:
--		links[id].codecs = &rt5650_components[0];
--		links[id].num_codecs = 1;
-+		ctx->codec_link->codecs = &rt5650_components[0];
-+		ctx->codec_link->num_codecs = 1;
- 		break;
- 	case CODEC_RT5682:
--		links[id].codecs = rt5682_component;
--		links[id].num_codecs = ARRAY_SIZE(rt5682_component);
-+		ctx->codec_link->codecs = rt5682_component;
-+		ctx->codec_link->num_codecs = ARRAY_SIZE(rt5682_component);
- 		break;
- 	case CODEC_RT5682S:
--		links[id].codecs = rt5682s_component;
--		links[id].num_codecs = ARRAY_SIZE(rt5682s_component);
-+		ctx->codec_link->codecs = rt5682s_component;
-+		ctx->codec_link->num_codecs = ARRAY_SIZE(rt5682s_component);
- 		break;
- 	default:
--		dev_err(dev, "invalid codec type %d\n", codec_type);
--		return NULL;
-+		dev_err(dev, "invalid codec type %d\n", ctx->codec_type);
-+		return -EINVAL;
- 	}
- 
--	links[id].init = sof_rt5682_codec_init;
--	links[id].exit = sof_rt5682_codec_exit;
--	links[id].ops = &sof_rt5682_ops;
-+	ctx->codec_link->init = sof_rt5682_codec_init;
-+	ctx->codec_link->exit = sof_rt5682_codec_exit;
-+	ctx->codec_link->ops = &sof_rt5682_ops;
- 
--	if (!is_legacy_cpu) {
-+	if (!ctx->rt5682.is_legacy_cpu) {
- 		/*
- 		 * Currently, On SKL+ platforms MCLK will be turned off in sof
- 		 * runtime suspended, and it will go into runtime suspended
-@@ -618,130 +611,64 @@ sof_card_dai_links_create(struct device *dev, enum sof_ssp_codec codec_type,
- 		 * avoid the noise.
- 		 * It can be removed once we can control MCLK by driver.
+diff --git a/sound/soc/intel/boards/cht_bsw_rt5672.c b/sound/soc/intel/boards/cht_bsw_rt5672.c
+index f6da24f3c466..8cf0b33cc02e 100644
+--- a/sound/soc/intel/boards/cht_bsw_rt5672.c
++++ b/sound/soc/intel/boards/cht_bsw_rt5672.c
+@@ -93,8 +93,12 @@ static int platform_clock_control(struct snd_soc_dapm_widget *w,
+ 		 * when codec is runtime suspended. Codec needs clock for jack
+ 		 * detection and button press.
  		 */
--		links[id].ignore_pmdown_time = 1;
-+		ctx->codec_link->ignore_pmdown_time = 1;
- 	}
--	id++;
+-		snd_soc_dai_set_sysclk(codec_dai, RT5670_SCLK_S_RCCLK,
+-				       48000 * 512, SND_SOC_CLOCK_IN);
++		ret = snd_soc_dai_set_sysclk(codec_dai, RT5670_SCLK_S_RCCLK,
++					     48000 * 512, SND_SOC_CLOCK_IN);
++		if (ret < 0) {
++			dev_err(card->dev, "failed to set codec sysclk: %d\n", ret);
++			return ret;
++		}
  
--	/* dmic */
--	if (dmic_be_num > 0) {
--		/* at least we have dmic01 */
--		ret = sof_intel_board_set_dmic_link(dev, &links[id], id,
--						    SOF_DMIC_01);
--		if (ret)
--			return NULL;
--
--		id++;
--	}
-+	if (ctx->amp_type == CODEC_NONE)
-+		return 0;
- 
--	if (dmic_be_num > 1) {
--		/* set up 2 BE links at most */
--		ret = sof_intel_board_set_dmic_link(dev, &links[id], id,
--						    SOF_DMIC_16K);
--		if (ret)
--			return NULL;
--
--		id++;
--	}
--
--	/* HDMI */
--	for (i = 1; i <= hdmi_num; i++) {
--		ret = sof_intel_board_set_intel_hdmi_link(dev, &links[id], id,
--							  i, idisp_codec);
--		if (ret)
--			return NULL;
--
--		id++;
--	}
--
--	/* speaker amp */
--	if (amp_type != CODEC_NONE) {
--		ret = sof_intel_board_set_ssp_amp_link(dev, &links[id], id,
--						       amp_type, ssp_amp);
--		if (ret)
--			return NULL;
--
--		/* codec-specific fields */
--		switch (amp_type) {
--		case CODEC_MAX98357A:
--			max_98357a_dai_link(&links[id]);
--			break;
--		case CODEC_MAX98360A:
--			max_98360a_dai_link(&links[id]);
--			break;
--		case CODEC_MAX98373:
--			links[id].codecs = max_98373_components;
--			links[id].num_codecs = ARRAY_SIZE(max_98373_components);
--			links[id].init = max_98373_spk_codec_init;
--			links[id].ops = &max_98373_ops;
--			break;
--		case CODEC_MAX98390:
--			max_98390_dai_link(dev, &links[id]);
--			break;
--		case CODEC_RT1011:
--			sof_rt1011_dai_link(&links[id]);
--			break;
--		case CODEC_RT1015:
--			sof_rt1015_dai_link(&links[id]);
--			break;
--		case CODEC_RT1015P:
--			sof_rt1015p_dai_link(&links[id]);
--			break;
--		case CODEC_RT1019P:
--			sof_rt1019p_dai_link(&links[id]);
--			break;
--		case CODEC_RT5650:
--			/* use AIF2 to support speaker pipeline */
--			links[id].codecs = &rt5650_components[1];
--			links[id].num_codecs = 1;
--			links[id].init = rt5650_spk_init;
--			links[id].ops = &sof_rt5682_ops;
--			break;
--		default:
--			dev_err(dev, "invalid amp type %d\n", amp_type);
--			return NULL;
--		}
--
--		id++;
--	}
--
--	/* BT audio offload */
--	if (sof_rt5682_quirk & SOF_SSP_BT_OFFLOAD_PRESENT) {
--		int port = (sof_rt5682_quirk & SOF_BT_OFFLOAD_SSP_MASK) >>
--				SOF_BT_OFFLOAD_SSP_SHIFT;
--
--		ret = sof_intel_board_set_bt_link(dev, &links[id], id, port);
--		if (ret)
--			return NULL;
--
--		id++;
-+	if (!ctx->amp_link) {
-+		dev_err(dev, "amp link not available");
-+		return -EINVAL;
- 	}
- 
--	/* HDMI-In SSP */
--	if (sof_rt5682_quirk & SOF_SSP_HDMI_CAPTURE_PRESENT_MASK) {
--		unsigned long hdmi_in_ssp = (sof_rt5682_quirk &
--				SOF_SSP_HDMI_CAPTURE_PRESENT_MASK) >>
--				SOF_NO_OF_HDMI_CAPTURE_SSP_SHIFT;
--		int port = 0;
--
--		for_each_set_bit(port, &hdmi_in_ssp, 32) {
--			ret = sof_intel_board_set_hdmi_in_link(dev, &links[id],
--							       id, port);
--			if (ret)
--				return NULL;
--
--			id++;
--		}
-+	/* codec-specific fields for speaker amplifier */
-+	switch (ctx->amp_type) {
-+	case CODEC_MAX98357A:
-+		max_98357a_dai_link(ctx->amp_link);
-+		break;
-+	case CODEC_MAX98360A:
-+		max_98360a_dai_link(ctx->amp_link);
-+		break;
-+	case CODEC_MAX98373:
-+		ctx->amp_link->codecs = max_98373_components;
-+		ctx->amp_link->num_codecs = ARRAY_SIZE(max_98373_components);
-+		ctx->amp_link->init = max_98373_spk_codec_init;
-+		ctx->amp_link->ops = &max_98373_ops;
-+		break;
-+	case CODEC_MAX98390:
-+		max_98390_dai_link(dev, ctx->amp_link);
-+		break;
-+	case CODEC_RT1011:
-+		sof_rt1011_dai_link(ctx->amp_link);
-+		break;
-+	case CODEC_RT1015:
-+		sof_rt1015_dai_link(ctx->amp_link);
-+		break;
-+	case CODEC_RT1015P:
-+		sof_rt1015p_dai_link(ctx->amp_link);
-+		break;
-+	case CODEC_RT1019P:
-+		sof_rt1019p_dai_link(ctx->amp_link);
-+		break;
-+	case CODEC_RT5650:
-+		/* use AIF2 to support speaker pipeline */
-+		ctx->amp_link->codecs = &rt5650_components[1];
-+		ctx->amp_link->num_codecs = 1;
-+		ctx->amp_link->init = rt5650_spk_init;
-+		ctx->amp_link->ops = &sof_rt5682_ops;
-+		break;
-+	default:
-+		dev_err(dev, "invalid amp type %d\n", ctx->amp_type);
-+		return -EINVAL;
- 	}
- 
--	return links;
--devm_err:
--	return NULL;
-+	return 0;
- }
- 
- static int sof_audio_probe(struct platform_device *pdev)
- {
- 	struct snd_soc_acpi_mach *mach = pdev->dev.platform_data;
--	struct snd_soc_dai_link *dai_links;
- 	struct sof_card_private *ctx;
- 	int ret;
- 
-@@ -821,32 +748,13 @@ static int sof_audio_probe(struct platform_device *pdev)
- 
- 	ctx->ssp_codec = sof_rt5682_quirk & SOF_RT5682_SSP_CODEC_MASK;
- 
--	/* compute number of dai links */
--	sof_audio_card_rt5682.num_links = 1 + ctx->dmic_be_num + ctx->hdmi_num;
--
--	if (ctx->amp_type != CODEC_NONE)
--		sof_audio_card_rt5682.num_links++;
--
--	if (sof_rt5682_quirk & SOF_SSP_BT_OFFLOAD_PRESENT) {
-+	if (sof_rt5682_quirk & SOF_SSP_BT_OFFLOAD_PRESENT)
- 		ctx->bt_offload_present = true;
--		sof_audio_card_rt5682.num_links++;
--	}
- 
--	if (sof_rt5682_quirk & SOF_SSP_HDMI_CAPTURE_PRESENT_MASK)
--		sof_audio_card_rt5682.num_links +=
--			hweight32((sof_rt5682_quirk & SOF_SSP_HDMI_CAPTURE_PRESENT_MASK) >>
--					SOF_NO_OF_HDMI_CAPTURE_SSP_SHIFT);
--
--	dai_links = sof_card_dai_links_create(&pdev->dev, ctx->codec_type,
--					      ctx->amp_type, ctx->ssp_codec,
--					      ctx->ssp_amp, ctx->dmic_be_num,
--					      ctx->hdmi_num,
--					      ctx->hdmi.idisp_codec,
--					      ctx->rt5682.is_legacy_cpu);
--	if (!dai_links)
--		return -ENOMEM;
--
--	sof_audio_card_rt5682.dai_link = dai_links;
-+	/* update dai_link */
-+	ret = sof_card_dai_links_create(&pdev->dev, &sof_audio_card_rt5682, ctx);
-+	if (ret)
-+		return ret;
- 
- 	/* update codec_conf */
- 	switch (ctx->amp_type) {
+ 		if (ctx->mclk)
+ 			clk_disable_unprepare(ctx->mclk);
 -- 
 2.43.0
 
