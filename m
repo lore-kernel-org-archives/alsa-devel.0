@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C4C26C4167B
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Nov 2023 15:36:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9DC32C4167B
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Nov 2023 15:37:09 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2E8D7A4D;
-	Mon, 27 Nov 2023 16:36:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2E8D7A4D
+	by alsa0.perex.cz (Postfix) with ESMTPS id F3FD8DF2;
+	Mon, 27 Nov 2023 16:36:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F3FD8DF2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1701099417;
-	bh=31pRsjv2J+AIInTtcDsFPCwKu0vBHoekWn1R0zEBVeM=;
+	s=default; t=1701099428;
+	bh=hu8qxAfbY0PdmsbL+wv4z49GlVEtJy5KeFdD3TpIvn8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=RijQZw8PHD7snlnthjqqtQk9jrbecXjgAUoh0oDhTtir5fRMJQV1gUF373DiTwQcL
-	 zM6oT3EZgBaYsUPflsOKXqH6M2Egbt1p7kXFRVnonc1blVNeqQkdzKD0LqNOB/JQZ0
-	 YmFcmsn2U9x3SgipyOeod7mZ34FegaRGb3i/ebck=
+	b=DsPnPMur9FMZovaw4eju64Apyiqf47ladNl5nh7Gwsk8wQHFx35+9k6S8cHF+3UAx
+	 96Uyb+r5vXxOIqTtg5ACIfK2X9XR3jN5GB/GbwV3SNgLtEQF+8sV9CU5vOqQChzCXD
+	 XhqombJYOkvSHAUbfnG0zGDNmHhPVnX4nfDCmuuo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B89F6F8062E; Mon, 27 Nov 2023 16:35:42 +0100 (CET)
+	id 7E521F8063E; Mon, 27 Nov 2023 16:35:43 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4A175F80568;
-	Mon, 27 Nov 2023 16:35:41 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7F96AF80676;
+	Mon, 27 Nov 2023 16:35:43 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3891AF805EC; Mon, 27 Nov 2023 16:35:33 +0100 (CET)
+	id C2A65F805E6; Mon, 27 Nov 2023 16:35:35 +0100 (CET)
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D50F6F80254
-	for <alsa-devel@alsa-project.org>; Mon, 27 Nov 2023 16:35:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D50F6F80254
+	by alsa1.perex.cz (Postfix) with ESMTPS id A8E24F801D5
+	for <alsa-devel@alsa-project.org>; Mon, 27 Nov 2023 16:35:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A8E24F801D5
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=DFwHziO2
+ header.s=Intel header.b=Zlde7WsT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701099327; x=1732635327;
+  t=1701099328; x=1732635328;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=31pRsjv2J+AIInTtcDsFPCwKu0vBHoekWn1R0zEBVeM=;
-  b=DFwHziO2aXE6/VANZ7EHggknW+7c8RHRK2wsZF9I3jR7q6RBJ7Lcq+QH
-   ej9NnYnWjD1iH0OXuHdm7lxOZiJ3onYr0KXqhOJDOoUcUUPdqDy5lOliK
-   9vmix+Ql5Mx4USJQwkojzrR9pff9XdH4BKIjzurksZZCB/nGsQl8AFNOP
-   JcLHhqItrffaXG3a/RuXAkJVgsM2qrRdGVYCDyM3LIYhItJeeIAJ8wc8B
-   GG2KTYvPTroAZYDgVfoS1LllMX7ux0goAyceBNOGVh02rqK7tr3ljIaxc
-   HQtRjD+K+YiexYz2phpVCxA83/cpvLabud7AcALBfPnUJ3XZ8csGPD8eM
+  bh=hu8qxAfbY0PdmsbL+wv4z49GlVEtJy5KeFdD3TpIvn8=;
+  b=Zlde7WsTEU97n0DdH7R2+ZINd2MFYl/jl6wYwTYziZ9DYug3X5ul2Vs6
+   Sy43P47DVwoGMxhuJRxHOjtU5Z3E9vgomRjlOEL15OYQ+TIvlj9pDENLy
+   5t4bYAE7ohVvEfWOjJqhQlY2aeu7M4Vww3J5q+up82ZUL23r/3vdtjQSv
+   n79jU5kKPcFGtU07K9KEC0WE+M8alHrqnc7TC3cdVJfZowzfvLNnal+hg
+   odZ52UTUqUfKXhMozrV6dCJ6+ktM+72u/wPCutDBkxvUL0ssys8upyFBD
+   6Y034KmBhPrZX8010EbWgb4mRG/2qAaZiGEcAxwJ6Hg+GLB4odKK/wx6A
    w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="372894426"
+X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="372894445"
 X-IronPort-AV: E=Sophos;i="6.04,231,1695711600";
-   d="scan'208";a="372894426"
+   d="scan'208";a="372894445"
 Received: from fmsmga007.fm.intel.com ([10.253.24.52])
   by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Nov 2023 07:26:38 -0800
+ 27 Nov 2023 07:26:44 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="771956405"
+X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="771956501"
 X-IronPort-AV: E=Sophos;i="6.04,231,1695711600";
-   d="scan'208";a="771956405"
+   d="scan'208";a="771956501"
 Received: from acornagl-mobl.ger.corp.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.252.58.144])
   by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Nov 2023 07:26:36 -0800
+ 27 Nov 2023 07:26:41 -0800
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com,
 	broonie@kernel.org
@@ -75,17 +75,17 @@ Cc: alsa-devel@alsa-project.org,
 	ranjani.sridharan@linux.intel.com,
 	yung-chuan.liao@linux.intel.com,
 	chao.song@linux.intel.com
-Subject: [PATCH 06/27] ASoC: Intel: board_helpers: support codec link
- initialization
-Date: Mon, 27 Nov 2023 17:26:33 +0200
-Message-ID: <20231127152654.28204-7-peter.ujfalusi@linux.intel.com>
+Subject: [PATCH 08/27] ASoC: Intel: sof_nau8825: use common module for codec
+ link
+Date: Mon, 27 Nov 2023 17:26:35 +0200
+Message-ID: <20231127152654.28204-9-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231127152654.28204-1-peter.ujfalusi@linux.intel.com>
 References: <20231127152654.28204-1-peter.ujfalusi@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: N4HAKLIUFO5Z6TVANTU2OFZATKRNLO6J
-X-Message-ID-Hash: N4HAKLIUFO5Z6TVANTU2OFZATKRNLO6J
+Message-ID-Hash: FPGVXCABISFYI6KQ6NOJNSCE6UP5PG5K
+X-Message-ID-Hash: FPGVXCABISFYI6KQ6NOJNSCE6UP5PG5K
 X-MailFrom: peter.ujfalusi@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -98,7 +98,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/N4HAKLIUFO5Z6TVANTU2OFZATKRNLO6J/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FPGVXCABISFYI6KQ6NOJNSCE6UP5PG5K/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -109,124 +109,83 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Brent Lu <brent.lu@intel.com>
 
-Add a helper function for machine drivers to initialize headphone
-codec DAI links. The function will initialize common fields and let
-caller to initialize codec-specific fields like codec, init, exit, and
-ops fields.
+Use intel_board module for headphone codec DAI link initialization.
 
 Signed-off-by: Brent Lu <brent.lu@intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 ---
- sound/soc/intel/boards/sof_board_helpers.c | 51 ++++++++++++++++++++++
- sound/soc/intel/boards/sof_board_helpers.h |  6 +++
- 2 files changed, 57 insertions(+)
+ sound/soc/intel/boards/sof_nau8825.c | 29 ++++++++--------------------
+ 1 file changed, 8 insertions(+), 21 deletions(-)
 
-diff --git a/sound/soc/intel/boards/sof_board_helpers.c b/sound/soc/intel/boards/sof_board_helpers.c
-index ce2967850c2d..5ee53c781b37 100644
---- a/sound/soc/intel/boards/sof_board_helpers.c
-+++ b/sound/soc/intel/boards/sof_board_helpers.c
-@@ -3,6 +3,7 @@
- // Copyright(c) 2023 Intel Corporation. All rights reserved.
+diff --git a/sound/soc/intel/boards/sof_nau8825.c b/sound/soc/intel/boards/sof_nau8825.c
+index dc2821a012d4..3aeed23c8d0d 100644
+--- a/sound/soc/intel/boards/sof_nau8825.c
++++ b/sound/soc/intel/boards/sof_nau8825.c
+@@ -226,30 +226,17 @@ sof_card_dai_links_create(struct device *dev, enum sof_ssp_codec amp_type,
+ 		goto devm_err;
  
- #include <sound/soc.h>
-+#include "../common/soc-intel-quirks.h"
- #include "hda_dsp_common.h"
- #include "sof_board_helpers.h"
+ 	/* codec SSP */
+-	links[id].name = devm_kasprintf(dev, GFP_KERNEL,
+-					"SSP%d-Codec", ssp_codec);
+-	if (!links[id].name)
+-		goto devm_err;
++	ret = sof_intel_board_set_codec_link(dev, &links[id], id, CODEC_NAU8825,
++					     ssp_codec);
++	if (ret)
++		return NULL;
  
-@@ -86,6 +87,55 @@ static struct snd_soc_dai_link_component platform_component[] = {
- 	}
- };
+-	links[id].id = id;
++	/* codec-specific fields */
+ 	links[id].codecs = nau8825_component;
+ 	links[id].num_codecs = ARRAY_SIZE(nau8825_component);
+-	links[id].platforms = platform_component;
+-	links[id].num_platforms = ARRAY_SIZE(platform_component);
+ 	links[id].init = sof_nau8825_codec_init;
+ 	links[id].exit = sof_nau8825_codec_exit;
+ 	links[id].ops = &sof_nau8825_ops;
+-	links[id].dpcm_playback = 1;
+-	links[id].dpcm_capture = 1;
+-	links[id].no_pcm = 1;
+-	links[id].cpus = &cpus[id];
+-	links[id].num_cpus = 1;
+-
+-	links[id].cpus->dai_name = devm_kasprintf(dev, GFP_KERNEL,
+-						  "SSP%d Pin",
+-						  ssp_codec);
+-	if (!links[id].cpus->dai_name)
+-		goto devm_err;
  
-+int sof_intel_board_set_codec_link(struct device *dev,
-+				   struct snd_soc_dai_link *link, int be_id,
-+				   enum sof_ssp_codec codec_type, int ssp_codec)
-+{
-+	struct snd_soc_dai_link_component *cpus;
-+
-+	dev_dbg(dev, "link %d: codec %s, ssp %d\n", be_id,
-+		sof_ssp_get_codec_name(codec_type), ssp_codec);
-+
-+	/* link name */
-+	link->name = devm_kasprintf(dev, GFP_KERNEL, "SSP%d-Codec", ssp_codec);
-+	if (!link->name)
-+		return -ENOMEM;
-+
-+	/* cpus */
-+	cpus = devm_kzalloc(dev, sizeof(struct snd_soc_dai_link_component),
-+			    GFP_KERNEL);
-+	if (!cpus)
-+		return -ENOMEM;
-+
-+	if (soc_intel_is_byt() || soc_intel_is_cht()) {
-+		/* backward-compatibility for BYT/CHT boards */
-+		cpus->dai_name = devm_kasprintf(dev, GFP_KERNEL, "ssp%d-port",
-+						ssp_codec);
-+	} else {
-+		cpus->dai_name = devm_kasprintf(dev, GFP_KERNEL, "SSP%d Pin",
-+						ssp_codec);
-+	}
-+	if (!cpus->dai_name)
-+		return -ENOMEM;
-+
-+	link->cpus = cpus;
-+	link->num_cpus = 1;
-+
-+	/* codecs - caller to handle */
-+
-+	/* platforms */
-+	link->platforms = platform_component;
-+	link->num_platforms = ARRAY_SIZE(platform_component);
-+
-+	link->id = be_id;
-+	link->no_pcm = 1;
-+	link->dpcm_capture = 1;
-+	link->dpcm_playback = 1;
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_NS(sof_intel_board_set_codec_link, SND_SOC_INTEL_SOF_BOARD_HELPERS);
-+
- int sof_intel_board_set_dmic_link(struct device *dev,
- 				  struct snd_soc_dai_link *link, int be_id,
- 				  enum sof_dmic_be_type be_type)
-@@ -202,3 +252,4 @@ MODULE_DESCRIPTION("ASoC Intel SOF Machine Driver Board Helpers");
- MODULE_AUTHOR("Brent Lu <brent.lu@intel.com>");
- MODULE_LICENSE("GPL");
- MODULE_IMPORT_NS(SND_SOC_INTEL_HDA_DSP_COMMON);
-+MODULE_IMPORT_NS(SND_SOC_INTEL_SOF_SSP_COMMON);
-diff --git a/sound/soc/intel/boards/sof_board_helpers.h b/sound/soc/intel/boards/sof_board_helpers.h
-index df99f576c1d8..7392d639672d 100644
---- a/sound/soc/intel/boards/sof_board_helpers.h
-+++ b/sound/soc/intel/boards/sof_board_helpers.h
-@@ -30,6 +30,7 @@ struct sof_rt5682_private {
-  * @amp_type: type of speaker amplifier
-  * @dmic_be_num: number of Intel PCH DMIC BE link
-  * @hdmi_num: number of Intel HDMI BE link
-+ * @ssp_codec: ssp port number of headphone BE link
-  * @rt5682: private data for rt5682 machine driver
-  */
- struct sof_card_private {
-@@ -42,6 +43,8 @@ struct sof_card_private {
- 	int dmic_be_num;
- 	int hdmi_num;
+ 	id++;
  
-+	int ssp_codec;
-+
- 	union {
- 		struct sof_rt5682_private rt5682;
- 	};
-@@ -54,6 +57,9 @@ enum sof_dmic_be_type {
+@@ -368,7 +355,7 @@ static int sof_audio_probe(struct platform_device *pdev)
+ 	struct snd_soc_acpi_mach *mach = pdev->dev.platform_data;
+ 	struct snd_soc_dai_link *dai_links;
+ 	struct sof_card_private *ctx;
+-	int ret, ssp_amp, ssp_codec;
++	int ret, ssp_amp;
  
- int sof_intel_board_card_late_probe(struct snd_soc_card *card);
+ 	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_KERNEL);
+ 	if (!ctx)
+@@ -396,7 +383,7 @@ static int sof_audio_probe(struct platform_device *pdev)
+ 	ssp_amp = (sof_nau8825_quirk & SOF_NAU8825_SSP_AMP_MASK) >>
+ 			SOF_NAU8825_SSP_AMP_SHIFT;
  
-+int sof_intel_board_set_codec_link(struct device *dev,
-+				   struct snd_soc_dai_link *link, int be_id,
-+				   enum sof_ssp_codec codec_type, int ssp_codec);
- int sof_intel_board_set_dmic_link(struct device *dev,
- 				  struct snd_soc_dai_link *link, int be_id,
- 				  enum sof_dmic_be_type be_type);
+-	ssp_codec = sof_nau8825_quirk & SOF_NAU8825_SSP_CODEC_MASK;
++	ctx->ssp_codec = sof_nau8825_quirk & SOF_NAU8825_SSP_CODEC_MASK;
+ 
+ 	/* compute number of dai links */
+ 	sof_audio_card_nau8825.num_links = 1 + ctx->dmic_be_num + ctx->hdmi_num;
+@@ -408,7 +395,7 @@ static int sof_audio_probe(struct platform_device *pdev)
+ 		sof_audio_card_nau8825.num_links++;
+ 
+ 	dai_links = sof_card_dai_links_create(&pdev->dev, ctx->amp_type,
+-					      ssp_codec, ssp_amp,
++					      ctx->ssp_codec, ssp_amp,
+ 					      ctx->dmic_be_num, ctx->hdmi_num,
+ 					      ctx->hdmi.idisp_codec);
+ 	if (!dai_links)
 -- 
 2.43.0
 
