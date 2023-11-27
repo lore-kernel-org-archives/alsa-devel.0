@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DBC48C4167B
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Nov 2023 13:38:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A9FEFC4167B
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Nov 2023 13:38:24 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0E24682A;
-	Mon, 27 Nov 2023 14:37:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0E24682A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 194C7E0D;
+	Mon, 27 Nov 2023 14:38:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 194C7E0D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1701092288;
-	bh=ylPOM8+EoXFj0fcda/iP43PmN+shQ7mww8VqSMW2wiU=;
+	s=default; t=1701092303;
+	bh=/bYP0A7guh2gx+dTt1lqj9fiXy1Rvo2B2dJpNFUeSxw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=DkjqTD9hcbqicIVGlLFJ9rYKU0qgrDihqm/SQQ6vTVydpGlg4svZC6YqJ5YKN2feO
-	 FPJqD4K29JPkj6fb5lQ6GKmq0+/uA8pEWLkr0b8eYst8rxTj1Wpnk0QJJGcH3RMhjU
-	 MBFBWva2PRAxjP1h6UhBJnjkGKt01A4pqvlQ0XJc=
+	b=PMKWVQJ6IWHhfyMWP8RojCnBcc1Zbei83O+ktIw52bihDWSvaWLvYfc1atGc2urmR
+	 3oJ+pFxg6oEwJVx+PociFqInF2qWXlqh5hAuBE1scxknHi7HyPqPBx3WoPw61W/9xi
+	 q2XCw0D/8wa1wHOeor6B6OeDVHThQ7T1MXbkkZj4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AA567F80254; Mon, 27 Nov 2023 14:36:23 +0100 (CET)
+	id 1AE65F80692; Mon, 27 Nov 2023 14:36:24 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id ABE34F8063B;
-	Mon, 27 Nov 2023 14:36:22 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 79576F8067A;
+	Mon, 27 Nov 2023 14:36:24 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 856C5F805C8; Mon, 27 Nov 2023 14:36:13 +0100 (CET)
+	id 55C38F80615; Mon, 27 Nov 2023 14:36:18 +0100 (CET)
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 674F8F8007E
-	for <alsa-devel@alsa-project.org>; Mon, 27 Nov 2023 14:36:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 674F8F8007E
+	by alsa1.perex.cz (Postfix) with ESMTPS id 519A4F80236
+	for <alsa-devel@alsa-project.org>; Mon, 27 Nov 2023 14:36:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 519A4F80236
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=La+7vV+K
+ header.s=Intel header.b=DLp7HX+g
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701092162; x=1732628162;
+  t=1701092163; x=1732628163;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=ylPOM8+EoXFj0fcda/iP43PmN+shQ7mww8VqSMW2wiU=;
-  b=La+7vV+Kk/usqoMMLBmdKBdpEgjHTAz/B3OtPGVZ6kEBoefSvVySMZIq
-   3tzdrcoafhhevIGU1C2LszSNIL1vvGiu6LhUd9+AJNaMbZ+fJgptn/Cxy
-   y2sBmYJvoeboTKr5xU9TVEA8NEBRn/bRg1ivr5vWDsgdsY/JwvXIaBb8V
-   X/eZhLkpSR+xHVy+nY7Dz5ZpYKqQ09Bdg4wGsjqaCQyPR5VT6Hh1xAucc
-   0lDY3bA9uFxdjJUrBNt1YdzFZF63KlPbXIlJAG2klJw3dqlQaiTpg056a
-   uq7OGvFnj5bQXy/vIXmVCbZp6T/qVMAPzaRvIpIiOs6P9Fx8wNAgq22Dn
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10906"; a="391578559"
+  bh=/bYP0A7guh2gx+dTt1lqj9fiXy1Rvo2B2dJpNFUeSxw=;
+  b=DLp7HX+g0wItdGmbc+xy4wjSykZFIbmq/Retd0zEQ+0F9mrW76Td1OpO
+   Gkl6O53dKWYF2zIhir/P30kocgWnN2TuI+U+iaTg+2S4PZU9/uiXYMSRU
+   /pkvLO9h82z/dFtq/QdcOUUQufC5IU91dODF/xlTGUyTrP8CtSPb3xvgN
+   ueTy9YBnKiUS9P4R/0fChZBC7cDVDcDF6wZViTrzMw8h2rUVgLp7GlGYe
+   D+kKUCpNGlhnPOhR5x6fpfFDUfpfwhaPS9YG52/Lf30XhSuUvv005E/hA
+   xU0oIj6MCOEr7XUpqZy3xfC3jIqPAYa+GpYukaVsIZJGEN7RGHb4UQJvm
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10906"; a="391578587"
 X-IronPort-AV: E=Sophos;i="6.04,231,1695711600";
-   d="scan'208";a="391578559"
+   d="scan'208";a="391578587"
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
   by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Nov 2023 05:34:31 -0800
+ 27 Nov 2023 05:34:39 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10906"; a="891743770"
+X-IronPort-AV: E=McAfee;i="6600,9927,10906"; a="891743781"
 X-IronPort-AV: E=Sophos;i="6.04,231,1695711600";
-   d="scan'208";a="891743770"
+   d="scan'208";a="891743781"
 Received: from acornagl-mobl.ger.corp.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.252.58.144])
   by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Nov 2023 05:34:28 -0800
+ 27 Nov 2023 05:34:35 -0800
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com,
 	broonie@kernel.org
@@ -78,16 +78,17 @@ Cc: alsa-devel@alsa-project.org,
 	ckeepax@opensource.cirrus.com,
 	yong.zhi@intel.com,
 	chao.song@linux.intel.com
-Subject: [PATCH 4/7] ASoC: Intel: soc-acpi: rt713+rt1316, no sdw-dmic config
-Date: Mon, 27 Nov 2023 15:34:45 +0200
-Message-ID: <20231127133448.18449-5-peter.ujfalusi@linux.intel.com>
+Subject: [PATCH 6/7] ASoC: Intel: soc-acpi-intel-tgl-match: add cs42l43 and
+ cs56l56 support
+Date: Mon, 27 Nov 2023 15:34:47 +0200
+Message-ID: <20231127133448.18449-7-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231127133448.18449-1-peter.ujfalusi@linux.intel.com>
 References: <20231127133448.18449-1-peter.ujfalusi@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: SG7HUYGIGAPJL4LHDHVJ4FAY57AWMFC4
-X-Message-ID-Hash: SG7HUYGIGAPJL4LHDHVJ4FAY57AWMFC4
+Message-ID-Hash: VIGM5O3MRJR6XHSQL6KHKLIO3ZTEVU6L
+X-Message-ID-Hash: VIGM5O3MRJR6XHSQL6KHKLIO3ZTEVU6L
 X-MailFrom: peter.ujfalusi@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -100,74 +101,133 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SG7HUYGIGAPJL4LHDHVJ4FAY57AWMFC4/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VIGM5O3MRJR6XHSQL6KHKLIO3ZTEVU6L/>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Mac Chiang <mac.chiang@intel.com>
+From: Bard Liao <yung-chuan.liao@linux.intel.com>
 
-This is additional HW board: rt713+rt1316 without rt713-dmic configuration:
+This is a test configuration for UpExtreme.
 
-SDW0: rt713 audio jack
-SDW1: rt1316 spk_amp_l
-SDW2: rt1316 spk_amp_r
+The codec layout is configured as:
+    - Link3: CS42L43 Jack
+    - Link0: 2x CS35L56 Speaker
+    - Link1: 2x CS35L56 Speaker
 
-Signed-off-by: Mac Chiang <mac.chiang@intel.com>
-Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 ---
- .../intel/common/soc-acpi-intel-mtl-match.c   | 25 +++++++++++++++++++
- 1 file changed, 25 insertions(+)
+ .../intel/common/soc-acpi-intel-tgl-match.c   | 78 +++++++++++++++++++
+ 1 file changed, 78 insertions(+)
 
-diff --git a/sound/soc/intel/common/soc-acpi-intel-mtl-match.c b/sound/soc/intel/common/soc-acpi-intel-mtl-match.c
-index af4224bff718..2035f561ca50 100644
---- a/sound/soc/intel/common/soc-acpi-intel-mtl-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-mtl-match.c
-@@ -434,6 +434,25 @@ static const struct snd_soc_acpi_link_adr mtl_rt713_l0_rt1316_l12_rt1713_l3[] =
+diff --git a/sound/soc/intel/common/soc-acpi-intel-tgl-match.c b/sound/soc/intel/common/soc-acpi-intel-tgl-match.c
+index 5804926c8b56..49834bffa50c 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-tgl-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-tgl-match.c
+@@ -41,6 +41,20 @@ static const struct snd_soc_acpi_endpoint spk_r_endpoint = {
+ 	.group_id = 1,
+ };
+ 
++static const struct snd_soc_acpi_endpoint spk_2_endpoint = {
++	.num = 0,
++	.aggregated = 1,
++	.group_position = 2,
++	.group_id = 1,
++};
++
++static const struct snd_soc_acpi_endpoint spk_3_endpoint = {
++	.num = 0,
++	.aggregated = 1,
++	.group_position = 3,
++	.group_id = 1,
++};
++
+ static const struct snd_soc_acpi_endpoint rt712_endpoints[] = {
+ 	{
+ 		.num = 0,
+@@ -400,6 +414,64 @@ static const struct snd_soc_acpi_link_adr tgl_712_only[] = {
  	{}
  };
  
-+static const struct snd_soc_acpi_link_adr mtl_rt713_l0_rt1316_l12[] = {
++static const struct snd_soc_acpi_adr_device cs42l43_3_adr[] = {
++	{
++		.adr = 0x00033001FA424301ull,
++		.num_endpoints = 1,
++		.endpoints = &single_endpoint,
++		.name_prefix = "cs42l43"
++	}
++};
++
++static const struct snd_soc_acpi_adr_device cs35l56_0_adr[] = {
++	{
++		.adr = 0x00003301FA355601ull,
++		.num_endpoints = 1,
++		.endpoints = &spk_r_endpoint,
++		.name_prefix = "cs35l56-8"
++	},
++	{
++		.adr = 0x00003201FA355601ull,
++		.num_endpoints = 1,
++		.endpoints = &spk_3_endpoint,
++		.name_prefix = "cs35l56-7"
++	}
++};
++
++static const struct snd_soc_acpi_adr_device cs35l56_1_adr[] = {
++	{
++		.adr = 0x00013701FA355601ull,
++		.num_endpoints = 1,
++		.endpoints = &spk_l_endpoint,
++		.name_prefix = "cs35l56-1"
++	},
++	{
++		.adr = 0x00013601FA355601ull,
++		.num_endpoints = 1,
++		.endpoints = &spk_2_endpoint,
++		.name_prefix = "cs35l56-2"
++	}
++};
++
++static const struct snd_soc_acpi_link_adr tgl_cs42l43_cs35l56[] = {
++	{
++		.mask = BIT(3),
++		.num_adr = ARRAY_SIZE(cs42l43_3_adr),
++		.adr_d = cs42l43_3_adr,
++	},
 +	{
 +		.mask = BIT(0),
-+		.num_adr = ARRAY_SIZE(rt713_0_single_adr),
-+		.adr_d = rt713_0_single_adr,
++		.num_adr = ARRAY_SIZE(cs35l56_0_adr),
++		.adr_d = cs35l56_0_adr,
 +	},
 +	{
 +		.mask = BIT(1),
-+		.num_adr = ARRAY_SIZE(rt1316_1_group2_adr),
-+		.adr_d = rt1316_1_group2_adr,
-+	},
-+	{
-+		.mask = BIT(2),
-+		.num_adr = ARRAY_SIZE(rt1316_2_group2_adr),
-+		.adr_d = rt1316_2_group2_adr,
++		.num_adr = ARRAY_SIZE(cs35l56_1_adr),
++		.adr_d = cs35l56_1_adr,
 +	},
 +	{}
 +};
 +
- static const struct snd_soc_acpi_adr_device mx8363_2_adr[] = {
- 	{
- 		.adr = 0x000230019F836300ull,
-@@ -519,6 +538,12 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_mtl_sdw_machines[] = {
+ static const struct snd_soc_acpi_codecs tgl_max98373_amp = {
+ 	.num_codecs = 1,
+ 	.codecs = {"MX98373"}
+@@ -494,6 +566,12 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_tgl_sdw_machines[] = {
  		.drv_name = "sof_sdw",
- 		.sof_tplg_filename = "sof-mtl-rt713-l0-rt1316-l12-rt1713-l3.tplg",
+ 		.sof_tplg_filename = "sof-tgl-rt715-rt711-rt1308-mono.tplg",
  	},
 +	{
-+		.link_mask = GENMASK(2, 0),
-+		.links = mtl_rt713_l0_rt1316_l12,
++		.link_mask = 0xB,
++		.links = tgl_cs42l43_cs35l56,
 +		.drv_name = "sof_sdw",
-+		.sof_tplg_filename = "sof-mtl-rt713-l0-rt1316-l12.tplg",
++		.sof_tplg_filename = "sof-tgl-cs42l43-l3-cs35l56-l01.tplg",
 +	},
  	{
- 		.link_mask = BIT(3) | BIT(0),
- 		.links = mtl_712_only,
+ 		.link_mask = 0xF, /* 4 active links required */
+ 		.links = tgl_3_in_1_default,
 -- 
 2.43.0
 
