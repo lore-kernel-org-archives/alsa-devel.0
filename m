@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0DED7C4167B
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Nov 2023 15:40:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6644DC4167B
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Nov 2023 15:40:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AB0FDDF1;
-	Mon, 27 Nov 2023 16:40:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AB0FDDF1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 32AE2EAA;
+	Mon, 27 Nov 2023 16:40:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 32AE2EAA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1701099610;
-	bh=IiyIs7ufyJ5e1diaY+K62Q+KzSHkBJml6pbO+iEgS1g=;
+	s=default; t=1701099636;
+	bh=2/PlK81RDS/YXT5w7vXXLMG5XVn5aYXtHWj/zVHQOHE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=VCsuX5vPtYZ5o1k01CaPwOV03YcYhx57Tda0yZm7ymg3e4nmzABevNV7OOY/O2k2m
-	 oTELgBZp/Ufc64mrOEfL3LyEUVP5U8NcI1btMh+dOmn68rE8CobABacbwczyg0K2B7
-	 7TnRqn/dBZQ0Jk6L8Xl/Rs3vrfostnZ9BGoD+Wl8=
+	b=WRld6/iNTQn2we5j8oSuC1BhM89xKsN45h5/clfMy6nVLySrThccCDlNwmBrIYWVT
+	 wWkEWePaSk5Y2jw9bhQoZjWrCiXYP9f/AYdJL4IpIQNzL4AP//DXZh2jVr8txZwmSo
+	 ed47tYoLngKYbTxTzmS6zCCK9I3lFbGbRgkw38zI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3DE29F80C70; Mon, 27 Nov 2023 16:36:10 +0100 (CET)
+	id 6C9C3F805BA; Mon, 27 Nov 2023 16:36:12 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B5707F80C7F;
-	Mon, 27 Nov 2023 16:36:09 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id AE7F9F80CBD;
+	Mon, 27 Nov 2023 16:36:12 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2D306F80743; Mon, 27 Nov 2023 16:35:57 +0100 (CET)
+	id BE9CEF8076A; Mon, 27 Nov 2023 16:35:58 +0100 (CET)
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B7AF2F805FE
-	for <alsa-devel@alsa-project.org>; Mon, 27 Nov 2023 16:35:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B7AF2F805FE
+	by alsa1.perex.cz (Postfix) with ESMTPS id 5D39EF805F5
+	for <alsa-devel@alsa-project.org>; Mon, 27 Nov 2023 16:35:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5D39EF805F5
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=U9ZoIBBJ
+ header.s=Intel header.b=Wp2QNahJ
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701099340; x=1732635340;
+  t=1701099341; x=1732635341;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=IiyIs7ufyJ5e1diaY+K62Q+KzSHkBJml6pbO+iEgS1g=;
-  b=U9ZoIBBJWh2f+7iKah18EDEbXzhcKNaHZdAoNzwq4PiqOWME/h0trbaV
-   8SnfdNU/LwQfFkaqvQ2pyGAdVoyuL/a6nohILayRmpq/f8SPXHtHQF6tE
-   4h1Gk6yDqe5XvUYI/si2pG3ACD0H6OMPri+8QtwkiXrcY2LUSJciccVyW
-   SUSg32Aqi2mcHf8isSm1W2vptxnaqzhStW5cS1qI0XQI4wPjQZz4aNr9x
-   WWOSTszjAZSaInCSahYxM6iRwBDef0FgG9tFXBJQTwZVbBONOtNX6nGKP
-   bRTpYtjx23kyMv4N4oY40nRrsoi9yWtWY2LyXtiOL/d2FQDfHWwP0/WpJ
+  bh=2/PlK81RDS/YXT5w7vXXLMG5XVn5aYXtHWj/zVHQOHE=;
+  b=Wp2QNahJYk+cvg+o2Dvj/NPvixM+JGiBgE1Q86n3DKATMpQzA5x17PS9
+   GJKLt3gUwuGywaVg1lJuKUMLsrrtTUBgXVrZfhoI1lguiftzdNvpR77VZ
+   UflofnKWV3Z1J+B9QApkRsVQsHPfALsgRM0xwnaKEx8iFT3ZCgug+Es/k
+   xDXMQIwTXfFWmqfsIQLQY0chE7a8gHQX6M/04fmTqVsZkNTrwNPuwvqDL
+   HXD1XMUox1wlC4GqkuE5mRU8L6PxOvR8gorSVKvBOpz26izM7jujo2qp0
+   cRm0meU7UDPzcgq6m+dnlJF0KuMWDfdLW/BTzWM2obTq001myLYQVA8He
    Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="372894590"
+X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="372894601"
 X-IronPort-AV: E=Sophos;i="6.04,231,1695711600";
-   d="scan'208";a="372894590"
+   d="scan'208";a="372894601"
 Received: from fmsmga007.fm.intel.com ([10.253.24.52])
   by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Nov 2023 07:27:12 -0800
+ 27 Nov 2023 07:27:15 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="771956903"
+X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="771956957"
 X-IronPort-AV: E=Sophos;i="6.04,231,1695711600";
-   d="scan'208";a="771956903"
+   d="scan'208";a="771956957"
 Received: from acornagl-mobl.ger.corp.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.252.58.144])
   by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Nov 2023 07:27:09 -0800
+ 27 Nov 2023 07:27:12 -0800
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com,
 	broonie@kernel.org
@@ -75,17 +75,17 @@ Cc: alsa-devel@alsa-project.org,
 	ranjani.sridharan@linux.intel.com,
 	yung-chuan.liao@linux.intel.com,
 	chao.song@linux.intel.com
-Subject: [PATCH 18/27] ASoC: Intel: sof_nau8825: use common module for BT
+Subject: [PATCH 19/27] ASoC: Intel: sof_rt5682: use common module for BT
  offload link
-Date: Mon, 27 Nov 2023 17:26:45 +0200
-Message-ID: <20231127152654.28204-19-peter.ujfalusi@linux.intel.com>
+Date: Mon, 27 Nov 2023 17:26:46 +0200
+Message-ID: <20231127152654.28204-20-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231127152654.28204-1-peter.ujfalusi@linux.intel.com>
 References: <20231127152654.28204-1-peter.ujfalusi@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 32CWJI35MRYLRLP7BWN74PZY5REPASE7
-X-Message-ID-Hash: 32CWJI35MRYLRLP7BWN74PZY5REPASE7
+Message-ID-Hash: SGVAV3ZK6Z2LPPV7QIK5APCPFYNTPPK5
+X-Message-ID-Hash: SGVAV3ZK6Z2LPPV7QIK5APCPFYNTPPK5
 X-MailFrom: peter.ujfalusi@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -98,7 +98,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/32CWJI35MRYLRLP7BWN74PZY5REPASE7/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SGVAV3ZK6Z2LPPV7QIK5APCPFYNTPPK5/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -116,48 +116,15 @@ Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 ---
- sound/soc/intel/boards/sof_nau8825.c | 42 +++++++++-------------------
- 1 file changed, 13 insertions(+), 29 deletions(-)
+ sound/soc/intel/boards/sof_rt5682.c | 30 ++++++++++++-----------------
+ 1 file changed, 12 insertions(+), 18 deletions(-)
 
-diff --git a/sound/soc/intel/boards/sof_nau8825.c b/sound/soc/intel/boards/sof_nau8825.c
-index cc2a11b3de97..32a43d1b5846 100644
---- a/sound/soc/intel/boards/sof_nau8825.c
-+++ b/sound/soc/intel/boards/sof_nau8825.c
-@@ -138,13 +138,6 @@ static struct snd_soc_ops sof_nau8825_ops = {
- 	.hw_params = sof_nau8825_hw_params,
- };
- 
--static struct snd_soc_dai_link_component platform_component[] = {
--	{
--		/* name might be overridden during probe */
--		.name = "0000:00:1f.3"
--	}
--};
--
- static int sof_card_late_probe(struct snd_soc_card *card)
- {
- 	struct sof_card_private *ctx = snd_soc_card_get_drvdata(card);
-@@ -212,7 +205,6 @@ sof_card_dai_links_create(struct device *dev, enum sof_ssp_codec amp_type,
- 			  int ssp_codec, int ssp_amp, int dmic_be_num,
- 			  int hdmi_num, bool idisp_codec)
- {
--	struct snd_soc_dai_link_component *cpus;
- 	struct snd_soc_dai_link *links;
- 	int i;
- 	int id = 0;
-@@ -220,9 +212,7 @@ sof_card_dai_links_create(struct device *dev, enum sof_ssp_codec amp_type,
- 
- 	links = devm_kcalloc(dev, sof_audio_card_nau8825.num_links,
- 			    sizeof(struct snd_soc_dai_link), GFP_KERNEL);
--	cpus = devm_kcalloc(dev, sof_audio_card_nau8825.num_links,
--			    sizeof(struct snd_soc_dai_link_component), GFP_KERNEL);
--	if (!links || !cpus)
-+	if (!links)
- 		goto devm_err;
- 
- 	/* codec SSP */
-@@ -311,23 +301,11 @@ sof_card_dai_links_create(struct device *dev, enum sof_ssp_codec amp_type,
- 		int port = (sof_nau8825_quirk & SOF_BT_OFFLOAD_SSP_MASK) >>
+diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
+index 777d1db5c6ad..22dd85129a51 100644
+--- a/sound/soc/intel/boards/sof_rt5682.c
++++ b/sound/soc/intel/boards/sof_rt5682.c
+@@ -720,23 +720,11 @@ sof_card_dai_links_create(struct device *dev, enum sof_ssp_codec codec_type,
+ 		int port = (sof_rt5682_quirk & SOF_BT_OFFLOAD_SSP_MASK) >>
  				SOF_BT_OFFLOAD_SSP_SHIFT;
  
 -		links[id].id = id;
@@ -184,30 +151,30 @@ index cc2a11b3de97..32a43d1b5846 100644
 +		id++;
  	}
  
- 	return links;
-@@ -365,6 +343,10 @@ static int sof_audio_probe(struct platform_device *pdev)
- 	if (mach->mach_params.codec_mask & IDISP_CODEC_MASK)
- 		ctx->hdmi.idisp_codec = true;
+ 	/* HDMI-In SSP */
+@@ -843,6 +831,10 @@ static int sof_audio_probe(struct platform_device *pdev)
+ 
+ 	dev_dbg(&pdev->dev, "sof_rt5682_quirk = %lx\n", sof_rt5682_quirk);
  
 +	/* port number of peripherals attached to ssp interface */
-+	ctx->ssp_bt = (sof_nau8825_quirk & SOF_BT_OFFLOAD_SSP_MASK) >>
++	ctx->ssp_bt = (sof_rt5682_quirk & SOF_BT_OFFLOAD_SSP_MASK) >>
 +			SOF_BT_OFFLOAD_SSP_SHIFT;
 +
- 	ctx->ssp_amp = (sof_nau8825_quirk & SOF_NAU8825_SSP_AMP_MASK) >>
- 			SOF_NAU8825_SSP_AMP_SHIFT;
+ 	ctx->ssp_amp = (sof_rt5682_quirk & SOF_RT5682_SSP_AMP_MASK) >>
+ 			SOF_RT5682_SSP_AMP_SHIFT;
  
-@@ -376,8 +358,10 @@ static int sof_audio_probe(struct platform_device *pdev)
+@@ -854,8 +846,10 @@ static int sof_audio_probe(struct platform_device *pdev)
  	if (ctx->amp_type != CODEC_NONE)
- 		sof_audio_card_nau8825.num_links++;
+ 		sof_audio_card_rt5682.num_links++;
  
--	if (sof_nau8825_quirk & SOF_SSP_BT_OFFLOAD_PRESENT)
-+	if (sof_nau8825_quirk & SOF_SSP_BT_OFFLOAD_PRESENT) {
+-	if (sof_rt5682_quirk & SOF_SSP_BT_OFFLOAD_PRESENT)
++	if (sof_rt5682_quirk & SOF_SSP_BT_OFFLOAD_PRESENT) {
 +		ctx->bt_offload_present = true;
- 		sof_audio_card_nau8825.num_links++;
+ 		sof_audio_card_rt5682.num_links++;
 +	}
  
- 	dai_links = sof_card_dai_links_create(&pdev->dev, ctx->amp_type,
- 					      ctx->ssp_codec, ctx->ssp_amp,
+ 	if (sof_rt5682_quirk & SOF_SSP_HDMI_CAPTURE_PRESENT_MASK)
+ 		sof_audio_card_rt5682.num_links +=
 -- 
 2.43.0
 
