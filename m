@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C7D9BC0755A
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Nov 2023 15:43:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DF3C1C07CB1
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Nov 2023 15:43:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 06388EC1;
-	Mon, 27 Nov 2023 16:43:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 06388EC1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 474ADED9;
+	Mon, 27 Nov 2023 16:43:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 474ADED9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1701099807;
-	bh=aVZx5EIhbQBJhRi0d0dJ2an+K0rSK/GJ6HT3ctw6O9M=;
+	s=default; t=1701099821;
+	bh=GNdzKNeZPXBqxHIpXNRJBlZad9ZUikVKFXQgyY2nhUU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=o+mweDOcNSv+abYDrGr3qNKUidPjHxOtmNKiHhIACShfYHRL5qRdJ4Jjz90ckPaEF
-	 LMh63usdLbUzATQGC3SCXLTBbG3Tmj+bhBgI/B1WdP5tHyZRLAaaABRe80cFCAVMY7
-	 lm6ffXzIAtt76/c25nYfJh/CYcPqQFTBqcehX3VA=
+	b=GSFTmS+cidkFW3x+PI2VUPUOgOIm+Uz634PBvUqUHEKIN8TGDMej8ZejKJIu9Eq7f
+	 r7NbQe+rwtIGeBcC73rgtayWc87prJjr/d+QSLuSaCyYOdZOQ/2UPKsO4oHufZ+z96
+	 c8Ea9sY+FL214EHLbKAxUhRt0zkEhWGcUP1n+ypc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6DB34F897A6; Mon, 27 Nov 2023 16:36:53 +0100 (CET)
+	id 2D947F897C3; Mon, 27 Nov 2023 16:36:54 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0461DF897A2;
-	Mon, 27 Nov 2023 16:36:53 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DE4EFF897C5;
+	Mon, 27 Nov 2023 16:36:54 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id F3604F805FD; Mon, 27 Nov 2023 16:36:48 +0100 (CET)
+	id 6C4F2F805FD; Mon, 27 Nov 2023 16:36:50 +0100 (CET)
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 4D5F3F80236
-	for <alsa-devel@alsa-project.org>; Mon, 27 Nov 2023 16:35:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4D5F3F80236
+	by alsa1.perex.cz (Postfix) with ESMTPS id 7769EF8007E
+	for <alsa-devel@alsa-project.org>; Mon, 27 Nov 2023 16:35:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7769EF8007E
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=lvjhpMKA
+ header.s=Intel header.b=W5HV3NUI
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701099323; x=1732635323;
+  t=1701099325; x=1732635325;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=aVZx5EIhbQBJhRi0d0dJ2an+K0rSK/GJ6HT3ctw6O9M=;
-  b=lvjhpMKAE7g3du5DFdPPlijL+PffD3OB7MxxccoSYmN/V/XUAiALMugI
-   ogikifPh6lTH/Q30niPc7nWLorLWRso6R7ywnB1/GDonTzWY9jTaFgJ+7
-   iGR+5JYg26MxWdL+WBJucCLvjoxwaZlEZq1yXlIAyB89sNgEw/34sJsr8
-   KK/IBPHkEnVfqit6+A+wqRimOrG6OQNmMUDY3tCy3m3wTzBgTk6DEwcNS
-   SnOnnv0IfqmykjWfXfPG10jqOoQoVP1wsUGt3nrMLZxc8SLDnrhHKcrnf
-   ep8DoyVEBBihBYUff9QyJGfhuTUngFltfaBrpmunLWoq3koONxB4nTeux
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="372894394"
+  bh=GNdzKNeZPXBqxHIpXNRJBlZad9ZUikVKFXQgyY2nhUU=;
+  b=W5HV3NUIFNJT2hTd4boWuK3vXxouzDmC6j5mmehw87LX9nj4VvJt7fC9
+   nINvHQt/GR9ZPlUV+6oHhhltftbuy983p2vMjKZQpvozMAvl/tYfdLbo/
+   JZv1QMJEqEfRY9J2KJwpl0/mDxpo0XojhCP7uIVWilUvhj3AO6xGCDH3m
+   6qCz8xMuB23rGbJIBHUsyyB8pZspGOFfSt7T5IwnnP3Y4aqvp/cwgJQwo
+   0azu90Jvgxe5kx3wwXbUx48FVZYH1OtmVJ1lm5pf6myfj5p3maA8qXES0
+   laQh8qwgviRDFXsdcTHQO1VcID4sgVasjXedenzQNWBCL8OjSFP4ZZGRo
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="372894416"
 X-IronPort-AV: E=Sophos;i="6.04,231,1695711600";
-   d="scan'208";a="372894394"
+   d="scan'208";a="372894416"
 Received: from fmsmga007.fm.intel.com ([10.253.24.52])
   by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Nov 2023 07:26:30 -0800
+ 27 Nov 2023 07:26:35 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="771956269"
+X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="771956363"
 X-IronPort-AV: E=Sophos;i="6.04,231,1695711600";
-   d="scan'208";a="771956269"
+   d="scan'208";a="771956363"
 Received: from acornagl-mobl.ger.corp.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.252.58.144])
   by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Nov 2023 07:26:27 -0800
+ 27 Nov 2023 07:26:33 -0800
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com,
 	broonie@kernel.org
@@ -75,16 +75,16 @@ Cc: alsa-devel@alsa-project.org,
 	ranjani.sridharan@linux.intel.com,
 	yung-chuan.liao@linux.intel.com,
 	chao.song@linux.intel.com
-Subject: [PATCH 03/27] ASoC: Intel: sof_maxim_common: check return value
-Date: Mon, 27 Nov 2023 17:26:30 +0200
-Message-ID: <20231127152654.28204-4-peter.ujfalusi@linux.intel.com>
+Subject: [PATCH 05/27] ASoC: Intel: ssp-common: get codec name function
+Date: Mon, 27 Nov 2023 17:26:32 +0200
+Message-ID: <20231127152654.28204-6-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231127152654.28204-1-peter.ujfalusi@linux.intel.com>
 References: <20231127152654.28204-1-peter.ujfalusi@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 2C4J77TPMYT6FZ4LELDY5TRPB4VHNMIY
-X-Message-ID-Hash: 2C4J77TPMYT6FZ4LELDY5TRPB4VHNMIY
+Message-ID-Hash: RSJZGLXHVDZIJ76ATQBIMBXCBWWGVF45
+X-Message-ID-Hash: RSJZGLXHVDZIJ76ATQBIMBXCBWWGVF45
 X-MailFrom: peter.ujfalusi@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -97,7 +97,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2C4J77TPMYT6FZ4LELDY5TRPB4VHNMIY/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RSJZGLXHVDZIJ76ATQBIMBXCBWWGVF45/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -106,46 +106,63 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Bard Liao <yung-chuan.liao@linux.intel.com>
+From: Brent Lu <brent.lu@intel.com>
 
-snd_soc_dai_set_tdm_slot() could return error.
+Add a helper function to get codec name string from codec type enum
+value.
 
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Signed-off-by: Brent Lu <brent.lu@intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Chao Song <chao.song@linux.intel.com>
+Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 ---
- sound/soc/intel/boards/sof_maxim_common.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ sound/soc/intel/boards/sof_ssp_common.c | 21 +++++++++++++++++++++
+ sound/soc/intel/boards/sof_ssp_common.h |  1 +
+ 2 files changed, 22 insertions(+)
 
-diff --git a/sound/soc/intel/boards/sof_maxim_common.c b/sound/soc/intel/boards/sof_maxim_common.c
-index f64124077ca7..cf2974718271 100644
---- a/sound/soc/intel/boards/sof_maxim_common.c
-+++ b/sound/soc/intel/boards/sof_maxim_common.c
-@@ -61,15 +61,21 @@ static int max_98373_hw_params(struct snd_pcm_substream *substream,
- {
- 	struct snd_soc_pcm_runtime *rtd = snd_soc_substream_to_rtd(substream);
- 	struct snd_soc_dai *codec_dai;
-+	int ret = 0;
- 	int j;
+diff --git a/sound/soc/intel/boards/sof_ssp_common.c b/sound/soc/intel/boards/sof_ssp_common.c
+index 41a258e45a61..96072790e9c0 100644
+--- a/sound/soc/intel/boards/sof_ssp_common.c
++++ b/sound/soc/intel/boards/sof_ssp_common.c
+@@ -96,6 +96,27 @@ enum sof_ssp_codec sof_ssp_detect_amp_type(struct device *dev)
+ }
+ EXPORT_SYMBOL_NS(sof_ssp_detect_amp_type, SND_SOC_INTEL_SOF_SSP_COMMON);
  
- 	for_each_rtd_codec_dais(rtd, j, codec_dai) {
- 		if (!strcmp(codec_dai->component->name, MAX_98373_DEV0_NAME)) {
- 			/* DEV0 tdm slot configuration */
--			snd_soc_dai_set_tdm_slot(codec_dai, 0x03, 3, 8, 32);
-+			ret = snd_soc_dai_set_tdm_slot(codec_dai, 0x03, 3, 8, 32);
- 		} else if (!strcmp(codec_dai->component->name, MAX_98373_DEV1_NAME)) {
- 			/* DEV1 tdm slot configuration */
--			snd_soc_dai_set_tdm_slot(codec_dai, 0x0C, 3, 8, 32);
-+			ret = snd_soc_dai_set_tdm_slot(codec_dai, 0x0C, 3, 8, 32);
-+		}
-+		if (ret < 0) {
-+			dev_err(codec_dai->dev, "fail to set tdm slot, ret %d\n",
-+				ret);
-+			return ret;
- 		}
- 	}
- 	return 0;
++const char *sof_ssp_get_codec_name(enum sof_ssp_codec codec_type)
++{
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(codecs); i++) {
++		if (codecs[i].codec_type != codec_type)
++			continue;
++
++		return codecs[i].name;
++	}
++	for (i = 0; i < ARRAY_SIZE(amps); i++) {
++		if (amps[i].codec_type != codec_type)
++			continue;
++
++		return amps[i].name;
++	}
++
++	return NULL;
++}
++EXPORT_SYMBOL_NS(sof_ssp_get_codec_name, SND_SOC_INTEL_SOF_SSP_COMMON);
++
+ MODULE_DESCRIPTION("ASoC Intel SOF Common Machine Driver Helpers");
+ MODULE_AUTHOR("Brent Lu <brent.lu@intel.com>");
+ MODULE_LICENSE("GPL");
+diff --git a/sound/soc/intel/boards/sof_ssp_common.h b/sound/soc/intel/boards/sof_ssp_common.h
+index e3fd6fb1db1c..6d827103479b 100644
+--- a/sound/soc/intel/boards/sof_ssp_common.h
++++ b/sound/soc/intel/boards/sof_ssp_common.h
+@@ -67,5 +67,6 @@ enum sof_ssp_codec {
+ 
+ enum sof_ssp_codec sof_ssp_detect_codec_type(struct device *dev);
+ enum sof_ssp_codec sof_ssp_detect_amp_type(struct device *dev);
++const char *sof_ssp_get_codec_name(enum sof_ssp_codec codec_type);
+ 
+ #endif /* __SOF_SSP_COMMON_H */
 -- 
 2.43.0
 
