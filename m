@@ -4,87 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DF3C1C07CB1
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Nov 2023 15:43:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6C875C07D59
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Nov 2023 15:43:58 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 474ADED9;
-	Mon, 27 Nov 2023 16:43:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 474ADED9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9A153846;
+	Mon, 27 Nov 2023 16:43:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9A153846
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1701099821;
-	bh=GNdzKNeZPXBqxHIpXNRJBlZad9ZUikVKFXQgyY2nhUU=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1701099836;
+	bh=0rhUFKvAImg0DoQpIyV/pgM58toMDdCrae+OOckfr6U=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=GSFTmS+cidkFW3x+PI2VUPUOgOIm+Uz634PBvUqUHEKIN8TGDMej8ZejKJIu9Eq7f
-	 r7NbQe+rwtIGeBcC73rgtayWc87prJjr/d+QSLuSaCyYOdZOQ/2UPKsO4oHufZ+z96
-	 c8Ea9sY+FL214EHLbKAxUhRt0zkEhWGcUP1n+ypc=
+	b=cpHlMiw3CPCjzAJ9YjwkFte47Uadn4LTR+v1YPCeHEMzwTSmDjX2b3J+YW8WIa8co
+	 ZFZmhFrq7A90/xXdl+8Z7Bzpb+crH7OPO/N22pUKnouQ7z+0MLrgCKHLScbAgE+BSO
+	 38h6lDhGWksEXzrjRTozmYivOrLiYci2QjhEZlNk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2D947F897C3; Mon, 27 Nov 2023 16:36:54 +0100 (CET)
+	id E4685F8057F; Mon, 27 Nov 2023 16:40:35 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id DE4EFF897C5;
-	Mon, 27 Nov 2023 16:36:54 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2E52FF805AA;
+	Mon, 27 Nov 2023 16:40:35 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6C4F2F805FD; Mon, 27 Nov 2023 16:36:50 +0100 (CET)
+	id 36E0CF80246; Mon, 27 Nov 2023 16:40:31 +0100 (CET)
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7769EF8007E
-	for <alsa-devel@alsa-project.org>; Mon, 27 Nov 2023 16:35:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7769EF8007E
+	by alsa1.perex.cz (Postfix) with ESMTPS id 845C1F800F5
+	for <alsa-devel@alsa-project.org>; Mon, 27 Nov 2023 16:40:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 845C1F800F5
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=W5HV3NUI
+ header.s=Intel header.b=gZmraV8Q
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701099325; x=1732635325;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=GNdzKNeZPXBqxHIpXNRJBlZad9ZUikVKFXQgyY2nhUU=;
-  b=W5HV3NUIFNJT2hTd4boWuK3vXxouzDmC6j5mmehw87LX9nj4VvJt7fC9
-   nINvHQt/GR9ZPlUV+6oHhhltftbuy983p2vMjKZQpvozMAvl/tYfdLbo/
-   JZv1QMJEqEfRY9J2KJwpl0/mDxpo0XojhCP7uIVWilUvhj3AO6xGCDH3m
-   6qCz8xMuB23rGbJIBHUsyyB8pZspGOFfSt7T5IwnnP3Y4aqvp/cwgJQwo
-   0azu90Jvgxe5kx3wwXbUx48FVZYH1OtmVJ1lm5pf6myfj5p3maA8qXES0
-   laQh8qwgviRDFXsdcTHQO1VcID4sgVasjXedenzQNWBCL8OjSFP4ZZGRo
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="372894416"
+  t=1701099628; x=1732635628;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=0rhUFKvAImg0DoQpIyV/pgM58toMDdCrae+OOckfr6U=;
+  b=gZmraV8Qc4JP7XsG//4BFLtau2rncCPR3e0rucXBKX4C5Jq8T4dQo5jv
+   qpkfag+k+KKXwsx2qj23bPHson7xGi3itgJvxYO7gReCMNmo1MNyQPviz
+   EfzhEYDqpbMwK4z+2BkQK3yOK02ejmc1cHPtmPWm33c11Z4Zw70uk7LLB
+   dsTSXbkdGOhYQ503bgNl6Q0hqILGA88/niuE3qTqNoIPtVmrKIdc8A9hF
+   KFIxVDnWjgrs2GYJmuUZXrUch9GTN9F7XwsU8/G2i7Se/888JRDOrwtqH
+   w+ZQ62S5tyZpZRVgUBbkZlZe+cS7KzYFENlEQ4V+U5iPDgERRMBAKH9VF
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="372897430"
 X-IronPort-AV: E=Sophos;i="6.04,231,1695711600";
-   d="scan'208";a="372894416"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+   d="scan'208";a="372897430"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
   by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Nov 2023 07:26:35 -0800
+ 27 Nov 2023 07:40:25 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="771956363"
 X-IronPort-AV: E=Sophos;i="6.04,231,1695711600";
-   d="scan'208";a="771956363"
-Received: from acornagl-mobl.ger.corp.intel.com (HELO
- pujfalus-desk.ger.corp.intel.com) ([10.252.58.144])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Nov 2023 07:26:33 -0800
-From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-To: lgirdwood@gmail.com,
-	broonie@kernel.org
-Cc: alsa-devel@alsa-project.org,
-	linux-sound@vger.kernel.org,
-	pierre-louis.bossart@linux.intel.com,
-	kai.vehmanen@linux.intel.com,
-	ranjani.sridharan@linux.intel.com,
-	yung-chuan.liao@linux.intel.com,
-	chao.song@linux.intel.com
-Subject: [PATCH 05/27] ASoC: Intel: ssp-common: get codec name function
-Date: Mon, 27 Nov 2023 17:26:32 +0200
-Message-ID: <20231127152654.28204-6-peter.ujfalusi@linux.intel.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231127152654.28204-1-peter.ujfalusi@linux.intel.com>
-References: <20231127152654.28204-1-peter.ujfalusi@linux.intel.com>
+   d="scan'208";a="16322740"
+Received: from acornagl-mobl.ger.corp.intel.com (HELO [10.252.58.144])
+ ([10.252.58.144])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 27 Nov 2023 07:40:23 -0800
+Message-ID: <b0c4b724-fe34-4e55-81fe-146e1b52839d@linux.intel.com>
+Date: Mon, 27 Nov 2023 17:40:57 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] ALSA: hda/hdmi: Add helper function to check if a
+ device is HDMI codec
+Content-Language: en-US
+To: Takashi Iwai <tiwai@suse.de>
+Cc: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
+ alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
+ pierre-louis.bossart@linux.intel.com, kai.vehmanen@linux.intel.com,
+ ranjani.sridharan@linux.intel.com
+References: <20231127130245.24295-1-peter.ujfalusi@linux.intel.com>
+ <20231127130245.24295-2-peter.ujfalusi@linux.intel.com>
+ <87jzq3pc6r.wl-tiwai@suse.de>
+ <d2fff7cd-ea4b-41b9-992b-fab6ba6549ec@linux.intel.com>
+ <87cyvvp8t6.wl-tiwai@suse.de>
+ <8ede931b-8c9c-4b95-83e5-5f0db9819e8e@linux.intel.com>
+ <878r6jp6jd.wl-tiwai@suse.de>
+From: =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>
+In-Reply-To: <878r6jp6jd.wl-tiwai@suse.de>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: RSJZGLXHVDZIJ76ATQBIMBXCBWWGVF45
-X-Message-ID-Hash: RSJZGLXHVDZIJ76ATQBIMBXCBWWGVF45
+Message-ID-Hash: VVX2O5SO3XLK45PFEP2BUGMGZDEJ3UDR
+X-Message-ID-Hash: VVX2O5SO3XLK45PFEP2BUGMGZDEJ3UDR
 X-MailFrom: peter.ujfalusi@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -97,7 +101,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RSJZGLXHVDZIJ76ATQBIMBXCBWWGVF45/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VVX2O5SO3XLK45PFEP2BUGMGZDEJ3UDR/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -106,63 +110,93 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Brent Lu <brent.lu@intel.com>
 
-Add a helper function to get codec name string from codec type enum
-value.
 
-Signed-off-by: Brent Lu <brent.lu@intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
----
- sound/soc/intel/boards/sof_ssp_common.c | 21 +++++++++++++++++++++
- sound/soc/intel/boards/sof_ssp_common.h |  1 +
- 2 files changed, 22 insertions(+)
+On 27/11/2023 17:20, Takashi Iwai wrote:
+> On Mon, 27 Nov 2023 15:45:54 +0100,
+> Péter Ujfalusi wrote:
+>>
+>>
+>>
+>> On 27/11/2023 16:31, Takashi Iwai wrote:
+>>> On Mon, 27 Nov 2023 15:12:51 +0100,
+>>> Péter Ujfalusi wrote:
+>>>>
+>>>>
+>>>>
+>>>> On 27/11/2023 15:18, Takashi Iwai wrote:
+>>>>>> +bool snd_hda_device_is_hdmi(struct hdac_device *hdev)
+>>>>>> +{
+>>>>>> +	int i;
+>>>>>> +
+>>>>>> +	for (i = 0; i < ARRAY_SIZE(snd_hda_id_hdmi); i++) {
+>>>>>> +		if (snd_hda_id_hdmi[i].vendor_id == hdev->vendor_id)
+>>>>>> +			return true;
+>>>>>> +	}
+>>>>>> +
+>>>>>> +	return false;
+>>>>>> +}
+>>>>>> +EXPORT_SYMBOL_GPL(snd_hda_device_is_hdmi);
+>>>>>
+>>>>> I'm afraid that this will bring unnecessary dependency on HDMI codec
+>>>>> driver.
+>>>>
+>>>> For HDMI support we anyways need HDMI code?
+>>>
+>>> But the ASoC hdac-hda driver isn't specifically bound with HDMI, I
+>>> thought?
+>>>
+>>> With your patch, now it becomes a hard-dependency.  It'll be even
+>>> build failure when HDMI codec driver isn't enabled in Kconfig.
+>>
+>> The change in hdaudio.h handles the config dependency, if
+>> CONFIG_SND_HDA_CODEC_HDMI is not enabled in Kconfig then
+>> snd_hda_device_is_hdmi() will return false.
+> 
+> OK, that's at least good.
+> But I still find it not ideal to bring the hard dependency there
+> unnecessarily.
+> 
+> With the introduction of a flag in hdac_device, the necessary change
+> would be even smaller like below.
+> 
+> 
+> Takashi
+> 
+> --- a/include/sound/hdaudio.h
+> +++ b/include/sound/hdaudio.h
+> @@ -95,6 +95,7 @@ struct hdac_device {
+>  	bool lazy_cache:1;	/* don't wake up for writes */
+>  	bool caps_overwriting:1; /* caps overwrite being in process */
+>  	bool cache_coef:1;	/* cache COEF read/write too */
+> +	bool is_hdmi:1;		/* a HDMI/DP codec */
+>  	unsigned int registered:1; /* codec was registered */
+>  };
+>  
+> --- a/sound/pci/hda/patch_hdmi.c
+> +++ b/sound/pci/hda/patch_hdmi.c
+> @@ -2597,6 +2597,7 @@ static int patch_generic_hdmi(struct hda_codec *codec)
+>  	}
+>  
+>  	generic_hdmi_init_per_pins(codec);
+> +	codec->core.is_hdmi = true;
+>  	return 0;
+>  }
+>  
+> @@ -3472,6 +3473,7 @@ static int patch_simple_hdmi(struct hda_codec *codec,
+>  	spec->pcm_playback = simple_pcm_playback;
+>  
+>  	codec->patch_ops = simple_hdmi_patch_ops;
+> +	codec->core.is_hdmi = true;
+>  
+>  	return 0;
+>  }
 
-diff --git a/sound/soc/intel/boards/sof_ssp_common.c b/sound/soc/intel/boards/sof_ssp_common.c
-index 41a258e45a61..96072790e9c0 100644
---- a/sound/soc/intel/boards/sof_ssp_common.c
-+++ b/sound/soc/intel/boards/sof_ssp_common.c
-@@ -96,6 +96,27 @@ enum sof_ssp_codec sof_ssp_detect_amp_type(struct device *dev)
- }
- EXPORT_SYMBOL_NS(sof_ssp_detect_amp_type, SND_SOC_INTEL_SOF_SSP_COMMON);
- 
-+const char *sof_ssp_get_codec_name(enum sof_ssp_codec codec_type)
-+{
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(codecs); i++) {
-+		if (codecs[i].codec_type != codec_type)
-+			continue;
-+
-+		return codecs[i].name;
-+	}
-+	for (i = 0; i < ARRAY_SIZE(amps); i++) {
-+		if (amps[i].codec_type != codec_type)
-+			continue;
-+
-+		return amps[i].name;
-+	}
-+
-+	return NULL;
-+}
-+EXPORT_SYMBOL_NS(sof_ssp_get_codec_name, SND_SOC_INTEL_SOF_SSP_COMMON);
-+
- MODULE_DESCRIPTION("ASoC Intel SOF Common Machine Driver Helpers");
- MODULE_AUTHOR("Brent Lu <brent.lu@intel.com>");
- MODULE_LICENSE("GPL");
-diff --git a/sound/soc/intel/boards/sof_ssp_common.h b/sound/soc/intel/boards/sof_ssp_common.h
-index e3fd6fb1db1c..6d827103479b 100644
---- a/sound/soc/intel/boards/sof_ssp_common.h
-+++ b/sound/soc/intel/boards/sof_ssp_common.h
-@@ -67,5 +67,6 @@ enum sof_ssp_codec {
- 
- enum sof_ssp_codec sof_ssp_detect_codec_type(struct device *dev);
- enum sof_ssp_codec sof_ssp_detect_amp_type(struct device *dev);
-+const char *sof_ssp_get_codec_name(enum sof_ssp_codec codec_type);
- 
- #endif /* __SOF_SSP_COMMON_H */
+I see,  so this is what I was not sure how to do ;)
+I will rework the series and resend tomorrow.
+
+Thanks for the code snippet, I will make you as author of it, if it is
+OK for you.
+
 -- 
-2.43.0
-
+Péter
