@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EE033C4167B
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Nov 2023 13:03:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B7AAC4167B
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Nov 2023 13:04:06 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3D787DF2;
-	Mon, 27 Nov 2023 14:03:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3D787DF2
+	by alsa0.perex.cz (Postfix) with ESMTPS id B879D83E;
+	Mon, 27 Nov 2023 14:03:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B879D83E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1701090218;
-	bh=MKeHYQIcm37ccjV6yff59a6zCUoujh/0QydqqvKlRA8=;
+	s=default; t=1701090239;
+	bh=tdXAxvH7Hfxz56Ii672gQKi1RhYlx5nPdd2W5+fHr7s=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=VnfQkB8qOSb/cUYzCmhWUq+qdYxH7NklNRlz4q9VTpYxg6nRGFNwCY5GJiTl2jAnh
-	 Vlecel7WgkyA77k04cqRkc1JVVgzylOy5lAcNOeqAQDQjwsaVA5NjMehVbEK1uow53
-	 Xt1+ivnSpqW3xpTNSoH+kX6sZhVBFFTSx7LiAIS0=
+	b=L6NGoY2G+qdIyBbQR5Ysr6km01FFzbw3BlO2uvOhQVV1U7Fc03TLdqx7yNk2Otj13
+	 h4yA+iliQG6fRx7SjN1Js7IG3o72dHKQjfm17Re7irV/DdiwEdtJY30Qqt8lBqD9Pd
+	 Lg5pNS4KhrX1y0QQkeXIYJL4Gs7raPQzH3lWkEaY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id F0BF1F805C1; Mon, 27 Nov 2023 14:02:58 +0100 (CET)
+	id 09CB5F805D8; Mon, 27 Nov 2023 14:03:00 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 10AF6F805CA;
-	Mon, 27 Nov 2023 14:02:58 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 51D23F805F3;
+	Mon, 27 Nov 2023 14:03:00 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E77ADF8016E; Mon, 27 Nov 2023 14:02:52 +0100 (CET)
+	id 3E544F8059F; Mon, 27 Nov 2023 14:02:55 +0100 (CET)
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 2B1BCF8016E
-	for <alsa-devel@alsa-project.org>; Mon, 27 Nov 2023 14:02:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2B1BCF8016E
+	by alsa1.perex.cz (Postfix) with ESMTPS id DF94EF800F5
+	for <alsa-devel@alsa-project.org>; Mon, 27 Nov 2023 14:02:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DF94EF800F5
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=U/8kFjXB
+ header.s=Intel header.b=mTQHMXt/
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701090166; x=1732626166;
+  t=1701090173; x=1732626173;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=MKeHYQIcm37ccjV6yff59a6zCUoujh/0QydqqvKlRA8=;
-  b=U/8kFjXBvayL1XMuAsHrH+tA00d/z4EUTRjvqPP2H6rbu3darLv4ENTu
-   Et/X7EVirfQg6xhNQs3yohgqUrBYRKk5Nz9rH+Mh5NVWlMEuLtp5zlPWQ
-   RJCWNnaT1LmaPeJLMhk18th2ER2gp9cpVZWTd7w2Pvdj6T4bR8h2nIo0R
-   ZctKIJ+jyGmCKcFC9hVPpyKK7e1usXgiwv/h67BDj96H/ggXFcpHGk3r9
-   VK514e8EJe3LM2UZXESHVnvsbfbD89oQOlM4df2F6iRniaP1cQQHws+Xv
-   zey3kWxXuecQABdUTmhAHeWuU68/i8yxyYg2dpMMzjBKE6Heyl5xZHm+W
+  bh=tdXAxvH7Hfxz56Ii672gQKi1RhYlx5nPdd2W5+fHr7s=;
+  b=mTQHMXt/PK5EnazeFAjlW5Rl5UABp12AWNCNO5x15qbQGsWcIM1jdsqT
+   DgIzzdC6e2JdDe6WUkCoLPsBZ6jMndUsu6AfBMMg2TC3pSupaEjry5G7v
+   ITY1W/7AXKS5bhabNnhAddNXLJaz0/aE4LO0JtFMBu7+7bQ7DeYqJX9Je
+   hwMUcbdKw4juBYjBPa/Lfwa2gIL4J4DovMXgeDCUfuruSuSgNkbsO/awG
+   qcTdOjZsAOsk+JH/699f8hhf5PwgSTS+sH/tPL/fv3R+KflkEAagTWDBh
+   kD3PlM9BxZ/FeznfeVDGge6ZO57k1YjuSag2amOAfToU2Gd1mWxfN2p6t
    w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10906"; a="391568035"
+X-IronPort-AV: E=McAfee;i="6600,9927,10906"; a="391568083"
 X-IronPort-AV: E=Sophos;i="6.04,230,1695711600";
-   d="scan'208";a="391568035"
+   d="scan'208";a="391568083"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
   by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Nov 2023 05:02:16 -0800
+ 27 Nov 2023 05:02:19 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10906"; a="797228703"
+X-IronPort-AV: E=McAfee;i="6600,9927,10906"; a="797228729"
 X-IronPort-AV: E=Sophos;i="6.04,230,1695711600";
-   d="scan'208";a="797228703"
+   d="scan'208";a="797228729"
 Received: from acornagl-mobl.ger.corp.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.252.58.144])
   by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Nov 2023 05:02:13 -0800
+ 27 Nov 2023 05:02:16 -0800
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com,
 	broonie@kernel.org,
@@ -75,17 +75,17 @@ Cc: alsa-devel@alsa-project.org,
 	pierre-louis.bossart@linux.intel.com,
 	kai.vehmanen@linux.intel.com,
 	ranjani.sridharan@linux.intel.com
-Subject: [PATCH 1/2] ALSA: hda/hdmi: Add helper function to check if a device
- is HDMI codec
-Date: Mon, 27 Nov 2023 15:02:44 +0200
-Message-ID: <20231127130245.24295-2-peter.ujfalusi@linux.intel.com>
+Subject: [PATCH 2/2] ASoC: hdac_hda: Conditionally register dais for HDMI and
+ Analog
+Date: Mon, 27 Nov 2023 15:02:45 +0200
+Message-ID: <20231127130245.24295-3-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231127130245.24295-1-peter.ujfalusi@linux.intel.com>
 References: <20231127130245.24295-1-peter.ujfalusi@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: CQK2FVN6E47RCVEG7BKDQLMBKQBMAMOD
-X-Message-ID-Hash: CQK2FVN6E47RCVEG7BKDQLMBKQBMAMOD
+Message-ID-Hash: 2HRUJXEJ2TQIDSDJUDQGUF5L63NRI4X2
+X-Message-ID-Hash: 2HRUJXEJ2TQIDSDJUDQGUF5L63NRI4X2
 X-MailFrom: peter.ujfalusi@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -98,7 +98,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CQK2FVN6E47RCVEG7BKDQLMBKQBMAMOD/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2HRUJXEJ2TQIDSDJUDQGUF5L63NRI4X2/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -107,62 +107,83 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The snd_hda_device_is_hdmi() can be used in drivers to check if the hdev
-belongs to a display audio device.
+The current driver is registering the same dais for each hdev found in the
+system which results duplicated widgets to be registered and the kernel
+log contains similar prints:
+snd_hda_codec_realtek ehdaudio0D0: ASoC: sink widget AIF1TX overwritten
+snd_hda_codec_realtek ehdaudio0D0: ASoC: source widget AIF1RX overwritten
+skl_hda_dsp_generic skl_hda_dsp_generic: ASoC: sink widget hifi3 overwritten
+skl_hda_dsp_generic skl_hda_dsp_generic: ASoC: sink widget hifi2 overwritten
+skl_hda_dsp_generic skl_hda_dsp_generic: ASoC: sink widget hifi1 overwritten
+skl_hda_dsp_generic skl_hda_dsp_generic: ASoC: source widget Codec Output Pin1 overwritten
+skl_hda_dsp_generic skl_hda_dsp_generic: ASoC: sink widget Codec Input Pin1 overwritten
+skl_hda_dsp_generic skl_hda_dsp_generic: ASoC: sink widget Analog Codec Playback overwritten
+skl_hda_dsp_generic skl_hda_dsp_generic: ASoC: sink widget Digital Codec Playback overwritten
+skl_hda_dsp_generic skl_hda_dsp_generic: ASoC: sink widget Alt Analog Codec Playback overwritten
+skl_hda_dsp_generic skl_hda_dsp_generic: ASoC: source widget Analog Codec Capture overwritten
+skl_hda_dsp_generic skl_hda_dsp_generic: ASoC: source widget Digital Codec Capture overwritten
+skl_hda_dsp_generic skl_hda_dsp_generic: ASoC: source widget Alt Analog Codec Capture overwritten
 
+To avoid such issue, split the dai array into HDMI and non HDMI array and
+register them conditionally:
+for HDMI hdev only register the dais needed for HDMI
+for non HDMI hdev do not  register the HDMI dais.
+
+Link: https://github.com/thesofproject/linux/issues/4509
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 ---
- include/sound/hdaudio.h    | 10 ++++++++++
- sound/pci/hda/patch_hdmi.c | 13 +++++++++++++
- 2 files changed, 23 insertions(+)
+ sound/soc/codecs/hdac_hda.c | 22 +++++++++++++++++++---
+ 1 file changed, 19 insertions(+), 3 deletions(-)
 
-diff --git a/include/sound/hdaudio.h b/include/sound/hdaudio.h
-index dd7c87bbc613..cf5483d6b5b7 100644
---- a/include/sound/hdaudio.h
-+++ b/include/sound/hdaudio.h
-@@ -158,6 +158,16 @@ bool snd_hdac_check_power_state(struct hdac_device *hdac,
- 		hda_nid_t nid, unsigned int target_state);
- unsigned int snd_hdac_sync_power_state(struct hdac_device *hdac,
- 		      hda_nid_t nid, unsigned int target_state);
+diff --git a/sound/soc/codecs/hdac_hda.c b/sound/soc/codecs/hdac_hda.c
+index 355f30779a34..72916a387ad6 100644
+--- a/sound/soc/codecs/hdac_hda.c
++++ b/sound/soc/codecs/hdac_hda.c
+@@ -132,6 +132,9 @@ static struct snd_soc_dai_driver hdac_hda_dais[] = {
+ 		.sig_bits = 24,
+ 	},
+ },
++};
 +
-+#if IS_ENABLED(CONFIG_SND_HDA_CODEC_HDMI)
-+bool snd_hda_device_is_hdmi(struct hdac_device *hdev);
-+#else
-+static inline bool snd_hda_device_is_hdmi(struct hdac_device *hdev)
-+{
-+	return false;
-+}
-+#endif
-+
- /**
-  * snd_hdac_read_parm - read a codec parameter
-  * @codec: the codec object
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index 1cde2a69bdb4..d6943575c8c7 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -4645,6 +4645,19 @@ HDA_CODEC_ENTRY(HDA_CODEC_ID_GENERIC_HDMI, "Generic HDMI", patch_generic_hdmi),
++static struct snd_soc_dai_driver hdac_hda_hdmi_dais[] = {
+ {
+ 	.id = HDAC_HDMI_0_DAI_ID,
+ 	.name = "intel-hdmi-hifi1",
+@@ -607,6 +610,13 @@ static const struct snd_soc_component_driver hdac_hda_codec = {
+ 	.endianness		= 1,
  };
- MODULE_DEVICE_TABLE(hdaudio, snd_hda_id_hdmi);
  
-+bool snd_hda_device_is_hdmi(struct hdac_device *hdev)
-+{
-+	int i;
++static const struct snd_soc_component_driver hdac_hda_hdmi_codec = {
++	.probe			= hdac_hda_codec_probe,
++	.remove			= hdac_hda_codec_remove,
++	.idle_bias_on		= false,
++	.endianness		= 1,
++};
 +
-+	for (i = 0; i < ARRAY_SIZE(snd_hda_id_hdmi); i++) {
-+		if (snd_hda_id_hdmi[i].vendor_id == hdev->vendor_id)
-+			return true;
-+	}
+ static int hdac_hda_dev_probe(struct hdac_device *hdev)
+ {
+ 	struct hdac_ext_link *hlink;
+@@ -621,9 +631,15 @@ static int hdac_hda_dev_probe(struct hdac_device *hdev)
+ 	snd_hdac_ext_bus_link_get(hdev->bus, hlink);
+ 
+ 	/* ASoC specific initialization */
+-	ret = devm_snd_soc_register_component(&hdev->dev,
+-					 &hdac_hda_codec, hdac_hda_dais,
+-					 ARRAY_SIZE(hdac_hda_dais));
++	if (snd_hda_device_is_hdmi(hdev))
++		ret = devm_snd_soc_register_component(&hdev->dev,
++						&hdac_hda_hdmi_codec, hdac_hda_hdmi_dais,
++						ARRAY_SIZE(hdac_hda_hdmi_dais));
++	else
++		ret = devm_snd_soc_register_component(&hdev->dev,
++						&hdac_hda_codec, hdac_hda_dais,
++						ARRAY_SIZE(hdac_hda_dais));
 +
-+	return false;
-+}
-+EXPORT_SYMBOL_GPL(snd_hda_device_is_hdmi);
-+
- MODULE_LICENSE("GPL");
- MODULE_DESCRIPTION("HDMI HD-audio codec");
- MODULE_ALIAS("snd-hda-codec-intelhdmi");
+ 	if (ret < 0) {
+ 		dev_err(&hdev->dev, "failed to register HDA codec %d\n", ret);
+ 		return ret;
 -- 
 2.43.0
 
