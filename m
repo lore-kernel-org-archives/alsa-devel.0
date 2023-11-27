@@ -4,67 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3AC11C4167B
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Nov 2023 12:07:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 16336C0755A
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Nov 2023 13:03:28 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7FE00DF4;
-	Mon, 27 Nov 2023 13:07:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7FE00DF4
+	by alsa0.perex.cz (Postfix) with ESMTPS id ECFEDA4B;
+	Mon, 27 Nov 2023 14:03:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ECFEDA4B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1701086868;
-	bh=FmZHUbgfxcD8wfSdcyZNeRwAwPqOZS+OqQ2TAzPCkmE=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=WkpoiskP829efs63xjvHqlLmJSYJLth301cv6Pu/i/aZE6TIJN2et0TROdRoEqmeA
-	 v/LQiKsDPXDe6cKjAH9RQYNigNL6aQXNKi73DmWaEpmt7vpRloHBfdjVcvDwUzu2Tf
-	 iFxJYVGZs099r2PLau32Yw35PBdK/gUh5ch/ZEqk=
+	s=default; t=1701090207;
+	bh=kZLOygxvuWEPWWyBCeKU0iS+fkvL9wRcEYuTra47C1E=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=k0DEEu2iKJ4Md23WxoiOTDyIPjUTdoJUEiD5ds295qNhkLK4uBVWsh5tM7Ldrk+6+
+	 h/x5HSDVMN/bbGavSLe873vwaw5wYYojdLR5cx4ddJ33k6Ut36hF+DvHpkpB7FimVn
+	 ziuCGdpEc/MAVzjZJGbxbaH6qDNdkX2VpBxkg/sY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C7D20F805FF; Mon, 27 Nov 2023 13:06:48 +0100 (CET)
+	id 2EB28F8057A; Mon, 27 Nov 2023 14:02:55 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id EC6D9F805EF;
-	Mon, 27 Nov 2023 13:06:47 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6328DF80246;
+	Mon, 27 Nov 2023 14:02:55 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9EAB7F801D5; Mon, 27 Nov 2023 13:06:41 +0100 (CET)
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+	id E6902F80236; Mon, 27 Nov 2023 14:02:50 +0100 (CET)
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 3959DF8016E
-	for <alsa-devel@alsa-project.org>; Mon, 27 Nov 2023 13:06:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3959DF8016E
+	by alsa1.perex.cz (Postfix) with ESMTPS id 544B9F8007E
+	for <alsa-devel@alsa-project.org>; Mon, 27 Nov 2023 14:02:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 544B9F8007E
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=JEpiLW10
+ header.s=Intel header.b=c5FyD/7d
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701086794; x=1732622794;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=FmZHUbgfxcD8wfSdcyZNeRwAwPqOZS+OqQ2TAzPCkmE=;
-  b=JEpiLW10+ByHdOh7kP0MJG1x+aVwylrqUMGFxezi0t+1Xn9HZKjDrYHe
-   BQd5gfG/8gIlhdID1vtlKAsFu3FofRANqKZfnj3qzSOgGl2R/mA12Zu5C
-   tUGqjjRsOeSXdet5X/r5sukomX1WAf0hFrnM7GO6T/sVCCXLd/DNjBwYV
-   3ap+7CSB1VCD4N1z2CZkgr66lFG6R5qM3BI9c6oAxnegvbTbnOfB0NbSU
-   kqNMEZosoiprs9B7rlv3MaXKG70GoLzzkpfgQR8f4ycmopbdKu7A3wqHb
-   I5bgJH0Y//O//3UhpQBEUiDrj3YkS9gSNc2xyS834xgfD/Ohog03LtjDk
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10906"; a="14249602"
+  t=1701090165; x=1732626165;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=kZLOygxvuWEPWWyBCeKU0iS+fkvL9wRcEYuTra47C1E=;
+  b=c5FyD/7dC5IYFGpYY9d11YwyVlX5hXIsPkodnRRK4Bu9hnrX5tJ+S1Im
+   vrd+4WbBqGFOyUMpLSdIfhOHoQVkq1d8oeZd+OoJmRqaEiael8qy/yp3N
+   OPU/qoLSjzSUAe9bq9+Qg7LevgFbZia6vLMx/tOuGYBqMiVyXZwrv4xHj
+   4VsTEwmN3jxkk5Q8+EDvhuFmqCn8cUhNFfIZ9DKNC2m5Grb8lz36apyAU
+   nOc7jQ2nv6cOR7oFHr/Z8lZq8cMaDnze5xDzRXG1qWRgdmkmD4bIGgo+y
+   GM54x/AfaPn2rCmuV0ihJuPdI0YUle5hzQyCh19IPfSSFi2Iri3oX1vle
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10906"; a="391568002"
 X-IronPort-AV: E=Sophos;i="6.04,230,1695711600";
-   d="scan'208";a="14249602"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Nov 2023 04:06:28 -0800
+   d="scan'208";a="391568002"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 27 Nov 2023 05:02:13 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10906"; a="859035573"
+X-IronPort-AV: E=McAfee;i="6600,9927,10906"; a="797228683"
 X-IronPort-AV: E=Sophos;i="6.04,230,1695711600";
-   d="scan'208";a="859035573"
+   d="scan'208";a="797228683"
 Received: from acornagl-mobl.ger.corp.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.252.58.144])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Nov 2023 04:06:25 -0800
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 27 Nov 2023 05:02:10 -0800
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com,
 	broonie@kernel.org,
@@ -74,21 +73,15 @@ Cc: alsa-devel@alsa-project.org,
 	linux-sound@vger.kernel.org,
 	pierre-louis.bossart@linux.intel.com,
 	kai.vehmanen@linux.intel.com,
-	ranjani.sridharan@linux.intel.com,
-	yung-chuan.liao@linux.intel.com,
-	brent.lu@intel.com
-Subject: [PATCH 1/2] ALSA: hda: intel-nhlt: add intel_nhlt_ssp_device_type()
- function
-Date: Mon, 27 Nov 2023 14:06:56 +0200
-Message-ID: <20231127120657.19764-2-peter.ujfalusi@linux.intel.com>
+	ranjani.sridharan@linux.intel.com
+Subject: [PATCH 0/2] ALSA/ASoC: hdmi/hdac_hda: Conditionally register dais
+Date: Mon, 27 Nov 2023 15:02:43 +0200
+Message-ID: <20231127130245.24295-1-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231127120657.19764-1-peter.ujfalusi@linux.intel.com>
-References: <20231127120657.19764-1-peter.ujfalusi@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: M2UGEVWCHRGQ3R4A2U47TIQB53L6SK4M
-X-Message-ID-Hash: M2UGEVWCHRGQ3R4A2U47TIQB53L6SK4M
+Message-ID-Hash: 6VHZPV44MY7GUSSRSOFGOTGBNDRCPU5O
+X-Message-ID-Hash: 6VHZPV44MY7GUSSRSOFGOTGBNDRCPU5O
 X-MailFrom: peter.ujfalusi@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -101,7 +94,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/M2UGEVWCHRGQ3R4A2U47TIQB53L6SK4M/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6VHZPV44MY7GUSSRSOFGOTGBNDRCPU5O/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -110,84 +103,54 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Brent Lu <brent.lu@intel.com>
+Hi,
 
-Add a helper function intel_nhlt_ssp_device_type() to detect the type
-of specific SSP port. The result is nhlt_device_type enum type which
-could be NHLT_DEVICE_BT or NHLT_DEVICE_I2S.
+Each instance of the hdac_hda registers DAIs to be used for analog and HDMI
+audio.
+When the system have more than one HDA codec - like most devices then the kernel
+log will include the following warning prints:
 
-Signed-off-by: Brent Lu <brent.lu@intel.com>
-Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+snd_hda_codec_realtek ehdaudio0D0: ASoC: sink widget AIF1TX overwritten
+snd_hda_codec_realtek ehdaudio0D0: ASoC: source widget AIF1RX overwritten
+skl_hda_dsp_generic skl_hda_dsp_generic: ASoC: sink widget hifi3 overwritten
+skl_hda_dsp_generic skl_hda_dsp_generic: ASoC: sink widget hifi2 overwritten
+skl_hda_dsp_generic skl_hda_dsp_generic: ASoC: sink widget hifi1 overwritten
+skl_hda_dsp_generic skl_hda_dsp_generic: ASoC: source widget Codec Output Pin1 overwritten
+skl_hda_dsp_generic skl_hda_dsp_generic: ASoC: sink widget Codec Input Pin1 overwritten
+skl_hda_dsp_generic skl_hda_dsp_generic: ASoC: sink widget Analog Codec Playback overwritten
+skl_hda_dsp_generic skl_hda_dsp_generic: ASoC: sink widget Digital Codec Playback overwritten
+skl_hda_dsp_generic skl_hda_dsp_generic: ASoC: sink widget Alt Analog Codec Playback overwritten
+skl_hda_dsp_generic skl_hda_dsp_generic: ASoC: source widget Analog Codec Capture overwritten
+skl_hda_dsp_generic skl_hda_dsp_generic: ASoC: source widget Digital Codec Capture overwritten
+skl_hda_dsp_generic skl_hda_dsp_generic: ASoC: source widget Alt Analog Codec Capture overwritten
+
+These are printed when the second instance of the hdac_hda is probing since it
+is re-registering the DAIs with the same name.
+Using some clever way of prefixing might solve the issue but that would need non
+backwards compatible changes to topology files.
+
+Pragmatically the hdac_hda instance fro the normal codec should not register
+DAIs for HDMI and the hdac_hda instance for the HDMI should not register DAIs
+for the analog codec - for example on a SDW device where we have HDA-HDMI and
+sdw codecs.
+
+To keep the hdac_hda vendor neutral (altrough it is only used on Intel platforms
+afaik) add a helper function to answer the question: is this codec HDMI?
+Use the new helper to decide which sets of DAIs to register for the probing
+hdac_hda instance.
+
+Regards,
+Peter
 ---
- include/sound/intel-nhlt.h | 10 ++++++++++
- sound/hda/intel-nhlt.c     | 26 ++++++++++++++++++++++++++
- 2 files changed, 36 insertions(+)
+Peter Ujfalusi (2):
+  ALSA: hda/hdmi: Add helper function to check if a device is HDMI codec
+  ASoC: hdac_hda: Conditionally register dais for HDMI and Analog
 
-diff --git a/include/sound/intel-nhlt.h b/include/sound/intel-nhlt.h
-index 53470d6a28d6..24dbe16684ae 100644
---- a/include/sound/intel-nhlt.h
-+++ b/include/sound/intel-nhlt.h
-@@ -143,6 +143,9 @@ intel_nhlt_get_endpoint_blob(struct device *dev, struct nhlt_acpi_table *nhlt,
- 			     u32 bus_id, u8 link_type, u8 vbps, u8 bps,
- 			     u8 num_ch, u32 rate, u8 dir, u8 dev_type);
- 
-+int intel_nhlt_ssp_device_type(struct device *dev, struct nhlt_acpi_table *nhlt,
-+			       u8 virtual_bus_id);
-+
- #else
- 
- static inline struct nhlt_acpi_table *intel_nhlt_init(struct device *dev)
-@@ -184,6 +187,13 @@ intel_nhlt_get_endpoint_blob(struct device *dev, struct nhlt_acpi_table *nhlt,
- 	return NULL;
- }
- 
-+static inline int intel_nhlt_ssp_device_type(struct device *dev,
-+					     struct nhlt_acpi_table *nhlt,
-+					     u8 virtual_bus_id)
-+{
-+	return -EINVAL;
-+}
-+
- #endif
- 
- #endif
-diff --git a/sound/hda/intel-nhlt.c b/sound/hda/intel-nhlt.c
-index 2c4dfc0b7e34..67d3e834c647 100644
---- a/sound/hda/intel-nhlt.c
-+++ b/sound/hda/intel-nhlt.c
-@@ -318,3 +318,29 @@ intel_nhlt_get_endpoint_blob(struct device *dev, struct nhlt_acpi_table *nhlt,
- 	return NULL;
- }
- EXPORT_SYMBOL(intel_nhlt_get_endpoint_blob);
-+
-+int intel_nhlt_ssp_device_type(struct device *dev, struct nhlt_acpi_table *nhlt,
-+			       u8 virtual_bus_id)
-+{
-+	struct nhlt_endpoint *epnt;
-+	int i;
-+
-+	if (!nhlt)
-+		return -EINVAL;
-+
-+	epnt = (struct nhlt_endpoint *)nhlt->desc;
-+	for (i = 0; i < nhlt->endpoint_count; i++) {
-+		/* for SSP link the virtual bus id is the SSP port number */
-+		if (epnt->linktype == NHLT_LINK_SSP &&
-+		    epnt->virtual_bus_id == virtual_bus_id) {
-+			dev_dbg(dev, "SSP%d: dev_type=%d\n", virtual_bus_id,
-+				epnt->device_type);
-+			return epnt->device_type;
-+		}
-+
-+		epnt = (struct nhlt_endpoint *)((u8 *)epnt + epnt->length);
-+	}
-+
-+	return -EINVAL;
-+}
-+EXPORT_SYMBOL(intel_nhlt_ssp_device_type);
+ include/sound/hdaudio.h     | 10 ++++++++++
+ sound/pci/hda/patch_hdmi.c  | 13 +++++++++++++
+ sound/soc/codecs/hdac_hda.c | 22 +++++++++++++++++++---
+ 3 files changed, 42 insertions(+), 3 deletions(-)
+
 -- 
 2.43.0
 
