@@ -4,88 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4C0D1C4167B
-	for <alsa-devel@archiver.kernel.org>; Tue, 28 Nov 2023 14:13:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7D49C4167B
+	for <alsa-devel@archiver.kernel.org>; Tue, 28 Nov 2023 14:16:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B1BF2E0F;
-	Tue, 28 Nov 2023 15:13:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B1BF2E0F
+	by alsa0.perex.cz (Postfix) with ESMTPS id E4129DF1;
+	Tue, 28 Nov 2023 15:15:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E4129DF1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1701180836;
-	bh=jgfMGvoU46AWQ6vTlQp6H+DWJfpkkWzbZhR7SyGgWBI=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1701180968;
+	bh=fpKEocUxMrrYcqELYtVIaj9TqLJFUwmG9ZmXoKkWhZY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=dzVJ3kpa6UYtGUNFIoh+Nuqrzeb0POrMWOd2UvPp6CzjrtgW0iJtRDg5sJttN1Vrr
-	 wyQX4n0EFcYzq/8WtdVNjLH+OnnV4hjeG4NvPtoCry3neIGrUef6AAx0qbzG86UiwQ
-	 S8ms+sqh7fsHSsXshgWwvw+wiboM7nWGmESMi8LI=
+	b=o46nXyVWT6qjbiXYlLDZKOQpRzJbP+DTYAmGPGvY0HY83CbzR7SNR9/ZgaFuJVD55
+	 GcF5RQwig4WAgG4yYP13BecClcZ45kVAg6/6KiQ12Xnhxl4WnrTC5ZCLTfz9Ag/7zY
+	 08+wrckZkv48PPeoM5pLNXAEXJ6JeIhfMOle2/nk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AE2DEF8074A; Tue, 28 Nov 2023 15:09:25 +0100 (CET)
+	id E4838F8055B; Tue, 28 Nov 2023 15:15:28 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3A40BF89693;
-	Tue, 28 Nov 2023 15:09:25 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 97170F8057B;
+	Tue, 28 Nov 2023 15:15:28 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3606AF8076C; Tue, 28 Nov 2023 15:09:00 +0100 (CET)
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net
- [217.70.183.195])
-	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+	id 8EC58F8016E; Tue, 28 Nov 2023 15:15:24 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 69878F805C4
-	for <alsa-devel@alsa-project.org>; Tue, 28 Nov 2023 15:08:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 69878F805C4
+	by alsa1.perex.cz (Postfix) with ESMTPS id 2BA3BF80114;
+	Tue, 28 Nov 2023 15:15:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2BA3BF80114
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=iP4PyNaM
-Received: by mail.gandi.net (Postfix) with ESMTPA id E5FA160012;
-	Tue, 28 Nov 2023 14:08:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1701180517;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=C0KV5VSap2HeJW6mH5ydEZnvSodIWVNbkUiCcgxqwGg=;
-	b=iP4PyNaMFAzPpWrUyhyN1eAf+GpeCRmRivAivlyfFLvIw1wU6IQW91PMSIE0zqRi2KNez4
-	+QRv3C8vDOi2amOgEM31Pdtn7Zo2y8tTpKLyfKlznaHRIzldp/zfpgumH3HUab5p1EWcD/
-	HuF4oKqZ85D2fCKwo+Kafk2ifYuPrJKJv2+m1C7gqQds1Q1GBNzdGdTGelRt2GN9GLP+Vj
-	O9qdoDY/hTZqUkycvpE17IL7V9hRKY1wkDUPVxRwio2B4tAKZEjwBjX30xvGSiXPIuxFnP
-	PxcGj6ac2REM+XQB6jb3kSy693SA0Gj297g1ZdSvYW72k791DkpjjxCZuZk2NA==
-From: Herve Codina <herve.codina@bootlin.com>
-To: Herve Codina <herve.codina@bootlin.com>,
-	Qiang Zhao <qiang.zhao@nxp.com>,
-	Li Yang <leoyang.li@nxp.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Shengjiu Wang <shengjiu.wang@gmail.com>,
-	Xiubo Li <Xiubo.Lee@gmail.com>,
-	Fabio Estevam <festevam@gmail.com>,
-	Nicolin Chen <nicoleotsuka@gmail.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc: Arnd Bergmann <arnd@arndb.de>,
-	linuxppc-dev@lists.ozlabs.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	alsa-devel@alsa-project.org,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: [PATCH 15/17] soc: fsl: cpm1: qmc: Handle timeslot entries at channel
- start() and stop()
-Date: Tue, 28 Nov 2023 15:08:14 +0100
-Message-ID: <20231128140818.261541-16-herve.codina@bootlin.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231128140818.261541-1-herve.codina@bootlin.com>
-References: <20231128140818.261541-1-herve.codina@bootlin.com>
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=GlYoUVtZ
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id CFC3D616E3;
+	Tue, 28 Nov 2023 14:15:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F04EC433C7;
+	Tue, 28 Nov 2023 14:15:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1701180918;
+	bh=fpKEocUxMrrYcqELYtVIaj9TqLJFUwmG9ZmXoKkWhZY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=GlYoUVtZdU7z+1KSGtWb02ZBz3uQMEOVik7A4hKmwM/aLjG87QqnhGQqJooCClAG6
+	 vetrqSkfJ+hIIdCNDC27KdjVEQsBj79fBsiCU/7qD5Fvf63l9QaPCuH08Kr8JYOtuZ
+	 DCsXaxjjPAQRqV09qUtRBpixROqRnYVXMvIxZOWyMh7jU1nZAitg3NqPrxoSJTMpkH
+	 PXN3Jj0hRU6/hu49lsekvJcQQk1JCJuUckwelycWiGDVOmvgpZIMkw+C7+remvLUke
+	 pUKGYlyjxyYTLwM0sNLb4oIhBMAn6CoxaSVXY73fluV+NFknXSKHirQmO1yrVbqtCN
+	 8BmDHdFNoNCHA==
+Date: Tue, 28 Nov 2023 14:15:12 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Kamil Duljas <kamil.duljas@gmail.com>
+Cc: Venkata Prasad Potturu <venkataprasad.potturu@amd.com>,
+	Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+	Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org,
+	linux-sound@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>,
+	sound-open-firmware@alsa-project.org
+Subject: Re: [PATCH] ASoC: SOF: acp: Add prevent against NULL
+Message-ID: <bb53b12c-f0e1-4e74-8fab-3bb887d2d1fa@sirena.org.uk>
+References: <20231117201606.1955-2-kamil.duljas@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: herve.codina@bootlin.com
-Message-ID-Hash: BDYTLF5HDVRCDNDOMT2Y56CW5LG25NU5
-X-Message-ID-Hash: BDYTLF5HDVRCDNDOMT2Y56CW5LG25NU5
-X-MailFrom: herve.codina@bootlin.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="ly5f+a4TVh2d6ApJ"
+Content-Disposition: inline
+In-Reply-To: <20231117201606.1955-2-kamil.duljas@gmail.com>
+X-Cookie: Must be over 21.
+Message-ID-Hash: HRVDSXVRINY7CIDQR5S3OUJNMMFSUPH6
+X-Message-ID-Hash: HRVDSXVRINY7CIDQR5S3OUJNMMFSUPH6
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -97,7 +86,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BDYTLF5HDVRCDNDOMT2Y56CW5LG25NU5/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HRVDSXVRINY7CIDQR5S3OUJNMMFSUPH6/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -106,319 +95,47 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-In order to support runtime timeslot route changes, enable the
-channel timeslot entries at channel start() and disable them at
-channel stop().
 
-Signed-off-by: Herve Codina <herve.codina@bootlin.com>
-Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- drivers/soc/fsl/qe/qmc.c | 175 ++++++++++++++++++++++++++++++++++++---
- 1 file changed, 163 insertions(+), 12 deletions(-)
+--ly5f+a4TVh2d6ApJ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/drivers/soc/fsl/qe/qmc.c b/drivers/soc/fsl/qe/qmc.c
-index e651b3bba1ca..e56aea5803bf 100644
---- a/drivers/soc/fsl/qe/qmc.c
-+++ b/drivers/soc/fsl/qe/qmc.c
-@@ -177,6 +177,7 @@ struct qmc_chan {
- 	struct qmc *qmc;
- 	void __iomem *s_param;
- 	enum qmc_mode mode;
-+	spinlock_t	ts_lock; /* Protect timeslots */
- 	u64	tx_ts_mask_avail;
- 	u64	tx_ts_mask;
- 	u64	rx_ts_mask_avail;
-@@ -265,6 +266,7 @@ static void qmc_setbits32(void __iomem *addr, u32 set)
- int qmc_chan_get_info(struct qmc_chan *chan, struct qmc_chan_info *info)
- {
- 	struct tsa_serial_info tsa_info;
-+	unsigned long flags;
- 	int ret;
- 
- 	/* Retrieve info from the TSA related serial */
-@@ -272,6 +274,8 @@ int qmc_chan_get_info(struct qmc_chan *chan, struct qmc_chan_info *info)
- 	if (ret)
- 		return ret;
- 
-+	spin_lock_irqsave(&chan->ts_lock, flags);
-+
- 	info->mode = chan->mode;
- 	info->rx_fs_rate = tsa_info.rx_fs_rate;
- 	info->rx_bit_rate = tsa_info.rx_bit_rate;
-@@ -280,6 +284,8 @@ int qmc_chan_get_info(struct qmc_chan *chan, struct qmc_chan_info *info)
- 	info->tx_bit_rate = tsa_info.tx_bit_rate;
- 	info->nb_rx_ts = hweight64(chan->rx_ts_mask);
- 
-+	spin_unlock_irqrestore(&chan->ts_lock, flags);
-+
- 	return 0;
- }
- EXPORT_SYMBOL(qmc_chan_get_info);
-@@ -683,6 +689,40 @@ static int qmc_chan_setup_tsa_32tx(struct qmc_chan *chan, const struct tsa_seria
- 	return 0;
- }
- 
-+static int qmc_chan_setup_tsa_tx(struct qmc_chan *chan, bool enable)
-+{
-+	struct tsa_serial_info info;
-+	int ret;
-+
-+	/* Retrieve info from the TSA related serial */
-+	ret = tsa_serial_get_info(chan->qmc->tsa_serial, &info);
-+	if (ret)
-+		return ret;
-+
-+	/* Setup entries */
-+	if (chan->qmc->is_tsa_64rxtx)
-+		return qmc_chan_setup_tsa_64rxtx(chan, &info, enable);
-+
-+	return qmc_chan_setup_tsa_32tx(chan, &info, enable);
-+}
-+
-+static int qmc_chan_setup_tsa_rx(struct qmc_chan *chan, bool enable)
-+{
-+	struct tsa_serial_info info;
-+	int ret;
-+
-+	/* Retrieve info from the TSA related serial */
-+	ret = tsa_serial_get_info(chan->qmc->tsa_serial, &info);
-+	if (ret)
-+		return ret;
-+
-+	/* Setup entries */
-+	if (chan->qmc->is_tsa_64rxtx)
-+		return qmc_chan_setup_tsa_64rxtx(chan, &info, enable);
-+
-+	return qmc_chan_setup_tsa_32rx(chan, &info, enable);
-+}
-+
- static int qmc_chan_setup_tsa(struct qmc_chan *chan, bool enable)
- {
- 	struct tsa_serial_info info;
-@@ -719,6 +759,12 @@ static int qmc_chan_stop_rx(struct qmc_chan *chan)
- 
- 	spin_lock_irqsave(&chan->rx_lock, flags);
- 
-+	if (chan->is_rx_stopped) {
-+		/* The channel is already stopped -> simply return ok */
-+		ret = 0;
-+		goto end;
-+	}
-+
- 	/* Send STOP RECEIVE command */
- 	ret = qmc_chan_command(chan, 0x0);
- 	if (ret) {
-@@ -729,6 +775,15 @@ static int qmc_chan_stop_rx(struct qmc_chan *chan)
- 
- 	chan->is_rx_stopped = true;
- 
-+	if (!chan->qmc->is_tsa_64rxtx || chan->is_tx_stopped) {
-+		ret = qmc_chan_setup_tsa_rx(chan, false);
-+		if (ret) {
-+			dev_err(chan->qmc->dev, "chan %u: Disable tsa entries failed (%d)\n",
-+				chan->id, ret);
-+			goto end;
-+		}
-+	}
-+
- end:
- 	spin_unlock_irqrestore(&chan->rx_lock, flags);
- 	return ret;
-@@ -741,6 +796,12 @@ static int qmc_chan_stop_tx(struct qmc_chan *chan)
- 
- 	spin_lock_irqsave(&chan->tx_lock, flags);
- 
-+	if (chan->is_tx_stopped) {
-+		/* The channel is already stopped -> simply return ok */
-+		ret = 0;
-+		goto end;
-+	}
-+
- 	/* Send STOP TRANSMIT command */
- 	ret = qmc_chan_command(chan, 0x1);
- 	if (ret) {
-@@ -751,37 +812,82 @@ static int qmc_chan_stop_tx(struct qmc_chan *chan)
- 
- 	chan->is_tx_stopped = true;
- 
-+	if (!chan->qmc->is_tsa_64rxtx || chan->is_rx_stopped) {
-+		ret = qmc_chan_setup_tsa_tx(chan, false);
-+		if (ret) {
-+			dev_err(chan->qmc->dev, "chan %u: Disable tsa entries failed (%d)\n",
-+				chan->id, ret);
-+			goto end;
-+		}
-+	}
-+
- end:
- 	spin_unlock_irqrestore(&chan->tx_lock, flags);
- 	return ret;
- }
- 
-+static int qmc_chan_start_rx(struct qmc_chan *chan);
-+
- int qmc_chan_stop(struct qmc_chan *chan, int direction)
- {
--	int ret;
-+	bool is_rx_rollback_needed = false;
-+	unsigned long flags;
-+	int ret = 0;
-+
-+	spin_lock_irqsave(&chan->ts_lock, flags);
- 
- 	if (direction & QMC_CHAN_READ) {
-+		is_rx_rollback_needed = !chan->is_rx_stopped;
- 		ret = qmc_chan_stop_rx(chan);
- 		if (ret)
--			return ret;
-+			goto end;
- 	}
- 
- 	if (direction & QMC_CHAN_WRITE) {
- 		ret = qmc_chan_stop_tx(chan);
--		if (ret)
--			return ret;
-+		if (ret) {
-+			/* Restart rx if needed */
-+			if (is_rx_rollback_needed)
-+				qmc_chan_start_rx(chan);
-+			goto end;
-+		}
- 	}
- 
--	return 0;
-+end:
-+	spin_unlock_irqrestore(&chan->ts_lock, flags);
-+	return ret;
- }
- EXPORT_SYMBOL(qmc_chan_stop);
- 
--static void qmc_chan_start_rx(struct qmc_chan *chan)
-+static int qmc_setup_chan_trnsync(struct qmc *qmc, struct qmc_chan *chan);
-+
-+static int qmc_chan_start_rx(struct qmc_chan *chan)
- {
- 	unsigned long flags;
-+	int ret;
- 
- 	spin_lock_irqsave(&chan->rx_lock, flags);
- 
-+	if (!chan->is_rx_stopped) {
-+		/* The channel is already started -> simply return ok */
-+		ret = 0;
-+		goto end;
-+	}
-+
-+	ret = qmc_chan_setup_tsa_rx(chan, true);
-+	if (ret) {
-+		dev_err(chan->qmc->dev, "chan %u: Enable tsa entries failed (%d)\n",
-+			chan->id, ret);
-+		goto end;
-+	}
-+
-+	ret = qmc_setup_chan_trnsync(chan->qmc, chan);
-+	if (ret) {
-+		dev_err(chan->qmc->dev, "chan %u: setup TRNSYNC failed (%d)\n",
-+			chan->id, ret);
-+		goto end;
-+	}
-+
- 	/* Restart the receiver */
- 	if (chan->mode == QMC_TRANSPARENT)
- 		qmc_write32(chan->s_param + QMC_SPE_ZDSTATE, 0x18000080);
-@@ -792,15 +898,38 @@ static void qmc_chan_start_rx(struct qmc_chan *chan)
- 
- 	chan->is_rx_stopped = false;
- 
-+end:
- 	spin_unlock_irqrestore(&chan->rx_lock, flags);
-+	return ret;
- }
- 
--static void qmc_chan_start_tx(struct qmc_chan *chan)
-+static int qmc_chan_start_tx(struct qmc_chan *chan)
- {
- 	unsigned long flags;
-+	int ret;
- 
- 	spin_lock_irqsave(&chan->tx_lock, flags);
- 
-+	if (!chan->is_tx_stopped) {
-+		/* The channel is already started -> simply return ok */
-+		ret = 0;
-+		goto end;
-+	}
-+
-+	ret = qmc_chan_setup_tsa_tx(chan, true);
-+	if (ret) {
-+		dev_err(chan->qmc->dev, "chan %u: Enable tsa entries failed (%d)\n",
-+			chan->id, ret);
-+		goto end;
-+	}
-+
-+	ret = qmc_setup_chan_trnsync(chan->qmc, chan);
-+	if (ret) {
-+		dev_err(chan->qmc->dev, "chan %u: setup TRNSYNC failed (%d)\n",
-+			chan->id, ret);
-+		goto end;
-+	}
-+
- 	/*
- 	 * Enable channel transmitter as it could be disabled if
- 	 * qmc_chan_reset() was called.
-@@ -812,18 +941,39 @@ static void qmc_chan_start_tx(struct qmc_chan *chan)
- 
- 	chan->is_tx_stopped = false;
- 
-+end:
- 	spin_unlock_irqrestore(&chan->tx_lock, flags);
-+	return ret;
- }
- 
- int qmc_chan_start(struct qmc_chan *chan, int direction)
- {
--	if (direction & QMC_CHAN_READ)
--		qmc_chan_start_rx(chan);
-+	bool is_rx_rollback_needed = false;
-+	unsigned long flags;
-+	int ret = 0;
- 
--	if (direction & QMC_CHAN_WRITE)
--		qmc_chan_start_tx(chan);
-+	spin_lock_irqsave(&chan->ts_lock, flags);
- 
--	return 0;
-+	if (direction & QMC_CHAN_READ) {
-+		is_rx_rollback_needed = chan->is_rx_stopped;
-+		ret = qmc_chan_start_rx(chan);
-+		if (ret)
-+			goto end;
-+	}
-+
-+	if (direction & QMC_CHAN_WRITE) {
-+		ret = qmc_chan_start_tx(chan);
-+		if (ret) {
-+			/* Restop rx if needed */
-+			if (is_rx_rollback_needed)
-+				qmc_chan_stop_rx(chan);
-+			goto end;
-+		}
-+	}
-+
-+end:
-+	spin_unlock_irqrestore(&chan->ts_lock, flags);
-+	return ret;
- }
- EXPORT_SYMBOL(qmc_chan_start);
- 
-@@ -992,6 +1142,7 @@ static int qmc_of_parse_chans(struct qmc *qmc, struct device_node *np)
- 		}
- 
- 		chan->id = chan_id;
-+		spin_lock_init(&chan->ts_lock);
- 		spin_lock_init(&chan->rx_lock);
- 		spin_lock_init(&chan->tx_lock);
- 
--- 
-2.42.0
+On Fri, Nov 17, 2023 at 09:16:06PM +0100, Kamil Duljas wrote:
 
+>  		adata->fw_code_bin = kasprintf(GFP_KERNEL, "%s/sof-%s-code.bin",
+> -					       plat_data->fw_filename_prefix,
+> -					       chip->name);
+> +							plat_data->fw_filename_prefix,
+> +							chip->name);
+
+Plese don't include spurious indentation changes like this, it just
+makes the diff much harder to read.
+
+> +		if (!adata->fw_code_bin)
+> +			return -ENOMEM;
+>  		adata->fw_data_bin = kasprintf(GFP_KERNEL, "%s/sof-%s-data.bin",
+> -					       plat_data->fw_filename_prefix,
+> -					       chip->name);
+> +							plat_data->fw_filename_prefix,
+> +							chip->name);
+> +		if (!adata->fw_data_bin)
+> +			return -ENOMEM;
+
+This now leaks the code binary...
+
+--ly5f+a4TVh2d6ApJ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVl9fAACgkQJNaLcl1U
+h9DRmgf9FivgR71JdwufFtzF1Yv4mYhxVCkokn2ICbfL5yVE0zuCR2x0DQHdZIDD
+rwAGJbGWbrIw9KWThiC3M9P+bbDepiTDVUy21R7iicAKFDw3nvEjbBei5KenF8j5
+Dj6+ezNNcTA/tpYw1YL9aTjGBfgu6X/f1lwf+K1tu6dAbXUhJqnDnLDQzdzqMfsh
+6jXyGlxWFdgOber5sYmDkLv+fLgXMM/iGarZNX7T0jRw+4jF6boQtCsWY1x6+8HL
+WfQxUSLQKRin6/Jy5lhLQOKZ3MoxVwnOpaC78fNjqSN9rBvVJBzfkWNkcodeVRvq
+USXhWq/aXvORd1C0SLaIr8aHdNjVEw==
+=1Cz9
+-----END PGP SIGNATURE-----
+
+--ly5f+a4TVh2d6ApJ--
