@@ -4,55 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A934EC4167B
-	for <alsa-devel@archiver.kernel.org>; Tue, 28 Nov 2023 14:10:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3E9A1C07CA9
+	for <alsa-devel@archiver.kernel.org>; Tue, 28 Nov 2023 14:10:13 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 533C7DEC;
-	Tue, 28 Nov 2023 15:09:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 533C7DEC
+	by alsa0.perex.cz (Postfix) with ESMTPS id DDF94E12;
+	Tue, 28 Nov 2023 15:10:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DDF94E12
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1701180609;
-	bh=yUh4GOd5ltOXIRE+O61xUE5j+/ligoTaXd9SDfqoZgU=;
+	s=default; t=1701180610;
+	bh=9b4RzKHoWaXQnuhvnLd2PAgtnIzU07NjAQDPuqpwcYE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=CD22BmDEew2oJeGLMRdQiBO5Y5v2HYE9rM3R1ByxHF55sHpGB/aFHrOpmRFVuOzHE
-	 lcvvVBxdIizRDx87PdxP1Qscmpp8MhkEhS8glZZTBEx7Ik/bk6ScEgSAN7lUQPq9+b
-	 lzkNAIidsReNZPFIG5g42yTuM0cfmu/zFATcw3/k=
+	b=CvJ3z9dD+2b/2aEMVqtz5e5VP5BPNFd2IE3VbCi/BDoWTMSsjxss+J38f8ZPO5EhJ
+	 SfJYNqk0z65e+d42HI4AZqF8mp6/VcWpJ8GySDZDk2cKPL54JvU81MVCG1U1Q0WVvG
+	 t7w3Lmry3PNNzhFXwL98whCz+97myujllx0VjXLQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 290F8F80557; Tue, 28 Nov 2023 15:08:46 +0100 (CET)
+	id 78950F8063C; Tue, 28 Nov 2023 15:08:47 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id CCDDEF80618;
-	Tue, 28 Nov 2023 15:08:45 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8F935F80639;
+	Tue, 28 Nov 2023 15:08:47 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 12242F8060A; Tue, 28 Nov 2023 15:08:42 +0100 (CET)
+	id C7279F805F5; Tue, 28 Nov 2023 15:08:42 +0100 (CET)
 Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net
  [IPv6:2001:4b98:dc4:8::223])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 61296F80114
-	for <alsa-devel@alsa-project.org>; Tue, 28 Nov 2023 15:08:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 61296F80114
+	by alsa1.perex.cz (Postfix) with ESMTPS id 61913F801D5
+	for <alsa-devel@alsa-project.org>; Tue, 28 Nov 2023 15:08:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 61913F801D5
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=KPyUdJ0x
-Received: by mail.gandi.net (Postfix) with ESMTPA id 37C2A6000F;
-	Tue, 28 Nov 2023 14:08:28 +0000 (UTC)
+ header.s=gm1 header.b=Ww25g59s
+Received: by mail.gandi.net (Postfix) with ESMTPA id 4563C60013;
+	Tue, 28 Nov 2023 14:08:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1701180509;
+	t=1701180506;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=+2B6YUVBlU8nP98Gi7Yh575FhYxDZUhvB/s29okN5tk=;
-	b=KPyUdJ0xO7QWgygD02j0RNLseVzKNmRyniX4pOsSzvLlzuUuMQRqgowuUQuXn8r9WrlEWq
-	Wen3h3xoZwcrt6FBc8214Lbfy0X/PMyqfE/aQtW+vtLzJfqgafT0kf2FMafIcp4PB1f/PP
-	GS+BOTEXJTXv4fsL+D9IAaR6m4Og6xtpjrOch/FfToMGIg3ECBsnFXIE3bE38L+WqPpClm
-	E2zk6rVYgJI48bUQGCXFH+/Xjf+ooEs/kjpAwKzY345On6Ct8GuwwLWscfQlyd9ZhLBA3W
-	NeZxWVFfNBn2DUmbghqIfoKK9dkUZVWR1UuW1azKzn80VDk7XxB3Ni37NzDerA==
+	bh=qto69Sz/uzj7vWp+LbsEsH5JgUyWqrsMlRYbgKO+Ta4=;
+	b=Ww25g59sPr1Wg8G2/+eo82WrZ6uxax9bU8yVHybpwtNwfTLCgJLf5wbu3NNaKdloqct4SN
+	JOl71UmaiYH9SqoWEm99UYUjls414OjRBZgwcCCRyxgXM+DgHiE6WiGInOx5WCGdzHXc1F
+	5JutCdvL8M33BnD43l0Zh8DE7gfb/B2Jp/wei1EUp9HzqSHivwORgT3bCB+K83Yp157Knc
+	IbPzw6Vd0r23914xtvob7oGilQ5CO/WiYAf5X4kE+y7MGAFcDlUHUdbT8gHvAQJfWnlUY7
+	K2lj3jmvc2L8Tb/VERzqS6pCaUHIe1CiReLbXjwgpUkt/bAlxy1311tX1O4q7g==
 From: Herve Codina <herve.codina@bootlin.com>
 To: Herve Codina <herve.codina@bootlin.com>,
 	Qiang Zhao <qiang.zhao@nxp.com>,
@@ -73,17 +73,17 @@ Cc: Arnd Bergmann <arnd@arndb.de>,
 	linux-kernel@vger.kernel.org,
 	alsa-devel@alsa-project.org,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: [PATCH 06/17] soc: fsl: cpm1: qmc: Add support for child devices
-Date: Tue, 28 Nov 2023 15:08:05 +0100
-Message-ID: <20231128140818.261541-7-herve.codina@bootlin.com>
+Subject: [PATCH 03/17] soc: fsl: cpm1: qmc: Fix rx channel reset
+Date: Tue, 28 Nov 2023 15:08:02 +0100
+Message-ID: <20231128140818.261541-4-herve.codina@bootlin.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231128140818.261541-1-herve.codina@bootlin.com>
 References: <20231128140818.261541-1-herve.codina@bootlin.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-GND-Sasl: herve.codina@bootlin.com
-Message-ID-Hash: N6PPWJL2GSHPG2TD2J4CPP3BJ7A6LG4H
-X-Message-ID-Hash: N6PPWJL2GSHPG2TD2J4CPP3BJ7A6LG4H
+Message-ID-Hash: CGTLSTG7R2B3C7U2WPDDISB6D6U7FQNR
+X-Message-ID-Hash: CGTLSTG7R2B3C7U2WPDDISB6D6U7FQNR
 X-MailFrom: herve.codina@bootlin.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -96,7 +96,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/N6PPWJL2GSHPG2TD2J4CPP3BJ7A6LG4H/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CGTLSTG7R2B3C7U2WPDDISB6D6U7FQNR/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -105,179 +105,36 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-QMC child devices support is needed to avoid orphan DT nodes that use a
-simple DT phandle to reference a QMC channel.
+The qmc_chan_reset_rx() set the is_rx_stopped flag. This leads to an
+inconsistent state in the following sequence.
+    qmc_chan_stop()
+    qmc_chan_reset()
+Indeed, after the qmc_chan_reset() call, the channel must still be
+stopped. Only a qmc_chan_start() call can move the channel from stopped
+state to started state.
 
-Allow to instantiate child devices and also extend the API to get the
-qmc_chan using a child device.
+Fix the issue removing the is_rx_stopped flag setting from
+qmc_chan_reset()
 
+Fixes: 3178d58e0b97 ("soc: fsl: cpm1: Add support for QMC")
 Signed-off-by: Herve Codina <herve.codina@bootlin.com>
+Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
- drivers/soc/fsl/qe/qmc.c | 91 +++++++++++++++++++++++++++++++---------
- include/soc/fsl/qe/qmc.h |  2 +
- 2 files changed, 73 insertions(+), 20 deletions(-)
+ drivers/soc/fsl/qe/qmc.c | 1 -
+ 1 file changed, 1 deletion(-)
 
 diff --git a/drivers/soc/fsl/qe/qmc.c b/drivers/soc/fsl/qe/qmc.c
-index 27f2f16deac9..e716f13669a0 100644
+index 3f3de1351c96..2312152a44b3 100644
 --- a/drivers/soc/fsl/qe/qmc.c
 +++ b/drivers/soc/fsl/qe/qmc.c
-@@ -1425,8 +1425,16 @@ static int qmc_probe(struct platform_device *pdev)
+@@ -685,7 +685,6 @@ static void qmc_chan_reset_rx(struct qmc_chan *chan)
+ 		    qmc_read16(chan->s_param + QMC_SPE_RBASE));
  
- 	platform_set_drvdata(pdev, qmc);
+ 	chan->rx_pending = 0;
+-	chan->is_rx_stopped = false;
  
-+	/* Populate channel related devices */
-+	ret = devm_of_platform_populate(qmc->dev);
-+	if (ret)
-+		goto err_disable_txrx;
-+
- 	return 0;
- 
-+err_disable_txrx:
-+	qmc_setbits32(qmc->scc_regs + SCC_GSMRL, 0);
-+
- err_disable_intr:
- 	qmc_write16(qmc->scc_regs + SCC_SCCM, 0);
- 
-@@ -1465,26 +1473,16 @@ static struct platform_driver qmc_driver = {
- };
- module_platform_driver(qmc_driver);
- 
--struct qmc_chan *qmc_chan_get_byphandle(struct device_node *np, const char *phandle_name)
-+static struct qmc_chan *qmc_chan_get_from_qmc(struct device_node *qmc_np, unsigned int chan_index)
- {
--	struct of_phandle_args out_args;
- 	struct platform_device *pdev;
- 	struct qmc_chan *qmc_chan;
- 	struct qmc *qmc;
--	int ret;
- 
--	ret = of_parse_phandle_with_fixed_args(np, phandle_name, 1, 0,
--					       &out_args);
--	if (ret < 0)
--		return ERR_PTR(ret);
--
--	if (!of_match_node(qmc_driver.driver.of_match_table, out_args.np)) {
--		of_node_put(out_args.np);
-+	if (!of_match_node(qmc_driver.driver.of_match_table, qmc_np))
- 		return ERR_PTR(-EINVAL);
--	}
- 
--	pdev = of_find_device_by_node(out_args.np);
--	of_node_put(out_args.np);
-+	pdev = of_find_device_by_node(qmc_np);
- 	if (!pdev)
- 		return ERR_PTR(-ENODEV);
- 
-@@ -1494,17 +1492,12 @@ struct qmc_chan *qmc_chan_get_byphandle(struct device_node *np, const char *phan
- 		return ERR_PTR(-EPROBE_DEFER);
- 	}
- 
--	if (out_args.args_count != 1) {
-+	if (chan_index >= ARRAY_SIZE(qmc->chans)) {
- 		platform_device_put(pdev);
- 		return ERR_PTR(-EINVAL);
- 	}
- 
--	if (out_args.args[0] >= ARRAY_SIZE(qmc->chans)) {
--		platform_device_put(pdev);
--		return ERR_PTR(-EINVAL);
--	}
--
--	qmc_chan = qmc->chans[out_args.args[0]];
-+	qmc_chan = qmc->chans[chan_index];
- 	if (!qmc_chan) {
- 		platform_device_put(pdev);
- 		return ERR_PTR(-ENOENT);
-@@ -1512,8 +1505,44 @@ struct qmc_chan *qmc_chan_get_byphandle(struct device_node *np, const char *phan
- 
- 	return qmc_chan;
+ 	spin_unlock_irqrestore(&chan->rx_lock, flags);
  }
-+
-+struct qmc_chan *qmc_chan_get_byphandle(struct device_node *np, const char *phandle_name)
-+{
-+	struct of_phandle_args out_args;
-+	struct qmc_chan *qmc_chan;
-+	int ret;
-+
-+	ret = of_parse_phandle_with_fixed_args(np, phandle_name, 1, 0,
-+					       &out_args);
-+	if (ret < 0)
-+		return ERR_PTR(ret);
-+
-+	if (out_args.args_count != 1) {
-+		of_node_put(out_args.np);
-+		return ERR_PTR(-EINVAL);
-+	}
-+
-+	qmc_chan = qmc_chan_get_from_qmc(out_args.np, out_args.args[0]);
-+	of_node_put(out_args.np);
-+	return qmc_chan;
-+}
- EXPORT_SYMBOL(qmc_chan_get_byphandle);
- 
-+struct qmc_chan *qmc_chan_get_bychild(struct device_node *np)
-+{
-+	struct device_node *qmc_np;
-+	u32 chan_index;
-+	int ret;
-+
-+	qmc_np = np->parent;
-+	ret = of_property_read_u32(np, "reg", &chan_index);
-+	if (ret)
-+		return ERR_PTR(-EINVAL);
-+
-+	return qmc_chan_get_from_qmc(qmc_np, chan_index);
-+}
-+EXPORT_SYMBOL(qmc_chan_get_bychild);
-+
- void qmc_chan_put(struct qmc_chan *chan)
- {
- 	put_device(chan->qmc->dev);
-@@ -1550,6 +1579,28 @@ struct qmc_chan *devm_qmc_chan_get_byphandle(struct device *dev,
- }
- EXPORT_SYMBOL(devm_qmc_chan_get_byphandle);
- 
-+struct qmc_chan *devm_qmc_chan_get_bychild(struct device *dev,
-+					   struct device_node *np)
-+{
-+	struct qmc_chan *qmc_chan;
-+	struct qmc_chan **dr;
-+
-+	dr = devres_alloc(devm_qmc_chan_release, sizeof(*dr), GFP_KERNEL);
-+	if (!dr)
-+		return ERR_PTR(-ENOMEM);
-+
-+	qmc_chan = qmc_chan_get_bychild(np);
-+	if (!IS_ERR(qmc_chan)) {
-+		*dr = qmc_chan;
-+		devres_add(dev, dr);
-+	} else {
-+		devres_free(dr);
-+	}
-+
-+	return qmc_chan;
-+}
-+EXPORT_SYMBOL(devm_qmc_chan_get_bychild);
-+
- MODULE_AUTHOR("Herve Codina <herve.codina@bootlin.com>");
- MODULE_DESCRIPTION("CPM QMC driver");
- MODULE_LICENSE("GPL");
-diff --git a/include/soc/fsl/qe/qmc.h b/include/soc/fsl/qe/qmc.h
-index 6f1d6cebc9fe..166484bb4294 100644
---- a/include/soc/fsl/qe/qmc.h
-+++ b/include/soc/fsl/qe/qmc.h
-@@ -17,9 +17,11 @@ struct device;
- struct qmc_chan;
- 
- struct qmc_chan *qmc_chan_get_byphandle(struct device_node *np, const char *phandle_name);
-+struct qmc_chan *qmc_chan_get_bychild(struct device_node *np);
- void qmc_chan_put(struct qmc_chan *chan);
- struct qmc_chan *devm_qmc_chan_get_byphandle(struct device *dev, struct device_node *np,
- 					     const char *phandle_name);
-+struct qmc_chan *devm_qmc_chan_get_bychild(struct device *dev, struct device_node *np);
- 
- enum qmc_mode {
- 	QMC_TRANSPARENT,
 -- 
 2.42.0
 
