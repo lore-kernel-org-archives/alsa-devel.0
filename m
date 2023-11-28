@@ -4,80 +4,141 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 278A5C4167B
-	for <alsa-devel@archiver.kernel.org>; Tue, 28 Nov 2023 17:48:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4D86DC4167B
+	for <alsa-devel@archiver.kernel.org>; Tue, 28 Nov 2023 17:50:23 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2E0E4DED;
-	Tue, 28 Nov 2023 18:48:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2E0E4DED
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0A6C8DED;
+	Tue, 28 Nov 2023 18:50:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0A6C8DED
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1701193723;
-	bh=Gfy1IvAJHtOURsa6p0dWEDOWeth/WVJ919Rozyirp/Y=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=Wu3DIVMHkKGOYTzaR9T66t0OELQVFnlotXwIMNqtXdZykumgKhidWI2tgqPEclO2A
-	 Tbpd9vZ5G9es6clnRX58UoA0XHydp6afdRHWbQDnKBA6Iy+cyoyBC9CjGrlDPo14qb
-	 Wxa3ZxsSMb4dq405dveRtuyAKDxuwsZ7jnu5GlPI=
+	s=default; t=1701193821;
+	bh=PBUNz8N/K7q4JL06xBR9ogC/lO9T7WaVOkWHXF6xgtI=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=G5XOHiQ8jKoHeLv4X24O1Q9m7zDEWKjl8zRMDqQVGRytP0T+7P6jGTlIb18G+Oml0
+	 Lcjx44n4BmuDjlvknVVBIdNzI/Z+MvznOnoqJ9/8WiS+1BuBUOCMcQoVcfJpjSG8jE
+	 UvqDna8TVmxjVfJuX380CJW+acwC55u6aFcAB1TM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 61D19F805D7; Tue, 28 Nov 2023 18:47:44 +0100 (CET)
+	id 3C4A1F8057B; Tue, 28 Nov 2023 18:49:44 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 18DB7F805E7;
-	Tue, 28 Nov 2023 18:47:44 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 987C2F8057B;
+	Tue, 28 Nov 2023 18:49:44 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 06155F8016E; Tue, 28 Nov 2023 18:47:37 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	id D8F31F80236; Tue, 28 Nov 2023 18:49:39 +0100 (CET)
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com
+ [IPv6:2a00:1450:4864:20::636])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 53DB8F80114
-	for <alsa-devel@alsa-project.org>; Tue, 28 Nov 2023 18:47:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 53DB8F80114
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9FBF2F8016E
+	for <alsa-devel@alsa-project.org>; Tue, 28 Nov 2023 18:49:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9FBF2F8016E
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=adENEMr6
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by ams.source.kernel.org (Postfix) with ESMTP id 60170B83B84;
-	Tue, 28 Nov 2023 17:47:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82B21C433C8;
-	Tue, 28 Nov 2023 17:47:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1701193647;
-	bh=Gfy1IvAJHtOURsa6p0dWEDOWeth/WVJ919Rozyirp/Y=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=adENEMr6OWS7SCT9+EXSQ5+EIv7/WS8hKvcIez0MT4/CIgBuCbaqBdBwY8XeoRLSI
-	 mA05jD42QWsEPDZkLnIy3h9aTYfvZOEKMgtWeU+ZiqN2BDXM6/fntIbVYcQ/D8k29T
-	 q9RWFC9ZNquZWsKV76Chtb47QLyvD0TyQKuulhq6XmKo9c9K3V3CLzXWpkyzu/VN9w
-	 OnNcvZzkDDbLU7BfE6Rtjw8wbdKepsJN/kB2SzY+24s8ZqJwXCof/TMaNkSsSMM/tQ
-	 Gn0Q4Q1QBq9bVq59rEqvfNqGgC0pOJ7CGdLM7gXL0y3diYndFeIrqnvd3Xa3LQvBQY
-	 igrjTxepP+FzQ==
-From: Mark Brown <broonie@kernel.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Banajit Goswami <bgoswami@quicinc.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Neil Armstrong <neil.armstrong@linaro.org>
-Cc: krzysztof.kozlowski@linaro.org, linux-arm-msm-owner@vger.kernel.org,
- alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
- linux-kernel@vger.kernel.org
-In-Reply-To: 
- <20231116-topic-sm8x50-upstream-tx-macro-fix-active-decimator-set-v1-1-6edf402f4b6f@linaro.org>
-References: 
- <20231116-topic-sm8x50-upstream-tx-macro-fix-active-decimator-set-v1-1-6edf402f4b6f@linaro.org>
-Subject: Re: [PATCH] ASoC: codecs: lpass-tx-macro: set active_decimator
- correct default value
-Message-Id: <170119364524.61148.12462722203643682631.b4-ty@kernel.org>
-Date: Tue, 28 Nov 2023 17:47:25 +0000
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20230601 header.b=YYQ7Oxdx
+Received: by mail-ej1-x636.google.com with SMTP id
+ a640c23a62f3a-a002562bd8bso4990766b.0
+        for <alsa-devel@alsa-project.org>;
+ Tue, 28 Nov 2023 09:49:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701193772; x=1701798572;
+ darn=alsa-project.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2Q6ar52kT12/oSOUgsQunGkK9992ePoRC0ssPbZWDgw=;
+        b=YYQ7OxdxHYvXedEiee9mL87kH6j+7FMjpZBeF6SZj6kO+h8x9Fm/0J+xDoUpPRw9Gf
+         bzY3ooKGfvdqACYNz6hMZtqFLI0Hnj9MdvMokgghnV08TAMaDbB40pKWRrmq36tcDGOY
+         WiQmhKJNKIPGv0q+k95jRVzR+eQB6nm0H7H0loPmZAPNiXsHMcHin/oyHRqzEWT169Zt
+         TDEBpLiZ5QNoXBaEuz7SCMfFr3QWk9tRe921LIqqjXFrJGz4EFBtxG+rP0hJ8/xwAORW
+         bEZJ9cHRTz/2T4Y1TJDMUW+XAnlIEdTRuwsEDZwMRJ2GXPAUm12ob+jwyS4419eidkd6
+         SRJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701193772; x=1701798572;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2Q6ar52kT12/oSOUgsQunGkK9992ePoRC0ssPbZWDgw=;
+        b=iOuCb5AigEnhiUYl2v3JELuaivLUCE7FOwzW5SDXq7O2HqjcjDGI2k7ga88sALxO3l
+         rqI23+YAsGqL9m4kVXSvlG9M0TuRmyX+gwYT0QRSoHvbVDQpcFQ+t8gzjfRj1RYmiv59
+         RdVbPwZUOg/cMf4xQwaQSBQjdp+HTAHKqUMo7xq0ltk3bJ17D4sbKLddaKe7qTK+QUWK
+         LVVVf1xmjeldCMVF6AD1ROZRMKFkllB0BebLRTXjEmhZM/nL9ksWzhw3y73JWk+NWep8
+         of0do/ar0tX029EVhouyQILAd84qK/twgedbOGy3t/iKnYPc8IqMmbH7Ui3ekY1Gs8An
+         zR4A==
+X-Gm-Message-State: AOJu0Yz4Il+9pEm9DXKEjGzcVqqu7wdlFF6tMFS5IUyFo79Y6fk0tQqa
+	vU/eGQoz7EPK8uxRGeSrGjA=
+X-Google-Smtp-Source: 
+ AGHT+IFegfjLsT1XNjq4u1dJkNE5gSVojRjltbsyE47RsYa/oKV+OirEmiPZK9QlSr1+eKKQQmVk8w==
+X-Received: by 2002:a17:906:f811:b0:a0f:1882:d5e with SMTP id
+ kh17-20020a170906f81100b00a0f18820d5emr5384410ejb.37.1701193772296;
+        Tue, 28 Nov 2023 09:49:32 -0800 (PST)
+Received: from localhost
+ (p200300e41f0fa600f22f74fffe1f3a53.dip0.t-ipconnect.de.
+ [2003:e4:1f0f:a600:f22f:74ff:fe1f:3a53])
+        by smtp.gmail.com with ESMTPSA id
+ cm26-20020a0564020c9a00b0054ae75dcd6bsm5742280edb.95.2023.11.28.09.49.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Nov 2023 09:49:30 -0800 (PST)
+From: Thierry Reding <thierry.reding@gmail.com>
+To: David Airlie <airlied@gmail.com>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Alim Akhtar <alim.akhtar@samsung.com>,
+	Andi Shyti <andi.shyti@kernel.org>,
+	Jonathan Cameron <jic23@kernel.org>,
+	Lars-Peter Clausen <lars@metafoo.de>,
+	Lee Jones <lee@kernel.org>,
+	Ulf Hansson <ulf.hansson@linaro.org>,
+	Tomasz Figa <tomasz.figa@gmail.com>,
+	Sylwester Nawrocki <s.nawrocki@samsung.com>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+	Alessandro Zummo <a.zummo@towertech.it>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Slaby <jirislaby@kernel.org>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Jaehoon Chung <jh80.chung@samsung.com>,
+	Sam Protsenko <semen.protsenko@linaro.org>,
+	dri-devel@lists.freedesktop.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-samsung-soc@vger.kernel.org,
+	linux-i2c@vger.kernel.org,
+	linux-iio@vger.kernel.org,
+	linux-mmc@vger.kernel.org,
+	linux-gpio@vger.kernel.org,
+	linux-pwm@vger.kernel.org,
+	linux-rtc@vger.kernel.org,
+	linux-serial@vger.kernel.org,
+	alsa-devel@alsa-project.org,
+	linux-sound@vger.kernel.org,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: Re: (subset) [PATCH 00/17] dt-bindings: samsung: add specific
+ compatibles for existing SoC
+Date: Tue, 28 Nov 2023 18:49:23 +0100
+Message-ID: <170119374454.445690.515311393756577368.b4-ty@gmail.com>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20231108104343.24192-1-krzysztof.kozlowski@linaro.org>
+References: <20231108104343.24192-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-0438c
-Message-ID-Hash: A75TWXA2KII6OG5AGIDPQLIEF6HDSFLH
-X-Message-ID-Hash: A75TWXA2KII6OG5AGIDPQLIEF6HDSFLH
-X-MailFrom: broonie@kernel.org
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: XAN6S377SS2KSP7O6RB3QX2OLHLJHPPL
+X-Message-ID-Hash: XAN6S377SS2KSP7O6RB3QX2OLHLJHPPL
+X-MailFrom: thierry.reding@gmail.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -89,7 +150,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/A75TWXA2KII6OG5AGIDPQLIEF6HDSFLH/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XAN6S377SS2KSP7O6RB3QX2OLHLJHPPL/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -98,41 +159,28 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, 16 Nov 2023 17:44:21 +0100, Neil Armstrong wrote:
-> The -1 value for active_decimator[dai_id] is considered as "not set",
-> but at probe the table is initialized a 0, this prevents enabling the
-> DEC0 Mixer since it will be considered as already set.
-> 
-> Initialize the table entries as -1 to fix tx_macro_tx_mixer_put().
-> 
+
+On Wed, 08 Nov 2023 11:43:26 +0100, Krzysztof Kozlowski wrote:
+> Merging
+> =======
+> I propose to take entire patchset through my tree (Samsung SoC), because:
+> 1. Next cycle two new SoCs will be coming (Google GS101 and ExynosAutov920), so
+>    they will touch the same lines in some of the DT bindings (not all, though).
+>    It is reasonable for me to take the bindings for the new SoCs, to have clean
+>    `make dtbs_check` on the new DTS.
+> 2. Having it together helps me to have clean `make dtbs_check` within my tree
+>    on the existing DTS.
+> 3. No drivers are affected by this change.
+> 4. I plan to do the same for Tesla FSD and Exynos ARM32 SoCs, thus expect
+>    follow up patchsets.
 > 
 > [...]
 
-Applied to
+Applied, thanks!
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+[12/17] dt-bindings: pwm: samsung: add specific compatibles for existing SoC
+        commit: 5d67b8f81b9d598599366214e3b2eb5f84003c9f
 
-Thanks!
-
-[1/1] ASoC: codecs: lpass-tx-macro: set active_decimator correct default value
-      commit: 69cecaf48831480252dcb63ba32803724f235b1c
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+Best regards,
+-- 
+Thierry Reding <thierry.reding@gmail.com>
