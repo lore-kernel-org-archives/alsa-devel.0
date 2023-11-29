@@ -4,151 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6A4E3C4167B
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Nov 2023 18:22:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 21BE6C4167B
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Nov 2023 18:46:34 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4EBC5DEE;
-	Wed, 29 Nov 2023 19:22:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4EBC5DEE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4A6BBDF1;
+	Wed, 29 Nov 2023 19:46:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4A6BBDF1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1701282164;
-	bh=gkYM9lMZPrRPifBe6tNXCU6GTe9tX/VL4/ezg9GgKXI=;
+	s=default; t=1701283591;
+	bh=FN4I76ZU7Cwagn6Bgl8OaeZ+LRU0T1R0zOgimIt+bG4=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=nAP3ZHF70PN16/ycDgfuZY9rMvLpJCnmSfV8xx0xZsQKQy6VRIw1sh1FRKj+f2iUb
-	 p37/V+Itl8PxjMcPFdM3j9LPbYtzyHDBSwxxYxUlxB655ZEnHDXH8cDDMJ949vcJ9Y
-	 t4vmEPXlM7yJIbSqxVE4/PVN1s4J07UJZJXb7nxo=
+	b=PBbhMcF3n+FNbVgJJQl3uEjln1N582x7KvqTFq2diBLI68I5fH7+z+2TNfhM7qpR3
+	 V2YnTnWhymY5y87k/NisN1xyLfnklmh+Ye9XscWywMk+aqNnoim4EAZ8FbuWc3UX8f
+	 pY64Mm2eqhwP81SA2bkmtAyx7lujPe3gGf5r/6m8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2AAE1F80578; Wed, 29 Nov 2023 19:22:13 +0100 (CET)
+	id 39857F8056F; Wed, 29 Nov 2023 19:45:59 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D6DB8F8058C;
-	Wed, 29 Nov 2023 19:22:12 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5025CF80254;
+	Wed, 29 Nov 2023 19:45:59 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 36A4EF8016E; Wed, 29 Nov 2023 19:22:06 +0100 (CET)
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com
- [IPv6:2a00:1450:4864:20::12b])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 32300F80236; Wed, 29 Nov 2023 19:45:53 +0100 (CET)
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id EB5C4F800F5
-	for <alsa-devel@alsa-project.org>; Wed, 29 Nov 2023 19:21:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EB5C4F800F5
+	by alsa1.perex.cz (Postfix) with ESMTPS id 1AFF6F8007E
+	for <alsa-devel@alsa-project.org>; Wed, 29 Nov 2023 19:45:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1AFF6F8007E
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=V/PMknfq
-Received: by mail-lf1-x12b.google.com with SMTP id
- 2adb3069b0e04-5098e423ba2so147772e87.2
-        for <alsa-devel@alsa-project.org>;
- Wed, 29 Nov 2023 10:21:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701282115; x=1701886915;
- darn=alsa-project.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=nNuPgKhDMKw80uiT85WqUBhO+7U/KHdwtlx8g1D/Ez4=;
-        b=V/PMknfqLHNfMbjXoDgJta/ZnkcnK7+8AjO2gryyC6LfIZ13casWBlMm1YBmOk1AfC
-         mIHf+jtq2iMrJIWqKa4g1xK2/2VIWTeR+1hTpzZrL8YiICutiY9ZhDtqQkkEgvFEeLWo
-         0jPjmaqGDqDxZkZdMq3JbdJQKWyK5NMpGgtM+c1q4nq7RaAy9oC6//hXdBXs+Ofi9i/I
-         cTKZZv/Xu9Z4ixLbTaNyX156kb6ajps1rmgmH7eyhqCNSPRt8saD2SQB3own9iCkMjLm
-         9eS4f7fyBrf+4b9Lg8N6GcFA/DzoxR+9n7b1qF0RSz+NtYBEkjgaxf3Y33V0m1137R+V
-         Yrww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701282115; x=1701886915;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=nNuPgKhDMKw80uiT85WqUBhO+7U/KHdwtlx8g1D/Ez4=;
-        b=a4eUDCyfMgoZ36Ihr/ROlHRUAnusOJ4kz3YQjYol66jTYMGCvIgKRvmtc6dPHSJH81
-         mextEBhMo9AS9zf7/rCM2NIgjb3mpDheQzSB3K1Z7cNqpZugqi8Bn1Sj8KPxqv8/EUcN
-         WRLB5xKyPiJfjZdJbuYE1lBJRR+U1RLxVTizDqnCwG2yYYT/awrW4W6itNeSD/d5jxkJ
-         FzWVW4AdVFd+BnaxUXYIPL0Huvpl32gZlls/snv6JlyxhC3aKCJPB/4A9C153gH5Ualm
-         Vtg5tJ6uHcTGvXt9Pq8FBU915g0gssNkHzkTIBYd8EkfKWsemQl94NnX4OX0R3OnxX7q
-         Wjww==
-X-Gm-Message-State: AOJu0YxefFhSpIrYoSreQeEweoYItJymaJuoLHOPjd/v1dbZKhauOIiG
-	9+/PJfPne3XC9RZecBvVfjLzLw==
-X-Google-Smtp-Source: 
- AGHT+IFqkXir0yMNo4WlvHXSFsKouuLysrWRfeYdK/tqF7ZvNNadMknVBKVHogi0sZlUOEooHchfbg==
-X-Received: by 2002:ac2:4887:0:b0:50b:c970:cc9b with SMTP id
- x7-20020ac24887000000b0050bc970cc9bmr653271lfc.61.1701282114687;
-        Wed, 29 Nov 2023 10:21:54 -0800 (PST)
-Received: from [192.168.209.83]
- (178235187166.dynamic-4-waw-k-2-3-0.vectranet.pl. [178.235.187.166])
-        by smtp.gmail.com with ESMTPSA id
- sd22-20020a170906ce3600b009fc576e26e6sm8119002ejb.80.2023.11.29.10.21.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 29 Nov 2023 10:21:54 -0800 (PST)
-Message-ID: <791d7271-87a4-4ce9-9beb-e8c3ef235737@linaro.org>
-Date: Wed, 29 Nov 2023 19:21:51 +0100
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=Ef+f+pvD
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701283546; x=1732819546;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=FN4I76ZU7Cwagn6Bgl8OaeZ+LRU0T1R0zOgimIt+bG4=;
+  b=Ef+f+pvDe/UXQW9GRhlTaAsgjsYUUc7KjFvYn2l8W+pmvgLcJTGifGji
+   HAE+ocEh79rBd9XBxG2MkQNvKslXkC38WZe199YzIZttyDH4ZYQPwgyKu
+   dSEN9xOa8bWUEM4BvioQjFJyxzR9Fcnwc4zXeTv7zx2u5V/veVpbE79FB
+   ZQKUG6Hp9vIUR7cIusgQ9yN8FbJjexGl1QpQ08ELKjiLQAjo/dhAxT9wc
+   kfQNYtMOcVCT7N7SHY3YirYPWe/v51HbMEEf+Xy4AiGbao2/Ua+k22s9R
+   6RIlKoZmUCgJH7ZNKemT0qUJRMmbXpAnOz7JFf+hpBr+RWF2v+FCaRTL3
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="383602785"
+X-IronPort-AV: E=Sophos;i="6.04,237,1695711600";
+   d="scan'208";a="383602785"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 29 Nov 2023 10:45:42 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="942421659"
+X-IronPort-AV: E=Sophos;i="6.04,237,1695711600";
+   d="scan'208";a="942421659"
+Received: from caw1-mobl1.amr.corp.intel.com (HELO [10.255.229.136])
+ ([10.255.229.136])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 29 Nov 2023 10:45:41 -0800
+Message-ID: <7bae01ac-a0de-47d9-9bd3-6bdfc48e02c1@linux.intel.com>
+Date: Wed, 29 Nov 2023 10:39:08 -0600
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 5/5] ASoC: codecs: Add WCD939x Codec driver
+Subject: Re: [PATCH 6/7] ASoC: Intel: soc-acpi-intel-tgl-match: add cs42l43
+ and cs56l56 support
 Content-Language: en-US
-To: neil.armstrong@linaro.org,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Banajit Goswami <bgoswami@quicinc.com>, Andy Gross <agross@kernel.org>,
- Bjorn Andersson <andersson@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>
-Cc: linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: 
- <20231123-topic-sm8650-upstream-wcd939x-codec-v1-0-21d4ad9276de@linaro.org>
- <20231123-topic-sm8650-upstream-wcd939x-codec-v1-5-21d4ad9276de@linaro.org>
- <ad9a7c4b-82f4-4347-b4dd-a394e4ba95f0@linaro.org>
- <42a6f6e0-2846-4cdc-8702-493fadbafb98@linaro.org>
- <eaa034cb-06e8-4204-befa-4389bcb7d9e8@linaro.org>
- <0140f49d-c463-4011-8159-f4e56466e6bd@linaro.org>
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <0140f49d-c463-4011-8159-f4e56466e6bd@linaro.org>
+To: Richard Fitzgerald <rf@opensource.cirrus.com>,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>, lgirdwood@gmail.com,
+ broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
+ kai.vehmanen@linux.intel.com, ranjani.sridharan@linux.intel.com,
+ cezary.rojewski@intel.com, yung-chuan.liao@linux.intel.com,
+ ckeepax@opensource.cirrus.com, yong.zhi@intel.com, chao.song@linux.intel.com
+References: <20231127133448.18449-1-peter.ujfalusi@linux.intel.com>
+ <20231127133448.18449-7-peter.ujfalusi@linux.intel.com>
+ <9660e9df-2061-4b2c-ba59-5e6f8a61f07d@opensource.cirrus.com>
+ <cb768f03-9d46-432e-ad67-8ff1ef075385@linux.intel.com>
+ <6038c9fa-8cb1-46e1-b856-d759a3f990b3@opensource.cirrus.com>
+ <5e9b0b69-6108-4909-90e8-257c13c2d886@linux.intel.com>
+ <d2de7d4c-3984-4737-b879-a1fa829007ff@opensource.cirrus.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <d2de7d4c-3984-4737-b879-a1fa829007ff@opensource.cirrus.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: DN4YNBYN7LV53XE2FJGAFMZME5EWGCOF
-X-Message-ID-Hash: DN4YNBYN7LV53XE2FJGAFMZME5EWGCOF
-X-MailFrom: konrad.dybcio@linaro.org
+Message-ID-Hash: ZAOWTDLIEMI4OGHRIG4LVSRKKDYBYYCC
+X-Message-ID-Hash: ZAOWTDLIEMI4OGHRIG4LVSRKKDYBYYCC
+X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -160,56 +104,83 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DN4YNBYN7LV53XE2FJGAFMZME5EWGCOF/>
-List-Archive: <>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZAOWTDLIEMI4OGHRIG4LVSRKKDYBYYCC/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 29.11.2023 16:12, neil.armstrong@linaro.org wrote:
-> On 29/11/2023 14:46, Konrad Dybcio wrote:
->> On 28.11.2023 16:01, Neil Armstrong wrote:
->>> On 25/11/2023 13:07, Konrad Dybcio wrote:
->>>
->>> <snip>
->>>
->>>>> +
->>>>> +static int wcd939x_io_init(struct snd_soc_component *component)
->>>>> +{
->>>>> +    snd_soc_component_write_field(component, WCD939X_ANA_BIAS,
->>>>> +                      WCD939X_BIAS_ANALOG_BIAS_EN, 1);
->>>> All of these values are BIT()s or 2-4 ORed BIT()s, can you check what they
->>>> mean?
+
+>>>>>> +        .name_prefix = "cs35l56-8"
+>>>>>
+>>>>> Can these prefixes be "AMPn" to match the CS35L41, CS35L51 and
+>>>>> CS35L56-hda driver? This prefix is used to find the matching firmware
+>>>>> files and our naming convention for these has been cs35lxx-xxxx-ampn
+>>>>>
+>>>>> Is there anything that depends on the prefixes being "cs35l56-n" ?
 >>>>
->>>> Same for almost all other snd_soc_component_ write/modify functions
+>>>> IIRC this name_prefix is just used for the codec_conf and hence for
+>>>> control names/UCM. At some point userspace/driver need to know if amp5
+>>>> is left or right.
+>>>>
+>>>> We can certainly align on conventions but the values set in this ACPI
+>>>> match table will not be used for firmware download - different scope.
+>>>>
 >>>
->>> It uses snd_soc_component_write_field() with is the same as
->>> regmap_write_bits(REGISTER, REGISTER_MASK,
->>>                    FIELD_PREP(REGISTER_MASK, value);
->>>
->>> So the 1 mean write in enable mask in this case, and mask is single bit,
->>> read it exactly like if it was using FIELD_PREP(), but even for BITs.
->>>
->>> I did check every single snd_soc_component_write_field() so far to check
->>> it matches.
->>>
->>> Or it's another question ?
->> What I wanted to ask is whether it's possible to #define these magic
->> values within these fields
+>>> They are used for our firmware download. Each amp can have its own
+>>> unique firmware file. The ALSA prefix is used to identify which firmware
+>>> file to load to which amp.
+>>
+>> The prefix will only be used when the card is created, specifically for
+>> control names.
+>> The firmware should be selected and downloaded when the device shows up
+>> on the bus.
+>> Card creation and device enumeration/initialization happen on different
+>> timelines, if the machine driver is "blacklisted" or unbound I am not
+>> sure what happens.
+>>
+>> There is a dependency between machine driver probe and codec firmware
+>> download that I am not able to follow, can you please elaborate?
+>>
 > 
-> OK, so most of writes are to boolean enable bits, I can use true/false
-> instead of 0 & 1 for those, would it be more readable ?
-Yes, I think that would convey their meaning quite well
+> The codec driver has to choose which firmware to load from under
+> /lib/firmware. It does this using a combination of SSID (to identify the
+> target product), the ALSA prefix string (to identify which amp) and
+> in some systems a GPIO on the motherboard to select between different
+> models of speaker when they have multiple suppliers. This results in a
+> firmware name like:
+> 
+> cs35l56-<silicon rev>-dsp1-misc-<SSID>[-<SPEAKER MODEL>]-<ALSA PREFIX>
+> 
+> You can see this if you look in the linux-firmware repo under cirrus/
+> for cs35l41 firmware files (though the ALSA PREFIX section in those
+> cases is not "AMPn" because they are not SDCA parts with rotation,
+> they have a fixed left/right assignment.)
+> 
+> We have to be careful of the length of the prefix. The 44 characters of
+> an ALSA control name get eaten up very quickly when we start creating
+> fully-qualified names for controls published by the firmware. So "AMPn"
+> was nice because it was descriptive enough but only uses 5 characters
+> of the 44.
+> 
+> Having said that, I've calculated that we have enough characters (just)
+> to use a prefix of "cs35l56-n". If there's a reason why that is
+> necessary/desirable for SOF or SoundWire then we could do that. But we'd
+> intended to use "AMPn" prefixes.
+> 
+> We just need to decide whether to go with "AMPn". Or switch to using
+> "cs35l56-n" for the ALSA prefix (the therefore the qualifier at the end
+> of the firmware filename).
 
-> 
-> For the rest, those a integer values to a field, those are not bitmasks
-> and I do not have the definition of the values.
-> 
-> I did a full cleanup and tried to define as much as possible,
-> there were still lot of places where not defined bitmasks we used,
-> but there's still some integer values, but I think it's acceptable.
-No worries, what you say already sounds very cool!
+Yes we have similar issues with control names in topology, the limit is
+hit very quickly.
 
-Konrad
+I think you missed my point though that the ALSA prefix is only set when
+the card is created, which can be sometime after the firmware needs to
+be downloaded. I guess you could pick the firmware in the component
+probe, which happens during the card creation, but that could be
+sub-optimal. Given the download times you want the download to proceed
+as early as possible.
