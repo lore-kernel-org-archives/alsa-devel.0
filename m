@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DDAC4C4167B
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Nov 2023 12:55:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AD419C4167B
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Nov 2023 12:55:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 52C8EE75;
-	Wed, 29 Nov 2023 13:55:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 52C8EE75
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7A9579F6;
+	Wed, 29 Nov 2023 13:55:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7A9579F6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1701262519;
-	bh=fHREn2IODvN5vXs5e4ohVj9Yrc5o/eFDFzSVB5NMoDs=;
+	s=default; t=1701262539;
+	bh=7o5Df0wGKeyYfnVIG1saGTKWLSJETSw4n9hnQZo8JuU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=bSiB/m8vYPfgEI5lDMwFmmUIJdnznld97gJYc1xwlmz9pajg77b6v1foADsf8OcL7
-	 aF+/mZwu7BDSs2YvTW97bTetnWv0dvit/WortcU1KBtBqh045ZrlJa2ZMLSl9zZYJZ
-	 ognWHNJ5OGmuJkOfBaD+JcGpH9ib1wRXHXI7L5KA=
+	b=cegy0KDjkrN56VH+3f6qbg1OnKh40rCm1MYG3XxHSbWdQqYfh0Ru/SQ24d499x1Pe
+	 /HK9jH2TRZh83bsWXkS0g9yNWt1iW0cmLONouHDD+U9kYO8ax3eGKccRuX4rAhLAol
+	 SulXyUPkZbb4hU0Xzhwlye5gunMJ+im4LywaVDAI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B2497F806B6; Wed, 29 Nov 2023 13:53:30 +0100 (CET)
+	id 4AF33F806B2; Wed, 29 Nov 2023 13:53:32 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 21BDAF8068C;
-	Wed, 29 Nov 2023 13:53:29 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CFA90F806C3;
+	Wed, 29 Nov 2023 13:53:30 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 68AB1F80567; Wed, 29 Nov 2023 13:53:19 +0100 (CET)
+	id DC232F80640; Wed, 29 Nov 2023 13:53:26 +0100 (CET)
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 4A7D8F805F8
-	for <alsa-devel@alsa-project.org>; Wed, 29 Nov 2023 13:53:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4A7D8F805F8
+	by alsa1.perex.cz (Postfix) with ESMTPS id A0343F8060B
+	for <alsa-devel@alsa-project.org>; Wed, 29 Nov 2023 13:53:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A0343F8060B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=Nhn3UbDi
+ header.s=Intel header.b=B7pF+UYt
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701262396; x=1732798396;
+  t=1701262400; x=1732798400;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=fHREn2IODvN5vXs5e4ohVj9Yrc5o/eFDFzSVB5NMoDs=;
-  b=Nhn3UbDiESz+aGIw+rwJTu1DS+g/LN89BsZPBNXCe6dRinYWMYW4wHU5
-   DYsVBhfI/+2AFFy1839gnvuahA1A6rhOE/2/qR9GoCSXLXIL96ZPJE0VO
-   MDecXwxJAJXGY+042EVZxlFs36mDHglKaErR/9fqDJHKZf4s3WJ5W97SI
-   P00NJrHLx/i7o7uEQ1oiUCsrEeK39+3k8EzOdMlJuDoeQi9mOIkwMotmI
-   1nFMi1PwtAv9cCToG2vF4Tkx0KjZ9vZOzXZgY2X2xDrQbaoJKu8L5WLVV
-   Yev6g86/Z+vkCAxpVl1T0HiobyLd1Wa9ZfBvUMn8UVgGnJNjfJndDT13j
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="392022953"
+  bh=7o5Df0wGKeyYfnVIG1saGTKWLSJETSw4n9hnQZo8JuU=;
+  b=B7pF+UYt3SHt7kSUrC6Dcs7ze9JdnnSAU8OSDghz6zjyJq3R1IVEOSqC
+   6Ld9pQwOMR8yR61LqpNlb/RBjO/8672+3aVc9nAtyl/u+Q567Mmb3gbEY
+   vHr4TC1lqfMK7rCCVJW3cAMVN6GbKmGCBE/RMDBGsJ8DXfbYCOPIbHsyY
+   InBpnZUgcGkIi/V2MNILgpDWayD1vWS3VGPjg2kTa5H8xOx5pL3irRpZ+
+   iHBjtgAX65Xj/ayBmHOuI7lgdMQEZr3bBxoEIGMmFEuC/kVB1hOkngu27
+   avjhbddMUxdyFzfWp0lB53mBYY9hFv9T7Ye9uudPrG/XHptZkwubwZJlX
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="392022965"
 X-IronPort-AV: E=Sophos;i="6.04,235,1695711600";
-   d="scan'208";a="392022953"
+   d="scan'208";a="392022965"
 Received: from fmviesa001.fm.intel.com ([10.60.135.141])
   by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 29 Nov 2023 04:53:13 -0800
+ 29 Nov 2023 04:53:17 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.04,235,1695711600";
-   d="scan'208";a="17174645"
+   d="scan'208";a="17174647"
 Received: from klitkey1-mobl1.ger.corp.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.252.44.16])
   by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 29 Nov 2023 04:53:11 -0800
+ 29 Nov 2023 04:53:15 -0800
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com,
 	broonie@kernel.org
@@ -72,17 +72,17 @@ Cc: alsa-devel@alsa-project.org,
 	pierre-louis.bossart@linux.intel.com,
 	kai.vehmanen@linux.intel.com,
 	ranjani.sridharan@linux.intel.com
-Subject: [PATCH 09/13] ASoC: SOF: sof-of-dev: Rely on core to create the file
- paths
-Date: Wed, 29 Nov 2023 14:53:23 +0200
-Message-ID: <20231129125327.23708-10-peter.ujfalusi@linux.intel.com>
+Subject: [PATCH 11/13] ASoC: SOF: core: Add helper for initialization of
+ paths, ops
+Date: Wed, 29 Nov 2023 14:53:25 +0200
+Message-ID: <20231129125327.23708-12-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231129125327.23708-1-peter.ujfalusi@linux.intel.com>
 References: <20231129125327.23708-1-peter.ujfalusi@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: TPDJLLBRTUDMTPJFFTTCBF4OJ2LNU2PX
-X-Message-ID-Hash: TPDJLLBRTUDMTPJFFTTCBF4OJ2LNU2PX
+Message-ID-Hash: PTBDCBWSEDFUCIXC3LLSL74UNXWE2YGE
+X-Message-ID-Hash: PTBDCBWSEDFUCIXC3LLSL74UNXWE2YGE
 X-MailFrom: peter.ujfalusi@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -94,8 +94,7 @@ X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TPDJLLBRTUDMTPJFFTTCBF4OJ2LNU2PX/>
+Archived-At: <>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -104,37 +103,92 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The core is now using the information from ipc_file_profile_base to create
-the paths for the loadable files, no need to set it in here anymore.
+Add sof_init_environment() as a helper function to contain path and ops
+initialization.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 ---
- sound/soc/sof/sof-of-dev.c | 11 -----------
- 1 file changed, 11 deletions(-)
+ sound/soc/sof/core.c | 56 +++++++++++++++++++++++++++-----------------
+ 1 file changed, 34 insertions(+), 22 deletions(-)
 
-diff --git a/sound/soc/sof/sof-of-dev.c b/sound/soc/sof/sof-of-dev.c
-index 7b58f45790f7..fa92da5ee9b3 100644
---- a/sound/soc/sof/sof-of-dev.c
-+++ b/sound/soc/sof/sof-of-dev.c
-@@ -87,17 +87,6 @@ int sof_of_probe(struct platform_device *pdev)
+diff --git a/sound/soc/sof/core.c b/sound/soc/sof/core.c
+index f1a083de9f9e..a2e9506e0f85 100644
+--- a/sound/soc/sof/core.c
++++ b/sound/soc/sof/core.c
+@@ -265,6 +265,38 @@ static int sof_select_ipc_and_paths(struct snd_sof_dev *sdev)
+ 	return 0;
+ }
  
- 	sof_pdata->desc = desc;
- 	sof_pdata->dev = &pdev->dev;
--	sof_pdata->fw_filename = desc->default_fw_filename[SOF_IPC_TYPE_3];
--
--	if (fw_path)
--		sof_pdata->fw_filename_prefix = fw_path;
--	else
--		sof_pdata->fw_filename_prefix = desc->default_fw_path[SOF_IPC_TYPE_3];
--
--	if (tplg_path)
--		sof_pdata->tplg_filename_prefix = tplg_path;
--	else
--		sof_pdata->tplg_filename_prefix = desc->default_tplg_path[SOF_IPC_TYPE_3];
++static int sof_init_environment(struct snd_sof_dev *sdev)
++{
++	int ret;
++
++	ret = sof_select_ipc_and_paths(sdev);
++	if (ret)
++		return ret;
++
++	/* init ops, if necessary */
++	ret = sof_ops_init(sdev);
++	if (ret < 0)
++		return ret;
++
++	/* check all mandatory ops */
++	if (!sof_ops(sdev) || !sof_ops(sdev)->probe) {
++		dev_err(sdev->dev, "missing mandatory ops\n");
++		sof_ops_free(sdev);
++		return -EINVAL;
++	}
++
++	if (!sdev->dspless_mode_selected &&
++	    (!sof_ops(sdev)->run || !sof_ops(sdev)->block_read ||
++	     !sof_ops(sdev)->block_write || !sof_ops(sdev)->send_msg ||
++	     !sof_ops(sdev)->load_firmware || !sof_ops(sdev)->ipc_msg_data)) {
++		dev_err(sdev->dev, "missing mandatory DSP ops\n");
++		sof_ops_free(sdev);
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
+ /*
+  *			FW Boot State Transition Diagram
+  *
+@@ -503,31 +535,11 @@ int snd_sof_device_probe(struct device *dev, struct snd_sof_pdata *plat_data)
+ 		}
+ 	}
  
- 	sof_pdata->ipc_file_profile_base.ipc_type = desc->ipc_default;
- 	sof_pdata->ipc_file_profile_base.fw_path = fw_path;
+-	ret = sof_select_ipc_and_paths(sdev);
++	/* Initialize loadable file paths and check the environment validity */
++	ret = sof_init_environment(sdev);
+ 	if (ret)
+ 		return ret;
+ 
+-	/* init ops, if necessary */
+-	ret = sof_ops_init(sdev);
+-	if (ret < 0)
+-		return ret;
+-
+-	/* check all mandatory ops */
+-	if (!sof_ops(sdev) || !sof_ops(sdev)->probe) {
+-		sof_ops_free(sdev);
+-		dev_err(dev, "missing mandatory ops\n");
+-		return -EINVAL;
+-	}
+-
+-	if (!sdev->dspless_mode_selected &&
+-	    (!sof_ops(sdev)->run || !sof_ops(sdev)->block_read ||
+-	     !sof_ops(sdev)->block_write || !sof_ops(sdev)->send_msg ||
+-	     !sof_ops(sdev)->load_firmware || !sof_ops(sdev)->ipc_msg_data)) {
+-		sof_ops_free(sdev);
+-		dev_err(dev, "missing mandatory DSP ops\n");
+-		return -EINVAL;
+-	}
+-
+ 	INIT_LIST_HEAD(&sdev->pcm_list);
+ 	INIT_LIST_HEAD(&sdev->kcontrol_list);
+ 	INIT_LIST_HEAD(&sdev->widget_list);
 -- 
 2.43.0
 
