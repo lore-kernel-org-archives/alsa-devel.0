@@ -4,95 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A7779C4167B
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Nov 2023 18:47:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 387F7C4167B
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Nov 2023 18:53:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6FCF8E12;
-	Wed, 29 Nov 2023 19:46:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6FCF8E12
+	by alsa0.perex.cz (Postfix) with ESMTPS id 41470DEC;
+	Wed, 29 Nov 2023 19:53:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 41470DEC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1701283623;
-	bh=VesGDOaehDA9Fg1TH+ih/jgS5o/DVG5HPfhsdBxy2o8=;
-	h=Date:Subject:To:References:From:In-Reply-To:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=f938lr7p7oAo6Fm+C942pg1dBrUEwmzaPyagnwlQFcw13tgptVv018MEKBPvCPrDS
-	 +AEUa6oOJXZdVIXU3pWyEthBNE1/JJEgGViUKGINtKuuG65In4nN0kgvviZcUqU/mf
-	 UOIjYvNsoobutfQNNZT5yISmsORayct+acACV/FM=
+	s=default; t=1701284019;
+	bh=UGgJf+xDm6TeaMGLjtQRriZZTl6p0lxp7AxmrXcux2w=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=AoWENCArMLpQfZ3IzJfbvJb69QjQ/NgVbBso/m+p9rjdFKd+XCMpBoETH+nRivi+W
+	 +nB3nxBw/TJSBCGz1zlrkdAkIb60VsiAtP6P1ymXyiXfKsDRrHI7rRNgnyzjHnW1Mk
+	 R5D7JlOMx+4MXwYXLCXmKbZYvbqJC6vDJcgKhlGU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A8123F805B2; Wed, 29 Nov 2023 19:46:04 +0100 (CET)
+	id 64633F80587; Wed, 29 Nov 2023 19:53:07 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C2BBAF805D6;
-	Wed, 29 Nov 2023 19:46:03 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8DF55F801D5;
+	Wed, 29 Nov 2023 19:53:07 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 65F6FF80588; Wed, 29 Nov 2023 19:46:00 +0100 (CET)
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 94A84F801D5; Wed, 29 Nov 2023 19:53:02 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 55AC3F8016E
-	for <alsa-devel@alsa-project.org>; Wed, 29 Nov 2023 19:45:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 55AC3F8016E
+	by alsa1.perex.cz (Postfix) with ESMTPS id C5A78F8007E
+	for <alsa-devel@alsa-project.org>; Wed, 29 Nov 2023 19:52:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C5A78F8007E
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=PtYikKH7
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701283548; x=1732819548;
-  h=message-id:date:mime-version:subject:to:references:from:
-   in-reply-to:content-transfer-encoding;
-  bh=VesGDOaehDA9Fg1TH+ih/jgS5o/DVG5HPfhsdBxy2o8=;
-  b=PtYikKH7eBqsRjJ9PTXMtVQTJ+6CIyGRDCFbkaRq2Or9tFDg+DhssG9w
-   VhvAlbtKPnagQv5LHevomUNLdFd8z2wpQQmF4MvxzsrpDllawwSskturA
-   W8ILZp4SolyfgyPQaYdCKwLu6ktvhrw3n5YwYE0zat7B91xHb+1UJyeX5
-   iOJ1YyR6M89vDoqSkN3LWoiueIliasRaYrID7/NOTJSSgHIFtWo+pmV4v
-   Brkmn5pKfzKQFHpHVWtdzvvvAswL1Ll+ekci8TAUBo9lV7UQUqtUKeq60
-   E+/uwdbXmkv7sx7MiAKP1Sw1pAqznLYlMk9/UgYFl+2gaBqxGvdzXIxv3
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="383602796"
-X-IronPort-AV: E=Sophos;i="6.04,237,1695711600";
-   d="scan'208";a="383602796"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 29 Nov 2023 10:45:43 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="942421671"
-X-IronPort-AV: E=Sophos;i="6.04,237,1695711600";
-   d="scan'208";a="942421671"
-Received: from caw1-mobl1.amr.corp.intel.com (HELO [10.255.229.136])
- ([10.255.229.136])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 29 Nov 2023 10:45:42 -0800
-Message-ID: <598015b0-68e1-434c-96d3-571040a3814e@linux.intel.com>
-Date: Wed, 29 Nov 2023 10:46:52 -0600
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=Zzqe7kj9
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 4FD4D61CAE;
+	Wed, 29 Nov 2023 18:52:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D82DC433C7;
+	Wed, 29 Nov 2023 18:52:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1701283976;
+	bh=UGgJf+xDm6TeaMGLjtQRriZZTl6p0lxp7AxmrXcux2w=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=Zzqe7kj9oMc7/5iqHUZGIH/2t2lng2nWwIqOejlb2it6VjKIH2QUf4wiZVqVGzrz4
+	 7Co0gUNwabPBLVCZq7fVh2OiypyVmtCbhqdp1NzGrfB9hJvlxlxaaqQ1vDXhzwzQVi
+	 jPlUR6kQiXHKTXeDAtVIavInxUKwYpUb0YEmmL4iA7bPEjfsNYglh36K0iSfMoVrh9
+	 jb3+3LYRgQBpMkkh7nlK73/MIsTFYA6MNbbd7hIqP76XWxQmnQlVopf8FfjEMCYcIH
+	 UB16FiHtXaeFUV1QQT93iReMZa/945VmXrqnZ39ij3GU2GLXfaGsN4uBiMO9OLNP3U
+	 tzdcpJX7sKCaA==
+From: Mark Brown <broonie@kernel.org>
+To: lgirdwood@gmail.com, Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
+ pierre-louis.bossart@linux.intel.com, kai.vehmanen@linux.intel.com,
+ ranjani.sridharan@linux.intel.com, yung-chuan.liao@linux.intel.com
+In-Reply-To: <20231129122021.679-1-peter.ujfalusi@linux.intel.com>
+References: <20231129122021.679-1-peter.ujfalusi@linux.intel.com>
+Subject: Re: [PATCH] ASoC: SOF: ipc4: check return value of
+ snd_sof_ipc_msg_data
+Message-Id: <170128397409.290371.3042450357579316139.b4-ty@kernel.org>
+Date: Wed, 29 Nov 2023 18:52:54 +0000
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] ASoC: qcom: Add helper for allocating Soundwire
- stream runtime
-Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>, Vinod Koul <vkoul@kernel.org>,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- Sanyog Kale <sanyog.r.kale@intel.com>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Banajit Goswami <bgoswami@quicinc.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, linux-arm-msm@vger.kernel.org,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- linux-sound@vger.kernel.org
-References: <20231128165638.757665-1-krzysztof.kozlowski@linaro.org>
- <ce46c729-48de-4b71-ace3-9b88f95e8e28@linux.intel.com>
- <5ffed1e6-ac60-42e1-8322-4f5e419ef86d@linaro.org>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <5ffed1e6-ac60-42e1-8322-4f5e419ef86d@linaro.org>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-ID-Hash: TNDOI4ZTGRFA4OYDQEVE53ENIIENBTX6
-X-Message-ID-Hash: TNDOI4ZTGRFA4OYDQEVE53ENIIENBTX6
-X-MailFrom: pierre-louis.bossart@linux.intel.com
+X-Mailer: b4 0.13-dev-0438c
+Message-ID-Hash: AXUYZGRLDXDF4D7C7DJXTYQFIPAYPGDE
+X-Message-ID-Hash: AXUYZGRLDXDF4D7C7DJXTYQFIPAYPGDE
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -104,7 +85,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TNDOI4ZTGRFA4OYDQEVE53ENIIENBTX6/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AXUYZGRLDXDF4D7C7DJXTYQFIPAYPGDE/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -113,57 +94,36 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-
-
-On 11/29/23 10:35, Krzysztof Kozlowski wrote:
-> On 28/11/2023 18:39, Pierre-Louis Bossart wrote:
->>
->>> +int qcom_snd_sdw_startup(struct snd_pcm_substream *substream)
->>> +{
->>> +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
->>> +	struct snd_soc_dai *cpu_dai = snd_soc_rtd_to_cpu(rtd, 0);
->>> +	struct sdw_stream_runtime *sruntime;
->>> +	struct snd_soc_dai *codec_dai;
->>> +	int ret, i;
->>> +
->>> +	sruntime = sdw_alloc_stream(cpu_dai->name);
->>> +	if (!sruntime)
->>> +		return -ENOMEM;
->>> +
->>> +	for_each_rtd_codec_dais(rtd, i, codec_dai) {
->>> +		ret = snd_soc_dai_set_stream(codec_dai, sruntime,
->>> +					     substream->stream);
->>> +		if (ret < 0 && ret != -ENOTSUPP) {
->>
->> I know this is existing code moved into a helper, but out of curiosity
->> why is -ENOTSUPP ignored? Isn't this problematic?
+On Wed, 29 Nov 2023 14:20:21 +0200, Peter Ujfalusi wrote:
+> snd_sof_ipc_msg_data could return error.
 > 
-> This is for all DAI links, so if some don't have set_stream callback, we
-> assume it is not needed. For example few codecs do not need it because
-> they are not on Soundwire bus at all and they don't care about the stream.
-
-Humm, it was my understanding that the substream is mapped 1:1 with a
-dailink, so not sure how SoundWire and non-SoundWire DAIs could be part
-of the same dailink?
-
-I am not saying this test is silly, just wondering if there is any case
-where this error code is returned. Worst-case it's always false but
-harmless.
-
->>
->>> +			dev_err(rtd->dev, "Failed to set sdw stream on %s\n",
->>> +				codec_dai->name);
->>> +			goto err_set_stream;
->>> +		}
->>> +	}
->>
->> Also should the CPU DAIs also be used to set the stream information?
->> it's not clear to me why only the CODEC DAIs are used.
 > 
-> I don't know, we never did. As you pointed out, I am just moving things
-> around, so I don't really know the original intention.
 
-Fair enough, I've been in your shoes :-)
-Not always easy to grade 3+ yr code as 'miss', 'bug', 'optimization' or
-'feature'...
+Applied to
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+
+Thanks!
+
+[1/1] ASoC: SOF: ipc4: check return value of snd_sof_ipc_msg_data
+      commit: 2bd512626f8ea3957c981cadd2ebf75feff737dd
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
 
