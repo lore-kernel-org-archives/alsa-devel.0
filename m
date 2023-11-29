@@ -4,150 +4,151 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 808F5C4167B
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Nov 2023 16:44:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6A4E3C4167B
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Nov 2023 18:22:46 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CD209DEC;
-	Wed, 29 Nov 2023 17:44:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CD209DEC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4EBC5DEE;
+	Wed, 29 Nov 2023 19:22:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4EBC5DEE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1701276265;
-	bh=6Sy6tHKfawn+DWHh4L9yIhF4tCk+BrQKYlCR13mrYXM=;
+	s=default; t=1701282164;
+	bh=gkYM9lMZPrRPifBe6tNXCU6GTe9tX/VL4/ezg9GgKXI=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=GzIfRWzuIYFMRwq+loMkKOOfHZiDQSumwsySuYcb6t6+dfRkD9jBlUPwlwp5v4dHV
-	 79tb3A/E9UAbuonP6PAqfqzdP944vwR6gB2cq/d9qElshRqT0DDSqmuTvN1rsvRvki
-	 MYBXT2/vzx5itq8WVU2du+d11IGytsHAJZrGX1qY=
+	b=nAP3ZHF70PN16/ycDgfuZY9rMvLpJCnmSfV8xx0xZsQKQy6VRIw1sh1FRKj+f2iUb
+	 p37/V+Itl8PxjMcPFdM3j9LPbYtzyHDBSwxxYxUlxB655ZEnHDXH8cDDMJ949vcJ9Y
+	 t4vmEPXlM7yJIbSqxVE4/PVN1s4J07UJZJXb7nxo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B68CCF80567; Wed, 29 Nov 2023 17:43:54 +0100 (CET)
+	id 2AAE1F80578; Wed, 29 Nov 2023 19:22:13 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8354EF80578;
-	Wed, 29 Nov 2023 17:43:54 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D6DB8F8058C;
+	Wed, 29 Nov 2023 19:22:12 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8FCC7F8016E; Wed, 29 Nov 2023 17:43:51 +0100 (CET)
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com
- [IPv6:2a00:1450:4864:20::629])
+	id 36A4EF8016E; Wed, 29 Nov 2023 19:22:06 +0100 (CET)
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com
+ [IPv6:2a00:1450:4864:20::12b])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id DDDA0F800F5
-	for <alsa-devel@alsa-project.org>; Wed, 29 Nov 2023 17:43:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DDDA0F800F5
+	by alsa1.perex.cz (Postfix) with ESMTPS id EB5C4F800F5
+	for <alsa-devel@alsa-project.org>; Wed, 29 Nov 2023 19:21:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EB5C4F800F5
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=cCaEfKoc
-Received: by mail-ej1-x629.google.com with SMTP id
- a640c23a62f3a-a04196fc957so999643466b.2
+ header.s=google header.b=V/PMknfq
+Received: by mail-lf1-x12b.google.com with SMTP id
+ 2adb3069b0e04-5098e423ba2so147772e87.2
         for <alsa-devel@alsa-project.org>;
- Wed, 29 Nov 2023 08:43:47 -0800 (PST)
+ Wed, 29 Nov 2023 10:21:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701276227; x=1701881027;
+        d=linaro.org; s=google; t=1701282115; x=1701886915;
  darn=alsa-project.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=fhyqDd+TZmzHAtUttgWk2RDaNO0MUw32LkqeIlJYnHQ=;
-        b=cCaEfKocZH2wCWwxykRYAxlFDZu88WrSAdhVFplRAPB70PSjFEUaPOy8xbvXiVa7M3
-         igkWPfz1h/gNSEwuUjMqJuWUzU5telO+Ds9AkICBICSG530xAob2IrWvjrb9N9I1ebTa
-         2xFixbi5M+V+UXHhlE5w2afrl8FtwuvuXKRR6L15fiisrBoq0nkjgHBu+Mve6v1HXuMu
-         VQqUMFBZwkpfcI1WfjljpOCHCXVPGJ1QcCUqL4LfAvHm5q/pF+rENZYkwNV0D9ip0CKk
-         A4nXhsIlSz+DDItyYKHLWuMtNWaDWg6Q7yT2aU2gOWFI5xbr8GpE6ekMHQex/xHBoD33
-         9mNw==
+        bh=nNuPgKhDMKw80uiT85WqUBhO+7U/KHdwtlx8g1D/Ez4=;
+        b=V/PMknfqLHNfMbjXoDgJta/ZnkcnK7+8AjO2gryyC6LfIZ13casWBlMm1YBmOk1AfC
+         mIHf+jtq2iMrJIWqKa4g1xK2/2VIWTeR+1hTpzZrL8YiICutiY9ZhDtqQkkEgvFEeLWo
+         0jPjmaqGDqDxZkZdMq3JbdJQKWyK5NMpGgtM+c1q4nq7RaAy9oC6//hXdBXs+Ofi9i/I
+         cTKZZv/Xu9Z4ixLbTaNyX156kb6ajps1rmgmH7eyhqCNSPRt8saD2SQB3own9iCkMjLm
+         9eS4f7fyBrf+4b9Lg8N6GcFA/DzoxR+9n7b1qF0RSz+NtYBEkjgaxf3Y33V0m1137R+V
+         Yrww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701276227; x=1701881027;
+        d=1e100.net; s=20230601; t=1701282115; x=1701886915;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fhyqDd+TZmzHAtUttgWk2RDaNO0MUw32LkqeIlJYnHQ=;
-        b=JvTWUKNWNAy7O8V+vMSqAmjpjIMj5xvHYdXlLzLNOwjr+cDLQbtVVaG8MyDQuanZEq
-         El1pTPvqn9nu5yH6OUNEwMY9KhccuNJCz1nvjBvHuOb9RarTKeAi9zADM+o7J441HbJP
-         XtQtdLJ/i6LEoPOx/wc45ly2cGjXk/9OYSmtU3iquiBqsPTtYKIF8x5KuSzRAFD13b7T
-         8Wk9Ww99JPDMWf5D/4EVVJY37kBiVLJ7datcv12fmktDPGRglOAyxD0CVIVczBxeDneV
-         FQhfs4pGy5EO6NsRXTkIbCzTlh+CERIo6kugQspxHYaaLjhx29MPBshY3L+RdH+Ey3WS
-         Jz+w==
-X-Gm-Message-State: AOJu0Yz/DLxYaYhjVzVFcaeiAy0xVYn7CUypWgsgG8wI6X6yIXBameg3
-	1ELtH9y4cKU3xhiJ5iFOVqoQPw==
+        bh=nNuPgKhDMKw80uiT85WqUBhO+7U/KHdwtlx8g1D/Ez4=;
+        b=a4eUDCyfMgoZ36Ihr/ROlHRUAnusOJ4kz3YQjYol66jTYMGCvIgKRvmtc6dPHSJH81
+         mextEBhMo9AS9zf7/rCM2NIgjb3mpDheQzSB3K1Z7cNqpZugqi8Bn1Sj8KPxqv8/EUcN
+         WRLB5xKyPiJfjZdJbuYE1lBJRR+U1RLxVTizDqnCwG2yYYT/awrW4W6itNeSD/d5jxkJ
+         FzWVW4AdVFd+BnaxUXYIPL0Huvpl32gZlls/snv6JlyxhC3aKCJPB/4A9C153gH5Ualm
+         Vtg5tJ6uHcTGvXt9Pq8FBU915g0gssNkHzkTIBYd8EkfKWsemQl94NnX4OX0R3OnxX7q
+         Wjww==
+X-Gm-Message-State: AOJu0YxefFhSpIrYoSreQeEweoYItJymaJuoLHOPjd/v1dbZKhauOIiG
+	9+/PJfPne3XC9RZecBvVfjLzLw==
 X-Google-Smtp-Source: 
- AGHT+IEP0pjc9mf5L7DI+73M//a6q3e4H0pxj2ine3WXBbq/sfzrTNXMneYwfcfndoJoaJZ95SKbKg==
-X-Received: by 2002:a17:907:b011:b0:9bd:bbc1:1c5f with SMTP id
- fu17-20020a170907b01100b009bdbbc11c5fmr10675401ejc.35.1701276226805;
-        Wed, 29 Nov 2023 08:43:46 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.223.109])
+ AGHT+IFqkXir0yMNo4WlvHXSFsKouuLysrWRfeYdK/tqF7ZvNNadMknVBKVHogi0sZlUOEooHchfbg==
+X-Received: by 2002:ac2:4887:0:b0:50b:c970:cc9b with SMTP id
+ x7-20020ac24887000000b0050bc970cc9bmr653271lfc.61.1701282114687;
+        Wed, 29 Nov 2023 10:21:54 -0800 (PST)
+Received: from [192.168.209.83]
+ (178235187166.dynamic-4-waw-k-2-3-0.vectranet.pl. [178.235.187.166])
         by smtp.gmail.com with ESMTPSA id
- d14-20020a1709067f0e00b009fcf829d84csm8013100ejr.169.2023.11.29.08.43.45
+ sd22-20020a170906ce3600b009fc576e26e6sm8119002ejb.80.2023.11.29.10.21.52
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 29 Nov 2023 08:43:46 -0800 (PST)
-Message-ID: <ab0fc6e0-a358-42e7-92e5-77ceea53a546@linaro.org>
-Date: Wed, 29 Nov 2023 17:43:45 +0100
+        Wed, 29 Nov 2023 10:21:54 -0800 (PST)
+Message-ID: <791d7271-87a4-4ce9-9beb-e8c3ef235737@linaro.org>
+Date: Wed, 29 Nov 2023 19:21:51 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] soundwire: qcom: allow multi-link on newer devices
+Subject: Re: [PATCH 5/5] ASoC: codecs: Add WCD939x Codec driver
 Content-Language: en-US
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>, Vinod Koul <vkoul@kernel.org>,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- Sanyog Kale <sanyog.r.kale@intel.com>, linux-arm-msm@vger.kernel.org,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Cc: Mark Brown <broonie@kernel.org>
-References: <20231128150049.412236-1-krzysztof.kozlowski@linaro.org>
- <e43db38a-206d-4ea5-8813-23e1f918dd65@linux.intel.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <e43db38a-206d-4ea5-8813-23e1f918dd65@linux.intel.com>
+To: neil.armstrong@linaro.org,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Banajit Goswami <bgoswami@quicinc.com>, Andy Gross <agross@kernel.org>,
+ Bjorn Andersson <andersson@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>
+Cc: linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: 
+ <20231123-topic-sm8650-upstream-wcd939x-codec-v1-0-21d4ad9276de@linaro.org>
+ <20231123-topic-sm8650-upstream-wcd939x-codec-v1-5-21d4ad9276de@linaro.org>
+ <ad9a7c4b-82f4-4347-b4dd-a394e4ba95f0@linaro.org>
+ <42a6f6e0-2846-4cdc-8702-493fadbafb98@linaro.org>
+ <eaa034cb-06e8-4204-befa-4389bcb7d9e8@linaro.org>
+ <0140f49d-c463-4011-8159-f4e56466e6bd@linaro.org>
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <0140f49d-c463-4011-8159-f4e56466e6bd@linaro.org>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: BJ3DEAGI2QHTCJS54R3IJGIYX6IMZPY7
-X-Message-ID-Hash: BJ3DEAGI2QHTCJS54R3IJGIYX6IMZPY7
-X-MailFrom: krzysztof.kozlowski@linaro.org
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: DN4YNBYN7LV53XE2FJGAFMZME5EWGCOF
+X-Message-ID-Hash: DN4YNBYN7LV53XE2FJGAFMZME5EWGCOF
+X-MailFrom: konrad.dybcio@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -159,53 +160,56 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BJ3DEAGI2QHTCJS54R3IJGIYX6IMZPY7/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DN4YNBYN7LV53XE2FJGAFMZME5EWGCOF/>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 28/11/2023 16:35, Pierre-Louis Bossart wrote:
->>  static enum sdw_command_response qcom_swrm_xfer_msg(struct sdw_bus *bus,
->>  						    struct sdw_msg *msg)
->>  {
->> @@ -1078,6 +1090,7 @@ static const struct sdw_master_port_ops qcom_swrm_port_ops = {
->>  };
->>  
->>  static const struct sdw_master_ops qcom_swrm_ops = {
->> +	.read_prop = qcom_swrm_read_prop,
+On 29.11.2023 16:12, neil.armstrong@linaro.org wrote:
+> On 29/11/2023 14:46, Konrad Dybcio wrote:
+>> On 28.11.2023 16:01, Neil Armstrong wrote:
+>>> On 25/11/2023 13:07, Konrad Dybcio wrote:
+>>>
+>>> <snip>
+>>>
+>>>>> +
+>>>>> +static int wcd939x_io_init(struct snd_soc_component *component)
+>>>>> +{
+>>>>> +    snd_soc_component_write_field(component, WCD939X_ANA_BIAS,
+>>>>> +                      WCD939X_BIAS_ANALOG_BIAS_EN, 1);
+>>>> All of these values are BIT()s or 2-4 ORed BIT()s, can you check what they
+>>>> mean?
+>>>>
+>>>> Same for almost all other snd_soc_component_ write/modify functions
+>>>
+>>> It uses snd_soc_component_write_field() with is the same as
+>>> regmap_write_bits(REGISTER, REGISTER_MASK,
+>>>                    FIELD_PREP(REGISTER_MASK, value);
+>>>
+>>> So the 1 mean write in enable mask in this case, and mask is single bit,
+>>> read it exactly like if it was using FIELD_PREP(), but even for BITs.
+>>>
+>>> I did check every single snd_soc_component_write_field() so far to check
+>>> it matches.
+>>>
+>>> Or it's another question ?
+>> What I wanted to ask is whether it's possible to #define these magic
+>> values within these fields
 > 
-> nit-pick: read_prop() literally means "read platform properties".
-> 
-> The functionality implemented in this callback looks more like an
-> initialization done in a probe, no?
-
-Yes, but multi_link is being set by sdw_bus_master_add() just before
-calling read_prop(). It looks a bit odd, because "bus" comes from the
-caller and is probably zero-ed already. Therefore I assumed the code did
-it on purpose - ignored multi_link set before sdw_bus_master_add(),
+> OK, so most of writes are to boolean enable bits, I can use true/false
+> instead of 0 & 1 for those, would it be more readable ?
+Yes, I think that would convey their meaning quite well
 
 > 
->>  	.xfer_msg = qcom_swrm_xfer_msg,
->>  	.pre_bank_switch = qcom_swrm_pre_bank_switch,
->>  	.post_bank_switch = qcom_swrm_post_bank_switch,
->> @@ -1196,6 +1209,15 @@ static int qcom_swrm_stream_alloc_ports(struct qcom_swrm_ctrl *ctrl,
->>  
->>  	mutex_lock(&ctrl->port_lock);
->>  	list_for_each_entry(m_rt, &stream->master_list, stream_node) {
+> For the rest, those a integer values to a field, those are not bitmasks
+> and I do not have the definition of the values.
 > 
-> just realizing this now, are you sure the 'port_lock' is the proper
-> means to protecting the stream->master_list? I don't see this used
-> anywhere else in stream.c. I think you need to use bus_lock.
+> I did a full cleanup and tried to define as much as possible,
+> there were still lot of places where not defined bitmasks we used,
+> but there's still some integer values, but I think it's acceptable.
+No worries, what you say already sounds very cool!
 
-This is from ctrl, internal driver structure:
-
-struct qcom_swrm_ctrl *ctrl
-
-
-Best regards,
-Krzysztof
-
+Konrad
