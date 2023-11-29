@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 852D6C4167B
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Nov 2023 12:55:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F2B52C4167B
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Nov 2023 12:56:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AB441BC0;
-	Wed, 29 Nov 2023 13:55:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AB441BC0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 30181DEE;
+	Wed, 29 Nov 2023 13:56:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 30181DEE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1701262551;
-	bh=lqQiFIs0p9s2KrlZP8z+iUyiVQdSrOyJh+D15uaRyLY=;
+	s=default; t=1701262574;
+	bh=RwxIUDEAMlV2abnxADO+KNz5UWOsUSZv/pAFbBcJ+1Q=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=U/Hh1CsnQnyTNOuX3E6zLX2KdiIw4E8QSKGxoLvv4zeNXNHSNbq0um7Km0YxojvOv
-	 dIbnJztFR2QXB4PJPnMj9GNtHrjMBVYRPVzIl9sYDLRtQkfvKNoWk/2feAoFA5xwtr
-	 ENbT5Idlcy1cA3Hy2X0yBCkq9sPoMQIeZMDIHV6M=
+	b=kTrGSFHH+68wurD7s9kbV4i/EezYYwPnSJN2gniLnTuAOt780kgF83xFVkPjVkvBP
+	 9LffRmbNREpx+rT0kFAtXIHDMWBH4GLrojifti8ooGpiAv4hrZLTq/ev5x0zhJE+xY
+	 Z6PLVbLjyFoKDYWdhWuMuDDwMaKAON7lwm8oS5F4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 25BDAF806C5; Wed, 29 Nov 2023 13:53:36 +0100 (CET)
+	id BE877F80715; Wed, 29 Nov 2023 13:53:38 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5458EF806CE;
-	Wed, 29 Nov 2023 13:53:36 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C9A63F806D3;
+	Wed, 29 Nov 2023 13:53:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BA250F8069E; Wed, 29 Nov 2023 13:53:28 +0100 (CET)
+	id 66E17F806B8; Wed, 29 Nov 2023 13:53:32 +0100 (CET)
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 403F4F8056F
-	for <alsa-devel@alsa-project.org>; Wed, 29 Nov 2023 13:53:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 403F4F8056F
+	by alsa1.perex.cz (Postfix) with ESMTPS id AF585F8060D
+	for <alsa-devel@alsa-project.org>; Wed, 29 Nov 2023 13:53:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AF585F8060D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=MDuBdhWt
+ header.s=Intel header.b=NuXxpnxz
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701262399; x=1732798399;
+  t=1701262401; x=1732798401;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=lqQiFIs0p9s2KrlZP8z+iUyiVQdSrOyJh+D15uaRyLY=;
-  b=MDuBdhWti4MXO7yL+XctFZKWJv9ejB4qautkcVmOyWZ4vfCji0VauXOi
-   46hywB3zwp3q1Qdo7gYItfRKYh5RfnoAgy+sBEujtCzIMKtIocRJ7rpM7
-   WQ3aWgu4gdOPZvnr7tB8QBmRVLTmZ4DqR7kl8jczTkbnrZsIkBn2Qc4D+
-   jcraHDbd6iN86c/Pxst+JcTB0NTjLDMjmO0zZF4zAbgfkBChQhpp9a9aC
-   3GIUp4Kx9CBm1OBmJEC8D9toqvcXgieNZG/QmRotXjw/iIj2Bt6qhqpgB
-   qDSq+YTnTTvOt2m4IT6aawBagccsCGVLRnRJiS8A1xarsXRy67e0txBEm
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="392022958"
+  bh=RwxIUDEAMlV2abnxADO+KNz5UWOsUSZv/pAFbBcJ+1Q=;
+  b=NuXxpnxzmUmUbIuyK6fa5ttdSPq2621L+X9s1J5WaNp+eiBPATi7pmzm
+   O++92fsTV3dhFMuvjR62jtas10MBoDWJX9rxUI3yTda0/AdUEyc4EBt4p
+   rRuLvnaMBRCYgRPJTUGb6mNim+6kVE5dqQBPPv6AhCo7pUWyPN1nJuDRS
+   hYAxFMuXmMyIU9o7eRTpvPAil++oWNROXhNE+M4KzAhO/RT6rg37Z5Wvi
+   pykzX4/YFIWbYdZ5nCZFWsdjvmCFKv+3G83OH9hk+o+n8HUvXNOOyEnx2
+   NLCWPAs0CI7P+pk83i2xVE3Pixrgc7low45tkJE+g/dcovduG7x2WyUz8
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="392022970"
 X-IronPort-AV: E=Sophos;i="6.04,235,1695711600";
-   d="scan'208";a="392022958"
+   d="scan'208";a="392022970"
 Received: from fmviesa001.fm.intel.com ([10.60.135.141])
   by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 29 Nov 2023 04:53:15 -0800
+ 29 Nov 2023 04:53:19 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.04,235,1695711600";
-   d="scan'208";a="17174646"
+   d="scan'208";a="17174648"
 Received: from klitkey1-mobl1.ger.corp.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.252.44.16])
   by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 29 Nov 2023 04:53:13 -0800
+ 29 Nov 2023 04:53:17 -0800
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com,
 	broonie@kernel.org
@@ -72,17 +72,17 @@ Cc: alsa-devel@alsa-project.org,
 	pierre-louis.bossart@linux.intel.com,
 	kai.vehmanen@linux.intel.com,
 	ranjani.sridharan@linux.intel.com
-Subject: [PATCH 10/13] ASoC: SOF: sof-pci-dev: Rely on core to create the file
- paths
-Date: Wed, 29 Nov 2023 14:53:24 +0200
-Message-ID: <20231129125327.23708-11-peter.ujfalusi@linux.intel.com>
+Subject: [PATCH 12/13] ASoC: SOF: Intel: Do not use resource managed
+ allocation for ipc4_data
+Date: Wed, 29 Nov 2023 14:53:26 +0200
+Message-ID: <20231129125327.23708-13-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231129125327.23708-1-peter.ujfalusi@linux.intel.com>
 References: <20231129125327.23708-1-peter.ujfalusi@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: PDVYAIEIGKUOPAVOQGCC6PH3FEM6DKDE
-X-Message-ID-Hash: PDVYAIEIGKUOPAVOQGCC6PH3FEM6DKDE
+Message-ID-Hash: WOGGEHBY2D4GCQOLBFN6X2GJEBCCORB5
+X-Message-ID-Hash: WOGGEHBY2D4GCQOLBFN6X2GJEBCCORB5
 X-MailFrom: peter.ujfalusi@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -95,7 +95,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PDVYAIEIGKUOPAVOQGCC6PH3FEM6DKDE/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WOGGEHBY2D4GCQOLBFN6X2GJEBCCORB5/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -104,157 +104,127 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The core is now using the information from ipc_file_profile_base to create
-the paths for the loadable files, no need to set it in here anymore.
+Manage the ipc4_data allocation in code instead of devm since the ops_init
+might be called more than once due to IPC type fallback.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 ---
- sound/soc/sof/sof-pci-dev.c | 115 ++++++------------------------------
- 1 file changed, 17 insertions(+), 98 deletions(-)
+ sound/soc/sof/intel/apl.c     | 2 +-
+ sound/soc/sof/intel/cnl.c     | 2 +-
+ sound/soc/sof/intel/hda-dai.c | 3 +++
+ sound/soc/sof/intel/icl.c     | 2 +-
+ sound/soc/sof/intel/lnl.c     | 2 +-
+ sound/soc/sof/intel/mtl.c     | 2 +-
+ sound/soc/sof/intel/skl.c     | 2 +-
+ sound/soc/sof/intel/tgl.c     | 2 +-
+ 8 files changed, 10 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/sof/sof-pci-dev.c b/sound/soc/sof/sof-pci-dev.c
-index becc85b27d51..aab5c900cecf 100644
---- a/sound/soc/sof/sof-pci-dev.c
-+++ b/sound/soc/sof/sof-pci-dev.c
-@@ -233,120 +233,39 @@ int sof_pci_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
- 	sof_pdata->desc = desc;
- 	sof_pdata->dev = dev;
+diff --git a/sound/soc/sof/intel/apl.c b/sound/soc/sof/intel/apl.c
+index 776b66389c34..dee6c7f73e80 100644
+--- a/sound/soc/sof/intel/apl.c
++++ b/sound/soc/sof/intel/apl.c
+@@ -55,7 +55,7 @@ int sof_apl_ops_init(struct snd_sof_dev *sdev)
+ 	if (sdev->pdata->ipc_type == SOF_IPC_TYPE_4) {
+ 		struct sof_ipc4_fw_data *ipc4_data;
  
--	sof_pdata->ipc_type = desc->ipc_default;
-+	path_override = &sof_pdata->ipc_file_profile_base;
+-		sdev->private = devm_kzalloc(sdev->dev, sizeof(*ipc4_data), GFP_KERNEL);
++		sdev->private = kzalloc(sizeof(*ipc4_data), GFP_KERNEL);
+ 		if (!sdev->private)
+ 			return -ENOMEM;
  
- 	if (sof_pci_ipc_type < 0) {
--		sof_pdata->ipc_type = desc->ipc_default;
--	} else {
--		dev_info(dev, "overriding default IPC %d to requested %d\n",
--			 desc->ipc_default, sof_pci_ipc_type);
--		if (sof_pci_ipc_type >= SOF_IPC_TYPE_COUNT) {
--			dev_err(dev, "invalid request value %d\n", sof_pci_ipc_type);
--			ret = -EINVAL;
--			goto out;
--		}
--		if (!(BIT(sof_pci_ipc_type) & desc->ipc_supported_mask)) {
--			dev_err(dev, "invalid request value %d, supported mask is %#x\n",
--				sof_pci_ipc_type, desc->ipc_supported_mask);
--			ret = -EINVAL;
--			goto out;
--		}
--		sof_pdata->ipc_type = sof_pci_ipc_type;
--	}
--
--	if (fw_filename) {
--		sof_pdata->fw_filename = fw_filename;
--
--		dev_dbg(dev, "Module parameter used, changed fw filename to %s\n",
--			sof_pdata->fw_filename);
-+		path_override->ipc_type = desc->ipc_default;
-+	} else if (sof_pci_ipc_type < SOF_IPC_TYPE_COUNT) {
-+		path_override->ipc_type = sof_pci_ipc_type;
- 	} else {
--		sof_pdata->fw_filename = desc->default_fw_filename[sof_pdata->ipc_type];
-+		dev_err(dev, "Invalid IPC type requested: %d\n", sof_pci_ipc_type);
-+		ret = -EINVAL;
-+		goto out;
+diff --git a/sound/soc/sof/intel/cnl.c b/sound/soc/sof/intel/cnl.c
+index 598cf50abadb..85e1e4760d0e 100644
+--- a/sound/soc/sof/intel/cnl.c
++++ b/sound/soc/sof/intel/cnl.c
+@@ -402,7 +402,7 @@ int sof_cnl_ops_init(struct snd_sof_dev *sdev)
+ 	if (sdev->pdata->ipc_type == SOF_IPC_TYPE_4) {
+ 		struct sof_ipc4_fw_data *ipc4_data;
+ 
+-		sdev->private = devm_kzalloc(sdev->dev, sizeof(*ipc4_data), GFP_KERNEL);
++		sdev->private = kzalloc(sizeof(*ipc4_data), GFP_KERNEL);
+ 		if (!sdev->private)
+ 			return -ENOMEM;
+ 
+diff --git a/sound/soc/sof/intel/hda-dai.c b/sound/soc/sof/intel/hda-dai.c
+index a20deaf3b428..f4cbc0ad5de3 100644
+--- a/sound/soc/sof/intel/hda-dai.c
++++ b/sound/soc/sof/intel/hda-dai.c
+@@ -621,6 +621,9 @@ void hda_ops_free(struct snd_sof_dev *sdev)
+ 
+ 		if (!hda_use_tplg_nhlt)
+ 			intel_nhlt_free(ipc4_data->nhlt);
++
++		kfree(sdev->private);
++		sdev->private = NULL;
  	}
+ }
+ EXPORT_SYMBOL_NS(hda_ops_free, SND_SOC_SOF_INTEL_HDA_COMMON);
+diff --git a/sound/soc/sof/intel/icl.c b/sound/soc/sof/intel/icl.c
+index 8e29d6bb6fe8..040698591992 100644
+--- a/sound/soc/sof/intel/icl.c
++++ b/sound/soc/sof/intel/icl.c
+@@ -123,7 +123,7 @@ int sof_icl_ops_init(struct snd_sof_dev *sdev)
+ 	if (sdev->pdata->ipc_type == SOF_IPC_TYPE_4) {
+ 		struct sof_ipc4_fw_data *ipc4_data;
  
--	/*
--	 * for platforms using the SOF community key, change the
--	 * default path automatically to pick the right files from the
--	 * linux-firmware tree. This can be overridden with the
--	 * fw_path kernel parameter, e.g. for developers.
--	 */
--
--	/* alternate fw and tplg filenames ? */
--	if (fw_path) {
--		sof_pdata->fw_filename_prefix = fw_path;
--
--		dev_dbg(dev,
--			"Module parameter used, changed fw path to %s\n",
--			sof_pdata->fw_filename_prefix);
--
--	} else if (dmi_check_system(community_key_platforms) && sof_dmi_use_community_key) {
--		sof_pdata->fw_filename_prefix =
--			devm_kasprintf(dev, GFP_KERNEL, "%s/%s",
--				       sof_pdata->desc->default_fw_path[sof_pdata->ipc_type],
--				       "community");
--
--		dev_dbg(dev,
--			"Platform uses community key, changed fw path to %s\n",
--			sof_pdata->fw_filename_prefix);
--	} else {
--		sof_pdata->fw_filename_prefix =
--			sof_pdata->desc->default_fw_path[sof_pdata->ipc_type];
--	}
-+	path_override->fw_path = fw_path;
-+	path_override->fw_name = fw_filename;
-+	path_override->fw_lib_path = lib_path;
-+	path_override->tplg_path = tplg_path;
+-		sdev->private = devm_kzalloc(sdev->dev, sizeof(*ipc4_data), GFP_KERNEL);
++		sdev->private = kzalloc(sizeof(*ipc4_data), GFP_KERNEL);
+ 		if (!sdev->private)
+ 			return -ENOMEM;
  
--	if (lib_path) {
--		sof_pdata->fw_lib_prefix = lib_path;
--
--		dev_dbg(dev, "Module parameter used, changed fw_lib path to %s\n",
--			sof_pdata->fw_lib_prefix);
--
--	} else if (sof_pdata->desc->default_lib_path[sof_pdata->ipc_type]) {
--		if (dmi_check_system(community_key_platforms) && sof_dmi_use_community_key) {
--			sof_pdata->fw_lib_prefix =
--				devm_kasprintf(dev, GFP_KERNEL, "%s/%s",
--					sof_pdata->desc->default_lib_path[sof_pdata->ipc_type],
--					"community");
--
--			dev_dbg(dev,
--				"Platform uses community key, changed fw_lib path to %s\n",
--				sof_pdata->fw_lib_prefix);
--		} else {
--			sof_pdata->fw_lib_prefix =
--				sof_pdata->desc->default_lib_path[sof_pdata->ipc_type];
--		}
-+	if (dmi_check_system(community_key_platforms) &&
-+	    sof_dmi_use_community_key) {
-+		path_override->fw_path_postfix = "community";
-+		path_override->fw_lib_path_postfix = "community";
- 	}
+diff --git a/sound/soc/sof/intel/lnl.c b/sound/soc/sof/intel/lnl.c
+index db94b45e53af..03308721ebd4 100644
+--- a/sound/soc/sof/intel/lnl.c
++++ b/sound/soc/sof/intel/lnl.c
+@@ -120,7 +120,7 @@ int sof_lnl_ops_init(struct snd_sof_dev *sdev)
  
--	if (tplg_path)
--		sof_pdata->tplg_filename_prefix = tplg_path;
--	else
--		sof_pdata->tplg_filename_prefix =
--			sof_pdata->desc->default_tplg_path[sof_pdata->ipc_type];
--
- 	/*
- 	 * the topology filename will be provided in the machine descriptor, unless
- 	 * it is overridden by a module parameter or DMI quirk.
- 	 */
- 	if (tplg_filename) {
--		sof_pdata->tplg_filename = tplg_filename;
--
--		dev_dbg(dev, "Module parameter used, changed tplg filename to %s\n",
--			sof_pdata->tplg_filename);
-+		path_override->tplg_name = tplg_filename;
- 	} else {
- 		dmi_check_system(sof_tplg_table);
- 		if (sof_dmi_override_tplg_name)
--			sof_pdata->tplg_filename = sof_dmi_override_tplg_name;
--	}
--
--	path_override = &sof_pdata->ipc_file_profile_base;
--	path_override->ipc_type = sof_pdata->ipc_type;
--	path_override->fw_path = fw_path;
--	path_override->fw_name = fw_filename;
--	path_override->fw_lib_path = lib_path;
--	path_override->tplg_path = tplg_path;
--	path_override->tplg_name = sof_pdata->tplg_filename;
--
--	if (dmi_check_system(community_key_platforms) &&
--	    sof_dmi_use_community_key) {
--		path_override->fw_path_postfix = "community";
--		path_override->fw_lib_path_postfix = "community";
-+			path_override->tplg_name = sof_dmi_override_tplg_name;
- 	}
+ 	sof_lnl_ops.get_stream_position = mtl_dsp_get_stream_hda_link_position;
  
- 	/* set callback to be called on successful device probe to enable runtime_pm */
+-	sdev->private = devm_kzalloc(sdev->dev, sizeof(struct sof_ipc4_fw_data), GFP_KERNEL);
++	sdev->private = kzalloc(sizeof(struct sof_ipc4_fw_data), GFP_KERNEL);
+ 	if (!sdev->private)
+ 		return -ENOMEM;
+ 
+diff --git a/sound/soc/sof/intel/mtl.c b/sound/soc/sof/intel/mtl.c
+index 3ef9e5c37028..f941e2c49d78 100644
+--- a/sound/soc/sof/intel/mtl.c
++++ b/sound/soc/sof/intel/mtl.c
+@@ -709,7 +709,7 @@ int sof_mtl_ops_init(struct snd_sof_dev *sdev)
+ 
+ 	sof_mtl_ops.get_stream_position = mtl_dsp_get_stream_hda_link_position;
+ 
+-	sdev->private = devm_kzalloc(sdev->dev, sizeof(struct sof_ipc4_fw_data), GFP_KERNEL);
++	sdev->private = kzalloc(sizeof(struct sof_ipc4_fw_data), GFP_KERNEL);
+ 	if (!sdev->private)
+ 		return -ENOMEM;
+ 
+diff --git a/sound/soc/sof/intel/skl.c b/sound/soc/sof/intel/skl.c
+index d24e64e71b58..93824e6ce573 100644
+--- a/sound/soc/sof/intel/skl.c
++++ b/sound/soc/sof/intel/skl.c
+@@ -62,7 +62,7 @@ int sof_skl_ops_init(struct snd_sof_dev *sdev)
+ 	/* probe/remove/shutdown */
+ 	sof_skl_ops.shutdown	= hda_dsp_shutdown;
+ 
+-	sdev->private = devm_kzalloc(sdev->dev, sizeof(*ipc4_data), GFP_KERNEL);
++	sdev->private = kzalloc(sizeof(*ipc4_data), GFP_KERNEL);
+ 	if (!sdev->private)
+ 		return -ENOMEM;
+ 
+diff --git a/sound/soc/sof/intel/tgl.c b/sound/soc/sof/intel/tgl.c
+index f7de1f5ba06d..d890cac6cb01 100644
+--- a/sound/soc/sof/intel/tgl.c
++++ b/sound/soc/sof/intel/tgl.c
+@@ -82,7 +82,7 @@ int sof_tgl_ops_init(struct snd_sof_dev *sdev)
+ 	if (sdev->pdata->ipc_type == SOF_IPC_TYPE_4) {
+ 		struct sof_ipc4_fw_data *ipc4_data;
+ 
+-		sdev->private = devm_kzalloc(sdev->dev, sizeof(*ipc4_data), GFP_KERNEL);
++		sdev->private = kzalloc(sizeof(*ipc4_data), GFP_KERNEL);
+ 		if (!sdev->private)
+ 			return -ENOMEM;
+ 
 -- 
 2.43.0
 
