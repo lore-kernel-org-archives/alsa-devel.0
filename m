@@ -4,75 +4,109 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 02929C4167B
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Nov 2023 21:18:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 40BEFC10DC1
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Nov 2023 21:29:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4ADF9DED;
-	Wed, 29 Nov 2023 22:18:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4ADF9DED
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8649BDEB;
+	Wed, 29 Nov 2023 22:29:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8649BDEB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1701292731;
-	bh=zjroZ4QizTDpv6VelU2kE8o4muDeYZ4T2Ye9AJFVwMQ=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1701293371;
+	bh=VssnOm4PeCD2AYkAkjJNDkBOjVBXB/SmcNyQhhRGYuA=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Fp2eUYCvmK0Vy2ze0G3cgGUtTgHv8p8lBy48arrDVmn4VnJFs0N9ZuKPUdp66azBl
-	 XFrvLq/nDc/W1I8vD/sdGf2CAT8r969FPqrwSCHTNIlqNUZf6jspWWiHQcgLnpe8zs
-	 VvNezBiJ3o0M70dW5hcgBF81cS4fuAZy3XC102UA=
+	b=eXXQ69X1NiQUZPtLGrIQRNusRs2/ky+xskBfUIfIZGvRFqyR7K7LFfEUr3qESYxrD
+	 q22LDg7XDIjqgqqKDLkEssEKwngtQ7vUBRUQiK7Kbuxe19mYTdUfkfWwhh9IvOrFq2
+	 Nuh0TRvKS/+yb8gGlC+csdoChagKGcZa37OMVDGA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A93A2F80587; Wed, 29 Nov 2023 22:18:19 +0100 (CET)
+	id 095F0F80589; Wed, 29 Nov 2023 22:28:58 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 269AEF8055C;
-	Wed, 29 Nov 2023 22:18:19 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7B127F805A8;
+	Wed, 29 Nov 2023 22:28:57 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A4181F8016E; Wed, 29 Nov 2023 22:18:14 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	id 5AE46F8025A; Wed, 29 Nov 2023 22:28:50 +0100 (CET)
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com
+ [IPv6:2a00:1450:4864:20::231])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 98D58F8007E
-	for <alsa-devel@alsa-project.org>; Wed, 29 Nov 2023 22:18:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 98D58F8007E
+	by alsa1.perex.cz (Postfix) with ESMTPS id 1FB27F800F5
+	for <alsa-devel@alsa-project.org>; Wed, 29 Nov 2023 22:28:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1FB27F800F5
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=rAArUxbt
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by ams.source.kernel.org (Postfix) with ESMTP id 8B349B84027;
-	Wed, 29 Nov 2023 21:18:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7DBACC433C8;
-	Wed, 29 Nov 2023 21:18:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1701292682;
-	bh=zjroZ4QizTDpv6VelU2kE8o4muDeYZ4T2Ye9AJFVwMQ=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=rAArUxbtM+j4rCmKl3RWqtqa5K/gk6w10YpTrrq2tIJxQzVR02YtCZ4LIVuiCTxR5
-	 an7aKu0isjep/gxN/H25zICbpcSqvDYZZrz0lEoBxTjIpqs5FoU6H+lX6cHSmcayZ1
-	 Q/BWpIsXhEfnZ333Da0EMHD9Bz0wRq6Zl+N9sfaEUkn5jfnqXlKqeFHKdi3r2072Rr
-	 mH/untkI4jNuaYKe31Jymkb559ETzqTFcfF4mCLDuIpWGnMVYMjUvW+tGVS1X457/C
-	 mUmxm6UUWNKmMN4SG0VaTCHZ15CyM1Ww3P4DLfPGNZQSDDXPjqNSMsavy2RuEB/YUf
-	 nzxaOL1Bgxl0A==
-From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com, Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
- pierre-louis.bossart@linux.intel.com, kai.vehmanen@linux.intel.com,
- ranjani.sridharan@linux.com, yung-chuan.liao@linux.intel.com
-In-Reply-To: <20231129131411.27516-1-peter.ujfalusi@linux.intel.com>
-References: <20231129131411.27516-1-peter.ujfalusi@linux.intel.com>
-Subject: Re: [PATCH 0/2] ASoC: SOF: ipc4-topology: Correct IPC message
- struct layouts
-Message-Id: <170129268022.323590.12416749966996283844.b4-ty@kernel.org>
-Date: Wed, 29 Nov 2023 21:18:00 +0000
+ unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
+ header.s=google header.b=Oz9M4cI1
+Received: by mail-lj1-x231.google.com with SMTP id
+ 38308e7fff4ca-2c9c39b7923so3753691fa.0
+        for <alsa-devel@alsa-project.org>;
+ Wed, 29 Nov 2023 13:28:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701293323; x=1701898123;
+ darn=alsa-project.org;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=uGzqJZeCIvHWgx50HcN8P2Sdt/SHVZafM+S/3T4/ITk=;
+        b=Oz9M4cI1HnvF1+Cr1IhIU+ht8kjzYC+6LIeQT2BJRH9+tgc8ARy1+ZYm55noMS2JPb
+         nKEGuqQ8PEZ/CHhU8mC7dTcUkQQMubkekOIym4vP8Y1r2PM7A+r5n8QUaD/Hs5qmfKSr
+         HgV7ae6wpOVw5KpTMs9I+Zo8Qs8NAz65uxIyc9UU9DtJK5XQWj9giIMFAuYdyxWKHOC0
+         yRybU1o+Ntq7J+L2oNT8FdeMNWEF6E3gNsf4TbKY6IU4nYrsNCYo14dBDF0jZxnjjYAJ
+         31Bv40jfZGn8m+4H91eq4H0nF6/7ZuoC+yE4cziNvAdqTgz8B9psqKLsGez995Xa5Z9/
+         n/og==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701293323; x=1701898123;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=uGzqJZeCIvHWgx50HcN8P2Sdt/SHVZafM+S/3T4/ITk=;
+        b=XQ70XtoeYpHmazkXgRp3gh1iKs1pitlWUOm0sGFvi4sR8Wu0UbVwMVwseWH1mwUaQO
+         6KrLWQlxkeEielGJCM/PzDgQ/oo+hPNc4/lKtxsy1VEJL5OrvzYG9xDs7/pFTHbtHe5T
+         TepjDY3XEk9XlkMwFO9jD1+P+/VnDIz/ZwHI3hMg6j+fFE6Ny8zFThhWIfTddXEPsJQw
+         B0z8+oNHGj3bAPj5mCdnFNTyKrn5q/TsgsMvINRUvr5PZXrQ5Le5QlCjtACMSdoTEMSf
+         Q3TM+Iv8XcT+5EiacE+cwEscGuQqQbPPmBSH2226oHvaVlXKYabV8vp+RHTy96OBbB3c
+         6MOA==
+X-Gm-Message-State: AOJu0YzFHh+wRJZh0YK4eO1RdcCq4Qvm1k1MZxF/hY2BR/50DGcY8TyV
+	68SmxydwN5RAiExUTP42+RoYww==
+X-Google-Smtp-Source: 
+ AGHT+IH2iP1+SnhRh5dk6NH/SIXt5a1DgU9BeCKEI9Kd5MNkN/wjAcRvj26p+QcR+8v7vqnF7DFCiA==
+X-Received: by 2002:a05:651c:b27:b0:2c9:a9ba:97ec with SMTP id
+ b39-20020a05651c0b2700b002c9a9ba97ecmr6389122ljr.38.1701293322448;
+        Wed, 29 Nov 2023 13:28:42 -0800 (PST)
+Received: from [127.0.1.1] ([85.235.12.238])
+        by smtp.gmail.com with ESMTPSA id
+ b5-20020a05651c032500b002bcdbfe36b9sm2106196ljp.111.2023.11.29.13.28.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Nov 2023 13:28:41 -0800 (PST)
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Wed, 29 Nov 2023 22:28:37 +0100
+Subject: [PATCH 01/10] ASoC: cs35l32: Drop legacy include
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-0438c
-Message-ID-Hash: N4EOX3EOUL2D24NYODXJOJYQZTQ6SPO3
-X-Message-ID-Hash: N4EOX3EOUL2D24NYODXJOJYQZTQ6SPO3
-X-MailFrom: broonie@kernel.org
+Message-Id: <20231129-descriptors-sound-cirrus-v1-1-31aa74425ff8@linaro.org>
+References: <20231129-descriptors-sound-cirrus-v1-0-31aa74425ff8@linaro.org>
+In-Reply-To: <20231129-descriptors-sound-cirrus-v1-0-31aa74425ff8@linaro.org>
+To: Paul Handrigan <Paul.Handrigan@cirrus.com>,
+ James Schulman <james.schulman@cirrus.com>,
+ David Rhodes <david.rhodes@cirrus.com>,
+ Richard Fitzgerald <rf@opensource.cirrus.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ Hartley Sweeten <hsweeten@visionengravers.com>,
+ Alexander Sverdlin <alexander.sverdlin@gmail.com>,
+ Nikita Shubin <nikita.shubin@maquefel.me>
+Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
+ linux-sound@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ Linus Walleij <linus.walleij@linaro.org>
+X-Mailer: b4 0.12.4
+Message-ID-Hash: WY6LHXNYM57DFHMP55MPHCIWS7OH2C6M
+X-Message-ID-Hash: WY6LHXNYM57DFHMP55MPHCIWS7OH2C6M
+X-MailFrom: linus.walleij@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -84,52 +118,37 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/N4EOX3EOUL2D24NYODXJOJYQZTQ6SPO3/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WY6LHXNYM57DFHMP55MPHCIWS7OH2C6M/>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Wed, 29 Nov 2023 15:14:09 +0200, Peter Ujfalusi wrote:
-> The SRC and GAIN module defined it's kernel side private struct in a way that
-> part of that is used as IPC message without making sure of proper alignment and
-> padding, which happens to work but it is better to be not 'clever' about these
-> sort of things.
-> 
-> The two patch corects this overlooked detail.
-> 
-> [...]
+This driver includes the legacy GPIO API <linux/gpio.h> but
+does not use any symbols from it.
 
-Applied to
+Drop the include.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+---
+ sound/soc/codecs/cs35l32.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-Thanks!
+diff --git a/sound/soc/codecs/cs35l32.c b/sound/soc/codecs/cs35l32.c
+index 138040618438..d1350ffbf3bd 100644
+--- a/sound/soc/codecs/cs35l32.c
++++ b/sound/soc/codecs/cs35l32.c
+@@ -13,7 +13,6 @@
+ #include <linux/init.h>
+ #include <linux/delay.h>
+ #include <linux/i2c.h>
+-#include <linux/gpio.h>
+ #include <linux/regmap.h>
+ #include <linux/slab.h>
+ #include <linux/platform_device.h>
 
-[1/2] ASoC: SOF: ipc4-topology: Correct data structures for the SRC module
-      commit: 2cf4da68a480f999ce1327a23557fad7b6dd80dd
-[2/2] ASoC: SOF: ipc4-topology: Correct data structures for the GAIN module
-      commit: c7095d154ddf40b6221118a0bbf30e68d78460b3
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+-- 
+2.34.1
 
