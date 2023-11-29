@@ -4,109 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 88A3AC4167B
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Nov 2023 21:32:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DC34DC4167B
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Nov 2023 21:32:39 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 01C36AEA;
-	Wed, 29 Nov 2023 22:32:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 01C36AEA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1C456E86;
+	Wed, 29 Nov 2023 22:32:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1C456E86
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1701293540;
-	bh=yB5pKzTCYEUlbxwJMzl/ckqbC/X80Zt2tURy9XN/d64=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
+	s=default; t=1701293558;
+	bh=YjAGVESRLvsK0NiT3pHkYj/TZu9G20YInTk2adZOymU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=h+fIUy1Idf6rpCy4gv+DlwkcuBZJBKZ8eD7AcJzRblyDOsi34XUyK0yrGjyoiqSZd
-	 ErebpSP2D5P3TYeG7CjyLdnl/l4cUgBO4+UbVP2KAKBl46LKMa2KA9c6ZLdcVw/Qiv
-	 3EqElHtyQvNACT4YCGGEjFEZ2SOwvmJSGzKelttk=
+	b=VIUjTjc7W5MiLM6x1na4X4gIYUkYbYCqgmzAagOEByXZ6GpAXqeo3go/W3TP0N+4U
+	 azOD0KHEC5dxWaGngf/QinfZmNXrCl+e1l7ehPQWPNj9vTGj1FACj9lhj5PbIvh2v4
+	 uwmckkPVF/2rYTJ3x0Bs7Eykgak2fuhEij7ssRag=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 91C75F806E5; Wed, 29 Nov 2023 22:29:48 +0100 (CET)
+	id 2B5BEF80557; Wed, 29 Nov 2023 22:32:07 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2E090F806ED;
-	Wed, 29 Nov 2023 22:29:48 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0A532F8055C;
+	Wed, 29 Nov 2023 22:32:07 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E0382F80568; Wed, 29 Nov 2023 22:29:40 +0100 (CET)
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com
- [IPv6:2a00:1450:4864:20::230])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 13714F801D5; Wed, 29 Nov 2023 22:32:03 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 05DDCF80236
-	for <alsa-devel@alsa-project.org>; Wed, 29 Nov 2023 22:28:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 05DDCF80236
+	by alsa1.perex.cz (Postfix) with ESMTPS id 38D09F80166
+	for <alsa-devel@alsa-project.org>; Wed, 29 Nov 2023 22:31:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 38D09F80166
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=Pxj2kU1U
-Received: by mail-lj1-x230.google.com with SMTP id
- 38308e7fff4ca-2c9b9191722so3738571fa.1
-        for <alsa-devel@alsa-project.org>;
- Wed, 29 Nov 2023 13:28:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701293326; x=1701898126;
- darn=alsa-project.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=YU/umhZ4xMv6PXObbvZL6R5y01gsoGYZgYp3KJFvARs=;
-        b=Pxj2kU1UtLyozBRqssmiEuJ6WBCA8h+wYxu7zHM7G+JnjEoIFEd6z1fUQfZOse1h5C
-         leMJjyjBvsUjv/LZK6oqPFlKXB9dQ8kQ9QmY08kL95VyIk8JdjA2ybJq/dExITd/2rlg
-         v3SoejMgrWZGmbWQcLcoz2GpqsOG1Ja5osJtSVJ5TMBNIRYqKr5wmvpJ4UIIn8J8Ij61
-         KqRHhLQQbkm4aj1lAkRcVf6uC4VGyU4OmBISjKpLdSTB/vbJoE5LWfXPpdTnrsni23du
-         o6PX9dGIYbh0QO5H7iEfE0DB/yh9YIzbUAUOHLE+n7XUI0DFMhSIJ0lQMcN4NxOJtvUj
-         0sVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701293326; x=1701898126;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YU/umhZ4xMv6PXObbvZL6R5y01gsoGYZgYp3KJFvARs=;
-        b=vlmCpkD1hvaA1JLzbb5dRBO+Lc3NV2Iacch4c2meBgVkRkfxrASW5Ak0U+y7fVsKIW
-         NHPB5DL+q5iTPkAfi1EcSvw4gghNbtGWSqjPjbmiENeizin9WlftNhp7JH0KpeSAB4Sm
-         HDdQiSr9aiv6mTZenF4vqOgfnvXKT60sZRIY+8cjJYa6/r9heBTrj0Ly4N0yg53GP2gw
-         g2507YpZe2HEq5xauMR4JJ9Vrdqolh4/Q0VjYXbJk7oZJsFtz7Y7Xbd0ejFuP5OXu35o
-         /sxnxCjZQeYPqeEsZpJnT6iD4yONEvJaaCiZmAg6+1HlwwPwgWO4f0rWnpWQmNN0/BRm
-         sULg==
-X-Gm-Message-State: AOJu0Yw2z5JuSDrLzHILgmjN7zCkxzr6ibMDZKqsBc/pNfLTTcVxevQp
-	dVZcEYJAPZK6ve9YGrn4hmODlg==
-X-Google-Smtp-Source: 
- AGHT+IE+lDIdHAdte4rENQsg0tSBQfqVYqAjeDvwRKqHOtDWVAZmyuqpLukchZeA3cMSJEgTRjKklw==
-X-Received: by 2002:a2e:88c6:0:b0:2c9:c438:d0fb with SMTP id
- a6-20020a2e88c6000000b002c9c438d0fbmr1191629ljk.34.1701293325848;
-        Wed, 29 Nov 2023 13:28:45 -0800 (PST)
-Received: from [127.0.1.1] ([85.235.12.238])
-        by smtp.gmail.com with ESMTPSA id
- b5-20020a05651c032500b002bcdbfe36b9sm2106196ljp.111.2023.11.29.13.28.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Nov 2023 13:28:45 -0800 (PST)
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Wed, 29 Nov 2023 22:28:40 +0100
-Subject: [PATCH 04/10] ASoC: cs35l35: Drop legacy includes
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231129-descriptors-sound-cirrus-v1-4-31aa74425ff8@linaro.org>
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=BobBgE+a
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by ams.source.kernel.org (Postfix) with ESMTP id 500E4B840A3;
+	Wed, 29 Nov 2023 21:31:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 839ABC433C7;
+	Wed, 29 Nov 2023 21:31:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1701293518;
+	bh=YjAGVESRLvsK0NiT3pHkYj/TZu9G20YInTk2adZOymU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=BobBgE+ag95f05O7EL6Uhtouac09JLNUCdsIE/dV/2drWWUJU1b/BCIhVqePRZM+B
+	 sC9d1ININ1hhLLkDkT3lr2L/gA+Lc0uHChvGmc5ZfMvGwWouyiK1nrun+x5C9N0IdP
+	 SNWTcsOoND6Bltar7FKmA7af+MX7r89Fx5FEwu3uKa5YCJ0CX6jLCLzZHuBVI0augW
+	 sUUaWsbWapU9+oU8xTLB3SkbtYlSBmeBsr5JdEGA4CUI03JjjwYSq8Nyk1OehEDlGh
+	 ww4DS+GvwVe8kGkFC5ueXenljhZzhPYz5iZHC9G9hF7Hl4jO0mhFbWpvestqPrAW6d
+	 GaekCekp7GJCw==
+Date: Wed, 29 Nov 2023 21:31:52 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: Paul Handrigan <Paul.Handrigan@cirrus.com>,
+	James Schulman <james.schulman@cirrus.com>,
+	David Rhodes <david.rhodes@cirrus.com>,
+	Richard Fitzgerald <rf@opensource.cirrus.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	Hartley Sweeten <hsweeten@visionengravers.com>,
+	Alexander Sverdlin <alexander.sverdlin@gmail.com>,
+	Nikita Shubin <nikita.shubin@maquefel.me>,
+	alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
+	linux-sound@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 02/10] ASoC: cs35l33: Fix GPIO name and drop legacy
+ include
+Message-ID: <1451c3ee-ae48-4151-ace4-2cf2ab9854ef@sirena.org.uk>
 References: <20231129-descriptors-sound-cirrus-v1-0-31aa74425ff8@linaro.org>
-In-Reply-To: <20231129-descriptors-sound-cirrus-v1-0-31aa74425ff8@linaro.org>
-To: Paul Handrigan <Paul.Handrigan@cirrus.com>,
- James Schulman <james.schulman@cirrus.com>,
- David Rhodes <david.rhodes@cirrus.com>,
- Richard Fitzgerald <rf@opensource.cirrus.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Hartley Sweeten <hsweeten@visionengravers.com>,
- Alexander Sverdlin <alexander.sverdlin@gmail.com>,
- Nikita Shubin <nikita.shubin@maquefel.me>
-Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
- linux-sound@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- Linus Walleij <linus.walleij@linaro.org>
-X-Mailer: b4 0.12.4
-Message-ID-Hash: 36LDJZIDZDIPAVEVAMSYSCJNQHOTXKH6
-X-Message-ID-Hash: 36LDJZIDZDIPAVEVAMSYSCJNQHOTXKH6
-X-MailFrom: linus.walleij@linaro.org
+ <20231129-descriptors-sound-cirrus-v1-2-31aa74425ff8@linaro.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="8qFzdh/puJOBRAP3"
+Content-Disposition: inline
+In-Reply-To: <20231129-descriptors-sound-cirrus-v1-2-31aa74425ff8@linaro.org>
+X-Cookie: You enjoy the company of other people.
+Message-ID-Hash: Z54JYOINCOXDITD6PCURN3RRDQBNBGYM
+X-Message-ID-Hash: Z54JYOINCOXDITD6PCURN3RRDQBNBGYM
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -118,7 +93,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/36LDJZIDZDIPAVEVAMSYSCJNQHOTXKH6/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Z54JYOINCOXDITD6PCURN3RRDQBNBGYM/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -127,37 +102,31 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-This driver includes the legacy GPIO APIs <linux/gpio.h> and
-<linux/of_gpio.h> but does not use any symbols from any of
-them.
 
-Drop the includes.
+--8qFzdh/puJOBRAP3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
----
- sound/soc/codecs/cs35l35.c | 2 --
- 1 file changed, 2 deletions(-)
+On Wed, Nov 29, 2023 at 10:28:38PM +0100, Linus Walleij wrote:
 
-diff --git a/sound/soc/codecs/cs35l35.c b/sound/soc/codecs/cs35l35.c
-index 63a538f747d3..ddb7d63213a3 100644
---- a/sound/soc/codecs/cs35l35.c
-+++ b/sound/soc/codecs/cs35l35.c
-@@ -18,14 +18,12 @@
- #include <linux/regulator/consumer.h>
- #include <linux/gpio/consumer.h>
- #include <linux/of.h>
--#include <linux/of_gpio.h>
- #include <linux/regmap.h>
- #include <sound/core.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
- #include <sound/soc.h>
- #include <sound/soc-dapm.h>
--#include <linux/gpio.h>
- #include <sound/initval.h>
- #include <sound/tlv.h>
- #include <sound/cs35l35.h>
+> Further the driver is requesting "reset-gpios" rather than
+> just "gpios" from the GPIO framework. This is wrong because
 
--- 
-2.34.1
+s/gpios/reset/
 
+--8qFzdh/puJOBRAP3
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVnrccACgkQJNaLcl1U
+h9DyeQf/TBc6PoOjQzWgFz59WRahFpJ5md8waFHS/0y3D3JoTSfMlIpeq9HNbUcu
+YR1TQMT/ThWJ8Sgh2IF2d1ch07dG7o7CBwxHrwnbursrm+oiO0c1ddebK1n7M8a4
+viHqQ3TKGM0DCPUd6xBMovcSDhRen+cEa4QGeIwEMHFwxRc9AGASBOFlqNJ5Ernr
+LUoLhlVT+2f92i8m76vcFfMXk2ZC1j6p1dD4IEYdnvVU2CccBhKACAW5Lbz000uz
+oZUTgiP/albHyyz3957NoNa1zVOfWSVPgB2O+Ie0I++jqxUhMLkKBqQQPa9P2X6E
+v0Mh4fhQ77g+3grAWYbLd2nf+z41cA==
+=5cDG
+-----END PGP SIGNATURE-----
+
+--8qFzdh/puJOBRAP3--
