@@ -4,86 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E083AC4167B
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Nov 2023 12:57:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B2BACC4167B
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Nov 2023 13:05:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 528C3AEA;
-	Wed, 29 Nov 2023 13:57:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 528C3AEA
+	by alsa0.perex.cz (Postfix) with ESMTPS id D0732A4C;
+	Wed, 29 Nov 2023 14:05:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D0732A4C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1701262637;
-	bh=DrPNJB1Cx5nxS/6nHhyoCgL07ikrf7u4dP2TnnOz++k=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=jXveTu9FvgWxsbh5ZQIS+AsLOK/ooGktszyG3CWvJPN2Luu0T28e7EhCzDbNP//Lj
-	 D3JU02oOBylch3u+tP6a+3qlOPF33j1bPCkRWESkAH0M0QlCqdKlOh/6GWd98rjA7D
-	 MxK5PYlQ+00DlaaYBh9hD35VKTGs9ojl8DEBFtNo=
+	s=default; t=1701263131;
+	bh=Z8kLlX8q2tc8UJlL8JluFurGTvFFVYDTlGNhquJe5Os=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=g9H7hLqBoF8laRPhfkcgjoOIZj+E162CBeSE9gUVFj+4T9vL6iO+zhletYdBN//Ar
+	 0kgC99i6FZETb9Mr0Ka6mofNwFao5M0m2Ex635Fl5f2TJa2orC+DpptN3rZ32WFW2C
+	 zHWySTDDRZj/2CkNnSG+2OeXwuqp7YXucJ8gbIQk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4B5D5F807DC; Wed, 29 Nov 2023 13:53:55 +0100 (CET)
+	id 7391DF80254; Wed, 29 Nov 2023 14:05:10 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E7079F80807;
-	Wed, 29 Nov 2023 13:53:54 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id EEE37F80254;
+	Wed, 29 Nov 2023 14:05:09 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B9F54F805AD; Wed, 29 Nov 2023 13:53:45 +0100 (CET)
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 04F43F8016E; Wed, 29 Nov 2023 14:05:07 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A1E9FF8007E
-	for <alsa-devel@alsa-project.org>; Wed, 29 Nov 2023 13:53:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A1E9FF8007E
+	by alsa1.perex.cz (Postfix) with ESMTPS id 2DE88F80114
+	for <alsa-devel@alsa-project.org>; Wed, 29 Nov 2023 14:05:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2DE88F80114
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=nKW3dV6L
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701262384; x=1732798384;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=DrPNJB1Cx5nxS/6nHhyoCgL07ikrf7u4dP2TnnOz++k=;
-  b=nKW3dV6LzrKD0f0Y+aZiMZCrAmbbDwvFIOXeWOFZgugHDQpfyfIfAiag
-   kYnhtdtc4q/e9BhtQbqqC2IVF3eTkq6dw1Es4IQ+XoqpfPIUFT+7AOVd1
-   QIlSQy/GCSDRzr0SidDrp9xm3K1vf+q1Rd2zQ3tpEztTyAcQ5/JT4abcy
-   W8XgBd7jhM6QGwEkGVfRihO23nyRUnOdkK8EDooyaTQ27OG2/p4nR86MJ
-   dRYVCRcsF/acauWViwdc1dHjVuablGm0GzxdpqFqej69qCfHRSP/t+VhT
-   GsX/7vcyF8sU8R7b0nKdI4Pk5nBIw5GSnp85R8cjypVg6cPP2b+nU++TG
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="392022897"
-X-IronPort-AV: E=Sophos;i="6.04,235,1695711600";
-   d="scan'208";a="392022897"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 29 Nov 2023 04:53:02 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,235,1695711600";
-   d="scan'208";a="17174616"
-Received: from klitkey1-mobl1.ger.corp.intel.com (HELO
- pujfalus-desk.ger.corp.intel.com) ([10.252.44.16])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 29 Nov 2023 04:53:00 -0800
-From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-To: lgirdwood@gmail.com,
-	broonie@kernel.org
-Cc: alsa-devel@alsa-project.org,
-	linux-sound@vger.kernel.org,
-	pierre-louis.bossart@linux.intel.com,
-	kai.vehmanen@linux.intel.com,
-	ranjani.sridharan@linux.intel.com
-Subject: [PATCH 04/13] ASoC: SOF: sof-acpi-dev: Save the default IPC type and
- path overrides
-Date: Wed, 29 Nov 2023 14:53:18 +0200
-Message-ID: <20231129125327.23708-5-peter.ujfalusi@linux.intel.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231129125327.23708-1-peter.ujfalusi@linux.intel.com>
-References: <20231129125327.23708-1-peter.ujfalusi@linux.intel.com>
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=O5f+rnMl
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 0A827615B9;
+	Wed, 29 Nov 2023 13:05:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F98FC433C7;
+	Wed, 29 Nov 2023 13:04:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1701263099;
+	bh=Z8kLlX8q2tc8UJlL8JluFurGTvFFVYDTlGNhquJe5Os=;
+	h=From:To:Cc:Subject:Date:From;
+	b=O5f+rnMlbWm1ZMtZa8FrOFJicEAjgydWzAQF8Ng1LzcMjSoet8XS2Orbz1EyktiRw
+	 mAlScQBZHScrTYvQKWyQQsKWAsK8AVGpuUJE7b3Ct8oo34U6mFk4E+Ns3sLyqklMOQ
+	 Gw/5XB0xEFGpaWdT1PpZqVsfgqdGq5M0EylIRddK+A14/laWnG4RSm+wnjgATLUvQ2
+	 5Pc+OchFC5J3oQy9DqX/cEWW3Xc9U1f2nCBa8nESGX4qgvO8qwUFadMtuigXbKOkM+
+	 NuD9sElPq4sOEHZR3vd0ywCEC2TMQ+jhVT/p1mvAHCMHJ+UEGXSmPljz8Ur8yrOKxl
+	 fMFbAhWvM03Hw==
+From: Vinod Koul <vkoul@kernel.org>
+To: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Cc: Vinod Koul <vkoul@kernel.org>,
+	Bard Liao <yung-chuan.liao@linux.intel.com>,
+	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+	Sanyog Kale <sanyog.r.kale@intel.com>,
+	alsa-devel@alsa-project.org
+Subject: [PATCH] soundwire: amd: drop bus freq calculation and set
+ 'max_clk_freq'
+Date: Wed, 29 Nov 2023 18:34:48 +0530
+Message-ID: <20231129130449.9892-1-vkoul@kernel.org>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: MYZV2KNGUNF45WD6ZOTHHTFUWXSZM6S7
-X-Message-ID-Hash: MYZV2KNGUNF45WD6ZOTHHTFUWXSZM6S7
-X-MailFrom: peter.ujfalusi@linux.intel.com
+Message-ID-Hash: 5A5Z2FACTTADE23ORSEDEN4KYPOAERHX
+X-Message-ID-Hash: 5A5Z2FACTTADE23ORSEDEN4KYPOAERHX
+X-MailFrom: vkoul@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -95,7 +83,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MYZV2KNGUNF45WD6ZOTHHTFUWXSZM6S7/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5A5Z2FACTTADE23ORSEDEN4KYPOAERHX/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -104,30 +92,35 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Store the default IPC type and the firmware and topology path overrides to
-ipc_file_profile_base
+max_dr_freq and curr_dr_freq is calculated and set in
+sdw_bus_master_add(). Setting in the driver is reduanant, so drop that.
+Set max_clk_freq instead.
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 ---
- sound/soc/sof/sof-acpi-dev.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/soundwire/amd_manager.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/sof/sof-acpi-dev.c b/sound/soc/sof/sof-acpi-dev.c
-index 84a4a0a3318e..87c0c2edc4c9 100644
---- a/sound/soc/sof/sof-acpi-dev.c
-+++ b/sound/soc/sof/sof-acpi-dev.c
-@@ -87,6 +87,10 @@ int sof_acpi_probe(struct platform_device *pdev, const struct sof_dev_desc *desc
- 	else
- 		sof_pdata->tplg_filename_prefix = desc->default_tplg_path[SOF_IPC_TYPE_3];
+diff --git a/drivers/soundwire/amd_manager.c b/drivers/soundwire/amd_manager.c
+index a3b1f4e6f0f9..f54bb4dd2d10 100644
+--- a/drivers/soundwire/amd_manager.c
++++ b/drivers/soundwire/amd_manager.c
+@@ -950,13 +950,13 @@ static int amd_sdw_manager_probe(struct platform_device *pdev)
  
-+	sof_pdata->ipc_file_profile_base.ipc_type = desc->ipc_default;
-+	sof_pdata->ipc_file_profile_base.fw_path = fw_path;
-+	sof_pdata->ipc_file_profile_base.tplg_path = tplg_path;
+ 	amd_manager->reg_mask = &sdw_manager_reg_mask_array[amd_manager->instance];
+ 	params = &amd_manager->bus.params;
+-	params->max_dr_freq = AMD_SDW_DEFAULT_CLK_FREQ * 2;
+-	params->curr_dr_freq = AMD_SDW_DEFAULT_CLK_FREQ * 2;
 +
- 	/* set callback to be called on successful device probe to enable runtime_pm */
- 	sof_pdata->sof_probe_complete = sof_acpi_probe_complete;
+ 	params->col = AMD_SDW_DEFAULT_COLUMNS;
+ 	params->row = AMD_SDW_DEFAULT_ROWS;
+ 	prop = &amd_manager->bus.prop;
+ 	prop->clk_freq = &amd_sdw_freq_tbl[0];
+ 	prop->mclk_freq = AMD_SDW_BUS_BASE_FREQ;
++	prop->max_clk_freq = AMD_SDW_DEFAULT_CLK_FREQ;
  
+ 	ret = sdw_bus_master_add(&amd_manager->bus, dev, dev->fwnode);
+ 	if (ret) {
 -- 
-2.43.0
+2.41.0
 
