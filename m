@@ -4,94 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 21BE6C4167B
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Nov 2023 18:46:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5171AC4167B
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Nov 2023 18:46:46 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4A6BBDF1;
-	Wed, 29 Nov 2023 19:46:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4A6BBDF1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 834B4E76;
+	Wed, 29 Nov 2023 19:46:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 834B4E76
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1701283591;
-	bh=FN4I76ZU7Cwagn6Bgl8OaeZ+LRU0T1R0zOgimIt+bG4=;
+	s=default; t=1701283604;
+	bh=cKJeFNkIQAf+/tiMMgC+hJ3Nk+Hnaj6HJWSuL5lnedo=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=PBbhMcF3n+FNbVgJJQl3uEjln1N582x7KvqTFq2diBLI68I5fH7+z+2TNfhM7qpR3
-	 V2YnTnWhymY5y87k/NisN1xyLfnklmh+Ye9XscWywMk+aqNnoim4EAZ8FbuWc3UX8f
-	 pY64Mm2eqhwP81SA2bkmtAyx7lujPe3gGf5r/6m8=
+	b=fZJ4q+f2Y0Sw+D7Xmyaezt0FbNeVz1L0D/MvXM6TtcrxfE624bIrxUJ6Iok5ZF/Nh
+	 wPWK9gY9VXJ0pGe4JiGpb3GLSMnVee1kPaWFGC9h32lh/lC4xUWLQ7kTL2YHdbpV1b
+	 3g4s1yecAkY42RJQIsyIjNzg9ZJTu6c0jCzisd+4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 39857F8056F; Wed, 29 Nov 2023 19:45:59 +0100 (CET)
+	id 5A055F805B1; Wed, 29 Nov 2023 19:46:02 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5025CF80254;
-	Wed, 29 Nov 2023 19:45:59 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2CA48F805C6;
+	Wed, 29 Nov 2023 19:46:01 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 32300F80236; Wed, 29 Nov 2023 19:45:53 +0100 (CET)
+	id 63AD8F801D5; Wed, 29 Nov 2023 19:45:56 +0100 (CET)
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 1AFF6F8007E
-	for <alsa-devel@alsa-project.org>; Wed, 29 Nov 2023 19:45:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1AFF6F8007E
+	by alsa1.perex.cz (Postfix) with ESMTPS id 1BD9CF800F5
+	for <alsa-devel@alsa-project.org>; Wed, 29 Nov 2023 19:45:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1BD9CF800F5
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=Ef+f+pvD
+ header.s=Intel header.b=A08Sl2xl
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701283546; x=1732819546;
+  t=1701283548; x=1732819548;
   h=message-id:date:mime-version:subject:to:cc:references:
    from:in-reply-to:content-transfer-encoding;
-  bh=FN4I76ZU7Cwagn6Bgl8OaeZ+LRU0T1R0zOgimIt+bG4=;
-  b=Ef+f+pvDe/UXQW9GRhlTaAsgjsYUUc7KjFvYn2l8W+pmvgLcJTGifGji
-   HAE+ocEh79rBd9XBxG2MkQNvKslXkC38WZe199YzIZttyDH4ZYQPwgyKu
-   dSEN9xOa8bWUEM4BvioQjFJyxzR9Fcnwc4zXeTv7zx2u5V/veVpbE79FB
-   ZQKUG6Hp9vIUR7cIusgQ9yN8FbJjexGl1QpQ08ELKjiLQAjo/dhAxT9wc
-   kfQNYtMOcVCT7N7SHY3YirYPWe/v51HbMEEf+Xy4AiGbao2/Ua+k22s9R
-   6RIlKoZmUCgJH7ZNKemT0qUJRMmbXpAnOz7JFf+hpBr+RWF2v+FCaRTL3
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="383602785"
+  bh=cKJeFNkIQAf+/tiMMgC+hJ3Nk+Hnaj6HJWSuL5lnedo=;
+  b=A08Sl2xlyeomWLqQjsd6URT99FhlsvG6peedt1FYhWwYiI26KBjZ2x/p
+   9ma8852wsX4rJ/v2lwhLIfzw5nfNHYKVUb4EFLeIKxedXrgaU2KG0GFi+
+   k61pn1jy+KTIlFsoJXVROmsI0iN6W8DguiGkvEhuIzUEXyQVj+Nc7OEpo
+   +6cXuHXg+3i3r92N38li33OySaOoHAh3NUxBImLZGIaE/aGNVguRGVJYm
+   9LVqWH9DpR2GrwlrubOY7cElOGQTfrkGwzYGS6m/wq9HyW4ns9KDl9pIO
+   T1RcdnBCqA+xQwdnP5VShBnLEOc3htLwK6EhEmbakZA1y8/MRSKyFlc5Z
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="383602810"
 X-IronPort-AV: E=Sophos;i="6.04,237,1695711600";
-   d="scan'208";a="383602785"
+   d="scan'208";a="383602810"
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
   by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 29 Nov 2023 10:45:42 -0800
+ 29 Nov 2023 10:45:44 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="942421659"
+X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="942421675"
 X-IronPort-AV: E=Sophos;i="6.04,237,1695711600";
-   d="scan'208";a="942421659"
+   d="scan'208";a="942421675"
 Received: from caw1-mobl1.amr.corp.intel.com (HELO [10.255.229.136])
  ([10.255.229.136])
   by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 29 Nov 2023 10:45:41 -0800
-Message-ID: <7bae01ac-a0de-47d9-9bd3-6bdfc48e02c1@linux.intel.com>
-Date: Wed, 29 Nov 2023 10:39:08 -0600
+ 29 Nov 2023 10:45:43 -0800
+Message-ID: <3d36d707-86f7-44fe-a613-64e264bb53cd@linux.intel.com>
+Date: Wed, 29 Nov 2023 11:07:20 -0600
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 6/7] ASoC: Intel: soc-acpi-intel-tgl-match: add cs42l43
- and cs56l56 support
+Subject: Re: [PATCH] soundwire: qcom: allow multi-link on newer devices
 Content-Language: en-US
-To: Richard Fitzgerald <rf@opensource.cirrus.com>,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>, lgirdwood@gmail.com,
- broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
- kai.vehmanen@linux.intel.com, ranjani.sridharan@linux.intel.com,
- cezary.rojewski@intel.com, yung-chuan.liao@linux.intel.com,
- ckeepax@opensource.cirrus.com, yong.zhi@intel.com, chao.song@linux.intel.com
-References: <20231127133448.18449-1-peter.ujfalusi@linux.intel.com>
- <20231127133448.18449-7-peter.ujfalusi@linux.intel.com>
- <9660e9df-2061-4b2c-ba59-5e6f8a61f07d@opensource.cirrus.com>
- <cb768f03-9d46-432e-ad67-8ff1ef075385@linux.intel.com>
- <6038c9fa-8cb1-46e1-b856-d759a3f990b3@opensource.cirrus.com>
- <5e9b0b69-6108-4909-90e8-257c13c2d886@linux.intel.com>
- <d2de7d4c-3984-4737-b879-a1fa829007ff@opensource.cirrus.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Vinod Koul <vkoul@kernel.org>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Sanyog Kale <sanyog.r.kale@intel.com>, linux-arm-msm@vger.kernel.org,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: Mark Brown <broonie@kernel.org>
+References: <20231128150049.412236-1-krzysztof.kozlowski@linaro.org>
+ <e43db38a-206d-4ea5-8813-23e1f918dd65@linux.intel.com>
+ <ab0fc6e0-a358-42e7-92e5-77ceea53a546@linaro.org>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <d2de7d4c-3984-4737-b879-a1fa829007ff@opensource.cirrus.com>
+In-Reply-To: <ab0fc6e0-a358-42e7-92e5-77ceea53a546@linaro.org>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: ZAOWTDLIEMI4OGHRIG4LVSRKKDYBYYCC
-X-Message-ID-Hash: ZAOWTDLIEMI4OGHRIG4LVSRKKDYBYYCC
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: YXUBDJARG3LFH4UUKWK6K65YOSJPXISU
+X-Message-ID-Hash: YXUBDJARG3LFH4UUKWK6K65YOSJPXISU
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -104,7 +99,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZAOWTDLIEMI4OGHRIG4LVSRKKDYBYYCC/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YXUBDJARG3LFH4UUKWK6K65YOSJPXISU/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -114,73 +109,56 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 
->>>>>> +        .name_prefix = "cs35l56-8"
->>>>>
->>>>> Can these prefixes be "AMPn" to match the CS35L41, CS35L51 and
->>>>> CS35L56-hda driver? This prefix is used to find the matching firmware
->>>>> files and our naming convention for these has been cs35lxx-xxxx-ampn
->>>>>
->>>>> Is there anything that depends on the prefixes being "cs35l56-n" ?
->>>>
->>>> IIRC this name_prefix is just used for the codec_conf and hence for
->>>> control names/UCM. At some point userspace/driver need to know if amp5
->>>> is left or right.
->>>>
->>>> We can certainly align on conventions but the values set in this ACPI
->>>> match table will not be used for firmware download - different scope.
->>>>
->>>
->>> They are used for our firmware download. Each amp can have its own
->>> unique firmware file. The ALSA prefix is used to identify which firmware
->>> file to load to which amp.
->>
->> The prefix will only be used when the card is created, specifically for
->> control names.
->> The firmware should be selected and downloaded when the device shows up
->> on the bus.
->> Card creation and device enumeration/initialization happen on different
->> timelines, if the machine driver is "blacklisted" or unbound I am not
->> sure what happens.
->>
->> There is a dependency between machine driver probe and codec firmware
->> download that I am not able to follow, can you please elaborate?
->>
-> 
-> The codec driver has to choose which firmware to load from under
-> /lib/firmware. It does this using a combination of SSID (to identify the
-> target product), the ALSA prefix string (to identify which amp) and
-> in some systems a GPIO on the motherboard to select between different
-> models of speaker when they have multiple suppliers. This results in a
-> firmware name like:
-> 
-> cs35l56-<silicon rev>-dsp1-misc-<SSID>[-<SPEAKER MODEL>]-<ALSA PREFIX>
-> 
-> You can see this if you look in the linux-firmware repo under cirrus/
-> for cs35l41 firmware files (though the ALSA PREFIX section in those
-> cases is not "AMPn" because they are not SDCA parts with rotation,
-> they have a fixed left/right assignment.)
-> 
-> We have to be careful of the length of the prefix. The 44 characters of
-> an ALSA control name get eaten up very quickly when we start creating
-> fully-qualified names for controls published by the firmware. So "AMPn"
-> was nice because it was descriptive enough but only uses 5 characters
-> of the 44.
-> 
-> Having said that, I've calculated that we have enough characters (just)
-> to use a prefix of "cs35l56-n". If there's a reason why that is
-> necessary/desirable for SOF or SoundWire then we could do that. But we'd
-> intended to use "AMPn" prefixes.
-> 
-> We just need to decide whether to go with "AMPn". Or switch to using
-> "cs35l56-n" for the ALSA prefix (the therefore the qualifier at the end
-> of the firmware filename).
 
-Yes we have similar issues with control names in topology, the limit is
-hit very quickly.
+On 11/29/23 10:43, Krzysztof Kozlowski wrote:
+> On 28/11/2023 16:35, Pierre-Louis Bossart wrote:
+>>>  static enum sdw_command_response qcom_swrm_xfer_msg(struct sdw_bus *bus,
+>>>  						    struct sdw_msg *msg)
+>>>  {
+>>> @@ -1078,6 +1090,7 @@ static const struct sdw_master_port_ops qcom_swrm_port_ops = {
+>>>  };
+>>>  
+>>>  static const struct sdw_master_ops qcom_swrm_ops = {
+>>> +	.read_prop = qcom_swrm_read_prop,
+>>
+>> nit-pick: read_prop() literally means "read platform properties".
+>>
+>> The functionality implemented in this callback looks more like an
+>> initialization done in a probe, no?
+> 
+> Yes, but multi_link is being set by sdw_bus_master_add() just before
+> calling read_prop(). It looks a bit odd, because "bus" comes from the
+> caller and is probably zero-ed already. Therefore I assumed the code did
+> it on purpose - ignored multi_link set before sdw_bus_master_add(),
 
-I think you missed my point though that the ALSA prefix is only set when
-the card is created, which can be sometime after the firmware needs to
-be downloaded. I guess you could pick the firmware in the component
-probe, which happens during the card creation, but that could be
-sub-optimal. Given the download times you want the download to proceed
-as early as possible.
+On the Intel side, there's a bit of luck here.
+
+The caller intel_link_probe() does not set the multi-link property, but
+it's set in intel_link_startup() *AFTER* reading the properties - but we
+don't have any properties related to multi-link, only the ability to
+discard specific links.
+
+>>>  	.xfer_msg = qcom_swrm_xfer_msg,
+>>>  	.pre_bank_switch = qcom_swrm_pre_bank_switch,
+>>>  	.post_bank_switch = qcom_swrm_post_bank_switch,
+>>> @@ -1196,6 +1209,15 @@ static int qcom_swrm_stream_alloc_ports(struct qcom_swrm_ctrl *ctrl,
+>>>  
+>>>  	mutex_lock(&ctrl->port_lock);
+>>>  	list_for_each_entry(m_rt, &stream->master_list, stream_node) {
+>>
+>> just realizing this now, are you sure the 'port_lock' is the proper
+>> means to protecting the stream->master_list? I don't see this used
+>> anywhere else in stream.c. I think you need to use bus_lock.
+> 
+> This is from ctrl, internal driver structure:
+> 
+> struct qcom_swrm_ctrl *ctrl
+
+My point what that all other instances where list_for_each_entry() is
+used on stream->master list rely on the bus_lock.
+
+You may be fine in this specific case with a QCOM-specific lock, not
+sure if there's any risk. At any rate that is not introduced by this
+patch, so for now
+
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
