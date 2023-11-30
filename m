@@ -4,82 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C574BC10DC3
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Nov 2023 19:23:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ECCD4C4167B
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Nov 2023 19:45:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 44C99DF6;
-	Thu, 30 Nov 2023 20:23:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 44C99DF6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3EA0CDFA;
+	Thu, 30 Nov 2023 20:45:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3EA0CDFA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1701372231;
-	bh=UxUXzr7MUAQkO9QmIGMfi1vJoiI/YuEE7Nq9Adt6j6A=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=VWrsjkebh6sGvP98+9lczeWqgmFXBc7DYCEacSB+nLaY48CqsWXmhK4l2GzfU2vAd
-	 h5r8IYfccT451MVV2EBBDgzl+pM4oo7mZUdA5lJa++6VLWxM9UQkT5BK3ODB+3m+xX
-	 gFZO1PYqUXl0+QPlYzx5urjYcq3YAPffulzmBQXM=
+	s=default; t=1701373536;
+	bh=OxkZgshpaYqRTtBVcu9JT/bxIPyq50WuUjYVUyUZtJM=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=HWkluXDLZaAUa405PT8HSoHSBUxUTGqrZ6c+KmQDJAN1rrKVrVd9vNxnVbyeX6WSV
+	 e8R5ET/boXcyKoAuk37ewi98EmtnqimQaf5U+EDTHQ/tpkSEIcDBGSlNMwpablpaew
+	 ZRlTTU3CZ87wrfOKhC89wVA7LFj50i34YV9jQqA4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 830D2F80557; Thu, 30 Nov 2023 20:23:17 +0100 (CET)
+	id 7184EF801D5; Thu, 30 Nov 2023 20:45:04 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id CE54BF8057E;
-	Thu, 30 Nov 2023 20:23:16 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CDA3CF80579;
+	Thu, 30 Nov 2023 20:45:03 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D7225F8016E; Thu, 30 Nov 2023 20:21:55 +0100 (CET)
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com
- [IPv6:2a00:1450:4864:20::12f])
+	id 0CBB7F8016E; Thu, 30 Nov 2023 20:44:57 +0100 (CET)
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com
+ [IPv6:2a00:1450:4864:20::334])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C16A9F800F5
-	for <alsa-devel@alsa-project.org>; Thu, 30 Nov 2023 20:21:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C16A9F800F5
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9CC0CF800F5
+	for <alsa-devel@alsa-project.org>; Thu, 30 Nov 2023 20:44:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9CC0CF800F5
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=BDagFxkP
-Received: by mail-lf1-x12f.google.com with SMTP id
- 2adb3069b0e04-50bba815f30so1734312e87.2
+ header.s=google header.b=kTdGcOIw
+Received: by mail-wm1-x334.google.com with SMTP id
+ 5b1f17b1804b1-40b4c2ef584so11703425e9.3
         for <alsa-devel@alsa-project.org>;
- Thu, 30 Nov 2023 11:21:48 -0800 (PST)
+ Thu, 30 Nov 2023 11:44:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701372106; x=1701976906;
+        d=linaro.org; s=google; t=1701373491; x=1701978291;
  darn=alsa-project.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=7hWM7V+ZExvAnFj1W1dKLDuXcl2XOV1nsx6wXsgycfE=;
-        b=BDagFxkPyfE+HdE14WdJ7LjO/dYeLAnMKWREheqiGKMYe1ijMYozAsg89buH55hQKl
-         yx0syKrEUAOT/C1c97GZlcEAdPjCawnpMkGmT8ooerLxptTqLE3vRlkCnvhK9hSzEtc3
-         BRVNxXdA5UjzV6QANPshvd3Uy9G5KkW8ouOtRw/yw0gJRJDwlsU6tKu9oV/ezbDLmiN5
-         P+CPaeek/myGt5BTTAdYzAaWhnUWqUNkFJMHBYlAJcp/wZTO4S0NzNUScRZlqynxPUkW
-         z06K6wxLZHZ8fNyyzuiAmqZ4Xs063RMwsvcK4gZzLA5zqogHvntWnV3Z+PgAxvM8yxsQ
-         n28A==
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=07QYxEgyoqmQ3Q1vq77DMefnw2mMccatpZsNXnEAueU=;
+        b=kTdGcOIwL8vdkBt5mIx6yPhwQrpE9pNvIScHO0v9wbz6lP/J23Uy1nCTjm7eQ8Azr7
+         GJZ7yPqwdHi/SVOmiKxl7qUrQOpdPzX/PD/uvLdTdmuI94D9jtT08Q61zOB92XGCdDgn
+         dZIoeBMmuv61C9gIejPNo1++0XNUodXdWgLYBTRVLr0j0ovCwFm1+uQeWwDkl2RXoUGJ
+         01qDQS0kHsfv4HGHtBMk7nFPWPOESCdcJUy3ecSfgmO8zj5xT4ABZrWXr3c8cXPay1EX
+         uRldL1WiFb5vfOJis2rOVJ2oUWM/KJQfXYqWd57fCoZy31YtBKC1qe51Rg8NlHdUnlOQ
+         ks/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701372106; x=1701976906;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=7hWM7V+ZExvAnFj1W1dKLDuXcl2XOV1nsx6wXsgycfE=;
-        b=Bbs/YMUkbbkxSAEp+fJ6HkOxVxepjdvuyhzu1jK9lvACzsc6N9bgx5dk0DqA/f9k9u
-         +cFv8T7NMbPFpUvHa5rXZEfrz9+TKbgaFzzUbHGXUOa9BMBO8m7GvJGfqpVPwtUMfLDe
-         b+0hlhDcCecSENtMsMPvvdWt2JOTI9bRDifuOwfmWmMvW2oRf9789PoeuUUF6/C/X3CJ
-         kNgDgvlgExfmaEUpkMT5isW3YzJvwqDRI1ayo1I/5bFe5Cht+O8z2uQ63xdcEmVrHokg
-         UovlBvuuuL1jiJSvVXO0jGgiK+a+gK+dHGXU9SYTI1VJS+oiXtln3isaPPp52RM9/k7x
-         bg8A==
-X-Gm-Message-State: AOJu0Ywv4lsRYExuEuvrI19Z0F4sNSbfTgStzaN8yefvhgzmMFgAAub/
-	HCJfOoHBjYfUPbt4NBbnpp3OVXBKzZuIthBo9Ef1Lw==
+        d=1e100.net; s=20230601; t=1701373491; x=1701978291;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=07QYxEgyoqmQ3Q1vq77DMefnw2mMccatpZsNXnEAueU=;
+        b=DwsbO7FfLxWHuSWEZ0aCxsLW5q3jB8SwMBfg/Sb5A4G9B65j3kHNYp5vbHVLiDDDMj
+         oXb4rDsQGP/c3+/IlKvwg1ZmUUTeBZc2nKZ0L71Ks3cpGFARYhANx5FQBrEAxtUOSgyA
+         c4i0GPK0gsN2xJtvPlJFgXptgByTA4WBkW941iuwVkE8t2jtM/r6locuXhnWUxw6f0du
+         ahQ2GJ8NMBtao+YnhRbCX5RUab60tDFpwi+/KnVxwevgMuC8ggiwtCIqydvM3hf2zV2s
+         4ul4zEbusBKeSyBF9EVO/m4Q5ZYGXcEA4giBpziOak95STp2FjGzbs2X2otLu1jlVrbG
+         VBVw==
+X-Gm-Message-State: AOJu0YwgLSuWkeyN+NNl2T0wkaQhh1RqDJ5aXsX910/NfArTorNHk/le
+	RPujRnaVxtgM+U2wUDlHHYUHGaR3eecPfbknRsEquQ==
 X-Google-Smtp-Source: 
- AGHT+IGG8SW/XcQazf2iyEQkOuHfNKXEzI1KvqtYFQzrb/U6iIkfOpKTu2rQXzzMQj1IPVHwiHZ0mg==
-X-Received: by 2002:a17:906:b88f:b0:a19:a1ba:bab7 with SMTP id
- hb15-20020a170906b88f00b00a19a1babab7mr5512ejb.93.1701367681837;
-        Thu, 30 Nov 2023 10:08:01 -0800 (PST)
+ AGHT+IH5RLOmJKYkkr8iZOW9SC+fCUJYFeQDas3VL1+GiBFExPCe+HsuOw/Ti2CQ542OzjVBSw5i4g==
+X-Received: by 2002:a17:906:ca2:b0:9fe:3bb6:99fe with SMTP id
+ k2-20020a1709060ca200b009fe3bb699femr80697ejh.2.1701367698155;
+        Thu, 30 Nov 2023 10:08:18 -0800 (PST)
 Received: from krzk-bin.. ([178.197.223.109])
         by smtp.gmail.com with ESMTPSA id
- y16-20020a170906559000b009a1dbf55665sm926713ejp.161.2023.11.30.10.08.00
+ y16-20020a170906559000b009a1dbf55665sm926713ejp.161.2023.11.30.10.08.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Nov 2023 10:08:01 -0800 (PST)
+        Thu, 30 Nov 2023 10:08:17 -0800 (PST)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
 	Banajit Goswami <bgoswami@quicinc.com>,
@@ -91,15 +93,16 @@ To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
 	linux-sound@vger.kernel.org,
 	linux-kernel@vger.kernel.org
 Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH v2 1/3] ASoC: qcom: audioreach: Commonize setting channel
- mappings
-Date: Thu, 30 Nov 2023 19:07:56 +0100
-Message-Id: <20231130180758.212172-1-krzysztof.kozlowski@linaro.org>
+Subject: [PATCH v2 3/3] ASoC: qcom: audioreach: Add 4 channel support
+Date: Thu, 30 Nov 2023 19:07:58 +0100
+Message-Id: <20231130180758.212172-3-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231130180758.212172-1-krzysztof.kozlowski@linaro.org>
+References: <20231130180758.212172-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: FFCUH7ESMUSHHVLJBYO7ZPE6KTQYM57O
-X-Message-ID-Hash: FFCUH7ESMUSHHVLJBYO7ZPE6KTQYM57O
+Message-ID-Hash: O5LMZKCX4X5MZGHPDLQSGRZVZ5S7VPNN
+X-Message-ID-Hash: O5LMZKCX4X5MZGHPDLQSGRZVZ5S7VPNN
 X-MailFrom: krzysztof.kozlowski@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -112,7 +115,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FFCUH7ESMUSHHVLJBYO7ZPE6KTQYM57O/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/O5LMZKCX4X5MZGHPDLQSGRZVZ5S7VPNN/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -121,87 +124,72 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Move code assigning channel mapping values to a common helper function.
-This simplifies three out of four cases, with the last case using
-incompatible type (uint16_t array instead of uint8_t array).
+Add support four channel streams.  Map channel 3 and 4 to left/right
+surround ("quad(side)" from ffmpeg standard channel list) to match what
+is in qdsp6/q6dsp-common.c driver.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
 ---
 
 Changes in v2:
-1. New patch
+1. Rebase to avoid duplicate code.
+
+v1:
+https://lore.kernel.org/alsa-devel/20231020084919.18628-1-krzysztof.kozlowski@linaro.org/
+
+quad(side):
+https://trac.ffmpeg.org/wiki/AudioChannelManipulation#Listchannelnamesandstandardchannellayouts
 ---
- sound/soc/qcom/qdsp6/audioreach.c | 35 ++++++++++++++-----------------
- 1 file changed, 16 insertions(+), 19 deletions(-)
+ sound/soc/qcom/qdsp6/audioreach.c | 14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/qcom/qdsp6/audioreach.c b/sound/soc/qcom/qdsp6/audioreach.c
-index 5974c7929dd3..3db5ff367a29 100644
+index 5c7113d46b6f..5291deac0a0b 100644
 --- a/sound/soc/qcom/qdsp6/audioreach.c
 +++ b/sound/soc/qcom/qdsp6/audioreach.c
-@@ -267,6 +267,16 @@ void *audioreach_alloc_apm_cmd_pkt(int pkt_size, uint32_t opcode, uint32_t token
+@@ -274,6 +274,11 @@ static void audioreach_set_channel_mapping(u8 *ch_map, int num_channels)
+ 	} else if (num_channels == 2) {
+ 		ch_map[0] =  PCM_CHANNEL_FL;
+ 		ch_map[1] =  PCM_CHANNEL_FR;
++	} else if (num_channels == 4) {
++		ch_map[0] =  PCM_CHANNEL_FL;
++		ch_map[1] =  PCM_CHANNEL_FR;
++		ch_map[2] =  PCM_CHANNEL_LS;
++		ch_map[3] =  PCM_CHANNEL_RS;
+ 	}
  }
- EXPORT_SYMBOL_GPL(audioreach_alloc_apm_cmd_pkt);
  
-+static void audioreach_set_channel_mapping(u8 *ch_map, int num_channels)
-+{
-+	if (num_channels == 1) {
-+		ch_map[0] =  PCM_CHANNEL_L;
-+	} else if (num_channels == 2) {
-+		ch_map[0] =  PCM_CHANNEL_L;
-+		ch_map[1] =  PCM_CHANNEL_R;
-+	}
-+}
-+
- static void apm_populate_container_config(struct apm_container_obj *cfg,
- 					  struct audioreach_container *cont)
- {
-@@ -864,12 +874,8 @@ static int audioreach_set_compr_media_format(struct media_format *media_fmt_hdr,
- 		mp3_cfg->endianness = PCM_LITTLE_ENDIAN;
- 		mp3_cfg->num_channels = mcfg->num_channels;
- 
--		if (mcfg->num_channels == 1) {
--			mp3_cfg->channel_mapping[0] =  PCM_CHANNEL_L;
--		} else if (mcfg->num_channels == 2) {
--			mp3_cfg->channel_mapping[0] =  PCM_CHANNEL_L;
--			mp3_cfg->channel_mapping[1] =  PCM_CHANNEL_R;
--		}
-+		audioreach_set_channel_mapping(mp3_cfg->channel_mapping,
-+					       mcfg->num_channels);
- 		break;
- 	case SND_AUDIOCODEC_AAC:
- 		media_fmt_hdr->data_format = DATA_FORMAT_RAW_COMPRESSED;
-@@ -1089,13 +1095,8 @@ static int audioreach_pcm_set_media_format(struct q6apm_graph *graph,
- 	media_cfg->q_factor = mcfg->bit_width - 1;
- 	media_cfg->bits_per_sample = mcfg->bit_width;
- 
--	if (num_channels == 1) {
--		media_cfg->channel_mapping[0] = PCM_CHANNEL_L;
--	} else if (num_channels == 2) {
--		media_cfg->channel_mapping[0] = PCM_CHANNEL_L;
--		media_cfg->channel_mapping[1] = PCM_CHANNEL_R;
--
--	}
-+	audioreach_set_channel_mapping(media_cfg->channel_mapping,
-+				       num_channels);
+@@ -843,6 +848,11 @@ static int audioreach_mfc_set_media_format(struct q6apm_graph *graph,
+ 	} else if (num_channels == 2) {
+ 		media_format->channel_mapping[0] = PCM_CHANNEL_FL;
+ 		media_format->channel_mapping[1] = PCM_CHANNEL_FR;
++	} else if (num_channels == 4) {
++		media_format->channel_mapping[0] = PCM_CHANNEL_FL;
++		media_format->channel_mapping[1] = PCM_CHANNEL_FR;
++		media_format->channel_mapping[2] = PCM_CHANNEL_LS;
++		media_format->channel_mapping[3] = PCM_CHANNEL_RS;
+ 	}
  
  	rc = q6apm_send_cmd_sync(graph->apm, pkt, 0);
+@@ -1063,7 +1073,7 @@ static int audioreach_pcm_set_media_format(struct q6apm_graph *graph,
+ 	int rc, payload_size;
+ 	struct gpr_pkt *pkt;
  
-@@ -1153,12 +1154,8 @@ static int audioreach_shmem_set_media_format(struct q6apm_graph *graph,
- 		cfg->endianness = PCM_LITTLE_ENDIAN;
- 		cfg->num_channels = mcfg->num_channels;
+-	if (num_channels > 2) {
++	if (num_channels > 4) {
+ 		dev_err(graph->dev, "Error: Invalid channels (%d)!\n", num_channels);
+ 		return -EINVAL;
+ 	}
+@@ -1117,7 +1127,7 @@ static int audioreach_shmem_set_media_format(struct q6apm_graph *graph,
+ 	struct gpr_pkt *pkt;
+ 	void *p;
  
--		if (mcfg->num_channels == 1)
--			cfg->channel_mapping[0] =  PCM_CHANNEL_L;
--		else if (num_channels == 2) {
--			cfg->channel_mapping[0] =  PCM_CHANNEL_L;
--			cfg->channel_mapping[1] =  PCM_CHANNEL_R;
--		}
-+		audioreach_set_channel_mapping(cfg->channel_mapping,
-+					       num_channels);
- 	} else {
- 		rc = audioreach_set_compr_media_format(header, p, mcfg);
- 		if (rc) {
+-	if (num_channels > 2) {
++	if (num_channels > 4) {
+ 		dev_err(graph->dev, "Error: Invalid channels (%d)!\n", num_channels);
+ 		return -EINVAL;
+ 	}
 -- 
 2.34.1
 
