@@ -4,106 +4,142 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AAF17C4167B
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Nov 2023 19:45:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 432BFC4167B
+	for <alsa-devel@archiver.kernel.org>; Fri,  1 Dec 2023 04:36:46 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E8885DEB;
-	Thu, 30 Nov 2023 20:45:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E8885DEB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 41027DF0;
+	Fri,  1 Dec 2023 05:36:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 41027DF0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1701373555;
-	bh=HVSp1QAdSIk2wrl2FAu53BOE+3ApnXBvs45863D7YlM=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=coENnpbxfAFPl6pTQcPWbBQ5PK0AofjREiZ2r3NqiMw7KMF3QfPSp0t4aqQ7PmbR+
-	 Dg6eVh3VLQLfFcE+kRrYN8vqzIZ0lX862gnbDG5TqpqyGJZw+vAgCSmlLMU4r3SJ6v
-	 1uPAGF2JYtmuR1LrGHUZ88VTYz3sTzwKPJScPXOc=
+	s=default; t=1701405404;
+	bh=DsKVx3Mx4nSUEq/Ry2Wecw0p5TacjmKibd2NE7+JAxg=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=c80f+a3dSq+5uDrfyI/nQvF0UDhfhs2fJce7QqhhMj493OdKS7ofmOc+seuKIxc0u
+	 lVE7jq6HrY9QaqWIGMbehfG3wEdzTnw6fBejOdeL/Xq0M9j4M/pfoe6YDSplkrBk21
+	 jyMy+2bdjfQ+lhqlT3sNc+vqQ0VaOfh/5CQgh1Pg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 56014F805B5; Thu, 30 Nov 2023 20:45:21 +0100 (CET)
+	id C076AF80571; Fri,  1 Dec 2023 05:36:13 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8FD15F805C0;
-	Thu, 30 Nov 2023 20:45:20 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8D659F8057A;
+	Fri,  1 Dec 2023 05:36:12 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BB9ADF80104; Thu, 30 Nov 2023 20:45:16 +0100 (CET)
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com
- [IPv6:2a00:1450:4864:20::22c])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 2694EF8016E; Fri,  1 Dec 2023 05:30:10 +0100 (CET)
+Received: from JPN01-OS0-obe.outbound.protection.outlook.com
+ (mail-os0jpn01on20700.outbound.protection.outlook.com
+ [IPv6:2a01:111:f403:201a::700])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 0B7A9F8055A
-	for <alsa-devel@alsa-project.org>; Thu, 30 Nov 2023 20:45:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0B7A9F8055A
+	by alsa1.perex.cz (Postfix) with ESMTPS id 00BC5F80114
+	for <alsa-devel@alsa-project.org>; Fri,  1 Dec 2023 05:30:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 00BC5F80114
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=NjQQpDv2
-Received: by mail-lj1-x22c.google.com with SMTP id
- 38308e7fff4ca-2c9d4afb7dfso7797821fa.1
-        for <alsa-devel@alsa-project.org>;
- Thu, 30 Nov 2023 11:45:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701373510; x=1701978310;
- darn=alsa-project.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AC9X+I2DWGil+KYfObDh0oa4Sp4cVvyRNcYSz6qi/GY=;
-        b=NjQQpDv25QcqF4ZKs61OTfvwVw5QMYA84tmyvuQGIjOOzOuncti4ZxYhh1vqfugwYt
-         JbWJUy1K3gpiG9gNlBIc4Su+wL3aL5X9Ja9IYjLRoqknv4KIH5fyAW3td2DBCMrApWvf
-         +2m8U9f/QvCmlYKyKvLDHbu/bYKxAGFFAdpcnIK67IKbw2dG7yYCfkvQP5g5szYG7BwC
-         9IjDvtcppL9cfoWaxNa2g1jyRnfO44jyDH3Ed+h4E0MISlpPJqsjmkwqlqnHGOsHmhCi
-         jvZ+nKI60LWdCc5529BvSarl+Mo3mSMoZcfRT/xUQGiRyMMReS59WuPFIPqsctR/0crx
-         t5Tw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701373510; x=1701978310;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=AC9X+I2DWGil+KYfObDh0oa4Sp4cVvyRNcYSz6qi/GY=;
-        b=FVnG/j0ixaSRxNd2WB5bj203k0Er7eZ2069kjzyEaKcpK9fPzn/fVaJNyscTEUOlp+
-         b0QDPC0PWC6BqNj/foLoCj635OrYpZ23Zqyq6E+wSrs3SzSfpB6veMskU9SlI70c11i0
-         T3XiOOvZwHj1FjMi1U/vpQM7nHUj0Zgay1eRQmW5cWipyMpxh0U+xwJrkhfbuCPilYnI
-         b3Y5Qs5eMKk5cpabhou7AZcbdR4JixyDW001wO9puHJ9GpcS6LYqas7IGq6fFctbb5uN
-         3l6bFIhF7FxGNxcVQTL8+lNw8N6/6609l/9iTul3vsdJnvb/NNICZPbjYNwhGAQx/KAI
-         +RFA==
-X-Gm-Message-State: AOJu0Yx9beBJ4/jVROztzBq5nCPVk4aaS8Tc+bI56v3pdzrXlKd+yU9Y
-	nOcyfg1Cn7y8xXJhSKgOkqei02jmaNAAa31XbLyAZg==
-X-Google-Smtp-Source: 
- AGHT+IFvub3SCGtusk+ZqhsrvxJgXcKJ9ivYgKET4m1jBYY5pnBV8bUXpwvzJHOJT7A45CaynCXmxA==
-X-Received: by 2002:adf:fdcc:0:b0:333:2fd2:68fa with SMTP id
- i12-20020adffdcc000000b003332fd268famr12459wrs.141.1701367693588;
-        Thu, 30 Nov 2023 10:08:13 -0800 (PST)
-Received: from krzk-bin.. ([178.197.223.109])
-        by smtp.gmail.com with ESMTPSA id
- y16-20020a170906559000b009a1dbf55665sm926713ejp.161.2023.11.30.10.08.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Nov 2023 10:08:13 -0800 (PST)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-	Banajit Goswami <bgoswami@quicinc.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
+	dkim=pass (1024-bit key,
+ unprotected) header.d=dm.renesas.com header.i=@dm.renesas.com
+ header.a=rsa-sha256 header.s=selector1 header.b=goqChZo2
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kiPk0JoCepsK4NE6HIMKuQcFeBXL9ABQ7Vz0PvLSV9PT7u3iuLNQgIazS2NkPVqT6y2chWZ2lcjSbLKxtd0YQ7iJVe+GWh/Bkm6tkBgp0cqkmqG69RVrgP1v0TMOszyKEXTOAwWC90GraHJo9HROZwynpEALn7pWcTAeJeog7C3CdRwyWT3b2PPAZnvvl1n+5ilGg2RuPS/6uPcmRxLFsCxQ3uL6JFrYPRQ0Dpc2qsWif+JrThL1bo1FJPlPk1O/UjKYa2eHcUYFnv38CiUiHukuy0gJDvvhQgk+NViHiAF32NbmyM7y1V+2tYnbd1b6Y7QbDGKgeP9KUYNhzMnBsg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=YsJ9ue6eqL3fxS4b+GsaE/vR1dLATusKP+vsG6dMoAE=;
+ b=gGbTyeak0w+Nnd3hCTxXPu2OpoyvBt6YdXAbK5hoxHTkdwQEi/7YfVF262wGeLvbuB0nQgmPvYX/3oFRgUNjEJpC7DRHU1tY1t6FD6m9QJdyrjoXsqzP/+0SWcUHmHlhryvRySEovfRAZhWKsoPT7v77eDaifqwPCOvWHqItoLTvgo/7qz54pq5L8XfeCu/aKmwfCLOgXqvAXuw4ujVJHqV5fk/EDMsucuurCApa4Hin7MWu5nCfnPpR4EnnsdwfOeVVle3A8LU/T71xUPCl2ctcPVyONf6dQ/uTV/by7hKyhE53Wx02IM8/GDvQkN6uSUIPpDQLOMAEkxFDqDoEAg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=dm.renesas.com; dmarc=pass action=none
+ header.from=dm.renesas.com; dkim=pass header.d=dm.renesas.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dm.renesas.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=YsJ9ue6eqL3fxS4b+GsaE/vR1dLATusKP+vsG6dMoAE=;
+ b=goqChZo2GOKa4XdpeC3HSxOL1EC7i89ddEwj3/UIM/nVhhFIKcAbWkaOdv9TbBoOoCXSf44UTFiNbTA/izwYNnWcj0wFAgZcKM5o+OLevXIq3YrBfJtrh1mSDMNHq68ge0E7XXJPg9DO464uy8ETj3qxsUnNbbpU6WHow+7UkiE=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=dm.renesas.com;
+Received: from OS3PR01MB6641.jpnprd01.prod.outlook.com (2603:1096:604:10b::11)
+ by TYWPR01MB9921.jpnprd01.prod.outlook.com (2603:1096:400:231::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.22; Fri, 1 Dec
+ 2023 04:29:55 +0000
+Received: from OS3PR01MB6641.jpnprd01.prod.outlook.com
+ ([fe80::f6c1:b978:d777:e7ba]) by OS3PR01MB6641.jpnprd01.prod.outlook.com
+ ([fe80::f6c1:b978:d777:e7ba%6]) with mapi id 15.20.7046.015; Fri, 1 Dec 2023
+ 04:29:55 +0000
+From: David Rau <David.Rau.opensource@dm.renesas.com>
+To: broonie@kernel.org
+Cc: support.opensource@diasemi.com,
+	lgirdwood@gmail.com,
+	perex@perex.cz,
+	tiwai@suse.com,
 	alsa-devel@alsa-project.org,
-	linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH v2 2/3] ASoC: qcom: audioreach: drop duplicate channel defines
-Date: Thu, 30 Nov 2023 19:07:57 +0100
-Message-Id: <20231130180758.212172-2-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231130180758.212172-1-krzysztof.kozlowski@linaro.org>
-References: <20231130180758.212172-1-krzysztof.kozlowski@linaro.org>
+	linux-kernel@vger.kernel.org,
+	David Rau <David.Rau.opensource@dm.renesas.com>
+Subject: [PATCH] ASoC: da7219: Support low DC impedance headset
+Date: Fri,  1 Dec 2023 12:29:33 +0800
+Message-Id: <20231201042933.26392-1-David.Rau.opensource@dm.renesas.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-ClientProxiedBy: TYCPR01CA0026.jpnprd01.prod.outlook.com
+ (2603:1096:405:1::14) To OS3PR01MB6641.jpnprd01.prod.outlook.com
+ (2603:1096:604:10b::11)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: VVV7Z2G7Z6TFQK2GFMSWIY6VAZ3WBHHS
-X-Message-ID-Hash: VVV7Z2G7Z6TFQK2GFMSWIY6VAZ3WBHHS
-X-MailFrom: krzysztof.kozlowski@linaro.org
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: OS3PR01MB6641:EE_|TYWPR01MB9921:EE_
+X-MS-Office365-Filtering-Correlation-Id: aa9f3a5c-8ce9-4ab8-434e-08dbf2262b6e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	iCM351XYsIHQtQWD/v2j3n2eB/3o9UM3WkfP2Qyzugtq05UOD49ZkaLN+MYQ5JnxiFxuu5QoXOakJzXlqEWXRwqIb/mPvTv7kyWJKJBTHEzIB3yiMY4hIO5NDevnNCQhGVrlZnzrHcFgK2QbDMqrsmnSr+l15q7oPNO54RSmGPuGUrfd11RHikK1kI83J6/w8nWnhFGZvtj+PKmIeqkObesJbEzhkhEJLCSI6marem487hZsOHYCj9CidUVUm0NcOj9TW7tC+644X9qLMV7qHF3VNp8rEbmoAjvMiZKQD2asVDwoZfwulNnLtOmJtfwp/RpDy+Fiq2ibkpm3Nh6yq/S+JG87QUO1ji87c6XCMBGQDQ8RXHLXomyoZ7Aq4n4B2gRi2f6R/TBQ9QlFLFrzisL98uRdo6TaT6dS3GqCliICHHMGluMPJAwAhXMTb6M09SXuNgQx6nrPZa/i2+emYJ3LOWUIChPYPPHs39TLFWZBolMDSSbWWHR4ZdHSFF5bpHc4TNO8C7uZZV/AYTESbK3QZdj1XRO82AuThAOiA/T5iKqSJ0KGILR5vDTFF9q/t5/KW1tpJZkSXhgloS87LcSKICdiF5moE8Gh3JJViypCLjZxDl+Nj5h8Snd07Sy2
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OS3PR01MB6641.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(136003)(396003)(346002)(376002)(39860400002)(230922051799003)(451199024)(186009)(64100799003)(1800799012)(26005)(478600001)(2616005)(6512007)(107886003)(6666004)(1076003)(38100700002)(86362001)(103116003)(38350700005)(83380400001)(41300700001)(6916009)(66476007)(52116002)(4326008)(66556008)(2906002)(316002)(8676002)(6506007)(6486002)(4744005)(66946007)(8936002)(5660300002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?us-ascii?Q?OjNDjdZAxDZDE5d8p8FvrxbVOGM6IodhOHh64SioLcUiTetj4np6KKOkq3F2?=
+ =?us-ascii?Q?lmAO/B2kaEa4rUbGm8isrQOI9wa0x5vtq6SAxun9zfjIQ9MJP6FcOImylQCh?=
+ =?us-ascii?Q?1E0HN7eXVsYpOOXdzOlvDn3fC+AN86XaBF0i4grQ1QMiazbGdT3WrWB8RtcH?=
+ =?us-ascii?Q?SRqzetdL6roNU5xzyPPL5QojRUdAofhCxa2Qq3rRYazxC3vFUOVo49QHnKv/?=
+ =?us-ascii?Q?HmkGikHEUfmQZQt5pBmyx2lsL29DmsW2uEQwOQO1M9STHHYNz2CO8ptWWo2n?=
+ =?us-ascii?Q?5bBYvfKudWAg+piw2gkd4YVUutUTmAaMEy3jg192yjt7o4zqerzN3+AvbnaZ?=
+ =?us-ascii?Q?RbvqAFs8/BFw167zlLJm7q3t7UWgJ3N274jglqHHPV4IwXvssXR2tWZY6jAy?=
+ =?us-ascii?Q?fXZqHemm0ssvwHQi924djW4hrs6/+c57Y+URxGfcB7foVtaAb8dB2UXgJ9A/?=
+ =?us-ascii?Q?u2c5cLk4JUUkLyVjeBoEjoUJKoC5DuCot6ArXJt6OFLO/1cnRxvQ+z0up7vB?=
+ =?us-ascii?Q?HdzJgX9K8fhyHDpy1jurxrgIdIg/OsBAw/9+4VltfQBp2bjmNJd8elR/Jcd1?=
+ =?us-ascii?Q?xIuMeObPlYi3tM+yJ2fIKOrqXCZrqmAlTFDKGBRCI/oj5wR9CqZH9t+3rHbs?=
+ =?us-ascii?Q?IavQ+SnYD7Rskd7H+sELE5aUiX3QjqX3p3dmx8KlSXN2OcFmJWHHQ99yjjOK?=
+ =?us-ascii?Q?TrOqwdOwEf7o9YvtVVrb1FPXJbvyL3qSrhLtP25+bjLZudGklHvR+BrAsFcH?=
+ =?us-ascii?Q?k4VmYxSjhQZFl1x8grHk8KTwhgajHOgzHY+kH9wEaC1mb48mYUyavpmvniBo?=
+ =?us-ascii?Q?wr/puWWT/QQNK0Ol6eNkPM49DNyiFOdxzdchjrtoljSpyyWvblbKbnh/c48p?=
+ =?us-ascii?Q?THzsMKM5PZe9fRRRC7hn3U8U0h0eg0DTKU0SpyR33s4tvy1GTM6CqDT7ZLxe?=
+ =?us-ascii?Q?ULuxLk1dlwAukN8SWRg9FOL85YlMXLR6+vEWF/8M1Is3hEc48a2tRatylbVa?=
+ =?us-ascii?Q?UNm1avpRsnPQXvvY1a7NcxjfvFVcIUmsBZpRg+bVsIqbKefkjYRWFMviuZBc?=
+ =?us-ascii?Q?aRzNATJr6GCXU/pQ/x2ScLYdXXXY4uLdyf4yz2PCn00YielcQlreTyWzOx6Q?=
+ =?us-ascii?Q?QvneqrNLD6/e3I/e3F5gSHWnW2FARLMp8vv2TM2ZM+/cwtaBpe8OKYZoSy27?=
+ =?us-ascii?Q?N92gy2vOLnWnF3d1so5Nm2ySc3oTDQK5QYEqz60elzk49nhIxShaTLrZElcb?=
+ =?us-ascii?Q?dfQhhlQdcjzhtXkxBRbi5SvcP2B+ZzM3WjWYeZHPIyTBbuZFBqRLx5IEtID9?=
+ =?us-ascii?Q?sR2iO1A9vK64Si7mgeuLBA8T9FwLx+w/q43QqWYy1N/go9pXCnGI6Asjuovu?=
+ =?us-ascii?Q?uPjQHy0M/FyLOpF2aSZD2DLnOXV4Du1m+dNJQzFoKgleSYYbYvvfOqUpdV8V?=
+ =?us-ascii?Q?u1CjTmErAFAsSoxSVYAo30DmohqVvGHWRDn8/vr2EJE81Jxv3Z16peZr4KB5?=
+ =?us-ascii?Q?TLrRsHDHxvxqtHOXRGdI4w9j9FpWtAZv5wayMmqkeY2OU2kSuMGBbkDIQMrl?=
+ =?us-ascii?Q?7Q1/TrXf7/FPbCzI2fWf3lcC3o5Qsciq+41iazwiPfhjBLtOKu9LFQr1jiXI?=
+ =?us-ascii?Q?fw=3D=3D?=
+X-OriginatorOrg: dm.renesas.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 
+ aa9f3a5c-8ce9-4ab8-434e-08dbf2262b6e
+X-MS-Exchange-CrossTenant-AuthSource: OS3PR01MB6641.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Dec 2023 04:29:55.6330
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 53d82571-da19-47e4-9cb4-625a166a4a2a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 
+ PfeYa/beLpLEiSYe/444KwZpB0ICG0GP/anPCOmcsQSw044v3oAY+6ejEiLv2ZTff0DMgWIPaDCIqkZwGPdTGeHbuN4o62boM+KoG8xTWrs=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYWPR01MB9921
+Message-ID-Hash: YLSRQOCBD5RJ7MS65RPIVSHQFB52XSWI
+X-Message-ID-Hash: YLSRQOCBD5RJ7MS65RPIVSHQFB52XSWI
+X-MailFrom: David.Rau.opensource@dm.renesas.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -115,7 +151,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VVV7Z2G7Z6TFQK2GFMSWIY6VAZ3WBHHS/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YLSRQOCBD5RJ7MS65RPIVSHQFB52XSWI/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -124,65 +160,27 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-q6apm.h header already defines channel mapping values, so drop
-duplicated devices from audioreach.h.
+Change the default MIC detection impedance threshold to 200ohm
+to support low mic DC impedance headset.
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-
+Signed-off-by: David Rau <David.Rau.opensource@dm.renesas.com>
 ---
+ sound/soc/codecs/da7219-aad.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Changes in v2:
-1. New patch
----
- sound/soc/qcom/qdsp6/audioreach.c | 12 ++++++------
- sound/soc/qcom/qdsp6/audioreach.h |  2 --
- 2 files changed, 6 insertions(+), 8 deletions(-)
-
-diff --git a/sound/soc/qcom/qdsp6/audioreach.c b/sound/soc/qcom/qdsp6/audioreach.c
-index 3db5ff367a29..5c7113d46b6f 100644
---- a/sound/soc/qcom/qdsp6/audioreach.c
-+++ b/sound/soc/qcom/qdsp6/audioreach.c
-@@ -270,10 +270,10 @@ EXPORT_SYMBOL_GPL(audioreach_alloc_apm_cmd_pkt);
- static void audioreach_set_channel_mapping(u8 *ch_map, int num_channels)
- {
- 	if (num_channels == 1) {
--		ch_map[0] =  PCM_CHANNEL_L;
-+		ch_map[0] =  PCM_CHANNEL_FL;
- 	} else if (num_channels == 2) {
--		ch_map[0] =  PCM_CHANNEL_L;
--		ch_map[1] =  PCM_CHANNEL_R;
-+		ch_map[0] =  PCM_CHANNEL_FL;
-+		ch_map[1] =  PCM_CHANNEL_FR;
- 	}
- }
+diff --git a/sound/soc/codecs/da7219-aad.c b/sound/soc/codecs/da7219-aad.c
+index 4c4405942779..6bc068cdcbe2 100644
+--- a/sound/soc/codecs/da7219-aad.c
++++ b/sound/soc/codecs/da7219-aad.c
+@@ -696,7 +696,7 @@ static struct da7219_aad_pdata *da7219_aad_fw_to_pdata(struct device *dev)
+ 		aad_pdata->mic_det_thr =
+ 			da7219_aad_fw_mic_det_thr(dev, fw_val32);
+ 	else
+-		aad_pdata->mic_det_thr = DA7219_AAD_MIC_DET_THR_500_OHMS;
++		aad_pdata->mic_det_thr = DA7219_AAD_MIC_DET_THR_200_OHMS;
  
-@@ -839,10 +839,10 @@ static int audioreach_mfc_set_media_format(struct q6apm_graph *graph,
- 	media_format->num_channels = cfg->num_channels;
- 
- 	if (num_channels == 1) {
--		media_format->channel_mapping[0] = PCM_CHANNEL_L;
-+		media_format->channel_mapping[0] = PCM_CHANNEL_FL;
- 	} else if (num_channels == 2) {
--		media_format->channel_mapping[0] = PCM_CHANNEL_L;
--		media_format->channel_mapping[1] = PCM_CHANNEL_R;
-+		media_format->channel_mapping[0] = PCM_CHANNEL_FL;
-+		media_format->channel_mapping[1] = PCM_CHANNEL_FR;
- 	}
- 
- 	rc = q6apm_send_cmd_sync(graph->apm, pkt, 0);
-diff --git a/sound/soc/qcom/qdsp6/audioreach.h b/sound/soc/qcom/qdsp6/audioreach.h
-index e38111ffd7b9..2c82917b7162 100644
---- a/sound/soc/qcom/qdsp6/audioreach.h
-+++ b/sound/soc/qcom/qdsp6/audioreach.h
-@@ -158,8 +158,6 @@ struct param_id_enc_bitrate_param {
- 
- #define MEDIA_FMT_ID_PCM	0x09001000
- #define MEDIA_FMT_ID_MP3	0x09001009
--#define PCM_CHANNEL_L		1
--#define PCM_CHANNEL_R		2
- #define SAMPLE_RATE_48K		48000
- #define BIT_WIDTH_16		16
- 
+ 	if (fwnode_property_read_u32(aad_np, "dlg,jack-ins-deb", &fw_val32) >= 0)
+ 		aad_pdata->jack_ins_deb =
 -- 
-2.34.1
+2.17.1
 
