@@ -4,91 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1924CC4167B
-	for <alsa-devel@archiver.kernel.org>; Fri,  1 Dec 2023 13:23:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 60F40C4167B
+	for <alsa-devel@archiver.kernel.org>; Fri,  1 Dec 2023 13:24:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C3C1ADF8;
-	Fri,  1 Dec 2023 14:23:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C3C1ADF8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8C965DF6;
+	Fri,  1 Dec 2023 14:24:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8C965DF6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1701436996;
-	bh=qpWJYdxwgKfY8zfX1GAh9v+YiF3ud8r07y0eRkDcrnw=;
+	s=default; t=1701437063;
+	bh=FeYjB4CWMAwbwNmOamDg6MachCt2fEEDFfSHen4U7NA=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=eoHe1RyQOAmKNFp3E4EuKbEfje9xs8e19Hp5qLh8dGXqsgriFRDSUdEXHKjHy5LNt
-	 N2CkoruQsaGkAUhs9iMM7yEg+Fujez7APu3kinC8wPTKDvnJGO4LlUoWrTHIdJlPNK
-	 uxxZEz/GCJ15w/A59PNWF5Fr4M153V8K/uqukhrc=
+	b=m4CEc1RhBZbBG4ko7bfhuD4lIQGhhygwjXtWif0v/xmNJLSF7vbqFGE7keSOfWkPO
+	 uANP+lD4I1rMuOKuFUhvuyqOR7O9p17XVzZtkVwD9tEbwRKchzmeYGe/pFpPvdTcv0
+	 BuuGkKaQ89PA0dV32pMVckvAZGDsJoycusWn4eO0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E3599F806AC; Fri,  1 Dec 2023 14:21:07 +0100 (CET)
+	id 74DEDF805A8; Fri,  1 Dec 2023 14:23:53 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 23009F8069E;
-	Fri,  1 Dec 2023 14:21:07 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BC091F8056F;
+	Fri,  1 Dec 2023 14:23:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0A6EBF80612; Fri,  1 Dec 2023 14:21:00 +0100 (CET)
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com
- [IPv6:2a00:1450:4864:20::12a])
+	id 003BCF80254; Fri,  1 Dec 2023 14:23:46 +0100 (CET)
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com
+ [IPv6:2a00:1450:4864:20::133])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 781FCF802BE
-	for <alsa-devel@alsa-project.org>; Fri,  1 Dec 2023 14:20:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 781FCF802BE
+	by alsa1.perex.cz (Postfix) with ESMTPS id E2BD0F80236
+	for <alsa-devel@alsa-project.org>; Fri,  1 Dec 2023 14:20:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E2BD0F80236
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=leq9V58c
-Received: by mail-lf1-x12a.google.com with SMTP id
- 2adb3069b0e04-50bba1dd05fso2952790e87.0
+ header.s=google header.b=eNgKlQZx
+Received: by mail-lf1-x133.google.com with SMTP id
+ 2adb3069b0e04-50bba1dd05fso2952698e87.0
         for <alsa-devel@alsa-project.org>;
- Fri, 01 Dec 2023 05:20:44 -0800 (PST)
+ Fri, 01 Dec 2023 05:20:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701436842; x=1702041642;
+        d=linaro.org; s=google; t=1701436837; x=1702041637;
  darn=alsa-project.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=k2Zjl+ghnoX/3uQpkhvwTgBBfYBwCJ4hUzQ4RLGrPPQ=;
-        b=leq9V58c5qwINpsYiiqU0JSUtSGZzubavrfpk7ndBfBxIMgsAgaRwyV/+E1lSLKt9s
-         BCFipqWsyX7m6N/00tXmv2KTcf/5HFlLnK5aP4QV22uAZFuCsz1b9traHjMOhsQ950j4
-         Bop3c54kgl8/6UllCjSrP1McXhYPTvlvXj8kRmvzed2f5UxMzPLl7jIwI8DPdMnmKh8l
-         1ZNpOejbooqfW1g9NCZ0eXUaIvvdCGMQR4FOB0bMm8Ip8VQycFUgJD20tmmRgJeOZmy8
-         exdAtCZjqyDrNlGVMw1iYYT/Idpfx/0h9b6OQYK+wxpzRW69Xlz15RorG2+YQHMQ+J1M
-         5pZQ==
+        bh=tmhoeNK2XrxfkfGdL3xKNy/HfoA09+0EnEv8OOqmFiw=;
+        b=eNgKlQZxG/TwZ3qrenqQNIBkm3K35yAlVp0bgDtn9xR/M1eMZWh09xEdTvRRVIRNqs
+         UUHWDdaX9ji1oyNrUL/DMUiM5h+V2QTvUjKcMrVsX5hlz2XPPFxtPVipfuOntq+Xe1d8
+         NYD/bHQVyL7Bd7V7iGP1p0jaIJoYPd84Bn/THCuvKWPt/PcuWH8TQ42gtKyLsL1tEIwm
+         +ArX7wPh59G7sLqndb7zXY3ZsowAuyqGYYNunmbKJQoq7RxfVJ+G7QQxUF6ryG59NYW/
+         FAwJaGOxF0A/McyX93H07FX9gKTzleVPn5TKdojBz89tEyRV3fwa3wAxVUp+a9qM3Of4
+         /NAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701436842; x=1702041642;
+        d=1e100.net; s=20230601; t=1701436837; x=1702041637;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=k2Zjl+ghnoX/3uQpkhvwTgBBfYBwCJ4hUzQ4RLGrPPQ=;
-        b=ROdVAGTsQKBhWdIqPcvD4u39/YsIyaz+7t16q7TLjQCuXAr0Fc7Fydf6GhgvWo65hA
-         UHLIGEUhSo2C/J1JFzn2KQ0AJZSXg4uxgpUjAknrfIVXVZLg+EkIiLEG1QOldeO2sUNH
-         Bx4FQ1t+IW6JfCOSRq4n1FXxxnHLo1lhfNob1BT5ydTblIU2AyTR5fqh1Ln3IdmJa4b6
-         5H1x7ZYF8b6bZzfqWYPC+rOMxbb6EQgE7brqaqTzLDjO2ZAMAwQsy7qsBQy1rgdtna21
-         VdSoS/pbmKta4TEXRV7qOWol4l8mtcgrFJ/CFgER9cQgf6dEhR1VoHaMBJGIuxYlmrJR
-         921A==
-X-Gm-Message-State: AOJu0YyfIIhCaHQthO7fxJdLS7cokPy2wDE6tVsHyNBbRTei20CJVuKL
-	KU0UBrojiUk4PQwo76ewbRqTE26KXAUuqJMjwcY=
+        bh=tmhoeNK2XrxfkfGdL3xKNy/HfoA09+0EnEv8OOqmFiw=;
+        b=qJ/wYiQ58gv+E0Lhic+B5olyRmAgb5boyQTTzlrypSe0XcgLDxxbCimZxkONvnGg4J
+         bRHstPBtaiaKEFnKAf08tKGc8LchnpzwfRwYsEsTbVnsC9ZEGsgMFLmrx79hkaydlvJT
+         3IwwJszwHYXGFc0/Aangtyc8lCCjQURm0QQWFvU+JUyEUaGnmLghpgg+l117g5xgA4RG
+         6ADog5I5SUFxWsQcUIRt/EMSdPp2cmbWz6TRdlqCpsghYQZhmcfmuZJDlmiQNANJzbMf
+         FYRX9NtbUKbbc9zIXOx2yEcKIXFFnmVRb64idH0YvI1bL15/8EZ6g/OtYdCurRNL+Kes
+         O0Gg==
+X-Gm-Message-State: AOJu0YzM1HICDUdn+AyCbZG2E+z6IIcmzIsRn/mV7tt8Uj7xzY+6J8an
+	LI+ym9sL0Va45kROhYtrikt/qodw5E1h5PL+cXc=
 X-Google-Smtp-Source: 
- AGHT+IEP9YooEM6UIg2kUPyWgnGCZVy2TmLr2VGSLb6afACF8IimZsUAaROd3HdHHX8+hnBq6Qopkw==
-X-Received: by 2002:a05:6512:118f:b0:50b:c7b0:ecaf with SMTP id
- g15-20020a056512118f00b0050bc7b0ecafmr892089lfr.49.1701436842052;
-        Fri, 01 Dec 2023 05:20:42 -0800 (PST)
+ AGHT+IFSgPDic86kEaX7pw26R4wwmabuIQgTcHwgTfrqNNG5jSVMDDG459yzdd7DusaO3vXR73bQLQ==
+X-Received: by 2002:a19:7906:0:b0:50b:d764:8819 with SMTP id
+ u6-20020a197906000000b0050bd7648819mr784054lfc.101.1701436837631;
+        Fri, 01 Dec 2023 05:20:37 -0800 (PST)
 Received: from [127.0.1.1] ([85.235.12.238])
         by smtp.gmail.com with ESMTPSA id
- u25-20020ac243d9000000b0050be054b4e8sm1081lfl.121.2023.12.01.05.20.41
+ u25-20020ac243d9000000b0050be054b4e8sm1081lfl.121.2023.12.01.05.20.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Dec 2023 05:20:41 -0800 (PST)
+        Fri, 01 Dec 2023 05:20:37 -0800 (PST)
 From: Linus Walleij <linus.walleij@linaro.org>
-Date: Fri, 01 Dec 2023 14:20:38 +0100
-Subject: [PATCH v2 09/10] ASoC: cs43130: Drop legacy includes
+Date: Fri, 01 Dec 2023 14:20:34 +0100
+Subject: [PATCH v2 05/10] ASoC: cs35l36: Drop legacy includes
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231201-descriptors-sound-cirrus-v2-9-ee9f9d4655eb@linaro.org>
+Message-Id: <20231201-descriptors-sound-cirrus-v2-5-ee9f9d4655eb@linaro.org>
 References: <20231201-descriptors-sound-cirrus-v2-0-ee9f9d4655eb@linaro.org>
 In-Reply-To: <20231201-descriptors-sound-cirrus-v2-0-ee9f9d4655eb@linaro.org>
 To: Paul Handrigan <Paul.Handrigan@cirrus.com>,
@@ -105,8 +105,8 @@ Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
  Linus Walleij <linus.walleij@linaro.org>,
  Charles Keepax <ckeepax@opensource.cirrus.com>
 X-Mailer: b4 0.12.4
-Message-ID-Hash: 2DGAX7XH6LPI76CAGA7RQDHGKPZG3YUA
-X-Message-ID-Hash: 2DGAX7XH6LPI76CAGA7RQDHGKPZG3YUA
+Message-ID-Hash: HS2M4HIGAHQZTQBDEM2Z3C3B7EI3Z6JD
+X-Message-ID-Hash: HS2M4HIGAHQZTQBDEM2Z3C3B7EI3Z6JD
 X-MailFrom: linus.walleij@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -119,7 +119,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2DGAX7XH6LPI76CAGA7RQDHGKPZG3YUA/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HS2M4HIGAHQZTQBDEM2Z3C3B7EI3Z6JD/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -137,29 +137,34 @@ Drop the includes.
 Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 ---
- sound/soc/codecs/cs43130.c | 2 --
- 1 file changed, 2 deletions(-)
+ChangeLog v1->v2:
+- Add <linux/irq.h> include, apparently the driver relied on this
+  being implicitly included from <linux/gpio.h>
+---
+ sound/soc/codecs/cs35l36.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/cs43130.c b/sound/soc/codecs/cs43130.c
-index 0b40fdfb1825..18933bf04684 100644
---- a/sound/soc/codecs/cs43130.c
-+++ b/sound/soc/codecs/cs43130.c
-@@ -11,7 +11,6 @@
- #include <linux/kernel.h>
- #include <linux/init.h>
- #include <linux/delay.h>
--#include <linux/gpio.h>
- #include <linux/gpio/consumer.h>
+diff --git a/sound/soc/codecs/cs35l36.c b/sound/soc/codecs/cs35l36.c
+index f2fde6e652b9..f5bd32e434a0 100644
+--- a/sound/soc/codecs/cs35l36.c
++++ b/sound/soc/codecs/cs35l36.c
+@@ -17,15 +17,14 @@
  #include <linux/platform_device.h>
- #include <linux/pm.h>
-@@ -26,7 +25,6 @@
+ #include <linux/regulator/consumer.h>
+ #include <linux/gpio/consumer.h>
++#include <linux/irq.h>
+ #include <linux/of.h>
+-#include <linux/of_gpio.h>
+ #include <linux/regmap.h>
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+ #include <sound/soc.h>
  #include <sound/soc-dapm.h>
+-#include <linux/gpio.h>
  #include <sound/initval.h>
  #include <sound/tlv.h>
--#include <linux/of_gpio.h>
- #include <linux/regulator/consumer.h>
- #include <linux/pm_runtime.h>
- #include <linux/completion.h>
+ #include <sound/cs35l36.h>
 
 -- 
 2.34.1
