@@ -4,113 +4,208 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 957FEC4167B
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 Dec 2023 07:42:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6A1A0C4167B
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 Dec 2023 07:42:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CFF21832;
-	Mon,  4 Dec 2023 08:42:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CFF21832
+	by alsa0.perex.cz (Postfix) with ESMTPS id C6AAA1F4;
+	Mon,  4 Dec 2023 08:42:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C6AAA1F4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1701675734;
-	bh=awYXFaLruWRwGaT09bNfZz8/g2Jv3deYZIxv3pwshKg=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=ctJrSArlzvzjvLYiueOwl06Dif5+Vm/a4IudStj8ibk57jyEGpiMLBeDGJKZg0sG9
-	 Wyj8iEaItRSGQrzKlOZLNKp3x/VmqAHtol7GSEKP5429JQ2KqTGr6QkB1pHBThs+Bi
-	 0gMlEHgn+USqvf6tY+AqpoFW2zxPDzCFsBUx7N0g=
+	s=default; t=1701675738;
+	bh=us2jFzVGPLOY84Q/+ENLaAGSW3Rkb+O3LTXBGr5qHtw=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=kE9PA0rdlzLysTQosORKbx/tlFTViPIJdyPyTX8IyxtCA/rfoKEwmEcANyXWSEdQI
+	 tZHO3+HpnguYlHCKBQkqpFajMhVyRMJZ/rDi5kGgTuzOCrZkgU/OYnkaJVFX+5gbGo
+	 DQIytpAaDCrL6C3TU66GdFp44jR21BYQAo0/3lAM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 21A2DF806D4; Mon,  4 Dec 2023 08:40:06 +0100 (CET)
+	id 2F846F8063E; Mon,  4 Dec 2023 08:40:04 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 35360F806BD;
-	Mon,  4 Dec 2023 08:40:05 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 77C0FF80696;
+	Mon,  4 Dec 2023 08:40:03 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 51AB6F8024E; Mon,  4 Dec 2023 00:30:17 +0100 (CET)
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com
- [IPv6:2a00:1450:4864:20::22b])
+	id 08ABCF8024E; Sun,  3 Dec 2023 20:33:23 +0100 (CET)
+Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com
+ [IPv6:2607:f8b0:4864:20::1133])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 4FCF7F800D2
-	for <alsa-devel@alsa-project.org>; Mon,  4 Dec 2023 00:30:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4FCF7F800D2
+	by alsa1.perex.cz (Postfix) with ESMTPS id 7A86BF800E4
+	for <alsa-devel@alsa-project.org>; Sun,  3 Dec 2023 20:33:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7A86BF800E4
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20230601 header.b=mHZiBN7v
-Received: by mail-lj1-x22b.google.com with SMTP id
- 38308e7fff4ca-2c9f57d9952so13819561fa.3
+ header.s=20230601 header.b=Rmo7j5Ql
+Received: by mail-yw1-x1133.google.com with SMTP id
+ 00721157ae682-5d7a47d06eeso9991537b3.1
         for <alsa-devel@alsa-project.org>;
- Sun, 03 Dec 2023 15:30:09 -0800 (PST)
+ Sun, 03 Dec 2023 11:33:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701646208; x=1702251008;
+        d=gmail.com; s=20230601; t=1701631990; x=1702236790;
  darn=alsa-project.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=3yeC8MKfInb1ck9+dTaSY7GS1OKnc5NIC26GZlu9xK0=;
-        b=mHZiBN7v/T8xwzJUwS4zLJ4nLbV3N8Vq29NJcHSa1HTCAiHVkEtJ/Dw/do/+yXk9Rd
-         8PEXuvVi1tFTEFW6ZHwDs3JFzl92eVlvqCXutKn+EN2HeRnF9Hjic+CH5/o3RC7CEGky
-         LjOwENS1m10SDK5VSRIHH5VLDbI5Mfj8ImNr8OZ642fceXnbD34wi5yiKPcNhSSkc19F
-         2lxjPgSr+IT+mVCtF1mso4rxHmrws8Vmi8WhPIEXKagr9pK3v14+ejYQm1VFCj9zWVYo
-         y4BzmI8CSmfBQl5SfzFWy9k4Pq4D+bC+IG41Nq2JGNTJM/mQP/SowurR/MtasgIQi6ZM
-         tiBA==
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HmvgTcSgTSYSGQ9OhXSlfMgozAivgkoJ1Cnrtk56obw=;
+        b=Rmo7j5QlejJiHIw1F7kN00sMyEdt1MMR8eHgbGQz1//CnyBUcGGdK+GkZXo2yrLtgm
+         Atf93512ac4bZhYSVgxUS+6jlYKntsGwvy1TM6WaHNmCfcKXuGaZyHHvIwLnpGyQIMpA
+         IZBN0sjHvTH6Ce2xN2EKkKHN3+BhpAJCi8PB6hJVXnoeN6bXLo3Cr611pJQLJa9/BVxp
+         QDiBUWj0rcuWGSekb37VLJesyKHbJ1RLf1YjuvHBrF3sP7SLk82UrIjf4vQdpMrFrLlw
+         fapN3iLZmIO0Y9OzqInb9ysDw+NcPVR0vETgPr0/PTLjqoWALg+GiHVb7OMMkAankJhR
+         B0iQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701646208; x=1702251008;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=3yeC8MKfInb1ck9+dTaSY7GS1OKnc5NIC26GZlu9xK0=;
-        b=E55USnh/lccWwrp0K4ano0mDGEzn+mM/0deR86fEGjz/d6VafVJrOIZZi+EKwKvK/P
-         P5w8ANvI+VmjwNxSii8pcrRGzySvZur8XGKwCtIXrDS+cFw+GMaUUDUzYqUSal0PpU6y
-         RZZvx9QO5y6KsReKfd8o5iTOvBPrIAxe7zlkUAHARxPR3gkT0p0xq06mVXMdvT2Yp3MU
-         E6cuGm6LARujQSzGtUWpdMzB5n7AZEumaXCBLb2wASzBdymo2ElCX5Ab8yJUapB3ECKQ
-         8Xl+KAXx594idIrhIZ1x/S1PC2Kf3CwXsDxkh/No5FnjoEvWbA4ZzmtwY+YQW3xvVlfR
-         c/aA==
-X-Gm-Message-State: AOJu0YxCbFglQL9jbu+DTqk3WdaINYFp99Vee++c/VzxRrR9PB1tWRzk
-	3vVMCStApI1loPm9R/zFjg==
+        d=1e100.net; s=20230601; t=1701631990; x=1702236790;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HmvgTcSgTSYSGQ9OhXSlfMgozAivgkoJ1Cnrtk56obw=;
+        b=Py8iPB99Cm8HN3Z9l3zkYLWjYEBWT2Do7Bd5FEr2ngYDk7ZJ2/wkNstT4v4KKXcfxE
+         oNQhgblhd9X25LAGX/PYMO2PcX0kgNKOVm0AyQDF2WALF3sbMkE5caEoS6RmdqRDMAHB
+         +ceFkDD3zUz2y0XQdyRSWyFKfy3ptkCpEthG46AXPaf5FeFfK/bfJdNDm6m5wpwulA8D
+         FpcMrLYhI8qa5/QC6y1le0C3Sxh2L3++Rbp8i0S54EEXTQoeSce6fiAO9eyL+TmVvN06
+         f2uJzSbn8exfNNiHjihmx7u8VB8QY72ouvq3/E8u5gdbIknWulo5qjKjhZ+9j7gyBIlT
+         EiEA==
+X-Gm-Message-State: AOJu0YzN/GPBjGeymFZETFXFoYgBvGdlveR20qBb3pzYM138Vf3fB/JZ
+	xyAvxCKoYOgazBqp4di9u5Y=
 X-Google-Smtp-Source: 
- AGHT+IFtfATQFXqIBV70aXRts1jvcZEMvrdcrDKR2hkfp7hVMig8XxGS94OZ4sOGZZbKBzNFfHozdg==
-X-Received: by 2002:a2e:b282:0:b0:2c9:d863:2c24 with SMTP id
- 2-20020a2eb282000000b002c9d8632c24mr1979856ljx.77.1701646207677;
-        Sun, 03 Dec 2023 15:30:07 -0800 (PST)
-Received: from alex-pc-ubuntu.lan (31-10-146-226.cgn.dynamic.upc.ch.
- [31.10.146.226])
+ AGHT+IH9dK5SBG1KTg95TkMNRGGX2LRFyEvXVyFKexhpvkq8MjiOjaHQrHY4kI3iqaUaVcCxIhY+og==
+X-Received: by 2002:a05:690c:c11:b0:5d1:6370:b2cf with SMTP id
+ cl17-20020a05690c0c1100b005d16370b2cfmr2746902ywb.29.1701631990366;
+        Sun, 03 Dec 2023 11:33:10 -0800 (PST)
+Received: from localhost ([2601:344:8301:57f0:cb98:c3e:57c:8191])
         by smtp.gmail.com with ESMTPSA id
- e19-20020a17090681d300b009fcb5fcfbe6sm4597526ejx.220.2023.12.03.15.30.07
+ d143-20020a814f95000000b005d795822dc7sm1042135ywb.35.2023.12.03.11.33.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Dec 2023 15:30:07 -0800 (PST)
-From: Aleksandrs Vinarskis <alex.vinarskis@gmail.com>
-To: tiwai@suse.com
-Cc: perex@perex.cz,
-	sbinding@opensource.cirrus.com,
-	andy.chi@canonical.com,
-	vitalyr@opensource.cirrus.com,
-	kailang@realtek.com,
+        Sun, 03 Dec 2023 11:33:09 -0800 (PST)
+From: Yury Norov <yury.norov@gmail.com>
+To: linux-kernel@vger.kernel.org,
+	"David S. Miller" <davem@davemloft.net>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	"James E.J. Bottomley" <jejb@linux.ibm.com>,
+	"K. Y. Srinivasan" <kys@microsoft.com>,
+	"Md. Haris Iqbal" <haris.iqbal@ionos.com>,
+	Akinobu Mita <akinobu.mita@gmail.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Borislav Petkov <bp@alien8.de>,
+	Chaitanya Kulkarni <kch@nvidia.com>,
+	Christian Brauner <brauner@kernel.org>,
+	Damien Le Moal <damien.lemoal@opensource.wdc.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	David Disseldorp <ddiss@suse.de>,
+	Edward Cree <ecree.xilinx@gmail.com>,
+	Eric Dumazet <edumazet@google.com>,
+	Fenghua Yu <fenghua.yu@intel.com>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Gregory Greenman <gregory.greenman@intel.com>,
+	Hans Verkuil <hverkuil@xs4all.nl>,
+	Hans de Goede <hdegoede@redhat.com>,
+	Hugh Dickins <hughd@google.com>,
+	Ingo Molnar <mingo@redhat.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Jason Gunthorpe <jgg@ziepe.ca>,
+	Jens Axboe <axboe@kernel.dk>,
+	Jiri Pirko <jiri@resnulli.us>,
+	Jiri Slaby <jirislaby@kernel.org>,
+	Kalle Valo <kvalo@kernel.org>,
+	Karsten Graul <kgraul@linux.ibm.com>,
+	Karsten Keil <isdn@linux-pingi.de>,
+	Kees Cook <keescook@chromium.org>,
+	Leon Romanovsky <leon@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Martin Habets <habetsm.xilinx@gmail.com>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Michal Simek <monstr@monstr.eu>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Oliver Neukum <oneukum@suse.com>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ping-Ke Shih <pkshih@realtek.com>,
+	Rich Felker <dalias@libc.org>,
+	Rob Herring <robh@kernel.org>,
+	Robin Murphy <robin.murphy@arm.com>,
+	Sean Christopherson <seanjc@google.com>,
+	Shuai Xue <xueshuai@linux.alibaba.com>,
+	Stanislaw Gruszka <stf_xl@wp.pl>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Valentin Schneider <vschneid@redhat.com>,
+	Vitaly Kuznetsov <vkuznets@redhat.com>,
+	Wenjia Zhang <wenjia@linux.ibm.com>,
+	Will Deacon <will@kernel.org>,
+	Yoshinori Sato <ysato@users.sourceforge.jp>,
+	GR-QLogic-Storage-Upstream@marvell.com,
 	alsa-devel@alsa-project.org,
-	linux-sound@vger.kernel.org
-Subject: [PATCH] ALSA: hda/realtek: fix speakers on XPS 9530 (2023)
-Date: Mon,  4 Dec 2023 00:30:06 +0100
-Message-Id: <20231203233006.100558-1-alex.vinarskis@gmail.com>
+	ath10k@lists.infradead.org,
+	dmaengine@vger.kernel.org,
+	iommu@lists.linux.dev,
+	kvm@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-arm-msm@vger.kernel.org,
+	linux-block@vger.kernel.org,
+	linux-bluetooth@vger.kernel.org,
+	linux-hyperv@vger.kernel.org,
+	linux-m68k@lists.linux-m68k.org,
+	linux-media@vger.kernel.org,
+	linux-mips@vger.kernel.org,
+	linux-net-drivers@amd.com,
+	linux-pci@vger.kernel.org,
+	linux-rdma@vger.kernel.org,
+	linux-s390@vger.kernel.org,
+	linux-scsi@vger.kernel.org,
+	linux-serial@vger.kernel.org,
+	linux-sh@vger.kernel.org,
+	linux-sound@vger.kernel.org,
+	linux-usb@vger.kernel.org,
+	linux-wireless@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	mpi3mr-linuxdrv.pdl@broadcom.com,
+	netdev@vger.kernel.org,
+	sparclinux@vger.kernel.org,
+	x86@kernel.org
+Cc: Yury Norov <yury.norov@gmail.com>,
+	Jan Kara <jack@suse.cz>,
+	Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
+	Matthew Wilcox <willy@infradead.org>,
+	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Maxim Kuvyrkov <maxim.kuvyrkov@linaro.org>,
+	Alexey Klimov <klimov.linux@gmail.com>,
+	Bart Van Assche <bvanassche@acm.org>,
+	Sergey Shtylyov <s.shtylyov@omp.ru>
+Subject: [PATCH v2 02/35] lib/find: add test for atomic find_bit() ops
+Date: Sun,  3 Dec 2023 11:32:34 -0800
+Message-Id: <20231203193307.542794-1-yury.norov@gmail.com>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20231203192422.539300-1-yury.norov@gmail.com>
+References: <20231203192422.539300-1-yury.norov@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-MailFrom: alex.vinarskis@gmail.com
+X-MailFrom: yury.norov@gmail.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: TFD2TCJQ7NI74VT67QJYPQXYFXAEF5DN
-X-Message-ID-Hash: TFD2TCJQ7NI74VT67QJYPQXYFXAEF5DN
-X-Mailman-Approved-At: Mon, 04 Dec 2023 07:36:43 +0000
+Message-ID-Hash: F7VRRUOY4ODXM4YQNNOBCHCH6JNJSNDA
+X-Message-ID-Hash: F7VRRUOY4ODXM4YQNNOBCHCH6JNJSNDA
+X-Mailman-Approved-At: Mon, 04 Dec 2023 07:36:25 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TFD2TCJQ7NI74VT67QJYPQXYFXAEF5DN/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/F7VRRUOY4ODXM4YQNNOBCHCH6JNJSNDA/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -119,28 +214,92 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-XPS 9530 has 2 tweeters and 2 subwoofers powered by CS35L41 amplifier, SPI
-connected. For subwoofers to work, it requires both to enable amplifier
-support, and to enable output to subwoofers via 0x17 quirk (similalry to
-XPS 9510/9520).
+Add basic functionality test for new API.
 
-Signed-off-by: Aleksandrs Vinarskis <alex.vinarskis@gmail.com>
+Signed-off-by: Yury Norov <yury.norov@gmail.com>
 ---
- sound/pci/hda/patch_realtek.c | 1 +
- 1 file changed, 1 insertion(+)
+ lib/test_bitmap.c | 61 +++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 61 insertions(+)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index f9ddacfd920e..44ffcf8bf7c5 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -9705,6 +9705,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1028, 0x0b1a, "Dell Precision 5570", ALC289_FIXUP_DUAL_SPK),
- 	SND_PCI_QUIRK(0x1028, 0x0b37, "Dell Inspiron 16 Plus 7620 2-in-1", ALC295_FIXUP_DELL_INSPIRON_TOP_SPEAKERS),
- 	SND_PCI_QUIRK(0x1028, 0x0b71, "Dell Inspiron 16 Plus 7620", ALC295_FIXUP_DELL_INSPIRON_TOP_SPEAKERS),
-+	SND_PCI_QUIRK(0x1028, 0x0beb, "Dell XPS 15 9530 (2023)", ALC289_FIXUP_DELL_CS35L41_SPI_2),
- 	SND_PCI_QUIRK(0x1028, 0x0c03, "Dell Precision 5340", ALC269_FIXUP_DELL4_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x0c19, "Dell Precision 3340", ALC236_FIXUP_DELL_DUAL_CODECS),
- 	SND_PCI_QUIRK(0x1028, 0x0c1a, "Dell Precision 3340", ALC236_FIXUP_DELL_DUAL_CODECS),
+diff --git a/lib/test_bitmap.c b/lib/test_bitmap.c
+index 65f22c2578b0..277e1ca9fd28 100644
+--- a/lib/test_bitmap.c
++++ b/lib/test_bitmap.c
+@@ -221,6 +221,65 @@ static void __init test_zero_clear(void)
+ 	expect_eq_pbl("", bmap, 1024);
+ }
+ 
++static void __init test_find_and_bit(void)
++{
++	unsigned long w, w_part, bit, cnt = 0;
++	DECLARE_BITMAP(bmap, EXP1_IN_BITS);
++
++	/*
++	 * Test find_and_clear{_next}_bit() and corresponding
++	 * iterators
++	 */
++	bitmap_copy(bmap, exp1, EXP1_IN_BITS);
++	w = bitmap_weight(bmap, EXP1_IN_BITS);
++
++	for_each_test_and_clear_bit(bit, bmap, EXP1_IN_BITS)
++		cnt++;
++
++	expect_eq_uint(w, cnt);
++	expect_eq_uint(0, bitmap_weight(bmap, EXP1_IN_BITS));
++
++	bitmap_copy(bmap, exp1, EXP1_IN_BITS);
++	w = bitmap_weight(bmap, EXP1_IN_BITS);
++	w_part = bitmap_weight(bmap, EXP1_IN_BITS / 3);
++
++	cnt = 0;
++	bit = EXP1_IN_BITS / 3;
++	for_each_test_and_clear_bit_from(bit, bmap, EXP1_IN_BITS)
++		cnt++;
++
++	expect_eq_uint(bitmap_weight(bmap, EXP1_IN_BITS), bitmap_weight(bmap, EXP1_IN_BITS / 3));
++	expect_eq_uint(w_part, bitmap_weight(bmap, EXP1_IN_BITS));
++	expect_eq_uint(w - w_part, cnt);
++
++	/*
++	 * Test find_and_set{_next}_bit() and corresponding
++	 * iterators
++	 */
++	bitmap_copy(bmap, exp1, EXP1_IN_BITS);
++	w = bitmap_weight(bmap, EXP1_IN_BITS);
++	cnt = 0;
++
++	for_each_test_and_set_bit(bit, bmap, EXP1_IN_BITS)
++		cnt++;
++
++	expect_eq_uint(EXP1_IN_BITS - w, cnt);
++	expect_eq_uint(EXP1_IN_BITS, bitmap_weight(bmap, EXP1_IN_BITS));
++
++	bitmap_copy(bmap, exp1, EXP1_IN_BITS);
++	w = bitmap_weight(bmap, EXP1_IN_BITS);
++	w_part = bitmap_weight(bmap, EXP1_IN_BITS / 3);
++	cnt = 0;
++
++	bit = EXP1_IN_BITS / 3;
++	for_each_test_and_set_bit_from(bit, bmap, EXP1_IN_BITS)
++		cnt++;
++
++	expect_eq_uint(EXP1_IN_BITS - bitmap_weight(bmap, EXP1_IN_BITS),
++			EXP1_IN_BITS / 3 - bitmap_weight(bmap, EXP1_IN_BITS / 3));
++	expect_eq_uint(EXP1_IN_BITS * 2 / 3 - (w - w_part), cnt);
++}
++
+ static void __init test_find_nth_bit(void)
+ {
+ 	unsigned long b, bit, cnt = 0;
+@@ -1273,6 +1332,8 @@ static void __init selftest(void)
+ 	test_for_each_clear_bitrange_from();
+ 	test_for_each_set_clump8();
+ 	test_for_each_set_bit_wrap();
++
++	test_find_and_bit();
+ }
+ 
+ KSTM_MODULE_LOADERS(test_bitmap);
 -- 
 2.40.1
 
