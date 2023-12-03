@@ -4,175 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E4E0EC4167B
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 Dec 2023 07:41:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 997F5C10DC1
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 Dec 2023 07:41:57 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 51E45DF6;
-	Mon,  4 Dec 2023 08:41:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 51E45DF6
+	by alsa0.perex.cz (Postfix) with ESMTPS id CE7E0E91;
+	Mon,  4 Dec 2023 08:41:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CE7E0E91
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1701675688;
-	bh=NjpjneCu5AhVPvBZnNaRP2EnaSnZHj3+TKzRsVUlTSI=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=X38MyFaGIxxvxutnbjfJKShGrUZuizCQAV4MEQuzj3fSA3TB0VgV2an76dUdbMsBF
-	 CyouPjgyTLZcMcG3nIsrvDfUo4KS3UZRBJgQC0IKkdABt+mkcQptNZIYdnMvbzHYOI
-	 5nNGnSMUqQxql+scFhaf94lB8bw6mK5FfPaCAE/8=
+	s=default; t=1701675715;
+	bh=bl4NfAT9acYKun2YQdGsVd7hVpY2opMsEMjoXXnkmes=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=YuNDJETsg+iLhWpgiY89fcdGOkT2H4OQgC058Jablm0HYwPrgyCGnydQ04rcAdtUt
+	 nfzsxT/1f9b4/9iKjvdEwsxOhQGk+kCkYay0PN6VS/u0PRp3vtHLtQeUqp2KlwuI+j
+	 f5wtwo2hO53CxhF1V02RPuH6AVp1t+yQHghmTjSs=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A40D4F8065E; Mon,  4 Dec 2023 08:40:03 +0100 (CET)
+	id 4F45CF806A4; Mon,  4 Dec 2023 08:40:06 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 42D71F80678;
-	Mon,  4 Dec 2023 08:40:01 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5B55CF806BA;
+	Mon,  4 Dec 2023 08:40:04 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 350B0F8024E; Sun,  3 Dec 2023 20:24:54 +0100 (CET)
-Received: from mail-yw1-x112a.google.com (mail-yw1-x112a.google.com
- [IPv6:2607:f8b0:4864:20::112a])
+	id 7C9E2F8024E; Sun,  3 Dec 2023 20:34:13 +0100 (CET)
+Received: from mail-yw1-x112b.google.com (mail-yw1-x112b.google.com
+ [IPv6:2607:f8b0:4864:20::112b])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id EDF23F800E4
-	for <alsa-devel@alsa-project.org>; Sun,  3 Dec 2023 20:24:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EDF23F800E4
+	by alsa1.perex.cz (Postfix) with ESMTPS id 1523EF800F5
+	for <alsa-devel@alsa-project.org>; Sun,  3 Dec 2023 20:34:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1523EF800F5
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20230601 header.b=LIS4aLAI
-Received: by mail-yw1-x112a.google.com with SMTP id
- 00721157ae682-5d279bcce64so42053617b3.3
+ header.s=20230601 header.b=fc0ycTOC
+Received: by mail-yw1-x112b.google.com with SMTP id
+ 00721157ae682-5d3687a6574so35790787b3.2
         for <alsa-devel@alsa-project.org>;
- Sun, 03 Dec 2023 11:24:27 -0800 (PST)
+ Sun, 03 Dec 2023 11:34:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701631465; x=1702236265;
+        d=gmail.com; s=20230601; t=1701632045; x=1702236845;
  darn=alsa-project.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=1nWfzgURTGtt75w4dP8mSFcskypLkgCfSwsONcOlJ4g=;
-        b=LIS4aLAIxIjPmeau8GeF7GI27DNMUvAkLRDPrbNvGYNyKBjpU3ngUA2mJfYRNpx2v/
-         dtKbpS2hUg2F7tOM9CctKCHPtECG5xjgL+kzqQ/U+8YJelivVVsMxbRm+UxLXy8e5zzb
-         BGJV35oUWO9xYxbwnVkKosp3yjGP4yI+iN+kjq4Mn1bFbycbYV3Ua8RFn6EoDfDybo4q
-         qaKaqQqNecDJNUTdMHgN/CpHqVua6E+FpnH6tGmaqJc9Wz4uSsGkzxuV/EaR2nmsA6qF
-         ptXUFusnJyRx8BKCEmM5HCUVkd8a2ZSBKiHGajGK7UtF9qoe78w6+eo7xkqGQJcpDFbF
-         xczg==
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QHrqBjURy+mudPJ+6bg27Pk9qQM+xmaxDRnoUP1Py9c=;
+        b=fc0ycTOCOrgNH41v6Zqe81pusRsd+fpZz4ib9+M3RgtEQQeE8V+Ot8OP+EmSazNzgY
+         B/1D8KQdFZum0cz7/J77n0SZi/T4ZO//4SguA+9kp+3ClfONlR/vWR7c8mQ4PD5/+Tc+
+         evdngRzlZzsjs0xdaxCWb9E1MIpag5WxATiqNiCtvW/sknEYVStK+IZEgZQQTDx/r6yi
+         /aWWzWEN3A0qHQms8uxa202tWWWYgN4kLemMLhvYZQlDYCmUs9sE1VUjH8lvz6fdjNEd
+         c9ovNAn8w6LRnRBZfwWFefmsreR8ftL1sH5QacOF3uJvmALsceroSf00w0HHsM7hqXek
+         vzFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701631465; x=1702236265;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=1nWfzgURTGtt75w4dP8mSFcskypLkgCfSwsONcOlJ4g=;
-        b=VndO6GRVMhMe4Q5/JMvWn9+H6KzlKrwrwlsMlJh5S3NmUinlwwuLwZsX9OAlGcz0Zc
-         5Wc3PHIeD58tPw3uCnCwLCC8J9HXx2A+DtJQ3VwtEWZKS297EdFNCGsp95JNIHzhvfAl
-         76WMppM+PCIRKlU1QJpoTVu2SZP365IsYr75lXObxc/6kyzzbZyT2eWZK13a/FNLCeGe
-         G0ogz30sxpVWolUwhlsTcdFYQyQet0djytrGS9H0E8kzlfc5T5JKj1vwk9RcaLcLEnDu
-         pvFt3XNHsZenOrJz1vuczs0RaEVPjBeQ5hsK0CklIkCgO0OGnOG/mxuVdNnRn6qu3MAd
-         27tw==
-X-Gm-Message-State: AOJu0YwiwSmwdKeeJgm6SDQMoaRp4qgGwbkQwsy68Q+MHuKoUcqGRiy0
-	YrALdSo46EJ7JB1BeUZR39c=
+        d=1e100.net; s=20230601; t=1701632045; x=1702236845;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=QHrqBjURy+mudPJ+6bg27Pk9qQM+xmaxDRnoUP1Py9c=;
+        b=qUDKO3dRtGnSPe2NIzpQbMDOb4xSJSVL2ImXCd/09onVHQxcaByNtkauAihpT0nvmR
+         E4o4qj7JK9sE5b4LAtL+CbPVKBefifSkAauBO9zTjmo+qiREW1HQnoLCKpWSZBSImn1B
+         WIG5BvHr/nDaUdUEOX/QUqI10kuhru0oAVIm1qIY8yHnqRMq7dD47hdbdIZazVwGk2Cs
+         dMqs8Lh5O/+eDKMdbQVzs1Hf5Z+sM3ZNp/3vOYF9OjSI+NnOXQ/V5EZorrKurhDK9GOy
+         rLn65NG02qLYvk2Of8+nbpuLxXxMj5PLdZKDGVxNTz5/EvUlKvC021Slc4NeqgWPMFY0
+         dp0Q==
+X-Gm-Message-State: AOJu0YxmXk1i2iJrfpAu+A2Ar7hcM6iJ4zLFmhVeYtRIVGnhhbNw7awG
+	VahLmjzl6gEH771iqrqy0G4=
 X-Google-Smtp-Source: 
- AGHT+IEg2kLnAuyhggdL3cVe4WpdM9rW+n2mVmMYjFUgPYcn1MOaP0Gt5Q6CzY6AfDTMwD33c5FMKw==
-X-Received: by 2002:a81:984c:0:b0:5d7:1941:2c2a with SMTP id
- p73-20020a81984c000000b005d719412c2amr2115940ywg.87.1701631465118;
-        Sun, 03 Dec 2023 11:24:25 -0800 (PST)
+ AGHT+IGc9OJCrz0Vs7Jwm9KKYJn6cgVwzSJPcWjmn+naJ4Os06xO0RgJu/5QwhQF/G6sjioOlbuV6Q==
+X-Received: by 2002:a05:690c:368a:b0:5d7:1940:7d74 with SMTP id
+ fu10-20020a05690c368a00b005d719407d74mr2240772ywb.75.1701632045662;
+        Sun, 03 Dec 2023 11:34:05 -0800 (PST)
 Received: from localhost ([2601:344:8301:57f0:cb98:c3e:57c:8191])
         by smtp.gmail.com with ESMTPSA id
- z83-20020a814c56000000b005d3c950160csm2377207ywa.4.2023.12.03.11.24.24
+ v127-20020a818585000000b005869fd2b5bcsm2769872ywf.127.2023.12.03.11.34.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Dec 2023 11:24:24 -0800 (PST)
+        Sun, 03 Dec 2023 11:34:05 -0800 (PST)
 From: Yury Norov <yury.norov@gmail.com>
 To: linux-kernel@vger.kernel.org,
-	"David S. Miller" <davem@davemloft.net>,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	"James E.J. Bottomley" <jejb@linux.ibm.com>,
-	"K. Y. Srinivasan" <kys@microsoft.com>,
-	"Md. Haris Iqbal" <haris.iqbal@ionos.com>,
-	Akinobu Mita <akinobu.mita@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Borislav Petkov <bp@alien8.de>,
-	Chaitanya Kulkarni <kch@nvidia.com>,
-	Christian Brauner <brauner@kernel.org>,
-	Damien Le Moal <damien.lemoal@opensource.wdc.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	David Disseldorp <ddiss@suse.de>,
-	Edward Cree <ecree.xilinx@gmail.com>,
-	Eric Dumazet <edumazet@google.com>,
-	Fenghua Yu <fenghua.yu@intel.com>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Gregory Greenman <gregory.greenman@intel.com>,
-	Hans Verkuil <hverkuil@xs4all.nl>,
-	Hans de Goede <hdegoede@redhat.com>,
-	Hugh Dickins <hughd@google.com>,
-	Ingo Molnar <mingo@redhat.com>,
-	Jakub Kicinski <kuba@kernel.org>,
 	Jaroslav Kysela <perex@perex.cz>,
-	Jason Gunthorpe <jgg@ziepe.ca>,
-	Jens Axboe <axboe@kernel.dk>,
-	Jiri Pirko <jiri@resnulli.us>,
-	Jiri Slaby <jirislaby@kernel.org>,
-	Kalle Valo <kvalo@kernel.org>,
-	Karsten Graul <kgraul@linux.ibm.com>,
-	Karsten Keil <isdn@linux-pingi.de>,
+	Takashi Iwai <tiwai@suse.com>,
+	Daniel Mack <zonque@gmail.com>,
+	Cezary Rojewski <cezary.rojewski@intel.com>,
+	Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+	Yury Norov <yury.norov@gmail.com>,
 	Kees Cook <keescook@chromium.org>,
-	Leon Romanovsky <leon@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Martin Habets <habetsm.xilinx@gmail.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Michal Simek <monstr@monstr.eu>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Oliver Neukum <oneukum@suse.com>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ping-Ke Shih <pkshih@realtek.com>,
-	Rich Felker <dalias@libc.org>,
-	Rob Herring <robh@kernel.org>,
-	Robin Murphy <robin.murphy@arm.com>,
-	Sean Christopherson <seanjc@google.com>,
-	Shuai Xue <xueshuai@linux.alibaba.com>,
-	Stanislaw Gruszka <stf_xl@wp.pl>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Valentin Schneider <vschneid@redhat.com>,
-	Vitaly Kuznetsov <vkuznets@redhat.com>,
-	Wenjia Zhang <wenjia@linux.ibm.com>,
-	Will Deacon <will@kernel.org>,
-	Yoshinori Sato <ysato@users.sourceforge.jp>,
-	GR-QLogic-Storage-Upstream@marvell.com,
-	alsa-devel@alsa-project.org,
-	ath10k@lists.infradead.org,
-	dmaengine@vger.kernel.org,
-	iommu@lists.linux.dev,
-	kvm@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-arm-msm@vger.kernel.org,
-	linux-block@vger.kernel.org,
-	linux-bluetooth@vger.kernel.org,
-	linux-hyperv@vger.kernel.org,
-	linux-m68k@lists.linux-m68k.org,
-	linux-media@vger.kernel.org,
-	linux-mips@vger.kernel.org,
-	linux-net-drivers@amd.com,
-	linux-pci@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	linux-s390@vger.kernel.org,
-	linux-scsi@vger.kernel.org,
-	linux-serial@vger.kernel.org,
-	linux-sh@vger.kernel.org,
 	linux-sound@vger.kernel.org,
-	linux-usb@vger.kernel.org,
-	linux-wireless@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org,
-	mpi3mr-linuxdrv.pdl@broadcom.com,
-	netdev@vger.kernel.org,
-	sparclinux@vger.kernel.org,
-	x86@kernel.org
-Cc: Yury Norov <yury.norov@gmail.com>,
-	Jan Kara <jack@suse.cz>,
+	alsa-devel@alsa-project.org
+Cc: Jan Kara <jack@suse.cz>,
 	Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
 	Matthew Wilcox <willy@infradead.org>,
 	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
@@ -180,11 +101,16 @@ Cc: Yury Norov <yury.norov@gmail.com>,
 	Maxim Kuvyrkov <maxim.kuvyrkov@linaro.org>,
 	Alexey Klimov <klimov.linux@gmail.com>,
 	Bart Van Assche <bvanassche@acm.org>,
-	Sergey Shtylyov <s.shtylyov@omp.ru>
-Subject: [PATCH v2 00/35] bitops: add atomic find_bit() operations
-Date: Sun,  3 Dec 2023 11:23:47 -0800
-Message-Id: <20231203192422.539300-1-yury.norov@gmail.com>
+	Sergey Shtylyov <s.shtylyov@omp.ru>,
+	Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH v2 32/35] ALSA: use atomic find_bit() functions where
+ applicable
+Date: Sun,  3 Dec 2023 11:33:04 -0800
+Message-Id: <20231203193307.542794-31-yury.norov@gmail.com>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20231203193307.542794-1-yury.norov@gmail.com>
+References: <20231203192422.539300-1-yury.norov@gmail.com>
+ <20231203193307.542794-1-yury.norov@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-MailFrom: yury.norov@gmail.com
@@ -193,15 +119,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: DCXWGOG5AIUHNS3MBEY6NOK3H3ZULZK4
-X-Message-ID-Hash: DCXWGOG5AIUHNS3MBEY6NOK3H3ZULZK4
-X-Mailman-Approved-At: Mon, 04 Dec 2023 07:36:21 +0000
+Message-ID-Hash: PFQ3USXGWGWSOPM55HPPEOY7FZGYSE5Q
+X-Message-ID-Hash: PFQ3USXGWGWSOPM55HPPEOY7FZGYSE5Q
+X-Mailman-Approved-At: Mon, 04 Dec 2023 07:36:43 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DCXWGOG5AIUHNS3MBEY6NOK3H3ZULZK4/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PFQ3USXGWGWSOPM55HPPEOY7FZGYSE5Q/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -210,229 +136,69 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add helpers around test_and_{set,clear}_bit() that allow to search for
-clear or set bits and flip them atomically.
+ALSA code tests each bit in bitmaps in a for() loop. Switch it to
+dedicated atomic find_bit() API.
 
-The target patterns may look like this:
-
-	for (idx = 0; idx < nbits; idx++)
-		if (test_and_clear_bit(idx, bitmap))
-			do_something(idx);
-
-Or like this:
-
-	do {
-		bit = find_first_bit(bitmap, nbits);
-		if (bit >= nbits)
-			return nbits;
-	} while (!test_and_clear_bit(bit, bitmap));
-	return bit;
-
-In both cases, the opencoded loop may be converted to a single function
-or iterator call. Correspondingly:
-
-	for_each_test_and_clear_bit(idx, bitmap, nbits)
-		do_something(idx);
-
-Or:
-	return find_and_clear_bit(bitmap, nbits);
-
-Obviously, the less routine code people have to write themself, the
-less probability to make a mistake.
-
-Those are not only handy helpers but also resolve a non-trivial
-issue of using non-atomic find_bit() together with atomic
-test_and_{set,clear)_bit().
-
-The trick is that find_bit() implies that the bitmap is a regular
-non-volatile piece of memory, and compiler is allowed to use such
-optimization techniques like re-fetching memory instead of caching it.
-
-For example, find_first_bit() is implemented like this:
-
-      for (idx = 0; idx * BITS_PER_LONG < sz; idx++) {
-              val = addr[idx];
-              if (val) {
-                      sz = min(idx * BITS_PER_LONG + __ffs(val), sz);
-                      break;
-              }
-      }
-
-On register-memory architectures, like x86, compiler may decide to
-access memory twice - first time to compare against 0, and second time
-to fetch its value to pass it to __ffs().
-
-When running find_first_bit() on volatile memory, the memory may get
-changed in-between, and for instance, it may lead to passing 0 to
-__ffs(), which is undefined. This is a potentially dangerous call.
-
-find_and_clear_bit() as a wrapper around test_and_clear_bit()
-naturally treats underlying bitmap as a volatile memory and prevents
-compiler from such optimizations.
-
-Now that KCSAN is catching exactly this type of situations and warns on
-undercover memory modifications. We can use it to reveal improper usage
-of find_bit(), and convert it to atomic find_and_*_bit() as appropriate.
-
-The 1st patch of the series adds the following atomic primitives:
-
-	find_and_set_bit(addr, nbits);
-	find_and_set_next_bit(addr, nbits, start);
-	...
-
-Here find_and_{set,clear} part refers to the corresponding
-test_and_{set,clear}_bit function. Suffixes like _wrap or _lock
-derive their semantics from corresponding find() or test() functions.
-
-For brevity, the naming omits the fact that we search for zero bit in
-find_and_set, and correspondingly search for set bit in find_and_clear
-functions.
-
-The patch also adds iterators with atomic semantics, like
-for_each_test_and_set_bit(). Here, the naming rule is to simply prefix
-corresponding atomic operation with 'for_each'.
-
-This series is a result of discussion [1]. All find_bit() functions imply
-exclusive access to the bitmaps. However, KCSAN reports quite a number
-of warnings related to find_bit() API. Some of them are not pointing
-to real bugs because in many situations people intentionally allow
-concurrent bitmap operations.
-
-If so, find_bit() can be annotated such that KCSAN will ignore it:
-
-        bit = data_race(find_first_bit(bitmap, nbits));
-
-This series addresses the other important case where people really need
-atomic find ops. As the following patches show, the resulting code
-looks safer and more verbose comparing to opencoded loops followed by
-atomic bit flips.
-
-In [1] Mirsad reported 2% slowdown in a single-thread search test when
-switching find_bit() function to treat bitmaps as volatile arrays. On
-the other hand, kernel robot in the same thread reported +3.7% to the
-performance of will-it-scale.per_thread_ops test.
-
-Assuming that our compilers are sane and generate better code against
-properly annotated data, the above discrepancy doesn't look weird. When
-running on non-volatile bitmaps, plain find_bit() outperforms atomic
-find_and_bit(), and vice-versa.
-
-So, all users of find_bit() API, where heavy concurrency is expected,
-are encouraged to switch to atomic find_and_bit() as appropriate.
-
-The 1st patch of this series adds atomic find_and_bit() API, 2nd adds
-a basic test for new API, and all the following patches spread it over
-the kernel.
-
-They can be applied separately from each other on per-subsystems basis,
-or I can pull them in bitmap tree, as appropriate.
-
-[1] https://lore.kernel.org/lkml/634f5fdf-e236-42cf-be8d-48a581c21660@alu.unizg.hr/T/#m3e7341eb3571753f3acf8fe166f3fb5b2c12e615
+Signed-off-by: Yury Norov <yury.norov@gmail.com>
+Acked-by: Takashi Iwai <tiwai@suse.de>
 ---
-v1: https://lore.kernel.org/netdev/20231118155105.25678-29-yury.norov@gmail.com/T/
-v2:
- - Add a basic test for the new API # Bart Van Assche;
- - Add collected reviewers' tags. Thank you guys!
- - Fix typos where found/pointed by;
- - Drop erroneous patch #v1-31 ("drivers/perf: optimize m1_pmu_get_event_idx()...") @ Marc Zyngier;
- - Drop unneeded patch #v1-12 ("wifi: intel: use atomic find_bit() API...") @ Johannes Berg;
- - Patch #v1-15: split SCSI changes per subsystems @ Bart Van Assche;
- - Patch  #5: keep changes inside __mm_cid_try_get() @ Mathieu Desnoyers;
- - Patch  #8: use find_and_set_next_bit() @ Will Deacon;
- - Patch #13: keep test against stimer->config.enable @ Vitaly Kuznetsov;
- - Patch #15: use find_and_set_next_bit @ Bart Van Assche;
- - Patch #31: edit commit message @ Tony Lu, Alexandra Winter;
- - Patch #35: edit tag @ John Paul Adrian Glaubitz;
+ sound/pci/hda/hda_codec.c |  7 +++----
+ sound/usb/caiaq/audio.c   | 13 +++++--------
+ 2 files changed, 8 insertions(+), 12 deletions(-)
 
-Yury Norov (35):
-  lib/find: add atomic find_bit() primitives
-  lib/find: add test for atomic find_bit() ops
-  lib/sbitmap; make __sbitmap_get_word() using find_and_set_bit()
-  watch_queue: use atomic find_bit() in post_one_notification()
-  sched: add cpumask_find_and_set() and use it in __mm_cid_get()
-  mips: sgi-ip30: rework heart_alloc_int()
-  sparc: fix opencoded find_and_set_bit() in alloc_msi()
-  perf/arm: optimize opencoded atomic find_bit() API
-  drivers/perf: optimize ali_drw_get_counter_idx() by using find_bit()
-  dmaengine: idxd: optimize perfmon_assign_event()
-  ath10k: optimize ath10k_snoc_napi_poll() by using find_bit()
-  wifi: rtw88: optimize rtw_pci_tx_kick_off() by using find_bit()
-  KVM: x86: hyper-v: optimize and cleanup kvm_hv_process_stimers()
-  PCI: hv: switch hv_get_dom_num() to use atomic find_bit()
-  scsi: core: use atomic find_bit() API where appropriate
-  scsi: mpi3mr: switch to using atomic find_and_set_bit()
-  scsi: qedi: rework qedi_get_task_idx()
-  powerpc: use atomic find_bit() API where appropriate
-  iommu: use atomic find_bit() API where appropriate
-  media: radio-shark: use atomic find_bit() API where appropriate
-  sfc: switch to using atomic find_bit() API where appropriate
-  tty: nozomi: optimize interrupt_handler()
-  usb: cdc-acm: optimize acm_softint()
-  block: null_blk: fix opencoded find_and_set_bit() in get_tag()
-  RDMA/rtrs: fix opencoded find_and_set_bit_lock() in
-    __rtrs_get_permit()
-  mISDN: optimize get_free_devid()
-  media: em28xx: cx231xx: fix opencoded find_and_set_bit()
-  ethernet: rocker: optimize ofdpa_port_internal_vlan_id_get()
-  serial: sc12is7xx: optimize sc16is7xx_alloc_line()
-  bluetooth: optimize cmtp_alloc_block_id()
-  net: smc:  use find_and_set_bit() in smc_wr_tx_get_free_slot_index()
-  ALSA: use atomic find_bit() functions where applicable
-  m68k: rework get_mmu_context()
-  microblaze: rework get_mmu_context()
-  sh: mach-x3proto: rework ilsel_enable()
-
- arch/m68k/include/asm/mmu_context.h          |  11 +-
- arch/microblaze/include/asm/mmu_context_mm.h |  11 +-
- arch/mips/sgi-ip30/ip30-irq.c                |  12 +-
- arch/powerpc/mm/book3s32/mmu_context.c       |  10 +-
- arch/powerpc/platforms/pasemi/dma_lib.c      |  45 +--
- arch/powerpc/platforms/powernv/pci-sriov.c   |  12 +-
- arch/sh/boards/mach-x3proto/ilsel.c          |   4 +-
- arch/sparc/kernel/pci_msi.c                  |   9 +-
- arch/x86/kvm/hyperv.c                        |  39 ++-
- drivers/block/null_blk/main.c                |  41 +--
- drivers/dma/idxd/perfmon.c                   |   8 +-
- drivers/infiniband/ulp/rtrs/rtrs-clt.c       |  15 +-
- drivers/iommu/arm/arm-smmu/arm-smmu.h        |  10 +-
- drivers/iommu/msm_iommu.c                    |  18 +-
- drivers/isdn/mISDN/core.c                    |   9 +-
- drivers/media/radio/radio-shark.c            |   5 +-
- drivers/media/radio/radio-shark2.c           |   5 +-
- drivers/media/usb/cx231xx/cx231xx-cards.c    |  16 +-
- drivers/media/usb/em28xx/em28xx-cards.c      |  37 +--
- drivers/net/ethernet/rocker/rocker_ofdpa.c   |  11 +-
- drivers/net/ethernet/sfc/rx_common.c         |   4 +-
- drivers/net/ethernet/sfc/siena/rx_common.c   |   4 +-
- drivers/net/ethernet/sfc/siena/siena_sriov.c |  14 +-
- drivers/net/wireless/ath/ath10k/snoc.c       |   9 +-
- drivers/net/wireless/realtek/rtw88/pci.c     |   5 +-
- drivers/net/wireless/realtek/rtw89/pci.c     |   5 +-
- drivers/pci/controller/pci-hyperv.c          |   7 +-
- drivers/perf/alibaba_uncore_drw_pmu.c        |  10 +-
- drivers/perf/arm-cci.c                       |  24 +-
- drivers/perf/arm-ccn.c                       |  10 +-
- drivers/perf/arm_dmc620_pmu.c                |   9 +-
- drivers/perf/arm_pmuv3.c                     |   8 +-
- drivers/scsi/mpi3mr/mpi3mr_os.c              |  21 +-
- drivers/scsi/qedi/qedi_main.c                |   9 +-
- drivers/scsi/scsi_lib.c                      |   7 +-
- drivers/tty/nozomi.c                         |   5 +-
- drivers/tty/serial/sc16is7xx.c               |   8 +-
- drivers/usb/class/cdc-acm.c                  |   5 +-
- include/linux/cpumask.h                      |  12 +
- include/linux/find.h                         | 293 +++++++++++++++++++
- kernel/sched/sched.h                         |  14 +-
- kernel/watch_queue.c                         |   6 +-
- lib/find_bit.c                               |  85 ++++++
- lib/sbitmap.c                                |  46 +--
- lib/test_bitmap.c                            |  61 ++++
- net/bluetooth/cmtp/core.c                    |  10 +-
- net/smc/smc_wr.c                             |  10 +-
- sound/pci/hda/hda_codec.c                    |   7 +-
- sound/usb/caiaq/audio.c                      |  13 +-
- 49 files changed, 629 insertions(+), 420 deletions(-)
-
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index 01718b1fc9a7..29254005f394 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -3275,10 +3275,9 @@ static int get_empty_pcm_device(struct hda_bus *bus, unsigned int type)
+ 
+ #ifdef CONFIG_SND_DYNAMIC_MINORS
+ 	/* non-fixed slots starting from 10 */
+-	for (i = 10; i < 32; i++) {
+-		if (!test_and_set_bit(i, bus->pcm_dev_bits))
+-			return i;
+-	}
++	i = find_and_set_next_bit(bus->pcm_dev_bits, 32, 10);
++	if (i < 32)
++		return i;
+ #endif
+ 
+ 	dev_warn(bus->card->dev, "Too many %s devices\n",
+diff --git a/sound/usb/caiaq/audio.c b/sound/usb/caiaq/audio.c
+index 4981753652a7..74dfcf32b439 100644
+--- a/sound/usb/caiaq/audio.c
++++ b/sound/usb/caiaq/audio.c
+@@ -610,7 +610,7 @@ static void read_completed(struct urb *urb)
+ 	struct snd_usb_caiaq_cb_info *info = urb->context;
+ 	struct snd_usb_caiaqdev *cdev;
+ 	struct device *dev;
+-	struct urb *out = NULL;
++	struct urb *out;
+ 	int i, frame, len, send_it = 0, outframe = 0;
+ 	unsigned long flags;
+ 	size_t offset = 0;
+@@ -625,17 +625,14 @@ static void read_completed(struct urb *urb)
+ 		return;
+ 
+ 	/* find an unused output urb that is unused */
+-	for (i = 0; i < N_URBS; i++)
+-		if (test_and_set_bit(i, &cdev->outurb_active_mask) == 0) {
+-			out = cdev->data_urbs_out[i];
+-			break;
+-		}
+-
+-	if (!out) {
++	i = find_and_set_bit(&cdev->outurb_active_mask, N_URBS);
++	if (i >= N_URBS) {
+ 		dev_err(dev, "Unable to find an output urb to use\n");
+ 		goto requeue;
+ 	}
+ 
++	out = cdev->data_urbs_out[i];
++
+ 	/* read the recently received packet and send back one which has
+ 	 * the same layout */
+ 	for (frame = 0; frame < FRAMES_PER_URB; frame++) {
 -- 
 2.40.1
 
