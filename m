@@ -4,101 +4,113 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 96E1CC10F04
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 Dec 2023 10:02:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C11D4C4167B
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 Dec 2023 10:03:08 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 24003868;
-	Mon,  4 Dec 2023 11:02:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 24003868
+	by alsa0.perex.cz (Postfix) with ESMTPS id CC214DF2;
+	Mon,  4 Dec 2023 11:02:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CC214DF2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1701684176;
-	bh=Ko9KA4NxwoRoFg8De5PsaOuq8CRBZDjUlKZ0pi0IT/4=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=O54u9HqDTPUtomI4ytadiIMHQUgw8XYQHJP/T/TKzycBBl3XCGduoj+Ubo5QS+9SW
-	 kb6fLnatPcTzBNs3bRwM2GL1Hfwxh7a3Rcge6MlsFUDqQF/CHF5O2h4Fi/LpSj7qw3
-	 io51d8n1C8BJec1bONYnOAZyRfMgwk4BYDhVWQFI=
+	s=default; t=1701684186;
+	bh=MhrFc+kvsBuTtxshCGIkg454doACjG7V41KTy1PIApQ=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=AeROclXI+0tn9BaK8q4Zc/ko0TYDf7eCnN6K81l9uFVajypkUtERUCTqvJIWETYpP
+	 s4C+RDdvsx9gtVmZYElch+uQDYJ4EXyq4tqstdCd0FT0oKPJRQt6A2xsnedOfmg+wO
+	 At+unBeicKGc2aJC+Yiem3sCkO3w9z4Tsqlf3raM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6992CF805AD; Mon,  4 Dec 2023 11:02:23 +0100 (CET)
+	id 96A83F80588; Mon,  4 Dec 2023 11:02:24 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 950B2F80580;
-	Mon,  4 Dec 2023 11:02:22 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 26C78F805A8;
+	Mon,  4 Dec 2023 11:02:24 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 520BCF8024E; Mon,  4 Dec 2023 11:01:18 +0100 (CET)
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com
- [IPv6:2a00:1450:4864:20::531])
+	id 097CFF8024E; Mon,  4 Dec 2023 11:01:30 +0100 (CET)
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com
+ [IPv6:2a00:1450:4864:20::62a])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 77E37F800AC
-	for <alsa-devel@alsa-project.org>; Mon,  4 Dec 2023 11:00:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 77E37F800AC
+	by alsa1.perex.cz (Postfix) with ESMTPS id DFDDBF800E4
+	for <alsa-devel@alsa-project.org>; Mon,  4 Dec 2023 11:01:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DFDDBF800E4
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=UxSFt6Zg
-Received: by mail-ed1-x531.google.com with SMTP id
- 4fb4d7f45d1cf-54cd8f5bb5cso644430a12.1
+ header.s=google header.b=xlOL86nR
+Received: by mail-ej1-x62a.google.com with SMTP id
+ a640c23a62f3a-a06e59384b6so583812566b.1
         for <alsa-devel@alsa-project.org>;
- Mon, 04 Dec 2023 02:00:55 -0800 (PST)
+ Mon, 04 Dec 2023 02:01:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701684054; x=1702288854;
+        d=linaro.org; s=google; t=1701684084; x=1702288884;
  darn=alsa-project.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ci3vPfK43+K4niO6uFBbC2o2Y2UUChnmCN7Lkz2+0dU=;
-        b=UxSFt6Zg0bw80geBm+Ur/MEgMixMgQJhr50IN89g/2vuuZB4psvl3BZ2m/j6+8TbHV
-         6s5qCyzSZ43J4sk1RaV0zBxuXIbuPhbcT053BjR/Pdj9NKws2yAOlX3LoB01sJ6oNpJN
-         Yj1Y7DoR2msASMdEBOYQ+hmYyzz2TJs0GSII0TWDxyk/lIiPcfPStQWCbmSOfLEhmBpd
-         3qads0X+uUJUk5Jw3Hg+H6URN+w9LE2kLsr7AjfqTYAJ+IXr/PbqqDt+KdCOQjaJgbZN
-         btO9JPVbi6TvKUdbAGVmYMiiW9xV943aF8NRlP/Af5pJCiI/pUAvqJfnfT2+UqcAzW8v
-         nCew==
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5gcpWgbYxTJM4cDAhuGusGlvYgR0Ejalgkc6iMWP0mY=;
+        b=xlOL86nRGIlNNE9Qsc8haOiJetyejG1B1UAXr9GOO0PCHsOas3eoPFEsZLErcVq9eh
+         YL2DRCm9YCvjJP5hAxScRWvDH2qMtcEPMANR2p2pm+tSfbGkNU3unVCtlDRVv9wZTplr
+         L1djO9eA/2PcydVTooAaEBgv2YU9lJfmyaJ+P3lP6uaPeohvB3rnVfbQbhNlz/dLg1L5
+         FbLX+R3GqGlkG8MA2SdQfeutY7Ae7ELhPQn1v7i7UdwKA9oRGUoj7wnLPCPt/vwoeLtv
+         vX5k4bGduH4RkfVb3Ecuh2AVG7A6vYd2X/ps+7YI+ljlEK3rUbT1VRCfhTu3bOAZ+hlo
+         kwEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701684054; x=1702288854;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ci3vPfK43+K4niO6uFBbC2o2Y2UUChnmCN7Lkz2+0dU=;
-        b=skIXTX6QV7njLUJz7pHtNsdsfEfY5ZMj03l9IfK5/v7ZZsAqzP8r3nNRQ8uT6u8EsS
-         QqRKV/vpjnmAxCg6gWfdh1VxOt+EOO+6sXWOLt4Fkk15A434Y7pQHozSUGAf3GTUzSOo
-         BxRAdbtrdsg+shCSC2T6SNxOEIhruMbVT/c93nE0ptQ4Ae30WhgMTApoq8vL52iFEAtM
-         aQ5CelimOiKsLIxLWMjnQWFNmGVi+FV3ZUIvWnBFObCf7C9BM/ZrUbe2PhhTkSFrxuYO
-         u2ZIBXzPvgXljbzNx1x9FY25QhYdTlrSQCMIMx3fbbefmRT7LtgN+dWMfkk4pUlvwanO
-         xlgw==
-X-Gm-Message-State: AOJu0Yw7oIPLCdKIXUXIVB9JYdeH2BnbGiiRMjYUJDy6mpeDdd27WdSI
-	8qJ8Os+OjxuWEOn3ro2swQ7w/w==
+        d=1e100.net; s=20230601; t=1701684084; x=1702288884;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5gcpWgbYxTJM4cDAhuGusGlvYgR0Ejalgkc6iMWP0mY=;
+        b=n232qwbJa4V8pdzsrrA9pB4Hj4DCXzPX9wfVskxSq953mb1ZNn+lb4K1E7nKJSYsnP
+         Jb8tBWN0eblZqjCHDC7PI2hyx9iFIu8RbzpdOftSlnb4dKqrg4UFdVS+AYygMZKhGmTi
+         t+3l+HzkfOQQ96DsbRmTtHpfUh5dcsX3FZxARJwnh15kl5jjTjI3fo8EqH1w/shbpxkM
+         7FOSCp9nJ+TRtE3g4frtyfZ7oVc1IZOK3Il+npZ0zjwfnN5ncAa73XobjDWLj9L8upX5
+         bgiszsvsJ7p8eMvVqxfBhwoPLlecGm7ZKWDNt393XXifyl7VJjWGyfn/Jsvo7rF0un43
+         LlVQ==
+X-Gm-Message-State: AOJu0YzjqT68kKXUY2Sgu8YIR86vU2D74WHFipYoVOY1pSKrYleeCxeB
+	YmOPlniVjdXh4fFSq/DP/8HesA==
 X-Google-Smtp-Source: 
- AGHT+IEYIliWeQynvKc93LC5+E03Aal9KlNobNkzWPdTJmmKwTqYABXRJ1BhSR0RaHAZc0hqoDtJYg==
-X-Received: by 2002:a17:906:3f17:b0:9be:7b67:1674 with SMTP id
- c23-20020a1709063f1700b009be7b671674mr3140130ejj.3.1701684053242;
-        Mon, 04 Dec 2023 02:00:53 -0800 (PST)
+ AGHT+IGIU3jORR6B0x3FGVJgT+5hu64J0FQmCPUvyJ3aNFTkxr8CSXX7InvfFNXJYlFuqoPmGBKcKQ==
+X-Received: by 2002:a17:906:3f57:b0:a1b:7313:504f with SMTP id
+ f23-20020a1709063f5700b00a1b7313504fmr701721ejj.101.1701684084486;
+        Mon, 04 Dec 2023 02:01:24 -0800 (PST)
 Received: from krzk-bin.. ([178.197.223.109])
         by smtp.gmail.com with ESMTPSA id
- z21-20020a170906715500b00a1185ad53c6sm5108123ejj.199.2023.12.04.02.00.52
+ pj21-20020a170906d79500b00a188fe9563esm5065572ejb.131.2023.12.04.02.01.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Dec 2023 02:00:52 -0800 (PST)
+        Mon, 04 Dec 2023 02:01:24 -0800 (PST)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
 	Banajit Goswami <bgoswami@quicinc.com>,
+	Andy Gross <agross@kernel.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
 	Liam Girdwood <lgirdwood@gmail.com>,
 	Mark Brown <broonie@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
 	Jaroslav Kysela <perex@perex.cz>,
 	Takashi Iwai <tiwai@suse.com>,
 	alsa-devel@alsa-project.org,
+	linux-arm-msm@vger.kernel.org,
 	linux-sound@vger.kernel.org,
+	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org
 Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH] ASoC: qcom: Fix trivial code style issues
-Date: Mon,  4 Dec 2023 11:00:48 +0100
-Message-Id: <20231204100048.211800-1-krzysztof.kozlowski@linaro.org>
+Subject: [PATCH 2/2] ASoC: dt-bindings: qcom,sm8250: Add X1E80100 sound card
+Date: Mon,  4 Dec 2023 11:01:16 +0100
+Message-Id: <20231204100116.211898-2-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231204100116.211898-1-krzysztof.kozlowski@linaro.org>
+References: <20231204100116.211898-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: RLQIH4GIARXYDSJFW5NIAYAWMCS4NCJT
-X-Message-ID-Hash: RLQIH4GIARXYDSJFW5NIAYAWMCS4NCJT
+Message-ID-Hash: 4MBJXLZAIV46NRRHKDESVKL3ZAQB4BGM
+X-Message-ID-Hash: 4MBJXLZAIV46NRRHKDESVKL3ZAQB4BGM
 X-MailFrom: krzysztof.kozlowski@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -111,7 +123,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RLQIH4GIARXYDSJFW5NIAYAWMCS4NCJT/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4MBJXLZAIV46NRRHKDESVKL3ZAQB4BGM/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -120,300 +132,28 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Fix few trivial code style issues, pointed out by checkpatch, so they do
-not get copied to new code (when old code is used as template):
-
-  WARNING: Prefer "GPL" over "GPL v2" - see commit bf7fbeeae6db ("module: Cure the MODULE_LICENSE "GPL" vs. "GPL v2" bogosity")
-  WARNING: function definition argument 'struct platform_device *' should also have an identifier name
-  ERROR: code indent should use tabs where possible
-  WARNING: please, no spaces at the start of a line
-  WARNING: Missing a blank line after declarations
-  WARNING: unnecessary whitespace before a quoted newline
+Document bindings for the Qualcomm X1E80100 SoC sound card.  The
+bindings are the same as for other newer Qualcomm ADSP sound cards, thus
+keep them in existing qcom,sm8250.yaml file, even though Linux driver is
+separate.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- sound/soc/qcom/apq8016_sbc.c     |  2 +-
- sound/soc/qcom/apq8096.c         |  2 +-
- sound/soc/qcom/common.c          |  2 +-
- sound/soc/qcom/lpass-apq8016.c   |  2 +-
- sound/soc/qcom/lpass-cpu.c       |  2 +-
- sound/soc/qcom/lpass-hdmi.c      |  2 +-
- sound/soc/qcom/lpass-ipq806x.c   |  2 +-
- sound/soc/qcom/lpass-platform.c  |  2 +-
- sound/soc/qcom/lpass-sc7180.c    |  2 +-
- sound/soc/qcom/lpass.h           |  2 +-
- sound/soc/qcom/qdsp6/q6afe.c     |  8 ++++----
- sound/soc/qcom/qdsp6/q6apm-dai.c |  4 ++--
- sound/soc/qcom/qdsp6/q6asm.h     | 20 ++++++++++----------
- sound/soc/qcom/qdsp6/topology.c  |  3 ++-
- sound/soc/qcom/sc7180.c          |  2 +-
- sound/soc/qcom/sc8280xp.c        |  2 +-
- sound/soc/qcom/sdm845.c          |  2 +-
- sound/soc/qcom/sdw.c             |  2 +-
- sound/soc/qcom/sm8250.c          |  2 +-
- sound/soc/qcom/storm.c           |  2 +-
- 20 files changed, 34 insertions(+), 33 deletions(-)
+ Documentation/devicetree/bindings/sound/qcom,sm8250.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/qcom/apq8016_sbc.c b/sound/soc/qcom/apq8016_sbc.c
-index efbdbb4dd753..4834a56eaa88 100644
---- a/sound/soc/qcom/apq8016_sbc.c
-+++ b/sound/soc/qcom/apq8016_sbc.c
-@@ -344,4 +344,4 @@ module_platform_driver(apq8016_sbc_platform_driver);
+diff --git a/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml b/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml
+index ec641fa2cd4b..4673fdffe312 100644
+--- a/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml
++++ b/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml
+@@ -34,6 +34,7 @@ properties:
+           - qcom,sdm845-sndcard
+           - qcom,sm8250-sndcard
+           - qcom,sm8450-sndcard
++          - qcom,x1e80100-sndcard
  
- MODULE_AUTHOR("Srinivas Kandagatla <srinivas.kandagatla@linaro.org");
- MODULE_DESCRIPTION("APQ8016 ASoC Machine Driver");
--MODULE_LICENSE("GPL v2");
-+MODULE_LICENSE("GPL");
-diff --git a/sound/soc/qcom/apq8096.c b/sound/soc/qcom/apq8096.c
-index 7ee6df02b906..4f6594cc723c 100644
---- a/sound/soc/qcom/apq8096.c
-+++ b/sound/soc/qcom/apq8096.c
-@@ -142,4 +142,4 @@ static struct platform_driver msm_snd_apq8096_driver = {
- module_platform_driver(msm_snd_apq8096_driver);
- MODULE_AUTHOR("Srinivas Kandagatla <srinivas.kandagatla@linaro.org");
- MODULE_DESCRIPTION("APQ8096 ASoC Machine Driver");
--MODULE_LICENSE("GPL v2");
-+MODULE_LICENSE("GPL");
-diff --git a/sound/soc/qcom/common.c b/sound/soc/qcom/common.c
-index 483bbf53a541..756706d5b493 100644
---- a/sound/soc/qcom/common.c
-+++ b/sound/soc/qcom/common.c
-@@ -239,4 +239,4 @@ int qcom_snd_wcd_jack_setup(struct snd_soc_pcm_runtime *rtd,
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(qcom_snd_wcd_jack_setup);
--MODULE_LICENSE("GPL v2");
-+MODULE_LICENSE("GPL");
-diff --git a/sound/soc/qcom/lpass-apq8016.c b/sound/soc/qcom/lpass-apq8016.c
-index 8e58e814a95f..9005c85f8c54 100644
---- a/sound/soc/qcom/lpass-apq8016.c
-+++ b/sound/soc/qcom/lpass-apq8016.c
-@@ -305,5 +305,5 @@ static struct platform_driver apq8016_lpass_cpu_platform_driver = {
- module_platform_driver(apq8016_lpass_cpu_platform_driver);
- 
- MODULE_DESCRIPTION("APQ8016 LPASS CPU Driver");
--MODULE_LICENSE("GPL v2");
-+MODULE_LICENSE("GPL");
- 
-diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
-index 88b80ed45c66..b0f3e02cb043 100644
---- a/sound/soc/qcom/lpass-cpu.c
-+++ b/sound/soc/qcom/lpass-cpu.c
-@@ -1294,4 +1294,4 @@ void asoc_qcom_lpass_cpu_platform_shutdown(struct platform_device *pdev)
- EXPORT_SYMBOL_GPL(asoc_qcom_lpass_cpu_platform_shutdown);
- 
- MODULE_DESCRIPTION("QTi LPASS CPU Driver");
--MODULE_LICENSE("GPL v2");
-+MODULE_LICENSE("GPL");
-diff --git a/sound/soc/qcom/lpass-hdmi.c b/sound/soc/qcom/lpass-hdmi.c
-index 24b1a7523adb..ce753ebc0894 100644
---- a/sound/soc/qcom/lpass-hdmi.c
-+++ b/sound/soc/qcom/lpass-hdmi.c
-@@ -251,4 +251,4 @@ const struct snd_soc_dai_ops asoc_qcom_lpass_hdmi_dai_ops = {
- EXPORT_SYMBOL_GPL(asoc_qcom_lpass_hdmi_dai_ops);
- 
- MODULE_DESCRIPTION("QTi LPASS HDMI Driver");
--MODULE_LICENSE("GPL v2");
-+MODULE_LICENSE("GPL");
-diff --git a/sound/soc/qcom/lpass-ipq806x.c b/sound/soc/qcom/lpass-ipq806x.c
-index e0e9ad35821c..5c874139f39d 100644
---- a/sound/soc/qcom/lpass-ipq806x.c
-+++ b/sound/soc/qcom/lpass-ipq806x.c
-@@ -177,4 +177,4 @@ static struct platform_driver ipq806x_lpass_cpu_platform_driver = {
- module_platform_driver(ipq806x_lpass_cpu_platform_driver);
- 
- MODULE_DESCRIPTION("QTi LPASS CPU Driver");
--MODULE_LICENSE("GPL v2");
-+MODULE_LICENSE("GPL");
-diff --git a/sound/soc/qcom/lpass-platform.c b/sound/soc/qcom/lpass-platform.c
-index 333c427cfdb0..addd2c4bdd3e 100644
---- a/sound/soc/qcom/lpass-platform.c
-+++ b/sound/soc/qcom/lpass-platform.c
-@@ -1384,4 +1384,4 @@ int asoc_qcom_lpass_platform_register(struct platform_device *pdev)
- EXPORT_SYMBOL_GPL(asoc_qcom_lpass_platform_register);
- 
- MODULE_DESCRIPTION("QTi LPASS Platform Driver");
--MODULE_LICENSE("GPL v2");
-+MODULE_LICENSE("GPL");
-diff --git a/sound/soc/qcom/lpass-sc7180.c b/sound/soc/qcom/lpass-sc7180.c
-index 22063b834554..e6bcdf6ed796 100644
---- a/sound/soc/qcom/lpass-sc7180.c
-+++ b/sound/soc/qcom/lpass-sc7180.c
-@@ -322,4 +322,4 @@ static struct platform_driver sc7180_lpass_cpu_platform_driver = {
- module_platform_driver(sc7180_lpass_cpu_platform_driver);
- 
- MODULE_DESCRIPTION("SC7180 LPASS CPU DRIVER");
--MODULE_LICENSE("GPL v2");
-+MODULE_LICENSE("GPL");
-diff --git a/sound/soc/qcom/lpass.h b/sound/soc/qcom/lpass.h
-index 2f222bd4ffcc..27a2bf9a6613 100644
---- a/sound/soc/qcom/lpass.h
-+++ b/sound/soc/qcom/lpass.h
-@@ -398,7 +398,7 @@ struct lpass_pcm_data {
- };
- 
- /* register the platform driver from the CPU DAI driver */
--int asoc_qcom_lpass_platform_register(struct platform_device *);
-+int asoc_qcom_lpass_platform_register(struct platform_device *pdev);
- void asoc_qcom_lpass_cpu_platform_remove(struct platform_device *pdev);
- void asoc_qcom_lpass_cpu_platform_shutdown(struct platform_device *pdev);
- int asoc_qcom_lpass_cpu_platform_probe(struct platform_device *pdev);
-diff --git a/sound/soc/qcom/qdsp6/q6afe.c b/sound/soc/qcom/qdsp6/q6afe.c
-index 91d39f6ad0bd..ef7557be5d66 100644
---- a/sound/soc/qcom/qdsp6/q6afe.c
-+++ b/sound/soc/qcom/qdsp6/q6afe.c
-@@ -553,13 +553,13 @@ struct q6afe_port {
- };
- 
- struct afe_cmd_remote_lpass_core_hw_vote_request {
--        uint32_t  hw_block_id;
--        char client_name[8];
-+	uint32_t  hw_block_id;
-+	char client_name[8];
- } __packed;
- 
- struct afe_cmd_remote_lpass_core_hw_devote_request {
--        uint32_t  hw_block_id;
--        uint32_t client_handle;
-+	uint32_t  hw_block_id;
-+	uint32_t client_handle;
- } __packed;
- 
- 
-diff --git a/sound/soc/qcom/qdsp6/q6apm-dai.c b/sound/soc/qcom/qdsp6/q6apm-dai.c
-index b799ac724627..052e40cb38fe 100644
---- a/sound/soc/qcom/qdsp6/q6apm-dai.c
-+++ b/sound/soc/qcom/qdsp6/q6apm-dai.c
-@@ -134,7 +134,7 @@ static void event_handler(uint32_t opcode, uint32_t token, uint32_t *payload, vo
- 		prtd->state = Q6APM_STREAM_STOPPED;
- 		break;
- 	case APM_CLIENT_EVENT_DATA_WRITE_DONE:
--	        spin_lock_irqsave(&prtd->lock, flags);
-+		spin_lock_irqsave(&prtd->lock, flags);
- 		prtd->pos += prtd->pcm_count;
- 		spin_unlock_irqrestore(&prtd->lock, flags);
- 		snd_pcm_period_elapsed(substream);
-@@ -143,7 +143,7 @@ static void event_handler(uint32_t opcode, uint32_t token, uint32_t *payload, vo
- 
- 		break;
- 	case APM_CLIENT_EVENT_DATA_READ_DONE:
--	        spin_lock_irqsave(&prtd->lock, flags);
-+		spin_lock_irqsave(&prtd->lock, flags);
- 		prtd->pos += prtd->pcm_count;
- 		spin_unlock_irqrestore(&prtd->lock, flags);
- 		snd_pcm_period_elapsed(substream);
-diff --git a/sound/soc/qcom/qdsp6/q6asm.h b/sound/soc/qcom/qdsp6/q6asm.h
-index 0103d8dae5da..519e1b3a3f7c 100644
---- a/sound/soc/qcom/qdsp6/q6asm.h
-+++ b/sound/soc/qcom/qdsp6/q6asm.h
-@@ -35,16 +35,16 @@ enum {
- #define ASM_LAST_BUFFER_FLAG           BIT(30)
- 
- struct q6asm_flac_cfg {
--        u32 sample_rate;
--        u32 ext_sample_rate;
--        u32 min_frame_size;
--        u32 max_frame_size;
--        u16 stream_info_present;
--        u16 min_blk_size;
--        u16 max_blk_size;
--        u16 ch_cfg;
--        u16 sample_size;
--        u16 md5_sum;
-+	u32 sample_rate;
-+	u32 ext_sample_rate;
-+	u32 min_frame_size;
-+	u32 max_frame_size;
-+	u16 stream_info_present;
-+	u16 min_blk_size;
-+	u16 max_blk_size;
-+	u16 ch_cfg;
-+	u16 sample_size;
-+	u16 md5_sum;
- };
- 
- struct q6asm_wma_cfg {
-diff --git a/sound/soc/qcom/qdsp6/topology.c b/sound/soc/qcom/qdsp6/topology.c
-index 130b22a34fb3..70572c83e101 100644
---- a/sound/soc/qcom/qdsp6/topology.c
-+++ b/sound/soc/qcom/qdsp6/topology.c
-@@ -545,6 +545,7 @@ static struct audioreach_module *audioreach_parse_common_tokens(struct q6apm *ap
- 
- 	if (mod) {
- 		int pn, id = 0;
-+
- 		mod->module_id = module_id;
- 		mod->max_ip_port = max_ip_port;
- 		mod->max_op_port = max_op_port;
-@@ -1271,7 +1272,7 @@ int audioreach_tplg_init(struct snd_soc_component *component)
- 
- 	ret = request_firmware(&fw, tplg_fw_name, dev);
- 	if (ret < 0) {
--		dev_err(dev, "tplg firmware loading %s failed %d \n", tplg_fw_name, ret);
-+		dev_err(dev, "tplg firmware loading %s failed %d\n", tplg_fw_name, ret);
- 		goto err;
- 	}
- 
-diff --git a/sound/soc/qcom/sc7180.c b/sound/soc/qcom/sc7180.c
-index b0320a74d508..a15f385ede45 100644
---- a/sound/soc/qcom/sc7180.c
-+++ b/sound/soc/qcom/sc7180.c
-@@ -578,4 +578,4 @@ static struct platform_driver sc7180_snd_driver = {
- module_platform_driver(sc7180_snd_driver);
- 
- MODULE_DESCRIPTION("sc7180 ASoC Machine Driver");
--MODULE_LICENSE("GPL v2");
-+MODULE_LICENSE("GPL");
-diff --git a/sound/soc/qcom/sc8280xp.c b/sound/soc/qcom/sc8280xp.c
-index 7c20b25ba3de..7c5a81681a2a 100644
---- a/sound/soc/qcom/sc8280xp.c
-+++ b/sound/soc/qcom/sc8280xp.c
-@@ -168,4 +168,4 @@ static struct platform_driver snd_sc8280xp_driver = {
- module_platform_driver(snd_sc8280xp_driver);
- MODULE_AUTHOR("Srinivas Kandagatla <srinivas.kandagatla@linaro.org");
- MODULE_DESCRIPTION("SC8280XP ASoC Machine Driver");
--MODULE_LICENSE("GPL v2");
-+MODULE_LICENSE("GPL");
-diff --git a/sound/soc/qcom/sdm845.c b/sound/soc/qcom/sdm845.c
-index 252a0f0819be..75701546b6ea 100644
---- a/sound/soc/qcom/sdm845.c
-+++ b/sound/soc/qcom/sdm845.c
-@@ -625,4 +625,4 @@ static struct platform_driver sdm845_snd_driver = {
- module_platform_driver(sdm845_snd_driver);
- 
- MODULE_DESCRIPTION("sdm845 ASoC Machine Driver");
--MODULE_LICENSE("GPL v2");
-+MODULE_LICENSE("GPL");
-diff --git a/sound/soc/qcom/sdw.c b/sound/soc/qcom/sdw.c
-index 77dbe0c28b29..7f5089bbe022 100644
---- a/sound/soc/qcom/sdw.c
-+++ b/sound/soc/qcom/sdw.c
-@@ -160,4 +160,4 @@ int qcom_snd_sdw_hw_free(struct snd_pcm_substream *substream,
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(qcom_snd_sdw_hw_free);
--MODULE_LICENSE("GPL v2");
-+MODULE_LICENSE("GPL");
-diff --git a/sound/soc/qcom/sm8250.c b/sound/soc/qcom/sm8250.c
-index f298167c2a23..d70df72c0160 100644
---- a/sound/soc/qcom/sm8250.c
-+++ b/sound/soc/qcom/sm8250.c
-@@ -182,4 +182,4 @@ static struct platform_driver snd_sm8250_driver = {
- module_platform_driver(snd_sm8250_driver);
- MODULE_AUTHOR("Srinivas Kandagatla <srinivas.kandagatla@linaro.org");
- MODULE_DESCRIPTION("SM8250 ASoC Machine Driver");
--MODULE_LICENSE("GPL v2");
-+MODULE_LICENSE("GPL");
-diff --git a/sound/soc/qcom/storm.c b/sound/soc/qcom/storm.c
-index 553165f11d30..c8d5ac43a176 100644
---- a/sound/soc/qcom/storm.c
-+++ b/sound/soc/qcom/storm.c
-@@ -140,4 +140,4 @@ static struct platform_driver storm_platform_driver = {
- module_platform_driver(storm_platform_driver);
- 
- MODULE_DESCRIPTION("QTi IPQ806x-based Storm Machine Driver");
--MODULE_LICENSE("GPL v2");
-+MODULE_LICENSE("GPL");
+   audio-routing:
+     $ref: /schemas/types.yaml#/definitions/non-unique-string-array
 -- 
 2.34.1
 
