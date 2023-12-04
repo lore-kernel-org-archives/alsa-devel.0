@@ -4,56 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5FAFBC10DC1
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 Dec 2023 20:36:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01A67C4167B
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 Dec 2023 20:37:11 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 723B4857;
-	Mon,  4 Dec 2023 21:35:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 723B4857
+	by alsa0.perex.cz (Postfix) with ESMTPS id E0C73868;
+	Mon,  4 Dec 2023 21:36:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E0C73868
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1701722162;
+	s=default; t=1701722229;
 	bh=C2U2qrCynZxI56Zkj6LUzA8sFR5k/ZUF1IMLPjunjXM=;
 	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=ZUSiv9QodOCTPFmtD+NfAYOQs1mhK2daLnZGSABlD3H0SgDy4Clo1Tacmlo0M6+8x
-	 PFxvf3TgK/nY/oF9qSCpZpj5le7t74uWJCEufMz7eugMVlhsh0UROhDz62jfuOwEaY
-	 TbiFFoOgs3gJ8QYWwZIjVhV5OpO7Zkw6EWxzGVGQ=
+	b=va0y7zUxQhR4AeZNZcxcAflQiYhxrpwvyyndCJFcj/zPMgAW9lPprS/7emKSU2YfN
+	 GfaQCtQVOT2a5MN+DFY75U4BZMecJe31EJos5hVaVJ4NIo95kN+h6ipXTlqfCkzJBs
+	 1tWZRieNaikObiwrOYrYqUT5AwTq6Vsw2EldPj5Y=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 21582F8057D; Mon,  4 Dec 2023 21:35:31 +0100 (CET)
+	id C350DF80579; Mon,  4 Dec 2023 21:36:32 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5F565F8025F;
-	Mon,  4 Dec 2023 21:35:30 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id ACC4EF802BE;
+	Mon,  4 Dec 2023 21:36:31 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CB837F8024E; Mon,  4 Dec 2023 21:35:26 +0100 (CET)
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+	id DF965F8024E; Mon,  4 Dec 2023 21:36:28 +0100 (CET)
+Received: from sin.source.kernel.org (sin.source.kernel.org
+ [IPv6:2604:1380:40e1:4800::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 586FAF800D2
-	for <alsa-devel@alsa-project.org>; Mon,  4 Dec 2023 21:35:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 586FAF800D2
+	by alsa1.perex.cz (Postfix) with ESMTPS id 88767F800E4
+	for <alsa-devel@alsa-project.org>; Mon,  4 Dec 2023 21:36:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 88767F800E4
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=kfpePyU1
+ header.s=k20201202 header.b=PI6lzptj
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 684C4CE12EB;
-	Mon,  4 Dec 2023 20:35:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4044C433CA;
-	Mon,  4 Dec 2023 20:35:16 +0000 (UTC)
+	by sin.source.kernel.org (Postfix) with ESMTP id 6A876CE12FB;
+	Mon,  4 Dec 2023 20:36:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2187FC433C9;
+	Mon,  4 Dec 2023 20:36:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1701722118;
+	s=k20201202; t=1701722180;
 	bh=C2U2qrCynZxI56Zkj6LUzA8sFR5k/ZUF1IMLPjunjXM=;
 	h=From:To:Cc:Subject:Date:From;
-	b=kfpePyU1kYjofn5AW34bsIYfYkR8+w4QT+ZdqrS09kaa5KHDUco4Zw7IAeI8kYsAS
-	 WJ2FY+80dCTzhLhhutYMldZtDJfEijElp9KvIt6jE9/I1oQvWC6ZCl+q/4r0UXDtD4
-	 0HNEleormdZzCI/ZGJIy5oao3sEbLk3pnaygypbABo/4YrQbQKCTiXa95RYgToa0U8
-	 NZOFUehFsdYQupxW/SkI7zMrdPF2Fq4OWVx307G+0fcvYeATnsfPuSXqieAuYT9lp0
-	 a9kCFTz5K4o8bdLMWrYsTOHgitSItmNVr1VIMUmp0vQebxrScvfOSc7q8Ni2uvNTdp
-	 bLB9fSBdYafhg==
+	b=PI6lzptjvMU1ws9NyonJRAuDY15E8rv/xZOD1fi+XsaH7xRAqZ5JtWzNKu1IzAyIy
+	 3cKxn/yG0xHjPoJdtzVNKYzSG7L2kBoSsImRj/f980fx2wdZfv3J//CIc2tm7QzpU+
+	 S61mFKfubhgq/Ew8ECbAf3qiByZLw3o+YQd9iOPXtA5ra6+0pIQBxA86/0g5z/OOvQ
+	 8uLEjImaVKTNiV8S+cNQee9eLV1LMqjdjsmjDoyx5iVdobzF6kFwjB4kcfcNKYn1VG
+	 1/ppj8jWWQAX3rY0kCab06mJk9s4KSy2FIf0NPQh96WLMvO2UJDHaPaPUhBDxZcqKg
+	 rxjiH0FnUK4SA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -65,17 +66,17 @@ Cc: Charles Keepax <ckeepax@opensource.cirrus.com>,
 	alsa-devel@alsa-project.org,
 	patches@opensource.cirrus.com,
 	linux-gpio@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 01/17] pinctrl: lochnagar: Don't build on MIPS
-Date: Mon,  4 Dec 2023 15:34:46 -0500
-Message-ID: <20231204203514.2093855-1-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 01/10] pinctrl: lochnagar: Don't build on MIPS
+Date: Mon,  4 Dec 2023 15:35:58 -0500
+Message-ID: <20231204203616.2094529-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.1.65
+X-stable-base: Linux 5.15.141
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: RZV342VND6F45KK2Y2B6N2MQ4EE6ZFIU
-X-Message-ID-Hash: RZV342VND6F45KK2Y2B6N2MQ4EE6ZFIU
+Message-ID-Hash: 6HQJVZIZGEQZSOWC7IK3Q5SGFHSIQAGC
+X-Message-ID-Hash: 6HQJVZIZGEQZSOWC7IK3Q5SGFHSIQAGC
 X-MailFrom: sashal@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -88,8 +89,9 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RZV342VND6F45KK2Y2B6N2MQ4EE6ZFIU/>
-List-Archive: <>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6HQJVZIZGEQZSOWC7IK3Q5SGFHSIQAGC/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
