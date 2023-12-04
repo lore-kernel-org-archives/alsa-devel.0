@@ -4,84 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5F72FC10F04
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 Dec 2023 12:48:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DEED3C4167B
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 Dec 2023 12:48:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 13AEE827;
-	Mon,  4 Dec 2023 13:48:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 13AEE827
+	by alsa0.perex.cz (Postfix) with ESMTPS id 24799DF2;
+	Mon,  4 Dec 2023 13:48:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 24799DF2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1701694110;
-	bh=gwEACH/aMrwkoIBjPUrdeotQmFvpJYGpN56GuamW+G8=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=tq1zx6gMNmwB/LummZss4fdnidi9EWg3zC2jk8wZXkDybjghd6UXY8yFgVTkUeV9Y
-	 wkaG5OmmSIUO2QRaV3e8d2hSo6Rzc2Ie6iSkXw7xi8J5iNca1aQbaHq5pcEiz7UklA
-	 J/7VEBvg0K3MTaWIwZN2TVOtDgEwv06TR5KK7DLc=
+	s=default; t=1701694121;
+	bh=JxFYr8SCaEU/fylo40wqLpp1UbL6/ukff20ogpJB4sA=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=BGVbJzNDEH0TuTpmtnwfUk4mSm2M+U0Say2fq8fs/l5s/id58DbYt0dLBF+uIj3ol
+	 ivug0YvidpWCDsMZakDnR3IKV2hcFO7gCVG5eETCcc2WhIcNIXnd0ziwcjD5g1cKJ+
+	 Cr+BYM9r5Hat//aHgTytdvgnT7VOscwsEDNFaE0Y=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4E5A2F80589; Mon,  4 Dec 2023 13:47:56 +0100 (CET)
+	id 838F9F805AB; Mon,  4 Dec 2023 13:48:06 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id CAD6CF80587;
-	Mon,  4 Dec 2023 13:47:55 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 13006F8057E;
+	Mon,  4 Dec 2023 13:48:06 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 777B5F8024E; Mon,  4 Dec 2023 13:47:51 +0100 (CET)
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com
- [IPv6:2a00:1450:4864:20::529])
+	id 58DB1F805A0; Mon,  4 Dec 2023 13:48:01 +0100 (CET)
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com
+ [IPv6:2a00:1450:4864:20::531])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 45456F800AC
+	by alsa1.perex.cz (Postfix) with ESMTPS id D58E8F8057E
 	for <alsa-devel@alsa-project.org>; Mon,  4 Dec 2023 13:47:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 45456F800AC
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D58E8F8057E
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=sXBNAyvc
-Received: by mail-ed1-x529.google.com with SMTP id
- 4fb4d7f45d1cf-54c846da5e9so1632561a12.3
+ header.s=google header.b=qYXz9cY6
+Received: by mail-ed1-x531.google.com with SMTP id
+ 4fb4d7f45d1cf-54ca339ae7aso1771832a12.3
         for <alsa-devel@alsa-project.org>;
- Mon, 04 Dec 2023 04:47:42 -0800 (PST)
+ Mon, 04 Dec 2023 04:47:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701694062; x=1702298862;
+        d=linaro.org; s=google; t=1701694061; x=1702298861;
  darn=alsa-project.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+ziVbN5ZTP69p6FxRTQ/DrNWjlcr9menHHHhzgnVhU0=;
-        b=sXBNAyvcuy07ld7Y3n6jAF0Fk1SdoKw9SLUhZ/pzUsXSEgHxFDvV4pbOtBgRafDILS
-         9aebF0n0R5n652ASkFrvUniVfhIs8TdWsCm1zAqGc0jMqw/YcgPFoRaO0lY6j8uH04oI
-         UYDHycZZ4Onv3eKg0S6Bd2NTqeuaeNE3TM/bbqlqgVBy6IY/44x6Fqrk+qM1158bD0EW
-         M+/QfFGVmu9Wc/F6cRKWZoGtN76q0VMrd/e+4Lf90LFyltAy3/n18pzRr3YxPYEpvqv2
-         vY9L20aUohrsCzaG829pWeUhJkbBsZ1jctkVxJZc6uYO+NHAvQ9IHpiXbzcoCY0RNl8X
-         6FpA==
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=/S3g4FV/iGDfW3ps7M4rheJELxKDhQrVaKwMBGZuxiY=;
+        b=qYXz9cY6n1dPNEJ82ffz8fmC2P5u7rLly5BsiU44u9BHHk4YI2pT85FJqmsYe0vH4w
+         /b3NBSX5+usVn3w3CKbAyKYpaj9xCw+k+p65i6qSTo8EFFOJ23Oy57k+gllbUzPe7LPZ
+         QGoTEsJRKlzyYtT0LCqBUpTxaLeKEzKLn6V6MwV4S4g+c7ePvMst1SqmgwBqmCT6owm6
+         Zz7zF+/m3nFPISftoNONIhCNEZvj7oK58nAD+YpF6i92Dj2dB2v9zobfDWnGr8d7V33y
+         PukxvZJn42lOU8pYEotaslxBCdQjMRoaFnPlWNiHeBV6qAzb91vxEAup/4s88MsrLZjj
+         oFdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701694062; x=1702298862;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+ziVbN5ZTP69p6FxRTQ/DrNWjlcr9menHHHhzgnVhU0=;
-        b=TPlz2TECq8jGtTKgizYmSaMp3K9ncX8yRTZtcE+L1caNy17B4IjNzM4RpBi+UYrH4E
-         Zfbo3vasTGH8lEMk3QHykVdtjFxmsK6x+dZpo8pkyGSl/3kpMrkxRZuuARiYb8wmXXgz
-         NjZ2/UQRWmcjUBEzcCGdCF6V4E466U8bivPpwQE9AFwieoM7aCRnoa5nyvb49RfmmRix
-         dddex/U8sGdRbL6kzSfC0pcptbCxqevO4GVfK7pKLxZZLo2uVBR2pPTnwmCOrAwrAJDy
-         03+dAn4IHpEz/Osvpa1Gwh5gsx+0Z0HGNP9METvG0hRpr1gCJgKnSXJTwpbdw1LmK+Bs
-         lqQw==
-X-Gm-Message-State: AOJu0YyX58UGrI7x5S2vNpqz5AGycWhLBVYFVMzrD7Lu+EsO2WHrGIOX
-	fyzDrDvRTM82/aDVMB+Ng+DkBQ==
+        d=1e100.net; s=20230601; t=1701694061; x=1702298861;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/S3g4FV/iGDfW3ps7M4rheJELxKDhQrVaKwMBGZuxiY=;
+        b=CUJuapK2ck8IeKi1355Zl5OtUt1Zd/Cv6CXar+erWdrj3oYhHERIhMrW0e4C4ijeAL
+         9wkJ0ixYN8VD+MsED0xMMMczGRG2iP/DHNj4EzS7GG0jg1nzd/v0H2FHS5S+mLP67zZB
+         XrWPp1iHLX9RihOXi8HzFKaQHkUtsFLRho6qN1X7fk2h2qxlu3CM/3I1+ka/E7pa0h0/
+         uVBZAGvVsqS3vlqlbhJbmFIu2Zbuf/Ygdjv2C/hD60kJ1cmQi30nxh/175xjg6KPhNS+
+         wSm7NYyapSE4cL2bPncQGby7SEzqrW0a78QbAnGa7bxt+UuGzOXt5HXfOsAO3CbOUS3e
+         Fftw==
+X-Gm-Message-State: AOJu0YxcUfwIf3YSjkDHwapM6mJH2pAFq6Yt7ImZEwTpTFYc8UF01QKT
+	gh2315QmBpOg9sDvi6PObQ/sSA==
 X-Google-Smtp-Source: 
- AGHT+IHApXDdpr226FRyb9j61M1tzyPuEc1Ds/nq5f9VgF00NIL9sLCBQAy4dDG6sIZWA3NbhrjkNA==
-X-Received: by 2002:a50:d59a:0:b0:54c:4837:903c with SMTP id
- v26-20020a50d59a000000b0054c4837903cmr3836618edi.52.1701694062023;
-        Mon, 04 Dec 2023 04:47:42 -0800 (PST)
+ AGHT+IF7lYKcq8TAJsw65A/PZFXqqONqGeNcKTt6yJrGmPFcJBo/4G1hXhQpgMC4aF1Y++2UOozUiA==
+X-Received: by 2002:a50:d799:0:b0:54c:4837:a665 with SMTP id
+ w25-20020a50d799000000b0054c4837a665mr2965090edi.82.1701694060814;
+        Mon, 04 Dec 2023 04:47:40 -0800 (PST)
 Received: from localhost.localdomain ([5.133.47.210])
         by smtp.gmail.com with ESMTPSA id
- dc15-20020a056402310f00b0054ced65bd26sm457017edb.41.2023.12.04.04.47.40
+ dc15-20020a056402310f00b0054ced65bd26sm457017edb.41.2023.12.04.04.47.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Dec 2023 04:47:41 -0800 (PST)
+        Mon, 04 Dec 2023 04:47:40 -0800 (PST)
 From: srinivas.kandagatla@linaro.org
 To: broonie@kernel.org,
 	alsa-devel@alsa-project.org
@@ -91,16 +89,14 @@ Cc: perex@perex.cz,
 	linux-kernel@vger.kernel.org,
 	johan+linaro@kernel.org,
 	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH 1/2] ASoC: ops: add correct range check for limiting volume
-Date: Mon,  4 Dec 2023 12:47:35 +0000
-Message-Id: <20231204124736.132185-2-srinivas.kandagatla@linaro.org>
+Subject: [PATCH 0/2] ASoC: qcom: Limit Digital gains on speaker
+Date: Mon,  4 Dec 2023 12:47:34 +0000
+Message-Id: <20231204124736.132185-1-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231204124736.132185-1-srinivas.kandagatla@linaro.org>
-References: <20231204124736.132185-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: VYRGQV63PEOPVL5LSHNLJ4RK6CLD3OLF
-X-Message-ID-Hash: VYRGQV63PEOPVL5LSHNLJ4RK6CLD3OLF
+Message-ID-Hash: PNQYQBLADHGEKSS2DIUSIK6UQJEUAQZ6
+X-Message-ID-Hash: PNQYQBLADHGEKSS2DIUSIK6UQJEUAQZ6
 X-MailFrom: srinivas.kandagatla@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -113,7 +109,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VYRGQV63PEOPVL5LSHNLJ4RK6CLD3OLF/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PNQYQBLADHGEKSS2DIUSIK6UQJEUAQZ6/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -124,29 +120,25 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-Volume can have ranges that start with negative values, ex: -84dB to
-+40dB. Apply correct range check in snd_soc_limit_volume before setting
-the platform_max. Without this patch, for example setting a 0dB limit on
-a volume range of -84dB to +40dB would fail.
+Limit the speaker digital gains to 0dB so that the users will not damage them.
+Currently there is a limit in UCM, but this does not stop the user form
+changing the digital gains from command line. So limit this in driver
+which makes the speakers more safer without active speaker protection in
+place.
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
- sound/soc/soc-ops.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Apart from this there is also a range check fix in snd_soc_limit_volume
+to allow setting this limit correctly.
 
-diff --git a/sound/soc/soc-ops.c b/sound/soc/soc-ops.c
-index 55b009d3c681..2d25748ca706 100644
---- a/sound/soc/soc-ops.c
-+++ b/sound/soc/soc-ops.c
-@@ -661,7 +661,7 @@ int snd_soc_limit_volume(struct snd_soc_card *card,
- 	kctl = snd_soc_card_get_kcontrol(card, name);
- 	if (kctl) {
- 		struct soc_mixer_control *mc = (struct soc_mixer_control *)kctl->private_value;
--		if (max <= mc->max) {
-+		if (max <= mc->max - mc->min) {
- 			mc->platform_max = max;
- 			ret = 0;
- 		}
+Tested on Lenovo X13s.
+
+Srinivas Kandagatla (2):
+  ASoC: ops: add correct range check for limiting volume
+  ASoC: qcom: sc8280xp: Limit speaker digital volumes
+
+ sound/soc/qcom/sc8280xp.c | 17 +++++++++++++++++
+ sound/soc/soc-ops.c       |  2 +-
+ 2 files changed, 18 insertions(+), 1 deletion(-)
+
 -- 
 2.25.1
 
