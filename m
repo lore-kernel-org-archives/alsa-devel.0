@@ -4,55 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 45163C07E97
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Dec 2023 15:22:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 81EC6C4167B
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Dec 2023 15:22:51 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 516DCE73;
-	Tue,  5 Dec 2023 16:22:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 516DCE73
+	by alsa0.perex.cz (Postfix) with ESMTPS id B771FE7D;
+	Tue,  5 Dec 2023 16:22:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B771FE7D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1701789756;
-	bh=+gxUCbKhHi1k9vzOs+nZ5DmTzSru3Y+rInUAtgzYBRo=;
+	s=default; t=1701789769;
+	bh=t5cLOrKtQA1zxzfyiGE5TYFwhFUTpSEQ1tf8ek9C1jM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=L14p8FpuaYZZvzpcnnHodgiLo0rb7wZ0fp1Fou8ngQGpf6CiIq+bN3IuxR77U/jys
-	 TnlrLT1B+8xP73Eq44L3hOeRXqDAkL4V2N3qyGf8wRjk7S0GE+YIUBRPpFhfH+OKij
-	 hfJsPoMfbS1yZ3YqG5ryFzA1qUsBrQTFusKGmdEg=
+	b=VgcIq7Rued5+W7Vw55qY12uA+Tl2iEozfXhOK9qcapHBdoiILnkqdeNXxWVNr+/5v
+	 kSpDxMdAKmzFIJMyx6EqFGuRDku/TccbQCp8zLzJpc6NXdBONc5Dj0T0rJkzuExC4L
+	 ankMo9p5nIgEoYpL6bfjNZ5D8Cg9j5T7p9CWOKDk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7D056F805E9; Tue,  5 Dec 2023 16:21:47 +0100 (CET)
+	id 8C588F8060E; Tue,  5 Dec 2023 16:21:51 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 54302F805C7;
-	Tue,  5 Dec 2023 16:21:47 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C2F95F80605;
+	Tue,  5 Dec 2023 16:21:50 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D0488F80564; Tue,  5 Dec 2023 16:21:40 +0100 (CET)
+	id 08F8DF805B4; Tue,  5 Dec 2023 16:21:44 +0100 (CET)
 Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net
- [217.70.183.194])
+ [IPv6:2001:4b98:dc4:8::222])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 48B9CF8024E
-	for <alsa-devel@alsa-project.org>; Tue,  5 Dec 2023 16:21:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 48B9CF8024E
+	by alsa1.perex.cz (Postfix) with ESMTPS id CFACFF800F5
+	for <alsa-devel@alsa-project.org>; Tue,  5 Dec 2023 16:21:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CFACFF800F5
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=QfHYP7YA
-Received: by mail.gandi.net (Postfix) with ESMTPA id 49D614000D;
-	Tue,  5 Dec 2023 15:21:27 +0000 (UTC)
+ header.s=gm1 header.b=aLiE+WIn
+Received: by mail.gandi.net (Postfix) with ESMTPA id 5018140010;
+	Tue,  5 Dec 2023 15:21:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1701789688;
+	t=1701789690;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=lu03dEE+d4O3eVLkV3wm5Z7ZRpmxelDisaYnU0Q3dCo=;
-	b=QfHYP7YAsbfIrnfYD+YYv5ttYiAL9xfCYIBW+yUepDsvEeHnnyd+5Tbqh+vCjxQNLNYMnl
-	MyZjFaaQOwg/7RH9zcYAJlzBdkIEstrXKURDTLPe3FlJOMO38uj9daX1/svStUi1d53rLy
-	SI0GD61JdB8mfRBeXnurjR5mzW94TmarXkiexSQ+hNqGqgurMoZAZ1qWnyedRABe9AIt5W
-	ExiwptsqJEOMnhH+XFE1K2wFKtuP2rRlTPPLSuzzOp9X1teiz9qBt1xJrGriGaKv0iu6em
-	qf8r5iICCk8PSthz/YfGhxC3Uz1ziIKDvmhMlXP3x//qSXXrt1Wo0VcNfq6tlg==
+	bh=oTsZ03wdLe2jX7b5CbBFQq2qQh274AFtQjsKmPdMnuY=;
+	b=aLiE+WIn02wlJInTUmiuNrEeMsfvNJmP7q6RldXeW/G25MZb729t/cgIKuJGxVcNsU3gKt
+	yvZzMFxGU9YZnZlfEWiKTD2RNIxQBJuokUuPgJ53ASN2X9Xw96NIn4WbdG1dph+GCwb2kK
+	ppWks68v0d9y3Z3jSX5BA89LGb3MeRs4ewEchlwZbuP87dhRmffbmoxQHRNLY4oZcY5RJS
+	WCl9khI+xSADBPielBK1VtS5RH0IhUSdhUS+WptRYPunN0Yhjkg/0bqdgOyaCwOsIPxy8O
+	IIXvHo61rc+Cb2+RlLo/yINWTHchEu1t/jJ03IIwDhkW8fZ3Y/+iVpp0nYyJbA==
 From: Herve Codina <herve.codina@bootlin.com>
 To: Herve Codina <herve.codina@bootlin.com>,
 	Qiang Zhao <qiang.zhao@nxp.com>,
@@ -72,20 +72,19 @@ Cc: Arnd Bergmann <arnd@arndb.de>,
 	linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
 	alsa-devel@alsa-project.org,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	stable@vger.kernel.org
-Subject: [PATCH v2 02/17] soc: fsl: cpm1: qmc: Fix __iomem addresses
- declaration
-Date: Tue,  5 Dec 2023 16:20:59 +0100
-Message-ID: <20231205152116.122512-3-herve.codina@bootlin.com>
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: [PATCH v2 04/17] soc: fsl: cpm1: qmc: Extend the API to provide Rx
+ status
+Date: Tue,  5 Dec 2023 16:21:01 +0100
+Message-ID: <20231205152116.122512-5-herve.codina@bootlin.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231205152116.122512-1-herve.codina@bootlin.com>
 References: <20231205152116.122512-1-herve.codina@bootlin.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-GND-Sasl: herve.codina@bootlin.com
-Message-ID-Hash: EHGS7CMV5XSFOSVKLLV4CLEKRGMPSLPT
-X-Message-ID-Hash: EHGS7CMV5XSFOSVKLLV4CLEKRGMPSLPT
+Message-ID-Hash: VYOPYVERJAX2Y4YQ5FUTSQ7JLDLRB4BV
+X-Message-ID-Hash: VYOPYVERJAX2Y4YQ5FUTSQ7JLDLRB4BV
 X-MailFrom: herve.codina@bootlin.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -98,159 +97,149 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/EHGS7CMV5XSFOSVKLLV4CLEKRGMPSLPT/>
-List-Archive: <>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VYOPYVERJAX2Y4YQ5FUTSQ7JLDLRB4BV/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Running sparse (make C=1) on qmc.c raises a lot of warning such as:
-  ...
-  warning: incorrect type in assignment (different address spaces)
-     expected struct cpm_buf_desc [usertype] *[noderef] __iomem bd
-     got struct cpm_buf_desc [noderef] [usertype] __iomem *txbd_free
-  ...
+In HDLC mode, some status flags related to the data read transfer can be
+set by the hardware and need to be known by a QMC consumer for further
+analysis.
 
-Indeed, some variable were declared 'type *__iomem var' instead of
-'type __iomem *var'.
+Extend the API in order to provide these transfer status flags at the
+read complete() call.
 
-Use the correct declaration to remove these warnings.
+In TRANSPARENT mode, these flags have no meaning. Keep only one read
+complete() API and update the consumers working in transparent mode.
+In this case, the newly introduced flags parameter is simply unused.
 
-Fixes: 3178d58e0b97 ("soc: fsl: cpm1: Add support for QMC")
-Cc: stable@vger.kernel.org
 Signed-off-by: Herve Codina <herve.codina@bootlin.com>
 Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
- drivers/soc/fsl/qe/qmc.c | 34 +++++++++++++++++-----------------
- 1 file changed, 17 insertions(+), 17 deletions(-)
+ drivers/soc/fsl/qe/qmc.c      | 29 +++++++++++++++++++++++++----
+ include/soc/fsl/qe/qmc.h      | 15 ++++++++++++++-
+ sound/soc/fsl/fsl_qmc_audio.c |  2 +-
+ 3 files changed, 40 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/soc/fsl/qe/qmc.c b/drivers/soc/fsl/qe/qmc.c
-index 92ec76c03965..3f3de1351c96 100644
+index 2312152a44b3..4b4832d93c9b 100644
 --- a/drivers/soc/fsl/qe/qmc.c
 +++ b/drivers/soc/fsl/qe/qmc.c
-@@ -175,7 +175,7 @@ struct qmc_chan {
- 	struct list_head list;
- 	unsigned int id;
- 	struct qmc *qmc;
--	void *__iomem s_param;
-+	void __iomem *s_param;
- 	enum qmc_mode mode;
- 	u64	tx_ts_mask;
- 	u64	rx_ts_mask;
-@@ -203,9 +203,9 @@ struct qmc_chan {
- struct qmc {
- 	struct device *dev;
- 	struct tsa_serial *tsa_serial;
--	void *__iomem scc_regs;
--	void *__iomem scc_pram;
--	void *__iomem dpram;
-+	void __iomem *scc_regs;
-+	void __iomem *scc_pram;
-+	void __iomem *dpram;
- 	u16 scc_pram_offset;
- 	cbd_t __iomem *bd_table;
- 	dma_addr_t bd_dma_addr;
-@@ -218,37 +218,37 @@ struct qmc {
- 	struct qmc_chan *chans[64];
+@@ -166,7 +166,7 @@
+ struct qmc_xfer_desc {
+ 	union {
+ 		void (*tx_complete)(void *context);
+-		void (*rx_complete)(void *context, size_t length);
++		void (*rx_complete)(void *context, size_t length, unsigned int flags);
+ 	};
+ 	void *context;
  };
- 
--static inline void qmc_write16(void *__iomem addr, u16 val)
-+static inline void qmc_write16(void __iomem *addr, u16 val)
- {
- 	iowrite16be(val, addr);
+@@ -421,7 +421,8 @@ static void qmc_chan_write_done(struct qmc_chan *chan)
  }
  
--static inline u16 qmc_read16(void *__iomem addr)
-+static inline u16 qmc_read16(void __iomem *addr)
- {
- 	return ioread16be(addr);
- }
- 
--static inline void qmc_setbits16(void *__iomem addr, u16 set)
-+static inline void qmc_setbits16(void __iomem *addr, u16 set)
- {
- 	qmc_write16(addr, qmc_read16(addr) | set);
- }
- 
--static inline void qmc_clrbits16(void *__iomem addr, u16 clr)
-+static inline void qmc_clrbits16(void __iomem *addr, u16 clr)
- {
- 	qmc_write16(addr, qmc_read16(addr) & ~clr);
- }
- 
--static inline void qmc_write32(void *__iomem addr, u32 val)
-+static inline void qmc_write32(void __iomem *addr, u32 val)
- {
- 	iowrite32be(val, addr);
- }
- 
--static inline u32 qmc_read32(void *__iomem addr)
-+static inline u32 qmc_read32(void __iomem *addr)
- {
- 	return ioread32be(addr);
- }
- 
--static inline void qmc_setbits32(void *__iomem addr, u32 set)
-+static inline void qmc_setbits32(void __iomem *addr, u32 set)
- {
- 	qmc_write32(addr, qmc_read32(addr) | set);
- }
-@@ -318,7 +318,7 @@ int qmc_chan_write_submit(struct qmc_chan *chan, dma_addr_t addr, size_t length,
+ int qmc_chan_read_submit(struct qmc_chan *chan, dma_addr_t addr, size_t length,
+-			 void (*complete)(void *context, size_t length), void *context)
++			 void (*complete)(void *context, size_t length, unsigned int flags),
++			 void *context)
  {
  	struct qmc_xfer_desc *xfer_desc;
  	unsigned long flags;
--	cbd_t *__iomem bd;
-+	cbd_t __iomem *bd;
- 	u16 ctrl;
+@@ -454,6 +455,10 @@ int qmc_chan_read_submit(struct qmc_chan *chan, dma_addr_t addr, size_t length,
+ 	xfer_desc->rx_complete = complete;
+ 	xfer_desc->context = context;
+ 
++	/* Clear previous status flags */
++	ctrl &= ~(QMC_BD_RX_L | QMC_BD_RX_F | QMC_BD_RX_LG | QMC_BD_RX_NO |
++		  QMC_BD_RX_AB | QMC_BD_RX_CR);
++
+ 	/* Activate the descriptor */
+ 	ctrl |= (QMC_BD_RX_E | QMC_BD_RX_UB);
+ 	wmb(); /* Be sure to flush data before descriptor activation */
+@@ -485,7 +490,7 @@ EXPORT_SYMBOL(qmc_chan_read_submit);
+ 
+ static void qmc_chan_read_done(struct qmc_chan *chan)
+ {
+-	void (*complete)(void *context, size_t size);
++	void (*complete)(void *context, size_t size, unsigned int flags);
+ 	struct qmc_xfer_desc *xfer_desc;
+ 	unsigned long flags;
+ 	cbd_t __iomem *bd;
+@@ -527,7 +532,23 @@ static void qmc_chan_read_done(struct qmc_chan *chan)
+ 
+ 		if (complete) {
+ 			spin_unlock_irqrestore(&chan->rx_lock, flags);
+-			complete(context, datalen);
++
++			/*
++			 * Avoid conversion between internal hardware flags and
++			 * the software API flags.
++			 * -> Be sure that the software API flags are consistent
++			 *    with the hardware flags
++			 */
++			BUILD_BUG_ON(QMC_RX_FLAG_HDLC_LAST  != QMC_BD_RX_L);
++			BUILD_BUG_ON(QMC_RX_FLAG_HDLC_FIRST != QMC_BD_RX_F);
++			BUILD_BUG_ON(QMC_RX_FLAG_HDLC_OVF   != QMC_BD_RX_LG);
++			BUILD_BUG_ON(QMC_RX_FLAG_HDLC_UNA   != QMC_BD_RX_NO);
++			BUILD_BUG_ON(QMC_RX_FLAG_HDLC_ABORT != QMC_BD_RX_AB);
++			BUILD_BUG_ON(QMC_RX_FLAG_HDLC_CRC   != QMC_BD_RX_CR);
++
++			complete(context, datalen,
++				 ctrl & (QMC_BD_RX_L | QMC_BD_RX_F | QMC_BD_RX_LG |
++					 QMC_BD_RX_NO | QMC_BD_RX_AB | QMC_BD_RX_CR));
+ 			spin_lock_irqsave(&chan->rx_lock, flags);
+ 		}
+ 
+diff --git a/include/soc/fsl/qe/qmc.h b/include/soc/fsl/qe/qmc.h
+index 3c61a50d2ae2..6f1d6cebc9fe 100644
+--- a/include/soc/fsl/qe/qmc.h
++++ b/include/soc/fsl/qe/qmc.h
+@@ -9,6 +9,7 @@
+ #ifndef __SOC_FSL_QMC_H__
+ #define __SOC_FSL_QMC_H__
+ 
++#include <linux/bits.h>
+ #include <linux/types.h>
+ 
+ struct device_node;
+@@ -56,8 +57,20 @@ int qmc_chan_set_param(struct qmc_chan *chan, const struct qmc_chan_param *param
+ int qmc_chan_write_submit(struct qmc_chan *chan, dma_addr_t addr, size_t length,
+ 			  void (*complete)(void *context), void *context);
+ 
++/* Flags available (ORed) for read complete() flags parameter in HDLC mode.
++ * No flags are available in transparent mode and the read complete() flags
++ * parameter has no meaning in transparent mode.
++ */
++#define QMC_RX_FLAG_HDLC_LAST	BIT(11) /* Last in frame */
++#define QMC_RX_FLAG_HDLC_FIRST	BIT(10) /* First in frame */
++#define QMC_RX_FLAG_HDLC_OVF	BIT(5)  /* Data overflow */
++#define QMC_RX_FLAG_HDLC_UNA	BIT(4)  /* Unaligned (ie. bits received not multiple of 8) */
++#define QMC_RX_FLAG_HDLC_ABORT	BIT(3)  /* Received an abort sequence (seven consecutive ones) */
++#define QMC_RX_FLAG_HDLC_CRC	BIT(2)  /* CRC error */
++
+ int qmc_chan_read_submit(struct qmc_chan *chan, dma_addr_t addr, size_t length,
+-			 void (*complete)(void *context, size_t length),
++			 void (*complete)(void *context, size_t length,
++					  unsigned int flags),
+ 			 void *context);
+ 
+ #define QMC_CHAN_READ  (1<<0)
+diff --git a/sound/soc/fsl/fsl_qmc_audio.c b/sound/soc/fsl/fsl_qmc_audio.c
+index 56d6b0b039a2..bfaaa451735b 100644
+--- a/sound/soc/fsl/fsl_qmc_audio.c
++++ b/sound/soc/fsl/fsl_qmc_audio.c
+@@ -99,7 +99,7 @@ static void qmc_audio_pcm_write_complete(void *context)
+ 	snd_pcm_period_elapsed(prtd->substream);
+ }
+ 
+-static void qmc_audio_pcm_read_complete(void *context, size_t length)
++static void qmc_audio_pcm_read_complete(void *context, size_t length, unsigned int flags)
+ {
+ 	struct qmc_dai_prtd *prtd = context;
  	int ret;
- 
-@@ -374,7 +374,7 @@ static void qmc_chan_write_done(struct qmc_chan *chan)
- 	void (*complete)(void *context);
- 	unsigned long flags;
- 	void *context;
--	cbd_t *__iomem bd;
-+	cbd_t __iomem *bd;
- 	u16 ctrl;
- 
- 	/*
-@@ -425,7 +425,7 @@ int qmc_chan_read_submit(struct qmc_chan *chan, dma_addr_t addr, size_t length,
- {
- 	struct qmc_xfer_desc *xfer_desc;
- 	unsigned long flags;
--	cbd_t *__iomem bd;
-+	cbd_t __iomem *bd;
- 	u16 ctrl;
- 	int ret;
- 
-@@ -488,7 +488,7 @@ static void qmc_chan_read_done(struct qmc_chan *chan)
- 	void (*complete)(void *context, size_t size);
- 	struct qmc_xfer_desc *xfer_desc;
- 	unsigned long flags;
--	cbd_t *__iomem bd;
-+	cbd_t __iomem *bd;
- 	void *context;
- 	u16 datalen;
- 	u16 ctrl;
-@@ -663,7 +663,7 @@ static void qmc_chan_reset_rx(struct qmc_chan *chan)
- {
- 	struct qmc_xfer_desc *xfer_desc;
- 	unsigned long flags;
--	cbd_t *__iomem bd;
-+	cbd_t __iomem *bd;
- 	u16 ctrl;
- 
- 	spin_lock_irqsave(&chan->rx_lock, flags);
-@@ -694,7 +694,7 @@ static void qmc_chan_reset_tx(struct qmc_chan *chan)
- {
- 	struct qmc_xfer_desc *xfer_desc;
- 	unsigned long flags;
--	cbd_t *__iomem bd;
-+	cbd_t __iomem *bd;
- 	u16 ctrl;
- 
- 	spin_lock_irqsave(&chan->tx_lock, flags);
 -- 
 2.43.0
 
