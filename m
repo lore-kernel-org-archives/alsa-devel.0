@@ -4,55 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BCE2FC4167B
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Dec 2023 15:24:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A5BDFC4167B
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Dec 2023 15:25:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1381CE7F;
-	Tue,  5 Dec 2023 16:24:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1381CE7F
+	by alsa0.perex.cz (Postfix) with ESMTPS id E3325E76;
+	Tue,  5 Dec 2023 16:25:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E3325E76
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1701789896;
-	bh=3X8GjzfgDf3o4iT/NE36c+1ElL9LcAE1S4eX7SMtaZI=;
+	s=default; t=1701789913;
+	bh=xvHOF/YEB3nJV2QutFxkDIzcxAMoNRWrPEwSp+iy8Nk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=OxQX0wjZXCHV5uTIomzQMxBwAng0X9nh0NKjEVgYhKjmPxD32CZBUEx2e77inF+2B
-	 WRMYEgiGCU2kFOTTAEdBXaAHaG+cd8ulxNfCgkTJ7QmkYQue5lutfxyHlxHBnITqH5
-	 eVyXHHOwBu+CfUw8xbBlsz9ICHxIfocZh8TuDClk=
+	b=KBkoKZ6SimylSFUzgjEIjsT/XBz5s95qZbUx/6VZMd62AdhRIsIY5DXbH2H8mEF2w
+	 lm+vwHphNY4DHtXJo7DtupEnM7AxPuGWSIox/pq++dk1oO1nbue6uNRAmZMGo4Ggfh
+	 PkfQlDsYmI1q2vo1fBDg0vLdjbLU9D3Z3jE/tLfI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C2C6CF80736; Tue,  5 Dec 2023 16:22:14 +0100 (CET)
+	id D67B4F80787; Tue,  5 Dec 2023 16:22:19 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 802DDF8056F;
-	Tue,  5 Dec 2023 16:22:13 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A6873F805A8;
+	Tue,  5 Dec 2023 16:22:18 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 812BDF80578; Tue,  5 Dec 2023 16:22:07 +0100 (CET)
+	id EA59FF806E0; Tue,  5 Dec 2023 16:22:10 +0100 (CET)
 Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net
- [217.70.183.194])
+ [IPv6:2001:4b98:dc4:8::222])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 394F0F8024E
-	for <alsa-devel@alsa-project.org>; Tue,  5 Dec 2023 16:21:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 394F0F8024E
+	by alsa1.perex.cz (Postfix) with ESMTPS id C7760F80166
+	for <alsa-devel@alsa-project.org>; Tue,  5 Dec 2023 16:21:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C7760F80166
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=mCnGrQ06
-Received: by mail.gandi.net (Postfix) with ESMTPA id 34AB34001F;
-	Tue,  5 Dec 2023 15:21:39 +0000 (UTC)
+ header.s=gm1 header.b=bPHz/aVw
+Received: by mail.gandi.net (Postfix) with ESMTPA id 3195C40013;
+	Tue,  5 Dec 2023 15:21:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1701789700;
+	t=1701789691;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=DSfFIo0PTo+iFIfEoPmWha/vh5mQYCTVDevXwJNb2wI=;
-	b=mCnGrQ06qMroufrsKXriV266bj5yqAb/KYTe8dE5jT5weO/LnHKF+FRUWCYL9KbeEffvS4
-	/OqaUtEeiQ7h+c4u3Y3sGTnpWy5wIz3ml7NCm0fmeeMqdiFEXof9uoN2P6kmhVOGqMyU6l
-	7n7nddoMkrYboCcUS9hW8CReJtttap9vxtY3rnPBHmyZVcDIXwKP5ejYfA2GwOAowGyOkj
-	Fsl9IYu0/qHjyJ/x5LXrIAqWYAOBlqsiI6vVsmUgMpX8N3h9cJCurlLwcJHRwix6pC21Lw
-	mqETpKcFXVgbjK4GA3LJiIlQavDjq7vKMfl4JVl6aTF/sVP7kVDmm5ExXqL1pA==
+	bh=fr/+FFqEM69Z2xWv6TIr9xG1wPePBXpVB6jujvPjf7w=;
+	b=bPHz/aVwC/l9kXBOINLG0e+ZPXA9XHiKjq0rnAjQ2+3dlqMaRErm0OukHPYatzh1mF5cuT
+	xUOWmmJvUJcMfn0vtmLYO7kmuYgxcR9gL5qj3GfUHzOZdBfBA9n5zsgQzY2OHZ+9PaXB5l
+	3NHkcCug1z3oVRxFjDCsWNUHEDRomYRB2+/ExIpGqEyIiNOfxwzJimFlw2p52LZ3517Zoy
+	lgV6itCytQqdL+PVPuZat9ohMt+yiEqmAOxnYfAJXzLbd2XiWwWFFUoEE0jKg13qzMUQXp
+	JLqNpqH1Ni6iD9zqObm+BzheDazJbmyHYobb7VddhIXrGjEu7bpDfVNDhw0Gew==
 From: Herve Codina <herve.codina@bootlin.com>
 To: Herve Codina <herve.codina@bootlin.com>,
 	Qiang Zhao <qiang.zhao@nxp.com>,
@@ -72,18 +72,20 @@ Cc: Arnd Bergmann <arnd@arndb.de>,
 	linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
 	alsa-devel@alsa-project.org,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: [PATCH v2 14/17] soc: fsl: cpm1: qmc: Introduce is_tsa_64rxtx flag
-Date: Tue,  5 Dec 2023 16:21:11 +0100
-Message-ID: <20231205152116.122512-15-herve.codina@bootlin.com>
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	Andrew Lunn <andrew@lunn.ch>
+Subject: [PATCH v2 05/17] soc: fsl: cpm1: qmc: Remove inline function
+ specifiers
+Date: Tue,  5 Dec 2023 16:21:02 +0100
+Message-ID: <20231205152116.122512-6-herve.codina@bootlin.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231205152116.122512-1-herve.codina@bootlin.com>
 References: <20231205152116.122512-1-herve.codina@bootlin.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-GND-Sasl: herve.codina@bootlin.com
-Message-ID-Hash: A5WENBFJIAVH3ET6KNAVB7A2BEUHPHZU
-X-Message-ID-Hash: A5WENBFJIAVH3ET6KNAVB7A2BEUHPHZU
+Message-ID-Hash: OGWE56R4JSFPLF4WZJKF5W4E7VK7O6RF
+X-Message-ID-Hash: OGWE56R4JSFPLF4WZJKF5W4E7VK7O6RF
 X-MailFrom: herve.codina@bootlin.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -96,7 +98,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/A5WENBFJIAVH3ET6KNAVB7A2BEUHPHZU/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OGWE56R4JSFPLF4WZJKF5W4E7VK7O6RF/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -105,57 +107,68 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-In order to support runtime timeslot route changes, some operations will
-be different according the routing table used (common Rx and Tx table or
-one table for Rx and one for Tx).
+The inline function specifier is present on some functions but it is
+better to let the compiler decide inlining or not these functions.
 
-The is_tsa_64rxtx flag is introduced to avoid extra computation to
-determine the table format each time we need it.
-It is set once at initialization.
+Remove inline specifiers.
 
+Fixes: 3178d58e0b97 ("soc: fsl: cpm1: Add support for QMC")
 Signed-off-by: Herve Codina <herve.codina@bootlin.com>
+Suggested-by: Andrew Lunn <andrew@lunn.ch>
 Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
- drivers/soc/fsl/qe/qmc.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/soc/fsl/qe/qmc.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/soc/fsl/qe/qmc.c b/drivers/soc/fsl/qe/qmc.c
-index 5ca4120779f8..e651b3bba1ca 100644
+index 4b4832d93c9b..27f2f16deac9 100644
 --- a/drivers/soc/fsl/qe/qmc.c
 +++ b/drivers/soc/fsl/qe/qmc.c
-@@ -216,6 +216,7 @@ struct qmc {
- 	u16 __iomem *int_curr;
- 	dma_addr_t int_dma_addr;
- 	size_t int_size;
-+	bool is_tsa_64rxtx;
- 	struct list_head chan_head;
+@@ -218,37 +218,37 @@ struct qmc {
  	struct qmc_chan *chans[64];
  };
-@@ -696,7 +697,7 @@ static int qmc_chan_setup_tsa(struct qmc_chan *chan, bool enable)
- 	 * Setup one common 64 entries table or two 32 entries (one for Tx
- 	 * and one for Tx) according to assigned TS numbers.
- 	 */
--	if (info.nb_tx_ts > 32 || info.nb_rx_ts > 32)
-+	if (chan->qmc->is_tsa_64rxtx)
- 		return qmc_chan_setup_tsa_64rxtx(chan, &info, enable);
  
- 	ret = qmc_chan_setup_tsa_32rx(chan, &info, enable);
-@@ -1053,6 +1054,7 @@ static int qmc_init_tsa_64rxtx(struct qmc *qmc, const struct tsa_serial_info *in
- 	 * Everything was previously checked, Tx and Rx related stuffs are
- 	 * identical -> Used Rx related stuff to build the table
- 	 */
-+	qmc->is_tsa_64rxtx = true;
+-static inline void qmc_write16(void __iomem *addr, u16 val)
++static void qmc_write16(void __iomem *addr, u16 val)
+ {
+ 	iowrite16be(val, addr);
+ }
  
- 	/* Invalidate all entries */
- 	for (i = 0; i < 64; i++)
-@@ -1081,6 +1083,7 @@ static int qmc_init_tsa_32rx_32tx(struct qmc *qmc, const struct tsa_serial_info
- 	 * Use a Tx 32 entries table and a Rx 32 entries table.
- 	 * Everything was previously checked.
- 	 */
-+	qmc->is_tsa_64rxtx = false;
+-static inline u16 qmc_read16(void __iomem *addr)
++static u16 qmc_read16(void __iomem *addr)
+ {
+ 	return ioread16be(addr);
+ }
  
- 	/* Invalidate all entries */
- 	for (i = 0; i < 32; i++) {
+-static inline void qmc_setbits16(void __iomem *addr, u16 set)
++static void qmc_setbits16(void __iomem *addr, u16 set)
+ {
+ 	qmc_write16(addr, qmc_read16(addr) | set);
+ }
+ 
+-static inline void qmc_clrbits16(void __iomem *addr, u16 clr)
++static void qmc_clrbits16(void __iomem *addr, u16 clr)
+ {
+ 	qmc_write16(addr, qmc_read16(addr) & ~clr);
+ }
+ 
+-static inline void qmc_write32(void __iomem *addr, u32 val)
++static void qmc_write32(void __iomem *addr, u32 val)
+ {
+ 	iowrite32be(val, addr);
+ }
+ 
+-static inline u32 qmc_read32(void __iomem *addr)
++static u32 qmc_read32(void __iomem *addr)
+ {
+ 	return ioread32be(addr);
+ }
+ 
+-static inline void qmc_setbits32(void __iomem *addr, u32 set)
++static void qmc_setbits32(void __iomem *addr, u32 set)
+ {
+ 	qmc_write32(addr, qmc_read32(addr) | set);
+ }
 -- 
 2.43.0
 
