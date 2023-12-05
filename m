@@ -4,55 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8C69AC4167B
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Dec 2023 15:23:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 610E5C4167B
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Dec 2023 15:23:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D1448DED;
-	Tue,  5 Dec 2023 16:23:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D1448DED
+	by alsa0.perex.cz (Postfix) with ESMTPS id 81698E87;
+	Tue,  5 Dec 2023 16:23:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 81698E87
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1701789818;
-	bh=Kf60//OOI6AQUKFmywF+vhlZBohqpeEpJQqpO/2IKME=;
+	s=default; t=1701789833;
+	bh=9DXQwJxumhm+EVCLgQWgLwWYoxNwPJAwIsdMkZ098Vc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=uaH8/9uT9jzW8HMRL5Svs/0oepUHOuxBxFg01euDE4HhYKZYZyz5BDO6rabJfAH8a
-	 roBHmeCKl0JP/AyQBpLuEjQNOoO+r7/iSYcMwD8cTiTVDARc1gQT94inNPGQDUtGGq
-	 AltPZn2K4ygupULbmtWIV4ZzPFhwLgt7IzPsF5uk=
+	b=TkJYSAawpf13tAu2BBP2iTomK0AVnKM6YxH9hN1EssQLOox0foX0goRbsp9NyufP5
+	 e9Os8e6IRksSVqnFgGAEwCfIG73FnvzipXZuh/4LhGuT7W2wJiuK/sKnSLWFLC/eJY
+	 efBIwDD8LDSFqMqrK4zidlOI5/7A5c5kh88cFN+4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7C8C1F8062F; Tue,  5 Dec 2023 16:22:00 +0100 (CET)
+	id 91826F80685; Tue,  5 Dec 2023 16:22:02 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B6757F80685;
-	Tue,  5 Dec 2023 16:21:59 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id AA702F806A6;
+	Tue,  5 Dec 2023 16:22:01 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 07A95F8060F; Tue,  5 Dec 2023 16:21:51 +0100 (CET)
+	id 4267BF80623; Tue,  5 Dec 2023 16:21:56 +0100 (CET)
 Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net
  [217.70.183.194])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 96930F802E8
-	for <alsa-devel@alsa-project.org>; Tue,  5 Dec 2023 16:21:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 96930F802E8
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9EA15F800AC
+	for <alsa-devel@alsa-project.org>; Tue,  5 Dec 2023 16:21:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9EA15F800AC
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=ouyRyNt5
-Received: by mail.gandi.net (Postfix) with ESMTPA id 8D73140019;
-	Tue,  5 Dec 2023 15:21:33 +0000 (UTC)
+ header.s=gm1 header.b=FBG8r0cJ
+Received: by mail.gandi.net (Postfix) with ESMTPA id 719364001C;
+	Tue,  5 Dec 2023 15:21:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1701789694;
+	t=1701789696;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=sDL7N04gw5BRlFHTIZAz5PXmdYE8Pno1RSYn/SHVcJM=;
-	b=ouyRyNt54e1mcTBloSV6JtW7i7S1zO4bPFu5CaE9zkCqiWEwSB8aE/OYMjkr2HOk3YEfeZ
-	PfsS4jNuAiPkRrxngxdXDUdyNzsr09awPpj8nQWGnaDsdpwelx8yv5dvE095/aklXHnABf
-	cPDMQvpQXS4H++q43Qyrdfmf2duFKkl4rIdE/AQEaVEN3MQBUwrMd9HLVVzwpZpvEOiEcF
-	ej/bCfR8iYqjbVX/9mKDqZn4akkPUDp/LZTW7lB7mwr3vRZ/vPOySHWhii0TTExInozMdS
-	kCBtNzNWSgC0oP8eXpicGjp6BoG1bUaOuVn+jGfe5eEgKQmspmCnisJ98QVLkQ==
+	bh=SyQZWf38Og5Y0/pf5oTDtok//mBEqzmwwSvCPagIUBQ=;
+	b=FBG8r0cJ4cSuCOfR8HlAXbtpyyfBpiimk6zTAC/iJCcfKMTLSFQw7dadW2l5TtL9k2OfMd
+	J5sGUlARGSn3tH0I4dgOa6bEi3X05MSyPDaOg0S8qIbOd3N6ceBjWTDRdHogWWSTow5oXJ
+	qZYAZXTBcVddg1xnaECUDwQOJewLA7kdz5ka6x8RovtXtBpUZWz2BbOxuB2GwmslrqRzK6
+	8N+w/Se3lAJGt4A0O7v9VINLwuOk053H48tz5jeiybde6SDAjzHDT4uUlmigulB/wxyqAX
+	fpxHikfOWA2/6n/fnONIWJN8U0WsEj6kQHf9g+98J7u31KyU4pmIr/GnBjEw3w==
 From: Herve Codina <herve.codina@bootlin.com>
 To: Herve Codina <herve.codina@bootlin.com>,
 	Qiang Zhao <qiang.zhao@nxp.com>,
@@ -73,18 +73,18 @@ Cc: Arnd Bergmann <arnd@arndb.de>,
 	linux-kernel@vger.kernel.org,
 	alsa-devel@alsa-project.org,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: [PATCH v2 08/17] soc: fsl: cpm1: qmc: Rename qmc_setup_tsa* to
- qmc_init_tsa*
-Date: Tue,  5 Dec 2023 16:21:05 +0100
-Message-ID: <20231205152116.122512-9-herve.codina@bootlin.com>
+Subject: [PATCH v2 10/17] soc: fsl: cpm1: qmc: Remove no more needed checks
+ from qmc_check_chans()
+Date: Tue,  5 Dec 2023 16:21:07 +0100
+Message-ID: <20231205152116.122512-11-herve.codina@bootlin.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231205152116.122512-1-herve.codina@bootlin.com>
 References: <20231205152116.122512-1-herve.codina@bootlin.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-GND-Sasl: herve.codina@bootlin.com
-Message-ID-Hash: Q7RD5HR6EQKVLIFN5YWH3EXARG5SYJRU
-X-Message-ID-Hash: Q7RD5HR6EQKVLIFN5YWH3EXARG5SYJRU
+Message-ID-Hash: AFLCNVTYC7WIZXK75EZQHX2DXPP3JR4D
+X-Message-ID-Hash: AFLCNVTYC7WIZXK75EZQHX2DXPP3JR4D
 X-MailFrom: herve.codina@bootlin.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -97,7 +97,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Q7RD5HR6EQKVLIFN5YWH3EXARG5SYJRU/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AFLCNVTYC7WIZXK75EZQHX2DXPP3JR4D/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -106,74 +106,70 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-qmc_setup_tsa* are called once at initialisation.
-They initialize the QMC TSA table.
-In order to introduce setup function later on for dynamic timeslots
-management, rename the function to avoid later confusion.
+The newly introduced qmc_chan_setup_tsa* functions check that the
+channel entries are not already used.
+These checks are also performed by qmc_check_chans() and are no more
+needed.
+
+Remove them from qmc_check_chans().
 
 Signed-off-by: Herve Codina <herve.codina@bootlin.com>
 Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
- drivers/soc/fsl/qe/qmc.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ drivers/soc/fsl/qe/qmc.c | 20 --------------------
+ 1 file changed, 20 deletions(-)
 
 diff --git a/drivers/soc/fsl/qe/qmc.c b/drivers/soc/fsl/qe/qmc.c
-index 0413e25d4c67..e3f2afb8fa4d 100644
+index 5d7e2ecdd933..f2a71a140db7 100644
 --- a/drivers/soc/fsl/qe/qmc.c
 +++ b/drivers/soc/fsl/qe/qmc.c
-@@ -919,7 +919,7 @@ static int qmc_of_parse_chans(struct qmc *qmc, struct device_node *np)
- 	return qmc_check_chans(qmc);
- }
- 
--static int qmc_setup_tsa_64rxtx(struct qmc *qmc, const struct tsa_serial_info *info)
-+static int qmc_init_tsa_64rxtx(struct qmc *qmc, const struct tsa_serial_info *info)
- {
- 	struct qmc_chan *chan;
- 	unsigned int i;
-@@ -961,7 +961,7 @@ static int qmc_setup_tsa_64rxtx(struct qmc *qmc, const struct tsa_serial_info *i
- 	return 0;
- }
- 
--static int qmc_setup_tsa_32rx_32tx(struct qmc *qmc, const struct tsa_serial_info *info)
-+static int qmc_init_tsa_32rx_32tx(struct qmc *qmc, const struct tsa_serial_info *info)
- {
- 	struct qmc_chan *chan;
- 	unsigned int i;
-@@ -1019,7 +1019,7 @@ static int qmc_setup_tsa_32rx_32tx(struct qmc *qmc, const struct tsa_serial_info
- 	return 0;
- }
- 
--static int qmc_setup_tsa(struct qmc *qmc)
-+static int qmc_init_tsa(struct qmc *qmc)
+@@ -884,10 +884,7 @@ EXPORT_SYMBOL(qmc_chan_reset);
+ static int qmc_check_chans(struct qmc *qmc)
  {
  	struct tsa_serial_info info;
+-	bool is_one_table = false;
+ 	struct qmc_chan *chan;
+-	u64 tx_ts_mask = 0;
+-	u64 rx_ts_mask = 0;
+ 	u64 tx_ts_assigned_mask;
+ 	u64 rx_ts_assigned_mask;
  	int ret;
-@@ -1030,12 +1030,12 @@ static int qmc_setup_tsa(struct qmc *qmc)
- 		return ret;
+@@ -911,7 +908,6 @@ static int qmc_check_chans(struct qmc *qmc)
+ 			dev_err(qmc->dev, "Number of TSA Tx/Rx TS assigned are not equal\n");
+ 			return -EINVAL;
+ 		}
+-		is_one_table = true;
+ 	}
  
- 	/*
--	 * Setup one common 64 entries table or two 32 entries (one for Tx and
--	 * one for Tx) according to assigned TS numbers.
-+	 * Initialize one common 64 entries table or two 32 entries (one for Tx
-+	 * and one for Tx) according to assigned TS numbers.
- 	 */
- 	return ((info.nb_tx_ts > 32) || (info.nb_rx_ts > 32)) ?
--		qmc_setup_tsa_64rxtx(qmc, &info) :
--		qmc_setup_tsa_32rx_32tx(qmc, &info);
-+		qmc_init_tsa_64rxtx(qmc, &info) :
-+		qmc_init_tsa_32rx_32tx(qmc, &info);
- }
+ 	tx_ts_assigned_mask = info.nb_tx_ts == 64 ? U64_MAX : (((u64)1) << info.nb_tx_ts) - 1;
+@@ -922,27 +918,11 @@ static int qmc_check_chans(struct qmc *qmc)
+ 			dev_err(qmc->dev, "chan %u uses TSA unassigned Tx TS\n", chan->id);
+ 			return -EINVAL;
+ 		}
+-		if (tx_ts_mask & chan->tx_ts_mask) {
+-			dev_err(qmc->dev, "chan %u uses an already used Tx TS\n", chan->id);
+-			return -EINVAL;
+-		}
  
- static int qmc_setup_chan_trnsync(struct qmc *qmc, struct qmc_chan *chan)
-@@ -1391,7 +1391,7 @@ static int qmc_probe(struct platform_device *pdev)
- 	qmc_write32(qmc->scc_pram + QMC_GBL_C_MASK32, 0xDEBB20E3);
- 	qmc_write16(qmc->scc_pram + QMC_GBL_C_MASK16, 0xF0B8);
+ 		if (chan->rx_ts_mask > rx_ts_assigned_mask) {
+ 			dev_err(qmc->dev, "chan %u uses TSA unassigned Rx TS\n", chan->id);
+ 			return -EINVAL;
+ 		}
+-		if (rx_ts_mask & chan->rx_ts_mask) {
+-			dev_err(qmc->dev, "chan %u uses an already used Rx TS\n", chan->id);
+-			return -EINVAL;
+-		}
+-
+-		if (is_one_table && (chan->tx_ts_mask != chan->rx_ts_mask)) {
+-			dev_err(qmc->dev, "chan %u uses different Rx and Tx TS\n", chan->id);
+-			return -EINVAL;
+-		}
+-
+-		tx_ts_mask |= chan->tx_ts_mask;
+-		rx_ts_mask |= chan->rx_ts_mask;
+ 	}
  
--	ret = qmc_setup_tsa(qmc);
-+	ret = qmc_init_tsa(qmc);
- 	if (ret)
- 		goto err_tsa_serial_disconnect;
- 
+ 	return 0;
 -- 
 2.43.0
 
