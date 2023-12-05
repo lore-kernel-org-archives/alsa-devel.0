@@ -4,55 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A1909C10F04
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Dec 2023 15:23:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8C69AC4167B
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Dec 2023 15:23:40 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DFC35E0F;
-	Tue,  5 Dec 2023 16:23:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DFC35E0F
+	by alsa0.perex.cz (Postfix) with ESMTPS id D1448DED;
+	Tue,  5 Dec 2023 16:23:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D1448DED
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1701789798;
-	bh=NP+5h4MpiId0rnKlcO6QXG5qZqYy6d3exD9E2Ro1mo0=;
+	s=default; t=1701789818;
+	bh=Kf60//OOI6AQUKFmywF+vhlZBohqpeEpJQqpO/2IKME=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=lLU9MR4UnfMDFlnJMjj8EyXL7sGVkv6PJzF262FjBjpvabzHinl2cnjhM8iLFg/Du
-	 JFu6l59v7Ft/VwZPsOKcmh9DzAw9Kj2X1YJFlgL9fAAd6NySXbyqDL6QMNQOGbnNNR
-	 aQt2dfS/PNo/lvzAvmGOPS0ve9uEhmBJ0knOVTZQ=
+	b=uaH8/9uT9jzW8HMRL5Svs/0oepUHOuxBxFg01euDE4HhYKZYZyz5BDO6rabJfAH8a
+	 roBHmeCKl0JP/AyQBpLuEjQNOoO+r7/iSYcMwD8cTiTVDARc1gQT94inNPGQDUtGGq
+	 AltPZn2K4ygupULbmtWIV4ZzPFhwLgt7IzPsF5uk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3C953F80640; Tue,  5 Dec 2023 16:21:58 +0100 (CET)
+	id 7C8C1F8062F; Tue,  5 Dec 2023 16:22:00 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 81840F80652;
-	Tue,  5 Dec 2023 16:21:57 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B6757F80685;
+	Tue,  5 Dec 2023 16:21:59 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0E825F805EF; Tue,  5 Dec 2023 16:21:50 +0100 (CET)
+	id 07A95F8060F; Tue,  5 Dec 2023 16:21:51 +0100 (CET)
 Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net
  [217.70.183.194])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id CC3F7F8028D
-	for <alsa-devel@alsa-project.org>; Tue,  5 Dec 2023 16:21:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CC3F7F8028D
+	by alsa1.perex.cz (Postfix) with ESMTPS id 96930F802E8
+	for <alsa-devel@alsa-project.org>; Tue,  5 Dec 2023 16:21:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 96930F802E8
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=kMIMIVJT
-Received: by mail.gandi.net (Postfix) with ESMTPA id C297F4001B;
-	Tue,  5 Dec 2023 15:21:31 +0000 (UTC)
+ header.s=gm1 header.b=ouyRyNt5
+Received: by mail.gandi.net (Postfix) with ESMTPA id 8D73140019;
+	Tue,  5 Dec 2023 15:21:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1701789692;
+	t=1701789694;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Vd+Rqgrbba9Ay4j5SVMCYkNm38iDM5D9Pbjrfd3n8FE=;
-	b=kMIMIVJTcFmxytn35uLE72UHMHVd+WvxwTSr2dNiRuHZ024u4qvaZRZqwebyFkXhLrOsPJ
-	wLZZDhaVkt70Ja3g6T9/c7qIPd991VGIjf1M7tq5f9heifkkjf+nGIVduWAyaE7MoCVU5P
-	blbIE9x1/w31unNra+yDDnDnkIK2/GSnRzlK/pSsHNwtRVUsonm8Da8N4xzFnTSLZ2kgUv
-	tNQ6/M4S2Uu1sa3ReuLIVLkEGL1K4Z/2wNYUDaL9PqJ1z3sli7oaxUjQf7zMqg5MouQgKM
-	1cMe0fc5I+HDCVivIfXhS1RnafV9IcxjAD+C8Y7AuOiM7loQveOqIDBfiNyo4Q==
+	bh=sDL7N04gw5BRlFHTIZAz5PXmdYE8Pno1RSYn/SHVcJM=;
+	b=ouyRyNt54e1mcTBloSV6JtW7i7S1zO4bPFu5CaE9zkCqiWEwSB8aE/OYMjkr2HOk3YEfeZ
+	PfsS4jNuAiPkRrxngxdXDUdyNzsr09awPpj8nQWGnaDsdpwelx8yv5dvE095/aklXHnABf
+	cPDMQvpQXS4H++q43Qyrdfmf2duFKkl4rIdE/AQEaVEN3MQBUwrMd9HLVVzwpZpvEOiEcF
+	ej/bCfR8iYqjbVX/9mKDqZn4akkPUDp/LZTW7lB7mwr3vRZ/vPOySHWhii0TTExInozMdS
+	kCBtNzNWSgC0oP8eXpicGjp6BoG1bUaOuVn+jGfe5eEgKQmspmCnisJ98QVLkQ==
 From: Herve Codina <herve.codina@bootlin.com>
 To: Herve Codina <herve.codina@bootlin.com>,
 	Qiang Zhao <qiang.zhao@nxp.com>,
@@ -73,17 +73,18 @@ Cc: Arnd Bergmann <arnd@arndb.de>,
 	linux-kernel@vger.kernel.org,
 	alsa-devel@alsa-project.org,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: [PATCH v2 06/17] soc: fsl: cpm1: qmc: Add support for child devices
-Date: Tue,  5 Dec 2023 16:21:03 +0100
-Message-ID: <20231205152116.122512-7-herve.codina@bootlin.com>
+Subject: [PATCH v2 08/17] soc: fsl: cpm1: qmc: Rename qmc_setup_tsa* to
+ qmc_init_tsa*
+Date: Tue,  5 Dec 2023 16:21:05 +0100
+Message-ID: <20231205152116.122512-9-herve.codina@bootlin.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231205152116.122512-1-herve.codina@bootlin.com>
 References: <20231205152116.122512-1-herve.codina@bootlin.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-GND-Sasl: herve.codina@bootlin.com
-Message-ID-Hash: WVX6B44U2237PLU55BVKSQ3UR76XSVR3
-X-Message-ID-Hash: WVX6B44U2237PLU55BVKSQ3UR76XSVR3
+Message-ID-Hash: Q7RD5HR6EQKVLIFN5YWH3EXARG5SYJRU
+X-Message-ID-Hash: Q7RD5HR6EQKVLIFN5YWH3EXARG5SYJRU
 X-MailFrom: herve.codina@bootlin.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -96,7 +97,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WVX6B44U2237PLU55BVKSQ3UR76XSVR3/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Q7RD5HR6EQKVLIFN5YWH3EXARG5SYJRU/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -105,179 +106,74 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-QMC child devices support is needed to avoid orphan DT nodes that use a
-simple DT phandle to reference a QMC channel.
-
-Allow to instantiate child devices and also extend the API to get the
-qmc_chan using a child device.
+qmc_setup_tsa* are called once at initialisation.
+They initialize the QMC TSA table.
+In order to introduce setup function later on for dynamic timeslots
+management, rename the function to avoid later confusion.
 
 Signed-off-by: Herve Codina <herve.codina@bootlin.com>
+Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
- drivers/soc/fsl/qe/qmc.c | 91 +++++++++++++++++++++++++++++++---------
- include/soc/fsl/qe/qmc.h |  2 +
- 2 files changed, 73 insertions(+), 20 deletions(-)
+ drivers/soc/fsl/qe/qmc.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/soc/fsl/qe/qmc.c b/drivers/soc/fsl/qe/qmc.c
-index 27f2f16deac9..e716f13669a0 100644
+index 0413e25d4c67..e3f2afb8fa4d 100644
 --- a/drivers/soc/fsl/qe/qmc.c
 +++ b/drivers/soc/fsl/qe/qmc.c
-@@ -1425,8 +1425,16 @@ static int qmc_probe(struct platform_device *pdev)
+@@ -919,7 +919,7 @@ static int qmc_of_parse_chans(struct qmc *qmc, struct device_node *np)
+ 	return qmc_check_chans(qmc);
+ }
  
- 	platform_set_drvdata(pdev, qmc);
- 
-+	/* Populate channel related devices */
-+	ret = devm_of_platform_populate(qmc->dev);
-+	if (ret)
-+		goto err_disable_txrx;
-+
+-static int qmc_setup_tsa_64rxtx(struct qmc *qmc, const struct tsa_serial_info *info)
++static int qmc_init_tsa_64rxtx(struct qmc *qmc, const struct tsa_serial_info *info)
+ {
+ 	struct qmc_chan *chan;
+ 	unsigned int i;
+@@ -961,7 +961,7 @@ static int qmc_setup_tsa_64rxtx(struct qmc *qmc, const struct tsa_serial_info *i
  	return 0;
- 
-+err_disable_txrx:
-+	qmc_setbits32(qmc->scc_regs + SCC_GSMRL, 0);
-+
- err_disable_intr:
- 	qmc_write16(qmc->scc_regs + SCC_SCCM, 0);
- 
-@@ -1465,26 +1473,16 @@ static struct platform_driver qmc_driver = {
- };
- module_platform_driver(qmc_driver);
- 
--struct qmc_chan *qmc_chan_get_byphandle(struct device_node *np, const char *phandle_name)
-+static struct qmc_chan *qmc_chan_get_from_qmc(struct device_node *qmc_np, unsigned int chan_index)
- {
--	struct of_phandle_args out_args;
- 	struct platform_device *pdev;
- 	struct qmc_chan *qmc_chan;
- 	struct qmc *qmc;
--	int ret;
- 
--	ret = of_parse_phandle_with_fixed_args(np, phandle_name, 1, 0,
--					       &out_args);
--	if (ret < 0)
--		return ERR_PTR(ret);
--
--	if (!of_match_node(qmc_driver.driver.of_match_table, out_args.np)) {
--		of_node_put(out_args.np);
-+	if (!of_match_node(qmc_driver.driver.of_match_table, qmc_np))
- 		return ERR_PTR(-EINVAL);
--	}
- 
--	pdev = of_find_device_by_node(out_args.np);
--	of_node_put(out_args.np);
-+	pdev = of_find_device_by_node(qmc_np);
- 	if (!pdev)
- 		return ERR_PTR(-ENODEV);
- 
-@@ -1494,17 +1492,12 @@ struct qmc_chan *qmc_chan_get_byphandle(struct device_node *np, const char *phan
- 		return ERR_PTR(-EPROBE_DEFER);
- 	}
- 
--	if (out_args.args_count != 1) {
-+	if (chan_index >= ARRAY_SIZE(qmc->chans)) {
- 		platform_device_put(pdev);
- 		return ERR_PTR(-EINVAL);
- 	}
- 
--	if (out_args.args[0] >= ARRAY_SIZE(qmc->chans)) {
--		platform_device_put(pdev);
--		return ERR_PTR(-EINVAL);
--	}
--
--	qmc_chan = qmc->chans[out_args.args[0]];
-+	qmc_chan = qmc->chans[chan_index];
- 	if (!qmc_chan) {
- 		platform_device_put(pdev);
- 		return ERR_PTR(-ENOENT);
-@@ -1512,8 +1505,44 @@ struct qmc_chan *qmc_chan_get_byphandle(struct device_node *np, const char *phan
- 
- 	return qmc_chan;
  }
-+
-+struct qmc_chan *qmc_chan_get_byphandle(struct device_node *np, const char *phandle_name)
-+{
-+	struct of_phandle_args out_args;
-+	struct qmc_chan *qmc_chan;
-+	int ret;
-+
-+	ret = of_parse_phandle_with_fixed_args(np, phandle_name, 1, 0,
-+					       &out_args);
-+	if (ret < 0)
-+		return ERR_PTR(ret);
-+
-+	if (out_args.args_count != 1) {
-+		of_node_put(out_args.np);
-+		return ERR_PTR(-EINVAL);
-+	}
-+
-+	qmc_chan = qmc_chan_get_from_qmc(out_args.np, out_args.args[0]);
-+	of_node_put(out_args.np);
-+	return qmc_chan;
-+}
- EXPORT_SYMBOL(qmc_chan_get_byphandle);
  
-+struct qmc_chan *qmc_chan_get_bychild(struct device_node *np)
-+{
-+	struct device_node *qmc_np;
-+	u32 chan_index;
-+	int ret;
-+
-+	qmc_np = np->parent;
-+	ret = of_property_read_u32(np, "reg", &chan_index);
-+	if (ret)
-+		return ERR_PTR(-EINVAL);
-+
-+	return qmc_chan_get_from_qmc(qmc_np, chan_index);
-+}
-+EXPORT_SYMBOL(qmc_chan_get_bychild);
-+
- void qmc_chan_put(struct qmc_chan *chan)
+-static int qmc_setup_tsa_32rx_32tx(struct qmc *qmc, const struct tsa_serial_info *info)
++static int qmc_init_tsa_32rx_32tx(struct qmc *qmc, const struct tsa_serial_info *info)
  {
- 	put_device(chan->qmc->dev);
-@@ -1550,6 +1579,28 @@ struct qmc_chan *devm_qmc_chan_get_byphandle(struct device *dev,
+ 	struct qmc_chan *chan;
+ 	unsigned int i;
+@@ -1019,7 +1019,7 @@ static int qmc_setup_tsa_32rx_32tx(struct qmc *qmc, const struct tsa_serial_info
+ 	return 0;
  }
- EXPORT_SYMBOL(devm_qmc_chan_get_byphandle);
  
-+struct qmc_chan *devm_qmc_chan_get_bychild(struct device *dev,
-+					   struct device_node *np)
-+{
-+	struct qmc_chan *qmc_chan;
-+	struct qmc_chan **dr;
-+
-+	dr = devres_alloc(devm_qmc_chan_release, sizeof(*dr), GFP_KERNEL);
-+	if (!dr)
-+		return ERR_PTR(-ENOMEM);
-+
-+	qmc_chan = qmc_chan_get_bychild(np);
-+	if (!IS_ERR(qmc_chan)) {
-+		*dr = qmc_chan;
-+		devres_add(dev, dr);
-+	} else {
-+		devres_free(dr);
-+	}
-+
-+	return qmc_chan;
-+}
-+EXPORT_SYMBOL(devm_qmc_chan_get_bychild);
-+
- MODULE_AUTHOR("Herve Codina <herve.codina@bootlin.com>");
- MODULE_DESCRIPTION("CPM QMC driver");
- MODULE_LICENSE("GPL");
-diff --git a/include/soc/fsl/qe/qmc.h b/include/soc/fsl/qe/qmc.h
-index 6f1d6cebc9fe..166484bb4294 100644
---- a/include/soc/fsl/qe/qmc.h
-+++ b/include/soc/fsl/qe/qmc.h
-@@ -17,9 +17,11 @@ struct device;
- struct qmc_chan;
+-static int qmc_setup_tsa(struct qmc *qmc)
++static int qmc_init_tsa(struct qmc *qmc)
+ {
+ 	struct tsa_serial_info info;
+ 	int ret;
+@@ -1030,12 +1030,12 @@ static int qmc_setup_tsa(struct qmc *qmc)
+ 		return ret;
  
- struct qmc_chan *qmc_chan_get_byphandle(struct device_node *np, const char *phandle_name);
-+struct qmc_chan *qmc_chan_get_bychild(struct device_node *np);
- void qmc_chan_put(struct qmc_chan *chan);
- struct qmc_chan *devm_qmc_chan_get_byphandle(struct device *dev, struct device_node *np,
- 					     const char *phandle_name);
-+struct qmc_chan *devm_qmc_chan_get_bychild(struct device *dev, struct device_node *np);
+ 	/*
+-	 * Setup one common 64 entries table or two 32 entries (one for Tx and
+-	 * one for Tx) according to assigned TS numbers.
++	 * Initialize one common 64 entries table or two 32 entries (one for Tx
++	 * and one for Tx) according to assigned TS numbers.
+ 	 */
+ 	return ((info.nb_tx_ts > 32) || (info.nb_rx_ts > 32)) ?
+-		qmc_setup_tsa_64rxtx(qmc, &info) :
+-		qmc_setup_tsa_32rx_32tx(qmc, &info);
++		qmc_init_tsa_64rxtx(qmc, &info) :
++		qmc_init_tsa_32rx_32tx(qmc, &info);
+ }
  
- enum qmc_mode {
- 	QMC_TRANSPARENT,
+ static int qmc_setup_chan_trnsync(struct qmc *qmc, struct qmc_chan *chan)
+@@ -1391,7 +1391,7 @@ static int qmc_probe(struct platform_device *pdev)
+ 	qmc_write32(qmc->scc_pram + QMC_GBL_C_MASK32, 0xDEBB20E3);
+ 	qmc_write16(qmc->scc_pram + QMC_GBL_C_MASK16, 0xF0B8);
+ 
+-	ret = qmc_setup_tsa(qmc);
++	ret = qmc_init_tsa(qmc);
+ 	if (ret)
+ 		goto err_tsa_serial_disconnect;
+ 
 -- 
 2.43.0
 
