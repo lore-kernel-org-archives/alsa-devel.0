@@ -4,87 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D8BA7C4167B
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Dec 2023 14:25:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AD6B6C4167B
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Dec 2023 15:22:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 131D0DF9;
-	Tue,  5 Dec 2023 15:25:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 131D0DF9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7E6CADEB;
+	Tue,  5 Dec 2023 16:22:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7E6CADEB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1701786328;
-	bh=+9U7lTLXFmXO4cGfsSfbvjsmVcPVaWiLU8wGYpgmDRA=;
-	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	s=default; t=1701789735;
+	bh=U9ts1V6IQH+0qpy5JdbNVX2rBvDOUCOugYFx220pKqY=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=MQO0Bdcec6FEnWAuv6X7x4UvgpefLG9VNplKeSP/TSvESWD01ik/2d/U38VmlPrQ5
-	 zgO8uQ4mNJz5ldiLiNOt5vF9FG7QkdpNuoz9ukkT9/FxhXLe9g1UdNLwHEwjqh+MQi
-	 OtcdMP2AuSZpbbCcRmlJSZ4Q2zRZoo81hLFAMsJg=
+	b=Cr9E+sNi2fZaSo2VoXg35YKQyNiiCHTSgItloYowgU2QrDXAsz8xQBiWp3QmJbCwV
+	 9DGDo+XP/baOjEuAOjEg2esG9LNwSg+GilASVGDw9l4gzH2gYix98TwQkTnekeCHmX
+	 5pPmjqNKBDbXVuMeYJiLgxz2UIhjYeiLIWP1/vkQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9DF39F805C3; Tue,  5 Dec 2023 15:24:38 +0100 (CET)
+	id CA62EF805B3; Tue,  5 Dec 2023 16:21:42 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id BFEB7F805C5;
-	Tue,  5 Dec 2023 15:24:37 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 23CA5F80579;
+	Tue,  5 Dec 2023 16:21:42 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id EB88EF8024E; Tue,  5 Dec 2023 15:24:32 +0100 (CET)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 64432F8055B; Tue,  5 Dec 2023 16:21:37 +0100 (CET)
+Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net
+ [IPv6:2001:4b98:dc4:8::222])
+	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 1116AF80166
-	for <alsa-devel@alsa-project.org>; Tue,  5 Dec 2023 15:24:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1116AF80166
+	by alsa1.perex.cz (Postfix) with ESMTPS id CB834F800AC
+	for <alsa-devel@alsa-project.org>; Tue,  5 Dec 2023 16:21:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CB834F800AC
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=lpL61ZFG
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-	by mx0a-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id
- 3B56mS62002076;
-	Tue, 5 Dec 2023 08:24:24 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	from:to:cc:subject:date:message-id:mime-version
-	:content-transfer-encoding:content-type; s=PODMain02222019; bh=k
-	NGwJRuCDSQPDWHxSRcWN5IiutDcB9RgwlpBxLTtnaY=; b=lpL61ZFGOAD3nEDKt
-	/35g2zpo0Bv7dp1qU/ZTvJZGNETRvmhEyFmTEVIRUbazKgG9H+UUrx/+tc0Rr2Yz
-	ceX2qzrhY0N2Q0YjHu+oqrsahEYfcpjZ6TWXFvW+47NeCKunAx5n0o+yvfV4tVcu
-	hxx+vSRhtMHlNIApJ8whtGQj9t6eXNB168wuIjfZDxV5m2J0JtcdG/dNjGp2ZjJK
-	XTbwi4XcdEZBxT+dcQvKCwbh2789I29btaqGnG79w6O/HdsCXPCUOZGyZIQI5JUR
-	PWNQl4hJTYkvKYsWmO+sCmeNA1Mzmj3U+lwzPtiEhbTJmctVOAvnYtxPs+45N1FU
-	90DXg==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3ur2v23992-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 05 Dec 2023 08:24:23 -0600 (CST)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 5 Dec
- 2023 14:24:20 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.40 via Frontend
- Transport; Tue, 5 Dec 2023 14:24:20 +0000
-Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id C3110474;
-	Tue,  5 Dec 2023 14:24:20 +0000 (UTC)
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-To: <perex@perex.cz>
-CC: <pierre-louis.bossart@linux.intel.com>, <bard.liao@intel.com>,
-        <mengdong.lin@intel.com>, <patches@opensource.cirrus.com>,
-        <alsa-devel@alsa-project.org>
-Subject: [PATCH alsa-ucm-conf 1/2] sof-soundwire: Add basic support for
- cs42l43
-Date: Tue, 5 Dec 2023 14:24:19 +0000
-Message-ID: <20231205142420.1256042-1-ckeepax@opensource.cirrus.com>
-X-Mailer: git-send-email 2.39.2
+ unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
+ header.s=gm1 header.b=ZLTYCOXn
+Received: by mail.gandi.net (Postfix) with ESMTPA id 4239840006;
+	Tue,  5 Dec 2023 15:21:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1701789686;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=EQzemCGjTKgaOFfggHrbLZ6TF0LQrH4UISYJFYtdjhE=;
+	b=ZLTYCOXnb1VxUvJE0efVr+7U4KVX+H7XmeidTTaEu3Ym5K05fvFZW+FCckTZhrBaYBWxgu
+	OoOhfyHDT0nc6C/FmbPR/69hBqAZU+peuWmt11XRZfvbc1zmr0FQj0IrqH+TS9SA5+p2eq
+	OpcaIEDq3Rj3gOxwxWZeLFGrKzk0cKUW1M2w1yMDmE6BAoXXKYvspl5tRZFaIRqgQ96DYn
+	Jxgp4qxZHDlE/bl0WGfbki46dBNVCkSqIZkCyCKkYwXXLyPdybDeWTuyMiQGSSgZCCRnHV
+	SuGm2J7v8McKbtLm/hYzEX+4Jmsf3Hxd3duvIAELZIKjDaXLD8alOZh4RnqpUw==
+From: Herve Codina <herve.codina@bootlin.com>
+To: Herve Codina <herve.codina@bootlin.com>,
+	Qiang Zhao <qiang.zhao@nxp.com>,
+	Li Yang <leoyang.li@nxp.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Shengjiu Wang <shengjiu.wang@gmail.com>,
+	Xiubo Li <Xiubo.Lee@gmail.com>,
+	Fabio Estevam <festevam@gmail.com>,
+	Nicolin Chen <nicoleotsuka@gmail.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: Arnd Bergmann <arnd@arndb.de>,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	alsa-devel@alsa-project.org,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: [PATCH v2 00/17] Prepare the PowerQUICC QMC and TSA for the HDLC QMC
+ driver
+Date: Tue,  5 Dec 2023 16:20:57 +0100
+Message-ID: <20231205152116.122512-1-herve.codina@bootlin.com>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: z8E0KvEVDv-vghmrasVXgr0j5m7rQYYV
-X-Proofpoint-GUID: z8E0KvEVDv-vghmrasVXgr0j5m7rQYYV
-X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: P4H5SPE5RJAOWYTOUZ7WH7MHI3Y6UEM6
-X-Message-ID-Hash: P4H5SPE5RJAOWYTOUZ7WH7MHI3Y6UEM6
-X-MailFrom: prvs=7703bda8c8=ckeepax@opensource.cirrus.com
+X-GND-Sasl: herve.codina@bootlin.com
+Message-ID-Hash: GYDF32AMWDNQOSOM6NWMEHHHY3DX4YFR
+X-Message-ID-Hash: GYDF32AMWDNQOSOM6NWMEHHHY3DX4YFR
+X-MailFrom: herve.codina@bootlin.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -96,7 +94,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/P4H5SPE5RJAOWYTOUZ7WH7MHI3Y6UEM6/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GYDF32AMWDNQOSOM6NWMEHHHY3DX4YFR/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -105,104 +103,90 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-cs42l43 is a codec device, add basic support for it. Including a dual
-channel DMIC input, stereo headphones, and a mono headset microphone.
+Hi,
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
----
- ucm2/sof-soundwire/cs42l43-dmic.conf | 28 +++++++++++++++++
- ucm2/sof-soundwire/cs42l43.conf      | 47 ++++++++++++++++++++++++++++
- 2 files changed, 75 insertions(+)
- create mode 100644 ucm2/sof-soundwire/cs42l43-dmic.conf
- create mode 100644 ucm2/sof-soundwire/cs42l43.conf
+This series updates PowerQUICC QMC and TSA drivers to prepare the
+support for the QMC HDLC driver.
 
-diff --git a/ucm2/sof-soundwire/cs42l43-dmic.conf b/ucm2/sof-soundwire/cs42l43-dmic.conf
-new file mode 100644
-index 0000000..bf59eca
---- /dev/null
-+++ b/ucm2/sof-soundwire/cs42l43-dmic.conf
-@@ -0,0 +1,28 @@
-+# Use case Configuration for sof-soundwire card
-+
-+SectionDevice."Mic" {
-+	Comment "Microphones"
-+
-+	ConflictingDevice [
-+		"Headset"
-+	]
-+
-+	EnableSequence [
-+		cset "name='cs42l43 DP1TX1 Input' 'Decimator 3'"
-+		cset "name='cs42l43 DP1TX2 Input' 'Decimator 4'"
-+		cset "name='cs42l43 Decimator 3 Switch' on"
-+		cset "name='cs42l43 Decimator 4 Switch' on"
-+	]
-+
-+	DisableSequence [
-+		cset "name='cs42l43 Decimator 3 Switch' off"
-+		cset "name='cs42l43 Decimator 4 Switch' off"
-+		cset "name='cs42l43 DP1TX1 Input' 'None'"
-+		cset "name='cs42l43 DP1TX2 Input' 'None'"
-+	]
-+
-+	Value {
-+		CapturePriority 100
-+		CapturePCM "hw:${CardId},4"
-+	}
-+}
-diff --git a/ucm2/sof-soundwire/cs42l43.conf b/ucm2/sof-soundwire/cs42l43.conf
-new file mode 100644
-index 0000000..378dbb2
---- /dev/null
-+++ b/ucm2/sof-soundwire/cs42l43.conf
-@@ -0,0 +1,47 @@
-+# Use case Configuration for sof-soundwire card
-+
-+SectionDevice."Headphones" {
-+	Comment "Headphones"
-+
-+	EnableSequence [
-+		cset "name='cs42l43 Headphone L Input 1' 'DP5RX1'"
-+		cset "name='cs42l43 Headphone R Input 1' 'DP5RX2'"
-+	]
-+
-+	DisableSequence [
-+		cset "name='cs42l43 Headphone L Input 1' 'None'"
-+		cset "name='cs42l43 Headphone R Input 1' 'None'"
-+	]
-+
-+	Value {
-+		PlaybackPriority 200
-+		PlaybackPCM "hw:${CardId},0"
-+		PlaybackVolume "cs42l43 Headphone Digital Volume"
-+		JackControl "Headphone Jack"
-+	}
-+}
-+
-+SectionDevice."Headset" {
-+	Comment "Headset Microphone"
-+
-+	EnableSequence [
-+		cset "name='cs42l43 ADC1 Input' 'IN1'"
-+		cset "name='cs42l43 Decimator 1 Mode' 'ADC'"
-+
-+		cset "name='cs42l43 DP1TX1 Input' 'Decimator 1'"
-+		cset "name='cs42l43 DP1TX2 Input' 'Decimator 1'"
-+	]
-+
-+	DisableSequence [
-+		cset "name='cs42l43 DP1TX1 Input' 'None'"
-+		cset "name='cs42l43 DP1TX2 Input' 'None'"
-+	]
-+
-+	Value {
-+		CapturePriority 200
-+		CapturePCM "hw:${CardId},4"
-+		CaptureVolume "cs42l43 Decimator 1 Volume"
-+		CaptureSwitch "cs42l43 Decimator 1 Switch"
-+		JackControl "Headset Mic Jack"
-+	}
-+}
+Patches were previously sent as part of a full feature series:
+"Add support for QMC HDLC, framer infrastructure and PEF2256 framer" [1]
+
+The full feature series reached the v9 iteration.
+The v1 was sent the 07/25/2023 followed by the other iterations
+(07/26/2023, 08/09/2023, 08/18/2023, 09/12/2023, 09/22/2023, 09/28/2023,
+10/11/23, 11/15/2023) and was ready to be merged in its v8.
+  https://lore.kernel.org/linux-kernel/20231025123215.5caca7d4@kernel.org/
+
+The lack of feedback from the Freescale SoC and the Quicc Engine
+maintainers (i.e. drivers/soc/fsl/qe/ to which the QMC and TSA drivers
+belong) blocks the entire full feature series.
+These patches are fixes and improvements to TSA and QMC drivers.
+These drivers were previously acked by Li Yang but without any feedback
+from Li Yang nor Qiang Zhao the series cannot move forward.
+
+In order to ease the review/merge, the full feature series has been
+split and this series contains patches related to the PowerQUICC SoC
+part (QMC and TSA).
+ - Perform some fixes (patches 1 to 5)
+ - Add support for child devices (patch 6)
+ - Add QMC dynamic timeslot support (patches 7 to 17)
+
+Compare to the previous iteration:
+  https://lore.kernel.org/linux-kernel/20231128140818.261541-1-herve.codina@bootlin.com/
+this v2 series:
+- Removes a forward declaration in the driver.
+- Adds kernel test robot tags as the issue was detected.
+- Adds some missing Cc: stable.
+
+Best regards,
+Hervé
+
+[1]: https://lore.kernel.org/linux-kernel/20231115144007.478111-1-herve.codina@bootlin.com/
+
+Changes v1 -> v2:
+  - Patch 1
+    Add 'Reported-by: kernel test robot <lkp@intel.com>'
+    Add 'Closes: https://lore.kernel.org/oe-kbuild-all/202312051959.9YdRIYbg-lkp@intel.com/'
+    Add 'Cc: stable@vger.kernel.org'
+
+  - Patch 2, 3
+    Add 'Cc: stable@vger.kernel.org
+
+  - Patch 15
+    Move qmc_setup_chan_trnsync() to avoid a forward declaration.
+
+Patches extracted:
+  - Patch 1..6 : full feature series patch 1..6
+  - Patch 7..17 : full feature series patch 9..19
+
+Herve Codina (17):
+  soc: fsl: cpm1: tsa: Fix __iomem addresses declaration
+  soc: fsl: cpm1: qmc: Fix __iomem addresses declaration
+  soc: fsl: cpm1: qmc: Fix rx channel reset
+  soc: fsl: cpm1: qmc: Extend the API to provide Rx status
+  soc: fsl: cpm1: qmc: Remove inline function specifiers
+  soc: fsl: cpm1: qmc: Add support for child devices
+  soc: fsl: cpm1: qmc: Introduce available timeslots masks
+  soc: fsl: cpm1: qmc: Rename qmc_setup_tsa* to qmc_init_tsa*
+  soc: fsl: cpm1: qmc: Introduce qmc_chan_setup_tsa*
+  soc: fsl: cpm1: qmc: Remove no more needed checks from
+    qmc_check_chans()
+  soc: fsl: cpm1: qmc: Check available timeslots in qmc_check_chans()
+  soc: fsl: cpm1: qmc: Add support for disabling channel TSA entries
+  soc: fsl: cpm1: qmc: Split Tx and Rx TSA entries setup
+  soc: fsl: cpm1: qmc: Introduce is_tsa_64rxtx flag
+  soc: fsl: cpm1: qmc: Handle timeslot entries at channel start() and
+    stop()
+  soc: fsl: cpm1: qmc: Remove timeslots handling from setup_chan()
+  soc: fsl: cpm1: qmc: Introduce functions to change timeslots at
+    runtime
+
+ drivers/soc/fsl/qe/qmc.c      | 658 ++++++++++++++++++++++++++--------
+ drivers/soc/fsl/qe/tsa.c      |  22 +-
+ include/soc/fsl/qe/qmc.h      |  27 +-
+ sound/soc/fsl/fsl_qmc_audio.c |   2 +-
+ 4 files changed, 538 insertions(+), 171 deletions(-)
+
 -- 
-2.39.2
+2.43.0
 
