@@ -4,88 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0D99BC4167B
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Dec 2023 15:27:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F3F8AC10F04
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Dec 2023 15:42:02 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E0045ED7;
-	Tue,  5 Dec 2023 16:27:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E0045ED7
+	by alsa0.perex.cz (Postfix) with ESMTPS id AC65A11C;
+	Tue,  5 Dec 2023 16:41:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AC65A11C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1701790054;
-	bh=xukjuGan3FvwHjC1u8CeuWNpwvGB/cEkfZb7z28+Ess=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	s=default; t=1701790920;
+	bh=vjrlfMihEwbG4vZyrXSqd2uLeidXw1bqUTeh6X6XMdA=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=nbbActgByVfpc24cw8W/U4gRxRvSiUdfvC7+2IsHThFqWNlzLW5e3RNrpcYtCQiN5
-	 cfelv/n1E74xiCcitw8P6TKUVilLa12XpbgO7zuUOJH4QmDyr4CxuNkZKC2EFIbE7S
-	 FA94ViAxe7kTN7zKvfdgGSehyt+n6nRSR6nIhJEQ=
+	b=X77cHBeH1Om0qpYQByDJGu8JnNeVzCpNfJp/xVCv9EgtnS5f6mH/nQV15RO3py4lA
+	 1GCP6TLFIv1Ctptr3Po7ZTvCzBw9y11WZwcE7warxb8PrlpkoZc/FgUwERg9LXGZAE
+	 yl8o1QhXMvyaUPGHZc35XRdHpnMtHLpbGbiJbm+c=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E0A9BF80604; Tue,  5 Dec 2023 16:26:00 +0100 (CET)
+	id 86BA6F80579; Tue,  5 Dec 2023 16:41:29 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 276A7F805E0;
-	Tue,  5 Dec 2023 16:26:00 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B8917F80580;
+	Tue,  5 Dec 2023 16:41:28 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E85BCF802BE; Tue,  5 Dec 2023 16:25:52 +0100 (CET)
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 153A4F8024E; Tue,  5 Dec 2023 16:41:24 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id BFE1FF800F5
-	for <alsa-devel@alsa-project.org>; Tue,  5 Dec 2023 16:25:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BFE1FF800F5
+	by alsa1.perex.cz (Postfix) with ESMTPS id 545C0F800F5
+	for <alsa-devel@alsa-project.org>; Tue,  5 Dec 2023 16:41:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 545C0F800F5
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=i2tG7uZa
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701789943; x=1733325943;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=xukjuGan3FvwHjC1u8CeuWNpwvGB/cEkfZb7z28+Ess=;
-  b=i2tG7uZakp91q5y1GqNmQkK+E4pj6gZsGFOJfpNIQEfxf/84iVMxQ6ES
-   sm76KmSPOJxdyCI06jhbwy+vT7K4DkOiqVK1hDsx2WXrcb5OpqK+45chC
-   HKJ4cxlVGzDYzfIxQV4/Ha72KRVv3hiOqCt6/L6bpEn5R6cu0imbDtWgA
-   MRp4cmULDrrwsLdOKT2AuoVOMDFE2bijiI8kMnuCGBCA/GQmStTnlOFsz
-   nzWEOzDgP/RV6tUbSj36QlLK2DtnAcgLFc/AoBclfSPAjH4C4e7YbiE0R
-   SckSdGJapnradFigxgvBv1AzrD7yNpKd1rb+a5F5bvpzlAH2nh3EE/iMl
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="12626116"
-X-IronPort-AV: E=Sophos;i="6.04,252,1695711600";
-   d="scan'208";a="12626116"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 05 Dec 2023 07:25:39 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="888975313"
-X-IronPort-AV: E=Sophos;i="6.04,252,1695711600";
-   d="scan'208";a="888975313"
-Received: from mbapna-mobl1.amr.corp.intel.com (HELO [10.212.151.198])
- ([10.212.151.198])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 05 Dec 2023 07:25:37 -0800
-Message-ID: <72bb44a8-dbe6-4fdd-921a-b9fcf798fe3c@linux.intel.com>
-Date: Tue, 5 Dec 2023 09:22:11 -0600
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=gk4Blx2p
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id C9AAC617EB;
+	Tue,  5 Dec 2023 15:41:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24464C433C7;
+	Tue,  5 Dec 2023 15:41:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1701790876;
+	bh=vjrlfMihEwbG4vZyrXSqd2uLeidXw1bqUTeh6X6XMdA=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=gk4Blx2pzponzHlpb6XMYi385hWWRglOstEEcWEC7P5Vy9bkm+E0bb8MbxMv7EkgY
+	 UvZW7nRXYh7/ELJlu5aFBKhXv8HQ8lad7Rh/YHSCUGEb5lnAZpa7lePSvlLSy0Nts7
+	 M6v6ONHiwr5ZK86lP+oAr4mfBMZAJxBHGmBVfWyHd3JMj7/9PizhkvPKCTuSOmFYCh
+	 h04zydOhe7OAfpbG4sO57yml8m6wuK60lkzht9dZr414oSArn3IGoMfWN0HsR6FUDO
+	 hGpKXGk5qOCycNn0dXTC69W0fnXtk6bLtDG7/AuaEKuTgLg9x9bmpIrvDN7ilZe9CC
+	 0gy/oaJy+2LIQ==
+From: Mark Brown <broonie@kernel.org>
+To: James Schulman <james.schulman@cirrus.com>,
+ David Rhodes <david.rhodes@cirrus.com>,
+ Richard Fitzgerald <rf@opensource.cirrus.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+ patches@opensource.cirrus.com, linux-sound@vger.kernel.org,
+ Colin Ian King <colin.i.king@gmail.com>
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20231205101740.2820813-1-colin.i.king@gmail.com>
+References: <20231205101740.2820813-1-colin.i.king@gmail.com>
+Subject: Re: [PATCH][next] ASoC: cs4271: Fix spelling mistake "retrieveing"
+ -> "retrieving"
+Message-Id: <170179087386.845405.2039286765455444557.b4-ty@kernel.org>
+Date: Tue, 05 Dec 2023 15:41:13 +0000
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ASoC: Intel: sof_sdw_cs_amp: Connect outputs to a speaker
- widget
-Content-Language: en-US
-To: Richard Fitzgerald <rf@opensource.cirrus.com>, broonie@kernel.org,
- peter.ujfalusi@linux.intel.com, yung-chuan.liao@linux.intel.com,
- kai.vehmanen@linux.intel.com, cezary.rojewski@intel.com,
- ranjani.sridharan@linux.intel.com
-Cc: alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
- linux-kernel@vger.kernel.org, patches@opensource.cirrus.com
-References: <20231205135001.2506070-1-rf@opensource.cirrus.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20231205135001.2506070-1-rf@opensource.cirrus.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-ID-Hash: 4GQVYSKUK6FVVQORVVTDDA5DMDS3PHPR
-X-Message-ID-Hash: 4GQVYSKUK6FVVQORVVTDDA5DMDS3PHPR
-X-MailFrom: pierre-louis.bossart@linux.intel.com
+X-Mailer: b4 0.13-dev-5c066
+Message-ID-Hash: UEAWXRRNAL6NVPA4XODWLBAUZOHWKRXA
+X-Message-ID-Hash: UEAWXRRNAL6NVPA4XODWLBAUZOHWKRXA
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -97,33 +88,45 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4GQVYSKUK6FVVQORVVTDDA5DMDS3PHPR/>
-List-Archive: <>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UEAWXRRNAL6NVPA4XODWLBAUZOHWKRXA/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-
-
-On 12/5/23 07:50, Richard Fitzgerald wrote:
-> Hookup the CS35L56 DAPM_OUTPUT widgets to a DAPM_SPK widget so
-> that there is a complete logical path to a speaker.
+On Tue, 05 Dec 2023 10:17:40 +0000, Colin Ian King wrote:
+> There is a spelling mistake in a dev_err_probe error message. Fix it.
 > 
-> There is no particular reason to use multiple speaker widgets.
-> The CS35L56 are designed to work together as a set so they have
-> all been connected to a single speaker widget.
 > 
-> Instead of a hardcoded list of codec widget names, the code walks
-> through all the codecs on the dailink and for every cs35l56 it uses
-> its name prefix to construct the source end of the route. This adds
-> a small amount of overhead during probe but has the benefit that it
-> isn't dependent on every system using the same prefixes.
-> 
-> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Applied to
 
-We should probably do the same thing for sof_sdw_rt_map.c, there's no
-good reason to encode rt1316-2 SPOL and rt1318-2 SPOR
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+
+Thanks!
+
+[1/1] ASoC: cs4271: Fix spelling mistake "retrieveing" -> "retrieving"
+      commit: 0be9595d8a1170474867b8ee2caf14394db45d8b
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
