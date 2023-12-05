@@ -4,55 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0A675C4167B
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Dec 2023 15:26:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C1439C4167B
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Dec 2023 15:26:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D8599EAB;
-	Tue,  5 Dec 2023 16:25:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D8599EAB
+	by alsa0.perex.cz (Postfix) with ESMTPS id F0B6EEB4;
+	Tue,  5 Dec 2023 16:26:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F0B6EEB4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1701789960;
-	bh=p90kx8FX6IvQVLNI3iCr83VyGnO2yiT4INzKozRdqA4=;
+	s=default; t=1701789973;
+	bh=FB/itCwBG7pRp+uaeD+i6utlxkBbH7tOpieNXOzuY4Q=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=r7W5XMQonSJ2FEIyslEu0HghAkCIBYSUizyVUDZGN3tsvMWkhdHesmdy88gygha7F
-	 /Wqj7b7QMCsv45Bw34/tqM1WVXnwp1VUJPNVza5mPz/0rNFFF2mM1fzyo5IwdBdzBK
-	 8CgRXcng7OR2ecQzVFAsBxoCgR2Tzw6vI5hAxx1U=
+	b=YkM9xRrB1Wh+HFhk4p15X8oSsUn9tUkKBoT1fiXmR5FEqeYoJQs/rYxCmWQwN42ac
+	 cYN+sybf9ryufwaWS7lJTqJQD/9pJVfF2Rmf1XCf13FflSNlI/L1zEkD66xG6A31JZ
+	 qu1fwJAlvJZWMbEmzRhtJR+CbSupXltObhe4PCU4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A7157F8085A; Tue,  5 Dec 2023 16:22:26 +0100 (CET)
+	id A35E8F808CA; Tue,  5 Dec 2023 16:22:28 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id AB394F8085C;
-	Tue,  5 Dec 2023 16:22:26 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1EB32F808F4;
+	Tue,  5 Dec 2023 16:22:28 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id EBE46F8074E; Tue,  5 Dec 2023 16:22:14 +0100 (CET)
+	id 0E5EDF8057A; Tue,  5 Dec 2023 16:22:16 +0100 (CET)
 Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net
- [217.70.183.194])
+ [IPv6:2001:4b98:dc4:8::222])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 2EA4EF8025F
-	for <alsa-devel@alsa-project.org>; Tue,  5 Dec 2023 16:21:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2EA4EF8025F
+	by alsa1.perex.cz (Postfix) with ESMTPS id AE85DF80589
+	for <alsa-devel@alsa-project.org>; Tue,  5 Dec 2023 16:21:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AE85DF80589
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=Z7UmF/Sx
-Received: by mail.gandi.net (Postfix) with ESMTPA id 4FC6840009;
-	Tue,  5 Dec 2023 15:21:28 +0000 (UTC)
+ header.s=gm1 header.b=PY2gAUaE
+Received: by mail.gandi.net (Postfix) with ESMTPA id EFB6A40021;
+	Tue,  5 Dec 2023 15:21:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1701789689;
+	t=1701789702;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=JegQGeg9h6K3SanbpVDQgW3INV0bHYQT8tL/y6V/fI4=;
-	b=Z7UmF/Sx610v9Ui+3KrH/mI7zdwsmeCoVrZbR5VKLgwLW0MEgtpmghFKWVOEGn547KQNwf
-	KBImIzahnVYXg5TP8Nv1lp1s2EkE8FjE2PmoJmwb+1oDb/vIr/pSE2zTPzHEAYoLjSrGn5
-	HbVtLIQsbIR857y7VCw3a6P2zpVLsLuvX6vpM5C2ScuOBppIjzbsr0FbGMMBEc0onuVg2a
-	tSuBIy0FPBt2Ne8A0PwWOda4riIWKQtjEwWrEEoAx5jeg8nDkYXV9tZEIoVh/wXjRak3YN
-	aE8D7Dm5KX186VlZmzY/WjnwTbrHdnEVqdr4ZjwZUa95xTJzd60C1GMm9iFHKQ==
+	bh=uOBWKYZj5UdDB35skSZSyrDTkyYGp1yN/Y6WoC8sAPc=;
+	b=PY2gAUaEK4upESCHDO+F9uMuJmh1B7rQ1kEYeSijJEUkapdzmEPWUNGoN4xxUHHadWWbTO
+	U2U1yCtHOYdCzC899WXZtUiCaVYz4/VyzASmINwsMH+MueuG2LRAUUCdbLeE9a/DVTGYdh
+	xnJcZyxY9oTEFXzEnkrgEFyQgWS9vcw82J66ZZiLTeXxE9v4Dem512pGYBNdg7gnhi7Syv
+	YMBk+q29jvxqzvjKeyNop6p+BFfZiH4Q9dR2JkvdHciP/fczFE4UA05avd9qPdle16f3Ut
+	pXXppn+TMlihFcYxx6OVkF+TDzpPe0f/n3gseqa0p12AFipuW6ILs0WOPzAivA==
 From: Herve Codina <herve.codina@bootlin.com>
 To: Herve Codina <herve.codina@bootlin.com>,
 	Qiang Zhao <qiang.zhao@nxp.com>,
@@ -72,19 +72,19 @@ Cc: Arnd Bergmann <arnd@arndb.de>,
 	linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
 	alsa-devel@alsa-project.org,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	stable@vger.kernel.org
-Subject: [PATCH v2 03/17] soc: fsl: cpm1: qmc: Fix rx channel reset
-Date: Tue,  5 Dec 2023 16:21:00 +0100
-Message-ID: <20231205152116.122512-4-herve.codina@bootlin.com>
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: [PATCH v2 17/17] soc: fsl: cpm1: qmc: Introduce functions to change
+ timeslots at runtime
+Date: Tue,  5 Dec 2023 16:21:14 +0100
+Message-ID: <20231205152116.122512-18-herve.codina@bootlin.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231205152116.122512-1-herve.codina@bootlin.com>
 References: <20231205152116.122512-1-herve.codina@bootlin.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-GND-Sasl: herve.codina@bootlin.com
-Message-ID-Hash: QJUBWLXVCJJVJZXTEJACC3NRBCRHPI3K
-X-Message-ID-Hash: QJUBWLXVCJJVJZXTEJACC3NRBCRHPI3K
+Message-ID-Hash: LSLP4CXO27TQZ5LZDK4SJP3MGMDHWHOQ
+X-Message-ID-Hash: LSLP4CXO27TQZ5LZDK4SJP3MGMDHWHOQ
 X-MailFrom: herve.codina@bootlin.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -96,8 +96,7 @@ X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QJUBWLXVCJJVJZXTEJACC3NRBCRHPI3K/>
+Archived-At: <>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -106,37 +105,104 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The qmc_chan_reset_rx() set the is_rx_stopped flag. This leads to an
-inconsistent state in the following sequence.
-    qmc_chan_stop()
-    qmc_chan_reset()
-Indeed, after the qmc_chan_reset() call, the channel must still be
-stopped. Only a qmc_chan_start() call can move the channel from stopped
-state to started state.
+Introduce qmc_chan_{get,set}_ts_info() function to allow timeslots
+modification at runtime.
 
-Fix the issue removing the is_rx_stopped flag setting from
-qmc_chan_reset()
+The modification is provided using qmc_chan_set_ts_info() and will be
+applied on next qmc_chan_start().
+qmc_chan_set_ts_info() must be called with the channel rx and/or tx
+stopped.
 
-Fixes: 3178d58e0b97 ("soc: fsl: cpm1: Add support for QMC")
-Cc: stable@vger.kernel.org
 Signed-off-by: Herve Codina <herve.codina@bootlin.com>
 Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
- drivers/soc/fsl/qe/qmc.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/soc/fsl/qe/qmc.c | 51 ++++++++++++++++++++++++++++++++++++++++
+ include/soc/fsl/qe/qmc.h | 10 ++++++++
+ 2 files changed, 61 insertions(+)
 
 diff --git a/drivers/soc/fsl/qe/qmc.c b/drivers/soc/fsl/qe/qmc.c
-index 3f3de1351c96..2312152a44b3 100644
+index 45d9cb40a118..f498db9abe35 100644
 --- a/drivers/soc/fsl/qe/qmc.c
 +++ b/drivers/soc/fsl/qe/qmc.c
-@@ -685,7 +685,6 @@ static void qmc_chan_reset_rx(struct qmc_chan *chan)
- 		    qmc_read16(chan->s_param + QMC_SPE_RBASE));
- 
- 	chan->rx_pending = 0;
--	chan->is_rx_stopped = false;
- 
- 	spin_unlock_irqrestore(&chan->rx_lock, flags);
+@@ -290,6 +290,57 @@ int qmc_chan_get_info(struct qmc_chan *chan, struct qmc_chan_info *info)
  }
+ EXPORT_SYMBOL(qmc_chan_get_info);
+ 
++int qmc_chan_get_ts_info(struct qmc_chan *chan, struct qmc_chan_ts_info *ts_info)
++{
++	unsigned long flags;
++
++	spin_lock_irqsave(&chan->ts_lock, flags);
++
++	ts_info->rx_ts_mask_avail = chan->rx_ts_mask_avail;
++	ts_info->tx_ts_mask_avail = chan->tx_ts_mask_avail;
++	ts_info->rx_ts_mask = chan->rx_ts_mask;
++	ts_info->tx_ts_mask = chan->tx_ts_mask;
++
++	spin_unlock_irqrestore(&chan->ts_lock, flags);
++
++	return 0;
++}
++EXPORT_SYMBOL(qmc_chan_get_ts_info);
++
++int qmc_chan_set_ts_info(struct qmc_chan *chan, const struct qmc_chan_ts_info *ts_info)
++{
++	unsigned long flags;
++	int ret;
++
++	/* Only a subset of available timeslots is allowed */
++	if ((ts_info->rx_ts_mask & chan->rx_ts_mask_avail) != ts_info->rx_ts_mask)
++		return -EINVAL;
++	if ((ts_info->tx_ts_mask & chan->tx_ts_mask_avail) != ts_info->tx_ts_mask)
++		return -EINVAL;
++
++	/* In case of common rx/tx table, rx/tx masks must be identical */
++	if (chan->qmc->is_tsa_64rxtx) {
++		if (ts_info->rx_ts_mask != ts_info->tx_ts_mask)
++			return -EINVAL;
++	}
++
++	spin_lock_irqsave(&chan->ts_lock, flags);
++
++	if ((chan->tx_ts_mask != ts_info->tx_ts_mask && !chan->is_tx_stopped) ||
++	    (chan->rx_ts_mask != ts_info->rx_ts_mask && !chan->is_rx_stopped)) {
++		dev_err(chan->qmc->dev, "Channel rx and/or tx not stopped\n");
++		ret = -EBUSY;
++	} else {
++		chan->tx_ts_mask = ts_info->tx_ts_mask;
++		chan->rx_ts_mask = ts_info->rx_ts_mask;
++		ret = 0;
++	}
++	spin_unlock_irqrestore(&chan->ts_lock, flags);
++
++	return ret;
++}
++EXPORT_SYMBOL(qmc_chan_set_ts_info);
++
+ int qmc_chan_set_param(struct qmc_chan *chan, const struct qmc_chan_param *param)
+ {
+ 	if (param->mode != chan->mode)
+diff --git a/include/soc/fsl/qe/qmc.h b/include/soc/fsl/qe/qmc.h
+index 166484bb4294..2a333fc1ea81 100644
+--- a/include/soc/fsl/qe/qmc.h
++++ b/include/soc/fsl/qe/qmc.h
+@@ -40,6 +40,16 @@ struct qmc_chan_info {
+ 
+ int qmc_chan_get_info(struct qmc_chan *chan, struct qmc_chan_info *info);
+ 
++struct qmc_chan_ts_info {
++	u64 rx_ts_mask_avail;
++	u64 tx_ts_mask_avail;
++	u64 rx_ts_mask;
++	u64 tx_ts_mask;
++};
++
++int qmc_chan_get_ts_info(struct qmc_chan *chan, struct qmc_chan_ts_info *ts_info);
++int qmc_chan_set_ts_info(struct qmc_chan *chan, const struct qmc_chan_ts_info *ts_info);
++
+ struct qmc_chan_param {
+ 	enum qmc_mode mode;
+ 	union {
 -- 
 2.43.0
 
