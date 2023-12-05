@@ -4,92 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9E163C4167B
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Dec 2023 14:09:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7C4F4C4167B
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Dec 2023 14:25:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0DBB083A;
-	Tue,  5 Dec 2023 15:09:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0DBB083A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5EE07E0D;
+	Tue,  5 Dec 2023 15:24:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5EE07E0D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1701785379;
-	bh=rQb+N39uPAAK6//1qgIY2sk376O56LStgFBioVbKq04=;
-	h=Date:From:To:CC:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1701786307;
+	bh=733NKxL4h+wm93HSHEujcT1ATDcM1CePguDygm1Gurg=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=sfQzfz4B4ZYkHNYSWPCAlNNRu2/KzGUAyEgr8YaqxGJ57DIWprcSyKCBaL/4o9/Vj
-	 O5be3eavZipzsvj03779tY3DLEtv4t/PecH3svVqTBud2E69G6E/5MS4e0t3Fl/Q9D
-	 UAMI4LlngetNhnF82/HbCzoq0QtjJkhDb6c5XyPA=
+	b=FQ7NatVN2ec74CkH+GSLE6uAtcrPf+r7ZQANj0kW47lG2LLQvah17iT3Eabcikqcv
+	 Ll4JptoLnLRvWFCb7hcjG46r+fsLSXUhyGj6SoNIUghpnVNYa8DXZp++9/l3mAsnB9
+	 1yhPP1fXF2wmS20R4vgzdeOq/wfYv7vxRyC/pn4M=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 94BB9F80568; Tue,  5 Dec 2023 15:08:57 +0100 (CET)
+	id AAFA7F8057E; Tue,  5 Dec 2023 15:24:35 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2F743F8057F;
-	Tue,  5 Dec 2023 15:08:57 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id AF51FF80580;
+	Tue,  5 Dec 2023 15:24:34 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 80BF0F8024E; Tue,  5 Dec 2023 15:08:52 +0100 (CET)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
+	id 7974FF8025A; Tue,  5 Dec 2023 15:24:30 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B866EF800F5
-	for <alsa-devel@alsa-project.org>; Tue,  5 Dec 2023 15:08:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B866EF800F5
+	by alsa1.perex.cz (Postfix) with ESMTPS id 93823F800F5
+	for <alsa-devel@alsa-project.org>; Tue,  5 Dec 2023 15:24:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 93823F800F5
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=YxWsdDBh
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-	by mx0b-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id
- 3B56gxTg026627;
-	Tue, 5 Dec 2023 08:08:43 -0600
+ header.s=PODMain02222019 header.b=q0JfNGpC
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+	by mx0a-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id
+ 3B5AskcD031438;
+	Tue, 5 Dec 2023 08:24:23 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	date:from:to:cc:subject:message-id:references:mime-version
-	:content-type:in-reply-to; s=PODMain02222019; bh=Y84RVH3VhN8tDOj
-	vYdyt02UT9ZJhyn7aTdxCf/Az8cs=; b=YxWsdDBhl7aBk9adBDLA8QMKQ0q1QDO
-	Qk0If8WrYTB6+wF84QLExCUrmzWOJPnv0qVMZs2KdbjiPJgPL/dzsOy27Jz0aW5o
-	u2s7IYOCLxoAgsqDmQlkN1X+4rNr4mvLe7OiOd4KVtwcDsXiL2gbuXLDufiTxpkP
-	uLgIoTG9hb3cJ9aEzQkX+abBe03wZ1j0DpcEdJjHlBz91Y7ASiN1BZQ7uHq3AF4g
-	VAJNhkItD8sdLYRzeEJb6gBVhoJ+MW1jEPG16gn+80ESXIsGYjOZfuFKsErRgD/u
-	GitxT5Urn/OZz5FTFB684Lw/l69Yo9i1rZDtE/rAHkiZv6Lp9gXJ5Vg==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3ur1vnkat2-1
+	from:to:cc:subject:date:message-id:in-reply-to:references
+	:mime-version:content-transfer-encoding:content-type; s=
+	PODMain02222019; bh=wsjEGUR0569MHdb3SMMQYhhzcIU8dA3MM8+YXYMq2bE=; b=
+	q0JfNGpCXBjjWZv1Hhi9C5jG/3ghdShdwijm3zNqUb+qLE+xfl0O8uprgzbhb4mu
+	R9xaTUJ6noAW3SfTISx433hTwW1U7OTYdXJCYd7XdrBcOh0KWdkouAkhV5onEHYM
+	1aB3MebdO1B85wxYhZ9enDi747VXwX845+csy6PJt9WiYpmKCT0MBswhWqmd6Tit
+	aDobsUt5HlQtROkoSS3ZF1v+aIbB+J5llYmzF+9Lg7039Do6eUgddThU8R2OiV0h
+	vIEC8tTj6yy7hwvmUKQGIs0VysPTc7ZY4L69DtA4DqnlYbvoBV2XdPieQg2LR7Fx
+	dxURtgqb5Xt4BfJJhzleGg==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3ur2v23991-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 05 Dec 2023 08:08:43 -0600 (CST)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+	Tue, 05 Dec 2023 08:24:23 -0600 (CST)
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 5 Dec
- 2023 14:08:41 +0000
+ 2023 14:24:20 +0000
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
  anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.40 via Frontend Transport; Tue, 5 Dec 2023 14:08:41 +0000
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com
- [198.61.86.93])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id C97E2474;
-	Tue,  5 Dec 2023 14:08:41 +0000 (UTC)
-Date: Tue, 5 Dec 2023 14:08:41 +0000
+ 15.2.1118.40 via Frontend Transport; Tue, 5 Dec 2023 14:24:20 +0000
+Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id D125811D1;
+	Tue,  5 Dec 2023 14:24:20 +0000 (UTC)
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
-To: Richard Fitzgerald <rf@opensource.cirrus.com>
-CC: <broonie@kernel.org>, <pierre-louis.bossart@linux.intel.com>,
-        <peter.ujfalusi@linux.intel.com>, <yung-chuan.liao@linux.intel.com>,
-        <kai.vehmanen@linux.intel.com>, <cezary.rojewski@intel.com>,
-        <ranjani.sridharan@linux.intel.com>, <alsa-devel@alsa-project.org>,
-        <linux-sound@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <patches@opensource.cirrus.com>
-Subject: Re: [PATCH] ASoC: Intel: sof_sdw_cs_amp: Connect outputs to a
- speaker widget
-Message-ID: <20231205140841.GG14858@ediswmail.ad.cirrus.com>
-References: <20231205135001.2506070-1-rf@opensource.cirrus.com>
+To: <perex@perex.cz>
+CC: <pierre-louis.bossart@linux.intel.com>, <bard.liao@intel.com>,
+        <mengdong.lin@intel.com>, <patches@opensource.cirrus.com>,
+        <alsa-devel@alsa-project.org>
+Subject: [PATCH alsa-ucm-conf 2/2] sof-soundwire: Add basic support for a 4x
+ cs35l56 configuration
+Date: Tue, 5 Dec 2023 14:24:20 +0000
+Message-ID: <20231205142420.1256042-2-ckeepax@opensource.cirrus.com>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20231205142420.1256042-1-ckeepax@opensource.cirrus.com>
+References: <20231205142420.1256042-1-ckeepax@opensource.cirrus.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20231205135001.2506070-1-rf@opensource.cirrus.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-GUID: AsMvK67Ferp6_peSXzZpkcOf209E6xTk
-X-Proofpoint-ORIG-GUID: AsMvK67Ferp6_peSXzZpkcOf209E6xTk
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: kvhZ5AtE0R2l5o5FDhagjV_HFRUmlFvO
+X-Proofpoint-GUID: kvhZ5AtE0R2l5o5FDhagjV_HFRUmlFvO
 X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: DW6NPWZI5346ID6G2KJA3FUKNZXS3RJD
-X-Message-ID-Hash: DW6NPWZI5346ID6G2KJA3FUKNZXS3RJD
+Message-ID-Hash: T2VDX4JHFXLHA7ZPLAUYNX27U5YWE4WU
+X-Message-ID-Hash: T2VDX4JHFXLHA7ZPLAUYNX27U5YWE4WU
 X-MailFrom: prvs=7703bda8c8=ckeepax@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -102,7 +99,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DW6NPWZI5346ID6G2KJA3FUKNZXS3RJD/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/T2VDX4JHFXLHA7ZPLAUYNX27U5YWE4WU/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -111,24 +108,45 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, Dec 05, 2023 at 01:50:01PM +0000, Richard Fitzgerald wrote:
-> Hookup the CS35L56 DAPM_OUTPUT widgets to a DAPM_SPK widget so
-> that there is a complete logical path to a speaker.
-> 
-> There is no particular reason to use multiple speaker widgets.
-> The CS35L56 are designed to work together as a set so they have
-> all been connected to a single speaker widget.
-> 
-> Instead of a hardcoded list of codec widget names, the code walks
-> through all the codecs on the dailink and for every cs35l56 it uses
-> its name prefix to construct the source end of the route. This adds
-> a small amount of overhead during probe but has the benefit that it
-> isn't dependent on every system using the same prefixes.
-> 
-> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-> ---
+cs35l56 is a boosted speaker amp add UCM support for a 4 amp
+configuration.
 
-Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+---
+ ucm2/sof-soundwire/cs35l56-4.conf | 24 ++++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
+ create mode 100644 ucm2/sof-soundwire/cs35l56-4.conf
 
-Thanks,
-Charles
+diff --git a/ucm2/sof-soundwire/cs35l56-4.conf b/ucm2/sof-soundwire/cs35l56-4.conf
+new file mode 100644
+index 0000000..f5af1e4
+--- /dev/null
++++ b/ucm2/sof-soundwire/cs35l56-4.conf
+@@ -0,0 +1,24 @@
++# Use case Configuration for sof-soundwire card
++
++SectionDevice."Speaker" {
++	Comment "Speaker"
++
++	EnableSequence [
++		cset "name='AMP1 Speaker Switch' 1"
++		cset "name='AMP2 Speaker Switch' 1"
++		cset "name='AMP3 Speaker Switch' 1"
++		cset "name='AMP4 Speaker Switch' 1"
++	]
++
++	DisableSequence [
++		cset "name='AMP4 Speaker Switch' 0"
++		cset "name='AMP3 Speaker Switch' 0"
++		cset "name='AMP2 Speaker Switch' 0"
++		cset "name='AMP1 Speaker Switch' 0"
++	]
++
++	Value {
++		PlaybackPriority 100
++		PlaybackPCM "hw:${CardId},2"
++	}
++}
+-- 
+2.39.2
+
