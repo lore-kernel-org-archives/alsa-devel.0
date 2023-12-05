@@ -4,67 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 20373C10DCE
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Dec 2023 17:00:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6A249C46CA0
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Dec 2023 17:12:13 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CEB27AEA;
-	Tue,  5 Dec 2023 18:00:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CEB27AEA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 63EEAA4C;
+	Tue,  5 Dec 2023 18:12:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 63EEAA4C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1701795640;
-	bh=RMbrascy7qFb8ahGeX/qqY/DHiuHp986+6NoGJLPpx0=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:List-Id:
+	s=default; t=1701796331;
+	bh=K/1cez5LQnfNiqaIWgtwa3dp1elmRG9QR6P4AviOUTc=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=KKjLWHoZxlSJ+Yy9axrb2iOG0xO6aTb1eEknorRI/3YWyVa7mNc9jyAOANwiPRNt3
-	 6aUldUx0SeJ21YM4uG+JHQDdVa1f+c3RU/dJoIB79Zsevgd6qFE2aNnyu5DMBgEd3Z
-	 ZAHr+/+qkkZRa7MdpotaWhWhMuKb0VzGY8nFAVN0=
+	b=W5D/nh3ZWGErj4NO4IFoHNM93OGn9QiQ+dp0MLoBD03klZtcTyawM/6daEGre4bKp
+	 NDqqT2AY6PvbbZ2iH2UXMBvHs3FxSvLULaInqv+G2TsR0kkVIUAdjrmVvVXu/AssaZ
+	 9pEwM3+WOZmaOYggnMUVOoJtGreAaMlbdCjhFqYg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5F762F8057B; Tue,  5 Dec 2023 18:00:08 +0100 (CET)
+	id CED09F80567; Tue,  5 Dec 2023 18:11:40 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E43EFF8057C;
-	Tue,  5 Dec 2023 18:00:07 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5778BF80588;
+	Tue,  5 Dec 2023 18:11:40 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 93D9CF8024E; Tue,  5 Dec 2023 18:00:01 +0100 (CET)
-Received: from irl.hu (irl.hu [95.85.9.111])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
- server-digest SHA256)
+	id 98437F8025A; Tue,  5 Dec 2023 18:11:35 +0100 (CET)
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with UTF8SMTPS id 63957F800AC
-	for <alsa-devel@alsa-project.org>; Tue,  5 Dec 2023 17:59:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 63957F800AC
-Received: from [192.168.2.4] (51b68398.dsl.pool.telekom.hu
- [::ffff:81.182.131.152])
-  (AUTH: CRAM-MD5 soyer@irl.hu, )
-  by irl.hu with ESMTPSA
-  id 0000000000071509.00000000656F5709.00116505;
- Tue, 05 Dec 2023 17:59:52 +0100
-Message-ID: <9c3846ae0da417c0fe5d4fa2d9d4134143184dda.camel@irl.hu>
-Subject: Re: [PATCH 2/2] ALSA: hda/tas2563: Add tas2563 HDA driver
-From: Gergo Koteles <soyer@irl.hu>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-  Shenghao Ding <shenghao-ding@ti.com>, Kevin Lu <kevin-lu@ti.com>,
-  Baojun Xu <baojun.xu@ti.com>, Jaroslav Kysela <perex@perex.cz>,
-  Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
-  Mark Brown <broonie@kernel.org>
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-Date: Tue, 05 Dec 2023 17:59:52 +0100
-In-Reply-To: <a530e70a-2491-4270-b582-cd493d1512b1@linux.intel.com>
-References: <cover.1701733441.git.soyer@irl.hu>
-	 <4a2f31d4eb8479789ceb1daf2e93ec0e25c23171.1701733441.git.soyer@irl.hu>
-	 <90765ee0-a814-4852-9b2a-020cda98d930@linux.intel.com>
-	 <974d41f6c703d9b65ebcd75a2c659cecf13bd877.camel@irl.hu>
-	 <a530e70a-2491-4270-b582-cd493d1512b1@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.1 (3.50.1-1.fc39) 
+	by alsa1.perex.cz (Postfix) with ESMTPS id 8BE1CF80166
+	for <alsa-devel@alsa-project.org>; Tue,  5 Dec 2023 18:11:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8BE1CF80166
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=UJsAMeUD
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701796286; x=1733332286;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=K/1cez5LQnfNiqaIWgtwa3dp1elmRG9QR6P4AviOUTc=;
+  b=UJsAMeUDzdGNXoURKQNCMLlgmxOFVGUOUX8b0w7V+FGgDOfoQJBZlMZT
+   UrTTGNBxWXBVxv+EFuLj8/LH0mkAswzkiJW8EUIPxNv/MVATEco3CgfVB
+   BbB/Rw3kLbWepxji685CTEhFUigUaEyfwaKxwFNsr4lbazdqtArqBafpN
+   T6ncvX+mKEqxeu7xcXTiKg/30HRdt+3+LT0xJCoPExG85b/b7ZW9A4hMz
+   jk/pE1Hj7V+4/U3IuUm8Oyr2j7GbiWrVjHQSJIaxUpNldPPO3ngyBZhaf
+   WNn0ls9ttD4CfMm/WLGj7C9RUIB3RDxvtkUt3FcqDQ4hg8vjhrhE1IuvU
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="7224205"
+X-IronPort-AV: E=Sophos;i="6.04,252,1695711600";
+   d="scan'208";a="7224205"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 05 Dec 2023 09:11:04 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="894445798"
+X-IronPort-AV: E=Sophos;i="6.04,252,1695711600";
+   d="scan'208";a="894445798"
+Received: from mbapna-mobl1.amr.corp.intel.com (HELO [10.212.151.198])
+ ([10.212.151.198])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 05 Dec 2023 09:11:03 -0800
+Message-ID: <8e3a9bc0-9f79-4419-a677-5f92f9bf04b7@linux.intel.com>
+Date: Tue, 5 Dec 2023 11:11:03 -0600
 MIME-Version: 1.0
-Message-ID-Hash: I6C35LDK2ZKMZ37G7CEPLLD4WXHOCQDI
-X-Message-ID-Hash: I6C35LDK2ZKMZ37G7CEPLLD4WXHOCQDI
-X-MailFrom: soyer@irl.hu
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH alsa-ucm-conf 2/2] sof-soundwire: Add basic support for a
+ 4x cs35l56 configuration
+Content-Language: en-US
+To: Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc: perex@perex.cz, bard.liao@intel.com, mengdong.lin@intel.com,
+ patches@opensource.cirrus.com, alsa-devel@alsa-project.org
+References: <20231205142420.1256042-1-ckeepax@opensource.cirrus.com>
+ <20231205142420.1256042-2-ckeepax@opensource.cirrus.com>
+ <c14371e7-0974-4d97-b5b8-55937390b684@linux.intel.com>
+ <20231205162838.GH14858@ediswmail.ad.cirrus.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20231205162838.GH14858@ediswmail.ad.cirrus.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: W3TQTMSBYI3F23G4N5FKIW33BEEXKNNG
+X-Message-ID-Hash: W3TQTMSBYI3F23G4N5FKIW33BEEXKNNG
+X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -75,7 +96,8 @@ X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: <>
+Archived-At: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/W3TQTMSBYI3F23G4N5FKIW33BEEXKNNG/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -84,54 +106,46 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, 2023-12-05 at 10:01 -0600, Pierre-Louis Bossart wrote:
-> > > > +
-> > > > +static void tas2563_fixup_i2c(struct hda_codec *cdc,
-> > > > +	const struct hda_fixup *fix, int action)
-> > > > +{
-> > > > +	 tas2xxx_generic_fixup(cdc, action, "i2c", "INT8866");
-> > >=20
-> > > Any specific reason to use an Intel ACPI identifier? Why not use
-> > > "TIAS2563" ?
-> > >=20
-> > INT8866 is in the ACPI.
-> > I don't know why Lenovo uses this name.
-> > I think it's more internal than intel.
-> >=20
-> > =C2=A0=C2=A0=C2=A0Scope (_SB.I2CD)
-> > =C2=A0=C2=A0=C2=A0=C2=A0{
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0Device (TAS)
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0{
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0Name (_HID, "INT8866")  // _HID: Hardware ID
->=20
-> Ouch, I hope they checked with Intel that this isn't an HID already in
-> use...
->=20
-It looks the INT prefix is not reserved. (yet)
-https://uefi.org/ACPI_ID_List?acpi_search=3DINT
-
-> >=20
-> > > > +	return 0;
-> > > > +}
-> > > > +
-> > > > +static const struct dev_pm_ops tas2563_hda_pm_ops =3D {
-> > > > +	SYSTEM_SLEEP_PM_OPS(tas2563_system_suspend, tas2563_system_resume=
-)
-> > >=20
-> > > where's the pm_runtime stuff?
-> > >=20
-> >=20
-> > The amp stores its state in software shutdown mode.
-> > The tas2563_hda_playback_hook wakes/shutdowns the amp, not the
-> > pm_runtime.
->=20
-> My point was that you have all these pm_runtime_ calls in the code, but
-> nothing that provides pm_runtime suspend-resume functions so not sure
-> what exactly the result is?
->=20
->=20
-I think nothing. I haven't experienced anything unusual recently.
 
 
+On 12/5/23 10:28, Charles Keepax wrote:
+> On Tue, Dec 05, 2023 at 09:25:27AM -0600, Pierre-Louis Bossart wrote:
+>> On 12/5/23 08:24, Charles Keepax wrote:
+>>> +	EnableSequence [
+>>> +		cset "name='AMP1 Speaker Switch' 1"
+>>> +		cset "name='AMP2 Speaker Switch' 1"
+>>> +		cset "name='AMP3 Speaker Switch' 1"
+>>> +		cset "name='AMP4 Speaker Switch' 1"
+>>> +	]
+>>> +
+>>> +	DisableSequence [
+>>> +		cset "name='AMP4 Speaker Switch' 0"
+>>> +		cset "name='AMP3 Speaker Switch' 0"
+>>> +		cset "name='AMP2 Speaker Switch' 0"
+>>> +		cset "name='AMP1 Speaker Switch' 0"
+>>> +	]
+>>
+>> If we only need an on/off switch, I wonder if this can be made
+>> conditional, i.e. enable/disable a control if it exists. That would
+>> scale to various numbers of amplifiers without a need to add a 2-amp, 6
+>> or 8-amp configuration.
+> 
+> I think that is possible, would you lean towards modifying
+> HiFi.conf to only include a single file for cs35l56, or would you
+> lean more towards having each cs35l56-x.conf file include a
+> single base file?
 
+I wasn't referring to partitioning of files, rather the conditional UCM
+syntax,
+
+Condition {
+	Type ControlExists
+	Control "name='AMP4 Speaker Switch'"
+}
+
+e.g.
+
+https://github.com/alsa-project/alsa-ucm-conf/blob/master/ucm2/Intel/sof-hda-dsp/HiFi.conf#L37
+
+I am not sure however if this can be part of an Enable/Disable sequence,
+that was really a question for Jaroslav.
