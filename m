@@ -4,53 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AD6B6C4167B
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Dec 2023 15:22:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 45163C07E97
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Dec 2023 15:22:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7E6CADEB;
-	Tue,  5 Dec 2023 16:22:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7E6CADEB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 516DCE73;
+	Tue,  5 Dec 2023 16:22:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 516DCE73
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1701789735;
-	bh=U9ts1V6IQH+0qpy5JdbNVX2rBvDOUCOugYFx220pKqY=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=Cr9E+sNi2fZaSo2VoXg35YKQyNiiCHTSgItloYowgU2QrDXAsz8xQBiWp3QmJbCwV
-	 9DGDo+XP/baOjEuAOjEg2esG9LNwSg+GilASVGDw9l4gzH2gYix98TwQkTnekeCHmX
-	 5pPmjqNKBDbXVuMeYJiLgxz2UIhjYeiLIWP1/vkQ=
+	s=default; t=1701789756;
+	bh=+gxUCbKhHi1k9vzOs+nZ5DmTzSru3Y+rInUAtgzYBRo=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=L14p8FpuaYZZvzpcnnHodgiLo0rb7wZ0fp1Fou8ngQGpf6CiIq+bN3IuxR77U/jys
+	 TnlrLT1B+8xP73Eq44L3hOeRXqDAkL4V2N3qyGf8wRjk7S0GE+YIUBRPpFhfH+OKij
+	 hfJsPoMfbS1yZ3YqG5ryFzA1qUsBrQTFusKGmdEg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CA62EF805B3; Tue,  5 Dec 2023 16:21:42 +0100 (CET)
+	id 7D056F805E9; Tue,  5 Dec 2023 16:21:47 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 23CA5F80579;
-	Tue,  5 Dec 2023 16:21:42 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 54302F805C7;
+	Tue,  5 Dec 2023 16:21:47 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 64432F8055B; Tue,  5 Dec 2023 16:21:37 +0100 (CET)
+	id D0488F80564; Tue,  5 Dec 2023 16:21:40 +0100 (CET)
 Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net
- [IPv6:2001:4b98:dc4:8::222])
+ [217.70.183.194])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id CB834F800AC
-	for <alsa-devel@alsa-project.org>; Tue,  5 Dec 2023 16:21:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CB834F800AC
+	by alsa1.perex.cz (Postfix) with ESMTPS id 48B9CF8024E
+	for <alsa-devel@alsa-project.org>; Tue,  5 Dec 2023 16:21:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 48B9CF8024E
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=ZLTYCOXn
-Received: by mail.gandi.net (Postfix) with ESMTPA id 4239840006;
-	Tue,  5 Dec 2023 15:21:24 +0000 (UTC)
+ header.s=gm1 header.b=QfHYP7YA
+Received: by mail.gandi.net (Postfix) with ESMTPA id 49D614000D;
+	Tue,  5 Dec 2023 15:21:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1701789686;
+	t=1701789688;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=EQzemCGjTKgaOFfggHrbLZ6TF0LQrH4UISYJFYtdjhE=;
-	b=ZLTYCOXnb1VxUvJE0efVr+7U4KVX+H7XmeidTTaEu3Ym5K05fvFZW+FCckTZhrBaYBWxgu
-	OoOhfyHDT0nc6C/FmbPR/69hBqAZU+peuWmt11XRZfvbc1zmr0FQj0IrqH+TS9SA5+p2eq
-	OpcaIEDq3Rj3gOxwxWZeLFGrKzk0cKUW1M2w1yMDmE6BAoXXKYvspl5tRZFaIRqgQ96DYn
-	Jxgp4qxZHDlE/bl0WGfbki46dBNVCkSqIZkCyCKkYwXXLyPdybDeWTuyMiQGSSgZCCRnHV
-	SuGm2J7v8McKbtLm/hYzEX+4Jmsf3Hxd3duvIAELZIKjDaXLD8alOZh4RnqpUw==
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=lu03dEE+d4O3eVLkV3wm5Z7ZRpmxelDisaYnU0Q3dCo=;
+	b=QfHYP7YAsbfIrnfYD+YYv5ttYiAL9xfCYIBW+yUepDsvEeHnnyd+5Tbqh+vCjxQNLNYMnl
+	MyZjFaaQOwg/7RH9zcYAJlzBdkIEstrXKURDTLPe3FlJOMO38uj9daX1/svStUi1d53rLy
+	SI0GD61JdB8mfRBeXnurjR5mzW94TmarXkiexSQ+hNqGqgurMoZAZ1qWnyedRABe9AIt5W
+	ExiwptsqJEOMnhH+XFE1K2wFKtuP2rRlTPPLSuzzOp9X1teiz9qBt1xJrGriGaKv0iu6em
+	qf8r5iICCk8PSthz/YfGhxC3Uz1ziIKDvmhMlXP3x//qSXXrt1Wo0VcNfq6tlg==
 From: Herve Codina <herve.codina@bootlin.com>
 To: Herve Codina <herve.codina@bootlin.com>,
 	Qiang Zhao <qiang.zhao@nxp.com>,
@@ -70,18 +72,20 @@ Cc: Arnd Bergmann <arnd@arndb.de>,
 	linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
 	alsa-devel@alsa-project.org,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: [PATCH v2 00/17] Prepare the PowerQUICC QMC and TSA for the HDLC QMC
- driver
-Date: Tue,  5 Dec 2023 16:20:57 +0100
-Message-ID: <20231205152116.122512-1-herve.codina@bootlin.com>
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	stable@vger.kernel.org
+Subject: [PATCH v2 02/17] soc: fsl: cpm1: qmc: Fix __iomem addresses
+ declaration
+Date: Tue,  5 Dec 2023 16:20:59 +0100
+Message-ID: <20231205152116.122512-3-herve.codina@bootlin.com>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20231205152116.122512-1-herve.codina@bootlin.com>
+References: <20231205152116.122512-1-herve.codina@bootlin.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-GND-Sasl: herve.codina@bootlin.com
-Message-ID-Hash: GYDF32AMWDNQOSOM6NWMEHHHY3DX4YFR
-X-Message-ID-Hash: GYDF32AMWDNQOSOM6NWMEHHHY3DX4YFR
+Message-ID-Hash: EHGS7CMV5XSFOSVKLLV4CLEKRGMPSLPT
+X-Message-ID-Hash: EHGS7CMV5XSFOSVKLLV4CLEKRGMPSLPT
 X-MailFrom: herve.codina@bootlin.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -94,99 +98,159 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GYDF32AMWDNQOSOM6NWMEHHHY3DX4YFR/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/EHGS7CMV5XSFOSVKLLV4CLEKRGMPSLPT/>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi,
+Running sparse (make C=1) on qmc.c raises a lot of warning such as:
+  ...
+  warning: incorrect type in assignment (different address spaces)
+     expected struct cpm_buf_desc [usertype] *[noderef] __iomem bd
+     got struct cpm_buf_desc [noderef] [usertype] __iomem *txbd_free
+  ...
 
-This series updates PowerQUICC QMC and TSA drivers to prepare the
-support for the QMC HDLC driver.
+Indeed, some variable were declared 'type *__iomem var' instead of
+'type __iomem *var'.
 
-Patches were previously sent as part of a full feature series:
-"Add support for QMC HDLC, framer infrastructure and PEF2256 framer" [1]
+Use the correct declaration to remove these warnings.
 
-The full feature series reached the v9 iteration.
-The v1 was sent the 07/25/2023 followed by the other iterations
-(07/26/2023, 08/09/2023, 08/18/2023, 09/12/2023, 09/22/2023, 09/28/2023,
-10/11/23, 11/15/2023) and was ready to be merged in its v8.
-  https://lore.kernel.org/linux-kernel/20231025123215.5caca7d4@kernel.org/
+Fixes: 3178d58e0b97 ("soc: fsl: cpm1: Add support for QMC")
+Cc: stable@vger.kernel.org
+Signed-off-by: Herve Codina <herve.codina@bootlin.com>
+Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ drivers/soc/fsl/qe/qmc.c | 34 +++++++++++++++++-----------------
+ 1 file changed, 17 insertions(+), 17 deletions(-)
 
-The lack of feedback from the Freescale SoC and the Quicc Engine
-maintainers (i.e. drivers/soc/fsl/qe/ to which the QMC and TSA drivers
-belong) blocks the entire full feature series.
-These patches are fixes and improvements to TSA and QMC drivers.
-These drivers were previously acked by Li Yang but without any feedback
-from Li Yang nor Qiang Zhao the series cannot move forward.
-
-In order to ease the review/merge, the full feature series has been
-split and this series contains patches related to the PowerQUICC SoC
-part (QMC and TSA).
- - Perform some fixes (patches 1 to 5)
- - Add support for child devices (patch 6)
- - Add QMC dynamic timeslot support (patches 7 to 17)
-
-Compare to the previous iteration:
-  https://lore.kernel.org/linux-kernel/20231128140818.261541-1-herve.codina@bootlin.com/
-this v2 series:
-- Removes a forward declaration in the driver.
-- Adds kernel test robot tags as the issue was detected.
-- Adds some missing Cc: stable.
-
-Best regards,
-Hervé
-
-[1]: https://lore.kernel.org/linux-kernel/20231115144007.478111-1-herve.codina@bootlin.com/
-
-Changes v1 -> v2:
-  - Patch 1
-    Add 'Reported-by: kernel test robot <lkp@intel.com>'
-    Add 'Closes: https://lore.kernel.org/oe-kbuild-all/202312051959.9YdRIYbg-lkp@intel.com/'
-    Add 'Cc: stable@vger.kernel.org'
-
-  - Patch 2, 3
-    Add 'Cc: stable@vger.kernel.org
-
-  - Patch 15
-    Move qmc_setup_chan_trnsync() to avoid a forward declaration.
-
-Patches extracted:
-  - Patch 1..6 : full feature series patch 1..6
-  - Patch 7..17 : full feature series patch 9..19
-
-Herve Codina (17):
-  soc: fsl: cpm1: tsa: Fix __iomem addresses declaration
-  soc: fsl: cpm1: qmc: Fix __iomem addresses declaration
-  soc: fsl: cpm1: qmc: Fix rx channel reset
-  soc: fsl: cpm1: qmc: Extend the API to provide Rx status
-  soc: fsl: cpm1: qmc: Remove inline function specifiers
-  soc: fsl: cpm1: qmc: Add support for child devices
-  soc: fsl: cpm1: qmc: Introduce available timeslots masks
-  soc: fsl: cpm1: qmc: Rename qmc_setup_tsa* to qmc_init_tsa*
-  soc: fsl: cpm1: qmc: Introduce qmc_chan_setup_tsa*
-  soc: fsl: cpm1: qmc: Remove no more needed checks from
-    qmc_check_chans()
-  soc: fsl: cpm1: qmc: Check available timeslots in qmc_check_chans()
-  soc: fsl: cpm1: qmc: Add support for disabling channel TSA entries
-  soc: fsl: cpm1: qmc: Split Tx and Rx TSA entries setup
-  soc: fsl: cpm1: qmc: Introduce is_tsa_64rxtx flag
-  soc: fsl: cpm1: qmc: Handle timeslot entries at channel start() and
-    stop()
-  soc: fsl: cpm1: qmc: Remove timeslots handling from setup_chan()
-  soc: fsl: cpm1: qmc: Introduce functions to change timeslots at
-    runtime
-
- drivers/soc/fsl/qe/qmc.c      | 658 ++++++++++++++++++++++++++--------
- drivers/soc/fsl/qe/tsa.c      |  22 +-
- include/soc/fsl/qe/qmc.h      |  27 +-
- sound/soc/fsl/fsl_qmc_audio.c |   2 +-
- 4 files changed, 538 insertions(+), 171 deletions(-)
-
+diff --git a/drivers/soc/fsl/qe/qmc.c b/drivers/soc/fsl/qe/qmc.c
+index 92ec76c03965..3f3de1351c96 100644
+--- a/drivers/soc/fsl/qe/qmc.c
++++ b/drivers/soc/fsl/qe/qmc.c
+@@ -175,7 +175,7 @@ struct qmc_chan {
+ 	struct list_head list;
+ 	unsigned int id;
+ 	struct qmc *qmc;
+-	void *__iomem s_param;
++	void __iomem *s_param;
+ 	enum qmc_mode mode;
+ 	u64	tx_ts_mask;
+ 	u64	rx_ts_mask;
+@@ -203,9 +203,9 @@ struct qmc_chan {
+ struct qmc {
+ 	struct device *dev;
+ 	struct tsa_serial *tsa_serial;
+-	void *__iomem scc_regs;
+-	void *__iomem scc_pram;
+-	void *__iomem dpram;
++	void __iomem *scc_regs;
++	void __iomem *scc_pram;
++	void __iomem *dpram;
+ 	u16 scc_pram_offset;
+ 	cbd_t __iomem *bd_table;
+ 	dma_addr_t bd_dma_addr;
+@@ -218,37 +218,37 @@ struct qmc {
+ 	struct qmc_chan *chans[64];
+ };
+ 
+-static inline void qmc_write16(void *__iomem addr, u16 val)
++static inline void qmc_write16(void __iomem *addr, u16 val)
+ {
+ 	iowrite16be(val, addr);
+ }
+ 
+-static inline u16 qmc_read16(void *__iomem addr)
++static inline u16 qmc_read16(void __iomem *addr)
+ {
+ 	return ioread16be(addr);
+ }
+ 
+-static inline void qmc_setbits16(void *__iomem addr, u16 set)
++static inline void qmc_setbits16(void __iomem *addr, u16 set)
+ {
+ 	qmc_write16(addr, qmc_read16(addr) | set);
+ }
+ 
+-static inline void qmc_clrbits16(void *__iomem addr, u16 clr)
++static inline void qmc_clrbits16(void __iomem *addr, u16 clr)
+ {
+ 	qmc_write16(addr, qmc_read16(addr) & ~clr);
+ }
+ 
+-static inline void qmc_write32(void *__iomem addr, u32 val)
++static inline void qmc_write32(void __iomem *addr, u32 val)
+ {
+ 	iowrite32be(val, addr);
+ }
+ 
+-static inline u32 qmc_read32(void *__iomem addr)
++static inline u32 qmc_read32(void __iomem *addr)
+ {
+ 	return ioread32be(addr);
+ }
+ 
+-static inline void qmc_setbits32(void *__iomem addr, u32 set)
++static inline void qmc_setbits32(void __iomem *addr, u32 set)
+ {
+ 	qmc_write32(addr, qmc_read32(addr) | set);
+ }
+@@ -318,7 +318,7 @@ int qmc_chan_write_submit(struct qmc_chan *chan, dma_addr_t addr, size_t length,
+ {
+ 	struct qmc_xfer_desc *xfer_desc;
+ 	unsigned long flags;
+-	cbd_t *__iomem bd;
++	cbd_t __iomem *bd;
+ 	u16 ctrl;
+ 	int ret;
+ 
+@@ -374,7 +374,7 @@ static void qmc_chan_write_done(struct qmc_chan *chan)
+ 	void (*complete)(void *context);
+ 	unsigned long flags;
+ 	void *context;
+-	cbd_t *__iomem bd;
++	cbd_t __iomem *bd;
+ 	u16 ctrl;
+ 
+ 	/*
+@@ -425,7 +425,7 @@ int qmc_chan_read_submit(struct qmc_chan *chan, dma_addr_t addr, size_t length,
+ {
+ 	struct qmc_xfer_desc *xfer_desc;
+ 	unsigned long flags;
+-	cbd_t *__iomem bd;
++	cbd_t __iomem *bd;
+ 	u16 ctrl;
+ 	int ret;
+ 
+@@ -488,7 +488,7 @@ static void qmc_chan_read_done(struct qmc_chan *chan)
+ 	void (*complete)(void *context, size_t size);
+ 	struct qmc_xfer_desc *xfer_desc;
+ 	unsigned long flags;
+-	cbd_t *__iomem bd;
++	cbd_t __iomem *bd;
+ 	void *context;
+ 	u16 datalen;
+ 	u16 ctrl;
+@@ -663,7 +663,7 @@ static void qmc_chan_reset_rx(struct qmc_chan *chan)
+ {
+ 	struct qmc_xfer_desc *xfer_desc;
+ 	unsigned long flags;
+-	cbd_t *__iomem bd;
++	cbd_t __iomem *bd;
+ 	u16 ctrl;
+ 
+ 	spin_lock_irqsave(&chan->rx_lock, flags);
+@@ -694,7 +694,7 @@ static void qmc_chan_reset_tx(struct qmc_chan *chan)
+ {
+ 	struct qmc_xfer_desc *xfer_desc;
+ 	unsigned long flags;
+-	cbd_t *__iomem bd;
++	cbd_t __iomem *bd;
+ 	u16 ctrl;
+ 
+ 	spin_lock_irqsave(&chan->tx_lock, flags);
 -- 
 2.43.0
 
