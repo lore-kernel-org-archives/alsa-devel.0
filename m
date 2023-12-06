@@ -4,43 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 40F70C4167B
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Dec 2023 00:02:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BD6C4C10F05
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Dec 2023 00:02:23 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 54F38857;
-	Thu,  7 Dec 2023 01:02:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 54F38857
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4828B850;
+	Thu,  7 Dec 2023 01:02:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4828B850
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1701907340;
-	bh=3gXlQSMa2t6u9qx0R6mBXzPLkS6++7n7m26sDH+W4Os=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=gtCzZnWIGRqzqNaheuW7BG+mR4ZOClUht9sJ8EkEdrMprJx5318N+voZn5TcgQecp
-	 XriJ1Jx+dqb+jilGSWG9CgR9P7HxFrB7LPRUYeU7KZOZuPzw9aseK63CpR+/TCkZ2L
-	 sHGzPKkovuKavWnQjbKNKOFmJabV0g1MHdaHMhnw=
+	s=default; t=1701907341;
+	bh=YDPwkK1deX7V9JsExYYWPrDMpLbjNA85dgJwuObOb0Y=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=V2ONt13pbDdiYFeviwEH9wiK0+xGjFa1cdD41eVFP8nP/vk/hAUyUBUoiQG37RKQI
+	 nQsWQ8LGDbSTJBbhBlccVTdaE7NMNopWxeOsXriUHqZeav5+j+cXXdvUL+WXw8sDIG
+	 0dcd+LOpQDZiLoZWer+AFBaNBTy0IH87GfZl+RsA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2AA52F80631; Thu,  7 Dec 2023 01:01:03 +0100 (CET)
+	id 511F7F80588; Thu,  7 Dec 2023 01:00:58 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 324D2F80623;
-	Thu,  7 Dec 2023 01:01:02 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CFC9FF80622;
+	Thu,  7 Dec 2023 01:00:57 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A9C7FF805A1; Thu,  7 Dec 2023 01:00:37 +0100 (CET)
+	id 1EDCDF805A8; Thu,  7 Dec 2023 01:00:32 +0100 (CET)
 Received: from irl.hu (irl.hu [95.85.9.111])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
  server-digest SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with UTF8SMTPS id 485A0F80557
-	for <alsa-devel@alsa-project.org>; Thu,  7 Dec 2023 01:00:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 485A0F80557
+	by alsa1.perex.cz (Postfix) with UTF8SMTPS id 479E8F80494
+	for <alsa-devel@alsa-project.org>; Thu,  7 Dec 2023 01:00:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 479E8F80494
 Received: from fedori.lan (51b690cd.dsl.pool.telekom.hu
  [::ffff:81.182.144.205])
   (AUTH: CRAM-MD5 soyer@irl.hu, )
   by irl.hu with ESMTPSA
-  id 00000000000716BB.0000000065710B01.00118FFE;
- Thu, 07 Dec 2023 01:00:01 +0100
+  id 00000000000716F9.0000000065710B06.00119065;
+ Thu, 07 Dec 2023 01:00:06 +0100
 From: Gergo Koteles <soyer@irl.hu>
 To: Shenghao Ding <shenghao-ding@ti.com>, Kevin Lu <kevin-lu@ti.com>,
   Baojun Xu <baojun.xu@ti.com>, Jaroslav Kysela <perex@perex.cz>,
@@ -48,16 +49,19 @@ To: Shenghao Ding <shenghao-ding@ti.com>, Kevin Lu <kevin-lu@ti.com>,
   Mark Brown <broonie@kernel.org>
 Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
   Gergo Koteles <soyer@irl.hu>
-Subject: [PATCH 00/16] ALSA: hda/tas2781: Add tas2563 support
-Date: Thu,  7 Dec 2023 00:59:41 +0100
-Message-ID: <cover.1701903015.git.soyer@irl.hu>
+Subject: [PATCH 09/16] ALSA: hda/tas2781: add TAS2563 support for 14ARB7
+Date: Thu,  7 Dec 2023 00:59:50 +0100
+Message-ID: 
+ <1efa4849a6c7fef0fafa000fe558a2633548bba0.1701906455.git.soyer@irl.hu>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <cover.1701906455.git.soyer@irl.hu>
+References: <cover.1701906455.git.soyer@irl.hu>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 X-Mime-Autoconverted: from 8bit to 7bit by courier 1.0
-Message-ID-Hash: 62I3U3QI2GXIBLEDH5WOGLWKJE3IUBPD
-X-Message-ID-Hash: 62I3U3QI2GXIBLEDH5WOGLWKJE3IUBPD
+Message-ID-Hash: OY7NHYFB4OYK6NMYTOIMDHQP5VJH4QF3
+X-Message-ID-Hash: OY7NHYFB4OYK6NMYTOIMDHQP5VJH4QF3
 X-MailFrom: soyer@irl.hu
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -70,7 +74,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/62I3U3QI2GXIBLEDH5WOGLWKJE3IUBPD/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OY7NHYFB4OYK6NMYTOIMDHQP5VJH4QF3/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -79,60 +83,147 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The tas2781-hda driver can be modified to support tas2563 as well.
-Before knowing this information, I created another series for a
-new driver.
-https://lore.kernel.org/lkml/cover.1701733441.git.soyer@irl.hu/
+The INT8866 belongs to the Lenovo Yoga 7 Gen 7 AMD 14ARB7
+laptop. It has two TAS2563 amplifier. Add the ACPI UID
+and calibration functions to handle them.
 
-This series now extends tas2781-hda, addresses differences and
-fixes various bugs.
+Signed-off-by: Gergo Koteles <soyer@irl.hu>
+---
+ include/sound/tas2781.h         |  1 +
+ sound/pci/hda/tas2781_hda_i2c.c | 87 +++++++++++++++++++++++++++++++++
+ 2 files changed, 88 insertions(+)
 
-The tas2563 is a smart amplifier. Similar to tas2562 but with DSP. Some
-Lenovo laptops have it to drive the bass speakers. By default, it is in
-software shutdown state.
-
-To make the DSP work it needs a firmware and some calibration data.
-The latter can be read from the EFI in Lenovo laptops.
-
-For the correct configuration it needs additional register data.
-It captured after running the Windows driver.
-
-The firmware can be extracted as TAS2563Firmware.bin from the Windows
-driver with innoextract.
-https://download.lenovo.com/consumer/mobiles/h5yd037fbfyy7kd0.exe
-
-The driver will search for it as TAS2XXX3870.bin with the 14ARB7.
-The captured registers extracted with TI's regtool:
-https://github.com/soyersoyer/tas2563rca/raw/main/INT8866RCA2.bin
-
-
-Gergo Koteles (16):
-  ASoC: tas2781: add support for fw version 0x0503
-  ALSA: hda/tas2781: leave hda_component in usable state
-  ASoC: tas2781: disable regmap regcache
-  ALSA: hda/tas2781: handle missing calibration data
-  ALSA: hda/tas2781: fix typos in comment
-  ASoC: tas2781: add ptrs to calibration functions
-  ALSA: hda/tas2781: load_calibration just load
-  ASoC: tas2781: add configurable global_addr
-  ALSA: hda/tas2781: add TAS2563 support for 14ARB7
-  ASoC: tas2781: check negative indexes
-  ASoC: tas2781: use 0 as default prog/conf index
-  ASoC: tas2781: move set_drv_data outside tasdevice_init
-  ALSA: hda/tas2781: remove sound controls in unbind
-  ALSA: hda/tas2781: call cleaner functions only once
-  ALSA: hda/tas2781: reset the amp before component_add
-  ALSA: hda/tas2781: configure the amp after firmware load
-
- include/sound/tas2781.h           |   8 +
- sound/pci/hda/tas2781_hda_i2c.c   | 364 +++++++++++++++++++-----------
- sound/soc/codecs/tas2781-comlib.c |  23 +-
- sound/soc/codecs/tas2781-fmwlib.c |  11 +-
- sound/soc/codecs/tas2781-i2c.c    |   2 +
- 5 files changed, 270 insertions(+), 138 deletions(-)
-
-
-base-commit: ffc253263a1375a65fa6c9f62a893e9767fbebfa
+diff --git a/include/sound/tas2781.h b/include/sound/tas2781.h
+index 5f364e4d8995..afe9584daa65 100644
+--- a/include/sound/tas2781.h
++++ b/include/sound/tas2781.h
+@@ -22,6 +22,7 @@
+ #define TAS2781_DRV_VER			1
+ #define SMARTAMP_MODULE_NAME		"tas2781"
+ #define TAS2781_GLOBAL_ADDR	0x40
++#define TAS2563_GLOBAL_ADDR	0x48
+ #define TASDEVICE_RATES			(SNDRV_PCM_RATE_44100 |\
+ 	SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_96000 |\
+ 	SNDRV_PCM_RATE_88200)
+diff --git a/sound/pci/hda/tas2781_hda_i2c.c b/sound/pci/hda/tas2781_hda_i2c.c
+index 7ebf5d7e4aac..f28383597ca8 100644
+--- a/sound/pci/hda/tas2781_hda_i2c.c
++++ b/sound/pci/hda/tas2781_hda_i2c.c
+@@ -65,6 +65,24 @@ enum calib_data {
+ 	CALIB_MAX
+ };
+ 
++#define TAS2563_MAX_CHANNELS	4
++
++#define TAS2563_CAL_POWER	TASDEVICE_REG(0, 0x0d, 0x3c)
++#define TAS2563_CAL_R0		TASDEVICE_REG(0, 0x0f, 0x34)
++#define TAS2563_CAL_INVR0	TASDEVICE_REG(0, 0x0f, 0x40)
++#define TAS2563_CAL_R0_LOW	TASDEVICE_REG(0, 0x0f, 0x48)
++#define TAS2563_CAL_TLIM	TASDEVICE_REG(0, 0x10, 0x14)
++#define TAS2563_CAL_N		5
++#define TAS2563_CAL_DATA_SIZE	4
++#define TAS2563_CAL_CH_SIZE	20
++#define TAS2563_CAL_ARRAY_SIZE	80
++
++static unsigned int cal_regs[TAS2563_CAL_N] = {
++	TAS2563_CAL_POWER, TAS2563_CAL_R0, TAS2563_CAL_INVR0,
++	TAS2563_CAL_R0_LOW, TAS2563_CAL_TLIM,
++};
++
++
+ static int tas2781_get_i2c_res(struct acpi_resource *ares, void *data)
+ {
+ 	struct tasdevice_priv *tas_priv = data;
+@@ -395,6 +413,68 @@ static const struct snd_kcontrol_new tas2781_dsp_conf_ctrl = {
+ 	.put = tasdevice_config_put,
+ };
+ 
++static void tas2563_apply_calibration(struct tasdevice_priv *tas_priv)
++{
++	unsigned int data;
++	int offset = 0;
++	int ret;
++
++	for (int i = 0; i < tas_priv->ndev; i++) {
++		for (int j = 0; j < TAS2563_CAL_N; ++j) {
++			data = cpu_to_be32(
++				*(uint32_t *)&tas_priv->cali_data.data[offset]);
++			ret = tasdevice_dev_bulk_write(tas_priv, i, cal_regs[j],
++				(unsigned char *)&data, TAS2563_CAL_DATA_SIZE);
++			if (ret)
++				dev_err(tas_priv->dev,
++					"Error writing calib regs\n");
++			offset += TAS2563_CAL_DATA_SIZE;
++		}
++	}
++}
++
++static int load_calibration_efi_2(struct tasdevice_priv *tas_priv)
++{
++	static efi_guid_t efi_guid = EFI_GUID(0x1f52d2a1, 0xbb3a, 0x457d, 0xbc,
++		0x09, 0x43, 0xa3, 0xf4, 0x31, 0x0a, 0x92);
++
++	static efi_char16_t *efi_vars[TAS2563_MAX_CHANNELS][TAS2563_CAL_N] = {
++		{ L"Power_1", L"R0_1", L"InvR0_1", L"R0_Low_1", L"TLim_1" },
++		{ L"Power_2", L"R0_2", L"InvR0_2", L"R0_Low_2", L"TLim_2" },
++		{ L"Power_3", L"R0_3", L"InvR0_3", L"R0_Low_3", L"TLim_3" },
++		{ L"Power_4", L"R0_4", L"InvR0_4", L"R0_Low_4", L"TLim_4" },
++	};
++
++	unsigned long max_size = TAS2563_CAL_DATA_SIZE;
++	unsigned int offset = 0;
++	efi_status_t status;
++	unsigned int attr;
++
++	tas_priv->cali_data.data = devm_kzalloc(tas_priv->dev,
++			TAS2563_CAL_ARRAY_SIZE, GFP_KERNEL);
++	if (!tas_priv->cali_data.data)
++		return -ENOMEM;
++
++	for (int i = 0; i < tas_priv->ndev; ++i) {
++		for (int j = 0; j < TAS2563_CAL_N; ++j) {
++			status = efi.get_variable(efi_vars[i][j],
++				&efi_guid, &attr, &max_size,
++				&tas_priv->cali_data.data[offset]);
++			if (status != EFI_SUCCESS ||
++				max_size != TAS2563_CAL_DATA_SIZE) {
++				dev_warn(tas_priv->dev,
++				"Calibration data read failed %ld\n", status);
++				return -EINVAL;
++			}
++			offset += TAS2563_CAL_DATA_SIZE;
++		}
++	}
++
++	tas_priv->cali_data.total_sz = offset;
++
++	return 0;
++}
++
+ static void tas2781_apply_calibration(struct tasdevice_priv *tas_priv)
+ {
+ 	static const unsigned char page_array[CALIB_MAX] = {
+@@ -658,6 +738,12 @@ static int tas2781_hda_i2c_probe(struct i2c_client *clt)
+ 		device_name = "TIAS2781";
+ 		tas_priv->load_calibration = load_calibration_efi_1;
+ 		tas_priv->apply_calibration = tas2781_apply_calibration;
++		tas_priv->global_addr = TAS2781_GLOBAL_ADDR;
++	} else if (strstr(dev_name(&clt->dev), "INT8866")) {
++		device_name = "INT8866";
++		tas_priv->load_calibration = load_calibration_efi_2;
++		tas_priv->apply_calibration = tas2563_apply_calibration;
++		tas_priv->global_addr = TAS2563_GLOBAL_ADDR;
+ 	} else
+ 		return -ENODEV;
+ 
+@@ -808,6 +894,7 @@ static const struct i2c_device_id tas2781_hda_i2c_id[] = {
+ 
+ static const struct acpi_device_id tas2781_acpi_hda_match[] = {
+ 	{"TIAS2781", 0 },
++	{"INT8866", 0 },
+ 	{}
+ };
+ MODULE_DEVICE_TABLE(acpi, tas2781_acpi_hda_match);
 -- 
 2.43.0
 
