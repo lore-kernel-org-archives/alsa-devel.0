@@ -4,84 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E742FC4167B
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Dec 2023 21:06:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C1D9DC4167B
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Dec 2023 21:31:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0E946DEC;
-	Wed,  6 Dec 2023 22:05:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0E946DEC
+	by alsa0.perex.cz (Postfix) with ESMTPS id C41D1868;
+	Wed,  6 Dec 2023 22:31:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C41D1868
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1701896762;
-	bh=3b1rBW7w13tMlent75Aip+Ve9vistS1muRoXTNQTFvk=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=Hp/MIueiWqdJj7ghoPZqMnmLIPQMGsYqHNzkVQqMtUhSigBafhErJTA03lsXVdJnw
-	 99KK+NonqeSJRvTWFCMna0qfN23TprC9hPRGoaJ4aflG9D47/EFsamBKUV1kO3iXkO
-	 CQ4bk8j/2hs5UFPoJmsMRsTVAgsfQJqjwkfBqR4Y=
+	s=default; t=1701898287;
+	bh=y8kQuX9pd8cBl2CQ5W6mXrhhOiqB2RDH5j2vAGHA9fQ=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=pe0+IBJJQG/DIJVlIM4mxpK+L2M23J92zjrjG+vQR1AaEwOstN7ef0dfNSyeIBxuj
+	 1Ga82FG9iHTQ2NLknQTucEG0I4bh9RslKexVnk7sSoB4hJ8DjhCinWjImYxeMvAC4c
+	 Q6kPiRh/l4G1Mlhj+JeuafKXLM39UOkWMhK5PuTk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 74D67F805B4; Wed,  6 Dec 2023 22:05:24 +0100 (CET)
+	id 81E5CF8025F; Wed,  6 Dec 2023 22:30:56 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B7C4EF805A9;
-	Wed,  6 Dec 2023 22:05:23 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 14683F8025F;
+	Wed,  6 Dec 2023 22:30:56 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C1DAEF80166; Wed,  6 Dec 2023 22:05:00 +0100 (CET)
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 3309CF8024E
-	for <alsa-devel@alsa-project.org>; Wed,  6 Dec 2023 22:04:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3309CF8024E
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=vQglDxau
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id C847CCE20DE;
-	Wed,  6 Dec 2023 21:04:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2AAE1C433C8;
-	Wed,  6 Dec 2023 21:04:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1701896681;
-	bh=3b1rBW7w13tMlent75Aip+Ve9vistS1muRoXTNQTFvk=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=vQglDxau9ZDy2AFbOsEnCKp5/VCVL62MVj6z39nPac5B5CPQHn1fMejfKZ06wrw0/
-	 AickRhoCzPrmvgLUE5h23/IV3qhKmEGmswCPQZGhZk31BPGqQYtDzd+0j1tzlFuDlR
-	 3A3CYOgO7YJ0ZntBNC8UfW80VFVpnJZnpz2JCq73NzS8vGIdINqsfzAyaKuPnWIFGn
-	 SQBj6/IKFUsTSPOPxdL5o2ADwPFWyB6eET2aDxmsNjimDDfWXWSFgDLBnZJ2qGg8zS
-	 0ZuRrfL8znyQUTOQALjVtT+hia5wj+bqemvNERT3ot2b0mjxRYwApHoaXRCPTZYTm+
-	 DCjWewhrhDOJQ==
-From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org, cujomalainey@chromium.org
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Daniel Baluta <daniel.baluta@nxp.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Trevor Wu <trevor.wu@mediatek.com>,
- Tinghan Shen <tinghan.shen@mediatek.com>
-In-Reply-To: <20231205220131.2585913-1-cujomalainey@chromium.org>
-References: <20231205220131.2585913-1-cujomalainey@chromium.org>
-Subject: Re: [PATCH] ASoC: SOF: mediatek: mt8186: Revert Add Google Steelix
- topology compatible
-Message-Id: <170189667789.80064.8079452528877340900.b4-ty@kernel.org>
-Date: Wed, 06 Dec 2023 21:04:37 +0000
+	id 46301F8024E; Wed,  6 Dec 2023 22:30:47 +0100 (CET)
+Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
+ [207.180.221.201])
+	by alsa1.perex.cz (Postfix) with ESMTP id 45525F800D2
+	for <alsa-devel@alsa-project.org>; Wed,  6 Dec 2023 22:30:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 45525F800D2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-5c066
-Message-ID-Hash: JTH5IGU3B7OGZHE4F4F7K2JCUES3EHPP
-X-Message-ID-Hash: JTH5IGU3B7OGZHE4F4F7K2JCUES3EHPP
-X-MailFrom: broonie@kernel.org
+From: GitHub pull_request - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1701898241708122253-webhooks-bot@alsa-project.org>
+References: <1701898241708122253-webhooks-bot@alsa-project.org>
+Subject: aplay: fix buffer overflow and tainted format string
+Message-Id: <20231206213047.46301F8024E@alsa1.perex.cz>
+Date: Wed,  6 Dec 2023 22:30:47 +0100 (CET)
+Message-ID-Hash: PKR7KVLVBHM2HM6U3G7KJAPPFTMT2VYX
+X-Message-ID-Hash: PKR7KVLVBHM2HM6U3G7KJAPPFTMT2VYX
+X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -93,48 +57,20 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JTH5IGU3B7OGZHE4F4F7K2JCUES3EHPP/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PKR7KVLVBHM2HM6U3G7KJAPPFTMT2VYX/>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, 05 Dec 2023 14:01:18 -0800, cujomalainey@chromium.org wrote:
-> This reverts commit 505c83212da5bfca95109421b8f5d9f8c6cdfef2.
-> 
-> This is not an official topology from the SOF project. Topologies are
-> named based on the card configuration and are NOT board specific.
-> 
-> 
+alsa-project/alsa-utils pull request #246 was opened from szsam:
 
-Applied to
+Prior this commit, memcpy from names[0] to format[] will overwrite if strlen(names[0]) is greater than 1024. Also, the length of malloc()ed names[channel] is insufficient, leading to another buffer overwriting when calling sprintf(). Moreover, the format string of sprintf() can be controlled by user input. An attacker can exploit this weakness to crash the program, disclose information or even execute arbitrary code.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+Fix by allocating enough space for arrays and using constant expressions as the format strings.
 
-Thanks!
-
-[1/1] ASoC: SOF: mediatek: mt8186: Revert Add Google Steelix topology compatible
-      commit: d20d36755a605a21e737b6b16c566658589b1811
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+Request URL   : https://github.com/alsa-project/alsa-utils/pull/246
+Patch URL     : https://github.com/alsa-project/alsa-utils/pull/246.patch
+Repository URL: https://github.com/alsa-project/alsa-utils
