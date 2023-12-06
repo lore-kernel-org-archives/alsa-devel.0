@@ -4,44 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 44E4FC4167B
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Dec 2023 00:01:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0906AC10DC1
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Dec 2023 00:01:35 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BC625820;
-	Thu,  7 Dec 2023 01:01:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BC625820
+	by alsa0.perex.cz (Postfix) with ESMTPS id C968EA4E;
+	Thu,  7 Dec 2023 01:01:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C968EA4E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1701907281;
-	bh=1zCZNDIPEY5ITHgZNBshDJrB115+NHjQt5YxMF/o4S4=;
+	s=default; t=1701907292;
+	bh=aVeNO1gRkgWwkqelL+LVBczCwhhpJymskeUXBEr1+dE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=csZFJud6JR9zAw1U7r/g0BY/8kAHHEF+L8HfWT8kdW9WVvbD3181C23za+Ac41nOV
-	 ZqEyU8aTOyXzThWAQZalebheyi05EKZFQnHN7JMUUMpdwHt7s73jtW6pi94nvvwylT
-	 SEUYly96ZKbKYSQ0EE3LFNKZvFt43Bk7WnnjXvLk=
+	b=VVfD9piXDXlTCtABtWLYiI7EgcQNBMqMdeeU4olmUMMRVxiTgRmsVPmEzxul6eJ4l
+	 IFdDAdrXVApTCNQkvAWMdVqbv+KbexWRCp+mGkqib619QnO9/m1oKxpoDnjLlwX3me
+	 n4AhG7m6CR9j6Qe/L64JzOlf/5ncj2jQnRO+U+Jc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 661E9F805BA; Thu,  7 Dec 2023 01:00:50 +0100 (CET)
+	id 55A38F805AE; Thu,  7 Dec 2023 01:00:53 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 526FEF805C1;
-	Thu,  7 Dec 2023 01:00:48 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id AB3B5F805B2;
+	Thu,  7 Dec 2023 01:00:50 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3E03FF8055A; Thu,  7 Dec 2023 01:00:18 +0100 (CET)
+	id 2E25CF802BE; Thu,  7 Dec 2023 01:00:20 +0100 (CET)
 Received: from irl.hu (irl.hu [95.85.9.111])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
  server-digest SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with UTF8SMTPS id BF403F8024E
-	for <alsa-devel@alsa-project.org>; Thu,  7 Dec 2023 01:00:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BF403F8024E
+	by alsa1.perex.cz (Postfix) with UTF8SMTPS id 80926F8025F
+	for <alsa-devel@alsa-project.org>; Thu,  7 Dec 2023 01:00:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 80926F8025F
 Received: from fedori.lan (51b690cd.dsl.pool.telekom.hu
  [::ffff:81.182.144.205])
   (AUTH: CRAM-MD5 soyer@irl.hu, )
   by irl.hu with ESMTPSA
-  id 00000000000716E7.0000000065710B03.00119029;
- Thu, 07 Dec 2023 01:00:03 +0100
+  id 00000000000716F3.0000000065710B05.0011905D;
+ Thu, 07 Dec 2023 01:00:05 +0100
 From: Gergo Koteles <soyer@irl.hu>
 To: Shenghao Ding <shenghao-ding@ti.com>, Kevin Lu <kevin-lu@ti.com>,
   Baojun Xu <baojun.xu@ti.com>, Jaroslav Kysela <perex@perex.cz>,
@@ -49,10 +49,10 @@ To: Shenghao Ding <shenghao-ding@ti.com>, Kevin Lu <kevin-lu@ti.com>,
   Mark Brown <broonie@kernel.org>
 Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
   Gergo Koteles <soyer@irl.hu>
-Subject: [PATCH 03/16] ASoC: tas2781: disable regmap regcache
-Date: Thu,  7 Dec 2023 00:59:44 +0100
+Subject: [PATCH 07/16] ALSA: hda/tas2781: load_calibration just load
+Date: Thu,  7 Dec 2023 00:59:48 +0100
 Message-ID: 
- <21a183b5a08cb23b193af78d4b1114cc59419272.1701906455.git.soyer@irl.hu>
+ <ebf628b2742d0e1b1f824c4f0e9b8e4c0a2bc106.1701906455.git.soyer@irl.hu>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1701906455.git.soyer@irl.hu>
 References: <cover.1701906455.git.soyer@irl.hu>
@@ -60,8 +60,8 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 X-Mime-Autoconverted: from 8bit to 7bit by courier 1.0
-Message-ID-Hash: F7AKS2PXJKEKSZU6HLJZ2VHSLIAQVWD7
-X-Message-ID-Hash: F7AKS2PXJKEKSZU6HLJZ2VHSLIAQVWD7
+Message-ID-Hash: REA476IKEB5OZKL5OYP47M62PNXBGU3C
+X-Message-ID-Hash: REA476IKEB5OZKL5OYP47M62PNXBGU3C
 X-MailFrom: soyer@irl.hu
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -74,7 +74,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/F7AKS2PXJKEKSZU6HLJZ2VHSLIAQVWD7/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/REA476IKEB5OZKL5OYP47M62PNXBGU3C/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -83,85 +83,33 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The amp has 3 level addressing (BOOK, PAGE, REG).
-The regcache couldn't handle it.
+Move the apply_calibration outside to make it clearer.
 
 Signed-off-by: Gergo Koteles <soyer@irl.hu>
 ---
- sound/pci/hda/tas2781_hda_i2c.c   | 17 +----------------
- sound/soc/codecs/tas2781-comlib.c |  2 +-
- 2 files changed, 2 insertions(+), 17 deletions(-)
+ sound/pci/hda/tas2781_hda_i2c.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/sound/pci/hda/tas2781_hda_i2c.c b/sound/pci/hda/tas2781_hda_i2c.c
-index 077a01521eef..d272d3d08b29 100644
+index 2b5031e4dda3..c82ed2413fcb 100644
 --- a/sound/pci/hda/tas2781_hda_i2c.c
 +++ b/sound/pci/hda/tas2781_hda_i2c.c
-@@ -717,8 +717,6 @@ static int tas2781_runtime_suspend(struct device *dev)
- 		tas_priv->tasdevice[i].cur_conf = -1;
- 	}
+@@ -470,7 +470,6 @@ static int load_calibration_efi_1(struct tasdevice_priv *tas_priv)
+ 		dev_dbg(tas_priv->dev, "%4ld-%2d-%2d, %2d:%2d:%2d\n",
+ 			tm->tm_year, tm->tm_mon, tm->tm_mday,
+ 			tm->tm_hour, tm->tm_min, tm->tm_sec);
+-		tas2781_apply_calib(tas_priv);
+ 	} else
+ 		tas_priv->cali_data.total_sz = 0;
  
--	regcache_cache_only(tas_priv->regmap, true);
--	regcache_mark_dirty(tas_priv->regmap);
+@@ -548,6 +547,7 @@ static void tasdev_fw_ready(const struct firmware *fmw, void *context)
+ 	 * calibrated data inside algo.
+ 	 */
+ 	tasdevice_load_calibration(tas_priv);
++	tasdevice_apply_calibration(tas_priv);
  
- 	mutex_unlock(&tas_priv->codec_lock);
- 
-@@ -730,20 +728,11 @@ static int tas2781_runtime_resume(struct device *dev)
- 	struct tasdevice_priv *tas_priv = dev_get_drvdata(dev);
- 	unsigned long calib_data_sz =
- 		tas_priv->ndev * TASDEVICE_SPEAKER_CALIBRATION_SIZE;
--	int ret;
- 
- 	dev_dbg(tas_priv->dev, "Runtime Resume\n");
- 
- 	mutex_lock(&tas_priv->codec_lock);
- 
--	regcache_cache_only(tas_priv->regmap, false);
--	ret = regcache_sync(tas_priv->regmap);
--	if (ret) {
--		dev_err(tas_priv->dev,
--			"Failed to restore register cache: %d\n", ret);
--		goto out;
--	}
--
- 	tasdevice_prmg_load(tas_priv, tas_priv->cur_prog);
- 
- 	/* If calibrated data occurs error, dsp will still works with default
-@@ -752,10 +741,9 @@ static int tas2781_runtime_resume(struct device *dev)
- 	if (tas_priv->cali_data.total_sz > calib_data_sz)
- 		tas2781_apply_calib(tas_priv);
- 
--out:
- 	mutex_unlock(&tas_priv->codec_lock);
- 
--	return ret;
-+	return 0;
- }
- 
- static int tas2781_system_suspend(struct device *dev)
-@@ -770,10 +758,7 @@ static int tas2781_system_suspend(struct device *dev)
- 		return ret;
- 
- 	/* Shutdown chip before system suspend */
--	regcache_cache_only(tas_priv->regmap, false);
- 	tasdevice_tuning_switch(tas_priv, 1);
--	regcache_cache_only(tas_priv->regmap, true);
--	regcache_mark_dirty(tas_priv->regmap);
- 
- 	/*
- 	 * Reset GPIO may be shared, so cannot reset here.
-diff --git a/sound/soc/codecs/tas2781-comlib.c b/sound/soc/codecs/tas2781-comlib.c
-index ffb26e4a7e2f..933cd008e9f5 100644
---- a/sound/soc/codecs/tas2781-comlib.c
-+++ b/sound/soc/codecs/tas2781-comlib.c
-@@ -39,7 +39,7 @@ static const struct regmap_range_cfg tasdevice_ranges[] = {
- static const struct regmap_config tasdevice_regmap = {
- 	.reg_bits = 8,
- 	.val_bits = 8,
--	.cache_type = REGCACHE_RBTREE,
-+	.cache_type = REGCACHE_NONE,
- 	.ranges = tasdevice_ranges,
- 	.num_ranges = ARRAY_SIZE(tasdevice_ranges),
- 	.max_register = 256 * 128,
+ out:
+ 	if (tas_priv->fw_state == TASDEVICE_DSP_FW_FAIL) {
 -- 
 2.43.0
 
