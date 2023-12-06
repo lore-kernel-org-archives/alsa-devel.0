@@ -4,44 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A14BBC4167B
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Dec 2023 00:02:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 40F70C4167B
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Dec 2023 00:02:22 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D90CA1CE;
-	Thu,  7 Dec 2023 01:01:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D90CA1CE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 54F38857;
+	Thu,  7 Dec 2023 01:02:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 54F38857
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1701907314;
-	bh=bcRUY1YH7EBXOVng9EInExdJFJX7iChJlcvSKH98q9g=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=FCnRI+gCQFK+nnWW0vZj4G8dJiJMQiOgMdKeWjgN36KfrQ7QRrydtNfBbnUhxYlus
-	 +vpe2kHkT9YdYCaDCtmdcq/cvcy4ZLHULjs01G8xM8u6RQVjBbhCQXoSgpf6xAkOzm
-	 r0oVdKoimPPWZOQ26psnI+rM06pduZUMenFqedm8=
+	s=default; t=1701907340;
+	bh=3gXlQSMa2t6u9qx0R6mBXzPLkS6++7n7m26sDH+W4Os=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=gtCzZnWIGRqzqNaheuW7BG+mR4ZOClUht9sJ8EkEdrMprJx5318N+voZn5TcgQecp
+	 XriJ1Jx+dqb+jilGSWG9CgR9P7HxFrB7LPRUYeU7KZOZuPzw9aseK63CpR+/TCkZ2L
+	 sHGzPKkovuKavWnQjbKNKOFmJabV0g1MHdaHMhnw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DF031F80609; Thu,  7 Dec 2023 01:00:56 +0100 (CET)
+	id 2AA52F80631; Thu,  7 Dec 2023 01:01:03 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3BC14F805BD;
-	Thu,  7 Dec 2023 01:00:54 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 324D2F80623;
+	Thu,  7 Dec 2023 01:01:02 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C5B73F8025F; Thu,  7 Dec 2023 01:00:21 +0100 (CET)
+	id A9C7FF805A1; Thu,  7 Dec 2023 01:00:37 +0100 (CET)
 Received: from irl.hu (irl.hu [95.85.9.111])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
  server-digest SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with UTF8SMTPS id 17E9EF802E8
-	for <alsa-devel@alsa-project.org>; Thu,  7 Dec 2023 01:00:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 17E9EF802E8
+	by alsa1.perex.cz (Postfix) with UTF8SMTPS id 485A0F80557
+	for <alsa-devel@alsa-project.org>; Thu,  7 Dec 2023 01:00:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 485A0F80557
 Received: from fedori.lan (51b690cd.dsl.pool.telekom.hu
  [::ffff:81.182.144.205])
   (AUTH: CRAM-MD5 soyer@irl.hu, )
   by irl.hu with ESMTPSA
-  id 00000000000716E1.0000000065710B05.00119062;
- Thu, 07 Dec 2023 01:00:05 +0100
+  id 00000000000716BB.0000000065710B01.00118FFE;
+ Thu, 07 Dec 2023 01:00:01 +0100
 From: Gergo Koteles <soyer@irl.hu>
 To: Shenghao Ding <shenghao-ding@ti.com>, Kevin Lu <kevin-lu@ti.com>,
   Baojun Xu <baojun.xu@ti.com>, Jaroslav Kysela <perex@perex.cz>,
@@ -49,19 +48,16 @@ To: Shenghao Ding <shenghao-ding@ti.com>, Kevin Lu <kevin-lu@ti.com>,
   Mark Brown <broonie@kernel.org>
 Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
   Gergo Koteles <soyer@irl.hu>
-Subject: [PATCH 08/16] ASoC: tas2781: add configurable global_addr
-Date: Thu,  7 Dec 2023 00:59:49 +0100
-Message-ID: 
- <80d655881e1ef744a680f617b2b1105c44b62bad.1701906455.git.soyer@irl.hu>
+Subject: [PATCH 00/16] ALSA: hda/tas2781: Add tas2563 support
+Date: Thu,  7 Dec 2023 00:59:41 +0100
+Message-ID: <cover.1701903015.git.soyer@irl.hu>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <cover.1701906455.git.soyer@irl.hu>
-References: <cover.1701906455.git.soyer@irl.hu>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 X-Mime-Autoconverted: from 8bit to 7bit by courier 1.0
-Message-ID-Hash: LCMEQDABKVO6WLPXUG7VMVHR5SXA5PZI
-X-Message-ID-Hash: LCMEQDABKVO6WLPXUG7VMVHR5SXA5PZI
+Message-ID-Hash: 62I3U3QI2GXIBLEDH5WOGLWKJE3IUBPD
+X-Message-ID-Hash: 62I3U3QI2GXIBLEDH5WOGLWKJE3IUBPD
 X-MailFrom: soyer@irl.hu
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -74,7 +70,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LCMEQDABKVO6WLPXUG7VMVHR5SXA5PZI/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/62I3U3QI2GXIBLEDH5WOGLWKJE3IUBPD/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -83,41 +79,60 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add ability to handle global_addr of different
-chip versions.
+The tas2781-hda driver can be modified to support tas2563 as well.
+Before knowing this information, I created another series for a
+new driver.
+https://lore.kernel.org/lkml/cover.1701733441.git.soyer@irl.hu/
 
-Signed-off-by: Gergo Koteles <soyer@irl.hu>
----
- include/sound/tas2781.h         | 2 ++
- sound/pci/hda/tas2781_hda_i2c.c | 2 +-
- 2 files changed, 3 insertions(+), 1 deletion(-)
+This series now extends tas2781-hda, addresses differences and
+fixes various bugs.
 
-diff --git a/include/sound/tas2781.h b/include/sound/tas2781.h
-index 1d3c71d7e68d..5f364e4d8995 100644
---- a/include/sound/tas2781.h
-+++ b/include/sound/tas2781.h
-@@ -121,6 +121,8 @@ struct tasdevice_priv {
- 	bool force_fwload_status;
- 	bool playback_started;
- 	bool isacpi;
-+	unsigned int global_addr;
-+
- 	int (*fw_parse_variable_header)(struct tasdevice_priv *tas_priv,
- 		const struct firmware *fmw, int offset);
- 	int (*fw_parse_program_data)(struct tasdevice_priv *tas_priv,
-diff --git a/sound/pci/hda/tas2781_hda_i2c.c b/sound/pci/hda/tas2781_hda_i2c.c
-index c82ed2413fcb..7ebf5d7e4aac 100644
---- a/sound/pci/hda/tas2781_hda_i2c.c
-+++ b/sound/pci/hda/tas2781_hda_i2c.c
-@@ -72,7 +72,7 @@ static int tas2781_get_i2c_res(struct acpi_resource *ares, void *data)
- 
- 	if (i2c_acpi_get_i2c_resource(ares, &sb)) {
- 		if (tas_priv->ndev < TASDEVICE_MAX_CHANNELS &&
--			sb->slave_address != TAS2781_GLOBAL_ADDR) {
-+			sb->slave_address != tas_priv->global_addr) {
- 			tas_priv->tasdevice[tas_priv->ndev].dev_addr =
- 				(unsigned int)sb->slave_address;
- 			tas_priv->ndev++;
+The tas2563 is a smart amplifier. Similar to tas2562 but with DSP. Some
+Lenovo laptops have it to drive the bass speakers. By default, it is in
+software shutdown state.
+
+To make the DSP work it needs a firmware and some calibration data.
+The latter can be read from the EFI in Lenovo laptops.
+
+For the correct configuration it needs additional register data.
+It captured after running the Windows driver.
+
+The firmware can be extracted as TAS2563Firmware.bin from the Windows
+driver with innoextract.
+https://download.lenovo.com/consumer/mobiles/h5yd037fbfyy7kd0.exe
+
+The driver will search for it as TAS2XXX3870.bin with the 14ARB7.
+The captured registers extracted with TI's regtool:
+https://github.com/soyersoyer/tas2563rca/raw/main/INT8866RCA2.bin
+
+
+Gergo Koteles (16):
+  ASoC: tas2781: add support for fw version 0x0503
+  ALSA: hda/tas2781: leave hda_component in usable state
+  ASoC: tas2781: disable regmap regcache
+  ALSA: hda/tas2781: handle missing calibration data
+  ALSA: hda/tas2781: fix typos in comment
+  ASoC: tas2781: add ptrs to calibration functions
+  ALSA: hda/tas2781: load_calibration just load
+  ASoC: tas2781: add configurable global_addr
+  ALSA: hda/tas2781: add TAS2563 support for 14ARB7
+  ASoC: tas2781: check negative indexes
+  ASoC: tas2781: use 0 as default prog/conf index
+  ASoC: tas2781: move set_drv_data outside tasdevice_init
+  ALSA: hda/tas2781: remove sound controls in unbind
+  ALSA: hda/tas2781: call cleaner functions only once
+  ALSA: hda/tas2781: reset the amp before component_add
+  ALSA: hda/tas2781: configure the amp after firmware load
+
+ include/sound/tas2781.h           |   8 +
+ sound/pci/hda/tas2781_hda_i2c.c   | 364 +++++++++++++++++++-----------
+ sound/soc/codecs/tas2781-comlib.c |  23 +-
+ sound/soc/codecs/tas2781-fmwlib.c |  11 +-
+ sound/soc/codecs/tas2781-i2c.c    |   2 +
+ 5 files changed, 270 insertions(+), 138 deletions(-)
+
+
+base-commit: ffc253263a1375a65fa6c9f62a893e9767fbebfa
 -- 
 2.43.0
 
