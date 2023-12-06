@@ -4,97 +4,99 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CE613C4167B
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Dec 2023 02:35:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 78592C4167B
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Dec 2023 07:28:48 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6B3E7950;
-	Wed,  6 Dec 2023 03:35:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6B3E7950
+	by alsa0.perex.cz (Postfix) with ESMTPS id E5200A4B;
+	Wed,  6 Dec 2023 08:28:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E5200A4B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1701830128;
-	bh=wASPL97AkQXnUtfj1MB3l2GjekCOAQTLlFrQcJippcw=;
+	s=default; t=1701847725;
+	bh=xffnH9F5/s2eglTFcbaIqO0o3VhqJC3mGV+1KbfvF1U=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=G8lLbE4qXv/Z4QHHeW/+ALtbAhPpKN9tHrQZLNGOvEDPUCvEWnXNRtC8V+OpHkc0f
-	 UqvtKvwB6mPIsRdJDx3bAhaUCo5hyBBLrZCdaq+oY+kdfBDXwxvjYf/Gtu1LiAuDjH
-	 6sv+BAcD+2wjLaiImV+mmdxUPUIkpKEkJzL7nBBA=
+	b=dnd1I0l1TpX9Gn3URcPdSLZcFOMvhEdqZM9mWJXYgKJhw7csNWr0ZwzK1vfts0xvx
+	 tzeswJZoLsOgstuPp5TmaEsVqGuX6IjT7wRIaDCy+xEWo+AQro9BkAMXpar3hTKK9f
+	 ZBX9kaKqETknkYfee1STvmbtuOLZCaA2HeDaasfM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0DA2AF8055A; Wed,  6 Dec 2023 03:34:58 +0100 (CET)
+	id EDB13F80570; Wed,  6 Dec 2023 08:28:13 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7A2E4F802BE;
-	Wed,  6 Dec 2023 03:34:56 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 47D48F8057F;
+	Wed,  6 Dec 2023 08:28:05 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DA76FF8024E; Wed,  6 Dec 2023 03:33:36 +0100 (CET)
-Received: from mail-oo1-xc2e.google.com (mail-oo1-xc2e.google.com
- [IPv6:2607:f8b0:4864:20::c2e])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id E61FDF8024E; Wed,  6 Dec 2023 08:12:36 +0100 (CET)
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id EFD6BF800AC
-	for <alsa-devel@alsa-project.org>; Wed,  6 Dec 2023 03:33:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EFD6BF800AC
+	by alsa1.perex.cz (Postfix) with ESMTPS id A200BF800D2
+	for <alsa-devel@alsa-project.org>; Wed,  6 Dec 2023 08:11:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A200BF800D2
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20230601 header.b=GKtLzoE8
-Received: by mail-oo1-xc2e.google.com with SMTP id
- 006d021491bc7-58ce8513da1so4270715eaf.2
-        for <alsa-devel@alsa-project.org>;
- Tue, 05 Dec 2023 18:33:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701830007; x=1702434807;
- darn=alsa-project.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=gtni9tTiI3wh+6gitPHbCCQdIiWXUwPAOQD6+rWEq2c=;
-        b=GKtLzoE8s/U6pRc5yglMtPWsxCH6r+D/MQrfTDL5LQ8cJNJihawul2lcYMGyh+x6C9
-         OZqTERkmVvcERrsVEODeKXZKwOAqVb2QQvjeJzu9ksRpvy7ctKkr9jG2TGssb4VlbA2I
-         F1MTYnK+e5MUuCtdMpl0wpcrk02R8IZKjh7XdbcaiPUldsmhCmraODq0yuxnvm0PaVG4
-         H4fublyCBZ2zReAb2rRUOEp9/e5jCmYm24PTe/6wkop1lzXqbkbLWCrKy4M3/tJIQUiR
-         oo/s3Kpv9iyxa24QnfQVWjruEWxqTTn5j+uzbONNG1biiYEZv+dOPLGBC/FIQ3rlLQxS
-         QARA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701830007; x=1702434807;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gtni9tTiI3wh+6gitPHbCCQdIiWXUwPAOQD6+rWEq2c=;
-        b=ZCY5YsjVBoLRXEUTnsCcU04Sl27VcdLik2CBtaHQ/4lHC8AguEUPAD7DLI00/vUgap
-         Gzx1cvmUPqYL1A8uJ9bw/isGlL5ze/54iIDucvTKATFgifzJ1v62zV8H6UDyOjCPx0XF
-         GdB6D3iWd5m2Wxs1Dhmp+lTHCnMLrPAyYb7sCngJ/QtnGreWzCn3sc3i6LJzKWg3Bhe8
-         +BdoF0uVuoemUtIytzWKlICvfGxI/Qy0JD93RHkAGeSb8uIbeqcgqWdi9r2PEC/Bv0Zy
-         x6CABXrmnzcoymVSb4od996AnM5ptxeEPnjmBgnNyy3vbdTQa6ufFnfpQr/4v2Gkgc0X
-         sH+A==
-X-Gm-Message-State: AOJu0YzCVbRgDkKvhZdpzpTpZDnnEVVQz4onHB3LU3J/LzG7VE/bVZQj
-	RrokahDaWbXd4XltZDW6ark=
-X-Google-Smtp-Source: 
- AGHT+IFsQ5WEwWNBWKeWKzqQGzQZzcYWPCBpYTt+LIs9XRZfRYw/uQlzhJZMW5a0KOhe8J7ExX/NHQ==
-X-Received: by 2002:a05:6358:918c:b0:16d:bc40:3273 with SMTP id
- j12-20020a056358918c00b0016dbc403273mr415250rwa.22.1701830007544;
-        Tue, 05 Dec 2023 18:33:27 -0800 (PST)
-Received: from geday ([2804:7f2:8006:29e6:900a:3114:a8a3:6281])
-        by smtp.gmail.com with ESMTPSA id
- w5-20020a17090aea0500b00286d686b3d9sm1381306pjy.17.2023.12.05.18.33.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Dec 2023 18:33:27 -0800 (PST)
-Date: Tue, 5 Dec 2023 23:33:33 -0300
-From: Geraldo Nascimento <geraldogabriel@gmail.com>
-To: Tim Bosse <flinn@timbos.se>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>
-Subject: Re: [PATCH] ALSA: hda/realtek: add new framework to quirk chain
-Message-ID: <ZW/dfeBFt+9wipXH@geday>
-References: <20231205234200.383832-1-flinn@timbos.se>
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=N15KuOqs
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701846688; x=1733382688;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=xffnH9F5/s2eglTFcbaIqO0o3VhqJC3mGV+1KbfvF1U=;
+  b=N15KuOqskO/td5Lmn+K40uwMVcBTkg6lsKXDmZrzct66cV0JXRUZOKIG
+   LgsOZn9Esv3moXq2WLfjoc0TrIsWHu2Q2Pyh9s4wHmHKuWuW7jmg43Y6A
+   vKWgIbwlJ/nTjAZdJuKWnN7oz2nRNLjQ8aqH1XFKZoTVTdPTnVaHpr1uf
+   MBpnwGm+BmhcK9dGuQ2sFVd2OWEVMbeajr7elRT+RJu32ltyW635uHHE1
+   zcsLLGEU+M/J0wXm/DJ73XoDk/Gg2NPl8epuRBkP9Gvx0WOSgergVXa2w
+   cPeGvQZWWQvlBcfrPyXd4HjUSg6avPn53ZHlKu1g0iIIRGDfmNIYQ67jM
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="480215910"
+X-IronPort-AV: E=Sophos;i="6.04,254,1695711600";
+   d="scan'208";a="480215910"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 05 Dec 2023 23:11:15 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="862019409"
+X-IronPort-AV: E=Sophos;i="6.04,254,1695711600";
+   d="scan'208";a="862019409"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by FMSMGA003.fm.intel.com with ESMTP; 05 Dec 2023 23:11:11 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rAm3m-000ARm-1q;
+	Wed, 06 Dec 2023 07:11:07 +0000
+Date: Wed, 6 Dec 2023 15:10:44 +0800
+From: kernel test robot <lkp@intel.com>
+To: Neil Armstrong <neil.armstrong@linaro.org>,
+	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+	Banajit Goswami <bgoswami@quicinc.com>,
+	Andy Gross <agross@kernel.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzk@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
+	linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Neil Armstrong <neil.armstrong@linaro.org>
+Subject: Re: [PATCH v2 5/5] ASoC: codecs: Add WCD939x Codec driver
+Message-ID: <202312061428.ck8TrWdU-lkp@intel.com>
+References: 
+ <20231201-topic-sm8650-upstream-wcd939x-codec-v2-5-94ed814b25aa@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231205234200.383832-1-flinn@timbos.se>
-Message-ID-Hash: 2DAORYDKSDW73UK6AGAYE4Z2SHZJ7UQ2
-X-Message-ID-Hash: 2DAORYDKSDW73UK6AGAYE4Z2SHZJ7UQ2
-X-MailFrom: geraldogabriel@gmail.com
+In-Reply-To: 
+ <20231201-topic-sm8650-upstream-wcd939x-codec-v2-5-94ed814b25aa@linaro.org>
+Message-ID-Hash: 2QD7ONANJ64GDG2ZC2SEW2EJDSKVLICH
+X-Message-ID-Hash: 2QD7ONANJ64GDG2ZC2SEW2EJDSKVLICH
+X-MailFrom: lkp@intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -105,8 +107,7 @@ X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2DAORYDKSDW73UK6AGAYE4Z2SHZJ7UQ2/>
+Archived-At: <>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -115,40 +116,43 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, Dec 05, 2023 at 06:42:00PM -0500, Tim Bosse wrote:
-> The Framework Laptop 13 (AMD Ryzen 7040Series) has an ALC 295 with
-> a disconnected or faulty headset mic presence detect and works with the
-> same quirk chain as 309d7363ca3d9fcdb92ff2d958be14d7e8707f68. This model
-> has a VID:PID of f111:0006.
-> 
-> Signed-off-by: Tim Bosse <flinn@timbos.se>
-> ---
->  sound/pci/hda/patch_realtek.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-> index f9ddacfd920e..59f2578839ed 100644
-> --- a/sound/pci/hda/patch_realtek.c
-> +++ b/sound/pci/hda/patch_realtek.c
-> @@ -10271,6 +10271,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
->  	SND_PCI_QUIRK(0x8086, 0x2081, "Intel NUC 10", ALC256_FIXUP_INTEL_NUC10),
->  	SND_PCI_QUIRK(0x8086, 0x3038, "Intel NUC 13", ALC295_FIXUP_CHROME_BOOK),
->  	SND_PCI_QUIRK(0xf111, 0x0001, "Framework Laptop", ALC295_FIXUP_FRAMEWORK_LAPTOP_MIC_NO_PRESENCE),
-> +	SND_PCI_QUIRK(0xf111, 0x0006, "Framework Laptop", ALC295_FIXUP_FRAMEWORK_LAPTOP_MIC_NO_PRESENCE),
->  
->  #if 0
->  	/* Below is a quirk table taken from the old code.
-> -- 
-> 2.43.0
+Hi Neil,
 
-Hi Tim, you forgot to add at least Takashi to the Cc: and your patch
-will most likely be missed, so putting him in the loop.
+kernel test robot noticed the following build errors:
 
-Also, not much to say here since it's a simple desirable fix but would
-you mind sending v2 with a rewording of the commit info? The way you put
-it sounds like a new framework is being added to the realtek quirk
-chain, which is not the case, you're adding a new Framework-brand laptop
-to the quirks.
+[auto build test ERROR on broonie-sound/for-next]
+[also build test ERROR on linus/master v6.7-rc4 next-20231205]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Thank you,
-Geraldo Nascimento
+url:    https://github.com/intel-lab-lkp/linux/commits/Neil-Armstrong/ASoC-dt-bindings-document-WCD939x-Audio-Codec/20231202-000916
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+patch link:    https://lore.kernel.org/r/20231201-topic-sm8650-upstream-wcd939x-codec-v2-5-94ed814b25aa%40linaro.org
+patch subject: [PATCH v2 5/5] ASoC: codecs: Add WCD939x Codec driver
+config: x86_64-randconfig-001-20231203 (https://download.01.org/0day-ci/archive/20231206/202312061428.ck8TrWdU-lkp@intel.com/config)
+compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231206/202312061428.ck8TrWdU-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312061428.ck8TrWdU-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+>> ld.lld: error: undefined symbol: typec_switch_unregister
+   >>> referenced by wcd939x.c:3610 (sound/soc/codecs/wcd939x.c:3610)
+   >>>               sound/soc/codecs/wcd939x.o:(wcd939x_probe) in archive vmlinux.a
+--
+>> ld.lld: error: undefined symbol: fwnode_typec_switch_get
+   >>> referenced by wcd939x.c:3369 (sound/soc/codecs/wcd939x.c:3369)
+   >>>               sound/soc/codecs/wcd939x.o:(wcd939x_bind) in archive vmlinux.a
+--
+>> ld.lld: error: undefined symbol: typec_switch_put
+   >>> referenced by wcd939x.c:3483 (sound/soc/codecs/wcd939x.c:3483)
+   >>>               sound/soc/codecs/wcd939x.o:(wcd939x_bind) in archive vmlinux.a
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
