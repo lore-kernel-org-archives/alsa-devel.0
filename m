@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 982E3C4167B
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Dec 2023 22:31:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5066DC4167B
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Dec 2023 22:32:04 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0D853DF5;
-	Thu,  7 Dec 2023 23:31:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0D853DF5
+	by alsa0.perex.cz (Postfix) with ESMTPS id B68E6AE8;
+	Thu,  7 Dec 2023 23:31:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B68E6AE8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1701988304;
-	bh=IjYf6gRzkTpmo6Q9g3AJuEWF4uxIJpfQMq4tyk+NPbE=;
+	s=default; t=1701988322;
+	bh=n1mWbGKFemsTLPwuTmI6hhmqxPf97t6/N27jfi+k5vQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=pIQ4yFjcEnh8XW9jC5oLM6MWwPS8j0iF14dCcUPaI6N5uwuanx/y/H3qMmn1gxWXv
-	 1086A5NDGAhixg3aljX5lnEHNkeBiPF+loZsMIoSsGVfq8LlZ4uq9Y5QIFMq8m6AbL
-	 AdWv+9vA8jIKHbgwA0MP6FA1Jhz2Kne0FSId1MbE=
+	b=g275Dj4ZduotQuQk6cE9ufiQJVO34CUG1NRLjjH/2y0p8zzgitvnjAZtF9pU+b8CG
+	 CDFMcwWYcIgOmpXHsndDuw73iltqFTxDJ0HDS8RCuzwH7mLeVabMO2rcUpw/nXArGe
+	 Efj9wMYmPwy39gMQ6orQlfTZ4DzgP/Pq/TEgCyEQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6ED95F805EF; Thu,  7 Dec 2023 23:30:41 +0100 (CET)
+	id 63A6BF8063C; Thu,  7 Dec 2023 23:30:46 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 786FCF805FE;
-	Thu,  7 Dec 2023 23:30:39 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id AF89AF80623;
+	Thu,  7 Dec 2023 23:30:44 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5C311F80568; Thu,  7 Dec 2023 23:30:34 +0100 (CET)
+	id 19D5CF805C3; Thu,  7 Dec 2023 23:30:41 +0100 (CET)
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 70197F80166
-	for <alsa-devel@alsa-project.org>; Thu,  7 Dec 2023 23:30:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 70197F80166
+	by alsa1.perex.cz (Postfix) with ESMTPS id 64ED5F8025F
+	for <alsa-devel@alsa-project.org>; Thu,  7 Dec 2023 23:30:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 64ED5F8025F
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=Z2UxzNDL
+ header.s=Intel header.b=ImUSEvK7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701988215; x=1733524215;
+  t=1701988216; x=1733524216;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=IjYf6gRzkTpmo6Q9g3AJuEWF4uxIJpfQMq4tyk+NPbE=;
-  b=Z2UxzNDLlgTF1fNDBFqv7oiShJLK1Yav5D0u36aw7dGNx0ugaLWiSpq/
-   IrVo+oKXaiIy9COhBpzbrqqTZznl1v7AyZ6dlC00yuoAKTnMd3qTCkreY
-   WUaTRH/EMqOrxV7PJ39fa8EEyBefN0OV5zH3zEki6YmlxXj0WpGlYkwF2
-   6yoe6KmRz8OaJ9gVE56s8aval2ULaVabko1TEcS/7cj6n97GXm49eNiuA
-   e8WK1FXKW+ciGp3NLswIvR1Z4ywPZATtXE6b84yMwyhMhimEMCGHzedXt
-   0DFHaL4pEJqzNS4TjyJCau/zgnc6fAhCNVQ38DrnYzLoEwZaAesCm8lpO
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="480516595"
+  bh=n1mWbGKFemsTLPwuTmI6hhmqxPf97t6/N27jfi+k5vQ=;
+  b=ImUSEvK73Xhvv5xt6iydAWgbTN86Zyz454kLxXkuWVGEQttRD6XBnV5t
+   yvdxPcctLwEzkrUALU/i9mf1BqWFEzR78Nxh1b1g/nG0UsGIwSq2YXgYB
+   BUVksDH9C6FICOHKcybkXS9K00cA1ZRW6AuYtta85IrZkZIWkSOxogPgM
+   HQrg7R77eybPFaVMxROBekJO+f9MjLY9OLAw5YwZy56Xi1F9lUgO5iVsM
+   0ujsXr7ATGwEye2Gkh77KyaD+kAYh0mqPjAbHFJtY5mE4ScawkJrs3Bqi
+   btUyII7JPgzefHkUxiRYicP2vIhpTDA2zRJ2/5iDUnREpGgHDuBUO1llz
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="480516609"
 X-IronPort-AV: E=Sophos;i="6.04,258,1695711600";
-   d="scan'208";a="480516595"
+   d="scan'208";a="480516609"
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
   by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Dec 2023 14:30:10 -0800
+ 07 Dec 2023 14:30:11 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="895307470"
+X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="895307473"
 X-IronPort-AV: E=Sophos;i="6.04,258,1695711600";
-   d="scan'208";a="895307470"
+   d="scan'208";a="895307473"
 Received: from hrcolco-mobl3.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.212.148.159])
   by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Dec 2023 14:30:09 -0800
+ 07 Dec 2023 14:30:10 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: linux-sound@vger.kernel.org
 Cc: alsa-devel@alsa-project.org,
@@ -84,17 +84,16 @@ Cc: alsa-devel@alsa-project.org,
 	Jack Yu <jack.yu@realtek.com>,
 	Oder Chiou <oder_chiou@realtek.com>,
 	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [RFC PATCH 03/16] soundwire: stream: extend sdw_alloc_stream() to
- take 'type' parameter
-Date: Thu,  7 Dec 2023 16:29:31 -0600
-Message-Id: <20231207222944.663893-4-pierre-louis.bossart@linux.intel.com>
+Subject: [RFC PATCH 04/16] soundwire: extend sdw_stream_type to BPT
+Date: Thu,  7 Dec 2023 16:29:32 -0600
+Message-Id: <20231207222944.663893-5-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231207222944.663893-1-pierre-louis.bossart@linux.intel.com>
 References: <20231207222944.663893-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: QFUX34QHXH5ECI2YZI5DTC5WPXHIHQEY
-X-Message-ID-Hash: QFUX34QHXH5ECI2YZI5DTC5WPXHIHQEY
+Message-ID-Hash: YMR2LIFG4BEYNQ7LFIDMBEBORP5QOYFN
+X-Message-ID-Hash: YMR2LIFG4BEYNQ7LFIDMBEBORP5QOYFN
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -107,7 +106,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QFUX34QHXH5ECI2YZI5DTC5WPXHIHQEY/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YMR2LIFG4BEYNQ7LFIDMBEBORP5QOYFN/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -116,97 +115,51 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-In the existing definition of sdw_stream_runtime, the 'type' member is
-never set and defaults to PCM. To prepare for the BPT/BRA support, we
-need to special-case streams and make use of the 'type'.
-
-No functional change for now, the implicit PCM type is now explicit.
+BPT/BRA need to be special cased, i.e. there's no point in using the
+bandwidth allocation since the entire frame can be used.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- Documentation/driver-api/soundwire/stream.rst | 2 +-
- drivers/soundwire/stream.c                    | 7 +++++--
- include/linux/soundwire/sdw.h                 | 3 ++-
- sound/soc/qcom/sdw.c                          | 2 +-
- 4 files changed, 9 insertions(+), 5 deletions(-)
+ include/linux/soundwire/sdw.h | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/driver-api/soundwire/stream.rst b/Documentation/driver-api/soundwire/stream.rst
-index b432a2de45d3..65b9bb742689 100644
---- a/Documentation/driver-api/soundwire/stream.rst
-+++ b/Documentation/driver-api/soundwire/stream.rst
-@@ -291,7 +291,7 @@ per stream. From ASoC DPCM framework, this stream state maybe linked to
- 
- .. code-block:: c
- 
--  int sdw_alloc_stream(char * stream_name);
-+  int sdw_alloc_stream(char * stream_name, enum sdw_stream_type type);
- 
- The SoundWire core provides a sdw_startup_stream() helper function,
- typically called during a dailink .startup() callback, which performs
-diff --git a/drivers/soundwire/stream.c b/drivers/soundwire/stream.c
-index c4ab360e727f..c1e3bb897fb9 100644
---- a/drivers/soundwire/stream.c
-+++ b/drivers/soundwire/stream.c
-@@ -1743,12 +1743,14 @@ static int set_stream(struct snd_pcm_substream *substream,
-  * sdw_alloc_stream() - Allocate and return stream runtime
-  *
-  * @stream_name: SoundWire stream name
-+ * @type: stream type (could be PCM, PDM or BPT)
-  *
-  * Allocates a SoundWire stream runtime instance.
-  * sdw_alloc_stream should be called only once per stream. Typically
-  * invoked from ALSA/ASoC machine/platform driver.
-  */
--struct sdw_stream_runtime *sdw_alloc_stream(const char *stream_name)
-+struct sdw_stream_runtime *sdw_alloc_stream(const char *stream_name,
-+					    enum sdw_stream_type type)
- {
- 	struct sdw_stream_runtime *stream;
- 
-@@ -1760,6 +1762,7 @@ struct sdw_stream_runtime *sdw_alloc_stream(const char *stream_name)
- 	INIT_LIST_HEAD(&stream->master_list);
- 	stream->state = SDW_STREAM_ALLOCATED;
- 	stream->m_rt_count = 0;
-+	stream->type = type;
- 
- 	return stream;
- }
-@@ -1788,7 +1791,7 @@ int sdw_startup_stream(void *sdw_substream)
- 	if (!name)
- 		return -ENOMEM;
- 
--	sdw_stream = sdw_alloc_stream(name);
-+	sdw_stream = sdw_alloc_stream(name, SDW_STREAM_PCM);
- 	if (!sdw_stream) {
- 		dev_err(rtd->dev, "alloc stream failed for substream DAI %s\n", substream->name);
- 		ret = -ENOMEM;
 diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
-index 71a7031f7b3a..5cc7fed1bf19 100644
+index 5cc7fed1bf19..9f04f3ad044f 100644
 --- a/include/linux/soundwire/sdw.h
 +++ b/include/linux/soundwire/sdw.h
-@@ -1024,7 +1024,8 @@ struct sdw_stream_runtime {
- 	int m_rt_count;
+@@ -140,12 +140,14 @@ enum sdw_dpn_pkg_mode {
+  *
+  * @SDW_STREAM_PCM: PCM data stream
+  * @SDW_STREAM_PDM: PDM data stream
++ * @SDW_STREAM_BPT: BPT data stream
+  *
+  * spec doesn't define this, but is used in implementation
+  */
+ enum sdw_stream_type {
+ 	SDW_STREAM_PCM = 0,
+ 	SDW_STREAM_PDM = 1,
++	SDW_STREAM_BPT = 2,
  };
  
--struct sdw_stream_runtime *sdw_alloc_stream(const char *stream_name);
-+struct sdw_stream_runtime *sdw_alloc_stream(const char *stream_name,
-+					    enum sdw_stream_type type);
- void sdw_release_stream(struct sdw_stream_runtime *stream);
- 
- int sdw_compute_params(struct sdw_bus *bus);
-diff --git a/sound/soc/qcom/sdw.c b/sound/soc/qcom/sdw.c
-index 77dbe0c28b29..d91a1bd0c66c 100644
---- a/sound/soc/qcom/sdw.c
-+++ b/sound/soc/qcom/sdw.c
-@@ -27,7 +27,7 @@ int qcom_snd_sdw_startup(struct snd_pcm_substream *substream)
- 	struct snd_soc_dai *codec_dai;
- 	int ret, i;
- 
--	sruntime = sdw_alloc_stream(cpu_dai->name);
-+	sruntime = sdw_alloc_stream(cpu_dai->name, SDW_STREAM_PCM);
- 	if (!sruntime)
- 		return -ENOMEM;
- 
+ /**
+@@ -959,7 +961,7 @@ struct sdw_port_config {
+  * @ch_count: Channel count of the stream
+  * @bps: Number of bits per audio sample
+  * @direction: Data direction
+- * @type: Stream type PCM or PDM
++ * @type: Stream type PCM, PDM or BPT
+  */
+ struct sdw_stream_config {
+ 	unsigned int frame_rate;
+@@ -1009,7 +1011,7 @@ struct sdw_stream_params {
+  * @name: SoundWire stream name
+  * @params: Stream parameters
+  * @state: Current state of the stream
+- * @type: Stream type PCM or PDM
++ * @type: Stream type PCM, PDM or BPT
+  * @master_list: List of Master runtime(s) in this stream.
+  * master_list can contain only one m_rt per Master instance
+  * for a stream
 -- 
 2.39.2
 
