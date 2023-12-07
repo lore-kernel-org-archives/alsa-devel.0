@@ -4,43 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 642F4C4167B
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Dec 2023 00:06:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 16E47C4167B
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Dec 2023 00:06:22 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BFBD7DEB;
-	Thu,  7 Dec 2023 01:05:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BFBD7DEB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 38207DED;
+	Thu,  7 Dec 2023 01:06:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 38207DED
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1701907560;
-	bh=7agwyfrV2/tGpeGABB7E96pR7l1zH5oZLdFLLUk+e3M=;
+	s=default; t=1701907580;
+	bh=1Y4OCCRvoRKWJS8uddwBtQlRP4WGgp/Ke0j7F0culUc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=N9/a2EvupSkAjsD4PG99eHwHPqXjaqqRTQnYna4KQFbXWXuYYHtlEJq2MFxt8xOX/
-	 8yHsnnTNowhB1mGRSbuFgpagWsUVOR093mIzlC7p5ZY0EkJ5cGla8jkS1wMg6L1yAN
-	 oQHGJOovqgdfCy2P0ZWOeS7UPpzNRdEQE/WG3qqM=
+	b=RIOryM+LkGWoMUojo6ywQ+4/E+FohkT0r1baaMaBciCWDq3E81euPaMihVU28MlRm
+	 t6MJPhQlyZNx+ZudDy5guvEJC+ZuXIdaYm5gkFtZrSxdT5pJW6nqbpriGQrlpkHJp0
+	 Iva0MxpkNnxOub499tdbAe50596LvD1yaaPmQuDI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0C681F80579; Thu,  7 Dec 2023 01:04:54 +0100 (CET)
+	id B42C5F80654; Thu,  7 Dec 2023 01:04:58 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0810DF80571;
-	Thu,  7 Dec 2023 01:04:54 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 306FDF80631;
+	Thu,  7 Dec 2023 01:04:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 06014F80563; Thu,  7 Dec 2023 01:04:50 +0100 (CET)
+	id 0D320F80567; Thu,  7 Dec 2023 01:04:52 +0100 (CET)
 Received: from irl.hu (irl.hu [95.85.9.111])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
  server-digest SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with UTF8SMTPS id 3FE45F80617
-	for <alsa-devel@alsa-project.org>; Thu,  7 Dec 2023 01:04:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3FE45F80617
+	by alsa1.perex.cz (Postfix) with UTF8SMTPS id 5B5FBF80587
+	for <alsa-devel@alsa-project.org>; Thu,  7 Dec 2023 01:04:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5B5FBF80587
 Received: from fedori.lan (51b690cd.dsl.pool.telekom.hu
  [::ffff:81.182.144.205])
   (AUTH: CRAM-MD5 soyer@irl.hu, )
   by irl.hu with ESMTPSA
-  id 00000000000716F4.0000000065710C14.001190BB;
+  id 00000000000716E7.0000000065710C14.001190BA;
  Thu, 07 Dec 2023 01:04:36 +0100
 From: Gergo Koteles <soyer@irl.hu>
 To: Shenghao Ding <shenghao-ding@ti.com>, Kevin Lu <kevin-lu@ti.com>,
@@ -49,10 +49,10 @@ To: Shenghao Ding <shenghao-ding@ti.com>, Kevin Lu <kevin-lu@ti.com>,
   Mark Brown <broonie@kernel.org>
 Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
   Gergo Koteles <soyer@irl.hu>
-Subject: [PATCH 11/16] ASoC: tas2781: use 0 as default prog/conf index
-Date: Thu,  7 Dec 2023 01:04:27 +0100
+Subject: [PATCH 10/16] ASoC: tas2781: check negative indexes
+Date: Thu,  7 Dec 2023 01:04:26 +0100
 Message-ID: 
- <88229933b7aaf0777cbe611979712e4e144b1ca1.1701906455.git.soyer@irl.hu>
+ <a9ccb1760c5b525036a33b9528b651b409e727c2.1701906455.git.soyer@irl.hu>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1701906455.git.soyer@irl.hu>
 References: <cover.1701906455.git.soyer@irl.hu>
@@ -60,8 +60,8 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 X-Mime-Autoconverted: from 8bit to 7bit by courier 1.0
-Message-ID-Hash: ARKFXYBIXDER74YVUCYCDV463FHRZCPT
-X-Message-ID-Hash: ARKFXYBIXDER74YVUCYCDV463FHRZCPT
+Message-ID-Hash: XZY57JYCMO6LGYRZK5V7QGJSGBB7T6FZ
+X-Message-ID-Hash: XZY57JYCMO6LGYRZK5V7QGJSGBB7T6FZ
 X-MailFrom: soyer@irl.hu
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -74,7 +74,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ARKFXYBIXDER74YVUCYCDV463FHRZCPT/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XZY57JYCMO6LGYRZK5V7QGJSGBB7T6FZ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -83,28 +83,60 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Invalid indexes are not the best default values.
+Negative indexes are not valid here.
 
 Signed-off-by: Gergo Koteles <soyer@irl.hu>
 ---
- sound/soc/codecs/tas2781-comlib.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/tas2781-fmwlib.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/codecs/tas2781-comlib.c b/sound/soc/codecs/tas2781-comlib.c
-index f914123c7284..635f97db033b 100644
---- a/sound/soc/codecs/tas2781-comlib.c
-+++ b/sound/soc/codecs/tas2781-comlib.c
-@@ -307,8 +307,8 @@ int tasdevice_init(struct tasdevice_priv *tas_priv)
+diff --git a/sound/soc/codecs/tas2781-fmwlib.c b/sound/soc/codecs/tas2781-fmwlib.c
+index 20dc2df034e9..aa5f56f9ad33 100644
+--- a/sound/soc/codecs/tas2781-fmwlib.c
++++ b/sound/soc/codecs/tas2781-fmwlib.c
+@@ -2198,21 +2198,21 @@ int tasdevice_select_tuningprm_cfg(void *context, int prm_no,
  		goto out;
  	}
  
--	tas_priv->cur_prog = -1;
--	tas_priv->cur_conf = -1;
-+	tas_priv->cur_prog = 0;
-+	tas_priv->cur_conf = 0;
+-	if (cfg_no >= tas_fmw->nr_configurations) {
++	if (cfg_no < 0 || cfg_no >= tas_fmw->nr_configurations) {
+ 		dev_err(tas_priv->dev,
+ 			"%s: cfg(%d) is not in range of conf %u\n",
+ 			__func__, cfg_no, tas_fmw->nr_configurations);
+ 		goto out;
+ 	}
  
- 	for (i = 0; i < tas_priv->ndev; i++) {
- 		tas_priv->tasdevice[i].cur_book = -1;
+-	if (prm_no >= tas_fmw->nr_programs) {
++	if (prm_no < 0 || prm_no >= tas_fmw->nr_programs) {
+ 		dev_err(tas_priv->dev,
+ 			"%s: prm(%d) is not in range of Programs %u\n",
+ 			__func__, prm_no, tas_fmw->nr_programs);
+ 		goto out;
+ 	}
+ 
+-	if (rca_conf_no >= rca->ncfgs || rca_conf_no < 0 ||
++	if (rca_conf_no < 0 || rca_conf_no >= rca->ncfgs ||
+ 		!cfg_info) {
+ 		dev_err(tas_priv->dev,
+ 			"conf_no:%d should be in range from 0 to %u\n",
+@@ -2304,7 +2304,7 @@ int tasdevice_prmg_load(void *context, int prm_no)
+ 		goto out;
+ 	}
+ 
+-	if (prm_no >= tas_fmw->nr_programs) {
++	if (prm_no < 0 || prm_no >= tas_fmw->nr_programs) {
+ 		dev_err(tas_priv->dev,
+ 			"%s: prm(%d) is not in range of Programs %u\n",
+ 			__func__, prm_no, tas_fmw->nr_programs);
+@@ -2349,7 +2349,7 @@ int tasdevice_prmg_calibdata_load(void *context, int prm_no)
+ 		goto out;
+ 	}
+ 
+-	if (prm_no >= tas_fmw->nr_programs) {
++	if (prm_no < 0 || prm_no >= tas_fmw->nr_programs) {
+ 		dev_err(tas_priv->dev,
+ 			"%s: prm(%d) is not in range of Programs %u\n",
+ 			__func__, prm_no, tas_fmw->nr_programs);
 -- 
 2.43.0
 
