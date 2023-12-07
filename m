@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BE53AC4167B
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Dec 2023 22:34:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EF13CC4167B
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Dec 2023 22:35:50 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 09DF7857;
-	Thu,  7 Dec 2023 23:34:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 09DF7857
+	by alsa0.perex.cz (Postfix) with ESMTPS id 43EF782B;
+	Thu,  7 Dec 2023 23:35:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 43EF782B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1701988483;
-	bh=Lq06mwNMjDgFe0DyRT6KiZkNWm7P+g8lzpc3H+kqz6U=;
+	s=default; t=1701988549;
+	bh=qQ7Ong4JKR/YOE3/JfcFuu0jPrgvbTLh/EPInQfYhSw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=nunQ/i8H7xGYbrg2lSUY4exMpVba+mAio4KF3EXgmFiL2CLmFv2H7v/GCnTy2ebo7
-	 aVFD3D7homCfZAzvYBbojaPOh1AZdHdsEakHDdhYSrLGj2ti8OMkydd0HMCLqscs/y
-	 H+xWjJhc5Jr60oCzzpPjSEhBGqEl2IWKmV+cnz1k=
+	b=f7t7c4K6xzYq5AMFmHAS+BUPpzXjgGJWw21S1LW7iOd8Icm4OSDNBCrDreK+XINNe
+	 bqVe+JH7xDr3dvBB4UkFIvm+nLCAGBN6oLjgFfXQ78sJv1qwZE8+TWWEuiLOw9wwi6
+	 zcL+TxiF6H4rDNiWnqRjK0YVlEuZJlwws5vNWfNg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6AD32F80727; Thu,  7 Dec 2023 23:31:55 +0100 (CET)
+	id 7FAC0F805AD; Thu,  7 Dec 2023 23:35:08 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id CC834F8070B;
-	Thu,  7 Dec 2023 23:31:54 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1FB06F805BB;
+	Thu,  7 Dec 2023 23:35:08 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C89C6F805EF; Thu,  7 Dec 2023 23:31:45 +0100 (CET)
+	id 037BAF8057F; Thu,  7 Dec 2023 23:35:02 +0100 (CET)
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id CA2F3F80564
-	for <alsa-devel@alsa-project.org>; Thu,  7 Dec 2023 23:30:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CA2F3F80564
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6FD0FF802E8
+	for <alsa-devel@alsa-project.org>; Thu,  7 Dec 2023 23:30:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6FD0FF802E8
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=ECvQk0g7
+ header.s=Intel header.b=XguUhsrk
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701988228; x=1733524228;
+  t=1701988218; x=1733524218;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=Lq06mwNMjDgFe0DyRT6KiZkNWm7P+g8lzpc3H+kqz6U=;
-  b=ECvQk0g7mCkgC4X6ykqyaaSacqAqP+2s54V3q41Er0zkov/gO8XWUN3V
-   a6CQxLc3TIJ8wldvPUiFwtO6WvlvWy6ktBPMbrU/g0uyTegc4XU3L7ZYC
-   reAfYHFHeQvwmGJKl5SOK7YF21inP+muWigK7oDL1ENd97DU3UtVZrzVV
-   ZveCfxMNdDhgu5uAjKSlZ2qhkAla/5+ZLOY+QK11iiYlaT8yMmV3FaSko
-   PVVK+6OIm1Vd8o+DV1wWIhTST5yPMAV/6lRKc9bO6fFENPX+Ydh/LGRIU
-   uvUWfjGy8joljepL5tXf5fCNIgt29ncaAsVchU6EgclZ2d00V0AbHhGad
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="480516705"
+  bh=qQ7Ong4JKR/YOE3/JfcFuu0jPrgvbTLh/EPInQfYhSw=;
+  b=XguUhsrkzxZFJrqeYVHWbJ7mPv12kZP8qN1BQmjJWig+7vFa13aDRBZE
+   vu4Jk52rd92/TTTitLz9yLVpRnUZVaqUGD5INtLnFlHM+B237YMofXyZ1
+   zEA7h+c0T/eCMbTwa5YrUPzcfhdrPsLhXSuHuUqqp2IvknwUEx9QBiQPD
+   NVvGUfDr6wJPDXopPEOxeChMi4Wd38QGIGo074Xooxv6imnW7LTJgDz9O
+   dExKmt1lsVh28RsY6DUmbCEJiZeyR4gn4CmYAUC1qPlwmFsjiiYOEexj0
+   UbUfW7Dqv3vsSCJZMtLbRjcryUmz4pyeQSN36XLbDG/FxehwIRPKzOTVA
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="480516636"
 X-IronPort-AV: E=Sophos;i="6.04,258,1695711600";
-   d="scan'208";a="480516705"
+   d="scan'208";a="480516636"
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
   by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Dec 2023 14:30:25 -0800
+ 07 Dec 2023 14:30:16 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="895307517"
+X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="895307482"
 X-IronPort-AV: E=Sophos;i="6.04,258,1695711600";
-   d="scan'208";a="895307517"
+   d="scan'208";a="895307482"
 Received: from hrcolco-mobl3.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.212.148.159])
   by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Dec 2023 14:30:24 -0800
+ 07 Dec 2023 14:30:14 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: linux-sound@vger.kernel.org
 Cc: alsa-devel@alsa-project.org,
@@ -84,17 +84,16 @@ Cc: alsa-devel@alsa-project.org,
 	Jack Yu <jack.yu@realtek.com>,
 	Oder Chiou <oder_chiou@realtek.com>,
 	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [RFC PATCH 15/16] soundwire: debugfs: add interface for BPT/BRA
- transfers
-Date: Thu,  7 Dec 2023 16:29:43 -0600
-Message-Id: <20231207222944.663893-16-pierre-louis.bossart@linux.intel.com>
+Subject: [RFC PATCH 07/16] soundwire: bus: add API for BPT protocol
+Date: Thu,  7 Dec 2023 16:29:35 -0600
+Message-Id: <20231207222944.663893-8-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231207222944.663893-1-pierre-louis.bossart@linux.intel.com>
 References: <20231207222944.663893-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: I33OQF3Q4TXA443WZTH54VUEYHCANRUH
-X-Message-ID-Hash: I33OQF3Q4TXA443WZTH54VUEYHCANRUH
+Message-ID-Hash: QEAMT7FV7UXB33RLI3MG236PJWFNG5BB
+X-Message-ID-Hash: QEAMT7FV7UXB33RLI3MG236PJWFNG5BB
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -107,7 +106,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/I33OQF3Q4TXA443WZTH54VUEYHCANRUH/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QEAMT7FV7UXB33RLI3MG236PJWFNG5BB/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -116,203 +115,340 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add code to show what codec drivers will need to do to enable BPT/BRA
-transfers. The only difference is to set the 'command_type' file to
-1. A zero-value will rely on regular read/write commands in Column0.
+Add definitions and helpers for the BPT/BRA protocol. Peripheral
+drivers (aka ASoC codec drivers) can use this API to send bulk data
+such as firmware or tables.
 
-For now the code will only return error codes since the Manager side
-is not enabled yet.
+The API is only available when no other audio streams have been
+allocated, and only one BTP/BRA stream is allowed per link.  To avoid
+the addition of yet another lock, the refcount tests are handled in
+the stream master_runtime alloc/free routines where the bus_lock is
+already held. Another benefit of this approach is that the same
+bus_lock is used to handle runtime and port linked lists, which
+reduces the potential for misaligned configurations.
+
+In addition to exclusion with audio streams, BPT transfers have a lot
+of overhead, specifically registers writes are needed to enable
+transport in DP0. In addition, most DMAs don't handle too well very
+small data sets.
+
+This patch suggests a minimum bound of 64 bytes, for smaller transfers
+codec drivers should rely on the regular read/write commands in
+Column0.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- drivers/soundwire/debugfs.c | 122 +++++++++++++++++++++++++++++++-----
- 1 file changed, 106 insertions(+), 16 deletions(-)
+ drivers/soundwire/bus.c       | 77 +++++++++++++++++++++++++++++++++++
+ drivers/soundwire/bus.h       | 18 ++++++++
+ drivers/soundwire/stream.c    | 30 ++++++++++++++
+ include/linux/soundwire/sdw.h | 76 ++++++++++++++++++++++++++++++++++
+ 4 files changed, 201 insertions(+)
 
-diff --git a/drivers/soundwire/debugfs.c b/drivers/soundwire/debugfs.c
-index 6d253d69871d..de35f5beec4d 100644
---- a/drivers/soundwire/debugfs.c
-+++ b/drivers/soundwire/debugfs.c
-@@ -138,9 +138,10 @@ static int sdw_slave_reg_show(struct seq_file *s_file, void *data)
+diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
+index f3fec15c3112..e5758d2ed88f 100644
+--- a/drivers/soundwire/bus.c
++++ b/drivers/soundwire/bus.c
+@@ -2015,3 +2015,80 @@ void sdw_clear_slave_status(struct sdw_bus *bus, u32 request)
+ 	}
  }
- DEFINE_SHOW_ATTRIBUTE(sdw_slave_reg);
- 
--#define MAX_CMD_BYTES 256
-+#define MAX_CMD_BYTES (1024 * 1024)
- 
- static int cmd;
-+static int cmd_type;
- static u32 start_addr;
- static size_t num_bytes;
- static u8 read_buffer[MAX_CMD_BYTES];
-@@ -164,6 +165,25 @@ static int set_command(void *data, u64 value)
- DEFINE_DEBUGFS_ATTRIBUTE(set_command_fops, NULL,
- 			 set_command, "%llu\n");
- 
-+static int set_command_type(void *data, u64 value)
+ EXPORT_SYMBOL(sdw_clear_slave_status);
++
++int sdw_bpt_close_stream(struct sdw_bus *bus,
++			 struct sdw_slave *slave,
++			 enum sdw_bpt_type mode,
++			 struct sdw_bpt_msg *msg)
 +{
-+	struct sdw_slave *slave = data;
-+
-+	if (value > 1)
-+		return -EINVAL;
-+
-+	/* Userspace changed the hardware state behind the kernel's back */
-+	add_taint(TAINT_USER, LOCKDEP_STILL_OK);
-+
-+	dev_dbg(&slave->dev, "command type: %s\n", value ? "BRA" : "Column0");
-+
-+	cmd_type = value;
-+
-+	return 0;
-+}
-+DEFINE_DEBUGFS_ATTRIBUTE(set_command_type_fops, NULL,
-+			 set_command_type, "%llu\n");
-+
- static int set_start_address(void *data, u64 value)
- {
- 	struct sdw_slave *slave = data;
-@@ -199,9 +219,64 @@ static int set_num_bytes(void *data, u64 value)
- DEFINE_DEBUGFS_ATTRIBUTE(set_num_bytes_fops, NULL,
- 			 set_num_bytes, "%llu\n");
- 
-+static int do_bpt_sequence(struct sdw_slave *slave, bool write,
-+			   u8 *buffer)
-+{
-+	struct sdw_bpt_msg msg = {0};
-+	int ret1;
 +	int ret;
 +
-+	msg.addr = start_addr;
-+	msg.len = num_bytes;
-+	msg.dev_num = slave->dev_num;
-+	if (write)
-+		msg.flags = SDW_MSG_FLAG_WRITE;
-+	else
-+		msg.flags = SDW_MSG_FLAG_READ;
-+	msg.buf = buffer;
-+
-+	ret = sdw_bpt_open_stream(slave->bus, slave, SDW_BRA, &msg);
-+	if (ret < 0) {
-+		dev_err(&slave->dev, "bpt_open_stream failed: %d\n", ret);
-+		return ret;
-+	}
-+
-+	ret = sdw_bpt_send_async(slave->bus,
-+				 slave,
-+				 &msg);
-+	if (ret < 0) {
-+		dev_err(&slave->dev, "bpt_send_async failed: %d\n", ret);
-+		goto close;
-+	}
-+
-+	dev_dbg(&slave->dev, "send_async done\n");
-+
-+	ret = sdw_bpt_wait(slave->bus,
-+			   slave,
-+			   &msg);
++	ret = bus->ops->bpt_close_stream(bus, slave, mode, msg);
 +	if (ret < 0)
-+		dev_err(&slave->dev, "%s: bpt_wait failed: %d\n", __func__, ret);
-+
-+	dev_dbg(&slave->dev, "wait done\n");
-+
-+close:
-+	ret1 = sdw_bpt_close_stream(slave->bus, slave, SDW_BRA, &msg);
-+	if (ret1 < 0) {
-+		dev_err(&slave->dev, "%s: bpt_close_stream failed: %d\n",
-+			__func__, ret1);
-+		if (!ret)
-+			ret = ret1;
-+	}
++		dev_err(bus->dev, "BPT stream close, err %d\n", ret);
 +
 +	return ret;
 +}
++EXPORT_SYMBOL(sdw_bpt_close_stream);
 +
- static int cmd_go(void *data, u64 value)
- {
-+	const struct firmware *fw = NULL;
- 	struct sdw_slave *slave = data;
-+	ktime_t start_t;
-+	ktime_t finish_t;
- 	int ret;
- 
- 	if (value != 1)
-@@ -218,40 +293,54 @@ static int cmd_go(void *data, u64 value)
- 		return ret;
- 	}
- 
--	/* Userspace changed the hardware state behind the kernel's back */
--	add_taint(TAINT_USER, LOCKDEP_STILL_OK);
--
--	dev_dbg(&slave->dev, "starting command\n");
--
- 	if (cmd == 0) {
--		const struct firmware *fw;
--
- 		ret = request_firmware(&fw, firmware_file, &slave->dev);
- 		if (ret < 0) {
- 			dev_err(&slave->dev, "firmware %s not found\n", firmware_file);
- 			goto out;
- 		}
--
--		if (fw->size != num_bytes) {
-+		if (fw->size < num_bytes) {
- 			dev_err(&slave->dev,
--				"firmware %s: unexpected size %zd, desired %zd\n",
-+				"firmware %s: firmware size %zd, desired %zd\n",
- 				firmware_file, fw->size, num_bytes);
--			release_firmware(fw);
- 			goto out;
- 		}
++int sdw_bpt_open_stream(struct sdw_bus *bus,
++			struct sdw_slave *slave,
++			enum sdw_bpt_type mode,
++			struct sdw_bpt_msg *msg)
++{
++	int ret;
++
++	/* only Bulk Register Access (BRA) is supported for now */
++	if (mode != SDW_BRA)
++		return -EINVAL;
++
++	if (msg->len < SDW_BPT_MSG_MIN_BYTES) {
++		dev_err(bus->dev, "BPT message length %d, min supported %d\n",
++			msg->len, SDW_BPT_MSG_MIN_BYTES);
++		return -EINVAL;
 +	}
++
++	if (msg->len % SDW_BPT_MSG_BYTE_ALIGNMENT) {
++		dev_err(bus->dev, "BPT message length %d is not a multiple of %d bytes\n",
++			msg->len, SDW_BPT_MSG_BYTE_ALIGNMENT);
++		return -EINVAL;
++	}
++
++	/* check device is enumerated */
++	if (slave->dev_num == SDW_ENUM_DEV_NUM ||
++	    slave->dev_num > SDW_MAX_DEVICES)
++		return -ENODEV;
++
++	/* make sure all callbacks are defined */
++	if (!bus->ops->bpt_open_stream ||
++	    !bus->ops->bpt_close_stream ||
++	    !bus->ops->bpt_send_async ||
++	    !bus->ops->bpt_wait)
++		return -ENOTSUPP;
++
++	ret = bus->ops->bpt_open_stream(bus, slave, mode, msg);
++	if (ret < 0)
++		dev_err(bus->dev, "BPT stream open, err %d\n", ret);
++
++	return ret;
++}
++EXPORT_SYMBOL(sdw_bpt_open_stream);
++
++int sdw_bpt_send_async(struct sdw_bus *bus,
++		       struct sdw_slave *slave,
++		       struct sdw_bpt_msg *msg)
++{
++	if (msg->len > SDW_BPT_MSG_MAX_BYTES)
++		return -EINVAL;
++
++	return bus->ops->bpt_send_async(bus, slave, msg);
++}
++EXPORT_SYMBOL(sdw_bpt_send_async);
++
++int sdw_bpt_wait(struct sdw_bus *bus,
++		 struct sdw_slave *slave,
++		 struct sdw_bpt_msg *msg)
++{
++	return bus->ops->bpt_wait(bus, slave, msg);
++}
++EXPORT_SYMBOL(sdw_bpt_wait);
+diff --git a/drivers/soundwire/bus.h b/drivers/soundwire/bus.h
+index fda6b24ac2da..936852ab3154 100644
+--- a/drivers/soundwire/bus.h
++++ b/drivers/soundwire/bus.h
+@@ -72,6 +72,24 @@ struct sdw_msg {
+ 	bool page;
+ };
  
--		ret = sdw_nwrite_no_pm(slave, start_addr, num_bytes, fw->data);
--		release_firmware(fw);
-+	/* Userspace changed the hardware state behind the kernel's back */
-+	add_taint(TAINT_USER, LOCKDEP_STILL_OK);
++/**
++ * struct sdw_btp_msg - Message structure
++ * @addr: Start Register address accessed in the Slave
++ * @len: number of bytes to transfer. More than 64Kb can be transferred
++ * but a practical limit of SDW_BPT_MSG_MAX_BYTES is enforced.
++ * @dev_num: Slave device number
++ * @flags: transfer flags, indicate if xfer is read or write
++ * @buf: message data buffer (filled by host for write, filled
++ * by Peripheral hardware for reads)
++ */
++struct sdw_bpt_msg {
++	u32 addr;
++	u32 len;
++	u8 dev_num;
++	u8 flags;
++	u8 *buf;
++};
 +
-+	dev_dbg(&slave->dev, "starting command\n");
-+	start_t = ktime_get();
-+
-+	if (cmd == 0) {
-+		if (cmd_type) {
-+			ret = do_bpt_sequence(slave, true, (u8 *)fw->data);
-+		} else {
-+			ret = sdw_nwrite_no_pm(slave, start_addr, num_bytes, fw->data);
+ #define SDW_DOUBLE_RATE_FACTOR		2
+ #define SDW_STRM_RATE_GROUPING		1
+ 
+diff --git a/drivers/soundwire/stream.c b/drivers/soundwire/stream.c
+index f9762610f051..b097b1a808f9 100644
+--- a/drivers/soundwire/stream.c
++++ b/drivers/soundwire/stream.c
+@@ -1189,6 +1189,20 @@ static struct sdw_master_runtime
+ 	struct sdw_master_runtime *m_rt, *walk_m_rt;
+ 	struct list_head *insert_after;
+ 
++	if (stream->type == SDW_STREAM_BPT) {
++		if (bus->stream_refcount > 0 || bus->bpt_stream_refcount > 0) {
++			dev_err(bus->dev, "%s: invalid configuration %d streams %d BPT streams\n",
++				__func__, bus->stream_refcount, bus->bpt_stream_refcount);
++			return ERR_PTR(-EBUSY);
 +		}
- 	} else {
--		ret = sdw_nread_no_pm(slave, start_addr, num_bytes, read_buffer);
-+		memset(read_buffer, 0, sizeof(read_buffer));
-+
-+		if (cmd_type) {
-+			ret = do_bpt_sequence(slave, false, read_buffer);
-+		} else {
-+			ret = sdw_nread_no_pm(slave, start_addr, num_bytes, read_buffer);
++	} else {
++		if (bus->bpt_stream_refcount > 0) {
++			dev_err(bus->dev, "%s: BTP stream already allocated\n",
++				__func__);
++			return ERR_PTR(-EAGAIN);
 +		}
- 	}
- 
--	dev_dbg(&slave->dev, "command completed %d\n", ret);
-+	finish_t = ktime_get();
- 
- out:
-+	if (fw)
-+		release_firmware(fw);
++	}
 +
- 	pm_runtime_mark_last_busy(&slave->dev);
- 	pm_runtime_put(&slave->dev);
+ 	m_rt = kzalloc(sizeof(*m_rt), GFP_KERNEL);
+ 	if (!m_rt)
+ 		return NULL;
+@@ -1217,6 +1231,8 @@ static struct sdw_master_runtime
+ 	m_rt->stream = stream;
  
-+	dev_dbg(&slave->dev, "command completed, status %d, time %lld ms\n",
-+		ret, div_u64(finish_t - start_t, NSEC_PER_MSEC));
-+
- 	return ret;
+ 	bus->stream_refcount++;
++	if (stream->type == SDW_STREAM_BPT)
++		bus->bpt_stream_refcount++;
+ 
+ 	return m_rt;
  }
- DEFINE_DEBUGFS_ATTRIBUTE(cmd_go_fops, NULL,
-@@ -293,6 +382,7 @@ void sdw_slave_debugfs_init(struct sdw_slave *slave)
+@@ -1265,6 +1281,8 @@ static void sdw_master_rt_free(struct sdw_master_runtime *m_rt,
+ 	list_del(&m_rt->bus_node);
+ 	kfree(m_rt);
  
- 	/* interface to send arbitrary commands */
- 	debugfs_create_file("command", 0200, d, slave, &set_command_fops);
-+	debugfs_create_file("command_type", 0200, d, slave, &set_command_type_fops);
- 	debugfs_create_file("start_address", 0200, d, slave, &set_start_address_fops);
- 	debugfs_create_file("num_bytes", 0200, d, slave, &set_num_bytes_fops);
- 	debugfs_create_file("go", 0200, d, slave, &cmd_go_fops);
++	if (stream->type == SDW_STREAM_BPT)
++		bus->bpt_stream_refcount--;
+ 	bus->stream_refcount--;
+ }
+ 
+@@ -1941,6 +1959,12 @@ int sdw_stream_add_master(struct sdw_bus *bus,
+ 	m_rt = sdw_master_rt_find(bus, stream);
+ 	if (!m_rt) {
+ 		m_rt = sdw_master_rt_alloc(bus, stream);
++		if (IS_ERR(m_rt)) {
++			ret = PTR_ERR(m_rt);
++			dev_err(bus->dev, "%s: Master runtime alloc failed for stream:%s: %d\n",
++				__func__, stream->name, ret);
++			goto unlock;
++		}
+ 		if (!m_rt) {
+ 			dev_err(bus->dev, "%s: Master runtime alloc failed for stream:%s\n",
+ 				__func__, stream->name);
+@@ -2056,6 +2080,12 @@ int sdw_stream_add_slave(struct sdw_slave *slave,
+ 		 * So, allocate m_rt and add Slave to it.
+ 		 */
+ 		m_rt = sdw_master_rt_alloc(slave->bus, stream);
++		if (IS_ERR(m_rt)) {
++			ret = PTR_ERR(m_rt);
++			dev_err(&slave->dev, "%s: Master runtime alloc failed for stream:%s: %d\n",
++				__func__, stream->name, ret);
++			goto unlock;
++		}
+ 		if (!m_rt) {
+ 			dev_err(&slave->dev, "%s: Master runtime alloc failed for stream:%s\n",
+ 				__func__, stream->name);
+diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
+index 1dda65d91bad..e54c5bbd2b91 100644
+--- a/include/linux/soundwire/sdw.h
++++ b/include/linux/soundwire/sdw.h
+@@ -835,6 +835,46 @@ struct sdw_defer {
+ 	struct sdw_msg *msg;
+ };
+ 
++/*
++ * Add a practical limit to BPT transfer sizes. BPT is typically used
++ * to transfer firmware, and larger firmware transfers will increase
++ * the cold latency beyond typical OS or user requirements.
++ */
++#define SDW_BPT_MSG_MAX_BYTES  (1024 * 1024)
++
++/*
++ * Add a minimum number of bytes for BPT transfer sizes. BPT has a lot of
++ * overhead, enabling/disabling a stream costs 6 write commands, plus the bank
++ * switch that could be delayed in time. In addition, transferring very small
++ * data sets over DMA is known to be problematic on multiple platforms.
++ */
++#define SDW_BPT_MSG_MIN_BYTES      128
++
++/*
++ * Add an alignment requirement for BPT transfer sizes. BPT is
++ * typically with DMAs which are most-efficient with data aligned to a
++ * cache line.  For example HDaudio DMAs strongly recommend to use
++ * multiples of 128 bytes.
++ * This could be a platform-specific value, but that would be problematic for
++ * codec drivers which are typically not platform-specific by definition.
++ * It's probably simpler for everyone to align on a baseline and use regular
++ * read/write commands for the remaining bytes.
++ */
++#define SDW_BPT_MSG_BYTE_ALIGNMENT 128
++
++/**
++ * sdw_bpt_type - SoundWire Bulk Payload Transfer (BPT) type
++ * @SDW_BRA: Soundwire Bulk Register Access (BRA)
++ *
++ * The SoundWire specification allows for implementation-defined
++ * solutions, they would be added after BRA.
++ */
++enum sdw_bpt_type {
++	SDW_BRA,
++};
++
++struct sdw_bpt_msg;
++
+ /**
+  * struct sdw_master_ops - Master driver ops
+  * @read_prop: Read Master properties
+@@ -850,6 +890,10 @@ struct sdw_defer {
+  * @get_device_num: Callback for vendor-specific device_number allocation
+  * @put_device_num: Callback for vendor-specific device_number release
+  * @new_peripheral_assigned: Callback to handle enumeration of new peripheral.
++ * @bpt_open_stream: reserve resources for BPT stream
++ * @bpt_close_stream: release resources for BPT stream
++ * @bpt_send_async: send message using BTP protocol
++ * @bpt_wait: wait for message completion using BTP protocol
+  */
+ struct sdw_master_ops {
+ 	int (*read_prop)(struct sdw_bus *bus);
+@@ -869,6 +913,20 @@ struct sdw_master_ops {
+ 	void (*new_peripheral_assigned)(struct sdw_bus *bus,
+ 					struct sdw_slave *slave,
+ 					int dev_num);
++	int (*bpt_open_stream)(struct sdw_bus *bus,
++			       struct sdw_slave *slave,
++			       enum sdw_bpt_type mode,
++			       struct sdw_bpt_msg *msg);
++	int (*bpt_close_stream)(struct sdw_bus *bus,
++				struct sdw_slave *slave,
++				enum sdw_bpt_type mode,
++				struct sdw_bpt_msg *msg);
++	int (*bpt_send_async)(struct sdw_bus *bus,
++			      struct sdw_slave *slave,
++			      struct sdw_bpt_msg *msg);
++	int (*bpt_wait)(struct sdw_bus *bus,
++			struct sdw_slave *slave,
++			struct sdw_bpt_msg *msg);
+ };
+ 
+ /**
+@@ -905,6 +963,8 @@ struct sdw_master_ops {
+  * synchronization will be used even if a stream only uses a single
+  * SoundWire segment.
+  * @stream_refcount: number of streams currently using this bus
++ * @btp_stream_refcount: number of BTP streams currently using this bus (should
++ * be zero or one, multiple streams per link is not supported).
+  */
+ struct sdw_bus {
+ 	struct device *dev;
+@@ -935,6 +995,7 @@ struct sdw_bus {
+ 	bool multi_link;
+ 	int hw_sync_min_links;
+ 	int stream_refcount;
++	int bpt_stream_refcount;
+ };
+ 
+ int sdw_bus_master_add(struct sdw_bus *bus, struct device *parent,
+@@ -1052,6 +1113,21 @@ int sdw_bus_exit_clk_stop(struct sdw_bus *bus);
+ int sdw_compare_devid(struct sdw_slave *slave, struct sdw_slave_id id);
+ void sdw_extract_slave_id(struct sdw_bus *bus, u64 addr, struct sdw_slave_id *id);
+ 
++int sdw_bpt_open_stream(struct sdw_bus *bus,
++			struct sdw_slave *slave,
++			enum sdw_bpt_type mode,
++			struct sdw_bpt_msg *msg);
++int sdw_bpt_close_stream(struct sdw_bus *bus,
++			 struct sdw_slave *slave,
++			 enum sdw_bpt_type mode,
++			 struct sdw_bpt_msg *msg);
++int sdw_bpt_send_async(struct sdw_bus *bus,
++		       struct sdw_slave *slave,
++		       struct sdw_bpt_msg *msg);
++int sdw_bpt_wait(struct sdw_bus *bus,
++		 struct sdw_slave *slave,
++		 struct sdw_bpt_msg *msg);
++
+ #if IS_ENABLED(CONFIG_SOUNDWIRE)
+ 
+ int sdw_stream_add_slave(struct sdw_slave *slave,
 -- 
 2.39.2
 
