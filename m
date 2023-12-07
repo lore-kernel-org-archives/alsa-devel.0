@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CE8E3C4167B
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Dec 2023 22:33:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8BA15C4167B
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Dec 2023 22:34:09 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F032D9F6;
-	Thu,  7 Dec 2023 23:33:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F032D9F6
+	by alsa0.perex.cz (Postfix) with ESMTPS id A7B9E86E;
+	Thu,  7 Dec 2023 23:33:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A7B9E86E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1701988429;
-	bh=DW5TwRD7qrAx9gIi5dGnp44PJkUlQbn/+XaQJD4plMI=;
+	s=default; t=1701988447;
+	bh=0ulUlrZZ4AfI+dQihV8j5v/94fgvK1AWBTFChWA/nHU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=fdcXIXooPtHIrGj7rGxzKoDie3TIqgdCEm+c1FKMZS3xCLMb78N50cV/G8Etwc0FA
-	 wwjJRFsBxKyWFyZW0lR5hqRSdatgcOR5my+oB5+pPyJsIl+ALgoUIaoNcXIM/CdzPt
-	 KniBvwpFKm1w2o14bnSTbqWWKI2p44oVgJTRT7hY=
+	b=vPXjXqGvLEK9pqOUi6OHolLlZ4B+WGIc4OzsVfIcbmD1EYm4ChSKi8Y3xpTQt8g6u
+	 /OjifHFK0Pt9KPL3vAuOtT92u//Wpgw5n0WGwjhnMUIqShwqwUn2H/tyq9dyD1+/mR
+	 kFZvaPm94NxqI4mDU0KJ9t7BEdZ0QuYXZPCJOOiQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0E431F806E7; Thu,  7 Dec 2023 23:31:29 +0100 (CET)
+	id B7323F805D5; Thu,  7 Dec 2023 23:31:43 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 00146F806F5;
-	Thu,  7 Dec 2023 23:31:28 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1D36AF80710;
+	Thu,  7 Dec 2023 23:31:41 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 62D31F80588; Thu,  7 Dec 2023 23:31:24 +0100 (CET)
+	id D75B9F8057F; Thu,  7 Dec 2023 23:31:33 +0100 (CET)
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 1A22EF8055C
-	for <alsa-devel@alsa-project.org>; Thu,  7 Dec 2023 23:30:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1A22EF8055C
+	by alsa1.perex.cz (Postfix) with ESMTPS id 7B4B2F8055B
+	for <alsa-devel@alsa-project.org>; Thu,  7 Dec 2023 23:30:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7B4B2F8055B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=YZSXHMSs
+ header.s=Intel header.b=YlYpnQ8o
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701988224; x=1733524224;
+  t=1701988227; x=1733524227;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=DW5TwRD7qrAx9gIi5dGnp44PJkUlQbn/+XaQJD4plMI=;
-  b=YZSXHMSs1lgxvzvoSUirIXO9P8nl3cdQlUg8W9DGOCOJWjqn0e6UFvp5
-   +1KK62LEvIZLA+XFtW98PrdQkqcLlLZhyD1XXwo4O2po6FCvcN1yyT0Nc
-   rjX/bEfrPRJAyZUs4DcamdMlOxmFSs2kmprEJWg2sRToQX6NuEEjY1l6v
-   FaaaLIthYWnTZndwhNIAwb58L9+66rN9c8LueCuHJXyIWTUW/GIfehy8O
-   E7dATlzvnjEFoL3Fo+FpKCJK8DP7GXXufu4rA+Bp5r9bFlKyqwrycfuao
-   JAZBz6xDydl/hixpGgPRA9/ZlhcTBbdqcdFBxt4Fn0KFwzhjP3LehLCRV
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="480516680"
+  bh=0ulUlrZZ4AfI+dQihV8j5v/94fgvK1AWBTFChWA/nHU=;
+  b=YlYpnQ8oGUDJlYewXgRnXRxHLWf5PS8m63gPS5A0bKgglrWfk4b/bw2G
+   AjA172hDECTIQf6y+3lYaWF/mZjXapDJjCD8wraQ1KKuhvXNGHXsETTRx
+   p5AjY0LHzRA14JdQUhfimQt4wZkHiavhL+8PLmXnquF07U+/bIAQ5zSGm
+   lkVPLRdVcPPXm4R/s9kdqrOI9jknfvR6QQNQnf3WNmxl2dq2J5+F98Iqc
+   uF8jw4iZ41o2VDythCJS2bXnM6gcxMw6xp6//OnylpQ8g5LJ/TIEwhKSv
+   ZG+1H3jZ5OnQGekcp1+xA68Ztmja2OC9HI7qqcgiVRj/6Q4sIYwdqWiGp
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="480516697"
 X-IronPort-AV: E=Sophos;i="6.04,258,1695711600";
-   d="scan'208";a="480516680"
+   d="scan'208";a="480516697"
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
   by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Dec 2023 14:30:22 -0800
+ 07 Dec 2023 14:30:24 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="895307503"
+X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="895307512"
 X-IronPort-AV: E=Sophos;i="6.04,258,1695711600";
-   d="scan'208";a="895307503"
+   d="scan'208";a="895307512"
 Received: from hrcolco-mobl3.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.212.148.159])
   by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Dec 2023 14:30:20 -0800
+ 07 Dec 2023 14:30:23 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: linux-sound@vger.kernel.org
 Cc: alsa-devel@alsa-project.org,
@@ -84,17 +84,17 @@ Cc: alsa-devel@alsa-project.org,
 	Jack Yu <jack.yu@realtek.com>,
 	Oder Chiou <oder_chiou@realtek.com>,
 	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [RFC PATCH 12/16] ASoC: SOF: Intel: hda-sdw-bpt: add helpers for
- SoundWire BPT DMA
-Date: Thu,  7 Dec 2023 16:29:40 -0600
-Message-Id: <20231207222944.663893-13-pierre-louis.bossart@linux.intel.com>
+Subject: [RFC PATCH 14/16] soundwire: intel_ace2x: add BPT
+ open/close/send_async/wait
+Date: Thu,  7 Dec 2023 16:29:42 -0600
+Message-Id: <20231207222944.663893-15-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231207222944.663893-1-pierre-louis.bossart@linux.intel.com>
 References: <20231207222944.663893-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: ZQQSI566A4R2CZF6LK7VZIQ253TDFM7F
-X-Message-ID-Hash: ZQQSI566A4R2CZF6LK7VZIQ253TDFM7F
+Message-ID-Hash: 5MSON5XZXMWYYFB3IC3V7AYEIU4HSO4V
+X-Message-ID-Hash: 5MSON5XZXMWYYFB3IC3V7AYEIU4HSO4V
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -107,7 +107,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZQQSI566A4R2CZF6LK7VZIQ253TDFM7F/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5MSON5XZXMWYYFB3IC3V7AYEIU4HSO4V/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -116,490 +116,415 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add SoundWire BPT DMA helpers as a separate module to avoid circular
-dependencies.
-
-For now this assumes no link DMA, only coupled mode.
+Add support for BTP API using Cadence and hda-sdw-bpt helpers.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- include/sound/hda-sdw-bpt.h       |  76 +++++++
- sound/soc/sof/intel/Kconfig       |   8 +-
- sound/soc/sof/intel/Makefile      |   4 +
- sound/soc/sof/intel/hda-sdw-bpt.c | 328 ++++++++++++++++++++++++++++++
- 4 files changed, 415 insertions(+), 1 deletion(-)
- create mode 100644 include/sound/hda-sdw-bpt.h
- create mode 100644 sound/soc/sof/intel/hda-sdw-bpt.c
+ drivers/soundwire/intel_ace2x.c | 377 ++++++++++++++++++++++++++++++++
+ 1 file changed, 377 insertions(+)
 
-diff --git a/include/sound/hda-sdw-bpt.h b/include/sound/hda-sdw-bpt.h
-new file mode 100644
-index 000000000000..163c4513c26f
---- /dev/null
-+++ b/include/sound/hda-sdw-bpt.h
-@@ -0,0 +1,76 @@
-+/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause) */
-+/*
-+ * This file is provided under a dual BSD/GPLv2 license.  When using or
-+ * redistributing this file, you may do so under either license.
-+ *
-+ * Copyright(c) 2023 Intel Corporation. All rights reserved.
-+ */
-+
-+#include <linux/device.h>
-+
-+struct hdac_ext_stream;
-+struct snd_dma_buffer;
-+
-+#if IS_ENABLED(CONFIG_SND_SOF_SOF_HDA_SDW_BPT)
-+int hda_sdw_bpt_open(struct device *dev,
-+		     int link_id,
-+		     struct hdac_ext_stream **bpt_tx_stream,
-+		     struct snd_dma_buffer *dmab_tx_bdl,
-+		     u32 bpt_tx_num_bytes,
-+		     u32 tx_dma_bandwidth,
-+		     struct hdac_ext_stream **bpt_rx_stream,
-+		     struct snd_dma_buffer *dmab_rx_bdl,
-+		     u32 bpt_rx_num_bytes,
-+		     u32 rx_dma_bandwidth);
-+
-+int hda_sdw_bpt_send_async(struct device *dev,
-+			   struct hdac_ext_stream *bpt_tx_stream,
-+			   struct hdac_ext_stream *bpt_rx_stream);
-+
-+int hda_sdw_bpt_wait(struct device *dev,
-+		     struct hdac_ext_stream *bpt_tx_stream,
-+		     struct hdac_ext_stream *bpt_rx_stream);
-+
-+int hda_sdw_bpt_close(struct device *dev,
-+		      struct hdac_ext_stream *bpt_tx_stream,
-+		      struct snd_dma_buffer *dmab_tx_bdl,
-+		      struct hdac_ext_stream *bpt_rx_stream,
-+		      struct snd_dma_buffer *dmab_rx_bdl);
-+#else
-+static inline int hda_sdw_bpt_open(struct device *dev,
-+				   int link_id,
-+				   struct hdac_ext_stream **bpt_tx_stream,
-+				   struct snd_dma_buffer *dmab_tx_bdl,
-+				   u32 bpt_tx_num_bytes,
-+				   u32 tx_dma_bandwidth,
-+				   struct hdac_ext_stream **bpt_rx_stream,
-+				   struct snd_dma_buffer *dmab_rx_bdl,
-+				   u32 bpt_rx_num_bytes,
-+				   u32 rx_dma_bandwidth)
-+{
-+	return 0;
-+}
-+
-+static inline int hda_sdw_bpt_send_async(struct device *dev,
-+					 struct hdac_ext_stream *bpt_tx_stream,
-+					 struct hdac_ext_stream *bpt_rx_stream)
-+{
-+	return 0;
-+}
-+
-+static inline int hda_sdw_bpt_wait(struct device *dev,
-+				   struct hdac_ext_stream *bpt_tx_stream,
-+				   struct hdac_ext_stream *bpt_rx_stream)
-+{
-+	return 0;
-+}
-+
-+static inline int hda_sdw_bpt_close(struct device *dev,
-+				    struct hdac_ext_stream *bpt_tx_stream,
-+				    struct snd_dma_buffer *dmab_tx_bdl,
-+				    struct hdac_ext_stream *bpt_rx_stream,
-+				    struct snd_dma_buffer *dmab_rx_bdl)
-+{
-+	return 0;
-+}
-+#endif
-diff --git a/sound/soc/sof/intel/Kconfig b/sound/soc/sof/intel/Kconfig
-index 3396bd46b778..d2650348987b 100644
---- a/sound/soc/sof/intel/Kconfig
-+++ b/sound/soc/sof/intel/Kconfig
-@@ -268,6 +268,7 @@ config SND_SOC_SOF_INTEL_LNL
- 	tristate
- 	select SND_SOC_SOF_HDA_GENERIC
- 	select SND_SOC_SOF_INTEL_SOUNDWIRE_LINK_BASELINE
-+	select SND_SOF_SOF_HDA_SDW_BPT if SND_SOC_SOF_INTEL_SOUNDWIRE
- 	select SND_SOC_SOF_IPC4
- 	select SND_SOC_SOF_INTEL_MTL
- 
-@@ -325,12 +326,17 @@ config SND_SOC_SOF_HDA_AUDIO_CODEC
- 
- endif ## SND_SOC_SOF_HDA_GENERIC
- 
-+config SND_SOF_SOF_HDA_SDW_BPT
-+	tristate
-+	help
-+	  This option is not user-selectable but automagically handled by
-+	  'select' statements at a higher level.
-+
- config SND_SOC_SOF_HDA_LINK_BASELINE
- 	tristate
- 	select SND_SOC_SOF_HDA if SND_SOC_SOF_HDA_LINK
- 	help
- 	  This option is not user-selectable but automagically handled by
--	  'select' statements at a higher level.
- 
- config SND_SOC_SOF_HDA
- 	tristate
-diff --git a/sound/soc/sof/intel/Makefile b/sound/soc/sof/intel/Makefile
-index 806df08e3fd5..de1e37a76c29 100644
---- a/sound/soc/sof/intel/Makefile
-+++ b/sound/soc/sof/intel/Makefile
-@@ -12,6 +12,8 @@ snd-sof-intel-hda-generic-objs := hda.o hda-common-ops.o
- 
- snd-sof-intel-hda-mlink-objs := hda-mlink.o
- 
-+snd-sof-intel-hda-sdw-bpt-objs := hda-sdw-bpt.o
-+
- snd-sof-intel-hda-common-$(CONFIG_SND_SOC_SOF_HDA_PROBES) += hda-probes.o
- 
- snd-sof-intel-hda-objs := hda-codec.o
-@@ -26,6 +28,8 @@ obj-$(CONFIG_SND_SOC_SOF_HDA_GENERIC) += snd-sof-intel-hda-generic.o
- obj-$(CONFIG_SND_SOC_SOF_HDA_MLINK) += snd-sof-intel-hda-mlink.o
- obj-$(CONFIG_SND_SOC_SOF_HDA) += snd-sof-intel-hda.o
- 
-+obj-$(CONFIG_SND_SOF_SOF_HDA_SDW_BPT) += snd-sof-intel-hda-sdw-bpt.o
-+
- snd-sof-pci-intel-tng-objs := pci-tng.o
- snd-sof-pci-intel-skl-objs := pci-skl.o skl.o hda-loader-skl.o
- snd-sof-pci-intel-apl-objs := pci-apl.o apl.o
-diff --git a/sound/soc/sof/intel/hda-sdw-bpt.c b/sound/soc/sof/intel/hda-sdw-bpt.c
-new file mode 100644
-index 000000000000..980c75c3a6bd
---- /dev/null
-+++ b/sound/soc/sof/intel/hda-sdw-bpt.c
-@@ -0,0 +1,328 @@
-+// SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause)
-+//
-+// This file is provided under a dual BSD/GPLv2 license.  When using or
-+// redistributing this file, you may do so under either license.
-+//
-+// Copyright(c) 2024 Intel Corporation. All rights reserved.
-+//
-+
-+/*
-+ * Hardware interface for SoundWire BPT support with HDA DMA
-+ */
-+
-+#include <sound/hdaudio_ext.h>
-+#include <sound/hda-mlink.h>
+diff --git a/drivers/soundwire/intel_ace2x.c b/drivers/soundwire/intel_ace2x.c
+index fb64c6d37ab0..f2f5dd503572 100644
+--- a/drivers/soundwire/intel_ace2x.c
++++ b/drivers/soundwire/intel_ace2x.c
+@@ -12,12 +12,383 @@
+ #include <linux/soundwire/sdw_intel.h>
+ #include <sound/hdaudio.h>
+ #include <sound/hda-mlink.h>
 +#include <sound/hda-sdw-bpt.h>
-+#include <sound/sof.h>
-+#include "../ops.h"
-+#include "../sof-priv.h"
-+#include "hda.h"
-+
-+static int hda_sdw_bpt_dma_prepare(struct device *dev,
-+				   struct hdac_ext_stream **sdw_bpt_stream,
-+				   struct snd_dma_buffer *dmab_bdl,
-+				   u32 bpt_num_bytes,
-+				   unsigned int num_channels,
-+				   int direction)
+ #include <sound/hda_register.h>
+ #include <sound/pcm_params.h>
+ #include "cadence_master.h"
+ #include "bus.h"
+ #include "intel.h"
+ 
++static int sdw_slave_bpt_stream_add(struct sdw_slave *slave,
++				    struct sdw_stream_runtime *stream)
 +{
-+	struct snd_sof_dev *sdev = dev_get_drvdata(dev);
-+	struct hdac_ext_stream *bpt_stream;
-+	unsigned int format = HDA_CL_STREAM_FORMAT;
++	struct sdw_stream_config sconfig = {0};
++	struct sdw_port_config pconfig = {0};
++	int ret;
++
++	/* arbitrary configuration */
++	sconfig.frame_rate = 16000;
++	sconfig.ch_count = 1;
++	sconfig.bps = 32; /* this is required for BPT/BRA */
++	sconfig.direction = SDW_DATA_DIR_RX;
++	sconfig.type = SDW_STREAM_BPT;
++
++	pconfig.num = 0;
++	pconfig.ch_mask = BIT(0);
++
++	ret = sdw_stream_add_slave(slave, &sconfig,
++				   &pconfig, 1, stream);
++	if (ret) {
++		dev_err(&slave->dev, "%s: failed: %d\n", __func__, ret);
++		return ret;
++	}
++
++	return 0;
++}
++
++static int intel_ace2x_bpt_open_stream(struct sdw_intel *sdw,
++				       struct sdw_slave *slave,
++				       enum sdw_bpt_type mode,
++				       struct sdw_bpt_msg *msg)
++{
++	struct sdw_cdns *cdns = &sdw->cdns;
++	struct sdw_bus *bus = &cdns->bus;
++	struct sdw_master_prop *prop = &bus->prop;
++	struct sdw_stream_runtime *stream;
++	struct sdw_stream_config sconfig;
++	struct sdw_port_config *pconfig;
++	unsigned int pdi0_buffer_size;
++	unsigned int tx_dma_bandwidth;
++	unsigned int pdi1_buffer_size;
++	unsigned int rx_dma_bandwidth;
++	unsigned int num_frames;
++	unsigned int data_per_frame;
++	unsigned int tx_total_bytes;
++	struct sdw_cdns_pdi *pdi0;
++	struct sdw_cdns_pdi *pdi1;
++	const int ch = 1;
++	const int num_pdi = 2;
++	int command;
++	int ret1;
++	int ret;
++	int dir;
++	int i;
++
++	if (mode != SDW_BRA)
++		return -EINVAL;
++
++	stream = sdw_alloc_stream("BPT", SDW_STREAM_BPT);
++	if (!stream)
++		return -ENOMEM;
++	cdns->bus.bpt_stream = stream;
++
++	ret = sdw_slave_bpt_stream_add(slave, stream);
++	if (ret < 0)
++		goto release_stream;
++
++	/* handle PDI0 first */
++	dir = SDW_DATA_DIR_TX;
++
++	pdi0 = sdw_cdns_alloc_pdi(cdns, &cdns->pcm, ch,  dir, 0);
++	if (!pdi0) {
++		dev_err(cdns->dev, "%s: sdw_cdns_alloc_pdi0 failed\n", __func__);
++		ret = -EINVAL;
++		goto remove_slave;
++	}
++
++	sdw_cdns_config_stream(cdns, ch, dir, pdi0);
++
++	/* handle PDI1  */
++	dir = SDW_DATA_DIR_RX;
++
++	pdi1 = sdw_cdns_alloc_pdi(cdns, &cdns->pcm, ch,  dir, 1);
++	if (!pdi1) {
++		dev_err(cdns->dev, "%s: sdw_cdns_alloc_pdi1 failed\n", __func__);
++		ret = -EINVAL;
++		goto remove_slave;
++	}
++
++	sdw_cdns_config_stream(cdns, ch, dir, pdi1);
 +
 +	/*
-+	 * the baseline format needs to be adjusted to
-+	 * bandwidth requirements
++	 * the port config direction, number of channels and frame
++	 * rate is totally arbitrary
 +	 */
-+	format |= (num_channels - 1);
++	sconfig.direction = dir;
++	sconfig.ch_count = ch;
++	sconfig.frame_rate = 16000;
++	sconfig.type = SDW_STREAM_BPT;
++	sconfig.bps = 32; /* this is required for BPT/BRA */
 +
-+	dev_dbg(dev, "direction %d format_val %x\n", direction, format);
-+
-+	bpt_stream = hda_cl_prepare(dev, format,
-+				    bpt_num_bytes,
-+				    dmab_bdl,
-+				    direction,
-+				    false);
-+	if (IS_ERR(bpt_stream)) {
-+		dev_err(sdev->dev, "%s: SDW BPT DMA prepare failed: dir %d\n",
-+			__func__, direction);
-+		return PTR_ERR(bpt_stream);
++	/* Port configuration */
++	pconfig = kcalloc(num_pdi, sizeof(*pconfig), GFP_KERNEL);
++	if (!pconfig) {
++		ret =  -ENOMEM;
++		goto remove_slave;
 +	}
-+	*sdw_bpt_stream = bpt_stream;
 +
-+	if (hdac_stream(bpt_stream)->direction == SNDRV_PCM_STREAM_PLAYBACK) {
-+		struct hdac_bus *bus = sof_to_bus(sdev);
-+		struct hdac_ext_link *hlink;
-+		int stream_tag;
-+
-+		stream_tag = hdac_stream(bpt_stream)->stream_tag;
-+		hlink = hdac_bus_eml_sdw_get_hlink(bus);
-+
-+		snd_hdac_ext_bus_link_set_stream_id(hlink, stream_tag);
++	for (i = 0; i < num_pdi; i++) {
++		pconfig[i].num = i;
++		pconfig[i].ch_mask = ch;
 +	}
-+	return 0;
-+}
 +
-+static int hda_sdw_bpt_dma_deprepare(struct device *dev,
-+				     struct hdac_ext_stream *sdw_bpt_stream,
-+				     struct snd_dma_buffer *dmab_bdl)
-+{
-+	struct snd_sof_dev *sdev = dev_get_drvdata(dev);
-+	int ret;
++	ret = sdw_stream_add_master(&cdns->bus, &sconfig,
++				    pconfig, num_pdi, stream);
++	kfree(pconfig);
 +
-+	ret = hda_cl_cleanup(sdev->dev, dmab_bdl, sdw_bpt_stream);
 +	if (ret < 0) {
-+		dev_err(sdev->dev, "%s: SDW BPT DMA cleanup failed\n",
-+			__func__);
-+		return ret;
++		dev_err(cdns->dev, "add master to stream failed:%d\n", ret);
++		goto remove_slave;
 +	}
 +
-+	if (hdac_stream(sdw_bpt_stream)->direction == SNDRV_PCM_STREAM_PLAYBACK) {
-+		struct hdac_bus *bus = sof_to_bus(sdev);
-+		struct hdac_ext_link *hlink;
-+		int stream_tag;
-+
-+		stream_tag = hdac_stream(sdw_bpt_stream)->stream_tag;
-+		hlink = hdac_bus_eml_sdw_get_hlink(bus);
-+
-+		snd_hdac_ext_bus_link_clear_stream_id(hlink, stream_tag);
-+	}
-+
-+	return 0;
-+}
-+
-+static int hda_sdw_bpt_dma_enable(struct device *dev,
-+				  struct hdac_ext_stream *sdw_bpt_stream)
-+{
-+	struct snd_sof_dev *sdev = dev_get_drvdata(dev);
-+	int ret;
-+
-+	ret = hda_cl_trigger(sdev->dev, sdw_bpt_stream, SNDRV_PCM_TRIGGER_START);
-+	if (ret < 0) {
-+		dev_err(sdev->dev, "%s: SDW BPT DMA trigger start failed\n", __func__);
-+		return ret;
-+	}
-+	return 0;
-+}
-+
-+static int hda_sdw_bpt_dma_disable(struct device *dev,
-+				   struct hdac_ext_stream *sdw_bpt_stream)
-+{
-+	struct snd_sof_dev *sdev = dev_get_drvdata(dev);
-+	int ret;
-+
-+	ret = hda_cl_trigger(sdev->dev, sdw_bpt_stream, SNDRV_PCM_TRIGGER_STOP);
-+	if (ret < 0) {
-+		dev_err(sdev->dev, "%s: SDW BPT DMA trigger stop failed\n", __func__);
-+		return ret;
-+	}
-+	return 0;
-+}
-+
-+int hda_sdw_bpt_open(struct device *dev,
-+		     int link_id,
-+		     struct hdac_ext_stream **bpt_tx_stream,
-+		     struct snd_dma_buffer *dmab_tx_bdl,
-+		     u32 bpt_tx_num_bytes,
-+		     u32 tx_dma_bandwidth,
-+		     struct hdac_ext_stream **bpt_rx_stream,
-+		     struct snd_dma_buffer *dmab_rx_bdl,
-+		     u32 bpt_rx_num_bytes,
-+		     u32 rx_dma_bandwidth)
-+{
-+	struct snd_sof_dev *sdev = dev_get_drvdata(dev);
-+	unsigned int num_channels_tx;
-+	unsigned int num_channels_rx;
-+	int ret2;
-+	int ret1;
-+	int ret;
-+
-+	num_channels_tx = DIV_ROUND_UP(tx_dma_bandwidth, 48000 * 32);
-+
-+	ret = hda_sdw_bpt_dma_prepare(dev,
-+				      bpt_tx_stream,
-+				      dmab_tx_bdl,
-+				      bpt_tx_num_bytes,
-+				      num_channels_tx,
-+				      SNDRV_PCM_STREAM_PLAYBACK);
-+	if (ret < 0) {
-+		dev_err(dev, "%s: hda_sdw_bpt_dma_prepare failed for TX: %d\n",
-+			__func__, ret);
-+		return ret;
-+	}
-+
-+	num_channels_rx = DIV_ROUND_UP(rx_dma_bandwidth, 48000 * 32);
-+
-+	ret = hda_sdw_bpt_dma_prepare(dev,
-+				      bpt_rx_stream,
-+				      dmab_rx_bdl,
-+				      bpt_rx_num_bytes,
-+				      num_channels_rx,
-+				      SNDRV_PCM_STREAM_CAPTURE);
-+	if (ret < 0) {
-+		dev_err(dev, "%s: hda_sdw_bpt_dma_prepare failed for RX: %d\n",
-+			__func__, ret);
-+
-+		ret1 = hda_sdw_bpt_dma_deprepare(dev,
-+						 *bpt_tx_stream,
-+						 dmab_tx_bdl);
-+		if (ret1 < 0)
-+			dev_err(dev, "%s: hda_sdw_bpt_dma_deprepare failed for TX: %d\n",
-+				__func__, ret1);
-+		return ret;
-+	}
-+
-+	/* we need to map the channels in PCMSyCM registers */
-+	ret = hdac_bus_eml_sdw_map_stream_ch(sof_to_bus(sdev),
-+					     link_id,
-+					     0, /* cpu_dai->id -> PDI0 */
-+					     GENMASK(num_channels_tx - 1, 0),
-+					     hdac_stream(*bpt_tx_stream)->stream_tag,
-+					     SNDRV_PCM_STREAM_PLAYBACK);
++	ret = sdw_prepare_stream(cdns->bus.bpt_stream);
 +	if (ret < 0)
-+		dev_err(dev, "%s: hdac_bus_eml_sdw_map_stream_ch failed for TX: %d\n",
-+			__func__, ret);
++		goto remove_master;
 +
-+	ret1 = hdac_bus_eml_sdw_map_stream_ch(sof_to_bus(sdev),
-+					      link_id,
-+					      1, /* cpu_dai->id -> PDI1 */
-+					      GENMASK(num_channels_rx - 1, 0),
-+					      hdac_stream(*bpt_rx_stream)->stream_tag,
-+					      SNDRV_PCM_STREAM_CAPTURE);
++	command = (msg->flags & SDW_MSG_FLAG_WRITE) ? 0 : 1;
++
++	ret = sdw_cdns_bpt_find_buffer_sizes(command,
++					     cdns->bus.params.row,
++					     cdns->bus.params.col,
++					     msg->len,
++					     SDW_BPT_MSG_MAX_BYTES,
++					     &data_per_frame,
++					     &pdi0_buffer_size,
++					     &pdi1_buffer_size,
++					     &num_frames);
++	if (ret < 0)
++		goto deprepare_stream;
++
++	sdw->bpt_ctx.pdi0_buffer_size = pdi0_buffer_size;
++	sdw->bpt_ctx.pdi1_buffer_size = pdi1_buffer_size;
++	sdw->bpt_ctx.num_frames = num_frames;
++	sdw->bpt_ctx.data_per_frame = data_per_frame;
++	tx_dma_bandwidth = div_u64((u64)pdi0_buffer_size * 8 * (u64)prop->default_frame_rate,
++				   num_frames);
++	rx_dma_bandwidth = div_u64((u64)pdi1_buffer_size * 8 * (u64)prop->default_frame_rate,
++				   num_frames);
++
++	dev_dbg(cdns->dev, "Message len %d transferred in %d frames (%d per frame)\n",
++		msg->len, num_frames, data_per_frame);
++	dev_dbg(cdns->dev, "sizes pdi0 %d pdi1 %d tx_bandwidth %d rx_bandwidth %d\n",
++		pdi0_buffer_size, pdi1_buffer_size,
++		tx_dma_bandwidth,
++		rx_dma_bandwidth);
++
++	ret = hda_sdw_bpt_open(cdns->dev->parent, /* PCI device */
++			       sdw->instance,
++			       &sdw->bpt_ctx.bpt_tx_stream,
++			       &sdw->bpt_ctx.dmab_tx_bdl,
++			       pdi0_buffer_size,
++			       tx_dma_bandwidth,
++			       &sdw->bpt_ctx.bpt_rx_stream,
++			       &sdw->bpt_ctx.dmab_rx_bdl,
++			       pdi1_buffer_size,
++			       rx_dma_bandwidth);
++	if (ret < 0) {
++		dev_err(cdns->dev, "%s: hda_sdw_bpt_open failed %d\n", __func__, ret);
++		goto deprepare_stream;
++	}
++
++	if (!command) {
++		ret = sdw_cdns_prepare_write_dma_buffer(
++			msg->dev_num, msg->addr,
++			msg->buf, msg->len,
++			data_per_frame,
++			sdw->bpt_ctx.dmab_tx_bdl.area,
++			pdi0_buffer_size,
++			&tx_total_bytes);
++	} else {
++		ret = sdw_cdns_prepare_read_dma_buffer(
++			msg->dev_num, msg->addr,
++			msg->len,
++			data_per_frame,
++			sdw->bpt_ctx.dmab_tx_bdl.area,
++			pdi0_buffer_size,
++			&tx_total_bytes);
++
++	}
++	if (ret < 0) {
++		dev_err(cdns->dev, "%s: sdw_prepare_%s_dma_buffer failed %d\n",
++			__func__, command ? "read" : "write", ret);
++		goto bpt_close;
++	}
++
++	return 0;
++
++bpt_close:
++	ret1 = hda_sdw_bpt_close(cdns->dev->parent, /* PCI device */
++				 sdw->bpt_ctx.bpt_tx_stream,
++				 &sdw->bpt_ctx.dmab_tx_bdl,
++				 sdw->bpt_ctx.bpt_rx_stream,
++				 &sdw->bpt_ctx.dmab_rx_bdl);
 +	if (ret1 < 0)
-+		dev_err(dev, "%s: hdac_bus_eml_sdw_map_stream_ch failed for RX: %d\n",
++		dev_err(cdns->dev, "%s:  hda_sdw_bpt_close failed: ret %d\n",
 +			__func__, ret1);
 +
-+	if (!ret)
-+		ret = ret1;
++deprepare_stream:
++	sdw_deprepare_stream(cdns->bus.bpt_stream);
 +
-+	if (ret < 0) {
-+		ret2 = hda_sdw_bpt_close(dev,
-+					 *bpt_tx_stream,
-+					 dmab_tx_bdl,
-+					 *bpt_rx_stream,
-+					 dmab_rx_bdl);
-+		if (ret2 < 0)
-+			dev_err(dev, "%s: hda_sdw_bpt_close failed: %d\n",
-+				__func__, ret2);
-+		return ret;
-+	}
++remove_master:
++	ret1 = sdw_stream_remove_master(&cdns->bus, cdns->bus.bpt_stream);
++	if (ret1 < 0)
++		dev_err(cdns->dev, "%s: remove master failed: %d\n",
++			__func__, ret1);
 +
-+	return 0;
++remove_slave:
++	ret1 = sdw_stream_remove_slave(slave, cdns->bus.bpt_stream);
++	if (ret1 < 0)
++		dev_err(cdns->dev, "%s: remove slave failed: %d\n",
++			__func__, ret1);
++
++release_stream:
++	sdw_release_stream(cdns->bus.bpt_stream);
++	cdns->bus.bpt_stream = NULL;
++
++	return ret;
 +}
-+EXPORT_SYMBOL_NS(hda_sdw_bpt_open, SND_SOC_SOF_INTEL_HDA_SDW_BPT);
 +
-+int hda_sdw_bpt_send_async(struct device *dev,
-+			   struct hdac_ext_stream *bpt_tx_stream,
-+			   struct hdac_ext_stream *bpt_rx_stream)
++static int intel_ace2x_bpt_close_stream(struct sdw_intel *sdw,
++					struct sdw_slave *slave,
++					enum sdw_bpt_type mode,
++					struct sdw_bpt_msg *msg)
 +{
++	struct sdw_cdns *cdns = &sdw->cdns;
 +	int ret1;
 +	int ret;
 +
-+	ret = hda_sdw_bpt_dma_enable(dev, bpt_tx_stream);
++	if (mode != SDW_BRA)
++		return -EINVAL;
++
++	ret = hda_sdw_bpt_close(cdns->dev->parent, /* PCI device */
++				sdw->bpt_ctx.bpt_tx_stream,
++				&sdw->bpt_ctx.dmab_tx_bdl,
++				sdw->bpt_ctx.bpt_rx_stream,
++				&sdw->bpt_ctx.dmab_rx_bdl);
++	if (ret < 0)
++		dev_err(cdns->dev, "%s:  hda_sdw_bpt_close failed: ret %d\n",
++			__func__, ret);
++
++	ret1 = sdw_deprepare_stream(cdns->bus.bpt_stream);
++	if (ret1 < 0) {
++		dev_err(cdns->dev, "%s: sdw_deprepare_stream failed: ret %d\n",
++			__func__, ret1);
++		if (!ret)
++			ret = ret1;
++	}
++
++	ret1 = sdw_stream_remove_master(&cdns->bus, cdns->bus.bpt_stream);
++	if (ret1 < 0) {
++		dev_err(cdns->dev, "%s: remove master failed: %d\n",
++			__func__, ret1);
++		if (!ret)
++			ret = ret1;
++	}
++
++	ret1 = sdw_stream_remove_slave(slave, cdns->bus.bpt_stream);
++	if (ret1 < 0) {
++		dev_err(cdns->dev, "%s: remove slave failed: %d\n",
++			__func__, ret1);
++		if (!ret)
++			ret = ret1;
++	}
++
++	cdns->bus.bpt_stream = NULL;
++
++	return ret;
++}
++
++static int intel_ace2x_bpt_send_async(struct sdw_intel *sdw,
++				      struct sdw_slave *slave,
++				      struct sdw_bpt_msg *msg)
++{
++	struct sdw_cdns *cdns = &sdw->cdns;
++	int ret;
++
++	dev_dbg(cdns->dev, "BPT Transfer start\n");
++
++	ret = hda_sdw_bpt_send_async(cdns->dev->parent, /* PCI device */
++				     sdw->bpt_ctx.bpt_tx_stream,
++				     sdw->bpt_ctx.bpt_rx_stream);
++	if (ret < 0)
++		return ret;
++
++	ret = sdw_enable_stream(cdns->bus.bpt_stream);
 +	if (ret < 0) {
-+		dev_err(dev, "%s: hda_sdw_bpt_dma_enable failed for TX: %d\n",
++		dev_err(cdns->dev, "%s: sdw_stream_enable failed: %d\n",
 +			__func__, ret);
 +		return ret;
 +	}
 +
-+	ret = hda_sdw_bpt_dma_enable(dev, bpt_rx_stream);
-+	if (ret < 0) {
-+		dev_err(dev, "%s: hda_sdw_bpt_dma_enable failed for RX: %d\n",
-+			__func__, ret);
-+
-+		ret1 = hda_sdw_bpt_dma_disable(dev, bpt_tx_stream);
-+		if (ret1 < 0)
-+			dev_err(dev, "%s: hda_sdw_bpt_dma_disable failed for TX: %d\n",
-+				__func__, ret1);
-+		return ret;
-+	}
++	dev_info(cdns->dev, "%s: done\n", __func__);
 +
 +	return 0;
 +}
-+EXPORT_SYMBOL_NS(hda_sdw_bpt_send_async, SND_SOC_SOF_INTEL_HDA_SDW_BPT);
 +
-+/*
-+ * 3s is several orders of magnitude larger than what is needed for a
-+ * typical firmware download.
-+ */
-+#define HDA_BPT_IOC_TIMEOUT_MS 3000
-+
-+int hda_sdw_bpt_wait(struct device *dev,
-+		     struct hdac_ext_stream *bpt_tx_stream,
-+		     struct hdac_ext_stream *bpt_rx_stream)
++static int intel_ace2x_bpt_wait(struct sdw_intel *sdw,
++				struct sdw_slave *slave,
++				struct sdw_bpt_msg *msg)
 +{
-+	struct sof_intel_hda_stream *hda_tx_stream;
-+	struct sof_intel_hda_stream *hda_rx_stream;
-+	unsigned long time_tx_left;
-+	unsigned long time_rx_left;
-+	snd_pcm_uframes_t tx_position;
-+	snd_pcm_uframes_t rx_position;
-+	int ret = 0;
-+	int ret1;
-+
-+	hda_tx_stream = container_of(bpt_tx_stream, struct sof_intel_hda_stream,
-+				     hext_stream);
-+	hda_rx_stream = container_of(bpt_rx_stream, struct sof_intel_hda_stream,
-+				     hext_stream);
-+
-+	time_tx_left = wait_for_completion_timeout(&hda_tx_stream->ioc,
-+						   msecs_to_jiffies(HDA_BPT_IOC_TIMEOUT_MS));
-+	if (!time_tx_left) {
-+		tx_position = hda_dsp_stream_get_position(hdac_stream(bpt_tx_stream),
-+							  SNDRV_PCM_STREAM_PLAYBACK,
-+							  false);
-+		dev_err(dev, "%s: SDW BPT TX DMA did not complete: %ld\n",
-+			__func__, tx_position);
-+		ret = -ETIMEDOUT;
-+	}
-+
-+	/* the wait should be minimal here */
-+	time_rx_left = wait_for_completion_timeout(&hda_rx_stream->ioc,
-+						   msecs_to_jiffies(HDA_BPT_IOC_TIMEOUT_MS));
-+	if (!time_rx_left) {
-+		rx_position = hda_dsp_stream_get_position(hdac_stream(bpt_rx_stream),
-+							  SNDRV_PCM_STREAM_CAPTURE,
-+							  false);
-+		dev_err(dev, "%s: SDW BPT RX DMA did not complete: %ld\n",
-+			__func__, rx_position);
-+		ret = -ETIMEDOUT;
-+	}
-+
-+	ret1 = hda_sdw_bpt_dma_disable(dev, bpt_rx_stream);
-+	if (!ret)
-+		ret = ret1;
-+
-+	ret1 = hda_sdw_bpt_dma_disable(dev, bpt_tx_stream);
-+	if (!ret)
-+		ret = ret1;
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL_NS(hda_sdw_bpt_wait, SND_SOC_SOF_INTEL_HDA_SDW_BPT);
-+
-+int hda_sdw_bpt_close(struct device *dev,
-+		      struct hdac_ext_stream *bpt_tx_stream,
-+		      struct snd_dma_buffer *dmab_tx_bdl,
-+		      struct hdac_ext_stream *bpt_rx_stream,
-+		      struct snd_dma_buffer *dmab_rx_bdl)
-+{
++	struct sdw_cdns *cdns = &sdw->cdns;
 +	int ret;
-+	int ret1;
 +
-+	ret = hda_sdw_bpt_dma_deprepare(dev,
-+					bpt_tx_stream,
-+					dmab_tx_bdl);
++	dev_dbg(cdns->dev, "BTP Transfer wait\n");
 +
-+	ret1 = hda_sdw_bpt_dma_deprepare(dev,
-+					 bpt_rx_stream,
-+					 dmab_rx_bdl);
-+	if (!ret)
-+		ret = ret1;
++	ret = hda_sdw_bpt_wait(cdns->dev->parent, /* PCI device */
++			       sdw->bpt_ctx.bpt_tx_stream,
++			       sdw->bpt_ctx.bpt_rx_stream);
++	if (ret < 0)
++		dev_err(cdns->dev, "%s: hda_sdw_bpt_wait failed: %d\n", __func__, ret);
 +
-+	return ret;
++	ret = sdw_disable_stream(cdns->bus.bpt_stream);
++	if (ret < 0) {
++		dev_err(cdns->dev, "%s: sdw_stream_enable failed: %d\n",
++			__func__, ret);
++		return ret;
++	}
++
++	if (0) {
++		/* dump DMA TX buffer */
++		print_hex_dump_debug("DMA out: ", DUMP_PREFIX_OFFSET,
++				     4, 4,
++				     sdw->bpt_ctx.dmab_tx_bdl.area,
++				     sdw->bpt_ctx.pdi0_buffer_size,
++				     false);
++
++		print_hex_dump_debug("DMA in: ", DUMP_PREFIX_OFFSET,
++				     4, 4,
++				     sdw->bpt_ctx.dmab_rx_bdl.area,
++				     sdw->bpt_ctx.pdi1_buffer_size,
++				     false);
++	}
++
++	if (msg->flags & SDW_MSG_FLAG_WRITE) {
++		ret = sdw_cdns_check_write_response(cdns->dev,
++						    sdw->bpt_ctx.dmab_rx_bdl.area,
++						    sdw->bpt_ctx.pdi1_buffer_size,
++						    sdw->bpt_ctx.num_frames);
++		if (ret < 0) {
++			dev_err(cdns->dev, "%s: BPT Write failed %d\n", __func__, ret);
++			return ret;
++		}
++	} else {
++		ret = sdw_cdns_check_read_response(cdns->dev,
++						   sdw->bpt_ctx.dmab_rx_bdl.area,
++						   sdw->bpt_ctx.pdi1_buffer_size,
++						   msg->buf, msg->len,
++						   sdw->bpt_ctx.num_frames,
++						   sdw->bpt_ctx.data_per_frame);
++		if (ret < 0) {
++			dev_err(cdns->dev, "%s: BPT Read failed %d\n", __func__, ret);
++			return ret;
++		}
++	}
++
++	dev_dbg(cdns->dev, "BPT Transfer done\n");
++
++	return 0;
 +}
-+EXPORT_SYMBOL_NS(hda_sdw_bpt_close, SND_SOC_SOF_INTEL_HDA_SDW_BPT);
 +
-+MODULE_LICENSE("Dual BSD/GPL");
-+MODULE_IMPORT_NS(SND_SOC_SOF_INTEL_HDA_COMMON);
-+MODULE_IMPORT_NS(SND_SOC_SOF_HDA_MLINK);
+ /*
+  * shim vendor-specific (vs) ops
+  */
+@@ -692,7 +1063,13 @@ const struct sdw_intel_hw_ops sdw_intel_lnl_hw_ops = {
+ 	.sync_check_cmdsync_unlocked = intel_check_cmdsync_unlocked,
+ 
+ 	.program_sdi = intel_program_sdi,
++
++	.bpt_open_stream = intel_ace2x_bpt_open_stream,
++	.bpt_close_stream = intel_ace2x_bpt_close_stream,
++	.bpt_send_async = intel_ace2x_bpt_send_async,
++	.bpt_wait = intel_ace2x_bpt_wait,
+ };
+ EXPORT_SYMBOL_NS(sdw_intel_lnl_hw_ops, SOUNDWIRE_INTEL);
+ 
+ MODULE_IMPORT_NS(SND_SOC_SOF_HDA_MLINK);
++MODULE_IMPORT_NS(SND_SOC_SOF_INTEL_HDA_SDW_BPT);
 -- 
 2.39.2
 
