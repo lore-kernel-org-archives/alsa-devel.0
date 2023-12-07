@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5072FC4167B
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Dec 2023 22:33:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 26BA6C4167B
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Dec 2023 22:33:40 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 25EACDEB;
-	Thu,  7 Dec 2023 23:33:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 25EACDEB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 190EA208;
+	Thu,  7 Dec 2023 23:33:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 190EA208
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1701988400;
-	bh=0d60EUy/Rv1jcqrB9RHzlJjXK5+aoVyqe1eJuA5s570=;
+	s=default; t=1701988418;
+	bh=4mNgJNnotsHrJOFFxqMdimap3f18t/HV+ud7BxYhTaE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=K0SSUd5o2pwvVW4+BDk+rkG9IZkT++59/awp6KQAMCF/tRHPs1Oex3eMq7jrK8nKQ
-	 euyuVb4k0n6XNYHP717K3fljgJOWsvgBhFds/TgHj+F9hnfPUApPYbBkoV/UyMg61X
-	 bjx5bXVA8LxNZxsv/xxz8X06W85qNVx9/s3DZZYw=
+	b=CY6z1t95f97uhoYj5rTIiLFa2ZIivRxs6k6t3VZQabnIP+UDNOmJWo+0Wn5dO1HLi
+	 c6KrB7Q8QZe8hEg/6iVWal5CsM/1dBkZelbHxSlojpZXgiKnkgWltIYICotWyqTs6+
+	 qHocxY7JJ4ELPlccCa0jMOqaSv4YJCYCTIYC2SOM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C62CBF806AC; Thu,  7 Dec 2023 23:31:17 +0100 (CET)
+	id B0B4EF8060F; Thu,  7 Dec 2023 23:31:27 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D1D51F806AD;
-	Thu,  7 Dec 2023 23:31:16 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D2ABDF806D0;
+	Thu,  7 Dec 2023 23:31:26 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 71F82F80578; Thu,  7 Dec 2023 23:31:11 +0100 (CET)
+	id 13F2FF80588; Thu,  7 Dec 2023 23:31:22 +0100 (CET)
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 8BF40F80563
-	for <alsa-devel@alsa-project.org>; Thu,  7 Dec 2023 23:30:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8BF40F80563
+	by alsa1.perex.cz (Postfix) with ESMTPS id F2429F8055A
+	for <alsa-devel@alsa-project.org>; Thu,  7 Dec 2023 23:30:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F2429F8055A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=MZaQ9Rpe
+ header.s=Intel header.b=LONDLdKd
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701988225; x=1733524225;
+  t=1701988224; x=1733524224;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=0d60EUy/Rv1jcqrB9RHzlJjXK5+aoVyqe1eJuA5s570=;
-  b=MZaQ9RpeeXoCLI+wjASELn6zpQkW736G3gOnqQgLNEf2A4NdYFtjjFty
-   COQsVQLhIlexk9jESIZIZCMhpYSEA/3B8K55nFJaOUaDJLeiiAyIZWTmh
-   77fHnd4DTfv9ujDTuJDC9WF8nDysI1zv62AoakWL1Esp6byFx4wuPVfFO
-   fOg8h4BuUt0iPJVzp1JXI7cbTcYWvnNl/MqGi2B3ncM7Nkhl0zX5Ht9Y8
-   t4v8UBw2LMVRj/pySBWV+o41omAANwGJgfoPCR6aLb9OBhQKq8Q1r5qn6
-   WUiUtUVUB9Bcv0tuMeF+f3zK9sDeZ1QdfLA8CJujpN+MicIDPG/wIip5Q
+  bh=4mNgJNnotsHrJOFFxqMdimap3f18t/HV+ud7BxYhTaE=;
+  b=LONDLdKdQNQYqVrFNwNxlCMH3ssckMR3qfDcKBH5yjmNL2RzrkPSMPNW
+   PxZ1PJL4f7/HtiEIB4AP9QaXtai9MOLQApf/TxYm9Ov0bzT8Y1IVr/IJI
+   EkN6zgRMsLZckDSnQEnTVvfzjl3VHrtO1D/damcXc5W3SIX1hm1YiykRe
+   yiARihvwrJ0YF5UxwAyo9K5nvP1fZ798ASOYO1re8G8ZcALYMkwUX3PfT
+   etYmj1o6T/NzxdmcLpqRKpCF5mwmk56iqSGHb7Qcx9rSz0cWUI2fPNVhx
+   iDelWgqoJp6DBeXfnthK/RfmuKwJxWthsswzJl4eO1h+NA6hdpMZdJufr
    Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="480516688"
+X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="480516671"
 X-IronPort-AV: E=Sophos;i="6.04,258,1695711600";
-   d="scan'208";a="480516688"
+   d="scan'208";a="480516671"
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
   by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Dec 2023 14:30:23 -0800
+ 07 Dec 2023 14:30:20 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="895307507"
+X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="895307498"
 X-IronPort-AV: E=Sophos;i="6.04,258,1695711600";
-   d="scan'208";a="895307507"
+   d="scan'208";a="895307498"
 Received: from hrcolco-mobl3.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.212.148.159])
   by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Dec 2023 14:30:22 -0800
+ 07 Dec 2023 14:30:19 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: linux-sound@vger.kernel.org
 Cc: alsa-devel@alsa-project.org,
@@ -84,16 +84,17 @@ Cc: alsa-devel@alsa-project.org,
 	Jack Yu <jack.yu@realtek.com>,
 	Oder Chiou <oder_chiou@realtek.com>,
 	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [RFC PATCH 13/16] soundwire: intel: add BPT context definition
-Date: Thu,  7 Dec 2023 16:29:41 -0600
-Message-Id: <20231207222944.663893-14-pierre-louis.bossart@linux.intel.com>
+Subject: [RFC PATCH 11/16] soundwire: intel_auxdevice: add indirection for BPT
+ open/close/send_async/wait
+Date: Thu,  7 Dec 2023 16:29:39 -0600
+Message-Id: <20231207222944.663893-12-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231207222944.663893-1-pierre-louis.bossart@linux.intel.com>
 References: <20231207222944.663893-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: IWZFHSVM55GTHQBVNUEY4QF7LXPDHC3J
-X-Message-ID-Hash: IWZFHSVM55GTHQBVNUEY4QF7LXPDHC3J
+Message-ID-Hash: OPBGFRAXPV43TRBRGSESUEUCNQQBISOG
+X-Message-ID-Hash: OPBGFRAXPV43TRBRGSESUEUCNQQBISOG
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -106,7 +107,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IWZFHSVM55GTHQBVNUEY4QF7LXPDHC3J/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OPBGFRAXPV43TRBRGSESUEUCNQQBISOG/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -115,41 +116,114 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-This is needed to be shared between open/send_async/close.
+Mirror abstraction added for master ops.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- drivers/soundwire/intel.h | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ drivers/soundwire/intel_auxdevice.c | 55 +++++++++++++++++++++++++++++
+ include/linux/soundwire/sdw_intel.h | 16 +++++++++
+ 2 files changed, 71 insertions(+)
 
-diff --git a/drivers/soundwire/intel.h b/drivers/soundwire/intel.h
-index 511932c55216..2289719f318c 100644
---- a/drivers/soundwire/intel.h
-+++ b/drivers/soundwire/intel.h
-@@ -48,11 +48,23 @@ struct sdw_intel_link_res {
- 	struct hdac_bus *hbus;
+diff --git a/drivers/soundwire/intel_auxdevice.c b/drivers/soundwire/intel_auxdevice.c
+index 93698532deac..1cdf4699cf2a 100644
+--- a/drivers/soundwire/intel_auxdevice.c
++++ b/drivers/soundwire/intel_auxdevice.c
+@@ -74,6 +74,56 @@ static bool is_wake_capable(struct sdw_slave *slave)
+ 	return false;
+ }
+ 
++static int generic_bpt_stream_open(struct sdw_bus *bus,
++				   struct sdw_slave *slave,
++				   enum sdw_bpt_type mode,
++				   struct sdw_bpt_msg *msg)
++{
++	struct sdw_cdns *cdns = bus_to_cdns(bus);
++	struct sdw_intel *sdw = cdns_to_intel(cdns);
++
++	if (sdw->link_res->hw_ops->bpt_open_stream)
++		return sdw->link_res->hw_ops->bpt_open_stream(sdw, slave, mode, msg);
++	return -ENOTSUPP;
++}
++
++static int generic_bpt_stream_close(struct sdw_bus *bus,
++				    struct sdw_slave *slave,
++				    enum sdw_bpt_type mode,
++				    struct sdw_bpt_msg *msg)
++{
++	struct sdw_cdns *cdns = bus_to_cdns(bus);
++	struct sdw_intel *sdw = cdns_to_intel(cdns);
++
++	if (sdw->link_res->hw_ops->bpt_close_stream)
++		return sdw->link_res->hw_ops->bpt_close_stream(sdw, slave, mode, msg);
++	return -ENOTSUPP;
++}
++
++static int generic_bpt_send_async(struct sdw_bus *bus,
++				  struct sdw_slave *slave,
++				  struct sdw_bpt_msg *msg)
++{
++	struct sdw_cdns *cdns = bus_to_cdns(bus);
++	struct sdw_intel *sdw = cdns_to_intel(cdns);
++
++	if (sdw->link_res->hw_ops->bpt_send_async)
++		return sdw->link_res->hw_ops->bpt_send_async(sdw, slave, msg);
++	return -ENOTSUPP;
++}
++
++static int generic_bpt_wait(struct sdw_bus *bus,
++			    struct sdw_slave *slave,
++			    struct sdw_bpt_msg *msg)
++{
++	struct sdw_cdns *cdns = bus_to_cdns(bus);
++	struct sdw_intel *sdw = cdns_to_intel(cdns);
++
++	if (sdw->link_res->hw_ops->bpt_wait)
++		return sdw->link_res->hw_ops->bpt_wait(sdw, slave, msg);
++	return -ENOTSUPP;
++}
++
+ static int generic_pre_bank_switch(struct sdw_bus *bus)
+ {
+ 	struct sdw_cdns *cdns = bus_to_cdns(bus);
+@@ -203,6 +253,11 @@ static struct sdw_master_ops sdw_intel_ops = {
+ 	.get_device_num =  intel_get_device_num_ida,
+ 	.put_device_num = intel_put_device_num_ida,
+ 	.new_peripheral_assigned = generic_new_peripheral_assigned,
++
++	.bpt_open_stream = generic_bpt_stream_open,
++	.bpt_close_stream = generic_bpt_stream_close,
++	.bpt_send_async = generic_bpt_send_async,
++	.bpt_wait = generic_bpt_wait,
  };
  
-+struct sdw_intel_bpt {
-+	struct hdac_ext_stream *bpt_tx_stream;
-+	struct snd_dma_buffer dmab_tx_bdl;
-+	struct hdac_ext_stream *bpt_rx_stream;
-+	struct snd_dma_buffer dmab_rx_bdl;
-+	unsigned int pdi0_buffer_size;
-+	unsigned int pdi1_buffer_size;
-+	unsigned int num_frames;
-+	unsigned int data_per_frame;
-+};
+ /*
+diff --git a/include/linux/soundwire/sdw_intel.h b/include/linux/soundwire/sdw_intel.h
+index 00bb22d96ae5..9e114df37a5b 100644
+--- a/include/linux/soundwire/sdw_intel.h
++++ b/include/linux/soundwire/sdw_intel.h
+@@ -423,6 +423,22 @@ struct sdw_intel_hw_ops {
+ 	bool (*sync_check_cmdsync_unlocked)(struct sdw_intel *sdw);
+ 
+ 	void (*program_sdi)(struct sdw_intel *sdw, int dev_num);
 +
- struct sdw_intel {
- 	struct sdw_cdns cdns;
- 	int instance;
- 	struct sdw_intel_link_res *link_res;
- 	bool startup_done;
-+	struct sdw_intel_bpt bpt_ctx;
- #ifdef CONFIG_DEBUG_FS
- 	struct dentry *debugfs;
- #endif
++	int (*bpt_open_stream)(struct sdw_intel *sdw,
++			       struct sdw_slave *slave,
++			       enum sdw_bpt_type mode,
++			       struct sdw_bpt_msg *msg);
++	int (*bpt_close_stream)(struct sdw_intel *sdw,
++				struct sdw_slave *slave,
++				enum sdw_bpt_type mode,
++				struct sdw_bpt_msg *msg);
++	int (*bpt_send_async)(struct sdw_intel *sdw,
++			      struct sdw_slave *slave,
++			      struct sdw_bpt_msg *msg);
++	int (*bpt_wait)(struct sdw_intel *sdw,
++			struct sdw_slave *slave,
++			struct sdw_bpt_msg *msg);
++
+ };
+ 
+ extern const struct sdw_intel_hw_ops sdw_intel_cnl_hw_ops;
 -- 
 2.39.2
 
