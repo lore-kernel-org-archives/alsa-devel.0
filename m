@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 57B8FC4167B
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Dec 2023 22:32:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B6B74C4167B
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Dec 2023 22:32:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A1AD8112;
-	Thu,  7 Dec 2023 23:32:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A1AD8112
+	by alsa0.perex.cz (Postfix) with ESMTPS id F37B0828;
+	Thu,  7 Dec 2023 23:32:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F37B0828
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1701988334;
-	bh=u4/yWFhGYkVI8D1iXkWMb8DzoHd+jsVaXCeuqfKMjdM=;
+	s=default; t=1701988351;
+	bh=uiyA/2gfS2gL3oHUJD4rZf2zZF4q2znJkQE1RjzObzE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=eN8FRSXPBaLH59xDzecbKWLeQ+uAsn/YeWzI/D1nxUiQ/iigTBgVOc61+Wu02YpxT
-	 tqrdjZ+mdFOyxfMGPCTJypuIEbaXQg+nNsAcn3xTRMLTM5qV4QJTUYZBW80kJ64+Mi
-	 UiTy8D6EhNKEfEZHEUibJsQn85cGZvK7pqcuZ/5I=
+	b=mXGbcQ09ft8Vxbszi27ta5TzU0mg1sPSOhsBGpcTomt6MC08AcdRmo97IVeI5Q7E2
+	 7q9RmQQHqCUuZd7xzfXNSHeBPDgJ0kZ8FXub7z2h55lD9+LApZqYaa1UaYuEdIgFv8
+	 DftOiBIMZET0mSbPSZ5Y3nrIBDFSVwLIsLWQrykA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C571EF80612; Thu,  7 Dec 2023 23:30:48 +0100 (CET)
+	id 6C2E8F80674; Thu,  7 Dec 2023 23:30:54 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id ECF55F80633;
-	Thu,  7 Dec 2023 23:30:46 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D6645F80683;
+	Thu,  7 Dec 2023 23:30:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1C920F805BF; Thu,  7 Dec 2023 23:30:41 +0100 (CET)
+	id E9070F8061A; Thu,  7 Dec 2023 23:30:44 +0100 (CET)
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 431C9F8024E
-	for <alsa-devel@alsa-project.org>; Thu,  7 Dec 2023 23:30:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 431C9F8024E
+	by alsa1.perex.cz (Postfix) with ESMTPS id 90330F802BE
+	for <alsa-devel@alsa-project.org>; Thu,  7 Dec 2023 23:30:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 90330F802BE
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=R0vTNkh4
+ header.s=Intel header.b=BXJdbNv1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701988216; x=1733524216;
+  t=1701988220; x=1733524220;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=u4/yWFhGYkVI8D1iXkWMb8DzoHd+jsVaXCeuqfKMjdM=;
-  b=R0vTNkh4WHCF+rxKjNtaascZMOB86bPmCw9pVe1pq3ERPsZKxR4cpB9M
-   8eAXjClgfqJQPT3sW/Nhrq/Uz/0ZJbXsA2MrSOi9vGmgEV5aEUVgiSXrW
-   H6mBPlgihLBclUOQ/JwaH2hAJG/woN9XqEYBn69b+/XSj8WmWaRfwVZxu
-   KVK8eaS0z8kBPBdgVooXapjtJs3WjY5iLUUm0D6m/6TwdMbPoDg/hpXqZ
-   SggqJeiITvHeqQib/Dht5SBL0gpiTqbZ+RKfVk4goXq2+/wD+YbTyOy4p
-   4aYHkwjG9TwOMJXk7tGNS/+KLr+Kw84dplVCJJUxd3XjY5bfk7O8SITEf
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="480516584"
+  bh=uiyA/2gfS2gL3oHUJD4rZf2zZF4q2znJkQE1RjzObzE=;
+  b=BXJdbNv1t9homC3GYc558atsShDnRgy/PppLlV775opCMRhcbgg57HbG
+   ASLenOLWPlcq8DZvPEPNOLAQichdArpo+r4FpcaJxOfMGm3UdekX7bMbo
+   mRuupmAxrfUGddaVOPv9CfIMiJMYbWWOfkCMM97nMlvrnGubB1XXWi4Wv
+   xroB6PhJmB0HaqCm4oocSJKfuLq6fWI2u3YUQX5qwZzmqoLhWzM11DIGb
+   gnRVrvlVM5n1T0RK22r23OkyCnwmiFf4RoUPx1N6BnyQLxi2IH5I56Sun
+   4LwMTqjeLZFs3cpK36UHXGE2OJ3dMLRJQ+zMpGkRxqL5TlylEgZzqbhuO
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="480516645"
 X-IronPort-AV: E=Sophos;i="6.04,258,1695711600";
-   d="scan'208";a="480516584"
+   d="scan'208";a="480516645"
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
   by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Dec 2023 14:30:09 -0800
+ 07 Dec 2023 14:30:17 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="895307464"
+X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="895307487"
 X-IronPort-AV: E=Sophos;i="6.04,258,1695711600";
-   d="scan'208";a="895307464"
+   d="scan'208";a="895307487"
 Received: from hrcolco-mobl3.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.212.148.159])
   by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Dec 2023 14:30:07 -0800
+ 07 Dec 2023 14:30:15 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: linux-sound@vger.kernel.org
 Cc: alsa-devel@alsa-project.org,
@@ -84,16 +84,16 @@ Cc: alsa-devel@alsa-project.org,
 	Jack Yu <jack.yu@realtek.com>,
 	Oder Chiou <oder_chiou@realtek.com>,
 	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [RFC PATCH 02/16] soundwire: cadence: add BTP support for DP0
-Date: Thu,  7 Dec 2023 16:29:30 -0600
-Message-Id: <20231207222944.663893-3-pierre-louis.bossart@linux.intel.com>
+Subject: [RFC PATCH 08/16] soundwire: bus: add bpt_stream pointer
+Date: Thu,  7 Dec 2023 16:29:36 -0600
+Message-Id: <20231207222944.663893-9-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231207222944.663893-1-pierre-louis.bossart@linux.intel.com>
 References: <20231207222944.663893-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: IRJQ7IAMCUYAHAFNUKD7DAPJ7VMA75PO
-X-Message-ID-Hash: IRJQ7IAMCUYAHAFNUKD7DAPJ7VMA75PO
+Message-ID-Hash: HAAIYMBOJDJ7RYHNMB5DNFHI2DKHI34Y
+X-Message-ID-Hash: HAAIYMBOJDJ7RYHNMB5DNFHI2DKHI34Y
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -106,7 +106,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IRJQ7IAMCUYAHAFNUKD7DAPJ7VMA75PO/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HAAIYMBOJDJ7RYHNMB5DNFHI2DKHI34Y/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -115,56 +115,36 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The register definitions are missing a BULK_ENABLE bitfield which must
-be set for DP0.
-
-In addition, the existing mapping from PDI to Data Port is 1:1. That's
-fine for PCM streams which are by construction in one direction
-only. The BTP/BRA protocol is bidirectional and relies on DP0 only,
-which breaks the 1:1 mapping. DP0 MUST be mapped to both PDI0 and
-PDI1, with PDI1 taking care of the TX direction and PDI1 of the RX
-direction.
+Add a convenience pointer to the 'sdw_bus' structure. BPT is a
+dedicated stream which will typically not be handled by DAIs or
+dailinks. Since there's only one BPT stream per link, storing the
+pointer at the link level seems rather natural.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- drivers/soundwire/cadence_master.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+ include/linux/soundwire/sdw.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/soundwire/cadence_master.c b/drivers/soundwire/cadence_master.c
-index 725222036853..bb623f82826c 100644
---- a/drivers/soundwire/cadence_master.c
-+++ b/drivers/soundwire/cadence_master.c
-@@ -183,6 +183,7 @@ MODULE_PARM_DESC(cdns_mcp_int_mask, "Cadence MCP IntMask");
- #define CDNS_PORTCTRL_TEST_FAILED		BIT(1)
- #define CDNS_PORTCTRL_DIRN			BIT(7)
- #define CDNS_PORTCTRL_BANK_INVERT		BIT(8)
-+#define CDNS_PORTCTRL_BULK_ENABLE		BIT(16)
+diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
+index e54c5bbd2b91..8db0cd7d0d89 100644
+--- a/include/linux/soundwire/sdw.h
++++ b/include/linux/soundwire/sdw.h
+@@ -965,6 +965,7 @@ struct sdw_master_ops {
+  * @stream_refcount: number of streams currently using this bus
+  * @btp_stream_refcount: number of BTP streams currently using this bus (should
+  * be zero or one, multiple streams per link is not supported).
++ * @bpt_stream: pointer stored for convenience.
+  */
+ struct sdw_bus {
+ 	struct device *dev;
+@@ -996,6 +997,7 @@ struct sdw_bus {
+ 	int hw_sync_min_links;
+ 	int stream_refcount;
+ 	int bpt_stream_refcount;
++	struct sdw_stream_runtime *bpt_stream;
+ };
  
- #define CDNS_PORT_OFFSET			0x80
- 
-@@ -1831,13 +1832,20 @@ void sdw_cdns_config_stream(struct sdw_cdns *cdns,
- 
- 		if (cdns->bus.params.m_data_mode != SDW_PORT_DATA_MODE_NORMAL)
- 			val |= CDNS_PORTCTRL_TEST_FAILED;
-+	} else if (pdi->num == 0) {
-+		val |= CDNS_PORTCTRL_BULK_ENABLE;
- 	}
- 	offset = CDNS_PORTCTRL + pdi->num * CDNS_PORT_OFFSET;
- 	cdns_updatel(cdns, offset,
--		     CDNS_PORTCTRL_DIRN | CDNS_PORTCTRL_TEST_FAILED,
-+		     CDNS_PORTCTRL_DIRN | CDNS_PORTCTRL_TEST_FAILED |
-+		     CDNS_PORTCTRL_BULK_ENABLE,
- 		     val);
- 
--	val = pdi->num;
-+	/* The DataPort0 needs to be mapped to both PDI and PDI1 ! */
-+	if (pdi->num == 1)
-+		val = 0;
-+	else
-+		val = pdi->num;
- 	val |= CDNS_PDI_CONFIG_SOFT_RESET;
- 	val |= FIELD_PREP(CDNS_PDI_CONFIG_CHANNEL, (1 << ch) - 1);
- 	cdns_writel(cdns, CDNS_PDI_CONFIG(pdi->num), val);
+ int sdw_bus_master_add(struct sdw_bus *bus, struct device *parent,
 -- 
 2.39.2
 
