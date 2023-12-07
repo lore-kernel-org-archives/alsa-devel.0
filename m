@@ -4,47 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 50980C4167B
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Dec 2023 13:59:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 21FE5C10DC3
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Dec 2023 14:00:02 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A02DE82A;
-	Thu,  7 Dec 2023 14:59:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A02DE82A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 42DB582A;
+	Thu,  7 Dec 2023 14:59:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 42DB582A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1701957583;
-	bh=ZL90KBKrGR+vYve7LkYqfP9QR8rLyQa3bLu3xUhTWNM=;
+	s=default; t=1701957600;
+	bh=AmwZ7UAXCBwOAm8zLaVFn1kHlOhwu1bIGhDfD1xkSY8=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=fp2qb5WtDPvVZZXyIe2xi5HikN/jKYXnoSx4YUIVfY0xMrnyMCig6E/1a1SIra4nf
-	 6cQhK2cwnxx0dHiHN2+yWqi/YxuxRJ8RN+UzPG3uOGAfY0EbpF8W2sMEMGM0awk0S/
-	 rdqqLVuEMrcBYoFLzCRPneXbdvD7q9faY29tTcKQ=
+	b=IOhOCZR4MMjIVFh7s1dvZ2TjgUBnIo0CMR2pGX7E2C8NyiivfmSuVluB4MVTYFvF6
+	 qkd2VMIZQrQ0Ys5OPT0CHEvw4k8of0wI+Z85qaxaSxmFP8uDGjkxhHjMs5VVWpuOBH
+	 n0n7XJAvjclL57T5M6u/ojwquK5EzD9cie3EUM+k=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 18C5DF8057D; Thu,  7 Dec 2023 14:59:11 +0100 (CET)
+	id 662C5F805C1; Thu,  7 Dec 2023 14:59:13 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7AD9DF80587;
-	Thu,  7 Dec 2023 14:59:10 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 43344F805C5;
+	Thu,  7 Dec 2023 14:59:12 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 91F2DF8028D; Thu,  7 Dec 2023 14:57:53 +0100 (CET)
+	id C11FBF8025A; Thu,  7 Dec 2023 14:58:04 +0100 (CET)
 Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
  [207.180.221.201])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8E527F800AC
-	for <alsa-devel@alsa-project.org>; Thu,  7 Dec 2023 14:57:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8E527F800AC
+	by alsa1.perex.cz (Postfix) with ESMTP id 509C6F80166
+	for <alsa-devel@alsa-project.org>; Thu,  7 Dec 2023 14:57:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 509C6F80166
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
+From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1701957457715157747-webhooks-bot@alsa-project.org>
-References: <1701957457715157747-webhooks-bot@alsa-project.org>
+In-Reply-To: <1701957467800903320-webhooks-bot@alsa-project.org>
+References: <1701957467800903320-webhooks-bot@alsa-project.org>
 Subject: No sound from frontal case jack AUX [MSI MAG Z690 Tomahawk Wifi]
-Message-Id: <20231207135753.91F2DF8028D@alsa1.perex.cz>
-Date: Thu,  7 Dec 2023 14:57:53 +0100 (CET)
-Message-ID-Hash: 64DZO2ECCW6RG5BU2MHFXRZPC4RK2K6D
-X-Message-ID-Hash: 64DZO2ECCW6RG5BU2MHFXRZPC4RK2K6D
+Message-Id: <20231207135804.C11FBF8025A@alsa1.perex.cz>
+Date: Thu,  7 Dec 2023 14:58:04 +0100 (CET)
+Message-ID-Hash: MID3FOBW6GCOVO5UTVC2IEYSFMHVENPY
+X-Message-ID-Hash: MID3FOBW6GCOVO5UTVC2IEYSFMHVENPY
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -57,7 +57,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/64DZO2ECCW6RG5BU2MHFXRZPC4RK2K6D/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MID3FOBW6GCOVO5UTVC2IEYSFMHVENPY/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -66,12 +66,12 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-ucm-conf issue #371 was opened from ricciolino:
+alsa-project/alsa-ucm-conf issue #371 was edited from ricciolino:
 
 I posted [this](https://ubuntuforums.org/showthread.php?t=2486774) some weeks ago and I thought I had been able to solve the issue.
 Unfortunately, it does not seem like so.
 
-Summary of the issue**: attaching my headphone to the rear jack, sound is emitted correctly, whilst frontal AUX jack it just looks dead (headphone device is correctly recognized in sound system settings but no sound is emitted).
+**Summary of the issue**: attaching my headphone to the rear jack, sound is emitted correctly, whilst frontal AUX jack it just looks dead (headphone device is correctly recognized in sound system settings but no sound is emitted).
 
 Summary of steps that brought me to the initial solution.
 
