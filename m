@@ -4,88 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F2EF0C4167B
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Dec 2023 08:29:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C102FC4167B
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Dec 2023 09:56:39 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 908A0112;
-	Thu,  7 Dec 2023 09:28:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 908A0112
+	by alsa0.perex.cz (Postfix) with ESMTPS id DC7CDA4E;
+	Thu,  7 Dec 2023 10:56:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DC7CDA4E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1701937745;
-	bh=QofVFSYs9O79ICYnq3eo2N+6XhGMF2P6AlIdiIAKLE0=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	s=default; t=1701942996;
+	bh=ELn6tskRuIXZ0MjD6/C3JdIPTc/pBmm7kVdi2o6BHXM=;
+	h=Date:From:To:CC:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=DTP3Qbf2kEbqQjtIWDkIelWvNMh/RPeQsQ7Gy2hRb5f1P8wrYZLlfYOzJVgivDNdD
-	 DhGhb6fQbn8sDXMWeNF/JsmZ87a5OInkyfM8P03HyStYRNEUEJvlDTw7Bu18GRw5CJ
-	 FKdF0hszBavW5F5gZv6KQBC1vPQTm3X7LYuMqwqQ=
+	b=QXmisQBiu7NFiaFxEYqjV5v4Tj27ZLzTS8KBsNy4tgSQnFl6oVOC8EIRzgKXV8deo
+	 UQsZplm7G7rDrE9OgA9rEVYnd62076CRq3BpOGsTdkBC8vzC97bNZrAQgJi8RJHaM8
+	 qIDBN8UGMOvNSP+ErBizKpwAZifA+N1rIFQObBLo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 96CF1F8057D; Thu,  7 Dec 2023 09:28:26 +0100 (CET)
+	id E9C9BF8057E; Thu,  7 Dec 2023 10:56:04 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 78BC3F8057F;
-	Thu,  7 Dec 2023 09:28:24 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 26ED1F80580;
+	Thu,  7 Dec 2023 10:56:04 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C7CD0F8024E; Thu,  7 Dec 2023 09:25:13 +0100 (CET)
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+	id EFFFEF8024E; Thu,  7 Dec 2023 10:55:38 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id AC8C0F800D2
-	for <alsa-devel@alsa-project.org>; Thu,  7 Dec 2023 09:24:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AC8C0F800D2
+	by alsa1.perex.cz (Postfix) with ESMTPS id 572ECF800E4
+	for <alsa-devel@alsa-project.org>; Thu,  7 Dec 2023 10:55:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 572ECF800E4
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=XhABa1P9
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701937500; x=1733473500;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=QofVFSYs9O79ICYnq3eo2N+6XhGMF2P6AlIdiIAKLE0=;
-  b=XhABa1P9whCIQoVmV5AgzyGHhW+q1qNi9hRHjJ/XDOMAi705Jw1gnsPH
-   UOvoVbuUCSbIEXarXBVWXWsWNjLyz4CBG5iYvZ4865UWeTlznxQ4tY352
-   6n936jRGsjN1Mg+LNGxR66CBsoh/ZI3p06oQpazlSbcio0ZpSf7TSIjp9
-   3AVAljAgt6vHYSRtm3pe9190smDIor2P0qJ1VFCRnEOjgAhl/55U5C2gp
-   nbMsF/A8Crcy8zx+bDKsJcDUS2tYtbN4Qp/aL/Rc3DdJhYFbfuLr53dqQ
-   5C2sfHPiWITnSlGu8uT7RTrYfpsDkaaYVD7its9+COPlM9aitxtxWu5ro
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10916"; a="1301616"
-X-IronPort-AV: E=Sophos;i="6.04,256,1695711600";
-   d="scan'208";a="1301616"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Dec 2023 00:24:53 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10916"; a="862400979"
-X-IronPort-AV: E=Sophos;i="6.04,256,1695711600";
-   d="scan'208";a="862400979"
-Received: from aslawinx-mobl.ger.corp.intel.com (HELO [10.94.8.107])
- ([10.94.8.107])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Dec 2023 00:24:51 -0800
-Message-ID: <f4dfebd6-db57-4588-a3fe-ab198d2ac366@linux.intel.com>
-Date: Thu, 7 Dec 2023 09:24:49 +0100
+ unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
+ header.s=PODMain02222019 header.b=BUnUcoO1
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+	by mx0a-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id
+ 3B76OS40010941;
+	Thu, 7 Dec 2023 03:55:27 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+	date:from:to:cc:subject:message-id:references:mime-version
+	:content-type:in-reply-to; s=PODMain02222019; bh=KjBSDNXSl6eV2Hf
+	IoeGoQGj1lBr4vKGApGNShpRSW74=; b=BUnUcoO1gDm/jm3k1o59+hGlfH8cSmp
+	X/oq+nPhWTC3Fky+Yq6NrtyyrsdpS8dHoUB/nqK4rTNiFYUmcRv8/8xZ6154L/pt
+	9IdwKupuJmwVvWO5YIwVxvx08oyUPih55EM4hFK07Zvu5W2qFMp9l91efPaPXFP/
+	rByTtO/2bBFqdEit6ItQnYeG2Juxkqs8P5i2/RI6QBpYvSx8ncFOwPOLiYGadi2m
+	xhiNTvrquiyNsQMdee9u+mA+Rd696ku9uSYHA6vB0urCU9HmnANPtDN0NLnriQNc
+	geM+TOomIPX1ffzhwmM+GlYQBijMXDzHMY59xU5P2+wErg0UTZVFoEg==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3utd47sy3v-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 07 Dec 2023 03:55:27 -0600 (CST)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 7 Dec
+ 2023 09:55:24 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.40 via Frontend
+ Transport; Thu, 7 Dec 2023 09:55:24 +0000
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com
+ [198.61.86.93])
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id A97B111AB;
+	Thu,  7 Dec 2023 09:55:24 +0000 (UTC)
+Date: Thu, 7 Dec 2023 09:55:24 +0000
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+To: Jaroslav Kysela <perex@perex.cz>
+CC: <pierre-louis.bossart@linux.intel.com>, <bard.liao@intel.com>,
+        <mengdong.lin@intel.com>, <patches@opensource.cirrus.com>,
+        <alsa-devel@alsa-project.org>
+Subject: Re: [PATCH alsa-ucm-conf v3 1/2] sof-soundwire: Add basic support
+ for cs42l43
+Message-ID: <20231207095524.GM14858@ediswmail.ad.cirrus.com>
+References: <20231206164612.1362203-1-ckeepax@opensource.cirrus.com>
+ <adef7c2f-7c52-46b4-b595-cbf8970b273b@perex.cz>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 5/5] ASoC: soc.h: don't create dummy Component via
- COMP_DUMMY()
-Content-Language: en-US
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
- Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
-References: <053ec252-e4df-4ccb-80fd-a802dd212b15@linux.intel.com>
- <87h6kuolii.wl-kuninori.morimoto.gx@renesas.com>
-From: =?UTF-8?Q?Amadeusz_S=C5=82awi=C5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>
-In-Reply-To: <87h6kuolii.wl-kuninori.morimoto.gx@renesas.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: 6G7VQXZPDPN22XEMEXPHAK3VIMRAIBF5
-X-Message-ID-Hash: 6G7VQXZPDPN22XEMEXPHAK3VIMRAIBF5
-X-MailFrom: amadeuszx.slawinski@linux.intel.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <adef7c2f-7c52-46b4-b595-cbf8970b273b@perex.cz>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-GUID: DbXeBGWCK9lm-9fgHV7TEEnqculmgzFm
+X-Proofpoint-ORIG-GUID: DbXeBGWCK9lm-9fgHV7TEEnqculmgzFm
+X-Proofpoint-Spam-Reason: safe
+Message-ID-Hash: QCVBVHAGIHP363WMR2PCH6M3NGZKZR34
+X-Message-ID-Hash: QCVBVHAGIHP363WMR2PCH6M3NGZKZR34
+X-MailFrom: prvs=770564f238=ckeepax@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -97,7 +100,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6G7VQXZPDPN22XEMEXPHAK3VIMRAIBF5/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QCVBVHAGIHP363WMR2PCH6M3NGZKZR34/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -106,56 +109,28 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 12/7/2023 2:21 AM, Kuninori Morimoto wrote:
+On Wed, Dec 06, 2023 at 06:26:17PM +0100, Jaroslav Kysela wrote:
+> On 06. 12. 23 17:46, Charles Keepax wrote:
+> >cs42l43 is a codec device, add basic support for it. Including a dual
+> >channel DMIC input, stereo headphones, and a mono headset microphone.
+> >
+> >Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+> >---
+> >+	Value {
+> >+		CapturePriority 100
+> >+		CapturePCM "hw:${CardId},4"
+> >+	}
+> >+}
 > 
-> Hi Amadeusz
+> Just curious: Why dmic input does not have Decimator switch/volume
+> controls like Headset output?
 > 
-> Thank you for your feedback
-> 
->>> --- a/include/sound/soc.h
->>> +++ b/include/sound/soc.h
->>> @@ -938,7 +938,7 @@ snd_soc_link_to_platform(struct snd_soc_dai_link *link, int n) {
->>>    #define COMP_PLATFORM(_name)		{ .name = _name }
->>>    #define COMP_AUX(_name)			{ .name = _name }
->>>    #define COMP_CODEC_CONF(_name)		{ .name = _name }
->>> -#define COMP_DUMMY()			{ .name = "snd-soc-dummy", .dai_name = "snd-soc-dummy-dai", }
->>> +#define COMP_DUMMY()			/* see snd_soc_fill_dummy_dai() */
->>
->> Isn't it effectively making COMP_DUMMY same as COMP_EMPTY, or am I not
->> seeing something? I guess next step could be to just remove all
->> COMP_DUMMY and replace them with COMP_EMPTY to avoid two definitions
->> which are same thing?
-> 
-> It is a little bit macro magic
-> 
-> COMP_EMPTY()
-> 	static struct snd_soc_dai_link_component name[]	= {{ }},
-> 	                                                   ^^^
-> COMP_DUMMY()
-> 	static struct snd_soc_dai_link_component name[]	= {   },
-> 	                                                   ^^^
-> EMPTY case will be 1 element array, DUMMY case will be 0 element array.
-> So, EMPTY case has empty element, and is not a special/strange array.
-> But DUMMY case, it has pointer but 0 size array, very special/strange.
-> This patch making this special/strange array on purpose, and convert it
-> to asoc_dummy_dlc() on soc-core.c
-> Is this good answer for you ?
-> 
+> We can combine mono controls to one stereo in latest UCM.
 
-Yes, thanks!
+Oh, I was not aware we could do that. I would yes much rather
+handle the switches and volumes in this way. I will see if I can
+figure it out, but if you had any good examples that already
+exist that would really be handy?
 
->>> +		if (dai_link->num_platforms == 0 && dai_link->platforms) {
->>> +			dev_warn(card->dev, "platform don't need dummy Component/DAI\n");
->>
->> I would just replace above print with code comment, no need to spam dmesg.
-> 
-> OK, will fix in v2
-> 
-> 
-> Thank you for your help !!
-> 
-> Best regards
-> ---
-> Renesas Electronics
-> Ph.D. Kuninori Morimoto
-
+Thanks,
+Charles
