@@ -4,98 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 76628C4167B
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Dec 2023 22:36:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F208FC4167B
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Dec 2023 22:37:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 371F5832;
-	Thu,  7 Dec 2023 23:36:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 371F5832
+	by alsa0.perex.cz (Postfix) with ESMTPS id E3017A4A;
+	Thu,  7 Dec 2023 23:37:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E3017A4A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1701988576;
-	bh=xZp9rAu7CFtQr/d0cAfzz06dHGZubVUeDnRzZs0edgk=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1701988648;
+	bh=NT7BHAqFBOhaRtrY/szkX/r9R8b3Zw9S8V4qsNXM+rg=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=U1Kc6SJ82m6O11v6UaV7Iv/P2ZYgYgybYmMUnB5LcMU2XxyZ94BYy4FIsRTDd7VDs
-	 hhtUPxj5iKENZLr9OTNX9Vqv/+M7WIp/C9xP2tE08GVMkQgQ5VzzIZLkOZOLTKyOFh
-	 Ufi3vU9ZFWT1jen/3KP61DOySe4VoTb5oSrrxm7E=
+	b=qN7lF44ya4SE18UD0bF799G6zectKkZs1rOBeTzuU/EGLIYNIGvbxdq7sTo1+V3zj
+	 BIl5I3Y7JsZbd/DFwbkcqaAO0n4rZUBcrDWUMNJbPQwD6JWJGnO/8O+3mx15eeIAag
+	 vh9NspIPFFdPazHcA3083VSp+HgyLRAAyn58Tebs=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0C74FF805F0; Thu,  7 Dec 2023 23:35:17 +0100 (CET)
+	id 543F2F805A0; Thu,  7 Dec 2023 23:36:57 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 44C6AF805EB;
-	Thu,  7 Dec 2023 23:35:17 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8F67AF8057F;
+	Thu,  7 Dec 2023 23:36:57 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A5C28F805EB; Thu,  7 Dec 2023 23:35:11 +0100 (CET)
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 717EDF80166; Thu,  7 Dec 2023 23:36:51 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 49D3FF8028D
-	for <alsa-devel@alsa-project.org>; Thu,  7 Dec 2023 23:30:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 49D3FF8028D
+	by alsa1.perex.cz (Postfix) with ESMTPS id A3FBAF805EE
+	for <alsa-devel@alsa-project.org>; Thu,  7 Dec 2023 23:35:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A3FBAF805EE
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=arcF/gjT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701988218; x=1733524218;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=xZp9rAu7CFtQr/d0cAfzz06dHGZubVUeDnRzZs0edgk=;
-  b=arcF/gjTJ28Y1swShL5yDcQGfUApi6orGME6g533oyh+4/L2T338iD8m
-   8ibBslTkyBd3PEMkuxKPtpe1a9JVAGjvUFPTiXllc9jIodOWjrCv5Ekci
-   tAexvz2O50dNpYdrR/ktBtK7oSrUqAALwIri761D6NcDwSAziZYVAdhp7
-   D7nrOn8lsw7b+MIeTp3mlR3V7ht57D/Tk4UZ9aHRMeTIKG2vII1O4FpG9
-   3av3l8gpJMCJxsmzUfYs78piL3u9C3Z52eMMu9OdhgkQIja4PDEThbv9M
-   mtUPkuC3CoFw1dCAbe5u6rcD56ytn+ExENvuAkenHrCvwBNAj/ilie2KW
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="480516628"
-X-IronPort-AV: E=Sophos;i="6.04,258,1695711600";
-   d="scan'208";a="480516628"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Dec 2023 14:30:14 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="895307479"
-X-IronPort-AV: E=Sophos;i="6.04,258,1695711600";
-   d="scan'208";a="895307479"
-Received: from hrcolco-mobl3.amr.corp.intel.com (HELO
- pbossart-mobl3.amr.corp.intel.com) ([10.212.148.159])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Dec 2023 14:30:13 -0800
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-To: linux-sound@vger.kernel.org
-Cc: alsa-devel@alsa-project.org,
-	tiwai@suse.de,
-	broonie@kernel.org,
-	vinod.koul@intel.com,
-	Bard liao <yung-chuan.liao@linux.intel.com>,
-	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-	Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-	Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-	srinivas.kandagatla@linaro.org,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	vijendar.mukunda@amd.com,
-	Charles Keepax <ckeepax@opensource.cirrus.com>,
-	Richard Fitzgerald <rf@opensource.cirrus.com>,
-	Shuming Fan <shumingf@realtek.com>,
-	Jack Yu <jack.yu@realtek.com>,
-	Oder Chiou <oder_chiou@realtek.com>,
-	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [RFC PATCH 06/16] soundwire: stream: reuse existing code for BPT
- stream
-Date: Thu,  7 Dec 2023 16:29:34 -0600
-Message-Id: <20231207222944.663893-7-pierre-louis.bossart@linux.intel.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231207222944.663893-1-pierre-louis.bossart@linux.intel.com>
-References: <20231207222944.663893-1-pierre-louis.bossart@linux.intel.com>
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=fM7G8omP
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 04321620CD;
+	Thu,  7 Dec 2023 22:35:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F8BDC433CA;
+	Thu,  7 Dec 2023 22:35:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1701988505;
+	bh=NT7BHAqFBOhaRtrY/szkX/r9R8b3Zw9S8V4qsNXM+rg=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=fM7G8omPRZ7ZWXJv3Rg5R2B74Wc7o7Kd0E7svQfW9jKfF2c9SyQMkDDpP2fwOg2PS
+	 TKO6qZXBPmoGXWGrJAefouIWYDB8ffo870ddOmQLfgZp38GIQ2vwXuC+0oI7iBOh5A
+	 Dmzh3SXRzNyYbWZvBRERx2CaEge5kWXD5un3ta2VoAnw3dOgT54u79sJmF7LZRjAi4
+	 wAyE+jsMQiEYPkN4VoQz3jAoz/AqgbXL0XVNVTtIB0JtpatC8cCnYqQ03ZaxLmbyKD
+	 a6Mknh/f6Fz9KzrfxlGNr9kf9sZWMTVB1KDV+sBR/xTblGk3eIJE8dITgwEoK8w1zX
+	 AsY+ipMKgV9Qw==
+From: Mark Brown <broonie@kernel.org>
+To: tudor.ambarus@linaro.org, pratyush@kernel.org,
+ miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+ sbinding@opensource.cirrus.com, lee@kernel.org, james.schulman@cirrus.com,
+ david.rhodes@cirrus.com, rf@opensource.cirrus.com, perex@perex.cz,
+ tiwai@suse.com, Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
+Cc: linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+ michael@walle.cc, linux-mtd@lists.infradead.org,
+ nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
+ claudiu.beznea@tuxon.dev, michal.simek@amd.com,
+ linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
+ patches@opensource.cirrus.com, linux-sound@vger.kernel.org, git@amd.com,
+ amitrkcian2002@gmail.com
+In-Reply-To: <20231125092137.2948-1-amit.kumar-mahapatra@amd.com>
+References: <20231125092137.2948-1-amit.kumar-mahapatra@amd.com>
+Subject: Re: (subset) [PATCH v11 00/10] spi: Add support for
+ stacked/parallel memories
+Message-Id: <170198850030.340565.15742297562436442635.b4-ty@kernel.org>
+Date: Thu, 07 Dec 2023 22:35:00 +0000
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: UQYYCEM3KGABDECKDCQDTKCVCSBC4CRB
-X-Message-ID-Hash: UQYYCEM3KGABDECKDCQDTKCVCSBC4CRB
-X-MailFrom: pierre-louis.bossart@linux.intel.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-5c066
+Message-ID-Hash: E2MKHEIWUEIGIQMF3Z7JSZJFRVG6P72N
+X-Message-ID-Hash: E2MKHEIWUEIGIQMF3Z7JSZJFRVG6P72N
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -107,239 +93,64 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UQYYCEM3KGABDECKDCQDTKCVCSBC4CRB/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/E2MKHEIWUEIGIQMF3Z7JSZJFRVG6P72N/>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-DP0 (Data Port 0) is very similar to regular data ports, with minor
-tweaks we can reuse the same code.
+On Sat, 25 Nov 2023 14:51:27 +0530, Amit Kumar Mahapatra wrote:
+> This patch series updated the spi-nor, spi core and the AMD-Xilinx GQSPI
+> driver to add stacked and parallel memories support.
+> 
+> The first nine patches
+> https://lore.kernel.org/all/20230119185342.2093323-1-amit.kumar-mahapatra@amd.com/
+> https://lore.kernel.org/all/20230310173217.3429788-2-amit.kumar-mahapatra@amd.com/
+> https://lore.kernel.org/all/20230310173217.3429788-3-amit.kumar-mahapatra@amd.com/
+> https://lore.kernel.org/all/20230310173217.3429788-4-amit.kumar-mahapatra@amd.com/
+> https://lore.kernel.org/all/20230310173217.3429788-5-amit.kumar-mahapatra@amd.com/
+> https://lore.kernel.org/all/20230310173217.3429788-6-amit.kumar-mahapatra@amd.com/
+> https://lore.kernel.org/all/20230310173217.3429788-7-amit.kumar-mahapatra@amd.com/
+> https://lore.kernel.org/all/20230310173217.3429788-8-amit.kumar-mahapatra@amd.com/
+> https://lore.kernel.org/all/20230310173217.3429788-9-amit.kumar-mahapatra@amd.com/
+> of the previous series got applied to
+> https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git
+> for-next But the rest of the patches in the series did not get applied as
+> failure was reported for spi driver with GPIO CS, so send the remaining
+> patches in the series after rebasing it on top of for-next branch and
+> fixing the issue.
+> 
+> [...]
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- drivers/soundwire/stream.c | 94 +++++++++++++++++++++++++++-----------
- 1 file changed, 68 insertions(+), 26 deletions(-)
+Applied to
 
-diff --git a/drivers/soundwire/stream.c b/drivers/soundwire/stream.c
-index 16ee58d4b7a2..f9762610f051 100644
---- a/drivers/soundwire/stream.c
-+++ b/drivers/soundwire/stream.c
-@@ -87,6 +87,10 @@ static int _sdw_program_slave_port_params(struct sdw_bus *bus,
- 		return ret;
- 	}
- 
-+	/* DP0 does not implement BlockCtrl3 */
-+	if (!t_params->port_num)
-+		goto skip_block_ctrl3;
-+
- 	/* Program DPN_BlockCtrl3 register */
- 	ret = sdw_write_no_pm(slave, addr2, t_params->blk_pkg_mode);
- 	if (ret < 0) {
-@@ -94,6 +98,7 @@ static int _sdw_program_slave_port_params(struct sdw_bus *bus,
- 		return ret;
- 	}
- 
-+skip_block_ctrl3:
- 	/*
- 	 * Data ports are FULL, SIMPLE and REDUCED. This function handles
- 	 * FULL and REDUCED only and beyond this point only FULL is
-@@ -130,18 +135,29 @@ static int sdw_program_slave_port_params(struct sdw_bus *bus,
- 	struct sdw_port_params *p_params = &p_rt->port_params;
- 	struct sdw_slave_prop *slave_prop = &s_rt->slave->prop;
- 	u32 addr1, addr2, addr3, addr4, addr5, addr6;
--	struct sdw_dpn_prop *dpn_prop;
-+	enum sdw_dpn_type port_type;
-+	bool read_only_wordlength;
- 	int ret;
- 	u8 wbuf;
- 
- 	if (s_rt->slave->is_mockup_device)
- 		return 0;
- 
--	dpn_prop = sdw_get_slave_dpn_prop(s_rt->slave,
--					  s_rt->direction,
--					  t_params->port_num);
--	if (!dpn_prop)
--		return -EINVAL;
-+	if (t_params->port_num) {
-+		struct sdw_dpn_prop *dpn_prop;
-+
-+		dpn_prop = sdw_get_slave_dpn_prop(s_rt->slave,
-+						  s_rt->direction,
-+						  t_params->port_num);
-+		if (!dpn_prop)
-+			return -EINVAL;
-+
-+		read_only_wordlength = dpn_prop->read_only_wordlength;
-+		port_type = dpn_prop->type;
-+	} else {
-+		read_only_wordlength = false;
-+		port_type = SDW_DPN_FULL;
-+	}
- 
- 	addr1 = SDW_DPN_PORTCTRL(t_params->port_num);
- 	addr2 = SDW_DPN_BLOCKCTRL1(t_params->port_num);
-@@ -171,7 +187,7 @@ static int sdw_program_slave_port_params(struct sdw_bus *bus,
- 		return ret;
- 	}
- 
--	if (!dpn_prop->read_only_wordlength) {
-+	if (!read_only_wordlength) {
- 		/* Program DPN_BlockCtrl1 register */
- 		ret = sdw_write_no_pm(s_rt->slave, addr2, (p_params->bps - 1));
- 		if (ret < 0) {
-@@ -223,9 +239,9 @@ static int sdw_program_slave_port_params(struct sdw_bus *bus,
- 		}
- 	}
- 
--	if (dpn_prop->type != SDW_DPN_SIMPLE) {
-+	if (port_type != SDW_DPN_SIMPLE) {
- 		ret = _sdw_program_slave_port_params(bus, s_rt->slave,
--						     t_params, dpn_prop->type);
-+						     t_params, port_type);
- 		if (ret < 0)
- 			dev_err(&s_rt->slave->dev,
- 				"Transport reg write failed for port: %d\n",
-@@ -432,6 +448,9 @@ static int sdw_prep_deprep_slave_ports(struct sdw_bus *bus,
- 	struct completion *port_ready;
- 	struct sdw_dpn_prop *dpn_prop;
- 	struct sdw_prepare_ch prep_ch;
-+	u32 imp_def_interrupts;
-+	bool simple_ch_prep_sm;
-+	u32 ch_prep_timeout;
- 	bool intr = false;
- 	int ret = 0, val;
- 	u32 addr;
-@@ -439,20 +458,31 @@ static int sdw_prep_deprep_slave_ports(struct sdw_bus *bus,
- 	prep_ch.num = p_rt->num;
- 	prep_ch.ch_mask = p_rt->ch_mask;
- 
--	dpn_prop = sdw_get_slave_dpn_prop(s_rt->slave,
--					  s_rt->direction,
--					  prep_ch.num);
--	if (!dpn_prop) {
--		dev_err(bus->dev,
--			"Slave Port:%d properties not found\n", prep_ch.num);
--		return -EINVAL;
-+	if (p_rt->num) {
-+		dpn_prop = sdw_get_slave_dpn_prop(s_rt->slave,
-+						  s_rt->direction,
-+						  prep_ch.num);
-+		if (!dpn_prop) {
-+			dev_err(bus->dev,
-+				"Slave Port:%d properties not found\n", prep_ch.num);
-+			return -EINVAL;
-+		}
-+
-+		imp_def_interrupts = dpn_prop->imp_def_interrupts;
-+		simple_ch_prep_sm = dpn_prop->simple_ch_prep_sm;
-+	} else {
-+		struct sdw_dp0_prop *dp0_prop = s_rt->slave->prop.dp0_prop;
-+
-+		imp_def_interrupts = dp0_prop->imp_def_interrupts;
-+		simple_ch_prep_sm =  dp0_prop->simple_ch_prep_sm;
-+		ch_prep_timeout = dp0_prop->ch_prep_timeout;
- 	}
- 
- 	prep_ch.prepare = prep;
- 
- 	prep_ch.bank = bus->params.next_bank;
- 
--	if (dpn_prop->imp_def_interrupts || !dpn_prop->simple_ch_prep_sm ||
-+	if (imp_def_interrupts || !simple_ch_prep_sm ||
- 	    bus->params.s_data_mode != SDW_PORT_DATA_MODE_NORMAL)
- 		intr = true;
- 
-@@ -463,7 +493,7 @@ static int sdw_prep_deprep_slave_ports(struct sdw_bus *bus,
- 	 */
- 	if (prep && intr) {
- 		ret = sdw_configure_dpn_intr(s_rt->slave, p_rt->num, prep,
--					     dpn_prop->imp_def_interrupts);
-+					     imp_def_interrupts);
- 		if (ret < 0)
- 			return ret;
- 	}
-@@ -472,7 +502,7 @@ static int sdw_prep_deprep_slave_ports(struct sdw_bus *bus,
- 	sdw_do_port_prep(s_rt, prep_ch, prep ? SDW_OPS_PORT_PRE_PREP : SDW_OPS_PORT_PRE_DEPREP);
- 
- 	/* Prepare Slave port implementing CP_SM */
--	if (!dpn_prop->simple_ch_prep_sm) {
-+	if (!simple_ch_prep_sm) {
- 		addr = SDW_DPN_PREPARECTRL(p_rt->num);
- 
- 		if (prep)
-@@ -489,7 +519,7 @@ static int sdw_prep_deprep_slave_ports(struct sdw_bus *bus,
- 		/* Wait for completion on port ready */
- 		port_ready = &s_rt->slave->port_ready[prep_ch.num];
- 		wait_for_completion_timeout(port_ready,
--			msecs_to_jiffies(dpn_prop->ch_prep_timeout));
-+			msecs_to_jiffies(ch_prep_timeout));
- 
- 		val = sdw_read_no_pm(s_rt->slave, SDW_DPN_PREPARESTATUS(p_rt->num));
- 		if ((val < 0) || (val & p_rt->ch_mask)) {
-@@ -506,7 +536,7 @@ static int sdw_prep_deprep_slave_ports(struct sdw_bus *bus,
- 	/* Disable interrupt after Port de-prepare */
- 	if (!prep && intr)
- 		ret = sdw_configure_dpn_intr(s_rt->slave, p_rt->num, prep,
--					     dpn_prop->imp_def_interrupts);
-+					     imp_def_interrupts);
- 
- 	return ret;
- }
-@@ -970,7 +1000,8 @@ static int sdw_slave_port_is_valid_range(struct device *dev, int num)
- 
- static int sdw_slave_port_config(struct sdw_slave *slave,
- 				 struct sdw_slave_runtime *s_rt,
--				 const struct sdw_port_config *port_config)
-+				 const struct sdw_port_config *port_config,
-+				 bool is_bpt_stream)
- {
- 	struct sdw_port_runtime *p_rt;
- 	int ret;
-@@ -982,9 +1013,14 @@ static int sdw_slave_port_config(struct sdw_slave *slave,
- 		 * TODO: Check valid port range as defined by DisCo/
- 		 * slave
- 		 */
--		ret = sdw_slave_port_is_valid_range(&slave->dev, port_config[i].num);
--		if (ret < 0)
--			return ret;
-+		if (!is_bpt_stream) {
-+			ret = sdw_slave_port_is_valid_range(&slave->dev, port_config[i].num);
-+			if (ret < 0)
-+				return ret;
-+		} else {
-+			if (port_config[i].num)
-+				return -EINVAL;
-+		}
- 
- 		ret = sdw_port_config(p_rt, port_config, i);
- 		if (ret < 0)
-@@ -1293,6 +1329,11 @@ struct sdw_dpn_prop *sdw_get_slave_dpn_prop(struct sdw_slave *slave,
- 	u8 num_ports;
- 	int i;
- 
-+	if (!port_num) {
-+		dev_err(&slave->dev, "%s: port_num is zero\n", __func__);
-+		return NULL;
-+	}
-+
- 	if (direction == SDW_DATA_DIR_TX) {
- 		num_ports = hweight32(slave->prop.source_ports);
- 		dpn_prop = slave->prop.src_dpn_prop;
-@@ -2056,7 +2097,8 @@ int sdw_stream_add_slave(struct sdw_slave *slave,
- 	if (ret)
- 		goto unlock;
- 
--	ret = sdw_slave_port_config(slave, s_rt, port_config);
-+	ret = sdw_slave_port_config(slave, s_rt, port_config,
-+				    stream->type == SDW_STREAM_BPT ? true : false);
- 	if (ret)
- 		goto unlock;
- 
--- 
-2.39.2
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+
+Thanks!
+
+[02/10] ALSA: hda/cs35l56: Use set/get APIs to access spi->chip_select
+        commit: f05e2f61fe88092e0d341ea27644a84e3386358d
+[03/10] spi: Add multi-cs memories support in SPI core
+        commit: 4d8ff6b0991d5e86b17b235fc46ec62e9195cb9b
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
 
