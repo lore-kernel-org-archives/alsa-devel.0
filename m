@@ -4,66 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 23C13C10DCE
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Dec 2023 22:31:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 982E3C4167B
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Dec 2023 22:31:45 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2254FDEC;
-	Thu,  7 Dec 2023 23:31:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2254FDEC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0D853DF5;
+	Thu,  7 Dec 2023 23:31:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0D853DF5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1701988281;
-	bh=I6zZMG+IpPw2s8Sw0iLkg1F5rzsOKtGLZz9ge2ZVzVw=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=dTOoJ+0Sxphg3ta4rB/hOJvWC3u2yg/M8e/CGVeFFPblean1uWzwFsXvfarM9LecQ
-	 OZesPjZoXOh70eodEcYe2XCM63bSCFiCMg+RUMa2FJGDvHKuG3c0xeIp4HQ8o6JOFr
-	 z8/IDCXjEiBX7nNO11rp9JUbcKpy1YQ9OhPINPGU=
+	s=default; t=1701988304;
+	bh=IjYf6gRzkTpmo6Q9g3AJuEWF4uxIJpfQMq4tyk+NPbE=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=pIQ4yFjcEnh8XW9jC5oLM6MWwPS8j0iF14dCcUPaI6N5uwuanx/y/H3qMmn1gxWXv
+	 1086A5NDGAhixg3aljX5lnEHNkeBiPF+loZsMIoSsGVfq8LlZ4uq9Y5QIFMq8m6AbL
+	 AdWv+9vA8jIKHbgwA0MP6FA1Jhz2Kne0FSId1MbE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 579CCF805D8; Thu,  7 Dec 2023 23:30:39 +0100 (CET)
+	id 6ED95F805EF; Thu,  7 Dec 2023 23:30:41 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 37492F805DA;
-	Thu,  7 Dec 2023 23:30:37 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 786FCF805FE;
+	Thu,  7 Dec 2023 23:30:39 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0190DF8056F; Thu,  7 Dec 2023 23:30:30 +0100 (CET)
+	id 5C311F80568; Thu,  7 Dec 2023 23:30:34 +0100 (CET)
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 52F63F800D2
-	for <alsa-devel@alsa-project.org>; Thu,  7 Dec 2023 23:30:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 52F63F800D2
+	by alsa1.perex.cz (Postfix) with ESMTPS id 70197F80166
+	for <alsa-devel@alsa-project.org>; Thu,  7 Dec 2023 23:30:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 70197F80166
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=nVeR+Y+D
+ header.s=Intel header.b=Z2UxzNDL
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701988213; x=1733524213;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=I6zZMG+IpPw2s8Sw0iLkg1F5rzsOKtGLZz9ge2ZVzVw=;
-  b=nVeR+Y+DR3U8D9osrk7c8pOUIN4qaiCz0dps7lhkIeQ95INKLiYMvZDQ
-   TM/H440QrZ9QnuEo1ns0R2PddUbqZ2r0EoxU6t3oeJKmyG2U3ZarTKcRq
-   HAzsN7o1SO2KHOi52OxCndgHA2dRFMepJaPIHGiyWd9Bw7tsonmgEZH3b
-   ATbvhNg7GeXyCXjuo5k4C1DBs44GFQJF196N0n/h6rRdoYGNdX3uul++w
-   a3K5t5QvyDCQtQZWJSIyfrpjE5ckvrvo3WWXE0toucp2oGijrNcYJZeyk
-   sRZstuBrdmj19e+Mc/rc87R9xKIAgvGfUCvoXmg3ip9KorVLGHVHmrBK9
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="480516563"
+  t=1701988215; x=1733524215;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=IjYf6gRzkTpmo6Q9g3AJuEWF4uxIJpfQMq4tyk+NPbE=;
+  b=Z2UxzNDLlgTF1fNDBFqv7oiShJLK1Yav5D0u36aw7dGNx0ugaLWiSpq/
+   IrVo+oKXaiIy9COhBpzbrqqTZznl1v7AyZ6dlC00yuoAKTnMd3qTCkreY
+   WUaTRH/EMqOrxV7PJ39fa8EEyBefN0OV5zH3zEki6YmlxXj0WpGlYkwF2
+   6yoe6KmRz8OaJ9gVE56s8aval2ULaVabko1TEcS/7cj6n97GXm49eNiuA
+   e8WK1FXKW+ciGp3NLswIvR1Z4ywPZATtXE6b84yMwyhMhimEMCGHzedXt
+   0DFHaL4pEJqzNS4TjyJCau/zgnc6fAhCNVQ38DrnYzLoEwZaAesCm8lpO
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="480516595"
 X-IronPort-AV: E=Sophos;i="6.04,258,1695711600";
-   d="scan'208";a="480516563"
+   d="scan'208";a="480516595"
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
   by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Dec 2023 14:30:06 -0800
+ 07 Dec 2023 14:30:10 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="895307458"
+X-IronPort-AV: E=McAfee;i="6600,9927,10917"; a="895307470"
 X-IronPort-AV: E=Sophos;i="6.04,258,1695711600";
-   d="scan'208";a="895307458"
+   d="scan'208";a="895307470"
 Received: from hrcolco-mobl3.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.212.148.159])
   by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Dec 2023 14:30:05 -0800
+ 07 Dec 2023 14:30:09 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: linux-sound@vger.kernel.org
 Cc: alsa-devel@alsa-project.org,
@@ -83,15 +84,17 @@ Cc: alsa-devel@alsa-project.org,
 	Jack Yu <jack.yu@realtek.com>,
 	Oder Chiou <oder_chiou@realtek.com>,
 	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [RFC PATCH 00/16] soundwire/ASoC: speed-up downloads with BTP/BRA
- protocol
-Date: Thu,  7 Dec 2023 16:29:28 -0600
-Message-Id: <20231207222944.663893-1-pierre-louis.bossart@linux.intel.com>
+Subject: [RFC PATCH 03/16] soundwire: stream: extend sdw_alloc_stream() to
+ take 'type' parameter
+Date: Thu,  7 Dec 2023 16:29:31 -0600
+Message-Id: <20231207222944.663893-4-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20231207222944.663893-1-pierre-louis.bossart@linux.intel.com>
+References: <20231207222944.663893-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: JWSG6NWRVENVRPPPMOUDJLYVRBN7XOPG
-X-Message-ID-Hash: JWSG6NWRVENVRPPPMOUDJLYVRBN7XOPG
+Message-ID-Hash: QFUX34QHXH5ECI2YZI5DTC5WPXHIHQEY
+X-Message-ID-Hash: QFUX34QHXH5ECI2YZI5DTC5WPXHIHQEY
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -104,147 +107,106 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JWSG6NWRVENVRPPPMOUDJLYVRBN7XOPG/>
-List-Archive: <>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QFUX34QHXH5ECI2YZI5DTC5WPXHIHQEY/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-This RFC patchset suggests a new API for ASoC codec drivers to use for
-firmware/table downloads.
+In the existing definition of sdw_stream_runtime, the 'type' member is
+never set and defaults to PCM. To prepare for the BPT/BRA support, we
+need to special-case streams and make use of the 'type'.
 
-Problem statement:
+No functional change for now, the implicit PCM type is now explicit.
 
-All existing transfers initiated by codec drivers rely on SoundWire
-read/write commands, which can only support ONE byte per frame. With
-the typical 48kHz frame rate, this means 384 kbits/s.
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+ Documentation/driver-api/soundwire/stream.rst | 2 +-
+ drivers/soundwire/stream.c                    | 7 +++++--
+ include/linux/soundwire/sdw.h                 | 3 ++-
+ sound/soc/qcom/sdw.c                          | 2 +-
+ 4 files changed, 9 insertions(+), 5 deletions(-)
 
-In addition, the command/control is typically handled with a FIFO and
-interrupts which adds more software overhead. To give a practical
-reference, sending 32Kb takes 2.5s on Intel platforms, which means
-about 105kbit/s only. Additional non-audio activity is likely to
-adversely impact interrupt scheduling and further decrease the
-transfer speeds.
-
-New SDCA-based codecs have a need to download tables and DSP firmware
-which are typically between 20 and 256 Kb. The slow bus operation has
-a direct impact on boot/resume times, and clearly having to wait more
-than 300ms is a showstopper in terms of latency requirements and
-user-experience.
-
-Suggested solution:
-
-The MIPI specification and most of the new codecs support the Bulk
-Transfer Protocol (BTP) and specifically the Bulk Register Access
-(BRA) configuration. This mode reclaims the 'audio' data space of the
-SoundWire frame to send firmware/coefficients over the DataPort 0
-(DP0).
-
-The API suggested is rather simple, with the following sequence
-expected:
-open(): reserve resources and prepare hardware
-send_async(): trigger DMAs and perform SoundWire bank switch
-wait(): wait for DMA completion and disable DMAs
-close(): release resources
-
-Benefits:
-
-Even after accounting for the protocol overhead, the data can be sent
-8x or 16x faster on the link than with the regular commands.
-
-With the use of DMAs, the software overhead becomes limited to the
-initialization. Measured results show that transferring the same 32Kb
-takes about 100ms, a 25x improvement on the baseline write() commands
-with an actual bitrate of 2.6 Mbits/s. These results are a measure of
-bus/hardware performance mainly, and will typically not be too
-modified by the CPU activity and scheduling.
-
-The performance for reads is similar, with a 25x speedup measured.
-
-Limitations:
-
-Setting up the transfers over DP0 takes time, and the reliance on DMAs
-on the host side brings alignment restrictions. The BTP/BRA protocol
-is really only relevant for "large" transfers done during boot/resume
-*before* audio transfers take place. Mixing BTP/BRA and audio is a
-nightmare, this patchset suggests a mutual-exclusion between two
-usages.
-
-Scope:
-
-This patchset only exposes the API and a debugfs interface to initiate
-commands, validate results and measure performance. The actual use of
-the API is left as an exercise for codec driver developers.
-
-This patchset depends on a number of pre-requisite patches and will
-not build on top of any for-next branches. The main intent of this RFC
-is to gather comments on the usage, API, benefits and restrictions.
-
-The code and functionality was tested on an Intel LunarLake RVP platform
-connected to a Realtek RT711-SDCA device.
-
-Acknowledgements:
-
-Thanks to Zeek Tsai at Realtek for providing test sequences that
-helped reconcile the data formatted by the host driver with the
-expected results on the code side.
-
-Pierre-Louis Bossart (16):
-  Documentation: driver: add SoundWire BRA description
-  soundwire: cadence: add BTP support for DP0
-  soundwire: stream: extend sdw_alloc_stream() to take 'type' parameter
-  soundwire: extend sdw_stream_type to BPT
-  soundwire: stream: special-case the bus compute_params() routine
-  soundwire: stream: reuse existing code for BPT stream
-  soundwire: bus: add API for BPT protocol
-  soundwire: bus: add bpt_stream pointer
-  soundwire: crc8: add constant table
-  soundwire: cadence: add BTP/BRA helpers to format data
-  soundwire: intel_auxdevice: add indirection for BPT
-    open/close/send_async/wait
-  ASoC: SOF: Intel: hda-sdw-bpt: add helpers for SoundWire BPT DMA
-  soundwire: intel: add BPT context definition
-  soundwire: intel_ace2x: add BPT open/close/send_async/wait
-  soundwire: debugfs: add interface for BPT/BRA transfers
-  ASoC: rt711-sdca: add DP0 support
-
- Documentation/driver-api/soundwire/bra.rst    | 478 +++++++++++++
- Documentation/driver-api/soundwire/index.rst  |   1 +
- Documentation/driver-api/soundwire/stream.rst |   2 +-
- .../driver-api/soundwire/summary.rst          |   5 +-
- drivers/soundwire/Kconfig                     |   1 +
- drivers/soundwire/Makefile                    |   4 +-
- drivers/soundwire/amd_manager.c               |   2 +-
- drivers/soundwire/bus.c                       |  77 +++
- drivers/soundwire/bus.h                       |  18 +
- drivers/soundwire/cadence_master.c            | 646 +++++++++++++++++-
- drivers/soundwire/cadence_master.h            |  30 +
- drivers/soundwire/crc8.c                      | 277 ++++++++
- drivers/soundwire/crc8.h                      |  11 +
- drivers/soundwire/debugfs.c                   | 122 +++-
- .../soundwire/generic_bandwidth_allocation.c  |  84 ++-
- drivers/soundwire/intel.h                     |  12 +
- drivers/soundwire/intel_ace2x.c               | 377 ++++++++++
- drivers/soundwire/intel_auxdevice.c           |  55 ++
- drivers/soundwire/qcom.c                      |   2 +-
- drivers/soundwire/stream.c                    | 137 +++-
- include/linux/soundwire/sdw.h                 |  91 ++-
- include/linux/soundwire/sdw_intel.h           |  16 +
- include/sound/hda-sdw-bpt.h                   |  76 +++
- sound/soc/codecs/rt711-sdca-sdw.c             |   8 +
- sound/soc/qcom/sdw.c                          |   2 +-
- sound/soc/sof/intel/Kconfig                   |   8 +-
- sound/soc/sof/intel/Makefile                  |   4 +
- sound/soc/sof/intel/hda-sdw-bpt.c             | 328 +++++++++
- 28 files changed, 2810 insertions(+), 64 deletions(-)
- create mode 100644 Documentation/driver-api/soundwire/bra.rst
- create mode 100644 drivers/soundwire/crc8.c
- create mode 100644 drivers/soundwire/crc8.h
- create mode 100644 include/sound/hda-sdw-bpt.h
- create mode 100644 sound/soc/sof/intel/hda-sdw-bpt.c
-
+diff --git a/Documentation/driver-api/soundwire/stream.rst b/Documentation/driver-api/soundwire/stream.rst
+index b432a2de45d3..65b9bb742689 100644
+--- a/Documentation/driver-api/soundwire/stream.rst
++++ b/Documentation/driver-api/soundwire/stream.rst
+@@ -291,7 +291,7 @@ per stream. From ASoC DPCM framework, this stream state maybe linked to
+ 
+ .. code-block:: c
+ 
+-  int sdw_alloc_stream(char * stream_name);
++  int sdw_alloc_stream(char * stream_name, enum sdw_stream_type type);
+ 
+ The SoundWire core provides a sdw_startup_stream() helper function,
+ typically called during a dailink .startup() callback, which performs
+diff --git a/drivers/soundwire/stream.c b/drivers/soundwire/stream.c
+index c4ab360e727f..c1e3bb897fb9 100644
+--- a/drivers/soundwire/stream.c
++++ b/drivers/soundwire/stream.c
+@@ -1743,12 +1743,14 @@ static int set_stream(struct snd_pcm_substream *substream,
+  * sdw_alloc_stream() - Allocate and return stream runtime
+  *
+  * @stream_name: SoundWire stream name
++ * @type: stream type (could be PCM, PDM or BPT)
+  *
+  * Allocates a SoundWire stream runtime instance.
+  * sdw_alloc_stream should be called only once per stream. Typically
+  * invoked from ALSA/ASoC machine/platform driver.
+  */
+-struct sdw_stream_runtime *sdw_alloc_stream(const char *stream_name)
++struct sdw_stream_runtime *sdw_alloc_stream(const char *stream_name,
++					    enum sdw_stream_type type)
+ {
+ 	struct sdw_stream_runtime *stream;
+ 
+@@ -1760,6 +1762,7 @@ struct sdw_stream_runtime *sdw_alloc_stream(const char *stream_name)
+ 	INIT_LIST_HEAD(&stream->master_list);
+ 	stream->state = SDW_STREAM_ALLOCATED;
+ 	stream->m_rt_count = 0;
++	stream->type = type;
+ 
+ 	return stream;
+ }
+@@ -1788,7 +1791,7 @@ int sdw_startup_stream(void *sdw_substream)
+ 	if (!name)
+ 		return -ENOMEM;
+ 
+-	sdw_stream = sdw_alloc_stream(name);
++	sdw_stream = sdw_alloc_stream(name, SDW_STREAM_PCM);
+ 	if (!sdw_stream) {
+ 		dev_err(rtd->dev, "alloc stream failed for substream DAI %s\n", substream->name);
+ 		ret = -ENOMEM;
+diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
+index 71a7031f7b3a..5cc7fed1bf19 100644
+--- a/include/linux/soundwire/sdw.h
++++ b/include/linux/soundwire/sdw.h
+@@ -1024,7 +1024,8 @@ struct sdw_stream_runtime {
+ 	int m_rt_count;
+ };
+ 
+-struct sdw_stream_runtime *sdw_alloc_stream(const char *stream_name);
++struct sdw_stream_runtime *sdw_alloc_stream(const char *stream_name,
++					    enum sdw_stream_type type);
+ void sdw_release_stream(struct sdw_stream_runtime *stream);
+ 
+ int sdw_compute_params(struct sdw_bus *bus);
+diff --git a/sound/soc/qcom/sdw.c b/sound/soc/qcom/sdw.c
+index 77dbe0c28b29..d91a1bd0c66c 100644
+--- a/sound/soc/qcom/sdw.c
++++ b/sound/soc/qcom/sdw.c
+@@ -27,7 +27,7 @@ int qcom_snd_sdw_startup(struct snd_pcm_substream *substream)
+ 	struct snd_soc_dai *codec_dai;
+ 	int ret, i;
+ 
+-	sruntime = sdw_alloc_stream(cpu_dai->name);
++	sruntime = sdw_alloc_stream(cpu_dai->name, SDW_STREAM_PCM);
+ 	if (!sruntime)
+ 		return -ENOMEM;
+ 
 -- 
 2.39.2
 
