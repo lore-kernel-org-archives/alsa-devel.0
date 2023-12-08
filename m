@@ -4,60 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 78AA3C10DC1
-	for <alsa-devel@archiver.kernel.org>; Fri,  8 Dec 2023 17:41:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8B0F4C4167B
+	for <alsa-devel@archiver.kernel.org>; Fri,  8 Dec 2023 18:08:36 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D8C0EAEA;
-	Fri,  8 Dec 2023 18:40:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D8C0EAEA
+	by alsa0.perex.cz (Postfix) with ESMTPS id D69C7A4E;
+	Fri,  8 Dec 2023 19:08:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D69C7A4E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1702057262;
-	bh=fqqWOmoeWyc5eQQiOQT4IPcS43+gVCQhHiCpqIgoCow=;
+	s=default; t=1702058913;
+	bh=yDM80Tto/484siadP5+AnovV1xcFZjFBv9NIBBY56Ns=;
 	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=BBlikT6Q+y0+ozTKm+nsy8aquRHhT7LTMAlsy1dchIJvQc13rZt5DSevh/n1iMBBc
-	 GWK1WnU02XaRkdnGYrMvJXFG74wcY7zQKomlV2oo5+DCEOUVak/+SDlyun+d9ZuGl4
-	 7MT+ozZSXo5Dqsggjt2JWJ4s3rDbmeYEEu+kaHXo=
+	b=DCI/mEX7NQxO+fOTifiqLR1JJIJK2HsOUXcUBKWBF6dBGaq45gfcKKU5OwtnkvfNd
+	 gsfTzYjsRyQ4hLLehVF0SfmQvspBpfAcJkYneewA8N+Kwa2NDSp2w+nIJ7zSsG4O6C
+	 iOuXTSYkCnkdyUg6fBXbKGupCqthA21OylrmN9Iw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 51DA2F8057C; Fri,  8 Dec 2023 18:40:29 +0100 (CET)
+	id 0F965F8057A; Fri,  8 Dec 2023 19:08:02 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2FAC0F8057F;
-	Fri,  8 Dec 2023 18:40:28 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C8960F80587;
+	Fri,  8 Dec 2023 19:08:01 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 95B1EF8024E; Fri,  8 Dec 2023 18:40:19 +0100 (CET)
+	id DF425F8024E; Fri,  8 Dec 2023 19:07:56 +0100 (CET)
 Received: from irl.hu (irl.hu [95.85.9.111])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
  server-digest SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with UTF8SMTPS id 4EEECF800E4
-	for <alsa-devel@alsa-project.org>; Fri,  8 Dec 2023 18:40:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4EEECF800E4
+	by alsa1.perex.cz (Postfix) with UTF8SMTPS id 6C7B9F800E4
+	for <alsa-devel@alsa-project.org>; Fri,  8 Dec 2023 19:07:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6C7B9F800E4
 Received: from fedori.lan (51b690cd.dsl.pool.telekom.hu
  [::ffff:81.182.144.205])
   (AUTH: CRAM-MD5 soyer@irl.hu, )
   by irl.hu with ESMTPSA
-  id 00000000000719DB.00000000657354F6.0011CADC;
- Fri, 08 Dec 2023 18:40:06 +0100
+  id 00000000000719EC.0000000065735B6F.0011CB93;
+ Fri, 08 Dec 2023 19:07:43 +0100
 From: Gergo Koteles <soyer@irl.hu>
 To: Shenghao Ding <shenghao-ding@ti.com>, Kevin Lu <kevin-lu@ti.com>,
   Baojun Xu <baojun.xu@ti.com>, Jaroslav Kysela <perex@perex.cz>,
   Takashi Iwai <tiwai@suse.com>
 Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
   Gergo Koteles <soyer@irl.hu>, stable@vger.kernel.org
-Subject: [PATCH] ALSA: hda/tas2781: leave hda_component in usable state
-Date: Fri,  8 Dec 2023 18:38:19 +0100
+Subject: [PATCH v2] ALSA: hda/tas2781: leave hda_component in usable state
+Date: Fri,  8 Dec 2023 19:06:49 +0100
 Message-ID: 
- <052224ccd9d24dac777c468d2ef94d5fabe619a0.1702056528.git.soyer@irl.hu>
+ <c3e903fedec7d84929664377307019e58dc22494.1702058704.git.soyer@irl.hu>
 X-Mailer: git-send-email 2.43.0
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 X-Mime-Autoconverted: from 8bit to 7bit by courier 1.0
-Message-ID-Hash: GWITBAGRFYOJIRTLLBXK3CMMNDVLLB5P
-X-Message-ID-Hash: GWITBAGRFYOJIRTLLBXK3CMMNDVLLB5P
+Message-ID-Hash: NCYRMRD6BHTAUSHSQ5RBFEY2RKSRSX7E
+X-Message-ID-Hash: NCYRMRD6BHTAUSHSQ5RBFEY2RKSRSX7E
 X-MailFrom: soyer@irl.hu
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -70,7 +70,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GWITBAGRFYOJIRTLLBXK3CMMNDVLLB5P/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NCYRMRD6BHTAUSHSQ5RBFEY2RKSRSX7E/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -110,7 +110,7 @@ Signed-off-by: Gergo Koteles <soyer@irl.hu>
  1 file changed, 6 insertions(+), 2 deletions(-)
 
 diff --git a/sound/pci/hda/tas2781_hda_i2c.c b/sound/pci/hda/tas2781_hda_i2c.c
-index fb802802939e..ba4fdae8ec9b 100644
+index fb802802939e..7dfa8aeb5fcc 100644
 --- a/sound/pci/hda/tas2781_hda_i2c.c
 +++ b/sound/pci/hda/tas2781_hda_i2c.c
 @@ -612,9 +612,13 @@ static void tas2781_hda_unbind(struct device *dev,
@@ -121,7 +121,7 @@ index fb802802939e..ba4fdae8ec9b 100644
  
 -	if (comps[tas_priv->index].dev == dev)
 -		memset(&comps[tas_priv->index], 0, sizeof(*comps));
-+	if (comps[tas_priv->index].dev == dev) {
++	if (comps->dev == dev) {
 +		comps->dev = NULL;
 +		strscpy(comps->name, "", sizeof(comps->name));
 +		comps->playback_hook = NULL;
