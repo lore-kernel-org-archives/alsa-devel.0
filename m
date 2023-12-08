@@ -4,107 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 27BC4C4167B
-	for <alsa-devel@archiver.kernel.org>; Fri,  8 Dec 2023 16:28:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 78AA3C10DC1
+	for <alsa-devel@archiver.kernel.org>; Fri,  8 Dec 2023 17:41:05 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D9E8783E;
-	Fri,  8 Dec 2023 17:28:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D9E8783E
+	by alsa0.perex.cz (Postfix) with ESMTPS id D8C0EAEA;
+	Fri,  8 Dec 2023 18:40:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D8C0EAEA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1702052923;
-	bh=LX3gDt++lPPtWGJ+g99Llmd0VHOkkLsl33bM+z2rK98=;
-	h=Date:From:To:CC:Subject:References:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=i8cC7TNewKuugrtggDqa4FmFoSZPsxozXxXikIPK5Zgi/fsRmTJr1+FgA9rrw8+qn
-	 OZzEbkFiyryRvb8SKBLGUM686T9RsOjfHvNq8HcCRoufyoLFL0+mrxijhf7FI6VT1Q
-	 V6FwqXs77nR1lmDB6ZBtfby/y8aTJMpjtONRsF8M=
+	s=default; t=1702057262;
+	bh=fqqWOmoeWyc5eQQiOQT4IPcS43+gVCQhHiCpqIgoCow=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=BBlikT6Q+y0+ozTKm+nsy8aquRHhT7LTMAlsy1dchIJvQc13rZt5DSevh/n1iMBBc
+	 GWK1WnU02XaRkdnGYrMvJXFG74wcY7zQKomlV2oo5+DCEOUVak/+SDlyun+d9ZuGl4
+	 7MT+ozZSXo5Dqsggjt2JWJ4s3rDbmeYEEu+kaHXo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DB767F8057A; Fri,  8 Dec 2023 17:28:00 +0100 (CET)
+	id 51DA2F8057C; Fri,  8 Dec 2023 18:40:29 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 35700F8025F;
-	Fri,  8 Dec 2023 17:28:00 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2FAC0F8057F;
+	Fri,  8 Dec 2023 18:40:28 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3D4E2F8024E; Fri,  8 Dec 2023 17:27:51 +0100 (CET)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 95B1EF8024E; Fri,  8 Dec 2023 18:40:19 +0100 (CET)
+Received: from irl.hu (irl.hu [95.85.9.111])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
+ server-digest SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 0518BF800F5
-	for <alsa-devel@alsa-project.org>; Fri,  8 Dec 2023 17:27:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0518BF800F5
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=mPNv0jBe
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-	by mx0b-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id
- 3B8FeRJ2004881;
-	Fri, 8 Dec 2023 10:27:37 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	date:from:to:cc:subject:message-id:references:mime-version
-	:content-type:in-reply-to; s=PODMain02222019; bh=0HWZUD+gNPGdTS3
-	1RBA/QqGm7ZI0O39dD0eoI6266U8=; b=mPNv0jBeENPGWeoXiCD/V2X6Z1fMIPM
-	RpZirjpxrtV/l1DYyrHQIE9tk1hqMYvRncAFJH+os4r7GC6sEpx70dxBV0q2kt7F
-	cJs9BahRwBKHIHtAmijQcBXb2AZMlDT/iAzPds0ylEnmIpuufAWCp4CRfOfQu7LF
-	wqOkWO3fTR9ohveh+GfOF4MnpUwaF39UDzMmI+wEIuU9d42tQh0vX1piN55JgWOF
-	K6PIe73yPf+7Tfaz5jJL/+f2ht25YXupK4EW7xlel0gV09+o+s4krOZ9YV6+NZl2
-	XoyxyqtNXvJb1VgH8CJHTRC7jqxdoN7jl7d481k2b7rWTaGDD6f5ufA==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3utd1wbqc4-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 08 Dec 2023 10:27:37 -0600 (CST)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 8 Dec
- 2023 16:27:35 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.40 via Frontend Transport; Fri, 8 Dec 2023 16:27:35 +0000
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com
- [198.61.86.93])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id D2DC111AB;
-	Fri,  8 Dec 2023 16:27:35 +0000 (UTC)
-Date: Fri, 8 Dec 2023 16:27:35 +0000
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-CC: <linux-sound@vger.kernel.org>, <alsa-devel@alsa-project.org>,
-        <tiwai@suse.de>, <broonie@kernel.org>, <vinod.koul@intel.com>,
-        Bard liao
-	<yung-chuan.liao@linux.intel.com>,
-        Ranjani Sridharan
-	<ranjani.sridharan@linux.intel.com>,
-        Peter Ujfalusi
-	<peter.ujfalusi@linux.intel.com>,
-        Kai Vehmanen
-	<kai.vehmanen@linux.intel.com>,
-        <srinivas.kandagatla@linaro.org>,
-        Krzysztof
- Kozlowski <krzysztof.kozlowski@linaro.org>,
-        <vijendar.mukunda@amd.com>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>,
-        Shuming Fan
-	<shumingf@realtek.com>, Jack Yu <jack.yu@realtek.com>,
-        Oder Chiou
-	<oder_chiou@realtek.com>
-Subject: Re: [RFC PATCH 01/16] Documentation: driver: add SoundWire BRA
- description
-Message-ID: <20231208162735.GV14858@ediswmail.ad.cirrus.com>
-References: <20231207222944.663893-1-pierre-louis.bossart@linux.intel.com>
- <20231207222944.663893-2-pierre-louis.bossart@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20231207222944.663893-2-pierre-louis.bossart@linux.intel.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-GUID: rmyWVHnc9on0167-CfgnfC99u-bSf5iL
-X-Proofpoint-ORIG-GUID: rmyWVHnc9on0167-CfgnfC99u-bSf5iL
-X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: P7UGXXEMJS3QUHYMRQQBTLXC6N2N2ELS
-X-Message-ID-Hash: P7UGXXEMJS3QUHYMRQQBTLXC6N2N2ELS
-X-MailFrom: prvs=77069abca2=ckeepax@opensource.cirrus.com
+	by alsa1.perex.cz (Postfix) with UTF8SMTPS id 4EEECF800E4
+	for <alsa-devel@alsa-project.org>; Fri,  8 Dec 2023 18:40:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4EEECF800E4
+Received: from fedori.lan (51b690cd.dsl.pool.telekom.hu
+ [::ffff:81.182.144.205])
+  (AUTH: CRAM-MD5 soyer@irl.hu, )
+  by irl.hu with ESMTPSA
+  id 00000000000719DB.00000000657354F6.0011CADC;
+ Fri, 08 Dec 2023 18:40:06 +0100
+From: Gergo Koteles <soyer@irl.hu>
+To: Shenghao Ding <shenghao-ding@ti.com>, Kevin Lu <kevin-lu@ti.com>,
+  Baojun Xu <baojun.xu@ti.com>, Jaroslav Kysela <perex@perex.cz>,
+  Takashi Iwai <tiwai@suse.com>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+  Gergo Koteles <soyer@irl.hu>, stable@vger.kernel.org
+Subject: [PATCH] ALSA: hda/tas2781: leave hda_component in usable state
+Date: Fri,  8 Dec 2023 18:38:19 +0100
+Message-ID: 
+ <052224ccd9d24dac777c468d2ef94d5fabe619a0.1702056528.git.soyer@irl.hu>
+X-Mailer: git-send-email 2.43.0
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Mime-Autoconverted: from 8bit to 7bit by courier 1.0
+Message-ID-Hash: GWITBAGRFYOJIRTLLBXK3CMMNDVLLB5P
+X-Message-ID-Hash: GWITBAGRFYOJIRTLLBXK3CMMNDVLLB5P
+X-MailFrom: soyer@irl.hu
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -116,7 +70,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/P7UGXXEMJS3QUHYMRQQBTLXC6N2N2ELS/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GWITBAGRFYOJIRTLLBXK3CMMNDVLLB5P/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -125,63 +79,58 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, Dec 07, 2023 at 04:29:29PM -0600, Pierre-Louis Bossart wrote:
-> The Bulk Register Access protocol was left as a TODO topic since
-> 2018. It's time to document this protocol and the design of its Linux
-> support.
-> 
-> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> ---
-> +Concurrency between BRA and regular read/write
-> +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> +
-> +The existing 'nread/nwrite' API already relies on a notion of start
-> +address and number of bytes, so it would be possible to extend this
-> +API with a 'hint' requesting BPT/BRA be used.
-> +
-> +However BRA transfers could be quite long, and the use of a single
-> +mutex for regular read/write and BRA is a show-stopper. Independent
-> +operation of the control/command and BRA transfers is a fundamental
-> +requirement, e.g. to change the volume level with the existing regmap
-> +interface while downloading firmware.
+Unloading then loading the module causes a NULL ponter dereference.
 
-Is this definitely a show stopper? Not saying that it wouldn't be
-desirable to do both from a speed perspective, but current
-systems that download firmware (I2C/SPI) typically will block the
-bus for some amount of time. There are also some desirable properties
-to a single lock such as not needing to worry about accessing the
-same register in the bulk transfer and a normal command transfer.
+The hda_unbind zeroes the hda_component, later the hda_bind tries
+to dereference the codec field.
 
-> +Audio DMA support
-> +-----------------
-> +
-> +Some DMAs, such as HDaudio, require an audio format field to be
-> +set. This format is in turn used to define acceptable bursts. BPT/BRA
-> +support is not fully compatible with these definitions in that the
-> +format may vary between read and write commands.
-> +
-> +In addition, on Intel HDaudio Intel platforms the DMAs need to be
-> +programmed with a PCM format matching the bandwidth of the BPT/BRA
-> +transfer. The format is based on 48kHz 32-bit samples, and the number
-> +of channels varies to adjust the bandwidth. The notion of channel is
-> +completely notional since the data is not typical audio
-> +PCM. Programming channels helps reserve enough bandwidth and adjust
-> +FIFO sizes to avoid xruns. Note that the quality of service comes as a
-> +cost. Since all channels need to be present as a sample block, data
-> +sizes not aligned to 128-bytes are not supported.
+The hda_component is only initialized once by tas2781_generic_fixup.
 
-Apologies but could you elaborate a litte on this? I am not sure
-I follow the reasoning, how does the 48k 32bit DMA implementation
-result in 128-byte limitation? I would have thought 1 channel would
-be 4-bytes and you are varying the channels so I would have expected
-4-byte aligned maybe 8-byte if the DMA expects stereo pairs.
+Set only previously modified fields to NULL.
 
-And what exactly do we mean by aligned, are we saying the length
-all transfers needs to be a multiple of 128-bytes?
+BUG: kernel NULL pointer dereference, address: 0000000000000322
+Call Trace:
+ <TASK>
+ ? __die+0x23/0x70
+ ? page_fault_oops+0x171/0x4e0
+ ? exc_page_fault+0x7f/0x180
+ ? asm_exc_page_fault+0x26/0x30
+ ? tas2781_hda_bind+0x59/0x140 [snd_hda_scodec_tas2781_i2c]
+ component_bind_all+0xf3/0x240
+ try_to_bring_up_aggregate_device+0x1c3/0x270
+ __component_add+0xbc/0x1a0
+ tas2781_hda_i2c_probe+0x289/0x3a0 [snd_hda_scodec_tas2781_i2c]
+ i2c_device_probe+0x136/0x2e0
 
-I think we might have some annoying restrictions on the block
-size on our hardware as well I will go dig into that and report
-back.
+Fixes: 5be27f1e3ec9 ("ALSA: hda/tas2781: Add tas2781 HDA driver")
+CC: stable@vger.kernel.org
+Signed-off-by: Gergo Koteles <soyer@irl.hu>
+---
+ sound/pci/hda/tas2781_hda_i2c.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-Thanks,
-Charles
+diff --git a/sound/pci/hda/tas2781_hda_i2c.c b/sound/pci/hda/tas2781_hda_i2c.c
+index fb802802939e..ba4fdae8ec9b 100644
+--- a/sound/pci/hda/tas2781_hda_i2c.c
++++ b/sound/pci/hda/tas2781_hda_i2c.c
+@@ -612,9 +612,13 @@ static void tas2781_hda_unbind(struct device *dev,
+ {
+ 	struct tasdevice_priv *tas_priv = dev_get_drvdata(dev);
+ 	struct hda_component *comps = master_data;
++	comps = &comps[tas_priv->index];
+ 
+-	if (comps[tas_priv->index].dev == dev)
+-		memset(&comps[tas_priv->index], 0, sizeof(*comps));
++	if (comps[tas_priv->index].dev == dev) {
++		comps->dev = NULL;
++		strscpy(comps->name, "", sizeof(comps->name));
++		comps->playback_hook = NULL;
++	}
+ 
+ 	tasdevice_config_info_remove(tas_priv);
+ 	tasdevice_dsp_remove(tas_priv);
+
+base-commit: ffc253263a1375a65fa6c9f62a893e9767fbebfa
+-- 
+2.43.0
+
