@@ -4,85 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 217C1C4167B
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Dec 2023 23:30:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 93F73C10DC1
+	for <alsa-devel@archiver.kernel.org>; Fri,  8 Dec 2023 12:05:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D8071950;
-	Fri,  8 Dec 2023 00:30:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D8071950
+	by alsa0.perex.cz (Postfix) with ESMTPS id 08CB7868;
+	Fri,  8 Dec 2023 13:05:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 08CB7868
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1701991814;
-	bh=w+3Svb6n9Ly6uKhJZ64/Ys4Z7dzGeHoD8YN3bJljioA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1702037154;
+	bh=4eFpStMF1jVizONtNGiUa7ya+nOEDJ0bzDnmGYz6OEU=;
+	h=Date:From:To:CC:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=M6TVUFYoJ3LpF90aa8QnqQNSjAadDAEsMFPbtjNWSI4EeGgbNu0MleylK5GjqeBLq
-	 +kbzsIu0JKKBxHujzAJvJ+vUM4KzTipPH0OZtjgdiPlVqsDlfswNzTGmY6vMyqCjnB
-	 Ed2FC8pIiWVyozAuqE4E4eRkBK57o+eXISUm/ozQ=
+	b=fOJA+eYbUUvPhnhcOuPIzHGINGJ71TpXMn3izN1llmTzWwRWz1CO47k38WL0UjeiL
+	 ZRANv5VEQefpz4ZqaCVpPsk4U4ALKAlgvDFwXnK9LQINK+3UMmH4LeuAYWSPj4KU3y
+	 QVAPvUCqn5a+gwCM+kyIYkmdl+UUIjqxyIveGuJQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 026B0F8057B; Fri,  8 Dec 2023 00:29:43 +0100 (CET)
+	id 18B0CF8056F; Fri,  8 Dec 2023 13:05:22 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 685D3F80580;
-	Fri,  8 Dec 2023 00:29:42 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1F4FAF8059F;
+	Fri,  8 Dec 2023 13:05:21 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 30CE7F8024E; Fri,  8 Dec 2023 00:29:35 +0100 (CET)
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	id E57C4F8024E; Fri,  8 Dec 2023 13:00:39 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A1205F800F5
-	for <alsa-devel@alsa-project.org>; Fri,  8 Dec 2023 00:29:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A1205F800F5
+	by alsa1.perex.cz (Postfix) with ESMTPS id F0575F800F5
+	for <alsa-devel@alsa-project.org>; Fri,  8 Dec 2023 13:00:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F0575F800F5
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=ermeSQN8
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id AE58ECE25CA;
-	Thu,  7 Dec 2023 23:29:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D639C433C7;
-	Thu,  7 Dec 2023 23:29:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1701991754;
-	bh=w+3Svb6n9Ly6uKhJZ64/Ys4Z7dzGeHoD8YN3bJljioA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ermeSQN8+asnah9uhS6WaitYbAr1xE7aUmImekpaKpbPFzcL0m+HpB29MQE2X3LY7
-	 hMxwAd/gaH2IwVlNawrE9wDIoqSiot1JoJ6o0xsC2787+FihMTnHGTp6NnnuXafHtk
-	 i58uhtLi0lk/sgYXiqraGdCugHaiYD+7qZxtbMKEGgAo7XhRoNQpRIwhH7jqFC2+aZ
-	 OByShy8mH9wb2lB93mzUaaLqm2JO3Xr+dpFwPkJHtLe8LpECQJ1tP45EHz1fyEAZvC
-	 Pe6Y927R+e0ytugEpWpz5RLr25XgcKAFW5EpPEvgzGDBCtbNCAGjxY8obHW2tPEkJo
-	 lwEuD1JWX6zLQ==
-Date: Thu, 7 Dec 2023 23:29:07 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: linux-sound@vger.kernel.org, alsa-devel@alsa-project.org, tiwai@suse.de,
-	vinod.koul@intel.com, Bard liao <yung-chuan.liao@linux.intel.com>,
-	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-	Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-	Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-	srinivas.kandagatla@linaro.org,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	vijendar.mukunda@amd.com,
-	Charles Keepax <ckeepax@opensource.cirrus.com>,
-	Richard Fitzgerald <rf@opensource.cirrus.com>,
-	Shuming Fan <shumingf@realtek.com>, Jack Yu <jack.yu@realtek.com>,
-	Oder Chiou <oder_chiou@realtek.com>
-Subject: Re: [RFC PATCH 01/16] Documentation: driver: add SoundWire BRA
- description
-Message-ID: <38d0c1c9-d60c-4ddd-b2ee-091d1717a377@sirena.org.uk>
-References: <20231207222944.663893-1-pierre-louis.bossart@linux.intel.com>
- <20231207222944.663893-2-pierre-louis.bossart@linux.intel.com>
+ unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
+ header.s=PODMain02222019 header.b=A368pSqZ
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+	by mx0b-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id
+ 3B88l9jb023016;
+	Fri, 8 Dec 2023 06:00:28 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+	date:from:to:cc:subject:message-id:references:mime-version
+	:content-type:in-reply-to; s=PODMain02222019; bh=9GW5kseewsSdimO
+	HjjCyZGMTY+S2hWZScdFmdQ7AWEA=; b=A368pSqZMbZCrOl5tt1F3rS0OCS4dcG
+	hBErgWoJJlbMvzbS1/wADkxOegnhfv0wesXqs247k4D+f1JWkXNVUVcz6KBN6iKb
+	xfTEnaWKgH7Lq5EdM1jsiRHoIwP53U22nW4e5YFexyYj7q4gbWUdOlFcNSRd5ndb
+	KjnSpfiF4/20qa08aGZDCOc8FxE4Ukp+jWDBpkeyZHWvf6E198wXx2UFDxt9mcWx
+	imaPZRMzCiY14NHkeJTo8evz3rhJXHlYD+PY7sf1uQDWnVBT9aJtR+QORqlQJwaX
+	euXsV8BRtHsfEy/Hyh2gldcthhL6O9FZ8rEVDBhin3p1Cm+AMfUhCGQ==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3utd1wbepk-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 08 Dec 2023 06:00:28 -0600 (CST)
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 8 Dec
+ 2023 12:00:27 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.40 via Frontend Transport; Fri, 8 Dec 2023 12:00:27 +0000
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com
+ [198.61.86.93])
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id E8F85468;
+	Fri,  8 Dec 2023 12:00:26 +0000 (UTC)
+Date: Fri, 8 Dec 2023 12:00:26 +0000
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+To: Jaroslav Kysela <perex@perex.cz>
+CC: <pierre-louis.bossart@linux.intel.com>, <bard.liao@intel.com>,
+        <mengdong.lin@intel.com>, <patches@opensource.cirrus.com>,
+        <alsa-devel@alsa-project.org>
+Subject: Re: [PATCH alsa-ucm-conf v3 1/2] sof-soundwire: Add basic support
+ for cs42l43
+Message-ID: <20231208120026.GO14858@ediswmail.ad.cirrus.com>
+References: <20231206164612.1362203-1-ckeepax@opensource.cirrus.com>
+ <adef7c2f-7c52-46b4-b595-cbf8970b273b@perex.cz>
+ <20231207095524.GM14858@ediswmail.ad.cirrus.com>
+ <d3ed56d5-2b1a-4626-8b18-0f9c8bb48c73@perex.cz>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="XJULi6ZoZiphACov"
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20231207222944.663893-2-pierre-louis.bossart@linux.intel.com>
-X-Cookie: Two is company, three is an orgy.
-Message-ID-Hash: ERPJX4WNV2PJYCWEUINZ2GVBP3ANWUBS
-X-Message-ID-Hash: ERPJX4WNV2PJYCWEUINZ2GVBP3ANWUBS
-X-MailFrom: broonie@kernel.org
+In-Reply-To: <d3ed56d5-2b1a-4626-8b18-0f9c8bb48c73@perex.cz>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-GUID: mSAo7EtdsRd586E-xyb8i_OpAHRsx3jH
+X-Proofpoint-ORIG-GUID: mSAo7EtdsRd586E-xyb8i_OpAHRsx3jH
+X-Proofpoint-Spam-Reason: safe
+Message-ID-Hash: H4ASUFUOSUVCSZHKEMQQOFNMNRZBOHUD
+X-Message-ID-Hash: H4ASUFUOSUVCSZHKEMQQOFNMNRZBOHUD
+X-MailFrom: prvs=77069abca2=ckeepax@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -94,7 +102,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ERPJX4WNV2PJYCWEUINZ2GVBP3ANWUBS/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/H4ASUFUOSUVCSZHKEMQQOFNMNRZBOHUD/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -103,136 +111,64 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+On Thu, Dec 07, 2023 at 02:56:17PM +0100, Jaroslav Kysela wrote:
+> On 07. 12. 23 10:55, Charles Keepax wrote:
+> >On Wed, Dec 06, 2023 at 06:26:17PM +0100, Jaroslav Kysela wrote:
+> >>On 06. 12. 23 17:46, Charles Keepax wrote:
+> >Oh, I was not aware we could do that. I would yes much rather
+> >handle the switches and volumes in this way. I will see if I can
+> >figure it out, but if you had any good examples that already
+> >exist that would really be handy?
+> 
+> You may look for "LibraryConfig.remap.Config" and
+> "Include.ctl-remap.File" strings in .conf files.
 
---XJULi6ZoZiphACov
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Apologies still struggling to get this working. I think there must
+some important boiler plate or limitation I am missing. Would really
+appreciate if you could have a look at this and let me know if it
+looks sane. I am starting out with just the simplest thing I can
+think of, just trying to rename a control:
 
-On Thu, Dec 07, 2023 at 04:29:29PM -0600, Pierre-Louis Bossart wrote:
+LibraryConfig.remap.Config {
+	ctl.default.remap {
+		"name='cs42l43 PDM2 Switch'" "name='cs42l43 Decimator 3 Switch'"
+	}
+}
 
-> +Addressing restrictions
-> +-----------------------
-> +
-> +The Device Number specified in the Header follows the SoundWire
-> +definitions, and broadcast and group addressing are
-> +permitted. However, in reality it is very unlikely that the exact same
-> +binary data needs to be provided to the two different Peripheral
-> +devices. The Linux implementation only allows for transfers to a
-> +single device at a time.
+SectionDevice."Mic"
+{
+	Comment "Microphones"
 
-For the firmware download case it seems likely that this won't always be
-the case, but it's definitely a thing that could be done incrementally.
+	EnableSequence
+	[
+		cset "name='cs42l43 PDM2 Switch' 1"
+	]
 
-> +Regmap use
-> +~~~~~~~~~~
+	DisableSequence
+	[
+		cset "name='cs42l43 PDM2 Switch' 0"
+	]
 
-> +Existing codec drivers rely on regmap to download firmware to
-> +Peripherals, so at a high-level it would seem natural to combine BRA
-> +and regmap. The regmap layer could check if BRA is available or not,
-> +and use a regular read-write command channel in the latter case.
+	Value
+	{
+		CapturePriority 100
+		CapturePCM "hw:${CardId},4"
+	}
+}
 
-> +However, the regmap layer does not have information on latency or how
-> +critical a BRA transfer is. It would make more sense to let the codec
-> +driver make decisions (wait, timeout, fallback to regular
-> +read/writes).
+Everything works as expected if I use "cs42l43 Decimator 3 Switch"
+directly in the use-case, however if I use "cs42l43 PDM2 Switch"
+I get the error:
 
-These don't seem like insurmountable obstacles - they feel more like a
-copy break kind of situation where we can infer things from the pattern
-of transactions, and there's always the possibility of adding some calls
-to give regmap more high level information about the overall state of
-the device.  One of the expected usage patterns with cache only mode is
-to build up a final register state then let the cache code work out the
-optimal pattern to actually write that out.
+ALSA lib main.c:826:(execute_sequence) unable to execute cset 'name='cs42l43 PDM2 Switch' 0'
+ALSA lib main.c:2573:(set_verb_user) error: failed to initialize new use case: HiFi
 
-> +In addition, the hardware may lose context and ask for the firmware to
-> +be downloaded again. The firmware is not however a fixed definition,
-> +the SDCA definition allows the hardware to request an updated firmware
-> +or a different coefficient table to deal with specific environment
-> +conditions. In other words, traditional regmap cache management is not
-> +good enough, the Peripheral driver is required track hardware
-> +notifications and react accordingly.
+The LibraryConfig bit doesn't seem to cause any errors in its own
+right, but the error messae suggests to me it didn't add the alias
+for the control. I have tried a lot of variations on the code,
+but I can't seem to locate what I am doing wrong.
 
-I might be missing something but those requests for redownload sound
-like things that would occur regardless of the mechanism used to perform
-the I/O?
+Also if there are any docs I should read happy to go there first?
 
-> +Concurrency between BRA and regular read/write
-> +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-> +The existing 'nread/nwrite' API already relies on a notion of start
-> +address and number of bytes, so it would be possible to extend this
-> +API with a 'hint' requesting BPT/BRA be used.
-
-> +However BRA transfers could be quite long, and the use of a single
-> +mutex for regular read/write and BRA is a show-stopper. Independent
-> +operation of the control/command and BRA transfers is a fundamental
-> +requirement, e.g. to change the volume level with the existing regmap
-> +interface while downloading firmware.
-
-> +This places the burden on the codec driver to verify that there is no
-> +concurrent access to the same address with the command/control
-> +protocol and the BRA protocol.
-
-This makes me feel very nervous about robustness.  I do note that regmap
-has an async interface which is currently only used for SPI and really
-only by the Cirrus DSPs (plus opportunisticly by rbtree cache sync), the
-original usage was to fill the pipleine of SPI controllers so we can
-ideally push data entirely from interrupt.  TBH that was done before SMP
-became standard and it's a lot less clear in this day and age that this
-is actually helpful, the overhead of cross core synchronisation likely
-obliterates any benefit.  There's sufficently few users that we could
-make API changes readily to fit better.
-
-> +One possible strategy to speed-up all initialization tasks would be to
-> +start a BRA transfer for firmware download, then deal with all the
-> +"regular" read/writes in parallel with the command channel, and last
-> +to wait for the BRA transfers to complete. This would allow for a
-> +degree of overlap instead of a purely sequential solution. As a
-> +results, the BRA API must support async transfers and expose a
-> +separate wait function.
-
-This feels a lot like it could map onto the regmap async interface, it
-would need a bit of a rework (mainly that currently they provide
-ordering guarantees with respect to both each other and sync I/O) but
-those could be removed with some care) but it's got the "here's a list
-of I/O, here's another call to ensure it's all actually happened" thing.
-It sounds very much like how I was thinking of the async API when I was
-writing it and the initial users.
-
-It's this bit that really got me thinking it could fit well into regmap.
-
-> +Error handling
-> +~~~~~~~~~~~~~~
-> +
-> +The expected response to a 'bra_message' and follow-up behavior may
-> +vary:
-> +
-> +   (1) A Peripheral driver may want to receive an immediate -EBUSY
-> +       response if the BRA protocol is not available at a given time.
-> +
-> +   (2) A Peripheral driver may want to wait until a timeout for the
-> +       on-going transfer to be handled
-> +
-> +   (3) A Peripheral driver may want to wait until existing BRA
-> +       transfers complete or deal with BRA as a background task when
-> +       audio transfers stop. In this case, there would be no timeout,
-> +       and the operation may not happen if the platform is suspended.
-
-Option 3 would be a jump for regmap.
-
---XJULi6ZoZiphACov
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVyVUIACgkQJNaLcl1U
-h9B4/Qf+IaFH8jmqjcL8xV2f9B7E3egdTFeoh2xbNIzGvsuxFsZ03uMuaZqL8I8r
-mR/gelMNyXJFHQqBfpPJqzG65eCeeI7pSaok2i8ALokpPFbMbu5FLHomHQNELRXx
-tCHL4gLgUTN3yuKchpcrnB3M3MxJQj3C2EseaEmWI2UkERv+57lqRHv1ER9zEP37
-8nFRPoAFQZw4BFVOC4Zfyhd71O7XZKi6kLZc3EKlOHtjWh1S/RUI6K6sFf2U9LXb
-544H+Dm9YQgp7gejXy3h+0JHWlnV3D/Z5yJ+Vnldgz6hMgfs9HXWkfoqpuU3kWVU
-K0peOA56AcP5CwlEsB72nkEfgccarQ==
-=L/7P
------END PGP SIGNATURE-----
-
---XJULi6ZoZiphACov--
+Thanks,
+Charles
