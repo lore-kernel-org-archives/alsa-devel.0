@@ -4,146 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B98CAC4167B
-	for <alsa-devel@archiver.kernel.org>; Sat,  9 Dec 2023 08:17:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F31A9C4167B
+	for <alsa-devel@archiver.kernel.org>; Sat,  9 Dec 2023 08:21:28 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EC4C282B;
-	Sat,  9 Dec 2023 09:17:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EC4C282B
+	by alsa0.perex.cz (Postfix) with ESMTPS id B07C7839;
+	Sat,  9 Dec 2023 09:21:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B07C7839
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1702109854;
-	bh=rgFsWbplqF7kjuvavoSx3MciKyYQOsBdV3nWjt9fAR4=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=NlMGZVApdKdiYT7aPyflJ1tENLGVLx8NaB5sC/M7v5M7JhpuBJHBj5qSk/KcMB5AX
-	 tuSipODkASoWMWKRTxo3WpZ7baUQcUYuvmdijtmsy33nYmC5s6BWSeFG1cp3kmdnYk
-	 c/yqD71o3KF26pIjr0z4N4sfHsDev2Eeo1UviAs4=
+	s=default; t=1702110086;
+	bh=d8EXxSYbXySJnPwxGEB4N73PWsy0qxVwsW7WPelBeUw=;
+	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=ucfSMCci3bAbL2ro4WOgcfiMRxezw+Z9k8ZbBDBkgLmbdrD6Z4i8E1yhJVFW/B5l3
+	 g7VczHQETK2cXOhy6HCcqYP+Uu8Mk2ADO6km8R7dzy+Ncd6MfOYNW2BRtDsA5dHSKK
+	 NLLkn7lT1goIIg6Hmwei5ZsodDWCIiIfjn0MJwbA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9E3B0F805CB; Sat,  9 Dec 2023 09:16:50 +0100 (CET)
+	id 5DAB9F805BA; Sat,  9 Dec 2023 09:21:02 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A6146F805C2;
-	Sat,  9 Dec 2023 09:16:49 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 22ECEF8057B;
+	Sat,  9 Dec 2023 09:21:02 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 993DCF8025A; Sat,  9 Dec 2023 09:11:12 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 660C0F8025A; Sat,  9 Dec 2023 09:13:16 +0100 (CET)
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 21E26F800F5
-	for <alsa-devel@alsa-project.org>; Sat,  9 Dec 2023 09:10:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 21E26F800F5
+	by alsa1.perex.cz (Postfix) with ESMTPS id E93CEF800AC
+	for <alsa-devel@alsa-project.org>; Sat,  9 Dec 2023 09:08:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E93CEF800AC
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=13p/SZfi;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=9gL8jGZn;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=13p/SZfi;
-	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=9gL8jGZn
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 4EB3021DAA;
-	Sat,  9 Dec 2023 08:10:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1702109456;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7c26mC+66VMAVt1GIwXQwVx/6dZRK5Hi5j94l+x99q0=;
-	b=13p/SZfimif1weYWzGmk4lztLxOjIQlEvV+IRoJf84mrAuNmvA0kq0nNgMe1I7kDK+hbtr
-	vlYAD/ZPQvuizUh6aISL7vEShjyVy6+QPv8WTRmH0y4cXuhFOyF7Gxe5ZfbpAYM2V8oKXR
-	MxhQ/E1bpwnFCuY/j7nJD2iPtX5HeZY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1702109456;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7c26mC+66VMAVt1GIwXQwVx/6dZRK5Hi5j94l+x99q0=;
-	b=9gL8jGZnNgB0J8ZRNAGlJvX0Jp0orL8XvNXPIYD4vT1qImlMpynMhT4BEQZCwnji8+Y/tO
-	mmjVqwdzTdEvRwAg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1702109456;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7c26mC+66VMAVt1GIwXQwVx/6dZRK5Hi5j94l+x99q0=;
-	b=13p/SZfimif1weYWzGmk4lztLxOjIQlEvV+IRoJf84mrAuNmvA0kq0nNgMe1I7kDK+hbtr
-	vlYAD/ZPQvuizUh6aISL7vEShjyVy6+QPv8WTRmH0y4cXuhFOyF7Gxe5ZfbpAYM2V8oKXR
-	MxhQ/E1bpwnFCuY/j7nJD2iPtX5HeZY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1702109456;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7c26mC+66VMAVt1GIwXQwVx/6dZRK5Hi5j94l+x99q0=;
-	b=9gL8jGZnNgB0J8ZRNAGlJvX0Jp0orL8XvNXPIYD4vT1qImlMpynMhT4BEQZCwnji8+Y/tO
-	mmjVqwdzTdEvRwAg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id F0E98136D6;
-	Sat,  9 Dec 2023 08:10:55 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id RI9QOQ8hdGWSdQAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Sat, 09 Dec 2023 08:10:55 +0000
-Date: Sat, 09 Dec 2023 09:10:55 +0100
-Message-ID: <87ttor6bjk.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Gergo Koteles <soyer@irl.hu>
-Cc: Shenghao Ding <shenghao-ding@ti.com>,
-	Kevin Lu <kevin-lu@ti.com>,
-	Baojun Xu <baojun.xu@ti.com>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	linux-kernel@vger.kernel.org,
-	alsa-devel@alsa-project.org,
-	stable@vger.kernel.org
-Subject: Re: [PATCH v2] ALSA: hda/tas2781: leave hda_component in usable state
-In-Reply-To: 
- <c3e903fedec7d84929664377307019e58dc22494.1702058704.git.soyer@irl.hu>
-References: 
- <c3e903fedec7d84929664377307019e58dc22494.1702058704.git.soyer@irl.hu>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spamd-Result: default: False [-3.29 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-0.983];
-	 RCPT_COUNT_SEVEN(0.00)[9];
-	 MID_CONTAINS_FROM(1.00)[];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-2.99)[99.96%]
-Message-ID-Hash: JDUXFO3MJYKRBSH2SEWLGUCVR4JEH7TQ
-X-Message-ID-Hash: JDUXFO3MJYKRBSH2SEWLGUCVR4JEH7TQ
-X-MailFrom: tiwai@suse.de
+ unprotected) header.d=ti.com header.i=@ti.com header.a=rsa-sha256
+ header.s=ti-com-17Q1 header.b=tcjlbp1R
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3B987qUf054868;
+	Sat, 9 Dec 2023 02:07:52 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1702109272;
+	bh=hSoa1Xa6h5DjuKFNUbPa5kCZbIfeIeP1yJrAtIlqyGY=;
+	h=From:To:CC:Subject:Date;
+	b=tcjlbp1RpzKtbkSZIh/Gp723skrVAWwDJf3+0BaCHrQO+wELb1nPLUU9EaiJjdtsX
+	 HtmAj7CKJgu9XbPUzA5bytgqvQmIHRn3HREj7UON7deFbTVQtnToco5HkUeyxLXnrx
+	 HI2iEHd5YoOGnRMMrFrq3AxzR6/V2e6z0Cz1sduI=
+Received: from DFLE106.ent.ti.com (dfle106.ent.ti.com [10.64.6.27])
+	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3B987qoV110420
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Sat, 9 Dec 2023 02:07:52 -0600
+Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Sat, 9
+ Dec 2023 02:07:52 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Sat, 9 Dec 2023 02:07:52 -0600
+Received: from LT5CG31242FY.dhcp.ti.com ([10.250.163.83])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3B987lHD122124;
+	Sat, 9 Dec 2023 02:07:48 -0600
+From: Shenghao Ding <shenghao-ding@ti.com>
+To: <broonie@kernel.org>
+CC: <krzysztof.kozlowski@linaro.org>, <robh+dt@kernel.org>,
+        <andriy.shevchenko@linux.intel.com>, <lgirdwood@gmail.com>,
+        <perex@perex.cz>, <pierre-louis.bossart@linux.intel.com>,
+        <13916275206@139.com>, <alsa-devel@alsa-project.org>,
+        <linux-kernel@vger.kernel.org>, <liam.r.girdwood@intel.com>,
+        <soyer@irl.hu>, <tiwai@suse.de>, Shenghao Ding
+	<shenghao-ding@ti.com>
+Subject: [PATCH v1 1/3] ASoC: tas2781: Add tas2563 into header file
+Date: Sat, 9 Dec 2023 16:07:40 +0800
+Message-ID: <20231209080742.1290-1-shenghao-ding@ti.com>
+X-Mailer: git-send-email 2.33.0.windows.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Message-ID-Hash: 2LEMPF4XN6XMO2DLMK7D5A5FGEXAPSGU
+X-Message-ID-Hash: 2LEMPF4XN6XMO2DLMK7D5A5FGEXAPSGU
+X-MailFrom: shenghao-ding@ti.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -155,7 +93,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JDUXFO3MJYKRBSH2SEWLGUCVR4JEH7TQ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2LEMPF4XN6XMO2DLMK7D5A5FGEXAPSGU/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -164,25 +102,42 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, 08 Dec 2023 19:06:49 +0100,
-Gergo Koteles wrote:
-> 
-> @@ -612,9 +612,13 @@ static void tas2781_hda_unbind(struct device *dev,
->  {
->  	struct tasdevice_priv *tas_priv = dev_get_drvdata(dev);
->  	struct hda_component *comps = master_data;
-> +	comps = &comps[tas_priv->index];
->  
-> -	if (comps[tas_priv->index].dev == dev)
-> -		memset(&comps[tas_priv->index], 0, sizeof(*comps));
-> +	if (comps->dev == dev) {
-> +		comps->dev = NULL;
-> +		strscpy(comps->name, "", sizeof(comps->name));
+Support tas2563
 
-This looks suboptimal.  Either just set *comp->name = 0, or fill all
-with memset().
+Signed-off-by: Shenghao Ding <shenghao-ding@ti.com>
+---
+ include/sound/tas2781.h | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
+diff --git a/include/sound/tas2781.h b/include/sound/tas2781.h
+index a6c808b22318..45be543110ac 100644
+--- a/include/sound/tas2781.h
++++ b/include/sound/tas2781.h
+@@ -1,13 +1,13 @@
+ /* SPDX-License-Identifier: GPL-2.0 */
+ //
+-// ALSA SoC Texas Instruments TAS2781 Audio Smart Amplifier
++// ALSA SoC Texas Instruments TAS2781/TAS2563 Audio Smart Amplifier
+ //
+ // Copyright (C) 2022 - 2023 Texas Instruments Incorporated
+ // https://www.ti.com
+ //
+-// The TAS2781 driver implements a flexible and configurable
++// The TAS2781/TAS2563 driver implements a flexible and configurable
+ // algo coefficient setting for one, two, or even multiple
+-// TAS2781 chips.
++// TAS2781/TAS2563 chips.
+ //
+ // Author: Shenghao Ding <shenghao-ding@ti.com>
+ // Author: Kevin Lu <kevin-lu@ti.com>
+@@ -60,6 +60,7 @@
+ 
+ enum audio_device {
+ 	TAS2781	= 0,
++	TAS2563
+ };
+ 
+ enum device_catlog_id {
+-- 
+2.34.1
 
-thanks,
-
-Takashi
