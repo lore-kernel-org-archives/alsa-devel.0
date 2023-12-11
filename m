@@ -4,119 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5BECAC4167B
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 Dec 2023 13:39:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C1454C4167B
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 Dec 2023 13:41:48 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 84983826;
-	Mon, 11 Dec 2023 14:38:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 84983826
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0987FAE8;
+	Mon, 11 Dec 2023 14:41:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0987FAE8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1702301945;
-	bh=Z4dXxdtXtBABxN8+xzfYAPaecDj0d8xQ+Hb4hmjrcHw=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1702302107;
+	bh=nxM3m0fd/Qts426VUxaIvUcMjAL8BjhTWiFbn8gjtHE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=fKb1QNKa4OMNljPjuTDhnbAl7ppPuQlwc1kQ4/sqQoXEacJ5zsFJcKW+cmRl3bYjj
-	 F2x2W9dnQRTdn1xE7eNilSJfyVEpIKj/UFIbxW7zdEDv5854Fd2zCTC/JgJ1qBu2ZC
-	 kse7wZwW5J9VcjfjmOzEVALnPCoNzHMT4hhqE0DY=
+	b=SHUcBEObXtfFZpT6SHJuBayDHWtlE8M9AzePxM9xQh1a0vNRjiOtoIozcfrkZvMx+
+	 94bThYbYgayN+pt8nYsdyr1Y4XHIvqQj2MPLm6rT4MT6hK2UA7hnrHIWEIaz3nAimw
+	 QLFJpDKKUrfK8hojNaFifqfcZrZUqdTN4ZKG3qDg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 65E42F8065C; Mon, 11 Dec 2023 14:37:28 +0100 (CET)
+	id 5F7EFF8057A; Mon, 11 Dec 2023 14:41:14 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8902CF80683;
-	Mon, 11 Dec 2023 14:37:27 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D3411F80580;
+	Mon, 11 Dec 2023 14:41:13 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E8D5FF80166; Mon, 11 Dec 2023 10:54:24 +0100 (CET)
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com
- [IPv6:2607:f8b0:4864:20::52f])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	id 34BD1F80166; Mon, 11 Dec 2023 14:41:09 +0100 (CET)
+Received: from sin.source.kernel.org (sin.source.kernel.org
+ [IPv6:2604:1380:40e1:4800::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id BD0F3F800D2
-	for <alsa-devel@alsa-project.org>; Mon, 11 Dec 2023 10:54:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BD0F3F800D2
+	by alsa1.perex.cz (Postfix) with ESMTPS id BB33BF800D2
+	for <alsa-devel@alsa-project.org>; Mon, 11 Dec 2023 14:41:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BB33BF800D2
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20230601 header.b=Hb8jYlle
-Received: by mail-pg1-x52f.google.com with SMTP id
- 41be03b00d2f7-5c21e185df5so3588063a12.1
-        for <alsa-devel@alsa-project.org>;
- Mon, 11 Dec 2023 01:54:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702288454; x=1702893254;
- darn=alsa-project.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AA04sfNkH62YtYg6Nmq5x2j1Jcg5BYJtxmdnCLXGgCI=;
-        b=Hb8jYlleShzasVK+BjvD0MGV+LbS8Wto+lxYuvXemTNpN4w6YmOnD6yBJBcwtyYgRL
-         QWlNrYvDcdJk7u67Lt/10jjGIs5CmulOu5eG7hdx05OdJhTRaLIogAZ2tdTgwOVLI69h
-         byMOO/px0YENs+sWjqINyO4f7G31Cai5TPakifaQUEG8L308RgTdyPeJUojZ4PIlU4GI
-         UUvui9PwArQmxfjUoHqz5l9KaTgakMkqdUx6cjf4lKIH/NXoz7JeCHBS0nrs8UsRwUBE
-         XYCEyHNyjy7zkXR1qDZqfPoEtNLdjwdBLWjz+Z9i3F0oCaKEw4zVXkM+EOAohEWQzoiD
-         dPaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702288454; x=1702893254;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=AA04sfNkH62YtYg6Nmq5x2j1Jcg5BYJtxmdnCLXGgCI=;
-        b=TNQCBAInvJpQzUt31WznLU6DekOXiUs53WnYMB9KNCLV/mIWfSOgc39946fl03uZo2
-         QakvQu7TgpRbFmngS7Gw68is3fxo3Sk/n8lp5uc6naSoL06xpw8sjC4rZXKtZF2aW6Pk
-         6vgA75ZeO5Tz7ZZgl0R0HqQZADjA0MnarTxOzcxLk6NKiCygcK9cFQECcbs/meQJr9As
-         21irIsB3RKAJDgTnuSfm0xD5QBs1ftCKbFe63jDUt5Dpa3q6if2cFEDCTROc9PMNDK4s
-         6SYGNzuVUychxqODvCbp8uHeDLVStNUXO4gJcqr3uw5RJAxszgNE38riBLSMXbH1INTc
-         m+Rg==
-X-Gm-Message-State: AOJu0YyWRZ0yE4zN2GSIUxs0rK+9ONgdIzfD+jJNc5CqWQ2QxzNoB9o5
-	MxwRJHyE/fu3uj2XFz43lxI=
-X-Google-Smtp-Source: 
- AGHT+IFqSNjgBxvcCASuoNTVlJPNlgjlLzFSaeUpu44Ey6GZeodxdNuVHFZImKjMy0H9Ph6Aiyyh5w==
-X-Received: by 2002:a05:6a21:789d:b0:18f:df5f:d9f3 with SMTP id
- bf29-20020a056a21789d00b0018fdf5fd9f3mr6159341pzc.91.1702288454100;
-        Mon, 11 Dec 2023 01:54:14 -0800 (PST)
-Received: from localhost.localdomain
- ([2409:8a6a:5426:70b1:a6fc:77ff:fe50:e63d])
-        by smtp.gmail.com with ESMTPSA id
- mt20-20020a17090b231400b002853349e490sm8149734pjb.34.2023.12.11.01.54.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Dec 2023 01:54:13 -0800 (PST)
-From: Jianhua Lu <lujianhua000@gmail.com>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-	Banajit Goswami <bgoswami@quicinc.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>
-Cc: alsa-devel@alsa-project.org,
-	linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Jianhua Lu <lujianhua000@gmail.com>
-Subject: [RFC, PATCH 2/2] ASoC: qcom: sm8250: Add TERTIARY_TDM_RX_0 support
-Date: Mon, 11 Dec 2023 17:53:57 +0800
-Message-ID: <20231211095357.4629-2-lujianhua000@gmail.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20231211095357.4629-1-lujianhua000@gmail.com>
-References: <20231211095357.4629-1-lujianhua000@gmail.com>
+	dkim=pass (1024-bit key,
+ unprotected) header.d=linuxfoundation.org header.i=@linuxfoundation.org
+ header.a=rsa-sha256 header.s=korg header.b=EWISpyq8
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sin.source.kernel.org (Postfix) with ESMTP id D709ECE127D;
+	Mon, 11 Dec 2023 13:41:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BE03EC433C9;
+	Mon, 11 Dec 2023 13:41:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1702302061;
+	bh=nxM3m0fd/Qts426VUxaIvUcMjAL8BjhTWiFbn8gjtHE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=EWISpyq8wNowbv0aYVcvdj3yFg7Rf4k6p1s8hhxK6NY7eiVikxtLg/N67DRry/c6+
+	 xCDto1x/dyxRE0i4mxYN1Kyh9Y2z8AtYz4/CsyfjqJ2ltyisaobLefFGXmNNWm7j3/
+	 U4r3banV4ANXrkdOJVgt7wqtT/0L9dgO0G01A4n0=
+Date: Mon, 11 Dec 2023 14:40:58 +0100
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Johan Hovold <johan+linaro@kernel.org>
+Cc: Sasha Levin <sashal@kernel.org>, stable@vger.kernel.org,
+	broonie@kernel.org, alsa-devel@alsa-project.org, perex@perex.cz,
+	tiwai@suse.com, linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org, srinivas.kandagatla@linaro.org
+Subject: Re: [PATCH stable-6.6 0/2] ASoC: qcom: sc8280xp: Limit speaker
+ digital volumes
+Message-ID: <2023121154-mule-utter-98cf@gregkh>
+References: <20231211132608.27861-1-johan+linaro@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-MailFrom: lujianhua000@gmail.com
-X-Mailman-Rule-Hits: nonmember-moderation
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231211132608.27861-1-johan+linaro@kernel.org>
+Message-ID-Hash: MNPIFOJWPVWIL3XPZHWGQ6F3VSNE5YNM
+X-Message-ID-Hash: MNPIFOJWPVWIL3XPZHWGQ6F3VSNE5YNM
+X-MailFrom: gregkh@linuxfoundation.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: 73TXQHF5VXCZYKYYS4ITQG773EK52MLE
-X-Message-ID-Hash: 73TXQHF5VXCZYKYYS4ITQG773EK52MLE
-X-Mailman-Approved-At: Mon, 11 Dec 2023 13:37:06 +0000
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/73TXQHF5VXCZYKYYS4ITQG773EK52MLE/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MNPIFOJWPVWIL3XPZHWGQ6F3VSNE5YNM/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -125,58 +91,30 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add TERTIARY_TDM_RX_0 case to make speaker amplifiers working
-on xiaomi-elish tablet.
+On Mon, Dec 11, 2023 at 02:26:06PM +0100, Johan Hovold wrote:
+> This is a backport of the following series:
+> 
+> 	https://lore.kernel.org/lkml/20231204124736.132185-1-srinivas.kandagatla@linaro.org/
+> 
+> which did not build on 6.6 due a rename of the asoc_rtd_to_cpu()
+> interface.
+> 
+> Johan
+> 
+> 
+> Srinivas Kandagatla (2):
+>   ASoC: ops: add correct range check for limiting volume
+>   ASoC: qcom: sc8280xp: Limit speaker digital volumes
+> 
+>  sound/soc/qcom/sc8280xp.c | 17 +++++++++++++++++
+>  sound/soc/soc-ops.c       |  2 +-
+>  2 files changed, 18 insertions(+), 1 deletion(-)
+> 
+> -- 
+> 2.41.0
+> 
+> 
 
-Signed-off-by: Jianhua Lu <lujianhua000@gmail.com>
----
- sound/soc/qcom/sm8250.c | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+Now queued up, thanks.
 
-diff --git a/sound/soc/qcom/sm8250.c b/sound/soc/qcom/sm8250.c
-index f298167c2a23..00c89c073e72 100644
---- a/sound/soc/qcom/sm8250.c
-+++ b/sound/soc/qcom/sm8250.c
-@@ -16,6 +16,7 @@
- 
- #define DRIVER_NAME		"sm8250"
- #define MI2S_BCLK_RATE		1536000
-+#define TDM_BCLK_RATE		12288000
- 
- struct sm8250_snd_data {
- 	bool stream_prepared[AFE_PORT_MAX];
-@@ -53,6 +54,7 @@ static int sm8250_snd_startup(struct snd_pcm_substream *substream)
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct snd_soc_dai *cpu_dai = snd_soc_rtd_to_cpu(rtd, 0);
- 	struct snd_soc_dai *codec_dai = snd_soc_rtd_to_codec(rtd, 0);
-+	int ret, j;
- 
- 	switch (cpu_dai->id) {
- 	case TERTIARY_MI2S_RX:
-@@ -63,6 +65,23 @@ static int sm8250_snd_startup(struct snd_pcm_substream *substream)
- 		snd_soc_dai_set_fmt(cpu_dai, fmt);
- 		snd_soc_dai_set_fmt(codec_dai, codec_dai_fmt);
- 		break;
-+	case TERTIARY_TDM_RX_0:
-+		codec_dai_fmt |= SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_DSP_A;
-+		snd_soc_dai_set_sysclk(cpu_dai,
-+			Q6AFE_LPASS_CLK_ID_TER_TDM_IBIT,
-+			TDM_BCLK_RATE, SNDRV_PCM_STREAM_PLAYBACK);
-+
-+		for_each_rtd_codec_dais(rtd, j, codec_dai) {
-+			ret = snd_soc_dai_set_fmt(codec_dai, codec_dai_fmt);
-+			snd_soc_dai_set_sysclk(codec_dai,
-+				0,
-+				TDM_BCLK_RATE, SNDRV_PCM_STREAM_PLAYBACK);
-+			if (ret < 0) {
-+				dev_err(rtd->dev, "TDM fmt err:%d\n", ret);
-+				return ret;
-+			}
-+		}
-+		break;
- 	default:
- 		break;
- 	}
--- 
-2.41.0
-
+greg k-h
