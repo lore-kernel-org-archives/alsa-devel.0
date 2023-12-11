@@ -4,56 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D364CC46CC5
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 Dec 2023 14:02:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E3182C4167B
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 Dec 2023 14:03:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D068482A;
-	Mon, 11 Dec 2023 15:02:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D068482A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6038BE94;
+	Mon, 11 Dec 2023 15:03:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6038BE94
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1702303375;
-	bh=hewV+haqm7iKFmVzteMqLLsZAMWK0d37JQvVNdoChUM=;
+	s=default; t=1702303400;
+	bh=uNrzFIHW5arvNF8Q+6qd4P78lIhkuakWAiBbRtTZw5g=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=V97XtU+KzrK4UWCmPxzT5N/nSmoTdyR4k5nPq1RN4NbXNCgoFF7tKCIWB7BeeBtWz
-	 DWI4TFzHNyXVoFalVkvEcghIIMN0waDe/tRdgo9yKaSBkUjvbC22CaQ4oy5O6Zqvd4
-	 0AXWJRqlOy52Kkuqv6EWQ5NaNgeoR+/6QWZuz+Rc=
+	b=WG2aaTUdaw7CTRtlkNTHhL7Sl/koPAOOz/XjlvWTicdi9GJelsCxuGb4QZ/r6L2b+
+	 iG0WQNtI6ZkrKjlFFN0pKnEDgHPpnmbeRGdfZG36iZf41w+jR94hYJ+nknZqD3FkbQ
+	 EeyRnjTmGuneQzYlRs86G+2OJxI4ktyvtEPHCxC8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3F1A9F8060F; Mon, 11 Dec 2023 15:01:59 +0100 (CET)
+	id C972BF80634; Mon, 11 Dec 2023 15:02:02 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9A8ECF805F6;
-	Mon, 11 Dec 2023 15:01:59 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9DC59F8062D;
+	Mon, 11 Dec 2023 15:02:02 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 95C93F8019B; Mon, 11 Dec 2023 15:01:51 +0100 (CET)
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+	id 1C6F9F8059F; Mon, 11 Dec 2023 15:01:54 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 835D5F8057F
+	by alsa1.perex.cz (Postfix) with ESMTPS id 14B4EF80166
 	for <alsa-devel@alsa-project.org>; Mon, 11 Dec 2023 15:01:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 835D5F8057F
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 14B4EF80166
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=f0i08+P2
+ header.s=k20201202 header.b=AF3aoQqh
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id E3CB2CE128C;
+	by ams.source.kernel.org (Postfix) with ESMTP id CB95CB80E58;
+	Mon, 11 Dec 2023 14:01:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A547C433CA;
 	Mon, 11 Dec 2023 14:01:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92626C433CC;
-	Mon, 11 Dec 2023 14:01:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702303298;
-	bh=hewV+haqm7iKFmVzteMqLLsZAMWK0d37JQvVNdoChUM=;
+	s=k20201202; t=1702303300;
+	bh=uNrzFIHW5arvNF8Q+6qd4P78lIhkuakWAiBbRtTZw5g=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=f0i08+P2Ak1hoZe+xMsHUv0GaRBfBq6ptLb7is1uujdn5CELA566hW+2Y1W9mo7AZ
-	 SuziF8yP44gXvIlPPZsewwHy7kMoZlm+ed8nm5MnAaEfvzfI8e2JKC0xuijlQKN1Sq
-	 X/MEsykUglEZyR4tRCBobTxRa9ODet1veDHQp19NqllsOQ4+xgmRy5fph4a8TDcikf
-	 i4bBDJuaqYoKhr/ehmGKjSlPfsotli8Lp0GLXX2wss9BwJNgpn/lpjM9J+pL98d/ff
-	 WhFht1A/q+R6bvSy7kO9HFyYo3MOy0kSOZevk3iNFk0kCjOQSKZpiLCPkgxLFNsvqk
-	 aKaTDEIVY1ZbA==
+	b=AF3aoQqhQZtmegR62jvgNQMSYr1C6S/U6TNYWRsv5zIlcO1ytd/X7x33X3KRpKZhy
+	 Wvcju5ARmVAvuUplhkOkWKHZESpge81ctPv+MAqu4I1O3EfVD98vhyQ1lvOpEjQ4JW
+	 XnbOEhbTyZ1JrmdrJyUdCoi5i6tKKPAFROgXlAzTecuIKmILEZjFfKp8Yi3nj5mEsK
+	 JzwO/E1rSKSPCeEev+kbkK9qMLNtUmIX+4v4bT4o0olO4AI/iaObHzabx2kWLKRIze
+	 l5SAxwM0/fizDr/MEc1ye9Ga0JoZodq//ZWB3r/thKLNkXMmlUf3Rrx/BqI9XE70v4
+	 9zZbZ8vQYeZoA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -70,10 +70,10 @@ Cc: Maciej Strozek <mstrozek@opensource.cirrus.com>,
 	alsa-devel@alsa-project.org,
 	patches@opensource.cirrus.com,
 	linux-sound@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 05/16] ASoC: cs43130: Fix the position of const
- qualifier
-Date: Mon, 11 Dec 2023 09:00:29 -0500
-Message-ID: <20231211140116.391986-5-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 06/16] ASoC: cs43130: Fix incorrect frame delay
+ configuration
+Date: Mon, 11 Dec 2023 09:00:30 -0500
+Message-ID: <20231211140116.391986-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231211140116.391986-1-sashal@kernel.org>
 References: <20231211140116.391986-1-sashal@kernel.org>
@@ -82,8 +82,8 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.10.203
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: CI36I5MG2RXDLREKBI2CCKCPR3GXMVEG
-X-Message-ID-Hash: CI36I5MG2RXDLREKBI2CCKCPR3GXMVEG
+Message-ID-Hash: NLY5SY6MOGLEKPDRXJIJOINEOO6IUUHN
+X-Message-ID-Hash: NLY5SY6MOGLEKPDRXJIJOINEOO6IUUHN
 X-MailFrom: sashal@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -96,7 +96,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CI36I5MG2RXDLREKBI2CCKCPR3GXMVEG/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NLY5SY6MOGLEKPDRXJIJOINEOO6IUUHN/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -107,39 +107,30 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Maciej Strozek <mstrozek@opensource.cirrus.com>
 
-[ Upstream commit e7f289a59e76a5890a57bc27b198f69f175f75d9 ]
+[ Upstream commit aa7e8e5e4011571022dc06e4d7a2f108feb53d1a ]
 
 Signed-off-by: Maciej Strozek <mstrozek@opensource.cirrus.com>
 Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/20231117141344.64320-2-mstrozek@opensource.cirrus.com
+Link: https://lore.kernel.org/r/20231117141344.64320-3-mstrozek@opensource.cirrus.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/cs43130.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/cs43130.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/sound/soc/codecs/cs43130.c b/sound/soc/codecs/cs43130.c
-index 8f70dee958786..285806868c405 100644
+index 285806868c405..02fb9317b6970 100644
 --- a/sound/soc/codecs/cs43130.c
 +++ b/sound/soc/codecs/cs43130.c
-@@ -1683,7 +1683,7 @@ static ssize_t cs43130_show_dc_r(struct device *dev,
- 	return cs43130_show_dc(dev, buf, HP_RIGHT);
- }
- 
--static u16 const cs43130_ac_freq[CS43130_AC_FREQ] = {
-+static const u16 cs43130_ac_freq[CS43130_AC_FREQ] = {
- 	24,
- 	43,
- 	93,
-@@ -2364,7 +2364,7 @@ static const struct regmap_config cs43130_regmap = {
- 	.use_single_write	= true,
- };
- 
--static u16 const cs43130_dc_threshold[CS43130_DC_THRESHOLD] = {
-+static const u16 cs43130_dc_threshold[CS43130_DC_THRESHOLD] = {
- 	50,
- 	120,
- };
+@@ -578,7 +578,7 @@ static int cs43130_set_sp_fmt(int dai_id, unsigned int bitwidth_sclk,
+ 		break;
+ 	case SND_SOC_DAIFMT_LEFT_J:
+ 		hi_size = bitwidth_sclk;
+-		frm_delay = 2;
++		frm_delay = 0;
+ 		frm_phase = 1;
+ 		break;
+ 	case SND_SOC_DAIFMT_DSP_A:
 -- 
 2.42.0
 
