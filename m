@@ -4,77 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B8B18C4167B
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 Dec 2023 16:22:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4AC87C4167B
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 Dec 2023 17:30:51 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F3602DED;
-	Mon, 11 Dec 2023 17:22:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F3602DED
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6574982A;
+	Mon, 11 Dec 2023 18:30:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6574982A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1702311741;
-	bh=3nTV0SkxLpCj5lGOPMqS4WVJVvWuXILN7ErZ+JOAhRo=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=tF3x2G7T+tB2jJ15s1etXMCwNXDvazuDlvJWAHTz/5HFiXVg7V8Z4TGC3QMcdrifw
-	 +P5B7lnox5l0eFlejOyGXHdAMovQnkLLu6e0wdv73GS84Zg6mIdUJIj0ErNWRuRW8J
-	 uc+4bzumuRqkIL0KYYTWU5CxuEh/iviiAObnnw6s=
+	s=default; t=1702315848;
+	bh=LG9yC9T7WxDhr+BiUl3Dho2W3NGuanNuq2BwSSb2m7M=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=FrfoJuI3uDXcaJM2xORvdkUoOSfJK9/SB58FqUNISJhhltk7rcsDByuhn4wBh766v
+	 90XrjJ5HpNzxbI77GQU8FZZJhwXRtwtUn1JEI1jZ9dK6iuf/1ZMU7F6UmlxEyhuYHF
+	 gyngnH+CnATQguvGsfTsJ9IzRtlSoqgfgcAiGup0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9AFD2F805DA; Mon, 11 Dec 2023 17:21:18 +0100 (CET)
+	id 78421F8057F; Mon, 11 Dec 2023 18:30:17 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 16723F805EA;
-	Mon, 11 Dec 2023 17:21:18 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C2EFAF80588;
+	Mon, 11 Dec 2023 18:30:16 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 44C93F80166; Mon, 11 Dec 2023 17:20:30 +0100 (CET)
+	id CA6A3F80166; Mon, 11 Dec 2023 18:30:10 +0100 (CET)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B5648F8001F
-	for <alsa-devel@alsa-project.org>; Mon, 11 Dec 2023 17:20:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B5648F8001F
+	by alsa1.perex.cz (Postfix) with ESMTPS id 04243F800D2
+	for <alsa-devel@alsa-project.org>; Mon, 11 Dec 2023 18:29:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 04243F800D2
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=n8kzE9f4
+ header.s=k20201202 header.b=Ksf5gdIj
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 3C014613C5;
-	Mon, 11 Dec 2023 16:20:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DEF12C433CD;
-	Mon, 11 Dec 2023 16:20:10 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 65E83614B2;
+	Mon, 11 Dec 2023 17:29:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A324EC433C7;
+	Mon, 11 Dec 2023 17:29:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702311612;
-	bh=3nTV0SkxLpCj5lGOPMqS4WVJVvWuXILN7ErZ+JOAhRo=;
-	h=From:To:In-Reply-To:References:Subject:Date:From;
-	b=n8kzE9f4/kvptFZBIE/JI71gnycQC2TponbEtW3zPxbUNhCBYROwQ4lDynuoC65sd
-	 9yTNY5awadulGSw2vQPRutWRnFonXii/po+AMg6Ws3rIVGXmLWgtL4AmK66hJL9tTC
-	 /uuJ9ouluS0HVxpq6cLP6GlqvHTzodiU17K9zRRnUuo5EKE37sIpqlIKXUvqJFjOva
-	 9O3oB3a381lQVF09tpclQHyk/VTlHbkR2wKh1aRnWutFODNSyUMQEFeY9/TYu76+MN
-	 gJMyHt+QBFlze31vnHpWXw1nHGozEDCMHqkj8MLnUvpm6P1o3RnszyRXBBN+xFpSf/
-	 dfQoiusfxSUvA==
-From: Mark Brown <broonie@kernel.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Banajit Goswami <bgoswami@quicinc.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
- linux-kernel@vger.kernel.org,
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20231130180758.212172-1-krzysztof.kozlowski@linaro.org>
-References: <20231130180758.212172-1-krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH v2 1/3] ASoC: qcom: audioreach: Commonize setting
- channel mappings
-Message-Id: <170231161062.85457.2289736198838739317.b4-ty@kernel.org>
-Date: Mon, 11 Dec 2023 16:20:10 +0000
+	s=k20201202; t=1702315795;
+	bh=LG9yC9T7WxDhr+BiUl3Dho2W3NGuanNuq2BwSSb2m7M=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Ksf5gdIjvH4DynRW4uEWQpgrSlQ3E928IhMDsDZtLZ3Dt3HV/7GDqj93NZ+x0Wyeo
+	 IurfMVxHjn6t507JQ1NrLC77E6y7MBZECoCktB7XuWMuN7k8VzJ5QVctnj+FsvsDMC
+	 rRtse8JR7Z/d7PqqSEzK4b2mmCA99YAWi5dBFkMg+xcGYGWt2RNxa6LzOOwWjVe0U3
+	 kZtKleeB2h68a6KhREyltBOM22qHz5e0D0b6+G/FsRDS3sYSw5cDWXl2o6Yr8YnWCp
+	 Rusvi/R2boGbUY+iVdFPHeUEaBA1mIPWv5Sd5PsauUcGtoSOWNTpAf9xXfmH1bR/GE
+	 mnfShQzYVVHIw==
+Date: Mon, 11 Dec 2023 17:29:50 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+	Banajit Goswami <bgoswami@quicinc.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
+	alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/4] ASoC: dt-bindings: qcom,lpass-rx-macro: Add X1E80100
+ LPASS RX
+Message-ID: <20231211-cardstock-elevator-3e19f9d41ac2@spud>
+References: <20231211123104.72963-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-5c066
-Message-ID-Hash: PZZCYFPHJGVG26WBPY4YTARH2VVBIEGJ
-X-Message-ID-Hash: PZZCYFPHJGVG26WBPY4YTARH2VVBIEGJ
-X-MailFrom: broonie@kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="2LNFTi2k/ijpYbVF"
+Content-Disposition: inline
+In-Reply-To: <20231211123104.72963-1-krzysztof.kozlowski@linaro.org>
+Message-ID-Hash: RXE5AWIRA6XAX47K5V6ZDS4JBA5ICUJP
+X-Message-ID-Hash: RXE5AWIRA6XAX47K5V6ZDS4JBA5ICUJP
+X-MailFrom: conor@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -86,7 +91,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PZZCYFPHJGVG26WBPY4YTARH2VVBIEGJ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RXE5AWIRA6XAX47K5V6ZDS4JBA5ICUJP/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -95,42 +100,59 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, 30 Nov 2023 19:07:56 +0100, Krzysztof Kozlowski wrote:
-> Move code assigning channel mapping values to a common helper function.
-> This simplifies three out of four cases, with the last case using
-> incompatible type (uint16_t array instead of uint8_t array).
-> 
-> 
 
-Applied to
+--2LNFTi2k/ijpYbVF
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+On Mon, Dec 11, 2023 at 01:31:01PM +0100, Krzysztof Kozlowski wrote:
+> Add bindings for Qualcomm X1E80100 SoC Low Power Audio SubSystem (LPASS)
+> RX macro codec, which looks like compatible with earlier SM8550.
+>=20
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-Thanks!
+I wish you'd send cover letters when you send series of trivial patches
+like this that could be acked in one go.
 
-[1/3] ASoC: qcom: audioreach: Commonize setting channel mappings
-      commit: ef14f40a3613ddd43a8dd736b5df6f865dcbb817
-[2/3] ASoC: qcom: audioreach: drop duplicate channel defines
-      commit: bcd684eae5aefc0688fcf43fd555155dd57f27c9
-[3/3] ASoC: qcom: audioreach: Add 4 channel support
-      commit: 3c5fcb20e07e3681a645fc3a8d890478ca320825
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+Cheers,
+Conor.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> ---
+>  .../devicetree/bindings/sound/qcom,lpass-rx-macro.yaml        | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/Documentation/devicetree/bindings/sound/qcom,lpass-rx-macro.=
+yaml b/Documentation/devicetree/bindings/sound/qcom,lpass-rx-macro.yaml
+> index cbc36646100f..b8540b30741e 100644
+> --- a/Documentation/devicetree/bindings/sound/qcom,lpass-rx-macro.yaml
+> +++ b/Documentation/devicetree/bindings/sound/qcom,lpass-rx-macro.yaml
+> @@ -19,7 +19,9 @@ properties:
+>            - qcom,sm8550-lpass-rx-macro
+>            - qcom,sc8280xp-lpass-rx-macro
+>        - items:
+> -          - const: qcom,sm8650-lpass-rx-macro
+> +          - enum:
+> +              - qcom,sm8650-lpass-rx-macro
+> +              - qcom,x1e80100-lpass-rx-macro
+>            - const: qcom,sm8550-lpass-rx-macro
+> =20
+>    reg:
+> --=20
+> 2.34.1
+>=20
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+--2LNFTi2k/ijpYbVF
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+-----BEGIN PGP SIGNATURE-----
 
-Thanks,
-Mark
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZXdHDgAKCRB4tDGHoIJi
+0nU+AQDVDBF2Ue5mLjfFa/+I6TWQM2yfHXHlsApXW8yIzl//igEAgY0GeYGSN98Z
+iBGGvTxVPokVS73NbLliSfIW9xpVwwg=
+=MyYY
+-----END PGP SIGNATURE-----
 
+--2LNFTi2k/ijpYbVF--
