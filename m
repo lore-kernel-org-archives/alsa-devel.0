@@ -4,87 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 71A17C10DC3
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 Dec 2023 14:04:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 89C11C10F05
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 Dec 2023 14:05:03 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5DE54A4B;
-	Mon, 11 Dec 2023 15:04:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5DE54A4B
+	by alsa0.perex.cz (Postfix) with ESMTPS id E870CE9C;
+	Mon, 11 Dec 2023 15:04:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E870CE9C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1702303484;
-	bh=2+ABJjwi2rtcImLzfvGNWYJkqy4ofmwTcTdjHO4769E=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=H7mFDSxKA2qeJy9WH64gZiHrJN+PFcyfkbY2ebgvVjQrvSLE7e8PF90/b1QfGzbPE
-	 LkaNIQP/iYIqpiDjFH8ORZ6l+ItpxFLWZDmRK4QJ5IyTm3jP/lM74OhVYoig1dESxj
-	 jVXOS0vG0uJzE1uuZGt80g2IWsiuY5HiDhbF1M8U=
+	s=default; t=1702303501;
+	bh=BuHKqMd7L6hJUMKqGXVpnwJckHYtw9yzl+qIn3moBgE=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=Q3Pu2sYrJtUEU8+ibVMAcxTtmG0a54saoOhfqcVOPDE+6GRt/02ZZopQYc3Jyi5K1
+	 W7MyRXarzDrt34PYcqe/Mrjc/H7ENLehDrqornpb4D/5/CTlKYoT3rthOnwj/agN8x
+	 UsSNXOfkdzVeR64Qu2C4FocnZBYwemOP4kQEm6DQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 314ECF80613; Mon, 11 Dec 2023 15:03:09 +0100 (CET)
+	id 78D5EF80695; Mon, 11 Dec 2023 15:03:16 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id BDAEAF80611;
-	Mon, 11 Dec 2023 15:03:09 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A25F9F8068C;
+	Mon, 11 Dec 2023 15:03:16 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 66CB3F805F9; Mon, 11 Dec 2023 15:03:06 +0100 (CET)
-Received: from sin.source.kernel.org (sin.source.kernel.org
- [IPv6:2604:1380:40e1:4800::1])
+	id 9C94DF80623; Mon, 11 Dec 2023 15:03:12 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7230AF805EE
-	for <alsa-devel@alsa-project.org>; Mon, 11 Dec 2023 15:03:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7230AF805EE
+	by alsa1.perex.cz (Postfix) with ESMTPS id 2FA1AF80619
+	for <alsa-devel@alsa-project.org>; Mon, 11 Dec 2023 15:03:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2FA1AF80619
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=F/gpGUw7
+ header.s=k20201202 header.b=GqUXPSwq
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 9B20BCE11FD;
-	Mon, 11 Dec 2023 14:03:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2FAAFC433C9;
-	Mon, 11 Dec 2023 14:02:59 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id DE922612AC;
+	Mon, 11 Dec 2023 14:02:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9250EC433CA;
+	Mon, 11 Dec 2023 14:02:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702303380;
-	bh=2+ABJjwi2rtcImLzfvGNWYJkqy4ofmwTcTdjHO4769E=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=F/gpGUw7MIh8dKZHv6mRhiEW37+3BrbswOzImibqjslh0Fxoy7exDBlqf9gX9buPD
-	 TMjsPAE9mLP6oKohFuUQEd5RmERBFOyGzvaSnZTRqJzNBaIJ39+kvWIENwB3dbAYMM
-	 j0Q1lCyqiEcmxMp1k9gCdkrwlJfvwGKbDP9TNV8no44S4U5BMFIrhTLIvlVA0B8Z76
-	 z9MmLMJATMC1PCHj6kmhPB3hPP95ksfeD60mLMCP0Vi//FFs8Z1AO4rbhfFHbi3KnB
-	 dCmTfTMdn0Kcmw3jhtjFQCJkmyXwz1Ml17okJeABkjFzeFKINw6JljX9j09cHx6+1Q
-	 aOcbdxQzh45Kw==
+	s=k20201202; t=1702303378;
+	bh=BuHKqMd7L6hJUMKqGXVpnwJckHYtw9yzl+qIn3moBgE=;
+	h=From:To:Cc:Subject:Date:From;
+	b=GqUXPSwqO9gcjR0hRnkNZlaBCUbYXvYOQkeOzhD4HXi3pFPRExyAxHXdw0Wcs8RkE
+	 JfQaQleefeude45KBaUjv6Ek2PFGmzP6wNx7/YbBWq2GPijXGjueYXKfymDAnr2nZP
+	 w5NBCGOMFKb09tF9EugOmQORTjKPkvl/R5dlUK64Jkr9rOrvCyHF1vSUrod3OXWCTV
+	 aPSlA7mZ5oOmp5mj8c2PZqRV3Naox07QcG2ieEU3z4O/NgOLSFw7SHD+IvTSzQxl2q
+	 6UO3Bp6t7o5FYP3WTkHVW5VGogzIMfw1P4t37Fzs1bpSk2rgiQPuHyhpzZn+D95AMR
+	 mT4JIjvobI5XQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Maciej Strozek <mstrozek@opensource.cirrus.com>,
-	Charles Keepax <ckeepax@opensource.cirrus.com>,
+Cc: Kamil Duljas <kamil.duljas@gmail.com>,
+	=?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
+ <amadeuszx.slawinski@linux.intel.com>,
 	Mark Brown <broonie@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	james.schulman@cirrus.com,
-	david.rhodes@cirrus.com,
-	rf@opensource.cirrus.com,
-	lgirdwood@gmail.com,
+	cezary.rojewski@intel.com,
+	pierre-louis.bossart@linux.intel.com,
+	liam.r.girdwood@linux.intel.com,
+	peter.ujfalusi@linux.intel.com,
+	yung-chuan.liao@linux.intel.com,
+	ranjani.sridharan@linux.intel.com,
+	kai.vehmanen@linux.intel.com,
 	perex@perex.cz,
 	tiwai@suse.com,
+	suhui@nfschina.com,
+	kuninori.morimoto.gx@renesas.com,
+	zhangyiqun@phytium.com.cn,
 	alsa-devel@alsa-project.org,
-	patches@opensource.cirrus.com,
 	linux-sound@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 2/7] ASoC: cs43130: Fix the position of const
- qualifier
-Date: Mon, 11 Dec 2023 09:02:45 -0500
-Message-ID: <20231211140254.392656-2-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 1/7] ASoC: Intel: Skylake: mem leak in skl
+ register function
+Date: Mon, 11 Dec 2023 09:02:44 -0500
+Message-ID: <20231211140254.392656-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231211140254.392656-1-sashal@kernel.org>
-References: <20231211140254.392656-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 4.19.301
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 6KZOPWUZD7XY2FQO6PL6NI2ODDXO5GG6
-X-Message-ID-Hash: 6KZOPWUZD7XY2FQO6PL6NI2ODDXO5GG6
+Message-ID-Hash: SFUQDYOLEEPQVJGDDKPTRBDOVZ4VQPLN
+X-Message-ID-Hash: SFUQDYOLEEPQVJGDDKPTRBDOVZ4VQPLN
 X-MailFrom: sashal@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -97,7 +100,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6KZOPWUZD7XY2FQO6PL6NI2ODDXO5GG6/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SFUQDYOLEEPQVJGDDKPTRBDOVZ4VQPLN/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -106,41 +109,47 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Maciej Strozek <mstrozek@opensource.cirrus.com>
+From: Kamil Duljas <kamil.duljas@gmail.com>
 
-[ Upstream commit e7f289a59e76a5890a57bc27b198f69f175f75d9 ]
+[ Upstream commit f8ba14b780273fd290ddf7ee0d7d7decb44cc365 ]
 
-Signed-off-by: Maciej Strozek <mstrozek@opensource.cirrus.com>
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/20231117141344.64320-2-mstrozek@opensource.cirrus.com
+skl_platform_register() uses krealloc. When krealloc is fail,
+then previous memory is not freed. The leak is also when soc
+component registration failed.
+
+Signed-off-by: Kamil Duljas <kamil.duljas@gmail.com>
+Reviewed-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
+Link: https://lore.kernel.org/r/20231116224112.2209-2-kamil.duljas@gmail.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/cs43130.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/intel/skylake/skl-pcm.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/cs43130.c b/sound/soc/codecs/cs43130.c
-index cf29dec28b5e3..95060ae7dbb40 100644
---- a/sound/soc/codecs/cs43130.c
-+++ b/sound/soc/codecs/cs43130.c
-@@ -1686,7 +1686,7 @@ static ssize_t cs43130_show_dc_r(struct device *dev,
- 	return cs43130_show_dc(dev, buf, HP_RIGHT);
+diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
+index 6b2c8c6e7a00f..5195e012dc6d4 100644
+--- a/sound/soc/intel/skylake/skl-pcm.c
++++ b/sound/soc/intel/skylake/skl-pcm.c
+@@ -1450,6 +1450,7 @@ int skl_platform_register(struct device *dev)
+ 		dais = krealloc(skl->dais, sizeof(skl_fe_dai) +
+ 				sizeof(skl_platform_dai), GFP_KERNEL);
+ 		if (!dais) {
++			kfree(skl->dais);
+ 			ret = -ENOMEM;
+ 			goto err;
+ 		}
+@@ -1462,8 +1463,10 @@ int skl_platform_register(struct device *dev)
+ 
+ 	ret = devm_snd_soc_register_component(dev, &skl_component,
+ 					 skl->dais, num_dais);
+-	if (ret)
++	if (ret) {
++		kfree(skl->dais);
+ 		dev_err(dev, "soc component registration failed %d\n", ret);
++	}
+ err:
+ 	return ret;
  }
- 
--static u16 const cs43130_ac_freq[CS43130_AC_FREQ] = {
-+static const u16 cs43130_ac_freq[CS43130_AC_FREQ] = {
- 	24,
- 	43,
- 	93,
-@@ -2365,7 +2365,7 @@ static const struct regmap_config cs43130_regmap = {
- 	.use_single_rw		= true, /* needed for regcache_sync */
- };
- 
--static u16 const cs43130_dc_threshold[CS43130_DC_THRESHOLD] = {
-+static const u16 cs43130_dc_threshold[CS43130_DC_THRESHOLD] = {
- 	50,
- 	120,
- };
 -- 
 2.42.0
 
