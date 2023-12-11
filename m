@@ -4,130 +4,146 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C5327C4167B
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 Dec 2023 03:45:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 31B70C4167B
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 Dec 2023 08:01:29 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 08C69843;
-	Mon, 11 Dec 2023 04:45:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 08C69843
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8C3A2A4B;
+	Mon, 11 Dec 2023 09:01:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8C3A2A4B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1702266323;
-	bh=r0pYP1q8Gtj2CB7Ycqp8y43LjjXbBC2kfyo7Qr4SBMo=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	s=default; t=1702281687;
+	bh=+baNFw6A3GebDC/R+mY2yb0WCaQkMxjY1MBYGq+ZtAw=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=T9NM9NAjuocvUF2gXY8vPy/r31WInQv6hbOhYa43LqQAOFC0IUYkNbngkW0jmTCBi
-	 TAnvokbOVocFCUHOaYjn9b5/Qg9aHnYNh5V/301x4dHO8ELJ8vUswfajKLLO/Nzt4G
-	 BevS81QUnYkcCE4MQPbKEu30lz4lbAEYd0OnIEe4=
+	b=nH7Ww/2MMjMnCuqnEvLrGV/x3r60qnaKw4VkdKOBstIgmJxHhOr9vK0liiq8jx3cL
+	 0ba7x8cPxhzUBgMxagU14FB184sPW651zM+1IQDV7G3LCtkWvcQiQaVWh6wKfxSGjI
+	 6VL+n/t+/0O03VvtDVgpbFexITzV6BRCiPMfos48=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4AA33F8025F; Mon, 11 Dec 2023 04:44:40 +0100 (CET)
+	id 1A6B9F80589; Mon, 11 Dec 2023 09:00:50 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A46B3F80587;
-	Mon, 11 Dec 2023 04:44:39 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D8A1BF80587;
+	Mon, 11 Dec 2023 09:00:49 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 79654F8016E; Mon, 11 Dec 2023 04:44:32 +0100 (CET)
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com
- [IPv6:2a00:1450:4864:20::12c])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	id 59194F80166; Mon, 11 Dec 2023 08:59:21 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 54BC9F80114
-	for <alsa-devel@alsa-project.org>; Mon, 11 Dec 2023 04:44:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 54BC9F80114
+	by alsa1.perex.cz (Postfix) with ESMTPS id 06BCDF80114
+	for <alsa-devel@alsa-project.org>; Mon, 11 Dec 2023 08:59:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 06BCDF80114
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=E0buIQN5
-Received: by mail-lf1-x12c.google.com with SMTP id
- 2adb3069b0e04-50bf1e32571so4629662e87.2
-        for <alsa-devel@alsa-project.org>;
- Sun, 10 Dec 2023 19:44:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702266262; x=1702871062;
- darn=alsa-project.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=o/vqeWpmuaC2GKHcpPmHJB7dDJL1y38uQQZMJmxyCF0=;
-        b=E0buIQN5Kp7ANZDuUb+l1tC/z9R4SEhwQHj1/YzPCiwHdsIqSwA8xcBwLkcuSZK2hv
-         Pnl0k0ORRzawiORxF03sU3jSMSkKocCxlRzfolEijAwuV6t6fSmsPTm84A1jS9VksjIo
-         XCqLugACqaB20kgGSEnU/s0Olh4aHXSlZ0DOZaPdWh6b6x8GIrGdkAGwvfuEDTKzAqO4
-         eenwy1umLwIitYZ1VOsEBMSeQ7qzTLtIRzVXHhbv36k7koIEMCRcA93Vas/BjTungXVw
-         gSBdmOwFVsg6zRlGa+Ykkqgv38MZ7tgNoGxe+BXjUVH2EsAKEGYT0pEoIAOaAECfrfi+
-         KjYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702266262; x=1702871062;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=o/vqeWpmuaC2GKHcpPmHJB7dDJL1y38uQQZMJmxyCF0=;
-        b=G/aMKDeP1AeVknDkAi+3HM1+C2tO2f6VzgPux/uFWXZcYJQQjlPpVkjz9KQ+pr63bv
-         kn75cJXfxHKQdT/Yxbkvb2zuPnl3bIK6RI+tgJryRcQem1mK+3H8ZGyF3Pe7lPDYJz7Z
-         GvzjW+0nEI8lgfj/HsUF7HhctIIdUjpqmR9cijQLxCezqAcxbQp4z1NfTcxxCVUG8msx
-         tliv1hoMbMcXdzmXuVd7uja3LTA0VKJ1X79m2NL4VLpbj2WPmZzA7t8t8OtIL9sghf5d
-         1Rfkam3xk5KhRgJYvj5x44gyIj1Zm6g0sw+KLRIl8MxB5IIY+MHZDTXA3fhqGW9XdrDZ
-         rMQQ==
-X-Gm-Message-State: AOJu0Yzjvm0et1o8YPSXI1O/aoq+/g4CyOjg41rw/McAPUKT0GA6165L
-	EGI2hX9M1JSO2ZqTFH1XspDPvA==
-X-Google-Smtp-Source: 
- AGHT+IF5PtBpY6xhcdNz9G3vVrurxD3qF8aQpcfrWHvhTTpJjLx5LRR48o/Ym5kxD82928DzeICIlg==
-X-Received: by 2002:ac2:562c:0:b0:50b:fd06:1c8a with SMTP id
- b12-20020ac2562c000000b0050bfd061c8amr1341405lff.26.1702266261661;
-        Sun, 10 Dec 2023 19:44:21 -0800 (PST)
-Received: from [192.168.2.107] ([79.115.63.75])
-        by smtp.gmail.com with ESMTPSA id
- w2-20020a50d782000000b0054cceab1940sm3269357edi.29.2023.12.10.19.44.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 10 Dec 2023 19:44:20 -0800 (PST)
-Message-ID: <2cadfffa-00bf-4e6a-bfce-9cc654b042a1@linaro.org>
-Date: Mon, 11 Dec 2023 03:44:18 +0000
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v11 07/10] mtd: spi-nor: Add stacked memories support in
- spi-nor
-Content-Language: en-US
-To: "Mahapatra, Amit Kumar" <amit.kumar-mahapatra@amd.com>,
- "broonie@kernel.org" <broonie@kernel.org>,
- "pratyush@kernel.org" <pratyush@kernel.org>,
- "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
- "richard@nod.at" <richard@nod.at>, "vigneshr@ti.com" <vigneshr@ti.com>,
- "sbinding@opensource.cirrus.com" <sbinding@opensource.cirrus.com>,
- "lee@kernel.org" <lee@kernel.org>,
- "james.schulman@cirrus.com" <james.schulman@cirrus.com>,
- "david.rhodes@cirrus.com" <david.rhodes@cirrus.com>,
- "rf@opensource.cirrus.com" <rf@opensource.cirrus.com>,
- "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.com" <tiwai@suse.com>
-Cc: "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "michael@walle.cc" <michael@walle.cc>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "nicolas.ferre@microchip.com" <nicolas.ferre@microchip.com>,
- "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
- "claudiu.beznea@tuxon.dev" <claudiu.beznea@tuxon.dev>,
- "Simek, Michal" <michal.simek@amd.com>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>,
- "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- "patches@opensource.cirrus.com" <patches@opensource.cirrus.com>,
- "linux-sound@vger.kernel.org" <linux-sound@vger.kernel.org>,
- "git (AMD-Xilinx)" <git@amd.com>,
- "amitrkcian2002@gmail.com" <amitrkcian2002@gmail.com>
-References: <20231125092137.2948-1-amit.kumar-mahapatra@amd.com>
- <20231125092137.2948-8-amit.kumar-mahapatra@amd.com>
- <e2305642-55f1-4893-bea3-b170ac0a5348@linaro.org>
- <9f577482-30d9-4e1d-9469-812d323b18c6@linaro.org>
- <BN7PR12MB2802C8279CA95FA08F8DDCF2DC8AA@BN7PR12MB2802.namprd12.prod.outlook.com>
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=F2EXEQKF;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=ZVxx0YFR;
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.a=rsa-sha256 header.s=susede2_rsa header.b=F2EXEQKF;
+	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=ZVxx0YFR
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 1B90D1FB6C;
+	Mon, 11 Dec 2023 07:59:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1702281549;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=uu6n7mEvnmXbniOla3rPuD+at6mp806bEoBZqpe8Srs=;
+	b=F2EXEQKFjaL8rqwVqqdQBU9hMTkZcxVRfsFW6uSowHHxfUb6IKM5rUc5vyH1u+nz5Gu0Qy
+	c40XaN2A62IIVciP3J+v37MzCtnwTQTQaolpzUO8jfCwFudytNhcgJgDPymwqHGUXV0Gum
+	IS1xPDJ7lZgF1CpgSe05vGUPx5oATRg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1702281549;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=uu6n7mEvnmXbniOla3rPuD+at6mp806bEoBZqpe8Srs=;
+	b=ZVxx0YFRxMokq+KnjclNVrUIaH9LdO+mntagvBMf6y1V//puLAuAZW+AxTunPqt8UsfUr6
+	BsAvAzr9si24LnAw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1702281549;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=uu6n7mEvnmXbniOla3rPuD+at6mp806bEoBZqpe8Srs=;
+	b=F2EXEQKFjaL8rqwVqqdQBU9hMTkZcxVRfsFW6uSowHHxfUb6IKM5rUc5vyH1u+nz5Gu0Qy
+	c40XaN2A62IIVciP3J+v37MzCtnwTQTQaolpzUO8jfCwFudytNhcgJgDPymwqHGUXV0Gum
+	IS1xPDJ7lZgF1CpgSe05vGUPx5oATRg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1702281549;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=uu6n7mEvnmXbniOla3rPuD+at6mp806bEoBZqpe8Srs=;
+	b=ZVxx0YFRxMokq+KnjclNVrUIaH9LdO+mntagvBMf6y1V//puLAuAZW+AxTunPqt8UsfUr6
+	BsAvAzr9si24LnAw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CE16D132DA;
+	Mon, 11 Dec 2023 07:59:08 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id UcQTMUzBdmXlHwAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Mon, 11 Dec 2023 07:59:08 +0000
+Date: Mon, 11 Dec 2023 08:59:08 +0100
+Message-ID: <874jgp5fw3.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Gergo Koteles <soyer@irl.hu>
+Cc: Shenghao Ding <shenghao-ding@ti.com>,
+	Kevin Lu <kevin-lu@ti.com>,
+	Baojun Xu <baojun.xu@ti.com>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	linux-kernel@vger.kernel.org,
+	alsa-devel@alsa-project.org,
+	stable@vger.kernel.org
+Subject: Re: [PATCH] ALSA: hda/tas2781: handle missing EFI calibration data
 In-Reply-To: 
- <BN7PR12MB2802C8279CA95FA08F8DDCF2DC8AA@BN7PR12MB2802.namprd12.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: YP2EMBXBO4GWLFJ5R2XCKGKMPB3UBA3K
-X-Message-ID-Hash: YP2EMBXBO4GWLFJ5R2XCKGKMPB3UBA3K
-X-MailFrom: tudor.ambarus@linaro.org
+ <f1f6583bda918f78556f67d522ca7b3b91cebbd5.1702251102.git.soyer@irl.hu>
+References: 
+ <f1f6583bda918f78556f67d522ca7b3b91cebbd5.1702251102.git.soyer@irl.hu>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spamd-Result: default: False [-3.09 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.17)[-0.867];
+	 RCPT_COUNT_SEVEN(0.00)[9];
+	 MID_CONTAINS_FROM(1.00)[];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-2.81)[99.19%]
+Message-ID-Hash: R5JFXSGYWNHVPV443PXD7NSMB5C6NSVQ
+X-Message-ID-Hash: R5JFXSGYWNHVPV443PXD7NSMB5C6NSVQ
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -139,7 +155,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YP2EMBXBO4GWLFJ5R2XCKGKMPB3UBA3K/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/R5JFXSGYWNHVPV443PXD7NSMB5C6NSVQ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -148,127 +164,34 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-
-
-On 12/8/23 17:06, Mahapatra, Amit Kumar wrote:
-> Hello Tudor,
-
-Hi!
-
+On Mon, 11 Dec 2023 00:37:33 +0100,
+Gergo Koteles wrote:
 > 
->> -----Original Message-----
->> From: Tudor Ambarus <tudor.ambarus@linaro.org>
->> Sent: Wednesday, December 6, 2023 8:14 PM
->> To: Mahapatra, Amit Kumar <amit.kumar-mahapatra@amd.com>;
->> broonie@kernel.org; pratyush@kernel.org; miquel.raynal@bootlin.com;
->> richard@nod.at; vigneshr@ti.com; sbinding@opensource.cirrus.com;
->> lee@kernel.org; james.schulman@cirrus.com; david.rhodes@cirrus.com;
->> rf@opensource.cirrus.com; perex@perex.cz; tiwai@suse.com
->> Cc: linux-spi@vger.kernel.org; linux-kernel@vger.kernel.org;
->> michael@walle.cc; linux-mtd@lists.infradead.org;
->> nicolas.ferre@microchip.com; alexandre.belloni@bootlin.com;
->> claudiu.beznea@tuxon.dev; Simek, Michal <michal.simek@amd.com>; linux-
->> arm-kernel@lists.infradead.org; alsa-devel@alsa-project.org;
->> patches@opensource.cirrus.com; linux-sound@vger.kernel.org; git (AMD-
->> Xilinx) <git@amd.com>; amitrkcian2002@gmail.com
->> Subject: Re: [PATCH v11 07/10] mtd: spi-nor: Add stacked memories support
->> in spi-nor
->>
->>
->>
->> On 12/6/23 14:30, Tudor Ambarus wrote:
->>> Hi, Amit,
->>>
->>> On 11/25/23 09:21, Amit Kumar Mahapatra wrote:
->>>> Each flash that is connected in stacked mode should have a separate
->>>> parameter structure. So, the flash parameter member(*params) of the
->>>> spi_nor structure is changed to an array (*params[2]). The array is
->>>> used to store the parameters of each flash connected in stacked
->> configuration.
->>>>
->>>> The current implementation assumes that a maximum of two flashes are
->>>> connected in stacked mode and both the flashes are of same make but
->>>> can differ in sizes. So, except the sizes all other flash parameters
->>>> of both the flashes are identical.
->>>
->>> Do you plan to add support for different flashes in stacked mode? If
->>> not, wouldn't it be simpler to have just an array of flash sizes
->>> instead of duplicating the entire params struct?
->>>
->>>>
->>>> SPI-NOR is not aware of the chip_select values, for any incoming
->>>> request SPI-NOR will decide the flash index with the help of
->>>> individual flash size and the configuration type (single/stacked).
->>>> SPI-NOR will pass on the flash index information to the SPI core &
->>>> SPI driver by setting the appropriate bit in
->>>> nor->spimem->spi->cs_index_mask. For example, if nth bit of
->>>> nor->spimem->spi->cs_index_mask is set then the driver would
->>>> assert/de-assert spi->chip_slect[n].
->>>>
->>>> Signed-off-by: Amit Kumar Mahapatra <amit.kumar-
->> mahapatra@amd.com>
->>>> ---
->>>>  drivers/mtd/spi-nor/core.c  | 272 +++++++++++++++++++++++++++++-------
->>>>  drivers/mtd/spi-nor/core.h  |   4 +
->>>>  include/linux/mtd/spi-nor.h |  15 +-
->>>>  3 files changed, 240 insertions(+), 51 deletions(-)
->>>>
->>>> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
->>>> index 93ae69b7ff83..e990be7c7eb6 100644
->>>> --- a/drivers/mtd/spi-nor/core.c
->>>> +++ b/drivers/mtd/spi-nor/core.c
->>>
->>> cut
->>>
->>>> @@ -2905,7 +3007,10 @@ static void spi_nor_init_fixup_flags(struct
->>>> spi_nor *nor)  static int spi_nor_late_init_params(struct spi_nor
->>>> *nor)  {
->>>>  	struct spi_nor_flash_parameter *params = spi_nor_get_params(nor,
->> 0);
->>>> -	int ret;
->>>> +	struct device_node *np = spi_nor_get_flash_node(nor);
->>>> +	u64 flash_size[SNOR_FLASH_CNT_MAX];
->>>> +	u32 idx = 0;
->>>> +	int rc, ret;
->>>>
->>>>  	if (nor->manufacturer && nor->manufacturer->fixups &&
->>>>  	    nor->manufacturer->fixups->late_init) { @@ -2937,6 +3042,44 @@
->>>> static int spi_nor_late_init_params(struct spi_nor *nor)
->>>>  	if (params->n_banks > 1)
->>>>  		params->bank_size = div64_u64(params->size, params-
->>> n_banks);
->>>>
->>>> +	nor->num_flash = 0;
->>>> +
->>>> +	/*
->>>> +	 * The flashes that are connected in stacked mode should be of same
->> make.
->>>> +	 * Except the flash size all other properties are identical for all the
->>>> +	 * flashes connected in stacked mode.
->>>> +	 * The flashes that are connected in parallel mode should be identical.
->>>> +	 */
->>>> +	while (idx < SNOR_FLASH_CNT_MAX) {
->>>> +		rc = of_property_read_u64_index(np, "stacked-memories",
->> idx,
->>>> +&flash_size[idx]);
->>
->> also, it's not clear to me why you read this property multiple times.
->> Have you sent a device tree patch somewhere? It will help me understand
->> what you're trying to achieve.
+> The code does not properly check whether the calibration variable is
+> available in the EFI. If it is not available, it causes a NULL pointer
+> dereference.
 > 
-> Miquel submitted the device tree patch; here is the series.
-> https://lore.kernel.org/all/20220126112608.955728-1-miquel.raynal@bootlin.com/
+> Check the return value of the first get_variable call also.
 > 
+> BUG: kernel NULL pointer dereference, address: 0000000000000000
+> Call Trace:
+>  <TASK>
+>  ? __die+0x23/0x70
+>  ? page_fault_oops+0x171/0x4e0
+>  ? srso_alias_return_thunk+0x5/0x7f
+>  ? schedule+0x5e/0xd0
+>  ? exc_page_fault+0x7f/0x180
+>  ? asm_exc_page_fault+0x26/0x30
+>  ? crc32_body+0x2c/0x120
+>  ? tas2781_save_calibration+0xe4/0x220 [snd_hda_scodec_tas2781_i2c]
+>  tasdev_fw_ready+0x1af/0x280 [snd_hda_scodec_tas2781_i2c]
+>  request_firmware_work_func+0x59/0xa0
+> 
+> Fixes: 5be27f1e3ec9 ("ALSA: hda/tas2781: Add tas2781 HDA driver")
+> CC: stable@vger.kernel.org
+> Signed-off-by: Gergo Koteles <soyer@irl.hu>
 
-oh, yes, I remember seeing this on the ml, but I couldn't allocate time
-to review it. Looking at:
-https://lore.kernel.org/all/20220126112608.955728-4-miquel.raynal@bootlin.com/
+Thanks, applied now.
 
-Flash size is not necessary for SPI NORs, as it can be discovered via
-SFDP. And spi-max-frequency should have been specified for all flashes,
-as I expect it can differ. At least so that the controller chooses the
-minimum frequency from all the max (if it can't operate the stacks at
-different frequencies).
 
-Cheers,
-ta
+Takashi
