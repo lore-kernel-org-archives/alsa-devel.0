@@ -4,114 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AB930C4332F
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Dec 2023 15:54:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D77DDC4332F
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Dec 2023 20:04:28 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8ACC1E7F;
-	Tue, 12 Dec 2023 16:54:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8ACC1E7F
+	by alsa0.perex.cz (Postfix) with ESMTPS id C7CB7DEC;
+	Tue, 12 Dec 2023 21:04:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C7CB7DEC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1702396497;
-	bh=UfXfaRMLuP5CTaSDy3nPQhnSzF+o5p2547PxaLfWFtE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1702411466;
+	bh=oCnI+6k0SS8HNmxIDvG1zz9u30fboP06DkNxZercQKw=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Wn0pHLL9IaXY7adsYEqt+h+NM3NlsqnaaPQQxx8sCovgZT3/SapGgpepe2+zo85fg
-	 m068fyMsCGIxfCnxvSUu81J+gIwaMDgRb7n9QksW0HC9VoxGKnA/Q+m+jxVUIe11RV
-	 9tJOthk+QCsKpOHBjdHL+0siXPgHsHpnEmo8v9sg=
+	b=QjWKKTtq7HD6E2JVrffggnLi3DiO40sVE2xmx3C73eFC2W4/LUVJ5vjvXRtqzED5I
+	 WmGzEmQmNACKm03r/6Iw4ZQu42pAD9SrlkfjxcCaBw5HLzo9OxSU4144eLKtSV5Ru1
+	 3IMH8YhRh5Mptkhwyt1Nqp1SzTd1DR2TxnoyZaao=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 84720F806C6; Tue, 12 Dec 2023 16:52:41 +0100 (CET)
+	id 60C35F80588; Tue, 12 Dec 2023 21:03:55 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id ECF49F805AC;
-	Tue, 12 Dec 2023 16:52:40 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BE5DEF80587;
+	Tue, 12 Dec 2023 21:03:54 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7C816F8016A; Tue, 12 Dec 2023 15:33:15 +0100 (CET)
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com
- [IPv6:2607:f8b0:4864:20::630])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 084E5F8016A; Tue, 12 Dec 2023 21:03:30 +0100 (CET)
+Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
+ server-digest SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 2EB79F8001F
-	for <alsa-devel@alsa-project.org>; Tue, 12 Dec 2023 15:33:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2EB79F8001F
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20230601 header.b=a6WUwMls
-Received: by mail-pl1-x630.google.com with SMTP id
- d9443c01a7336-1d307cf18fdso12732365ad.3
-        for <alsa-devel@alsa-project.org>;
- Tue, 12 Dec 2023 06:33:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702391585; x=1702996385;
- darn=alsa-project.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=FgtrwCld4CcJzZn2fDspIh0QCBOkWG+UpKY4fFhtYqs=;
-        b=a6WUwMlsknrXvYsifrstIbAZBTHHOUVWzDRkKj3ra3NWAl0Oy+txu63PlcXOoZyi00
-         1fQYQH0BbhoZpY9pN9KO9kO32G+De7ju6n3jZJY89zvoL+UgVSQKQt8VqqMKiH6TjnAW
-         BrMo/E611/anKOUlrkGdJ1u2LkS4K2EQdEdzdiQLCKx6VghW/1aqL0YyPmlGIykomqJ3
-         yhn0vc2r13PsLFT9G+XlwsYMG+Bwf77SwMgfDSZbVGGz2QqnrXUKluwJ14qclkN2mPIo
-         1q4p+scc2pKoEI3XqNa/OPhOM+3FTYCL+Ih8w3Vd7a3+4kZIe39jGT0V1w0TNy3wPy2e
-         kUbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702391585; x=1702996385;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FgtrwCld4CcJzZn2fDspIh0QCBOkWG+UpKY4fFhtYqs=;
-        b=k7Mq2Bz4j2d6ftu1mtskqOylf7bbKKM0198675uqSOSJZIuNLbgeOM4XFzmLAL6V5k
-         XQr7iYR9GpClqaDqKRNV94kB+VqYzqQQlf6TTwbNiPe/JnZ7vizOrWsoqqGPMBhEt2Jb
-         I4X6o3j/ABrdLpfKqHbbyzHD+BweoqTBq+Af17mHcnWNKOydxyjH4s2TP6oe4lImIvaZ
-         xzg+fRI8dkd/caXNuGeW0KcQDeG3RL+X3Rb41/KP6CrguHYfs5lMXsKwUfN9ynQKTLaJ
-         GhJpS9whEZA8g+vH92zu9JJ40kDermmAg0JwRwEa0rfZCyHJfUmtSaDASI70KqgGMKeT
-         Jnng==
-X-Gm-Message-State: AOJu0YwKCkULg69YpGocjHXWQPJvcOcAUKrawLmmAGzx2CfPQ69kmioD
-	+P+5hIWWvTXPAJhss+T8cLo=
-X-Google-Smtp-Source: 
- AGHT+IEIsWEtcl3wL28xc8lcH4vTgfH7wPqcFpwscBr1whjZyLhbBmOtDQfzVbXOl/StNV2Ux+dZZg==
-X-Received: by 2002:a17:902:bc4c:b0:1d0:6ffd:cec3 with SMTP id
- t12-20020a170902bc4c00b001d06ffdcec3mr3345275plz.124.1702391584856;
-        Tue, 12 Dec 2023 06:33:04 -0800 (PST)
-Received: from Gentoo ([2409:8a6a:5426:70b1:a6fc:77ff:fe50:e63d])
-        by smtp.gmail.com with ESMTPSA id
- w23-20020a170902a71700b001d0c418174fsm2902272plq.117.2023.12.12.06.33.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Dec 2023 06:33:04 -0800 (PST)
-Date: Tue, 12 Dec 2023 22:32:56 +0800
-From: Jianhua Lu <lujianhua000@gmail.com>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: Banajit Goswami <bgoswami@quicinc.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
-	linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC, PATCH v2 1/2] ASoC: qcom: sdw: Add TDM support
-Message-ID: <ZXhvGEN28L5EqMx-@Gentoo>
-References: <20231212095850.26482-1-lujianhua000@gmail.com>
- <c43c4303-ed59-49e7-940a-62df6ad1b575@linaro.org>
+	by alsa1.perex.cz (Postfix) with ESMTPS id EAC94F8001F
+	for <alsa-devel@alsa-project.org>; Tue, 12 Dec 2023 21:03:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EAC94F8001F
+Received: from [194.95.143.137] (helo=phil.localnet)
+	by gloria.sntech.de with esmtpsa  (TLS1.3) tls
+ TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <heiko@sntech.de>)
+	id 1rD8yJ-00069W-Cc; Tue, 12 Dec 2023 21:03:15 +0100
+From: Heiko Stuebner <heiko@sntech.de>
+To: Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, David Airlie <airlied@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>, Lee Jones <lee@kernel.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>,
+ Vinod Koul <vkoul@kernel.org>, Kishon Vijay Abraham I <kishon@kernel.org>,
+ Alex Bee <knaerzche@gmail.com>
+Cc: Elaine Zhang <zhangqing@rock-chips.com>, Johan Jonker <jbx6244@gmail.com>,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, alsa-devel@alsa-project.org,
+ linux-clk@vger.kernel.org, linux-phy@lists.infradead.org,
+ Alex Bee <knaerzche@gmail.com>
+Subject: Re: [PATCH 00/31] Fix and improve Rockchip RK3128 support
+Date: Tue, 12 Dec 2023 21:03:14 +0100
+Message-ID: <2167016.irdbgypaU6@phil>
+In-Reply-To: <20230829171647.187787-1-knaerzche@gmail.com>
+References: <20230829171647.187787-1-knaerzche@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c43c4303-ed59-49e7-940a-62df6ad1b575@linaro.org>
-X-MailFrom: lujianhua000@gmail.com
-X-Mailman-Rule-Hits: nonmember-moderation
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+Message-ID-Hash: XG2CLWYKKPHLFZ3Y37MVYL43TNQ6J62U
+X-Message-ID-Hash: XG2CLWYKKPHLFZ3Y37MVYL43TNQ6J62U
+X-MailFrom: heiko@sntech.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: BXUNFKP7ETNPHA6COVXWR2CFX7P6GC7Q
-X-Message-ID-Hash: BXUNFKP7ETNPHA6COVXWR2CFX7P6GC7Q
-X-Mailman-Approved-At: Tue, 12 Dec 2023 15:52:07 +0000
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BXUNFKP7ETNPHA6COVXWR2CFX7P6GC7Q/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XG2CLWYKKPHLFZ3Y37MVYL43TNQ6J62U/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -120,35 +88,20 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, Dec 12, 2023 at 11:47:36AM +0000, Srinivas Kandagatla wrote:
-> > +int qcom_snd_tdm_hw_params(struct snd_pcm_substream *substream,
-> > +			   struct snd_pcm_hw_params *params)
-> > +{
-> 
-> TBH, this should not be part of sdw.c file, its intended for more of 
-> soundwire specific helpers, pl consider moving this to common.c for now.
-> Because, Not all old qcom platforms have soundwire controllers.
+Hi Alex,
 
-Acked.
-> 
-> > +		ret = snd_soc_dai_set_tdm_slot(cpu_dai, 0, 0x3, 8, slot_width);
-> 
-> slot mask is always set to 2 channels in this case, should you not check 
-> the number of channels to determine the correct one?
-> 
-> 
-> These magic number 0, 0x3, 8 seems to make the code unreadable, can you 
-> do something like this:
-> snd_soc_dai_set_tdm_slot(cpu_dai, tx_mask, rx_mask, 
-> ARRAY_SIZE(tdm_slot_offset), slot_width);
+Am Dienstag, 29. August 2023, 19:16:16 CET schrieb Alex Bee:
+> this series fixes some issues I found when testing my "new" RK3128 board
+> with the mainline kernel and adds some core functionality like SMP bringup,
+> usb and networking.
 
-Acked.
-> 
-> > +		}
-> > +	}
-> Finally  ./sound/soc/qcom/sdm845.c does have exactly same code, can you 
-> consider removing this and make use of this new helper in that file too.
+before I discard this thread, is everything from here migrated to
+separate serieses or are there patches in this big pile that are still
+relevant on their own, that haven't been applied?
+[I lost track of what did go where ;-) ]
 
-Acked.
 
-Thanks for your reveiw very much, I will do it in patch v3.
+Thanks
+Heiko
+
+
