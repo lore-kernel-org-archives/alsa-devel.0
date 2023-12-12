@@ -4,93 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3BFE5C4332F
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Dec 2023 08:10:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B196C4332F
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Dec 2023 08:13:54 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 797D0DEF;
-	Tue, 12 Dec 2023 09:10:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 797D0DEF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 11766AE8;
+	Tue, 12 Dec 2023 09:13:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 11766AE8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1702368634;
-	bh=OrzPyzSnlQ4w2hZz/Baas4f3W1LzsV2V/lHEDAWTjGs=;
-	h=From:Subject:Date:To:Cc:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=gGAKpmoL8s+ArrCsAaX8yg7l2NnQXnQb7bxZwOXmuHIBQmxcvZqRQx1KYAGrlF2VJ
-	 S/yLymMPQDIMnkJw3RDpVoCGHL7d4sfBVhpQiumnRrddxp3EVN4rAnDI5mfvjaMy8/
-	 FiSGck9DddP9AMTxdJMWeP5fpGV7ajtdYW0n+MZg=
+	s=default; t=1702368833;
+	bh=l7XyXt1fVLon65HN4wKj5YMCqYBmKvyCyW+bCEtblb0=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=jfA6A4YAv5wGDXPXexQ2hu1RKqpdH/0CrODM8jBrpLR2FQIku1K9gu2ThQ8Xif4KD
+	 Z684AWyhnlht42twWyzoJXRbS0uo8DCvGO8tR4ZoPdgYVZq/Vlfd3kLECBTrHSmRL1
+	 Po11Y8dibspomF9ii1604t52Lf60jOwg9bIuEZvs=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 20061F80557; Tue, 12 Dec 2023 09:10:00 +0100 (CET)
+	id 97495F8057F; Tue, 12 Dec 2023 09:13:21 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 77AEEF80587;
-	Tue, 12 Dec 2023 09:09:59 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 93CACF80587;
+	Tue, 12 Dec 2023 09:13:20 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4B822F8019B; Tue, 12 Dec 2023 09:08:59 +0100 (CET)
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com
- [IPv6:2a00:1450:4864:20::335])
+	id 72F58F8016E; Tue, 12 Dec 2023 09:09:02 +0100 (CET)
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com
+ [IPv6:2a00:1450:4864:20::435])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id DE715F80166
-	for <alsa-devel@alsa-project.org>; Tue, 12 Dec 2023 09:08:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DE715F80166
+	by alsa1.perex.cz (Postfix) with ESMTPS id D1E5AF80124
+	for <alsa-devel@alsa-project.org>; Tue, 12 Dec 2023 09:08:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D1E5AF80124
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=g/jsDgAU
-Received: by mail-wm1-x335.google.com with SMTP id
- 5b1f17b1804b1-40c48d7a7a7so15029665e9.3
+ header.s=google header.b=sHsKkZEB
+Received: by mail-wr1-x435.google.com with SMTP id
+ ffacd0b85a97d-3333074512bso3366403f8f.1
         for <alsa-devel@alsa-project.org>;
- Tue, 12 Dec 2023 00:08:26 -0800 (PST)
+ Tue, 12 Dec 2023 00:08:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702368505; x=1702973305;
+        d=linaro.org; s=google; t=1702368507; x=1702973307;
  darn=alsa-project.org;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=j7Vc7WfA6zO/nZVypNJ5ZSKRNw4vlGrxvFfZBsf6PZE=;
-        b=g/jsDgAUmKjIsD+zpEGIFhG92C25S/Qhv/JOJamHZ9vjQtXWDOV4hMCE6/9rJLurDG
-         8aylPPXwj+TzTh5yaEEA9YEBvtiT3pda6unRG53aQagGqdggT5moiiyCwYkXbjHtac//
-         I9XlvOgSrq/7J/YBozUEJlhyrU5y5dhP99FHm5DQNmZkDPIc61gYq+7vO6LTea22nyDm
-         +wclIe1coZxI0CRsaUHBaMkgZ117PFezRQwDiJeevq1PEiC7UYush4Du6W9TKcc7M5Cg
-         AiLJcZ77bJzM03LXP2aQ404P6gzImkkO4hMYUJX1DLthwY2ANcJyJZKbS/6/JaMwUE8a
-         CzLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702368505; x=1702973305;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=j7Vc7WfA6zO/nZVypNJ5ZSKRNw4vlGrxvFfZBsf6PZE=;
-        b=JTvp7Um9C6oR4ouii3nX0jwx6BY8kEtJeMJ40z7B2RebnNg/Tkx6TT0KYm+XzkJayH
-         80eN0MwKxsMBobXaT1ZNWGPyuXH6GGekB7I0LW+Q1sC8aP5qj1TRVNoKEBPzW/CviS5x
-         jx/RxnsqAnvTV4x2T6qXaMBH9zp07HAk1FE+GLBi8RMu1fk9Sw6q8HIdQFa+pbdiznr/
-         qDLpMDFK5S7hAd2OxHTLcJK8A0zUcqy18Gip+sz291iIWJukHfY79v3aKt3VAVQ9xemC
-         VB3IlOOBUAM1XctV7qL8CD2Bx055HEs9SPmVaXIIZkfZRbhsSGp5JA2fvLb0DMSvAvuf
-         wh1w==
-X-Gm-Message-State: AOJu0Yy1QtIIHprRTor/Phl0idEQ/gkFgO0No0EQyHK8OTmqzzPsLe7R
-	pAi1LhS2eKEY60BwZ+Nzm9O4GA==
+        bh=cZhyn0SzD0LcNzzKrk+BOSL06IGkQV09rjNYI+C4fE8=;
+        b=sHsKkZEB2chnOifxsnQxuZMK7LuSN4yVIQhXuNmt0PHBxvT35/EDN/WqDcgTUl9rUI
+         SLOU1afvSsL21wvICTAGjbLRng8SvrtYDnnqeTVb61YOSRNGCSpXgS0D49yJgNBaL913
+         E0Z5whpq37jADk2tOxYLyI03zbnXSSBlakNBolTz7jhNE9FxxbhKnz2pFEMRsGruNCKi
+         jR0eUWm581DG5JrqA8+tHgQq+HMZIses9LZVF/xBrcThFTxbijsmdXH5xbh0MAFKQJz5
+         3QMEr3NBlJjxOIVNLoIj18wpFVYftJypH/ZfmLDrdWB8Rn8saFB1f5KoUpDYjpTp7ZtH
+         Ns1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702368507; x=1702973307;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cZhyn0SzD0LcNzzKrk+BOSL06IGkQV09rjNYI+C4fE8=;
+        b=lp7HM2D3JC3RRfyBtY9vpVcvaW0HGi25v597CQC3BxKvtAuIlhl/Hc2RLqtoJ+gzH2
+         jPfNL9N+f0wqUmN6QvikrlMnlFN7ILiPP4J5s3lPcAe2RsudEjeElqDt4i+7rHFSxeVI
+         j6uWENHZKPhyi/Biey1tKvyHQFSw2yHEnlJZKU1boeRGxc4PTuAEwQlJupCNX22KEWv+
+         YNHj3PeIL/xnwLeaRKU88O2/UkG+P5FFygQtI9260DyclStYiRZpaAQ5y3dkJzuVwKX7
+         v7TvHI35is8bdhkDVd2UXSkoVgaywooDMOxq9yTzYdCci4e8Psh907K2njif49YyfSa/
+         f/qQ==
+X-Gm-Message-State: AOJu0YzjLfCcGFsscLa2f/Scj8A+EpO5M+gVDNaiczVRAeNB6qfp5DRN
+	ubZEHcTwImNdYP1FpyxWS6DHcQ==
 X-Google-Smtp-Source: 
- AGHT+IFpC7/sT0VIDkEJ9Oag1ij5lW+BcSQjyEaC79Eoj7mJ9V5d7dc5CmiB4lNlsj8FfFfc2beOKw==
-X-Received: by 2002:a1c:4c07:0:b0:40b:5e1b:54ae with SMTP id
- z7-20020a1c4c07000000b0040b5e1b54aemr3470007wmf.58.1702368504657;
-        Tue, 12 Dec 2023 00:08:24 -0800 (PST)
+ AGHT+IGz12J2/2+iCyl2jRF/v/VIA+qJML+76a5pagXs43wcMh0WbIU9hT456iIyx3bddFwB0UyUxQ==
+X-Received: by 2002:a05:600c:22ce:b0:40b:5e4a:235e with SMTP id
+ 14-20020a05600c22ce00b0040b5e4a235emr2833546wmg.96.1702368506789;
+        Tue, 12 Dec 2023 00:08:26 -0800 (PST)
 Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:52eb:f6ff:feb3:451a])
         by smtp.gmail.com with ESMTPSA id
- n10-20020a05600c500a00b004094e565e71sm15609355wmr.23.2023.12.12.00.08.23
+ n10-20020a05600c500a00b004094e565e71sm15609355wmr.23.2023.12.12.00.08.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Dec 2023 00:08:24 -0800 (PST)
+        Tue, 12 Dec 2023 00:08:26 -0800 (PST)
 From: Neil Armstrong <neil.armstrong@linaro.org>
-Subject: [PATCH 0/2] ASoC: qcom: add sound card support for SM8650
-Date: Tue, 12 Dec 2023 09:08:18 +0100
-Message-Id: 
- <20231212-topic-sm8650-upstream-snd-card-v1-0-fbfc38471204@linaro.org>
+Date: Tue, 12 Dec 2023 09:08:20 +0100
+Subject: [PATCH 2/2] ASoC: qcom: sc8280xp: Add support for SM8650
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAPIUeGUC/x3NMQ7CMAxA0atUnrHUGJUCV0EMJnHAQ9PILgip6
- t0bdXzL/yu4mIrDvVvB5Keuc2kIpw7ih8tbUFMzUE/nQIFwmatG9Ol6GXr8Vl9MeEIvCSNbwjD
- Ia+TMNOYbtEg1yfo/Bo/ntu1u7ASicAAAAA==
+Message-Id: 
+ <20231212-topic-sm8650-upstream-snd-card-v1-2-fbfc38471204@linaro.org>
+References: 
+ <20231212-topic-sm8650-upstream-snd-card-v1-0-fbfc38471204@linaro.org>
+In-Reply-To: 
+ <20231212-topic-sm8650-upstream-snd-card-v1-0-fbfc38471204@linaro.org>
 To: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
  Konrad Dybcio <konrad.dybcio@linaro.org>,
  Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
@@ -103,24 +106,24 @@ Cc: linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
  linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org, Neil Armstrong <neil.armstrong@linaro.org>
 X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=744;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=692;
  i=neil.armstrong@linaro.org; h=from:subject:message-id;
- bh=OrzPyzSnlQ4w2hZz/Baas4f3W1LzsV2V/lHEDAWTjGs=;
- b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBleBT2CPZAHiWYnl772ED0TNHbAgYjtuRnkahPbmGn
- 3VyDLO+JAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZXgU9gAKCRB33NvayMhJ0UBCD/
- 9aS6SDPueYXQWfGRWKZB57ZqiqxFUMnfUecohs0K3A9LsjgvoT4R7lH6F34NLx6LH+WvzRW6pk1TUx
- 3UoDBwn8tSItLhAVVeMl2CVJASIf/WjJ4yfBJ/h1lSbcrK0w6BbudEgoa8IrWHbvs2hkG4RJKWxyRl
- wKw6QHOrLYa8tkL+R2KNBq1ncJrCvClS4BKKEuWE1fE/1++ETTHrFA5N83pK/aOmyTgLhxSZVI/e4A
- jpkOIe6EZ832SoOZqB1R8p9HE92d73wgl6jkTSIY9wGdlvtyGuzwiIoDQvJLrmIdbWXKm2M5dWEoZ3
- wqQ34Q1SEXvdQRdOXxNh1RvMvNFm2vM4Ustviq0Tq0vDzA7ipLgB/J4PpPK7w66xhchhKCYEqQN2F8
- GFLAFbRPO4EWOCMNGHL0lDHrma6kQxN0NzNRuys1ZVCgj4iLwWk+y/8Usf2pABq4lZQB3dY+BiuKkb
- c6BlS2j1VD9GlzdWVVgWRgW9/AC1byA/lpMtuvC7UdbHBwPijaSd9iMPzXvAm8+o+pmY1u6DpphYNU
- 8p0cQKWqjzRHhWwwhiDRQV2OZPoq+HBSTYWSL6E3C+ufMgyPh+hfynBBUDUplSGC3gt2yeIU6wLgrh
- qOxB2BpJRdk/+JUqbesJAv1m9D6tXx14XEFPbdEBR3szRjrFgz2NzdQvBUGw==
+ bh=l7XyXt1fVLon65HN4wKj5YMCqYBmKvyCyW+bCEtblb0=;
+ b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBleBT3ET/ZnxriBIRSuvP6q36fZX+QOaiXY0dLH3wf
+ U9meb3iJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZXgU9wAKCRB33NvayMhJ0Z78D/
+ 9ox3qcrRO0/cavRBNM1SPlK1ldKE6CflPnmNaO7iYNBtjmYea+3SmSA8oAzgL+jeWa55DvPM3Xknhx
+ wcDT6XaGPv6FPHk68s4uibKINVsNbw3vejyudOlG2PRWgRRXRgtirEIiUCjmG5KEFwLHnGDG2ogzOj
+ b4wsgIe+U+GfMyieOn9cWVHgQocuRmAaW171eJO6prYbJk4FkwNdS94ZFCxQ+OhjobkxIZMYVOynmZ
+ +8Pc2hgtIZsfJdUHO2EWmxXpwoegsf0sc5x5MeGo06jF45LUIm8LWVaLWjUwhxqwA2T8A/NOlVhIWv
+ W8W5bVW/f+0s1mjh1K4wnvbP80LoTbrwPZmM6CkEbPeD7Tb+YdSXRL8bVFXNCO9/umB1MIRBYGCpUV
+ ISPSdrparuPJw3cLVrErFuwx4BwTA5zxkypBAnmQpKyrOv+Yp1vb1ZiOwT1bltmAuTtiCrFpJjL/RW
+ FCX2bd9EdQ7Ca66gy5ys5MYmbqj3eogNutZnKJXkn+gg6bxi8PGy8o6aOcQr9a2vLPEe53jQ04KKTp
+ Jog5Z0XIAL+mC+A4s4dpD96IM8F/kDJDHYojbP9CuLSLLEdEyEl9WNfseM+2uP6+FlCA6r6THzxix7
+ yd0zI1a0yci7dheMpsgEZojCFOz/+HgI5fZmxqHKC7XhwWX7TJZ2XdnQ4Aew==
 X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
  fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
-Message-ID-Hash: RUIAGH4MXDUP5FQHJVOYVXGOMWO5C4W5
-X-Message-ID-Hash: RUIAGH4MXDUP5FQHJVOYVXGOMWO5C4W5
+Message-ID-Hash: ODGEE4VDVF5RIBF2PRYZDENZ6TGK3YEV
+X-Message-ID-Hash: ODGEE4VDVF5RIBF2PRYZDENZ6TGK3YEV
 X-MailFrom: neil.armstrong@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -133,7 +136,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RUIAGH4MXDUP5FQHJVOYVXGOMWO5C4W5/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ODGEE4VDVF5RIBF2PRYZDENZ6TGK3YEV/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -142,24 +145,26 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Document the SM8650 sound card using the SM8450 fallback
-and add the SM8650 compatible to the sc8280xp sound card
-driver to use the sm8650 card driver_name like SM8450 & SM8550.
+Add compatibles for sound card on Qualcomm SM8650 boards.
 
 Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
 ---
-Neil Armstrong (2):
-      ASoC: dt-bindings: qcom,sm8250: document SM8650 sound card
-      ASoC: qcom: sc8280xp: Add support for SM8650
+ sound/soc/qcom/sc8280xp.c | 1 +
+ 1 file changed, 1 insertion(+)
 
- Documentation/devicetree/bindings/sound/qcom,sm8250.yaml | 1 +
- sound/soc/qcom/sc8280xp.c                                | 1 +
- 2 files changed, 2 insertions(+)
----
-base-commit: bbd220ce4e29ed55ab079007cff0b550895258eb
-change-id: 20231212-topic-sm8650-upstream-snd-card-15eb7afa27f9
+diff --git a/sound/soc/qcom/sc8280xp.c b/sound/soc/qcom/sc8280xp.c
+index 1e8f9452cd28..494f284875d2 100644
+--- a/sound/soc/qcom/sc8280xp.c
++++ b/sound/soc/qcom/sc8280xp.c
+@@ -170,6 +170,7 @@ static const struct of_device_id snd_sc8280xp_dt_match[] = {
+ 	{.compatible = "qcom,sc8280xp-sndcard", "sc8280xp"},
+ 	{.compatible = "qcom,sm8450-sndcard", "sm8450"},
+ 	{.compatible = "qcom,sm8550-sndcard", "sm8550"},
++	{.compatible = "qcom,sm8650-sndcard", "sm8650"},
+ 	{}
+ };
+ 
 
-Best regards,
 -- 
-Neil Armstrong <neil.armstrong@linaro.org>
+2.34.1
 
