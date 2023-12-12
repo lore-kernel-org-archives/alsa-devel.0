@@ -4,118 +4,114 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3F0C4C4332F
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Dec 2023 15:54:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AB930C4332F
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Dec 2023 15:54:59 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8E718DFA;
-	Tue, 12 Dec 2023 16:54:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8E718DFA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8ACC1E7F;
+	Tue, 12 Dec 2023 16:54:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8ACC1E7F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1702396491;
-	bh=Lgqc+VmtbjrvqAKislWqkpgWXOdYzrE/++kcbwu6YoE=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1702396497;
+	bh=UfXfaRMLuP5CTaSDy3nPQhnSzF+o5p2547PxaLfWFtE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Fe6s3HXDJf0osVTeP0xnr74Jce8WY8ad7xRJly1lf+mvOCzFs/rwiO167408VAofo
-	 0Gb9mGp8SxbVjwZJdVAlxRPkSmK7cm31TDEW/+lbuRCRRqraEd0NCsk4mYglQW+WwV
-	 oG9dv3Sc7xhf71KBfgpzWLS/mjpW78WKK74HeESE=
+	b=Wn0pHLL9IaXY7adsYEqt+h+NM3NlsqnaaPQQxx8sCovgZT3/SapGgpepe2+zo85fg
+	 m068fyMsCGIxfCnxvSUu81J+gIwaMDgRb7n9QksW0HC9VoxGKnA/Q+m+jxVUIe11RV
+	 9tJOthk+QCsKpOHBjdHL+0siXPgHsHpnEmo8v9sg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id F03ECF806D3; Tue, 12 Dec 2023 16:52:40 +0100 (CET)
+	id 84720F806C6; Tue, 12 Dec 2023 16:52:41 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6FABBF806BF;
-	Tue, 12 Dec 2023 16:52:37 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id ECF49F805AC;
+	Tue, 12 Dec 2023 16:52:40 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A6704F8016A; Tue, 12 Dec 2023 10:59:27 +0100 (CET)
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com
- [IPv6:2607:f8b0:4864:20::229])
+	id 7C816F8016A; Tue, 12 Dec 2023 15:33:15 +0100 (CET)
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com
+ [IPv6:2607:f8b0:4864:20::630])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id AF6A8F8001F
-	for <alsa-devel@alsa-project.org>; Tue, 12 Dec 2023 10:59:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AF6A8F8001F
+	by alsa1.perex.cz (Postfix) with ESMTPS id 2EB79F8001F
+	for <alsa-devel@alsa-project.org>; Tue, 12 Dec 2023 15:33:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2EB79F8001F
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20230601 header.b=BgBTP1nO
-Received: by mail-oi1-x229.google.com with SMTP id
- 5614622812f47-3b9ef61b6b8so3071418b6e.3
+ header.s=20230601 header.b=a6WUwMls
+Received: by mail-pl1-x630.google.com with SMTP id
+ d9443c01a7336-1d307cf18fdso12732365ad.3
         for <alsa-devel@alsa-project.org>;
- Tue, 12 Dec 2023 01:59:24 -0800 (PST)
+ Tue, 12 Dec 2023 06:33:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702375162; x=1702979962;
+        d=gmail.com; s=20230601; t=1702391585; x=1702996385;
  darn=alsa-project.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=p5GlMW1Kh4nLITNIYwe64bCuIn3y8U980DG6b5ax924=;
-        b=BgBTP1nOVBFbYuIaxpo38dsUT967RXzVwwvZ9xY15R+mbyX4Q+nrruQhXWkLOHBYHs
-         49p/LOsJ4gIL4NksORKW2vf01CYLC+MDu59asxH8GGh9stAwElEFruqLn9oen8qivWs9
-         9Nc79tP6T+4zEtLY3aNzwCOF0lfY4+KHINJbRIVOtnnFTKd+6VUErx9Zi0kjn6yJKSPI
-         F3rGz+NS3sHM1FO2ngZybO4aiHEllFbWATsmv9XyhT8uF0cf5H8snmHEeiwXY0OWDfc/
-         7yp1I1hh+iSPHGC6J/6Ztva5jjf6+CWsbihK9zSABx3KWqCjUQ5R9vywpoD9wKmf6Vp/
-         2S2Q==
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=FgtrwCld4CcJzZn2fDspIh0QCBOkWG+UpKY4fFhtYqs=;
+        b=a6WUwMlsknrXvYsifrstIbAZBTHHOUVWzDRkKj3ra3NWAl0Oy+txu63PlcXOoZyi00
+         1fQYQH0BbhoZpY9pN9KO9kO32G+De7ju6n3jZJY89zvoL+UgVSQKQt8VqqMKiH6TjnAW
+         BrMo/E611/anKOUlrkGdJ1u2LkS4K2EQdEdzdiQLCKx6VghW/1aqL0YyPmlGIykomqJ3
+         yhn0vc2r13PsLFT9G+XlwsYMG+Bwf77SwMgfDSZbVGGz2QqnrXUKluwJ14qclkN2mPIo
+         1q4p+scc2pKoEI3XqNa/OPhOM+3FTYCL+Ih8w3Vd7a3+4kZIe39jGT0V1w0TNy3wPy2e
+         kUbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702375162; x=1702979962;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=p5GlMW1Kh4nLITNIYwe64bCuIn3y8U980DG6b5ax924=;
-        b=EXBG4/kyxCNU0T6BSfk49AcmmgeHabkMDZle58EObTenwBOLMDDYWmWOG/BmtSeLq4
-         N+ltBzRB7lV1SBYSdRXmW/5+G6gutz2o8HfDVn21pw/v+T1vQc1EAA+g3m3SV2lSTliZ
-         3Geuc3bPCQvjOfesmShId1NIs9WWUEAExRZ4HMq9pm05ofFfs0xWyvEFcg/5idqtU2cb
-         cWJwEmyTCQ9GNNVqkWYS85zaw4XSKXoX+XtBzzDUJlqLzbKLOTk3dN/YENORH+XU8LHj
-         PKCCQxKKMEzPL8iGVhBaKTepfLelgyUFwPIcDgudMv657PyvOboCDLAc1y11fe1pA04Z
-         ByRw==
-X-Gm-Message-State: AOJu0YwB91WwN1M4y12te+1kVFl5hYeX56m5ls4viX5GvpmVSyVjWPBk
-	GdE8F1w6qmAuK7u+le1jTqQ=
+        d=1e100.net; s=20230601; t=1702391585; x=1702996385;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FgtrwCld4CcJzZn2fDspIh0QCBOkWG+UpKY4fFhtYqs=;
+        b=k7Mq2Bz4j2d6ftu1mtskqOylf7bbKKM0198675uqSOSJZIuNLbgeOM4XFzmLAL6V5k
+         XQr7iYR9GpClqaDqKRNV94kB+VqYzqQQlf6TTwbNiPe/JnZ7vizOrWsoqqGPMBhEt2Jb
+         I4X6o3j/ABrdLpfKqHbbyzHD+BweoqTBq+Af17mHcnWNKOydxyjH4s2TP6oe4lImIvaZ
+         xzg+fRI8dkd/caXNuGeW0KcQDeG3RL+X3Rb41/KP6CrguHYfs5lMXsKwUfN9ynQKTLaJ
+         GhJpS9whEZA8g+vH92zu9JJ40kDermmAg0JwRwEa0rfZCyHJfUmtSaDASI70KqgGMKeT
+         Jnng==
+X-Gm-Message-State: AOJu0YwKCkULg69YpGocjHXWQPJvcOcAUKrawLmmAGzx2CfPQ69kmioD
+	+P+5hIWWvTXPAJhss+T8cLo=
 X-Google-Smtp-Source: 
- AGHT+IGv+pUTcYw3AN16Fy3gEBQql0CgY9sI+VsP3TLi5giVX8oZb9syxSid0H88mpsNY3owKtMXEw==
-X-Received: by 2002:a05:6808:3028:b0:3a8:432a:ea13 with SMTP id
- ay40-20020a056808302800b003a8432aea13mr7516672oib.46.1702375162279;
-        Tue, 12 Dec 2023 01:59:22 -0800 (PST)
-Received: from localhost.localdomain ([117.189.239.2])
+ AGHT+IEIsWEtcl3wL28xc8lcH4vTgfH7wPqcFpwscBr1whjZyLhbBmOtDQfzVbXOl/StNV2Ux+dZZg==
+X-Received: by 2002:a17:902:bc4c:b0:1d0:6ffd:cec3 with SMTP id
+ t12-20020a170902bc4c00b001d06ffdcec3mr3345275plz.124.1702391584856;
+        Tue, 12 Dec 2023 06:33:04 -0800 (PST)
+Received: from Gentoo ([2409:8a6a:5426:70b1:a6fc:77ff:fe50:e63d])
         by smtp.gmail.com with ESMTPSA id
- d4-20020a056a0010c400b006ce7344328asm7730354pfu.77.2023.12.12.01.59.16
+ w23-20020a170902a71700b001d0c418174fsm2902272plq.117.2023.12.12.06.33.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Dec 2023 01:59:21 -0800 (PST)
+        Tue, 12 Dec 2023 06:33:04 -0800 (PST)
+Date: Tue, 12 Dec 2023 22:32:56 +0800
 From: Jianhua Lu <lujianhua000@gmail.com>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-	Banajit Goswami <bgoswami@quicinc.com>,
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: Banajit Goswami <bgoswami@quicinc.com>,
 	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>
-Cc: alsa-devel@alsa-project.org,
-	linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Jianhua Lu <lujianhua000@gmail.com>
-Subject: [RFC, PATCH v2 2/2] ASoC: qcom: sm8250: Add TERTIARY_TDM_RX_0 support
-Date: Tue, 12 Dec 2023 17:58:50 +0800
-Message-ID: <20231212095850.26482-2-lujianhua000@gmail.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20231212095850.26482-1-lujianhua000@gmail.com>
+	Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+	linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC, PATCH v2 1/2] ASoC: qcom: sdw: Add TDM support
+Message-ID: <ZXhvGEN28L5EqMx-@Gentoo>
 References: <20231212095850.26482-1-lujianhua000@gmail.com>
+ <c43c4303-ed59-49e7-940a-62df6ad1b575@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c43c4303-ed59-49e7-940a-62df6ad1b575@linaro.org>
 X-MailFrom: lujianhua000@gmail.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: XNGBP22XSG4LA346VXVT3KBLG6TWGVAL
-X-Message-ID-Hash: XNGBP22XSG4LA346VXVT3KBLG6TWGVAL
+Message-ID-Hash: BXUNFKP7ETNPHA6COVXWR2CFX7P6GC7Q
+X-Message-ID-Hash: BXUNFKP7ETNPHA6COVXWR2CFX7P6GC7Q
 X-Mailman-Approved-At: Tue, 12 Dec 2023 15:52:07 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XNGBP22XSG4LA346VXVT3KBLG6TWGVAL/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BXUNFKP7ETNPHA6COVXWR2CFX7P6GC7Q/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -124,60 +120,35 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add TERTIARY_TDM_RX_0 case to make speaker amplifiers working
-on xiaomi-elish tablet.
+On Tue, Dec 12, 2023 at 11:47:36AM +0000, Srinivas Kandagatla wrote:
+> > +int qcom_snd_tdm_hw_params(struct snd_pcm_substream *substream,
+> > +			   struct snd_pcm_hw_params *params)
+> > +{
+> 
+> TBH, this should not be part of sdw.c file, its intended for more of 
+> soundwire specific helpers, pl consider moving this to common.c for now.
+> Because, Not all old qcom platforms have soundwire controllers.
 
-Signed-off-by: Jianhua Lu <lujianhua000@gmail.com>
----
-No changes in v2.
+Acked.
+> 
+> > +		ret = snd_soc_dai_set_tdm_slot(cpu_dai, 0, 0x3, 8, slot_width);
+> 
+> slot mask is always set to 2 channels in this case, should you not check 
+> the number of channels to determine the correct one?
+> 
+> 
+> These magic number 0, 0x3, 8 seems to make the code unreadable, can you 
+> do something like this:
+> snd_soc_dai_set_tdm_slot(cpu_dai, tx_mask, rx_mask, 
+> ARRAY_SIZE(tdm_slot_offset), slot_width);
 
- sound/soc/qcom/sm8250.c | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+Acked.
+> 
+> > +		}
+> > +	}
+> Finally  ./sound/soc/qcom/sdm845.c does have exactly same code, can you 
+> consider removing this and make use of this new helper in that file too.
 
-diff --git a/sound/soc/qcom/sm8250.c b/sound/soc/qcom/sm8250.c
-index f298167c2a23..00c89c073e72 100644
---- a/sound/soc/qcom/sm8250.c
-+++ b/sound/soc/qcom/sm8250.c
-@@ -16,6 +16,7 @@
- 
- #define DRIVER_NAME		"sm8250"
- #define MI2S_BCLK_RATE		1536000
-+#define TDM_BCLK_RATE		12288000
- 
- struct sm8250_snd_data {
- 	bool stream_prepared[AFE_PORT_MAX];
-@@ -53,6 +54,7 @@ static int sm8250_snd_startup(struct snd_pcm_substream *substream)
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct snd_soc_dai *cpu_dai = snd_soc_rtd_to_cpu(rtd, 0);
- 	struct snd_soc_dai *codec_dai = snd_soc_rtd_to_codec(rtd, 0);
-+	int ret, j;
- 
- 	switch (cpu_dai->id) {
- 	case TERTIARY_MI2S_RX:
-@@ -63,6 +65,23 @@ static int sm8250_snd_startup(struct snd_pcm_substream *substream)
- 		snd_soc_dai_set_fmt(cpu_dai, fmt);
- 		snd_soc_dai_set_fmt(codec_dai, codec_dai_fmt);
- 		break;
-+	case TERTIARY_TDM_RX_0:
-+		codec_dai_fmt |= SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_DSP_A;
-+		snd_soc_dai_set_sysclk(cpu_dai,
-+			Q6AFE_LPASS_CLK_ID_TER_TDM_IBIT,
-+			TDM_BCLK_RATE, SNDRV_PCM_STREAM_PLAYBACK);
-+
-+		for_each_rtd_codec_dais(rtd, j, codec_dai) {
-+			ret = snd_soc_dai_set_fmt(codec_dai, codec_dai_fmt);
-+			snd_soc_dai_set_sysclk(codec_dai,
-+				0,
-+				TDM_BCLK_RATE, SNDRV_PCM_STREAM_PLAYBACK);
-+			if (ret < 0) {
-+				dev_err(rtd->dev, "TDM fmt err:%d\n", ret);
-+				return ret;
-+			}
-+		}
-+		break;
- 	default:
- 		break;
- 	}
--- 
-2.41.0
+Acked.
 
+Thanks for your reveiw very much, I will do it in patch v3.
