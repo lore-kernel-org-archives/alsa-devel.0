@@ -4,82 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3C6AFC4332F
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Dec 2023 15:53:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2179BC4332F
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Dec 2023 15:53:45 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6E66486E;
-	Tue, 12 Dec 2023 16:53:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6E66486E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0F54083B;
+	Tue, 12 Dec 2023 16:53:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0F54083B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1702396411;
-	bh=4kWP2IU2rXXqF/qdgC4tpLa4a+71uPYg4wB+uUEohSg=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=nktCRDl4xbaXFEETdRQwxlONaH0up38ckRhxrQP2hodMAXr6i4jeSbIpsSoFRUimF
-	 9OllJI+QOApiX0AlHxbR9CKWSxG6Pe878LESV26/w8KoLi+wcLx5JWMjJfpI+KL/UE
-	 8M+OgwROlPw0/acoIeIdBywChbtmkN7oBvucicCk=
+	s=default; t=1702396423;
+	bh=us2jFzVGPLOY84Q/+ENLaAGSW3Rkb+O3LTXBGr5qHtw=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=HEysIYUnXIqeyZhIi1pzOccirMQlfROhtCnZVwrZcxC6YZs3tCxIyybCtq1sLV1cy
+	 9t5m4qOKoQFN35qk5tmnPYwe+TI+GIkVkq/J5I5HH+Nqsfq/7DkRq5XRtiSCKq8n+E
+	 l234GPjdjC+aOvPq851igsOqtFm4KyxaEsG/GHKo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0B5F7F80607; Tue, 12 Dec 2023 16:52:23 +0100 (CET)
+	id 00CB8F80623; Tue, 12 Dec 2023 16:52:26 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D9265F8060D;
-	Tue, 12 Dec 2023 16:52:22 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4F129F8062F;
+	Tue, 12 Dec 2023 16:52:26 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4DF96F8016E; Tue, 12 Dec 2023 03:28:18 +0100 (CET)
-Received: from mail-yw1-x112a.google.com (mail-yw1-x112a.google.com
- [IPv6:2607:f8b0:4864:20::112a])
+	id DDAE4F8020D; Tue, 12 Dec 2023 03:28:19 +0100 (CET)
+Received: from mail-yw1-x1135.google.com (mail-yw1-x1135.google.com
+ [IPv6:2607:f8b0:4864:20::1135])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 16BAFF80124
-	for <alsa-devel@alsa-project.org>; Tue, 12 Dec 2023 03:27:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 16BAFF80124
+	by alsa1.perex.cz (Postfix) with ESMTPS id 990FEF80166
+	for <alsa-devel@alsa-project.org>; Tue, 12 Dec 2023 03:27:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 990FEF80166
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20230601 header.b=XoOwrYP0
-Received: by mail-yw1-x112a.google.com with SMTP id
- 00721157ae682-5df49931b4eso28077577b3.0
+ header.s=20230601 header.b=XSqbDfCV
+Received: by mail-yw1-x1135.google.com with SMTP id
+ 00721157ae682-5cfc3a48ab2so44882157b3.0
         for <alsa-devel@alsa-project.org>;
- Mon, 11 Dec 2023 18:27:53 -0800 (PST)
+ Mon, 11 Dec 2023 18:27:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702348072; x=1702952872;
+        d=gmail.com; s=20230601; t=1702348076; x=1702952876;
  darn=alsa-project.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=2rIXSzzj4Vn0OnxWzlgjGuiOUWfNx+9Oitq+JebsnVk=;
-        b=XoOwrYP0stB4sinta2ZbbMrGNjAA2LKPeC7CX7ddpf9bYauswQ/LK6Ou9abpViYvY0
-         sCjXlgPa9OCudKkxhyT7BBFk0omWtO5ZwQzwu7JBvnHFSKI9Y/JJ0z6ZcRORbW8P6qKY
-         YqU4Z498ISaVML0X6rjquOgeXGPSuTuLeeIvKx0vqY3YvNnJwUuOZDBqL4gWAlJ2agCJ
-         b1cVKUEk7kGXb+xQ9hiRL2p/G2pKhV4ndSH79jIorPICUcmTpt+p7gT9Vs90l9xZ3bma
-         RFF8jP0nCxml/WBnQOWCMD4d8YPLiOO1S9VTu1ynae2SZIFGrQRXPqi51E0RUVbtVO3j
-         0vJw==
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HmvgTcSgTSYSGQ9OhXSlfMgozAivgkoJ1Cnrtk56obw=;
+        b=XSqbDfCVkttR2zXYw+4mTfGWQCyPbg/e2I/0BjZpG8kidw5BBhKNdOfS4kS1qJb3Uh
+         +ffR6lz6rFqPzNVPh7xkNfPkD7rSOOcLTUJw1rmAah5tMXU4PZhcX/hWOTFrin0zyL46
+         raTYG3OZwOMqInKGU9flXYmGB3G7v/02WAJFKcMqHqW+IMqTeo9AnvREBW3lzhVbbgjo
+         1SSTSmwguS+Gity4Rq/qZxqrdYAoeM2be7pNgHkXO8o7oCmZjEkL1NG1lmhccO+s8TsY
+         bzvkSyK5qRf3ndmWaZ3vBbrTCtVAASGsLES+nRHuMS0dvYDhP8jhY1oaInoU9gbjowaC
+         CNlQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702348072; x=1702952872;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=2rIXSzzj4Vn0OnxWzlgjGuiOUWfNx+9Oitq+JebsnVk=;
-        b=VLLo385+8IHn8oCgVLe4TuRchYGWxQCUYS+5NBAoCgPJjtUGaxLYp+NlYSrqDDOW42
-         tK5lUr4KLubDYHoANo5s7v7TF5EZnhHzXa1lLcVbZ4bgEEcApSTa+CZSilW9/Ovplh6W
-         x+bCkrSzWtOgdfFEPJ/wGSvLxJRdNKVZpE0GkX8rVS2GwrhlhvBnxzpU+sqBeEAgOf+P
-         rQbCPvmv7BkGEwJLkUbY28A9i0QtetLXafrFcr8F9ZglTAFLwi0F1uvMTEuzgYhlNVzI
-         ti7oyL/xh9bMvglOZn4g7+wyjyN5r6mFCW1UBWRS4+o9Qn8rZV+rfvVL6OBej3iVPkj9
-         490Q==
-X-Gm-Message-State: AOJu0YxIu2o/L5O3VSHTZP1xvr8KDakvvRbgNRXNfrNqKlNYiy2BGH/S
-	7liTD/N9q1ZAEksRAvzqc3I=
+        d=1e100.net; s=20230601; t=1702348076; x=1702952876;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HmvgTcSgTSYSGQ9OhXSlfMgozAivgkoJ1Cnrtk56obw=;
+        b=IiKNFdW7M+QpSxsqyrU/Yrr6FRQyonETzDkWR+BXcl/SoGnOiNvg3zGFIgwrhJ1yMr
+         9mVA15rRJ7x86tnZKgU5lx27EkpmVjPd1fKvgVE5GY8rB44KmJmaB1+Z47MepkMs6+34
+         8S0RxyOC5zAFQr8LlZW+C6vEFyZFp5jvQbLZ2wJGE6bGyqnGC24gE0QvLKCnzt3xIlXE
+         fmxEWLwIL15bSAWnfWjq2IhZrQX7H3EfKRYJIEAic89n0sTxoCiRzGGj7kl+n7Jzxju7
+         Pri62THix65vUAMu3vxy35FFr+YXr+EvH4SbEBc+gQmhxxftXLnbplFlfC0RqU3Oza3U
+         Gb5g==
+X-Gm-Message-State: AOJu0YzOmCLZVCsP1X6WerKEo2fHmGEqHCkFsAxuxcLJKxkhzeF56czV
+	6ZDs1BTc7Sxry5uWzO4XzWQ=
 X-Google-Smtp-Source: 
- AGHT+IGNrxiOB0CU5Pwp1l0+iyVygpKHBLCSMm3YHsDrVXT56LslkKopHRNY35LGYnIHsoxEKrxNng==
-X-Received: by 2002:a0d:f6c7:0:b0:5d7:1940:b37e with SMTP id
- g190-20020a0df6c7000000b005d71940b37emr4381333ywf.74.1702348071823;
-        Mon, 11 Dec 2023 18:27:51 -0800 (PST)
+ AGHT+IFPs4AvQxtYv4UrJlD5lGh/BMqsDvh12ZnXOoQbI3s9B0hPdqcJ7FPe01OhhQlwKaBiv0CCJg==
+X-Received: by 2002:a81:a505:0:b0:5d7:1941:aa7 with SMTP id
+ u5-20020a81a505000000b005d719410aa7mr4037805ywg.66.1702348076388;
+        Mon, 11 Dec 2023 18:27:56 -0800 (PST)
 Received: from localhost ([2601:344:8301:57f0:38aa:1c88:df05:9b73])
         by smtp.gmail.com with ESMTPSA id
- y188-20020a0dd6c5000000b005d6da42e443sm3448474ywd.59.2023.12.11.18.27.50
+ a200-20020a0dd8d1000000b005d35a952324sm3448999ywe.56.2023.12.11.18.27.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Dec 2023 18:27:51 -0800 (PST)
+        Mon, 11 Dec 2023 18:27:55 -0800 (PST)
 From: Yury Norov <yury.norov@gmail.com>
 To: linux-kernel@vger.kernel.org,
 	"David S. Miller" <davem@davemloft.net>,
@@ -181,10 +183,12 @@ Cc: Yury Norov <yury.norov@gmail.com>,
 	Alexey Klimov <klimov.linux@gmail.com>,
 	Bart Van Assche <bvanassche@acm.org>,
 	Sergey Shtylyov <s.shtylyov@omp.ru>
-Subject: [PATCH v3 00/35] bitops: add atomic find_bit() operations
-Date: Mon, 11 Dec 2023 18:27:14 -0800
-Message-Id: <20231212022749.625238-1-yury.norov@gmail.com>
+Subject: [PATCH v3 02/35] lib/find: add test for atomic find_bit() ops
+Date: Mon, 11 Dec 2023 18:27:16 -0800
+Message-Id: <20231212022749.625238-3-yury.norov@gmail.com>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20231212022749.625238-1-yury.norov@gmail.com>
+References: <20231212022749.625238-1-yury.norov@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-MailFrom: yury.norov@gmail.com
@@ -193,15 +197,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: RRVZSRXN3J2ZWUM66VIFUUTXL4OXHJS4
-X-Message-ID-Hash: RRVZSRXN3J2ZWUM66VIFUUTXL4OXHJS4
-X-Mailman-Approved-At: Tue, 12 Dec 2023 15:52:06 +0000
+Message-ID-Hash: UIRWYPI6ELYOBEATN4CLT33EN35IEQVB
+X-Message-ID-Hash: UIRWYPI6ELYOBEATN4CLT33EN35IEQVB
+X-Mailman-Approved-At: Tue, 12 Dec 2023 15:52:07 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RRVZSRXN3J2ZWUM66VIFUUTXL4OXHJS4/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UIRWYPI6ELYOBEATN4CLT33EN35IEQVB/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -210,232 +214,92 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add helpers around test_and_{set,clear}_bit() that allow to search for
-clear or set bits and flip them atomically.
+Add basic functionality test for new API.
 
-The target patterns may look like this:
-
-	for (idx = 0; idx < nbits; idx++)
-		if (test_and_clear_bit(idx, bitmap))
-			do_something(idx);
-
-Or like this:
-
-	do {
-		bit = find_first_bit(bitmap, nbits);
-		if (bit >= nbits)
-			return nbits;
-	} while (!test_and_clear_bit(bit, bitmap));
-	return bit;
-
-In both cases, the opencoded loop may be converted to a single function
-or iterator call. Correspondingly:
-
-	for_each_test_and_clear_bit(idx, bitmap, nbits)
-		do_something(idx);
-
-Or:
-	return find_and_clear_bit(bitmap, nbits);
-
-Obviously, the less routine code people have to write themself, the
-less probability to make a mistake.
-
-Those are not only handy helpers but also resolve a non-trivial
-issue of using non-atomic find_bit() together with atomic
-test_and_{set,clear)_bit().
-
-The trick is that find_bit() implies that the bitmap is a regular
-non-volatile piece of memory, and compiler is allowed to use such
-optimization techniques like re-fetching memory instead of caching it.
-
-For example, find_first_bit() is implemented like this:
-
-      for (idx = 0; idx * BITS_PER_LONG < sz; idx++) {
-              val = addr[idx];
-              if (val) {
-                      sz = min(idx * BITS_PER_LONG + __ffs(val), sz);
-                      break;
-              }
-      }
-
-On register-memory architectures, like x86, compiler may decide to
-access memory twice - first time to compare against 0, and second time
-to fetch its value to pass it to __ffs().
-
-When running find_first_bit() on volatile memory, the memory may get
-changed in-between, and for instance, it may lead to passing 0 to
-__ffs(), which is undefined. This is a potentially dangerous call.
-
-find_and_clear_bit() as a wrapper around test_and_clear_bit()
-naturally treats underlying bitmap as a volatile memory and prevents
-compiler from such optimizations.
-
-Now that KCSAN is catching exactly this type of situations and warns on
-undercover memory modifications. We can use it to reveal improper usage
-of find_bit(), and convert it to atomic find_and_*_bit() as appropriate.
-
-In some cases concurrent operations with plain find_bit() are acceptable.
-For example:
-
- - two threads running find_*_bit(): safe wrt ffs(0) and returns correct
-   value, because underlying bitmap is unchanged;
- - find_next_bit() in parallel with set or clear_bit(), when modifying
-   a bit prior to the start bit to search: safe and correct;
- - find_first_bit() in parallel with set_bit(): safe, but may return wrong
-   bit number;
- - find_first_zero_bit() in parallel with clear_bit(): same as above.
-
-In last 2 cases find_bit() may not return a correct bit number, but
-it may be OK if caller requires any (not exactly the first) set or clear
-bit, correspondingly.
-
-In such cases, KCSAN may be safely silenced with data_race(). But in most
-cases where KCSAN detects concurrency people should carefully review their
-code and likely protect critical sections or switch to atomic
-find_and_bit(), as appropriate.
-
-The 1st patch of the series adds the following atomic primitives:
-
-	find_and_set_bit(addr, nbits);
-	find_and_set_next_bit(addr, nbits, start);
-	...
-
-Here find_and_{set,clear} part refers to the corresponding
-test_and_{set,clear}_bit function. Suffixes like _wrap or _lock
-derive their semantics from corresponding find() or test() functions.
-
-For brevity, the naming omits the fact that we search for zero bit in
-find_and_set, and correspondingly search for set bit in find_and_clear
-functions.
-
-The patch also adds iterators with atomic semantics, like
-for_each_test_and_set_bit(). Here, the naming rule is to simply prefix
-corresponding atomic operation with 'for_each'.
-
-In [1] Jan reported 2% slowdown in a single-thread search test when
-switching find_bit() function to treat bitmaps as volatile arrays. On
-the other hand, kernel robot in the same thread reported +3.7% to the
-performance of will-it-scale.per_thread_ops test.
-
-Assuming that our compilers are sane and generate better code against
-properly annotated data, the above discrepancy doesn't look weird. When
-running on non-volatile bitmaps, plain find_bit() outperforms atomic
-find_and_bit(), and vice-versa.
-
-So, all users of find_bit() API, where heavy concurrency is expected,
-are encouraged to switch to atomic find_and_bit() as appropriate.
-
-The 1st patch of this series adds atomic find_and_bit() API, 2nd adds
-a basic test for new API, and all the following patches spread it over
-the kernel.
-
-They can be applied separately from each other on per-subsystems basis,
-or I can pull them in bitmap tree, as appropriate.
-
-[1] https://lore.kernel.org/lkml/634f5fdf-e236-42cf-be8d-48a581c21660@alu.unizg.hr/T/#m3e7341eb3571753f3acf8fe166f3fb5b2c12e615
-
+Signed-off-by: Yury Norov <yury.norov@gmail.com>
 ---
-v1: https://lore.kernel.org/netdev/20231118155105.25678-29-yury.norov@gmail.com/T/
-v2: https://lore.kernel.org/all/20231204185101.ddmkvsr2xxsmoh2u@quack3/T/
-v3:
- - collect more reviews;
- - align wording in commit messages @ Bjorn Helgaas;
- - add examples where non-atomic find_bit() may safely race @ Jan Kara;
- - patch  #3: use if-else instead of ternary operator @ Jens Axboe;
- - patch #13: align coding style @ Vitaly Kuznetsov, Sean Christopherson;
+ lib/test_bitmap.c | 61 +++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 61 insertions(+)
 
-Yury Norov (35):
-  lib/find: add atomic find_bit() primitives
-  lib/find: add test for atomic find_bit() ops
-  lib/sbitmap; optimize __sbitmap_get_word() by using find_and_set_bit()
-  watch_queue: optimize post_one_notification() by using
-    find_and_clear_bit()
-  sched: add cpumask_find_and_set() and use it in __mm_cid_get()
-  mips: sgi-ip30: optimize heart_alloc_int() by using find_and_set_bit()
-  sparc: optimize alloc_msi() by using find_and_set_bit()
-  perf/arm: use atomic find_bit() API
-  drivers/perf: optimize ali_drw_get_counter_idx() by using
-    find_and_set_bit()
-  dmaengine: idxd: optimize perfmon_assign_event()
-  ath10k: optimize ath10k_snoc_napi_poll() with an atomic iterator
-  wifi: rtw88: optimize the driver by using atomic iterator
-  KVM: x86: hyper-v: optimize and cleanup kvm_hv_process_stimers()
-  PCI: hv: Optimize hv_get_dom_num() by using find_and_set_bit()
-  scsi: core: optimize scsi_evt_emit() by using an atomic iterator
-  scsi: mpi3mr: optimize the driver by using find_and_set_bit()
-  scsi: qedi: optimize qedi_get_task_idx() by using find_and_set_bit()
-  powerpc: optimize arch code by using atomic find_bit() API
-  iommu: optimize subsystem by using atomic find_bit() API
-  media: radio-shark: optimize driver by using atomic find_bit() API
-  sfc: optimize driver by using atomic find_bit() API
-  tty: nozomi: optimize interrupt_handler()
-  usb: cdc-acm: optimize acm_softint()
-  block: null_blk: replace get_tag() with a generic
-    find_and_set_bit_lock()
-  RDMA/rtrs: optimize __rtrs_get_permit() by using
-    find_and_set_bit_lock()
-  mISDN: optimize get_free_devid()
-  media: em28xx: cx231xx: optimize drivers by using find_and_set_bit()
-  ethernet: rocker: optimize ofdpa_port_internal_vlan_id_get()
-  serial: sc12is7xx: optimize sc16is7xx_alloc_line()
-  bluetooth: optimize cmtp_alloc_block_id()
-  net: smc: optimize smc_wr_tx_get_free_slot_index()
-  ALSA: use atomic find_bit() functions where applicable
-  m68k: optimize get_mmu_context()
-  microblaze: optimize get_mmu_context()
-  sh: mach-x3proto: optimize ilsel_enable()
-
- arch/m68k/include/asm/mmu_context.h          |  11 +-
- arch/microblaze/include/asm/mmu_context_mm.h |  11 +-
- arch/mips/sgi-ip30/ip30-irq.c                |  12 +-
- arch/powerpc/mm/book3s32/mmu_context.c       |  10 +-
- arch/powerpc/platforms/pasemi/dma_lib.c      |  45 +--
- arch/powerpc/platforms/powernv/pci-sriov.c   |  12 +-
- arch/sh/boards/mach-x3proto/ilsel.c          |   4 +-
- arch/sparc/kernel/pci_msi.c                  |   9 +-
- arch/x86/kvm/hyperv.c                        |  40 +--
- drivers/block/null_blk/main.c                |  41 +--
- drivers/dma/idxd/perfmon.c                   |   8 +-
- drivers/infiniband/ulp/rtrs/rtrs-clt.c       |  15 +-
- drivers/iommu/arm/arm-smmu/arm-smmu.h        |  10 +-
- drivers/iommu/msm_iommu.c                    |  18 +-
- drivers/isdn/mISDN/core.c                    |   9 +-
- drivers/media/radio/radio-shark.c            |   5 +-
- drivers/media/radio/radio-shark2.c           |   5 +-
- drivers/media/usb/cx231xx/cx231xx-cards.c    |  16 +-
- drivers/media/usb/em28xx/em28xx-cards.c      |  37 +--
- drivers/net/ethernet/rocker/rocker_ofdpa.c   |  11 +-
- drivers/net/ethernet/sfc/rx_common.c         |   4 +-
- drivers/net/ethernet/sfc/siena/rx_common.c   |   4 +-
- drivers/net/ethernet/sfc/siena/siena_sriov.c |  14 +-
- drivers/net/wireless/ath/ath10k/snoc.c       |   9 +-
- drivers/net/wireless/realtek/rtw88/pci.c     |   5 +-
- drivers/net/wireless/realtek/rtw89/pci.c     |   5 +-
- drivers/pci/controller/pci-hyperv.c          |   7 +-
- drivers/perf/alibaba_uncore_drw_pmu.c        |  10 +-
- drivers/perf/arm-cci.c                       |  24 +-
- drivers/perf/arm-ccn.c                       |  10 +-
- drivers/perf/arm_dmc620_pmu.c                |   9 +-
- drivers/perf/arm_pmuv3.c                     |   8 +-
- drivers/scsi/mpi3mr/mpi3mr_os.c              |  21 +-
- drivers/scsi/qedi/qedi_main.c                |   9 +-
- drivers/scsi/scsi_lib.c                      |   7 +-
- drivers/tty/nozomi.c                         |   5 +-
- drivers/tty/serial/sc16is7xx.c               |   8 +-
- drivers/usb/class/cdc-acm.c                  |   5 +-
- include/linux/cpumask.h                      |  12 +
- include/linux/find.h                         | 293 +++++++++++++++++++
- kernel/sched/sched.h                         |  14 +-
- kernel/watch_queue.c                         |   6 +-
- lib/find_bit.c                               |  85 ++++++
- lib/sbitmap.c                                |  46 +--
- lib/test_bitmap.c                            |  61 ++++
- net/bluetooth/cmtp/core.c                    |  10 +-
- net/smc/smc_wr.c                             |  10 +-
- sound/pci/hda/hda_codec.c                    |   7 +-
- sound/usb/caiaq/audio.c                      |  13 +-
- 49 files changed, 631 insertions(+), 419 deletions(-)
-
+diff --git a/lib/test_bitmap.c b/lib/test_bitmap.c
+index 65f22c2578b0..277e1ca9fd28 100644
+--- a/lib/test_bitmap.c
++++ b/lib/test_bitmap.c
+@@ -221,6 +221,65 @@ static void __init test_zero_clear(void)
+ 	expect_eq_pbl("", bmap, 1024);
+ }
+ 
++static void __init test_find_and_bit(void)
++{
++	unsigned long w, w_part, bit, cnt = 0;
++	DECLARE_BITMAP(bmap, EXP1_IN_BITS);
++
++	/*
++	 * Test find_and_clear{_next}_bit() and corresponding
++	 * iterators
++	 */
++	bitmap_copy(bmap, exp1, EXP1_IN_BITS);
++	w = bitmap_weight(bmap, EXP1_IN_BITS);
++
++	for_each_test_and_clear_bit(bit, bmap, EXP1_IN_BITS)
++		cnt++;
++
++	expect_eq_uint(w, cnt);
++	expect_eq_uint(0, bitmap_weight(bmap, EXP1_IN_BITS));
++
++	bitmap_copy(bmap, exp1, EXP1_IN_BITS);
++	w = bitmap_weight(bmap, EXP1_IN_BITS);
++	w_part = bitmap_weight(bmap, EXP1_IN_BITS / 3);
++
++	cnt = 0;
++	bit = EXP1_IN_BITS / 3;
++	for_each_test_and_clear_bit_from(bit, bmap, EXP1_IN_BITS)
++		cnt++;
++
++	expect_eq_uint(bitmap_weight(bmap, EXP1_IN_BITS), bitmap_weight(bmap, EXP1_IN_BITS / 3));
++	expect_eq_uint(w_part, bitmap_weight(bmap, EXP1_IN_BITS));
++	expect_eq_uint(w - w_part, cnt);
++
++	/*
++	 * Test find_and_set{_next}_bit() and corresponding
++	 * iterators
++	 */
++	bitmap_copy(bmap, exp1, EXP1_IN_BITS);
++	w = bitmap_weight(bmap, EXP1_IN_BITS);
++	cnt = 0;
++
++	for_each_test_and_set_bit(bit, bmap, EXP1_IN_BITS)
++		cnt++;
++
++	expect_eq_uint(EXP1_IN_BITS - w, cnt);
++	expect_eq_uint(EXP1_IN_BITS, bitmap_weight(bmap, EXP1_IN_BITS));
++
++	bitmap_copy(bmap, exp1, EXP1_IN_BITS);
++	w = bitmap_weight(bmap, EXP1_IN_BITS);
++	w_part = bitmap_weight(bmap, EXP1_IN_BITS / 3);
++	cnt = 0;
++
++	bit = EXP1_IN_BITS / 3;
++	for_each_test_and_set_bit_from(bit, bmap, EXP1_IN_BITS)
++		cnt++;
++
++	expect_eq_uint(EXP1_IN_BITS - bitmap_weight(bmap, EXP1_IN_BITS),
++			EXP1_IN_BITS / 3 - bitmap_weight(bmap, EXP1_IN_BITS / 3));
++	expect_eq_uint(EXP1_IN_BITS * 2 / 3 - (w - w_part), cnt);
++}
++
+ static void __init test_find_nth_bit(void)
+ {
+ 	unsigned long b, bit, cnt = 0;
+@@ -1273,6 +1332,8 @@ static void __init selftest(void)
+ 	test_for_each_clear_bitrange_from();
+ 	test_for_each_set_clump8();
+ 	test_for_each_set_bit_wrap();
++
++	test_find_and_bit();
+ }
+ 
+ KSTM_MODULE_LOADERS(test_bitmap);
 -- 
 2.40.1
 
