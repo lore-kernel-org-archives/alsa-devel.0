@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 04E9AC4332F
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Dec 2023 15:26:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 95ECEC4332F
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Dec 2023 15:26:23 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 29875DF4;
-	Tue, 12 Dec 2023 16:25:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 29875DF4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 79B5C839;
+	Tue, 12 Dec 2023 16:26:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 79B5C839
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1702394763;
-	bh=ajV1SrGGbtEqzO6TMjB3amdftdFdTVvbBkd9sbJpJT0=;
+	s=default; t=1702394781;
+	bh=0T4VyZb8n+Fr6rE/aCScdaeJJGAa79uX2Rljlcg1KHA=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=ParcGtajEwfL9MB8kq5rQMnpDC5oDT7nxN1qJhC+Fn6deKFEF8yuVf1IlAXT5ucdF
-	 heGWECjnyPPqJM0ULt00LlLtixFIZlQB+/m9n3/TJQjoSrGnhuHbrKKIR+PglpYIql
-	 uLg4P6T8VhChc/jhkdFAdVKKofYE8V4NViFKOtBQ=
+	b=chDJ1hd34WmmAVoenCmap2BNN8LVu/D1i8I0I19miTObUVGGIHg9m67+1jKyqNsHF
+	 Mg2kfpvL5NEl4TDAOCwzCJADLnJrQyHa8qber04umfWOSiUc8ZwmLdQykYcok4Wa3H
+	 lOBYOdsX13RF1r2C0FjohDBJgZoYBHtIARGfMaAM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6130FF8057A; Tue, 12 Dec 2023 16:25:29 +0100 (CET)
+	id 946ACF805D2; Tue, 12 Dec 2023 16:25:37 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E9639F80580;
-	Tue, 12 Dec 2023 16:25:28 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 17C45F805D7;
+	Tue, 12 Dec 2023 16:25:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4F324F8016A; Tue, 12 Dec 2023 16:25:24 +0100 (CET)
-Received: from mx08-00178001.pphosted.com (mx08-00178001.pphosted.com
- [91.207.212.93])
+	id 94682F805B1; Tue, 12 Dec 2023 16:25:33 +0100 (CET)
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
+ [185.132.182.106])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 72D4DF8016A
-	for <alsa-devel@alsa-project.org>; Tue, 12 Dec 2023 16:25:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 72D4DF8016A
+	by alsa1.perex.cz (Postfix) with ESMTPS id BBFA9F8019B
+	for <alsa-devel@alsa-project.org>; Tue, 12 Dec 2023 16:25:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BBFA9F8019B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=foss.st.com header.i=@foss.st.com header.a=rsa-sha256
- header.s=selector1 header.b=TrVdCwGf
-Received: from pps.filterd (m0369457.ppops.net [127.0.0.1])
+ header.s=selector1 header.b=71l+5CnO
+Received: from pps.filterd (m0288072.ppops.net [127.0.0.1])
 	by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id
- 3BCCtSgp012700;
-	Tue, 12 Dec 2023 16:25:21 +0100
+ 3BCCOnGn001179;
+	Tue, 12 Dec 2023 16:25:19 +0100
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
 	:mime-version:content-transfer-encoding:content-type; s=
-	selector1; bh=vuPHo2ugeRBZCuepraSlz9L3LBXsltpRpgNrnnkNs7o=; b=Tr
-	VdCwGfvbTO2e1o8XZUtgaRFE+1vfnOtMSIczqprqAtPUEMvZ7zKPupX7lNHYSwhr
-	K0xMIRszz5tLeNitjgwkET7IbQXMDDRPhtfLP8Vo7O41dhARRw0FtzLRYmJi2z5w
-	uPDIPPCC5utRFU0tYN5JJAjOdErWcvy0eUMd+aJ5Y96dhhcHhhV2De9dKgaiUSlu
-	nAGA+NC/UAkVMEq2j2N/8iIR7Wh0rmxXFrp1YUrNY9DIv8s+71/ytIOkIDwj299n
-	RZ/SLs8bhiCwgnphBtqy/7cgVzXS4a48VhFwXWo7uCAYokINUMZMG3lyYQsM/Qhg
-	TuSbvHlQBGg9NTIZlcDA==
+	selector1; bh=QpG4L46teLbBYcxt3AXNM5BujFv4AEDCEiVswfgeH2s=; b=71
+	l+5CnOazG6/owrN9/LPpceyoq14h8BUl/wClZ6vlstNujryKkM6aDgjhcYQtywWs
+	FrHGo/LqhoPTh783vbnHTfsaTe2FocR9mDik120YyxjrLRTz2iaBPacfIv3XlROD
+	vK74aSPwPnapnTnj8rVvUZtCriJBABL7XM7Tu99qpBHR9SZzYONZ5agfTUE27fH2
+	4tQY8GEWIN5MeYee+1KHiEsqCxNlJL6X5DGnxjrijiiwZ73/+ENZxaJJZAYRxsEZ
+	iY6gkadX2zEHIWMNQXTB+YSXUA0BLcd89So8iKQHm4y7iz2H9k4Ogdk3udACYraD
+	vcXxT7I3wTFu7C/kJLsw==
 Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3uw42nhssq-1
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3uvehmc8g4-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 12 Dec 2023 16:25:21 +0100 (CET)
+	Tue, 12 Dec 2023 16:25:19 +0100 (CET)
 Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 680AA100062;
-	Tue, 12 Dec 2023 16:25:20 +0100 (CET)
+	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 1D59610005A;
+	Tue, 12 Dec 2023 16:25:19 +0100 (CET)
 Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 5D39822D195;
-	Tue, 12 Dec 2023 16:25:20 +0100 (CET)
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 12E8922D195;
+	Tue, 12 Dec 2023 16:25:19 +0100 (CET)
 Received: from localhost (10.252.7.20) by SHFDAG1NODE1.st.com (10.75.129.69)
  with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 12 Dec
- 2023 16:25:20 +0100
+ 2023 16:25:18 +0100
 From: Gatien Chevallier <gatien.chevallier@foss.st.com>
 To: <Oleksii_Moisieiev@epam.com>, <gregkh@linuxfoundation.org>,
         <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
@@ -93,10 +93,9 @@ CC: <linux-crypto@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-usb@vger.kernel.org>,
         Gatien Chevallier
 	<gatien.chevallier@foss.st.com>
-Subject: [PATCH v8 06/13] of: property: fw_devlink: Add support for
- "access-controller"
-Date: Tue, 12 Dec 2023 16:23:49 +0100
-Message-ID: <20231212152356.345703-7-gatien.chevallier@foss.st.com>
+Subject: [PATCH v8 04/13] dt-bindings: bus: document ETZPC
+Date: Tue, 12 Dec 2023 16:23:47 +0100
+Message-ID: <20231212152356.345703-5-gatien.chevallier@foss.st.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20231212152356.345703-1-gatien.chevallier@foss.st.com>
 References: <20231212152356.345703-1-gatien.chevallier@foss.st.com>
@@ -109,8 +108,8 @@ X-ClientProxiedBy: EQNCAS1NODE3.st.com (10.75.129.80) To SHFDAG1NODE1.st.com
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-12-12_09,2023-12-12_01,2023-05-22_02
-Message-ID-Hash: 2EFIHNCZBHTUUYLG77MCM6G7XMKWXV7Y
-X-Message-ID-Hash: 2EFIHNCZBHTUUYLG77MCM6G7XMKWXV7Y
+Message-ID-Hash: Q6CMCJGPF4CZAUHM6V2GDVSEAXBNR3JM
+X-Message-ID-Hash: Q6CMCJGPF4CZAUHM6V2GDVSEAXBNR3JM
 X-MailFrom: prvs=071036046b=gatien.chevallier@foss.st.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -123,7 +122,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2EFIHNCZBHTUUYLG77MCM6G7XMKWXV7Y/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Q6CMCJGPF4CZAUHM6V2GDVSEAXBNR3JM/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -132,43 +131,130 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Allows tracking dependencies between devices and their access
-controller.
+Document ETZPC (Extended TrustZone protection controller). ETZPC is a
+firewall controller.
 
 Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
 ---
 
 Changes in V6:
     	- Renamed access-controller to access-controllers
+    	- Removal of access-control-provider property
+    	- Removal of access-controller and access-controller-names
+    	  declaration in the patternProperties field. Add
+    	  additionalProperties: true in this field.
 
 Changes in V5:
-	- Rename feature-domain* to access-control*
+	- Renamed feature-domain* to access-control*
 
-Patch not present in V1
+Changes in V2:
+	- Corrected errors highlighted by Rob's robot
+	- No longer define the maxItems for the "feature-domains"
+	  property
+	- Fix example (node name, status)
+	- Declare "feature-domain-names" as an optional
+	  property for child nodes
+	- Fix description of "feature-domains" property
+	- Reordered the properties so it matches ETZPC
+	- Add missing "feature-domain-controller" property
 
- drivers/of/property.c | 2 ++
- 1 file changed, 2 insertions(+)
+ .../bindings/bus/st,stm32-etzpc.yaml          | 87 +++++++++++++++++++
+ 1 file changed, 87 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/bus/st,stm32-etzpc.yaml
 
-diff --git a/drivers/of/property.c b/drivers/of/property.c
-index afdaefbd03f6..7f737eac91b2 100644
---- a/drivers/of/property.c
-+++ b/drivers/of/property.c
-@@ -1268,6 +1268,7 @@ DEFINE_SIMPLE_PROP(leds, "leds", NULL)
- DEFINE_SIMPLE_PROP(backlight, "backlight", NULL)
- DEFINE_SIMPLE_PROP(panel, "panel", NULL)
- DEFINE_SIMPLE_PROP(msi_parent, "msi-parent", "#msi-cells")
-+DEFINE_SIMPLE_PROP(access_controllers, "access-controllers", "#access-controller-cells")
- DEFINE_SUFFIX_PROP(regulators, "-supply", NULL)
- DEFINE_SUFFIX_PROP(gpio, "-gpio", "#gpio-cells")
- 
-@@ -1363,6 +1364,7 @@ static const struct supplier_bindings of_supplier_bindings[] = {
- 	{ .parse_prop = parse_regulators, },
- 	{ .parse_prop = parse_gpio, },
- 	{ .parse_prop = parse_gpios, },
-+	{ .parse_prop = parse_access_controllers, },
- 	{}
- };
- 
+diff --git a/Documentation/devicetree/bindings/bus/st,stm32-etzpc.yaml b/Documentation/devicetree/bindings/bus/st,stm32-etzpc.yaml
+new file mode 100644
+index 000000000000..9ca0ad39bc19
+--- /dev/null
++++ b/Documentation/devicetree/bindings/bus/st,stm32-etzpc.yaml
+@@ -0,0 +1,87 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/bus/st,stm32-etzpc.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: STM32 Extended TrustZone protection controller
++
++description: |
++  The ETZPC configures TrustZone security in a SoC having bus masters and
++  devices with programmable-security attributes (securable resources).
++
++maintainers:
++  - Gatien Chevallier <gatien.chevallier@foss.st.com>
++
++properties:
++  compatible:
++    contains:
++      const: st,stm32-etzpc
++
++  reg:
++    maxItems: 1
++
++  "#address-cells":
++    const: 1
++
++  "#size-cells":
++    const: 1
++
++  ranges: true
++
++  "#access-controller-cells":
++    const: 1
++    description:
++      Contains the firewall ID associated to the peripheral.
++
++patternProperties:
++  "^.*@[0-9a-f]+$":
++    description: Peripherals
++    type: object
++
++    additionalProperties: true
++
++    required:
++      - access-controllers
++
++required:
++  - compatible
++  - reg
++  - "#address-cells"
++  - "#size-cells"
++  - "#access-controller-cells"
++  - ranges
++
++additionalProperties: false
++
++examples:
++  - |
++    // In this example, the usart2 device refers to rifsc as its access
++    // controller.
++    // Access rights are verified before creating devices.
++
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    #include <dt-bindings/clock/stm32mp13-clks.h>
++    #include <dt-bindings/reset/stm32mp13-resets.h>
++
++    etzpc: bus@5c007000 {
++        compatible = "st,stm32-etzpc";
++        reg = <0x5c007000 0x400>;
++        #address-cells = <1>;
++        #size-cells = <1>;
++        #access-controller-cells = <1>;
++        ranges;
++
++        usart2: serial@4c001000 {
++            compatible = "st,stm32h7-uart";
++            reg = <0x4c001000 0x400>;
++            interrupts-extended = <&exti 27 IRQ_TYPE_LEVEL_HIGH>;
++            clocks = <&rcc USART2_K>;
++            resets = <&rcc USART2_R>;
++            wakeup-source;
++            dmas = <&dmamux1 43 0x400 0x5>,
++                    <&dmamux1 44 0x400 0x1>;
++            dma-names = "rx", "tx";
++            access-controllers = <&etzpc 17>;
++        };
++    };
 -- 
 2.25.1
 
