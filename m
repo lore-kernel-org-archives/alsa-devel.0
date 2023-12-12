@@ -4,133 +4,113 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B1370C4332F
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Dec 2023 15:03:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0D41AC4332F
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Dec 2023 15:24:59 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6A35DA4E;
-	Tue, 12 Dec 2023 16:03:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6A35DA4E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 69C15DEC;
+	Tue, 12 Dec 2023 16:24:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 69C15DEC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1702393407;
-	bh=c1+ffC/4SX+tGSx7cS/2QocEZ2C4FCD1pc53CcZnBe0=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	s=default; t=1702394697;
+	bh=QQ4UBZ9yup7NRH15FH2dORAkO77CQT+p2TfBJGuScso=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=hU17pVQqkFiESrxFSrF+3XqrViQrNv+WLd3zHis6mxIEGbAmNomuBPCUtjQBMTReh
-	 2lxY4r4qYs36KE2I5Tf3tc+bktMYbiU7UH7RlIJzVkL4MMcfmsF5oibInV394MCdlu
-	 TcQUw5BRpdQ2ujGtMg0EkN7LtzselLlouod+7D8Q=
+	b=l1qBh9JREnT8HCqKfH5WQDCz6cD7W2MYnHwd3O9klk857lxNr0dR1upvIm1I4MhzN
+	 Kz9NjgFgiThuuBipwhdZsK979lMNKkjRDDUUXXqttfXf9hTIXjSURSIKsptDqp/ESP
+	 AMYrMsFCE5y7JTDgpTQ4/qe8ffTi4xayNjwvbYZ8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C68AAF805A0; Tue, 12 Dec 2023 16:02:55 +0100 (CET)
+	id 235A2F8057B; Tue, 12 Dec 2023 16:24:26 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 49BCBF80579;
-	Tue, 12 Dec 2023 16:02:55 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 067C0F80557;
+	Tue, 12 Dec 2023 16:24:26 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5AED4F8016A; Tue, 12 Dec 2023 16:02:50 +0100 (CET)
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com
- [IPv6:2a00:1450:4864:20::136])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id A075BF8020D; Tue, 12 Dec 2023 16:24:20 +0100 (CET)
+Received: from mx08-00178001.pphosted.com (mx08-00178001.pphosted.com
+ [91.207.212.93])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E0D17F80124
-	for <alsa-devel@alsa-project.org>; Tue, 12 Dec 2023 16:02:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E0D17F80124
+	by alsa1.perex.cz (Postfix) with ESMTPS id 2FE3BF80114
+	for <alsa-devel@alsa-project.org>; Tue, 12 Dec 2023 16:24:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2FE3BF80114
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=gmp2FMTV
-Received: by mail-lf1-x136.google.com with SMTP id
- 2adb3069b0e04-50d176eb382so5459348e87.2
-        for <alsa-devel@alsa-project.org>;
- Tue, 12 Dec 2023 07:02:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702393355; x=1702998155;
- darn=alsa-project.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=SJSaOj/O3sNlbMjuItblJHTlzvK1I9vT1qpvbGVa2tk=;
-        b=gmp2FMTVeAX9Dp4oOag4Z1jVPnAjkxiDFC1Z9oD4gZWZAzMJr8nxhNvV76aI1xReys
-         o57gyodgb8cRZwpTsCiPc2UioLH458yQhI/HbPQhhtFD8fNOWl0rmwtz6fH0D3UWnJua
-         nigP7vEP8uureDVjNHOzd9PxJDmjw4sowTV7q9a+zPg1OumWHak406AhOn0flszp35Uz
-         GF6N05Ncv3lr4xOV8CDmIkVXuiCev9CeL17uIS8V2dUTGRbf/U1nFZHXjOGyIL5ozrIg
-         ZyG1qFpBrtKWT+NgyKC1jnZYCLrJFJCveMnP9atutD306Eq2VPt2wlbro6M5LLJpUEvA
-         1w9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702393355; x=1702998155;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SJSaOj/O3sNlbMjuItblJHTlzvK1I9vT1qpvbGVa2tk=;
-        b=TBZuYKrwYM+HVYgVtHzOUFVD0QvbtJ7bM0V40/+qtpb5/4yYMdlJDAnQ2iU2LBbUSc
-         1oZgJXvmRkGHCNF38bEf5xY/ekK9xIB9Ekj9/OKORm1a0oD3AjOBEgUq2BunFy/pw2UN
-         287sS2dISEAy31o18VZLFXZPPmfcTukab9Z9KWXV99wm+Zt6Qig+X0CVBR0Jz1zzWE67
-         GfqfL/zPj294w66el1GY+paO8uIEUEC/sVU1S7I7Z+zoC/oV92Gx0EraxQC27ZgimUon
-         +g3csNj7j7PKotN3WuyesWjXdWb+TnJlG+LOQ4xAJ5vlTU7p920Yci6Ot9CNMINRF893
-         SQcA==
-X-Gm-Message-State: AOJu0YwnPemuC4jXXMPPTn/S4wp16gbHGtg5wx17GMDgNtpmioPZMEkq
-	QqE9vIufHid3suWa+k+QTd/zEA==
-X-Google-Smtp-Source: 
- AGHT+IEQrTt5tPm83DHZ6HyQKpuEeSOXvUyNiD23wBW25lvvmAykVrQcO2UewxP10LZ8abWJJdsapw==
-X-Received: by 2002:a05:6512:3a90:b0:50d:23e4:fe9c with SMTP id
- q16-20020a0565123a9000b0050d23e4fe9cmr3279122lfu.64.1702393354454;
-        Tue, 12 Dec 2023 07:02:34 -0800 (PST)
-Received: from [192.168.2.107] ([79.115.63.202])
-        by smtp.gmail.com with ESMTPSA id
- v10-20020a170906564a00b009fea232316bsm6343831ejr.193.2023.12.12.07.02.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Dec 2023 07:02:33 -0800 (PST)
-Message-ID: <c3fa1e04-92ed-48ab-a509-98e43abd5cd6@linaro.org>
-Date: Tue, 12 Dec 2023 15:02:31 +0000
+ unprotected) header.d=foss.st.com header.i=@foss.st.com header.a=rsa-sha256
+ header.s=selector1 header.b=REAAcd3J
+Received: from pps.filterd (m0369457.ppops.net [127.0.0.1])
+	by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id
+ 3BCBdgLW003978;
+	Tue, 12 Dec 2023 16:24:09 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+	from:to:cc:subject:date:message-id:in-reply-to:references
+	:mime-version:content-transfer-encoding:content-type; s=
+	selector1; bh=PArOreOCiQOFnjN4DbUh85R/iRgIHuoFoafWk6VLZKU=; b=RE
+	AAcd3Jv5nMdaTUzKKzUJkCwmKyfpCnlq9y9y9k/30bVC76Wwei/P81mkPRJVpjWy
+	V6mscsArS2mWPKaFd8r3y8ih1nHt2fQBhdW4rJ58vb8geDZ+vLVULiRPm3Pla/HE
+	vlv0NNJHMjHgwawAKhliQGEju8mq0BR1zTrlnsB/JQLZENSJyMeGsGdvMqEORRfE
+	h8D2WJwdgBgSUfV/UyJk1aqdGyD3+RysPE1jMM54AI9On3/CdCY9MxFZt5p4X38I
+	YODNdHZ4WXTyT9TAmP17ZqlaCgMrPp4Yb1Mq6Vb2E1PwmZEXZs/WBJfWkMnl6tnO
+	hh5L6pXwMmRMFVWxgjSA==
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3uw42nhsn1-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 12 Dec 2023 16:24:09 +0100 (CET)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 6954010005A;
+	Tue, 12 Dec 2023 16:24:08 +0100 (CET)
+Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 5488822F7B1;
+	Tue, 12 Dec 2023 16:24:08 +0100 (CET)
+Received: from localhost (10.252.7.20) by SHFDAG1NODE1.st.com (10.75.129.69)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 12 Dec
+ 2023 16:24:07 +0100
+From: Gatien Chevallier <gatien.chevallier@foss.st.com>
+To: <Oleksii_Moisieiev@epam.com>, <gregkh@linuxfoundation.org>,
+        <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <alexandre.torgue@foss.st.com>,
+        <vkoul@kernel.org>, <jic23@kernel.org>, <olivier.moysan@foss.st.com>,
+        <arnaud.pouliquen@foss.st.com>, <mchehab@kernel.org>,
+        <fabrice.gasnier@foss.st.com>, <andi.shyti@kernel.org>,
+        <ulf.hansson@linaro.org>, <edumazet@google.com>, <kuba@kernel.org>,
+        <pabeni@redhat.com>, <hugues.fruchet@foss.st.com>, <lee@kernel.org>,
+        <will@kernel.org>, <catalin.marinas@arm.com>, <arnd@kernel.org>,
+        <richardcochran@gmail.com>, Frank Rowand <frowand.list@gmail.com>,
+        <peng.fan@oss.nxp.com>, <lars@metafoo.de>, <rcsekar@samsung.com>,
+        <wg@grandegger.com>, <mkl@pengutronix.de>
+CC: <linux-crypto@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>,
+        <dmaengine@vger.kernel.org>, <linux-i2c@vger.kernel.org>,
+        <linux-iio@vger.kernel.org>, <alsa-devel@alsa-project.org>,
+        <linux-media@vger.kernel.org>, <linux-mmc@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <linux-phy@lists.infradead.org>,
+        <linux-serial@vger.kernel.org>, <linux-spi@vger.kernel.org>,
+        <linux-usb@vger.kernel.org>,
+        Gatien Chevallier
+	<gatien.chevallier@foss.st.com>
+Subject: [PATCH v8 03/13] dt-bindings: bus: document RIFSC
+Date: Tue, 12 Dec 2023 16:23:46 +0100
+Message-ID: <20231212152356.345703-4-gatien.chevallier@foss.st.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20231212152356.345703-1-gatien.chevallier@foss.st.com>
+References: <20231212152356.345703-1-gatien.chevallier@foss.st.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v11 07/10] mtd: spi-nor: Add stacked memories support in
- spi-nor
-Content-Language: en-US
-To: "Mahapatra, Amit Kumar" <amit.kumar-mahapatra@amd.com>,
- "broonie@kernel.org" <broonie@kernel.org>,
- "pratyush@kernel.org" <pratyush@kernel.org>,
- "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
- "richard@nod.at" <richard@nod.at>, "vigneshr@ti.com" <vigneshr@ti.com>,
- "sbinding@opensource.cirrus.com" <sbinding@opensource.cirrus.com>,
- "lee@kernel.org" <lee@kernel.org>,
- "james.schulman@cirrus.com" <james.schulman@cirrus.com>,
- "david.rhodes@cirrus.com" <david.rhodes@cirrus.com>,
- "rf@opensource.cirrus.com" <rf@opensource.cirrus.com>,
- "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.com" <tiwai@suse.com>
-Cc: "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "michael@walle.cc" <michael@walle.cc>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "nicolas.ferre@microchip.com" <nicolas.ferre@microchip.com>,
- "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
- "claudiu.beznea@tuxon.dev" <claudiu.beznea@tuxon.dev>,
- "Simek, Michal" <michal.simek@amd.com>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>,
- "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- "patches@opensource.cirrus.com" <patches@opensource.cirrus.com>,
- "linux-sound@vger.kernel.org" <linux-sound@vger.kernel.org>,
- "git (AMD-Xilinx)" <git@amd.com>,
- "amitrkcian2002@gmail.com" <amitrkcian2002@gmail.com>
-References: <20231125092137.2948-1-amit.kumar-mahapatra@amd.com>
- <20231125092137.2948-8-amit.kumar-mahapatra@amd.com>
- <e2305642-55f1-4893-bea3-b170ac0a5348@linaro.org>
- <BN7PR12MB2802BEDFB821A1748185794CDC8AA@BN7PR12MB2802.namprd12.prod.outlook.com>
- <f5a47024-514a-4846-bc16-08cf0f9af912@linaro.org>
- <BN7PR12MB2802BB3DA682D9C13EF7DE08DC8FA@BN7PR12MB2802.namprd12.prod.outlook.com>
- <5a6f6764-6779-42b0-b6c6-3f638b85ef78@linaro.org>
- <BN7PR12MB28029EB1A7D09882878499A2DC8FA@BN7PR12MB2802.namprd12.prod.outlook.com>
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: 
- <BN7PR12MB28029EB1A7D09882878499A2DC8FA@BN7PR12MB2802.namprd12.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: LS33NDE54EL6IT7HPL3O6RKVFQL7VTEX
-X-Message-ID-Hash: LS33NDE54EL6IT7HPL3O6RKVFQL7VTEX
-X-MailFrom: tudor.ambarus@linaro.org
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.252.7.20]
+X-ClientProxiedBy: EQNCAS1NODE3.st.com (10.75.129.80) To SHFDAG1NODE1.st.com
+ (10.75.129.69)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-12_09,2023-12-12_01,2023-05-22_02
+Message-ID-Hash: UUEYIX3LJ222B7STKFXSMOZ4W6IH2B4A
+X-Message-ID-Hash: UUEYIX3LJ222B7STKFXSMOZ4W6IH2B4A
+X-MailFrom: prvs=071036046b=gatien.chevallier@foss.st.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -142,7 +122,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LS33NDE54EL6IT7HPL3O6RKVFQL7VTEX/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UUEYIX3LJ222B7STKFXSMOZ4W6IH2B4A/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -151,141 +131,137 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+Document RIFSC (RIF security controller). RIFSC is a firewall controller
+composed of different kinds of hardware resources.
 
+Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
+---
 
-On 12/11/23 13:37, Mahapatra, Amit Kumar wrote:
+Changes in V6:
+	- Renamed access-controller to access-controllers
+	- Removal of access-control-provider property
+	- Removal of access-controller and access-controller-names
+	  declaration in the patternProperties field. Add
+	  additionalProperties: true in this field.
 
-Hi!
+Changes in V5:
+	- Renamed feature-domain* to access-control*
 
-cut
+Changes in V2:
+	- Corrected errors highlighted by Rob's robot
+	- No longer define the maxItems for the "feature-domains"
+	  property
+	- Fix example (node name, status)
+	- Declare "feature-domain-names" as an optional
+	  property for child nodes
+	- Fix description of "feature-domains" property
 
->>>>>>>  drivers/mtd/spi-nor/core.c  | 272
->>>>>>> +++++++++++++++++++++++++++++-----
->>>> --
->>>>>>>  drivers/mtd/spi-nor/core.h  |   4 +
->>>>>>>  include/linux/mtd/spi-nor.h |  15 +-
->>>>>>>  3 files changed, 240 insertions(+), 51 deletions(-)
->>>>>>>
->>>>>>> diff --git a/drivers/mtd/spi-nor/core.c
->>>>>>> b/drivers/mtd/spi-nor/core.c index 93ae69b7ff83..e990be7c7eb6
->>>>>>> 100644
->>>>>>> --- a/drivers/mtd/spi-nor/core.c
->>>>>>> +++ b/drivers/mtd/spi-nor/core.c
->>>>>>
->>>>>> cut
->>>>>>
->>>>>>> @@ -2905,7 +3007,10 @@ static void spi_nor_init_fixup_flags(struct
->>>>>>> spi_nor *nor)  static int spi_nor_late_init_params(struct spi_nor
->>>>>>> *nor)  {
->>>>>>>  	struct spi_nor_flash_parameter *params = spi_nor_get_params(nor,
->>>>>> 0);
->>>>>>> -	int ret;
->>>>>>> +	struct device_node *np = spi_nor_get_flash_node(nor);
->>>>>>> +	u64 flash_size[SNOR_FLASH_CNT_MAX];
->>>>>>> +	u32 idx = 0;
->>>>>>> +	int rc, ret;
->>>>>>>
->>>>>>>  	if (nor->manufacturer && nor->manufacturer->fixups &&
->>>>>>>  	    nor->manufacturer->fixups->late_init) { @@ -2937,6 +3042,44
->>>>>>> @@ static int spi_nor_late_init_params(struct spi_nor *nor)
->>>>>>>  	if (params->n_banks > 1)
->>>>>>>  		params->bank_size = div64_u64(params->size, params-
->>>> n_banks);
->>>>>>>
->>>>>>> +	nor->num_flash = 0;
->>>>>>> +
->>>>>>> +	/*
->>>>>>> +	 * The flashes that are connected in stacked mode should be
->> of
->>>>>>> +same
->>>>>> make.
->>>>>>> +	 * Except the flash size all other properties are identical for all
->> the
->>>>>>> +	 * flashes connected in stacked mode.
->>>>>>> +	 * The flashes that are connected in parallel mode should be
->> identical.
->>>>>>> +	 */
->>>>>>> +	while (idx < SNOR_FLASH_CNT_MAX) {
->>>>>>> +		rc = of_property_read_u64_index(np, "stacked-
->> memories",
->>>>>> idx,
->>>>>>> +&flash_size[idx]);
->>>>>>
->>>>>> This is a little late in my opinion, as we don't have any sanity
->>>>>> check on the flashes that are stacked on top of the first. We shall
->>>>>> at least read and compare the ID for all.
->>>>>
->>>>> Alright, I will incorporate a sanity check for reading and comparing
->>>>> the ID of the stacked flash. Subsequently, I believe this stacked
->>>>> logic should be relocated to spi_nor_get_flash_info() where we
->>>>> identify the first flash. Please share your thoughts on this.
->>>>> Additionally, do you
->>>>
->>>> I'm wondering whether we can add a layer on top of the flash type to
->>>> handle
->>>
->>> When you mention "on top," are you referring to incorporating it into
->>> the MTD layer? Initially, Miquel had submitted this patch to address
->>
->> I mean something above SPI MEM flashes, be it NOR, NANDs or whatever.
->> Instead of treating the stacked flashes as a monolithic device and treat in SPI
->> NOR some array of flashes, to have a layer above which probes the SPI MEM
->> flash driver for each stacked flash. In your case SPI NOR would be probed
->> twice, as you use 2 SPI NOR flashes.
->>
->>> stacked/parallel handling in the MTD layer.
->>> https://lore.kernel.org/linux-mtd/20200114191052.0a16d116@xps13/t/
->>> However, the Device Tree bindings were initially not accepted.
->>
->> Okay, thanks for the pointer. I'll take a look.
+ .../bindings/bus/st,stm32mp25-rifsc.yaml      | 96 +++++++++++++++++++
+ 1 file changed, 96 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/bus/st,stm32mp25-rifsc.yaml
 
-haven't yet read the thread from above, but I skimmed over the AMD
-controller datasheet.
+diff --git a/Documentation/devicetree/bindings/bus/st,stm32mp25-rifsc.yaml b/Documentation/devicetree/bindings/bus/st,stm32mp25-rifsc.yaml
+new file mode 100644
+index 000000000000..95aa7f04c739
+--- /dev/null
++++ b/Documentation/devicetree/bindings/bus/st,stm32mp25-rifsc.yaml
+@@ -0,0 +1,96 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/bus/st,stm32mp25-rifsc.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: STM32 Resource isolation framework security controller
++
++maintainers:
++  - Gatien Chevallier <gatien.chevallier@foss.st.com>
++
++description: |
++  Resource isolation framework (RIF) is a comprehensive set of hardware blocks
++  designed to enforce and manage isolation of STM32 hardware resources like
++  memory and peripherals.
++
++  The RIFSC (RIF security controller) is composed of three sets of registers,
++  each managing a specific set of hardware resources:
++    - RISC registers associated with RISUP logic (resource isolation device unit
++      for peripherals), assign all non-RIF aware peripherals to zero, one or
++      any security domains (secure, privilege, compartment).
++    - RIMC registers: associated with RIMU logic (resource isolation master
++      unit), assign all non RIF-aware bus master to one security domain by
++      setting secure, privileged and compartment information on the system bus.
++      Alternatively, the RISUP logic controlling the device port access to a
++      peripheral can assign target bus attributes to this peripheral master port
++      (supported attribute: CID).
++    - RISC registers associated with RISAL logic (resource isolation device unit
++      for address space - Lite version), assign address space subregions to one
++      security domains (secure, privilege, compartment).
++
++properties:
++  compatible:
++    contains:
++      const: st,stm32mp25-rifsc
++
++  reg:
++    maxItems: 1
++
++  "#address-cells":
++    const: 1
++
++  "#size-cells":
++    const: 1
++
++  ranges: true
++
++  "#access-controller-cells":
++    const: 1
++    description:
++      Contains the firewall ID associated to the peripheral.
++
++patternProperties:
++  "^.*@[0-9a-f]+$":
++    description: Peripherals
++    type: object
++
++    additionalProperties: true
++
++    required:
++      - access-controllers
++
++required:
++  - compatible
++  - reg
++  - "#address-cells"
++  - "#size-cells"
++  - "#access-controller-cells"
++  - ranges
++
++additionalProperties: false
++
++examples:
++  - |
++    // In this example, the usart2 device refers to rifsc as its domain
++    // controller.
++    // Access rights are verified before creating devices.
++
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++
++    rifsc: bus@42080000 {
++        compatible = "st,stm32mp25-rifsc";
++        reg = <0x42080000 0x1000>;
++        #address-cells = <1>;
++        #size-cells = <1>;
++        #access-controller-cells = <1>;
++        ranges;
++
++        usart2: serial@400e0000 {
++              compatible = "st,stm32h7-uart";
++              reg = <0x400e0000 0x400>;
++              interrupts = <GIC_SPI 115 IRQ_TYPE_LEVEL_HIGH>;
++              clocks = <&ck_flexgen_08>;
++              access-controllers = <&rifsc 32>;
++        };
++    };
+-- 
+2.25.1
 
->>
->>> Following a series of discussions, the below bindings were eventually
->>> merged.
->>> https://lore.kernel.org/all/20220126112608.955728-4-miquel.raynal@boot
->>> lin.com/
->>
->> I saw, thanks.
->>
->>>
->>>> the stacked/parallel modes. This way everything will become flash
->>>> type independent. Would it be possible to stack 2 SPI NANDs? How
->>>> about a SPI NOR and a SPI NAND?
->>>>
->>>> Is the datasheet of the controller public?
->>>
->>> Yes,
->>> https://docs.xilinx.com/r/en-US/am011-versal-acap-trm/Quad-SPI-Control
->>> ler
->>>
->>
->> Wonderful, I'll take a look. I see two clocks there. Does this mean that the
->> stacked flashes can be operated at different frequencies? Do you know if we
-> 
-> In stacked configuration, both flashes utilize a common clock (single 
-> clock line). In a parallel setup, the flashes share the same clock but 
-> have distinct clock lines. Please refer the diagrams in the sections 
-> below for reference.
-> https://docs.xilinx.com/r/en-US/am011-versal-acap-trm/QSPI-Flash-Interface-Diagrams
-
-Thanks! Can you share with us what flashes you used for testing in the
-stacked and parallel configurations?
-
->> can combine a SPI NOR with a SPI NAND in stacked configuration?
-> 
-> No, Xilinx/AMD QSPI controllers doesn't support this configuration.
-> 
-
-2 SPI NANDs shall work with the AMD controller, right?
-
-I skimmed over the QSPI controller datasheet and wondered why one would
-get complicated with 2 Quad Flashes when we have Octal. But then I saw
-that the same SoC can configure an Octal controller (the Octal and Quad
-controllers seems mutual exclusive) and that the Octal one can operate 2
-octal flashes in stacked mode :).
-
-Cheers,
-ta
