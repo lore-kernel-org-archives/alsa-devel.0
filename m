@@ -4,126 +4,107 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7B66DC4332F
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 Dec 2023 14:24:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AE1B4C4332F
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 Dec 2023 15:41:03 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B734DAE9;
-	Thu, 14 Dec 2023 15:24:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B734DAE9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 85C19DF1;
+	Thu, 14 Dec 2023 16:40:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 85C19DF1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1702563893;
-	bh=1vJYGEUu6FEdHqSKUkb2sEF37s3GzZ8qfJTlIp8RFfk=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	s=default; t=1702568461;
+	bh=MebzFsFfhSJ5dIfclJguwUeKJcn4t6kLU1YEnX6kTVk=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=t5sJwkTlcKw6u3duNVlGru31lW5Ze1tX6zSr4owirRrKjf17THEaU7/FK+XhhKltv
-	 IyZBGtONqT8k0hH9Vx+e+ZBOEvSpwAF+A8KEg0L774uo+jb/RVl5GBzJhFSZ/abJge
-	 h/brMHD0/Tq5xrbJcKJbLxWkaMstqd8+JiUAg4IE=
+	b=ZkKXew/M0W/JW4pO7IQB91uPuzPg2dYI1wQZUqzc6R0V6vvSgOiSodZjum7NuZsjw
+	 mCD2rI90QpIgt2zuuWyxbQEVs3nJCF4egOxXWjolyBSut/T1UcjAgdS6PWV81Vpjbq
+	 hHoXK14KIIAF48AaIwlZZp849vBvwh2YIL/C0r7w=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7DE94F80588; Thu, 14 Dec 2023 15:23:44 +0100 (CET)
+	id B34F5F80580; Thu, 14 Dec 2023 16:40:30 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 86733F805AB;
-	Thu, 14 Dec 2023 15:23:43 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 487CCF8057F;
+	Thu, 14 Dec 2023 16:40:29 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id F10ABF8016A; Wed, 13 Dec 2023 21:29:59 +0100 (CET)
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com
- [IPv6:2a00:1450:4864:20::32d])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id A738BF8016A; Thu, 14 Dec 2023 16:40:20 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A0905F800D2
-	for <alsa-devel@alsa-project.org>; Wed, 13 Dec 2023 21:29:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A0905F800D2
+	by alsa1.perex.cz (Postfix) with ESMTPS id 87D67F8001F
+	for <alsa-devel@alsa-project.org>; Thu, 14 Dec 2023 16:40:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 87D67F8001F
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20230601 header.b=R4fDwHjc
-Received: by mail-wm1-x32d.google.com with SMTP id
- 5b1f17b1804b1-40c1e3ea2f2so72485605e9.2
-        for <alsa-devel@alsa-project.org>;
- Wed, 13 Dec 2023 12:29:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702499388; x=1703104188;
- darn=alsa-project.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Zw2AbkoN/4FIKkUWexE+EWqV2AcpdmgqKqjwrsLePhs=;
-        b=R4fDwHjcizYBv1EQLVArLZxeY0mFmnz2Y7JAKNmwVfFUJ+XuwIPSZKOZOoE4t9dkBd
-         rU6IPzUxTrj4rzKBcVCUJaHuQq3aM2/2V8JPiZtRqkv1CGSZeb9gF5JPypPMHz2AnpFG
-         TJXiUgikRoTbcx70irM+6FoVV01epKeLuhB19bmiI4e2y6sIk8LC23PwRRSoBVVvFGY8
-         SELeKWzyW6R4AVmCuHOOsuYUtGMzMT0GfNOc2yMvc64AZ+XY6uE63az2f1XvYUIXoiOZ
-         j5YVKIWuuq1NWTJogU619hoidFQbXNHgD4P5y9N7ZO20NrHTy+D0Di7rMqtB+L4BkAw4
-         xXmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702499388; x=1703104188;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Zw2AbkoN/4FIKkUWexE+EWqV2AcpdmgqKqjwrsLePhs=;
-        b=n52opHI8y9TLI7ORRVbXhZ0C5/bG1LItKvm2Tk3D9pgTQkwUd6Fcf4yD0bgoA3ARG3
-         mFpeW9UBfGxz0JBUwsAP6B6CYr5i74oxuVubjQXiR/rr7Web/1oPVU2xKcOVB2ms81ke
-         RB4mV3ivW1VYwBD1ZMZeluQiSxUlpvYLFHc+3ff3frbwq4kLMTDE4D5UK2Z5NoO/aLs0
-         LxUq2mrP8+uHuZAsgcKH/vNu489p67V1wDx9pz6PmZl9lMqZShC2+8vr5re8jM+udHNq
-         8GCaRZJCG/4Spl8auO11MXXhV7EtjygN+FggxWnbtjoKdgnvk9l0MRVH3/2rddAxSS54
-         SeZw==
-X-Gm-Message-State: AOJu0Yw3njer0EFqEbffK4amlp4zn5D55r58NiVtJdMEz7kOriVlCSi5
-	z9iUspWA7hyWSOqHBxy2Cw==
-X-Google-Smtp-Source: 
- AGHT+IG20yw7g9GqI9IbadFk19Exl/zGderaqPqj/VFPT7HLhLixQNc2+B3uD+potrr7JRkM+oOFEA==
-X-Received: by 2002:a05:600c:3648:b0:40b:4812:22e2 with SMTP id
- y8-20020a05600c364800b0040b481222e2mr5226786wmq.11.1702499387771;
-        Wed, 13 Dec 2023 12:29:47 -0800 (PST)
-Received: from ?IPV6:2a02:810b:f40:4300:3bf6:bcc0:fe50:883f?
- ([2a02:810b:f40:4300:3bf6:bcc0:fe50:883f])
-        by smtp.gmail.com with ESMTPSA id
- n21-20020a05600c4f9500b0040b36ad5413sm21179364wmq.46.2023.12.13.12.29.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Dec 2023 12:29:47 -0800 (PST)
-Message-ID: <a5889aba-75b6-4671-918b-26a4b9ec12c5@gmail.com>
-Date: Wed, 13 Dec 2023 21:29:45 +0100
+ unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
+ header.s=PODMain02222019 header.b=jkWP3dlq
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+	by mx0b-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id
+ 3BECwqvj011581;
+	Thu, 14 Dec 2023 09:40:01 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	PODMain02222019; bh=z3TGw5/xezw89jMNYCXSuUDyHpcWKRZb/6RcGoYuygE=; b=
+	jkWP3dlqx/A9WQkKPMxF1whG/BUJzvaf36HAJldN9eW7WaU4TJ65ZimSatJr7jSu
+	YAkMJBWShqnZGGjmQSPTgka6u1LDkC8Uq658dGEs6wiInYopckxU32q9G/zsmSC/
+	XYQZBebxuTGSgEbzKrED1lzpGh2rA+dkImOJqFFdBpTZXAZGgr8Wg5oymTnMIWkP
+	nwaDtFAQPZV5QDRr5aoovgTgJlx201N65Zduls9MqxO6zu139x2vdN/ts9rNixbU
+	EmFQAkQ8JM3Cbn8MjGN2+uQYINm3fSOrQNGUMGtDaiY+NwbOhK/+RiJcnRv/L91C
+	Q3euNMQwlExvPpDfTo6Ubw==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3uvnhpp9c4-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 14 Dec 2023 09:40:00 -0600 (CST)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 14 Dec
+ 2023 15:39:59 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.40 via Frontend
+ Transport; Thu, 14 Dec 2023 15:39:59 +0000
+Received: from [198.90.251.142] (EDIN4WRCFY3.ad.cirrus.com [198.90.251.142])
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 2580F11CC;
+	Thu, 14 Dec 2023 15:39:59 +0000 (UTC)
+Message-ID: <d98a3157-6e58-4dd9-a35a-759bcdcbe0c9@opensource.cirrus.com>
+Date: Thu, 14 Dec 2023 15:39:58 +0000
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 00/31] Fix and improve Rockchip RK3128 support
-Content-Language: en-US, de-DE
-To: Heiko Stuebner <heiko@sntech.de>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, David Airlie <airlied@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>, Lee Jones <lee@kernel.org>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
- <sboyd@kernel.org>, Vinod Koul <vkoul@kernel.org>,
- Kishon Vijay Abraham I <kishon@kernel.org>
-Cc: Elaine Zhang <zhangqing@rock-chips.com>, Johan Jonker
- <jbx6244@gmail.com>, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org,
- linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
- alsa-devel@alsa-project.org, linux-clk@vger.kernel.org,
- linux-phy@lists.infradead.org
-References: <20230829171647.187787-1-knaerzche@gmail.com>
- <2167016.irdbgypaU6@phil>
-From: Alex Bee <knaerzche@gmail.com>
-In-Reply-To: <2167016.irdbgypaU6@phil>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-MailFrom: knaerzche@gmail.com
-X-Mailman-Rule-Hits: nonmember-moderation
+User-Agent: Mozilla Thunderbird Beta
+Subject: Re: [PATCH 1/1] ALSA: hda: cs35l41: Dell Fiorano add missing _DSD
+ properties
+To: Takashi Iwai <tiwai@suse.de>, <patches@opensource.cirrus.com>
+CC: Aleksandrs Vinarskis <alex.vinarskis@gmail.com>, <perex@perex.cz>,
+        <tiwai@suse.com>, <sbinding@opensource.cirrus.com>,
+        <james.schulman@cirrus.com>, <david.rhodes@cirrus.com>,
+        <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
+        Jasper Smet
+	<josbeir@gmail.com>
+References: <20231212195243.10666-1-alex.vinarskis@gmail.com>
+ <87fs05qc65.wl-tiwai@suse.de>
+Content-Language: en-US
+From: Stuart Henderson <stuarth@opensource.cirrus.com>
+In-Reply-To: <87fs05qc65.wl-tiwai@suse.de>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-GUID: rHyxExfuHEw1QW_H6SzrQsJ3uLSBj6WG
+X-Proofpoint-ORIG-GUID: rHyxExfuHEw1QW_H6SzrQsJ3uLSBj6WG
+X-Proofpoint-Spam-Reason: safe
+Message-ID-Hash: LYRBM4QRQLD77MPJT6SXOHWPRTOIVBR6
+X-Message-ID-Hash: LYRBM4QRQLD77MPJT6SXOHWPRTOIVBR6
+X-MailFrom: prvs=77126fb03d=stuarth@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: STJ5YHJOOLXJBS35DOU6TH4M6JXDSEJH
-X-Message-ID-Hash: STJ5YHJOOLXJBS35DOU6TH4M6JXDSEJH
-X-Mailman-Approved-At: Thu, 14 Dec 2023 14:23:38 +0000
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/STJ5YHJOOLXJBS35DOU6TH4M6JXDSEJH/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LYRBM4QRQLD77MPJT6SXOHWPRTOIVBR6/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -132,36 +113,125 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi Heiko
 
-Am 12.12.23 um 21:03 schrieb Heiko Stuebner:
-> Hi Alex,
->
-> Am Dienstag, 29. August 2023, 19:16:16 CET schrieb Alex Bee:
->> this series fixes some issues I found when testing my "new" RK3128 board
->> with the mainline kernel and adds some core functionality like SMP bringup,
->> usb and networking.
-> before I discard this thread, is everything from here migrated to
-> separate serieses or are there patches in this big pile that are still
-> relevant on their own, that haven't been applied?
-> [I lost track of what did go where ;-) ]
-
-No worries - I kept track :)
-
-Not everything is re-sent yet (sound nodes, RK3126/RK3128 split-up) but 
-you can discard this and will re-send everything left in separate series 
-(as I said [0])
-
-[0] 
-https://lore.kernel.org/linux-arm-kernel/170109134007.42627.12929766893521974712.b4-ty@kernel.org/T/#m63efa1c1379353b5cf764d2f9a260cf0329c864c
-
-Regards,
-
-Alex
-
+On 14/12/2023 11:02, Takashi Iwai wrote:
+> On Tue, 12 Dec 2023 20:52:43 +0100,
+> Aleksandrs Vinarskis wrote:
+>> Dell XPS 9530 (2023) has two SPI connected CS35L41 amplifiers, however
+>> is missing _DSD properties, cs-gpios and has a firmware bug which caps SPI
+>> controller's speed to unusable 3051Hz. This patch adds _DSD properties and
+>> sets second cs-gpio. In case SPI speed bug is detected, it will not
+>> initialize the device to avoid hangs on wake up.
+>>
+>> Resolution of SPI speed bug requires either a patch to `intel-lpss.c` or an
+>> UEFI update with corrected values from Dell. Tested with locally applied
+>> patch to `intel-lpss` on multiple XPS 9530 devices.
+>>
+>> Co-developed-by: Jasper Smet <josbeir@gmail.com>
+>> Signed-off-by: Jasper Smet <josbeir@gmail.com>
+>> Signed-off-by: Aleksandrs Vinarskis <alex.vinarskis@gmail.com>
+> Can Cirrus team review this?
 >
 >
-> Thanks
-> Heiko
+> thanks,
 >
->
+> Takashi
+
+The patch looks sensible, with some minor comments below, however we're 
+just at the tail end of testing a patch chain that genericises a lot of 
+this code and adds support for a rather large batch of other laptops 
+with incomplete DSD.  We're hoping to push this upstream on Monday.
+
+Can I be awkward and ask that we hold off on this patch chain until 
+then?  Then we can add this laptop using the new approach.
+
+If/when the chain is accepted, we will add support for a few Dell 
+laptops as well, including this one.
+
+>> ---
+>>   sound/pci/hda/cs35l41_hda_property.c | 47 ++++++++++++++++++++++++++++
+>>   1 file changed, 47 insertions(+)
+>>
+>> diff --git a/sound/pci/hda/cs35l41_hda_property.c b/sound/pci/hda/cs35l41_hda_property.c
+>> index c83328971728..69446a794397 100644
+>> --- a/sound/pci/hda/cs35l41_hda_property.c
+>> +++ b/sound/pci/hda/cs35l41_hda_property.c
+>> @@ -7,9 +7,55 @@
+>>   // Author: Stefan Binding <sbinding@opensource.cirrus.com>
+>>   
+>>   #include <linux/gpio/consumer.h>
+>> +#include <linux/spi/spi.h>
+>>   #include <linux/string.h>
+>>   #include "cs35l41_hda_property.h"
+>>   
+>> +/*
+>> + * Device 10280BEB (Dell XPS 9530) doesn't have _DSD at all. Moreover, pin that is typically
+>> + * used for `speaker_id` is missing. SPI's cs-gpios definitions are also missing.
+>> + */
+>> +static int dell_fiorano_no_acpi(struct cs35l41_hda *cs35l41, struct device *physdev, int id,
+>> +				const char *hid)
+>> +{
+>> +	struct cs35l41_hw_cfg *hw_cfg = &cs35l41->hw_cfg;
+>> +	struct spi_device *spi = to_spi_device(cs35l41->dev);
+>> +
+>> +	/*
+>> +	 * 10280BEB has a firmware bug, which wrongly enables clock divider for intel-lpss
+>> +	 * Resultant SPI clock is 100Mhz/32767=3051Hz, which leads to ~3 minute hang on boot/wake up
+>> +	 * Avoid initializing device if lpss was not patched/fixed UEFI was not installed
+>> +	 */
+>> +	if (spi->max_speed_hz < CS35L41_SPI_MAX_FREQ) {
+>> +		dev_err(cs35l41->dev, "SPI's max_speed_hz is capped at %u Hz, will not continue to avoid hanging\n",
+>> +			spi->max_speed_hz);
+>> +		return -EINVAL;
+>> +	}
+
+Instead of erroring out, I wonder if we can noodle our way to the 
+appropriate clk and clk_set_rate it up to 4MHz for this particular 
+laptop only?  Stefan's taking a look at that.
+
+Also, any SPI rate >~100k is probably just about usable, so we don't 
+want to error on <4MHz.  Quite often the spi clock is set at some value 
+just below 4MHz.  It's unclear if this is going to get fixed in the BIOS 
+at this point, so we don't know what exact rate we'd eventually receive.
+
+>> +
+>> +	dev_info(cs35l41->dev, "Adding DSD properties for %s\n", cs35l41->acpi_subsystem_id);
+>> +
+>> +	/* check SPI address to assign the index */
+>> +	cs35l41->index = id;
+>> +	cs35l41->channel_index = 0;
+>> +	/* 10280BEB is missing pin which is typically assigned to `spk-id-gpios` */
+>> +	cs35l41->speaker_id = cs35l41_get_speaker_id(physdev, cs35l41->index, 2, -1);
+>> +	cs35l41->reset_gpio = gpiod_get_index(physdev, NULL, 1, GPIOD_OUT_LOW);
+>> +
+>> +	hw_cfg->spk_pos = cs35l41->index  ? 1 : 0;	// 0th L, 1st R
+>> +	hw_cfg->bst_type = CS35L41_EXT_BOOST;
+>> +	hw_cfg->gpio1.func = CS35l41_VSPK_SWITCH;
+>> +	hw_cfg->gpio1.valid = true;
+>> +	hw_cfg->gpio2.func = CS35L41_INTERRUPT;
+>> +	hw_cfg->gpio2.valid = true;
+>> +	hw_cfg->valid = true;
+>> +
+>> +	/* Add second cs-gpio here */
+>> +	if (cs35l41->index)
+>> +		spi->cs_gpiod = gpiod_get_index(physdev, NULL, 0, GPIOD_OUT_HIGH);
+This will break once you pick up AMD's multi-cs patches, we should use 
+spi_set_csgpiod instead.
+>> +
+>> +	return 0;
+>> +}
+>> +
+>>   /*
+>>    * Device CLSA010(0/1) doesn't have _DSD so a gpiod_get by the label reset won't work.
+>>    * And devices created by serial-multi-instantiate don't have their device struct
+>> @@ -92,6 +138,7 @@ static const struct cs35l41_prop_model cs35l41_prop_model_table[] = {
+>>   	{ "CLSA0100", NULL, lenovo_legion_no_acpi },
+>>   	{ "CLSA0101", NULL, lenovo_legion_no_acpi },
+>>   	{ "CSC3551", "103C89C6", hp_vision_acpi_fix },
+>> +	{ "CSC3551", "10280BEB", dell_fiorano_no_acpi },
+>>   	{}
+>>   };
+>>   
+>> -- 
+>> 2.40.1
+>>
