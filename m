@@ -4,77 +4,108 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B11B7C4332F
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 Dec 2023 11:12:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B8C7C4332F
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 Dec 2023 13:16:34 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7DB01BC0;
-	Thu, 14 Dec 2023 12:12:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7DB01BC0
+	by alsa0.perex.cz (Postfix) with ESMTPS id B3EC9DF0;
+	Thu, 14 Dec 2023 14:16:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B3EC9DF0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1702552369;
-	bh=TZ1vRXqDptocYRDVGwkp62YEwPxCdg9ggzn/jKJtTkM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=Q5qjFxNAh3GqitH/0+SiBDzWDdX8TRQamj5ZbwBMPcgMDmUr8Wf9oD8KyeK9b9CIr
-	 yUiY6GnKel0apXKXQ1Q9rkrB6tYHlf6wMOAgO+AF5aLQPCpPe/0ZKCY3d5sADvMay1
-	 cw9suuwCFd42T5pNLcwQ1zWSae3f1GvTj4R1ZTBg=
+	s=default; t=1702559792;
+	bh=LK4dghZv/mOj1FuH8khGYnPJP1wF+IxeSt3nRujTvM8=;
+	h=From:Subject:Date:To:Cc:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=YY6Se26iacjSKgDepX5U9HvnA0dq2sdUIF4rQRhjeF3MFCQLuEdJ8vmv6e9V43XYX
+	 f0VOEysS4grNou8KR/KTW7gzeGBwPVEaoFTVrgwND4QLbaLrDiY3RuCrPI092dkTFF
+	 4BdBoR0jay3Zj/8LbJy3sQxXTY9Nla7MpF4rER7Q=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5BE05F8058C; Thu, 14 Dec 2023 12:12:12 +0100 (CET)
+	id 531D5F8058C; Thu, 14 Dec 2023 14:16:00 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A707CF80588;
-	Thu, 14 Dec 2023 12:12:12 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 24720F80580;
+	Thu, 14 Dec 2023 14:15:59 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 53EDBF8016A; Thu, 14 Dec 2023 12:12:09 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	id 839D5F8025F; Thu, 14 Dec 2023 14:15:52 +0100 (CET)
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com
+ [IPv6:2a00:1450:4864:20::22e])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id DA285F80114
-	for <alsa-devel@alsa-project.org>; Thu, 14 Dec 2023 12:12:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DA285F80114
+	by alsa1.perex.cz (Postfix) with ESMTPS id 0C89EF8001F
+	for <alsa-devel@alsa-project.org>; Thu, 14 Dec 2023 14:15:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0C89EF8001F
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=jCto4tIK
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id D707861F60;
-	Thu, 14 Dec 2023 11:12:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D6ACC433C8;
-	Thu, 14 Dec 2023 11:12:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702552323;
-	bh=TZ1vRXqDptocYRDVGwkp62YEwPxCdg9ggzn/jKJtTkM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=jCto4tIKs4RHUeT5DSunbTCDcENsTdfoLFS4ipfkZ6kOsekcz2jCh3YVVbaIaiJ9Y
-	 /ARs6Ymr1+vbllJvvtj7ZHfRhhCY9rw33GUV0xZshRhPkz+bpOU8JMjqne68o33oug
-	 EcsD4YcX2EYyAqV0pMZKEbkWgwGyIrNfG2Yp7SX6p7SPD1cIHtxhnYA0pWPVrtxdv7
-	 H29UX8mp+FwOlnh8A2Qx+Jv+EtSdCphfFPbjmSrB/wwo2C0RAHjBWObPK8niZg7fNe
-	 t6036iKGMjpmcI3NYQ212rs6FdvPUwmufO0yMzbhNK8fTAZP6UaCDJXRcju80iEi8O
-	 Dw5eDnNMowzgg==
-Date: Thu, 14 Dec 2023 11:11:58 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
-	alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
-	pierre-louis.bossart@linux.intel.com, kai.vehmanen@linux.intel.com,
-	ranjani.sridharan@linux.intel.com, yung-chuan.liao@linux.intel.com,
-	brent.lu@intel.com
-Subject: Re: [PATCH 2/2] ASoC: SOF: ipc4-topology: support NHLT device type
-Message-ID: <337560f8-94e3-447e-825a-6a3d916fcf16@sirena.org.uk>
-References: <20231127120657.19764-1-peter.ujfalusi@linux.intel.com>
- <20231127120657.19764-3-peter.ujfalusi@linux.intel.com>
+ unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
+ header.s=google header.b=ju++uvy1
+Received: by mail-lj1-x22e.google.com with SMTP id
+ 38308e7fff4ca-2cc4029dc6eso13081441fa.1
+        for <alsa-devel@alsa-project.org>;
+ Thu, 14 Dec 2023 05:15:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702559743; x=1703164543;
+ darn=alsa-project.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Hsy3l+28Wlzo8cXaOBVgUpQ+5XTYvjbT3bX9woEdBdk=;
+        b=ju++uvy1tR1Z6gpsRHQ8BuHhZcLkAVY6hTBT9vHfGczUzvfXdgvIoXDmFcIIFYmrMc
+         TjMSpGEONyMb72cSxs1U2yqAJGi6rxF3q6xYse2GF1tJSrxNlSTxlWIDuW4wr2EUaGJC
+         t5BckwzQB5OmaLLPsb6korKpB4TdIO41GiqnylTnPHULynvOFvaA2RrnZnYPp8Q8TPok
+         rhZzW4lole9Ur19qgVs2TR+lFyW6D3vnxsOFRTqYOtiwVSnkoGeSoNHND5WwSF5nlNEY
+         NSWM9XgQuUxuw/mRgigD1FUvAqQobEVTdlHZfiQh5v35x6k2JODF8rrDhLUo++tIESFq
+         t7ZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702559743; x=1703164543;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Hsy3l+28Wlzo8cXaOBVgUpQ+5XTYvjbT3bX9woEdBdk=;
+        b=hFEe+6pzc7v+dmG8DbQeqIkFf40hlnc71oL+MA1WmxiI13R0JRgpBowOWdZvfhflQr
+         k9HubVh5mmpaLZFHqlsd6LbB/jBQIDG2Qj5uLO/zQtNb/sBPZy7M70On3dehgL2Lq9cv
+         6P49pX9/FcnPRrGXWmtSieiz/spLlbuQ5liaaYZ3+n63EVbVyJWNv3DGvcZCA3ScYMbv
+         m2UmQ8p7aWI8LeZf/gBvQytoaMOrvc/MiU+AkNN/H0L5jJm5NJI7QU2Bnm9SmgKoqE8m
+         qaQxZFur5Lx+1w1CHP+/Awcks/y8NJKOVjfoAV4Zjvh9Mfc8hq03oljDLyLjEo71zN/L
+         5RiA==
+X-Gm-Message-State: AOJu0YzNjOQIgI6PHJQF+UWjWh2TFsvzBPMbxg8ZxCMnQtrJg1b8RSsA
+	6dypxrokiGBpkL/VLCjej4/k3Q==
+X-Google-Smtp-Source: 
+ AGHT+IGG2eNJ8YdSSOtikRyhfKzL54YiZt8kpDvWZmOdjaLZ+i16vshFSugATB9RNQ2q9+lT0N5dlA==
+X-Received: by 2002:a2e:8447:0:b0:2ca:31a:4e8 with SMTP id
+ u7-20020a2e8447000000b002ca031a04e8mr4281616ljh.72.1702559743254;
+        Thu, 14 Dec 2023 05:15:43 -0800 (PST)
+Received: from [127.0.1.1] ([85.235.12.238])
+        by smtp.gmail.com with ESMTPSA id
+ p23-20020a2e93d7000000b002ca02ceae84sm2080478ljh.83.2023.12.14.05.15.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Dec 2023 05:15:42 -0800 (PST)
+From: Linus Walleij <linus.walleij@linaro.org>
+Subject: [PATCH 0/4] GPIO inclusion fixes to misc sound drivers
+Date: Thu, 14 Dec 2023 14:15:41 +0100
+Message-Id: 
+ <20231214-gpio-descriptors-sound-misc-v1-0-e3004176bd8b@linaro.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="8UjZ1pKW2iNdRUe1"
-Content-Disposition: inline
-In-Reply-To: <20231127120657.19764-3-peter.ujfalusi@linux.intel.com>
-X-Cookie: Preserve the old, but know the new.
-Message-ID-Hash: G67YJXZ4H6L46O7LZZUKEOOC7OXPIUPW
-X-Message-ID-Hash: G67YJXZ4H6L46O7LZZUKEOOC7OXPIUPW
-X-MailFrom: broonie@kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAP3/emUC/x3MwQqDMAwA0F+RnA0slQ3Zr4gHbdMuh7UlURHEf
+ 1/Z8V3eBcYqbPDuLlA+xKTkBuo78J8lJ0YJzeAebiBHDlOVgoHNq9StqKGVPQf8inkcV08vGp4
+ jR4I2VOUo53+f5vv+ASS6OIxtAAAA
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Banajit Goswami <bgoswami@quicinc.com>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Thierry Reding <thierry.reding@gmail.com>,
+ Jonathan Hunter <jonathanh@nvidia.com>
+Cc: linux-sound@vger.kernel.org, alsa-devel@alsa-project.org,
+ devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
+ Linus Walleij <linus.walleij@linaro.org>
+X-Mailer: b4 0.12.4
+Message-ID-Hash: XRQS6ZL3JZDDLFHIRSYY6LD235YRQJ5J
+X-Message-ID-Hash: XRQS6ZL3JZDDLFHIRSYY6LD235YRQJ5J
+X-MailFrom: linus.walleij@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -86,7 +117,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/G67YJXZ4H6L46O7LZZUKEOOC7OXPIUPW/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XRQS6ZL3JZDDLFHIRSYY6LD235YRQJ5J/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -95,35 +126,30 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+Mostly dropping unused headers, and a single driver rewrite.
 
---8UjZ1pKW2iNdRUe1
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+---
+Linus Walleij (4):
+      ASoC: hisilicon: Drop GPIO include
+      ASoC: qcom: sc7180: Drop GPIO include
+      ASoC: simple-card-utils: Drop GPIO include
+      ASoC: tegra: tegra20_ac97: Convert to use GPIO descriptors
 
-On Mon, Nov 27, 2023 at 02:06:57PM +0200, Peter Ujfalusi wrote:
-> From: Brent Lu <brent.lu@intel.com>
->=20
-> The endpoint in NHLT table for a SSP port could have the device type
-> NHLT_DEVICE_BT or NHLT_DEVICE_I2S. Use intel_nhlt_ssp_device_type()
-> function to retrieve the device type before querying the endpoint
-> blob to make sure we are always using correct device type parameter.
+ arch/arm/boot/dts/nvidia/tegra20-colibri.dtsi |  2 +-
+ sound/soc/generic/audio-graph-card.c          |  1 -
+ sound/soc/generic/audio-graph-card2.c         |  1 -
+ sound/soc/generic/simple-card-utils.c         |  1 -
+ sound/soc/hisilicon/hi6210-i2s.c              |  1 -
+ sound/soc/qcom/sc7180.c                       |  1 -
+ sound/soc/tegra/tegra20_ac97.c                | 55 +++++++++++++--------------
+ sound/soc/tegra/tegra20_ac97.h                |  4 +-
+ 8 files changed, 29 insertions(+), 37 deletions(-)
+---
+base-commit: b85ea95d086471afb4ad062012a4d73cd328fa86
+change-id: 20231212-gpio-descriptors-sound-misc-8bc161358ef1
 
-Acked-by: Mark Brown <broonie@kernel.org>
+Best regards,
+-- 
+Linus Walleij <linus.walleij@linaro.org>
 
---8UjZ1pKW2iNdRUe1
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmV64v0ACgkQJNaLcl1U
-h9DO1Qf+N+1u2arL1wwjXJMSutWkreFnWV4qGzay46WqEXsYk9m+NvqBfKIp9Qpa
-ZktGdZoz9hzMRLbATzqBYME6YosPniWO/p04r2eeYSI0x8wO67LGVT13dnciW1eR
-9Dk8F7Jk2rKfj1Or5y0yOej7CMgWXH+6T6zUmlOdzAHJTu9sENaTZlSlSDbscyIw
-Ft/3ClozxWeKWo27yTLTHA2+ofuQCTc9pxbj4GCT/UvYpVxIDnH+tvY4roCQ1hak
-cDk/VG+FWIrlfFdMiREh1aDEm2F99m/PZQ6ZvsKgJEfoX2Bc7P5snSWEP+0SOXdx
-gnfwbTOPPCLxOmpVThFNIgHzcC9Vgg==
-=07ia
------END PGP SIGNATURE-----
-
---8UjZ1pKW2iNdRUe1--
