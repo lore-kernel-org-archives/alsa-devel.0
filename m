@@ -4,92 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79754C4332F
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 Dec 2023 13:16:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F487C4332F
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 Dec 2023 13:17:09 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8D232843;
-	Thu, 14 Dec 2023 14:16:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8D232843
+	by alsa0.perex.cz (Postfix) with ESMTPS id 921F1E72;
+	Thu, 14 Dec 2023 14:16:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 921F1E72
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1702559809;
-	bh=pE/NrsCrt9dzyWmHpAvVhrx2jqeufxODC4Ve1eLNtCM=;
+	s=default; t=1702559827;
+	bh=hmjNbFQy/MFZ32TwtvEddH6Mn4umEwoA5x6YUMSk+Pg=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=YDV/6RAMmlzI5RuYcF5ZVCSXoA8cD62Fy0zl5XTgG4OFruqjJHppsjFG1OFYFK69+
-	 gdkiTrFRQ3bQHZbQ6PoHdhZeTsj1tu4HALAnUvIJoJ4so7UE6LVsX9q6YkOkhtoBNM
-	 lto99hy3SGMsw4nEDCLfU2GscmMjaXuTO4BNm2eU=
+	b=r7nweyslgqnMZUoK1ci2bqdkmX9Eg7lCkAz1OF2d4w90LNiwK1mfCql/eyKw+mFqH
+	 MG/gbKV72LA53BjAmQTi5bufJT0TjWxWXey7u2A5dozUhPMK4hQm7NleKkZpetjuk5
+	 J/nf13rdVkUwLHYrPmdv7lPQDX4/CiDPsf5eqycA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 14073F80578; Thu, 14 Dec 2023 14:16:02 +0100 (CET)
+	id 4BD21F80166; Thu, 14 Dec 2023 14:16:10 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6D941F805D2;
-	Thu, 14 Dec 2023 14:16:00 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D0942F805E1;
+	Thu, 14 Dec 2023 14:16:09 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E3932F8020D; Thu, 14 Dec 2023 14:15:53 +0100 (CET)
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com
- [IPv6:2a00:1450:4864:20::22a])
+	id 1632DF8019B; Thu, 14 Dec 2023 14:15:56 +0100 (CET)
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com
+ [IPv6:2a00:1450:4864:20::231])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 3A906F80166
-	for <alsa-devel@alsa-project.org>; Thu, 14 Dec 2023 14:15:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3A906F80166
+	by alsa1.perex.cz (Postfix) with ESMTPS id 47C33F80114
+	for <alsa-devel@alsa-project.org>; Thu, 14 Dec 2023 14:15:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 47C33F80114
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=bVWK77kh
-Received: by mail-lj1-x22a.google.com with SMTP id
- 38308e7fff4ca-2ca00dffc23so103161421fa.2
+ header.s=google header.b=seumnG9z
+Received: by mail-lj1-x231.google.com with SMTP id
+ 38308e7fff4ca-2c9fdf53abcso5934831fa.1
         for <alsa-devel@alsa-project.org>;
- Thu, 14 Dec 2023 05:15:45 -0800 (PST)
+ Thu, 14 Dec 2023 05:15:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702559744; x=1703164544;
+        d=linaro.org; s=google; t=1702559746; x=1703164546;
  darn=alsa-project.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=XFPvhE2TfppE4P1yrXLwpu8QNBSRgd4h1Csi59de14s=;
-        b=bVWK77khUs/l1oZ+zhkxME3fzj1SnGpnFjAwExCZhLsOOluUhkZvr8FKiKUlLyXmBQ
-         o3gIPGhJsfvuywENov1N03JaYYlWFmwy+CK4HbPKJ1aSxB74HJlf8Ts5AqBNS0za6K1D
-         +aUrMY8uwnhUQpXbsrMEdoUjazxoP7i24Den8mhXjm/9aVXAZlz5vRoKlOhUef/fcumj
-         wsUTGw6RO2n9zdHoPTQa+PRBwJ4yRcPhEVDwRhlj8QJB6eL5YiT12PLT63fIg9qnKs3F
-         yaF9+qOD1exqsKGOpE50jHH6Wcia8jp/JHsK7DbUUmcCIMzxbUI4ZXWFNLNxd+5k//SG
-         wL0A==
+        bh=kaGgexboX4k3Qc2D4NNTwm8nzl2s41MzL85I6McymUo=;
+        b=seumnG9zFq8OJjpD3douPIgKDYl6c5jpq06u275i8WXIpN0d6xyIdaS+d3yl5aNUz+
+         AXf6HihwkfBQc7yPxvEoj4R2H/dzlLDvUkxHA2b6k8i+yR76eOvYV4noshkiDg+dsqDg
+         Z59GFVV7bLgtHy+CMpAcBYGcvjsGUAQT08YCGG4oa9NqauAWcE6Kh5t/co+m5qbE8Tvf
+         woii56+EqO3ZzpXFqAWpUNsJ8dW0kQevhhMJENPDOwZHMFHKvjVrRaV7u038W4ZRWGpH
+         8a4Ztr9d4BojhMWOrZJiKefZVdl2i2nxMs2dPKluuSzwPoPn3UAJHiIdBMhepKf/muxs
+         kSoQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702559744; x=1703164544;
+        d=1e100.net; s=20230601; t=1702559746; x=1703164546;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=XFPvhE2TfppE4P1yrXLwpu8QNBSRgd4h1Csi59de14s=;
-        b=gptMrVo5C+u96vYVIgxpbbsFJ5Uqo1bza19ARRWzpjKaL6jb30k8HDhsOniPigYbop
-         BWQk9IKD4ms/eO+FDkOxbd95FtzSRLAhTrcKiZRQvBJ2SlOaXMWrEVNG2KNB4bmuBCFp
-         71Pb85z5F/IYVycuBkvS78cmahjDnvjMJ4gH5WpQy/663QRqd2xmLqFEVqkP70ERI/fp
-         VnjJ6E7DPMsSeGdoBuZbm6eNuc+oafvbbzNlnvkGR2GPUbOUvk/H/Oo830JyLi1L3PEi
-         x4I5jPsxy/C4e52l5SFMRXmTIB0C0siAWHVMKwowJ3rXnTSYB4vb+jfmCra4KosYglPC
-         PbFQ==
-X-Gm-Message-State: AOJu0YyzK5MTKbMitj43yWj6KltOMXj4ayVDtOCChGNa1/0m9FB84JdO
-	9ep4txlDdtTURFgso38Yx15Sxw==
+        bh=kaGgexboX4k3Qc2D4NNTwm8nzl2s41MzL85I6McymUo=;
+        b=dZ6rPIPRtPYoQQ021M3j2kA4Ucsri1uMXJ9HXW6i0SSM2WfFrvuFnE70/KluICsXQG
+         J5OZoQKseeZYoZ6OyUsorm9ZUfpaZUG+q5fBagv6qY4lKchfHVuQsERwOVgVq7DDqjjI
+         COEPnMAHMmkFppj1T+SaOAojj3D4TgzR4Tp2tiVITdDjEEBrPTYn6U9FY+2StHkO2dqA
+         JZrgjOLTD2/Tbb3y1wsTUcY8tI6dSD2hWWpOiTVYlT4ndSzKsQFY5tDbuK0zebeelO53
+         l6jazNVCe/Oq+ZRLS4SyzZHwRJVbS7TvlCp1iuiXsKi5s5UIF1dXzgmLg/eckqbRJ0Br
+         spvA==
+X-Gm-Message-State: AOJu0YwIMNCdlHPHgpFFBOiuFGzmLcuItqjXSiqUMZSTr/u8ECFZrR6E
+	EIOLrt31ZnUqqM4junnQkrmM4Q==
 X-Google-Smtp-Source: 
- AGHT+IFZ57yYzKJ7lhsSP4PBKVG28nM00flMj6xzVKrNm2pHPIBAti0LYIyzlqr3hZAxbG5Uc+OLtQ==
-X-Received: by 2002:a05:651c:88b:b0:2cc:1c75:3494 with SMTP id
- d11-20020a05651c088b00b002cc1c753494mr5912328ljq.55.1702559744240;
-        Thu, 14 Dec 2023 05:15:44 -0800 (PST)
+ AGHT+IGYhdO0R6QYJVwI+mlxYKJRdlAEgaRgJbuekhSlydk1uvqpHt6BYffRJ/9o8BrX6Te5MxGJTQ==
+X-Received: by 2002:a2e:6e13:0:b0:2ca:207:d214 with SMTP id
+ j19-20020a2e6e13000000b002ca0207d214mr5679117ljc.12.1702559746426;
+        Thu, 14 Dec 2023 05:15:46 -0800 (PST)
 Received: from [127.0.1.1] ([85.235.12.238])
         by smtp.gmail.com with ESMTPSA id
- p23-20020a2e93d7000000b002ca02ceae84sm2080478ljh.83.2023.12.14.05.15.43
+ p23-20020a2e93d7000000b002ca02ceae84sm2080478ljh.83.2023.12.14.05.15.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Dec 2023 05:15:43 -0800 (PST)
+        Thu, 14 Dec 2023 05:15:45 -0800 (PST)
 From: Linus Walleij <linus.walleij@linaro.org>
-Date: Thu, 14 Dec 2023 14:15:42 +0100
-Subject: [PATCH 1/4] ASoC: hisilicon: Drop GPIO include
+Date: Thu, 14 Dec 2023 14:15:44 +0100
+Subject: [PATCH 3/4] ASoC: simple-card-utils: Drop GPIO include
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Message-Id: 
- <20231214-gpio-descriptors-sound-misc-v1-1-e3004176bd8b@linaro.org>
+ <20231214-gpio-descriptors-sound-misc-v1-3-e3004176bd8b@linaro.org>
 References: 
  <20231214-gpio-descriptors-sound-misc-v1-0-e3004176bd8b@linaro.org>
 In-Reply-To: 
@@ -106,8 +106,8 @@ Cc: linux-sound@vger.kernel.org, alsa-devel@alsa-project.org,
  devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
  Linus Walleij <linus.walleij@linaro.org>
 X-Mailer: b4 0.12.4
-Message-ID-Hash: GAARPU6ZQNTXPHXDHURD4ZUWNFJRN3PX
-X-Message-ID-Hash: GAARPU6ZQNTXPHXDHURD4ZUWNFJRN3PX
+Message-ID-Hash: 3N6BP5NWJWUWXEXQKTORK4IZ34DMDOSR
+X-Message-ID-Hash: 3N6BP5NWJWUWXEXQKTORK4IZ34DMDOSR
 X-MailFrom: linus.walleij@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -120,7 +120,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GAARPU6ZQNTXPHXDHURD4ZUWNFJRN3PX/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3N6BP5NWJWUWXEXQKTORK4IZ34DMDOSR/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -129,26 +129,53 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-This driver is including the legacy GPIO header <linux/gpio.h>
-but not using any symbols from it. Drop the include.
+The generic card utilities are including the legacy GPIO header
+<linux/gpio.h> but not using any symbols from it. Drop the
+include from all files.
 
 Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 ---
- sound/soc/hisilicon/hi6210-i2s.c | 1 -
- 1 file changed, 1 deletion(-)
+ sound/soc/generic/audio-graph-card.c  | 1 -
+ sound/soc/generic/audio-graph-card2.c | 1 -
+ sound/soc/generic/simple-card-utils.c | 1 -
+ 3 files changed, 3 deletions(-)
 
-diff --git a/sound/soc/hisilicon/hi6210-i2s.c b/sound/soc/hisilicon/hi6210-i2s.c
-index dd7d2a077248..250ae3781d14 100644
---- a/sound/soc/hisilicon/hi6210-i2s.c
-+++ b/sound/soc/hisilicon/hi6210-i2s.c
-@@ -15,7 +15,6 @@
+diff --git a/sound/soc/generic/audio-graph-card.c b/sound/soc/generic/audio-graph-card.c
+index 76a9f1e8cdd5..83e3ba773fbd 100644
+--- a/sound/soc/generic/audio-graph-card.c
++++ b/sound/soc/generic/audio-graph-card.c
+@@ -9,7 +9,6 @@
+ 
  #include <linux/clk.h>
- #include <linux/jiffies.h>
- #include <linux/io.h>
+ #include <linux/device.h>
 -#include <linux/gpio.h>
- #include <sound/core.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
+ #include <linux/gpio/consumer.h>
+ #include <linux/module.h>
+ #include <linux/of.h>
+diff --git a/sound/soc/generic/audio-graph-card2.c b/sound/soc/generic/audio-graph-card2.c
+index 7146611df730..b0a5a9357c76 100644
+--- a/sound/soc/generic/audio-graph-card2.c
++++ b/sound/soc/generic/audio-graph-card2.c
+@@ -8,7 +8,6 @@
+ // based on ${LINUX}/sound/soc/generic/audio-graph-card.c
+ #include <linux/clk.h>
+ #include <linux/device.h>
+-#include <linux/gpio.h>
+ #include <linux/gpio/consumer.h>
+ #include <linux/module.h>
+ #include <linux/of.h>
+diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
+index cfa70a56ff0f..2f2280342e2a 100644
+--- a/sound/soc/generic/simple-card-utils.c
++++ b/sound/soc/generic/simple-card-utils.c
+@@ -5,7 +5,6 @@
+ // Copyright (c) 2016 Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+ 
+ #include <linux/clk.h>
+-#include <linux/gpio.h>
+ #include <linux/gpio/consumer.h>
+ #include <linux/module.h>
+ #include <linux/of.h>
 
 -- 
 2.34.1
