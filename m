@@ -4,68 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9A499C47073
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Jan 2024 18:58:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 62084C47073
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Jan 2024 18:58:28 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CF6241511;
-	Tue,  2 Jan 2024 19:57:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CF6241511
+	by alsa0.perex.cz (Postfix) with ESMTPS id C4B8E151E;
+	Tue,  2 Jan 2024 19:58:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C4B8E151E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1704221887;
-	bh=94cy1d42LwDp1V3sIq4TDavurB97LUabmdMDHjRakC0=;
+	s=default; t=1704221906;
+	bh=K1qxNt1VJKzA1qy4pp9hiB/aRj+EpQYb6FbhBzxmHro=;
 	h=From:To:CC:Subject:Date:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=ln8+8U18ZXo95Xxnx0mU4Goxg13EMW4yzTiH7jejx5BxJE6DaBnxow7y9vjamyYkV
-	 m+xFX1YlpC2G67fYn1aQC3/06yMpfIrfxUDjJSeedAmseTjSRRsCJHYwE2DNlF03VA
-	 CI1tAyQjco2o7zmrIs4AxOL9LELFRHVus/0T0RFk=
+	b=mK6Z3bcGhAta87YQ34EvCktPQOvlYg2VkwpcXVNTtiQu4MwYwpITvDWem6jOJDldJ
+	 a6gWYP6sVGPAsKkzzbPoZxu8VMUlWSBV5FzDQY4CtGUHE1jFHMRSZ9oQjk0ZrYJeg8
+	 Glf2toKvNcOjs2UhxfOKVx9GAxiwuifgb73LceSg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9CFB0F89802; Tue,  2 Jan 2024 19:51:16 +0100 (CET)
+	id 3466BF89767; Tue,  2 Jan 2024 19:51:12 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id EEACAF897F8;
-	Tue,  2 Jan 2024 19:51:15 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 87021F89752;
+	Tue,  2 Jan 2024 19:51:11 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8AFE0F8016A; Fri, 15 Dec 2023 12:21:12 +0100 (CET)
+	id 8103EF8016E; Fri, 15 Dec 2023 08:30:37 +0100 (CET)
 Received: from NAM02-DM3-obe.outbound.protection.outlook.com
- (mail-dm3nam02on2061d.outbound.protection.outlook.com
- [IPv6:2a01:111:f400:7e83::61d])
+ (mail-dm3nam02on20601.outbound.protection.outlook.com
+ [IPv6:2a01:111:f400:7e83::601])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 3072DF8001F
-	for <alsa-devel@alsa-project.org>; Fri, 15 Dec 2023 12:21:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3072DF8001F
+	by alsa1.perex.cz (Postfix) with ESMTPS id 86D0DF8016A
+	for <alsa-devel@alsa-project.org>; Fri, 15 Dec 2023 08:28:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 86D0DF8016A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=amd.com header.i=@amd.com header.a=rsa-sha256
- header.s=selector1 header.b=SCd44z9T
+ header.s=selector1 header.b=KQANRfl6
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jtutqEtg8ZzX3xIBYrwJUoN9Dy401jMJfUkrhJmahk160vF5DwpRAS38IZGpdUeneL8RBK5cGN0ZCfvH+yM1Jf1ObLmekq+KlUN7+MzKBKUV/PJP4EvODoX2coZbnQpLiLEmUCx1K4/ryY+qZFqJk/ZAz5yrb9GDpAwRLhrwODudQ8XiycR76DvdFW4hud8OY3oIeIQKgPKgQBgcr5kLp4iYyfYD9s/JM0YVtP0x2ff25LTGz4iVF5z/HTr/lEo5covB/8PoRmFmVIjdPMJX4cum83xrsPyoxjELbgG/bhjFVSz2eQW2Ua6hhxRjt4nM0nFOmXI25dnBVeh0Fw0KGg==
+ b=MKEjJ3/WD4ZJEZIF0m/Of1yIfXD6xDcO1njD9ZWSGRlGgPL4dkEuqvmEr81Hwo5DMiSgki1DM0nRK7/jh0YZ++GNJ68NvpXQ0QI9mRXOkz/kgcvu9LFgW8VqRQTRpSivwID32c+MSh6fjekxx81IoDvbMgMsvxn35G0Pk4reqk2QzAc/XXF0MZeWVQB5cfoPZdbuovRG6DAx8Bphd8DqrRWDLW0ww2UHYBhV/EQCihUHmLwhUWOmx78IlpfRLQYShHeJ8NpDsk7r3/mPphzOZO2qfoTKiqVtDYo1FTbQPoQ8mXKGLMqaJ5SO/w1h47PBXhEA8jt8ZgA1eJ+E4AF5Zw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=94cy1d42LwDp1V3sIq4TDavurB97LUabmdMDHjRakC0=;
- b=bDcK/qiNZ3j6zhFgFeUPs3TJLoGePcDWOYNb8ySh0RVzaFHDg6cv+nHCmLufoZ+ESbFJIRX1aYLJzm+g61UhCIxfXdCW3lSIdfrPK25Wi9W1w/1pcKfEFoNumoEoPSRgaMDUKocC99T/rWeLyXdGNpzbqGxHWWrtEmOB5NzxKqbAz49Z4dftwrfmwLglL+voOEOwPXV+x2IKaOEtkKe6dEu602B1PCKUrzMPNxRczwa4Kt9BWC9W+AsY602GAt0lJKYpp0dkBX9QFsV4UnOdYBXCWY0toY/DQchq6PFAcT20V5kcKPYZ+czbiC8uTHN+aOgUb6/XrAeVHXFHj252tQ==
+ bh=K1qxNt1VJKzA1qy4pp9hiB/aRj+EpQYb6FbhBzxmHro=;
+ b=jW8yQxGGHfZdq1wjbZEoR6tSlDk3fM9V/OQy4mIuOmlxhKdQugjo49GNMl7AiftnRDAUGOxB4SMbae3o5bQcLPsqKpQz354FOV6g0/7/sLsBEh7AkGCtN8ISsAXty4VwAI4+fCeJDw8+FEJbJ2h5dP/EyTkaS6x1mE1i4JhvYfGRQbE6ihCYpl1SJByuMfFpEhVFaywHSG81CUkbI0ChgSpI5hse4DAWmfz4XjD2IVTToLaXHX+1NwTkqHwHWUQu4WolMJy7dMbpO7nuVZ/2OFSJxxEJHdmNy8ruxW+3WAk43Ikz2L0hgYRWiDg96s3kYNuQqAdishZuKwt9/gRqMA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
  header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=94cy1d42LwDp1V3sIq4TDavurB97LUabmdMDHjRakC0=;
- b=SCd44z9T+Ro9OjEHI0m9WEtpe54Kefj+Ad6S763c9VcFaB5Lg3o28WScV5HY5AzQWXRxclPFDGqVYmwiGs1hthfCxhcfYArC+GLRHo6EPfDbd5qO/R0NGkXmAoj6z5zpWEZBtfjXSri3MCf5XOaIrhlTTjhuFvk7n5SEdsA3lLU=
+ bh=K1qxNt1VJKzA1qy4pp9hiB/aRj+EpQYb6FbhBzxmHro=;
+ b=KQANRfl6ooLveIVxvgtiC6FbTmoYVBWDbjuTjWMPHsvMbQb0ivZc4XeFLeL6bkoGHpdFmppivP0hf2ucG9aL06JLROdr2BDuAx3C4kcPTQo0Siwpi0m0/REis0hjMr7tN4n+Vhkz5S6mvF0mcsCE5hvgidUA55rJlb4papz/ixI=
 Received: from BN7PR12MB2802.namprd12.prod.outlook.com (2603:10b6:408:25::33)
- by PH0PR12MB8821.namprd12.prod.outlook.com (2603:10b6:510:28d::19) with
+ by BL0PR12MB4898.namprd12.prod.outlook.com (2603:10b6:208:1c7::17) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.32; Fri, 15 Dec
- 2023 11:20:55 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.31; Fri, 15 Dec
+ 2023 07:28:02 +0000
 Received: from BN7PR12MB2802.namprd12.prod.outlook.com
  ([fe80::2a35:852d:bc78:ed64]) by BN7PR12MB2802.namprd12.prod.outlook.com
  ([fe80::2a35:852d:bc78:ed64%7]) with mapi id 15.20.7091.029; Fri, 15 Dec 2023
- 11:20:55 +0000
+ 07:28:01 +0000
 From: "Mahapatra, Amit Kumar" <amit.kumar-mahapatra@amd.com>
-To: Tudor Ambarus <tudor.ambarus@linaro.org>, "broonie@kernel.org"
-	<broonie@kernel.org>, "pratyush@kernel.org" <pratyush@kernel.org>,
+To: Michael Walle <michael@walle.cc>
+CC: "broonie@kernel.org" <broonie@kernel.org>, "tudor.ambarus@linaro.org"
+	<tudor.ambarus@linaro.org>, "pratyush@kernel.org" <pratyush@kernel.org>,
 	"miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>, "richard@nod.at"
 	<richard@nod.at>, "vigneshr@ti.com" <vigneshr@ti.com>,
 	"sbinding@opensource.cirrus.com" <sbinding@opensource.cirrus.com>,
@@ -73,10 +74,9 @@ To: Tudor Ambarus <tudor.ambarus@linaro.org>, "broonie@kernel.org"
 	<james.schulman@cirrus.com>, "david.rhodes@cirrus.com"
 	<david.rhodes@cirrus.com>, "rf@opensource.cirrus.com"
 	<rf@opensource.cirrus.com>, "perex@perex.cz" <perex@perex.cz>,
-	"tiwai@suse.com" <tiwai@suse.com>
-CC: "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"michael@walle.cc" <michael@walle.cc>, "linux-mtd@lists.infradead.org"
+	"tiwai@suse.com" <tiwai@suse.com>, "linux-spi@vger.kernel.org"
+	<linux-spi@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "linux-mtd@lists.infradead.org"
 	<linux-mtd@lists.infradead.org>, "nicolas.ferre@microchip.com"
 	<nicolas.ferre@microchip.com>, "alexandre.belloni@bootlin.com"
 	<alexandre.belloni@bootlin.com>, "claudiu.beznea@tuxon.dev"
@@ -87,29 +87,15 @@ CC: "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
 	<patches@opensource.cirrus.com>, "linux-sound@vger.kernel.org"
 	<linux-sound@vger.kernel.org>, "git (AMD-Xilinx)" <git@amd.com>,
 	"amitrkcian2002@gmail.com" <amitrkcian2002@gmail.com>
-Subject: RE: [PATCH v11 07/10] mtd: spi-nor: Add stacked memories support in
- spi-nor
-Thread-Topic: [PATCH v11 07/10] mtd: spi-nor: Add stacked memories support in
- spi-nor
-Thread-Index: 
- AQHaH4D9pFM5xtDoeEuMNIpXuxvtzbCcYmwAgAEJ+aCABhoaAIAAMcLwgAAzdICAADdZAIABtmWAgAQ4ECCAAAuVAIAAD5dQgAAYdQCAAAF/8A==
-Date: Fri, 15 Dec 2023 11:20:55 +0000
+Subject: RE: [PATCH v11 00/10] spi: Add support for stacked/parallel memories
+Thread-Topic: [PATCH v11 00/10] spi: Add support for stacked/parallel memories
+Thread-Index: AQHaH4DWk85ayhAN50GzHAcX+0JPbLClsDGAgAGh+SA=
+Date: Fri, 15 Dec 2023 07:28:01 +0000
 Message-ID: 
- <BN7PR12MB280237CDD7BB148479932874DC93A@BN7PR12MB2802.namprd12.prod.outlook.com>
+ <BN7PR12MB280267F8478681A1ED48A2D1DC93A@BN7PR12MB2802.namprd12.prod.outlook.com>
 References: <20231125092137.2948-1-amit.kumar-mahapatra@amd.com>
- <20231125092137.2948-8-amit.kumar-mahapatra@amd.com>
- <e2305642-55f1-4893-bea3-b170ac0a5348@linaro.org>
- <BN7PR12MB2802BEDFB821A1748185794CDC8AA@BN7PR12MB2802.namprd12.prod.outlook.com>
- <f5a47024-514a-4846-bc16-08cf0f9af912@linaro.org>
- <BN7PR12MB2802BB3DA682D9C13EF7DE08DC8FA@BN7PR12MB2802.namprd12.prod.outlook.com>
- <5a6f6764-6779-42b0-b6c6-3f638b85ef78@linaro.org>
- <BN7PR12MB28029EB1A7D09882878499A2DC8FA@BN7PR12MB2802.namprd12.prod.outlook.com>
- <c3fa1e04-92ed-48ab-a509-98e43abd5cd6@linaro.org>
- <BN7PR12MB2802E87F1A6CD22D904CAEACDC93A@BN7PR12MB2802.namprd12.prod.outlook.com>
- <b3d3c457-a43b-478a-85b3-52558227d139@linaro.org>
- <BN7PR12MB28027E62D66460A374E3CFEADC93A@BN7PR12MB2802.namprd12.prod.outlook.com>
- <e212f9fa-83c5-4b9e-8636-c8c6183096ab@linaro.org>
-In-Reply-To: <e212f9fa-83c5-4b9e-8636-c8c6183096ab@linaro.org>
+ <30ffd8378d3ef1c4fa6dfe4324b18345@walle.cc>
+In-Reply-To: <30ffd8378d3ef1c4fa6dfe4324b18345@walle.cc>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
@@ -117,85 +103,76 @@ X-MS-TNEF-Correlator:
 authentication-results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=amd.com;
 x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BN7PR12MB2802:EE_|PH0PR12MB8821:EE_
-x-ms-office365-filtering-correlation-id: bf8119ce-9021-4ca7-b31e-08dbfd5fe79e
+x-ms-traffictypediagnostic: BN7PR12MB2802:EE_|BL0PR12MB4898:EE_
+x-ms-office365-filtering-correlation-id: 9f4ebcd3-7d79-4351-5fb2-08dbfd3f5ec7
 x-ld-processed: 3dd8961f-e488-4e60-8e11-a82d994e183d,ExtAddr
 x-ms-exchange-senderadcheck: 1
 x-ms-exchange-antispam-relay: 0
 x-microsoft-antispam: BCL:0;
 x-microsoft-antispam-message-info: 
- yQgcRgF8EaQqh3pewhNxLOTi1Rwz2Za/MMGQlOxZZZEf9Nc9lVLRbey5ch1DP+xrODro2wLQtNGjORzBdc0EItMbX8jihY/KwAFmJcGt9e2Y3FLDwgCbsWaILKiJjTJuph7hCpFWDc9IriDHTn075zq9aMxRa+ifIkaXjHseclx9LR+1MlJYVJevZGdSFBEAfSjV0Vf1QkIgpJ5cG0MJlCF2n5MsPSv9yVmFK68/AzpUia/bCexc1b/Dj7ki+mrNLXPM5fMQYZdsRjK2mmO28tV0Ty8QPPsz+VG+I3Cn9QDCFm18saVtObJor1MFmmpQSs98BH++FO8MTpjFKPArfPXjygW0lWQ25jpahJKo9TdY3bwKPo88iXA/N6XDf8Yfke8CZ9M5PzIzxgi/ztTp9D5PNqzXJ+tX3IeoBDUhnfM82N8k7wQApXhaZlo/TIVqzMv5EJ/wj9pyCpRn2EI2mKAHuGVh12f4vpgiOkLT0vx5eSTIHrMFVOqaAFoeqtGguMTShWOXtRauBJVpdR/Br4ojFKynYIidsnfKch1KC+RRm59kCN6V6fygI8HvsOcRZn05/JXDrC63cOY3vx/ivOFDBuEtPOXNTEIvhSofVdCv662lKHGZ1nawYgjV8/oP67yCfJydGDkeQMO7WKRtJA==
+ DBs4tti4xyWzCQD3UoYWlcULg1RE0TvzGj6snW2J7CTmA0vh4Dic1Q0E1oJT+OMZAuwpjm8/JCRHvXS1agNE07qg2BEuimWqiSpxD+80yKqsJ4Te23sOPFcDJ9NolqaU79INjHcmhvaMtefCzTeHYbc7gSaFRVzEI/D6B6SJCQG8L8pfrXOJCjEk2/ZnDJdllRKCeWnQLWj8ZpOrmaQt5S2Xsw1YPK7D/QKVdfxy7wCGAhR2vwt6WbBalL6af+bIynj4Nz921aUzZ0HNu+z1QGDBNEjgnJO+lg9izOEwMwVg+wkeYhkr/ESMbCsc7SBXurmQxToOj5T0S0vd92vih3eY3t8a6yC7YZVebBVA5+eviSXJkX0fnCW54YGLAaTIieW7yYvxoIEzqPg6uJYN28MTRIQrB8cx228BSO/JNPKYZKu4SVV/LipcCCu/5yvr+rfctmW691V5Fvz9nayc36KI9S6JIY4JpR3SNtbb63Uh72VzNMq90bMCvcGWcSCntGvKFPDsdrppVlfCSZuaRtbHTyyj4r2dCibtgTPsnBaOlptxf9mj2UkBsTnT3uP46tsmqPxmrWo0axemOAzBxW7RbAahj8m1Hb2ruoTfBeKDtn5UeAnSmOFrcr6O267n
 x-forefront-antispam-report: 
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN7PR12MB2802.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(376002)(396003)(39860400002)(136003)(230922051799003)(64100799003)(1800799012)(451199024)(186009)(2906002)(33656002)(4326008)(8676002)(8936002)(52536014)(86362001)(5660300002)(7416002)(38070700009)(921008)(41300700001)(53546011)(26005)(9686003)(55016003)(83380400001)(478600001)(6506007)(7696005)(71200400001)(38100700002)(122000001)(110136005)(76116006)(66446008)(54906003)(66476007)(64756008)(66946007)(66556008)(316002);DIR:OUT;SFP:1101;
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN7PR12MB2802.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(396003)(136003)(346002)(376002)(366004)(230922051799003)(64100799003)(1800799012)(451199024)(186009)(4326008)(8936002)(52536014)(8676002)(2906002)(7416002)(5660300002)(478600001)(6506007)(7696005)(9686003)(53546011)(54906003)(64756008)(66446008)(66476007)(66556008)(66946007)(76116006)(316002)(6916009)(41300700001)(38100700002)(122000001)(55016003)(33656002)(86362001)(38070700009)(71200400001)(26005)(83380400001);DIR:OUT;SFP:1101;
 x-ms-exchange-antispam-messagedata-chunkcount: 1
 x-ms-exchange-antispam-messagedata-0: 
- =?utf-8?B?NW1aaklqYzlDTjZVSHFtL3l1Ym5keGg3ZS94d0d5a0paSzRoNGt0azFIR2dr?=
- =?utf-8?B?aldlVTYzdlcxc3lRbWtXWjNXUzUxaENDVVg1OE50a1ViRnhzd1pxVGpoR2Rr?=
- =?utf-8?B?QVpvQjVaM3dqWGNKS2NXMXNpTjJmQXE4NXE4eDN2Z1VSbmxMR1ZuWFBZbVBW?=
- =?utf-8?B?M2VFR0FvZ2RwTk5SL0xMaDVGL3RPVnpqWUd2V0VTUjFvS3FRamdrVGJtVFgz?=
- =?utf-8?B?cUNwMWpaWWtwNHZZSFQvVUxXZWxMQ0V1UmdBNnpMNjNDMG91dHBwR1JFMzJU?=
- =?utf-8?B?OVRBdkIxY01mYzBQa3dsV1VNNFpjUFMvdWFTNnEvU25ta1RJV3RaTUFET2t1?=
- =?utf-8?B?cFpMRUxzN0JNa1p1U0lkbTVVMEJxTTE0TWQvVU9rd04wRDF3Vjc4THR6V0RF?=
- =?utf-8?B?UlJmRUdjcFBsb1ZXNDNIMEY4Tk8wV2dFMUpsc3U5MGY1b1phcUVHeGF6Nmxt?=
- =?utf-8?B?ZS9SdXZxcm9mUWN2U1VTc3BIVUw1Y3Q1a2s4amhvZjJkUTl3ZUgwcUZMcXQ5?=
- =?utf-8?B?cUpMV2wzdkYzdEtNUWY3K3FWaStNcWM5aW1Pa3ByaWs5blZtSi9WRnIwbmtm?=
- =?utf-8?B?SXpycE1BQVhsVDdjaHlBZzRBVFVDL1Iyaml5dmNoeWtCOG1yaWJpUWx4WUFX?=
- =?utf-8?B?R2t5QWU5VjEvekZBYUdlZDNjSTQ2TFNwaU8rWGJMcEh3RUZxVnFNWm9IYzBP?=
- =?utf-8?B?TUJ5ZGN1MkI0dmlYTWZUbzdYd0FmbzNkN0hwZmlkWWYrMlVqVUx3TkhGYXBn?=
- =?utf-8?B?NFJaOTdqZ2NEQjR0WWU0VTZhMkdKcXNPVlI2NWY3bVV4VlRhVEhUMlRHenJq?=
- =?utf-8?B?SkNPaWx5aXZRRzRCREt6Rkg3c1NPUVRZWDZpYlhTeHVSQ3JVSHNGR3pIbWVw?=
- =?utf-8?B?RWt6T3BuK0U2cFBvUDlsTGQxcGUxSlZlRlVDOWhFWTFLT0hKQTR1aHY5TkVE?=
- =?utf-8?B?NFRUSis0RU1IQy9wQ3F5RHU5OVZESjh1ckE2ekZFWGl2aHZJYllaalExTytu?=
- =?utf-8?B?YWdlcXF6b24ralNiSVZTTnpNbEs0eXBGYUZVOXdKWlZDK0tZU29WUjdjSTBh?=
- =?utf-8?B?OGF0TFVlcVUvTS84MlJ3UlBCRUlReE9wOEV0Vks5UHY2UlRjRlErZ1FHbVFo?=
- =?utf-8?B?aVVvaTVvVUVzSFRsOU9oVmpXbGt2eURmY0M5ZUlmRFFOUjJxVzFLekJFSzR6?=
- =?utf-8?B?emloVG1hcUdNSjg2Vkxxb1lYbEwxb3YwMmdXK2p6elo0Yys3RVVxdkNiTDIv?=
- =?utf-8?B?Smx5bzhjR3JYR3U2aTY4UlVXaG9RNFgyd0FxNWxzdHpTS1BRdklHRFBYRmFt?=
- =?utf-8?B?TzR6dG5NQnhkaC9pbjB5eEszUVRpR2hocUphS2I1RE9jTmFQVWxLeWlFS2Jo?=
- =?utf-8?B?a0RaazNmWDArNXRtRnZEOFhiQXVXUGVvb2t1TUR6TldQOE1KYXNFVGx5MXlR?=
- =?utf-8?B?UDQxUkplZFB2OGsrczVNUk5JQjVKRUlyM2dMVE9sakE3aGltZWFxenRxd0p2?=
- =?utf-8?B?TE9PMy8wdldmOEQvU2Y3QkczaXZ0NXQ1QmhNdGVrMjJxUm13MFU4OG5Vak4w?=
- =?utf-8?B?bHhGd1NTOGxrbG1URGlydnNMejFrcTNmK2dlN0tJYThYUExVWjRNdlU5dy9u?=
- =?utf-8?B?TjVsM2cxKzZoQmdvb0lrMTdjajdDMXJ2TFR4SnNpNnJIK3BGbW5iTHluWWpq?=
- =?utf-8?B?TlB5TjRubmNKL1FNUmV0NDkxM0kvNytiY283a1hoWStCOXVsRDF2Z1doRXdR?=
- =?utf-8?B?aG9OR2h1Q3hyU2RTRG1TVkgzY1NIL2NEbEZpb1pUQXF4UU5tc2cvVFBoMXZF?=
- =?utf-8?B?RlpGN1A3U3Z6aGFYaitiSXE3d3Q5MlNWeUU4WFlWMi94K3pkVkV3SGtXekND?=
- =?utf-8?B?Mmp6UGlXZXExamVLZklFMnBTYkp5QXdySTJWWlVzblNXVUp2QlhTU3ZYek9l?=
- =?utf-8?B?d0ROMldaakhFM3QrZWJ5U0xwSGw4SDFJVFlmaVEwTmNWcUZYeEhmR3pWdkI1?=
- =?utf-8?B?MnNhb3RBOStkN1VWZERSL3FkaDRTamFya3VSZ0x5TlhGRXFVQzJlTWdrWWJn?=
- =?utf-8?B?SFBKekdZaGFNVWZRYTVXRlFWNGJHckVJYUErZC9ubVhEM2QyRUkzazErZGJz?=
- =?utf-8?Q?40N4=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ =?us-ascii?Q?nwB2bHhWPqOu4O8k9NXequEAXrH09gpK2BpCd/SiFQtlYAykZKqx0xSAKq3c?=
+ =?us-ascii?Q?kjWOQ6OuD6e79yS6cWtkkJlKZITpG/m3HLPbQ3EVsNT6kb5FtvcWSJdewy1p?=
+ =?us-ascii?Q?GM/gtyyprzAVB1cycpxKpRmjlNBtSMhMETl4o+ySCQxtKvHwvDxLLJpk2pej?=
+ =?us-ascii?Q?KdQssN1/XXxqfOTP7df2QrMzqlAu2vCKQ8gzAVf6iDwUyMhhCt4cOXf3Peva?=
+ =?us-ascii?Q?TRy5/j9QLmqrFvpTj8p36ruaniXOWnm4zXrg0HXTRP9sNTFrkYksA6JHTSNJ?=
+ =?us-ascii?Q?Eznf2tRkSV7UrvqyAwxPfwyH9/vO9SJVeWJtWpkuvm0Lq1bTFBcfwXqClsws?=
+ =?us-ascii?Q?hV6IgEVNBGVSTq5cdqwX6piMvchOhgoudIAPg4xaNpidGN4nIHH5ZzvYYJmU?=
+ =?us-ascii?Q?oS+N95q3s8EFad4lM2/EqK6qmgD0mtJUrm23WtUgdSTK/eH7GjaBDJvz+mNf?=
+ =?us-ascii?Q?Gq8bWXP1Aih6YpJQsAF51Su/5QsOKMkxcOBWqhuXRT1aOX0mBfUoybLDGT9O?=
+ =?us-ascii?Q?3TIOfczsypMDaoN94hrC/vC6diPhcd8tCr5jB6hNQYsjPTxK0FeJosFtUIOL?=
+ =?us-ascii?Q?uESblRaWcW8hwbvAIS1aFTDQTxe5vmAxHqRUfEGR9EE3ejfe+vO3OYYZl68q?=
+ =?us-ascii?Q?UL4uazXzv/GyPzZ5DV1Rw3UqiA3KgUhA7vS4QyeDsHmJF0om/2zqZDlZB/7D?=
+ =?us-ascii?Q?CLIPVSnmibmOdbAha9SMpwF2tgjWuW4ZUGJMVrO0cwKZ26cRCMYZqPUk6nbV?=
+ =?us-ascii?Q?XzvSKNNCA5qGvV2k4rXlaVkeHQfn2kgN/JDYcbpcvLrsu/1haSYUYsi7SkX4?=
+ =?us-ascii?Q?XcJ3ZOJGBFB/lWLpvzyOVSiR2qzckVy50dEc09vI6pJhmBj2KW5GPT61Om0C?=
+ =?us-ascii?Q?M4DoIxKW46X3YjOtKOtROJbEic/2cqAihfWHjRtWk9dc6+IqW9Vx8euTfKdF?=
+ =?us-ascii?Q?k7KStu4q5Ujghr8ulE0Yd6fw1s17HOyxIUkFaRXHBoG2jXry/tgqaTeEPy75?=
+ =?us-ascii?Q?YJnhzfTBLlysfKajqawEAlua14d3Qe5gP0vGfGYC6wQ6nzMs7IaVBO6XVQPI?=
+ =?us-ascii?Q?BJkA2/KWLOEQBVaHEfFVUKPS3LBQEmx9g08vFlOdwJqlIZPZHasFQnW1W5ud?=
+ =?us-ascii?Q?caf9OU4Q/puPNT0WdDsyyjiwG+bo8RGr0eH+s5xNdMbDkXbZrb/VaPRet5cO?=
+ =?us-ascii?Q?GwdPtOwLdrdGjgfIKvU+mElXklxCr8CAuFBTR1swZV2upTYEUjnvW7wmg7AN?=
+ =?us-ascii?Q?S4uwf+WYJzGSbuw+fmrwzuqi/3NcAvmFX5XF08www4ou9bved5ii3bSviuuQ?=
+ =?us-ascii?Q?5uYrEh6cDaElNwouBsRTp8pelM24GE5IM2vgfavdahty4Yh9EyCxicoHZ0/e?=
+ =?us-ascii?Q?5PnYO7ANdfGfB1y/KXnSToYcx1AfnuJqn6b3zURx24nu3Glm/z0FiAbb8lmU?=
+ =?us-ascii?Q?gNfb2mRpqIDCJ95K/L1reO9EnkN+Vn3y2YNrPy50gVHlPgggHNIJcIymuuoQ?=
+ =?us-ascii?Q?zWU24lIX3VDeg+LPOon4LONYmglMbP+ZrGCvZ4ttNRKbw4h2G6eXxS5P/iOu?=
+ =?us-ascii?Q?xDG1xHWRXTXI/hhqccw=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 X-OriginatorOrg: amd.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
 X-MS-Exchange-CrossTenant-AuthSource: BN7PR12MB2802.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-Network-Message-Id: 
- bf8119ce-9021-4ca7-b31e-08dbfd5fe79e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Dec 2023 11:20:55.2244
+ 9f4ebcd3-7d79-4351-5fb2-08dbfd3f5ec7
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Dec 2023 07:28:01.7399
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
 X-MS-Exchange-CrossTenant-userprincipalname: 
- rURVtZ/X12o6Q9qHuu0+GhwVXPdmN4hvT+41mKlyMj8CdR02fR5U8K4qYUGNcEdIhufUOPE+d/jFCHGMT9LBvA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB8821
+ S9WSAYyOnA1CKmg/ARMjkMj1kuuuN6el2HZD+Vk+SxAF6YdjY/XHT3j5e7TCpA0mOyOjiLO1mZ3gLYnxYSViQg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB4898
 X-MailFrom: amit.kumar-mahapatra@amd.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: UL3YTB2GDGT6YBU27QJDVVGW7MOPO433
-X-Message-ID-Hash: UL3YTB2GDGT6YBU27QJDVVGW7MOPO433
-X-Mailman-Approved-At: Mon, 01 Jan 2024 13:15:07 +0000
+Message-ID-Hash: 6UFM2DEDKSR5FDRUX7GVJ3QFOVGRD5EJ
+X-Message-ID-Hash: 6UFM2DEDKSR5FDRUX7GVJ3QFOVGRD5EJ
+X-Mailman-Approved-At: Mon, 01 Jan 2024 13:15:04 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7CGVGUK2JHX3P2KRR2DF5CZC4H6R5LAB/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/EN7V4H2EA3DGGSIHKVJ64GKBHBKFQ2VL/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -204,74 +181,129 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-SGVsbG8gVHVkb3IsDQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogVHVk
-b3IgQW1iYXJ1cyA8dHVkb3IuYW1iYXJ1c0BsaW5hcm8ub3JnPg0KPiBTZW50OiBGcmlkYXksIERl
-Y2VtYmVyIDE1LCAyMDIzIDQ6MDMgUE0NCj4gVG86IE1haGFwYXRyYSwgQW1pdCBLdW1hciA8YW1p
-dC5rdW1hci1tYWhhcGF0cmFAYW1kLmNvbT47DQo+IGJyb29uaWVAa2VybmVsLm9yZzsgcHJhdHl1
-c2hAa2VybmVsLm9yZzsgbWlxdWVsLnJheW5hbEBib290bGluLmNvbTsNCj4gcmljaGFyZEBub2Qu
-YXQ7IHZpZ25lc2hyQHRpLmNvbTsgc2JpbmRpbmdAb3BlbnNvdXJjZS5jaXJydXMuY29tOw0KPiBs
-ZWVAa2VybmVsLm9yZzsgamFtZXMuc2NodWxtYW5AY2lycnVzLmNvbTsgZGF2aWQucmhvZGVzQGNp
-cnJ1cy5jb207DQo+IHJmQG9wZW5zb3VyY2UuY2lycnVzLmNvbTsgcGVyZXhAcGVyZXguY3o7IHRp
-d2FpQHN1c2UuY29tDQo+IENjOiBsaW51eC1zcGlAdmdlci5rZXJuZWwub3JnOyBsaW51eC1rZXJu
-ZWxAdmdlci5rZXJuZWwub3JnOyBtaWNoYWVsQHdhbGxlLmNjOw0KPiBsaW51eC1tdGRAbGlzdHMu
-aW5mcmFkZWFkLm9yZzsgbmljb2xhcy5mZXJyZUBtaWNyb2NoaXAuY29tOw0KPiBhbGV4YW5kcmUu
-YmVsbG9uaUBib290bGluLmNvbTsgY2xhdWRpdS5iZXpuZWFAdHV4b24uZGV2OyBTaW1laywgTWlj
-aGFsDQo+IDxtaWNoYWwuc2ltZWtAYW1kLmNvbT47IGxpbnV4LWFybS1rZXJuZWxAbGlzdHMuaW5m
-cmFkZWFkLm9yZzsgYWxzYS0NCj4gZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZzsgcGF0Y2hlc0BvcGVu
-c291cmNlLmNpcnJ1cy5jb207IGxpbnV4LQ0KPiBzb3VuZEB2Z2VyLmtlcm5lbC5vcmc7IGdpdCAo
-QU1ELVhpbGlueCkgPGdpdEBhbWQuY29tPjsNCj4gYW1pdHJrY2lhbjIwMDJAZ21haWwuY29tDQo+
-IFN1YmplY3Q6IFJlOiBbUEFUQ0ggdjExIDA3LzEwXSBtdGQ6IHNwaS1ub3I6IEFkZCBzdGFja2Vk
-IG1lbW9yaWVzIHN1cHBvcnQNCj4gaW4gc3BpLW5vcg0KPiANCj4gDQo+IA0KPiBPbiAxMi8xNS8y
-MyAxMDowMiwgTWFoYXBhdHJhLCBBbWl0IEt1bWFyIHdyb3RlOg0KPiA+IEhlbGxvIFR1ZG9yLA0K
-PiANCj4gSGksDQo+IA0KPiA+DQo+ID4+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+ID4+
-IEZyb206IFR1ZG9yIEFtYmFydXMgPHR1ZG9yLmFtYmFydXNAbGluYXJvLm9yZz4NCj4gPj4gU2Vu
-dDogRnJpZGF5LCBEZWNlbWJlciAxNSwgMjAyMyAxOjQwIFBNDQo+ID4+IFRvOiBNYWhhcGF0cmEs
-IEFtaXQgS3VtYXIgPGFtaXQua3VtYXItbWFoYXBhdHJhQGFtZC5jb20+Ow0KPiA+PiBicm9vbmll
-QGtlcm5lbC5vcmc7IHByYXR5dXNoQGtlcm5lbC5vcmc7IG1pcXVlbC5yYXluYWxAYm9vdGxpbi5j
-b207DQo+ID4+IHJpY2hhcmRAbm9kLmF0OyB2aWduZXNockB0aS5jb207IHNiaW5kaW5nQG9wZW5z
-b3VyY2UuY2lycnVzLmNvbTsNCj4gPj4gbGVlQGtlcm5lbC5vcmc7IGphbWVzLnNjaHVsbWFuQGNp
-cnJ1cy5jb207IGRhdmlkLnJob2Rlc0BjaXJydXMuY29tOw0KPiA+PiByZkBvcGVuc291cmNlLmNp
-cnJ1cy5jb207IHBlcmV4QHBlcmV4LmN6OyB0aXdhaUBzdXNlLmNvbQ0KPiA+PiBDYzogbGludXgt
-c3BpQHZnZXIua2VybmVsLm9yZzsgbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZzsNCj4gPj4g
-bWljaGFlbEB3YWxsZS5jYzsgbGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmc7DQo+ID4+IG5p
-Y29sYXMuZmVycmVAbWljcm9jaGlwLmNvbTsgYWxleGFuZHJlLmJlbGxvbmlAYm9vdGxpbi5jb207
-DQo+ID4+IGNsYXVkaXUuYmV6bmVhQHR1eG9uLmRldjsgU2ltZWssIE1pY2hhbCA8bWljaGFsLnNp
-bWVrQGFtZC5jb20+Ow0KPiA+PiBsaW51eC0gYXJtLWtlcm5lbEBsaXN0cy5pbmZyYWRlYWQub3Jn
-OyBhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmc7DQo+ID4+IHBhdGNoZXNAb3BlbnNvdXJjZS5j
-aXJydXMuY29tOyBsaW51eC1zb3VuZEB2Z2VyLmtlcm5lbC5vcmc7IGdpdCAoQU1ELQ0KPiA+PiBY
-aWxpbngpIDxnaXRAYW1kLmNvbT47IGFtaXRya2NpYW4yMDAyQGdtYWlsLmNvbQ0KPiA+PiBTdWJq
-ZWN0OiBSZTogW1BBVENIIHYxMSAwNy8xMF0gbXRkOiBzcGktbm9yOiBBZGQgc3RhY2tlZCBtZW1v
-cmllcw0KPiA+PiBzdXBwb3J0IGluIHNwaS1ub3INCj4gPj4NCj4gPj4NCj4gPj4NCj4gPj4gT24g
-MTUuMTIuMjAyMyAwOTo1NSwgTWFoYXBhdHJhLCBBbWl0IEt1bWFyIHdyb3RlOg0KPiA+Pj4+IFRo
-YW5rcyEgQ2FuIHlvdSBzaGFyZSB3aXRoIHVzIHdoYXQgZmxhc2hlcyB5b3UgdXNlZCBmb3IgdGVz
-dGluZyBpbg0KPiA+Pj4+IHRoZSBzdGFja2VkIGFuZCBwYXJhbGxlbCBjb25maWd1cmF0aW9ucz8N
-Cj4gPj4+IEkgdXNlZCBTUEktTk9SIFFTUEkgZmxhc2hlcyBmb3IgdGVzdGluZyBzdGFja2VkIGFu
-ZCBwYXJhbGxlbC4NCj4gPj4NCj4gPj4gSSBnb3QgdGhhdCwgSSB3YW50ZWQgdGhlIGZsYXNoIG5h
-bWUgb3IgZGV2aWNlIElELg0KPiA+DQo+ID4gTjI1UTAwQSwgTVg2NlUyRzQ1RywgSVMyNUxQMDFH
-ICYgVzI1SDAySlYgYXJlIHNvbWUgb2YgdGhlIFFTUEkNCj4gZmxhc2hlcw0KPiA+IG9uIHdoaWNo
-IHdlIHRlc3RlZC4gQWRkaXRpb25hbGx5LCB3ZSBjb25kdWN0ZWQgdGVzdHMgb24gb3ZlciAzMA0K
-PiA+IGRpZmZlcmVudCBRU1BJIGZsYXNoZXMgZnJvbSBmb3VyIGRpc3RpbmN0IHZlbmRvcnMgKE1p
-cm9uLCBXaW5ib25kLA0KPiBNYWNyb25peCwgYW5kIElTU0kpLg0KPiA+DQo+IA0KPiBHcmVhdC4N
-Cj4gDQo+ID4+IFdoYXQgSSdtIGludGVyZXN0ZWQgaXMgaWYgZWFjaCBmbGFzaCBpcyBpbiBpdHMg
-b3duIHBhY2thZ2UuIEFyZSB0aGV5Pw0KPiA+DQo+ID4gSSdtIHNvcnJ5LCBidXQgSSBkb24ndCBx
-dWl0ZSB1bmRlcnN0YW5kIHdoYXQgeW91IG1lYW4gYnkgImlmIGVhY2gNCj4gPiBmbGFzaCBpbiBp
-dHMgb3duIHBhY2thZ2UuIg0KPiA+DQo+IA0KPiBUaGVyZSBhcmUgZmxhc2hlcyB0aGF0IGFyZSBz
-dGFja2VkIGF0IHRoZSBwaHlzaWNhbCBsZXZlbC4gSXQncyBhIHNpbmdsZSBmbGFzaCB3aXRoDQo+
-IG11bHRpcGxlIGRpZXMsIHRoYXQgYXJlIGFsbCB1bmRlciBhIHNpbmdsZSBwaHlzaWNhbCBwYWNr
-YWdlLg0KDQpHb3QgaXQuIFRoZSBXMjVIMDJKViBRU1BJIGZsYXNoIEkgbWVudGlvbmVkIGVhcmxp
-ZXIgaXMgYSBkZXZpY2Ugd2l0aCANCndpdGggZm91ciBkaWVzIHRoYXQgYXJlIHN0YWNrZWQgYXQg
-dGhlIHBoeXNpY2FsIGxldmVsLg0KDQo+IA0KPiBBcyBJIHVuZGVyc3RhbmQsIHlvdXIgc3RhY2tl
-ZCBmbGFzaCBtb2RlbCBpcyBhdCBsb2dpY2FsIGxldmVsLiBZb3UgaGF2ZQ0KPiAyIGZsYXNoZXMg
-ZWFjaCBpbiBpdHMgb3duIHBhY2thZ2UuIDIgZGlmZmVyZW50IGVudGl0aWVzLiBJcyBteSB1bmRl
-cnN0YW5kaW5nDQo+IGNvcnJlY3Q/DQoNClllcywgdGhhdOKAmXMgY29ycmVjdC4NCg0KSSdkIGxp
-a2UgdG8gY29udHJpYnV0ZSB0byB5b3VyIGVhcmxpZXIgcG9pbnQgcmVnYXJkaW5nIHRoZSBwbGFj
-ZW1lbnQgb2YgDQp0aGUgc3RhY2tlZCBsYXllci4gQXMgeW91IGNvcnJlY3RseSBoaWdobGlnaHRl
-ZCwgaXQgc2hvdWxkIGJlIGluIHRoZSANCnNwaS1tZW0gZ2VuZXJpYyBsYXllci4gRm9yIGluc3Rh
-bmNlLCB3aGVuIGEgcmVhZC93cml0ZSBvcGVyYXRpb24gZXh0ZW5kcyANCmFjcm9zcyBtdWx0aXBs
-ZSBmbGFzaGVzICh3aGV0aGVyIFNQSS1OT1Igb3IgU1BJLU5BTkQpLCB0aGUgc3RhY2tlZCBsYXll
-ciANCm11c3QgaGFuZGxlIHRoZSBmbGFzaCBjcm9zc292ZXIuIFRoaXMgcmVxdWlyZXMgc2V0dGlu
-ZyB0aGUgYXBwcm9wcmlhdGUgQ1MgDQppbmRleCBpbiBtZW0tPnNwaS0+Y3NfaW5kZXhfbWFzayB0
-byBzZWxlY3QgdGhlIGNvcnJlY3Qgc2xhdmUgZGV2aWNlIGFuZCANCnVwZGF0aW5nIHRoZSBkYXRh
-IGJ1ZmZlciwgYWRkcmVzcyAmIGRhdGEgbGVuZ3RoIGluIHNwaV9tZW1fb3Agc3RydWN0IA0KdmFy
-aWFibGUuIERvZXMgdGhpcyBhbGlnbiB3aXRoIHlvdXIgdW5kZXJzdGFuZGluZz8NCg0KUmVnYXJk
-cywNCkFtaXQNCj4gDQo+IENoZWVycywNCj4gdGENCg==
+Hello Michael,
+
+> -----Original Message-----
+> From: Michael Walle <michael@walle.cc>
+> Sent: Tuesday, December 12, 2023 6:05 PM
+> To: Mahapatra, Amit Kumar <amit.kumar-mahapatra@amd.com>
+> Cc: broonie@kernel.org; tudor.ambarus@linaro.org; pratyush@kernel.org;
+> miquel.raynal@bootlin.com; richard@nod.at; vigneshr@ti.com;
+> sbinding@opensource.cirrus.com; lee@kernel.org;
+> james.schulman@cirrus.com; david.rhodes@cirrus.com;
+> rf@opensource.cirrus.com; perex@perex.cz; tiwai@suse.com; linux-
+> spi@vger.kernel.org; linux-kernel@vger.kernel.org; linux-
+> mtd@lists.infradead.org; nicolas.ferre@microchip.com;
+> alexandre.belloni@bootlin.com; claudiu.beznea@tuxon.dev; Simek, Michal
+> <michal.simek@amd.com>; linux-arm-kernel@lists.infradead.org; alsa-
+> devel@alsa-project.org; patches@opensource.cirrus.com; linux-
+> sound@vger.kernel.org; git (AMD-Xilinx) <git@amd.com>;
+> amitrkcian2002@gmail.com
+> Subject: Re: [PATCH v11 00/10] spi: Add support for stacked/parallel
+> memories
+>=20
+> > This patch series updated the spi-nor, spi core and the AMD-Xilinx
+> > GQSPI driver to add stacked and parallel memories support.
+>=20
+> Honestly, I'm not thrilled about how this is implemented in the core and =
+what
+> the restrictions are.
+> First, the pattern "if (n=3D=3D1) then { old behavior } else { copy old c=
+ode modify
+> for n=3D=3D2 }" is hard to maintain. There should be no copy and the old =
+code
+> shall be adapted to work for both n=3D1 and n>1.
+
+Stacked mode serves as an extension of single device mode concerning data=20
+handling and CS line assertion. In both scenarios, the driver only asserts=
+=20
+one CS line at any given time. The existing code has been expanded to=20
+determine the CS line to be asserted based on the requested address and=20
+data length. This modification accommodates both single (legacy) and=20
+stacked use cases.
+
+In contrast, parallel mode differs from the legacy (single) mode in terms=20
+of data handling. In parallel mode, each byte of data is stored in both=20
+devices, with even bits in the lower flash and odd bits in the upper flash.=
+=20
+During the transfer, multiple CS lines need to be asserted simultaneously.=
+=20
+Consequently, special handling is necessary for parallel mode.
+
+>=20
+> But I agree with Tudor, some kind of abstraction (layer) would be nice.
+
+I agree too.
+
+>=20
+> Also, you hardcode n=3D2 everywhere. Please generalize that one.
+>=20
+> Are you aware of any other controller supporting such a feature? I've see=
+n
+
+Currently, I am familiar only with the AMD-Xilinx QSPI controllers that=20
+support parallel/stacked configurations and AMD-Xilinx OSPI controllers,=20
+which support stacked configuration. However, it's important to highlight=20
+certain aspects of these configurations. In parallel mode, each byte of=20
+data is stored in both flash devices, and the QSPI controller=20
+automatically handles the byte split and the simultaneous=20
+assertion/de-assertion of multiple CS lines. Hence, it can be stated that=20
+parallel operation is a controller feature, and other controllers wishing=20
+to operate flashes in parallel mode should be capable of data splitting=20
+and asserting multiple CS lines simultaneously. This characteristic might=20
+be specific to the AMD-Xilinx controller.
+
+In contrast, in stacked mode, only one CS pin is asserted at any given=20
+time, determined by the memory address and the accessed data length.=20
+Stacked mode, unlike parallel mode, functions as a software abstraction.
+Once implemented, any SPI controller with multiple CS lines or with a=20
+combination of native-CS and GPIO-CS can operate two or more flashes in=20
+stacked mode.
+
+> you also need to modify the spi controller and intercept some commands.
+
+Command interception occurs exclusively in parallel mode, not in stacked=20
+mode. In parallel mode, data must be split during flash memory read/write=20
+operations. However, during Flash register read/write operations, there=20
+should be no data split, as the identical data needs to be written to=20
+(or read from) the register of both flashes. Consequently, the driver has=20
+to intercept the command before activating the data split feature of the=20
+controller.
+
+> Can everything be moved there?
+
+In stacked mode, determining which flash device needs to be asserted is=20
+based on the flash address and the length of the requested data. This=20
+information is handled by the spi-nor core. If the operation spans across=20
+multiple flashes, the command, address, dummy (if required), and residual=20
+data must be issued to multiple flashes. This process should be carried=20
+out in the spi-nor core layer( or before spi-mem) and not in the driver.
+
+ That is why >=20
+> I'm not sure we are implementing controller specific things in the core. =
+Hard
+
+As explained earlier the parallel mode of operation can be controller speci=
+fic,
+But the stacked mode is controller independent.
+
+> to judge without seeing other controllers doing a similar thing. I'd like=
+ to avoid
+> that.
+>=20
+> If we had some kind of abstraction here, that might be easier to adapt in=
+ the
+> future, but just putting everything into the core will make it really har=
+d to
+> maintain. So if everything related to stacked and parallel memory would b=
+e in
+> drivers/mtd/spi-nor/stacked.c, we'd have at least everything in one place=
+ with
+> a proper interface between that and the core.
+
+I agree.
+
+Regards
+Amit
+>=20
+> -michael
