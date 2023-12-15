@@ -4,71 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F0F93C35274
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Dec 2023 14:43:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3C43FC35274
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Dec 2023 14:44:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2981CDF6;
-	Fri, 15 Dec 2023 15:43:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2981CDF6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4463AE84;
+	Fri, 15 Dec 2023 15:43:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4463AE84
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1702651420;
-	bh=MnTxDQ/X0Gu1276RPY1f/BSXX1hXOKOfeOjfCfmzCv8=;
+	s=default; t=1702651445;
+	bh=HXCS5StPz/ifq66mFe/Jj3Q65TF3SlpI4W5seWeLOEc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=EeMmO/QijUGjcuKbYlk9wmhzygIp+DxR2GQvVQvSg+D8EHk7TyWbWExLWFAStVANe
-	 X4gQXaShYJgNf2KCMzOD6CHZcvtEjxGDC5iGYvwJCqjaVQgJS0ladod89W1fEmMlF4
-	 ohfOafpUmylmYrvYcFmbCl8qOh6jWXghd4jnfEQk=
+	b=NPJpXW4RCjd6KgavtoGCWjUs1mvfSwm8cqFHZqK7+eNZaGxpaeFg6MIfkVZ+g1Xi2
+	 EINrrAx90YMzAOhOA474o0ge49pJ2QWpcpQUrhEjiT6g4WY34HTcW9JFsnvLk8z7jV
+	 AnYYUwQg3KpVfAt3hdCsDtjsS5rusoR5ynQnaoCk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 46973F80681; Fri, 15 Dec 2023 15:42:14 +0100 (CET)
+	id 2A880F8069D; Fri, 15 Dec 2023 15:42:16 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D4C03F8067E;
-	Fri, 15 Dec 2023 15:42:13 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A8CE8F8069D;
+	Fri, 15 Dec 2023 15:42:15 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E06AFF80564; Fri, 15 Dec 2023 15:42:09 +0100 (CET)
+	id 4224AF80494; Fri, 15 Dec 2023 15:42:11 +0100 (CET)
 Received: from mail.savoirfairelinux.com (mail.savoirfairelinux.com
  [208.88.110.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 48447F8065D
-	for <alsa-devel@alsa-project.org>; Fri, 15 Dec 2023 15:42:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 48447F8065D
+	by alsa1.perex.cz (Postfix) with ESMTPS id 95410F8019B
+	for <alsa-devel@alsa-project.org>; Fri, 15 Dec 2023 15:42:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 95410F8019B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=savoirfairelinux.com header.i=@savoirfairelinux.com
  header.a=rsa-sha256 header.s=DFC430D2-D198-11EC-948E-34200CB392D2
- header.b=geDILowr
+ header.b=B/1d+ZDK
 Received: from localhost (localhost [127.0.0.1])
-	by mail.savoirfairelinux.com (Postfix) with ESMTP id 25F449C094E;
-	Fri, 15 Dec 2023 09:42:04 -0500 (EST)
+	by mail.savoirfairelinux.com (Postfix) with ESMTP id A7C139C094E;
+	Fri, 15 Dec 2023 09:42:07 -0500 (EST)
 Received: from mail.savoirfairelinux.com ([127.0.0.1])
  by localhost (mail.savoirfairelinux.com [127.0.0.1]) (amavis, port 10032)
- with ESMTP id Fjn4dQGGzuKW; Fri, 15 Dec 2023 09:42:03 -0500 (EST)
+ with ESMTP id UrFSvh_CqOh1; Fri, 15 Dec 2023 09:42:07 -0500 (EST)
 Received: from localhost (localhost [127.0.0.1])
-	by mail.savoirfairelinux.com (Postfix) with ESMTP id B89109C411A;
-	Fri, 15 Dec 2023 09:42:03 -0500 (EST)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.savoirfairelinux.com B89109C411A
+	by mail.savoirfairelinux.com (Postfix) with ESMTP id 640DD9C411A;
+	Fri, 15 Dec 2023 09:42:07 -0500 (EST)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.savoirfairelinux.com 640DD9C411A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
 	d=savoirfairelinux.com; s=DFC430D2-D198-11EC-948E-34200CB392D2;
-	t=1702651323; bh=6kRTwfd4Noi281HJPP4aTcZJSr5Bl9jyeAnw8yA/CC0=;
+	t=1702651327; bh=1tWHBsC3u+nkZ6XpND0qMR0c3tv5xGsM8B4rjwBEpB0=;
 	h=From:To:Date:Message-Id:MIME-Version;
-	b=geDILowrKgMXnQK+hOHkf3shzsjjZiZ7wGk2KEacXjLplZZw3Gc9xbIAe83eSsa6v
-	 L9JqxjK+ldOnU20DLXRGIIN5eWmr4wDTvEk2Mx1zC9pIvn3nAA5nLAM3MijkOFFyHe
-	 aLagTAqX4UZxcvhhxGtcm4H05dtOaSuwJbmnLCT81szRXglFJVLmC+q6bbGPFhUbMh
-	 f5n6cc86nW+/ZAqBhqCffuO4KoRidANphTTCzdAICv6HJmTCoSjOPHP2Snf+8mD40V
-	 aKjPW1+uLldR7Yd2SBTCL9iZynqOESu3WPI8ex6OnOMnAINCWHTrGwAcfMQUiKFjJB
-	 oczSWaV306esw==
+	b=B/1d+ZDKai6iRqQ00hd2bzYtVIRc3vT77vfogHBM5/4H1PRRK8NZmCMB8soCAky1G
+	 ZjKWe8e8CLoCjO5uqihJ8Af5krlYjNKx8F3/7kjxS0oTofOrR434MdFtwBNnvsf1Xc
+	 lB0f0U8KZW7/I38Ax4GfKvtqRlIO/1SFYGFrbnEdxWPUKwrrs4gJb36SRV0U1Al5Na
+	 8eyRCxbTfVhSZ7w4hq50rrDIDBHdzwW9QMJbUTst2g+pcmedi6W8z/MmhyzE9hq5Sa
+	 nQKFWFVUA3uzi4GAQrW42UOe26OjiT9sXEYHLfTy8ea/6op/GR0xI2vMY2DbAn4ZJL
+	 SgBbMCpuSU+HQ==
 X-Virus-Scanned: amavis at mail.savoirfairelinux.com
 Received: from mail.savoirfairelinux.com ([127.0.0.1])
  by localhost (mail.savoirfairelinux.com [127.0.0.1]) (amavis, port 10026)
- with ESMTP id rk1H7aOFXHlx; Fri, 15 Dec 2023 09:42:03 -0500 (EST)
+ with ESMTP id kA6fq4dqu6iZ; Fri, 15 Dec 2023 09:42:07 -0500 (EST)
 Received: from gerard.rennes.sfl (unknown [192.168.216.3])
-	by mail.savoirfairelinux.com (Postfix) with ESMTPSA id CD47E9C40F4;
-	Fri, 15 Dec 2023 09:42:02 -0500 (EST)
+	by mail.savoirfairelinux.com (Postfix) with ESMTPSA id 7B56C9C094E;
+	Fri, 15 Dec 2023 09:42:06 -0500 (EST)
 From: Elinor Montmasson <elinor.montmasson@savoirfairelinux.com>
 To: shengjiu.wang@gmail.com,
 	Xiubo.Lee@gmail.com,
@@ -76,17 +76,17 @@ To: shengjiu.wang@gmail.com,
 Cc: elinor.montmasson@savoirfairelinux.com,
 	alsa-devel@alsa-project.org,
 	philip-dylan.gleonec@savoirfairelinux.com
-Subject: [PATCHv3 05/10] ASoC: fsl-asoc-card: set generic codec as clock
- provider
-Date: Fri, 15 Dec 2023 15:40:00 +0100
-Message-Id: <20231215144005.934728-6-elinor.montmasson@savoirfairelinux.com>
+Subject: [PATCHv3 06/10] ASoC: fsl-asoc-card: add dts property
+ "cpu-slot-width"
+Date: Fri, 15 Dec 2023 15:40:01 +0100
+Message-Id: <20231215144005.934728-7-elinor.montmasson@savoirfairelinux.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20231215144005.934728-1-elinor.montmasson@savoirfairelinux.com>
 References: <20231215144005.934728-1-elinor.montmasson@savoirfairelinux.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-Message-ID-Hash: A2UNNJ7GNC3COTS4SL52CJ4DN2IDMWF4
-X-Message-ID-Hash: A2UNNJ7GNC3COTS4SL52CJ4DN2IDMWF4
+Message-ID-Hash: L5IBK2HELNITWRD6YDYV3F4G3G47E3YP
+X-Message-ID-Hash: L5IBK2HELNITWRD6YDYV3F4G3G47E3YP
 X-MailFrom: elinor.montmasson@savoirfairelinux.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -99,7 +99,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/A2UNNJ7GNC3COTS4SL52CJ4DN2IDMWF4/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/L5IBK2HELNITWRD6YDYV3F4G3G47E3YP/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -108,14 +108,9 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The default dai format defined by DAI_FMT_BASE doesn't set if the codec
-is consumer or provider of the bit and frame clocks.
-
-S/PDIF DIR usually converts audio signal to an asynchronous I2S/PCM
-stream, and doesn't consume a bit or frame clock.
-
-As S/PDIF DIR and DIT are used as codecs for the generic use case,
-set codecs as provider of both bit and frame clocks by default.
+Add new optional dts property "cpu-slot-width", which allows setting a
+custom TDM slot width in bits for the CPU DAI
+when using the generic codec.
 
 Signed-off-by: Elinor Montmasson <elinor.montmasson@savoirfairelinux.com>
 Co-authored-by: Philip-Dylan Gleonec <philip-dylan.gleonec@savoirfairelin=
@@ -126,15 +121,16 @@ ux.com>
 
 diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.=
 c
-index 71048c1250ec..3a57d9bfbb48 100644
+index 3a57d9bfbb48..012c8d3666aa 100644
 --- a/sound/soc/fsl/fsl-asoc-card.c
 +++ b/sound/soc/fsl/fsl-asoc-card.c
-@@ -744,6 +744,7 @@ static int fsl_asoc_card_probe(struct platform_device=
+@@ -745,6 +745,7 @@ static int fsl_asoc_card_probe(struct platform_device=
  *pdev)
- 		generic_codec_dai_names[1] =3D "dir-hifi";
  		priv->dai_link[0].num_codecs =3D 2;
  		priv->dai_link[2].num_codecs =3D 2;
-+		priv->dai_fmt |=3D SND_SOC_DAIFMT_CBP_CFP;
+ 		priv->dai_fmt |=3D SND_SOC_DAIFMT_CBP_CFP;
++		of_property_read_u32(np, "cpu-slot-width", &priv->cpu_priv.slot_width)=
+;
  	} else {
  		dev_err(&pdev->dev, "unknown Device Tree compatible\n");
  		ret =3D -EINVAL;
