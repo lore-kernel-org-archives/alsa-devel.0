@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 381F7C4167B
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Dec 2023 21:51:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AEFBBC4167B
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Dec 2023 21:52:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 560A6E7C;
-	Fri, 15 Dec 2023 22:51:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 560A6E7C
+	by alsa0.perex.cz (Postfix) with ESMTPS id EEC08E7C;
+	Fri, 15 Dec 2023 22:52:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EEC08E7C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1702677086;
-	bh=Dzx1UoMjYsLl5SRBdrnoX/EcVkOrdTGt6OEY7XLqt/0=;
+	s=default; t=1702677160;
+	bh=xpoEYL0FPRtcCLv8AvCTLAvjTYOKm5CKc58H8HxBEEs=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=GoVA6nBfwPX5eSvfIY4LCdu300xUnBR/SA8w9hyKfL9mMHWyhI+wq7hzQKtr3cNEN
-	 hX4xlFimZrYM/FQwkiDdk/nGlAtTBDWwIrPUe2SiYhB+enPFSO/u4aVO9H4h2ISHof
-	 6Z0IJOcRxDemddOGC9a8bWVdSdCJhH3TgptoGEJg=
+	b=fBA/YVaJMqLZ/AK4ycx99LvSrAyE+cRaTvtqY3vsNXVf9rzFjFbLKC6sVcIj/PLZW
+	 lqP8Rjpkhlm6aE7Jbr6eyIWcwMJVih+UWy7k0lvrdMs0TzwfT39L8vmeRXIkYb/oK1
+	 FDXPa9kXdmyj+MOsuPuYOk7n0bAVKlgMph3K8ZuM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A11AFF805B0; Fri, 15 Dec 2023 22:50:35 +0100 (CET)
+	id 0634DF805B0; Fri, 15 Dec 2023 22:52:09 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C9D52F805F4;
-	Fri, 15 Dec 2023 22:50:32 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B11C7F805B4;
+	Fri, 15 Dec 2023 22:52:07 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C0416F805AE; Fri, 15 Dec 2023 22:50:25 +0100 (CET)
+	id AC493F805AD; Fri, 15 Dec 2023 22:50:30 +0100 (CET)
 Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com
  [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 6BE3EF800D2
-	for <alsa-devel@alsa-project.org>; Fri, 15 Dec 2023 22:50:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6BE3EF800D2
+	by alsa1.perex.cz (Postfix) with ESMTPS id 2B08AF8001F
+	for <alsa-devel@alsa-project.org>; Fri, 15 Dec 2023 22:50:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2B08AF8001F
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
- header.s=qcppdkim1 header.b=IkKaP2xI
+ header.s=qcppdkim1 header.b=c1r2GDDO
 Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
 	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id
- 3BFIEbqM004228;
-	Fri, 15 Dec 2023 21:50:06 GMT
+ 3BFIFde3007014;
+	Fri, 15 Dec 2023 21:50:07 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-type; s=qcppdkim1; bh=tXo36dzb3ThKDdLM0pwN
-	wf4bRqGnDd4wJp3wG2Vhtog=; b=IkKaP2xI4WD/KgJt7zNJ2MN4dYQArl7vUlYf
-	M/ycdWCOF2CiZ3OeVkXfOl4puhB6IR38PoT+XceFEb3I+O9S1oxRPWO8vgqz29yb
-	QNZVw0gvF4ISKDfz2G2+Z58tQYLt+WzslGTF8ZnOEgdbSokosm4nzOxW0gtJ5XGD
-	zO79+rYNcVmzcHTYKbOIC4AR+qJOiMS8iUiTlpjF67i4vicCaV7zy5D99G5lgIKf
-	uQPVtla4zbwbG7CTcbXB7FuQID5zp6ZiZYcIswlgY85+Bf3aAYfHY9QQaHoUXg8Y
-	0b2lqdKu3CsB0Np4vA1BhHT4DRQzpdVrDjpIlqfbQPrY7j93DQ==
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com
+	:mime-version:content-type; s=qcppdkim1; bh=v8Jxb8bBgP9MWz2XFnRZ
+	2V/2ZMl+riJioh0iU79kmmo=; b=c1r2GDDOmAd0LNEWzncJfFR2EQm89V6Y4d7Z
+	LR0u8VqpQo+SikFFEwigshp3en7EweOAFkcuvHlG4eQIDUtYgZOShq4qt0wIeFRV
+	zRK34bxxthMH/3x84YztC10CMh9MPXSk8VSKC+K1rOheeZtweSL1saGkXMfOCccv
+	m8G25BleH8Vlr77FyOndrk1G23hHEmZg0q6HvCy16NHM0s+kMkDYlSeGbHo/xIIi
+	cKAjXNuqDL/zOuKFKA7NuQNimxvcRnF8DqJBWNSc2Y+c64u7u95LAorrK9BheDBv
+	mbzHjtfIuV4CncCJ3AGH9ZJFscTmY+Wh4aNPAl+9wOuEp3aNFg==
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com
  [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v0hdfa7dr-1
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v0hdfa7ds-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 15 Dec 2023 21:50:06 +0000 (GMT)
+	Fri, 15 Dec 2023 21:50:07 +0000 (GMT)
 Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com
  [10.47.209.197])
-	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id
- 3BFLo57r008234
+	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id
+ 3BFLo6ES017923
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 15 Dec 2023 21:50:05 GMT
+	Fri, 15 Dec 2023 21:50:06 GMT
 Received: from hu-wcheng-lv.qualcomm.com (10.49.16.6) by
  nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Fri, 15 Dec 2023 13:50:05 -0800
+ 15.2.1118.40; Fri, 15 Dec 2023 13:50:06 -0800
 From: Wesley Cheng <quic_wcheng@quicinc.com>
 To: <srinivas.kandagatla@linaro.org>, <mathias.nyman@intel.com>,
         <perex@perex.cz>, <conor+dt@kernel.org>, <corbet@lwn.net>,
@@ -78,12 +78,11 @@ To: <srinivas.kandagatla@linaro.org>, <mathias.nyman@intel.com>,
 CC: <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-sound@vger.kernel.org>, <linux-usb@vger.kernel.org>,
         <linux-arm-msm@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <alsa-devel@alsa-project.org>,
-        Mathias Nyman <mathias.nyman@linux.intel.com>,
-        Wesley Cheng <quic_wcheng@quicinc.com>
-Subject: [PATCH v10 01/41] xhci: add support to allocate several interrupters
-Date: Fri, 15 Dec 2023 13:49:15 -0800
-Message-ID: <20231215214955.12110-2-quic_wcheng@quicinc.com>
+        <alsa-devel@alsa-project.org>, Wesley Cheng <quic_wcheng@quicinc.com>
+Subject: [PATCH v10 04/41] usb: host: xhci-mem: Cleanup pending secondary
+ event ring events
+Date: Fri, 15 Dec 2023 13:49:18 -0800
+Message-ID: <20231215214955.12110-5-quic_wcheng@quicinc.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20231215214955.12110-1-quic_wcheng@quicinc.com>
 References: <20231215214955.12110-1-quic_wcheng@quicinc.com>
@@ -95,19 +94,19 @@ X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
  signatures=585085
-X-Proofpoint-ORIG-GUID: XYPV4WXlYI872cxQZ2Gp7SLf6oecMEsp
-X-Proofpoint-GUID: XYPV4WXlYI872cxQZ2Gp7SLf6oecMEsp
+X-Proofpoint-ORIG-GUID: usflg_JFFneTDKDDmA1qlq26WOPDcy-P
+X-Proofpoint-GUID: usflg_JFFneTDKDDmA1qlq26WOPDcy-P
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
  malwarescore=0
- mlxlogscore=819 impostorscore=0 spamscore=0 lowpriorityscore=0
- adultscore=0 clxscore=1011 priorityscore=1501 mlxscore=0 phishscore=0
+ mlxlogscore=790 impostorscore=0 spamscore=0 lowpriorityscore=0
+ adultscore=0 clxscore=1015 priorityscore=1501 mlxscore=0 phishscore=0
  bulkscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.19.0-2311290000 definitions=main-2312150152
-Message-ID-Hash: KBM4Q6HQJS6NGCM3T4KMOJMLKDGQZ2HS
-X-Message-ID-Hash: KBM4Q6HQJS6NGCM3T4KMOJMLKDGQZ2HS
+Message-ID-Hash: DKV2IEJUYCBOBVWMRVU4V6IT2UZPHOPM
+X-Message-ID-Hash: DKV2IEJUYCBOBVWMRVU4V6IT2UZPHOPM
 X-MailFrom: quic_wcheng@quicinc.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -120,7 +119,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KBM4Q6HQJS6NGCM3T4KMOJMLKDGQZ2HS/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DKV2IEJUYCBOBVWMRVU4V6IT2UZPHOPM/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -129,369 +128,149 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Mathias Nyman <mathias.nyman@linux.intel.com>
+As part of xHCI bus suspend, the XHCI is halted.  However, if there are
+pending events in the secondary event ring, it is observed that the xHCI
+controller stops responding to further commands upon host or device
+initiated bus resume.  Iterate through all pending events and update the
+dequeue pointer to the beginning of the event ring.
 
-Modify the XHCI drivers to accommodate for handling multiple event rings in
-case there are multiple interrupters.  Add the required APIs so clients are
-able to allocate/request for an interrupter ring, and pass this information
-back to the client driver.  This allows for users to handle the resource
-accordingly, such as passing the event ring base address to an audio DSP.
-There is no actual support for multiple MSI/MSI-X vectors.
-
-[export xhci_initialize_ring_info() -wcheng]
-
-Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
 Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
 ---
- drivers/usb/host/xhci-debugfs.c |   2 +-
- drivers/usb/host/xhci-mem.c     | 108 ++++++++++++++++++++++++++++----
- drivers/usb/host/xhci-ring.c    |   2 +-
- drivers/usb/host/xhci.c         |  51 +++++++++------
- drivers/usb/host/xhci.h         |   6 +-
- 5 files changed, 137 insertions(+), 32 deletions(-)
+ drivers/usb/host/xhci-mem.c  | 11 +++++----
+ drivers/usb/host/xhci-ring.c | 46 +++++++++++++++++++++++++++++++++++-
+ drivers/usb/host/xhci.c      |  2 +-
+ drivers/usb/host/xhci.h      |  7 ++++++
+ 4 files changed, 59 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/usb/host/xhci-debugfs.c b/drivers/usb/host/xhci-debugfs.c
-index 6d142cd61bd6..f8ba15e7c225 100644
---- a/drivers/usb/host/xhci-debugfs.c
-+++ b/drivers/usb/host/xhci-debugfs.c
-@@ -693,7 +693,7 @@ void xhci_debugfs_init(struct xhci_hcd *xhci)
- 				     "command-ring",
- 				     xhci->debugfs_root);
- 
--	xhci_debugfs_create_ring_dir(xhci, &xhci->interrupter->event_ring,
-+	xhci_debugfs_create_ring_dir(xhci, &xhci->interrupters[0]->event_ring,
- 				     "event-ring",
- 				     xhci->debugfs_root);
- 
 diff --git a/drivers/usb/host/xhci-mem.c b/drivers/usb/host/xhci-mem.c
-index 6faa854152ef..4460fa7e9fab 100644
+index 4460fa7e9fab..5bf74c37cbf6 100644
 --- a/drivers/usb/host/xhci-mem.c
 +++ b/drivers/usb/host/xhci-mem.c
-@@ -323,6 +323,7 @@ void xhci_initialize_ring_info(struct xhci_ring *ring,
- 	 */
- 	ring->num_trbs_free = ring->num_segs * (TRBS_PER_SEGMENT - 1) - 1;
- }
-+EXPORT_SYMBOL_GPL(xhci_initialize_ring_info);
+@@ -1827,7 +1827,7 @@ xhci_remove_interrupter(struct xhci_hcd *xhci, struct xhci_interrupter *ir)
+ 		tmp &= ERST_SIZE_MASK;
+ 		writel(tmp, &ir->ir_set->erst_size);
  
- /* Allocate segments and link them for a ring */
- static int xhci_alloc_segments_for_ring(struct xhci_hcd *xhci,
-@@ -1855,6 +1856,31 @@ xhci_free_interrupter(struct xhci_hcd *xhci, struct xhci_interrupter *ir)
- 	kfree(ir);
- }
- 
-+void xhci_remove_secondary_interrupter(struct usb_hcd *hcd, struct xhci_interrupter *ir)
-+{
-+	struct xhci_hcd *xhci = hcd_to_xhci(hcd);
-+	unsigned int intr_num;
-+
-+	/* interrupter 0 is primary interrupter, don't touch it */
-+	if (!ir || !ir->intr_num || ir->intr_num >= xhci->max_interrupters)
-+		xhci_dbg(xhci, "Invalid secondary interrupter, can't remove\n");
-+
-+	/* fixme, should we check xhci->interrupter[intr_num] == ir */
-+	/* fixme locking */
-+
-+	spin_lock_irq(&xhci->lock);
-+
-+	intr_num = ir->intr_num;
-+
-+	xhci_remove_interrupter(xhci, ir);
-+	xhci->interrupters[intr_num] = NULL;
-+
-+	spin_unlock_irq(&xhci->lock);
-+
-+	xhci_free_interrupter(xhci, ir);
-+}
-+EXPORT_SYMBOL_GPL(xhci_remove_secondary_interrupter);
-+
- void xhci_mem_cleanup(struct xhci_hcd *xhci)
- {
- 	struct device	*dev = xhci_to_hcd(xhci)->self.sysdev;
-@@ -1862,10 +1888,14 @@ void xhci_mem_cleanup(struct xhci_hcd *xhci)
- 
- 	cancel_delayed_work_sync(&xhci->cmd_timer);
- 
--	xhci_remove_interrupter(xhci, xhci->interrupter);
--	xhci_free_interrupter(xhci, xhci->interrupter);
--	xhci->interrupter = NULL;
--	xhci_dbg_trace(xhci, trace_xhci_dbg_init, "Freed primary event ring");
-+	for (i = 0; i < xhci->max_interrupters; i++) {
-+		if (xhci->interrupters[i]) {
-+			xhci_remove_interrupter(xhci, xhci->interrupters[i]);
-+			xhci_free_interrupter(xhci, xhci->interrupters[i]);
-+			xhci->interrupters[i] = NULL;
-+		}
-+	}
-+	xhci_dbg_trace(xhci, trace_xhci_dbg_init, "Freed interrupters");
- 
- 	if (xhci->cmd_ring)
- 		xhci_ring_free(xhci, xhci->cmd_ring);
-@@ -1935,6 +1965,7 @@ void xhci_mem_cleanup(struct xhci_hcd *xhci)
- 	for (i = 0; i < xhci->num_port_caps; i++)
- 		kfree(xhci->port_caps[i].psi);
- 	kfree(xhci->port_caps);
-+	kfree(xhci->interrupters);
- 	xhci->num_port_caps = 0;
- 
- 	xhci->usb2_rhub.ports = NULL;
-@@ -1943,6 +1974,7 @@ void xhci_mem_cleanup(struct xhci_hcd *xhci)
- 	xhci->rh_bw = NULL;
- 	xhci->ext_caps = NULL;
- 	xhci->port_caps = NULL;
-+	xhci->interrupters = NULL;
- 
- 	xhci->page_size = 0;
- 	xhci->page_shift = 0;
-@@ -2248,18 +2280,20 @@ static int xhci_setup_port_arrays(struct xhci_hcd *xhci, gfp_t flags)
- }
- 
- static struct xhci_interrupter *
--xhci_alloc_interrupter(struct xhci_hcd *xhci, gfp_t flags)
-+xhci_alloc_interrupter(struct xhci_hcd *xhci, int segs, gfp_t flags)
- {
- 	struct device *dev = xhci_to_hcd(xhci)->self.sysdev;
- 	struct xhci_interrupter *ir;
--	unsigned int num_segs;
-+	unsigned int num_segs = segs;
- 	int ret;
- 
- 	ir = kzalloc_node(sizeof(*ir), flags, dev_to_node(dev));
- 	if (!ir)
- 		return NULL;
- 
--	num_segs = min_t(unsigned int, 1 << HCS_ERST_MAX(xhci->hcs_params2),
-+	/* number of ring segments should be greater than 0 */
-+	if (segs <= 0)
-+		num_segs = min_t(unsigned int, 1 << HCS_ERST_MAX(xhci->hcs_params2),
- 			 ERST_MAX_SEGS);
- 
- 	ir->event_ring = xhci_ring_alloc(xhci, num_segs, 1, TYPE_EVENT, 0,
-@@ -2294,6 +2328,13 @@ xhci_add_interrupter(struct xhci_hcd *xhci, struct xhci_interrupter *ir,
- 		return -EINVAL;
+-		xhci_write_64(xhci, ERST_EHB, &ir->ir_set->erst_dequeue);
++		xhci_update_erst_dequeue(xhci, ir, ir->event_ring->first_seg->trbs, true);
  	}
+ }
  
-+	if (xhci->interrupters[intr_num]) {
-+		xhci_warn(xhci, "Interrupter %d\n already set up", intr_num);
-+		return -EINVAL;
+@@ -1865,11 +1865,12 @@ void xhci_remove_secondary_interrupter(struct usb_hcd *hcd, struct xhci_interrup
+ 	if (!ir || !ir->intr_num || ir->intr_num >= xhci->max_interrupters)
+ 		xhci_dbg(xhci, "Invalid secondary interrupter, can't remove\n");
+ 
+-	/* fixme, should we check xhci->interrupter[intr_num] == ir */
+-	/* fixme locking */
+-
+ 	spin_lock_irq(&xhci->lock);
+-
++	/*
++	 * Cleanup secondary interrupter to ensure there are no pending events.
++	 * This also updates event ring dequeue pointer back to the start.
++	 */
++	xhci_skip_sec_intr_events(xhci, ir->event_ring, ir);
+ 	intr_num = ir->intr_num;
+ 
+ 	xhci_remove_interrupter(xhci, ir);
+diff --git a/drivers/usb/host/xhci-ring.c b/drivers/usb/host/xhci-ring.c
+index 33806ae966f9..448417c5d5b1 100644
+--- a/drivers/usb/host/xhci-ring.c
++++ b/drivers/usb/host/xhci-ring.c
+@@ -2980,7 +2980,7 @@ static int xhci_handle_event(struct xhci_hcd *xhci, struct xhci_interrupter *ir)
+  * - When all events have finished
+  * - To avoid "Event Ring Full Error" condition
+  */
+-static void xhci_update_erst_dequeue(struct xhci_hcd *xhci,
++void xhci_update_erst_dequeue(struct xhci_hcd *xhci,
+ 				     struct xhci_interrupter *ir,
+ 				     union xhci_trb *event_ring_deq,
+ 				     bool clear_ehb)
+@@ -3013,6 +3013,50 @@ static void xhci_update_erst_dequeue(struct xhci_hcd *xhci,
+ 	xhci_write_64(xhci, temp_64, &ir->ir_set->erst_dequeue);
+ }
+ 
++/*
++ * Move the event ring dequeue pointer to skip events kept in the secondary
++ * event ring.  This is used to ensure that pending events in the ring are
++ * acknowledged, so the XHCI HCD can properly enter suspend/resume.  The
++ * secondary ring is typically maintained by an external component.
++ */
++void xhci_skip_sec_intr_events(struct xhci_hcd *xhci,
++	struct xhci_ring *ring,	struct xhci_interrupter *ir)
++{
++	union xhci_trb *erdp_trb, *current_trb;
++	u64 erdp_reg;
++	u32 iman_reg;
++	dma_addr_t deq;
++
++	/* disable irq, ack pending interrupt and ack all pending events */
++	xhci_disable_interrupter(ir);
++	iman_reg = readl_relaxed(&ir->ir_set->irq_pending);
++	if (iman_reg & IMAN_IP)
++		writel_relaxed(iman_reg, &ir->ir_set->irq_pending);
++
++	/* last acked event trb is in erdp reg  */
++	erdp_reg = xhci_read_64(xhci, &ir->ir_set->erst_dequeue);
++	deq = (dma_addr_t)(erdp_reg & ERST_PTR_MASK);
++	if (!deq) {
++		xhci_err(xhci, "event ring handling not required\n");
++		return;
 +	}
 +
-+	xhci->interrupters[intr_num] = ir;
-+	ir->intr_num = intr_num;
- 	ir->ir_set = &xhci->run_regs->ir_set[intr_num];
- 
- 	/* set ERST count with the number of entries in the segment table */
-@@ -2313,10 +2354,52 @@ xhci_add_interrupter(struct xhci_hcd *xhci, struct xhci_interrupter *ir,
++	erdp_trb = current_trb = ir->event_ring->dequeue;
++	/* read cycle state of the last acked trb to find out CCS */
++	ring->cycle_state = le32_to_cpu(current_trb->event_cmd.flags) & TRB_CYCLE;
++
++	while (1) {
++		inc_deq(xhci, ir->event_ring);
++		erdp_trb = ir->event_ring->dequeue;
++		/* cycle state transition */
++		if ((le32_to_cpu(erdp_trb->event_cmd.flags) & TRB_CYCLE) !=
++		    ring->cycle_state)
++			break;
++	}
++
++	xhci_update_erst_dequeue(xhci, ir, current_trb, true);
++}
++
+ /*
+  * xHCI spec says we can get an interrupt, and if the HC has an error condition,
+  * we might get bad data out of the event ring.  Section 4.10.2.7 has a list of
+diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
+index fd7d06f6fe36..f9d3d556a2d7 100644
+--- a/drivers/usb/host/xhci.c
++++ b/drivers/usb/host/xhci.c
+@@ -333,7 +333,7 @@ static int xhci_enable_interrupter(struct xhci_interrupter *ir)
  	return 0;
  }
  
-+struct xhci_interrupter *
-+xhci_create_secondary_interrupter(struct usb_hcd *hcd, int num_seg)
-+{
-+	struct xhci_hcd *xhci = hcd_to_xhci(hcd);
-+	struct xhci_interrupter *ir;
-+	unsigned int i;
-+	int err = -ENOSPC;
-+
-+	if (!xhci->interrupters || xhci->max_interrupters <= 1)
-+		return NULL;
-+
-+	ir = xhci_alloc_interrupter(xhci, num_seg, GFP_KERNEL);
-+	if (!ir)
-+		return NULL;
-+
-+	spin_lock_irq(&xhci->lock);
-+
-+	/* Find available secondary interrupter, interrupter 0 is reserved for primary */
-+	for (i = 1; i < xhci->max_interrupters; i++) {
-+		if (xhci->interrupters[i] == NULL) {
-+			err = xhci_add_interrupter(xhci, ir, i);
-+			break;
-+		}
-+	}
-+
-+	spin_unlock_irq(&xhci->lock);
-+
-+	if (err) {
-+		xhci_warn(xhci, "Failed to add secondary interrupter, max interrupters %d\n",
-+			  xhci->max_interrupters);
-+		xhci_free_interrupter(xhci, ir);
-+		return NULL;
-+	}
-+
-+	xhci_dbg(xhci, "Add secondary interrupter %d, max interrupters %d\n",
-+		 i, xhci->max_interrupters);
-+
-+	return ir;
-+}
-+EXPORT_SYMBOL_GPL(xhci_create_secondary_interrupter);
-+
- int xhci_mem_init(struct xhci_hcd *xhci, gfp_t flags)
+-static int xhci_disable_interrupter(struct xhci_interrupter *ir)
++int xhci_disable_interrupter(struct xhci_interrupter *ir)
  {
--	dma_addr_t	dma;
-+	struct xhci_interrupter *ir;
- 	struct device	*dev = xhci_to_hcd(xhci)->self.sysdev;
-+	dma_addr_t	dma;
- 	unsigned int	val, val2;
- 	u64		val_64;
- 	u32		page_size, temp;
-@@ -2440,11 +2523,14 @@ int xhci_mem_init(struct xhci_hcd *xhci, gfp_t flags)
- 	/* Allocate and set up primary interrupter 0 with an event ring. */
- 	xhci_dbg_trace(xhci, trace_xhci_dbg_init,
- 		       "Allocating primary event ring");
--	xhci->interrupter = xhci_alloc_interrupter(xhci, flags);
--	if (!xhci->interrupter)
-+	xhci->interrupters = kcalloc_node(xhci->max_interrupters, sizeof(*xhci->interrupters),
-+					  flags, dev_to_node(dev));
-+
-+	ir = xhci_alloc_interrupter(xhci, 0, flags);
-+	if (!ir)
- 		goto fail;
+ 	u32 iman;
  
--	if (xhci_add_interrupter(xhci, xhci->interrupter, 0))
-+	if (xhci_add_interrupter(xhci, ir, 0))
- 		goto fail;
- 
- 	xhci->isoc_bei_interval = AVOID_BEI_INTERVAL_MAX;
-diff --git a/drivers/usb/host/xhci-ring.c b/drivers/usb/host/xhci-ring.c
-index 2c1d614b3b0f..33806ae966f9 100644
---- a/drivers/usb/host/xhci-ring.c
-+++ b/drivers/usb/host/xhci-ring.c
-@@ -3061,7 +3061,7 @@ irqreturn_t xhci_irq(struct usb_hcd *hcd)
- 	writel(status, &xhci->op_regs->status);
- 
- 	/* This is the handler of the primary interrupter */
--	ir = xhci->interrupter;
-+	ir = xhci->interrupters[0];
- 	if (!hcd->msi_enabled) {
- 		u32 irq_pending;
- 		irq_pending = readl(&ir->ir_set->irq_pending);
-diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
-index 08fbabff23a0..b3c9abd97ab1 100644
---- a/drivers/usb/host/xhci.c
-+++ b/drivers/usb/host/xhci.c
-@@ -480,7 +480,7 @@ static int xhci_init(struct usb_hcd *hcd)
- 
- static int xhci_run_finished(struct xhci_hcd *xhci)
- {
--	struct xhci_interrupter *ir = xhci->interrupter;
-+	struct xhci_interrupter *ir = xhci->interrupters[0];
- 	unsigned long	flags;
- 	u32		temp;
- 
-@@ -532,7 +532,7 @@ int xhci_run(struct usb_hcd *hcd)
- 	u64 temp_64;
- 	int ret;
- 	struct xhci_hcd *xhci = hcd_to_xhci(hcd);
--	struct xhci_interrupter *ir = xhci->interrupter;
-+	struct xhci_interrupter *ir = xhci->interrupters[0];
- 	/* Start the xHCI host controller running only after the USB 2.0 roothub
- 	 * is setup.
- 	 */
-@@ -596,7 +596,7 @@ void xhci_stop(struct usb_hcd *hcd)
- {
- 	u32 temp;
- 	struct xhci_hcd *xhci = hcd_to_xhci(hcd);
--	struct xhci_interrupter *ir = xhci->interrupter;
-+	struct xhci_interrupter *ir = xhci->interrupters[0];
- 
- 	mutex_lock(&xhci->mutex);
- 
-@@ -692,36 +692,51 @@ EXPORT_SYMBOL_GPL(xhci_shutdown);
- #ifdef CONFIG_PM
- static void xhci_save_registers(struct xhci_hcd *xhci)
- {
--	struct xhci_interrupter *ir = xhci->interrupter;
-+	struct xhci_interrupter *ir;
-+	unsigned int i;
- 
- 	xhci->s3.command = readl(&xhci->op_regs->command);
- 	xhci->s3.dev_nt = readl(&xhci->op_regs->dev_notification);
- 	xhci->s3.dcbaa_ptr = xhci_read_64(xhci, &xhci->op_regs->dcbaa_ptr);
- 	xhci->s3.config_reg = readl(&xhci->op_regs->config_reg);
- 
--	if (!ir)
--		return;
-+	/* save both primary and all secondary interrupters */
-+	/* fixme, shold we lock  to prevent race with remove secondary interrupter? */
-+	for (i = 0; i < xhci->max_interrupters; i++) {
-+		ir = xhci->interrupters[i];
-+		if (!ir)
-+			continue;
- 
--	ir->s3_erst_size = readl(&ir->ir_set->erst_size);
--	ir->s3_erst_base = xhci_read_64(xhci, &ir->ir_set->erst_base);
--	ir->s3_erst_dequeue = xhci_read_64(xhci, &ir->ir_set->erst_dequeue);
--	ir->s3_irq_pending = readl(&ir->ir_set->irq_pending);
--	ir->s3_irq_control = readl(&ir->ir_set->irq_control);
-+		ir->s3_erst_size = readl(&ir->ir_set->erst_size);
-+		ir->s3_erst_base = xhci_read_64(xhci, &ir->ir_set->erst_base);
-+		ir->s3_erst_dequeue = xhci_read_64(xhci, &ir->ir_set->erst_dequeue);
-+		ir->s3_irq_pending = readl(&ir->ir_set->irq_pending);
-+		ir->s3_irq_control = readl(&ir->ir_set->irq_control);
-+	}
- }
- 
- static void xhci_restore_registers(struct xhci_hcd *xhci)
- {
--	struct xhci_interrupter *ir = xhci->interrupter;
-+	struct xhci_interrupter *ir;
-+	unsigned int i;
- 
- 	writel(xhci->s3.command, &xhci->op_regs->command);
- 	writel(xhci->s3.dev_nt, &xhci->op_regs->dev_notification);
- 	xhci_write_64(xhci, xhci->s3.dcbaa_ptr, &xhci->op_regs->dcbaa_ptr);
- 	writel(xhci->s3.config_reg, &xhci->op_regs->config_reg);
--	writel(ir->s3_erst_size, &ir->ir_set->erst_size);
--	xhci_write_64(xhci, ir->s3_erst_base, &ir->ir_set->erst_base);
--	xhci_write_64(xhci, ir->s3_erst_dequeue, &ir->ir_set->erst_dequeue);
--	writel(ir->s3_irq_pending, &ir->ir_set->irq_pending);
--	writel(ir->s3_irq_control, &ir->ir_set->irq_control);
-+
-+	/* FIXME should we lock to protect against freeing of interrupters */
-+	for (i = 0; i < xhci->max_interrupters; i++) {
-+		ir = xhci->interrupters[i];
-+		if (!ir)
-+			continue;
-+
-+		writel(ir->s3_erst_size, &ir->ir_set->erst_size);
-+		xhci_write_64(xhci, ir->s3_erst_base, &ir->ir_set->erst_base);
-+		xhci_write_64(xhci, ir->s3_erst_dequeue, &ir->ir_set->erst_dequeue);
-+		writel(ir->s3_irq_pending, &ir->ir_set->irq_pending);
-+		writel(ir->s3_irq_control, &ir->ir_set->irq_control);
-+	}
- }
- 
- static void xhci_set_cmd_ring_deq(struct xhci_hcd *xhci)
-@@ -1084,7 +1099,7 @@ int xhci_resume(struct xhci_hcd *xhci, pm_message_t msg)
- 		xhci_dbg(xhci, "// Disabling event ring interrupts\n");
- 		temp = readl(&xhci->op_regs->status);
- 		writel((temp & ~0x1fff) | STS_EINT, &xhci->op_regs->status);
--		xhci_disable_interrupter(xhci->interrupter);
-+		xhci_disable_interrupter(xhci->interrupters[0]);
- 
- 		xhci_dbg(xhci, "cleaning up memory\n");
- 		xhci_mem_cleanup(xhci);
 diff --git a/drivers/usb/host/xhci.h b/drivers/usb/host/xhci.h
-index 90e6b6ef7bd2..a5c72a634e6a 100644
+index e98099b960e4..37887c2f0653 100644
 --- a/drivers/usb/host/xhci.h
 +++ b/drivers/usb/host/xhci.h
-@@ -1774,7 +1774,7 @@ struct xhci_hcd {
- 	struct reset_control *reset;
- 	/* data structures */
- 	struct xhci_device_context_array *dcbaa;
--	struct xhci_interrupter *interrupter;
-+	struct xhci_interrupter **interrupters;
- 	struct xhci_ring	*cmd_ring;
- 	unsigned int            cmd_ring_state;
- #define CMD_RING_STATE_RUNNING         (1 << 0)
-@@ -2085,6 +2085,10 @@ struct xhci_container_ctx *xhci_alloc_container_ctx(struct xhci_hcd *xhci,
- 		int type, gfp_t flags);
- void xhci_free_container_ctx(struct xhci_hcd *xhci,
- 		struct xhci_container_ctx *ctx);
-+struct xhci_interrupter *
-+xhci_create_secondary_interrupter(struct usb_hcd *hcd, int num_seg);
-+void xhci_remove_secondary_interrupter(struct usb_hcd
-+				       *hcd, struct xhci_interrupter *ir);
+@@ -2093,6 +2093,9 @@ struct xhci_interrupter *
+ xhci_create_secondary_interrupter(struct usb_hcd *hcd, int num_seg);
+ void xhci_remove_secondary_interrupter(struct usb_hcd
+ 				       *hcd, struct xhci_interrupter *ir);
++void xhci_skip_sec_intr_events(struct xhci_hcd *xhci,
++	struct xhci_ring *ring,	struct xhci_interrupter *ir);
++int xhci_disable_interrupter(struct xhci_interrupter *ir);
  
  /* xHCI host controller glue */
  typedef void (*xhci_get_quirks_t)(struct device *, struct xhci_hcd *);
+@@ -2180,6 +2183,10 @@ void inc_deq(struct xhci_hcd *xhci, struct xhci_ring *ring);
+ unsigned int count_trbs(u64 addr, u64 len);
+ int xhci_stop_endpoint_sync(struct xhci_hcd *xhci, struct xhci_virt_ep *ep,
+ 			    int suspend, gfp_t gfp_flags);
++void xhci_update_erst_dequeue(struct xhci_hcd *xhci,
++				     struct xhci_interrupter *ir,
++				     union xhci_trb *event_ring_deq,
++				     bool clear_ehb);
+ 
+ /* xHCI roothub code */
+ void xhci_set_link_state(struct xhci_hcd *xhci, struct xhci_port *port,
