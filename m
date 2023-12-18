@@ -4,90 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4E873C35274
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 Dec 2023 15:14:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 51BCEC46CCD
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 Dec 2023 15:14:40 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EC9D785D;
-	Mon, 18 Dec 2023 16:14:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EC9D785D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 516C3E81;
+	Mon, 18 Dec 2023 16:14:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 516C3E81
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1702912459;
-	bh=rGcIu7AZNagZ9U/Vb6lsXjp1KWmkQxiFV/HwYmiLBH0=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=ChBXCgrQAgmwIo+rvuwKMthPLoAnMG/4G5LEfMDfIsg53sVePbj8qwHQ45nYlmmbB
-	 aPPf+cHPYbeyQWo22PnrgoK9f8zVharQcjCf9XbvBBqr0CFDl7yK7xHhqKP0y9rrlX
-	 tA9Ret5PH2bioJ8WU0Wp0KSeY36A1TPlQqICYQZg=
+	s=default; t=1702912478;
+	bh=BKencx6p5wq+oJ8mtou/Z5l8HtUvZi9466/cAxa7tr4=;
+	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=GrXYJIzyuP98K5nh5WG6eWpecF9zt9VIFyeeE85IVH9UH1bhuZxprEUvtekda+TRK
+	 5WrYF9UgS9FKWjMSHpHYVP3XYng6z5AjRfHjJhmJlnSIGz8TvTkLujJHY0dA2Qyje5
+	 WwO8jnEICUuvAPqeUk3MfRHyxX4hfv5wyl7q4sa0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C41D5F805EE; Mon, 18 Dec 2023 16:13:16 +0100 (CET)
+	id B4052F8061E; Mon, 18 Dec 2023 16:13:22 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 344C6F805F6;
-	Mon, 18 Dec 2023 16:13:15 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C84E4F8061D;
+	Mon, 18 Dec 2023 16:13:21 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8D13CF8055C; Mon, 18 Dec 2023 16:13:10 +0100 (CET)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
+	id DC66FF805D5; Mon, 18 Dec 2023 16:13:14 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 18076F80425
-	for <alsa-devel@alsa-project.org>; Mon, 18 Dec 2023 16:12:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 18076F80425
+	by alsa1.perex.cz (Postfix) with ESMTPS id 4F401F804DA
+	for <alsa-devel@alsa-project.org>; Mon, 18 Dec 2023 16:12:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4F401F804DA
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=c+0/cAvR
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-	by mx0a-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id
- 3BI5gNV5015248;
-	Mon, 18 Dec 2023 09:12:52 -0600
+ header.s=PODMain02222019 header.b=Wm6IcXzh
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+	by mx0b-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id
+ 3BI8qL59016655;
+	Mon, 18 Dec 2023 09:12:48 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	PODMain02222019; bh=5uCZuNm6fqqAvQVXFBBbV28goTCBorkO1dPizFuHNsQ=; b=
-	c+0/cAvRm0/ZR+luGffszhLt4Q/XBJfPkjzGkejW6Lvz0ZaG9wTikrZy+FIG9mbx
-	WlCdfrdY/drTGPNiLnQ7AAq573KhdozqQkOnfpHAKqJoc0yip2EBUG5NfzyKZqqb
-	Ytce1hFN5mMrGiLQv6KPHyjubKsdwJ40i0QEAe/+Ux5DXZr6UeMlpwdcKEQyulF1
-	4iNHKwHiBwxTBp8XdYSH2pEgZ7jyLCgrKeYtbeBXxw0qkPRuaTOO1F99lM9IGdZL
-	h/z1/O1mHVXJi/itIwvlOA43udIbfPqwkfXxeB8BoLdf1ojw1ZkncJdixIh3euKJ
-	R0LD7dL5NdNiLohfHNWW3g==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3v1a622ub0-3
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=PODMain02222019; bh=d
+	unokV4spakSd7d2fILB4jcGfewzshlj//5mWZatk7M=; b=Wm6IcXzhaol1k7S4B
+	avshHTAzPuA76hwx7sT3P1kSLTONNHDHniT+rrul14emGe5Mp7/SlUu95MoG3bcu
+	RT7/K59DyhU3YqZ+jul+hE14wRncxEgdJVg9zyr+Y+ae3f/Vzz9hcZEayurhfOvw
+	5ELOCVzGo2oQD1hGcc1jtiTf4ZJCncLHBT67z57vbSEWfYw/Qcn7KDDJyVLd/MGg
+	lAJZ6ym9ytk18WOJpUfXnwNzXn00+kefq5O22sXkGA3yE8K2h8dcGjGKMMKnW+Xu
+	CHMiDRimLoSvJz3NZzojwYyRHKByzGtuDiD7BPanVd0YwsHWnHWVEUt/LbGIME9U
+	1zpdg==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3v196natsr-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 18 Dec 2023 09:12:51 -0600 (CST)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+	Mon, 18 Dec 2023 09:12:48 -0600 (CST)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 18 Dec
- 2023 15:12:48 +0000
+ 2023 15:12:47 +0000
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.40 via Frontend
- Transport; Mon, 18 Dec 2023 15:12:48 +0000
+ Transport; Mon, 18 Dec 2023 15:12:47 +0000
 Received: from sbinding-cirrus-dsktp2.ad.cirrus.com (unknown [198.90.238.77])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id D735A15B9;
-	Mon, 18 Dec 2023 15:12:47 +0000 (UTC)
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id E471615A0;
+	Mon, 18 Dec 2023 15:12:46 +0000 (UTC)
 From: Stefan Binding <sbinding@opensource.cirrus.com>
 To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
 CC: <alsa-devel@alsa-project.org>, <linux-sound@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
         "Stefan
  Binding" <sbinding@opensource.cirrus.com>
-Subject: [PATCH v1 4/7] ALSA: hda: cs35l41: Support additional ASUS Zenbook
- 2022 Models
-Date: Mon, 18 Dec 2023 15:12:18 +0000
-Message-ID: <20231218151221.388745-5-sbinding@opensource.cirrus.com>
+Subject: [PATCH v1 0/7] Add support for various laptops using CS35L41 HDA
+ without _DSD
+Date: Mon, 18 Dec 2023 15:12:14 +0000
+Message-ID: <20231218151221.388745-1-sbinding@opensource.cirrus.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231218151221.388745-1-sbinding@opensource.cirrus.com>
-References: <20231218151221.388745-1-sbinding@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: D_Mo1Vlq9YGbsE27llwoSqix7duLUowU
-X-Proofpoint-ORIG-GUID: D_Mo1Vlq9YGbsE27llwoSqix7duLUowU
+X-Proofpoint-ORIG-GUID: QpRVrcYfWWlre1f6BRHgOCDEVys8zboe
+X-Proofpoint-GUID: QpRVrcYfWWlre1f6BRHgOCDEVys8zboe
 X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: 47AZDMZPHJ4W427PN5SBHA6A2CI7FVUY
-X-Message-ID-Hash: 47AZDMZPHJ4W427PN5SBHA6A2CI7FVUY
+Message-ID-Hash: WQPIW5XI66ADEIJRXK3OIKSOIEOALHFZ
+X-Message-ID-Hash: WQPIW5XI66ADEIJRXK3OIKSOIEOALHFZ
 X-MailFrom: prvs=7716b2c674=sbinding@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -100,65 +97,58 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/47AZDMZPHJ4W427PN5SBHA6A2CI7FVUY/>
-List-Archive: <>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WQPIW5XI66ADEIJRXK3OIKSOIEOALHFZ/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add new model entries into configuration table.
+The CS35L41 HDA driver requires various system defined properties to configure
+the driver for an individual system. For some laptops, these properties are
+missing in the BIOS. To be able to support these laptops, there is a mechanism
+in the driver to get this configuration from a lookup table, to be able to add
+or patch _DSD as necessary.
 
-Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
----
- sound/pci/hda/cs35l41_hda_property.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+However this mechanism currently only allows for laptops to be patched one at
+a time, however, in the case where there are many laptops which need to be
+configured generically, a generic function has been added, with an additional
+lookup table to the individual laptops, indexed by SSID.
 
-diff --git a/sound/pci/hda/cs35l41_hda_property.c b/sound/pci/hda/cs35l41_hda_property.c
-index a0d808ed640a..07fe72bb128a 100644
---- a/sound/pci/hda/cs35l41_hda_property.c
-+++ b/sound/pci/hda/cs35l41_hda_property.c
-@@ -42,6 +42,7 @@ static const struct cs35l41_config cs35l41_config_table[] = {
-  * in the ACPI. The Reset GPIO is also valid, so we can use the Reset defined in _DSD.
-  */
- 	{ "103C89C6", SPI, 2, INTERNAL, { CS35L41_RIGHT, CS35L41_LEFT, 0, 0 }, -1, -1, -1, 1000, 4500, 24 },
-+	{ "104312AF", SPI, 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 1000, 4500, 24 },
- 	{ "10431433", I2C, 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4500, 24 },
- 	{ "10431463", I2C, 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4500, 24 },
- 	{ "10431473", SPI, 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, -1, 0, 1000, 4500, 24 },
-@@ -60,6 +61,11 @@ static const struct cs35l41_config cs35l41_config_table[] = {
- 	{ "10431CDF", SPI, 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 1000, 4500, 24 },
- 	{ "10431CEF", SPI, 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 1000, 4500, 24 },
- 	{ "10431D1F", I2C, 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4500, 24 },
-+	{ "10431DA2", SPI, 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 0, 0, 0 },
-+	{ "10431E02", SPI, 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 0, 0, 0 },
-+	{ "10431EE2", I2C, 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, -1, -1, 0, 0, 0 },
-+	{ "10431F12", I2C, 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4500, 24 },
-+	{ "10431F62", SPI, 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 0, 0, 0 },
- 	{}
- };
- 
-@@ -334,6 +340,7 @@ static const struct cs35l41_prop_model cs35l41_prop_model_table[] = {
- 	{ "CLSA0100", NULL, lenovo_legion_no_acpi },
- 	{ "CLSA0101", NULL, lenovo_legion_no_acpi },
- 	{ "CSC3551", "103C89C6", generic_dsd_config },
-+	{ "CSC3551", "104312AF", generic_dsd_config },
- 	{ "CSC3551", "10431433", generic_dsd_config },
- 	{ "CSC3551", "10431463", generic_dsd_config },
- 	{ "CSC3551", "10431473", generic_dsd_config },
-@@ -352,6 +359,11 @@ static const struct cs35l41_prop_model cs35l41_prop_model_table[] = {
- 	{ "CSC3551", "10431CDF", generic_dsd_config },
- 	{ "CSC3551", "10431CEF", generic_dsd_config },
- 	{ "CSC3551", "10431D1F", generic_dsd_config },
-+	{ "CSC3551", "10431DA2", generic_dsd_config },
-+	{ "CSC3551", "10431E02", generic_dsd_config },
-+	{ "CSC3551", "10431EE2", generic_dsd_config },
-+	{ "CSC3551", "10431F12", generic_dsd_config },
-+	{ "CSC3551", "10431F62", generic_dsd_config },
- 	{}
- };
- 
+To support laptops using SPI without _DSD, an additional workaround is needed
+to be able to support the SPI Chip Select GPIOs whose resources are defined
+inside the _CRS for the Speaker ACPI Node. This workaround only works for
+SPI laptops which contain up to 2 amps, since the SPI controller would not
+allow more than 2 amps to be instantiated without the cs-gpios entry in
+_DSD.
+
+These patches add support for various ASUS laptops without _DSD, but the
+framework added here allows for support for more laptops in the future
+for other manufacturers. Support for laptops without _DSD from other
+manufacturers is coming in the future.
+
+Note: for systems which use modified _DSD to emulate the missing _DSD,
+these patches are incompatible, and the modified _DSD must be removed in
+order for the support through this framework to work for those laptops.
+
+Stefan Binding (7):
+  ALSA: hda: cs35l41: Add config table to support many laptops without
+    _DSD
+  ALSA: hda: cs35l41: Support additional ASUS ROG 2023 models
+  ALSA: hda/realtek: Add quirks for ASUS ROG 2023 models
+  ALSA: hda: cs35l41: Support additional ASUS Zenbook 2022 Models
+  ALSA: hda/realtek: Add quirks for ASUS Zenbook 2022 Models
+  ALSA: hda: cs35l41: Support additional ASUS Zenbook 2023 Models
+  ALSA: hda/realtek: Add quirks for ASUS Zenbook 2023 Models
+
+ sound/pci/hda/cs35l41_hda.c          |   2 +
+ sound/pci/hda/cs35l41_hda.h          |   5 +-
+ sound/pci/hda/cs35l41_hda_property.c | 362 ++++++++++++++++++++++++---
+ sound/pci/hda/patch_realtek.c        |  39 ++-
+ 4 files changed, 353 insertions(+), 55 deletions(-)
+
 -- 
 2.34.1
 
