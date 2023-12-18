@@ -4,68 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0759EC35274
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 Dec 2023 15:14:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C3347C35274
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 Dec 2023 15:15:05 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0E5B9E7C;
-	Mon, 18 Dec 2023 16:14:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0E5B9E7C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6C176E7A;
+	Mon, 18 Dec 2023 16:14:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6C176E7A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1702912490;
-	bh=eC9syXO/Mya4vCTZU0ZNsz6rOgAboltenfQtCSCdQfI=;
+	s=default; t=1702912503;
+	bh=92GhK758r09gkwEEe3EHzbhvc8YxXCmR3HRbJQaEmuQ=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=ubenSE+7Fef3UjM/Gnr+SVlE0HP2a0UygfAFVMtVFE5fpFea9jWWQ9Z0EDNSHhlUD
-	 8aQLaMbnU9hJzchX0NlisYwdlNtmmf53+iXPk+vk12aRexQdDR+V0kS2vXeCsuCzCE
-	 ul7j1ZGaHpH02G2VviUHvKJoeTF4PpTg0O7wHGYg=
+	b=OmPopKL5bGDh6/axIxEl0aiLt0fNhfK1g7PP+SmGkEaJFNOk8qBhZpk81sun+icsi
+	 kURItkkj40jW5XPfsNwfavFOtzqcCZAKGmCnJy1AvE8tfNPQCS1tGRWI6mDzL5uNOw
+	 77D6lxN+9/lh0RSaB4TLkR2VBCo3DQK50yLgQDL4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B905DF8063D; Mon, 18 Dec 2023 16:13:24 +0100 (CET)
+	id 836F8F80690; Mon, 18 Dec 2023 16:13:30 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3489FF80632;
-	Mon, 18 Dec 2023 16:13:24 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 411D0F80682;
+	Mon, 18 Dec 2023 16:13:29 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D0C50F805FC; Mon, 18 Dec 2023 16:13:17 +0100 (CET)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
+	id 521EFF80651; Mon, 18 Dec 2023 16:13:25 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7405EF8055A
-	for <alsa-devel@alsa-project.org>; Mon, 18 Dec 2023 16:12:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7405EF8055A
+	by alsa1.perex.cz (Postfix) with ESMTPS id DADACF80431
+	for <alsa-devel@alsa-project.org>; Mon, 18 Dec 2023 16:12:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DADACF80431
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=Cr+c/A5D
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-	by mx0b-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id
- 3BI8qL5B016655;
-	Mon, 18 Dec 2023 09:12:50 -0600
+ header.s=PODMain02222019 header.b=WRGT8Leb
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+	by mx0a-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id
+ 3BI5gNV7015248;
+	Mon, 18 Dec 2023 09:12:54 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
 	:mime-version:content-transfer-encoding:content-type; s=
-	PODMain02222019; bh=QCI+WosXPoG/C4WNkalOZYspoGUtRlQIsi9pkSb1e54=; b=
-	Cr+c/A5Dn7pv1n5LvLt9/GMy8vISSQKPe6P2NL7bTDP+2VhNwekeCBI1pQu2djwR
-	jVdmkwCrPT/7duAnriki3WFr5UztrmVMpuTPke099z08r07BAWPxR7dJO4qUoeR6
-	JTj74qj7GS5RiMjAxUJv3I5GuDlCj7vJq69Q7LuiCMJJuZq17tbqWgWiPMAk5W+Y
-	3byPUS49J4aHxYHZr3mfpqS+KRbcH9k8xMgM3DxIolxAPWDrh/FmOr3jOa4Af89J
-	YDG3LFKxX/ebywElNuMSTo7Q9pL1fR2rpaOKUqkAdINgow0Jh7GBROJ1prfLZsaM
-	skqIERj0tf7sF47S0Ux/IA==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3v196natsr-3
+	PODMain02222019; bh=ctJlTsxAE1mhFxDWq9arbchkWs2tJ0h+k4v0fUeXWEk=; b=
+	WRGT8LebB8AvqW/ztWRaydd6gHr7nyFpeQ9d1M/Gwly8r37oNDrK1E60V9rZDeXs
+	JyQ0/2OViSBJ0O3sc6ZIpot2BVPN6QPdqwFxrsfDBEinQPBu1qem6UkRM0hC/VA/
+	nQglwDC+zOUN2GpblBM39/WHqnIHUGRBmFROXDOcWTDXYdYulfMNl+8/Mp3C/9+Y
+	3TvksqOHCu5Fn3NyeCnhJY2UMXxAeYgzKd2Erw/rXaA3oSCaS5RMzuy2WRTSIQ46
+	OosZRJfAm+IA6wUdLJE41FicpHI2ay9JaeG7CgDM5xsLh0pTulQUfquV5uBAKVmJ
+	nRLrIj7IVC5s9J3+tCzOJQ==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3v1a622ub0-5
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 18 Dec 2023 09:12:49 -0600 (CST)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+	Mon, 18 Dec 2023 09:12:53 -0600 (CST)
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 18 Dec
  2023 15:12:48 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.40 via Frontend
- Transport; Mon, 18 Dec 2023 15:12:48 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.40 via Frontend Transport; Mon, 18 Dec 2023 15:12:48 +0000
 Received: from sbinding-cirrus-dsktp2.ad.cirrus.com (unknown [198.90.238.77])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 21CE615B6;
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id A4E623582;
 	Mon, 18 Dec 2023 15:12:48 +0000 (UTC)
 From: Stefan Binding <sbinding@opensource.cirrus.com>
 To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
@@ -73,21 +73,21 @@ CC: <alsa-devel@alsa-project.org>, <linux-sound@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
         "Stefan
  Binding" <sbinding@opensource.cirrus.com>
-Subject: [PATCH v1 5/7] ALSA: hda/realtek: Add quirks for ASUS Zenbook 2022
+Subject: [PATCH v1 7/7] ALSA: hda/realtek: Add quirks for ASUS Zenbook 2023
  Models
-Date: Mon, 18 Dec 2023 15:12:19 +0000
-Message-ID: <20231218151221.388745-6-sbinding@opensource.cirrus.com>
+Date: Mon, 18 Dec 2023 15:12:21 +0000
+Message-ID: <20231218151221.388745-8-sbinding@opensource.cirrus.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231218151221.388745-1-sbinding@opensource.cirrus.com>
 References: <20231218151221.388745-1-sbinding@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: VgkwNQYe1FOieNDjLT0OgTzs0eZzFMez
-X-Proofpoint-GUID: VgkwNQYe1FOieNDjLT0OgTzs0eZzFMez
+X-Proofpoint-GUID: cC1ET2UN5k6W25HHSm6HnOCHOwIYXaWC
+X-Proofpoint-ORIG-GUID: cC1ET2UN5k6W25HHSm6HnOCHOwIYXaWC
 X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: YIRSV2TJYKQ4YHM2MK6OTUJTHX5E3FZG
-X-Message-ID-Hash: YIRSV2TJYKQ4YHM2MK6OTUJTHX5E3FZG
+Message-ID-Hash: IF3AEIDSF6LI5RJ3OIXBDEMI2BZ3ADS2
+X-Message-ID-Hash: IF3AEIDSF6LI5RJ3OIXBDEMI2BZ3ADS2
 X-MailFrom: prvs=7716b2c674=sbinding@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -100,7 +100,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YIRSV2TJYKQ4YHM2MK6OTUJTHX5E3FZG/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IF3AEIDSF6LI5RJ3OIXBDEMI2BZ3ADS2/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -116,35 +116,35 @@ cs35l41_hda_property.c
 
 Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
 ---
- sound/pci/hda/patch_realtek.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ sound/pci/hda/patch_realtek.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
 diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 9c3de6a80e73..66652320822f 100644
+index 66652320822f..c3a756528886 100644
 --- a/sound/pci/hda/patch_realtek.c
 +++ b/sound/pci/hda/patch_realtek.c
-@@ -10000,17 +10000,20 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1043, 0x1d1f, "ASUS G713PI/PU/PV/PVN", ALC287_FIXUP_CS35L41_I2C_2),
- 	SND_PCI_QUIRK(0x1043, 0x1d42, "ASUS Zephyrus G14 2022", ALC289_FIXUP_ASUS_GA401),
- 	SND_PCI_QUIRK(0x1043, 0x1d4e, "ASUS TM420", ALC256_FIXUP_ASUS_HPE),
-+	SND_PCI_QUIRK(0x1043, 0x1da2, "ASUS UP6502ZA/ZD", ALC245_FIXUP_CS35L41_SPI_2),
- 	SND_PCI_QUIRK(0x1043, 0x1e02, "ASUS UX3402ZA", ALC245_FIXUP_CS35L41_SPI_2),
- 	SND_PCI_QUIRK(0x1043, 0x16a3, "ASUS UX3402VA", ALC245_FIXUP_CS35L41_SPI_2),
- 	SND_PCI_QUIRK(0x1043, 0x1f62, "ASUS UX7602ZM", ALC245_FIXUP_CS35L41_SPI_2),
- 	SND_PCI_QUIRK(0x1043, 0x1e11, "ASUS Zephyrus G15", ALC289_FIXUP_ASUS_GA502),
--	SND_PCI_QUIRK(0x1043, 0x1e12, "ASUS UM3402", ALC287_FIXUP_CS35L41_I2C_2),
-+	SND_PCI_QUIRK(0x1043, 0x1e12, "ASUS UM6702RA/RC", ALC287_FIXUP_CS35L41_I2C_2),
- 	SND_PCI_QUIRK(0x1043, 0x1e51, "ASUS Zephyrus M15", ALC294_FIXUP_ASUS_GU502_PINS),
- 	SND_PCI_QUIRK(0x1043, 0x1e5e, "ASUS ROG Strix G513", ALC294_FIXUP_ASUS_G513_PINS),
- 	SND_PCI_QUIRK(0x1043, 0x1e8e, "ASUS Zephyrus G15", ALC289_FIXUP_ASUS_GA401),
-+	SND_PCI_QUIRK(0x1043, 0x1ee2, "ASUS UM3402", ALC287_FIXUP_CS35L41_I2C_2),
+@@ -9963,10 +9963,13 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1043, 0x1663, "ASUS GU603ZI/ZJ/ZQ/ZU/ZV", ALC285_FIXUP_ASUS_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1043, 0x1683, "ASUS UM3402YAR", ALC287_FIXUP_CS35L41_I2C_2),
+ 	SND_PCI_QUIRK(0x1043, 0x16b2, "ASUS GU603", ALC289_FIXUP_ASUS_GA401),
++	SND_PCI_QUIRK(0x1043, 0x16d3, "ASUS UX5304VA", ALC245_FIXUP_CS35L41_SPI_2),
+ 	SND_PCI_QUIRK(0x1043, 0x16e3, "ASUS UX50", ALC269_FIXUP_STEREO_DMIC),
++	SND_PCI_QUIRK(0x1043, 0x16f3, "ASUS UX7602VI/BZ", ALC245_FIXUP_CS35L41_SPI_2),
+ 	SND_PCI_QUIRK(0x1043, 0x1740, "ASUS UX430UA", ALC295_FIXUP_ASUS_DACS),
+ 	SND_PCI_QUIRK(0x1043, 0x17d1, "ASUS UX431FL", ALC294_FIXUP_ASUS_DUAL_SPK),
+ 	SND_PCI_QUIRK(0x1043, 0x17f3, "ROG Ally NR2301L/X", ALC294_FIXUP_ASUS_ALLY),
++	SND_PCI_QUIRK(0x1043, 0x1863, "ASUS UX6404VI/VV", ALC245_FIXUP_CS35L41_SPI_2),
+ 	SND_PCI_QUIRK(0x1043, 0x1881, "ASUS Zephyrus S/M", ALC294_FIXUP_ASUS_GX502_PINS),
+ 	SND_PCI_QUIRK(0x1043, 0x18b1, "Asus MJ401TA", ALC256_FIXUP_ASUS_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1043, 0x18d3, "ASUS UM3504DA", ALC294_FIXUP_CS35L41_I2C_2),
+@@ -10013,6 +10016,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
  	SND_PCI_QUIRK(0x1043, 0x1c52, "ASUS Zephyrus G15 2022", ALC289_FIXUP_ASUS_GA401),
  	SND_PCI_QUIRK(0x1043, 0x1f11, "ASUS Zephyrus G14", ALC289_FIXUP_ASUS_GA401),
  	SND_PCI_QUIRK(0x1043, 0x1f12, "ASUS UM5302", ALC287_FIXUP_CS35L41_I2C_2),
-+	SND_PCI_QUIRK(0x1043, 0x1f62, "ASUS UX7602ZM", ALC245_FIXUP_CS35L41_SPI_2),
++	SND_PCI_QUIRK(0x1043, 0x1f1f, "ASUS H7604JI/JV/J3D", ALC245_FIXUP_CS35L41_SPI_2),
+ 	SND_PCI_QUIRK(0x1043, 0x1f62, "ASUS UX7602ZM", ALC245_FIXUP_CS35L41_SPI_2),
  	SND_PCI_QUIRK(0x1043, 0x1f92, "ASUS ROG Flow X16", ALC289_FIXUP_ASUS_GA401),
  	SND_PCI_QUIRK(0x1043, 0x3030, "ASUS ZN270IE", ALC256_FIXUP_ASUS_AIO_GPIO2),
- 	SND_PCI_QUIRK(0x1043, 0x3a20, "ASUS G614JZR", ALC245_FIXUP_CS35L41_SPI_2),
 -- 
 2.34.1
 
