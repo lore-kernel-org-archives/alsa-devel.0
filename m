@@ -4,97 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 83B79C46CD4
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 Dec 2023 10:12:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D5EF3C35274
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 Dec 2023 10:47:16 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 466BCE7F;
-	Mon, 18 Dec 2023 11:12:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 466BCE7F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4A128E72;
+	Mon, 18 Dec 2023 11:47:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4A128E72
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1702894353;
-	bh=dWVfo0YlGfjE9aDQP2Ly3L2JCb3LpM/ev0NxuURn88c=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1702896434;
+	bh=/e+N/7efDKzNbaoFbBulNt3D6lXhfGB0YrWVJy0wYaw=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=UZa543Ajm3KJMTAgVMX18zbiHiDsZHKl9UlVIQxnZV93X684VZ0Yjh8NdSwRTIUZK
-	 mypylf4yk02KbE79B1XfFN31prBP48PY6Ul++IUp6KJW+13t5Zs76zpHeCFBg5EWCk
-	 T6KU/Y4nPZ8H19pm9cQYpQwQOsnUsjdKkvk9JEuw=
+	b=XVx5uea3X8EaKsTmlOWjjQfSGd1egUaC6pvq0gvuZuzaytu/b1npLuHyvA0UvX1LX
+	 Td55VNMKT1cgETDlUmv+IM8ZtW32cOhG41ltWfsCa8Lv7ZoYHCdZi8ldR2GXsctrIG
+	 PBMU9W4AiQZVO+3CnyVkQ9w5sk5y9Ji8lcXOORUo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7E54DF805A1; Mon, 18 Dec 2023 11:11:58 +0100 (CET)
+	id 92F8AF8056F; Mon, 18 Dec 2023 11:46:41 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 222E8F8058C;
-	Mon, 18 Dec 2023 11:11:58 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6885CF805A0;
+	Mon, 18 Dec 2023 11:46:41 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 05E6EF80425; Mon, 18 Dec 2023 11:11:53 +0100 (CET)
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com
- [IPv6:2607:f8b0:4864:20::431])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 0C52CF80431; Mon, 18 Dec 2023 11:46:36 +0100 (CET)
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 2F544F80124
-	for <alsa-devel@alsa-project.org>; Mon, 18 Dec 2023 11:11:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2F544F80124
+	by alsa1.perex.cz (Postfix) with ESMTPS id A379CF800D2
+	for <alsa-devel@alsa-project.org>; Mon, 18 Dec 2023 11:46:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A379CF800D2
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20230601 header.b=AAp1xamr
-Received: by mail-pf1-x431.google.com with SMTP id
- d2e1a72fcca58-6d5e7664f8dso43999b3a.0
-        for <alsa-devel@alsa-project.org>;
- Mon, 18 Dec 2023 02:11:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702894308; x=1703499108;
- darn=alsa-project.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dWVfo0YlGfjE9aDQP2Ly3L2JCb3LpM/ev0NxuURn88c=;
-        b=AAp1xamrP06QUTvMRkibRp3P4c4dJigHB7f1NvJaY5QJ8w7VqvLl86kz/5Pcf3u+2u
-         9ReyhzLCrziEO6FQa+Ac8oLcqOY8OowfUsguxDStg9+XyiiR+ME9l8MPbXmDJhHQrPsJ
-         kEc6R/XGtpTtwI77wMpW5ihHJ6w5F/99WIdeQrs1MchsRPR9yta8Eu3EfyBx/xceG2kr
-         3V/uEOVR2tAbOau68z90KN/916cz/3kqo3d+5SZh8jlh7X7A1v4uBwn4zfEu2AwiKCe4
-         JsY+BbsbNdyy0xtlxN+2m7xoiLI6QDKX0Y9iYde/EhRvIHwN7jbPaTHIxe67ljUdoqnT
-         AM9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702894308; x=1703499108;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dWVfo0YlGfjE9aDQP2Ly3L2JCb3LpM/ev0NxuURn88c=;
-        b=qPskRILglWImkUGL20Y2BASGZqxNr3FYiw7A31DSrnMX7hq8DDouAz9EfK5iBp+blp
-         6qbkAEN1/Yxb4RXO+XkpQzZGuQdrdt+QlFWsCH57jUSWYnhN1Mx9ffNSE2ejFIfodm5N
-         bjkUJeP6zd7dBpmPyxCJkqM28GDZnvJnWQSk4h0BW/NnByVJ4apOS33oiDvRY2nRKI0/
-         H4tRKyrSMs96T1TThCHzwUGBqR2+kGOHzJET2xfShx8hH7LYuQVnMFT3QGFWvHOWC303
-         37u1QygXbY1k/zsfsW9WspvhLDp4eh1eHtY1q8ixmu1QO9kZfFDYO7ZTYL4A9vJ7i4Zj
-         l6TA==
-X-Gm-Message-State: AOJu0YxCGVM+iEN6559erkDsCTKULO3baAJnsQUK5jBlgUuZEkYyck2D
-	dTxWVf4M7uv+sqZqxphULmrxShueqGj55kSRGnI=
-X-Google-Smtp-Source: 
- AGHT+IFYAnVfFiaPLV3aOQmZxk09vqA3D8C1S99StKDu8dlQoGIILh+9qvsyJUfc1ZciBzGtPeAUAdzf88ItNIDemXY=
-X-Received: by 2002:a05:6a00:2288:b0:6cd:e3ef:ce54 with SMTP id
- f8-20020a056a00228800b006cde3efce54mr34661547pfe.0.1702894308316; Mon, 18 Dec
- 2023 02:11:48 -0800 (PST)
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=k/1wDnvd
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702896392; x=1734432392;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=/e+N/7efDKzNbaoFbBulNt3D6lXhfGB0YrWVJy0wYaw=;
+  b=k/1wDnvdZLnC/4SQShskuhZfkq4w71IN8nzIX/Z+aui5iLZYFWFMI17j
+   azSbsxvwZjmCwWlW5bziU3RYe7TFUCyWe81NPwmvgvIUjyoAl68seuugd
+   HGJEgq+ZUilW6phKgd08aIhLBtiCFKG8LUvacb3mMHAR5mlFVUVal0KSE
+   mZYd8y2+NsQKD3ES89b/ASjPtRsm/x9YyA/x3K398GLiulasMBB2LlJdS
+   AMNMXnwGBAkgH4VTVNpVnljKjO3Jua4e7M1Ez5mvKgcjIK8QxlrYLqIOy
+   5rxT8dok4ShRz8IQsT6z+3G/EWqB/lJY6h33kFTcKsFQ74KIBb5TgybAg
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10927"; a="8851339"
+X-IronPort-AV: E=Sophos;i="6.04,285,1695711600";
+   d="scan'208";a="8851339"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 18 Dec 2023 02:46:26 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10927"; a="779048112"
+X-IronPort-AV: E=Sophos;i="6.04,285,1695711600";
+   d="scan'208";a="779048112"
+Received: from mmaiores-mobl1.ger.corp.intel.com (HELO [10.249.34.197])
+ ([10.249.34.197])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 18 Dec 2023 02:46:23 -0800
+Message-ID: <b57c7a24-d7fd-4a89-8293-8ab761be013d@linux.intel.com>
+Date: Mon, 18 Dec 2023 10:40:47 +0100
 MIME-Version: 1.0
-References: <1702891731-3417-1-git-send-email-shengjiu.wang@nxp.com>
-In-Reply-To: <1702891731-3417-1-git-send-email-shengjiu.wang@nxp.com>
-From: Fabio Estevam <festevam@gmail.com>
-Date: Mon, 18 Dec 2023 07:11:36 -0300
-Message-ID: 
- <CAOMZO5CjoXFx4uX7w7My_zSeo_+mhQqhWYH3PNdV6SQOUXTxtg@mail.gmail.com>
-Subject: Re: [PATCH] ASoC: fsl_sai: Fix channel swap issue on i.MX8MP
-To: Shengjiu Wang <shengjiu.wang@nxp.com>
-Cc: shengjiu.wang@gmail.com, Xiubo.Lee@gmail.com, nicoleotsuka@gmail.com,
-	lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
-	alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org,
-	linux-kernel@vger.kernel.org, linux-sound@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Message-ID-Hash: EXX2TTEWLK4PB2YPBNNO2BXRKEG6VEXV
-X-Message-ID-Hash: EXX2TTEWLK4PB2YPBNNO2BXRKEG6VEXV
-X-MailFrom: festevam@gmail.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] ASoC: Intel: bytcr_rt5640: Add quirk for the Medion
+ Lifetab S10346
+Content-Language: en-US
+To: Hans de Goede <hdegoede@redhat.com>,
+ Cezary Rojewski <cezary.rojewski@intel.com>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+ Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
+References: <20231217213221.49424-1-hdegoede@redhat.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20231217213221.49424-1-hdegoede@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: JN7YXB3V7U4SXYZTWPRJQFPMZRNWJ7ES
+X-Message-ID-Hash: JN7YXB3V7U4SXYZTWPRJQFPMZRNWJ7ES
+X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -106,7 +97,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/EXX2TTEWLK4PB2YPBNNO2BXRKEG6VEXV/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JN7YXB3V7U4SXYZTWPRJQFPMZRNWJ7ES/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -115,19 +106,16 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, Dec 18, 2023 at 7:10=E2=80=AFAM Shengjiu Wang <shengjiu.wang@nxp.co=
-m> wrote:
->
-> When flag mclk_with_tere and mclk_direction_output enabled,
-> The SAI transmitter or receiver will be enabled in very early
-> stage, that if FSL_SAI_xMR is set by previous case,
-> for example previous case is one channel, current case is
-> two channels, then current case started with wrong xMR in
-> the beginning, then channel swap happen.
->
-> The patch is to clear xMR in hw_free() to avoid such
-> channel swap issue.
->
-> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 
-Fixes tag, please.
+
+On 12/17/23 15:32, Hans de Goede wrote:
+> Add a quirk for the Medion Lifetab S10346, this BYTCR tablet has no CHAN
+> package in its ACPI tables and uses SSP0-AIF1 rather then SSP0-AIF2 which
+> is the default for BYTCR devices.
+> 
+> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+> ---
+>  sound/soc/intel/boards/bytcr_rt5640.c | 12 ++++++++++++
+
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+
