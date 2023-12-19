@@ -4,74 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0ACC5C41535
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Dec 2023 16:06:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 80429C41535
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Dec 2023 16:06:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0B645E72;
-	Tue, 19 Dec 2023 17:06:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0B645E72
+	by alsa0.perex.cz (Postfix) with ESMTPS id BA06D844;
+	Tue, 19 Dec 2023 17:06:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BA06D844
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1703001993;
-	bh=jCafuXZMr4CVA6ZUTmd6i6uEsoZeucixacGiBD7RwNI=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=BBUoBs04F9VLhrQQB1jTBcSZIZgp9fDVOWsCbz3e9NjT5rHQRhBIl45J+c3mDmuP0
-	 +ucN2/8YaJLjMQpJSRtt+TgQ69ATueRwRYS91uvtnTrMEjbgiEoIPUPRCazncwlOPM
-	 pP62Xe7Vkm6cPnDeD9AsaV2aQPsFFQ05m83RN8ao=
+	s=default; t=1703002013;
+	bh=dFfTW4Ywg/AnVhHHspPjP/ls8JhEBJSKWAKuZw3hh00=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=W9/9LYED+IYxxea5pxtemPPIowAPeJUlfLIx+N0+XEvGrs+DOdS66L2Ae2meA2AwJ
+	 HRLGP8aMdO4kuz7ffrTRjzP/27pewePxq1j08L+xRePQnElB/9W944xfg++avK80Hs
+	 fi1xm2iDutmXuBzEVIAGEt6EMS+r0mt5vUb1EfhM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3D1A8F8059F; Tue, 19 Dec 2023 17:06:01 +0100 (CET)
+	id 79BD9F805CB; Tue, 19 Dec 2023 17:06:03 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 459B9F8059F;
-	Tue, 19 Dec 2023 17:06:01 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 045ECF80580;
+	Tue, 19 Dec 2023 17:06:03 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DF648F80431; Tue, 19 Dec 2023 17:05:53 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	id 6CAD6F80212; Tue, 19 Dec 2023 17:05:57 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 47767F80212
+	by alsa1.perex.cz (Postfix) with ESMTPS id 4741DF800D2
 	for <alsa-devel@alsa-project.org>; Tue, 19 Dec 2023 17:05:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 47767F80212
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4741DF800D2
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=qmUYPxhN
+ header.s=k20201202 header.b=EZwCGzKC
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 516606134F;
-	Tue, 19 Dec 2023 16:05:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10C9DC433C7;
+	by dfw.source.kernel.org (Postfix) with ESMTP id B8D2961403;
 	Tue, 19 Dec 2023 16:05:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 394FBC433CA;
+	Tue, 19 Dec 2023 16:05:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703001945;
-	bh=jCafuXZMr4CVA6ZUTmd6i6uEsoZeucixacGiBD7RwNI=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=qmUYPxhNZWAocTkoQECmYZQFZ34/VqCmVQRLp/x4znYAOMATKsjCpJOSeJBucqVD1
-	 J1E7k9VDZB5a5OdplC6Hbxv/CSeBUKETnSlQhWzrdZPlbacWcycx3gb/Jqr2h/iFoo
-	 pZt5fd0PHnYOcRmfrnBmu3uTXD0Rsy2aYCP6mTLTI60DhbTwPbxQ6hMLP+pNytoKTR
-	 Q9HAnCZEZP1WE+rVMLO2z2jQeYc4jpstcRRU7WqKPqa4CC+ajyDBmd3SNcTTuEAZrI
-	 Tkj+nDRT9smYUHNCYCYbxMMdQggl4m6qyRjMkAkMx/krXz75+NDHwKtmmKDD8cewLq
-	 AET82MXGYk4DA==
+	s=k20201202; t=1703001943;
+	bh=dFfTW4Ywg/AnVhHHspPjP/ls8JhEBJSKWAKuZw3hh00=;
+	h=From:To:In-Reply-To:References:Subject:Date:From;
+	b=EZwCGzKC1l35Wk38SgOiMAWDej7vsInLJWFf/Frx6JArZxgiihEL+axeTVAJsz8T9
+	 BF2WyoDd3J8XObr7sn6XbhFCj1GaPxJvsuOB26BoXIGsM5dqyxOEDgwtZpxIoN4wwi
+	 Oau/Dh7rsZIAH7WPof7tDf+Y1jGRB0L/WgyF5mMM6P7cOcok1IMlwib1ptQK178ZCz
+	 wb+qf/ORQBpg1stzbdAc6tDWW4c8dxskTSMSnScN/3C73rgJFvyPbCXNHFHnGDEv6A
+	 1EuZx2G/QCEhRZ/HFwGlwV/SZNullZWiCAkrbsClFSf3rJdxOHoipDbqoN3QooPE/Y
+	 ZLIdkrUJ5KF4w==
 From: Mark Brown <broonie@kernel.org>
-To: Jerome Brunet <jbrunet@baylibre.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- Zhengqiao Xia <xiazhengqiao@huaqin.corp-partner.google.com>,
- Hsin-Yi Wang <hsinyi@google.com>
-In-Reply-To: <20231218145655.134929-1-jbrunet@baylibre.com>
-References: <20231218145655.134929-1-jbrunet@baylibre.com>
-Subject: Re: [PATCH] ASoC: hdmi-codec: fix missing report for jack initial
- status
-Message-Id: <170300194376.59057.11924859016246547455.b4-ty@kernel.org>
-Date: Tue, 19 Dec 2023 16:05:43 +0000
+To: shengjiu.wang@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
+ nicoleotsuka@gmail.com, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
+ alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org,
+ linux-kernel@vger.kernel.org, linux-sound@vger.kernel.org,
+ Shengjiu Wang <shengjiu.wang@nxp.com>
+In-Reply-To: <1702953057-4499-1-git-send-email-shengjiu.wang@nxp.com>
+References: <1702953057-4499-1-git-send-email-shengjiu.wang@nxp.com>
+Subject: Re: [PATCH v2] ASoC: fsl_sai: Fix channel swap issue on i.MX8MP
+Message-Id: <170300194095.59057.18227409280630031139.b4-ty@kernel.org>
+Date: Tue, 19 Dec 2023 16:05:40 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-5c066
-Message-ID-Hash: TH55ESIQGKKXFDPJCBNC4AXXLINL3O7E
-X-Message-ID-Hash: TH55ESIQGKKXFDPJCBNC4AXXLINL3O7E
+Message-ID-Hash: XXFPQVHXAIYY4GEIUAVQCMDKIGSZEBE3
+X-Message-ID-Hash: XXFPQVHXAIYY4GEIUAVQCMDKIGSZEBE3
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -84,24 +85,21 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TH55ESIQGKKXFDPJCBNC4AXXLINL3O7E/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XXFPQVHXAIYY4GEIUAVQCMDKIGSZEBE3/>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, 18 Dec 2023 15:56:52 +0100, Jerome Brunet wrote:
-> This fixes a problem introduced while fixing ELD reporting with no jack
-> set.
-> 
-> Most driver using the hdmi-codec will call the 'plugged_cb' callback
-> directly when registered to report the initial state of the HDMI connector.
-> 
-> With the commit mentionned, this occurs before jack is ready and the
-> initial report is lost for platforms actually providing a jack for HDMI.
+On Tue, 19 Dec 2023 10:30:57 +0800, Shengjiu Wang wrote:
+> When flag mclk_with_tere and mclk_direction_output enabled,
+> The SAI transmitter or receiver will be enabled in very early
+> stage, that if FSL_SAI_xMR is set by previous case,
+> for example previous case is one channel, current case is
+> two channels, then current case started with wrong xMR in
+> the beginning, then channel swap happen.
 > 
 > [...]
 
@@ -111,8 +109,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: hdmi-codec: fix missing report for jack initial status
-      commit: 025222a9d6d25eee2ad9a1bb5a8b29b34b5ba576
+[1/1] ASoC: fsl_sai: Fix channel swap issue on i.MX8MP
+      commit: 8f0f01647550daf9cd8752c1656dcb0136d79ce1
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
