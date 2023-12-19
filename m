@@ -4,83 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A34C6C41535
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Dec 2023 18:08:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 93ABAC46CA2
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Dec 2023 18:08:23 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D3E39EB6;
-	Tue, 19 Dec 2023 19:07:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D3E39EB6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0B275EAA;
+	Tue, 19 Dec 2023 19:08:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0B275EAA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1703009284;
-	bh=75Es5ASDNV/OKxp/HlaSmARaKwxlUSU1EzBIpJTahRw=;
+	s=default; t=1703009302;
+	bh=BkdpxdriLwhZmETXOsh3mZuFvfKehA1ZY7LfarcI37A=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=fzm9N6rOTiG94V2lOkJL4U+5+oydoAYDLk9nY/57zRgsngKJwUOcodC305pvJpIPi
-	 M9JZ3aGtj1MUqgeEGniiOriCL9BvNVz0WSPxWSN2TU+Ok0Kj8Nf6Kx0kLSK5qfmNIs
-	 zvomIpXT4cUDU8D1GgQA3UKMI1DaRIK1ZWqF8M8Q=
+	b=adI9BpB2D8/89jAP+cfkNFXbJ/46Svq9Hw+KZvukeMZOPaO9eXzToJFlIcG9AWrWm
+	 OCZTx0PVN/Qycj9mhSGxHg9r1zBj2DFSVM4xnx9Zhi3juvz6xAuiXv77g6kVnesKmX
+	 zYVhq9IteFA/M8epIR8uZITjWkmXGy6soTL5NgJ0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5A498F805E6; Tue, 19 Dec 2023 19:07:10 +0100 (CET)
+	id 18583F8060A; Tue, 19 Dec 2023 19:07:12 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id BE1B3F805EE;
-	Tue, 19 Dec 2023 19:07:09 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D1474F8060C;
+	Tue, 19 Dec 2023 19:07:11 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BFC26F805AB; Tue, 19 Dec 2023 19:07:03 +0100 (CET)
-Received: from sin.source.kernel.org (sin.source.kernel.org
- [IPv6:2604:1380:40e1:4800::1])
+	id 79497F805B4; Tue, 19 Dec 2023 19:07:06 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id F081FF80588
-	for <alsa-devel@alsa-project.org>; Tue, 19 Dec 2023 19:06:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F081FF80588
+	by alsa1.perex.cz (Postfix) with ESMTPS id CC9C2F80431
+	for <alsa-devel@alsa-project.org>; Tue, 19 Dec 2023 19:07:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CC9C2F80431
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=bbamb6wM
+ header.s=k20201202 header.b=NJrIVF9Q
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id E121BCE1AAB;
+	by ams.source.kernel.org (Postfix) with ESMTP id E3801B81A38;
+	Tue, 19 Dec 2023 18:06:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7FA3EC433CA;
 	Tue, 19 Dec 2023 18:06:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F8CCC433C7;
-	Tue, 19 Dec 2023 18:06:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703009215;
-	bh=75Es5ASDNV/OKxp/HlaSmARaKwxlUSU1EzBIpJTahRw=;
+	s=k20201202; t=1703009219;
+	bh=BkdpxdriLwhZmETXOsh3mZuFvfKehA1ZY7LfarcI37A=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=bbamb6wMIQTNf2EwRtb8UiN2rGhkeT3P8P/X+6ptYEgRlQK5Da0Dsmh+XELFHeiBw
-	 pbkfnuMPYvQpHiCXo99GPo74qlJW/vBKogHtjMGgJkEge+lCEBy1l5k5YiLW08nSi2
-	 YzNBgl3Scxhv0zJOG/HH9nfVsGWB9sIZo/C9VEELwDkWrVWsM6eB7EgRwq8pX8c4fC
-	 Mlx/oEX/JenyAaKtZ2zHR7PEAipdYLRY6TpQmPqv/NhJb1fSZxRhOU+5js1HhcbSZ7
-	 BO/sVIwYoObutr8vagWBI8lvIHRIzkYCTff8tKgQusvFu4BNvGCt4E0l5sj44sJpl/
-	 LqbEy6WVyTmlw==
+	b=NJrIVF9QxPBuJo7WsIDB/Es3w/CKkCO53d9JLL2vnVmlRCH/AVE0hAuVRF2oE+pMb
+	 jznN1ipl2rc2xkpAzRW7b7bK8zbCLtT+CEL9jkvGwWaZgns89xK34qq8dqhcSwqxKu
+	 9TiZ8F+NPN4yOT1WkLXBcVca3Zxm9OTAiElpMkEq6ZUOQ2IAqNoGhCASYkMxqOmOwp
+	 uevAVwQaVUjpYiwjFEsnjtjAlBfeB3O7EZbV4qxrmblH+BrtKxcpOjgf9wXiCuk8YW
+	 lRw+mOlfnaUePE4HLQICVfIPVDUhobQnN2eA2TH04QXIJ2z+CbfhAMsUucUYzF55wD
+	 ED7XiSTv5LHsA==
 From: Mark Brown <broonie@kernel.org>
-To: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Banajit Goswami <bgoswami@quicinc.com>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Thierry Reding <thierry.reding@gmail.com>,
- Jonathan Hunter <jonathanh@nvidia.com>,
- Linus Walleij <linus.walleij@linaro.org>
-Cc: linux-sound@vger.kernel.org, alsa-devel@alsa-project.org,
- devicetree@vger.kernel.org, linux-tegra@vger.kernel.org
-In-Reply-To: 
- <20231214-gpio-descriptors-sound-misc-v1-0-e3004176bd8b@linaro.org>
-References: 
- <20231214-gpio-descriptors-sound-misc-v1-0-e3004176bd8b@linaro.org>
-Subject: Re: [PATCH 0/4] GPIO inclusion fixes to misc sound drivers
-Message-Id: <170300921190.125466.2748505947171245430.b4-ty@kernel.org>
-Date: Tue, 19 Dec 2023 18:06:51 +0000
+To: Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Brent Lu <brent.lu@intel.com>, Cezary Rojewski <cezary.rojewski@intel.com>,
+ Daniel Baluta <daniel.baluta@nxp.com>, Jaroslav Kysela <perex@perex.cz>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Shengjiu Wang <shengjiu.wang@gmail.com>,
+ Sylwester Nawrocki <s.nawrocki@samsung.com>, Takashi Iwai <tiwai@suse.com>,
+ Xiubo Li <Xiubo.Lee@gmail.com>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Fabio Estevam <festevam@gmail.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ Nicolin Chen <nicoleotsuka@gmail.com>, alsa-devel@alsa-project.org,
+ linux-sound@vger.kernel.org
+In-Reply-To: <878r5q93sq.wl-kuninori.morimoto.gx@renesas.com>
+References: <878r5q93sq.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH v2 0/5] ASoC: don't use original dummy dlc
+Message-Id: <170300921524.125466.13853663973005425398.b4-ty@kernel.org>
+Date: Tue, 19 Dec 2023 18:06:55 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-5c066
-Message-ID-Hash: ZYQX52GJCDZMMJ62Z5JB2C3IH2EVOHYR
-X-Message-ID-Hash: ZYQX52GJCDZMMJ62Z5JB2C3IH2EVOHYR
+Message-ID-Hash: NSWO65GJC443MLAUAO63CQFRGTEO5AME
+X-Message-ID-Hash: NSWO65GJC443MLAUAO63CQFRGTEO5AME
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -93,7 +96,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZYQX52GJCDZMMJ62Z5JB2C3IH2EVOHYR/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NSWO65GJC443MLAUAO63CQFRGTEO5AME/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -102,10 +105,16 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, 14 Dec 2023 14:15:41 +0100, Linus Walleij wrote:
-> Mostly dropping unused headers, and a single driver rewrite.
+On Tue, 19 Dec 2023 05:09:25 +0000, Kuninori Morimoto wrote:
+> This v2 patch-set try to not use original dummy dlc.
 > 
+> "Empty" dlc might be used on Platform, but "dummy" dlc is not needed
+> for it. [PATCH 1/5][PATCH 2/5] removes "dummy" dlc from Platform.
 > 
+> Now ASoC have common dummy dlc (= snd_soc_dummy_dlc).
+> [PATCH 3/5][PATCH 4/5] will use it instead of original dummy dlc.
+> 
+> [...]
 
 Applied to
 
@@ -113,14 +122,16 @@ Applied to
 
 Thanks!
 
-[1/4] ASoC: hisilicon: Drop GPIO include
-      commit: 487b467206fb2f3a21c93759d3b0ffe7044ed197
-[2/4] ASoC: qcom: sc7180: Drop GPIO include
-      commit: 809fc84b371a0364160254037d2bc34a8f5ce372
-[3/4] ASoC: simple-card-utils: Drop GPIO include
-      commit: 4504f63321e1a581a3c0cbc8de91bd0175d94783
-[4/4] ASoC: tegra: tegra20_ac97: Convert to use GPIO descriptors
-      commit: 26e91f61d6b91ccfb0bbb15cbc81845dd1d223af
+[1/5] ASoC: fsl: fsl-asoc-card: don't need DUMMY Platform
+      commit: 7465582e0b18859d3681192ec2ccf22a81370040
+[2/5] ASoC: samsung: odroid: don't need DUMMY Platform
+      commit: 56558d6ab8c09c416bdb6d72b7e02894539a882a
+[3/5] ASoC: intel: hdaudio.c: use snd_soc_dummy_dlc
+      commit: c2dfe29f30d8850af324449f416491b171af19aa
+[4/5] ASoC: sof: use snd_soc_dummy_dlc
+      commit: e8776ff9ce9f5a8a9d8294101fd2924cebdd2da1
+[5/5] ASoC: soc.h: don't create dummy Component via COMP_DUMMY()
+      commit: 13f58267cda3d6946c8f4de368ad5d4a003baa61
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
