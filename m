@@ -4,69 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E5184C41535
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Dec 2023 17:40:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D288FC46CA2
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Dec 2023 17:40:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B57B7E96;
-	Tue, 19 Dec 2023 18:39:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B57B7E96
+	by alsa0.perex.cz (Postfix) with ESMTPS id D604DE81;
+	Tue, 19 Dec 2023 18:40:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D604DE81
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1703007609;
-	bh=b5MDa03Vi7XKT0qQS1k8UXSPsp5FYy2d/OBD41hAEBU=;
+	s=default; t=1703007628;
+	bh=dmu5WhRsGcFZw9k5Y+O97oyAhHLWwCpvYCbBnGTC3WY=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=k4zwr/xiAMEEMGZQDvDxvpPrZULB89edjq7chwprdeLXQkvWlxidGHQcTvWghZib+
-	 0rgWG0Y0InashrS/Vd4mBaqfBvb7Xe3uMuUtiQEmVyauT2Z6o4aj/nZsljE2GKMQPN
-	 gXWUUFgZjDq/rA3rIg6xIuaHZ1YP3rwGexm3chUo=
+	b=bdx8TafZEwLi4QFHMlQA1Qi5lZ2ZIWli4PnvtFPgrSvxnK7kJlDb0aXia5qDNo6sT
+	 kQ1vPoANeeu6gy1H318OELzH7ScWYyHF2g9kCQIcEvAe1l/bd+T5H0roJJ01hUtwi8
+	 jxfkJEPupYK4yELtKNDR3dpMdbCunxDw7sZyp/k0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 34555F805EB; Tue, 19 Dec 2023 18:39:16 +0100 (CET)
+	id E2173F805A9; Tue, 19 Dec 2023 18:39:38 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id F4150F805FA;
-	Tue, 19 Dec 2023 18:39:15 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DFDB9F8060B;
+	Tue, 19 Dec 2023 18:39:33 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D4537F8055C; Tue, 19 Dec 2023 18:39:12 +0100 (CET)
+	id 10DDBF8057C; Tue, 19 Dec 2023 18:39:30 +0100 (CET)
 Received: from m.b4.vu (m.b4.vu [203.16.231.148])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 32C9BF80431
-	for <alsa-devel@alsa-project.org>; Tue, 19 Dec 2023 18:37:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 32C9BF80431
+	by alsa1.perex.cz (Postfix) with ESMTPS id CC2DBF80578
+	for <alsa-devel@alsa-project.org>; Tue, 19 Dec 2023 18:38:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CC2DBF80578
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=b4.vu header.i=@b4.vu header.a=rsa-sha256 header.s=m1
- header.b=J40YY9LR
+ header.b=tb1sscCU
 Received: by m.b4.vu (Postfix, from userid 1000)
-	id 3DAD0604B9F7; Wed, 20 Dec 2023 04:07:21 +1030 (ACDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 m.b4.vu 3DAD0604B9F7
+	id 141F8604B9F7; Wed, 20 Dec 2023 04:08:42 +1030 (ACDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 m.b4.vu 141F8604B9F7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=b4.vu; s=m1;
-	t=1703007441; bh=UPNbemMDS4lDUP7V/e0nZI2I2ad47Wkcxstixw5X+Xs=;
+	t=1703007522; bh=NHjcjEOW30LqDt4IfDXMQ9aPNo751eyY/StHwOP1mLE=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=J40YY9LRwCJPGApJEpHdQEhpI3svsHm+iZXZ65R5cUmPvpQpsnKs5HSoh3Gi+dVc3
-	 vi97nhwn/8PFD4d4dJ92ylslHyLe/mLU0Cno6DwFSRrvOmVPz0D3JajAGKihthSf19
-	 d1Wd2P9YYhtHa4sHVkd04I/QFD5Q1N0O/eomZEySqzJoTBnix+/IkvwNLrn+027Puk
-	 o7wXGk+2HtAuBrT8cKtMuFg3IXWmTiJMkfG0xxuXJ0+l3LKGA9h6DsTMtwhabWY2OX
-	 Wc+HpHDRv3sjjvBeDsy5T4nJflAanRYDi+jpqYbVs9bNxL57MCf84h1CIGYYypIeyv
-	 1X83Dfnk905Rw==
-Date: Wed, 20 Dec 2023 04:07:21 +1030
+	b=tb1sscCUykSPgoRHHihX2OnSiwKUlM4LfDpvrTM051ia1FS8gbOhavuqhCSA5ntM2
+	 yTVn7+GHII6JVFG0GhvPMIUBenDodRJLJ8oIrp0auU2hvTTKr74qkEnG7wHKvxaGVa
+	 EmPZ17k1Jx1/Lu4e8dDehEHI5+6AJTrA5lcT1CuPeDculRlxbQ7kFDR1K87c9asAgt
+	 yJ79e9ldGlDQE057gNlGeYuo9alfHvwgeYvLa4XpxfE6bZ6bErxR9Zp0d4KMADjcz5
+	 CCKH6Vnyf+Z2lJcGviZl0sMf2oUBVRg0SbW8XAPFbjWkzWFDKeJqzCBTBVJmZxHjBN
+	 ge5JBCR2l3bTg==
+Date: Wed, 20 Dec 2023 04:08:42 +1030
 From: "Geoffrey D. Bennett" <g@b4.vu>
 To: Takashi Iwai <tiwai@suse.de>
 Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
 	alsa-devel@alsa-project.org, linux-sound@vger.kernel.org
-Subject: [PATCH 03/11] ALSA: scarlett2: Add missing error check to
- scarlett2_usb_set_config()
-Message-ID: <def110c5c31dbdf0a7414d258838a0a31c0fab67.1703001053.git.g@b4.vu>
+Subject: [PATCH 07/11] ALSA: scarlett2: Add #defines for firmware upgrade
+Message-ID: <3077651c21bc8d4f046c68b79ec387aa16fcc5e4.1703001053.git.g@b4.vu>
 References: <cover.1703001053.git.g@b4.vu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <cover.1703001053.git.g@b4.vu>
-Message-ID-Hash: 3Q6UAA5P7VWVNFLQJPGK7FUTBRA6TYN5
-X-Message-ID-Hash: 3Q6UAA5P7VWVNFLQJPGK7FUTBRA6TYN5
+Message-ID-Hash: 3QVAC25NSRALI6Y6FCUOLCCBLFJCUKLS
+X-Message-ID-Hash: 3QVAC25NSRALI6Y6FCUOLCCBLFJCUKLS
 X-MailFrom: g@b4.vu
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -79,7 +78,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3Q6UAA5P7VWVNFLQJPGK7FUTBRA6TYN5/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3QVAC25NSRALI6Y6FCUOLCCBLFJCUKLS/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -88,32 +87,54 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-scarlett2_usb_set_config() calls scarlett2_usb_get() but was not
-checking the result. Return the error if it fails rather than
-continuing with an invalid value.
+Add #defines for SCARLETT2_USB_* needed for firmware upgrade:
+reboot, info-flash, info-segment, erase-segment, get-erase, and
+write-segment.
 
 Signed-off-by: Geoffrey D. Bennett <g@b4.vu>
-Fixes: 9e15fae6c51a ("ALSA: usb-audio: scarlett2: Allow bit-level access to config")
 ---
- sound/usb/mixer_scarlett2.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ sound/usb/mixer_scarlett2.c | 28 +++++++++++++++++-----------
+ 1 file changed, 17 insertions(+), 11 deletions(-)
 
 diff --git a/sound/usb/mixer_scarlett2.c b/sound/usb/mixer_scarlett2.c
-index a0ba53372f7b..22285d8038c1 100644
+index 73f5badceb19..129b9c97871a 100644
 --- a/sound/usb/mixer_scarlett2.c
 +++ b/sound/usb/mixer_scarlett2.c
-@@ -1577,7 +1577,10 @@ static int scarlett2_usb_set_config(
- 		size = 1;
- 		offset = config_item->offset;
+@@ -1137,17 +1137,23 @@ static int scarlett2_get_port_start_num(
+ #define SCARLETT2_USB_CMD_REQ  2
+ #define SCARLETT2_USB_CMD_RESP 3
  
--		scarlett2_usb_get(mixer, offset, &tmp, 1);
-+		err = scarlett2_usb_get(mixer, offset, &tmp, 1);
-+		if (err < 0)
-+			return err;
-+
- 		if (value)
- 			tmp |= (1 << index);
- 		else
+-#define SCARLETT2_USB_INIT_1    0x00000000
+-#define SCARLETT2_USB_INIT_2    0x00000002
+-#define SCARLETT2_USB_GET_METER 0x00001001
+-#define SCARLETT2_USB_GET_MIX   0x00002001
+-#define SCARLETT2_USB_SET_MIX   0x00002002
+-#define SCARLETT2_USB_GET_MUX   0x00003001
+-#define SCARLETT2_USB_SET_MUX   0x00003002
+-#define SCARLETT2_USB_GET_SYNC  0x00006004
+-#define SCARLETT2_USB_GET_DATA  0x00800000
+-#define SCARLETT2_USB_SET_DATA  0x00800001
+-#define SCARLETT2_USB_DATA_CMD  0x00800002
++#define SCARLETT2_USB_INIT_1        0x00000000
++#define SCARLETT2_USB_INIT_2        0x00000002
++#define SCARLETT2_USB_REBOOT        0x00000003
++#define SCARLETT2_USB_GET_METER     0x00001001
++#define SCARLETT2_USB_GET_MIX       0x00002001
++#define SCARLETT2_USB_SET_MIX       0x00002002
++#define SCARLETT2_USB_GET_MUX       0x00003001
++#define SCARLETT2_USB_SET_MUX       0x00003002
++#define SCARLETT2_USB_INFO_FLASH    0x00004000
++#define SCARLETT2_USB_INFO_SEGMENT  0x00004001
++#define SCARLETT2_USB_ERASE_SEGMENT 0x00004002
++#define SCARLETT2_USB_GET_ERASE     0x00004003
++#define SCARLETT2_USB_WRITE_SEGMENT 0x00004004
++#define SCARLETT2_USB_GET_SYNC      0x00006004
++#define SCARLETT2_USB_GET_DATA      0x00800000
++#define SCARLETT2_USB_SET_DATA      0x00800001
++#define SCARLETT2_USB_DATA_CMD      0x00800002
+ 
+ #define SCARLETT2_USB_CONFIG_SAVE 6
+ 
 -- 
 2.43.0
 
