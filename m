@@ -4,83 +4,123 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C4EBAC47074
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Jan 2024 18:53:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D0E50C46CD2
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Jan 2024 18:53:46 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 32407EC1;
-	Tue,  2 Jan 2024 19:53:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 32407EC1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 241E6ED0;
+	Tue,  2 Jan 2024 19:53:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 241E6ED0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1704221599;
-	bh=iNW7gUCewPIpmUfayODUr0/5o74U/hDzQamDggIA4z8=;
-	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=gnTvrH/q9JilDVne4iJphEFOTNSQggjcKSHf5xK8ilbjVHwxVrLw4rmV5AGzFAI6O
-	 msvmkXn3YtmoUmzFI8XQG5jPadQldn4XK3D02F8/8+fZMUw3obmzuzppb9oVo/zhEa
-	 89qVVFLWc2pG0y3aGeQpBu/TgYJY+2M6utoSHcYU=
+	s=default; t=1704221625;
+	bh=ZO1nbBDS/3XN5pif6mo49Br10pz4Q+TkOLhjb6LnLFE=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=riX7fkOXc1s/hr4pTmFV0ojpF2IvD7V/hLnFwgRBLGWoG+yO4IWIvZqf8RM4Pe6FW
+	 VmEr9A4mM1mKDoiKGcJrhjs0XQJ82KOZHB4o/gpTL3gPbzCqUyLhLJeWBSNQCQwWrC
+	 Yve8tB36XPlzMcfESE8OxPLsYPTT19bCSuXsUmmw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5B87AF806DD; Tue,  2 Jan 2024 19:50:57 +0100 (CET)
+	id A8899F806C8; Tue,  2 Jan 2024 19:50:56 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 93B40F806E8;
-	Tue,  2 Jan 2024 19:50:57 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B0759F806C5;
+	Tue,  2 Jan 2024 19:50:56 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2A3DDF8024E; Thu, 21 Dec 2023 04:32:43 +0100 (CET)
-Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
-	(using TLSv1 with cipher ADH-AES256-SHA (256/256 bits))
+	id 038FEF80425; Wed, 20 Dec 2023 08:39:08 +0100 (CET)
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com
+ [IPv6:2a00:1450:4864:20::52e])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A4091F800D2
-	for <alsa-devel@alsa-project.org>; Thu, 21 Dec 2023 04:32:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A4091F800D2
-Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
-	by ex01.ufhost.com (Postfix) with ESMTP id A003F24E285;
-	Thu, 21 Dec 2023 11:32:24 +0800 (CST)
-Received: from EXMBX061.cuchost.com (172.16.6.61) by EXMBX165.cuchost.com
- (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 21 Dec
- 2023 11:32:24 +0800
-Received: from localhost.localdomain (113.72.145.47) by EXMBX061.cuchost.com
- (172.16.6.61) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 21 Dec
- 2023 11:32:23 +0800
-From: Xingyu Wu <xingyu.wu@starfivetech.com>
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
-	Claudiu Beznea <Claudiu.Beznea@microchip.com>, Jaroslav Kysela
-	<perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Rob Herring
-	<robh+dt@kernel.org>, Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
-	<conor.dooley@microchip.com>
-CC: Walker Chen <walker.chen@starfivetech.com>, Xingyu Wu
-	<xingyu.wu@starfivetech.com>, <devicetree@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <alsa-devel@alsa-project.org>,
-	<linux-sound@vger.kernel.org>
-Subject: [PATCH v1 0/2] Add Cadence I2S controller driver for the
-Date: Thu, 21 Dec 2023 11:32:21 +0800
-Message-ID: <20231221033223.73201-1-xingyu.wu@starfivetech.com>
-X-Mailer: git-send-email 2.25.1
+	by alsa1.perex.cz (Postfix) with ESMTPS id CB845F8016E
+	for <alsa-devel@alsa-project.org>; Wed, 20 Dec 2023 08:38:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CB845F8016E
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20230601 header.b=gA5rjwNq
+Received: by mail-ed1-x52e.google.com with SMTP id
+ 4fb4d7f45d1cf-5532b45c286so4655267a12.0
+        for <alsa-devel@alsa-project.org>;
+ Tue, 19 Dec 2023 23:38:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703057891; x=1703662691;
+ darn=alsa-project.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gxdaR881KYWxnVjE5RFuD+xNEp0CWp7EUb3EZJFwG58=;
+        b=gA5rjwNqzmN2jStgK+60W1g9foEqTxvzsLRveMmYbH7cn5/ExkdHZcXCFljkOJo/bh
+         YQG5GFE45AdavWZ+QnOL+TJjiXCUnDjWBeocqWVqMZmk//Yf6PPtlBaWW8TmWUmDrSYY
+         pBbD7N3f8ILu9P/zQPjinDimNhWEgkptrj7h9e4CqUE2Ej2sLOr7uUSRfYURbL5suXz5
+         BR91p+XB5dptPVPHF0jEr0DgTxlvBSva9QWedaJrHrpp+Vp70LVGhdTbi5SBYxOQBK8k
+         r5+4BqAghRVrPuKrWsQlROIBDT+2DrWVssoFRKD1fqTk6Y9hNbYDV1Cg9E/yAJbjhluc
+         ILfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703057891; x=1703662691;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gxdaR881KYWxnVjE5RFuD+xNEp0CWp7EUb3EZJFwG58=;
+        b=f8HCxDbaWZG29PFwRW36/GWu/yghdAyW6NdK7AXQiEwY43NAzPAY2QzyT7xJmm8x1a
+         n4+F3pzald32SOsgmuR6HmHpx21I2NTzTkCkhWcWlVXiYYltm/3rBvsQDH7D4wgvYKeU
+         jXZhKgBBBRbzZDmH+3AiMDpNWu7Mho5BJBQhyuUX85wvVaeKheHGsHQqUvEnHqm+nZC0
+         aa3BtlVPgKl6btYnfhCQOXiyVS6U0sS4vAoht3fdtoyRdqiZzhtK9lMdtSkECgy1dh/z
+         osX+qwBySR64rB6eN1UBvw89rQP9o/mVkKbDt6ECzt5/ebFHpC8m7B5XlhodVdzru9Dq
+         xqeA==
+X-Gm-Message-State: AOJu0YzYrAosPOkCVtKJMNcdEiZaF5f7FWI1zkQzXACHH4nv98qaNCMg
+	VM1gFXsg2a928crAgPypMw==
+X-Google-Smtp-Source: 
+ AGHT+IF1+fG3lPptD5qJNeH9L9Yw2E+IRSt3K4z5bx6nfNUz4NixxmGTMGu3Eq9TuPiyNB8OraLeiw==
+X-Received: by 2002:a50:d71a:0:b0:553:99fb:ae47 with SMTP id
+ t26-20020a50d71a000000b0055399fbae47mr526017edi.27.1703057891414;
+        Tue, 19 Dec 2023 23:38:11 -0800 (PST)
+Received: from alex-pc-ubuntu.lan (31-10-153-16.cgn.dynamic.upc.ch.
+ [31.10.153.16])
+        by smtp.gmail.com with ESMTPSA id
+ p7-20020a056402500700b0055283720ec3sm5979043eda.76.2023.12.19.23.38.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Dec 2023 23:38:11 -0800 (PST)
+From: Aleksandrs Vinarskis <alex.vinarskis@gmail.com>
+To: tiwai@suse.de
+Cc: alex.vinarskis@gmail.com,
+	alsa-devel@alsa-project.org,
+	david.rhodes@cirrus.com,
+	james.schulman@cirrus.com,
+	josbeir@gmail.com,
+	linux-kernel@vger.kernel.org,
+	patches@opensource.cirrus.com,
+	perex@perex.cz,
+	sbinding@opensource.cirrus.com,
+	stuarth@opensource.cirrus.com,
+	tiwai@suse.com
+Subject: [PATCH v2 1/2] ALSA: hda: cs35l41: Safety-guard against capped SPI
+ speed
+Date: Wed, 20 Dec 2023 08:38:08 +0100
+Message-Id: <20231220073809.22027-2-alex.vinarskis@gmail.com>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20231220073809.22027-1-alex.vinarskis@gmail.com>
+References: <87ttokpyws.wl-tiwai@suse.de>
+ <20231220073809.22027-1-alex.vinarskis@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [113.72.145.47]
-X-ClientProxiedBy: EXCAS061.cuchost.com (172.16.6.21) To EXMBX061.cuchost.com
- (172.16.6.61)
-X-YovoleRuleAgent: yovoleflag
-Content-Transfer-Encoding: quoted-printable
-X-MailFrom: xingyu.wu@starfivetech.com
+Content-Transfer-Encoding: 8bit
+X-MailFrom: alex.vinarskis@gmail.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: HQQB6GNRWBVAATT42BXJXARCEWFXL5EG
-X-Message-ID-Hash: HQQB6GNRWBVAATT42BXJXARCEWFXL5EG
-X-Mailman-Approved-At: Mon, 01 Jan 2024 13:17:34 +0000
+Message-ID-Hash: AA4XHMFHQWI7C3IW72NOPE7HVFDJPVXZ
+X-Message-ID-Hash: AA4XHMFHQWI7C3IW72NOPE7HVFDJPVXZ
+X-Mailman-Approved-At: Mon, 01 Jan 2024 13:16:44 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HQQB6GNRWBVAATT42BXJXARCEWFXL5EG/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AA4XHMFHQWI7C3IW72NOPE7HVFDJPVXZ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -89,35 +129,51 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The Cadence I2S Controller implements a function of the multi-channel
-(up to 8-channel) bus. Each stereo channel combines functions of a
-transmitter and a receiver, and can switch freely between them. Each
-channel has independent gating, clock and interruption control. It also
-support some of these channels are used as playback and others can also
-be used as record in the same time.
+Some devices with intel-lpss based SPI controllers may have misconfigured
+clock divider due to firmware bug. This would result in capped SPI speeds,
+which leads to longer DSP firmware loading times.
+This safety guards against possible hangs during wake-up by not
+initializing the device if lpss was not patched/fixed UEFI was not
+installed
 
-Four I2S controllers are used on the StarFive JH8100 SoC. Two of the I2S
-controllers use two stereo channels, one of them use four channels, and
-one use eight. It had tested on the fpga with WM8960.
+Signed-off-by: Aleksandrs Vinarskis <alex.vinarskis@gmail.com>
+---
+ sound/pci/hda/cs35l41_hda_property.c | 15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
 
-Xingyu Wu (2):
-  dt-bindings: ASoC: Add Cadence I2S controller for StarFive JH8100 SoC
-  ASoC: starfive: Add drivers of Cadence Multi-Channel I2S Controller
-
- .../bindings/sound/cdns,jh8100-i2s.yaml       | 100 +++
- MAINTAINERS                                   |   7 +
- sound/soc/starfive/Kconfig                    |  18 +
- sound/soc/starfive/Makefile                   |   4 +
- sound/soc/starfive/cdns-jh8100-i2s-pcm.c      | 262 +++++++
- sound/soc/starfive/cdns-jh8100-i2s.c          | 727 ++++++++++++++++++
- sound/soc/starfive/cdns-jh8100-i2s.h          | 171 ++++
- 7 files changed, 1289 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/cdns,jh8100-i=
-2s.yaml
- create mode 100644 sound/soc/starfive/cdns-jh8100-i2s-pcm.c
- create mode 100644 sound/soc/starfive/cdns-jh8100-i2s.c
- create mode 100644 sound/soc/starfive/cdns-jh8100-i2s.h
-
---=20
-2.25.1
+diff --git a/sound/pci/hda/cs35l41_hda_property.c b/sound/pci/hda/cs35l41_hda_property.c
+index c9eb70290973..cb305b093311 100644
+--- a/sound/pci/hda/cs35l41_hda_property.c
++++ b/sound/pci/hda/cs35l41_hda_property.c
+@@ -210,6 +210,19 @@ static int generic_dsd_config(struct cs35l41_hda *cs35l41, struct device *physde
+ 
+ 	if (cfg->bus == SPI) {
+ 		cs35l41->index = id;
++		/*
++		 * Some devices with intel-lpss based SPI controllers may have misconfigured
++		 * clock divider due to firmware bug. This would result in capped SPI speeds,
++		 * which leads to longer DSP firmware loading times.
++		 * Avoid initializing device if lpss was not patched/fixed UEFI was not installed
++		 */
++		spi = to_spi_device(cs35l41->dev);
++		if (spi->max_speed_hz < CS35L41_SPI_MAX_FREQ/2) {
++			dev_err(cs35l41->dev,
++				"SPI's max_speed_hz is capped at %u Hz, will not continue to avoid hanging\n",
++				spi->max_speed_hz);
++			return -EINVAL;
++		}
+ 		/*
+ 		 * Manually set the Chip Select for the second amp <cs_gpio_index> in the node.
+ 		 * This is only supported for systems with 2 amps, since we cannot expand the
+@@ -219,8 +232,6 @@ static int generic_dsd_config(struct cs35l41_hda *cs35l41, struct device *physde
+ 		 * first.
+ 		 */
+ 		if (cfg->cs_gpio_index >= 0) {
+-			spi = to_spi_device(cs35l41->dev);
+-
+ 			if (cfg->num_amps != 2) {
+ 				dev_warn(cs35l41->dev,
+ 					 "Cannot update SPI CS, Number of Amps (%d) != 2\n",
+-- 
+2.40.1
 
