@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 293C4C3DA6E
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4FF80C46CD4
 	for <alsa-devel@archiver.kernel.org>; Wed, 20 Dec 2023 22:56:11 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4E694E9F;
+	by alsa0.perex.cz (Postfix) with ESMTPS id 97A7FEA1;
 	Wed, 20 Dec 2023 23:55:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4E694E9F
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 97A7FEA1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
 	s=default; t=1703112969;
-	bh=IGgZehaaQQnMG45GXcNMEevkkJUJeILuky0j8c+ldVQ=;
+	bh=HLIdB6RAlEjWf7lTGhPmbI2b17RKXb3d6jAWDjFfQqI=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=rEglP0b6sr8u6wE6yseaN6VUwZ8xDIQHKIUeTTIdrWGgIWKSlc7VvMGMsvqhveMb3
-	 9XxxTts96cENGBQZ4Q87pnplAObW4JyIP9q2+Aa4VWWrvrh7ESPeWC5wnpnkb/kS6Z
-	 8WFNeOSiM8ekIwsgsgPAldML0IY4hSiDEH+p2nt4=
+	b=mIijVYNeBDI+l+q/mc3UEcNlB5rvhCsxTf0SfDPKe9UtyM1XzJOZkIKjmIs13KSeq
+	 KltxNU1CiaprM9Gjsk830zpajDEzIljYV6r5tuPTwmV1+5b6gkUjR5nV86iWoxWANZ
+	 rfv0tAJutpWlgqoNUbhAfyW+gsOWyP9h5hyH/Vks=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5A69BF8986A; Wed, 20 Dec 2023 23:48:40 +0100 (CET)
+	id C6A74F89877; Wed, 20 Dec 2023 23:48:37 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C9806F80689;
-	Wed, 20 Dec 2023 23:48:39 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1F6F1F8983E;
+	Wed, 20 Dec 2023 23:48:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 43E57F897F9; Wed, 20 Dec 2023 23:48:25 +0100 (CET)
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com
- [205.220.180.131])
+	id A4DEDF805B1; Wed, 20 Dec 2023 23:48:24 +0100 (CET)
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com
+ [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id DD1FFF805A8
+	by alsa1.perex.cz (Postfix) with ESMTPS id 81411F805A0
 	for <alsa-devel@alsa-project.org>; Wed, 20 Dec 2023 23:46:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DD1FFF805A8
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 81411F805A0
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
- header.s=qcppdkim1 header.b=Fj3sTl8Y
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+ header.s=qcppdkim1 header.b=W69cGewM
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
 	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id
- 3BKLUmHQ020658;
-	Wed, 20 Dec 2023 22:46:06 GMT
+ 3BKMNZdX026151;
+	Wed, 20 Dec 2023 22:46:05 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-type; s=qcppdkim1; bh=GEq454iSwI48K4ZPgN9m
-	T347jXotm2BjHdb8t2pxU4g=; b=Fj3sTl8YMlVIJHR25sk0+AVAfOp0p0JV5mVG
-	inyaEiqcNMpQUJo+bB8fYoWEFsubdjIYxhncwMZDRd0mkX8BkUzVR2jqtGLXgMwn
-	rYHRtdGo0vnlRlcyd1tWr/ER4wJOmBJNMt+8JxjEv75gXLtY0tTLheBvsEuDbTbt
-	2qVUceiZe3KuxatjofZdJ6tjnye0QsbhalsLinckBSWVhkh33FkjfYct/K4eolrk
-	q86iAqG4I0woINTGxm0E2K9NBoPabe6WXTguuL+tFJ/x4DKn6adHECbS/1ZMuJVw
-	YlVqYbrgbmA3E42InafcRFwEi+P0RwZpttpKDeVhAOrlosOAKw==
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com
+	:mime-version:content-type; s=qcppdkim1; bh=l/SogG1mwYpfrMkIwODI
+	+k6bupo64StismUhwsMTISY=; b=W69cGewM2Vr3sMBl49ISrokNGlb8WoBqokZj
+	fYFUwaO/P9Hk2MyfgBxZMYuMXSIwAd6vn5p9etjoFP6TaUdGojgbCZW0FkA3L2TN
+	QXGP0k3UQjV8soyj1wN03usmMpz4EQbGvQmLtl+iCcjBbo83iARBd5LjMGLn5p3S
+	XO1U06nPosqMWu+dVKSO6zb3RmOmjWBlOPdvRkRIVrhBOwQBgKVy6BOximdUHlwL
+	GHDNg3qxD/fffIl4Kh3HuF6j0AVG4G4PbmYANOz/1y+oCsXHI4pu4FgJ303f8Y78
+	bglcC0+xrwy3KaHP9hPwZcaGKBhuOTDnL3b51Q50urw8sb12fw==
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com
  [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v3rppjmew-1
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v3tmm2d5n-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 20 Dec 2023 22:46:06 +0000 (GMT)
+	Wed, 20 Dec 2023 22:46:05 +0000 (GMT)
 Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com
  [10.47.209.197])
-	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id
- 3BKMk5s9017033
+	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id
+ 3BKMk48o008445
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 20 Dec 2023 22:46:05 GMT
+	Wed, 20 Dec 2023 22:46:04 GMT
 Received: from hu-wcheng-lv.qualcomm.com (10.49.16.6) by
  nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Wed, 20 Dec 2023 14:46:05 -0800
+ 15.2.1118.40; Wed, 20 Dec 2023 14:46:04 -0800
 From: Wesley Cheng <quic_wcheng@quicinc.com>
 To: <srinivas.kandagatla@linaro.org>, <mathias.nyman@intel.com>,
         <perex@perex.cz>, <conor+dt@kernel.org>, <corbet@lwn.net>,
@@ -79,10 +79,9 @@ CC: <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-sound@vger.kernel.org>, <linux-usb@vger.kernel.org>,
         <linux-arm-msm@vger.kernel.org>, <linux-doc@vger.kernel.org>,
         <alsa-devel@alsa-project.org>, Wesley Cheng <quic_wcheng@quicinc.com>
-Subject: [PATCH v11 37/41] ALSA: usb-audio: qcom: Use card and PCM index from
- QMI request
-Date: Wed, 20 Dec 2023 14:45:40 -0800
-Message-ID: <20231220224544.18031-38-quic_wcheng@quicinc.com>
+Subject: [PATCH v11 35/41] ASoC: usb: Fetch ASoC sound card information
+Date: Wed, 20 Dec 2023 14:45:38 -0800
+Message-ID: <20231220224544.18031-36-quic_wcheng@quicinc.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20231220224544.18031-1-quic_wcheng@quicinc.com>
 References: <20231220224544.18031-1-quic_wcheng@quicinc.com>
@@ -94,19 +93,19 @@ X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
  signatures=585085
-X-Proofpoint-ORIG-GUID: x7Oo-m0Hsx3aiUdqUF6Tmm2zjRlC4bhF
-X-Proofpoint-GUID: x7Oo-m0Hsx3aiUdqUF6Tmm2zjRlC4bhF
+X-Proofpoint-GUID: zbW7OBVW4PU8bgy_khwncWFImxsh0BU2
+X-Proofpoint-ORIG-GUID: zbW7OBVW4PU8bgy_khwncWFImxsh0BU2
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- bulkscore=0 mlxscore=0
- priorityscore=1501 suspectscore=0 mlxlogscore=992 impostorscore=0
- clxscore=1015 spamscore=0 phishscore=0 lowpriorityscore=0 adultscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2312200163
-Message-ID-Hash: 54BYFDGBDJDZBFKBEPC3SKNBETAV4PUE
-X-Message-ID-Hash: 54BYFDGBDJDZBFKBEPC3SKNBETAV4PUE
+ lowpriorityscore=0
+ spamscore=0 impostorscore=0 mlxscore=0 bulkscore=0 clxscore=1015
+ priorityscore=1501 mlxlogscore=999 adultscore=0 malwarescore=0
+ phishscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2311290000 definitions=main-2312200163
+Message-ID-Hash: JGABZFWUEMANISOJMPHMOICHNJ4ZCVBF
+X-Message-ID-Hash: JGABZFWUEMANISOJMPHMOICHNJ4ZCVBF
 X-MailFrom: quic_wcheng@quicinc.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -119,7 +118,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/54BYFDGBDJDZBFKBEPC3SKNBETAV4PUE/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JGABZFWUEMANISOJMPHMOICHNJ4ZCVBF/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -128,55 +127,63 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Utilize the card and PCM index coming from the USB QMI stream request.
-This field follows what is set by the ASoC USB backend, and could
-potentially carry information about a specific device selected through the
-ASoC USB backend.  The backend also has information about the last USB
-sound device plugged in, so it can choose to select the last device plugged
-in, accordingly.
+For USB sound to expose mixer controls to fetch information about the ASoC
+sound card, add an API that returns the platform sound card number that is
+registered with SOC USB.  Knowing this allows for applications to further
+query about the offload status.
 
 Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
 ---
- sound/usb/qcom/qc_audio_offload.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+ include/sound/soc-usb.h |  1 +
+ sound/soc/soc-usb.c     | 26 ++++++++++++++++++++++++++
+ 2 files changed, 27 insertions(+)
 
-diff --git a/sound/usb/qcom/qc_audio_offload.c b/sound/usb/qcom/qc_audio_offload.c
-index 1104499f89f7..e0a010a40b97 100644
---- a/sound/usb/qcom/qc_audio_offload.c
-+++ b/sound/usb/qcom/qc_audio_offload.c
-@@ -106,8 +106,6 @@ struct uaudio_qmi_dev {
- 	bool er_mapped;
- 	/* reference count to number of possible consumers */
- 	atomic_t qdev_in_use;
--	/* idx to last udev card number plugged in */
--	unsigned int last_card_num;
- };
+diff --git a/include/sound/soc-usb.h b/include/sound/soc-usb.h
+index 6bbd4339e8c5..77c19fc591ea 100644
+--- a/include/sound/soc-usb.h
++++ b/include/sound/soc-usb.h
+@@ -73,6 +73,7 @@ int snd_soc_usb_find_format(int card_idx, struct snd_pcm_hw_params *params,
+ int snd_soc_usb_connect(struct device *usbdev, struct snd_soc_usb_device *sdev);
+ int snd_soc_usb_disconnect(struct device *usbdev, struct snd_soc_usb_device *sdev);
+ void *snd_soc_usb_find_priv_data(struct device *dev);
++int snd_soc_usb_device_offload_available(struct device *dev);
  
- struct uaudio_dev {
-@@ -1243,7 +1241,7 @@ static int prepare_qmi_response(struct snd_usb_substream *subs,
+ int snd_soc_usb_prepare_session(struct snd_soc_usb *usb, int card_idx, int pcm_idx);
+ int snd_soc_usb_shutdown_session(struct snd_soc_usb *usb, int session_id);
+diff --git a/sound/soc/soc-usb.c b/sound/soc/soc-usb.c
+index 7d202b0a2680..b272945dcab0 100644
+--- a/sound/soc/soc-usb.c
++++ b/sound/soc/soc-usb.c
+@@ -340,6 +340,32 @@ int snd_soc_usb_find_format(int card_idx, struct snd_pcm_hw_params *params,
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_usb_find_format);
  
- 	pcm_dev_num = (req_msg->usb_token & QMI_STREAM_REQ_DEV_NUM_MASK) >> 8;
- 	xfer_buf_len = req_msg->xfer_buff_size;
--	card_num = uaudio_qdev->last_card_num;
-+	card_num = (req_msg->usb_token & QMI_STREAM_REQ_CARD_NUM_MASK) >> 16;
- 
- 	if (!uadev[card_num].ctrl_intf) {
- 		dev_err(&subs->dev->dev, "audio ctrl intf info not cached\n");
-@@ -1436,8 +1434,7 @@ static void handle_uaudio_stream_req(struct qmi_handle *handle,
- 
- 	direction = (req_msg->usb_token & QMI_STREAM_REQ_DIRECTION);
- 	pcm_dev_num = (req_msg->usb_token & QMI_STREAM_REQ_DEV_NUM_MASK) >> 8;
--	pcm_card_num = req_msg->enable ? uaudio_qdev->last_card_num :
--				ffs(uaudio_qdev->card_slot) - 1;
-+	pcm_card_num = (req_msg->usb_token & QMI_STREAM_REQ_CARD_NUM_MASK) >> 16;
- 	if (pcm_card_num >= SNDRV_CARDS) {
- 		ret = -EINVAL;
- 		goto response;
-@@ -1646,7 +1643,6 @@ static void qc_usb_audio_offload_probe(struct snd_usb_audio *chip)
- 	sdev->num_capture = usb_qmi_get_pcm_num(chip, 1);
- 	uadev[chip->card->number].sdev = sdev;
- 
--	uaudio_qdev->last_card_num = chip->card->number;
- 	snd_soc_usb_connect(usb_get_usb_backend(udev), sdev);
- 
- 	mutex_unlock(&chip->mutex);
++/**
++ * snd_soc_usb_device_offload_available() - Fetch BE DAI link sound card
++ * @dev: the device to find in SOC USB
++ *
++ * Finds the component linked to a specific SOC USB instance, and returns
++ * the sound card number for the platform card supporting offloading.
++ *
++ */
++int snd_soc_usb_device_offload_available(struct device *dev)
++{
++	struct snd_soc_usb *ctx;
++	struct device_node *node;
++
++	node = snd_soc_find_phandle(dev);
++	if (IS_ERR(node))
++		return -ENODEV;
++
++	ctx = snd_soc_find_usb_ctx(node);
++	of_node_put(node);
++	if (!ctx)
++		return -ENODEV;
++
++	return ctx->component->card->snd_card->number;
++}
++EXPORT_SYMBOL_GPL(snd_soc_usb_device_offload_available);
++
+ /**
+  * snd_soc_usb_allocate_port() - allocate a SOC USB device
+  * @component: USB DPCM backend DAI component
