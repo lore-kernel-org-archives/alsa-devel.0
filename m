@@ -4,91 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A8274C3DA6E
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Dec 2023 17:03:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 145DAC3DA6E
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Dec 2023 17:03:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D47A3DEE;
-	Wed, 20 Dec 2023 18:03:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D47A3DEE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0B40CA4C;
+	Wed, 20 Dec 2023 18:03:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0B40CA4C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1703091804;
-	bh=5UcXQ9KuEIWqZQkd02Fc+uc9OL3IYAn+B7swYNt9wAg=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=ueL2C4cCkJYolgYex4En0TkZ6BVWEkldGmRwvkCeUECkG4kLzgV/DeCew3R/ir/2T
-	 I1+td/8eS3YxeKj9Zy5fIqU6eYH6LA2U0ThIgfS/6auReNrx+xxTrl6ROWrn9oZIio
-	 k4sgGj9Xkr9P3h03/LfAuzv621afGkvu5ONeCEvc=
+	s=default; t=1703091811;
+	bh=l326KXJ2h5/pxMX0mC14yMNgaui0wBlbKqnrXOFvFpc=;
+	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=C2e7/54Wgy26K42gkV/N/zA96Kge8fQGvRXl8khrlyxSMUZSbSa7CA2HOcF8XCe+p
+	 UbgDk0AAk39NaW6jW88sReNmhDR3NxJ/JJbMuntWAbHi5hBnwliOgUV9vvPtVgApNC
+	 HJcRUwdF0HXpJhlT8czUR7o2bAMjx2uECy5mANk0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 10AEAF805FF; Wed, 20 Dec 2023 18:02:14 +0100 (CET)
+	id 32D5AF805E1; Wed, 20 Dec 2023 18:02:15 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 20177F805AB;
-	Wed, 20 Dec 2023 18:02:12 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E3724F8061D;
+	Wed, 20 Dec 2023 18:02:14 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 30088F80212; Wed, 20 Dec 2023 17:58:59 +0100 (CET)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
+	id 19830F8016E; Wed, 20 Dec 2023 18:00:05 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D77D8F8016E
-	for <alsa-devel@alsa-project.org>; Wed, 20 Dec 2023 17:58:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D77D8F8016E
+	by alsa1.perex.cz (Postfix) with ESMTPS id 5C85EF800D2
+	for <alsa-devel@alsa-project.org>; Wed, 20 Dec 2023 17:59:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5C85EF800D2
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=bVBqO1NE
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-	by mx0b-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id
- 3BKFAkOM027189;
-	Wed, 20 Dec 2023 10:58:40 -0600
+ header.s=PODMain02222019 header.b=SCDOOPh1
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+	by mx0a-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id
+ 3BKFAuD1013270;
+	Wed, 20 Dec 2023 10:59:53 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	PODMain02222019; bh=nn92BFuFVkfOSmcxN8Xmbs98B0otTlz2/dwGR7+zG78=; b=
-	bVBqO1NER3eNXD8/vEIswHyJ73vWtDiwY+9OvZD8D3uXuFRmUO/HTqkifKQyCdoa
-	GnDDBWcIV8I1kFaNAolPgiQGGPgDH7zTq+JziH68oLmbiBGzT5zo4Tc0kQNs+1az
-	ExRw4zhCfMOnWVKP4huBE/ufGD/4ws1P/1G14M6Zy8nwvN2Q9EFKFgU29uDmYai1
-	eEnbdsl0PIQyDlaexU4dwIj6xicIEZhld7D+zzOoQrydweG3Da2zxphAU8p3AaKo
-	QeS7oqBp1aE3npNzrywnTwbPFDvacQiq0eC+EMD190HxMSlW+yq3K56F8p0koPUa
-	FnUZE0PTbVB3nC5DBASQIQ==
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=PODMain02222019; bh=/
+	PVWllNrFZWaUHLxYPitsTCB7aPFL4UNw8UtOWI7AEo=; b=SCDOOPh1UIFsRkMMO
+	dHXtI/EY1Vkd5PcCr/AoDZUeQbPfIrQ16eut9bUUUbcKETrYrYmA9ieXxb8EZpKY
+	B48+Dy34b1C2C/P/AC5HlGUSAhKEUwCVaGSWO7Q9ODZJSyVgZqDnImiTuMcqTjzA
+	WgolBl2MEWV+PrMgPMsbts+Ell4FGS0btKNpYMZFpEWO+1vc5WnnbYMFizXPOhWp
+	8pJ4oOebvi6HZpqWB88pjaKCq/o8IUPpOBcs5oF4MeanzcMUONvKGK4jone2tWtG
+	9xnRnvt3G/WGbKctZ9pcxUlgC/+/HisKlQXu6/dKhH0fCuIeT+j19jSylujC5xxD
+	z6s+w==
 Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3v196ndrdg-2
+	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3v1a625t9f-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 20 Dec 2023 10:58:39 -0600 (CST)
+	Wed, 20 Dec 2023 10:59:53 -0600 (CST)
 Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 20 Dec
- 2023 16:58:37 +0000
+ 2023 16:59:51 +0000
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.40 via Frontend
- Transport; Wed, 20 Dec 2023 16:58:37 +0000
-Received: from sbinding-cirrus-dsktp2.ad.cirrus.com (unknown [198.90.238.77])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id F2EE7468;
-	Wed, 20 Dec 2023 16:58:36 +0000 (UTC)
-From: Stefan Binding <sbinding@opensource.cirrus.com>
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-CC: <alsa-devel@alsa-project.org>, <linux-sound@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
-        "Stefan
- Binding" <sbinding@opensource.cirrus.com>
-Subject: [PATCH v1 2/3] ALSA: hda: cs35l41: Prevent firmware load if SPI speed
- too low
-Date: Wed, 20 Dec 2023 16:58:28 +0000
-Message-ID: <20231220165829.160711-3-sbinding@opensource.cirrus.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231220165829.160711-1-sbinding@opensource.cirrus.com>
-References: <20231220165829.160711-1-sbinding@opensource.cirrus.com>
+ Transport; Wed, 20 Dec 2023 16:59:51 +0000
+Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 2861A11CC;
+	Wed, 20 Dec 2023 16:59:51 +0000 (UTC)
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+To: <perex@perex.cz>
+CC: <pierre-louis.bossart@linux.intel.com>, <bard.liao@intel.com>,
+        <mengdong.lin@intel.com>, <patches@opensource.cirrus.com>,
+        <alsa-devel@alsa-project.org>
+Subject: [PATCH v4] sof-soundwire: Add basic support for cs42l43
+Date: Wed, 20 Dec 2023 16:59:51 +0000
+Message-ID: <20231220165951.3675985-1-ckeepax@opensource.cirrus.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: o1Izj8Or3tk-3RqROqShIVaBxjnG7Pdv
-X-Proofpoint-GUID: o1Izj8Or3tk-3RqROqShIVaBxjnG7Pdv
+X-Proofpoint-GUID: 8q5jUcfuIubYjjGXIpAkr3-hod1Mz2Q-
+X-Proofpoint-ORIG-GUID: 8q5jUcfuIubYjjGXIpAkr3-hod1Mz2Q-
 X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: CUCFWAHSZ35SCLVGEB6HWVIZUPYBIF3J
-X-Message-ID-Hash: CUCFWAHSZ35SCLVGEB6HWVIZUPYBIF3J
-X-MailFrom: prvs=7718def8b8=sbinding@opensource.cirrus.com
+Message-ID-Hash: VXZLN5ABIDAJ2L5Q72DEQCHWH5UG4MNK
+X-Message-ID-Hash: VXZLN5ABIDAJ2L5Q72DEQCHWH5UG4MNK
+X-MailFrom: prvs=7718adeda9=ckeepax@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -100,7 +95,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CUCFWAHSZ35SCLVGEB6HWVIZUPYBIF3J/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VXZLN5ABIDAJ2L5Q72DEQCHWH5UG4MNK/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -109,284 +104,149 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Some laptops without _DSD have the SPI speed set very low in the BIOS.
-Since the SPI controller uses this speed as its max speed, the SPI
-transactions are very slow. Firmware download writes to many registers,
-and if the SPI speed is too slow, it can take a long time to download.
-For this reason, disable firmware loading if the maximum SPI speed is
-too low. Without Firmware, audio playback will work, but the volume
-will be low to ensure safe operation of the CS35L41.
+cs42l43 is a codec device, add basic support for it. Including a dual
+channel DMIC input, stereo headphones, and a mono headset microphone.
 
-Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 ---
- sound/pci/hda/cs35l41_hda.c          | 25 ++++++++--
- sound/pci/hda/cs35l41_hda.h          | 12 ++++-
- sound/pci/hda/cs35l41_hda_i2c.c      |  2 +-
- sound/pci/hda/cs35l41_hda_property.c | 74 +++++++++++++---------------
- sound/pci/hda/cs35l41_hda_spi.c      |  2 +-
- 5 files changed, 70 insertions(+), 45 deletions(-)
 
-diff --git a/sound/pci/hda/cs35l41_hda.c b/sound/pci/hda/cs35l41_hda.c
-index 92ca2b3b6c92..d3fa6e136744 100644
---- a/sound/pci/hda/cs35l41_hda.c
-+++ b/sound/pci/hda/cs35l41_hda.c
-@@ -12,6 +12,7 @@
- #include <sound/hda_codec.h>
- #include <sound/soc.h>
- #include <linux/pm_runtime.h>
-+#include <linux/spi/spi.h>
- #include "hda_local.h"
- #include "hda_auto_parser.h"
- #include "hda_jack.h"
-@@ -996,6 +997,11 @@ static int cs35l41_smart_amp(struct cs35l41_hda *cs35l41)
- 	__be32 halo_sts;
- 	int ret;
- 
-+	if (cs35l41->bypass_fw) {
-+		dev_warn(cs35l41->dev, "Bypassing Firmware.\n");
-+		return 0;
-+	}
+Changes since v3:
+ - Rebase on GitHub series
+ - Add control remapping for the PDM volume/switch
+
+Little earlier than expected, still reviewing the workings behind the
+scenes but this all tests out fine. So no need to hold everything up
+on my account.
+
+Thanks,
+Charles
+
+ ucm2/codecs/cs42l43/init.conf         | 14 ++++++++
+ ucm2/sof-soundwire/cs42l43-dmic.conf  | 26 +++++++++++++++
+ ucm2/sof-soundwire/cs42l43.conf       | 46 +++++++++++++++++++++++++++
+ ucm2/sof-soundwire/sof-soundwire.conf |  2 +-
+ 4 files changed, 87 insertions(+), 1 deletion(-)
+ create mode 100644 ucm2/codecs/cs42l43/init.conf
+ create mode 100644 ucm2/sof-soundwire/cs42l43-dmic.conf
+ create mode 100644 ucm2/sof-soundwire/cs42l43.conf
+
+diff --git a/ucm2/codecs/cs42l43/init.conf b/ucm2/codecs/cs42l43/init.conf
+new file mode 100644
+index 0000000..10a6e1f
+--- /dev/null
++++ b/ucm2/codecs/cs42l43/init.conf
+@@ -0,0 +1,14 @@
++# cs42l43 specific control settings
 +
- 	ret = cs35l41_init_dsp(cs35l41);
- 	if (ret) {
- 		dev_warn(cs35l41->dev, "Cannot Initialize Firmware. Error: %d\n", ret);
-@@ -1588,6 +1594,7 @@ static int cs35l41_hda_read_acpi(struct cs35l41_hda *cs35l41, const char *hid, i
- 	u32 values[HDA_MAX_COMPONENTS];
- 	struct acpi_device *adev;
- 	struct device *physdev;
-+	struct spi_device *spi;
- 	const char *sub;
- 	char *property;
- 	size_t nval;
-@@ -1610,7 +1617,7 @@ static int cs35l41_hda_read_acpi(struct cs35l41_hda *cs35l41, const char *hid, i
- 	ret = cs35l41_add_dsd_properties(cs35l41, physdev, id, hid);
- 	if (!ret) {
- 		dev_info(cs35l41->dev, "Using extra _DSD properties, bypassing _DSD in ACPI\n");
--		goto put_physdev;
-+		goto out;
- 	}
- 
- 	property = "cirrus,dev-index";
-@@ -1701,8 +1708,20 @@ static int cs35l41_hda_read_acpi(struct cs35l41_hda *cs35l41, const char *hid, i
- 		hw_cfg->bst_type = CS35L41_EXT_BOOST;
- 
- 	hw_cfg->valid = true;
-+out:
- 	put_device(physdev);
- 
-+	cs35l41->bypass_fw = false;
-+	if (cs35l41->control_bus == SPI) {
-+		spi = to_spi_device(cs35l41->dev);
-+		if (spi->max_speed_hz < CS35L41_MAX_ACCEPTABLE_SPI_SPEED_HZ) {
-+			dev_warn(cs35l41->dev,
-+				 "SPI speed is too slow to support firmware download: %d Hz.\n",
-+				 spi->max_speed_hz);
-+			cs35l41->bypass_fw = true;
++LibraryConfig.remap.Config {
++	ctl.default.map {
++		"name='cs42l43 PDM2 Switch'" {
++			"name='cs42l43 Decimator 3 Switch'".vindex.0 0
++			"name='cs42l43 Decimator 4 Switch'".vindex.1 0
++		}
++		"name='cs42l43 PDM2 Volume'" {
++			"name='cs42l43 Decimator 3 Volume'".vindex.0 0
++			"name='cs42l43 Decimator 4 Volume'".vindex.1 0
 +		}
 +	}
++}
+diff --git a/ucm2/sof-soundwire/cs42l43-dmic.conf b/ucm2/sof-soundwire/cs42l43-dmic.conf
+new file mode 100644
+index 0000000..d5f895d
+--- /dev/null
++++ b/ucm2/sof-soundwire/cs42l43-dmic.conf
+@@ -0,0 +1,26 @@
++# Use case Configuration for sof-soundwire card
 +
- 	return 0;
- 
- err:
-@@ -1711,14 +1730,13 @@ static int cs35l41_hda_read_acpi(struct cs35l41_hda *cs35l41, const char *hid, i
- 	hw_cfg->gpio1.valid = false;
- 	hw_cfg->gpio2.valid = false;
- 	acpi_dev_put(cs35l41->dacpi);
--put_physdev:
- 	put_device(physdev);
- 
- 	return ret;
- }
- 
- int cs35l41_hda_probe(struct device *dev, const char *device_name, int id, int irq,
--		      struct regmap *regmap)
-+		      struct regmap *regmap, enum control_bus control_bus)
- {
- 	unsigned int regid, reg_revid;
- 	struct cs35l41_hda *cs35l41;
-@@ -1737,6 +1755,7 @@ int cs35l41_hda_probe(struct device *dev, const char *device_name, int id, int i
- 	cs35l41->dev = dev;
- 	cs35l41->irq = irq;
- 	cs35l41->regmap = regmap;
-+	cs35l41->control_bus = control_bus;
- 	dev_set_drvdata(dev, cs35l41);
- 
- 	ret = cs35l41_hda_read_acpi(cs35l41, device_name, id);
-diff --git a/sound/pci/hda/cs35l41_hda.h b/sound/pci/hda/cs35l41_hda.h
-index 3d925d677213..43d55292b327 100644
---- a/sound/pci/hda/cs35l41_hda.h
-+++ b/sound/pci/hda/cs35l41_hda.h
-@@ -20,6 +20,8 @@
- #include <linux/firmware/cirrus/cs_dsp.h>
- #include <linux/firmware/cirrus/wmfw.h>
- 
-+#define CS35L41_MAX_ACCEPTABLE_SPI_SPEED_HZ	1000000
++SectionDevice."Mic" {
++	Comment "Microphones"
 +
- struct cs35l41_amp_cal_data {
- 	u32 calTarget[2];
- 	u32 calTime[2];
-@@ -46,6 +48,11 @@ enum cs35l41_hda_gpio_function {
- 	CS35l41_SYNC,
- };
- 
-+enum control_bus {
-+	I2C,
-+	SPI
-+};
++	ConflictingDevice [
++		"Headset"
++	]
 +
- struct cs35l41_hda {
- 	struct device *dev;
- 	struct regmap *regmap;
-@@ -74,6 +81,9 @@ struct cs35l41_hda {
- 	struct cs_dsp cs_dsp;
- 	struct acpi_device *dacpi;
- 	bool mute_override;
-+	enum control_bus control_bus;
-+	bool bypass_fw;
++	EnableSequence [
++		cset "name='cs42l43 DP1TX1 Input' 'Decimator 3'"
++		cset "name='cs42l43 DP1TX2 Input' 'Decimator 4'"
++	]
 +
- };
- 
- enum halo_state {
-@@ -85,7 +95,7 @@ enum halo_state {
- extern const struct dev_pm_ops cs35l41_hda_pm_ops;
- 
- int cs35l41_hda_probe(struct device *dev, const char *device_name, int id, int irq,
--		      struct regmap *regmap);
-+		      struct regmap *regmap, enum control_bus control_bus);
- void cs35l41_hda_remove(struct device *dev);
- int cs35l41_get_speaker_id(struct device *dev, int amp_index, int num_amps, int fixed_gpio_id);
- 
-diff --git a/sound/pci/hda/cs35l41_hda_i2c.c b/sound/pci/hda/cs35l41_hda_i2c.c
-index b44536fbba17..603e9bff3a71 100644
---- a/sound/pci/hda/cs35l41_hda_i2c.c
-+++ b/sound/pci/hda/cs35l41_hda_i2c.c
-@@ -30,7 +30,7 @@ static int cs35l41_hda_i2c_probe(struct i2c_client *clt)
- 		return -ENODEV;
- 
- 	return cs35l41_hda_probe(&clt->dev, device_name, clt->addr, clt->irq,
--				 devm_regmap_init_i2c(clt, &cs35l41_regmap_i2c));
-+				 devm_regmap_init_i2c(clt, &cs35l41_regmap_i2c), I2C);
- }
- 
- static void cs35l41_hda_i2c_remove(struct i2c_client *clt)
-diff --git a/sound/pci/hda/cs35l41_hda_property.c b/sound/pci/hda/cs35l41_hda_property.c
-index 11d4b8b32a66..00fc9fc02465 100644
---- a/sound/pci/hda/cs35l41_hda_property.c
-+++ b/sound/pci/hda/cs35l41_hda_property.c
-@@ -16,10 +16,6 @@
- 
- struct cs35l41_config {
- 	const char *ssid;
--	enum {
--		SPI,
--		I2C
--	} bus;
- 	int num_amps;
- 	enum {
- 		INTERNAL,
-@@ -35,46 +31,46 @@ struct cs35l41_config {
- };
- 
- static const struct cs35l41_config cs35l41_config_table[] = {
--	{ "10280B27", SPI, 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 1000, 4500, 24 },
--	{ "10280B28", SPI, 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 1000, 4500, 24 },
--	{ "10280BEB", SPI, 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, -1, 0, 0, 0, 0 },
--	{ "10280C4D", I2C, 4, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, CS35L41_LEFT, CS35L41_RIGHT }, 0, 1, -1, 1000, 4500, 24 },
-+	{ "10280B27", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 1000, 4500, 24 },
-+	{ "10280B28", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 1000, 4500, 24 },
-+	{ "10280BEB", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, -1, 0, 0, 0, 0 },
-+	{ "10280C4D", 4, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, CS35L41_LEFT, CS35L41_RIGHT }, 0, 1, -1, 1000, 4500, 24 },
- /*
-  * Device 103C89C6 does have _DSD, however it is setup to use the wrong boost type.
-  * We can override the _DSD to correct the boost type here.
-  * Since this laptop has valid ACPI, we do not need to handle cs-gpios, since that already exists
-  * in the ACPI. The Reset GPIO is also valid, so we can use the Reset defined in _DSD.
-  */
--	{ "103C89C6", SPI, 2, INTERNAL, { CS35L41_RIGHT, CS35L41_LEFT, 0, 0 }, -1, -1, -1, 1000, 4500, 24 },
--	{ "104312AF", SPI, 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 1000, 4500, 24 },
--	{ "10431433", I2C, 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4500, 24 },
--	{ "10431463", I2C, 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4500, 24 },
--	{ "10431473", SPI, 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, -1, 0, 1000, 4500, 24 },
--	{ "10431483", SPI, 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, -1, 0, 1000, 4500, 24 },
--	{ "10431493", SPI, 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 1000, 4500, 24 },
--	{ "104314D3", SPI, 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 1000, 4500, 24 },
--	{ "104314E3", I2C, 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4500, 24 },
--	{ "10431503", I2C, 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4500, 24 },
--	{ "10431533", I2C, 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4500, 24 },
--	{ "10431573", SPI, 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 1000, 4500, 24 },
--	{ "10431663", SPI, 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, -1, 0, 1000, 4500, 24 },
--	{ "104316D3", SPI, 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 0, 0, 0 },
--	{ "104316F3", SPI, 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 0, 0, 0 },
--	{ "104317F3", I2C, 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4500, 24 },
--	{ "10431863", SPI, 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 1000, 4500, 24 },
--	{ "104318D3", I2C, 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 0, 0, 0 },
--	{ "10431C9F", SPI, 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 1000, 4500, 24 },
--	{ "10431CAF", SPI, 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 1000, 4500, 24 },
--	{ "10431CCF", SPI, 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 1000, 4500, 24 },
--	{ "10431CDF", SPI, 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 1000, 4500, 24 },
--	{ "10431CEF", SPI, 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 1000, 4500, 24 },
--	{ "10431D1F", I2C, 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4500, 24 },
--	{ "10431DA2", SPI, 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 0, 0, 0 },
--	{ "10431E02", SPI, 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 0, 0, 0 },
--	{ "10431EE2", I2C, 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, -1, -1, 0, 0, 0 },
--	{ "10431F12", I2C, 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4500, 24 },
--	{ "10431F1F", SPI, 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, -1, 0, 0, 0, 0 },
--	{ "10431F62", SPI, 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 0, 0, 0 },
-+	{ "103C89C6", 2, INTERNAL, { CS35L41_RIGHT, CS35L41_LEFT, 0, 0 }, -1, -1, -1, 1000, 4500, 24 },
-+	{ "104312AF", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 1000, 4500, 24 },
-+	{ "10431433", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4500, 24 },
-+	{ "10431463", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4500, 24 },
-+	{ "10431473", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, -1, 0, 1000, 4500, 24 },
-+	{ "10431483", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, -1, 0, 1000, 4500, 24 },
-+	{ "10431493", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 1000, 4500, 24 },
-+	{ "104314D3", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 1000, 4500, 24 },
-+	{ "104314E3", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4500, 24 },
-+	{ "10431503", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4500, 24 },
-+	{ "10431533", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4500, 24 },
-+	{ "10431573", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 1000, 4500, 24 },
-+	{ "10431663", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, -1, 0, 1000, 4500, 24 },
-+	{ "104316D3", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 0, 0, 0 },
-+	{ "104316F3", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 0, 0, 0 },
-+	{ "104317F3", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4500, 24 },
-+	{ "10431863", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 1000, 4500, 24 },
-+	{ "104318D3", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 0, 0, 0 },
-+	{ "10431C9F", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 1000, 4500, 24 },
-+	{ "10431CAF", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 1000, 4500, 24 },
-+	{ "10431CCF", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 1000, 4500, 24 },
-+	{ "10431CDF", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 1000, 4500, 24 },
-+	{ "10431CEF", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 1000, 4500, 24 },
-+	{ "10431D1F", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4500, 24 },
-+	{ "10431DA2", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 0, 0, 0 },
-+	{ "10431E02", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 0, 0, 0 },
-+	{ "10431EE2", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, -1, -1, 0, 0, 0 },
-+	{ "10431F12", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4500, 24 },
-+	{ "10431F1F", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, -1, 0, 0, 0, 0 },
-+	{ "10431F62", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 0, 0, 0 },
- 	{}
- };
- 
-@@ -212,7 +208,7 @@ static int generic_dsd_config(struct cs35l41_hda *cs35l41, struct device *physde
- 			 "_DSD already exists.\n");
++	DisableSequence [
++		cset "name='cs42l43 DP1TX1 Input' 'None'"
++		cset "name='cs42l43 DP1TX2 Input' 'None'"
++	]
++
++	Value {
++		CapturePriority 100
++		CapturePCM "hw:${CardId},4"
++		CaptureMixer "default:${CardId}"
++		CaptureMixerElem "cs42l43 PDM2"
++	}
++}
+diff --git a/ucm2/sof-soundwire/cs42l43.conf b/ucm2/sof-soundwire/cs42l43.conf
+new file mode 100644
+index 0000000..1702cf0
+--- /dev/null
++++ b/ucm2/sof-soundwire/cs42l43.conf
+@@ -0,0 +1,46 @@
++# Use case Configuration for sof-soundwire card
++
++SectionDevice."Headphones" {
++	Comment "Headphones"
++
++	EnableSequence [
++		cset "name='cs42l43 Headphone L Input 1' 'DP5RX1'"
++		cset "name='cs42l43 Headphone R Input 1' 'DP5RX2'"
++	]
++
++	DisableSequence [
++		cset "name='cs42l43 Headphone L Input 1' 'None'"
++		cset "name='cs42l43 Headphone R Input 1' 'None'"
++	]
++
++	Value {
++		PlaybackPriority 200
++		PlaybackPCM "hw:${CardId},0"
++		PlaybackVolume "cs42l43 Headphone Digital Volume"
++		JackControl "Headphone Jack"
++	}
++}
++
++SectionDevice."Headset" {
++	Comment "Headset Microphone"
++
++	EnableSequence [
++		cset "name='cs42l43 ADC1 Input' 'IN1'"
++		cset "name='cs42l43 Decimator 1 Mode' 'ADC'"
++
++		cset "name='cs42l43 DP1TX1 Input' 'Decimator 1'"
++		cset "name='cs42l43 DP1TX2 Input' 'Decimator 1'"
++	]
++
++	DisableSequence [
++		cset "name='cs42l43 DP1TX1 Input' 'None'"
++		cset "name='cs42l43 DP1TX2 Input' 'None'"
++	]
++
++	Value {
++		CapturePriority 200
++		CapturePCM "hw:${CardId},4"
++		CaptureMixerElem "cs42l43 Decimator 1"
++		JackControl "Headset Mic Jack"
++	}
++}
+diff --git a/ucm2/sof-soundwire/sof-soundwire.conf b/ucm2/sof-soundwire/sof-soundwire.conf
+index 18b1bf8..35a262c 100644
+--- a/ucm2/sof-soundwire/sof-soundwire.conf
++++ b/ucm2/sof-soundwire/sof-soundwire.conf
+@@ -47,7 +47,7 @@ DefineRegex {
+ If.hs_init {
+ 	Condition {
+ 		Type RegexMatch
+-		Regex "(rt5682|rt700|rt711|rt713(-sdca)?)"
++		Regex "(cs42l43|rt5682|rt700|rt711|rt713(-sdca)?)"
+ 		String "${var:HeadsetCodec1}"
  	}
- 
--	if (cfg->bus == SPI) {
-+	if (cs35l41->control_bus == SPI) {
- 		cs35l41->index = id;
- 		/*
- 		 * Manually set the Chip Select for the second amp <cs_gpio_index> in the node.
-diff --git a/sound/pci/hda/cs35l41_hda_spi.c b/sound/pci/hda/cs35l41_hda_spi.c
-index eb287aa5f782..b76c0dfd5fef 100644
---- a/sound/pci/hda/cs35l41_hda_spi.c
-+++ b/sound/pci/hda/cs35l41_hda_spi.c
-@@ -26,7 +26,7 @@ static int cs35l41_hda_spi_probe(struct spi_device *spi)
- 		return -ENODEV;
- 
- 	return cs35l41_hda_probe(&spi->dev, device_name, spi_get_chipselect(spi, 0), spi->irq,
--				 devm_regmap_init_spi(spi, &cs35l41_regmap_spi));
-+				 devm_regmap_init_spi(spi, &cs35l41_regmap_spi), SPI);
- }
- 
- static void cs35l41_hda_spi_remove(struct spi_device *spi)
+ 	True.Include.hs_init.File "/codecs/${var:HeadsetCodec1}/init.conf"
 -- 
-2.34.1
+2.39.2
 
