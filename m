@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 90AA0C3DA6E
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Dec 2023 22:48:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F40C3C3DA6E
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Dec 2023 22:48:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C1A867F1;
-	Wed, 20 Dec 2023 23:47:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C1A867F1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5883CDF4;
+	Wed, 20 Dec 2023 23:48:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5883CDF4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1703112481;
-	bh=Jc2Mpwhk0poVuDshNre4am0eWc84tHRBF0AiFPuoIWY=;
+	s=default; t=1703112496;
+	bh=3mRgqPiZTm9OWt4eGc7Nq88l2c6uW52em4SlB0Jae9Q=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=XamsQYJaSmRHI6RfZcuC58ZkAviVnGFXVx/k2B4VAmiLokaaMFKh/d0bMdIAQMkIi
-	 5Eo9rmJWJWS+dv79Onqx1Dze7st22ThoUXhX72BGWUVHYsvloOSJM6UNw/5L+UTHMw
-	 cyzLrfP3PduigBOCgtywpYKoOG66Okfp/2+f4WNo=
+	b=CXuGhZi2WOysXztF0i4MIqA/P3pqUYfpMPgsPMruK2LykB7yIVaKmw5xv8RZrPbRE
+	 EvUF33tjT9kxop27kIaS8qFPVKj+UX2w1LHwU2ZxFtU4C9VcL8ww1sCVi/SelorH75
+	 zCgZNc2+yMkub+bl89HBknhxucKPVOZsP45hHI+k=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 40657F80675; Wed, 20 Dec 2023 23:46:34 +0100 (CET)
+	id DAD30F80698; Wed, 20 Dec 2023 23:46:37 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 26DA1F80656;
-	Wed, 20 Dec 2023 23:46:34 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8D102F806A7;
+	Wed, 20 Dec 2023 23:46:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8BE67F805D2; Wed, 20 Dec 2023 23:46:20 +0100 (CET)
+	id C5FBFF805CB; Wed, 20 Dec 2023 23:46:21 +0100 (CET)
 Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com
  [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E196AF8016E
-	for <alsa-devel@alsa-project.org>; Wed, 20 Dec 2023 23:45:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E196AF8016E
+	by alsa1.perex.cz (Postfix) with ESMTPS id 7A5EDF80537
+	for <alsa-devel@alsa-project.org>; Wed, 20 Dec 2023 23:45:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7A5EDF80537
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
- header.s=qcppdkim1 header.b=eaQ4n4as
+ header.s=qcppdkim1 header.b=S5NQL3r+
 Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
 	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id
- 3BKLJSCA024546;
-	Wed, 20 Dec 2023 22:45:55 GMT
+ 3BKMdgpc021036;
+	Wed, 20 Dec 2023 22:45:57 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-type; s=qcppdkim1; bh=dvSeSujDsWAxoUgpDofY
-	eTPsm6P/pMlRxfIJ/11lUYU=; b=eaQ4n4as4L3eylyBW1WUWyCYYpaxuipPP+P4
-	dVpvDNUHH/XDbYdkQPr7DE0gZE+JWU31mZ0//B+xbCuYLdZI2wgluPjYbSzkcMAj
-	5H2dUNjszNUygS0Yy+4vBFRvJArwuOTCk9Sk4dh5hQBgJtRGSyO2D3jD92ogLQf3
-	sTNs6jGuFXAKLFvH2QRHf4n9bfGfpAA1uII055SW/BH4tvZ+C2A8KMy/RH7CpCrU
-	ZpMHHjlm6qJ6tisn/cKSCbcBDRSDDssT1tzvtnWgMAPsl9UYdbvPLtmus17dd4tB
-	ggjXwoF4d41fy9XxgJ77RHZvJDBAEF4E14T197Js8fGK0HP9mA==
+	:mime-version:content-type; s=qcppdkim1; bh=WMU2HIKS908Imaw26ML/
+	jCV96oNOcXMr4ajnHFwqVmY=; b=S5NQL3r+QAz2DhXDjoPzw7Pnvdt1y7tA4wmg
+	J+yiWjeyrf/9XHEfiCEMqxLKfynn7UT8b8M/KehFO/yz7ENVHbK6Zb8oZVnvaOIB
+	eZGmE3AU6JsCvjt/IvTtRtggbcG5a1r2xCMutuP9GsuBb8qBd+48cXTGnwyZ5qF6
+	IsoxveMenbgo2Zk0rkKtF6kRsa39SLOkV2R8MuQCm59qUnG3JDdSqdC4tAeZg/z6
+	Gj0Q/zl0yrX3e/Kj+uB30TSeMYAkwokgHq3+6yCv3Ga+6QgZeAwneCvtfC2B0iFy
+	vbuZbP0NXmCaQM7fuwH6lU10Lfs1Hqedb5xgaK5igtlBZk5eOQ==
 Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com
  [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v37vxw2s9-1
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v37vxw2sd-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 20 Dec 2023 22:45:55 +0000 (GMT)
+	Wed, 20 Dec 2023 22:45:57 +0000 (GMT)
 Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com
  [10.47.209.197])
 	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id
- 3BKMjsIh007919
+ 3BKMjuOD008278
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 20 Dec 2023 22:45:54 GMT
+	Wed, 20 Dec 2023 22:45:56 GMT
 Received: from hu-wcheng-lv.qualcomm.com (10.49.16.6) by
  nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Wed, 20 Dec 2023 14:45:54 -0800
+ 15.2.1118.40; Wed, 20 Dec 2023 14:45:56 -0800
 From: Wesley Cheng <quic_wcheng@quicinc.com>
 To: <srinivas.kandagatla@linaro.org>, <mathias.nyman@intel.com>,
         <perex@perex.cz>, <conor+dt@kernel.org>, <corbet@lwn.net>,
@@ -79,10 +79,9 @@ CC: <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-sound@vger.kernel.org>, <linux-usb@vger.kernel.org>,
         <linux-arm-msm@vger.kernel.org>, <linux-doc@vger.kernel.org>,
         <alsa-devel@alsa-project.org>, Wesley Cheng <quic_wcheng@quicinc.com>
-Subject: [PATCH v11 04/41] usb: host: xhci-mem: Cleanup pending secondary
- event ring events
-Date: Wed, 20 Dec 2023 14:45:07 -0800
-Message-ID: <20231220224544.18031-5-quic_wcheng@quicinc.com>
+Subject: [PATCH v11 09/41] ASoC: qdsp6: q6afe: Increase APR timeout
+Date: Wed, 20 Dec 2023 14:45:12 -0800
+Message-ID: <20231220224544.18031-10-quic_wcheng@quicinc.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20231220224544.18031-1-quic_wcheng@quicinc.com>
 References: <20231220224544.18031-1-quic_wcheng@quicinc.com>
@@ -94,19 +93,19 @@ X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
  signatures=585085
-X-Proofpoint-ORIG-GUID: ptU1pFl-9Z2v7wQukOHceXaTLVQ45Z3r
-X-Proofpoint-GUID: ptU1pFl-9Z2v7wQukOHceXaTLVQ45Z3r
+X-Proofpoint-ORIG-GUID: rY1dRZgqAb5VEbzO58AyW9vTx5pTi2EK
+X-Proofpoint-GUID: rY1dRZgqAb5VEbzO58AyW9vTx5pTi2EK
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- mlxlogscore=796
+ mlxlogscore=812
  suspectscore=0 impostorscore=0 lowpriorityscore=0 malwarescore=0
  bulkscore=0 phishscore=0 spamscore=0 clxscore=1015 mlxscore=0 adultscore=0
  priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.19.0-2311290000 definitions=main-2312200163
-Message-ID-Hash: ATL7MSYUA3XTUXWRZW5QPUY2QKKLWWQ5
-X-Message-ID-Hash: ATL7MSYUA3XTUXWRZW5QPUY2QKKLWWQ5
+Message-ID-Hash: JQJOFSQI4P7J5VRPJHA2FAADSS2K2T6G
+X-Message-ID-Hash: JQJOFSQI4P7J5VRPJHA2FAADSS2K2T6G
 X-MailFrom: quic_wcheng@quicinc.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -119,7 +118,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ATL7MSYUA3XTUXWRZW5QPUY2QKKLWWQ5/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JQJOFSQI4P7J5VRPJHA2FAADSS2K2T6G/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -128,149 +127,29 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-As part of xHCI bus suspend, the XHCI is halted.  However, if there are
-pending events in the secondary event ring, it is observed that the xHCI
-controller stops responding to further commands upon host or device
-initiated bus resume.  Iterate through all pending events and update the
-dequeue pointer to the beginning of the event ring.
+For USB offloading situations, the AFE port start command will result in a
+QMI handshake between the Q6DSP and the main processor.  Depending on if
+the USB bus is suspended, this routine would require more time to complete,
+as resuming the USB bus has some overhead associated with it.  Increase the
+timeout to 3s to allow for sufficient time for the USB QMI stream enable
+handshake to complete.
 
+Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
 ---
- drivers/usb/host/xhci-mem.c  | 11 +++++----
- drivers/usb/host/xhci-ring.c | 46 +++++++++++++++++++++++++++++++++++-
- drivers/usb/host/xhci.c      |  2 +-
- drivers/usb/host/xhci.h      |  7 ++++++
- 4 files changed, 59 insertions(+), 7 deletions(-)
+ sound/soc/qcom/qdsp6/q6afe.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/usb/host/xhci-mem.c b/drivers/usb/host/xhci-mem.c
-index 4460fa7e9fab..5bf74c37cbf6 100644
---- a/drivers/usb/host/xhci-mem.c
-+++ b/drivers/usb/host/xhci-mem.c
-@@ -1827,7 +1827,7 @@ xhci_remove_interrupter(struct xhci_hcd *xhci, struct xhci_interrupter *ir)
- 		tmp &= ERST_SIZE_MASK;
- 		writel(tmp, &ir->ir_set->erst_size);
+diff --git a/sound/soc/qcom/qdsp6/q6afe.c b/sound/soc/qcom/qdsp6/q6afe.c
+index 8e0d2d583c9c..f8b6d9e552f0 100644
+--- a/sound/soc/qcom/qdsp6/q6afe.c
++++ b/sound/soc/qcom/qdsp6/q6afe.c
+@@ -366,7 +366,7 @@
+ #define AFE_API_VERSION_SLOT_MAPPING_CONFIG	1
+ #define AFE_API_VERSION_CODEC_DMA_CONFIG	1
  
--		xhci_write_64(xhci, ERST_EHB, &ir->ir_set->erst_dequeue);
-+		xhci_update_erst_dequeue(xhci, ir, ir->event_ring->first_seg->trbs, true);
- 	}
- }
- 
-@@ -1865,11 +1865,12 @@ void xhci_remove_secondary_interrupter(struct usb_hcd *hcd, struct xhci_interrup
- 	if (!ir || !ir->intr_num || ir->intr_num >= xhci->max_interrupters)
- 		xhci_dbg(xhci, "Invalid secondary interrupter, can't remove\n");
- 
--	/* fixme, should we check xhci->interrupter[intr_num] == ir */
--	/* fixme locking */
--
- 	spin_lock_irq(&xhci->lock);
--
-+	/*
-+	 * Cleanup secondary interrupter to ensure there are no pending events.
-+	 * This also updates event ring dequeue pointer back to the start.
-+	 */
-+	xhci_skip_sec_intr_events(xhci, ir->event_ring, ir);
- 	intr_num = ir->intr_num;
- 
- 	xhci_remove_interrupter(xhci, ir);
-diff --git a/drivers/usb/host/xhci-ring.c b/drivers/usb/host/xhci-ring.c
-index 33806ae966f9..448417c5d5b1 100644
---- a/drivers/usb/host/xhci-ring.c
-+++ b/drivers/usb/host/xhci-ring.c
-@@ -2980,7 +2980,7 @@ static int xhci_handle_event(struct xhci_hcd *xhci, struct xhci_interrupter *ir)
-  * - When all events have finished
-  * - To avoid "Event Ring Full Error" condition
-  */
--static void xhci_update_erst_dequeue(struct xhci_hcd *xhci,
-+void xhci_update_erst_dequeue(struct xhci_hcd *xhci,
- 				     struct xhci_interrupter *ir,
- 				     union xhci_trb *event_ring_deq,
- 				     bool clear_ehb)
-@@ -3013,6 +3013,50 @@ static void xhci_update_erst_dequeue(struct xhci_hcd *xhci,
- 	xhci_write_64(xhci, temp_64, &ir->ir_set->erst_dequeue);
- }
- 
-+/*
-+ * Move the event ring dequeue pointer to skip events kept in the secondary
-+ * event ring.  This is used to ensure that pending events in the ring are
-+ * acknowledged, so the XHCI HCD can properly enter suspend/resume.  The
-+ * secondary ring is typically maintained by an external component.
-+ */
-+void xhci_skip_sec_intr_events(struct xhci_hcd *xhci,
-+	struct xhci_ring *ring,	struct xhci_interrupter *ir)
-+{
-+	union xhci_trb *erdp_trb, *current_trb;
-+	u64 erdp_reg;
-+	u32 iman_reg;
-+	dma_addr_t deq;
-+
-+	/* disable irq, ack pending interrupt and ack all pending events */
-+	xhci_disable_interrupter(ir);
-+	iman_reg = readl_relaxed(&ir->ir_set->irq_pending);
-+	if (iman_reg & IMAN_IP)
-+		writel_relaxed(iman_reg, &ir->ir_set->irq_pending);
-+
-+	/* last acked event trb is in erdp reg  */
-+	erdp_reg = xhci_read_64(xhci, &ir->ir_set->erst_dequeue);
-+	deq = (dma_addr_t)(erdp_reg & ERST_PTR_MASK);
-+	if (!deq) {
-+		xhci_err(xhci, "event ring handling not required\n");
-+		return;
-+	}
-+
-+	erdp_trb = current_trb = ir->event_ring->dequeue;
-+	/* read cycle state of the last acked trb to find out CCS */
-+	ring->cycle_state = le32_to_cpu(current_trb->event_cmd.flags) & TRB_CYCLE;
-+
-+	while (1) {
-+		inc_deq(xhci, ir->event_ring);
-+		erdp_trb = ir->event_ring->dequeue;
-+		/* cycle state transition */
-+		if ((le32_to_cpu(erdp_trb->event_cmd.flags) & TRB_CYCLE) !=
-+		    ring->cycle_state)
-+			break;
-+	}
-+
-+	xhci_update_erst_dequeue(xhci, ir, current_trb, true);
-+}
-+
- /*
-  * xHCI spec says we can get an interrupt, and if the HC has an error condition,
-  * we might get bad data out of the event ring.  Section 4.10.2.7 has a list of
-diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
-index 573ca5c4f31a..eb15c63e6775 100644
---- a/drivers/usb/host/xhci.c
-+++ b/drivers/usb/host/xhci.c
-@@ -333,7 +333,7 @@ static int xhci_enable_interrupter(struct xhci_interrupter *ir)
- 	return 0;
- }
- 
--static int xhci_disable_interrupter(struct xhci_interrupter *ir)
-+int xhci_disable_interrupter(struct xhci_interrupter *ir)
- {
- 	u32 iman;
- 
-diff --git a/drivers/usb/host/xhci.h b/drivers/usb/host/xhci.h
-index e98099b960e4..37887c2f0653 100644
---- a/drivers/usb/host/xhci.h
-+++ b/drivers/usb/host/xhci.h
-@@ -2093,6 +2093,9 @@ struct xhci_interrupter *
- xhci_create_secondary_interrupter(struct usb_hcd *hcd, int num_seg);
- void xhci_remove_secondary_interrupter(struct usb_hcd
- 				       *hcd, struct xhci_interrupter *ir);
-+void xhci_skip_sec_intr_events(struct xhci_hcd *xhci,
-+	struct xhci_ring *ring,	struct xhci_interrupter *ir);
-+int xhci_disable_interrupter(struct xhci_interrupter *ir);
- 
- /* xHCI host controller glue */
- typedef void (*xhci_get_quirks_t)(struct device *, struct xhci_hcd *);
-@@ -2180,6 +2183,10 @@ void inc_deq(struct xhci_hcd *xhci, struct xhci_ring *ring);
- unsigned int count_trbs(u64 addr, u64 len);
- int xhci_stop_endpoint_sync(struct xhci_hcd *xhci, struct xhci_virt_ep *ep,
- 			    int suspend, gfp_t gfp_flags);
-+void xhci_update_erst_dequeue(struct xhci_hcd *xhci,
-+				     struct xhci_interrupter *ir,
-+				     union xhci_trb *event_ring_deq,
-+				     bool clear_ehb);
- 
- /* xHCI roothub code */
- void xhci_set_link_state(struct xhci_hcd *xhci, struct xhci_port *port,
+-#define TIMEOUT_MS 1000
++#define TIMEOUT_MS 3000
+ #define AFE_CMD_RESP_AVAIL	0
+ #define AFE_CMD_RESP_NONE	1
+ #define AFE_CLK_TOKEN		1024
