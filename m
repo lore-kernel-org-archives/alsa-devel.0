@@ -4,93 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 28BA2C35274
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 Dec 2023 22:01:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 81CADC46CCD
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 Dec 2023 23:37:54 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 18C32DEE;
-	Thu, 21 Dec 2023 23:01:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 18C32DEE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2E06DDF5;
+	Fri, 22 Dec 2023 00:37:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2E06DDF5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1703196117;
-	bh=Mu966ENzqAzL5zVpXkX0okIrHoGjPvhJ8rqTFtXNsxY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=s85xxTIBBRWJonYg37cKO1VH+sq3zCmEygZ2wflenCBxfWig0sI5fkQw/3OWGAJXZ
-	 +yOs5DguT0a+qbOZih4AxQppIun98uJeZiuSSdAUWyCFDr1+BtHO/HAeU3x1rK+Xjg
-	 1s/nH398R3ncBrHqV8zfNItXxlPQbjz8wp1lPznM=
+	s=default; t=1703201871;
+	bh=QKRGEb6ntQbbWETEGc52fYWEw4HYQa9uwTHsTB26UVw=;
+	h=Date:From:To:Cc:Subject:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=bzBVhd7v5rdwgaTXSzZ+Xdp2f9pgE2rWVkAN/bZf774EzgULNSzNE0AS20oaFU7Ep
+	 PzD0143p+3MB7sf5uZJo7vTjfspebuGqSe39KkYQDcJC2V1JZzxdkLbvaFwimtpRyR
+	 WgHLNKsRyxxY34JjhURjLeSDH7iOqQsVJF6AMpOc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 92231F805B6; Thu, 21 Dec 2023 23:01:25 +0100 (CET)
+	id D3F44F8057B; Fri, 22 Dec 2023 00:37:18 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 62AE4F805AB;
-	Thu, 21 Dec 2023 23:01:25 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2B2E9F800D2;
+	Fri, 22 Dec 2023 00:37:18 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 239B2F80568; Thu, 21 Dec 2023 23:01:20 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	id E6948F8016E; Fri, 22 Dec 2023 00:37:01 +0100 (CET)
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id F0C32F804DA
-	for <alsa-devel@alsa-project.org>; Thu, 21 Dec 2023 23:01:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F0C32F804DA
+	by alsa1.perex.cz (Postfix) with ESMTPS id CBBC0F800D2
+	for <alsa-devel@alsa-project.org>; Fri, 22 Dec 2023 00:36:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CBBC0F800D2
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=S2O8QXVK
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by ams.source.kernel.org (Postfix) with ESMTP id 8AEDAB821CD;
-	Thu, 21 Dec 2023 22:01:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83B2EC433C8;
-	Thu, 21 Dec 2023 22:01:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703196075;
-	bh=Mu966ENzqAzL5zVpXkX0okIrHoGjPvhJ8rqTFtXNsxY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=S2O8QXVKb3ZUGIFC0OpGxRRynfGqmj+gp7FTRV7NaqGkWM4IE05+Gqd4cUFQEQYL4
-	 wG8CTj9V0h17GQd4DGWTQ/ID88OjucDGd4K+yDcA/dII3YbqJZwo8/WEGbw+0/BCww
-	 uvzyeWwpnjNf8BE09DbyfTe4eatwQUCKS88qqoFVuq4Fb0xHA3dCIj/qvA6T9heVw1
-	 XMReR5iaSQzexSnB5wS2XhpBfBxtK/INvsJIBmzcaV4NgQ/FFgNRrpnmVxI9gmQ0P9
-	 68dzeUi++eubqSxVn0qTA5U4n6uBSTfo0lld+kP5+b9rRlCVwpuJxK42akZsycfsTr
-	 Hh/bbpwOTtWRw==
-Received: (nullmailer pid 166032 invoked by uid 1000);
-	Thu, 21 Dec 2023 22:01:11 -0000
-Date: Thu, 21 Dec 2023 16:01:11 -0600
-From: Rob Herring <robh@kernel.org>
-To: Gatien Chevallier <gatien.chevallier@foss.st.com>
-Cc: mchehab@kernel.org, rcsekar@samsung.com, olivier.moysan@foss.st.com,
- Frank Rowand <frowand.list@gmail.com>, dmaengine@vger.kernel.org,
- linux-crypto@vger.kernel.org, jic23@kernel.org, lars@metafoo.de,
- mkl@pengutronix.de, linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
- davem@davemloft.net, conor+dt@kernel.org, fabrice.gasnier@foss.st.com,
- pabeni@redhat.com, linux-media@vger.kernel.org, catalin.marinas@arm.com,
- netdev@vger.kernel.org, Oleksii_Moisieiev@epam.com,
- linux-serial@vger.kernel.org, hugues.fruchet@foss.st.com,
- linux-usb@vger.kernel.org, linux-mmc@vger.kernel.org, arnd@kernel.org,
- linux-iio@vger.kernel.org, will@kernel.org, edumazet@google.com,
- linux-stm32@st-md-mailman.stormreply.com, krzysztof.kozlowski+dt@linaro.org,
- ulf.hansson@linaro.org, alexandre.torgue@foss.st.com,
- devicetree@vger.kernel.org, linux-i2c@vger.kernel.org,
- herbert@gondor.apana.org.au, vkoul@kernel.org, robh+dt@kernel.org,
- kuba@kernel.org, wg@grandegger.com, lee@kernel.org, peng.fan@oss.nxp.com,
- linux-phy@lists.infradead.org, arnaud.pouliquen@foss.st.com,
- gregkh@linuxfoundation.org, richardcochran@gmail.com,
- linux-arm-kernel@lists.infradead.org, andi.shyti@kernel.org,
- alsa-devel@alsa-project.org
-Subject: Re: [PATCH v8 06/13] of: property: fw_devlink: Add support for
- "access-controller"
-Message-ID: <170319607084.165973.14576693798188042387.robh@kernel.org>
-References: <20231212152356.345703-1-gatien.chevallier@foss.st.com>
- <20231212152356.345703-7-gatien.chevallier@foss.st.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231212152356.345703-7-gatien.chevallier@foss.st.com>
-Message-ID-Hash: YH7VS3TPMO52GAV2RPOOXH6AZIJS2SJF
-X-Message-ID-Hash: YH7VS3TPMO52GAV2RPOOXH6AZIJS2SJF
-X-MailFrom: robh@kernel.org
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=fjdGkDuD
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1703201816; x=1734737816;
+  h=date:from:to:cc:subject:message-id;
+  bh=QKRGEb6ntQbbWETEGc52fYWEw4HYQa9uwTHsTB26UVw=;
+  b=fjdGkDuDDEaA4j8+zRvlTpuXgRJcGFaJiqHptnG20XFHREp6or874ogz
+   /ipDgbEmIRAMTMZqY+dssPzpIILZKFpAVZcCnzj/2SfPzdWVm4OdLvlXD
+   uNVUgHIGfnRlE2eg/P6KmSEz3KqH4bcelpmWV5cgfKf8y3op2BSNdTAx1
+   o3Hx9yxUfET0LSVWs1agIDwyiu5TD5oIvlvXC3ApLCo5JzDz7WU6tl0Xw
+   5uuY4frKmCgYALznmGThItuJD9oPSLjzQiGfsODPNjf5ZdVlsXEVswyIK
+   0wFXu/bpz7yXS4/brqsWdOj+GxeAOnmEWhYNhfTaapW60v4mf6uCcWwmN
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10931"; a="3296492"
+X-IronPort-AV: E=Sophos;i="6.04,294,1695711600";
+   d="scan'208";a="3296492"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 21 Dec 2023 15:36:39 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10931"; a="895268140"
+X-IronPort-AV: E=Sophos;i="6.04,294,1695711600";
+   d="scan'208";a="895268140"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by fmsmga002.fm.intel.com with ESMTP; 21 Dec 2023 15:36:37 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rGSaG-0008ro-0B;
+	Thu, 21 Dec 2023 23:36:23 +0000
+Date: Fri, 22 Dec 2023 07:35:36 +0800
+From: kernel test robot <lkp@intel.com>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Linux Memory Management List <linux-mm@kvack.org>,
+ alsa-devel@alsa-project.org, netdev@vger.kernel.org,
+ patches@opensource.cirrus.com
+Subject: [linux-next:pending-fixes] BUILD REGRESSION
+ c6eb02b33bd24f8f4a60947b539db4871ef914cd
+Message-ID: <202312220731.p0jrL7zG-lkp@intel.com>
+User-Agent: s-nail v14.9.24
+Message-ID-Hash: LAD5MGYGTPLX6IXHBMCNXJG6A47QUEYC
+X-Message-ID-Hash: LAD5MGYGTPLX6IXHBMCNXJG6A47QUEYC
+X-MailFrom: lkp@intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -102,7 +89,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YH7VS3TPMO52GAV2RPOOXH6AZIJS2SJF/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LAD5MGYGTPLX6IXHBMCNXJG6A47QUEYC/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -111,25 +98,39 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git pending-fixes
+branch HEAD: c6eb02b33bd24f8f4a60947b539db4871ef914cd  Merge branch 'for-linux-next-fixes' of git://anongit.freedesktop.org/drm/drm-misc
 
-On Tue, 12 Dec 2023 16:23:49 +0100, Gatien Chevallier wrote:
-> Allows tracking dependencies between devices and their access
-> controller.
-> 
-> Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
-> ---
-> 
-> Changes in V6:
->     	- Renamed access-controller to access-controllers
-> 
-> Changes in V5:
-> 	- Rename feature-domain* to access-control*
-> 
-> Patch not present in V1
-> 
->  drivers/of/property.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
+Error/Warning reports:
 
-Acked-by: Rob Herring <robh@kernel.org>
+https://lore.kernel.org/oe-kbuild-all/202312211413.1NkzZWqi-lkp@intel.com
 
+Error/Warning: (recently discovered and may have been fixed)
+
+sound/pci/hda/cs35l41_hda_property.c:238: undefined reference to `spi_setup'
+
+Unverified Error/Warning (likely false positive, please contact us if interested):
+
+net/core/stream.c:82:13-14: WARNING opportunity for min()
+
+Error/Warning ids grouped by kconfigs:
+
+gcc_recent_errors
+`-- i386-randconfig-051-20231010
+    `-- sound-pci-hda-cs35l41_hda_property.c:undefined-reference-to-spi_setup
+clang_recent_errors
+`-- x86_64-randconfig-102-20231221
+    `-- net-core-stream.c:WARNING-opportunity-for-min()
+
+elapsed time: 1457m
+
+configs tested: 2
+configs skipped: 0
+
+tested configs:
+x86_64                            allnoconfig   gcc  
+x86_64                              defconfig   gcc  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
