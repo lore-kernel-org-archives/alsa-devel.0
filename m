@@ -4,61 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C5360C35274
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 Dec 2023 14:45:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 168CDC35274
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 Dec 2023 14:45:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E3919DF0;
-	Thu, 21 Dec 2023 15:44:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E3919DF0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5947D83A;
+	Thu, 21 Dec 2023 15:45:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5947D83A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1703169901;
-	bh=g9H/wip9okyMkI7qxjfibvkApC+JionIjkmsvnCQ86M=;
+	s=default; t=1703169939;
+	bh=qR/VUPzO8jIzabOI56INyptFUDjyYZAwRvCJFtLVKyo=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=jDWB17SyU+ERgROh/Q9GTYmSI97Dvs9gQV0XLbBYs+eFReOYe3xROelPopo/P24LO
-	 76NhF7B/kcr3qoZ5m/p3qWiRANt09PPLdK9PRo6Y0RQ1FQjNttOnG9v2BzIXOEqDOk
-	 /ax2uF7FN0TXE3XXsa+W1p0eKk4J3oPTDZlxKHzQ=
+	b=Yomsohd5OmaYEKcLB+KNBvizLptnEGfKVVUqmyild8NzHgFX0/BBVqXZ92/xLUQOu
+	 EJvZ2dmwzzWBHPlDlile+9Iz2Uq1OE7iXWbE2b7lWfOKFC3FIAR6dQ1g1w91uDBbwy
+	 8qnGE+OvPYMs1H5hVyQGhYGzdvO6OFAidOc2djKw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E9A57F80589; Thu, 21 Dec 2023 15:44:26 +0100 (CET)
+	id 0E81BF80567; Thu, 21 Dec 2023 15:45:06 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6FD43F80571;
-	Thu, 21 Dec 2023 15:44:26 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6374AF80570;
+	Thu, 21 Dec 2023 15:45:06 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id EEB62F80153; Thu, 21 Dec 2023 15:44:21 +0100 (CET)
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+	id 9C42AF80212; Thu, 21 Dec 2023 15:45:02 +0100 (CET)
+Received: from sin.source.kernel.org (sin.source.kernel.org
+ [IPv6:2604:1380:40e1:4800::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E8F00F800F5
-	for <alsa-devel@alsa-project.org>; Thu, 21 Dec 2023 15:44:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E8F00F800F5
+	by alsa1.perex.cz (Postfix) with ESMTPS id 2EE57F80124
+	for <alsa-devel@alsa-project.org>; Thu, 21 Dec 2023 15:44:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2EE57F80124
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=SaPXCqjB
+ header.s=k20201202 header.b=aMiNkHkT
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 74CE3CE1F83;
-	Thu, 21 Dec 2023 14:44:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01AB1C433C9;
-	Thu, 21 Dec 2023 14:44:12 +0000 (UTC)
+	by sin.source.kernel.org (Postfix) with ESMTP id BB0A0CE1FC5;
+	Thu, 21 Dec 2023 14:44:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64839C433C7;
+	Thu, 21 Dec 2023 14:44:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703169853;
-	bh=g9H/wip9okyMkI7qxjfibvkApC+JionIjkmsvnCQ86M=;
+	s=k20201202; t=1703169896;
+	bh=qR/VUPzO8jIzabOI56INyptFUDjyYZAwRvCJFtLVKyo=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=SaPXCqjB40+3Toi+YpMPNVzvMqUhEi8Pq2DTWxKvv0Q14fhLGemz0Z89JkFSkoZqJ
-	 dlovHK0040LgL6fZepCuoMXpjGM8o4seAeXMRWgtxSDoA0tlmOH2ByijfCr5GIyQ60
-	 17KVp/YvSLVyF/1tRxBW5DGCXNBVqQFyuivWNaakyMq7Z7gQ8VJWyNxJQFfrdPS1j3
-	 5tR8vARcOo2V57vVmGUu7Y8jGvxmZVjeB55g8jf1CjdX4accE1lrpv0gH2mHHLxRVS
-	 opwdVQV6PnOjx6+3x+xSVJreKK3BPNCw4Tv4NZqu7p5m4LEHkGY8O5ol8oll4qoCHI
-	 KWA3aLdwpCEtg==
-Date: Thu, 21 Dec 2023 20:14:09 +0530
+	b=aMiNkHkTa6ttUo2aNbk7SwpG13CIhLkIWTlm+/wgobEqqqYSJvluX9qgtw0QbMXLH
+	 s6Z/mZ34KZRw74xF7k1lmwoLA0tM4hod8E71WH+7O7vwp74k0FsP9DJecMo3OCj4Jw
+	 dGISynPcXXTSMJcjrmHwZmX6XTkkyMpHHx7rQMBies4akh8yNs0ro9eXcUXw1fxfYt
+	 jOiYqTI32fjWcP6zA6vAwILeLZv5+cPaTtmcrKEk49gDbJlIQOVRvMjuBmlwyKQMzr
+	 KYQrfncxD3gbIanjzIPdPdsENk2QqDwiXQy/DhEKDkFHTOi19pfhX1tDxfLV9GwUwC
+	 QbX8tT4RkFizg==
+Date: Thu, 21 Dec 2023 20:14:51 +0530
 From: Vinod Koul <vkoul@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: linux-sound@vger.kernel.org, alsa-devel@alsa-project.org, tiwai@suse.de,
-	broonie@kernel.org, vinod.koul@intel.com,
+To: Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+	linux-sound@vger.kernel.org, alsa-devel@alsa-project.org,
+	tiwai@suse.de, broonie@kernel.org, vinod.koul@intel.com,
 	Bard liao <yung-chuan.liao@linux.intel.com>,
 	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
 	Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
@@ -66,23 +69,23 @@ Cc: linux-sound@vger.kernel.org, alsa-devel@alsa-project.org, tiwai@suse.de,
 	srinivas.kandagatla@linaro.org,
 	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
 	vijendar.mukunda@amd.com,
-	Charles Keepax <ckeepax@opensource.cirrus.com>,
 	Richard Fitzgerald <rf@opensource.cirrus.com>,
 	Shuming Fan <shumingf@realtek.com>, Jack Yu <jack.yu@realtek.com>,
 	Oder Chiou <oder_chiou@realtek.com>
 Subject: Re: [RFC PATCH 01/16] Documentation: driver: add SoundWire BRA
  description
-Message-ID: <ZYRPOckODRGNNZli@matsya>
+Message-ID: <ZYRPYwPlzCz3jWLc@matsya>
 References: <20231207222944.663893-1-pierre-louis.bossart@linux.intel.com>
  <20231207222944.663893-2-pierre-louis.bossart@linux.intel.com>
  <ZYAvoFbEP8RH_x0Y@matsya>
  <a5d0e3a7-e45c-4971-8ad7-7ba19702acf1@linux.intel.com>
+ <20231218142946.GZ14858@ediswmail.ad.cirrus.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <a5d0e3a7-e45c-4971-8ad7-7ba19702acf1@linux.intel.com>
-Message-ID-Hash: USRDSBKEEF4AC2HGUM7UPGWMPXE6JKP3
-X-Message-ID-Hash: USRDSBKEEF4AC2HGUM7UPGWMPXE6JKP3
+In-Reply-To: <20231218142946.GZ14858@ediswmail.ad.cirrus.com>
+Message-ID-Hash: FMYTY6IXJ7VEO62XYX4ZGBGJOKCFW64W
+X-Message-ID-Hash: FMYTY6IXJ7VEO62XYX4ZGBGJOKCFW64W
 X-MailFrom: vkoul@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -95,98 +98,45 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/USRDSBKEEF4AC2HGUM7UPGWMPXE6JKP3/>
-List-Archive: <>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FMYTY6IXJ7VEO62XYX4ZGBGJOKCFW64W/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 18-12-23, 13:58, Pierre-Louis Bossart wrote:
-> 
-> >>  Documentation/driver-api/soundwire/bra.rst    | 478 ++++++++++++++++++
+On 18-12-23, 14:29, Charles Keepax wrote:
+> On Mon, Dec 18, 2023 at 01:58:47PM +0100, Pierre-Louis Bossart wrote:
+> > > why not have a single API that does both? First check if it is supported
+> > > and then allocate buffers and do the transfer.. What are the advantages
+> > > of using this two step process
 > > 
-> > Can we split the cadence parts of this to bra-cadence.rst that way this
-> > file documents the core parts only
+> > Symmetry is the only thing that comes to my mind. Open - close and send
+> > - wait are natural matches, aren't they?
+> > 
+> > We do need a wait(), so bundling open() and send() would be odd.
+> > 
 > 
-> Yes, we can split the Cadence parts out.
+> I agree send->wait->close would be odd, But you just bundle close
+> into wait. So the API becomes just send->wait, which seems pretty
+> logical.
 
-Great
-
-> 
-> 
-> >> +Error handling
-> >> +~~~~~~~~~~~~~~
-> >> +
-> >> +The expected response to a 'bra_message' and follow-up behavior may
-> >> +vary:
-> >> +
-> >> +   (1) A Peripheral driver may want to receive an immediate -EBUSY
-> >> +       response if the BRA protocol is not available at a given time.
-> >> +
-> >> +   (2) A Peripheral driver may want to wait until a timeout for the
-> >> +       on-going transfer to be handled
-> >> +
-> >> +   (3) A Peripheral driver may want to wait until existing BRA
-> >> +       transfers complete or deal with BRA as a background task when
-> >> +       audio transfers stop. In this case, there would be no timeout,
-> >> +       and the operation may not happen if the platform is suspended.
-> > 
-> > Is this runtime suspend or S3/S4 case?
-> 
-> System suspend (which can also mean S0i1).
-> 
-> I don't think we can have a case where a peripheral driver waits on
-> something without having done a pm_runtime_get_sync() to prevent
-> runtime_pm suspend.
-> 
-> > 
-> >> +BTP/BRA API available to peripheral drivers
-> >> +-------------------------------------------
-> >> +
-> >> +ASoC Peripheral drivers may use
-> >> +
-> >> +   - sdw_bpt_stream_open(mode)
-> >> +
-> >> +      This function verifies that the BPT protocol with the
-> >> +      'mode'. For now only BRA is accepted as a mode. This function
-> >> +      allocates a work buffer internally. This buffer is not exposed
-> >> +      to the caller.
-> >> +
-> >> +     errors:
-> >> +         -ENODEV: BPT/BRA is not supported by the Manager.
-> >> +
-> >> +         -EBUSY: another agent is already using the audio payload for
-> >> +          audio transfers. There is no way to predict when the audio
-> >> +          streams might stop, this will require the Peripheral driver
-> >> +          to fall back to the regular (slow) command channel.
-> >> +
-> >> +         -EAGAIN: another agent is already transferring data using the
-> >> +          BPT/BRA protocol. Since the transfers will typically last
-> >> +          10s or 100s of ms, the Peripheral driver may wait and retry
-> >> +          later.
-> >> +
-> >> +    - sdw_bpt_message_send_async(bpt_message)
-> > 
-> > why not have a single API that does both? First check if it is supported
-> > and then allocate buffers and do the transfer.. What are the advantages
-> > of using this two step process
-> 
-> Symmetry is the only thing that comes to my mind. Open - close and send
-> - wait are natural matches, aren't they?
-
-Why have symmetry to DAI apis, why not symmetry to regmap write APIs..?
-This is data transfer, so I am not sure why would we model it as a DAI.
-(Internal implementation may rely on that but from API design, i dont
-think that should be a concern)
+You would drop close as well, only send and wait...
 
 > 
-> We do need a wait(), so bundling open() and send() would be odd.
+> > But you have a point that the open() is not generic in that it also
+> > prepares the DMA buffers for transmission. Maybe it's more natural to
+> > follow the traditional open(), hw_params(), hw_free, close() from ALSA.
 > 
-> But you have a point that the open() is not generic in that it also
-> prepares the DMA buffers for transmission. Maybe it's more natural to
-> follow the traditional open(), hw_params(), hw_free, close() from ALSA.
+> I think this just makes it worse, you are now adding even more
+> calls. The problem I see here is that, open and close (at least to
+> me) strongly implies that you can do multiple operations between
+> them and unless I have misunderstood something here you can't.
+> 
+> Thanks,
+> Charles
 
 -- 
 ~Vinod
