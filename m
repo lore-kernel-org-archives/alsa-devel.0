@@ -4,111 +4,122 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CCC2EC46CD2
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Jan 2024 18:55:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 04CDDC47073
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Jan 2024 18:55:22 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 18D83EB9;
-	Tue,  2 Jan 2024 19:55:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 18D83EB9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4DDFDEDF;
+	Tue,  2 Jan 2024 19:55:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4DDFDEDF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1704221713;
-	bh=wVhTpALcMiNCntelNMpcmyS353uCxC0tr69XZxUeP7w=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1704221720;
+	bh=6IL/idsjPpNrA/kDZh3Wf4QGHuJb8x57N1ifjiYZCC4=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=ghwxspvl5wt2MWt4scTnlllhOhU9oANZAbY17xzfQYvd/CslKBB5+KS+yxAxp5XS9
-	 dHA0a+JnUNgOy6X1QMMyWbOOCfntb+Opxnv6/RiUuaPscoh7dnQ8m2WVwZN1ghqW/O
-	 9dXtZU9A26E4C5JI4Ue6FLtXq1bT5yv7bkCnMmEU=
+	b=iRDmmo43P6ViHFBpG2ZXhp3jCJrY9QtjcQr9YoDIdZFbzPB0RmkfMDiStIztucgp5
+	 oua8kLLzCnMsS9Mzz4M/L8wur55OVcuEJpnJoLdiBIhbCY0apzvx6UMxvLVAlu19yv
+	 s1OndLKUt0SheLQm4yfNqFOuwro8QUDa8SUDa3Bg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 12602F89803; Tue,  2 Jan 2024 19:51:03 +0100 (CET)
+	id D1AEEF80C58; Tue,  2 Jan 2024 19:51:00 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2B4D1F80C57;
-	Tue,  2 Jan 2024 19:51:03 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7FC6EF8077D;
+	Tue,  2 Jan 2024 19:51:00 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 79345F80153; Thu, 21 Dec 2023 22:51:57 +0100 (CET)
-Received: from sin.source.kernel.org (sin.source.kernel.org
- [IPv6:2604:1380:40e1:4800::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	id 71D0EF80153; Thu, 21 Dec 2023 12:24:45 +0100 (CET)
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com
+ [IPv6:2a00:1450:4864:20::331])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 89AB7F800BD
-	for <alsa-devel@alsa-project.org>; Thu, 21 Dec 2023 22:51:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 89AB7F800BD
+	by alsa1.perex.cz (Postfix) with ESMTPS id C2976F800D2
+	for <alsa-devel@alsa-project.org>; Thu, 21 Dec 2023 12:24:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C2976F800D2
 Authentication-Results: alsa1.perex.cz;
-	dkim=fail reason="signature verification failed" (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=grvlhMPd
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 0D95ACE210F;
-	Thu, 21 Dec 2023 21:51:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E29B9C433C9;
-	Thu, 21 Dec 2023 21:51:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703195502;
-	bh=wVhTpALcMiNCntelNMpcmyS353uCxC0tr69XZxUeP7w=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=grvlhMPdSPsEsMrM435z6Ee777r4kKrlEfU5VJO4IHAn4V7pnANe2YaPn9yqlGBHg
-	 U7IjIExcXlK1D9VjptD8QyQ+42pMJbqVtaZr9Lh6/W9NcKiHa/4Pi1lg/vqCN4EdnL
-	 6kO0lUSi+dNbPKTQgm7u7+8N5icMjEm+Xx0mdV8DwQ4PENu1D0ga/Kb1YDb+J4XM0f
-	 ANsuXOYE3cY800vWiRTMZq07yWnLPeaBKYK201IO8zMr9PmgVqaDHP5agM0fLCgIzx
-	 SLr/TsqKDLJRLArQCYcVOAdjwxzBrLiXnruS1js2v2YjfWlxH3LNi3VupaDmJHLxBr
-	 igbLYfklcAyjA==
-Received: (nullmailer pid 153686 invoked by uid 1000);
-	Thu, 21 Dec 2023 21:51:38 -0000
-Date: Thu, 21 Dec 2023 15:51:38 -0600
-From: Rob Herring <robh@kernel.org>
-To: Gatien Chevallier <gatien.chevallier@foss.st.com>
-Cc: pabeni@redhat.com, netdev@vger.kernel.org, lars@metafoo.de,
-	linux-media@vger.kernel.org, hugues.fruchet@foss.st.com,
-	olivier.moysan@foss.st.com, lee@kernel.org,
-	alexandre.torgue@foss.st.com, catalin.marinas@arm.com,
-	peng.fan@oss.nxp.com, linux-mmc@vger.kernel.org,
-	linux-phy@lists.infradead.org, linux-serial@vger.kernel.org,
-	robh+dt@kernel.org, wg@grandegger.com, arnaud.pouliquen@foss.st.com,
-	alsa-devel@alsa-project.org, linux-iio@vger.kernel.org,
-	vkoul@kernel.org, conor+dt@kernel.org, mkl@pengutronix.de,
-	Frank Rowand <frowand.list@gmail.com>, linux-crypto@vger.kernel.org,
-	edumazet@google.com, linux-kernel@vger.kernel.org,
-	dmaengine@vger.kernel.org, linux-spi@vger.kernel.org,
-	linux-usb@vger.kernel.org, linux-i2c@vger.kernel.org,
-	Oleksii Moisieiev <oleksii_moisieiev@epam.com>, arnd@kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com, davem@davemloft.net,
-	krzysztof.kozlowski+dt@linaro.org, ulf.hansson@linaro.org,
-	will@kernel.org, rcsekar@samsung.com,
-	linux-arm-kernel@lists.infradea, d.org@alsa-project.org,
-	kuba@kernel.org, mchehab@kernel.org, gregkh@linuxfoundation.org,
-	jic23@kernel.org, devicetree@vger.kernel.org,
-	richardcochran@gmail.com, Oleksii_Moisieiev@epam.com,
-	andi.shyti@kernel.org, herbert@gondor.apana.org.au,
-	fabrice.gasnier@foss.st.com
-Subject: Re: [PATCH v8 01/13] dt-bindings: document generic access controllers
-Message-ID: <170319549389.153568.1692332156021513651.robh@kernel.org>
-References: <20231212152356.345703-1-gatien.chevallier@foss.st.com>
- <20231212152356.345703-2-gatien.chevallier@foss.st.com>
+	dkim=pass (2048-bit key,
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20230601 header.b=XNWyehuN
+Received: by mail-wm1-x331.google.com with SMTP id
+ 5b1f17b1804b1-40d3352b525so6869125e9.1
+        for <alsa-devel@alsa-project.org>;
+ Thu, 21 Dec 2023 03:24:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703157876; x=1703762676;
+ darn=alsa-project.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rGkZwIdmLi60ShwVAK7ggKym2AkjQZ0+N0ICnJdPIpA=;
+        b=XNWyehuNz3UnhJ0oigMRyCUleOft6VIiWYQjxz+DTANugFJJSIiVavS1e/q95NhsdA
+         x1StGCCOgl+cf7ZZyDbD7RZqQf57SR72+PVhzhQ5hNoULfHFjj6OpokF0ffPGkxPLS6L
+         CBZMHDU3+/DTN32d9o/j9pKqJ35P8vz8VMtPm7wcQUHYa0sHgyYdE1ygsuRKjh/sIsqf
+         39DJnnAQBPuO47dsPUBhvgVE4XN10/C9hVc36Fo03WJ/nlH+vGUFfk6JtQUi2bQg4i1m
+         200ejiN4zAcA3q4fGs90zXcX8Kh/kFNbJ41Cc9gOIJvWtqRcN5tLRUgIcqXAGsk7TVRp
+         Jt3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703157876; x=1703762676;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rGkZwIdmLi60ShwVAK7ggKym2AkjQZ0+N0ICnJdPIpA=;
+        b=pcmIziw4HruuJa7qysnv8Gr8IwJud6xTVFWId9ZhNduZ7Xtv3n0bb8NVniswhAcGzx
+         Xnt99HTbGGFLSe+SoAdOSxFn+MPwoqJrKm+srfI3QZu1eZRFdt0cdUWJVzhCmeEKK1KA
+         RwfBetGkrfWZJ5Co4im5mAcoIDMVicWk5C4NA7LXkI9oUAL3WGnaVHwcSzdTjU8Rgs8X
+         OcFXxbD8/56gpgzmn9dcoeptSQt9CKc6bNvhwcBsxlzm4q2ekE5EWiOLJ+0b1PMUJH4s
+         rwd0dfe/dlTrTeNX7IU8juWRmmd3ZoS3N1+ks2rRjiUax3MvGBzKcKoYvHAFf63UVXT8
+         WmrA==
+X-Gm-Message-State: AOJu0YzbInQ/Df29BwwVyhJWK83UAl8+Gwm5Lr9uUGyJCKejWjLgJrzl
+	2ouvUTd5lpkMGHd8qvwmfw==
+X-Google-Smtp-Source: 
+ AGHT+IEY0zeOkEmWqxzOZOz9OMEjZ8EZ5dx8hGr56e2e8YMsAf+s1y30sszRmEvQ0vIVdg0Em94KmQ==
+X-Received: by 2002:a05:600c:4445:b0:40c:2d85:3a01 with SMTP id
+ v5-20020a05600c444500b0040c2d853a01mr657257wmn.161.1703157876018;
+        Thu, 21 Dec 2023 03:24:36 -0800 (PST)
+Received: from alex-pc-ubuntu.lan (31-10-153-16.cgn.dynamic.upc.ch.
+ [31.10.153.16])
+        by smtp.gmail.com with ESMTPSA id
+ d24-20020adfa418000000b003368d3437d5sm111465wra.44.2023.12.21.03.24.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Dec 2023 03:24:35 -0800 (PST)
+From: Aleksandrs Vinarskis <alex.vinarskis@gmail.com>
+To: sbinding@opensource.cirrus.com
+Cc: alex.vinarskis@gmail.com,
+	alsa-devel@alsa-project.org,
+	david.rhodes@cirrus.com,
+	james.schulman@cirrus.com,
+	josbeir@gmail.com,
+	linux-kernel@vger.kernel.org,
+	patches@opensource.cirrus.com,
+	perex@perex.cz,
+	stuarth@opensource.cirrus.com,
+	tiwai@suse.com,
+	tiwai@suse.de
+Subject: Re: [PATCH v2 1/2] ALSA: hda: cs35l41: Safety-guard against capped
+ SPI speed
+Date: Thu, 21 Dec 2023 12:24:34 +0100
+Message-Id: <20231221112434.13730-1-alex.vinarskis@gmail.com>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <8170413d-07a8-4e77-b43d-78cd9e4ea76f@opensource.cirrus.com>
+References: <8170413d-07a8-4e77-b43d-78cd9e4ea76f@opensource.cirrus.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231212152356.345703-2-gatien.chevallier@foss.st.com>
-X-MailFrom: robh@kernel.org
-X-Mailman-Rule-Hits: max-recipients
+Content-Transfer-Encoding: 8bit
+X-MailFrom: alex.vinarskis@gmail.com
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-size; news-moderation; no-subject; digests;
- suspicious-header
-Message-ID-Hash: FC64QRXJ6JS3CQQ76BHSYQCHPAOXKAYY
-X-Message-ID-Hash: FC64QRXJ6JS3CQQ76BHSYQCHPAOXKAYY
-X-Mailman-Approved-At: Mon, 01 Jan 2024 13:18:25 +0000
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: QUDK45L4H6VYEDGXZOLZM6CCER27PAJE
+X-Message-ID-Hash: QUDK45L4H6VYEDGXZOLZM6CCER27PAJE
+X-Mailman-Approved-At: Mon, 01 Jan 2024 13:17:35 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FC64QRXJ6JS3CQQ76BHSYQCHPAOXKAYY/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QUDK45L4H6VYEDGXZOLZM6CCER27PAJE/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -117,45 +128,78 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+Sorry for incorrect expression and confusion, it is indeed not the driver
+that hangs. What I meant is that _computer_ "hangs" on wake up from
+suspend. Unlike boot, where driver does not delay boot process, on wake up
+from suspend it seems it does - after lid was opened/power button pressed,
+with firmware loading taking ~180seconds in total, computer still has
+black screen and is irresponsive for said duration, which is completely
+unacceptable.
 
-On Tue, 12 Dec 2023 16:23:44 +0100, Gatien Chevallier wrote:
-> From: Oleksii Moisieiev <Oleksii_Moisieiev@epam.com>
-> 
-> Introducing of the generic access controllers bindings for the
-> access controller provider and consumer devices. Those bindings are
-> intended to allow a better handling of accesses to resources in a
-> hardware architecture supporting several compartments.
-> 
-> This patch is based on [1]. It is integrated in this patchset as it
-> provides a use-case for it.
-> 
-> Diffs with [1]:
-> 	- Rename feature-domain* properties to access-control* to narrow
-> 	  down the scope of the binding
-> 	- YAML errors and typos corrected.
-> 	- Example updated
-> 	- Some rephrasing in the binding description
-> 
-> [1]: https://lore.kernel.org/lkml/0c0a82bb-18ae-d057-562b
-> 
-> Signed-off-by: Oleksii Moisieiev <oleksii_moisieiev@epam.com>
-> Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
-> ---
-> 
-> Changes in V6:
-> 	- Renamed access-controller to access-controllers
-> 	- Example updated
-> 	- Removal of access-control-provider property
-> 
-> Changes in V5:
-> 	- Diffs with [1]
-> 	- Discarded the [IGNORE] tag as the patch is now part of the
-> 	  patchset
-> 
->  .../access-controllers.yaml                   | 84 +++++++++++++++++++
->  1 file changed, 84 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/access-controllers/access-controllers.yaml
-> 
+I do not have enough expertise in particular area, but it sounds very weird
+to me that audio driver is delaying system wake up process at first place.
+Was this intentional? I would assume/guess most correct solution would be
+for driver to run non-blocking, like it does on boot, but again, I am not
+too familiar with the subject.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+> (~80s per amp) to load the firmware.
 
+Besides firmware loading, there are general initialization/communication
+taking place as well. I have disabled firmware loading to try: at a speed
+of 3051Hz, it takes ~16 seconds on boot (non blocking, so not a big deal)
+and ~7-8 seconds on wake up from suspend (blocking, so it is still not
+acceptable).
+
+I am myself extremely exited to get support for 9530 in upstream, but I am
+just afraid that such a big wake up delay is a huge hit on a end user, and
+would affect everyone with 9530 where intel-lpss patch was not applied yet.
+
+> Instead I would prefer that we instead disable the loading of the 
+> firmware in this case.
+> Without loading firmware, the volume is much lower, but at least you 
+> still have audio.
+
+This indeed sounds like a better approach, I did not think of that. This
+should work much better for generic cases, but unfortunately, will still
+not prevent devices with _extremely_ slow SPI from badly affecting UX
+
+Taking into account the above, and unless driver being blocking on wake up
+can be resolved, perhaps it would makes sense to do both?
+a) Your suggestion - disable firmware loading if SPI speed is not in MHz
+range and
+b) Do not initialize device at all, if SPI speed is ridiculously low (like
+for example 3051 Hz)?
+
+I have tested on 9530 without firmware loading, with SPI speed set to
+50000Hz: it delays wake up by ~0.9-1 seconds. Subjectively, I think this is
+the maximum acceptable delay.
+
+> I have a patch to do that, which I was planning on pushing up 
+> (hopefully) today.
+
+Thanks for following up on this!
+
+> 
+> Thanks,
+> 
+> Stefan
+> 
+> >   		/*
+> >   		 * Manually set the Chip Select for the second amp <cs_gpio_index> in the node.
+> >   		 * This is only supported for systems with 2 amps, since we cannot expand the
+> > @@ -219,8 +232,6 @@ static int generic_dsd_config(struct cs35l41_hda *cs35l41, struct device *physde
+> >   		 * first.
+> >   		 */
+> >   		if (cfg->cs_gpio_index >= 0) {
+> > -			spi = to_spi_device(cs35l41->dev);
+> > -
+> >   			if (cfg->num_amps != 2) {
+> >   				dev_warn(cs35l41->dev,
+> >   					 "Cannot update SPI CS, Number of Amps (%d) != 2\n",
+
+FYI intel-lpss patch was submitted for review [1]. However, as it is in
+different tree, it cannot be guaranteed that it will be always applied
+when your patch for 9530 and other Dell devices will be applied, which is
+why I am insisting on safety guard against _extremely_ low SPI speeds.
+
+[1]: https://lore.kernel.org/all/20231220205621.8575-1-alex.vinarskis@gmail.com/
