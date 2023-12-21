@@ -4,123 +4,107 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D0E50C46CD2
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Jan 2024 18:53:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 008AFC46CD2
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Jan 2024 18:54:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 241E6ED0;
-	Tue,  2 Jan 2024 19:53:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 241E6ED0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0FFC6EE6;
+	Tue,  2 Jan 2024 19:54:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0FFC6EE6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1704221625;
-	bh=ZO1nbBDS/3XN5pif6mo49Br10pz4Q+TkOLhjb6LnLFE=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=riX7fkOXc1s/hr4pTmFV0ojpF2IvD7V/hLnFwgRBLGWoG+yO4IWIvZqf8RM4Pe6FW
-	 VmEr9A4mM1mKDoiKGcJrhjs0XQJ82KOZHB4o/gpTL3gPbzCqUyLhLJeWBSNQCQwWrC
-	 Yve8tB36XPlzMcfESE8OxPLsYPTT19bCSuXsUmmw=
+	s=default; t=1704221657;
+	bh=W7WluWnLd2+ye3nUeyJGSgdbLTM4HABDfTaUaDegwfc=;
+	h=References:In-Reply-To:From:Date:Subject:To:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=eis58HMVkNTM3lYCLcApvGRdQFp8Zj+/qneYyRc3xpQrJNdcso6HOy7lF06yAHkHl
+	 KJMWSZQpJRMiQCszjYdsAIDGgD/GxeA3RLQyQuyZWLKmDH2yugbQUwgYN+Yh2ZYzhH
+	 ov9Xg4d9JNOmXdYSkXLUHhyPAkEFXDqrHJO0bhPk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A8899F806C8; Tue,  2 Jan 2024 19:50:56 +0100 (CET)
+	id 58BB8F807A6; Tue,  2 Jan 2024 19:51:02 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B0759F806C5;
-	Tue,  2 Jan 2024 19:50:56 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5959CF808C5;
+	Tue,  2 Jan 2024 19:51:02 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 038FEF80425; Wed, 20 Dec 2023 08:39:08 +0100 (CET)
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com
- [IPv6:2a00:1450:4864:20::52e])
+	id A1148F80153; Thu, 21 Dec 2023 19:01:05 +0100 (CET)
+Received: from mail-ua1-x92e.google.com (mail-ua1-x92e.google.com
+ [IPv6:2607:f8b0:4864:20::92e])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id CB845F8016E
-	for <alsa-devel@alsa-project.org>; Wed, 20 Dec 2023 08:38:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CB845F8016E
+	by alsa1.perex.cz (Postfix) with ESMTPS id DB124F800BD
+	for <alsa-devel@alsa-project.org>; Thu, 21 Dec 2023 19:00:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DB124F800BD
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20230601 header.b=gA5rjwNq
-Received: by mail-ed1-x52e.google.com with SMTP id
- 4fb4d7f45d1cf-5532b45c286so4655267a12.0
+ header.s=20230601 header.b=Cvaa+WHx
+Received: by mail-ua1-x92e.google.com with SMTP id
+ a1e0cc1a2514c-7cc242dad2bso232820241.1
         for <alsa-devel@alsa-project.org>;
- Tue, 19 Dec 2023 23:38:13 -0800 (PST)
+ Thu, 21 Dec 2023 10:00:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703057891; x=1703662691;
+        d=gmail.com; s=20230601; t=1703181657; x=1703786457;
  darn=alsa-project.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gxdaR881KYWxnVjE5RFuD+xNEp0CWp7EUb3EZJFwG58=;
-        b=gA5rjwNqzmN2jStgK+60W1g9foEqTxvzsLRveMmYbH7cn5/ExkdHZcXCFljkOJo/bh
-         YQG5GFE45AdavWZ+QnOL+TJjiXCUnDjWBeocqWVqMZmk//Yf6PPtlBaWW8TmWUmDrSYY
-         pBbD7N3f8ILu9P/zQPjinDimNhWEgkptrj7h9e4CqUE2Ej2sLOr7uUSRfYURbL5suXz5
-         BR91p+XB5dptPVPHF0jEr0DgTxlvBSva9QWedaJrHrpp+Vp70LVGhdTbi5SBYxOQBK8k
-         r5+4BqAghRVrPuKrWsQlROIBDT+2DrWVssoFRKD1fqTk6Y9hNbYDV1Cg9E/yAJbjhluc
-         ILfg==
+        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=0zgqhz3gU0ngKgXXY84DKw25FNO497Ngp+gIFMzuC7w=;
+        b=Cvaa+WHx0c1A6MRlwW3nRiTF8/QGeF3CPrCjRlaFemyNVJwd4d1HTrYEpf4aVffVhh
+         KvgNXOqLAsgqgVdLMxwFOEadrfy2qBRkmhxLtd8jqiYSnvyrF/mkQol2VzF0R0z9wrbR
+         jeOf38ysmPqnyBsHJSX9OYSxVaCkN/WFTFAU4QIIx2NDubZ0AgVQ9c9pihas8dElZTyG
+         KBO2J844o52G8FImWZMNxU5QJO3P7gCnkqxqwvBjMglTYQeqAg+6osTY3/VQKz080M8q
+         ZIEnHdveoOKU0ofdfqXP8WzRVyEWu1vFth9pkSLzAVRKico7/sEHjNASN6vENg09yD75
+         Jl7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703057891; x=1703662691;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gxdaR881KYWxnVjE5RFuD+xNEp0CWp7EUb3EZJFwG58=;
-        b=f8HCxDbaWZG29PFwRW36/GWu/yghdAyW6NdK7AXQiEwY43NAzPAY2QzyT7xJmm8x1a
-         n4+F3pzald32SOsgmuR6HmHpx21I2NTzTkCkhWcWlVXiYYltm/3rBvsQDH7D4wgvYKeU
-         jXZhKgBBBRbzZDmH+3AiMDpNWu7Mho5BJBQhyuUX85wvVaeKheHGsHQqUvEnHqm+nZC0
-         aa3BtlVPgKl6btYnfhCQOXiyVS6U0sS4vAoht3fdtoyRdqiZzhtK9lMdtSkECgy1dh/z
-         osX+qwBySR64rB6eN1UBvw89rQP9o/mVkKbDt6ECzt5/ebFHpC8m7B5XlhodVdzru9Dq
-         xqeA==
-X-Gm-Message-State: AOJu0YzYrAosPOkCVtKJMNcdEiZaF5f7FWI1zkQzXACHH4nv98qaNCMg
-	VM1gFXsg2a928crAgPypMw==
+        d=1e100.net; s=20230601; t=1703181657; x=1703786457;
+        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=0zgqhz3gU0ngKgXXY84DKw25FNO497Ngp+gIFMzuC7w=;
+        b=lZuFEtf7SYt/1dIvwvFIStXHK7PIjRO2dceSW/QFfL+9op/s3lhANUIZ/JH0wO1s0B
+         Pnk1HKhsFfCM551cVPRNOimZ6z9FhiKDvK+gLQq7fqDkqPugwqc+za44XqSh3c9+v/S2
+         IFUCXOkFn4FV4Bqm4KTL3bnkR4ust82a9/XvbS/fAvnPpUvF6z+Nl5DPFiVqxp7NiWKb
+         mMaxJ1R4yHXI/3CtaBLvhXS5K3q1nVenNupnMEZg2KZ6rHcE8shjgsKbYMYPvgRbNV11
+         /0sXM9BZs1/n7oT4A9OIzYokq5Luq9NNBO7MbhF6Wg5uQUT4pTQs9JFxYLP8PYYJsnIf
+         3ceg==
+X-Gm-Message-State: AOJu0Yxy+RJg9dhXZ2dF3QeelF/GFs2svn7exj/T1b/sFpIuSoXp4C2e
+	SRbUL33M94ws5CGdwbAsyP0XYRF5pKOJMPKV5tVmrMHNaPE=
 X-Google-Smtp-Source: 
- AGHT+IF1+fG3lPptD5qJNeH9L9Yw2E+IRSt3K4z5bx6nfNUz4NixxmGTMGu3Eq9TuPiyNB8OraLeiw==
-X-Received: by 2002:a50:d71a:0:b0:553:99fb:ae47 with SMTP id
- t26-20020a50d71a000000b0055399fbae47mr526017edi.27.1703057891414;
-        Tue, 19 Dec 2023 23:38:11 -0800 (PST)
-Received: from alex-pc-ubuntu.lan (31-10-153-16.cgn.dynamic.upc.ch.
- [31.10.153.16])
-        by smtp.gmail.com with ESMTPSA id
- p7-20020a056402500700b0055283720ec3sm5979043eda.76.2023.12.19.23.38.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Dec 2023 23:38:11 -0800 (PST)
-From: Aleksandrs Vinarskis <alex.vinarskis@gmail.com>
-To: tiwai@suse.de
-Cc: alex.vinarskis@gmail.com,
-	alsa-devel@alsa-project.org,
-	david.rhodes@cirrus.com,
-	james.schulman@cirrus.com,
-	josbeir@gmail.com,
-	linux-kernel@vger.kernel.org,
-	patches@opensource.cirrus.com,
-	perex@perex.cz,
-	sbinding@opensource.cirrus.com,
-	stuarth@opensource.cirrus.com,
-	tiwai@suse.com
-Subject: [PATCH v2 1/2] ALSA: hda: cs35l41: Safety-guard against capped SPI
- speed
-Date: Wed, 20 Dec 2023 08:38:08 +0100
-Message-Id: <20231220073809.22027-2-alex.vinarskis@gmail.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20231220073809.22027-1-alex.vinarskis@gmail.com>
-References: <87ttokpyws.wl-tiwai@suse.de>
- <20231220073809.22027-1-alex.vinarskis@gmail.com>
+ AGHT+IFrLKY5Rq9Xe7zM7cDVOxKuiSFALGN9bj2aLyZ445I0C4VOAcm0c85ei4E+0WU3cNDoZqJF9VXUQdCdg+isBBA=
+X-Received: by 2002:a05:6122:221f:b0:4b7:1507:5c07 with SMTP id
+ bb31-20020a056122221f00b004b715075c07mr9585vkb.9.1703181657364; Thu, 21 Dec
+ 2023 10:00:57 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-MailFrom: alex.vinarskis@gmail.com
+References: 
+ <CAGTfBuhGbEXgSDfpwUoGo8wAV9Huh1nfN9o+j27hWG+85vzCkA@mail.gmail.com>
+In-Reply-To: 
+ <CAGTfBuhGbEXgSDfpwUoGo8wAV9Huh1nfN9o+j27hWG+85vzCkA@mail.gmail.com>
+From: R Guerra <xbox360liveteam21@gmail.com>
+Date: Thu, 21 Dec 2023 18:00:46 +0000
+Message-ID: 
+ <CAGTfBujLtpVXwOK1aiwuJBA+ZoazOv7uCey6P5trtigiCY4jUQ@mail.gmail.com>
+Subject: Re: Re: [PATCH] ALSA: hda/realtek: the bass speaker can't output
+ sound on Yoga 9i
+To: alsa-devel@alsa-project.org
+X-MailFrom: xbox360liveteam21@gmail.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: AA4XHMFHQWI7C3IW72NOPE7HVFDJPVXZ
-X-Message-ID-Hash: AA4XHMFHQWI7C3IW72NOPE7HVFDJPVXZ
-X-Mailman-Approved-At: Mon, 01 Jan 2024 13:16:44 +0000
+Message-ID-Hash: O5U4DPVHVX427KN4BS3TK4ETUBFHHWBS
+X-Message-ID-Hash: O5U4DPVHVX427KN4BS3TK4ETUBFHHWBS
+X-Mailman-Approved-At: Mon, 01 Jan 2024 13:18:25 +0000
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="UTF-8"
+X-Content-Filtered-By: Mailman/MimeDel 3.3.9
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AA4XHMFHQWI7C3IW72NOPE7HVFDJPVXZ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/O5U4DPVHVX427KN4BS3TK4ETUBFHHWBS/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -129,51 +113,4 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Some devices with intel-lpss based SPI controllers may have misconfigured
-clock divider due to firmware bug. This would result in capped SPI speeds,
-which leads to longer DSP firmware loading times.
-This safety guards against possible hangs during wake-up by not
-initializing the device if lpss was not patched/fixed UEFI was not
-installed
-
-Signed-off-by: Aleksandrs Vinarskis <alex.vinarskis@gmail.com>
----
- sound/pci/hda/cs35l41_hda_property.c | 15 +++++++++++++--
- 1 file changed, 13 insertions(+), 2 deletions(-)
-
-diff --git a/sound/pci/hda/cs35l41_hda_property.c b/sound/pci/hda/cs35l41_hda_property.c
-index c9eb70290973..cb305b093311 100644
---- a/sound/pci/hda/cs35l41_hda_property.c
-+++ b/sound/pci/hda/cs35l41_hda_property.c
-@@ -210,6 +210,19 @@ static int generic_dsd_config(struct cs35l41_hda *cs35l41, struct device *physde
- 
- 	if (cfg->bus == SPI) {
- 		cs35l41->index = id;
-+		/*
-+		 * Some devices with intel-lpss based SPI controllers may have misconfigured
-+		 * clock divider due to firmware bug. This would result in capped SPI speeds,
-+		 * which leads to longer DSP firmware loading times.
-+		 * Avoid initializing device if lpss was not patched/fixed UEFI was not installed
-+		 */
-+		spi = to_spi_device(cs35l41->dev);
-+		if (spi->max_speed_hz < CS35L41_SPI_MAX_FREQ/2) {
-+			dev_err(cs35l41->dev,
-+				"SPI's max_speed_hz is capped at %u Hz, will not continue to avoid hanging\n",
-+				spi->max_speed_hz);
-+			return -EINVAL;
-+		}
- 		/*
- 		 * Manually set the Chip Select for the second amp <cs_gpio_index> in the node.
- 		 * This is only supported for systems with 2 amps, since we cannot expand the
-@@ -219,8 +232,6 @@ static int generic_dsd_config(struct cs35l41_hda *cs35l41, struct device *physde
- 		 * first.
- 		 */
- 		if (cfg->cs_gpio_index >= 0) {
--			spi = to_spi_device(cs35l41->dev);
--
- 			if (cfg->num_amps != 2) {
- 				dev_warn(cs35l41->dev,
- 					 "Cannot update SPI CS, Number of Amps (%d) != 2\n",
--- 
-2.40.1
-
+QnR3LCBJ4oCZbSB1c2luZyBNYW5qYXJvLg0K
