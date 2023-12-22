@@ -4,107 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 008AFC46CD2
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Jan 2024 18:54:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BEC93C46CD2
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Jan 2024 18:54:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0FFC6EE6;
-	Tue,  2 Jan 2024 19:54:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0FFC6EE6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2BA0DF7A;
+	Tue,  2 Jan 2024 19:54:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2BA0DF7A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1704221657;
-	bh=W7WluWnLd2+ye3nUeyJGSgdbLTM4HABDfTaUaDegwfc=;
-	h=References:In-Reply-To:From:Date:Subject:To:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=eis58HMVkNTM3lYCLcApvGRdQFp8Zj+/qneYyRc3xpQrJNdcso6HOy7lF06yAHkHl
-	 KJMWSZQpJRMiQCszjYdsAIDGgD/GxeA3RLQyQuyZWLKmDH2yugbQUwgYN+Yh2ZYzhH
-	 ov9Xg4d9JNOmXdYSkXLUHhyPAkEFXDqrHJO0bhPk=
+	s=default; t=1704221669;
+	bh=HFFoqpYdrroEwD3fY9XFdGIeZoeU6TPFj90wnzGUses=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=hhJ/Sr5F/mMEen23VH+WhnSLeSvSbtjMedEGdRg6RGaNsV+4fcfJE5XE/UJ2ddau8
+	 oVqmIQEH58ZtClFVcSgNUTjk5eQ5FJ+JYH0dGyHE17F+7bfs8gQqnB/ZUSDbaNiYbG
+	 okkfqd4IArGfciFS6DRXB78P1PCZ5KXnJsD5n9js=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 58BB8F807A6; Tue,  2 Jan 2024 19:51:02 +0100 (CET)
+	id 4C45AF80845; Tue,  2 Jan 2024 19:51:05 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5959CF808C5;
-	Tue,  2 Jan 2024 19:51:02 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 27C90F80CC4;
+	Tue,  2 Jan 2024 19:51:05 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A1148F80153; Thu, 21 Dec 2023 19:01:05 +0100 (CET)
-Received: from mail-ua1-x92e.google.com (mail-ua1-x92e.google.com
- [IPv6:2607:f8b0:4864:20::92e])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 5FE3FF8016E; Fri, 22 Dec 2023 10:20:01 +0100 (CET)
+Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
+	(using TLSv1 with cipher ADH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id DB124F800BD
-	for <alsa-devel@alsa-project.org>; Thu, 21 Dec 2023 19:00:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DB124F800BD
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20230601 header.b=Cvaa+WHx
-Received: by mail-ua1-x92e.google.com with SMTP id
- a1e0cc1a2514c-7cc242dad2bso232820241.1
-        for <alsa-devel@alsa-project.org>;
- Thu, 21 Dec 2023 10:00:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703181657; x=1703786457;
- darn=alsa-project.org;
-        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=0zgqhz3gU0ngKgXXY84DKw25FNO497Ngp+gIFMzuC7w=;
-        b=Cvaa+WHx0c1A6MRlwW3nRiTF8/QGeF3CPrCjRlaFemyNVJwd4d1HTrYEpf4aVffVhh
-         KvgNXOqLAsgqgVdLMxwFOEadrfy2qBRkmhxLtd8jqiYSnvyrF/mkQol2VzF0R0z9wrbR
-         jeOf38ysmPqnyBsHJSX9OYSxVaCkN/WFTFAU4QIIx2NDubZ0AgVQ9c9pihas8dElZTyG
-         KBO2J844o52G8FImWZMNxU5QJO3P7gCnkqxqwvBjMglTYQeqAg+6osTY3/VQKz080M8q
-         ZIEnHdveoOKU0ofdfqXP8WzRVyEWu1vFth9pkSLzAVRKico7/sEHjNASN6vENg09yD75
-         Jl7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703181657; x=1703786457;
-        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0zgqhz3gU0ngKgXXY84DKw25FNO497Ngp+gIFMzuC7w=;
-        b=lZuFEtf7SYt/1dIvwvFIStXHK7PIjRO2dceSW/QFfL+9op/s3lhANUIZ/JH0wO1s0B
-         Pnk1HKhsFfCM551cVPRNOimZ6z9FhiKDvK+gLQq7fqDkqPugwqc+za44XqSh3c9+v/S2
-         IFUCXOkFn4FV4Bqm4KTL3bnkR4ust82a9/XvbS/fAvnPpUvF6z+Nl5DPFiVqxp7NiWKb
-         mMaxJ1R4yHXI/3CtaBLvhXS5K3q1nVenNupnMEZg2KZ6rHcE8shjgsKbYMYPvgRbNV11
-         /0sXM9BZs1/n7oT4A9OIzYokq5Luq9NNBO7MbhF6Wg5uQUT4pTQs9JFxYLP8PYYJsnIf
-         3ceg==
-X-Gm-Message-State: AOJu0Yxy+RJg9dhXZ2dF3QeelF/GFs2svn7exj/T1b/sFpIuSoXp4C2e
-	SRbUL33M94ws5CGdwbAsyP0XYRF5pKOJMPKV5tVmrMHNaPE=
-X-Google-Smtp-Source: 
- AGHT+IFrLKY5Rq9Xe7zM7cDVOxKuiSFALGN9bj2aLyZ445I0C4VOAcm0c85ei4E+0WU3cNDoZqJF9VXUQdCdg+isBBA=
-X-Received: by 2002:a05:6122:221f:b0:4b7:1507:5c07 with SMTP id
- bb31-20020a056122221f00b004b715075c07mr9585vkb.9.1703181657364; Thu, 21 Dec
- 2023 10:00:57 -0800 (PST)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 5E3A2F80124
+	for <alsa-devel@alsa-project.org>; Fri, 22 Dec 2023 10:19:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5E3A2F80124
+Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
+	by ex01.ufhost.com (Postfix) with ESMTP id 6A19C24E2E6;
+	Fri, 22 Dec 2023 17:19:40 +0800 (CST)
+Received: from EXMBX061.cuchost.com (172.16.6.61) by EXMBX165.cuchost.com
+ (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Fri, 22 Dec
+ 2023 17:19:40 +0800
+Received: from [192.168.125.131] (113.72.145.47) by EXMBX061.cuchost.com
+ (172.16.6.61) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Fri, 22 Dec
+ 2023 17:19:39 +0800
+Message-ID: <c94b377a-1e21-4361-ae82-ca84d1dce60a@starfivetech.com>
+Date: Fri, 22 Dec 2023 17:11:17 +0800
 MIME-Version: 1.0
-References: 
- <CAGTfBuhGbEXgSDfpwUoGo8wAV9Huh1nfN9o+j27hWG+85vzCkA@mail.gmail.com>
-In-Reply-To: 
- <CAGTfBuhGbEXgSDfpwUoGo8wAV9Huh1nfN9o+j27hWG+85vzCkA@mail.gmail.com>
-From: R Guerra <xbox360liveteam21@gmail.com>
-Date: Thu, 21 Dec 2023 18:00:46 +0000
-Message-ID: 
- <CAGTfBujLtpVXwOK1aiwuJBA+ZoazOv7uCey6P5trtigiCY4jUQ@mail.gmail.com>
-Subject: Re: Re: [PATCH] ALSA: hda/realtek: the bass speaker can't output
- sound on Yoga 9i
-To: alsa-devel@alsa-project.org
-X-MailFrom: xbox360liveteam21@gmail.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 2/2] ASoC: starfive: Add drivers of Cadence
+ Multi-Channel I2S Controller
+To: Mark Brown <broonie@kernel.org>
+CC: Liam Girdwood <lgirdwood@gmail.com>, Claudiu Beznea
+	<Claudiu.Beznea@microchip.com>, Jaroslav Kysela <perex@perex.cz>, "Takashi
+ Iwai" <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
+	<conor.dooley@microchip.com>, Walker Chen <walker.chen@starfivetech.com>,
+	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<alsa-devel@alsa-project.org>, <linux-sound@vger.kernel.org>
+References: <20231221033223.73201-1-xingyu.wu@starfivetech.com>
+ <20231221033223.73201-3-xingyu.wu@starfivetech.com>
+ <861f9b28-863d-48b0-8491-add4a286597e@sirena.org.uk>
+Content-Language: en-US
+From: Xingyu Wu <xingyu.wu@starfivetech.com>
+In-Reply-To: <861f9b28-863d-48b0-8491-add4a286597e@sirena.org.uk>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [113.72.145.47]
+X-ClientProxiedBy: EXCAS066.cuchost.com (172.16.6.26) To EXMBX061.cuchost.com
+ (172.16.6.61)
+X-YovoleRuleAgent: yovoleflag
+X-MailFrom: xingyu.wu@starfivetech.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: O5U4DPVHVX427KN4BS3TK4ETUBFHHWBS
-X-Message-ID-Hash: O5U4DPVHVX427KN4BS3TK4ETUBFHHWBS
+Message-ID-Hash: LSPW3H7DHEEBT3HHZVZQK4ZVZE6GNDSS
+X-Message-ID-Hash: LSPW3H7DHEEBT3HHZVZQK4ZVZE6GNDSS
 X-Mailman-Approved-At: Mon, 01 Jan 2024 13:18:25 +0000
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="UTF-8"
-X-Content-Filtered-By: Mailman/MimeDel 3.3.9
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/O5U4DPVHVX427KN4BS3TK4ETUBFHHWBS/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LSPW3H7DHEEBT3HHZVZQK4ZVZE6GNDSS/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -113,4 +94,20 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-QnR3LCBJ4oCZbSB1c2luZyBNYW5qYXJvLg0K
+On 2023/12/21 20:55, Mark Brown wrote:
+> On Thu, Dec 21, 2023 at 11:32:23AM +0800, Xingyu Wu wrote:
+> 
+>>  sound/soc/starfive/cdns-jh8100-i2s-pcm.c | 262 ++++++++
+>>  sound/soc/starfive/cdns-jh8100-i2s.c     | 727 +++++++++++++++++++++++
+>>  sound/soc/starfive/cdns-jh8100-i2s.h     | 171 ++++++
+> 
+> If this is a Cadence IP why is the entire driver SoC specific?
+
+This a new driver about this Cadence I2S controller. Should I create a new folder and file like this:
+
+sound/soc/cdns/cdns-i2s*
+
+and I use different compatible to support other SoC like JH8100?
+
+Best regards,
+Xingyu Wu
