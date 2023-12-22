@@ -4,122 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 04CDDC47073
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Jan 2024 18:55:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4FDB9C47073
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Jan 2024 18:55:36 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4DDFDEDF;
-	Tue,  2 Jan 2024 19:55:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4DDFDEDF
+	by alsa0.perex.cz (Postfix) with ESMTPS id AA1E61285;
+	Tue,  2 Jan 2024 19:55:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AA1E61285
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1704221720;
-	bh=6IL/idsjPpNrA/kDZh3Wf4QGHuJb8x57N1ifjiYZCC4=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=iRDmmo43P6ViHFBpG2ZXhp3jCJrY9QtjcQr9YoDIdZFbzPB0RmkfMDiStIztucgp5
-	 oua8kLLzCnMsS9Mzz4M/L8wur55OVcuEJpnJoLdiBIhbCY0apzvx6UMxvLVAlu19yv
-	 s1OndLKUt0SheLQm4yfNqFOuwro8QUDa8SUDa3Bg=
+	s=default; t=1704221734;
+	bh=tueOFQBgCD2B3oRGng+uqU8LtI6YztW4wWLZC0YK9eY=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=mclNKW+85JjDlwD0Te/rbhxO/EAyNLyOj6jvD64WnRe/QuoKLqM0Kf/GibAZCrsj0
+	 +xP28DAUzBi+xiAi6JLOmZ583Tb72MURUx8aEA5dEQJDFrY56QG1yNBXdhmcR19qrc
+	 UyHB13EIVy3gsITEo50JjWK3fvTbNUYnVkv0BMEA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D1AEEF80C58; Tue,  2 Jan 2024 19:51:00 +0100 (CET)
+	id C047DF80787; Tue,  2 Jan 2024 19:51:04 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7FC6EF8077D;
-	Tue,  2 Jan 2024 19:51:00 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 298F7F808CA;
+	Tue,  2 Jan 2024 19:51:04 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 71D0EF80153; Thu, 21 Dec 2023 12:24:45 +0100 (CET)
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com
- [IPv6:2a00:1450:4864:20::331])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	id 91D07F8016E; Fri, 22 Dec 2023 02:51:04 +0100 (CET)
+Received: from mx.dolansoft.org (s2.dolansoft.org [212.51.146.245])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C2976F800D2
-	for <alsa-devel@alsa-project.org>; Thu, 21 Dec 2023 12:24:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C2976F800D2
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6EA76F800D2
+	for <alsa-devel@alsa-project.org>; Fri, 22 Dec 2023 02:50:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6EA76F800D2
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20230601 header.b=XNWyehuN
-Received: by mail-wm1-x331.google.com with SMTP id
- 5b1f17b1804b1-40d3352b525so6869125e9.1
-        for <alsa-devel@alsa-project.org>;
- Thu, 21 Dec 2023 03:24:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703157876; x=1703762676;
- darn=alsa-project.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rGkZwIdmLi60ShwVAK7ggKym2AkjQZ0+N0ICnJdPIpA=;
-        b=XNWyehuNz3UnhJ0oigMRyCUleOft6VIiWYQjxz+DTANugFJJSIiVavS1e/q95NhsdA
-         x1StGCCOgl+cf7ZZyDbD7RZqQf57SR72+PVhzhQ5hNoULfHFjj6OpokF0ffPGkxPLS6L
-         CBZMHDU3+/DTN32d9o/j9pKqJ35P8vz8VMtPm7wcQUHYa0sHgyYdE1ygsuRKjh/sIsqf
-         39DJnnAQBPuO47dsPUBhvgVE4XN10/C9hVc36Fo03WJ/nlH+vGUFfk6JtQUi2bQg4i1m
-         200ejiN4zAcA3q4fGs90zXcX8Kh/kFNbJ41Cc9gOIJvWtqRcN5tLRUgIcqXAGsk7TVRp
-         Jt3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703157876; x=1703762676;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rGkZwIdmLi60ShwVAK7ggKym2AkjQZ0+N0ICnJdPIpA=;
-        b=pcmIziw4HruuJa7qysnv8Gr8IwJud6xTVFWId9ZhNduZ7Xtv3n0bb8NVniswhAcGzx
-         Xnt99HTbGGFLSe+SoAdOSxFn+MPwoqJrKm+srfI3QZu1eZRFdt0cdUWJVzhCmeEKK1KA
-         RwfBetGkrfWZJ5Co4im5mAcoIDMVicWk5C4NA7LXkI9oUAL3WGnaVHwcSzdTjU8Rgs8X
-         OcFXxbD8/56gpgzmn9dcoeptSQt9CKc6bNvhwcBsxlzm4q2ekE5EWiOLJ+0b1PMUJH4s
-         rwd0dfe/dlTrTeNX7IU8juWRmmd3ZoS3N1+ks2rRjiUax3MvGBzKcKoYvHAFf63UVXT8
-         WmrA==
-X-Gm-Message-State: AOJu0YzbInQ/Df29BwwVyhJWK83UAl8+Gwm5Lr9uUGyJCKejWjLgJrzl
-	2ouvUTd5lpkMGHd8qvwmfw==
-X-Google-Smtp-Source: 
- AGHT+IEY0zeOkEmWqxzOZOz9OMEjZ8EZ5dx8hGr56e2e8YMsAf+s1y30sszRmEvQ0vIVdg0Em94KmQ==
-X-Received: by 2002:a05:600c:4445:b0:40c:2d85:3a01 with SMTP id
- v5-20020a05600c444500b0040c2d853a01mr657257wmn.161.1703157876018;
-        Thu, 21 Dec 2023 03:24:36 -0800 (PST)
-Received: from alex-pc-ubuntu.lan (31-10-153-16.cgn.dynamic.upc.ch.
- [31.10.153.16])
-        by smtp.gmail.com with ESMTPSA id
- d24-20020adfa418000000b003368d3437d5sm111465wra.44.2023.12.21.03.24.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Dec 2023 03:24:35 -0800 (PST)
-From: Aleksandrs Vinarskis <alex.vinarskis@gmail.com>
-To: sbinding@opensource.cirrus.com
-Cc: alex.vinarskis@gmail.com,
-	alsa-devel@alsa-project.org,
-	david.rhodes@cirrus.com,
-	james.schulman@cirrus.com,
-	josbeir@gmail.com,
-	linux-kernel@vger.kernel.org,
+ unprotected) header.d=brun.one header.i=@brun.one header.a=rsa-sha256
+ header.s=s1 header.b=SHLaK32k
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=brun.one;
+	s=s1; h=MIME-Version:Message-ID:Date:Subject:Cc:To:From:In-Reply-To:
+	References:From:To:Subject:Date:Message-ID:Reply-To;
+	bh=zv1tp5EJGy8vjqEhUz2XKQPecD+fBNOlCqIMeS8hFok=; b=SHLaK32kHbJSEOFijM+QKWwfr4
+	vvCF7413TMy6VwWc8NJ/tysH9/b1oIBUKceoxwJs0JYD1OkB/0YzNr+OyOR6k+G1CilIA9ECH9o6L
+	v1/1j6z4fKXJGlArcSPEUrtbnWOen5eUJHhntYVMSU+dq9Qzem07Q2GtG4ncCnx9sjmDLgsY0nVFt
+	gUFPfgWNNRex7Sapzpu0vL9rqxVpHF8lOqREpfhKTfYfYvOhiJrL2Eqt2cgk5bjukoAd4YE2tkFPn
+	7wcQPuBbTCl4nt0FPKB2MtcGUZpbOSVOridCbqMLV6d0fcl17apvUXpbTTS/qmEikKI0QaSR5Vjzr
+	KczlPPeQ==;
+Received: from [212.51.153.89] (helo=blacklava.cluster.local)
+	by mx.dolansoft.org with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96.2)
+	(envelope-from <lorenz@dolansoft.org>)
+	id 1rGUgc-000urd-0M;
+	Fri, 22 Dec 2023 01:50:50 +0000
+From: Lorenz Brun <lorenz@brun.one>
+To: Stefan Binding <sbinding@opensource.cirrus.com>,
+	James Schulman <james.schulman@cirrus.com>,
+	David Rhodes <david.rhodes@cirrus.com>,
+	Richard Fitzgerald <rf@opensource.cirrus.com>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org,
 	patches@opensource.cirrus.com,
-	perex@perex.cz,
-	stuarth@opensource.cirrus.com,
-	tiwai@suse.com,
-	tiwai@suse.de
-Subject: Re: [PATCH v2 1/2] ALSA: hda: cs35l41: Safety-guard against capped
- SPI speed
-Date: Thu, 21 Dec 2023 12:24:34 +0100
-Message-Id: <20231221112434.13730-1-alex.vinarskis@gmail.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <8170413d-07a8-4e77-b43d-78cd9e4ea76f@opensource.cirrus.com>
-References: <8170413d-07a8-4e77-b43d-78cd9e4ea76f@opensource.cirrus.com>
+	linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] ALSA: hda: cs35l41: Add HP override
+Date: Fri, 22 Dec 2023 02:50:39 +0100
+Message-ID: <20231222015040.3024898-1-lorenz@brun.one>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-MailFrom: alex.vinarskis@gmail.com
+Sender: lorenz@dolansoft.org
+X-MailFrom: lorenz@brun.one
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: QUDK45L4H6VYEDGXZOLZM6CCER27PAJE
-X-Message-ID-Hash: QUDK45L4H6VYEDGXZOLZM6CCER27PAJE
-X-Mailman-Approved-At: Mon, 01 Jan 2024 13:17:35 +0000
+Message-ID-Hash: WOUYCJVEGZFWP3CR3Y4IEYKI5ZQXULR2
+X-Message-ID-Hash: WOUYCJVEGZFWP3CR3Y4IEYKI5ZQXULR2
+X-Mailman-Approved-At: Mon, 01 Jan 2024 13:18:25 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QUDK45L4H6VYEDGXZOLZM6CCER27PAJE/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WOUYCJVEGZFWP3CR3Y4IEYKI5ZQXULR2/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -128,78 +94,102 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Sorry for incorrect expression and confusion, it is indeed not the driver
-that hangs. What I meant is that _computer_ "hangs" on wake up from
-suspend. Unlike boot, where driver does not delay boot process, on wake up
-from suspend it seems it does - after lid was opened/power button pressed,
-with firmware loading taking ~180seconds in total, computer still has
-black screen and is irresponsive for said duration, which is completely
-unacceptable.
+This adds an override for a series of notebooks using a common config
+taken from HP's proprietary Windows driver (csaudioext).
 
-I do not have enough expertise in particular area, but it sounds very weird
-to me that audio driver is delaying system wake up process at first place.
-Was this intentional? I would assume/guess most correct solution would be
-for driver to run non-blocking, like it does on boot, but again, I am not
-too familiar with the subject.
+This has been tested on a HP 15-ey0xxxx device (subsystem 103C8A31)
+together with another Realtek quirk and the calibration files from the
+proprietary driver.
 
-> (~80s per amp) to load the firmware.
+Signed-off-by: Lorenz Brun <lorenz@brun.one>
+---
+ sound/pci/hda/cs35l41_hda_property.c | 59 ++++++++++++++++++++++++++++
+ 1 file changed, 59 insertions(+)
 
-Besides firmware loading, there are general initialization/communication
-taking place as well. I have disabled firmware loading to try: at a speed
-of 3051Hz, it takes ~16 seconds on boot (non blocking, so not a big deal)
-and ~7-8 seconds on wake up from suspend (blocking, so it is still not
-acceptable).
+diff --git a/sound/pci/hda/cs35l41_hda_property.c b/sound/pci/hda/cs35l41_hda_property.c
+index c83328971728..8135ea532a94 100644
+--- a/sound/pci/hda/cs35l41_hda_property.c
++++ b/sound/pci/hda/cs35l41_hda_property.c
+@@ -6,6 +6,7 @@
+ //
+ // Author: Stefan Binding <sbinding@opensource.cirrus.com>
+ 
++#include <linux/acpi.h>
+ #include <linux/gpio/consumer.h>
+ #include <linux/string.h>
+ #include "cs35l41_hda_property.h"
+@@ -81,6 +82,42 @@ static int hp_vision_acpi_fix(struct cs35l41_hda *cs35l41, struct device *physde
+ 	return 0;
+ }
+ 
++/*
++ * HP 2-channel I2C configuration with internal boost (4.1A inductor current) with no _DSD,
++ * reset GPIO can still be extracted from ACPI by index. Covers HP configurations 251, 252,
++ * 253, 254, 351, 352 and 353 in the proprietary driver (csaudioext).
++ */
++static int hp_i2c_2ch_vbst_ipk41(struct cs35l41_hda *cs35l41, struct device *physdev, int id,
++			      const char *hid)
++{
++	// In case a valid _DSD exists, use that instead of the override. This stops applying
++	// the override in case HP ever fixes their firmware.
++	if (device_property_count_u32(physdev, "cirrus,dev-index") > 0)
++		return -ENOENT;
++
++	struct cs35l41_hw_cfg *hw_cfg = &cs35l41->hw_cfg;
++
++	cs35l41->index = id == 0x40 ? 0 : 1;
++	cs35l41->channel_index = 0;
++	// Get reset GPIO (shared for both instances) from ACPI GpioIo at index 0.
++	cs35l41->reset_gpio = gpiod_get_index(physdev, NULL, 0, GPIOD_OUT_HIGH);
++	// Speaker ID GPIO is ACPI GpioIo index 1.
++	cs35l41->speaker_id = cs35l41_get_speaker_id(physdev, 0, 0, 1);
++
++	hw_cfg->spk_pos = cs35l41->index ? 1 : 0; // left:right
++	hw_cfg->gpio1.func = CS35L41_NOT_USED;
++	hw_cfg->gpio1.valid = true;
++	hw_cfg->gpio2.func = CS35L41_INTERRUPT;
++	hw_cfg->gpio2.valid = true;
++	hw_cfg->bst_type = CS35L41_INT_BOOST;
++	hw_cfg->bst_ind = 1000;
++	hw_cfg->bst_ipk = 4100;
++	hw_cfg->bst_cap = 10; // Exact value unknown, maps into correct range
++	hw_cfg->valid = true;
++
++	return 0;
++}
++
+ struct cs35l41_prop_model {
+ 	const char *hid;
+ 	const char *ssid;
+@@ -92,6 +129,28 @@ static const struct cs35l41_prop_model cs35l41_prop_model_table[] = {
+ 	{ "CLSA0100", NULL, lenovo_legion_no_acpi },
+ 	{ "CLSA0101", NULL, lenovo_legion_no_acpi },
+ 	{ "CSC3551", "103C89C6", hp_vision_acpi_fix },
++	{ "CSC3551", "103C8A28", hp_i2c_2ch_vbst_ipk41 },
++	{ "CSC3551", "103C8A29", hp_i2c_2ch_vbst_ipk41 },
++	{ "CSC3551", "103C8A2A", hp_i2c_2ch_vbst_ipk41 },
++	{ "CSC3551", "103C8A2B", hp_i2c_2ch_vbst_ipk41 },
++	{ "CSC3551", "103C8A2C", hp_i2c_2ch_vbst_ipk41 },
++	{ "CSC3551", "103C8A2D", hp_i2c_2ch_vbst_ipk41 },
++	{ "CSC3551", "103C8A2E", hp_i2c_2ch_vbst_ipk41 },
++	{ "CSC3551", "103C8A30", hp_i2c_2ch_vbst_ipk41 },
++	{ "CSC3551", "103C8A31", hp_i2c_2ch_vbst_ipk41 },
++	{ "CSC3551", "103C8BB3", hp_i2c_2ch_vbst_ipk41 },
++	{ "CSC3551", "103C8BB4", hp_i2c_2ch_vbst_ipk41 },
++	{ "CSC3551", "103C8BDF", hp_i2c_2ch_vbst_ipk41 },
++	{ "CSC3551", "103C8BE0", hp_i2c_2ch_vbst_ipk41 },
++	{ "CSC3551", "103C8BE1", hp_i2c_2ch_vbst_ipk41 },
++	{ "CSC3551", "103C8BE2", hp_i2c_2ch_vbst_ipk41 },
++	{ "CSC3551", "103C8BE9", hp_i2c_2ch_vbst_ipk41 },
++	{ "CSC3551", "103C8BDD", hp_i2c_2ch_vbst_ipk41 },
++	{ "CSC3551", "103C8BDE", hp_i2c_2ch_vbst_ipk41 },
++	{ "CSC3551", "103C8BE3", hp_i2c_2ch_vbst_ipk41 },
++	{ "CSC3551", "103C8BE5", hp_i2c_2ch_vbst_ipk41 },
++	{ "CSC3551", "103C8BE6", hp_i2c_2ch_vbst_ipk41 },
++	{ "CSC3551", "103C8B3A", hp_i2c_2ch_vbst_ipk41 },
+ 	{}
+ };
+ 
+-- 
+2.42.0
 
-I am myself extremely exited to get support for 9530 in upstream, but I am
-just afraid that such a big wake up delay is a huge hit on a end user, and
-would affect everyone with 9530 where intel-lpss patch was not applied yet.
-
-> Instead I would prefer that we instead disable the loading of the 
-> firmware in this case.
-> Without loading firmware, the volume is much lower, but at least you 
-> still have audio.
-
-This indeed sounds like a better approach, I did not think of that. This
-should work much better for generic cases, but unfortunately, will still
-not prevent devices with _extremely_ slow SPI from badly affecting UX
-
-Taking into account the above, and unless driver being blocking on wake up
-can be resolved, perhaps it would makes sense to do both?
-a) Your suggestion - disable firmware loading if SPI speed is not in MHz
-range and
-b) Do not initialize device at all, if SPI speed is ridiculously low (like
-for example 3051 Hz)?
-
-I have tested on 9530 without firmware loading, with SPI speed set to
-50000Hz: it delays wake up by ~0.9-1 seconds. Subjectively, I think this is
-the maximum acceptable delay.
-
-> I have a patch to do that, which I was planning on pushing up 
-> (hopefully) today.
-
-Thanks for following up on this!
-
-> 
-> Thanks,
-> 
-> Stefan
-> 
-> >   		/*
-> >   		 * Manually set the Chip Select for the second amp <cs_gpio_index> in the node.
-> >   		 * This is only supported for systems with 2 amps, since we cannot expand the
-> > @@ -219,8 +232,6 @@ static int generic_dsd_config(struct cs35l41_hda *cs35l41, struct device *physde
-> >   		 * first.
-> >   		 */
-> >   		if (cfg->cs_gpio_index >= 0) {
-> > -			spi = to_spi_device(cs35l41->dev);
-> > -
-> >   			if (cfg->num_amps != 2) {
-> >   				dev_warn(cs35l41->dev,
-> >   					 "Cannot update SPI CS, Number of Amps (%d) != 2\n",
-
-FYI intel-lpss patch was submitted for review [1]. However, as it is in
-different tree, it cannot be guaranteed that it will be always applied
-when your patch for 9530 and other Dell devices will be applied, which is
-why I am insisting on safety guard against _extremely_ low SPI speeds.
-
-[1]: https://lore.kernel.org/all/20231220205621.8575-1-alex.vinarskis@gmail.com/
