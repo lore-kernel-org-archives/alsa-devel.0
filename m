@@ -4,68 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CF924C47074
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Jan 2024 18:56:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 010A9C46CD2
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Jan 2024 18:56:44 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9FB15FCB;
-	Tue,  2 Jan 2024 19:56:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9FB15FCB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 031D514FC;
+	Tue,  2 Jan 2024 19:56:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 031D514FC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1704221799;
-	bh=aNHG+3Rg310j3tyqCxmCNGKsKxUy8R8S47O0UX6UTrQ=;
+	s=default; t=1704221803;
+	bh=98rqhpvvpAdoD5ltfnOBcruSc6olCfUeDazjYtkR658=;
 	h=Date:Subject:To:CC:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=ZRhU46Q3NfGDXm6EwqIr6iYrBmH1VQxMm3WwXNqpg5TZ8V0g2lu33pD7NzQiNM7f/
-	 7k7u6yF/TLQ3CzvrmczfUDp0OnnDjQfETMkihpBkOdIN6v9c9OOeLkBu12v/BrVt3G
-	 3UQ5dyz//q/G3fKhg2k9i/Q1q6TNoFFLU9TfZCPI=
+	b=V5tpBa6q8Zjlzqz48fuzw/4usgqPUEZCiWXxG47yuoGX7QEhSZUvXdJG4I+92nug2
+	 1euebr/gLfPwgqsLhcXC6AWvLqSef054qfqXjl7tn43h5+zMLDTQS/0aUgGwd/ivj4
+	 XNbn+GijhR/5eKGFJkF5B25MFJ2ltR+65K8j+EDE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 791E9F896CC; Tue,  2 Jan 2024 19:51:07 +0100 (CET)
+	id 914CAF897D5; Tue,  2 Jan 2024 19:51:10 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0360EF8962D;
-	Tue,  2 Jan 2024 19:51:07 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1855AF89759;
+	Tue,  2 Jan 2024 19:51:10 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 725FCF8016E; Fri, 22 Dec 2023 11:04:42 +0100 (CET)
-Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
+	id 73F7CF8016E; Fri, 22 Dec 2023 10:53:35 +0100 (CET)
+Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com
+ [61.152.239.71])
 	(using TLSv1 with cipher ADH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 33ABBF800D2
-	for <alsa-devel@alsa-project.org>; Fri, 22 Dec 2023 11:04:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 33ABBF800D2
+	by alsa1.perex.cz (Postfix) with ESMTPS id 94CB1F800D2
+	for <alsa-devel@alsa-project.org>; Fri, 22 Dec 2023 10:53:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 94CB1F800D2
 Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
 	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
 	(Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
-	by ex01.ufhost.com (Postfix) with ESMTP id 69C3B24E2E1;
-	Fri, 22 Dec 2023 18:04:30 +0800 (CST)
+	by fd01.gateway.ufhost.com (Postfix) with ESMTP id 1A6627FDC;
+	Fri, 22 Dec 2023 17:53:12 +0800 (CST)
 Received: from EXMBX061.cuchost.com (172.16.6.61) by EXMBX165.cuchost.com
  (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Fri, 22 Dec
- 2023 18:04:30 +0800
+ 2023 17:53:11 +0800
 Received: from [192.168.125.131] (113.72.145.47) by EXMBX061.cuchost.com
  (172.16.6.61) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Fri, 22 Dec
- 2023 18:04:29 +0800
-Message-ID: <20c29117-2e4c-49c6-a90f-27ec507914ff@starfivetech.com>
-Date: Fri, 22 Dec 2023 17:56:07 +0800
+ 2023 17:53:11 +0800
+Message-ID: <ed66f0bb-69c7-4b00-9688-05a5102212e9@starfivetech.com>
+Date: Fri, 22 Dec 2023 17:44:48 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH v1 1/2] dt-bindings: ASoC: Add Cadence I2S controller for
  StarFive JH8100 SoC
 Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Liam Girdwood
-	<lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Claudiu Beznea
-	<Claudiu.Beznea@microchip.com>, Jaroslav Kysela <perex@perex.cz>, "Takashi
- Iwai" <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
+To: Conor Dooley <conor@kernel.org>
+CC: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+	Claudiu Beznea <Claudiu.Beznea@microchip.com>, Jaroslav Kysela
+	<perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Rob Herring
+	<robh+dt@kernel.org>, Krzysztof Kozlowski
 	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
-	<conor.dooley@microchip.com>
-CC: Walker Chen <walker.chen@starfivetech.com>, <devicetree@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <alsa-devel@alsa-project.org>,
-	<linux-sound@vger.kernel.org>
+	<conor.dooley@microchip.com>, Walker Chen <walker.chen@starfivetech.com>,
+	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<alsa-devel@alsa-project.org>, <linux-sound@vger.kernel.org>
 References: <20231221033223.73201-1-xingyu.wu@starfivetech.com>
  <20231221033223.73201-2-xingyu.wu@starfivetech.com>
- <2e74c513-40de-41b7-ba86-c5b345344ce4@linaro.org>
+ <20231221-saddlebag-tricolor-d02a17d66795@spud>
 From: Xingyu Wu <xingyu.wu@starfivetech.com>
-In-Reply-To: <2e74c513-40de-41b7-ba86-c5b345344ce4@linaro.org>
+In-Reply-To: <20231221-saddlebag-tricolor-d02a17d66795@spud>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
 X-Originating-IP: [113.72.145.47]
@@ -78,15 +79,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: JT7OFON6RCGVL3GFGQFN6DJ5TNEZRCH6
-X-Message-ID-Hash: JT7OFON6RCGVL3GFGQFN6DJ5TNEZRCH6
+Message-ID-Hash: QPZJOY43N6AEJCQY73KZIYY573CYIKHW
+X-Message-ID-Hash: QPZJOY43N6AEJCQY73KZIYY573CYIKHW
 X-Mailman-Approved-At: Mon, 01 Jan 2024 13:18:25 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JT7OFON6RCGVL3GFGQFN6DJ5TNEZRCH6/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QPZJOY43N6AEJCQY73KZIYY573CYIKHW/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -95,8 +96,96 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 2023/12/22 0:07, Krzysztof Kozlowski wrote:
-> On 21/12/2023 04:32, Xingyu Wu wrote:
+On 2023/12/21 21:53, Conor Dooley wrote:
+> Xingyu, Mark,
+> 
+> On Thu, Dec 21, 2023 at 11:32:22AM +0800, Xingyu Wu wrote:
+>> Add bindings for the Multi-Channel I2S controller of Cadence
+>> on the StarFive JH8100 SoC.
+>> 
+>> Signed-off-by: Xingyu Wu <xingyu.wu@starfivetech.com>
+>> ---
+>>  .../bindings/sound/cdns,jh8100-i2s.yaml       | 100 ++++++++++++++++++
+>>  1 file changed, 100 insertions(+)
+>>  create mode 100644 Documentation/devicetree/bindings/sound/cdns,jh8100-i2s.yaml
+>> 
+>> diff --git a/Documentation/devicetree/bindings/sound/cdns,jh8100-i2s.yaml b/Documentation/devicetree/bindings/sound/cdns,jh8100-i2s.yaml
+>> new file mode 100644
+>> index 000000000000..5d95d9ab3e45
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/sound/cdns,jh8100-i2s.yaml
+>> @@ -0,0 +1,100 @@
+>> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/sound/cdns,jh8100-i2s.yaml#
+> 
+> Filename matching the compatible please.
+
+Noted.
+
+> 
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: Cadence multi-channel I2S controller for StarFive JH8100 SoC
+>> +
+>> +description: |
+> 
+> You only need the | if there is formatting to preserve.
+
+Will drop.
+
+> 
+>> +  The Cadence I2S Controller implements a function of the multi-channel
+>> +  (up to 8-channel) bus. It combines functions of a transmitter and a receiver.
+>> +  It is used in the StarFive JH8100 SoC.
+>> +
+>> +maintainers:
+>> +  - Xingyu Wu <xingyu.wu@starfivetech.com>
+>> +  - Walker Chen <walker.chen@starfivetech.com>
+>> +
+>> +properties:
+>> +  compatible:
+>> +    const: starfive,jh8100-i2s
+>> +
+>> +  reg:
+>> +    maxItems: 1
+>> +
+>> +  interrupts:
+>> +    description: |
+>> +      The interrupt line number for the I2S controller. Add this
+>> +      parameter if the I2S controller that you are using does not
+>> +      support DMA.
+> 
+> You've got one i2s controller here, you should know if it supports DMA
+> or not.
+
+The I2S already supports interrupt handler, but if the SoC supports DMA controller to be use, it can optionally use DMA.
+
+> 
+>> +    maxItems: 1
+>> +
+>> +  clocks:
+>> +    items:
+>> +      - description: Bit clock
+>> +      - description: Main ICG clock
+>> +      - description: Inner master clock
+>> +
+>> +  clock-names:
+>> +    items:
+>> +      - const: bclk
+>> +      - const: icg
+>> +      - const: mclk_inner
+>> +
+>> +  resets:
+>> +    maxItems: 1
+>> +
+>> +  dmas:
+>> +    items:
+>> +      - description: TX DMA Channel
+>> +      - description: RX DMA Channel
+>> +    minItems: 1
+>> +
 >> +  dma-names:
 >> +    items:
 >> +      - const: tx
@@ -104,19 +193,34 @@ On 2023/12/22 0:07, Krzysztof Kozlowski wrote:
 >> +    minItems: 1
 >> +
 >> +  cdns,i2s-max-channels:
-> 
-> Custom properties after generic, so after sound-dai-cells. The coding
-> style now mentions this.
-> 
-
-Noted.
-
-> 
 >> +    description: |
 >> +      Number of I2S max stereo channels supported by the hardware.
 >> +    $ref: /schemas/types.yaml#/definitions/uint32
 >> +    minimum: 1
 >> +    maximum: 8
+> 
+> Mark, is there no common property for this kind of thing? That said,
+> there's one device here so the number is known at present.
+> Another note, this property is not required, so it should have a
+> default.
+> 
+> It's kinda hard to know with this binding - it is touted as being for a
+> particular Cadence IP, and some aspects are pretty generic, but at the
+> same time there's only one device here so it's hard to tell what is
+> variable between implementations and what is not.
+> Are there no other implementations of this controller? Unless it is
+> brand new, I find that hard to believe.
+> 
+> Cheers,
+> Conor.
+> 
+ 
+Sorry, It does not seem to be common property. The Cadence I2S supports 8 channels. There are four I2S controllers on the JH8100 SoC, and two of them just provide 4 channels to use, one of them just provide 2 channels.
+It seems to depend on the SoC.
+
+Thanks,
+Xingyu Wu
+
 >> +
 >> +  "#sound-dai-cells":
 >> +    const: 0
@@ -136,18 +240,25 @@ Noted.
 >> +      - interrupts
 >> +
 >> +unevaluatedProperties: false
-> 
-> This is not correct without allOf: which should point you to missing
-> $ref to dai-common.
-
-Will fix.
-
-> 
-> 
-> Best regards,
-> Krzysztof
-> 
-
-Thanks,
-Xingyu Wu
+>> +
+>> +examples:
+>> +  - |
+>> +    i2s@122b0000 {
+>> +      compatible = "starfive,jh8100-i2s";
+>> +      reg = <0x122b0000 0x1000>;
+>> +      clocks = <&syscrg_ne 133>,
+>> +               <&syscrg_ne 170>,
+>> +               <&syscrg 50>;
+>> +      clock-names = "bclk", "icg",
+>> +                    "mclk_inner";
+>> +      resets = <&syscrg_ne 43>;
+>> +      dmas = <&dma 7>, <&dma 6>;
+>> +      dma-names = "tx", "rx";
+>> +      cdns,i2s-max-channels = <2>;
+>> +      #sound-dai-cells = <0>;
+>> +    };
+>> -- 
+>> 2.25.1
+>> 
+>> 
 
