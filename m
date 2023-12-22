@@ -4,95 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6504FC46CD2
-	for <alsa-devel@archiver.kernel.org>; Fri, 22 Dec 2023 21:35:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6F3DAC46CD2
+	for <alsa-devel@archiver.kernel.org>; Fri, 22 Dec 2023 22:52:08 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 38093A4E;
-	Fri, 22 Dec 2023 22:35:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 38093A4E
+	by alsa0.perex.cz (Postfix) with ESMTPS id A6E10DFA;
+	Fri, 22 Dec 2023 23:51:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A6E10DFA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1703280936;
-	bh=dpqNdfS4ahJoafXVsQek4DZnUBoFniH8a9Xe1zk0FlM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1703285525;
+	bh=oNyOtJmRK/PlWo4BKGbaCJgMzouADPvq3uSryPTzQhI=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=d8OoURkmChkcNf+MItcxafcT6lcY8aiQfxz045mrJxjliQi3oNGzZU2sLUb4I+X9h
-	 BMk4okIGmbEAEkj7ReT28/nniFDpMikDGUvgLEAY4NSzM9KZM5vorJ16m2yAh/VTHL
-	 cNIInarjVOdRcx8Kp2/JwO/eoRSTTwIMD25oEUQo=
+	b=VeiC6t4o03tPfFVlX9xy3pCZnvX/iJ6aqSboSrbeQ6acan9o2+lfpVP1qy+tlEHMa
+	 KCsrBLwZ41exzIJqM+eA55MQHeuexuNJ2vmGoPIB+AZV0TjEBOQSxzv8d/BCiYQ8sb
+	 bNRCWsL3+tgXu1+GWBxl6h2KixK/95bu400dM2Cc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 286C8F80578; Fri, 22 Dec 2023 22:34:58 +0100 (CET)
+	id 486D3F8055A; Fri, 22 Dec 2023 23:51:29 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id AB505F80587;
-	Fri, 22 Dec 2023 22:34:58 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8868BF8057B;
+	Fri, 22 Dec 2023 23:51:28 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 399AAF8016E; Fri, 22 Dec 2023 22:34:52 +0100 (CET)
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 8FFDFF8016E; Fri, 22 Dec 2023 23:51:23 +0100 (CET)
+Received: from metis.whiteo.stw.pengutronix.de
+ (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
+ server-digest SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C6EF2F800F5
-	for <alsa-devel@alsa-project.org>; Fri, 22 Dec 2023 22:34:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C6EF2F800F5
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=A2j7/Gmh
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703280883; x=1734816883;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=dpqNdfS4ahJoafXVsQek4DZnUBoFniH8a9Xe1zk0FlM=;
-  b=A2j7/GmhGB6BrckwR2LTAt/BIRowaxu5lUyA2clXUgWG200PnTBhSuJJ
-   es5ZhLNXdMvgaI9lKfhjW744L+Ozquw9m3hpbs3h7QKoQvdnBZLaKydv2
-   ssKOSdXkCIy4LLpWozG1eJYaWy46NRxZ1Qgr6H6xlP0LnOKRDlam+q4SW
-   GeN1Scp7LSW0sr6iu/x076lHsM6D7MQBiNU3M1zdUFbfcIY0Es15zsxdI
-   RgQ6dXOYR9hsuYC6QIj5+uKRMAluGHadD1WVT32amX8wdJxCVzi4GX4dx
-   r7C/vy2qsjhgSmYC4rHbVZ9zWxSvvkV3F9wovK3w8crgGUrX2puEYB5NL
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10932"; a="395052349"
-X-IronPort-AV: E=Sophos;i="6.04,297,1695711600";
-   d="scan'208";a="395052349"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 22 Dec 2023 13:34:36 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10932"; a="895566717"
-X-IronPort-AV: E=Sophos;i="6.04,297,1695711600";
-   d="scan'208";a="895566717"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga002.fm.intel.com with ESMTP; 22 Dec 2023 13:34:33 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rGn9p-0009tc-1J;
-	Fri, 22 Dec 2023 21:34:16 +0000
-Date: Sat, 23 Dec 2023 05:32:31 +0800
-From: kernel test robot <lkp@intel.com>
-To: Xingyu Wu <xingyu.wu@starfivetech.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Claudiu Beznea <Claudiu.Beznea@microchip.com>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzk@kernel.org>,
-	Conor Dooley <conor.dooley@microchip.com>
-Cc: oe-kbuild-all@lists.linux.dev,
-	Walker Chen <walker.chen@starfivetech.com>,
-	Xingyu Wu <xingyu.wu@starfivetech.com>, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
-	linux-sound@vger.kernel.org
-Subject: Re: [PATCH v1 2/2] ASoC: starfive: Add drivers of Cadence
- Multi-Channel I2S Controller
-Message-ID: <202312230525.gch9VlZT-lkp@intel.com>
-References: <20231221033223.73201-3-xingyu.wu@starfivetech.com>
+	by alsa1.perex.cz (Postfix) with ESMTPS id 85198F80124
+	for <alsa-devel@alsa-project.org>; Fri, 22 Dec 2023 23:51:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 85198F80124
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps
+ (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rGoML-0005bm-T8; Fri, 22 Dec 2023 23:51:13 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls
+ TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rGoMK-000qvD-D7; Fri, 22 Dec 2023 23:51:13 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rGoML-000FfO-1L;
+	Fri, 22 Dec 2023 23:51:13 +0100
+From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: Charles Keepax <ckeepax@opensource.cirrus.com>,
+	Richard Fitzgerald <rf@opensource.cirrus.com>,
+	alsa-devel@alsa-project.org,
+	patches@opensource.cirrus.com,
+	linux-kernel@vger.kernel.org,
+	kernel@pengutronix.de
+Subject: [PATCH 06/13] irqchip/madera: Convert to platform remove callback
+ returning void
+Date: Fri, 22 Dec 2023 23:50:37 +0100
+Message-ID: 
+ <64c2f79760c53f29651e7126418c407ff699317d.1703284359.git.u.kleine-koenig@pengutronix.de>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <cover.1703284359.git.u.kleine-koenig@pengutronix.de>
+References: <cover.1703284359.git.u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231221033223.73201-3-xingyu.wu@starfivetech.com>
-Message-ID-Hash: QEJRRJUKNQDZK3MK2FAJLAELRKQR75MJ
-X-Message-ID-Hash: QEJRRJUKNQDZK3MK2FAJLAELRKQR75MJ
-X-MailFrom: lkp@intel.com
+Content-Type: text/plain; charset=UTF-8
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1755;
+ i=u.kleine-koenig@pengutronix.de; h=from:subject:message-id;
+ bh=oNyOtJmRK/PlWo4BKGbaCJgMzouADPvq3uSryPTzQhI=;
+ b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlhhK9Y8lRVhNFkK9eJWWYKEZRt6Vy9FJ7h2sj6
+ VryWfbz2laJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZYYSvQAKCRCPgPtYfRL+
+ TngFCACHKhMzBPTBKVocA6VfvDGmuukvynuqR9RfEljwyjneu/L12qaidTDwjPFQtNSEm6HZUBa
+ K7ywfUFIwGDqS1YVFVeBCOV8jGXoZQ1+LY1U/MmzIzFuLOaUIu8bU2Rtqzq4dKUaXpuQFQ4XgN/
+ zHN+B6RKZtpT46Rivq79vpIoz+ujbj3zvTwiti73wKa72M9tvxC8H0l0UV1oqbQtq8wqtMMTNru
+ aZL67AYTcfqSmIXXkOi0XtADOuwcMMChC1mY4F/J7L2+ro3Wf8NrGMpdohxtssProziTgnyhXrJ
+ LUKLwQ6vOC4EWnqbFzHzpsKePslWuOr8y1HurRhaWAvl7i9V
+X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp;
+ fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de);
+ SAEximRunCond expanded to false
+X-PTX-Original-Recipient: alsa-devel@alsa-project.org
+Message-ID-Hash: 2XTNERJJ6RVNCKKWKEVHZQZYNPAIDI3M
+X-Message-ID-Hash: 2XTNERJJ6RVNCKKWKEVHZQZYNPAIDI3M
+X-MailFrom: ukl@pengutronix.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -104,7 +103,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QEJRRJUKNQDZK3MK2FAJLAELRKQR75MJ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2XTNERJJ6RVNCKKWKEVHZQZYNPAIDI3M/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -113,47 +112,52 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi Xingyu,
+The .remove() callback for a platform driver returns an int which makes
+many driver authors wrongly assume it's possible to do error handling by
+returning an error code. However the value returned is ignored (apart
+from emitting a warning) and this typically results in resource leaks.
 
-kernel test robot noticed the following build warnings:
+To improve here there is a quest to make the remove callback return
+void. In the first step of this quest all drivers are converted to
+.remove_new(), which already returns void. Eventually after all drivers
+are converted, .remove_new() will be renamed to .remove().
 
-[auto build test WARNING on broonie-sound/for-next]
-[also build test WARNING on robh/for-next linus/master v6.7-rc6 next-20231222]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Trivially convert this driver from always returning zero in the remove
+callback to the void returning variant.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Xingyu-Wu/dt-bindings-ASoC-Add-Cadence-I2S-controller-for-StarFive-JH8100-SoC/20231222-172628
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-patch link:    https://lore.kernel.org/r/20231221033223.73201-3-xingyu.wu%40starfivetech.com
-patch subject: [PATCH v1 2/2] ASoC: starfive: Add drivers of Cadence Multi-Channel I2S Controller
-config: parisc-allyesconfig (https://download.01.org/0day-ci/archive/20231223/202312230525.gch9VlZT-lkp@intel.com/config)
-compiler: hppa-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231223/202312230525.gch9VlZT-lkp@intel.com/reproduce)
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+---
+ drivers/irqchip/irq-madera.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312230525.gch9VlZT-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> sound/soc/starfive/cdns-jh8100-i2s.c:519:12: warning: 'cdns_jh8100_i2s_runtime_resume' defined but not used [-Wunused-function]
-     519 | static int cdns_jh8100_i2s_runtime_resume(struct device *dev)
-         |            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-vim +/cdns_jh8100_i2s_runtime_resume +519 sound/soc/starfive/cdns-jh8100-i2s.c
-
-   518	
- > 519	static int cdns_jh8100_i2s_runtime_resume(struct device *dev)
-   520	{
-   521		struct cdns_jh8100_i2s_dev *i2s = dev_get_drvdata(dev);
-   522	
-   523		return clk_prepare_enable(i2s->clks[1].clk); /* ICG clock */
-   524	}
-   525	
-
+diff --git a/drivers/irqchip/irq-madera.c b/drivers/irqchip/irq-madera.c
+index 3eb1f8cdf674..b424c0a327f7 100644
+--- a/drivers/irqchip/irq-madera.c
++++ b/drivers/irqchip/irq-madera.c
+@@ -222,7 +222,7 @@ static int madera_irq_probe(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static int madera_irq_remove(struct platform_device *pdev)
++static void madera_irq_remove(struct platform_device *pdev)
+ {
+ 	struct madera *madera = dev_get_drvdata(pdev->dev.parent);
+ 
+@@ -232,13 +232,11 @@ static int madera_irq_remove(struct platform_device *pdev)
+ 	 */
+ 	madera->irq_dev = NULL;
+ 	regmap_del_irq_chip(madera->irq, madera->irq_data);
+-
+-	return 0;
+ }
+ 
+ static struct platform_driver madera_irq_driver = {
+ 	.probe	= &madera_irq_probe,
+-	.remove = &madera_irq_remove,
++	.remove_new = madera_irq_remove,
+ 	.driver = {
+ 		.name	= "madera-irq",
+ 		.pm	= &madera_irq_pm_ops,
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.42.0
+
