@@ -4,68 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2D3A7C46CD3
-	for <alsa-devel@archiver.kernel.org>; Sun, 24 Dec 2023 19:32:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DBFDEC46CD2
+	for <alsa-devel@archiver.kernel.org>; Sun, 24 Dec 2023 19:32:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0678CEC5;
-	Sun, 24 Dec 2023 20:32:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0678CEC5
+	by alsa0.perex.cz (Postfix) with ESMTPS id B8207EC8;
+	Sun, 24 Dec 2023 20:32:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B8207EC8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1703446358;
-	bh=3ER0xOvAhOw7UYm2k/9bUohO2rq9toqIhr0E69S5vrs=;
+	s=default; t=1703446373;
+	bh=mPWiWUUY/BQ6xboADMfC6smArbGekVriurLq81uef7g=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=LqlufvxGIAAViXz0WO74S4Up7efxmKGjh9VOlUKW60/fvnWvBkL+QflUIoUYCQi/g
-	 oe5qkJCRIZOHHUa5dIQeSmhhV1lS7N0yT/iMz8hx4kqy1q6ESV5gjUsvuDyMvAtml/
-	 8aoVXp79eyKwrEtzJLoOlbCBFrd8dyCCDVhSziTM=
+	b=qMJtJb5F2VJjDII1aOkwD25PS8pl0LlGyMIL8eJzSF+o4tNP/R/ILMcwu8pVB8frs
+	 mhdp/CeuEx074j7ayYxNw8ZEssk6GFYPAtW625/eu3gVfq/7p+QFLi892DuD2mEF9Z
+	 9mduy7QvbluoCf/XNTFI3Lmc37FadV8UsZ8gSRxY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1FBB5F80605; Sun, 24 Dec 2023 20:31:54 +0100 (CET)
+	id 7063FF805CA; Sun, 24 Dec 2023 20:32:07 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 90FADF80600;
-	Sun, 24 Dec 2023 20:31:54 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2EC0EF805C0;
+	Sun, 24 Dec 2023 20:32:07 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 966AEF805E8; Sun, 24 Dec 2023 20:31:49 +0100 (CET)
+	id 9C6E3F80578; Sun, 24 Dec 2023 20:32:00 +0100 (CET)
 Received: from m.b4.vu (m.b4.vu [203.16.231.148])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D2806F8015B
-	for <alsa-devel@alsa-project.org>; Sun, 24 Dec 2023 20:30:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D2806F8015B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 7CAC1F805FB
+	for <alsa-devel@alsa-project.org>; Sun, 24 Dec 2023 20:30:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7CAC1F805FB
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=b4.vu header.i=@b4.vu header.a=rsa-sha256 header.s=m1
- header.b=uqDln1Hk
+ header.b=DYaDltya
 Received: by m.b4.vu (Postfix, from userid 1000)
-	id 30575604B9CB; Mon, 25 Dec 2023 06:00:29 +1030 (ACDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 m.b4.vu 30575604B9CB
+	id E88A7604B9CB; Mon, 25 Dec 2023 06:00:38 +1030 (ACDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 m.b4.vu E88A7604B9CB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=b4.vu; s=m1;
-	t=1703446229; bh=BpM0d/U+/XXah+AUVCKPlhYL60EcBOcx8sRcwlr1kRc=;
+	t=1703446238; bh=IM3v0Nv1z9Ik6nKAZ+Y0zaINdNmwxjzDUhSISUBT0o0=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=uqDln1HkmWWH+11Sxda2WScABOtTqm0ycNN3wMffpXxjbbjuNNDJdHbBFDDnSkhAJ
-	 aZ2k88NKoGdgQtxbzMgK8d8+WntsyisZDFTe5CdaY8eiISi4IbBowz9qLokhgpoT7c
-	 h5V4x2eD7oFRkYKlt3lj2dGbRYYZi0WL9/x4yXVEF3lVbJAUpdTHcodYh/Ea9u1hGk
-	 vuA+Cpca3CXrx1K27uHc5n00nqea857kojIOUbJACem7LxVr2Ct1wKVKtj4fFSF1Id
-	 kpHZn/mV11Yu57YURjEtxrQEOysnUcuPA7AjTPMvDhzUG6xxftH2QeVGOBS2n/692v
-	 oI3DYrGahWcdQ==
-Date: Mon, 25 Dec 2023 06:00:29 +1030
+	b=DYaDltya3y3+Qp63XpsUmHiT5jwjsWAw615Ufx3Fs5srYqbhk0rzwcni+tTqZhhwg
+	 RtQ4Ok2vmtn2rfku3zjNLOAzRzG7/X4sJ8tVDMCyhUWa1GroEELkcTOVwjOrqnqqit
+	 7M/yl0f2Zx2GfnxA5aZhjCkyWi0I4WCnc8czb32sMWXb+O6V7ekIFMeaY/YCWBpMZT
+	 b19F/f36DcvGE/EfvDAEkayYmncbczTeSHBYIB4pnWaxD9Ok3jcTvFIozyMFexVnb+
+	 +5GZVHbm8KFFzmMvpdroKlsl9YhEeYvgZW7ahenVk3bEz2Gqjfk5oaICC4sys/BE2r
+	 7EkfHckYqwYfw==
+Date: Mon, 25 Dec 2023 06:00:38 +1030
 From: "Geoffrey D. Bennett" <g@b4.vu>
 To: Takashi Iwai <tiwai@suse.de>
 Cc: Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
 	linux-sound@vger.kernel.org
-Subject: [PATCH 20/23] ALSA: scarlett2: Add #define for SCARLETT2_MIX_MAX
-Message-ID: <83cec5ccd75f0db2bd061a76d31a7023d26300c1.1703444932.git.g@b4.vu>
+Subject: [PATCH 21/23] ALSA: scarlett2: Rename db_scale_scarlett2_gain to
+ volume
+Message-ID: <d544ec7cc5d5a849da104a5a78b17f61f50657c1.1703444932.git.g@b4.vu>
 References: <cover.1703444932.git.g@b4.vu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <cover.1703444932.git.g@b4.vu>
-Message-ID-Hash: JNDGPRWHFZE5HNAZR6FQ2J5UAWOJKRLX
-X-Message-ID-Hash: JNDGPRWHFZE5HNAZR6FQ2J5UAWOJKRLX
+Message-ID-Hash: SJZY6VJG4ON2KI6NPQE3IMX57VJ6567H
+X-Message-ID-Hash: SJZY6VJG4ON2KI6NPQE3IMX57VJ6567H
 X-MailFrom: g@b4.vu
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -78,7 +79,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JNDGPRWHFZE5HNAZR6FQ2J5UAWOJKRLX/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SJZY6VJG4ON2KI6NPQE3IMX57VJ6567H/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -87,37 +88,46 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add a #define for SCARLETT2_MIX_MAX (max of mixer inputs * outputs) as
-that will be used again soon.
+db_scale_scarlett2_gain is the TLV for the output volume controls.
+Gen 4 has software-controllable input gain controls, so rename this to
+db_scale_scarlett2_volume so we can use that name for the inputs.
 
 Signed-off-by: Geoffrey D. Bennett <g@b4.vu>
 ---
- sound/usb/mixer_scarlett2.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ sound/usb/mixer_scarlett2.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/sound/usb/mixer_scarlett2.c b/sound/usb/mixer_scarlett2.c
-index efe95a25998b..186d6d04381c 100644
+index 186d6d04381c..a9bbad29ad4f 100644
 --- a/sound/usb/mixer_scarlett2.c
 +++ b/sound/usb/mixer_scarlett2.c
-@@ -208,6 +208,9 @@ static const u16 scarlett2_mixer_values[SCARLETT2_MIXER_VALUE_COUNT] = {
- /* Maximum number of outputs from the mixer */
- #define SCARLETT2_OUTPUT_MIX_MAX 12
+@@ -2417,7 +2417,7 @@ static int scarlett2_volume_ctl_put(struct snd_kcontrol *kctl,
+ }
  
-+/* Maximum number of mixer gain controls */
-+#define SCARLETT2_MIX_MAX (SCARLETT2_INPUT_MIX_MAX * SCARLETT2_OUTPUT_MIX_MAX)
-+
- /* Maximum size of the data in the USB mux assignment message:
-  * 20 inputs, 20 outputs, 25 matrix inputs, 12 spare
-  */
-@@ -719,7 +722,7 @@ struct scarlett2_data {
- 	struct snd_kcontrol *speaker_switching_ctl;
- 	struct snd_kcontrol *talkback_ctl;
- 	u8 mux[SCARLETT2_MUX_MAX];
--	u8 mix[SCARLETT2_INPUT_MIX_MAX * SCARLETT2_OUTPUT_MIX_MAX];
-+	u8 mix[SCARLETT2_MIX_MAX];
+ static const DECLARE_TLV_DB_MINMAX(
+-	db_scale_scarlett2_gain, -SCARLETT2_VOLUME_BIAS * 100, 0
++	db_scale_scarlett2_volume, -SCARLETT2_VOLUME_BIAS * 100, 0
+ );
+ 
+ static const struct snd_kcontrol_new scarlett2_master_volume_ctl = {
+@@ -2428,7 +2428,7 @@ static const struct snd_kcontrol_new scarlett2_master_volume_ctl = {
+ 	.info = scarlett2_volume_ctl_info,
+ 	.get  = scarlett2_master_volume_ctl_get,
+ 	.private_value = 0, /* max value */
+-	.tlv = { .p = db_scale_scarlett2_gain }
++	.tlv = { .p = db_scale_scarlett2_volume }
  };
  
- /*** Model-specific data ***/
+ static const struct snd_kcontrol_new scarlett2_line_out_volume_ctl = {
+@@ -2440,7 +2440,7 @@ static const struct snd_kcontrol_new scarlett2_line_out_volume_ctl = {
+ 	.get  = scarlett2_volume_ctl_get,
+ 	.put  = scarlett2_volume_ctl_put,
+ 	.private_value = 0, /* max value */
+-	.tlv = { .p = db_scale_scarlett2_gain }
++	.tlv = { .p = db_scale_scarlett2_volume }
+ };
+ 
+ /*** Mute Switch Controls ***/
 -- 
 2.43.0
 
