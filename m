@@ -4,76 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5C6D9C47074
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Jan 2024 19:09:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3DDB5C46CD2
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Jan 2024 19:10:02 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6D783EA6;
-	Tue,  2 Jan 2024 20:09:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6D783EA6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 236D2E9D;
+	Tue,  2 Jan 2024 20:09:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 236D2E9D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1704222572;
-	bh=GeOldI5c7/t6muoCGTMnLmytEPBPfHAMzSMSDSCAFO4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=aGObpHDwm3QUNxth5MvLWqiZwYsQ5jWoYNUDv/1bZssq738QGoMeUfnMRSkQzpRFg
-	 XZCeAxbrelC43OymtJ4xuiuE5LTwBJL3s5afQUwFBNDypr6B0jrjkVX/kybkOZcJDk
-	 xDruyQaTHtmP5rk1mubKJb7XTo+7MKgg9PvyZiu0=
+	s=default; t=1704222600;
+	bh=b4JkRx9IW/2Mqis6Wxs8UBnV3+psqONjdD8/WLplL4o=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=idFnpX19gbG8zmCtItCBRYxtAOc+SJ6xLf48OT/gimQ06Jnk5XZbtk7cprksovzmk
+	 OU+AdBHdbYsU9TjJ69m00kcb40EqQZR81hIHLXSTUywrw4Om8DiAQ6klu0vnaJHw4K
+	 H1ZvKl2KcVNGkmSt04/EgoZLU9BhMAovx0tHci30=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2A836F806F5; Tue,  2 Jan 2024 20:07:03 +0100 (CET)
+	id 0B5AEF805BF; Tue,  2 Jan 2024 20:07:52 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 30248F806D5;
-	Tue,  2 Jan 2024 20:07:02 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 74027F805B2;
+	Tue,  2 Jan 2024 20:07:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E29C6F80424; Tue,  2 Jan 2024 20:04:35 +0100 (CET)
-Received: from isilmar-4.linta.de (isilmar-4.linta.de [136.243.71.142])
+	id DCDA3F8057D; Tue,  2 Jan 2024 20:07:47 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 3A240F80051
-	for <alsa-devel@alsa-project.org>; Tue,  2 Jan 2024 20:04:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3A240F80051
-X-isilmar-external: YES
-X-isilmar-external: YES
-X-isilmar-external: YES
-X-isilmar-external: YES
-X-isilmar-external: YES
-X-isilmar-external: YES
-X-isilmar-external: YES
-X-isilmar-external: YES
-X-isilmar-external: YES
-X-isilmar-external: YES
-X-isilmar-external: YES
-X-isilmar-external: YES
-X-isilmar-external: YES
-Received: from shine.dominikbrodowski.net (shine.brodo.linta [10.2.0.112])
-	by isilmar-4.linta.de (Postfix) with ESMTPSA id 5CD412002DB;
-	Sat, 30 Dec 2023 07:27:53 +0000 (UTC)
-Received: by shine.dominikbrodowski.net (Postfix, from userid 1000)
-	id 1B011A0083; Sat, 30 Dec 2023 08:27:43 +0100 (CET)
-Date: Sat, 30 Dec 2023 08:27:43 +0100
-From: Dominik Brodowski <linux@dominikbrodowski.net>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: peter.ujfalusi@linux.intel.com, lgirdwood@gmail.com, broonie@kernel.org,
-	perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
-	linux-sound@vger.kernel.org, pierre-louis.bossart@linux.intel.com,
-	kai.vehmanen@linux.intel.com, ranjani.sridharan@linux.intel.com,
-	linux-kernel@vger.kernel.org, regressions@lists.linux.dev
-Subject: Re: Oops in hdac_hda_dev_probe (6.7-rc7)
-Message-ID: <ZY_Gb8-rncuOjRq-@shine.dominikbrodowski.net>
-References: <ZYvUIxtrqBQZbNlC@shine.dominikbrodowski.net>
- <87sf3lxiet.wl-tiwai@suse.de>
- <ZY7kosArPqhlCfOA@shine.dominikbrodowski.net>
- <874jg1x7ao.wl-tiwai@suse.de>
+	by alsa1.perex.cz (Postfix) with ESMTPS id 1C07AF8055A
+	for <alsa-devel@alsa-project.org>; Tue,  2 Jan 2024 20:07:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1C07AF8055A
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=qbs7vhMY
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id D56A0611B0;
+	Fri, 29 Dec 2023 16:58:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0B1FC433C7;
+	Fri, 29 Dec 2023 16:58:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703869101;
+	bh=b4JkRx9IW/2Mqis6Wxs8UBnV3+psqONjdD8/WLplL4o=;
+	h=From:To:In-Reply-To:References:Subject:Date:From;
+	b=qbs7vhMYcMb4ICsZXu39XriMqUaLOaVs4Lk/yGM4iXMzitHergVz/QOBScC8ykPv8
+	 j9yb2b8Re7LqgxUgcSCdzPm2fR9HO87QOB6LuPXRMbOmcocqJH4sfwM6KvjKsexTmP
+	 S0LqOlAtTh1USnt0kCcyzCka/EnFb/jhes7tXkPXftd8ruQtaPj1dxU6ND346Dnu1C
+	 kp58fT/d63Xk6D/owpnFxB78dV/8y76W/+6qTs/6KCkqQbiPIHCNh1EfHBYrhHwhZ9
+	 P29VMADrlu9B3W6t4/ONRs0aoTlrtMguEz1IZHeNzK8P/+apm71kiy85Xwmux2zxiz
+	 cZrBO7XNHHNCQ==
+From: Mark Brown <broonie@kernel.org>
+To: shengjiu.wang@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
+ nicoleotsuka@gmail.com, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org, linux-sound@vger.kernel.org,
+ Chancel Liu <chancel.liu@nxp.com>
+In-Reply-To: <20231225080608.967953-1-chancel.liu@nxp.com>
+References: <20231225080608.967953-1-chancel.liu@nxp.com>
+Subject: Re: [PATCH] ASoC: fsl_rpmsg: Fix error handler with
+ pm_runtime_enable
+Message-Id: <170386909836.3001741.632329944524813915.b4-ty@kernel.org>
+Date: Fri, 29 Dec 2023 16:58:18 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <874jg1x7ao.wl-tiwai@suse.de>
-Message-ID-Hash: T4VTFS4V7BBSYRK5GWXUXFXGKHFMIZXT
-X-Message-ID-Hash: T4VTFS4V7BBSYRK5GWXUXFXGKHFMIZXT
-X-MailFrom: linux@dominikbrodowski.net
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-0438c
+Message-ID-Hash: GFCDVC7L46ETNISZ4TKZGEKJSTEVSO2Z
+X-Message-ID-Hash: GFCDVC7L46ETNISZ4TKZGEKJSTEVSO2Z
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -85,7 +86,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/T4VTFS4V7BBSYRK5GWXUXFXGKHFMIZXT/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GFCDVC7L46ETNISZ4TKZGEKJSTEVSO2Z/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -94,52 +95,41 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Am Fri, Dec 29, 2023 at 06:11:43PM +0100 schrieb Takashi Iwai:
-> On Fri, 29 Dec 2023 16:24:18 +0100,
-> Dominik Brodowski wrote:
-> > 
-> > Hi Takashi,
-> > 
-> > many thanks for your response. Your patch helps half-way: the oops goes
-> > away, but so does the sound... With your patch, the decisive lines in dmesg
-> > are:
-> > 
-> > 	sof-audio-pci-intel-tgl 0000:00:1f.3: Firmware info: version 2:2:0-57864
-> > 	sof-audio-pci-intel-tgl 0000:00:1f.3: Firmware: ABI 3:22:1 Kernel ABI 3:23:0
-> > 	sof_sdw sof_sdw: ASoC: CODEC DAI intel-hdmi-hifi1 not registered
-> > 	sof_sdw sof_sdw: snd_soc_register_card failed -517
-> > 	sof_sdw sof_sdw: ASoC: CODEC DAI intel-hdmi-hifi1 not registered
-> > 	sof_sdw sof_sdw: snd_soc_register_card failed -517
-> > 	platform sof_sdw: deferred probe pending
-> > 
-> > With a revert of the a0575b4add21, it is:
-> > 
-> > 	sof-audio-pci-intel-tgl 0000:00:1f.3: Firmware info: version 2:2:0-57864
-> > 	sof-audio-pci-intel-tgl 0000:00:1f.3: Firmware: ABI 3:22:1 Kernel ABI 3:23:0
-> > 	sof-audio-pci-intel-tgl 0000:00:1f.3: Topology: ABI 3:22:1 Kernel ABI 3:23:0
-> > 	sof_sdw sof_sdw: ASoC: Parent card not yet available, widget card binding deferred
-> > 	sof_sdw sof_sdw: hda_dsp_hdmi_build_controls: no PCM in topology for HDMI converter 3
-> > 	input: sof-soundwire HDMI/DP,pcm=5 as /devices/pci0000:00/0000:00:1f.3/sof_sdw/sound/card0/input14
-> > 	input: sof-soundwire HDMI/DP,pcm=6 as /devices/pci0000:00/0000:00:1f.3/sof_sdw/sound/card0/input15
-> > 	input: sof-soundwire HDMI/DP,pcm=7 as /devices/pci0000:00/0000:00:1f.3/sof_sdw/sound/card0/input16
-> > 
-> > Maybe this helps a bit further?
+On Mon, 25 Dec 2023 17:06:08 +0900, Chancel Liu wrote:
+> There is error message when defer probe happens:
 > 
-> Thanks for quick testing.
-> It shows at least that my guess wasn't wrong.
+> fsl_rpmsg rpmsg_audio: Unbalanced pm_runtime_enable!
 > 
-> The problem could be the initialization order in the caller side.
-> Can the patch below work instead?
+> Fix the error handler with pm_runtime_enable.
+> 
+> 
+> [...]
 
-Unfortunately, no:
+Applied to
 
-sof-audio-pci-intel-tgl 0000:00:1f.3: Firmware info: version 2:2:0-57864
-sof-audio-pci-intel-tgl 0000:00:1f.3: Firmware: ABI 3:22:1 Kernel ABI 3:23:0
-sof_sdw sof_sdw: ASoC: CODEC DAI intel-hdmi-hifi1 not registered
-sof_sdw sof_sdw: snd_soc_register_card failed -517
-sof_sdw sof_sdw: ASoC: CODEC DAI intel-hdmi-hifi1 not registered
-sof_sdw sof_sdw: snd_soc_register_card failed -517
-platform sof_sdw: deferred probe pending
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-Thanks,	
-	Dominik
+Thanks!
+
+[1/1] ASoC: fsl_rpmsg: Fix error handler with pm_runtime_enable
+      commit: f9d378fc68c43fd41b35133edec9cd902ec334ec
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
