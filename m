@@ -4,70 +4,139 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6C862C46CD2
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Jan 2024 19:10:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 23ECBC47073
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Jan 2024 19:10:36 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CDB0AED0;
-	Tue,  2 Jan 2024 20:10:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CDB0AED0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4F14EEB2;
+	Tue,  2 Jan 2024 20:10:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4F14EEB2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1704222618;
-	bh=zOf5lk7dCVyjEmn/S2QwvaQXTaq5j1ZU+ucwJN1cjpc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1704222634;
+	bh=Vt0sMFYlRjioUQDDDkS52n6W8+vhZ6C6zvpG4SfLsqc=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=cyeIU1/PeWNxOSf1JiCEnH9iBuWc1StEjDidI9w6wGR2KW6VHIJIfpKGv3pBAowvx
-	 wqA+Ve3b3F3vrYQE36f7p0JCNoCThO2V1oSfTQ+0XaDUCbpBPxqqnyXmUM4VXVlQNe
-	 X88pEH8Zti0VaYTKM3pqhZ8M4hTv7TSxM2Nh6ovY=
+	b=vgfTEcbaPcdHsO1RpYD5X//he/wSq+jc5yOBSgP/Y1iVF4CEDWHAjScOrswetE0cQ
+	 EPqUkbSbvPat1gFyb0Z4YbPQ41G+y2udi1sdeX/9PVodl9bbO3mOQFO1ETPMm9YPy4
+	 AcQHZDNRhnN29utmctE3OCZm+PfLzChF2c1TygTs=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E4272F805E3; Tue,  2 Jan 2024 20:08:25 +0100 (CET)
+	id C713BF805A8; Tue,  2 Jan 2024 20:10:05 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6C32EF805E0;
-	Tue,  2 Jan 2024 20:08:25 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E03EBF805AF;
+	Tue,  2 Jan 2024 20:10:04 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 53AE4F80563; Tue,  2 Jan 2024 20:08:21 +0100 (CET)
-Received: from m.b4.vu (m.b4.vu [203.16.231.148])
+	id 7EFFFF80557; Tue,  2 Jan 2024 20:09:58 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 2D64BF80533
-	for <alsa-devel@alsa-project.org>; Tue,  2 Jan 2024 20:08:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2D64BF80533
+	by alsa1.perex.cz (Postfix) with ESMTPS id 63149F80424
+	for <alsa-devel@alsa-project.org>; Tue,  2 Jan 2024 20:09:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 63149F80424
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=b4.vu header.i=@b4.vu header.a=rsa-sha256 header.s=m1
- header.b=SexFa7bw
-Received: by m.b4.vu (Postfix, from userid 1000)
-	id C93AE604B1D5; Fri, 29 Dec 2023 22:49:23 +1030 (ACDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 m.b4.vu C93AE604B1D5
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=b4.vu; s=m1;
-	t=1703852363; bh=IIDtS5l87RhlwRGtBY+MgB8DAuPPeQdYVYvLBSsHLQ0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=SexFa7bwY2CSr7mStLVjqshxFa/gxAC0bPEYZ99n3LIS3azs0ziUTM9Eqlzofti+C
-	 4bnQzDt7/AkOMAd3Iwp3JV6d+s3uVSPPJzaKfZJqasCc92GHzb+bZQHT6/ZqGCCLrh
-	 vbuhItZLD0thPwO3bHbT8zSW2zSV+os7tBu7e8pgymk6zmNT/IKvpY0S5oaTJj6QQ5
-	 jsyk6/2kHPSm2JRR/B5kHogPuMWDbhHCdgxw9zA07wRlGgBG3wLchRZkjmLNUCqSvN
-	 Wf4QEXSfsJHk+zDaKghusSZBj3HaNB8z+n+3c2ZeADrUSa7GU9he/u8BlPfukUOZRk
-	 CfexN4WRtqtpw==
-Date: Fri, 29 Dec 2023 22:49:23 +1030
-From: "Geoffrey D. Bennett" <g@b4.vu>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=zmvZh4Xa;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=ljqqFpOV;
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.a=rsa-sha256 header.s=susede2_rsa header.b=zmvZh4Xa;
+	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=ljqqFpOV
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 256A31F7B9;
+	Fri, 29 Dec 2023 14:40:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1703860827;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6ZFrIyrsoyE1a1N5hjjoD7plvaNI6lZtgk7Kb37Nqo4=;
+	b=zmvZh4XaX2DLKbXzLwT8XIheI4SWr0E31f7rRjjsG780Gkcay9y98JSXhn3oIYSu25YeXi
+	yxWXWhjqEqS7cC2BQrXPGXemo+PMJeqZ6wmDlyxgNiDiXJFHpBKMhbW5bb9B/vK/554kY6
+	//hGZSJM/NGQtbRHxBHQaOLkjdDf3fA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1703860827;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6ZFrIyrsoyE1a1N5hjjoD7plvaNI6lZtgk7Kb37Nqo4=;
+	b=ljqqFpOVCTXivfG+hIyFJhVTd9cKko9hyoMyrirnNgrOysu4mNRC8PPrNzedgXfADJ4DKv
+	A/I31v76z35LOMAA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1703860827;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6ZFrIyrsoyE1a1N5hjjoD7plvaNI6lZtgk7Kb37Nqo4=;
+	b=zmvZh4XaX2DLKbXzLwT8XIheI4SWr0E31f7rRjjsG780Gkcay9y98JSXhn3oIYSu25YeXi
+	yxWXWhjqEqS7cC2BQrXPGXemo+PMJeqZ6wmDlyxgNiDiXJFHpBKMhbW5bb9B/vK/554kY6
+	//hGZSJM/NGQtbRHxBHQaOLkjdDf3fA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1703860827;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6ZFrIyrsoyE1a1N5hjjoD7plvaNI6lZtgk7Kb37Nqo4=;
+	b=ljqqFpOVCTXivfG+hIyFJhVTd9cKko9hyoMyrirnNgrOysu4mNRC8PPrNzedgXfADJ4DKv
+	A/I31v76z35LOMAA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EF7EA133E5;
+	Fri, 29 Dec 2023 14:40:26 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id LgQGOVrajmVgfAAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Fri, 29 Dec 2023 14:40:26 +0000
+Date: Fri, 29 Dec 2023 15:40:26 +0100
+Message-ID: <87il4hxeat.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: "Geoffrey D. Bennett" <g@b4.vu>
+Cc: Takashi Iwai <tiwai@suse.com>,
+	alsa-devel@alsa-project.org,
 	linux-sound@vger.kernel.org
-Subject: [PATCH v2 11/11] ALSA: scarlett2: Add support for uploading new
- firmware
-Message-ID: <ZY65S0ojShSNSeRQ@m.b4.vu>
-References: <e295050a79057ee8b7bc555a65e295691abd1ede.1703001053.git.g@b4.vu>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e295050a79057ee8b7bc555a65e295691abd1ede.1703001053.git.g@b4.vu>
-Message-ID-Hash: QE7TFZ2CSLU7CNIPCIB3SRA2RBOTVIYJ
-X-Message-ID-Hash: QE7TFZ2CSLU7CNIPCIB3SRA2RBOTVIYJ
-X-MailFrom: g@b4.vu
+Subject: Re: [PATCH] ALSA: scarlett2: Convert meter levels from little-endian
+In-Reply-To: <ZYsBIE3DSKdi4YC/@m.b4.vu>
+References: <ZYsBIE3DSKdi4YC/@m.b4.vu>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spamd-Result: default: False [-3.30 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 RCPT_COUNT_THREE(0.00)[4];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 MID_CONTAINS_FROM(1.00)[];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[99.98%]
+Message-ID-Hash: LSWTJJNIYN2TSNJUTJWLSRQZ55R2DZS3
+X-Message-ID-Hash: LSWTJJNIYN2TSNJUTJWLSRQZ55R2DZS3
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -79,7 +148,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QE7TFZ2CSLU7CNIPCIB3SRA2RBOTVIYJ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LSWTJJNIYN2TSNJUTJWLSRQZ55R2DZS3/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -88,165 +157,24 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add ops.write to the hwdep interface. Once the upgrade firmware flash
-segment has been erased, writes to the hwdep fd are permitted, and
-translated to SCARLETT2_USB_WRITE_SEGMENT commands to the device.
+On Tue, 26 Dec 2023 17:36:48 +0100,
+Geoffrey D. Bennett wrote:
+> 
+> Add missing conversion from little-endian data to CPU-endian in
+> scarlett2_usb_get_meter_levels().
+> 
+> Fixes: 3473185f31df ("ALSA: scarlett2: Remap Level Meter values")
+> Signed-off-by: Geoffrey D. Bennett <g@b4.vu>
+> ---
+> 
+> Hi Takashi,
+> 
+> Can you add this to 6.7-rc8 please.
 
-Signed-off-by: Geoffrey D. Bennett <g@b4.vu>
----
+Applied to for-linus branch.  I'm going to send a PR for 6.7 final in
+the next week.
 
-Hi Takashi,
 
-I noticed that scarlett2_hwdep_write() was returning the wrong value
-for errors encountered after the kzalloc(). Since I don't think you've
-taken this set of patches yet, can you replace the previous patch 11
-with this version two? Sorry, I don't know if you'd prefer I resend
-all 11 patches but I erred on the side of fewer emails. Let me know if
-you would like me to do different this time or next time.
+thanks,
 
-Thanks,
-Geoffrey.
-
- sound/usb/mixer_scarlett2.c | 96 +++++++++++++++++++++++++++++++++++--
- 1 file changed, 93 insertions(+), 3 deletions(-)
-
-diff --git a/sound/usb/mixer_scarlett2.c b/sound/usb/mixer_scarlett2.c
-index ca09d0cd0cae..1f3b07bd7b3f 100644
---- a/sound/usb/mixer_scarlett2.c
-+++ b/sound/usb/mixer_scarlett2.c
-@@ -266,7 +266,8 @@ enum {
- enum {
- 	SCARLETT2_FLASH_WRITE_STATE_IDLE = 0,
- 	SCARLETT2_FLASH_WRITE_STATE_SELECTED = 1,
--	SCARLETT2_FLASH_WRITE_STATE_ERASING = 2
-+	SCARLETT2_FLASH_WRITE_STATE_ERASING = 2,
-+	SCARLETT2_FLASH_WRITE_STATE_WRITE = 3
- };
- 
- static const char *const scarlett2_dim_mute_names[SCARLETT2_DIM_MUTE_COUNT] = {
-@@ -1176,6 +1177,7 @@ static int scarlett2_get_port_start_num(
- #define SCARLETT2_USB_METER_LEVELS_GET_MAGIC 1
- 
- #define SCARLETT2_FLASH_BLOCK_SIZE 4096
-+#define SCARLETT2_FLASH_WRITE_MAX 1024
- #define SCARLETT2_SEGMENT_NUM_MIN 1
- #define SCARLETT2_SEGMENT_NUM_MAX 4
- 
-@@ -5079,10 +5081,10 @@ static int scarlett2_ioctl_get_erase_progress(
- 		return -EFAULT;
- 
- 	/* If the erase is complete, change the state from ERASING to
--	 * IDLE.
-+	 * WRITE.
- 	 */
- 	if (progress.progress == 0xff)
--		private->flash_write_state = SCARLETT2_FLASH_WRITE_STATE_IDLE;
-+		private->flash_write_state = SCARLETT2_FLASH_WRITE_STATE_WRITE;
- 
- 	return 0;
- }
-@@ -5135,6 +5137,93 @@ static int scarlett2_hwdep_ioctl(struct snd_hwdep *hw, struct file *file,
- 	}
- }
- 
-+static long scarlett2_hwdep_write(struct snd_hwdep *hw,
-+				  const char __user *buf,
-+				  long count, loff_t *offset)
-+{
-+	struct usb_mixer_interface *mixer = hw->private_data;
-+	struct scarlett2_data *private = mixer->private_data;
-+	int segment_id, segment_num, err, len;
-+	int flash_size;
-+
-+	/* SCARLETT2_USB_WRITE_SEGMENT request data */
-+	struct {
-+		__le32 segment_num;
-+		__le32 offset;
-+		__le32 pad;
-+		u8 data[];
-+	} __packed *req;
-+
-+	/* Calculate the maximum permitted in data[] */
-+	const size_t max_data_size = SCARLETT2_FLASH_WRITE_MAX -
-+				     offsetof(typeof(*req), data);
-+
-+	/* If erasing, wait for it to complete */
-+	if (private->flash_write_state ==
-+	      SCARLETT2_FLASH_WRITE_STATE_ERASING) {
-+		err = scarlett2_wait_for_erase(mixer);
-+		if (err < 0)
-+			return err;
-+		private->flash_write_state = SCARLETT2_FLASH_WRITE_STATE_WRITE;
-+
-+	/* Check that an erase has been done & completed */
-+	} else if (private->flash_write_state !=
-+		     SCARLETT2_FLASH_WRITE_STATE_WRITE) {
-+		return -EINVAL;
-+	}
-+
-+	/* Check that we're writing to the upgrade firmware */
-+	segment_id = private->selected_flash_segment_id;
-+	if (segment_id != SCARLETT2_SEGMENT_ID_FIRMWARE)
-+		return -EINVAL;
-+
-+	segment_num = private->flash_segment_nums[segment_id];
-+	if (segment_num < SCARLETT2_SEGMENT_NUM_MIN ||
-+	    segment_num > SCARLETT2_SEGMENT_NUM_MAX)
-+		return -EFAULT;
-+
-+	/* Validate the offset and count */
-+	flash_size = private->flash_segment_blocks[segment_id] *
-+		     SCARLETT2_FLASH_BLOCK_SIZE;
-+
-+	if (count < 0 || *offset < 0 || *offset + count >= flash_size)
-+		return -EINVAL;
-+
-+	if (!count)
-+		return 0;
-+
-+	/* Limit the *req size to SCARLETT2_FLASH_WRITE_MAX */
-+	if (count > max_data_size)
-+		count = max_data_size;
-+
-+	/* Create and send the request */
-+	len = struct_size(req, data, count);
-+	req = kzalloc(len, GFP_KERNEL);
-+	if (!req)
-+		return -ENOMEM;
-+
-+	req->segment_num = cpu_to_le32(segment_num);
-+	req->offset = cpu_to_le32(*offset);
-+	req->pad = 0;
-+
-+	if (copy_from_user(req->data, buf, count)) {
-+		err = -EFAULT;
-+		goto error;
-+	}
-+
-+	err = scarlett2_usb(mixer, SCARLETT2_USB_WRITE_SEGMENT,
-+			    req, len, NULL, 0);
-+	if (err < 0)
-+		goto error;
-+
-+	*offset += count;
-+	err = count;
-+
-+error:
-+	kfree(req);
-+	return err;
-+}
-+
- static int scarlett2_hwdep_release(struct snd_hwdep *hw, struct file *file)
- {
- 	struct usb_mixer_interface *mixer = hw->private_data;
-@@ -5164,6 +5253,7 @@ static int scarlett2_hwdep_init(struct usb_mixer_interface *mixer)
- 	hw->exclusive = 1;
- 	hw->ops.open = scarlett2_hwdep_open;
- 	hw->ops.ioctl = scarlett2_hwdep_ioctl;
-+	hw->ops.write = scarlett2_hwdep_write;
- 	hw->ops.release = scarlett2_hwdep_release;
- 
- 	return 0;
--- 
-2.43.0
-
+Takashi
