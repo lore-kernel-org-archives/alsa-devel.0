@@ -4,107 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5019FC46CD2
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Jan 2024 19:53:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9510AC46CD2
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Jan 2024 19:55:04 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 435B1EAD;
-	Tue,  2 Jan 2024 20:53:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 435B1EAD
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7E7FBE8C;
+	Tue,  2 Jan 2024 20:54:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7E7FBE8C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1704225218;
-	bh=z9DJyDtomZG7fy9ZprZvw/z8kTxEPOvKo8h28f6CxjI=;
-	h=Date:From:To:Cc:In-Reply-To:References:Subject:List-Id:
+	s=default; t=1704225302;
+	bh=rtAe09QqxJDBgnlUvBKRaJVInEEjdfi7y/w/Ofw3qHg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=uGBeuUp/A8DgRs/TAaojW8vsBiO2oT3yzvSTmw8ACzj14UxzUmqxMoSzweei4tGXS
-	 HVLU5fvhG0Fk9KVnemgOFokJ9bptyagz3feSjbwuZEPy9/MaOYkUlPQCYGy5WyIaMj
-	 um6SkxIzVy6m8+oHazKa50g9Cj1Zx0X/yPpZSmlE=
+	b=aUXa6CmsZTVTf3++F1o2dfPwc35p3GSEU0yX1TUOnd9eEh/UdOtYw5TU5itto79R3
+	 iLaRedL6Zvb3+pFAPkeHKhsN85gFW94PZPMLDsQRGYNDpGsBotk01nsNRndioxEvN+
+	 XJyszMqtL9Sb6IBxvvUtDakhWfhU8lHowMTIDxqk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C744AF8057D; Tue,  2 Jan 2024 20:53:06 +0100 (CET)
+	id 8825CF80086; Tue,  2 Jan 2024 20:54:42 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id BAB4AF80587;
-	Tue,  2 Jan 2024 20:53:05 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id EEA6BF8057A;
+	Tue,  2 Jan 2024 20:54:41 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8B58CF80424; Tue,  2 Jan 2024 20:53:01 +0100 (CET)
-Received: from mail.savoirfairelinux.com (mail.savoirfairelinux.com
- [208.88.110.44])
+	id C9C4AF80424; Tue,  2 Jan 2024 20:54:37 +0100 (CET)
+Received: from isilmar-4.linta.de (isilmar-4.linta.de [136.243.71.142])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 910D8F80051
-	for <alsa-devel@alsa-project.org>; Tue,  2 Jan 2024 20:52:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 910D8F80051
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=savoirfairelinux.com header.i=@savoirfairelinux.com
- header.a=rsa-sha256 header.s=DFC430D2-D198-11EC-948E-34200CB392D2
- header.b=HfBx0L9S
-Received: from localhost (localhost [127.0.0.1])
-	by mail.savoirfairelinux.com (Postfix) with ESMTP id DFB4E9C0888;
-	Tue,  2 Jan 2024 06:37:40 -0500 (EST)
-Received: from mail.savoirfairelinux.com ([127.0.0.1])
- by localhost (mail.savoirfairelinux.com [127.0.0.1]) (amavis, port 10032)
- with ESMTP id oH47By21Q_s9; Tue,  2 Jan 2024 06:37:40 -0500 (EST)
-Received: from localhost (localhost [127.0.0.1])
-	by mail.savoirfairelinux.com (Postfix) with ESMTP id 50F959C0957;
-	Tue,  2 Jan 2024 06:37:40 -0500 (EST)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.savoirfairelinux.com 50F959C0957
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=savoirfairelinux.com; s=DFC430D2-D198-11EC-948E-34200CB392D2;
-	t=1704195460; bh=bAsNfTDPGcy9UE/qR8q9C/MYhrYIBcUMKG2G3Oi4VLE=;
-	h=Date:From:To:Message-ID:MIME-Version;
-	b=HfBx0L9SYhFxNTXnatyaVVD/0MKoxKv1DkFPwS4FhP21ZdGhZFAP2Yw2hgXG5W1+t
-	 DG22L6dYlNdqI/yA4nolhiQbAYRMk3Yvd1vhj35YZTZ1keQ1XC+emTImMoQmjgdIjh
-	 alA58hoYPXIYl8/8523fTVCfrQVCNMBqb6qPyKUQ1uoRLrwWFtxWeVm73HyoV71weA
-	 Vcvll8Fbldw/DCB9WQCaUVbMMf9+FXj0uatTbgq9RGC183UtRM5ockSfi6AD3jQlfV
-	 NlAXW2vSrvxzA0K2KrHkaWWkgrrQsn+4DCiJZlStF1JhWW5TYl6ACLELjZgkVicaEV
-	 5OCMfpqr9RX7g==
-X-Virus-Scanned: amavis at mail.savoirfairelinux.com
-Received: from mail.savoirfairelinux.com ([127.0.0.1])
- by localhost (mail.savoirfairelinux.com [127.0.0.1]) (amavis, port 10026)
- with ESMTP id 20Ly5X62OB9G; Tue,  2 Jan 2024 06:37:40 -0500 (EST)
-Received: from mail.savoirfairelinux.com (mail.savoirfairelinux.com
- [192.168.48.237])
-	by mail.savoirfairelinux.com (Postfix) with ESMTP id 1AD139C0888;
-	Tue,  2 Jan 2024 06:37:40 -0500 (EST)
-Date: Tue, 2 Jan 2024 06:37:39 -0500 (EST)
-From: Elinor Montmasson <elinor.montmasson@savoirfairelinux.com>
-To: Rob Herring <robh@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	shengjiu wang <shengjiu.wang@gmail.com>,
-	Xiubo Lee <Xiubo.Lee@gmail.com>, Fabio Estevam <festevam@gmail.com>,
-	Nicolin Chen <nicoleotsuka@gmail.com>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-	linux-sound <linux-sound@vger.kernel.org>,
-	devicetree <devicetree@vger.kernel.org>,
-	linux-kernel <linux-kernel@vger.kernel.org>,
-	alsa-devel <alsa-devel@alsa-project.org>,
-	linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-	Philip-Dylan Gleonec <philip-dylan.gleonec@savoirfairelinux.com>
-Message-ID: 
- <1300509761.24764.1704195459987.JavaMail.zimbra@savoirfairelinux.com>
-In-Reply-To: <20231220222550.GA1232936-robh@kernel.org>
-References: <20231218124058.2047167-1-elinor.montmasson@savoirfairelinux.com>
- <20231218124058.2047167-11-elinor.montmasson@savoirfairelinux.com>
- <20231220222550.GA1232936-robh@kernel.org>
-Subject: Re: [PATCHv3 RESEND 10/10] ASoC: dt-bindings: fsl-asoc-card: add
- compatible for generic codec
+	by alsa1.perex.cz (Postfix) with ESMTPS id D8AC7F80086
+	for <alsa-devel@alsa-project.org>; Tue,  2 Jan 2024 20:54:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D8AC7F80086
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+Received: from shine.dominikbrodowski.net (shine.brodo.linta [10.2.0.112])
+	by isilmar-4.linta.de (Postfix) with ESMTPSA id 987D82002B9;
+	Fri, 29 Dec 2023 15:24:46 +0000 (UTC)
+Received: by shine.dominikbrodowski.net (Postfix, from userid 1000)
+	id 0AAFAA0083; Fri, 29 Dec 2023 16:24:19 +0100 (CET)
+Date: Fri, 29 Dec 2023 16:24:18 +0100
+From: Dominik Brodowski <linux@dominikbrodowski.net>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: peter.ujfalusi@linux.intel.com, lgirdwood@gmail.com, broonie@kernel.org,
+	perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
+	linux-sound@vger.kernel.org, pierre-louis.bossart@linux.intel.com,
+	kai.vehmanen@linux.intel.com, ranjani.sridharan@linux.intel.com,
+	linux-kernel@vger.kernel.org, regressions@lists.linux.dev
+Subject: Re: Oops in hdac_hda_dev_probe (6.7-rc7)
+Message-ID: <ZY7kosArPqhlCfOA@shine.dominikbrodowski.net>
+References: <ZYvUIxtrqBQZbNlC@shine.dominikbrodowski.net>
+ <87sf3lxiet.wl-tiwai@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Mailer: Zimbra 8.8.15_GA_4581 (ZimbraWebClient - GC112
- (Linux)/8.8.15_GA_4581)
-Thread-Topic: ASoC: dt-bindings: fsl-asoc-card: add compatible for generic
- codec
-Thread-Index: r/qDupTL/n3XOuEH8yE+GIqg/zABBQ==
-Message-ID-Hash: CQQT3TDUCKM2NVG642Z3WTHUZZI2O457
-X-Message-ID-Hash: CQQT3TDUCKM2NVG642Z3WTHUZZI2O457
-X-MailFrom: elinor.montmasson@savoirfairelinux.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87sf3lxiet.wl-tiwai@suse.de>
+Message-ID-Hash: GSJXQLL4BGHLBSEP4DECIJNWDFY5NQYO
+X-Message-ID-Hash: GSJXQLL4BGHLBSEP4DECIJNWDFY5NQYO
+X-MailFrom: linux@dominikbrodowski.net
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -116,7 +84,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CQQT3TDUCKM2NVG642Z3WTHUZZI2O457/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GSJXQLL4BGHLBSEP4DECIJNWDFY5NQYO/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -125,48 +93,144 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hello,
+Hi Takashi,
 
-On Wednesday, 20 December, 2023 23:25:50, Rob Herring wrote:
-> On Mon, Dec 18, 2023 at 01:40:58PM +0100, Elinor Montmasson wrote: 
-> > +Optional, relevant only with the "fsl,imx-audio-generic" compatible: 
-> > + 
-> > + - cpu-slot-width : Indicates a specific TDM slot width in bits. 
-> > + - cpu-slot-num : Indicates a specific number of TDM slots per frame. 
+many thanks for your response. Your patch helps half-way: the oops goes
+away, but so does the sound... With your patch, the decisive lines in dmesg
+are:
+
+	sof-audio-pci-intel-tgl 0000:00:1f.3: Firmware info: version 2:2:0-57864
+	sof-audio-pci-intel-tgl 0000:00:1f.3: Firmware: ABI 3:22:1 Kernel ABI 3:23:0
+	sof_sdw sof_sdw: ASoC: CODEC DAI intel-hdmi-hifi1 not registered
+	sof_sdw sof_sdw: snd_soc_register_card failed -517
+	sof_sdw sof_sdw: ASoC: CODEC DAI intel-hdmi-hifi1 not registered
+	sof_sdw sof_sdw: snd_soc_register_card failed -517
+	platform sof_sdw: deferred probe pending
+
+With a revert of the a0575b4add21, it is:
+
+	sof-audio-pci-intel-tgl 0000:00:1f.3: Firmware info: version 2:2:0-57864
+	sof-audio-pci-intel-tgl 0000:00:1f.3: Firmware: ABI 3:22:1 Kernel ABI 3:23:0
+	sof-audio-pci-intel-tgl 0000:00:1f.3: Topology: ABI 3:22:1 Kernel ABI 3:23:0
+	sof_sdw sof_sdw: ASoC: Parent card not yet available, widget card binding deferred
+	sof_sdw sof_sdw: hda_dsp_hdmi_build_controls: no PCM in topology for HDMI converter 3
+	input: sof-soundwire HDMI/DP,pcm=5 as /devices/pci0000:00/0000:00:1f.3/sof_sdw/sound/card0/input14
+	input: sof-soundwire HDMI/DP,pcm=6 as /devices/pci0000:00/0000:00:1f.3/sof_sdw/sound/card0/input15
+	input: sof-soundwire HDMI/DP,pcm=7 as /devices/pci0000:00/0000:00:1f.3/sof_sdw/sound/card0/input16
+
+Maybe this helps a bit further?
+
+Best,
+	Dominik
+
+Am Fri, Dec 29, 2023 at 02:11:38PM +0100 schrieb Takashi Iwai:
+> On Wed, 27 Dec 2023 08:37:07 +0100,
+> Dominik Brodowski wrote:
+> > 
+> > Hi,
+> > 
+> > unfortunately, the latest 6.7.0-rc7 and the two previous rc kernels cause an
+> > oops in hdac_hda_dev_probe(); sound and resume-from-suspend subsequently do
+> > not work:
+> > 
+> > 
+> > BUG: kernel NULL pointer dereference, address: 0000000000000078
+> > #PF: supervisor read access in kernel mode
+> > #PF: error_code(0x0000) - not-present page
+> > PGD 0
+> > P4D 0
+> > Oops: 0000 [#1] PREEMPT SMP NOPTI
+> > Hardware name: Dell Inc. XPS 9315/00KRKP, BIOS 1.1.3 05/11/2022
+> > Workqueue: events sof_probe_work
+> > 
+> > RIP: 0010:hdac_hda_dev_probe+0x42/0xf0
+> > Code: 48 8b 37 48 8b bb c8 04 00 00 e8 09 9b 0a 00 48 85 c0 48 89 c5 0f 84 a6 00 00 00 48 8b bb c8 04 00 00 48 89 c6 e8 1e 9a 0a 00 <41> 80 7c 24 78 00 75 46 b9 03 00 00 00 48 c7 c2 c0 b2 a1 ac 48 c7
+> > RSP: 0000:ffffc90000207b50 EFLAGS: 00010246
+> > 
+> > RAX: 0000000000000000 RBX: ffff88811495d000 RCX: 0000000000000000
+> > RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+> > RBP: ffff888108691600 R08: 0000000000000000 R09: 0000000000000000
+> > R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+> > R13: 0000000000000000 R14: 0000000000000000 R15: ffff88811400b028
+> > FS:  0000000000000000(0000) GS:ffff88886f500000(0000) knlGS:0000000000000000
+> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > CR2: 0000000000000078 CR3: 00000002b7a5a000 CR4: 0000000000f50ef0
+> > PKRU: 55555554
+> > Call Trace:
+> >  <TASK>
+> >  ? __die+0x1e/0x70
+> >  ? page_fault_oops+0x17c/0x4b0
+> >  ? snd_hdac_ext_bus_link_get+0x24/0xc0
+> >  ? exc_page_fault+0x462/0x8e0
+> >  ? asm_exc_page_fault+0x26/0x30
+> >  ? hdac_hda_dev_probe+0x42/0xf0
+> >  really_probe+0x166/0x300
+> >  ? __pfx___device_attach_driver+0x10/0x10
+> >  __driver_probe_device+0x6e/0x120
+> >  driver_probe_device+0x1a/0x90
+> >  __device_attach_driver+0x8e/0xd0
+> >  bus_for_each_drv+0x90/0xf0
+> >  __device_attach+0xac/0x1a0
+> >  bus_probe_device+0x93/0xb0
+> >  device_add+0x669/0x860
+> >  snd_hdac_device_register+0x10/0x60
+> >  hda_codec_probe_bus+0x189/0x290
+> >  hda_dsp_probe+0x211/0x550
+> >  sof_probe_work+0x2c/0x430
+> >  ? process_one_work+0x19c/0x500
+> >  process_one_work+0x205/0x500
+> >  worker_thread+0x1dc/0x3e0
+> > 
+> >  ? __pfx_worker_thread+0x10/0x10
+> >  kthread+0xea/0x120
+> >  ? __pfx_kthread+0x10/0x10
+> >  ret_from_fork+0x2c/0x50
+> >  ? __pfx_kthread+0x10/0x10
+> >  ret_from_fork_asm+0x1b/0x30
+> >  </TASK>
+> > Modules linked in:
+> > CR2: 0000000000000078
+> > ---[ end trace 0000000000000000 ]---
+> > RIP: 0010:hdac_hda_dev_probe+0x42/0xf0
+> > Code: 48 8b 37 48 8b bb c8 04 00 00 e8 09 9b 0a 00 48 85 c0 48 89 c5 0f 84 a6 00 00 00 48 8b bb c8 04 00 00 48 89 c6 e8 1e 9a 0a 00 <41> 80 7c 24 78 00 75 46 b9 03 00 00 00 48 c7 c2 c0 b2 a1 ac 48 c7
+> > RSP: 0000:ffffc90000207b50 EFLAGS: 00010246
+> > RAX: 0000000000000000 RBX: ffff88811495d000 RCX: 0000000000000000
+> > RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+> > RBP: ffff888108691600 R08: 0000000000000000 R09: 0000000000000000
+> > R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+> > R13: 0000000000000000 R14: 0000000000000000 R15: ffff88811400b028
+> > FS:  0000000000000000(0000) GS:ffff88886f500000(0000) knlGS:0000000000000000
+> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > CR2: 0000000000000078 CR3: 00000002b7a5a000 CR4: 0000000000f50ef0
+> > PKRU: 55555554
+> > note: kworker/2:0[24] exited with irqs disabled
+> > 
+> > 
+> > I was able to bisect the issue to commit a0575b4add21 ("ASoC: hdac_hda:
+> > Conditionally register dais for HDMI and Analog"). Reverting that patch on
+> > top of mainline fixes it.
 > 
-> Pretty sure I've seen other bindings with TDM slot properties. A sign we 
-> need something common if we don't already have something. 
-
-That's right, "tdm-slot.txt" already defines TDM bindings, I will
-use them with the utility function snd_soc_of_parse_tdm_slot().
-
-> > + - cpu-sysclk-freq-rx : Frequency of the CPU DAI sys clock for Rx. 
-> > + - cpu-sysclk-freq-tx : Frequency of the CPU DAI sys clock for Tx. 
-> > + 
-> > + - cpu-sysclk-dir-rx-out : Boolean property. Specifies sys clock direction 
-> > + as 'out' on initialization for Rx. 
-> > + If not set, default direction is 'in'. 
-> > + - cpu-sysclk-dir-tx-out : Boolean property. Specifies sys clock direction 
-> > + as 'out' on initialization for Tx. 
-> > + If not set, default direction is 'in'. 
+> As I've been (and still am) off, I had too little time for taking a
+> deeper look now, unfortunately.  But my wild guess is that it's a NULL
+> dereference of the hdac_hda_priv referred via hdac dev.  If it's
+> correct, a oneliner like below should work around the crash.
+> Could you give it a try?
 > 
-> Looks like clock stuff. Use the clock binding. 
-
-simple-card defines similar properties at the dai level:
-"system-clock-frequency" and "system-clock-direction-out".
-The first is used if no "clocks" binding is specified for the dai node.
-
-Maybe I could use a similar logic with fsl-asoc-card ?
-* adding a "clock-cpu" phandle property which should be the cpu clock.
-It will be used to retreive the frequency for both RX and TX.
-* keeping "cpu-sysclk-freq-rx"/"cpu-sysclk-freq-tx", which are used if
-no clock is provided, like "system-clock-frequency" in simple-card.
-* keep using "cpu-sysclk-dir-rx-out"/"cpu-sysclk-dir-tx-out", like
-"system-clock-direction-out" in simple card.
-
-Also, maybe I could rename my new properties:
-cpu-system-clock-frequency-tx, cpu-system-clock-direction-out-rx, ...
-It would better match those in simple-card as they do the same thing.
-
-Best regards,
-Elinor Montmasson
+> 
+> thanks,
+> 
+> Takashi
+> 
+> -- 8< --
+> --- a/sound/soc/codecs/hdac_hda.c
+> +++ b/sound/soc/codecs/hdac_hda.c
+> @@ -630,7 +630,7 @@ static int hdac_hda_dev_probe(struct hdac_device *hdev)
+>  	snd_hdac_ext_bus_link_get(hdev->bus, hlink);
+>  
+>  	/* ASoC specific initialization */
+> -	if (hda_pvt->need_display_power)
+> +	if (hda_pvt && hda_pvt->need_display_power)
+>  		ret = devm_snd_soc_register_component(&hdev->dev,
+>  						&hdac_hda_hdmi_codec, hdac_hda_hdmi_dais,
+>  						ARRAY_SIZE(hdac_hda_hdmi_dais));
+> 
