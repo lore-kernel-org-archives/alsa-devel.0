@@ -4,60 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6829FC46CD2
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Jan 2024 19:07:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7B325C46CD2
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Jan 2024 19:07:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F3C63EA4;
-	Tue,  2 Jan 2024 20:07:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F3C63EA4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 99511E97;
+	Tue,  2 Jan 2024 20:07:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 99511E97
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1704222432;
-	bh=ZxhrJsKWxq9E+ZCF97Hlhn6tkPMhiHPIcePMRLYZSTY=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=dCGmlyd6qPQaeYT9UsljS/4BZdAuROToMVn7c6oLFFcR98oVWckikFF+sWUPL1G7o
-	 U4pMbQTO/JgsvUKw1NmgwucJndlk+FBAjBijvOKMl8lcfmugmaKUGHogdrx7C8e47I
-	 eShn+QhQSIb1IxLfKYd4dP8Wik3kuY3Ranca5dlo=
+	s=default; t=1704222451;
+	bh=v3L0Uh3dUWaaZ3RBoiuIPeva6hes+I4da8oBkP1fxEc=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=RjDXNkpgdrOlooyP0ABfoR5nBqR60i7PB0IX1zuHVRndvxVLDAGpOqgOgjC7+9lyw
+	 Bb35MD6cxlRBD9DqvQsuKnrXyPyybmBolZQDGVp1otkYCHa0YzTsVAeYtu8Cas+mcz
+	 Lw8EgmO1fBO4Pxzn8/Jckm3bwT3eWTfz4Eq2vsMc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CC278F8057E; Tue,  2 Jan 2024 20:06:39 +0100 (CET)
+	id 3A20CF805B3; Tue,  2 Jan 2024 20:06:41 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D2113F8047D;
-	Tue,  2 Jan 2024 20:06:38 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 90A7CF805BE;
+	Tue,  2 Jan 2024 20:06:41 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CD17EF8065A; Tue,  2 Jan 2024 19:59:32 +0100 (CET)
+	id A95E2F8065A; Tue,  2 Jan 2024 19:59:33 +0100 (CET)
 Received: from irl.hu (irl.hu [95.85.9.111])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
  server-digest SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with UTF8SMTPS id 1F9DEF8067E
-	for <alsa-devel@alsa-project.org>; Tue,  2 Jan 2024 19:54:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1F9DEF8067E
+	by alsa1.perex.cz (Postfix) with UTF8SMTPS id 06383F8067A
+	for <alsa-devel@alsa-project.org>; Tue,  2 Jan 2024 19:54:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 06383F8067A
 Received: from fedori.lan (51b6838a.dsl.pool.telekom.hu
  [::ffff:81.182.131.138])
   (AUTH: CRAM-MD5 soyer@irl.hu, )
   by irl.hu with ESMTPSA
-  id 0000000000071ED9.00000000658F60B8.0014D4ED;
- Sat, 30 Dec 2023 01:13:44 +0100
+  id 0000000000071EF2.00000000658F5FD0.0014D4A7;
+ Sat, 30 Dec 2023 01:09:51 +0100
 From: Gergo Koteles <soyer@irl.hu>
 To: Shenghao Ding <shenghao-ding@ti.com>, Kevin Lu <kevin-lu@ti.com>,
   Baojun Xu <baojun.xu@ti.com>, Jaroslav Kysela <perex@perex.cz>,
-  Takashi Iwai <tiwai@suse.com>
+  Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+  Mark Brown <broonie@kernel.org>
 Cc: linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
   alsa-devel@alsa-project.org, Gergo Koteles <soyer@irl.hu>
-Subject: [PATCH] ALSA: hda/tas2781: configure the amp after firmware load
-Date: Sat, 30 Dec 2023 01:13:41 +0100
+Subject: [PATCH v2 2/4] ALSA: hda/tas2781: add configurable global i2c address
+Date: Sat, 30 Dec 2023 01:09:43 +0100
 Message-ID: 
- <7f2f65d9212aa16edd4db8725489ae59dbe74c66.1703895108.git.soyer@irl.hu>
+ <a252f1efeed5049f027f01e699c9e10e1e05bf9e.1703891777.git.soyer@irl.hu>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <cover.1703891777.git.soyer@irl.hu>
+References: <cover.1703891777.git.soyer@irl.hu>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 X-Mime-Autoconverted: from 8bit to 7bit by courier 1.0
-Message-ID-Hash: SQWRUZGPVPYDM52TD2FSFXNBEOCODGFY
-X-Message-ID-Hash: SQWRUZGPVPYDM52TD2FSFXNBEOCODGFY
+Message-ID-Hash: X2PHCMTJH52WZTNALLCZATOHXPECHMUM
+X-Message-ID-Hash: X2PHCMTJH52WZTNALLCZATOHXPECHMUM
 X-MailFrom: soyer@irl.hu
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -70,7 +74,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SQWRUZGPVPYDM52TD2FSFXNBEOCODGFY/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/X2PHCMTJH52WZTNALLCZATOHXPECHMUM/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -79,31 +83,49 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Make the amp available immediately after a module
-load to avoid having to wait for a PCM hook action.
-(eg. unloading & loading the module while listening
-music)
+Make the global i2c address configurable to support compatible amplifiers
+with different global i2c address.
 
 Signed-off-by: Gergo Koteles <soyer@irl.hu>
 ---
- sound/pci/hda/tas2781_hda_i2c.c | 2 ++
- 1 file changed, 2 insertions(+)
+ include/sound/tas2781.h         | 2 ++
+ sound/pci/hda/tas2781_hda_i2c.c | 3 ++-
+ 2 files changed, 4 insertions(+), 1 deletion(-)
 
+diff --git a/include/sound/tas2781.h b/include/sound/tas2781.h
+index e17ceab4fead..dde9f8120d4c 100644
+--- a/include/sound/tas2781.h
++++ b/include/sound/tas2781.h
+@@ -121,6 +121,8 @@ struct tasdevice_priv {
+ 	bool force_fwload_status;
+ 	bool playback_started;
+ 	bool isacpi;
++	unsigned int global_addr;
++
+ 	int (*fw_parse_variable_header)(struct tasdevice_priv *tas_priv,
+ 		const struct firmware *fmw, int offset);
+ 	int (*fw_parse_program_data)(struct tasdevice_priv *tas_priv,
 diff --git a/sound/pci/hda/tas2781_hda_i2c.c b/sound/pci/hda/tas2781_hda_i2c.c
-index dfe281b57aa6..c8523df4105f 100644
+index 0f8d5f947f54..49477d17b07c 100644
 --- a/sound/pci/hda/tas2781_hda_i2c.c
 +++ b/sound/pci/hda/tas2781_hda_i2c.c
-@@ -584,6 +584,8 @@ static void tasdev_fw_ready(const struct firmware *fmw, void *context)
- 	 */
- 	tas2781_save_calibration(tas_priv);
+@@ -81,7 +81,7 @@ static int tas2781_get_i2c_res(struct acpi_resource *ares, void *data)
  
-+	tasdevice_tuning_switch(tas_hda->priv, 0);
-+
- out:
- 	mutex_unlock(&tas_hda->priv->codec_lock);
- 	if (fmw)
-
-base-commit: 64bf8dec54cfe57f416884a6b3d54c7f4259e93f
+ 	if (i2c_acpi_get_i2c_resource(ares, &sb)) {
+ 		if (tas_priv->ndev < TASDEVICE_MAX_CHANNELS &&
+-			sb->slave_address != TAS2781_GLOBAL_ADDR) {
++			sb->slave_address != tas_priv->global_addr) {
+ 			tas_priv->tasdevice[tas_priv->ndev].dev_addr =
+ 				(unsigned int)sb->slave_address;
+ 			tas_priv->ndev++;
+@@ -699,6 +699,7 @@ static int tas2781_hda_i2c_probe(struct i2c_client *clt)
+ 		device_name = "TIAS2781";
+ 		tas_hda->priv->save_calibration = tas2781_save_calibration;
+ 		tas_hda->priv->apply_calibration = tas2781_apply_calib;
++		tas_hda->priv->global_addr = TAS2781_GLOBAL_ADDR;
+ 	} else
+ 		return -ENODEV;
+ 
 -- 
 2.43.0
 
