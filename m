@@ -4,140 +4,137 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 708FFC46CD2
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Jan 2024 19:08:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B1A80C46CD2
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Jan 2024 19:08:50 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 56343E7A;
-	Tue,  2 Jan 2024 20:08:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 56343E7A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 153C6E89;
+	Tue,  2 Jan 2024 20:08:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 153C6E89
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1704222520;
-	bh=oKhJf3n1cMB9x62W62JgegL4YxXrFEM0IUw/XE2X0Fw=;
+	s=default; t=1704222529;
+	bh=4/Boj2ab0V7qtEyROU+UoYB7mc+cHHRsevRmvPK77DI=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=XAXReCNGyTVx8kv4qoc+Hq2U7inZqa/y6RahsOIT31gthiNOI39K859lHxDkPYlIX
-	 lHoucddWi9keE+cLH7rlLob3QPUbSazLdTle7ZtY9opzTLOCH9QpEZGqodbTivBVRO
-	 W+1aLuwyQ6R5jlNpp3pF8ecJVSlG2vk+sV7Op7Hk=
+	b=bHnB0YMcpVQv/R7b7EOPh0QE9a2oFawuQJ8wHa7vGFLW/VWhvJVb23A3a0ydnzJjr
+	 x5VGk9M4gRFlL+q/Je/+UFzxzPLHWtDazJcrHl4Hg1X62qyIoZOa954DV+57OoKQam
+	 6waGeGVHX7+FM9gUtcjS5ekyJ3eQAQqj5rl0JIq8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id EB94AF80659; Tue,  2 Jan 2024 20:06:54 +0100 (CET)
+	id 5098DF80697; Tue,  2 Jan 2024 20:06:56 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 587F7F80677;
-	Tue,  2 Jan 2024 20:06:54 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 06D5BF8069D;
+	Tue,  2 Jan 2024 20:06:56 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8011DF80537; Tue,  2 Jan 2024 20:00:42 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+	id 8FB67F80579; Tue,  2 Jan 2024 20:04:07 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 40561F8057A
-	for <alsa-devel@alsa-project.org>; Tue,  2 Jan 2024 19:54:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 40561F8057A
+	by alsa1.perex.cz (Postfix) with ESMTPS id 94338F8065B
+	for <alsa-devel@alsa-project.org>; Tue,  2 Jan 2024 19:59:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 94338F8065B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=Ttzh2bqT;
+ header.s=susede2_rsa header.b=HZVxcC/y;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=N5682qh9;
+ header.s=susede2_ed25519 header.b=T5ztKVj1;
 	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=Ttzh2bqT;
+ header.a=rsa-sha256 header.s=susede2_rsa header.b=HZVxcC/y;
 	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=N5682qh9
+ header.s=susede2_ed25519 header.b=T5ztKVj1
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [10.150.64.97])
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 903A61FCED;
-	Tue,  2 Jan 2024 09:25:01 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 22E3421DFB;
+	Sun, 31 Dec 2023 08:33:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1704187501;
+	t=1704011624;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=10ALmBdejT/UDcEl5ROuUx4qyQxUrE5NQXpj4f4LXhM=;
-	b=Ttzh2bqTXlR+ctkzKcEGO5U82EgJsVZmlsMID1iJI8iHitzJnSoO9kql9D8Ik6UlfE2MPp
-	Q/HSwPqijdFbNc2jQa0r0yhcTiEnrRWrsBomjmvKixTKb5fIT4s7K06IVMwjDeWOCfzD8H
-	M2VqJ7QzaYCFPq2scRGQtvZcdeLrP3k=
+	bh=N4RTRshVREzFDoQShoQSeJ7L1xCrv3rMfCKwpXDSiu4=;
+	b=HZVxcC/yybZy9ySs7R1EzckIbpfuTkvqsqaGiunMvFXeP0u/PWrW7ktJmLQO7ihlMWx6rR
+	9nuGxmsxp1tD50YZLX7GMmpiSzsurMftAsXFMU4cU2VcTcAUiORHrXmRTC21aQIToX7m0Z
+	gsqw7b5xpKmOVAL+CiDLa/B0byxFgbE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1704187501;
+	s=susede2_ed25519; t=1704011624;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=10ALmBdejT/UDcEl5ROuUx4qyQxUrE5NQXpj4f4LXhM=;
-	b=N5682qh9z3GlftWXoHQBcq/L08wRXX07bHovWWirdPKPKiJQrL9ZBEK69eKSTTSIsPwgJF
-	2h+vvg7JI6azhcCA==
+	bh=N4RTRshVREzFDoQShoQSeJ7L1xCrv3rMfCKwpXDSiu4=;
+	b=T5ztKVj1Pk/2MNK6+rQHZd7Q0j92pkpdLJfYYfbyMMurDW0n3iYSVV6z6auWlXDEo1xSmE
+	wVVRnlF0bfXm6HAA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1704187501;
+	t=1704011624;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=10ALmBdejT/UDcEl5ROuUx4qyQxUrE5NQXpj4f4LXhM=;
-	b=Ttzh2bqTXlR+ctkzKcEGO5U82EgJsVZmlsMID1iJI8iHitzJnSoO9kql9D8Ik6UlfE2MPp
-	Q/HSwPqijdFbNc2jQa0r0yhcTiEnrRWrsBomjmvKixTKb5fIT4s7K06IVMwjDeWOCfzD8H
-	M2VqJ7QzaYCFPq2scRGQtvZcdeLrP3k=
+	bh=N4RTRshVREzFDoQShoQSeJ7L1xCrv3rMfCKwpXDSiu4=;
+	b=HZVxcC/yybZy9ySs7R1EzckIbpfuTkvqsqaGiunMvFXeP0u/PWrW7ktJmLQO7ihlMWx6rR
+	9nuGxmsxp1tD50YZLX7GMmpiSzsurMftAsXFMU4cU2VcTcAUiORHrXmRTC21aQIToX7m0Z
+	gsqw7b5xpKmOVAL+CiDLa/B0byxFgbE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1704187501;
+	s=susede2_ed25519; t=1704011624;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=10ALmBdejT/UDcEl5ROuUx4qyQxUrE5NQXpj4f4LXhM=;
-	b=N5682qh9z3GlftWXoHQBcq/L08wRXX07bHovWWirdPKPKiJQrL9ZBEK69eKSTTSIsPwgJF
-	2h+vvg7JI6azhcCA==
+	bh=N4RTRshVREzFDoQShoQSeJ7L1xCrv3rMfCKwpXDSiu4=;
+	b=T5ztKVj1Pk/2MNK6+rQHZd7Q0j92pkpdLJfYYfbyMMurDW0n3iYSVV6z6auWlXDEo1xSmE
+	wVVRnlF0bfXm6HAA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 336B213AC6;
-	Tue,  2 Jan 2024 09:25:01 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B96031398B;
+	Sun, 31 Dec 2023 08:33:43 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id rZVDC23Wk2XpCgAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Tue, 02 Jan 2024 09:25:01 +0000
-Date: Tue, 02 Jan 2024 10:25:00 +0100
-Message-ID: <87y1d8ulxv.wl-tiwai@suse.de>
+	id 4JsKKmcnkWWkHwAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Sun, 31 Dec 2023 08:33:43 +0000
+Date: Sun, 31 Dec 2023 09:33:43 +0100
+Message-ID: <87cyumwz2w.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: =?ISO-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@linux.intel.com>
-Cc: Dominik Brodowski <linux@dominikbrodowski.net>,
+To: Gergo Koteles <soyer@irl.hu>
+Cc: Shenghao Ding <shenghao-ding@ti.com>,
+	Kevin Lu <kevin-lu@ti.com>,
+	Baojun Xu <baojun.xu@ti.com>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
 	Mark Brown <broonie@kernel.org>,
-	lgirdwood@gmail.com,
-	perex@perex.cz,
-	tiwai@suse.com,
-	alsa-devel@alsa-project.org,
 	linux-sound@vger.kernel.org,
-	pierre-louis.bossart@linux.intel.com,
-	kai.vehmanen@linux.intel.com,
-	ranjani.sridharan@linux.intel.com,
 	linux-kernel@vger.kernel.org,
-	regressions@lists.linux.dev
-Subject: Re: Oops in hdac_hda_dev_probe (6.7-rc7)
-In-Reply-To: <3260e806-a708-4462-9d4e-346e54143a65@linux.intel.com>
-References: <ZYvUIxtrqBQZbNlC@shine.dominikbrodowski.net>
-	<87sf3lxiet.wl-tiwai@suse.de>
-	<ZY7kosArPqhlCfOA@shine.dominikbrodowski.net>
-	<874jg1x7ao.wl-tiwai@suse.de>
-	<ZY_Gb8-rncuOjRq-@shine.dominikbrodowski.net>
-	<87plyovwg7.wl-tiwai@suse.de>
-	<3260e806-a708-4462-9d4e-346e54143a65@linux.intel.com>
+	alsa-devel@alsa-project.org
+Subject: Re: [PATCH v2 0/4] ALSA: hda/tas2781: Add tas2563 support
+In-Reply-To: <3933d97638cfe57de5f9651b1f9a168bf88e43a5.camel@irl.hu>
+References: <cover.1701906455.git.soyer@irl.hu>
+	<cover.1703891777.git.soyer@irl.hu>
+	<87il4fwrs1.wl-tiwai@suse.de>
+	<3933d97638cfe57de5f9651b1f9a168bf88e43a5.camel@irl.hu>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-2.10 / 50.00];
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spamd-Bar: /
+X-Spamd-Result: default: False [0.67 / 50.00];
 	 ARC_NA(0.00)[];
 	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
 	 FROM_HAS_DN(0.00)[];
 	 TO_DN_SOME(0.00)[];
 	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
@@ -145,18 +142,24 @@ X-Spamd-Result: default: False [-2.10 / 50.00];
 	 MIME_GOOD(-0.10)[text/plain];
 	 RCVD_COUNT_THREE(0.00)[3];
 	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 RCPT_COUNT_TWELVE(0.00)[13];
+	 DKIM_TRACE(0.00)[suse.de:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_SEVEN(0.00)[11];
 	 MID_CONTAINS_FROM(1.00)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
 	 FUZZY_BLOCKED(0.00)[rspamd.com];
 	 FROM_EQ_ENVFROM(0.00)[];
 	 MIME_TRACE(0.00)[0:+];
-	 FREEMAIL_CC(0.00)[dominikbrodowski.net,kernel.org,gmail.com,perex.cz,suse.com,alsa-project.org,vger.kernel.org,linux.intel.com,lists.linux.dev];
+	 FREEMAIL_CC(0.00)[ti.com,perex.cz,suse.com,gmail.com,kernel.org,vger.kernel.org,alsa-project.org];
 	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-Authentication-Results: smtp-out2.suse.de;
-	none
-Message-ID-Hash: 6A7MSA4IROLSTUUMI6HPUC3JX5MCX5RG
-X-Message-ID-Hash: 6A7MSA4IROLSTUUMI6HPUC3JX5MCX5RG
+	 BAYES_HAM(-0.02)[54.96%];
+	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b="HZVxcC/y";
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=T5ztKVj1
+X-Rspamd-Queue-Id: 22E3421DFB
+Message-ID-Hash: ZYVKRBPXIFO4SKXQCAK5LSEA3B34HYQU
+X-Message-ID-Hash: ZYVKRBPXIFO4SKXQCAK5LSEA3B34HYQU
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -169,7 +172,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6A7MSA4IROLSTUUMI6HPUC3JX5MCX5RG/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZYVKRBPXIFO4SKXQCAK5LSEA3B34HYQU/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -178,82 +181,48 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, 02 Jan 2024 10:08:47 +0100,
-Péter Ujfalusi wrote:
+On Sat, 30 Dec 2023 21:18:06 +0100,
+Gergo Koteles wrote:
 > 
+> Hi Takashi,
 > 
-> 
-> On 30/12/2023 12:03, Takashi Iwai wrote:
-> > On Sat, 30 Dec 2023 08:27:43 +0100,
-> > Dominik Brodowski wrote:
-> >>
-> >> Am Fri, Dec 29, 2023 at 06:11:43PM +0100 schrieb Takashi Iwai:
-> >>> On Fri, 29 Dec 2023 16:24:18 +0100,
-> >>> Dominik Brodowski wrote:
-> >>>>
-> >>>> Hi Takashi,
-> >>>>
-> >>>> many thanks for your response. Your patch helps half-way: the oops goes
-> >>>> away, but so does the sound... With your patch, the decisive lines in dmesg
-> >>>> are:
-> >>>>
-> >>>> 	sof-audio-pci-intel-tgl 0000:00:1f.3: Firmware info: version 2:2:0-57864
-> >>>> 	sof-audio-pci-intel-tgl 0000:00:1f.3: Firmware: ABI 3:22:1 Kernel ABI 3:23:0
-> >>>> 	sof_sdw sof_sdw: ASoC: CODEC DAI intel-hdmi-hifi1 not registered
-> >>>> 	sof_sdw sof_sdw: snd_soc_register_card failed -517
-> >>>> 	sof_sdw sof_sdw: ASoC: CODEC DAI intel-hdmi-hifi1 not registered
-> >>>> 	sof_sdw sof_sdw: snd_soc_register_card failed -517
-> >>>> 	platform sof_sdw: deferred probe pending
-> >>>>
-> >>>> With a revert of the a0575b4add21, it is:
-> >>>>
-> >>>> 	sof-audio-pci-intel-tgl 0000:00:1f.3: Firmware info: version 2:2:0-57864
-> >>>> 	sof-audio-pci-intel-tgl 0000:00:1f.3: Firmware: ABI 3:22:1 Kernel ABI 3:23:0
-> >>>> 	sof-audio-pci-intel-tgl 0000:00:1f.3: Topology: ABI 3:22:1 Kernel ABI 3:23:0
-> >>>> 	sof_sdw sof_sdw: ASoC: Parent card not yet available, widget card binding deferred
-> >>>> 	sof_sdw sof_sdw: hda_dsp_hdmi_build_controls: no PCM in topology for HDMI converter 3
-> >>>> 	input: sof-soundwire HDMI/DP,pcm=5 as /devices/pci0000:00/0000:00:1f.3/sof_sdw/sound/card0/input14
-> >>>> 	input: sof-soundwire HDMI/DP,pcm=6 as /devices/pci0000:00/0000:00:1f.3/sof_sdw/sound/card0/input15
-> >>>> 	input: sof-soundwire HDMI/DP,pcm=7 as /devices/pci0000:00/0000:00:1f.3/sof_sdw/sound/card0/input16
-> >>>>
-> >>>> Maybe this helps a bit further?
-> >>>
-> >>> Thanks for quick testing.
-> >>> It shows at least that my guess wasn't wrong.
-> >>>
-> >>> The problem could be the initialization order in the caller side.
-> >>> Can the patch below work instead?
-> >>
-> >> Unfortunately, no:
-> >>
-> >> sof-audio-pci-intel-tgl 0000:00:1f.3: Firmware info: version 2:2:0-57864
-> >> sof-audio-pci-intel-tgl 0000:00:1f.3: Firmware: ABI 3:22:1 Kernel ABI 3:23:0
-> >> sof_sdw sof_sdw: ASoC: CODEC DAI intel-hdmi-hifi1 not registered
-> >> sof_sdw sof_sdw: snd_soc_register_card failed -517
-> >> sof_sdw sof_sdw: ASoC: CODEC DAI intel-hdmi-hifi1 not registered
-> >> sof_sdw sof_sdw: snd_soc_register_card failed -517
-> >> platform sof_sdw: deferred probe pending
+> On Sat, 2023-12-30 at 17:59 +0100, Takashi Iwai wrote:
+> > Thanks, I guess I'll take this series later for 6.8 unless any
+> > objection is raised from reviewers.
 > > 
-> > Hm, then it might be the logical failure of that commit.
-> > Peter?
+> > But, I'd like to hear clarifications of some points beforehand:
 > > 
-> > Without a fix in the next few days, we'll have to revert it before
-> > 6.7.
+> > - Did we get consensus about the ACPI HID?  I didn't follow the
+> >   previous thread completely.
+> > 
 > 
-> The fix for this was sent early December:
-> https://lore.kernel.org/linux-sound/20231207095425.19597-1-peter.ujfalusi@linux.intel.com/
-> 
-> It had the correct Fixes tag but it did not made it to 6.7-rc while
-> a0575b4add21 did made it.
-> 
-> Mark, Takashi, can you pick the fix for 6.7 (it is in -next)? I think we
-> might have time for it to land?
+> The INT8866 is a (wrong) PNP ID, that should only be used by the owner
+> "Interphase Corporation".
+> Intel has also mistakenly used the INT PNP prefix in the past, and now
+> TI/leNovo.
 
-Oh that landed to Mark's for-next branch, i.e. only for 6.8.
-Mark, please cherry-pick and send a PR before 6.7 final.
+Yeah, and the question is whether TI / Lenovo recognize the problem
+and will avoid such a failure in future again.
 
-Meanwhile, Peter, please update the bugzilla entry to let people try
-the patch.
+> >   Since those models have been already in the market for quite some
+> >   time, we'd have to accept "INT8866", I'm afraid.  But it's still
+> >   very important to know whether a similar problem can be avoided in
+> >   future.
+> > 
+> > - Will be the firmware files upstreamed to linux-firmware tree later?
+> >   Otherwise users will have significant difficulties.
+> 
+> Shenghao sent the two files to linux-firmware@kernel.org a few days
+> ago, but I think the "Allegedly GPLv2+ ... Found in hex form in kernel
+> source." Licence needs to be fixed before acceptance.
+
+OK, that sounds promising.
+
+> But even if it is not included in the linux-firmware package, it is
+> easier for users to put two files in place per OS installation than
+> patching the kernel.
+
+Sure.
 
 
 thanks,
