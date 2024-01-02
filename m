@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1AAB1C46CD2
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Jan 2024 21:52:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DCB3FC46CD2
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Jan 2024 21:52:31 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7D827E99;
-	Tue,  2 Jan 2024 22:51:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7D827E99
+	by alsa0.perex.cz (Postfix) with ESMTPS id 05847E7A;
+	Tue,  2 Jan 2024 22:52:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 05847E7A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1704232326;
-	bh=597PH9z+1VP7R2ukFPhiOxQhpHkRhkBHaxGMJALc5no=;
+	s=default; t=1704232350;
+	bh=Zn94y7bErg2fCTqgECKQemiKoOfcE1kcsfixHwdqr+Q=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=WqhlaxpU5wYBavHgD+81kEJ9FCJx78ffv4dvytqz0JQcwaCN75hqIO7ER0K8/5Ker
-	 r6zFxPMPOD51xAKbQF9yeO55ypZtqGEwT850I0YQO84e8TOKjJvMLFeObnYhQZFaLN
-	 vR0pfpYsTFnk6Nay7uLg3/fF1Xe2VcWh4wNNHgNY=
+	b=f0Fclhgp3qrUQD7HyBfEvl3Y30TbErw+lNaLlrsLqWoUYsfByPbfbwAWJeKGwwQ20
+	 iYiRtWaZxBP5Ik9F2I5sW6fZLTB69oCEZdNk6c5KEGcDWVY5bBYL+Iccz0cbtffjEQ
+	 gA8ZbvQiFMF6PKlqtR7A2W2/d9NG/ZT3j1uMNSX4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1B620F89615; Tue,  2 Jan 2024 22:47:40 +0100 (CET)
+	id CC306F896DE; Tue,  2 Jan 2024 22:47:45 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5B070F89633;
-	Tue,  2 Jan 2024 22:47:40 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B59E2F89674;
+	Tue,  2 Jan 2024 22:47:44 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1AD04F80722; Tue,  2 Jan 2024 22:47:11 +0100 (CET)
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com
- [205.220.168.131])
+	id D6C3DF80718; Tue,  2 Jan 2024 22:47:13 +0100 (CET)
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com
+ [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 6DB9FF80563
-	for <alsa-devel@alsa-project.org>; Tue,  2 Jan 2024 22:46:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6DB9FF80563
+	by alsa1.perex.cz (Postfix) with ESMTPS id 56D8BF80570
+	for <alsa-devel@alsa-project.org>; Tue,  2 Jan 2024 22:46:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 56D8BF80570
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
- header.s=qcppdkim1 header.b=GTjYmavA
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+ header.s=qcppdkim1 header.b=cMFWgU1r
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
 	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id
- 402LkNc2010348;
-	Tue, 2 Jan 2024 21:46:23 GMT
+ 402JU40E007927;
+	Tue, 2 Jan 2024 21:46:25 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-type; s=qcppdkim1; bh=G2zlZoLj4tpbBf6CZGUg
-	qbkTG0qUc5ZXENrtX1X/jwo=; b=GTjYmavA+Zxmtyl4W6BaAvv3dYheioC9UonK
-	ZWuFnQAy33WCdZNOTvBHtpu3kjg3DazwFTole3BrSudH2iSl2KmqmIFRvEOdPCDT
-	+nO2EA8R7r4GREEwev8snZc0WLNuCs7TEy5XbXfQc/qoNSpU/DTv7v80XGg/nKtS
-	5KBNekSzYSBTdgheVMPxhOlhDwiK7+bFRqEebLTJQmj4AhXQqwundOjTgIQjwspy
-	YvOOACGwJdaDDFKrIzeEi3Z6VhC2wXa5DHZ37qrgBsua6B5R+3w8N+gmH+dAXCc1
-	9XUKWo2sDZKwLaFfR3vm+EtzjgsKYMtQY+uJBYRpB3eZjdjVlA==
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com
+	:mime-version:content-type; s=qcppdkim1; bh=As/LdtUmbbB5siySloFf
+	0kGunSrAkzqtvS8hEof3Hjw=; b=cMFWgU1rsNPFzg0pKPg9uIjD5vCqXMjy/VAU
+	2k4vvokrCIy8iDdslxGq3vZOZTnLBLSfQhuQ8BgPuN6gU1KFJm93Gr6Jnz7eVA2X
+	mGl+aqYQtP8Ckj16fu5FOELTCxjJ0FGaLMrT33++fAEZb0EFNSvffcoYd9IG4XtT
+	HZ+W2SBYk4rg5Liabjd4162dg8W20C7iY7HGMrYg2sb/OoEGgGIDWIzTGFhqScxd
+	0KR9obSfbZ/Ndwvh9Ay/vsUnZuiBrd50l1qF92g2qF08EVwuzrkb8Fo/NppkJpLR
+	o+EuhbLkm52WQe6VsB87CEIY2TkTi2lMxOW0hLOWMJJCZMHjnA==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com
  [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vcdgpskhn-1
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vbsyk2yb0-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 02 Jan 2024 21:46:23 +0000 (GMT)
+	Tue, 02 Jan 2024 21:46:25 +0000 (GMT)
 Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com
  [10.47.209.197])
-	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id
- 402LkMeo017448
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id
+ 402LkOPA003251
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 2 Jan 2024 21:46:22 GMT
+	Tue, 2 Jan 2024 21:46:24 GMT
 Received: from hu-wcheng-lv.qualcomm.com (10.49.16.6) by
  nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Tue, 2 Jan 2024 13:46:22 -0800
+ 15.2.1118.40; Tue, 2 Jan 2024 13:46:23 -0800
 From: Wesley Cheng <quic_wcheng@quicinc.com>
 To: <srinivas.kandagatla@linaro.org>, <mathias.nyman@intel.com>,
         <perex@perex.cz>, <conor+dt@kernel.org>, <corbet@lwn.net>,
@@ -79,10 +79,9 @@ CC: <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-sound@vger.kernel.org>, <linux-usb@vger.kernel.org>,
         <linux-arm-msm@vger.kernel.org>, <linux-doc@vger.kernel.org>,
         <alsa-devel@alsa-project.org>, Wesley Cheng <quic_wcheng@quicinc.com>
-Subject: [PATCH v12 16/41] usb: dwc3: Specify maximum number of XHCI
- interrupters
-Date: Tue, 2 Jan 2024 13:45:24 -0800
-Message-ID: <20240102214549.22498-17-quic_wcheng@quicinc.com>
+Subject: [PATCH v12 21/41] ASoC: usb: Add PCM format check API for USB backend
+Date: Tue, 2 Jan 2024 13:45:29 -0800
+Message-ID: <20240102214549.22498-22-quic_wcheng@quicinc.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20240102214549.22498-1-quic_wcheng@quicinc.com>
 References: <20240102214549.22498-1-quic_wcheng@quicinc.com>
@@ -94,19 +93,19 @@ X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
  signatures=585085
-X-Proofpoint-ORIG-GUID: XWThPArgfwVqON5dUJn5kQV8F45EgXiA
-X-Proofpoint-GUID: XWThPArgfwVqON5dUJn5kQV8F45EgXiA
+X-Proofpoint-ORIG-GUID: KnPDFzMt07AOILiz33GmyoyJysan74Ex
+X-Proofpoint-GUID: KnPDFzMt07AOILiz33GmyoyJysan74Ex
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- lowpriorityscore=0
- spamscore=0 bulkscore=0 phishscore=0 mlxlogscore=762 impostorscore=0
- mlxscore=0 suspectscore=0 clxscore=1015 priorityscore=1501 malwarescore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2401020160
-Message-ID-Hash: WGAFT464TRFVMIE7UQ7HYLQ6LAIIWC3E
-X-Message-ID-Hash: WGAFT464TRFVMIE7UQ7HYLQ6LAIIWC3E
+ adultscore=0
+ lowpriorityscore=0 priorityscore=1501 impostorscore=0 malwarescore=0
+ bulkscore=0 mlxlogscore=999 spamscore=0 suspectscore=0 clxscore=1015
+ mlxscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2401020161
+Message-ID-Hash: FBKDXY3FFO2KCGGWZYAUBJGIAHUDDUX4
+X-Message-ID-Hash: FBKDXY3FFO2KCGGWZYAUBJGIAHUDDUX4
 X-MailFrom: quic_wcheng@quicinc.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -119,7 +118,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WGAFT464TRFVMIE7UQ7HYLQ6LAIIWC3E/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FBKDXY3FFO2KCGGWZYAUBJGIAHUDDUX4/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -128,103 +127,63 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Allow for the DWC3 host driver to pass along XHCI property that defines
-how many interrupters to allocate.  This is in relation for the number of
-event rings that can be potentially used by other processors within the
-system.
+Introduce a helper to check if a particular PCM format is supported by the
+USB audio device connected.  If the USB audio device does not have an
+audio profile which can support the requested format, then notify the USB
+backend.
 
-Acked-by: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
 Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
 ---
- drivers/usb/dwc3/core.c | 12 ++++++++++++
- drivers/usb/dwc3/core.h |  2 ++
- drivers/usb/dwc3/host.c |  5 ++++-
- 3 files changed, 18 insertions(+), 1 deletion(-)
+ include/sound/soc-usb.h |  2 ++
+ sound/soc/soc-usb.c     | 25 +++++++++++++++++++++++++
+ 2 files changed, 27 insertions(+)
 
-diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
-index b101dbf8c5dc..8b1629eff48a 100644
---- a/drivers/usb/dwc3/core.c
-+++ b/drivers/usb/dwc3/core.c
-@@ -1510,6 +1510,7 @@ static void dwc3_get_properties(struct dwc3 *dwc)
- 	u8			tx_thr_num_pkt_prd = 0;
- 	u8			tx_max_burst_prd = 0;
- 	u8			tx_fifo_resize_max_num;
-+	u16			num_hc_interrupters;
- 	const char		*usb_psy_name;
- 	int			ret;
+diff --git a/include/sound/soc-usb.h b/include/sound/soc-usb.h
+index c0c6b5abacdf..d9fc83180c56 100644
+--- a/include/sound/soc-usb.h
++++ b/include/sound/soc-usb.h
+@@ -38,6 +38,8 @@ struct snd_soc_usb {
+ };
  
-@@ -1532,6 +1533,9 @@ static void dwc3_get_properties(struct dwc3 *dwc)
- 	 */
- 	tx_fifo_resize_max_num = 6;
+ const char *snd_soc_usb_get_components_tag(bool playback);
++int snd_soc_usb_find_format(int card_idx, struct snd_pcm_hw_params *params,
++			int direction);
  
-+	/* default to a single XHCI interrupter */
-+	num_hc_interrupters = 1;
-+
- 	dwc->maximum_speed = usb_get_maximum_speed(dev);
- 	dwc->max_ssp_rate = usb_get_maximum_ssp_rate(dev);
- 	dwc->dr_mode = usb_get_dr_mode(dev);
-@@ -1583,6 +1587,12 @@ static void dwc3_get_properties(struct dwc3 *dwc)
- 				&tx_thr_num_pkt_prd);
- 	device_property_read_u8(dev, "snps,tx-max-burst-prd",
- 				&tx_max_burst_prd);
-+	device_property_read_u16(dev, "num-hc-interrupters",
-+				&num_hc_interrupters);
-+	/* DWC3 core allowed to have a max of 8 interrupters */
-+	if (num_hc_interrupters > 8)
-+		num_hc_interrupters = 8;
-+
- 	dwc->do_fifo_resize = device_property_read_bool(dev,
- 							"tx-fifo-resize");
- 	if (dwc->do_fifo_resize)
-@@ -1671,6 +1681,8 @@ static void dwc3_get_properties(struct dwc3 *dwc)
- 	dwc->imod_interval = 0;
- 
- 	dwc->tx_fifo_resize_max_num = tx_fifo_resize_max_num;
-+
-+	dwc->num_hc_interrupters = num_hc_interrupters;
+ int snd_soc_usb_connect(struct device *usbdev, struct snd_soc_usb_device *sdev);
+ int snd_soc_usb_disconnect(struct device *usbdev, struct snd_soc_usb_device *sdev);
+diff --git a/sound/soc/soc-usb.c b/sound/soc/soc-usb.c
+index 5b127141f0a1..cad8e1d798e4 100644
+--- a/sound/soc/soc-usb.c
++++ b/sound/soc/soc-usb.c
+@@ -80,6 +80,31 @@ void *snd_soc_usb_find_priv_data(struct device *dev)
  }
+ EXPORT_SYMBOL_GPL(snd_soc_usb_find_priv_data);
  
- /* check whether the core supports IMOD */
-diff --git a/drivers/usb/dwc3/core.h b/drivers/usb/dwc3/core.h
-index efe6caf4d0e8..fb229b64946f 100644
---- a/drivers/usb/dwc3/core.h
-+++ b/drivers/usb/dwc3/core.h
-@@ -1062,6 +1062,7 @@ struct dwc3_scratchpad_array {
-  * @tx_max_burst_prd: max periodic ESS transmit burst size
-  * @tx_fifo_resize_max_num: max number of fifos allocated during txfifo resize
-  * @clear_stall_protocol: endpoint number that requires a delayed status phase
-+ * @num_hc_interrupters: number of host controller interrupters
-  * @hsphy_interface: "utmi" or "ulpi"
-  * @connected: true when we're connected to a host, false otherwise
-  * @softconnect: true when gadget connect is called, false when disconnect runs
-@@ -1298,6 +1299,7 @@ struct dwc3 {
- 	u8			tx_max_burst_prd;
- 	u8			tx_fifo_resize_max_num;
- 	u8			clear_stall_protocol;
-+	u16			num_hc_interrupters;
- 
- 	const char		*hsphy_interface;
- 
-diff --git a/drivers/usb/dwc3/host.c b/drivers/usb/dwc3/host.c
-index 61f57fe5bb78..79ce359c342a 100644
---- a/drivers/usb/dwc3/host.c
-+++ b/drivers/usb/dwc3/host.c
-@@ -61,7 +61,7 @@ static int dwc3_host_get_irq(struct dwc3 *dwc)
- 
- int dwc3_host_init(struct dwc3 *dwc)
- {
--	struct property_entry	props[4];
-+	struct property_entry	props[5];
- 	struct platform_device	*xhci;
- 	int			ret, irq;
- 	int			prop_idx = 0;
-@@ -107,6 +107,9 @@ int dwc3_host_init(struct dwc3 *dwc)
- 	if (DWC3_VER_IS_WITHIN(DWC3, ANY, 300A))
- 		props[prop_idx++] = PROPERTY_ENTRY_BOOL("quirk-broken-port-ped");
- 
-+	props[prop_idx++] = PROPERTY_ENTRY_U16("num-hc-interrupters",
-+						dwc->num_hc_interrupters);
++/**
++ * snd_soc_usb_find_format() - Check if audio format is supported
++ * @card_idx: USB sound chip array index
++ * @params: PCM parameters
++ * @direction: capture or playback
++ *
++ * Ensure that a requested audio profile from the ASoC side is able to be
++ * supported by the USB device.
++ *
++ * Return 0 on success, negative on error.
++ *
++ */
++int snd_soc_usb_find_format(int card_idx, struct snd_pcm_hw_params *params,
++			int direction)
++{
++	struct snd_usb_stream *as;
 +
- 	if (prop_idx) {
- 		ret = device_create_managed_software_node(&xhci->dev, props, NULL);
- 		if (ret) {
++	as = snd_usb_find_suppported_substream(card_idx, params, direction);
++	if (!as)
++		return -EOPNOTSUPP;
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(snd_soc_usb_find_format);
++
+ /**
+  * snd_soc_usb_allocate_port() - allocate a SOC USB device
+  * @component: USB DPCM backend DAI component
