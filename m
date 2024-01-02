@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 140F6C47074
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Jan 2024 21:48:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9DB75C46CD2
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Jan 2024 21:48:46 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5454EE12;
-	Tue,  2 Jan 2024 22:48:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5454EE12
+	by alsa0.perex.cz (Postfix) with ESMTPS id AF54C7F1;
+	Tue,  2 Jan 2024 22:48:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AF54C7F1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1704232100;
-	bh=7UgoR9GdrlxExII/CSr165GUaCZgYQDj5Fe+6gxuDKw=;
+	s=default; t=1704232124;
+	bh=MsAGWvTmUe7ZZFpKhdaFPCADXzDmkHKqTdEvB/OSsj0=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=imZS4Xma0QkqyNUSqwQ3u3q82edtuptJRPFkfZqTjtEfg/xldKZNlKW31kB635DZ4
-	 QFHCNvtLK/8P9J2SNz8L8P7ledCH8NLSGYg5bePUyBP5Co1+j8EHG6ZWa9Z5Mj5Y6r
-	 KQO6a1S2N0X3HoJSp1JsPGceAzPtits4xlxoGs9s=
+	b=hLb6dk4U7asCxrGVl2/aRWiIioUNcwLT6+S3QfOTbpt6DsVreRGOtfWKQ0+DDtqvM
+	 VoxynAef4tHkSk49DVkZDMd+GQybQYaWElLbRBbZI1bkZ+m+03oj6e04TZe1zZLOmJ
+	 MCHhpPQfEpZ0MsCDsQZ/DUK9cXKsa8wr+k/495lg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0DF0CF80684; Tue,  2 Jan 2024 22:46:56 +0100 (CET)
+	id DD269F806A5; Tue,  2 Jan 2024 22:46:59 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0B68EF8067D;
-	Tue,  2 Jan 2024 22:46:56 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 04A89F80693;
+	Tue,  2 Jan 2024 22:46:59 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1E68EF805FD; Tue,  2 Jan 2024 22:46:46 +0100 (CET)
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com
- [205.220.180.131])
+	id D6A20F80609; Tue,  2 Jan 2024 22:46:46 +0100 (CET)
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com
+ [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 175A2F80549
-	for <alsa-devel@alsa-project.org>; Tue,  2 Jan 2024 22:46:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 175A2F80549
+	by alsa1.perex.cz (Postfix) with ESMTPS id 63D3BF8047D
+	for <alsa-devel@alsa-project.org>; Tue,  2 Jan 2024 22:46:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 63D3BF8047D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
- header.s=qcppdkim1 header.b=WSxFbiOe
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+ header.s=qcppdkim1 header.b=dkmbj/gq
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
 	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id
- 402EcooP018582;
-	Tue, 2 Jan 2024 21:46:21 GMT
+ 402LU2hv002253;
+	Tue, 2 Jan 2024 21:46:19 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-type; s=qcppdkim1; bh=7sqlF3lfk8wdZ6Q0jCNq
-	vTIEHuVLALHHp/uM/yniut0=; b=WSxFbiOefhRQ+oAprFOwSHlxZM6kflzKtf8T
-	fPurstrAnpMuyt+MGOYtSSUGPPWu9SVEgWadKZixC7CxDemiyB2kZ+oiF3ghXIIl
-	oy5/Ne7o/yWHn2ULyZlCVkbiiNRphfT40ZmqFDcGMVV2wL7jI+768FJGx6VhUmp7
-	1jInU+SkPXaLRz2Nd0y+OFM1h1vEZU6L1EhyL9k0FTNSwTTQPm1SD+iS1CEzQM99
-	8bVMnzn1ZYaIVA4nfbqZ0wFLpPPmZ1Vb2WaHuNkUF1BbBIkLkHz2K2X/YIqthO8J
-	4lCpIhQLhEXicnO8vLdBBib4yq8qQYuPG0Otrqd0uGcqaAEWRg==
+	:mime-version:content-type; s=qcppdkim1; bh=paHxL+OZAHcyvEHgJl2x
+	/I6Y7uPgTaT5eH7keKhw8sM=; b=dkmbj/gqVHgdTE7e1ni2cE8fnbpV5bF9zoq8
+	oOTezl00frmknKirwEFOIe2Y8Rfi5GGgFHnMLsWLBxbdMIHxfC6CYIZrq1UPsu8B
+	bE0u1K5SABBU+bK0OvNQzMTltuuoJSTTC1hP0gwzziP5T7Q6ZMFARFmxmklGfV3C
+	Y2/F2LFQfRNVGipnZeZLlIWNA2JO+Vwb2FC1OqwnOEkd9eJesCPwiFeqPPtbQrPh
+	eyHXbO2sYb751mOp0+Thw7KWjc/VK7kM+8dcFSi3oyYlOxOMyc4u9SNlpc/sDKG+
+	FBnqn5e0Z+Fk+l6v+TZ3eQvMsfl7EAIZ3WUMrOt6trvUzALHzQ==
 Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com
  [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vc9nn1xj4-1
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vccc1hqcj-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 02 Jan 2024 21:46:21 +0000 (GMT)
+	Tue, 02 Jan 2024 21:46:19 +0000 (GMT)
 Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com
  [10.47.209.197])
 	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id
- 402LkK6R009853
+ 402LkIgX009843
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 2 Jan 2024 21:46:20 GMT
+	Tue, 2 Jan 2024 21:46:18 GMT
 Received: from hu-wcheng-lv.qualcomm.com (10.49.16.6) by
  nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Tue, 2 Jan 2024 13:46:19 -0800
+ 15.2.1118.40; Tue, 2 Jan 2024 13:46:18 -0800
 From: Wesley Cheng <quic_wcheng@quicinc.com>
 To: <srinivas.kandagatla@linaro.org>, <mathias.nyman@intel.com>,
         <perex@perex.cz>, <conor+dt@kernel.org>, <corbet@lwn.net>,
@@ -78,10 +78,13 @@ To: <srinivas.kandagatla@linaro.org>, <mathias.nyman@intel.com>,
 CC: <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-sound@vger.kernel.org>, <linux-usb@vger.kernel.org>,
         <linux-arm-msm@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <alsa-devel@alsa-project.org>, Wesley Cheng <quic_wcheng@quicinc.com>
-Subject: [PATCH v12 08/41] ASoC: qcom: qdsp6: Introduce USB AFE port to q6dsp
-Date: Tue, 2 Jan 2024 13:45:16 -0800
-Message-ID: <20240102214549.22498-9-quic_wcheng@quicinc.com>
+        <alsa-devel@alsa-project.org>,
+        Mathias Nyman <mathias.nyman@linux.intel.com>,
+        Wesley Cheng <quic_wcheng@quicinc.com>
+Subject: [PATCH v12 03/41] xhci: sideband: add initial api to register a
+ sideband entity
+Date: Tue, 2 Jan 2024 13:45:11 -0800
+Message-ID: <20240102214549.22498-4-quic_wcheng@quicinc.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20240102214549.22498-1-quic_wcheng@quicinc.com>
 References: <20240102214549.22498-1-quic_wcheng@quicinc.com>
@@ -93,19 +96,19 @@ X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
  signatures=585085
-X-Proofpoint-GUID: 3F7oEUFOEA0T5e1e18srplYyLk-FOav4
-X-Proofpoint-ORIG-GUID: 3F7oEUFOEA0T5e1e18srplYyLk-FOav4
+X-Proofpoint-GUID: 9Yd9ZqkXCjNbmJRpq5uAcPEVQqp86WtD
+X-Proofpoint-ORIG-GUID: 9Yd9ZqkXCjNbmJRpq5uAcPEVQqp86WtD
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- adultscore=0 impostorscore=0
- priorityscore=1501 mlxlogscore=999 phishscore=0 mlxscore=0 clxscore=1015
- lowpriorityscore=0 bulkscore=0 spamscore=0 suspectscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2311290000
- definitions=main-2401020161
-Message-ID-Hash: IYCFLRHKVDSGOZ6AHQSABAWUPIU7T47F
-X-Message-ID-Hash: IYCFLRHKVDSGOZ6AHQSABAWUPIU7T47F
+ mlxlogscore=999
+ lowpriorityscore=0 malwarescore=0 spamscore=0 clxscore=1015
+ impostorscore=0 adultscore=0 phishscore=0 suspectscore=0 mlxscore=0
+ bulkscore=0 priorityscore=1501 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2311290000 definitions=main-2401020161
+Message-ID-Hash: 5ATDXXMWXOX64UM57UV5D3VPIXBORSUN
+X-Message-ID-Hash: 5ATDXXMWXOX64UM57UV5D3VPIXBORSUN
 X-MailFrom: quic_wcheng@quicinc.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -118,7 +121,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IYCFLRHKVDSGOZ6AHQSABAWUPIU7T47F/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5ATDXXMWXOX64UM57UV5D3VPIXBORSUN/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -127,554 +130,537 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The QC ADSP is able to support USB playback endpoints, so that the main
-application processor can be placed into lower CPU power modes.  This adds
-the required AFE port configurations and port start command to start an
-audio session.
+From: Mathias Nyman <mathias.nyman@linux.intel.com>
 
-Specifically, the QC ADSP can support all potential endpoints that are
-exposed by the audio data interface.  This includes, feedback endpoints
-(both implicit and explicit) as well as the isochronous (data) endpoints.
-The size of audio samples sent per USB frame (microframe) will be adjusted
-based on information received on the feedback endpoint.
+Introduce XHCI sideband, which manages the USB endpoints being requested by
+a client driver.  This is used for when client drivers are attempting to
+offload USB endpoints to another entity for handling USB transfers.  XHCI
+sideband will allow for drivers to fetch the required information about the
+transfer ring, so the user can submit transfers independently.  Expose the
+required APIs for drivers to register and request for a USB endpoint and to
+manage XHCI secondary interrupters.
 
-Some pre-requisites are needed before issuing the AFE port start command,
-such as setting the USB AFE dev_token.  This carries information about the
-available USB SND cards and PCM devices that have been discovered on the
-USB bus.  The dev_token field is used by the audio DSP to notify the USB
-offload driver of which card and PCM index to enable playback on.
+Multiple ring segment page linking, proper endpoint clean up, and allowing
+module compliation added by Wesley Cheng to complete original concept code
+by Mathias Nyman.
 
+Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
+Co-developed-by: Wesley Cheng <quic_wcheng@quicinc.com>
 Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
 ---
- sound/soc/qcom/qdsp6/q6afe-dai.c         |  60 +++++++
- sound/soc/qcom/qdsp6/q6afe.c             | 191 ++++++++++++++++++++++-
- sound/soc/qcom/qdsp6/q6afe.h             |  36 ++++-
- sound/soc/qcom/qdsp6/q6dsp-lpass-ports.c |  23 +++
- sound/soc/qcom/qdsp6/q6dsp-lpass-ports.h |   1 +
- sound/soc/qcom/qdsp6/q6routing.c         |   9 ++
- 6 files changed, 318 insertions(+), 2 deletions(-)
+ drivers/usb/host/Kconfig          |   9 +
+ drivers/usb/host/Makefile         |   2 +
+ drivers/usb/host/xhci-sideband.c  | 374 ++++++++++++++++++++++++++++++
+ drivers/usb/host/xhci.h           |   4 +
+ include/linux/usb/xhci-sideband.h |  66 ++++++
+ 5 files changed, 455 insertions(+)
+ create mode 100644 drivers/usb/host/xhci-sideband.c
+ create mode 100644 include/linux/usb/xhci-sideband.h
 
-diff --git a/sound/soc/qcom/qdsp6/q6afe-dai.c b/sound/soc/qcom/qdsp6/q6afe-dai.c
-index a9c4f896a7df..80b22d1a24d0 100644
---- a/sound/soc/qcom/qdsp6/q6afe-dai.c
-+++ b/sound/soc/qcom/qdsp6/q6afe-dai.c
-@@ -92,6 +92,39 @@ static int q6hdmi_hw_params(struct snd_pcm_substream *substream,
- 	return 0;
- }
+diff --git a/drivers/usb/host/Kconfig b/drivers/usb/host/Kconfig
+index 4448d0ab06f0..6135603c5dc4 100644
+--- a/drivers/usb/host/Kconfig
++++ b/drivers/usb/host/Kconfig
+@@ -104,6 +104,15 @@ config USB_XHCI_RZV2M
+ 	  Say 'Y' to enable the support for the xHCI host controller
+ 	  found in Renesas RZ/V2M SoC.
  
-+static int q6afe_usb_hw_params(struct snd_pcm_substream *substream,
-+			   struct snd_pcm_hw_params *params,
-+			   struct snd_soc_dai *dai)
++config USB_XHCI_SIDEBAND
++	tristate "xHCI support for sideband"
++	help
++	  Say 'Y' to enable the support for the xHCI sideband capability.
++	  provide a mechanism for a sideband datapath for payload associated
++	  with audio class endpoints. This allows for an audio DSP to use
++	  xHCI USB endpoints directly, allowing CPU to sleep while playing
++	  audio
++
+ config USB_XHCI_TEGRA
+ 	tristate "xHCI support for NVIDIA Tegra SoCs"
+ 	depends on PHY_TEGRA_XUSB
+diff --git a/drivers/usb/host/Makefile b/drivers/usb/host/Makefile
+index be4e5245c52f..435a1e93b40b 100644
+--- a/drivers/usb/host/Makefile
++++ b/drivers/usb/host/Makefile
+@@ -32,6 +32,8 @@ endif
+ xhci-rcar-hcd-y				+= xhci-rcar.o
+ xhci-rcar-hcd-$(CONFIG_USB_XHCI_RZV2M)	+= xhci-rzv2m.o
+ 
++obj-$(CONFIG_USB_XHCI_SIDEBAND) += xhci-sideband.o
++
+ obj-$(CONFIG_USB_PCI)	+= pci-quirks.o
+ 
+ obj-$(CONFIG_USB_EHCI_HCD)	+= ehci-hcd.o
+diff --git a/drivers/usb/host/xhci-sideband.c b/drivers/usb/host/xhci-sideband.c
+new file mode 100644
+index 000000000000..eb5ac5fc5c09
+--- /dev/null
++++ b/drivers/usb/host/xhci-sideband.c
+@@ -0,0 +1,374 @@
++// SPDX-License-Identifier: GPL-2.0
++
++/*
++ * xHCI host controller sideband support
++ *
++ * Copyright (c) 2023, Intel Corporation.
++ *
++ * Author: Mathias Nyman
++ */
++
++#include <linux/usb/xhci-sideband.h>
++#include <linux/dma-direct.h>
++
++#include "xhci.h"
++
++/* sideband internal helpers */
++static struct sg_table *
++xhci_ring_to_sgtable(struct xhci_sideband *sb, struct xhci_ring *ring)
 +{
-+	struct q6afe_dai_data *dai_data = dev_get_drvdata(dai->dev);
-+	int channels = params_channels(params);
-+	int rate = params_rate(params);
-+	struct q6afe_usb_cfg *usb = &dai_data->port_config[dai->id].usb_audio;
++	struct xhci_segment *seg;
++	struct sg_table	*sgt;
++	unsigned int n_pages;
++	struct page **pages;
++	struct device *dev;
++	size_t sz;
++	int i;
 +
-+	usb->sample_rate = rate;
-+	usb->num_channels = channels;
++	dev = xhci_to_hcd(sb->xhci)->self.sysdev;
++	sz = ring->num_segs * TRB_SEGMENT_SIZE;
++	n_pages = PAGE_ALIGN(sz) >> PAGE_SHIFT;
++	pages = kvmalloc_array(n_pages, sizeof(struct page *), GFP_KERNEL);
++	if (!pages)
++		return NULL;
 +
-+	switch (params_format(params)) {
-+	case SNDRV_PCM_FORMAT_U16_LE:
-+	case SNDRV_PCM_FORMAT_S16_LE:
-+		usb->bit_width = 16;
-+		break;
-+	case SNDRV_PCM_FORMAT_S24_LE:
-+	case SNDRV_PCM_FORMAT_S24_3LE:
-+		usb->bit_width = 24;
-+		break;
-+	case SNDRV_PCM_FORMAT_S32_LE:
-+		usb->bit_width = 32;
-+		break;
-+	default:
-+		dev_err(dai->dev, "%s: invalid format %d\n",
-+			__func__, params_format(params));
-+		return -EINVAL;
++	sgt = kzalloc(sizeof(struct sg_table), GFP_KERNEL);
++	if (!sgt) {
++		kvfree(pages);
++		return NULL;
 +	}
++
++	seg = ring->first_seg;
++	/*
++	 * Rings can potentially have multiple segments, create an array that
++	 * carries page references to allocated segments.  Utilize the
++	 * sg_alloc_table_from_pages() to create the sg table, and to ensure
++	 * that page links are created.
++	 */
++	for (i = 0; i < ring->num_segs; i++) {
++		dma_get_sgtable(dev, sgt, seg->trbs, seg->dma,
++					TRB_SEGMENT_SIZE);
++		pages[i] = sg_page(sgt->sgl);
++		sg_free_table(sgt);
++		seg = seg->next;
++	}
++
++	if (sg_alloc_table_from_pages(sgt, pages, n_pages, 0, sz, GFP_KERNEL)) {
++		kvfree(pages);
++		kfree(sgt);
++
++		return NULL;
++	}
++	/*
++	 * Save first segment dma address to sg dma_address field for the sideband
++	 * client to have access to the IOVA of the ring.
++	 */
++	sg_dma_address(sgt->sgl) = ring->first_seg->dma;
++
++	return sgt;
++}
++
++static void
++__xhci_sideband_remove_endpoint(struct xhci_sideband *sb, struct xhci_virt_ep *ep)
++{
++	/*
++	 * Issue a stop endpoint command when an endpoint is removed.
++	 * The stop ep cmd handler will handle the ring cleanup.
++	 */
++	xhci_stop_endpoint_sync(sb->xhci, ep, 0, GFP_KERNEL);
++
++	ep->sideband = NULL;
++	sb->eps[ep->ep_index] = NULL;
++}
++
++/* sideband api functions */
++
++/**
++ * xhci_sideband_add_endpoint - add endpoint to sideband access list
++ * @sb: sideband instance for this usb device
++ * @host_ep: usb host endpoint
++ *
++ * Adds an endpoint to the list of sideband accessed endpoints for this usb
++ * device.
++ * After an endpoint is added the sideband client can get the endpoint transfer
++ * ring buffer by calling xhci_sideband_endpoint_buffer()
++ *
++ * Return: 0 on success, negative error otherwise.
++ */
++int
++xhci_sideband_add_endpoint(struct xhci_sideband *sb,
++			   struct usb_host_endpoint *host_ep)
++{
++	struct xhci_virt_ep *ep;
++	unsigned int ep_index;
++
++	ep_index = xhci_get_endpoint_index(&host_ep->desc);
++	ep = &sb->vdev->eps[ep_index];
++
++	if (ep->ep_state & EP_HAS_STREAMS)
++		return -EINVAL;
++
++	/*
++	 * Note, we don't know the DMA mask of the audio DSP device, if its
++	 * smaller than for xhci it won't be able to access the endpoint ring
++	 * buffer. This could be solved by not allowing the audio class driver
++	 * to add the endpoint the normal way, but instead offload it immediately,
++	 * and let this function add the endpoint and allocate the ring buffer
++	 * with the smallest common DMA mask
++	 */
++
++	if (sb->eps[ep_index] || ep->sideband)
++		return -EBUSY;
++
++	ep->sideband = sb;
++	sb->eps[ep_index] = ep;
 +
 +	return 0;
 +}
-+
- static int q6i2s_hw_params(struct snd_pcm_substream *substream,
- 			   struct snd_pcm_hw_params *params,
- 			   struct snd_soc_dai *dai)
-@@ -392,6 +425,10 @@ static int q6afe_dai_prepare(struct snd_pcm_substream *substream,
- 		q6afe_cdc_dma_port_prepare(dai_data->port[dai->id],
- 					   &dai_data->port_config[dai->id].dma_cfg);
- 		break;
-+	case USB_RX:
-+		q6afe_usb_port_prepare(dai_data->port[dai->id],
-+				       &dai_data->port_config[dai->id].usb_audio);
-+		break;
- 	default:
- 		return -EINVAL;
- 	}
-@@ -618,6 +655,9 @@ static const struct snd_soc_dapm_route q6afe_dapm_routes[] = {
- 	{"TX_CODEC_DMA_TX_5", NULL, "TX_CODEC_DMA_TX_5 Capture"},
- 	{"RX_CODEC_DMA_RX_6 Playback", NULL, "RX_CODEC_DMA_RX_6"},
- 	{"RX_CODEC_DMA_RX_7 Playback", NULL, "RX_CODEC_DMA_RX_7"},
-+
-+	/* USB playback AFE port receives data for playback, hence use the RX port */
-+	{"USB Playback", NULL, "USB_RX"},
- };
- 
- static int msm_dai_q6_dai_probe(struct snd_soc_dai *dai)
-@@ -645,6 +685,23 @@ static int msm_dai_q6_dai_remove(struct snd_soc_dai *dai)
- 	return 0;
- }
- 
-+static const struct snd_soc_dai_ops q6afe_usb_ops = {
-+	.probe		= msm_dai_q6_dai_probe,
-+	.prepare	= q6afe_dai_prepare,
-+	.hw_params	= q6afe_usb_hw_params,
-+	/*
-+	 * Shutdown callback required to stop the USB AFE port, which is enabled
-+	 * by the prepare() stage.  This stops the audio traffic on the USB AFE
-+	 * port on the Q6DSP.
-+	 */
-+	.shutdown	= q6afe_dai_shutdown,
-+	/*
-+	 * Startup callback not needed, as AFE port start command passes the PCM
-+	 * parameters within the AFE command, which is provided by the PCM core
-+	 * during the prepare() stage.
-+	 */
-+};
-+
- static const struct snd_soc_dai_ops q6hdmi_ops = {
- 	.probe			= msm_dai_q6_dai_probe,
- 	.remove			= msm_dai_q6_dai_remove,
-@@ -943,6 +1000,8 @@ static const struct snd_soc_dapm_widget q6afe_dai_widgets[] = {
- 		0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_AIF_IN("RX_CODEC_DMA_RX_7", "NULL",
- 		0, SND_SOC_NOPM, 0, 0),
-+
-+	SND_SOC_DAPM_AIF_IN("USB_RX", NULL, 0, SND_SOC_NOPM, 0, 0),
- };
- 
- static const struct snd_soc_component_driver q6afe_dai_component = {
-@@ -1057,6 +1116,7 @@ static int q6afe_dai_dev_probe(struct platform_device *pdev)
- 	cfg.q6i2s_ops = &q6i2s_ops;
- 	cfg.q6tdm_ops = &q6tdm_ops;
- 	cfg.q6dma_ops = &q6dma_ops;
-+	cfg.q6usb_ops = &q6afe_usb_ops;
- 	dais = q6dsp_audio_ports_set_config(dev, &cfg, &num_dais);
- 
- 	return devm_snd_soc_register_component(dev, &q6afe_dai_component, dais, num_dais);
-diff --git a/sound/soc/qcom/qdsp6/q6afe.c b/sound/soc/qcom/qdsp6/q6afe.c
-index 91d39f6ad0bd..8e0d2d583c9c 100644
---- a/sound/soc/qcom/qdsp6/q6afe.c
-+++ b/sound/soc/qcom/qdsp6/q6afe.c
-@@ -35,6 +35,8 @@
- #define AFE_MODULE_TDM			0x0001028A
- 
- #define AFE_PARAM_ID_CDC_SLIMBUS_SLAVE_CFG 0x00010235
-+#define AFE_PARAM_ID_USB_AUDIO_DEV_PARAMS    0x000102A5
-+#define AFE_PARAM_ID_USB_AUDIO_DEV_LPCM_FMT 0x000102AA
- 
- #define AFE_PARAM_ID_LPAIF_CLK_CONFIG	0x00010238
- #define AFE_PARAM_ID_INT_DIGITAL_CDC_CLK_CONFIG	0x00010239
-@@ -44,6 +46,7 @@
- #define AFE_PARAM_ID_TDM_CONFIG	0x0001029D
- #define AFE_PARAM_ID_PORT_SLOT_MAPPING_CONFIG	0x00010297
- #define AFE_PARAM_ID_CODEC_DMA_CONFIG	0x000102B8
-+#define AFE_PARAM_ID_USB_AUDIO_CONFIG    0x000102A4
- #define AFE_CMD_REMOTE_LPASS_CORE_HW_VOTE_REQUEST	0x000100f4
- #define AFE_CMD_RSP_REMOTE_LPASS_CORE_HW_VOTE_REQUEST   0x000100f5
- #define AFE_CMD_REMOTE_LPASS_CORE_HW_DEVOTE_REQUEST	0x000100f6
-@@ -72,12 +75,16 @@
- #define AFE_PORT_CONFIG_I2S_WS_SRC_INTERNAL	0x1
- #define AFE_LINEAR_PCM_DATA				0x0
- 
-+#define AFE_API_MINOR_VERSION_USB_AUDIO_CONFIG 0x1
- 
- /* Port IDs */
- #define AFE_API_VERSION_HDMI_CONFIG	0x1
- #define AFE_PORT_ID_MULTICHAN_HDMI_RX	0x100E
- #define AFE_PORT_ID_HDMI_OVER_DP_RX	0x6020
- 
-+/* USB AFE port */
-+#define AFE_PORT_ID_USB_RX                       0x7000
-+
- #define AFE_API_VERSION_SLIMBUS_CONFIG 0x1
- /* Clock set API version */
- #define AFE_API_VERSION_CLOCK_SET 1
-@@ -513,12 +520,96 @@ struct afe_param_id_cdc_dma_cfg {
- 	u16	active_channels_mask;
- } __packed;
- 
-+struct afe_param_id_usb_cfg {
-+/* Minor version used for tracking USB audio device configuration.
-+ * Supported values: AFE_API_MINOR_VERSION_USB_AUDIO_CONFIG
-+ */
-+	u32                  cfg_minor_version;
-+/* Sampling rate of the port.
-+ * Supported values:
-+ * - AFE_PORT_SAMPLE_RATE_8K
-+ * - AFE_PORT_SAMPLE_RATE_11025
-+ * - AFE_PORT_SAMPLE_RATE_12K
-+ * - AFE_PORT_SAMPLE_RATE_16K
-+ * - AFE_PORT_SAMPLE_RATE_22050
-+ * - AFE_PORT_SAMPLE_RATE_24K
-+ * - AFE_PORT_SAMPLE_RATE_32K
-+ * - AFE_PORT_SAMPLE_RATE_44P1K
-+ * - AFE_PORT_SAMPLE_RATE_48K
-+ * - AFE_PORT_SAMPLE_RATE_96K
-+ * - AFE_PORT_SAMPLE_RATE_192K
-+ */
-+	u32                  sample_rate;
-+/* Bit width of the sample.
-+ * Supported values: 16, 24
-+ */
-+	u16                  bit_width;
-+/* Number of channels.
-+ * Supported values: 1 and 2
-+ */
-+	u16                  num_channels;
-+/* Data format supported by the USB. The supported value is
-+ * 0 (#AFE_USB_AUDIO_DATA_FORMAT_LINEAR_PCM).
-+ */
-+	u16                  data_format;
-+/* this field must be 0 */
-+	u16                  reserved;
-+/* device token of actual end USB audio device */
-+	u32                  dev_token;
-+/* endianness of this interface */
-+	u32                   endian;
-+/* service interval */
-+	u32                  service_interval;
-+} __packed;
++EXPORT_SYMBOL_GPL(xhci_sideband_add_endpoint);
 +
 +/**
-+ * struct afe_param_id_usb_audio_dev_params
-+ * @cfg_minor_version: Minor version used for tracking USB audio device
-+ * configuration.
-+ * Supported values:
-+ *     AFE_API_MINOR_VERSION_USB_AUDIO_CONFIG
-+ * @dev_token: device token of actual end USB audio device
-+ **/
-+struct afe_param_id_usb_audio_dev_params {
-+	u32	cfg_minor_version;
-+	u32	dev_token;
-+} __packed;
-+
-+/**
-+ * struct afe_param_id_usb_audio_dev_lpcm_fmt
-+ * @cfg_minor_version: Minor version used for tracking USB audio device
-+ * configuration.
-+ * Supported values:
-+ *     AFE_API_MINOR_VERSION_USB_AUDIO_CONFIG
-+ * @endian: endianness of this interface
-+ **/
-+struct afe_param_id_usb_audio_dev_lpcm_fmt {
-+	u32	cfg_minor_version;
-+	u32	endian;
-+} __packed;
-+
-+#define AFE_PARAM_ID_USB_AUDIO_SVC_INTERVAL     0x000102B7
-+
-+/**
-+ * struct afe_param_id_usb_audio_svc_interval
-+ * @cfg_minor_version: Minor version used for tracking USB audio device
-+ * configuration.
-+ * Supported values:
-+ *     AFE_API_MINOR_VERSION_USB_AUDIO_CONFIG
-+ * @svc_interval: service interval
-+ **/
-+struct afe_param_id_usb_audio_svc_interval {
-+	u32	cfg_minor_version;
-+	u32	svc_interval;
-+} __packed;
-+
- union afe_port_config {
- 	struct afe_param_id_hdmi_multi_chan_audio_cfg hdmi_multi_ch;
- 	struct afe_param_id_slimbus_cfg           slim_cfg;
- 	struct afe_param_id_i2s_cfg	i2s_cfg;
- 	struct afe_param_id_tdm_cfg	tdm_cfg;
- 	struct afe_param_id_cdc_dma_cfg	dma_cfg;
-+	struct afe_param_id_usb_cfg usb_cfg;
- } __packed;
- 
- 
-@@ -833,6 +924,7 @@ static struct afe_port_map port_maps[AFE_PORT_MAX] = {
- 				RX_CODEC_DMA_RX_6, 1, 1},
- 	[RX_CODEC_DMA_RX_7] = { AFE_PORT_ID_RX_CODEC_DMA_RX_7,
- 				RX_CODEC_DMA_RX_7, 1, 1},
-+	[USB_RX] = { AFE_PORT_ID_USB_RX, USB_RX, 1, 1},
- };
- 
- static void q6afe_port_free(struct kref *ref)
-@@ -1290,6 +1382,100 @@ void q6afe_tdm_port_prepare(struct q6afe_port *port,
- }
- EXPORT_SYMBOL_GPL(q6afe_tdm_port_prepare);
- 
-+/**
-+ * afe_port_send_usb_dev_param() - Send USB dev token
++ * xhci_sideband_remove_endpoint - remove endpoint from sideband access list
++ * @sb: sideband instance for this usb device
++ * @host_ep: usb host endpoint
 + *
-+ * @port: Instance of afe port
-+ * @cardidx: USB SND card index to reference
-+ * @pcmidx: USB SND PCM device index to reference
++ * Removes an endpoint from the list of sideband accessed endpoints for this usb
++ * device.
++ * sideband client should no longer touch the endpoint transfer buffer after
++ * calling this.
 + *
-+ * The USB dev token carries information about which USB SND card instance and
-+ * PCM device to execute the offload on.  This information is carried through
-+ * to the stream enable QMI request, which is handled by the offload class
-+ * driver.  The information is parsed to determine which USB device to query
-+ * the required resources for.
++ * Return: 0 on success, negative error otherwise.
 + */
-+int afe_port_send_usb_dev_param(struct q6afe_port *port, int cardidx, int pcmidx)
++int
++xhci_sideband_remove_endpoint(struct xhci_sideband *sb,
++			      struct usb_host_endpoint *host_ep)
 +{
-+	struct afe_param_id_usb_audio_dev_params usb_dev;
-+	int ret;
++	struct xhci_virt_ep *ep;
++	unsigned int ep_index;
 +
-+	memset(&usb_dev, 0, sizeof(usb_dev));
++	ep_index = xhci_get_endpoint_index(&host_ep->desc);
++	ep = sb->eps[ep_index];
 +
-+	usb_dev.cfg_minor_version = AFE_API_MINOR_VERSION_USB_AUDIO_CONFIG;
-+	usb_dev.dev_token = (cardidx << 16) | (pcmidx << 8);
-+	ret = q6afe_port_set_param_v2(port, &usb_dev,
-+				AFE_PARAM_ID_USB_AUDIO_DEV_PARAMS,
-+				AFE_MODULE_AUDIO_DEV_INTERFACE, sizeof(usb_dev));
-+	if (ret)
-+		dev_err(port->afe->dev, "%s: AFE device param cmd failed %d\n",
-+			__func__, ret);
++	if (!ep || !ep->sideband)
++		return -ENODEV;
 +
-+	return ret;
++	__xhci_sideband_remove_endpoint(sb, ep);
++	xhci_initialize_ring_info(ep->ring, 1);
++
++	return 0;
 +}
-+EXPORT_SYMBOL_GPL(afe_port_send_usb_dev_param);
++EXPORT_SYMBOL_GPL(xhci_sideband_remove_endpoint);
 +
-+static int afe_port_send_usb_params(struct q6afe_port *port, struct q6afe_usb_cfg *cfg)
++int
++xhci_sideband_stop_endpoint(struct xhci_sideband *sb,
++			    struct usb_host_endpoint *host_ep)
 +{
-+	union afe_port_config *pcfg = &port->port_cfg;
-+	struct afe_param_id_usb_audio_dev_lpcm_fmt lpcm_fmt;
-+	struct afe_param_id_usb_audio_svc_interval svc_int;
-+	int ret;
++	struct xhci_virt_ep *ep;
++	unsigned int ep_index;
 +
-+	if (!pcfg) {
-+		dev_err(port->afe->dev, "%s: Error, no configuration data\n", __func__);
-+		ret = -EINVAL;
-+		goto exit;
++	ep_index = xhci_get_endpoint_index(&host_ep->desc);
++	ep = sb->eps[ep_index];
++
++	if (!ep || ep->sideband != sb)
++		return -EINVAL;
++
++	return xhci_stop_endpoint_sync(sb->xhci, ep, 0, GFP_KERNEL);
++}
++EXPORT_SYMBOL_GPL(xhci_sideband_stop_endpoint);
++
++/**
++ * xhci_sideband_get_endpoint_buffer - gets the endpoint transfer buffer address
++ * @sb: sideband instance for this usb device
++ * @host_ep: usb host endpoint
++ *
++ * Returns the address of the endpoint buffer where xHC controller reads queued
++ * transfer TRBs from. This is the starting address of the ringbuffer where the
++ * sideband client should write TRBs to.
++ *
++ * Caller needs to free the returned sg_table
++ *
++ * Return: struct sg_table * if successful. NULL otherwise.
++ */
++struct sg_table *
++xhci_sideband_get_endpoint_buffer(struct xhci_sideband *sb,
++			      struct usb_host_endpoint *host_ep)
++{
++	struct xhci_virt_ep *ep;
++	unsigned int ep_index;
++
++	ep_index = xhci_get_endpoint_index(&host_ep->desc);
++	ep = sb->eps[ep_index];
++
++	if (!ep)
++		return NULL;
++
++	return xhci_ring_to_sgtable(sb, ep->ring);
++}
++EXPORT_SYMBOL_GPL(xhci_sideband_get_endpoint_buffer);
++
++/**
++ * xhci_sideband_get_event_buffer - return the event buffer for this device
++ * @sb: sideband instance for this usb device
++ *
++ * If a secondary xhci interupter is set up for this usb device then this
++ * function returns the address of the event buffer where xHC writes
++ * the transfer completion events.
++ *
++ * Caller needs to free the returned sg_table
++ *
++ * Return: struct sg_table * if successful. NULL otherwise.
++ */
++struct sg_table *
++xhci_sideband_get_event_buffer(struct xhci_sideband *sb)
++{
++	if (!sb->ir)
++		return NULL;
++
++	return xhci_ring_to_sgtable(sb, sb->ir->event_ring);
++}
++EXPORT_SYMBOL_GPL(xhci_sideband_get_event_buffer);
++
++/**
++ * xhci_sideband_create_interrupter - creates a new interrupter for this sideband
++ * @sb: sideband instance for this usb device
++ * @num_seg: number of event ring segments to allocate
++ *
++ * Sets up a xhci interrupter that can be used for this sideband accessed usb
++ * device. Transfer events for this device can be routed to this interrupters
++ * event ring by setting the 'Interrupter Target' field correctly when queueing
++ * the transfer TRBs.
++ * Once this interrupter is created the interrupter target ID can be obtained
++ * by calling xhci_sideband_interrupter_id()
++ *
++ * Returns 0 on success, negative error otherwise
++ */
++int
++xhci_sideband_create_interrupter(struct xhci_sideband *sb, int num_seg)
++{
++	if (sb->ir)
++		return -EBUSY;
++
++	sb->ir = xhci_create_secondary_interrupter(xhci_to_hcd(sb->xhci),
++			num_seg);
++	if (!sb->ir)
++		return -ENOMEM;
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(xhci_sideband_create_interrupter);
++
++/**
++ * xhci_sideband_remove_interrupter - remove the interrupter from a sideband
++ * @sb: sideband instance for this usb device
++ *
++ * Removes a registered interrupt for a sideband.  This would allow for other
++ * sideband users to utilize this interrupter.
++ */
++void
++xhci_sideband_remove_interrupter(struct xhci_sideband *sb)
++{
++	if (!sb || !sb->ir)
++		return;
++
++	xhci_remove_secondary_interrupter(xhci_to_hcd(sb->xhci), sb->ir);
++
++	sb->ir = NULL;
++}
++EXPORT_SYMBOL_GPL(xhci_sideband_remove_interrupter);
++
++/**
++ * xhci_sideband_interrupter_id - return the interrupter target id
++ * @sb: sideband instance for this usb device
++ *
++ * If a secondary xhci interrupter is set up for this usb device then this
++ * function returns the ID used by the interrupter. The sideband client
++ * needs to write this ID to the 'Interrupter Target' field of the transfer TRBs
++ * it queues on the endpoints transfer ring to ensure transfer completion event
++ * are written by xHC to the correct interrupter event ring.
++ *
++ * Returns interrupter id on success, negative error othgerwise
++ */
++int
++xhci_sideband_interrupter_id(struct xhci_sideband *sb)
++{
++	if (!sb || !sb->ir)
++		return -ENODEV;
++
++	return sb->ir->intr_num;
++}
++EXPORT_SYMBOL_GPL(xhci_sideband_interrupter_id);
++
++/**
++ * xhci_sideband_register - register a sideband for a usb device
++ * @udev: usb device to be accessed via sideband
++ *
++ * Allows for clients to utilize XHCI interrupters and fetch transfer and event
++ * ring parameters for executing data transfers.
++ *
++ * Return: pointer to a new xhci_sideband instance if successful. NULL otherwise.
++ */
++struct xhci_sideband *
++xhci_sideband_register(struct usb_device *udev)
++{
++	struct usb_hcd *hcd = bus_to_hcd(udev->bus);
++	struct xhci_hcd *xhci = hcd_to_xhci(hcd);
++	struct xhci_virt_device *vdev;
++	struct xhci_sideband *sb;
++
++	/* make sure the usb device is connected to a xhci controller */
++	if (!udev->slot_id)
++		return NULL;
++
++	sb = kzalloc_node(sizeof(*sb), GFP_KERNEL, dev_to_node(hcd->self.sysdev));
++	if (!sb)
++		return NULL;
++
++	/* check this device isn't already controlled via sideband */
++	spin_lock_irq(&xhci->lock);
++
++	vdev = xhci->devs[udev->slot_id];
++
++	if (!vdev || vdev->sideband) {
++		xhci_warn(xhci, "XHCI sideband for slot %d already in use\n",
++			  udev->slot_id);
++		spin_unlock_irq(&xhci->lock);
++		kfree(sb);
++		return NULL;
 +	}
 +
-+	memset(&lpcm_fmt, 0, sizeof(lpcm_fmt));
-+	memset(&svc_int, 0, sizeof(svc_int));
++	sb->xhci = xhci;
++	sb->vdev = vdev;
++	vdev->sideband = sb;
 +
-+	lpcm_fmt.cfg_minor_version = AFE_API_MINOR_VERSION_USB_AUDIO_CONFIG;
-+	lpcm_fmt.endian = pcfg->usb_cfg.endian;
-+	ret = q6afe_port_set_param_v2(port, &lpcm_fmt,
-+				      AFE_PARAM_ID_USB_AUDIO_DEV_LPCM_FMT,
-+				      AFE_MODULE_AUDIO_DEV_INTERFACE, sizeof(lpcm_fmt));
-+	if (ret) {
-+		dev_err(port->afe->dev, "%s: AFE device param cmd LPCM_FMT failed %d\n",
-+			__func__, ret);
-+		goto exit;
-+	}
++	spin_unlock_irq(&xhci->lock);
 +
-+	svc_int.cfg_minor_version = AFE_API_MINOR_VERSION_USB_AUDIO_CONFIG;
-+	svc_int.svc_interval = pcfg->usb_cfg.service_interval;
-+	ret = q6afe_port_set_param_v2(port, &svc_int,
-+				      AFE_PARAM_ID_USB_AUDIO_SVC_INTERVAL,
-+				      AFE_MODULE_AUDIO_DEV_INTERFACE, sizeof(svc_int));
-+	if (ret)
-+		dev_err(port->afe->dev, "%s: AFE device param cmd svc_interval failed %d\n",
-+			__func__, ret);
-+
-+exit:
-+	return ret;
++	return sb;
 +}
++EXPORT_SYMBOL_GPL(xhci_sideband_register);
 +
 +/**
-+ * q6afe_usb_port_prepare() - Prepare usb afe port.
++ * xhci_sideband_unregister - unregister sideband access to a usb device
++ * @sb: sideband instance to be unregistered
 + *
-+ * @port: Instance of afe port
-+ * @cfg: USB configuration for the afe port
-+ *
++ * Unregisters sideband access to a usb device and frees the sideband
++ * instance.
++ * After this the endpoint and interrupter event buffers should no longer
++ * be accessed via sideband. The xhci driver can now take over handling
++ * the buffers.
 + */
-+void q6afe_usb_port_prepare(struct q6afe_port *port,
-+			     struct q6afe_usb_cfg *cfg)
++void
++xhci_sideband_unregister(struct xhci_sideband *sb)
 +{
-+	union afe_port_config *pcfg = &port->port_cfg;
++	int i;
 +
-+	pcfg->usb_cfg.cfg_minor_version = AFE_API_MINOR_VERSION_USB_AUDIO_CONFIG;
-+	pcfg->usb_cfg.sample_rate = cfg->sample_rate;
-+	pcfg->usb_cfg.num_channels = cfg->num_channels;
-+	pcfg->usb_cfg.bit_width = cfg->bit_width;
++	for (i = 0; i < EP_CTX_PER_DEV; i++)
++		if (sb->eps[i])
++			__xhci_sideband_remove_endpoint(sb, sb->eps[i]);
 +
-+	afe_port_send_usb_params(port, cfg);
++	xhci_sideband_remove_interrupter(sb);
++
++	sb->vdev->sideband = NULL;
++	kfree(sb);
 +}
-+EXPORT_SYMBOL_GPL(q6afe_usb_port_prepare);
-+
- /**
-  * q6afe_hdmi_port_prepare() - Prepare hdmi afe port.
-  *
-@@ -1612,7 +1798,10 @@ struct q6afe_port *q6afe_port_get_from_id(struct device *dev, int id)
- 		break;
- 	case AFE_PORT_ID_WSA_CODEC_DMA_RX_0 ... AFE_PORT_ID_RX_CODEC_DMA_RX_7:
- 		cfg_type = AFE_PARAM_ID_CODEC_DMA_CONFIG;
--	break;
-+		break;
-+	case AFE_PORT_ID_USB_RX:
-+		cfg_type = AFE_PARAM_ID_USB_AUDIO_CONFIG;
-+		break;
- 	default:
- 		dev_err(dev, "Invalid port id 0x%x\n", port_id);
- 		return ERR_PTR(-EINVAL);
-diff --git a/sound/soc/qcom/qdsp6/q6afe.h b/sound/soc/qcom/qdsp6/q6afe.h
-index 65d0676075e1..04c70f904b86 100644
---- a/sound/soc/qcom/qdsp6/q6afe.h
-+++ b/sound/soc/qcom/qdsp6/q6afe.h
-@@ -3,7 +3,7 @@
- #ifndef __Q6AFE_H__
- #define __Q6AFE_H__
- 
--#define AFE_PORT_MAX		129
-+#define AFE_PORT_MAX		137
- 
- #define MSM_AFE_PORT_TYPE_RX 0
- #define MSM_AFE_PORT_TYPE_TX 1
-@@ -203,6 +203,36 @@ struct q6afe_cdc_dma_cfg {
- 	u16	active_channels_mask;
++EXPORT_SYMBOL_GPL(xhci_sideband_unregister);
++MODULE_LICENSE("GPL");
+diff --git a/drivers/usb/host/xhci.h b/drivers/usb/host/xhci.h
+index b7d06fcd58d1..e98099b960e4 100644
+--- a/drivers/usb/host/xhci.h
++++ b/drivers/usb/host/xhci.h
+@@ -949,6 +949,8 @@ struct xhci_virt_ep {
+ 	int			next_frame_id;
+ 	/* Use new Isoch TRB layout needed for extended TBC support */
+ 	bool			use_extended_tbc;
++	/* set if this endpoint is controlled via sideband access*/
++	struct xhci_sideband			*sideband;
  };
  
+ enum xhci_overhead_type {
+@@ -1012,6 +1014,8 @@ struct xhci_virt_device {
+ 	u16				current_mel;
+ 	/* Used for the debugfs interfaces. */
+ 	void				*debugfs_private;
++	/* set if this device is registered for sideband access */
++	struct xhci_sideband			*sideband;
+ };
+ 
+ /*
+diff --git a/include/linux/usb/xhci-sideband.h b/include/linux/usb/xhci-sideband.h
+new file mode 100644
+index 000000000000..823f9314d93a
+--- /dev/null
++++ b/include/linux/usb/xhci-sideband.h
+@@ -0,0 +1,66 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * xHCI host controller sideband support
++ *
++ * Copyright (c) 2023, Intel Corporation.
++ *
++ * Author: Mathias Nyman <mathias.nyman@linux.intel.com>
++ */
++
++#ifndef __LINUX_XHCI_SIDEBAND_H
++#define __LINUX_XHCI_SIDEBAND_H
++
++#include <linux/scatterlist.h>
++#include <linux/usb.h>
++
++#define	EP_CTX_PER_DEV		31	/* FIMXME defined twice, from xhci.h */
++
++struct xhci_sideband;
++
 +/**
-+ * struct q6afe_usb_cfg
-+ * @cfg_minor_version: Minor version used for tracking USB audio device
-+ * configuration.
-+ * Supported values:
-+ *     AFE_API_MINOR_VERSION_USB_AUDIO_CONFIG
-+ * @sample_rate: Sampling rate of the port
-+ *    Supported values:
-+ *      AFE_PORT_SAMPLE_RATE_8K
-+ *      AFE_PORT_SAMPLE_RATE_11025
-+ *      AFE_PORT_SAMPLE_RATE_12K
-+ *      AFE_PORT_SAMPLE_RATE_16K
-+ *      AFE_PORT_SAMPLE_RATE_22050
-+ *      AFE_PORT_SAMPLE_RATE_24K
-+ *      AFE_PORT_SAMPLE_RATE_32K
-+ *      AFE_PORT_SAMPLE_RATE_44P1K
-+ *      AFE_PORT_SAMPLE_RATE_48K
-+ *      AFE_PORT_SAMPLE_RATE_96K
-+ *      AFE_PORT_SAMPLE_RATE_192K
-+ * @bit_width: Bit width of the sample.
-+ *    Supported values: 16, 24
-+ * @num_channels: Number of channels
-+ *    Supported values: 1, 2
-+ **/
-+struct q6afe_usb_cfg {
-+	u32	cfg_minor_version;
-+	u32     sample_rate;
-+	u16	bit_width;
-+	u16	num_channels;
++ * struct xhci_sideband - representation of a sideband accessed usb device.
++ * @xhci: The xhci host controller the usb device is connected to
++ * @vdev: the usb device accessed via sideband
++ * @eps: array of endpoints controlled via sideband
++ * @ir: event handling and buffer for sideband accessed device
++ *
++ * FIXME usb device accessed via sideband Keeping track of sideband accessed usb devices.
++ */
++
++struct xhci_sideband {
++	struct xhci_hcd                 *xhci;
++	struct xhci_virt_device         *vdev;
++	struct xhci_virt_ep             *eps[EP_CTX_PER_DEV];
++	struct xhci_interrupter         *ir;
 +};
- 
- struct q6afe_port_config {
- 	struct q6afe_hdmi_cfg hdmi;
-@@ -210,6 +240,7 @@ struct q6afe_port_config {
- 	struct q6afe_i2s_cfg i2s_cfg;
- 	struct q6afe_tdm_cfg tdm;
- 	struct q6afe_cdc_dma_cfg dma_cfg;
-+	struct q6afe_usb_cfg usb_audio;
- };
- 
- struct q6afe_port;
-@@ -219,6 +250,8 @@ int q6afe_port_start(struct q6afe_port *port);
- int q6afe_port_stop(struct q6afe_port *port);
- void q6afe_port_put(struct q6afe_port *port);
- int q6afe_get_port_id(int index);
-+void q6afe_usb_port_prepare(struct q6afe_port *port,
-+			     struct q6afe_usb_cfg *cfg);
- void q6afe_hdmi_port_prepare(struct q6afe_port *port,
- 			    struct q6afe_hdmi_cfg *cfg);
- void q6afe_slim_port_prepare(struct q6afe_port *port,
-@@ -228,6 +261,7 @@ void q6afe_tdm_port_prepare(struct q6afe_port *port, struct q6afe_tdm_cfg *cfg);
- void q6afe_cdc_dma_port_prepare(struct q6afe_port *port,
- 				struct q6afe_cdc_dma_cfg *cfg);
- 
-+int afe_port_send_usb_dev_param(struct q6afe_port *port, int cardidx, int pcmidx);
- int q6afe_port_set_sysclk(struct q6afe_port *port, int clk_id,
- 			  int clk_src, int clk_root,
- 			  unsigned int freq, int dir);
-diff --git a/sound/soc/qcom/qdsp6/q6dsp-lpass-ports.c b/sound/soc/qcom/qdsp6/q6dsp-lpass-ports.c
-index 4919001de08b..4a96b11f7fd1 100644
---- a/sound/soc/qcom/qdsp6/q6dsp-lpass-ports.c
-+++ b/sound/soc/qcom/qdsp6/q6dsp-lpass-ports.c
-@@ -97,6 +97,26 @@
- 	}
- 
- static struct snd_soc_dai_driver q6dsp_audio_fe_dais[] = {
-+	{
-+		.playback = {
-+			.stream_name = "USB Playback",
-+			.rates = SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_11025 |
-+					SNDRV_PCM_RATE_16000 | SNDRV_PCM_RATE_22050 |
-+					SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 |
-+					SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_96000 |
-+					SNDRV_PCM_RATE_192000,
-+			.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S16_BE |
-+					SNDRV_PCM_FMTBIT_U16_LE | SNDRV_PCM_FMTBIT_U16_BE |
-+					SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S24_BE |
-+					SNDRV_PCM_FMTBIT_U24_LE | SNDRV_PCM_FMTBIT_U24_BE,
-+			.channels_min = 1,
-+			.channels_max = 2,
-+			.rate_min =	8000,
-+			.rate_max = 192000,
-+		},
-+		.id = USB_RX,
-+		.name = "USB_RX",
-+	},
- 	{
- 		.playback = {
- 			.stream_name = "HDMI Playback",
-@@ -624,6 +644,9 @@ struct snd_soc_dai_driver *q6dsp_audio_ports_set_config(struct device *dev,
- 		case WSA_CODEC_DMA_RX_0 ... RX_CODEC_DMA_RX_7:
- 			q6dsp_audio_fe_dais[i].ops = cfg->q6dma_ops;
- 			break;
-+		case USB_RX:
-+			q6dsp_audio_fe_dais[i].ops = cfg->q6usb_ops;
-+			break;
- 		default:
- 			break;
- 		}
-diff --git a/sound/soc/qcom/qdsp6/q6dsp-lpass-ports.h b/sound/soc/qcom/qdsp6/q6dsp-lpass-ports.h
-index 7f052c8a1257..d8dde6dd0aca 100644
---- a/sound/soc/qcom/qdsp6/q6dsp-lpass-ports.h
-+++ b/sound/soc/qcom/qdsp6/q6dsp-lpass-ports.h
-@@ -11,6 +11,7 @@ struct q6dsp_audio_port_dai_driver_config {
- 	const struct snd_soc_dai_ops *q6i2s_ops;
- 	const struct snd_soc_dai_ops *q6tdm_ops;
- 	const struct snd_soc_dai_ops *q6dma_ops;
-+	const struct snd_soc_dai_ops *q6usb_ops;
- };
- 
- struct snd_soc_dai_driver *q6dsp_audio_ports_set_config(struct device *dev,
-diff --git a/sound/soc/qcom/qdsp6/q6routing.c b/sound/soc/qcom/qdsp6/q6routing.c
-index 81fde0681f95..45811f0f0d44 100644
---- a/sound/soc/qcom/qdsp6/q6routing.c
-+++ b/sound/soc/qcom/qdsp6/q6routing.c
-@@ -515,6 +515,9 @@ static int msm_routing_put_audio_mixer(struct snd_kcontrol *kcontrol,
- 	return 1;
- }
- 
-+static const struct snd_kcontrol_new usb_mixer_controls[] = {
-+	Q6ROUTING_RX_MIXERS(USB_RX) };
 +
- static const struct snd_kcontrol_new hdmi_mixer_controls[] = {
- 	Q6ROUTING_RX_MIXERS(HDMI_RX) };
- 
-@@ -950,6 +953,10 @@ static const struct snd_soc_dapm_widget msm_qdsp6_widgets[] = {
- 	SND_SOC_DAPM_MIXER("MultiMedia8 Mixer", SND_SOC_NOPM, 0, 0,
- 		mmul8_mixer_controls, ARRAY_SIZE(mmul8_mixer_controls)),
- 
-+	SND_SOC_DAPM_MIXER("USB Mixer", SND_SOC_NOPM, 0, 0,
-+			   usb_mixer_controls,
-+			   ARRAY_SIZE(usb_mixer_controls)),
++struct xhci_sideband *
++xhci_sideband_register(struct usb_device *udev);
++void
++xhci_sideband_unregister(struct xhci_sideband *sb);
++int
++xhci_sideband_add_endpoint(struct xhci_sideband *sb,
++			   struct usb_host_endpoint *host_ep);
++int
++xhci_sideband_remove_endpoint(struct xhci_sideband *sb,
++			      struct usb_host_endpoint *host_ep);
++int
++xhci_sideband_stop_endpoint(struct xhci_sideband *sb,
++			    struct usb_host_endpoint *host_ep);
++struct sg_table *
++xhci_sideband_get_endpoint_buffer(struct xhci_sideband *sb,
++				  struct usb_host_endpoint *host_ep);
++struct sg_table *
++xhci_sideband_get_event_buffer(struct xhci_sideband *sb);
 +
- };
- 
- static const struct snd_soc_dapm_route intercon[] = {
-@@ -1043,6 +1050,8 @@ static const struct snd_soc_dapm_route intercon[] = {
- 	{"MM_UL6", NULL, "MultiMedia6 Mixer"},
- 	{"MM_UL7", NULL, "MultiMedia7 Mixer"},
- 	{"MM_UL8", NULL, "MultiMedia8 Mixer"},
++int
++xhci_sideband_create_interrupter(struct xhci_sideband *sb, int num_seg);
 +
-+	Q6ROUTING_RX_DAPM_ROUTE("USB Mixer", "USB_RX"),
- };
- 
- static int routing_hw_params(struct snd_soc_component *component,
++void
++xhci_sideband_remove_interrupter(struct xhci_sideband *sb);
++
++int
++xhci_sideband_interrupter_id(struct xhci_sideband *sb);
++
++#endif /* __LINUX_XHCI_SIDEBAND_H */
++
