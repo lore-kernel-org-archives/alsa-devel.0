@@ -4,169 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7C14FC47074
-	for <alsa-devel@archiver.kernel.org>; Thu,  4 Jan 2024 08:58:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C169FC47073
+	for <alsa-devel@archiver.kernel.org>; Thu,  4 Jan 2024 09:23:09 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AF13CED3;
-	Thu,  4 Jan 2024 09:58:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AF13CED3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5D90BE91;
+	Thu,  4 Jan 2024 10:22:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5D90BE91
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1704358699;
-	bh=2NehM04VXfIrWDIjhQ0p6S0EqLpmhKMUyCI6JnvURXc=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=mzroMjAa8iNOooWx/rDk6mfRKusImiYm4CIob2A/LPMhbdWovwPH3iapxt2CL+F6N
-	 kzpbUhkJrGNeToZacAZBa5e6VSkNXF8WBW44KIveHeSta63VSNdyU0z2JmBu/7+CON
-	 dTA+snLWDbq5msQYAql/fcuT9PEL4rpaIUSZakaM=
+	s=default; t=1704360187;
+	bh=Wl373xlx/nePhMbz+OJN/a+fdEhuxEOBtJowioF1SkU=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=bJxJleoLo334SXW5oExEZ1Pcwr5mPrfhkI/OHwkabxgdnjmHn3ykdk+C/ZpM1brEI
+	 2kAMPskgbwor8DJizLDCaP0QxeMyGIC0ouVV+h/ex9/+Z36UFTKBQ+WVgTPALjM52d
+	 wLkcCS4Vf4j8qZfy6tCEDQeeLNWcLz7vOICaun54=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 31B37F805D4; Thu,  4 Jan 2024 09:57:42 +0100 (CET)
+	id 1C084F8057A; Thu,  4 Jan 2024 10:22:34 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4C7AFF805C1;
-	Thu,  4 Jan 2024 09:57:42 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A8342F80567;
+	Thu,  4 Jan 2024 10:22:34 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9AA98F80496; Thu,  4 Jan 2024 09:57:36 +0100 (CET)
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com
- [IPv6:2a00:1450:4864:20::52e])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	id 465ACF806E7; Tue,  2 Jan 2024 22:50:26 +0100 (CET)
+Received: from mx.dolansoft.org (s2.dolansoft.org [212.51.146.245])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id ED13DF804CC
-	for <alsa-devel@alsa-project.org>; Thu,  4 Jan 2024 09:57:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ED13DF804CC
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6DC65F8984D
+	for <alsa-devel@alsa-project.org>; Tue,  2 Jan 2024 22:48:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6DC65F8984D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=uxabJwHk
-Received: by mail-ed1-x52e.google.com with SMTP id
- 4fb4d7f45d1cf-556e6a6d5b3so223644a12.1
-        for <alsa-devel@alsa-project.org>;
- Thu, 04 Jan 2024 00:57:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704358644; x=1704963444;
- darn=alsa-project.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=7NM+lSy2JFxNYRdnQ3pFJqK0nq1Xog5/qHx1MD7yLMc=;
-        b=uxabJwHkBifZNVmojthoZ9xOO53j+gb6opc1nC1Mb9x3FWmXrp8tRJ/dwhAIx4+KNs
-         JZsdh7/1RQrMTUVnxukDbsG9ah546KjSp+zgjnH9Colyfn03XMrP0e5x9t+mD+SFYQmE
-         X4RRlHDKuPWBYO+qeaow2t5EV1ticLVkNCEUd7AYzvnzqDl2LvNW4peNKEUuGvecjqSq
-         fSdAOAFe5TuJBdd2EhVEBvcMq5OJPmel/ow4lZKyzWynw2YXhXVXHcH6/xI/6KU/Ip/q
-         2gxN4awWy3M00J2I9qTovykdTWlvrU9k/G1ND62YbwUo4bgYTk4QkDQnpqFpSvaLa9He
-         CloQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704358644; x=1704963444;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7NM+lSy2JFxNYRdnQ3pFJqK0nq1Xog5/qHx1MD7yLMc=;
-        b=LZOcD35XZdvJzi3vgkZlgJXfO4a64ozHbJ8LlIuJ0Ya+Znp6MzC9UhSdENYcHnJw1N
-         iV+XKlLoB+JHx1Pn+rfYMJGzHR6BQ+sTE43jaKPomJL1ARCTAvuqqf4wcxYkEoDmyZcz
-         gsHkWtQdD90gIEcIU+VFZskUjdcAxjecJWO2YGTL9Jy8nRZdDPDAcUJnVvlS/18O2JmN
-         /00uYD+KvrfGb5jDIgUOkrZUB1L7XOZJynvugBa+BWSCScfMmKJnuYAJys1JjlC6slzF
-         J+Ch83sTUYTeFvl4ltajyIENdbz64SnYSUewNg0/pIrv9RXWayPAezHt/pf6pHEDRvOq
-         fzPA==
-X-Gm-Message-State: AOJu0YzfMcRGeEUgCOd3D5dXIqiKvcrTVgvIeXHOF9jMisQnKAYSLKCc
-	pS9DjQ2S6z0HwV1neWh26SfFgygyeeWsMA==
-X-Google-Smtp-Source: 
- AGHT+IEQlUMy9peGvgc3YEyUx/m3a0L7XKMOxnVNhL9drrpoC27NW8FsiiouncEBPpsG07FDZagAnw==
-X-Received: by 2002:a17:906:b247:b0:a27:6570:adbc with SMTP id
- ce7-20020a170906b24700b00a276570adbcmr187783ejb.33.1704358643864;
-        Thu, 04 Jan 2024 00:57:23 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id
- li4-20020a170906f98400b00a26f5eb0554sm9020697ejb.63.2024.01.04.00.57.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Jan 2024 00:57:23 -0800 (PST)
-Message-ID: <88bd6668-7e67-42c7-97b6-d7029f371349@linaro.org>
-Date: Thu, 4 Jan 2024 09:57:21 +0100
+ unprotected) header.d=brun.one header.i=@brun.one header.a=rsa-sha256
+ header.s=s1 header.b=E2npxgfi
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=brun.one;
+	s=s1; h=MIME-Version:Message-ID:Date:Subject:Cc:To:From:In-Reply-To:
+	References:From:To:Subject:Date:Message-ID:Reply-To;
+	bh=tk05/deGlS4tuw8pDhigIISVFF8G63ZmEtVtmgFP+ks=; b=E2npxgfi8/c4idsH1/Hnvcq0ax
+	l7IuT51xDlloC1d+wTulBhV6qiDkBEf/+BzNDF+RWbqHBZe89s5aOgWu2foYq/9Ubt2D7ajNQMADZ
+	kb2/YsJ+iV4k8Yb2eyY7YDAAqpKSR3yDX1vFQHxgDfmX59XDq2Sxgo9N+M6XNUWJPwDtJ7S8tahd/
+	QRMyLP6fed+t06iymK5hahb4B+dG/9UV1+kMbmKbvRd5zL1Brp7j4yx6U1fP8J5N2W9Xuun2tZdf4
+	u9qNXfySN5EQrkJCd1UZleR7BMuw3mgwvK72KGs56fde0PSu3Xq/I7P17dbUt4z7qsg0V6+Gt7/bK
+	u9C/TkRg==;
+Received: from [212.51.153.89] (helo=blacklava.cluster.local)
+	by mx.dolansoft.org with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96.2)
+	(envelope-from <lorenz@dolansoft.org>)
+	id 1rKmca-001AiL-2O;
+	Tue, 02 Jan 2024 21:48:24 +0000
+From: Lorenz Brun <lorenz@brun.one>
+To: Stefan Binding <sbinding@opensource.cirrus.com>,
+	James Schulman <james.schulman@cirrus.com>,
+	David Rhodes <david.rhodes@cirrus.com>,
+	Richard Fitzgerald <rf@opensource.cirrus.com>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org,
+	patches@opensource.cirrus.com,
+	linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v3] ALSA: hda: cs35l41: Support more HP models without _DSD
+Date: Tue,  2 Jan 2024 22:48:20 +0100
+Message-ID: <20240102214821.3394810-1-lorenz@brun.one>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/4] reset: add GPIO-based reset controller
-Content-Language: en-US
-To: Sean Anderson <sean.anderson@seco.com>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Banajit Goswami <bgoswami@quicinc.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Cc: Bartosz Golaszewski <brgl@bgdev.pl>
-References: <20231222150133.732662-1-krzysztof.kozlowski@linaro.org>
- <20231222150133.732662-3-krzysztof.kozlowski@linaro.org>
- <530e3473-eb3b-477c-8599-e7aa12779640@seco.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <530e3473-eb3b-477c-8599-e7aa12779640@seco.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: 4JIC62STTXYT7WQFI5XXMD2RDWZKDJH5
-X-Message-ID-Hash: 4JIC62STTXYT7WQFI5XXMD2RDWZKDJH5
-X-MailFrom: krzysztof.kozlowski@linaro.org
+Content-Transfer-Encoding: 8bit
+Sender: lorenz@dolansoft.org
+X-MailFrom: lorenz@brun.one
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: 2EDSZMTMU5QYA56ET5KNSKX34K73VFZJ
+X-Message-ID-Hash: 2EDSZMTMU5QYA56ET5KNSKX34K73VFZJ
+X-Mailman-Approved-At: Thu, 04 Jan 2024 09:22:28 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4JIC62STTXYT7WQFI5XXMD2RDWZKDJH5/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2EDSZMTMU5QYA56ET5KNSKX34K73VFZJ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -175,51 +94,90 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 28/12/2023 17:05, Sean Anderson wrote:
-> On 12/22/23 10:01, Krzysztof Kozlowski wrote:
->> Add simple driver to control GPIO-based resets using the reset
->> controller API for the cases when the GPIOs are shared and reset should
->> be coordinated.  The driver is expected to be used by reset core
->> framework for ad-hoc reset controllers.
-> 
-> How do we handle power sequencing? Often GPIOs need some pre/post delay in
-> order to ensure proper power sequencing. For regular reset drivers, this is
-> internal to the driver.
+This adds overrides for a series of notebooks using a common config
+taken from HP's proprietary Windows driver.
 
-It's not part of this patchset. Power sequencing is an old topic and
-generic solutions were failing, rejected, did not solve the problems,
-etc (choose your reason).
+This has been tested on a HP 15-ey0xxxx device (subsystem 103C8A31)
+together with another Realtek quirk and the calibration files from the
+proprietary driver.
 
-Delays are device specific, so they go to drivers (depending on the
-compatible). Complex power sequencing is way too much for simplified
-reset-framework handling, so anyway it is expected you do it in your driver.
+Signed-off-by: Lorenz Brun <lorenz@brun.one>
+---
+Changes in v2:
+ - Use newly-introduced config table instead of function
+ - Change boost cap value from 10uF to 24uF after cross-referencing my
+   sources with the preexisting 103C89C6 entry.
 
+Changes in v3:
+ - Rebase onto sound/for-next
+ - Sorted model table
+ - Updated commit message
 
-> 
-> Maybe something like
-> 
-> my-device {
-> 	reset-gpios = <&gpio 555 GPIO_ACTIVE_LOW>;
->         reset-gpios-post-deassert-us = <100>;
+ sound/pci/hda/cs35l41_hda_property.c | 44 ++++++++++++++++++++++++++++
+ 1 file changed, 44 insertions(+)
 
-Feel free to add it later. This patchset, and actually all patches
-should, solves one problem while allowing you to extend it later.
-
-If there is a architectural problem in my approach not allowing you to
-extend it later, then we should discuss it.
-
-> };
-> 
-> Of course, this is a bit ambiguous if you have multiple devices using the same
-> GPIO with different delays. Maybe we take the max? But the driver below seems
-> to only have access to one device. Which I suppose begs the question: how do
-> we know when it's safe to deassert the reset (e.g. we've gotten to the point
-> where all devices using this reset gpio have gotten far enough to detect that
-> they use it)?
-
-The driver (reset consumer) knows when it is safe or not. You must
-implement proper reset handling in your driver.
-
-Best regards,
-Krzysztof
+diff --git a/sound/pci/hda/cs35l41_hda_property.c b/sound/pci/hda/cs35l41_hda_property.c
+index 52820ca9c603..fcc605be51cf 100644
+--- a/sound/pci/hda/cs35l41_hda_property.c
++++ b/sound/pci/hda/cs35l41_hda_property.c
+@@ -42,6 +42,28 @@ static const struct cs35l41_config cs35l41_config_table[] = {
+  * in the ACPI. The Reset GPIO is also valid, so we can use the Reset defined in _DSD.
+  */
+ 	{ "103C89C6", 2, INTERNAL, { CS35L41_RIGHT, CS35L41_LEFT, 0, 0 }, -1, -1, -1, 1000, 4500, 24 },
++	{ "103C8A28", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
++	{ "103C8A29", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
++	{ "103C8A2A", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
++	{ "103C8A2B", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
++	{ "103C8A2C", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
++	{ "103C8A2D", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
++	{ "103C8A2E", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
++	{ "103C8A30", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
++	{ "103C8A31", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
++	{ "103C8BB3", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
++	{ "103C8BB4", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
++	{ "103C8BDF", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
++	{ "103C8BE0", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
++	{ "103C8BE1", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
++	{ "103C8BE2", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
++	{ "103C8BE9", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
++	{ "103C8BDD", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
++	{ "103C8BDE", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
++	{ "103C8BE3", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
++	{ "103C8BE5", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
++	{ "103C8BE6", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
++	{ "103C8B3A", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
+ 	{ "104312AF", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 1000, 4500, 24 },
+ 	{ "10431433", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4500, 24 },
+ 	{ "10431463", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4500, 24 },
+@@ -356,6 +378,28 @@ static const struct cs35l41_prop_model cs35l41_prop_model_table[] = {
+ 	{ "CSC3551", "10280BEB", generic_dsd_config },
+ 	{ "CSC3551", "10280C4D", generic_dsd_config },
+ 	{ "CSC3551", "103C89C6", generic_dsd_config },
++	{ "CSC3551", "103C8A28", generic_dsd_config },
++	{ "CSC3551", "103C8A29", generic_dsd_config },
++	{ "CSC3551", "103C8A2A", generic_dsd_config },
++	{ "CSC3551", "103C8A2B", generic_dsd_config },
++	{ "CSC3551", "103C8A2C", generic_dsd_config },
++	{ "CSC3551", "103C8A2D", generic_dsd_config },
++	{ "CSC3551", "103C8A2E", generic_dsd_config },
++	{ "CSC3551", "103C8A30", generic_dsd_config },
++	{ "CSC3551", "103C8A31", generic_dsd_config },
++	{ "CSC3551", "103C8BB3", generic_dsd_config },
++	{ "CSC3551", "103C8BB4", generic_dsd_config },
++	{ "CSC3551", "103C8BDF", generic_dsd_config },
++	{ "CSC3551", "103C8BE0", generic_dsd_config },
++	{ "CSC3551", "103C8BE1", generic_dsd_config },
++	{ "CSC3551", "103C8BE2", generic_dsd_config },
++	{ "CSC3551", "103C8BE9", generic_dsd_config },
++	{ "CSC3551", "103C8BDD", generic_dsd_config },
++	{ "CSC3551", "103C8BDE", generic_dsd_config },
++	{ "CSC3551", "103C8BE3", generic_dsd_config },
++	{ "CSC3551", "103C8BE5", generic_dsd_config },
++	{ "CSC3551", "103C8BE6", generic_dsd_config },
++	{ "CSC3551", "103C8B3A", generic_dsd_config },
+ 	{ "CSC3551", "104312AF", generic_dsd_config },
+ 	{ "CSC3551", "10431433", generic_dsd_config },
+ 	{ "CSC3551", "10431463", generic_dsd_config },
+-- 
+2.42.0
 
