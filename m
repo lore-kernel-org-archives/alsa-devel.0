@@ -4,92 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4BC4DC47074
-	for <alsa-devel@archiver.kernel.org>; Thu,  4 Jan 2024 09:23:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B50B0C47074
+	for <alsa-devel@archiver.kernel.org>; Thu,  4 Jan 2024 09:23:52 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D371BEC5;
-	Thu,  4 Jan 2024 10:23:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D371BEC5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9D79CEE6;
+	Thu,  4 Jan 2024 10:23:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9D79CEE6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1704360208;
-	bh=/Rrxph1FzSqtfo+CMowfYdZ9PlPcKe0NVAgo5z4EwtU=;
+	s=default; t=1704360230;
+	bh=kWAKk3nloB2r8KYY+fac/aEI7U47DszvlPld13tJ92g=;
 	h=Date:Subject:From:To:Cc:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=oGNTZP+R7CM5HbT47G8CRDW11Bm9bLiGcWuxrcJjTxYRkjwqnzE+PW61owo7249ib
-	 q1Cdt+3HSWIHfkzLDQk65dMzixVqwnUIFiuJr75jGzR5+4YrRNpnceXxYMKaMO9pSt
-	 kekXIGtcBwTgOTUMMjc691iqGYd4OdDf6lXrQLwA=
+	b=BX+8tGPhsdxQ+wHfl6VsZYou/Y2wMkrMmEYJR1d+WjGsCRk3UaTnLQy/Ux6YT4QV5
+	 ifrPoktQrTUqyaxvQx+sGwhYNHK7lMX2f7JWy1lTXDTSUt/vu+PfKoSE0WOr+blWYb
+	 0pvuNOIIBB3JUrf0c9sJ8yUNStt8k8gLybx/7SWo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 324D6F805BF; Thu,  4 Jan 2024 10:22:41 +0100 (CET)
+	id 361FBF805F3; Thu,  4 Jan 2024 10:22:44 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 638DAF805B3;
-	Thu,  4 Jan 2024 10:22:41 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 88298F805F4;
+	Thu,  4 Jan 2024 10:22:44 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D03B9F80224; Tue,  2 Jan 2024 23:38:47 +0100 (CET)
-Received: from mail-200167.simplelogin.co (mail-200167.simplelogin.co
- [176.119.200.167])
+	id BEE3FF80224; Tue,  2 Jan 2024 23:56:48 +0100 (CET)
+Received: from mail-200162.simplelogin.co (mail-200162.simplelogin.co
+ [176.119.200.162])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 3FAA9F80074
-	for <alsa-devel@alsa-project.org>; Tue,  2 Jan 2024 23:38:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3FAA9F80074
+	by alsa1.perex.cz (Postfix) with ESMTPS id 1AB84F80051
+	for <alsa-devel@alsa-project.org>; Tue,  2 Jan 2024 23:56:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1AB84F80051
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=willian.wang header.i=@willian.wang header.a=rsa-sha256
- header.s=dkim header.b=QcUHuszj
-ARC-Seal: i=1; a=rsa-sha256; d=simplelogin.co; s=arc-20230626; t=1704235120;
+ header.s=dkim header.b=hDZ6dqAk
+ARC-Seal: i=1; a=rsa-sha256; d=simplelogin.co; s=arc-20230626; t=1704236204;
 	cv=none;
- b=STSyzQ0RkZ4JgWQlHgMI3IlxqvZHq+64SfjGh1Cjg02hNEELl9fDvr5JM1uzPiEIJhZGq2rsETk+ksRhG6JtCa2QLRU9F64cyD1LpZkLjk9JZ3pHYxwVR5Tom7bfLm8GfbILLBTFdphB9CN1pLY7saJC+m3yz4gM+ehRVlivn2oKAU1EAzQzgd0QkCj98QHSDfFB57NkOpMnNVZ3LXoQ+oGBErkt2QMVdGZ9a8hUFPXxWLeyDyD2SUWfcEOd696AFCP4UBW6eWH+JOzLiRHm7rFcsbnEkvfc//Kk1TxvbSChIAkXmD9L4Bc9s/QAB+W4eL9W1bR0MPdwzkS6OKp+UQ==
+ b=OMmlGsH4M3jv2+97BrEzzp7GCvekezXXgFE0r/Izy1uMSHpmZaSgvX705J7cVovTridDano7CJfF9n0lEXqXKHftwxnw5suRGQ45Y2qRzMfvmnPen4ufycSSNKFX8eD6NBdZsd2PRmE7HrO7q9ZzunvRrtrm1IkQ6n6w+NBpgeieSdbdVS2JLQ90em8SI8vrUyJ2kxvYpBktnLuUeFFtgvL0Gem2Nmh8z4tjqwX5cmvI3tQh5yofbtrkItwszJE8+99UQlW/kKcnrpNFhcw/z23gJ4aLHUwgSzOmG2JeUnQmxfY+O71THPu59mAc3mFH6OCI+DnSKyTN/Rwv7fJoEg==
 ARC-Message-Signature: i=1; a=rsa-sha256; d=simplelogin.co; s=arc-20230626;
-	t=1704235120; c=relaxed/simple;
-	bh=9UNtbbZOnXkVkZz6jHXCKsWdG8aI3jFrmx1yIa2Nt5g=;
+	t=1704236204; c=relaxed/simple;
+	bh=kWAKk3nloB2r8KYY+fac/aEI7U47DszvlPld13tJ92g=;
 	h=DKIM-Signature:MIME-Version:Date:Subject:Content-Type:
 	 Content-Transfer-Encoding:From:To:Cc:Message-ID:X-SimpleLogin-Type:
 	 X-SimpleLogin-EmailLog-ID:X-SimpleLogin-Want-Signing;
- b=A0vA2Wg+oAuzRyAVm9ILyzZW0fBWWlT8Aft/CtwQ1M5nt5WQTe6Ogqvq7Yb36zKNLRGsgZg0CPDd3vluWgVsJ+cJn/jLqYoZeWJxdHOXXGM2PvM3B9p/95+RZNIuQPRMl+2FMGgxUqjpHaL8a2wlYYj/G4zinqr6EF8tdAoQ67Dnb19ZPxbrjcFSfDsoaC5EzshdeFutAQdu96no73IT6ZfNaGBHrB84UNm7jQUbONQGyoPVeNjIX3pG2vP5RKrrXQSBR5sb8AlIMi0pUh7d308qAuxI0dVK43Ui4dOLWCVuW5vhJWkHWvFtuAVFXOjNWHMUTbbtsgWb3SaGEIhZmA==
+ b=VtCjrdRzw47QARSaHBSSElyHVWoiZVBXYu10psgZOlDaX0yOOCvIlA/dvPlnH4AUcVQA+3fSdU/QkPRp6sIHVAtlDjRY6bbOETloce0I3ONghOFscVbn1KprEFZ0VMhujUOj0HAaSMZ24Pm8vROKt32Ac2+FUeg+O07yJVOOZqQnm9mNTBycYdy9qiWPIUjaSJIlXcd2QEOhZ/b+sS9eN8EkTijHvceKcqVv+UmdtXU8Bd3Ca97L0kCDWtH1EixtxhuoYsHVNndlL66nfJ+/gg/oPnbJeJbly8minW3t+RhPLco/tkQz0SDIuK0JhQ1LpUtJazMS5ZnfrdiCfJBVQg==
 ARC-Authentication-Results: i=1; mail.protonmail.ch
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=willian.wang;
-	s=dkim; t=1704235120;
+	s=dkim; t=1704236204;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding;
-	bh=9UNtbbZOnXkVkZz6jHXCKsWdG8aI3jFrmx1yIa2Nt5g=;
-	b=QcUHuszjH7MiBDunfFTHMi0T+1+Ewje1L5hKjr4kSbcMFDPnWTSZLg2xVKRzWyw+5Trdey
-	SDMPMfbyxyllAZIgcOHV7oMMm3wlUKteNtHKYcn3Yp+t/YB8j24cMRmQd6ue41+2hT6wJ8
-	mETgDgu/VzLQixrv0zN4dqwDgszPtWQ=
+	bh=kWAKk3nloB2r8KYY+fac/aEI7U47DszvlPld13tJ92g=;
+	b=hDZ6dqAkxJrIRdTQHVYPkGWrlfTSbj0zhH9W05oJHKmpOW4YEhOBm6d8HpNEUMOgcPXTjc
+	RdmQ2YAI9kFA4pdohowWN+V+LbxnHJYzexEcq95AJkXdtv+rj1qlcPyGtK5BT1As3k4Grh
+	uKDPcGdeia3V2W9ELwg6SbspVvqbgRI=
 MIME-Version: 1.0
-Date: Tue, 2 Jan 2024 19:37:59 -0300
+Date: Tue, 2 Jan 2024 19:56:03 -0300
 Subject: Re: Oops in hdac_hda_dev_probe (6.7-rc7)
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 From: Willian Wang <kernel@willian.wang>
 To: peter.ujfalusi@linux.intel.com
 Cc: 
  tiwai@suse.com,regressions@lists.linux.dev,tiwai@suse.de,ranjani.sridharan@linux.intel.com,pierre-louis.bossart@linux.intel.com,perex@perex.cz,linux-sound@vger.kernel.org,linux-kernel@vger.kernel.org,kai.vehmanen@linux.intel.com,lgirdwood@gmail.com,broonie@kernel.org,alsa-devel@alsa-project.org,linux@dominikbrodowski.net
-Message-ID: <170423512017.9.491093800173465800.241687161@willian.wang>
+Message-ID: <170423620368.7.11626876748388238508.241693435@willian.wang>
 X-SimpleLogin-Type: Reply
-X-SimpleLogin-EmailLog-ID: 241687165
+X-SimpleLogin-EmailLog-ID: 241693440
 X-SimpleLogin-Want-Signing: yes
 X-MailFrom: 
- sl.lmysyibsgqytmobxge3dklbageydkmzzhe4f2.gepnzhmnjvygg@willian.wang
+ sl.lmysyibsgqytmojtgq2dalbageydknbqge3f2.m6ihuhbe7z2vi@willian.wang
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: S4EHMSPPC3ANE2OKJSO6LWVPXHRIG45X
-X-Message-ID-Hash: S4EHMSPPC3ANE2OKJSO6LWVPXHRIG45X
-X-Mailman-Approved-At: Thu, 04 Jan 2024 09:22:37 +0000
-Content-Type: text/plain; charset="UTF-8"
-X-Content-Filtered-By: Mailman/MimeDel 3.3.9
+Message-ID-Hash: QJI5MNOUABZQFTDS3ZIVDM7ETSQJKRV5
+X-Message-ID-Hash: QJI5MNOUABZQFTDS3ZIVDM7ETSQJKRV5
+X-Mailman-Approved-At: Thu, 04 Jan 2024 09:22:39 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/S4EHMSPPC3ANE2OKJSO6LWVPXHRIG45X/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QJI5MNOUABZQFTDS3ZIVDM7ETSQJKRV5/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -99,4 +98,5 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 Hi, just tested the patch and both sound and resume-from-suspend are
-working like 6.6 again 👍
+working like 6.6 again =F0=9F=91=8D
+
