@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6F8CDC47079
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Jan 2024 21:49:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E181FC46CD2
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Jan 2024 21:50:16 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 38B26EA2;
-	Tue,  2 Jan 2024 22:49:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 38B26EA2
+	by alsa0.perex.cz (Postfix) with ESMTPS id E98C5DF8;
+	Tue,  2 Jan 2024 22:50:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E98C5DF8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1704232192;
-	bh=WH9TmmPAzKkVNcMTRlvFC7RvCOZirGoXdMqwMPa6omQ=;
+	s=default; t=1704232215;
+	bh=kvDxU8liMtmht9fSgNi3hKWQ1iaU1WoZMBXOp0ElMOQ=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Jbh05qll7ny+RW5buxrYNYsCOsMgqUnLdOoKGGdG91pKoCVqZEgd8ZlG3ZvDtJlew
-	 VR8ADW9ufh7BEeqrIPG5bF7Z5o2Ry5QP4EdFH0FfpnOodl3hut4bpq4LMdNelD5Lgg
-	 WGcykd5sFE0310MVxklRTTqx9Tjf9knjxVFhLx0I=
+	b=Ykg8WFLP+l1XCkcpi+9qNVjPXZrtWAPYhkAeniPVQ5uI/cYmDFkPL4FR/UMNN+rjm
+	 /fefuL9zUNAfzQ0GOug3HwogPJwQjKMhC+zN50csAXtV+M5gg00A325amcFCV79AXL
+	 lpYBacig+SXeER9bQ5W7t1L2rDUJjPwOQ9yEJmI8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7A059F8074B; Tue,  2 Jan 2024 22:47:14 +0100 (CET)
+	id C7DFCF80794; Tue,  2 Jan 2024 22:47:18 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 98FB2F8074D;
-	Tue,  2 Jan 2024 22:47:13 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 74779F8078F;
+	Tue,  2 Jan 2024 22:47:17 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AAA89F80676; Tue,  2 Jan 2024 22:46:55 +0100 (CET)
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com
- [205.220.180.131])
+	id A06FEF8069F; Tue,  2 Jan 2024 22:46:59 +0100 (CET)
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com
+ [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 71BABF80557
-	for <alsa-devel@alsa-project.org>; Tue,  2 Jan 2024 22:46:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 71BABF80557
+	by alsa1.perex.cz (Postfix) with ESMTPS id 89E76F80224
+	for <alsa-devel@alsa-project.org>; Tue,  2 Jan 2024 22:46:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 89E76F80224
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
- header.s=qcppdkim1 header.b=O8VdmTxG
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+ header.s=qcppdkim1 header.b=IzAJ6p1N
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
 	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id
- 402KdgiH023461;
-	Tue, 2 Jan 2024 21:46:21 GMT
+ 402Lfe9q022215;
+	Tue, 2 Jan 2024 21:46:22 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-type; s=qcppdkim1; bh=86CRWSbyU7o/7fiEv94b
-	65sAQIFEI12dxb7Yw2dHkVU=; b=O8VdmTxG44mnAlMpRpO8lGyXuqJywcbl/n9P
-	mg063TLGv9VueJMsPVEt+s9rMSyTuE4Ady2ME/YaxuLwBVYsrSMXNymH6M3hRUQb
-	iWNBsqZcjzNbdeGgRTDnkrQaCzPQtT8PP+1PkxwEeLLMexoQ5lXA+fGPC66bKjqX
-	IdEW0iJYQuVHb71755b7cyRAXoNqErfLqgOXuCgGUV3AJipdTojHdstnF3pWPdGH
-	UkBxKbQpJNm/6y5xu1oedSo8dqajYbUP0buXD++SZNtMQyMyv6FT3VQDlD8DwrJq
-	NNtlBJK6u3HU994pcYwt9ng4CmHVzyUJqBVjWEiXBkg31fdyPw==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com
+	:mime-version:content-type; s=qcppdkim1; bh=yFEcFuGRN84lI6Aon2p6
+	t/mqpx7vwIPFvRi0lRjtoKU=; b=IzAJ6p1NEKlh1QCPtFJiW3uuSBshEnzNcYmO
+	uQuVwDetqCQ8eDEnQUgzpaAzXw7PTQnuSsEeW3tC+aVADT/pdFmNKj7Zr8Y+daJI
+	Zj04V2OdLAm1H9xGrD+yY05dPjr8tRrfOP7YX2fZMPscNiwQCTAcjd+tQ0ZjwSC9
+	WkxejVlbU+9Bc6gpyUckfJ5y5hnF4QVmbiT457D+99aDshQXQMEqv87UvzrBl43Y
+	YSbI24OWqxSYqVm/zrbRMZyTAlTAbfgPl5fRr0c2aYvn5rnbnKAgrTBu2yZWGjLG
+	dmbc8RIxoY+sAK8nt9Ph95U7h9gyZmaOUyPAPOlCYmLDJtoR6w==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com
  [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vc9nn1xj3-1
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vccc1hqcn-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 02 Jan 2024 21:46:20 +0000 (GMT)
+	Tue, 02 Jan 2024 21:46:21 +0000 (GMT)
 Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com
  [10.47.209.197])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id
- 402LkJe1003230
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id
+ 402LkLoM017345
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 2 Jan 2024 21:46:19 GMT
+	Tue, 2 Jan 2024 21:46:21 GMT
 Received: from hu-wcheng-lv.qualcomm.com (10.49.16.6) by
  nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Tue, 2 Jan 2024 13:46:18 -0800
+ 15.2.1118.40; Tue, 2 Jan 2024 13:46:20 -0800
 From: Wesley Cheng <quic_wcheng@quicinc.com>
 To: <srinivas.kandagatla@linaro.org>, <mathias.nyman@intel.com>,
         <perex@perex.cz>, <conor+dt@kernel.org>, <corbet@lwn.net>,
@@ -79,9 +79,9 @@ CC: <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-sound@vger.kernel.org>, <linux-usb@vger.kernel.org>,
         <linux-arm-msm@vger.kernel.org>, <linux-doc@vger.kernel.org>,
         <alsa-devel@alsa-project.org>, Wesley Cheng <quic_wcheng@quicinc.com>
-Subject: [PATCH v12 06/41] ASoC: Add SOC USB APIs for adding an USB backend
-Date: Tue, 2 Jan 2024 13:45:14 -0800
-Message-ID: <20240102214549.22498-7-quic_wcheng@quicinc.com>
+Subject: [PATCH v12 12/41] ALSA: usb-audio: Export USB SND APIs for modules
+Date: Tue, 2 Jan 2024 13:45:20 -0800
+Message-ID: <20240102214549.22498-13-quic_wcheng@quicinc.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20240102214549.22498-1-quic_wcheng@quicinc.com>
 References: <20240102214549.22498-1-quic_wcheng@quicinc.com>
@@ -93,19 +93,19 @@ X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
  signatures=585085
-X-Proofpoint-GUID: LH84_7Zc_9kR8DB2gwXFY9GNf_u9xUBk
-X-Proofpoint-ORIG-GUID: LH84_7Zc_9kR8DB2gwXFY9GNf_u9xUBk
+X-Proofpoint-GUID: V8X4b-EA6f04W8DlhNuh06n5CG2XvWBe
+X-Proofpoint-ORIG-GUID: V8X4b-EA6f04W8DlhNuh06n5CG2XvWBe
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- adultscore=0 impostorscore=0
- priorityscore=1501 mlxlogscore=999 phishscore=0 mlxscore=0 clxscore=1015
- lowpriorityscore=0 bulkscore=0 spamscore=0 suspectscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2311290000
- definitions=main-2401020161
-Message-ID-Hash: Q33MBG47B2HZKLDDSOO6FCD4IFPF5N43
-X-Message-ID-Hash: Q33MBG47B2HZKLDDSOO6FCD4IFPF5N43
+ mlxlogscore=999
+ lowpriorityscore=0 malwarescore=0 spamscore=0 clxscore=1015
+ impostorscore=0 adultscore=0 phishscore=0 suspectscore=0 mlxscore=0
+ bulkscore=0 priorityscore=1501 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2311290000 definitions=main-2401020161
+Message-ID-Hash: 44KWXPIFOLQQ7M5XOUPXHOTXEE7UWSMI
+X-Message-ID-Hash: 44KWXPIFOLQQ7M5XOUPXHOTXEE7UWSMI
 X-MailFrom: quic_wcheng@quicinc.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -118,7 +118,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Q33MBG47B2HZKLDDSOO6FCD4IFPF5N43/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/44KWXPIFOLQQ7M5XOUPXHOTXEE7UWSMI/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -127,330 +127,237 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Some platforms may have support for offloading USB audio devices to a
-dedicated audio DSP.  Introduce a set of APIs that allow for management of
-USB sound card and PCM devices enumerated by the USB SND class driver.
-This allows for the ASoC components to be aware of what USB devices are
-available for offloading.
+Some vendor modules will utilize useful parsing and endpoint management
+APIs to start audio playback/capture.
 
 Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
 ---
- include/sound/soc-usb.h |  51 +++++++++
- sound/soc/Makefile      |   2 +-
- sound/soc/soc-usb.c     | 238 ++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 290 insertions(+), 1 deletion(-)
- create mode 100644 include/sound/soc-usb.h
- create mode 100644 sound/soc/soc-usb.c
+ sound/usb/card.c     |  4 +++
+ sound/usb/endpoint.c |  1 +
+ sound/usb/helper.c   |  1 +
+ sound/usb/pcm.c      | 75 +++++++++++++++++++++++++++++++-------------
+ sound/usb/pcm.h      | 11 +++++++
+ 5 files changed, 71 insertions(+), 21 deletions(-)
 
-diff --git a/include/sound/soc-usb.h b/include/sound/soc-usb.h
-new file mode 100644
-index 000000000000..c0c6b5abacdf
---- /dev/null
-+++ b/include/sound/soc-usb.h
-@@ -0,0 +1,51 @@
-+/* SPDX-License-Identifier: GPL-2.0
-+ *
-+ * Copyright (c) 2022-2024 Qualcomm Innovation Center, Inc. All rights reserved.
-+ */
-+
-+#ifndef __LINUX_SND_SOC_USB_H
-+#define __LINUX_SND_SOC_USB_H
-+
-+/**
-+ * struct snd_soc_usb_device
-+ * @card_idx - sound card index associated with USB device
-+ * @chip_idx - USB sound chip array index
-+ * @num_playback - number of playback streams
-+ * @num_capture - number of capture streams
-+ **/
-+struct snd_soc_usb_device {
-+	int card_idx;
-+	int chip_idx;
-+	int num_playback;
-+	int num_capture;
-+};
-+
-+/**
-+ * struct snd_soc_usb
-+ * @list - list head for SND SOC struct list
-+ * @dev - USB backend device reference
-+ * @component - reference to ASoC component
-+ * @connection_status_cb - callback to notify connection events
-+ * @priv_data - driver data
-+ **/
-+struct snd_soc_usb {
-+	struct list_head list;
-+	struct device *dev;
-+	struct snd_soc_component *component;
-+	int (*connection_status_cb)(struct snd_soc_usb *usb,
-+			struct snd_soc_usb_device *sdev, bool connected);
-+	void *priv_data;
-+};
-+
-+const char *snd_soc_usb_get_components_tag(bool playback);
-+
-+int snd_soc_usb_connect(struct device *usbdev, struct snd_soc_usb_device *sdev);
-+int snd_soc_usb_disconnect(struct device *usbdev, struct snd_soc_usb_device *sdev);
-+void *snd_soc_usb_find_priv_data(struct device *dev);
-+
-+struct snd_soc_usb *snd_soc_usb_allocate_port(struct snd_soc_component *component,
-+			int num_supported_streams, void *data);
-+void snd_soc_usb_free_port(struct snd_soc_usb *usb);
-+int snd_soc_usb_add_port(struct snd_soc_usb *usb);
-+int snd_soc_usb_remove_port(struct snd_soc_usb *usb);
-+#endif
-diff --git a/sound/soc/Makefile b/sound/soc/Makefile
-index 8376fdb217ed..d597cda11abc 100644
---- a/sound/soc/Makefile
-+++ b/sound/soc/Makefile
-@@ -1,5 +1,5 @@
- # SPDX-License-Identifier: GPL-2.0
--snd-soc-core-objs := soc-core.o soc-dapm.o soc-jack.o soc-utils.o soc-dai.o soc-component.o
-+snd-soc-core-objs := soc-core.o soc-dapm.o soc-jack.o soc-usb.o soc-utils.o soc-dai.o soc-component.o
- snd-soc-core-objs += soc-pcm.o soc-devres.o soc-ops.o soc-link.o soc-card.o
- snd-soc-core-$(CONFIG_SND_SOC_COMPRESS) += soc-compress.o
+diff --git a/sound/usb/card.c b/sound/usb/card.c
+index 1ef6d144aa51..c0b312e264bf 100644
+--- a/sound/usb/card.c
++++ b/sound/usb/card.c
+@@ -1068,6 +1068,7 @@ int snd_usb_lock_shutdown(struct snd_usb_audio *chip)
+ 		wake_up(&chip->shutdown_wait);
+ 	return err;
+ }
++EXPORT_SYMBOL_GPL(snd_usb_lock_shutdown);
  
-diff --git a/sound/soc/soc-usb.c b/sound/soc/soc-usb.c
-new file mode 100644
-index 000000000000..22f498074256
---- /dev/null
-+++ b/sound/soc/soc-usb.c
-@@ -0,0 +1,238 @@
-+// SPDX-License-Identifier: GPL-2.0
+ /* autosuspend and unlock the shutdown */
+ void snd_usb_unlock_shutdown(struct snd_usb_audio *chip)
+@@ -1076,6 +1077,7 @@ void snd_usb_unlock_shutdown(struct snd_usb_audio *chip)
+ 	if (atomic_dec_and_test(&chip->usage_count))
+ 		wake_up(&chip->shutdown_wait);
+ }
++EXPORT_SYMBOL_GPL(snd_usb_unlock_shutdown);
+ 
+ int snd_usb_autoresume(struct snd_usb_audio *chip)
+ {
+@@ -1098,6 +1100,7 @@ int snd_usb_autoresume(struct snd_usb_audio *chip)
+ 	}
+ 	return 0;
+ }
++EXPORT_SYMBOL_GPL(snd_usb_autoresume);
+ 
+ void snd_usb_autosuspend(struct snd_usb_audio *chip)
+ {
+@@ -1111,6 +1114,7 @@ void snd_usb_autosuspend(struct snd_usb_audio *chip)
+ 	for (i = 0; i < chip->num_interfaces; i++)
+ 		usb_autopm_put_interface(chip->intf[i]);
+ }
++EXPORT_SYMBOL_GPL(snd_usb_autosuspend);
+ 
+ static int usb_audio_suspend(struct usb_interface *intf, pm_message_t message)
+ {
+diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
+index 8f65349a06d3..9876abb80853 100644
+--- a/sound/usb/endpoint.c
++++ b/sound/usb/endpoint.c
+@@ -1513,6 +1513,7 @@ int snd_usb_endpoint_prepare(struct snd_usb_audio *chip,
+ 	mutex_unlock(&chip->mutex);
+ 	return err;
+ }
++EXPORT_SYMBOL_GPL(snd_usb_endpoint_prepare);
+ 
+ /* get the current rate set to the given clock by any endpoint */
+ int snd_usb_endpoint_get_clock_rate(struct snd_usb_audio *chip, int clock)
+diff --git a/sound/usb/helper.c b/sound/usb/helper.c
+index bf80e55d013a..4322ae3738e6 100644
+--- a/sound/usb/helper.c
++++ b/sound/usb/helper.c
+@@ -62,6 +62,7 @@ void *snd_usb_find_csint_desc(void *buffer, int buflen, void *after, u8 dsubtype
+ 	}
+ 	return NULL;
+ }
++EXPORT_SYMBOL_GPL(snd_usb_find_csint_desc);
+ 
+ /*
+  * Wrapper for usb_control_msg().
+diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
+index 08bf535ed163..3adb09ce1702 100644
+--- a/sound/usb/pcm.c
++++ b/sound/usb/pcm.c
+@@ -148,6 +148,16 @@ find_format(struct list_head *fmt_list_head, snd_pcm_format_t format,
+ 	return found;
+ }
+ 
++const struct audioformat *
++snd_usb_find_format(struct list_head *fmt_list_head, snd_pcm_format_t format,
++	    unsigned int rate, unsigned int channels, bool strict_match,
++	    struct snd_usb_substream *subs)
++{
++	return find_format(fmt_list_head, format, rate, channels, strict_match,
++			subs);
++}
++EXPORT_SYMBOL_GPL(snd_usb_find_format);
++
+ static const struct audioformat *
+ find_substream_format(struct snd_usb_substream *subs,
+ 		      const struct snd_pcm_hw_params *params)
+@@ -157,6 +167,14 @@ find_substream_format(struct snd_usb_substream *subs,
+ 			   true, subs);
+ }
+ 
++const struct audioformat *
++snd_usb_find_substream_format(struct snd_usb_substream *subs,
++		      const struct snd_pcm_hw_params *params)
++{
++	return find_substream_format(subs, params);
++}
++EXPORT_SYMBOL_GPL(snd_usb_find_substream_format);
++
+ bool snd_usb_pcm_has_fixed_rate(struct snd_usb_substream *subs)
+ {
+ 	const struct audioformat *fp;
+@@ -461,20 +479,9 @@ static void close_endpoints(struct snd_usb_audio *chip,
+ 	}
+ }
+ 
+-/*
+- * hw_params callback
+- *
+- * allocate a buffer and set the given audio format.
+- *
+- * so far we use a physically linear buffer although packetize transfer
+- * doesn't need a continuous area.
+- * if sg buffer is supported on the later version of alsa, we'll follow
+- * that.
+- */
+-static int snd_usb_hw_params(struct snd_pcm_substream *substream,
+-			     struct snd_pcm_hw_params *hw_params)
++int snd_usb_hw_params(struct snd_usb_substream *subs,
++				struct snd_pcm_hw_params *hw_params)
+ {
+-	struct snd_usb_substream *subs = substream->runtime->private_data;
+ 	struct snd_usb_audio *chip = subs->stream->chip;
+ 	const struct audioformat *fmt;
+ 	const struct audioformat *sync_fmt;
+@@ -499,7 +506,7 @@ static int snd_usb_hw_params(struct snd_pcm_substream *substream,
+ 	if (fmt->implicit_fb) {
+ 		sync_fmt = snd_usb_find_implicit_fb_sync_format(chip, fmt,
+ 								hw_params,
+-								!substream->stream,
++								!subs->direction,
+ 								&sync_fixed_rate);
+ 		if (!sync_fmt) {
+ 			usb_audio_dbg(chip,
+@@ -579,15 +586,28 @@ static int snd_usb_hw_params(struct snd_pcm_substream *substream,
+ 
+ 	return ret;
+ }
++EXPORT_SYMBOL_GPL(snd_usb_hw_params);
+ 
+ /*
+- * hw_free callback
++ * hw_params callback
+  *
+- * reset the audio format and release the buffer
++ * allocate a buffer and set the given audio format.
++ *
++ * so far we use a physically linear buffer although packetize transfer
++ * doesn't need a continuous area.
++ * if sg buffer is supported on the later version of alsa, we'll follow
++ * that.
+  */
+-static int snd_usb_hw_free(struct snd_pcm_substream *substream)
++static int snd_usb_pcm_hw_params(struct snd_pcm_substream *substream,
++			     struct snd_pcm_hw_params *hw_params)
+ {
+ 	struct snd_usb_substream *subs = substream->runtime->private_data;
++
++	return snd_usb_hw_params(subs, hw_params);
++}
++
++int snd_usb_hw_free(struct snd_usb_substream *subs)
++{
+ 	struct snd_usb_audio *chip = subs->stream->chip;
+ 
+ 	snd_media_stop_pipeline(subs);
+@@ -603,6 +623,19 @@ static int snd_usb_hw_free(struct snd_pcm_substream *substream)
+ 
+ 	return 0;
+ }
++EXPORT_SYMBOL_GPL(snd_usb_hw_free);
++
 +/*
-+ * Copyright (c) 2022-2024 Qualcomm Innovation Center, Inc. All rights reserved.
++ * hw_free callback
++ *
++ * reset the audio format and release the buffer
 + */
-+#include <linux/of.h>
-+#include <linux/usb.h>
-+#include <sound/soc.h>
-+#include <sound/soc-usb.h>
-+#include "../usb/card.h"
-+
-+static DEFINE_MUTEX(ctx_mutex);
-+static LIST_HEAD(usb_ctx_list);
-+
-+static struct device_node *snd_soc_find_phandle(struct device *dev)
++static int snd_usb_pcm_hw_free(struct snd_pcm_substream *substream)
 +{
-+	struct device_node *node;
++	struct snd_usb_substream *subs = substream->runtime->private_data;
 +
-+	node = of_parse_phandle(dev->of_node, "usb-soc-be", 0);
-+	if (!node)
-+		return ERR_PTR(-ENODEV);
-+
-+	return node;
++	return snd_usb_hw_free(subs);
 +}
+ 
+ /* free-wheeling mode? (e.g. dmix) */
+ static int in_free_wheeling_mode(struct snd_pcm_runtime *runtime)
+@@ -1746,8 +1779,8 @@ static int snd_usb_substream_capture_trigger(struct snd_pcm_substream *substream
+ static const struct snd_pcm_ops snd_usb_playback_ops = {
+ 	.open =		snd_usb_pcm_open,
+ 	.close =	snd_usb_pcm_close,
+-	.hw_params =	snd_usb_hw_params,
+-	.hw_free =	snd_usb_hw_free,
++	.hw_params =	snd_usb_pcm_hw_params,
++	.hw_free =	snd_usb_pcm_hw_free,
+ 	.prepare =	snd_usb_pcm_prepare,
+ 	.trigger =	snd_usb_substream_playback_trigger,
+ 	.sync_stop =	snd_usb_pcm_sync_stop,
+@@ -1758,8 +1791,8 @@ static const struct snd_pcm_ops snd_usb_playback_ops = {
+ static const struct snd_pcm_ops snd_usb_capture_ops = {
+ 	.open =		snd_usb_pcm_open,
+ 	.close =	snd_usb_pcm_close,
+-	.hw_params =	snd_usb_hw_params,
+-	.hw_free =	snd_usb_hw_free,
++	.hw_params =	snd_usb_pcm_hw_params,
++	.hw_free =	snd_usb_pcm_hw_free,
+ 	.prepare =	snd_usb_pcm_prepare,
+ 	.trigger =	snd_usb_substream_capture_trigger,
+ 	.sync_stop =	snd_usb_pcm_sync_stop,
+diff --git a/sound/usb/pcm.h b/sound/usb/pcm.h
+index 388fe2ba346d..be2dd9478982 100644
+--- a/sound/usb/pcm.h
++++ b/sound/usb/pcm.h
+@@ -15,4 +15,15 @@ void snd_usb_preallocate_buffer(struct snd_usb_substream *subs);
+ int snd_usb_audioformat_set_sync_ep(struct snd_usb_audio *chip,
+ 				    struct audioformat *fmt);
+ 
++const struct audioformat *
++snd_usb_find_format(struct list_head *fmt_list_head, snd_pcm_format_t format,
++	    unsigned int rate, unsigned int channels, bool strict_match,
++	    struct snd_usb_substream *subs);
++const struct audioformat *
++snd_usb_find_substream_format(struct snd_usb_substream *subs,
++		      const struct snd_pcm_hw_params *params);
 +
-+static struct snd_soc_usb *snd_soc_find_usb_ctx(struct device_node *node)
-+{
-+	struct snd_soc_usb *ctx;
-+
-+	mutex_lock(&ctx_mutex);
-+	list_for_each_entry(ctx, &usb_ctx_list, list) {
-+		if (ctx->component->dev->of_node == node) {
-+			mutex_unlock(&ctx_mutex);
-+			return ctx;
-+		}
-+	}
-+	mutex_unlock(&ctx_mutex);
-+
-+	return NULL;
-+}
-+
-+/**
-+ * snd_soc_usb_get_components_tag() - Retrieve SOC USB component tag
-+ * @playback: direction of audio stream
-+ *
-+ * Returns the USB offload component tag used in the ASoC components
-+ * string.
-+ *
-+ */
-+const char *snd_soc_usb_get_components_tag(bool playback)
-+{
-+	if (playback)
-+		return "usbplybkoffld: 1";
-+	else
-+		return "usbcapoffld: 1";
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_usb_get_components_tag);
-+
-+/**
-+ * snd_soc_usb_find_priv_data() - Retrieve private data stored
-+ * @dev: device reference
-+ *
-+ * Fetch the private data stored in the USB SND SOC structure.
-+ *
-+ */
-+void *snd_soc_usb_find_priv_data(struct device *dev)
-+{
-+	struct snd_soc_usb *ctx;
-+	struct device_node *node;
-+
-+	node = snd_soc_find_phandle(dev);
-+	if (!IS_ERR(node)) {
-+		ctx = snd_soc_find_usb_ctx(node);
-+		of_node_put(node);
-+	} else {
-+		/* Check if backend device */
-+		ctx = snd_soc_find_usb_ctx(dev->of_node);
-+	}
-+
-+	return ctx ? ctx->priv_data : NULL;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_usb_find_priv_data);
-+
-+/**
-+ * snd_soc_usb_allocate_port() - allocate a SOC USB device
-+ * @component: USB DPCM backend DAI component
-+ * @num_streams: number of supported offload streams
-+ * @data: private data
-+ *
-+ * Allocate and initialize a SOC USB device.  This will populate parameters that
-+ * are used in subsequent sequences.
-+ *
-+ */
-+struct snd_soc_usb *snd_soc_usb_allocate_port(struct snd_soc_component *component,
-+			int num_streams, void *data)
-+{
-+	struct snd_soc_usb *usb;
-+
-+	usb = kzalloc(sizeof(*usb), GFP_KERNEL);
-+	if (!usb)
-+		return ERR_PTR(-ENOMEM);
-+
-+	usb->component = component;
-+	usb->priv_data = data;
-+	usb->num_supported_streams = num_streams;
-+
-+	return usb;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_usb_allocate_port);
-+
-+/**
-+ * snd_soc_usb_free_port() - free a SOC USB device
-+ * @usb: allocated SOC USB device
-+
-+ * Free and remove the SOC USB device from the available list of devices.
-+ *
-+ */
-+void snd_soc_usb_free_port(struct snd_soc_usb *usb)
-+{
-+	snd_soc_usb_remove_port(usb);
-+	kfree(usb);
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_usb_free_port);
-+
-+/**
-+ * snd_soc_usb_add_port() - Add a USB backend port
-+ * @dev: USB backend device
-+ * @priv: private data
-+ * @connection_cb: connection status callback
-+ *
-+ * Register a USB backend device to the SND USB SOC framework.  Memory is
-+ * allocated as part of the USB backend device.
-+ *
-+ */
-+int snd_soc_usb_add_port(struct snd_soc_usb *usb)
-+{
-+
-+
-+	mutex_lock(&ctx_mutex);
-+	list_add_tail(&usb->list, &usb_ctx_list);
-+	mutex_unlock(&ctx_mutex);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_usb_add_port);
-+
-+/**
-+ * snd_soc_usb_remove_port() - Remove a USB backend port
-+ * @dev: USB backend device
-+ *
-+ * Remove a USB backend device from USB SND SOC.  Memory is freed when USB
-+ * backend is removed.
-+ *
-+ */
-+int snd_soc_usb_remove_port(struct snd_soc_usb *usb)
-+{
-+	struct snd_soc_usb *ctx, *tmp;
-+
-+	mutex_lock(&ctx_mutex);
-+	list_for_each_entry_safe(ctx, tmp, &usb_ctx_list, list) {
-+		if (ctx == usb) {
-+			list_del(&ctx->list);
-+			break;
-+		}
-+	}
-+	mutex_unlock(&ctx_mutex);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_usb_remove_port);
-+
-+/**
-+ * snd_soc_usb_connect() - Notification of USB device connection
-+ * @usbdev: USB bus device
-+ * @card_idx: USB SND card instance
-+ *
-+ * Notify of a new USB SND device connection.  The card_idx can be used to
-+ * handle how the DPCM backend selects, which device to enable USB offloading
-+ * on.
-+ *
-+ */
-+int snd_soc_usb_connect(struct device *usbdev, struct snd_soc_usb_device *sdev)
-+{
-+	struct snd_soc_usb *ctx;
-+	struct device_node *node;
-+
-+	if (!usbdev)
-+		return -ENODEV;
-+
-+	node = snd_soc_find_phandle(usbdev);
-+	if (IS_ERR(node))
-+		return -ENODEV;
-+
-+	ctx = snd_soc_find_usb_ctx(node);
-+	of_node_put(node);
-+	if (!ctx)
-+		return -ENODEV;
-+
-+	mutex_lock(&ctx_mutex);
-+	if (ctx->connection_status_cb)
-+		ctx->connection_status_cb(ctx, sdev, true);
-+	mutex_unlock(&ctx_mutex);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_usb_connect);
-+
-+/**
-+ * snd_soc_usb_disconnect() - Notification of USB device disconnection
-+ * @usbdev: USB bus device
-+ *
-+ * Notify of a new USB SND device disconnection to the USB backend.
-+ *
-+ */
-+int snd_soc_usb_disconnect(struct device *usbdev, struct snd_soc_usb_device *sdev)
-+{
-+	struct snd_soc_usb *ctx;
-+	struct device_node *node;
-+
-+	if (!usbdev)
-+		return -ENODEV;
-+
-+	node = snd_soc_find_phandle(usbdev);
-+	if (IS_ERR(node))
-+		return -ENODEV;
-+
-+	ctx = snd_soc_find_usb_ctx(node);
-+	of_node_put(node);
-+	if (!ctx)
-+		return -ENODEV;
-+
-+	mutex_lock(&ctx_mutex);
-+	if (ctx->connection_status_cb)
-+		ctx->connection_status_cb(ctx, sdev, false);
-+	mutex_unlock(&ctx_mutex);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_usb_disconnect);
++int snd_usb_hw_params(struct snd_usb_substream *subs,
++				struct snd_pcm_hw_params *hw_params);
++int snd_usb_hw_free(struct snd_usb_substream *subs);
+ #endif /* __USBAUDIO_PCM_H */
