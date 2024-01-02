@@ -4,160 +4,107 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D7BB5C46CD2
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Jan 2024 19:50:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5019FC46CD2
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Jan 2024 19:53:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B8133E82;
-	Tue,  2 Jan 2024 20:50:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B8133E82
+	by alsa0.perex.cz (Postfix) with ESMTPS id 435B1EAD;
+	Tue,  2 Jan 2024 20:53:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 435B1EAD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1704225051;
-	bh=xXq3622DPUTYmXiLjYefHJ02P4X9CRfBreceetN466A=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	s=default; t=1704225218;
+	bh=z9DJyDtomZG7fy9ZprZvw/z8kTxEPOvKo8h28f6CxjI=;
+	h=Date:From:To:Cc:In-Reply-To:References:Subject:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=inEAYkGAXHpep/HfEIn6k0Z4ZtXHHXzNgUC2/q1LIFP+0kGQSksaIfc4eYSQ7+ZwO
-	 6A+SFJn7JlcoC55t8F36U5BmF3H1XPoOKnRXi50pvj4y79w3PZ407aa2csYocPfjFY
-	 Kwb2MSl9XQf4WSIJMhAt180a4OVUv2eqiLbKcFqE=
+	b=uGBeuUp/A8DgRs/TAaojW8vsBiO2oT3yzvSTmw8ACzj14UxzUmqxMoSzweei4tGXS
+	 HVLU5fvhG0Fk9KVnemgOFokJ9bptyagz3feSjbwuZEPy9/MaOYkUlPQCYGy5WyIaMj
+	 um6SkxIzVy6m8+oHazKa50g9Cj1Zx0X/yPpZSmlE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 798C2F805AC; Tue,  2 Jan 2024 20:50:05 +0100 (CET)
+	id C744AF8057D; Tue,  2 Jan 2024 20:53:06 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C12A3F805B0;
-	Tue,  2 Jan 2024 20:50:04 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BAB4AF80587;
+	Tue,  2 Jan 2024 20:53:05 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D4BDAF80551; Tue,  2 Jan 2024 20:49:58 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
+	id 8B58CF80424; Tue,  2 Jan 2024 20:53:01 +0100 (CET)
+Received: from mail.savoirfairelinux.com (mail.savoirfairelinux.com
+ [208.88.110.44])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 0BF0AF80424
-	for <alsa-devel@alsa-project.org>; Tue,  2 Jan 2024 20:49:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0BF0AF80424
+	by alsa1.perex.cz (Postfix) with ESMTPS id 910D8F80051
+	for <alsa-devel@alsa-project.org>; Tue,  2 Jan 2024 20:52:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 910D8F80051
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=bf4NxG2c;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=HzUos/6b;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=bf4NxG2c;
-	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=HzUos/6b
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 720B01F802;
-	Sat, 30 Dec 2023 10:03:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1703930617;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=gcV5OU5SfV1BLtRf/EedR9E5OkftoptDTaAhrFBDOoM=;
-	b=bf4NxG2cGncc0PtqMEY+4pb7JVTvB7R5ob0fOUCe64TO3zeBOH3nFkvwtyT7RuUNmWNYs7
-	lk27j55tP8Ci+Fh1NKEpT2LEynHBo3XO6nJvjkeZCQXETt75v5CQ1+t2eTHBHkEZu5hGTf
-	sp2j5ecfi2FtxIl4OvKhnqLrnA4BakM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1703930617;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=gcV5OU5SfV1BLtRf/EedR9E5OkftoptDTaAhrFBDOoM=;
-	b=HzUos/6bV6cJcGoq6zsFmUcqrSCN7tH/mHfxFLE25u10gM75cdcPmZHegvD7iZ92xzwOsx
-	ux+Iq181mjHxuxBQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1703930617;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=gcV5OU5SfV1BLtRf/EedR9E5OkftoptDTaAhrFBDOoM=;
-	b=bf4NxG2cGncc0PtqMEY+4pb7JVTvB7R5ob0fOUCe64TO3zeBOH3nFkvwtyT7RuUNmWNYs7
-	lk27j55tP8Ci+Fh1NKEpT2LEynHBo3XO6nJvjkeZCQXETt75v5CQ1+t2eTHBHkEZu5hGTf
-	sp2j5ecfi2FtxIl4OvKhnqLrnA4BakM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1703930617;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=gcV5OU5SfV1BLtRf/EedR9E5OkftoptDTaAhrFBDOoM=;
-	b=HzUos/6bV6cJcGoq6zsFmUcqrSCN7tH/mHfxFLE25u10gM75cdcPmZHegvD7iZ92xzwOsx
-	ux+Iq181mjHxuxBQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 16442136D1;
-	Sat, 30 Dec 2023 10:03:37 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id uoEgBPnqj2WwPQAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Sat, 30 Dec 2023 10:03:37 +0000
-Date: Sat, 30 Dec 2023 11:03:36 +0100
-Message-ID: <87plyovwg7.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Dominik Brodowski <linux@dominikbrodowski.net>
-Cc: peter.ujfalusi@linux.intel.com,
-	lgirdwood@gmail.com,
-	broonie@kernel.org,
-	perex@perex.cz,
-	tiwai@suse.com,
-	alsa-devel@alsa-project.org,
-	linux-sound@vger.kernel.org,
-	pierre-louis.bossart@linux.intel.com,
-	kai.vehmanen@linux.intel.com,
-	ranjani.sridharan@linux.intel.com,
-	linux-kernel@vger.kernel.org,
-	regressions@lists.linux.dev
-Subject: Re: Oops in hdac_hda_dev_probe (6.7-rc7)
-In-Reply-To: <ZY_Gb8-rncuOjRq-@shine.dominikbrodowski.net>
-References: <ZYvUIxtrqBQZbNlC@shine.dominikbrodowski.net>
-	<87sf3lxiet.wl-tiwai@suse.de>
-	<ZY7kosArPqhlCfOA@shine.dominikbrodowski.net>
-	<874jg1x7ao.wl-tiwai@suse.de>
-	<ZY_Gb8-rncuOjRq-@shine.dominikbrodowski.net>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-2.31 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.de:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_TWELVE(0.00)[13];
-	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 FREEMAIL_CC(0.00)[linux.intel.com,gmail.com,kernel.org,perex.cz,suse.com,alsa-project.org,vger.kernel.org,lists.linux.dev];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=bf4NxG2c;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b="HzUos/6b"
-X-Rspamd-Queue-Id: 720B01F802
-Message-ID-Hash: XSZTLT5KGXWWA7IDCOD5ZYKC5WGBCYYX
-X-Message-ID-Hash: XSZTLT5KGXWWA7IDCOD5ZYKC5WGBCYYX
-X-MailFrom: tiwai@suse.de
+	dkim=pass (2048-bit key,
+ unprotected) header.d=savoirfairelinux.com header.i=@savoirfairelinux.com
+ header.a=rsa-sha256 header.s=DFC430D2-D198-11EC-948E-34200CB392D2
+ header.b=HfBx0L9S
+Received: from localhost (localhost [127.0.0.1])
+	by mail.savoirfairelinux.com (Postfix) with ESMTP id DFB4E9C0888;
+	Tue,  2 Jan 2024 06:37:40 -0500 (EST)
+Received: from mail.savoirfairelinux.com ([127.0.0.1])
+ by localhost (mail.savoirfairelinux.com [127.0.0.1]) (amavis, port 10032)
+ with ESMTP id oH47By21Q_s9; Tue,  2 Jan 2024 06:37:40 -0500 (EST)
+Received: from localhost (localhost [127.0.0.1])
+	by mail.savoirfairelinux.com (Postfix) with ESMTP id 50F959C0957;
+	Tue,  2 Jan 2024 06:37:40 -0500 (EST)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.savoirfairelinux.com 50F959C0957
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=savoirfairelinux.com; s=DFC430D2-D198-11EC-948E-34200CB392D2;
+	t=1704195460; bh=bAsNfTDPGcy9UE/qR8q9C/MYhrYIBcUMKG2G3Oi4VLE=;
+	h=Date:From:To:Message-ID:MIME-Version;
+	b=HfBx0L9SYhFxNTXnatyaVVD/0MKoxKv1DkFPwS4FhP21ZdGhZFAP2Yw2hgXG5W1+t
+	 DG22L6dYlNdqI/yA4nolhiQbAYRMk3Yvd1vhj35YZTZ1keQ1XC+emTImMoQmjgdIjh
+	 alA58hoYPXIYl8/8523fTVCfrQVCNMBqb6qPyKUQ1uoRLrwWFtxWeVm73HyoV71weA
+	 Vcvll8Fbldw/DCB9WQCaUVbMMf9+FXj0uatTbgq9RGC183UtRM5ockSfi6AD3jQlfV
+	 NlAXW2vSrvxzA0K2KrHkaWWkgrrQsn+4DCiJZlStF1JhWW5TYl6ACLELjZgkVicaEV
+	 5OCMfpqr9RX7g==
+X-Virus-Scanned: amavis at mail.savoirfairelinux.com
+Received: from mail.savoirfairelinux.com ([127.0.0.1])
+ by localhost (mail.savoirfairelinux.com [127.0.0.1]) (amavis, port 10026)
+ with ESMTP id 20Ly5X62OB9G; Tue,  2 Jan 2024 06:37:40 -0500 (EST)
+Received: from mail.savoirfairelinux.com (mail.savoirfairelinux.com
+ [192.168.48.237])
+	by mail.savoirfairelinux.com (Postfix) with ESMTP id 1AD139C0888;
+	Tue,  2 Jan 2024 06:37:40 -0500 (EST)
+Date: Tue, 2 Jan 2024 06:37:39 -0500 (EST)
+From: Elinor Montmasson <elinor.montmasson@savoirfairelinux.com>
+To: Rob Herring <robh@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	shengjiu wang <shengjiu.wang@gmail.com>,
+	Xiubo Lee <Xiubo.Lee@gmail.com>, Fabio Estevam <festevam@gmail.com>,
+	Nicolin Chen <nicoleotsuka@gmail.com>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	linux-sound <linux-sound@vger.kernel.org>,
+	devicetree <devicetree@vger.kernel.org>,
+	linux-kernel <linux-kernel@vger.kernel.org>,
+	alsa-devel <alsa-devel@alsa-project.org>,
+	linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+	Philip-Dylan Gleonec <philip-dylan.gleonec@savoirfairelinux.com>
+Message-ID: 
+ <1300509761.24764.1704195459987.JavaMail.zimbra@savoirfairelinux.com>
+In-Reply-To: <20231220222550.GA1232936-robh@kernel.org>
+References: <20231218124058.2047167-1-elinor.montmasson@savoirfairelinux.com>
+ <20231218124058.2047167-11-elinor.montmasson@savoirfairelinux.com>
+ <20231220222550.GA1232936-robh@kernel.org>
+Subject: Re: [PATCHv3 RESEND 10/10] ASoC: dt-bindings: fsl-asoc-card: add
+ compatible for generic codec
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Mailer: Zimbra 8.8.15_GA_4581 (ZimbraWebClient - GC112
+ (Linux)/8.8.15_GA_4581)
+Thread-Topic: ASoC: dt-bindings: fsl-asoc-card: add compatible for generic
+ codec
+Thread-Index: r/qDupTL/n3XOuEH8yE+GIqg/zABBQ==
+Message-ID-Hash: CQQT3TDUCKM2NVG642Z3WTHUZZI2O457
+X-Message-ID-Hash: CQQT3TDUCKM2NVG642Z3WTHUZZI2O457
+X-MailFrom: elinor.montmasson@savoirfairelinux.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -169,7 +116,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XSZTLT5KGXWWA7IDCOD5ZYKC5WGBCYYX/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CQQT3TDUCKM2NVG642Z3WTHUZZI2O457/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -178,63 +125,48 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Sat, 30 Dec 2023 08:27:43 +0100,
-Dominik Brodowski wrote:
+Hello,
+
+On Wednesday, 20 December, 2023 23:25:50, Rob Herring wrote:
+> On Mon, Dec 18, 2023 at 01:40:58PM +0100, Elinor Montmasson wrote: 
+> > +Optional, relevant only with the "fsl,imx-audio-generic" compatible: 
+> > + 
+> > + - cpu-slot-width : Indicates a specific TDM slot width in bits. 
+> > + - cpu-slot-num : Indicates a specific number of TDM slots per frame. 
 > 
-> Am Fri, Dec 29, 2023 at 06:11:43PM +0100 schrieb Takashi Iwai:
-> > On Fri, 29 Dec 2023 16:24:18 +0100,
-> > Dominik Brodowski wrote:
-> > > 
-> > > Hi Takashi,
-> > > 
-> > > many thanks for your response. Your patch helps half-way: the oops goes
-> > > away, but so does the sound... With your patch, the decisive lines in dmesg
-> > > are:
-> > > 
-> > > 	sof-audio-pci-intel-tgl 0000:00:1f.3: Firmware info: version 2:2:0-57864
-> > > 	sof-audio-pci-intel-tgl 0000:00:1f.3: Firmware: ABI 3:22:1 Kernel ABI 3:23:0
-> > > 	sof_sdw sof_sdw: ASoC: CODEC DAI intel-hdmi-hifi1 not registered
-> > > 	sof_sdw sof_sdw: snd_soc_register_card failed -517
-> > > 	sof_sdw sof_sdw: ASoC: CODEC DAI intel-hdmi-hifi1 not registered
-> > > 	sof_sdw sof_sdw: snd_soc_register_card failed -517
-> > > 	platform sof_sdw: deferred probe pending
-> > > 
-> > > With a revert of the a0575b4add21, it is:
-> > > 
-> > > 	sof-audio-pci-intel-tgl 0000:00:1f.3: Firmware info: version 2:2:0-57864
-> > > 	sof-audio-pci-intel-tgl 0000:00:1f.3: Firmware: ABI 3:22:1 Kernel ABI 3:23:0
-> > > 	sof-audio-pci-intel-tgl 0000:00:1f.3: Topology: ABI 3:22:1 Kernel ABI 3:23:0
-> > > 	sof_sdw sof_sdw: ASoC: Parent card not yet available, widget card binding deferred
-> > > 	sof_sdw sof_sdw: hda_dsp_hdmi_build_controls: no PCM in topology for HDMI converter 3
-> > > 	input: sof-soundwire HDMI/DP,pcm=5 as /devices/pci0000:00/0000:00:1f.3/sof_sdw/sound/card0/input14
-> > > 	input: sof-soundwire HDMI/DP,pcm=6 as /devices/pci0000:00/0000:00:1f.3/sof_sdw/sound/card0/input15
-> > > 	input: sof-soundwire HDMI/DP,pcm=7 as /devices/pci0000:00/0000:00:1f.3/sof_sdw/sound/card0/input16
-> > > 
-> > > Maybe this helps a bit further?
-> > 
-> > Thanks for quick testing.
-> > It shows at least that my guess wasn't wrong.
-> > 
-> > The problem could be the initialization order in the caller side.
-> > Can the patch below work instead?
+> Pretty sure I've seen other bindings with TDM slot properties. A sign we 
+> need something common if we don't already have something. 
+
+That's right, "tdm-slot.txt" already defines TDM bindings, I will
+use them with the utility function snd_soc_of_parse_tdm_slot().
+
+> > + - cpu-sysclk-freq-rx : Frequency of the CPU DAI sys clock for Rx. 
+> > + - cpu-sysclk-freq-tx : Frequency of the CPU DAI sys clock for Tx. 
+> > + 
+> > + - cpu-sysclk-dir-rx-out : Boolean property. Specifies sys clock direction 
+> > + as 'out' on initialization for Rx. 
+> > + If not set, default direction is 'in'. 
+> > + - cpu-sysclk-dir-tx-out : Boolean property. Specifies sys clock direction 
+> > + as 'out' on initialization for Tx. 
+> > + If not set, default direction is 'in'. 
 > 
-> Unfortunately, no:
-> 
-> sof-audio-pci-intel-tgl 0000:00:1f.3: Firmware info: version 2:2:0-57864
-> sof-audio-pci-intel-tgl 0000:00:1f.3: Firmware: ABI 3:22:1 Kernel ABI 3:23:0
-> sof_sdw sof_sdw: ASoC: CODEC DAI intel-hdmi-hifi1 not registered
-> sof_sdw sof_sdw: snd_soc_register_card failed -517
-> sof_sdw sof_sdw: ASoC: CODEC DAI intel-hdmi-hifi1 not registered
-> sof_sdw sof_sdw: snd_soc_register_card failed -517
-> platform sof_sdw: deferred probe pending
+> Looks like clock stuff. Use the clock binding. 
 
-Hm, then it might be the logical failure of that commit.
-Peter?
+simple-card defines similar properties at the dai level:
+"system-clock-frequency" and "system-clock-direction-out".
+The first is used if no "clocks" binding is specified for the dai node.
 
-Without a fix in the next few days, we'll have to revert it before
-6.7.
+Maybe I could use a similar logic with fsl-asoc-card ?
+* adding a "clock-cpu" phandle property which should be the cpu clock.
+It will be used to retreive the frequency for both RX and TX.
+* keeping "cpu-sysclk-freq-rx"/"cpu-sysclk-freq-tx", which are used if
+no clock is provided, like "system-clock-frequency" in simple-card.
+* keep using "cpu-sysclk-dir-rx-out"/"cpu-sysclk-dir-tx-out", like
+"system-clock-direction-out" in simple card.
 
+Also, maybe I could rename my new properties:
+cpu-system-clock-frequency-tx, cpu-system-clock-direction-out-rx, ...
+It would better match those in simple-card as they do the same thing.
 
-thanks,
-
-Takashi
+Best regards,
+Elinor Montmasson
