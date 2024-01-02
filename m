@@ -4,65 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A856CC47074
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Jan 2024 19:08:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2C55CC46CD2
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Jan 2024 19:08:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1AAF1E98;
-	Tue,  2 Jan 2024 20:07:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1AAF1E98
+	by alsa0.perex.cz (Postfix) with ESMTPS id 53C69EA2;
+	Tue,  2 Jan 2024 20:08:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 53C69EA2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1704222479;
-	bh=E7Q60s3IwDmLJ+2sCyI4vtSF/n26s1n/OwmYrM7vSNk=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1704222503;
+	bh=jClnt4rzvFUUv7Eom43v4OTG5gscrsuV/WZCXvUpXa8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=tQHy1Ac04ZVCgIpq+QWc8Uf02aWYt6DIhMTsmnypogXZNZmjLUtboIPbV90JgnwFY
-	 qwPexMIURvun5XSijVB/sWvwvPaGghxnjdBk15dxAEhbL/dUkQCEyHCXsxnQm5Epmp
-	 GflJ76dAo6xxwDGcz3e5Ne593a3n/RStTg693v6M=
+	b=q6mqqry5NHKDglKTD33lAwkvMI8ZJF4CeBc5RziIl9lOO1LEsrarfL4bMwOE4IeGs
+	 Y/EDNyFR84QNmKjDboaH+wo47fiP68bj3q7DJesQ9NvWMA1l5+tMt0wmjEWlIX+iY/
+	 dDJU/HHHfA0bdDa8DuG6ScxpY0j96RqwMSQIAJsE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6373DF80614; Tue,  2 Jan 2024 20:06:46 +0100 (CET)
+	id 36713F80635; Tue,  2 Jan 2024 20:06:50 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3ADDAF8060A;
-	Tue,  2 Jan 2024 20:06:46 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 79152F8063A;
+	Tue,  2 Jan 2024 20:06:50 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 06587F8065A; Tue,  2 Jan 2024 19:59:35 +0100 (CET)
-Received: from irl.hu (irl.hu [95.85.9.111])
+	id 3C72FF8065C; Tue,  2 Jan 2024 20:00:04 +0100 (CET)
+Received: from isilmar-4.linta.de (isilmar-4.linta.de [136.243.71.142])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
- server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with UTF8SMTPS id 1D3D1F8067D
-	for <alsa-devel@alsa-project.org>; Tue,  2 Jan 2024 19:54:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1D3D1F8067D
-Received: from fedori.lan (51b6838a.dsl.pool.telekom.hu
- [::ffff:81.182.131.138])
-  (AUTH: CRAM-MD5 soyer@irl.hu, )
-  by irl.hu with ESMTPSA
-  id 00000000000720A0.00000000658F5FD1.0014D4C3;
- Sat, 30 Dec 2023 01:09:53 +0100
-From: Gergo Koteles <soyer@irl.hu>
-To: Shenghao Ding <shenghao-ding@ti.com>, Kevin Lu <kevin-lu@ti.com>,
-  Baojun Xu <baojun.xu@ti.com>, Jaroslav Kysela <perex@perex.cz>,
-  Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
-  Mark Brown <broonie@kernel.org>
-Cc: linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
-  alsa-devel@alsa-project.org, Gergo Koteles <soyer@irl.hu>
-Subject: [PATCH v2 4/4] ALSA: hda/tas2781: add fixup for Lenovo 14ARB7
-Date: Sat, 30 Dec 2023 01:09:45 +0100
-Message-ID: 
- <abce9ee55689523562feb72383377171a489ddc7.1703891777.git.soyer@irl.hu>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <cover.1703891777.git.soyer@irl.hu>
-References: <cover.1703891777.git.soyer@irl.hu>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Mime-Autoconverted: from 8bit to 7bit by courier 1.0
-Message-ID-Hash: V2RBLABF3O7IOLQU7DOC36CH2F2DRRR5
-X-Message-ID-Hash: V2RBLABF3O7IOLQU7DOC36CH2F2DRRR5
-X-MailFrom: soyer@irl.hu
+	by alsa1.perex.cz (Postfix) with ESMTPS id 4AAB7F80699
+	for <alsa-devel@alsa-project.org>; Tue,  2 Jan 2024 19:54:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4AAB7F80699
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+Received: from shine.dominikbrodowski.net (shine.brodo.linta [10.2.0.112])
+	by isilmar-4.linta.de (Postfix) with ESMTPSA id 2AAD42002EC;
+	Tue,  2 Jan 2024 17:38:32 +0000 (UTC)
+Received: by shine.dominikbrodowski.net (Postfix, from userid 1000)
+	id E6FCBA0083; Tue,  2 Jan 2024 18:37:45 +0100 (CET)
+Date: Tue, 2 Jan 2024 18:37:45 +0100
+From: Dominik Brodowski <linux@dominikbrodowski.net>
+To: =?iso-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@linux.intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>,
+	lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
+	alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
+	pierre-louis.bossart@linux.intel.com, kai.vehmanen@linux.intel.com,
+	ranjani.sridharan@linux.intel.com, linux-kernel@vger.kernel.org,
+	regressions@lists.linux.dev
+Subject: Re: Oops in hdac_hda_dev_probe (6.7-rc7)
+Message-ID: <ZZRJ6VNJlQ97bnjF@shine.dominikbrodowski.net>
+References: <ZYvUIxtrqBQZbNlC@shine.dominikbrodowski.net>
+ <87sf3lxiet.wl-tiwai@suse.de>
+ <ZY7kosArPqhlCfOA@shine.dominikbrodowski.net>
+ <874jg1x7ao.wl-tiwai@suse.de>
+ <ZY_Gb8-rncuOjRq-@shine.dominikbrodowski.net>
+ <87plyovwg7.wl-tiwai@suse.de>
+ <3260e806-a708-4462-9d4e-346e54143a65@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <3260e806-a708-4462-9d4e-346e54143a65@linux.intel.com>
+Message-ID-Hash: 3JIVJ62NNM6QXJMFCN2XMEBOC2F3B6BH
+X-Message-ID-Hash: 3JIVJ62NNM6QXJMFCN2XMEBOC2F3B6BH
+X-MailFrom: linux@dominikbrodowski.net
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -74,7 +91,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/V2RBLABF3O7IOLQU7DOC36CH2F2DRRR5/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3JIVJ62NNM6QXJMFCN2XMEBOC2F3B6BH/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -83,60 +100,70 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The 14ARB7 has two tas2563 amplifier on i2c.
-Connect it to the tas2781 driver.
+Am Tue, Jan 02, 2024 at 11:08:47AM +0200 schrieb Péter Ujfalusi:
+> 
+> 
+> On 30/12/2023 12:03, Takashi Iwai wrote:
+> > On Sat, 30 Dec 2023 08:27:43 +0100,
+> > Dominik Brodowski wrote:
+> >>
+> >> Am Fri, Dec 29, 2023 at 06:11:43PM +0100 schrieb Takashi Iwai:
+> >>> On Fri, 29 Dec 2023 16:24:18 +0100,
+> >>> Dominik Brodowski wrote:
+> >>>>
+> >>>> Hi Takashi,
+> >>>>
+> >>>> many thanks for your response. Your patch helps half-way: the oops goes
+> >>>> away, but so does the sound... With your patch, the decisive lines in dmesg
+> >>>> are:
+> >>>>
+> >>>> 	sof-audio-pci-intel-tgl 0000:00:1f.3: Firmware info: version 2:2:0-57864
+> >>>> 	sof-audio-pci-intel-tgl 0000:00:1f.3: Firmware: ABI 3:22:1 Kernel ABI 3:23:0
+> >>>> 	sof_sdw sof_sdw: ASoC: CODEC DAI intel-hdmi-hifi1 not registered
+> >>>> 	sof_sdw sof_sdw: snd_soc_register_card failed -517
+> >>>> 	sof_sdw sof_sdw: ASoC: CODEC DAI intel-hdmi-hifi1 not registered
+> >>>> 	sof_sdw sof_sdw: snd_soc_register_card failed -517
+> >>>> 	platform sof_sdw: deferred probe pending
+> >>>>
+> >>>> With a revert of the a0575b4add21, it is:
+> >>>>
+> >>>> 	sof-audio-pci-intel-tgl 0000:00:1f.3: Firmware info: version 2:2:0-57864
+> >>>> 	sof-audio-pci-intel-tgl 0000:00:1f.3: Firmware: ABI 3:22:1 Kernel ABI 3:23:0
+> >>>> 	sof-audio-pci-intel-tgl 0000:00:1f.3: Topology: ABI 3:22:1 Kernel ABI 3:23:0
+> >>>> 	sof_sdw sof_sdw: ASoC: Parent card not yet available, widget card binding deferred
+> >>>> 	sof_sdw sof_sdw: hda_dsp_hdmi_build_controls: no PCM in topology for HDMI converter 3
+> >>>> 	input: sof-soundwire HDMI/DP,pcm=5 as /devices/pci0000:00/0000:00:1f.3/sof_sdw/sound/card0/input14
+> >>>> 	input: sof-soundwire HDMI/DP,pcm=6 as /devices/pci0000:00/0000:00:1f.3/sof_sdw/sound/card0/input15
+> >>>> 	input: sof-soundwire HDMI/DP,pcm=7 as /devices/pci0000:00/0000:00:1f.3/sof_sdw/sound/card0/input16
+> >>>>
+> >>>> Maybe this helps a bit further?
+> >>>
+> >>> Thanks for quick testing.
+> >>> It shows at least that my guess wasn't wrong.
+> >>>
+> >>> The problem could be the initialization order in the caller side.
+> >>> Can the patch below work instead?
+> >>
+> >> Unfortunately, no:
+> >>
+> >> sof-audio-pci-intel-tgl 0000:00:1f.3: Firmware info: version 2:2:0-57864
+> >> sof-audio-pci-intel-tgl 0000:00:1f.3: Firmware: ABI 3:22:1 Kernel ABI 3:23:0
+> >> sof_sdw sof_sdw: ASoC: CODEC DAI intel-hdmi-hifi1 not registered
+> >> sof_sdw sof_sdw: snd_soc_register_card failed -517
+> >> sof_sdw sof_sdw: ASoC: CODEC DAI intel-hdmi-hifi1 not registered
+> >> sof_sdw sof_sdw: snd_soc_register_card failed -517
+> >> platform sof_sdw: deferred probe pending
+> > 
+> > Hm, then it might be the logical failure of that commit.
+> > Peter?
+> > 
+> > Without a fix in the next few days, we'll have to revert it before
+> > 6.7.
+> 
+> The fix for this was sent early December:
+> https://lore.kernel.org/linux-sound/20231207095425.19597-1-peter.ujfalusi@linux.intel.com/
 
-Signed-off-by: Gergo Koteles <soyer@irl.hu>
----
- sound/pci/hda/patch_realtek.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+Yes, that patch fixes the issue (all built-in here).
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 19040887ff67..67468f7d1c90 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -6989,6 +6989,12 @@ static void tas2781_fixup_i2c(struct hda_codec *cdc,
- 	 tas2781_generic_fixup(cdc, action, "i2c", "TIAS2781");
- }
- 
-+static void yoga7_14arb7_fixup_i2c(struct hda_codec *cdc,
-+	const struct hda_fixup *fix, int action)
-+{
-+	 tas2781_generic_fixup(cdc, action, "i2c", "INT8866");
-+}
-+
- /* for alc295_fixup_hp_top_speakers */
- #include "hp_x360_helper.c"
- 
-@@ -7460,6 +7466,7 @@ enum {
- 	ALC236_FIXUP_DELL_DUAL_CODECS,
- 	ALC287_FIXUP_CS35L41_I2C_2_THINKPAD_ACPI,
- 	ALC287_FIXUP_TAS2781_I2C,
-+	ALC287_FIXUP_YOGA7_14ARB7_I2C,
- 	ALC245_FIXUP_HP_MUTE_LED_COEFBIT,
- 	ALC245_FIXUP_HP_X360_MUTE_LEDS,
- 	ALC287_FIXUP_THINKPAD_I2S_SPK,
-@@ -9578,6 +9585,12 @@ static const struct hda_fixup alc269_fixups[] = {
- 		.chained = true,
- 		.chain_id = ALC269_FIXUP_THINKPAD_ACPI,
- 	},
-+	[ALC287_FIXUP_YOGA7_14ARB7_I2C] = {
-+		.type = HDA_FIXUP_FUNC,
-+		.v.func = yoga7_14arb7_fixup_i2c,
-+		.chained = true,
-+		.chain_id = ALC285_FIXUP_THINKPAD_HEADSET_JACK,
-+	},
- 	[ALC245_FIXUP_HP_MUTE_LED_COEFBIT] = {
- 		.type = HDA_FIXUP_FUNC,
- 		.v.func = alc245_fixup_hp_mute_led_coefbit,
-@@ -10231,6 +10244,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x17aa, 0x3853, "Lenovo Yoga 7 15ITL5", ALC287_FIXUP_YOGA7_14ITL_SPEAKERS),
- 	SND_PCI_QUIRK(0x17aa, 0x3855, "Legion 7 16ITHG6", ALC287_FIXUP_LEGION_16ITHG6),
- 	SND_PCI_QUIRK(0x17aa, 0x3869, "Lenovo Yoga7 14IAL7", ALC287_FIXUP_YOGA9_14IAP7_BASS_SPK_PIN),
-+	SND_PCI_QUIRK(0x17aa, 0x3870, "Lenovo Yoga 7 14ARB7", ALC287_FIXUP_YOGA7_14ARB7_I2C),
- 	SND_PCI_QUIRK(0x17aa, 0x387d, "Yoga S780-16 pro Quad AAC", ALC287_FIXUP_TAS2781_I2C),
- 	SND_PCI_QUIRK(0x17aa, 0x387e, "Yoga S780-16 pro Quad YC", ALC287_FIXUP_TAS2781_I2C),
- 	SND_PCI_QUIRK(0x17aa, 0x3881, "YB9 dual power mode2 YC", ALC287_FIXUP_TAS2781_I2C),
--- 
-2.43.0
-
+Thanks,
+	Dominik
