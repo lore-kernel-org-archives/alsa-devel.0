@@ -4,85 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F41C4C46CD2
-	for <alsa-devel@archiver.kernel.org>; Wed,  3 Jan 2024 00:18:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D07E1C47074
+	for <alsa-devel@archiver.kernel.org>; Wed,  3 Jan 2024 00:18:34 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 376E5E8F;
-	Wed,  3 Jan 2024 01:17:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 376E5E8F
+	by alsa0.perex.cz (Postfix) with ESMTPS id A4098E80;
+	Wed,  3 Jan 2024 01:18:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A4098E80
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1704241086;
-	bh=5ce/TzGIrkmraBAItY2GelPvo+xOgoy8S+0UvHP5qhk=;
+	s=default; t=1704241112;
+	bh=hSQCNLhgdrUSuSOnKYd9NYUiotK5NpzVFOrkxQJlZ7o=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=m1j2XCytwFlNg3d3fagjvmVGOSmWZJM93v8IPQClof2evVBQa5Wrt0IKSZ6hVuCL+
-	 XNheZPe9CVO/vp8hxsqicGoMcZ/ANUYpwBEby8+Gyr9cPJ8PWxxkjbooEFXVw5HWh3
-	 9p8D7LHxbiM4MhDkaG9iOK3FwRUPdpap92N7tWJY=
+	b=jLXRnYDQ9U6K3QjUfcwnkhHeqy7kAffJwtdOAkgKo7GgVlNQZvx+eBvDjV60Jb9xW
+	 C4nLI5GiVT2IDJgqIjoW0Bjl7xDTf80ZkdQh3kCjDQ2Mz9wm7vZ/WQ4or+92TfKJBV
+	 NmHxLtGWbJJKLhCqp/VaP2RI8QJaZLV02xB0a7/g=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0150DF8057E; Wed,  3 Jan 2024 01:17:34 +0100 (CET)
+	id 59E60F8057E; Wed,  3 Jan 2024 01:18:12 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8AE49F8058C;
-	Wed,  3 Jan 2024 01:17:33 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 73496F805A9;
+	Wed,  3 Jan 2024 01:18:11 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 05739F80551; Wed,  3 Jan 2024 01:17:24 +0100 (CET)
+	id 0CA70F80551; Wed,  3 Jan 2024 01:17:29 +0100 (CET)
 Received: from mail1.merlins.org (magic.merlins.org [209.81.13.136])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
  server-digest SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 759BDF80022
+	by alsa1.perex.cz (Postfix) with ESMTPS id D62FDF80074
 	for <alsa-devel@alsa-project.org>; Wed,  3 Jan 2024 01:17:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 759BDF80022
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D62FDF80074
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=merlins.org
 	; s=key; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
 	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
 	List-Post:List-Owner:List-Archive;
-	bh=jEUidlbRkh+sRXZoW4h6WobGnL5gbYzACItvfn2hM+U=; b=g7KAkPF0qoG7mLFbqBmO2qi8CY
-	XpyiPHFPcaiIiXMIViLFIM+WNYJHmwua303AS7aMg1KHF4DMdYXD6xESS3N4ATwfEPu1PRnZj6+fN
-	SnM4ymPxRALtu1lCSvsW6fgA8xCvv7GudddxcUDqp7vr4quYnB60M+Tgeo5FBGOmTQg7woxqDsRy7
-	sDy0DM3Wf4lKYEo67R6NrCY5EtIdoZQXJswZ636VHtt5OqUHmyWQtwA6dTq/SnMZf0vKuQo7Yy4LM
-	PTpFe6T5h2ses5bisb3e0rXOWUG7m6/zhDvxbPh70CXCaNXZHiqFZMI83l3ppVfpf4ORZ2Vuo0XXz
-	pTXkFU0A==;
-Received: from lfbn-idf3-1-20-89.w81-249.abo.wanadoo.fr ([81.249.147.89]:54622
- helo=sauron.svh.merlins.org)
+	bh=t9XfppTAXB/R7RwW8dr4rHSvu5BTIy+GAdi8E1JMC7k=; b=QwPKDucgsKyIFvU9J1D/Pj5Tri
+	VCRKltktTy4Yv1jnPHs3G/H21xD6A0y4/PBb9DERiLJ4A3RY1WxwjDktE9Ert3DyPSGS3KFIKNJkm
+	0bp97rlJvdhD/7d9bv3bbtwcZnmRX1XR6l4GFLNMQfOOiDHXoz0iHd33ysP+mBiR6sx62yjnoCS8Q
+	9Gqc0TpNWN6KElsyWmOtfCt1Ski4D0qfA0hmCXKsPCjmgABYTRiwDaOd5SFS3JX/fI2hbeth7ItaI
+	wDO0qJkRD1R5H6gpz3A1J3ZFk5pW/43kI/kC4Nyf0WLMZsgY4i/BVNXKIjKDeL43+fPWZEEDcPPnm
+	hyK8TLVw==;
+Received: from [172.58.27.122] (port=52915 helo=merlin.svh.merlins.org)
 	by mail1.merlins.org with esmtpsa
 	(Cipher TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim
  4.94.2 #2)
-	id 1rKmFY-00062a-7h by authid <merlins.org> with srv_auth_plain;
- Tue, 02 Jan 2024 13:24:36 -0800
-Received: from merlin by sauron.svh.merlins.org with local (Exim 4.96)
+	id 1rKbw8-00068g-KA by authid <merlins.org> with srv_auth_plain;
+ Tue, 02 Jan 2024 02:23:52 -0800
+Received: from merlin by merlin.svh.merlins.org with local (Exim 4.96)
 	(envelope-from <marc@merlins.org>)
-	id 1rKmFW-0063xS-18;
-	Tue, 02 Jan 2024 13:24:34 -0800
-Date: Tue, 2 Jan 2024 13:24:34 -0800
+	id 1rKbw5-0003v0-0B;
+	Tue, 02 Jan 2024 02:23:49 -0800
+Date: Tue, 2 Jan 2024 02:23:49 -0800
 From: Marc MERLIN <marc@merlins.org>
 To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-	Rander Wang <rander.wang@intel.com>,
-	Bard Liao <yung-chuan.liao@linux.intel.com>,
-	linux-sound@vger.kernel.org, alsa-devel@alsa-project.org,
-	linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 Subject: Re: sof-audio-pci-intel-tgl/soundwire 6.6.8 kernel outputs no sound
- on speakers but works on headphones => missing alsa-ucm-conf
-Message-ID: <ZZR_Et3vvv-bmQ0H@merlins.org>
+ on speakers but works on headphones
+Message-ID: <ZZPkNRuMXYKOe-Os@merlins.org>
 References: <20231223234430.GA11359@merlins.org>
  <alpine.DEB.2.22.394.2401021117370.14041@eliteleevi.tm.intel.com>
- <ZZRP8RqT83cE-S5m@merlins.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZZRP8RqT83cE-S5m@merlins.org>
+In-Reply-To: <alpine.DEB.2.22.394.2401021117370.14041@eliteleevi.tm.intel.com>
 X-Sysadmin: BOFH
 X-URL: http://marc.merlins.org/
-X-SA-Exim-Connect-IP: 81.249.147.89
+X-SA-Exim-Connect-IP: 172.58.27.122
 X-SA-Exim-Mail-From: marc@merlins.org
-Message-ID-Hash: ESPP5NCMOPZRZX2BC2UNNE25V4OL46TC
-X-Message-ID-Hash: ESPP5NCMOPZRZX2BC2UNNE25V4OL46TC
+Message-ID-Hash: D5U7BVOQQVXANYM5TVXSVH66AX564Y2A
+X-Message-ID-Hash: D5U7BVOQQVXANYM5TVXSVH66AX564Y2A
 X-MailFrom: marc@merlins.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -95,7 +89,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ESPP5NCMOPZRZX2BC2UNNE25V4OL46TC/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/D5U7BVOQQVXANYM5TVXSVH66AX564Y2A/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -104,21 +98,54 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, Jan 02, 2024 at 10:03:29AM -0800, Marc MERLIN wrote:
-> 1) for sure, debian package alsa-ucm-conf should be required, not
-> recommended. It's not big, people who can't keep track of everything
-> that changes all the time, have no idea that they need it, and really
-> need it installed by default if their hardware requires it.
-> I've filed a couple of bugs with them, including on the package
-> description that gives little clue that the package can be so essential
+On Tue, Jan 02, 2024 at 11:26:18AM +0200, Kai Vehmanen wrote:
+> Hi,
+> 
+> On Sat, 23 Dec 2023, Marc MERLIN wrote:
+> 
+> > Howdy,
+> > 
+> > First, apologies if I'm not sending this to the right place, I could not
+> > find an approrpriate soundwire/sof mailing list, please redirect me as
+> > needed (I had to find an old soundwire message for reference)
+> > 
+> > laptop; Dell XPS 17 9730
+> > 
+> > merlin:~# lspci | grep -i audio
+> > 0000:00:1f.3 Multimedia audio controller: Intel Corporation Device 51ca (rev 01)
+> > 
+> > stock mainline 6.6.8 shows the device, but no sound comes out, as if it
+> > were muted, but I do not see anyting muted in alsamixer. If I plug in
+> 
+> we'd need a bit more info, especially alsa-info output, to figure out 
+> whether this is an issue with the mixer settings and/or the drivers. 
+> Instructions how to get alsa-info output availbale at 
+> https://thesofproject.github.io/latest/getting_started/intel_debug/suggestions.html
 
-Done:
+Sure thing. I tried to give a lot fo machine info in my first 2 Emails,
+sorry that I missed some.
+Reading that page, the good news is that sound output works with the
+same 6.5.0-14.generic kernel under ubuntu 23, so at least linux can make
+it work without windows needed.
 
-https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1059871
-alsa-ucm-conf should be a required package by libasound2-data, it's essential on some sound hardware
+looks like alsa-info mostly gathered what I had captured manually and
+posted, but here it is
+https://alsa-project.org/db/?f=d732a80cdb3d8e569a97c7dc73a32ddc76aea8a9
 
-https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1059872
-alsa-ucm-conf should be a required package, it's essential on some sound hardware
+I added the modprobe.conf debugging recommended in your page, and that
+seems to have killed sound:
+https://alsa-project.org/db/?f=7397a0f60194cc275fe7e6c0ed38733559d91382
+
+> Please file a bug at 
+> https://github.com/thesofproject/linux/issues
+ 
+THanks, done: https://github.com/thesofproject/linux/issues/4758
+
+> There was one bug affecting 9730 variants, but I don't think your case
+> is the the same:
+> https://github.com/thesofproject/linux/issues/4380
+
+Indeed, I referenced them, thanks.
 
 Marc
 -- 
