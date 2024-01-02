@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A04A0C46CD2
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Jan 2024 21:49:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0F2AEC46CD2
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Jan 2024 21:49:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B17A8E98;
-	Tue,  2 Jan 2024 22:48:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B17A8E98
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3F92FEA2;
+	Tue,  2 Jan 2024 22:49:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3F92FEA2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1704232141;
-	bh=dOPe1mJClSQIpRCzsjeCtfvU3YlKJ4n/3TVeFilcQy8=;
+	s=default; t=1704232157;
+	bh=3mRgqPiZTm9OWt4eGc7Nq88l2c6uW52em4SlB0Jae9Q=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=XoQD78ONbrXQOFTec4JpO7z/OEuTZFLXXJDQ0OkwWUb+eyE/hph5t5/tRIt+8qP7b
-	 f2Rp24AqgZJMiFLuYcGjzFfFI4S3pVkrOQR+JbDTLp7s8QlxR7fDKpDyuTw97//ENl
-	 naNLxUZzbKsQBcflbLWV+Xi8QW69OcsWxzLpSfL0=
+	b=JW4AAt8O+vjVILVk7o7/6A7WtC/UDTn6EnaTSpx8rp+cYQVzTXZmz2ySXN6ET0kik
+	 jMPv4iH6g7r0VEpGa7o+pnuD5oritXjO324+u5DcJXkPt3shydZKDydorE3H31GHDM
+	 aEwoZbeHnD4A1m6RO2Fyd9xpclFQYF1GIYhRFtks=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 10525F8055A; Tue,  2 Jan 2024 22:47:03 +0100 (CET)
+	id 0002EF805BD; Tue,  2 Jan 2024 22:47:06 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 35CE8F806B5;
-	Tue,  2 Jan 2024 22:47:03 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 48068F806D8;
+	Tue,  2 Jan 2024 22:47:06 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BF923F80558; Tue,  2 Jan 2024 22:46:47 +0100 (CET)
+	id 9FEB9F805B3; Tue,  2 Jan 2024 22:46:49 +0100 (CET)
 Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com
  [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 71A70F80533
-	for <alsa-devel@alsa-project.org>; Tue,  2 Jan 2024 22:46:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 71A70F80533
+	by alsa1.perex.cz (Postfix) with ESMTPS id 310A2F80551
+	for <alsa-devel@alsa-project.org>; Tue,  2 Jan 2024 22:46:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 310A2F80551
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
- header.s=qcppdkim1 header.b=H4Jc+V2N
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+ header.s=qcppdkim1 header.b=UlW7/rSx
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
 	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id
- 402L6Sq7010362;
-	Tue, 2 Jan 2024 21:46:20 GMT
+ 402LY1SG006706;
+	Tue, 2 Jan 2024 21:46:21 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-type; s=qcppdkim1; bh=q9wsZr9hk6oekRD8z74N
-	6sV+NK+QirK5GCM36reO4w4=; b=H4Jc+V2NjL5VlMgio9c4TdQ3AOdoNKXiKqBU
-	yheg4Kip6haaIC/6Sval6swOAvTgnCUlnF72eZt5UmWEbFCA+KELZtrt8yoe8qh8
-	M+tlCAhiYSQjzJEHOn9wjskhIlpY6vw1MNuUtyVpsVE7bVXP89mOG9FVPL9uInPL
-	Xnd1VBkpeX8YWVcyrkX/Crx5P2He+HLdFWxH5/KLxXscqDcksyaWJHf2sKU9mDw3
-	uBy8A/SUeMeNE+qF0ej/6W4qXe64wlcV7kZaX2HYgkntYYBsPO2L4fzdMKpXLL9f
-	4NaWXw/g2UmYbU6zE6a0RCjfd+k3nZcPjEZVFMGuw8S6CoJkCg==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com
+	:mime-version:content-type; s=qcppdkim1; bh=WMU2HIKS908Imaw26ML/
+	jCV96oNOcXMr4ajnHFwqVmY=; b=UlW7/rSxVx69ePIdsOYv2LmVOpc9B3S+Q6K2
+	iAGT+B5Teb6WpkhnFW4Hz/zOZMG9nonYdVHuIwV2UrKRwlqRw8bXQlcTVVNQl6oQ
+	foyjOiZ/ZuBD/Us9orI7oWFzB1akuBFWGYz+FdC6vXH980Lpgl2Ivjhr/DkuYkIr
+	te8ihC7T9QakRjzNTxBlr92LwDgSPfK8sTgFfH2u0CpHA4FUeKKJE8tQdoNxNpql
+	Lqj46lkyRMuXz1L4TkU3l23kXCCmtk730+qyzrb+FIJpsoVGE/Gu45oi6O04zbRC
+	JYG+YGAZHLQdKSRcY+xMl98+lRzGKQoPoC37H/19fToRRetfNA==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com
  [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vcbnb1s69-1
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vcgyuh8ey-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 02 Jan 2024 21:46:20 +0000 (GMT)
+	Tue, 02 Jan 2024 21:46:21 +0000 (GMT)
 Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com
  [10.47.209.197])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id
- 402LkJeA011445
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id
+ 402LkKNm003234
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 2 Jan 2024 21:46:19 GMT
+	Tue, 2 Jan 2024 21:46:20 GMT
 Received: from hu-wcheng-lv.qualcomm.com (10.49.16.6) by
  nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Tue, 2 Jan 2024 13:46:18 -0800
+ 15.2.1118.40; Tue, 2 Jan 2024 13:46:19 -0800
 From: Wesley Cheng <quic_wcheng@quicinc.com>
 To: <srinivas.kandagatla@linaro.org>, <mathias.nyman@intel.com>,
         <perex@perex.cz>, <conor+dt@kernel.org>, <corbet@lwn.net>,
@@ -79,10 +79,9 @@ CC: <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-sound@vger.kernel.org>, <linux-usb@vger.kernel.org>,
         <linux-arm-msm@vger.kernel.org>, <linux-doc@vger.kernel.org>,
         <alsa-devel@alsa-project.org>, Wesley Cheng <quic_wcheng@quicinc.com>
-Subject: [PATCH v12 05/41] usb: host: xhci-mem: Allow for interrupter clients
- to choose specific index
-Date: Tue, 2 Jan 2024 13:45:13 -0800
-Message-ID: <20240102214549.22498-6-quic_wcheng@quicinc.com>
+Subject: [PATCH v12 09/41] ASoC: qdsp6: q6afe: Increase APR timeout
+Date: Tue, 2 Jan 2024 13:45:17 -0800
+Message-ID: <20240102214549.22498-10-quic_wcheng@quicinc.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20240102214549.22498-1-quic_wcheng@quicinc.com>
 References: <20240102214549.22498-1-quic_wcheng@quicinc.com>
@@ -94,19 +93,19 @@ X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
  signatures=585085
-X-Proofpoint-ORIG-GUID: DxoHaRYs5rb6PjZUYpL96ixGnqo4_gPu
-X-Proofpoint-GUID: DxoHaRYs5rb6PjZUYpL96ixGnqo4_gPu
+X-Proofpoint-ORIG-GUID: jCpIW9H_xuepB3hTBRTdRj3RkkvNyhV8
+X-Proofpoint-GUID: jCpIW9H_xuepB3hTBRTdRj3RkkvNyhV8
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- priorityscore=1501
- phishscore=0 mlxlogscore=662 mlxscore=0 bulkscore=0 impostorscore=0
- suspectscore=0 clxscore=1015 malwarescore=0 spamscore=0 lowpriorityscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ mlxscore=0 mlxlogscore=803
+ adultscore=0 clxscore=1015 lowpriorityscore=0 priorityscore=1501
+ impostorscore=0 malwarescore=0 bulkscore=0 spamscore=0 suspectscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.19.0-2311290000 definitions=main-2401020161
-Message-ID-Hash: Y42F4BP5ELN7HLU7TBSAEPQSIMY3IOO7
-X-Message-ID-Hash: Y42F4BP5ELN7HLU7TBSAEPQSIMY3IOO7
+Message-ID-Hash: GRPFQL7HGBKBOROIZKULWVBFCRJXD3CK
+X-Message-ID-Hash: GRPFQL7HGBKBOROIZKULWVBFCRJXD3CK
 X-MailFrom: quic_wcheng@quicinc.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -119,7 +118,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Y42F4BP5ELN7HLU7TBSAEPQSIMY3IOO7/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GRPFQL7HGBKBOROIZKULWVBFCRJXD3CK/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -128,119 +127,29 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Some clients may operate only on a specific XHCI interrupter instance.
-Allow for the associated class driver to request for the interrupter that
-it requires.
+For USB offloading situations, the AFE port start command will result in a
+QMI handshake between the Q6DSP and the main processor.  Depending on if
+the USB bus is suspended, this routine would require more time to complete,
+as resuming the USB bus has some overhead associated with it.  Increase the
+timeout to 3s to allow for sufficient time for the USB QMI stream enable
+handshake to complete.
 
+Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
 ---
- drivers/usb/host/xhci-mem.c       | 30 ++++++++++++++++--------------
- drivers/usb/host/xhci-sideband.c  |  4 ++--
- drivers/usb/host/xhci.h           |  2 +-
- include/linux/usb/xhci-sideband.h |  3 ++-
- 4 files changed, 21 insertions(+), 18 deletions(-)
+ sound/soc/qcom/qdsp6/q6afe.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/usb/host/xhci-mem.c b/drivers/usb/host/xhci-mem.c
-index 5bf74c37cbf6..8e24342a19c5 100644
---- a/drivers/usb/host/xhci-mem.c
-+++ b/drivers/usb/host/xhci-mem.c
-@@ -2356,7 +2356,7 @@ xhci_add_interrupter(struct xhci_hcd *xhci, struct xhci_interrupter *ir,
- }
+diff --git a/sound/soc/qcom/qdsp6/q6afe.c b/sound/soc/qcom/qdsp6/q6afe.c
+index 8e0d2d583c9c..f8b6d9e552f0 100644
+--- a/sound/soc/qcom/qdsp6/q6afe.c
++++ b/sound/soc/qcom/qdsp6/q6afe.c
+@@ -366,7 +366,7 @@
+ #define AFE_API_VERSION_SLOT_MAPPING_CONFIG	1
+ #define AFE_API_VERSION_CODEC_DMA_CONFIG	1
  
- struct xhci_interrupter *
--xhci_create_secondary_interrupter(struct usb_hcd *hcd, int num_seg)
-+xhci_create_secondary_interrupter(struct usb_hcd *hcd, int num_seg, int intr_num)
- {
- 	struct xhci_hcd *xhci = hcd_to_xhci(hcd);
- 	struct xhci_interrupter *ir;
-@@ -2371,28 +2371,30 @@ xhci_create_secondary_interrupter(struct usb_hcd *hcd, int num_seg)
- 		return NULL;
- 
- 	spin_lock_irq(&xhci->lock);
--
--	/* Find available secondary interrupter, interrupter 0 is reserved for primary */
-+	/* Find available secondary interrupter, interrupter 0 is reserverd for primary */
- 	for (i = 1; i < xhci->max_interrupters; i++) {
--		if (xhci->interrupters[i] == NULL) {
--			err = xhci_add_interrupter(xhci, ir, i);
--			break;
-+		if ((intr_num > 0 && i == intr_num) || intr_num <= 0) {
-+			if (xhci->interrupters[i] == NULL) {
-+				err = xhci_add_interrupter(xhci, ir, i);
-+				if (err) {
-+					spin_unlock_irq(&xhci->lock);
-+					goto free_ir;
-+				}
-+				break;
-+			}
- 		}
- 	}
--
- 	spin_unlock_irq(&xhci->lock);
- 
--	if (err) {
--		xhci_warn(xhci, "Failed to add secondary interrupter, max interrupters %d\n",
--			  xhci->max_interrupters);
--		xhci_free_interrupter(xhci, ir);
--		return NULL;
--	}
--
- 	xhci_dbg(xhci, "Add secondary interrupter %d, max interrupters %d\n",
- 		 i, xhci->max_interrupters);
- 
- 	return ir;
-+
-+free_ir:
-+	xhci_free_interrupter(xhci, ir);
-+
-+	return NULL;
- }
- EXPORT_SYMBOL_GPL(xhci_create_secondary_interrupter);
- 
-diff --git a/drivers/usb/host/xhci-sideband.c b/drivers/usb/host/xhci-sideband.c
-index eb5ac5fc5c09..624044dc6228 100644
---- a/drivers/usb/host/xhci-sideband.c
-+++ b/drivers/usb/host/xhci-sideband.c
-@@ -243,13 +243,13 @@ EXPORT_SYMBOL_GPL(xhci_sideband_get_event_buffer);
-  * Returns 0 on success, negative error otherwise
-  */
- int
--xhci_sideband_create_interrupter(struct xhci_sideband *sb, int num_seg)
-+xhci_sideband_create_interrupter(struct xhci_sideband *sb, int num_seg, int intr_num)
- {
- 	if (sb->ir)
- 		return -EBUSY;
- 
- 	sb->ir = xhci_create_secondary_interrupter(xhci_to_hcd(sb->xhci),
--			num_seg);
-+			num_seg, intr_num);
- 	if (!sb->ir)
- 		return -ENOMEM;
- 
-diff --git a/drivers/usb/host/xhci.h b/drivers/usb/host/xhci.h
-index 37887c2f0653..966681195e41 100644
---- a/drivers/usb/host/xhci.h
-+++ b/drivers/usb/host/xhci.h
-@@ -2090,7 +2090,7 @@ struct xhci_container_ctx *xhci_alloc_container_ctx(struct xhci_hcd *xhci,
- void xhci_free_container_ctx(struct xhci_hcd *xhci,
- 		struct xhci_container_ctx *ctx);
- struct xhci_interrupter *
--xhci_create_secondary_interrupter(struct usb_hcd *hcd, int num_seg);
-+xhci_create_secondary_interrupter(struct usb_hcd *hcd, int num_seg, int intr_num);
- void xhci_remove_secondary_interrupter(struct usb_hcd
- 				       *hcd, struct xhci_interrupter *ir);
- void xhci_skip_sec_intr_events(struct xhci_hcd *xhci,
-diff --git a/include/linux/usb/xhci-sideband.h b/include/linux/usb/xhci-sideband.h
-index 823f9314d93a..3ff0afbf3a05 100644
---- a/include/linux/usb/xhci-sideband.h
-+++ b/include/linux/usb/xhci-sideband.h
-@@ -54,7 +54,8 @@ struct sg_table *
- xhci_sideband_get_event_buffer(struct xhci_sideband *sb);
- 
- int
--xhci_sideband_create_interrupter(struct xhci_sideband *sb, int num_seg);
-+xhci_sideband_create_interrupter(struct xhci_sideband *sb, int num_seg,
-+				 int intr_num);
- 
- void
- xhci_sideband_remove_interrupter(struct xhci_sideband *sb);
+-#define TIMEOUT_MS 1000
++#define TIMEOUT_MS 3000
+ #define AFE_CMD_RESP_AVAIL	0
+ #define AFE_CMD_RESP_NONE	1
+ #define AFE_CLK_TOKEN		1024
