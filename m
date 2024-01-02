@@ -4,88 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C169FC47073
-	for <alsa-devel@archiver.kernel.org>; Thu,  4 Jan 2024 09:23:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4BC4DC47074
+	for <alsa-devel@archiver.kernel.org>; Thu,  4 Jan 2024 09:23:31 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5D90BE91;
-	Thu,  4 Jan 2024 10:22:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5D90BE91
+	by alsa0.perex.cz (Postfix) with ESMTPS id D371BEC5;
+	Thu,  4 Jan 2024 10:23:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D371BEC5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1704360187;
-	bh=Wl373xlx/nePhMbz+OJN/a+fdEhuxEOBtJowioF1SkU=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	s=default; t=1704360208;
+	bh=/Rrxph1FzSqtfo+CMowfYdZ9PlPcKe0NVAgo5z4EwtU=;
+	h=Date:Subject:From:To:Cc:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=bJxJleoLo334SXW5oExEZ1Pcwr5mPrfhkI/OHwkabxgdnjmHn3ykdk+C/ZpM1brEI
-	 2kAMPskgbwor8DJizLDCaP0QxeMyGIC0ouVV+h/ex9/+Z36UFTKBQ+WVgTPALjM52d
-	 wLkcCS4Vf4j8qZfy6tCEDQeeLNWcLz7vOICaun54=
+	b=oGNTZP+R7CM5HbT47G8CRDW11Bm9bLiGcWuxrcJjTxYRkjwqnzE+PW61owo7249ib
+	 q1Cdt+3HSWIHfkzLDQk65dMzixVqwnUIFiuJr75jGzR5+4YrRNpnceXxYMKaMO9pSt
+	 kekXIGtcBwTgOTUMMjc691iqGYd4OdDf6lXrQLwA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1C084F8057A; Thu,  4 Jan 2024 10:22:34 +0100 (CET)
+	id 324D6F805BF; Thu,  4 Jan 2024 10:22:41 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A8342F80567;
-	Thu,  4 Jan 2024 10:22:34 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 638DAF805B3;
+	Thu,  4 Jan 2024 10:22:41 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 465ACF806E7; Tue,  2 Jan 2024 22:50:26 +0100 (CET)
-Received: from mx.dolansoft.org (s2.dolansoft.org [212.51.146.245])
+	id D03B9F80224; Tue,  2 Jan 2024 23:38:47 +0100 (CET)
+Received: from mail-200167.simplelogin.co (mail-200167.simplelogin.co
+ [176.119.200.167])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 6DC65F8984D
-	for <alsa-devel@alsa-project.org>; Tue,  2 Jan 2024 22:48:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6DC65F8984D
+	by alsa1.perex.cz (Postfix) with ESMTPS id 3FAA9F80074
+	for <alsa-devel@alsa-project.org>; Tue,  2 Jan 2024 23:38:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3FAA9F80074
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=brun.one header.i=@brun.one header.a=rsa-sha256
- header.s=s1 header.b=E2npxgfi
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=brun.one;
-	s=s1; h=MIME-Version:Message-ID:Date:Subject:Cc:To:From:In-Reply-To:
-	References:From:To:Subject:Date:Message-ID:Reply-To;
-	bh=tk05/deGlS4tuw8pDhigIISVFF8G63ZmEtVtmgFP+ks=; b=E2npxgfi8/c4idsH1/Hnvcq0ax
-	l7IuT51xDlloC1d+wTulBhV6qiDkBEf/+BzNDF+RWbqHBZe89s5aOgWu2foYq/9Ubt2D7ajNQMADZ
-	kb2/YsJ+iV4k8Yb2eyY7YDAAqpKSR3yDX1vFQHxgDfmX59XDq2Sxgo9N+M6XNUWJPwDtJ7S8tahd/
-	QRMyLP6fed+t06iymK5hahb4B+dG/9UV1+kMbmKbvRd5zL1Brp7j4yx6U1fP8J5N2W9Xuun2tZdf4
-	u9qNXfySN5EQrkJCd1UZleR7BMuw3mgwvK72KGs56fde0PSu3Xq/I7P17dbUt4z7qsg0V6+Gt7/bK
-	u9C/TkRg==;
-Received: from [212.51.153.89] (helo=blacklava.cluster.local)
-	by mx.dolansoft.org with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96.2)
-	(envelope-from <lorenz@dolansoft.org>)
-	id 1rKmca-001AiL-2O;
-	Tue, 02 Jan 2024 21:48:24 +0000
-From: Lorenz Brun <lorenz@brun.one>
-To: Stefan Binding <sbinding@opensource.cirrus.com>,
-	James Schulman <james.schulman@cirrus.com>,
-	David Rhodes <david.rhodes@cirrus.com>,
-	Richard Fitzgerald <rf@opensource.cirrus.com>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>
-Cc: alsa-devel@alsa-project.org,
-	patches@opensource.cirrus.com,
-	linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v3] ALSA: hda: cs35l41: Support more HP models without _DSD
-Date: Tue,  2 Jan 2024 22:48:20 +0100
-Message-ID: <20240102214821.3394810-1-lorenz@brun.one>
+	dkim=pass (1024-bit key,
+ unprotected) header.d=willian.wang header.i=@willian.wang header.a=rsa-sha256
+ header.s=dkim header.b=QcUHuszj
+ARC-Seal: i=1; a=rsa-sha256; d=simplelogin.co; s=arc-20230626; t=1704235120;
+	cv=none;
+ b=STSyzQ0RkZ4JgWQlHgMI3IlxqvZHq+64SfjGh1Cjg02hNEELl9fDvr5JM1uzPiEIJhZGq2rsETk+ksRhG6JtCa2QLRU9F64cyD1LpZkLjk9JZ3pHYxwVR5Tom7bfLm8GfbILLBTFdphB9CN1pLY7saJC+m3yz4gM+ehRVlivn2oKAU1EAzQzgd0QkCj98QHSDfFB57NkOpMnNVZ3LXoQ+oGBErkt2QMVdGZ9a8hUFPXxWLeyDyD2SUWfcEOd696AFCP4UBW6eWH+JOzLiRHm7rFcsbnEkvfc//Kk1TxvbSChIAkXmD9L4Bc9s/QAB+W4eL9W1bR0MPdwzkS6OKp+UQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; d=simplelogin.co; s=arc-20230626;
+	t=1704235120; c=relaxed/simple;
+	bh=9UNtbbZOnXkVkZz6jHXCKsWdG8aI3jFrmx1yIa2Nt5g=;
+	h=DKIM-Signature:MIME-Version:Date:Subject:Content-Type:
+	 Content-Transfer-Encoding:From:To:Cc:Message-ID:X-SimpleLogin-Type:
+	 X-SimpleLogin-EmailLog-ID:X-SimpleLogin-Want-Signing;
+ b=A0vA2Wg+oAuzRyAVm9ILyzZW0fBWWlT8Aft/CtwQ1M5nt5WQTe6Ogqvq7Yb36zKNLRGsgZg0CPDd3vluWgVsJ+cJn/jLqYoZeWJxdHOXXGM2PvM3B9p/95+RZNIuQPRMl+2FMGgxUqjpHaL8a2wlYYj/G4zinqr6EF8tdAoQ67Dnb19ZPxbrjcFSfDsoaC5EzshdeFutAQdu96no73IT6ZfNaGBHrB84UNm7jQUbONQGyoPVeNjIX3pG2vP5RKrrXQSBR5sb8AlIMi0pUh7d308qAuxI0dVK43Ui4dOLWCVuW5vhJWkHWvFtuAVFXOjNWHMUTbbtsgWb3SaGEIhZmA==
+ARC-Authentication-Results: i=1; mail.protonmail.ch
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=willian.wang;
+	s=dkim; t=1704235120;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=9UNtbbZOnXkVkZz6jHXCKsWdG8aI3jFrmx1yIa2Nt5g=;
+	b=QcUHuszjH7MiBDunfFTHMi0T+1+Ewje1L5hKjr4kSbcMFDPnWTSZLg2xVKRzWyw+5Trdey
+	SDMPMfbyxyllAZIgcOHV7oMMm3wlUKteNtHKYcn3Yp+t/YB8j24cMRmQd6ue41+2hT6wJ8
+	mETgDgu/VzLQixrv0zN4dqwDgszPtWQ=
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: lorenz@dolansoft.org
-X-MailFrom: lorenz@brun.one
+Date: Tue, 2 Jan 2024 19:37:59 -0300
+Subject: Re: Oops in hdac_hda_dev_probe (6.7-rc7)
+Content-Transfer-Encoding: 7bit
+From: Willian Wang <kernel@willian.wang>
+To: peter.ujfalusi@linux.intel.com
+Cc: 
+ tiwai@suse.com,regressions@lists.linux.dev,tiwai@suse.de,ranjani.sridharan@linux.intel.com,pierre-louis.bossart@linux.intel.com,perex@perex.cz,linux-sound@vger.kernel.org,linux-kernel@vger.kernel.org,kai.vehmanen@linux.intel.com,lgirdwood@gmail.com,broonie@kernel.org,alsa-devel@alsa-project.org,linux@dominikbrodowski.net
+Message-ID: <170423512017.9.491093800173465800.241687161@willian.wang>
+X-SimpleLogin-Type: Reply
+X-SimpleLogin-EmailLog-ID: 241687165
+X-SimpleLogin-Want-Signing: yes
+X-MailFrom: 
+ sl.lmysyibsgqytmobxge3dklbageydkmzzhe4f2.gepnzhmnjvygg@willian.wang
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: 2EDSZMTMU5QYA56ET5KNSKX34K73VFZJ
-X-Message-ID-Hash: 2EDSZMTMU5QYA56ET5KNSKX34K73VFZJ
-X-Mailman-Approved-At: Thu, 04 Jan 2024 09:22:28 +0000
+Message-ID-Hash: S4EHMSPPC3ANE2OKJSO6LWVPXHRIG45X
+X-Message-ID-Hash: S4EHMSPPC3ANE2OKJSO6LWVPXHRIG45X
+X-Mailman-Approved-At: Thu, 04 Jan 2024 09:22:37 +0000
+Content-Type: text/plain; charset="UTF-8"
+X-Content-Filtered-By: Mailman/MimeDel 3.3.9
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2EDSZMTMU5QYA56ET5KNSKX34K73VFZJ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/S4EHMSPPC3ANE2OKJSO6LWVPXHRIG45X/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -94,90 +98,5 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-This adds overrides for a series of notebooks using a common config
-taken from HP's proprietary Windows driver.
-
-This has been tested on a HP 15-ey0xxxx device (subsystem 103C8A31)
-together with another Realtek quirk and the calibration files from the
-proprietary driver.
-
-Signed-off-by: Lorenz Brun <lorenz@brun.one>
----
-Changes in v2:
- - Use newly-introduced config table instead of function
- - Change boost cap value from 10uF to 24uF after cross-referencing my
-   sources with the preexisting 103C89C6 entry.
-
-Changes in v3:
- - Rebase onto sound/for-next
- - Sorted model table
- - Updated commit message
-
- sound/pci/hda/cs35l41_hda_property.c | 44 ++++++++++++++++++++++++++++
- 1 file changed, 44 insertions(+)
-
-diff --git a/sound/pci/hda/cs35l41_hda_property.c b/sound/pci/hda/cs35l41_hda_property.c
-index 52820ca9c603..fcc605be51cf 100644
---- a/sound/pci/hda/cs35l41_hda_property.c
-+++ b/sound/pci/hda/cs35l41_hda_property.c
-@@ -42,6 +42,28 @@ static const struct cs35l41_config cs35l41_config_table[] = {
-  * in the ACPI. The Reset GPIO is also valid, so we can use the Reset defined in _DSD.
-  */
- 	{ "103C89C6", 2, INTERNAL, { CS35L41_RIGHT, CS35L41_LEFT, 0, 0 }, -1, -1, -1, 1000, 4500, 24 },
-+	{ "103C8A28", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
-+	{ "103C8A29", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
-+	{ "103C8A2A", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
-+	{ "103C8A2B", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
-+	{ "103C8A2C", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
-+	{ "103C8A2D", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
-+	{ "103C8A2E", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
-+	{ "103C8A30", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
-+	{ "103C8A31", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
-+	{ "103C8BB3", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
-+	{ "103C8BB4", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
-+	{ "103C8BDF", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
-+	{ "103C8BE0", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
-+	{ "103C8BE1", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
-+	{ "103C8BE2", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
-+	{ "103C8BE9", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
-+	{ "103C8BDD", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
-+	{ "103C8BDE", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
-+	{ "103C8BE3", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
-+	{ "103C8BE5", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
-+	{ "103C8BE6", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
-+	{ "103C8B3A", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
- 	{ "104312AF", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 1000, 4500, 24 },
- 	{ "10431433", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4500, 24 },
- 	{ "10431463", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4500, 24 },
-@@ -356,6 +378,28 @@ static const struct cs35l41_prop_model cs35l41_prop_model_table[] = {
- 	{ "CSC3551", "10280BEB", generic_dsd_config },
- 	{ "CSC3551", "10280C4D", generic_dsd_config },
- 	{ "CSC3551", "103C89C6", generic_dsd_config },
-+	{ "CSC3551", "103C8A28", generic_dsd_config },
-+	{ "CSC3551", "103C8A29", generic_dsd_config },
-+	{ "CSC3551", "103C8A2A", generic_dsd_config },
-+	{ "CSC3551", "103C8A2B", generic_dsd_config },
-+	{ "CSC3551", "103C8A2C", generic_dsd_config },
-+	{ "CSC3551", "103C8A2D", generic_dsd_config },
-+	{ "CSC3551", "103C8A2E", generic_dsd_config },
-+	{ "CSC3551", "103C8A30", generic_dsd_config },
-+	{ "CSC3551", "103C8A31", generic_dsd_config },
-+	{ "CSC3551", "103C8BB3", generic_dsd_config },
-+	{ "CSC3551", "103C8BB4", generic_dsd_config },
-+	{ "CSC3551", "103C8BDF", generic_dsd_config },
-+	{ "CSC3551", "103C8BE0", generic_dsd_config },
-+	{ "CSC3551", "103C8BE1", generic_dsd_config },
-+	{ "CSC3551", "103C8BE2", generic_dsd_config },
-+	{ "CSC3551", "103C8BE9", generic_dsd_config },
-+	{ "CSC3551", "103C8BDD", generic_dsd_config },
-+	{ "CSC3551", "103C8BDE", generic_dsd_config },
-+	{ "CSC3551", "103C8BE3", generic_dsd_config },
-+	{ "CSC3551", "103C8BE5", generic_dsd_config },
-+	{ "CSC3551", "103C8BE6", generic_dsd_config },
-+	{ "CSC3551", "103C8B3A", generic_dsd_config },
- 	{ "CSC3551", "104312AF", generic_dsd_config },
- 	{ "CSC3551", "10431433", generic_dsd_config },
- 	{ "CSC3551", "10431463", generic_dsd_config },
--- 
-2.42.0
-
+Hi, just tested the patch and both sound and resume-from-suspend are
+working like 6.6 again 👍
