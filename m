@@ -4,122 +4,105 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3B25AC3DA6E
-	for <alsa-devel@archiver.kernel.org>; Wed,  3 Jan 2024 15:57:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5AB6DC3DA6E
+	for <alsa-devel@archiver.kernel.org>; Wed,  3 Jan 2024 16:25:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 434C3E11;
-	Wed,  3 Jan 2024 16:56:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 434C3E11
+	by alsa0.perex.cz (Postfix) with ESMTPS id 157E5E97;
+	Wed,  3 Jan 2024 17:24:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 157E5E97
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1704297428;
-	bh=Gua8BQpnwayiWOGtCxRwS1CfY2Rt9+GY22yyc9hvHjE=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:Reply-To:List-Id:
+	s=default; t=1704299107;
+	bh=e7A5dG1jEF9eZADbVxTs8U3CR1jOZzXgY4h4AvHFeh0=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=lQCD7NqsCh9cG29dYUemHUygHJiz3jpqGo0RQslYrtSYzd7l0dRtWvCDfLB6kFE1e
-	 LuRN3hW2KqHhWksiE1H9VQOt57mzJTxn8dDHnP5GaoX+QIMJlB2c/AvjmqW+TujHhh
-	 SC1EtHah19wXrTgvFS7dwKSr1Uye5y2WdG+5kseY=
+	b=o1A0n+n2TN7APZBYs/utA276H1m/Gd9QZCcu/oa3sOC7EWkIkXMY9OpP+7GGcGtBt
+	 r5FXzCr2zmjF4slQAj8iaSU/5MOqLwQLFjX6PLhHYMEurPx7LfQrOo8qjcDA76ZfB4
+	 L2RbXl483Y4nuTPWxJlHClou+a584LrhwziJinoM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 56C89F80588; Wed,  3 Jan 2024 16:56:32 +0100 (CET)
+	id AD40CF8059F; Wed,  3 Jan 2024 17:24:35 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 81612F80535;
-	Wed,  3 Jan 2024 16:56:31 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4CAC7F80535;
+	Wed,  3 Jan 2024 17:24:35 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E78F4F80537; Wed,  3 Jan 2024 16:56:26 +0100 (CET)
-Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com
- [209.85.128.169])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 1C69FF80537; Wed,  3 Jan 2024 17:24:30 +0100 (CET)
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 4E442F80086
-	for <alsa-devel@alsa-project.org>; Wed,  3 Jan 2024 16:56:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4E442F80086
-Received: by mail-yw1-f169.google.com with SMTP id
- 00721157ae682-5e6c8b70766so89526147b3.3
-        for <alsa-devel@alsa-project.org>;
- Wed, 03 Jan 2024 07:56:24 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704297380; x=1704902180;
-        h=cc:to:subject:message-id:date:from:reply-to:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Hn7VOtINC55lOTy/B7JuMDmVjDUI9C4FMEpnGvML3ew=;
-        b=L7aIwfukMPGPFsjQP6s1ui3QNV2rQQCfH5jotZSbgAdEnKpcMmpXairH8lA94uSree
-         +TVSScRpp+JSKc75uHh4fqn5c18z9veeXX/oie9bu0hLrgYI5Q0EwLckTmPLmP0IOpkl
-         J7rMDuevUbAVraTjsoq+p/RqBPdMJJyIrs/waCemnKOwToJaqcSou16aeitp579DozBp
-         6eN/6NHVVHEV+IsMqeG9AVuPsUYZJw0v9vRcYVrV7v/k7MiljbxReZrXTS9zcZpJDk3W
-         AQM547k4gWNlSD19Z0+YaDGn3q7Bcg62IVOYVJwSiAWMqfoK1DtRpZDcMZZOcki+XMz8
-         YjPA==
-X-Gm-Message-State: AOJu0YxIUDBpjgp8boFDz0LHgTryfhZvMzSMT86cTdXnbY3XTPR0zKmY
-	qsUmDGIrxmH1+Zf+AmEMcGks+vU/ifaqxXkZ
-X-Google-Smtp-Source: 
- AGHT+IFHN1aAua0zRU9BUv+Ry6mtbEi/raegMu+9xNNNP8yPL5P8dY2W12P8S/8lrNcW1DWnxVmh3w==
-X-Received: by 2002:a81:7c54:0:b0:5e6:ac24:da0d with SMTP id
- x81-20020a817c54000000b005e6ac24da0dmr9790806ywc.68.1704297380022;
-        Wed, 03 Jan 2024 07:56:20 -0800 (PST)
-Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com.
- [209.85.219.170])
-        by smtp.gmail.com with ESMTPSA id
- e13-20020a81c14d000000b005ef818813f8sm5820025ywl.15.2024.01.03.07.56.19
-        for <alsa-devel@alsa-project.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Jan 2024 07:56:19 -0800 (PST)
-Received: by mail-yb1-f170.google.com with SMTP id
- 3f1490d57ef6-dbdacafe012so6934008276.1
-        for <alsa-devel@alsa-project.org>;
- Wed, 03 Jan 2024 07:56:19 -0800 (PST)
-X-Received: by 2002:a25:4ed7:0:b0:dbe:3d4b:234 with SMTP id
- c206-20020a254ed7000000b00dbe3d4b0234mr5180281ybb.44.1704297379333; Wed, 03
- Jan 2024 07:56:19 -0800 (PST)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 84518F80533
+	for <alsa-devel@alsa-project.org>; Wed,  3 Jan 2024 17:24:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 84518F80533
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=ngbK0dO8
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704299067; x=1735835067;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=e7A5dG1jEF9eZADbVxTs8U3CR1jOZzXgY4h4AvHFeh0=;
+  b=ngbK0dO8cqJJKeGwFkWxzoH1OXHYUU4HLOgrNdBFtD85eSaVnQ0cdDki
+   GyKCqA4cdtWoocyspxs98U0fTq+MyxDscbj5LmUoNP2XBs4xdFV8YgUMq
+   RN0DBI8jajGRBWQcKBoTZmrHfFuDmf8V5sgVWooF5eaNQLwvAaX/iAvVw
+   0kKd8g5tnpcT9y7VdOBB2Kp6TYzCCFOPJuhY/6pbbW0qiX9ZYQxrbkAFP
+   ROvWMJMBDkL3KicSjrePdQS4yw1aLsBEPUUa1bDFM/kr5K0ziGadC134u
+   1I0iG1N/xsdkX0ioGERbhinRrJucQeRjK0vr8fulHvXwpEqvVSO8VpZe/
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10942"; a="18553022"
+X-IronPort-AV: E=Sophos;i="6.04,328,1695711600";
+   d="scan'208";a="18553022"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 03 Jan 2024 08:24:05 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10942"; a="780026987"
+X-IronPort-AV: E=Sophos;i="6.04,328,1695711600";
+   d="scan'208";a="780026987"
+Received: from homichel-mobl2.amr.corp.intel.com (HELO [10.252.51.214])
+ ([10.252.51.214])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 03 Jan 2024 08:24:01 -0800
+Message-ID: <d61245f1-cd4a-4369-9d32-087b892cf4fa@linux.intel.com>
+Date: Wed, 3 Jan 2024 18:24:53 +0200
 MIME-Version: 1.0
-References: <NnE33wh--3-9@tutanota.com>
- <CAJX_Q+0NL1_dkLD2oePhW+EjvGiPLQ7S-1jarz4dANm12iHNMg@mail.gmail.com>
- <CAEnG5GAsD_Db7G3TGkfA+bjO64V6tJuGph1dLOnvGhYicvLW_Q@mail.gmail.com>
-In-Reply-To: 
- <CAEnG5GAsD_Db7G3TGkfA+bjO64V6tJuGph1dLOnvGhYicvLW_Q@mail.gmail.com>
-From: Lucas Tanure <tanure@linux.com>
-Date: Wed, 3 Jan 2024 12:56:10 -0300
-X-Gmail-Original-Message-ID: 
- <CAJX_Q+1OoXdBAv=tMFdD1-Kfg0sDdnDjbYDpU9g8YfOeECwukA@mail.gmail.com>
-Message-ID: 
- <CAJX_Q+1OoXdBAv=tMFdD1-Kfg0sDdnDjbYDpU9g8YfOeECwukA@mail.gmail.com>
-Subject: Re: Fwd: No sound drivers on HP Envy x360 ey0xxx
-To: Matthew Anderson <ruinairas1992@gmail.com>
-Cc: voreck-lukas@tutanota.com, Bagasdotme <bagasdotme@gmail.com>,
-	Alsa Devel <alsa-devel@alsa-project.org>, Andy Chi <andy.chi@canonical.com>,
-	David Rhodes <david.rhodes@cirrus.com>, Faenkhauser <faenkhauser@gmail.com>,
-	James Schulman <james.schulman@cirrus.com>, Kailang <kailang@realtek.com>,
-	L Guzenko <l.guzenko@web.de>, Linux Kernel <linux-kernel@vger.kernel.org>,
-	Linux Sound <linux-sound@vger.kernel.org>, Luke <luke@ljones.dev>,
-	Overloader <overloader@tutanota.com>,
- Patches <patches@opensource.cirrus.com>,
-	Perex <perex@perex.cz>, Rf <rf@opensource.cirrus.com>,
-	Sbinding <sbinding@opensource.cirrus.com>,
- Shenghao Ding <shenghao-ding@ti.com>,
-	Tiwai <tiwai@suse.com>, Tsengalb99 <tsengalb99@gmail.com>,
-	Vitalyr <vitalyr@opensource.cirrus.com>, Yangyuchi66 <yangyuchi66@gmail.com>
-Message-ID-Hash: ZTYMPHVXN37VWIJ4UOZJ7KTV5HFYXJXR
-X-Message-ID-Hash: ZTYMPHVXN37VWIJ4UOZJ7KTV5HFYXJXR
-X-MailFrom: tanurelinux@gmail.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: Oops in hdac_hda_dev_probe (6.7-rc7)
+Content-Language: en-US
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Dominik Brodowski <linux@dominikbrodowski.net>,
+ Mark Brown <broonie@kernel.org>, lgirdwood@gmail.com, perex@perex.cz,
+ tiwai@suse.com, alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
+ pierre-louis.bossart@linux.intel.com, kai.vehmanen@linux.intel.com,
+ ranjani.sridharan@linux.intel.com, linux-kernel@vger.kernel.org,
+ regressions@lists.linux.dev
+References: <ZYvUIxtrqBQZbNlC@shine.dominikbrodowski.net>
+ <87sf3lxiet.wl-tiwai@suse.de> <ZY7kosArPqhlCfOA@shine.dominikbrodowski.net>
+ <874jg1x7ao.wl-tiwai@suse.de> <ZY_Gb8-rncuOjRq-@shine.dominikbrodowski.net>
+ <87plyovwg7.wl-tiwai@suse.de>
+ <3260e806-a708-4462-9d4e-346e54143a65@linux.intel.com>
+ <87y1d8ulxv.wl-tiwai@suse.de> <87o7e2a3hr.wl-tiwai@suse.de>
+From: =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>
+In-Reply-To: <87o7e2a3hr.wl-tiwai@suse.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: CQPUMJMY6XTWBZZYFDPQEW5I4CN5X2KA
+X-Message-ID-Hash: CQPUMJMY6XTWBZZYFDPQEW5I4CN5X2KA
+X-MailFrom: peter.ujfalusi@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="UTF-8"
-X-Content-Filtered-By: Mailman/MimeDel 3.3.9
 X-Mailman-Version: 3.3.9
 Precedence: list
-Reply-To: tanure@linux.com
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZTYMPHVXN37VWIJ4UOZJ7KTV5HFYXJXR/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CQPUMJMY6XTWBZZYFDPQEW5I4CN5X2KA/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -128,21 +111,20 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-T24gV2VkLCAzIEphbiAyMDI0LCAxMTo0NyBNYXR0aGV3IEFuZGVyc29uLCA8cnVpbmFpcmFzMTk5
-MkBnbWFpbC5jb20+IHdyb3RlOg0KDQo+IFRoZSBpc3N1ZSBpcyB0aGF0IEhQIGRvZXMgbm90IHBy
-b3ZpZGUgdGhlIERTRCBpbmZvcm1hdGlvbiBpbiB0aGUgQklPUyBmb3INCj4gdGhlIENpcnJ1cyBB
-bXAuIEkndmUgYWxyZWFkeSBlbWFpbGVkIEhQIGluZm9ybWluZyB0aGVtIG9mIHRoZSBpc3N1ZS4g
-SSB0b28NCj4gaGF2ZSBhIG5ld2VyIEhQIEVudnkgWDM2MCB3aGljaCBoYXMgdGhlIHNhbWUgcHJv
-YmxlbS4NCj4NCj4gT24gV2VkLCBKYW4gMywgMjAyNCwgODoyOOKAr0FNIEx1Y2FzIFRhbnVyZSA8
-dGFudXJlQGxpbnV4LmNvbT4gd3JvdGU6DQo+DQo+Pg0KPj4NCj4+IE9uIFdlZCwgMyBKYW4gMjAy
-NCwgMDg6MjMgLCA8dm9yZWNrLWx1a2FzQHR1dGFub3RhLmNvbT4gd3JvdGU6DQo+Pg0KPj4+IEkg
-aG9wZSBJJ20gcmVzcG9uZGluZyBjb3JyZWN0bHkNCj4+Pg0KPj4+IE9uIGJ1Z3ppbGxhIEkgd2Fz
-IGFza2VkIHRvIGF0dGFjaCBkbWVzZyBhbmQgbHNwY2kgb3V0cHV0LiBJJ20gc2VuZGluZw0KPj4+
-IGJvdGggYXMgYXR0YWNobWVudHMgKGNhdXNlIG9mIHRoZWlyIGxlbmd0aCkgYW5kIGhvcGUgaXQg
-d29ya3MsIGl0J3MgbXkNCj4+PiBmaXJzdCB0aW1lIHdvcmtpbmcgd2l0aCB0aGVzZSBtYWlsaW5n
-IGxpc3RzLg0KPj4+DQo+Pg0KPj4gSGksDQo+Pg0KPj4gVGhlIG1vc3QgaW1wb3J0YW50IHRoaW5n
-IHRvIHN0YXJ0IGlzIHRoZSBEU0RUIGR1bXAgZnJvbSB5b3VyIEJpb3MuDQo+PiBUaGF0IHNob3Vs
-ZCBkZXNjcmliZSB0aGUga2V5IHBvaW50cyBhYm91dCB0aGUgaGFyZHdhcmUgY29uZmlndXJhdGlv
-bi4NCj4+DQo+PiBUaGFua3MNCj4+IEx1Y2FzIFRhbnVyZQ0KPj4NCj4NCkFyZSB5b3Ugc3VyZT8N
-CkhvdyB0aGUgY2FuICBXaW5kb3dzIGRyaXZlciBiZSBsb2FkZWQgd2l0aG91dCB0aGF0Pw0KDQo+
-DQo=
+
+
+On 03/01/2024 16:36, Takashi Iwai wrote:
+>>> Mark, Takashi, can you pick the fix for 6.7 (it is in -next)? I think we
+>>> might have time for it to land?
+>>
+>> Oh that landed to Mark's for-next branch, i.e. only for 6.8.
+>> Mark, please cherry-pick and send a PR before 6.7 final.
+> 
+> I ended up with cherry-picking by myself now.
+> 
+> I'm going to send a PR to Linus for 6.7 final in tomorrow.
+
+Thank you, I really appreciate it!
+
+-- 
+Péter
