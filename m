@@ -4,111 +4,185 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A0450C47074
-	for <alsa-devel@archiver.kernel.org>; Thu,  4 Jan 2024 09:25:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 47DAFC47073
+	for <alsa-devel@archiver.kernel.org>; Thu,  4 Jan 2024 09:37:04 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E12E71506;
-	Thu,  4 Jan 2024 10:24:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E12E71506
+	by alsa0.perex.cz (Postfix) with ESMTPS id 43836E89;
+	Thu,  4 Jan 2024 10:36:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 43836E89
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1704360300;
-	bh=I1PEMGQhf6s6T3XGLWXHNW+dj75r/+iQcN27jd8cVQA=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=pUChnGZ6OryM9WCxiAaahOoAY3lPVti2WrG67Zq8KmX3AaZYf/dmyzUFDGBjZ/Pmy
-	 ZLzfwNWFcTZ/bNNXFJqoBpdR8VWj+N3+O5qAn1z6o0KCGGX9NF1BBe9frkS4utRC9Z
-	 xmH5iCxrVWCOLVWzg5zDfQo32KNKoMk5juMk9rTQ=
+	s=default; t=1704361022;
+	bh=ymERd/P8H9zDLCFBT7Ua6sofrqv5Ae8OOj6FLPoLYT0=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=Uy5FkF6r9Ivmwno1kiCiPUf+5X9A4pI/ZzI+VuLQOaSjWUlWtDuTFKHkaB2Nvoq1z
+	 Rajp2W/ZWaJEzzaqf984b1jPP4E2MYuKgiwp+q4a747jvaUFzdcvoiFXTOkkNt21wN
+	 O5mmmpHFWDgT9S89Q8Fuc4i/T6O9YMd6q9K426pA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3927FF806A3; Thu,  4 Jan 2024 10:22:55 +0100 (CET)
+	id 969C7F80589; Thu,  4 Jan 2024 10:36:21 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6F873F806A8;
-	Thu,  4 Jan 2024 10:22:55 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C3099F80589;
+	Thu,  4 Jan 2024 10:36:20 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id EA901F804B2; Thu,  4 Jan 2024 07:10:37 +0100 (CET)
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com
- [IPv6:2607:f8b0:4864:20::431])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	id 5360AF804B0; Thu,  4 Jan 2024 10:36:16 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 6967BF80224
-	for <alsa-devel@alsa-project.org>; Thu,  4 Jan 2024 07:09:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6967BF80224
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6AB51F802DB
+	for <alsa-devel@alsa-project.org>; Thu,  4 Jan 2024 10:36:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6AB51F802DB
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20230601 header.b=HP2dock7
-Received: by mail-pf1-x431.google.com with SMTP id
- d2e1a72fcca58-6d98ce84e18so114940b3a.3
-        for <alsa-devel@alsa-project.org>;
- Wed, 03 Jan 2024 22:09:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704348542; x=1704953342;
- darn=alsa-project.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=5ZvQW0xU+LOb9bzaqP41SYyg4D476cxr1BBMCgwep1I=;
-        b=HP2dock72MnQXoc6LAvqR8Lq/UkMBLddWtaR/BGwuTSkEFfnmcR6M69u9oHx1E+AEn
-         94LznkCVCq7Zb7WnXtlsIv3qMGlASSKWXK+vjZgIcbGvhV7FjTNxyPudSj8dXcOiXN9e
-         dSNSZ1Z4krba/JfQudbn25CDRUVxsxqvQeXenMp+fWlCfCFT6X4+b/E0rwIvhZkK7/nR
-         0mbHU2gkVfCWgagWaNrwiWzwZ0zQLGQ5GMZii/tHL0nggWicGL6Xg0APrhN5A8Ow6rJ2
-         /Qut6BmdkLNui0IRnnx+Fe2QcyFKhb36nxi508vylfUUnu4GJaz76Of3IsECusN+FJMj
-         9UQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704348542; x=1704953342;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5ZvQW0xU+LOb9bzaqP41SYyg4D476cxr1BBMCgwep1I=;
-        b=vcCKWOBJsejVHldduVG/LINTItQqCo5iq7557eDPIuLTQI1+XdloJIxUCpZSEXbDtu
-         MEEw7sxMszg2yY5gWtZJ4dqEel84vyY7F8J8HLhbSMvlI8AusYO0YX+dCx/MV/Hypq6R
-         /s2FneZ0fCsTQSIWg9f8jEbmK5XIaNc9yVBiR+27qgzvF+KSIbDTOvD0eALMXW1sQf9O
-         H7K8R4g+GLSlXpedyhtTQuehpNqByIbyRkbUuO9IRoWySbMN810fmqn9BwPKiTPWxY+4
-         xpp1JHj3F7YiFeEWAuDTi5+WnzwiIktZVg8a2r7kqPbkZ33OvLKBzo1i3hF/9opElamf
-         pXVg==
-X-Gm-Message-State: AOJu0YyZqhW+pZpwWSVlivXOox8CjiyKT6X39mKjP2ZembLDfi58zn0Y
-	FAnCZkuG7xayQs5pJpFUOOQ=
-X-Google-Smtp-Source: 
- AGHT+IGPx7ipScYKtOWFT5j0xVd85A3lG6Rch/jPBtZBGlh0XwaA+0QEFOoH++nqD7CibZ/idq9h8g==
-X-Received: by 2002:aa7:9e42:0:b0:6da:2898:1d6c with SMTP id
- z2-20020aa79e42000000b006da28981d6cmr142773pfq.51.1704348541947;
-        Wed, 03 Jan 2024 22:09:01 -0800 (PST)
-Received: from arch-hp.. ([2409:40c2:1059:c189:c8af:e8c3:986e:aea2])
-        by smtp.gmail.com with ESMTPSA id
- m7-20020a62f207000000b006d9a846036asm19473072pfh.60.2024.01.03.22.08.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Jan 2024 22:09:01 -0800 (PST)
-From: Siddhesh Dharme <siddheshdharme18@gmail.com>
-To: perex@perex.cz,
-	tiwai@suse.com
-Cc: alsa-devel@alsa-project.org,
-	linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Siddhesh Dharme <siddheshdharme18@gmail.com>
-Subject: [PATCH] ALSA: hda/realtek: Fix mute and mic-mute LEDs for HP ProBook
- 440 G6
-Date: Thu,  4 Jan 2024 11:37:36 +0530
-Message-ID: <20240104060736.5149-1-siddheshdharme18@gmail.com>
-X-Mailer: git-send-email 2.43.0
-MIME-Version: 1.0
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=zOxUEE1I;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=zSPGc6/a;
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.a=rsa-sha256 header.s=susede2_rsa header.b=zOxUEE1I;
+	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=zSPGc6/a
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 7745D21E11;
+	Thu,  4 Jan 2024 09:36:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1704360967;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wCC2Cqka0ThfsVWehN5bZIJn79HD8yA3L7KVMrzWJC4=;
+	b=zOxUEE1IL7CrQfOcOmtr/2orimz4bzTdiAlBXqOzf+rkQsNmwyU8md+TTbOPHDn6VxFF3j
+	aZLo+OMZPqEYXGgMOHmF2oXap+KdCahM8RzN8HK3R2j4/bsGpTYpHf5UFWLPwn1dZGRi5x
+	VecOWJV4Far3MjR7HMxoxCkW+Wlm5Ug=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1704360967;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wCC2Cqka0ThfsVWehN5bZIJn79HD8yA3L7KVMrzWJC4=;
+	b=zSPGc6/atvrRxg2R/2cyRa6ypt8OX14m4P85XDyJ+vKlzt9+vBBczNoYbvLCGAqLu0OnME
+	nFtL1ArW7By4FzAQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1704360967;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wCC2Cqka0ThfsVWehN5bZIJn79HD8yA3L7KVMrzWJC4=;
+	b=zOxUEE1IL7CrQfOcOmtr/2orimz4bzTdiAlBXqOzf+rkQsNmwyU8md+TTbOPHDn6VxFF3j
+	aZLo+OMZPqEYXGgMOHmF2oXap+KdCahM8RzN8HK3R2j4/bsGpTYpHf5UFWLPwn1dZGRi5x
+	VecOWJV4Far3MjR7HMxoxCkW+Wlm5Ug=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1704360967;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wCC2Cqka0ThfsVWehN5bZIJn79HD8yA3L7KVMrzWJC4=;
+	b=zSPGc6/atvrRxg2R/2cyRa6ypt8OX14m4P85XDyJ+vKlzt9+vBBczNoYbvLCGAqLu0OnME
+	nFtL1ArW7By4FzAQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E47D3137E8;
+	Thu,  4 Jan 2024 09:36:06 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id zTOfNgZ8lmWFYgAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Thu, 04 Jan 2024 09:36:06 +0000
+Date: Thu, 04 Jan 2024 10:36:06 +0100
+Message-ID: <87cyuha1a1.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Matthew Anderson <ruinairas1992@gmail.com>
+Cc: tanure@linux.com,
+	voreck-lukas@tutanota.com,
+	Bagasdotme <bagasdotme@gmail.com>,
+	Alsa Devel <alsa-devel@alsa-project.org>,
+	Andy Chi <andy.chi@canonical.com>,
+	David Rhodes <david.rhodes@cirrus.com>,
+	Faenkhauser <faenkhauser@gmail.com>,
+	James Schulman <james.schulman@cirrus.com>,
+	Kailang <kailang@realtek.com>,
+	L Guzenko <l.guzenko@web.de>,
+	Linux Kernel <linux-kernel@vger.kernel.org>,
+	Linux Sound <linux-sound@vger.kernel.org>,
+	Luke <luke@ljones.dev>,
+	Overloader <overloader@tutanota.com>,
+	Patches <patches@opensource.cirrus.com>,
+	Perex <perex@perex.cz>,
+	Rf <rf@opensource.cirrus.com>,
+	Sbinding <sbinding@opensource.cirrus.com>,
+	Shenghao Ding <shenghao-ding@ti.com>,
+	Tiwai <tiwai@suse.com>,
+	Tsengalb99 <tsengalb99@gmail.com>,
+	Vitalyr <vitalyr@opensource.cirrus.com>,
+	Yangyuchi66 <yangyuchi66@gmail.com>
+Subject: Re: Fwd: No sound drivers on HP Envy x360 ey0xxx
+In-Reply-To: 
+ <CAEnG5GADVZeFe55dPyEDbQA_jeNqQLNvCRPK4vBCMPCq25gmdA@mail.gmail.com>
+References: <NnE33wh--3-9@tutanota.com>
+	<CAJX_Q+0NL1_dkLD2oePhW+EjvGiPLQ7S-1jarz4dANm12iHNMg@mail.gmail.com>
+	<CAEnG5GAsD_Db7G3TGkfA+bjO64V6tJuGph1dLOnvGhYicvLW_Q@mail.gmail.com>
+	<CAJX_Q+1OoXdBAv=tMFdD1-Kfg0sDdnDjbYDpU9g8YfOeECwukA@mail.gmail.com>
+	<CAEnG5GADVZeFe55dPyEDbQA_jeNqQLNvCRPK4vBCMPCq25gmdA@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-MailFrom: siddheshdharme18@gmail.com
-X-Mailman-Rule-Hits: nonmember-moderation
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spamd-Result: default: False [0.13 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com,web.de];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 NEURAL_SPAM_LONG(2.43)[0.695];
+	 RCPT_COUNT_TWELVE(0.00)[24];
+	 MID_CONTAINS_FROM(1.00)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[tutanota.com:email,linux.com:email];
+	 FREEMAIL_TO(0.00)[gmail.com];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 FREEMAIL_CC(0.00)[linux.com,tutanota.com,gmail.com,alsa-project.org,canonical.com,cirrus.com,realtek.com,web.de,vger.kernel.org,ljones.dev,opensource.cirrus.com,perex.cz,ti.com,suse.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%]
+Message-ID-Hash: HXAI6HKN3SHGLRAINL5GLQEQ76DSCKLL
+X-Message-ID-Hash: HXAI6HKN3SHGLRAINL5GLQEQ76DSCKLL
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: IO3NGLAXJQEAY5NJ5TLVX6USVT7K5AXR
-X-Message-ID-Hash: IO3NGLAXJQEAY5NJ5TLVX6USVT7K5AXR
-X-Mailman-Approved-At: Thu, 04 Jan 2024 09:22:49 +0000
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IO3NGLAXJQEAY5NJ5TLVX6USVT7K5AXR/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HXAI6HKN3SHGLRAINL5GLQEQ76DSCKLL/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -117,27 +191,68 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-LEDs in 'HP ProBook 440 G6' laptop are controlled by ALC236 codec.
-Enable already existing quirk 'ALC236_FIXUP_HP_MUTE_LED_MICMUTE_VREF'
-to fix mute and mic-mute LEDs.
+On Wed, 03 Jan 2024 17:19:31 +0100,
+Matthew Anderson wrote:
+> 
+> They have something working around it on Windows. It's the same issue we've
+> had to work around on Asus devices such as the ROG Ally.
+> 
+>  You can use DSDT overrides to enable audio on Linux but this is dangerous
+> and not recommended because we have no way of knowing the safe values to
+> use.
+> 
+> Asus eventually pushed an update adding the missing information for the ROG
+> ally so it's no longer an issue. This is the proper solution.
 
-Signed-off-by: Siddhesh Dharme <siddheshdharme18@gmail.com>
----
- sound/pci/hda/patch_realtek.c | 1 +
- 1 file changed, 1 insertion(+)
+There are recent additions to apply the static configuration for such
+machines with broken BIOSen.  For HP, it'll be included in 6.8,
+currently found in for-next branch (or topic/cs35l41 branch) of
+sound.git tree.
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index c80e2f3ac..1dcfba27e 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -9825,6 +9825,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x103c, 0x84da, "HP OMEN dc0019-ur", ALC295_FIXUP_HP_OMEN),
- 	SND_PCI_QUIRK(0x103c, 0x84e7, "HP Pavilion 15", ALC269_FIXUP_HP_MUTE_LED_MIC3),
- 	SND_PCI_QUIRK(0x103c, 0x8519, "HP Spectre x360 15-df0xxx", ALC285_FIXUP_HP_SPECTRE_X360),
-+	SND_PCI_QUIRK(0x103c, 0x8537, "HP ProBook 440 G6", ALC236_FIXUP_HP_MUTE_LED_MICMUTE_VREF),
- 	SND_PCI_QUIRK(0x103c, 0x860f, "HP ZBook 15 G6", ALC285_FIXUP_HP_GPIO_AMP_INIT),
- 	SND_PCI_QUIRK(0x103c, 0x861f, "HP Elite Dragonfly G1", ALC285_FIXUP_HP_GPIO_AMP_INIT),
- 	SND_PCI_QUIRK(0x103c, 0x869d, "HP", ALC236_FIXUP_HP_MUTE_LED),
--- 
-2.43.0
+You'd need to adjust the quirk tables in both
+sound/pci/hda/patch_realtek.c and sound/pci/hda/cs35l41_hda_property.c
+to match with yours.
 
+
+HTH,
+
+Takashi
+
+> 
+> On Wed, Jan 3, 2024, 9:56 AM Lucas Tanure <tanure@linux.com> wrote:
+> 
+> >
+> >
+> > On Wed, 3 Jan 2024, 11:47 Matthew Anderson, <ruinairas1992@gmail.com>
+> > wrote:
+> >
+> >> The issue is that HP does not provide the DSD information in the BIOS for
+> >> the Cirrus Amp. I've already emailed HP informing them of the issue. I too
+> >> have a newer HP Envy X360 which has the same problem.
+> >>
+> >> On Wed, Jan 3, 2024, 8:28 AM Lucas Tanure <tanure@linux.com> wrote:
+> >>
+> >>>
+> >>>
+> >>> On Wed, 3 Jan 2024, 08:23 , <voreck-lukas@tutanota.com> wrote:
+> >>>
+> >>>> I hope I'm responding correctly
+> >>>>
+> >>>> On bugzilla I was asked to attach dmesg and lspci output. I'm sending
+> >>>> both as attachments (cause of their length) and hope it works, it's my
+> >>>> first time working with these mailing lists.
+> >>>>
+> >>>
+> >>> Hi,
+> >>>
+> >>> The most important thing to start is the DSDT dump from your Bios.
+> >>> That should describe the key points about the hardware configuration.
+> >>>
+> >>> Thanks
+> >>> Lucas Tanure
+> >>>
+> >>
+> > Are you sure?
+> > How the can  Windows driver be loaded without that?
+> >
+> >>
