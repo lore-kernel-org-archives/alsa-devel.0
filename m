@@ -4,148 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AAF91C47073
-	for <alsa-devel@archiver.kernel.org>; Thu,  4 Jan 2024 09:43:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D2C06C47074
+	for <alsa-devel@archiver.kernel.org>; Thu,  4 Jan 2024 11:57:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 50AEDEA1;
-	Thu,  4 Jan 2024 10:43:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 50AEDEA1
+	by alsa0.perex.cz (Postfix) with ESMTPS id B44E9E96;
+	Thu,  4 Jan 2024 12:56:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B44E9E96
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1704361399;
-	bh=HA6ooV9l++QsMmLio7h3R/ZioLQ6j2dW+H/ofh16A3M=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	s=default; t=1704369428;
+	bh=oEcqZE2yPd8FnHGLM1ipw3hGySg+5s7Ni0IpK3d6rPI=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=ZtDkStezJb0/RS6c9uKjKroW4TLLH30tkXzBGjBVXbVMZ6+9u11Me3RCyxaKIb7em
-	 GBzO6s2RnjreM8H07/b2o7xBz5h08Jrjoyv69xo1RodZfFVpL6t7+vNK0VWatFa9vf
-	 /f4fifZWsRGdoQe6u/ZCr7Y/bMjHD8vilPuW4ltk=
+	b=hGT4NZ8w92BxINv0Qx/haBcwhcRvikztf4+S7LaymKh1EeKzysiDdh8cucqSqZ2Rf
+	 iJ/mfjU9wMFSazZw4K3m0TDOKCItLJVP0xkSDkqBoXxoW0vcfdUEIy5TVdwsHLegjH
+	 XLYVOFp9WD6B3sNgd+hK1NJ2rpw9U4lrfUsxXyng=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C72BAF805A8; Thu,  4 Jan 2024 10:42:42 +0100 (CET)
+	id 9F6E4F804F1; Thu,  4 Jan 2024 12:56:37 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 295E8F8055B;
-	Thu,  4 Jan 2024 10:42:42 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4EA27F80589;
+	Thu,  4 Jan 2024 12:56:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 64946F804B0; Thu,  4 Jan 2024 10:42:38 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 4B4B5F804B0; Thu,  4 Jan 2024 12:56:22 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 6F1AFF80086
-	for <alsa-devel@alsa-project.org>; Thu,  4 Jan 2024 10:42:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6F1AFF80086
+	by alsa1.perex.cz (Postfix) with ESMTPS id 08D3FF80238
+	for <alsa-devel@alsa-project.org>; Thu,  4 Jan 2024 12:56:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 08D3FF80238
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=PzZ4zto4;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=AlRtKVuy;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=PzZ4zto4;
-	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=AlRtKVuy
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 2503C21EDE;
-	Thu,  4 Jan 2024 09:42:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1704361354;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=I1BgDm0+zuhPj9lChPaCbqlhdvr7I7RHxGTrTc1Gpt4=;
-	b=PzZ4zto4yN3EqhB4UWzpxLgIxRZY898bzUOfdRzd+nFp4V2NEu3cv3OUREocEfqV3g6QdS
-	jeJSgxaoDzq2rpysQV/NslcG54C7G31kBQpygYc6C0SZdVR75BR8BRXoLpZHRJ4yGLAIDk
-	3OvYcpU0bXktL9W1dvKGxsEfO2B270g=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1704361354;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=I1BgDm0+zuhPj9lChPaCbqlhdvr7I7RHxGTrTc1Gpt4=;
-	b=AlRtKVuypGdci03xEQ5S6OpBaSgcubbrAAv/tDyabCQaEg9YZWs50Of89oypf+w8orT/iv
-	rd5Yj94oHHdYJBBA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1704361354;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=I1BgDm0+zuhPj9lChPaCbqlhdvr7I7RHxGTrTc1Gpt4=;
-	b=PzZ4zto4yN3EqhB4UWzpxLgIxRZY898bzUOfdRzd+nFp4V2NEu3cv3OUREocEfqV3g6QdS
-	jeJSgxaoDzq2rpysQV/NslcG54C7G31kBQpygYc6C0SZdVR75BR8BRXoLpZHRJ4yGLAIDk
-	3OvYcpU0bXktL9W1dvKGxsEfO2B270g=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1704361354;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=I1BgDm0+zuhPj9lChPaCbqlhdvr7I7RHxGTrTc1Gpt4=;
-	b=AlRtKVuypGdci03xEQ5S6OpBaSgcubbrAAv/tDyabCQaEg9YZWs50Of89oypf+w8orT/iv
-	rd5Yj94oHHdYJBBA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0090C137E8;
-	Thu,  4 Jan 2024 09:42:33 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id ib5VOol9lmVOZAAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Thu, 04 Jan 2024 09:42:33 +0000
-Date: Thu, 04 Jan 2024 10:42:33 +0100
-Message-ID: <87a5pla0za.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Mark Hills <mark@xwax.org>
-Cc: Geraldo Nascimento <geraldogabriel@gmail.com>,
-	alsa-devel@alsa-project.org
-Subject: Re: Regression in Final Scratch 'ScratchAmp' quirk (DJ interface)
-In-Reply-To: <ZZXzhKbCEK04caa2@geday>
-References: <05f7b47d-1762-c6aa-ddb1-3c6f6128cf44@xwax.org>
-	<ZZXzhKbCEK04caa2@geday>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spamd-Bar: /
-X-Spamd-Result: default: False [0.44 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 FROM_HAS_DN(0.00)[];
-	 RCPT_COUNT_THREE(0.00)[3];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 TO_DN_SOME(0.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.de:+];
-	 MX_GOOD(-0.01)[];
-	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 FREEMAIL_CC(0.00)[gmail.com,alsa-project.org];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.25)[73.31%]
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=PzZ4zto4;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=AlRtKVuy
-X-Rspamd-Queue-Id: 2503C21EDE
-Message-ID-Hash: XLGUC5WVFOHY5AMV5B7Q5G3LKAXLC4PJ
-X-Message-ID-Hash: XLGUC5WVFOHY5AMV5B7Q5G3LKAXLC4PJ
-X-MailFrom: tiwai@suse.de
+	dkim=pass (2048-bit key,
+ unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
+ header.s=PODMain02222019 header.b=cU2qkYa7
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+	by mx0b-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id
+ 404BTAnq000975;
+	Thu, 4 Jan 2024 05:56:13 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	PODMain02222019; bh=/NqDoBBjx0wFqGQbw4rIaY5FhG1vCYbHJvQ4OeObe4A=; b=
+	cU2qkYa76fAOJ1m4xYPyhycw5KoYgm7aazN87eC+FwvdG+Q0draagWiPGf8zpApk
+	jI5cvMcL6yWMmgH/L0Kt59hCOy1dCIreFpjkiL008O5H4PNCWuZvtmgyEoIfsyMP
+	k9lyDqyVyo8XzzuUDWMjXsK848jfmtUvLMplNDvyqPDvfRQl9Doe5CQs4IdZm4Dt
+	Gquxe6wgTIZbsFr5Y89GYcX4KhXxcqvHkchOg2chf0bmlugX6Vam/Z+AddcaG5Gt
+	DH6JBC8P37GR7V+H8D5JOE65xw848hnRJWHHpDhlrKJvQwJNYUu0XSLN3ppV9uKO
+	aE7tm0X1+ovNgQQX2homXQ==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3vaggqek4b-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 04 Jan 2024 05:56:13 -0600 (CST)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 4 Jan
+ 2024 11:56:11 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.40 via Frontend
+ Transport; Thu, 4 Jan 2024 11:56:11 +0000
+Received: from [198.61.65.138] (EDIN4L06LR3.ad.cirrus.com [198.61.65.138])
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 96C8B46C;
+	Thu,  4 Jan 2024 11:56:11 +0000 (UTC)
+Message-ID: <d6ffe1ae-6561-43a2-a1bc-55c44a6731bd@opensource.cirrus.com>
+Date: Thu, 4 Jan 2024 11:56:11 +0000
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 06/13] irqchip/madera: Convert to platform remove callback
+ returning void
+Content-Language: en-US
+To: =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+        "Thomas Gleixner" <tglx@linutronix.de>
+CC: Charles Keepax <ckeepax@opensource.cirrus.com>,
+        <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
+        <linux-kernel@vger.kernel.org>, <kernel@pengutronix.de>
+References: <cover.1703284359.git.u.kleine-koenig@pengutronix.de>
+ <64c2f79760c53f29651e7126418c407ff699317d.1703284359.git.u.kleine-koenig@pengutronix.de>
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
+In-Reply-To: 
+ <64c2f79760c53f29651e7126418c407ff699317d.1703284359.git.u.kleine-koenig@pengutronix.de>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-GUID: 77nqBSXgZ0baqHtBCgqqenVw1bjzlpLd
+X-Proofpoint-ORIG-GUID: 77nqBSXgZ0baqHtBCgqqenVw1bjzlpLd
+X-Proofpoint-Spam-Reason: safe
+Message-ID-Hash: V4IKLEMTFTNTUQYD727K33DRPFRYGFZT
+X-Message-ID-Hash: V4IKLEMTFTNTUQYD727K33DRPFRYGFZT
+X-MailFrom: prvs=8733a9cd6e=rf@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -157,7 +103,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XLGUC5WVFOHY5AMV5B7Q5G3LKAXLC4PJ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/V4IKLEMTFTNTUQYD727K33DRPFRYGFZT/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -166,46 +112,52 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, 04 Jan 2024 00:53:40 +0100,
-Geraldo Nascimento wrote:
+On 22/12/23 22:50, Uwe Kleine-König wrote:
+> The .remove() callback for a platform driver returns an int which makes
+> many driver authors wrongly assume it's possible to do error handling by
+> returning an error code. However the value returned is ignored (apart
+> from emitting a warning) and this typically results in resource leaks.
 > 
-> On Wed, Jan 03, 2024 at 03:54:29PM +0000, Mark Hills wrote:
-> > The ScratchAmp worked perfectly with a quirk, but now that seems to have 
-> > regressed and the device is no longer detected [1].
-> > 
-> > It's design is from 2002, based on class-compliant (Philips UDA1325H) 
-> > chips. It hides itself behind a 'vendor specific' description, presumably 
-> > as it was launched in a closed system with specific hardware and software 
-> > for DJ'ing.
+> To improve here there is a quest to make the remove callback return
+> void. In the first step of this quest all drivers are converted to
+> .remove_new(), which already returns void. Eventually after all drivers
+> are converted, .remove_new() will be renamed to .remove().
 > 
-> Hi Mark, great fan of your work with xwax here.
+> Trivially convert this driver from always returning zero in the remove
+> callback to the void returning variant.
 > 
-> Perhaps adding USB_DEVICE_VENDOR_SPEC(0x103d, 0x0100) and
-> USB_DEVICE_VENDOR_SPEC(0x103d, 0x0101) to quirks-table.h can do the
-> trick?
+> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+> ---
+>   drivers/irqchip/irq-madera.c | 6 ++----
+>   1 file changed, 2 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/irqchip/irq-madera.c b/drivers/irqchip/irq-madera.c
+> index 3eb1f8cdf674..b424c0a327f7 100644
+> --- a/drivers/irqchip/irq-madera.c
+> +++ b/drivers/irqchip/irq-madera.c
+> @@ -222,7 +222,7 @@ static int madera_irq_probe(struct platform_device *pdev)
+>   	return 0;
+>   }
+>   
+> -static int madera_irq_remove(struct platform_device *pdev)
+> +static void madera_irq_remove(struct platform_device *pdev)
+>   {
+>   	struct madera *madera = dev_get_drvdata(pdev->dev.parent);
+>   
+> @@ -232,13 +232,11 @@ static int madera_irq_remove(struct platform_device *pdev)
+>   	 */
+>   	madera->irq_dev = NULL;
+>   	regmap_del_irq_chip(madera->irq, madera->irq_data);
+> -
+> -	return 0;
+>   }
+>   
+>   static struct platform_driver madera_irq_driver = {
+>   	.probe	= &madera_irq_probe,
+> -	.remove = &madera_irq_remove,
+> +	.remove_new = madera_irq_remove,
+>   	.driver = {
+>   		.name	= "madera-irq",
+>   		.pm	= &madera_irq_pm_ops,
 
-Yes, something like below.
-
-If this doesn't work, try to replace USB_DEVICE_VENDOR_SPEC() with
-USB_AUDIO_DEVICE() in the patch.
-
-In anyway, please give lsusb -v output of the specific device, too.
-
-
-Takashi
-
--- 8< --
---- a/sound/usb/quirks-table.h
-+++ b/sound/usb/quirks-table.h
-@@ -169,6 +169,10 @@
- { USB_AUDIO_DEVICE(0x046d, 0x08f6) },
- { USB_AUDIO_DEVICE(0x046d, 0x0990) },
- 
-+/* Stanton ScratchAmp */
-+{ USB_DEVICE_VENDOR_SPEC(0x103d, 0x0100) },
-+{ USB_DEVICE_VENDOR_SPEC(0x103d, 0x0101) },
-+
- /*
-  * Yamaha devices
-  */
-
+Reviewed-by: Richard Fitzgerald <rf@opensource.cirrus.com>
