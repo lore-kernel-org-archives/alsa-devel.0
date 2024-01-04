@@ -4,122 +4,111 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 20D23C47073
-	for <alsa-devel@archiver.kernel.org>; Thu,  4 Jan 2024 09:24:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A0450C47074
+	for <alsa-devel@archiver.kernel.org>; Thu,  4 Jan 2024 09:25:02 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6A6591504;
-	Thu,  4 Jan 2024 10:24:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6A6591504
+	by alsa0.perex.cz (Postfix) with ESMTPS id E12E71506;
+	Thu,  4 Jan 2024 10:24:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E12E71506
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1704360281;
-	bh=/5bgf22M1H4gEa2wvfFBtYv7XCVrvFkGCa34kl4ES58=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=Y8iU3ALRmWoU12yYQIjSbXa8uqtz70Ec9irtuJ6pUb/nJHXUk3Tlqdj8k1IEZQk62
-	 lmy41NcSnGXFhU7/Fl8j7Ton7Hq3A/3dEDL0L7qfClIm34zRjLe4qzucxbosLr/QTl
-	 R+GENQFzzb3ADB/c0bd/ValpPmKL/agMcFc824bI=
+	s=default; t=1704360300;
+	bh=I1PEMGQhf6s6T3XGLWXHNW+dj75r/+iQcN27jd8cVQA=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=pUChnGZ6OryM9WCxiAaahOoAY3lPVti2WrG67Zq8KmX3AaZYf/dmyzUFDGBjZ/Pmy
+	 ZLzfwNWFcTZ/bNNXFJqoBpdR8VWj+N3+O5qAn1z6o0KCGGX9NF1BBe9frkS4utRC9Z
+	 xmH5iCxrVWCOLVWzg5zDfQo32KNKoMk5juMk9rTQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 117DBF80656; Thu,  4 Jan 2024 10:22:53 +0100 (CET)
+	id 3927FF806A3; Thu,  4 Jan 2024 10:22:55 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 77E2FF80675;
-	Thu,  4 Jan 2024 10:22:53 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6F873F806A8;
+	Thu,  4 Jan 2024 10:22:55 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 27B04F80537; Wed,  3 Jan 2024 17:19:49 +0100 (CET)
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com
- [IPv6:2607:f8b0:4864:20::102f])
+	id EA901F804B2; Thu,  4 Jan 2024 07:10:37 +0100 (CET)
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com
+ [IPv6:2607:f8b0:4864:20::431])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 3E2AEF80086
-	for <alsa-devel@alsa-project.org>; Wed,  3 Jan 2024 17:19:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3E2AEF80086
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6967BF80224
+	for <alsa-devel@alsa-project.org>; Thu,  4 Jan 2024 07:09:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6967BF80224
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20230601 header.b=HvgmVCiQ
-Received: by mail-pj1-x102f.google.com with SMTP id
- 98e67ed59e1d1-28c5af37d3aso1877132a91.0
+ header.s=20230601 header.b=HP2dock7
+Received: by mail-pf1-x431.google.com with SMTP id
+ d2e1a72fcca58-6d98ce84e18so114940b3a.3
         for <alsa-devel@alsa-project.org>;
- Wed, 03 Jan 2024 08:19:42 -0800 (PST)
+ Wed, 03 Jan 2024 22:09:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704298781; x=1704903581;
+        d=gmail.com; s=20230601; t=1704348542; x=1704953342;
  darn=alsa-project.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=UjaYUrFsVj9+pKwf8/dS9l24/1mpBbioEanyM6G1CzE=;
-        b=HvgmVCiQQXAYsvFjhOT/7Ac8gL00n0QqaNzBGZ2LcOOBbki8nGOcW0FKmFOPW1kpjp
-         5G+niOFBeaeXPfrKK76JP2YaYVn/e21VV4y7YKC98/fGS0KDrU3kt58rcZwzSZZT6J5s
-         l2osBmku+mI8ZIZY0hGiWj2xIefTFzgm1xcn3b/AuYG6sLko59hojtc0CpPKu8AFzbs4
-         2nRrzx+8ByzNXrofk8/DxH01zlplR0N1dJ5WhYeC0PUVRCBFgCCrY3pgTngFHfyZJlwI
-         7FlBp7UNwXHm2IbtM6fZjitJvqJYyOBkqE7Myqcf8pTzvqZ1h8Dp/tX64Bm4ApUCu/ou
-         J4Sg==
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=5ZvQW0xU+LOb9bzaqP41SYyg4D476cxr1BBMCgwep1I=;
+        b=HP2dock72MnQXoc6LAvqR8Lq/UkMBLddWtaR/BGwuTSkEFfnmcR6M69u9oHx1E+AEn
+         94LznkCVCq7Zb7WnXtlsIv3qMGlASSKWXK+vjZgIcbGvhV7FjTNxyPudSj8dXcOiXN9e
+         dSNSZ1Z4krba/JfQudbn25CDRUVxsxqvQeXenMp+fWlCfCFT6X4+b/E0rwIvhZkK7/nR
+         0mbHU2gkVfCWgagWaNrwiWzwZ0zQLGQ5GMZii/tHL0nggWicGL6Xg0APrhN5A8Ow6rJ2
+         /Qut6BmdkLNui0IRnnx+Fe2QcyFKhb36nxi508vylfUUnu4GJaz76Of3IsECusN+FJMj
+         9UQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704298781; x=1704903581;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1704348542; x=1704953342;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=UjaYUrFsVj9+pKwf8/dS9l24/1mpBbioEanyM6G1CzE=;
-        b=pAB0DK9cf5J/AlmEDRyyHKHVS4mlqyYKKTpdb9ppAaGyCo/uSAO8mZ2+ZMd+ASc8iQ
-         jkDArBtEhYw1UR85zUnBxEWLTh5q1a+p8XBMgurarK7m1N1BVoK5+lKcFtY6UsKuDPGr
-         YtuJzUrsq3N40dsP9OplqNvtAP+mCnS5P5zwab8GOyrpawpdBqIWahSqbY0325KTP9Xs
-         QeAYoGWWfD3fohQnpJmKM7tAL7xMxJnv0yxYwMVElEYu/oiS9Vj/TWN4h08caNBLaDod
-         +j/dt/fVyUQYE2ZYjpPO/wMUX0bvJfE4DW+E8gy7MTW2F6J7xLSAKU9pQbinLePRdDvB
-         2Rgg==
-X-Gm-Message-State: AOJu0YzKHUBfwgWbUKRAy5iMs8K17LkThWkUIWhtyCdpBi8j2DBAcj/W
-	qGMy5HoQ+wE/T9GbFJiGRTEe64lMxRECI3Igy44=
+        bh=5ZvQW0xU+LOb9bzaqP41SYyg4D476cxr1BBMCgwep1I=;
+        b=vcCKWOBJsejVHldduVG/LINTItQqCo5iq7557eDPIuLTQI1+XdloJIxUCpZSEXbDtu
+         MEEw7sxMszg2yY5gWtZJ4dqEel84vyY7F8J8HLhbSMvlI8AusYO0YX+dCx/MV/Hypq6R
+         /s2FneZ0fCsTQSIWg9f8jEbmK5XIaNc9yVBiR+27qgzvF+KSIbDTOvD0eALMXW1sQf9O
+         H7K8R4g+GLSlXpedyhtTQuehpNqByIbyRkbUuO9IRoWySbMN810fmqn9BwPKiTPWxY+4
+         xpp1JHj3F7YiFeEWAuDTi5+WnzwiIktZVg8a2r7kqPbkZ33OvLKBzo1i3hF/9opElamf
+         pXVg==
+X-Gm-Message-State: AOJu0YyZqhW+pZpwWSVlivXOox8CjiyKT6X39mKjP2ZembLDfi58zn0Y
+	FAnCZkuG7xayQs5pJpFUOOQ=
 X-Google-Smtp-Source: 
- AGHT+IGCANTT7wChZVAZrUrw+oXjA/AWofXkhjngdbnxV/OTv7WyfBnzW3ImCncOVMjLhDuZMtcnmu5f2ByJU01zeEY=
-X-Received: by 2002:a17:90a:e0f:b0:28c:5a9:de71 with SMTP id
- v15-20020a17090a0e0f00b0028c05a9de71mr28573383pje.4.1704298780851; Wed, 03
- Jan 2024 08:19:40 -0800 (PST)
+ AGHT+IGPx7ipScYKtOWFT5j0xVd85A3lG6Rch/jPBtZBGlh0XwaA+0QEFOoH++nqD7CibZ/idq9h8g==
+X-Received: by 2002:aa7:9e42:0:b0:6da:2898:1d6c with SMTP id
+ z2-20020aa79e42000000b006da28981d6cmr142773pfq.51.1704348541947;
+        Wed, 03 Jan 2024 22:09:01 -0800 (PST)
+Received: from arch-hp.. ([2409:40c2:1059:c189:c8af:e8c3:986e:aea2])
+        by smtp.gmail.com with ESMTPSA id
+ m7-20020a62f207000000b006d9a846036asm19473072pfh.60.2024.01.03.22.08.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Jan 2024 22:09:01 -0800 (PST)
+From: Siddhesh Dharme <siddheshdharme18@gmail.com>
+To: perex@perex.cz,
+	tiwai@suse.com
+Cc: alsa-devel@alsa-project.org,
+	linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Siddhesh Dharme <siddheshdharme18@gmail.com>
+Subject: [PATCH] ALSA: hda/realtek: Fix mute and mic-mute LEDs for HP ProBook
+ 440 G6
+Date: Thu,  4 Jan 2024 11:37:36 +0530
+Message-ID: <20240104060736.5149-1-siddheshdharme18@gmail.com>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-References: <NnE33wh--3-9@tutanota.com>
- <CAJX_Q+0NL1_dkLD2oePhW+EjvGiPLQ7S-1jarz4dANm12iHNMg@mail.gmail.com>
- <CAEnG5GAsD_Db7G3TGkfA+bjO64V6tJuGph1dLOnvGhYicvLW_Q@mail.gmail.com>
- <CAJX_Q+1OoXdBAv=tMFdD1-Kfg0sDdnDjbYDpU9g8YfOeECwukA@mail.gmail.com>
-In-Reply-To: 
- <CAJX_Q+1OoXdBAv=tMFdD1-Kfg0sDdnDjbYDpU9g8YfOeECwukA@mail.gmail.com>
-From: Matthew Anderson <ruinairas1992@gmail.com>
-Date: Wed, 3 Jan 2024 10:19:31 -0600
-Message-ID: 
- <CAEnG5GADVZeFe55dPyEDbQA_jeNqQLNvCRPK4vBCMPCq25gmdA@mail.gmail.com>
-Subject: Re: Fwd: No sound drivers on HP Envy x360 ey0xxx
-To: tanure@linux.com
-Cc: voreck-lukas@tutanota.com, Bagasdotme <bagasdotme@gmail.com>,
-	Alsa Devel <alsa-devel@alsa-project.org>, Andy Chi <andy.chi@canonical.com>,
-	David Rhodes <david.rhodes@cirrus.com>, Faenkhauser <faenkhauser@gmail.com>,
-	James Schulman <james.schulman@cirrus.com>, Kailang <kailang@realtek.com>,
-	L Guzenko <l.guzenko@web.de>, Linux Kernel <linux-kernel@vger.kernel.org>,
-	Linux Sound <linux-sound@vger.kernel.org>, Luke <luke@ljones.dev>,
-	Overloader <overloader@tutanota.com>,
- Patches <patches@opensource.cirrus.com>,
-	Perex <perex@perex.cz>, Rf <rf@opensource.cirrus.com>,
-	Sbinding <sbinding@opensource.cirrus.com>,
- Shenghao Ding <shenghao-ding@ti.com>,
-	Tiwai <tiwai@suse.com>, Tsengalb99 <tsengalb99@gmail.com>,
-	Vitalyr <vitalyr@opensource.cirrus.com>, Yangyuchi66 <yangyuchi66@gmail.com>
-X-MailFrom: ruinairas1992@gmail.com
+Content-Transfer-Encoding: 8bit
+X-MailFrom: siddheshdharme18@gmail.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: ADWDW6TOHFF6B7DLSCZ7MLWBMUIG3S2G
-X-Message-ID-Hash: ADWDW6TOHFF6B7DLSCZ7MLWBMUIG3S2G
-X-Mailman-Approved-At: Thu, 04 Jan 2024 09:22:48 +0000
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="UTF-8"
-X-Content-Filtered-By: Mailman/MimeDel 3.3.9
+Message-ID-Hash: IO3NGLAXJQEAY5NJ5TLVX6USVT7K5AXR
+X-Message-ID-Hash: IO3NGLAXJQEAY5NJ5TLVX6USVT7K5AXR
+X-Mailman-Approved-At: Thu, 04 Jan 2024 09:22:49 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ADWDW6TOHFF6B7DLSCZ7MLWBMUIG3S2G/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IO3NGLAXJQEAY5NJ5TLVX6USVT7K5AXR/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -128,30 +117,27 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-VGhleSBoYXZlIHNvbWV0aGluZyB3b3JraW5nIGFyb3VuZCBpdCBvbiBXaW5kb3dzLiBJdCdzIHRo
-ZSBzYW1lIGlzc3VlIHdlJ3ZlDQpoYWQgdG8gd29yayBhcm91bmQgb24gQXN1cyBkZXZpY2VzIHN1
-Y2ggYXMgdGhlIFJPRyBBbGx5Lg0KDQogWW91IGNhbiB1c2UgRFNEVCBvdmVycmlkZXMgdG8gZW5h
-YmxlIGF1ZGlvIG9uIExpbnV4IGJ1dCB0aGlzIGlzIGRhbmdlcm91cw0KYW5kIG5vdCByZWNvbW1l
-bmRlZCBiZWNhdXNlIHdlIGhhdmUgbm8gd2F5IG9mIGtub3dpbmcgdGhlIHNhZmUgdmFsdWVzIHRv
-DQp1c2UuDQoNCkFzdXMgZXZlbnR1YWxseSBwdXNoZWQgYW4gdXBkYXRlIGFkZGluZyB0aGUgbWlz
-c2luZyBpbmZvcm1hdGlvbiBmb3IgdGhlIFJPRw0KYWxseSBzbyBpdCdzIG5vIGxvbmdlciBhbiBp
-c3N1ZS4gVGhpcyBpcyB0aGUgcHJvcGVyIHNvbHV0aW9uLg0KDQpPbiBXZWQsIEphbiAzLCAyMDI0
-LCA5OjU24oCvQU0gTHVjYXMgVGFudXJlIDx0YW51cmVAbGludXguY29tPiB3cm90ZToNCg0KPg0K
-Pg0KPiBPbiBXZWQsIDMgSmFuIDIwMjQsIDExOjQ3IE1hdHRoZXcgQW5kZXJzb24sIDxydWluYWly
-YXMxOTkyQGdtYWlsLmNvbT4NCj4gd3JvdGU6DQo+DQo+PiBUaGUgaXNzdWUgaXMgdGhhdCBIUCBk
-b2VzIG5vdCBwcm92aWRlIHRoZSBEU0QgaW5mb3JtYXRpb24gaW4gdGhlIEJJT1MgZm9yDQo+PiB0
-aGUgQ2lycnVzIEFtcC4gSSd2ZSBhbHJlYWR5IGVtYWlsZWQgSFAgaW5mb3JtaW5nIHRoZW0gb2Yg
-dGhlIGlzc3VlLiBJIHRvbw0KPj4gaGF2ZSBhIG5ld2VyIEhQIEVudnkgWDM2MCB3aGljaCBoYXMg
-dGhlIHNhbWUgcHJvYmxlbS4NCj4+DQo+PiBPbiBXZWQsIEphbiAzLCAyMDI0LCA4OjI44oCvQU0g
-THVjYXMgVGFudXJlIDx0YW51cmVAbGludXguY29tPiB3cm90ZToNCj4+DQo+Pj4NCj4+Pg0KPj4+
-IE9uIFdlZCwgMyBKYW4gMjAyNCwgMDg6MjMgLCA8dm9yZWNrLWx1a2FzQHR1dGFub3RhLmNvbT4g
-d3JvdGU6DQo+Pj4NCj4+Pj4gSSBob3BlIEknbSByZXNwb25kaW5nIGNvcnJlY3RseQ0KPj4+Pg0K
-Pj4+PiBPbiBidWd6aWxsYSBJIHdhcyBhc2tlZCB0byBhdHRhY2ggZG1lc2cgYW5kIGxzcGNpIG91
-dHB1dC4gSSdtIHNlbmRpbmcNCj4+Pj4gYm90aCBhcyBhdHRhY2htZW50cyAoY2F1c2Ugb2YgdGhl
-aXIgbGVuZ3RoKSBhbmQgaG9wZSBpdCB3b3JrcywgaXQncyBteQ0KPj4+PiBmaXJzdCB0aW1lIHdv
-cmtpbmcgd2l0aCB0aGVzZSBtYWlsaW5nIGxpc3RzLg0KPj4+Pg0KPj4+DQo+Pj4gSGksDQo+Pj4N
-Cj4+PiBUaGUgbW9zdCBpbXBvcnRhbnQgdGhpbmcgdG8gc3RhcnQgaXMgdGhlIERTRFQgZHVtcCBm
-cm9tIHlvdXIgQmlvcy4NCj4+PiBUaGF0IHNob3VsZCBkZXNjcmliZSB0aGUga2V5IHBvaW50cyBh
-Ym91dCB0aGUgaGFyZHdhcmUgY29uZmlndXJhdGlvbi4NCj4+Pg0KPj4+IFRoYW5rcw0KPj4+IEx1
-Y2FzIFRhbnVyZQ0KPj4+DQo+Pg0KPiBBcmUgeW91IHN1cmU/DQo+IEhvdyB0aGUgY2FuICBXaW5k
-b3dzIGRyaXZlciBiZSBsb2FkZWQgd2l0aG91dCB0aGF0Pw0KPg0KPj4NCg==
+LEDs in 'HP ProBook 440 G6' laptop are controlled by ALC236 codec.
+Enable already existing quirk 'ALC236_FIXUP_HP_MUTE_LED_MICMUTE_VREF'
+to fix mute and mic-mute LEDs.
+
+Signed-off-by: Siddhesh Dharme <siddheshdharme18@gmail.com>
+---
+ sound/pci/hda/patch_realtek.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index c80e2f3ac..1dcfba27e 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -9825,6 +9825,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x103c, 0x84da, "HP OMEN dc0019-ur", ALC295_FIXUP_HP_OMEN),
+ 	SND_PCI_QUIRK(0x103c, 0x84e7, "HP Pavilion 15", ALC269_FIXUP_HP_MUTE_LED_MIC3),
+ 	SND_PCI_QUIRK(0x103c, 0x8519, "HP Spectre x360 15-df0xxx", ALC285_FIXUP_HP_SPECTRE_X360),
++	SND_PCI_QUIRK(0x103c, 0x8537, "HP ProBook 440 G6", ALC236_FIXUP_HP_MUTE_LED_MICMUTE_VREF),
+ 	SND_PCI_QUIRK(0x103c, 0x860f, "HP ZBook 15 G6", ALC285_FIXUP_HP_GPIO_AMP_INIT),
+ 	SND_PCI_QUIRK(0x103c, 0x861f, "HP Elite Dragonfly G1", ALC285_FIXUP_HP_GPIO_AMP_INIT),
+ 	SND_PCI_QUIRK(0x103c, 0x869d, "HP", ALC236_FIXUP_HP_MUTE_LED),
+-- 
+2.43.0
+
