@@ -4,97 +4,153 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 54647C3DA6E
-	for <alsa-devel@archiver.kernel.org>; Wed,  3 Jan 2024 23:53:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 48412C47074
+	for <alsa-devel@archiver.kernel.org>; Thu,  4 Jan 2024 08:57:39 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 96919E98;
-	Thu,  4 Jan 2024 00:53:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 96919E98
+	by alsa0.perex.cz (Postfix) with ESMTPS id CDB7FE9B;
+	Thu,  4 Jan 2024 09:57:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CDB7FE9B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1704326025;
-	bh=s1Ddmxdfym7l5K/gCAq++uvtxwRfiwF4P9l0AM6TKAk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1704358656;
+	bh=38UrEx4/DcK3POMtsRao/k5J696fWVIlS3Ar3xeANT8=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=PcNJnzrQDjEF/9zA9+NzEbVMuArn8wQim0dlM/zhnw/sfl9uPPPLnjNol+wd9MAxP
-	 5AbCCRThK3IyqhC8mlDUwmVJKpB5LifgyMEoMEmT8dfARrpfUndkxImt+/La44XB86
-	 wW8NhQ89SeOOh1zbb6GTo9fGS/sAFXSyROHi8Nw0=
+	b=qYBlIppX7Gd+BeK3W1PYa6jhsuwmPBDoFcjKkFrkvmdUbMlC5Ow/Q7stkwEE3JgQG
+	 5rT0umI+91/KwAIq8JU0v7gQtYLOduW7nTloE8GlKrB9xElhceHCDl+YICL2qXcobM
+	 6OJ9WWt4dfWEJ/YK8sK14EdvmnWVcEDjVNFj8FPo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 340CBF8059F; Thu,  4 Jan 2024 00:53:13 +0100 (CET)
+	id 36183F804F1; Thu,  4 Jan 2024 09:57:00 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id BC651F80564;
-	Thu,  4 Jan 2024 00:53:12 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 30888F8057D;
+	Thu,  4 Jan 2024 09:56:59 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 73BDCF804B0; Thu,  4 Jan 2024 00:53:06 +0100 (CET)
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com
- [IPv6:2607:f8b0:4864:20::636])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	id 524B5F804B0; Thu,  4 Jan 2024 09:53:45 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 584CBF802DB
-	for <alsa-devel@alsa-project.org>; Thu,  4 Jan 2024 00:52:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 584CBF802DB
+	by alsa1.perex.cz (Postfix) with ESMTPS id 1F684F80224
+	for <alsa-devel@alsa-project.org>; Thu,  4 Jan 2024 09:53:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1F684F80224
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20230601 header.b=kxhMB7kk
-Received: by mail-pl1-x636.google.com with SMTP id
- d9443c01a7336-1d480c6342dso44762205ad.2
-        for <alsa-devel@alsa-project.org>;
- Wed, 03 Jan 2024 15:52:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704325976; x=1704930776;
- darn=alsa-project.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=rd68II1L0TFJm+D7eGj86VKo7YNY3VGiRHXn4Lw/o9o=;
-        b=kxhMB7kk+m2hypfNAhBOo+4DyYWy8S6r/G4Fx2UsOWEZ1D6xZNUZnErZkM3s0gDT/Q
-         9QrVtLx82kfLNFF0g9RLEvJ4bWcH4c/71xr5FPDvFTZQ5aud1tfROpKu+aZDPn40Fhd5
-         /q8E/PSMOGRwKz/vKrm/xB3YbTdjch7EtJACPwKeRySOUnkgFBOVX0OKgk3r9wk88UWy
-         arNSPOdX7DybEaHjb2toWA5smcQqJxD3kzqjfOrmymP5uHZEbzSYhKxoIkZoo82PrTa8
-         6hKlPQZEuxHCCjnJTnBErOYKJilhOGpGdkk/9qsCvluzZY7VPpKVgdsfeHZrNUA6/08u
-         MmVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704325976; x=1704930776;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rd68II1L0TFJm+D7eGj86VKo7YNY3VGiRHXn4Lw/o9o=;
-        b=B4DptvuOjx8o4YV0cNPdBVdzhi388oEtmBoVUpau7sd4YIisJxevaQ8TRkx83665/3
-         lPWI+uqL1sd8DXMRHmNexCtfvnRavrVBMMtJQ1krw5RygN96xXD2lLzebPit91PnSmpr
-         sjf0zRf8kTctKbRY36kU4/4Qb4bclSo/w/EYELpA+hktjSQlT77FMsZ/HsE6vInqkPR/
-         xVo35tTWtOWg7f/viZ7qITpagVkxdlsL6jcUo9tKtW/uZwb1iHY9THTcRD4KbH+BZarX
-         xcD6oVEeub54G+KjUxUL7BeD02uUFmgcOA2VAwiczL55ulb2gBacTOR5onv6g1wGNGKp
-         wiVA==
-X-Gm-Message-State: AOJu0YzWTSh/+IW7mtUg0EU5mklbjHTFLFsEp9qxsNvPBFXGfWLx2Syt
-	Y2pd6hvRO31gHAVMkrDAAQM=
-X-Google-Smtp-Source: 
- AGHT+IGz/vFJG7iZ2hXjsPiS4b5kkW8oFcsK+eXPIPkFISSSq0ZTyBb2uIgrwn2TFVvaHKB6Ps5ECQ==
-X-Received: by 2002:a17:902:e5c3:b0:1d3:6c37:23b7 with SMTP id
- u3-20020a170902e5c300b001d36c3723b7mr22514193plf.87.1704325975498;
-        Wed, 03 Jan 2024 15:52:55 -0800 (PST)
-Received: from geday ([2804:7f2:8002:dd7c:7912:b8f2:dd57:c8ea])
-        by smtp.gmail.com with ESMTPSA id
- iz4-20020a170902ef8400b001d08e080042sm24542622plb.43.2024.01.03.15.52.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Jan 2024 15:52:54 -0800 (PST)
-Date: Wed, 3 Jan 2024 20:53:40 -0300
-From: Geraldo Nascimento <geraldogabriel@gmail.com>
-To: Mark Hills <mark@xwax.org>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>
-Subject: Re: Regression in Final Scratch 'ScratchAmp' quirk (DJ interface)
-Message-ID: <ZZXzhKbCEK04caa2@geday>
-References: <05f7b47d-1762-c6aa-ddb1-3c6f6128cf44@xwax.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <05f7b47d-1762-c6aa-ddb1-3c6f6128cf44@xwax.org>
-Message-ID-Hash: ER3DQFHMANG4DJ2IFCL7TY3EGQGK4LGM
-X-Message-ID-Hash: ER3DQFHMANG4DJ2IFCL7TY3EGQGK4LGM
-X-MailFrom: geraldogabriel@gmail.com
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=xwZGXUtR;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=qfBUSdo4;
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.a=rsa-sha256 header.s=susede2_rsa header.b=xwZGXUtR;
+	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=qfBUSdo4
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 910DE21E73;
+	Thu,  4 Jan 2024 08:53:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1704358416;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=60pY3+TKeowAJTEaVySctoSv+hCzrSmVwOvZhPv/TuE=;
+	b=xwZGXUtRJiRdVKlDQuXxAzS9QJHCdfY3oTf5juhly34nhize5xSUTJZoAh2CUalB+iCaNb
+	MrmxGH5cpeffpB8VjVkJjcv6kc8/dmLq5SZhctEhRVa+6hba5YV1sPIAjUFenP09ZXrUDB
+	gDnodDKckz7Nm2UDXSUU0AXLd1bwBAM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1704358416;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=60pY3+TKeowAJTEaVySctoSv+hCzrSmVwOvZhPv/TuE=;
+	b=qfBUSdo4Dz9Uw9vvrnfXEiR8x6mdnbYmZrk9lrkmX2SP64Upz/F0v7lDUIXmYw8iIU1xDB
+	D91wi1m732D3ooBw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1704358416;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=60pY3+TKeowAJTEaVySctoSv+hCzrSmVwOvZhPv/TuE=;
+	b=xwZGXUtRJiRdVKlDQuXxAzS9QJHCdfY3oTf5juhly34nhize5xSUTJZoAh2CUalB+iCaNb
+	MrmxGH5cpeffpB8VjVkJjcv6kc8/dmLq5SZhctEhRVa+6hba5YV1sPIAjUFenP09ZXrUDB
+	gDnodDKckz7Nm2UDXSUU0AXLd1bwBAM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1704358416;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=60pY3+TKeowAJTEaVySctoSv+hCzrSmVwOvZhPv/TuE=;
+	b=qfBUSdo4Dz9Uw9vvrnfXEiR8x6mdnbYmZrk9lrkmX2SP64Upz/F0v7lDUIXmYw8iIU1xDB
+	D91wi1m732D3ooBw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5A40313722;
+	Thu,  4 Jan 2024 08:53:36 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 0BSLFBBylmUmVgAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Thu, 04 Jan 2024 08:53:36 +0000
+Date: Thu, 04 Jan 2024 09:53:35 +0100
+Message-ID: <87il49a38w.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Siddhesh Dharme <siddheshdharme18@gmail.com>
+Cc: perex@perex.cz,
+	tiwai@suse.com,
+	alsa-devel@alsa-project.org,
+	linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ALSA: hda/realtek: Fix mute and mic-mute LEDs for HP
+ ProBook 440 G6
+In-Reply-To: <20240104060736.5149-1-siddheshdharme18@gmail.com>
+References: <20240104060736.5149-1-siddheshdharme18@gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=xwZGXUtR;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=qfBUSdo4
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.46 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 RCPT_COUNT_FIVE(0.00)[6];
+	 DWL_DNSWL_LOW(-1.00)[suse.de:dkim];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.de:+];
+	 MX_GOOD(-0.01)[];
+	 MID_CONTAINS_FROM(1.00)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
+	 FREEMAIL_TO(0.00)[gmail.com];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-2.95)[99.77%]
+X-Rspamd-Queue-Id: 910DE21E73
+Message-ID-Hash: OG2OHESA6E7UDHWEZXYAAM6IYSIN2GV3
+X-Message-ID-Hash: OG2OHESA6E7UDHWEZXYAAM6IYSIN2GV3
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -106,7 +162,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ER3DQFHMANG4DJ2IFCL7TY3EGQGK4LGM/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OG2OHESA6E7UDHWEZXYAAM6IYSIN2GV3/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -115,65 +171,16 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Wed, Jan 03, 2024 at 03:54:29PM +0000, Mark Hills wrote:
-> The ScratchAmp worked perfectly with a quirk, but now that seems to have 
-> regressed and the device is no longer detected [1].
+On Thu, 04 Jan 2024 07:07:36 +0100,
+Siddhesh Dharme wrote:
 > 
-> It's design is from 2002, based on class-compliant (Philips UDA1325H) 
-> chips. It hides itself behind a 'vendor specific' description, presumably 
-> as it was launched in a closed system with specific hardware and software 
-> for DJ'ing.
+> LEDs in 'HP ProBook 440 G6' laptop are controlled by ALC236 codec.
+> Enable already existing quirk 'ALC236_FIXUP_HP_MUTE_LED_MICMUTE_VREF'
+> to fix mute and mic-mute LEDs.
+> 
+> Signed-off-by: Siddhesh Dharme <siddheshdharme18@gmail.com>
 
-Hi Mark, great fan of your work with xwax here.
+Applied now.  Thanks.
 
-Perhaps adding USB_DEVICE_VENDOR_SPEC(0x103d, 0x0100) and
-USB_DEVICE_VENDOR_SPEC(0x103d, 0x0101) to quirks-table.h can do the
-trick?
 
-Regards,
-Geraldo Nascimento
-
-> 
-> So this quirk was introduced in 2007:
-> 
-> +/* Stanton/N2IT Final Scratch v1 device ('Scratchamp') */
-> +{
-> +	USB_DEVICE(0x103d, 0x0100),
-> +		.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
-> +		.vendor_name = "Stanton",
-> +		.product_name = "ScratchAmp",
-> +		.ifnum = QUIRK_NO_INTERFACE
-> +	}
-> +},
-> +{
-> +	USB_DEVICE(0x103d, 0x0101),
-> +		.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
-> +		.vendor_name = "Stanton",
-> +		.product_name = "ScratchAmp",
-> +		.ifnum = QUIRK_NO_INTERFACE
-> +	}
-> +},
-> 
-> In a modern kernel, the (ineffective) quirk is now in sound/usb/card.c:
-> 
-> +	/* Stanton/N2IT Final Scratch v1 device ('Scratchamp') */
-> +	DEVICE_NAME(0x103d, 0x0100, "Stanton", "ScratchAmp"),
-> +	DEVICE_NAME(0x103d, 0x0101, "Stanton", "ScratchAmp"),
-> 
-> Is there a functional difference between these quirks and/or any reason 
-> the device would no longer be detected?
-> 
-> I noted the commits went via use of QUIRK_RENAME_DEVICE(), perhaps 
-> misleading the refactoring to assume the quirk was purely a rename.
-> 
-> Below is an "lsusb" of the device, dated from 2008; I don't currently have 
-> access to my own device, or know exactly when this regressed.
-> 
-> Many thanks
-> 
-> [1] https://sourceforge.net/p/xwax/mailman/message/48496984/
-> [2] http://www.pogo.org.uk/~mark/linuxdj/scratchamp.html
-> [3] https://finalscratch.sourceforge.net/innards/
-> 
-> -- 
-> Mark
+Takashi
