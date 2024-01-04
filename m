@@ -4,78 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 87E26C47074
-	for <alsa-devel@archiver.kernel.org>; Thu,  4 Jan 2024 17:22:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CDC43C47074
+	for <alsa-devel@archiver.kernel.org>; Thu,  4 Jan 2024 17:24:02 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D739FE8C;
-	Thu,  4 Jan 2024 18:22:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D739FE8C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 66D45E93;
+	Thu,  4 Jan 2024 18:23:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 66D45E93
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1704388974;
-	bh=zTbm8vqIgREP9xUh5RR/d7xMKSNXbjKCjPWbk6W/NSU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1704389040;
+	bh=AgNpe/rQhXH4s/zrVu4O6NOZqlKS54MKFZBPb9+vKyQ=;
+	h=Date:To:Cc:References:From:Subject:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=BoSffibhlPN9D75rfaUgkDe/wcx9m5pGS3RaQMrwt9cLmi2JqdNTlMedEHo/6axw6
-	 Ha3njPdlXizFQ2dN+JUQnaPHkF/vpz6s4bWrtbNbcgSQIQ5YHAwoEABqtn3LiiaHrj
-	 5HUmlwhqmTzfTOfnN3tswdeSO3EO2VYuh0iczSP8=
+	b=L5RDMQwxC4Aeo50R5gBbDBSMNOd+boclqbhuj6q3Sgof5cmZfFmX+h371H6EKlZiE
+	 UVY/YfZ3+4EmUtsjnfLZZwAQVFsPuCM6qR5ng7zewPU9ZK4DwHfjOQn2pG0zK4459Y
+	 +YrsK98l+jbRxbsdsKlz8nI6QK9nhfbdU6F1Pff4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 32A63F804B2; Thu,  4 Jan 2024 18:22:30 +0100 (CET)
+	id B34E3F805A8; Thu,  4 Jan 2024 18:23:29 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D3219F805A8;
-	Thu,  4 Jan 2024 18:22:29 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0DD9CF8058C;
+	Thu,  4 Jan 2024 18:23:29 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 085DDF804B0; Thu,  4 Jan 2024 18:22:25 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id D77C9F80238; Thu,  4 Jan 2024 18:23:24 +0100 (CET)
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 65E59F80086
-	for <alsa-devel@alsa-project.org>; Thu,  4 Jan 2024 18:22:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 65E59F80086
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6D8B2F80086
+	for <alsa-devel@alsa-project.org>; Thu,  4 Jan 2024 18:23:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6D8B2F80086
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=fix3L17+
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 04B59618C9;
-	Thu,  4 Jan 2024 17:22:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7BD6C433C7;
-	Thu,  4 Jan 2024 17:22:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704388939;
-	bh=zTbm8vqIgREP9xUh5RR/d7xMKSNXbjKCjPWbk6W/NSU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=fix3L17+M3Q9NTGotqRuLRCFkkzimgaIIPzqhnOysfC0vb86AaR/2SIAYkhw4qYfe
-	 u9OsO5rMLFgKGh8ajLxdFx+hl8dml4XKW1LznKISvr9IsRdVym9I8OeogDU7cy5bJN
-	 C8aozsYBnM9o2ez8TkSAfWG+xZYoICoAgNuZbgFeKrFgcD10a30kHKy7dJ1h7wf3az
-	 Cnf+4oiPbOS2J15dDrxKA1S0IzRuo+G1jrM4mqSdf4j3eE/LJxv2/lEwVUmWuKqswG
-	 cWBNfmW3M6ca5GQ2KjZPhLfPxfwst9xa6dGWShhroL27OxwUFmSYBUjoALUDd3/ZP6
-	 Tkm/xWnDrxOyQ==
-Date: Thu, 4 Jan 2024 17:22:14 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Thierry Reding <thierry.reding@gmail.com>
-Cc: Sameer Pujar <spujar@nvidia.com>, alsa-devel@alsa-project.org,
-	Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-	devicetree@vger.kernel.org, robh+dt@kernel.org,
-	Jon Hunter <jonathanh@nvidia.com>, linux-tegra@vger.kernel.org
-Subject: Re: Query on audio-graph-card DT binding
-Message-ID: <42c0c4fa-585e-4194-bbe4-e0377c87e632@sirena.org.uk>
-References: <dfe363ef-4638-4b5e-8308-73e286ac0b50@nvidia.com>
- <ZZblyhfzQjzyoUc_@orome.fritz.box>
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=T71KDnvS
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704389000; x=1735925000;
+  h=message-id:date:mime-version:to:cc:references:from:
+   subject:in-reply-to:content-transfer-encoding;
+  bh=AgNpe/rQhXH4s/zrVu4O6NOZqlKS54MKFZBPb9+vKyQ=;
+  b=T71KDnvS6MESa0RTAPia2GifuiATEgmTOaic+Sehzws1jTpqcyEqof6s
+   f184LDQ0jyn+p2Pnb71hmk21HWhuisPLpUcuxYo1XsGHQNgYqHs7NywEK
+   LmHyuQOMWD06YOWSO3TpmedgqOdMcrfS+6v0n39/rwnGMC0UPF1Zjq8Ud
+   iscxJzFLk2EHgBFcjIK30Z63EHWShX5mi0MZeroq5nlOuJZltFdIXlvFs
+   YwtPlFoLTqRY81381bZx5VVl/nKWYwdX76OMWyHE9/kaj36eOSlr/TQds
+   ne/tILtrCTIsoqgWOkupIYuqErd0cbnS7TsLwBtLxs4T52D19LsCmx1FW
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10943"; a="15895925"
+X-IronPort-AV: E=Sophos;i="6.04,331,1695711600";
+   d="scan'208";a="15895925"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 04 Jan 2024 06:47:01 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10943"; a="773536659"
+X-IronPort-AV: E=Sophos;i="6.04,330,1695711600";
+   d="scan'208";a="773536659"
+Received: from mattu-haswell.fi.intel.com (HELO [10.237.72.199])
+ ([10.237.72.199])
+  by orsmga007.jf.intel.com with ESMTP; 04 Jan 2024 06:46:52 -0800
+Message-ID: <734591a1-50b4-6dc7-0b93-077355ec12e4@linux.intel.com>
+Date: Thu, 4 Jan 2024 16:48:19 +0200
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="qsCYEYAbIVCe8tbR"
-Content-Disposition: inline
-In-Reply-To: <ZZblyhfzQjzyoUc_@orome.fritz.box>
-X-Cookie: Q:	Are we not men?
-Message-ID-Hash: OCPBDJBGKMXPVS2BRI2ASWNF6IYG2JJT
-X-Message-ID-Hash: OCPBDJBGKMXPVS2BRI2ASWNF6IYG2JJT
-X-MailFrom: broonie@kernel.org
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.13.0
+Content-Language: en-US
+To: Wesley Cheng <quic_wcheng@quicinc.com>, srinivas.kandagatla@linaro.org,
+ mathias.nyman@intel.com, perex@perex.cz, conor+dt@kernel.org,
+ corbet@lwn.net, gregkh@linuxfoundation.org, lgirdwood@gmail.com,
+ andersson@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ konrad.dybcio@linaro.org, Thinh.Nguyen@synopsys.com, broonie@kernel.org,
+ bgoswami@quicinc.com, tiwai@suse.com, robh+dt@kernel.org, agross@kernel.org
+Cc: linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-sound@vger.kernel.org, linux-usb@vger.kernel.org,
+ linux-arm-msm@vger.kernel.org, linux-doc@vger.kernel.org,
+ alsa-devel@alsa-project.org
+References: <20240102214549.22498-1-quic_wcheng@quicinc.com>
+ <20240102214549.22498-5-quic_wcheng@quicinc.com>
+From: Mathias Nyman <mathias.nyman@linux.intel.com>
+Subject: Re: [PATCH v12 04/41] usb: host: xhci-mem: Cleanup pending secondary
+ event ring events
+In-Reply-To: <20240102214549.22498-5-quic_wcheng@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: VLHTE4IZ6TCNH43ZOT2XE2AAD6ZSTB2O
+X-Message-ID-Hash: VLHTE4IZ6TCNH43ZOT2XE2AAD6ZSTB2O
+X-MailFrom: mathias.nyman@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -87,55 +102,74 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OCPBDJBGKMXPVS2BRI2ASWNF6IYG2JJT/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VLHTE4IZ6TCNH43ZOT2XE2AAD6ZSTB2O/>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+On 2.1.2024 23.45, Wesley Cheng wrote:
+> As part of xHCI bus suspend, the XHCI is halted.  However, if there are
+> pending events in the secondary event ring, it is observed that the xHCI
+> controller stops responding to further commands upon host or device
+> initiated bus resume.  Iterate through all pending events and update the
+> dequeue pointer to the beginning of the event ring.
+> 
+> Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
+...
+> +/*
+> + * Move the event ring dequeue pointer to skip events kept in the secondary
+> + * event ring.  This is used to ensure that pending events in the ring are
+> + * acknowledged, so the XHCI HCD can properly enter suspend/resume.  The
+> + * secondary ring is typically maintained by an external component.
+> + */
+> +void xhci_skip_sec_intr_events(struct xhci_hcd *xhci,
+> +	struct xhci_ring *ring,	struct xhci_interrupter *ir)
+> +{
+> +	union xhci_trb *erdp_trb, *current_trb;
+> +	u64 erdp_reg;
+> +	u32 iman_reg;
+> +	dma_addr_t deq;
+> +
+> +	/* disable irq, ack pending interrupt and ack all pending events */
+> +	xhci_disable_interrupter(ir);
+> +	iman_reg = readl_relaxed(&ir->ir_set->irq_pending);
+> +	if (iman_reg & IMAN_IP)
+> +		writel_relaxed(iman_reg, &ir->ir_set->irq_pending);
+> +
+> +	/* last acked event trb is in erdp reg  */
+> +	erdp_reg = xhci_read_64(xhci, &ir->ir_set->erst_dequeue);
+> +	deq = (dma_addr_t)(erdp_reg & ERST_PTR_MASK);
+> +	if (!deq) {
+> +		xhci_err(xhci, "event ring handling not required\n");
+> +		return;
+> +	}
+> +
+> +	erdp_trb = current_trb = ir->event_ring->dequeue;
+> +	/* read cycle state of the last acked trb to find out CCS */
+> +	ring->cycle_state = le32_to_cpu(current_trb->event_cmd.flags) & TRB_CYCLE;
+> +
+> +	while (1) {
+> +		inc_deq(xhci, ir->event_ring);
+> +		erdp_trb = ir->event_ring->dequeue;
+> +		/* cycle state transition */
+> +		if ((le32_to_cpu(erdp_trb->event_cmd.flags) & TRB_CYCLE) !=
+> +		    ring->cycle_state)
+> +			break;
+> +	}
+> +
+> +	xhci_update_erst_dequeue(xhci, ir, current_trb, true);
+> +}
 
---qsCYEYAbIVCe8tbR
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Code above is very similar to the existing event ring processing parts of xhci_irq()
+and xhci_handle_event()
 
-On Thu, Jan 04, 2024 at 06:07:22PM +0100, Thierry Reding wrote:
-> On Tue, Dec 26, 2023 at 09:58:02PM +0530, Sameer Pujar wrote:
+I'll see if I can refactor the existing event ring processing, decouple it from
+event handling so that it could be used by primary and secondary interrupters with
+handlers, and this case where we just want to clear the event ring.
 
-> > =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 /-----> codec1 endpoint
-> > =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 /
-> > CPU endpoint \
-> > =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 \-----> codec2 endpoint
+Thanks
+Mathias
 
-> Can you describe the use-case? Is there a need to switch between codec1
-> and codec2 endpoints or do they receive the same data in parallel all
-> the time?
-
-> Could this perhaps be described by adding multiple CPU ports with one
-> endpoint each?
-
-Don't know about the specific use case that Sameer is looking at but to
-me this looks like a surround sound setup where multiple stereo (or
-mono) DACs are wired in parallel, either with a TDM setup or with
-multiple data lines.  There's multiple CODECs all taking input from a
-single host controller.
-
---qsCYEYAbIVCe8tbR
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmWW6UYACgkQJNaLcl1U
-h9BvSAf/fR1ssQ4GinXH1HRespMqPWRE4tXIuKIpgLNB3VLe4jio3IDHRoDmJrZ9
-L+farGwkmen3ti02C692QzdHaRDKsPeCDjzWBEihR685UkOO5u2053eiwTwwhjRW
-KtBfH7pgKiZbbQnfGwOfgzztNtW+btyQ3XeLA1sXs0y0TIzi0VgGiAihohMJ7x/5
-oU2zKrqeLn7haSIzKiwU44AMssq6Nn4DVMjgLynTdlbb4xGyKFzyeI3tCgl16hTJ
-bwEWxcDmHxSL9yIirvUZTM4JzuY7CuNy7JTW680vWAZx1WrqzpTXAY0jiVje7akJ
-N93tflyKEj/dKxpUJIZjCNZaIHIJgA==
-=cAAN
------END PGP SIGNATURE-----
-
---qsCYEYAbIVCe8tbR--
