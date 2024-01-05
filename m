@@ -4,94 +4,113 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EF2FBC3DA6E
-	for <alsa-devel@archiver.kernel.org>; Fri,  5 Jan 2024 14:34:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 43E24C3DA6E
+	for <alsa-devel@archiver.kernel.org>; Fri,  5 Jan 2024 16:00:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E96BFE97;
-	Fri,  5 Jan 2024 15:34:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E96BFE97
+	by alsa0.perex.cz (Postfix) with ESMTPS id C7B9FE91;
+	Fri,  5 Jan 2024 17:00:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C7B9FE91
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1704465262;
-	bh=PgXaKGN8DqZgvzqxm7EM/leplkV3k/W5tK0CswY8nxw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=XMY4IMJdtDrlfy2h0ZRV4YrwirvHU/IyxhJKpLd+pybWelJuBy6tAp0Xur8ZbWs19
-	 itSeX147xsSEVWrGlish38flN/gAvNg3O/iQxBmWcuE3edk7kr6D+vbuXL03zECvKw
-	 ass6CBO2srdRc3MBF7uMEkkvkOjus2ETVXGU78vM=
+	s=default; t=1704470412;
+	bh=4DTqm92eIMpZxY2Ov5Fyz7puPbQQgRR1Zr7Bytv1RN0=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=OE2kgaLRFVGN4R2MfGqs9KhH2pUdIFd76HzamO66iWNT6IbxtsT9IUZU71w3PKruz
+	 REkYeSnWFnNRs6UeYFNTdgJiPT3qh9FX+W8F0NQqzsQyFVeIARYMbjot54jhbnxFUA
+	 TA2unVTf5q0FO6GZhb6JiHYWLL5sMTR1DNc8FHQM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E4920F8057C; Fri,  5 Jan 2024 15:33:50 +0100 (CET)
+	id 9253FF8057C; Fri,  5 Jan 2024 16:59:40 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3A457F805A0;
-	Fri,  5 Jan 2024 15:33:50 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CBE0AF8055C;
+	Fri,  5 Jan 2024 16:59:39 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 63391F804CC; Fri,  5 Jan 2024 15:33:44 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	id 2DF9EF804F1; Fri,  5 Jan 2024 16:59:34 +0100 (CET)
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com
+ [IPv6:2a00:1450:4864:20::335])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id AB58FF80496
-	for <alsa-devel@alsa-project.org>; Fri,  5 Jan 2024 15:33:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AB58FF80496
+	by alsa1.perex.cz (Postfix) with ESMTPS id 438B2F8011B
+	for <alsa-devel@alsa-project.org>; Fri,  5 Jan 2024 16:59:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 438B2F8011B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=eutmiK8m
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 7F34161B2D;
-	Fri,  5 Jan 2024 14:33:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 435F0C433C8;
-	Fri,  5 Jan 2024 14:33:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704465208;
-	bh=PgXaKGN8DqZgvzqxm7EM/leplkV3k/W5tK0CswY8nxw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=eutmiK8mS7otKfg6XPGuMelGNRsbSuK9AVVvVKyRcSMEKSCGJCcM3oI0VFgUuBExW
-	 3lSEarA0liHmqyg1YBMLz6mDQJ1U8t1uKiVqFSPhB0unRzFwwAfoRw4EPEMSxkYEU+
-	 Z/0d0A6E6W4PNk+kVaGpZ2/FT4ZNrWs5bTR0be8EpZA8PZIdmN//fPUZffx/IZlvWR
-	 qSpmzpE6JcSmia1EWxAXjf9BVhKkp2AjRsMOPpi4f6a+Asuw14u2q+2uA+lgvK4gtu
-	 9rry/bIyj+eKO2dpcVWYjXm0tNIheQvePJQeGGrGWb9aOgJ1+bhVpNKFwgsRweBLb2
-	 iA8pe9otNIa3w==
-Date: Fri, 5 Jan 2024 14:33:21 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Sean Anderson <sean.anderson@seco.com>,
+ unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
+ header.s=google header.b=yGA/c7oM
+Received: by mail-wm1-x335.google.com with SMTP id
+ 5b1f17b1804b1-40d8909a6feso18149695e9.2
+        for <alsa-devel@alsa-project.org>;
+ Fri, 05 Jan 2024 07:59:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1704470363; x=1705075163;
+ darn=alsa-project.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ojBQKqXKo4lu+tyGs931tVbnWS1sxtV4aoVa4f902n4=;
+        b=yGA/c7oM5ZW8+zh9f0ukXLA+Gjriu3tg5NKE4EMqFYVz0AIHguXPGLBnLiIeXSIi76
+         BgtQ3yc3n6P0+9w1nhYh49BRxjqkgehe9yOWclZFPnUvR8Lj3Hvs8AacApn3+cr2HAPS
+         fsX/H6ByM+nbgZIYuErL5SB/AjMjCe5ihIZnYSJLIjbLoHVapXb61i3neF4rCM6MccS9
+         1YGzHBYxnwAdGudFGwc5AAqURcG/fUMFaaRBQuwDyOwJkZbg3Lh7FfOpVQeoDV3zsor6
+         hwDznax9VTOZk/6NEUZX7iBYXZ+BgUB84CwW7XSPrE+t5D43HffJCW3KguASruyfYVtj
+         Fxvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704470363; x=1705075163;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ojBQKqXKo4lu+tyGs931tVbnWS1sxtV4aoVa4f902n4=;
+        b=f7hy6QChFLWmoHHEEPlGjRlGbbLseQ/b8NGHCyfA/P8BmizhoLMyY+yEYTqKLJiQYf
+         5Rx/VK+xVdG5ZvmgtZzxO3l5ikQvNCvWNegn/tCOHH3YfZBdY/mwDMX48xh3DSmdF6z3
+         /YbomRT4JyaKN4k80ebkEsiOL2F70owiRoTbeWJqJ++3MllIPCcY8SJwjDaedpouePmp
+         NTyZPhLJs+E8r6GdSo1TSK09z50o/XzxIWrOI42XRwy8RYwYY4uZjnwhai9THzpepXZr
+         aaLs8a0Ilr43G8rXuJ1eAoVe4Noc64ahFwUumOV37tEqWCXPjw7uq0rUi72w2ST7mwsd
+         fHzg==
+X-Gm-Message-State: AOJu0Yx7ovKO94jNyTB0L49kmY9IKIJFeLLhbUBtsvhTc2+KwAwODhdc
+	MJrotAS8eV673AU9WK38kcWQBkqUDzL8NQ==
+X-Google-Smtp-Source: 
+ AGHT+IGwV4OwKKATavp8Q64GytM17HdFfAv5ZKYAelGrsoZCfrrWxmUv3Kzk+4KdvDrMFQQkbNmewA==
+X-Received: by 2002:a05:600c:45c7:b0:40d:5f86:cef4 with SMTP id
+ s7-20020a05600c45c700b0040d5f86cef4mr875290wmo.235.1704470363063;
+        Fri, 05 Jan 2024 07:59:23 -0800 (PST)
+Received: from krzk-bin.. ([178.197.223.112])
+        by smtp.gmail.com with ESMTPSA id
+ su8-20020a17090703c800b00a29910a9366sm326024ejb.8.2024.01.05.07.59.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Jan 2024 07:59:22 -0800 (PST)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+	Banajit Goswami <bgoswami@quicinc.com>,
 	Bjorn Andersson <andersson@kernel.org>,
 	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-	Banajit Goswami <bgoswami@quicinc.com>,
 	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
 	Rob Herring <robh+dt@kernel.org>,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
 	Conor Dooley <conor+dt@kernel.org>,
 	Philipp Zabel <p.zabel@pengutronix.de>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-	linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
-	linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Bartosz Golaszewski <brgl@bgdev.pl>
-Subject: Re: [PATCH 2/4] reset: add GPIO-based reset controller
-Message-ID: <758c4fe3-1ea1-4a8c-bb6f-3a3df588da75@sirena.org.uk>
-References: <20231222150133.732662-1-krzysztof.kozlowski@linaro.org>
- <20231222150133.732662-3-krzysztof.kozlowski@linaro.org>
- <530e3473-eb3b-477c-8599-e7aa12779640@seco.com>
- <88bd6668-7e67-42c7-97b6-d7029f371349@linaro.org>
- <075990bb-5fdb-4d30-9484-9df6b978e805@seco.com>
- <fcbae47b-3b28-42f0-b93f-f83932025dc1@linaro.org>
- <2be19fbf-4c73-4594-be42-31587dc7b747@seco.com>
- <d2d17b94-6f29-423d-a7e0-e24513a8e59f@linaro.org>
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	alsa-devel@alsa-project.org,
+	linux-arm-msm@vger.kernel.org,
+	linux-sound@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Chris Packham <chris.packham@alliedtelesis.co.nz>,
+	Bartosz Golaszewski <brgl@bgdev.pl>,
+	Sean Anderson <sean.anderson@seco.com>
+Subject: [PATCH v2 0/4] reset: gpio: ASoC: shared GPIO resets
+Date: Fri,  5 Jan 2024 16:59:14 +0100
+Message-Id: <20240105155918.279657-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="vImSMy+icUlzjZXl"
-Content-Disposition: inline
-In-Reply-To: <d2d17b94-6f29-423d-a7e0-e24513a8e59f@linaro.org>
-X-Cookie: Your step will soil many countries.
-Message-ID-Hash: 7TVKABBVTHHTZLDZKNAXBGR6LFY76YG6
-X-Message-ID-Hash: 7TVKABBVTHHTZLDZKNAXBGR6LFY76YG6
-X-MailFrom: broonie@kernel.org
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: H3ESPKTYJBPR72SMKMS2TIUHMIXVMUKI
+X-Message-ID-Hash: H3ESPKTYJBPR72SMKMS2TIUHMIXVMUKI
+X-MailFrom: krzysztof.kozlowski@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -103,58 +122,75 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7TVKABBVTHHTZLDZKNAXBGR6LFY76YG6/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/H3ESPKTYJBPR72SMKMS2TIUHMIXVMUKI/>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+Hi,
 
---vImSMy+icUlzjZXl
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Changes in v2
+=============
+1. wsa884x.c: add missing return in wsa884x_get_reset(), correct comment.
+2. qcom,wsa8840.yaml: fix oneOf syntax.
+3. reset/core.c:
+   - Revise approach based on Bartosz comments: parse the reset-gpios phandle
+     with arguments, do not use deprecated API and do not rely on gpio_desc
+     pointer.
+   - Create a list of instantiated platform devices to avoid any duplicates.
+   - After creating reset-gpio platform device, try to get new reset controller
+     or return EPROBE_DEFER.
+   - Drop the "cookie" member and add new "of_args" to "struct
+     reset_controller_dev".
+4. reset-gpio.c:
+   - Fix smatch warning on platdata evaluation.
+   - Parse GPIO args and store them in rc.of_args.
 
-On Thu, Jan 04, 2024 at 08:08:50PM +0100, Krzysztof Kozlowski wrote:
-> On 04/01/2024 17:30, Sean Anderson wrote:
+Description
+===========
 
-> > device post-assert delay post-deassert delay
-> > ====== ================= ===================
-> > A                  500us                 1ms
-> > B                    1ms               300us
+We have at least few cases where hardware engineers decided to use one
+powerdown/shutdown/reset GPIO line for multiple devices:
 
-...
+1. WSA884x (this and previous patch):
+https://lore.kernel.org/all/b7aeda24-d638-45b7-8e30-80d287f498f8@sirena.org.uk/
+2. https://lore.kernel.org/all/20231027033104.1348921-1-chris.packham@alliedtelesis.co.nz/
+3. https://lore.kernel.org/lkml/20191030120440.3699-1-peter.ujfalusi@ti.com/
+4. https://lore.kernel.org/all/20211018234923.1769028-1-sean.anderson@seco.com/
+5. https://social.treehouse.systems/@marcan/111268780311634160
 
-> Now, if we are back to realistic cases - use just the longest reset time.
+I try to solve my case, hopefuly Chris' (2), partially Sean's (4) and maybe
+Hectors (5), using Rob's suggestion:
 
-Isn't the main concern here that when one device probes we don't yet
-know the times for the other devices?
+https://lore.kernel.org/all/YXi5CUCEi7YmNxXM@robh.at.kernel.org/
 
-> > If we leave things up to the drivers, then whoever probes first will get
-> > to decide the reset sequence.
+Best regards,
+Krzysztof
 
-> In current design yes, but it's not a problem to change it. Where is the
-> limitation? Just read other values and update the reset time.
+Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>
+Cc: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Sean Anderson <sean.anderson@seco.com>
 
-We might have already done a reset by that time and earlier devices
-might prevent later devices from resetting again.  It shouldn't be such
-an issue for the post delay, but might be one for the pre delay.
+Krzysztof Kozlowski (4):
+  reset: gpio: Add GPIO-based reset controller
+  reset: Instantiate reset GPIO controller for shared reset-gpios
+  ASoC: dt-bindings: qcom,wsa8840: Add reset-gpios for shared line
+  ASoC: codecs: wsa884x: Allow sharing reset GPIO
 
---vImSMy+icUlzjZXl
-Content-Type: application/pgp-signature; name="signature.asc"
+ .../bindings/sound/qcom,wsa8840.yaml          |  11 +-
+ MAINTAINERS                                   |   5 +
+ drivers/reset/Kconfig                         |   9 +
+ drivers/reset/Makefile                        |   1 +
+ drivers/reset/core.c                          | 176 ++++++++++++++++--
+ drivers/reset/reset-gpio.c                    | 121 ++++++++++++
+ include/linux/reset-controller.h              |   4 +
+ sound/soc/codecs/wsa884x.c                    |  53 +++++-
+ 8 files changed, 356 insertions(+), 24 deletions(-)
+ create mode 100644 drivers/reset/reset-gpio.c
 
------BEGIN PGP SIGNATURE-----
+-- 
+2.34.1
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmWYEzAACgkQJNaLcl1U
-h9AUFQf8DiBunWd33PprmdlKCI899IHnZ7UxbOoI6wrUZN2Sv3Eo8tBt+XXsK2ZV
-h61S9/tKulQcEi1z6NLrCKslrceGCewQP3dzTMmas5F14hBDSXE4WEfCrHpcLgtZ
-r6eqUUCKIQSDhBDodrHOPSHFxvizmJqcGoFNlj+UUF6U0Mqxo1S3DY3Q4/6edGqj
-p35k9Tud8KLEQJ4By0206b90rthRaUicLXQXuEqRYrrkLWQsKLIjjnZSZmrOogEb
-OmGTeyk5lY67DXPrhGxYnHI0R+XiaDK4SJm07EfQmJoBfD0ShMgMicPBXod/kkG1
-UUYU+vv8YIrLd/0AWrfdWORkiyteAA==
-=xDYl
------END PGP SIGNATURE-----
-
---vImSMy+icUlzjZXl--
