@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5A6CDC47079
-	for <alsa-devel@archiver.kernel.org>; Fri,  5 Jan 2024 13:07:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BCF0FC47079
+	for <alsa-devel@archiver.kernel.org>; Fri,  5 Jan 2024 13:07:50 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 32466EC0;
-	Fri,  5 Jan 2024 14:07:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 32466EC0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 110D8EC0;
+	Fri,  5 Jan 2024 14:07:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 110D8EC0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1704460054;
-	bh=epuZhuRi0i0lbKV/sqCWoG0n/m1tuxNifQOWhLHZfnw=;
+	s=default; t=1704460069;
+	bh=B50pv5d8ZZKWXoopRey6mTHccRzQz9EZy2FPQnz5ZW4=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=gXqU10Tih9y4JMEf93aRpFYMnRd04Bklz2/3viUaelNFPXuwquJy3VRcQJkjI+I/i
-	 HbX+mNR+sAKenikOOOUftXPmqSFK6wyn5UJgJPD+Cem74mfN5RNOlkEIaufuh2QXW6
-	 9q2MuAU1azEkfGdfZPWx++XbOg3zn0eM/LXp34XQ=
+	b=b62v2CTg7mxHNd/ZNsHs+gmKyuBCK+BmQBt4/2fGavM6HfQu73N7DVYH8/1Sw/g/O
+	 fd51cRKBbLeWTx6MnP7FVk98sMRwTRgPiYas/pbYYyEaySlIcEfqifCHhTi51Xd+t0
+	 hMbYkogd0Wbyab5WUv+CTIdK9/2HNBvDmocUau5Y=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0C5F9F805D9; Fri,  5 Jan 2024 14:06:41 +0100 (CET)
+	id 77B8BF805E1; Fri,  5 Jan 2024 14:06:44 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0B589F805B6;
-	Fri,  5 Jan 2024 14:06:41 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 81462F805E1;
+	Fri,  5 Jan 2024 14:06:43 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6CB6AF805B6; Fri,  5 Jan 2024 14:05:54 +0100 (CET)
+	id 0DCE4F804F1; Fri,  5 Jan 2024 14:05:57 +0100 (CET)
 Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
  [185.132.182.106])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id AC17FF804B0
-	for <alsa-devel@alsa-project.org>; Fri,  5 Jan 2024 14:05:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AC17FF804B0
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6F47BF80578
+	for <alsa-devel@alsa-project.org>; Fri,  5 Jan 2024 14:05:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6F47BF80578
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=foss.st.com header.i=@foss.st.com header.a=rsa-sha256
- header.s=selector1 header.b=43IfoDba
+ header.s=selector1 header.b=7NPz5AHz
 Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
 	by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id
- 405A7MVW024555;
-	Fri, 5 Jan 2024 14:05:47 +0100
+ 405A5E0W024600;
+	Fri, 5 Jan 2024 14:05:50 +0100
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
 	:mime-version:content-transfer-encoding:content-type; s=
-	selector1; bh=Q+07reG+71QOLFZZRSa34Sf5YT3/ebDcFf8sV9X/n1M=; b=43
-	IfoDbaLeJd+yj+3sHSWbd8ExDdygvZQWI/eEWcmy+zUV5nB3cfzNZ2rx3sd8zyH/
-	4TyzQas5zKQmK9D47K5HYtwd6tkUAHyhhmSRlr8iawm1geWMOHExeV6kDMy19QH8
-	XAHfSG+p6xHW7EMpmUOdFeReHZP+d3p5PlXSGiU5tkwlnKGbz/rNmVJz8r4FE1sN
-	nYRa5LC0cga7RUKXpFc0iOfShjhakqxD/n2suQOnpJFxzYiT4JuYXvvvwvU7Cf8L
-	+zg1VArT0w72YKL5YEfz9Hsp4iH3mpDVlKV91sWCXLZJgYblHnWAFTrDohAMuxqR
-	EmFR7ZGBw/kTKVo5osQQ==
+	selector1; bh=BX9Ea+0NT8jzuu1PSshCC3cinphy71OrLcncKVsDu4o=; b=7N
+	Pz5AHzfI1stECBdFYMiQeSkFWk0WIbPxupgbIqkLqFCPWG9+xdHrCohxbXLFZUoF
+	/XcBR3u2RxHwcWl5ar6LuxCLQpG5nm6GVv50nkmqdIQbhMkR20tJb311D2azH4WK
+	5HOyVBN6Dxh3PhTYeeevUT4jZP8RZCi3r82eyDhTgnJt53JYTbHTMP2oqhvmjTwC
+	zI7uRlTh1QHczOoHwbkucfubFwmRP2Q63kmEXh6YEuoDCH56B715vzyXMjOvaeie
+	Pfdy/9yKSXFnsRqNwjires1eR7z+MD4m+BQXOCUFHUWuKzDVO8/9kQZtaisMm2/8
+	P4kzxICXNHDC6tZtHVzA==
 Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3ve9f525hg-1
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3ve9f525hm-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 05 Jan 2024 14:05:47 +0100 (CET)
+	Fri, 05 Jan 2024 14:05:50 +0100 (CET)
 Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id C1C8610002A;
-	Fri,  5 Jan 2024 14:05:46 +0100 (CET)
+	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 6F96C10002A;
+	Fri,  5 Jan 2024 14:05:48 +0100 (CET)
 Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id B4C6F229A94;
-	Fri,  5 Jan 2024 14:05:46 +0100 (CET)
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 619E4229A94;
+	Fri,  5 Jan 2024 14:05:48 +0100 (CET)
 Received: from localhost (10.201.20.32) by SHFDAG1NODE1.st.com (10.75.129.69)
  with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 5 Jan
- 2024 14:05:46 +0100
+ 2024 14:05:48 +0100
 From: Gatien Chevallier <gatien.chevallier@foss.st.com>
 To: <Oleksii_Moisieiev@epam.com>, <gregkh@linuxfoundation.org>,
         <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
@@ -94,9 +94,10 @@ CC: <linux-crypto@vger.kernel.org>, <devicetree@vger.kernel.org>,
         Gatien Chevallier
 	<gatien.chevallier@foss.st.com>,
         Rob Herring <robh@kernel.org>
-Subject: [PATCH v9 04/13] dt-bindings: bus: document ETZPC
-Date: Fri, 5 Jan 2024 14:03:55 +0100
-Message-ID: <20240105130404.301172-5-gatien.chevallier@foss.st.com>
+Subject: [PATCH v9 06/13] of: property: fw_devlink: Add support for
+ "access-controller"
+Date: Fri, 5 Jan 2024 14:03:57 +0100
+Message-ID: <20240105130404.301172-7-gatien.chevallier@foss.st.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240105130404.301172-1-gatien.chevallier@foss.st.com>
 References: <20240105130404.301172-1-gatien.chevallier@foss.st.com>
@@ -109,8 +110,8 @@ X-ClientProxiedBy: EQNCAS1NODE3.st.com (10.75.129.80) To SHFDAG1NODE1.st.com
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2024-01-05_06,2024-01-05_01,2023-05-22_02
-Message-ID-Hash: OD6WE2ZUT4ALETJRJGT4HMK2Q56WVFKS
-X-Message-ID-Hash: OD6WE2ZUT4ALETJRJGT4HMK2Q56WVFKS
+Message-ID-Hash: UASWGYYIUUJ4MW6Y6MD4OMKYBMU7GBTC
+X-Message-ID-Hash: UASWGYYIUUJ4MW6Y6MD4OMKYBMU7GBTC
 X-MailFrom: prvs=1734cf6afc=gatien.chevallier@foss.st.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -123,7 +124,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OD6WE2ZUT4ALETJRJGT4HMK2Q56WVFKS/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UASWGYYIUUJ4MW6Y6MD4OMKYBMU7GBTC/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -132,144 +133,46 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Document ETZPC (Extended TrustZone protection controller). ETZPC is a
-firewall controller.
+Allows tracking dependencies between devices and their access
+controller.
 
 Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
+Acked-by: Rob Herring <robh@kernel.org>
 ---
-
 Changes in V9:
-	- Added "simple-bus" to ETZPC's compatible list
-	- Added Rob's review tag
+    	- Added Rob's review tag
 
 Changes in V6:
     	- Renamed access-controller to access-controllers
-    	- Removal of access-control-provider property
-    	- Removal of access-controller and access-controller-names
-    	  declaration in the patternProperties field. Add
-    	  additionalProperties: true in this field.
 
 Changes in V5:
-	- Renamed feature-domain* to access-control*
+	- Rename feature-domain* to access-control*
 
-Changes in V2:
-	- Corrected errors highlighted by Rob's robot
-	- No longer define the maxItems for the "feature-domains"
-	  property
-	- Fix example (node name, status)
-	- Declare "feature-domain-names" as an optional
-	  property for child nodes
-	- Fix description of "feature-domains" property
-	- Reordered the properties so it matches ETZPC
-	- Add missing "feature-domain-controller" property
+Patch not present in V1
 
- .../bindings/bus/st,stm32-etzpc.yaml          | 96 +++++++++++++++++++
- 1 file changed, 96 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/bus/st,stm32-etzpc.yaml
+ drivers/of/property.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/bus/st,stm32-etzpc.yaml b/Documentation/devicetree/bindings/bus/st,stm32-etzpc.yaml
-new file mode 100644
-index 000000000000..d12b62a3a5a8
---- /dev/null
-+++ b/Documentation/devicetree/bindings/bus/st,stm32-etzpc.yaml
-@@ -0,0 +1,96 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/bus/st,stm32-etzpc.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: STM32 Extended TrustZone protection controller
-+
-+description: |
-+  The ETZPC configures TrustZone security in a SoC having bus masters and
-+  devices with programmable-security attributes (securable resources).
-+
-+maintainers:
-+  - Gatien Chevallier <gatien.chevallier@foss.st.com>
-+
-+select:
-+  properties:
-+    compatible:
-+      contains:
-+        const: st,stm32-etzpc
-+  required:
-+    - compatible
-+
-+properties:
-+  compatible:
-+    items:
-+      - const: st,stm32-etzpc
-+      - const: simple-bus
-+
-+  reg:
-+    maxItems: 1
-+
-+  "#address-cells":
-+    const: 1
-+
-+  "#size-cells":
-+    const: 1
-+
-+  ranges: true
-+
-+  "#access-controller-cells":
-+    const: 1
-+    description:
-+      Contains the firewall ID associated to the peripheral.
-+
-+patternProperties:
-+  "^.*@[0-9a-f]+$":
-+    description: Peripherals
-+    type: object
-+
-+    additionalProperties: true
-+
-+    required:
-+      - access-controllers
-+
-+required:
-+  - compatible
-+  - reg
-+  - "#address-cells"
-+  - "#size-cells"
-+  - "#access-controller-cells"
-+  - ranges
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    // In this example, the usart2 device refers to rifsc as its access
-+    // controller.
-+    // Access rights are verified before creating devices.
-+
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+    #include <dt-bindings/clock/stm32mp13-clks.h>
-+    #include <dt-bindings/reset/stm32mp13-resets.h>
-+
-+    etzpc: bus@5c007000 {
-+        compatible = "st,stm32-etzpc", "simple-bus";
-+        reg = <0x5c007000 0x400>;
-+        #address-cells = <1>;
-+        #size-cells = <1>;
-+        #access-controller-cells = <1>;
-+        ranges;
-+
-+        usart2: serial@4c001000 {
-+            compatible = "st,stm32h7-uart";
-+            reg = <0x4c001000 0x400>;
-+            interrupts-extended = <&exti 27 IRQ_TYPE_LEVEL_HIGH>;
-+            clocks = <&rcc USART2_K>;
-+            resets = <&rcc USART2_R>;
-+            wakeup-source;
-+            dmas = <&dmamux1 43 0x400 0x5>,
-+                    <&dmamux1 44 0x400 0x1>;
-+            dma-names = "rx", "tx";
-+            access-controllers = <&etzpc 17>;
-+        };
-+    };
+diff --git a/drivers/of/property.c b/drivers/of/property.c
+index afdaefbd03f6..7f737eac91b2 100644
+--- a/drivers/of/property.c
++++ b/drivers/of/property.c
+@@ -1268,6 +1268,7 @@ DEFINE_SIMPLE_PROP(leds, "leds", NULL)
+ DEFINE_SIMPLE_PROP(backlight, "backlight", NULL)
+ DEFINE_SIMPLE_PROP(panel, "panel", NULL)
+ DEFINE_SIMPLE_PROP(msi_parent, "msi-parent", "#msi-cells")
++DEFINE_SIMPLE_PROP(access_controllers, "access-controllers", "#access-controller-cells")
+ DEFINE_SUFFIX_PROP(regulators, "-supply", NULL)
+ DEFINE_SUFFIX_PROP(gpio, "-gpio", "#gpio-cells")
+ 
+@@ -1363,6 +1364,7 @@ static const struct supplier_bindings of_supplier_bindings[] = {
+ 	{ .parse_prop = parse_regulators, },
+ 	{ .parse_prop = parse_gpio, },
+ 	{ .parse_prop = parse_gpios, },
++	{ .parse_prop = parse_access_controllers, },
+ 	{}
+ };
+ 
 -- 
 2.35.3
 
