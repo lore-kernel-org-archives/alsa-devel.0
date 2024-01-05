@@ -4,129 +4,150 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4F0B8C47074
-	for <alsa-devel@archiver.kernel.org>; Sun,  7 Jan 2024 08:56:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 40F45C47073
+	for <alsa-devel@archiver.kernel.org>; Sun,  7 Jan 2024 08:56:58 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 699751497;
-	Sun,  7 Jan 2024 09:56:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 699751497
+	by alsa0.perex.cz (Postfix) with ESMTPS id 20B22150C;
+	Sun,  7 Jan 2024 09:56:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 20B22150C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1704617799;
-	bh=LLUnBf/CABKSxuDuAXo0ucSAj13/vS/B5J47iUC+7eo=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1704617816;
+	bh=YKQHga/6iO0pE/KChJXb5E90UcyAIMM6z/7ZHcYw7wU=;
+	h=Date:From:To:CC:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=JQ0MB63xokWjWcOCD+2jcGYeFioI/+06v7SUgj9XFTyR5PVbGj062fHHVk7VFJK2c
-	 5y3BMmi4t4mTeZaFHF2Yw4eGFf4cINCeX3FFYLj5pYxwir31z/UCkRTaUt1UdaOORE
-	 NUNgWMLVObDVuhHhl7lzo4zbiy2ueqPnRKDXdMIA=
+	b=kCahiLy103zt1nswlHsG1YPN5hxh5Qg5f88tw+osLYDQnaOhHPUI20d7zq36DB6g5
+	 uTN8EOCkVWT6SVkpKAgrLCxJMrWPk/CS7VmYaHOEIAZgxoZcF304g9Rz/N1WBQw5o1
+	 54ah2D1+9L5wZK/3+mehdSWgxR0F0G4TsWjnpOZo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BDD61F8068C; Sun,  7 Jan 2024 09:54:59 +0100 (CET)
+	id A1E3BF805BB; Sun,  7 Jan 2024 09:55:08 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 17734F80684;
-	Sun,  7 Jan 2024 09:54:59 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 98F8BF8055B;
+	Sun,  7 Jan 2024 09:55:08 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 94EF0F804CC; Fri,  5 Jan 2024 14:05:03 +0100 (CET)
-Received: from mx08-00178001.pphosted.com (mx08-00178001.pphosted.com
- [91.207.212.93])
+	id 0B8E8F804B0; Fri,  5 Jan 2024 15:04:52 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 420CCF80086
-	for <alsa-devel@alsa-project.org>; Fri,  5 Jan 2024 14:04:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 420CCF80086
+	by alsa1.perex.cz (Postfix) with ESMTPS id 3644AF80238
+	for <alsa-devel@alsa-project.org>; Fri,  5 Jan 2024 15:04:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3644AF80238
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=foss.st.com header.i=@foss.st.com header.a=rsa-sha256
- header.s=selector1 header.b=VpuhUfrx
-Received: from pps.filterd (m0369457.ppops.net [127.0.0.1])
-	by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id
- 405A2inw032007;
-	Fri, 5 Jan 2024 14:04:37 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	selector1; bh=f8yYjC7/bXFz3P4Kx664vSO5R+Y8zJivOeI8ipIFK/I=; b=Vp
-	uhUfrxXK21O27qztVZANQdYQw7aYYlWHd/ZUmdhmx5yPbfDR+PMDqV/tyQwN01zm
-	zMU3lO/Iqfcx4bIzvn2rStmJQesk3J+JghAxNF8SmgMyr2ERfu3nkDDn8FH9Clu7
-	fs8aWuDP3cyE+0IzrT7SfKcs8cs1I1ffET6cAisRr7rS9A2p3hj157OOzHCXMjvC
-	tb5u7qoWCZbBYU+Blj726Y3hnc/YrkKCObOqthud74ixFwFp9gJeb8+llPm75BQ2
-	yxKbuzaWfDcPivtGZkZEITZZZaW2qKO7ATZmH4zt+XubdKpBd6TJl3VCSJL3ugJ6
-	tbx+Z1O2yU2UdcHc9Y2w==
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3ve9eq25uk-1
+ unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
+ header.s=PODMain02222019 header.b=rF/0IQUd
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+	by mx0b-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id
+ 405CRxc9029289;
+	Fri, 5 Jan 2024 08:04:25 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+	date:from:to:cc:subject:message-id:references:mime-version
+	:content-type:in-reply-to; s=PODMain02222019; bh=NgK0ariODaAJM3u
+	rz57AUlxKnvsuFzT7i1lyaH/qe3g=; b=rF/0IQUdGm0Wd99Ij94Tkra47dqAYQz
+	UGL7T28kFbh9N5oq6IVFe4E6gU8n9KczZ7rnVg0BD/gWCalL+ihrEyh7A+ZumIHi
+	KKmgPlp7oFU3KQ05XhnvLZmWufI8fdzejd6SA6Hckobkld8GfsbPJJQYY9nyZMG1
+	nKMuZcsqdicAfddO5tyRM9C8hR0q4T9KTGRY1NItuS+OLq4MDibork6d+g9yWYqO
+	mppwJtpehHA5CtMtnzWZI0uqc6J0wNTq09hJtZTNLrNfj0DFksQN+7fMkrN0dgJh
+	ckfwTaMxidrgksrvgUc6Jq53quiiHuZC/qWBaMAoWe9JCp7k7evgU3Q==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3ve9d00n13-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 05 Jan 2024 14:04:37 +0100 (CET)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 34A99100038;
-	Fri,  5 Jan 2024 14:04:34 +0100 (CET)
-Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 24794229A8E;
-	Fri,  5 Jan 2024 14:04:34 +0100 (CET)
-Received: from localhost (10.201.20.32) by SHFDAG1NODE1.st.com (10.75.129.69)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 5 Jan
- 2024 14:04:33 +0100
-From: Gatien Chevallier <gatien.chevallier@foss.st.com>
-To: <Oleksii_Moisieiev@epam.com>, <gregkh@linuxfoundation.org>,
-        <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <alexandre.torgue@foss.st.com>,
-        <vkoul@kernel.org>, <jic23@kernel.org>, <olivier.moysan@foss.st.com>,
-        <arnaud.pouliquen@foss.st.com>, <mchehab@kernel.org>,
-        <fabrice.gasnier@foss.st.com>, <andi.shyti@kernel.org>,
-        <ulf.hansson@linaro.org>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>, <hugues.fruchet@foss.st.com>, <lee@kernel.org>,
-        <will@kernel.org>, <catalin.marinas@arm.com>, <arnd@kernel.org>,
-        <richardcochran@gmail.com>, Frank Rowand <frowand.list@gmail.com>,
-        <peng.fan@oss.nxp.com>, <lars@metafoo.de>, <rcsekar@samsung.com>,
-        <wg@grandegger.com>, <mkl@pengutronix.de>
-CC: <linux-crypto@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>,
-        <dmaengine@vger.kernel.org>, <linux-i2c@vger.kernel.org>,
-        <linux-iio@vger.kernel.org>, <alsa-devel@alsa-project.org>,
-        <linux-media@vger.kernel.org>, <linux-mmc@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <linux-phy@lists.infradead.org>,
-        <linux-serial@vger.kernel.org>, <linux-spi@vger.kernel.org>,
-        <linux-usb@vger.kernel.org>,
-        Oleksii Moisieiev <oleksii_moisieiev@epam.com>,
-        Gatien Chevallier <gatien.chevallier@foss.st.com>,
-        Rob Herring
-	<robh@kernel.org>
-Subject: [PATCH v9 01/13] dt-bindings: document generic access controllers
-Date: Fri, 5 Jan 2024 14:03:52 +0100
-Message-ID: <20240105130404.301172-2-gatien.chevallier@foss.st.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240105130404.301172-1-gatien.chevallier@foss.st.com>
-References: <20240105130404.301172-1-gatien.chevallier@foss.st.com>
+	Fri, 05 Jan 2024 08:04:24 -0600 (CST)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 5 Jan
+ 2024 14:04:23 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.40 via Frontend
+ Transport; Fri, 5 Jan 2024 14:04:08 +0000
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com
+ [198.61.86.93])
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 0008C468;
+	Fri,  5 Jan 2024 14:04:07 +0000 (UTC)
+Date: Fri, 5 Jan 2024 14:04:07 +0000
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+To: James Ogletree <jogletre@opensource.cirrus.com>
+CC: James Ogletree <james.ogletree@cirrus.com>,
+        Fred Treven
+	<fred.treven@cirrus.com>,
+        Ben Bright <ben.bright@cirrus.com>,
+        Dmitry Torokhov
+	<dmitry.torokhov@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        "Krzysztof
+ Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>,
+        Simon Trimmer <simont@opensource.cirrus.com>,
+        "Richard
+ Fitzgerald" <rf@opensource.cirrus.com>,
+        Lee Jones <lee@kernel.org>, "Liam
+ Girdwood" <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, "Jaroslav
+ Kysela" <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        James Schulman
+	<james.schulman@cirrus.com>,
+        David Rhodes <david.rhodes@cirrus.com>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        Jacky Bai
+	<ping.bai@nxp.com>, Jeff LaBundy <jeff@labundy.com>,
+        Peng Fan
+	<peng.fan@nxp.com>, Weidong Wang <wangweidong.a@awinic.com>,
+        Herve Codina
+	<herve.codina@bootlin.com>,
+        Arnd Bergmann <arnd@arndb.de>, Shenghao Ding
+	<13916275206@139.com>,
+        Ryan Lee <ryans.lee@analog.com>,
+        Linus Walleij
+	<linus.walleij@linaro.org>,
+        Maxim Kochetkov <fido_max@inbox.ru>,
+        Shuming Fan
+	<shumingf@realtek.com>,
+        "open list:CIRRUS LOGIC HAPTIC DRIVERS"
+	<patches@opensource.cirrus.com>,
+        "open list:INPUT (KEYBOARD, MOUSE, JOYSTICK,
+ TOUCHSCREEN)..." <linux-input@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND
+ FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>,
+        open list
+	<linux-kernel@vger.kernel.org>,
+        "open list:SOUND - SOC LAYER / DYNAMIC AUDIO
+ POWER MANAGEM..." <linux-sound@vger.kernel.org>,
+        "moderated list:CIRRUS LOGIC
+ AUDIO CODEC DRIVERS" <alsa-devel@alsa-project.org>
+Subject: Re: [PATCH v5 3/5] mfd: cs40l50: Add support for CS40L50 core driver
+Message-ID: <20240105140407.GG14858@ediswmail.ad.cirrus.com>
+References: <20240104223643.876292-1-jogletre@opensource.cirrus.com>
+ <20240104223643.876292-4-jogletre@opensource.cirrus.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.201.20.32]
-X-ClientProxiedBy: EQNCAS1NODE3.st.com (10.75.129.80) To SHFDAG1NODE1.st.com
- (10.75.129.69)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-05_06,2024-01-05_01,2023-05-22_02
-X-MailFrom: prvs=1734cf6afc=gatien.chevallier@foss.st.com
-X-Mailman-Rule-Hits: max-recipients
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20240104223643.876292-4-jogletre@opensource.cirrus.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-ORIG-GUID: pMkVg0owTryzh09Kt_vwlElCrMJXezxQ
+X-Proofpoint-GUID: pMkVg0owTryzh09Kt_vwlElCrMJXezxQ
+X-Proofpoint-Spam-Reason: safe
+X-MailFrom: prvs=873448ca47=ckeepax@opensource.cirrus.com
+X-Mailman-Rule-Hits: implicit-dest
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-size; news-moderation; no-subject; digests;
- suspicious-header
-Message-ID-Hash: 3ONIWV5EI2DRIYAQK3M3JUXRUNYMTYYN
-X-Message-ID-Hash: 3ONIWV5EI2DRIYAQK3M3JUXRUNYMTYYN
-X-Mailman-Approved-At: Sun, 07 Jan 2024 08:53:50 +0000
+ administrivia; max-recipients; max-size; news-moderation; no-subject;
+ digests; suspicious-header
+Message-ID-Hash: LRK4F4XHLN7SOUKEKZNGUZ66XQ2RAEWP
+X-Message-ID-Hash: LRK4F4XHLN7SOUKEKZNGUZ66XQ2RAEWP
+X-Mailman-Approved-At: Sun, 07 Jan 2024 08:53:59 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3ONIWV5EI2DRIYAQK3M3JUXRUNYMTYYN/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LRK4F4XHLN7SOUKEKZNGUZ66XQ2RAEWP/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -135,137 +156,369 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Oleksii Moisieiev <Oleksii_Moisieiev@epam.com>
+On Thu, Jan 04, 2024 at 10:36:36PM +0000, James Ogletree wrote:
+> Introduce support for Cirrus Logic Device CS40L50: a
+> haptic driver with waveform memory, integrated DSP,
+> and closed-loop algorithms.
+> 
+> The MFD component registers and initializes the device.
+> 
+> Signed-off-by: James Ogletree <jogletre@opensource.cirrus.com>
+> ---
+> +config MFD_CS40L50_CORE
+> +	tristate
+> +	select MFD_CORE
+> +	select FW_CS_DSP
+> +	select REGMAP_IRQ
+> +
+> +config MFD_CS40L50_I2C
+> +	tristate "Cirrus Logic CS40L50 (I2C)"
+> +	select REGMAP_I2C
+> +	select MFD_CS40L50_CORE
+> +	depends on I2C
+> +	help
+> +	  Select this to support the Cirrus Logic CS40L50 Haptic
+> +	  Driver over I2C.
+> +
+> +	  This driver can be built as a module. If built as a module it will be
+> +	  called "cs40l50-i2c".
+> +
+> +config MFD_CS40L50_SPI
+> +	tristate "Cirrus Logic CS40L50 (SPI)"
+> +	select REGMAP_SPI
+> +	select MFD_CS40L50_CORE
+> +	depends on SPI
+> +	help
+> +	  Select this to support the Cirrus Logic CS40L50 Haptic
+> +	  Driver over SPI.
+> +
+> +	  This driver can be built as a module. If built as a module it will be
+> +	  called "cs40l50-spi".
+> +
 
-Introducing of the generic access controllers bindings for the
-access controller provider and consumer devices. Those bindings are
-intended to allow a better handling of accesses to resources in a
-hardware architecture supporting several compartments.
+Generally the order in Kconfigs should be alphabetical, probably
+up around Cirrus Madera stuff would make most sense.
 
-This patch is based on [1]. It is integrated in this patchset as it
-provides a use-case for it.
+> +static int cs40l50_dsp_init(struct cs40l50 *cs40l50)
+> +{
+> +	int err;
+> +
+> +	cs40l50->dsp.num = 1;
+> +	cs40l50->dsp.type = WMFW_HALO;
+> +	cs40l50->dsp.dev = cs40l50->dev;
+> +	cs40l50->dsp.regmap = cs40l50->regmap;
+> +	cs40l50->dsp.base = CS40L50_CORE_BASE;
+> +	cs40l50->dsp.base_sysinfo = CS40L50_SYS_INFO_ID;
+> +	cs40l50->dsp.mem = cs40l50_dsp_regions;
+> +	cs40l50->dsp.num_mems = ARRAY_SIZE(cs40l50_dsp_regions);
+> +	cs40l50->dsp.no_core_startstop = true;
+> +
+> +	err = cs_dsp_halo_init(&cs40l50->dsp);
+> +	if (err)
+> +		return err;
+> +
+> +	return devm_add_action_or_reset(cs40l50->dev, cs40l50_dsp_remove,
+> +					&cs40l50->dsp);
 
-Diffs with [1]:
-	- Rename feature-domain* properties to access-control* to narrow
-	  down the scope of the binding
-	- YAML errors and typos corrected.
-	- Example updated
-	- Some rephrasing in the binding description
+Hmm... I notice you use this for both dsp_remove and
+dsp_power_down. Are you sure devm will guarantee those are called
+in the right order? Its not immediately clear to me that would be
+have to be the case.
 
-[1]: https://lore.kernel.org/lkml/0c0a82bb-18ae-d057-562b
+> +static irqreturn_t cs40l50_irq_handler(int irq, void *data)
+> +{
+> +	struct cs40l50 *cs40l50 = data;
+> +	int err;
+> +
+> +	mutex_lock(&cs40l50->lock);
+> +
+> +	if (irq == cs40l50_irqs[0].virq)
+> +		err = cs40l50_process_dsp_queue(cs40l50);
+> +	else
+> +		err = cs40l50_handle_hw_err(cs40l50, irq);
 
-Signed-off-by: Oleksii Moisieiev <oleksii_moisieiev@epam.com>
-Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
----
+Feels kinda weird to assign the same handler to every IRQ and
+then depending on which IRQ it was call a different function.
+Would it not be simpler just to assign a different handler?
 
-Changes in V9:
-	- Added Rob's review tag
+> +static int cs40l50_power_up_dsp(struct cs40l50 *cs40l50)
+> +{
+> +	int err;
+> +
+> +	mutex_lock(&cs40l50->lock);
+> +
+> +	if (cs40l50->patch) {
+> +		/* Stop core if loading patch file */
+> +		err = regmap_multi_reg_write(cs40l50->regmap, cs40l50_stop_core,
+> +					     ARRAY_SIZE(cs40l50_stop_core));
+> +		if (err)
+> +			goto err_mutex;
+> +	}
+> +
+> +	err = cs_dsp_power_up(&cs40l50->dsp, cs40l50->patch, "cs40l50.wmfw",
+> +			      cs40l50->bin, "cs40l50.bin", "cs40l50");
+> +	if (err)
+> +		goto err_mutex;
+> +
+> +	err = devm_add_action_or_reset(cs40l50->dev, cs40l50_dsp_power_down,
+> +				       &cs40l50->dsp);
+> +	if (err)
+> +		goto err_mutex;
+> +
+> +	if (cs40l50->patch) {
+> +		/* Resume core after loading patch file */
+> +		err = regmap_write(cs40l50->regmap, CS40L50_CCM_CORE_CONTROL,
+> +				   CS40L50_CLOCK_ENABLE);
 
-Changes in V6:
-	- Renamed access-controller to access-controllers
-	- Example updated
-	- Removal of access-control-provider property
+This feels like this needs a comment, why are we skipping the
+normal DSP init and doing it manually (this appears to be the
+same writes start_core would have done)? I assume its something to
+do with what you are really doing is you don't want lock_memory
+to run?
 
-Changes in V5:
-	- Diffs with [1]
-	- Discarded the [IGNORE] tag as the patch is now part of the
-	  patchset
+> +static int cs40l50_configure_dsp(struct cs40l50 *cs40l50)
+> +{
+> +	u32 nwaves;
+> +	int err;
+> +
+> +	if (cs40l50->bin) {
+> +		/* Log number of effects if wavetable was loaded */
+> +		err = regmap_read(cs40l50->regmap, CS40L50_NUM_WAVES, &nwaves);
+> +		if (err)
+> +			return err;
+> +
+> +		dev_info(cs40l50->dev, "Loaded with %u RAM waveforms\n", nwaves);
 
- .../access-controllers.yaml                   | 84 +++++++++++++++++++
- 1 file changed, 84 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/access-controllers/access-controllers.yaml
+Kinda nervous about the fact we access all these DSP controls
+directly through address, rather than using the DSP control
+accessors, we have the accessors for a reason. They manage things
+like access permissions etc. and historically, the firmware
+guys have not been able to guarantee these remain in consistent
+locations between firmware versions.
 
-diff --git a/Documentation/devicetree/bindings/access-controllers/access-controllers.yaml b/Documentation/devicetree/bindings/access-controllers/access-controllers.yaml
-new file mode 100644
-index 000000000000..99e2865f0e46
---- /dev/null
-+++ b/Documentation/devicetree/bindings/access-controllers/access-controllers.yaml
-@@ -0,0 +1,84 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/access-controllers/access-controllers.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Generic Domain Access Controllers
-+
-+maintainers:
-+  - Oleksii Moisieiev <oleksii_moisieiev@epam.com>
-+
-+description: |+
-+  Common access controllers properties
-+
-+  Access controllers are in charge of stating which of the hardware blocks under
-+  their responsibility (their domain) can be accesssed by which compartment. A
-+  compartment can be a cluster of CPUs (or coprocessors), a range of addresses
-+  or a group of hardware blocks. An access controller's domain is the set of
-+  resources covered by the access controller.
-+
-+  This device tree binding can be used to bind devices to their access
-+  controller provided by access-controllers property. In this case, the device
-+  is a consumer and the access controller is the provider.
-+
-+  An access controller can be represented by any node in the device tree and
-+  can provide one or more configuration parameters, needed to control parameters
-+  of the consumer device. A consumer node can refer to the provider by phandle
-+  and a set of phandle arguments, specified by '#access-controller-cells'
-+  property in the access controller node.
-+
-+  Access controllers are typically used to set/read the permissions of a
-+  hardware block and grant access to it. Any of which depends on the access
-+  controller. The capabilities of each access controller are defined by the
-+  binding of the access controller device.
-+
-+  Each node can be a consumer for the several access controllers.
-+
-+# always select the core schema
-+select: true
-+
-+properties:
-+  "#access-controller-cells":
-+    description:
-+      Number of cells in an access-controllers specifier;
-+      Can be any value as specified by device tree binding documentation
-+      of a particular provider. The node is an access controller.
-+
-+  access-controller-names:
-+    $ref: /schemas/types.yaml#/definitions/string-array
-+    description:
-+      A list of access-controllers names, sorted in the same order as
-+      access-controllers entries. Consumer drivers will use
-+      access-controller-names to match with existing access-controllers entries.
-+
-+  access-controllers:
-+    $ref: /schemas/types.yaml#/definitions/phandle-array
-+    description:
-+      A list of access controller specifiers, as defined by the
-+      bindings of the access-controllers provider.
-+
-+additionalProperties: true
-+
-+examples:
-+  - |
-+    clock_controller: access-controllers@50000 {
-+        reg = <0x50000 0x400>;
-+        #access-controller-cells = <2>;
-+    };
-+
-+    bus_controller: bus@60000 {
-+        reg = <0x60000 0x10000>;
-+        #address-cells = <1>;
-+        #size-cells = <1>;
-+        ranges;
-+        #access-controller-cells = <3>;
-+
-+        uart4: serial@60100 {
-+            reg = <0x60100 0x400>;
-+            clocks = <&clk_serial>;
-+            access-controllers = <&clock_controller 1 2>,
-+                                 <&bus_controller 1 3 5>;
-+            access-controller-names = "clock", "bus";
-+        };
-+    };
--- 
-2.35.3
+I guess this is so you can access them even in the case of the
+ROM firmware, but you could have a meta-data only firmware file
+that you load in that case to give you the controls.  I don't
+feel the need to NAK the driver based on this but please think
+about this very carefully it's a strange way to use the DSP
+controls, and feels likely to cause problems to me. It is also
+quite hostile to fixing it in the future since as you are not
+using the controls no one will be checking that things like the
+access flags in the firmware are set correctly, which is annoying
+if the decision has to be reversed later since there will likely
+be a bunch of broken firmwares already in the field.
 
+> +int cs40l50_probe(struct cs40l50 *cs40l50)
+> +{
+> +	struct device *dev = cs40l50->dev;
+> +	int err;
+> +
+> +	mutex_init(&cs40l50->lock);
+> +
+> +	cs40l50->reset_gpio = devm_gpiod_get_optional(dev, "reset", GPIOD_OUT_HIGH);
+> +	if (IS_ERR(cs40l50->reset_gpio))
+> +		return dev_err_probe(dev, PTR_ERR(cs40l50->reset_gpio),
+> +				     "Failed getting reset GPIO\n");
+> +
+> +	err = devm_regulator_bulk_get_enable(dev, ARRAY_SIZE(cs40l50_supplies),
+> +					     cs40l50_supplies);
+> +	if (err)
+> +		return dev_err_probe(dev, err, "Failed getting supplies\n");
+> +
+> +	/* Ensure minimum reset pulse width */
+> +	usleep_range(CS40L50_RESET_PULSE_US, CS40L50_RESET_PULSE_US + 100);
+> +
+> +	gpiod_set_value_cansleep(cs40l50->reset_gpio, 0);
+> +
+> +	/* Wait for control port to be ready */
+> +	usleep_range(CS40L50_CP_READY_US, CS40L50_CP_READY_US + 100);
+> +
+> +	err = cs40l50_dsp_init(cs40l50);
+> +	if (err)
+> +		return dev_err_probe(dev, err, "Failed to initialize DSP\n");
+> +
+> +	cs40l50_pm_runtime_setup(dev);
+> +
+> +	err = cs40l50_get_model(cs40l50);
+> +	if (err)
+> +		return dev_err_probe(dev, err, "Failed to get part number\n");
+> +
+> +	err = cs40l50_irq_init(cs40l50);
+> +	if (err)
+> +		return dev_err_probe(dev, err, "Failed to initialize IRQs\n");
+> +
+> +	err = request_firmware_nowait(THIS_MODULE, FW_ACTION_UEVENT, CS40L50_FW,
+> +				      dev, GFP_KERNEL, cs40l50, cs40l50_request_patch);
+> +	if (err)
+> +		return dev_err_probe(dev, err, "Failed to request %s\n", CS40L50_FW);
+> +
+> +	err = devm_mfd_add_devices(dev, PLATFORM_DEVID_NONE, cs40l50_devs,
+> +				   ARRAY_SIZE(cs40l50_devs), NULL, 0, NULL);
+> +	if (err)
+> +		return dev_err_probe(dev, err, "Failed to add sub devices\n");
+> +
+
+Do you want to add the child devices here? Or after the firmware
+init has been done? If you do it here then the child devices may
+well probe and become available before all the setup you have in
+the DSP loading stuff is done. What happens if one of those
+drivers tries to do something before init is complete?
+
+> +static int cs40l50_runtime_resume(struct device *dev)
+> +{
+> +	struct cs40l50 *cs40l50 = dev_get_drvdata(dev);
+> +	int err, i;
+> +	u32 val;
+> +
+> +	/* Device NAKs when exiting hibernation, so optionally retry here. */
+> +	for (i = 0; i < CS40L50_DSP_TIMEOUT_COUNT; i++) {
+> +		err = regmap_write(cs40l50->regmap, CS40L50_DSP_QUEUE,
+> +				     CS40L50_PREVENT_HIBER);
+> +		if (!err)
+> +			break;
+> +
+> +		usleep_range(CS40L50_DSP_POLL_US, CS40L50_DSP_POLL_US + 100);
+> +	}
+
+Are you comfortable with the behaviour here? If the chip fails to
+respond before the TIMEOUT, you will proceed on and do the read
+loop. Since the read loop is just looking for a zero in the
+queue, it looks like if for some reason the chip was too slow to
+respond this function would succeed despite the chip never
+receiving the PREVENT_HIBER. Would it not be safer to skip the
+read loop if you fail to send the PREVENT_HIBER?
+
+> +
+> +	for (i = 0; i < CS40L50_DSP_TIMEOUT_COUNT; i++) {
+> +		err = regmap_read(cs40l50->regmap, CS40L50_DSP_QUEUE, &val);
+> +		if (!err && val == 0)
+> +			return 0;
+> +
+> +		usleep_range(CS40L50_DSP_POLL_US, CS40L50_DSP_POLL_US + 100);
+> +	}
+
+I am not sure if the ignoring errors is important here (as it is
+for the first loop), but if it is a comment should be added to
+say why, and if it isn't, couldn't this be a
+regmap_read_poll_timeout instead of a manual loop?
+
+> +++ b/drivers/mfd/cs40l50-spi.c
+> @@ -0,0 +1,69 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * CS40L50 Advanced Haptic Driver with waveform memory,
+> + * integrated DSP, and closed-loop algorithms
+> + *
+> + * Copyright 2023 Cirrus Logic, Inc.
+> + *
+> + * Author: James Ogletree <james.ogletree@cirrus.com>
+> + */
+> +
+> +#include <linux/mfd/cs40l50.h>
+> +#include <linux/mfd/spi.h>
+
+Should be linux/spi/spi.h, make sure your build testing the whole
+patch.
+
+> +#ifndef __CS40L50_H__
+> +#define __CS40L50_H__
+> +
+> +#include <linux/firmware/cirrus/cs_dsp.h>
+> +#include <linux/gpio/consumer.h>
+> +#include <linux/pm.h>
+> +#include <linux/regmap.h>
+> +
+> +/* Power Supply Configuration */
+> +#define CS40L50_BLOCK_ENABLES2			0x201C
+> +#define CS40L50_ERR_RLS				0x2034
+> +#define CS40L50_PWRMGT_CTL			0x2900
+> +#define CS40L50_BST_LPMODE_SEL			0x3810
+> +#define CS40L50_DCM_LOW_POWER		0x1
+> +#define CS40L50_OVERTEMP_WARN		0x4000010
+> +
+> +/* Interrupts */
+> +#define CS40L50_IRQ1_INT_1			0xE010
+> +#define CS40L50_IRQ1_MASK_1			0xE090
+> +#define CS40L50_IRQ1_MASK_2			0xE094
+> +#define CS40L50_IRQ1_MASK_20			0xE0DC
+> +#define CS40L50_IRQ_MASK_2_OVERRIDE	0xFFDF7FFF
+> +#define CS40L50_IRQ_MASK_20_OVERRIDE	0x15C01000
+> +#define CS40L50_IRQ1_INT_1_OFFSET	(4 * 0)
+> +#define CS40L50_IRQ1_INT_2_OFFSET	(4 * 1)
+> +#define CS40L50_IRQ1_INT_8_OFFSET	(4 * 7)
+> +#define CS40L50_IRQ1_INT_9_OFFSET	(4 * 8)
+> +#define CS40L50_IRQ1_INT_10_OFFSET	(4 * 9)
+> +#define CS40L50_IRQ1_INT_18_OFFSET	(4 * 17)
+> +#define CS40L50_GLOBAL_ERR_RLS_SET	BIT(11)
+> +#define CS40L50_GLOBAL_ERR_RLS_CLEAR	0
+> +#define CS40L50_AMP_SHORT_MASK		BIT(31)
+> +#define CS40L50_DSP_QUEUE_MASK		BIT(21)
+> +#define CS40L50_TEMP_ERR_MASK		BIT(31)
+> +#define CS40L50_BST_UVP_MASK		BIT(6)
+> +#define CS40L50_BST_SHORT_MASK		BIT(7)
+> +#define CS40L50_BST_ILIMIT_MASK		BIT(18)
+> +#define CS40L50_UVLO_VDDBATT_MASK	BIT(16)
+> +#define CS40L50_GLOBAL_ERROR_MASK	BIT(15)
+> +
+> +enum cs40l50_irq_list {
+> +	CS40L50_DSP_QUEUE_IRQ,
+> +	CS40L50_GLOBAL_ERROR_IRQ,
+> +	CS40L50_UVLO_VDDBATT_IRQ,
+> +	CS40L50_BST_ILIMIT_IRQ,
+> +	CS40L50_BST_SHORT_IRQ,
+> +	CS40L50_BST_UVP_IRQ,
+> +	CS40L50_TEMP_ERR_IRQ,
+> +	CS40L50_AMP_SHORT_IRQ,
+> +};
+> +
+> +/* DSP */
+> +#define CS40L50_XMEM_PACKED_0			0x2000000
+> +#define CS40L50_XMEM_UNPACKED24_0		0x2800000
+> +#define CS40L50_SYS_INFO_ID			0x25E0000
+> +#define CS40L50_RAM_INIT			0x28021DC
+> +#define CS40L50_DSP_QUEUE_WT			0x28042C8
+> +#define CS40L50_DSP_QUEUE_RD			0x28042CC
+> +#define CS40L50_POWER_ON_WSEQ			0x2804320
+> +#define CS40L50_NUM_WAVES			0x280CB4C
+> +#define CS40L50_CORE_BASE			0x2B80000
+> +#define CS40L50_CCM_CORE_CONTROL		0x2BC1000
+> +#define CS40L50_YMEM_PACKED_0			0x2C00000
+> +#define CS40L50_YMEM_UNPACKED24_0		0x3400000
+> +#define CS40L50_PMEM_0				0x3800000
+> +#define CS40L50_MEM_RDY_HW		0x2
+> +#define CS40L50_RAM_INIT_FLAG		0x1
+> +#define CS40L50_CLOCK_DISABLE		0x80
+> +#define CS40L50_CLOCK_ENABLE		0x281
+> +#define CS40L50_DSP_POLL_US		1000
+> +#define CS40L50_DSP_TIMEOUT_COUNT	100
+> +#define CS40L50_RESET_PULSE_US		2200
+> +#define CS40L50_CP_READY_US		3100
+> +#define CS40L50_AUTOSUSPEND_MS		2000
+> +#define CS40L50_PSEQ_SIZE		200
+> +
+> +/* DSP Commands */
+> +#define CS40L50_DSP_QUEUE_BASE		0x11004
+> +#define CS40L50_DSP_QUEUE_END		0x1101C
+> +#define CS40L50_DSP_QUEUE		0x11020
+> +#define CS40L50_PREVENT_HIBER	0x2000003
+> +#define CS40L50_ALLOW_HIBER	0x2000004
+> +#define CS40L50_START_I2S	0x3000002
+> +#define CS40L50_OWT_PUSH	0x3000008
+> +#define CS40L50_STOP_PLAYBACK	0x5000000
+> +#define CS40L50_OWT_DELETE	0xD000000
+> +
+> +/* Firmware files */
+> +#define CS40L50_FW	"cs40l50.wmfw"
+> +#define CS40L50_WT	"cs40l50.bin"
+> +
+> +/* Device */
+> +#define CS40L50_DEVID			0x0
+> +#define CS40L50_REVID			0x4
+> +#define CS40L50_DEVID_A		0x40A50
+> +#define CS40L50_REVID_B0	0xB0
+
+Admittedly a bit nitpicky but the tabbing here is all over the
+place, would be nicer to line up the values on these defines.
+
+Thanks,
+Charles
