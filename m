@@ -4,154 +4,129 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9BF7AC47074
-	for <alsa-devel@archiver.kernel.org>; Sun,  7 Jan 2024 08:56:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4F0B8C47074
+	for <alsa-devel@archiver.kernel.org>; Sun,  7 Jan 2024 08:56:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 18CEC1500;
-	Sun,  7 Jan 2024 09:56:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 18CEC1500
+	by alsa0.perex.cz (Postfix) with ESMTPS id 699751497;
+	Sun,  7 Jan 2024 09:56:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 699751497
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1704617789;
-	bh=tO/15XyaR9yGXvoq+5sSYGKdQNwFd54LOayCdIx8JqI=;
+	s=default; t=1704617799;
+	bh=LLUnBf/CABKSxuDuAXo0ucSAj13/vS/B5J47iUC+7eo=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=HpY3DP1o/4KP9+hfJyFrIh+MCN9/1CDgamudHHS/RVz5PKgtyCW6ll2OSQJB+fni6
-	 2AbaW+Ocm2TCzUCHdoRgTa+xTDdZY4FkFAAXbM0cMeV+r+nMEM2K1KcYmvJ2FI2yCA
-	 b7oVqkkhXgTumoEpvwmXFBK+BtyYTigWGw8fL3MQ=
+	b=JQ0MB63xokWjWcOCD+2jcGYeFioI/+06v7SUgj9XFTyR5PVbGj062fHHVk7VFJK2c
+	 5y3BMmi4t4mTeZaFHF2Yw4eGFf4cINCeX3FFYLj5pYxwir31z/UCkRTaUt1UdaOORE
+	 NUNgWMLVObDVuhHhl7lzo4zbiy2ueqPnRKDXdMIA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7C61DF80649; Sun,  7 Jan 2024 09:54:57 +0100 (CET)
+	id BDD61F8068C; Sun,  7 Jan 2024 09:54:59 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8C47CF8062E;
-	Sun,  7 Jan 2024 09:54:57 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 17734F80684;
+	Sun,  7 Jan 2024 09:54:59 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0B45AF804B0; Thu,  4 Jan 2024 23:39:06 +0100 (CET)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
+	id 94EF0F804CC; Fri,  5 Jan 2024 14:05:03 +0100 (CET)
+Received: from mx08-00178001.pphosted.com (mx08-00178001.pphosted.com
+ [91.207.212.93])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 45881F80238
-	for <alsa-devel@alsa-project.org>; Thu,  4 Jan 2024 23:38:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 45881F80238
+	by alsa1.perex.cz (Postfix) with ESMTPS id 420CCF80086
+	for <alsa-devel@alsa-project.org>; Fri,  5 Jan 2024 14:04:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 420CCF80086
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=Ri5rhvsV
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-	by mx0a-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id
- 404HROEx031049;
-	Thu, 4 Jan 2024 16:38:54 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+ unprotected) header.d=foss.st.com header.i=@foss.st.com header.a=rsa-sha256
+ header.s=selector1 header.b=VpuhUfrx
+Received: from pps.filterd (m0369457.ppops.net [127.0.0.1])
+	by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id
+ 405A2inw032007;
+	Fri, 5 Jan 2024 14:04:37 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
 	:mime-version:content-transfer-encoding:content-type; s=
-	PODMain02222019; bh=LIrh8b0b3b3moFJ0u2XyLI/HUiOCpaIN3S1bqdRv3Bg=; b=
-	Ri5rhvsVXesZtpHj9Ur0x6c4MMczLiwkKM27W8j6xB7kkwliLMTxQvJyXFFI9cwY
-	/x/Qq6Mbk0XBGVQ0oyPTTSDB6MxvK49vk2Eb51QP9QN0UOIiI+T9winHvCpZeR+O
-	LZDr877mn+yoO6bX9yS3QYlXZFktBzcYB9xfKhO2AnRzZiBxq53e4CTZk8PBWuWl
-	6mPlk1qT6zdfErlGU6cXm6TThi+jqqUcmKlXFdVH8XtXk0W7hkp29IDT/aQJu0bv
-	X48AsH/3HqDr1ejoIsz9aMy202FaPNnMsXVT6A4Ic5XdzjMWYdOmwIPPaW3vAoRH
-	WLgwbd1Lk0dMbGa0g1Z3Wg==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3ve137rd00-1
+	selector1; bh=f8yYjC7/bXFz3P4Kx664vSO5R+Y8zJivOeI8ipIFK/I=; b=Vp
+	uhUfrxXK21O27qztVZANQdYQw7aYYlWHd/ZUmdhmx5yPbfDR+PMDqV/tyQwN01zm
+	zMU3lO/Iqfcx4bIzvn2rStmJQesk3J+JghAxNF8SmgMyr2ERfu3nkDDn8FH9Clu7
+	fs8aWuDP3cyE+0IzrT7SfKcs8cs1I1ffET6cAisRr7rS9A2p3hj157OOzHCXMjvC
+	tb5u7qoWCZbBYU+Blj726Y3hnc/YrkKCObOqthud74ixFwFp9gJeb8+llPm75BQ2
+	yxKbuzaWfDcPivtGZkZEITZZZaW2qKO7ATZmH4zt+XubdKpBd6TJl3VCSJL3ugJ6
+	tbx+Z1O2yU2UdcHc9Y2w==
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3ve9eq25uk-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 04 Jan 2024 16:38:54 -0600 (CST)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 4 Jan
- 2024 22:38:52 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.40 via Frontend
- Transport; Thu, 4 Jan 2024 22:38:37 +0000
-Received: from aus-sw-rshr002.ad.cirrus.com (aus-sw-rshr002.ad.cirrus.com
- [141.131.145.53])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 7A70C468;
-	Thu,  4 Jan 2024 22:38:32 +0000 (UTC)
-From: James Ogletree <jogletre@opensource.cirrus.com>
-To: 
-CC: James Ogletree <jogletre@opensource.cirrus.com>,
-        James Ogletree
-	<james.ogletree@cirrus.com>,
-        Fred Treven <fred.treven@cirrus.com>,
-        Ben Bright
-	<ben.bright@cirrus.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        "Rob
- Herring" <robh+dt@kernel.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Simon Trimmer <simont@opensource.cirrus.com>,
-        Charles Keepax
-	<ckeepax@opensource.cirrus.com>,
-        Richard Fitzgerald
-	<rf@opensource.cirrus.com>,
-        Lee Jones <lee@kernel.org>, Liam Girdwood
-	<lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, Jaroslav Kysela
-	<perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        James Schulman
-	<james.schulman@cirrus.com>,
-        David Rhodes <david.rhodes@cirrus.com>,
-        "Jacky
- Bai" <ping.bai@nxp.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Jeff LaBundy <jeff@labundy.com>,
-        Sebastian Reichel
-	<sebastian.reichel@collabora.com>,
-        Peng Fan <peng.fan@nxp.com>, Weidong Wang
-	<wangweidong.a@awinic.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Herve Codina
-	<herve.codina@bootlin.com>,
-        Shuming Fan <shumingf@realtek.com>,
-        Shenghao Ding
-	<13916275206@139.com>, Ryan Lee <ryans.lee@analog.com>,
-        Linus Walleij
-	<linus.walleij@linaro.org>,
-        Maxim Kochetkov <fido_max@inbox.ru>,
-        "open
- list:CIRRUS LOGIC HAPTIC DRIVERS" <patches@opensource.cirrus.com>,
-        "open
- list:INPUT (KEYBOARD, MOUSE, JOYSTICK, TOUCHSCREEN)..."
-	<linux-input@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE
- TREE BINDINGS" <devicetree@vger.kernel.org>,
-        open list
-	<linux-kernel@vger.kernel.org>,
-        "open list:SOUND - SOC LAYER / DYNAMIC AUDIO
- POWER MANAGEM..." <linux-sound@vger.kernel.org>,
-        "moderated list:CIRRUS LOGIC
- AUDIO CODEC DRIVERS" <alsa-devel@alsa-project.org>
-Subject: [PATCH v5 5/5] ASoC: cs40l50: Support I2S streaming to CS40L50
-Date: Thu, 4 Jan 2024 22:36:38 +0000
-Message-ID: <20240104223643.876292-6-jogletre@opensource.cirrus.com>
+	Fri, 05 Jan 2024 14:04:37 +0100 (CET)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 34A99100038;
+	Fri,  5 Jan 2024 14:04:34 +0100 (CET)
+Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 24794229A8E;
+	Fri,  5 Jan 2024 14:04:34 +0100 (CET)
+Received: from localhost (10.201.20.32) by SHFDAG1NODE1.st.com (10.75.129.69)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 5 Jan
+ 2024 14:04:33 +0100
+From: Gatien Chevallier <gatien.chevallier@foss.st.com>
+To: <Oleksii_Moisieiev@epam.com>, <gregkh@linuxfoundation.org>,
+        <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <alexandre.torgue@foss.st.com>,
+        <vkoul@kernel.org>, <jic23@kernel.org>, <olivier.moysan@foss.st.com>,
+        <arnaud.pouliquen@foss.st.com>, <mchehab@kernel.org>,
+        <fabrice.gasnier@foss.st.com>, <andi.shyti@kernel.org>,
+        <ulf.hansson@linaro.org>, <edumazet@google.com>, <kuba@kernel.org>,
+        <pabeni@redhat.com>, <hugues.fruchet@foss.st.com>, <lee@kernel.org>,
+        <will@kernel.org>, <catalin.marinas@arm.com>, <arnd@kernel.org>,
+        <richardcochran@gmail.com>, Frank Rowand <frowand.list@gmail.com>,
+        <peng.fan@oss.nxp.com>, <lars@metafoo.de>, <rcsekar@samsung.com>,
+        <wg@grandegger.com>, <mkl@pengutronix.de>
+CC: <linux-crypto@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>,
+        <dmaengine@vger.kernel.org>, <linux-i2c@vger.kernel.org>,
+        <linux-iio@vger.kernel.org>, <alsa-devel@alsa-project.org>,
+        <linux-media@vger.kernel.org>, <linux-mmc@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <linux-phy@lists.infradead.org>,
+        <linux-serial@vger.kernel.org>, <linux-spi@vger.kernel.org>,
+        <linux-usb@vger.kernel.org>,
+        Oleksii Moisieiev <oleksii_moisieiev@epam.com>,
+        Gatien Chevallier <gatien.chevallier@foss.st.com>,
+        Rob Herring
+	<robh@kernel.org>
+Subject: [PATCH v9 01/13] dt-bindings: document generic access controllers
+Date: Fri, 5 Jan 2024 14:03:52 +0100
+Message-ID: <20240105130404.301172-2-gatien.chevallier@foss.st.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240104223643.876292-1-jogletre@opensource.cirrus.com>
-References: <20240104223643.876292-1-jogletre@opensource.cirrus.com>
+In-Reply-To: <20240105130404.301172-1-gatien.chevallier@foss.st.com>
+References: <20240105130404.301172-1-gatien.chevallier@foss.st.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: oUsmF-rfD2BtWSjPGW-jaySKkiPQAhfo
-X-Proofpoint-ORIG-GUID: oUsmF-rfD2BtWSjPGW-jaySKkiPQAhfo
-X-Proofpoint-Spam-Reason: safe
-X-MailFrom: prvs=8733dab0b6=jogletre@opensource.cirrus.com
-X-Mailman-Rule-Hits: nonmember-moderation
+X-Originating-IP: [10.201.20.32]
+X-ClientProxiedBy: EQNCAS1NODE3.st.com (10.75.129.80) To SHFDAG1NODE1.st.com
+ (10.75.129.69)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-05_06,2024-01-05_01,2023-05-22_02
+X-MailFrom: prvs=1734cf6afc=gatien.chevallier@foss.st.com
+X-Mailman-Rule-Hits: max-recipients
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: 5OOSNELLGBTNURC6XY3JVRKC4FO5EVS3
-X-Message-ID-Hash: 5OOSNELLGBTNURC6XY3JVRKC4FO5EVS3
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-size; news-moderation; no-subject; digests;
+ suspicious-header
+Message-ID-Hash: 3ONIWV5EI2DRIYAQK3M3JUXRUNYMTYYN
+X-Message-ID-Hash: 3ONIWV5EI2DRIYAQK3M3JUXRUNYMTYYN
 X-Mailman-Approved-At: Sun, 07 Jan 2024 08:53:50 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5OOSNELLGBTNURC6XY3JVRKC4FO5EVS3/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3ONIWV5EI2DRIYAQK3M3JUXRUNYMTYYN/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -160,392 +135,137 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Introduce support for Cirrus Logic Device CS40L50: a
-haptic driver with waveform memory, integrated DSP,
-and closed-loop algorithms.
+From: Oleksii Moisieiev <Oleksii_Moisieiev@epam.com>
 
-The ASoC driver enables I2S streaming to the device.
+Introducing of the generic access controllers bindings for the
+access controller provider and consumer devices. Those bindings are
+intended to allow a better handling of accesses to resources in a
+hardware architecture supporting several compartments.
 
-Signed-off-by: James Ogletree <jogletre@opensource.cirrus.com>
+This patch is based on [1]. It is integrated in this patchset as it
+provides a use-case for it.
+
+Diffs with [1]:
+	- Rename feature-domain* properties to access-control* to narrow
+	  down the scope of the binding
+	- YAML errors and typos corrected.
+	- Example updated
+	- Some rephrasing in the binding description
+
+[1]: https://lore.kernel.org/lkml/0c0a82bb-18ae-d057-562b
+
+Signed-off-by: Oleksii Moisieiev <oleksii_moisieiev@epam.com>
+Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
 ---
- MAINTAINERS                      |   1 +
- sound/soc/codecs/Kconfig         |  11 ++
- sound/soc/codecs/Makefile        |   2 +
- sound/soc/codecs/cs40l50-codec.c | 304 +++++++++++++++++++++++++++++++
- 4 files changed, 318 insertions(+)
- create mode 100644 sound/soc/codecs/cs40l50-codec.c
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 24cfb4f017bb..fca2454a7a38 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -4943,6 +4943,7 @@ F:	Documentation/devicetree/bindings/input/cirrus,cs40l50.yaml
- F:	drivers/input/misc/cs40l*
- F:	drivers/mfd/cs40l*
- F:	include/linux/mfd/cs40l*
-+F:	sound/soc/codecs/cs40l*
- 
- CIRRUS LOGIC DSP FIRMWARE DRIVER
- M:	Simon Trimmer <simont@opensource.cirrus.com>
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index f1e1dbc509f6..9338a36c4c85 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -73,6 +73,7 @@ config SND_SOC_ALL_CODECS
- 	imply SND_SOC_CS35L56_I2C
- 	imply SND_SOC_CS35L56_SPI
- 	imply SND_SOC_CS35L56_SDW
-+	imply SND_SOC_CS40L50
- 	imply SND_SOC_CS42L42
- 	imply SND_SOC_CS42L42_SDW
- 	imply SND_SOC_CS42L43
-@@ -800,6 +801,16 @@ config SND_SOC_CS35L56_SDW
- 	help
- 	  Enable support for Cirrus Logic CS35L56 boosted amplifier with SoundWire control
- 
-+config SND_SOC_CS40L50
-+	tristate "Cirrus Logic CS40L50 CODEC"
-+	depends on MFD_CS40L50_CORE
-+	help
-+	  This option enables support for I2S streaming to Cirrus Logic CS40L50.
-+
-+		CS40L50 is a haptic driver with waveform memory, an integrated
-+		DSP, and closed-loop algorithms. If built as a module, it will be
-+		called snd-soc-cs40l50.
-+
- config SND_SOC_CS42L42_CORE
- 	tristate
- 
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index a87e56938ce5..7e31f000774a 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -74,6 +74,7 @@ snd-soc-cs35l56-shared-objs := cs35l56-shared.o
- snd-soc-cs35l56-i2c-objs := cs35l56-i2c.o
- snd-soc-cs35l56-spi-objs := cs35l56-spi.o
- snd-soc-cs35l56-sdw-objs := cs35l56-sdw.o
-+snd-soc-cs40l50-objs := cs40l50-codec.o
- snd-soc-cs42l42-objs := cs42l42.o
- snd-soc-cs42l42-i2c-objs := cs42l42-i2c.o
- snd-soc-cs42l42-sdw-objs := cs42l42-sdw.o
-@@ -460,6 +461,7 @@ obj-$(CONFIG_SND_SOC_CS35L56_SHARED)	+= snd-soc-cs35l56-shared.o
- obj-$(CONFIG_SND_SOC_CS35L56_I2C)	+= snd-soc-cs35l56-i2c.o
- obj-$(CONFIG_SND_SOC_CS35L56_SPI)	+= snd-soc-cs35l56-spi.o
- obj-$(CONFIG_SND_SOC_CS35L56_SDW)	+= snd-soc-cs35l56-sdw.o
-+obj-$(CONFIG_SND_SOC_CS40L50)		+= snd-soc-cs40l50.o
- obj-$(CONFIG_SND_SOC_CS42L42_CORE)	+= snd-soc-cs42l42.o
- obj-$(CONFIG_SND_SOC_CS42L42)	+= snd-soc-cs42l42-i2c.o
- obj-$(CONFIG_SND_SOC_CS42L42_SDW)	+= snd-soc-cs42l42-sdw.o
-diff --git a/sound/soc/codecs/cs40l50-codec.c b/sound/soc/codecs/cs40l50-codec.c
+Changes in V9:
+	- Added Rob's review tag
+
+Changes in V6:
+	- Renamed access-controller to access-controllers
+	- Example updated
+	- Removal of access-control-provider property
+
+Changes in V5:
+	- Diffs with [1]
+	- Discarded the [IGNORE] tag as the patch is now part of the
+	  patchset
+
+ .../access-controllers.yaml                   | 84 +++++++++++++++++++
+ 1 file changed, 84 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/access-controllers/access-controllers.yaml
+
+diff --git a/Documentation/devicetree/bindings/access-controllers/access-controllers.yaml b/Documentation/devicetree/bindings/access-controllers/access-controllers.yaml
 new file mode 100644
-index 000000000000..c4035719cf04
+index 000000000000..99e2865f0e46
 --- /dev/null
-+++ b/sound/soc/codecs/cs40l50-codec.c
-@@ -0,0 +1,304 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * CS40L50 Advanced Haptic Driver with waveform memory,
-+ * integrated DSP, and closed-loop algorithms
-+ *
-+ * Copyright 2023 Cirrus Logic, Inc.
-+ *
-+ * Author: James Ogletree <james.ogletree@cirrus.com>
-+ */
++++ b/Documentation/devicetree/bindings/access-controllers/access-controllers.yaml
+@@ -0,0 +1,84 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/access-controllers/access-controllers.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+#include <linux/mfd/cs40l50.h>
-+#include <linux/pm_runtime.h>
-+#include <sound/pcm_params.h>
-+#include <sound/soc.h>
++title: Generic Domain Access Controllers
 +
-+#define CS40L50_REFCLK_INPUT			0x2C04
-+#define CS40L50_ASP_CONTROL2			0x4808
-+#define CS40L50_ASP_DATA_CONTROL5		0x4840
++maintainers:
++  - Oleksii Moisieiev <oleksii_moisieiev@epam.com>
 +
-+/* PLL Config */
-+#define CS40L50_PLL_CLK_CFG_32768	0x00
-+#define CS40L50_PLL_CLK_CFG_1536000	0x1B
-+#define CS40L50_PLL_CLK_CFG_3072000	0x21
-+#define CS40L50_PLL_CLK_CFG_6144000	0x28
-+#define CS40L50_PLL_CLK_CFG_9600000	0x30
-+#define CS40L50_PLL_CLK_CFG_12288000	0x33
-+#define CS40L50_PLL_CLK_FRQ_32768	32768
-+#define CS40L50_PLL_CLK_FRQ_1536000	1536000
-+#define CS40L50_PLL_CLK_FRQ_3072000	3072000
-+#define CS40L50_PLL_CLK_FRQ_6144000	6144000
-+#define CS40L50_PLL_CLK_FRQ_9600000	9600000
-+#define CS40L50_PLL_CLK_FRQ_12288000	12288000
-+#define CS40L50_PLL_REFCLK_BCLK		0x0
-+#define CS40L50_PLL_REFCLK_MCLK		0x5
-+#define CS40L50_PLL_REFCLK_LOOP_MASK	BIT(11)
-+#define CS40L50_PLL_REFCLK_OPEN_LOOP	1
-+#define CS40L50_PLL_REFCLK_CLOSED_LOOP	0
-+#define CS40L50_PLL_REFCLK_LOOP_SHIFT	11
-+#define CS40L50_PLL_REFCLK_FREQ_MASK	GENMASK(10, 5)
-+#define CS40L50_PLL_REFCLK_FREQ_SHIFT	5
-+#define CS40L50_PLL_REFCLK_SEL_MASK	GENMASK(2, 0)
++description: |+
++  Common access controllers properties
 +
-+/* ASP Config */
-+#define CS40L50_ASP_RX_WIDTH_SHIFT	24
-+#define CS40L50_ASP_RX_WIDTH_MASK	GENMASK(31, 24)
-+#define CS40L50_ASP_RX_WL_MASK		GENMASK(5, 0)
-+#define CS40L50_ASP_FSYNC_INV_MASK	BIT(2)
-+#define CS40L50_ASP_BCLK_INV_MASK	BIT(6)
-+#define CS40L50_ASP_FMT_MASK		GENMASK(10, 8)
-+#define CS40L50_ASP_FMT_I2S		0x2
-+#define CS40L50_FORMATS			(SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE)
++  Access controllers are in charge of stating which of the hardware blocks under
++  their responsibility (their domain) can be accesssed by which compartment. A
++  compartment can be a cluster of CPUs (or coprocessors), a range of addresses
++  or a group of hardware blocks. An access controller's domain is the set of
++  resources covered by the access controller.
 +
-+struct cs40l50_pll_sysclk_config {
-+	unsigned int freq;
-+	unsigned int clk_cfg;
-+};
++  This device tree binding can be used to bind devices to their access
++  controller provided by access-controllers property. In this case, the device
++  is a consumer and the access controller is the provider.
 +
-+struct cs40l50_codec {
-+	struct device *dev;
-+	struct regmap *regmap;
-+	unsigned int sysclk_rate;
-+	unsigned int daifmt;
-+};
++  An access controller can be represented by any node in the device tree and
++  can provide one or more configuration parameters, needed to control parameters
++  of the consumer device. A consumer node can refer to the provider by phandle
++  and a set of phandle arguments, specified by '#access-controller-cells'
++  property in the access controller node.
 +
-+static const struct cs40l50_pll_sysclk_config cs40l50_pll_sysclk[] = {
-+	{CS40L50_PLL_CLK_FRQ_32768, CS40L50_PLL_CLK_CFG_32768},
-+	{CS40L50_PLL_CLK_FRQ_1536000, CS40L50_PLL_CLK_CFG_1536000},
-+	{CS40L50_PLL_CLK_FRQ_3072000, CS40L50_PLL_CLK_CFG_3072000},
-+	{CS40L50_PLL_CLK_FRQ_6144000, CS40L50_PLL_CLK_CFG_6144000},
-+	{CS40L50_PLL_CLK_FRQ_9600000, CS40L50_PLL_CLK_CFG_9600000},
-+	{CS40L50_PLL_CLK_FRQ_12288000, CS40L50_PLL_CLK_CFG_12288000},
-+};
++  Access controllers are typically used to set/read the permissions of a
++  hardware block and grant access to it. Any of which depends on the access
++  controller. The capabilities of each access controller are defined by the
++  binding of the access controller device.
 +
-+static int cs40l50_get_clk_config(unsigned int freq, unsigned int *clk_cfg)
-+{
-+	int i;
++  Each node can be a consumer for the several access controllers.
 +
-+	for (i = 0; i < ARRAY_SIZE(cs40l50_pll_sysclk); i++) {
-+		if (cs40l50_pll_sysclk[i].freq == freq) {
-+			*clk_cfg = cs40l50_pll_sysclk[i].clk_cfg;
-+			return 0;
-+		}
-+	}
++# always select the core schema
++select: true
 +
-+	return -EINVAL;
-+}
++properties:
++  "#access-controller-cells":
++    description:
++      Number of cells in an access-controllers specifier;
++      Can be any value as specified by device tree binding documentation
++      of a particular provider. The node is an access controller.
 +
-+static int cs40l50_swap_ext_clk(struct cs40l50_codec *codec, unsigned int clk_src)
-+{
-+	unsigned int clk_cfg;
-+	int ret;
++  access-controller-names:
++    $ref: /schemas/types.yaml#/definitions/string-array
++    description:
++      A list of access-controllers names, sorted in the same order as
++      access-controllers entries. Consumer drivers will use
++      access-controller-names to match with existing access-controllers entries.
 +
-+	switch (clk_src) {
-+	case CS40L50_PLL_REFCLK_BCLK:
-+		ret = cs40l50_get_clk_config(codec->sysclk_rate, &clk_cfg);
-+		if (ret)
-+			return ret;
-+		break;
-+	case CS40L50_PLL_REFCLK_MCLK:
-+		clk_cfg = CS40L50_PLL_CLK_CFG_32768;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
++  access-controllers:
++    $ref: /schemas/types.yaml#/definitions/phandle-array
++    description:
++      A list of access controller specifiers, as defined by the
++      bindings of the access-controllers provider.
 +
-+	ret = regmap_update_bits(codec->regmap, CS40L50_REFCLK_INPUT,
-+				 CS40L50_PLL_REFCLK_LOOP_MASK,
-+				 CS40L50_PLL_REFCLK_OPEN_LOOP <<
-+				 CS40L50_PLL_REFCLK_LOOP_SHIFT);
-+	if (ret)
-+		return ret;
++additionalProperties: true
 +
-+	ret = regmap_update_bits(codec->regmap, CS40L50_REFCLK_INPUT,
-+				 CS40L50_PLL_REFCLK_FREQ_MASK |
-+				 CS40L50_PLL_REFCLK_SEL_MASK,
-+				 (clk_cfg << CS40L50_PLL_REFCLK_FREQ_SHIFT) | clk_src);
-+	if (ret)
-+		return ret;
++examples:
++  - |
++    clock_controller: access-controllers@50000 {
++        reg = <0x50000 0x400>;
++        #access-controller-cells = <2>;
++    };
 +
-+	return regmap_update_bits(codec->regmap, CS40L50_REFCLK_INPUT,
-+				  CS40L50_PLL_REFCLK_LOOP_MASK,
-+				  CS40L50_PLL_REFCLK_CLOSED_LOOP <<
-+				  CS40L50_PLL_REFCLK_LOOP_SHIFT);
-+}
++    bus_controller: bus@60000 {
++        reg = <0x60000 0x10000>;
++        #address-cells = <1>;
++        #size-cells = <1>;
++        ranges;
++        #access-controller-cells = <3>;
 +
-+static int cs40l50_clk_en(struct snd_soc_dapm_widget *w,
-+			  struct snd_kcontrol *kcontrol,
-+			  int event)
-+{
-+	struct snd_soc_component *comp = snd_soc_dapm_to_component(w->dapm);
-+	struct cs40l50_codec *codec = snd_soc_component_get_drvdata(comp);
-+	int ret;
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_POST_PMU:
-+		ret = regmap_write(codec->regmap, CS40L50_DSP_QUEUE, CS40L50_STOP_PLAYBACK);
-+		if (ret)
-+			return ret;
-+
-+		ret = regmap_write(codec->regmap, CS40L50_DSP_QUEUE, CS40L50_START_I2S);
-+		if (ret)
-+			return ret;
-+
-+		ret = cs40l50_swap_ext_clk(codec, CS40L50_PLL_REFCLK_BCLK);
-+		if (ret)
-+			return ret;
-+		break;
-+	case SND_SOC_DAPM_PRE_PMD:
-+		ret = cs40l50_swap_ext_clk(codec, CS40L50_PLL_REFCLK_MCLK);
-+		if (ret)
-+			return ret;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct snd_soc_dapm_widget cs40l50_dapm_widgets[] = {
-+	SND_SOC_DAPM_SUPPLY_S("ASP PLL", 0, SND_SOC_NOPM, 0, 0, cs40l50_clk_en,
-+		SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
-+	SND_SOC_DAPM_AIF_IN("ASPRX1", NULL, 0, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_AIF_IN("ASPRX2", NULL, 0, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_OUTPUT("OUT"),
-+};
-+
-+static const struct snd_soc_dapm_route cs40l50_dapm_routes[] = {
-+	{ "ASP Playback", NULL, "ASP PLL" },
-+	{ "ASPRX1", NULL, "ASP Playback" },
-+	{ "ASPRX2", NULL, "ASP Playback" },
-+
-+	{ "OUT", NULL, "ASPRX1" },
-+	{ "OUT", NULL, "ASPRX2" },
-+};
-+
-+static int cs40l50_component_set_sysclk(struct snd_soc_component *component,
-+		int clk_id, int source, unsigned int freq, int dir)
-+{
-+	struct cs40l50_codec *codec = snd_soc_component_get_drvdata(component);
-+
-+	codec->sysclk_rate = freq;
-+
-+	return 0;
-+}
-+
-+static int cs40l50_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
-+{
-+	struct cs40l50_codec *codec = snd_soc_component_get_drvdata(codec_dai->component);
-+
-+	if ((fmt & SND_SOC_DAIFMT_MASTER_MASK) != SND_SOC_DAIFMT_CBS_CFS)
-+		return -EINVAL;
-+
-+	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
-+	case SND_SOC_DAIFMT_NB_NF:
-+		codec->daifmt = 0;
-+		break;
-+	case SND_SOC_DAIFMT_NB_IF:
-+		codec->daifmt = CS40L50_ASP_FSYNC_INV_MASK;
-+		break;
-+	case SND_SOC_DAIFMT_IB_NF:
-+		codec->daifmt = CS40L50_ASP_BCLK_INV_MASK;
-+		break;
-+	case SND_SOC_DAIFMT_IB_IF:
-+		codec->daifmt = CS40L50_ASP_FSYNC_INV_MASK | CS40L50_ASP_BCLK_INV_MASK;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	if ((fmt & SND_SOC_DAIFMT_FORMAT_MASK) == SND_SOC_DAIFMT_I2S)
-+		codec->daifmt |= FIELD_PREP(CS40L50_ASP_FMT_MASK, CS40L50_ASP_FMT_I2S);
-+
-+	return 0;
-+}
-+
-+static int cs40l50_hw_params(struct snd_pcm_substream *substream,
-+			     struct snd_pcm_hw_params *params,
-+			     struct snd_soc_dai *dai)
-+{
-+	struct cs40l50_codec *codec = snd_soc_component_get_drvdata(dai->component);
-+	unsigned int asp_rx_wl = params_width(params);
-+	int ret;
-+
-+	ret = regmap_update_bits(codec->regmap, CS40L50_ASP_DATA_CONTROL5,
-+				 CS40L50_ASP_RX_WL_MASK, asp_rx_wl);
-+	if (ret)
-+		return ret;
-+
-+	codec->daifmt |= (asp_rx_wl << CS40L50_ASP_RX_WIDTH_SHIFT);
-+
-+	return regmap_update_bits(codec->regmap, CS40L50_ASP_CONTROL2,
-+				  CS40L50_ASP_FSYNC_INV_MASK |
-+				  CS40L50_ASP_BCLK_INV_MASK |
-+				  CS40L50_ASP_FMT_MASK |
-+				  CS40L50_ASP_RX_WIDTH_MASK, codec->daifmt);
-+}
-+
-+static const struct snd_soc_dai_ops cs40l50_dai_ops = {
-+	.set_fmt = cs40l50_set_dai_fmt,
-+	.hw_params = cs40l50_hw_params,
-+};
-+
-+static struct snd_soc_dai_driver cs40l50_dai[] = {
-+	{
-+		.name = "cs40l50-pcm",
-+		.id = 0,
-+		.playback = {
-+			.stream_name = "ASP Playback",
-+			.channels_min = 1,
-+			.channels_max = 2,
-+			.rates = SNDRV_PCM_RATE_48000,
-+			.formats = CS40L50_FORMATS,
-+		},
-+		.ops = &cs40l50_dai_ops,
-+		.symmetric_rate = 1,
-+	},
-+};
-+
-+static int cs40l50_codec_probe(struct snd_soc_component *component)
-+{
-+	struct cs40l50_codec *codec = snd_soc_component_get_drvdata(component);
-+
-+	codec->sysclk_rate = CS40L50_PLL_CLK_FRQ_1536000;
-+
-+	return 0;
-+}
-+
-+static const struct snd_soc_component_driver soc_codec_dev_cs40l50 = {
-+	.probe = cs40l50_codec_probe,
-+	.set_sysclk = cs40l50_component_set_sysclk,
-+	.dapm_widgets = cs40l50_dapm_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(cs40l50_dapm_widgets),
-+	.dapm_routes = cs40l50_dapm_routes,
-+	.num_dapm_routes = ARRAY_SIZE(cs40l50_dapm_routes),
-+};
-+
-+static int cs40l50_codec_driver_probe(struct platform_device *pdev)
-+{
-+	struct cs40l50 *cs40l50 = dev_get_drvdata(pdev->dev.parent);
-+	struct cs40l50_codec *codec;
-+
-+	codec = devm_kzalloc(&pdev->dev, sizeof(*codec), GFP_KERNEL);
-+	if (!codec)
-+		return -ENOMEM;
-+
-+	codec->regmap = cs40l50->regmap;
-+	codec->dev = &pdev->dev;
-+
-+	return devm_snd_soc_register_component(&pdev->dev, &soc_codec_dev_cs40l50,
-+					       cs40l50_dai, ARRAY_SIZE(cs40l50_dai));
-+}
-+
-+static struct platform_driver cs40l50_codec_driver = {
-+	.probe = cs40l50_codec_driver_probe,
-+	.driver = {
-+		.name = "cs40l50-codec",
-+	},
-+};
-+module_platform_driver(cs40l50_codec_driver);
-+
-+MODULE_DESCRIPTION("ASoC CS40L50 driver");
-+MODULE_AUTHOR("James Ogletree <james.ogletree@cirrus.com>");
-+MODULE_LICENSE("GPL");
++        uart4: serial@60100 {
++            reg = <0x60100 0x400>;
++            clocks = <&clk_serial>;
++            access-controllers = <&clock_controller 1 2>,
++                                 <&bus_controller 1 3 5>;
++            access-controller-names = "clock", "bus";
++        };
++    };
 -- 
-2.25.1
+2.35.3
 
