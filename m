@@ -4,161 +4,153 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 53744C47073
-	for <alsa-devel@archiver.kernel.org>; Thu,  4 Jan 2024 19:09:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 36496C4707B
+	for <alsa-devel@archiver.kernel.org>; Fri,  5 Jan 2024 04:55:52 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7F6E6E93;
-	Thu,  4 Jan 2024 20:09:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7F6E6E93
+	by alsa0.perex.cz (Postfix) with ESMTPS id CD225E96;
+	Fri,  5 Jan 2024 05:55:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CD225E96
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1704395386;
-	bh=jo3039tK7vqVCGHlzoGFnQ27xnTPHvEgANlkoHsRmhQ=;
+	s=default; t=1704430549;
+	bh=DlYPFWmAesXcRlxMo5F6GEVq8iSThTI8S33ahgoRFOM=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=amu9tG8ttvN68n1Hsnie61og5YovO1oyHzybXsFvv3qTV4L2VySlHqAXOpoOoLLwT
-	 J+7GEHedLg8wxC0jgDal7HuWkzpdDdKxQARuguea1fzWaSgPFX3YsdQydTWPtWSCB9
-	 DIl06szY3qcALXlSsMoMmaUaac0ARGYqGA7yGSww=
+	b=c3vxm3fAUXbIZ8JP66NVSRFSphR5wfPcFHVDdyPlD4rIWon+WFvpdUYPgT+dhsUi0
+	 9iAwyGwwwnUwyAebcx2awIMyT2GGeV3y70yQqkhR6md0Lg0CFY2Ov6RjjSe8leZXuB
+	 zcU9AoE5ycqq2uR9Z1Rm0XQxDnb9+p2EHSgqQLxE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5545DF8059F; Thu,  4 Jan 2024 20:09:14 +0100 (CET)
+	id 00EE3F8055B; Fri,  5 Jan 2024 05:55:17 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 909BDF8057B;
-	Thu,  4 Jan 2024 20:09:14 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A1E2EF80570;
+	Fri,  5 Jan 2024 05:55:17 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A96D0F804B0; Thu,  4 Jan 2024 20:09:08 +0100 (CET)
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com
- [IPv6:2a00:1450:4864:20::12e])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 1F298F804B0; Fri,  5 Jan 2024 05:54:46 +0100 (CET)
+Received: from NAM04-MW2-obe.outbound.protection.outlook.com
+ (mail-mw2nam04on2061c.outbound.protection.outlook.com
+ [IPv6:2a01:111:f400:7e8c::61c])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 81F75F80238
-	for <alsa-devel@alsa-project.org>; Thu,  4 Jan 2024 20:08:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 81F75F80238
+	by alsa1.perex.cz (Postfix) with ESMTPS id 54BF3F80086
+	for <alsa-devel@alsa-project.org>; Fri,  5 Jan 2024 05:54:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 54BF3F80086
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=pt6rclKc
-Received: by mail-lf1-x12e.google.com with SMTP id
- 2adb3069b0e04-50e7c6f0487so874696e87.3
-        for <alsa-devel@alsa-project.org>;
- Thu, 04 Jan 2024 11:08:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704395334; x=1705000134;
- darn=alsa-project.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=WrAc8y7ksD7LSd2oegA9ea7MEhlctFkip+JgP2VCZP0=;
-        b=pt6rclKc6PG9CPdSF/DZn990zS6azEsAcbrqHQzFjW3O4zZqYn29bYg8nLjo9vNCpJ
-         9kfIYzD7pVIf2PJ7HD9A/vL0OSx/1qYnppq8VNPsfdeep6Z5zqWtpWwtsbGY2XBFHTsy
-         7ZUifVhMYOIM5QBLuy2WNbZyl+z9LmYmA/1kwtjoqhdy7WkKaJOUnohdP07SdddCRLvT
-         /3DxzgHDDg8AF3sKqbCsLT3gLtHI8n2LfKjHJoedKel4harRQTeHnmvQfMD7Wk3hJP35
-         w8ejuNPXbKSM4EB2U3bK7SSYIg5MvASJQHuSKAOeujc54HMIB7be9II1KRaqEJQkh3cZ
-         goTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704395334; x=1705000134;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WrAc8y7ksD7LSd2oegA9ea7MEhlctFkip+JgP2VCZP0=;
-        b=AwbJNPV/o6pvPhhTGCjMVgZdzEAte8iIYXAJrBEwtOOHp3yUUIGEg5eb6PeObNZLSN
-         ocqBxMX9I40UKducPsaLr/0usQwty74ZcHTk5oyOR4zgPvXrY8RiGEdTOYXmACHoVF2q
-         pzQANw6nzvSVgWBlWuBZmWc9S5hCCf8UbT3vv2eMfasLlqTTTIbQ2Tl74sO9iueUv/Xo
-         QR0nRVM8Ta2WnROJ8LPd0LFbpqrP8oW8xLSzRkkWD84wIUzPomRarUnZL40B0Ddc4lV5
-         qGjMh/ERlb0DE7FSjRIhGbnZxhlP8sBWyW1nE/Xc1+EjwDtisnOhJpTjx9bw4p9cLY+d
-         kbTg==
-X-Gm-Message-State: AOJu0Ywj356AI/xM2UphsOMhONmFMVOrPK7MqIXS7x6qlFSbDo/Ui0b4
-	CPO+g0P4uxpmedXu98/atMJZILO9tA60tg==
-X-Google-Smtp-Source: 
- AGHT+IElHsOKbL1fqCBl0CKJPvAcZft0+Oj3qVO7GyVQ09CYlZLBhjYBlruXCP558WmXPYbFC/nktA==
-X-Received: by 2002:a05:6512:281e:b0:50e:6a13:cd23 with SMTP id
- cf30-20020a056512281e00b0050e6a13cd23mr438168lfb.128.1704395334182;
-        Thu, 04 Jan 2024 11:08:54 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id
- d8-20020a50fe88000000b005545dffa0bdsm39971edt.13.2024.01.04.11.08.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Jan 2024 11:08:53 -0800 (PST)
-Message-ID: <d2d17b94-6f29-423d-a7e0-e24513a8e59f@linaro.org>
-Date: Thu, 4 Jan 2024 20:08:50 +0100
-MIME-Version: 1.0
+ unprotected) header.d=Nvidia.com header.i=@Nvidia.com header.a=rsa-sha256
+ header.s=selector2 header.b=hgiuhsQF
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kWu1xHngqbfdp2Sw0ggPeJnB3ehuTI8zD3ksUxawk2sobubHujoDt5ZXK0IelJM5ZE3ZjTRl0iqfq3XnhW4IK7ujiNsT96PsN26QqmFz+18VMbaOavwmyPzkOuyIXQCRqihW7MegFz1YgzTpQxKsoYaubW0MvVrnjgH6KprBaW2LQznvydf2dnPKCQDvKGuG8l07FB8pR8zLfr+KW4RUYDN8VxjuaRzFm1Eicl1+78Sug1hRa1KkwU+go8eykjZHXuvRrqpEF+4kRs87/PButgtb52+bSt7DfQH+B4QyYNNad0BbVZg2FkQJQJBcMxCgBkZ1UC4JbZyo9c69bbbuAA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Z9Q01E6HOzlASmQ34hVpCXl9hlptHHM5uIRpczARrrU=;
+ b=OV3ZhAsmZXWS3YmOBfxo13c6JZlTim0Gw0pAb0Mm4ve9PE/HslVC8XpQmYhFqvtgjIVPEDbEbh/sVmgGtfMiKKVvWVo6Hl6Sao2XmvGLIkQEt48pl6zmuvCZ51uTPjGc98wHBfIhAK2gCjyUwoVyTWjW36C77vlGxIPD8eY4gr1Fiaas/OixNGdGnysxZmFqFxpibVkzyr4nvRbCU7SK6cE4pp9bHyg3DOEeC5lhrSYzqFPBpl/ZqTxzY9WIPFv/giBEbRsOCXfIGhoZj95LfHztMNc0Pbj0ir4y+qc208kgxVTtSrri5O+0hC+aZPZcVBMHA7GU+9CAwon2QCZyDw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Z9Q01E6HOzlASmQ34hVpCXl9hlptHHM5uIRpczARrrU=;
+ b=hgiuhsQFc7zLoDkh7Lu+IvLPKxQK1fOZDd5EsxtquD6VlssFECl6bRPl64LzX/31CKSPECa6QliiE5sfrzufFeyr6k3aYNHVY4pn29EabAZThxzdIVMUhVypVgYF1RfO2UjO5wXgdD90A7328BfZtACrs8EiXSrrI14ItBCy0NAJgHamMiteia/4BR1HhfQnv/t3EnHLM8pb2b/WkgYGFMuxGxpDMQoHdGFzA3bIOvW9wqV7qDSoKl0OfwqRMh2T5ZV4ysy4U5+/2PKYp+OScjC17mcp3M2Wqj7DwhqAruJuyhWm5m7kZc2CNk4bBIA7pMwTnQqfDUtdS4mf8VYX4A==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from BYAPR12MB3205.namprd12.prod.outlook.com (2603:10b6:a03:134::32)
+ by BN9PR12MB5276.namprd12.prod.outlook.com (2603:10b6:408:101::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.16; Fri, 5 Jan
+ 2024 04:54:27 +0000
+Received: from BYAPR12MB3205.namprd12.prod.outlook.com
+ ([fe80::48ee:1bc7:7fdf:cd13]) by BYAPR12MB3205.namprd12.prod.outlook.com
+ ([fe80::48ee:1bc7:7fdf:cd13%7]) with mapi id 15.20.7159.015; Fri, 5 Jan 2024
+ 04:54:26 +0000
+Message-ID: <3faec2e9-8cd9-46f9-8807-801922de0edf@nvidia.com>
+Date: Fri, 5 Jan 2024 10:24:18 +0530
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/4] reset: add GPIO-based reset controller
+Subject: Re: Query on audio-graph-card DT binding
 Content-Language: en-US
-To: Sean Anderson <sean.anderson@seco.com>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Banajit Goswami <bgoswami@quicinc.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Cc: Bartosz Golaszewski <brgl@bgdev.pl>
-References: <20231222150133.732662-1-krzysztof.kozlowski@linaro.org>
- <20231222150133.732662-3-krzysztof.kozlowski@linaro.org>
- <530e3473-eb3b-477c-8599-e7aa12779640@seco.com>
- <88bd6668-7e67-42c7-97b6-d7029f371349@linaro.org>
- <075990bb-5fdb-4d30-9484-9df6b978e805@seco.com>
- <fcbae47b-3b28-42f0-b93f-f83932025dc1@linaro.org>
- <2be19fbf-4c73-4594-be42-31587dc7b747@seco.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <2be19fbf-4c73-4594-be42-31587dc7b747@seco.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: WPTIL2BUXOC2NPNSUZ5TLZBLOLP32QH7
-X-Message-ID-Hash: WPTIL2BUXOC2NPNSUZ5TLZBLOLP32QH7
-X-MailFrom: krzysztof.kozlowski@linaro.org
+To: Mark Brown <broonie@kernel.org>, Thierry Reding <thierry.reding@gmail.com>
+Cc: alsa-devel@alsa-project.org,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ devicetree@vger.kernel.org, robh+dt@kernel.org,
+ Jon Hunter <jonathanh@nvidia.com>, linux-tegra@vger.kernel.org
+References: <dfe363ef-4638-4b5e-8308-73e286ac0b50@nvidia.com>
+ <ZZblyhfzQjzyoUc_@orome.fritz.box>
+ <42c0c4fa-585e-4194-bbe4-e0377c87e632@sirena.org.uk>
+From: Sameer Pujar <spujar@nvidia.com>
+In-Reply-To: <42c0c4fa-585e-4194-bbe4-e0377c87e632@sirena.org.uk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: PN2PR01CA0254.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:c01:21a::20) To BYAPR12MB3205.namprd12.prod.outlook.com
+ (2603:10b6:a03:134::32)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BYAPR12MB3205:EE_|BN9PR12MB5276:EE_
+X-MS-Office365-Filtering-Correlation-Id: b60b7eae-3744-49de-d811-08dc0daa6478
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	MJIYukjhHixb7HFfkXVEDExH/TPElfgzzDoS9PksjPB9il9vURKOvAyv83KR4da+qarTPWotPf8avMw6lNIfhHo2W3oVK8k66lATMf/UjnH7TBB3V4mML3WDMSHrErVrk1ujLBTXDrEph52CZc3us7nc3mHE+sLksg5N+hX8nktH+99C1hBeAVSmS0A7RfnjfCg59w5M+/EwS77gmoYTvQfMhUVpIGRJ5vePAnc9+zVM19VhmfVa2cXgKmnITYVVqgxt9v7rPWJLq5BZ+8dELauljX3UV9j3PQfdqEU7sGL/NapbYK+MO4AroQYK2wsllJsfDFNyO/hU4gzBwcDcpgtfT2jw6mjgqLS+Sx3N6OJbmEkPXnYZ5v54GytHubx5nc9knSXUICQXHqAaN6jmsxukwa9ecIc1/j49ANOEA4Ez5mL6Q/qYvvCwiaSRtmb9oED22rBvX7gV5xG6N3U8oI2hfzJGk0W0YBZ/+30nt/5bP8UT5pqmJgVLYTL6reTsLVraDA3iiZH9c5y/W0tinsOd5xYiOQ/ygyt8FzxCgVG6JkV1T5eiEJ7ttAeQl2dUOSAd0Hb0O1f+evsNZ0NlnmF4jzl8vb+HwQIN+gvYb8HJweYhJBGBnuO1ABILWWLad+gtzZaJ5tZBQV8Y03M2ioyjtoiBTbe3WVFu3JAAJcrFZFxV3/GzxRqIuKnW67dqJq3Xf7IjVA/UvlfltVKRLKtuwWLcM5rfc/bYkonQ3Tg=
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB3205.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(366004)(39860400002)(396003)(136003)(230273577357003)(230173577357003)(230922051799003)(451199024)(1800799012)(186009)(64100799003)(2616005)(26005)(6666004)(53546011)(6506007)(6512007)(86362001)(83380400001)(4326008)(316002)(54906003)(110136005)(8676002)(8936002)(2906002)(36756003)(5660300002)(6486002)(478600001)(66476007)(66556008)(66946007)(38100700002)(31696002)(31686004)(41300700001)(2013699003)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?utf-8?B?UHFheG1nRlc4d1dEVFBUNmp3Z2pHM3F6V3psZmpqWW1URmlHWGsyNzAzNmx6?=
+ =?utf-8?B?bEdYVU1mY2Nza1RIa1lIY1lPUWg0cEY4MWd4NHVJNjJQWEJpLzJvNlJvVzdj?=
+ =?utf-8?B?azBGb3Y3MnlmbWpCOFBrNS8wVFFJZFc1Z1FDWnh5SW1XRTh4SDlReU42ZXdL?=
+ =?utf-8?B?aWZFYVF0aDRjczZ0bmVZQW94RGRZWFJJMGtqQlJTVFpEK3FXR25Hc2NsR0p1?=
+ =?utf-8?B?SzFUc3ZIZDAxRkxnZWlEL2Z4WlpCTUFMUkQ2SXhUWld3T3BUV1Q1NEk3Mm5N?=
+ =?utf-8?B?ZUhwUEc4NnlqSDlVK1cvUThYUXQ3ME44WUd5R3hTU0N0aC9IZkZ6cERGMHJ6?=
+ =?utf-8?B?OVVzY3lLbm85aGtDR05NMXJXcUo4Nm5sTFBwaE04ekJtb2FMTnNybCt5K2dI?=
+ =?utf-8?B?N2wyTk9XZ2pXVWxzTjBTZEdWZWVYY1hKL3FEM3lERVBIZUtrTEFmd2w1eS9k?=
+ =?utf-8?B?YnJLNUFSVFlXb1AvT3NFMUNHNjhCZXNlWTlvdHN1Q210aVVaTDVTUUJOUVpS?=
+ =?utf-8?B?eGhZcWo3QWJYdHFnT2pYNEpnZUhJVXJxNkQ3SXh3QzFmeStvM3VIODQrV1Jh?=
+ =?utf-8?B?d2FMWE1DZDVGemJ3VHEzZGowVlRLRVlXUmNYVHZ3RGI5MDVhRDBQanhxK0l5?=
+ =?utf-8?B?ZklCNnhrTkc2UFNxT3FrM2N2NkU3WjNlejJYMm1neUZDWUppM3dvMjMrazlw?=
+ =?utf-8?B?ektHOUgyYmxJRng1SU5GbHY4bVlOWFUxUEE1Qm1rSTlBVGNSdzRhTnRqUDRq?=
+ =?utf-8?B?V2dIbHZrQkZoRmd3eU1ScHM0NzdMN0VVRElVQVNpNEs0TVFoZFlXTzVzL0Nq?=
+ =?utf-8?B?aFdQWTdsNVJiU3FoTVMwY2lERGxEekNDT1JqUUdDOHV6U3ZrcXUzWEJ4azZh?=
+ =?utf-8?B?MTRvYjVTVFVISVV2eGVlVjlkckhjVDNjRW4wSUdBTERvZHRZdnpZVW5GQlh4?=
+ =?utf-8?B?SVdBSFhqRzY4aTYvNTRYZ09sMXdJT25Kai9sVmZSVnpkRTdmOU9BbWlORVo3?=
+ =?utf-8?B?d1ZMVWx1WTBkWmMrT1ZXcHFYcm5wOVNXRHBJREd0aFR5aE9EWUxuY2IxVXQ1?=
+ =?utf-8?B?Q3dqOFR5eFNudStPRFRYd0tJQU9NYjUvUnZmc0wwWHZWSjROdXFrVHpJeFFq?=
+ =?utf-8?B?clpEd0xYUU9YOGJmNTdCN0JBbVlINGs3VHc4STBib1lSZE9DM1VFL1Q3RXM5?=
+ =?utf-8?B?dGlQZ3NzbFZnT3JtSHM5YmY1ZE9hRElkMmJkZFRMbmFyK3JIL2YzOUhTRjFi?=
+ =?utf-8?B?Y2tIWEx6NStRSzJwSFhVQldhRDNtMkNtSFduc25MMWZrSUVPYStYM0xzcWxz?=
+ =?utf-8?B?c21jdldXZnBONy9WbFQ2ZERBYnE3ZzZJTE9OeEQ4VzFxVGJZSUN6RVNOaTdH?=
+ =?utf-8?B?RmlPUzhJVEFvQ2VWeFVhYmp3Sk1Rb0c3WGxXOHNFNFNrNkN5NXFmMk0xbmps?=
+ =?utf-8?B?LzFTVUs4b1pxY1F6ZjR0em9LbnViWFJUUCswdmlibHJGMndoUjdneEMyRWNV?=
+ =?utf-8?B?NTc3WXd5SDJCbDBTSjVWWlFiZXk2RkdOL0oyeloyd200b3FoaGJWaG0vTTV3?=
+ =?utf-8?B?bnpqRWdwbGZieWhTR0R4T284Vk5jN25qV1MzSGJMRkI0aEpJcU8zOFRWSnV1?=
+ =?utf-8?B?aU5QNEcwanl5K0tCRkdFTy9QNFZPZUs3RWEvZHB5QjFTd0EwZDZ5Nlo0SkFk?=
+ =?utf-8?B?czNwbUdqOHQxYVc4RktsYnFKZ1hMMkVDdlc3RVo4aEE5YU5COVBvTXZUQ09I?=
+ =?utf-8?B?QW82RG96U3RVRWpKS1drQXBWQVJoMEpSYXhUQ0FhUHZJcGZadU5QTlJ6MEVG?=
+ =?utf-8?B?cjZScUIrQ0JhN0htdEEweTBMdkpqNUdNWXFHZTBZTXVGd1UwWlJyalA5UTBL?=
+ =?utf-8?B?d1R0T0tpTTFSRy9Iam8xUk1kdjVCZkNLdGRZMFNXOGREa3lWNlJHZUgxVFhD?=
+ =?utf-8?B?bHgwZ1RXUWpHUVlFeDFSY1h3WFJ3dDAvbm85Vlp2SjJWTGtPVXh0ekF4RkhD?=
+ =?utf-8?B?cExFN01ub3c0bFRjMlhFZW1ZZVdTQjVyQUVpU1lSdFBWL2o5Tk53dzc2OUJj?=
+ =?utf-8?B?TjUxNVQvYjltUVdxb2FiWmxpaGtBdHppMDk2OTIxS1NUbzAyOTZ0SWNPdWxz?=
+ =?utf-8?Q?zMLmMUIJqvdp099TzkCysDWzm?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 
+ b60b7eae-3744-49de-d811-08dc0daa6478
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB3205.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Jan 2024 04:54:26.4336
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 
+ UOuYdsX2jyeqCDTo7jCDlK8hjXBcLKs4HJclb3vk5jpnIsmxdwqja82Fhd1UB/rnX0ia/pzyk1+0SgupE2dOKg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR12MB5276
+Message-ID-Hash: GRBL7QIWD6SM7K3JXMYPIIZGWEYSANHU
+X-Message-ID-Hash: GRBL7QIWD6SM7K3JXMYPIIZGWEYSANHU
+X-MailFrom: spujar@nvidia.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -170,7 +162,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WPTIL2BUXOC2NPNSUZ5TLZBLOLP32QH7/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GRBL7QIWD6SM7K3JXMYPIIZGWEYSANHU/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -179,205 +171,45 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 04/01/2024 17:30, Sean Anderson wrote:
-> On 1/4/24 11:08, Krzysztof Kozlowski wrote:
->> On 04/01/2024 17:04, Sean Anderson wrote:
->>> On 1/4/24 03:57, Krzysztof Kozlowski wrote:
->>>> On 28/12/2023 17:05, Sean Anderson wrote:
->>>>> On 12/22/23 10:01, Krzysztof Kozlowski wrote:
->>>>>> Add simple driver to control GPIO-based resets using the reset
->>>>>> controller API for the cases when the GPIOs are shared and reset should
->>>>>> be coordinated.  The driver is expected to be used by reset core
->>>>>> framework for ad-hoc reset controllers.
->>>>>
->>>>> How do we handle power sequencing? Often GPIOs need some pre/post delay in
->>>>> order to ensure proper power sequencing. For regular reset drivers, this is
->>>>> internal to the driver.
->>>>
->>>> It's not part of this patchset. Power sequencing is an old topic and
->>>> generic solutions were failing, rejected, did not solve the problems,
->>>> etc (choose your reason).
->>>>
->>>> Delays are device specific, so they go to drivers (depending on the
->>>> compatible). Complex power sequencing is way too much for simplified
->>>> reset-framework handling, so anyway it is expected you do it in your driver.
->>>
->>> Well, the reason to bring it up is twofold:
->>>
->>> - Traditionally, drivers expect the reset controller to handle all
->>>   necessary delays. For example, reset-k210 includes a 10us delay
->>>   between asserting and deasserting the reset. There's a similar thing
->>>   in reset-imx7, and several other reset drivers.
->>> - We would need to add custom assert/deassert delays to every driver
->>>   using this interface. These are not always added, since any given
->>>   device may require delays which can be inferred from its compatible.
->>>   However, an integrated system may require delays to be different from
->>>   what any individual device requires.
->>>
->>>>>
->>>>> Maybe something like
->>>>>
->>>>> my-device {
->>>>> 	reset-gpios = <&gpio 555 GPIO_ACTIVE_LOW>;
->>>>>         reset-gpios-post-deassert-us = <100>;
->>>>
->>>> Feel free to add it later. This patchset, and actually all patches
->>>> should, solves one problem while allowing you to extend it later.
->>>
->>> Yes, but we should try to avoid creating problems for ourselves in the
->>> future.
->>>
->>>> If there is a architectural problem in my approach not allowing you to
->>>> extend it later, then we should discuss it.
->>>
->>> Well, I brought up just such an architectural issue below...
->>
->> Sorry, but where the issue? You did not present any arguments stating
->> that it is not possible to add your feature.
->>
->> What is the problem to parse that property?
->>
->>>
->>>>> };
->>>>>
->>>>> Of course, this is a bit ambiguous if you have multiple devices using the same
->>>>> GPIO with different delays.
->>>
->>> This is the most concerning one to me.
->>>
->>>>> Maybe we take the max? But the driver below seems
->>>>> to only have access to one device. Which I suppose begs the question: how do
->>>>> we know when it's safe to deassert the reset (e.g. we've gotten to the point
->>>>> where all devices using this reset gpio have gotten far enough to detect that
->>>>> they use it)?
->>>>
->>>> The driver (reset consumer) knows when it is safe or not. You must
->>>> implement proper reset handling in your driver.
->>>
->>> The driver has no idea whether it is safe or not. It just calls
->>> reset_assert/deassert at the appropriate time, and the reset
->>> framework/controller is supposed to coordinate things so e.g. the device
->>> doesn't get reset multiple times as multiple drivers all probe.
->>
->>
->> Sorry, then I don't get what you refer to. The driver calls deassert
->> when it is safe for it to do it, so the driver *knows*. Now, you claim
->> that driver does not know that... core also does not know, so no one knows.
-> 
-> Yes! That is the problem with this design. Someone has to coordinate the
-> reset, and it can't be the driver. But the core also doesn't have enough
-> information. So no one can do it.
-
-The point is that the driver coordinates.
-
-> 
-> For example, say we want to share a reset GPIO between two devices. Each
-> device has the following constraints:
-> 
-> device post-assert delay post-deassert delay
-> ====== ================= ===================
-> A                  500us                 1ms
-> B                    1ms               300us
-
-And now imagine that these values are incompatible between them, so
-using 1ms on device A is wrong - too long.
-
-This is just not doable. You invented some imaginary case to prove that
-hardware is broken.
-
-Now, if we are back to realistic cases - use just the longest reset time.
 
 
+On 04-01-2024 22:52, Mark Brown wrote:
+> On Thu, Jan 04, 2024 at 06:07:22PM +0100, Thierry Reding wrote:
+>> On Tue, Dec 26, 2023 at 09:58:02PM +0530, Sameer Pujar wrote:
+>>>                /-----> codec1 endpoint
+>>>               /
+>>> CPU endpoint \
+>>>                \-----> codec2 endpoint
+>> Can you describe the use-case? Is there a need to switch between codec1
+>> and codec2 endpoints or do they receive the same data in parallel all
+>> the time?
+>> Could this perhaps be described by adding multiple CPU ports with one
+>> endpoint each?
+> Don't know about the specific use case that Sameer is looking at but to
+> me this looks like a surround sound setup where multiple stereo (or
+> mono) DACs are wired in parallel, either with a TDM setup or with
+> multiple data lines.  There's multiple CODECs all taking input from a
+> single host controller.
 
-> 
-> If we leave things up to the drivers, then whoever probes first will get
-> to decide the reset sequence.
+Yes, it is a TDM use case where the same clock and data line is shared 
+with multiple CODECs. Each CODEC is expected to pickup data based on the 
+allotted TDM slot.
 
-In current design yes, but it's not a problem to change it. Where is the
-limitation? Just read other values and update the reset time.
+It is possible to create multiple CPU dummy endpoints and use these in 
+DT binding for each CODEC. I am not sure if this is the best way right 
+now. There are few things to note here with dummy endpoints. First, it 
+leads to bit of duplication of endpoint DAIs and DAI links for these. 
+Please note that host controller pins are actually shared with external 
+CODECs. So shouldn't DT provide a way to represent this connection? 
+Second, ASoC provides a way to represent multiple CODECs on a single DAI 
+link in the driver and my concern is to understand if present binding 
+can be extended to represent this scenario. Third, one of the user 
+wanted to connect 6 CODECs and that is the maximum request I have seen 
+so far. I can expose additional dummy CPU DAIs keeping this maximum 
+request in mind, but not sure if users would like to extend it further. 
+The concern I have is, how can we make this easily extendible and 
+simpler to use?
 
-> 
-> So if we choose the post-assert delay to be 1ms and the post-deassert
-> delay to be 1ms then everyone is happy. How can we make sure the reset
-
-No, not everyone is happy, if these values are incompatible. OTOH, if
-they are compatible, just put same values to your DTS, because that's
-the requirement of the reset line.
-
-> controller enforces this? Well, we can do the above thing and specify
-> something like
-> 
-> A {
->     reset-gpios = <&gpio 555 GPIO_ACTIVE_LOW>;
->     reset-gpios-post-assert-us = <1000>;
->     reset-gpios-post-deassert-us = <1000>;
-> };
-> 
-> B {
->     reset-gpios = <&gpio 555 GPIO_ACTIVE_LOW>;
-> };
-> 
-> But what if B gets probed first? Then we will have to also specify the
-> delays on B as well. I'm not a big fan of this because
-
-It's a shared reset line, thus the shared or global delays can be
-described in every place. That's for DT correctness. Now from the driver
-point of view, there is no problem to update the reset values after
-probing A.
-
-> 
-> - We have to specify (identical) delays in every consumer (instead of
->   having a central place to put the delays)
-> - Having the delays depend on the probe order (if one of the consumers'
->   delays don't match) will result in bugs for board maintainers. Maybe
->   we should just warn in that case and that is enough?
-
-No, it does not depend. Just update the values.
-
-> - Actually, the same problem exists for reset-gpios (e.g. if one driver
->   specifies ACTIVE_HIGH and another specifies ACTIVE_LOW).
-
-No, actually this is handled. This is not a shared reset line and it
-will not be handled. Second device probe should fail.
-
-> 
-> Maybe the delays should go instead on the gpio controller? So something
-> like (taking inspiration from gpio-hog):
-
-We talked about this for other patchsets and answer was no, that's not
-the property of GPIO.
-
-> 
-> gpio {
-> 	gpio-controller;
-> 	#gpio-cells = <2>;
-> 
-> 	my-reset {
-> 		gpio-reset;
-> 		gpio = <555 GPIO_ACTIVE_LOW>;
-> 		post-assert-us = <1000>;
-> 		post-deassert-us = <1000>;
-> 	};
-> };
-> 
->> Hm, wait, now maybe I understand your concern. Did you read the
->> patchset? This is for the coordinated, shared, non-exclusive reset by
->> design.  And as stated during previous discussions: that's the driver's
->> job to be sure it is called like that.
-> 
-> Well, one of the major advantages of moving GPIO resets to a reset
-> controller is that the reset framework can coordinate things if we want.
-> This is a rather natural extension of this patchset IMO. Even if you are
-> not adding this functionality now, it is good not to make it difficult
-> for future work.
-
-And nothing is made here difficult. You want same delays on each
-consumer? No problem in adding them, just few lines. You want
-contradictory or inconsistent delays? A bit more code, but still nothing
-here is blocked. You want totally random stuff because hardware is
-broken? You might need to write dedicated reset controller for your case
-because generic binding stops being generic for such cases.
-
-Best regards,
-Krzysztof
-
+With custom DT bindings it may be simpler to resolve this, but Tegra 
+audio presently relies on standard graph remote-endpoints binding. So I 
+guess diverging from this may not be preferable?
