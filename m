@@ -4,84 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 535A0C3DA6E
-	for <alsa-devel@archiver.kernel.org>; Fri,  5 Jan 2024 16:00:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0BC31C3DA6E
+	for <alsa-devel@archiver.kernel.org>; Fri,  5 Jan 2024 16:01:02 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A3300E7B;
-	Fri,  5 Jan 2024 17:00:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A3300E7B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3ADACE79;
+	Fri,  5 Jan 2024 17:00:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3ADACE79
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1704470445;
-	bh=bc+iXpdz9DbsJ3J2wS5bEwodgL6YbnpTsc8B/pGoOSM=;
+	s=default; t=1704470461;
+	bh=zd6Bmh48g7rsM+87XsXBkxNU+Zs2Yu+NMiweLujpj9I=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=VILgyBcFEFr5TJ8rhlXNd5xw2WLOtk0D0cd3eBEcZtgKkJke8ncaCwV3fqyyZ0TOM
-	 9vhkex0xrBZWjQvmATtNAJzxLV7j1CJQXJ7/kwuJYm9HLLJk0Au8HAUFV/A+6TorJV
-	 76rOVq5OntjDilcoXwARMUUDGG3PdyO0G3t+owkQ=
+	b=tXNnKzArsPqz9KnXtGW7gskrj1itWeTJbJ7ZCrPbY8Z+itQ4g3OXV9hmE14E5cGgd
+	 8tl8eVphwRy1SLuj60d9Ep7gKuyBh7fHHqZWcrLV2Y4mhBmuxuwWH5CiK6Fj6uFm36
+	 0+iU4nVVU0E2royyk9BF7w4kQmmEATkteXqHd0DU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B5766F805E3; Fri,  5 Jan 2024 16:59:49 +0100 (CET)
+	id AD2B4F80619; Fri,  5 Jan 2024 16:59:52 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 392E4F805E8;
-	Fri,  5 Jan 2024 16:59:49 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id EE1A5F805F4;
+	Fri,  5 Jan 2024 16:59:51 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6DF1AF8058C; Fri,  5 Jan 2024 16:59:43 +0100 (CET)
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com
- [IPv6:2a00:1450:4864:20::62f])
+	id 720EEF8055B; Fri,  5 Jan 2024 16:59:43 +0100 (CET)
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com
+ [IPv6:2a00:1450:4864:20::32e])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id EF7E3F80496
-	for <alsa-devel@alsa-project.org>; Fri,  5 Jan 2024 16:59:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EF7E3F80496
+	by alsa1.perex.cz (Postfix) with ESMTPS id 0C9EFF804B2
+	for <alsa-devel@alsa-project.org>; Fri,  5 Jan 2024 16:59:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0C9EFF804B2
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=WczM9FPy
-Received: by mail-ej1-x62f.google.com with SMTP id
- a640c23a62f3a-a26fa294e56so181104166b.0
+ header.s=google header.b=G0LJtZHE
+Received: by mail-wm1-x32e.google.com with SMTP id
+ 5b1f17b1804b1-40b5155e154so19033835e9.3
         for <alsa-devel@alsa-project.org>;
- Fri, 05 Jan 2024 07:59:27 -0800 (PST)
+ Fri, 05 Jan 2024 07:59:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704470367; x=1705075167;
+        d=linaro.org; s=google; t=1704470370; x=1705075170;
  darn=alsa-project.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=2tTyPxtOHyPhs2m2q+fBlzqfN887mU2OuCBzVF3uVpc=;
-        b=WczM9FPyrV8RfP9ekF8U0T2Ki+9ZueGAb2eyNUZ02HXuFRF9CH3AJywly5ZFnvbIN5
-         NBrigWRb+NRmoSFVehFqQ8Lch1M2XjXvzjcZTKmiZQDbVEp0yBOxgLzrTZFjxq2NbAhU
-         treY1iy1409EWfoKR8vf5G8+A39LV2liy4Chb930TfGx3pYnasxzfvzRLpH+Ezw6OTMT
-         weyHn8MYU9NlmwO1h8RJTMhcvFcUjV0hjeBSTty1NAWJJNr9QULMrHHPJalnrDUWDHk2
-         UTjfjj0hLUqZSwwJlf7z8t/+uSyzrgn8yywFHMluvM7EPsrQwiluHoPBhPPt46OjKeO0
-         XQug==
+        bh=qJ0gjfKMOfp9CH0Fl1AfdBLtnAI1t5WhWrFWLERW/vA=;
+        b=G0LJtZHEsZnIS23O7tw6rYTHl0Zql+FM8jycdK29LLL0uSiIzsPz3SwqqLsKT6Y/Ym
+         2/6Qn4SKBWLEENuk4SDnXtIJNI2LSJcK1zyTXl2DdY3NYQ91pDNkQg/yN8K4k3ARiX2D
+         mxy+zNxaXQ3pDy6nR8IF/3yAc1pPseRUODjbew/XXaiTgpY5K6/sYOPaDQBWd+WNK/N1
+         hfOWdQ7VPvD90Od94LfXkLsXcG1mjUCO0PMs+1GSRU8B1jceL9iu5NffTul6KySjb40O
+         N5VXdaEu6lkAD42hsKwO51oXQuZrrW6c2svHxr1BUAdYP6GmghklLwrtP2WvmlzY1ceY
+         eb/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704470367; x=1705075167;
+        d=1e100.net; s=20230601; t=1704470370; x=1705075170;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=2tTyPxtOHyPhs2m2q+fBlzqfN887mU2OuCBzVF3uVpc=;
-        b=IPv4IzW+bSIZJfVNKAlwraKzPldvaJi//7psPxrWd2m92VHEr/UfQ9jFQUiXFyAYER
-         Unei/2Mdfj3VGZniP58tHFZ0Vsm0hIiiZsBdu1iffZMDBlm+uRVDQNaHk3pA/PspL9k2
-         FaGoXVImoOWRG2rnvbLa3bMxfJ1eGRzH9GLqhPeSVM+AFYhykKasjyIdZm1Op6MSpGxy
-         TnBREDBp+ePukwtXC1PSAtYIhhiNAqvldZErQgjMIdD4QQlxNMXZThRZ9Xuy7fVOI9r5
-         KJ4LkwOTxb71bdGcmuUXBKMLBS7cKuNWHFLmwMbYq5cMxD6aNwrSl+8v0N6okA1StQX4
-         2sVQ==
-X-Gm-Message-State: AOJu0YzRfGU3ZARRVHmmSLnDBlLyUijmMdGhqGrd6u3Uov7b3pb06iJL
-	Cv2xB7CD/Zz7m9hgjjTLdEdoTXpf4WHxXw==
+        bh=qJ0gjfKMOfp9CH0Fl1AfdBLtnAI1t5WhWrFWLERW/vA=;
+        b=qkbOVHxonH/jpMG6J8ZCYUqurypCaChKUwXda025obQZYBoyboDtUk6B6ON8Mpxafa
+         +cTeeVp16h1ToF8d02VG6ZQz8232FO+8j8N4f3806Algey3rfQ3TZ+jC7eoFIuXg9Hjd
+         t/+Cjhl/LgWWZNGq90RQyuhRw0/+b/qGL+Rf0VklIuLbcVuAidR0SrlReUzPyBjB9G3k
+         yFgN4zTDf0jfnYgE6BI1KqyTsq+I6MgSREX49YhE8FcNpdLuIcv1Y3HBKS7YZX3Il1VD
+         aWK9HhViodd9/9mjGUUF8kDf3FP59krYkBAehcGp/YX2MuZZIBNHc2V6MLAWINFUFc/C
+         Lwwg==
+X-Gm-Message-State: AOJu0Yx+LovN71LDWBydZzy/D/U0zD+2Io4KKOCzE5naDj6uodwbUFmc
+	e3HEVf9YMHunLuxeexB8BYrC4mWLM3wGgw==
 X-Google-Smtp-Source: 
- AGHT+IEJllJOQYWFJfcK4fFNCU2+uk/9rAtZgBP1Rn9juMOU1AONaO8vekFgnIMLnJEdjkon7/9SEQ==
-X-Received: by 2002:a17:907:98a:b0:a27:d9ef:8ab with SMTP id
- bf10-20020a170907098a00b00a27d9ef08abmr1310502ejc.2.1704470366902;
-        Fri, 05 Jan 2024 07:59:26 -0800 (PST)
+ AGHT+IGj8XXcjRZqX0CMRZnlgyrYxQ9F41PD/Rl4Wzog+acUIvZibg08DZgrOQHo9/UmfHMwsM5gyA==
+X-Received: by 2002:a05:600c:a0b:b0:40d:8dcc:ffd6 with SMTP id
+ z11-20020a05600c0a0b00b0040d8dccffd6mr1236643wmp.136.1704470370692;
+        Fri, 05 Jan 2024 07:59:30 -0800 (PST)
 Received: from krzk-bin.. ([178.197.223.112])
         by smtp.gmail.com with ESMTPSA id
- su8-20020a17090703c800b00a29910a9366sm326024ejb.8.2024.01.05.07.59.25
+ su8-20020a17090703c800b00a29910a9366sm326024ejb.8.2024.01.05.07.59.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Jan 2024 07:59:26 -0800 (PST)
+        Fri, 05 Jan 2024 07:59:30 -0800 (PST)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
 	Banajit Goswami <bgoswami@quicinc.com>,
@@ -103,17 +103,16 @@ To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
 Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
 	Bartosz Golaszewski <brgl@bgdev.pl>,
 	Sean Anderson <sean.anderson@seco.com>
-Subject: [PATCH v2 2/4] reset: Instantiate reset GPIO controller for shared
- reset-gpios
-Date: Fri,  5 Jan 2024 16:59:16 +0100
-Message-Id: <20240105155918.279657-3-krzysztof.kozlowski@linaro.org>
+Subject: [PATCH v2 4/4] ASoC: codecs: wsa884x: Allow sharing reset GPIO
+Date: Fri,  5 Jan 2024 16:59:18 +0100
+Message-Id: <20240105155918.279657-5-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240105155918.279657-1-krzysztof.kozlowski@linaro.org>
 References: <20240105155918.279657-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: SM5PZCD7QHQXJNH2EPTL53H3TUCJHYZB
-X-Message-ID-Hash: SM5PZCD7QHQXJNH2EPTL53H3TUCJHYZB
+Message-ID-Hash: V4DVBOBBRQI7QAD7EPH6MQRZWBCQAFFS
+X-Message-ID-Hash: V4DVBOBBRQI7QAD7EPH6MQRZWBCQAFFS
 X-MailFrom: krzysztof.kozlowski@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -126,7 +125,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SM5PZCD7QHQXJNH2EPTL53H3TUCJHYZB/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/V4DVBOBBRQI7QAD7EPH6MQRZWBCQAFFS/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -135,278 +134,124 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Devices sharing a reset GPIO could use the reset framework for
-coordinated handling of that shared GPIO line.  We have several cases of
-such needs, at least for Devicetree-based platforms.
+On some boards with multiple WSA8840/WSA8845 speakers, the reset
+(shutdown) GPIO is shared between two speakers.  Use the reset
+controller framework and its "reset-gpio" driver to handle this case.
+This allows bring-up and proper handling of all WSA884x speakers on
+X1E80100-CRD board.
 
-If Devicetree-based device requests a reset line, which is missing but
-there is a reset-gpios property, instantiate a new "reset-gpio" platform
-device which will handle such reset line.  This allows seamless handling
-of such shared reset-gpios without need of changing Devicetree binding [1].
-
-All newly registered "reset-gpio" platform devices will be stored on
-their own list to avoid any duplicated devices.  The key to find each of
-such platform device is the entire Devicetree GPIO specifier: phandle to
-GPIO controller, GPIO number and GPIO flags.  If two devices have
-conflicting "reset-gpios" property, e.g. with different ACTIVE_xxx
-flags, this would spawn two separate "reset-gpio" devices, where the
-second would fail probing on busy GPIO reques
-
-Link: https://lore.kernel.org/all/YXi5CUCEi7YmNxXM@robh.at.kernel.org/ [1]
 Cc: Bartosz Golaszewski <brgl@bgdev.pl>
 Cc: Sean Anderson <sean.anderson@seco.com>
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
----
- drivers/reset/core.c             | 176 ++++++++++++++++++++++++++++---
- include/linux/reset-controller.h |   4 +
- 2 files changed, 167 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/reset/core.c b/drivers/reset/core.c
-index 4d5a78d3c085..ec9b3ff419cf 100644
---- a/drivers/reset/core.c
-+++ b/drivers/reset/core.c
+---
+
+If previous patches are fine, then this commit is independent and could
+be taken via ASoC.
+---
+ sound/soc/codecs/wsa884x.c | 53 +++++++++++++++++++++++++++++++-------
+ 1 file changed, 43 insertions(+), 10 deletions(-)
+
+diff --git a/sound/soc/codecs/wsa884x.c b/sound/soc/codecs/wsa884x.c
+index f2653df84e4a..a9767ef0e39d 100644
+--- a/sound/soc/codecs/wsa884x.c
++++ b/sound/soc/codecs/wsa884x.c
 @@ -13,6 +13,7 @@
- #include <linux/module.h>
- #include <linux/of.h>
- #include <linux/acpi.h>
-+#include <linux/platform_device.h>
- #include <linux/reset.h>
- #include <linux/reset-controller.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/regmap.h>
+ #include <linux/regulator/consumer.h>
++#include <linux/reset.h>
  #include <linux/slab.h>
-@@ -23,6 +24,10 @@ static LIST_HEAD(reset_controller_list);
- static DEFINE_MUTEX(reset_lookup_mutex);
- static LIST_HEAD(reset_lookup_list);
- 
-+/* Protects reset_gpio_device_list */
-+static DEFINE_MUTEX(reset_gpio_device_mutex);
-+static LIST_HEAD(reset_gpio_device_list);
-+
- /**
-  * struct reset_control - a reset control
-  * @rcdev: a pointer to the reset controller device
-@@ -63,6 +68,16 @@ struct reset_control_array {
- 	struct reset_control *rstc[] __counted_by(num_rstcs);
+ #include <linux/soundwire/sdw.h>
+ #include <linux/soundwire/sdw_registers.h>
+@@ -699,6 +700,7 @@ struct wsa884x_priv {
+ 	struct sdw_stream_runtime *sruntime;
+ 	struct sdw_port_config port_config[WSA884X_MAX_SWR_PORTS];
+ 	struct gpio_desc *sd_n;
++	struct reset_control *sd_reset;
+ 	bool port_prepared[WSA884X_MAX_SWR_PORTS];
+ 	bool port_enable[WSA884X_MAX_SWR_PORTS];
+ 	unsigned int variant;
+@@ -1799,9 +1801,22 @@ static struct snd_soc_dai_driver wsa884x_dais[] = {
+ 	},
  };
  
-+/**
-+ * struct reset_gpio_device - ad-hoc created reset-gpio device
-+ * @of_args: phandle to the reset controller with all the args like GPIO number
-+ * @list: list entry for the reset_lookup_list
-+ */
-+struct reset_gpio_device {
-+	struct of_phandle_args of_args;
-+	struct list_head list;
-+};
-+
- static const char *rcdev_name(struct reset_controller_dev *rcdev)
+-static void wsa884x_gpio_powerdown(void *data)
++static void wsa884x_reset_powerdown(void *data)
  {
- 	if (rcdev->dev)
-@@ -813,13 +828,119 @@ static void __reset_control_put_internal(struct reset_control *rstc)
- 	kref_put(&rstc->refcnt, __reset_control_release);
+-	gpiod_direction_output(data, 1);
++	struct wsa884x_priv *wsa884x = data;
++
++	if (wsa884x->sd_reset)
++		reset_control_assert(wsa884x->sd_reset);
++	else
++		gpiod_direction_output(wsa884x->sd_n, 1);
++}
++
++static void wsa884x_reset_deassert(struct wsa884x_priv *wsa884x)
++{
++	if (wsa884x->sd_reset)
++		reset_control_deassert(wsa884x->sd_reset);
++	else
++		gpiod_direction_output(wsa884x->sd_n, 0);
  }
  
-+static bool __reset_gpios_args_match(const struct of_phandle_args *a1,
-+				     const struct of_phandle_args *a2)
+ static void wsa884x_regulator_disable(void *data)
+@@ -1809,6 +1824,27 @@ static void wsa884x_regulator_disable(void *data)
+ 	regulator_bulk_disable(WSA884X_SUPPLIES_NUM, data);
+ }
+ 
++static int wsa884x_get_reset(struct device *dev, struct wsa884x_priv *wsa884x)
 +{
-+	unsigned int i;
++	wsa884x->sd_reset = devm_reset_control_get_optional_shared(dev, NULL);
++	if (IS_ERR(wsa884x->sd_reset))
++		return dev_err_probe(dev, PTR_ERR(wsa884x->sd_reset),
++				     "Failed to get reset\n");
++	else if (wsa884x->sd_reset)
++		return 0;
++	/*
++	 * else: NULL, so use the backwards compatible way for powerdown-gpios,
++	 * which does not handle sharing GPIO properly.
++	 */
++	wsa884x->sd_n = devm_gpiod_get_optional(dev, "powerdown",
++						GPIOD_OUT_HIGH);
++	if (IS_ERR(wsa884x->sd_n))
++		return dev_err_probe(dev, PTR_ERR(wsa884x->sd_n),
++				     "Shutdown Control GPIO not found\n");
 +
-+	if (!a2)
-+		return false;
-+
-+	if (a1->args_count != a2->args_count)
-+		return false;
-+
-+	for (i = 0; i < a1->args_count; i++)
-+		if (a1->args[i] != a2->args[i])
-+			break;
-+
-+	/* All args matched? */
-+	if (i == a1->args_count)
-+		return true;
-+
-+	return false;
++	return 0;
 +}
 +
-+/*
-+ * @node:	node of the device requesting reset
-+ * @reset_args:	phandle to the reset controller with all the args like GPIO number
-+ */
-+static int __reset_add_reset_gpio_device(struct device_node *node,
-+					 struct of_phandle_args *args)
-+{
-+	struct reset_gpio_device *rgpio_dev;
-+	struct platform_device *pdev;
-+	int ret;
-+
-+	lockdep_assert_not_held(&reset_list_mutex);
-+
-+	mutex_lock(&reset_gpio_device_mutex);
-+
-+	list_for_each_entry(rgpio_dev, &reset_gpio_device_list, list) {
-+		if (args->np == rgpio_dev->of_args.np) {
-+			if (__reset_gpios_args_match(args,
-+						     &rgpio_dev->of_args)) {
-+				ret = 0;
-+				goto out_unlock;
-+			}
-+		}
-+	}
-+
-+	/* Not freed in normal path, persisent subsyst data */
-+	rgpio_dev = kzalloc(sizeof(*rgpio_dev), GFP_KERNEL);
-+	if (!rgpio_dev) {
-+		ret = -ENOMEM;
-+		goto out_unlock;
-+	}
-+
-+	rgpio_dev->of_args = *args;
-+	pdev = platform_device_register_data(NULL, "reset-gpio",
-+					     PLATFORM_DEVID_AUTO, &node,
-+					     sizeof(node));
-+	ret = PTR_ERR_OR_ZERO(pdev);
-+	if (!ret)
-+		list_add(&rgpio_dev->list, &reset_gpio_device_list);
-+	else
-+		kfree(rgpio_dev);
-+
-+out_unlock:
-+	mutex_unlock(&reset_gpio_device_mutex);
-+
-+	return ret;
-+}
-+
-+static struct reset_controller_dev *__reset_find_rcdev(struct of_phandle_args *args,
-+						       bool gpio_fallback,
-+						       const void *cookie)
-+{
-+	struct reset_controller_dev *r, *rcdev;
-+
-+	lockdep_assert_held(&reset_list_mutex);
-+
-+	rcdev = NULL;
-+	list_for_each_entry(r, &reset_controller_list, list) {
-+		if (args->np == r->of_node) {
-+			if (gpio_fallback) {
-+				if (__reset_gpios_args_match(args, r->of_args)) {
-+					/*
-+					 * Fake args (take first reset) and
-+					 * args_count (to matcg reset-gpio
-+					 * of_reset_n_cells) because reset-gpio
-+					 * has only one reset and does not care
-+					 * about reset of GPIO specifier.
-+					 */
-+					args->args[0] = 0;
-+					args->args_count = 1;
-+					rcdev = r;
-+					break;
-+				}
-+			} else {
-+				rcdev = r;
-+				break;
-+			}
-+		}
-+	}
-+
-+	return rcdev;
-+}
-+
- struct reset_control *
- __of_reset_control_get(struct device_node *node, const char *id, int index,
- 		       bool shared, bool optional, bool acquired)
+ static int wsa884x_probe(struct sdw_slave *pdev,
+ 			 const struct sdw_device_id *id)
  {
-+	struct of_phandle_args args = {0};
-+	bool gpio_fallback = false;
- 	struct reset_control *rstc;
--	struct reset_controller_dev *r, *rcdev;
--	struct of_phandle_args args;
-+	struct reset_controller_dev *rcdev;
- 	int rstc_id;
- 	int ret;
+@@ -1838,11 +1874,9 @@ static int wsa884x_probe(struct sdw_slave *pdev,
+ 	if (ret)
+ 		return ret;
  
-@@ -839,21 +960,50 @@ __of_reset_control_get(struct device_node *node, const char *id, int index,
- 					 index, &args);
- 	if (ret == -EINVAL)
- 		return ERR_PTR(ret);
--	if (ret)
--		return optional ? NULL : ERR_PTR(ret);
-+	if (ret) {
-+		/*
-+		 * There can be only one reset-gpio for regular devices, so
-+		 * don't bother with GPIO index.
-+		 */
-+		ret = of_parse_phandle_with_args(node, "reset-gpios", "#gpio-cells",
-+						 0, &args);
-+		if (ret)
-+			return optional ? NULL : ERR_PTR(ret);
+-	wsa884x->sd_n = devm_gpiod_get_optional(dev, "powerdown",
+-						GPIOD_OUT_HIGH);
+-	if (IS_ERR(wsa884x->sd_n))
+-		return dev_err_probe(dev, PTR_ERR(wsa884x->sd_n),
+-				     "Shutdown Control GPIO not found\n");
++	ret = wsa884x_get_reset(dev, wsa884x);
++	if (ret)
++		return ret;
  
--	mutex_lock(&reset_list_mutex);
--	rcdev = NULL;
--	list_for_each_entry(r, &reset_controller_list, list) {
--		if (args.np == r->of_node) {
--			rcdev = r;
--			break;
--		}
-+		gpio_fallback = true;
- 	}
+ 	dev_set_drvdata(dev, wsa884x);
+ 	wsa884x->slave = pdev;
+@@ -1858,9 +1892,8 @@ static int wsa884x_probe(struct sdw_slave *pdev,
+ 	pdev->prop.sink_dpn_prop = wsa884x_sink_dpn_prop;
+ 	pdev->prop.scp_int1_mask = SDW_SCP_INT1_BUS_CLASH | SDW_SCP_INT1_PARITY;
  
-+	mutex_lock(&reset_list_mutex);
-+	rcdev = __reset_find_rcdev(&args, gpio_fallback, NULL);
-+
- 	if (!rcdev) {
--		rstc = ERR_PTR(-EPROBE_DEFER);
--		goto out;
-+		if (gpio_fallback) {
-+			/*
-+			 * Registering reset-gpio device might cause immediate
-+			 * bind, thus taking reset_list_mutex lock via
-+			 * reset_controller_register().
-+			 */
-+			mutex_unlock(&reset_list_mutex);
-+			ret = __reset_add_reset_gpio_device(node, &args);
-+			mutex_lock(&reset_list_mutex);
-+			if (ret) {
-+				rstc = ERR_PTR(ret);
-+				goto out;
-+			}
-+			/*
-+			 * Success: reset-gpio could probe immediately, so
-+			 * re-check the lookup.
-+			 */
-+			rcdev = __reset_find_rcdev(&args, gpio_fallback, NULL);
-+			if (!rcdev) {
-+				rstc = ERR_PTR(-EPROBE_DEFER);
-+				goto out;
-+			}
-+			/* Success, rcdev is valid thus do not bail out */
-+		} else {
-+			rstc = ERR_PTR(-EPROBE_DEFER);
-+			goto out;
-+		}
- 	}
+-	/* Bring out of reset */
+-	gpiod_direction_output(wsa884x->sd_n, 0);
+-	ret = devm_add_action_or_reset(dev, wsa884x_gpio_powerdown, wsa884x->sd_n);
++	wsa884x_reset_deassert(wsa884x);
++	ret = devm_add_action_or_reset(dev, wsa884x_reset_powerdown, wsa884x);
+ 	if (ret)
+ 		return ret;
  
- 	if (WARN_ON(args.args_count != rcdev->of_reset_n_cells)) {
-diff --git a/include/linux/reset-controller.h b/include/linux/reset-controller.h
-index 0fa4f60e1186..e064473215de 100644
---- a/include/linux/reset-controller.h
-+++ b/include/linux/reset-controller.h
-@@ -61,6 +61,9 @@ struct reset_control_lookup {
-  * @dev: corresponding driver model device struct
-  * @of_node: corresponding device tree node as phandle target
-  * @of_reset_n_cells: number of cells in reset line specifiers
-+ * TODO: of_args have of_node, so we have here duplication
-+ * @of_args: for reset-gpios controllers: corresponding phandle args with GPIO
-+ *           number complementing of_node
-  * @of_xlate: translation function to translate from specifier as found in the
-  *            device tree to id as given to the reset control ops, defaults
-  *            to :c:func:`of_reset_simple_xlate`.
-@@ -74,6 +77,7 @@ struct reset_controller_dev {
- 	struct device *dev;
- 	struct device_node *of_node;
- 	int of_reset_n_cells;
-+	const struct of_phandle_args *of_args;
- 	int (*of_xlate)(struct reset_controller_dev *rcdev,
- 			const struct of_phandle_args *reset_spec);
- 	unsigned int nr_resets;
 -- 
 2.34.1
 
