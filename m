@@ -4,163 +4,117 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4C9D9C46CD2
-	for <alsa-devel@archiver.kernel.org>; Sat,  6 Jan 2024 15:33:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3A5BFC47077
+	for <alsa-devel@archiver.kernel.org>; Sat,  6 Jan 2024 17:29:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 84D32E7F;
-	Sat,  6 Jan 2024 16:33:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 84D32E7F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 90ED6EA4;
+	Sat,  6 Jan 2024 18:29:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 90ED6EA4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1704555204;
-	bh=IlBamVPEIAyfbsjikpxgytQ236zDtCRmre/7Jsg0EDA=;
+	s=default; t=1704562171;
+	bh=ZnCSDEVUUBYCWGioB3vX1cbTgSLukQmtJwwlUzLInDQ=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=hv479gNzmOhGwvsF7xGQpNqVin0EaxDoCIdX/dXSd+CXEZWcCtS+5yluojQIt+JPo
-	 vfX/UDRBAICDaiFO18letiH+FAlDhO8o5tXEGIR/C7Y3JV6X2BtyCH6a2Y8mRXKW8f
-	 QhlXQ5siwQ805/WgUTQ61K4XUOKSpomNxmkZHcNg=
+	b=ZsZoFuCsT/K86qzksNHurTV2JUeY0Nc++oSyPpjZ4jYsuEHmuzL0cJJldFv83Ig+a
+	 0fGYsgjrbVwfd3b3IcjDlPQjAxfs3AhQJn11eK/ztp1lqwaON0pymhatXmiJCPsUUB
+	 Zqu/TI+Lssw3fMk7P5IA3gd9SzNX22zDcsD1NgiY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6B0AAF80568; Sat,  6 Jan 2024 16:32:49 +0100 (CET)
+	id 7A74BF805A1; Sat,  6 Jan 2024 18:28:55 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D9F38F80587;
-	Sat,  6 Jan 2024 16:32:47 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id ECAD4F80570;
+	Sat,  6 Jan 2024 18:28:54 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E9FB7F804B0; Sat,  6 Jan 2024 16:32:43 +0100 (CET)
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com
- [IPv6:2a00:1450:4864:20::52c])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 2C4AFF804B0; Sat,  6 Jan 2024 18:28:49 +0100 (CET)
+Received: from omta040.useast.a.cloudfilter.net
+ (omta040.useast.a.cloudfilter.net [44.202.169.39])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 748AEF802DB
-	for <alsa-devel@alsa-project.org>; Sat,  6 Jan 2024 16:32:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 748AEF802DB
+	by alsa1.perex.cz (Postfix) with ESMTPS id BEBF9F802DB
+	for <alsa-devel@alsa-project.org>; Sat,  6 Jan 2024 18:28:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BEBF9F802DB
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=BPNLmPRj
-Received: by mail-ed1-x52c.google.com with SMTP id
- 4fb4d7f45d1cf-556fc91aba9so596169a12.1
-        for <alsa-devel@alsa-project.org>;
- Sat, 06 Jan 2024 07:32:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704555159; x=1705159959;
- darn=alsa-project.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=GX/TYOuEaEWdZOe4Via6FfCNhxFRRVBiWsIZwO9fu64=;
-        b=BPNLmPRjyetSHIrqhdic3ECZqIAREQ7l+AQfDiUpCKkMk0FDf3Hxg7upOJdT+EiBry
-         BghpsNdU/xl2WYODlOZipbczys1KrN0S+X3HDYLYlOLzOOVLYt1bZXV54BsKgG6fxU1J
-         RmN7jOdjS0VVjWZ+TG41O1XbLccrGBUlNHoP6PdjwSK9erR6f3DrEMxL6DaM4gKDcJMY
-         SHyl0dTrhwNJdXYIAoK7/1zBuMNESocQ4gacLcpany5VpnLBc1vFiIaVgE04sPJGO0ZO
-         Cro7FTFMWZ3VxsKPEQz4hLEGJ+0Dnxuo51MBu7FnTSw+6jke2JTR56Hffs8ArRc2bTSM
-         XDcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704555159; x=1705159959;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GX/TYOuEaEWdZOe4Via6FfCNhxFRRVBiWsIZwO9fu64=;
-        b=lnCZOkVSQ8w8xxB/4yROjmpycflfFP2dJAt7OflocChx3133rzOzQ8sZc3RI9WTaWS
-         DCsQHPjwtuQ6l5CZ/q5EibAa8fPlWlKHKbvNwWuO+rMNjOD38faz88fysbzKS+2qJAPm
-         XC3slJnDEbz8Q2JsdrQYklbWKT9fp5kVfiRvpZk8hLjptH0tug8UNYG1+mwdk3/OXhPw
-         dwDpimuZn2UOR/p5sZIpjUSrEX9TK1kQYBevO0J/p11A4jKFnuzeUYiV1Yc3c8LorqQK
-         ANUO5GFe/LnOHjchMfFSWnHpDNGOc93s3hl66GPqj7yls7YEBNZpfhudr6FP4E2x+Wjm
-         mlSw==
-X-Gm-Message-State: AOJu0Ywl5qUbIS4CM241YvtINurCOYUdC1K61ABBdmuNL5O+hq2QXIsl
-	na8uLJwG3a88ZRGGXJi/uFL5gb73Vfx3Yg==
-X-Google-Smtp-Source: 
- AGHT+IH0/XeH7QwrkW7lTxkcr24gZ45qG0SJGvdLsOVexLew253lAEYJOYk6YWQLTeUb2xrFBKkAXQ==
-X-Received: by 2002:a17:907:3603:b0:a23:6c6a:41a5 with SMTP id
- bk3-20020a170907360300b00a236c6a41a5mr576428ejc.45.1704555158846;
-        Sat, 06 Jan 2024 07:32:38 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.223.112])
-        by smtp.gmail.com with ESMTPSA id
- lb24-20020a170906add800b00a28fa7838d2sm2077369ejb.18.2024.01.06.07.32.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 06 Jan 2024 07:32:38 -0800 (PST)
-Message-ID: <c3c8e68f-ee7e-430b-b890-011573e809b1@linaro.org>
-Date: Sat, 6 Jan 2024 16:32:35 +0100
+ unprotected) header.d=embeddedor.com header.i=@embeddedor.com
+ header.a=rsa-sha256 header.s=default header.b=gowa6Gk2
+Received: from eig-obgw-5004a.ext.cloudfilter.net ([10.0.29.221])
+	by cmsmtp with ESMTPS
+	id M343rQJU6THHuMATNrO9I7; Sat, 06 Jan 2024 17:28:37 +0000
+Received: from gator4166.hostgator.com ([108.167.133.22])
+	by cmsmtp with ESMTPS
+	id MATLrxkPsKleDMATMrvV9V; Sat, 06 Jan 2024 17:28:36 +0000
+X-Authority-Analysis: v=2.4 cv=KcbBDCUD c=1 sm=1 tr=0 ts=65998dc4
+ a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=GfQleyYEO+cc22AUyTT7qQ==:17
+ a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
+ a=IkcTkHD0fZMA:10 a=dEuoMetlWLkA:10 a=wYkD_t78qR0A:10 a=NEAV23lmAAAA:8
+ a=7YfXLusrAAAA:8 a=VwQbUJbxAAAA:8 a=3gf6MFcAdpgbip9PbcIA:9 a=QEXdDO2ut3YA:10
+ a=SLz71HocmBbuEhFRYD3r:22 a=AjGcO6oz07-iQ99wixmX:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=jqbX15IrQLQ95FamULlsdlZsBzcnY9l7VxFlPvs2xck=; b=gowa6Gk2iiQNWan/JlPXQpunW0
+	JPEGeHxCpmxiNUaJFG1hrEEL/H+UHDClk6YUK04blgYe6y3ls55iWqSbiOjE8jM+nsH8lmDf64A2B
+	EU/Bptw8Qn09Itv9E2lA9R2z4zzu55/jNPz4VvpdMqLMKj5jK1uHylWgtlReif2G0u6BkJNAfWTw5
+	u05V4MCK5ymyXYbnrnEN+plo/imTUq4UBGloGM2TL5Zde9Yjt5yiwK/mv5xWLkwtITAo6XovpAElG
+	F9Nm1KHOze/dLMH9zkk6qf0qrU1kDjWntuijVFA7aUEc7rz4VlwW2vVAKJ3A3B+TS7e2egImVjxqB
+	cu2xrHAQ==;
+Received: from 187.184.157.186.cable.dyn.cableonline.com.mx
+ ([187.184.157.186]:54571 helo=[192.168.0.10])
+	by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls
+ TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96.2)
+	(envelope-from <gustavo@embeddedor.com>)
+	id 1rMATK-002YaE-2e;
+	Sat, 06 Jan 2024 11:28:34 -0600
+Message-ID: <1b3c3242-d239-465b-990c-33680291ec46@embeddedor.com>
+Date: Sat, 6 Jan 2024 11:28:32 -0600
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/4] reset: add GPIO-based reset controller
+Subject: Re: [PATCH] ASoC: ti: Use devm_kcalloc() instead of devm_kzalloc()
 Content-Language: en-US
-To: Mark Brown <broonie@kernel.org>
-Cc: Sean Anderson <sean.anderson@seco.com>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Banajit Goswami <bgoswami@quicinc.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>,
+To: Erick Archer <erick.archer@gmx.com>,
+ Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
  Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, Bartosz Golaszewski <brgl@bgdev.pl>
-References: <20231222150133.732662-1-krzysztof.kozlowski@linaro.org>
- <20231222150133.732662-3-krzysztof.kozlowski@linaro.org>
- <530e3473-eb3b-477c-8599-e7aa12779640@seco.com>
- <88bd6668-7e67-42c7-97b6-d7029f371349@linaro.org>
- <075990bb-5fdb-4d30-9484-9df6b978e805@seco.com>
- <fcbae47b-3b28-42f0-b93f-f83932025dc1@linaro.org>
- <2be19fbf-4c73-4594-be42-31587dc7b747@seco.com>
- <d2d17b94-6f29-423d-a7e0-e24513a8e59f@linaro.org>
- <758c4fe3-1ea1-4a8c-bb6f-3a3df588da75@sirena.org.uk>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <758c4fe3-1ea1-4a8c-bb6f-3a3df588da75@sirena.org.uk>
-Content-Type: text/plain; charset=UTF-8
+ "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc: alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+References: <20240106162752.18599-1-erick.archer@gmx.com>
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+In-Reply-To: <20240106162752.18599-1-erick.archer@gmx.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-ID-Hash: KQE73C3EONGMDCUV3E5HCHRPYCLG4PGA
-X-Message-ID-Hash: KQE73C3EONGMDCUV3E5HCHRPYCLG4PGA
-X-MailFrom: krzysztof.kozlowski@linaro.org
+X-AntiAbuse: This header was added to track abuse,
+ please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - alsa-project.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.184.157.186
+X-Source-L: No
+X-Exim-ID: 1rMATK-002YaE-2e
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187.184.157.186.cable.dyn.cableonline.com.mx ([192.168.0.10])
+ [187.184.157.186]:54571
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 4
+X-Org: HG=hgshared;ORG=hostgator;
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: 
+ MS4xfCV3yv9BxzTQu9nwuCnQjYD0GQQvaBJcxyzm6CA76V0Z+4M0iFARU89RpzVXSXKZTN4cxKoeQ2CSjeyB/0K6mSUS4C9YDW1xV8xzMV55vd8XupdjeuKx
+ sl0tCpNA1oYwJbpaO/hoPe+iSRDhHUfiQLgL73JY4kV9nXA1oUX0tu/R6Zf2QpVfnGLR3YIFnwjNv+/QHG/07SMF3lJiFSi5qDNOSDDwox78cyLyqaNrleL3
+Message-ID-Hash: VXU234VSBP2ICBYNVFE4DJMC3TDFCZ3T
+X-Message-ID-Hash: VXU234VSBP2ICBYNVFE4DJMC3TDFCZ3T
+X-MailFrom: gustavo@embeddedor.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -172,7 +126,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KQE73C3EONGMDCUV3E5HCHRPYCLG4PGA/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VXU234VSBP2ICBYNVFE4DJMC3TDFCZ3T/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -181,45 +135,48 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 05/01/2024 15:33, Mark Brown wrote:
-> On Thu, Jan 04, 2024 at 08:08:50PM +0100, Krzysztof Kozlowski wrote:
->> On 04/01/2024 17:30, Sean Anderson wrote:
-> 
->>> device post-assert delay post-deassert delay
->>> ====== ================= ===================
->>> A                  500us                 1ms
->>> B                    1ms               300us
-> 
-> ...
-> 
->> Now, if we are back to realistic cases - use just the longest reset time.
-> 
-> Isn't the main concern here that when one device probes we don't yet
-> know the times for the other devices?
 
-You can never know when second device will appear. It might come from
-modules, DTB overlay etc. If we want to satisfy all users, then we need
-to wait till all users appear, which I think is not even possible,
-considering runtime loaded overlays.
 
+On 1/6/24 10:27, Erick Archer wrote:
+> Use 2-factor multiplication argument form devm_kcalloc() instead
+> of devm_kzalloc().
 > 
->>> If we leave things up to the drivers, then whoever probes first will get
->>> to decide the reset sequence.
+> Link: https://github.com/KSPP/linux/issues/162
+> Signed-off-by: Erick Archer <erick.archer@gmx.com>
+
+Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+
+Thanks!
+-- 
+Gustavo
+
+> ---
+>   sound/soc/ti/j721e-evm.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
 > 
->> In current design yes, but it's not a problem to change it. Where is the
->> limitation? Just read other values and update the reset time.
+> diff --git a/sound/soc/ti/j721e-evm.c b/sound/soc/ti/j721e-evm.c
+> index b4b158dc736e..d9d1e021f5b2 100644
+> --- a/sound/soc/ti/j721e-evm.c
+> +++ b/sound/soc/ti/j721e-evm.c
+> @@ -649,7 +649,7 @@ static int j721e_soc_probe_cpb(struct j721e_priv *priv, int *link_idx,
+>   	 * Link 2: McASP10 <- pcm3168a_1 ADC
+>   	 */
+>   	comp_count = 6;
+> -	compnent = devm_kzalloc(priv->dev, comp_count * sizeof(*compnent),
+> +	compnent = devm_kcalloc(priv->dev, comp_count, sizeof(*compnent),
+>   				GFP_KERNEL);
+>   	if (!compnent) {
+>   		ret = -ENOMEM;
+> @@ -763,7 +763,7 @@ static int j721e_soc_probe_ivi(struct j721e_priv *priv, int *link_idx,
+>   	 *		   \ pcm3168a_b ADC
+>   	 */
+>   	comp_count = 8;
+> -	compnent = devm_kzalloc(priv->dev, comp_count * sizeof(*compnent),
+> +	compnent = devm_kcalloc(priv->dev, comp_count, sizeof(*compnent),
+>   				GFP_KERNEL);
+>   	if (!compnent) {
+>   		ret = -ENOMEM;
+> --
+> 2.25.1
 > 
-> We might have already done a reset by that time and earlier devices
-> might prevent later devices from resetting again.  It shouldn't be such
-> an issue for the post delay, but might be one for the pre delay.
-
-If the reset deassert (or assert, depending what's the default state) is
-triggered in the probe, then it will happen with the probe of the first
-device. If the delays of that reset are not suitable for the second -
-not yet probed - then what do you propose? I have the answer: do not use
-the simple, generic solution. The simple and generic solutions work for
-simple and generic cases.
-
-Best regards,
-Krzysztof
-
+> 
