@@ -4,111 +4,126 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6C8BEC3DA6E
-	for <alsa-devel@archiver.kernel.org>; Mon,  8 Jan 2024 16:23:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ABEEFC3DA6E
+	for <alsa-devel@archiver.kernel.org>; Mon,  8 Jan 2024 16:24:04 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9BBCAB76;
-	Mon,  8 Jan 2024 17:23:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9BBCAB76
+	by alsa0.perex.cz (Postfix) with ESMTPS id 740EFEA3;
+	Mon,  8 Jan 2024 17:23:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 740EFEA3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1704731015;
-	bh=j33KwBE+ESJjy2ZwRNfG6TakLeb0ccaARxU4EAyKqQM=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1704731042;
+	bh=q8L8GGjcdhecGc36tfxiOQfbebJzTJwl/eJFGBs9nvA=;
+	h=From:To:CC:Subject:Date:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=tBmJDGyzW33p+6ymt2bPrJuJNLiJ8j7nL3bGGeHZNurcQ7wWjeXMlDSDBCS45gmUx
-	 xXC/d8sYf3bQRyD+NUPRbCM8NXN0ooqYrSOnX2BgPbJPmHNERtXTpYWMhsFoSDzdVu
-	 wbktVsfj/KQM27axVVXn8T00BLGE0GtogEcg3Gkc=
+	b=QjmCFr1J8vhjSdlGvScWcRAN532R4y16/Ueiv+BVfJYVdx8reeUDw+kVaH/e9gr2b
+	 xvanuOwzQw6dD/wgZGy94ebGMKwWK8FRp+1qH/O6bozR2AT3Y+aZLVQFWWE/r3mfLf
+	 Q+DSY64KXsm/LA29FgXHXZMimMjwMUSZ1Z3hwhHQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AEF24F80676; Mon,  8 Jan 2024 17:22:02 +0100 (CET)
+	id 62399F8068F; Mon,  8 Jan 2024 17:22:04 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D6847F8063C;
-	Mon,  8 Jan 2024 17:22:01 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6B231F8065E;
+	Mon,  8 Jan 2024 17:22:04 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 12E48F804F1; Sun,  7 Jan 2024 14:49:38 +0100 (CET)
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com
- [IPv6:2607:f8b0:4864:20::736])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	id 26802F80254; Sun,  7 Jan 2024 22:35:34 +0100 (CET)
+Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz
+ [IPv6:2001:df5:b000:5::4])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C7F13F80236
-	for <alsa-devel@alsa-project.org>; Sun,  7 Jan 2024 14:49:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C7F13F80236
+	by alsa1.perex.cz (Postfix) with ESMTPS id A86E7F800F5
+	for <alsa-devel@alsa-project.org>; Sun,  7 Jan 2024 22:35:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A86E7F800F5
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20230601 header.b=F84jCa02
-Received: by mail-qk1-x736.google.com with SMTP id
- af79cd13be357-7831be84f4eso53782285a.0
-        for <alsa-devel@alsa-project.org>;
- Sun, 07 Jan 2024 05:49:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704635368; x=1705240168;
- darn=alsa-project.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6Hqw57BmkdbaBbLNY/q+mzp+dqJI+Q3yMncezqofKS8=;
-        b=F84jCa02R+9yfhLdBstErAyMpxIaac7AYoHPjmaaWLR3BT0GYO4XvEcWHW4iCLoXoI
-         Hld2T+UFDAF9HL1kqI6zw/GFKhdHvTHRYiXkCj1hiezaHWzQF1IW08zrAqgZZOEXlN7x
-         mkpQ/evWocuTMPBdhq74X3j7T3ZcGP+JK/zikMSD38/718M5b+Y3BN2qGIc4DXrO2NSk
-         kMvMGiAoHCSiY4v/CaU/jiaQ2tjxSOZILtpTd5Yy5owEoxx/WtQtR3PygkAd0tipkd7c
-         JKwcr67BShiWP7VcTYrwB9lSoBqY1DbnJvjczT00Ocb9GP1SqBizvO0GxwNOcWQ4OZdY
-         D7nw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704635368; x=1705240168;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6Hqw57BmkdbaBbLNY/q+mzp+dqJI+Q3yMncezqofKS8=;
-        b=QrH2kNyFFkDm4AbMLbbeFNOYTTY0gh+NlHpuQnT+PN8i1H25l6z6gCvdNH1LDzs8s9
-         XA2uHcbqn06V4OF7fx3rQAiUTJ7KZlzQCCXvDKeSwUcac6RBNdnECA3HWTEUF35fWUTi
-         58L0gKrzXZFBddH78F68bCFGaWtfW/h7rcohycarqeowzWq8cKKa/AYjb4owjS0h91E0
-         70aYSQEkSDodXx2we8cPO5xFG10TKWWSLEys8qKXB+s9g+YGSOFE4oRP4BXBG5HtpTXK
-         dmZziihgOm9WPLAx3XQYjqdUhyP39V1/F0FkLuNDw7wDVlgUbFAMZYhOfyEf/upm2vdg
-         ecOA==
-X-Gm-Message-State: AOJu0YxaYVbBEPZnT1ZZYtGoaQhYIpqUCZR8VdjekL0WKUUkKaCaiwLG
-	Sn7m6Xhg7hdF3ZWB9CmVoC48AmElHHE=
-X-Google-Smtp-Source: 
- AGHT+IFpmEy81X6grJrTNVhk8om1w/FdiwnA2vdUl2Dqutlz0dTF6iryqo/osbDNwtmmIPeNymNYWA==
-X-Received: by 2002:ae9:f40d:0:b0:783:2092:412b with SMTP id
- y13-20020ae9f40d000000b007832092412bmr465856qkl.20.1704635368282;
-        Sun, 07 Jan 2024 05:49:28 -0800 (PST)
-Received: from localhost.localdomain ([2602:47:d950:3e00:64e5:89b4:ac:57eb])
-        by smtp.googlemail.com with ESMTPSA id
- os8-20020a05620a810800b0078310c390ffsm1120279qkn.9.2024.01.07.05.49.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Jan 2024 05:49:27 -0800 (PST)
-From: Nicholas Vinson <nvinson234@gmail.com>
-To: alsa-devel@alsa-project.org
-Cc: Nicholas Vinson <nvinson234@gmail.com>
-Subject: [PATCH 3/4] src/Versions.in: Add guards for pcm and timer syms
-Date: Sun,  7 Jan 2024 08:48:55 -0500
-Message-ID: 
- <40181a6d1a2ef02257899e6bd1a0609660501f48.1704635150.git.nvinson234@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <cover.1704635150.git.nvinson234@gmail.com>
-References: <cover.1704635150.git.nvinson234@gmail.com>
+ unprotected) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz
+ header.a=rsa-sha256 header.s=mail181024 header.b=aqTvxNtL
+Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(Client did not present a certificate)
+	by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id C30F92C0778;
+	Mon,  8 Jan 2024 10:35:01 +1300 (NZDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+	s=mail181024; t=1704663301;
+	bh=TnYYe5Ik8V8NQEU6s3jXxwZQ8YygUV7ZxdlPvpcWlM8=;
+	h=From:To:CC:Subject:Date:References:In-Reply-To:From;
+	b=aqTvxNtLaeFT0CIoy0nSJHS3gI02IUvlfNf0UL+r6mfnKUZTNrvEZg4KrPyXmqzF7
+	 fVgOXFjaxKT8IMQ5uXwt4BtpMtQTA3yzT6iKNdo2h9Z6duC1YEEROdBQNiZxTOR1UI
+	 ptg8ziTloMj6SrIsFQ3TMbSXMqeWxMHFRP9dr0jAkcVDQ2EizIUGDd0AIJY5GiMc4A
+	 uPtgkTZn3xaidTp4mntvflbIM4npJC+Y0/5Svm46OeRfsLQxFvnSjmiCxyuJXMvJEI
+	 WVOyAgityYMm64UXwOuFigaOGVbXAAhZ9XVtKUYacsDuQ0P9DYa/tce0ig7kyGfJF5
+	 GUURQmMgrMhdQ==
+Received: from svr-chch-ex2.atlnz.lc (Not Verified[2001:df5:b000:bc8::76]) by
+ svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
+	id <B659b19050000>; Mon, 08 Jan 2024 10:35:01 +1300
+Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) by
+ svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8::76) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.2.1118.40; Mon, 8 Jan 2024 10:35:01 +1300
+Received: from svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8::76) by
+ svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8:409d:36f5:8899:92e8) with Microsoft
+ SMTP Server (TLS) id 15.0.1497.48; Mon, 8 Jan 2024 10:35:01 +1300
+Received: from svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567]) by
+ svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567%15]) with mapi id
+ 15.02.1118.040; Mon, 8 Jan 2024 10:35:01 +1300
+From: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Srinivas Kandagatla
+	<srinivas.kandagatla@linaro.org>, Banajit Goswami <bgoswami@quicinc.com>,
+	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio
+	<konrad.dybcio@linaro.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown
+	<broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+	Philipp Zabel <p.zabel@pengutronix.de>, Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>, "alsa-devel@alsa-project.org"
+	<alsa-devel@alsa-project.org>, "linux-arm-msm@vger.kernel.org"
+	<linux-arm-msm@vger.kernel.org>, "linux-sound@vger.kernel.org"
+	<linux-sound@vger.kernel.org>, "devicetree@vger.kernel.org"
+	<devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>
+CC: Bartosz Golaszewski <brgl@bgdev.pl>, Sean Anderson
+	<sean.anderson@seco.com>
+Subject: Re: [PATCH v2 0/4] reset: gpio: ASoC: shared GPIO resets
+Thread-Topic: [PATCH v2 0/4] reset: gpio: ASoC: shared GPIO resets
+Thread-Index: AQHaP/Aqq7L7gochO0ekRf3UAMpbALDOCO0A
+Date: Sun, 7 Jan 2024 21:35:01 +0000
+Message-ID: <d86f0d2c-40fc-44d2-94f6-e67068e55594@alliedtelesis.co.nz>
+References: <20240105155918.279657-1-krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20240105155918.279657-1-krzysztof.kozlowski@linaro.org>
+Accept-Language: en-NZ, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.33.22.30]
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-MailFrom: nvinson234@gmail.com
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=CYB2G4jl c=1 sm=1 tr=0
+ a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=75chYTbOgJ0A:10
+ a=dEuoMetlWLkA:10 a=vE6nA0IPAAAA:8 a=6On8Lo5iK3YeLNhOxggA:9 a=QEXdDO2ut3YA:10
+ a=KKAkSRfTAAAA:8 a=9xXEWPmocA81tVRg:21 a=_W_S_7VecoQA:10
+ a=rVnDm9A_-c-k2ki-JAcA:9 a=_s8P6U4_B6QeRRtK5oEG:22 a=cvBusfyB2V15izCimMoJ:22
+X-SEG-SpamProfiler-Score: 0
+X-MailFrom: Chris.Packham@alliedtelesis.co.nz
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: MB5PGC76N7JJP6XEMMQM64J4SHVQQQBU
-X-Message-ID-Hash: MB5PGC76N7JJP6XEMMQM64J4SHVQQQBU
+Message-ID-Hash: 325X2DHNTEN6GNSNNWG75BJNXHW7MIOJ
+X-Message-ID-Hash: 325X2DHNTEN6GNSNNWG75BJNXHW7MIOJ
 X-Mailman-Approved-At: Mon, 08 Jan 2024 16:21:52 +0000
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"
+X-Content-Filtered-By: Mailman/MimeDel 3.3.9
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MB5PGC76N7JJP6XEMMQM64J4SHVQQQBU/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/325X2DHNTEN6GNSNNWG75BJNXHW7MIOJ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -117,103 +132,51 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Configure script allows for the disabling of the pcm module. When
-disabled, the pcm symbols will not be available. Add guards to remove
-symbols from version map when not present.
-
-Signed-off-by: Nicholas Vinson <nvinson234@gmail.com>
----
- src/Makefile.am    |  3 +++
- src/Versions.in.in | 13 +++++++++++++
- 2 files changed, 16 insertions(+)
-
-diff --git a/src/Makefile.am b/src/Makefile.am
-index b4a0d5d9..ad5bf8ef 100644
---- a/src/Makefile.am
-+++ b/src/Makefile.am
-@@ -26,6 +26,9 @@ SUBDIRS += mixer
- libasound_la_LIBADD += mixer/libmixer.la
- endif
- if BUILD_PCM
-+if VERSIONED_SYMBOLS
-+VERSION_CPPFLAGS += -DHAVE_PCM_SYMS -DHAVE_TIMER_SYMS
-+endif
- SUBDIRS += pcm timer
- libasound_la_LIBADD += pcm/libpcm.la timer/libtimer.la
- endif
-diff --git a/src/Versions.in.in b/src/Versions.in.in
-index 041eff08..98f36ded 100644
---- a/src/Versions.in.in
-+++ b/src/Versions.in.in
-@@ -16,6 +16,7 @@ ALSA_0.9 {
- };
- 
- ALSA_0.9.0rc4 {
-+#ifdef HAVE_PCM_SYMS
-   global:
- 
-     @SYMBOL_PREFIX@snd_pcm_hw_params_get_access;
-@@ -42,6 +43,7 @@ ALSA_0.9.0rc4 {
-     @SYMBOL_PREFIX@snd_pcm_hw_params_get_rate_max;
-     @SYMBOL_PREFIX@snd_pcm_hw_params_set_rate_near;
-     @SYMBOL_PREFIX@snd_pcm_hw_params_set_rate_first;
-+
-     @SYMBOL_PREFIX@snd_pcm_hw_params_set_rate_last;
- 
-     @SYMBOL_PREFIX@snd_pcm_hw_params_get_period_time;
-@@ -85,22 +87,29 @@ ALSA_0.9.0rc4 {
-     @SYMBOL_PREFIX@snd_pcm_hw_params_set_tick_time_near;
-     @SYMBOL_PREFIX@snd_pcm_hw_params_set_tick_time_first;
-     @SYMBOL_PREFIX@snd_pcm_hw_params_set_tick_time_last;
-+#endif
- 
- } ALSA_0.9;
- 
- ALSA_0.9.0rc8 {
-+#ifdef HAVE_PCM_SYMS
-   global:
- 
-     @SYMBOL_PREFIX@snd_pcm_forward;
-     @SYMBOL_PREFIX@snd_pcm_status_get_trigger_htstamp;
-     @SYMBOL_PREFIX@snd_pcm_status_get_htstamp;
-+#endif
- 
- } ALSA_0.9.0rc4;
- 
- ALSA_0.9.0 {
-+#if defined HAVE_PCM_SYMS || defined HAVE_TIMER_SYMS
-   global:
- 
-+#if defined HAVE_PCM_SYMS
-     @SYMBOL_PREFIX@snd_pcm_type_name;
-+#endif
-+#ifdef HAVE_TIMER_SYMS
-     @SYMBOL_PREFIX@snd_timer_query_info;
-     @SYMBOL_PREFIX@snd_timer_query_params;
-     @SYMBOL_PREFIX@snd_timer_query_status;
-@@ -108,6 +117,8 @@ ALSA_0.9.0 {
-     @SYMBOL_PREFIX@snd_timer_params_get_exclusive;
-     @SYMBOL_PREFIX@snd_timer_params_set_filter;
-     @SYMBOL_PREFIX@snd_timer_params_get_filter;
-+#endif
-+#endif
- } ALSA_0.9.0rc8;
- 
- ALSA_0.9.3 {
-@@ -146,11 +157,13 @@ ALSA_1.2.6 {
- } ALSA_1.1.6;
- 
- ALSA_1.2.9 {
-+#ifdef HAVE_PCM_SYMS
-   global:
- 
-     @SYMBOL_PREFIX@snd_pcm_hw_params_is_perfect_drain;
-     @SYMBOL_PREFIX@snd_pcm_hw_params_set_drain_silence;
-     @SYMBOL_PREFIX@snd_pcm_hw_params_get_drain_silence;
-+#endif
- } ALSA_1.2.6;
- 
- ALSA_1.2.10 {
--- 
-2.43.0
-
+SGkgS3J6eXN6dG9mLA0KDQpPbiA2LzAxLzI0IDA0OjU5LCBLcnp5c3p0b2YgS296bG93c2tpIHdy
+b3RlOg0KDQpIaSwNCg0KQ2hhbmdlcyBpbiB2Mg0KPT09PT09PT09PT09PQ0KMS4gd3NhODg0eC5j
+OiBhZGQgbWlzc2luZyByZXR1cm4gaW4gd3NhODg0eF9nZXRfcmVzZXQoKSwgY29ycmVjdCBjb21t
+ZW50Lg0KMi4gcWNvbSx3c2E4ODQwLnlhbWw6IGZpeCBvbmVPZiBzeW50YXguDQozLiByZXNldC9j
+b3JlLmM6DQogICAtIFJldmlzZSBhcHByb2FjaCBiYXNlZCBvbiBCYXJ0b3N6IGNvbW1lbnRzOiBw
+YXJzZSB0aGUgcmVzZXQtZ3Bpb3MgcGhhbmRsZQ0KICAgICB3aXRoIGFyZ3VtZW50cywgZG8gbm90
+IHVzZSBkZXByZWNhdGVkIEFQSSBhbmQgZG8gbm90IHJlbHkgb24gZ3Bpb19kZXNjDQogICAgIHBv
+aW50ZXIuDQogICAtIENyZWF0ZSBhIGxpc3Qgb2YgaW5zdGFudGlhdGVkIHBsYXRmb3JtIGRldmlj
+ZXMgdG8gYXZvaWQgYW55IGR1cGxpY2F0ZXMuDQogICAtIEFmdGVyIGNyZWF0aW5nIHJlc2V0LWdw
+aW8gcGxhdGZvcm0gZGV2aWNlLCB0cnkgdG8gZ2V0IG5ldyByZXNldCBjb250cm9sbGVyDQogICAg
+IG9yIHJldHVybiBFUFJPQkVfREVGRVIuDQogICAtIERyb3AgdGhlICJjb29raWUiIG1lbWJlciBh
+bmQgYWRkIG5ldyAib2ZfYXJncyIgdG8gInN0cnVjdA0KICAgICByZXNldF9jb250cm9sbGVyX2Rl
+diIuDQo0LiByZXNldC1ncGlvLmM6DQogICAtIEZpeCBzbWF0Y2ggd2FybmluZyBvbiBwbGF0ZGF0
+YSBldmFsdWF0aW9uLg0KICAgLSBQYXJzZSBHUElPIGFyZ3MgYW5kIHN0b3JlIHRoZW0gaW4gcmMu
+b2ZfYXJncy4NCg0KRGVzY3JpcHRpb24NCj09PT09PT09PT09DQoNCldlIGhhdmUgYXQgbGVhc3Qg
+ZmV3IGNhc2VzIHdoZXJlIGhhcmR3YXJlIGVuZ2luZWVycyBkZWNpZGVkIHRvIHVzZSBvbmUNCnBv
+d2VyZG93bi9zaHV0ZG93bi9yZXNldCBHUElPIGxpbmUgZm9yIG11bHRpcGxlIGRldmljZXM6DQoN
+Cg0KKGNwOiBsaW5rcyByZW1vdmVkIGR1ZSB0byBjb3JwIGVtYWlsIG11bmdpbmcgdGhlbSBhbmQg
+bWFraW5nIHRoZW0gbG9vayBsaWtlIGEgcGhpc2hpbmcgYXR0ZW1wdCkNCg0KSSB0cnkgdG8gc29s
+dmUgbXkgY2FzZSwgaG9wZWZ1bHkgQ2hyaXMnICgyKSwgcGFydGlhbGx5IFNlYW4ncyAoNCkgYW5k
+IG1heWJlDQpIZWN0b3JzICg1KSwgdXNpbmcgUm9iJ3Mgc3VnZ2VzdGlvbjoNCg0KDQoNCihjcDog
+bGluayByZW1vdmVkIGhlcmUpDQoNCg0KQmVzdCByZWdhcmRzLA0KS3J6eXN6dG9mDQoNCkNjOiBD
+aHJpcyBQYWNraGFtIDxjaHJpcy5wYWNraGFtQGFsbGllZHRlbGVzaXMuY28ubno+PG1haWx0bzpj
+aHJpcy5wYWNraGFtQGFsbGllZHRlbGVzaXMuY28ubno+DQpDYzogQmFydG9zeiBHb2xhc3pld3Nr
+aSA8YnJnbEBiZ2Rldi5wbD48bWFpbHRvOmJyZ2xAYmdkZXYucGw+DQpDYzogU2VhbiBBbmRlcnNv
+biA8c2Vhbi5hbmRlcnNvbkBzZWNvLmNvbT48bWFpbHRvOnNlYW4uYW5kZXJzb25Ac2Vjby5jb20+
+DQoNCktyenlzenRvZiBLb3psb3dza2kgKDQpOg0KICByZXNldDogZ3BpbzogQWRkIEdQSU8tYmFz
+ZWQgcmVzZXQgY29udHJvbGxlcg0KICByZXNldDogSW5zdGFudGlhdGUgcmVzZXQgR1BJTyBjb250
+cm9sbGVyIGZvciBzaGFyZWQgcmVzZXQtZ3Bpb3MNCiAgQVNvQzogZHQtYmluZGluZ3M6IHFjb20s
+d3NhODg0MDogQWRkIHJlc2V0LWdwaW9zIGZvciBzaGFyZWQgbGluZQ0KICBBU29DOiBjb2RlY3M6
+IHdzYTg4NHg6IEFsbG93IHNoYXJpbmcgcmVzZXQgR1BJTw0KDQogLi4uL2JpbmRpbmdzL3NvdW5k
+L3Fjb20sd3NhODg0MC55YW1sICAgICAgICAgIHwgIDExICstDQogTUFJTlRBSU5FUlMgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICA1ICsNCiBkcml2ZXJzL3Jlc2V0L0tjb25m
+aWcgICAgICAgICAgICAgICAgICAgICAgICAgfCAgIDkgKw0KIGRyaXZlcnMvcmVzZXQvTWFrZWZp
+bGUgICAgICAgICAgICAgICAgICAgICAgICB8ICAgMSArDQogZHJpdmVycy9yZXNldC9jb3JlLmMg
+ICAgICAgICAgICAgICAgICAgICAgICAgIHwgMTc2ICsrKysrKysrKysrKysrKystLQ0KIGRyaXZl
+cnMvcmVzZXQvcmVzZXQtZ3Bpby5jICAgICAgICAgICAgICAgICAgICB8IDEyMSArKysrKysrKysr
+KysNCiBpbmNsdWRlL2xpbnV4L3Jlc2V0LWNvbnRyb2xsZXIuaCAgICAgICAgICAgICAgfCAgIDQg
+Kw0KIHNvdW5kL3NvYy9jb2RlY3Mvd3NhODg0eC5jICAgICAgICAgICAgICAgICAgICB8ICA1MyAr
+KysrKy0NCiA4IGZpbGVzIGNoYW5nZWQsIDM1NiBpbnNlcnRpb25zKCspLCAyNCBkZWxldGlvbnMo
+LSkNCiBjcmVhdGUgbW9kZSAxMDA2NDQgZHJpdmVycy9yZXNldC9yZXNldC1ncGlvLmMNCg0KDQoN
+CkknbGwgdHJ5IGFuZCB0YWtlIHRoZXNlIGZvciBhIHNwaW4gb24gbXkgaGFyZHdhcmUuIEkgdGhp
+bmsgSSdsbCBuZWVkIHRvIHVwZGF0ZSB0aGUgcGNhOTU0eCBtdXggZHJpdmVyIGFsb25nIHNpbWls
+YXIgbGluZXMgdG8geW91ciBjaGFuZ2VzIHRvIHRoZSB3c2E4ODR4LiBEbyB5b3UgaGFwcGVuIHRv
+IGhhdmUgYW4gZXhhbXBsZSBvZiB3aGF0IHRoZSByZXNldC1jb250cm9sbGVyIHVzYWdlIGxvb2tz
+IGxpa2UgaW4gYSBkZXZpY2V0cmVlPyBJIGNhbiBwcm9iYWJseSBmaWd1cmUgaXQgb3V0IGJhc2Vk
+IG9uIHRoZSBjb2RlIGJ1dCBJIGZpZ3VyZWQgSSdkIGFzayBqdXN0IGluIGNhc2UgeW91IGFscmVh
+ZHkgaGFkIGFuIGV4YW1wbGUgaGFuZHkuDQo=
