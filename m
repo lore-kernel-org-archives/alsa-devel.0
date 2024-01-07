@@ -4,91 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0AB00C3DA6E
-	for <alsa-devel@archiver.kernel.org>; Mon,  8 Jan 2024 16:22:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C0C1FC3DA6E
+	for <alsa-devel@archiver.kernel.org>; Mon,  8 Jan 2024 16:23:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EB29D20C;
-	Mon,  8 Jan 2024 17:22:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EB29D20C
+	by alsa0.perex.cz (Postfix) with ESMTPS id A9DD8E7D;
+	Mon,  8 Jan 2024 17:23:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A9DD8E7D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1704730974;
-	bh=pfc5gtvn4b4EVAxlXDU40ahe+qqsr/NuY7UWWPnRXk4=;
+	s=default; t=1704731003;
+	bh=COIMYhmOeamnzBh9DzoVKj7taL2SyUsGtfhPKJDnnzQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=sRpd4DJizTDzSbCgv1+UZXKOvdi2BWpJb3P2WV5VLoJGMEAmTqoTm/rJF71eD+2d/
-	 +y1/72mqpRW6RPUcCqpz5O3HhJzMnQkLNmyIix35GZp0Cg0qwM9+Bog2SBmz25qKTm
-	 KRRPplxfs1/6pBwoEqDqw1H3N6TXDYXy+S6o/BoE=
+	b=jHEE9tpA2MoFHBo5gHRyGTlLQjsUsYCegOD4pZJ0JD1M6M1Le0rtZ0Z2Ejj1w1cj8
+	 RgK0pQ1U4SjuGG2T3MSJmjWOBGcub5My3rffnpOl1deOtBvVAt/oGeHmYuafUDDheW
+	 qfGbWkS0dL9ViMBy7CTRa2WFxXWownJ+2HtWpjU0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C5900F805FA; Mon,  8 Jan 2024 17:21:56 +0100 (CET)
+	id EF00EF80617; Mon,  8 Jan 2024 17:21:59 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 42184F805EB;
-	Mon,  8 Jan 2024 17:21:56 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 90E1EF80612;
+	Mon,  8 Jan 2024 17:21:59 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 04EDBF802DB; Sun,  7 Jan 2024 14:49:34 +0100 (CET)
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com
- [IPv6:2607:f8b0:4864:20::735])
+	id 3039EF80254; Sun,  7 Jan 2024 14:49:35 +0100 (CET)
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com
+ [IPv6:2607:f8b0:4864:20::72a])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E6A34F800F5
-	for <alsa-devel@alsa-project.org>; Sun,  7 Jan 2024 14:49:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E6A34F800F5
+	by alsa1.perex.cz (Postfix) with ESMTPS id BC003F80086
+	for <alsa-devel@alsa-project.org>; Sun,  7 Jan 2024 14:49:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BC003F80086
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20230601 header.b=FcKI08p4
-Received: by mail-qk1-x735.google.com with SMTP id
- af79cd13be357-7831be84f4eso53781185a.0
+ header.s=20230601 header.b=chC8TnuP
+Received: by mail-qk1-x72a.google.com with SMTP id
+ af79cd13be357-7831be84f4eso53782985a.0
         for <alsa-devel@alsa-project.org>;
- Sun, 07 Jan 2024 05:49:28 -0800 (PST)
+ Sun, 07 Jan 2024 05:49:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704635366; x=1705240166;
+        d=gmail.com; s=20230601; t=1704635370; x=1705240170;
  darn=alsa-project.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Vo9zZ7GO4dydRr6xjEjRJpw5b3BLUzuSBST5lbeN9WQ=;
-        b=FcKI08p4e+2iGKrB7Fq5MwwRP6WYrcMd1jnTLD1JzBJRIYfANQEH/6j6sq8jz5otKL
-         8a/s5L5sx9iqDPfLW5rTwpmwp+GR3VASaww+pfCN2jDO12ckuz3a5+1XaNobnrlO10+V
-         RBLGY30V+k/jsPMhPLoZBYibgphsXk+oceDTLyH2b98no055GOdarNFu9gLbT32em7+F
-         kgDjaRTwGIm1+crafXxzNzbZPPlpg+sFrfZ0+lRyQKdSnwq+fxnYwRmuo1Ml/sm9nu0Y
-         WJiD261rFCsWNuyVyMd5T809dRTAWLFWgAAPm0IY/3p73BYY6ILkB/tjSu5/BxLqEdW5
-         miOg==
+        bh=GOF6sEqDIgSyAvb+prfjypAX6iR1Y4dGfmqj46BSgHA=;
+        b=chC8TnuPSxwY59sIyXnKCg2yn6x0Ez8xjbBmaHG8Sb9sHfE1o+C4frh/no83xP/Qt6
+         QFD4kIEkrdWQ7IYI5di/9kiuJqHmu3Fk0kUv7/OPECReUFneX3rDizRQPg+EVx2bidlx
+         2YOyqqeQNThiPWuihDKwgt/YrQEWJE5k0RS2VzJ2IjulpV8xZFr9e+OqYCkSGApNyBRa
+         NTpvtZ4ETluh/UYYLMwUEanDGKYujvi1xlOLoa3EYHD23Y3y3z4f3anit/BsZiiuXP52
+         DCqbM5Qt0wGXaJGFfad0upDk/If/BDojjoDbHxVuFr1qfy/mf6GX2jA65zdXtiUbrkzp
+         Bpxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704635366; x=1705240166;
+        d=1e100.net; s=20230601; t=1704635370; x=1705240170;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Vo9zZ7GO4dydRr6xjEjRJpw5b3BLUzuSBST5lbeN9WQ=;
-        b=TdmxWgfCEoYKoZXJFr7CawBtASaf0NRo2Z277Km/sdbs6gEUzbxXVi/9FUZeNtrdVv
-         vB6nvTVnd0Gyd8I26LZoblCsMcrpJFDtxGhKP0l579sZ7VoYetM1W3i8PilAxy6GJV8d
-         kXbo7p1wvjnZdI2ShHLZwq/u5YEVMcdI3zwASbi5pDHDwzgb4fU45jj+WgqGHZ3TmdkX
-         Yln77hLR/a6e47wd7U+TC3KvbjjC0m+6HHF+n1zHsZkZEcDKLspCf/HGXAG3VBQ1ZM5r
-         jRQmPYpJLveYCaJqOJU6jwXo6GbIbrRTvkGJ5DTv5HvqKB5GQ/FQ+7NV9pImJUN0Wukh
-         sv2A==
-X-Gm-Message-State: AOJu0YxLwfFqokfZmGP83zCxzZLaY7JmzKt6ktpYUk89giVswh9A6rNa
-	cRdmxqawR0qZUQoRcYs5c520UjePVNU=
+        bh=GOF6sEqDIgSyAvb+prfjypAX6iR1Y4dGfmqj46BSgHA=;
+        b=ILafkZU2KtIozAD4nWZxXGObY214EQ+QxpKtiO9yArifGWLu2J/e2UvbqfVgFpNcph
+         KE7Yv2nNIQo/FuKKTH0bbqjjbgjSc1KChApAWY2bkFk81sg1/9dZI0z/aO/gmEKZUl2h
+         xqddIL+i9VceIAajXcJ77v/w1b49N9rAVjdyC7hpVubTKq1xUQn/XkTSJj375D0HmIqb
+         SEbzEqYC4TMFAiU4EPdtP2oauGT5PjmGjhzlY/wl7Kqke1AWeC9wpfcT0T0IC+gqAUIA
+         5Iyso16baiP8YOLOX1/+M0d8Hl7gkUk9d0O3Mrl6GqQ0bhT/RTSEw1zYrmspzr5nUdRV
+         va3w==
+X-Gm-Message-State: AOJu0Yykgk9Q9mjbQ6pc6bX9171Lb1pFUSJgxfpglwIy4nygFHE+vGKc
+	3L+fsglx8Q5QYRyQHs9eQgkJZms0poE=
 X-Google-Smtp-Source: 
- AGHT+IHTQjPG7dZ3gd0zZfFxszWgc+6ZRaoomoEwnk9Vm2JijVbMH0tkj4nsWLXJ5xZ3Lz+rtKwrMA==
-X-Received: by 2002:a05:620a:2415:b0:781:5b96:537f with SMTP id
- d21-20020a05620a241500b007815b96537fmr3396619qkn.114.1704635366455;
-        Sun, 07 Jan 2024 05:49:26 -0800 (PST)
+ AGHT+IFnb37vBjY66Nu2rSQ0/P/iq7LZuxpig0/R2LCHTpVEcPdVYio3qWgU+Ne/5nxgcww411b+Hg==
+X-Received: by 2002:a05:620a:1454:b0:77e:fba3:4f28 with SMTP id
+ i20-20020a05620a145400b0077efba34f28mr2303236qkl.126.1704635369856;
+        Sun, 07 Jan 2024 05:49:29 -0800 (PST)
 Received: from localhost.localdomain ([2602:47:d950:3e00:64e5:89b4:ac:57eb])
         by smtp.googlemail.com with ESMTPSA id
- os8-20020a05620a810800b0078310c390ffsm1120279qkn.9.2024.01.07.05.49.25
+ os8-20020a05620a810800b0078310c390ffsm1120279qkn.9.2024.01.07.05.49.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Jan 2024 05:49:26 -0800 (PST)
+        Sun, 07 Jan 2024 05:49:29 -0800 (PST)
 From: Nicholas Vinson <nvinson234@gmail.com>
 To: alsa-devel@alsa-project.org
 Cc: Nicholas Vinson <nvinson234@gmail.com>
-Subject: [PATCH 2/4] src/Versions.in: Add guards for opt. alisp symbols
-Date: Sun,  7 Jan 2024 08:48:54 -0500
+Subject: [PATCH 4/4] libatopology: Remove version-script flags
+Date: Sun,  7 Jan 2024 08:48:56 -0500
 Message-ID: 
- <b60ab4a86cc69a7749f5a4b1a6325933a048eb45.1704635150.git.nvinson234@gmail.com>
+ <f00125b2e661576756d7efefbe9707774efffaf5.1704635150.git.nvinson234@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1704635150.git.nvinson234@gmail.com>
 References: <cover.1704635150.git.nvinson234@gmail.com>
@@ -100,127 +100,57 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: 2VVYMQFO2PPCR2RCPR5ZACWKGVWLYSJD
-X-Message-ID-Hash: 2VVYMQFO2PPCR2RCPR5ZACWKGVWLYSJD
+Message-ID-Hash: R4OUPK7LM4YILZ7KJ5JDCKS7CJ33AE3N
+X-Message-ID-Hash: R4OUPK7LM4YILZ7KJ5JDCKS7CJ33AE3N
 X-Mailman-Approved-At: Mon, 08 Jan 2024 16:21:51 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2VVYMQFO2PPCR2RCPR5ZACWKGVWLYSJD/>
-List-Archive: <>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/R4OUPK7LM4YILZ7KJ5JDCKS7CJ33AE3N/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add guards for optional alisp symbols. This ensures that the Versions
-file does not contain undefined symbols when building alisp support is
-disabled.
-
-Fixes Gentoo bugs 914511 (https://bugs.gentoo.org/914511),
-    914643 (https://bugs.gentoo.org/914643),
-    and 919417 (https://bugs.gentoo.org/919417).
-
-Fixes bug #305
-Fixes alsa_lisp symbol error reported in bug #356
+Review of Versions.in does not list any symbols defined in the
+libatopology library. Naming undefined symbols in a version script
+causes build failures with ld.lld when using default flags.
 
 Signed-off-by: Nicholas Vinson <nvinson234@gmail.com>
 ---
- configure.ac                        |  2 +-
- src/Makefile.am                     | 11 ++++++++++-
- src/{Versions.in => Versions.in.in} |  4 ++++
- 3 files changed, 15 insertions(+), 2 deletions(-)
- rename src/{Versions.in => Versions.in.in} (99%)
+ src/topology/Makefile.am | 8 +-------
+ 1 file changed, 1 insertion(+), 7 deletions(-)
 
-diff --git a/configure.ac b/configure.ac
-index 9db527c3..024e70b0 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -749,7 +749,7 @@ fi
- 
- AC_CONFIG_FILES(Makefile doc/Makefile doc/pictures/Makefile doc/doxygen.cfg \
- 		include/Makefile include/sound/Makefile include/sound/uapi/Makefile \
--		src/Versions src/Makefile \
-+		src/Versions.in src/Makefile \
- 		src/control/Makefile src/mixer/Makefile \
- 		src/pcm/Makefile src/pcm/scopes/Makefile \
- 		src/rawmidi/Makefile src/timer/Makefile \
-diff --git a/src/Makefile.am b/src/Makefile.am
-index df46dbc4..b4a0d5d9 100644
---- a/src/Makefile.am
-+++ b/src/Makefile.am
-@@ -1,10 +1,11 @@
--EXTRA_DIST=Versions
+diff --git a/src/topology/Makefile.am b/src/topology/Makefile.am
+index 9f48891f..b1bc10f1 100644
+--- a/src/topology/Makefile.am
++++ b/src/topology/Makefile.am
+@@ -1,11 +1,5 @@
  COMPATNUM=@LIBTOOL_VERSION_INFO@
  
- if VERSIONED_SYMBOLS
- VSYMS = -Wl,--version-script=Versions
-+BUILT_SOURCES = $(top_builddir)/src/Versions
- else
- VSYMS =
-+BUILT_SOURCES =
- endif
- 
+-if VERSIONED_SYMBOLS
+-VSYMS = -Wl,--version-script=../Versions
+-else
+-VSYMS =
+-endif
+-
  if SYMBOLIC_FUNCTIONS
-@@ -13,6 +14,8 @@ else
- SYMFUNCS =
- endif
+ SYMFUNCS = -Wl,-Bsymbolic-functions
+ else
+@@ -15,7 +9,7 @@ endif
+ lib_LTLIBRARIES = libatopology.la
  
-+VERSION_CPPFLAGS =
-+
- lib_LTLIBRARIES = libasound.la
- libasound_la_SOURCES = conf.c confeval.c confmisc.c input.c output.c async.c error.c dlmisc.c socket.c shmarea.c userfile.c names.c
+ libatopology_la_LIBADD = ../libasound.la
+-libatopology_la_LDFLAGS = -version-info $(COMPATNUM) $(VSYMS) $(SYMFUNCS) $(LDFLAGS_NOUNDEFINED)
++libatopology_la_LDFLAGS = -version-info $(COMPATNUM) $(SYMFUNCS) $(LDFLAGS_NOUNDEFINED)
  
-@@ -43,6 +46,9 @@ SUBDIRS += ucm
- libasound_la_LIBADD += ucm/libucm.la
- endif
- if BUILD_ALISP
-+if VERSIONED_SYMBOLS
-+VERSION_CPPFLAGS += -DHAVE_ALISP_SYMS
-+endif
- SUBDIRS += alisp
- libasound_la_LIBADD += alisp/libalisp.la
- endif
-@@ -51,6 +57,9 @@ libasound_la_LIBADD += @ALSA_DEPLIBS@
- 
- libasound_la_LDFLAGS = -version-info $(COMPATNUM) $(VSYMS) $(SYMFUNCS) $(LDFLAGS_NOUNDEFINED)
- 
-+$(top_builddir)/src/Versions: $(top_builddir)/src/Versions.in
-+	$(COMPILE) -E $(VERSION_CPPFLAGS) -x assembler-with-cpp -o $@ $<
-+
- control/libcontrol.la:
- 	$(MAKE) -C control libcontrol.la
- 
-diff --git a/src/Versions.in b/src/Versions.in.in
-similarity index 99%
-rename from src/Versions.in
-rename to src/Versions.in.in
-index c53a99fa..041eff08 100644
---- a/src/Versions.in
-+++ b/src/Versions.in.in
-@@ -118,15 +118,19 @@ ALSA_0.9.3 {
- } ALSA_0.9.0;
- 
- ALSA_0.9.5 {
-+#ifdef HAVE_ALISP_SYMS
-   global:
- 
-     @SYMBOL_PREFIX@alsa_lisp;
-+#endif
- } ALSA_0.9.3;
- 
- ALSA_0.9.7 {
-+#ifdef HAVE_ALISP_SYMS
-   global:
- 
-     @SYMBOL_PREFIX@alsa_lisp_*;
-+#endif
- } ALSA_0.9.5;
- 
- ALSA_1.1.6 {
+ libatopology_la_SOURCES =\
+ 	parser.c \
 -- 
 2.43.0
 
