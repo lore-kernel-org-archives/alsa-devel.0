@@ -4,86 +4,150 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 42536C3DA6E
-	for <alsa-devel@archiver.kernel.org>; Mon,  8 Jan 2024 12:22:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3F929C3DA6E
+	for <alsa-devel@archiver.kernel.org>; Mon,  8 Jan 2024 15:56:45 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8C39411C;
-	Mon,  8 Jan 2024 13:22:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8C39411C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 42DCF823;
+	Mon,  8 Jan 2024 16:56:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 42DCF823
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1704716542;
-	bh=JPMRFk0+a513JrpsImh3MdYI5B3NL29731Yi1WO0Yaw=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:List-Id:
+	s=default; t=1704729403;
+	bh=rQ2H0o8DKlz6IxN0XBgak7Ugha/X2lcaxPUNPOmoVWc=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=OSyNg0DC4pwBKGdjO7LkY7cHFnJnV2zWIfU1Q2nUVDcHGG/vMUQ0V/NaKBePnO87d
-	 3G6P6cDUkAr42syhnLNKob3SSztNIqg/5NnHTfaBBIBs62teHJ6JPlnYsHKz97emF7
-	 2QLNr/zhRSbmheETThStbzvdlYkZ6GE2KxHpBPR8=
+	b=L8g3pZHWyZdtMdUpyTkYSdwts8scyNyXielDWMSanm/+1OHKePPii1CTtwQW8RzCM
+	 txRDKTNeo9gtBKQBPIx/K2NMsoPguOcKCjNgKdgNDOCVXs5rMV8D8Zv38xHRrRmfON
+	 SksTWTRBxsTMXlFjGHFTklA52ICK5UFi4JzVr8Tc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5535AF80578; Mon,  8 Jan 2024 13:21:51 +0100 (CET)
+	id 87C6DF80579; Mon,  8 Jan 2024 16:56:05 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id F2795F80589;
-	Mon,  8 Jan 2024 13:21:50 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 932FDF8059F;
+	Mon,  8 Jan 2024 16:56:05 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 355D5F80246; Mon,  8 Jan 2024 13:21:47 +0100 (CET)
-Received: from metis.whiteo.stw.pengutronix.de
- (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+	id A638BF80254; Mon,  8 Jan 2024 16:56:00 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
- server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 36302F8003A
-	for <alsa-devel@alsa-project.org>; Mon,  8 Jan 2024 13:21:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 36302F8003A
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps
- (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <p.zabel@pengutronix.de>)
-	id 1rModK-0007ah-HH; Mon, 08 Jan 2024 13:21:34 +0100
-Received: from [2a0a:edc0:0:900:1d::4e] (helo=lupine)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls
- TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <p.zabel@pengutronix.de>)
-	id 1rModJ-001FLl-AR; Mon, 08 Jan 2024 13:21:33 +0100
-Received: from pza by lupine with local (Exim 4.96)
-	(envelope-from <p.zabel@pengutronix.de>)
-	id 1rModJ-00090a-0m;
-	Mon, 08 Jan 2024 13:21:33 +0100
-Message-ID: <eb41618782e1cd80d469a65bcdbf640ebbfb4f5c.camel@pengutronix.de>
-Subject: Re: [PATCH v2 1/4] reset: gpio: Add GPIO-based reset controller
-From: Philipp Zabel <p.zabel@pengutronix.de>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Srinivas
- Kandagatla <srinivas.kandagatla@linaro.org>, Banajit Goswami
- <bgoswami@quicinc.com>,  Bjorn Andersson <andersson@kernel.org>, Konrad
- Dybcio <konrad.dybcio@linaro.org>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,  Conor Dooley
- <conor+dt@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai
- <tiwai@suse.com>,  alsa-devel@alsa-project.org,
- linux-arm-msm@vger.kernel.org,  linux-sound@vger.kernel.org,
- devicetree@vger.kernel.org,  linux-kernel@vger.kernel.org
-Cc: Bartosz Golaszewski <brgl@bgdev.pl>, Sean Anderson
- <sean.anderson@seco.com>
-Date: Mon, 08 Jan 2024 13:21:33 +0100
-In-Reply-To: <20240105155918.279657-2-krzysztof.kozlowski@linaro.org>
-References: <20240105155918.279657-1-krzysztof.kozlowski@linaro.org>
-	 <20240105155918.279657-2-krzysztof.kozlowski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4-2 
-MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: p.zabel@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de);
- SAEximRunCond expanded to false
-X-PTX-Original-Recipient: alsa-devel@alsa-project.org
-Message-ID-Hash: E6QDLAPZYTUR2MBLYKHG6FDFWKFXUKIC
-X-Message-ID-Hash: E6QDLAPZYTUR2MBLYKHG6FDFWKFXUKIC
-X-MailFrom: p.zabel@pengutronix.de
+	by alsa1.perex.cz (Postfix) with ESMTPS id 3AA42F8003A
+	for <alsa-devel@alsa-project.org>; Mon,  8 Jan 2024 16:55:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3AA42F8003A
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=ZJQVvH7W;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=eDZe2EO2;
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.a=rsa-sha256 header.s=susede2_rsa header.b=HjGvnfss;
+	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=c24dex0e
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 463E021D25;
+	Mon,  8 Jan 2024 15:55:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1704729353;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=otoEBLYRoxPbrNf5ndZA3E2Sne8+a1o3mng2AXb1V7w=;
+	b=ZJQVvH7W1X95OoXG34l0tc5Fhg14eC4KVJdQLFdIjJ9v33jVVQNZgzF0rQZpW1V8QAbzMs
+	YnsWbaZXng7ZYUBBafRRda6qrsHu9/sPczMyAJHgB8wU4O46Fzl4oE+mCeTK6/Dfgwav2D
+	F2JCQ/Kkdayqn3+bDWOY5GGFSIcboDY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1704729353;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=otoEBLYRoxPbrNf5ndZA3E2Sne8+a1o3mng2AXb1V7w=;
+	b=eDZe2EO2dcsWupH4p3VXx+OrYyL4ncrgZaihev/KxUJdpJxBjP3+WE16VGPbV7LVKul+Jy
+	ZJht15S3FlrdqeDA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1704729352;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=otoEBLYRoxPbrNf5ndZA3E2Sne8+a1o3mng2AXb1V7w=;
+	b=HjGvnfss//wX/DWEtqZmc2EEStma2Hd35QyN2Xn6t4smYxm3V8GQmAv5rRYKGo02F2ldU0
+	ke+qjD6x0Gs/kHzih2iAai5o+xxL+9IF0M1gsjpr7geFIltE8vzmDnGMCfNImdzKad4Ef4
+	jMJtbTm0WTdfWddt5gxEsA8xf6Lc4mc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1704729352;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=otoEBLYRoxPbrNf5ndZA3E2Sne8+a1o3mng2AXb1V7w=;
+	b=c24dex0eU03cKRrUE0Tim4SIoN0ebcpbs7E0pccvi9yxT9P6ZXKugMfEdpAwS7tHYSu6S+
+	d1zNGKDS2wezIeBA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0E45513686;
+	Mon,  8 Jan 2024 15:55:52 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id fv+5AQgbnGVUawAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Mon, 08 Jan 2024 15:55:52 +0000
+Date: Mon, 08 Jan 2024 16:55:51 +0100
+Message-ID: <87sf37sttk.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Tom Jason Schwanke <tom@catboys.cloud>
+Cc: perex@perex.cz,
+	tiwai@suse.com,
+	alsa-devel@alsa-project.org,
+	linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ALSA: hda/realtek: Fix mute and mic-mute LEDs for HP Envy
+ X360 13-ay0xxx
+In-Reply-To: <651b26e9-e86b-45dd-aa90-3e43d6b99823@catboys.cloud>
+References: <651b26e9-e86b-45dd-aa90-3e43d6b99823@catboys.cloud>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 463E021D25
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=HjGvnfss;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=c24dex0e
+X-Spamd-Result: default: False [-1.41 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCPT_COUNT_FIVE(0.00)[6];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.de:+];
+	 MX_GOOD(-0.01)[];
+	 MID_CONTAINS_FROM(1.00)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-0.90)[86.01%]
+Message-ID-Hash: BJE2FKJN72PWFTQ2I57YF2C245JUVFTT
+X-Message-ID-Hash: BJE2FKJN72PWFTQ2I57YF2C245JUVFTT
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -95,7 +159,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/E6QDLAPZYTUR2MBLYKHG6FDFWKFXUKIC/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BJE2FKJN72PWFTQ2I57YF2C245JUVFTT/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -104,32 +168,19 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fr, 2024-01-05 at 16:59 +0100, Krzysztof Kozlowski wrote:
-> Add a simple driver to control GPIO-based resets using the reset
-> controller API for the cases when the GPIOs are shared and reset should
-> be coordinated.  The driver is expected to be used by reset core
-> framework for ad-hoc reset controllers.
+On Mon, 08 Jan 2024 16:15:21 +0100,
+Tom Jason Schwanke wrote:
+> 
+> This enables the mute and mic-mute LEDs on the HP Envy X360 13-ay0xxx convertibles.
+> The quirk 'ALC245_FIXUP_HP_X360_MUTE_LEDS' already exists and is now enabled for this device.
+> Fixes https://bugzilla.kernel.org/show_bug.cgi?id=216197
+> 
+> Signed-off-by: Tom Jason Schwanke <tom@catboys.cloud>
 
-I don't know how evil it is to set a parent-less platform device's
-of_node to another device's node, but I like the simplicity of a
-single-GPIO reset controller driver more that I had expected.
+The patch was somewhat based on the old kernel (and had a typical mail
+tab/space problem), so I adjusted and applied manually.
 
-[...]
-> diff --git a/drivers/reset/reset-gpio.c b/drivers/reset/reset-gpio.c
-> new file mode 100644
-> index 000000000000..cf0a867cbc5f
-> --- /dev/null
-> +++ b/drivers/reset/reset-gpio.c
-> @@ -0,0 +1,121 @@
-[...]
-> +static void reset_gpio_of_args_put(void *data)
 
-This should probably be called reset_gpio_of_node_put().
+thanks,
 
-> +{
-> +	of_node_put(data);
-> +}
-[...]
-
-regards
-Philipp
+Takashi
