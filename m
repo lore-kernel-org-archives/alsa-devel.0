@@ -4,105 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5DFA9C47073
-	for <alsa-devel@archiver.kernel.org>; Mon,  8 Jan 2024 16:24:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 05276C3DA6E
+	for <alsa-devel@archiver.kernel.org>; Mon,  8 Jan 2024 16:24:28 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7B39586F;
-	Mon,  8 Jan 2024 17:23:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7B39586F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8D3DFEF2;
+	Mon,  8 Jan 2024 17:24:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8D3DFEF2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1704731045;
-	bh=nRlGjB6MLEPuVqKHt0cbyigi8lxe0Du61ognLit7izw=;
-	h=Date:From:To:Cc:Subject:List-Id:List-Archive:List-Help:List-Owner:
+	s=default; t=1704731065;
+	bh=Y8lHlQjUepn0WOMp8xWNS5lS2RAFFxeSEYjkMCew2bo=;
+	h=Date:From:Subject:To:Cc:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=qxBG9bLGN+8+eTdFkqULPGVsL0JK3XIWCcA0ZCvBMBifv0STkSd2B35pM1MmRV0QE
-	 2xAYYab36gA1VJe2f7qjA5G6Q6fWGz4nnTgKmY8Kh4bbsMZyV1OQYmAoDmwjkFFEK+
-	 ToQotyxbgVi0gNVe9msiZNbNmnBx+VSaTvggFXM8=
+	b=ogCOYPDZRQUmGd2SxONQBmhoD6dp0SkrRZ4xvDygLGIBjqYS4/PWm9DHqnmdr/Ert
+	 xlcGCMMfJAtCQeUuj+g1fHiX08XG9LYz+HURRPM3+nxwrkm63Pv8MyqN6MRn+8DkR3
+	 HAkXpUM5CANbC5SYdtRDFw30mNX0A0JEP/OAIpiA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7BAD3F8069E; Mon,  8 Jan 2024 17:22:06 +0100 (CET)
+	id 0BB4AF806A6; Mon,  8 Jan 2024 17:22:26 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E331DF806A5;
-	Mon,  8 Jan 2024 17:22:05 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E9DA0F8057A;
+	Mon,  8 Jan 2024 17:22:25 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 720ABF80254; Mon,  8 Jan 2024 11:03:59 +0100 (CET)
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com
- [IPv6:2a00:1450:4864:20::336])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	id 26D0DF80254; Mon,  8 Jan 2024 16:15:32 +0100 (CET)
+Received: from mail.catboys.cloud (mail.catboys.cloud [185.233.107.22])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id AD18BF80086
-	for <alsa-devel@alsa-project.org>; Mon,  8 Jan 2024 11:03:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AD18BF80086
+	by alsa1.perex.cz (Postfix) with ESMTPS id 8022AF8014B
+	for <alsa-devel@alsa-project.org>; Mon,  8 Jan 2024 16:15:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8022AF8014B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=MTHEHF/j
-Received: by mail-wm1-x336.google.com with SMTP id
- 5b1f17b1804b1-40d5a41143fso19230835e9.3
-        for <alsa-devel@alsa-project.org>;
- Mon, 08 Jan 2024 02:03:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1704708233; x=1705313033;
- darn=alsa-project.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=4ZGUazryB+36ZjwWsoSkOiJeHXguphjqlafJdYJv/Do=;
-        b=MTHEHF/jTgXDHGLr7m9//KrrqVfqAAINZHZlFqYJFgIpfIFb4KuRhepb7R7+cqR+6L
-         vvgwpy84iHrYWqlY1enWbQ4efQzY//Qc9of880sqjaCDERTQor+AhHjiMm2TrdVH8TbJ
-         8pMZRlbYG818apy5Mg6n64RZVdqj5vVatdRxGYLjM4iUjIKWs6JlVimeRXx6XHzRkEfN
-         77JDrHGqhAfHTnib/zIshwurtRjdCFHKAFzNjUuwglU9626Ls1PsGlvFyPV9z3HER/Su
-         wFQdOQDswXSVvd8e/16RPb77afeMJPmatGV1PT03EUSQMbQalsfw6u4bIyi1zfEuDHYt
-         VZVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704708233; x=1705313033;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4ZGUazryB+36ZjwWsoSkOiJeHXguphjqlafJdYJv/Do=;
-        b=hdaA7+bj1ZpdByCHMAu4vA/dY0pe6LvhwSxyR7VQ/woqeOTBVWv5jb5AC/awNG75JA
-         WsOB7cYiKHhM3kVEfTRUGeMjRA/Voy2LHz9RoTd8ilkXpMAjzKGLhevGbHVY0UQM0nbU
-         U6U0LTNIVrKBVuutzIgZN0gNiq+hL9ziWA0jrBNSy5wj7xYpt0uo1UX2/jNfrg/PBdbr
-         lLcC4fy5ZKuQjclawEwrtM4/t/Qx0k4KHw/LS6I7X7Y5XiECIXYUlvjQnwLnsCMYjc3h
-         BXc8o0dbq7x5imx0OkJ2fxcest8HNmMaNoI2pNd+ZxrznIT0nedzf1CztKAwQ7L4y03y
-         UNcg==
-X-Gm-Message-State: AOJu0YwFn8o3LmOICuoWe7FpYrobEF4Y37QWm1PmLTEHYuvjB02l3FFK
-	jOe41gs8jeoCHNEc7CQeQLDv1xOZ99roow==
-X-Google-Smtp-Source: 
- AGHT+IHCWbr9BEW6un50JdypT5XyBEDWjQledTpxWGMlZP7aLBqGkJRtQUqcJ2+pinmXtc0gXQQI8g==
-X-Received: by 2002:a7b:cb10:0:b0:40d:5e74:89e8 with SMTP id
- u16-20020a7bcb10000000b0040d5e7489e8mr1695620wmj.55.1704708232796;
-        Mon, 08 Jan 2024 02:03:52 -0800 (PST)
-Received: from localhost ([102.140.209.237])
-        by smtp.gmail.com with ESMTPSA id
- h11-20020a5d504b000000b0033739c1da1dsm7347942wrt.67.2024.01.08.02.03.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Jan 2024 02:03:52 -0800 (PST)
-Date: Mon, 8 Jan 2024 13:03:49 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: cezary.rojewski@intel.com
-Cc: alsa-devel@alsa-project.org
-Subject: [bug report] ASoC: Intel: avs: Path creation and freeing
-Message-ID: <8b6690a2-4a92-404a-a846-5b099e34a7a2@moroto.mountain>
+ unprotected) header.d=catboys.cloud header.i=@catboys.cloud
+ header.a=rsa-sha256 header.s=dkim header.b=J/wBtsoX
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon)
+ with ESMTPSA id BEDE2C0B01;
+	Mon,  8 Jan 2024 16:15:21 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=catboys.cloud;
+	s=dkim; t=1704726924;
+	h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:content-language;
+	bh=XYe40yUbAp9wLca9aCV+041knviU6Ai80qscE96Dorg=;
+	b=J/wBtsoXaj7CU2Ph0PGKCYixSirM1JW/q/M1Fip+0ph9jIjSN4ELaiMZHdoLk/ZriUvwW5
+	xsmfrOzhfQhCz0HUcSz5H6mhaf7Z+mGkjX2Lp5GQNfMvQweuAJz0hu/67rxZL03lrMs8LL
+	iNTo/Ln/cQ612XdqDJ+vuK8YkdlqZxFj+Aq5r7BT1VH7wzpI1tJcEPj9dSfjF5zzIAjgNv
+	4ATgArHCqrsKg3ciOkyuWHDXoLRn8utaXFN/+y0uG4OOM8qpEjEzDOj6/jgirLxACve0lc
+	j2wb77ehjOMkCziB40k7er5phPVUBIIDkT6uG1YNlAGVqZWS8RT6K3kzOm+wpw==
+Message-ID: <651b26e9-e86b-45dd-aa90-3e43d6b99823@catboys.cloud>
+Date: Mon, 8 Jan 2024 16:15:21 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-MailFrom: dan.carpenter@linaro.org
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+From: Tom Jason Schwanke <tom@catboys.cloud>
+Subject: [PATCH] ALSA: hda/realtek: Fix mute and mic-mute LEDs for HP Envy
+ X360 13-ay0xxx
+To: perex@perex.cz, tiwai@suse.com
+Cc: alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Last-TLS-Session-Version: TLSv1.3
+X-MailFrom: tom@catboys.cloud
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: YRBTT6ZU6E4FLHPE2OU6SJWBWJWNLLOR
-X-Message-ID-Hash: YRBTT6ZU6E4FLHPE2OU6SJWBWJWNLLOR
-X-Mailman-Approved-At: Mon, 08 Jan 2024 16:21:53 +0000
+Message-ID-Hash: YOYNBJJY2ZKMCMW6DTSZ7LEKOA7TDLMQ
+X-Message-ID-Hash: YOYNBJJY2ZKMCMW6DTSZ7LEKOA7TDLMQ
+X-Mailman-Approved-At: Mon, 08 Jan 2024 16:22:21 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YRBTT6ZU6E4FLHPE2OU6SJWBWJWNLLOR/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YOYNBJJY2ZKMCMW6DTSZ7LEKOA7TDLMQ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -111,29 +89,26 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hello Cezary Rojewski,
+This enables the mute and mic-mute LEDs on the HP Envy X360 13-ay0xxx convertibles.
+The quirk 'ALC245_FIXUP_HP_X360_MUTE_LEDS' already exists and is now enabled for this device.
+Fixes https://bugzilla.kernel.org/show_bug.cgi?id=216197
 
-This is a semi-automatic email about new static checker warnings.
+Signed-off-by: Tom Jason Schwanke <tom@catboys.cloud>
+---
+  sound/pci/hda/patch_realtek.c | 1 +
+  1 file changed, 1 insertion(+)
 
-    sound/soc/intel/avs/path.c:110 avs_path_find_variant()
-    warn: variable dereferenced before check 'variant->be_fmt' (see line 105)
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 1dcfba27e075..475d7e843ed3 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -9875,6 +9875,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+         SND_PCI_QUIRK(0x103c, 0x8870, "HP ZBook Fury 15.6 Inch G8 Mobile Workstation PC", ALC285_FIXUP_HP_GPIO_AMP_INIT),
+         SND_PCI_QUIRK(0x103c, 0x8873, "HP ZBook Studio 15.6 Inch G8 Mobile Workstation PC", ALC285_FIXUP_HP_GPIO_AMP_INIT),
+         SND_PCI_QUIRK(0x103c, 0x887a, "HP Laptop 15s-eq2xxx", ALC236_FIXUP_HP_MUTE_LED_COEFBIT2),
++       SND_PCI_QUIRK(0x103c, 0x876E, "HP ENVY x360 Convertible 13-ay0xxx", ALC245_FIXUP_HP_X360_MUTE_LEDS),
+         SND_PCI_QUIRK(0x103c, 0x888a, "HP ENVY x360 Convertible 15-eu0xxx", ALC245_FIXUP_HP_X360_MUTE_LEDS),
+         SND_PCI_QUIRK(0x103c, 0x888d, "HP ZBook Power 15.6 inch G8 Mobile Workstation PC", ALC236_FIXUP_HP_GPIO_LED),
+         SND_PCI_QUIRK(0x103c, 0x8895, "HP EliteBook 855 G8 Notebook PC", ALC285_FIXUP_HP_SPEAKERS_MICMUTE_LED),
+---
 
-sound/soc/intel/avs/path.c
-   104				variant->fe_fmt->valid_bit_depth, variant->fe_fmt->bit_depth);
-   105			dev_dbg(adev->dev, "check BE rate %d chn %d vbd %d bd %d\n",
-   106				variant->be_fmt->sampling_freq, variant->be_fmt->num_channels,
-   107				variant->be_fmt->valid_bit_depth, variant->be_fmt->bit_depth);
-                                ^^^^^^^^^^^^^^^                   ^^^^^^^^^^^^^^^
-Unchecked dereferences
-
-   108	
-   109			if (variant->fe_fmt && avs_test_hw_params(fe_params, variant->fe_fmt) &&
-   110			    variant->be_fmt && avs_test_hw_params(be_params, variant->be_fmt))
-                            ^^^^^^^^^^^^^^^
-Checked too late
-
-   111				return variant;
-   112		}
-
-regards,
-dan carpenter
