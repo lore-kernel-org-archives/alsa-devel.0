@@ -4,82 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C7D74C46CD2
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Jan 2024 09:54:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7D1D1C46CD2
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Jan 2024 10:17:50 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D053B206;
-	Tue,  9 Jan 2024 10:54:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D053B206
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3C769203;
+	Tue,  9 Jan 2024 11:17:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3C769203
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1704794095;
-	bh=ZzK6Vp42TEIsfIyJQNP28NhtlMFkU94Dmq0D+Z7QDdY=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=VcPiu2hGArFB0Mg9JH4XXNxRsxmxAxraa1BYe0Q1DfuHVnPPL9J/rt5gR5xMyBLyC
-	 9tLVW432cUNDLtvTBUGZAqf5zPDnt31Kfo3iYAEGU9jK3c1+olluoL1N9rwP5MSbwO
-	 hRXMkQDKwHNO1CGVKUct4Jeey5UQginfhg5Di4zk=
+	s=default; t=1704795468;
+	bh=+94a8tc76Thd4Dc+km10C7S+eGD4ggn+6hn0r7Jekpw=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=iBOT/SN47n+xt+mP9EdkTEz7aqmT8xN5N7rMWaoqqz1AY5z0e1kQsFgu96fKGrpkx
+	 4Dv6Ifk1JsW+gy7VPLKTciR+/otwqxTC7LwhGC86NMKjDag3zUt8A8tDzLkXG6Gu0f
+	 vmbcbiLbkludzoFb2JawN+D9KNcU5P8I5Ioc/MsQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 14B41F8055B; Tue,  9 Jan 2024 10:54:34 +0100 (CET)
+	id 4B431F80578; Tue,  9 Jan 2024 11:17:05 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7BFACF80589;
-	Tue,  9 Jan 2024 10:54:34 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6196BF8059F;
+	Tue,  9 Jan 2024 11:17:05 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5D6CEF80254; Tue,  9 Jan 2024 10:53:53 +0100 (CET)
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id ECA94F80086
-	for <alsa-devel@alsa-project.org>; Tue,  9 Jan 2024 10:53:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ECA94F80086
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=WcXXsHyc
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 1A4E2CE17D5;
-	Tue,  9 Jan 2024 09:53:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED03BC433C7;
-	Tue,  9 Jan 2024 09:53:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704794020;
-	bh=ZzK6Vp42TEIsfIyJQNP28NhtlMFkU94Dmq0D+Z7QDdY=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=WcXXsHycg7s8ZD808aEB0IuRC/Bag1Sc2v1jQ1iPEZTISo/tm2USeZdeUBa8t5M2T
-	 KR0d4J4uyeFP46pmE8UD79VBJoFRzYRScKZ/BAgt+0ukv1CPzT+2ZtirRFupNTafW9
-	 3xg0RMGDRU0b8/Ni3Ftj6CXsGn/jlyG+x6z3pVtf/V5lUC0Sfd0I1qi1vfTmuJyjPB
-	 d+UKsA0AYpYGPUmpYC30JvsItCj+vccj4sFO7bTVWw/RdrRWAPpRlvXTHUte7IRFmq
-	 wJBvfO2EfGZIkIt8AdooIFeMvU4GM3YFBmdw/XCwuirYcdqr+/NfCoFVeKhnPZkiFG
-	 EtXgf/VEpHetg==
-From: Mark Brown <broonie@kernel.org>
-To: =?utf-8?q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= <nfraprado@collabora.com>
-Cc: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- kernel@collabora.com, Jaroslav Kysela <perex@perex.cz>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- =?utf-8?q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado_via_Alsa-devel?=
- <alsa-devel@alsa-project.org>,
- Rob Herring <robh@kernel.org>, Takashi Iwai <tiwai@suse.com>,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-mediatek@lists.infradead.org, linux-sound@vger.kernel.org
-In-Reply-To: <20240108204508.691739-1-nfraprado@collabora.com>
-References: <20240108204508.691739-1-nfraprado@collabora.com>
-Subject: Re: [PATCH] ASoC: mediatek: mt8192: Check existence of dai_name
- before dereferencing
-Message-Id: <170479401767.23951.13089659929333674161.b4-ty@kernel.org>
-Date: Tue, 09 Jan 2024 09:53:37 +0000
+	id 99371F80254; Tue,  9 Jan 2024 11:17:01 +0100 (CET)
+Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
+ [207.180.221.201])
+	by alsa1.perex.cz (Postfix) with ESMTP id 00CA9F80086
+	for <alsa-devel@alsa-project.org>; Tue,  9 Jan 2024 11:16:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 00CA9F80086
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.13-dev-5c066
-Message-ID-Hash: PLSFZ2HCJXCP2YNKUDGGGBPHNDLR6WUH
-X-Message-ID-Hash: PLSFZ2HCJXCP2YNKUDGGGBPHNDLR6WUH
-X-MailFrom: broonie@kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1704795412941235304-webhooks-bot@alsa-project.org>
+References: <1704795412941235304-webhooks-bot@alsa-project.org>
+Subject: External I/O-Plugin API is missing precise timestamp control
+Message-Id: <20240109101701.99371F80254@alsa1.perex.cz>
+Date: Tue,  9 Jan 2024 11:17:01 +0100 (CET)
+Message-ID-Hash: PXVGU6P2TRTNH3BDN4KDXMWOSGOOPQPK
+X-Message-ID-Hash: PXVGU6P2TRTNH3BDN4KDXMWOSGOOPQPK
+X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -91,7 +57,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PLSFZ2HCJXCP2YNKUDGGGBPHNDLR6WUH/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PXVGU6P2TRTNH3BDN4KDXMWOSGOOPQPK/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -100,43 +66,11 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, 08 Jan 2024 17:44:58 -0300, Nícolas F. R. A. Prado wrote:
-> Following commit 13f58267cda3 ("ASoC: soc.h: don't create dummy
-> Component via COMP_DUMMY()"), the dai_name field is only populated for
-> dummy components after the card is registered. This causes a null
-> pointer dereference in the mt8192-mt6359 sound card driver's probe
-> function when searching for a dai_name among all the card's dai links.
-> 
-> Verify that the dai_name is non-null before passing it to strcmp. While
-> at it, also check that there's at least one codec.
-> 
-> [...]
+alsa-project/alsa-lib issue #377 was opened from z-s-e:
 
-Applied to
+Unless I overlooked something, it seems not possible for an ioplug plugin to influence the timestamps reported by `snd_pcm_status_get_htstamp()` - I suppose those are rather autogenerated by the lib and thus of fairly low precision. Also, at the moment it is possible that a status update contains newer timestamps than a previous update, but without an increased `snd_pcm_status_get_avail()` value, which makes these autogenerated timestamps not very well behaved.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+It would be much better if there was a way for a plugin to tell the alsa-lib which timestamps it should forward to the user.
 
-Thanks!
-
-[1/1] ASoC: mediatek: mt8192: Check existence of dai_name before dereferencing
-      commit: 4d4e1b6319e5c4425ea3faeaf9a10b8b4c16c1e1
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+Issue URL     : https://github.com/alsa-project/alsa-lib/issues/377
+Repository URL: https://github.com/alsa-project/alsa-lib
