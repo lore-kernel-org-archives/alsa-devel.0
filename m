@@ -4,93 +4,108 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 10EE2C3DA6E
-	for <alsa-devel@archiver.kernel.org>; Wed, 10 Jan 2024 10:58:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4F04CC4707C
+	for <alsa-devel@archiver.kernel.org>; Wed, 10 Jan 2024 12:55:44 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 72854EB6;
-	Wed, 10 Jan 2024 11:58:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 72854EB6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 71C6CE69;
+	Wed, 10 Jan 2024 13:55:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 71C6CE69
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1704884309;
-	bh=xkaWrvfIfP7fZ7XhBOMVv7Q1Juvm5n5GKRa8e8j5ynQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=IYLrOFe3I8QbQhsFvkGWJ12U4fh1HWU9AUD3mZfewn9oQ8pMRuG1l3sqFqR+j8EBF
-	 VRtnIOMotPBPs6n6NedKM+oQgA/Wyy7LsYwJKY4G78w9XwtM+OtEMjEzJEiBpiHHYs
-	 S3H0w4GLA5SlmnB7Tl3ZioOfcTQ0iv4W+qULvMQg=
+	s=default; t=1704891342;
+	bh=PZABZvFu6YfewBVsfWRIsRfRTNc3fsB6tyPmtxoCWCw=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=BE0llH/EElxCGRSbfyZhYjJrkjeOMYHoEyUE+RwQITGnaJtHuh/+sV6oEM4RBLhl+
+	 PwhP4vJ1wvyLvSFzPV8UDwEiyqEwBmVg8INND4FxwVJ+9TGOcLx1LzrfqyD5uEjWqP
+	 qFRdt+BKl2JEMSxvZPYnWCJMtmtY//8XpFLMk9hI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0A445F8057C; Wed, 10 Jan 2024 11:57:57 +0100 (CET)
+	id 9DBCFF8057B; Wed, 10 Jan 2024 13:55:10 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 66C08F80589;
-	Wed, 10 Jan 2024 11:57:57 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C29EDF80589;
+	Wed, 10 Jan 2024 13:55:09 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8B249F80254; Wed, 10 Jan 2024 11:56:33 +0100 (CET)
-Received: from sin.source.kernel.org (sin.source.kernel.org
- [IPv6:2604:1380:40e1:4800::1])
+	id 110A2F80254; Tue,  9 Jan 2024 19:11:47 +0100 (CET)
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
+ server-digest SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 931C0F8014B
-	for <alsa-devel@alsa-project.org>; Wed, 10 Jan 2024 11:56:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 931C0F8014B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 581DCF8014B
+	for <alsa-devel@alsa-project.org>; Tue,  9 Jan 2024 19:11:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 581DCF8014B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=KAUNf7aJ
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 443C2CE1C0C;
-	Wed, 10 Jan 2024 10:56:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2CE8C433C7;
-	Wed, 10 Jan 2024 10:56:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704884180;
-	bh=xkaWrvfIfP7fZ7XhBOMVv7Q1Juvm5n5GKRa8e8j5ynQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=KAUNf7aJLFZZQ90MjJVa5wr0odvvVCP5rWR+DTYfKeWU38ePHYogD6u6vEMzXM+pU
-	 PVHcAr3qi6SBD4pN8ssWUab2Ap1A2A/3vMgDMtSQvBVYcVMlMFz9hayZ9r9C6Fdp0q
-	 vpLRh4m99k2bMFdc4NkhQijRAkcUeuv4ojSEX8vN2jvk4D7iJAkaFWejbtMIaJW2Cb
-	 EfjdbwC9LpctUoW6EoXHkVB0YvfbqF8pNJ12lxbEfcfOVlU5SL/vXc3HqhRWF99Mug
-	 4Ne4eKP57irYVyFcgPjgbZ8n3/ZfSXSUQXHx7GuB5C2CHNw231DBMmVFvHZHMWhH+D
-	 XE036xOJQDtoQ==
-Date: Wed, 10 Jan 2024 10:56:14 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Chancel Liu <chancel.liu@nxp.com>
-Cc: lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	shengjiu.wang@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
-	nicoleotsuka@gmail.com, perex@perex.cz, tiwai@suse.com,
-	linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
-	linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH 3/3] ASoC: dt-bindings: fsl,micfil: Add compatible string
- for i.MX95 platform
-Message-ID: <20240110-petty-tabasco-e8d86a751dea@spud>
-References: <20240109075551.870001-1-chancel.liu@nxp.com>
- <20240109075551.870001-4-chancel.liu@nxp.com>
+ unprotected) header.d=gmx.com header.i=erick.archer@gmx.com
+ header.a=rsa-sha256 header.s=s31663417 header.b=B29xcGD9
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
+	s=s31663417; t=1704823897; x=1705428697; i=erick.archer@gmx.com;
+	bh=PZABZvFu6YfewBVsfWRIsRfRTNc3fsB6tyPmtxoCWCw=;
+	h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+	b=B29xcGD9pJnrAoiLFpmOkfTFB/SsYMSIyA5nwqm9eVATIxvpptcEVeM98ngs2bES
+	 pD1uHMpJ5ljFpXEhGCPMExkAnOBH/dY0Wiw0EwtMovH+k7OJtMrfl5PyFPqH1M+1V
+	 b6s8y/tIDgaJZCnBBQmu9kj1Ovinw7ZmvRoWVqKFEW6djOjOCsJep/kPOjqoiPx6K
+	 tOn2YukORtnKB/zZJLFG3nLZnubmy2x+FMsAYD+Lgn5DP1bTf+mOkuSC4PQJmsAZ9
+	 wmPHBXgJack0D08nkI51jCgot4RJyqgHL9iij66K8ZrY/xYs0bSVxqFHIZxd3dKwx
+	 Z1qPyn23mPZFHVqoSQ==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from localhost.localdomain ([79.157.194.183]) by mail.gmx.net
+ (mrgmx005 [212.227.17.184]) with ESMTPSA (Nemesis) id
+ 1N33Ed-1rAqX60qfl-013JkH; Tue, 09 Jan 2024 19:11:37 +0100
+From: Erick Archer <erick.archer@gmx.com>
+To: Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc: Erick Archer <erick.archer@gmx.com>,
+	alsa-devel@alsa-project.org,
+	linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-hardening@vger.kernel.org
+Subject: [PATCH v2] ASoC: ti: j721e-evm: Use devm_kcalloc() instead of
+ devm_kzalloc()
+Date: Tue,  9 Jan 2024 19:11:01 +0100
+Message-Id: <20240109181101.3806-1-erick.archer@gmx.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="uKeeFUVPvFzJGMuc"
-Content-Disposition: inline
-In-Reply-To: <20240109075551.870001-4-chancel.liu@nxp.com>
-Message-ID-Hash: LHO5BI4I2SKSOKZ47VDAVC2JSO2SXASX
-X-Message-ID-Hash: LHO5BI4I2SKSOKZ47VDAVC2JSO2SXASX
-X-MailFrom: conor@kernel.org
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:+FQsFrpfyWYIKyTGfUr8bMQdMIgv0XDftz8xSNidl484g0foWv3
+ QsSRpMhc5PM5K1X/QVF3MPErICODTv70QT4510g408rqnzAbuoEQiZR1vcelqJuQF4iPOmT
+ J3q307fdOBJKiUQoTeX1O6wQbN5NXKwMbEjbo1uixPcJDUbrk10gHSclH/F1e+qOExIpIUq
+ BMNRsVYowKU35EuYzwL1w==
+UI-OutboundReport: notjunk:1;M01:P0:HqM7Q25+xKA=;ZvHEBSr7KNi6TYu4C+KGhvAVlGP
+ s4H5lD02JyV2eVDZIryDMPxkDN4wch7uGmKBucRuWBvCX5Km9GPVjpfyJ1+MDyPq9O5sEiDR5
+ Co9Tvtz9GY8FisLl8famEPEwNTp50nsujR+9JS3NTNLmuBOlB0d0fdKrOt+M6qlPyxIiJMMEo
+ rJ/o0NpJ4tu+E/aSLJ6sMI70KQPAaTSTRugOVtFLqC7D3M8mfFYEYS5Qsk2Hwax4UgeMNcDqN
+ Y60c/TDS0GgxbmgxhWluzfpWIcNR0MmlHyhx1QL1NhuYeBBBWKdrfAHV7qJRmtGKe3VPdf5m8
+ co/kioq+0lyGYTzRJ50/CPMvkcVTEc6sJKKGpF/5VQoL9N8LHJgyVQAm+GEL5RBVl0kg64BS9
+ zmM3n41TymExB7k0851H3juNGz3APx10CTHTbC9uIa3cnkaKnQKDB0trKXpv+GOY9FKKjafBk
+ +zqI9heJT2FKE2RTOmcM/91qiKS0Xq1zV+exknAnh/AeoJUAdgZOJMMkoEJJkgfJ4xvQTTyxi
+ DIQpWvkIjuzySdtWl8Uv4gAdMhJTuGrblab2g+ExrpdJxNeb9L0TxDU9vC/XSGwMrE0NTUkCb
+ vRGOk2rxZ88XOlJr7DXqLLiW6uIXEz4kTiwZNSJSLtbgJV3HM+giJrLRhqtNiTdcLzc2Xwczs
+ 7/JMc9NJT0vcjGevcBUbEgpx+lO2GHkuhvIgoeGyO+NevhzJPephji6vg3T7pXEmvuGVM2OTg
+ WSgZ0AQsVp9XK0sviU3z/3NQIxtJKIO/VwAMgwSVfHhCCaTIxGspThmvovRSXBBuZVrXOcjY0
+ rv2x77IOJRMU20Qiv9guHs1b29h35202a9Ov7C4S9nVr59yn1QBoCHew7Sg8zjchZ0ekYkmtn
+ DUZq5E4n+0h5JcEjnD4e69Udeu/dYvxnPhUzMqbzVYG5rO0YUHnMPPv7NhbiJTJ9UIPbH8Xcm
+ KkHCdL/Xd5Qc/5RPsv5zlcoGkPQ=
+X-MailFrom: erick.archer@gmx.com
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: 2H3RZAODRB6UQW27NJQSZM5FUJYG4W23
+X-Message-ID-Hash: 2H3RZAODRB6UQW27NJQSZM5FUJYG4W23
+X-Mailman-Approved-At: Wed, 10 Jan 2024 12:55:03 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LHO5BI4I2SKSOKZ47VDAVC2JSO2SXASX/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2H3RZAODRB6UQW27NJQSZM5FUJYG4W23/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -99,80 +114,44 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+Use 2-factor multiplication argument form devm_kcalloc() instead
+of devm_kzalloc().
 
---uKeeFUVPvFzJGMuc
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Link: https://github.com/KSPP/linux/issues/162
+Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Acked-by: Peter Ujfalusi <peter.ujfalusi@gmail.com>
+Signed-off-by: Erick Archer <erick.archer@gmx.com>
+=2D--
+Changes in v2:
+- Fix the commit title adding "j721e-evm"
+=2D--
+ sound/soc/ti/j721e-evm.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-On Tue, Jan 09, 2024 at 04:55:51PM +0900, Chancel Liu wrote:
-> Add compatible string "fsl,imx95-micfil" for i.MX95 platform.
->=20
-> Signed-off-by: Chancel Liu <chancel.liu@nxp.com>
-> ---
->  .../devicetree/bindings/sound/fsl,micfil.yaml     | 15 +++++++++++----
->  1 file changed, 11 insertions(+), 4 deletions(-)
->=20
-> diff --git a/Documentation/devicetree/bindings/sound/fsl,micfil.yaml b/Do=
-cumentation/devicetree/bindings/sound/fsl,micfil.yaml
-> index b7e605835639..f0d3d11d07d2 100644
-> --- a/Documentation/devicetree/bindings/sound/fsl,micfil.yaml
-> +++ b/Documentation/devicetree/bindings/sound/fsl,micfil.yaml
-> @@ -15,10 +15,17 @@ description: |
-> =20
->  properties:
->    compatible:
-> -    enum:
-> -      - fsl,imx8mm-micfil
-> -      - fsl,imx8mp-micfil
-> -      - fsl,imx93-micfil
-> +    oneOf:
-> +      - items:
-> +          - enum:
-> +              - fsl,imx95-micfil
-> +          - const: fsl,imx93-micfil
-> +
+diff --git a/sound/soc/ti/j721e-evm.c b/sound/soc/ti/j721e-evm.c
+index b4b158dc736e..d9d1e021f5b2 100644
+=2D-- a/sound/soc/ti/j721e-evm.c
++++ b/sound/soc/ti/j721e-evm.c
+@@ -649,7 +649,7 @@ static int j721e_soc_probe_cpb(struct j721e_priv *priv=
+, int *link_idx,
+ 	 * Link 2: McASP10 <- pcm3168a_1 ADC
+ 	 */
+ 	comp_count =3D 6;
+-	compnent =3D devm_kzalloc(priv->dev, comp_count * sizeof(*compnent),
++	compnent =3D devm_kcalloc(priv->dev, comp_count, sizeof(*compnent),
+ 				GFP_KERNEL);
+ 	if (!compnent) {
+ 		ret =3D -ENOMEM;
+@@ -763,7 +763,7 @@ static int j721e_soc_probe_ivi(struct j721e_priv *priv=
+, int *link_idx,
+ 	 *		   \ pcm3168a_b ADC
+ 	 */
+ 	comp_count =3D 8;
+-	compnent =3D devm_kzalloc(priv->dev, comp_count * sizeof(*compnent),
++	compnent =3D devm_kcalloc(priv->dev, comp_count, sizeof(*compnent),
+ 				GFP_KERNEL);
+ 	if (!compnent) {
+ 		ret =3D -ENOMEM;
+=2D-
+2.25.1
 
-> +      - items:
-
-This items is not needed, as the only item in the list is the enum.
-You can just do
-properties:
-  compatible:
-    oneOf:
-      - items:
-          - enum:
-              - fsl,imx95-micfil
-          - const: fsl,imx93-micfil
-
-      - enum:
-          - fsl,imx8mm-micfil
-          - fsl,imx8mp-micfil
-          - fsl,imx93-micfil
-
-Cheers,
-Conor.
-
-> +          - enum:
-> +              - fsl,imx8mm-micfil
-> +              - fsl,imx8mp-micfil
-> +              - fsl,imx93-micfil
-> =20
->    reg:
->      maxItems: 1
-> --=20
-> 2.42.0
->=20
-
---uKeeFUVPvFzJGMuc
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZZ53zgAKCRB4tDGHoIJi
-0tn/AP9dcugakMRKRZG/ezh4tXsqNC4Q32/3HPFQMtSa/xVWlwD+JAQQ5q83Q6Xt
-RFG9B3BLubQbp2zSeeMNkMv2QI2Hiwg=
-=JTpT
------END PGP SIGNATURE-----
-
---uKeeFUVPvFzJGMuc--
