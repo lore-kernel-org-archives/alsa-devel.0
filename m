@@ -4,49 +4,137 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1357AC46CD2
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Jan 2024 18:38:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A9814C4707C
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Jan 2024 22:32:35 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A5430F51;
-	Tue,  9 Jan 2024 19:37:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A5430F51
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4D4E3EB1;
+	Tue,  9 Jan 2024 23:32:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4D4E3EB1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1704825483;
-	bh=60Y8ZGv+HDkv2xM6PNOBL1FCyS5iOUcHMjFLuYr4NfQ=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=nYdXg5WD0nLdBEZsnmiv1vStEXWpMgcrGwLR5g8LOyButxJzoSyXsZGVbQR/tyRRS
-	 9U8UVW886Z2I3wXHX89/9x7m8fCjMXekt094fgqkYQDx6dNNKKkOg+y7NEV9/F84vR
-	 I9qQmkkduusgrpGb8EroyALjq3Y1agGipEDQnVq4=
+	s=default; t=1704839552;
+	bh=ClWKgLrErwgnsqKg9s7InPIW7JP59g8PIMc1o7Fmh3g=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=DHR2M4ht/K9rX4qRwwQzlNmWcMqK/GU79pmmNWso2r4/e4kjJyPGm0/IIO12w0caO
+	 qbs8kSrsrOyQLQf/AUjb75jwEmbpulhLwJnLRBGLPPFPoUQm679LRMtH584e8T/nYU
+	 tNduIvDm7rCp8y6NDPKdF0s8J9p6SFqt4nN7s5/8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E6D71F80579; Tue,  9 Jan 2024 19:37:29 +0100 (CET)
+	id CE449F80579; Tue,  9 Jan 2024 23:31:55 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0ABE0F802DB;
-	Tue,  9 Jan 2024 19:37:29 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 30840F8056F;
+	Tue,  9 Jan 2024 23:31:55 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0A235F80254; Tue,  9 Jan 2024 19:37:24 +0100 (CET)
-Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
- [207.180.221.201])
-	by alsa1.perex.cz (Postfix) with ESMTP id 42562F80086
-	for <alsa-devel@alsa-project.org>; Tue,  9 Jan 2024 19:37:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 42562F80086
+	id 5656FF80254; Tue,  9 Jan 2024 23:31:38 +0100 (CET)
+Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com
+ [IPv6:2607:f8b0:4864:20::22f])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 3CB16F800F5
+	for <alsa-devel@alsa-project.org>; Tue,  9 Jan 2024 23:31:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3CB16F800F5
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20230601 header.b=bhobSueq
+Received: by mail-oi1-x22f.google.com with SMTP id
+ 5614622812f47-3bbce1202ebso3315271b6e.2
+        for <alsa-devel@alsa-project.org>;
+ Tue, 09 Jan 2024 14:31:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704839483; x=1705444283;
+ darn=alsa-project.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=4LM2tcpDQbe/VXeTrQ3vh6Aow7A9aPJshodbKcPZnx4=;
+        b=bhobSueqkceNoQ81Zk17G5LuYUhSu+ow2MMKKkoNckEnVQka2Whp2ErWR3+VihV8ZZ
+         HU+LFmzraIL0FzHZd6rrBdUoCDemaZIn8IySXP8CLiwzS2YBR+mCOSL54qWSKA/9l1Ln
+         fui5WaH9XJLQRCSLhIPxtf9AICXOPOQn3wwVGSNDqP8dMTDCt2z2dRVZxvqJTrXhMFj2
+         alER9xM2NQ7tvNB+av71UiOSmwlxJ3B16t30mGzIDNiuxjcQge343ItYrT7ieRFHLXYX
+         EF13tr6cAQMH3m6Po6e1RR0yZrp+xh8FjOH9GSao2nQ/w3M3O/6z0kLFBshxLaJZ1fmz
+         06KA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704839483; x=1705444283;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=4LM2tcpDQbe/VXeTrQ3vh6Aow7A9aPJshodbKcPZnx4=;
+        b=XJOemAYmFxg5eAif5WEN6X9H8oHVKtlytYeZtlBqXIQNLDnB9fF7cDvS83CJC0GrOg
+         1DDKO4gcxl7Cc5672GmjhKh5oDl60wU4t+4PHHOFLay585v18R6JXMX0vYMZ/UuXmT1j
+         ZuEsGpxS9iUFjPOBLfCQSP3FnqHdPdQ4Zk+RDogutrCoa+wpR2GG8VVHdxKHkhn92rpz
+         7rz1u9pmqvLDdcs+ULOr4V/2Up2RoAu/xqlgY1dxf/f61hV3Ehpr8Q0MciFx+/xqoG81
+         5BBc9YuJ/qSQzfCHD03C7b9eFyRJlADuKzfcYk16r9V0guvAOQo5ZyvpihczIKV5wgU2
+         Kfng==
+X-Gm-Message-State: AOJu0Yx8Waefi2A2dwXYAqPxPBiXj83E/6JlTjuDPGa8toy4bbbPVIKI
+	/SgMrwt/OuVJneSIzBdKTeg=
+X-Google-Smtp-Source: 
+ AGHT+IFeGOFa6xfy0pKzOnBFaLp6N/drKJ3QnkjdLOsdi4+3g8yIJf4CeMOPwWpjFyp77eA+1TnhMA==
+X-Received: by 2002:a05:6808:e83:b0:3bd:3a51:f6dd with SMTP id
+ k3-20020a0568080e8300b003bd3a51f6ddmr110101oil.70.1704839483464;
+        Tue, 09 Jan 2024 14:31:23 -0800 (PST)
+Received: from google.com ([2620:15c:9d:2:1135:ca4a:123c:5e53])
+        by smtp.gmail.com with ESMTPSA id
+ q24-20020aa79838000000b006daf6892afesm2211283pfl.144.2024.01.09.14.31.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Jan 2024 14:31:22 -0800 (PST)
+Date: Tue, 9 Jan 2024 14:31:18 -0800
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To: James Ogletree <James.Ogletree@cirrus.com>
+Cc: James Ogletree <jogletre@opensource.cirrus.com>,
+	Fred Treven <Fred.Treven@cirrus.com>,
+	Ben Bright <Ben.Bright@cirrus.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Simon Trimmer <simont@opensource.cirrus.com>,
+	Charles Keepax <ckeepax@opensource.cirrus.com>,
+	Richard Fitzgerald <rf@opensource.cirrus.com>,
+	Lee Jones <lee@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	James Schulman <James.Schulman@cirrus.com>,
+	David Rhodes <David.Rhodes@cirrus.com>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Peng Fan <peng.fan@nxp.com>, Jeff LaBundy <jeff@labundy.com>,
+	Sebastian Reichel <sebastian.reichel@collabora.com>,
+	Jacky Bai <ping.bai@nxp.com>,
+	Weidong Wang <wangweidong.a@awinic.com>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Herve Codina <herve.codina@bootlin.com>,
+	Shuming Fan <shumingf@realtek.com>,
+	Shenghao Ding <13916275206@139.com>,
+	Ryan Lee <ryans.lee@analog.com>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	"open list:CIRRUS LOGIC HAPTIC DRIVERS" <patches@opensource.cirrus.com>,
+	"open list:INPUT (KEYBOARD, MOUSE, JOYSTICK,
+ TOUCHSCREEN)..." <linux-input@vger.kernel.org>,
+	"open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
+ <devicetree@vger.kernel.org>,
+	open list <linux-kernel@vger.kernel.org>,
+	"open list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..."
+ <linux-sound@vger.kernel.org>,
+	"moderated list:CIRRUS LOGIC AUDIO CODEC DRIVERS"
+ <alsa-devel@alsa-project.org>
+Subject: Re: [PATCH v5 4/5] Input: cs40l50 - Add support for the CS40L50
+ haptic driver
+Message-ID: <ZZ3JNuLp-ZfGOQRF@google.com>
+References: <20240104223643.876292-1-jogletre@opensource.cirrus.com>
+ <20240104223643.876292-5-jogletre@opensource.cirrus.com>
+ <ZZoFUwOEF6NByIp2@google.com>
+ <564A2601-4933-4BD7-B4E6-C973A585CA61@cirrus.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub issues - reopened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1704825433004208326-webhooks-bot@alsa-project.org>
-References: <1704825433004208326-webhooks-bot@alsa-project.org>
-Subject: Line & Mic In detected,
- but not working on MPG B650I EDGE WIFI (0db0:36e7)
-Message-Id: <20240109183724.0A235F80254@alsa1.perex.cz>
-Date: Tue,  9 Jan 2024 19:37:24 +0100 (CET)
-Message-ID-Hash: ZACW6YW7PNKA4RBS6II4A7FUCHHHWIPM
-X-Message-ID-Hash: ZACW6YW7PNKA4RBS6II4A7FUCHHHWIPM
-X-MailFrom: github@alsa-project.org
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <564A2601-4933-4BD7-B4E6-C973A585CA61@cirrus.com>
+Message-ID-Hash: WISQ3JMBEUADEEVW6X7I72ZFQ7I7RRJJ
+X-Message-ID-Hash: WISQ3JMBEUADEEVW6X7I72ZFQ7I7RRJJ
+X-MailFrom: dmitry.torokhov@gmail.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -58,7 +146,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZACW6YW7PNKA4RBS6II4A7FUCHHHWIPM/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WISQ3JMBEUADEEVW6X7I72ZFQ7I7RRJJ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -67,473 +155,95 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-ucm-conf issue #281 was reopened from 13r0ck:
+On Tue, Jan 09, 2024 at 10:03:02PM +0000, James Ogletree wrote:
+> Hi Dmitry,
+> 
+> Thank you for your excellent review. Just a few questions.
+> 
+> > On Jan 6, 2024, at 7:58 PM, Dmitry Torokhov <dmitry.torokhov@gmail.com> wrote:
+> > 
+> > On Thu, Jan 04, 2024 at 10:36:37PM +0000, James Ogletree wrote:
+> 
+> >> +
+> >> + info->add_effect.u.periodic.custom_data = kcalloc(len, sizeof(s16), GFP_KERNEL);
+> >> + if (!info->add_effect.u.periodic.custom_data)
+> >> + return -ENOMEM;
+> >> +
+> >> + if (copy_from_user(info->add_effect.u.periodic.custom_data,
+> >> +   effect->u.periodic.custom_data, sizeof(s16) * len)) {
+> >> + info->add_error = -EFAULT;
+> >> + goto out_free;
+> >> + }
+> >> +
+> >> + queue_work(info->vibe_wq, &info->add_work);
+> >> + flush_work(&info->add_work);
+> > 
+> > I do not understand the need of scheduling a work here. You are
+> > obviously in a sleeping context (otherwise you would not be able to
+> > execute flush_work()) so you should be able to upload the effect right
+> > here.
+> 
+> Scheduling work here is to ensure its ordering with “playback" worker
+> items, which themselves are called in atomic context and so need
+> deferred work. I think this explains why we need a workqueue as well,
+> but please correct me.
+> 
+> > 
+> >> +
+> >> +static int vibra_playback(struct input_dev *dev, int effect_id, int val)
+> >> +{
+> >> + struct vibra_info *info = input_get_drvdata(dev);
+> >> +
+> >> + if (val > 0) {
+> > 
+> > value is supposed to signal how many times an effect should be repeated.
+> > It looks like you are not handling this at all.
+> 
+> For playbacks, we mandate that the input_event value field is set to either 1
 
-Seems to have been broken by 33b934c29d2911ef060d48b1a0ca9682645b68c8 , as it was completely functional in 1.2.7.2
-  
-  I did manage to find a patch that fixes the line in on 1.2.8:
-  All it does is disable spdif for that usb id.
-  ```
-  Index: alsa-ucm-conf/ucm2/USB-Audio/Realtek/ALC4080-HiFi.conf
-  ===================================================================
-  --- alsa-ucm-conf.orig/ucm2/USB-Audio/Realtek/ALC4080-HiFi.conf
-  +++ alsa-ucm-conf/ucm2/USB-Audio/Realtek/ALC4080-HiFi.conf
-  @@ -100,6 +100,17 @@ If.msi-meg-unify {
- 	  }
-   }
-   
-  +If.b650i {
-  +	Condition {
-  +		Type RegexMatch
-  +		String "${CardComponents}"
-  +		Regex "USB(0db0:36e7)"
-  +	}
-  +	True.Define {
-  +		SpdifName ""
-  +	}
-  +}
-  +
-   If.asus-rog-strix {
- 	  Condition {
- 		  Type RegexMatch
-  ```
-  
-  But I am struggling to find what is missing to make mic work. Jack detection is fine, and I can get recordings via `arecord`, but I am missing something with the ucm conf.
-  
-  ### Here are the config dumps for a few different situations
-  
-  #### Without the patch above
-  
-  `$ alsa-info` -> http://alsa-project.org/db/?f=ac8aa25f882540a20c95ee555491a498bd3a88a4
-  
-  <details>
-  <summary> ` $ alsaucm dump -c hw:1 text ` </summary>
-  <br>
-  
-  ```
-  
-  Verb.HiFi {
-	  Comment "HiFi 2.0 channels"
-	  Device.Speaker {
-		  Comment Speakers
-		  Values {
-			  CaptureCTL "_ucm0001.hw:Audio"
-			  JackControl "Speaker - Output Jack"
-			  PlaybackCTL "_ucm0001.hw:Audio"
-			  PlaybackChannels 2
-			  PlaybackMixerElem PCM,0
-			  PlaybackPCM "_ucm0001.hw:Audio"
-			  PlaybackPriority 200
-			  TQ HiFi
-		  }
-	  }
-	  Device.Headphones {
-		  Comment "Front Headphones"
-		  Values {
-			  CaptureCTL "_ucm0001.hw:Audio"
-			  JackControl "Headphone - Output Jack"
-			  PlaybackCTL "_ucm0001.hw:Audio"
-			  PlaybackMixerElem PCM,1
-			  PlaybackPCM "_ucm0001.hw:Audio,1"
-			  PlaybackPriority 300
-			  TQ HiFi
-		  }
-	  }
-	  Device.SPDIF {
-		  Comment "S/PDIF Output"
-		  Values {
-			  CaptureCTL "_ucm0001.hw:Audio"
-			  PlaybackCTL "_ucm0001.hw:Audio"
-			  PlaybackMixerElem PCM,2
-			  PlaybackPCM "_ucm0001.hw:Audio,3"
-			  PlaybackPriority 100
-			  TQ HiFi
-		  }
-	  }
-	  Device.Line1 {
-		  Comment "Line Input"
-		  Values {
-			  CaptureCTL "_ucm0001.hw:Audio"
-			  CaptureMixerElem Line,0
-			  CapturePCM "_ucm0001.hw:Audio,1"
-			  CapturePriority 100
-			  JackControl "Line - Input Jack"
-			  PlaybackCTL "_ucm0001.hw:Audio"
-			  TQ HiFi
-		  }
-	  }
-	  Device.Mic1 {
-		  Comment Microphone
-		  Values {
-			  CaptureCTL "_ucm0001.hw:Audio"
-			  CaptureMixerElem Mic,0
-			  CapturePCM "_ucm0001.hw:Audio,2"
-			  CapturePriority 300
-			  JackControl "Mic - Input Jack"
-			  PlaybackCTL "_ucm0001.hw:Audio"
-			  TQ HiFi
-		  }
-	  }
-  }
-  Verb."HiFi 5+1" {
-	  Comment "HiFi 5.1 channels"
-	  Device.Speaker {
-		  Comment Speakers
-		  Values {
-			  CaptureCTL "_ucm0001.hw:Audio"
-			  JackControl "Speaker - Output Jack"
-			  PlaybackCTL "_ucm0001.hw:Audio"
-			  PlaybackChannels 6
-			  PlaybackMixerElem PCM,0
-			  PlaybackPCM "_ucm0001.hw:Audio"
-			  PlaybackPriority 200
-			  TQ HiFi
-		  }
-	  }
-	  Device.Headphones {
-		  Comment "Front Headphones"
-		  Values {
-			  CaptureCTL "_ucm0001.hw:Audio"
-			  JackControl "Headphone - Output Jack"
-			  PlaybackCTL "_ucm0001.hw:Audio"
-			  PlaybackMixerElem PCM,1
-			  PlaybackPCM "_ucm0001.hw:Audio,1"
-			  PlaybackPriority 300
-			  TQ HiFi
-		  }
-	  }
-	  Device.SPDIF {
-		  Comment "S/PDIF Output"
-		  Values {
-			  CaptureCTL "_ucm0001.hw:Audio"
-			  PlaybackCTL "_ucm0001.hw:Audio"
-			  PlaybackMixerElem PCM,2
-			  PlaybackPCM "_ucm0001.hw:Audio,3"
-			  PlaybackPriority 100
-			  TQ HiFi
-		  }
-	  }
-	  Device.Line1 {
-		  Comment "Line Input"
-		  Values {
-			  CaptureCTL "_ucm0001.hw:Audio"
-			  CaptureMixerElem Line,0
-			  CapturePCM "_ucm0001.hw:Audio,1"
-			  CapturePriority 100
-			  JackControl "Line - Input Jack"
-			  PlaybackCTL "_ucm0001.hw:Audio"
-			  TQ HiFi
-		  }
-	  }
-	  Device.Mic1 {
-		  Comment Microphone
-		  Values {
-			  CaptureCTL "_ucm0001.hw:Audio"
-			  CaptureMixerElem Mic,0
-			  CapturePCM "_ucm0001.hw:Audio,2"
-			  CapturePriority 300
-			  JackControl "Mic - Input Jack"
-			  PlaybackCTL "_ucm0001.hw:Audio"
-			  TQ HiFi
-		  }
-	  }
-  }
-  Verb."HiFi 7+1" {
-	  Comment "HiFi 7.1 channels"
-	  Device.Speaker {
-		  Comment Speakers
-		  Values {
-			  CaptureCTL "_ucm0001.hw:Audio"
-			  JackControl "Speaker - Output Jack"
-			  PlaybackCTL "_ucm0001.hw:Audio"
-			  PlaybackChannels 8
-			  PlaybackMixerElem PCM,0
-			  PlaybackPCM "_ucm0001.hw:Audio"
-			  PlaybackPriority 200
-			  TQ HiFi
-		  }
-	  }
-	  Device.Headphones {
-		  Comment "Front Headphones"
-		  Values {
-			  CaptureCTL "_ucm0001.hw:Audio"
-			  JackControl "Headphone - Output Jack"
-			  PlaybackCTL "_ucm0001.hw:Audio"
-			  PlaybackMixerElem PCM,1
-			  PlaybackPCM "_ucm0001.hw:Audio,1"
-			  PlaybackPriority 300
-			  TQ HiFi
-		  }
-	  }
-	  Device.SPDIF {
-		  Comment "S/PDIF Output"
-		  Values {
-			  CaptureCTL "_ucm0001.hw:Audio"
-			  PlaybackCTL "_ucm0001.hw:Audio"
-			  PlaybackMixerElem PCM,2
-			  PlaybackPCM "_ucm0001.hw:Audio,3"
-			  PlaybackPriority 100
-			  TQ HiFi
-		  }
-	  }
-	  Device.Line1 {
-		  Comment "Line Input"
-		  Values {
-			  CaptureCTL "_ucm0001.hw:Audio"
-			  CaptureMixerElem Line,0
-			  CapturePCM "_ucm0001.hw:Audio,1"
-			  CapturePriority 100
-			  JackControl "Line - Input Jack"
-			  PlaybackCTL "_ucm0001.hw:Audio"
-			  TQ HiFi
-		  }
-	  }
-	  Device.Mic1 {
-		  Comment Microphone
-		  Values {
-			  CaptureCTL "_ucm0001.hw:Audio"
-			  CaptureMixerElem Mic,0
-			  CapturePCM "_ucm0001.hw:Audio,2"
-			  CapturePriority 300
-			  JackControl "Mic - Input Jack"
-			  PlaybackCTL "_ucm0001.hw:Audio"
-			  TQ HiFi
-		  }
-	  }
-  }
-  
-  ```
-  
-  <br>
-  </details>
-  
-  #### With the patch above 
-  
-  `$ alsa-info` -> http://alsa-project.org/db/?f=7b95b33ddf71324505c7dd696bcc7f24ca64ca52
-  
-  <details>
-  <summary> ` $ alsaucm dump -c hw:1 text ` </summary>
-  <br>
-  
-  ```
-  
-  Verb.HiFi {
-	  Comment "HiFi 2.0 channels"
-	  Device.Speaker {
-		  Comment Speakers
-		  Values {
-			  CaptureCTL "_ucm0001.hw:Audio"
-			  JackControl "Speaker - Output Jack"
-			  PlaybackCTL "_ucm0001.hw:Audio"
-			  PlaybackChannels 2
-			  PlaybackMixerElem PCM,0
-			  PlaybackPCM "_ucm0001.hw:Audio"
-			  PlaybackPriority 200
-			  TQ HiFi
-		  }
-	  }
-	  Device.Headphones {
-		  Comment "Front Headphones"
-		  Values {
-			  CaptureCTL "_ucm0001.hw:Audio"
-			  JackControl "Headphone - Output Jack"
-			  PlaybackCTL "_ucm0001.hw:Audio"
-			  PlaybackMixerElem PCM,1
-			  PlaybackPCM "_ucm0001.hw:Audio,1"
-			  PlaybackPriority 300
-			  TQ HiFi
-		  }
-	  }
-	  Device.Line1 {
-		  Comment "Line Input"
-		  Values {
-			  CaptureCTL "_ucm0001.hw:Audio"
-			  CaptureMixerElem Line,0
-			  CapturePCM "_ucm0001.hw:Audio,1"
-			  CapturePriority 100
-			  JackControl "Line - Input Jack"
-			  PlaybackCTL "_ucm0001.hw:Audio"
-			  TQ HiFi
-		  }
-	  }
-	  Device.Mic1 {
-		  Comment Microphone
-		  Values {
-			  CaptureCTL "_ucm0001.hw:Audio"
-			  CaptureMixerElem Mic,0
-			  CapturePCM "_ucm0001.hw:Audio,2"
-			  CapturePriority 300
-			  JackControl "Mic - Input Jack"
-			  PlaybackCTL "_ucm0001.hw:Audio"
-			  TQ HiFi
-		  }
-	  }
-  }
-  Verb."HiFi 5+1" {
-	  Comment "HiFi 5.1 channels"
-	  Device.Speaker {
-		  Comment Speakers
-		  Values {
-			  CaptureCTL "_ucm0001.hw:Audio"
-			  JackControl "Speaker - Output Jack"
-			  PlaybackCTL "_ucm0001.hw:Audio"
-			  PlaybackChannels 6
-			  PlaybackMixerElem PCM,0
-			  PlaybackPCM "_ucm0001.hw:Audio"
-			  PlaybackPriority 200
-			  TQ HiFi
-		  }
-	  }
-	  Device.Headphones {
-		  Comment "Front Headphones"
-		  Values {
-			  CaptureCTL "_ucm0001.hw:Audio"
-			  JackControl "Headphone - Output Jack"
-			  PlaybackCTL "_ucm0001.hw:Audio"
-			  PlaybackMixerElem PCM,1
-			  PlaybackPCM "_ucm0001.hw:Audio,1"
-			  PlaybackPriority 300
-			  TQ HiFi
-		  }
-	  }
-	  Device.Line1 {
-		  Comment "Line Input"
-		  Values {
-			  CaptureCTL "_ucm0001.hw:Audio"
-			  CaptureMixerElem Line,0
-			  CapturePCM "_ucm0001.hw:Audio,1"
-			  CapturePriority 100
-			  JackControl "Line - Input Jack"
-			  PlaybackCTL "_ucm0001.hw:Audio"
-			  TQ HiFi
-		  }
-	  }
-	  Device.Mic1 {
-		  Comment Microphone
-		  Values {
-			  CaptureCTL "_ucm0001.hw:Audio"
-			  CaptureMixerElem Mic,0
-			  CapturePCM "_ucm0001.hw:Audio,2"
-			  CapturePriority 300
-			  JackControl "Mic - Input Jack"
-			  PlaybackCTL "_ucm0001.hw:Audio"
-			  TQ HiFi
-		  }
-	  }
-  }
-  Verb."HiFi 7+1" {
-	  Comment "HiFi 7.1 channels"
-	  Device.Speaker {
-		  Comment Speakers
-		  Values {
-			  CaptureCTL "_ucm0001.hw:Audio"
-			  JackControl "Speaker - Output Jack"
-			  PlaybackCTL "_ucm0001.hw:Audio"
-			  PlaybackChannels 8
-			  PlaybackMixerElem PCM,0
-			  PlaybackPCM "_ucm0001.hw:Audio"
-			  PlaybackPriority 200
-			  TQ HiFi
-		  }
-	  }
-	  Device.Headphones {
-		  Comment "Front Headphones"
-		  Values {
-			  CaptureCTL "_ucm0001.hw:Audio"
-			  JackControl "Headphone - Output Jack"
-			  PlaybackCTL "_ucm0001.hw:Audio"
-			  PlaybackMixerElem PCM,1
-			  PlaybackPCM "_ucm0001.hw:Audio,1"
-			  PlaybackPriority 300
-			  TQ HiFi
-		  }
-	  }
-	  Device.Line1 {
-		  Comment "Line Input"
-		  Values {
-			  CaptureCTL "_ucm0001.hw:Audio"
-			  CaptureMixerElem Line,0
-			  CapturePCM "_ucm0001.hw:Audio,1"
-			  CapturePriority 100
-			  JackControl "Line - Input Jack"
-			  PlaybackCTL "_ucm0001.hw:Audio"
-			  TQ HiFi
-		  }
-	  }
-	  Device.Mic1 {
-		  Comment Microphone
-		  Values {
-			  CaptureCTL "_ucm0001.hw:Audio"
-			  CaptureMixerElem Mic,0
-			  CapturePCM "_ucm0001.hw:Audio,2"
-			  CapturePriority 300
-			  JackControl "Mic - Input Jack"
-			  PlaybackCTL "_ucm0001.hw:Audio"
-			  TQ HiFi
-		  }
-	  }
-  }
-  
-  ```
-  
-  <br>
-  </details>
+I am sorry, who is "we"?
 
+> or 0 to command either a start playback or stop playback respectively.
+> Values other than that should be rejected, so in the next version I will fix this
+> to explicitly check for 1 or 0.
 
-  #### On 1.2.7.2 ( with `USB-Audio.conf` quirk to add 0bd0:36e7 to Realtek ALC4080. See https://github.com/alsa-project/alsa-ucm-conf/commit/1923bd19c0bef947c085e2941dd8ed2d1310731e but for 1.2.7.2 )
+No, please implement the API properly.
 
-  `$ alsa-info` -> http://alsa-project.org/db/?f=f148616a3e9b8c0dffffbe57a6bc9ede78c9d309
+> 
+> > 
+> >> + info->start_effect = &dev->ff->effects[effect_id];
+> >> + queue_work(info->vibe_wq, &info->vibe_start_work);
+> > 
+> > The API allows playback of several effects at once, the way you have it
+> > done here if multiple requests come at same time only one will be
+> > handled.
+> 
+> I think I may need some clarification on this point. Why would concurrent
+> start/stop playback commands get dropped? It seems they would all be
+> added to the workqueue and executed eventually.
 
-  <details>
-  <summary> ` $ alsaucm dump -c hw:1 text ` </summary>
-  <br>
+You only have one instance of vibe_start_work, as well as only one
+"slot" to hold the effect you want to start. So if you issue 2 request
+back to back to play effect 1 and 2 you are likely to end with
+info->start_effect == 2 and that is what vibe_start_work handler will
+observe, effectively dropping request to play effect 1 on the floor.
 
-  ```
-  
-  Verb.HiFi {
-	Comment "Play HiFi quality Music"
-	Device.Speaker {
-		Comment Speakers
-		Values {
-			CaptureCTL "_ucm0001.hw:Audio"
-			JackControl "Speaker - Output Jack"
-			PlaybackCTL "_ucm0001.hw:Audio"
-			PlaybackChannels 2
-			PlaybackMixerElem Speaker
-			PlaybackPCM "_ucm0001.hw:Audio"
-			PlaybackPriority 200
-		}
-	}
-	Device.Line {
-		Comment "Line In"
-		Values {
-			CaptureCTL "_ucm0001.hw:Audio"
-			CaptureMixerElem Line
-			CapturePCM "_ucm0001.hw:Audio,1"
-			CapturePriority 100
-			JackControl "Line - Input Jack"
-			PlaybackCTL "_ucm0001.hw:Audio"
-		}
-	}
-	Device.Mic1 {
-		Comment Microphone
-		Values {
-			CaptureCTL "_ucm0001.hw:Audio"
-			CaptureMixerElem Mic
-			CapturePCM "_ucm0001.hw:Audio,2"
-			CapturePriority 200
-			JackControl "Mic - Input Jack"
-			PlaybackCTL "_ucm0001.hw:Audio"
-		}
-	}
-}
+> 
+> > 
+> >> + } else {
+> >> + queue_work(info->vibe_wq, &info->vibe_stop_work);
+> > 
+> > Which effect are you stopping? All of them? You need to stop a
+> > particular one.
+> 
+> Our implementation of “stop” stops all effects in flight which is intended.
+> That is probably unusual so I will add a comment here in the next
+> version.
 
+Again, please implement the driver properly, not define your own
+carveouts for the expected behavior.
 
-  ```
+Thanks.
 
-  <br>
-
-  </details>
-
-Issue URL     : https://github.com/alsa-project/alsa-ucm-conf/issues/281
-Repository URL: https://github.com/alsa-project/alsa-ucm-conf
+-- 
+Dmitry
