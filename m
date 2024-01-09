@@ -4,147 +4,102 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8F391C46CD2
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Jan 2024 14:14:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CD5D2C46CD2
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Jan 2024 14:17:09 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3E30BE94;
-	Tue,  9 Jan 2024 15:14:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3E30BE94
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0793BE64;
+	Tue,  9 Jan 2024 15:16:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0793BE64
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1704809675;
-	bh=6xFPYih35/poGcTQx3G0DEOkKlYzmCrwNB66jo1gvp8=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	s=default; t=1704809828;
+	bh=bEUIyacTRUl2UeAbazfoL2KrKIlvlAHSWVIZ2KVw8Ps=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=bJgaZn5kDVlRl/iVQwynOfVi7J+puYlqs3swPf4fKjYSPWn1pVoJa59Ej4gqN3l5U
-	 zefO9AH1IumT7UhMep7bmuV1u6HFeKSuBVcj3r7CoF/EtYIoj34Q6Q7S+hN57kLt65
-	 KU+ovWkR36/jPelbghtWmAXGXZtChE03loy55FIk=
+	b=avXMqD+uJGSM/DVSzghJM+hZ+yUA4z+9mmSS83hNBkJzP9aCyFwAUpn6xOgVFmw6Z
+	 8BeiTESjD7YCqtQdSpqJAi/0XMFLYcvNk1ANf+cym4+apQRqqsQJ5YqtLwDMwUVh8t
+	 GFbAbrIJy5rTm8QvLszIYUNA9e02TVcu7y6ife4Q=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2BC86F80579; Tue,  9 Jan 2024 15:14:04 +0100 (CET)
+	id 91952F8057A; Tue,  9 Jan 2024 15:16:29 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 95A9AF8055B;
-	Tue,  9 Jan 2024 15:14:03 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A6088F80520;
+	Tue,  9 Jan 2024 15:16:28 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 905AEF80254; Tue,  9 Jan 2024 15:13:58 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	id 689A1F80254; Tue,  9 Jan 2024 15:16:24 +0100 (CET)
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com
+ [IPv6:2a00:1450:4864:20::62a])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C1D6DF8014B
-	for <alsa-devel@alsa-project.org>; Tue,  9 Jan 2024 15:13:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C1D6DF8014B
+	by alsa1.perex.cz (Postfix) with ESMTPS id E43B6F80086
+	for <alsa-devel@alsa-project.org>; Tue,  9 Jan 2024 15:16:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E43B6F80086
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=zgE6ROAX;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=rdyqfgWD;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=uG//rdsp;
-	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=jF1thjI2
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id DF13E1F806;
-	Tue,  9 Jan 2024 14:13:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1704809631;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Wpa4DDcUFck9COiGV1cpqENWfAxZcIO+P3YbLq2DPTw=;
-	b=zgE6ROAXhe1eVKpqJ/3aZCJA6gAP1+Kxc20TSW/MT50LImr2L+IiYf2cyoUm8tp5QHB1b5
-	QZZOrF7ELRAsR5/upPaJMT3yGrU/dpVAHmy/QyjbIdDLfZ9zF0ZFg+whTf1Z9JO9t7qbT/
-	OL/JueVdw0c8uGDjlRafp6J28fPqz2k=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1704809631;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Wpa4DDcUFck9COiGV1cpqENWfAxZcIO+P3YbLq2DPTw=;
-	b=rdyqfgWDCE5RrzbTRi8gIyVf9Ue48YTLO8q7piNDOk9EN3lIAJSlS2j5k3j7YORWnWblr2
-	M+IGh3O3uZ096kCg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1704809630;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Wpa4DDcUFck9COiGV1cpqENWfAxZcIO+P3YbLq2DPTw=;
-	b=uG//rdspZ85/CJGw21d6Q7HcwBQosT8Glqofv25l10s2Qy6uDVv1LC8nN9KH0Zn0B4vozh
-	Gp0WmLHkAR9kz2Ff+QSBQm7N1OtKykIO27x9iB3LGoNh1VQ3GCdNc5IlCuZLtOYn8hWxVw
-	L81rjbYOH/9pR5ui1p1J+F/RVR7nxyA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1704809630;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Wpa4DDcUFck9COiGV1cpqENWfAxZcIO+P3YbLq2DPTw=;
-	b=jF1thjI2BpYUw5JwyFDwsEHARJqmxWsXkayV8Fq/SvexUTuFlWJea227wKJny9vNAdyCAv
-	MzUQBq8XLEHYJLDQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8C476134E8;
-	Tue,  9 Jan 2024 14:13:50 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id tPq4IJ5UnWU6BgAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Tue, 09 Jan 2024 14:13:50 +0000
-Date: Tue, 09 Jan 2024 15:13:50 +0100
-Message-ID: <87mster3vl.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Gergo Koteles <soyer@irl.hu>
-Cc: Shenghao Ding <shenghao-ding@ti.com>,
-	Kevin Lu <kevin-lu@ti.com>,
-	Baojun Xu <baojun.xu@ti.com>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	linux-kernel@vger.kernel.org,
-	alsa-devel@alsa-project.org,
-	linux-sound@vger.kernel.org,
-	kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH] ALSA: hda/tas2781: annotate calibration data endianness
-In-Reply-To: 
- <3852ff28ea7d5d8f2086d8dd78aeff8d1d984991.1704748435.git.soyer@irl.hu>
-References: 
- <3852ff28ea7d5d8f2086d8dd78aeff8d1d984991.1704748435.git.soyer@irl.hu>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spamd-Result: default: False [1.46 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 NEURAL_SPAM_LONG(3.50)[1.000];
-	 RCPT_COUNT_SEVEN(0.00)[10];
-	 MID_CONTAINS_FROM(1.00)[];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-2.74)[98.87%]
-Message-ID-Hash: NGK47GQSXK4HE5XAZSGAV3FJZLAUIWCS
-X-Message-ID-Hash: NGK47GQSXK4HE5XAZSGAV3FJZLAUIWCS
-X-MailFrom: tiwai@suse.de
+	dkim=pass (2048-bit key,
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20230601 header.b=dnC97x+g
+Received: by mail-ej1-x62a.google.com with SMTP id
+ a640c23a62f3a-a294295dda3so339067566b.0
+        for <alsa-devel@alsa-project.org>;
+ Tue, 09 Jan 2024 06:16:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704809779; x=1705414579;
+ darn=alsa-project.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XfKKmsgrBNevkxdWqBtR6SySOi1WLHhsxeOVYSFipik=;
+        b=dnC97x+gMcJN0QJnSA0wK4t7EYxmoYA3lUuuhs44C5hGNyScNoDOJ7z+t6X0bJfYtA
+         7jTI4edtWh9OFoCOoMy32m/9mUiu7s5FVWvPqHcZcMMJgOXvMV2PTChdcJxdt6Y/QDYr
+         BnSW5BSadiMIdixhj98XeDwirDRiwtaf1OJXcEwhbfw5ByX7OGvDxL+OwgKf7Kn+PxzB
+         ABCZnoTeKUurEOBMhrWGufPIB/uAQ5JV2uvDftxtR4nIGWGn3hipIEB1gQI1qy6tivba
+         Hjd/XnWyh83ecFzXD7qqiBe1CxqmJS8+AwmLCozc5e8hdxb9EgAeoRyOJzYB5V6tp1OI
+         yCKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704809779; x=1705414579;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XfKKmsgrBNevkxdWqBtR6SySOi1WLHhsxeOVYSFipik=;
+        b=U0xR73GXVEkkD53Z9b294aHV85cVtuGSHCxpGsCffGuumh93je11XmFHHkyqLqfT4f
+         E5PkPOpjt4/q5gvZ4YPK7lYBwZzNjiB6zeJBM6YiYriAsHk+YcAKbXInNmU/egFshC1T
+         MOnbwB9RF8MygDA1GdeWGleZnWmnqE6PWLj5GZYJuEXGA7ON4vojz1t6sV15Oii1i/wn
+         hLn/mUtdLdSNsZMaiBj70+wjXLHOcrhVWxLYNM4oEWWbXGKRBWkS6aJy+r6XrtTFPqu3
+         p47+lS7QCllrzSX9wRnSKeszzrDt2HmsrF+Co0WkQLNl/wruRL5rXN8Auka/cWFaCfdd
+         9++g==
+X-Gm-Message-State: AOJu0Yz1Yz/S5X2mPo5qVoJic2ai3Nm87nY04iJGPiueYfKUfZTctOE4
+	WPaPh7maF12PN/ZXo9CuRC5RXb5rhe1Je/AxKAE=
+X-Google-Smtp-Source: 
+ AGHT+IHrnXDoXiFmgZB8pnUib0FZSixSpHYIUBlJTfVPoTkImZsXEmElnr3lXwcWDIqgM9foKbqDkNseDvscZLyDkgE=
+X-Received: by 2002:a17:907:2d09:b0:a29:1419:f522 with SMTP id
+ gs9-20020a1709072d0900b00a291419f522mr330417ejc.72.1704809778626; Tue, 09 Jan
+ 2024 06:16:18 -0800 (PST)
+MIME-Version: 1.0
+References: <20240109075551.870001-1-chancel.liu@nxp.com>
+ <20240109075551.870001-4-chancel.liu@nxp.com>
+In-Reply-To: <20240109075551.870001-4-chancel.liu@nxp.com>
+From: Daniel Baluta <daniel.baluta@gmail.com>
+Date: Tue, 9 Jan 2024 16:16:06 +0200
+Message-ID: 
+ <CAEnQRZAgwmNZ8ruV6rPJ_OTzjLHL0jgPLFNbBeW1fXYG+QjAbw@mail.gmail.com>
+Subject: Re: [PATCH 3/3] ASoC: dt-bindings: fsl,micfil: Add compatible string
+ for i.MX95 platform
+To: Chancel Liu <chancel.liu@nxp.com>
+Cc: lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	shengjiu.wang@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
+	nicoleotsuka@gmail.com, perex@perex.cz, tiwai@suse.com,
+	linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+	linuxppc-dev@lists.ozlabs.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Message-ID-Hash: K5RX7OCRKHUBJU6WMSP4TOZPLAODC5DT
+X-Message-ID-Hash: K5RX7OCRKHUBJU6WMSP4TOZPLAODC5DT
+X-MailFrom: daniel.baluta@gmail.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -156,7 +111,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NGK47GQSXK4HE5XAZSGAV3FJZLAUIWCS/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/K5RX7OCRKHUBJU6WMSP4TOZPLAODC5DT/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -165,19 +120,52 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, 08 Jan 2024 22:16:46 +0100,
-Gergo Koteles wrote:
-> 
-> Sparse reports an endian mismatch.
-> The amplifier expects the calibration data as big-endian.
-> Use the __be32 type to express endianness better.
-> 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202401072137.Oc7pQgRW-lkp@intel.com/
-> 
-> Signed-off-by: Gergo Koteles <soyer@irl.hu>
+On Tue, Jan 9, 2024 at 9:58=E2=80=AFAM Chancel Liu <chancel.liu@nxp.com> wr=
+ote:
+>
+> Add compatible string "fsl,imx95-micfil" for i.MX95 platform.
+>
+> Signed-off-by: Chancel Liu <chancel.liu@nxp.com>
+> ---
+>  .../devicetree/bindings/sound/fsl,micfil.yaml     | 15 +++++++++++----
+>  1 file changed, 11 insertions(+), 4 deletions(-)
+>
+> diff --git a/Documentation/devicetree/bindings/sound/fsl,micfil.yaml b/Do=
+cumentation/devicetree/bindings/sound/fsl,micfil.yaml
+> index b7e605835639..f0d3d11d07d2 100644
+> --- a/Documentation/devicetree/bindings/sound/fsl,micfil.yaml
+> +++ b/Documentation/devicetree/bindings/sound/fsl,micfil.yaml
+> @@ -15,10 +15,17 @@ description: |
+>
+>  properties:
+>    compatible:
+> -    enum:
+> -      - fsl,imx8mm-micfil
+> -      - fsl,imx8mp-micfil
+> -      - fsl,imx93-micfil
+> +    oneOf:
+> +      - items:
+> +          - enum:
+> +              - fsl,imx95-micfil
+> +          - const: fsl,imx93-micfil
+> +
+> +      - items:
+> +          - enum:
+> +              - fsl,imx8mm-micfil
+> +              - fsl,imx8mp-micfil
+> +              - fsl,imx93-micfil
 
-Thanks, applied with the additional Fixes tag to the commit.
+My yaml knowledge is very limited. Can you describe in natural
+language in the commit what exactly we are doing here.
+
+Why something like this:
 
 
-Takashi
+>    compatible:
+>     enum:
+>       - fsl,imx8mm-micfil
+>       - fsl,imx8mp-micfil
+>       - fsl,imx93-micfil
++        - fsl,imx95-micfil
+
+Isn't enough?
