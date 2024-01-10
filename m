@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9E45FC47074
-	for <alsa-devel@archiver.kernel.org>; Wed, 10 Jan 2024 09:59:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 29ED0C3DA6E
+	for <alsa-devel@archiver.kernel.org>; Wed, 10 Jan 2024 09:59:59 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C8C8ADF9;
-	Wed, 10 Jan 2024 10:59:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C8C8ADF9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 81B1A14DC;
+	Wed, 10 Jan 2024 10:59:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 81B1A14DC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1704880786;
-	bh=uowzxZRevTt9WCAROFCeIie7vPjduaXYhxvsHTUycdg=;
+	s=default; t=1704880797;
+	bh=70tYyohuzJBuHeIMEu8qAErJX0isonNJlXcOljksQBU=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=JMNwY5zTDWjodx+fqA/1f3gdZY0Kzb7APFuT1K3ru+kvEwST7CoF0rhMVZ7xkdUoY
-	 JJwEyewbUvxooxPonpGlqLXslyqXfanJB7ZIXzWfDR0PxYuhNFvn3sA2yow1TNOQHa
-	 BZNO5OI++3Hy4momFaV2axLUyN+fw20dKw6+aOp4=
+	b=IwxU7cdi5KKzsiHrIiCubm9dOZOj9q5R9tXbUb4jymsxVNYlggVOdn6Iu81eB2XX5
+	 5zL8cQ5Spym8zFASUiMG2yNpREGV3/hYD59MVQxxTnb87ASjLS9hM5pm8PpDtXrwgR
+	 BtdyajxrfYJKB8gCf8/vAoDcxWStZv4n6ALMGJHE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B80E3F80567; Wed, 10 Jan 2024 10:59:02 +0100 (CET)
+	id CF477F805D3; Wed, 10 Jan 2024 10:59:03 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7C869F805E4;
-	Wed, 10 Jan 2024 10:59:02 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D8906F805F0;
+	Wed, 10 Jan 2024 10:59:03 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 000EAF802DB; Wed, 10 Jan 2024 10:48:14 +0100 (CET)
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com
- (mail-bn8nam12on20625.outbound.protection.outlook.com
- [IPv6:2a01:111:f400:fe5b::625])
+	id 2411FF805AC; Wed, 10 Jan 2024 10:51:39 +0100 (CET)
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com
+ (mail-mw2nam12on20600.outbound.protection.outlook.com
+ [IPv6:2a01:111:f403:200a::600])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 464FAF804F1;
-	Wed, 10 Jan 2024 10:47:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 464FAF804F1
+	by alsa1.perex.cz (Postfix) with ESMTPS id DE7CDF80086;
+	Wed, 10 Jan 2024 10:45:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DE7CDF80086
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=amd.com header.i=@amd.com header.a=rsa-sha256
- header.s=selector1 header.b=T9RVbqeA
+ header.s=selector1 header.b=wW0951aF
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=j8DdPWKNpQbZDWz9ok11Gx7v0PAnK1gOK368wia5pHnak9WUU8VepHUAu2UsEeExx+AdxcJcNHlV7rGBFh+NAM/scOSN11pNyCusIq6vb6To1BiCgNUBsKbOTZtfKwtxnFJreLgWHPWqGg/gH+eVh5JXu61jmKvhWJLviLeGW6mlskTBM17M+afuCyZaPUtYlkb7TDomXcWPeYdw023ls0Ckco4bIh3NpLik4kQNvWILZ5cR3KyIGXy57VmRf99xjZ+rUxw7iG+aSssVcvaaxlX0RgU9nCp0iFP+B4OshJP7kmMDg46x9T/nPYYIKAek+ciwWEVzLRnOwvzk/+aKAw==
+ b=PiV68bn7jQihaEi1KDBskL+6psaXPD3rITXqfs0MiLFdS/CcJGiLfBZXSCPLWe/BLGXA7eMieqE2SEZaQeFngojgb+MJhReALDf1twwSl24pFWTWnaeiwZqONAAgXFeZIoTiB+T+zo4YAygn0FOlAGtlOrkAz9g/WJYsjTMFSv3lldW7fTDKoXh8BQMfckKcH+rIb6YI8nTzerpbPT9LCQsJfJB74sVCq44MhKUPVPy6w/TqvnvDx2cGT4VLlUO3ThtZWRktDjeHQWsHQUVjWMHqRcADxRmaMJzybr+6AHn0X+uCTR/hMPbktJz8gqqclh8ZYkSC/zMPFTfhQ5jt1A==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=UhoVkhy8GN1PdZmnmv/uRV5zVwbIdlO+MnLOz/NKjrs=;
- b=J3JtI0WA85xT8cM63HzEAVEIHrzeicrfjf/WiF95caRTfFOEUuf0TtE5yNuR8gcc7Xh4Eb1Q4M4bSW6U33rFCLc5OjnU7sFXVUDFVvhZ+DV9utTsLzrVY3Gj2Y0x+7OGmK8Au2zp6+4RRnZr043ZGFQIf/6YokEu8IM5dEkseWCWF3avm2uS+Je2fMphswpHAghsXf1WV++R7LDZKcQC457vbrJdzemSqRYPn2CDkl54ehXwJXTWMA/077KxEo72cVWfrRFBAr0zUMIqdwB6+M453nhNI3vgRj5OToBa9ocCqudK8CGf/wfH4tpMF4Na1NMXA3P5m8y2xosPQbOWww==
+ bh=1zC5WRwtu6+qO+9CXnFzJPWrGYlpkczne7vfVG5jg8k=;
+ b=GO9e/YI/gmsTigY8JlL7s+79QdeUHfPI5e5LDURr+7bbtKDRBPdVyNYT8QOwGUSeiYvIKNa5ZtI5PzioEBWK1mLIoEU8F0fOourX/QrF+XYjsT/ONGLiObrk9cou4kFK/q9Cv4Jo1lJLNSxZDVIHuvkgR0QWU4Huw/uI0WAeUelTt8kR9JB6yDSGQkOe+P3LHz/9abKfumygj95RKOGuO6DGYs41jWwgyjE+rQRG7v8Bk+pIiY+FzxMb//aNaWuqTW2lwpQIfvf8O1QKBg+znSZBPdi0IJVEAF6u6qBfMkyYDk+VXmjpi/pAFpXSwtbuoJ122iMO3ovy7zd54JcM0A==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
  (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
  dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UhoVkhy8GN1PdZmnmv/uRV5zVwbIdlO+MnLOz/NKjrs=;
- b=T9RVbqeAl+GPCLLEojfmm8l9IHdBV8sXzHAtkY29+1nJqQq5BWI55w1CLxwVCyXUfyLfeTpO0RvSekCG2PBmNS0QPce7uNhwYv6Xx+N9R78V6Cq4LYt3AhGtR1TOZVIaPXmTD0naL2MlFgW5YZVcd553q7jTJQ5bVahiI0lJkLs=
-Received: from SN7PR04CA0231.namprd04.prod.outlook.com (2603:10b6:806:127::26)
- by PH7PR12MB5618.namprd12.prod.outlook.com (2603:10b6:510:134::14) with
+ bh=1zC5WRwtu6+qO+9CXnFzJPWrGYlpkczne7vfVG5jg8k=;
+ b=wW0951aFk3TgpockNYd7ZRSr0wxwcWQYgB79N7UwMZH+5GuhNgo7+eNaLjc1KPkJWquwd7raN/o3QCH8PBG/CQnwBbuYut+iHEJARIxAtMevnX663ladqqdULoeC8CAfx+3Xw3w//QPfC6pwgNr8HF/Vk/CJiYq2hdEJ5wa0XKs=
+Received: from SN6PR05CA0006.namprd05.prod.outlook.com (2603:10b6:805:de::19)
+ by DM4PR12MB5796.namprd12.prod.outlook.com (2603:10b6:8:63::16) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.23; Wed, 10 Jan
- 2024 09:47:23 +0000
-Received: from SA2PEPF00001509.namprd04.prod.outlook.com
- (2603:10b6:806:127:cafe::3a) by SN7PR04CA0231.outlook.office365.com
- (2603:10b6:806:127::26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.23 via Frontend
- Transport; Wed, 10 Jan 2024 09:47:23 +0000
+ 2024 09:45:46 +0000
+Received: from SA2PEPF00001506.namprd04.prod.outlook.com
+ (2603:10b6:805:de:cafe::a9) by SN6PR05CA0006.outlook.office365.com
+ (2603:10b6:805:de::19) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.18 via Frontend
+ Transport; Wed, 10 Jan 2024 09:45:46 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=amd.com;
@@ -72,20 +72,16 @@ Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
  165.204.84.17 as permitted sender) receiver=protection.outlook.com;
  client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
 Received: from SATLEXMB04.amd.com (165.204.84.17) by
- SA2PEPF00001509.mail.protection.outlook.com (10.167.242.41) with Microsoft
+ SA2PEPF00001506.mail.protection.outlook.com (10.167.242.38) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7181.14 via Frontend Transport; Wed, 10 Jan 2024 09:47:23 +0000
-Received: from SATLEXMB06.amd.com (10.181.40.147) by SATLEXMB04.amd.com
+ 15.20.7181.14 via Frontend Transport; Wed, 10 Jan 2024 09:45:46 +0000
+Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB04.amd.com
  (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Wed, 10 Jan
- 2024 03:47:14 -0600
-Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB06.amd.com
- (10.181.40.147) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Wed, 10 Jan
- 2024 03:47:13 -0600
+ 2024 03:45:41 -0600
 Received: from vijendar-X570-GAMING-X.amd.com (10.180.168.240) by
  SATLEXMB04.amd.com (10.181.40.145) with Microsoft SMTP Server id 15.1.2507.34
- via Frontend Transport; Wed, 10 Jan 2024 03:47:08 -0600
+ via Frontend Transport; Wed, 10 Jan 2024 03:45:36 -0600
 From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 To: <broonie@kernel.org>, <vkoul@kernel.org>
 CC: <alsa-devel@alsa-project.org>, <yung-chuan.liao@linux.intel.com>,
@@ -96,15 +92,16 @@ CC: <alsa-devel@alsa-project.org>, <yung-chuan.liao@linux.intel.com>,
 	<peter.ujfalusi@linux.intel.com>, Ranjani Sridharan
 	<ranjani.sridharan@linux.intel.com>, Daniel Baluta <daniel.baluta@nxp.com>,
 	Kai Vehmanen <kai.vehmanen@linux.intel.com>, Jaroslav Kysela
-	<perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Mastan Katragadda
-	<Mastan.Katragadda@amd.com>, V sujith kumar Reddy
-	<Vsujithkumar.Reddy@amd.com>, "moderated list:SOUND - SOUND OPEN FIRMWARE
- (SOF) DRIVERS" <sound-open-firmware@alsa-project.org>, "open list:SOUND - SOC
- LAYER / DYNAMIC AUDIO POWER MANAGEM..." <linux-sound@vger.kernel.org>, "open
- list" <linux-kernel@vger.kernel.org>
-Subject: [PATCH V2 13/13] ASoC: SOF: amd: refactor acp driver pm ops
-Date: Wed, 10 Jan 2024 15:14:16 +0530
-Message-ID: <20240110094416.853610-14-Vijendar.Mukunda@amd.com>
+	<perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, V sujith kumar Reddy
+	<Vsujithkumar.Reddy@amd.com>, Mastan Katragadda <Mastan.Katragadda@amd.com>,
+	"moderated list:SOUND - SOUND OPEN FIRMWARE (SOF) DRIVERS"
+	<sound-open-firmware@alsa-project.org>, "open list:SOUND - SOC LAYER /
+ DYNAMIC AUDIO POWER MANAGEM..." <linux-sound@vger.kernel.org>, open list
+	<linux-kernel@vger.kernel.org>
+Subject: [PATCH V2 07/13] ASoC: SOF: amd: add code for invoking soundwire
+ manager helper functions
+Date: Wed, 10 Jan 2024 15:14:10 +0530
+Message-ID: <20240110094416.853610-8-Vijendar.Mukunda@amd.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240110094416.853610-1-Vijendar.Mukunda@amd.com>
 References: <20240110094416.853610-1-Vijendar.Mukunda@amd.com>
@@ -113,30 +110,30 @@ Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SA2PEPF00001509:EE_|PH7PR12MB5618:EE_
-X-MS-Office365-Filtering-Correlation-Id: 6f288196-6247-4171-cbc0-08dc11c12544
+X-MS-TrafficTypeDiagnostic: SA2PEPF00001506:EE_|DM4PR12MB5796:EE_
+X-MS-Office365-Filtering-Correlation-Id: e8f55c23-fc6f-4a73-8b1d-08dc11c0eb81
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info: 
-	e/yw6X41z/diZRifrGad3/rjEfB2PC/kRUsYT58skXqyqKHykRn4JdSldugHz0WIoed6jwcjAi0by84GB4ggRRU4eMRGf77+Fi+ChOuGF6vPVHdqBd5fUpM/enF2/g9s3mwcXxDUdsMgo6hhplODGiubn0dk9yGibsi/jJ53OSl56BpEPKPFbrMqE0lzV9C0eAjeK8z0fOXkO77u1MOGSobJeYdTfQJ6DcqPLGIvU+jTskoOUwUtdM/eL7yS6/DvA7BK62ivBdrVLC5ZLnHH3EvcsJ2XLmZOo+Pa1zsONrTE/Trhuc9gLG6A52GQDTHIuN+oCmoIWST5M/yZCi60Z1z6gyEcq9JjXMY3hIK+QnKY+rkeAxmUTrZ76wFqstsH6nGv0uxQXu+BAV1yFImyMS0IkC+iPHwn8b3TYrHJek9+cNX6Jf7Dq67LM+KTrpCHT9eMCn3vrKWGo+HIwdvpuOL/Y2GZyyTWmvBY2dHWFNbLZ2XQNaCgm9VDf/43+r+JEm3bPM0sE0pjlciIluH5AV9OvQg9M3XJ9xi51aSAQ8t6OBsOFw1wjf6aMab7bMF0nDDkoreBlC5SkkIm4UaQGfGYiQHr4tM8WRKWPTarCR4B0pMmks9xJdkaYEdBQ8x9DBIsE54429Y9URGyP3jmmNfofZsNjYvX56pYnd7vlJU4kM5ZEgvTbcqhpPC8pjPdVEZ47/IDCpngs1xh/Aa4YR4S3bd33panvXwFt+FRfAkNMZuq9bsqvwHWGpMNWamvn3lKGy/+sqFcIVtAlyH1AA==
+	eCisJIHdX/SUSY29y1xymO+O7sCW0RtODA41wV7WBR9egvwyMkE8IsUZddeyY5kzifIObv3e+hcAT5Nbnjmlyq4yXm6YV1g7LPQOEpYEaTPbdqSvCBumoA7Pos7T5/cSOyxUgetxb/Gv9tec85a+m7YdqJUWxmwmwERNR2CyQr7nGHLmZxoM8pzXuQHx44ijlJB1LHtKKHiOrTXOdk7dtELykAyIs51wzCaxVN3GNatLktYYXugXmXGdcxfGgIgXnUQbI3dZcVwzTRYTLF3hVGK5N4+EypVQQh//RP0axYRjfAEUfeCVEENMWGAU3FfArIFFVRcNl3JsImGKYVBLlY0y9u5brDYg/36d68k+3hcgBa8xMQV3F6eUavaEG41C5x+gsQ7FwGzvwkVcjtwncOz7aL4sYAKlic4sEnn7fXE/y2RmkqSsZP2jAjvE5+WmL0ZUuVABk7Cokbydk59lEGQgIA9AkNeCPigsn5C1NvNsP7m7ToR986lR+ZiQsbwCwSdxltAFUidy3d/t3sIbHbkGdVfpkJ3Fs/E7SvufFioWzbq2eLt95af9Q+KpIQlrFxz4Cm4oRH9HnTVm61Bj2ZAcncD+m6nb9AEtKC9raOTbDoFNoDqqDDQxs7pFtrZOx73DHVE/vRdEp7fabfUrRd/CARuC8w6nCNlOf275xNw97L1pSVAnPdSKCwyxqs8N+GwAPkXslSr5n6JVzxS5tcU7WX/ugUsM03WvlxVrwT2QlwG4vLvaeOb16KrmMdRyfuaqB1iahFcc7mNFShlOjw==
 X-Forefront-Antispam-Report: 
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(346002)(376002)(39860400002)(136003)(396003)(230922051799003)(1800799012)(451199024)(186009)(64100799003)(82310400011)(40470700004)(46966006)(36840700001)(40480700001)(40460700003)(83380400001)(70206006)(70586007)(86362001)(41300700001)(36756003)(356005)(81166007)(54906003)(82740400003)(36860700001)(47076005)(1076003)(426003)(336012)(2616005)(26005)(5660300002)(2906002)(110136005)(316002)(7696005)(478600001)(6666004)(8936002)(4326008)(8676002)(7416002)(36900700001);DIR:OUT;SFP:1101;
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(376002)(396003)(346002)(39860400002)(136003)(230922051799003)(451199024)(186009)(82310400011)(64100799003)(1800799012)(40470700004)(46966006)(36840700001)(83380400001)(26005)(336012)(426003)(2616005)(82740400003)(47076005)(1076003)(36860700001)(4326008)(8676002)(8936002)(7416002)(5660300002)(2906002)(7696005)(6666004)(478600001)(54906003)(316002)(110136005)(70586007)(41300700001)(70206006)(81166007)(356005)(36756003)(86362001)(40480700001)(40460700003)(36900700001);DIR:OUT;SFP:1101;
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Jan 2024 09:47:23.0612
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Jan 2024 09:45:46.1671
  (UTC)
 X-MS-Exchange-CrossTenant-Network-Message-Id: 
- 6f288196-6247-4171-cbc0-08dc11c12544
+ e8f55c23-fc6f-4a73-8b1d-08dc11c0eb81
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: 
  TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
 X-MS-Exchange-CrossTenant-AuthSource: 
-	SA2PEPF00001509.namprd04.prod.outlook.com
+	SA2PEPF00001506.namprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB5618
-Message-ID-Hash: K2FH7YPOY3K5FOAGAS7OB4X43FD7PWIZ
-X-Message-ID-Hash: K2FH7YPOY3K5FOAGAS7OB4X43FD7PWIZ
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5796
+Message-ID-Hash: PZO7PABH7CE7WWXJ3L6GVSRAFVEU3LXN
+X-Message-ID-Hash: PZO7PABH7CE7WWXJ3L6GVSRAFVEU3LXN
 X-MailFrom: Vijendar.Mukunda@amd.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -149,7 +146,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/K2FH7YPOY3K5FOAGAS7OB4X43FD7PWIZ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PZO7PABH7CE7WWXJ3L6GVSRAFVEU3LXN/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -158,149 +155,227 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Refactor acp driver pm ops to support SoundWire interface.
-
-When SoundWire configuration is enabled, In case of ClockStopMode,
-DSP soft reset should be applied and for rest of the scenarios
-acp init/deinit sequence should be invoked.
+Add code for invoking Soundwire manager helper functions
+when SoundWire configuration is selected.
 
 Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 ---
- sound/soc/sof/amd/acp-dsp-offset.h |  3 ++
- sound/soc/sof/amd/acp.c            | 65 +++++++++++++++++++++++++++---
- sound/soc/sof/amd/acp.h            |  4 ++
- 3 files changed, 67 insertions(+), 5 deletions(-)
+ sound/soc/sof/amd/Kconfig | 17 +++++++
+ sound/soc/sof/amd/acp.c   | 99 ++++++++++++++++++++++++++++++++++++++-
+ sound/soc/sof/amd/acp.h   | 15 +++++-
+ 3 files changed, 129 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/sof/amd/acp-dsp-offset.h b/sound/soc/sof/amd/acp-dsp-offset.h
-index c1bdc028a61a..59afbe2e0f42 100644
---- a/sound/soc/sof/amd/acp-dsp-offset.h
-+++ b/sound/soc/sof/amd/acp-dsp-offset.h
-@@ -103,4 +103,7 @@
- /* Cache window registers */
- #define ACP_DSP0_CACHE_OFFSET0			0x0420
- #define ACP_DSP0_CACHE_SIZE0			0x0424
+diff --git a/sound/soc/sof/amd/Kconfig b/sound/soc/sof/amd/Kconfig
+index 19c5e27a193f..1cea1d75130c 100644
+--- a/sound/soc/sof/amd/Kconfig
++++ b/sound/soc/sof/amd/Kconfig
+@@ -60,6 +60,23 @@ config SND_SOC_SOF_ACP_PROBES
+ 	  This option is not user-selectable but automatically handled by
+ 	  'select' statements at a higher level
+ 
++config SND_SOC_SOF_AMD_SOUNDWIRE_LINK_BASELINE
++	tristate
++	select SOUNDWIRE_AMD if SND_SOC_SOF_AMD_SOUNDWIRE != n
++	select SND_AMD_SOUNDWIRE_ACPI if ACPI
 +
-+#define ACP_SW0_EN				0x3000
-+#define ACP_SW1_EN				0x3C00
- #endif
++config SND_SOC_SOF_AMD_SOUNDWIRE
++	tristate "SOF support for SoundWire based AMD platforms"
++	default SND_SOC_SOF_AMD_SOUNDWIRE_LINK_BASELINE
++	depends on SND_SOC_SOF_AMD_SOUNDWIRE_LINK_BASELINE
++	depends on ACPI && SOUNDWIRE
++	depends on !(SOUNDWIRE=m && SND_SOC_SOF_AMD_SOUNDWIRE_LINK_BASELINE=y)
++	help
++	  This adds support for SoundWire with Sound Open Firmware
++	  for AMD platforms.
++	  Say Y if you want to enable SoundWire links with SOF.
++	  If unsure select "N".
++
+ config SND_SOC_SOF_AMD_ACP63
+ 	tristate "SOF support for ACP6.3 platform"
+ 	depends on SND_SOC_SOF_PCI
 diff --git a/sound/soc/sof/amd/acp.c b/sound/soc/sof/amd/acp.c
-index 7a34faae9889..920fead2d93d 100644
+index 32a741fcb84f..f24cd6b7490f 100644
 --- a/sound/soc/sof/amd/acp.c
 +++ b/sound/soc/sof/amd/acp.c
-@@ -482,6 +482,31 @@ static int acp_reset(struct snd_sof_dev *sdev)
- 	return ret;
- }
- 
-+static int acp_dsp_reset(struct snd_sof_dev *sdev)
-+{
-+	unsigned int val;
-+	int ret;
-+
-+	snd_sof_dsp_write(sdev, ACP_DSP_BAR, ACP_SOFT_RESET, ACP_DSP_ASSERT_RESET);
-+
-+	ret = snd_sof_dsp_read_poll_timeout(sdev, ACP_DSP_BAR, ACP_SOFT_RESET, val,
-+					    val & ACP_DSP_SOFT_RESET_DONE_MASK,
-+					    ACP_REG_POLL_INTERVAL, ACP_REG_POLL_TIMEOUT_US);
-+	if (ret < 0) {
-+		dev_err(sdev->dev, "timeout asserting reset\n");
-+		return ret;
-+	}
-+
-+	snd_sof_dsp_write(sdev, ACP_DSP_BAR, ACP_SOFT_RESET, ACP_DSP_RELEASE_RESET);
-+
-+	ret = snd_sof_dsp_read_poll_timeout(sdev, ACP_DSP_BAR, ACP_SOFT_RESET, val, !val,
-+					    ACP_REG_POLL_INTERVAL, ACP_REG_POLL_TIMEOUT_US);
-+	if (ret < 0)
-+		dev_err(sdev->dev, "timeout in releasing reset\n");
-+
-+	return ret;
-+}
-+
- static int acp_init(struct snd_sof_dev *sdev)
- {
- 	int ret;
-@@ -498,10 +523,34 @@ static int acp_init(struct snd_sof_dev *sdev)
- 	return acp_reset(sdev);
- }
- 
-+static bool check_acp_sdw_enable_status(struct snd_sof_dev *sdev)
-+{
-+	struct acp_dev_data *acp_data;
-+	u32 sdw0_en, sdw1_en;
-+
-+	acp_data = sdev->pdata->hw_pdata;
-+	if (!acp_data->sdw)
-+		return false;
-+
-+	sdw0_en = snd_sof_dsp_read(sdev, ACP_DSP_BAR, ACP_SW0_EN);
-+	sdw1_en = snd_sof_dsp_read(sdev, ACP_DSP_BAR, ACP_SW1_EN);
-+	acp_data->sdw_en_stat = sdw0_en || sdw1_en;
-+	return acp_data->sdw_en_stat;
-+}
-+
- int amd_sof_acp_suspend(struct snd_sof_dev *sdev, u32 target_state)
- {
- 	int ret;
- 
-+	/* When acp_reset() function is invoked, it will apply ACP SOFT reset and
-+	 * DSP reset. ACP Soft reset sequence will cause all ACP IP registers will
-+	 * be reset to default values which will break the ClockStop Mode functionality.
-+	 * Add a condition check to apply DSP reset when SoundWire ClockStop mode
-+	 * is selected. For the rest of the scenarios, apply acp reset sequence.
-+	 */
-+	if (check_acp_sdw_enable_status(sdev))
-+		return acp_dsp_reset(sdev);
-+
- 	ret = acp_reset(sdev);
- 	if (ret) {
- 		dev_err(sdev->dev, "ACP Reset failed\n");
-@@ -517,13 +566,19 @@ EXPORT_SYMBOL_NS(amd_sof_acp_suspend, SND_SOC_SOF_AMD_COMMON);
- int amd_sof_acp_resume(struct snd_sof_dev *sdev)
- {
- 	int ret;
-+	struct acp_dev_data *acp_data;
- 
--	ret = acp_init(sdev);
--	if (ret) {
--		dev_err(sdev->dev, "ACP Init failed\n");
--		return ret;
-+	acp_data = sdev->pdata->hw_pdata;
-+	if (!acp_data->sdw_en_stat) {
-+		ret = acp_init(sdev);
-+		if (ret) {
-+			dev_err(sdev->dev, "ACP Init failed\n");
-+			return ret;
-+		}
-+		return acp_memory_init(sdev);
-+	} else {
-+		return acp_dsp_reset(sdev);
- 	}
--	return acp_memory_init(sdev);
+@@ -491,6 +491,81 @@ int amd_sof_acp_resume(struct snd_sof_dev *sdev)
  }
  EXPORT_SYMBOL_NS(amd_sof_acp_resume, SND_SOC_SOF_AMD_COMMON);
  
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_AMD_SOUNDWIRE)
++static int acp_sof_scan_sdw_devices(struct snd_sof_dev *sdev, u64 addr)
++{
++	struct acpi_device *sdw_dev;
++	struct acp_dev_data *acp_data;
++	const struct sof_amd_acp_desc *desc = get_chip_info(sdev->pdata);
++
++	if (!addr)
++		return -ENODEV;
++
++	acp_data = sdev->pdata->hw_pdata;
++	sdw_dev = acpi_find_child_device(ACPI_COMPANION(sdev->dev), addr, 0);
++	if (!sdw_dev)
++		return -ENODEV;
++
++	acp_data->info.handle = sdw_dev->handle;
++	acp_data->info.count = desc->sdw_max_link_count;
++
++	return amd_sdw_scan_controller(&acp_data->info);
++}
++
++static int amd_sof_sdw_probe(struct snd_sof_dev *sdev)
++{
++	struct acp_dev_data *acp_data;
++	struct sdw_amd_res sdw_res;
++	int ret;
++
++	acp_data = sdev->pdata->hw_pdata;
++
++	memset(&sdw_res, 0, sizeof(sdw_res));
++	sdw_res.addr = acp_data->addr;
++	sdw_res.reg_range = acp_data->reg_range;
++	sdw_res.handle = acp_data->info.handle;
++	sdw_res.parent = sdev->dev;
++	sdw_res.dev = sdev->dev;
++	sdw_res.acp_lock = &acp_data->acp_lock;
++	sdw_res.count = acp_data->info.count;
++	sdw_res.link_mask = acp_data->info.link_mask;
++	sdw_res.mmio_base = sdev->bar[ACP_DSP_BAR];
++
++	ret = sdw_amd_probe(&sdw_res, &acp_data->sdw);
++	if (ret)
++		dev_err(sdev->dev, "SoundWire probe failed\n");
++	return ret;
++}
++
++static int amd_sof_sdw_exit(struct snd_sof_dev *sdev)
++{
++	struct acp_dev_data *acp_data;
++
++	acp_data = sdev->pdata->hw_pdata;
++	if (acp_data->sdw)
++		sdw_amd_exit(acp_data->sdw);
++	acp_data->sdw = NULL;
++
++	return 0;
++}
++
++#else
++static int acp_sof_scan_sdw_devices(struct snd_sof_dev *sdev, u64 addr)
++{
++	return 0;
++}
++
++static int amd_sof_sdw_probe(struct snd_sof_dev *sdev)
++{
++	return 0;
++}
++
++static int amd_sof_sdw_exit(struct snd_sof_dev *sdev)
++{
++	return 0;
++}
++#endif
++
+ int amd_sof_acp_probe(struct snd_sof_dev *sdev)
+ {
+ 	struct pci_dev *pci = to_pci_dev(sdev->dev);
+@@ -527,7 +602,9 @@ int amd_sof_acp_probe(struct snd_sof_dev *sdev)
+ 	}
+ 
+ 	pci_set_master(pci);
+-
++	adata->addr = addr;
++	adata->reg_range = chip->reg_end_addr - chip->reg_start_addr;
++	mutex_init(&adata->acp_lock);
+ 	sdev->pdata->hw_pdata = adata;
+ 	adata->smn_dev = pci_get_device(PCI_VENDOR_ID_AMD, chip->host_bridge_id, NULL);
+ 	if (!adata->smn_dev) {
+@@ -549,6 +626,21 @@ int amd_sof_acp_probe(struct snd_sof_dev *sdev)
+ 	if (ret < 0)
+ 		goto free_ipc_irq;
+ 
++	/* scan SoundWire capabilities exposed by DSDT */
++	ret = acp_sof_scan_sdw_devices(sdev, chip->sdw_acpi_dev_addr);
++	if (ret < 0) {
++		dev_dbg(sdev->dev, "skipping SoundWire, not detected with ACPI scan\n");
++		goto skip_soundwire;
++	}
++	ret = amd_sof_sdw_probe(sdev);
++	if (ret < 0) {
++		dev_err(sdev->dev, "error: SoundWire probe error\n");
++		free_irq(sdev->ipc_irq, sdev);
++		pci_dev_put(adata->smn_dev);
++		return ret;
++	}
++
++skip_soundwire:
+ 	sdev->dsp_box.offset = 0;
+ 	sdev->dsp_box.size = BOX_SIZE_512;
+ 
+@@ -596,6 +688,9 @@ void amd_sof_acp_remove(struct snd_sof_dev *sdev)
+ 	if (adata->smn_dev)
+ 		pci_dev_put(adata->smn_dev);
+ 
++	if (adata->sdw)
++		amd_sof_sdw_exit(sdev);
++
+ 	if (sdev->ipc_irq)
+ 		free_irq(sdev->ipc_irq, sdev);
+ 
+@@ -607,4 +702,6 @@ void amd_sof_acp_remove(struct snd_sof_dev *sdev)
+ EXPORT_SYMBOL_NS(amd_sof_acp_remove, SND_SOC_SOF_AMD_COMMON);
+ 
+ MODULE_DESCRIPTION("AMD ACP sof driver");
++MODULE_IMPORT_NS(SOUNDWIRE_AMD_INIT);
++MODULE_IMPORT_NS(SND_AMD_SOUNDWIRE_ACPI);
+ MODULE_LICENSE("Dual BSD/GPL");
 diff --git a/sound/soc/sof/amd/acp.h b/sound/soc/sof/amd/acp.h
-index e94713d7ff1d..947068da39b5 100644
+index c645aee216fd..e88d01330ec7 100644
 --- a/sound/soc/sof/amd/acp.h
 +++ b/sound/soc/sof/amd/acp.h
-@@ -31,6 +31,9 @@
- #define ACP_ASSERT_RESET			0x01
- #define ACP_RELEASE_RESET			0x00
- #define ACP_SOFT_RESET_DONE_MASK		0x00010001
-+#define ACP_DSP_ASSERT_RESET			0x04
-+#define ACP_DSP_RELEASE_RESET			0x00
-+#define ACP_DSP_SOFT_RESET_DONE_MASK		0x00050004
+@@ -12,7 +12,7 @@
+ #define __SOF_AMD_ACP_H
  
- #define ACP_DSP_INTR_EN_MASK			0x00000001
- #define ACP3X_SRAM_PTE_OFFSET			0x02050000
-@@ -242,6 +245,7 @@ struct acp_dev_data {
- 	bool enable_fw_debug;
- 	bool is_dram_in_use;
- 	bool is_sram_in_use;
-+	bool sdw_en_stat;
+ #include <linux/dmi.h>
+-
++#include <linux/soundwire/sdw_amd.h>
+ #include "../sof-priv.h"
+ #include "../sof-audio.h"
+ 
+@@ -191,6 +191,10 @@ struct sof_amd_acp_desc {
+ 	u32 acp_clkmux_sel;
+ 	u32 fusion_dsp_offset;
+ 	u32 probe_reg_offset;
++	u32 reg_start_addr;
++	u32 reg_end_addr;
++	u32 sdw_max_link_count;
++	u64 sdw_acpi_dev_addr;
  };
  
- void memcpy_to_scratch(struct snd_sof_dev *sdev, u32 offset, unsigned int *src, size_t bytes);
+ /* Common device data struct for ACP devices */
+@@ -199,6 +203,12 @@ struct acp_dev_data {
+ 	const struct firmware *fw_dbin;
+ 	/* DMIC device */
+ 	struct platform_device *dmic_dev;
++	/* mutex lock to protect ACP common registers access */
++	struct mutex acp_lock;
++	/* ACPI information stored between scan and probe steps */
++	struct sdw_amd_acpi_info info;
++	/* sdw context allocated by SoundWire driver */
++	struct sdw_amd_ctx *sdw;
+ 	unsigned int fw_bin_size;
+ 	unsigned int fw_data_bin_size;
+ 	unsigned int fw_sram_data_bin_size;
+@@ -207,6 +217,9 @@ struct acp_dev_data {
+ 	const char *fw_sram_data_bin;
+ 	u32 fw_bin_page_count;
+ 	u32 fw_data_bin_page_count;
++	u32 addr;
++	u32 reg_range;
++	u32 blk_type;
+ 	dma_addr_t sha_dma_addr;
+ 	u8 *bin_buf;
+ 	dma_addr_t dma_addr;
 -- 
 2.34.1
 
