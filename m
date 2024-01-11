@@ -4,52 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 29F3AC47077
-	for <alsa-devel@archiver.kernel.org>; Thu, 11 Jan 2024 10:55:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 28C1FC4707B
+	for <alsa-devel@archiver.kernel.org>; Thu, 11 Jan 2024 10:55:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 601E0DF9;
-	Thu, 11 Jan 2024 11:55:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 601E0DF9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4AA67105F;
+	Thu, 11 Jan 2024 11:55:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4AA67105F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1704970523;
-	bh=fshr/55h3wT+fevwdGwbnLEUOYH9vCJUJk2ISAPoJYk=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=I95rrq/5l+0EfMX3MH38w6WuPGSnIdcz3W9HOdEFQVGUrMUgge61WyI9dHqXI8DmZ
-	 XmV4fSPKvVeAdDXI5mrgME3IW++xIEeU1adBygLC/ZDC3YsAtG7CoH01CWDEWyj7pM
-	 RG5HGBamKjCdojgtqDBe6IG8E18IQvYHI+5gR/h4=
+	s=default; t=1704970539;
+	bh=t5/M/FDJlEol50qHM5SqsEKoXsNv1Vb4Pkp42aLqIa4=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=NozO7U9XUJVz5jykEbDtkb+OcSyVC2tK9v1LgJjulT0t/wVkQyhGIN7IQnZGuNrVI
+	 mhRcdrn0A2E74pOD/ruErVpjRRfw4PneCVatbyG0lQ14CKfO9ARkesYPO0xrucJ0F/
+	 rommkAfLQaV+8WEdMmD4wlgIE8Ttpou8eJKx2oeg=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 34EBEF8057D; Thu, 11 Jan 2024 11:54:50 +0100 (CET)
+	id 40542F805A9; Thu, 11 Jan 2024 11:54:52 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 907A0F80589;
-	Thu, 11 Jan 2024 11:54:50 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BBCB4F805AE;
+	Thu, 11 Jan 2024 11:54:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 01B08F804E7; Thu, 11 Jan 2024 11:52:57 +0100 (CET)
+	id 13AE7F804F1; Thu, 11 Jan 2024 11:53:00 +0100 (CET)
 Received: from madrid.collaboradmins.com (madrid.collaboradmins.com
- [46.235.227.194])
+ [IPv6:2a00:1098:ed:100::25])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id DB22AF80086
-	for <alsa-devel@alsa-project.org>; Thu, 11 Jan 2024 11:52:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DB22AF80086
+	by alsa1.perex.cz (Postfix) with ESMTPS id 41599F80246
+	for <alsa-devel@alsa-project.org>; Thu, 11 Jan 2024 11:52:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 41599F80246
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=collabora.com header.i=@collabora.com
- header.a=rsa-sha256 header.s=mail header.b=Xhe1Vp8n
+ header.a=rsa-sha256 header.s=mail header.b=q4kLQ0pR
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1704970370;
-	bh=fshr/55h3wT+fevwdGwbnLEUOYH9vCJUJk2ISAPoJYk=;
-	h=From:To:Cc:Subject:Date:From;
-	b=Xhe1Vp8nV66TBCawvwAjnPaTLzQaQRdebTDUFoyaDaEdR+w7Q6enrQzLbXkJOxWa7
-	 1VIqSTYMwjMLwjDtvnYwVkcUwI1l6LTGmCn5Iuy+3shh+mnUV05U1fiImxbTAoJ7px
-	 GuuQKFn9e37GJeFxCTusXKaQ8Cw1uOqaDBBBFKtPcKvUqwRqF144BMDZToKUGwTGX3
-	 dX9k4KqF+nAWHyqDnDqvpcMYpPBL5SH/3Osznm5XiaC8H929IbbCrlO5UzgpySdOST
-	 F57IRWOqWplN9TmWYzEBEHQ5X/y1XBjepO72lrlQwqdPBrjvu8C/JEKP3YK6TGicUS
-	 I3XClm5Z+cASA==
+	s=mail; t=1704970373;
+	bh=t5/M/FDJlEol50qHM5SqsEKoXsNv1Vb4Pkp42aLqIa4=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=q4kLQ0pRzFTsf7+QSE8HGBiTkkbxto3GLyZ/YvnTZ3mYaGX8FfpVDoW/lCHeVEnrp
+	 KDquhySZRSotQRrNpFz7IxcBhS8HRZql2vryLjMWnFXGTsPv1mm83U4LWKVWBbFh1n
+	 kNp5Q0TsZ4yta0eBv1yrC3tqnJJTrn5uMX1BLsO1an4Om8eIsjITCVEyP2Ge9CLhXz
+	 AVRGSiVkjnfVb9kpbBfTX9kERC6Xsl8c4gwQuOo2AF/PHqrXvKSWgPTtGbCs1Hs2qQ
+	 Igi4DuQN7WY0gWzRwOnUKN+jHP27eSWNFbWSYz6lwKV+xDJIKIwqjyrKQ5zUgG2YPn
+	 TBQ7/nNSxctcA==
 Received: from IcarusMOD.eternityproject.eu (cola.collaboradmins.com
  [195.201.22.229])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
@@ -57,8 +57,8 @@ Received: from IcarusMOD.eternityproject.eu (cola.collaboradmins.com
  SHA256)
 	(No client certificate requested)
 	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id CDD2237811D1;
-	Thu, 11 Jan 2024 10:52:49 +0000 (UTC)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 65DF93781FCB;
+	Thu, 11 Jan 2024 10:52:52 +0000 (UTC)
 From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 To: lgirdwood@gmail.com
 Cc: broonie@kernel.org,
@@ -77,14 +77,17 @@ Cc: broonie@kernel.org,
 	linux-kernel@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org,
 	linux-mediatek@lists.infradead.org
-Subject: [PATCH 0/7] ASoC: mediatek: AFE drivers cleanups
-Date: Thu, 11 Jan 2024 11:52:40 +0100
-Message-ID: <20240111105247.117766-1-angelogioacchino.delregno@collabora.com>
+Subject: [PATCH 2/7] ASoC: mediatek: mt8173-afe-pcm: Use
+ devm_snd_soc_register_component()
+Date: Thu, 11 Jan 2024 11:52:42 +0100
+Message-ID: <20240111105247.117766-3-angelogioacchino.delregno@collabora.com>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240111105247.117766-1-angelogioacchino.delregno@collabora.com>
+References: <20240111105247.117766-1-angelogioacchino.delregno@collabora.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 75O2LZAOZ6YI6DWNWSBNVUAOBJZTYMMD
-X-Message-ID-Hash: 75O2LZAOZ6YI6DWNWSBNVUAOBJZTYMMD
+Message-ID-Hash: XIMK2QHCP3VGMPPMLTCJCDSTXM4H3QKV
+X-Message-ID-Hash: XIMK2QHCP3VGMPPMLTCJCDSTXM4H3QKV
 X-MailFrom: angelogioacchino.delregno@collabora.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -97,7 +100,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/75O2LZAOZ6YI6DWNWSBNVUAOBJZTYMMD/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XIMK2QHCP3VGMPPMLTCJCDSTXM4H3QKV/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -106,27 +109,113 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-This series converts MediaTek AFE drivers' probe functions to use
-dev_err_probe() and devm functions where possible and, in some
-cases, dropping the .remove_new() callback, reducing the size.
+Function devm_snd_soc_register_component() allocates a new struct
+snd_soc_component, adds components and initializes them; since this
+is also devm, it automatically unregisters components and frees
+memory upon destruction.
 
-Cheers!
+That's exactly what we're doing in the probe function of this driver:
+switch to that function instead, allowing to remove the last goto and
+to discard the .remove_new() callback for this driver.
 
-AngeloGioacchino Del Regno (7):
-  ASoC: mediatek: mt8173-afe-pcm: Convert to devm_pm_runtime_enable()
-  ASoC: mediatek: mt8173-afe-pcm: Use devm_snd_soc_register_component()
-  ASoC: mediatek: mt8183-afe-pcm: Convert to devm_pm_runtime_enable()
-  ASoC: mediatek: mt8183-afe-pcm: Simplify with dev_err_probe()
-  ASoC: mediatek: mt8192-afe-pcm: Convert to devm_pm_runtime_enable()
-  ASoC: mediatek: mt8192-afe-pcm: Simplify with dev_err_probe()
-  ASoC: mediatek: mt8195-afe-pcm: Drop .remove_new() callback
+Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+---
+ sound/soc/mediatek/mt8173/mt8173-afe-pcm.c | 58 +++-------------------
+ 1 file changed, 8 insertions(+), 50 deletions(-)
 
- sound/soc/mediatek/mt8173/mt8173-afe-pcm.c |  78 +++------------
- sound/soc/mediatek/mt8183/mt8183-afe-pcm.c | 108 +++++++--------------
- sound/soc/mediatek/mt8192/mt8192-afe-pcm.c |  95 ++++++------------
- sound/soc/mediatek/mt8195/mt8195-afe-pcm.c |  12 +--
- 4 files changed, 81 insertions(+), 212 deletions(-)
-
+diff --git a/sound/soc/mediatek/mt8173/mt8173-afe-pcm.c b/sound/soc/mediatek/mt8173/mt8173-afe-pcm.c
+index ea611730de9c..b887e10635fe 100644
+--- a/sound/soc/mediatek/mt8173/mt8173-afe-pcm.c
++++ b/sound/soc/mediatek/mt8173/mt8173-afe-pcm.c
+@@ -1129,72 +1129,31 @@ static int mt8173_afe_pcm_dev_probe(struct platform_device *pdev)
+ 	afe->runtime_resume = mt8173_afe_runtime_resume;
+ 	afe->runtime_suspend = mt8173_afe_runtime_suspend;
+ 
+-	ret = devm_snd_soc_register_component(&pdev->dev,
+-					 &mtk_afe_pcm_platform,
+-					 NULL, 0);
++	ret = devm_snd_soc_register_component(&pdev->dev, &mtk_afe_pcm_platform, NULL, 0);
+ 	if (ret)
+ 		return ret;
+ 
+-	comp_pcm = devm_kzalloc(&pdev->dev, sizeof(*comp_pcm), GFP_KERNEL);
+-	if (!comp_pcm)
+-		return -ENOMEM;
+-
+-	ret = snd_soc_component_initialize(comp_pcm,
+-					   &mt8173_afe_pcm_dai_component,
+-					   &pdev->dev);
++	ret = devm_snd_soc_register_component(&pdev->dev, &mt8173_afe_pcm_dai_component,
++					      mt8173_afe_pcm_dais,
++					      ARRAY_SIZE(mt8173_afe_pcm_dais));
+ 	if (ret)
+ 		return ret;
+ 
+-#ifdef CONFIG_DEBUG_FS
+-	comp_pcm->debugfs_prefix = "pcm";
+-#endif
+-
+-	ret = snd_soc_add_component(comp_pcm,
+-				    mt8173_afe_pcm_dais,
+-				    ARRAY_SIZE(mt8173_afe_pcm_dais));
++	ret = devm_snd_soc_register_component(&pdev->dev, &mt8173_afe_hdmi_dai_component,
++					      mt8173_afe_hdmi_dais,
++					      ARRAY_SIZE(mt8173_afe_hdmi_dais));
+ 	if (ret)
+ 		return ret;
+ 
+-	comp_hdmi = devm_kzalloc(&pdev->dev, sizeof(*comp_hdmi), GFP_KERNEL);
+-	if (!comp_hdmi) {
+-		ret = -ENOMEM;
+-		goto err_cleanup_components;
+-	}
+-
+-	ret = snd_soc_component_initialize(comp_hdmi,
+-					   &mt8173_afe_hdmi_dai_component,
+-					   &pdev->dev);
+-	if (ret)
+-		goto err_cleanup_components;
+-
+-#ifdef CONFIG_DEBUG_FS
+-	comp_hdmi->debugfs_prefix = "hdmi";
+-#endif
+-
+-	ret = snd_soc_add_component(comp_hdmi,
+-				    mt8173_afe_hdmi_dais,
+-				    ARRAY_SIZE(mt8173_afe_hdmi_dais));
+-	if (ret)
+-		goto err_cleanup_components;
+-
+ 	ret = devm_request_irq(afe->dev, irq_id, mt8173_afe_irq_handler,
+ 			       0, "Afe_ISR_Handle", (void *)afe);
+ 	if (ret) {
+ 		dev_err(afe->dev, "could not request_irq\n");
+-		goto err_cleanup_components;
++		return ret;
+ 	}
+ 
+ 	dev_info(&pdev->dev, "MT8173 AFE driver initialized.\n");
+ 	return 0;
+-
+-err_cleanup_components:
+-	snd_soc_unregister_component(&pdev->dev);
+-	return ret;
+-}
+-
+-static void mt8173_afe_pcm_dev_remove(struct platform_device *pdev)
+-{
+-	snd_soc_unregister_component(&pdev->dev);
+ }
+ 
+ static const struct of_device_id mt8173_afe_pcm_dt_match[] = {
+@@ -1215,7 +1174,6 @@ static struct platform_driver mt8173_afe_pcm_driver = {
+ 		   .pm = &mt8173_afe_pm_ops,
+ 	},
+ 	.probe = mt8173_afe_pcm_dev_probe,
+-	.remove_new = mt8173_afe_pcm_dev_remove,
+ };
+ 
+ module_platform_driver(mt8173_afe_pcm_driver);
 -- 
 2.43.0
 
