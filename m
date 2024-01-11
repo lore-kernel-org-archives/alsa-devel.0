@@ -4,91 +4,165 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BE801C4707B
-	for <alsa-devel@archiver.kernel.org>; Thu, 11 Jan 2024 10:57:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 67352C47077
+	for <alsa-devel@archiver.kernel.org>; Thu, 11 Jan 2024 11:07:46 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DFF2BF52;
-	Thu, 11 Jan 2024 11:57:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DFF2BF52
+	by alsa0.perex.cz (Postfix) with ESMTPS id 34A02EBE;
+	Thu, 11 Jan 2024 12:07:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 34A02EBE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1704970641;
-	bh=3cQvnwcXHoi10LGhXXkqD+S50rLO3Wezsg1rzILzUxg=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=MSPp/ORagvjt12H9Iz712f/c8vmdlz4IWiAXa9Anr4IzfF8pDvBuz8dxg25HuLdyB
-	 9fLLSK6isrJhrfc48gKwhXWkWZOqiMtXYIjOmQIYJZeHFMBnDGr69+4dWrigU1Va/2
-	 5k7CexGgmKE0Yl+v4w/CCYZ8r6jVq64ftaWwE+Dw=
+	s=default; t=1704971259;
+	bh=jvDwk5jkP15X0Pm8mhccDPi8aUwn9kLsb0+YMzgMDpI=;
+	h=From:To:Subject:Date:References:In-Reply-To:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=nphxmOeiUAYXEGtHVDKiOE8BIBO1cocNahkXGMpxavV06aRRi37CvfAO2vd8kCTYS
+	 JfH0W4y09fl7JcdyxtOREsnwzvz89qxrpgbhg2ZUr1zThRu8shdeII1o0zHbOkaqS2
+	 jUvni9d+MVIqALokAMVZ3zRZk51pcdr8z0T89CKI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6CF12F806B7; Thu, 11 Jan 2024 11:55:05 +0100 (CET)
+	id 2BC80F80579; Thu, 11 Jan 2024 12:07:06 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D2A77F806A5;
-	Thu, 11 Jan 2024 11:55:04 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 711A1F80589;
+	Thu, 11 Jan 2024 12:07:06 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B9319F80254; Thu, 11 Jan 2024 11:53:08 +0100 (CET)
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com
- [IPv6:2a00:1098:ed:100::25])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	id 7CD00F80254; Thu, 11 Jan 2024 12:07:01 +0100 (CET)
+Received: from EUR05-DB8-obe.outbound.protection.outlook.com
+ (mail-db8eur05on20611.outbound.protection.outlook.com
+ [IPv6:2a01:111:f400:7e1a::611])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id ACCA0F80246
-	for <alsa-devel@alsa-project.org>; Thu, 11 Jan 2024 11:52:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ACCA0F80246
+	by alsa1.perex.cz (Postfix) with ESMTPS id 14C81F80086
+	for <alsa-devel@alsa-project.org>; Thu, 11 Jan 2024 12:06:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 14C81F80086
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=collabora.com header.i=@collabora.com
- header.a=rsa-sha256 header.s=mail header.b=CLVk0hS9
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1704970378;
-	bh=3cQvnwcXHoi10LGhXXkqD+S50rLO3Wezsg1rzILzUxg=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=CLVk0hS9qP1S0SfjosuThhHcG23RNZwo7E3I5N+W/tIuoxBDnsIj+HaMXf69ntc4i
-	 WNK7/lNLCd/XFvkNMyM/+Y7z/UEIFzf45S7zaWASQFMA88ATcBJCB+O3RSIVm23plI
-	 K/KPoRpBKcat+wzk0kK3DpfkHl4EtN3Ie+DRu0dz6W7M7TGBFOa7DlKL+PQDS9yx+7
-	 QJSODtPQv5ASzB1zbVYuzxXnF/J1BrT78DYGqTVPr/E8mC6uEcY38yz+qCMbZyjiGw
-	 G6c78RnowRrlD36tFeMHibVHe5cJJWpeYGDXJBVTKgAxM2s+Mpa/6a8v4hMkuqMsG9
-	 1cdHYvyEgmPcw==
-Received: from IcarusMOD.eternityproject.eu (cola.collaboradmins.com
- [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 8FB5F3781F8E;
-	Thu, 11 Jan 2024 10:52:57 +0000 (UTC)
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-To: lgirdwood@gmail.com
-Cc: broonie@kernel.org,
-	perex@perex.cz,
-	tiwai@suse.com,
-	matthias.bgg@gmail.com,
-	angelogioacchino.delregno@collabora.com,
-	ribalda@chromium.org,
-	nicolas.ferre@microchip.com,
-	u.kleine-koenig@pengutronix.de,
-	kuninori.morimoto.gx@renesas.com,
-	nfraprado@collabora.com,
-	alsa-devel@alsa-project.org,
-	trevor.wu@mediatek.com,
-	linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org
-Subject: [PATCH 6/7] ASoC: mediatek: mt8192-afe-pcm: Simplify with
- dev_err_probe()
-Date: Thu, 11 Jan 2024 11:52:46 +0100
-Message-ID: <20240111105247.117766-7-angelogioacchino.delregno@collabora.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240111105247.117766-1-angelogioacchino.delregno@collabora.com>
-References: <20240111105247.117766-1-angelogioacchino.delregno@collabora.com>
+	dkim=pass (1024-bit key,
+ unprotected) header.d=nxp.com header.i=@nxp.com header.a=rsa-sha256
+ header.s=selector2 header.b=TNSx5SkR
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IYYs/kRq/78aBpeaqpSGGa0yOT/KS5OzC1mVVUsUin92y0wLcIXL+jsPbXlZ9ds4z06ZGjpQ/1cNN8sAqMUuDH7J/B+ByZI4Wl/7SGxrOaxALkACoNk0xvhqQKbmIJFBHmCwsu5H9Wqf9cEXl57LHaNZUCw+q538w404xwUCYbLcULPWEHja6tFjuOhOg5VAVS0NSL7W/opADvhNh63+Y9+6ci4nYzu6mydtCLqRNgOj+TrLD6FPNVc9jQckITYbriHkKKgBtaDpVYG5B/5EtQMoKbF6yvTVAqWJ+IkjABq5g1TBQ0RvvvWSN65/naaiu83dsaZV1d1w1XrDAx9/Qw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=jvDwk5jkP15X0Pm8mhccDPi8aUwn9kLsb0+YMzgMDpI=;
+ b=jv9mq6psmLbPTCNFVUXzS5ir7iVsNvE9ZKRFm1Iw5fHJoba5Gs4u3YzZUFPPBAk1snYN+7Tp6nZOMiJrob9KsVU7ZJlJ1r2AotMwELQoPiY5SWoS7BUTDlAbQYucP1kDHGO6uSOSV+S5yXySkfceK6L9jV+M74IGIuMQtZBPVnt96oh5W4yWpdsyC+SIqBKM0V1oqsTa9ymJrDmCNKIQRBZp0rMWV8P8dtSFXgaTjAQ57ftHwo5qsobaIcMElqqP8t16C5Q+88nzHlPX/UO08FiMnXUIKmyrkfrp5t3LYV57O204N3+cplkdwb/lNW8mgAjpaf32b6wu8CmaDD+Yrw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jvDwk5jkP15X0Pm8mhccDPi8aUwn9kLsb0+YMzgMDpI=;
+ b=TNSx5SkRtxDNSoW9xt9KH/UBupwbnNTirLGP+KBs85Z1FfmoehLG7s5YlViz36SFeh54lRcMjH7N98vtN/ogJW7GZlkKNWmH15OnfwJMIS1QXMsZ2vPEL3tQ7c+iMh7ohSDn5mAVnLoc2B7WCFSpvNrpzesRRJ1tKImw/b9VAxc=
+Received: from DB9PR04MB9498.eurprd04.prod.outlook.com (2603:10a6:10:360::21)
+ by PAXPR04MB8426.eurprd04.prod.outlook.com (2603:10a6:102:1ca::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.19; Thu, 11 Jan
+ 2024 11:06:55 +0000
+Received: from DB9PR04MB9498.eurprd04.prod.outlook.com
+ ([fe80::2a3c:9a90:b09f:293c]) by DB9PR04MB9498.eurprd04.prod.outlook.com
+ ([fe80::2a3c:9a90:b09f:293c%3]) with mapi id 15.20.7159.020; Thu, 11 Jan 2024
+ 11:06:55 +0000
+From: Chancel Liu <chancel.liu@nxp.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	"lgirdwood@gmail.com" <lgirdwood@gmail.com>, "broonie@kernel.org"
+	<broonie@kernel.org>, "robh+dt@kernel.org" <robh+dt@kernel.org>,
+	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
+	"conor+dt@kernel.org" <conor+dt@kernel.org>, "shengjiu.wang@gmail.com"
+	<shengjiu.wang@gmail.com>, "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>,
+	"festevam@gmail.com" <festevam@gmail.com>, "nicoleotsuka@gmail.com"
+	<nicoleotsuka@gmail.com>, "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.com"
+	<tiwai@suse.com>, "linux-sound@vger.kernel.org"
+	<linux-sound@vger.kernel.org>, "devicetree@vger.kernel.org"
+	<devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "alsa-devel@alsa-project.org"
+	<alsa-devel@alsa-project.org>, "linuxppc-dev@lists.ozlabs.org"
+	<linuxppc-dev@lists.ozlabs.org>
+Subject: RE: Re: [PATCH 1/3] ASoC: dt-bindings: fsl,sai: Add compatible string
+ for i.MX95 platform
+Thread-Topic: Re: [PATCH 1/3] ASoC: dt-bindings: fsl,sai: Add compatible
+ string for i.MX95 platform
+Thread-Index: AQHaRH5JRPPqOQSwLESjzaZBO2/1og==
+Date: Thu, 11 Jan 2024 11:06:55 +0000
+Message-ID: 
+ <DB9PR04MB9498C7C66BD45F2FBDD163D5E3682@DB9PR04MB9498.eurprd04.prod.outlook.com>
+References: <20240109075551.870001-1-chancel.liu@nxp.com>
+ <20240109075551.870001-2-chancel.liu@nxp.com>
+ <8ed559e8-1f97-45ee-acb9-c792752fd419@linaro.org>
+In-Reply-To: <8ed559e8-1f97-45ee-acb9-c792752fd419@linaro.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DB9PR04MB9498:EE_|PAXPR04MB8426:EE_
+x-ms-office365-filtering-correlation-id: bca4a025-7f43-46ff-672d-08dc12956c30
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 
+ M9dGGskF9xcaa4hK/CaVb4WpyvoayVAU2CivokzSRGIz4Xvg4dpS2Lz86Nx5G5BzHVWHGeLENJv4Lmx9sdNTUCt+OJjmEd3O7lqxwacw76Bqi3GGc35s1AR5iAPZDGFF3eVSd1ZTJ2xhX6UcU8oy1lsWt9F8Xuqw2qdsn/RSpKrX9SCcvGkbnla+JMmXYg/RJXmw5T3zFGQU7tUcCNRZb2n/kXbTMncphgx7iSCyojME49Q4q/NIuYz5+QOaBspVv5b/t3q/IcM7H2F65LrUIDNCyY9XHYrvm7lm51LRzxozzVNzxC9Is+D9xgFV89kzRGhbB2yqSAi53hCAwtGMTtsVhHGkhHem5Iuqh2r9lQXfSWB6c+PE7ui9SVv06ABJdIZdI5saJZDBBZxxpUrtt0kSIQuSga3N3bCQ/ZQO8dT4xE07awUvyr8dh/yc8hxg6o8Fq/w4tURFZnhWVqHj+wpYV2n31JW3RaE1ZVOJIBxc42YBMi3S5UIsheiCDfdCVxhHGB/Jh7i0lhT6OZsQ3GD7RA5Q2xmJ+f4m5VuOu7x9XlGciCy77/Fo+y0U2Vy8BCnfW6bbtKWqvH3DSmJ2YAnIDPI0PwuxalL0OGL0mOgxmftDflTea/IG0hsoUqzGwI6Sbfcm4Bs9ZgOvq4AYvA==
+x-forefront-antispam-report: 
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR04MB9498.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(39860400002)(376002)(346002)(136003)(230922051799003)(64100799003)(186009)(451199024)(1800799012)(55016003)(83380400001)(921011)(41300700001)(76116006)(33656002)(86362001)(38070700009)(122000001)(38100700002)(26005)(6506007)(9686003)(7696005)(2906002)(66556008)(66476007)(66446008)(64756008)(110136005)(316002)(478600001)(66946007)(71200400001)(5660300002)(44832011)(8936002)(8676002)(7416002)(4744005)(52536014);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: 
+ =?utf-8?B?REs1NkVhdmhlVUVKamNZQWwzRjZtZlRvcHFrVE5mL1dKS3ZLTHBZNFQwakVZ?=
+ =?utf-8?B?RldkeXhRUVhNKzkxcm1wNzY1Qk04dHFDQlFDekdsK3pBTERqTWNGTTNPYjl5?=
+ =?utf-8?B?NnZ0bEFIb1ZlQitjcWs0V1AzekwrK2lqUkdtVkFjNk9jbU41RnQ3aW1ldUZa?=
+ =?utf-8?B?NGk5eWNkQVpGZStUeVJyNHdCYmcwT3loOGtlTTB4eEd5Q2VTakRoQWNYbUQ0?=
+ =?utf-8?B?OU1ldHM3MUNkNVFVeUlpSjhzcjFxWFNkVXVEeXZ6ZzBveDRsaW9aYUFwM3Qy?=
+ =?utf-8?B?RXZRNGo1dlRjRitTZ0svV21scFgvL1FPemF2WGtoRXlCTzJKQ3hjNWJHa2xx?=
+ =?utf-8?B?MU5STERlZXhFWEhsZnh6Q1VlRGxqUGpBZkJlNGhJRW5RK1JRVG4zTDBMTTJI?=
+ =?utf-8?B?V2ZDdkZQTE1tWXVwQ29Eb0hsKzV0b0xsUVRON2J0bzlYa1ZuWWIzZW1QMEV2?=
+ =?utf-8?B?aDR2RDdTYWxRWDEyOG1GVkNDL0NBbmtGaFhGWlpOUjRmR3ZYN2RpdnE5SXo2?=
+ =?utf-8?B?b3VOYndxRWpJU2xlSnNiQzU3WXJGcmRWT0o5bFl2RDVGY2s1RDc3Vm56MWRa?=
+ =?utf-8?B?andndy95UGFJTlNoS090NS9jYjV5a2R5UStJS2lGbWZJNjlkQjhVNWhHcW9O?=
+ =?utf-8?B?WXBaR2xBWXRHWGR3S1pFa2E3QmFoNTdmREtIT2IvelZUM29pQWcyYlcrWUx5?=
+ =?utf-8?B?S3dZTzhWUVVJTERHOUluQXVjOVdYaTlJenc5OC9IWlovZUtmcDhCcFQvR1Qw?=
+ =?utf-8?B?ZXltUzlDN2JGVDQ4WTdXNkMxd0V1YWdDeU5RWGJ5M21jN3RWL0RldW5BR0xT?=
+ =?utf-8?B?dFhaeGxVODFsV29uaUI3OVBKNEM0bnlVUXJzbnRZLzZPMjNaUnpxaWZQWDRy?=
+ =?utf-8?B?WmlmdUdaYWwvRDRWMHhKY0RHVkFXd1lCRjdlbFMybTZoamRsTXljVHB0eURR?=
+ =?utf-8?B?R2QzSlpnUTVzQmYwTUVpNmJpanFVb2F3VzFvQ3RGVFpBYm1ESFd6SVVvaEhT?=
+ =?utf-8?B?ZnlFSmZvNjFZVUFib25HS0dLK1lFaXRySlZWdllPWUszcTNyMm9Ud09KcENa?=
+ =?utf-8?B?Z1pPdGV5V05RRmtwdUV0Wmhab0h0Sk8xNHFmbTF4WnZNSFhIWk13VitjZUtv?=
+ =?utf-8?B?K08yd2FaU2V6bUwxanppOWl1dHg4RHB0M0FBRytoOFZBM2RGU1BGMGk2N0pI?=
+ =?utf-8?B?YzlDeTlZSUpzNWltaUNyM1JhdFZ2WDUxNmcrWTBsWmRCK1ZucVVzZ1d2VU5N?=
+ =?utf-8?B?T1pSKzRCZHRVand4ZDllZHc2K05MWEdzOVhrSFZJdXlKdUtUdGxLQjdGOXRB?=
+ =?utf-8?B?RDQ3bXdoZkRqQXV5WStLYUZCMWVleE1uUmtiV3dHLzd1ck5Vcy85RGhOa3p1?=
+ =?utf-8?B?OWNxQWlEWk9nV3E3VFQxMTMzK0JONUtPWkljTnpGdHNPMWpQa0E3Z1BoWW9i?=
+ =?utf-8?B?SFRaTUNDR0hqb0k2ejRRYjJORDNmbHFjZEd3enRZdGJmVFpzV1NTSFIrMTQx?=
+ =?utf-8?B?K0lRc0hETEZPNDZhemdsYlBYZVRRbElrV1NRTWR5N3piYnpVcis4S2t2K3RR?=
+ =?utf-8?B?YVNIbWNEUFc0QmdZZEhrZStEYzBjR1ZCTWhMdnhSTldCZUNUd2RwRzJBcWNP?=
+ =?utf-8?B?MHRBYkxqZkFkeUJNRllnUUlLVEhnWWtWOG8wcFVuMUhlejgzaVArYlhsNnZS?=
+ =?utf-8?B?WVNTRnBZc0tmRnBuSVdhNXZoSnR3bEJkN0Z4ZDFCUFFCMXZ5aTVRYjZBRlBv?=
+ =?utf-8?B?b2VBNldrc3RoY0tOR2Z2RE1UZE02OGRBY3FkbHZXQmlob2M3OUpnSW1sMWIy?=
+ =?utf-8?B?b0tNNFZJNzdGMTk5Y1dSM2RsUVAvcjBhUkRRaEowKy85dGZham1WOEZkL2NS?=
+ =?utf-8?B?cFc0VlAyckR6SlVJUjBjQnJ5Nm4wa3RNaXZCZkt5N0xBcSswNzNtd2RPR1Ro?=
+ =?utf-8?B?MW02U0twYnVVaENXNURmV1d0RHNDdE0xdWZiY1pOVC9laG5zNHNzSGdVTUNj?=
+ =?utf-8?B?V1dlZGNzSGpMeVV0N0diRW9HSW1zbmJaMnM2dWRuUC8zY1VLRzNLODBVWGV3?=
+ =?utf-8?B?dU5nRWdWTGltSmVZd2hjVjMyRWxQZkhSTVRLNVJBZDNGWW8vZm4vL3FRZzdq?=
+ =?utf-8?Q?l7Ak548xV1V2Rbmelvv5Cscjz?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: RPYVTDT4CZIHHGR4WLVHJ5JFUQXHAD5Z
-X-Message-ID-Hash: RPYVTDT4CZIHHGR4WLVHJ5JFUQXHAD5Z
-X-MailFrom: angelogioacchino.delregno@collabora.com
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DB9PR04MB9498.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 
+ bca4a025-7f43-46ff-672d-08dc12956c30
+X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Jan 2024 11:06:55.3813
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 
+ LIWRTMjTkZxD9vblG2e7w4OLVKKBF8apbp3EAIlVsBCgWJAXvng4hQFZM5OCQ1kFuv4pbpPY7ESK8wnmheXPgA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR04MB8426
+Message-ID-Hash: WXJPXQYS5SRF47G5FCCNIPUCUMKCF3JG
+X-Message-ID-Hash: WXJPXQYS5SRF47G5FCCNIPUCUMKCF3JG
+X-MailFrom: chancel.liu@nxp.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -100,7 +174,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RPYVTDT4CZIHHGR4WLVHJ5JFUQXHAD5Z/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UUCPIXEKGJVHCJJC77M65BAK4QZB7CTQ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -109,137 +183,20 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Simplify the probe function by switching error prints to return
-dev_err_probe(), lowering the lines count; while at it, also
-beautify some messages and change some others' level from warn
-to error.
-
-Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
----
- sound/soc/mediatek/mt8192/mt8192-afe-pcm.c | 65 ++++++++--------------
- 1 file changed, 22 insertions(+), 43 deletions(-)
-
-diff --git a/sound/soc/mediatek/mt8192/mt8192-afe-pcm.c b/sound/soc/mediatek/mt8192/mt8192-afe-pcm.c
-index 794419d16b01..7242e6a4625c 100644
---- a/sound/soc/mediatek/mt8192/mt8192-afe-pcm.c
-+++ b/sound/soc/mediatek/mt8192/mt8192-afe-pcm.c
-@@ -2205,17 +2205,12 @@ static int mt8192_afe_pcm_dev_probe(struct platform_device *pdev)
- 
- 	/* reset controller to reset audio regs before regmap cache */
- 	rstc = devm_reset_control_get_exclusive(dev, "audiosys");
--	if (IS_ERR(rstc)) {
--		ret = PTR_ERR(rstc);
--		dev_err(dev, "could not get audiosys reset:%d\n", ret);
--		return ret;
--	}
-+	if (IS_ERR(rstc))
-+		return dev_err_probe(dev, PTR_ERR(rstc), "could not get audiosys reset\n");
- 
- 	ret = reset_control_reset(rstc);
--	if (ret) {
--		dev_err(dev, "failed to trigger audio reset:%d\n", ret);
--		return ret;
--	}
-+	if (ret)
-+		return dev_err_probe(dev, ret, "failed to trigger audio reset\n");
- 
- 	ret = devm_pm_runtime_enable(&pdev->dev);
- 	if (ret)
-@@ -2223,25 +2218,21 @@ static int mt8192_afe_pcm_dev_probe(struct platform_device *pdev)
- 
- 	/* regmap init */
- 	afe->regmap = syscon_node_to_regmap(dev->parent->of_node);
--	if (IS_ERR(afe->regmap)) {
--		dev_err(dev, "could not get regmap from parent\n");
--		return PTR_ERR(afe->regmap);
--	}
-+	if (IS_ERR(afe->regmap))
-+		return dev_err_probe(dev, PTR_ERR(afe->regmap),
-+				     "could not get regmap from parent");
-+
- 	ret = regmap_attach_dev(dev, afe->regmap, &mt8192_afe_regmap_config);
--	if (ret) {
--		dev_warn(dev, "regmap_attach_dev fail, ret %d\n", ret);
--		return ret;
--	}
-+	if (ret)
-+		return dev_err_probe(dev, ret, "regmap_attach_dev fail\n");
- 
- 	/* enable clock for regcache get default value from hw */
- 	afe_priv->pm_runtime_bypass_reg_ctl = true;
- 	pm_runtime_get_sync(&pdev->dev);
- 
- 	ret = regmap_reinit_cache(afe->regmap, &mt8192_afe_regmap_config);
--	if (ret) {
--		dev_err(dev, "regmap_reinit_cache fail, ret %d\n", ret);
--		return ret;
--	}
-+	if (ret)
-+		return dev_err_probe(dev, ret, "regmap_reinit_cache fail\n");
- 
- 	pm_runtime_put_sync(&pdev->dev);
- 	afe_priv->pm_runtime_bypass_reg_ctl = false;
-@@ -2281,30 +2272,22 @@ static int mt8192_afe_pcm_dev_probe(struct platform_device *pdev)
- 
- 	ret = devm_request_irq(dev, irq_id, mt8192_afe_irq_handler,
- 			       IRQF_TRIGGER_NONE, "asys-isr", (void *)afe);
--	if (ret) {
--		dev_err(dev, "could not request_irq for Afe_ISR_Handle\n");
--		return ret;
--	}
-+	if (ret)
-+		return dev_err_probe(dev, ret, "could not request_irq for Afe_ISR_Handle\n");
- 
- 	/* init sub_dais */
- 	INIT_LIST_HEAD(&afe->sub_dais);
- 
- 	for (i = 0; i < ARRAY_SIZE(dai_register_cbs); i++) {
- 		ret = dai_register_cbs[i](afe);
--		if (ret) {
--			dev_warn(afe->dev, "dai register i %d fail, ret %d\n",
--				 i, ret);
--			return ret;
--		}
-+		if (ret)
-+			return dev_err_probe(afe->dev, ret, "dai %d register fail");
- 	}
- 
- 	/* init dai_driver and component_driver */
- 	ret = mtk_afe_combine_sub_dai(afe);
--	if (ret) {
--		dev_warn(afe->dev, "mtk_afe_combine_sub_dai fail, ret %d\n",
--			 ret);
--		return ret;
--	}
-+	if (ret)
-+		return dev_err_probe(afe->dev, ret, "mtk_afe_combine_sub_dai fail\n");
- 
- 	/* others */
- 	afe->mtk_afe_hardware = &mt8192_afe_hardware;
-@@ -2320,19 +2303,15 @@ static int mt8192_afe_pcm_dev_probe(struct platform_device *pdev)
- 	/* register platform */
- 	ret = devm_snd_soc_register_component(&pdev->dev,
- 					      &mt8192_afe_component, NULL, 0);
--	if (ret) {
--		dev_warn(dev, "err_platform\n");
--		return ret;
--	}
-+	if (ret)
-+		return dev_err_probe(dev, ret, "Couldn't register AFE component\n");
- 
- 	ret = devm_snd_soc_register_component(&pdev->dev,
- 					      &mt8192_afe_pcm_component,
- 					      afe->dai_drivers,
- 					      afe->num_dai_drivers);
--	if (ret) {
--		dev_warn(dev, "err_dai_component\n");
--		return ret;
--	}
-+	if (ret)
-+		return dev_err_probe(dev, ret, "Couldn't register AFE-PCM component\n");
- 
- 	return 0;
- }
--- 
-2.43.0
-
+PiA+IEFkZCBjb21wYXRpYmxlIHN0cmluZyAiZnNsLGlteDk1LXNhaSIgZm9yIGkuTVg5NSBwbGF0
+Zm9ybS4NCj4gPg0KPiA+IFNpZ25lZC1vZmYtYnk6IENoYW5jZWwgTGl1IDxjaGFuY2VsLmxpdUBu
+eHAuY29tPg0KPiA+IC0tLQ0KPiA+ICBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mv
+c291bmQvZnNsLHNhaS55YW1sIHwgMSArDQo+ID4gIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlv
+bigrKQ0KPiA+DQo+ID4gZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5k
+aW5ncy9zb3VuZC9mc2wsc2FpLnlhbWwNCj4gYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmlu
+ZGluZ3Mvc291bmQvZnNsLHNhaS55YW1sDQo+ID4gaW5kZXggMDg4YzI2YjAwMWNjLi5mM2Q5MTBh
+YTJkYzYgMTAwNjQ0DQo+ID4gLS0tIGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdz
+L3NvdW5kL2ZzbCxzYWkueWFtbA0KPiA+ICsrKyBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9i
+aW5kaW5ncy9zb3VuZC9mc2wsc2FpLnlhbWwNCj4gPiBAQCAtNDAsNiArNDAsNyBAQCBwcm9wZXJ0
+aWVzOg0KPiA+ICAgICAgICAgICAgICAgIC0gZnNsLGlteDh1bHAtc2FpDQo+ID4gICAgICAgICAg
+ICAgICAgLSBmc2wsaW14OTMtc2FpDQo+ID4gICAgICAgICAgICAgICAgLSBmc2wsdmY2MTAtc2Fp
+DQo+ID4gKyAgICAgICAgICAgICAgLSBmc2wsaW14OTUtc2FpDQo+IA0KPiBEb24ndCBicmVhayB0
+aGUgb3JkZXIsIHBsZWFzZS4NCj4gDQo+IEJlc3QgcmVnYXJkcywNCj4gS3J6eXN6dG9mDQoNClNv
+cnJ5IGJ1dCBJIGRvbid0IHVuZGVyc3RhbmQgd2hhdCdzIHRoZSAib3JkZXIiIHJlZmVyIHRvLiBD
+b3VsZCB5b3UgcGxlYXNlDQpleHBsYWluIGl0IHRvIG1lPw0KDQpSZWdhcmRzLCANCkNoYW5jZWwg
+TGl1DQoNCg==
