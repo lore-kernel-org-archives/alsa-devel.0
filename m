@@ -4,112 +4,116 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0D214C47077
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Jan 2024 09:29:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6103BC4706C
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Jan 2024 09:29:54 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3E7B6205;
-	Tue, 16 Jan 2024 10:29:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3E7B6205
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9452E202;
+	Tue, 16 Jan 2024 10:29:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9452E202
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1705397363;
-	bh=h/99NiF4A2BrTs/f1i+EHbcfLqSPcc4NdjFBKleOmWo=;
-	h=Date:In-Reply-To:References:Subject:From:To:Cc:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=b2jAKEjakP2DDamgPjIDhjIUFH4AxhiuWjkUKMC5Lhg2RL4U4B6KqP6bYJ4ZYgkKy
-	 8004f6z06CcoVqKybDIXsxs4L+JacKKdwN7Cn6ZfLubwHyHav+IQdrLQ4gcobKGRcc
-	 0kFZz5Z/SgyriRBhJHwDdoEQVU6MNGJmBMdalKqE=
+	s=default; t=1705397392;
+	bh=pH7EFpO4Hsr8Z989lCT3NDlGF3y5dW2FMDPt7uruCZ8=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=CjlwjDnEeGmPooJL9puETa2dfQZN7Z1q2RXOuP5QliAdpxXs3uDDSRaG2Wh0I/f/x
+	 ytpXZjTHkjoG8kCuAeYgQePthkIdgAszlXMBbG9IXuQPMwGTaxyvTR51JBoaMu8Vq1
+	 +euGH1qJbteXxx5hKmTpaOXaiw1M7fjhibahRjpA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B081CF805D9; Tue, 16 Jan 2024 10:28:35 +0100 (CET)
+	id 95143F805EF; Tue, 16 Jan 2024 10:28:37 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9613EF8057F;
-	Tue, 16 Jan 2024 10:28:33 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C93B1F805F0;
+	Tue, 16 Jan 2024 10:28:36 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6617DF80254; Thu, 11 Jan 2024 14:33:32 +0100 (CET)
-Received: from mail-wr1-x449.google.com (mail-wr1-x449.google.com
- [IPv6:2a00:1450:4864:20::449])
+	id CD72CF80254; Fri, 12 Jan 2024 17:35:26 +0100 (CET)
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com
+ [IPv6:2a00:1450:4864:20::432])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 76C7AF8003A
-	for <alsa-devel@alsa-project.org>; Thu, 11 Jan 2024 14:33:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 76C7AF8003A
+	by alsa1.perex.cz (Postfix) with ESMTPS id 89CA5F8003A
+	for <alsa-devel@alsa-project.org>; Fri, 12 Jan 2024 17:35:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 89CA5F8003A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=google.com header.i=@google.com header.a=rsa-sha256
- header.s=20230601 header.b=1jFVWRqE
-Received: by mail-wr1-x449.google.com with SMTP id
- ffacd0b85a97d-33768a5f55cso3175839f8f.1
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20230601 header.b=llQIOK9l
+Received: by mail-wr1-x432.google.com with SMTP id
+ ffacd0b85a97d-33765009941so5299571f8f.3
         for <alsa-devel@alsa-project.org>;
- Thu, 11 Jan 2024 05:33:23 -0800 (PST)
+ Fri, 12 Jan 2024 08:35:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1704980003; x=1705584803;
+        d=gmail.com; s=20230601; t=1705077316; x=1705682116;
  darn=alsa-project.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=h/99NiF4A2BrTs/f1i+EHbcfLqSPcc4NdjFBKleOmWo=;
-        b=1jFVWRqEQ4VemK66LM18/IbJUuZuGndhZ+bWR9bGWjxSqiRnmJfN1v4JT42OkL/pQE
-         c7ePLo56lb0AZpH+TzOFdBXWs78XqNKepzts6prUJW31/BS0IFah7E5jyAa2p05n/hMr
-         aARLoZ9M8kb9QtA9XkxcqAaK9zoFyJaa7EizPYiPV4w6iI092GrkCf9cGP3qDbXyQ55c
-         FXlUYamp8QS0D8/N6lcoFdvr8snzRbzxl8+ABr5AtLhdG1rmOVKRJLllHgrM+r2vYfmf
-         SpJAsAb/1xXTcNK9PerRjaHVP9l3R+y5h4Ny8atXbmkCK66zYc4fLlACqZ+B8IF/J901
-         6OMQ==
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=LlIMTu749xK+G2nXubgKLsCYahSVNlgmIkXmTS0PwKs=;
+        b=llQIOK9l3MyNSQdYeuZ8R0LrmtYylsBdiNEwmZIiU2HRiOqR+x41yBQxkpm7pudeHo
+         nzTbmxe8nLkuofRDH9pXoHuVrWoXq0QtweoBrSjbJ3vU554oYdYObqnHa7J2b5Xrb5cZ
+         8XqOQGbAOeiQjYMM8MZrF31Bl3xgRyWafk5KpUdX0Cmb1gx7AUZsX1uGN29R4oAIcg2B
+         ZljPZtnatzJV/uF3w8MPs1SuPg4aaJmw7xKBRp0ixyWPDG84zMO9+I4epLkSLumXfPhU
+         b/5QqwPelEJq1yrwbnwFeq5MViLOtV0QHs59XFVj/jj3lNvl0H/m1xBaUhRP2m3ihu0R
+         yqPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704980003; x=1705584803;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=h/99NiF4A2BrTs/f1i+EHbcfLqSPcc4NdjFBKleOmWo=;
-        b=A/WceEvmrj/auOboy/UWQp9HLtiygZ28P/vQKUSRG1H+rJat8aKLZeTJndbVfPr43u
-         c6S5DbkmjA+Wh2CcPSFHJHA1tSK1KPUeq9C5X8HFTaRjS/nvk+h8A68W2AIHRHYy4W3B
-         mnH+SpD11By61x0iUk/ZIhIY7pj9BVxoe3m5pxEm3zT9bJPxOIXznaEaAj0JueLZL9i1
-         KkW0ztQIRr00PHVzKUv9CMJ+IsYH1m1mO/y0+1dKdi3DNWKae28haUyq83XZRJ+e0zhc
-         7+wSG8WlAHc+bG79uFjtS+tigrrT5Wq6t+3GcKuK0CwFZ6ctMchmWMYIAktZj84iGOWc
-         3A1w==
-X-Gm-Message-State: AOJu0YwT0Uc83+bImigwayOaexRQNbQiES26VXXRbP+ufQD2Q0gRbD95
-	kE9rgq2DxvAG4OhuqkUxfSfQDUBq1MCnKJdm+L8=
+        d=1e100.net; s=20230601; t=1705077316; x=1705682116;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=LlIMTu749xK+G2nXubgKLsCYahSVNlgmIkXmTS0PwKs=;
+        b=YX4XHDRCzNWqqAPoQIyeAEI+F4j+1MQLAKJtkDZPpS/ESLfjp/Dpqdic053EESWfQN
+         GLxri1t8uZ9vMfizVFGZYh91EYR8NbQy2nhxqqnVischWaJ8c7gJicyIILMQI671NXqB
+         h+ZARKPThMlHbXzwZcBArjdLosrQVYfe+Aedj4S1748PByRuLNd6eZXMB+Z0RQFyopET
+         1KoelAwmsTeGg15YEXtSMucI8egLtUCF8mGcRWujAZVkylTOEisbJqTkFs3zM2u2t1w7
+         V6rsLowxeRmwSnbL8d38+wU8PBZBo9rE6oT3t2qowFt72ABjaglmZL6fyCOx1M4J5+CP
+         Suyw==
+X-Gm-Message-State: AOJu0YzACA9FRNH/2gnQUWF+yTU7NNrUQd+MPXYpts3tQB7yvis3heP7
+	eHuejiKMZnlr/P0qtVR5sG8=
 X-Google-Smtp-Source: 
- AGHT+IFsuF9J9DQ1b9o9M0B0uCNQ4u2/hpHiLtI0CB158k+7cM7TbsSjNtoX1gjNCAU74IrCTBCB2sPeakzF
-X-Received: from dextero.c.googlers.com
- ([fda3:e722:ac3:cc00:28:9cb1:c0a8:364e])
- (user=dextero job=sendgmr) by 2002:a05:600c:350b:b0:40e:59e4:6563 with SMTP
- id h11-20020a05600c350b00b0040e59e46563mr9699wmq.0.1704980002699; Thu, 11 Jan
- 2024 05:33:22 -0800 (PST)
-Date: Thu, 11 Jan 2024 13:33:20 +0000
-In-Reply-To: <20230209115916.917569-1-aiswarya.cyriac@opensynergy.com>
-Mime-Version: 1.0
-References: <20230209115916.917569-1-aiswarya.cyriac@opensynergy.com>
-X-Mailer: git-send-email 2.43.0.275.g3460e3d667-goog
-Message-ID: <20240111133320.2717702-1-dextero@google.com>
-Subject: Re: [RESEND PATCH 0/1] ALSA: virtio: add support for audio controls
-From: Marcin Radomski <dextero@google.com>
-To: aiswarya.cyriac@opensynergy.com
-Cc: alsa-devel@alsa-project.org, anton.yakovlev@opensynergy.com,
-	jasowang@redhat.com, linux-kernel@vger.kernel.org, mst@redhat.com,
-	perex@perex.cz, tiwai@suse.com, virtio-dev@lists.oasis-open.org,
-	virtualization@lists.linux-foundation.org, vill@google.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-MailFrom: 
- 3Iu6fZQcKCrEUVokVifXffXcV.TfdRcjR-UVmVcRcjR-gifaVTk.fiX@flex--dextero.bounces.google.com
+ AGHT+IHIaYT4sw8rtu3Wb5cOS37Igtd1/bCisVWU7eVb4vG7lRY3sMPZwc5lgYivI8nUeoVlHEFP9g==
+X-Received: by 2002:a05:6000:11d1:b0:333:2fd2:5d1a with SMTP id
+ i17-20020a05600011d100b003332fd25d1amr1025646wrx.76.1705077315961;
+        Fri, 12 Jan 2024 08:35:15 -0800 (PST)
+Received: from kenzo-linux-laptop.bicolor-pike.ts.net
+ (154.red-88-26-51.staticip.rima-tde.net. [88.26.51.154])
+        by smtp.gmail.com with ESMTPSA id
+ h18-20020adf9cd2000000b00336a1f6ce7csm4298766wre.19.2024.01.12.08.35.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Jan 2024 08:35:15 -0800 (PST)
+From: Kenzo Gomez <kenzo.sgomez@gmail.com>
+To: sbinding@opensource.cirrus.com
+Cc: Kenzo Gomez <kenzo.sgomez@gmail.com>,
+	James Schulman <james.schulman@cirrus.com>,
+	David Rhodes <david.rhodes@cirrus.com>,
+	Richard Fitzgerald <rf@opensource.cirrus.com>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	alsa-devel@alsa-project.org,
+	patches@opensource.cirrus.com,
+	linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] ALSA: hda: cs35l41: Support additional ASUS Zenbook UX3402VA
+Date: Fri, 12 Jan 2024 17:32:15 +0100
+Message-ID: <20240112163239.59743-1-kenzo.sgomez@gmail.com>
+X-Mailer: git-send-email 2.43.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-MailFrom: kenzo.sgomez@gmail.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: PN26PEQOJX2TMM2F4NUQBI36WIYZIELN
-X-Message-ID-Hash: PN26PEQOJX2TMM2F4NUQBI36WIYZIELN
-X-Mailman-Approved-At: Tue, 16 Jan 2024 09:26:33 +0000
+Message-ID-Hash: CRJFCY4HTYN3RRBETS3NCC6L3C2QUGNA
+X-Message-ID-Hash: CRJFCY4HTYN3RRBETS3NCC6L3C2QUGNA
+X-Mailman-Approved-At: Tue, 16 Jan 2024 09:26:34 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PN26PEQOJX2TMM2F4NUQBI36WIYZIELN/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CRJFCY4HTYN3RRBETS3NCC6L3C2QUGNA/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -118,20 +122,33 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi Aiswarya,
+Add new model entry into configuration table.
 
-I was looking into VirtIO audio controls support in Linux and came across t=
-his patch series, which seems to be marked "archived" on patchwork [0]. I w=
-ould love to be able to use this with mainline Linux. I'm wondering about t=
-he status of this series - is the feature still under development, or are t=
-here some concerns that need to be addressed?
+Signed-off-by: Kenzo Gomez <kenzo.sgomez@gmail.com>
+---
+ sound/pci/hda/cs35l41_hda_property.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-I'd be more than happy to help with testing.
+diff --git a/sound/pci/hda/cs35l41_hda_property.c b/sound/pci/hda/cs35l41_hda_property.c
+index c1afb721b4c6..adfb31a6bf1e 100644
+--- a/sound/pci/hda/cs35l41_hda_property.c
++++ b/sound/pci/hda/cs35l41_hda_property.c
+@@ -67,6 +67,7 @@ static const struct cs35l41_config cs35l41_config_table[] = {
+ 	{ "10431D1F", I2C, 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4500, 24 },
+ 	{ "10431DA2", SPI, 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 0, 0, 0 },
+ 	{ "10431E02", SPI, 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 0, 0, 0 },
++	{ "104316A3", SPI, 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 0, 0, 0 },
+ 	{ "10431EE2", I2C, 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, -1, -1, 0, 0, 0 },
+ 	{ "10431F12", I2C, 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4500, 24 },
+ 	{ "10431F1F", SPI, 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, -1, 0, 0, 0, 0 },
+@@ -371,6 +372,7 @@ static const struct cs35l41_prop_model cs35l41_prop_model_table[] = {
+ 	{ "CSC3551", "10431D1F", generic_dsd_config },
+ 	{ "CSC3551", "10431DA2", generic_dsd_config },
+ 	{ "CSC3551", "10431E02", generic_dsd_config },
++	{ "CSC3551", "104316A3", generic_dsd_config },
+ 	{ "CSC3551", "10431EE2", generic_dsd_config },
+ 	{ "CSC3551", "10431F12", generic_dsd_config },
+ 	{ "CSC3551", "10431F1F", generic_dsd_config },
+-- 
+2.43.0
 
-Thanks for any insights or updates you can offer.
-
-Regards,
-Marcin Radomski
-
-[0] https://patchwork.kernel.org/project/alsa-devel/patch/20230209115916.91=
-7569-2-aiswarya.cyriac@opensynergy.com/
