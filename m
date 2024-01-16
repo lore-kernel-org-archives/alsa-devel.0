@@ -4,87 +4,102 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 965EEC47077
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Jan 2024 07:16:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 15360C4706C
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Jan 2024 08:03:24 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 696C8741;
-	Tue, 16 Jan 2024 08:16:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 696C8741
+	by alsa0.perex.cz (Postfix) with ESMTPS id CA5B27F4;
+	Tue, 16 Jan 2024 09:03:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CA5B27F4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1705389404;
-	bh=677zo72GhiNfg33o/lJ5avDqp4IGWnVQ/Y+4/rVlINI=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	s=default; t=1705392201;
+	bh=vGMZ6ufj6EgiiJI7Gflk/1+nT3+3RdY8bqAJA4zOo70=;
+	h=From:To:CC:Subject:Date:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=guHYdaTqSs4z0Kuw1c0B506Vv8cOtHgd7uO/67tsB51dHfXPtEfw9tMAQMz4zjXnY
-	 NRafk48f1Y0YubnAVPw/Sy5gy3lSBM9UW4i7gJEAmyTsc9fgu6fv+jUY9GvuErqUP4
-	 Cl45UHFjSUr033l3GvQkuxN4y2J9faC/brwP5g0M=
+	b=B+736EUpFEO1Sd13O2uzQELv5hj7/TUZuunVLSG8dnuSF6qpBcIkx4jSCose/gjci
+	 yW/B9kcUZM9oyt15C7DCvL3Q6l5+EFWl2QflryxhFz15fOPfrqtlPLCaQKc5ocJLk7
+	 kKZ7b4UlgMfVL2lNORZv1Iql12kX76/hmz5wKWIE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E397BF80571; Tue, 16 Jan 2024 08:16:13 +0100 (CET)
+	id 56E69F80587; Tue, 16 Jan 2024 09:02:50 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id AA4A5F80579;
-	Tue, 16 Jan 2024 08:16:12 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 87A0CF80563;
+	Tue, 16 Jan 2024 09:02:49 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3C041F802E8; Tue, 16 Jan 2024 08:16:01 +0100 (CET)
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+	id 033EDF80236; Tue, 16 Jan 2024 09:00:45 +0100 (CET)
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 3AEC6F802BE
-	for <alsa-devel@alsa-project.org>; Tue, 16 Jan 2024 08:15:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3AEC6F802BE
+	by alsa1.perex.cz (Postfix) with ESMTPS id 213A5F8014B
+	for <alsa-devel@alsa-project.org>; Tue, 16 Jan 2024 09:00:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 213A5F8014B
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=iw84nf4g
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705389343; x=1736925343;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=677zo72GhiNfg33o/lJ5avDqp4IGWnVQ/Y+4/rVlINI=;
-  b=iw84nf4ggtcAVBf7QPSacaBhU4Kw8FPk+inpgKEeNFL7jwO7PN50JTz/
-   MX9vxmaR5uRVrny3AgJAPZC6NPW5cKMAVwWQ7XI7OXFDL9TbmuRctLsfM
-   CLuYqZefvs5sbZ3nS4xtzt6OW9QF32VcuFNjyMLTk7UFXtYCvwN/ccGWP
-   Co9Rcn40ENmO2B9+Ba2psCRVEpXguFPCA9A7u99OGSK+pPWweX0cxZR3/
-   dEpscOS9Mkwx0v7TODb2cdwnO7mRH3bWG0A8YIw+TSTOZp/buHXgEx37y
-   QJcK8wNFKyofAa9IIrJT+86KeF3N1C8bh1XDy8ylSK1N6SvHiisTIh0LD
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10954"; a="390228397"
-X-IronPort-AV: E=Sophos;i="6.04,198,1695711600";
-   d="scan'208";a="390228397"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Jan 2024 23:15:39 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10954"; a="927356257"
-X-IronPort-AV: E=Sophos;i="6.04,198,1695711600";
-   d="scan'208";a="927356257"
-Received: from igranath-mobl.ger.corp.intel.com (HELO [10.249.38.184])
- ([10.249.38.184])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Jan 2024 23:15:34 -0800
-Message-ID: <5b3d2dcc-1300-49cf-8946-28ad0394cb51@linux.intel.com>
-Date: Mon, 15 Jan 2024 10:33:36 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5] ASoc: tas2783: Add tas2783 codec driver
-To: Shenghao Ding <shenghao-ding@ti.com>, broonie@kernel.org
-Cc: andriy.shevchenko@linux.intel.com, lgirdwood@gmail.com, perex@perex.cz,
- 13916275206@139.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, liam.r.girdwood@intel.com,
- mengdong.lin@intel.com, yung-chuan.liao@linux.intel.com, baojun.xu@ti.com,
- kevin-lu@ti.com, peeyush@ti.com, navada@ti.com, tiwai@suse.de
+	dkim=pass (1024-bit key,
+ unprotected) header.d=ti.com header.i=@ti.com header.a=rsa-sha256
+ header.s=ti-com-17Q1 header.b=m0O54XJY
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40G80QLl115573;
+	Tue, 16 Jan 2024 02:00:26 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1705392026;
+	bh=vGMZ6ufj6EgiiJI7Gflk/1+nT3+3RdY8bqAJA4zOo70=;
+	h=From:To:CC:Subject:Date:References:In-Reply-To;
+	b=m0O54XJY51em6QKBp58gc/brm5gh3ozQlvC3bVc/8wbrCDQsLeSiqfAqfVd1teJij
+	 PY1My/dnTXG3qtNHrliV5G3CPiQZrtmyxW3Dw12y+8RLyf6tWmdxacD4yQayOk3zsa
+	 yLab/F3tNB0Z0laQ2MaE+MDgdMN1rEe36FURTbM8=
+Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40G80Q7e096064
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Tue, 16 Jan 2024 02:00:26 -0600
+Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 16
+ Jan 2024 02:00:26 -0600
+Received: from DLEE101.ent.ti.com ([fe80::91ee:60bc:bfb7:851c]) by
+ DLEE101.ent.ti.com ([fe80::91ee:60bc:bfb7:851c%18]) with mapi id
+ 15.01.2507.023; Tue, 16 Jan 2024 02:00:26 -0600
+From: "Ding, Shenghao" <shenghao-ding@ti.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+CC: "andriy.shevchenko@linux.intel.com" <andriy.shevchenko@linux.intel.com>,
+        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "perex@perex.cz"
+	<perex@perex.cz>,
+        "13916275206@139.com" <13916275206@139.com>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "liam.r.girdwood@intel.com" <liam.r.girdwood@intel.com>,
+        "mengdong.lin@intel.com" <mengdong.lin@intel.com>,
+        "yung-chuan.liao@linux.intel.com" <yung-chuan.liao@linux.intel.com>,
+        "Xu,
+ Baojun" <baojun.xu@ti.com>, "Lu, Kevin" <kevin-lu@ti.com>,
+        "Gupta, Peeyush"
+	<peeyush@ti.com>,
+        "Navada Kanyana, Mukund" <navada@ti.com>,
+        "tiwai@suse.de"
+	<tiwai@suse.de>,
+        "broonie@kernel.org" <broonie@kernel.org>
+Subject: RE: [EXTERNAL] Re: [PATCH v5] ASoc: tas2783: Add tas2783 codec driver
+Thread-Topic: [EXTERNAL] Re: [PATCH v5] ASoc: tas2783: Add tas2783 codec
+ driver
+Thread-Index: AQHaRhahFjQd/H5lZEerulwaf5oPkLDbBDsAgAETrEA=
+Date: Tue, 16 Jan 2024 08:00:26 +0000
+Message-ID: <db5696e6691344a8bce3ac37431decac@ti.com>
 References: <20240113114944.1043-1-shenghao-ding@ti.com>
+ <5b3d2dcc-1300-49cf-8946-28ad0394cb51@linux.intel.com>
+In-Reply-To: <5b3d2dcc-1300-49cf-8946-28ad0394cb51@linux.intel.com>
+Accept-Language: en-US, zh-CN
 Content-Language: en-US
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20240113114944.1043-1-shenghao-ding@ti.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: JXKTK4FG4G5IT4DHFP2HINL5FBGYCGK2
-X-Message-ID-Hash: JXKTK4FG4G5IT4DHFP2HINL5FBGYCGK2
-X-MailFrom: pierre-louis.bossart@linux.intel.com
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.85.14.94]
+x-exclaimer-md-config: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Message-ID-Hash: K3NBUGEHOGQC7S6LNLC7XLVLYWRBQA5U
+X-Message-ID-Hash: K3NBUGEHOGQC7S6LNLC7XLVLYWRBQA5U
+X-MailFrom: shenghao-ding@ti.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -95,7 +110,8 @@ X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: <>
+Archived-At: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/K3NBUGEHOGQC7S6LNLC7XLVLYWRBQA5U/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -104,306 +120,188 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-This version is much better than previous ones, but can be improved
-further, specifically on the identification of firmware based on the
-unique_id and pm_runtime. See additional nit-picks and suggestions below.
-
-
-> ---
-> Change in v5:
->  - simplify tasdevice_set_sdw_stream
->  - fixed some Linux coding style
->  - fixed the spelling mistakes
->  - Select left/right channel based on unique id
->  - a longer description has been added
->  - remove unused crc8 in KCONFIG
-
-Don't you need a 'select CRC32' though? ...
-
-Maybe it's already set by other Kconfigs.
-
-
-> +/* Update the calibrate data, including speaker impedance, f0, etc, into algo.
-> + * Calibrate data is done by manufacturer in the factory. These data are used
-> + * by Algo for calucating the speaker temperature, speaker membrance excursion
-> + * and f0 in real time during playback.
-> + * In case of no or valid calibrated data, dsp will still works with default
-> + * calibrated data inside algo.
-
-suggested edits:
-
-Load the calibration data, including speaker impedance, f0, etc.
-Calibration is done by the manufacturer in the factory. The calibration
-data are used by the algorithm  for calculating the speaker temperature,
-speaker membrance excursion and f0 in real time during playback.
-The DSP will work with default data values if calibrated data are
-missing or are invalid.
-
-
-> +static int tasdevice_sdw_hw_params(struct snd_pcm_substream *substream,
-> +	struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
-> +{
-> +	struct snd_soc_component *component = dai->component;
-> +	struct tasdevice_priv *tas_priv =
-> +		snd_soc_component_get_drvdata(component);
-> +	struct sdw_stream_config stream_config = {0};
-> +	struct sdw_port_config port_config = {0};
-> +	struct sdw_stream_runtime *sdw_stream;
-> +	int ret;
-> +
-> +	dev_dbg(dai->dev, "%s %s", __func__, dai->name);
-> +	sdw_stream = snd_soc_dai_get_dma_data(dai, substream);
-> +
-> +	if (!sdw_stream)
-> +		return -EINVAL;
-> +
-> +	if (!tas_priv->sdw_peripheral)
-> +		return -EINVAL;
-> +
-> +	/* SoundWire specific configuration */
-> +	snd_sdw_params_to_config(substream, params,
-> +		&stream_config, &port_config);
-> +
-> +	/* port 1 for playback */
-> +	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-> +		port_config.num = 1;
-> +	else
-> +		port_config.num = 2;
-> +
-> +	ret = sdw_stream_add_slave(tas_priv->sdw_peripheral,
-> +		&stream_config, &port_config, 1, sdw_stream);
-> +	if (ret) {
-> +		dev_err(dai->dev, "Unable to configure port\n");
-> +		return ret;
-> +	}
-> +
-> +	dev_dbg(dai->dev, "%s fomrat: %i rate: %i\n", __func__,
-
-typo: format
-
-> +		params_format(params), params_rate(params));
-> +
-> +	return 0;
-> +}
-> +
-
-> +static int tasdevice_mute(struct snd_soc_dai *dai, int mute,
-> +	int direction)
-> +{
-> +	struct snd_soc_component *component = dai->component;
-> +	struct tasdevice_priv *tas_dev =
-> +		snd_soc_component_get_drvdata(component);
-> +	struct regmap *map = tas_dev->regmap;
-> +	int ret;
-> +
-> +	dev_dbg(tas_dev->dev, "Mute or unmute %d.\n", mute);
-> +
-> +	if (mute) {
-> +		/* Echo channel can't be shutdown while tas2783 must keep
-> +		 * working state while playback is on.
-
-Consider rewording that comment, two 'while' in the same sentence make
-it hard to parse.
-
-> +		 */
-> +		if (direction == SNDRV_PCM_STREAM_CAPTURE
-> +			&& tas_dev->pstream == true)
-> +			return 0;
-> +		/* FU23 mute (0x40400108) */
-> +		ret = regmap_write(map,
-> +			SDW_SDCA_CTL(TAS2783_FUNC_TYPE_SMART_AMP,
-> +			TAS2783_SDCA_ENT_FU23, TAS2783_SDCA_CTL_FU_MUTE, 0),
-> +			1);
-> +		ret |= regmap_write(map, TASDEVICE_REG(0, 0, 0x02), 0x1a);
-
-ORin error codecs is not quite right
-
-> +		tas_dev->pstream = false;
-> +	} else {
-> +		/* FU23 Unmute, 0x40400108. */
-> +		ret = regmap_write(map,
-> +			SDW_SDCA_CTL(TAS2783_FUNC_TYPE_SMART_AMP,
-> +			TAS2783_SDCA_ENT_FU23, TAS2783_SDCA_CTL_FU_MUTE, 0),
-> +			0);
-> +		ret |= regmap_write(map, TASDEVICE_REG(0, 0, 0x02), 0x0);
-> +		if (direction == SNDRV_PCM_STREAM_PLAYBACK)
-> +			tas_dev->pstream = true;
-> +	}
-> +
-> +	if (ret)
-> +		dev_err(tas_dev->dev, "Mute or unmute %d failed %d.\n",
-> +			mute, ret);
-> +
-> +	return ret;
-> +}
-> +
-
-> +static int tasdevice_init(struct tasdevice_priv *tas_dev)
-> +{
-> +	int ret;
-> +
-> +	dev_set_drvdata(tas_dev->dev, tas_dev);
-> +
-> +	mutex_init(&tas_dev->codec_lock);
-> +	ret = devm_snd_soc_register_component(tas_dev->dev,
-> +		&soc_codec_driver_tasdevice,
-> +		tasdevice_dai_driver, ARRAY_SIZE(tasdevice_dai_driver));
-> +	if (ret) {
-> +		dev_err(tas_dev->dev, "%s: codec register error:%d.\n",
-> +			__func__, ret);
-> +	}
-> +
-> +	tas2783_reset(tas_dev);
-> +	/* tas2783-8[9,...,f].bin was copied into /lib/firmware/ */
-
-You need to add a comment to explain what those files contain, it's not
-clear at all if they are just 'firmware' or if they contain tables.
-
-> +	scnprintf(tas_dev->rca_binaryname, 64, "tas2783-%01x.bin",
-> +		tas_dev->sdw_peripheral->id.unique_id);
-
-And more specifically the use of the unique_id is problematic since it's
-only relevant in the context of one link. If you have two amps on
-separate links, the unique_id is irrelevant.
-
-> +
-> +	ret = request_firmware_nowait(THIS_MODULE, FW_ACTION_UEVENT,
-> +		tas_dev->rca_binaryname, tas_dev->dev, GFP_KERNEL,
-> +		tas_dev, tasdevice_rca_ready);
-> +	if (ret) {
-> +		dev_dbg(tas_dev->dev,
-> +		"%s: request_firmware %x open status: %d.\n",
-> +		__func__, tas_dev->sdw_peripheral->id.unique_id, ret);
-> +	}
-> +
-> +	/* set autosuspend parameters */
-> +	pm_runtime_set_autosuspend_delay(tas_dev->dev, 3000);
-> +	pm_runtime_use_autosuspend(tas_dev->dev);
-> +
-> +	/* make sure the device does not suspend immediately */
-> +	pm_runtime_mark_last_busy(tas_dev->dev);
-> +
-> +	pm_runtime_enable(tas_dev->dev);
-
-You are handling pm_runtime here...
-
-> +
-> +	dev_dbg(tas_dev->dev, "%s was called for TAS2783.\n",  __func__);
-> +
-> +	return ret;
-> +}
-> +
-> +static int tasdevice_read_prop(struct sdw_slave *slave)
-> +{
-> +	struct sdw_slave_prop *prop = &slave->prop;
-> +	int nval;
-> +	int i, j;
-> +	u32 bit;
-> +	unsigned long addr;
-> +	struct sdw_dpn_prop *dpn;
-> +
-> +	prop->scp_int1_mask =
-> +		SDW_SCP_INT1_BUS_CLASH | SDW_SCP_INT1_PARITY;
-> +	prop->quirks = SDW_SLAVE_QUIRKS_INVALID_INITIAL_PARITY;
-> +
-> +	prop->paging_support = true;
-> +
-> +	/* first we need to allocate memory for set bits in port lists */
-> +	prop->source_ports = BIT(2); /* BITMAP: 00000100 */
-> +	prop->sink_ports = BIT(1); /* BITMAP:  00000010 */
-> +
-> +	nval = hweight32(prop->source_ports);
-> +	prop->src_dpn_prop = devm_kcalloc(&slave->dev, nval,
-> +		sizeof(*prop->src_dpn_prop), GFP_KERNEL);
-> +	if (!prop->src_dpn_prop)
-> +		return -ENOMEM;
-> +
-> +	i = 0;
-> +	dpn = prop->src_dpn_prop;
-> +	addr = prop->source_ports;
-> +	for_each_set_bit(bit, &addr, 32) {
-> +		dpn[i].num = bit;
-> +		dpn[i].type = SDW_DPN_FULL;
-> +		dpn[i].simple_ch_prep_sm = true;
-> +		dpn[i].ch_prep_timeout = 10;
-> +		i++;
-> +	}
-> +
-> +	/* do this again for sink now */
-> +	nval = hweight32(prop->sink_ports);
-> +	prop->sink_dpn_prop = devm_kcalloc(&slave->dev, nval,
-> +		sizeof(*prop->sink_dpn_prop), GFP_KERNEL);
-> +	if (!prop->sink_dpn_prop)
-> +		return -ENOMEM;
-> +
-> +	j = 0;
-> +	dpn = prop->sink_dpn_prop;
-> +	addr = prop->sink_ports;
-> +	for_each_set_bit(bit, &addr, 32) {
-> +		dpn[j].num = bit;
-> +		dpn[j].type = SDW_DPN_FULL;
-> +		dpn[j].simple_ch_prep_sm = true;
-> +		dpn[j].ch_prep_timeout = 10;
-> +		j++;
-> +	}
-> +
-> +	/* set the timeout values */
-> +	prop->clk_stop_timeout = 20;
-> +
-> +	return 0;
-> +}
-> +
-> +static int tasdevice_io_init(struct device *dev, struct sdw_slave *slave)
-> +{
-> +	struct tasdevice_priv *tas_priv = dev_get_drvdata(dev);
-> +
-> +	if (tas_priv->hw_init)
-> +		return 0;
-> +
-> +	if (tas_priv->first_hw_init) {
-> +		regcache_cache_only(tas_priv->regmap, false);
-> +		regcache_cache_bypass(tas_priv->regmap, true);
-> +	} else {
-> +		/*
-> +		 * PM runtime is only enabled when a Slave reports as Attached
-> +		 */
-> +
-> +		/* set autosuspend parameters */
-> +		pm_runtime_set_autosuspend_delay(&slave->dev, 3000);
-> +		pm_runtime_use_autosuspend(&slave->dev);
-> +
-> +		/* update count of parent 'active' children */
-> +		pm_runtime_set_active(&slave->dev);
-> +
-> +		/* make sure the device does not suspend immediately */
-> +		pm_runtime_mark_last_busy(&slave->dev);
-> +
-> +		pm_runtime_enable(&slave->dev);
-
-... and here.
-
-This isn't quite right, you should only use set_active() here and move
-all other parts in the probe.
-
-> +	}
-> +
-> +	pm_runtime_get_noresume(&slave->dev);
-> +
-> +	/* sw reset */
-> +	regmap_write(tas_priv->regmap, 0x8001, 0x01);
-> +
-> +	if (tas_priv->first_hw_init) {
-> +		regcache_cache_bypass(tas_priv->regmap, false);
-> +		regcache_mark_dirty(tas_priv->regmap);
-> +	} else
-> +		tas_priv->first_hw_init = true;
-> +	/* Mark Slave initialization complete */
-> +	tas_priv->hw_init = true;
-
-if you do a get_noresume() you've got to do a put_noidle() here for
-symmetry.
-
-> +
-> +	return 0;
-> +}
-> +
+VGhhbmtzIGZvciB5b3VyIHJldmlldyBjb21tZW50Lg0KDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2Fn
+ZS0tLS0tDQo+IEZyb206IFBpZXJyZS1Mb3VpcyBCb3NzYXJ0IDxwaWVycmUtbG91aXMuYm9zc2Fy
+dEBsaW51eC5pbnRlbC5jb20+DQo+IFNlbnQ6IE1vbmRheSwgSmFudWFyeSAxNSwgMjAyNCA1OjM0
+IFBNDQo+IFRvOiBEaW5nLCBTaGVuZ2hhbyA8c2hlbmdoYW8tZGluZ0B0aS5jb20+OyBicm9vbmll
+QGtlcm5lbC5vcmcNCj4gQ2M6IGFuZHJpeS5zaGV2Y2hlbmtvQGxpbnV4LmludGVsLmNvbTsgbGdp
+cmR3b29kQGdtYWlsLmNvbTsNCj4gcGVyZXhAcGVyZXguY3o7IDEzOTE2Mjc1MjA2QDEzOS5jb207
+IGFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZzsNCj4gbGludXgta2VybmVsQHZnZXIua2VybmVs
+Lm9yZzsgbGlhbS5yLmdpcmR3b29kQGludGVsLmNvbTsNCj4gbWVuZ2RvbmcubGluQGludGVsLmNv
+bTsgeXVuZy1jaHVhbi5saWFvQGxpbnV4LmludGVsLmNvbTsgWHUsIEJhb2p1bg0KPiA8YmFvanVu
+Lnh1QHRpLmNvbT47IEx1LCBLZXZpbiA8a2V2aW4tbHVAdGkuY29tPjsgR3VwdGEsIFBlZXl1c2gN
+Cj4gPHBlZXl1c2hAdGkuY29tPjsgTmF2YWRhIEthbnlhbmEsIE11a3VuZCA8bmF2YWRhQHRpLmNv
+bT47DQo+IHRpd2FpQHN1c2UuZGUNCj4gU3ViamVjdDogW0VYVEVSTkFMXSBSZTogW1BBVENIIHY1
+XSBBU29jOiB0YXMyNzgzOiBBZGQgdGFzMjc4MyBjb2RlYw0KPiBkcml2ZXINCj4gDQo+IFRoaXMg
+dmVyc2lvbiBpcyBtdWNoIGJldHRlciB0aGFuIHByZXZpb3VzIG9uZXMsIGJ1dCBjYW4gYmUgaW1w
+cm92ZWQgZnVydGhlciwNCj4gc3BlY2lmaWNhbGx5IG9uIHRoZSBpZGVudGlmaWNhdGlvbiBvZiBm
+aXJtd2FyZSBiYXNlZCBvbiB0aGUgdW5pcXVlX2lkIGFuZA0KPiBwbV9ydW50aW1lLiBTZWUgYWRk
+aXRpb25hbCBuaXQtcGlja3MgYW5kIHN1Z2dlc3Rpb25zIGJlbG93Lg0KPiANCj4gDQo+ID4gLS0t
+DQo+ID4gQ2hhbmdlIGluIHY1Og0KPiA+ICAtIHNpbXBsaWZ5IHRhc2RldmljZV9zZXRfc2R3X3N0
+cmVhbQ0KPiA+ICAtIGZpeGVkIHNvbWUgTGludXggY29kaW5nIHN0eWxlDQo+ID4gIC0gZml4ZWQg
+dGhlIHNwZWxsaW5nIG1pc3Rha2VzDQo+ID4gIC0gU2VsZWN0IGxlZnQvcmlnaHQgY2hhbm5lbCBi
+YXNlZCBvbiB1bmlxdWUgaWQNCj4gPiAgLSBhIGxvbmdlciBkZXNjcmlwdGlvbiBoYXMgYmVlbiBh
+ZGRlZA0KPiA+ICAtIHJlbW92ZSB1bnVzZWQgY3JjOCBpbiBLQ09ORklHDQo+IA0KPiBEb24ndCB5
+b3UgbmVlZCBhICdzZWxlY3QgQ1JDMzInIHRob3VnaD8gLi4uDQo+IA0KPiBNYXliZSBpdCdzIGFs
+cmVhZHkgc2V0IGJ5IG90aGVyIEtjb25maWdzLg0KPiANCj4gDQo+ID4gKy8qIFVwZGF0ZSB0aGUg
+Y2FsaWJyYXRlIGRhdGEsIGluY2x1ZGluZyBzcGVha2VyIGltcGVkYW5jZSwgZjAsIGV0YywgaW50
+bw0KPiBhbGdvLg0KPiA+ICsgKiBDYWxpYnJhdGUgZGF0YSBpcyBkb25lIGJ5IG1hbnVmYWN0dXJl
+ciBpbiB0aGUgZmFjdG9yeS4gVGhlc2UgZGF0YQ0KPiA+ICthcmUgdXNlZA0KPiA+ICsgKiBieSBB
+bGdvIGZvciBjYWx1Y2F0aW5nIHRoZSBzcGVha2VyIHRlbXBlcmF0dXJlLCBzcGVha2VyIG1lbWJy
+YW5jZQ0KPiA+ICtleGN1cnNpb24NCj4gPiArICogYW5kIGYwIGluIHJlYWwgdGltZSBkdXJpbmcg
+cGxheWJhY2suDQo+ID4gKyAqIEluIGNhc2Ugb2Ygbm8gb3IgdmFsaWQgY2FsaWJyYXRlZCBkYXRh
+LCBkc3Agd2lsbCBzdGlsbCB3b3JrcyB3aXRoDQo+ID4gK2RlZmF1bHQNCj4gPiArICogY2FsaWJy
+YXRlZCBkYXRhIGluc2lkZSBhbGdvLg0KPiANCj4gc3VnZ2VzdGVkIGVkaXRzOg0KPiANCj4gTG9h
+ZCB0aGUgY2FsaWJyYXRpb24gZGF0YSwgaW5jbHVkaW5nIHNwZWFrZXIgaW1wZWRhbmNlLCBmMCwg
+ZXRjLg0KPiBDYWxpYnJhdGlvbiBpcyBkb25lIGJ5IHRoZSBtYW51ZmFjdHVyZXIgaW4gdGhlIGZh
+Y3RvcnkuIFRoZSBjYWxpYnJhdGlvbiBkYXRhDQo+IGFyZSB1c2VkIGJ5IHRoZSBhbGdvcml0aG0g
+IGZvciBjYWxjdWxhdGluZyB0aGUgc3BlYWtlciB0ZW1wZXJhdHVyZSwgc3BlYWtlcg0KPiBtZW1i
+cmFuY2UgZXhjdXJzaW9uIGFuZCBmMCBpbiByZWFsIHRpbWUgZHVyaW5nIHBsYXliYWNrLg0KPiBU
+aGUgRFNQIHdpbGwgd29yayB3aXRoIGRlZmF1bHQgZGF0YSB2YWx1ZXMgaWYgY2FsaWJyYXRlZCBk
+YXRhIGFyZSBtaXNzaW5nIG9yDQo+IGFyZSBpbnZhbGlkLg0KPiANCj4gDQo+ID4gK3N0YXRpYyBp
+bnQgdGFzZGV2aWNlX3Nkd19od19wYXJhbXMoc3RydWN0IHNuZF9wY21fc3Vic3RyZWFtDQo+ICpz
+dWJzdHJlYW0sDQo+ID4gKwlzdHJ1Y3Qgc25kX3BjbV9od19wYXJhbXMgKnBhcmFtcywgc3RydWN0
+IHNuZF9zb2NfZGFpICpkYWkpIHsNCj4gPiArCXN0cnVjdCBzbmRfc29jX2NvbXBvbmVudCAqY29t
+cG9uZW50ID0gZGFpLT5jb21wb25lbnQ7DQo+ID4gKwlzdHJ1Y3QgdGFzZGV2aWNlX3ByaXYgKnRh
+c19wcml2ID0NCj4gPiArCQlzbmRfc29jX2NvbXBvbmVudF9nZXRfZHJ2ZGF0YShjb21wb25lbnQp
+Ow0KPiA+ICsJc3RydWN0IHNkd19zdHJlYW1fY29uZmlnIHN0cmVhbV9jb25maWcgPSB7MH07DQo+
+ID4gKwlzdHJ1Y3Qgc2R3X3BvcnRfY29uZmlnIHBvcnRfY29uZmlnID0gezB9Ow0KPiA+ICsJc3Ry
+dWN0IHNkd19zdHJlYW1fcnVudGltZSAqc2R3X3N0cmVhbTsNCj4gPiArCWludCByZXQ7DQo+ID4g
+Kw0KPiA+ICsJZGV2X2RiZyhkYWktPmRldiwgIiVzICVzIiwgX19mdW5jX18sIGRhaS0+bmFtZSk7
+DQo+ID4gKwlzZHdfc3RyZWFtID0gc25kX3NvY19kYWlfZ2V0X2RtYV9kYXRhKGRhaSwgc3Vic3Ry
+ZWFtKTsNCj4gPiArDQo+ID4gKwlpZiAoIXNkd19zdHJlYW0pDQo+ID4gKwkJcmV0dXJuIC1FSU5W
+QUw7DQo+ID4gKw0KPiA+ICsJaWYgKCF0YXNfcHJpdi0+c2R3X3BlcmlwaGVyYWwpDQo+ID4gKwkJ
+cmV0dXJuIC1FSU5WQUw7DQo+ID4gKw0KPiA+ICsJLyogU291bmRXaXJlIHNwZWNpZmljIGNvbmZp
+Z3VyYXRpb24gKi8NCj4gPiArCXNuZF9zZHdfcGFyYW1zX3RvX2NvbmZpZyhzdWJzdHJlYW0sIHBh
+cmFtcywNCj4gPiArCQkmc3RyZWFtX2NvbmZpZywgJnBvcnRfY29uZmlnKTsNCj4gPiArDQo+ID4g
+KwkvKiBwb3J0IDEgZm9yIHBsYXliYWNrICovDQo+ID4gKwlpZiAoc3Vic3RyZWFtLT5zdHJlYW0g
+PT0gU05EUlZfUENNX1NUUkVBTV9QTEFZQkFDSykNCj4gPiArCQlwb3J0X2NvbmZpZy5udW0gPSAx
+Ow0KPiA+ICsJZWxzZQ0KPiA+ICsJCXBvcnRfY29uZmlnLm51bSA9IDI7DQo+ID4gKw0KPiA+ICsJ
+cmV0ID0gc2R3X3N0cmVhbV9hZGRfc2xhdmUodGFzX3ByaXYtPnNkd19wZXJpcGhlcmFsLA0KPiA+
+ICsJCSZzdHJlYW1fY29uZmlnLCAmcG9ydF9jb25maWcsIDEsIHNkd19zdHJlYW0pOw0KPiA+ICsJ
+aWYgKHJldCkgew0KPiA+ICsJCWRldl9lcnIoZGFpLT5kZXYsICJVbmFibGUgdG8gY29uZmlndXJl
+IHBvcnRcbiIpOw0KPiA+ICsJCXJldHVybiByZXQ7DQo+ID4gKwl9DQo+ID4gKw0KPiA+ICsJZGV2
+X2RiZyhkYWktPmRldiwgIiVzIGZvbXJhdDogJWkgcmF0ZTogJWlcbiIsIF9fZnVuY19fLA0KPiAN
+Cj4gdHlwbzogZm9ybWF0DQo+IA0KPiA+ICsJCXBhcmFtc19mb3JtYXQocGFyYW1zKSwgcGFyYW1z
+X3JhdGUocGFyYW1zKSk7DQo+ID4gKw0KPiA+ICsJcmV0dXJuIDA7DQo+ID4gK30NCj4gPiArDQo+
+IA0KPiA+ICtzdGF0aWMgaW50IHRhc2RldmljZV9tdXRlKHN0cnVjdCBzbmRfc29jX2RhaSAqZGFp
+LCBpbnQgbXV0ZSwNCj4gPiArCWludCBkaXJlY3Rpb24pDQo+ID4gK3sNCj4gPiArCXN0cnVjdCBz
+bmRfc29jX2NvbXBvbmVudCAqY29tcG9uZW50ID0gZGFpLT5jb21wb25lbnQ7DQo+ID4gKwlzdHJ1
+Y3QgdGFzZGV2aWNlX3ByaXYgKnRhc19kZXYgPQ0KPiA+ICsJCXNuZF9zb2NfY29tcG9uZW50X2dl
+dF9kcnZkYXRhKGNvbXBvbmVudCk7DQo+ID4gKwlzdHJ1Y3QgcmVnbWFwICptYXAgPSB0YXNfZGV2
+LT5yZWdtYXA7DQo+ID4gKwlpbnQgcmV0Ow0KPiA+ICsNCj4gPiArCWRldl9kYmcodGFzX2Rldi0+
+ZGV2LCAiTXV0ZSBvciB1bm11dGUgJWQuXG4iLCBtdXRlKTsNCj4gPiArDQo+ID4gKwlpZiAobXV0
+ZSkgew0KPiA+ICsJCS8qIEVjaG8gY2hhbm5lbCBjYW4ndCBiZSBzaHV0ZG93biB3aGlsZSB0YXMy
+NzgzIG11c3Qga2VlcA0KPiA+ICsJCSAqIHdvcmtpbmcgc3RhdGUgd2hpbGUgcGxheWJhY2sgaXMg
+b24uDQo+IA0KPiBDb25zaWRlciByZXdvcmRpbmcgdGhhdCBjb21tZW50LCB0d28gJ3doaWxlJyBp
+biB0aGUgc2FtZSBzZW50ZW5jZSBtYWtlIGl0DQo+IGhhcmQgdG8gcGFyc2UuDQo+IA0KPiA+ICsJ
+CSAqLw0KPiA+ICsJCWlmIChkaXJlY3Rpb24gPT0gU05EUlZfUENNX1NUUkVBTV9DQVBUVVJFDQo+
+ID4gKwkJCSYmIHRhc19kZXYtPnBzdHJlYW0gPT0gdHJ1ZSkNCj4gPiArCQkJcmV0dXJuIDA7DQo+
+ID4gKwkJLyogRlUyMyBtdXRlICgweDQwNDAwMTA4KSAqLw0KPiA+ICsJCXJldCA9IHJlZ21hcF93
+cml0ZShtYXAsDQo+ID4gKwkJCVNEV19TRENBX0NUTChUQVMyNzgzX0ZVTkNfVFlQRV9TTUFSVF9B
+TVAsDQo+ID4gKwkJCVRBUzI3ODNfU0RDQV9FTlRfRlUyMywNCj4gVEFTMjc4M19TRENBX0NUTF9G
+VV9NVVRFLCAwKSwNCj4gPiArCQkJMSk7DQo+ID4gKwkJcmV0IHw9IHJlZ21hcF93cml0ZShtYXAs
+IFRBU0RFVklDRV9SRUcoMCwgMCwgMHgwMiksIDB4MWEpOw0KPiANCj4gT1JpbiBlcnJvciBjb2Rl
+Y3MgaXMgbm90IHF1aXRlIHJpZ2h0DQo+IA0KPiA+ICsJCXRhc19kZXYtPnBzdHJlYW0gPSBmYWxz
+ZTsNCj4gPiArCX0gZWxzZSB7DQo+ID4gKwkJLyogRlUyMyBVbm11dGUsIDB4NDA0MDAxMDguICov
+DQo+ID4gKwkJcmV0ID0gcmVnbWFwX3dyaXRlKG1hcCwNCj4gPiArCQkJU0RXX1NEQ0FfQ1RMKFRB
+UzI3ODNfRlVOQ19UWVBFX1NNQVJUX0FNUCwNCj4gPiArCQkJVEFTMjc4M19TRENBX0VOVF9GVTIz
+LA0KPiBUQVMyNzgzX1NEQ0FfQ1RMX0ZVX01VVEUsIDApLA0KPiA+ICsJCQkwKTsNCj4gPiArCQly
+ZXQgfD0gcmVnbWFwX3dyaXRlKG1hcCwgVEFTREVWSUNFX1JFRygwLCAwLCAweDAyKSwgMHgwKTsN
+Cj4gPiArCQlpZiAoZGlyZWN0aW9uID09IFNORFJWX1BDTV9TVFJFQU1fUExBWUJBQ0spDQo+ID4g
+KwkJCXRhc19kZXYtPnBzdHJlYW0gPSB0cnVlOw0KPiA+ICsJfQ0KPiA+ICsNCj4gPiArCWlmIChy
+ZXQpDQo+ID4gKwkJZGV2X2Vycih0YXNfZGV2LT5kZXYsICJNdXRlIG9yIHVubXV0ZSAlZCBmYWls
+ZWQgJWQuXG4iLA0KPiA+ICsJCQltdXRlLCByZXQpOw0KPiA+ICsNCj4gPiArCXJldHVybiByZXQ7
+DQo+ID4gK30NCj4gPiArDQo+IA0KPiA+ICtzdGF0aWMgaW50IHRhc2RldmljZV9pbml0KHN0cnVj
+dCB0YXNkZXZpY2VfcHJpdiAqdGFzX2Rldikgew0KPiA+ICsJaW50IHJldDsNCj4gPiArDQo+ID4g
+KwlkZXZfc2V0X2RydmRhdGEodGFzX2Rldi0+ZGV2LCB0YXNfZGV2KTsNCj4gPiArDQo+ID4gKwlt
+dXRleF9pbml0KCZ0YXNfZGV2LT5jb2RlY19sb2NrKTsNCj4gPiArCXJldCA9IGRldm1fc25kX3Nv
+Y19yZWdpc3Rlcl9jb21wb25lbnQodGFzX2Rldi0+ZGV2LA0KPiA+ICsJCSZzb2NfY29kZWNfZHJp
+dmVyX3Rhc2RldmljZSwNCj4gPiArCQl0YXNkZXZpY2VfZGFpX2RyaXZlciwgQVJSQVlfU0laRSh0
+YXNkZXZpY2VfZGFpX2RyaXZlcikpOw0KPiA+ICsJaWYgKHJldCkgew0KPiA+ICsJCWRldl9lcnIo
+dGFzX2Rldi0+ZGV2LCAiJXM6IGNvZGVjIHJlZ2lzdGVyIGVycm9yOiVkLlxuIiwNCj4gPiArCQkJ
+X19mdW5jX18sIHJldCk7DQo+ID4gKwl9DQo+ID4gKw0KPiA+ICsJdGFzMjc4M19yZXNldCh0YXNf
+ZGV2KTsNCj4gPiArCS8qIHRhczI3ODMtOFs5LC4uLixmXS5iaW4gd2FzIGNvcGllZCBpbnRvIC9s
+aWIvZmlybXdhcmUvICovDQo+IA0KPiBZb3UgbmVlZCB0byBhZGQgYSBjb21tZW50IHRvIGV4cGxh
+aW4gd2hhdCB0aG9zZSBmaWxlcyBjb250YWluLCBpdCdzIG5vdCBjbGVhcg0KPiBhdCBhbGwgaWYg
+dGhleSBhcmUganVzdCAnZmlybXdhcmUnIG9yIGlmIHRoZXkgY29udGFpbiB0YWJsZXMuDQo+IA0K
+PiA+ICsJc2NucHJpbnRmKHRhc19kZXYtPnJjYV9iaW5hcnluYW1lLCA2NCwgInRhczI3ODMtJTAx
+eC5iaW4iLA0KPiA+ICsJCXRhc19kZXYtPnNkd19wZXJpcGhlcmFsLT5pZC51bmlxdWVfaWQpOw0K
+PiANCj4gQW5kIG1vcmUgc3BlY2lmaWNhbGx5IHRoZSB1c2Ugb2YgdGhlIHVuaXF1ZV9pZCBpcyBw
+cm9ibGVtYXRpYyBzaW5jZSBpdCdzIG9ubHkNCj4gcmVsZXZhbnQgaW4gdGhlIGNvbnRleHQgb2Yg
+b25lIGxpbmsuIElmIHlvdSBoYXZlIHR3byBhbXBzIG9uIHNlcGFyYXRlIGxpbmtzLA0KPiB0aGUg
+dW5pcXVlX2lkIGlzIGlycmVsZXZhbnQuDQo+IA0KPiA+ICsNCj4gPiArCXJldCA9IHJlcXVlc3Rf
+ZmlybXdhcmVfbm93YWl0KFRISVNfTU9EVUxFLA0KPiBGV19BQ1RJT05fVUVWRU5ULA0KPiA+ICsJ
+CXRhc19kZXYtPnJjYV9iaW5hcnluYW1lLCB0YXNfZGV2LT5kZXYsIEdGUF9LRVJORUwsDQo+ID4g
+KwkJdGFzX2RldiwgdGFzZGV2aWNlX3JjYV9yZWFkeSk7DQo+ID4gKwlpZiAocmV0KSB7DQo+ID4g
+KwkJZGV2X2RiZyh0YXNfZGV2LT5kZXYsDQo+ID4gKwkJIiVzOiByZXF1ZXN0X2Zpcm13YXJlICV4
+IG9wZW4gc3RhdHVzOiAlZC5cbiIsDQo+ID4gKwkJX19mdW5jX18sIHRhc19kZXYtPnNkd19wZXJp
+cGhlcmFsLT5pZC51bmlxdWVfaWQsIHJldCk7DQo+ID4gKwl9DQo+ID4gKw0KPiA+ICsJLyogc2V0
+IGF1dG9zdXNwZW5kIHBhcmFtZXRlcnMgKi8NCj4gPiArCXBtX3J1bnRpbWVfc2V0X2F1dG9zdXNw
+ZW5kX2RlbGF5KHRhc19kZXYtPmRldiwgMzAwMCk7DQo+ID4gKwlwbV9ydW50aW1lX3VzZV9hdXRv
+c3VzcGVuZCh0YXNfZGV2LT5kZXYpOw0KPiA+ICsNCj4gPiArCS8qIG1ha2Ugc3VyZSB0aGUgZGV2
+aWNlIGRvZXMgbm90IHN1c3BlbmQgaW1tZWRpYXRlbHkgKi8NCj4gPiArCXBtX3J1bnRpbWVfbWFy
+a19sYXN0X2J1c3kodGFzX2Rldi0+ZGV2KTsNCj4gPiArDQo+ID4gKwlwbV9ydW50aW1lX2VuYWJs
+ZSh0YXNfZGV2LT5kZXYpOw0KPiANCj4gWW91IGFyZSBoYW5kbGluZyBwbV9ydW50aW1lIGhlcmUu
+Li4NCj4gDQo+ID4gKw0KPiA+ICsJZGV2X2RiZyh0YXNfZGV2LT5kZXYsICIlcyB3YXMgY2FsbGVk
+IGZvciBUQVMyNzgzLlxuIiwgIF9fZnVuY19fKTsNCj4gPiArDQo+ID4gKwlyZXR1cm4gcmV0Ow0K
+PiA+ICt9DQo+ID4gKw0KPiA+ICtzdGF0aWMgaW50IHRhc2RldmljZV9yZWFkX3Byb3Aoc3RydWN0
+IHNkd19zbGF2ZSAqc2xhdmUpIHsNCj4gPiArCXN0cnVjdCBzZHdfc2xhdmVfcHJvcCAqcHJvcCA9
+ICZzbGF2ZS0+cHJvcDsNCj4gPiArCWludCBudmFsOw0KPiA+ICsJaW50IGksIGo7DQo+ID4gKwl1
+MzIgYml0Ow0KPiA+ICsJdW5zaWduZWQgbG9uZyBhZGRyOw0KPiA+ICsJc3RydWN0IHNkd19kcG5f
+cHJvcCAqZHBuOw0KPiA+ICsNCj4gPiArCXByb3AtPnNjcF9pbnQxX21hc2sgPQ0KPiA+ICsJCVNE
+V19TQ1BfSU5UMV9CVVNfQ0xBU0ggfCBTRFdfU0NQX0lOVDFfUEFSSVRZOw0KPiA+ICsJcHJvcC0+
+cXVpcmtzID0gU0RXX1NMQVZFX1FVSVJLU19JTlZBTElEX0lOSVRJQUxfUEFSSVRZOw0KPiA+ICsN
+Cj4gPiArCXByb3AtPnBhZ2luZ19zdXBwb3J0ID0gdHJ1ZTsNCj4gPiArDQo+ID4gKwkvKiBmaXJz
+dCB3ZSBuZWVkIHRvIGFsbG9jYXRlIG1lbW9yeSBmb3Igc2V0IGJpdHMgaW4gcG9ydCBsaXN0cyAq
+Lw0KPiA+ICsJcHJvcC0+c291cmNlX3BvcnRzID0gQklUKDIpOyAvKiBCSVRNQVA6IDAwMDAwMTAw
+ICovDQo+ID4gKwlwcm9wLT5zaW5rX3BvcnRzID0gQklUKDEpOyAvKiBCSVRNQVA6ICAwMDAwMDAx
+MCAqLw0KPiA+ICsNCj4gPiArCW52YWwgPSBod2VpZ2h0MzIocHJvcC0+c291cmNlX3BvcnRzKTsN
+Cj4gPiArCXByb3AtPnNyY19kcG5fcHJvcCA9IGRldm1fa2NhbGxvYygmc2xhdmUtPmRldiwgbnZh
+bCwNCj4gPiArCQlzaXplb2YoKnByb3AtPnNyY19kcG5fcHJvcCksIEdGUF9LRVJORUwpOw0KPiA+
+ICsJaWYgKCFwcm9wLT5zcmNfZHBuX3Byb3ApDQo+ID4gKwkJcmV0dXJuIC1FTk9NRU07DQo+ID4g
+Kw0KPiA+ICsJaSA9IDA7DQo+ID4gKwlkcG4gPSBwcm9wLT5zcmNfZHBuX3Byb3A7DQo+ID4gKwlh
+ZGRyID0gcHJvcC0+c291cmNlX3BvcnRzOw0KPiA+ICsJZm9yX2VhY2hfc2V0X2JpdChiaXQsICZh
+ZGRyLCAzMikgew0KPiA+ICsJCWRwbltpXS5udW0gPSBiaXQ7DQo+ID4gKwkJZHBuW2ldLnR5cGUg
+PSBTRFdfRFBOX0ZVTEw7DQo+ID4gKwkJZHBuW2ldLnNpbXBsZV9jaF9wcmVwX3NtID0gdHJ1ZTsN
+Cj4gPiArCQlkcG5baV0uY2hfcHJlcF90aW1lb3V0ID0gMTA7DQo+ID4gKwkJaSsrOw0KPiA+ICsJ
+fQ0KPiA+ICsNCj4gPiArCS8qIGRvIHRoaXMgYWdhaW4gZm9yIHNpbmsgbm93ICovDQo+ID4gKwlu
+dmFsID0gaHdlaWdodDMyKHByb3AtPnNpbmtfcG9ydHMpOw0KPiA+ICsJcHJvcC0+c2lua19kcG5f
+cHJvcCA9IGRldm1fa2NhbGxvYygmc2xhdmUtPmRldiwgbnZhbCwNCj4gPiArCQlzaXplb2YoKnBy
+b3AtPnNpbmtfZHBuX3Byb3ApLCBHRlBfS0VSTkVMKTsNCj4gPiArCWlmICghcHJvcC0+c2lua19k
+cG5fcHJvcCkNCj4gPiArCQlyZXR1cm4gLUVOT01FTTsNCj4gPiArDQo+ID4gKwlqID0gMDsNCj4g
+PiArCWRwbiA9IHByb3AtPnNpbmtfZHBuX3Byb3A7DQo+ID4gKwlhZGRyID0gcHJvcC0+c2lua19w
+b3J0czsNCj4gPiArCWZvcl9lYWNoX3NldF9iaXQoYml0LCAmYWRkciwgMzIpIHsNCj4gPiArCQlk
+cG5bal0ubnVtID0gYml0Ow0KPiA+ICsJCWRwbltqXS50eXBlID0gU0RXX0RQTl9GVUxMOw0KPiA+
+ICsJCWRwbltqXS5zaW1wbGVfY2hfcHJlcF9zbSA9IHRydWU7DQo+ID4gKwkJZHBuW2pdLmNoX3By
+ZXBfdGltZW91dCA9IDEwOw0KPiA+ICsJCWorKzsNCj4gPiArCX0NCj4gPiArDQo+ID4gKwkvKiBz
+ZXQgdGhlIHRpbWVvdXQgdmFsdWVzICovDQo+ID4gKwlwcm9wLT5jbGtfc3RvcF90aW1lb3V0ID0g
+MjA7DQo+ID4gKw0KPiA+ICsJcmV0dXJuIDA7DQo+ID4gK30NCj4gPiArDQo+ID4gK3N0YXRpYyBp
+bnQgdGFzZGV2aWNlX2lvX2luaXQoc3RydWN0IGRldmljZSAqZGV2LCBzdHJ1Y3Qgc2R3X3NsYXZl
+DQo+ID4gKypzbGF2ZSkgew0KPiA+ICsJc3RydWN0IHRhc2RldmljZV9wcml2ICp0YXNfcHJpdiA9
+IGRldl9nZXRfZHJ2ZGF0YShkZXYpOw0KPiA+ICsNCj4gPiArCWlmICh0YXNfcHJpdi0+aHdfaW5p
+dCkNCj4gPiArCQlyZXR1cm4gMDsNCj4gPiArDQo+ID4gKwlpZiAodGFzX3ByaXYtPmZpcnN0X2h3
+X2luaXQpIHsNCj4gPiArCQlyZWdjYWNoZV9jYWNoZV9vbmx5KHRhc19wcml2LT5yZWdtYXAsIGZh
+bHNlKTsNCj4gPiArCQlyZWdjYWNoZV9jYWNoZV9ieXBhc3ModGFzX3ByaXYtPnJlZ21hcCwgdHJ1
+ZSk7DQo+ID4gKwl9IGVsc2Ugew0KPiA+ICsJCS8qDQo+ID4gKwkJICogUE0gcnVudGltZSBpcyBv
+bmx5IGVuYWJsZWQgd2hlbiBhIFNsYXZlIHJlcG9ydHMgYXMNCj4gQXR0YWNoZWQNCj4gPiArCQkg
+Ki8NCj4gPiArDQo+ID4gKwkJLyogc2V0IGF1dG9zdXNwZW5kIHBhcmFtZXRlcnMgKi8NCj4gPiAr
+CQlwbV9ydW50aW1lX3NldF9hdXRvc3VzcGVuZF9kZWxheSgmc2xhdmUtPmRldiwgMzAwMCk7DQo+
+ID4gKwkJcG1fcnVudGltZV91c2VfYXV0b3N1c3BlbmQoJnNsYXZlLT5kZXYpOw0KPiA+ICsNCj4g
+PiArCQkvKiB1cGRhdGUgY291bnQgb2YgcGFyZW50ICdhY3RpdmUnIGNoaWxkcmVuICovDQo+ID4g
+KwkJcG1fcnVudGltZV9zZXRfYWN0aXZlKCZzbGF2ZS0+ZGV2KTsNCj4gPiArDQo+ID4gKwkJLyog
+bWFrZSBzdXJlIHRoZSBkZXZpY2UgZG9lcyBub3Qgc3VzcGVuZCBpbW1lZGlhdGVseSAqLw0KPiA+
+ICsJCXBtX3J1bnRpbWVfbWFya19sYXN0X2J1c3koJnNsYXZlLT5kZXYpOw0KPiA+ICsNCj4gPiAr
+CQlwbV9ydW50aW1lX2VuYWJsZSgmc2xhdmUtPmRldik7DQo+IA0KPiAuLi4gYW5kIGhlcmUuDQo+
+IA0KPiBUaGlzIGlzbid0IHF1aXRlIHJpZ2h0LCB5b3Ugc2hvdWxkIG9ubHkgdXNlIHNldF9hY3Rp
+dmUoKSBoZXJlIGFuZCBtb3ZlIGFsbCBvdGhlcg0KPiBwYXJ0cyBpbiB0aGUgcHJvYmUuDQo+IA0K
+PiA+ICsJfQ0KPiA+ICsNCj4gPiArCXBtX3J1bnRpbWVfZ2V0X25vcmVzdW1lKCZzbGF2ZS0+ZGV2
+KTsNCj4gPiArDQo+ID4gKwkvKiBzdyByZXNldCAqLw0KPiA+ICsJcmVnbWFwX3dyaXRlKHRhc19w
+cml2LT5yZWdtYXAsIDB4ODAwMSwgMHgwMSk7DQo+ID4gKw0KPiA+ICsJaWYgKHRhc19wcml2LT5m
+aXJzdF9od19pbml0KSB7DQo+ID4gKwkJcmVnY2FjaGVfY2FjaGVfYnlwYXNzKHRhc19wcml2LT5y
+ZWdtYXAsIGZhbHNlKTsNCj4gPiArCQlyZWdjYWNoZV9tYXJrX2RpcnR5KHRhc19wcml2LT5yZWdt
+YXApOw0KPiA+ICsJfSBlbHNlDQo+ID4gKwkJdGFzX3ByaXYtPmZpcnN0X2h3X2luaXQgPSB0cnVl
+Ow0KPiA+ICsJLyogTWFyayBTbGF2ZSBpbml0aWFsaXphdGlvbiBjb21wbGV0ZSAqLw0KPiA+ICsJ
+dGFzX3ByaXYtPmh3X2luaXQgPSB0cnVlOw0KPiANCj4gaWYgeW91IGRvIGEgZ2V0X25vcmVzdW1l
+KCkgeW91J3ZlIGdvdCB0byBkbyBhIHB1dF9ub2lkbGUoKSBoZXJlIGZvcg0KPiBzeW1tZXRyeS4N
+Cj4gDQo+ID4gKw0KPiA+ICsJcmV0dXJuIDA7DQo+ID4gK30NCj4gPiArDQo=
