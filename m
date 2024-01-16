@@ -4,106 +4,155 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3E1F6C47422
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 Jan 2024 15:45:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 81927C47422
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 Jan 2024 16:16:54 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 88E093E7;
-	Fri, 26 Jan 2024 16:45:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 88E093E7
+	by alsa0.perex.cz (Postfix) with ESMTPS id B5083741;
+	Fri, 26 Jan 2024 17:16:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B5083741
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1706283953;
-	bh=fqIG2jDZoTw9TE78+cnz0OxfSJ1D3qd3x/zWVd40lg4=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To:List-Id:
+	s=default; t=1706285811;
+	bh=pi9f5n7aCz4k4GcDtHhDD5lv5OgeZ4ucYdJWw/uz8rU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=dLpNah8CTIgtcJ3es4XcUy+nf+nHvk1eZbcQvxgBOhlo4FcW8ZqqZBerD9SqKU6Am
-	 +7D+wewEv76h8+QXXoEvCGtpx57Lm8UjlXXTpBpothcM1fw5VYx21xkQFWZleURqHY
-	 dkOqOzO6B/srZ7rvrGHV367WvPl3QQIhEWCEiox4=
+	b=P3CnKa0Df9whBZSwiJHlrKMm6IHLf1hufwmK0cg0at7ksHJ/PWPifnLxUaIiQslFL
+	 l3LuEwp/ODsOfTTUwyqbQB9lm0pmXoji1VKvjhejKh2U8YvCClfmc4xn7LF1ClVvCy
+	 K2aaWqerp/XrLhrqEImCj/5sMIuaK0yz7MCypuTI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 309A2F80570; Fri, 26 Jan 2024 16:45:10 +0100 (CET)
+	id 5CDB1F802E8; Fri, 26 Jan 2024 17:16:29 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 13D40F8058C;
-	Fri, 26 Jan 2024 16:45:10 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1EC2AF80589;
+	Fri, 26 Jan 2024 17:16:29 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 50F01F8028D; Fri, 26 Jan 2024 16:45:02 +0100 (CET)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id E54EDF801F5; Tue, 16 Jan 2024 15:41:27 +0100 (CET)
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 3DD62F800C1
-	for <alsa-devel@alsa-project.org>; Fri, 26 Jan 2024 16:44:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3DD62F800C1
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9CB3BF800F5
+	for <alsa-devel@alsa-project.org>; Tue, 16 Jan 2024 15:41:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9CB3BF800F5
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=Ri8PJyjD
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-	by mx0a-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id
- 40QAV94J011624;
-	Fri, 26 Jan 2024 09:44:52 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	PODMain02222019; bh=sTeLXv2n33njXj2pPXt/tcA9jUcN2EMferdUpNRom0c=; b=
-	Ri8PJyjDWJtzg8CIzUcE0ikkQ1nqkbryUAHzfBf0llpykpe3ffSObCi+gVCBOvv6
-	n4KEx4iA0veIgB0pKnPg46QOiXPpwp1sdzc8m6UXNWkWqlbI8G1t1Eon0Ty03z8i
-	hV/AbhvL3gRKHCue5Dz3gOZUG8TEW6KPql4/3dkWH0fMEFFOsMlwlUy2tuHx4pR1
-	1CHiHlvft8jpmqFbZun/9s4Ozy2otCZzE9zEBJf+4/kyPZEs5yESvpldsHurtgsj
-	RPihom5z4+IZrHmXJIL1N6CbER9KTUBSsyxLdmrMujcbFLmd8hplYX0AjOZEeP38
-	r8EtDkU9GnWU6VB5tJW4XQ==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3vtmfhm3ha-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 26 Jan 2024 09:44:51 -0600 (CST)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 26 Jan
- 2024 15:44:49 +0000
-Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
- ediex01.ad.cirrus.com (198.61.84.80) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40 via Frontend Transport; Fri, 26 Jan 2024 15:44:49 +0000
-Received: from [198.90.208.18] (ediswws06.ad.cirrus.com [198.90.208.18])
-	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 060D6820246;
-	Fri, 26 Jan 2024 15:44:49 +0000 (UTC)
-Message-ID: <0d2aee4d-edc4-4e6e-99c3-d548eb6d6e18@opensource.cirrus.com>
-Date: Fri, 26 Jan 2024 15:44:48 +0000
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=eoW8PYM2
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sin.source.kernel.org (Postfix) with ESMTP id 5BF2FCE19B0;
+	Tue, 16 Jan 2024 14:41:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82385C433F1;
+	Tue, 16 Jan 2024 14:40:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705416062;
+	bh=pi9f5n7aCz4k4GcDtHhDD5lv5OgeZ4ucYdJWw/uz8rU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=eoW8PYM2MfAuIBhKaoTZlWZwOEH64nrarWgh8smz385NHA2AvWbxhu44TZid6guIO
+	 ztdPcokve4KGk/P0r48xP9LXjdlp+nfRggeFVeFp1EKUfQh1HSmalAz393OHzBH8yx
+	 HITZr7gQr/eVgLSaMXJ0zK/Hypf/9tgOSbSJiXzjxDaUW1d3OgO9S7G4+/H4mw666+
+	 L5PksNx2fvrD/Q9/Cn2uOjt9fv52HRvN58krYPnsggJ/tW1Mam7cV3tInWEBTcjzIV
+	 QhTlg/jUO4g8ofnL8rKCTYV2n5vBGWNCAEmw7Luoyo7bgDS5dKI4oEy8rewQcDvB/c
+	 CCz+OFltnyGUA==
+Date: Tue, 16 Jan 2024 14:40:39 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+Cc: Geert Uytterhoeven <geert+renesas@glider.be>, linux-spi@vger.kernel.org,
+	kernel@pengutronix.de, Moritz Fischer <mdf@kernel.org>,
+	Wu Hao <hao.wu@intel.com>, Xu Yilun <yilun.xu@intel.com>,
+	Tom Rix <trix@redhat.com>, linux-fpga@vger.kernel.org,
+	Alexander Aring <alex.aring@gmail.com>,
+	Stefan Schmidt <stefan@datenfreihafen.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	linux-wpan@vger.kernel.org, netdev@vger.kernel.org,
+	Lars-Peter Clausen <lars@metafoo.de>,
+	Michael Hennerich <Michael.Hennerich@analog.com>,
+	Jonathan Cameron <jic23@kernel.org>, linux-iio@vger.kernel.org,
+	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+	linux-input@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Rayyan Ansari <rayyan@ansari.sh>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+	Martin Tuma <martin.tuma@digiteqautomotive.com>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	linux-media@vger.kernel.org, Sergey Kozlov <serjk@netup.ru>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Yang Yingliang <yangyingliang@huawei.com>,
+	linux-mmc@vger.kernel.org, Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Heiko Stuebner <heiko@sntech.de>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Amit Kumar Mahapatra via Alsa-devel <alsa-devel@alsa-project.org>,
+	Rob Herring <robh@kernel.org>, linux-mtd@lists.infradead.org,
+	Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Nicolas Ferre <nicolas.ferre@microchip.com>,
+	Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
+	Ronald Wahl <ronald.wahl@raritan.com>,
+	Benson Leung <bleung@chromium.org>,
+	Tzung-Bi Shih <tzungbi@kernel.org>,
+	Guenter Roeck <groeck@chromium.org>,
+	chrome-platform@lists.linux.dev,
+	Michal Simek <michal.simek@amd.com>,
+	Max Filippov <jcmvbkbc@gmail.com>,
+	linux-arm-kernel@lists.infradead.org,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	linux-arm-msm@vger.kernel.org,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	linux-mediatek@lists.infradead.org,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	Javier Martinez Canillas <javierm@redhat.com>,
+	Sam Ravnborg <sam@ravnborg.org>,
+	Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>,
+	dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+	linux-staging@lists.linux.dev, Rui Miguel Silva <rmfrfs@gmail.com>,
+	Viresh Kumar <vireshk@kernel.org>, Johan Hovold <johan@kernel.org>,
+	Alex Elder <elder@kernel.org>, greybus-dev@lists.linaro.org,
+	Peter Huewe <peterhuewe@gmx.de>,
+	Jarkko Sakkinen <jarkko@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>,
+	linux-integrity@vger.kernel.org,
+	Herve Codina <herve.codina@bootlin.com>,
+	Aaro Koskinen <aaro.koskinen@iki.fi>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	linux-usb@vger.kernel.org, Helge Deller <deller@gmx.de>,
+	Dario Binacchi <dario.binacchi@amarulasolutions.com>,
+	Kalle Valo <kvalo@kernel.org>, Dmitry Antipov <dmantipov@yandex.ru>,
+	libertas-dev@lists.infradead.org, linux-wireless@vger.kernel.org,
+	Jonathan Corbet <corbet@lwn.net>, James Clark <james.clark@arm.com>,
+	Bjorn Helgaas <bhelgaas@google.com>, linux-doc@vger.kernel.org
+Subject: Re: [PATCH 00/33] spi: get rid of some legacy macros
+Message-ID: <3404c9af-6c11-45d7-9ba4-a120e21e407e@sirena.org.uk>
+References: <cover.1705348269.git.u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 0/4] Support HP Models without _DSD
-To: Takashi Iwai <tiwai@suse.de>,
-        Stefan Binding
-	<sbinding@opensource.cirrus.com>
-CC: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        <alsa-devel@alsa-project.org>, <linux-sound@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>
-References: <20240126113007.4084-1-sbinding@opensource.cirrus.com>
- <87wmrwnn2n.wl-tiwai@suse.de>
-Content-Language: en-GB
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
-In-Reply-To: <87wmrwnn2n.wl-tiwai@suse.de>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-ORIG-GUID: 0A87Bz0BkaY1TQM-BuRqLl5iY_Dge84p
-X-Proofpoint-GUID: 0A87Bz0BkaY1TQM-BuRqLl5iY_Dge84p
-X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: U5JS3JQW6TUJX5NKGR5VMRMZDEUCBVLG
-X-Message-ID-Hash: U5JS3JQW6TUJX5NKGR5VMRMZDEUCBVLG
-X-MailFrom: prvs=8755be56ea=rf@opensource.cirrus.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="c8yli56mmI+gJGEV"
+Content-Disposition: inline
+In-Reply-To: <cover.1705348269.git.u.kleine-koenig@pengutronix.de>
+X-Cookie: Programmers do it bit by bit.
+X-MailFrom: broonie@kernel.org
+X-Mailman-Rule-Hits: max-recipients
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ administrivia; implicit-dest; max-size; news-moderation; no-subject; digests;
+ suspicious-header
+Message-ID-Hash: UEJZR5BL2K5GIKE7ES3TQHVTF3EAAD7J
+X-Message-ID-Hash: UEJZR5BL2K5GIKE7ES3TQHVTF3EAAD7J
+X-Mailman-Approved-At: Fri, 26 Jan 2024 16:16:23 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/U5JS3JQW6TUJX5NKGR5VMRMZDEUCBVLG/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UEJZR5BL2K5GIKE7ES3TQHVTF3EAAD7J/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -112,31 +161,43 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 26/01/2024 15:14, Takashi Iwai wrote:
-> On Fri, 26 Jan 2024 12:30:03 +0100,
-> Stefan Binding wrote:
->>
->> Add Quirks and driver properties for Dell models.
->> Driver properties are required since these models do not have _DSD.
->> Some models require special handing for Speaker ID and cannot use
->> the configuration table to add properties.
->> Also fix an issue for Channel Index property, when set through the
->> configuration table, to use the same method as when loading _DSD
->> properties. This is needed for laptops with 4 amps where the
->> channels do not alternate.
->>
->> Stefan Binding (4):
->>    ALSA: hda: cs35l41: Set Channel Index correctly when system is missing
->>      _DSD
->>    ALSA: hda: cs35l41: Support additional HP Envy Models
->>    ALSA: hda: cs35l41: Support HP models without _DSD using dual Speaker
->>      ID
->>    ALSA: hda/realtek: Add quirks for various HP ENVY models
-> 
-> The last one conflicts with the latest for-next branch due to the
-> recent change from Cirrus.  Could you rebase and resubmit?
-> 
 
-Yes, sorry. That's my fault for not syncing up with Stefan before
-sending the other patch.
+--c8yli56mmI+gJGEV
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+On Mon, Jan 15, 2024 at 09:12:46PM +0100, Uwe Kleine-K=F6nig wrote:
+
+> In commit 8caab75fd2c2 ("spi: Generalize SPI "master" to "controller"")
+> some functions were renamed. Further some compat defines were introduced
+> to map the old names to the new ones.
+
+> Patch #18 and #19 touch the same driver, otherwise the patches #1 - #31
+> are pairwise independent and could be applied by their respective
+> maintainers. The alternative is to let all patches go via the spi tree.
+> Mark, what's your preference here?
+
+I don't have a strong preference here, I'm happy to take all the patches
+if the maintainers for the other subsystem are OK with that - ideally
+I'd apply things at -rc1 but the timeline is a bit tight there.  I think
+my plan here unless anyone objects (or I notice something myself) will
+be to queue things at -rc3, please shout if that doesn't seem
+reasonable.
+
+--c8yli56mmI+gJGEV
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmWmlVwACgkQJNaLcl1U
+h9AImgf/YhrOsj57KBdfXCGkJi2n+rTwU/YN3Vvfy2fP+4gmJoFGfjk1o+luXQwi
+q3+RNetq9JicN07DE0eggUdY7EqvLtghmHnQWYraw+gEPT7PwkiFuKZgDEy79tmH
+pNpJuEKTeDipvLkXCVMzD0T+NrW2BXshkACyxLpBrh+ewGJpmmgJEH8LEo52dxrk
+uLfK3YjSYco5zXw8Dzak8Ea9Hb57dnySjT6aQf8GRXZMjNYAPqMC27Pzd5pWHnD1
+am4raQY/1ji5yjiVs38+2RB0EnWlFJyj0VvC9vL5PEhkz0XiW3OTTedLKcxKKoYv
+H+d+5ZwIRVx3bl+qcRRzH8EMyJW7pA==
+=Umm1
+-----END PGP SIGNATURE-----
+
+--c8yli56mmI+gJGEV--
