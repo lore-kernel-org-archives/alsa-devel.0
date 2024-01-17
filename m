@@ -4,61 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5EB37C47258
-	for <alsa-devel@archiver.kernel.org>; Wed, 17 Jan 2024 09:08:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AF71BC47422
+	for <alsa-devel@archiver.kernel.org>; Wed, 17 Jan 2024 09:08:45 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 852841F7;
-	Wed, 17 Jan 2024 10:08:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 852841F7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6BAAB84A;
+	Wed, 17 Jan 2024 10:08:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6BAAB84A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1705482514;
-	bh=vEtn9XD7xyubHLGGICH9x1XRbBU8Muy2s+oZUo5w6Zc=;
+	s=default; t=1705482523;
+	bh=ubf+Lb9lWCl+Bw/cYPU6tgtajk7KlSOrM82ga/TBaGE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=LXd2ZLYWmB4FOuq0dMOt9q/Kg6dVkMTFEkvfFJBKowmH7da55m/o/l8FXXne7U6mr
-	 iMkRehZvcuEBrWB8S1OQJ7VCENCqe2aTQksYubIVucfV0ZEvxAd2SZmODNI6MPE0hw
-	 0dZn1gseOrhHYBqH6wfI/zvOU9X3Nzv/1WmxUt98=
+	b=JmVljYusvgGOhrJ6Vou+hbUvZx6qG0SqO6U0NREQlqwCFxsxlAfqqxKUSGnCYpUMo
+	 NxbzT+5K4q1Q+rDWPLyk+fJGngDOTADlTWIJm3yUGYKI9dvI/VrXNFRGO2mdbQRH98
+	 bJV9krkEmrpSURGTJRatY/tZg7VhubetZN55ptNI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 06F2CF805D9; Wed, 17 Jan 2024 10:07:39 +0100 (CET)
+	id B5112F805FC; Wed, 17 Jan 2024 10:07:41 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id CCA88F80567;
-	Wed, 17 Jan 2024 10:07:38 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E6C80F805FD;
+	Wed, 17 Jan 2024 10:07:40 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 82479F801F5; Wed, 17 Jan 2024 10:04:09 +0100 (CET)
-Received: from sin.source.kernel.org (sin.source.kernel.org
- [IPv6:2604:1380:40e1:4800::1])
+	id E5917F802BE; Wed, 17 Jan 2024 10:06:40 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 3F7E1F80236
-	for <alsa-devel@alsa-project.org>; Wed, 17 Jan 2024 10:03:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3F7E1F80236
+	by alsa1.perex.cz (Postfix) with ESMTPS id 485A3F8003A
+	for <alsa-devel@alsa-project.org>; Wed, 17 Jan 2024 10:03:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 485A3F8003A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=AEHLmJHo
+ header.s=k20201202 header.b=ul+i8Cpz
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 0008DCE1BD9;
+	by dfw.source.kernel.org (Postfix) with ESMTP id 2111B61569;
 	Wed, 17 Jan 2024 09:03:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F50DC43394;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79CFBC433F1;
 	Wed, 17 Jan 2024 09:03:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1705482224;
-	bh=vEtn9XD7xyubHLGGICH9x1XRbBU8Muy2s+oZUo5w6Zc=;
+	bh=ubf+Lb9lWCl+Bw/cYPU6tgtajk7KlSOrM82ga/TBaGE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=AEHLmJHoFnVJOtBCMyEqHJ7tYtCFYxtXYlp6KjBLXwAoLviq6KXa2J33VefHQsH5N
-	 RJHheVMGHfnUDlMf1IZhJQ3OTcPa5T5R5r+huyTsxRKJurmZWA6MNfc/Qxulfnr0fR
-	 S+JJH9NETF28J/AAsfq929kjrcK5p0HlY1yguZ2mrZjUd+K5C2GL9DIHYKPvmzgt3s
-	 NxpmdkBj+OLvgzGaPj68JFyRYne7FQeh7tP+Wp1jUMGZDrVmqVqGSs/8cN8rDrPUZ0
-	 VLeuOrCIv6whNLKISOaGRHA/ABShs/L0/X9Wke+QtxFxpsXC4aY0FiBKOKSiZOs1Wl
-	 7cAyQpSy2hITg==
+	b=ul+i8CpzEGX31XDcKOWiMUk/Mx/cPUlWS3k1ZWXNcmO+13+g+43kk7k7zsDou3Jqx
+	 2HCVy13ILqrFrpytfP7xQS4Q+s8uzGzVqomaFETJqYRFKTjMvHusVASImqm9CWLX1N
+	 HehEQcPMuOqpl8a/ZtW8lbbHdsU/PTb7d1fzDWjHi1fcOqHQlAJLy7IY1eHnJEGtKc
+	 uoQ9nmJxOhlhDfMz1RZZ6inqcS/ExtArgXGmWGG5CEgzHiKxkVos9PSHsNPOYpFjOR
+	 CzOuBnP7tlysEahDt+IyNQsbzoAVuEK1jjTUo31B9chHBTTutQzmXUQdXj7Gf0Tigb
+	 MMXYGK3cBqq+g==
 Received: from johan by xi.lan with local (Exim 4.96.2)
 	(envelope-from <johan+linaro@kernel.org>)
-	id 1rQ1pt-00086Y-0d;
+	id 1rQ1pt-00086U-03;
 	Wed, 17 Jan 2024 10:03:49 +0100
 From: Johan Hovold <johan+linaro@kernel.org>
 To: Mark Brown <broonie@kernel.org>
@@ -70,17 +70,18 @@ Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
 	alsa-devel@alsa-project.org,
 	linux-sound@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	Johan Hovold <johan+linaro@kernel.org>
-Subject: [PATCH v2 3/3] ASoC: codecs: wcd9335: drop unused gain hack remnant
-Date: Wed, 17 Jan 2024 10:03:31 +0100
-Message-ID: <20240117090331.31111-4-johan+linaro@kernel.org>
+	Johan Hovold <johan+linaro@kernel.org>,
+	stable@vger.kernel.org
+Subject: [PATCH v2 1/3] ASoC: qcom: sc8280xp: limit speaker volumes
+Date: Wed, 17 Jan 2024 10:03:29 +0100
+Message-ID: <20240117090331.31111-2-johan+linaro@kernel.org>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20240117090331.31111-1-johan+linaro@kernel.org>
 References: <20240117090331.31111-1-johan+linaro@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: AHPNVKOPG2EOEGCI6Z4EOVGLMDC4PTKX
-X-Message-ID-Hash: AHPNVKOPG2EOEGCI6Z4EOVGLMDC4PTKX
+Message-ID-Hash: 4X4SMPEQ4UQFRIP7TI7ECTOSE7KS43ON
+X-Message-ID-Hash: 4X4SMPEQ4UQFRIP7TI7ECTOSE7KS43ON
 X-MailFrom: johan+linaro@kernel.org
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
@@ -92,63 +93,54 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AHPNVKOPG2EOEGCI6Z4EOVGLMDC4PTKX/>
-List-Archive: <>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4X4SMPEQ4UQFRIP7TI7ECTOSE7KS43ON/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The vendor driver appears to be modifying the gain settings behind the
-back of user space but these hacks never made it upstream except for
-some essentially dead code that adds a constant zero to the current
-settings on DAPM events.
+The current UCM configuration sets the speaker PA volume to 15 dB when
+enabling the speakers but this does not prevent the user from increasing
+the volume further.
 
-Note that the volume registers still need to be written after enabling
-clocks in order for any prior updates to take effect.
+Limit the PA volume to 15 dB in the machine driver to reduce the risk of
+speaker damage until we have active speaker protection in place.
 
+Note that this will probably need to be generalised using
+machine-specific limits, but a common limit should do for now.
+
+Cc: stable@vger.kernel.org	# 6.5
+Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
 ---
- sound/soc/codecs/wcd9335.c | 4 ----
- 1 file changed, 4 deletions(-)
+ sound/soc/qcom/sc8280xp.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/wcd9335.c b/sound/soc/codecs/wcd9335.c
-index 43c648efd0d9..deb15b95992d 100644
---- a/sound/soc/codecs/wcd9335.c
-+++ b/sound/soc/codecs/wcd9335.c
-@@ -3033,7 +3033,6 @@ static int wcd9335_codec_enable_mix_path(struct snd_soc_dapm_widget *w,
- {
- 	struct snd_soc_component *comp = snd_soc_dapm_to_component(w->dapm);
- 	u16 gain_reg;
--	int offset_val = 0;
- 	int val = 0;
- 
- 	switch (w->reg) {
-@@ -3073,7 +3072,6 @@ static int wcd9335_codec_enable_mix_path(struct snd_soc_dapm_widget *w,
- 	switch (event) {
- 	case SND_SOC_DAPM_POST_PMU:
- 		val = snd_soc_component_read(comp, gain_reg);
--		val += offset_val;
- 		snd_soc_component_write(comp, gain_reg, val);
+diff --git a/sound/soc/qcom/sc8280xp.c b/sound/soc/qcom/sc8280xp.c
+index ed4bb551bfbb..aa43903421f5 100644
+--- a/sound/soc/qcom/sc8280xp.c
++++ b/sound/soc/qcom/sc8280xp.c
+@@ -32,12 +32,14 @@ static int sc8280xp_snd_init(struct snd_soc_pcm_runtime *rtd)
+ 	case WSA_CODEC_DMA_RX_0:
+ 	case WSA_CODEC_DMA_RX_1:
+ 		/*
+-		 * set limit of 0dB on Digital Volume for Speakers,
+-		 * this can prevent damage of speakers to some extent without
+-		 * active speaker protection
++		 * Set limit of 0 dB on Digital Volume and 15 dB on PA Volume
++		 * to reduce the risk of speaker damage until we have active
++		 * speaker protection in place.
+ 		 */
+ 		snd_soc_limit_volume(card, "WSA_RX0 Digital Volume", 84);
+ 		snd_soc_limit_volume(card, "WSA_RX1 Digital Volume", 84);
++		snd_soc_limit_volume(card, "SpkrLeft PA Volume", 12);
++		snd_soc_limit_volume(card, "SpkrRight PA Volume", 12);
  		break;
- 	case SND_SOC_DAPM_POST_PMD:
-@@ -3294,7 +3292,6 @@ static int wcd9335_codec_enable_interpolator(struct snd_soc_dapm_widget *w,
- 	u16 gain_reg;
- 	u16 reg;
- 	int val;
--	int offset_val = 0;
- 
- 	if (!(snd_soc_dapm_widget_name_cmp(w, "RX INT0 INTERP"))) {
- 		reg = WCD9335_CDC_RX0_RX_PATH_CTL;
-@@ -3337,7 +3334,6 @@ static int wcd9335_codec_enable_interpolator(struct snd_soc_dapm_widget *w,
- 	case SND_SOC_DAPM_POST_PMU:
- 		wcd9335_config_compander(comp, w->shift, event);
- 		val = snd_soc_component_read(comp, gain_reg);
--		val += offset_val;
- 		snd_soc_component_write(comp, gain_reg, val);
+ 	default:
  		break;
- 	case SND_SOC_DAPM_POST_PMD:
 -- 
 2.41.0
 
