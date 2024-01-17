@@ -4,85 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AF71BC47422
-	for <alsa-devel@archiver.kernel.org>; Wed, 17 Jan 2024 09:08:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 11CF6C47258
+	for <alsa-devel@archiver.kernel.org>; Wed, 17 Jan 2024 09:09:06 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6BAAB84A;
-	Wed, 17 Jan 2024 10:08:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6BAAB84A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4E272846;
+	Wed, 17 Jan 2024 10:08:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4E272846
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1705482523;
-	bh=ubf+Lb9lWCl+Bw/cYPU6tgtajk7KlSOrM82ga/TBaGE=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1705482544;
+	bh=/dPCBxX9NtYra0koFE41eeYgs1qT5c5J5e0WBloEftE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=JmVljYusvgGOhrJ6Vou+hbUvZx6qG0SqO6U0NREQlqwCFxsxlAfqqxKUSGnCYpUMo
-	 NxbzT+5K4q1Q+rDWPLyk+fJGngDOTADlTWIJm3yUGYKI9dvI/VrXNFRGO2mdbQRH98
-	 bJV9krkEmrpSURGTJRatY/tZg7VhubetZN55ptNI=
+	b=Lo/WK04Xq/etIHbnsg5XDBlMJaN+iKe2iiT7YpQAN1wPKPwND9KLfyeIEIvWeZwaz
+	 5CyU3mrmq/4baQhtmCwkGA7mWdDU6Gg3HxkkD+U/l/wnbFCd4hDukQQvIaSXTW2pGh
+	 kGMBAdE5TiGU63M/OnHtEVHJOFPFF2l/zwDDwwko=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B5112F805FC; Wed, 17 Jan 2024 10:07:41 +0100 (CET)
+	id A5C62F805A0; Wed, 17 Jan 2024 10:08:42 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E6C80F805FD;
-	Wed, 17 Jan 2024 10:07:40 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id AA2E8F80236;
+	Wed, 17 Jan 2024 10:08:41 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E5917F802BE; Wed, 17 Jan 2024 10:06:40 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+	id 94D54F801F5; Wed, 17 Jan 2024 10:08:37 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 485A3F8003A
-	for <alsa-devel@alsa-project.org>; Wed, 17 Jan 2024 10:03:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 485A3F8003A
+	by alsa1.perex.cz (Postfix) with ESMTPS id 3721CF802BE
+	for <alsa-devel@alsa-project.org>; Wed, 17 Jan 2024 10:08:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3721CF802BE
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=ul+i8Cpz
+ header.s=k20201202 header.b=EwfFyoFP
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 2111B61569;
-	Wed, 17 Jan 2024 09:03:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79CFBC433F1;
-	Wed, 17 Jan 2024 09:03:44 +0000 (UTC)
+	by ams.source.kernel.org (Postfix) with ESMTP id 413C2B8108C;
+	Wed, 17 Jan 2024 09:08:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92E08C433F1;
+	Wed, 17 Jan 2024 09:08:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705482224;
-	bh=ubf+Lb9lWCl+Bw/cYPU6tgtajk7KlSOrM82ga/TBaGE=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ul+i8CpzEGX31XDcKOWiMUk/Mx/cPUlWS3k1ZWXNcmO+13+g+43kk7k7zsDou3Jqx
-	 2HCVy13ILqrFrpytfP7xQS4Q+s8uzGzVqomaFETJqYRFKTjMvHusVASImqm9CWLX1N
-	 HehEQcPMuOqpl8a/ZtW8lbbHdsU/PTb7d1fzDWjHi1fcOqHQlAJLy7IY1eHnJEGtKc
-	 uoQ9nmJxOhlhDfMz1RZZ6inqcS/ExtArgXGmWGG5CEgzHiKxkVos9PSHsNPOYpFjOR
-	 CzOuBnP7tlysEahDt+IyNQsbzoAVuEK1jjTUo31B9chHBTTutQzmXUQdXj7Gf0Tigb
-	 MMXYGK3cBqq+g==
+	s=k20201202; t=1705482498;
+	bh=/dPCBxX9NtYra0koFE41eeYgs1qT5c5J5e0WBloEftE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=EwfFyoFPPJKIQlb/mKFQXjLoA42JHsJe7581uZAyH5PiUdNVZg9NuN7VRq6I/2yja
+	 +cgOn8V40goecsaz8cSraOaKDWK5tRQO9FU1Drtxhnar24j84hA1xrNhk3OiXwN2iN
+	 /a3hbEXzo8FB631BxwHPNohViqSGmghGJGieF8HIsqLl5UYEecSN2SVXvuVqvG3hW+
+	 0krW5ShJR2yPOVZBoJRHKK9A/Tn2mrwrUYfoe9H+L1dRxH36ci2FyUdOOrQsBNdjkx
+	 dyRAq3gbqN9DFYHH3kUBqSimdqTiV+8eAhxTsWhBN4KxnxqUQ5RM28S2Hs6mpTIgV7
+	 ix+zZs5w4rX/A==
 Received: from johan by xi.lan with local (Exim 4.96.2)
-	(envelope-from <johan+linaro@kernel.org>)
-	id 1rQ1pt-00086U-03;
-	Wed, 17 Jan 2024 10:03:49 +0100
-From: Johan Hovold <johan+linaro@kernel.org>
-To: Mark Brown <broonie@kernel.org>
-Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+	(envelope-from <johan@kernel.org>)
+	id 1rQ1uI-0008AG-3C;
+	Wed, 17 Jan 2024 10:08:23 +0100
+Date: Wed, 17 Jan 2024 10:08:22 +0100
+From: Johan Hovold <johan@kernel.org>
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: Johan Hovold <johan+linaro@kernel.org>, Mark Brown <broonie@kernel.org>,
 	Banajit Goswami <bgoswami@quicinc.com>,
 	Liam Girdwood <lgirdwood@gmail.com>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	alsa-devel@alsa-project.org,
-	linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Johan Hovold <johan+linaro@kernel.org>,
-	stable@vger.kernel.org
-Subject: [PATCH v2 1/3] ASoC: qcom: sc8280xp: limit speaker volumes
-Date: Wed, 17 Jan 2024 10:03:29 +0100
-Message-ID: <20240117090331.31111-2-johan+linaro@kernel.org>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20240117090331.31111-1-johan+linaro@kernel.org>
-References: <20240117090331.31111-1-johan+linaro@kernel.org>
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH 2/7] ASoC: codecs: lpass-wsa-macro: fix compander volume
+ hack
+Message-ID: <ZaeZBjKezfdslS2L@hovoldconsulting.com>
+References: <20240116093903.19403-1-johan+linaro@kernel.org>
+ <20240116093903.19403-3-johan+linaro@kernel.org>
+ <8bb1cad6-6a85-444a-b881-c03ab0051009@linaro.org>
+ <ZaaAO8SMczq7YUAE@hovoldconsulting.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 4X4SMPEQ4UQFRIP7TI7ECTOSE7KS43ON
-X-Message-ID-Hash: 4X4SMPEQ4UQFRIP7TI7ECTOSE7KS43ON
-X-MailFrom: johan+linaro@kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZaaAO8SMczq7YUAE@hovoldconsulting.com>
+Message-ID-Hash: DYJCEITFOUYTR7BDMQZRWTINBKAEHYGI
+X-Message-ID-Hash: DYJCEITFOUYTR7BDMQZRWTINBKAEHYGI
+X-MailFrom: johan@kernel.org
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -93,7 +91,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4X4SMPEQ4UQFRIP7TI7ECTOSE7KS43ON/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DYJCEITFOUYTR7BDMQZRWTINBKAEHYGI/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -102,45 +100,22 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The current UCM configuration sets the speaker PA volume to 15 dB when
-enabling the speakers but this does not prevent the user from increasing
-the volume further.
+On Tue, Jan 16, 2024 at 02:10:19PM +0100, Johan Hovold wrote:
+> On Tue, Jan 16, 2024 at 11:10:21AM +0000, Srinivas Kandagatla wrote:
 
-Limit the PA volume to 15 dB in the machine driver to reduce the risk of
-speaker damage until we have active speaker protection in place.
+> > This is not a hack, wsa codec requires gain to be programmed after the 
+> > clk is enabled for that particular interpolator.
+> 
+> Ok, but then it's also broken as, as I mentioned off-list, these
+> registers are cached so unless companding is enabled, the write on
+> enable will have no effect.
 
-Note that this will probably need to be generalised using
-machine-specific limits, but a common limit should do for now.
+I was obviously confused here, and indeed tests reveal that those writes
+are needed for any prior updates to take effect (e.g. volume changes
+while the codec is runtime suspended).
 
-Cc: stable@vger.kernel.org	# 6.5
-Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
----
- sound/soc/qcom/sc8280xp.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+I've just sent a v2 here:
 
-diff --git a/sound/soc/qcom/sc8280xp.c b/sound/soc/qcom/sc8280xp.c
-index ed4bb551bfbb..aa43903421f5 100644
---- a/sound/soc/qcom/sc8280xp.c
-+++ b/sound/soc/qcom/sc8280xp.c
-@@ -32,12 +32,14 @@ static int sc8280xp_snd_init(struct snd_soc_pcm_runtime *rtd)
- 	case WSA_CODEC_DMA_RX_0:
- 	case WSA_CODEC_DMA_RX_1:
- 		/*
--		 * set limit of 0dB on Digital Volume for Speakers,
--		 * this can prevent damage of speakers to some extent without
--		 * active speaker protection
-+		 * Set limit of 0 dB on Digital Volume and 15 dB on PA Volume
-+		 * to reduce the risk of speaker damage until we have active
-+		 * speaker protection in place.
- 		 */
- 		snd_soc_limit_volume(card, "WSA_RX0 Digital Volume", 84);
- 		snd_soc_limit_volume(card, "WSA_RX1 Digital Volume", 84);
-+		snd_soc_limit_volume(card, "SpkrLeft PA Volume", 12);
-+		snd_soc_limit_volume(card, "SpkrRight PA Volume", 12);
- 		break;
- 	default:
- 		break;
--- 
-2.41.0
+	https://lore.kernel.org/lkml/20240117090331.31111-1-johan+linaro@kernel.org/
 
+Johan
