@@ -4,106 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 68A1BC47DA2
-	for <alsa-devel@archiver.kernel.org>; Wed, 17 Jan 2024 15:13:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 851F5C47DA2
+	for <alsa-devel@archiver.kernel.org>; Wed, 17 Jan 2024 15:23:27 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 28D0183B;
-	Wed, 17 Jan 2024 16:13:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 28D0183B
+	by alsa0.perex.cz (Postfix) with ESMTPS id BA949210;
+	Wed, 17 Jan 2024 16:23:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BA949210
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1705504420;
-	bh=GCZrQDHaMa0VPIX4o4j8+CDBJ3xXXLP0Tb/HGEhCxls=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1705505005;
+	bh=6UDS8FkhexYyc0wVvVp2lu16oGdbc3OgmsT1Ttvx59s=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=kLDkbBrQdAKRv7xN5/EcqY5KF6TO6iFyMlpPiPqoe2Zz7b735okBHF54iNiYrkmmq
-	 ZAYE09MznAdCjlqtDqE8WfK6nBE0DUXjqWhwQV7sGK0N+iPwjKZVLSoACYNEkwK+NB
-	 3UIOoY087bwX+5QhO0mO+BbJyys/fLRlP9j9a+I8=
+	b=qdlA3RIOpOryk8k/hRM3FdtlUk14GKS/xdXAyaM3dK42p0rUPU8F2dbbcjAueZPZm
+	 QYMHDWumIsaQkdMWLhjLoMEMMrN5TE/MovheJlHd6zz0JFeuF3jssmn0pyuxbZPpq0
+	 XymK3KAf2sSKqv6mVSg5SAZ+RoOsFINcm9WETrcQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CB7ACF805F4; Wed, 17 Jan 2024 16:12:38 +0100 (CET)
+	id 47FA0F80580; Wed, 17 Jan 2024 16:22:54 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 51936F805EE;
-	Wed, 17 Jan 2024 16:12:38 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 514D5F80580;
+	Wed, 17 Jan 2024 16:22:53 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B4079F805D8; Wed, 17 Jan 2024 16:12:34 +0100 (CET)
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com
- [IPv6:2607:f8b0:4864:20::82e])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	id 63A05F801F5; Wed, 17 Jan 2024 16:22:49 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7ACD2F80548
-	for <alsa-devel@alsa-project.org>; Wed, 17 Jan 2024 16:12:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7ACD2F80548
+	by alsa1.perex.cz (Postfix) with ESMTPS id D1674F800F5
+	for <alsa-devel@alsa-project.org>; Wed, 17 Jan 2024 16:22:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D1674F800F5
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=ZQTwJ3/I
-Received: by mail-qt1-x82e.google.com with SMTP id
- d75a77b69052e-42993124fa1so67766491cf.3
-        for <alsa-devel@alsa-project.org>;
- Wed, 17 Jan 2024 07:12:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705504344; x=1706109144;
- darn=alsa-project.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ixH1kcICmlswgGdL4OCIid5fgK6X+yz0saxJFyTHsOI=;
-        b=ZQTwJ3/I6gwmfkXFV/LEt8F7Qn1suUCQw1rw6GHr3mg+8bQXxSWQ2PN/sfOWjvbSdr
-         OvP3r4P2gbuxo0MeR3YQMKiyGFqYLfCC/HKE2qIaCxSdpmLjQmfBR0EOZOSb0FNc9jkq
-         5ZaHSUM7IpdgWxlXev70eojoMVg/c/ViCxlNyFfBM0oC/AWcMshM+nR4KEmeshlj3h3Z
-         hNEDRDXnOWNmAb7XnqCTopI7dDSIMbbuvO17ImpG84vn6+j+Q3PlIHea/0VfolPVbG1A
-         uiqHyph9vvuen57efzhjHyLMnU1ta7TO24FPFI+cCxEDdtv3I7tjlrS9GYSTLev4ke1E
-         7biQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705504344; x=1706109144;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ixH1kcICmlswgGdL4OCIid5fgK6X+yz0saxJFyTHsOI=;
-        b=gY5621ZPLCgfYqtLDYdwX55s8zgc62UoHrnoeD8oXGz3NxbzRjy6a7Sqogx65wD/Ky
-         5+MKdxlvavBUKuBzXJk4Qiv/PrlUaraylm6giax/gkIFTAsngb+46ZWzK3Agzs9/6VxJ
-         /Ej/k0UR01kBOov+Q/4k1QmO+bobCAaBw51qkd2MG/d56ahsbD65U/+Wo3lsezx3cBNi
-         EDp7Zihrdf3q3lxoAkC0V/BsZ99NtNztyxVxnXgvDzu8dpHh1t8bo2WDC+jSByLVQaGb
-         fkMx6b/GKLHWN0nCP1if5k42w0IC5wRvHhErNWNKTbtyW9DAgF2Az646MUSjVCWWs8YP
-         IGrw==
-X-Gm-Message-State: AOJu0YwC1OkfaXTO/aw0EEzEJTWuAHIR4sh6Eyq39AEla6VqcUkP1X1S
-	ispQ+HvK52lKN0RtBoVSk85gjjHJFI2bWg==
-X-Google-Smtp-Source: 
- AGHT+IGKpZZkvxd3eMsUpIls7FJA2Nl5Ug6PcJy3m/KUNJ109oGm7KrlaXZDhPDpTPidr1LTLydhHA==
-X-Received: by 2002:ac8:578a:0:b0:42a:733:c26b with SMTP id
- v10-20020ac8578a000000b0042a0733c26bmr3066083qta.54.1705504342921;
-        Wed, 17 Jan 2024 07:12:22 -0800 (PST)
-Received: from krzk-bin.. ([178.197.215.66])
-        by smtp.gmail.com with ESMTPSA id
- m7-20020a05620a24c700b007816cf21f7asm4519337qkn.76.2024.01.17.07.12.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jan 2024 07:12:22 -0800 (PST)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=jW9TIUFP
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by ams.source.kernel.org (Postfix) with ESMTP id 0372BB8110A;
+	Wed, 17 Jan 2024 15:22:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 537DBC433C7;
+	Wed, 17 Jan 2024 15:22:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705504964;
+	bh=6UDS8FkhexYyc0wVvVp2lu16oGdbc3OgmsT1Ttvx59s=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=jW9TIUFP9KDG4Ij8h3pVU6tXgCy10WhUVNamkwrhWjcgaEdGH3EpulWFFa/O8r/aQ
+	 eXT/7OeVf84d98rPS5CIspPkHFAv9SPdbUqDJOF+8xWH/vIrFK/z3zTde+4/8Uw07G
+	 tAwd5DVPLPEAo0E+eKb9W3RMkC4zBgyTdEA2CzGOrwFXP0FeH2rbcQXIumEmu6kdRx
+	 mfAMwkgM78p1+i25aPvFZIJdtS0zMWxeEGYMiaZ9itMlb3iCHBGsybrkDyM+X+sJol
+	 sFGcpFK51Kvo9AauRdxRm2QvHVkJHhm9vbMI1DtpGr4QGd3aw/Tmuu/UaBTZLm16vi
+	 dyEWqwxH3mDcw==
+Date: Wed, 17 Jan 2024 15:22:39 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
 	Banajit Goswami <bgoswami@quicinc.com>,
 	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	alsa-devel@alsa-project.org,
-	linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH 3/3] ASoC: codecs: wcd934x: drop unneeded regulator include
-Date: Wed, 17 Jan 2024 16:12:08 +0100
-Message-Id: <20240117151208.1219755-3-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240117151208.1219755-1-krzysztof.kozlowski@linaro.org>
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH 1/3] ASoC: codecs: wcd938x: handle deferred probe
+Message-ID: <8c30a417-20fb-4d61-b5e5-deb5cd579e50@sirena.org.uk>
 References: <20240117151208.1219755-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: OSSV4VM7UB4MQP4ITAI7ECZSJVAUBJJB
-X-Message-ID-Hash: OSSV4VM7UB4MQP4ITAI7ECZSJVAUBJJB
-X-MailFrom: krzysztof.kozlowski@linaro.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="QFFyemF5MjRQpF88"
+Content-Disposition: inline
+In-Reply-To: <20240117151208.1219755-1-krzysztof.kozlowski@linaro.org>
+X-Cookie: Nostalgia isn't what it used to be.
+Message-ID-Hash: 57UY5G46T3QPU4X6BIPM6UXENSR3WCI4
+X-Message-ID-Hash: 57UY5G46T3QPU4X6BIPM6UXENSR3WCI4
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -115,7 +88,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OSSV4VM7UB4MQP4ITAI7ECZSJVAUBJJB/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/57UY5G46T3QPU4X6BIPM6UXENSR3WCI4/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -124,26 +97,33 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Driver does not use any regulator code, so drop redundant include of
-regulator/consumer.h header.
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
----
- sound/soc/codecs/wcd934x.c | 1 -
- 1 file changed, 1 deletion(-)
+--QFFyemF5MjRQpF88
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/sound/soc/codecs/wcd934x.c b/sound/soc/codecs/wcd934x.c
-index 1b6e376f3833..6813268e6a19 100644
---- a/sound/soc/codecs/wcd934x.c
-+++ b/sound/soc/codecs/wcd934x.c
-@@ -13,7 +13,6 @@
- #include <linux/of.h>
- #include <linux/platform_device.h>
- #include <linux/regmap.h>
--#include <linux/regulator/consumer.h>
- #include <linux/slab.h>
- #include <linux/slimbus.h>
- #include <sound/pcm_params.h>
--- 
-2.34.1
+On Wed, Jan 17, 2024 at 04:12:06PM +0100, Krzysztof Kozlowski wrote:
 
+>  	if (ret) {
+>  		dev_err(dev, "%s: Fail to obtain platform data\n", __func__);
+> -		return -EINVAL;
+> +		return ret;
+
+Should this be a dev_err_probe() as well?
+
+--QFFyemF5MjRQpF88
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmWn8L4ACgkQJNaLcl1U
+h9D0ywf/ZnguSawFPSvLSmZVVE26qF0aj2D0OQ7gHQ8FtL2H9VCflICbGytH79B4
+2RSVIuvM5MNinmoWSanljMuwBI4feZeS10CmQJKnrqvGVhOnpvlmJew0W6KeJbIb
+46fOJDk52PGNpkMtXDpuhXy1/SsrH3WLQhEKhDHPtJRl7uCS2qS/8QE8y6eZ8drW
++JlONFb5emSDvHvz2U0hPSZ0X6uEDI+M4xw4xlTbtBFCTdoj6Lmal/BWuIq5R474
+iIdPpur9UKzxXTkQWo0lFiZw5vIjaU91o5tczCZDAkhW/Y5Yrk/a9BqcgF1W1t2E
+Pnfa/E1hImH6vtUIPE3npI7IAhN7zw==
+=sotV
+-----END PGP SIGNATURE-----
+
+--QFFyemF5MjRQpF88--
