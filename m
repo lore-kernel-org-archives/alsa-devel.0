@@ -4,47 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A5CF2C47422
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Jan 2024 13:17:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 12782C4707B
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Jan 2024 13:18:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C2BAC825;
-	Thu, 18 Jan 2024 14:17:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C2BAC825
+	by alsa0.perex.cz (Postfix) with ESMTPS id F025DE9F;
+	Thu, 18 Jan 2024 14:17:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F025DE9F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1705583869;
-	bh=VnC3GQZpck8ZBUREAIqNZ/Adv2k0JhYJY1WS6nT4LQc=;
+	s=default; t=1705583888;
+	bh=fpWAagc9TBPC2nK/rsoLD6Cght7/uGfO3bRO+j3x+wo=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=vP6M9ZC/BbpuTk/M8sYj23VzewGceO6LMlnb9dwSei2LB43BQHVPSPQgmCTG/ShTI
-	 TnjdoX9KOMu3xS0MjYS3ODFmLa0C+24tYIoe1aumYs4q8CMA9UT92ezIh7eiExN7Hm
-	 UQG8qXwQD/wILHq/IQvYCbYC382/g1zICU1fZ1MA=
+	b=tIHN164y4JLfHXpMM/9Gqdm0SYoIhWkhjK/43idjAgaXiYsZPvsMWj0Rz6PI4UBjC
+	 n3yQi3sxjLBaaY4bzyrOhS0hX5fGHbOZh2E6C6qSljRQj1LUQ5DR+0+ClwsO4tCLZz
+	 6d4mQ6u1iwKxV/mPGsstkqdiKDe7+4VXju1w7B+c=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id EBCAEF80236; Thu, 18 Jan 2024 14:15:29 +0100 (CET)
+	id 0EAE1F8057C; Thu, 18 Jan 2024 14:15:33 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B0C9BF806D0;
-	Thu, 18 Jan 2024 14:15:28 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D4F3DF806FC;
+	Thu, 18 Jan 2024 14:15:32 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id ABC99F80631; Thu, 18 Jan 2024 14:15:18 +0100 (CET)
-Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
+	id 0B87BF80687; Thu, 18 Jan 2024 14:15:23 +0100 (CET)
+Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A04D3F8003A
-	for <alsa-devel@alsa-project.org>; Thu, 18 Jan 2024 14:15:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A04D3F8003A
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 3A1732022F8;
-	Thu, 18 Jan 2024 14:15:02 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 50FB5F80074
+	for <alsa-devel@alsa-project.org>; Thu, 18 Jan 2024 14:15:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 50FB5F80074
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id F18A01A228F;
+	Thu, 18 Jan 2024 14:15:04 +0100 (CET)
 Received: from aprdc01srsp001v.ap-rdc01.nxp.com
  (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
-	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id C5DF9201730;
-	Thu, 18 Jan 2024 14:15:01 +0100 (CET)
+	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 900CD1A22A0;
+	Thu, 18 Jan 2024 14:15:04 +0100 (CET)
 Received: from localhost.localdomain (shlinux2.ap.freescale.net
  [10.192.224.44])
-	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id B9A9A183487A;
-	Thu, 18 Jan 2024 21:14:59 +0800 (+08)
+	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id DA2F6183AC0A;
+	Thu, 18 Jan 2024 21:15:02 +0800 (+08)
 From: Shengjiu Wang <shengjiu.wang@nxp.com>
 To: hverkuil@xs4all.nl,
 	sakari.ailus@iki.fi,
@@ -63,15 +63,15 @@ To: hverkuil@xs4all.nl,
 	tiwai@suse.com,
 	alsa-devel@alsa-project.org,
 	linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH v12 08/15] media: uapi: Define audio sample format fourcc type
-Date: Thu, 18 Jan 2024 20:32:01 +0800
-Message-Id: <1705581128-4604-9-git-send-email-shengjiu.wang@nxp.com>
+Subject: [PATCH v12 10/15] media: uapi: Add audio rate controls support
+Date: Thu, 18 Jan 2024 20:32:03 +0800
+Message-Id: <1705581128-4604-11-git-send-email-shengjiu.wang@nxp.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1705581128-4604-1-git-send-email-shengjiu.wang@nxp.com>
 References: <1705581128-4604-1-git-send-email-shengjiu.wang@nxp.com>
 X-Virus-Scanned: ClamAV using ClamSMTP
-Message-ID-Hash: A4QZL7CPWETU7UDYGLHDFL45HVSLNCDI
-X-Message-ID-Hash: A4QZL7CPWETU7UDYGLHDFL45HVSLNCDI
+Message-ID-Hash: ZXG6XVF7TRLM67GTLJGISDR5QLANQUMF
+X-Message-ID-Hash: ZXG6XVF7TRLM67GTLJGISDR5QLANQUMF
 X-MailFrom: shengjiu.wang@nxp.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -83,8 +83,7 @@ X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/A4QZL7CPWETU7UDYGLHDFL45HVSLNCDI/>
+Archived-At: <>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -93,184 +92,87 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The audio sample format definition is from alsa,
-the header file is include/uapi/sound/asound.h, but
-don't include this header file directly, because in
-user space, there is another copy in alsa-lib.
-There will be conflict in userspace for include
-videodev2.h & asound.h and asoundlib.h
+Add V4L2_CID_M2M_AUDIO_SOURCE_RATE and V4L2_CID_M2M_AUDIO_DEST_RATE
+new IDs for rate control.
 
-Here still use the fourcc format.
+Add V4L2_CID_M2M_AUDIO_SOURCE_RATE_OFFSET and
+V4L2_CID_M2M_AUDIO_DEST_RATE_OFFSET for clock drift.
 
 Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 ---
- .../userspace-api/media/v4l/pixfmt-audio.rst  | 87 +++++++++++++++++++
- .../userspace-api/media/v4l/pixfmt.rst        |  1 +
- drivers/media/v4l2-core/v4l2-ioctl.c          | 13 +++
- include/uapi/linux/videodev2.h                | 23 +++++
- 4 files changed, 124 insertions(+)
- create mode 100644 Documentation/userspace-api/media/v4l/pixfmt-audio.rst
+ .../media/v4l/ext-ctrls-audio-m2m.rst         | 20 +++++++++++++++++++
+ drivers/media/v4l2-core/v4l2-ctrls-defs.c     |  6 ++++++
+ include/uapi/linux/v4l2-controls.h            |  5 +++++
+ 3 files changed, 31 insertions(+)
 
-diff --git a/Documentation/userspace-api/media/v4l/pixfmt-audio.rst b/Documentation/userspace-api/media/v4l/pixfmt-audio.rst
-new file mode 100644
-index 000000000000..04b4a7fbd8f4
---- /dev/null
-+++ b/Documentation/userspace-api/media/v4l/pixfmt-audio.rst
-@@ -0,0 +1,87 @@
-+.. SPDX-License-Identifier: GFDL-1.1-no-invariants-or-later
+diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-audio-m2m.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-audio-m2m.rst
+index 82d2ecedbfee..de579ab8fb94 100644
+--- a/Documentation/userspace-api/media/v4l/ext-ctrls-audio-m2m.rst
++++ b/Documentation/userspace-api/media/v4l/ext-ctrls-audio-m2m.rst
+@@ -19,3 +19,23 @@ Audio M2M Control IDs
+     The Audio M2M class descriptor. Calling
+     :ref:`VIDIOC_QUERYCTRL` for this control will
+     return a description of this control class.
 +
-+.. _pixfmt-audio:
++.. _v4l2-audio-asrc:
 +
-+*************
-+Audio Formats
-+*************
++``V4L2_CID_M2M_AUDIO_SOURCE_RATE (integer menu)``
++    Sets the audio source sample rate, unit is Hz
 +
-+These formats are used for :ref:`audiomem2mem` interface only.
++``V4L2_CID_M2M_AUDIO_DEST_RATE (integer menu)``
++    Sets the audio destination sample rate, unit is Hz
 +
-+.. tabularcolumns:: |p{5.8cm}|p{1.2cm}|p{10.3cm}|
++``V4L2_CID_M2M_AUDIO_SOURCE_RATE_OFFSET (fixed point)``
++    Sets the offset from the audio source sample rate, unit is Hz.
++    The offset compensates for any clock drift. The actual source audio
++    sample rate is the ideal source audio sample rate from
++    ``V4L2_CID_M2M_AUDIO_SOURCE_RATE`` plus this fixed point offset.
 +
-+.. cssclass:: longtable
-+
-+.. flat-table:: Audio Format
-+    :header-rows:  1
-+    :stub-columns: 0
-+    :widths:       3 1 4
-+
-+    * - Identifier
-+      - Code
-+      - Details
-+    * .. _V4L2-AUDIO-FMT-S8:
-+
-+      - ``V4L2_AUDIO_FMT_S8``
-+      - 'S8'
-+      - Corresponds to SNDRV_PCM_FORMAT_S8 in ALSA
-+    * .. _V4L2-AUDIO-FMT-S16-LE:
-+
-+      - ``V4L2_AUDIO_FMT_S16_LE``
-+      - 'S16_LE'
-+      - Corresponds to SNDRV_PCM_FORMAT_S16_LE in ALSA
-+    * .. _V4L2-AUDIO-FMT-U16-LE:
-+
-+      - ``V4L2_AUDIO_FMT_U16_LE``
-+      - 'U16_LE'
-+      - Corresponds to SNDRV_PCM_FORMAT_U16_LE in ALSA
-+    * .. _V4L2-AUDIO-FMT-S24-LE:
-+
-+      - ``V4L2_AUDIO_FMT_S24_LE``
-+      - 'S24_LE'
-+      - Corresponds to SNDRV_PCM_FORMAT_S24_LE in ALSA
-+    * .. _V4L2-AUDIO-FMT-U24-LE:
-+
-+      - ``V4L2_AUDIO_FMT_U24_LE``
-+      - 'U24_LE'
-+      - Corresponds to SNDRV_PCM_FORMAT_U24_LE in ALSA
-+    * .. _V4L2-AUDIO-FMT-S32-LE:
-+
-+      - ``V4L2_AUDIO_FMT_S32_LE``
-+      - 'S32_LE'
-+      - Corresponds to SNDRV_PCM_FORMAT_S32_LE in ALSA
-+    * .. _V4L2-AUDIO-FMT-U32-LE:
-+
-+      - ``V4L2_AUDIO_FMT_U32_LE``
-+      - 'U32_LE'
-+      - Corresponds to SNDRV_PCM_FORMAT_U32_LE in ALSA
-+    * .. _V4L2-AUDIO-FMT-FLOAT-LE:
-+
-+      - ``V4L2_AUDIO_FMT_FLOAT_LE``
-+      - 'FLOAT_LE'
-+      - Corresponds to SNDRV_PCM_FORMAT_FLOAT_LE in ALSA
-+    * .. _V4L2-AUDIO-FMT-IEC958-SUBFRAME-LE:
-+
-+      - ``V4L2_AUDIO_FMT_IEC958_SUBFRAME_LE``
-+      - 'IEC958_SUBFRAME_LE'
-+      - Corresponds to SNDRV_PCM_FORMAT_IEC958_SUBFRAME_LE in ALSA
-+    * .. _V4L2-AUDIO-FMT-S24-3LE:
-+
-+      - ``V4L2_AUDIO_FMT_S24_3LE``
-+      - 'S24_3LE'
-+      - Corresponds to SNDRV_PCM_FORMAT_S24_3LE in ALSA
-+    * .. _V4L2-AUDIO-FMT-U24-3LE:
-+
-+      - ``V4L2_AUDIO_FMT_U24_3LE``
-+      - 'U24_3LE'
-+      - Corresponds to SNDRV_PCM_FORMAT_U24_3LE in ALSA
-+    * .. _V4L2-AUDIO-FMT-S20-3LE:
-+
-+      - ``V4L2_AUDIO_FMT_S20_3LE``
-+      - 'S20_3LE'
-+      - Corresponds to SNDRV_PCM_FORMAT_S24_3LE in ALSA
-+    * .. _V4L2-AUDIO-FMT-U20-3LE:
-+
-+      - ``V4L2_AUDIO_FMT_U20_3LE``
-+      - 'U20_3LE'
-+      - Corresponds to SNDRV_PCM_FORMAT_U20_3LE in ALSA
-diff --git a/Documentation/userspace-api/media/v4l/pixfmt.rst b/Documentation/userspace-api/media/v4l/pixfmt.rst
-index 11dab4a90630..2eb6fdd3b43d 100644
---- a/Documentation/userspace-api/media/v4l/pixfmt.rst
-+++ b/Documentation/userspace-api/media/v4l/pixfmt.rst
-@@ -36,3 +36,4 @@ see also :ref:`VIDIOC_G_FBUF <VIDIOC_G_FBUF>`.)
-     colorspaces
-     colorspaces-defs
-     colorspaces-details
-+    pixfmt-audio
-diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
-index e7be7c2f302d..e5094f0e75c1 100644
---- a/drivers/media/v4l2-core/v4l2-ioctl.c
-+++ b/drivers/media/v4l2-core/v4l2-ioctl.c
-@@ -1471,6 +1471,19 @@ static void v4l_fill_fmtdesc(struct v4l2_fmtdesc *fmt)
- 	case V4L2_PIX_FMT_Y210:		descr = "10-bit YUYV Packed"; break;
- 	case V4L2_PIX_FMT_Y212:		descr = "12-bit YUYV Packed"; break;
- 	case V4L2_PIX_FMT_Y216:		descr = "16-bit YUYV Packed"; break;
-+	case V4L2_AUDIO_FMT_S8:		descr = "8-bit Signed"; break;
-+	case V4L2_AUDIO_FMT_S16_LE:	descr = "16-bit Signed LE"; break;
-+	case V4L2_AUDIO_FMT_U16_LE:		descr = "16-bit Unsigned LE"; break;
-+	case V4L2_AUDIO_FMT_S24_LE:		descr = "24(32)-bit Signed LE"; break;
-+	case V4L2_AUDIO_FMT_U24_LE:		descr = "24(32)-bit Unsigned LE"; break;
-+	case V4L2_AUDIO_FMT_S32_LE:		descr = "32-bit Signed LE"; break;
-+	case V4L2_AUDIO_FMT_U32_LE:		descr = "32-bit Unsigned LE"; break;
-+	case V4L2_AUDIO_FMT_FLOAT_LE:		descr = "32-bit Float LE"; break;
-+	case V4L2_AUDIO_FMT_IEC958_SUBFRAME_LE:	descr = "32-bit IEC958 LE"; break;
-+	case V4L2_AUDIO_FMT_S24_3LE:		descr = "24(24)-bit Signed LE"; break;
-+	case V4L2_AUDIO_FMT_U24_3LE:		descr = "24(24)-bit Unsigned LE"; break;
-+	case V4L2_AUDIO_FMT_S20_3LE:		descr = "20(24)-bit Signed LE"; break;
-+	case V4L2_AUDIO_FMT_U20_3LE:		descr = "20(24)-bit Unsigned LE"; break;
++``V4L2_CID_M2M_AUDIO_DEST_RATE_OFFSET (fixed point)``
++    Sets the offset from the audio destination sample rate, unit is Hz.
++    The offset compensates for any clock drift. The actual destination audio
++    sample rate is the ideal source audio sample rate from
++    ``V4L2_CID_M2M_AUDIO_DEST_RATE`` plus this fixed point offset.
+diff --git a/drivers/media/v4l2-core/v4l2-ctrls-defs.c b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
+index 2a85ea3dc92f..91e1f5348c23 100644
+--- a/drivers/media/v4l2-core/v4l2-ctrls-defs.c
++++ b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
+@@ -1245,6 +1245,8 @@ const char *v4l2_ctrl_get_name(u32 id)
  
+ 	/* Audio M2M controls */
+ 	case V4L2_CID_M2M_AUDIO_CLASS:  return "Audio M2M Controls";
++	case V4L2_CID_M2M_AUDIO_SOURCE_RATE:	return "Audio Source Sample Rate";
++	case V4L2_CID_M2M_AUDIO_DEST_RATE:	return "Audio Destination Sample Rate";
  	default:
- 		/* Compressed formats */
-diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
-index 57c82eb158f1..7d0b33e7d854 100644
---- a/include/uapi/linux/videodev2.h
-+++ b/include/uapi/linux/videodev2.h
-@@ -843,6 +843,29 @@ struct v4l2_pix_format {
- #define V4L2_META_FMT_RK_ISP1_PARAMS	v4l2_fourcc('R', 'K', '1', 'P') /* Rockchip ISP1 3A Parameters */
- #define V4L2_META_FMT_RK_ISP1_STAT_3A	v4l2_fourcc('R', 'K', '1', 'S') /* Rockchip ISP1 3A Statistics */
+ 		return NULL;
+ 	}
+@@ -1606,6 +1608,10 @@ void v4l2_ctrl_fill(u32 id, const char **name, enum v4l2_ctrl_type *type,
+ 	case V4L2_CID_COLORIMETRY_HDR10_MASTERING_DISPLAY:
+ 		*type = V4L2_CTRL_TYPE_HDR10_MASTERING_DISPLAY;
+ 		break;
++	case V4L2_CID_M2M_AUDIO_SOURCE_RATE:
++	case V4L2_CID_M2M_AUDIO_DEST_RATE:
++		*type = V4L2_CTRL_TYPE_INTEGER_MENU;
++		break;
+ 	default:
+ 		*type = V4L2_CTRL_TYPE_INTEGER;
+ 		break;
+diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4l2-controls.h
+index a8b4b830c757..30129ccdc282 100644
+--- a/include/uapi/linux/v4l2-controls.h
++++ b/include/uapi/linux/v4l2-controls.h
+@@ -3495,6 +3495,11 @@ struct v4l2_ctrl_av1_film_grain {
+ #define V4L2_CID_M2M_AUDIO_CLASS_BASE  (V4L2_CTRL_CLASS_M2M_AUDIO | 0x900)
+ #define V4L2_CID_M2M_AUDIO_CLASS       (V4L2_CTRL_CLASS_M2M_AUDIO | 1)
  
-+/*
-+ * Audio-data formats
-+ * All these audio formats use a fourcc starting with 'AU'
-+ * followed by the SNDRV_PCM_FORMAT_ value from asound.h.
-+ */
-+#define V4L2_AUDIO_FMT_S8			v4l2_fourcc('A', 'U', '0', '0')
-+#define V4L2_AUDIO_FMT_S16_LE			v4l2_fourcc('A', 'U', '0', '2')
-+#define V4L2_AUDIO_FMT_U16_LE			v4l2_fourcc('A', 'U', '0', '4')
-+#define V4L2_AUDIO_FMT_S24_LE			v4l2_fourcc('A', 'U', '0', '6')
-+#define V4L2_AUDIO_FMT_U24_LE			v4l2_fourcc('A', 'U', '0', '8')
-+#define V4L2_AUDIO_FMT_S32_LE			v4l2_fourcc('A', 'U', '1', '0')
-+#define V4L2_AUDIO_FMT_U32_LE			v4l2_fourcc('A', 'U', '1', '2')
-+#define V4L2_AUDIO_FMT_FLOAT_LE			v4l2_fourcc('A', 'U', '1', '4')
-+#define V4L2_AUDIO_FMT_IEC958_SUBFRAME_LE	v4l2_fourcc('A', 'U', '1', '8')
-+#define V4L2_AUDIO_FMT_S24_3LE			v4l2_fourcc('A', 'U', '3', '2')
-+#define V4L2_AUDIO_FMT_U24_3LE			v4l2_fourcc('A', 'U', '3', '4')
-+#define V4L2_AUDIO_FMT_S20_3LE			v4l2_fourcc('A', 'U', '3', '6')
-+#define V4L2_AUDIO_FMT_U20_3LE			v4l2_fourcc('A', 'U', '3', '8')
++#define V4L2_CID_M2M_AUDIO_SOURCE_RATE	(V4L2_CID_M2M_AUDIO_CLASS_BASE + 0)
++#define V4L2_CID_M2M_AUDIO_DEST_RATE	(V4L2_CID_M2M_AUDIO_CLASS_BASE + 1)
++#define V4L2_CID_M2M_AUDIO_SOURCE_RATE_OFFSET	(V4L2_CID_M2M_AUDIO_CLASS_BASE + 2)
++#define V4L2_CID_M2M_AUDIO_DEST_RATE_OFFSET	(V4L2_CID_M2M_AUDIO_CLASS_BASE + 3)
 +
-+#define v4l2_fourcc_to_audfmt(fourcc)	\
-+	(__force snd_pcm_format_t)(((((fourcc) >> 16) & 0xff) - '0') * 10  \
-+				   + ((((fourcc) >> 24) & 0xff) - '0'))
-+
- /* priv field value to indicates that subsequent fields are valid. */
- #define V4L2_PIX_FMT_PRIV_MAGIC		0xfeedcafe
- 
+ /* MPEG-compression definitions kept for backwards compatibility */
+ #ifndef __KERNEL__
+ #define V4L2_CTRL_CLASS_MPEG            V4L2_CTRL_CLASS_CODEC
 -- 
 2.34.1
 
