@@ -4,46 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 654B9C4707B
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Jan 2024 13:16:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F866C4707B
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Jan 2024 13:16:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4635A83B;
-	Thu, 18 Jan 2024 14:16:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4635A83B
+	by alsa0.perex.cz (Postfix) with ESMTPS id E8216857;
+	Thu, 18 Jan 2024 14:16:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E8216857
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1705583770;
-	bh=eA+QV5MORPGVMOkV8/lngjkLrx7P/9sMBakDpqbAkNM=;
-	h=From:To:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=a5XYynTopb2tVuBkNxHLznXCy8hKsRuZUTFQP51AlQpR4FCOXpLH+Plkzyl6bl2CW
-	 13CT2NIzv1psDtwjgM1YxYbUfbijhtrmJAC15iXxzRxzbvj2nlqSVmqutQ2ovHx5/E
-	 F5d8QrAyVybW0bYvMkdk0JTJIzhHtmI7SnXF2DlM=
+	s=default; t=1705583791;
+	bh=av6fOLV/++JwoVuZ28V9t3kDf6O1gW/IMhILJHw/04U=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=DjvKciOWw+Kx2QBZlMgTshOPoTd+g+Pl8Cr3hpWlG8WwHYOnRA6PKWnS4AzdYzLDR
+	 51WzpOOf/f5VSxJuLZ81NxBmrw+VcGWH4VcUXE+IyIEQk1XRhqRnErEDnuEcuVOa1K
+	 sUro0QfWl00bHVleJM+eOK/QdTmzHk5GOTNPH/EU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B1CD8F805F4; Thu, 18 Jan 2024 14:15:13 +0100 (CET)
+	id DE7B4F8028D; Thu, 18 Jan 2024 14:15:14 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A28F4F805D5;
-	Thu, 18 Jan 2024 14:15:12 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 499BDF805FD;
+	Thu, 18 Jan 2024 14:15:14 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 489BCF80074; Thu, 18 Jan 2024 14:15:04 +0100 (CET)
-Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
+	id 2D304F80520; Thu, 18 Jan 2024 14:15:06 +0100 (CET)
+Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 9A906F80074
-	for <alsa-devel@alsa-project.org>; Thu, 18 Jan 2024 14:14:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9A906F80074
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id A72CA2022F1;
-	Thu, 18 Jan 2024 14:14:49 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 99FD6F8014B
+	for <alsa-devel@alsa-project.org>; Thu, 18 Jan 2024 14:14:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 99FD6F8014B
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id BE4DB1A0740;
+	Thu, 18 Jan 2024 14:14:52 +0100 (CET)
 Received: from aprdc01srsp001v.ap-rdc01.nxp.com
  (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
-	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 422722022EA;
-	Thu, 18 Jan 2024 14:14:49 +0100 (CET)
+	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 5BE9D1A0762;
+	Thu, 18 Jan 2024 14:14:52 +0100 (CET)
 Received: from localhost.localdomain (shlinux2.ap.freescale.net
  [10.192.224.44])
-	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 33218183487A;
-	Thu, 18 Jan 2024 21:14:47 +0800 (+08)
+	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 57751183AC0A;
+	Thu, 18 Jan 2024 21:14:50 +0800 (+08)
 From: Shengjiu Wang <shengjiu.wang@nxp.com>
 To: hverkuil@xs4all.nl,
 	sakari.ailus@iki.fi,
@@ -62,13 +63,16 @@ To: hverkuil@xs4all.nl,
 	tiwai@suse.com,
 	alsa-devel@alsa-project.org,
 	linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH v12 00/15] Add audio support in v4l2 framework
-Date: Thu, 18 Jan 2024 20:31:53 +0800
-Message-Id: <1705581128-4604-1-git-send-email-shengjiu.wang@nxp.com>
+Subject: [PATCH v12 02/15] ASoC: fsl_easrc: define functions for memory to
+ memory usage
+Date: Thu, 18 Jan 2024 20:31:55 +0800
+Message-Id: <1705581128-4604-3-git-send-email-shengjiu.wang@nxp.com>
 X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1705581128-4604-1-git-send-email-shengjiu.wang@nxp.com>
+References: <1705581128-4604-1-git-send-email-shengjiu.wang@nxp.com>
 X-Virus-Scanned: ClamAV using ClamSMTP
-Message-ID-Hash: Z4SBMMGNETINYG2RFFNCCRHEMCXHCTUH
-X-Message-ID-Hash: Z4SBMMGNETINYG2RFFNCCRHEMCXHCTUH
+Message-ID-Hash: NRDEKV7VQWET2GODTBBFOBETOYLBBY3Q
+X-Message-ID-Hash: NRDEKV7VQWET2GODTBBFOBETOYLBBY3Q
 X-MailFrom: shengjiu.wang@nxp.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -81,7 +85,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Z4SBMMGNETINYG2RFFNCCRHEMCXHCTUH/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NRDEKV7VQWET2GODTBBFOBETOYLBBY3Q/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -90,163 +94,270 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Audio signal processing also has the requirement for memory to
-memory similar as Video.
+ASRC can be used on memory to memory case, define several
+functions for m2m usage and export them as function pointer.
 
-This asrc memory to memory (memory ->asrc->memory) case is a non
-real time use case.
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+Acked-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/fsl/fsl_easrc.c | 214 ++++++++++++++++++++++++++++++++++++++
+ sound/soc/fsl/fsl_easrc.h |   4 +
+ 2 files changed, 218 insertions(+)
 
-User fills the input buffer to the asrc module, after conversion, then asrc
-sends back the output buffer to user. So it is not a traditional ALSA playback
-and capture case.
-
-It is a specific use case,  there is no reference in current kernel.
-v4l2 memory to memory is the closed implementation,  v4l2 current
-support video, image, radio, tuner, touch devices, so it is not
-complicated to add support for this specific audio case.
-
-Because we had implemented the "memory -> asrc ->i2s device-> codec"
-use case in ALSA.  Now the "memory->asrc->memory" needs
-to reuse the code in asrc driver, so the first 3 patches is for refining
-the code to make it can be shared by the "memory->asrc->memory"
-driver.
-
-The main change is in the v4l2 side, A /dev/vl4-audioX will be created,
-user applications only use the ioctl of v4l2 framework.
-
-Other change is to add memory to memory support for two kinds of i.MX ASRC
-module.
-
-changes in v12
-- minor changes according to comments
-- drop min_buffers_needed = 1 and V4L2_CTRL_FLAG_UPDATE flag
-- drop bus_info
-
-changes in v11
-- add add-fixed-point-test-controls in vivid.
-- add v4l2_ctrl_fp_compose() helper function for min and max
-
-changes in v10
-- remove FIXED_POINT type
-- change code base on media: v4l2-ctrls: add support for fraction_bits
-- fix issue reported by kernel test robot
-- remove module_alias
-
-changes in v9:
-- add MEDIA_ENT_F_PROC_AUDIO_RESAMPLER.
-- add MEDIA_INTF_T_V4L_AUDIO
-- add media controller support
-- refine the vim2m-audio to support 8k<->16k conversion.
-
-changes in v8:
-- refine V4L2_CAP_AUDIO_M2M to be 0x00000008
-- update doc for FIXED_POINT
-- address comments for imx-asrc
-
-changes in v7:
-- add acked-by from Mark
-- separate commit for fixed point, m2m audio class, audio rate controls
-- use INTEGER_MENU for rate,  FIXED_POINT for rate offset
-- remove used fmts
-- address other comments for Hans
-
-changes in v6:
-- use m2m_prepare/m2m_unprepare/m2m_start/m2m_stop to replace
-  m2m_start_part_one/m2m_stop_part_one, m2m_start_part_two/m2m_stop_part_two.
-- change V4L2_CTRL_TYPE_ASRC_RATE to V4L2_CTRL_TYPE_FIXED_POINT
-- fix warning by kernel test rebot
-- remove some unused format V4L2_AUDIO_FMT_XX
-- Get SNDRV_PCM_FORMAT from V4L2_AUDIO_FMT in driver.
-- rename audm2m to viaudm2m.
-
-changes in v5:
-- remove V4L2_AUDIO_FMT_LPCM
-- define audio pixel format like V4L2_AUDIO_FMT_S8...
-- remove rate and format in struct v4l2_audio_format.
-- Add V4L2_CID_ASRC_SOURCE_RATE and V4L2_CID_ASRC_DEST_RATE controls
-- updata document accordingly.
-
-changes in v4:
-- update document style
-- separate V4L2_AUDIO_FMT_LPCM and V4L2_CAP_AUDIO_M2M in separate commit
-
-changes in v3:
-- Modify documents for adding audio m2m support
-- Add audio virtual m2m driver
-- Defined V4L2_AUDIO_FMT_LPCM format type for audio.
-- Defined V4L2_CAP_AUDIO_M2M capability type for audio m2m case.
-- with modification in v4l-utils, pass v4l2-compliance test.
-
-changes in v2:
-- decouple the implementation in v4l2 and ALSA
-- implement the memory to memory driver as a platfrom driver
-  and move it to driver/media
-- move fsl_asrc_common.h to include/sound folder
-
-Shengjiu Wang (15):
-  ASoC: fsl_asrc: define functions for memory to memory usage
-  ASoC: fsl_easrc: define functions for memory to memory usage
-  ASoC: fsl_asrc: move fsl_asrc_common.h to include/sound
-  ASoC: fsl_asrc: register m2m platform device
-  ASoC: fsl_easrc: register m2m platform device
-  media: uapi: Add V4L2_CAP_AUDIO_M2M capability flag
-  media: v4l2: Add audio capture and output support
-  media: uapi: Define audio sample format fourcc type
-  media: uapi: Add V4L2_CTRL_CLASS_M2M_AUDIO
-  media: uapi: Add audio rate controls support
-  media: uapi: Declare interface types for Audio
-  media: uapi: Add an entity type for audio resampler
-  media: vivid: add fixed point test controls
-  media: imx-asrc: Add memory to memory driver
-  media: vim2m-audio: add virtual driver for audio memory to memory
-
- .../media/mediactl/media-types.rst            |   11 +
- .../userspace-api/media/v4l/buffer.rst        |    6 +
- .../userspace-api/media/v4l/common.rst        |    1 +
- .../media/v4l/dev-audio-mem2mem.rst           |   71 +
- .../userspace-api/media/v4l/devices.rst       |    1 +
- .../media/v4l/ext-ctrls-audio-m2m.rst         |   41 +
- .../userspace-api/media/v4l/pixfmt-audio.rst  |   87 ++
- .../userspace-api/media/v4l/pixfmt.rst        |    1 +
- .../media/v4l/vidioc-enum-fmt.rst             |    2 +
- .../media/v4l/vidioc-g-ext-ctrls.rst          |    4 +
- .../userspace-api/media/v4l/vidioc-g-fmt.rst  |    4 +
- .../media/v4l/vidioc-querycap.rst             |    3 +
- .../media/videodev2.h.rst.exceptions          |    3 +
- .../media/common/videobuf2/videobuf2-v4l2.c   |    4 +
- drivers/media/platform/nxp/Kconfig            |   13 +
- drivers/media/platform/nxp/Makefile           |    1 +
- drivers/media/platform/nxp/imx-asrc.c         | 1256 +++++++++++++++++
- drivers/media/test-drivers/Kconfig            |   10 +
- drivers/media/test-drivers/Makefile           |    1 +
- drivers/media/test-drivers/vim2m-audio.c      |  793 +++++++++++
- drivers/media/test-drivers/vivid/vivid-core.h |    2 +
- .../media/test-drivers/vivid/vivid-ctrls.c    |   26 +
- drivers/media/v4l2-core/v4l2-compat-ioctl32.c |    9 +
- drivers/media/v4l2-core/v4l2-ctrls-defs.c     |   10 +
- drivers/media/v4l2-core/v4l2-dev.c            |   21 +
- drivers/media/v4l2-core/v4l2-ioctl.c          |   66 +
- drivers/media/v4l2-core/v4l2-mem2mem.c        |   13 +-
- include/media/v4l2-ctrls.h                    |    6 +
- include/media/v4l2-dev.h                      |    2 +
- include/media/v4l2-ioctl.h                    |   34 +
- .../fsl => include/sound}/fsl_asrc_common.h   |   60 +
- include/uapi/linux/media.h                    |    2 +
- include/uapi/linux/v4l2-controls.h            |    9 +
- include/uapi/linux/videodev2.h                |   41 +
- sound/soc/fsl/fsl_asrc.c                      |  144 ++
- sound/soc/fsl/fsl_asrc.h                      |    4 +-
- sound/soc/fsl/fsl_asrc_dma.c                  |    2 +-
- sound/soc/fsl/fsl_easrc.c                     |  233 +++
- sound/soc/fsl/fsl_easrc.h                     |    6 +-
- 39 files changed, 2996 insertions(+), 7 deletions(-)
- create mode 100644 Documentation/userspace-api/media/v4l/dev-audio-mem2mem.rst
- create mode 100644 Documentation/userspace-api/media/v4l/ext-ctrls-audio-m2m.rst
- create mode 100644 Documentation/userspace-api/media/v4l/pixfmt-audio.rst
- create mode 100644 drivers/media/platform/nxp/imx-asrc.c
- create mode 100644 drivers/media/test-drivers/vim2m-audio.c
- rename {sound/soc/fsl => include/sound}/fsl_asrc_common.h (60%)
-
+diff --git a/sound/soc/fsl/fsl_easrc.c b/sound/soc/fsl/fsl_easrc.c
+index ec53bda46a46..cf7ad30a323b 100644
+--- a/sound/soc/fsl/fsl_easrc.c
++++ b/sound/soc/fsl/fsl_easrc.c
+@@ -1861,6 +1861,211 @@ static int fsl_easrc_get_fifo_addr(u8 dir, enum asrc_pair_index index)
+ 	return REG_EASRC_FIFO(dir, index);
+ }
+ 
++/* Get sample numbers in FIFO */
++static unsigned int fsl_easrc_get_output_fifo_size(struct fsl_asrc_pair *pair)
++{
++	struct fsl_asrc *asrc = pair->asrc;
++	enum asrc_pair_index index = pair->index;
++	u32 val;
++
++	regmap_read(asrc->regmap, REG_EASRC_SFS(index), &val);
++	val &= EASRC_SFS_NSGO_MASK;
++
++	return val >> EASRC_SFS_NSGO_SHIFT;
++}
++
++static int fsl_easrc_m2m_prepare(struct fsl_asrc_pair *pair)
++{
++	struct fsl_easrc_ctx_priv *ctx_priv = pair->private;
++	struct fsl_asrc *asrc = pair->asrc;
++	struct device *dev = &asrc->pdev->dev;
++	int ret;
++
++	ctx_priv->in_params.sample_rate = pair->rate[IN];
++	ctx_priv->in_params.sample_format = pair->sample_format[IN];
++	ctx_priv->out_params.sample_rate = pair->rate[OUT];
++	ctx_priv->out_params.sample_format = pair->sample_format[OUT];
++
++	ctx_priv->in_params.fifo_wtmk = FSL_EASRC_INPUTFIFO_WML;
++	ctx_priv->out_params.fifo_wtmk = FSL_EASRC_OUTPUTFIFO_WML;
++	/* Fill the right half of the re-sampler with zeros */
++	ctx_priv->rs_init_mode = 0x2;
++	/* Zero fill the right half of the prefilter */
++	ctx_priv->pf_init_mode = 0x2;
++
++	ret = fsl_easrc_set_ctx_format(pair,
++				       &ctx_priv->in_params.sample_format,
++				       &ctx_priv->out_params.sample_format);
++	if (ret) {
++		dev_err(dev, "failed to set context format: %d\n", ret);
++		return ret;
++	}
++
++	ret = fsl_easrc_config_context(asrc, pair->index);
++	if (ret) {
++		dev_err(dev, "failed to config context %d\n", ret);
++		return ret;
++	}
++
++	ctx_priv->in_params.iterations = 1;
++	ctx_priv->in_params.group_len = pair->channels;
++	ctx_priv->in_params.access_len = pair->channels;
++	ctx_priv->out_params.iterations = 1;
++	ctx_priv->out_params.group_len = pair->channels;
++	ctx_priv->out_params.access_len = pair->channels;
++
++	ret = fsl_easrc_set_ctx_organziation(pair);
++	if (ret) {
++		dev_err(dev, "failed to set fifo organization\n");
++		return ret;
++	}
++
++	/* The context start flag */
++	pair->first_convert = 1;
++	return 0;
++}
++
++static int fsl_easrc_m2m_start(struct fsl_asrc_pair *pair)
++{
++	/* start context once */
++	if (pair->first_convert) {
++		fsl_easrc_start_context(pair);
++		pair->first_convert = 0;
++	}
++
++	return 0;
++}
++
++static int fsl_easrc_m2m_stop(struct fsl_asrc_pair *pair)
++{
++	/* Stop pair/context */
++	if (!pair->first_convert) {
++		fsl_easrc_stop_context(pair);
++		pair->first_convert = 1;
++	}
++
++	return 0;
++}
++
++/* calculate capture data length according to output data length and sample rate */
++static int fsl_easrc_m2m_calc_out_len(struct fsl_asrc_pair *pair, int input_buffer_length)
++{
++	struct fsl_asrc *easrc = pair->asrc;
++	struct fsl_easrc_priv *easrc_priv = easrc->private;
++	struct fsl_easrc_ctx_priv *ctx_priv = pair->private;
++	unsigned int in_rate = ctx_priv->in_params.norm_rate;
++	unsigned int out_rate = ctx_priv->out_params.norm_rate;
++	unsigned int channels = pair->channels;
++	unsigned int in_samples, out_samples;
++	unsigned int in_width, out_width;
++	unsigned int out_length;
++	unsigned int frac_bits;
++	u64 val1, val2;
++
++	switch (easrc_priv->rs_num_taps) {
++	case EASRC_RS_32_TAPS:
++		/* integer bits = 5; */
++		frac_bits = 39;
++		break;
++	case EASRC_RS_64_TAPS:
++		/* integer bits = 6; */
++		frac_bits = 38;
++		break;
++	case EASRC_RS_128_TAPS:
++		/* integer bits = 7; */
++		frac_bits = 37;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	val1 = (u64)in_rate << frac_bits;
++	do_div(val1, out_rate);
++	val1 += (s64)ctx_priv->ratio_mod << (frac_bits - 31);
++
++	in_width = snd_pcm_format_physical_width(ctx_priv->in_params.sample_format) / 8;
++	out_width = snd_pcm_format_physical_width(ctx_priv->out_params.sample_format) / 8;
++
++	ctx_priv->in_filled_len += input_buffer_length;
++	if (ctx_priv->in_filled_len <= ctx_priv->in_filled_sample * in_width * channels) {
++		out_length = 0;
++	} else {
++		in_samples = ctx_priv->in_filled_len / (in_width * channels) -
++			     ctx_priv->in_filled_sample;
++
++		/* right shift 12 bit to make ratio in 32bit space */
++		val2 = (u64)in_samples << (frac_bits - 12);
++		val1 = val1 >> 12;
++		do_div(val2, val1);
++		out_samples = val2;
++
++		out_length = out_samples * out_width * channels;
++		ctx_priv->in_filled_len = ctx_priv->in_filled_sample * in_width * channels;
++	}
++
++	return out_length;
++}
++
++static int fsl_easrc_m2m_get_maxburst(u8 dir, struct fsl_asrc_pair *pair)
++{
++	struct fsl_easrc_ctx_priv *ctx_priv = pair->private;
++
++	if (dir == IN)
++		return ctx_priv->in_params.fifo_wtmk * pair->channels;
++	else
++		return ctx_priv->out_params.fifo_wtmk * pair->channels;
++}
++
++static int fsl_easrc_m2m_pair_suspend(struct fsl_asrc_pair *pair)
++{
++	fsl_easrc_stop_context(pair);
++
++	return 0;
++}
++
++static int fsl_easrc_m2m_pair_resume(struct fsl_asrc_pair *pair)
++{
++	struct fsl_easrc_ctx_priv *ctx_priv = pair->private;
++
++	pair->first_convert = 1;
++	ctx_priv->in_filled_len = 0;
++
++	return 0;
++}
++
++/* val is Q31 */
++static int fsl_easrc_m2m_set_ratio_mod(struct fsl_asrc_pair *pair, int val)
++{
++	struct fsl_easrc_ctx_priv *ctx_priv = pair->private;
++	struct fsl_asrc *easrc = pair->asrc;
++	struct fsl_easrc_priv *easrc_priv = easrc->private;
++	unsigned int frac_bits;
++
++	ctx_priv->ratio_mod += val;
++
++	switch (easrc_priv->rs_num_taps) {
++	case EASRC_RS_32_TAPS:
++		/* integer bits = 5; */
++		frac_bits = 39;
++		break;
++	case EASRC_RS_64_TAPS:
++		/* integer bits = 6; */
++		frac_bits = 38;
++		break;
++	case EASRC_RS_128_TAPS:
++		/* integer bits = 7; */
++		frac_bits = 37;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	val <<= (frac_bits - 31);
++	regmap_write(easrc->regmap, REG_EASRC_RUC(pair->index), EASRC_RSUC_RS_RM(val));
++
++	return 0;
++}
++
+ static const struct of_device_id fsl_easrc_dt_ids[] = {
+ 	{ .compatible = "fsl,imx8mn-easrc",},
+ 	{}
+@@ -1926,6 +2131,15 @@ static int fsl_easrc_probe(struct platform_device *pdev)
+ 	easrc->release_pair = fsl_easrc_release_context;
+ 	easrc->get_fifo_addr = fsl_easrc_get_fifo_addr;
+ 	easrc->pair_priv_size = sizeof(struct fsl_easrc_ctx_priv);
++	easrc->m2m_prepare = fsl_easrc_m2m_prepare;
++	easrc->m2m_start = fsl_easrc_m2m_start;
++	easrc->m2m_stop = fsl_easrc_m2m_stop;
++	easrc->get_output_fifo_size = fsl_easrc_get_output_fifo_size;
++	easrc->m2m_calc_out_len = fsl_easrc_m2m_calc_out_len;
++	easrc->m2m_get_maxburst = fsl_easrc_m2m_get_maxburst;
++	easrc->m2m_pair_suspend = fsl_easrc_m2m_pair_suspend;
++	easrc->m2m_pair_resume = fsl_easrc_m2m_pair_resume;
++	easrc->m2m_set_ratio_mod = fsl_easrc_m2m_set_ratio_mod;
+ 
+ 	easrc_priv->rs_num_taps = EASRC_RS_32_TAPS;
+ 	easrc_priv->const_coeff = 0x3FF0000000000000;
+diff --git a/sound/soc/fsl/fsl_easrc.h b/sound/soc/fsl/fsl_easrc.h
+index 7c70dac52713..c9f770862662 100644
+--- a/sound/soc/fsl/fsl_easrc.h
++++ b/sound/soc/fsl/fsl_easrc.h
+@@ -601,6 +601,8 @@ struct fsl_easrc_slot {
+  * @out_missed_sample: sample missed in output
+  * @st1_addexp: exponent added for stage1
+  * @st2_addexp: exponent added for stage2
++ * @ratio_mod: update ratio
++ * @in_filled_len: input filled length
+  */
+ struct fsl_easrc_ctx_priv {
+ 	struct fsl_easrc_io_params in_params;
+@@ -618,6 +620,8 @@ struct fsl_easrc_ctx_priv {
+ 	int out_missed_sample;
+ 	int st1_addexp;
+ 	int st2_addexp;
++	int ratio_mod;
++	unsigned int in_filled_len;
+ };
+ 
+ /**
 -- 
 2.34.1
 
