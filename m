@@ -4,76 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B6088C47DB3
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Jan 2024 16:58:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C669EC47DB3
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Jan 2024 16:59:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 778D8827;
-	Thu, 18 Jan 2024 17:58:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 778D8827
+	by alsa0.perex.cz (Postfix) with ESMTPS id DF720825;
+	Thu, 18 Jan 2024 17:59:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DF720825
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1705597135;
-	bh=QYRlUkW/XpdCNFGIHDOmI1vkPXM8L2eljOqXfzrzFsQ=;
-	h=From:Date:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1705597152;
+	bh=j++VE3yyl/3Aq6hN2lI/I5Lv3fNUZ9f2+8EY9q5HghQ=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=SRey/g/MSQuWeCmwKwRzF5E9pFymp4Ttt6Px22uN+poAgcYf8DspU+gVPhps4Var0
-	 IjMsEXW+8Cv60KXyIsHFZZKM3RpXHEACcT0mAmDlwqHgKARjAkbJ0jPcS9TwX+HwOb
-	 MaoJwu4lDDcKNRHI5MEqbZUeFvKFy+r4/LB1zvo4=
+	b=GUjeo9AjAmXCO56MdiGSWagr4YhGSxwPuTA6BgLgzo86+hl50wqcC5X9deoL2XqS4
+	 9lijoaTuxScvtICUUSepn07DhNNwqY3582tzZa5vqeSNBPUu3bUyQgMCAHYDb2LTv3
+	 7+CdQCdc2fuz/A8TwxINzOZOtHqkzA2UlxlfT6sk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B56B4F8057C; Thu, 18 Jan 2024 17:58:18 +0100 (CET)
+	id 2C333F805C3; Thu, 18 Jan 2024 17:58:36 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0B32CF80580;
-	Thu, 18 Jan 2024 17:58:18 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2A651F805C4;
+	Thu, 18 Jan 2024 17:58:36 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B0150F801F5; Thu, 18 Jan 2024 17:58:14 +0100 (CET)
-Received: from fgw23-7.mail.saunalahti.fi (fgw23-7.mail.saunalahti.fi
- [62.142.5.84])
+	id 814CEF8059F; Thu, 18 Jan 2024 17:58:31 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 18587F80074
-	for <alsa-devel@alsa-project.org>; Thu, 18 Jan 2024 17:58:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 18587F80074
-Received: from localhost (88-113-24-108.elisa-laajakaista.fi [88.113.24.108])
-	by fgw23.mail.saunalahti.fi (Halon) with ESMTP
-	id c2b5c193-b622-11ee-b972-005056bdfda7;
-	Thu, 18 Jan 2024 18:58:11 +0200 (EET)
-From: andy.shevchenko@gmail.com
-Date: Thu, 18 Jan 2024 18:58:10 +0200
-To: Charles Keepax <ckeepax@opensource.cirrus.com>
-Cc: broonie@kernel.org, lee@kernel.org, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	linus.walleij@linaro.org, vkoul@kernel.org, lgirdwood@gmail.com,
-	yung-chuan.liao@linux.intel.com, sanyog.r.kale@intel.com,
-	pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
-	patches@opensource.cirrus.com, devicetree@vger.kernel.org,
-	linux-gpio@vger.kernel.org, linux-spi@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 0/6] Add cs42l43 PC focused SoundWire CODEC
-Message-ID: <ZalYooJxj7Ba0sYU@surfacebook.localdomain>
-References: <20230804104602.395892-1-ckeepax@opensource.cirrus.com>
+	by alsa1.perex.cz (Postfix) with ESMTPS id 1E854F8057E
+	for <alsa-devel@alsa-project.org>; Thu, 18 Jan 2024 17:58:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1E854F8057E
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=JSLp7lP+
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by ams.source.kernel.org (Postfix) with ESMTP id 3F6C9B81890;
+	Thu, 18 Jan 2024 16:58:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9DEFFC433C7;
+	Thu, 18 Jan 2024 16:58:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705597105;
+	bh=j++VE3yyl/3Aq6hN2lI/I5Lv3fNUZ9f2+8EY9q5HghQ=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=JSLp7lP+yt2+TNDtjYwQo3EhajRF3UyEJl8Qt1EyujY64k5U+PZVx5JcOKgBs+35j
+	 6n3xNowULaMqLpw5e66YN3REKKMbwnPoceprkwxWR18V4gXCc8z3+DYZClyIIHNX/9
+	 CejlplkAfn1oKeq2i3MofOS4s4MMM2K9dhViBL7eiziFiW+DbnxgIN/W4SnItWKGzU
+	 1D00ayoUHdNqDpTBxrzzT7o34mt6DRlKEvYW5kzNfpCuVdvss2jiLNZGZcNPlj7Hgj
+	 NcuDaBV7sw7h52cu8Zg+kq1ou4oStn41Bh8sbtJqOj1cMENM3ZQwzLAp4aEyaBiPvU
+	 9COmIaQoyDZfw==
+Received: from johan by xi.lan with local (Exim 4.96.2)
+	(envelope-from <johan+linaro@kernel.org>)
+	id 1rQVir-0003Yy-1q;
+	Thu, 18 Jan 2024 17:58:33 +0100
+From: Johan Hovold <johan+linaro@kernel.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+	Banajit Goswami <bgoswami@quicinc.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	alsa-devel@alsa-project.org,
+	linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Johan Hovold <johan+linaro@kernel.org>,
+	stable@vger.kernel.org
+Subject: [PATCH v3 1/5] ASoC: codecs: wsa883x: fix PA volume control
+Date: Thu, 18 Jan 2024 17:58:07 +0100
+Message-ID: <20240118165811.13672-2-johan+linaro@kernel.org>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20240118165811.13672-1-johan+linaro@kernel.org>
+References: <20240118165811.13672-1-johan+linaro@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230804104602.395892-1-ckeepax@opensource.cirrus.com>
-Message-ID-Hash: KMKUKV7D72MWJ4SLSQGGH5XQRDZFWCQ3
-X-Message-ID-Hash: KMKUKV7D72MWJ4SLSQGGH5XQRDZFWCQ3
-X-MailFrom: andy.shevchenko@gmail.com
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: QAPAI4YRWLNY5RAA76BKP4DQOKEIFIJ6
+X-Message-ID-Hash: QAPAI4YRWLNY5RAA76BKP4DQOKEIFIJ6
+X-MailFrom: johan+linaro@kernel.org
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KMKUKV7D72MWJ4SLSQGGH5XQRDZFWCQ3/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QAPAI4YRWLNY5RAA76BKP4DQOKEIFIJ6/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -82,24 +101,45 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Fri, Aug 04, 2023 at 11:45:56AM +0100, Charles Keepax kirjoitti:
-> This patch chain adds support for the Cirrus Logic cs42l43 PC focused
-> SoundWire CODEC. The chain is currently based of Lee's for-mfd-next
-> branch.
-> 
-> This series is mostly just a resend keeping pace with the kernel under
-> it, except for a minor fixup in the ASoC stuff.
+The PA gain can be set in steps of 1.5 dB from -3 dB to 18 dB, that is,
+in fifteen levels.
 
+Fix the range of the PA volume control to avoid having the first
+sixteen levels all map to -3 dB.
 
-Sorry for the late review, nevertheless, I was alerted by the pin control code
-probe function that does something custom with devlinks. This is a red flag,
-please find time to fix that.
+Note that level 0 (-3 dB) does not mute the PA so the mute flag should
+also not be set.
 
-The rest of the review (since the code is in upstream) is probably good to have
-via follow up cleanups.
+Fixes: cdb09e623143 ("ASoC: codecs: wsa883x: add control, dapm widgets and map")
+Cc: stable@vger.kernel.org      # 6.0
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
+---
+ sound/soc/codecs/wsa883x.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
+diff --git a/sound/soc/codecs/wsa883x.c b/sound/soc/codecs/wsa883x.c
+index cb83c569e18d..32983ca9afba 100644
+--- a/sound/soc/codecs/wsa883x.c
++++ b/sound/soc/codecs/wsa883x.c
+@@ -1098,7 +1098,7 @@ static int wsa_dev_mode_put(struct snd_kcontrol *kcontrol,
+ 	return 1;
+ }
+ 
+-static const DECLARE_TLV_DB_SCALE(pa_gain, -300, 150, -300);
++static const DECLARE_TLV_DB_SCALE(pa_gain, -300, 150, 0);
+ 
+ static int wsa883x_get_swr_port(struct snd_kcontrol *kcontrol,
+ 				struct snd_ctl_elem_value *ucontrol)
+@@ -1239,7 +1239,7 @@ static const struct snd_soc_dapm_widget wsa883x_dapm_widgets[] = {
+ 
+ static const struct snd_kcontrol_new wsa883x_snd_controls[] = {
+ 	SOC_SINGLE_RANGE_TLV("PA Volume", WSA883X_DRE_CTL_1, 1,
+-			     0x0, 0x1f, 1, pa_gain),
++			     0x1, 0xf, 1, pa_gain),
+ 	SOC_ENUM_EXT("WSA MODE", wsa_dev_mode_enum,
+ 		     wsa_dev_mode_get, wsa_dev_mode_put),
+ 	SOC_SINGLE_EXT("COMP Offset", SND_SOC_NOPM, 0, 4, 0,
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.41.0
 
