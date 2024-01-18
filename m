@@ -4,95 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 15EE9C47DAF
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Jan 2024 17:00:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 40108C47DAF
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Jan 2024 17:06:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 83CE182C;
-	Thu, 18 Jan 2024 18:00:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 83CE182C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 44AAA7F1;
+	Thu, 18 Jan 2024 18:06:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 44AAA7F1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1705597240;
-	bh=l7DGGpCso7bX08YQvGfXDvfIrpjxnzkTzOG8xe3VBVk=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1705597614;
+	bh=zwlAmsr3jy9o0CUfZAf7n0+dthoLludbuSbP800F6PU=;
+	h=From:Date:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=AsCdp7lk4T4aXcgWkSbnaByhuVumsaGUtCLcKEWII+AGwx8dpIpjhiJt1jn1gDFRu
-	 IA+Qtt7xdQFDgw6IfMvzUvSJEXxu/pQ9L3Wtgyb23ZCY9EhLP6eLLvEGkGr8NvYrAo
-	 w5dbH6tbgLwmejzCHLemQIFNtEKGhFpdpuMzAZGU=
+	b=dQEFoGq09GGDjHxjq/woflL79i6HfAHURg5T5jwH8n5r1alxSrCYELCWHWwi5gCoa
+	 qAkE6VXHN28aMaEkrW8htkrGOzFFSsjSqwXYbL/ojUJ8EHpMT9I6iK6QjLm3CX+9lS
+	 TZoy4ZuXvNkgVqFYgb+XOI8nw/Ks1LK8kgM3irbo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4DB4BF80695; Thu, 18 Jan 2024 17:58:51 +0100 (CET)
+	id AC8D5F80589; Thu, 18 Jan 2024 18:06:22 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C674AF80686;
-	Thu, 18 Jan 2024 17:58:50 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 60996F80564;
+	Thu, 18 Jan 2024 18:06:22 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 758B1F805CA; Thu, 18 Jan 2024 17:58:39 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+	id 89263F801F5; Thu, 18 Jan 2024 18:06:17 +0100 (CET)
+Received: from fgw20-7.mail.saunalahti.fi (fgw20-7.mail.saunalahti.fi
+ [62.142.5.81])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 539D1F8003A
-	for <alsa-devel@alsa-project.org>; Thu, 18 Jan 2024 17:58:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 539D1F8003A
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=dNPc3o1T
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by ams.source.kernel.org (Postfix) with ESMTP id F1A09B818F2;
-	Thu, 18 Jan 2024 16:58:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5613C433A6;
-	Thu, 18 Jan 2024 16:58:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705597105;
-	bh=l7DGGpCso7bX08YQvGfXDvfIrpjxnzkTzOG8xe3VBVk=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=dNPc3o1TZelTNhdGXAREgHUPw1ZrgBv+4XMHedohsa6BG6u2M1btngUjF2WxpFYrV
-	 TwdxVuD6ZG/3nvEX/N7tBahtLKwnSNb0ptKnsuAk0pbF08F3xwOU020V6NO2xAo47a
-	 uOYltEr2CRFyYd/SlLjUITRKUxoepTyk2tuKJuxR/twFK5qbHhGJkuzcVy5DPAi96U
-	 guhDlYAWyLmgXmLrlqjvkkBQE5pIdPXdgC/BGzBUk9Bwo5j8UAGxnofU+dn0jYUZr8
-	 hgGaTpUd1CTKOwg4Cs3tcngujxqYSn9eu3mV8OQS+beMZV5uGBdCdtulH07dJb7DDY
-	 4Enz5H/ieA+ww==
-Received: from johan by xi.lan with local (Exim 4.96.2)
-	(envelope-from <johan+linaro@kernel.org>)
-	id 1rQVir-0003Z4-2l;
-	Thu, 18 Jan 2024 17:58:33 +0100
-From: Johan Hovold <johan+linaro@kernel.org>
-To: Mark Brown <broonie@kernel.org>
-Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-	Banajit Goswami <bgoswami@quicinc.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	alsa-devel@alsa-project.org,
-	linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Johan Hovold <johan+linaro@kernel.org>,
-	stable@vger.kernel.org
-Subject: [PATCH v3 4/5] ASoC: codecs: lpass-wsa-macro: fix compander volume
- hack
-Date: Thu, 18 Jan 2024 17:58:10 +0100
-Message-ID: <20240118165811.13672-5-johan+linaro@kernel.org>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20240118165811.13672-1-johan+linaro@kernel.org>
-References: <20240118165811.13672-1-johan+linaro@kernel.org>
+	by alsa1.perex.cz (Postfix) with ESMTPS id 3CA8DF80074
+	for <alsa-devel@alsa-project.org>; Thu, 18 Jan 2024 18:06:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3CA8DF80074
+Received: from localhost (88-113-24-108.elisa-laajakaista.fi [88.113.24.108])
+	by fgw20.mail.saunalahti.fi (Halon) with ESMTP
+	id e241a668-b623-11ee-b3cf-005056bd6ce9;
+	Thu, 18 Jan 2024 19:06:13 +0200 (EET)
+From: andy.shevchenko@gmail.com
+Date: Thu, 18 Jan 2024 19:06:13 +0200
+To: Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc: broonie@kernel.org, lee@kernel.org, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	linus.walleij@linaro.org, vkoul@kernel.org, lgirdwood@gmail.com,
+	yung-chuan.liao@linux.intel.com, sanyog.r.kale@intel.com,
+	pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
+	patches@opensource.cirrus.com, devicetree@vger.kernel.org,
+	linux-gpio@vger.kernel.org, linux-spi@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 5/6] spi: cs42l43: Add SPI controller support
+Message-ID: <ZalahZkCrBm-BXwz@surfacebook.localdomain>
+References: <20230804104602.395892-1-ckeepax@opensource.cirrus.com>
+ <20230804104602.395892-6-ckeepax@opensource.cirrus.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: UILDQPUGHZUUHSPHJXA55IO33Q4REZYY
-X-Message-ID-Hash: UILDQPUGHZUUHSPHJXA55IO33Q4REZYY
-X-MailFrom: johan+linaro@kernel.org
-X-Mailman-Rule-Hits: nonmember-moderation
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230804104602.395892-6-ckeepax@opensource.cirrus.com>
+Message-ID-Hash: SXCX2BM3ZFNMFEXTPXLXAAY3PF2VTAE7
+X-Message-ID-Hash: SXCX2BM3ZFNMFEXTPXLXAAY3PF2VTAE7
+X-MailFrom: andy.shevchenko@gmail.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UILDQPUGHZUUHSPHJXA55IO33Q4REZYY/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SXCX2BM3ZFNMFEXTPXLXAAY3PF2VTAE7/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -101,70 +83,98 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The LPASS WSA macro codec driver is updating the digital gain settings
-behind the back of user space on DAPM events if companding has been
-enabled.
+Fri, Aug 04, 2023 at 11:46:01AM +0100, Charles Keepax kirjoitti:
+> From: Lucas Tanure <tanureal@opensource.cirrus.com>
+> 
+> The CS42L43 is an audio CODEC with integrated MIPI SoundWire interface
+> (Version 1.2.1 compliant), I2C, SPI, and I2S/TDM interfaces designed
+> for portable applications. It provides a high dynamic range, stereo
+> DAC for headphone output, two integrated Class D amplifiers for
+> loudspeakers, and two ADCs for wired headset microphone input or
+> stereo line input. PDM inputs are provided for digital microphones.
+> 
+> The SPI component incorporates a SPI controller interface for
+> communication with other peripheral components.
 
-As compander control is exported to user space, this can result in the
-digital gain setting being incremented (or decremented) every time the
-sound server is started and the codec suspended depending on what the
-UCM configuration looks like.
+...
 
-Soon enough playback will become distorted (or too quiet).
+> +		while (buf < block) {
+> +			const u8 *word = min(buf + sizeof(u32), block);
+> +			int pad = (buf + sizeof(u32)) - word;
+> +
+> +			while (buf < word) {
+> +				val >>= BITS_PER_BYTE;
+> +				val |= FIELD_PREP(GENMASK(31, 24), *buf);
+> +
+> +				buf++;
+> +			}
 
-This is specifically a problem on the Lenovo ThinkPad X13s as this
-bypasses the limit for the digital gain setting that has been set by the
-machine driver.
+Is this a reinvented way of get_unaligned_*() APIs?
 
-Fix this by simply dropping the compander gain offset hack. If someone
-cares about modelling the impact of the compander setting this can
-possibly be done by exporting it as a volume control later.
+> +			val >>= pad * BITS_PER_BYTE;
+> +
+> +			regmap_write(regmap, CS42L43_TX_DATA, val);
+> +		}
 
-Note that the volume registers still need to be written after enabling
-clocks in order for any prior updates to take effect.
+...
 
-Fixes: 2c4066e5d428 ("ASoC: codecs: lpass-wsa-macro: add dapm widgets and route")
-Cc: stable@vger.kernel.org      # 5.11
-Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
----
- sound/soc/codecs/lpass-wsa-macro.c | 7 -------
- 1 file changed, 7 deletions(-)
+> +			while (buf < word) {
+> +				*buf = FIELD_GET(GENMASK(7, 0), val);
+> +
+> +				val >>= BITS_PER_BYTE;
+> +				buf++;
+> +			}
 
-diff --git a/sound/soc/codecs/lpass-wsa-macro.c b/sound/soc/codecs/lpass-wsa-macro.c
-index 7e21cec3c2fb..6ce309980cd1 100644
---- a/sound/soc/codecs/lpass-wsa-macro.c
-+++ b/sound/soc/codecs/lpass-wsa-macro.c
-@@ -1584,7 +1584,6 @@ static int wsa_macro_enable_interpolator(struct snd_soc_dapm_widget *w,
- 	u16 gain_reg;
- 	u16 reg;
- 	int val;
--	int offset_val = 0;
- 	struct wsa_macro *wsa = snd_soc_component_get_drvdata(component);
- 
- 	if (w->shift == WSA_MACRO_COMP1) {
-@@ -1623,10 +1622,8 @@ static int wsa_macro_enable_interpolator(struct snd_soc_dapm_widget *w,
- 					CDC_WSA_RX1_RX_PATH_MIX_SEC0,
- 					CDC_WSA_RX_PGA_HALF_DB_MASK,
- 					CDC_WSA_RX_PGA_HALF_DB_ENABLE);
--			offset_val = -2;
- 		}
- 		val = snd_soc_component_read(component, gain_reg);
--		val += offset_val;
- 		snd_soc_component_write(component, gain_reg, val);
- 		wsa_macro_config_ear_spkr_gain(component, wsa,
- 						event, gain_reg);
-@@ -1654,10 +1651,6 @@ static int wsa_macro_enable_interpolator(struct snd_soc_dapm_widget *w,
- 					CDC_WSA_RX1_RX_PATH_MIX_SEC0,
- 					CDC_WSA_RX_PGA_HALF_DB_MASK,
- 					CDC_WSA_RX_PGA_HALF_DB_DISABLE);
--			offset_val = 2;
--			val = snd_soc_component_read(component, gain_reg);
--			val += offset_val;
--			snd_soc_component_write(component, gain_reg, val);
- 		}
- 		wsa_macro_config_ear_spkr_gain(component, wsa,
- 						event, gain_reg);
+put_unaligned_*() ?
+
+...
+
+> +	/* select another internal CS, which doesn't exist, so CS 0 is not used */
+> +	if (spi_get_csgpiod(spi, 0))
+> +		spi_config1 |= 1 << CS42L43_SPI_SS_SEL_SHIFT;
+
+BIT() ?
+
+> +	if (spi->mode & SPI_CPOL)
+> +		spi_config1 |= CS42L43_SPI_CPOL_MASK;
+> +	if (spi->mode & SPI_CPHA)
+> +		spi_config1 |= CS42L43_SPI_CPHA_MASK;
+> +	if (spi->mode & SPI_3WIRE)
+> +		spi_config1 |= CS42L43_SPI_THREE_WIRE_MASK;
+
+...
+
+> +	if (is_of_node(fwnode))
+> +		fwnode = fwnode_get_named_child_node(fwnode, "spi");
+
+You can actually drop these is_of_node() tests and use another variable. In
+ACPI there can't be child node in small letters.
+
+But main problem here (and in another driver where the similar is used) that
+you bumped reference count for fwnode. I haven't seen where you drop it back.
+Have you tested rmmod/modprobe in a loop?
+
+...
+
+> +	devm_pm_runtime_enable(priv->dev);
+
+No error check? Why?
+
+...
+
+> +	ret = devm_spi_register_controller(priv->dev, priv->ctlr);
+> +	if (ret) {
+> +		pm_runtime_disable(priv->dev);
+
+Ah! Are you sure you properly simulated faults when testing this code?
+
+> +		dev_err(priv->dev, "Failed to register SPI controller: %d\n", ret);
+> +	}
+> +
+> +	return ret;
+
 -- 
-2.41.0
+With Best Regards,
+Andy Shevchenko
+
 
