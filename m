@@ -4,60 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1A972C4725D
-	for <alsa-devel@archiver.kernel.org>; Fri, 19 Jan 2024 11:12:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B78C4C4725D
+	for <alsa-devel@archiver.kernel.org>; Fri, 19 Jan 2024 11:27:40 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A0FBC3E8;
-	Fri, 19 Jan 2024 12:12:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A0FBC3E8
+	by alsa0.perex.cz (Postfix) with ESMTPS id C1D90820;
+	Fri, 19 Jan 2024 12:27:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C1D90820
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1705662769;
-	bh=rUJw8CQ9UdeEM+EGBdevLvTdmgUMyljBLPzXUydsUQ0=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=W3uiRbxw6TLs6Ji4IYIYdWr/CBdM6EPvJQxDyejKiBWpP3+CF5NLH1hDuL0nsMhY3
-	 UMiLvMRHfE9NzY3NDFfygyshTOanNxUSDysNBPmZkjyHpK7uDRBh5ufwo0dkgnzDIS
-	 GrohVT0lI3oMAzfo5vP0FxCRLURDRO4tKbOYNWUQ=
+	s=default; t=1705663658;
+	bh=l7DGGpCso7bX08YQvGfXDvfIrpjxnzkTzOG8xe3VBVk=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=e4Go+njyUFW1yep68jH0auzvErasb85rZJ7hjTM0geEE5m0GeOLhEuz5zqmvVeYO+
+	 eu5h2joaN41biqXI6IeTPActNnAL4VzXsQKGxfl4mLti+Fy1qiWl2jDmNHTGnOh7vc
+	 OuSd9QpaO8AoN9EC+6xhEgITRdjR1g1KZZ+jQnXI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8634AF80570; Fri, 19 Jan 2024 12:12:18 +0100 (CET)
+	id 705E9F80563; Fri, 19 Jan 2024 12:27:07 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1EF2BF80588;
-	Fri, 19 Jan 2024 12:12:18 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D0EE1F8014B;
+	Fri, 19 Jan 2024 12:27:06 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8E878F801F5; Fri, 19 Jan 2024 12:12:02 +0100 (CET)
-Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
- [207.180.221.201])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2CC4BF800C1
-	for <alsa-devel@alsa-project.org>; Fri, 19 Jan 2024 12:11:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2CC4BF800C1
+	id 8C3CCF802E8; Fri, 19 Jan 2024 12:27:02 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id A84C3F800C1
+	for <alsa-devel@alsa-project.org>; Fri, 19 Jan 2024 12:26:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A84C3F800C1
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=YhJkk+cM
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by ams.source.kernel.org (Postfix) with ESMTP id CCA94B81B99;
+	Fri, 19 Jan 2024 11:26:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22A93C433A6;
+	Fri, 19 Jan 2024 11:26:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705663615;
+	bh=l7DGGpCso7bX08YQvGfXDvfIrpjxnzkTzOG8xe3VBVk=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=YhJkk+cMaTlopP1irGiiDq13+a7TBtsEZ6otbU7M/ljnD1V55EZePRM0XtewkayqI
+	 UeyqWcv6XBo//CpsOZwirvLsTenlMeTkrtCq5RBz0m3/3MavweFxj46tRj0ADjKj3d
+	 2aYFpqtsrJs2973P54qVLkBGOjt4BhDhLSuAk8B+PEMpXz6ZDiJmjn867D1dLYq7rs
+	 7Qq56OAjruTuHV18kW0T0U5hhu4P+hodxMSfJbQmuunEBxbA+iAgyFVZbhwsi9fa85
+	 qMZgPi//RtVTz9TFUE5gc7viZH2lk2UINQbmIX349Lfd+KejHhSCNhdrph5rUardAc
+	 eVBmMXD2G+KvQ==
+Received: from johan by xi.lan with local (Exim 4.96.2)
+	(envelope-from <johan+linaro@kernel.org>)
+	id 1rQn1b-0001xN-3C;
+	Fri, 19 Jan 2024 12:27:04 +0100
+From: Johan Hovold <johan+linaro@kernel.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+	Banajit Goswami <bgoswami@quicinc.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	alsa-devel@alsa-project.org,
+	linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Johan Hovold <johan+linaro@kernel.org>,
+	stable@vger.kernel.org
+Subject: [PATCH v4 3/4] ASoC: codecs: lpass-wsa-macro: fix compander volume
+ hack
+Date: Fri, 19 Jan 2024 12:24:19 +0100
+Message-ID: <20240119112420.7446-4-johan+linaro@kernel.org>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20240119112420.7446-1-johan+linaro@kernel.org>
+References: <20240119112420.7446-1-johan+linaro@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1705662707893251896-webhooks-bot@alsa-project.org>
-References: <1705662707893251896-webhooks-bot@alsa-project.org>
-Subject: Dmic mute button is not working with SOF based acp-dmic solution
-Message-Id: <20240119111202.8E878F801F5@alsa1.perex.cz>
-Date: Fri, 19 Jan 2024 12:12:02 +0100 (CET)
-Message-ID-Hash: KPXP5JEU76BOS5NBAX2VZN5N7WHL7I7G
-X-Message-ID-Hash: KPXP5JEU76BOS5NBAX2VZN5N7WHL7I7G
-X-MailFrom: github@alsa-project.org
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: OHAQ3BFNZELCGWH5IGJQ5I7LG7NKP5CK
+X-Message-ID-Hash: OHAQ3BFNZELCGWH5IGJQ5I7LG7NKP5CK
+X-MailFrom: johan+linaro@kernel.org
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KPXP5JEU76BOS5NBAX2VZN5N7WHL7I7G/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OHAQ3BFNZELCGWH5IGJQ5I7LG7NKP5CK/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -66,52 +102,70 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-ucm-conf issue #385 was opened from Venkata-Prasad-Potturu:
+The LPASS WSA macro codec driver is updating the digital gain settings
+behind the back of user space on DAPM events if companding has been
+enabled.
 
-Hi,
-We have enabled ACP-DMIC endpoint support using SOF stack, and created mixer controls for capture switch and volume.
-Trying to link Mic mute button with amixer controls in the UCM config file, but unable to invoke the enable/disable sequence  when we press mic mute button.
-Please find the below ucm configuration, amixer controls and pactl list.
-[pactl_list.txt](https://github.com/alsa-project/alsa-ucm-conf/files/13988218/pactl_list.txt)
+As compander control is exported to user space, this can result in the
+digital gain setting being incremented (or decremented) every time the
+sound server is started and the codec suspended depending on what the
+UCM configuration looks like.
 
-Could anyone help on this.
+Soon enough playback will become distorted (or too quiet).
 
-**AMIXER CONTROLS:-**
-		_**root@systemc-Mayan-RMB:/usr/share/alsa/ucm2#**_ arecord -l
-		**** List of CAPTURE Hardware Devices ****
-		card 1: sofrmbdsp [sof-rmb-dsp], device 6: DMIC (*) []
-		  Subdevices: 0/1
-		  Subdevice #0: subdevice #0
-		**_root@systemc-Mayan-RMB:/usr/share/alsa/ucm2#_** **amixer -c 1 contents**
-		numid=2,iface=MIXER,name='PGA4.0 4 Master Capture Switch'
-		  ; type=BOOLEAN,access=rw------,values=2
-		  : values=on,on
-		numid=1,iface=MIXER,name='PGA4.0 4 Master Capture Volume'
-		  ; type=INTEGER,access=rw---R--,values=2,min=0,max=80,step=0
-		  : values=44,44
-		  | dBscale-min=-50.00dB,step=1.00dB,mute=1
-		**_root@systemc-Mayan-RMB:/usr/share/alsa/ucm2#_**
-**UCM Configuration:-**
+This is specifically a problem on the Lenovo ThinkPad X13s as this
+bypasses the limit for the digital gain setting that has been set by the
+machine driver.
 
-		SectionDevice."dmic" {
-				Comment "Digital Microphone"
-				EnableSequence [
-						exec "echo DMIC EnableSequence"
-						cset "name='PGA4.0 4 Master Capture Switch' 1"
-						cset "name='PGA4.0 4 Master Capture Volume' 44"
-			   ]
+Fix this by simply dropping the compander gain offset hack. If someone
+cares about modelling the impact of the compander setting this can
+possibly be done by exporting it as a volume control later.
 
-				DisableSequence [
-						exec "echo DMIC DisableSequence"
-						cset "name='PGA4.0 4 Master Capture Switch' 0"
-						cset "name='PGA4.0 4 Master Capture Volume' 33"
-				]
+Note that the volume registers still need to be written after enabling
+clocks in order for any prior updates to take effect.
 
-				Value {
-						CapturePriority 100
-						CapturePCM "hw:${CardId},6"
-				}
-		}
+Fixes: 2c4066e5d428 ("ASoC: codecs: lpass-wsa-macro: add dapm widgets and route")
+Cc: stable@vger.kernel.org      # 5.11
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
+---
+ sound/soc/codecs/lpass-wsa-macro.c | 7 -------
+ 1 file changed, 7 deletions(-)
 
-Issue URL     : https://github.com/alsa-project/alsa-ucm-conf/issues/385
-Repository URL: https://github.com/alsa-project/alsa-ucm-conf
+diff --git a/sound/soc/codecs/lpass-wsa-macro.c b/sound/soc/codecs/lpass-wsa-macro.c
+index 7e21cec3c2fb..6ce309980cd1 100644
+--- a/sound/soc/codecs/lpass-wsa-macro.c
++++ b/sound/soc/codecs/lpass-wsa-macro.c
+@@ -1584,7 +1584,6 @@ static int wsa_macro_enable_interpolator(struct snd_soc_dapm_widget *w,
+ 	u16 gain_reg;
+ 	u16 reg;
+ 	int val;
+-	int offset_val = 0;
+ 	struct wsa_macro *wsa = snd_soc_component_get_drvdata(component);
+ 
+ 	if (w->shift == WSA_MACRO_COMP1) {
+@@ -1623,10 +1622,8 @@ static int wsa_macro_enable_interpolator(struct snd_soc_dapm_widget *w,
+ 					CDC_WSA_RX1_RX_PATH_MIX_SEC0,
+ 					CDC_WSA_RX_PGA_HALF_DB_MASK,
+ 					CDC_WSA_RX_PGA_HALF_DB_ENABLE);
+-			offset_val = -2;
+ 		}
+ 		val = snd_soc_component_read(component, gain_reg);
+-		val += offset_val;
+ 		snd_soc_component_write(component, gain_reg, val);
+ 		wsa_macro_config_ear_spkr_gain(component, wsa,
+ 						event, gain_reg);
+@@ -1654,10 +1651,6 @@ static int wsa_macro_enable_interpolator(struct snd_soc_dapm_widget *w,
+ 					CDC_WSA_RX1_RX_PATH_MIX_SEC0,
+ 					CDC_WSA_RX_PGA_HALF_DB_MASK,
+ 					CDC_WSA_RX_PGA_HALF_DB_DISABLE);
+-			offset_val = 2;
+-			val = snd_soc_component_read(component, gain_reg);
+-			val += offset_val;
+-			snd_soc_component_write(component, gain_reg, val);
+ 		}
+ 		wsa_macro_config_ear_spkr_gain(component, wsa,
+ 						event, gain_reg);
+-- 
+2.41.0
+
