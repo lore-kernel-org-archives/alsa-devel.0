@@ -4,78 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4A0F6C47DD3
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 Jan 2024 20:29:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2EE29C47DD3
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 Jan 2024 20:45:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 91F14850;
-	Mon, 22 Jan 2024 21:28:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 91F14850
+	by alsa0.perex.cz (Postfix) with ESMTPS id 790DD823;
+	Mon, 22 Jan 2024 21:44:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 790DD823
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1705955342;
-	bh=uN71bCXA30X74Or5WgrlOA05l7pdmTn+Pla2tjReuL4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=IoxW9jq9Jh+6UsDv5HEEHqoxJZQZH4/6dKvIDXSLvVohmBefy+zkzdOmMElOZt+Pa
-	 PVIdMEUP5MbYq0jdVXp34GVsZlJw5OWcrn5gJ704L7PIog25ywK+Y2Hble3VdPv4JF
-	 URyEIzQHNiLKwwnX+3xesKMgkK7c9c9pBRhc7NPU=
+	s=default; t=1705956308;
+	bh=jHahJBNOqmpxsRa3jIC+1XUQhYkCmY2XrppesnzXsns=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=Q9y9A+Fd0bdcj+Lq4zvfb3ZJECKYcwykC+7vFNfr5T2eMWNbVq4kYtgS703EvXmjy
+	 cCuhgD4Bgopqp8SCvCFpCnKU4HBZzdq6DuMTVAd5Fozd2DF2OFYTjxxjqJoV6BR4pu
+	 gXsOxOv4hQ5giQ8xTGFjB8r3s7u1p/IblPgCtZ6c=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 35859F80589; Mon, 22 Jan 2024 21:28:30 +0100 (CET)
+	id 9CB76F8025F; Mon, 22 Jan 2024 21:44:37 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 26C04F80578;
-	Mon, 22 Jan 2024 21:28:30 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 32ABBF80588;
+	Mon, 22 Jan 2024 21:44:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A0A36F804E7; Mon, 22 Jan 2024 21:28:24 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+	id 74D01F802E8; Mon, 22 Jan 2024 21:44:31 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 79EC4F802BE
-	for <alsa-devel@alsa-project.org>; Mon, 22 Jan 2024 21:28:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 79EC4F802BE
+	by alsa1.perex.cz (Postfix) with ESMTPS id 70512F8025F
+	for <alsa-devel@alsa-project.org>; Mon, 22 Jan 2024 21:44:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 70512F8025F
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=OpWIrWI8
+ header.s=k20201202 header.b=PWvoqp4K
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id C515461A0A;
-	Mon, 22 Jan 2024 20:28:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9F62BC43390;
-	Mon, 22 Jan 2024 20:28:09 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id EBB5E61A8A;
+	Mon, 22 Jan 2024 20:44:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9EF45C43390;
+	Mon, 22 Jan 2024 20:44:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705955292;
-	bh=uN71bCXA30X74Or5WgrlOA05l7pdmTn+Pla2tjReuL4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=OpWIrWI8IvL33sZXeUcci+95ckE29z3Ua0TF4vFRsXSi0rKw5kl/vVirmZDQZMXWO
-	 BQsBhzKnIaj4ketTFRUktRInU6T0CA5xBRL9XhQcBCwuPn0McCk7lSW2SauJ1+MbKb
-	 FiOS98LPdjjKD8iz7uY5BZvs3wVNBh/Qs8xBESa/SPKJsn6uo8hpFBQ+xFRpOgc2E+
-	 tfJuxLVBUJPYdKMke4TbEgYPU67dvPykeLNOf1vjgTYDYmdeQOEU0ivEhG5YJOQX16
-	 GYElEYrWLuJ3BgzM+naOhNOznl/B9Rd9tb5acbOR32KrJD9qAKeWHbTN2Yonb6JziD
-	 qkwZanZdN4lQQ==
-Date: Mon, 22 Jan 2024 20:28:06 +0000
+	s=k20201202; t=1705956262;
+	bh=jHahJBNOqmpxsRa3jIC+1XUQhYkCmY2XrppesnzXsns=;
+	h=From:To:In-Reply-To:References:Subject:Date:From;
+	b=PWvoqp4K/BSNf38aC031IAIAGvnawluui5ppROC72eOoP60pdyF1a1GwutIp0XJun
+	 QhmRWGJjkX7a0NYQQL8DLh+Ia5f5+X8L8ctO9WaZ8uIG215wxpE27CvYw4EilCUN3L
+	 E9H+xcKGmq32P79671o0+eXHdOm3vVIi5pIenMcYURyq0Q4soYwq5Hjuw43lRjz0Rw
+	 EjR3S5UQr9grqDMROnI3/eegu7gSW3xG5eqL1XGUnbbAyOYK6wOdiUfCEhCcdaybKt
+	 IDqTL3GZe4+rY7rbVlbXEJ3VTQenQ12EPtMjRjav90PSAkruylijxR3Epy0W2AxU3H
+	 tV+SWwIVLeu7g==
 From: Mark Brown <broonie@kernel.org>
-To: Seven Lee <wtli@nuvoton.com>
-Cc: lgirdwood@gmail.com, alsa-devel@alsa-project.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	robh+dt@kernel.org, conor+dt@kernel.org, YHCHuang@nuvoton.com,
-	KCHSU0@nuvoton.com, CTLIN0@nuvoton.com, SJLIN0@nuvoton.com,
-	scott6986@gmail.com, supercraig0719@gmail.com, dardar923@gmail.com
-Subject: Re: [PATCH 2/2] ASoC: nau8325: new driver
-Message-ID: <820c5ff7-4329-46b0-9981-607b1593deb5@sirena.org.uk>
-References: <20240122095650.60523-1-wtli@nuvoton.com>
- <20240122095650.60523-2-wtli@nuvoton.com>
+To: lgirdwood@gmail.com, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ shengjiu.wang@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
+ nicoleotsuka@gmail.com, perex@perex.cz, tiwai@suse.com,
+ linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+ linuxppc-dev@lists.ozlabs.org, Chancel Liu <chancel.liu@nxp.com>
+In-Reply-To: <20240112054331.3244104-1-chancel.liu@nxp.com>
+References: <20240112054331.3244104-1-chancel.liu@nxp.com>
+Subject: Re: [PATCH v2 0/3] ASoC: Support SAI and MICFIL on i.MX95 platform
+Message-Id: <170595625937.145475.18065779265515755326.b4-ty@kernel.org>
+Date: Mon, 22 Jan 2024 20:44:19 +0000
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="QAZjW4H1wKCsCURa"
-Content-Disposition: inline
-In-Reply-To: <20240122095650.60523-2-wtli@nuvoton.com>
-X-Cookie: Nice guys don't finish nice.
-Message-ID-Hash: XUPYMXXBHMBLSJFRVZVIFAI32SR62RL2
-X-Message-ID-Hash: XUPYMXXBHMBLSJFRVZVIFAI32SR62RL2
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-5c066
+Message-ID-Hash: 74UMQEQOX5ZMAMGOPZ2STXXBYTYDL7SX
+X-Message-ID-Hash: 74UMQEQOX5ZMAMGOPZ2STXXBYTYDL7SX
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -88,7 +85,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XUPYMXXBHMBLSJFRVZVIFAI32SR62RL2/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/74UMQEQOX5ZMAMGOPZ2STXXBYTYDL7SX/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -97,91 +94,50 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+On Fri, 12 Jan 2024 14:43:28 +0900, Chancel Liu wrote:
+> Support SAI and MICFIL on i.MX95 platform
+> 
+> changes in v2
+> - Remove unnecessary "item" in fsl,micfil.yaml
+> - Don't change alphabetical order in fsl,sai.yaml
+> 
+> Chancel Liu (3):
+>   ASoC: dt-bindings: fsl,sai: Add compatible string for i.MX95 platform
+>   ASoC: fsl_sai: Add support for i.MX95 platform
+>   ASoC: dt-bindings: fsl,micfil: Add compatible string for i.MX95
+>     platform
+> 
+> [...]
 
---QAZjW4H1wKCsCURa
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Applied to
 
-On Mon, Jan 22, 2024 at 05:56:50PM +0800, Seven Lee wrote:
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-> +++ b/sound/soc/codecs/nau8325.c
-> @@ -0,0 +1,896 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * nau8325.c -- Nuvoton NAU8325 audio codec driver
-> + *
+Thanks!
 
-Please use a C++ comment for the whole block to make things look more
-consistent.
+[1/3] ASoC: dt-bindings: fsl,sai: Add compatible string for i.MX95 platform
+      commit: 52523f70fdf9b2cb0bfd1999eba4aa3a30b04fa6
+[2/3] ASoC: fsl_sai: Add support for i.MX95 platform
+      commit: 2f2d78e2c29347a96268f6f34092538b307ed056
+[3/3] ASoC: dt-bindings: fsl,micfil: Add compatible string for i.MX95 platform
+      commit: 20d2719937cf439602566a8f041d3208274abc01
 
-> +static int nau8325_clkdet_put(struct snd_kcontrol *kcontrol,
-> +			      struct snd_ctl_elem_value *ucontrol)
-> +{
-> +	struct soc_mixer_control *mc =
-> +		(struct soc_mixer_control *)kcontrol->private_value;
-> +	struct snd_soc_component *component =
-> +		snd_soc_kcontrol_component(kcontrol);
-> +	struct nau8325 *nau8325 = snd_soc_component_get_drvdata(component);
-> +	unsigned int max = mc->max, min = mc->min, val;
-> +	unsigned int mask = (1 << fls(max)) - 1;
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-AFAICT this will only work well if max is 1, just hard code that.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> +
-> +	val = (ucontrol->value.integer.value[0] + min) & mask;
-> +	nau8325->clock_detection = val;
-> +
-> +	if (nau8325->clock_detection)
-> +		regmap_update_bits(nau8325->regmap, NAU8325_R40_CLK_DET_CTRL,
-> +				   NAU8325_CLKPWRUP_DIS, 0);
-> +	else
-> +		regmap_update_bits(nau8325->regmap, NAU8325_R40_CLK_DET_CTRL,
-> +				   NAU8325_CLKPWRUP_DIS, NAU8325_CLKPWRUP_DIS);
-> +
-> +	return nau8325->clock_detection;
-> +}
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-Please use mixer-test to verify that your controls conform to the
-expected API, the return value here is not what's expected - it should
-be a negative value for an error, 0 for no change and 1 for change.
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-> +	SOC_SINGLE_EXT("Clock Detection", SND_SOC_NOPM, 0, 1, 0,
-> +		       nau8325_clkdet_get, nau8325_clkdet_put),
+Thanks,
+Mark
 
-Shouldn't this be a Switch?
-
-> +	SOC_SINGLE("ALC Enable", NAU8325_R2E_ALC_CTRL3,
-> +		   NAU8325_ALC_EN_SFT, 1, 0),
-
-ALC Switch.
-
-> +static int nau8325_powerup_event(struct snd_soc_dapm_widget *w,
-> +				 struct snd_kcontrol *kcontrol, int event)
-> +{
-> +	struct snd_soc_component *component =
-> +		snd_soc_dapm_to_component(w->dapm);
-> +	struct nau8325 *nau8325 = snd_soc_component_get_drvdata(component);
-> +
-> +	if (nau8325->clock_detection)
-> +		return 0;
-> +
-
-What happens if someone enables clock detection while things are powered
-up?
-
---QAZjW4H1wKCsCURa
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmWuz9UACgkQJNaLcl1U
-h9BQjgf/QLIx/6Vn2gRBlBNbQfnoOasSe3itaUJwtDJ6sVFgb6jjZT0ZlOww4+rf
-TX08tOTbrDHhWqh2RCuxxAFCHG9Uu0TYl46QikJIRfZSP/1dWtdY4dptsv+n5Kgh
-UQDmnDiewqFaR4mlDBzgzmeDL+Gfr8L+ucedfTpRpwl7YNv1/Mwubh5U/oDGLGVB
-+2O7QQ8OKWpdUW4XRvH3Rdh7GYrtx0YUPn+Yicp7wOnyKg7qs1OEvpTBpAQVPPvT
-LpE2I+3swtCjetn2maB+cPUgDcOKL6hu9rIj/alple3YU5ux+il+PiJDlfTD5H1C
-XNimTSNbAm/gNjZbrUQbShQj05Upcg==
-=+I7g
------END PGP SIGNATURE-----
-
---QAZjW4H1wKCsCURa--
