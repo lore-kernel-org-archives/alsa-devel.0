@@ -4,92 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D238FC47DD3
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 Jan 2024 18:14:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 34AB6C47DD3
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 Jan 2024 18:19:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4EC7683B;
-	Mon, 22 Jan 2024 19:14:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4EC7683B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 137AD84A;
+	Mon, 22 Jan 2024 19:19:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 137AD84A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1705947253;
-	bh=DUzlzYhwpqdukSU52axAImuuJwvD9YUD7+kH8ySYwR4=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	s=default; t=1705947552;
+	bh=Lh26btgQP3JMyEbw/WcBqZn6EmesDwfSrRfDbLyisSs=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=gBIq1g77ELiMtG2KSiIuhwAvkM9uFfCi7XxYgnXs73estkZVwJ/+P+O9aEnCNN3SW
-	 5tL+aPXOf/vpXYuECbNY9cY+gba9oobicV1S/2TZ0Rxj3lecAIcRZbxgFnjoETuMpa
-	 FdiSaswhK54RRcQcu0nMf0x0c8S6GO9lTMQuN6sw=
+	b=iDpIW7qu8aui92R7ppt62a3WG+fwFO5heKyj4cyzX5llGzKya6ZX7HIge9yOwxUkk
+	 3cj8BnB8xkT7EKfS1szI/v8szu5CR8cFzHAWphFL9KpEgka9pyC+nTCTNkqS9v1ws3
+	 8zp+NFg1RPbx73dN1bXMDt56uC1K+m9DD7BYqUtA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 05822F8057A; Mon, 22 Jan 2024 19:13:41 +0100 (CET)
+	id B2A31F8057C; Mon, 22 Jan 2024 19:18:40 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8B92EF8057B;
-	Mon, 22 Jan 2024 19:13:41 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3576CF80580;
+	Mon, 22 Jan 2024 19:18:40 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B770DF8025F; Mon, 22 Jan 2024 19:13:37 +0100 (CET)
-Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net
- [IPv6:2001:4b98:dc4:8::227])
-	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+	id 8F8E0F80494; Mon, 22 Jan 2024 19:18:34 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 91989F80149
-	for <alsa-devel@alsa-project.org>; Mon, 22 Jan 2024 19:13:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 91989F80149
+	by alsa1.perex.cz (Postfix) with ESMTPS id 8E799F800C1
+	for <alsa-devel@alsa-project.org>; Mon, 22 Jan 2024 19:18:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8E799F800C1
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=TS4VJcDT
-Received: by mail.gandi.net (Postfix) with ESMTPSA id E911020003;
-	Mon, 22 Jan 2024 18:13:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1705947213;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=DUzlzYhwpqdukSU52axAImuuJwvD9YUD7+kH8ySYwR4=;
-	b=TS4VJcDTXuYNmsNX7murn8lJ6pwDcgMonq+lmQaAc2c2W4Hq3hN28GfkE6Z+Zh8mWzqNib
-	+EipYHY1L8+yIdcbNtHUFkG89WnWDL/+9aUmgHXBIGJAIMBww5NEqL8ZKumGOvFJ/vr2y4
-	bvbISQD0R993JrEmz1i4ZCnoLrJT+nb/MKLpLj+XwgooA+r+Se/9EFmSftfaolNrtDIxDx
-	Wt4xv/AIy2DJ3Bxs/FMylclS2yYvm0FVM8WjEwnXET/7Xr6CqJcbthHhZ+oU2fWEiPDKRT
-	VFz8sSb4telxCcJgVOcemJYlwyrn0vGcn8Ke6uM0P1Vguv5A7UUAumMn1DT3Yw==
-Date: Mon, 22 Jan 2024 19:13:17 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Uwe =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?= <u.kleine-koenig@pengutronix.de>
-Cc: Mark Brown <broonie@kernel.org>, kernel@pengutronix.de, Richard
- Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Rob
- Herring <robh@kernel.org>, Heiko Stuebner <heiko@sntech.de>, Michal Simek
- <michal.simek@amd.com>, Amit Kumar Mahapatra via Alsa-devel
- <alsa-devel@alsa-project.org>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org
-Subject: Re: [PATCH v2 12/33] mtd: dataflash: Follow renaming of SPI
- "master" to "controller"
-Message-ID: <20240122191317.5924f087@xps-13>
-In-Reply-To: 
- <63d7d1f1e6fe564daf034c66eb3073aa265b7969.1705944943.git.u.kleine-koenig@pengutronix.de>
-References: <cover.1705944943.git.u.kleine-koenig@pengutronix.de>
-	<63d7d1f1e6fe564daf034c66eb3073aa265b7969.1705944943.git.u.kleine-koenig@pengutronix.de>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=lImPn0vA
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by ams.source.kernel.org (Postfix) with ESMTP id A0FB1B81028;
+	Mon, 22 Jan 2024 18:18:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39B90C433B2;
+	Mon, 22 Jan 2024 18:18:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705947508;
+	bh=Lh26btgQP3JMyEbw/WcBqZn6EmesDwfSrRfDbLyisSs=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=lImPn0vAhkzpA6lJL6Q/O4/xwKx2Evk+EErvcYTyArIU9MFB5m0KoQBBnnbBulKnz
+	 dwWEaMKrfTqLpcOaUrkDHZ8La/1p0L78UGyR9kOwsmSi/qjI6+mATjrJfCn1vyfhQW
+	 EX1W3Lz+VFJtzJfypQNClv2tPkfDp1cLZ7kccwl0IsKAy0vLjV3Qu7UBZy05Nwt3vr
+	 7CMiXciPrqD4pyLunXeVc9VeDyFS8UcJQtC5d9PM+XpGEroAdjMsL+uj/uDR5+SF24
+	 dYS+bNVCU7MHMn4+IrkjC25WP3bY+vW0PkjDp7iA0i1hPIfSFsmWDrZ9hTd3qxFZT9
+	 SdNb4Fk9LbKhw==
+Received: from johan by xi.lan with local (Exim 4.97.1)
+	(envelope-from <johan+linaro@kernel.org>)
+	id 1rRysa-0000000013X-2DzD;
+	Mon, 22 Jan 2024 19:18:40 +0100
+From: Johan Hovold <johan+linaro@kernel.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+	Banajit Goswami <bgoswami@quicinc.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	alsa-devel@alsa-project.org,
+	linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Johan Hovold <johan+linaro@kernel.org>,
+	stable@vger.kernel.org
+Subject: [PATCH v5 3/4] ASoC: codecs: lpass-wsa-macro: fix compander volume
+ hack
+Date: Mon, 22 Jan 2024 19:18:18 +0100
+Message-ID: <20240122181819.4038-4-johan+linaro@kernel.org>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240122181819.4038-1-johan+linaro@kernel.org>
+References: <20240122181819.4038-1-johan+linaro@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: miquel.raynal@bootlin.com
-Message-ID-Hash: RKF6FD2Q5TOGND3X7HQITM5HXEMAKZTM
-X-Message-ID-Hash: RKF6FD2Q5TOGND3X7HQITM5HXEMAKZTM
-X-MailFrom: miquel.raynal@bootlin.com
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: U3OQ2FFRG7IFMJZFZKANHBJGZHMCOULF
+X-Message-ID-Hash: U3OQ2FFRG7IFMJZFZKANHBJGZHMCOULF
+X-MailFrom: johan+linaro@kernel.org
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RKF6FD2Q5TOGND3X7HQITM5HXEMAKZTM/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/U3OQ2FFRG7IFMJZFZKANHBJGZHMCOULF/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -98,25 +101,70 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi Uwe,
+The LPASS WSA macro codec driver is updating the digital gain settings
+behind the back of user space on DAPM events if companding has been
+enabled.
 
-u.kleine-koenig@pengutronix.de wrote on Mon, 22 Jan 2024 19:07:07 +0100:
+As compander control is exported to user space, this can result in the
+digital gain setting being incremented (or decremented) every time the
+sound server is started and the codec suspended depending on what the
+UCM configuration looks like.
 
-> In commit 8caab75fd2c2 ("spi: Generalize SPI "master" to "controller"")
-> some functions and struct members were renamed. To not break all drivers
-> compatibility macros were provided.
->=20
-> To be able to remove these compatibility macros push the renaming into
-> this driver.
->=20
-> Signed-off-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
+Soon enough playback will become distorted (or too quiet).
 
-I think I read in the previous thread that Mark would apply them all
-through his tree, I am fine with that so here is my Acked-by. In case I
-misunderstood the thread or at the end you/Mark prefer to let the
-patches go through the trees they normally belong to, just let me know.
+This is specifically a problem on the Lenovo ThinkPad X13s as this
+bypasses the limit for the digital gain setting that has been set by the
+machine driver.
 
-Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Fix this by simply dropping the compander gain offset hack. If someone
+cares about modelling the impact of the compander setting this can
+possibly be done by exporting it as a volume control later.
 
-Thanks,
-Miqu=C3=A8l
+Note that the volume registers still need to be written after enabling
+clocks in order for any prior updates to take effect.
+
+Fixes: 2c4066e5d428 ("ASoC: codecs: lpass-wsa-macro: add dapm widgets and route")
+Cc: stable@vger.kernel.org      # 5.11
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
+---
+ sound/soc/codecs/lpass-wsa-macro.c | 7 -------
+ 1 file changed, 7 deletions(-)
+
+diff --git a/sound/soc/codecs/lpass-wsa-macro.c b/sound/soc/codecs/lpass-wsa-macro.c
+index 7e21cec3c2fb..6ce309980cd1 100644
+--- a/sound/soc/codecs/lpass-wsa-macro.c
++++ b/sound/soc/codecs/lpass-wsa-macro.c
+@@ -1584,7 +1584,6 @@ static int wsa_macro_enable_interpolator(struct snd_soc_dapm_widget *w,
+ 	u16 gain_reg;
+ 	u16 reg;
+ 	int val;
+-	int offset_val = 0;
+ 	struct wsa_macro *wsa = snd_soc_component_get_drvdata(component);
+ 
+ 	if (w->shift == WSA_MACRO_COMP1) {
+@@ -1623,10 +1622,8 @@ static int wsa_macro_enable_interpolator(struct snd_soc_dapm_widget *w,
+ 					CDC_WSA_RX1_RX_PATH_MIX_SEC0,
+ 					CDC_WSA_RX_PGA_HALF_DB_MASK,
+ 					CDC_WSA_RX_PGA_HALF_DB_ENABLE);
+-			offset_val = -2;
+ 		}
+ 		val = snd_soc_component_read(component, gain_reg);
+-		val += offset_val;
+ 		snd_soc_component_write(component, gain_reg, val);
+ 		wsa_macro_config_ear_spkr_gain(component, wsa,
+ 						event, gain_reg);
+@@ -1654,10 +1651,6 @@ static int wsa_macro_enable_interpolator(struct snd_soc_dapm_widget *w,
+ 					CDC_WSA_RX1_RX_PATH_MIX_SEC0,
+ 					CDC_WSA_RX_PGA_HALF_DB_MASK,
+ 					CDC_WSA_RX_PGA_HALF_DB_DISABLE);
+-			offset_val = 2;
+-			val = snd_soc_component_read(component, gain_reg);
+-			val += offset_val;
+-			snd_soc_component_write(component, gain_reg, val);
+ 		}
+ 		wsa_macro_config_ear_spkr_gain(component, wsa,
+ 						event, gain_reg);
+-- 
+2.43.0
+
