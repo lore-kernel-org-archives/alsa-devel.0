@@ -4,80 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CADF4C47DAF
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 Jan 2024 18:20:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1B5F6C47DD3
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 Jan 2024 18:21:36 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C2567822;
-	Mon, 22 Jan 2024 19:20:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C2567822
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4E473850;
+	Mon, 22 Jan 2024 19:21:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4E473850
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1705947621;
-	bh=7miscXNSOMprQJwxQIJJr4/Ytf2DqWNxzA6Kigr9MWg=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=BKVaR00R5ax5RJ7k/Ff1XljUbAPp6z36V+T1hyHC9wjVtRfT2fFHgPJRiPe7rjiuE
-	 7ArRa0hMWclUfjenm/Ng48E43bqNl0L0UtCIFHTv0gVlkPe70EgAvUvolgjp9m5tUN
-	 g0J2FLkZHxsZ/0d8MQQGPObv5E+zakf63/yOrq1k=
+	s=default; t=1705947694;
+	bh=0sJKHQG49NpDF9oXlr8dzTMmdtReYYA/3/HvI32mt3k=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=U/qJ4tEyWgxCTKswGMLD70bt7PQqq7RlR3ldGuG9JjsFjrMPPjEr///+EYzD6P4M2
+	 eiNIuDUAzVLQrwgOCvYH7zBWdmitydfKlcvQthyWHu4B/iYDyonFGYXx6jVvQyzLU2
+	 tyVLAp0NwKFkkr6+GZecubMFIxNqjEuE8KnCbThM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2F0C9F80634; Mon, 22 Jan 2024 19:18:49 +0100 (CET)
+	id 681CAF80149; Mon, 22 Jan 2024 19:20:58 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6A629F8063B;
-	Mon, 22 Jan 2024 19:18:49 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DBFF5F8028D;
+	Mon, 22 Jan 2024 19:20:57 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0CA87F8022B; Mon, 22 Jan 2024 19:18:38 +0100 (CET)
-Received: from sin.source.kernel.org (sin.source.kernel.org
- [IPv6:2604:1380:40e1:4800::1])
+	id 7C49BF8025F; Mon, 22 Jan 2024 19:20:52 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 38829F8028D
-	for <alsa-devel@alsa-project.org>; Mon, 22 Jan 2024 19:18:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 38829F8028D
+	by alsa1.perex.cz (Postfix) with ESMTPS id 7DF21F80149
+	for <alsa-devel@alsa-project.org>; Mon, 22 Jan 2024 19:20:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7DF21F80149
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=b+9POOsO
+ header.s=k20201202 header.b=kCgAUbk5
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 9366FCE28C5;
-	Mon, 22 Jan 2024 18:18:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1CCDC43390;
-	Mon, 22 Jan 2024 18:18:27 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 1473D616F7;
+	Mon, 22 Jan 2024 18:20:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4F51C433F1;
+	Mon, 22 Jan 2024 18:20:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705947507;
-	bh=7miscXNSOMprQJwxQIJJr4/Ytf2DqWNxzA6Kigr9MWg=;
-	h=From:To:Cc:Subject:Date:From;
-	b=b+9POOsOeQjtUvXuCNigCJf2HSOkXYPLOWg/HE+CRt/c26e2TW5wTHa4FHl3M4tIf
-	 e46SSMKSvD4XGNYdTCsa0Qwkoi8jpOAqd+VRud/WfsEGwMS/x3j8+XP/cVVyEVZJ/6
-	 GG+ICMsaaw3YL0alwVkUEI8wt/Jt9vOmVZyEoiK3tvE1dZCI4pEFnLWxja/juLRnhS
-	 YhZ+IVRQVXhpNt/urMtl5gPV8++M8rx6SBMrsMcWBC7HsVZif7u6Sp7gtCgtDxQPdL
-	 z0+yDXOKMbZ6roSrUO6wYmyb421yoIpQataUcPoo1JveBaQ9QFsXVCYAaq5FTthQf/
-	 0D33ILfewDsBg==
+	s=k20201202; t=1705947648;
+	bh=0sJKHQG49NpDF9oXlr8dzTMmdtReYYA/3/HvI32mt3k=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=kCgAUbk5wO9/OcyNXeGVOEeNOJx2Z0zcXXV+pcVXVq6ZC13luQfhGm1aXZWEmlicy
+	 MjdrjHYGND4iwtjMVNRzlTEmq+5eJFN0iwV7khwWD2q1dl00DRGugUS/srimkX0Vmd
+	 qnx1ASTi/s4Di6GfmNKC01VjPy1VX1aeqytRhc5yC/Xw2zkgD1r+DsORl1wskKTTb4
+	 4R6DRmGNqVo2CNVnKM35LvAf/1oZ9BLKd5TIsojzlKHOkvbjwZPr0uIR2Ne8UiDKo1
+	 X2yAJUkeZgkGkPvTpjQovXDRcHLP/ktkvLM0pGVSgGDxIif/i45B15z5JV4Zhabnr5
+	 1isaAHiq35auQ==
 Received: from johan by xi.lan with local (Exim 4.97.1)
-	(envelope-from <johan+linaro@kernel.org>)
-	id 1rRysa-0000000013R-12Hg;
-	Mon, 22 Jan 2024 19:18:40 +0100
-From: Johan Hovold <johan+linaro@kernel.org>
+	(envelope-from <johan@kernel.org>)
+	id 1rRyur-0000000014o-0z39;
+	Mon, 22 Jan 2024 19:21:01 +0100
+Date: Mon, 22 Jan 2024 19:21:01 +0100
+From: Johan Hovold <johan@kernel.org>
 To: Mark Brown <broonie@kernel.org>
-Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+Cc: Johan Hovold <johan+linaro@kernel.org>,
+	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
 	Banajit Goswami <bgoswami@quicinc.com>,
 	Liam Girdwood <lgirdwood@gmail.com>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	alsa-devel@alsa-project.org,
-	linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Johan Hovold <johan+linaro@kernel.org>
-Subject: [PATCH v5 0/4] ASoC: qcom: volume fixes and codec cleanups
-Date: Mon, 22 Jan 2024 19:18:15 +0100
-Message-ID: <20240122181819.4038-1-johan+linaro@kernel.org>
-X-Mailer: git-send-email 2.43.0
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH v4 2/4] ASoC: qcom: sc8280xp: limit speaker volumes
+Message-ID: <Za6yDXTPp9MzC1bY@hovoldconsulting.com>
+References: <20240119112420.7446-1-johan+linaro@kernel.org>
+ <20240119112420.7446-3-johan+linaro@kernel.org>
+ <d54d3640-49bf-4a2f-903b-4beeb0ebd56c@sirena.org.uk>
+ <Za4cR90XoAaATq8X@hovoldconsulting.com>
+ <aca2b125-acf8-4791-a3eb-ea19826d3ee4@sirena.org.uk>
+ <Za6l6EP7OqXPU9mj@hovoldconsulting.com>
+ <8c6fc7e6-7694-4718-be47-d9fc3f893947@sirena.org.uk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 3DT3GIEALLFD2ECRYHTKOW7BSM3THMIJ
-X-Message-ID-Hash: 3DT3GIEALLFD2ECRYHTKOW7BSM3THMIJ
-X-MailFrom: johan+linaro@kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="SDkeIWwVz3rl8Ay6"
+Content-Disposition: inline
+In-Reply-To: <8c6fc7e6-7694-4718-be47-d9fc3f893947@sirena.org.uk>
+Message-ID-Hash: 4YVYT6UZ53XZGPLXW3IHTQ7UAAWJDOYZ
+X-Message-ID-Hash: 4YVYT6UZ53XZGPLXW3IHTQ7UAAWJDOYZ
+X-MailFrom: johan@kernel.org
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -88,7 +95,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3DT3GIEALLFD2ECRYHTKOW7BSM3THMIJ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4YVYT6UZ53XZGPLXW3IHTQ7UAAWJDOYZ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -97,69 +104,35 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-To reduce the risk of speaker damage the PA gain needs to be limited on
-machines like the Lenovo Thinkpad X13s until we have active speaker
-protection in place.
 
-Limit the gain to the current default setting provided by the UCM
-configuration which most user have so far been using (due to a bug in
-the configuration files which prevented hardware volume control [1]).
+--SDkeIWwVz3rl8Ay6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The wsa883x PA volume control also turned out to be broken, which meant
-that the default setting used by UCM configuration is actually the
-lowest level (-3 dB). With the codec driver fixed, hardware volume
-control also works as expected.
+On Mon, Jan 22, 2024 at 06:06:25PM +0000, Mark Brown wrote:
+> On Mon, Jan 22, 2024 at 06:29:12PM +0100, Johan Hovold wrote:
+>=20
+> > Could you please try again, and tell me which patch fails to apply and
+> > how it fails?
+>=20
+> It was the specific patch I replied to, just the standard "this patch
+> doesn't apply" message.
 
-Note that the new wsa884x driver most likely suffers from a similar bug,
-I'll send a fix for that once I've got that confirmed.
-
-Included is also a related fix for the LPASS WSA macro driver, which
-was changing the digital gain setting behind the back of user space and
-which can result in excessive (or too low) digital gain.
-
-There are further Qualcomm codec drivers that similarly appear to
-manipulate various gain settings, but on closer inspection it turns out
-that they only write back the current settings. Tests reveal that these
-writes are indeed needed for any prior updates to take effect (at least
-for the WSA and RX macros).
+Ok, thanks. No idea what goes wrong here. I just sent the regenerated
+patches as a v5.
 
 Johan
 
-[1] https://github.com/alsa-project/alsa-ucm-conf/pull/382
+--SDkeIWwVz3rl8Ay6
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
 
-Changes in v5
- - rebase on v6.8-rc1 
+iHUEABYIAB0WIQQHbPq+cpGvN/peuzMLxc3C7H1lCAUCZa6yCQAKCRALxc3C7H1l
+CJxRAQCuI9Q8CVpoSadmK9bGHfSYEgp3BrhBbEZIhHjThFuJOwD7Bqj7D2tNHWON
+piUIM+AN1i4Eia0yv8PbzpYWcziIwQM=
+=fQyz
+-----END PGP SIGNATURE-----
 
-Changes in v4
- - keep the full PA volume control range and only fix the exported dB
-   values
- - use a combined -3 dB machine limit as limiting just the PA volume
-   confuses PulseAudio
- - drop the PA gain initialisation which is no longer needed
-
-Changes in v3
- - fix the wsa883x PA volume control and update the machine limits
-   accordingly
-
-Changes in v2
- - keep the volume register write on power-on in lpass-wsa-macro
- - drop the other patches removing volume register writes on DAPM events
- - only drop the constant-zero gain offsets in wcd9335
-
-
-Johan Hovold (4):
-  ASoC: codecs: wsa883x: fix PA volume control
-  ASoC: qcom: sc8280xp: limit speaker volumes
-  ASoC: codecs: lpass-wsa-macro: fix compander volume hack
-  ASoC: codecs: wcd9335: drop unused gain hack remnant
-
- sound/soc/codecs/lpass-wsa-macro.c |  7 -------
- sound/soc/codecs/wcd9335.c         |  4 ----
- sound/soc/codecs/wsa883x.c         |  6 +++++-
- sound/soc/qcom/sc8280xp.c          | 12 +++++++-----
- 4 files changed, 12 insertions(+), 17 deletions(-)
-
--- 
-2.43.0
-
+--SDkeIWwVz3rl8Ay6--
