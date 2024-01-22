@@ -4,78 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6C050C46CD2
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 Jan 2024 21:55:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ED565C46CD2
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 Jan 2024 21:55:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 56047828;
-	Mon, 22 Jan 2024 22:55:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 56047828
+	by alsa0.perex.cz (Postfix) with ESMTPS id 88BC184A;
+	Mon, 22 Jan 2024 22:55:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 88BC184A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1705960519;
-	bh=EeDjJlLHY6iFwJ0hkXfNBUcyQNF3sYQV0gkXYFzIUKc=;
+	s=default; t=1705960534;
+	bh=4Bz1DD90hbSr+QDM9o6ei83T0CBo8SWVx1b2kI4unKA=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=j1n3Xgblz84P7v8G0TY027JheXI5fyLps6yY06s2B+WStjYGqVeKFNSnU0LckaSAk
-	 ukwZ49AlqVsqMKbOxYyWSvtrJeKqWTAfUnjFL1kahtOyZB/qDtSCKaAj/Ixw2fidmW
-	 27svIT29NHJ9WO4hK/nGykB+gyWB1Hvpn3GUX9OM=
+	b=lqF567jbE2DB6+G+9713EuDIubJbPvtpTT69d5/+JlAU0w7W8+4Bz0Ws1ME4gWncL
+	 slfSKyXEaSt1K2u/Y8asQcq/ja4Nwgq8u5G/P/0mT7y1W96EL3LvUXNEMp5YTOnCjR
+	 6ZW5SsEIF6zEV8AhC8+omT5Ot5rRThTKHObPbEZs=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2E8B3F805BE; Mon, 22 Jan 2024 22:54:31 +0100 (CET)
+	id 953C2F805D4; Mon, 22 Jan 2024 22:54:33 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D3671F805C6;
-	Mon, 22 Jan 2024 22:54:30 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D7C92F805F0;
+	Mon, 22 Jan 2024 22:54:32 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 909C6F802BE; Mon, 22 Jan 2024 22:54:25 +0100 (CET)
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+	id 0CD55F8025F; Mon, 22 Jan 2024 22:54:27 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 77E1BF800C1
-	for <alsa-devel@alsa-project.org>; Mon, 22 Jan 2024 22:54:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 77E1BF800C1
+	by alsa1.perex.cz (Postfix) with ESMTPS id AD7A7F8028D
+	for <alsa-devel@alsa-project.org>; Mon, 22 Jan 2024 22:54:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AD7A7F8028D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=qRGmZsG0
+ header.s=k20201202 header.b=SOEkwOQI
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 8E895CE2D35;
-	Mon, 22 Jan 2024 21:54:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7988C43390;
-	Mon, 22 Jan 2024 21:54:06 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 9F5B961B0B;
+	Mon, 22 Jan 2024 21:54:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D6B7C433C7;
+	Mon, 22 Jan 2024 21:54:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705960449;
-	bh=EeDjJlLHY6iFwJ0hkXfNBUcyQNF3sYQV0gkXYFzIUKc=;
+	s=k20201202; t=1705960458;
+	bh=4Bz1DD90hbSr+QDM9o6ei83T0CBo8SWVx1b2kI4unKA=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=qRGmZsG0n0pbfTQwQgnz+TuBnM66swIVaH9h0QJShmFy6RXhQ3MCiJEqcFiTghpN6
-	 8IcbTwBtX7aC0i64PwbrEYEyO2n+56CjGtSmPjoG7+AGL+lrmlqDMZBzhknrdkvrgD
-	 YHofstpgXpfYwO+a5m22RQdeVErn2nkceiKmqzTPaIsc6m0SJ0O0dRbD6Y7cQ1llN6
-	 d/NvJu7O4cAMl9gdUn1Wn6OoMsZQQ2wKZvAshAUlFEeEIshN2O82WzybfYWDGZDGAA
-	 0XqAoc7JEy+1Q2v3TsZaNUJjvBEV1WIhqWpvozyq5NYHTsTwN2mTyBmLKCb0ZsLyg1
-	 nqNHLFSwhv3jg==
+	b=SOEkwOQIN1dYHbkNB3myXMNJEhBKc3YUqOCR9vip3DqnSpcgpcH1rAt4RCMqAWG9X
+	 y5x/2qKyui1xbBzG1xCsy6igPtTiitq/jW5atXchbWcoPg9f6BOd93HlD+bka5ipcU
+	 x7sA15g5iIpdLj8+tr5hFRdMX1JCEQ55tptqTzYIW41AcE4Zsk9Km4hbGoNEKTT+8L
+	 9APIss2jLIx9QVetrAv1jWoDR8G6l/Sgkk6jVdHHSPsRlIkz7vsxIfwNzmWDxSMmdX
+	 vhpb4/qokfGY0Pn0o/54HdJI329fVknYf8/LP8RR8T+m/EE2ea4JSY6x6NMt9kbrJX
+	 mLc0gN1p1N6iw==
 From: Mark Brown <broonie@kernel.org>
-To: =?utf-8?q?Uwe_Kleine-K=C3=83=C2=B6nig?= <u.kleine-koenig@pengutronix.de>,
- Alexandre Belloni <alexandre.belloni@bootlin.com>,
- Claudiu Beznea <claudiu.beznea@tuxon.dev>,
- Jarkko Nikula <jarkko.nikula@bitmer.com>, Jaroslav Kysela <perex@perex.cz>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Nicolas Ferre <nicolas.ferre@microchip.com>,
- Peter Ujfalusi <peter.ujfalusi@gmail.com>, Takashi Iwai <tiwai@suse.com>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, linux-sound@vger.kernel.org
-In-Reply-To: <871qaoy9q7.wl-kuninori.morimoto.gx@renesas.com>
-References: <871qaoy9q7.wl-kuninori.morimoto.gx@renesas.com>
-Subject: Re: [PATCH v2 0/3] ASoC: use devm_snd_soc_register_card()
-Message-Id: <170596044638.161959.8281079331696349966.b4-ty@kernel.org>
-Date: Mon, 22 Jan 2024 21:54:06 +0000
+To: Johan Hovold <johan+linaro@kernel.org>
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Banajit Goswami <bgoswami@quicinc.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20240122181819.4038-1-johan+linaro@kernel.org>
+References: <20240122181819.4038-1-johan+linaro@kernel.org>
+Subject: Re: (subset) [PATCH v5 0/4] ASoC: qcom: volume fixes and codec
+ cleanups
+Message-Id: <170596045583.161959.6600754837297158632.b4-ty@kernel.org>
+Date: Mon, 22 Jan 2024 21:54:15 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-5c066
-Message-ID-Hash: HH4MB3JZLRPPDS5W72IYWSWTRFGZH6AT
-X-Message-ID-Hash: HH4MB3JZLRPPDS5W72IYWSWTRFGZH6AT
+Message-ID-Hash: LYXTR4OJCG6JW27HL2MEWV2H6MK3BXAD
+X-Message-ID-Hash: LYXTR4OJCG6JW27HL2MEWV2H6MK3BXAD
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -87,7 +86,8 @@ X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: <>
+Archived-At: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LYXTR4OJCG6JW27HL2MEWV2H6MK3BXAD/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -96,16 +96,14 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, 11 Jan 2024 00:50:09 +0000, Kuninori Morimoto wrote:
-> These are v2 to use devm_snd_soc_register_card() on ASoC.
+On Mon, 22 Jan 2024 19:18:15 +0100, Johan Hovold wrote:
+> To reduce the risk of speaker damage the PA gain needs to be limited on
+> machines like the Lenovo Thinkpad X13s until we have active speaker
+> protection in place.
 > 
-> v1 -> v2
-> 	- focus only simple case.
-> 
-> Kuninori Morimoto (3):
->   ASoC: ti: use devm_snd_soc_register_card()
->   ASoC: fsl: use devm_snd_soc_register_card()
->   ASoC: atmel: use devm_snd_soc_register_card()
+> Limit the gain to the current default setting provided by the UCM
+> configuration which most user have so far been using (due to a bug in
+> the configuration files which prevented hardware volume control [1]).
 > 
 > [...]
 
@@ -115,12 +113,8 @@ Applied to
 
 Thanks!
 
-[1/3] ASoC: ti: use devm_snd_soc_register_card()
-      commit: 98e9645a35993f8cfe99e36c9ba3e6a8c1783d78
-[2/3] ASoC: fsl: use devm_snd_soc_register_card()
-      commit: a4005007161c9df8fa4f44a776c624f68ec34a69
-[3/3] ASoC: atmel: use devm_snd_soc_register_card()
-      commit: 00352af2504a90381ec733237c3ef444032d5f1f
+[2/4] ASoC: qcom: sc8280xp: limit speaker volumes
+      commit: c481016bb4f8a9c059c39ac06e7b65e233a61f6a
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
