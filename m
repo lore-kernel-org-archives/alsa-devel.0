@@ -4,58 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DD48EC47DAF
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 Jan 2024 07:33:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2E986C4725D
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 Jan 2024 07:35:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2DD601F8;
-	Mon, 22 Jan 2024 08:33:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2DD601F8
+	by alsa0.perex.cz (Postfix) with ESMTPS id C8E8A74C;
+	Mon, 22 Jan 2024 08:35:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C8E8A74C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1705908814;
-	bh=w3x6fjQRj1G239oK4GnIyAbnMwFvI9UCv7x3oK55Llk=;
+	s=default; t=1705908915;
+	bh=FMSjJS1WV5njtl/Y28CewL/VTjUBcIvACGaXMr5ZtWc=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=tZ/PrXZV5N+H3m+tVdFi8RiuuiVMqyZ3moN46oiGYGxnOIdZrCYylv98dm2ZRk0WS
-	 dbHLw8Kf/7/syxgt18m5jJt60X5sbmlgSHFYJ6z7TKX4w9eP3tfYU06cRAYPiwLSxF
-	 6Q30cYs+z9mFkQo9rhHJQ4nB5DPAr12maWu33+p4=
+	b=VfCp5bWwtXBt01sG9LtYh5ZTY+sFIyGKiYfmCif3QhLGRd3YiBFPhGrjQH30tGcyO
+	 YDumTBG93+iwr5CTxIAjRE3zpyI46X0+5NJNxT2W/dFRll7sqQHMEN5cs2iLNpT/1g
+	 Ak2cNL3zXkXhEYGVezMwnkuQTfTYtT4d1euMTYE8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 875E6F8057E; Mon, 22 Jan 2024 08:33:02 +0100 (CET)
+	id 83DCAF80587; Mon, 22 Jan 2024 08:34:39 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 07352F8056F;
-	Mon, 22 Jan 2024 08:33:02 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id F1E9EF80580;
+	Mon, 22 Jan 2024 08:34:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0F684F8025F; Mon, 22 Jan 2024 08:32:56 +0100 (CET)
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+	id B5028F8025F; Mon, 22 Jan 2024 08:34:31 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 028C7F80149
-	for <alsa-devel@alsa-project.org>; Mon, 22 Jan 2024 08:32:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 028C7F80149
+	by alsa1.perex.cz (Postfix) with ESMTPS id 42D0CF80149
+	for <alsa-devel@alsa-project.org>; Mon, 22 Jan 2024 08:34:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 42D0CF80149
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=kThrX8DK
+ header.s=k20201202 header.b=bEls0NK8
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 940CCCE28E7;
-	Mon, 22 Jan 2024 07:32:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CDE58C43390;
-	Mon, 22 Jan 2024 07:32:35 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 952C16106D;
+	Mon, 22 Jan 2024 07:34:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59D25C433F1;
+	Mon, 22 Jan 2024 07:34:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705908756;
-	bh=w3x6fjQRj1G239oK4GnIyAbnMwFvI9UCv7x3oK55Llk=;
+	s=k20201202; t=1705908860;
+	bh=FMSjJS1WV5njtl/Y28CewL/VTjUBcIvACGaXMr5ZtWc=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=kThrX8DKkqS/wgk/ydg8e9O+Ht9U9dFKbiK8Wz5sBUH/T6Mg8bQzwwD07efNxXaq7
-	 /+MzyqpQT89gC5+AKc7k5Sdz4ZyJ9CcACJCWFdg36WHwKwLRkOyZqZGu0hShqb1IH+
-	 oA4emJvBTNrhC1wJvyaX/nSsibnHprJ6dUmCN7vx0hRy7UGyGzjOHWrjq+iZ8pZbmG
-	 5lEkXS6DBgFiI9wC1cC4S/YaHeI6sfGC6ZpgtBue37FMVdtkhOyhIJ4SOg50iGpoS2
-	 FIfFHFYnJvE3smS3jq06+Jh1vU0C8euG/+x7hDneaj0hYxVeyQHtHcRfNOBifu85EL
-	 IGWpPJfUqfYzA==
-Date: Mon, 22 Jan 2024 13:02:32 +0530
+	b=bEls0NK8UEGPwSV9O5f0KT6MWVj03wkHBHN8PBWz8ns6/D3b/srmK4/3wbmH+V4uQ
+	 FFqAB5aEgMk8pQxWeLXwII9rhB/8Xm1j+WHxC4HufIsJJ0ZGdKXmGjCHbvHpF4nYAy
+	 +BE3Z3RqEGW4YH6K28Pva9ESUeR6U98z4jcXC09CrgNOuxoyOfRiQ7/XPvMCwIk3Lk
+	 wocjF8NhI1B/1cAcejUjRSPOkogeZWVd45so/OsHuCDFWKYlnecPY4cQT76OTgbzJG
+	 WUi508pRBTPTOMt2X9lDajOmvbpnit3kIjah7WPMVMXTsJK8vBsOAPAFuNIQ38OjWY
+	 G2G+NX9zCOJDw==
+Date: Mon, 22 Jan 2024 13:04:16 +0530
 From: Vinod Koul <vkoul@kernel.org>
 To: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 Cc: broonie@kernel.org, alsa-devel@alsa-project.org,
@@ -64,24 +65,17 @@ Cc: broonie@kernel.org, alsa-devel@alsa-project.org,
 	Sunil-kumar.Dommati@amd.com, vinod.koul@intel.com,
 	venkataprasad.potturu@amd.com,
 	Sanyog Kale <sanyog.r.kale@intel.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-	Syed Saba Kareem <Syed.SabaKareem@amd.com>,
-	Arnd Bergmann <arnd@arndb.de>, Marian Postevca <posteuca@mutex.one>,
-	open list <linux-kernel@vger.kernel.org>,
-	"open list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..."
- <linux-sound@vger.kernel.org>
-Subject: Re: [PATCH V2 01/13] ASoC/soundwire: implement generic api for
- scanning amd soundwire controller
-Message-ID: <Za4aEL1NaGS8UeGr@matsya>
+	open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH V2 02/13] drivers: soundwire: amd: update license
+Message-ID: <Za4aeN7vJ-Ln2fxA@matsya>
 References: <20240110094416.853610-1-Vijendar.Mukunda@amd.com>
- <20240110094416.853610-2-Vijendar.Mukunda@amd.com>
+ <20240110094416.853610-3-Vijendar.Mukunda@amd.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240110094416.853610-2-Vijendar.Mukunda@amd.com>
-Message-ID-Hash: D7WWOX7AMFTZQ7YXMKQSEFJV2MOB7WSV
-X-Message-ID-Hash: D7WWOX7AMFTZQ7YXMKQSEFJV2MOB7WSV
+In-Reply-To: <20240110094416.853610-3-Vijendar.Mukunda@amd.com>
+Message-ID-Hash: BSRKIH7M4CVH7DHUF3VCGW2HE3ZIRCP4
+X-Message-ID-Hash: BSRKIH7M4CVH7DHUF3VCGW2HE3ZIRCP4
 X-MailFrom: vkoul@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -94,7 +88,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/D7WWOX7AMFTZQ7YXMKQSEFJV2MOB7WSV/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BSRKIH7M4CVH7DHUF3VCGW2HE3ZIRCP4/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -104,10 +98,61 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 On 10-01-24, 15:14, Vijendar Mukunda wrote:
-> Implement generic function for scanning SoundWire controller.
-> Same function will be used for legacy and sof stack for AMD platforms.
 
-Acked-by: Vinod Koul <vkoul@kernel.org>
+Why is the title "drivers: soundwire: "
+
+git log drivers/soundwire/amd*
+Tells me you didnt do that in past why now..?
+
+> Update license to dual license to align with Sound Open Firmware (SOF)
+> driver as SOF uses dual license.
+> 
+> Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+> ---
+>  drivers/soundwire/amd_manager.c   | 4 ++--
+>  drivers/soundwire/amd_manager.h   | 2 +-
+>  include/linux/soundwire/sdw_amd.h | 2 +-
+>  3 files changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/soundwire/amd_manager.c b/drivers/soundwire/amd_manager.c
+> index 3a99f6dcdfaf..afa2d83b7e69 100644
+> --- a/drivers/soundwire/amd_manager.c
+> +++ b/drivers/soundwire/amd_manager.c
+> @@ -1,4 +1,4 @@
+> -// SPDX-License-Identifier: GPL-2.0+
+> +// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
+>  /*
+>   * SoundWire AMD Manager driver
+>   *
+> @@ -1207,5 +1207,5 @@ module_platform_driver(amd_sdw_driver);
+>  
+>  MODULE_AUTHOR("Vijendar.Mukunda@amd.com");
+>  MODULE_DESCRIPTION("AMD SoundWire driver");
+> -MODULE_LICENSE("GPL");
+> +MODULE_LICENSE("Dual BSD/GPL");
+>  MODULE_ALIAS("platform:" DRV_NAME);
+> diff --git a/drivers/soundwire/amd_manager.h b/drivers/soundwire/amd_manager.h
+> index 5f040151a259..f57165bbb9d9 100644
+> --- a/drivers/soundwire/amd_manager.h
+> +++ b/drivers/soundwire/amd_manager.h
+> @@ -1,4 +1,4 @@
+> -/* SPDX-License-Identifier: GPL-2.0+ */
+> +/* SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause) */
+>  /*
+>   * Copyright (C) 2023 Advanced Micro Devices, Inc. All rights reserved.
+>   */
+> diff --git a/include/linux/soundwire/sdw_amd.h b/include/linux/soundwire/sdw_amd.h
+> index 41dd64941cef..56b4117c087a 100644
+> --- a/include/linux/soundwire/sdw_amd.h
+> +++ b/include/linux/soundwire/sdw_amd.h
+> @@ -1,4 +1,4 @@
+> -/* SPDX-License-Identifier: GPL-2.0+ */
+> +/* SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause) */
+>  /*
+>   * Copyright (C) 2023 Advanced Micro Devices, Inc. All rights reserved.
+>   */
+> -- 
+> 2.34.1
 
 -- 
 ~Vinod
