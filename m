@@ -4,59 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 131A7C47DAF
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 Jan 2024 18:19:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6FB49C47DAF
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 Jan 2024 18:20:08 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D961A83B;
-	Mon, 22 Jan 2024 19:19:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D961A83B
+	by alsa0.perex.cz (Postfix) with ESMTPS id BC2337F4;
+	Mon, 22 Jan 2024 19:19:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BC2337F4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1705947589;
-	bh=iEHE7zcoasy6D541jeKFupXFX5j6AhyLZMvQAbjE414=;
+	s=default; t=1705947606;
+	bh=J3pJykalQ9z5qLyd0IoXv2mhNXbeb8C+rJuQjv479Gs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=up9XM7S8LNY0TmDk9yPxBIfQxS57dt7gbmXDbHuNfD8rQbXJay/8fAwqcgw7ANYEj
-	 cTFgKgAL9hDlwugzdTmfR9MrTTPXZ2YJ+j4tUXNO8YtV/7gh10fKd9taG6L5F7nuBJ
-	 soafzoLIEIt3vkEOt/rkPSH1po8Zx2xEOTjn+LOI=
+	b=c2xdmm7wQ6oPY3r4OnZdch0HcR35VNiObtvtO1xPCLOak340XQvk5UxER//a+V6MZ
+	 YWmEjwk4OY3+INMADAoLpj1m6qMAA3iVue+3kGQOXK8jx8+Js/3xf1auL5onuz7n8L
+	 mEnKlVjna0Grq8Ca77LXfF0pEB9+DAI5viWDNjVM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id ED9E7F805EE; Mon, 22 Jan 2024 19:18:45 +0100 (CET)
+	id 4D39AF8060B; Mon, 22 Jan 2024 19:18:47 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 13251F805F0;
-	Mon, 22 Jan 2024 19:18:45 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 67982F80611;
+	Mon, 22 Jan 2024 19:18:47 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0E5A9F8025F; Mon, 22 Jan 2024 19:18:36 +0100 (CET)
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+	id 3CAA5F8025F; Mon, 22 Jan 2024 19:18:37 +0100 (CET)
+Received: from sin.source.kernel.org (sin.source.kernel.org
+ [IPv6:2604:1380:40e1:4800::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 71329F802BE
-	for <alsa-devel@alsa-project.org>; Mon, 22 Jan 2024 19:18:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 71329F802BE
+	by alsa1.perex.cz (Postfix) with ESMTPS id 2CE25F80149
+	for <alsa-devel@alsa-project.org>; Mon, 22 Jan 2024 19:18:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2CE25F80149
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=O+dcfJF6
+ header.s=k20201202 header.b=K24fJxSp
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id E700FCE2C10;
+	by sin.source.kernel.org (Postfix) with ESMTP id 9F07FCE2C13;
 	Mon, 22 Jan 2024 18:18:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D1602C433C7;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CEC71C43399;
 	Mon, 22 Jan 2024 18:18:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1705947507;
-	bh=iEHE7zcoasy6D541jeKFupXFX5j6AhyLZMvQAbjE414=;
+	bh=J3pJykalQ9z5qLyd0IoXv2mhNXbeb8C+rJuQjv479Gs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=O+dcfJF6E044EyavOfv1l9nHnpKuMYutU0LqH7U8RTGknusM+yybwHryBMXCCV6E/
-	 6xdXL1sM1jWLDi8dwSM2TkJ/23cgWDee+65weSpeDef+3Lw3QGywZuckX7l5pMnBuM
-	 e4i8+BZsjataShXzmTwIslxZ30KLNZ2HdE0P5T7EvFYjNK90ueMjsI6Z2QChXLcLG6
-	 YpcRJY8b4iadTa0s43m5mQGMfPzIHXiyRJyd313Mzf6V+Kki3hl3wojw5E7ovJhXMI
-	 dBYHM6O7chalTSbVnwzzt/1QCH1Cbb4UUyf2pTu7MtM1X9nvIOot94yej8+sk/BUvp
-	 q7CAXSS9+tI6A==
+	b=K24fJxSp+FVgatotrYgfDwSUxsJpUEUirW5i9YYtNy82g7DIQQb8BNKtVxHiXa4Pe
+	 WbtgD6zZUdGpU2tphB1q7HqEvldJNHIzfIVA5R6RjTYkHDg4xTQdFzAvTkAx+CUEFf
+	 hwbwP2fPqRCrLn1XxDA8XEKKB2eavF044La9klYHiWDFyVANSqK1S+AII7R+G92SbJ
+	 KA84JkyVeb5KQdZV1Mz9MEIcHpZg9tzeSCMyk/4P16zr14RMCLe9ylTrFoUgVDzD2c
+	 lpakAwNuE/2+uRRsEOFN20SObhp9DBfyjH+n8P8z/rzHIPf9JnlQYmD53TJy4jvHE+
+	 Z9TP1RLO37Chg==
 Received: from johan by xi.lan with local (Exim 4.97.1)
 	(envelope-from <johan+linaro@kernel.org>)
-	id 1rRysa-0000000013V-1wQ8;
+	id 1rRysa-0000000013T-1ZCx;
 	Mon, 22 Jan 2024 19:18:40 +0100
 From: Johan Hovold <johan+linaro@kernel.org>
 To: Mark Brown <broonie@kernel.org>
@@ -70,16 +71,16 @@ Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
 	linux-kernel@vger.kernel.org,
 	Johan Hovold <johan+linaro@kernel.org>,
 	stable@vger.kernel.org
-Subject: [PATCH v5 2/4] ASoC: qcom: sc8280xp: limit speaker volumes
-Date: Mon, 22 Jan 2024 19:18:17 +0100
-Message-ID: <20240122181819.4038-3-johan+linaro@kernel.org>
+Subject: [PATCH v5 1/4] ASoC: codecs: wsa883x: fix PA volume control
+Date: Mon, 22 Jan 2024 19:18:16 +0100
+Message-ID: <20240122181819.4038-2-johan+linaro@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240122181819.4038-1-johan+linaro@kernel.org>
 References: <20240122181819.4038-1-johan+linaro@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: XJ2BHC2NBVFP3U2NX2XHB7D73NLNOIH2
-X-Message-ID-Hash: XJ2BHC2NBVFP3U2NX2XHB7D73NLNOIH2
+Message-ID-Hash: BQFC7W42J7C2VAAL7CJFL2K7LYPB47AD
+X-Message-ID-Hash: BQFC7W42J7C2VAAL7CJFL2K7LYPB47AD
 X-MailFrom: johan+linaro@kernel.org
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
@@ -91,7 +92,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XJ2BHC2NBVFP3U2NX2XHB7D73NLNOIH2/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BQFC7W42J7C2VAAL7CJFL2K7LYPB47AD/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -100,51 +101,44 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The UCM configuration for the Lenovo ThinkPad X13s has up until now
-been setting the speaker PA volume to the minimum -3 dB when enabling
-the speakers, but this does not prevent the user from increasing the
-volume further.
+The PA gain can be set in steps of 1.5 dB from -3 dB to 18 dB, that is,
+in 15 levels.
 
-Limit the digital gain and PA volumes to a combined -3 dB in the machine
-driver to reduce the risk of speaker damage until we have active speaker
-protection in place (or higher safe levels have been established).
+Fix the dB values for the PA volume control as experiments using wsa8835
+show that the first 16 levels all map to the same lowest gain while the
+last three map to the highest gain.
 
-Note that the PA volume limit cannot be set lower than 0 dB or
-PulseAudio gets confused when the first 16 levels all map to -3 dB.
+These values specifically need to be correct for the sound server to
+provide proper volume control.
 
-Also note that this will probably need to be generalised using
-machine-specific limits, but a common limit should do for now.
+Note that level 0 (-3 dB) does not mute the PA so the mute flag should
+also not be set.
 
-Cc: stable@vger.kernel.org	# 6.5
+Fixes: cdb09e623143 ("ASoC: codecs: wsa883x: add control, dapm widgets and map")
+Cc: stable@vger.kernel.org      # 6.0
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
 ---
- sound/soc/qcom/sc8280xp.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+ sound/soc/codecs/wsa883x.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/qcom/sc8280xp.c b/sound/soc/qcom/sc8280xp.c
-index ed4bb551bfbb..b7fd503a1666 100644
---- a/sound/soc/qcom/sc8280xp.c
-+++ b/sound/soc/qcom/sc8280xp.c
-@@ -32,12 +32,14 @@ static int sc8280xp_snd_init(struct snd_soc_pcm_runtime *rtd)
- 	case WSA_CODEC_DMA_RX_0:
- 	case WSA_CODEC_DMA_RX_1:
- 		/*
--		 * set limit of 0dB on Digital Volume for Speakers,
--		 * this can prevent damage of speakers to some extent without
--		 * active speaker protection
-+		 * Set limit of -3 dB on Digital Volume and 0 dB on PA Volume
-+		 * to reduce the risk of speaker damage until we have active
-+		 * speaker protection in place.
- 		 */
--		snd_soc_limit_volume(card, "WSA_RX0 Digital Volume", 84);
--		snd_soc_limit_volume(card, "WSA_RX1 Digital Volume", 84);
-+		snd_soc_limit_volume(card, "WSA_RX0 Digital Volume", 81);
-+		snd_soc_limit_volume(card, "WSA_RX1 Digital Volume", 81);
-+		snd_soc_limit_volume(card, "SpkrLeft PA Volume", 17);
-+		snd_soc_limit_volume(card, "SpkrRight PA Volume", 17);
- 		break;
- 	default:
- 		break;
+diff --git a/sound/soc/codecs/wsa883x.c b/sound/soc/codecs/wsa883x.c
+index cb83c569e18d..a2e86ef7d18f 100644
+--- a/sound/soc/codecs/wsa883x.c
++++ b/sound/soc/codecs/wsa883x.c
+@@ -1098,7 +1098,11 @@ static int wsa_dev_mode_put(struct snd_kcontrol *kcontrol,
+ 	return 1;
+ }
+ 
+-static const DECLARE_TLV_DB_SCALE(pa_gain, -300, 150, -300);
++static const SNDRV_CTL_TLVD_DECLARE_DB_RANGE(pa_gain,
++	0, 14, TLV_DB_SCALE_ITEM(-300, 0, 0),
++	15, 29, TLV_DB_SCALE_ITEM(-300, 150, 0),
++	30, 31, TLV_DB_SCALE_ITEM(1800, 0, 0),
++);
+ 
+ static int wsa883x_get_swr_port(struct snd_kcontrol *kcontrol,
+ 				struct snd_ctl_elem_value *ucontrol)
 -- 
 2.43.0
 
