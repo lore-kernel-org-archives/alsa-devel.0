@@ -4,78 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5C562C47DAF
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 Jan 2024 16:34:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2775C47DD9
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 Jan 2024 16:35:03 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BEDD984A;
-	Mon, 22 Jan 2024 17:34:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BEDD984A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 89C39820;
+	Mon, 22 Jan 2024 17:34:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 89C39820
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1705941281;
-	bh=qx0slvzEJDNEhcWL6ARnxl5FKczNxXGG4ZvuQmczmUY=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=neE5bjN4PJFQjxfz45aK+Uaon0eyAPId5/DmWUeYqNMXAPkarprnq9N6whfy+id2S
-	 CSUznvUJy5BeVhW+L7OGQ6dl3MKe5ZK71KxHf7o45EMVYhHjsb9OnimMDQT+i36rOg
-	 K3b1OYRq+N4O2HERyh/bzPK6fqTh2Exav3KarGy8=
+	s=default; t=1705941301;
+	bh=AnT6KpLa3u0hFMSAd/NwItFYFy+ZRbXGode8jH6ETD8=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=KdLRkpSUVSiEJeU75N+dC+0q3Ga4vODkBVQdzcivCCn2HPvbctCPSnMXq+/9t9+6u
+	 6Cn98j1mauhvyleZerz5BM4xyYoWqoFzR7hnVMV+j+NLRz6nOqrmn6ETln2inHAWEY
+	 m9Vvx6xI8LveWbL0VqnoKFtth8HbjD1FYQQWqKaA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 49418F8057F; Mon, 22 Jan 2024 17:34:09 +0100 (CET)
+	id 9CC97F805B3; Mon, 22 Jan 2024 17:34:11 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 98C92F80564;
-	Mon, 22 Jan 2024 17:34:08 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9A613F805C2;
+	Mon, 22 Jan 2024 17:34:10 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B349BF802BE; Mon, 22 Jan 2024 17:34:00 +0100 (CET)
-Received: from sin.source.kernel.org (sin.source.kernel.org
- [IPv6:2604:1380:40e1:4800::1])
+	id 81AFEF8028D; Mon, 22 Jan 2024 17:34:02 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E7BE3F80149
-	for <alsa-devel@alsa-project.org>; Mon, 22 Jan 2024 17:33:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E7BE3F80149
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6033CF8025F
+	for <alsa-devel@alsa-project.org>; Mon, 22 Jan 2024 17:33:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6033CF8025F
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=Y3ghcF4U
+ header.s=k20201202 header.b=kjRt5IdG
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 16913CE12A3;
-	Mon, 22 Jan 2024 16:33:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F67BC433C7;
-	Mon, 22 Jan 2024 16:33:42 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 69046614FB;
+	Mon, 22 Jan 2024 16:33:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E34B4C433F1;
+	Mon, 22 Jan 2024 16:33:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705941225;
-	bh=qx0slvzEJDNEhcWL6ARnxl5FKczNxXGG4ZvuQmczmUY=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=Y3ghcF4UrCUd9YkeyOT4JqiVFg+oSn3mn4svk02eISuC1tjXDUbOBo2hrbHRw1vSk
-	 rFYgXdt8kD/h5lFkjkYFCh2CQimZ2uJVrhf5EBj+w8m+gESgKn9ow7kxxDpz8nHMqa
-	 Mpk1XOJzQabJ3hmLC81iYEEVJRX2DFOPyQLK/AY8nH1zjDFU2zzbrNaZmFcTi62NMU
-	 MLWjyaTwxK7dThpCrMPwZGq1xsupEdsPiJKzFCdJelPIYEYVv+hEljN2F461m3121U
-	 DYKMilYhGFt9R4e4YBvT15goJhMO4etaEIcCXbBr+nq8qziqjCLZk0gUY8xSGTvcUm
-	 HERAy44RSFeog==
+	s=k20201202; t=1705941232;
+	bh=AnT6KpLa3u0hFMSAd/NwItFYFy+ZRbXGode8jH6ETD8=;
+	h=From:To:In-Reply-To:References:Subject:Date:From;
+	b=kjRt5IdGhxzArXLJpc7SCLmDDSIaA/2Ig5oh1se3IdMxwIjOcHR3M1UCRwhDxEo27
+	 iO7Nvo62o3vYAkRD/LDE9Fzk9kfqlX8mgMc7++bxkQdyJi7jLhxJ8qjTE6iw6iJEZB
+	 7GZxxuL2Vyl5equD2BF7VEDUT86/Ccc/eTEJCN/0X2DVeSzWx6hFZEuxcndZjcz+Cl
+	 dJNVm6fRotlWc/LKC81A7HMGwUYxcRwbA+Z72irYKK3fEElvSa3ZazTcxbvUqQ2SUD
+	 K3WuV9vDhdDKt3H0G02Am/UjvNjwMju2oUgbQouT83KMYdz/tmyuyFRpUOUkidRGcW
+	 MigK+IxDxKYRA==
 From: Mark Brown <broonie@kernel.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Banajit Goswami <bgoswami@quicinc.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- "Gustavo A. R. Silva" <gustavoars@kernel.org>,
- Erick Archer <erick.archer@gmx.com>
-Cc: alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-In-Reply-To: <20240106171635.19881-1-erick.archer@gmx.com>
-References: <20240106171635.19881-1-erick.archer@gmx.com>
-Subject: Re: [PATCH] ASoC: qcom: Use devm_kcalloc() instead of
- devm_kzalloc()
-Message-Id: <170594122282.63484.7192392650857534262.b4-ty@kernel.org>
-Date: Mon, 22 Jan 2024 16:33:42 +0000
+To: Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Herve Codina <herve.codina@bootlin.com>,
+ Shengjiu Wang <shengjiu.wang@nxp.com>, linux-sound@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ alsa-devel@alsa-project.org,
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20240115182017.1610055-1-krzysztof.kozlowski@linaro.org>
+References: <20240115182017.1610055-1-krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH] ASoC: dt-bindings: Do not override firmware-name $ref
+Message-Id: <170594122964.63484.11012665627670215684.b4-ty@kernel.org>
+Date: Mon, 22 Jan 2024 16:33:49 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-5c066
-Message-ID-Hash: 5BIWYLVM6JIWXKKFUCYJSQTGJSER4M2T
-X-Message-ID-Hash: 5BIWYLVM6JIWXKKFUCYJSQTGJSER4M2T
+Message-ID-Hash: C5LLEZNBYGVQFPA437HCHRYXFUTHO5DP
+X-Message-ID-Hash: C5LLEZNBYGVQFPA437HCHRYXFUTHO5DP
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -88,7 +86,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5BIWYLVM6JIWXKKFUCYJSQTGJSER4M2T/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/C5LLEZNBYGVQFPA437HCHRYXFUTHO5DP/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -97,9 +95,10 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Sat, 06 Jan 2024 18:16:35 +0100, Erick Archer wrote:
-> Use 2-factor multiplication argument form devm_kcalloc() instead
-> of devm_kzalloc().
+On Mon, 15 Jan 2024 19:20:17 +0100, Krzysztof Kozlowski wrote:
+> dtschema package defines firmware-name as string-array, so individual
+> bindings should not make it a string but instead just narrow the number
+> of expected firmware file names.
 > 
 > 
 
@@ -109,8 +108,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: qcom: Use devm_kcalloc() instead of devm_kzalloc()
-      commit: 322ed3a10bf2dc85568aa9ed285aba448347080c
+[1/1] ASoC: dt-bindings: Do not override firmware-name $ref
+      commit: 059870e53aa06831f1ccdc5e9cf29f933cdf284e
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
