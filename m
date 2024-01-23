@@ -4,140 +4,149 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F39F8C47258
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Jan 2024 07:51:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 98E9BC47DDB
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 Jan 2024 07:59:27 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6C674820;
-	Tue, 23 Jan 2024 08:51:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6C674820
+	by alsa0.perex.cz (Postfix) with ESMTPS id 67501741;
+	Tue, 23 Jan 2024 08:59:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 67501741
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1705996290;
-	bh=ApE1ymyjSp/9bjKw4vll3u4WRE8oc+K7pME/hV/KA8Y=;
+	s=default; t=1705996765;
+	bh=pFyUKCV7PckLl73NJF0nEHxcP3YgpX8KAqzVymf34Ho=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Hf3eufAzE/iinFHmV+hcxACjidu+BMv2CLqTai3VWX0ZC3epDdOWZPAKe+ByFBaBT
-	 nBOVinMIcIPjtp3xe2kFWipXN3YrpiVpEA7S6W1KvM2OC1jMOFlPOdzqfVNHspgG/7
-	 GZzBi3Lzq75f1lFQbg5hWdHoWwnM5AQJaxxUcaWU=
+	b=bcoOwAcNXC9LEHrwF30Xm+aBaMXrYPHl2Qghro78PwbHnzi7ZDvBZiiV25PL1gu9m
+	 s6zD1yphykAEkXXcGAyBHwKUTVCNMc3TZkun/p2dEgHyTQSvX3/z4sz/zmzNuDG1HF
+	 cC4VUYl3UcWcNrZKHknJj1AeTpwdo96W5Rw6lntM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2D001F80587; Tue, 23 Jan 2024 08:50:54 +0100 (CET)
+	id E881AF805AF; Tue, 23 Jan 2024 08:58:53 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E353DF80587;
-	Tue, 23 Jan 2024 08:50:52 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 36D9AF8057D;
+	Tue, 23 Jan 2024 08:58:53 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8F4E9F8003A; Tue, 23 Jan 2024 08:47:27 +0100 (CET)
+	id 316FCF80494; Tue, 23 Jan 2024 08:53:11 +0100 (CET)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id EC830F8003A
-	for <alsa-devel@alsa-project.org>; Tue, 23 Jan 2024 08:45:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EC830F8003A
+	by alsa1.perex.cz (Postfix) with ESMTPS id 62D66F8025F
+	for <alsa-devel@alsa-project.org>; Tue, 23 Jan 2024 08:52:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 62D66F8025F
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=lt1xBQlD;
+ header.s=susede2_rsa header.b=Btl067fn;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=sHAG/Yjo;
+ header.s=susede2_ed25519 header.b=2tgb3Y6k;
 	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=lt1xBQlD;
+ header.a=rsa-sha256 header.s=susede2_rsa header.b=Btl067fn;
 	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=sHAG/Yjo
+ header.s=susede2_ed25519 header.b=2tgb3Y6k
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [10.150.64.97])
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 17EBD22229;
-	Tue, 23 Jan 2024 07:45:30 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 8AC2D21F4E;
+	Tue, 23 Jan 2024 07:52:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1705995930;
+	t=1705996359;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=aa5L+mUFMi725X5M5MIPd+dHF2d9EcLTIcmYjrS3ceE=;
-	b=lt1xBQlD8JmKMNxo7npxk1xElyE1A3/03nUIwq3XOWUSVPh97WZvESx2sW654taWagJ0RT
-	6ZQ4wOvzpUfR8saJZVGI/S0mnbBmCSaMquMaeTLg6d7PQwDjLsmg0TOfww52MK6rdQNwyj
-	fSFd7TzQZrFxJ3b3bgLqL3MwZbxZNiA=
+	bh=prvT3vWO52L/uHnktDoGcR4sTbjQr2MfIdjzVdS6mfY=;
+	b=Btl067fn6lRnDDq9NCXx84J6dWAQopZuYVmvqMzXRrR+RVpx9ZmBRpOGISuAvXRIHiYIQR
+	o7ZYGlM/dkzBw6ZO6ujOmDAchzYKXyaItbmEBtFAfyF5TrD3JZ5kkdcrazzltIPw+27mQJ
+	VRkLzE72/Zflb+J2SbUn5FhTimUj/Ak=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1705995930;
+	s=susede2_ed25519; t=1705996359;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=aa5L+mUFMi725X5M5MIPd+dHF2d9EcLTIcmYjrS3ceE=;
-	b=sHAG/YjoByK5Ln5BTRKlgGqmPvcusqS3QbqVN6F03BBKSRai/73qMnOANDZiNvIGItN4UH
-	jtTBXLZvUZKBi4Bg==
+	bh=prvT3vWO52L/uHnktDoGcR4sTbjQr2MfIdjzVdS6mfY=;
+	b=2tgb3Y6kVFmEynpEywD4x7MKw0O2f7l6fOCo3iHycEJMQLD8dfRqVMEe+I40RPaY6m4wyW
+	Wc/haavMLkLTnADA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1705995930;
+	t=1705996359;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=aa5L+mUFMi725X5M5MIPd+dHF2d9EcLTIcmYjrS3ceE=;
-	b=lt1xBQlD8JmKMNxo7npxk1xElyE1A3/03nUIwq3XOWUSVPh97WZvESx2sW654taWagJ0RT
-	6ZQ4wOvzpUfR8saJZVGI/S0mnbBmCSaMquMaeTLg6d7PQwDjLsmg0TOfww52MK6rdQNwyj
-	fSFd7TzQZrFxJ3b3bgLqL3MwZbxZNiA=
+	bh=prvT3vWO52L/uHnktDoGcR4sTbjQr2MfIdjzVdS6mfY=;
+	b=Btl067fn6lRnDDq9NCXx84J6dWAQopZuYVmvqMzXRrR+RVpx9ZmBRpOGISuAvXRIHiYIQR
+	o7ZYGlM/dkzBw6ZO6ujOmDAchzYKXyaItbmEBtFAfyF5TrD3JZ5kkdcrazzltIPw+27mQJ
+	VRkLzE72/Zflb+J2SbUn5FhTimUj/Ak=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1705995930;
+	s=susede2_ed25519; t=1705996359;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=aa5L+mUFMi725X5M5MIPd+dHF2d9EcLTIcmYjrS3ceE=;
-	b=sHAG/YjoByK5Ln5BTRKlgGqmPvcusqS3QbqVN6F03BBKSRai/73qMnOANDZiNvIGItN4UH
-	jtTBXLZvUZKBi4Bg==
+	bh=prvT3vWO52L/uHnktDoGcR4sTbjQr2MfIdjzVdS6mfY=;
+	b=2tgb3Y6kVFmEynpEywD4x7MKw0O2f7l6fOCo3iHycEJMQLD8dfRqVMEe+I40RPaY6m4wyW
+	Wc/haavMLkLTnADA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D996F136A4;
-	Tue, 23 Jan 2024 07:45:29 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 540D813786;
+	Tue, 23 Jan 2024 07:52:39 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id y0deM5lur2XVYwAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Tue, 23 Jan 2024 07:45:29 +0000
-Date: Tue, 23 Jan 2024 08:45:29 +0100
-Message-ID: <871qa8o5ly.wl-tiwai@suse.de>
+	id qlsQE0dwr2UMZgAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Tue, 23 Jan 2024 07:52:39 +0000
+Date: Tue, 23 Jan 2024 08:52:38 +0100
+Message-ID: <87wms0mqpl.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Julian Sikorski <belegdol@gmail.com>
-Cc: alsa-devel@alsa-project.org,
-	Julian Sikorski <belegdol+github@gmail.com>
-Subject: Re: [PATCH] Add a quirk for Yamaha YIT-W12TX transmitter
-In-Reply-To: <0cc1ed1a-10d6-4c78-a955-ca0f2435d538@gmail.com>
-References: <20231127221552.19087-1-belegdol+github@gmail.com>
-	<0cc1ed1a-10d6-4c78-a955-ca0f2435d538@gmail.com>
+To: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+Cc: Takashi Iwai <tiwai@suse.com>,
+	Jaroslav Kysela <perex@perex.cz>,
+	<alsa-devel@alsa-project.org>,
+	<patches@opensource.cirrus.com>,
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] ALSA: hda/cs8409: Suppress vmaster control for Dolphin
+ models
+In-Reply-To: <20240122184710.5802-1-vitalyr@opensource.cirrus.com>
+References: <20240122184710.5802-1-vitalyr@opensource.cirrus.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
 Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spamd-Result: default: False [-1.14 / 50.00];
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=Btl067fn;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=2tgb3Y6k
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.69 / 50.00];
 	 ARC_NA(0.00)[];
 	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
 	 FROM_HAS_DN(0.00)[];
-	 RCPT_COUNT_THREE(0.00)[3];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TAGGED_RCPT(0.00)[github];
-	 MIME_GOOD(-0.10)[text/plain];
 	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MIME_GOOD(-0.10)[text/plain];
+	 DWL_DNSWL_MED(-2.00)[suse.de:dkim];
+	 RCPT_COUNT_FIVE(0.00)[6];
 	 RCVD_COUNT_THREE(0.00)[3];
-	 TO_MATCH_ENVRCPT_SOME(0.00)[];
 	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.de:+];
+	 MX_GOOD(-0.01)[];
 	 MID_CONTAINS_FROM(1.00)[];
-	 FREEMAIL_TO(0.00)[gmail.com];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
 	 FUZZY_BLOCKED(0.00)[rspamd.com];
 	 FROM_EQ_ENVFROM(0.00)[];
 	 MIME_TRACE(0.00)[0:+];
-	 FREEMAIL_CC(0.00)[alsa-project.org,gmail.com];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
 	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-2.04)[95.27%]
-Message-ID-Hash: NSWBOS3YEDGIDMGDGVIVKCUB7AXJZH5O
-X-Message-ID-Hash: NSWBOS3YEDGIDMGDGVIVKCUB7AXJZH5O
+	 BAYES_HAM(-2.18)[96.06%]
+X-Rspamd-Queue-Id: 8AC2D21F4E
+Message-ID-Hash: EZNUUZOEGU6VRY24NOMSHDWCDA2WLSNL
+X-Message-ID-Hash: EZNUUZOEGU6VRY24NOMSHDWCDA2WLSNL
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -150,7 +159,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NSWBOS3YEDGIDMGDGVIVKCUB7AXJZH5O/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/EZNUUZOEGU6VRY24NOMSHDWCDA2WLSNL/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -159,42 +168,18 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, 22 Jan 2024 14:58:14 +0100,
-Julian Sikorski wrote:
+On Mon, 22 Jan 2024 19:47:10 +0100,
+Vitaly Rodionov wrote:
 > 
-> Am 27.11.23 um 23:15 schrieb Julian Sikorski:
-> > The device fails to initialize otherwise, giving the following error:
-> > [ 3676.671641] usb 2-1.1: 1:1: cannot get freq at ep 0x1
-> > 
-> > Signed-off-by: Julian Sikorski <belegdol+github@gmail.com>
-> > ---
-> >   sound/usb/quirks.c | 2 ++
-> >   1 file changed, 2 insertions(+)
-> > 
-> > diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
-> > index ab2b938502eb..bf0a7cca90d0 100644
-> > --- a/sound/usb/quirks.c
-> > +++ b/sound/usb/quirks.c
-> > @@ -2031,6 +2031,8 @@ static const struct usb_audio_quirk_flags_table quirk_flags_table[] = {
-> >   		   QUIRK_FLAG_CTL_MSG_DELAY_1M | QUIRK_FLAG_IGNORE_CTL_ERROR),
-> >   	DEVICE_FLG(0x0499, 0x1509, /* Steinberg UR22 */
-> >   		   QUIRK_FLAG_GENERIC_IMPLICIT_FB),
-> > +	DEVICE_FLG(0x0499, 0x3108, /* Yamaha YIT-W12TX */
-> > +		   QUIRK_FLAG_GET_SAMPLE_RATE),
-> >   	DEVICE_FLG(0x04d8, 0xfeea, /* Benchmark DAC1 Pre */
-> >   		   QUIRK_FLAG_GET_SAMPLE_RATE),
-> >   	DEVICE_FLG(0x04e8, 0xa051, /* Samsung USBC Headset (AKG) */
+> Customer has reported an issue with specific desktop platform
+> where two CS42L42 codecs are connected to CS8409 HDA bridge.
+> If "Master Volume Control" is created then on Ubuntu OS UCM
+> left/right balance slider in UI audio settings has no effect.
+> This patch will fix this issue for a target paltform.
 > 
-> 
-> 
-> Hi all,
-> 
-> is there something missing? It does not look like this got merged.
+> Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
 
-I seem to have overlooked or it didn't reach to me properly.
-Care to resubmit?  Don't forget to put subsystem maintainers to Cc.
+Applied, thanks.
 
-
-thanks,
 
 Takashi
