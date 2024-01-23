@@ -4,84 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A92E4C47DDF
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Jan 2024 14:14:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A6F44C47DDB
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 Jan 2024 14:15:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F0061B76;
-	Tue, 23 Jan 2024 15:14:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F0061B76
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9B1BEE68;
+	Tue, 23 Jan 2024 15:15:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9B1BEE68
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1706019298;
-	bh=DeKmmRTD5CNQ6B+HeX8UYe9vDMCdXGtr2srSjXnVNns=;
+	s=default; t=1706019318;
+	bh=oMxlIYU8lOKLFt0TEL5h53mUDoaj/hO9QDpO+Y17nsg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=dQ+URxGaS8UuDRb3K0+C3RRqNd/8X8t4uuTE2d94t0nxBqUSSRKHfV3bQP6+xKs7n
-	 ISFkVjys74BBLfkL11MKb/2EDXCP1CDJNrrDpxOL9m65f20xDlmLX5lvbgoaQ4dMLf
-	 QHRtmSNbA3WboL5yYLQNX0ZA8n8Aop4X4C5y3sN8=
+	b=HGT5epXI/6k+xFk03sBeuGa7zKxEUa5rA2JK9ALs6gh3c8Mb3YHem+S5ck2cbN3iY
+	 MaNRLRxUxY4qEhYOrtU9q9908Mu6C5ltm9LL9YV9KhQ1VT/jquAcWb3Mdux19HTaSG
+	 6orgckVhR0e+T3swKB8Fn/mkbX7l08NMcGsTFccI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E93E6F805EB; Tue, 23 Jan 2024 15:13:57 +0100 (CET)
+	id 3EFF4F80623; Tue, 23 Jan 2024 15:14:03 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E1E6BF802BE;
-	Tue, 23 Jan 2024 15:13:56 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B34E9F80618;
+	Tue, 23 Jan 2024 15:14:02 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 36929F80494; Tue, 23 Jan 2024 15:13:50 +0100 (CET)
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com
- [IPv6:2a00:1450:4864:20::436])
+	id 3C682F8057B; Tue, 23 Jan 2024 15:13:53 +0100 (CET)
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com
+ [IPv6:2a00:1450:4864:20::42e])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 40F07F8003A
-	for <alsa-devel@alsa-project.org>; Tue, 23 Jan 2024 15:13:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 40F07F8003A
+	by alsa1.perex.cz (Postfix) with ESMTPS id D323EF80149
+	for <alsa-devel@alsa-project.org>; Tue, 23 Jan 2024 15:13:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D323EF80149
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=WP/RDrJ6
-Received: by mail-wr1-x436.google.com with SMTP id
- ffacd0b85a97d-336c8ab0b20so4431262f8f.1
+ header.s=google header.b=uTBhya6G
+Received: by mail-wr1-x42e.google.com with SMTP id
+ ffacd0b85a97d-337d99f9cdfso3862336f8f.0
         for <alsa-devel@alsa-project.org>;
- Tue, 23 Jan 2024 06:13:37 -0800 (PST)
+ Tue, 23 Jan 2024 06:13:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706019215; x=1706624015;
+        d=linaro.org; s=google; t=1706019226; x=1706624026;
  darn=alsa-project.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=BMoHux/To4Z52U5G1RVrMYaeJYsNbnrs52rE7GNgAZI=;
-        b=WP/RDrJ6RBCRTpeWyWYFye0JHH5QXuOhy+4wOMdBYzFYhFX6giapvpn2XsDZMUgogN
-         69bWIaGFgiZvNXgwVIrUdZIsfGfbyh9o/eQbq8CZTj4s5yK+1OXXM0d+Dd1hbS0gJNCB
-         hvPELnUTDzlO/oXGPM1hCTzCbUOxI7AuylvRtyxsRWExpMsiweU9lBbOn1pSxjdDY94j
-         6Smz8Q/2mhOXSSbC7brwFpJqqGi1KeGJt/krqow1w8cqPymVRFnlZ3KI/FlwsG1gxPWB
-         l3NLAtQ7Rp9IsvQ6KvfvcyASICHdwsifsjja0/5WdScZasXKgaoKZPQf2Se6ty97RmMZ
-         JgRw==
+        bh=qG0lQDgeayG/ZAaWGjl028iUARha7B2YZJgs2y6qJ/U=;
+        b=uTBhya6GFfbuWhN1DGsgqfq2JjRTSTKVc3TAWrDncxTaKRkw+kA6BYBNymuBVWNj1P
+         7QfqiFm7CswyolaBVeDIVugOXptvWm/3Oj4rePm4fwcM83+JmNfHIS0hE52NO/XnrLsH
+         QLcJbgJTTjYe6iPsUgqBFoqyLy8keDako8qbpeMy6wdU+/Xj7rzc4U2mw4sYoUc0YdXv
+         av6MXpKyIe2/nuy48CWA/PV5nfp/8K071VgAwcYuMm4xadyRNrusyAC6RIpnjf+I80Kd
+         zddBuBWNY7MJZmqIryBHXD4jgKOzYkdtl2TrJeWqLhHAb6Z/nl2m2uSDZVm7zLNQwk3g
+         x0Zw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706019215; x=1706624015;
+        d=1e100.net; s=20230601; t=1706019226; x=1706624026;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=BMoHux/To4Z52U5G1RVrMYaeJYsNbnrs52rE7GNgAZI=;
-        b=KKbhLcL9Zt4aN51eJjXf4MItiKqzE1jRwZ4wSRqgrCEdtrRYpLVma2Q4wMLqOQK0YM
-         9QQuWehRp4wj9gnb10RpE+znEROA+lQkMGFMyayt2VFuwAN/IqU3TMOwemifFlG1gQPU
-         BlN7pttUpNR2MS7iBhJtrYYTpFEejDfA5X3NSu7bL/M8OF4zz+NX5qTNcvlR+xSSgs0g
-         ivMoGpjDDhOK1grH82Az4AkwdTP3EovDgLBaedphvaUohEds1F51rPcXspFKS8iSM+m7
-         +Erbgqq25vjRwY2WBH1P3vY0Gq3uV/6enz/sTMpneazBazqOEB2AKKVXb/3WouwpsyH0
-         U8Yw==
-X-Gm-Message-State: AOJu0YwAhT8bdRxAOEbnnADQE/t0m1EAIWLtNvUbPBiFEbcceiKKo9W5
-	cH5/ZGCjLeVZJakQeMKz9/2wHzFiqNUN+iFfjcEayRzOkGWGRv0otiCr1sgU8MA=
+        bh=qG0lQDgeayG/ZAaWGjl028iUARha7B2YZJgs2y6qJ/U=;
+        b=urHnMt8GbbY4v8ztvp8l3TJH660Jb9nBQyXBvpX0GyxS6ypTUa/gptY2twGi2pKSBg
+         9IMuELRzORlMCrxfns3sqdOVAV0KCJHEYmF21CFqu36PU03ySmTWN05mBSrYtQ6KmJAG
+         AOyojSnJ0HqTYtOsUGk8OmB8Pp+PS3W64KoX7MD3vWCxkePdK2skB5MB4jpEKNPy4NKd
+         goDxB4Hna4nPTx3+stZjGrazA74/W+X1Nn1Q5P1avXUzIPyZ798KOYN3uzzSacJg7HbB
+         Rr0pJBsUaLWtpM7hg45jP3XSsX/STqRNN1tl1zqnESofcmZt7pjfSC33IxfeR+SRCevB
+         4OWA==
+X-Gm-Message-State: AOJu0YxdUY6/9m+OqI2tYJUk56sXfuUCyH639zTYCDA+p2d2Vtf/Knyk
+	I3u+n2hz6MssmUq7dc3QsGNFODVj1OWkT5z1IDTrYvA2X/0Ntk2l4tVlebeN28c=
 X-Google-Smtp-Source: 
- AGHT+IHo9L/aNhs2YMpki7iiHaEqAW0G6bDJZdhRv+OHQG2adVInlM0yES+a35JGzEx8ngUBwfPJ4g==
-X-Received: by 2002:adf:e546:0:b0:337:c702:98f7 with SMTP id
- z6-20020adfe546000000b00337c70298f7mr3509879wrm.95.1706019215345;
-        Tue, 23 Jan 2024 06:13:35 -0800 (PST)
+ AGHT+IHqKV7UxmdKdHe6zjaK7RBNZnRE3p6gqEa/c3ykA6FNDvoSpVZjiP8ZtDmiAEKBeFc7P6DV7A==
+X-Received: by 2002:a05:6000:100a:b0:337:c81e:cdb0 with SMTP id
+ a10-20020a056000100a00b00337c81ecdb0mr2955862wrx.104.1706019226510;
+        Tue, 23 Jan 2024 06:13:46 -0800 (PST)
 Received: from krzk-bin.. ([178.197.215.66])
         by smtp.gmail.com with ESMTPSA id
- r8-20020adfe688000000b00337d97338b0sm12132298wrm.76.2024.01.23.06.13.33
+ r8-20020adfe688000000b00337d97338b0sm12132298wrm.76.2024.01.23.06.13.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Jan 2024 06:13:34 -0800 (PST)
+        Tue, 23 Jan 2024 06:13:46 -0800 (PST)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To: Bjorn Andersson <andersson@kernel.org>,
 	Konrad Dybcio <konrad.dybcio@linaro.org>,
@@ -104,17 +104,21 @@ To: Bjorn Andersson <andersson@kernel.org>,
 	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	linux-pm@vger.kernel.org
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH v4 1/6] of: Add of_phandle_args_equal() helper
-Date: Tue, 23 Jan 2024 15:13:06 +0100
-Message-Id: <20240123141311.220505-2-krzysztof.kozlowski@linaro.org>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Bartosz Golaszewski <brgl@bgdev.pl>,
+	Sean Anderson <sean.anderson@seco.com>,
+	Rob Herring <robh@kernel.org>
+Subject: [PATCH v4 5/6] ASoC: dt-bindings: qcom,wsa8840: Add reset-gpios for
+ shared line
+Date: Tue, 23 Jan 2024 15:13:10 +0100
+Message-Id: <20240123141311.220505-6-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240123141311.220505-1-krzysztof.kozlowski@linaro.org>
 References: <20240123141311.220505-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 3FLVWJCTRZUMGWIO5LZRPAXD7REA4QZE
-X-Message-ID-Hash: 3FLVWJCTRZUMGWIO5LZRPAXD7REA4QZE
+Message-ID-Hash: L2WCB34BTJSFNQNBZQQ5ZYDBMUZ2QCDL
+X-Message-ID-Hash: L2WCB34BTJSFNQNBZQQ5ZYDBMUZ2QCDL
 X-MailFrom: krzysztof.kozlowski@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -126,7 +130,8 @@ X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: <>
+Archived-At: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/L2WCB34BTJSFNQNBZQQ5ZYDBMUZ2QCDL/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -135,45 +140,57 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add a helper comparing two "struct of_phandle_args" to avoid
-reinventing the wheel.
+On newer Qualcomm platforms, like X1E80100-CRD, the WSA884x speakers
+share SD_N GPIOs between two speakers, thus a coordinated assertion is
+needed.  Linux supports handling shared GPIO lines through "reset-gpios"
+property, thus allow specifying either powerdown or reset GPIOs (these
+are the same).
 
+Cc: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Sean Anderson <sean.anderson@seco.com>
+Acked-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-
 ---
 
-Dependency of cpufreq and reset change.
+If previous patches are fine, then this commit is independent and could
+be taken via ASoC.
 ---
- include/linux/of.h | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ .../devicetree/bindings/sound/qcom,wsa8840.yaml       | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/of.h b/include/linux/of.h
-index 6a9ddf20e79a..85bcc05b278d 100644
---- a/include/linux/of.h
-+++ b/include/linux/of.h
-@@ -1065,6 +1065,22 @@ static inline int of_parse_phandle_with_optional_args(const struct device_node *
- 					    0, index, out_args);
- }
+diff --git a/Documentation/devicetree/bindings/sound/qcom,wsa8840.yaml b/Documentation/devicetree/bindings/sound/qcom,wsa8840.yaml
+index d717017b0fdb..22798d22d981 100644
+--- a/Documentation/devicetree/bindings/sound/qcom,wsa8840.yaml
++++ b/Documentation/devicetree/bindings/sound/qcom,wsa8840.yaml
+@@ -28,6 +28,10 @@ properties:
+     description: Powerdown/Shutdown line to use (pin SD_N)
+     maxItems: 1
  
-+/**
-+ * of_phandle_args_equal() - Compare two of_phandle_args
-+ * @a1:		First of_phandle_args to compare
-+ * @a2:		Second of_phandle_args to compare
-+ *
-+ * Return: True if a1 and a2 are the same (same node pointer, same phandle
-+ * args), false otherwise.
-+ */
-+static inline bool of_phandle_args_equal(const struct of_phandle_args *a1,
-+					 const struct of_phandle_args *a2)
-+{
-+	return a1->np == a2->np &&
-+	       a1->args_count == a2->args_count &&
-+	       !memcmp(a1->args, a2->args, sizeof(a1->args[0]) * a1->args_count);
-+}
++  reset-gpios:
++    description: Powerdown/Shutdown line to use (pin SD_N)
++    maxItems: 1
 +
- /**
-  * of_property_count_u8_elems - Count the number of u8 elements in a property
-  *
+   '#sound-dai-cells':
+     const: 0
+ 
+@@ -37,11 +41,16 @@ properties:
+ required:
+   - compatible
+   - reg
+-  - powerdown-gpios
+   - '#sound-dai-cells'
+   - vdd-1p8-supply
+   - vdd-io-supply
+ 
++oneOf:
++  - required:
++      - powerdown-gpios
++  - required:
++      - reset-gpios
++
+ unevaluatedProperties: false
+ 
+ examples:
 -- 
 2.34.1
 
