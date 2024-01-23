@@ -4,48 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 765D4C47258
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Jan 2024 16:07:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 85E80C47DDB
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 Jan 2024 16:57:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A0DE286F;
-	Tue, 23 Jan 2024 17:07:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A0DE286F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 89637820;
+	Tue, 23 Jan 2024 17:57:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 89637820
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1706026065;
-	bh=+gWhJTV2X7HiF+UUaHLtNhZd3rQJFw65YRZSrrUJ9nk=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=dgy/n1DtDDxovoJJ1j0AXVwTBL+hd9EUzzVazFh4o+B1x3xfhUO42jYR2utIFF1Yv
-	 BMW/YmrLuzqZ/pZF5PokrC3pkqqSpFkkysyq2UYCvDfV7XgOKagtGbV5h5k20COHdu
-	 jiIPM5WXVSWwvggtPayJEHuEITPdg2Ee7HBsFo3U=
+	s=default; t=1706029034;
+	bh=NpWVul+0kJHPkFkDMQv/ztRnm6Ag7wfkANj8KnoCCSk=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=Ekz+NmmMbqmteEogbMhrEBQyAy5TysfMbKaBG9vIP+CSKCOUB7nzMOeFS8siBJReY
+	 AmYf7MvWozBct+rVLVETzJMXS+7WKkVpQZJPFdxRnpTnKGbiDykp4iCP5FjYFVHkEe
+	 3xNFTD68doIVhdRxiFAh3KWq0CEvsqGPjLN2pHnM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D385BF804E7; Tue, 23 Jan 2024 17:07:13 +0100 (CET)
+	id D007BF80588; Tue, 23 Jan 2024 17:56:35 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id ED289F80580;
-	Tue, 23 Jan 2024 17:07:12 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BF955F80548;
+	Tue, 23 Jan 2024 17:56:34 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AE5B1F8028D; Tue, 23 Jan 2024 17:07:08 +0100 (CET)
-Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
- [207.180.221.201])
-	by alsa1.perex.cz (Postfix) with ESMTP id 15D26F800C1
-	for <alsa-devel@alsa-project.org>; Tue, 23 Jan 2024 17:07:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 15D26F800C1
+	id 9DB75F802BE; Tue, 23 Jan 2024 17:56:28 +0100 (CET)
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net
+ [217.70.183.197])
+	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9BFC2F800C1
+	for <alsa-devel@alsa-project.org>; Tue, 23 Jan 2024 17:56:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9BFC2F800C1
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
+ header.s=gm1 header.b=LGTP6V3f
+Received: by mail.gandi.net (Postfix) with ESMTPA id 1BC9F1C000B;
+	Tue, 23 Jan 2024 16:56:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1706028980;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=y6zKOydFE4YNS4qWuRmXdt0aeAzHKR+ZP0mVpRlo5LQ=;
+	b=LGTP6V3fmTY22gfMaEsa+k1HpmooZzFOlniOvPPRxw3CfReSZ6dtn0D3jn0MGbW/VRusmW
+	cTxZLkolgUyq2mhVAPzoqPvI0pCuYXZqywGt3DB4+V9L/P1R312nRpPrgxOa+0BtMrN3ue
+	R9gqHlYRVm2243FMF+jIjs8HIU7eT0DExDLyfrfDpR6pICuJ1o4sIcoXrXntN94Z7bXg1s
+	unpHHqpA+7iDKe532C2a5OaRKyT2dxPyfeguysRHmfGl95URWiQd27rWu37HJ+6J+0LUgj
+	yDbdFSC8oFhzvAplmF/0XXwqyyoDwREF3fyIwXVNDclKVtv7iyAhCUNn2dAEGw==
+From: Herve Codina <herve.codina@bootlin.com>
+To: Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>
+Cc: linux-kernel@vger.kernel.org,
+	alsa-devel@alsa-project.org,
+	Herve Codina <herve.codina@bootlin.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: [PATCH 0/1] Add support for the framer codec
+Date: Tue, 23 Jan 2024 17:56:12 +0100
+Message-ID: <20240123165615.250303-1-herve.codina@bootlin.com>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub pull_request - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1706026020263633728-webhooks-bot@alsa-project.org>
-References: <1706026020263633728-webhooks-bot@alsa-project.org>
-Subject: Add support for Asus ROG Maximus Z790 Apex Encore motherboard
-Message-Id: <20240123160708.AE5B1F8028D@alsa1.perex.cz>
-Date: Tue, 23 Jan 2024 17:07:08 +0100 (CET)
-Message-ID-Hash: CLR2ZYTEYUYSUFXB4MRTUPYIIDY5YD5Z
-X-Message-ID-Hash: CLR2ZYTEYUYSUFXB4MRTUPYIIDY5YD5Z
-X-MailFrom: github@alsa-project.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: herve.codina@bootlin.com
+Message-ID-Hash: KM53F27WCMP6UDKUJYJYUZ5WFFPCUT2D
+X-Message-ID-Hash: KM53F27WCMP6UDKUJYJYUZ5WFFPCUT2D
+X-MailFrom: herve.codina@bootlin.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -57,20 +83,54 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CLR2ZYTEYUYSUFXB4MRTUPYIIDY5YD5Z/>
-List-Archive: <>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KM53F27WCMP6UDKUJYJYUZ5WFFPCUT2D/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-ucm-conf pull request #388 was opened from jrouvier:
+Hi,
 
-The Asus ROG Maximus Z790 Apex Encore motherboard is yet another Asus board with a Realtek ALC4080 chip.  This adds the USB device id for this chip as it appears on this motherboard, which is needed to enable the rear microphone port.
+This patch introduces the framer codec support.
 
-My [alsa-info.txt](https://github.com/alsa-project/alsa-ucm-conf/files/14026974/alsa-info.txt) details attached.
+The patch was previously sent as part of a full feature series and
+was previously reviewed in that context:
+"Add support for QMC HDLC, framer infrastructure and PEF2256 framer" [1]
 
-Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/388
-Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/388.patch
-Repository URL: https://github.com/alsa-project/alsa-ucm-conf
+In order to ease the merge, the full feature series has been split and
+needed parts were merged in v6.8-rc1:
+ - "Prepare the PowerQUICC QMC and TSA for the HDLC QMC driver" [2]
+ - "Add support for framer infrastructure and PEF2256 framer" [3]
+
+The part related to QMC HDLC was sent upstream recently and is under
+review [4].
+
+This patch is the last one of the full feature series that was not
+merged nor re-sent recently.
+
+Best regards,
+Hervé
+
+[1]: https://lore.kernel.org/linux-kernel/20231115144007.478111-1-herve.codina@bootlin.com/
+[2]: https://lore.kernel.org/linux-kernel/20231205152116.122512-1-herve.codina@bootlin.com/
+[3]: https://lore.kernel.org/linux-kernel/20231128132534.258459-1-herve.codina@bootlin.com/
+[4]: https://lore.kernel.org/linux-kernel/20240123164912.249540-1-herve.codina@bootlin.com/
+
+Patch extracted:
+  - Patch 1 : full feature series patch 26
+
+Herve Codina (1):
+  ASoC: codecs: Add support for the framer codec
+
+ sound/soc/codecs/Kconfig        |  15 ++
+ sound/soc/codecs/Makefile       |   2 +
+ sound/soc/codecs/framer-codec.c | 413 ++++++++++++++++++++++++++++++++
+ 3 files changed, 430 insertions(+)
+ create mode 100644 sound/soc/codecs/framer-codec.c
+
+-- 
+2.43.0
+
