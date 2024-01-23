@@ -4,84 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 330B9C47DDB
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Jan 2024 14:14:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A92E4C47DDF
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 Jan 2024 14:14:59 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8A20D74C;
-	Tue, 23 Jan 2024 15:14:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8A20D74C
+	by alsa0.perex.cz (Postfix) with ESMTPS id F0061B76;
+	Tue, 23 Jan 2024 15:14:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F0061B76
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1706019276;
-	bh=GaifTXwjrtPwYGxIjA7saixKCJ2NePne3qXb4RkB2PA=;
+	s=default; t=1706019298;
+	bh=DeKmmRTD5CNQ6B+HeX8UYe9vDMCdXGtr2srSjXnVNns=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=KY4itlx+8Xc8A/JDWvBGsjx1dwaRvroSBNxOWCSYEaD8n2tlS/fd1LGh2VNoWX+64
-	 dHcoyy7jQpXDHsynThO6lGAz0F8sa3iLTEl8pIyva5ucLOUxORmE50Olu0i9QIGuvm
-	 x6g3zUnjhmI6P6AQs7hvAHjthODwfbyXZUTFlJic=
+	b=dQ+URxGaS8UuDRb3K0+C3RRqNd/8X8t4uuTE2d94t0nxBqUSSRKHfV3bQP6+xKs7n
+	 ISFkVjys74BBLfkL11MKb/2EDXCP1CDJNrrDpxOL9m65f20xDlmLX5lvbgoaQ4dMLf
+	 QHRtmSNbA3WboL5yYLQNX0ZA8n8Aop4X4C5y3sN8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E4321F805A9; Tue, 23 Jan 2024 15:13:55 +0100 (CET)
+	id E93E6F805EB; Tue, 23 Jan 2024 15:13:57 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D369BF805BD;
-	Tue, 23 Jan 2024 15:13:54 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E1E6BF802BE;
+	Tue, 23 Jan 2024 15:13:56 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E66D7F80494; Tue, 23 Jan 2024 15:13:48 +0100 (CET)
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com
- [IPv6:2a00:1450:4864:20::42a])
+	id 36929F80494; Tue, 23 Jan 2024 15:13:50 +0100 (CET)
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com
+ [IPv6:2a00:1450:4864:20::436])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 5BA1CF8025F
-	for <alsa-devel@alsa-project.org>; Tue, 23 Jan 2024 15:13:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5BA1CF8025F
+	by alsa1.perex.cz (Postfix) with ESMTPS id 40F07F8003A
+	for <alsa-devel@alsa-project.org>; Tue, 23 Jan 2024 15:13:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 40F07F8003A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=uydqCbAt
-Received: by mail-wr1-x42a.google.com with SMTP id
- ffacd0b85a97d-33921b95dddso2126862f8f.1
+ header.s=google header.b=WP/RDrJ6
+Received: by mail-wr1-x436.google.com with SMTP id
+ ffacd0b85a97d-336c8ab0b20so4431262f8f.1
         for <alsa-devel@alsa-project.org>;
- Tue, 23 Jan 2024 06:13:38 -0800 (PST)
+ Tue, 23 Jan 2024 06:13:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706019218; x=1706624018;
+        d=linaro.org; s=google; t=1706019215; x=1706624015;
  darn=alsa-project.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=bb9ozaaEJGm3+iYRaS/Eou91hz/HW8vlq47gXO46/QQ=;
-        b=uydqCbAt4npHkXIhAZ6vS8UbYfqRumvsY2uqLGl5GZ/R9H9d83si9GSISmSmrHStqh
-         jnbJ4qvrVb3HVzym/gE9Qsg4PDz5+6utt9nJnVTN7bFdd22o8GGEPLgiCmWMW9K6emDn
-         sT7ecnK6d/w/QWtyJcpZUxd89XuKrOTO86KVh6Avl0nFIoBHD1fybbBqBLl98Qp3aqL3
-         J1vxG2TzVkvpqmQJn+FNoIrtDJGC1m9taic+bvVY/v3Yl27e/0jNdJ+ischY4t2x205P
-         voxb/1vPP6IKyAwSUEafygIF1BduKF2FOzuEePXRBzA0RbZpT3qaPwARN/PNFjlCg7Zk
-         77Zg==
+        bh=BMoHux/To4Z52U5G1RVrMYaeJYsNbnrs52rE7GNgAZI=;
+        b=WP/RDrJ6RBCRTpeWyWYFye0JHH5QXuOhy+4wOMdBYzFYhFX6giapvpn2XsDZMUgogN
+         69bWIaGFgiZvNXgwVIrUdZIsfGfbyh9o/eQbq8CZTj4s5yK+1OXXM0d+Dd1hbS0gJNCB
+         hvPELnUTDzlO/oXGPM1hCTzCbUOxI7AuylvRtyxsRWExpMsiweU9lBbOn1pSxjdDY94j
+         6Smz8Q/2mhOXSSbC7brwFpJqqGi1KeGJt/krqow1w8cqPymVRFnlZ3KI/FlwsG1gxPWB
+         l3NLAtQ7Rp9IsvQ6KvfvcyASICHdwsifsjja0/5WdScZasXKgaoKZPQf2Se6ty97RmMZ
+         JgRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706019218; x=1706624018;
+        d=1e100.net; s=20230601; t=1706019215; x=1706624015;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=bb9ozaaEJGm3+iYRaS/Eou91hz/HW8vlq47gXO46/QQ=;
-        b=VpbiE/DWvyFsYYjXSVdSkXE1DA4zZDUOa5vN0h02onGdvtRPLIGWC0cXrL+wZUE9FF
-         lfB3YCLfYwQzVIIhMPy5ikziYF4y8fap1aepqfcMF76iatF+S7mXC1NLNRY6zefOFBDc
-         18SJUztPNCWOZupKUhdBds8yDgVRYYaCKCAhamHZkfz6TWHOxvyp0RvBrUQNurc+et1A
-         XZoGP2DYYe/ee+dg5kwa+HQ5WEL4cIClY0waYV4Gnrt1AqIACjuW7bUBF1ecKBLpkk1H
-         IPJKCEKXRdU1EZxnh2XEMbsIlWv5ijjrI8o+SLXkBxC2DkkYGY5WmqCuqE6sDdH9Wcz/
-         RAyw==
-X-Gm-Message-State: AOJu0YzsX/sVsxWM2FI6bamVjysjs2cmxxKnbY3iFBDz0Y1WLRdCcxWq
-	nisXXQ924ZDH3pFoGsH0dm/CD7S+hQ/ot3ggBWd2Mqv2haWYsYSVosnYk1ESb0U=
+        bh=BMoHux/To4Z52U5G1RVrMYaeJYsNbnrs52rE7GNgAZI=;
+        b=KKbhLcL9Zt4aN51eJjXf4MItiKqzE1jRwZ4wSRqgrCEdtrRYpLVma2Q4wMLqOQK0YM
+         9QQuWehRp4wj9gnb10RpE+znEROA+lQkMGFMyayt2VFuwAN/IqU3TMOwemifFlG1gQPU
+         BlN7pttUpNR2MS7iBhJtrYYTpFEejDfA5X3NSu7bL/M8OF4zz+NX5qTNcvlR+xSSgs0g
+         ivMoGpjDDhOK1grH82Az4AkwdTP3EovDgLBaedphvaUohEds1F51rPcXspFKS8iSM+m7
+         +Erbgqq25vjRwY2WBH1P3vY0Gq3uV/6enz/sTMpneazBazqOEB2AKKVXb/3WouwpsyH0
+         U8Yw==
+X-Gm-Message-State: AOJu0YwAhT8bdRxAOEbnnADQE/t0m1EAIWLtNvUbPBiFEbcceiKKo9W5
+	cH5/ZGCjLeVZJakQeMKz9/2wHzFiqNUN+iFfjcEayRzOkGWGRv0otiCr1sgU8MA=
 X-Google-Smtp-Source: 
- AGHT+IGTxU9A6hZE3T/GfJ3iQs+U7hHMUT7YMZ5antPynbwk/2dJ9MwRblLpOb1YR4bjPYZyBsdj2g==
-X-Received: by 2002:a5d:5602:0:b0:337:c097:db99 with SMTP id
- l2-20020a5d5602000000b00337c097db99mr3351685wrv.21.1706019218190;
-        Tue, 23 Jan 2024 06:13:38 -0800 (PST)
+ AGHT+IHo9L/aNhs2YMpki7iiHaEqAW0G6bDJZdhRv+OHQG2adVInlM0yES+a35JGzEx8ngUBwfPJ4g==
+X-Received: by 2002:adf:e546:0:b0:337:c702:98f7 with SMTP id
+ z6-20020adfe546000000b00337c70298f7mr3509879wrm.95.1706019215345;
+        Tue, 23 Jan 2024 06:13:35 -0800 (PST)
 Received: from krzk-bin.. ([178.197.215.66])
         by smtp.gmail.com with ESMTPSA id
- r8-20020adfe688000000b00337d97338b0sm12132298wrm.76.2024.01.23.06.13.35
+ r8-20020adfe688000000b00337d97338b0sm12132298wrm.76.2024.01.23.06.13.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Jan 2024 06:13:37 -0800 (PST)
+        Tue, 23 Jan 2024 06:13:34 -0800 (PST)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To: Bjorn Andersson <andersson@kernel.org>,
 	Konrad Dybcio <konrad.dybcio@linaro.org>,
@@ -105,16 +105,16 @@ To: Bjorn Andersson <andersson@kernel.org>,
 	linux-kernel@vger.kernel.org,
 	linux-pm@vger.kernel.org
 Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH v4 2/6] cpufreq: do not open-code of_phandle_args_equal()
-Date: Tue, 23 Jan 2024 15:13:07 +0100
-Message-Id: <20240123141311.220505-3-krzysztof.kozlowski@linaro.org>
+Subject: [PATCH v4 1/6] of: Add of_phandle_args_equal() helper
+Date: Tue, 23 Jan 2024 15:13:06 +0100
+Message-Id: <20240123141311.220505-2-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240123141311.220505-1-krzysztof.kozlowski@linaro.org>
 References: <20240123141311.220505-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: FSS3GTTHFAAAPHUSC7EJOYQI4WKJS27C
-X-Message-ID-Hash: FSS3GTTHFAAAPHUSC7EJOYQI4WKJS27C
+Message-ID-Hash: 3FLVWJCTRZUMGWIO5LZRPAXD7REA4QZE
+X-Message-ID-Hash: 3FLVWJCTRZUMGWIO5LZRPAXD7REA4QZE
 X-MailFrom: krzysztof.kozlowski@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -126,8 +126,7 @@ X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FSS3GTTHFAAAPHUSC7EJOYQI4WKJS27C/>
+Archived-At: <>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -136,32 +135,45 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Use newly added of_phandle_args_equal() helper to compare two
-of_phandle_args.
+Add a helper comparing two "struct of_phandle_args" to avoid
+reinventing the wheel.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
 ---
 
-Depends on previous of change.
+Dependency of cpufreq and reset change.
 ---
- include/linux/cpufreq.h | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ include/linux/of.h | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
-diff --git a/include/linux/cpufreq.h b/include/linux/cpufreq.h
-index afda5f24d3dd..3cd06dafb04b 100644
---- a/include/linux/cpufreq.h
-+++ b/include/linux/cpufreq.h
-@@ -1149,8 +1149,7 @@ static inline int of_perf_domain_get_sharing_cpumask(int pcpu, const char *list_
- 		if (ret < 0)
- 			continue;
+diff --git a/include/linux/of.h b/include/linux/of.h
+index 6a9ddf20e79a..85bcc05b278d 100644
+--- a/include/linux/of.h
++++ b/include/linux/of.h
+@@ -1065,6 +1065,22 @@ static inline int of_parse_phandle_with_optional_args(const struct device_node *
+ 					    0, index, out_args);
+ }
  
--		if (pargs->np == args.np && pargs->args_count == args.args_count &&
--		    !memcmp(pargs->args, args.args, sizeof(args.args[0]) * args.args_count))
-+		if (of_phandle_args_equal(pargs, &args))
- 			cpumask_set_cpu(cpu, cpumask);
- 
- 		of_node_put(args.np);
++/**
++ * of_phandle_args_equal() - Compare two of_phandle_args
++ * @a1:		First of_phandle_args to compare
++ * @a2:		Second of_phandle_args to compare
++ *
++ * Return: True if a1 and a2 are the same (same node pointer, same phandle
++ * args), false otherwise.
++ */
++static inline bool of_phandle_args_equal(const struct of_phandle_args *a1,
++					 const struct of_phandle_args *a2)
++{
++	return a1->np == a2->np &&
++	       a1->args_count == a2->args_count &&
++	       !memcmp(a1->args, a2->args, sizeof(a1->args[0]) * a1->args_count);
++}
++
+ /**
+  * of_property_count_u8_elems - Count the number of u8 elements in a property
+  *
 -- 
 2.34.1
 
