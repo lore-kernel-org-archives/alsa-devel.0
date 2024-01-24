@@ -4,122 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 36071C46CD2
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jan 2024 07:48:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E8069C46CD2
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jan 2024 11:31:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5389B204;
-	Wed, 24 Jan 2024 08:48:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5389B204
+	by alsa0.perex.cz (Postfix) with ESMTPS id 53CD684D;
+	Wed, 24 Jan 2024 12:31:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 53CD684D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1706082517;
-	bh=GryOK2WVcAShxcw9ALS3eyUBe11Jg8gdOpY4P9IFJC0=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1706095878;
+	bh=ACl9OKKd1hYaYZUvRjBxjN1AVItWVDBQD0aFVxnQE4c=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=XtsqXg/n/3X0miGWtPjeLuvPemubiuqe/yups5/G1c6WVuece0S+CO30sq4Q4y2p4
-	 i0SYpdJKBocsd7czhnqbTBPvmVTuF/6gYRtquDVooREsejRLmpvSlF43hNrlrrfRFc
-	 eZcH6aRuCcafE97inGgSyjEzIj9CFTAIW0yOHCM4=
+	b=ABp4Bxxz2nDKclR1sHPX0jF+t+MMy1jvh1syPaWyEOwVe+g19kK4AzJQ6asmndZ2m
+	 rbEMRZJeNqjsALZ+G9oZ9yWBwcVVOT3deSwvypetURrGpWYxJZsTYvXv9QbfW51jLJ
+	 TQIMyIILiBNrOlSVzuWEEm1LCX+a+rVFHGN+EwBs=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 76AE3F80600; Wed, 24 Jan 2024 08:47:53 +0100 (CET)
+	id 677B5F80548; Wed, 24 Jan 2024 12:30:43 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id AEAAEF80608;
-	Wed, 24 Jan 2024 08:47:52 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 235D3F80580;
+	Wed, 24 Jan 2024 12:30:43 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 94198F805D2; Wed, 24 Jan 2024 08:47:39 +0100 (CET)
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com
- [IPv6:2a00:1450:4864:20::532])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id E9C0EF8028D; Wed, 24 Jan 2024 12:26:21 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 59FC6F802BE
-	for <alsa-devel@alsa-project.org>; Wed, 24 Jan 2024 08:45:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 59FC6F802BE
+	by alsa1.perex.cz (Postfix) with ESMTPS id 1C303F80149
+	for <alsa-devel@alsa-project.org>; Wed, 24 Jan 2024 12:26:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1C303F80149
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=MMuI53Vr
-Received: by mail-ed1-x532.google.com with SMTP id
- 4fb4d7f45d1cf-559cef15db5so10882757a12.0
-        for <alsa-devel@alsa-project.org>;
- Tue, 23 Jan 2024 23:45:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706082340; x=1706687140;
- darn=alsa-project.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lbbgB2jGb5iix1JEFZ5ptTFKMdT0kRT1hLXtledxTNc=;
-        b=MMuI53Vr5CZTUHQJ8hd2GLZFbtf0YhON1tN09S6pQN88vgp4tqrR53n6hlNnrrvPRz
-         W9EwLavJjeZmn6sQmeTAh4QA5RpDE0t0i1OkAHRt+Cdmv8hiZ4X/PG0tVKBw7aEUaPPo
-         MhXkl1b6OmT5zGydbHyei3+LPnBn4bKM5h+ELvtuQooC/pC3A8AinJYw1zFlNXPlXVie
-         r8WaqnHX8kH2Y1eR6EC3mmsvCh0JMaXBd1uLeORcq7x6FzjU8RrRPfQnpDQdmK8tkwKB
-         nUwcKTiOD+1L30mlZ5snJl4VxTynxH/Xk4XRCK6Sg0dxXd/uAz/vtxlLjZ0cWFX5UnQD
-         NweQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706082340; x=1706687140;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lbbgB2jGb5iix1JEFZ5ptTFKMdT0kRT1hLXtledxTNc=;
-        b=wJ5AydamQWMnS6gPj2CyqrVRPhrjb0fjsuAn0j+uddCYUpaJUDJDzagulaQ1xxDo3M
-         gy269MBkREK2nGFJaCDicxJm9LY1QMxBwQClopmladKuF+MHqOk8XxabExvpxL5wFP9v
-         6Bf0QVF0ypcZmP79n+sqa5QTNp1gSgs49p8JOKaeuzxX7TMr1oKIRKh1nrO9gYJtkMSQ
-         QUYdh0zDC8GglZE28jPpDKjpanG9tUiBz1t3DDL1pR63WLRa29DP58Xp6m24vefjNEr8
-         UxiF71j3J9Y09RcUHdP9GIuwiGU6zDoGKrdEf76nu0KcAh2d1AwAbgiMw4WB+6lesxEF
-         NfBg==
-X-Gm-Message-State: AOJu0YwTg9SVei++T8KsB9mR2s6pT//G9OH82DTpNVEjEDMSV8tuL6zm
-	f7vPjCpkfyL9MD3vaX5xZl4dRi81DNOwXAdqlv9dCm9HQhdBEBK4z6DrMIBA7z4=
-X-Google-Smtp-Source: 
- AGHT+IEQkZ17Xxu4UhThSYaaYVmGQU1hlHS0XtEM/o5SerofGnKso07erFONxvp37r0P5aTqZTmUTw==
-X-Received: by 2002:a05:6402:350e:b0:55c:a84b:ca58 with SMTP id
- b14-20020a056402350e00b0055ca84bca58mr1163018edd.18.1706082340480;
-        Tue, 23 Jan 2024 23:45:40 -0800 (PST)
-Received: from krzk-bin.. ([178.197.215.66])
-        by smtp.gmail.com with ESMTPSA id
- c4-20020a056402100400b0055c8a30152bsm1306951edu.83.2024.01.23.23.45.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Jan 2024 23:45:40 -0800 (PST)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-	Banajit Goswami <bgoswami@quicinc.com>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Viresh Kumar <viresh.kumar@linaro.org>,
-	Frank Rowand <frowand.list@gmail.com>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	alsa-devel@alsa-project.org,
-	linux-arm-msm@vger.kernel.org,
-	linux-sound@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-pm@vger.kernel.org
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Bartosz Golaszewski <brgl@bgdev.pl>,
-	Chris Packham <chris.packham@alliedtelesis.co.nz>,
-	Sean Anderson <sean.anderson@seco.com>
-Subject: [PATCH v5 4/6] reset: Instantiate reset GPIO controller for shared
- reset-gpios
-Date: Wed, 24 Jan 2024 08:45:25 +0100
-Message-Id: <20240124074527.48869-5-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240124074527.48869-1-krzysztof.kozlowski@linaro.org>
-References: <20240124074527.48869-1-krzysztof.kozlowski@linaro.org>
+ unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
+ header.s=PODMain02222019 header.b=hd6Zaf9Q
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+	by mx0b-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id
+ 40O4banO023994;
+	Wed, 24 Jan 2024 05:26:09 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+	from:to:cc:subject:date:message-id:in-reply-to:references
+	:mime-version:content-transfer-encoding:content-type; s=
+	PODMain02222019; bh=NfaVHqV3QAdzaoZI36J4vl2G+SdDrbS5YrJZHom/gWc=; b=
+	hd6Zaf9QMrjctYsmnS5RyviUHipbJk3jjMHsPQgDlPRjVoWMj147Uv6dHLyFrdmb
+	rGHFaLrvY2Uurp4pO8vVVDximWqWUIaFzcJlWraHaIv4B3fIJ0Ob1RFGH/LM8mOu
+	aKvVDeIRuxLRq0ryXPanFik9q3H8NWl30zeSf4KBIehjGV4s18CRU5oLtfBxuar5
+	rio5ZF3H6d+Z8kANrW0FtAL16m/n4fyvQPuJ1MWbmLoLRCygtjXMUpKD/yTmIwMU
+	wz/O2IsxrZSak4415c3aaPDPG+8vMDS01PPHFYd016cY5z555hk5IKzZAoJ4OBX5
+	2Szd54ABF4i7nvroaTGqkg==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3vtmf9rq8g-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 24 Jan 2024 05:26:09 -0600 (CST)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 24 Jan
+ 2024 11:26:07 +0000
+Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
+ ediex01.ad.cirrus.com (198.61.84.80) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40 via Frontend Transport; Wed, 24 Jan 2024 11:26:07 +0000
+Received: from ediswws06.ad.cirrus.com (ediswws06.ad.cirrus.com
+ [198.90.251.117])
+	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 8FE75820247;
+	Wed, 24 Jan 2024 11:26:07 +0000 (UTC)
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
+To: <tiwai@suse.com>, <soyer@irl.hu>, <shenghao-ding@ti.com>
+CC: <perex@perex.cz>, <linux-kernel@vger.kernel.org>,
+        <linux-sound@vger.kernel.org>, <alsa-devel@alsa-project.org>,
+        <patches@opensource.cirrus.com>,
+        Richard Fitzgerald
+	<rf@opensource.cirrus.com>
+Subject: [PATCH 1/2] ALSA: hda: realtek: Re-work CS35L41 fixups to re-use for
+ other amps
+Date: Wed, 24 Jan 2024 11:26:06 +0000
+Message-ID: <20240124112607.77614-2-rf@opensource.cirrus.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20240124112607.77614-1-rf@opensource.cirrus.com>
+References: <20240124112607.77614-1-rf@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: NQILG3XSG4HERO77TEXRTYUK77QWIXDH
-X-Message-ID-Hash: NQILG3XSG4HERO77TEXRTYUK77QWIXDH
-X-MailFrom: krzysztof.kozlowski@linaro.org
+Content-Type: text/plain
+X-Proofpoint-GUID: E17i4__LtRZQrKC626O6dj176eIYz-5j
+X-Proofpoint-ORIG-GUID: E17i4__LtRZQrKC626O6dj176eIYz-5j
+X-Proofpoint-Spam-Reason: safe
+Message-ID-Hash: CRZDJ3C7OMVSAVOKXHD2JEUQHKYMUWKY
+X-Message-ID-Hash: CRZDJ3C7OMVSAVOKXHD2JEUQHKYMUWKY
+X-MailFrom: prvs=875330d341=rf@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -131,7 +103,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NQILG3XSG4HERO77TEXRTYUK77QWIXDH/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CRZDJ3C7OMVSAVOKXHD2JEUQHKYMUWKY/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -140,365 +112,185 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Devices sharing a reset GPIO could use the reset framework for
-coordinated handling of that shared GPIO line.  We have several cases of
-such needs, at least for Devicetree-based platforms.
+Slightly re-work the code around cs35l41_generic_fixup() and the component
+binding search so that it can be re-used for other amps that use the
+component binding mechanism.
 
-If Devicetree-based device requests a reset line, while "resets"
-Devicetree property is missing but there is a "reset-gpios" one,
-instantiate a new "reset-gpio" platform device which will handle such
-reset line.  This allows seamless handling of such shared reset-gpios
-without need of changing Devicetree binding [1].
+The match string is stored in struct scodec_dev_name instead of hardcoding
+it in the match function.
 
-To avoid creating multiple "reset-gpio" platform devices, store the
-Devicetree "reset-gpios" GPIO specifiers used for new devices on a
-linked list.  Later such Devicetree GPIO specifier (phandle to GPIO
-controller, GPIO number and GPIO flags) is used to check if reset
-controller for given GPIO was already registered.
+The tas2781 does not use the amp index as part of the driver name match.
+But its match format string does not include a field for the index, so
+snprintf() would safely ignore the p->index argument. Because of this there
+is no need for a special match function for this case, the CS35L41 code
+can be re-used.
 
-If two devices have conflicting "reset-gpios" property, e.g. with
-different ACTIVE_xxx flags, this would allow to spawn two separate
-"reset-gpio" devices, where the second would fail probing on busy GPIO
-request.
-
-Link: https://lore.kernel.org/all/YXi5CUCEi7YmNxXM@robh.at.kernel.org/ [1]
-Cc: Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>
-Cc: Sean Anderson <sean.anderson@seco.com>
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 ---
-
-Depends on previous of change.
+Can someone test that this doesn't break the two TAS2781 fixups?
 ---
- drivers/reset/core.c             | 215 +++++++++++++++++++++++++++++--
- include/linux/reset-controller.h |   4 +
- 2 files changed, 206 insertions(+), 13 deletions(-)
+ sound/pci/hda/patch_realtek.c | 83 +++++++----------------------------
+ 1 file changed, 15 insertions(+), 68 deletions(-)
 
-diff --git a/drivers/reset/core.c b/drivers/reset/core.c
-index 4d5a78d3c085..60a8a33c4419 100644
---- a/drivers/reset/core.c
-+++ b/drivers/reset/core.c
-@@ -5,14 +5,19 @@
-  * Copyright 2013 Philipp Zabel, Pengutronix
-  */
- #include <linux/atomic.h>
-+#include <linux/cleanup.h>
- #include <linux/device.h>
- #include <linux/err.h>
- #include <linux/export.h>
- #include <linux/kernel.h>
- #include <linux/kref.h>
-+#include <linux/gpio/driver.h>
-+#include <linux/gpio/machine.h>
-+#include <linux/idr.h>
- #include <linux/module.h>
- #include <linux/of.h>
- #include <linux/acpi.h>
-+#include <linux/platform_device.h>
- #include <linux/reset.h>
- #include <linux/reset-controller.h>
- #include <linux/slab.h>
-@@ -23,6 +28,11 @@ static LIST_HEAD(reset_controller_list);
- static DEFINE_MUTEX(reset_lookup_mutex);
- static LIST_HEAD(reset_lookup_list);
- 
-+/* Protects reset_gpio_lookup_list */
-+static DEFINE_MUTEX(reset_gpio_lookup_mutex);
-+static LIST_HEAD(reset_gpio_lookup_list);
-+static DEFINE_IDA(reset_gpio_ida);
-+
- /**
-  * struct reset_control - a reset control
-  * @rcdev: a pointer to the reset controller device
-@@ -63,6 +73,16 @@ struct reset_control_array {
- 	struct reset_control *rstc[] __counted_by(num_rstcs);
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 19f2eb26659d..2e2906d2dd1c 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -6841,11 +6841,12 @@ static void comp_generic_playback_hook(struct hda_pcm_stream *hinfo, struct hda_
+ struct scodec_dev_name {
+ 	const char *bus;
+ 	const char *hid;
++	const char *match_str;
+ 	int index;
  };
  
-+/**
-+ * struct reset_gpio_lookup - lookup key for ad-hoc created reset-gpio devices
-+ * @of_args: phandle to the reset controller with all the args like GPIO number
-+ * @list: list entry for the reset_gpio_lookup_list
-+ */
-+struct reset_gpio_lookup {
-+	struct of_phandle_args of_args;
-+	struct list_head list;
-+};
-+
- static const char *rcdev_name(struct reset_controller_dev *rcdev)
+ /* match the device name in a slightly relaxed manner */
+-static int comp_match_cs35l41_dev_name(struct device *dev, void *data)
++static int comp_match_dev_name(struct device *dev, void *data)
  {
- 	if (rcdev->dev)
-@@ -71,6 +91,9 @@ static const char *rcdev_name(struct reset_controller_dev *rcdev)
- 	if (rcdev->of_node)
- 		return rcdev->of_node->full_name;
- 
-+	if (rcdev->of_args)
-+		return rcdev->of_args->np->full_name;
-+
- 	return NULL;
+ 	struct scodec_dev_name *p = data;
+ 	const char *d = dev_name(dev);
+@@ -6859,32 +6860,12 @@ static int comp_match_cs35l41_dev_name(struct device *dev, void *data)
+ 	if (isdigit(d[n]))
+ 		n++;
+ 	/* the rest must be exact matching */
+-	snprintf(tmp, sizeof(tmp), "-%s:00-cs35l41-hda.%d", p->hid, p->index);
++	snprintf(tmp, sizeof(tmp), p->match_str, p->hid, p->index);
+ 	return !strcmp(d + n, tmp);
  }
  
-@@ -99,6 +122,9 @@ static int of_reset_simple_xlate(struct reset_controller_dev *rcdev,
-  */
- int reset_controller_register(struct reset_controller_dev *rcdev)
+-static int comp_match_tas2781_dev_name(struct device *dev,
+-	void *data)
+-{
+-	struct scodec_dev_name *p = data;
+-	const char *d = dev_name(dev);
+-	int n = strlen(p->bus);
+-	char tmp[32];
+-
+-	/* check the bus name */
+-	if (strncmp(d, p->bus, n))
+-		return 0;
+-	/* skip the bus number */
+-	if (isdigit(d[n]))
+-		n++;
+-	/* the rest must be exact matching */
+-	snprintf(tmp, sizeof(tmp), "-%s:00", p->hid);
+-
+-	return !strcmp(d + n, tmp);
+-}
+-
+-static void cs35l41_generic_fixup(struct hda_codec *cdc, int action, const char *bus,
+-				  const char *hid, int count)
++static void comp_generic_fixup(struct hda_codec *cdc, int action, const char *bus,
++			       const char *hid, const char *match_str, int count)
  {
-+	if (rcdev->of_node && rcdev->of_args)
-+		return -EINVAL;
-+
- 	if (!rcdev->of_xlate) {
- 		rcdev->of_reset_n_cells = 1;
- 		rcdev->of_xlate = of_reset_simple_xlate;
-@@ -813,12 +839,162 @@ static void __reset_control_put_internal(struct reset_control *rstc)
- 	kref_put(&rstc->refcnt, __reset_control_release);
- }
- 
-+static int __reset_add_reset_gpio_lookup(int id, struct device_node *np,
-+					 unsigned int gpio,
-+					 unsigned int of_flags)
-+{
-+	const struct fwnode_handle *fwnode = of_fwnode_handle(np);
-+	unsigned int lookup_flags;
-+	const char *label_tmp;
-+
-+	/*
-+	 * Later we map GPIO flags between OF and Linux, however not all
-+	 * constants from include/dt-bindings/gpio/gpio.h and
-+	 * include/linux/gpio/machine.h match each other.
-+	 */
-+	if (of_flags > GPIO_ACTIVE_LOW) {
-+		pr_err("reset-gpio code does not support GPIO flags %u for GPIO %u\n",
-+		       of_flags, gpio);
-+		return -EINVAL;
-+	}
-+
-+	struct gpio_device *gdev __free(gpio_device_put) = gpio_device_find_by_fwnode(fwnode);
-+	if (!gdev)
-+		return -EPROBE_DEFER;
-+
-+	label_tmp = gpio_device_get_label(gdev);
-+	if (!label_tmp)
-+		return -EINVAL;
-+
-+	char *label __free(kfree) = kstrdup(label_tmp, GFP_KERNEL);
-+	if (!label)
-+		return -ENOMEM;
-+
-+	/* Size: one lookup entry plus sentinel */
-+	struct gpiod_lookup_table *lookup __free(kfree) = kzalloc(struct_size(lookup, table, 2),
-+								  GFP_KERNEL);
-+	if (!lookup)
-+		return -ENOMEM;
-+
-+	lookup->dev_id = kasprintf(GFP_KERNEL, "reset-gpio.%d", id);
-+	if (!lookup->dev_id)
-+		return -ENOMEM;
-+
-+	lookup_flags = GPIO_PERSISTENT;
-+	lookup_flags |= of_flags & GPIO_ACTIVE_LOW;
-+	lookup->table[0] = GPIO_LOOKUP(no_free_ptr(label), gpio, "reset",
-+				       lookup_flags);
-+
-+	/* Not freed on success, because it is persisent subsystem data. */
-+	gpiod_add_lookup_table(no_free_ptr(lookup));
-+
-+	return 0;
-+}
-+
-+/*
-+ * @args:	phandle to the GPIO provider with all the args like GPIO number
-+ */
-+static int __reset_add_reset_gpio_device(const struct of_phandle_args *args)
-+{
-+	struct reset_gpio_lookup *rgpio_dev;
-+	struct platform_device *pdev;
-+	int id, ret;
-+
-+	/*
-+	 * Registering reset-gpio device might cause immediate
-+	 * bind, resulting in its probe() registering new reset controller thus
-+	 * taking reset_list_mutex lock via reset_controller_register().
-+	 */
-+	lockdep_assert_not_held(&reset_list_mutex);
-+
-+	mutex_lock(&reset_gpio_lookup_mutex);
-+
-+	list_for_each_entry(rgpio_dev, &reset_gpio_lookup_list, list) {
-+		if (args->np == rgpio_dev->of_args.np) {
-+			if (of_phandle_args_equal(args, &rgpio_dev->of_args))
-+				goto out; /* Already on the list, done */
-+		}
-+	}
-+
-+	id = ida_alloc(&reset_gpio_ida, GFP_KERNEL);
-+	if (id < 0) {
-+		ret = id;
-+		goto err_unlock;
-+	}
-+
-+	/* Not freed on success, because it is persisent subsystem data. */
-+	rgpio_dev = kzalloc(sizeof(*rgpio_dev), GFP_KERNEL);
-+	if (!rgpio_dev) {
-+		ret = -ENOMEM;
-+		goto err_ida_free;
-+	}
-+
-+	ret = __reset_add_reset_gpio_lookup(id, args->np, args->args[0],
-+					    args->args[1]);
-+	if (ret < 0)
-+		goto err_kfree;
-+
-+	rgpio_dev->of_args = *args;
-+	/*
-+	 * We keep the device_node reference, but of_args.np is put at the end
-+	 * of __of_reset_control_get(), so get it one more time.
-+	 * Hold reference as long as rgpio_dev memory is valid.
-+	 */
-+	of_node_get(rgpio_dev->of_args.np);
-+	pdev = platform_device_register_data(NULL, "reset-gpio", id,
-+					     &rgpio_dev->of_args,
-+					     sizeof(rgpio_dev->of_args));
-+	ret = PTR_ERR_OR_ZERO(pdev);
-+	if (ret)
-+		goto err_put;
-+
-+	list_add(&rgpio_dev->list, &reset_gpio_lookup_list);
-+
-+out:
-+	mutex_unlock(&reset_gpio_lookup_mutex);
-+
-+	return 0;
-+
-+err_put:
-+	of_node_put(rgpio_dev->of_args.np);
-+err_kfree:
-+	kfree(rgpio_dev);
-+err_ida_free:
-+	ida_free(&reset_gpio_ida, id);
-+err_unlock:
-+	mutex_unlock(&reset_gpio_lookup_mutex);
-+
-+	return ret;
-+}
-+
-+static struct reset_controller_dev *__reset_find_rcdev(const struct of_phandle_args *args,
-+						       bool gpio_fallback)
-+{
-+	struct reset_controller_dev *rcdev;
-+
-+	lockdep_assert_held(&reset_list_mutex);
-+
-+	list_for_each_entry(rcdev, &reset_controller_list, list) {
-+		if (gpio_fallback) {
-+			if (rcdev->of_args && of_phandle_args_equal(args,
-+								    rcdev->of_args))
-+				return rcdev;
-+		} else {
-+			if (args->np == rcdev->of_node)
-+				return rcdev;
-+		}
-+	}
-+
-+	return NULL;
-+}
-+
- struct reset_control *
- __of_reset_control_get(struct device_node *node, const char *id, int index,
- 		       bool shared, bool optional, bool acquired)
- {
-+	bool gpio_fallback = false;
- 	struct reset_control *rstc;
--	struct reset_controller_dev *r, *rcdev;
-+	struct reset_controller_dev *rcdev;
- 	struct of_phandle_args args;
- 	int rstc_id;
- 	int ret;
-@@ -839,39 +1015,52 @@ __of_reset_control_get(struct device_node *node, const char *id, int index,
- 					 index, &args);
- 	if (ret == -EINVAL)
- 		return ERR_PTR(ret);
--	if (ret)
--		return optional ? NULL : ERR_PTR(ret);
-+	if (ret) {
-+		if (!IS_ENABLED(CONFIG_RESET_GPIO))
-+			return optional ? NULL : ERR_PTR(ret);
- 
--	mutex_lock(&reset_list_mutex);
--	rcdev = NULL;
--	list_for_each_entry(r, &reset_controller_list, list) {
--		if (args.np == r->of_node) {
--			rcdev = r;
--			break;
-+		/*
-+		 * There can be only one reset-gpio for regular devices, so
-+		 * don't bother with the "reset-gpios" phandle index.
-+		 */
-+		ret = of_parse_phandle_with_args(node, "reset-gpios", "#gpio-cells",
-+						 0, &args);
-+		if (ret)
-+			return optional ? NULL : ERR_PTR(ret);
-+
-+		gpio_fallback = true;
-+
-+		ret = __reset_add_reset_gpio_device(&args);
-+		if (ret) {
-+			rstc = ERR_PTR(ret);
-+			goto out_put;
+ 	struct device *dev = hda_codec_dev(cdc);
+ 	struct alc_spec *spec = cdc->spec;
+@@ -6899,10 +6880,11 @@ static void cs35l41_generic_fixup(struct hda_codec *cdc, int action, const char
+ 				return;
+ 			rec->bus = bus;
+ 			rec->hid = hid;
++			rec->match_str = match_str;
+ 			rec->index = i;
+ 			spec->comps[i].codec = cdc;
+ 			component_match_add(dev, &spec->match,
+-					    comp_match_cs35l41_dev_name, rec);
++					    comp_match_dev_name, rec);
  		}
+ 		ret = component_master_add_with_match(dev, &comp_master_ops, spec->match);
+ 		if (ret)
+@@ -6916,83 +6898,48 @@ static void cs35l41_generic_fixup(struct hda_codec *cdc, int action, const char
  	}
+ }
  
-+	mutex_lock(&reset_list_mutex);
-+	rcdev = __reset_find_rcdev(&args, gpio_fallback);
- 	if (!rcdev) {
- 		rstc = ERR_PTR(-EPROBE_DEFER);
--		goto out;
-+		goto out_unlock;
- 	}
+-static void tas2781_generic_fixup(struct hda_codec *cdc, int action,
+-	const char *bus, const char *hid)
+-{
+-	struct device *dev = hda_codec_dev(cdc);
+-	struct alc_spec *spec = cdc->spec;
+-	struct scodec_dev_name *rec;
+-	int ret;
+-
+-	switch (action) {
+-	case HDA_FIXUP_ACT_PRE_PROBE:
+-		rec = devm_kmalloc(dev, sizeof(*rec), GFP_KERNEL);
+-		if (!rec)
+-			return;
+-		rec->bus = bus;
+-		rec->hid = hid;
+-		rec->index = 0;
+-		spec->comps[0].codec = cdc;
+-		component_match_add(dev, &spec->match,
+-			comp_match_tas2781_dev_name, rec);
+-		ret = component_master_add_with_match(dev, &comp_master_ops,
+-			spec->match);
+-		if (ret)
+-			codec_err(cdc,
+-				"Fail to register component aggregator %d\n",
+-				ret);
+-		else
+-			spec->gen.pcm_playback_hook =
+-				comp_generic_playback_hook;
+-		break;
+-	case HDA_FIXUP_ACT_FREE:
+-		component_master_del(dev, &comp_master_ops);
+-		break;
+-	}
+-}
+-
+ static void cs35l41_fixup_i2c_two(struct hda_codec *cdc, const struct hda_fixup *fix, int action)
+ {
+-	cs35l41_generic_fixup(cdc, action, "i2c", "CSC3551", 2);
++	comp_generic_fixup(cdc, action, "i2c", "CSC3551", "-%s:00-cs35l41-hda.%d", 2);
+ }
  
- 	if (WARN_ON(args.args_count != rcdev->of_reset_n_cells)) {
- 		rstc = ERR_PTR(-EINVAL);
--		goto out;
-+		goto out_unlock;
- 	}
+ static void cs35l41_fixup_i2c_four(struct hda_codec *cdc, const struct hda_fixup *fix, int action)
+ {
+-	cs35l41_generic_fixup(cdc, action, "i2c", "CSC3551", 4);
++	comp_generic_fixup(cdc, action, "i2c", "CSC3551", "-%s:00-cs35l41-hda.%d", 4);
+ }
  
- 	rstc_id = rcdev->of_xlate(rcdev, &args);
- 	if (rstc_id < 0) {
- 		rstc = ERR_PTR(rstc_id);
--		goto out;
-+		goto out_unlock;
- 	}
+ static void cs35l41_fixup_spi_two(struct hda_codec *codec, const struct hda_fixup *fix, int action)
+ {
+-	cs35l41_generic_fixup(codec, action, "spi", "CSC3551", 2);
++	comp_generic_fixup(codec, action, "spi", "CSC3551", "-%s:00-cs35l41-hda.%d", 2);
+ }
  
- 	/* reset_list_mutex also protects the rcdev's reset_control list */
- 	rstc = __reset_control_get_internal(rcdev, rstc_id, shared, acquired);
+ static void cs35l41_fixup_spi_four(struct hda_codec *codec, const struct hda_fixup *fix, int action)
+ {
+-	cs35l41_generic_fixup(codec, action, "spi", "CSC3551", 4);
++	comp_generic_fixup(codec, action, "spi", "CSC3551", "-%s:00-cs35l41-hda.%d", 4);
+ }
  
--out:
-+out_unlock:
- 	mutex_unlock(&reset_list_mutex);
-+out_put:
- 	of_node_put(args.np);
+ static void alc287_fixup_legion_16achg6_speakers(struct hda_codec *cdc, const struct hda_fixup *fix,
+ 						 int action)
+ {
+-	cs35l41_generic_fixup(cdc, action, "i2c", "CLSA0100", 2);
++	comp_generic_fixup(cdc, action, "i2c", "CLSA0100", "-%s:00-cs35l41-hda.%d", 2);
+ }
  
- 	return rstc;
-diff --git a/include/linux/reset-controller.h b/include/linux/reset-controller.h
-index 0fa4f60e1186..357df16ede32 100644
---- a/include/linux/reset-controller.h
-+++ b/include/linux/reset-controller.h
-@@ -60,6 +60,9 @@ struct reset_control_lookup {
-  * @reset_control_head: head of internal list of requested reset controls
-  * @dev: corresponding driver model device struct
-  * @of_node: corresponding device tree node as phandle target
-+ * @of_args: for reset-gpios controllers: corresponding phandle args with
-+ *           of_node and GPIO number complementing of_node; either this or
-+ *           of_node should be present
-  * @of_reset_n_cells: number of cells in reset line specifiers
-  * @of_xlate: translation function to translate from specifier as found in the
-  *            device tree to id as given to the reset control ops, defaults
-@@ -73,6 +76,7 @@ struct reset_controller_dev {
- 	struct list_head reset_control_head;
- 	struct device *dev;
- 	struct device_node *of_node;
-+	const struct of_phandle_args *of_args;
- 	int of_reset_n_cells;
- 	int (*of_xlate)(struct reset_controller_dev *rcdev,
- 			const struct of_phandle_args *reset_spec);
+ static void alc287_fixup_legion_16ithg6_speakers(struct hda_codec *cdc, const struct hda_fixup *fix,
+ 						 int action)
+ {
+-	cs35l41_generic_fixup(cdc, action, "i2c", "CLSA0101", 2);
++	comp_generic_fixup(cdc, action, "i2c", "CLSA0101", "-%s:00-cs35l41-hda.%d", 2);
+ }
+ 
+ static void tas2781_fixup_i2c(struct hda_codec *cdc,
+ 	const struct hda_fixup *fix, int action)
+ {
+-	 tas2781_generic_fixup(cdc, action, "i2c", "TIAS2781");
++	comp_generic_fixup(cdc, action, "i2c", "TIAS2781", "-%s:00", 1);
+ }
+ 
+ static void yoga7_14arb7_fixup_i2c(struct hda_codec *cdc,
+ 	const struct hda_fixup *fix, int action)
+ {
+-	 tas2781_generic_fixup(cdc, action, "i2c", "INT8866");
++	comp_generic_fixup(cdc, action, "i2c", "INT8866", "-%s:00", 1);
+ }
+ 
+ /* for alc295_fixup_hp_top_speakers */
 -- 
-2.34.1
+2.30.2
 
