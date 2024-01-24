@@ -4,89 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 95DFCC46CD2
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jan 2024 16:58:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2ABEC47E49
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jan 2024 16:58:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 53EB3B60;
-	Wed, 24 Jan 2024 17:58:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 53EB3B60
+	by alsa0.perex.cz (Postfix) with ESMTPS id AF47D823;
+	Wed, 24 Jan 2024 17:58:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AF47D823
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1706115494;
-	bh=Q598g3ES9DwULDvPn3Tu0gZTULbU0YAUntODedh3iwg=;
+	s=default; t=1706115521;
+	bh=5KNYbqRyLWNS+MwizZFGzQ2Dhc3qcL3+uy+mbhyjmQQ=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Hnbtc/tvDWw2L6etGXCYr/ajx0QFkVlq5VwpaGN3g7SQ0lDbxrT59oFbrY+Re9dtM
-	 hIfQCAT7z4zg+Dzj6cxjG8uliqFesYb+8qjgZCt9ioBmQPsjctNocheH5IUN5HM9K5
-	 g/oVibCVdGHhRLgc6fcNSQMqpeLpT1QvGzFq42NY=
+	b=jsN+LXfOPlXaNrpiAu+yfqnonjigE9lKGdBzbc6B5bRpGZhq9mUTICCKPhFdaMGjd
+	 e88iW312LRzvX+gEu0SnwECm4cAwMRFlT8naDt99ox9YV937Rhosh5DyXq747MdE0N
+	 02SzrmHInumdGofNhvSACec5DEneDA+5QEeKLT1o=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 94522F80641; Wed, 24 Jan 2024 17:56:39 +0100 (CET)
+	id 72BEBF8067A; Wed, 24 Jan 2024 17:56:42 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 21007F80682;
-	Wed, 24 Jan 2024 17:56:39 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BEA6EF8069F;
+	Wed, 24 Jan 2024 17:56:41 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5CD8CF8057A; Wed, 24 Jan 2024 17:56:26 +0100 (CET)
+	id C086DF805C6; Wed, 24 Jan 2024 17:56:28 +0100 (CET)
 Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id EDB77F804E7
-	for <alsa-devel@alsa-project.org>; Wed, 24 Jan 2024 17:56:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EDB77F804E7
+	by alsa1.perex.cz (Postfix) with ESMTPS id AC8EBF8028D
+	for <alsa-devel@alsa-project.org>; Wed, 24 Jan 2024 17:56:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AC8EBF8028D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=LAb8MMgJ
+ header.s=PODMain02222019 header.b=C2DZNL38
 Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
 	by mx0a-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id
- 40O7L4kw000450;
-	Wed, 24 Jan 2024 10:56:04 -0600
+ 40O7L4ku000450;
+	Wed, 24 Jan 2024 10:56:03 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
 	:mime-version:content-transfer-encoding:content-type; s=
-	PODMain02222019; bh=przA4QwCommAhJfz+ziW6gvkL1al7pQyEzCeV5NJhkc=; b=
-	LAb8MMgJ3s/tPLDHUmCmCEB2Ls9H3/Mm9L4bfGp/fn+Zt5vDzgmwT/XrgKZLIRYJ
-	gI2VQy+wUmAxFiJthAoT9/WzZOkmHdru+j0MemFpwsCGfD2XRHmBbeB5U9XvsauR
-	jxcSGpuotFaReh6CJvFyfaz2UqmGkquH13ITygF6mTi9YCQbK+8ZDienMRUP2DKN
-	Ia1+ZufRjF8J5JvpcO+MVrfK20ks4qLqisgbYoLAq4zP5poBPXknQmBdWM0PArN/
-	26fQYz3Kae7wGxpGaagNKAK8BJ243C28fm4wLcsAto38KUjml5c1+xz8cE5V9/5i
-	hqVV5XtTn66HZidxWAkI+Q==
+	PODMain02222019; bh=uf+mIUoUA58TF7kJUpUzS/CCL6qpa30sbJehHm5UEGY=; b=
+	C2DZNL3869BynGzES4XMwIeZV5DIX8kT1T+sdkn3e7f7lz7y+pgxcLFw1G5GASUJ
+	u3KTZuEHN1QscfQ+Vwe4Gcw8+TdEPIH24GrwcH0Ae5cctk67PwZ+NTh2VHdZeor0
+	jxofYfiLv3JRvBWqx5PVlP0es3GP0ET4jvP7bm4Z95SY4jC7Ea5fQR3/bmDHLdbb
+	kgn2Fh7dQKytLWsLCUrGcUico+3pVl2+QWwkkVvbZnBpVmgSBojigox89hvdXvFg
+	xWZZuNKc/MFtN0bCwG1D16gIWCm8ZdfZgPvU3i9OfGR3AlziaDpo7se4MJ1E6rms
+	kkzRfQw01r1obI59rPFcPA==
 Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3vtmfhh44s-4
+	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3vtmfhh44s-2
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 24 Jan 2024 10:56:04 -0600 (CST)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
+	Wed, 24 Jan 2024 10:56:02 -0600 (CST)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
  (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 24 Jan
  2024 16:55:59 +0000
 Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ ediex01.ad.cirrus.com (198.61.84.80) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
  15.2.1118.40 via Frontend Transport; Wed, 24 Jan 2024 16:55:59 +0000
 Received: from ediswws07.ad.cirrus.com (ediswws07.ad.cirrus.com
  [198.90.208.14])
-	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 0911782024A;
-	Wed, 24 Jan 2024 16:55:59 +0000 (UTC)
+	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id F0E99820249;
+	Wed, 24 Jan 2024 16:55:58 +0000 (UTC)
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
 To: <broonie@kernel.org>
 CC: <andy.shevchenko@gmail.com>, <lgirdwood@gmail.com>,
         <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
         <linux-sound@vger.kernel.org>
-Subject: [PATCH 5/7] ASoC: cs42l43: Use USEC_PER_MSEC rather than hard coding
-Date: Wed, 24 Jan 2024 16:55:56 +0000
-Message-ID: <20240124165558.1876407-5-ckeepax@opensource.cirrus.com>
+Subject: [PATCH 4/7] ASoC: cs42l43: Add pm_ptr around the power ops
+Date: Wed, 24 Jan 2024 16:55:55 +0000
+Message-ID: <20240124165558.1876407-4-ckeepax@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20240124165558.1876407-1-ckeepax@opensource.cirrus.com>
 References: <20240124165558.1876407-1-ckeepax@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: Sc98E8Olr60-OpbYMNmPfSJRpSv6PJAM
-X-Proofpoint-GUID: Sc98E8Olr60-OpbYMNmPfSJRpSv6PJAM
+X-Proofpoint-ORIG-GUID: PIQDtVSCP88wy5j6gbUIAiHCFud6VbJN
+X-Proofpoint-GUID: PIQDtVSCP88wy5j6gbUIAiHCFud6VbJN
 X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: WIWPIYX76CRFSH6A5EMMXHGPORUELK5J
-X-Message-ID-Hash: WIWPIYX76CRFSH6A5EMMXHGPORUELK5J
+Message-ID-Hash: 7WUXT74E5ST5TLAVF6BZWKIX2YO4KUHA
+X-Message-ID-Hash: 7WUXT74E5ST5TLAVF6BZWKIX2YO4KUHA
 X-MailFrom: prvs=8753590469=ckeepax@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -99,7 +100,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WIWPIYX76CRFSH6A5EMMXHGPORUELK5J/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7WUXT74E5ST5TLAVF6BZWKIX2YO4KUHA/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -111,30 +112,22 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 ---
- sound/soc/codecs/cs42l43-jack.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/soc/codecs/cs42l43.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/cs42l43-jack.c b/sound/soc/codecs/cs42l43-jack.c
-index 147c7017fd8b6..4bcf66cff566a 100644
---- a/sound/soc/codecs/cs42l43-jack.c
-+++ b/sound/soc/codecs/cs42l43-jack.c
-@@ -17,6 +17,7 @@
- #include <linux/pm_runtime.h>
- #include <linux/property.h>
- #include <linux/regmap.h>
-+#include <linux/time.h>
- #include <linux/workqueue.h>
- #include <sound/control.h>
- #include <sound/jack.h>
-@@ -647,7 +648,7 @@ static int cs42l43_run_load_detect(struct cs42l43_codec *priv, bool mic)
- static int cs42l43_run_type_detect(struct cs42l43_codec *priv)
- {
- 	struct cs42l43 *cs42l43 = priv->core;
--	int timeout_ms = ((2 * priv->detect_us) / 1000) + 200;
-+	int timeout_ms = ((2 * priv->detect_us) / USEC_PER_MSEC) + 200;
- 	unsigned int type = 0xff;
- 	unsigned long time_left;
+diff --git a/sound/soc/codecs/cs42l43.c b/sound/soc/codecs/cs42l43.c
+index d418c0b0ce9aa..1852cb072bd0e 100644
+--- a/sound/soc/codecs/cs42l43.c
++++ b/sound/soc/codecs/cs42l43.c
+@@ -2349,7 +2349,7 @@ MODULE_DEVICE_TABLE(platform, cs42l43_codec_id_table);
+ static struct platform_driver cs42l43_codec_driver = {
+ 	.driver = {
+ 		.name	= "cs42l43-codec",
+-		.pm	= &cs42l43_codec_pm_ops,
++		.pm	= pm_ptr(&cs42l43_codec_pm_ops),
+ 	},
  
+ 	.probe		= cs42l43_codec_probe,
 -- 
 2.30.2
 
