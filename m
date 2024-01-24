@@ -4,60 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 47AC3C47DDB
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 Jan 2024 16:20:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CA12BC47DDB
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 Jan 2024 16:20:22 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 35605B60;
-	Fri, 26 Jan 2024 17:19:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 35605B60
+	by alsa0.perex.cz (Postfix) with ESMTPS id 475501FA;
+	Fri, 26 Jan 2024 17:20:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 475501FA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1706286008;
-	bh=J9cWHBzQAtoEqppKJznkEOwXANl/OtQJlMreI+w5+pM=;
+	s=default; t=1706286021;
+	bh=NNDXRpvhIGTKBi9slZ/qWQEGn6Uj559Gpw2fxZO2A8A=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=hkOF9RwEKQG6LIx1k4t/oJH8RBgv0+tfGnTV9i8bS/5gbLyhbo3y9nyJ8N/ybZuUc
-	 Ah0Cwl1usfT19T7xFvtN36W1Aofv5CSR+w8AwduPvwDLDL9O4dsEIXjgLrtWZUio49
-	 RQXn3m3dgTnhmW0FmNkmrdXl2aqmtW91m0MITSHk=
+	b=lBP6xa3EQmt1XmxMW2kCJZ0XVmQxdE4aPPFLQFhfvjbw2dbh7YNMn2V0EvC2teJx/
+	 18vvha5xhCGgqjyPdPk7tQdLLz+DM2eqB4ASwK+UjDjaLaZgIeO69tQM/ufYRRFZG8
+	 LKmtutFRPb4HQKiENKEXtC+/2uQOaSe7MXn0fCus=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E3E98F805A1; Fri, 26 Jan 2024 17:18:30 +0100 (CET)
+	id C5940F805B1; Fri, 26 Jan 2024 17:18:34 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 797B0F8067E;
-	Fri, 26 Jan 2024 17:18:29 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0ED41F806AD;
+	Fri, 26 Jan 2024 17:18:34 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DCDD2F8028D; Wed, 24 Jan 2024 18:22:26 +0100 (CET)
+	id CA54FF8028D; Wed, 24 Jan 2024 18:31:26 +0100 (CET)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 87D2AF8003A
-	for <alsa-devel@alsa-project.org>; Wed, 24 Jan 2024 18:22:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 87D2AF8003A
+	by alsa1.perex.cz (Postfix) with ESMTPS id 8A4A8F8003A
+	for <alsa-devel@alsa-project.org>; Wed, 24 Jan 2024 18:31:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8A4A8F8003A
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=LzpFWfp6
+	dkim=pass (1024-bit key,
+ unprotected) header.d=linuxfoundation.org header.i=@linuxfoundation.org
+ header.a=rsa-sha256 header.s=korg header.b=TE8sMbvf
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id B592E61DC3;
-	Wed, 24 Jan 2024 17:22:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AAF93C433C7;
-	Wed, 24 Jan 2024 17:22:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706116940;
-	bh=J9cWHBzQAtoEqppKJznkEOwXANl/OtQJlMreI+w5+pM=;
+	by dfw.source.kernel.org (Postfix) with ESMTP id 443BB61DE4;
+	Wed, 24 Jan 2024 17:30:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA2D0C433C7;
+	Wed, 24 Jan 2024 17:30:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1706117457;
+	bh=NNDXRpvhIGTKBi9slZ/qWQEGn6Uj559Gpw2fxZO2A8A=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=LzpFWfp68rpr4dWHpdN+3IBhvKe1BMer+To6gMN52sFIqJGOHOg2ldSKjRXCcMb5m
-	 TFWNLUoV1HFSfX27ssqcTmUNGmLjfsu/z7ab3gxQuXnjvSNFUQXmjhZEIyIhUWWEIT
-	 CgAYNmzcDLnvRg+viWfwfm6By4Ffbj0ymjEy26C89CVOqr6JLR32V+zT7k2ef93fpP
-	 1Ka1oOBMomGGEuXbLQOuhLohRSeVfalTXlkn0w18Bo0vP0gpL8EpG8vIchAhQdEue3
-	 Cd0Kc25AAqNkrZ3Jhe5TUtRkxqZmjaKSQ074XXZPz2CPZUgeNzrq5mcjx4JO7BaCUH
-	 nqaKOF7sEH13g==
-Date: Wed, 24 Jan 2024 17:22:00 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+	b=TE8sMbvfIUEPS7l+FWWrLd9ucrffQrWpUeULzzDGbHOZntLPKHC9u7ekCFztLhU3U
+	 g9c/BN8CkGH0i32zPynRDSS6j46gbVDA6ioIe6yR345V3vEOlOOOrQK63M5gAF7wrU
+	 bDTC1oJaRecQ9F29HgZfYDFNvnxiLNzNXD19CPf8=
+Date: Wed, 24 Jan 2024 09:30:56 -0800
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Mark Brown <broonie@kernel.org>
 Cc: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
 	kernel@pengutronix.de, Moritz Fischer <mdf@kernel.org>,
 	Wu Hao <hao.wu@intel.com>, Xu Yilun <yilun.xu@intel.com>,
@@ -126,16 +122,16 @@ Cc: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
 	Jonathan Corbet <corbet@lwn.net>, James Clark <james.clark@arm.com>,
 	Bjorn Helgaas <bhelgaas@google.com>, linux-doc@vger.kernel.org
 Subject: Re: [PATCH v2 00/33] spi: get rid of some legacy macros
-Message-ID: <c1e38a30-5075-4d01-af24-ac684e77cf29@sirena.org.uk>
+Message-ID: <2024012439-machinist-amazingly-2d2c@gregkh>
 References: <cover.1705944943.git.u.kleine-koenig@pengutronix.de>
  <2024012417-prissy-sworn-bc55@gregkh>
+ <c1e38a30-5075-4d01-af24-ac684e77cf29@sirena.org.uk>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="FdGjmVpGJ74QDTu1"
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <2024012417-prissy-sworn-bc55@gregkh>
-X-Cookie: To err is human, to moo bovine.
-X-MailFrom: broonie@kernel.org
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <c1e38a30-5075-4d01-af24-ac684e77cf29@sirena.org.uk>
+X-MailFrom: gregkh@linuxfoundation.org
 X-Mailman-Rule-Hits: max-recipients
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -143,15 +139,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-size; news-moderation; no-subject; digests;
  suspicious-header
-Message-ID-Hash: SOJGNHF5QGGJAI5CBJL5PKMBHPQMXNL4
-X-Message-ID-Hash: SOJGNHF5QGGJAI5CBJL5PKMBHPQMXNL4
+Message-ID-Hash: 5PPBITDXPIB6P4VRTZBZLMLL4JUEXY3J
+X-Message-ID-Hash: 5PPBITDXPIB6P4VRTZBZLMLL4JUEXY3J
 X-Mailman-Approved-At: Fri, 26 Jan 2024 16:18:21 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SOJGNHF5QGGJAI5CBJL5PKMBHPQMXNL4/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5PPBITDXPIB6P4VRTZBZLMLL4JUEXY3J/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -160,38 +156,21 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+On Wed, Jan 24, 2024 at 05:22:00PM +0000, Mark Brown wrote:
+> On Wed, Jan 24, 2024 at 09:13:49AM -0800, Greg Kroah-Hartman wrote:
+> > On Mon, Jan 22, 2024 at 07:06:55PM +0100, Uwe Kleine-König wrote:
+> 
+> > > Note that Jonathan Cameron has already applied patch 3 to his tree, it
+> > > didn't appear in a public tree though yet. I still included it here to
+> > > make the kernel build bots happy.
+> 
+> > Are we supposed to take the individual changes in our different
+> > subsystem trees, or do you want them all to go through the spi tree?
+> 
+> Given that the final patch removes the legacy interfaces I'm expecting
+> to take them via SPI.
 
---FdGjmVpGJ74QDTu1
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Great, thanks, I'll go ack the subsystem patches that are relevent for
+me.
 
-On Wed, Jan 24, 2024 at 09:13:49AM -0800, Greg Kroah-Hartman wrote:
-> On Mon, Jan 22, 2024 at 07:06:55PM +0100, Uwe Kleine-K=F6nig wrote:
-
-> > Note that Jonathan Cameron has already applied patch 3 to his tree, it
-> > didn't appear in a public tree though yet. I still included it here to
-> > make the kernel build bots happy.
-
-> Are we supposed to take the individual changes in our different
-> subsystem trees, or do you want them all to go through the spi tree?
-
-Given that the final patch removes the legacy interfaces I'm expecting
-to take them via SPI.
-
---FdGjmVpGJ74QDTu1
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmWxRzcACgkQJNaLcl1U
-h9CS5Af+OPZh7Z4aM5AF1TAMNJebJxrwbV+lfEa8zsdVnpHBXYpXokCrVwsSRBtM
-yR/bt2+OoZjrVep6c0lufmewH58kEtQF4UazYao7MD2alCnwzn49m697Ubpnc/k9
-iSCRd+E5ICMZuRdRrDAmd/To7o3jsg85SeN4qLdeer17NkjU6VS9vR6NlzImV/nS
-MXj52eAHL5+EZIpIlwZSBkCxyEEsz/UFaGcFsKMonZ+24Oz5SXXWFhUWfiFCD+fA
-DNZKxXJ9Vk2i5pCUsduff5giUUypwRqVP4C01wYMs7o3jkMZ2cQhtuH8iyDtKKMU
-FSwO3bpbAgZzLbY2G2cqYZyEpqJ8Ow==
-=E3cl
------END PGP SIGNATURE-----
-
---FdGjmVpGJ74QDTu1--
+greg k-h
