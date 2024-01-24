@@ -4,59 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 00300C46CD2
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jan 2024 15:13:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7E875C46CD2
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jan 2024 15:14:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2FD0BB70;
-	Wed, 24 Jan 2024 16:13:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2FD0BB70
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9EEA7B60;
+	Wed, 24 Jan 2024 16:13:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9EEA7B60
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1706109234;
-	bh=8fSzUVey984nMEt+aAXA7c16HLFwu6d7XSq7GXLETks=;
+	s=default; t=1706109245;
+	bh=Zz52SDfR224CDCMoBiwJdfjDeIdqEPXzExz50qfgwrQ=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Y8GqFIT8Q7jymOLhlCEh6Qy69QhtIjupmyKfJnPjgrJ4fci36VxjkAFEMQXr9cea0
-	 fjinETJiT+W7KuO0S6YNiwVh2DBjOzOR/oQw5y3Se1S4liAJiMMBJBJnDAcuW2mgkZ
-	 XnS86AsF/QA/x4WgDfaNDNJ/Lf0BDnhPnVOxLxAI=
+	b=rKonK6VqA05QBfmUiujERzgzYcupgpqZYnfGte7Tw8GTEygUYFfCKrvrSwN9tKYUa
+	 rht/1R99LXr1SqLEp4+BGsszWA9ABv1dQZp584tTFZ1Da/Wosv0O4NP8jmRupTiYQM
+	 2WDWTTA4iZ2Zrs0pkqIYMNk2JLQ3bDo67LVE5quM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 86D83F805F6; Wed, 24 Jan 2024 16:12:53 +0100 (CET)
+	id 2B0BBF8022B; Wed, 24 Jan 2024 16:12:57 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 49A27F805F4;
-	Wed, 24 Jan 2024 16:12:53 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 75F0EF8060F;
+	Wed, 24 Jan 2024 16:12:56 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CC706F802E8; Wed, 24 Jan 2024 16:12:42 +0100 (CET)
+	id B4EFFF8055C; Wed, 24 Jan 2024 16:12:46 +0100 (CET)
 Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A9BC8F8028D
+	by alsa1.perex.cz (Postfix) with ESMTPS id F0D4AF8025F
 	for <alsa-devel@alsa-project.org>; Wed, 24 Jan 2024 16:12:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A9BC8F8028D
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F0D4AF8025F
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=fZLq6Zj0
+ header.s=PODMain02222019 header.b=gwX8Nl0q
 Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
 	by mx0a-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id
- 40O8PstE007460;
-	Wed, 24 Jan 2024 09:12:26 -0600
+ 40O8PstD007460;
+	Wed, 24 Jan 2024 09:12:25 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
 	:mime-version:content-transfer-encoding:content-type; s=
-	PODMain02222019; bh=xqockhO3PC0w8zteR8DQgwdzsYaq2lS11Dt4dduvSI4=; b=
-	fZLq6Zj0KpSFrjCQCa7XA5r9C+aAkPNzuD7IZSYXYlTPws6C3OoL0nhQQC2VeQjD
-	cexHOq8T4TC0UKMjpGUZDg8ULpSuflfQBnUkkBHLmGiInIlskMDp8WNeCDBD9fvy
-	MER/ZAxr34t+ggBDFfbMhO4+jfkvry5upd7t/pWpmCYUG08UT7/sCg02KmC8gvox
-	bo2cjZOhJXmdmalwafvlA2RmZwP2gmVOBvCqjixlvFzZKb72FmUJlQpu5etxy/vS
-	6AkNejLlwKHcjhXt4EaASd3J9jxmzjjZSwC68x7s3dq87ORy/ZrpGbmKC/RjWQy9
-	BJn40LEbvo5PdgF2SWgrXA==
+	PODMain02222019; bh=zP71zJiMcBLIMsOwcfHrVKfWtO7pQrg+yAAaiRud60c=; b=
+	gwX8Nl0qURQGm+q8Qgz+iGm7qlFwKqxh7C+2zOIL06XcSRpSHF3CiiRQkBy5cmOi
+	sqan+HXGpsVROBcZWUfnfhfbfyijGVGLYmPoeC3toY+2b+EJ7Wd9qDl6q8UJrKd0
+	tiD80L1BrxzaiCQpnZQx810KqDUSrdFkg8K01aTGtWxbua1wE+pEdgGKqEYOy0Bv
+	wUazdC9Ro1Sd4FWJfjW5oBfxiB0UcJJz6bwHLIvzu2RK5DTjmyc0714/7cdxF/lN
+	9dzVkFkfox05p+wH2RfUSOwHjxinrfl2ZuoygtNIJYTxES97rBBvGhfQo8MbnZfu
+	e+ZHKjSQk/z6yiZLEk48Rg==
 Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3vtmfhgxx8-2
+	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3vtmfhgxx8-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 24 Jan 2024 09:12:25 -0600 (CST)
+	Wed, 24 Jan 2024 09:12:24 -0600 (CST)
 Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 24 Jan
@@ -67,26 +67,26 @@ Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
  15.2.1118.40 via Frontend Transport; Wed, 24 Jan 2024 15:12:22 +0000
 Received: from ediswws07.ad.cirrus.com (ediswws07.ad.cirrus.com
  [198.90.208.14])
-	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 5386882024A;
+	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 3AD81820248;
 	Wed, 24 Jan 2024 15:12:22 +0000 (UTC)
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
 To: <lee@kernel.org>, <broonie@kernel.org>
 CC: <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
         <linux-kernel@vger.kernel.org>, <linux-spi@vger.kernel.org>
-Subject: [PATCH 5/6] mfd: cs42l43: Handle error from devm_pm_runtime_enable
-Date: Wed, 24 Jan 2024 15:12:21 +0000
-Message-ID: <20240124151222.1448570-5-ckeepax@opensource.cirrus.com>
+Subject: [PATCH 3/6] mfd: cs42l43: Add time postfixes on defines
+Date: Wed, 24 Jan 2024 15:12:19 +0000
+Message-ID: <20240124151222.1448570-3-ckeepax@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20240124151222.1448570-1-ckeepax@opensource.cirrus.com>
 References: <20240124151222.1448570-1-ckeepax@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: ht3Mncp21og942O5GIgF56txXAIWH9sr
-X-Proofpoint-GUID: ht3Mncp21og942O5GIgF56txXAIWH9sr
+X-Proofpoint-ORIG-GUID: npSgXlqADQH1pGoVzRuXliRyCgHEyxx_
+X-Proofpoint-GUID: npSgXlqADQH1pGoVzRuXliRyCgHEyxx_
 X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: JBOSZFZBGTFON5MEAYD4FR6JLHNTTL6W
-X-Message-ID-Hash: JBOSZFZBGTFON5MEAYD4FR6JLHNTTL6W
+Message-ID-Hash: X5PQOEXYIIPTDQEXW7WOEZO3RE454VFB
+X-Message-ID-Hash: X5PQOEXYIIPTDQEXW7WOEZO3RE454VFB
 X-MailFrom: prvs=8753590469=ckeepax@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -99,7 +99,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JBOSZFZBGTFON5MEAYD4FR6JLHNTTL6W/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/X5PQOEXYIIPTDQEXW7WOEZO3RE454VFB/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -108,30 +108,132 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-As it devm_pm_runtime_enable can fail due to memory allocations, it is
-best to handle the error.
-
 Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 ---
- drivers/mfd/cs42l43.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/mfd/cs42l43.c | 36 ++++++++++++++++++------------------
+ 1 file changed, 18 insertions(+), 18 deletions(-)
 
 diff --git a/drivers/mfd/cs42l43.c b/drivers/mfd/cs42l43.c
-index aea0f8f485785..56bd9dbbe10b0 100644
+index 65a331481d975..aea0f8f485785 100644
 --- a/drivers/mfd/cs42l43.c
 +++ b/drivers/mfd/cs42l43.c
-@@ -1065,7 +1065,9 @@ int cs42l43_dev_probe(struct cs42l43 *cs42l43)
- 	 * the boot work runs.
- 	 */
- 	pm_runtime_get_noresume(cs42l43->dev);
--	devm_pm_runtime_enable(cs42l43->dev);
-+	ret = devm_pm_runtime_enable(cs42l43->dev);
-+	if (ret)
-+		return ret;
+@@ -27,30 +27,30 @@
  
- 	queue_work(system_long_wq, &cs42l43->boot_work);
+ #include "cs42l43.h"
  
+-#define CS42L43_RESET_DELAY			20
++#define CS42L43_RESET_DELAY_MS			20
+ 
+-#define CS42L43_SDW_ATTACH_TIMEOUT		500
+-#define CS42L43_SDW_DETACH_TIMEOUT		100
++#define CS42L43_SDW_ATTACH_TIMEOUT_MS		500
++#define CS42L43_SDW_DETACH_TIMEOUT_MS		100
+ 
+ #define CS42L43_MCU_BOOT_STAGE1			1
+ #define CS42L43_MCU_BOOT_STAGE2			2
+ #define CS42L43_MCU_BOOT_STAGE3			3
+ #define CS42L43_MCU_BOOT_STAGE4			4
+-#define CS42L43_MCU_POLL			5000
+-#define CS42L43_MCU_CMD_TIMEOUT			20000
++#define CS42L43_MCU_POLL_US			5000
++#define CS42L43_MCU_CMD_TIMEOUT_US		20000
+ #define CS42L43_MCU_UPDATE_FORMAT		3
+ #define CS42L43_MCU_UPDATE_OFFSET		0x100000
+-#define CS42L43_MCU_UPDATE_TIMEOUT		500000
++#define CS42L43_MCU_UPDATE_TIMEOUT_US		500000
+ #define CS42L43_MCU_UPDATE_RETRIES		5
+ 
+ #define CS42L43_MCU_SUPPORTED_REV		0x2105
+ #define CS42L43_MCU_SHADOW_REGS_REQUIRED_REV	0x2200
+ #define CS42L43_MCU_SUPPORTED_BIOS_REV		0x0001
+ 
+-#define CS42L43_VDDP_DELAY			50
+-#define CS42L43_VDDD_DELAY			1000
++#define CS42L43_VDDP_DELAY_US			50
++#define CS42L43_VDDD_DELAY_US			1000
+ 
+-#define CS42L43_AUTOSUSPEND_TIME		250
++#define CS42L43_AUTOSUSPEND_TIME_MS		250
+ 
+ struct cs42l43_patch_header {
+ 	__le16 version;
+@@ -538,10 +538,10 @@ static int cs42l43_soft_reset(struct cs42l43 *cs42l43)
+ 	regcache_cache_only(cs42l43->regmap, true);
+ 	regmap_multi_reg_write_bypassed(cs42l43->regmap, reset, ARRAY_SIZE(reset));
+ 
+-	msleep(CS42L43_RESET_DELAY);
++	msleep(CS42L43_RESET_DELAY_MS);
+ 
+ 	if (cs42l43->sdw) {
+-		unsigned long timeout = msecs_to_jiffies(CS42L43_SDW_DETACH_TIMEOUT);
++		unsigned long timeout = msecs_to_jiffies(CS42L43_SDW_DETACH_TIMEOUT_MS);
+ 		unsigned long time;
+ 
+ 		time = wait_for_completion_timeout(&cs42l43->device_detach, timeout);
+@@ -561,7 +561,7 @@ static int cs42l43_soft_reset(struct cs42l43 *cs42l43)
+ static int cs42l43_wait_for_attach(struct cs42l43 *cs42l43)
+ {
+ 	if (!cs42l43->attached) {
+-		unsigned long timeout = msecs_to_jiffies(CS42L43_SDW_ATTACH_TIMEOUT);
++		unsigned long timeout = msecs_to_jiffies(CS42L43_SDW_ATTACH_TIMEOUT_MS);
+ 		unsigned long time;
+ 
+ 		time = wait_for_completion_timeout(&cs42l43->device_attach, timeout);
+@@ -603,7 +603,7 @@ static int cs42l43_mcu_stage_2_3(struct cs42l43 *cs42l43, bool shadow)
+ 
+ 	ret = regmap_read_poll_timeout(cs42l43->regmap, CS42L43_BOOT_STATUS,
+ 				       val, (val == CS42L43_MCU_BOOT_STAGE3),
+-				       CS42L43_MCU_POLL, CS42L43_MCU_CMD_TIMEOUT);
++				       CS42L43_MCU_POLL_US, CS42L43_MCU_CMD_TIMEOUT_US);
+ 	if (ret) {
+ 		dev_err(cs42l43->dev, "Failed to move to stage 3: %d, 0x%x\n", ret, val);
+ 		return ret;
+@@ -652,7 +652,7 @@ static int cs42l43_mcu_disable(struct cs42l43 *cs42l43)
+ 
+ 	ret = regmap_read_poll_timeout(cs42l43->regmap, CS42L43_SOFT_INT_SHADOW, val,
+ 				       (val & CS42L43_CONTROL_APPLIED_INT_MASK),
+-				       CS42L43_MCU_POLL, CS42L43_MCU_CMD_TIMEOUT);
++				       CS42L43_MCU_POLL_US, CS42L43_MCU_CMD_TIMEOUT_US);
+ 	if (ret) {
+ 		dev_err(cs42l43->dev, "Failed to disable firmware: %d, 0x%x\n", ret, val);
+ 		return ret;
+@@ -696,7 +696,7 @@ static void cs42l43_mcu_load_firmware(const struct firmware *firmware, void *con
+ 
+ 	ret = regmap_read_poll_timeout(cs42l43->regmap, CS42L43_SOFT_INT_SHADOW, val,
+ 				       (val & CS42L43_PATCH_APPLIED_INT_MASK),
+-				       CS42L43_MCU_POLL, CS42L43_MCU_UPDATE_TIMEOUT);
++				       CS42L43_MCU_POLL_US, CS42L43_MCU_UPDATE_TIMEOUT_US);
+ 	if (ret) {
+ 		dev_err(cs42l43->dev, "Failed to update firmware: %d, 0x%x\n", ret, val);
+ 		cs42l43->firmware_error = ret;
+@@ -957,7 +957,7 @@ static int cs42l43_power_up(struct cs42l43 *cs42l43)
+ 	}
+ 
+ 	/* vdd-p must be on for 50uS before any other supply */
+-	usleep_range(CS42L43_VDDP_DELAY, 2 * CS42L43_VDDP_DELAY);
++	usleep_range(CS42L43_VDDP_DELAY_US, 2 * CS42L43_VDDP_DELAY_US);
+ 
+ 	gpiod_set_value_cansleep(cs42l43->reset, 1);
+ 
+@@ -973,7 +973,7 @@ static int cs42l43_power_up(struct cs42l43 *cs42l43)
+ 		goto err_core_supplies;
+ 	}
+ 
+-	usleep_range(CS42L43_VDDD_DELAY, 2 * CS42L43_VDDD_DELAY);
++	usleep_range(CS42L43_VDDD_DELAY_US, 2 * CS42L43_VDDD_DELAY_US);
+ 
+ 	return 0;
+ 
+@@ -1057,7 +1057,7 @@ int cs42l43_dev_probe(struct cs42l43 *cs42l43)
+ 	if (ret)
+ 		return ret;
+ 
+-	pm_runtime_set_autosuspend_delay(cs42l43->dev, CS42L43_AUTOSUSPEND_TIME);
++	pm_runtime_set_autosuspend_delay(cs42l43->dev, CS42L43_AUTOSUSPEND_TIME_MS);
+ 	pm_runtime_use_autosuspend(cs42l43->dev);
+ 	pm_runtime_set_active(cs42l43->dev);
+ 	/*
 -- 
 2.30.2
 
