@@ -4,89 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 85F11C48286
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 Jan 2024 10:28:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A59E7C48260
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Jan 2024 10:29:24 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6D12AA4D;
-	Thu, 25 Jan 2024 11:28:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6D12AA4D
+	by alsa0.perex.cz (Postfix) with ESMTPS id A674C823;
+	Thu, 25 Jan 2024 11:29:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A674C823
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1706178494;
-	bh=YtFNpGDYsCivUz1wf8vRxMwoBoVkCYcCceTNNZS180w=;
+	s=default; t=1706178557;
+	bh=1BUV/n0pld+xzfDrWvK34M5kcqqzdhpPi6FvpKMqCf4=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=oRx/vIQmTxKVNampbzVr/gC08KiQgyD7VE5F6B4fSLhsy/OKvYDKxvT2sMhaTboQc
-	 +MQmSdJA/6n0LYvG+e3vfrFbMJhPANJipw4MVzgBB35nMa0eEJ2rlKUlOrIJxF7cEY
-	 2oKjJyO5qVU8XRHZ5rIQobJGH550LNFNYwEtAJXc=
+	b=j17LZX8qDR5hnxBvTTaVsysIo9KXvS5CsDaUKhyGW5065fjWYbn5WJHzAs35ysmul
+	 ulTKOoGNrIA+jF82oNUQhNluUMCOBVy/i1XCrtvCUgMibv9ySciEVqalES9MO2s5+L
+	 kEasmu66UpT1n0XSLsatkIPD73hiA0Tm6i/hUXok=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3DA12F80588; Thu, 25 Jan 2024 11:27:54 +0100 (CET)
+	id 9C470F80567; Thu, 25 Jan 2024 11:28:47 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 16B13F80587;
-	Thu, 25 Jan 2024 11:27:53 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4B4D7F80588;
+	Thu, 25 Jan 2024 11:28:46 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7B021F802BE; Thu, 25 Jan 2024 11:27:46 +0100 (CET)
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com
- [IPv6:2a00:1450:4864:20::630])
+	id 1CA2BF8025F; Thu, 25 Jan 2024 11:28:38 +0100 (CET)
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com
+ [IPv6:2a00:1450:4864:20::530])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id CA5CAF80149
-	for <alsa-devel@alsa-project.org>; Thu, 25 Jan 2024 11:27:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CA5CAF80149
+	by alsa1.perex.cz (Postfix) with ESMTPS id 4CA7BF80520
+	for <alsa-devel@alsa-project.org>; Thu, 25 Jan 2024 11:28:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4CA7BF80520
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=sxSLTnBK
-Received: by mail-ej1-x630.google.com with SMTP id
- a640c23a62f3a-a315f43ecc3so78059866b.0
+ header.s=google header.b=JSKeb7z0
+Received: by mail-ed1-x530.google.com with SMTP id
+ 4fb4d7f45d1cf-55c2cf644f3so4446448a12.1
         for <alsa-devel@alsa-project.org>;
- Thu, 25 Jan 2024 02:27:41 -0800 (PST)
+ Thu, 25 Jan 2024 02:28:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706178460; x=1706783260;
+        d=linaro.org; s=google; t=1706178501; x=1706783301;
  darn=alsa-project.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=V9gvMSv3+q7H3h79v5kkDnU5d5N9R7IDK8L4QtD2T7Q=;
-        b=sxSLTnBKN9cSy81N3bg6qYDZZHp+GSXbQcn35A0Q9hnt+SeSQ3/BEX7/mAA8XyMVoh
-         hhLyfcrWeSBp/2MWd+PaiHlHKuXAsFCw1+Y6awAbe6GG/obdAjFVCOjU83Lj6AWevGJZ
-         pJERSrGGRdq//NfJcfr2KLUEZ8yU46SaNQLMN6S+xaokL65+DDj2nPoV0Jtxi1aShP6s
-         qWiAtFhUs1/SVOw36MvG04R8yLQfPExZ27InppRmQChVjrJh2UC6JJEaMbcb4XwL3cXY
-         pImv/oombvj2RtIt/hLCMgfZ9S24Z9GkclKCvaCRCle/QCyJgJ87gWOL/eiaVbzhM3MU
-         qCQg==
+        bh=qS872QzcI9RYx6rQ9UXd6xffNXdTKVLXMYNRjv3PA84=;
+        b=JSKeb7z0zQxmMLswZDtJSxvPg5Xciq1b+bv/1FDnnmPSnc6SLAUpyrxjJZM0vfBA18
+         /yfQ+6KA79amkphgpxcYB+DvqzyiEbfBrObGwARhQpIjO2ihbh3fmJX/jaYYrW5l86X3
+         vqF8XfnKgjhZ8LZwyvGjL/3rx2DJeKlHqjy+OCge/gXLaF5upquUbXlnEutWWbOzXgbG
+         bUYGw2ZCAb0EhFxVnnNT/G8BH9xAkpPRnIuwcVD/JIQqfrQIKDl3VFhD1OOEfQNXBCJ4
+         9yuq0qdjIAEwJ6pR8KLwwB4dMuN7meoBjUSVBqx0QZJTTPO+TMVjcZhk/7BdN5aXwih1
+         WWPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706178460; x=1706783260;
+        d=1e100.net; s=20230601; t=1706178501; x=1706783301;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=V9gvMSv3+q7H3h79v5kkDnU5d5N9R7IDK8L4QtD2T7Q=;
-        b=XPpPeNWv/qew0Io1/+tXuAlREUbSnhM2VfMj52KEjpR1rRjumL9cUFv/SbhYXKSx41
-         x2qZ+7WXDS96TbsPEuDA602LAfaGojuIWwSerm06iFghXwkmjdOZ9E4jrirxIpJm6GIi
-         my2AZ9fZEoxr0gbZ9l+Yg86kMeUBIE/QSoKede3oyJp3LXLho5EYrdP22raYr5+frLaf
-         Gd6/G+tEokRF8Yv0OD+gxUs2zIuql47P+01mHTRIv2yQQaU6oh3hKE+n1eidqWjRypML
-         aQPM6IWLZVyybbJjiK/AITLcbOWkTX8KLkhf1U7CAbPNgrfE6FFGj5awMaVJwaW6JW70
-         0sKw==
-X-Gm-Message-State: AOJu0YznwPhRAuXNLAK0bVSGnB0aK40V5X+IZpSz2nbS6lF1PtdlCIL9
-	FT07/uOZmw5m1v9qv84vv3jfViPFcP7k/15OS2DG+DTPF7LBzHLqmY0SikwsiHA=
+        bh=qS872QzcI9RYx6rQ9UXd6xffNXdTKVLXMYNRjv3PA84=;
+        b=qbp+l92h78mGyS4W/dk4g++Hj8aNm4GOIlSwddUcjk52s0YnnQ/BUBrRwyvMIlxZzo
+         LRqH+UKxMyR2wCYhgKM1vgEh3CfMr0Io9rrGIsrYdnf8CoaurOq/oukwRJoiYh4MeXdM
+         bW0jwiFWxprBlLWFA9uabkF266rdl8nQ0iv+PRubQA/r4dCu+Y7y2zhJdPgRPLxFrObh
+         s7aXj2MjuMYn7TLG/hzzsgRcWq+ZyK+C/V1yamYDPoA3oD2di/iY1hTqDm96xswbjOQj
+         /LqYqD9TtftQ9RxC1Ua4QOt0+vdupwF5538Jk7LouSTX+Ik88sz/BjMZP8VnHpvDIGa2
+         ttHg==
+X-Gm-Message-State: AOJu0Yxk1JvLoCt1P1UCQfd+y4PSH7qVsOgINdV9MlEMOTYRB5wWxLKG
+	sZo2BH1IPZUNCcyPBtHywE6Nw3VefEof8d7Bq/w+yo8i3lm/26Pop9tXcHPU4ao=
 X-Google-Smtp-Source: 
- AGHT+IEnFE+kVE6wnGzV+nC41HNIgBzA646SU5hXBNWKIIB6uNlwYtHbNxIbJ9RTF+GbVyiur/pEMw==
-X-Received: by 2002:a17:906:b746:b0:a31:6f39:9517 with SMTP id
- fx6-20020a170906b74600b00a316f399517mr207210ejb.299.1706178459780;
-        Thu, 25 Jan 2024 02:27:39 -0800 (PST)
+ AGHT+IG7W1x1ChGNejBuzNVo8nbpwbtXbh1ez79+xb/HQzHaLcoMRrZt/DH19dECmI7UVZur8qmgCg==
+X-Received: by 2002:a17:907:c20e:b0:a31:fff9:30cd with SMTP id
+ ti14-20020a170907c20e00b00a31fff930cdmr128912ejc.48.1706178501224;
+        Thu, 25 Jan 2024 02:28:21 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.215.66])
         by smtp.gmail.com with ESMTPSA id
- fj5-20020a1709069c8500b00a318504ecadsm386588ejc.10.2024.01.25.02.27.38
+ fj5-20020a1709069c8500b00a318504ecadsm386588ejc.10.2024.01.25.02.28.19
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Jan 2024 02:27:39 -0800 (PST)
-Message-ID: <38852c07-ee51-44de-a616-7c3e86e88a8b@linaro.org>
-Date: Thu, 25 Jan 2024 11:27:37 +0100
+        Thu, 25 Jan 2024 02:28:20 -0800 (PST)
+Message-ID: <cc01d34f-97f4-499b-963f-77204055faa6@linaro.org>
+Date: Thu, 25 Jan 2024 11:28:19 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] dt-bindings: pinctrl: Unify "input-debounce" schema
+Subject: Re: [PATCH 2/2] dt-bindings: pinctrl: nuvoton,npcm845: Drop redundant
+ type for "slew-rate"
 Content-Language: en-US
 To: Rob Herring <robh@kernel.org>,
  Charles Keepax <ckeepax@opensource.cirrus.com>,
@@ -103,6 +104,7 @@ Cc: alsa-devel@alsa-project.org, linux-gpio@vger.kernel.org,
  devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
  openbmc@lists.ozlabs.org
 References: <20240124190106.1540585-1-robh@kernel.org>
+ <20240124190106.1540585-2-robh@kernel.org>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -148,11 +150,11 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240124190106.1540585-1-robh@kernel.org>
+In-Reply-To: <20240124190106.1540585-2-robh@kernel.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-ID-Hash: DIGPR4OWD277AYAQKVV2XSZH34M5ZRX7
-X-Message-ID-Hash: DIGPR4OWD277AYAQKVV2XSZH34M5ZRX7
+Message-ID-Hash: LV7JPPV4GSZAMNXUF3BVH6QQG63FW6KA
+X-Message-ID-Hash: LV7JPPV4GSZAMNXUF3BVH6QQG63FW6KA
 X-MailFrom: krzysztof.kozlowski@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -165,8 +167,9 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DIGPR4OWD277AYAQKVV2XSZH34M5ZRX7/>
-List-Archive: <>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LV7JPPV4GSZAMNXUF3BVH6QQG63FW6KA/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
@@ -174,12 +177,12 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 On 24/01/2024 20:01, Rob Herring wrote:
-> nuvoton,npcm845-pinctrl defines the common "input-debounce" property as
-> an array rather than an scalar. Update the common definition to expand
-> it to an uint32-array, and update all the users of the property with
-> array constraints.
+> pincfg-node.yaml already defines the type for "slew-rate", so drop the
+> type from the nuvoton,npcm845-pinctrl binding.
 > 
 > Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+
 
 Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
