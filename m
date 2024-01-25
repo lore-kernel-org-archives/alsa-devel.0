@@ -4,98 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2A5EC46CD2
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Jan 2024 22:49:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3B6C4C47258
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Jan 2024 03:36:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E426783E;
-	Wed, 24 Jan 2024 23:48:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E426783E
+	by alsa0.perex.cz (Postfix) with ESMTPS id DC0CF201;
+	Thu, 25 Jan 2024 04:36:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DC0CF201
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1706136543;
-	bh=2k1/oB1b1xsSx/hwwozwCabonaX31FYcHee9Ghg3YQM=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=Uh3RpYbIRyonZPknxAzCXkeyqZcqwU3oKxf4ouyJ3K1o4xvLJTWhVQ0SQYNhGhG2p
-	 r9WBdvT7hOe1VaAcbCyVIS1Q5Yf8e0QF+lT7x1bLQB9KO3xS2tiH4PrckbF7QReZsV
-	 8jT0aw4Jq2kwv9vwsiJh80eV61JrpsKhw/WDI4sY=
+	s=default; t=1706153778;
+	bh=PKbz2iskz6MjYCchd3n6D+CIC9W9HUloFT41AuP/oik=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=T8x3FdHysfVNSMoNhoUBw27Kbifb/8W96afmLnnYuY1ssxS0vlm3SJLgi/X+bWrDC
+	 JJEcPmFZ6hDDDR/GxOufXyFlB7D9GurU/d2lKl1QwsagrEnGqgKsgNYodYF6UcyPgQ
+	 dOWhJbDdzxuD24wH1rriUA+QvY6pXgtTy1MDd3xE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 123B8F8057A; Wed, 24 Jan 2024 23:48:32 +0100 (CET)
+	id 13E6FF80580; Thu, 25 Jan 2024 04:35:40 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 59144F80588;
-	Wed, 24 Jan 2024 23:48:32 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4B48BF80587;
+	Thu, 25 Jan 2024 04:35:40 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 54A29F8028D; Wed, 24 Jan 2024 23:48:28 +0100 (CET)
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com
- [IPv6:2a00:1450:4864:20::62f])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 4C2F4F8022B
-	for <alsa-devel@alsa-project.org>; Wed, 24 Jan 2024 23:48:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4C2F4F8022B
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20230601 header.b=TmvDUrcS
-Received: by mail-ej1-x62f.google.com with SMTP id
- a640c23a62f3a-a27733ae1dfso632984166b.3
-        for <alsa-devel@alsa-project.org>;
- Wed, 24 Jan 2024 14:48:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706136504; x=1706741304;
- darn=alsa-project.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=m2lDJfHqgAnsylYiJMOYGwOrJ3u54Vpc6bMpn+gMMhE=;
-        b=TmvDUrcSYvi+XknQld21NuxqF7PXx9Hun43qXY1CxgW5kQbna6GI7jUz98eodX+utz
-         dKzgxXdZrosgdBYuc1Mq2bdGQh1Rx65nH1WDyxxZnQ9DT08YhfOAgA9xVQcxOlu7SGV3
-         0PCZGmA8lULMPMm1Rkg+/U5boQJp44+VvLMle+mGcsO0BkKxkKgDMWlyCRfTmV2Bg0sM
-         IrLGowuCuCae12XBfGzr1kltrdECCMIQOHE9R3aXffZJN3zExRze76VoqtAmb61FqxE+
-         N/hTqI5rQsykjQn8VVTgkCRsSh9ACZl728kjEt8kHpOYXhFEYMRbpgK5Upr/yHDsnTHU
-         4KSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706136504; x=1706741304;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=m2lDJfHqgAnsylYiJMOYGwOrJ3u54Vpc6bMpn+gMMhE=;
-        b=PWy6zAOW6vg01a+HIE/9uu+szoxqo89xg1ONiqIvIhxSYYj2bcGtEb8mK/yKri9Ty8
-         niLRzbaTf9OMDdKR7oiM5vMyHNige7H2G/clBT6p3I7wQz+bOWcyuLLvpXDETdVj5bcW
-         GMYFxesXFbNvKfwrc1XyzqoPM00MEYrL781rPUK/Y96tvOcixrckN7sJVVqCrvcLXCeG
-         2/1fobxHdC3GHRdRpQdV9hC8gDS8fen6K3epr0pfnyjGSs1c9l+2UxZKSPH9FxubajF5
-         c3vxDx2+6NY6Si8/VZlN5bCshatMYU7gVHs/K1OCPQ7/ZVzqxkClaDPH1tWBA+lDYM/m
-         BQ7w==
-X-Gm-Message-State: AOJu0Yx+ystnykagFZ/bJKRmL2lF1mNFohnCmFTqdrJuAYL4fDLjwiw+
-	l3Kr3FuELHsTnZgl4XCHc0scd9qsP4/rXTD0g9TybeWqcAN6TdQf627+oBSAnErLMredtXJVJDx
-	1D14bYoxnvD5NJle/0PFTwA4xHIpwObq58dM=
-X-Google-Smtp-Source: 
- AGHT+IHCheky8a8aA5K3Tecr1RkqI1DhEGpvVY5LyYTE7NlgxQkdJF+1lmYlOIPa6iL2VLYE6/P702J1Ts8m9SoehM8=
-X-Received: by 2002:a17:906:4091:b0:a2e:81c3:80c4 with SMTP id
- u17-20020a170906409100b00a2e81c380c4mr17143ejj.159.1706136504221; Wed, 24 Jan
- 2024 14:48:24 -0800 (PST)
+	id 6C892F8028D; Thu, 25 Jan 2024 04:35:34 +0100 (CET)
+Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
+ [207.180.221.201])
+	by alsa1.perex.cz (Postfix) with ESMTP id C7191F80149
+	for <alsa-devel@alsa-project.org>; Thu, 25 Jan 2024 04:35:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C7191F80149
 MIME-Version: 1.0
-References: <20240124165558.1876407-1-ckeepax@opensource.cirrus.com>
- <20240124165558.1876407-7-ckeepax@opensource.cirrus.com>
-In-Reply-To: <20240124165558.1876407-7-ckeepax@opensource.cirrus.com>
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Thu, 25 Jan 2024 00:47:48 +0200
-Message-ID: 
- <CAHp75VfbgJMvOgjgEU49y5zPV4RPPPR5e-nKv+oqP7ED6AsndA@mail.gmail.com>
-Subject: Re: [PATCH 7/7] ASoC: cs42l43: Use fls to calculate the pre-divider
- for the PLL
-To: Charles Keepax <ckeepax@opensource.cirrus.com>
-Cc: broonie@kernel.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org,
-	patches@opensource.cirrus.com, linux-sound@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Message-ID-Hash: ZJTFKGGIBYDZQ7HBGWVB6J3THTNV4WO5
-X-Message-ID-Hash: ZJTFKGGIBYDZQ7HBGWVB6J3THTNV4WO5
-X-MailFrom: andy.shevchenko@gmail.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub pull_request - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1706153727390721321-webhooks-bot@alsa-project.org>
+References: <1706153727390721321-webhooks-bot@alsa-project.org>
+Subject: ucm: MediaTek: mt8395-evk: Add HDMIRX config
+Message-Id: <20240125033534.6C892F8028D@alsa1.perex.cz>
+Date: Thu, 25 Jan 2024 04:35:34 +0100 (CET)
+Message-ID-Hash: KXWCTKY7RANVWAO3A7TW53VA4EIBOBSA
+X-Message-ID-Hash: KXWCTKY7RANVWAO3A7TW53VA4EIBOBSA
+X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -107,7 +57,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZJTFKGGIBYDZQ7HBGWVB6J3THTNV4WO5/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KXWCTKY7RANVWAO3A7TW53VA4EIBOBSA/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -116,24 +66,11 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Wed, Jan 24, 2024 at 6:56=E2=80=AFPM Charles Keepax
-<ckeepax@opensource.cirrus.com> wrote:
+alsa-project/alsa-ucm-conf pull request #389 was opened from zoran055:
 
-Commit message?
+Add HDMI RX config and modify the priority value
+of the capture devices.
 
-> Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-
-...
-
-> +       div =3D fls(freq) -
-> +             fls(cs42l43_pll_configs[ARRAY_SIZE(cs42l43_pll_configs) - 1=
-].freq);
-> +       freq /=3D 1 << div;
-
-  freq >>=3D div;
-
-
---=20
-With Best Regards,
-Andy Shevchenko
+Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/389
+Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/389.patch
+Repository URL: https://github.com/alsa-project/alsa-ucm-conf
