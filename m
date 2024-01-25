@@ -4,89 +4,104 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 150BCC47258
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 Jan 2024 10:33:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0582DC48260
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Jan 2024 10:39:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2845D857;
-	Thu, 25 Jan 2024 11:33:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2845D857
+	by alsa0.perex.cz (Postfix) with ESMTPS id 37A92203;
+	Thu, 25 Jan 2024 11:39:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 37A92203
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1706178836;
-	bh=tT3rEg+Hnli5xVMR7wEmp2rtZ+JsRr53eHkR4QJp6Cg=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1706179180;
+	bh=1SIXC4wWYaFLAPwdkKFjp65vXY1gVmwuEvMvTcck4G0=;
+	h=Date:From:To:CC:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=V0bnF23+MtXHx6v8VHpTAvhMs14dCpxwpfDcR94+4gfoF8qhyl1lsN5goKo/Xe533
-	 fOlzhc+H/Ch1xS3p3b/2xA8dd8ksCRBuPklpKE0RLaUw09xE0XFxD3g9QkK+cTxd5b
-	 bAA1tZcB0va7X0JCjYrJJW0yWB/+aOlPwGpMeWDY=
+	b=OB82rdEjL+MBTjLxrfpz2XhcLvq//z8b5yj8bWVIuwfctfDcjDGYWrMd+294wHpJE
+	 ZQohrik5aoKO6K0iCs/MJcjpSKWAQ846uTs5gijPnL5IGWcozlVyJ5gnNsV6ybnws+
+	 deTZtKhPvIrI9yJ8tztNcTPvDpaehj9d2JvPEfWc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 503DDF80692; Thu, 25 Jan 2024 11:32:05 +0100 (CET)
+	id 468A1F800C1; Thu, 25 Jan 2024 11:39:08 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9E2F2F80696;
-	Thu, 25 Jan 2024 11:32:05 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6FEECF80564;
+	Thu, 25 Jan 2024 11:39:08 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 67519F805E0; Thu, 25 Jan 2024 11:31:50 +0100 (CET)
+	id B325CF8028D; Thu, 25 Jan 2024 11:39:03 +0100 (CET)
 Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D9DA3F802BE
-	for <alsa-devel@alsa-project.org>; Thu, 25 Jan 2024 11:31:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D9DA3F802BE
+	by alsa1.perex.cz (Postfix) with ESMTPS id C1730F80149
+	for <alsa-devel@alsa-project.org>; Thu, 25 Jan 2024 11:38:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C1730F80149
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=UPt9sLPs
+ header.s=PODMain02222019 header.b=b3+gBlDX
 Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
 	by mx0a-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id
- 40P6oFQ6010841;
-	Thu, 25 Jan 2024 04:31:21 -0600
+ 40P5AAgS030847;
+	Thu, 25 Jan 2024 04:38:57 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	PODMain02222019; bh=wM66v6KnK8q48bXk35LK6FA8cA2NdL6vYO6G9pylDtE=; b=
-	UPt9sLPsCbGDrnbHiAOFVmPwyf6c41OPjV6kXUm+j48ZRMlIqO2fmYpaYpQlacdX
-	SQDM5QTN08AiixYaekHXIoHLx8Mte2E4E5vY+31PZGx/KXb3hbVC98AsPKgc6RLJ
-	P15e9JSfLojOyS5nONR1G1Ou4zdONnJMKsyIn1UQO14MhO2wnBiQKCqlrT2MSxEv
-	ax5Qf6ani87a0GjdVL+3s4+WYTWqBK/Lihgw/jftZyR6kk32JB+RGnKJ4CKhl2t9
-	9qtwxnfhCFSgI/4D3AFFt4LW11TmAbKE7KJkoiDf4pbwAPXrxmtCoN3Fb7QLdjNw
-	5iQ83SAK9d3ftJd3LLY5lg==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3vtmfhj3jn-3
+	date:from:to:cc:subject:message-id:references:mime-version
+	:content-type:in-reply-to; s=PODMain02222019; bh=H+pywFxcGO3YzfU
+	rAAIpNM2vOQO6zCM1bhi8m27y6OI=; b=b3+gBlDXeNI33HTb3T7utPWf75UcvTs
+	ZcP/BhOpa3V4+/1KG2aJyhJmonJrkg58ulrc3GIVe4IVnfvBgY+Lox1KAI5JisQZ
+	3b8JM2obfJM4NwlhRimVpm5BIoKJwxQ8WkYJbiWHrReD3jNTTwvK53q4/to2Qrsq
+	ixXzNZmnJ0tBc4agwBubW1bNhaNmJACR47haBNshaI4PnGrKytTXJGGT7aHEnwcq
+	y7UamTq69F0kQ+sPr/N7LOuKbnexmfPuOe9AwibpexoZATYkP67Q7C/b1PTV1G+k
+	mm+nux6AVYhCUDatO6NJuqJP/k/tOfKBSSFfQEKidf2uiaZ2ktIvQ8g==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3vtmfhj3tc-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 25 Jan 2024 04:31:21 -0600 (CST)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+	Thu, 25 Jan 2024 04:38:57 -0600 (CST)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 25 Jan
- 2024 10:31:17 +0000
+ 2024 10:38:55 +0000
 Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.40 via Frontend Transport; Thu, 25 Jan 2024 10:31:17 +0000
-Received: from ediswws07.ad.cirrus.com (ediswws07.ad.cirrus.com
- [198.90.208.14])
-	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 84606820249;
-	Thu, 25 Jan 2024 10:31:17 +0000 (UTC)
+ ediex01.ad.cirrus.com (198.61.84.80) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40 via Frontend Transport; Thu, 25 Jan 2024 10:38:55 +0000
+Received: from ediswmail9.ad.cirrus.com (ediswmail9.ad.cirrus.com
+ [198.61.86.93])
+	by ediswmail9.ad.cirrus.com (Postfix) with ESMTPS id 21112820246;
+	Thu, 25 Jan 2024 10:38:55 +0000 (UTC)
+Date: Thu, 25 Jan 2024 10:38:54 +0000
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
-To: <broonie@kernel.org>
-CC: <andy.shevchenko@gmail.com>, <lgirdwood@gmail.com>,
-        <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
-        <linux-sound@vger.kernel.org>
-Subject: [PATCH v2 4/7] ASoC: cs42l43: Add pm_ptr around the power ops
-Date: Thu, 25 Jan 2024 10:31:14 +0000
-Message-ID: <20240125103117.2622095-4-ckeepax@opensource.cirrus.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20240125103117.2622095-1-ckeepax@opensource.cirrus.com>
-References: <20240125103117.2622095-1-ckeepax@opensource.cirrus.com>
+To: Rob Herring <robh@kernel.org>
+CC: Richard Fitzgerald <rf@opensource.cirrus.com>,
+        Linus Walleij
+	<linus.walleij@linaro.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "Avi
+ Fishman" <avifishman70@gmail.com>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        "Tali
+ Perry" <tali.perry1@gmail.com>,
+        Patrick Venture <venture@google.com>, "Nancy
+ Yuen" <yuenn@google.com>,
+        Benjamin Fair <benjaminfair@google.com>,
+        Jonathan
+ =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>,
+        <patches@opensource.cirrus.com>, <alsa-devel@alsa-project.org>,
+        <linux-gpio@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <openbmc@lists.ozlabs.org>
+Subject: Re: [PATCH 1/2] dt-bindings: pinctrl: Unify "input-debounce" schema
+Message-ID: <ZbI6PrrQsVDIjt69@ediswmail9.ad.cirrus.com>
+References: <20240124190106.1540585-1-robh@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: VyPs16uuCx-jB0x4IiOJZHQe2NylKGe_
-X-Proofpoint-GUID: VyPs16uuCx-jB0x4IiOJZHQe2NylKGe_
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20240124190106.1540585-1-robh@kernel.org>
+X-Proofpoint-ORIG-GUID: 8iYiuE_6G63A78QKjJlEqxQHoZze71Jp
+X-Proofpoint-GUID: 8iYiuE_6G63A78QKjJlEqxQHoZze71Jp
 X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: 4SGMPIO76DDK475PT4FQAYN36AFPLLTV
-X-Message-ID-Hash: 4SGMPIO76DDK475PT4FQAYN36AFPLLTV
+Message-ID-Hash: LUQMENTYBC3G453DLK45SUB6F3FEGPRU
+X-Message-ID-Hash: LUQMENTYBC3G453DLK45SUB6F3FEGPRU
 X-MailFrom: prvs=8754d201d6=ckeepax@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -99,7 +114,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4SGMPIO76DDK475PT4FQAYN36AFPLLTV/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LUQMENTYBC3G453DLK45SUB6F3FEGPRU/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -108,34 +123,17 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add missing pm_ptr around the power ops.
+On Wed, Jan 24, 2024 at 01:01:04PM -0600, Rob Herring wrote:
+> nuvoton,npcm845-pinctrl defines the common "input-debounce" property as
+> an array rather than an scalar. Update the common definition to expand
+> it to an uint32-array, and update all the users of the property with
+> array constraints.
+> 
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+>  Documentation/devicetree/bindings/pinctrl/cirrus,madera.yaml   | 3 ++-
 
-Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
----
-
-Changes since v1:
- - Added commit message
+Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 
 Thanks,
 Charles
-
- sound/soc/codecs/cs42l43.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/codecs/cs42l43.c b/sound/soc/codecs/cs42l43.c
-index d418c0b0ce9aa..1852cb072bd0e 100644
---- a/sound/soc/codecs/cs42l43.c
-+++ b/sound/soc/codecs/cs42l43.c
-@@ -2349,7 +2349,7 @@ MODULE_DEVICE_TABLE(platform, cs42l43_codec_id_table);
- static struct platform_driver cs42l43_codec_driver = {
- 	.driver = {
- 		.name	= "cs42l43-codec",
--		.pm	= &cs42l43_codec_pm_ops,
-+		.pm	= pm_ptr(&cs42l43_codec_pm_ops),
- 	},
- 
- 	.probe		= cs42l43_codec_probe,
--- 
-2.30.2
-
