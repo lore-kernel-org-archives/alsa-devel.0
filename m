@@ -4,57 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1350AC47258
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 Jan 2024 09:45:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6F256C47258
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Jan 2024 09:45:54 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 74D87850;
-	Thu, 25 Jan 2024 10:45:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 74D87850
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8BF9D3E;
+	Thu, 25 Jan 2024 10:45:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8BF9D3E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1706175925;
-	bh=PFOSAF9cxQoEPuEhbe/l/cyfvJjm0UX7yPpPUPKYm+g=;
+	s=default; t=1706175952;
+	bh=RgBY/UGCd4plfjZ1+ESyM3yfa/sdiUadST2GFLW/M4o=;
 	h=Subject:From:To:Cc:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=aPCXDu+JuGWzttTfi/Rh8SiUE4SDrRyZXAaTfBQNnNC7Fsuw3hZndh3RdkAUj+/uC
-	 qJnk97UFbLjn9yP3RoMPVYKFyChaz9dpmcvfAdWVFRuvT1i/dhLvxqyerGeMs2HAds
-	 Nyfo2dtjgydTR9T0oY8/abF/+uM5dpnwAQ9X8tbo=
+	b=WhbdMyg67fzRfNRcoEO3gopOO8XMWIfFLh56ib0XC9JCGgOZcEvdnNZdJNQefbkHK
+	 i3HCE0E8UCqe5Xf+xldu+jmK5F5r+wpR7T+BLnGyWa3gSlInOkw0W2nSJsuWrYhXOV
+	 fj1A5HIvYkHcnRHW3TlmTbGyX+Uom3Qn4VE6WkrQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5756BF805E6; Thu, 25 Jan 2024 10:44:42 +0100 (CET)
+	id 8F92EF805F6; Thu, 25 Jan 2024 10:44:44 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id BAF01F805A8;
-	Thu, 25 Jan 2024 10:44:41 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2ABABF80580;
+	Thu, 25 Jan 2024 10:44:44 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2F227F8025F; Thu, 25 Jan 2024 10:43:53 +0100 (CET)
+	id 8A264F8028D; Thu, 25 Jan 2024 10:44:05 +0100 (CET)
 Received: from metis.whiteo.stw.pengutronix.de
  (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
  server-digest SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 3B507F80149
-	for <alsa-devel@alsa-project.org>; Thu, 25 Jan 2024 10:43:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3B507F80149
+	by alsa1.perex.cz (Postfix) with ESMTPS id 4A9CDF80149
+	for <alsa-devel@alsa-project.org>; Thu, 25 Jan 2024 10:44:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4A9CDF80149
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <p.zabel@pengutronix.de>)
-	id 1rSwGl-0002Jt-GA; Thu, 25 Jan 2024 10:43:35 +0100
+	id 1rSwGv-0002Ku-8h; Thu, 25 Jan 2024 10:43:45 +0100
 Received: from [2a0a:edc0:0:900:1d::4e] (helo=lupine)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls
  TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <p.zabel@pengutronix.de>)
-	id 1rSwGj-002FmG-00; Thu, 25 Jan 2024 10:43:33 +0100
+	id 1rSwGu-002FmK-Q5; Thu, 25 Jan 2024 10:43:44 +0100
 Received: from pza by lupine with local (Exim 4.96)
 	(envelope-from <p.zabel@pengutronix.de>)
-	id 1rSwGi-0003jy-2w;
-	Thu, 25 Jan 2024 10:43:32 +0100
-Message-ID: <3ef1c6d075d8de9976468d46013ae7c292ff83ce.camel@pengutronix.de>
-Subject: Re: [PATCH v5 3/6] reset: gpio: Add GPIO-based reset controller
+	id 1rSwGu-0003mR-2L;
+	Thu, 25 Jan 2024 10:43:44 +0100
+Message-ID: <34d4e5bc7492d51b921b0633d51ed5c71b12657e.camel@pengutronix.de>
+Subject: Re: [PATCH v5 4/6] reset: Instantiate reset GPIO controller for
+ shared reset-gpios
 From: Philipp Zabel <p.zabel@pengutronix.de>
 To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Srinivas
  Kandagatla <srinivas.kandagatla@linaro.org>, Banajit Goswami
@@ -69,13 +70,11 @@ To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Srinivas
  linux-sound@vger.kernel.org,  devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org,  linux-pm@vger.kernel.org
 Cc: Bartosz Golaszewski <brgl@bgdev.pl>, Chris Packham
- <chris.packham@alliedtelesis.co.nz>, Sean Anderson
- <sean.anderson@seco.com>,  Bartosz Golaszewski
- <bartosz.golaszewski@linaro.org>
-Date: Thu, 25 Jan 2024 10:43:32 +0100
-In-Reply-To: <20240124074527.48869-4-krzysztof.kozlowski@linaro.org>
+ <chris.packham@alliedtelesis.co.nz>, Sean Anderson <sean.anderson@seco.com>
+Date: Thu, 25 Jan 2024 10:43:44 +0100
+In-Reply-To: <20240124074527.48869-5-krzysztof.kozlowski@linaro.org>
 References: <20240124074527.48869-1-krzysztof.kozlowski@linaro.org>
-	 <20240124074527.48869-4-krzysztof.kozlowski@linaro.org>
+	 <20240124074527.48869-5-krzysztof.kozlowski@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 User-Agent: Evolution 3.46.4-2 
@@ -85,8 +84,8 @@ X-SA-Exim-Mail-From: p.zabel@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de);
  SAEximRunCond expanded to false
 X-PTX-Original-Recipient: alsa-devel@alsa-project.org
-Message-ID-Hash: PTPTWH2PWX3YUEKY4VRTMIIPF4YPOUHF
-X-Message-ID-Hash: PTPTWH2PWX3YUEKY4VRTMIIPF4YPOUHF
+Message-ID-Hash: Z4J575X74YQWHUTDOT3ZJWU7M7QS7CQF
+X-Message-ID-Hash: Z4J575X74YQWHUTDOT3ZJWU7M7QS7CQF
 X-MailFrom: p.zabel@pengutronix.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -99,7 +98,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PTPTWH2PWX3YUEKY4VRTMIIPF4YPOUHF/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Z4J575X74YQWHUTDOT3ZJWU7M7QS7CQF/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -109,15 +108,32 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 On Mi, 2024-01-24 at 08:45 +0100, Krzysztof Kozlowski wrote:
-> Add a simple driver to control GPIO-based resets using the reset
-> controller API for the cases when the GPIOs are shared and reset should
-> be coordinated.  The driver is expected to be used by reset core
-> framework for ad-hoc reset controllers.
+> Devices sharing a reset GPIO could use the reset framework for
+> coordinated handling of that shared GPIO line.  We have several cases of
+> such needs, at least for Devicetree-based platforms.
 >=20
+> If Devicetree-based device requests a reset line, while "resets"
+> Devicetree property is missing but there is a "reset-gpios" one,
+> instantiate a new "reset-gpio" platform device which will handle such
+> reset line.  This allows seamless handling of such shared reset-gpios
+> without need of changing Devicetree binding [1].
+>=20
+> To avoid creating multiple "reset-gpio" platform devices, store the
+> Devicetree "reset-gpios" GPIO specifiers used for new devices on a
+> linked list.  Later such Devicetree GPIO specifier (phandle to GPIO
+> controller, GPIO number and GPIO flags) is used to check if reset
+> controller for given GPIO was already registered.
+>=20
+> If two devices have conflicting "reset-gpios" property, e.g. with
+> different ACTIVE_xxx flags, this would allow to spawn two separate
+> "reset-gpio" devices, where the second would fail probing on busy GPIO
+> request.
+>=20
+> Link: https://lore.kernel.org/all/YXi5CUCEi7YmNxXM@robh.at.kernel.org/ [1=
+]
 > Cc: Bartosz Golaszewski <brgl@bgdev.pl>
 > Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>
 > Cc: Sean Anderson <sean.anderson@seco.com>
-> Reviewed-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 > Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
 Reviewed-by: Philipp Zabel <p.zabel@pengutronix.de>
