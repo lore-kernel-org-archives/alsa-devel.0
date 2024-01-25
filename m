@@ -4,59 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5D110C48260
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 Jan 2024 10:33:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 150BCC47258
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Jan 2024 10:33:58 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B3153B60;
-	Thu, 25 Jan 2024 11:33:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B3153B60
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2845D857;
+	Thu, 25 Jan 2024 11:33:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2845D857
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1706178820;
-	bh=74xy6bXGMuQCFhfauhIX2FmqVaxkq835O7ubysl9X9E=;
+	s=default; t=1706178836;
+	bh=tT3rEg+Hnli5xVMR7wEmp2rtZ+JsRr53eHkR4QJp6Cg=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=ta4JLp+P5d+m1CoqFUi1bK5DUjZA8eAZCITj4HzOvFGXbJQisu2mfNNva2cnm2Bo8
-	 bzUAYdQUtW7X/TkW5XYqJs3WYa4A9U1XfPP4CaeuIQdI18n0sYuPwR2XcPoCi/JUXa
-	 23L6g2mBfq39k40HFBfiXWEZM6m8v8vu97ShHEog=
+	b=V0bnF23+MtXHx6v8VHpTAvhMs14dCpxwpfDcR94+4gfoF8qhyl1lsN5goKo/Xe533
+	 fOlzhc+H/Ch1xS3p3b/2xA8dd8ksCRBuPklpKE0RLaUw09xE0XFxD3g9QkK+cTxd5b
+	 bAA1tZcB0va7X0JCjYrJJW0yWB/+aOlPwGpMeWDY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 65C86F8067B; Thu, 25 Jan 2024 11:32:03 +0100 (CET)
+	id 503DDF80692; Thu, 25 Jan 2024 11:32:05 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 724D6F80683;
-	Thu, 25 Jan 2024 11:32:02 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9E2F2F80696;
+	Thu, 25 Jan 2024 11:32:05 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 60FBDF805D9; Thu, 25 Jan 2024 11:31:48 +0100 (CET)
+	id 67519F805E0; Thu, 25 Jan 2024 11:31:50 +0100 (CET)
 Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 35AD4F804E7
-	for <alsa-devel@alsa-project.org>; Thu, 25 Jan 2024 11:31:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 35AD4F804E7
+	by alsa1.perex.cz (Postfix) with ESMTPS id D9DA3F802BE
+	for <alsa-devel@alsa-project.org>; Thu, 25 Jan 2024 11:31:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D9DA3F802BE
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=JQdrJRU4
+ header.s=PODMain02222019 header.b=UPt9sLPs
 Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
 	by mx0a-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id
- 40P6oFQ8010841;
-	Thu, 25 Jan 2024 04:31:23 -0600
+ 40P6oFQ6010841;
+	Thu, 25 Jan 2024 04:31:21 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
 	:mime-version:content-transfer-encoding:content-type; s=
-	PODMain02222019; bh=b00fmaNr6KFnOua3z2NJYeD2LfAVRCQxrGXVQrSrW00=; b=
-	JQdrJRU4kja38XML6pj9OvE9rwJaCDeDGq6eVaiPHhjUQNiHxhEt2WGDu7zisE8k
-	z/Meeoc1g5+PDiZ5w4ZRwOcjT+D22vuaYDaHc794ojAvnP4fEf0iWLOyXhEBH8Oi
-	z2mvjigUiAQFvy/sxLqly5dq+NeCEYOEk7Z6MYdNAESTdUWYp9SEIFNgOeL7alai
-	jbcQ0o2254aunOp6r8fpfPYKgRcomstEeOhR36Pf72lPibR4XjPLoyyukGiMbze8
-	h7AlTlUsGObGE5EhyhTxstBBu4cTtsNITroWByLMi6UbcyuS5MrD0VsI0/29sTpW
-	qX1ST5ip7xFKMl6CvFe/rA==
+	PODMain02222019; bh=wM66v6KnK8q48bXk35LK6FA8cA2NdL6vYO6G9pylDtE=; b=
+	UPt9sLPsCbGDrnbHiAOFVmPwyf6c41OPjV6kXUm+j48ZRMlIqO2fmYpaYpQlacdX
+	SQDM5QTN08AiixYaekHXIoHLx8Mte2E4E5vY+31PZGx/KXb3hbVC98AsPKgc6RLJ
+	P15e9JSfLojOyS5nONR1G1Ou4zdONnJMKsyIn1UQO14MhO2wnBiQKCqlrT2MSxEv
+	ax5Qf6ani87a0GjdVL+3s4+WYTWqBK/Lihgw/jftZyR6kk32JB+RGnKJ4CKhl2t9
+	9qtwxnfhCFSgI/4D3AFFt4LW11TmAbKE7KJkoiDf4pbwAPXrxmtCoN3Fb7QLdjNw
+	5iQ83SAK9d3ftJd3LLY5lg==
 Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3vtmfhj3jn-5
+	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3vtmfhj3jn-3
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 25 Jan 2024 04:31:23 -0600 (CST)
+	Thu, 25 Jan 2024 04:31:21 -0600 (CST)
 Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 25 Jan
@@ -66,28 +66,27 @@ Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
  15.2.1118.40 via Frontend Transport; Thu, 25 Jan 2024 10:31:17 +0000
 Received: from ediswws07.ad.cirrus.com (ediswws07.ad.cirrus.com
  [198.90.208.14])
-	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id AA5D5820270;
+	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 84606820249;
 	Thu, 25 Jan 2024 10:31:17 +0000 (UTC)
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
 To: <broonie@kernel.org>
 CC: <andy.shevchenko@gmail.com>, <lgirdwood@gmail.com>,
         <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
         <linux-sound@vger.kernel.org>
-Subject: [PATCH v2 7/7] ASoC: cs42l43: Use fls to calculate the pre-divider
- for the PLL
-Date: Thu, 25 Jan 2024 10:31:17 +0000
-Message-ID: <20240125103117.2622095-7-ckeepax@opensource.cirrus.com>
+Subject: [PATCH v2 4/7] ASoC: cs42l43: Add pm_ptr around the power ops
+Date: Thu, 25 Jan 2024 10:31:14 +0000
+Message-ID: <20240125103117.2622095-4-ckeepax@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20240125103117.2622095-1-ckeepax@opensource.cirrus.com>
 References: <20240125103117.2622095-1-ckeepax@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: wTqMl6uxuAiMH9BltiOe4Yhf_F3B6Eqw
-X-Proofpoint-GUID: wTqMl6uxuAiMH9BltiOe4Yhf_F3B6Eqw
+X-Proofpoint-ORIG-GUID: VyPs16uuCx-jB0x4IiOJZHQe2NylKGe_
+X-Proofpoint-GUID: VyPs16uuCx-jB0x4IiOJZHQe2NylKGe_
 X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: KXZNA77E2ILRD3CIJUY34CBL47VAR2TH
-X-Message-ID-Hash: KXZNA77E2ILRD3CIJUY34CBL47VAR2TH
+Message-ID-Hash: 4SGMPIO76DDK475PT4FQAYN36AFPLLTV
+X-Message-ID-Hash: 4SGMPIO76DDK475PT4FQAYN36AFPLLTV
 X-MailFrom: prvs=8754d201d6=ckeepax@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -100,7 +99,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KXZNA77E2ILRD3CIJUY34CBL47VAR2TH/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4SGMPIO76DDK475PT4FQAYN36AFPLLTV/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -109,40 +108,34 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Use fls to calculate the pre-divider and input frequency for the PLL,
-this is marginally faster than the previous loop.
+Add missing pm_ptr around the power ops.
 
 Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 ---
 
 Changes since v1:
- - Change / into >>
+ - Added commit message
 
 Thanks,
 Charles
 
- sound/soc/codecs/cs42l43.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ sound/soc/codecs/cs42l43.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/sound/soc/codecs/cs42l43.c b/sound/soc/codecs/cs42l43.c
-index 23e9557494afa..2c402086924d3 100644
+index d418c0b0ce9aa..1852cb072bd0e 100644
 --- a/sound/soc/codecs/cs42l43.c
 +++ b/sound/soc/codecs/cs42l43.c
-@@ -1338,10 +1338,9 @@ static int cs42l43_enable_pll(struct cs42l43_codec *priv)
+@@ -2349,7 +2349,7 @@ MODULE_DEVICE_TABLE(platform, cs42l43_codec_id_table);
+ static struct platform_driver cs42l43_codec_driver = {
+ 	.driver = {
+ 		.name	= "cs42l43-codec",
+-		.pm	= &cs42l43_codec_pm_ops,
++		.pm	= pm_ptr(&cs42l43_codec_pm_ops),
+ 	},
  
- 	dev_dbg(priv->dev, "Enabling PLL at %uHz\n", freq);
- 
--	while (freq > cs42l43_pll_configs[ARRAY_SIZE(cs42l43_pll_configs) - 1].freq) {
--		div++;
--		freq /= 2;
--	}
-+	div = fls(freq) -
-+	      fls(cs42l43_pll_configs[ARRAY_SIZE(cs42l43_pll_configs) - 1].freq);
-+	freq >>= div;
- 
- 	if (div <= CS42L43_PLL_REFCLK_DIV_MASK) {
- 		int i;
+ 	.probe		= cs42l43_codec_probe,
 -- 
 2.30.2
 
