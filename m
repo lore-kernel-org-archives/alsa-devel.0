@@ -4,78 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 42E02C47422
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 Jan 2024 21:38:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3A8A4C47DDB
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 Jan 2024 21:39:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B309E82C;
-	Fri, 26 Jan 2024 22:38:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B309E82C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4A10F3E7;
+	Fri, 26 Jan 2024 22:39:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4A10F3E7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1706305136;
-	bh=Cyr+ohTCDNTF015J2dl9lIrDXnFHUzCsBweKOJFBkuw=;
+	s=default; t=1706305155;
+	bh=Wz1o7Q6iD89nk8IWCSK5qkbgtWiTCWqUvD9d8tOORmE=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=jc0AelLU/AQc3IG4+IjlteBZkLDd+w3lo2fFXSlj4xaE3MTWafnaGRt7S1vF0Kh4T
-	 dFSTbCsd3ngtGoz4KC59jI46KPCtbk7s5J4U/v4fvMfXBHms78MhG4GfjmvGVqyQn0
-	 LZ/U1hR/jVErvZB9tQxaJ6AfrsX8Q7EQQPsjcolE=
+	b=d2tasoZWZAY5NrDtQBPa2oawxK204aTsEAsTIoMBjrP4sK3oJIhVAo8IAejM46CJ3
+	 0ayqVzp0FiO5d12th/aQW32Gu+rodj4WCqBSAq1yqYf5tKt5QoZnBijWUasT64ludw
+	 UdSCYszfOBMTeWUUR7DM2lDKvQcfq9qvXx8Sli8o=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DDC07F80589; Fri, 26 Jan 2024 22:38:25 +0100 (CET)
+	id A78C2F805C3; Fri, 26 Jan 2024 22:38:28 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0EF47F80587;
-	Fri, 26 Jan 2024 22:38:25 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DE155F805A8;
+	Fri, 26 Jan 2024 22:38:26 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D60C1F802BE; Fri, 26 Jan 2024 22:38:19 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+	id 39731F8028D; Fri, 26 Jan 2024 22:38:22 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 1AB31F800C1
-	for <alsa-devel@alsa-project.org>; Fri, 26 Jan 2024 22:38:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1AB31F800C1
+	by alsa1.perex.cz (Postfix) with ESMTPS id 7AF19F8022B
+	for <alsa-devel@alsa-project.org>; Fri, 26 Jan 2024 22:38:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7AF19F8022B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=KAPLvw0/
+ header.s=k20201202 header.b=PSouTCKR
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 9F7F462334;
-	Fri, 26 Jan 2024 21:38:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6AC00C433C7;
-	Fri, 26 Jan 2024 21:38:06 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 1FF606233A;
+	Fri, 26 Jan 2024 21:38:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7835C43394;
+	Fri, 26 Jan 2024 21:38:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706305088;
-	bh=Cyr+ohTCDNTF015J2dl9lIrDXnFHUzCsBweKOJFBkuw=;
+	s=k20201202; t=1706305091;
+	bh=Wz1o7Q6iD89nk8IWCSK5qkbgtWiTCWqUvD9d8tOORmE=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=KAPLvw0/vaB0QKZx0Mo4DAoXZh5RzceBvBjcNZ7f0T1o5tZIqA+6+qFPlZi3DkuOg
-	 wAj3bFB7Q+GG480+li8sMBk70or/p0ziIjQDlO+DTa7OeTVA2ZJLIUjRUATwQp810m
-	 BGyLONVlk4pUz5DZarX/yzwG9KA3Z3gxe7b6MKAoplZx1Rzmd/WwmUtRaKUcJqaXrK
-	 pup1pk3Sbt9jrIeE9lhgrh6LzP2DZOYtWok4k86diFPH7Co1pimFGiFQCxSo0sNORv
-	 h5gff3Ta3vnKFIpA6omH23Nb9IeZRg2Q1YsT6jrCkV0UJvzwu7c1XI+wlL8mH4o7u/
-	 a/Jaj13xIbnlw==
+	b=PSouTCKRzpMb+0QjyfZkgg0YMPC0NUqyMf1CdlBG94IrogewicQlhyMBKUpMo9E9Z
+	 7iu56vP4G6H8f41QMSBrFHGy/JGuGo9EcJ2nZolotAtJkGV7mEjp+HFWL7FxvqkZjK
+	 p8EES4aoIR/VN4e7TPn5xLRA03r8R9so9Yazqg1/NpEGq3/X35tb3087gHQnx8vtgw
+	 DjlCOdhlHsal5ppMBpHxM0pw7Mx0VWEkK/kQNKWD213o1Wt1JPAM3UStfAIrGqwVII
+	 K97U0mnQfVF9P1ovcvWDBMGw/LezHwJTXP2gtFLX6/kuNxXxQXWKcPtlOVmQNrVfmE
+	 G7vgo3FG1p+NQ==
 From: Mark Brown <broonie@kernel.org>
-To: Sylwester Nawrocki <s.nawrocki@samsung.com>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Rob Herring <robh@kernel.org>
-Cc: Krzysztof Kozlowski <krzk@kernel.org>, alsa-devel@alsa-project.org,
- linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-In-Reply-To: <20240124190754.1554899-1-robh@kernel.org>
-References: <20240124190754.1554899-1-robh@kernel.org>
-Subject: Re: [PATCH] ASoC: dt-bindings: samsung,tm2: Correct "audio-codec"
- constraints
-Message-Id: <170630508611.52716.16893175190780075572.b4-ty@kernel.org>
-Date: Fri, 26 Jan 2024 21:38:06 +0000
+To: Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc: andy.shevchenko@gmail.com, lgirdwood@gmail.com,
+ alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
+ linux-sound@vger.kernel.org
+In-Reply-To: <20240125103117.2622095-1-ckeepax@opensource.cirrus.com>
+References: <20240125103117.2622095-1-ckeepax@opensource.cirrus.com>
+Subject: Re: [PATCH v2 1/7] ASoC: cs42l43: Tidy up header includes
+Message-Id: <170630509047.52716.9195906453206651565.b4-ty@kernel.org>
+Date: Fri, 26 Jan 2024 21:38:10 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-a684c
-Message-ID-Hash: XGSTOIIVAZHPANCAR6XZ4HRKZFTU6FH6
-X-Message-ID-Hash: XGSTOIIVAZHPANCAR6XZ4HRKZFTU6FH6
+Message-ID-Hash: UA6EHMBSG2JUY5ETK725YTG3E5V25K4K
+X-Message-ID-Hash: UA6EHMBSG2JUY5ETK725YTG3E5V25K4K
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -88,7 +83,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XGSTOIIVAZHPANCAR6XZ4HRKZFTU6FH6/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UA6EHMBSG2JUY5ETK725YTG3E5V25K4K/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -97,10 +92,9 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Wed, 24 Jan 2024 13:07:53 -0600, Rob Herring wrote:
-> The "audio-codec" constraints define how many entries(2), but not the
-> size of each entry. Each entry is a single phandle. Define the size with
-> an inner 'items' list.
+On Thu, 25 Jan 2024 10:31:11 +0000, Charles Keepax wrote:
+> Use more forward declarations, move header guards to cover other
+> includes, and rely less on including headers through other headers.
 > 
 > 
 
@@ -110,8 +104,20 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: dt-bindings: samsung,tm2: Correct "audio-codec" constraints
-      commit: 36553eb7785da18568de2b8ecafb3d80db1a0d6b
+[1/7] ASoC: cs42l43: Tidy up header includes
+      commit: fb430b06397e5eebefd42584fe4dfabf2a3632e0
+[2/7] ASoC: cs42l43: Minor code tidy ups
+      commit: 40f6281c1e7d733399bd42fe97a0aae00b967a91
+[3/7] ASoC: cs42l43: Check error from device_property_read_u32_array()
+      commit: a2e7cf55db781654fdb2d3b2529e28c4d93e24fc
+[4/7] ASoC: cs42l43: Add pm_ptr around the power ops
+      commit: 7a93a9abe44386b4caa0e67977f41b8c9f06b51c
+[5/7] ASoC: cs42l43: Use USEC_PER_MSEC rather than hard coding
+      commit: 96c716887c1a918d4cb4610f5cf111280fda48f0
+[6/7] ASoC: cs42l43: Refactor to use for_each_set_bit()
+      commit: fe04d1632cb4130fb47d18fe70ac292562a3b9c3
+[7/7] ASoC: cs42l43: Use fls to calculate the pre-divider for the PLL
+      commit: 31c6e53a4da5fe626b99e1ebf777d751994e3281
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
