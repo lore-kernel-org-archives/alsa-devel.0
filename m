@@ -4,87 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 45A65C47422
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 Jan 2024 11:32:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ACA2BC47422
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 Jan 2024 11:32:58 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2B651B60;
-	Fri, 26 Jan 2024 12:32:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2B651B60
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0ECA01DC;
+	Fri, 26 Jan 2024 12:32:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0ECA01DC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1706268749;
-	bh=TN0XrQV2h/QTnlDKi6o2lGP7iDmvEvgx0po8yYmRfmI=;
-	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=Khxwn/KVCuct64XM36bGK1Ueo9eBjAfaznEh5qKmLcD0AaINo1ToJgZVEPZef1NQ2
-	 e5LVrX6a1gEAJsmWXUmeaPZwgD2A+VZYBz9dgw4wofENMTkKn7jeOj2+woEGOfRmQn
-	 W+izTZi6sqSylAkO6VGO0acnnV9h/P9Mek2ODdzE=
+	s=default; t=1706268777;
+	bh=HJ7kwhHPw8ESJ22WUO9RMBE6xL5q0eTOX/Cpi6rSi10=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=RmJ18lMjbGvGwpWwgT7CwjSfRyOieelp7nW/oOqq9PKypjwxv+v7mhlYj8aW+hRz3
+	 1fAjbBjPO/XgEhHns9XbdkPn+HpayXBEJ8Z+uPPQ8/NJl1wcgXBnwiPbVUvTMIbc6Z
+	 xkSN2ch8TSrTSYAFec6e0DOq3dzBNMFgDi163Ugk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9B764F805B4; Fri, 26 Jan 2024 12:31:47 +0100 (CET)
+	id 579F6F805F6; Fri, 26 Jan 2024 12:31:50 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2227CF805C4;
-	Fri, 26 Jan 2024 12:31:47 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 84B5CF805F1;
+	Fri, 26 Jan 2024 12:31:50 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id F2599F80494; Fri, 26 Jan 2024 12:30:34 +0100 (CET)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
+	id 2E082F802E8; Fri, 26 Jan 2024 12:30:39 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 339A0F8025F
-	for <alsa-devel@alsa-project.org>; Fri, 26 Jan 2024 12:30:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 339A0F8025F
+	by alsa1.perex.cz (Postfix) with ESMTPS id 47B4AF802BE
+	for <alsa-devel@alsa-project.org>; Fri, 26 Jan 2024 12:30:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 47B4AF802BE
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=T/rY5rft
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-	by mx0b-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id
- 40QAq09q023770;
-	Fri, 26 Jan 2024 05:30:19 -0600
+ header.s=PODMain02222019 header.b=liEdi90O
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+	by mx0a-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id
+ 40Q5FRfw020176;
+	Fri, 26 Jan 2024 05:30:20 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	from:to:cc:subject:date:message-id:mime-version
-	:content-transfer-encoding:content-type; s=PODMain02222019; bh=0
-	aT+NkSik14EJ6htlwQSwNMMDFmIeJnn5EUHgh1et3s=; b=T/rY5rftda/ip2nJ1
-	+6fKOqYJ0UZ5tLhhXep70xWRo9EyHVjW1FPEUxpj5NCVEkxljTYCtFl6dJ3hs8jc
-	YB5DlF9SsISFGM6cmrmiVP1AlUsu8n/DQBQT4duQykNiC2/dLYjNvOTU9isKwkG1
-	MginvXXmEv7HAEMazev2NJg05WKaecp4IWIwcMkM8JwE0/rZufkp1HNaVDKxSCqE
-	By0+UjL3uzU9te9RZI3cblHR1OQQdBUIl0Kv1p2dCRguvt5sVUk/v+wPAJA8MHjg
-	oW5YDoEf2/0WwdCo9JKRPRCsNyKeX0K0nMrmU5zwvZs0sYa5W+zFGu+fKhYPOLw3
-	tS0rQ==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3vtmf9unnn-1
+	from:to:cc:subject:date:message-id:in-reply-to:references
+	:mime-version:content-transfer-encoding:content-type; s=
+	PODMain02222019; bh=7uq1CqVNlpi3ICWvwksEDM+iaXgEodV7Ok10dAjdLXg=; b=
+	liEdi90OImRtI0DXiLJb/2HYpFgbSX9sMtjl19tb0DF2z65YlCxqvYrM5LouCDM4
+	HqY1eSPN2RHf6x7lOUz7CyLtgxWLnWFS/nUK6ivp/w9EV8nckdHOpZrXZHchO8x1
+	Cp+Fz6m0rCiittycmrdo+BO66NRSpXUIvFh1McIWrnzG5xJ+xwN5tTpOdJHZkmgM
+	gVAeZpUOpM6mK+bk236GIiu8vWZWJ9Vi6D6sYHr4X/p7FjbUF+TKUEOFmKSsZJL6
+	+OeHc8fuMm0BwVHHWD60L48GEB8nrFyIERnuKMHIZSYyWRbXmAqDkSciUeCFjgY6
+	JrtVZG8pgvulfUQal2LthA==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3vtmfhksnq-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Fri, 26 Jan 2024 05:30:19 -0600 (CST)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 26 Jan
  2024 11:30:17 +0000
 Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ ediex01.ad.cirrus.com (198.61.84.80) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
  15.2.1118.40 via Frontend Transport; Fri, 26 Jan 2024 11:30:17 +0000
 Received: from sbinding-cirrus-dsktp2.ad.cirrus.com (LONNG2L6RQ3.ad.cirrus.com
  [198.90.238.116])
-	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id E6984820243;
-	Fri, 26 Jan 2024 11:30:16 +0000 (UTC)
+	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 777FD820248;
+	Fri, 26 Jan 2024 11:30:17 +0000 (UTC)
 From: Stefan Binding <sbinding@opensource.cirrus.com>
 To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
 CC: <alsa-devel@alsa-project.org>, <linux-sound@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
         "Stefan
  Binding" <sbinding@opensource.cirrus.com>
-Subject: [PATCH v1 0/4] Support HP Models without _DSD
-Date: Fri, 26 Jan 2024 11:30:03 +0000
-Message-ID: <20240126113007.4084-1-sbinding@opensource.cirrus.com>
+Subject: [PATCH v1 2/4] ALSA: hda: cs35l41: Support additional HP Envy Models
+Date: Fri, 26 Jan 2024 11:30:05 +0000
+Message-ID: <20240126113007.4084-3-sbinding@opensource.cirrus.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240126113007.4084-1-sbinding@opensource.cirrus.com>
+References: <20240126113007.4084-1-sbinding@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: lGKmo7_SMIXhX6X4S-eR_EDqP3JGrQP-
-X-Proofpoint-ORIG-GUID: lGKmo7_SMIXhX6X4S-eR_EDqP3JGrQP-
+X-Proofpoint-ORIG-GUID: Nn4GSfehB5sDLiX4i_VAVIFyRbXY9JuU
+X-Proofpoint-GUID: Nn4GSfehB5sDLiX4i_VAVIFyRbXY9JuU
 X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: 3JQQFLUBF3VJN36YIF2C6BQAN567Q26W
-X-Message-ID-Hash: 3JQQFLUBF3VJN36YIF2C6BQAN567Q26W
+Message-ID-Hash: E564QZBOT3YGH2RW3XZUJFVTY4ZSC3TF
+X-Message-ID-Hash: E564QZBOT3YGH2RW3XZUJFVTY4ZSC3TF
 X-MailFrom: prvs=8755fd102d=sbinding@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -97,7 +101,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3JQQFLUBF3VJN36YIF2C6BQAN567Q26W/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/E564QZBOT3YGH2RW3XZUJFVTY4ZSC3TF/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -106,27 +110,85 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add Quirks and driver properties for Dell models.
-Driver properties are required since these models do not have _DSD.
-Some models require special handing for Speaker ID and cannot use
-the configuration table to add properties.
-Also fix an issue for Channel Index property, when set through the
-configuration table, to use the same method as when loading _DSD
-properties. This is needed for laptops with 4 amps where the
-channels do not alternate.
+Add new model entries into configuration table.
 
-Stefan Binding (4):
-  ALSA: hda: cs35l41: Set Channel Index correctly when system is missing
-    _DSD
-  ALSA: hda: cs35l41: Support additional HP Envy Models
-  ALSA: hda: cs35l41: Support HP models without _DSD using dual Speaker
-    ID
-  ALSA: hda/realtek: Add quirks for various HP ENVY models
+Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
+---
+ sound/pci/hda/cs35l41_hda_property.c | 34 +++++++++++++++++++++++-----
+ 1 file changed, 28 insertions(+), 6 deletions(-)
 
- sound/pci/hda/cs35l41_hda_property.c | 90 +++++++++++++++++++++++-----
- sound/pci/hda/patch_realtek.c        | 40 +++++++++++++
- 2 files changed, 114 insertions(+), 16 deletions(-)
-
+diff --git a/sound/pci/hda/cs35l41_hda_property.c b/sound/pci/hda/cs35l41_hda_property.c
+index 87edf0d2fbb0..6714740b85c8 100644
+--- a/sound/pci/hda/cs35l41_hda_property.c
++++ b/sound/pci/hda/cs35l41_hda_property.c
+@@ -51,19 +51,30 @@ static const struct cs35l41_config cs35l41_config_table[] = {
+ 	{ "103C8A2E", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
+ 	{ "103C8A30", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
+ 	{ "103C8A31", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
++	{ "103C8A6E", 4, EXTERNAL, { CS35L41_LEFT, CS35L41_LEFT, CS35L41_RIGHT, CS35L41_RIGHT }, 0, -1, -1, 0, 0, 0 },
+ 	{ "103C8BB3", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
+ 	{ "103C8BB4", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
++	{ "103C8BDD", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
++	{ "103C8BDE", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
+ 	{ "103C8BDF", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
+ 	{ "103C8BE0", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
+ 	{ "103C8BE1", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
+ 	{ "103C8BE2", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
+-	{ "103C8BE9", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
+-	{ "103C8BDD", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
+-	{ "103C8BDE", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
+ 	{ "103C8BE3", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
+ 	{ "103C8BE5", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
+ 	{ "103C8BE6", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
++	{ "103C8BE7", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
++	{ "103C8BE8", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
++	{ "103C8BE9", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
+ 	{ "103C8B3A", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
++	{ "103C8C15", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4000, 24 },
++	{ "103C8C16", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4000, 24 },
++	{ "103C8C17", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4000, 24 },
++	{ "103C8C4F", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
++	{ "103C8C50", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
++	{ "103C8C51", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
++	{ "103C8CDD", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
++	{ "103C8CDE", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 3900, 24 },
+ 	{ "104312AF", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 1000, 4500, 24 },
+ 	{ "10431433", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4500, 24 },
+ 	{ "10431463", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4500, 24 },
+@@ -381,19 +392,30 @@ static const struct cs35l41_prop_model cs35l41_prop_model_table[] = {
+ 	{ "CSC3551", "103C8A2E", generic_dsd_config },
+ 	{ "CSC3551", "103C8A30", generic_dsd_config },
+ 	{ "CSC3551", "103C8A31", generic_dsd_config },
++	{ "CSC3551", "103C8A6E", generic_dsd_config },
+ 	{ "CSC3551", "103C8BB3", generic_dsd_config },
+ 	{ "CSC3551", "103C8BB4", generic_dsd_config },
++	{ "CSC3551", "103C8BDD", generic_dsd_config },
++	{ "CSC3551", "103C8BDE", generic_dsd_config },
+ 	{ "CSC3551", "103C8BDF", generic_dsd_config },
+ 	{ "CSC3551", "103C8BE0", generic_dsd_config },
+ 	{ "CSC3551", "103C8BE1", generic_dsd_config },
+ 	{ "CSC3551", "103C8BE2", generic_dsd_config },
+-	{ "CSC3551", "103C8BE9", generic_dsd_config },
+-	{ "CSC3551", "103C8BDD", generic_dsd_config },
+-	{ "CSC3551", "103C8BDE", generic_dsd_config },
+ 	{ "CSC3551", "103C8BE3", generic_dsd_config },
+ 	{ "CSC3551", "103C8BE5", generic_dsd_config },
+ 	{ "CSC3551", "103C8BE6", generic_dsd_config },
++	{ "CSC3551", "103C8BE7", generic_dsd_config },
++	{ "CSC3551", "103C8BE8", generic_dsd_config },
++	{ "CSC3551", "103C8BE9", generic_dsd_config },
+ 	{ "CSC3551", "103C8B3A", generic_dsd_config },
++	{ "CSC3551", "103C8C15", generic_dsd_config },
++	{ "CSC3551", "103C8C16", generic_dsd_config },
++	{ "CSC3551", "103C8C17", generic_dsd_config },
++	{ "CSC3551", "103C8C4F", generic_dsd_config },
++	{ "CSC3551", "103C8C50", generic_dsd_config },
++	{ "CSC3551", "103C8C51", generic_dsd_config },
++	{ "CSC3551", "103C8CDD", generic_dsd_config },
++	{ "CSC3551", "103C8CDE", generic_dsd_config },
+ 	{ "CSC3551", "104312AF", generic_dsd_config },
+ 	{ "CSC3551", "10431433", generic_dsd_config },
+ 	{ "CSC3551", "10431463", generic_dsd_config },
 -- 
 2.34.1
 
