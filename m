@@ -4,86 +4,122 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B8393C48286
-	for <alsa-devel@archiver.kernel.org>; Tue,  6 Feb 2024 09:41:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 733F7C4828D
+	for <alsa-devel@archiver.kernel.org>; Tue,  6 Feb 2024 09:52:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9D5B76C1;
-	Tue,  6 Feb 2024 10:41:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9D5B76C1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3E89B82C;
+	Tue,  6 Feb 2024 10:51:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3E89B82C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1707212515;
-	bh=8Q3rZBp0QdSoT8AB/VNdTixvhfVDTbs7lsqe5RokcrU=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1707213125;
+	bh=P5inWfry6T1Czl6TsnTuVIoqd+ZhftxFosxgazH4yR8=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=LEMHDUDSJp0uok4eRiyUZYsF/uPOtrMBHRCPLhS2a31XAECONvXFiFh31iLYHMbIn
-	 BI3kFJ61wKiN6Egp7dCg0RXQYV5uKquAsCAlch6NvFcbcYOlY7Wdl3vqvRtXfEzUQm
-	 9fzQdAM2OpxPyE8Fq1p6e5d84wIanxxTmpbFEV6Y=
+	b=YY8TLYuCqUIjocxjWJlLyhKk8gm/2r8BmC8W1qPmxf2e5Pv5U8fn2PLWQARrcLb7t
+	 aGPjLCxZZredew8iS7JpBz0HsfVAcj0XR1tl1VrUG4MY+z46gTYZ84HD77YYrAACSO
+	 qf314n2bm74QHbJ/meL1fk0tnKMJ3Ulbm5Pqbwe0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BF1A3F80587; Tue,  6 Feb 2024 10:41:23 +0100 (CET)
+	id 2728DF80153; Tue,  6 Feb 2024 10:51:34 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 03B54F805AA;
-	Tue,  6 Feb 2024 10:41:23 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 48C18F805A9;
+	Tue,  6 Feb 2024 10:51:33 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 997F9F801EB; Tue,  6 Feb 2024 10:39:13 +0100 (CET)
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	id 772F1F8028D; Sat, 27 Jan 2024 17:47:46 +0100 (CET)
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com
+ [IPv6:2a00:1450:4864:20::332])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id AC9D4F800E3
-	for <alsa-devel@alsa-project.org>; Tue,  6 Feb 2024 10:37:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AC9D4F800E3
+	by alsa1.perex.cz (Postfix) with ESMTPS id 56572F800C1
+	for <alsa-devel@alsa-project.org>; Sat, 27 Jan 2024 17:47:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 56572F800C1
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=sxV0+WND
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 4AD16CE12AB;
-	Tue,  6 Feb 2024 09:37:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0769AC43390;
-	Tue,  6 Feb 2024 09:37:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707212267;
-	bh=8Q3rZBp0QdSoT8AB/VNdTixvhfVDTbs7lsqe5RokcrU=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=sxV0+WNDpEM1ppiMfgjskCS8Z3AtBmMOAoPmv5YG7hzhdYs/SsOECVrtAsjnP2zO+
-	 O7GT2T04flURqgDe5TdxQl+aSvdShG36sPyGREp4QjlhTvbYeM5l0shhS8a27icXWu
-	 37JGpWXbdSpSdF95Yr2gCEpLUQqXv4AJtqUu1DHSf7l4kmQmnPWi52SgEGAjX7PvNw
-	 4RHhHaBKE3UtS3dnSRIDuqX9Rz/ORg13P+EjPLCOJfn5rliMsoIKh/g03OmlJaOT8z
-	 yfOrtULrGXTr/30IsLeL1bh/7G8dprtT7gTuxK+MEqWGd2CeJqFn4fY8EupH7BKrrN
-	 DoxZ2osUTpHDg==
-From: Mark Brown <broonie@kernel.org>
-To: Charles Keepax <ckeepax@opensource.cirrus.com>
-Cc: lgirdwood@gmail.com, alsa-devel@alsa-project.org,
- patches@opensource.cirrus.com, linux-sound@vger.kernel.org
-In-Reply-To: <20240202140619.1068560-1-ckeepax@opensource.cirrus.com>
-References: <20240202140619.1068560-1-ckeepax@opensource.cirrus.com>
-Subject: Re: [PATCH 1/3] ASoC: cs42l43: Add clear of stashed pointer on
- component remove
-Message-Id: <170721226503.850647.13196584350173036688.b4-ty@kernel.org>
-Date: Tue, 06 Feb 2024 09:37:45 +0000
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20230601 header.b=TYCqvlW8
+Received: by mail-wm1-x332.google.com with SMTP id
+ 5b1f17b1804b1-40e76109cdeso25972285e9.0
+        for <alsa-devel@alsa-project.org>;
+ Sat, 27 Jan 2024 08:47:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706374058; x=1706978858;
+ darn=alsa-project.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jq5nWV4gc+boSoV96VgLy7nj/n+DgQjkGxXgMwyJKWg=;
+        b=TYCqvlW8wk2mh+gGqHVhXxQ+0HzZSPK03gbXV1QVsVQi5JwQQ+U7Frb/R8cgFFAotK
+         PhikFiZPAsr8FFXK+/9BTE0HPqXpS8aX2QD5SJV47lVzjlmEbX7IpplSoRGbakFvzmvZ
+         7JIoikkY5U1w5u4j/xpvgyf8SCYdYcz96bUBKrGrb/8WZoIWB+/VkFmcJquU5n81EQRB
+         4FTj8nfg4ttnqaNhAwXdbIk17sXLONyuVg4CB2WtggmcEFQ+SyLJ3GyTsu88ABtYERBm
+         aPndUurOTBZmSrKfwKGLxcqAPWqIfMALEOWHwmQmbZZZnOTElDfEUquGCzv4pnQTqSG3
+         gpaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706374058; x=1706978858;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jq5nWV4gc+boSoV96VgLy7nj/n+DgQjkGxXgMwyJKWg=;
+        b=LCY68gKWkiajMOEfZi4fD01jPDq7v8sJLCpF1MwQMwyX9haeH71R31jBsch+OkLkJT
+         fJXQVPGGFGYZLqdDsCchcqtDrIonelT9chPRx6yOZFiWzHWXfZZwHLi3h+I8o0y2vkl0
+         m1sGDSavuIaXFKKSweqYmRNPVWXuxH296S9hzFOYzqOjVLdWf2ytiujbl1ZNpg6gFdt0
+         qK2DfNVzKn3orjDjEc1juDMdv5srXqzBOBjOwzAPQQVc6eczHCG3z3CrQ0A4ICKk3WgR
+         kDfgFxaoaVYjqqmbPRZZpqSFREsgKVbzcLuFXReoBbjEKdi4Xcl5h1mkN5AFU+AQgzRy
+         co3A==
+X-Gm-Message-State: AOJu0YyUG4bT82XFw4JJMdGgGW/DsBM9bTUeEzDiGHtDpCnHPr9yLLp4
+	/W5Koq937pC14ZHUj4Fd+r+W9feM9kJqDFs8KiJuAXKgKY8OjAHU
+X-Google-Smtp-Source: 
+ AGHT+IG4fFkwwlanBWpqJW1F0dTLbqKbMH0i4rK9ABL48tuKQ/mudc3Aug7IIsmMoMMeS0psJTUOlQ==
+X-Received: by 2002:a05:600c:4ec8:b0:40e:ace6:4fc2 with SMTP id
+ g8-20020a05600c4ec800b0040eace64fc2mr1439967wmq.24.1706374058012;
+        Sat, 27 Jan 2024 08:47:38 -0800 (PST)
+Received: from kenzo-linux-laptop.bicolor-pike.ts.net
+ (154.red-88-26-51.staticip.rima-tde.net. [88.26.51.154])
+        by smtp.gmail.com with ESMTPSA id
+ i9-20020a05600c354900b0040eee435571sm1895013wmq.45.2024.01.27.08.47.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 27 Jan 2024 08:47:37 -0800 (PST)
+From: Kenzo Gomez <kenzo.sgomez@gmail.com>
+To: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org,
+	david.rhodes@cirrus.com,
+	james.schulman@cirrus.com,
+	kenzo.sgomez@gmail.com,
+	linux-kernel@vger.kernel.org,
+	linux-sound@vger.kernel.org,
+	patches@opensource.cirrus.com,
+	perex@perex.cz,
+	rf@opensource.cirrus.com,
+	sbinding@opensource.cirrus.com,
+	tiwai@suse.com
+Subject: [PATCH v3] ALSA: hda: cs35l41: Support additional ASUS Zenbook
+ UX3402VA
+Date: Sat, 27 Jan 2024 17:46:21 +0100
+Message-ID: <20240127164621.26431-1-kenzo.sgomez@gmail.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <874jfdwsfg.wl-tiwai@suse.de>
+References: <874jfdwsfg.wl-tiwai@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-0438c
-Message-ID-Hash: UA3CPP2ZM2GHSUGXIAHNCWHGPSHHC5XF
-X-Message-ID-Hash: UA3CPP2ZM2GHSUGXIAHNCWHGPSHHC5XF
-X-MailFrom: broonie@kernel.org
+Content-Transfer-Encoding: 8bit
+X-MailFrom: kenzo.sgomez@gmail.com
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: OSTFULLHZKW2XE7CWZUSP7Y4JIV6XGDF
+X-Message-ID-Hash: OSTFULLHZKW2XE7CWZUSP7Y4JIV6XGDF
+X-Mailman-Approved-At: Tue, 06 Feb 2024 09:51:28 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UA3CPP2ZM2GHSUGXIAHNCWHGPSHHC5XF/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OSTFULLHZKW2XE7CWZUSP7Y4JIV6XGDF/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -92,42 +128,33 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, 02 Feb 2024 14:06:17 +0000, Charles Keepax wrote:
-> If the component is removed the stashed component pointer in the
-> CODECs private struct should also be cleared to prevent use of a stale
-> pointer.
-> 
-> 
+Add new model entry into configuration table.
 
-Applied to
+Signed-off-by: Kenzo Gomez <kenzo.sgomez@gmail.com>
+---
+ sound/pci/hda/cs35l41_hda_property.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-
-Thanks!
-
-[1/3] ASoC: cs42l43: Add clear of stashed pointer on component remove
-      commit: cd2a2388614fcf2b9b626332c0da53a2c6cbf2ee
-[2/3] ASoC: cs42l43: Sync the hp ilimit works when removing the component
-      commit: 7fa1a01ba6cb64bc24e7ba0dbee589f3f09f3cf7
-[3/3] ASoC: cs42l43: Shut down jack detection on component remove
-      commit: 3ef9f445ddb1e061ce497f54ca75bbaec52a3a46
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+diff --git a/sound/pci/hda/cs35l41_hda_property.c b/sound/pci/hda/cs35l41_hda_property.c
+index 35277ce890a4..59504852adc6 100644
+--- a/sound/pci/hda/cs35l41_hda_property.c
++++ b/sound/pci/hda/cs35l41_hda_property.c
+@@ -76,6 +76,7 @@ static const struct cs35l41_config cs35l41_config_table[] = {
+ 	{ "10431533", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4500, 24 },
+ 	{ "10431573", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 1000, 4500, 24 },
+ 	{ "10431663", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, -1, 0, 1000, 4500, 24 },
++	{ "104316A3", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 0, 0, 0 },
+ 	{ "104316D3", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 0, 0, 0 },
+ 	{ "104316F3", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 0, 0, 0 },
+ 	{ "104317F3", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4500, 24 },
+@@ -410,6 +411,7 @@ static const struct cs35l41_prop_model cs35l41_prop_model_table[] = {
+ 	{ "CSC3551", "10431533", generic_dsd_config },
+ 	{ "CSC3551", "10431573", generic_dsd_config },
+ 	{ "CSC3551", "10431663", generic_dsd_config },
++	{ "CSC3551", "104316A3", generic_dsd_config },
+ 	{ "CSC3551", "104316D3", generic_dsd_config },
+ 	{ "CSC3551", "104316F3", generic_dsd_config },
+ 	{ "CSC3551", "104317F3", generic_dsd_config },
+-- 
+2.43.0
 
