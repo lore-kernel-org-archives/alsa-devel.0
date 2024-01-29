@@ -4,121 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8E1ACC47DA9
-	for <alsa-devel@archiver.kernel.org>; Tue, 30 Jan 2024 07:41:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 00404C46CD2
+	for <alsa-devel@archiver.kernel.org>; Tue, 30 Jan 2024 09:12:24 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 49D5BB70;
-	Tue, 30 Jan 2024 08:41:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 49D5BB70
+	by alsa0.perex.cz (Postfix) with ESMTPS id 91595DF8;
+	Tue, 30 Jan 2024 10:12:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 91595DF8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1706600500;
-	bh=gQFi/hgfA9MVHBETu5aazZyA13OZc9rH5VvRgCcJmsA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1706605942;
+	bh=RvaoRqi6d2649HMPir89XZBkoGY4LvB2aJ08/fzLesM=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=XfPxleBjFJJEyQ0Ly+h1HXN3GeS/0z92eQd3HTf6RYnRk9tRjdFrYrKIdSeajIzVL
-	 zWPju9u1YH5j6gnGn0ZHHM6xzIpiUa6fUTvl48IxwiCO6u+knHwhr1wjEW4ff3ixSU
-	 uetSbAdoNhGLaWd0WvdKP2WnEURVwC74U+Ai5P44=
+	b=dmgFJpRdab4JMSsnkXnQ+ZIxu4eziD4FMsvKyDRhZGPB/ifdQJlmqP/qB4ctJiRio
+	 R0VSbgdc/P9xJcCYnytrrFqTBkoM8d2Nk9E4BXCwHBLtDpW+BPfPGQ75VVTJ58OaEh
+	 YLxryl9Rky4cKcl5EA+J6ohCRfuiXuCLPve7p86s=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7E66DF80580; Tue, 30 Jan 2024 08:41:09 +0100 (CET)
+	id 5CC25F8057D; Tue, 30 Jan 2024 10:11:50 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id ABBBDF8056F;
-	Tue, 30 Jan 2024 08:41:07 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 90617F805AA;
+	Tue, 30 Jan 2024 10:11:50 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1A522F80563; Tue, 30 Jan 2024 08:40:43 +0100 (CET)
-Received: from meesny.iki.fi (meesny.iki.fi [195.140.195.201])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 11135F80563; Tue, 30 Jan 2024 10:11:41 +0100 (CET)
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 3AF58F80149
-	for <alsa-devel@alsa-project.org>; Tue, 30 Jan 2024 08:40:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3AF58F80149
+	by alsa1.perex.cz (Postfix) with ESMTPS id E6F16F80548
+	for <alsa-devel@alsa-project.org>; Tue, 30 Jan 2024 10:11:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E6F16F80548
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=iki.fi header.i=@iki.fi header.a=rsa-sha256
- header.s=meesny header.b=mmg4Uety
-Received: from hillosipuli.retiisi.eu
- (2a00-1190-d1dd-0-c641-1eff-feae-163c.v6.cust.suomicom.net
- [IPv6:2a00:1190:d1dd:0:c641:1eff:feae:163c])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	(Authenticated sender: sailus)
-	by meesny.iki.fi (Postfix) with ESMTPSA id 4TPHBy1PY0zyPp;
-	Tue, 30 Jan 2024 09:40:25 +0200 (EET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi; s=meesny;
-	t=1706600429;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=XXYG2rIBeg/NNZorp9z2BhKReEh61TvwReLHXvCjaww=;
-	b=mmg4UetyKwlC7TSRMl0nDOWPi+zjDxXpOp3M6L3+Qb/TsTqYbPp/4uUv261XYGZBcYHB6U
-	T7T3x9ynxedfSLrcBFH+i/H93sAwKym2r1tj/D1GB2T/SkFWrq1/Kt+oc8YHFDjfatHaM9
-	GduB0g58fL7yX+1xcHMtDKkvA1Pp1X0=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi;
-	s=meesny; t=1706600429;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=XXYG2rIBeg/NNZorp9z2BhKReEh61TvwReLHXvCjaww=;
-	b=UJJzQlqCs9VrKm5FbkOAbRgkCMTr9auA3UukM+Cirg/lszktkvqF9Eq5X0OOPQzqyY1zgH
-	1sd2TE0evQiwof0Rp/NhS9QPgZ738HW3BhaVRDZmAvDKyv1e/CfDJchauGIeZMEks+FKYO
-	Gs5KxF3RtGS38UkWzoFa/p1ytG0AjEw=
-ARC-Authentication-Results: i=1;
-	ORIGINATING;
-	auth=pass smtp.auth=sailus smtp.mailfrom=sakari.ailus@iki.fi
-ARC-Seal: i=1; s=meesny; d=iki.fi; t=1706600429; a=rsa-sha256; cv=none;
-	b=b8I/5XUpD8zAG3kEkB9ylC36TMUKxkOVnd3GUPE359jInhtZl89CjKZLsuC/UJuUeEnO3o
-	h5OdGhfPjjgmquLay5oDg7lo+L5ojRZUBSC8QI62oKmUlDJpF6udc9tAur01+JX+nmf0Ct
-	HTROci/T7MAOf+H9Af+iDXNYkNT9M9s=
-Received: from valkosipuli.retiisi.eu (valkosipuli.localdomain [192.168.4.2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits)
- server-digest SHA256)
-	(No client certificate requested)
-	by hillosipuli.retiisi.eu (Postfix) with ESMTPS id 3FC86634C93;
-	Tue, 30 Jan 2024 09:40:24 +0200 (EET)
-Date: Tue, 30 Jan 2024 07:40:24 +0000
-From: Sakari Ailus <sakari.ailus@iki.fi>
-To: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-	Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-	Uwe =?iso-8859-1?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-	Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>,
-	Frank Rowand <frowand.list@gmail.com>, Helge Deller <deller@gmx.de>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Mark Brown <broonie@kernel.org>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Maxime Ripard <mripard@kernel.org>,
-	Michal Simek <michal.simek@amd.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Saravana Kannan <saravanak@google.com>,
-	Takashi Iwai <tiwai@suse.com>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-	linux-fbdev@vger.kernel.org, linux-media@vger.kernel.org,
-	linux-sound@vger.kernel.org
-Subject: Re: [PATCH v2 00/13] of: property: add port base loop
-Message-ID: <Zbin6Pg6oNp0cTNO@valkosipuli.retiisi.eu>
-References: <87fryhklhb.wl-kuninori.morimoto.gx@renesas.com>
- <20240129122736.GC8131@pendragon.ideasonboard.com>
- <ZbeoPBvGJlaJco_J@valkosipuli.retiisi.eu>
- <87zfwnirps.wl-kuninori.morimoto.gx@renesas.com>
- <Zbil22dm9x2ZudJC@valkosipuli.retiisi.eu>
- <582ede29-2df7-4f01-a03b-da59d9f56d74@ideasonboard.com>
+	dkim=pass (2048-bit key,
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=G7SDa72y
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706605893; x=1738141893;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=RvaoRqi6d2649HMPir89XZBkoGY4LvB2aJ08/fzLesM=;
+  b=G7SDa72yN1ztcl3+aGHeKbhAXktFdG+N7Vh9HS+F3MISkNFiPU2fqM8Q
+   XN3NjH/kgWcDEiOmf2nCkce6Sf7pdJayy1/RuprYXSm81zGUYFLQIlU/K
+   aPax2lua0T+m52Stu1MJgxyFWdKBdnWoo51ZxIrxWJfFPddF15F6IVQI6
+   4Pv8jO+yR0lZIR3Tt/rt11cfqgbyN71mKubU9WHeaHsY22FPnFHaAIBwF
+   o4m4ODpJ88CLExwAmPOE9Ot5cPJGloDQ0fpJ91nHOe2YRZiFnkGbadrP3
+   5bqX/j310ZQMkPj1/qNvA0WeJDKi37LVeHJB9gZp3aUToO4QDELjwvzQt
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10968"; a="3055987"
+X-IronPort-AV: E=Sophos;i="6.05,707,1701158400";
+   d="scan'208";a="3055987"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 30 Jan 2024 01:08:05 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10968"; a="931378461"
+X-IronPort-AV: E=Sophos;i="6.05,707,1701158400";
+   d="scan'208";a="931378461"
+Received: from vkamysba-mobl1.amr.corp.intel.com (HELO [10.254.116.178])
+ ([10.254.116.178])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 30 Jan 2024 01:07:25 -0800
+Message-ID: <4f54a12c-c8a3-414c-b4df-3f7b25e6d524@linux.intel.com>
+Date: Mon, 29 Jan 2024 18:15:14 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <582ede29-2df7-4f01-a03b-da59d9f56d74@ideasonboard.com>
-Message-ID-Hash: TG3X7AGMNTFPH5NYYC6LIDCCJKBDJB45
-X-Message-ID-Hash: TG3X7AGMNTFPH5NYYC6LIDCCJKBDJB45
-X-MailFrom: sakari.ailus@iki.fi
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 08/18] ASoC: cs35l56: Fix default SDW TX mixer registers
+Content-Language: en-US
+To: Richard Fitzgerald <rf@opensource.cirrus.com>, broonie@kernel.org,
+ tiwai@suse.com
+Cc: alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
+ linux-kernel@vger.kernel.org, patches@opensource.cirrus.com
+References: <20240129162737.497-1-rf@opensource.cirrus.com>
+ <20240129162737.497-9-rf@opensource.cirrus.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20240129162737.497-9-rf@opensource.cirrus.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: TLR25BLMKYIPCRMTSCRHT2ZRABLKYPSL
+X-Message-ID-Hash: TLR25BLMKYIPCRMTSCRHT2ZRABLKYPSL
+X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -130,48 +95,65 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TG3X7AGMNTFPH5NYYC6LIDCCJKBDJB45/>
-List-Archive: <>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TLR25BLMKYIPCRMTSCRHT2ZRABLKYPSL/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, Jan 30, 2024 at 09:37:42AM +0200, Tomi Valkeinen wrote:
-> On 30/01/2024 09:31, Sakari Ailus wrote:
-> > Hi Morimoto-san,
-> > 
-> > On Tue, Jan 30, 2024 at 12:34:55AM +0000, Kuninori Morimoto wrote:
-> > > 
-> > > Hi Laurent, Sakari
-> > > 
-> > > Thank you for your review
-> > > 
-> > > > > The strategy sounds good to me. However, I'm wondering if you shouldn't
-> > > > > take one more step in the core, and implement these as fwnode
-> > > > > operations. Or is there a reason why OF is special, and iterating over
-> > > > > ports would be useful for drivers on OF systems but not on other types
-> > > > > of systems ?
-> > > > 
-> > > > I'd prefer that, too.
-> > > 
-> > > It is very easy reason, because I'm not fwnode user ;P
-> > > I'm not familiar with fwnode, but in my quick check, it seems it is easy
-> > > to expand fwnode side functions if of_graph side function exist ?
-> > 
-> > That would be one way to do that, yes, but I suggested using the existing
-> > endpoint iterators as that would keep the firmware specific implementation
-> > more simple. The (slight) drawback is that for each node returned, you'd
-> > need to check its parent (i.e. port node) is the same as the port you're
-> > interested in. The alternative may involve reworking the struct
-> > fwnode_operations interface somewhat, including swnode, DT and ACPI
-> > implementations.
-> > 
+
+
+On 1/29/24 17:27, Richard Fitzgerald wrote:
+> Patch the SDW TX mixer registers to silicon defaults.
 > 
-> But we still need the of_* versions, don't we, for patches 4 to 13?
+> CS35L56 is designed for SDCA and a generic SDCA driver would
+> know nothing about these chip-specific registers. So the
+> firmware sets up the SDW TX mixer registers to whatever audio
+> is relevant on a specific system.
+> 
+> This means that the driver cannot assume the initial values
+> of these registers. But Linux has ALSA controls to configure
+> routing, so the registers can be patched to silicon default and
+> the ALSA controls used to select what audio to feed back to the
+> host capture path.
 
-Yes, my comment was indeed about the fwnode property API only.
+humm, which has the precedence then?
+a) the values set by firmware
+b) the default values set by the driver?
 
--- 
-Sakari Ailus
+Also if the firmware touches those registers shouldn't they be marked as
+'volatile'?
+
+
+> Backport note:
+> This won't apply to kernels older than v6.6.
+> 
+> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+> Fixes: e49611252900 ("ASoC: cs35l56: Add driver for Cirrus Logic CS35L56")
+> ---
+>  sound/soc/codecs/cs35l56-shared.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+> 
+> diff --git a/sound/soc/codecs/cs35l56-shared.c b/sound/soc/codecs/cs35l56-shared.c
+> index 35789ffc63af..a812abf90836 100644
+> --- a/sound/soc/codecs/cs35l56-shared.c
+> +++ b/sound/soc/codecs/cs35l56-shared.c
+> @@ -12,6 +12,15 @@
+>  #include "cs35l56.h"
+>  
+>  static const struct reg_sequence cs35l56_patch[] = {
+> +	/*
+> +	 * Firmware can change these to non-defaults to satisfy SDCA.
+> +	 * Ensure that they are at known defaults.
+> +	 */
+> +	{ CS35L56_SWIRE_DP3_CH1_INPUT,		0x00000018 },
+> +	{ CS35L56_SWIRE_DP3_CH2_INPUT,		0x00000019 },
+> +	{ CS35L56_SWIRE_DP3_CH3_INPUT,		0x00000029 },
+> +	{ CS35L56_SWIRE_DP3_CH4_INPUT,		0x00000028 },
+> +
+>  	/* These are not reset by a soft-reset, so patch to defaults. */
+>  	{ CS35L56_MAIN_RENDER_USER_MUTE,	0x00000000 },
+>  	{ CS35L56_MAIN_RENDER_USER_VOLUME,	0x00000000 },
