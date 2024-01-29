@@ -4,84 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AB1CBC47422
-	for <alsa-devel@archiver.kernel.org>; Mon, 29 Jan 2024 11:53:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 317A9C47DA9
+	for <alsa-devel@archiver.kernel.org>; Mon, 29 Jan 2024 11:53:31 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 62EA0852;
-	Mon, 29 Jan 2024 12:53:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 62EA0852
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7B4FF1E6;
+	Mon, 29 Jan 2024 12:53:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7B4FF1E6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1706529191;
-	bh=pEaaZzWd53CrhjsWjih79Gm0lLf84UYwD3xSD5zEQj4=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=iYhZf6/GxObEmOdlxBmHiRzZPNGOROBVMt+p0n3EMX4cJ+F51f7+NzWp6zjNPSARN
-	 ahzpqXHMHAfAsQlBazoHq4CFu2xrt33HEHSnhwJbKqnEZCg0l2hhmdhjiIQsd3HEZW
-	 xpD2HLmVBHa+PchYDO9O+HCOIZP+EJH7l1Vd76sI=
+	s=default; t=1706529209;
+	bh=TevWKR2DSrMzB/VAXnrwgpjtV2WO/i7dhXJ3FYqBRLA=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=jQrFAw8oJwC0+DeA1aaZWGeBRnjwUsHYWCFGhHjDAjJ287P1Hqe/fxl8Rtwyfmum6
+	 2z6kcP0zQ6r9rCUNCadAbSEHesmLyCLfox2ozVXovKrePqn5dqZUsZMgpR8FoVKqRF
+	 XCNdC/KLFPhmT5mhGpV8/o0dojuvjU+gBkuoP720=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id ADEDBF805AB; Mon, 29 Jan 2024 12:52:36 +0100 (CET)
+	id 021B8F805C4; Mon, 29 Jan 2024 12:52:43 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id BF07DF80578;
-	Mon, 29 Jan 2024 12:52:35 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9F6E3F805C6;
+	Mon, 29 Jan 2024 12:52:42 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E88CAF80431; Mon, 29 Jan 2024 12:52:29 +0100 (CET)
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com
- [IPv6:2a00:1450:4864:20::529])
+	id EB288F8057E; Mon, 29 Jan 2024 12:52:38 +0100 (CET)
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com
+ [IPv6:2a00:1450:4864:20::232])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7F2E1F800FB
+	by alsa1.perex.cz (Postfix) with ESMTPS id 25DCFF8017A
 	for <alsa-devel@alsa-project.org>; Mon, 29 Jan 2024 12:52:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7F2E1F800FB
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 25DCFF8017A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=Yp7foaPz
-Received: by mail-ed1-x529.google.com with SMTP id
- 4fb4d7f45d1cf-55ee686b5d5so1449484a12.0
+ header.s=google header.b=RNSfxa+y
+Received: by mail-lj1-x232.google.com with SMTP id
+ 38308e7fff4ca-2d04c0b1cacso9499111fa.0
         for <alsa-devel@alsa-project.org>;
  Mon, 29 Jan 2024 03:52:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706529142; x=1707133942;
+        d=linaro.org; s=google; t=1706529141; x=1707133941;
  darn=alsa-project.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7u11vGwKEs3fH7gtNpJv3ew33Q7fXCEnCXNY0GONseQ=;
-        b=Yp7foaPzOwY+SaEy8Zk9LPuWWhV8z+MsmNsS73LehDOkoknsqrCnC2XxMZ6ILqQ30H
-         UHmO7d3piZnuK+HjvPqJAx9fh5/ehDL6qRrvRIzEqY/LX6QQxZdBZ8kVpcp2FXA7QV1x
-         t8LRTeDE9M2beueK8Oxppe5ezqy8/Xi8gQd7dngDflkBF/8qqn3Yl+c1cZ5rN0xRD9PM
-         CtGV1VR2dXb4I/G90GZMS7BbOcyNCMFAp2DeaVfoBbfeW6u37SfNrCsqifzkrX9ADDrN
-         RNhBFppI+SpMkiZ7dkijJogW1SqNRvG8BKP+piDJ3eoO74gGsmNlSOWlgYTPS+Z0YpWd
-         iG2g==
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=R/YgAdznIozSs2D/WsWY2hpfyQsPzLBVEOR2iGtuuDw=;
+        b=RNSfxa+ymKyjqQ3n2luQ91ruMBooNbLX/wCg87PEFzPaeQ7CIG0sjztBgZBebjdGJv
+         fIfkiyDmeno4B+q9FQ4nqrvdOPjRwz4AETNE4CA3dvriTlI5KBOAsJQxADkEfjunQI7A
+         v4W7eYnRsXindWXiuIT9juWz9JTC0ZfQNe3rFM5V+b+nALPB/tvN3uah9w3o9DCDpsK2
+         aCx6c2SH+S8QH4Wey+xup5uqd3YPhhR0D8ZBIQWIoEjhkd5IbjwiW3YA8skhzwARO3Kl
+         zYxLQzNh3lnunYv2HIC0FFJE0s13mc1Va/qVRB2WVvGtbDsDxwqCkev/P30IZ1vlkAAX
+         zXVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706529142; x=1707133942;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7u11vGwKEs3fH7gtNpJv3ew33Q7fXCEnCXNY0GONseQ=;
-        b=FaGKzJgKrIICczzHz/EWlDJV/6iqpblim4G5H6zJPJxwrOUmn+3JT670iBP1pDFMPx
-         nGj7XoXcJsKEw2JVod9vEBrROEQ1tahp75gwT9NhJe0T9k5+Ahh4idQrzFqsql/36M7c
-         W3VSJBSesEeWxuAzGH0UjiKtmvsvilak8iG4uE0f5oXUO6/EzsQFJ+jbxJ9oRwPF9f2v
-         DOClemULCO6V2GwL0TrfleQw3DzJ5AxqYocGzZ8lSzmyK+UrQlD1ykwvu7dFbuhXcEG9
-         Ev4ya42Vqy77qJBYuVjLbW82CzeQddN5IUQTT7fqNQkqmyRr/dkvViVkLCDPgDWOqb8T
-         E4uQ==
-X-Gm-Message-State: AOJu0YyrVCmjAWaJ5RVdPCVJyQKdJCK4XijHMfTKkhO7FhU82A8/Y3eV
-	iI2XU4t3bS0uUDzjUFse50gTQQzHqhugasAdKsW7+M8NsPVYp/yA01gRcGeUZNM=
+        d=1e100.net; s=20230601; t=1706529141; x=1707133941;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=R/YgAdznIozSs2D/WsWY2hpfyQsPzLBVEOR2iGtuuDw=;
+        b=tgE/Ll3XGUY3S7+Lm1JzVynEY2O+Z4Mb1BK6RnwyIU2FCLaqVnVIHuc0d288+U8zeL
+         KFvgIcrfZtN7tFvRM+YyiZ7Og4pQ9lPFM8oOlxEV0/KoWydDiBm3u5PF1+gLFtVSn+po
+         5U5svl+5id2QUw1BShd9HeG1Yf5TGIQkH1i5EX9tP7MiPmFGn55kvUUptOOFbXxDXn/R
+         ESb3Ds5zS7dT2qRuB6PmuHJMDGy7x3OPJm6EOvZ6GUVLa3g62e1gINrgjXXls1r8drij
+         Wua8QaAT1oqAyy6ilD5vpvo1asK3cbLohu+eNJkwVGzzRmxDLXZ91xlfBBoykPU9rnFz
+         rQlw==
+X-Gm-Message-State: AOJu0YzTAp37rVwBpEKyNJRKS+7/1mJJpNEZyv+ipke5txd05B2WAVY/
+	uikpmuZt1alwn1YYlRM454uNFGVlHny2bltWPiSA6XbGk73xVgcMapdMCxo5RgE=
 X-Google-Smtp-Source: 
- AGHT+IFmy3sCvOF6JNQB/p5p+/mn9vblRl4lD4OGfVKlB3WcdWBRMAzyMpmnKg1BqnvigRA+MvIHwg==
-X-Received: by 2002:a05:6402:274b:b0:55e:f866:30dd with SMTP id
- z11-20020a056402274b00b0055ef86630ddmr2119525edd.12.1706529142419;
-        Mon, 29 Jan 2024 03:52:22 -0800 (PST)
+ AGHT+IFqjoy3FZxoV9ITWG/DVDbPwIlEmiyp2X8ew7y1z0leblC2o5ktNI6NnAt/yx6tOebUXaknnQ==
+X-Received: by 2002:a05:651c:1986:b0:2cd:7357:58eb with SMTP id
+ bx6-20020a05651c198600b002cd735758ebmr4260461ljb.39.1706529140447;
+        Mon, 29 Jan 2024 03:52:20 -0800 (PST)
 Received: from krzk-bin.. ([178.197.222.62])
         by smtp.gmail.com with ESMTPSA id
- ec19-20020a0564020d5300b0055f29ececeasm19907edb.57.2024.01.29.03.52.20
+ ec19-20020a0564020d5300b0055f29ececeasm19907edb.57.2024.01.29.03.52.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jan 2024 03:52:21 -0800 (PST)
+        Mon, 29 Jan 2024 03:52:19 -0800 (PST)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
 	Banajit Goswami <bgoswami@quicinc.com>,
@@ -105,17 +103,17 @@ To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
 	linux-kernel@vger.kernel.org,
 	linux-pm@vger.kernel.org
 Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Rob Herring <robh@kernel.org>
-Subject: [PATCH v6 1/6] of: Add of_phandle_args_equal() helper
-Date: Mon, 29 Jan 2024 12:52:11 +0100
-Message-Id: <20240129115216.96479-2-krzysztof.kozlowski@linaro.org>
+	Chris Packham <chris.packham@alliedtelesis.co.nz>,
+	Bartosz Golaszewski <brgl@bgdev.pl>,
+	Sean Anderson <sean.anderson@seco.com>
+Subject: [PATCH v6 0/6] reset: gpio: ASoC: shared GPIO resets
+Date: Mon, 29 Jan 2024 12:52:10 +0100
+Message-Id: <20240129115216.96479-1-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240129115216.96479-1-krzysztof.kozlowski@linaro.org>
-References: <20240129115216.96479-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: RASNW7R2XJKYQWT4C44UPXYYTDKKX2BM
-X-Message-ID-Hash: RASNW7R2XJKYQWT4C44UPXYYTDKKX2BM
+Message-ID-Hash: OXQBDMZFB2ROHMCKWMFRJKQTBUA3QNTP
+X-Message-ID-Hash: OXQBDMZFB2ROHMCKWMFRJKQTBUA3QNTP
 X-MailFrom: krzysztof.kozlowski@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -128,54 +126,150 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RASNW7R2XJKYQWT4C44UPXYYTDKKX2BM/>
-List-Archive: <>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OXQBDMZFB2ROHMCKWMFRJKQTBUA3QNTP/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add a helper comparing two "struct of_phandle_args" to avoid
-reinventing the wheel.
+Hi,
 
-Reviewed-by: Philipp Zabel <p.zabel@pengutronix.de>
-Acked-by: Rob Herring <robh@kernel.org>
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
----
+Dependencies / Merging
+======================
+1. Depends on !GPIOLIB stub:
+   https://lore.kernel.org/all/20240125081601.118051-3-krzysztof.kozlowski@linaro.org/
 
-Dependency of cpufreq and reset change.
----
- include/linux/of.h | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+2. Patch #2 (cpufreq: do not open-code of_phandle_args_equal()) and patch #4
+   (reset: Instantiate reset GPIO controller for shared reset-gpios) depend on OF
+   change (patch #1).
 
-diff --git a/include/linux/of.h b/include/linux/of.h
-index 6a9ddf20e79a..85bcc05b278d 100644
---- a/include/linux/of.h
-+++ b/include/linux/of.h
-@@ -1065,6 +1065,22 @@ static inline int of_parse_phandle_with_optional_args(const struct device_node *
- 					    0, index, out_args);
- }
- 
-+/**
-+ * of_phandle_args_equal() - Compare two of_phandle_args
-+ * @a1:		First of_phandle_args to compare
-+ * @a2:		Second of_phandle_args to compare
-+ *
-+ * Return: True if a1 and a2 are the same (same node pointer, same phandle
-+ * args), false otherwise.
-+ */
-+static inline bool of_phandle_args_equal(const struct of_phandle_args *a1,
-+					 const struct of_phandle_args *a2)
-+{
-+	return a1->np == a2->np &&
-+	       a1->args_count == a2->args_count &&
-+	       !memcmp(a1->args, a2->args, sizeof(a1->args[0]) * a1->args_count);
-+}
-+
- /**
-  * of_property_count_u8_elems - Count the number of u8 elements in a property
-  *
+Changes in v6
+=============
+1. reset/core.c: Add check for number of GPIO cells==2 (Neil).
+2. Add Rb/Ack tags.
+
+Changes in v5
+=============
+1. Minor comments from Philipp: missing cleanup.h, correct indentation of
+   pr_err(), shorten gpio_device_find_by_fwnode() line.
+2. Acks/Rbs.
+
+Changes in v4
+=============
+1. New patches:
+   of: add of_phandle_args_equal() helper
+   cpufreq: do not open-code of_phandle_args_equal()
+
+2. reset-gpio.c:
+   - Drop unneeded comment (Bartosz), add Rb tag.
+   - Do not assign of_node.
+
+3. reset/core.c:
+   - Implement most of Bartosz feedback (I responded to one which I did not
+     implement) and comments from Philipp.
+   - Expect either rcdev->of_args or rcdev->of_node.
+   - Drop __reset_gpios_args_match() and use common helper (Philipp).
+   - Move declarations of automatic-cleanup variables in
+     __reset_add_reset_gpio_lookup() to place of use (Bartosz).
+   - Separate gpio_device_get_label() and kstrdup() (Philipp).
+   - Correct doc for __reset_add_reset_gpio_device(), rewrite few comments.
+   - Drop unneeded "r" variable in __reset_find_rcdev() (Philipp).
+   - Drop of_phandle_args initialization in __of_reset_control_get (Philipp).
+   - Check if CONFIG_RESET_GPIO is enabled before trying to look up reset-gpios.
+
+4. Drop Chris' patch: "i2c: muxes: pca954x: Allow sharing reset GPIO", because
+   discussion is on going.
+
+Changes in v3
+=============
+1. reset-gpio.c:
+  - Add reset_gpio_of_xlate (Philipp).
+  - reset_gpio_of_args_put->reset_gpio_of_node_put (Philipp).
+  - Expect via platdata of_phandle_args.
+  - Do not call device_set_node() to attach itself to reset consumer
+    (the final device).  This was questionable idea in the first place.
+    Bartosz suggested to use GPIO_LOOKUP to solve this.
+
+2. reset/core.c, implement Philipp's feedback. That was a lot:
+  - Commit msg fixes.
+  - Add new platform_device earlier, when reset core found "reset-gpios" but
+    not "resets".
+  - Do not overwrite of_phandle_args.
+  - Expect matching .of_reset_n_cells.
+  - Pass of_phandle_args as platdata to reset-gpio.
+  - Rename reset_gpio_device->reset_gpio_lookup and others. Fix few comments
+    and code cleanup pointed on review.
+  - From Bartosz:
+    Use GPIO_LOOKUP and a lot of cleanup.h in __reset_add_reset_gpio_lookup().
+
+3. Include here Chris' patch: "i2c: muxes: pca954x: Allow sharing reset GPIO".
+
+Changes in v2
+=============
+1. wsa884x.c: add missing return in wsa884x_get_reset(), correct comment.
+2. qcom,wsa8840.yaml: fix oneOf syntax.
+3. reset-gpio.c:
+   - Fix smatch warning on platdata evaluation.
+   - Parse GPIO args and store them in rc.of_args.
+4. reset/core.c:
+   - Revise approach based on Bartosz comments: parse the reset-gpios phandle
+     with arguments, do not use deprecated API and do not rely on gpio_desc
+     pointer.
+   - Create a list of instantiated platform devices to avoid any duplicates.
+   - After creating reset-gpio platform device, try to get new reset controller
+     or return EPROBE_DEFER.
+   - Drop the "cookie" member and add new "of_args" to "struct
+     reset_controller_dev".
+
+Description
+===========
+
+We have at least few cases where hardware engineers decided to use one
+powerdown/shutdown/reset GPIO line for multiple devices:
+
+1. WSA884x (this and previous patch):
+https://lore.kernel.org/all/b7aeda24-d638-45b7-8e30-80d287f498f8@sirena.org.uk/
+2. https://lore.kernel.org/all/20231027033104.1348921-1-chris.packham@alliedtelesis.co.nz/
+3. https://lore.kernel.org/lkml/20191030120440.3699-1-peter.ujfalusi@ti.com/
+4. https://lore.kernel.org/all/20211018234923.1769028-1-sean.anderson@seco.com/
+5. https://social.treehouse.systems/@marcan/111268780311634160
+
+I try to solve my case, hopefuly Chris' (2), partially Sean's (4) and maybe
+Hectors (5), using Rob's suggestion:
+
+https://lore.kernel.org/all/YXi5CUCEi7YmNxXM@robh.at.kernel.org/
+
+Best regards,
+Krzysztof
+
+Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>
+Cc: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Sean Anderson <sean.anderson@seco.com>
+
+Krzysztof Kozlowski (6):
+  of: Add of_phandle_args_equal() helper
+  cpufreq: do not open-code of_phandle_args_equal()
+  reset: gpio: Add GPIO-based reset controller
+  reset: Instantiate reset GPIO controller for shared reset-gpios
+  ASoC: dt-bindings: qcom,wsa8840: Add reset-gpios for shared line
+  ASoC: codecs: wsa884x: Allow sharing reset GPIO
+
+ .../bindings/sound/qcom,wsa8840.yaml          |  11 +-
+ MAINTAINERS                                   |   5 +
+ drivers/reset/Kconfig                         |   9 +
+ drivers/reset/Makefile                        |   1 +
+ drivers/reset/core.c                          | 224 +++++++++++++++++-
+ drivers/reset/reset-gpio.c                    | 119 ++++++++++
+ include/linux/cpufreq.h                       |   3 +-
+ include/linux/of.h                            |  16 ++
+ include/linux/reset-controller.h              |   4 +
+ sound/soc/codecs/wsa884x.c                    |  53 ++++-
+ 10 files changed, 419 insertions(+), 26 deletions(-)
+ create mode 100644 drivers/reset/reset-gpio.c
+
 -- 
 2.34.1
 
