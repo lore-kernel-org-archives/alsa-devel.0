@@ -4,91 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 12FD3C47DDB
-	for <alsa-devel@archiver.kernel.org>; Mon, 29 Jan 2024 16:31:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DDFF1C47DB3
+	for <alsa-devel@archiver.kernel.org>; Mon, 29 Jan 2024 16:32:11 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 69285826;
-	Mon, 29 Jan 2024 17:31:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 69285826
+	by alsa0.perex.cz (Postfix) with ESMTPS id 36F4284C;
+	Mon, 29 Jan 2024 17:32:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 36F4284C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1706545902;
-	bh=WMa+E/IsJJh0xMAdW5rdDO4TW2hkjRiEiK+MOHP5ggk=;
+	s=default; t=1706545930;
+	bh=aNsf8rFngmr4TYBrPemJAolCtcIkgvbOTrD34WK1ofM=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=tm8ypX3mA3BYnGstcyLAnFH+doeeBVohsO9qEQ4gxvtqHXfbHPo1uIL6FMdg/RjpW
-	 oQ9Jhg9EymjKnTzCLWAFn1yS4/00QBKQthIOQ1r8BoqAH/qPfWn7JQDbaAJq/H9Kj8
-	 Vjc7oUw7amUywaKbr8/ZuiaPXRfdPoLvfzZqm5Os=
+	b=r5J0s87OOnT31yP8m0whUJy4u6JiNf1Q8hLdjeAvHiF6CK1fYYvGMfjuFJREpcL+e
+	 XZb3TphXPbvJksPqeCN7CTIfnG2DetiVvODEwZSlrhhIE4R2H7xHSv+B+WbaQDMegm
+	 n/fHXe91IalNwsr7tZbfX84TxmRCkSmGc31LsIE0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 19040F8075A; Mon, 29 Jan 2024 17:28:58 +0100 (CET)
+	id 1A75BF807C3; Mon, 29 Jan 2024 17:29:03 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 48FD7F80794;
-	Mon, 29 Jan 2024 17:28:58 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 895B8F807B6;
+	Mon, 29 Jan 2024 17:29:02 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 05005F8068C; Mon, 29 Jan 2024 17:28:29 +0100 (CET)
+	id 3F151F805AE; Mon, 29 Jan 2024 17:28:32 +0100 (CET)
 Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id EDB52F80563
-	for <alsa-devel@alsa-project.org>; Mon, 29 Jan 2024 17:27:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EDB52F80563
+	by alsa1.perex.cz (Postfix) with ESMTPS id CC9D1F80587
+	for <alsa-devel@alsa-project.org>; Mon, 29 Jan 2024 17:27:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CC9D1F80587
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=PVklpkRx
+ header.s=PODMain02222019 header.b=g4/gtMUe
 Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
 	by mx0b-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id
- 40T5fM0M006968;
-	Mon, 29 Jan 2024 10:27:57 -0600
+ 40T5fM0J006968;
+	Mon, 29 Jan 2024 10:27:56 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
 	:mime-version:content-transfer-encoding:content-type; s=
-	PODMain02222019; bh=vihQFlaLo0Ij7ZEe+g2FSTJscOtY5rr5pKJ4XAH0JCQ=; b=
-	PVklpkRxDTh3yGR7YMlXPOk4A8IFPVQq5VIOmM8WT9athbXVZxai1sleFKtpIk/0
-	mZXgBI6OdaSDRP27LB7QwqPIOHQl4Sqmr1GtrsQEvRqePyPKt6p/vv53AZtd0w4L
-	3dhJADG9h5V0K0ehKJ0swkuHkx8Cj1IES0tiSZxgpXo9RLltiGdR1w/opNmW5BB8
-	H9zKKVz2h46XtblBhUj1DkPPX4gBYWLnyZUblGn474nTjUGgDs76SlpinbnUzzSz
-	FPFq6Xy6xhYzhG4wYfnZlR9uIjWHS2CYUU9JYfp1W3EAtYUugeNTaT9LhWp/OZLJ
-	cZsFcP8dxJH/Nr8k3t9gIg==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3vvy4nta8n-8
+	PODMain02222019; bh=hWIZx3SVGmXaP46UN8UM0rv5QCRd2JlcYKJUxWaPxiw=; b=
+	g4/gtMUeCr9LbazmIhlkHShBXNV42hHdSdW2QsTwJ85mYLvYrMvjj+nyjALN5i0x
+	t0mOzbvGnCJTqUPKjr8H5CB23gXVsnnc1coY4vVromAJ1O8sRFfEJCkR9MJuOIRC
+	HXOxRwbrdoXtRwX6B/9OhdWeOEThox9UNKURdQahUfnk6qgb3O/V0CRC6Dh+nJR6
+	JCFteRbZUqBFm+WqQ0D7sfxVHHd/+3Xbg5goPC9gwVXykri260haT0KbdALa4LVl
+	T7y9jIaSThvLqIqmlS5TX9dLG95WUr/AEKjAyyRM7DEnIXf1fqHXRkoBHbi0TiZA
+	66fgSWjv6Qmx1Ox/ja+hmA==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3vvy4nta8p-6
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 29 Jan 2024 10:27:56 -0600 (CST)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+	Mon, 29 Jan 2024 10:27:55 -0600 (CST)
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 29 Jan
- 2024 16:27:47 +0000
+ 2024 16:27:44 +0000
 Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
- ediex01.ad.cirrus.com (198.61.84.80) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40 via Frontend Transport; Mon, 29 Jan 2024 16:27:47 +0000
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.40 via Frontend Transport; Mon, 29 Jan 2024 16:27:44 +0000
 Received: from EDIN4L06LR3.ad.cirrus.com (EDIN4L06LR3.ad.cirrus.com
  [198.61.64.204])
-	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id E4894820270;
-	Mon, 29 Jan 2024 16:27:46 +0000 (UTC)
+	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 7E545820247;
+	Mon, 29 Jan 2024 16:27:44 +0000 (UTC)
 From: Richard Fitzgerald <rf@opensource.cirrus.com>
 To: <broonie@kernel.org>, <tiwai@suse.com>
 CC: <alsa-devel@alsa-project.org>, <linux-sound@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
         "Richard
  Fitzgerald" <rf@opensource.cirrus.com>
-Subject: [PATCH 16/18] ALSA: hda: cs35l56: Fix filename string field layout
-Date: Mon, 29 Jan 2024 16:27:35 +0000
-Message-ID: <20240129162737.497-17-rf@opensource.cirrus.com>
+Subject: [PATCH 09/18] ALSA: hda: cs35l56: Initialize all ASP1 registers
+Date: Mon, 29 Jan 2024 16:27:28 +0000
+Message-ID: <20240129162737.497-10-rf@opensource.cirrus.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240129162737.497-1-rf@opensource.cirrus.com>
 References: <20240129162737.497-1-rf@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: XVN8exbvxqmaOu5Io8r8DbmpZkHf9mda
-X-Proofpoint-GUID: XVN8exbvxqmaOu5Io8r8DbmpZkHf9mda
+X-Proofpoint-ORIG-GUID: naKf23TEBYC8V5T512tzgCeMK3gg3Fb0
+X-Proofpoint-GUID: naKf23TEBYC8V5T512tzgCeMK3gg3Fb0
 X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: GC5V3ICWM5WW4XEUPEUDXMMDEK4ICLQF
-X-Message-ID-Hash: GC5V3ICWM5WW4XEUPEUDXMMDEK4ICLQF
+Message-ID-Hash: PKTI7AHQTBFSJKMP6WIU572WZVGF5DCC
+X-Message-ID-Hash: PKTI7AHQTBFSJKMP6WIU572WZVGF5DCC
 X-MailFrom: prvs=97580788b4=rf@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -101,7 +100,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GC5V3ICWM5WW4XEUPEUDXMMDEK4ICLQF/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PKTI7AHQTBFSJKMP6WIU572WZVGF5DCC/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -110,57 +109,74 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Change the filename field layout to:
-  cs35l56-rev[-s]-dsp1-misc[-sub].[wmfw|bin]
+Add ASP1_FRAME_CONTROL1, ASP1_FRAME_CONTROL5 and the ASP1_TX?_INPUT
+registers to the sequence used to initialize the ASP configuration.
+Write this sequence to the cache and directly to the registers to
+ensure that they match.
 
-This is to keep the same firmware file naming scheme as the
-CS35L56 ASoC driver.
+A system-specific firmware can patch these registers to values that are
+not the silicon default, so that the CS35L56 boots already in the
+configuration used by Windows or by "driverless" Windows setups such
+as factory tuning.
 
-This is not a compatibility break because no firmware files have
-been published.
-
-The original field layout matched the ASoC driver, but the way the
-ASoC driver used the wm_adsp driver config to form this filename
-was bugged. Fixing the ASoC driver to use the correct wm_adsp config
-strings means that the 's' flag (to indicate a secured part) has to
-move to somewhere after the first '-'.
+These may not match how Linux is configuring the HDA codec. And anyway
+on Linux the ALSA controls are used to configure routing options.
 
 Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 Fixes: 73cfbfa9caea ("ALSA: hda/cs35l56: Add driver for Cirrus Logic CS35L56 amplifier")
 ---
- sound/pci/hda/cs35l56_hda.c | 15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
+ sound/pci/hda/cs35l56_hda.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
 diff --git a/sound/pci/hda/cs35l56_hda.c b/sound/pci/hda/cs35l56_hda.c
-index 7ba7234d8d9c..081479f65fe7 100644
+index b61e1de8c4bf..f22bcb104a4e 100644
 --- a/sound/pci/hda/cs35l56_hda.c
 +++ b/sound/pci/hda/cs35l56_hda.c
-@@ -405,16 +405,19 @@ static int cs35l56_hda_request_firmware_file(struct cs35l56_hda *cs35l56,
- 	int ret = 0;
+@@ -30,14 +30,23 @@
+   *  ASP1_RX_WL = 24 bits per sample
+   *  ASP1_TX_WL = 24 bits per sample
+   *  ASP1_RXn_EN 1..3 and ASP1_TXn_EN 1..4 disabled
++  *
++  * Override any Windows-specific mixer settings applied by the firmware.
+   */
+ static const struct reg_sequence cs35l56_hda_dai_config[] = {
+ 	{ CS35L56_ASP1_CONTROL1,	0x00000021 },
+ 	{ CS35L56_ASP1_CONTROL2,	0x20200200 },
+ 	{ CS35L56_ASP1_CONTROL3,	0x00000003 },
++	{ CS35L56_ASP1_FRAME_CONTROL1,	0x03020100 },
++	{ CS35L56_ASP1_FRAME_CONTROL5,	0x00020100 },
+ 	{ CS35L56_ASP1_DATA_CONTROL5,	0x00000018 },
+ 	{ CS35L56_ASP1_DATA_CONTROL1,	0x00000018 },
+ 	{ CS35L56_ASP1_ENABLES1,	0x00000000 },
++	{ CS35L56_ASP1TX1_INPUT,	0x00000018 },
++	{ CS35L56_ASP1TX2_INPUT,	0x00000019 },
++	{ CS35L56_ASP1TX3_INPUT,	0x00000020 },
++	{ CS35L56_ASP1TX4_INPUT,	0x00000028 },
++
+ };
  
- 	if (system_name && amp_name)
--		*filename = kasprintf(GFP_KERNEL, "%scs35l56%s-%02x-dsp1-misc-%s-%s.%s", dir,
--				      cs35l56->base.secured ? "s" : "", cs35l56->base.rev,
-+		*filename = kasprintf(GFP_KERNEL, "%scs35l56-%02x%s-dsp1-misc-%s-%s.%s", dir,
-+				      cs35l56->base.rev,
-+				      cs35l56->base.secured ? "-s" : "",
- 				      system_name, amp_name, filetype);
- 	else if (system_name)
--		*filename = kasprintf(GFP_KERNEL, "%scs35l56%s-%02x-dsp1-misc-%s.%s", dir,
--				      cs35l56->base.secured ? "s" : "", cs35l56->base.rev,
-+		*filename = kasprintf(GFP_KERNEL, "%scs35l56-%02x%s-dsp1-misc-%s.%s", dir,
-+				      cs35l56->base.rev,
-+				      cs35l56->base.secured ? "-s" : "",
- 				      system_name, filetype);
- 	else
--		*filename = kasprintf(GFP_KERNEL, "%scs35l56%s-%02x-dsp1-misc.%s", dir,
--				      cs35l56->base.secured ? "s" : "", cs35l56->base.rev,
-+		*filename = kasprintf(GFP_KERNEL, "%scs35l56-%02x%s-dsp1-misc.%s", dir,
-+				      cs35l56->base.rev,
-+				      cs35l56->base.secured ? "-s" : "",
- 				      filetype);
+ static void cs35l56_hda_play(struct cs35l56_hda *cs35l56)
+@@ -133,6 +142,10 @@ static int cs35l56_hda_runtime_resume(struct device *dev)
+ 		}
+ 	}
  
- 	if (!*filename)
++	ret = cs35l56_force_sync_asp1_registers_from_cache(&cs35l56->base);
++	if (ret)
++		goto err;
++
+ 	return 0;
+ 
+ err:
+@@ -976,6 +989,9 @@ int cs35l56_hda_common_probe(struct cs35l56_hda *cs35l56, int id)
+ 
+ 	regmap_multi_reg_write(cs35l56->base.regmap, cs35l56_hda_dai_config,
+ 			       ARRAY_SIZE(cs35l56_hda_dai_config));
++	ret = cs35l56_force_sync_asp1_registers_from_cache(&cs35l56->base);
++	if (ret)
++		goto err;
+ 
+ 	/*
+ 	 * By default only enable one ASP1TXn, where n=amplifier index,
 -- 
 2.39.2
 
