@@ -4,70 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D149AC47DDB
-	for <alsa-devel@archiver.kernel.org>; Mon, 29 Jan 2024 16:32:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2F369C47DB3
+	for <alsa-devel@archiver.kernel.org>; Mon, 29 Jan 2024 16:33:13 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1B9089F6;
-	Mon, 29 Jan 2024 17:32:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1B9089F6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4C378E67;
+	Mon, 29 Jan 2024 17:33:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4C378E67
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1706545975;
-	bh=h0rgb6aZm4gwgUniAiZJ+bxuduUl6CsjAiO7cHkbWBM=;
+	s=default; t=1706545991;
+	bh=XPyEjE/NSjThDCbkP+v910TdNDZnze3KCcGGK4rItJQ=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=mu9JlS/I3242iMdud0GjWt5W+GRfUXfpkx4ebbC3KLm7vdju1npW/wnrTTJiJ9UoD
-	 izusWzXluMA6Jj92x8G7Ie+TNDCX8gyyncU9+BYC2F7EyPE4i+zzrwLi9i5I3h6fnI
-	 5oQKXqVOGjfPiAtuBXjpm209udM3bshIi7iF8pG8=
+	b=oaVRaR8HtAqyImPHpi11FQERRl8wWBsTMm97SrJw11Ku5ANy5eJDMiQzKQ3WO0JuZ
+	 14jg5vOPXF7s9kvQFeDlYDtFKj/NANl3dtw/ZoAtlqB4rmYAcuE2LO4BXnc5X88o84
+	 afN3LcsHYeyAmIDgufGJjZT5HcnW2UYK3R9KCRzw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8B23CF80C0F; Mon, 29 Jan 2024 17:29:15 +0100 (CET)
+	id DA459F80C81; Mon, 29 Jan 2024 17:29:18 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2ADA3F80C0F;
-	Mon, 29 Jan 2024 17:29:15 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D56B5F80C58;
+	Mon, 29 Jan 2024 17:29:17 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C677AF806C7; Mon, 29 Jan 2024 17:28:41 +0100 (CET)
+	id 25933F80730; Mon, 29 Jan 2024 17:28:47 +0100 (CET)
 Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D14E4F8057B
+	by alsa1.perex.cz (Postfix) with ESMTPS id B976FF8055B
 	for <alsa-devel@alsa-project.org>; Mon, 29 Jan 2024 17:27:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D14E4F8057B
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B976FF8055B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=C1FsGSbj
+ header.s=PODMain02222019 header.b=QtaHTFH/
 Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
 	by mx0b-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id
- 40T5fM0P006968;
-	Mon, 29 Jan 2024 10:27:58 -0600
+ 40T5fM0N006968;
+	Mon, 29 Jan 2024 10:27:57 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
 	:mime-version:content-transfer-encoding:content-type; s=
-	PODMain02222019; bh=w4CGZbUCOC1yLU5NKzT5GdiUkJej28e0tOzXCRok5ms=; b=
-	C1FsGSbjVsmQ7qt3rNFc5xvBEqxwaL5P1J2VMOsZGKUICcUuIa5mkFYux2xzCFyi
-	N10PxZlSVZx55HFREquwZAFeMl0Ia2ACLNkgSf9tm9BI6+foKsaAQd5kzkwe8F65
-	urbgaSxTYazMeMC+a1aChBnGcLa8N4rYuxAiv8q6H6iLXxB19mYNSnNCmo6YIjUp
-	BSTsRLDl18c96sI2kG0AOdWTY3L0aHqhw0a0cfApZFC6y6Yhfd3Xef5I/7qCRkr7
-	JSzFHNkbKCP3cLprQI7Or4pZ2b2rOkjd9/2/0uRaPPSFu0OEycGTtWN9u6XVXasM
-	vhMjHgFz9O6hMicydxG+kg==
+	PODMain02222019; bh=NlZTDzTBH3fvSFLWZS7A61Ze30PaFxijMjapvhdkuCc=; b=
+	QtaHTFH/F0YpDsnxxjF0IhYFWR+0/Y4VkCLEZ6Lg94P0wYjwN/i6RfVqrbrL4Z6G
+	TjF/nTWLfKSnvYPlE6FUDKUxqykLNX3Cg9POGNWRVws+C1M3kqXAZC7FD9zk5h3L
+	4TaPEvkbQh0dAUiAQa7NE03SkTXTfbNsGrSqKhe1IgwHSolx1MbM5ToASvK1XZO/
+	EEvJJm8sA0m0j6GM+rmKZ/Qj1BZxHqbWsGTWzUHuo5o0EiblSHV2bqIT0oJXoibW
+	veir8FVfSncGj0SQVyMz3AF/n5f0Bj8FFnU32XYpHY8rG5NT6qLK3pr5TKrSG1oS
+	a51z2QgvJkzscEJnBARxOg==
 Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3vvy4nta8p-9
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3vvy4nta8p-8
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 29 Jan 2024 10:27:58 -0600 (CST)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
+	Mon, 29 Jan 2024 10:27:57 -0600 (CST)
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
  (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 29 Jan
- 2024 16:27:46 +0000
+ 2024 16:27:45 +0000
 Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
- ediex01.ad.cirrus.com (198.61.84.80) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40 via Frontend Transport; Mon, 29 Jan 2024 16:27:46 +0000
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.40 via Frontend Transport; Mon, 29 Jan 2024 16:27:45 +0000
 Received: from EDIN4L06LR3.ad.cirrus.com (EDIN4L06LR3.ad.cirrus.com
  [198.61.64.204])
-	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id E03C7820247;
+	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 88861820249;
 	Mon, 29 Jan 2024 16:27:45 +0000 (UTC)
 From: Richard Fitzgerald <rf@opensource.cirrus.com>
 To: <broonie@kernel.org>, <tiwai@suse.com>
@@ -75,21 +74,21 @@ CC: <alsa-devel@alsa-project.org>, <linux-sound@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
         "Richard
  Fitzgerald" <rf@opensource.cirrus.com>
-Subject: [PATCH 13/18] ASoC: cs35l56: Load tunings for the correct speaker
- models
-Date: Mon, 29 Jan 2024 16:27:32 +0000
-Message-ID: <20240129162737.497-14-rf@opensource.cirrus.com>
+Subject: [PATCH 12/18] ASoC: cs35l56: Firmware file must match the version of
+ preloaded firmware
+Date: Mon, 29 Jan 2024 16:27:31 +0000
+Message-ID: <20240129162737.497-13-rf@opensource.cirrus.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240129162737.497-1-rf@opensource.cirrus.com>
 References: <20240129162737.497-1-rf@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: mws68Ze2d3ptg8Hci6V7kFmy9aJMOmA4
-X-Proofpoint-GUID: mws68Ze2d3ptg8Hci6V7kFmy9aJMOmA4
+X-Proofpoint-ORIG-GUID: SsMX5iOukd5eVccGOIut1gKNvXHRdnn0
+X-Proofpoint-GUID: SsMX5iOukd5eVccGOIut1gKNvXHRdnn0
 X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: 3PNQGPY453HEGICX4XBHSFZJBMH7RJLM
-X-Message-ID-Hash: 3PNQGPY453HEGICX4XBHSFZJBMH7RJLM
+Message-ID-Hash: GSD4IOOLVBDA5T6AIU2UZYRSWX4WMBOF
+X-Message-ID-Hash: GSD4IOOLVBDA5T6AIU2UZYRSWX4WMBOF
 X-MailFrom: prvs=97580788b4=rf@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -102,7 +101,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3PNQGPY453HEGICX4XBHSFZJBMH7RJLM/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GSD4IOOLVBDA5T6AIU2UZYRSWX4WMBOF/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -111,170 +110,214 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-If the "spk-id-gpios" property is present it points to GPIOs whose
-value must be used to select the correct bin file to match the
-speakers.
+Check during initialization whether the firmware is already patched.
+If so, include the firmware version in the wm_adsp fwf_name string.
 
-Some manufacturers use multiple sources of speakers, which need
-different tunings for best performance. On these models the type of
-speaker fitted is indicated by the values of one or more GPIOs. The
-number formed by the GPIOs identifies the tuning required.
+If the firmware has already been patched by the BIOS the driver
+can only replace it if it has control of hard RESET.
 
-The speaker ID must be used in combination with the subsystem ID
-(either from PCI SSID or cirrus,firmware-uid property), because the
-GPIOs can only indicate variants of a specific model.
+If the driver cannot replace the firmware, it can still load a wmfw
+(for ALSA control definitions) and/or a bin (for additional tunings).
+But these must match the version of firmware that is running on the
+CS35L56.
+
+The firmware is pre-patched if FIRMWARE_MISSING == 0.
+
+Including the firmware version in the fwf_name string will
+qualify the firmware file name:
+
+Normal (unpatched or replaceable firmware):
+  cs35l56-rev-dsp1-misc[-system_name].[wmfw|bin]
+
+Preloaded firmware:
+  cs35l56-rev[-s]-VVVVVV-dsp1-misc[-system_name].[wmfw|bin]
+
+Where:
+   [-s] is an optional -s added into the name for a secured CS35L56
+   VVVVVV is the 24-bit firmware version in hexadecimal.
 
 Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-Fixes: 1a1c3d794ef6 ("ASoC: cs35l56: Use PCI SSID as the firmware UID")
+Fixes: 608f1b0dbdde ("ASoC: cs35l56: Move DSP part string generation so that it is done only once")
 ---
- include/sound/cs35l56.h           |  1 +
- sound/soc/codecs/cs35l56-shared.c | 36 +++++++++++++++++++++++++++++++
- sound/soc/codecs/cs35l56.c        | 32 ++++++++++++++++++++++-----
- sound/soc/codecs/cs35l56.h        |  1 +
- 4 files changed, 65 insertions(+), 5 deletions(-)
+ include/sound/cs35l56.h           |  3 ++
+ sound/soc/codecs/cs35l56-shared.c | 36 +++++++++++++++++++--
+ sound/soc/codecs/cs35l56.c        | 52 +++++++++++++++++--------------
+ 3 files changed, 65 insertions(+), 26 deletions(-)
 
 diff --git a/include/sound/cs35l56.h b/include/sound/cs35l56.h
-index 5d6aefc41e64..23da6298ab37 100644
+index 4db36c893d9d..5d6aefc41e64 100644
 --- a/include/sound/cs35l56.h
 +++ b/include/sound/cs35l56.h
-@@ -289,6 +289,7 @@ void cs35l56_init_cs_dsp(struct cs35l56_base *cs35l56_base, struct cs_dsp *cs_ds
- int cs35l56_read_prot_status(struct cs35l56_base *cs35l56_base,
- 			     bool *fw_missing, unsigned int *fw_version);
+@@ -75,6 +75,7 @@
+ #define CS35L56_DSP1_AHBM_WINDOW_DEBUG_0		0x25E2040
+ #define CS35L56_DSP1_AHBM_WINDOW_DEBUG_1		0x25E2044
+ #define CS35L56_DSP1_XMEM_UNPACKED24_0			0x2800000
++#define CS35L56_DSP1_FW_VER				0x2800010
+ #define CS35L56_DSP1_HALO_STATE_A1			0x2801E58
+ #define CS35L56_DSP1_HALO_STATE				0x28021E0
+ #define CS35L56_DSP1_PM_CUR_STATE_A1			0x2804000
+@@ -285,6 +286,8 @@ int cs35l56_is_fw_reload_needed(struct cs35l56_base *cs35l56_base);
+ int cs35l56_runtime_suspend_common(struct cs35l56_base *cs35l56_base);
+ int cs35l56_runtime_resume_common(struct cs35l56_base *cs35l56_base, bool is_soundwire);
+ void cs35l56_init_cs_dsp(struct cs35l56_base *cs35l56_base, struct cs_dsp *cs_dsp);
++int cs35l56_read_prot_status(struct cs35l56_base *cs35l56_base,
++			     bool *fw_missing, unsigned int *fw_version);
  int cs35l56_hw_init(struct cs35l56_base *cs35l56_base);
-+int cs35l56_get_speaker_id(struct cs35l56_base *cs35l56_base);
  int cs35l56_get_bclk_freq_id(unsigned int freq);
  void cs35l56_fill_supply_names(struct regulator_bulk_data *data);
- 
 diff --git a/sound/soc/codecs/cs35l56-shared.c b/sound/soc/codecs/cs35l56-shared.c
-index 33835535ef84..02fba4bc0a14 100644
+index 9a70db0fa418..33835535ef84 100644
 --- a/sound/soc/codecs/cs35l56-shared.c
 +++ b/sound/soc/codecs/cs35l56-shared.c
-@@ -5,6 +5,7 @@
- // Copyright (C) 2023 Cirrus Logic, Inc. and
- //                    Cirrus Logic International Semiconductor Ltd.
- 
-+#include <linux/gpio/consumer.h>
- #include <linux/regmap.h>
- #include <linux/regulator/consumer.h>
- #include <linux/types.h>
-@@ -736,6 +737,41 @@ int cs35l56_hw_init(struct cs35l56_base *cs35l56_base)
+@@ -628,10 +628,35 @@ void cs35l56_init_cs_dsp(struct cs35l56_base *cs35l56_base, struct cs_dsp *cs_ds
  }
- EXPORT_SYMBOL_NS_GPL(cs35l56_hw_init, SND_SOC_CS35L56_SHARED);
+ EXPORT_SYMBOL_NS_GPL(cs35l56_init_cs_dsp, SND_SOC_CS35L56_SHARED);
  
-+int cs35l56_get_speaker_id(struct cs35l56_base *cs35l56_base)
++int cs35l56_read_prot_status(struct cs35l56_base *cs35l56_base,
++			     bool *fw_missing, unsigned int *fw_version)
 +{
-+	struct gpio_descs *descs;
-+	int speaker_id;
-+	int i, ret;
++	unsigned int prot_status;
++	int ret;
 +
-+	/* Read the speaker type qualifier from the motherboard GPIOs */
-+	descs = gpiod_get_array_optional(cs35l56_base->dev, "spk-id", GPIOD_IN);
-+	if (!descs) {
-+		return -ENOENT;
-+	} else if (IS_ERR(descs)) {
-+		ret = PTR_ERR(descs);
-+		return dev_err_probe(cs35l56_base->dev, ret, "Failed to get spk-id-gpios\n");
++	ret = regmap_read(cs35l56_base->regmap, CS35L56_PROTECTION_STATUS, &prot_status);
++	if (ret) {
++		dev_err(cs35l56_base->dev, "Get PROTECTION_STATUS failed: %d\n", ret);
++		return ret;
 +	}
 +
-+	speaker_id = 0;
-+	for (i = 0; i < descs->ndescs; i++) {
-+		ret = gpiod_get_value_cansleep(descs->desc[i]);
-+		if (ret < 0) {
-+			dev_err_probe(cs35l56_base->dev, ret, "Failed to read spk-id[%d]\n", i);
-+			goto err;
-+		}
++	*fw_missing = !!(prot_status & CS35L56_FIRMWARE_MISSING);
 +
-+		speaker_id |= (ret << i);
++	ret = regmap_read(cs35l56_base->regmap, CS35L56_DSP1_FW_VER, fw_version);
++	if (ret) {
++		dev_err(cs35l56_base->dev, "Get FW VER failed: %d\n", ret);
++		return ret;
 +	}
 +
-+	dev_dbg(cs35l56_base->dev, "Speaker ID = %d\n", speaker_id);
-+	ret = speaker_id;
-+err:
-+	gpiod_put_array(descs);
-+
-+	return ret;
++	return 0;
 +}
-+EXPORT_SYMBOL_NS_GPL(cs35l56_get_speaker_id, SND_SOC_CS35L56_SHARED);
++EXPORT_SYMBOL_NS_GPL(cs35l56_read_prot_status, SND_SOC_CS35L56_SHARED);
 +
- static const u32 cs35l56_bclk_valid_for_pll_freq_table[] = {
- 	[0x0C] = 128000,
- 	[0x0F] = 256000,
+ int cs35l56_hw_init(struct cs35l56_base *cs35l56_base)
+ {
+ 	int ret;
+-	unsigned int devid, revid, otpid, secured;
++	unsigned int devid, revid, otpid, secured, fw_ver;
++	bool fw_missing;
+ 
+ 	/*
+ 	 * When the system is not using a reset_gpio ensure the device is
+@@ -690,8 +715,13 @@ int cs35l56_hw_init(struct cs35l56_base *cs35l56_base)
+ 		return ret;
+ 	}
+ 
+-	dev_info(cs35l56_base->dev, "Cirrus Logic CS35L56%s Rev %02X OTP%d\n",
+-		 cs35l56_base->secured ? "s" : "", cs35l56_base->rev, otpid);
++	ret = cs35l56_read_prot_status(cs35l56_base, &fw_missing, &fw_ver);
++	if (ret)
++		return ret;
++
++	dev_info(cs35l56_base->dev, "Cirrus Logic CS35L56%s Rev %02X OTP%d fw:%d.%d.%d (patched=%u)\n",
++		 cs35l56_base->secured ? "s" : "", cs35l56_base->rev, otpid,
++		 fw_ver >> 16, (fw_ver >> 8) & 0xff, fw_ver & 0xff, !fw_missing);
+ 
+ 	/* Wake source and *_BLOCKED interrupts default to unmasked, so mask them */
+ 	regmap_write(cs35l56_base->regmap, CS35L56_IRQ1_MASK_20, 0xffffffff);
 diff --git a/sound/soc/codecs/cs35l56.c b/sound/soc/codecs/cs35l56.c
-index 597677422547..c23e29da4cfb 100644
+index 8899c02c6dea..597677422547 100644
 --- a/sound/soc/codecs/cs35l56.c
 +++ b/sound/soc/codecs/cs35l56.c
-@@ -959,10 +959,19 @@ static int cs35l56_component_probe(struct snd_soc_component *component)
- 
- 	if (!cs35l56->dsp.system_name &&
- 	    (snd_soc_card_get_pci_ssid(component->card, &vendor, &device) == 0)) {
--		cs35l56->dsp.system_name = devm_kasprintf(cs35l56->base.dev,
--							  GFP_KERNEL,
--							  "%04x%04x",
--							  vendor, device);
-+		/* Append a speaker qualifier if there is a speaker ID */
-+		if (cs35l56->speaker_id >= 0) {
-+			cs35l56->dsp.system_name = devm_kasprintf(cs35l56->base.dev,
-+								  GFP_KERNEL,
-+								  "%04x%04x-spkid%d",
-+								  vendor, device,
-+								  cs35l56->speaker_id);
-+		} else {
-+			cs35l56->dsp.system_name = devm_kasprintf(cs35l56->base.dev,
-+								  GFP_KERNEL,
-+								  "%04x%04x",
-+								  vendor, device);
-+		}
- 		if (!cs35l56->dsp.system_name)
- 			return -ENOMEM;
+@@ -804,7 +804,7 @@ static struct snd_soc_dai_driver cs35l56_dai[] = {
  	}
-@@ -1245,7 +1254,13 @@ static int cs35l56_get_firmware_uid(struct cs35l56_private *cs35l56)
- 	if (ret < 0)
- 		return 0;
+ };
  
--	cs35l56->dsp.system_name = devm_kstrdup(dev, prop, GFP_KERNEL);
-+	/* Append a speaker qualifier if there is a speaker ID */
-+	if (cs35l56->speaker_id >= 0)
-+		cs35l56->dsp.system_name = devm_kasprintf(dev, GFP_KERNEL, "%s-spkid%d",
-+							  prop, cs35l56->speaker_id);
-+	else
-+		cs35l56->dsp.system_name = devm_kstrdup(dev, prop, GFP_KERNEL);
-+
- 	if (cs35l56->dsp.system_name == NULL)
- 		return -ENOMEM;
+-static void cs35l56_secure_patch(struct cs35l56_private *cs35l56)
++static void cs35l56_reinit_patch(struct cs35l56_private *cs35l56)
+ {
+ 	int ret;
  
-@@ -1260,6 +1275,7 @@ int cs35l56_common_probe(struct cs35l56_private *cs35l56)
+@@ -816,19 +816,10 @@ static void cs35l56_secure_patch(struct cs35l56_private *cs35l56)
+ 		cs35l56_mbox_send(&cs35l56->base, CS35L56_MBOX_CMD_AUDIO_REINIT);
+ }
  
- 	init_completion(&cs35l56->init_completion);
- 	mutex_init(&cs35l56->base.irq_lock);
-+	cs35l56->speaker_id = -ENOENT;
+-static void cs35l56_patch(struct cs35l56_private *cs35l56)
++static void cs35l56_patch(struct cs35l56_private *cs35l56, bool firmware_missing)
+ {
+-	unsigned int firmware_missing;
+ 	int ret;
  
- 	dev_set_drvdata(cs35l56->base.dev, cs35l56);
+-	ret = regmap_read(cs35l56->base.regmap, CS35L56_PROTECTION_STATUS, &firmware_missing);
+-	if (ret) {
+-		dev_err(cs35l56->base.dev, "Failed to read PROTECTION_STATUS: %d\n", ret);
+-		return;
+-	}
+-
+-	firmware_missing &= CS35L56_FIRMWARE_MISSING;
+-
+ 	/*
+ 	 * Disable SoundWire interrupts to prevent race with IRQ work.
+ 	 * Setting sdw_irq_no_unmask prevents the handler re-enabling
+@@ -901,34 +892,49 @@ static void cs35l56_dsp_work(struct work_struct *work)
+ 	struct cs35l56_private *cs35l56 = container_of(work,
+ 						       struct cs35l56_private,
+ 						       dsp_work);
++	unsigned int firmware_version;
++	bool firmware_missing;
++	int ret;
  
-@@ -1296,6 +1312,12 @@ int cs35l56_common_probe(struct cs35l56_private *cs35l56)
- 		gpiod_set_value_cansleep(cs35l56->base.reset_gpio, 1);
- 	}
+ 	if (!cs35l56->base.init_done)
+ 		return;
  
-+	ret = cs35l56_get_speaker_id(&cs35l56->base);
-+	if ((ret < 0) && (ret != -ENOENT))
+ 	pm_runtime_get_sync(cs35l56->base.dev);
+ 
++	ret = cs35l56_read_prot_status(&cs35l56->base, &firmware_missing, &firmware_version);
++	if (ret)
 +		goto err;
 +
-+	cs35l56->speaker_id = ret;
-+
- 	ret = cs35l56_get_firmware_uid(cs35l56);
- 	if (ret != 0)
- 		goto err;
-diff --git a/sound/soc/codecs/cs35l56.h b/sound/soc/codecs/cs35l56.h
-index dc2fe4c91e67..596b141e3f96 100644
---- a/sound/soc/codecs/cs35l56.h
-+++ b/sound/soc/codecs/cs35l56.h
-@@ -45,6 +45,7 @@ struct cs35l56_private {
- 	bool sdw_attached;
- 	struct completion init_completion;
+ 	/* Populate fw file qualifier with the revision and security state */
+-	if (!cs35l56->dsp.fwf_name) {
+-		cs35l56->dsp.fwf_name = kasprintf(GFP_KERNEL, "%02x%s-dsp1",
++	kfree(cs35l56->dsp.fwf_name);
++	if (firmware_missing) {
++		cs35l56->dsp.fwf_name = kasprintf(GFP_KERNEL, "%02x-dsp1", cs35l56->base.rev);
++	} else {
++		/* Firmware files must match the running firmware version */
++		cs35l56->dsp.fwf_name = kasprintf(GFP_KERNEL,
++						  "%02x%s-%06x-dsp1",
+ 						  cs35l56->base.rev,
+-						  cs35l56->base.secured ? "-s" : "");
+-		if (!cs35l56->dsp.fwf_name)
+-			goto err;
++						  cs35l56->base.secured ? "-s" : "",
++						  firmware_version);
+ 	}
  
-+	int speaker_id;
- 	u32 rx_mask;
- 	u32 tx_mask;
- 	u8 asp_slot_width;
++	if (!cs35l56->dsp.fwf_name)
++		goto err;
++
+ 	dev_dbg(cs35l56->base.dev, "DSP fwf name: '%s' system name: '%s'\n",
+ 		cs35l56->dsp.fwf_name, cs35l56->dsp.system_name);
+ 
+ 	/*
+-	 * When the device is running in secure mode the firmware files can
+-	 * only contain insecure tunings and therefore we do not need to
+-	 * shutdown the firmware to apply them and can use the lower cost
+-	 * reinit sequence instead.
++	 * The firmware cannot be patched if it is already running from
++	 * patch RAM. In this case the firmware files are versioned to
++	 * match the running firmware version and will only contain
++	 * tunings. We do not need to shutdown the firmware to apply
++	 * tunings so can use the lower cost reinit sequence instead.
+ 	 */
+-	if (cs35l56->base.secured)
+-		cs35l56_secure_patch(cs35l56);
++	if (!firmware_missing)
++		cs35l56_reinit_patch(cs35l56);
+ 	else
+-		cs35l56_patch(cs35l56);
++		cs35l56_patch(cs35l56, firmware_missing);
+ 
+ 
+ 	/*
 -- 
 2.39.2
 
