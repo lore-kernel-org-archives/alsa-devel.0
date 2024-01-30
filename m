@@ -4,54 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2923DC46CD2
-	for <alsa-devel@archiver.kernel.org>; Tue, 30 Jan 2024 18:48:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D94F6C46CD2
+	for <alsa-devel@archiver.kernel.org>; Tue, 30 Jan 2024 18:49:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8B52314DC;
-	Tue, 30 Jan 2024 19:48:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8B52314DC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2F983F52;
+	Tue, 30 Jan 2024 19:48:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2F983F52
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1706640519;
-	bh=+h2BNyNBH2PQ5+Cwjewz2w+MpDwd4+tscGSgxiN4bBw=;
+	s=default; t=1706640540;
+	bh=wEdD348a9MfphH5q9oOA68An6QVp+AVDQ4A3h9ix8BU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=tUzz9FUx6vghsXz9UNWH+EEw2MHzXDa32pJXU/7OfyyfyUA8AfmKfnNc+tiexEED+
-	 1/dJ7znBpnA7y5tt5pcy2r3b0iL8hKd7yfbMrubJYCCQDuiEi9zFj/61Wi0F0qcZdS
-	 Y9DyHDz9eC8tiEFCDvjaiqQEPhmihKgkTrVNWCaE=
+	b=TzyiBoWLPUrOyvhRbKT+PtYZqTKIGp5ujQLNG9bZIZpXGb8R9+OXkRZuWmUsvl5c6
+	 nkTE8OWUtzDrje+GPtdn8XArK91GM3Hn4IRBIidrBcL2P9P1FZry+vNH4xmNqlpH0B
+	 UEfY2AbwN45zMZKscLSzTs2zrwJylrHFR8XPUwA4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 18F53F80655; Tue, 30 Jan 2024 19:47:12 +0100 (CET)
+	id D0C29F8068A; Tue, 30 Jan 2024 19:47:18 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 785E6F80655;
-	Tue, 30 Jan 2024 19:47:11 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 376B9F8068C;
+	Tue, 30 Jan 2024 19:47:17 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7D3C4F805E2; Tue, 30 Jan 2024 19:47:02 +0100 (CET)
-Received: from sin.source.kernel.org (sin.source.kernel.org
- [IPv6:2604:1380:40e1:4800::1])
+	id 02EECF80564; Tue, 30 Jan 2024 19:47:02 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7B77BF80563
-	for <alsa-devel@alsa-project.org>; Tue, 30 Jan 2024 19:46:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7B77BF80563
+	by alsa1.perex.cz (Postfix) with ESMTPS id 94B62F80564
+	for <alsa-devel@alsa-project.org>; Tue, 30 Jan 2024 19:46:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 94B62F80564
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=linuxfoundation.org header.i=@linuxfoundation.org
- header.a=rsa-sha256 header.s=korg header.b=gxE/1m3L
+ header.a=rsa-sha256 header.s=korg header.b=E/anzjRI
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 6D980CE1C3A;
-	Tue, 30 Jan 2024 18:46:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99253C43390;
-	Tue, 30 Jan 2024 18:46:42 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 1887F60FCD;
+	Tue, 30 Jan 2024 18:46:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8FBE0C43394;
+	Tue, 30 Jan 2024 18:46:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1706640402;
-	bh=+h2BNyNBH2PQ5+Cwjewz2w+MpDwd4+tscGSgxiN4bBw=;
+	s=korg; t=1706640404;
+	bh=wEdD348a9MfphH5q9oOA68An6QVp+AVDQ4A3h9ix8BU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=gxE/1m3LBF4/0Uug8Ja3628zL9XNu1jPKRDjIb+WoJn9bSz80+kQE1VSaK8IGV36w
-	 kY6fxwphK6yqq4kk4NJSjj89nLgrv9NOzmBSNj/AeKTgQYNP73fFIr+OMI9g4eIS2q
-	 bOWkXgSN95hGjetUpnZIgmPF5aJFt6dD6DXjrFjU=
+	b=E/anzjRI6nxUAS3DddupnKyfHU+TxhTaG5TlVcxVlu+xaU2bLscMa/6VX5kG407cl
+	 Ymw16RH7RUIh3CAuq7XqoidnSiMdU+dMRgOeiuHhfPRI+/dBaDA9//5GK2GrlFxM1H
+	 Tucp3mfjk7/OxF3Ox8WFLgMf/6qkabPk1AKpifVE=
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To: alsa-devel@alsa-project.org
 Cc: linux-kernel@vger.kernel.org,
@@ -61,25 +61,24 @@ Cc: linux-kernel@vger.kernel.org,
 	Bard Liao <yung-chuan.liao@linux.intel.com>,
 	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
 	Sanyog Kale <sanyog.r.kale@intel.com>
-Subject: [PATCH 3/6] soundwire: sysfs: cleanup the logic for creating the dp0
- sysfs attributes
-Date: Tue, 30 Jan 2024 10:46:29 -0800
-Message-ID: <2024013029-budget-mulled-5b34@gregkh>
+Subject: [PATCH 5/6] soundwire: sysfs: remove sdw_slave_sysfs_init()
+Date: Tue, 30 Jan 2024 10:46:31 -0800
+Message-ID: <2024013030-denatured-swaddling-b047@gregkh>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <2024013025-spoiling-exact-ad20@gregkh>
 References: <2024013025-spoiling-exact-ad20@gregkh>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2392;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3127;
  i=gregkh@linuxfoundation.org; h=from:subject:message-id;
- bh=+h2BNyNBH2PQ5+Cwjewz2w+MpDwd4+tscGSgxiN4bBw=;
- b=owGbwMvMwCRo6H6F97bub03G02pJDKk7XVhfd9kz3i+ziuUsbZn91kua31/nxW6Lq/e7v0ZWH
- 3Hb2FLYEcvCIMjEICumyPJlG8/R/RWHFL0MbU/DzGFlAhnCwMUpABOpz2WYn5egX7lZUK/wMuuz
- qjcsv3dWRTbuY5jvNWNKbtb0F41zllTeZXxww81vwYR8AA==
+ bh=wEdD348a9MfphH5q9oOA68An6QVp+AVDQ4A3h9ix8BU=;
+ b=owGbwMvMwCRo6H6F97bub03G02pJDKk7Xdhvzpyex5JSJ/p6auuuCX6mVm/2zdy3SlX24fYlL
+ seUt8gu64hlYRBkYpAVU2T5so3n6P6KQ4pehranYeawMoEMYeDiFICJnL/IMD/Y2PanvDTLn+ce
+ l1Je3I5VCra8FMGwYNHNTj/200tZlUT1iuPCdP9pzFY4CQA=
 X-Developer-Key: i=gregkh@linuxfoundation.org; a=openpgp;
  fpr=F4B60CC5BF78C2214A313DCB3147D40DDB2DFB29
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: V5O4YFIVJGX5ZUZB74KGKHLMHPDYCXWX
-X-Message-ID-Hash: V5O4YFIVJGX5ZUZB74KGKHLMHPDYCXWX
+Message-ID-Hash: ZQRHULYNNCHWWJ5EIXOZITXOXXGQFB5P
+X-Message-ID-Hash: ZQRHULYNNCHWWJ5EIXOZITXOXXGQFB5P
 X-MailFrom: gregkh@linuxfoundation.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -92,7 +91,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/V5O4YFIVJGX5ZUZB74KGKHLMHPDYCXWX/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZQRHULYNNCHWWJ5EIXOZITXOXXGQFB5P/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -101,14 +100,9 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-There's no need to special-case the dp0 sysfs attributes, the
-is_visible() callback in the attribute group can handle that for us, so
-add that and add it to the attribute group list making the logic simpler
-overall.
-
-This is a step on the way to moving all of the sysfs attribute handling
-into the default driver core attribute group logic so that the soundwire
-core does not have to do any of it manually.
+Now that sdw_slave_sysfs_init() only calls sdw_slave_sysfs_dpn_init(),
+just do that instead and remove sdw_slave_sysfs_init() to get it out of
+the way to save a bit of logic and code size.
 
 Cc: Vinod Koul <vkoul@kernel.org>
 Cc: Bard Liao <yung-chuan.liao@linux.intel.com>
@@ -118,67 +112,77 @@ Cc: alsa-devel@alsa-project.org
 Cc: linux-kernel@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/soundwire/sysfs_slave.c | 28 ++++++++++++++++++++++------
- 1 file changed, 22 insertions(+), 6 deletions(-)
+ drivers/soundwire/bus_type.c        |  4 ++--
+ drivers/soundwire/sysfs_local.h     |  1 -
+ drivers/soundwire/sysfs_slave.c     | 13 -------------
+ drivers/soundwire/sysfs_slave_dpn.c |  3 +++
+ 4 files changed, 5 insertions(+), 16 deletions(-)
 
+diff --git a/drivers/soundwire/bus_type.c b/drivers/soundwire/bus_type.c
+index 5abe5593395a..6085eb8c8d85 100644
+--- a/drivers/soundwire/bus_type.c
++++ b/drivers/soundwire/bus_type.c
+@@ -126,8 +126,8 @@ static int sdw_drv_probe(struct device *dev)
+ 	if (slave->prop.use_domain_irq)
+ 		sdw_irq_create_mapping(slave);
+ 
+-	/* init the sysfs as we have properties now */
+-	ret = sdw_slave_sysfs_init(slave);
++	/* init the dynamic sysfs attributes we need */
++	ret = sdw_slave_sysfs_dpn_init(slave);
+ 	if (ret < 0)
+ 		dev_warn(dev, "Slave sysfs init failed:%d\n", ret);
+ 
+diff --git a/drivers/soundwire/sysfs_local.h b/drivers/soundwire/sysfs_local.h
+index 3ab8658a7782..fa048e112629 100644
+--- a/drivers/soundwire/sysfs_local.h
++++ b/drivers/soundwire/sysfs_local.h
+@@ -15,7 +15,6 @@ extern const struct attribute_group *sdw_slave_status_attr_groups[];
+ extern const struct attribute_group *sdw_attr_groups[];
+ 
+ /* additional device-managed properties reported after driver probe */
+-int sdw_slave_sysfs_init(struct sdw_slave *slave);
+ int sdw_slave_sysfs_dpn_init(struct sdw_slave *slave);
+ 
+ #endif /* __SDW_SYSFS_LOCAL_H */
 diff --git a/drivers/soundwire/sysfs_slave.c b/drivers/soundwire/sysfs_slave.c
-index 83e3f6cc3250..8876c7807048 100644
+index 3afc0dc06c98..0eefc205f697 100644
 --- a/drivers/soundwire/sysfs_slave.c
 +++ b/drivers/soundwire/sysfs_slave.c
-@@ -184,18 +184,40 @@ static struct attribute *dp0_attrs[] = {
+@@ -221,19 +221,6 @@ const struct attribute_group *sdw_attr_groups[] = {
  	NULL,
  };
  
-+static umode_t dp0_attr_visible(struct kobject *kobj, struct attribute *attr,
-+			      int n)
-+{
-+	struct sdw_slave *slave = dev_to_sdw_dev(kobj_to_dev(kobj));
-+
-+	if (slave->prop.dp0_prop)
-+		return attr->mode;
-+	return 0;
-+}
-+
-+static bool dp0_group_visible(struct kobject *kobj)
-+{
-+	struct sdw_slave *slave = dev_to_sdw_dev(kobj_to_dev(kobj));
-+
-+	if (slave->prop.dp0_prop)
-+		return true;
-+	return false;
-+}
-+DEFINE_SYSFS_GROUP_VISIBLE(dp0);
-+
- /*
-  * we don't use ATTRIBUTES_GROUP here since we want to add a subdirectory
-  * for dp0-level properties
-  */
- static const struct attribute_group dp0_group = {
- 	.attrs = dp0_attrs,
-+	.is_visible = SYSFS_GROUP_VISIBLE(dp0),
- 	.name = "dp0",
- };
- 
- static const struct attribute_group *slave_groups[] = {
- 	&slave_attr_group,
- 	&sdw_slave_dev_attr_group,
-+	&dp0_group,
- 	NULL,
- };
- 
-@@ -207,12 +229,6 @@ int sdw_slave_sysfs_init(struct sdw_slave *slave)
- 	if (ret < 0)
- 		return ret;
- 
--	if (slave->prop.dp0_prop) {
--		ret = devm_device_add_group(&slave->dev, &dp0_group);
+-int sdw_slave_sysfs_init(struct sdw_slave *slave)
+-{
+-	int ret;
+-
+-	if (slave->prop.source_ports || slave->prop.sink_ports) {
+-		ret = sdw_slave_sysfs_dpn_init(slave);
 -		if (ret < 0)
 -			return ret;
 -	}
 -
- 	if (slave->prop.source_ports || slave->prop.sink_ports) {
- 		ret = sdw_slave_sysfs_dpn_init(slave);
- 		if (ret < 0)
+-	return 0;
+-}
+-
+ /*
+  * the status is shown in capital letters for UNATTACHED and RESERVED
+  * on purpose, to highligh users to the fact that these status values
+diff --git a/drivers/soundwire/sysfs_slave_dpn.c b/drivers/soundwire/sysfs_slave_dpn.c
+index c4b6543c09fd..a3fb380ee519 100644
+--- a/drivers/soundwire/sysfs_slave_dpn.c
++++ b/drivers/soundwire/sysfs_slave_dpn.c
+@@ -283,6 +283,9 @@ int sdw_slave_sysfs_dpn_init(struct sdw_slave *slave)
+ 	int ret;
+ 	int i;
+ 
++	if (!slave->prop.source_ports && !slave->prop.sink_ports)
++		return 0;
++
+ 	mask = slave->prop.source_ports;
+ 	for_each_set_bit(i, &mask, 32) {
+ 		ret = add_all_attributes(&slave->dev, i, 1);
 -- 
 2.43.0
 
