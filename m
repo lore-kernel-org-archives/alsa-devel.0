@@ -4,58 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9CCDCC46CD2
-	for <alsa-devel@archiver.kernel.org>; Tue, 30 Jan 2024 15:59:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F2B1BC46CD2
+	for <alsa-devel@archiver.kernel.org>; Tue, 30 Jan 2024 15:59:50 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1BF4EED1;
-	Tue, 30 Jan 2024 16:59:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1BF4EED1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 54F74F53;
+	Tue, 30 Jan 2024 16:59:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 54F74F53
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1706630371;
-	bh=igZZcV/zWtQctF2QKGyC6Gn9cB3ebUyhI2KC+rnG7SY=;
+	s=default; t=1706630389;
+	bh=ayeCCM9eX9UuzR6QhI1Yi/QBnlgDh998JcXlC3hLB44=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=g8Zxf4SzXpXWHlxQkfMTElhnqCmkxhhL5pHjZ+gQLGiLdTK7IzG/yz/atdnG9yvbI
-	 Tks+8kLoTcfEUVQD4CneDP2vLxD/yLe1FmcTRKOJpfNfCElD69NeTvKA9gill4l1zR
-	 dmHKQIXnm0wqbTqEiQs9aKXXgQ05iYRqHRLz7ebA=
+	b=r+W5oBOUhaXoPHhq6hSn2qQ+7dpcy48mpBfiUEJVGikgHXSv+bLWox5BK0IVWWUQy
+	 TUxctAQIsDwFAftoZaCmDgZdOvMG1Q00yhqWFWgCxQQMrkq94gRF+B8Y77+1Pg0KVo
+	 90isHT/zkS04VnBUV9xXxBZPIPgP4c/CbW/4Jt7I=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 820A5F80580; Tue, 30 Jan 2024 16:58:59 +0100 (CET)
+	id CDCC5F80564; Tue, 30 Jan 2024 16:59:22 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 81E9FF805AA;
-	Tue, 30 Jan 2024 16:58:58 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 54C67F805BA;
+	Tue, 30 Jan 2024 16:59:22 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 14D9FF8055C; Tue, 30 Jan 2024 16:58:53 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	id BBD5DF80588; Tue, 30 Jan 2024 16:59:18 +0100 (CET)
+Received: from sin.source.kernel.org (sin.source.kernel.org
+ [IPv6:2604:1380:40e1:4800::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id BEC7DF80149
-	for <alsa-devel@alsa-project.org>; Tue, 30 Jan 2024 16:58:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BEC7DF80149
+	by alsa1.perex.cz (Postfix) with ESMTPS id 06E70F80548
+	for <alsa-devel@alsa-project.org>; Tue, 30 Jan 2024 16:59:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 06E70F80548
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=myibXwsh
+ header.s=k20201202 header.b=S9EHfRRg
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 4597660DF4;
-	Tue, 30 Jan 2024 15:58:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D3E8C43394;
-	Tue, 30 Jan 2024 15:58:45 +0000 (UTC)
+	by sin.source.kernel.org (Postfix) with ESMTP id 6AB55CE1B56;
+	Tue, 30 Jan 2024 15:59:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2BF70C433C7;
+	Tue, 30 Jan 2024 15:59:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706630325;
-	bh=igZZcV/zWtQctF2QKGyC6Gn9cB3ebUyhI2KC+rnG7SY=;
+	s=k20201202; t=1706630350;
+	bh=ayeCCM9eX9UuzR6QhI1Yi/QBnlgDh998JcXlC3hLB44=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=myibXwshLj1afq3Gsz9VBx1m/Gwuvd80L1wMgOGnJFiGBH3fh5pHt07L7gIbQVAUF
-	 IZxpvXjm2QcuSDBU7uj9nhHYLIgpsBz0qfegJoWrnefhWGUIwZL4tylg850ieisaex
-	 Jr0gs19ebJf1fkiH7Gn99mxMxJjzT/D9FSLxJnN6JoOMai4qIZGFKZAJbLeTxF/TvM
-	 a5umkR43R+BjzziFyquL5NUuJ6Cjkzi5HkMdwVzA7TK92Xa2KCkdzVPzTukTTL0f4w
-	 UcpG7fr4xGMUNl5kdaWvCni1a+5V6FGxfy0jGbuf5RIXnNjUBF3tXkU7ZOERdi1Ooj
-	 uSNATDh50VGwQ==
-Date: Tue, 30 Jan 2024 21:28:41 +0530
+	b=S9EHfRRgKUwzZqRUsOXlRJ2Zr5I8nKUacNjp87CUob2Lq3vLHh8FTJo2jA2ndu8qD
+	 LpYyGt9mvgL+H9SMRSdIwmm6ymznsbjjUSQ4FI/aKqbmRREjhTwgj6NiKJKgfcGRpY
+	 4DJEnFpqN6waJiXJKW3mHVlHDmXZHDrDU0q4QzTSdr3HnkJHcTZAjfssdz8sszt0nt
+	 qi17/4qrK2FHI8UO9rvLMC+6YCESkoyPJlo1+PieAXIGCiPzqqlxjcURe2PFFH3HZr
+	 eeKUjvQoayjTy5SFmXuTX2X35sxdAQEc0SpwvOC1kn1bcxhngo/kNd1A3sf43Lcjqf
+	 dDGtAqcR+kG+g==
+Date: Tue, 30 Jan 2024 21:29:07 +0530
 From: Vinod Koul <vkoul@kernel.org>
 To: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 Cc: broonie@kernel.org, alsa-devel@alsa-project.org,
@@ -65,16 +66,17 @@ Cc: broonie@kernel.org, alsa-devel@alsa-project.org,
 	venkataprasad.potturu@amd.com,
 	Sanyog Kale <sanyog.r.kale@intel.com>,
 	open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH V4 02/13] soundwire: amd: update license
-Message-ID: <ZbkcsYHBVYnxSe9e@matsya>
+Subject: Re: [PATCH V4 04/13] soundwire: amd: implement function to extract
+ slave information
+Message-ID: <Zbkcy3KLLkJ1mw7x@matsya>
 References: <20240129055147.1493853-1-Vijendar.Mukunda@amd.com>
- <20240129055147.1493853-3-Vijendar.Mukunda@amd.com>
+ <20240129055147.1493853-5-Vijendar.Mukunda@amd.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240129055147.1493853-3-Vijendar.Mukunda@amd.com>
-Message-ID-Hash: B4PSETEOVXCPRXCHABDI37H2RX7GVZXA
-X-Message-ID-Hash: B4PSETEOVXCPRXCHABDI37H2RX7GVZXA
+In-Reply-To: <20240129055147.1493853-5-Vijendar.Mukunda@amd.com>
+Message-ID-Hash: JAQOYSKBJU3LIJVVASOG5IE622HNK7MJ
+X-Message-ID-Hash: JAQOYSKBJU3LIJVVASOG5IE622HNK7MJ
 X-MailFrom: vkoul@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -87,7 +89,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/B4PSETEOVXCPRXCHABDI37H2RX7GVZXA/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JAQOYSKBJU3LIJVVASOG5IE622HNK7MJ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -97,8 +99,9 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 On 29-01-24, 11:21, Vijendar Mukunda wrote:
-> Update license to dual license to align with Sound Open Firmware (SOF)
-> driver as SOF uses dual license.
+> Implement function to extract slaves information connected on the bus.
+> This information is required during machine select logic.
+> This function will be called from machine select logic code.
 
 Acked-by: Vinod Koul <vkoul@kernel.org>
 
