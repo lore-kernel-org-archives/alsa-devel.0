@@ -4,109 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1154FC4828F
-	for <alsa-devel@archiver.kernel.org>; Fri,  2 Feb 2024 15:43:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DA8E4C48291
+	for <alsa-devel@archiver.kernel.org>; Fri,  2 Feb 2024 16:18:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5FD7884D;
-	Fri,  2 Feb 2024 16:43:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5FD7884D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1692B84D;
+	Fri,  2 Feb 2024 17:18:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1692B84D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1706888594;
-	bh=scWCCSNr1Q3lv9FkWzECrNcLle7Ox7YalRe8vTccd4A=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=NJFJRGWFqqStzLIHCpG8umPS6MTnOaAnpHigLmTr2nq3d++zC7KfsYN24iw51Qg3W
-	 GeXIBtzKYphbk/1G5GXHhBnKWi7srEaDYeB+7VLERucwoFvUg8bMpNBibNM7uItqqg
-	 gqITBw2LMwPcGWcICfQgGCDh0viC0aXzg7yghl1Q=
+	s=default; t=1706890708;
+	bh=AE0SEUj7Y/tfMu8o/0l1ilY4/oHuzQA8xZ6TeYOyFJU=;
+	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=elgP7LVqM9e8hCNvVzYx8Vsjoq4GGZFStp3p4ixZwn1O93M67oLa+yMYl8RHMUFrX
+	 2ECqXUS9cCxmhJ6OKrimtmz1hLQvmzx9svL1C5H7xpLpOEMo8KdqEWPu8gJkLN5w5m
+	 kCtyM11JK1sDEXj68RYgHKo5jH8uGmwNtoM0DO9M=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 54430F80609; Fri,  2 Feb 2024 16:42:02 +0100 (CET)
+	id 2F9DFF80571; Fri,  2 Feb 2024 17:17:56 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E2A68F80600;
-	Fri,  2 Feb 2024 16:42:01 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4E48BF8056F;
+	Fri,  2 Feb 2024 17:17:56 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C2D8DF80588; Fri,  2 Feb 2024 16:41:55 +0100 (CET)
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com
- [IPv6:2a00:1450:4864:20::12c])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 49380F8055B; Fri,  2 Feb 2024 17:17:46 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 30F49F80149
-	for <alsa-devel@alsa-project.org>; Fri,  2 Feb 2024 16:41:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 30F49F80149
+	by alsa1.perex.cz (Postfix) with ESMTPS id 68ADAF80548
+	for <alsa-devel@alsa-project.org>; Fri,  2 Feb 2024 17:17:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 68ADAF80548
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=oSQdEed8
-Received: by mail-lf1-x12c.google.com with SMTP id
- 2adb3069b0e04-5112d5ab492so2935101e87.0
-        for <alsa-devel@alsa-project.org>;
- Fri, 02 Feb 2024 07:41:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706888501; x=1707493301;
- darn=alsa-project.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JTaE595ceD/5+24qRv22P7o3MSmNjYJJN4DZfYKGFdg=;
-        b=oSQdEed8fdIFQG2Ken6KVwJ2YtFc526GQfmL0oFRAcNqEoE0OX6uPSAgou4AYDDRwA
-         vsZiK5uINY77AvWh6uZlmCc5VLmMcAYkuGEeQr7H5ZVrkmOlBitmiCEB7KJk51ywZQTc
-         ERnk4GJppQzpNcLiwxjftEegiyZkgOkW8OZjYSRtBH5wHirrTrJ3z3sK5o7OZkXMJiP5
-         oaqd7sLBn5SdcKESDIO4UVAsC4dM6xL5fbkOevefO0j75x9PE0eq2J0Ag4tSIyCSMR2b
-         a7aaESvTed67p3ouATuoK4uhnKzcZV27jrxjgMRWEpHWdQ7uTCIrI5Nj3GehNTJbVO0i
-         L2UA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706888501; x=1707493301;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JTaE595ceD/5+24qRv22P7o3MSmNjYJJN4DZfYKGFdg=;
-        b=FflcrPGvnXLRkEkUa0b16+6UJm6WeITadzSKqGVhTY8BgyIrgV4/uO3giKpOvNRm4X
-         JggljWmnBKIPwpKvq7ny8EU07NLzCHgeIfHhleGA2zRBlMKzyG7Fq9f6I3HVeIv7NtZL
-         aSa5A8uJRMt7VXLzmizW7dLUYBRUMmFVfwchncO6ejsk4mlsE/rjKQINCCEblZxdrjDY
-         xv5Sb6W9EobjyIolljisN1RrpkQvSgDVBcxCmFXnZeeCwUXv+5/RVB823XgU6rkw20Xc
-         9GsB3rj2zjWDM/OyEp47CraVaikgBSpWh9JkD2Yav+zkfltTMVFTYPFim49+G4ndatL3
-         iu8g==
-X-Gm-Message-State: AOJu0YzkJjECj2fEByMgy6FZCpf8ToKD+Gp2nJKAstlS1cO13bCJrzlw
-	StJyx3ec4UbslS/5j6f0f2Ij5y8AwWs2RLj60yC9SEa/Vd8CGpq6WIW2kGDNEoo=
-X-Google-Smtp-Source: 
- AGHT+IHGdGRJSDguuQBM/q+45C0xJUE3HWzzBXrNL1nVnq4WR1VewqBP5WknN4Upn68unEhG+XLvNQ==
-X-Received: by 2002:a05:6512:707:b0:511:3622:508e with SMTP id
- b7-20020a056512070700b005113622508emr1363443lfs.62.1706888500980;
-        Fri, 02 Feb 2024 07:41:40 -0800 (PST)
-X-Forwarded-Encrypted: i=0;
- AJvYcCVkuv4Il9EedgVLpQq/ZhdclgzdmtTwnPPSDBsrgSnZo+gjyW9AHgkjtA+/h21aEJrXSM0g1Sj80CLaSu1E5KvA4lvxLsn460edSq0v+V53kBD0D+qR7Aup78/Hhj+2CZqq04PyCdookc7Mqu53p6Ef0iliIChxx/NYodMp70e3QHW5z1l8YYdk4MXG24+VwQYHaTIXy4N4QFMbI0A70BnG2aDH07mIL9KD0FGVXoKP4oyTC690lDHVbZXfeGriepHqBiaYDn43d1ynKeutgJROqaBopUTFKb6d+jurU5MSKqJvhnAF
-Received: from krzk-bin.. ([178.197.222.62])
-        by smtp.gmail.com with ESMTPSA id
- cu9-20020a170906ba8900b00a37116e2885sm624819ejd.84.2024.02.02.07.41.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Feb 2024 07:41:40 -0800 (PST)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-	Banajit Goswami <bgoswami@quicinc.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	alsa-devel@alsa-project.org,
-	linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH 2/3] ASoC: codecs: tx-macro: Mark AMIC control registers as
- volatile
-Date: Fri,  2 Feb 2024 16:41:33 +0100
-Message-Id: <20240202154134.66967-3-krzysztof.kozlowski@linaro.org>
+ unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
+ header.s=PODMain02222019 header.b=U2D7rWPe
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+	by mx0a-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id
+ 412G7T7N005383;
+	Fri, 2 Feb 2024 10:17:35 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=PODMain02222019; bh=d
+	ztUlVgM3uruxT9g6eLIIFQ6JObOYYRKqDfkXdE9Lv4=; b=U2D7rWPeo0Kwqh2Mq
+	qIqYSkGA2P9FvQOg8UODMnxUo/37N075UlLDm0Q6zn3erVVzSq+Zpr9FxfndCH1J
+	FUYa0pl8gfSxTVyZNEnpwZ57YPhv0kopDBurQ+7yJNFYBKTJqtEsdpjQKc++eYzl
+	V3fsUilNanUxqiDi+VU2KRZ1n6C7rd5ZDDjiGGPkBdb725t8dLKElgE91CQmGBcS
+	HPUvhfoXi8E3maV3zNejSyt/YwPvKkyM7r7+MZ5nxVqsakM25a6d7w40sMLh6K7z
+	oXGOePxSS441yRrlHFuV+BLu0OezMDfKyK/DEy06aMyfKcUsMByvqfB5vV0teZsG
+	sdsbA==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3w0puwgqxn-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 02 Feb 2024 10:17:35 -0600 (CST)
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 2 Feb
+ 2024 16:17:33 +0000
+Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.40 via Frontend Transport; Fri, 2 Feb 2024 16:17:33 +0000
+Received: from sbinding-cirrus-dsktp2.ad.cirrus.com (unknown [198.61.64.191])
+	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id C43FD820246;
+	Fri,  2 Feb 2024 16:17:32 +0000 (UTC)
+From: Stefan Binding <sbinding@opensource.cirrus.com>
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+CC: <alsa-devel@alsa-project.org>, <linux-sound@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
+        "Stefan
+ Binding" <sbinding@opensource.cirrus.com>
+Subject: [PATCH v1] ALSA: hda/realtek: Remove two HP Laptops using CS35L41
+Date: Fri, 2 Feb 2024 16:17:27 +0000
+Message-ID: <20240202161727.321373-1-sbinding@opensource.cirrus.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240202154134.66967-1-krzysztof.kozlowski@linaro.org>
-References: <20240202154134.66967-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: HMTGL3LPV6GONHBXM4ESJQRXBXOAAPUA
-X-Message-ID-Hash: HMTGL3LPV6GONHBXM4ESJQRXBXOAAPUA
-X-MailFrom: krzysztof.kozlowski@linaro.org
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: Lh3Nk5urHu-PSPEdo_zb_V356sj0i91C
+X-Proofpoint-GUID: Lh3Nk5urHu-PSPEdo_zb_V356sj0i91C
+X-Proofpoint-Spam-Reason: safe
+Message-ID-Hash: LAASFNPYT3UVXEMUFQH7YSVYIQGOMNIU
+X-Message-ID-Hash: LAASFNPYT3UVXEMUFQH7YSVYIQGOMNIU
+X-MailFrom: prvs=97625aa8a4=sbinding@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -118,7 +96,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HMTGL3LPV6GONHBXM4ESJQRXBXOAAPUA/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LAASFNPYT3UVXEMUFQH7YSVYIQGOMNIU/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -127,26 +105,26 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Just like DMIC, the AMIC control registers are volatile.
+These two HP laptops are changing configurations.
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
 ---
- sound/soc/codecs/lpass-tx-macro.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/pci/hda/patch_realtek.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/sound/soc/codecs/lpass-tx-macro.c b/sound/soc/codecs/lpass-tx-macro.c
-index cdceccf64ac8..2d4f6c04332b 100644
---- a/sound/soc/codecs/lpass-tx-macro.c
-+++ b/sound/soc/codecs/lpass-tx-macro.c
-@@ -432,6 +432,8 @@ static bool tx_is_volatile_register(struct device *dev, unsigned int reg)
- 	case CDC_TX_TOP_CSR_SWR_DMIC1_CTL:
- 	case CDC_TX_TOP_CSR_SWR_DMIC2_CTL:
- 	case CDC_TX_TOP_CSR_SWR_DMIC3_CTL:
-+	case CDC_TX_TOP_CSR_SWR_AMIC0_CTL:
-+	case CDC_TX_TOP_CSR_SWR_AMIC1_CTL:
- 		return true;
- 	}
- 	return false;
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 348505edf063..3d7e7b32fcf4 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -9855,8 +9855,6 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x103c, 0x8cdd, "HP Spectre", ALC287_FIXUP_CS35L41_I2C_2),
+ 	SND_PCI_QUIRK(0x103c, 0x8cde, "HP Spectre", ALC287_FIXUP_CS35L41_I2C_2),
+ 	SND_PCI_QUIRK(0x103c, 0x8cf5, "HP ZBook Studio 16", ALC245_FIXUP_CS35L41_SPI_4_HP_GPIO_LED),
+-	SND_PCI_QUIRK(0x103c, 0x8d01, "HP EliteBook G12", ALC287_FIXUP_CS35L41_I2C_4),
+-	SND_PCI_QUIRK(0x103c, 0x8d08, "HP EliteBook 1045 G12", ALC287_FIXUP_CS35L41_I2C_4),
+ 	SND_PCI_QUIRK(0x1043, 0x103e, "ASUS X540SA", ALC256_FIXUP_ASUS_MIC),
+ 	SND_PCI_QUIRK(0x1043, 0x103f, "ASUS TX300", ALC282_FIXUP_ASUS_TX300),
+ 	SND_PCI_QUIRK(0x1043, 0x106d, "Asus K53BE", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
 -- 
 2.34.1
 
