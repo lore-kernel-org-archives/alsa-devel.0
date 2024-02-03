@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B4DD3C48292
-	for <alsa-devel@archiver.kernel.org>; Sat,  3 Feb 2024 02:38:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7146BC48292
+	for <alsa-devel@archiver.kernel.org>; Sat,  3 Feb 2024 02:38:50 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 00C0E827;
-	Sat,  3 Feb 2024 03:38:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 00C0E827
+	by alsa0.perex.cz (Postfix) with ESMTPS id A62EA86F;
+	Sat,  3 Feb 2024 03:38:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A62EA86F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1706927924;
-	bh=/ctydeO9BP9IDNCKzOW84UaD1pWVBJmsNl/Vixk3Z5M=;
+	s=default; t=1706927928;
+	bh=2TQXo2YMYhg/mBJxKuqafaOEZef1g+SCKODQN1pqdkU=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Fia/nkffHToSGi7VJMnnGins3+pvRY12CYnng7zDuRiM8Q/k1hF1K3yYuHU16fIPV
-	 VO1wsPIVrvvv+63swlxqQIuN3ob0er/RKY5MOtrELyl/nUV7/mrsZUXFmzEWYrLHt8
-	 JBVZFmGz2B3+G+Ti46JXbyt80DdN2z6xdySClY70=
+	b=AACfrhevpVC3tCIrWkXg/syKYLcOx6/MqJvOneJ3NFBDkCmfMLUS80Sw1Mt2IOUwz
+	 Dmrc/fhk9lK/Sj504Az1NP4PchG1Sy8ijmx5NsiyrUSx8+emQDYDzXTK0UvgH5ODWp
+	 4ds/23F8DSZGGfZDO7MdWfif/zuCnjJy6OdVj0ZQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 26644F8060D; Sat,  3 Feb 2024 03:37:46 +0100 (CET)
+	id 27743F8061E; Sat,  3 Feb 2024 03:37:47 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id BEF53F805E6;
-	Sat,  3 Feb 2024 03:37:45 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 710FEF805E6;
+	Sat,  3 Feb 2024 03:37:47 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E1AE6F805B5; Sat,  3 Feb 2024 03:37:38 +0100 (CET)
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com
- [205.220.180.131])
+	id 3A166F805B4; Sat,  3 Feb 2024 03:37:41 +0100 (CET)
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com
+ [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B2321F80149
-	for <alsa-devel@alsa-project.org>; Sat,  3 Feb 2024 03:37:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B2321F80149
+	by alsa1.perex.cz (Postfix) with ESMTPS id 09274F8057A
+	for <alsa-devel@alsa-project.org>; Sat,  3 Feb 2024 03:37:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 09274F8057A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
- header.s=qcppdkim1 header.b=TksxWt9w
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+ header.s=qcppdkim1 header.b=CaQRTJUn
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
 	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id
- 4131vpjH015339;
-	Sat, 3 Feb 2024 02:37:19 GMT
+ 4132Mpwa024362;
+	Sat, 3 Feb 2024 02:37:24 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-type; s=qcppdkim1; bh=2sOcjxKmnstL/5ftZf58
-	41vds3YmEI4sRJLRwbFI4Jw=; b=TksxWt9wD+hoE1wZM0dYR9Mip7EhGUvIUp0I
-	H3YzlTxhKDLq1Ayl0YbckWnl52CBK4mJFQGq/svusRBpOoCcqongn1y5QXZ2HgTx
-	L3dFxmD2rvVi3Q2TeGYemG/ITGYW6JqeJ1Lclz70icWi9ugkmup9OvuXBHOfZEDi
-	fg5IT1Ne2OJgpyH4y16C4VYijU4G10OTqMkwt7WOM0Ri5ohBxyNAaDo74wxgkKPu
-	6zVM7E2Gz8WSH79zd4KPSQhsUvKPieh25ZO+kSkT6Z8T3Q3tA0zNGPK5pe6RMBC6
-	o+lvVXBJk9vxNAUzBd9ttqa5U92WQ3R5GjBJHTqDPSjS+HuKbA==
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com
+	:mime-version:content-type; s=qcppdkim1; bh=/ZM8SPXr7udKkYr/SDUm
+	noP1IOgbHf5SfkdSPWJ27XA=; b=CaQRTJUnivbwx8BZrr1iQ0EISsp+RlVAhPFo
+	AmiulMsu9fy+cNswdexmi9MGUD+WAGosGLilFDEXALoS9ZxrSkIe3HRfTH2I+wxK
+	+kaAZPFe2ruqvwb63H1vnP5Fg6zq0YdCb7j+zNOUUfIv+qTaNAenhKvppqaBlxxk
+	UNKUCJWHu2m4KCcSuIxDsK6yj7YWBNotGmaTgNtzIgoiVCv/+lQmHF+BfklBukCt
+	bPyOgozdDHfxQ2iHUmyt182+daRqIEW3N1cwdICmRAucvT8Wn8lepQqBcgn/KuPF
+	4vux8eASGwa7EoCLpRoWSrfrF+VX04Gp4pfrM/285MLtMFbguQ==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com
  [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w1ax4849a-1
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w154w8sgw-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 03 Feb 2024 02:37:18 +0000 (GMT)
+	Sat, 03 Feb 2024 02:37:24 +0000 (GMT)
 Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com
  [10.47.209.197])
-	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id
- 4132bHsY008154
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id
+ 4132bNP6003547
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 3 Feb 2024 02:37:17 GMT
+	Sat, 3 Feb 2024 02:37:23 GMT
 Received: from hu-wcheng-lv.qualcomm.com (10.49.16.6) by
  nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Fri, 2 Feb 2024 18:37:17 -0800
+ 15.2.1118.40; Fri, 2 Feb 2024 18:37:23 -0800
 From: Wesley Cheng <quic_wcheng@quicinc.com>
 To: <srinivas.kandagatla@linaro.org>, <mathias.nyman@intel.com>,
         <perex@perex.cz>, <conor+dt@kernel.org>, <corbet@lwn.net>,
@@ -78,13 +78,11 @@ To: <srinivas.kandagatla@linaro.org>, <mathias.nyman@intel.com>,
 CC: <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-sound@vger.kernel.org>, <linux-usb@vger.kernel.org>,
         <linux-arm-msm@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <alsa-devel@alsa-project.org>,
-        Mathias Nyman <mathias.nyman@linux.intel.com>,
-        Wesley Cheng <quic_wcheng@quicinc.com>
-Subject: [PATCH v13 01/53] xhci: fix possible null pointer dereference at
- secondary interrupter removal
-Date: Fri, 2 Feb 2024 18:35:53 -0800
-Message-ID: <20240203023645.31105-2-quic_wcheng@quicinc.com>
+        <alsa-devel@alsa-project.org>, Wesley Cheng <quic_wcheng@quicinc.com>
+Subject: [PATCH v13 21/53] ASoC: dt-bindings: qcom,q6dsp-lpass-ports: Add
+ USB_RX port
+Date: Fri, 2 Feb 2024 18:36:13 -0800
+Message-ID: <20240203023645.31105-22-quic_wcheng@quicinc.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20240203023645.31105-1-quic_wcheng@quicinc.com>
 References: <20240203023645.31105-1-quic_wcheng@quicinc.com>
@@ -96,19 +94,19 @@ X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
  signatures=585085
-X-Proofpoint-ORIG-GUID: nvPhaEaUOS4conh-P7-RduoJTWJsxWOX
-X-Proofpoint-GUID: nvPhaEaUOS4conh-P7-RduoJTWJsxWOX
+X-Proofpoint-GUID: gIxp9bX5UtD5mUFEFSFp8Zn8zXriW0xd
+X-Proofpoint-ORIG-GUID: gIxp9bX5UtD5mUFEFSFp8Zn8zXriW0xd
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2024-02-02_16,2024-01-31_01,2023-05-22_02
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- lowpriorityscore=0
- clxscore=1015 bulkscore=0 phishscore=0 mlxlogscore=999 priorityscore=1501
- impostorscore=0 malwarescore=0 spamscore=0 adultscore=0 suspectscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ clxscore=1015 bulkscore=0
+ impostorscore=0 priorityscore=1501 lowpriorityscore=0 suspectscore=0
+ mlxlogscore=869 malwarescore=0 phishscore=0 mlxscore=0 spamscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.19.0-2401310000 definitions=main-2402030015
-Message-ID-Hash: 6KSUYIJP7IJ2QIMCWP4LFCTC427LSQYF
-X-Message-ID-Hash: 6KSUYIJP7IJ2QIMCWP4LFCTC427LSQYF
+Message-ID-Hash: 3YUFGQYM4EWAMCC6VMRZGDS6V7QRNOOH
+X-Message-ID-Hash: 3YUFGQYM4EWAMCC6VMRZGDS6V7QRNOOH
 X-MailFrom: quic_wcheng@quicinc.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -121,55 +119,34 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6KSUYIJP7IJ2QIMCWP4LFCTC427LSQYF/>
-List-Archive: <>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3YUFGQYM4EWAMCC6VMRZGDS6V7QRNOOH/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Mathias Nyman <mathias.nyman@linux.intel.com>
+Q6DSP supports handling of USB playback audio data if USB audio offloading
+is enabled.  Add a new definition for the USB_RX AFE port, which is
+referenced when the AFE port is started.
 
-Don't try to remove a secondary interrupter that is known to be invalid.
-Also check if the interrupter is valid inside the spinlock that protects
-the array of interrupters.
-
-Found by smatch static checker
-
-Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-Closes: https://lore.kernel.org/linux-usb/ffaa0a1b-5984-4a1f-bfd3-9184630a97b9@moroto.mountain/
-Fixes: c99b38c41234 ("xhci: add support to allocate several interrupters")
-Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
-Link: https://lore.kernel.org/r/20240125152737.2983959-2-mathias.nyman@linux.intel.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
 ---
- drivers/usb/host/xhci-mem.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ include/dt-bindings/sound/qcom,q6dsp-lpass-ports.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/usb/host/xhci-mem.c b/drivers/usb/host/xhci-mem.c
-index 4460fa7e9fab..d00d4d937236 100644
---- a/drivers/usb/host/xhci-mem.c
-+++ b/drivers/usb/host/xhci-mem.c
-@@ -1861,14 +1861,14 @@ void xhci_remove_secondary_interrupter(struct usb_hcd *hcd, struct xhci_interrup
- 	struct xhci_hcd *xhci = hcd_to_xhci(hcd);
- 	unsigned int intr_num;
+diff --git a/include/dt-bindings/sound/qcom,q6dsp-lpass-ports.h b/include/dt-bindings/sound/qcom,q6dsp-lpass-ports.h
+index 39f203256c4f..6d1ce7f5da51 100644
+--- a/include/dt-bindings/sound/qcom,q6dsp-lpass-ports.h
++++ b/include/dt-bindings/sound/qcom,q6dsp-lpass-ports.h
+@@ -139,6 +139,7 @@
+ #define DISPLAY_PORT_RX_5	133
+ #define DISPLAY_PORT_RX_6	134
+ #define DISPLAY_PORT_RX_7	135
++#define USB_RX			136
  
-+	spin_lock_irq(&xhci->lock);
-+
- 	/* interrupter 0 is primary interrupter, don't touch it */
--	if (!ir || !ir->intr_num || ir->intr_num >= xhci->max_interrupters)
-+	if (!ir || !ir->intr_num || ir->intr_num >= xhci->max_interrupters) {
- 		xhci_dbg(xhci, "Invalid secondary interrupter, can't remove\n");
--
--	/* fixme, should we check xhci->interrupter[intr_num] == ir */
--	/* fixme locking */
--
--	spin_lock_irq(&xhci->lock);
-+		spin_unlock_irq(&xhci->lock);
-+		return;
-+	}
- 
- 	intr_num = ir->intr_num;
- 
+ #define LPASS_CLK_ID_PRI_MI2S_IBIT	1
+ #define LPASS_CLK_ID_PRI_MI2S_EBIT	2
