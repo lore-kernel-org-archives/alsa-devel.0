@@ -4,72 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E06F9C4828D
-	for <alsa-devel@archiver.kernel.org>; Mon,  5 Feb 2024 16:59:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 95BF8C4828D
+	for <alsa-devel@archiver.kernel.org>; Mon,  5 Feb 2024 17:00:11 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DA34283B;
-	Mon,  5 Feb 2024 17:59:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DA34283B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 66B4A84D;
+	Mon,  5 Feb 2024 17:59:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 66B4A84D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1707152382;
-	bh=KIiF0znJX7pu7g5ceO0tvUe1EFCxoVX/gkYbJJRRHKk=;
+	s=default; t=1707152409;
+	bh=VRTN3Dv3YqaGLWiQ45v40VoTuQnxlGeffm0Q415W9do=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=lKBaYv7X9DBJ2a81OFLnCzKZ0HZA6C+aH6C/leHGNZcnJJzvTN4BjCM3OiwU1WCfW
-	 LsTZJj9mT8Y/AqC4b/ZoIOzON4fNVaSEhJfIWU4sYOVX3YIUaZBUN3p1xq19Z/Zhw6
-	 beegzzt5BfQRaHlJWB3DfHXv7pks4dd5XTHiDts4=
+	b=O4i+OZx+sddpw2Lg9e6t3smMp+9wuUe/JLdslIG1IWq+V2BkSRec0CkJbnMKB1B+B
+	 RmZSprdALa3YlDDTYBeVUioH+hZ9L1JINaTqOxd9K9wirlMF/kcdpEJhxaXkmhBhxb
+	 yEK3OVFFXGzAhfuvPWhW3YmTVIt3q3tzzHCrn0nA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5619FF805BD; Mon,  5 Feb 2024 17:58:57 +0100 (CET)
+	id 8B5BBF805F6; Mon,  5 Feb 2024 17:58:59 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 68A0BF805D3;
-	Mon,  5 Feb 2024 17:58:57 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 50162F805EA;
+	Mon,  5 Feb 2024 17:58:59 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D3DBDF804E7; Mon,  5 Feb 2024 17:58:50 +0100 (CET)
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+	id 70746F801EB; Mon,  5 Feb 2024 17:58:53 +0100 (CET)
+Received: from sin.source.kernel.org (sin.source.kernel.org
+ [IPv6:2604:1380:40e1:4800::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 9CED0F801D5
-	for <alsa-devel@alsa-project.org>; Mon,  5 Feb 2024 17:58:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9CED0F801D5
+	by alsa1.perex.cz (Postfix) with ESMTPS id D594CF80153
+	for <alsa-devel@alsa-project.org>; Mon,  5 Feb 2024 17:58:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D594CF80153
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=tSR0Uwba
+ header.s=k20201202 header.b=sMQfKs7b
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 28051CE0B13;
-	Mon,  5 Feb 2024 16:58:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 377EBC433C7;
-	Mon,  5 Feb 2024 16:58:39 +0000 (UTC)
+	by sin.source.kernel.org (Postfix) with ESMTP id ABE23CE09E9;
+	Mon,  5 Feb 2024 16:58:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04722C43399;
+	Mon,  5 Feb 2024 16:58:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707152322;
-	bh=KIiF0znJX7pu7g5ceO0tvUe1EFCxoVX/gkYbJJRRHKk=;
+	s=k20201202; t=1707152326;
+	bh=VRTN3Dv3YqaGLWiQ45v40VoTuQnxlGeffm0Q415W9do=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=tSR0UwbaPhOpSQXBC9TIaf6XsaKaS2DV7Nek+GLRfy+qvfPkfqmzeZkZYz+A0rAWw
-	 TDtDxke2RV+Gt9O0AEVSN1/MA+QRog4AYq2lL2Y3sJK2ApeYw9YnrrDRVTKIL0V9Ad
-	 2/NCXi6+o3r3N6rmx1cDekNnPdSFDPlhmQoUVmSSM3ecDNqrPSKFfZVPX8ckC+YJIO
-	 PnZb8cgpWNO3+1hyJAGGCX6mCvG/joBymfDzJvENt3lLbJyrPZdujNPBBCdILHpVn8
-	 CjjZegW1wvImvwpmz+pPORMc0I+tKkdP/g2rO+/vVin/FJ6SnDAw8kySASokwv0C9c
-	 bJ7Br/F6SOTyA==
+	b=sMQfKs7bfBQW8WnJ0FfpCcai0NlmCFM8t7X6YmNoatsPD3MywYRbT44Ju8TBU2BGM
+	 7yxmmvUBxY57qK9QAJ1hIZwvg9TEmLJf5nX18N3w3D3SwXKerD/r7HJyyw7r+dMHEo
+	 bqQIdlok+mZTcJJHIKgRXhMTSdRoz4WlP7PPqV2xfFSVYccMgUxy05zyLue7cURGZE
+	 eoh5mE0m/6eQK4AF4nWMnVWwCi0S4KOOoJNE7AQ9Xi/2XhsMfHa+1c05obkReNZLV9
+	 yLXjACvOEd7SLJ8ZJun8VBhjc4JQEsSZLgpu6X++CFvaQUMlK/u0aiUkokT8etZSe1
+	 tSID3QpVwESzg==
 From: Mark Brown <broonie@kernel.org>
-To: Cezary Rojewski <cezary.rojewski@intel.com>
-Cc: alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
- tiwai@suse.com, perex@perex.cz, amadeuszx.slawinski@linux.intel.com,
- pierre-louis.bossart@linux.intel.com, hdegoede@redhat.com
-In-Reply-To: <20240202114901.1002127-1-cezary.rojewski@intel.com>
-References: <20240202114901.1002127-1-cezary.rojewski@intel.com>
-Subject: Re: [PATCH] ASoC: Intel: avs: Fix pci_probe() error path
-Message-Id: <170715231987.801804.1736027462162326166.b4-ty@kernel.org>
-Date: Mon, 05 Feb 2024 16:58:39 +0000
+To: Shenghao Ding <shenghao-ding@ti.com>, Kevin Lu <kevin-lu@ti.com>,
+ Baojun Xu <baojun.xu@ti.com>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Gergo Koteles <soyer@irl.hu>
+Cc: linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
+ alsa-devel@alsa-project.org, stable@vger.kernel.org
+In-Reply-To: 
+ <118dad922cef50525e5aab09badef2fa0eb796e5.1707076603.git.soyer@irl.hu>
+References: 
+ <118dad922cef50525e5aab09badef2fa0eb796e5.1707076603.git.soyer@irl.hu>
+Subject: Re: [PATCH] ASoC: tas2781: add module parameter to tascodec_init()
+Message-Id: <170715232269.801804.9210971697925067313.b4-ty@kernel.org>
+Date: Mon, 05 Feb 2024 16:58:42 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-0438c
-Message-ID-Hash: 36AVSVV6V7OQ6LYUAGY3PH2NJDNJVJJN
-X-Message-ID-Hash: 36AVSVV6V7OQ6LYUAGY3PH2NJDNJVJJN
+Message-ID-Hash: JKG4LX6KJXFN4BNPRIUV4GBSTV6TJ2KT
+X-Message-ID-Hash: JKG4LX6KJXFN4BNPRIUV4GBSTV6TJ2KT
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -82,7 +88,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/36AVSVV6V7OQ6LYUAGY3PH2NJDNJVJJN/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JKG4LX6KJXFN4BNPRIUV4GBSTV6TJ2KT/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -91,13 +97,16 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, 02 Feb 2024 12:49:01 +0100, Cezary Rojewski wrote:
-> Recent changes modified operation-order in the probe() function without
-> updating its error path accordingly. If snd_hdac_i915_init() exists with
-> status EPROBE_DEFER the error path must cleanup allocated IRQs before
-> leaving the scope.
+On Sun, 04 Feb 2024 21:01:17 +0100, Gergo Koteles wrote:
+> The tascodec_init() of the snd-soc-tas2781-comlib module is called from
+> snd-soc-tas2781-i2c and snd-hda-scodec-tas2781-i2c modules. It calls
+> request_firmware_nowait() with parameter THIS_MODULE and a cont/callback
+> from the latter modules.
 > 
+> The latter modules can be removed while their callbacks are running,
+> resulting in a general protection failure.
 > 
+> [...]
 
 Applied to
 
@@ -105,8 +114,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: Intel: avs: Fix pci_probe() error path
-      commit: b5fbde22684af5456d1de60758950944d69d69ad
+[1/1] ASoC: tas2781: add module parameter to tascodec_init()
+      commit: 34a1066981a967eab619938e7b35a9be6b4c34e1
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
