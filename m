@@ -4,241 +4,191 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6EAB1C4828D
-	for <alsa-devel@archiver.kernel.org>; Tue,  6 Feb 2024 10:03:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BABB8C4828D
+	for <alsa-devel@archiver.kernel.org>; Tue,  6 Feb 2024 11:39:51 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9C419EA3;
-	Tue,  6 Feb 2024 11:02:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9C419EA3
+	by alsa0.perex.cz (Postfix) with ESMTPS id CE6F5829;
+	Tue,  6 Feb 2024 12:39:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CE6F5829
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1707213782;
-	bh=6NTsi8MTHhKSU1zdGgcR2NazjNxpJ4OkB7k2y0vpsVc=;
-	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=F+BajZWrw8sr6IwzCK0mJ4o4RjtMgLcQSor5NqqjW0SJmghht7Jb2fPKiDMAEM8Yg
-	 WY9r2BX+3V9NMHED7GpLQFO+v5S6SCcbfGMvrurhl5ipVrRqZqmNtvPtMr+SNXP9bU
-	 wJ7tOMdoUC+UqD4zOjmOBbaMiq6wAvtCXIzuU7yU=
+	s=default; t=1707219588;
+	bh=ZNJPTIPAK8/V1RPK0l1VKA3oYC1jOJG0SNejQn09bpk=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=qEpzNcDr3C5mUSbjWDqk++O/xGqZnYua8PCPLLngCHigW+X7MB72T08gYUd6lcKcJ
+	 ebvIEMVJMid8XVjrE78CBgTkiw8WzemsE73io3ZO38tlhXm0K6Ihck8EN2XgYFznGG
+	 SVqV8OGCUzXrqCq8uFl/jkA9L1BZ84p0BjAYap8c=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E95D6F80681; Tue,  6 Feb 2024 11:01:08 +0100 (CET)
+	id 276D5F805AA; Tue,  6 Feb 2024 12:39:16 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A63F4F8068C;
-	Tue,  6 Feb 2024 11:01:07 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8184CF8057D;
+	Tue,  6 Feb 2024 12:39:16 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id F0A55F801EB; Tue,  6 Feb 2024 07:45:04 +0100 (CET)
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com
- [68.232.153.233])
+	id C07AFF804E7; Tue,  6 Feb 2024 12:39:09 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 97A4DF8016E
-	for <alsa-devel@alsa-project.org>; Tue,  6 Feb 2024 07:44:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 97A4DF8016E
+	by alsa1.perex.cz (Postfix) with ESMTPS id D70C8F80153
+	for <alsa-devel@alsa-project.org>; Tue,  6 Feb 2024 12:39:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D70C8F80153
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=microchip.com header.i=@microchip.com
- header.a=rsa-sha256 header.s=mchp header.b=eamd+o1n
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1707201891; x=1738737891;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=6NTsi8MTHhKSU1zdGgcR2NazjNxpJ4OkB7k2y0vpsVc=;
-  b=eamd+o1nY+MURCbMhvEWkl/GvrbCmYcy+ikc8m1+iSDvhWVBS2p3L/nU
-   iR/gRC6sYaDLAinpaw8yP+uwM9mm6YcReJtMb+LXmRAHoQpRN/kd1krj1
-   VJUh55RDnSy5SxKO7W16rZTG4ou+0pZ3dRkmPcwPi5cRLg3n4PZgH5HTi
-   xYqLtb6jfT+vW2iF5d8u8GOycbYKYz4u/H4EYhI2gS7fvYjghbYwiIAaR
-   tgNLLJPk5DU4Nq6SJZsjWvajO2Nx3dYsUPahvPfcLZYl9PH9cMEqFo1be
-   8VWbW2B8fQ2EbdQ/W3CepTmN2IVxYbhAJcf0zPgudw/g7a9hR2StF5sDN
-   Q==;
-X-CSE-ConnectionGUID: 5cKW/z4QQq6KFQyHa1Y4Bg==
-X-CSE-MsgGUID: xRRXybZ8QuS7vPMPAREMRA==
-X-IronPort-AV: E=Sophos;i="6.05,246,1701154800";
-   d="scan'208";a="15812734"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256;
- 05 Feb 2024 23:44:45 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 5 Feb 2024 23:44:29 -0700
-Received: from che-lt-i70843lx.microchip.com (10.10.85.11) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
- 15.1.2507.35 via Frontend Transport; Mon, 5 Feb 2024 23:44:23 -0700
-From: Dharma Balasubiramani <dharma.b@microchip.com>
-To: <claudiu.beznea@tuxon.dev>, <lgirdwood@gmail.com>, <broonie@kernel.org>,
-	<robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-	<conor+dt@kernel.org>, <nicolas.ferre@microchip.com>,
-	<alexandre.belloni@bootlin.com>, <dharma.b@microchip.com>,
-	<alsa-devel@alsa-project.org>, <linux-sound@vger.kernel.org>,
-	<devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>
-CC: <hari.prasathge@microchip.com>
-Subject: [linux][PATCH] ASoC: dt-bindings: atmel,sam9x5-wm8731: Convert to
- json-schema
-Date: Tue, 6 Feb 2024 12:14:18 +0530
-Message-ID: <20240206064418.237377-1-dharma.b@microchip.com>
-X-Mailer: git-send-email 2.25.1
+ unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
+ header.s=PODMain02222019 header.b=a7DcBj9a
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+	by mx0b-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id
+ 4169iwBg025133;
+	Tue, 6 Feb 2024 05:38:58 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+	from:to:cc:subject:date:message-id:in-reply-to:references
+	:mime-version:content-transfer-encoding:content-type; s=
+	PODMain02222019; bh=269NzVQgDVeR3rcbff3E/lSbplkfYeX91pPkIS0tryE=; b=
+	a7DcBj9aKE/QVCo4IRLUoyZXzK26nJjifSrkgAM8RbWA5bc4WJP+SVTrwS9oZf6r
+	EFCaF1hg4UM+AAD2B6k2wqkU2Y9EFoEpTvEW5WZNnq6m5w0FOzALgzB8CVM0DtqB
+	/k41LC2dMlAVSPBZkX0g9S0IX2P/NylMmJtmjjuiG/MDa2nSxaDq7CEzu/YY/Zy/
+	TjdkAFQN5s2VxK4lKonX24QVot11frbaFtqrApB2gB3W5tLVqQJp+jgpXuLtCsh3
+	IuzO/bMEMhBSu2tJgp0LYsYHYLw8EmXT7uiq60XtvfwQRPxH3jht3ZVVMV1b3+8z
+	5Ae4SfFdrQbHa5RVi2LPEA==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3w1jsnk8w0-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 06 Feb 2024 05:38:57 -0600 (CST)
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 6 Feb
+ 2024 11:38:50 +0000
+Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.40 via Frontend Transport; Tue, 6 Feb 2024 11:38:50 +0000
+Received: from ediswws07.ad.cirrus.com (ediswws07.ad.cirrus.com
+ [198.90.208.14])
+	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 3BDF9820247;
+	Tue,  6 Feb 2024 11:38:50 +0000 (UTC)
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+To: <broonie@kernel.org>
+CC: <lgirdwood@gmail.com>, <alsa-devel@alsa-project.org>,
+        <patches@opensource.cirrus.com>, <linux-sound@vger.kernel.org>
+Subject: [PATCH 2/2] ASoC: cs42l43: Add system suspend ops to disable IRQ
+Date: Tue, 6 Feb 2024 11:38:50 +0000
+Message-ID: <20240206113850.719888-2-ckeepax@opensource.cirrus.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20240206113850.719888-1-ckeepax@opensource.cirrus.com>
+References: <20240206113850.719888-1-ckeepax@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-MailFrom: Dharma.B@microchip.com
-X-Mailman-Rule-Hits: nonmember-moderation
+X-Proofpoint-GUID: rAeNZ1QXncETRBkhkBbFjd6sP5pX4lx5
+X-Proofpoint-ORIG-GUID: rAeNZ1QXncETRBkhkBbFjd6sP5pX4lx5
+X-Proofpoint-Spam-Reason: safe
+Message-ID-Hash: MTZJM74M5J6IVL567DKOW5CC4OQU4MFN
+X-Message-ID-Hash: MTZJM74M5J6IVL567DKOW5CC4OQU4MFN
+X-MailFrom: prvs=9766772a2b=ckeepax@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: DVMHRTJGFPWUK2AWR2GOQ66I6WXBCEHQ
-X-Message-ID-Hash: DVMHRTJGFPWUK2AWR2GOQ66I6WXBCEHQ
-X-Mailman-Approved-At: Tue, 06 Feb 2024 10:01:00 +0000
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DVMHRTJGFPWUK2AWR2GOQ66I6WXBCEHQ/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MTZJM74M5J6IVL567DKOW5CC4OQU4MFN/>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Convert atmel sam9x5-wm8731-audio devicetree binding to json-schema.
+The IRQ should be disabled whilst entering and exiting system suspend to
+avoid the IRQ handler being called whilst the PM runtime is disabled.
 
-Signed-off-by: Dharma Balasubiramani <dharma.b@microchip.com>
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 ---
- .../sound/atmel,sam9x5-wm8731-audio.yaml      | 76 +++++++++++++++++++
- .../sound/atmel-sam9x5-wm8731-audio.txt       | 35 ---------
- 2 files changed, 76 insertions(+), 35 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/atmel,sam9x5-wm8731-audio.yaml
- delete mode 100644 Documentation/devicetree/bindings/sound/atmel-sam9x5-wm8731-audio.txt
 
-diff --git a/Documentation/devicetree/bindings/sound/atmel,sam9x5-wm8731-audio.yaml b/Documentation/devicetree/bindings/sound/atmel,sam9x5-wm8731-audio.yaml
-new file mode 100644
-index 000000000000..33717b728f63
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/atmel,sam9x5-wm8731-audio.yaml
-@@ -0,0 +1,76 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/atmel,sam9x5-wm8731-audio.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+Apologies for the churn on this.
+
+It seems there is no new style macro that provides all the required
+callbacks, and I am a little nervous to add one. It looks like
+there are quite a few drivers in a similar situation, so for now
+I have just swapped things back to the old style PM macros, and if a
+conversion is planned this can be caught in that.
+
+Thanks,
+Charles
+
+ sound/soc/codecs/cs42l43.c | 45 +++++++++++++++++++++++++++++++++++---
+ 1 file changed, 42 insertions(+), 3 deletions(-)
+
+diff --git a/sound/soc/codecs/cs42l43.c b/sound/soc/codecs/cs42l43.c
+index f1e119277622..e734b21849a0 100644
+--- a/sound/soc/codecs/cs42l43.c
++++ b/sound/soc/codecs/cs42l43.c
+@@ -2362,8 +2362,47 @@ static int cs42l43_codec_runtime_resume(struct device *dev)
+ 	return 0;
+ }
+ 
+-static DEFINE_RUNTIME_DEV_PM_OPS(cs42l43_codec_pm_ops, NULL,
+-				 cs42l43_codec_runtime_resume, NULL);
++static int cs42l43_codec_suspend(struct device *dev)
++{
++	struct cs42l43 *cs42l43 = dev_get_drvdata(dev);
 +
-+title: Atmel at91sam9x5ek wm8731 audio complex
++	disable_irq(cs42l43->irq);
 +
-+maintainers:
-+  - Dharma Balasubiramani <dharma.b@microchip.com>
++	return 0;
++}
 +
-+description:
-+  The audio complex configuration for Atmel at91sam9x5ek with WM8731 audio codec.
++static int cs42l43_codec_suspend_noirq(struct device *dev)
++{
++	struct cs42l43 *cs42l43 = dev_get_drvdata(dev);
 +
-+properties:
-+  compatible:
-+    const: atmel,sam9x5-wm8731-audio
++	enable_irq(cs42l43->irq);
 +
-+  atmel,model:
-+    $ref: /schemas/types.yaml#/definitions/string
-+    description: The user-visible name of this sound complex.
++	return 0;
++}
 +
-+  atmel,ssc-controller:
-+    $ref: /schemas/types.yaml#/definitions/phandle
-+    description: The phandle of the SSC controller.
++static int cs42l43_codec_resume(struct device *dev)
++{
++	struct cs42l43 *cs42l43 = dev_get_drvdata(dev);
 +
-+  atmel,audio-codec:
-+    $ref: /schemas/types.yaml#/definitions/phandle
-+    description: The phandle of the WM8731 audio codec.
++	enable_irq(cs42l43->irq);
 +
-+  atmel,audio-routing:
-+    description:
-+      A list of the connections between audio components. Each entry is a pair
-+      of strings, the first being the connection's sink, the second being the
-+      connection's source.
-+    $ref: /schemas/types.yaml#/definitions/non-unique-string-array
-+    items:
-+      enum:
-+        # Board Connectors
-+        - Headphone Jack
-+        - Line In Jack
++	return 0;
++}
 +
-+        # CODEC Pins
-+        - LOUT
-+        - ROUT
-+        - LHPOUT
-+        - RHPOUT
-+        - LLINEIN
-+        - RLINEIN
-+        - MICIN
++static int cs42l43_codec_resume_noirq(struct device *dev)
++{
++	struct cs42l43 *cs42l43 = dev_get_drvdata(dev);
 +
-+required:
-+  - compatible
-+  - atmel,model
-+  - atmel,ssc-controller
-+  - atmel,audio-codec
-+  - atmel,audio-routing
++	disable_irq(cs42l43->irq);
 +
-+additionalProperties: false
++	return 0;
++}
 +
-+examples:
-+  - |
-+    sound {
-+        compatible = "atmel,sam9x5-wm8731-audio";
-+
-+        atmel,model = "wm8731 @ AT91SAM9X5EK";
-+
-+        atmel,audio-routing =
-+                "Headphone Jack", "RHPOUT",
-+                "Headphone Jack", "LHPOUT",
-+                "LLINEIN", "Line In Jack",
-+                "RLINEIN", "Line In Jack";
-+
-+        atmel,ssc-controller = <&ssc0>;
-+        atmel,audio-codec = <&wm8731>;
-+    };
-diff --git a/Documentation/devicetree/bindings/sound/atmel-sam9x5-wm8731-audio.txt b/Documentation/devicetree/bindings/sound/atmel-sam9x5-wm8731-audio.txt
-deleted file mode 100644
-index 8facbce53db8..000000000000
---- a/Documentation/devicetree/bindings/sound/atmel-sam9x5-wm8731-audio.txt
-+++ /dev/null
-@@ -1,35 +0,0 @@
--* Atmel at91sam9x5ek wm8731 audio complex
--
--Required properties:
--  - compatible: "atmel,sam9x5-wm8731-audio"
--  - atmel,model: The user-visible name of this sound complex.
--  - atmel,ssc-controller: The phandle of the SSC controller
--  - atmel,audio-codec: The phandle of the WM8731 audio codec
--  - atmel,audio-routing: A list of the connections between audio components.
--    Each entry is a pair of strings, the first being the connection's sink,
--    the second being the connection's source.
--
--Available audio endpoints for the audio-routing table:
--
--Board connectors:
-- * Headphone Jack
-- * Line In Jack
--
--wm8731 pins:
--cf Documentation/devicetree/bindings/sound/wlf,wm8731.yaml
--
--Example:
--sound {
--	compatible = "atmel,sam9x5-wm8731-audio";
--
--	atmel,model = "wm8731 @ AT91SAM9X5EK";
--
--	atmel,audio-routing =
--		"Headphone Jack", "RHPOUT",
--		"Headphone Jack", "LHPOUT",
--		"LLINEIN", "Line In Jack",
--		"RLINEIN", "Line In Jack";
--
--	atmel,ssc-controller = <&ssc0>;
--	atmel,audio-codec = <&wm8731>;
--};
++static const struct dev_pm_ops cs42l43_codec_pm_ops = {
++	SYSTEM_SLEEP_PM_OPS(cs42l43_codec_suspend, cs42l43_codec_resume)
++	NOIRQ_SYSTEM_SLEEP_PM_OPS(cs42l43_codec_suspend_noirq, cs42l43_codec_resume_noirq)
++	RUNTIME_PM_OPS(NULL, cs42l43_codec_runtime_resume, NULL)
++};
+ 
+ static const struct platform_device_id cs42l43_codec_id_table[] = {
+ 	{ "cs42l43-codec", },
+@@ -2374,7 +2413,7 @@ MODULE_DEVICE_TABLE(platform, cs42l43_codec_id_table);
+ static struct platform_driver cs42l43_codec_driver = {
+ 	.driver = {
+ 		.name	= "cs42l43-codec",
+-		.pm	= pm_ptr(&cs42l43_codec_pm_ops),
++		.pm	= &cs42l43_codec_pm_ops,
+ 	},
+ 
+ 	.probe		= cs42l43_codec_probe,
 -- 
-2.25.1
+2.30.2
 
