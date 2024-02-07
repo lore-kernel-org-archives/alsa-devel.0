@@ -4,64 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F3A7EC4828F
-	for <alsa-devel@archiver.kernel.org>; Wed,  7 Feb 2024 12:10:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5CECDC4828D
+	for <alsa-devel@archiver.kernel.org>; Wed,  7 Feb 2024 12:10:57 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2BA9B1CE;
-	Wed,  7 Feb 2024 13:10:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2BA9B1CE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1FBEDDF6;
+	Wed,  7 Feb 2024 13:10:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1FBEDDF6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1707307842;
-	bh=RtezLeKtYqzMMlD7l4M22QwSiNc/vjvRHMceNkkvGLc=;
+	s=default; t=1707307855;
+	bh=Ko10ZkzkLNKDt3XPWSA4Pl4GxMkRRlKq5pWgyGeCp8g=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=RQkjrnM7dXYvqcvkLfKo9qLz31AUv9Sq0qOr9c6UIyDZq9TclbJXlSaV11G4gtkQC
-	 /M0kH2nsiNRA9Gl2yqZ1z1xS/71Xj02d2J5PkNnHNH91CVhWyopHDvsNkwE5lajLOe
-	 xl21uc7RR6NAVZ1JOqNgSZSEmSNdyqPMvj1Cq76g=
+	b=n9vL3PHsPsWr+u0JKAbJTyBD9+FMOmgTHbRUIk5m8e/rkepjUAwg1BTo6uB6PJqIu
+	 xGSr48Du08mBxI+Ddv0tnv4mxQHwjJeU3dgJkocmPFgExUX+ywRoBgQdq3yebDtq09
+	 2VxL39FftmRKcTyQKqDjvT+1V9ZGRjqggyvG8/w0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D2D9EF805F7; Wed,  7 Feb 2024 13:09:43 +0100 (CET)
+	id AC1FEF805EB; Wed,  7 Feb 2024 13:09:45 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E5E45F805F0;
-	Wed,  7 Feb 2024 13:09:42 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0CE30F80612;
+	Wed,  7 Feb 2024 13:09:45 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B944AF805AF; Wed,  7 Feb 2024 13:09:36 +0100 (CET)
+	id 25E90F8057B; Wed,  7 Feb 2024 13:09:38 +0100 (CET)
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id BD5D1F8016E
-	for <alsa-devel@alsa-project.org>; Wed,  7 Feb 2024 13:09:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BD5D1F8016E
+	by alsa1.perex.cz (Postfix) with ESMTPS id A83A3F804E7
+	for <alsa-devel@alsa-project.org>; Wed,  7 Feb 2024 13:09:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A83A3F804E7
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=S6i3Z63w
+ header.s=Intel header.b=NeJk2utY
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707307766; x=1738843766;
+  t=1707307768; x=1738843768;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=RtezLeKtYqzMMlD7l4M22QwSiNc/vjvRHMceNkkvGLc=;
-  b=S6i3Z63wvoAFdeDtJmuvkkHbks8DeS/61yl9kHUF0/Jbr5iLASoGzDyU
-   w521gVJh5v2DN4UoSDiiIc1C0SoQzP5IMISss/Mdpy9xOXkDofVK4QYea
-   R/iw9qMWHHTnk63zACZUWWuUlpyjPDKGUG6nWSdaQ5HHJRd7vfO55QV49
-   dBXBfBkItjzNp79FwVz/8m0P0e/vms9k4qBOXbjTUT3eAEH0QtomRyh1I
-   BmVI3c9IsN/RnlvZ5pTM30ZIJ6NHn+ncgDEJx0kBzaqOPwbowaxVX4pDZ
-   4Ysi3XS56PeQJyi3Cdb5qvmrTE/cRrICzcMYoCa1JbNHVZYfIpGXtKUwL
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10976"; a="4757842"
+  bh=Ko10ZkzkLNKDt3XPWSA4Pl4GxMkRRlKq5pWgyGeCp8g=;
+  b=NeJk2utYf1weVlUKdveppWd5l7x+9GU680pbWDb40eqYaecnfFGiK/Rh
+   djf0xDaaFFNvaeZNC6J7w9eOGHJCNWcIf3XuWiLz4v8x8Sy8fsXnOOCTh
+   wNyFfcPvkUaUpTDYBq1IFrFKUK4Ya//L+6wVK2NtHrcmktjnaLnPQs1Qh
+   V7aDPYvPrFROrwKSdG3ox9cByblwMX4jOHlg3vjJOxCPd5GUeqaUtHSUE
+   BkedADPPGJRbm4ihqJ2SJjOS7pQ1elDm570hdP+mI8GponnEkuEOhOJQU
+   xvJ8Foi6wUh3ntZI3Wq9avnU0CXct8T9PWkG1wSnMZ8Vjvfxu5UeJonHA
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10976"; a="4757856"
 X-IronPort-AV: E=Sophos;i="6.05,250,1701158400";
-   d="scan'208";a="4757842"
+   d="scan'208";a="4757856"
 Received: from orviesa007.jf.intel.com ([10.64.159.147])
   by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Feb 2024 04:09:21 -0800
+ 07 Feb 2024 04:09:25 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.05,250,1701158400";
-   d="scan'208";a="1631801"
+   d="scan'208";a="1631810"
 Received: from dev2 (HELO DEV2.igk.intel.com) ([10.237.148.94])
-  by orviesa007.jf.intel.com with ESMTP; 07 Feb 2024 04:09:18 -0800
+  by orviesa007.jf.intel.com with ESMTP; 07 Feb 2024 04:09:22 -0800
 From: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
  <amadeuszx.slawinski@linux.intel.com>
 To: Mark Brown <broonie@kernel.org>
@@ -73,18 +73,18 @@ Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
 	=?UTF-8?q?=C5=81ukasz=20Majczak?= <lma@chromium.org>,
 	=?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
  <amadeuszx.slawinski@linux.intel.com>
-Subject: [PATCH 1/3] ASoC: Intel: avs: UAPI: Add tokens for initial config
- feature
-Date: Wed,  7 Feb 2024 13:09:44 +0100
-Message-Id: <20240207120946.2140480-2-amadeuszx.slawinski@linux.intel.com>
+Subject: [PATCH 3/3] ASoC: Intel: avs: Send initial config to module if
+ present
+Date: Wed,  7 Feb 2024 13:09:46 +0100
+Message-Id: <20240207120946.2140480-4-amadeuszx.slawinski@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240207120946.2140480-1-amadeuszx.slawinski@linux.intel.com>
 References: <20240207120946.2140480-1-amadeuszx.slawinski@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 3TKXPAF4AK46JWF5HIQ4K4GVUR7P3LQO
-X-Message-ID-Hash: 3TKXPAF4AK46JWF5HIQ4K4GVUR7P3LQO
+Message-ID-Hash: TL7R7D5QX7PLKZ4ZHQPHMAV4KJFT4NGW
+X-Message-ID-Hash: TL7R7D5QX7PLKZ4ZHQPHMAV4KJFT4NGW
 X-MailFrom: amadeuszx.slawinski@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -97,7 +97,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3TKXPAF4AK46JWF5HIQ4K4GVUR7P3LQO/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TL7R7D5QX7PLKZ4ZHQPHMAV4KJFT4NGW/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -106,50 +106,65 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Allow for defining initial config which will be send after module
-initialization to configure initial module state. This is only useful
-for modules which need to be configured on init.
+If there are initial configs to send to module on init do send them.
 
 Reviewed-by: Cezary Rojewski <cezary.rojewski@intel.com>
 Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 ---
- include/uapi/sound/intel/avs/tokens.h | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ sound/soc/intel/avs/path.c | 33 +++++++++++++++++++++++++++++++++
+ 1 file changed, 33 insertions(+)
 
-diff --git a/include/uapi/sound/intel/avs/tokens.h b/include/uapi/sound/intel/avs/tokens.h
-index 4ffe546aa409a..4beca03405c07 100644
---- a/include/uapi/sound/intel/avs/tokens.h
-+++ b/include/uapi/sound/intel/avs/tokens.h
-@@ -19,6 +19,8 @@ enum avs_tplg_token {
- 	AVS_TKN_MANIFEST_NUM_MODCFGS_EXT_U32		= 6,
- 	AVS_TKN_MANIFEST_NUM_PPLCFGS_U32		= 7,
- 	AVS_TKN_MANIFEST_NUM_BINDINGS_U32		= 8,
-+	AVS_TKN_MANIFEST_NUM_CONDPATH_TMPLS_U32		= 9,
-+	AVS_TKN_MANIFEST_NUM_INIT_CONFIGS_U32		= 10,
+diff --git a/sound/soc/intel/avs/path.c b/sound/soc/intel/avs/path.c
+index 3aa16ee8d34c1..e785fc2a7008f 100644
+--- a/sound/soc/intel/avs/path.c
++++ b/sound/soc/intel/avs/path.c
+@@ -547,6 +547,33 @@ static int avs_path_module_type_create(struct avs_dev *adev, struct avs_path_mod
+ 	return avs_modext_create(adev, mod);
+ }
  
- 	/* struct avs_tplg_library */
- 	AVS_TKN_LIBRARY_ID_U32				= 101,
-@@ -109,6 +111,8 @@ enum avs_tplg_token {
- 	AVS_TKN_MOD_PROC_DOMAIN_U8			= 1705,
- 	AVS_TKN_MOD_MODCFG_EXT_ID_U32			= 1706,
- 	AVS_TKN_MOD_KCONTROL_ID_U32			= 1707,
-+	AVS_TKN_MOD_INIT_CONFIG_NUM_IDS_U32		= 1708,
-+	AVS_TKN_MOD_INIT_CONFIG_ID_U32			= 1709,
- 
- 	/* struct avs_tplg_path_template */
- 	AVS_TKN_PATH_TMPL_ID_U32			= 1801,
-@@ -125,6 +129,11 @@ enum avs_tplg_token {
- 
- 	/* struct avs_tplg_kcontrol */
- 	AVS_TKN_KCONTROL_ID_U32				= 2301,
++static int avs_path_module_send_init_configs(struct avs_dev *adev, struct avs_path_module *mod)
++{
++	struct avs_soc_component *acomp;
 +
-+	/* struct avs_tplg_init_config */
-+	AVS_TKN_INIT_CONFIG_ID_U32			= 2401,
-+	AVS_TKN_INIT_CONFIG_PARAM_U8			= 2402,
-+	AVS_TKN_INIT_CONFIG_LENGTH_U32			= 2403,
- };
++	acomp = to_avs_soc_component(mod->template->owner->owner->owner->owner->comp);
++
++	u32 num_ids = mod->template->num_config_ids;
++	u32 *ids = mod->template->config_ids;
++
++	for (int i = 0; i < num_ids; i++) {
++		struct avs_tplg_init_config *config = &acomp->tplg->init_configs[ids[i]];
++		size_t len = config->length;
++		void *data = config->data;
++		u32 param = config->param;
++		int ret;
++
++		ret = avs_ipc_set_large_config(adev, mod->module_id, mod->instance_id,
++					       param, data, len);
++		if (ret) {
++			dev_err(adev->dev, "send initial module config failed: %d\n", ret);
++			return AVS_IPC_RET(ret);
++		}
++	}
++
++	return 0;
++}
++
+ static void avs_path_module_free(struct avs_dev *adev, struct avs_path_module *mod)
+ {
+ 	kfree(mod);
+@@ -580,6 +607,12 @@ avs_path_module_create(struct avs_dev *adev,
+ 		return ERR_PTR(ret);
+ 	}
  
- #endif
++	ret = avs_path_module_send_init_configs(adev, mod);
++	if (ret) {
++		kfree(mod);
++		return ERR_PTR(ret);
++	}
++
+ 	return mod;
+ }
+ 
 -- 
 2.34.1
 
