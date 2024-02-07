@@ -4,189 +4,99 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C3A26C4829A
-	for <alsa-devel@archiver.kernel.org>; Sat, 10 Feb 2024 08:11:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0C93EC48260
+	for <alsa-devel@archiver.kernel.org>; Sat, 10 Feb 2024 08:34:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 18FDF827;
-	Sat, 10 Feb 2024 09:11:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 18FDF827
+	by alsa0.perex.cz (Postfix) with ESMTPS id 73A47950;
+	Sat, 10 Feb 2024 09:34:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 73A47950
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1707552701;
-	bh=F8DGyIH//SMvI1ax+96o/ObM1ZtA0zzCYF6zYzURkuY=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=XJbRjPv2uJafnURv3LhDijTX1OdLFhGiWbrJXTfJCZMACrkoK7TnEFr3th38GQHQ5
-	 9bz/DIgnZvsh+U00cPv8SPrd9XbRToDvTkJGX4O+3fUFymShxQWYakW+vlaipzbEUK
-	 k6rnHK0dV8AfEiFCj7Yo3WbKdWgoO81V/p8zOHSs=
+	s=default; t=1707554063;
+	bh=eaPjoMfznAH4IZPj/39ikg5X854USdvackzLWMpCGwI=;
+	h=From:To:CC:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=RA/jyqNLeC6sxeqhw/zZtLzQNbOiPKbJlhD3bRK7n3bTkByK+RgRNkBse33tTtSD0
+	 pjhgx0u7C3jt00/cbfFY41DBHFUKPH52vITw9E+2t3+InyzfhVcDSFJkRvunp9yv9k
+	 44dA6Ou0AFasho8SRWNWSwY1aW+IORNrvLNqvBeQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 27BB7F80588; Sat, 10 Feb 2024 09:11:09 +0100 (CET)
+	id DD897F805A8; Sat, 10 Feb 2024 09:33:51 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6EC4FF80568;
-	Sat, 10 Feb 2024 09:11:09 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DA57CF80153;
+	Sat, 10 Feb 2024 09:33:49 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0DC36F801EB; Sat, 10 Feb 2024 09:09:25 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2a07:de40:b251:101:10:150:64:2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id C4899F801EB; Wed,  7 Feb 2024 10:43:01 +0100 (CET)
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com
+ [68.232.153.233])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7AD48F80153
-	for <alsa-devel@alsa-project.org>; Sat, 10 Feb 2024 09:08:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7AD48F80153
+	by alsa1.perex.cz (Postfix) with ESMTPS id 68914F800E3
+	for <alsa-devel@alsa-project.org>; Wed,  7 Feb 2024 10:42:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 68914F800E3
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=KJoW4J71;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=DALLQMtL;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=ZTWz1/eC;
-	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=xJIBcXYS
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 5A6711F871;
-	Sat, 10 Feb 2024 08:08:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1707552517;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zlZxIUNjuMw/gmtQRSWgnNoi6CtpoNOtj4J6OuXVIjg=;
-	b=KJoW4J71U9ZLJ7gO2a8d/PIy4nhqzxY0s2zlnSK3EfY+kPyH4g9TEVPDrbfiXtcc/TIc19
-	rBz1R3rMMqHBFpfdklsVYAvJUBGeIBd1yEeUbyG+S4pvPUI3SlQWCdSERiYlNcqQK8aMbi
-	FLTcGWIGmoltnHEJ9DbUUfL3K59u3Cs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1707552517;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zlZxIUNjuMw/gmtQRSWgnNoi6CtpoNOtj4J6OuXVIjg=;
-	b=DALLQMtLxjWwWSgCINWrel5oJJeUceaqE4HtJb6m4CQza+kjwh0s/IV8ugvQhrrR/EzT5b
-	Us/14GhwwZ1wBUAQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1707552515;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zlZxIUNjuMw/gmtQRSWgnNoi6CtpoNOtj4J6OuXVIjg=;
-	b=ZTWz1/eCrW4xLIfHtnBLB6BnNE2Hyv+DpxtveF0h6zNq9n2cM02p5thixj/s3MPSNtnQ1z
-	oWVlRIw4qVHxPrc9pXXKeC739EKUY3jDKS0izOgEk9N/+8AYvkDEcvuryy8bu1Wg0PaJqU
-	w8ZfhTZZRJjf5urEpo/4ELDawf/K784=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1707552515;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zlZxIUNjuMw/gmtQRSWgnNoi6CtpoNOtj4J6OuXVIjg=;
-	b=xJIBcXYSPUlRFsJAH686aURuAcIgKNqRNMW8Sp8PsxJ1wmcHs6/sbp65Meumml9uDAWSPz
-	lg4vL/0gbcQppkBA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A58C613867;
-	Sat, 10 Feb 2024 08:08:34 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id dyCTJgIvx2VMcQAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Sat, 10 Feb 2024 08:08:34 +0000
-Date: Sat, 10 Feb 2024 09:08:34 +0100
-Message-ID: <875xywzqpp.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Wesley Cheng <quic_wcheng@quicinc.com>
-Cc: <srinivas.kandagatla@linaro.org>,
-	<mathias.nyman@intel.com>,
-	<perex@perex.cz>,
-	<conor+dt@kernel.org>,
-	<corbet@lwn.net>,
-	<lgirdwood@gmail.com>,
-	<andersson@kernel.org>,
-	<krzysztof.kozlowski+dt@linaro.org>,
-	<gregkh@linuxfoundation.org>,
-	<Thinh.Nguyen@synopsys.com>,
-	<broonie@kernel.org>,
-	<bgoswami@quicinc.com>,
-	<tiwai@suse.com>,
-	<robh+dt@kernel.org>,
-	<konrad.dybcio@linaro.org>,
-	<linux-kernel@vger.kernel.org>,
-	<devicetree@vger.kernel.org>,
-	<linux-sound@vger.kernel.org>,
-	<linux-usb@vger.kernel.org>,
-	<linux-arm-msm@vger.kernel.org>,
-	<linux-doc@vger.kernel.org>,
-	<alsa-devel@alsa-project.org>
-Subject: Re: [PATCH v14 20/53] ASoC: Add SOC USB APIs for adding an USB
- backend
-In-Reply-To: <b007a78c-b8fb-83bc-3be6-963708182cee@quicinc.com>
-References: <20240208231406.27397-1-quic_wcheng@quicinc.com>
-	<20240208231406.27397-21-quic_wcheng@quicinc.com>
-	<87r0hl29ha.wl-tiwai@suse.de>
-	<b007a78c-b8fb-83bc-3be6-963708182cee@quicinc.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b="ZTWz1/eC";
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=xJIBcXYS
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-3.01 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 TO_DN_SOME(0.00)[];
-	 R_RATELIMIT(0.00)[to_ip_from(RLe67txhfobum3fqdb5xx8e3au)];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_TRACE(0.00)[suse.de:+];
-	 MX_GOOD(-0.01)[];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 BAYES_HAM(-3.00)[100.00%];
-	 ARC_NA(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 FROM_HAS_DN(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[dt];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 DWL_DNSWL_LOW(-1.00)[suse.de:dkim];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 RCPT_COUNT_TWELVE(0.00)[23];
-	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,quicinc.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FREEMAIL_CC(0.00)[linaro.org,intel.com,perex.cz,kernel.org,lwn.net,gmail.com,linuxfoundation.org,synopsys.com,quicinc.com,suse.com,vger.kernel.org,alsa-project.org];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Rspamd-Queue-Id: 5A6711F871
-Message-ID-Hash: R3WYLVKMYQCZASVB47SBPE7KXA7DF4JQ
-X-Message-ID-Hash: R3WYLVKMYQCZASVB47SBPE7KXA7DF4JQ
-X-MailFrom: tiwai@suse.de
+	dkim=pass (2048-bit key,
+ unprotected) header.d=microchip.com header.i=@microchip.com
+ header.a=rsa-sha256 header.s=mchp header.b=trvoLBLQ
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1707298972; x=1738834972;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=eaPjoMfznAH4IZPj/39ikg5X854USdvackzLWMpCGwI=;
+  b=trvoLBLQWVHFtIP51QAKMiKPenPradtYNFieZ31XuDfSQMgiMvJoJiob
+   ucIKzOUu6qrLSWStB9daFIKy+jIdwSnjDh8a/HJo1z7CXTMf8I7RiGNC6
+   lnJ5XzyfBwKRSwn9g0ouY2usA7KEJg5lJR5KGn9ABZVGKyDYsld5S0n58
+   9bTIXPH/MauqkSbSH56xqfu/5DecGH+Yk0FaPxquM93Y2ukR0ii3XtLKT
+   owZ1R6hMhcaFk//LU0RzClxlncgV3Y0GfMEoqe5xkCSgoaVb2SSp1Ghor
+   wk3hw/sVv1DdGIG07wAD03CG12nOsHzZaIXDGovS8T0Ja1ywuZuIs5Qxs
+   w==;
+X-CSE-ConnectionGUID: fRBUDne2SeOxScIZjr2Gpg==
+X-CSE-MsgGUID: gMnZzN7ETgKrlsrBwpz63Q==
+X-IronPort-AV: E=Sophos;i="6.05,250,1701154800";
+   d="scan'208";a="15884586"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256;
+ 07 Feb 2024 02:42:43 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 7 Feb 2024 02:41:55 -0700
+Received: from che-lt-i70843lx.microchip.com (10.10.85.11) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
+ 15.1.2507.35 via Frontend Transport; Wed, 7 Feb 2024 02:41:49 -0700
+From: Dharma Balasubiramani <dharma.b@microchip.com>
+To: <claudiu.beznea@tuxon.dev>, <lgirdwood@gmail.com>, <broonie@kernel.org>,
+	<robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+	<conor+dt@kernel.org>, <nicolas.ferre@microchip.com>,
+	<alexandre.belloni@bootlin.com>, <dharma.b@microchip.com>,
+	<alsa-devel@alsa-project.org>, <linux-sound@vger.kernel.org>,
+	<devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-kernel@vger.kernel.org>
+CC: <hari.prasathge@microchip.com>
+Subject: [PATCH] ASoC: dt-bindings: atmel,asoc-wm8904: Convert to json-schema
+Date: Wed, 7 Feb 2024 15:11:44 +0530
+Message-ID: <20240207094144.195397-1-dharma.b@microchip.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-MailFrom: Dharma.B@microchip.com
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: T62O2FHBCUJE3PDAJEM7UZLXOSTTLHT6
+X-Message-ID-Hash: T62O2FHBCUJE3PDAJEM7UZLXOSTTLHT6
+X-Mailman-Approved-At: Sat, 10 Feb 2024 08:33:43 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/R3WYLVKMYQCZASVB47SBPE7KXA7DF4JQ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/T62O2FHBCUJE3PDAJEM7UZLXOSTTLHT6/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -195,53 +105,167 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, 09 Feb 2024 21:34:39 +0100,
-Wesley Cheng wrote:
-> 
-> Hi Takashi,
-> 
-> On 2/9/2024 2:54 AM, Takashi Iwai wrote:
-> > On Fri, 09 Feb 2024 00:13:33 +0100,
-> > Wesley Cheng wrote:
-> >> 
-> >> Some platforms may have support for offloading USB audio devices to a
-> >> dedicated audio DSP.  Introduce a set of APIs that allow for management of
-> >> USB sound card and PCM devices enumerated by the USB SND class driver.
-> >> This allows for the ASoC components to be aware of what USB devices are
-> >> available for offloading.
-> >> 
-> >> Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
-> > (snip)
-> >> --- a/sound/soc/Makefile
-> >> +++ b/sound/soc/Makefile
-> >> @@ -1,5 +1,5 @@
-> >>   # SPDX-License-Identifier: GPL-2.0
-> >> -snd-soc-core-objs := soc-core.o soc-dapm.o soc-jack.o soc-utils.o soc-dai.o soc-component.o
-> >> +snd-soc-core-objs := soc-core.o soc-dapm.o soc-jack.o soc-usb.o soc-utils.o soc-dai.o soc-component.o
-> >>   snd-soc-core-objs += soc-pcm.o soc-devres.o soc-ops.o soc-link.o soc-card.o
-> >>   snd-soc-core-$(CONFIG_SND_SOC_COMPRESS) += soc-compress.o
-> > 
-> > Do we really want to build this into ASoC core unconditionally?
-> > This is very specific to Qualcomm USB-offload stuff, so it's better to
-> > factor out.
-> > 
-> 
-> Ideally, the SOC USB part shouldn't be Qualcomm specific.  Since I
-> don't have access or insight into how other vendors are achieving the
-> same thing, I can only base the soc-usb layer to work with the
-> information that is required to get the audio stream up and running on
-> the QC platforms.  In its simplest form, its basically just a SW
-> entity that notifies ASoC components about changes occurring from USB
-> SND, and I think all vendors that have an ASoC based platform card
-> handling the offload will need this notification.
+Convert atmel,asoc-wm8904 devicetree binding to json-schema.
 
-Yes, but it's not necessarily built into the snd-soc-core module at
-all, but can be split to another module, right?  Otherwise all
-machines must load this code even if it doesn't use at all.
-If this were common among various chips, it'd be worth to be merged
-into the default common module.  But I don't think that's the case.
+Signed-off-by: Dharma Balasubiramani <dharma.b@microchip.com>
+---
+ .../bindings/sound/atmel,asoc-wm8904.yaml     | 84 +++++++++++++++++++
+ .../bindings/sound/atmel-wm8904.txt           | 55 ------------
+ 2 files changed, 84 insertions(+), 55 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/atmel,asoc-wm8904.yaml
+ delete mode 100644 Documentation/devicetree/bindings/sound/atmel-wm8904.txt
 
+diff --git a/Documentation/devicetree/bindings/sound/atmel,asoc-wm8904.yaml b/Documentation/devicetree/bindings/sound/atmel,asoc-wm8904.yaml
+new file mode 100644
+index 000000000000..89a67f8e33b6
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/atmel,asoc-wm8904.yaml
+@@ -0,0 +1,84 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/atmel,asoc-wm8904.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Atmel wm8904 audio codec complex
++
++maintainers:
++  - Dharma Balasubiramani <dharma.b@microchip.com>
++
++description:
++  The ASoC audio complex configuration for Atmel with WM8904 audio codec.
++
++properties:
++  compatible:
++    const: atmel,asoc-wm8904
++
++  atmel,model:
++    $ref: /schemas/types.yaml#/definitions/string
++    description: The user-visible name of this sound complex.
++
++  atmel,ssc-controller:
++    $ref: /schemas/types.yaml#/definitions/phandle
++    description: The phandle of the SSC controller.
++
++  atmel,audio-codec:
++    $ref: /schemas/types.yaml#/definitions/phandle
++    description: The phandle of the WM8731 audio codec.
++
++  atmel,audio-routing:
++    description:
++      A list of the connections between audio components. Each entry is a pair
++      of strings, the first being the connection's sink, the second being the
++      connection's source.
++    $ref: /schemas/types.yaml#/definitions/non-unique-string-array
++    items:
++      enum:
++        # Board Connectors
++        - Headphone Jack
++        - Line In Jack
++        - Mic
++        # WM8904 CODEC Pins
++        - IN1L
++        - IN1R
++        - IN2L
++        - IN2R
++        - IN3L
++        - IN3R
++        - HPOUTL
++        - HPOUTR
++        - LINEOUTL
++        - LINEOUTR
++        - MICBIAS
++
++required:
++  - compatible
++  - atmel,model
++  - atmel,audio-routing
++  - atmel,ssc-controller
++  - atmel,audio-codec
++
++additionalProperties: false
++
++examples:
++  - |
++    sound {
++        compatible = "atmel,asoc-wm8904";
++        pinctrl-names = "default";
++        pinctrl-0 = <&pinctrl_pck0_as_mck>;
++
++        atmel,model = "wm8904 @ AT91SAM9N12EK";
++
++        atmel,audio-routing =
++                "Headphone Jack", "HPOUTL",
++                "Headphone Jack", "HPOUTR",
++                "IN2L", "Line In Jack",
++                "IN2R", "Line In Jack",
++                "Mic", "MICBIAS",
++                "IN1L", "Mic";
++
++        atmel,ssc-controller = <&ssc0>;
++        atmel,audio-codec = <&wm8904>;
++    };
+diff --git a/Documentation/devicetree/bindings/sound/atmel-wm8904.txt b/Documentation/devicetree/bindings/sound/atmel-wm8904.txt
+deleted file mode 100644
+index 8bbe50c884b6..000000000000
+--- a/Documentation/devicetree/bindings/sound/atmel-wm8904.txt
++++ /dev/null
+@@ -1,55 +0,0 @@
+-Atmel ASoC driver with wm8904 audio codec complex
+-
+-Required properties:
+-  - compatible: "atmel,asoc-wm8904"
+-  - atmel,model: The user-visible name of this sound complex.
+-  - atmel,audio-routing: A list of the connections between audio components.
+-    Each entry is a pair of strings, the first being the connection's sink,
+-    the second being the connection's source. Valid names for sources and
+-    sinks are the WM8904's pins, and the jacks on the board:
+-
+-    WM8904 pins:
+-
+-    * IN1L
+-    * IN1R
+-    * IN2L
+-    * IN2R
+-    * IN3L
+-    * IN3R
+-    * HPOUTL
+-    * HPOUTR
+-    * LINEOUTL
+-    * LINEOUTR
+-    * MICBIAS
+-
+-    Board connectors:
+-
+-    * Headphone Jack
+-    * Line In Jack
+-    * Mic
+-
+-  - atmel,ssc-controller: The phandle of the SSC controller
+-  - atmel,audio-codec: The phandle of the WM8904 audio codec
+-
+-Optional properties:
+-  - pinctrl-names, pinctrl-0: Please refer to pinctrl-bindings.txt
+-
+-Example:
+-sound {
+-	compatible = "atmel,asoc-wm8904";
+-	pinctrl-names = "default";
+-	pinctrl-0 = <&pinctrl_pck0_as_mck>;
+-
+-	atmel,model = "wm8904 @ AT91SAM9N12EK";
+-
+-	atmel,audio-routing =
+-		"Headphone Jack", "HPOUTL",
+-		"Headphone Jack", "HPOUTR",
+-		"IN2L", "Line In Jack",
+-		"IN2R", "Line In Jack",
+-		"Mic", "MICBIAS",
+-		"IN1L", "Mic";
+-
+-	atmel,ssc-controller = <&ssc0>;
+-	atmel,audio-codec = <&wm8904>;
+-};
+-- 
+2.25.1
 
-thanks,
-
-Takashi
