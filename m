@@ -4,86 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0DC2FC4828F
-	for <alsa-devel@archiver.kernel.org>; Thu,  8 Feb 2024 17:01:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7608AC48260
+	for <alsa-devel@archiver.kernel.org>; Thu,  8 Feb 2024 17:01:39 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D8131F50;
-	Thu,  8 Feb 2024 18:01:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D8131F50
+	by alsa0.perex.cz (Postfix) with ESMTPS id D6D99EB1;
+	Thu,  8 Feb 2024 18:01:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D6D99EB1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1707411683;
-	bh=V92CfbYk61vu8Lu87qyGidx+d8Y00Or+SdwAb6vYum4=;
+	s=default; t=1707411697;
+	bh=lEHyeoUjOvDABSfQ8AI9NYBoAOp6zb3qSZVX8RMi9nw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=rhH2T1cQbt3e8VJfM3basMhGyU2Xf4DXZAtslOyTr5tJzrgU8hq/E8eC4cGwcJOFn
-	 dXjXkeNPwmlvPTXXy15+2W0pKkM14+OkxC1QYfGrrv1wRLHOFOmu2fBt/uLx1+jgTh
-	 khJK8zJW2LpmeaAg13XPXStjfz7bFRx14c8Pl47E=
+	b=X8RSSHWBTJGb9pwhKfOHtcjeumaN8T4lp3CIvcUsHUNqQvub9YfrbIVEigZemgUjf
+	 awEXKrM11VOSuG/FBHMXv942YhFQrudKzKMmYBsf2Cor3gcIUfaKu6JlXPYAIMg3kH
+	 3Ww3TGRsj0+DWcm9ksvYIWYoUQnPLi/Vc50zmDWU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D8AD3F80C73; Thu,  8 Feb 2024 17:57:13 +0100 (CET)
+	id 09FAEF80C8F; Thu,  8 Feb 2024 17:57:17 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1184AF805E7;
-	Thu,  8 Feb 2024 17:57:13 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4729FF80CB4;
+	Thu,  8 Feb 2024 17:57:17 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 73C81F8067C; Thu,  8 Feb 2024 17:56:31 +0100 (CET)
+	id 001ACF80699; Thu,  8 Feb 2024 17:56:33 +0100 (CET)
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D95ACF805F2
-	for <alsa-devel@alsa-project.org>; Thu,  8 Feb 2024 17:56:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D95ACF805F2
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9CEBEF805F0
+	for <alsa-devel@alsa-project.org>; Thu,  8 Feb 2024 17:56:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9CEBEF805F0
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=P9DNw5g6
+ header.s=Intel header.b=HAXrGs67
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707411375; x=1738947375;
+  t=1707411376; x=1738947376;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=V92CfbYk61vu8Lu87qyGidx+d8Y00Or+SdwAb6vYum4=;
-  b=P9DNw5g6FW3+bQplLolG/IirtmA+hYudWU9dLgBwGMCWC1U9WppdojUT
-   yVF8bWaYpYmoInBpq3bVUmT+mZqfgHkava2SWmBIWNUYdu85PjldZclkq
-   4ZXAWTNo/sWjHiwIwaMN1mSyPZnh9ShmmzfZXIEGdGrv+TcPF1EJY2hqy
-   sVcvrVHIlz5nZLkFg5zkmvr0lSW6Uj8LyEpzhtjzc++U5KzIY9WcHAFKd
-   9wxmqdeVIU3xC7KZbHJGxO/F4kqf3tdZxboejncirXNvgd9/CSHp8qkhh
-   WPuMdcG/9olBXsGpahUByohAgyDwI/FLUbDSKE8tf1jkkbtSmDoPJyqpn
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10978"; a="395675421"
+  bh=lEHyeoUjOvDABSfQ8AI9NYBoAOp6zb3qSZVX8RMi9nw=;
+  b=HAXrGs67NpPFeqlfzU3qL/rpsx580Hc57nsFG72FshMBy6y96ZGeuVvM
+   kkIcHHbjaAKkeMe+lRKBFxGDVLZx4J8B8EKXF13K/MLZJnTeLWLRGiuHH
+   jPmMHumvOrPS8B23hzd7674/OYOYkGwFnxB2JyWR54gz5U0H2v6xWPKUz
+   enWTONRvdjK8bGBxQZG6gjOStidXiSSOXhDzD7QBrmi0x/WfK2Nsx7Utj
+   NlhKfS5NIQmtUirRwYTXEtpgvYHce4xHRc6FWJYa6nPmNwyrtVgYx9G5f
+   LFX2FYxKAOdrY7XLyFetorseahE+XEv5jqODs/BqishPOI1sP/AEYlQda
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10978"; a="395675434"
 X-IronPort-AV: E=Sophos;i="6.05,254,1701158400";
-   d="scan'208";a="395675421"
+   d="scan'208";a="395675434"
 Received: from fmviesa010.fm.intel.com ([10.60.135.150])
   by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 08 Feb 2024 08:56:04 -0800
+ 08 Feb 2024 08:56:05 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.05,254,1701158400";
-   d="scan'208";a="1690269"
+   d="scan'208";a="1690278"
 Received: from stang1-mobl1.amr.corp.intel.com (HELO localhost.localdomain)
  ([10.212.92.130])
   by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 08 Feb 2024 08:56:04 -0800
+ 08 Feb 2024 08:56:06 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: linux-sound@vger.kernel.org
 Cc: alsa-devel@alsa-project.org,
 	tiwai@suse.de,
 	broonie@kernel.org,
-	mosomate <mosomate@gmail.com>,
+	Charles Keepax <ckeepax@opensource.cirrus.com>,
 	Bard Liao <yung-chuan.liao@linux.intel.com>,
+	=?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
 	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 19/24] ASoC: Intel: common: DMI remap for rebranded Intel NUC
- M15 (LAPRC710) laptops
-Date: Thu,  8 Feb 2024 10:55:40 -0600
-Message-Id: <20240208165545.93811-20-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 21/24] ASoC: Intel: sof_sdw: Remove unused function prototypes
+Date: Thu,  8 Feb 2024 10:55:42 -0600
+Message-Id: <20240208165545.93811-22-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240208165545.93811-1-pierre-louis.bossart@linux.intel.com>
 References: <20240208165545.93811-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: N6G4ZLEZWTCGLZ56U2JRQRYIIYA5A6FP
-X-Message-ID-Hash: N6G4ZLEZWTCGLZ56U2JRQRYIIYA5A6FP
+Message-ID-Hash: DMLBUANEDQVR2YPJHYYTPBCAI4H7UAYK
+X-Message-ID-Hash: DMLBUANEDQVR2YPJHYYTPBCAI4H7UAYK
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -96,7 +96,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/N6G4ZLEZWTCGLZ56U2JRQRYIIYA5A6FP/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DMLBUANEDQVR2YPJHYYTPBCAI4H7UAYK/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -105,62 +105,106 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: mosomate <mosomate@gmail.com>
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-Added DMI quirk to handle the rebranded variants of Intel NUC M15
-(LAPRC710) laptops. The DMI matching is based on motherboard
-attributes.
+Recent commits remove a lot of init functions remove their function
+prototypes as well.
 
-Link: https://github.com/thesofproject/linux/issues/4218
-Signed-off-by: Máté Mosonyi <mosomate@gmail.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- drivers/soundwire/dmi-quirks.c   |  8 ++++++++
- sound/soc/intel/boards/sof_sdw.c | 11 +++++++++++
- 2 files changed, 19 insertions(+)
+ sound/soc/intel/boards/sof_sdw_common.h | 62 -------------------------
+ 1 file changed, 62 deletions(-)
 
-diff --git a/drivers/soundwire/dmi-quirks.c b/drivers/soundwire/dmi-quirks.c
-index 9ebdd0cd0b1c..91ab97a456fa 100644
---- a/drivers/soundwire/dmi-quirks.c
-+++ b/drivers/soundwire/dmi-quirks.c
-@@ -130,6 +130,14 @@ static const struct dmi_system_id adr_remap_quirk_table[] = {
- 		},
- 		.driver_data = (void *)intel_rooks_county,
- 	},
-+	{
-+		/* quirk used for NUC15 LAPRC710 skew */
-+		.matches = {
-+			DMI_MATCH(DMI_BOARD_VENDOR, "Intel Corporation"),
-+			DMI_MATCH(DMI_BOARD_NAME, "LAPRC710"),
-+		},
-+		.driver_data = (void *)intel_rooks_county,
-+	},
- 	{
- 		.matches = {
- 			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc"),
-diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
-index 801cfe9c4dd3..e4b9f4d1ec06 100644
---- a/sound/soc/intel/boards/sof_sdw.c
-+++ b/sound/soc/intel/boards/sof_sdw.c
-@@ -236,6 +236,17 @@ static const struct dmi_system_id sof_sdw_quirk_table[] = {
- 					SOF_SDW_PCH_DMIC |
- 					RT711_JD2_100K),
- 	},
-+	{
-+		/* NUC15 LAPRC710 skews */
-+		.callback = sof_sdw_quirk_cb,
-+		.matches = {
-+			DMI_MATCH(DMI_BOARD_VENDOR, "Intel Corporation"),
-+			DMI_MATCH(DMI_BOARD_NAME, "LAPRC710"),
-+		},
-+		.driver_data = (void *)(SOF_SDW_TGL_HDMI |
-+					SOF_SDW_PCH_DMIC |
-+					RT711_JD2_100K),
-+	},
- 	/* TigerLake-SDCA devices */
- 	{
- 		.callback = sof_sdw_quirk_cb,
+diff --git a/sound/soc/intel/boards/sof_sdw_common.h b/sound/soc/intel/boards/sof_sdw_common.h
+index ab444dae46ab..b1d57034361c 100644
+--- a/sound/soc/intel/boards/sof_sdw_common.h
++++ b/sound/soc/intel/boards/sof_sdw_common.h
+@@ -139,25 +139,6 @@ int sof_sdw_rt_sdca_jack_init(struct snd_soc_card *card,
+ 			      bool playback);
+ int sof_sdw_rt_sdca_jack_exit(struct snd_soc_card *card, struct snd_soc_dai_link *dai_link);
+ 
+-/* RT712-SDCA support */
+-int sof_sdw_rt712_spk_init(struct snd_soc_card *card,
+-			   const struct snd_soc_acpi_link_adr *link,
+-			   struct snd_soc_dai_link *dai_links,
+-			   struct sof_sdw_codec_info *info,
+-			   bool playback);
+-int sof_sdw_rt712_sdca_dmic_init(struct snd_soc_card *card,
+-				 const struct snd_soc_acpi_link_adr *link,
+-				 struct snd_soc_dai_link *dai_links,
+-				 struct sof_sdw_codec_info *info,
+-				 bool playback);
+-
+-/* RT700 support */
+-int sof_sdw_rt700_init(struct snd_soc_card *card,
+-		       const struct snd_soc_acpi_link_adr *link,
+-		       struct snd_soc_dai_link *dai_links,
+-		       struct sof_sdw_codec_info *info,
+-		       bool playback);
+-
+ /* RT1308 I2S support */
+ extern struct snd_soc_ops sof_sdw_rt1308_i2s_ops;
+ 
+@@ -169,22 +150,6 @@ int sof_sdw_rt_amp_init(struct snd_soc_card *card,
+ 			bool playback);
+ int sof_sdw_rt_amp_exit(struct snd_soc_card *card, struct snd_soc_dai_link *dai_link);
+ 
+-/* RT1316 support */
+-
+-/* RT715 support */
+-int sof_sdw_rt715_init(struct snd_soc_card *card,
+-		       const struct snd_soc_acpi_link_adr *link,
+-		       struct snd_soc_dai_link *dai_links,
+-		       struct sof_sdw_codec_info *info,
+-		       bool playback);
+-
+-/* RT715-SDCA support */
+-int sof_sdw_rt715_sdca_init(struct snd_soc_card *card,
+-			    const struct snd_soc_acpi_link_adr *link,
+-			    struct snd_soc_dai_link *dai_links,
+-			    struct sof_sdw_codec_info *info,
+-			    bool playback);
+-
+ /* RT722-SDCA support */
+ int sof_sdw_rt722_spk_init(struct snd_soc_card *card,
+ 			   const struct snd_soc_acpi_link_adr *link,
+@@ -204,33 +169,6 @@ int sof_sdw_maxim_init(struct snd_soc_card *card,
+ 		       struct sof_sdw_codec_info *info,
+ 		       bool playback);
+ 
+-/* RT5682 support */
+-int sof_sdw_rt5682_init(struct snd_soc_card *card,
+-			const struct snd_soc_acpi_link_adr *link,
+-			struct snd_soc_dai_link *dai_links,
+-			struct sof_sdw_codec_info *info,
+-			bool playback);
+-
+-/* CS42L42 support */
+-int sof_sdw_cs42l42_init(struct snd_soc_card *card,
+-			 const struct snd_soc_acpi_link_adr *link,
+-			 struct snd_soc_dai_link *dai_links,
+-			 struct sof_sdw_codec_info *info,
+-			 bool playback);
+-
+-/* CS42L43 support */
+-int sof_sdw_cs42l43_hs_init(struct snd_soc_card *card,
+-			    const struct snd_soc_acpi_link_adr *link,
+-			    struct snd_soc_dai_link *dai_links,
+-			    struct sof_sdw_codec_info *info,
+-			    bool playback);
+-
+-int sof_sdw_cs42l43_dmic_init(struct snd_soc_card *card,
+-			      const struct snd_soc_acpi_link_adr *link,
+-			      struct snd_soc_dai_link *dai_links,
+-			      struct sof_sdw_codec_info *info,
+-			      bool playback);
+-
+ /* CS AMP support */
+ int sof_sdw_cs_amp_init(struct snd_soc_card *card,
+ 			const struct snd_soc_acpi_link_adr *link,
 -- 
 2.40.1
 
