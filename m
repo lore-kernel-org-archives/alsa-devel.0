@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8A65BC48260
-	for <alsa-devel@archiver.kernel.org>; Thu,  8 Feb 2024 23:25:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 98495C4828F
+	for <alsa-devel@archiver.kernel.org>; Thu,  8 Feb 2024 23:26:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DC9E5DF9;
-	Fri,  9 Feb 2024 00:25:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DC9E5DF9
+	by alsa0.perex.cz (Postfix) with ESMTPS id F2454191C;
+	Fri,  9 Feb 2024 00:25:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F2454191C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1707434755;
-	bh=httnPJJML5QlmnUl6L9g9SMmpTEhPWJw3rWiUQwkot4=;
+	s=default; t=1707434769;
+	bh=kCI2wpxHS2B0a8rnreQMrTdOsnwA7+jL3ssXaF27uaU=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Xf7xV3xPymxYHurM4JNBnijq8yHIZ5AWc2vhP5PM2hEc+8heM1cfp1roncqZS5AmT
-	 7ip9QxpA+ReQ5xNnINKPykyR9OkUAngHTyYHmsXmwMdy7gawOxrDxcxV3IUNyMnBXK
-	 51TQv9GwBlYVgxA+JaVDkkOCiR4zJooKsS2gFBb0=
+	b=kgmRI8PFhvIDypU8SZCWlh1p/skzbwq2siGm1SyN+65UdO/IJPhOcQaQAbQFjFvX2
+	 4LtZutTJ1kD6qQOVnfdOeqi8SlUIMpUNYBx2wS2ZuwoHhPkfgmDWYTJJTKgkAm+sJJ
+	 TfyC6hA8W7BnzhCQYYhnnn3Bnn4DGsoGdLv1uMFk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 63B80F898A9; Fri,  9 Feb 2024 00:17:17 +0100 (CET)
+	id 72393F898DB; Fri,  9 Feb 2024 00:17:20 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 43BBFF898AA;
-	Fri,  9 Feb 2024 00:17:17 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1EC93F898D1;
+	Fri,  9 Feb 2024 00:17:20 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id F2E3EF8067D; Fri,  9 Feb 2024 00:16:02 +0100 (CET)
+	id A044EF80677; Fri,  9 Feb 2024 00:16:04 +0100 (CET)
 Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com
  [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 54A01F8056F
-	for <alsa-devel@alsa-project.org>; Fri,  9 Feb 2024 00:14:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 54A01F8056F
+	by alsa1.perex.cz (Postfix) with ESMTPS id 4B590F805BB
+	for <alsa-devel@alsa-project.org>; Fri,  9 Feb 2024 00:14:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4B590F805BB
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
- header.s=qcppdkim1 header.b=e24GPRU1
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+ header.s=qcppdkim1 header.b=Vq7e9dh9
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
 	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id
- 418MlA5J031470;
-	Thu, 8 Feb 2024 23:14:19 GMT
+ 418N0rmX025969;
+	Thu, 8 Feb 2024 23:14:29 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-type; s=qcppdkim1; bh=v2ItLrNtk2j1QY1c2ABM
-	7WgcR1ha0sOr3zVlmeNNouY=; b=e24GPRU1V4U6QFgGWVVKhW8vy3TgUPj0vLdR
-	pelgFWziJfpruK8ipMubFs8eHrEgwFQTDUsM4gExPm/+mWBIKFdbxMBpmz0hThsa
-	jH6X4v+0GkZAI4DpgI2fw25n3LyD6iVAnlca7O1owa2AjulBOkGUWC5ZQyRj+mNL
-	k49iHOQ+t8Fb/V25LqxeJEuq2M0GEYz2Iy6sSvKRVhOgJFI+QwGJbWZx42JStH6r
-	+C/OEZRmGox6MkmikYLERxqSiC0mwDj6Q0uDq5j9bIGJ5GnPm7inSPJNQEJNO8Aj
-	VIgxe69+60s8Tpo7tJl6FaFUDQE5TuBIsBqOkZJE8/WHOk2bpA==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com
+	:mime-version:content-type; s=qcppdkim1; bh=EzS2gn4U4WnO6HUj0UC6
+	9z/Zo5B+U25eLv0bGKq0HUI=; b=Vq7e9dh9cfW50sAun5tL/amCcCfQA7CdG8cW
+	A2BXfcmuiaNRSuDfRPCFbYxqmZ3agMRJRzj7u7BJQnDoe50HdGBB5EhChj/oOwjh
+	btUc/nrKUub5kIZyrbwITLJi23/9X3o1smJlB4QLoZ4ps4sViW9tMQxGRGGJxx7O
+	9mUb/Yy3AjQwdiFB2dmlYZSNkcsNL7OrAfp0mK9sCKItgjRLYnNlhjrsRdYKmztX
+	TgWGc9TihAQAIC97mJTzOyUI/rGCbX7mKn4Y0e0IVJvC5/NysM8DkYQWaZ3tjvcN
+	9yS0F2hNwTsjPGtHtv4byRgiqr0PT8puwEK2CKNLIvuugG1HWg==
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com
  [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w4sns2aaq-1
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w4m3ak1pj-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 08 Feb 2024 23:14:19 +0000 (GMT)
+	Thu, 08 Feb 2024 23:14:29 +0000 (GMT)
 Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com
  [10.47.209.197])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id
- 418NEI3o012202
+	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id
+ 418NEScr005639
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 8 Feb 2024 23:14:18 GMT
+	Thu, 8 Feb 2024 23:14:28 GMT
 Received: from hu-wcheng-lv.qualcomm.com (10.49.16.6) by
  nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Thu, 8 Feb 2024 15:14:18 -0800
+ 15.2.1118.40; Thu, 8 Feb 2024 15:14:27 -0800
 From: Wesley Cheng <quic_wcheng@quicinc.com>
 To: <srinivas.kandagatla@linaro.org>, <mathias.nyman@intel.com>,
         <perex@perex.cz>, <conor+dt@kernel.org>, <corbet@lwn.net>,
@@ -78,13 +78,10 @@ To: <srinivas.kandagatla@linaro.org>, <mathias.nyman@intel.com>,
 CC: <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-sound@vger.kernel.org>, <linux-usb@vger.kernel.org>,
         <linux-arm-msm@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <alsa-devel@alsa-project.org>,
-        Mathias Nyman <mathias.nyman@linux.intel.com>,
-        Wesley Cheng <quic_wcheng@quicinc.com>
-Subject: [PATCH v14 09/53] xhci: add helper that checks for unhandled events
- on a event ring
-Date: Thu, 8 Feb 2024 15:13:22 -0800
-Message-ID: <20240208231406.27397-10-quic_wcheng@quicinc.com>
+        <alsa-devel@alsa-project.org>, Wesley Cheng <quic_wcheng@quicinc.com>
+Subject: [PATCH v14 45/53] ASoC: usb: Create SOC USB SND jack kcontrol
+Date: Thu, 8 Feb 2024 15:13:58 -0800
+Message-ID: <20240208231406.27397-46-quic_wcheng@quicinc.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20240208231406.27397-1-quic_wcheng@quicinc.com>
 References: <20240208231406.27397-1-quic_wcheng@quicinc.com>
@@ -96,19 +93,19 @@ X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
  signatures=585085
-X-Proofpoint-ORIG-GUID: 2LjOZDT6qoQD_SNop_3nA5mBVBIiiktS
-X-Proofpoint-GUID: 2LjOZDT6qoQD_SNop_3nA5mBVBIiiktS
+X-Proofpoint-ORIG-GUID: fnioLAMqjAzfQg0-pZ6w1c1JU1bR7suu
+X-Proofpoint-GUID: fnioLAMqjAzfQg0-pZ6w1c1JU1bR7suu
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2024-02-08_11,2024-02-08_01,2023-05-22_02
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- priorityscore=1501 mlxscore=0
- adultscore=0 spamscore=0 lowpriorityscore=0 malwarescore=0 bulkscore=0
- phishscore=0 clxscore=1015 suspectscore=0 impostorscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2401310000
- definitions=main-2402080131
-Message-ID-Hash: 6Y4AXJDNCTYVFFSG2KB72FFVV2G6F4ST
-X-Message-ID-Hash: 6Y4AXJDNCTYVFFSG2KB72FFVV2G6F4ST
+ mlxscore=0 suspectscore=0
+ bulkscore=0 lowpriorityscore=0 impostorscore=0 phishscore=0
+ mlxlogscore=725 adultscore=0 priorityscore=1501 malwarescore=0 spamscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401310000 definitions=main-2402080131
+Message-ID-Hash: 3G2E6LWBCARYBX7COYJP62JM5UECSS5R
+X-Message-ID-Hash: 3G2E6LWBCARYBX7COYJP62JM5UECSS5R
 X-MailFrom: quic_wcheng@quicinc.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -121,7 +118,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6Y4AXJDNCTYVFFSG2KB72FFVV2G6F4ST/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3G2E6LWBCARYBX7COYJP62JM5UECSS5R/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -130,43 +127,93 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Mathias Nyman <mathias.nyman@linux.intel.com>
+Expose API for creation of a jack control for notifying of available
+devices that are plugged in/discovered, and that support offloading.  This
+allows for control names to be standardized across implementations of USB
+audio offloading.
 
-Add unhandled_event_trb() that returns true in case xHC hardware has
-written new event trbs to the event ring that driver has not yet handled.
-
-Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
 Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
 ---
- drivers/usb/host/xhci-ring.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+ include/sound/soc-usb.h |  4 ++++
+ sound/soc/soc-usb.c     | 37 +++++++++++++++++++++++++++++++++++++
+ 2 files changed, 41 insertions(+)
 
-diff --git a/drivers/usb/host/xhci-ring.c b/drivers/usb/host/xhci-ring.c
-index 338b6fddedc3..48388bc16b24 100644
---- a/drivers/usb/host/xhci-ring.c
-+++ b/drivers/usb/host/xhci-ring.c
-@@ -113,6 +113,12 @@ static bool last_td_in_urb(struct xhci_td *td)
- 	return urb_priv->num_tds_done == urb_priv->num_tds;
+diff --git a/include/sound/soc-usb.h b/include/sound/soc-usb.h
+index c05d9b2f5c90..e07e83d86a11 100644
+--- a/include/sound/soc-usb.h
++++ b/include/sound/soc-usb.h
+@@ -6,6 +6,8 @@
+ #ifndef __LINUX_SND_SOC_USB_H
+ #define __LINUX_SND_SOC_USB_H
+ 
++#include <sound/soc.h>
++
+ enum snd_soc_usb_dai_state {
+ 	SND_SOC_USB_IDLE,
+ 	SND_SOC_USB_PREPARED,
+@@ -76,6 +78,8 @@ int snd_soc_usb_prepare_session(struct snd_soc_usb *usb, int card_idx, int pcm_i
+ int snd_soc_usb_shutdown_session(struct snd_soc_usb *usb, int session_id);
+ int snd_soc_usb_set_session_state(struct snd_soc_usb *usb, int session_id,
+ 				  enum snd_soc_usb_dai_state state);
++int snd_soc_usb_setup_offload_jack(struct snd_soc_component *component,
++					struct snd_soc_jack *jack);
+ 
+ struct snd_soc_usb *snd_soc_usb_allocate_port(struct snd_soc_component *component,
+ 			int num_supported_streams, void *data);
+diff --git a/sound/soc/soc-usb.c b/sound/soc/soc-usb.c
+index 9c082129cb9f..f22fd1b6d294 100644
+--- a/sound/soc/soc-usb.c
++++ b/sound/soc/soc-usb.c
+@@ -4,8 +4,11 @@
+  */
+ #include <linux/of.h>
+ #include <linux/usb.h>
++
++#include <sound/jack.h>
+ #include <sound/soc.h>
+ #include <sound/soc-usb.h>
++
+ #include "../usb/card.h"
+ 
+ static DEFINE_MUTEX(ctx_mutex);
+@@ -42,6 +45,40 @@ static struct snd_soc_usb *snd_soc_find_usb_ctx(struct device_node *node)
  }
  
-+static bool unhandled_event_trb(struct xhci_ring *ring)
+ /* SOC USB sound kcontrols */
++
++/**
++ * snd_soc_usb_setup_offload_jack() - Create USB offloading jack
++ * @component: USB DPCM backend DAI component
++ * @jack: jack structure to create
++ *
++ * Creates a jack device for notifying userspace of the availability
++ * of an offload capable device.
++ *
++ * Returns 0 on success, negative on error.
++ *
++ */
++int snd_soc_usb_setup_offload_jack(struct snd_soc_component *component,
++					struct snd_soc_jack *jack)
 +{
-+	return ((le32_to_cpu(ring->dequeue->event_cmd.flags) & TRB_CYCLE) ==
-+		ring->cycle_state);
++	int ret;
++
++	ret = snd_soc_card_jack_new(component->card, "SNDUSB OFFLD Jack",
++					SND_JACK_HEADPHONE, jack);
++	if (ret < 0) {
++		dev_err(component->card->dev, "Unable to add USB offload jack\n");
++		return ret;
++	}
++
++	ret = snd_soc_component_set_jack(component, jack, NULL);
++	if (ret) {
++		dev_warn(component->card->dev, "Failed to set jack: %d\n", ret);
++		return ret;
++	}
++
++	return 0;
 +}
++EXPORT_SYMBOL_GPL(snd_soc_usb_setup_offload_jack);
 +
- static void inc_td_cnt(struct urb *urb)
+ static int snd_soc_usb_get_offload_status(struct snd_kcontrol *kcontrol,
+ 				   struct snd_ctl_elem_value *ucontrol)
  {
- 	struct urb_priv *urb_priv = urb->hcpriv;
-@@ -2923,9 +2929,8 @@ static int xhci_handle_event(struct xhci_hcd *xhci, struct xhci_interrupter *ir)
- 	}
- 
- 	event = ir->event_ring->dequeue;
--	/* Does the HC or OS own the TRB? */
--	if ((le32_to_cpu(event->event_cmd.flags) & TRB_CYCLE) !=
--	    ir->event_ring->cycle_state)
-+
-+	if (!unhandled_event_trb(ir->event_ring))
- 		return 0;
- 
- 	trace_xhci_handle_event(ir->event_ring, &event->generic);
