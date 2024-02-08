@@ -4,84 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 34059C48260
-	for <alsa-devel@archiver.kernel.org>; Thu,  8 Feb 2024 17:02:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 93002C4829A
+	for <alsa-devel@archiver.kernel.org>; Thu,  8 Feb 2024 17:02:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4EFFAE9D;
-	Thu,  8 Feb 2024 18:02:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4EFFAE9D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 86F0914DD;
+	Thu,  8 Feb 2024 18:02:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 86F0914DD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1707411734;
-	bh=yOZ9EZGP28EpFbe80EFkcrfotn/qgf+OhCYxIyOXtR4=;
+	s=default; t=1707411748;
+	bh=iRATeZtRrW+PHtKv+nCULUFBqBZO+V/KE5hbLZcj5RU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Ikdu6x52UMlGYZtoCq8BmeVR//rOqkDi3HmXoHnqbKYMAsUNZdtaaZxrvdFagCHRh
-	 H/9v9rpKtupwG5PK6iqpgGfFgsflU0hagligaGsdRHs8EcXFh5fRgPeCMzlMTHeiuN
-	 +PdHC5EFDjWc5dA+IUdF5zfLZ3FCXNsTPbyxgmTA=
+	b=rLW26BjsfydBnceE55VSMh3onknBC6oWwK/UIVaBlbdxP7j13Y5lIN5FRVkENuzau
+	 HGFID01BEj1EtgYXj2G7FR21x4wxvhz5oB/VqpJp388Lh0nusYJM6e8av/GAgYGch6
+	 OjyXQC5vp6X7U7LpakiOYHrsk08Fpn4gF1s9ZYQA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D7A4FF89664; Thu,  8 Feb 2024 17:57:25 +0100 (CET)
+	id 0ACF6F896E2; Thu,  8 Feb 2024 17:57:30 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B96FAF89633;
-	Thu,  8 Feb 2024 17:57:24 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 49CAFF896DD;
+	Thu,  8 Feb 2024 17:57:29 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CDB69F806BC; Thu,  8 Feb 2024 17:56:39 +0100 (CET)
+	id A8524F806BC; Thu,  8 Feb 2024 17:56:40 +0100 (CET)
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id ADF5BF805EB
-	for <alsa-devel@alsa-project.org>; Thu,  8 Feb 2024 17:56:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ADF5BF805EB
+	by alsa1.perex.cz (Postfix) with ESMTPS id EBFE7F8060C
+	for <alsa-devel@alsa-project.org>; Thu,  8 Feb 2024 17:56:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EBFE7F8060C
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=XT3xrPZ0
+ header.s=Intel header.b=OITOTBzL
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707411374; x=1738947374;
+  t=1707411377; x=1738947377;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=yOZ9EZGP28EpFbe80EFkcrfotn/qgf+OhCYxIyOXtR4=;
-  b=XT3xrPZ0w+FWGLqx16qG91v3gaPToB2s9AApxKKSw4N3NKpI2E9tQdsL
-   B7E6P/SGWsdjBNFdadZB6DpK0NxVRgU2FnTuRJwxKgfI+mZ1TaNmsHNjB
-   b6rHr73bs5AjtxacG/XpJyt05pKM5pX0JkR5sgXvpUoqpwqcaG9IbKqNZ
-   GcTZTyJbYxhWnlyU0bYr5oHxVEN69do9MAWhivzK/DjEa8CgSNDRD2JfW
-   hN/Edx8wq3fxNmzMLjhC9AF0gzJhNyAPCwryHTart4BRkDKgS3h53/O5w
-   XC1a8xj3aZzwJmDvxLXM2LD8khaL/gYMamWn7yiEmL+HDvm/jdZy657go
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10978"; a="395675416"
+  bh=iRATeZtRrW+PHtKv+nCULUFBqBZO+V/KE5hbLZcj5RU=;
+  b=OITOTBzLjyfA7afpXYqL2DiZKP1yhZQPPCE1WhSuQHE7zfepK5R3lWao
+   tc7JUgut6jAhvbQmybZvvrgsWaTJjAoxNYCWx+cL5PeJ9UNNZriRKcAx9
+   04GVg4P8Aq/Iiiws0DQYv41R2iAa8ChZGKrqus2g8fGsVyypwTLj9ZTUg
+   bwFhRhk6aqv9LabL4J93B+aImfBPNk+3ndrD9qdHS/2BZ957XQYECjMHV
+   +FKEm8leCmjcWucmdCBayJP762KgL+nUNksLxnAJOTn18Oo1VUarVRWRG
+   ENCW++cz7boU2Vm5V4hOiMePzSJyl7qu6RHo0Z/Bve37SPxjkgaMntxnt
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10978"; a="395675447"
 X-IronPort-AV: E=Sophos;i="6.05,254,1701158400";
-   d="scan'208";a="395675416"
+   d="scan'208";a="395675447"
 Received: from fmviesa010.fm.intel.com ([10.60.135.150])
   by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 08 Feb 2024 08:56:04 -0800
+ 08 Feb 2024 08:56:07 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.05,254,1701158400";
-   d="scan'208";a="1690268"
+   d="scan'208";a="1690284"
 Received: from stang1-mobl1.amr.corp.intel.com (HELO localhost.localdomain)
  ([10.212.92.130])
   by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 08 Feb 2024 08:56:04 -0800
+ 08 Feb 2024 08:56:07 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: linux-sound@vger.kernel.org
 Cc: alsa-devel@alsa-project.org,
 	tiwai@suse.de,
 	broonie@kernel.org,
+	Chao Song <chao.song@linux.intel.com>,
 	Bard Liao <yung-chuan.liao@linux.intel.com>,
-	Rander Wang <rander.wang@intel.com>,
 	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 18/24] ASoC: Intel: sof_sdw: remove .init callbacks
-Date: Thu,  8 Feb 2024 10:55:39 -0600
-Message-Id: <20240208165545.93811-19-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 23/24] ASoC: Intel: soc-acpi-intel-lnl-match: Add rt722
+ support
+Date: Thu,  8 Feb 2024 10:55:44 -0600
+Message-Id: <20240208165545.93811-24-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240208165545.93811-1-pierre-louis.bossart@linux.intel.com>
 References: <20240208165545.93811-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: BL5SFVYJ557WDOI2ER3QWWPTY7T26HNG
-X-Message-ID-Hash: BL5SFVYJ557WDOI2ER3QWWPTY7T26HNG
+Message-ID-Hash: UR7EYMKIX7W7MPUOKUW4PJB5JEU4RD5Q
+X-Message-ID-Hash: UR7EYMKIX7W7MPUOKUW4PJB5JEU4RD5Q
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -94,308 +95,107 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BL5SFVYJ557WDOI2ER3QWWPTY7T26HNG/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UR7EYMKIX7W7MPUOKUW4PJB5JEU4RD5Q/>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Bard Liao <yung-chuan.liao@linux.intel.com>
+From: Chao Song <chao.song@linux.intel.com>
 
-Some codec .init callbacks are empty after removing dai_links->init =
-xxx_rtd_init;. Remove those callbacks.
+This patch adds match table for rt722 multiple
+function codec on link 0.
 
-Reviewed-by: Rander Wang <rander.wang@intel.com>
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Signed-off-by: Chao Song <chao.song@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/boards/sof_sdw.c            | 12 ------------
- sound/soc/intel/boards/sof_sdw_cs42l42.c    | 16 ----------------
- sound/soc/intel/boards/sof_sdw_cs42l43.c    | 18 ------------------
- sound/soc/intel/boards/sof_sdw_rt5682.c     | 16 ----------------
- sound/soc/intel/boards/sof_sdw_rt700.c      | 16 ----------------
- sound/soc/intel/boards/sof_sdw_rt712_sdca.c | 18 ------------------
- sound/soc/intel/boards/sof_sdw_rt715.c      |  8 --------
- sound/soc/intel/boards/sof_sdw_rt715_sdca.c |  8 --------
- 8 files changed, 112 deletions(-)
+ .../intel/common/soc-acpi-intel-lnl-match.c   | 49 +++++++++++++++++++
+ 1 file changed, 49 insertions(+)
 
-diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
-index 782b45adb21e..801cfe9c4dd3 100644
---- a/sound/soc/intel/boards/sof_sdw.c
-+++ b/sound/soc/intel/boards/sof_sdw.c
-@@ -650,7 +650,6 @@ static struct sof_sdw_codec_info codec_info_list[] = {
- 				.dai_name = "rt700-aif1",
- 				.dai_type = SOF_SDW_DAI_TYPE_JACK,
- 				.dailink = {SDW_JACK_OUT_DAI_ID, SDW_JACK_IN_DAI_ID},
--				.init = sof_sdw_rt700_init,
- 				.rtd_init = rt700_rtd_init,
- 			},
- 		},
-@@ -706,7 +705,6 @@ static struct sof_sdw_codec_info codec_info_list[] = {
- 				.dai_name = "rt712-sdca-aif2",
- 				.dai_type = SOF_SDW_DAI_TYPE_AMP,
- 				.dailink = {SDW_AMP_OUT_DAI_ID, SDW_UNUSED_DAI_ID},
--				.init = sof_sdw_rt712_spk_init,
- 				.rtd_init = rt712_spk_rtd_init,
- 			},
- 		},
-@@ -721,7 +719,6 @@ static struct sof_sdw_codec_info codec_info_list[] = {
- 				.dai_name = "rt712-sdca-dmic-aif1",
- 				.dai_type = SOF_SDW_DAI_TYPE_MIC,
- 				.dailink = {SDW_UNUSED_DAI_ID, SDW_DMIC_DAI_ID},
--				.init = sof_sdw_rt712_sdca_dmic_init,
- 				.rtd_init = rt712_sdca_dmic_rtd_init,
- 			},
- 		},
-@@ -752,7 +749,6 @@ static struct sof_sdw_codec_info codec_info_list[] = {
- 				.dai_name = "rt712-sdca-dmic-aif1",
- 				.dai_type = SOF_SDW_DAI_TYPE_MIC,
- 				.dailink = {SDW_UNUSED_DAI_ID, SDW_DMIC_DAI_ID},
--				.init = sof_sdw_rt712_sdca_dmic_init,
- 				.rtd_init = rt712_sdca_dmic_rtd_init,
- 			},
- 		},
-@@ -815,7 +811,6 @@ static struct sof_sdw_codec_info codec_info_list[] = {
- 				.dai_name = "rt715-aif2",
- 				.dai_type = SOF_SDW_DAI_TYPE_MIC,
- 				.dailink = {SDW_UNUSED_DAI_ID, SDW_DMIC_DAI_ID},
--				.init = sof_sdw_rt715_sdca_init,
- 				.rtd_init = rt715_sdca_rtd_init,
- 			},
- 		},
-@@ -831,7 +826,6 @@ static struct sof_sdw_codec_info codec_info_list[] = {
- 				.dai_name = "rt715-aif2",
- 				.dai_type = SOF_SDW_DAI_TYPE_MIC,
- 				.dailink = {SDW_UNUSED_DAI_ID, SDW_DMIC_DAI_ID},
--				.init = sof_sdw_rt715_sdca_init,
- 				.rtd_init = rt715_sdca_rtd_init,
- 			},
- 		},
-@@ -847,7 +841,6 @@ static struct sof_sdw_codec_info codec_info_list[] = {
- 				.dai_name = "rt715-aif2",
- 				.dai_type = SOF_SDW_DAI_TYPE_MIC,
- 				.dailink = {SDW_UNUSED_DAI_ID, SDW_DMIC_DAI_ID},
--				.init = sof_sdw_rt715_init,
- 				.rtd_init = rt715_rtd_init,
- 			},
- 		},
-@@ -863,7 +856,6 @@ static struct sof_sdw_codec_info codec_info_list[] = {
- 				.dai_name = "rt715-aif2",
- 				.dai_type = SOF_SDW_DAI_TYPE_MIC,
- 				.dailink = {SDW_UNUSED_DAI_ID, SDW_DMIC_DAI_ID},
--				.init = sof_sdw_rt715_init,
- 				.rtd_init = rt715_rtd_init,
- 			},
- 		},
-@@ -935,7 +927,6 @@ static struct sof_sdw_codec_info codec_info_list[] = {
- 				.dai_name = "rt5682-sdw",
- 				.dai_type = SOF_SDW_DAI_TYPE_JACK,
- 				.dailink = {SDW_JACK_OUT_DAI_ID, SDW_JACK_IN_DAI_ID},
--				.init = sof_sdw_rt5682_init,
- 				.rtd_init = rt5682_rtd_init,
- 			},
- 		},
-@@ -963,7 +954,6 @@ static struct sof_sdw_codec_info codec_info_list[] = {
- 				.dai_name = "cs42l42-sdw",
- 				.dai_type = SOF_SDW_DAI_TYPE_JACK,
- 				.dailink = {SDW_JACK_OUT_DAI_ID, SDW_JACK_IN_DAI_ID},
--				.init = sof_sdw_cs42l42_init,
- 				.rtd_init = cs42l42_rtd_init,
- 			},
- 		},
-@@ -978,7 +968,6 @@ static struct sof_sdw_codec_info codec_info_list[] = {
- 				.dai_name = "cs42l43-dp5",
- 				.dai_type = SOF_SDW_DAI_TYPE_JACK,
- 				.dailink = {SDW_JACK_OUT_DAI_ID, SDW_UNUSED_DAI_ID},
--				.init = sof_sdw_cs42l43_hs_init,
- 				.rtd_init = cs42l43_hs_rtd_init,
- 			},
- 			{
-@@ -986,7 +975,6 @@ static struct sof_sdw_codec_info codec_info_list[] = {
- 				.dai_name = "cs42l43-dp1",
- 				.dai_type = SOF_SDW_DAI_TYPE_MIC,
- 				.dailink = {SDW_UNUSED_DAI_ID, SDW_DMIC_DAI_ID},
--				.init = sof_sdw_cs42l43_dmic_init,
- 				.rtd_init = cs42l43_dmic_rtd_init,
- 			},
- 			{
-diff --git a/sound/soc/intel/boards/sof_sdw_cs42l42.c b/sound/soc/intel/boards/sof_sdw_cs42l42.c
-index 5d0915b72c7f..0dc297f7de01 100644
---- a/sound/soc/intel/boards/sof_sdw_cs42l42.c
-+++ b/sound/soc/intel/boards/sof_sdw_cs42l42.c
-@@ -121,20 +121,4 @@ int cs42l42_rtd_init(struct snd_soc_pcm_runtime *rtd)
- 
- 	return ret;
- }
--
--int sof_sdw_cs42l42_init(struct snd_soc_card *card,
--			 const struct snd_soc_acpi_link_adr *link,
--			 struct snd_soc_dai_link *dai_links,
--			 struct sof_sdw_codec_info *info,
--			 bool playback)
--{
--	/*
--	 * headset should be initialized once.
--	 * Do it with dai link for playback.
--	 */
--	if (!playback)
--		return 0;
--
--	return 0;
--}
- MODULE_IMPORT_NS(SND_SOC_INTEL_SOF_BOARD_HELPERS);
-diff --git a/sound/soc/intel/boards/sof_sdw_cs42l43.c b/sound/soc/intel/boards/sof_sdw_cs42l43.c
-index 7909ea9c9c14..a9b6edac2ecd 100644
---- a/sound/soc/intel/boards/sof_sdw_cs42l43.c
-+++ b/sound/soc/intel/boards/sof_sdw_cs42l43.c
-@@ -108,18 +108,6 @@ int cs42l43_hs_rtd_init(struct snd_soc_pcm_runtime *rtd)
- 	return ret;
- }
- 
--int sof_sdw_cs42l43_hs_init(struct snd_soc_card *card, const struct snd_soc_acpi_link_adr *link,
--			    struct snd_soc_dai_link *dai_links, struct sof_sdw_codec_info *info,
--			    bool playback)
--{
--	/*
--	 * No need to test if (!playback) like other codecs as cs42l43 uses separated dai for
--	 * playback and capture, and sof_sdw_cs42l43_init is only linked to the playback dai.
--	 */
--
--	return 0;
--}
--
- int cs42l43_dmic_rtd_init(struct snd_soc_pcm_runtime *rtd)
- {
- 	struct snd_soc_card *card = rtd->card;
-@@ -145,9 +133,3 @@ int cs42l43_dmic_rtd_init(struct snd_soc_pcm_runtime *rtd)
- 	return ret;
- }
- 
--int sof_sdw_cs42l43_dmic_init(struct snd_soc_card *card, const struct snd_soc_acpi_link_adr *link,
--			      struct snd_soc_dai_link *dai_links, struct sof_sdw_codec_info *info,
--			      bool playback)
--{
--	return 0;
--}
-diff --git a/sound/soc/intel/boards/sof_sdw_rt5682.c b/sound/soc/intel/boards/sof_sdw_rt5682.c
-index 4e3fcc861074..6b008a5a343b 100644
---- a/sound/soc/intel/boards/sof_sdw_rt5682.c
-+++ b/sound/soc/intel/boards/sof_sdw_rt5682.c
-@@ -120,20 +120,4 @@ int rt5682_rtd_init(struct snd_soc_pcm_runtime *rtd)
- 
- 	return ret;
- }
--
--int sof_sdw_rt5682_init(struct snd_soc_card *card,
--			const struct snd_soc_acpi_link_adr *link,
--			struct snd_soc_dai_link *dai_links,
--			struct sof_sdw_codec_info *info,
--			bool playback)
--{
--	/*
--	 * headset should be initialized once.
--	 * Do it with dai link for playback.
--	 */
--	if (!playback)
--		return 0;
--
--	return 0;
--}
- MODULE_IMPORT_NS(SND_SOC_INTEL_SOF_BOARD_HELPERS);
-diff --git a/sound/soc/intel/boards/sof_sdw_rt700.c b/sound/soc/intel/boards/sof_sdw_rt700.c
-index 781d41e35191..88e785a54b16 100644
---- a/sound/soc/intel/boards/sof_sdw_rt700.c
-+++ b/sound/soc/intel/boards/sof_sdw_rt700.c
-@@ -119,20 +119,4 @@ int rt700_rtd_init(struct snd_soc_pcm_runtime *rtd)
- 
- 	return ret;
- }
--
--int sof_sdw_rt700_init(struct snd_soc_card *card,
--		       const struct snd_soc_acpi_link_adr *link,
--		       struct snd_soc_dai_link *dai_links,
--		       struct sof_sdw_codec_info *info,
--		       bool playback)
--{
--	/*
--	 * headset should be initialized once.
--	 * Do it with dai link for playback.
--	 */
--	if (!playback)
--		return 0;
--
--	return 0;
--}
- MODULE_IMPORT_NS(SND_SOC_INTEL_SOF_BOARD_HELPERS);
-diff --git a/sound/soc/intel/boards/sof_sdw_rt712_sdca.c b/sound/soc/intel/boards/sof_sdw_rt712_sdca.c
-index dddb27e4c943..ebb4b58c198b 100644
---- a/sound/soc/intel/boards/sof_sdw_rt712_sdca.c
-+++ b/sound/soc/intel/boards/sof_sdw_rt712_sdca.c
-@@ -67,15 +67,6 @@ int rt712_spk_rtd_init(struct snd_soc_pcm_runtime *rtd)
- 	return ret;
- }
- 
--int sof_sdw_rt712_spk_init(struct snd_soc_card *card,
--			   const struct snd_soc_acpi_link_adr *link,
--			   struct snd_soc_dai_link *dai_links,
--			   struct sof_sdw_codec_info *info,
--			   bool playback)
--{
--	return 0;
--}
--
- static const char * const dmics[] = {
- 	"rt712-sdca-dmic"
+diff --git a/sound/soc/intel/common/soc-acpi-intel-lnl-match.c b/sound/soc/intel/common/soc-acpi-intel-lnl-match.c
+index 3d48e161cb33..74d6dcd7471f 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-lnl-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-lnl-match.c
+@@ -51,6 +51,31 @@ static const struct snd_soc_acpi_endpoint rt712_endpoints[] = {
+ 	},
  };
-@@ -99,13 +90,4 @@ int rt712_sdca_dmic_rtd_init(struct snd_soc_pcm_runtime *rtd)
  
- 	return 0;
- }
--
--int sof_sdw_rt712_sdca_dmic_init(struct snd_soc_card *card,
--				 const struct snd_soc_acpi_link_adr *link,
--				 struct snd_soc_dai_link *dai_links,
--				 struct sof_sdw_codec_info *info,
--				 bool playback)
--{
--	return 0;
--}
- MODULE_IMPORT_NS(SND_SOC_INTEL_SOF_BOARD_HELPERS);
-diff --git a/sound/soc/intel/boards/sof_sdw_rt715.c b/sound/soc/intel/boards/sof_sdw_rt715.c
-index 19194fe92b8e..b5a886cd595d 100644
---- a/sound/soc/intel/boards/sof_sdw_rt715.c
-+++ b/sound/soc/intel/boards/sof_sdw_rt715.c
-@@ -24,11 +24,3 @@ int rt715_rtd_init(struct snd_soc_pcm_runtime *rtd)
- 	return 0;
- }
++/*
++ * RT722 is a multi-function codec, three endpoints are created for
++ * its headset, amp and dmic functions.
++ */
++static const struct snd_soc_acpi_endpoint rt722_endpoints[] = {
++	{
++		.num = 0,
++		.aggregated = 0,
++		.group_position = 0,
++		.group_id = 0,
++	},
++	{
++		.num = 1,
++		.aggregated = 0,
++		.group_position = 0,
++		.group_id = 0,
++	},
++	{
++		.num = 2,
++		.aggregated = 0,
++		.group_position = 0,
++		.group_id = 0,
++	},
++};
++
+ static const struct snd_soc_acpi_adr_device rt711_sdca_0_adr[] = {
+ 	{
+ 		.adr = 0x000030025D071101ull,
+@@ -78,6 +103,15 @@ static const struct snd_soc_acpi_adr_device rt1712_3_single_adr[] = {
+ 	}
+ };
  
--int sof_sdw_rt715_init(struct snd_soc_card *card,
--		       const struct snd_soc_acpi_link_adr *link,
--		       struct snd_soc_dai_link *dai_links,
--		       struct sof_sdw_codec_info *info,
--		       bool playback)
--{
--	return 0;
--}
-diff --git a/sound/soc/intel/boards/sof_sdw_rt715_sdca.c b/sound/soc/intel/boards/sof_sdw_rt715_sdca.c
-index 3089fa8450fa..4b37a8a6dd2e 100644
---- a/sound/soc/intel/boards/sof_sdw_rt715_sdca.c
-+++ b/sound/soc/intel/boards/sof_sdw_rt715_sdca.c
-@@ -24,11 +24,3 @@ int rt715_sdca_rtd_init(struct snd_soc_pcm_runtime *rtd)
- 	return 0;
- }
++static const struct snd_soc_acpi_adr_device rt722_0_single_adr[] = {
++	{
++		.adr = 0x000030025d072201ull,
++		.num_endpoints = ARRAY_SIZE(rt722_endpoints),
++		.endpoints = rt722_endpoints,
++		.name_prefix = "rt722"
++	}
++};
++
+ static const struct snd_soc_acpi_adr_device rt1316_2_group1_adr[] = {
+ 	{
+ 		.adr = 0x000230025D131601ull,
+@@ -128,6 +162,15 @@ static const struct snd_soc_acpi_link_adr lnl_712_only[] = {
+ 	{}
+ };
  
--int sof_sdw_rt715_sdca_init(struct snd_soc_card *card,
--			    const struct snd_soc_acpi_link_adr *link,
--			    struct snd_soc_dai_link *dai_links,
--			    struct sof_sdw_codec_info *info,
--			    bool playback)
--{
--	return 0;
--}
++static const struct snd_soc_acpi_link_adr lnl_rt722_only[] = {
++	{
++		.mask = BIT(0),
++		.num_adr = ARRAY_SIZE(rt722_0_single_adr),
++		.adr_d = rt722_0_single_adr,
++	},
++	{}
++};
++
+ static const struct snd_soc_acpi_link_adr lnl_3_in_1_sdca[] = {
+ 	{
+ 		.mask = BIT(0),
+@@ -191,6 +234,12 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_lnl_sdw_machines[] = {
+ 		.drv_name = "sof_sdw",
+ 		.sof_tplg_filename = "sof-lnl-rt712-l2-rt1712-l3.tplg",
+ 	},
++	{
++		.link_mask = BIT(0),
++		.links = lnl_rt722_only,
++		.drv_name = "sof_sdw",
++		.sof_tplg_filename = "sof-lnl-rt722-l0.tplg",
++	},
+ 	{},
+ };
+ EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_lnl_sdw_machines);
 -- 
 2.40.1
 
