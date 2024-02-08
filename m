@@ -4,84 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 329E3C48260
-	for <alsa-devel@archiver.kernel.org>; Thu,  8 Feb 2024 16:38:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D7680C48260
+	for <alsa-devel@archiver.kernel.org>; Thu,  8 Feb 2024 16:40:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 03695950;
-	Thu,  8 Feb 2024 17:38:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 03695950
+	by alsa0.perex.cz (Postfix) with ESMTPS id 88EAB868;
+	Thu,  8 Feb 2024 17:39:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 88EAB868
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1707410335;
-	bh=GopZ5/61N+an8PeekkcsbURLOIv13SaQfkgk42FcmK4=;
+	s=default; t=1707410398;
+	bh=mqS9lw9rTFCFRqh4I38rzrLdGyE8889OqTSvXKvtVh0=;
 	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=kyP0oIRKnAuRGSfOaem5rRomxqyHMUEKI/5+SZ2u9DIOshD4Vn7v2cHBhlLRTFrq/
-	 c8M38YajUd562Ks9WSNF+SebI30cMzHiIteX738Hx6SSMpiJWcH9jr5g/A8zGr9Xm9
-	 tgarZ74SUUVbVSGrLJxGa0dOsFGjNnjPedcbYNvg=
+	b=SpidXJm48BwDMRMJtGfhjnZ82KXK70w9DwvsMdsidH2ghnBSZlIz9f6feHxYDVPlS
+	 DbdrvfB5WbgRhx6EGj7vVfq72fupJmb1gFKmvtaqaloCBbRtE0Gu+RRzaNZnk26Ua+
+	 CZ8pPc0NgPT+PU4Cpsz7M6SQqXGSCmlq+man2wLo=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CAC69F805CB; Thu,  8 Feb 2024 17:38:18 +0100 (CET)
+	id AA3F9F80578; Thu,  8 Feb 2024 17:39:22 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 81D62F805C0;
-	Thu,  8 Feb 2024 17:38:18 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 61A66F8057C;
+	Thu,  8 Feb 2024 17:39:22 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 33755F804E7; Thu,  8 Feb 2024 17:38:14 +0100 (CET)
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+	id 191DDF804E7; Thu,  8 Feb 2024 17:39:19 +0100 (CET)
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7D655F805B3
-	for <alsa-devel@alsa-project.org>; Thu,  8 Feb 2024 17:38:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7D655F805B3
+	by alsa1.perex.cz (Postfix) with ESMTPS id CF270F80153
+	for <alsa-devel@alsa-project.org>; Thu,  8 Feb 2024 17:39:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CF270F80153
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=T3i3rjHk
+ header.s=Intel header.b=N0LfrX42
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707410288; x=1738946288;
+  t=1707410357; x=1738946357;
   h=from:to:cc:subject:date:message-id:mime-version:
    content-transfer-encoding;
-  bh=GopZ5/61N+an8PeekkcsbURLOIv13SaQfkgk42FcmK4=;
-  b=T3i3rjHkshLQ9NcH6BsqXnBDdynqV1Fp2RBlUZftM4LxOxAlDIUHH/J5
-   yqiBAP9pWr8Mp84SkpGLkPyH/ZJOFedwAYaOfLfl4qsyUu89ByFgRV+Jm
-   Awfm63/xFW9bTLsr7KifWAd8JnwuN2NGlnp3xJtCKeY8W4Dlmqvn1Gc+S
-   C3NkNYIHtOm9YYT1uDP5yIPSFAnVT6dtv1290gDbYY7zTrM9CwWxZR1c/
-   /oA6pmkQeKPZg2l16T1w+cJI9rrML72OQlJVYT8oU3V29O7IEqxNbMdso
-   h9jFY4LfasleQM5QO2/GoX01Acr86Qhgcm9IvzLQ1efN8MUrjQ0uIY7R5
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10978"; a="436392514"
+  bh=mqS9lw9rTFCFRqh4I38rzrLdGyE8889OqTSvXKvtVh0=;
+  b=N0LfrX42SRQQ25sBoSzjaWle658AtG/RD9SGoyVjkmYMg1V9LXGm22Ve
+   QDUg8WU9VZdKM7NFx++yNQWicVxG50ttr3AqS8UlL8ZcuTWyUZAvpjE3G
+   GVDEavkdUnPB+p/EgV0C8M8h3qujY4RuFbYpXP4jtjH38FILXHiHvaxkb
+   qP/5TMFJ899xvoAmNpsJY3K6lYfihdYbS/8cslYiFx6cOmKQGYJLfa7eH
+   Wx67GI/qkyTtV1b+wXLmn3nuKj4Cjufx4gz+J3LPmmwE5QokbY95my+Kp
+   Xn9dZiK1lBQ4kBXSftfYOhIWvVzQSu+ILLSY5FMfCtnWW4V0zbOVNDhvV
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10978"; a="1120320"
 X-IronPort-AV: E=Sophos;i="6.05,254,1701158400";
-   d="scan'208";a="436392514"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 08 Feb 2024 08:38:01 -0800
+   d="scan'208";a="1120320"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 08 Feb 2024 08:39:13 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10978"; a="824883735"
 X-IronPort-AV: E=Sophos;i="6.05,254,1701158400";
-   d="scan'208";a="824883735"
+   d="scan'208";a="2068825"
 Received: from stang1-mobl1.amr.corp.intel.com (HELO localhost.localdomain)
  ([10.212.92.130])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 08 Feb 2024 08:38:00 -0800
+  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 08 Feb 2024 08:39:12 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: linux-sound@vger.kernel.org
-Cc: alsa-devel@alsa-project.org,
-	tiwai@suse.de,
-	broonie@kernel.org,
-	vkoul@kernel.org,
-	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-	Rander Wang <rander.wang@intel.com>,
-	Bard Liao <yung-chuan.liao@linux.intel.com>
-Subject: [PATCH] ALSA: HDA: intel-sdw-acpi: add kernel parameter to select
- alternate controller
-Date: Thu,  8 Feb 2024 10:37:50 -0600
-Message-Id: <20240208163750.92849-1-pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, broonie@kernel.org,
+	"Sayed, Karimuddin" <karimuddin.sayed@intel.com>,
+	=?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
+	Sayed@alsa-project.org,
+	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH] ALSA: hda/realtek: Add "Intel Reference board" SSID in the
+ ALC256.
+Date: Thu,  8 Feb 2024 10:39:04 -0600
+Message-Id: <20240208163904.92977-1-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: XCIFXR3HVRCRK7CR5CFKFXPAZEN4OZAD
-X-Message-ID-Hash: XCIFXR3HVRCRK7CR5CFKFXPAZEN4OZAD
+Message-ID-Hash: YNUVRECKGWRMESMEAJMA3AIH6SIMYXKP
+X-Message-ID-Hash: YNUVRECKGWRMESMEAJMA3AIH6SIMYXKP
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -94,7 +92,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XCIFXR3HVRCRK7CR5CFKFXPAZEN4OZAD/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YNUVRECKGWRMESMEAJMA3AIH6SIMYXKP/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -103,62 +101,30 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Existing DSDT or SSDT platforms hard-code clock and frame shape
-configurations. For validation, we'd like to use alternate
-configurations. It's not always possible to generate new tables due to
-missing symbols, and modifying existing objects usually leads to
-AE_OBJECT_EXIST errors.
+From: "Sayed, Karimuddin" <karimuddin.sayed@intel.com>
 
-The mechanism suggested in this patch is to add a NEW ACPI controller
-device with a different _ADR value. e.g.
+Add "Intel Reference board" SSID in the alc256.
+Enable "power saving mode" and Enable "headset jack mode".
 
- Scope (_SB_.PC00.RP08.PXSX.HDAS) {
-
-  	Device (SDWP)
-            {
-                Name (_ADR, 0x40000001)  // _ADR: Address
-
-The desired _ADR can be passed as a parameter with
-
-options snd-intel-sdw-acpi sdw_ctrl_addr=0x40000001
-
-This solution leads to minimal tables with just what the developers or
-validation engineers need, and without overriding any of the existing
-firmware definitions. It's consistent with the recommendation to
-extend ACPI definitions and not redefine them with a risk of conflict.
-
+Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Signed-off-by: Sayed, Karimuddin <karimuddin.sayed@intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Rander Wang <rander.wang@intel.com>
-Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- sound/hda/intel-sdw-acpi.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ sound/pci/hda/patch_realtek.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/hda/intel-sdw-acpi.c b/sound/hda/intel-sdw-acpi.c
-index b57d72ea4503..5f60658c6051 100644
---- a/sound/hda/intel-sdw-acpi.c
-+++ b/sound/hda/intel-sdw-acpi.c
-@@ -23,6 +23,10 @@ static int ctrl_link_mask;
- module_param_named(sdw_link_mask, ctrl_link_mask, int, 0444);
- MODULE_PARM_DESC(sdw_link_mask, "Intel link mask (one bit per link)");
- 
-+static ulong ctrl_addr = 0x40000000;
-+module_param_named(sdw_ctrl_addr, ctrl_addr, ulong, 0444);
-+MODULE_PARM_DESC(sdw_ctrl_addr, "Intel SoundWire Controller _ADR");
-+
- static bool is_link_enabled(struct fwnode_handle *fw_node, u8 idx)
- {
- 	struct fwnode_handle *link;
-@@ -141,6 +145,9 @@ static acpi_status sdw_intel_acpi_cb(acpi_handle handle, u32 level,
- 	if (FIELD_GET(GENMASK(31, 28), adr) != SDW_LINK_TYPE)
- 		return AE_OK; /* keep going */
- 
-+	if (adr != ctrl_addr)
-+		return AE_OK; /* keep going */
-+
- 	/* found the correct SoundWire controller */
- 	info->handle = handle;
- 
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index f6f16622f9cc..0052a654204d 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -10081,6 +10081,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x10ec, 0x1252, "Intel Reference board", ALC295_FIXUP_CHROME_BOOK),
+ 	SND_PCI_QUIRK(0x10ec, 0x1254, "Intel Reference board", ALC295_FIXUP_CHROME_BOOK),
+ 	SND_PCI_QUIRK(0x10ec, 0x12cc, "Intel Reference board", ALC295_FIXUP_CHROME_BOOK),
++	SND_PCI_QUIRK(0x10ec, 0x12f6, "Intel Reference board", ALC295_FIXUP_CHROME_BOOK),
+ 	SND_PCI_QUIRK(0x10f7, 0x8338, "Panasonic CF-SZ6", ALC269_FIXUP_HEADSET_MODE),
+ 	SND_PCI_QUIRK(0x144d, 0xc109, "Samsung Ativ book 9 (NP900X3G)", ALC269_FIXUP_INV_DMIC),
+ 	SND_PCI_QUIRK(0x144d, 0xc169, "Samsung Notebook 9 Pen (NP930SBE-K01US)", ALC298_FIXUP_SAMSUNG_AMP),
 -- 
 2.40.1
 
