@@ -4,116 +4,177 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 21394C48297
-	for <alsa-devel@archiver.kernel.org>; Sat, 10 Feb 2024 00:32:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C3A26C4829A
+	for <alsa-devel@archiver.kernel.org>; Sat, 10 Feb 2024 08:11:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5E2E2850;
-	Sat, 10 Feb 2024 01:32:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5E2E2850
+	by alsa0.perex.cz (Postfix) with ESMTPS id 18FDF827;
+	Sat, 10 Feb 2024 09:11:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 18FDF827
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1707525137;
-	bh=wCW3zFW/+d1IVAWJlYeFqcCbESpjv/UqBXVGgoe5JIw=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To:List-Id:
+	s=default; t=1707552701;
+	bh=F8DGyIH//SMvI1ax+96o/ObM1ZtA0zzCYF6zYzURkuY=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=R+YBpkm6eHXUJIaZIARCaf4BeE0taKYKYq6cuMu2NtYR8MufNyIyfUXDnfWUA66R1
-	 3xFTvbUOoINk3KxMyvwZzrgPSP/dqnL1FUjekNiYMIopLpQcRWaWHU8HqW8Z/SMmbE
-	 CINMHm1ZFaOa1CUUhoZZyfnfIt4Q7j09RSMuUkLs=
+	b=XJbRjPv2uJafnURv3LhDijTX1OdLFhGiWbrJXTfJCZMACrkoK7TnEFr3th38GQHQ5
+	 9bz/DIgnZvsh+U00cPv8SPrd9XbRToDvTkJGX4O+3fUFymShxQWYakW+vlaipzbEUK
+	 k6rnHK0dV8AfEiFCj7Yo3WbKdWgoO81V/p8zOHSs=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 76FB8F805AA; Sat, 10 Feb 2024 01:31:45 +0100 (CET)
+	id 27BB7F80588; Sat, 10 Feb 2024 09:11:09 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1BA62F80588;
-	Sat, 10 Feb 2024 01:31:45 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6EC4FF80568;
+	Sat, 10 Feb 2024 09:11:09 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6E420F801EB; Sat, 10 Feb 2024 01:31:39 +0100 (CET)
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com
- [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 0DC36F801EB; Sat, 10 Feb 2024 09:09:25 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 41042F8016E
-	for <alsa-devel@alsa-project.org>; Sat, 10 Feb 2024 01:31:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 41042F8016E
+	by alsa1.perex.cz (Postfix) with ESMTPS id 7AD48F80153
+	for <alsa-devel@alsa-project.org>; Sat, 10 Feb 2024 09:08:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7AD48F80153
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
- header.s=qcppdkim1 header.b=lDV1ToMc
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id
- 41A0Jtde019670;
-	Sat, 10 Feb 2024 00:31:23 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=EPlrOpZcg7RkI/G3TQS7CRq1UauaWKip5XIBMtpCMdI=; b=lD
-	V1ToMcNuHWUMK2sRmRjELeyICKvcd1iFgLKdVVnCFiJA6K+HMm8gwoDf2vRToov9
-	LVRH4i1ySk/6SX3PMlNqVPTDEW6Awxl53kd2VgONmviD5GMullo1xJjVeMgxHzxk
-	NUjPbAgU66FeVCbGXtecjXrlhjstR85s6HZWPGElqA3x4M0xcT9Ad/OGHPgoSPJs
-	pxNeKepUMNcvPylLqriFJPmOvWR+1pGnI1Pm54Tv8Cu5er8RG6BN+7SkVw16uhX7
-	s//TKg7ycszxHmGT5JabbGHfD120nGtIhQk+DDVEsSh/CdWkzEHEGHM770oua6Hg
-	BJVmnP8fSnv+HBdTvRXg==
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com
- [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w5gk2hudt-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 10 Feb 2024 00:31:23 +0000 (GMT)
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com
- [10.47.209.197])
-	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id
- 41A0VMin029048
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 10 Feb 2024 00:31:22 GMT
-Received: from [10.110.93.252] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 9 Feb
- 2024 16:31:21 -0800
-Message-ID: <43aa48a5-fab2-8d1c-a1c9-1553b47fe72c@quicinc.com>
-Date: Fri, 9 Feb 2024 16:31:20 -0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: [PATCH v14 48/53] ALSA: usb-audio: mixer: Add USB offloading
- mixer control
-Content-Language: en-US
-To: Takashi Iwai <tiwai@suse.de>
-CC: <srinivas.kandagatla@linaro.org>, <mathias.nyman@intel.com>,
-        <perex@perex.cz>, <conor+dt@kernel.org>, <corbet@lwn.net>,
-        <lgirdwood@gmail.com>, <andersson@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <gregkh@linuxfoundation.org>,
-        <Thinh.Nguyen@synopsys.com>, <broonie@kernel.org>,
-        <bgoswami@quicinc.com>, <tiwai@suse.com>, <robh+dt@kernel.org>,
-        <konrad.dybcio@linaro.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-sound@vger.kernel.org>,
-        <linux-usb@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-doc@vger.kernel.org>, <alsa-devel@alsa-project.org>
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=KJoW4J71;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=DALLQMtL;
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.a=rsa-sha256 header.s=susede2_rsa header.b=ZTWz1/eC;
+	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=xJIBcXYS
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 5A6711F871;
+	Sat, 10 Feb 2024 08:08:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1707552517;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zlZxIUNjuMw/gmtQRSWgnNoi6CtpoNOtj4J6OuXVIjg=;
+	b=KJoW4J71U9ZLJ7gO2a8d/PIy4nhqzxY0s2zlnSK3EfY+kPyH4g9TEVPDrbfiXtcc/TIc19
+	rBz1R3rMMqHBFpfdklsVYAvJUBGeIBd1yEeUbyG+S4pvPUI3SlQWCdSERiYlNcqQK8aMbi
+	FLTcGWIGmoltnHEJ9DbUUfL3K59u3Cs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1707552517;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zlZxIUNjuMw/gmtQRSWgnNoi6CtpoNOtj4J6OuXVIjg=;
+	b=DALLQMtLxjWwWSgCINWrel5oJJeUceaqE4HtJb6m4CQza+kjwh0s/IV8ugvQhrrR/EzT5b
+	Us/14GhwwZ1wBUAQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1707552515;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zlZxIUNjuMw/gmtQRSWgnNoi6CtpoNOtj4J6OuXVIjg=;
+	b=ZTWz1/eCrW4xLIfHtnBLB6BnNE2Hyv+DpxtveF0h6zNq9n2cM02p5thixj/s3MPSNtnQ1z
+	oWVlRIw4qVHxPrc9pXXKeC739EKUY3jDKS0izOgEk9N/+8AYvkDEcvuryy8bu1Wg0PaJqU
+	w8ZfhTZZRJjf5urEpo/4ELDawf/K784=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1707552515;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zlZxIUNjuMw/gmtQRSWgnNoi6CtpoNOtj4J6OuXVIjg=;
+	b=xJIBcXYSPUlRFsJAH686aURuAcIgKNqRNMW8Sp8PsxJ1wmcHs6/sbp65Meumml9uDAWSPz
+	lg4vL/0gbcQppkBA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A58C613867;
+	Sat, 10 Feb 2024 08:08:34 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id dyCTJgIvx2VMcQAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Sat, 10 Feb 2024 08:08:34 +0000
+Date: Sat, 10 Feb 2024 09:08:34 +0100
+Message-ID: <875xywzqpp.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Wesley Cheng <quic_wcheng@quicinc.com>
+Cc: <srinivas.kandagatla@linaro.org>,
+	<mathias.nyman@intel.com>,
+	<perex@perex.cz>,
+	<conor+dt@kernel.org>,
+	<corbet@lwn.net>,
+	<lgirdwood@gmail.com>,
+	<andersson@kernel.org>,
+	<krzysztof.kozlowski+dt@linaro.org>,
+	<gregkh@linuxfoundation.org>,
+	<Thinh.Nguyen@synopsys.com>,
+	<broonie@kernel.org>,
+	<bgoswami@quicinc.com>,
+	<tiwai@suse.com>,
+	<robh+dt@kernel.org>,
+	<konrad.dybcio@linaro.org>,
+	<linux-kernel@vger.kernel.org>,
+	<devicetree@vger.kernel.org>,
+	<linux-sound@vger.kernel.org>,
+	<linux-usb@vger.kernel.org>,
+	<linux-arm-msm@vger.kernel.org>,
+	<linux-doc@vger.kernel.org>,
+	<alsa-devel@alsa-project.org>
+Subject: Re: [PATCH v14 20/53] ASoC: Add SOC USB APIs for adding an USB
+ backend
+In-Reply-To: <b007a78c-b8fb-83bc-3be6-963708182cee@quicinc.com>
 References: <20240208231406.27397-1-quic_wcheng@quicinc.com>
- <20240208231406.27397-49-quic_wcheng@quicinc.com>
- <87y1bt2acg.wl-tiwai@suse.de>
-From: Wesley Cheng <quic_wcheng@quicinc.com>
-In-Reply-To: <87y1bt2acg.wl-tiwai@suse.de>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
- signatures=585085
-X-Proofpoint-ORIG-GUID: lXQuVPmFc1WXS-_N4GcNV_ReH1aK5jL-
-X-Proofpoint-GUID: lXQuVPmFc1WXS-_N4GcNV_ReH1aK5jL-
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-09_20,2024-02-08_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- mlxscore=0 lowpriorityscore=0
- phishscore=0 malwarescore=0 mlxlogscore=999 spamscore=0 impostorscore=0
- suspectscore=0 clxscore=1015 bulkscore=0 priorityscore=1501 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2401310000
- definitions=main-2402100002
-Message-ID-Hash: DZ7BAM6GAEHHGSNCWXWZP7PVFBPY2JDH
-X-Message-ID-Hash: DZ7BAM6GAEHHGSNCWXWZP7PVFBPY2JDH
-X-MailFrom: quic_wcheng@quicinc.com
+	<20240208231406.27397-21-quic_wcheng@quicinc.com>
+	<87r0hl29ha.wl-tiwai@suse.de>
+	<b007a78c-b8fb-83bc-3be6-963708182cee@quicinc.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b="ZTWz1/eC";
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=xJIBcXYS
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 TO_DN_SOME(0.00)[];
+	 R_RATELIMIT(0.00)[to_ip_from(RLe67txhfobum3fqdb5xx8e3au)];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_TRACE(0.00)[suse.de:+];
+	 MX_GOOD(-0.01)[];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 BAYES_HAM(-3.00)[100.00%];
+	 ARC_NA(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 FROM_HAS_DN(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[dt];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 DWL_DNSWL_LOW(-1.00)[suse.de:dkim];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 RCPT_COUNT_TWELVE(0.00)[23];
+	 MID_CONTAINS_FROM(1.00)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,quicinc.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FREEMAIL_CC(0.00)[linaro.org,intel.com,perex.cz,kernel.org,lwn.net,gmail.com,linuxfoundation.org,synopsys.com,quicinc.com,suse.com,vger.kernel.org,alsa-project.org];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Rspamd-Queue-Id: 5A6711F871
+Message-ID-Hash: R3WYLVKMYQCZASVB47SBPE7KXA7DF4JQ
+X-Message-ID-Hash: R3WYLVKMYQCZASVB47SBPE7KXA7DF4JQ
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -125,7 +186,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DZ7BAM6GAEHHGSNCWXWZP7PVFBPY2JDH/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/R3WYLVKMYQCZASVB47SBPE7KXA7DF4JQ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -134,204 +195,53 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi Takashi,
+On Fri, 09 Feb 2024 21:34:39 +0100,
+Wesley Cheng wrote:
+> 
+> Hi Takashi,
+> 
+> On 2/9/2024 2:54 AM, Takashi Iwai wrote:
+> > On Fri, 09 Feb 2024 00:13:33 +0100,
+> > Wesley Cheng wrote:
+> >> 
+> >> Some platforms may have support for offloading USB audio devices to a
+> >> dedicated audio DSP.  Introduce a set of APIs that allow for management of
+> >> USB sound card and PCM devices enumerated by the USB SND class driver.
+> >> This allows for the ASoC components to be aware of what USB devices are
+> >> available for offloading.
+> >> 
+> >> Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
+> > (snip)
+> >> --- a/sound/soc/Makefile
+> >> +++ b/sound/soc/Makefile
+> >> @@ -1,5 +1,5 @@
+> >>   # SPDX-License-Identifier: GPL-2.0
+> >> -snd-soc-core-objs := soc-core.o soc-dapm.o soc-jack.o soc-utils.o soc-dai.o soc-component.o
+> >> +snd-soc-core-objs := soc-core.o soc-dapm.o soc-jack.o soc-usb.o soc-utils.o soc-dai.o soc-component.o
+> >>   snd-soc-core-objs += soc-pcm.o soc-devres.o soc-ops.o soc-link.o soc-card.o
+> >>   snd-soc-core-$(CONFIG_SND_SOC_COMPRESS) += soc-compress.o
+> > 
+> > Do we really want to build this into ASoC core unconditionally?
+> > This is very specific to Qualcomm USB-offload stuff, so it's better to
+> > factor out.
+> > 
+> 
+> Ideally, the SOC USB part shouldn't be Qualcomm specific.  Since I
+> don't have access or insight into how other vendors are achieving the
+> same thing, I can only base the soc-usb layer to work with the
+> information that is required to get the audio stream up and running on
+> the QC platforms.  In its simplest form, its basically just a SW
+> entity that notifies ASoC components about changes occurring from USB
+> SND, and I think all vendors that have an ASoC based platform card
+> handling the offload will need this notification.
 
-On 2/9/2024 2:36 AM, Takashi Iwai wrote:
-> On Fri, 09 Feb 2024 00:14:01 +0100,
-> Wesley Cheng wrote:
->>
->> In order to allow userspace/applications know about USB offloading status,
->> expose a sound kcontrol that fetches information about which sound card
->> index is associated with the ASoC platform card supporting offloading.  In
->> the USB audio offloading framework, the ASoC BE DAI link is the entity
->> responsible for registering to the SOC USB layer.  SOC USB will expose more
->> details about the current offloading status, which includes the USB sound
->> card and USB PCM device indexes currently being used.
->>
->> Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
-> 
-> Now looking at this again, I noticed that this will bring the
-> hard-dependency on ASoC stuff to USB-audio driver, since it adds the
-> call of snd_soc_usb_device_offload_available().
-> 
-> Maybe we can let the add-on platform adding/removing the control
-> element on the fly instead?
-> 
+Yes, but it's not necessarily built into the snd-soc-core module at
+all, but can be split to another module, right?  Otherwise all
+machines must load this code even if it doesn't use at all.
+If this were common among various chips, it'd be worth to be merged
+into the default common module.  But I don't think that's the case.
 
-Sure, I'll move it into the QC offload driver.  As long as we have a 
-standard API within USB SND that other vendors can also add to their 
-offload drivers, I think that is sufficient.
 
-Thanks
-Wesley Cheng
+thanks,
 
-> 
-> thanks,
-> 
-> Takashi
-> 
->> ---
->>   sound/usb/Kconfig             |  4 ++
->>   sound/usb/Makefile            |  1 +
->>   sound/usb/mixer.c             |  5 +++
->>   sound/usb/mixer_usb_offload.c | 72 +++++++++++++++++++++++++++++++++++
->>   sound/usb/mixer_usb_offload.h | 17 +++++++++
->>   5 files changed, 99 insertions(+)
->>   create mode 100644 sound/usb/mixer_usb_offload.c
->>   create mode 100644 sound/usb/mixer_usb_offload.h
->>
->> diff --git a/sound/usb/Kconfig b/sound/usb/Kconfig
->> index 4c842fbe6365..3e7be258d0e3 100644
->> --- a/sound/usb/Kconfig
->> +++ b/sound/usb/Kconfig
->> @@ -176,10 +176,14 @@ config SND_BCD2000
->>   	  To compile this driver as a module, choose M here: the module
->>   	  will be called snd-bcd2000.
->>   
->> +config SND_USB_OFFLOAD_MIXER
->> +	bool
->> +
->>   config SND_USB_AUDIO_QMI
->>   	tristate "Qualcomm Audio Offload driver"
->>   	depends on QCOM_QMI_HELPERS && SND_USB_AUDIO && USB_XHCI_SIDEBAND
->>   	select SND_PCM
->> +	select SND_USB_OFFLOAD_MIXER
->>   	help
->>   	  Say Y here to enable the Qualcomm USB audio offloading feature.
->>   
->> diff --git a/sound/usb/Makefile b/sound/usb/Makefile
->> index 246788268ddd..8c54660a11b0 100644
->> --- a/sound/usb/Makefile
->> +++ b/sound/usb/Makefile
->> @@ -22,6 +22,7 @@ snd-usb-audio-objs := 	card.o \
->>   			stream.o \
->>   			validate.o
->>   
->> +snd-usb-audio-$(CONFIG_SND_USB_OFFLOAD_MIXER) += mixer_usb_offload.o
->>   snd-usb-audio-$(CONFIG_SND_USB_AUDIO_MIDI_V2) += midi2.o
->>   snd-usb-audio-$(CONFIG_SND_USB_AUDIO_USE_MEDIA_CONTROLLER) += media.o
->>   
->> diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
->> index 409fc1164694..09229e623469 100644
->> --- a/sound/usb/mixer.c
->> +++ b/sound/usb/mixer.c
->> @@ -48,6 +48,7 @@
->>   #include "mixer.h"
->>   #include "helper.h"
->>   #include "mixer_quirks.h"
->> +#include "mixer_usb_offload.h"
->>   #include "power.h"
->>   
->>   #define MAX_ID_ELEMS	256
->> @@ -3609,6 +3610,10 @@ int snd_usb_create_mixer(struct snd_usb_audio *chip, int ctrlif)
->>   	if (err < 0)
->>   		goto _error;
->>   
->> +	err = snd_usb_offload_init_mixer(mixer);
->> +	if (err < 0)
->> +		goto _error;
->> +
->>   	err = snd_device_new(chip->card, SNDRV_DEV_CODEC, mixer, &dev_ops);
->>   	if (err < 0)
->>   		goto _error;
->> diff --git a/sound/usb/mixer_usb_offload.c b/sound/usb/mixer_usb_offload.c
->> new file mode 100644
->> index 000000000000..61b17359b987
->> --- /dev/null
->> +++ b/sound/usb/mixer_usb_offload.c
->> @@ -0,0 +1,72 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +/*
->> + * Copyright (c) 2022-2024 Qualcomm Innovation Center, Inc. All rights reserved.
->> + */
->> +
->> +#include <linux/usb.h>
->> +
->> +#include <sound/core.h>
->> +#include <sound/control.h>
->> +#include <sound/soc-usb.h>
->> +
->> +#include "card.h"
->> +#include "mixer.h"
->> +#include "mixer_usb_offload.h"
->> +#include "usbaudio.h"
->> +
->> +static int
->> +snd_usb_offload_create_mixer(struct usb_mixer_interface *mixer,
->> +		       const struct snd_kcontrol_new *new_kctl)
->> +{
->> +	struct snd_usb_audio *chip = mixer->chip;
->> +	struct usb_device *udev = chip->dev;
->> +
->> +	return snd_ctl_add(chip->card,
->> +			   snd_ctl_new1(new_kctl, udev->bus->sysdev));
->> +}
->> +
->> +static int
->> +snd_usb_offload_available_get(struct snd_kcontrol *kcontrol,
->> +		      struct snd_ctl_elem_value *ucontrol)
->> +{
->> +	struct device *sysdev = snd_kcontrol_chip(kcontrol);
->> +	int ret;
->> +
->> +	ret = snd_soc_usb_device_offload_available(sysdev);
->> +	ucontrol->value.integer.value[0] = ret < 0 ? -1 : ret;
->> +
->> +	return ret < 0 ? ret : 0;
->> +}
->> +
->> +static int snd_usb_offload_available_info(struct snd_kcontrol *kcontrol,
->> +			      struct snd_ctl_elem_info *uinfo)
->> +{
->> +	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
->> +	uinfo->count = 1;
->> +	uinfo->value.integer.min = -1;
->> +	uinfo->value.integer.max = SNDRV_CARDS;
->> +
->> +	return 0;
->> +}
->> +
->> +static const struct snd_kcontrol_new snd_usb_offload_available_ctl = {
->> +	.iface = SNDRV_CTL_ELEM_IFACE_CARD,
->> +	.access = SNDRV_CTL_ELEM_ACCESS_READ,
->> +	.name = "USB Offload Playback Capable Card",
->> +	.info = snd_usb_offload_available_info,
->> +	.get = snd_usb_offload_available_get,
->> +};
->> +
->> +/**
->> + * snd_usb_offload_init_mixer() - Add USB offload bounded mixer
->> + * @mixer - USB mixer
->> + *
->> + * Creates a sound control for a USB audio device, so that applications can
->> + * query for if there is an available USB audio offload path, and which
->> + * card is managing it.
->> + */
->> +int snd_usb_offload_init_mixer(struct usb_mixer_interface *mixer)
->> +{
->> +	return snd_usb_offload_create_mixer(mixer, &snd_usb_offload_available_ctl);
->> +}
->> +EXPORT_SYMBOL_GPL(snd_usb_offload_init_mixer);
->> diff --git a/sound/usb/mixer_usb_offload.h b/sound/usb/mixer_usb_offload.h
->> new file mode 100644
->> index 000000000000..fb88e872d8fa
->> --- /dev/null
->> +++ b/sound/usb/mixer_usb_offload.h
->> @@ -0,0 +1,17 @@
->> +/* SPDX-License-Identifier: GPL-2.0
->> + *
->> + * Copyright (c) 2022-2024 Qualcomm Innovation Center, Inc. All rights reserved.
->> + */
->> +
->> +#ifndef __USB_OFFLOAD_MIXER_H
->> +#define __USB_OFFLOAD_MIXER_H
->> +
->> +#if IS_ENABLED(CONFIG_SND_USB_OFFLOAD_MIXER)
->> +int snd_usb_offload_init_mixer(struct usb_mixer_interface *mixer);
->> +#else
->> +static int snd_usb_offload_init_mixer(struct usb_mixer_interface *mixer)
->> +{
->> +	return 0;
->> +}
->> +#endif
->> +#endif /* __USB_OFFLOAD_MIXER_H */
+Takashi
