@@ -4,136 +4,106 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D358FC48260
-	for <alsa-devel@archiver.kernel.org>; Sat, 10 Feb 2024 08:37:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 571F0C48260
+	for <alsa-devel@archiver.kernel.org>; Sat, 10 Feb 2024 13:44:59 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 33760DFA;
-	Sat, 10 Feb 2024 09:36:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 33760DFA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 89984852;
+	Sat, 10 Feb 2024 14:44:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 89984852
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1707554222;
-	bh=oqvxtofftemHVkqCtUvTHWJMUcVkNerevyhL33rOVTg=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1707572697;
+	bh=q+3I7JL6xymgeWGNmO96Zf6DFrL8mskL5/lKRc0EW8c=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=fZSGPWfHNA9lyrIZH69u6HwqjzxnkALt9n+RXsGxD2oz6gILBdYtFe7eplOxmC7IC
-	 ZarWNY7/UxX2LEWnymClWZ3bKc7KrUX919YYWGGwQwXSUvKooxv+V43UWRGWXpJvzs
-	 R9gZEFFBJr+aQUKZnml5WYkqwg3rMWvZ2jQaRNj4=
+	b=YfPMif1CTZ0jIQPDmZWyxC3JTl7zXclnyz8Ow4pQKJfny5nlwu91tzPcg3su1Ayto
+	 Ey5TtAekoouvrNI4Xy4BQ1KgoSAGignY4JDGNVsOcp9Af2Nm8bFquzFfhepJNDcJki
+	 KN7ulAwmjm4Ezry+rU0No3K82MLUBgUVyidqYa4c=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5021FF805D9; Sat, 10 Feb 2024 09:36:27 +0100 (CET)
+	id A3DC0F805AD; Sat, 10 Feb 2024 14:44:25 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id EC1D5F805C3;
-	Sat, 10 Feb 2024 09:36:26 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 73CF4F805A8;
+	Sat, 10 Feb 2024 14:44:25 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0868BF801EB; Thu,  8 Feb 2024 22:22:07 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	id 4741AF80548; Sat, 10 Feb 2024 14:44:19 +0100 (CET)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 10C1EF800E3
-	for <alsa-devel@alsa-project.org>; Thu,  8 Feb 2024 22:21:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 10C1EF800E3
+	by alsa1.perex.cz (Postfix) with ESMTPS id EB788F8016E
+	for <alsa-devel@alsa-project.org>; Sat, 10 Feb 2024 14:44:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EB788F8016E
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=L5BmvqcR
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 9718260B33;
-	Thu,  8 Feb 2024 21:21:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 289CDC433F1;
-	Thu,  8 Feb 2024 21:21:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707427313;
-	bh=oqvxtofftemHVkqCtUvTHWJMUcVkNerevyhL33rOVTg=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=L5BmvqcRkgnwQazmD6GNbT/V4WhBK5Jh6gNZcDqvZtq3vD3bjm4E5j4iLEoOGBSf2
-	 9F9jyrrWriCDl5Wu0BAXPhkb1g056buOTe2Ztq7rnNXkEo1LQlxR/MS5DrRDwOGECL
-	 PzXvkI3prpHFsJQ85rgk8WagJHAGPijl/nL+cwohJK5pgSdWN4EVlzkTj2GSjD78+U
-	 Do4/ScbKYtsrkZ/UX5X3+BMEO6gp6SsFMVnpleSnv3fJUOOdIaypIpDthmOW76tyzt
-	 Evsw5NI06O+Mh6/qIrxzDT3P++ocGhgYPwbeQwHydxaTl96OS/0UKdfbCWCgOU5q38
-	 wcv+IJzWFU9dQ==
-From: Mark Brown <broonie@kernel.org>
-To: =?utf-8?q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-Cc: kernel@pengutronix.de, Moritz Fischer <mdf@kernel.org>,
- Wu Hao <hao.wu@intel.com>, Xu Yilun <yilun.xu@intel.com>,
- Tom Rix <trix@redhat.com>, linux-fpga@vger.kernel.org,
- linux-kernel@vger.kernel.org, Alexander Aring <alex.aring@gmail.com>,
- Stefan Schmidt <stefan@datenfreihafen.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- linux-wpan@vger.kernel.org, netdev@vger.kernel.org,
- Lars-Peter Clausen <lars@metafoo.de>,
- Michael Hennerich <Michael.Hennerich@analog.com>,
- Jonathan Cameron <jic23@kernel.org>, linux-iio@vger.kernel.org,
- Dmitry Torokhov <dmitry.torokhov@gmail.com>,
- Jonathan Cameron <Jonathan.Cameron@huawei.com>, linux-input@vger.kernel.org,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Ulf Hansson <ulf.hansson@linaro.org>,
- Martin Tuma <martin.tuma@digiteqautomotive.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>, linux-media@vger.kernel.org,
- Sergey Kozlov <serjk@netup.ru>, Arnd Bergmann <arnd@arndb.de>,
- Yang Yingliang <yangyingliang@huawei.com>, linux-mmc@vger.kernel.org,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Rob Herring <robh@kernel.org>,
- Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>,
- Amit Kumar Mahapatra via Alsa-devel <alsa-devel@alsa-project.org>,
- linux-mtd@lists.infradead.org, Simon Horman <horms@kernel.org>,
- Ronald Wahl <ronald.wahl@raritan.com>, Benson Leung <bleung@chromium.org>,
- Tzung-Bi Shih <tzungbi@kernel.org>, Guenter Roeck <groeck@chromium.org>,
- chrome-platform@lists.linux.dev, Michal Simek <michal.simek@amd.com>,
- Max Filippov <jcmvbkbc@gmail.com>, linux-spi@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>, linux-arm-msm@vger.kernel.org,
- Matthias Brugger <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- linux-mediatek@lists.infradead.org, Thomas Zimmermann <tzimmermann@suse.de>,
- Javier Martinez Canillas <javierm@redhat.com>,
- Sam Ravnborg <sam@ravnborg.org>, dri-devel@lists.freedesktop.org,
- linux-fbdev@vger.kernel.org, linux-staging@lists.linux.dev,
- Viresh Kumar <vireshk@kernel.org>, Rui Miguel Silva <rmfrfs@gmail.com>,
- Johan Hovold <johan@kernel.org>, Alex Elder <elder@kernel.org>,
- greybus-dev@lists.linaro.org, Peter Huewe <peterhuewe@gmx.de>,
- Jarkko Sakkinen <jarkko@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>,
- linux-integrity@vger.kernel.org, Herve Codina <herve.codina@bootlin.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- linux-usb@vger.kernel.org, Helge Deller <deller@gmx.de>,
- Dario Binacchi <dario.binacchi@amarulasolutions.com>,
- Kalle Valo <kvalo@kernel.org>, Dmitry Antipov <dmantipov@yandex.ru>,
- libertas-dev@lists.infradead.org, linux-wireless@vger.kernel.org,
- Jonathan Corbet <corbet@lwn.net>, Bjorn Helgaas <bhelgaas@google.com>,
- James Clark <james.clark@arm.com>, linux-doc@vger.kernel.org
-In-Reply-To: <cover.1707324793.git.u.kleine-koenig@pengutronix.de>
-References: <cover.1707324793.git.u.kleine-koenig@pengutronix.de>
-Subject: Re: [PATCH v3 00/32] spi: get rid of some legacy macros
-Message-Id: <170742729486.2266792.11643460714402047207.b4-ty@kernel.org>
-Date: Thu, 08 Feb 2024 21:21:34 +0000
+	dkim=pass (1024-bit key,
+ unprotected) header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256
+ header.s=mimecast20190719 header.b=Zozt2yxI
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707572646;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=jmGE/9tI09rWo4NVLVxZ5r2vdCrPHXjaWtS/C34Vjb4=;
+	b=Zozt2yxIgRtjVi9pyLUSouyiwkgPtdTypoobQrKEeaT8JnaxgLEtcSrQeS96RdQFSqMWft
+	c4zHua15ej3jk++cpGGqyo48gycAlsfNQ0kzupfkSgo//AuFHphxnP4zA7M2ukwWXA28VK
+	2LZk2YrXBNISXSCVIshhLpxKexRURlA=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-557-PHF3jQy7MGCb9oLWabgQTA-1; Sat, 10 Feb 2024 08:44:04 -0500
+X-MC-Unique: PHF3jQy7MGCb9oLWabgQTA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com
+ [10.11.54.2])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 5E3C0185A781;
+	Sat, 10 Feb 2024 13:44:04 +0000 (UTC)
+Received: from shalem.redhat.com (unknown [10.39.192.79])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 08EF940C9444;
+	Sat, 10 Feb 2024 13:44:02 +0000 (UTC)
+From: Hans de Goede <hdegoede@redhat.com>
+To: Cezary Rojewski <cezary.rojewski@intel.com>,
+	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+	Mark Brown <broonie@kernel.org>
+Cc: Hans de Goede <hdegoede@redhat.com>,
+	Oder Chiou <oder_chiou@realtek.com>,
+	alsa-devel@alsa-project.org,
+	Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Subject: [PATCH 6.8 regression fix 1/2] ASoC: Intel: Boards: Fix NULL pointer
+ deref in BYT/CHT boards
+Date: Sat, 10 Feb 2024 14:43:59 +0100
+Message-ID: <20240210134400.24913-2-hdegoede@redhat.com>
+In-Reply-To: <20240210134400.24913-1-hdegoede@redhat.com>
+References: <20240210134400.24913-1-hdegoede@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
 Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.13-dev-0438c
-X-MailFrom: broonie@kernel.org
-X-Mailman-Rule-Hits: max-recipients
+Content-Type: text/plain; charset="US-ASCII"; x-default=true
+Message-ID-Hash: ZH3DGFAITHFDNTTEVYAVNBFSTPNLT7AY
+X-Message-ID-Hash: ZH3DGFAITHFDNTTEVYAVNBFSTPNLT7AY
+X-MailFrom: hdegoede@redhat.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-size; news-moderation; no-subject; digests;
- suspicious-header
-Message-ID-Hash: XF4L4ZEDAPYTQNK7ECB6NZDNU5E6TCKU
-X-Message-ID-Hash: XF4L4ZEDAPYTQNK7ECB6NZDNU5E6TCKU
-X-Mailman-Approved-At: Sat, 10 Feb 2024 08:33:43 +0000
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XF4L4ZEDAPYTQNK7ECB6NZDNU5E6TCKU/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZH3DGFAITHFDNTTEVYAVNBFSTPNLT7AY/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -142,107 +112,144 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Wed, 07 Feb 2024 19:40:14 +0100, Uwe Kleine-König wrote:
-> Changes since v2
-> (https://lore.kernel.org/linux-spi/cover.1705944943.git.u.kleine-koenig@pengutronix.de):
-> 
->  - Drop patch "mtd: rawnand: fsl_elbc: Let .probe retry if local bus is
->    missing" which doesn't belong into this series.
->  - Fix a build failure noticed by the kernel build bot in
->    drivers/spi/spi-au1550.c. (I failed to catch this because this driver
->    is mips only, but not enabled in a mips allmodconfig. That's a bit
->    unfortunate, but not easily fixable.)
->  - Add the Reviewed-by: and Acked-by: tags I received for v2.
-> 
-> [...]
+Since commit 13f58267cda3 ("ASoC: soc.h: don't create dummy Component
+via COMP_DUMMY()") dummy snd_soc_dai_link.codecs entries no longer
+have a name set.
 
-Applied to
+This means that when looking for the codec dai_link the machine
+driver can no longer unconditionally run strcmp() on
+snd_soc_dai_link.codecs[0].name since this may now be NULL.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+Add a check for snd_soc_dai_link.codecs[0].name being NULL to all
+BYT/CHT machine drivers to avoid NULL pointer dereferences in
+their probe() methods.
 
-Thanks!
+Fixes: 13f58267cda3 ("ASoC: soc.h: don't create dummy Component via COMP_DUMMY()")
+Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+---
+ sound/soc/intel/boards/bytcht_cx2072x.c | 3 ++-
+ sound/soc/intel/boards/bytcht_da7213.c  | 3 ++-
+ sound/soc/intel/boards/bytcht_es8316.c  | 3 ++-
+ sound/soc/intel/boards/bytcr_rt5640.c   | 3 ++-
+ sound/soc/intel/boards/bytcr_rt5651.c   | 3 ++-
+ sound/soc/intel/boards/bytcr_wm5102.c   | 3 ++-
+ sound/soc/intel/boards/cht_bsw_rt5645.c | 3 ++-
+ sound/soc/intel/boards/cht_bsw_rt5672.c | 3 ++-
+ 8 files changed, 16 insertions(+), 8 deletions(-)
 
-[01/32] fpga: ice40-spi: Follow renaming of SPI "master" to "controller"
-        commit: 227ab73b89d66e3064b3c2bcb5fe382b1815763d
-[02/32] ieee802154: ca8210: Follow renaming of SPI "master" to "controller"
-        commit: 167b78446706bb4d19f7dd93ca320aed25ae1bbd
-[03/32] iio: adc: ad_sigma_delta: Follow renaming of SPI "master" to "controller"
-        commit: 2780e7b716a605781dbee753ef4983d775a65427
-[04/32] Input: pxspad - follow renaming of SPI "master" to "controller"
-        commit: a78acec53b8524593afeed7258a442adc3450818
-[05/32] Input: synaptics-rmi4 - follow renaming of SPI "master" to "controller"
-        commit: 1245633c61baf159fcc1303d7f0855f49831b9c1
-[06/32] media: mgb4: Follow renaming of SPI "master" to "controller"
-        commit: 2c2f93fbfba7186cc081e23120f169eac3b5b62a
-[07/32] media: netup_unidvb: Follow renaming of SPI "master" to "controller"
-        commit: cfa13a64bd631d8f04a1c385923706fcef9a63ed
-[08/32] media: usb/msi2500: Follow renaming of SPI "master" to "controller"
-        commit: dd868ae646d5770f80f90dc056d06eb2e6d39c62
-[09/32] media: v4l2-subdev: Follow renaming of SPI "master" to "controller"
-        commit: d920b3a672b7f79cd13b341234aebd49233f836c
-[10/32] misc: gehc-achc: Follow renaming of SPI "master" to "controller"
-        commit: 26dcf09ee5d9ceba2c627ae3ba174a229f25638f
-[11/32] mmc: mmc_spi: Follow renaming of SPI "master" to "controller"
-        commit: b0a6776e53403aa380411f2a43cdefb9f00ff50a
-[12/32] mtd: dataflash: Follow renaming of SPI "master" to "controller"
-        commit: 44ee998db9eef84bf005c39486566a67cb018354
-[13/32] net: ks8851: Follow renaming of SPI "master" to "controller"
-        commit: 1cc711a72ae7fd44e90839f0c8d3226664de55a2
-[14/32] net: vertexcom: mse102x: Follow renaming of SPI "master" to "controller"
-        commit: 7969b98b80c0332f940c547f84650a20aab33841
-[15/32] platform/chrome: cros_ec_spi: Follow renaming of SPI "master" to "controller"
-        commit: 85ad0ec049a771c4910c8aebb2d0bd9ce9311fd9
-[16/32] spi: bitbang: Follow renaming of SPI "master" to "controller"
-        commit: 2259233110d90059187c5ba75537eb93eba8417b
-[17/32] spi: cadence-quadspi: Don't emit error message on allocation error
-        commit: e71011dacc3413bed4118d2c42f10736ffcd762c
-[18/32] spi: cadence-quadspi: Follow renaming of SPI "master" to "controller"
-        commit: 28e59d8bf1ace0ddf05f989a48d6824d75731267
-[19/32] spi: cavium: Follow renaming of SPI "master" to "controller"
-        commit: 1747fbdedba8b6b3fd459895ed5d57e534549884
-[20/32] spi: geni-qcom: Follow renaming of SPI "master" to "controller"
-        commit: 14cea92338a0776c1615994150e738ac0f5fbb2c
-[21/32] spi: loopback-test: Follow renaming of SPI "master" to "controller"
-        commit: 2c2310c17fac13aa7e78756d7f3780c7891f9397
-[22/32] spi: slave-mt27xx: Follow renaming of SPI "master" to "controller"
-        commit: 8197b136bbbe64a7cab1020a4b067020e5977d98
-[23/32] spi: spidev: Follow renaming of SPI "master" to "controller"
-        commit: d934cd6f0e5d0052772612db4b07df60cb9da387
-[24/32] staging: fbtft: Follow renaming of SPI "master" to "controller"
-        commit: bbd25d7260eeeaef89f7371cbadcd33dd7f7bff9
-[25/32] staging: greybus: spi: Follow renaming of SPI "master" to "controller"
-        commit: ee3c668dda3d2783b0fff4091461356fe000e4d8
-[26/32] tpm_tis_spi: Follow renaming of SPI "master" to "controller"
-        commit: b6af14eacc8814b0986e20507df423cebe9fd859
-[27/32] usb: gadget: max3420_udc: Follow renaming of SPI "master" to "controller"
-        commit: 8c716f4a3d4fcbec976247e3443d36cbc24c0512
-[28/32] video: fbdev: mmp: Follow renaming of SPI "master" to "controller"
-        commit: b23031e730e72ec9067b7c38c25e776c5e27e116
-[29/32] wifi: libertas: Follow renaming of SPI "master" to "controller"
-        commit: 30060d57cee194d6b70283f2faf787e2fdc61b6e
-[30/32] spi: fsl-lib: Follow renaming of SPI "master" to "controller"
-        commit: 801185efa2402dce57828930e9684884fc8d62da
-[31/32] spi: Drop compat layer from renaming "master" to "controller"
-        commit: 620d269f29a569ba37419cc03cf1da2d55f6252a
-[32/32] Documentation: spi: Update documentation for renaming "master" to "controller"
-        commit: 76b31eb4c2da3ddb3195cc14f6aad24908adf524
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+diff --git a/sound/soc/intel/boards/bytcht_cx2072x.c b/sound/soc/intel/boards/bytcht_cx2072x.c
+index 10a84a2c1036..c014d85a08b2 100644
+--- a/sound/soc/intel/boards/bytcht_cx2072x.c
++++ b/sound/soc/intel/boards/bytcht_cx2072x.c
+@@ -241,7 +241,8 @@ static int snd_byt_cht_cx2072x_probe(struct platform_device *pdev)
+ 
+ 	/* fix index of codec dai */
+ 	for (i = 0; i < ARRAY_SIZE(byt_cht_cx2072x_dais); i++) {
+-		if (!strcmp(byt_cht_cx2072x_dais[i].codecs->name,
++		if (byt_cht_cx2072x_dais[i].codecs->name &&
++		    !strcmp(byt_cht_cx2072x_dais[i].codecs->name,
+ 			    "i2c-14F10720:00")) {
+ 			dai_index = i;
+ 			break;
+diff --git a/sound/soc/intel/boards/bytcht_da7213.c b/sound/soc/intel/boards/bytcht_da7213.c
+index 7e5eea690023..f4ac3ddd148b 100644
+--- a/sound/soc/intel/boards/bytcht_da7213.c
++++ b/sound/soc/intel/boards/bytcht_da7213.c
+@@ -245,7 +245,8 @@ static int bytcht_da7213_probe(struct platform_device *pdev)
+ 
+ 	/* fix index of codec dai */
+ 	for (i = 0; i < ARRAY_SIZE(dailink); i++) {
+-		if (!strcmp(dailink[i].codecs->name, "i2c-DLGS7213:00")) {
++		if (dailink[i].codecs->name &&
++		    !strcmp(dailink[i].codecs->name, "i2c-DLGS7213:00")) {
+ 			dai_index = i;
+ 			break;
+ 		}
+diff --git a/sound/soc/intel/boards/bytcht_es8316.c b/sound/soc/intel/boards/bytcht_es8316.c
+index 1564a88a885e..2fcec2e02bb5 100644
+--- a/sound/soc/intel/boards/bytcht_es8316.c
++++ b/sound/soc/intel/boards/bytcht_es8316.c
+@@ -546,7 +546,8 @@ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
+ 
+ 	/* fix index of codec dai */
+ 	for (i = 0; i < ARRAY_SIZE(byt_cht_es8316_dais); i++) {
+-		if (!strcmp(byt_cht_es8316_dais[i].codecs->name,
++		if (byt_cht_es8316_dais[i].codecs->name &&
++		    !strcmp(byt_cht_es8316_dais[i].codecs->name,
+ 			    "i2c-ESSX8316:00")) {
+ 			dai_index = i;
+ 			break;
+diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+index 42466b4b1ca4..03be5e26ec4a 100644
+--- a/sound/soc/intel/boards/bytcr_rt5640.c
++++ b/sound/soc/intel/boards/bytcr_rt5640.c
+@@ -1652,7 +1652,8 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
+ 
+ 	/* fix index of codec dai */
+ 	for (i = 0; i < ARRAY_SIZE(byt_rt5640_dais); i++) {
+-		if (!strcmp(byt_rt5640_dais[i].codecs->name,
++		if (byt_rt5640_dais[i].codecs->name &&
++		    !strcmp(byt_rt5640_dais[i].codecs->name,
+ 			    "i2c-10EC5640:00")) {
+ 			dai_index = i;
+ 			break;
+diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
+index f9fe8414f454..80c841b000a3 100644
+--- a/sound/soc/intel/boards/bytcr_rt5651.c
++++ b/sound/soc/intel/boards/bytcr_rt5651.c
+@@ -910,7 +910,8 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
+ 
+ 	/* fix index of codec dai */
+ 	for (i = 0; i < ARRAY_SIZE(byt_rt5651_dais); i++) {
+-		if (!strcmp(byt_rt5651_dais[i].codecs->name,
++		if (byt_rt5651_dais[i].codecs->name &&
++		    !strcmp(byt_rt5651_dais[i].codecs->name,
+ 			    "i2c-10EC5651:00")) {
+ 			dai_index = i;
+ 			break;
+diff --git a/sound/soc/intel/boards/bytcr_wm5102.c b/sound/soc/intel/boards/bytcr_wm5102.c
+index 6978ebde6693..cccb5e90c0fe 100644
+--- a/sound/soc/intel/boards/bytcr_wm5102.c
++++ b/sound/soc/intel/boards/bytcr_wm5102.c
+@@ -605,7 +605,8 @@ static int snd_byt_wm5102_mc_probe(struct platform_device *pdev)
+ 
+ 	/* find index of codec dai */
+ 	for (i = 0; i < ARRAY_SIZE(byt_wm5102_dais); i++) {
+-		if (!strcmp(byt_wm5102_dais[i].codecs->name,
++		if (byt_wm5102_dais[i].codecs->name &&
++		    !strcmp(byt_wm5102_dais[i].codecs->name,
+ 			    "wm5102-codec")) {
+ 			dai_index = i;
+ 			break;
+diff --git a/sound/soc/intel/boards/cht_bsw_rt5645.c b/sound/soc/intel/boards/cht_bsw_rt5645.c
+index c952a96cde7e..7773f61064f4 100644
+--- a/sound/soc/intel/boards/cht_bsw_rt5645.c
++++ b/sound/soc/intel/boards/cht_bsw_rt5645.c
+@@ -571,7 +571,8 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
+ 
+ 	/* set correct codec name */
+ 	for (i = 0; i < ARRAY_SIZE(cht_dailink); i++)
+-		if (!strcmp(card->dai_link[i].codecs->name,
++		if (card->dai_link[i].codecs->name &&
++		    !strcmp(card->dai_link[i].codecs->name,
+ 			    "i2c-10EC5645:00")) {
+ 			card->dai_link[i].codecs->name = drv->codec_name;
+ 			dai_index = i;
+diff --git a/sound/soc/intel/boards/cht_bsw_rt5672.c b/sound/soc/intel/boards/cht_bsw_rt5672.c
+index 8cf0b33cc02e..be2d1a8dbca8 100644
+--- a/sound/soc/intel/boards/cht_bsw_rt5672.c
++++ b/sound/soc/intel/boards/cht_bsw_rt5672.c
+@@ -466,7 +466,8 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
+ 
+ 	/* find index of codec dai */
+ 	for (i = 0; i < ARRAY_SIZE(cht_dailink); i++) {
+-		if (!strcmp(cht_dailink[i].codecs->name, RT5672_I2C_DEFAULT)) {
++		if (cht_dailink[i].codecs->name &&
++		    !strcmp(cht_dailink[i].codecs->name, RT5672_I2C_DEFAULT)) {
+ 			dai_index = i;
+ 			break;
+ 		}
+-- 
+2.43.0
 
