@@ -4,84 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 055DAC4829B
-	for <alsa-devel@archiver.kernel.org>; Mon, 12 Feb 2024 06:11:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D7025C48297
+	for <alsa-devel@archiver.kernel.org>; Mon, 12 Feb 2024 07:11:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6E476B65;
-	Mon, 12 Feb 2024 07:11:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6E476B65
+	by alsa0.perex.cz (Postfix) with ESMTPS id E4B59868;
+	Mon, 12 Feb 2024 08:10:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E4B59868
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1707718288;
-	bh=oy3gkwXSjXKA2Ayx2dhISZ86EWgTqhsy2HxNCU3pqAA=;
+	s=default; t=1707721869;
+	bh=lj8or7ggdJKR9iXDKz21o2V4MlB+Zx4S208R6fznus0=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=VK6Zh0baeqAaQZcCqnS3v1mY8C1epHLdlblNONwcKg0BkfIXVakCPpiMTJvSOr/Xo
-	 WjKEZuCxKY9wgymrj93CQi1tJVLk5MImIK3sBa6+9DHXk3FrCKOTYcq+rwRVrQKF/b
-	 LKMbXjqv3Am+AchOszvCT39U4mWecl+k0l46Ry+U=
+	b=IOLNn8WeheOQGXH34twMgx71Ky8yBrVr2e7VIcbmE7wmF4XpZ3EyRKqxX2vbym3M1
+	 2aJw6RtWP58tedMJdV18syJy0TUbT9alNUb5F75ShPYwQg0J3WlsxFgVfMFpJMG9kP
+	 6W8EpBKexl4hw5WN2++FV8kwCNdKbJDlk2UEUC5k=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1976BF805A9; Mon, 12 Feb 2024 07:10:51 +0100 (CET)
+	id 4CECCF8015B; Mon, 12 Feb 2024 08:10:33 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4E092F805A9;
-	Mon, 12 Feb 2024 07:10:51 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id ED9FAF805A1;
+	Mon, 12 Feb 2024 08:10:32 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B105AF80238; Mon, 12 Feb 2024 07:09:24 +0100 (CET)
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com
- [209.85.208.46])
+	id 47D2DF80238; Mon, 12 Feb 2024 08:09:23 +0100 (CET)
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com
+ [209.85.218.44])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id BEEDEF800BF
-	for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2024 07:08:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BEEDEF800BF
-Received: by mail-ed1-f46.google.com with SMTP id
- 4fb4d7f45d1cf-560e9c7a094so3642958a12.0
+	by alsa1.perex.cz (Postfix) with ESMTPS id 866EFF8015B
+	for <alsa-devel@alsa-project.org>; Mon, 12 Feb 2024 08:09:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 866EFF8015B
+Received: by mail-ej1-f44.google.com with SMTP id
+ a640c23a62f3a-a3832ef7726so316205266b.0
         for <alsa-devel@alsa-project.org>;
- Sun, 11 Feb 2024 22:08:00 -0800 (PST)
+ Sun, 11 Feb 2024 23:09:21 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707718080; x=1708322880;
+        d=1e100.net; s=20230601; t=1707721760; x=1708326560;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=MILP1dtOJICOj8/NSquH6W/spYpMBc6qdWLltCUs/0Y=;
-        b=ud3G638etqsTq1/4B/2iypUZKd2rgCGUAY+Z3UXPkRL/a2b6u44aiC0Ae7MqwotEs8
-         dPDrhEYwiIAJ6exlEtw2J3yt73SIpxRS/OY6tGmrbUbjC9LMjs4a6xwpjYoXw8MruQWO
-         UPGBkK6U6f7/HIO78itFkmfkwWfztyFkO9t6JJCgwoo/YjI5IT+N4VPo02LUhlNvmBv8
-         XP/09PGV+BoABab/9v5JzC5Kl5zYWsp9BOY16RunG28q0KYJdZvAP7U+bTGsGDFUVW0p
-         KE0yHy1mU9SbWpGBpWM5Zk+mtHu+RB/hENnWS39oSJQoJyldpcn/NU0T8pU2xAA4ckAx
-         OCXg==
+        bh=2oQwdcuaPgD/6a3Qyiq6Up5TUTtBy+clzjlSb/4KKug=;
+        b=H1mMGo4LabCkpigTTBFDgrgY9fC/dBmZMA/id8LZJo4S3peHuHmMaU63jbeESgSfAA
+         5DzOT4dEGYKqC/K/iFXzXlX6nE4QrpaY0OR4W5M4osafhawnINMsjMuLE4+Yzvh+2L67
+         9LH51Yb28rmgBeiabBA/Jk7gZMjV9ww7MGv9GHf6B1880N2A38f1HLWHH42/3yRVMBAJ
+         ihVzgXTGhZfqvc56YCVO6kfnsbJvaD0XNtkycAPJKq8GH+0bl6MsciRq6AsQhcTlennD
+         0y3GrwWKBl3qQpJU/m8Hvxi3SmSqD0NkEO3PEBN2hgby0wt1OuuJRAt0jY6AVY/4yicx
+         IS4w==
 X-Forwarded-Encrypted: i=1;
- AJvYcCWio83c3l1Dq5jcxHLOjYn7cbill8X2kOzSzpxUB3xiE9+QaO39tU5J8bLxhBR/C60zqip+zdEdpGqeD6LV7haz8uwE0qg3KX9ABkM=
-X-Gm-Message-State: AOJu0YzVwTgeZ3ob7bSRiv+Mfdy+J+/AC6mY4JgLqdxSCBjJZ6f2/pkU
-	3XDP4Ob6nUMGfAXAvkmvFNoTnCV1pHvNMsrpA5uPsrb9FWuEZKro
+ AJvYcCUMzcgpRpBk4LkiSrE382TIbSXtx0RdBCOJMR4qMx0Lv4Y55OZemv4Mm3CyMQUS/MMW4IFg1R/lQjgw5S5CDWwSlOQXUYVgi/XNhow=
+X-Gm-Message-State: AOJu0YwZuWovDw5o6YJDenCmo7kyEOBMH/3FUIM0I4D90GOo7HQ45npU
+	M0T9lnYzbLaYvfxr5wgV7U+Ox37t9r0Ldw3rWmE55Acjf2r4yPI+
 X-Google-Smtp-Source: 
- AGHT+IFCForocFWEda5Hr23AV8M7LiMDlqi/+DPJ4IY7p6su2vjUujSLGXfj2IR9nOuPgJ/jwtwphQ==
-X-Received: by 2002:a17:906:f28c:b0:a3c:943d:7363 with SMTP id
- gu12-20020a170906f28c00b00a3c943d7363mr1190337ejb.11.1707718080169;
-        Sun, 11 Feb 2024 22:08:00 -0800 (PST)
+ AGHT+IHedEWJoOAdlpNfWpSkXIqYj9kZfAdQq1FG4PUyadjjt2AVqxpfV+Ma2fNddcbA5kN9F+nRHg==
+X-Received: by 2002:a17:906:abcc:b0:a3c:c311:9 with SMTP id
+ kq12-20020a170906abcc00b00a3cc3110009mr436285ejb.72.1707721760612;
+        Sun, 11 Feb 2024 23:09:20 -0800 (PST)
 X-Forwarded-Encrypted: i=1;
- AJvYcCXdiTMkqKb5RSCNsBha9XX9F00c48jVZDVEQe+5unQnhH1EryRoq9slb9SerfOsxiKmMcJRfvgRJ6/PVlN2gNwPyR9+zlr9E25ZzSM+efvCwoaJoOzqFikmIS1vbJKlgKjJshjrohiN8HgAX5CLZ3h5vZXnJu7Kou7Zr/CpdE7ZTmcrASTJ6waUnK2h49yy7kaWTmcTvHwLiN3MefeMxETciJeXYR2nElW6isGZ4sm1+uk7E8/g07wkSC2LrLybxaNKzvPrr9IX09/apB8A9IgOJD6bcSMQJbcGGfYoXwqTc7MGb6O3o70v+2+M1OUZinGhd43gnOJGx0rgdFqux+BGLOUIwNEIaPrEgwj2phAvxrNxUAvgW5f82XBFnP3HS9t2V3gVejcwtWeWOt/wiGi+tX/G
+ AJvYcCUleGVnhcJS2ioXX5L8pT8BcU6eMlSRt5YvVqlu8u/8Qguy2B+HlaSU3sqVZ1fMak5/bga4fQnYI+0oCPpR9kMkEFq98Euyt5JIge04GAgr9cfwSMPW9uXoPtON46Zf2BEOtDUIOIcTp7i+IpSH+okSAH81lESaaXgdgbpT+LOcBXBSr4p1ZKvIDckhaEa34oeBwgQ2JttbTbC9l6Chs6gWp6IMg1OtetrKaQViWVjOtJc0afzmZbOLoOzaQPPZsNHMmt+b2Byy4GEfsHgILG/YsK8ZCi/MPfdjqkSKxG+ezq4k7nocejSw/s+zYJSrXLZ/dbVxE3P1/0yB3Klu9hg8IXdsvXPxRkqfPu8mLrM3HCnkKKP6gmctyVgJ8m6O/aEcWfnGMlGa2LSWeBHZdkHlmoo0
 Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:59? ([2a0b:e7c0:0:107::aaaa:59])
         by smtp.gmail.com with ESMTPSA id
- wt11-20020a170906ee8b00b00a389d911606sm3529612ejb.88.2024.02.11.22.07.59
+ rg8-20020a1709076b8800b00a38a2fa2d4bsm3560483ejc.45.2024.02.11.23.09.19
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 11 Feb 2024 22:07:59 -0800 (PST)
-Message-ID: <360ef165-2ee3-4018-9b24-e77cd82f3417@kernel.org>
-Date: Mon, 12 Feb 2024 07:07:58 +0100
+        Sun, 11 Feb 2024 23:09:19 -0800 (PST)
+Message-ID: <b912a534-f56b-4bc9-a704-4430e0743f60@kernel.org>
+Date: Mon, 12 Feb 2024 08:09:18 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] Subject: [PATCH] sound: drivers: fix typo 'reguest' to
- 'request'
+Subject: Re: [PATCH] sound: drivers: fix typo 'reguest' to 'request'
 Content-Language: en-US
 To: Yinchuan Guo <guoych37@mail2.sysu.edu.cn>, linux-kernel@vger.kernel.org
 Cc: lee.jones@linaro.org, james.smart@broadcom.com,
  dick.kennedy@broadcom.com, jejb@linux.ibm.com, martin.petersen@oracle.com,
  gregkh@linuxfoundation.org, lgirdwood@gmail.com, broonie@kernel.org,
  perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org
-References: <20240211182846.3608447-1-guoych37@mail2.sysu.edu.cn>
+References: <20240212065014.3696356-1-guoych37@mail2.sysu.edu.cn>
 From: Jiri Slaby <jirislaby@kernel.org>
 Autocrypt: addr=jirislaby@kernel.org; keydata=
  xsFNBE6S54YBEACzzjLwDUbU5elY4GTg/NdotjA0jyyJtYI86wdKraekbNE0bC4zV+ryvH4j
@@ -125,11 +124,11 @@ Autocrypt: addr=jirislaby@kernel.org; keydata=
  f/bIWIr0cqQmqQ33FgRhrG1+Xml6UXyJ2jExmlO8JljuOGeXYh6ZkIEyzqzffzBLXZCujlYQ
  DFXpyMNVJ2ZwPmX2mWEoYuaBU0JN7wM+/zWgOf2zRwhEuD3A2cO2PxoiIfyUEfB9SSmffaK/
  S4xXoB6wvGENZ85Hg37C7WDNdaAt6Xh2uQIly5grkgvWppkNy4ZHxE+jeNsU7tg=
-In-Reply-To: <20240211182846.3608447-1-guoych37@mail2.sysu.edu.cn>
+In-Reply-To: <20240212065014.3696356-1-guoych37@mail2.sysu.edu.cn>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-ID-Hash: L6VYF5CYSLGMIXJONEH5DLFPDEOOYMBC
-X-Message-ID-Hash: L6VYF5CYSLGMIXJONEH5DLFPDEOOYMBC
+Message-ID-Hash: 4HUSEVJIEMNSRX7SE5YKNW5AR5UXBIUA
+X-Message-ID-Hash: 4HUSEVJIEMNSRX7SE5YKNW5AR5UXBIUA
 X-MailFrom: jirislaby@gmail.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -142,7 +141,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/L6VYF5CYSLGMIXJONEH5DLFPDEOOYMBC/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4HUSEVJIEMNSRX7SE5YKNW5AR5UXBIUA/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -151,11 +150,7 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi,
-
-the subject is mangled.
-
-On 11. 02. 24, 19:28, Yinchuan Guo wrote:
+On 12. 02. 24, 7:50, Yinchuan Guo wrote:
 > This patch fixes a widespread spelling mistake of the word "request"
 > (incorrectly spelled as "reguest") across multiple files.
 > 
@@ -166,22 +161,8 @@ On 11. 02. 24, 19:28, Yinchuan Guo wrote:
 >   drivers/tty/serial/max310x.c  | 2 +-
 >   drivers/tty/serial/sccnxp.c   | 2 +-
 
-These do not look like "sound". You should send/fix them separately.
+Again, these have nothing to do with sound.
 
->   sound/soc/codecs/rt274.c      | 2 +-
->   sound/soc/codecs/rt286.c      | 2 +-
->   sound/soc/codecs/rt298.c      | 2 +-
->   sound/soc/codecs/rt5514-spi.c | 2 +-
->   sound/soc/codecs/rt5640.c     | 2 +-
->   sound/soc/codecs/rt5645.c     | 2 +-
->   sound/soc/codecs/rt5651.c     | 2 +-
->   sound/soc/codecs/rt5659.c     | 2 +-
->   sound/soc/codecs/rt5663.c     | 2 +-
->   sound/soc/codecs/rt5665.c     | 2 +-
->   sound/soc/codecs/rt5668.c     | 2 +-
->   sound/soc/codecs/rt5682-i2c.c | 2 +-
-
-thanks,
 -- 
 js
 suse labs
