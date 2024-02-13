@@ -4,73 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E4929C48260
-	for <alsa-devel@archiver.kernel.org>; Tue, 13 Feb 2024 17:55:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B3C1FC48260
+	for <alsa-devel@archiver.kernel.org>; Tue, 13 Feb 2024 17:55:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 18F68F51;
-	Tue, 13 Feb 2024 18:55:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 18F68F51
+	by alsa0.perex.cz (Postfix) with ESMTPS id C129B1060;
+	Tue, 13 Feb 2024 18:55:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C129B1060
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1707846929;
-	bh=OdZ/Y9zBfSGNYm4w6+scC4UUyi2R5zySwbdcyI1Rv/c=;
+	s=default; t=1707846939;
+	bh=Fpat39sCKC0M/T0N7Xrv5bT2WB5EUj8Z2VGFq0l5oCQ=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=LLOL5Iz61r2V7d3q/izQT78zLKfNnz5KBeEPzdi1uhhZPXJLXrajWR6DtrcfIenTI
-	 xeT5iqSFAVAwtMkTJp6hsIy7Eu63YPY33VSEbbCS/LeZywzsZ8iM7ML7BOz53tqFGs
-	 vOBRyH6q8bXo5x0hdwXVMWQbY4xsy/83yDCzDl0Y=
+	b=Vt5Zj0fSC+mi8Nv2Jbx1atpoQi7WvZBryDj7V1n8mxWeuADYQqKkJouE5MI9Ppb0I
+	 rZARSiwFKPQWmZeaFk7++yLDhqly7gH6EoSaSWtOS3HVwAc3s3QMVYI48zp5uokcb+
+	 10IM/x4MQxnpTUm0S9GKLswpvUZ7eN+TFr2G/w1M=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6818CF805AD; Tue, 13 Feb 2024 18:54:56 +0100 (CET)
+	id ED2B0F8025A; Tue, 13 Feb 2024 18:55:01 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 81653F805AA;
-	Tue, 13 Feb 2024 18:54:56 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3D8ACF805CA;
+	Tue, 13 Feb 2024 18:55:01 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 80090F80238; Tue, 13 Feb 2024 18:54:51 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+	id 10795F805B0; Tue, 13 Feb 2024 18:54:58 +0100 (CET)
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 968AEF80104
-	for <alsa-devel@alsa-project.org>; Tue, 13 Feb 2024 18:54:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 968AEF80104
+	by alsa1.perex.cz (Postfix) with ESMTPS id 64630F8025A
+	for <alsa-devel@alsa-project.org>; Tue, 13 Feb 2024 18:54:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 64630F8025A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=linuxfoundation.org header.i=@linuxfoundation.org
- header.a=rsa-sha256 header.s=korg header.b=A1gErUWs
+ header.a=rsa-sha256 header.s=korg header.b=xgifEv1b
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 5046661627;
-	Tue, 13 Feb 2024 17:54:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86DB7C433C7;
-	Tue, 13 Feb 2024 17:54:42 +0000 (UTC)
+	by sin.source.kernel.org (Postfix) with ESMTP id 19219CE1D7F;
+	Tue, 13 Feb 2024 17:54:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC359C433F1;
+	Tue, 13 Feb 2024 17:54:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1707846883;
-	bh=OdZ/Y9zBfSGNYm4w6+scC4UUyi2R5zySwbdcyI1Rv/c=;
+	s=korg; t=1707846889;
+	bh=Fpat39sCKC0M/T0N7Xrv5bT2WB5EUj8Z2VGFq0l5oCQ=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=A1gErUWsOg8gH/lvFWBbzLLxlU1jyvekZ1tBQvuTJDyrYwpwuGaPu+tpxzOBKyE75
-	 mBIs1z+RfZuuRITnmkhKkQEofH39UwFRCg1ArduHot2GjVf3JgotXfjJuvWv+dOxqS
-	 i8cjNfsnToqCSbLecN4NelHVBzSxcAXMFiIm0OgY=
-Date: Tue, 13 Feb 2024 18:29:10 +0100
+	b=xgifEv1bwXhoJlsctQxA8caAXj3U4+DtQHuKl0JYKmd/aTZz2EvuJ3k8HCoW9G7Bz
+	 /h6aM8+2qOzCAHxef1tzTqxSmegsBM8wEhnZxPZkpV6w0i0blKHabVQVCUDQvOdO2D
+	 jPLgAwanDvHOt29LWBfF00E0Lmjf0dVRO9odef4E=
+Date: Tue, 13 Feb 2024 18:29:30 +0100
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To: "Ricardo B. Marliere" <ricardo@marliere.net>
 Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-	Banajit Goswami <bgoswami@quicinc.com>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] soc: qcom: apr: make aprbus const
-Message-ID: <2024021301-request-residence-74d6@gregkh>
-References: <20240213-bus_cleanup-apr-v1-1-50c824eec06d@marliere.net>
+	alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] slimbus: core: make slimbus_bus const
+Message-ID: <2024021326-swimwear-onshore-e3f4@gregkh>
+References: <20240213-bus_cleanup-slimbus-v1-1-34f06d82de6e@marliere.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240213-bus_cleanup-apr-v1-1-50c824eec06d@marliere.net>
-Message-ID-Hash: OQQDH7UNJONMIP4WTQB2YAXSTXSJ6CO7
-X-Message-ID-Hash: OQQDH7UNJONMIP4WTQB2YAXSTXSJ6CO7
+In-Reply-To: <20240213-bus_cleanup-slimbus-v1-1-34f06d82de6e@marliere.net>
+Message-ID-Hash: 7FPP24SSDRLWM463M7JRJ5YR7OQFA3Q6
+X-Message-ID-Hash: 7FPP24SSDRLWM463M7JRJ5YR7OQFA3Q6
 X-MailFrom: gregkh@linuxfoundation.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -83,7 +78,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OQQDH7UNJONMIP4WTQB2YAXSTXSJ6CO7/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7FPP24SSDRLWM463M7JRJ5YR7OQFA3Q6/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -92,15 +87,16 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, Feb 13, 2024 at 11:44:01AM -0300, Ricardo B. Marliere wrote:
+On Tue, Feb 13, 2024 at 11:40:35AM -0300, Ricardo B. Marliere wrote:
 > Since commit d492cc2573a0 ("driver core: device.h: make struct
 > bus_type a const *"), the driver core can properly handle constant
-> struct bus_type, move the aprbus variable to be a constant
+> struct bus_type, move the slimbus_bus variable to be a constant
 > structure as well, placing it into read-only memory which can not be
 > modified at runtime.
 > 
 > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 > Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 > Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+> ---
 
 Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
