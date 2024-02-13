@@ -4,121 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 80A9CC4829A
-	for <alsa-devel@archiver.kernel.org>; Tue, 13 Feb 2024 12:46:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9AC77C4829A
+	for <alsa-devel@archiver.kernel.org>; Tue, 13 Feb 2024 14:23:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8039C832;
-	Tue, 13 Feb 2024 13:46:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8039C832
+	by alsa0.perex.cz (Postfix) with ESMTPS id EE239A4A;
+	Tue, 13 Feb 2024 15:23:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EE239A4A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1707828388;
-	bh=Wlfk7dY0wWDXuDYy0panziIsiJR/AG6s30SqLg65+G0=;
-	h=In-Reply-To:References:Date:From:To:Cc:Subject:List-Id:
+	s=default; t=1707834199;
+	bh=yqTyD/OjND337wp33t22PMtWJVzfs0J8AnORHF+7GG4=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=kWENjFi72tjeIfox8iTs0C3Mdlk4M4UgWjtc5URkhcxUCG99gW4ImWkisuMRSQq/E
-	 lOh8gk2CQLbKbZILie4+pS8TWU7ILYLJn0Z0uIp4k+W44yZIIebnRTlMH3ZiOyHZkP
-	 6pTXatDR493FOL2PtNT5/Gimwrl6rCzX1EGvvCeM=
+	b=X8ZG7S1d401K9gJA6R9qqb8pq/eMQhvaAVq3/bgFpCF+T+q5XVFuB/4DUcUc7U7zF
+	 kdlwL55b+zT/yjIj7kwu44QzODP0HyYljxdr8kCcx86fpQfM5/x8w/bDruykuLOLGd
+	 m9u+CMk4Ew78gqPdWzZ7dY2saCeFub0uGc5WZR+w=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 56FDBF805AA; Tue, 13 Feb 2024 13:45:57 +0100 (CET)
+	id 51272F80571; Tue, 13 Feb 2024 15:22:47 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 524A7F8016E;
-	Tue, 13 Feb 2024 13:45:57 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4DFA3F8058C;
+	Tue, 13 Feb 2024 15:22:47 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5D29DF8016E; Tue, 13 Feb 2024 13:45:52 +0100 (CET)
-Received: from wfhigh8-smtp.messagingengine.com
- (wfhigh8-smtp.messagingengine.com [64.147.123.159])
+	id AFEE2F8025A; Tue, 13 Feb 2024 15:22:39 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 3C0D6F80104
-	for <alsa-devel@alsa-project.org>; Tue, 13 Feb 2024 13:45:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3C0D6F80104
+	by alsa1.perex.cz (Postfix) with ESMTPS id 3C330F80104
+	for <alsa-devel@alsa-project.org>; Tue, 13 Feb 2024 15:22:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3C330F80104
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=arndb.de header.i=@arndb.de header.a=rsa-sha256
- header.s=fm3 header.b=MVKdScji;
-	dkim=pass (2048-bit key,
- unprotected) header.d=messagingengine.com header.i=@messagingengine.com
- header.a=rsa-sha256 header.s=fm3 header.b=TBER6n7G
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfhigh.west.internal (Postfix) with ESMTP id 5A0A818000B3;
-	Tue, 13 Feb 2024 07:45:41 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Tue, 13 Feb 2024 07:45:43 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm3; t=1707828340; x=1707914740; bh=USQ9m9LRrK
-	EPc6jBigxNFqy6LATxlEiA3y2icE1wmKU=; b=MVKdScjiFTQgmJvjhZ/2M90i23
-	l/fpMktEDMfJppqKTT+/khsgDio7EHjaZpT3+9qAwiIYyrPwVot9zpcK61giOCak
-	sIqQPDL6MwOZ6UxG6xt+gOngE22lnvjTE+cWfkiUp7+CkBaS5PTqPtRevSihjC6N
-	jF0VG3bXfrlI0qoJWP96QJj4OMcsLGphzGOjK+mwZ7keX6moZ6CeTN2y6SGv4IS6
-	/BeeBELwCArYgSZ9aULHv5tu1QPUHusDXOUBQ4g2ShQKjZvqPfwVjN/C1Ydg1vf1
-	UFu7ZAzc1PCrIOeNKl2RtjXW69ZzJKCKIlJ4kMGU9r4KrDldt6RBwtYqWGvw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1707828340; x=1707914740; bh=USQ9m9LRrKEPc6jBigxNFqy6LATx
-	lEiA3y2icE1wmKU=; b=TBER6n7G5KS+2jvixiyf2/8+env6bDAeIKdQkwLvkZ9l
-	iUVf4w89ofi1RB6FWoUfCYdKZiz5bWGUzvEDR48HK3qdMp7M14hcOV008HKa0515
-	tqsN1Ufogx5x+o5dO4kXPewWYmEdLZLXzJZWZ5Q8VvZL4MfHCAT7Jhd+qJgPpzS+
-	yh36/WcKtzvE8Ip/rLHsrsTxjQRPmQDYjOmpbLOA/BfSnD7fvMICgzixFkHsZssE
-	SP8E3pOsFhc4YE0j+D0x9gbNQei92jFDfdqICSWsno6APWJv8kZG217EJAY4y/5y
-	EkFSwgwgQmrjStWhlA+6K0Ysk0CooMERyftl1YjZYw==
-X-ME-Sender: <xms:dGTLZeOFthVxaGlMlICy2zGBpA0Z9TCq6WI-dId3lOjYJ7lkzg5UuA>
-    <xme:dGTLZc8PO8q9wAStqrNZzGENQ0Xgjydxie-zGhbHrV87qBUbjrsjyr0kyMGwdcFLX
-    3liXcS8Kvt18b56rQM>
-X-ME-Proxy-Cause: 
- gggruggvucftvghtrhhoucdtuddrgedvledrudehgdegfecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
-    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
-    gvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedtkeet
-    ffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrh
-    hnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:dGTLZVQNjjdd2aSfuCueS9pgZNw49IrY36p83cr-ASUb7aFulkrusA>
-    <xmx:dGTLZeuQyK3SCb7oueqV76z-aoKjGHEm4s-SqW7YEoJYfnCDg1HMFg>
-    <xmx:dGTLZWeagM_-E5iIblPxOi26bQkryjltXKLm3wz-gheyUySQle4jYA>
-    <xmx:dGTLZTCmdRiDL29BNyTl9Wf2np2S9JNbm_VBLoSQq3WyfxCaVWOMriXxAjc>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 6D8F2B6008D; Tue, 13 Feb 2024 07:45:40 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-144-ge5821d614e-fm-20240125.002-ge5821d61
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=j26fZM4J
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 2B4FD613F9;
+	Tue, 13 Feb 2024 14:22:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8057CC433C7;
+	Tue, 13 Feb 2024 14:22:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707834149;
+	bh=yqTyD/OjND337wp33t22PMtWJVzfs0J8AnORHF+7GG4=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=j26fZM4JKyiZxhBok+sG84VvBt/MqBNn/AAUNCtYmbLqbII24bzx0mocMC/hifs26
+	 MymKA4NA/GocKd74u3tAEK7Wo9LnGSc2NrCM5ikCaVbclHgMJYLXvK2yEfhVsqzKvV
+	 0GDasPHFiXxHI9hYg2qlI2S85z6a82kZaKQKII1EvxtfTNoCMlNpv94hCVRoRhR12s
+	 rxpE6evzJqiHsg9zZMDsGEefXZBAOQCeyIqtWGm5GzikcW8lRXVH9ncgTgcJECZCaE
+	 PlamdIcJGZCTw1yV7lpCJ9+xs3FYwhkz1wGjrQklAGjP6wYJef1s6Yxq9rkzHWHsdy
+	 B+jkLkhJftv4A==
+From: Mark Brown <broonie@kernel.org>
+To: James Schulman <james.schulman@cirrus.com>,
+ David Rhodes <david.rhodes@cirrus.com>,
+ Richard Fitzgerald <rf@opensource.cirrus.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Ricardo Rivera-Matos <rriveram@opensource.cirrus.com>,
+ Bjorn Andersson <andersson@kernel.org>, Abel Vesa <abel.vesa@linaro.org>,
+ Sai Prakash Ranjan <quic_saipraka@quicinc.com>,
+ Neil Armstrong <neil.armstrong@linaro.org>,
+ Kees Cook <keescook@chromium.org>, Tony Luck <tony.luck@intel.com>,
+ "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc: Marijn Suijten <marijn.suijten@somainline.org>,
+ alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
+ linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+ linux-hardening@vger.kernel.org
+In-Reply-To: <20240210-topic-1v-v1-0-fda0db38e29b@linaro.org>
+References: <20240210-topic-1v-v1-0-fda0db38e29b@linaro.org>
+Subject: Re: (subset) [PATCH 0/7] Xperia 1 V support
+Message-Id: <170783414525.38232.9788370045735417740.b4-ty@kernel.org>
+Date: Tue, 13 Feb 2024 14:22:25 +0000
 MIME-Version: 1.0
-Message-Id: <bcd477f9-8619-4121-83ce-fa8ba05a36aa@app.fastmail.com>
-In-Reply-To: <1j7cj8k2se.fsf@starbuckisacylon.baylibre.com>
-References: <20240213101220.459641-1-arnd@kernel.org>
- <1jbk8kk5pk.fsf@starbuckisacylon.baylibre.com>
- <c61d7daf-1b13-4ff8-aeae-7dcd8dd02131@app.fastmail.com>
- <1j7cj8k2se.fsf@starbuckisacylon.baylibre.com>
-Date: Tue, 13 Feb 2024 13:45:19 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Jerome Brunet" <jbrunet@baylibre.com>
-Cc: "Arnd Bergmann" <arnd@kernel.org>, "Stephen Boyd" <sboyd@kernel.org>,
- "Mark Brown" <broonie@kernel.org>, "Liam Girdwood" <lgirdwood@gmail.com>,
- "Jaroslav Kysela" <perex@perex.cz>, "Takashi Iwai" <tiwai@suse.com>,
- "Neil Armstrong" <neil.armstrong@linaro.org>,
- "Kevin Hilman" <khilman@baylibre.com>,
- "Martin Blumenstingl" <martin.blumenstingl@googlemail.com>,
- "Nathan Chancellor" <nathan@kernel.org>,
- "Nick Desaulniers" <ndesaulniers@google.com>,
- "Bill Wendling" <morbo@google.com>, "Justin Stitt" <justinstitt@google.com>,
- alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-amlogic@lists.infradead.org,
- linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-Subject: Re: [PATCH] ASoC: meson: add helpers for clk_disable_unprepare
-Content-Type: text/plain
-Message-ID-Hash: I66QYG2O2BZ722FMZDLEJF7LKJEJAAVS
-X-Message-ID-Hash: I66QYG2O2BZ722FMZDLEJF7LKJEJAAVS
-X-MailFrom: arnd@arndb.de
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-a684c
+Message-ID-Hash: VJ2MXBHBQX5T7MWCJ5AEQBTFQJ7JO5GS
+X-Message-ID-Hash: VJ2MXBHBQX5T7MWCJ5AEQBTFQJ7JO5GS
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -130,7 +98,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/I66QYG2O2BZ722FMZDLEJF7LKJEJAAVS/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VJ2MXBHBQX5T7MWCJ5AEQBTFQJ7JO5GS/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -139,30 +107,39 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, Feb 13, 2024, at 12:09, Jerome Brunet wrote:
-> On Tue 13 Feb 2024 at 11:52, "Arnd Bergmann" <arnd@arndb.de> wrote:
->
->> On Tue, Feb 13, 2024, at 11:36, Jerome Brunet wrote:
->>> On Tue 13 Feb 2024 at 11:11, Arnd Bergmann <arnd@kernel.org> wrote:
->>
->>> This probably pre-dates the introduction of devm_clk_get_enabled()
->>> It would probably be better to use that instead of duplicating helper
->>> functions which do the same thing.
->>
->> Ah, I had not thought of that interface either, so you are probably
->> right that this is the best way to do it.
->> Can you send a replacement patch then and add my Reported-by?
->
-> Sure.
->
-> How may I reproduce the problem ?
-> Just tried with 'Debian clang version 16.0.6 (19)', no warning.
->
-> I suppose I need to add something ?
+On Mon, 12 Feb 2024 14:10:08 +0100, Konrad Dybcio wrote:
+> DTS for the phone and some fly-by fixes
+> 
+> Patch 1 for Mark/sound
+> Rest for qcom
+> 
+> 
 
-The warning is currently only enabled at W=1 level until
-we have fixed all the existing diagnostic output. I have
-sent the other ones today, but for now, please test with
-'make W=1'.
+Applied to
 
-     Arnd
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+
+Thanks!
+
+[1/7] dt-bindings: ASoC: cs35l45: Add interrupts
+      commit: d0611f617d823a87f04186ad165e2990208c040b
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
