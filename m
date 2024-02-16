@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 29E79C48260
-	for <alsa-devel@archiver.kernel.org>; Fri, 16 Feb 2024 04:01:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 682C4C48260
+	for <alsa-devel@archiver.kernel.org>; Fri, 16 Feb 2024 04:01:29 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 35372E82;
-	Fri, 16 Feb 2024 05:00:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 35372E82
+	by alsa0.perex.cz (Postfix) with ESMTPS id 77D05E7F;
+	Fri, 16 Feb 2024 05:01:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 77D05E7F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1708056068;
-	bh=rGBI8/1xyEocU+KperBTW20R1SZDCmNOw8fTHGOWAOo=;
+	s=default; t=1708056087;
+	bh=dkqdQuJ8Rq6+dAJb34C+xzhHLB/mL2WN/jcr5GLTyZA=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=LN/EZskuXbPtKxCawVQk6dRatR1Sd4Q1R4RZ5YDzVJ7jGNYhA2OoRnuBOn2aEaHSd
-	 t44R1xoz6LDV0PsMn/R5Bob2ufZZRlyBJoMvzZcHinE6Axn3mJPvLmMqtf5ZxHBIrl
-	 Xo+2IhwGcMQlHyRpxhKvW/IQDwsZnrd2cOZ3nEeo=
+	b=trX34+oLo7E5l9v5A+UY48TsnR+wNgCOCsovpphPWHvf3BPDMLtXACFxoX51AgYwG
+	 hpeejgkcG6ajWF9SIhOxLiz8JkfLzanpv5KdwFU1glt9VPkahg2ciVL+PA1+5abeSf
+	 V1L5CsAWJr6tB4yh8K2+ny8iPRuCX84+bRt6g4FI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 69278F80618; Fri, 16 Feb 2024 05:00:17 +0100 (CET)
+	id 349A7F80640; Fri, 16 Feb 2024 05:00:22 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 23A8BF80614;
-	Fri, 16 Feb 2024 05:00:17 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D442AF8061D;
+	Fri, 16 Feb 2024 05:00:21 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 18119F805C2; Fri, 16 Feb 2024 04:59:55 +0100 (CET)
+	id D4B77F80568; Fri, 16 Feb 2024 04:59:57 +0100 (CET)
 Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com
  [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 1807CF80568
+	by alsa1.perex.cz (Postfix) with ESMTPS id 51CC8F8056F
 	for <alsa-devel@alsa-project.org>; Fri, 16 Feb 2024 04:59:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1807CF80568
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 51CC8F8056F
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
- header.s=qcppdkim1 header.b=k09hN7aq
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+ header.s=qcppdkim1 header.b=GrN7oPcg
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
 	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id
- 41G3qVgo013853;
-	Fri, 16 Feb 2024 03:59:36 GMT
+ 41G3lT7j020169;
+	Fri, 16 Feb 2024 03:59:34 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-type; s=qcppdkim1; bh=J6PqM7y/z1h8FCZqkEAQ
-	KxaiOCjo8iRGi6WtYbn5R9E=; b=k09hN7aqd3jeqQciEIpXcuRWjb0tmQ+ubApe
-	Ohria9N39d/BAZMEvWxZR0DN1bLO1fyFgrvCWkoVo5NhMUFYB+YTi9mGbrzcjpAV
-	kIFOj7DMqp6Ji2hlVKRVVpYh3tqSyUjRD4jsemVsFbGY5gyzNoSnk/N3W5ZWjqui
-	oSJYAl76PQm5xZKKqBwaByOU3ycv8Dq2KZmbzcv8eRSBXaWd1hn58iHZ1SxgQEiX
-	KkPbzOGzkCTM7WboFQi/XLZ9JW/MY1cbaHk4C2j11wZ3ftLrWZspHWGdfnlsx4aj
-	sDQ8fk2pyP9do2QH7Orhj/y6zAY7SD2AXB/weugPPePEygn1gA==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com
+	:mime-version:content-type; s=qcppdkim1; bh=AdFyybXCQxALpHCh7Q4a
+	DrMz/YV1catRW10h9gq82qw=; b=GrN7oPcgDXA6R4ayY+Ntyyg9C1KUeEvgmvDB
+	a2tgp/FHSX+BgwEJPxt4dnNe6ysm8gMUVDZq4OFl9goZ9FhvEigFrHQWEFUovv5M
+	WnmeYLvHS+TwNiqTBnC1JBiCsWhdJ/ywXfoW8saot5shos5NnNUCnaes/Vf/16Sp
+	RP8b+2XTmrM2imM8OzSWoi3nJKG38bV+zMcuGa5f/6/QRkLK+SA/d06vBEGVQHpZ
+	cyQA7kOYbWyrxJc1DzU0HwRz3dJzxqPSGdnw5Dwk2+uq5pXHeN5qnxDdX5xzDAj1
+	JcVy+Dgjw+uGQI5m3kfCqZ0mUVby7t9oGr7/4S9g/P1y+MLNLg==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com
  [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w9e4h2p19-1
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wa03r80ga-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 16 Feb 2024 03:59:35 +0000 (GMT)
+	Fri, 16 Feb 2024 03:59:34 +0000 (GMT)
 Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com
  [10.47.209.197])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id
- 41G3xZgD014647
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id
+ 41G3xXXh024875
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 16 Feb 2024 03:59:35 GMT
+	Fri, 16 Feb 2024 03:59:33 GMT
 Received: from hu-wcheng-lv.qualcomm.com (10.49.16.6) by
  nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Thu, 15 Feb 2024 19:59:34 -0800
+ 15.2.1118.40; Thu, 15 Feb 2024 19:59:33 -0800
 From: Wesley Cheng <quic_wcheng@quicinc.com>
 To: <srinivas.kandagatla@linaro.org>, <mathias.nyman@intel.com>,
         <perex@perex.cz>, <conor+dt@kernel.org>, <corbet@lwn.net>,
@@ -81,10 +81,10 @@ CC: <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <alsa-devel@alsa-project.org>,
         Mathias Nyman <mathias.nyman@linux.intel.com>,
         Wesley Cheng <quic_wcheng@quicinc.com>
-Subject: [PATCH v16 07/50] xhci: add helper that checks for unhandled events
- on a event ring
-Date: Thu, 15 Feb 2024 19:58:40 -0800
-Message-ID: <20240216035923.23392-8-quic_wcheng@quicinc.com>
+Subject: [PATCH v16 02/50] xhci: Add helper to set an interrupters interrupt
+ moderation interval
+Date: Thu, 15 Feb 2024 19:58:35 -0800
+Message-ID: <20240216035923.23392-3-quic_wcheng@quicinc.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20240216035923.23392-1-quic_wcheng@quicinc.com>
 References: <20240216035923.23392-1-quic_wcheng@quicinc.com>
@@ -96,19 +96,19 @@ X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
  signatures=585085
-X-Proofpoint-GUID: oN3VWIRrsr5aN2obPndp3NIzUOQjTBCr
-X-Proofpoint-ORIG-GUID: oN3VWIRrsr5aN2obPndp3NIzUOQjTBCr
+X-Proofpoint-ORIG-GUID: BWNKkF7GawaJrLMKMwyDxo9zn0izUME6
+X-Proofpoint-GUID: BWNKkF7GawaJrLMKMwyDxo9zn0izUME6
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2024-02-16_03,2024-02-14_01,2023-05-22_02
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- clxscore=1015 spamscore=0
- impostorscore=0 adultscore=0 mlxscore=0 phishscore=0 malwarescore=0
- priorityscore=1501 suspectscore=0 bulkscore=0 mlxlogscore=999
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401310000 definitions=main-2402160031
-Message-ID-Hash: EPCXNA36Y434R66AJZ4CTEDHVOUD7OXZ
-X-Message-ID-Hash: EPCXNA36Y434R66AJZ4CTEDHVOUD7OXZ
+ malwarescore=0
+ mlxlogscore=999 lowpriorityscore=0 mlxscore=0 adultscore=0
+ priorityscore=1501 clxscore=1015 bulkscore=0 phishscore=0 spamscore=0
+ suspectscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2401310000 definitions=main-2402160031
+Message-ID-Hash: IMGBFBKEBQIUJJJPHZSKAG6CA4WZGJMO
+X-Message-ID-Hash: IMGBFBKEBQIUJJJPHZSKAG6CA4WZGJMO
 X-MailFrom: quic_wcheng@quicinc.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -121,7 +121,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/EPCXNA36Y434R66AJZ4CTEDHVOUD7OXZ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IMGBFBKEBQIUJJJPHZSKAG6CA4WZGJMO/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -132,42 +132,70 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Mathias Nyman <mathias.nyman@linux.intel.com>
 
-Add unhandled_event_trb() that returns true in case xHC hardware has
-written new event trbs to the event ring that driver has not yet handled.
+Add a helper to set the interrupt moderation interval for an interrupter.
+Each interrupter can have its own moderation value.
 
-Change-Id: I0d60c9155bad0a72bcb0c7f33f95013e3b1db709
+Hardware has a 16bit register for the moderation value, each step is 250ns.
+
+Helper function imod_interval argument is in nanoseconds.
+
+Values from 0 to 16383750 (250 x 0xffff) are accepted.
+0 means no interrupt throttling.
+
+Change-Id: I28f3ee1692b00a36767c8e406db651cbf3ce30cf
 Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
 Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
 ---
- drivers/usb/host/xhci-ring.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+ drivers/usb/host/xhci.c | 25 ++++++++++++++++++-------
+ 1 file changed, 18 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/usb/host/xhci-ring.c b/drivers/usb/host/xhci-ring.c
-index ad008a5abc81..275164dc449d 100644
---- a/drivers/usb/host/xhci-ring.c
-+++ b/drivers/usb/host/xhci-ring.c
-@@ -113,6 +113,12 @@ static bool last_td_in_urb(struct xhci_td *td)
- 	return urb_priv->num_tds_done == urb_priv->num_tds;
+diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
+index 0886829d53e5..b405b8236134 100644
+--- a/drivers/usb/host/xhci.c
++++ b/drivers/usb/host/xhci.c
+@@ -346,6 +346,23 @@ static int xhci_disable_interrupter(struct xhci_interrupter *ir)
+ 	return 0;
  }
  
-+static bool unhandled_event_trb(struct xhci_ring *ring)
++/* interrupt moderation interval imod_interval in nanoseconds */
++static int xhci_set_interrupter_moderation(struct xhci_interrupter *ir,
++					   u32 imod_interval)
 +{
-+	return ((le32_to_cpu(ring->dequeue->event_cmd.flags) & TRB_CYCLE) ==
-+		ring->cycle_state);
++	u32 imod;
++
++	if (!ir || !ir->ir_set || imod_interval > U16_MAX * 250)
++		return -EINVAL;
++
++	imod = readl(&ir->ir_set->irq_control);
++	imod &= ~ER_IRQ_INTERVAL_MASK;
++	imod |= (imod_interval / 250) & ER_IRQ_INTERVAL_MASK;
++	writel(imod, &ir->ir_set->irq_control);
++
++	return 0;
 +}
 +
- static void inc_td_cnt(struct urb *urb)
+ static void compliance_mode_recovery(struct timer_list *t)
  {
- 	struct urb_priv *urb_priv = urb->hcpriv;
-@@ -2973,9 +2979,8 @@ static int xhci_handle_event(struct xhci_hcd *xhci, struct xhci_interrupter *ir)
- 	}
+ 	struct xhci_hcd *xhci;
+@@ -528,7 +545,6 @@ static int xhci_run_finished(struct xhci_hcd *xhci)
+  */
+ int xhci_run(struct usb_hcd *hcd)
+ {
+-	u32 temp;
+ 	u64 temp_64;
+ 	int ret;
+ 	struct xhci_hcd *xhci = hcd_to_xhci(hcd);
+@@ -551,12 +567,7 @@ int xhci_run(struct usb_hcd *hcd)
+ 	xhci_dbg_trace(xhci, trace_xhci_dbg_init,
+ 			"ERST deq = 64'h%0lx", (long unsigned int) temp_64);
  
- 	event = ir->event_ring->dequeue;
--	/* Does the HC or OS own the TRB? */
--	if ((le32_to_cpu(event->event_cmd.flags) & TRB_CYCLE) !=
--	    ir->event_ring->cycle_state)
-+
-+	if (!unhandled_event_trb(ir->event_ring))
- 		return 0;
+-	xhci_dbg_trace(xhci, trace_xhci_dbg_init,
+-			"// Set the interrupt modulation register");
+-	temp = readl(&ir->ir_set->irq_control);
+-	temp &= ~ER_IRQ_INTERVAL_MASK;
+-	temp |= (xhci->imod_interval / 250) & ER_IRQ_INTERVAL_MASK;
+-	writel(temp, &ir->ir_set->irq_control);
++	xhci_set_interrupter_moderation(ir, xhci->imod_interval);
  
- 	trace_xhci_handle_event(ir->event_ring, &event->generic);
+ 	if (xhci->quirks & XHCI_NEC_HOST) {
+ 		struct xhci_command *command;
