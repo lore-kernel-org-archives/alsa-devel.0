@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 39E8EC48BF5
-	for <alsa-devel@archiver.kernel.org>; Sat, 17 Feb 2024 00:28:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 98642C48BF5
+	for <alsa-devel@archiver.kernel.org>; Sat, 17 Feb 2024 00:29:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6CB6A1E93;
-	Sat, 17 Feb 2024 01:28:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6CB6A1E93
+	by alsa0.perex.cz (Postfix) with ESMTPS id A25A81903;
+	Sat, 17 Feb 2024 01:28:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A25A81903
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1708129720;
-	bh=6yp9RjBq2qpvAYc0ugZGDVDCGvHjZRMy63U6Fof67VE=;
+	s=default; t=1708129745;
+	bh=8rL7gpr+KMGK5h66C78Gj6lXk/y7QT7KtlvsJ5lLGT4=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=e2Y4FftmpS9ER9XT09lBFfFVfutH4mZBcv9OKGutjMpAa539l5uVH/ctUhWLs9zQZ
-	 WIOf1fsD6ZsD14THHd2zMd8QnlG4oVVza3ccPQfdofgN9P/qBJEiM95hdD63iChZre
-	 a2hayeY7rxynfVdjp8mNL7GlX94Twp1S+AeElfzE=
+	b=bW3U9Q08HJ898Ed2f9eMfJrjlvaJkRI1b9HMhopCE+0+RO6Jo6UBL5DrLKvv0aP83
+	 FIjYxtJyrgJUudTTM1duOMxED5oXtA3h2T0DooseSZevRPh4tj8tlJCt2ihJFoXBf0
+	 Nx+aPIXLIYof+6mIMRNiA5DEki83WC+VSsedYak0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id EA023F896E7; Sat, 17 Feb 2024 01:23:21 +0100 (CET)
+	id CDFD2F89670; Sat, 17 Feb 2024 01:23:25 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4A11DF89670;
-	Sat, 17 Feb 2024 01:23:21 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D2EF6F896EE;
+	Sat, 17 Feb 2024 01:23:24 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 333A1F800EE; Sat, 17 Feb 2024 01:13:01 +0100 (CET)
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com
- [205.220.168.131])
+	id 55607F804CC; Sat, 17 Feb 2024 01:13:01 +0100 (CET)
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com
+ [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 047D9F805BD
-	for <alsa-devel@alsa-project.org>; Sat, 17 Feb 2024 01:10:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 047D9F805BD
+	by alsa1.perex.cz (Postfix) with ESMTPS id C284DF805BA
+	for <alsa-devel@alsa-project.org>; Sat, 17 Feb 2024 01:10:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C284DF805BA
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
- header.s=qcppdkim1 header.b=LM6IRT4e
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+ header.s=qcppdkim1 header.b=g+goq07v
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
 	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id
- 41GMxUUE005917;
-	Sat, 17 Feb 2024 00:10:43 GMT
+ 41GKoGuq005859;
+	Sat, 17 Feb 2024 00:10:44 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-type; s=qcppdkim1; bh=4ibUzgRF2BuTOjveQ96T
-	tuGfrjQklOOUgFZvogEpMW4=; b=LM6IRT4e5yq5h0uNCiobXqmNaElQNE47LMCx
-	BRXjoXpowZR7B5IqXU7WOfRIOWzSptOSX6Oy+9TGJVx/g+Ce0/bXeWUrk0/4+cWV
-	VmYZ6dBFWOVcRj8Oc7qfnEd86AN87OhtSn9n3wneUO0v9CthGtqscEHVZ+CKyJol
-	3NQ92XAsqg7Q/Axq0gTsJM2oaRQKyAtefYt9Cmzhrk0BDayEYw7c+Q3ozAMlnpFo
-	fLor8a4aKkHjI98HBHwSdXAeDZz8hy2IpbFSeK6JGzybDgeHPR51LLpWbKUW2cpe
-	pwMs+3OZCRa5FR4R2T8XICdr6obfL/7kKnNvCduzAsV5AiWUsQ==
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com
+	:mime-version:content-type; s=qcppdkim1; bh=R9awlAMukK9rQwp2tpzL
+	wlf3jRryKK5BOUc5K2fhYe4=; b=g+goq07vlWlCYwl1GumphtEdYkHJXIzYTwr+
+	9hf7N5RXMCr6KnwJzQAIUwVNlzDpY565rPjKr21bMfUW6KpnHVvFnPPkL15anzyQ
+	mSsk7ji50vsGNoFM48czrP3D+PA6dFhuMv5ttekSTGnqfDdoilBzXlWl7AXSokJ8
+	FRsvqCkk+x+fqUIyokG4rvuV6gzH30+ReT5AZk5Qe3CY/wN4STCWDYYNeodSvh2A
+	z1Jzs/aWBKTgknK2cvbq7ESGrMEVyqAm0G8LU7pIzawlrwY06Hrh/2xpDG4lCbVi
+	uiXz0MaeiHFY9yPEyG5uf7Z6yuVwFluEte3/GkJcrs0BUnuU9w==
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com
  [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w9ytaa5yf-1
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w9fkfcv5f-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 17 Feb 2024 00:10:42 +0000 (GMT)
+	Sat, 17 Feb 2024 00:10:44 +0000 (GMT)
 Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com
  [10.47.209.197])
-	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id
- 41H0AgSO011382
+	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id
+ 41H0AhO1029141
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 17 Feb 2024 00:10:42 GMT
+	Sat, 17 Feb 2024 00:10:43 GMT
 Received: from hu-wcheng-lv.qualcomm.com (10.49.16.6) by
  nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Fri, 16 Feb 2024 16:10:41 -0800
+ 15.2.1118.40; Fri, 16 Feb 2024 16:10:42 -0800
 From: Wesley Cheng <quic_wcheng@quicinc.com>
 To: <srinivas.kandagatla@linaro.org>, <mathias.nyman@intel.com>,
         <perex@perex.cz>, <conor+dt@kernel.org>, <corbet@lwn.net>,
@@ -79,10 +79,10 @@ CC: <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-sound@vger.kernel.org>, <linux-usb@vger.kernel.org>,
         <linux-arm-msm@vger.kernel.org>, <linux-doc@vger.kernel.org>,
         <alsa-devel@alsa-project.org>, Wesley Cheng <quic_wcheng@quicinc.com>
-Subject: [PATCH v17 44/51] ASoC: qcom: qdsp6: Add headphone jack for offload
- connection status
-Date: Fri, 16 Feb 2024 16:10:10 -0800
-Message-ID: <20240217001017.29969-45-quic_wcheng@quicinc.com>
+Subject: [PATCH v17 47/51] ALSA: usb-audio: Allow for rediscovery of connected
+ USB SND devices
+Date: Fri, 16 Feb 2024 16:10:13 -0800
+Message-ID: <20240217001017.29969-48-quic_wcheng@quicinc.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20240217001017.29969-1-quic_wcheng@quicinc.com>
 References: <20240217001017.29969-1-quic_wcheng@quicinc.com>
@@ -94,19 +94,19 @@ X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
  signatures=585085
-X-Proofpoint-GUID: eNBLolsgmc1AMH-oSSEMRwjg1UUDI0Ph
-X-Proofpoint-ORIG-GUID: eNBLolsgmc1AMH-oSSEMRwjg1UUDI0Ph
+X-Proofpoint-ORIG-GUID: _JhfinMOp0gSYJTIWFwxKoJdaD17xpXg
+X-Proofpoint-GUID: _JhfinMOp0gSYJTIWFwxKoJdaD17xpXg
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2024-02-16_23,2024-02-16_01,2023-05-22_02
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- lowpriorityscore=0
- impostorscore=0 bulkscore=0 priorityscore=1501 adultscore=0 spamscore=0
- phishscore=0 clxscore=1015 mlxscore=0 malwarescore=0 mlxlogscore=999
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ clxscore=1015 malwarescore=0
+ adultscore=0 lowpriorityscore=0 impostorscore=0 mlxlogscore=999
+ spamscore=0 bulkscore=0 suspectscore=0 mlxscore=0 phishscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.19.0-2401310000 definitions=main-2402160189
-Message-ID-Hash: CUHAYAGMNRXU7VRR4U3FU3N7OPRFF6RY
-X-Message-ID-Hash: CUHAYAGMNRXU7VRR4U3FU3N7OPRFF6RY
+Message-ID-Hash: CO626XGET7ZUNV4TQ7SPAYW3OFHHL7U5
+X-Message-ID-Hash: CO626XGET7ZUNV4TQ7SPAYW3OFHHL7U5
 X-MailFrom: quic_wcheng@quicinc.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -119,7 +119,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CUHAYAGMNRXU7VRR4U3FU3N7OPRFF6RY/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CO626XGET7ZUNV4TQ7SPAYW3OFHHL7U5/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -128,227 +128,85 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The headphone jack framework has a well defined infrastructure for
-notifying userspace entities through input devices.  Expose a jack device
-that carries information about if an offload capable device is connected.
-Applications can further identify specific offloading information through
-other SND kcontrols.
+In case of notifying SND platform drivers of connection events, some of
+these use cases, such as offloading, require an ASoC USB backend device to
+be initialized before the events can be handled.  If the USB backend device
+has not yet been probed, this leads to missing initial USB audio device
+connection events.
+
+Expose an API that traverses the usb_chip array for connected devices, and
+to call the respective connection callback registered to the SND platform
+driver.
 
 Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
 ---
- sound/soc/qcom/Kconfig             |  5 +++++
- sound/soc/qcom/Makefile            |  2 ++
- sound/soc/qcom/qdsp6/q6usb.c       | 20 ++++++++++++++++++++
- sound/soc/qcom/sm8250.c            | 12 +++++++++++-
- sound/soc/qcom/usb_offload_utils.c | 29 +++++++++++++++++++++++++++++
- sound/soc/qcom/usb_offload_utils.h | 20 ++++++++++++++++++++
- 6 files changed, 87 insertions(+), 1 deletion(-)
- create mode 100644 sound/soc/qcom/usb_offload_utils.c
- create mode 100644 sound/soc/qcom/usb_offload_utils.h
+ sound/usb/card.c                  | 21 +++++++++++++++++++++
+ sound/usb/card.h                  |  4 ++++
+ sound/usb/qcom/qc_audio_offload.c |  2 ++
+ 3 files changed, 27 insertions(+)
 
-diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
-index d1bca2cf5ae4..092b4cb8bf39 100644
---- a/sound/soc/qcom/Kconfig
-+++ b/sound/soc/qcom/Kconfig
-@@ -118,6 +118,10 @@ config SND_SOC_QDSP6_USB
- 	tristate
- 	select SND_SOC_USB
- 
-+config SND_SOC_QCOM_OFFLOAD_UTILS
-+	tristate
-+	select SND_SOC_USB
-+
- config SND_SOC_QDSP6_PRM
- 	tristate
- 	select SND_SOC_QDSP6_PRM_LPASS_CLOCKS
-@@ -177,6 +181,7 @@ config SND_SOC_SM8250
- 	select SND_SOC_QDSP6
- 	select SND_SOC_QCOM_COMMON
- 	select SND_SOC_QCOM_SDW
-+	select SND_SOC_QCOM_OFFLOAD_UTILS
- 	help
- 	  To add support for audio on Qualcomm Technologies Inc.
- 	  SM8250 SoC-based systems.
-diff --git a/sound/soc/qcom/Makefile b/sound/soc/qcom/Makefile
-index 34f3fcb8ee9a..001c287df777 100644
---- a/sound/soc/qcom/Makefile
-+++ b/sound/soc/qcom/Makefile
-@@ -30,6 +30,7 @@ snd-soc-sc8280xp-objs := sc8280xp.o
- snd-soc-qcom-common-objs := common.o
- snd-soc-qcom-sdw-objs := sdw.o
- snd-soc-x1e80100-objs := x1e80100.o
-+snd-soc-qcom-offload-utils-objs := usb_offload_utils.o
- 
- obj-$(CONFIG_SND_SOC_STORM) += snd-soc-storm.o
- obj-$(CONFIG_SND_SOC_APQ8016_SBC) += snd-soc-apq8016-sbc.o
-@@ -42,6 +43,7 @@ obj-$(CONFIG_SND_SOC_SM8250) += snd-soc-sm8250.o
- obj-$(CONFIG_SND_SOC_QCOM_COMMON) += snd-soc-qcom-common.o
- obj-$(CONFIG_SND_SOC_QCOM_SDW) += snd-soc-qcom-sdw.o
- obj-$(CONFIG_SND_SOC_X1E80100) += snd-soc-x1e80100.o
-+obj-$(CONFIG_SND_SOC_QCOM_OFFLOAD_UTILS) += snd-soc-qcom-offload-utils.o
- 
- #DSP lib
- obj-$(CONFIG_SND_SOC_QDSP6) += qdsp6/
-diff --git a/sound/soc/qcom/qdsp6/q6usb.c b/sound/soc/qcom/qdsp6/q6usb.c
-index 32971395ab13..c62416215e83 100644
---- a/sound/soc/qcom/qdsp6/q6usb.c
-+++ b/sound/soc/qcom/qdsp6/q6usb.c
-@@ -14,6 +14,7 @@
- #include <linux/slab.h>
- 
- #include <sound/asound.h>
-+#include <sound/jack.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
- #include <sound/q6usboffload.h>
-@@ -38,6 +39,7 @@ struct q6usb_status {
- struct q6usb_port_data {
- 	struct q6afe_usb_cfg usb_cfg;
- 	struct snd_soc_usb *usb;
-+	struct snd_soc_jack *hs_jack;
- 	struct q6usb_offload priv;
- 	struct mutex mutex;
- 	unsigned long available_card_slot;
-@@ -252,6 +254,9 @@ static int q6usb_alsa_connection_cb(struct snd_soc_usb *usb,
- 
- 	mutex_lock(&data->mutex);
- 	if (connected) {
-+		if (!data->available_card_slot)
-+			snd_jack_report(data->hs_jack->jack, 1);
-+
- 		/*
- 		 * Update the latest USB headset plugged in, if session is
- 		 * idle.
-@@ -274,12 +279,26 @@ static int q6usb_alsa_connection_cb(struct snd_soc_usb *usb,
- 					ffs(data->available_card_slot) - 1 : 0;
- 			data->sel_pcm_idx = 0;
- 		}
-+
-+		if (!data->available_card_slot)
-+			snd_jack_report(data->hs_jack->jack, 0);
- 	}
- 	mutex_unlock(&data->mutex);
- 
- 	return 0;
+diff --git a/sound/usb/card.c b/sound/usb/card.c
+index 1ad99a462038..8364c5b8fbbf 100644
+--- a/sound/usb/card.c
++++ b/sound/usb/card.c
+@@ -186,6 +186,27 @@ struct snd_usb_stream *snd_usb_find_suppported_substream(int card_idx,
  }
+ EXPORT_SYMBOL_GPL(snd_usb_find_suppported_substream);
  
-+static int q6usb_component_set_jack(struct snd_soc_component *component,
-+			struct snd_soc_jack *jack, void *data)
-+{
-+	struct q6usb_port_data *priv = dev_get_drvdata(component->dev);
-+
-+	priv->hs_jack = jack;
-+	snd_jack_report(jack->jack, priv->available_card_slot ? 1 : 0);
-+
-+	return 0;
-+}
-+
- static int q6usb_component_probe(struct snd_soc_component *component)
- {
- 	struct q6usb_port_data *data = dev_get_drvdata(component->dev);
-@@ -320,6 +339,7 @@ static void q6usb_component_remove(struct snd_soc_component *component)
- 
- static const struct snd_soc_component_driver q6usb_dai_component = {
- 	.probe = q6usb_component_probe,
-+	.set_jack = q6usb_component_set_jack,
- 	.remove = q6usb_component_remove,
- 	.name = "q6usb-dai-component",
- 	.dapm_widgets = q6usb_dai_widgets,
-diff --git a/sound/soc/qcom/sm8250.c b/sound/soc/qcom/sm8250.c
-index d70df72c0160..a4e87dfb1b93 100644
---- a/sound/soc/qcom/sm8250.c
-+++ b/sound/soc/qcom/sm8250.c
-@@ -12,6 +12,7 @@
- #include <linux/input-event-codes.h>
- #include "qdsp6/q6afe.h"
- #include "common.h"
-+#include "usb_offload_utils.h"
- #include "sdw.h"
- 
- #define DRIVER_NAME		"sm8250"
-@@ -22,14 +23,23 @@ struct sm8250_snd_data {
- 	struct snd_soc_card *card;
- 	struct sdw_stream_runtime *sruntime[AFE_PORT_MAX];
- 	struct snd_soc_jack jack;
-+	struct snd_soc_jack usb_offload_jack;
-+	bool usb_offload_jack_setup;
- 	bool jack_setup;
- };
- 
- static int sm8250_snd_init(struct snd_soc_pcm_runtime *rtd)
- {
- 	struct sm8250_snd_data *data = snd_soc_card_get_drvdata(rtd->card);
-+	struct snd_soc_dai *cpu_dai = snd_soc_rtd_to_cpu(rtd, 0);
-+	int ret;
- 
--	return qcom_snd_wcd_jack_setup(rtd, &data->jack, &data->jack_setup);
-+	if (cpu_dai->id == USB_RX)
-+		ret = qcom_snd_usb_offload_jack_setup(rtd, &data->usb_offload_jack,
-+						&data->usb_offload_jack_setup);
-+	else
-+		ret = qcom_snd_wcd_jack_setup(rtd, &data->jack, &data->jack_setup);
-+	return ret;
- }
- 
- static int sm8250_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
-diff --git a/sound/soc/qcom/usb_offload_utils.c b/sound/soc/qcom/usb_offload_utils.c
-new file mode 100644
-index 000000000000..0be05c1f87a9
---- /dev/null
-+++ b/sound/soc/qcom/usb_offload_utils.c
-@@ -0,0 +1,29 @@
-+// SPDX-License-Identifier: GPL-2.0
 +/*
-+ * Copyright (c) 2022-2024 Qualcomm Innovation Center, Inc. All rights reserved.
++ * in case the platform driver was not ready at the time of USB SND
++ * device connect, expose an API to discover all connected USB devices
++ * so it can populate any dependent resources/structures.
 + */
-+#include <dt-bindings/sound/qcom,q6afe.h>
-+#include <linux/module.h>
-+#include <sound/jack.h>
-+#include <sound/soc-usb.h>
-+
-+#include "usb_offload_utils.h"
-+
-+int qcom_snd_usb_offload_jack_setup(struct snd_soc_pcm_runtime *rtd,
-+			    struct snd_soc_jack *jack, bool *jack_setup)
++void snd_usb_rediscover_devices(void)
 +{
-+	struct snd_soc_dai *cpu_dai = snd_soc_rtd_to_cpu(rtd, 0);
-+	struct snd_soc_dai *codec_dai = snd_soc_rtd_to_codec(rtd, 0);
++	int i;
 +
-+	if (cpu_dai->id != USB_RX)
-+		return 0;
++	guard(mutex)(&register_mutex);
 +
-+	if (!*jack_setup)
-+		snd_soc_usb_setup_offload_jack(codec_dai->component, jack);
++	if (!platform_ops || !platform_ops->connect_cb)
++		return;
 +
-+	*jack_setup = true;
-+
-+	return 0;
++	for (i = 0; i < SNDRV_CARDS; i++) {
++		if (usb_chip[i])
++			platform_ops->connect_cb(usb_chip[i]);
++	}
 +}
-+EXPORT_SYMBOL_GPL(qcom_snd_usb_offload_jack_setup);
-+MODULE_LICENSE("GPL");
-diff --git a/sound/soc/qcom/usb_offload_utils.h b/sound/soc/qcom/usb_offload_utils.h
-new file mode 100644
-index 000000000000..283e81f57f43
---- /dev/null
-+++ b/sound/soc/qcom/usb_offload_utils.h
-@@ -0,0 +1,20 @@
-+/* SPDX-License-Identifier: GPL-2.0
-+ *
-+ * Copyright (c) 2022-2024 Qualcomm Innovation Center, Inc. All rights reserved.
-+ */
-+#ifndef __QCOM_SND_USB_OFFLOAD_UTILS_H__
-+#define __QCOM_SND_USB_OFFLOAD_UTILS_H__
++EXPORT_SYMBOL_GPL(snd_usb_rediscover_devices);
 +
-+#include <sound/soc.h>
+ /*
+  * disconnect streams
+  * called from usb_audio_disconnect()
+diff --git a/sound/usb/card.h b/sound/usb/card.h
+index 0b14f7f4c743..003a6e2b4b23 100644
+--- a/sound/usb/card.h
++++ b/sound/usb/card.h
+@@ -222,11 +222,15 @@ int snd_usb_unregister_platform_ops(void);
+ #if IS_ENABLED(CONFIG_SND_USB_AUDIO)
+ struct snd_usb_stream *snd_usb_find_suppported_substream(int card_idx,
+ 				struct snd_pcm_hw_params *params, int direction);
++void snd_usb_rediscover_devices(void);
+ #else
+ static struct snd_usb_stream *snd_usb_find_suppported_substream(int card_idx,
+ 				struct snd_pcm_hw_params *params, int direction)
+ {
+ 	return NULL;
+ }
 +
-+#if IS_ENABLED(CONFIG_SND_SOC_QCOM_OFFLOAD_UTILS)
-+int qcom_snd_usb_offload_jack_setup(struct snd_soc_pcm_runtime *rtd,
-+			    struct snd_soc_jack *jack, bool *jack_setup);
-+#else
-+static inline int qcom_snd_usb_offload_jack_setup(struct snd_soc_pcm_runtime *rtd,
-+			    struct snd_soc_jack *jack, bool *jack_setup)
-+{
-+	return -ENODEV;
-+}
-+#endif /* IS_ENABLED(CONFIG_SND_SOC_QCOM_OFFLOAD_UTILS) */
-+#endif /* __QCOM_SND_USB_OFFLOAD_UTILS_H__ */
++void snd_usb_rediscover_devices(void)
++{ }
+ #endif /* IS_ENABLED(CONFIG_SND_USB_AUDIO) */
+ #endif /* __USBAUDIO_CARD_H */
+diff --git a/sound/usb/qcom/qc_audio_offload.c b/sound/usb/qcom/qc_audio_offload.c
+index 6a25a390f8ae..9695bf0ac1cd 100644
+--- a/sound/usb/qcom/qc_audio_offload.c
++++ b/sound/usb/qcom/qc_audio_offload.c
+@@ -1879,6 +1879,8 @@ static int __init qc_usb_audio_offload_init(void)
+ 	if (ret < 0)
+ 		goto release_qmi;
+ 
++	snd_usb_rediscover_devices();
++
+ 	return 0;
+ 
+ release_qmi:
