@@ -4,66 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 44415C5475B
-	for <alsa-devel@archiver.kernel.org>; Sun, 18 Feb 2024 12:33:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 328E4C48BF6
+	for <alsa-devel@archiver.kernel.org>; Sun, 18 Feb 2024 19:13:31 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 94F62A4D;
-	Sun, 18 Feb 2024 13:33:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 94F62A4D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8A1C6B71;
+	Sun, 18 Feb 2024 20:13:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8A1C6B71
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1708259615;
-	bh=eYtZPEx+07UJa3cQ56bmqdmhg0yCVbIb+3F6bgoeDo0=;
-	h=Date:From:To:Cc:Subject:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=Qhd54J6bz5+vU5mnBYHIc74UupIff/sJi3OY4TRD5lcdoijadGq57iHwfe+scTyYd
-	 6ysr1524xOQPx45ccBs1Xn+I5losUbjC3VuC5YZKfs9tNXQOwylD5hF5cRzKcGc/xf
-	 JOqNB80xdjbaiTjms/G4X5B2JPLE0Z9/zA7Jw95k=
+	s=default; t=1708283609;
+	bh=/H62QMDTLmM1dXDrq6dNaaqlML8aeDxPeyDcHN0WyrA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=l8wFLwcIdlIa2gmjz0knVtpDPcDYSHjvXz2u8i0DS7wapKKlWPNOjxuhSy4fHoMDH
+	 8swlJXAqKvU6r8LnRj/VAb+hFY++OkYJvgTaF+h2S0NboTjKbkS/4qMX+NM8xNM+BS
+	 4u0WxE1aw8HEqVDI8j3cuN/OO7yO7XX53Do2PydE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DD8E9F8059F; Sun, 18 Feb 2024 13:33:02 +0100 (CET)
+	id 48C0FF805A8; Sun, 18 Feb 2024 20:12:55 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3123DF805A9;
-	Sun, 18 Feb 2024 13:33:02 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4AD14F805AC;
+	Sun, 18 Feb 2024 20:12:54 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 59247F80496; Sun, 18 Feb 2024 13:32:12 +0100 (CET)
-Received: from m.b4.vu (m.b4.vu [203.16.231.148])
+	id 35E07F800EE; Sun, 18 Feb 2024 20:10:29 +0100 (CET)
+Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 12357F8019B
-	for <alsa-devel@alsa-project.org>; Sun, 18 Feb 2024 13:32:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 12357F8019B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 59326F800EE
+	for <alsa-devel@alsa-project.org>; Sun, 18 Feb 2024 20:10:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 59326F800EE
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=b4.vu header.i=@b4.vu header.a=rsa-sha256 header.s=m1
- header.b=G1SfwHPs
-Received: by m.b4.vu (Postfix, from userid 1000)
-	id 59DB5604B6AC; Sun, 18 Feb 2024 23:01:57 +1030 (ACDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 m.b4.vu 59DB5604B6AC
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=b4.vu; s=m1;
-	t=1708259517; bh=03NkfLGbymydbLJWR1DaTvuFB7M+E8jeSeaMKnEzYPM=;
-	h=Date:From:To:Cc:Subject:From;
-	b=G1SfwHPsDKDGG91IIk2+eNHoIJ6nDTEnmSw8B+kNKaINqOHkda9HWGBRcdcpO/I6U
-	 cDCMNg9hSZaKo1fbSLZNFHvt+GTNWzyVvRzPqXS6RomBE+/aLLDnq3+Ln14e4YVQjm
-	 G/KnuMtmfqebGIdCvw1OmBz8wl444E6x/lXoSq1FnJPtIt6wd+9IyCXLbnXH6znwVN
-	 ofXk9mo06Y1M79WA8ARdw3mjxtlF0Tz7ADCDWfLHqlNDwzIPq9p/JOUfnBoC0q2bjP
-	 WEGYcGVuosbBDPBdZBiARLf8Daiqy2fBGYk62dmzTwVSz0pjURjF6TXUoK62v2akA5
-	 HoiNpA7bUeHjg==
-Date: Sun, 18 Feb 2024 23:01:57 +1030
-From: "Geoffrey D. Bennett" <g@b4.vu>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org
-Subject: [PATCH] conf: USB-Audio: Add more Scarlett devices to the IEC958
- blacklist
-Message-ID: <ZdH4vcOpKeqmmdHN@m.b4.vu>
+	dkim=pass (1024-bit key,
+ unprotected) header.d=ucw.cz header.i=@ucw.cz header.a=rsa-sha256
+ header.s=gen1 header.b=ZTiTJ3UV
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+	id 9689F1C006B; Sun, 18 Feb 2024 20:10:19 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ucw.cz; s=gen1;
+	t=1708283419;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=pFAnKsSUhODm3ulUCr0ZKCb5X66vxbSvVEnktFSeTTo=;
+	b=ZTiTJ3UVs4a2Vgx5wJ7z2U/BLAVe3GBOVa9rJSP9pZWfwXid2Ga5YyNEW+qIzF7tKld/vm
+	BMK0qi2rBhgAwQHYI3elObLrsKLrkActviADTxwwPbma3MrCpGOn8hw4OSoD6MhSIR6AXt
+	8wn2nx30JNRD3d9sEyGT05XvxL4TE40=
+Date: Sun, 18 Feb 2024 20:10:18 +0100
+From: Pavel Machek <pavel@ucw.cz>
+To: Sasha Levin <sashal@kernel.org>
+Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Mark Brown <broonie@kernel.org>, srinivas.kandagatla@linaro.org,
+	bgoswami@quicinc.com, lgirdwood@gmail.com, perex@perex.cz,
+	tiwai@suse.com, alsa-devel@alsa-project.org,
+	linux-sound@vger.kernel.org
+Subject: Re: [PATCH AUTOSEL 5.10 04/16] ASoC: codecs: wcd934x: drop unneeded
+ regulator include
+Message-ID: <ZdJWGgYMRoeLEKWh@duo.ucw.cz>
+References: <20240207212700.4287-1-sashal@kernel.org>
+ <20240207212700.4287-4-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="7qa2KFxf9dQT6fA5"
 Content-Disposition: inline
-Message-ID-Hash: LS27MRVT7KYUK4YGWMYP5G4KWXCX7BXH
-X-Message-ID-Hash: LS27MRVT7KYUK4YGWMYP5G4KWXCX7BXH
-X-MailFrom: g@b4.vu
+In-Reply-To: <20240207212700.4287-4-sashal@kernel.org>
+Message-ID-Hash: XXUWYEEX5T56D7UNQ4PMJQHDVOKZTUST
+X-Message-ID-Hash: XXUWYEEX5T56D7UNQ4PMJQHDVOKZTUST
+X-MailFrom: pavel@ucw.cz
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -75,7 +84,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LS27MRVT7KYUK4YGWMYP5G4KWXCX7BXH/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XXUWYEEX5T56D7UNQ4PMJQHDVOKZTUST/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -84,29 +93,45 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The Scarlett Solo and 2i2 don't have S/PDIF outputs.
 
-Signed-off-by: Geoffrey D. Bennett <g@b4.vu>
----
- src/conf/cards/USB-Audio.conf | 3 +++
- 1 file changed, 3 insertions(+)
+--7qa2KFxf9dQT6fA5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/src/conf/cards/USB-Audio.conf b/src/conf/cards/USB-Audio.conf
-index 80631b2e..05384a32 100644
---- a/src/conf/cards/USB-Audio.conf
-+++ b/src/conf/cards/USB-Audio.conf
-@@ -66,8 +66,11 @@ USB-Audio.pcm.iec958_device {
- 	"Plantronics USB Headset" 999
- 	"Plantronics Wireless Audio" 999
- 	"SB WoW Headset" 999
-+	"Scarlett 2i2 4th Gen" 999
- 	"Scarlett 2i2 USB" 999
- 	"Scarlett 2i4 USB" 999
-+	"Scarlett Solo 4th Gen" 999
-+	"Scarlett Solo USB" 999
- 	"Sennheiser USB headset" 999
- 	"SWTOR Gaming Headset by Razer" 999
- 	"ThinkStation P620 Main" 999
--- 
-2.43.0
+Hi!
 
+> [ Upstream commit 35314e39dabcfb256832654ad0e856a9fba744bd ]
+>=20
+> Driver does not use any regulator code, so drop redundant include of
+> regulator/consumer.h header.
+
+This is just a cleanup, we should not have it in stable.
+
+Best regards,
+								Pavel
+
+> +++ b/sound/soc/codecs/wcd934x.c
+> @@ -13,7 +13,6 @@
+>  #include <linux/of.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/regmap.h>
+> -#include <linux/regulator/consumer.h>
+>  #include <linux/slab.h>
+>  #include <linux/slimbus.h>
+>  #include <sound/pcm_params.h>
+
+--=20
+People of Russia, stop Putin before his war on Ukraine escalates.
+
+--7qa2KFxf9dQT6fA5
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZdJWGgAKCRAw5/Bqldv6
+8iOQAJ9inBpQDN+haYqgeqPuxAw4PDFSwwCfVVi8mLYBEMh2CxLJvoxzV8+OUVc=
+=0c1d
+-----END PGP SIGNATURE-----
+
+--7qa2KFxf9dQT6fA5--
