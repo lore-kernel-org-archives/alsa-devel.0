@@ -4,105 +4,109 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A6EA9C48BC4
-	for <alsa-devel@archiver.kernel.org>; Sun, 18 Feb 2024 03:31:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2F9EC4829E
+	for <alsa-devel@archiver.kernel.org>; Sun, 18 Feb 2024 07:50:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F380182C;
-	Sun, 18 Feb 2024 04:31:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F380182C
+	by alsa0.perex.cz (Postfix) with ESMTPS id AD3D2BC0;
+	Sun, 18 Feb 2024 08:50:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AD3D2BC0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1708227084;
-	bh=2nRBV2fUpHaqb82N/C4deVSrnkTWASajFc9A8riQRbE=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=l9y48+F6iWqzt03nGkUdlrPMFKqDAzt9xOHEF6NudhnOKktpZD6CZI3ER1VmfnXLP
-	 /DPQlcAW5yeZ+aAPmEo1APjQS064ScVzsN0rLXM4c5dEJZXXGaRnu/eeKP3rnIszhj
-	 I/I4yZXcve9EV/N/hVHCqHJoLYKNN41qgfuJ+L/Q=
+	s=default; t=1708242653;
+	bh=a2736GuvevjxKu2DugmT3osmAD4m8ekkFwJXyTibR1o=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=Ofd6J+P/1qLmpHRqdr7QcRjrq7mnIIE4TQjvt9jey0x/Z1ctyvlW2+k/I9Bu/WFOg
+	 zS325+QbAxecfB5jeLDBMFAVM7G3hqQ4VVg993zdjnLLEeSJ+F6ch1tb1L27qFgqEG
+	 DeBcjZ+QW7fd9I2oB+aZh1DMMTMTJP1QoecbAK0s=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CB035F805A1; Sun, 18 Feb 2024 04:30:51 +0100 (CET)
+	id 9A363F805AA; Sun, 18 Feb 2024 08:50:20 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3D93AF805AA;
-	Sun, 18 Feb 2024 04:30:51 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 85761F805A8;
+	Sun, 18 Feb 2024 08:50:19 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D00ECF80496; Sun, 18 Feb 2024 04:30:45 +0100 (CET)
-Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com
- [64.147.123.19])
+	id 350F0F80496; Sun, 18 Feb 2024 08:44:32 +0100 (CET)
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com
+ [66.111.4.26])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 03B19F80104
-	for <alsa-devel@alsa-project.org>; Sun, 18 Feb 2024 04:30:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 03B19F80104
+	by alsa1.perex.cz (Postfix) with ESMTPS id CD6FEF80496
+	for <alsa-devel@alsa-project.org>; Sun, 18 Feb 2024 08:41:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CD6FEF80496
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=sakamocchi.jp header.i=@sakamocchi.jp
- header.a=rsa-sha256 header.s=fm1 header.b=NC1PWQQC;
+ header.a=rsa-sha256 header.s=fm1 header.b=Yz+aFdrn;
 	dkim=pass (2048-bit key,
  unprotected) header.d=messagingengine.com header.i=@messagingengine.com
- header.a=rsa-sha256 header.s=fm1 header.b=QNR8uT44
+ header.a=rsa-sha256 header.s=fm1 header.b=W8WwA7kQ
 Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-	by mailout.west.internal (Postfix) with ESMTP id D68483200392;
-	Sat, 17 Feb 2024 22:30:32 -0500 (EST)
+	by mailout.nyi.internal (Postfix) with ESMTP id 4D0C15C0070;
+	Sun, 18 Feb 2024 02:41:39 -0500 (EST)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Sat, 17 Feb 2024 22:30:33 -0500
+  by compute4.internal (MEProxy); Sun, 18 Feb 2024 02:41:39 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
 	 h=cc:cc:content-transfer-encoding:content-type:date:date:from
-	:from:in-reply-to:message-id:mime-version:reply-to:subject
-	:subject:to:to; s=fm1; t=1708227032; x=1708313432; bh=A0j3SW1JHI
-	a1O1Iw2bt8CT2eukJao0r8lGkD5zm4FEw=; b=NC1PWQQC3QlJPgKR1uFROzvhAc
-	oDP7wMr4rYeLOXrAuReQfkJIFTwgtSrZTKwhVXQvOAhs3YAy/pKPLwNU21MpmfGI
-	ZOgwompL+8NFQ8P/ks+nCaspbiaxhLEB2V9h5rg77fjcOAh/7BDIlprugM18AuHV
-	yCWuPjv+tH4zVs+NKRYUvN0Z2TNEBev94v9SiKsqqHyQQq4ruCPhLzBDcIbqLYwX
-	hIgQum0Erm+qkSFWlhlB2bMb4jYUFUERzYtL1YighQh3Z631FGEiB8nuxcRLQeDB
-	A2HSz1G6NsLz1bJAu010qMVAF4WloJYQ8Cuer7SX1BTpcxrWD3Y78T53LZng==
+	:from:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:subject:subject:to:to; s=fm1; t=1708242099; x=
+	1708328499; bh=q2s75MGjAW5JOX5jbhZdViqawKA/HJYPnRCN4QVm5Yc=; b=Y
+	z+aFdrnnEUM8bKJVfgzVLB9+tmP8xrnje8TlEkUIeSWB4idHMmINQjFxpTnHIDaU
+	WoTWMm6YK0Da4QDBqdksgxos7h7UoEAdFjJWmil6/8sq1khKOkVxJ32bDmpFrNUi
+	Kv1R7vdX5CFLjfnbfN4aas821JB5Onj+/3z7zlQVcPdJOgXoLoWx8DBe38LbWrMs
+	oTh69pxqKnsHC08Ps5y6A03GAw46d61wKWbW8OyR7tBxLGedLk5VTaqVSYWAVIf9
+	7oXYFCnwwoqppckyPnDbCFL8KwLSdJ6Ux8GMJalzrxEcIjjqQ5McsLo9bU6A8VG0
+	mzIvBqjogufTNO6waYcLA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-transfer-encoding
 	:content-type:date:date:feedback-id:feedback-id:from:from
-	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm1; t=1708227032; x=1708313432; bh=A0j3SW1JHIa1O1Iw2bt8CT2eukJa
-	o0r8lGkD5zm4FEw=; b=QNR8uT44v54QUDHKppXCGufRJKDRWgpx35j/oAR/zNYt
-	9guVq4ykQ0NFGE7Qy3s+HCC6QivcbOZ/Ej8ef3CebexegfKhnq+0BjzF0Pz31onf
-	LyiO0YnCDZne8m/vn5h2PGd766FZGC/bKa9n6kbW3PyEUmNjgAgEfw7badxDkHgU
-	wN+4SkyOG0cPYx0iW3sv9z1kpPMpo5MNQCnNj4cNfJYyr04T3Rr1bqHbmKNCK5i2
-	K7OjpnSZwD9GHG7bZ2Ujt3Z13q7G+7/r1d4p6GJjpcBuiSJ0NyjriZAmQP23/EGA
-	8OuOQOGLxqQDJ+tYr39qKhUOHRg39X3CXpVczpQ5VA==
-X-ME-Sender: <xms:13nRZciqF6-Oi-dmWuPV1krd7E88xRblKOV0khwsiY7m5e3Mr1pgbA>
-    <xme:13nRZVCD2fgBcw8HCNKqx5ivuTB6YRRP4uIsVBA05dj1gymQUbdw810YayJA_ot2r
-    QGPr-2VNYwdHuhxS1A>
+	:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1708242099; x=
+	1708328499; bh=q2s75MGjAW5JOX5jbhZdViqawKA/HJYPnRCN4QVm5Yc=; b=W
+	8WwA7kQj2JLbRSf2hsLWttYd+4sK/P2/Gxv21TWukJzHnMlEYLbhpwxiJdXBxwXl
+	fwZ/IVG9oYrmXbGWgVlUqGiZbynQFpMOqS+m4byM7HzoDOxIew4AQzAouKk/PhIl
+	g57wW2eBg6al7wovGng7NMyGgrthu4zWkUlHX7gwkFLAL7eJzt9yAohCf3K/Au76
+	k220x1w0TqdoV8Reh3CA8Nd6JnqB2OCerOiCyrh8jNoc0U8LxaavSMfG2YKckX8k
+	H37nPubwsTVoK98Hl2Ylxb/LkF3uEgf1mWfXGuyZcWT8RuJTxxjLseh7175CH8Th
+	+Yrj/yV5jm8N8PV5aLyBg==
+X-ME-Sender: <xms:s7TRZWR8cdvKWp4TEGHmNPtIxEj0PNpIhpBEi4VzOyKc7Hg3Lg4qEQ>
+    <xme:s7TRZbzqORGY9zBkgWgvWFM1Mdqs1o-KCQ9KF7BrCKZZE-pToTjuO0Q2sUDqy5ijX
+    i5abJNFrIqgXBqVyB8>
 X-ME-Received: 
- <xmr:13nRZUEht8X2T_N2bxG-EGQB1itrWzyeK-GlQiju1X8-IGAR4UNg3MbTGHTSl9cppnl3NKUWPIrzg0s7AZbQrfN9lBmqH2V7gMUtnAxs4geK>
+ <xmr:s7TRZT0yPsPF69Yky5K5KBFPR7OviHPUf9hbRySly8f9tYU0Tg15rLY1aF3E4lA5HhCsq07GFnj7zybxFYRdg_B6h3fG14KyN00d7w4A90AX>
 X-ME-Proxy-Cause: 
- gggruggvucftvghtrhhoucdtuddrgedvledrvdehgdeiudcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecunecujfgurhephffvvefufffkofgggfestdekredtre
-    dttdenucfhrhhomhepvfgrkhgrshhhihcuufgrkhgrmhhothhouceoohdqthgrkhgrshhh
-    ihesshgrkhgrmhhotggthhhirdhjpheqnecuggftrfgrthhtvghrnhepffdvueelffevke
-    duhfetjeduffeghfettdfguedtgfdvgfeufeduheevheevkeeknecuvehluhhsthgvrhfu
-    ihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepohdqthgrkhgrshhhihesshgrkh
-    grmhhotggthhhirdhjph
-X-ME-Proxy: <xmx:13nRZdT6qAG4gJwovNDvasoJI7h2C8i-pWBfDFO8h8CdboxuGZi7TA>
-    <xmx:13nRZZwIAdZv_Foka1WcAmCWW5jGtgOwVtxyz9LoSVm--owkAIWaJg>
-    <xmx:13nRZb5u48QZS-sLDAfTiZFmIKh5f4w9bRT98oHadRiniOrwBxNXOg>
-    <xmx:2HnRZaoMjTJFBYL1vMf23PSrhE_Y3N9JDY_Dw92QigsviB8rg8IM7g>
+ gggruggvucftvghtrhhoucdtuddrgedvledrvdehgdduudefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvfevufffkffojghfggfgsedtke
+    ertdertddtnecuhfhrohhmpefvrghkrghshhhiucfurghkrghmohhtohcuoehoqdhtrghk
+    rghshhhisehsrghkrghmohgttghhihdrjhhpqeenucggtffrrghtthgvrhhnpedvjefgje
+    euvdfguddukeelveetgfdtvefhtdfffeeigfevueetffeivdffkedvtdenucevlhhushht
+    vghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehoqdhtrghkrghshhhise
+    hsrghkrghmohgttghhihdrjhhp
+X-ME-Proxy: <xmx:s7TRZSCevX0ja_qVcGUO0C6Pv1nFX--JYoUwKUsAA_U9PviXdAUX8A>
+    <xmx:s7TRZfjXkKc2upoH31PfcYpoWAHg4uyV5_uLdvloZE3IX03W1Tk-1w>
+    <xmx:s7TRZepgOySo4kEw8-1OaPZJ47v6V07u8vBqmJWYusTGp3JLfdCOGA>
+    <xmx:s7TRZfJ5VhrsFpgwbVMEm4Gq2_d6YKyi5BneaU64bzD_Kx41Y2kE2g>
 Feedback-ID: ie8e14432:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 17 Feb 2024 22:30:30 -0500 (EST)
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
+ 18 Feb 2024 02:41:38 -0500 (EST)
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 To: tiwai@suse.de
-Cc: alsa-devel@alsa-project.org,
-	stable@vger.kernel.org
-Subject: [PATCH] ALSA: firewire-lib: fix to check cycle continuity
-Date: Sun, 18 Feb 2024 12:30:26 +0900
-Message-Id: <20240218033026.72577-1-o-takashi@sakamocchi.jp>
+Cc: alsa-devel@alsa-project.org
+Subject: [PATCH 3/4] ALSA: firewire-lib: handle quirk to calculate payload
+ quadlets as data block counter
+Date: Sun, 18 Feb 2024 16:41:27 +0900
+Message-Id: <20240218074128.95210-4-o-takashi@sakamocchi.jp>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20240218074128.95210-1-o-takashi@sakamocchi.jp>
+References: <20240218074128.95210-1-o-takashi@sakamocchi.jp>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: BQWKXOJ4Q2BXU4SE2SACSRGG3ZGCDBJQ
-X-Message-ID-Hash: BQWKXOJ4Q2BXU4SE2SACSRGG3ZGCDBJQ
+Message-ID-Hash: 66JL433DMJQFPVDK4NZ2X4KHWYGCGJUO
+X-Message-ID-Hash: 66JL433DMJQFPVDK4NZ2X4KHWYGCGJUO
 X-MailFrom: o-takashi@sakamocchi.jp
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -115,7 +119,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BQWKXOJ4Q2BXU4SE2SACSRGG3ZGCDBJQ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/66JL433DMJQFPVDK4NZ2X4KHWYGCGJUO/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -124,35 +128,62 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The local helper function to compare the given pair of cycle count
-evaluates them. If the left value is less than the right value, the
-function returns negative value.
+Miglia Harmony Audio (OXFW970) has a quirk to put the number of
+accumulated quadlets in CIP payload into the dbc field of CIP header.
 
-If the safe cycle is less than the current cycle, it is the case of
-cycle lost. However, it is not currently handled properly.
+This commit handles the quirk in the packet processing layer.
 
-This commit fixes the bug.
-
-Cc: <stable@vger.kernel.org>
-Fixes: 705794c53b00 ("ALSA: firewire-lib: check cycle continuity")
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/amdtp-stream.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/firewire/amdtp-stream.c | 12 ++++++++----
+ sound/firewire/amdtp-stream.h |  4 ++++
+ 2 files changed, 12 insertions(+), 4 deletions(-)
 
 diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
-index a13c0b408aad..7be17bca257f 100644
+index a13c0b408aad..9d5a025d2e96 100644
 --- a/sound/firewire/amdtp-stream.c
 +++ b/sound/firewire/amdtp-stream.c
-@@ -951,7 +951,7 @@ static int generate_tx_packet_descs(struct amdtp_stream *s, struct pkt_desc *des
- 				// to the reason.
- 				unsigned int safe_cycle = increment_ohci_cycle_count(next_cycle,
- 								IR_JUMBO_PAYLOAD_MAX_SKIP_CYCLES);
--				lost = (compare_ohci_cycle_count(safe_cycle, cycle) > 0);
-+				lost = (compare_ohci_cycle_count(safe_cycle, cycle) < 0);
- 			}
- 			if (lost) {
- 				dev_err(&s->unit->device, "Detect discontinuity of cycle: %d %d\n",
+@@ -773,10 +773,14 @@ static int check_cip_header(struct amdtp_stream *s, const __be32 *buf,
+ 	} else {
+ 		unsigned int dbc_interval;
+ 
+-		if (*data_blocks > 0 && s->ctx_data.tx.dbc_interval > 0)
+-			dbc_interval = s->ctx_data.tx.dbc_interval;
+-		else
+-			dbc_interval = *data_blocks;
++		if (!(s->flags & CIP_DBC_IS_PAYLOAD_QUADLETS)) {
++			if (*data_blocks > 0 && s->ctx_data.tx.dbc_interval > 0)
++				dbc_interval = s->ctx_data.tx.dbc_interval;
++			else
++				dbc_interval = *data_blocks;
++		} else {
++			dbc_interval = payload_length / sizeof(__be32);
++		}
+ 
+ 		lost = dbc != ((*data_block_counter + dbc_interval) & 0xff);
+ 	}
+diff --git a/sound/firewire/amdtp-stream.h b/sound/firewire/amdtp-stream.h
+index b7ff44751ab9..a1ed2e80f91a 100644
+--- a/sound/firewire/amdtp-stream.h
++++ b/sound/firewire/amdtp-stream.h
+@@ -37,6 +37,9 @@
+  *	the value of current SYT_INTERVAL; e.g. initial value is not zero.
+  * @CIP_UNAWARE_SYT: For outgoing packet, the value in SYT field of CIP is 0xffff.
+  *	For incoming packet, the value in SYT field of CIP is not handled.
++ * @CIP_DBC_IS_PAYLOAD_QUADLETS: Available for incoming packet, and only effective with
++ *	CIP_DBC_IS_END_EVENT flag. The value of dbc field is the number of accumulated quadlets
++ *	in CIP payload, instead of the number of accumulated data blocks.
+  */
+ enum cip_flags {
+ 	CIP_NONBLOCKING		= 0x00,
+@@ -51,6 +54,7 @@ enum cip_flags {
+ 	CIP_NO_HEADER		= 0x100,
+ 	CIP_UNALIGHED_DBC	= 0x200,
+ 	CIP_UNAWARE_SYT		= 0x400,
++	CIP_DBC_IS_PAYLOAD_QUADLETS = 0x800,
+ };
+ 
+ /**
 -- 
 2.40.1
 
