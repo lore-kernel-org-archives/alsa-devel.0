@@ -4,64 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D3A30C48BC3
-	for <alsa-devel@archiver.kernel.org>; Tue, 20 Feb 2024 13:09:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 72502C5475B
+	for <alsa-devel@archiver.kernel.org>; Tue, 20 Feb 2024 13:09:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 49C4086F;
-	Tue, 20 Feb 2024 14:08:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 49C4086F
+	by alsa0.perex.cz (Postfix) with ESMTPS id B026DB71;
+	Tue, 20 Feb 2024 14:09:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B026DB71
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1708434540;
-	bh=7s4CVYt3Sljqy3TImAgQ3K7XC/Mf1qqLwuwQY6AMGbU=;
+	s=default; t=1708434576;
+	bh=2z1uKWvVIwaQ2DKT6NQYhg3DF/4KBYL0i6xHWjR8mnk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=bw+CthOak7Fhijd1d43eCCEwsVuLbnPtmYiMrDbZpKFiPfmu0NEdwJ+A0R44+W8+p
-	 Hr3MAC80hFCMwV8S1YpPwblQ/v1eNyuHooKaoKAGYbo3DvHQc6vUDF2NTjGHU/NcE9
-	 UJ4Tn1KvbhnTS9F3knl7jNxVHbDHElsBQ8++10zM=
+	b=J2rOj2hrtf0AwYUVXkkDSJRoEs7jpHfapVOYwpj19NDET00m7G4OIbKgafwS3Bruc
+	 JaB3Ejq4nHm40HKndABuJ7twU+7uXrEIt13ssooZRX1EVqjD6BjgZS22fj/srN3gos
+	 j5B6tSB+a3IljNa027R9c+63u7//os48Dzy8rC/g=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0487DF8071C; Tue, 20 Feb 2024 14:07:23 +0100 (CET)
+	id 51009F8068A; Tue, 20 Feb 2024 14:07:25 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 331F3F8067B;
-	Tue, 20 Feb 2024 14:07:19 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6C00DF806D1;
+	Tue, 20 Feb 2024 14:07:21 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 065EFF80567; Tue, 20 Feb 2024 14:04:21 +0100 (CET)
+	id B90C9F8047D; Tue, 20 Feb 2024 14:06:25 +0100 (CET)
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 79D7AF80578
-	for <alsa-devel@alsa-project.org>; Tue, 20 Feb 2024 14:03:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 79D7AF80578
+	by alsa1.perex.cz (Postfix) with ESMTPS id 5FBB4F804CC
+	for <alsa-devel@alsa-project.org>; Tue, 20 Feb 2024 14:03:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5FBB4F804CC
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=L+tDznQx
+ header.s=Intel header.b=K8WIBtRs
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708434227; x=1739970227;
+  t=1708434223; x=1739970223;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=7s4CVYt3Sljqy3TImAgQ3K7XC/Mf1qqLwuwQY6AMGbU=;
-  b=L+tDznQxzYgKvJodoG2NvqjJKjGPBVE/hVC4sY+RQjPE8yIIP1MmF4oF
-   7+8EeYU9o2thU7RJMhhgmFyVMVI7KgbIjKmwaNs44K1DxIVDY+H24SBJU
-   vjMyfQ2E/pzETnvpFB9TM9P1YXyR7rwuj4+ZUZsNXj92soB2OX6PD/pRi
-   7K0q3DpIs0Y8gfTXOvzjGNC/hjRLcJWMlaG9r/VhAzHvEr1x44rz1HGuV
-   VVKOFe+nilHZKjRB6Tp9SCOO8HXaJKTqXterEdT43lq9ZlfpvZmca9Y67
-   lUIaMI6Z8K5TxNvOzHPtKULOSjns5V1baSEwgTvzpnmzV8XiAxS8LZLjE
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10989"; a="2989034"
+  bh=2z1uKWvVIwaQ2DKT6NQYhg3DF/4KBYL0i6xHWjR8mnk=;
+  b=K8WIBtRs3hdAb1s860bQ6lWvArdxx8bzAIH79yc+5SJWwmfiiSLNMqif
+   oaRL6ZX3m5Qp2qlikc30yE6f1ontlxv5JK+fNQ5F8YSOg8wK7tEosudOu
+   Qphb3tkK545EupB35k3BEE/2WVdfKyhO3ObLnmuTyJIXycKFolZpUra94
+   leN9NwJs+1goEEsSdnFLkG3ZT5421y5nARHwTIu4MP1PMyrK2P3Nq0p/9
+   K4/BXdFxCiOt76uA81b1osPaGwlvWVJzkuAuY+DGT14iRrFJDXM6ubL7w
+   hJqBVlcqz3HicG7LUn4UDtxP4qBaoRXuytyZ7s4vUep1fxxWrIJ5Q003H
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10989"; a="2988926"
 X-IronPort-AV: E=Sophos;i="6.06,172,1705392000";
-   d="scan'208";a="2989034"
+   d="scan'208";a="2988926"
 Received: from fmviesa010.fm.intel.com ([10.60.135.150])
   by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 Feb 2024 03:49:38 -0800
+ 20 Feb 2024 03:49:19 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.06,172,1705392000";
-   d="scan'208";a="4751060"
+   d="scan'208";a="4750960"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
-  by fmviesa010.fm.intel.com with ESMTP; 20 Feb 2024 03:49:36 -0800
+  by fmviesa010.fm.intel.com with ESMTP; 20 Feb 2024 03:49:17 -0800
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: broonie@kernel.org
 Cc: alsa-devel@alsa-project.org,
@@ -72,18 +72,18 @@ Cc: alsa-devel@alsa-project.org,
 	pierre-louis.bossart@linux.intel.com,
 	hdegoede@redhat.com,
 	Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: [PATCH 10/10] ASoC: Intel: avs: Populate board selection with new I2S
- entries
-Date: Tue, 20 Feb 2024 12:50:35 +0100
-Message-Id: <20240220115035.770402-11-cezary.rojewski@intel.com>
+Subject: [PATCH 02/10] ASoC: Intel: avs: Fix sound clipping in single capture
+ scenario
+Date: Tue, 20 Feb 2024 12:50:27 +0100
+Message-Id: <20240220115035.770402-3-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240220115035.770402-1-cezary.rojewski@intel.com>
 References: <20240220115035.770402-1-cezary.rojewski@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: BZB52ANUVXMEFPUF7GNZFD652VGBR32I
-X-Message-ID-Hash: BZB52ANUVXMEFPUF7GNZFD652VGBR32I
+Message-ID-Hash: 6MOUBWFMOGTOZ3CX5LRMHV64PO2A6UUG
+X-Message-ID-Hash: 6MOUBWFMOGTOZ3CX5LRMHV64PO2A6UUG
 X-MailFrom: cezary.rojewski@intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -96,7 +96,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BZB52ANUVXMEFPUF7GNZFD652VGBR32I/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6MOUBWFMOGTOZ3CX5LRMHV64PO2A6UUG/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -105,120 +105,118 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Update board selection with tables specifying supported I2S
-configurations. DMIC/HDAudio board selection require no update as
-dmic/hdaudio machine boards are generic and not tied to any specific
-codec.
+To avoid sound clipping when there just one, single CAPTURE stream
+ongoing, disable L1SEN before it is started. Any PLAYBACK stream or
+additional CAPTURE allows L1SEN to be re-enabled.
 
 Reviewed-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 ---
- sound/soc/intel/avs/board_selection.c | 85 +++++++++++++++++++++++++++
- 1 file changed, 85 insertions(+)
+ sound/soc/intel/avs/pcm.c | 77 ++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 75 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/intel/avs/board_selection.c b/sound/soc/intel/avs/board_selection.c
-index 8e91eece992d..8360ce557401 100644
---- a/sound/soc/intel/avs/board_selection.c
-+++ b/sound/soc/intel/avs/board_selection.c
-@@ -236,6 +236,82 @@ static struct snd_soc_acpi_mach avs_gml_i2s_machines[] = {
- 	{},
- };
+diff --git a/sound/soc/intel/avs/pcm.c b/sound/soc/intel/avs/pcm.c
+index 4dfc5a1ebb7c..2cafbc392cdb 100644
+--- a/sound/soc/intel/avs/pcm.c
++++ b/sound/soc/intel/avs/pcm.c
+@@ -643,6 +643,79 @@ static int avs_dai_fe_prepare(struct snd_pcm_substream *substream, struct snd_so
+ 	return 0;
+ }
  
-+static struct snd_soc_acpi_mach avs_cnl_i2s_machines[] = {
-+	{
-+		.id = "INT34C2",
-+		.drv_name = "avs_rt274",
-+		.mach_params = {
-+			.i2s_link_mask = AVS_SSP(0),
-+		},
-+		.tplg_filename = "rt274-tplg.bin",
-+	},
-+	{
-+		.id = "10EC5682",
-+		.drv_name = "avs_rt5682",
-+		.mach_params = {
-+			.i2s_link_mask = AVS_SSP(1),
-+		},
-+		.tplg_filename = "rt5682-tplg.bin",
-+	},
-+	{},
-+};
++static void avs_hda_stream_start(struct hdac_bus *bus, struct hdac_ext_stream *host_stream)
++{
++	struct hdac_stream *first_running = NULL;
++	struct hdac_stream *pos;
++	struct avs_dev *adev = hdac_to_avs(bus);
 +
-+static struct snd_soc_acpi_mach avs_icl_i2s_machines[] = {
-+	{
-+		.id = "INT343A",
-+		.drv_name = "avs_rt298",
-+		.mach_params = {
-+			.i2s_link_mask = AVS_SSP(0),
-+		},
-+		.tplg_filename = "rt298-tplg.bin",
-+	},
-+	{
-+		.id = "INT34C2",
-+		.drv_name = "avs_rt274",
-+		.mach_params = {
-+			.i2s_link_mask = AVS_SSP(0),
-+		},
-+		.tplg_filename = "rt274-tplg.bin",
-+	},
-+	{},
-+};
++	list_for_each_entry(pos, &bus->stream_list, list) {
++		if (pos->running) {
++			if (first_running)
++				break; /* more than one running */
++			first_running = pos;
++		}
++	}
 +
-+static struct snd_soc_acpi_mach avs_tgl_i2s_machines[] = {
-+	{
-+		.id = "INT34C2",
-+		.drv_name = "avs_rt274",
-+		.mach_params = {
-+			.i2s_link_mask = AVS_SSP(0),
-+		},
-+		.tplg_filename = "rt274-tplg.bin",
-+	},
-+	{
-+		.id = "10EC0298",
-+		.drv_name = "avs_rt298",
-+		.mach_params = {
-+			.i2s_link_mask = AVS_SSP(0),
-+		},
-+		.tplg_filename = "rt298-tplg.bin",
-+	},
-+	{
-+		.id = "10EC1308",
-+		.drv_name = "avs_rt1308",
-+		.mach_params = {
-+			.i2s_link_mask = AVS_SSP(1),
-+		},
-+		.tplg_filename = "rt1308-tplg.bin",
-+	},
-+	{
-+		.id = "ESSX8336",
-+		.drv_name = "avs_es8336",
-+		.mach_params = {
-+			.i2s_link_mask = AVS_SSP(0),
-+		},
-+		.tplg_filename = "es8336-tplg.bin",
-+	},
-+	{},
-+};
++	/*
++	 * If host_stream is a CAPTURE stream and will be the only one running,
++	 * disable L1SEN to avoid sound clipping.
++	 */
++	if (!first_running) {
++		if (hdac_stream(host_stream)->direction == SNDRV_PCM_STREAM_CAPTURE)
++			avs_hda_l1sen_enable(adev, false);
++		snd_hdac_stream_start(hdac_stream(host_stream));
++		return;
++	}
 +
- static struct snd_soc_acpi_mach avs_test_i2s_machines[] = {
- 	{
- 		.drv_name = "avs_i2s_test",
-@@ -296,6 +372,15 @@ static const struct avs_acpi_boards i2s_boards[] = {
- 	AVS_MACH_ENTRY(HDA_KBL_LP, avs_kbl_i2s_machines),
- 	AVS_MACH_ENTRY(HDA_APL, avs_apl_i2s_machines),
- 	AVS_MACH_ENTRY(HDA_GML, avs_gml_i2s_machines),
-+	AVS_MACH_ENTRY(HDA_CNL_LP,	avs_cnl_i2s_machines),
-+	AVS_MACH_ENTRY(HDA_CNL_H,	avs_cnl_i2s_machines),
-+	AVS_MACH_ENTRY(HDA_CML_LP,	avs_cnl_i2s_machines),
-+	AVS_MACH_ENTRY(HDA_ICL_LP,	avs_icl_i2s_machines),
-+	AVS_MACH_ENTRY(HDA_TGL_LP,	avs_tgl_i2s_machines),
-+	AVS_MACH_ENTRY(HDA_EHL_0,	avs_tgl_i2s_machines),
-+	AVS_MACH_ENTRY(HDA_ADL_P,	avs_tgl_i2s_machines),
-+	AVS_MACH_ENTRY(HDA_RPL_P_0,	avs_tgl_i2s_machines),
-+	AVS_MACH_ENTRY(HDA_RPL_M,	avs_tgl_i2s_machines),
- 	{},
- };
++	snd_hdac_stream_start(hdac_stream(host_stream));
++	/*
++	 * If host_stream is the first stream to break the rule above,
++	 * re-enable L1SEN.
++	 */
++	if (list_entry_is_head(pos, &bus->stream_list, list) &&
++	    first_running->direction == SNDRV_PCM_STREAM_CAPTURE)
++		avs_hda_l1sen_enable(adev, true);
++}
++
++static void avs_hda_stream_stop(struct hdac_bus *bus, struct hdac_ext_stream *host_stream)
++{
++	struct hdac_stream *first_running = NULL;
++	struct hdac_stream *pos;
++	struct avs_dev *adev = hdac_to_avs(bus);
++
++	list_for_each_entry(pos, &bus->stream_list, list) {
++		if (pos == hdac_stream(host_stream))
++			continue; /* ignore stream that is about to be stopped */
++		if (pos->running) {
++			if (first_running)
++				break; /* more than one running */
++			first_running = pos;
++		}
++	}
++
++	/*
++	 * If host_stream is a CAPTURE stream and is the only one running,
++	 * re-enable L1SEN.
++	 */
++	if (!first_running) {
++		snd_hdac_stream_stop(hdac_stream(host_stream));
++		if (hdac_stream(host_stream)->direction == SNDRV_PCM_STREAM_CAPTURE)
++			avs_hda_l1sen_enable(adev, true);
++		return;
++	}
++
++	/*
++	 * If by stopping host_stream there is only a single, CAPTURE stream running
++	 * left, disable L1SEN to avoid sound clipping.
++	 */
++	if (list_entry_is_head(pos, &bus->stream_list, list) &&
++	    first_running->direction == SNDRV_PCM_STREAM_CAPTURE)
++		avs_hda_l1sen_enable(adev, false);
++
++	snd_hdac_stream_stop(hdac_stream(host_stream));
++}
++
+ static int avs_dai_fe_trigger(struct snd_pcm_substream *substream, int cmd, struct snd_soc_dai *dai)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = snd_soc_substream_to_rtd(substream);
+@@ -664,7 +737,7 @@ static int avs_dai_fe_trigger(struct snd_pcm_substream *substream, int cmd, stru
+ 	case SNDRV_PCM_TRIGGER_START:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+ 		spin_lock_irqsave(&bus->reg_lock, flags);
+-		snd_hdac_stream_start(hdac_stream(host_stream));
++		avs_hda_stream_start(bus, host_stream);
+ 		spin_unlock_irqrestore(&bus->reg_lock, flags);
  
+ 		/* Timeout on DRSM poll shall not stop the resume so ignore the result. */
+@@ -694,7 +767,7 @@ static int avs_dai_fe_trigger(struct snd_pcm_substream *substream, int cmd, stru
+ 			dev_err(dai->dev, "pause FE path failed: %d\n", ret);
+ 
+ 		spin_lock_irqsave(&bus->reg_lock, flags);
+-		snd_hdac_stream_stop(hdac_stream(host_stream));
++		avs_hda_stream_stop(bus, host_stream);
+ 		spin_unlock_irqrestore(&bus->reg_lock, flags);
+ 
+ 		ret = avs_path_reset(data->path);
 -- 
 2.25.1
 
