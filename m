@@ -4,67 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 33B92C5478C
-	for <alsa-devel@archiver.kernel.org>; Thu, 22 Feb 2024 20:41:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E71B1C48BF8
+	for <alsa-devel@archiver.kernel.org>; Thu, 22 Feb 2024 20:42:02 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 51E1986F;
-	Thu, 22 Feb 2024 21:41:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 51E1986F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 099D01DF;
+	Thu, 22 Feb 2024 21:41:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 099D01DF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1708634500;
-	bh=jeAQTPQrhXpg49xvZysNAxqhbPsEr5aAB0AbuUICJgI=;
-	h=Subject:From:To:Cc:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=aqXh9tV6CLbZzZ79A3eKdCqkaK2ST8O2vA9S3vqWGRMwDX1G00Js7nICtw/DgNbxc
-	 6EgZRTv9mquCiWIGPChclQll+BgbbNMosW20jQDapJL3Gt99cG5C3LEDvKQYtH1De9
-	 iV/5tmP7f413Xi2wLJG48j4LHl5r+GsqGMISsezY=
+	s=default; t=1708634521;
+	bh=VU7eFjyMMwj2wha596144IVFoZku7WK0IDQNMvyYawg=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=aFZAZRf7TR5pJ32m8m1cbT40VUcmwPBmR+5stsM/TUJk9tcYIxZSFQwOkJ5aMoBaZ
+	 gqT1PsNEmgJjJXZkaIfNxHa5mYIvr+OamBYE9oxTYrpJ88ipHttiC4Ve143EZ+IYlA
+	 Wu0SqI+/Ejnf/9sDcV7wyP6pE90mKNAOzkWAXuvU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id EA11CF805AC; Thu, 22 Feb 2024 21:41:08 +0100 (CET)
+	id 7A73AF805D3; Thu, 22 Feb 2024 21:41:12 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id CB348F80589;
-	Thu, 22 Feb 2024 21:41:07 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B3852F805D5;
+	Thu, 22 Feb 2024 21:41:11 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CA4F8F804B0; Thu, 22 Feb 2024 21:41:01 +0100 (CET)
+	id 2F7F4F804B0; Thu, 22 Feb 2024 21:41:06 +0100 (CET)
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 199FAF800EE
-	for <alsa-devel@alsa-project.org>; Thu, 22 Feb 2024 21:40:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 199FAF800EE
+	by alsa1.perex.cz (Postfix) with ESMTPS id 5DDC8F8047D
+	for <alsa-devel@alsa-project.org>; Thu, 22 Feb 2024 21:40:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5DDC8F8047D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=lf/ObxyX
+ header.s=Intel header.b=PqBj5cdl
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708634455; x=1740170455;
-  h=subject:from:to:cc:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=jeAQTPQrhXpg49xvZysNAxqhbPsEr5aAB0AbuUICJgI=;
-  b=lf/ObxyXSuSvA4tRSZ0XrNjHK9jbQwfqfqhsGnU3q9hWtdrk6/CcbIyW
-   BQWyYeX78nE1u5j6UD4JaKRDwxX45tFv9A2SKuNjrsi6PQG5jz7SSzUas
-   sWGuqh6+5XG/6wiCmXVMqyDi4A6JwJy/02XzBC6NXwxpgc00486CRoljk
-   gTeB5X4A4ZnXrZoJse9UKc/fCr9XMewi1z9aW+jnRmpyxq5JTKJUqP4uN
-   lbWby5lRQZh3nCPUgEs5LNH8Vs+iwZYBPH6OQj1bokwNIDTYKVZTUpgpN
-   t7aAoidwB2Y6P/EmX+IFJz0RfM8jOcXGHcOb0hpnD6+BGZopMBa8P/bWs
+  t=1708634458; x=1740170458;
+  h=subject:from:to:cc:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=VU7eFjyMMwj2wha596144IVFoZku7WK0IDQNMvyYawg=;
+  b=PqBj5cdlp4lBm/3rp4dyDNdEV24xrC6pK4m2vp5pMsqkmHBzUOASMip0
+   mtK1k/4yYlUCGQ3nTCdN1qQyqhrIRekqBD4saPCroiciTDpQaQ8KN04Pe
+   79u3dSaYmUX0n55osg3Bmq8FrrT/3XUZ7KRo3tEA3jdiMV9uEp8NZKPfv
+   UaA5c5tJDFlndpP+ztzfbOndG92gMYrsaOP4RnElaC33i3/OGH8RkSP52
+   YDPgmF96ZFat/GQTFbyurjr0D4ONGaJddtLVBlYSNEeFHCiXcrdAPPzxp
+   dOgZn2QZMD+A/hx7oOQhgNsoRu5JVKC8iLkmR0dSUycPhavUjtTHMqSfN
    w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10992"; a="25358628"
+X-IronPort-AV: E=McAfee;i="6600,9927,10992"; a="25358650"
 X-IronPort-AV: E=Sophos;i="6.06,179,1705392000";
-   d="scan'208";a="25358628"
+   d="scan'208";a="25358650"
 Received: from fmsmga002.fm.intel.com ([10.253.24.26])
   by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 22 Feb 2024 12:40:50 -0800
+ 22 Feb 2024 12:40:56 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10992"; a="913585365"
+X-IronPort-AV: E=McAfee;i="6600,9927,10992"; a="913585389"
 X-IronPort-AV: E=Sophos;i="6.06,179,1705392000";
-   d="scan'208";a="913585365"
+   d="scan'208";a="913585389"
 Received: from wyeh-mobl.amr.corp.intel.com (HELO dwillia2-xfh.jf.intel.com)
  ([10.209.77.87])
   by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 22 Feb 2024 12:40:49 -0800
-Subject: [PATCH 0/3] sysfs: Group visibility fixups
+ 22 Feb 2024 12:40:55 -0800
+Subject: [PATCH 1/3] sysfs: Fix crash on empty group attributes array
 From: Dan Williams <dan.j.williams@intel.com>
 To: gregkh@linuxfoundation.org
 Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
@@ -72,15 +73,19 @@ Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  "Rafael J. Wysocki" <rafael@kernel.org>,
  linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
  linux-coco@lists.linux.dev, alsa-devel@alsa-project.org
-Date: Thu, 22 Feb 2024 12:40:48 -0800
+Date: Thu, 22 Feb 2024 12:40:54 -0800
 Message-ID: 
+ <170863445442.1479840.1818801787239831650.stgit@dwillia2-xfh.jf.intel.com>
+In-Reply-To: 
+ <170863444851.1479840.10249410842428140526.stgit@dwillia2-xfh.jf.intel.com>
+References: 
  <170863444851.1479840.10249410842428140526.stgit@dwillia2-xfh.jf.intel.com>
 User-Agent: StGit/0.18-3-g996c
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-ID-Hash: HYR7WPJ7FIDKM3G4FSUQMQIYKMFH6GRO
-X-Message-ID-Hash: HYR7WPJ7FIDKM3G4FSUQMQIYKMFH6GRO
+Message-ID-Hash: RVRBVNKKO2XANNJLF3XFOIN3J6VZFEUL
+X-Message-ID-Hash: RVRBVNKKO2XANNJLF3XFOIN3J6VZFEUL
 X-MailFrom: dan.j.williams@intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -93,7 +98,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HYR7WPJ7FIDKM3G4FSUQMQIYKMFH6GRO/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RVRBVNKKO2XANNJLF3XFOIN3J6VZFEUL/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -102,30 +107,60 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hey Greg,
+It turns out that arch/x86/events/intel/core.c makes use of "empty"
+attributes.
 
-Marc was able to get me a backtrace for that bootup hang scenario that
-Pierre noted here [1]. A Tested-by is still pending, but I am certain
-this is the issue, and it may impact more than just the one platform if
-that "empty_attrs" pattern has been repeated anywhere else in the
-kernel.
+	static struct attribute *empty_attrs;
 
-I also took some time to document how to use the helpers a bit better,
-and introduce DEFINE_SIMPLE_SYSFS_GROUP_VISIBLE() for cases where all
-that matters is group visibility and not per attribute visibility.
+	__init int intel_pmu_init(void)
+	{
+	        struct attribute **extra_skl_attr = &empty_attrs;
+	        struct attribute **extra_attr = &empty_attrs;
+	        struct attribute **td_attr    = &empty_attrs;
+	        struct attribute **mem_attr   = &empty_attrs;
+	        struct attribute **tsx_attr   = &empty_attrs;
+		...
 
-[1]: http://lore.kernel.org/r/b93ec9c2-23f5-486b-a3dc-ed9b960df359@linux.intel.com
+That breaks the assumption __first_visible() that expects that if
+grp->attrs is set then grp->attrs[0] must also be set and results in
+backtraces like:
 
+    BUG: kernel NULL pointer dereference, address: 00rnel mode
+    #PF: error_code(0x0000) - not-present ] PREEMPT SMP NOPTI
+    CPU: 1 PID: 1 Comm: swapper/IP: 0010:exra_is_visible+0x14/0x20
+     ? exc_page_fault+0x68/0x190
+     internal_create_groups+0x42/0xa0
+     pmu_dev_alloc+0xc0/0xe0
+     perf_event_sysfs_init+0x580000000000 ]---
+    RIP: 0010:exra_is_visible+0x14/0
+
+Check for non-empty attributes array before calling is_visible().
+
+Reported-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Closes: https://github.com/thesofproject/linux/pull/4799#issuecomment-1958537212
+Fixes: 70317fd24b41 ("sysfs: Introduce a mechanism to hide static attribute_groups")
+Cc: Marc Herbert <marc.herbert@intel.com>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>
+Signed-off-by: Dan Williams <dan.j.williams@intel.com>
 ---
+ fs/sysfs/group.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Dan Williams (3):
-      sysfs: Fix crash on empty group attributes array
-      sysfs: Document new "group visible" helpers
-      sysfs: Introduce DEFINE_SIMPLE_SYSFS_GROUP_VISIBLE()
+diff --git a/fs/sysfs/group.c b/fs/sysfs/group.c
+index ccb275cdabcb..8c63ba3cfc47 100644
+--- a/fs/sysfs/group.c
++++ b/fs/sysfs/group.c
+@@ -33,10 +33,10 @@ static void remove_files(struct kernfs_node *parent,
+ 
+ static umode_t __first_visible(const struct attribute_group *grp, struct kobject *kobj)
+ {
+-	if (grp->attrs && grp->is_visible)
++	if (grp->attrs && grp->attrs[0] && grp->is_visible)
+ 		return grp->is_visible(kobj, grp->attrs[0], 0);
+ 
+-	if (grp->bin_attrs && grp->is_bin_visible)
++	if (grp->bin_attrs && grp->bin_attrs[0] && grp->is_bin_visible)
+ 		return grp->is_bin_visible(kobj, grp->bin_attrs[0], 0);
+ 
+ 	return 0;
 
-
- fs/sysfs/group.c      |    4 +-
- include/linux/sysfs.h |   85 +++++++++++++++++++++++++++++++++++++++++++++++--
- 2 files changed, 84 insertions(+), 5 deletions(-)
-
-base-commit: 70317fd24b419091aa0a6dc3ea3ec7bb50c37c32
