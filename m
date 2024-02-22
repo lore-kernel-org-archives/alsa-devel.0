@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C019EC48BF8
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EDF1AC5479F
 	for <alsa-devel@archiver.kernel.org>; Thu, 22 Feb 2024 17:06:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 99E7DB70;
-	Thu, 22 Feb 2024 18:06:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 99E7DB70
+	by alsa0.perex.cz (Postfix) with ESMTPS id 22AF3839;
+	Thu, 22 Feb 2024 18:06:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 22AF3839
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1708621614;
-	bh=FgvZABVdcDQjiW6UTsk7+nZcUDYDiqk6G+wQrxlYAhY=;
+	s=default; t=1708621615;
+	bh=qOmiPs34pCUiDLhuSNi0Chuyh6/urNG1iNBP3mIBQVU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=muO5kWL3p97THi3nuTau0+JJt605IOi32XYxUzRnKqHpLxlpLdGLiL14u5G34dJjL
-	 sRb+j1OVUwYYlPL2PN2dPgMGmIwsXoQQsQnLbEsh9BQkBlWUJWIcjyzgbgLKpDvz8C
-	 31DJuYEQ2t4F4tzkcf7lp/YTiLNZOgv0VNFnq5R4=
+	b=g02jWGs/HV9lULObTNK7GxqGdihEzXZX/kEI6PQBEalYpQYRarIAa5hdqFpM2eYB4
+	 xBfCzLYjky0k44UpVvT67pRg38LKwjcVsneEC6xNShiEvQ6AFurrd8swrGyqcyMy5V
+	 zbQiVAZ36vAqixYT6h991Sxu19xli8whGvg9ZIDY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 869FCF805BB; Thu, 22 Feb 2024 18:06:08 +0100 (CET)
+	id 02044F805EA; Thu, 22 Feb 2024 18:06:11 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 52B98F805C7;
-	Thu, 22 Feb 2024 18:06:08 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3231EF805D4;
+	Thu, 22 Feb 2024 18:06:11 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E8419F805B3; Thu, 22 Feb 2024 18:06:03 +0100 (CET)
+	id 12025F805B2; Thu, 22 Feb 2024 18:06:05 +0100 (CET)
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 2B4C3F800EE
-	for <alsa-devel@alsa-project.org>; Thu, 22 Feb 2024 18:05:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2B4C3F800EE
+	by alsa1.perex.cz (Postfix) with ESMTPS id 4C8C6F805AA
+	for <alsa-devel@alsa-project.org>; Thu, 22 Feb 2024 18:06:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4C8C6F805AA
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=BIQ+3V5B
+ header.s=Intel header.b=ez6mXMx8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708621558; x=1740157558;
+  t=1708621563; x=1740157563;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=FgvZABVdcDQjiW6UTsk7+nZcUDYDiqk6G+wQrxlYAhY=;
-  b=BIQ+3V5BkXYpqVSMRucEKBs7khNxBNvSlydFKglTEVeB80szaVXcJXgL
-   bK7LCzO6kmQIDIU9yMS1u2svzjTTSjX93OqcgzZyXj9aluiiaBoAIdApI
-   U2pICQP4JFpfWU2ZpTl1YsGWpinIy4lHY1kKQ8ufCHoG4N2XtbxawLPGm
-   TV+jM0vK87xR7okf+7ZqSa4cE0l0Jf4ytdC4YgcS4OvOuSPfhCozka3sp
-   u5qxDBWizUhcMNt5GFgXLTtvgMST9xRCVtwl2z2uuw9L33mSV3VZwPleI
-   5FiRG0MG0vjE3l0UOfdzsOlhB/W7SBirjreWQowIvezVAtLbLMGRP00Ig
+  bh=qOmiPs34pCUiDLhuSNi0Chuyh6/urNG1iNBP3mIBQVU=;
+  b=ez6mXMx8hJR4xrqv+jzLmyt3lEdguOk4BT/dGfKtTeXbpUteFnVfzi3+
+   MKOwFH2FkRLGVB5Q12gZgHKd/9BSBd/YbJ/t9xWZBLEMRmiUSEmkiAYXf
+   QEddMPFzQk8pgPF5TrPzG0+oX/jL3U16kTt0iAnfCJPh6kBQKEDWqUPgX
+   qTJgI1bO3znIYayxvjdJ0+0IVlhy/THVa4/a9XK0fvjUpJJuDpJxwdGn/
+   vrRF2Tim3Jj3DYLPVkOJoVIB4X3px/gyija3BrJZ0ZdbmfosLAKE3a0QI
+   1SDHyfuruZ03XLzkMQs3EGn6s2/rPnJ6C8YkV8MQYtmlVwn4ATI92wlbd
    A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10992"; a="20299204"
+X-IronPort-AV: E=McAfee;i="6600,9927,10992"; a="20299253"
 X-IronPort-AV: E=Sophos;i="6.06,179,1705392000";
-   d="scan'208";a="20299204"
+   d="scan'208";a="20299253"
 Received: from orsmga001.jf.intel.com ([10.7.209.18])
   by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 22 Feb 2024 09:04:58 -0800
+ 22 Feb 2024 09:05:05 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10992"; a="827575236"
+X-IronPort-AV: E=McAfee;i="6600,9927,10992"; a="827575245"
 X-IronPort-AV: E=Sophos;i="6.06,179,1705392000";
-   d="scan'208";a="827575236"
+   d="scan'208";a="827575245"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
-  by orsmga001.jf.intel.com with ESMTP; 22 Feb 2024 09:04:53 -0800
+  by orsmga001.jf.intel.com with ESMTP; 22 Feb 2024 09:05:01 -0800
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: broonie@kernel.org
 Cc: alsa-devel@alsa-project.org,
@@ -78,17 +78,16 @@ Cc: alsa-devel@alsa-project.org,
 	pierre-louis.bossart@linux.intel.com,
 	hdegoede@redhat.com,
 	Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: [PATCH 1/4] ALSA: hda: Skip i915 initialization on CNL/LKF-based
- platforms
-Date: Thu, 22 Feb 2024 18:06:11 +0100
-Message-Id: <20240222170614.884413-2-cezary.rojewski@intel.com>
+Subject: [PATCH 3/4] ASoC: codecs: hda: Cleanup error messages
+Date: Thu, 22 Feb 2024 18:06:13 +0100
+Message-Id: <20240222170614.884413-4-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240222170614.884413-1-cezary.rojewski@intel.com>
 References: <20240222170614.884413-1-cezary.rojewski@intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: UHSFDIJCPZK7DM3ZSCPVM4VKELXDN6S3
-X-Message-ID-Hash: UHSFDIJCPZK7DM3ZSCPVM4VKELXDN6S3
+Message-ID-Hash: P72IQT6723VYBTJ7XXP4HQTXXBO5LXB6
+X-Message-ID-Hash: P72IQT6723VYBTJ7XXP4HQTXXBO5LXB6
 X-MailFrom: cezary.rojewski@intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -101,7 +100,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UHSFDIJCPZK7DM3ZSCPVM4VKELXDN6S3/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/P72IQT6723VYBTJ7XXP4HQTXXBO5LXB6/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -110,78 +109,56 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Commit 78f613ba1efb ("drm/i915: finish removal of CNL") and its friends
-removed support for i915 for all CNL-based platforms. HDAudio library,
-however, still treats such platforms as valid candidates for i915
-binding. Update query mechanism to reflect changes made in drm tree.
+Be cohesive and use same pattern in each error message.
 
-At the same time, i915 support for LKF-based platforms has not been
-provided so remove them from valid binding candidates.
-
-Link: https://lore.kernel.org/all/20210728215946.1573015-1-lucas.demarchi@intel.com/
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 ---
- include/drm/i915_pciids.h |  4 ++++
- sound/hda/hdac_i915.c     | 18 +++++++++++++++---
- 2 files changed, 19 insertions(+), 3 deletions(-)
+ sound/soc/codecs/hda.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/include/drm/i915_pciids.h b/include/drm/i915_pciids.h
-index fcf1849aa47c..04172b541ee7 100644
---- a/include/drm/i915_pciids.h
-+++ b/include/drm/i915_pciids.h
-@@ -582,6 +582,10 @@
- 	INTEL_VGA_DEVICE(0x8A51, info), \
- 	INTEL_VGA_DEVICE(0x8A5D, info)
+diff --git a/sound/soc/codecs/hda.c b/sound/soc/codecs/hda.c
+index d9e7cd8aada2..8a9d0674555e 100644
+--- a/sound/soc/codecs/hda.c
++++ b/sound/soc/codecs/hda.c
+@@ -198,19 +198,19 @@ static int hda_codec_probe(struct snd_soc_component *component)
+ 	ret = snd_hda_codec_device_new(codec->bus, component->card->snd_card, hdev->addr, codec,
+ 				       false);
+ 	if (ret < 0) {
+-		dev_err(&hdev->dev, "create hda codec failed: %d\n", ret);
++		dev_err(&hdev->dev, "codec create failed: %d\n", ret);
+ 		goto device_new_err;
+ 	}
  
-+/* LKF */
-+#define INTEL_LKF_IDS(info) \
-+	INTEL_VGA_DEVICE(0x9840, info)
-+
- /* EHL */
- #define INTEL_EHL_IDS(info) \
- 	INTEL_VGA_DEVICE(0x4541, info), \
-diff --git a/sound/hda/hdac_i915.c b/sound/hda/hdac_i915.c
-index 365c36fdf205..07861f9fc491 100644
---- a/sound/hda/hdac_i915.c
-+++ b/sound/hda/hdac_i915.c
-@@ -6,6 +6,7 @@
- #include <linux/init.h>
- #include <linux/module.h>
- #include <linux/pci.h>
-+#include <drm/i915_pciids.h>
- #include <sound/core.h>
- #include <sound/hdaudio.h>
- #include <sound/hda_i915.h>
-@@ -127,15 +128,26 @@ static int i915_component_master_match(struct device *dev, int subcomponent,
- /* check whether Intel graphics is present and reachable */
- static int i915_gfx_present(struct pci_dev *hdac_pci)
- {
-+	/* List of known platforms with no i915 support. */
-+	static struct pci_device_id denylist[] = {
-+		INTEL_CNL_IDS(NULL),
-+		INTEL_LKF_IDS(NULL),
-+		{ 0 }
-+	};
- 	struct pci_dev *display_dev = NULL;
+ 	ret = snd_hda_codec_set_name(codec, codec->preset->name);
+ 	if (ret < 0) {
+-		dev_err(&hdev->dev, "name failed %s\n", codec->preset->name);
++		dev_err(&hdev->dev, "set name: %s failed: %d\n", codec->preset->name, ret);
+ 		goto err;
+ 	}
  
- 	if (!gpu_bind || (gpu_bind < 0 && video_firmware_drivers_only()))
- 		return false;
+ 	ret = snd_hdac_regmap_init(&codec->core);
+ 	if (ret < 0) {
+-		dev_err(&hdev->dev, "regmap init failed\n");
++		dev_err(&hdev->dev, "regmap init failed: %d\n", ret);
+ 		goto err;
+ 	}
  
- 	for_each_pci_dev(display_dev) {
--		if (display_dev->vendor == PCI_VENDOR_ID_INTEL &&
--		    (display_dev->class >> 16) == PCI_BASE_CLASS_DISPLAY &&
--		    connectivity_check(display_dev, hdac_pci)) {
-+		if (display_dev->vendor != PCI_VENDOR_ID_INTEL ||
-+		    (display_dev->class >> 16) != PCI_BASE_CLASS_DISPLAY)
-+			continue;
-+
-+		if (pci_match_id(denylist, display_dev))
-+			continue;
-+
-+		if (connectivity_check(display_dev, hdac_pci)) {
- 			pci_dev_put(display_dev);
- 			return true;
- 		}
+@@ -223,13 +223,13 @@ static int hda_codec_probe(struct snd_soc_component *component)
+ 
+ 	ret = patch(codec);
+ 	if (ret < 0) {
+-		dev_err(&hdev->dev, "patch failed %d\n", ret);
++		dev_err(&hdev->dev, "codec init failed: %d\n", ret);
+ 		goto err;
+ 	}
+ 
+ 	ret = snd_hda_codec_parse_pcms(codec);
+ 	if (ret < 0) {
+-		dev_err(&hdev->dev, "unable to map pcms to dai %d\n", ret);
++		dev_err(&hdev->dev, "unable to map pcms to dai: %d\n", ret);
+ 		goto parse_pcms_err;
+ 	}
+ 
 -- 
 2.25.1
 
