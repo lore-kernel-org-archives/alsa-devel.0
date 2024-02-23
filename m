@@ -4,87 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 546A5C5478C
-	for <alsa-devel@archiver.kernel.org>; Fri, 23 Feb 2024 17:53:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1C32EC5478C
+	for <alsa-devel@archiver.kernel.org>; Fri, 23 Feb 2024 17:53:09 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 493A8832;
-	Fri, 23 Feb 2024 18:52:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 493A8832
+	by alsa0.perex.cz (Postfix) with ESMTPS id DA9A5827;
+	Fri, 23 Feb 2024 18:52:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DA9A5827
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1708710782;
-	bh=D6ZViuQxxu5LLhWeN+tNr7Qy788hI6Q6B6sgjHGd1ws=;
+	s=default; t=1708710786;
+	bh=9ZZxPk/a7pO8ytzdAHohcBFzs6TPeMkP0Go5hItHYIg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=gCUHBikuhkAEsdNQ+GhrkfCOi6P3GhweDU9wJbWFZ0WVzXw3i59Bm9qhY7ew1Vl6d
-	 kXzFUfDoEIvZI1APIodHvn6aCby/7CAlh6Bvn1pQkUFiI4H8nLSzhKGTAkT7hTwWS1
-	 6TN8GRPG9jsfUviLLoHwcX4MSPY9qfM1fzRB9Prg=
+	b=Eel3tEJ9BG8vALC6awoMUAR5ksGmQWvoB0JosxC/YBzBIIQuQKfHOSgUAk0ODQvuA
+	 Oc5kHCYYvXBg0MGBxANjUexOBU2xqN64JoVV1RFDQ+qGZKvCZgEaEPxj0VNrqzVbUj
+	 c695jX1VXxUC5PcvcDzGavK9PBGSUDH0YdTjyNUI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C8A99F80611; Fri, 23 Feb 2024 18:51:50 +0100 (CET)
+	id D4726F8063B; Fri, 23 Feb 2024 18:51:53 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 161DFF80610;
-	Fri, 23 Feb 2024 18:51:50 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 32768F80631;
+	Fri, 23 Feb 2024 18:51:53 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D9FA6F80567; Fri, 23 Feb 2024 18:51:37 +0100 (CET)
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com
- [IPv6:2a00:1450:4864:20::42e])
+	id 8F604F805B0; Fri, 23 Feb 2024 18:51:39 +0100 (CET)
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com
+ [IPv6:2a00:1450:4864:20::330])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A8384F80567
-	for <alsa-devel@alsa-project.org>; Fri, 23 Feb 2024 18:51:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A8384F80567
+	by alsa1.perex.cz (Postfix) with ESMTPS id 02013F804CC
+	for <alsa-devel@alsa-project.org>; Fri, 23 Feb 2024 18:51:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 02013F804CC
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=baylibre-com.20230601.gappssmtp.com
  header.i=@baylibre-com.20230601.gappssmtp.com header.a=rsa-sha256
- header.s=20230601 header.b=P/e1CXu3
-Received: by mail-wr1-x42e.google.com with SMTP id
- ffacd0b85a97d-33d6f26ff33so410217f8f.0
+ header.s=20230601 header.b=taDJnTid
+Received: by mail-wm1-x330.google.com with SMTP id
+ 5b1f17b1804b1-41241f64c6bso8675225e9.0
         for <alsa-devel@alsa-project.org>;
- Fri, 23 Feb 2024 09:51:27 -0800 (PST)
+ Fri, 23 Feb 2024 09:51:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1708710686;
- x=1709315486; darn=alsa-project.org;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1708710684;
+ x=1709315484; darn=alsa-project.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=CvElMeb2g6xpqhFWcI8ix09RRMkAlSO99O6608hvkMQ=;
-        b=P/e1CXu3ZTRRRT8GETwyGhL83DLyS/pw1NrAhI58co/WCalNbEB+hY0wgnjG0Ya6zH
-         oeQbqRX3e3I6LXW1zxzeIw77ZgkEHHQBX0QcACiUc+wnFkQNzIj+KnN3x1c5oe8iQbJb
-         NbIgNoi5vLraaFrVjOGQAIwk5Kmi5+o+rSokCjBR4SxRQDuAVQujxnF7pLzwgwKIEEJb
-         B0oJhRKpv6MxFsUZD6eIuW0YI7teslRyQ0fYwX88kVwX7myHii5vANJTcCFB2q/6IVU4
-         oQSAEZs00nLXX+9hbRvI9gIIQtruzUMLp7ltpvrpcngn9gWaFHuN7Q+qM5Z3lbw51vzw
-         Hv5w==
+        bh=VeCmmTR4nL1DWlLTvSXW5V8GjozKprjftrRX3BjbH5I=;
+        b=taDJnTidGsOPCqnBIOGVvxlugw7oqoDJwrmGgiXfoxSge57GGPtNA+91BfYe2hDpFz
+         pqhp0pz6qOA2EAUmB00r0fIylPiyIYXahML2igLA9+85f0fkmdj0cPNejDnIPWS6tTs1
+         pKdGq5GWHLjiJbpiF1+bz8SyzTqjt9M8ojRipZlXOys3+SeTJz/TM96RcmEUnxIjujCp
+         jBh4ry9IEPiIIdqrWKxAOgotVe9Uditi8Yxgc8ku18xy52E5gdt+cOvUbQcOaLRI1OBJ
+         smDyV66xEZAG6t7PJRsg/WYAyE2jXFE12LLbCAoPVU/FBL8XoCJmP9Bv5Fsvi9CU7XH4
+         shbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708710686; x=1709315486;
+        d=1e100.net; s=20230601; t=1708710684; x=1709315484;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=CvElMeb2g6xpqhFWcI8ix09RRMkAlSO99O6608hvkMQ=;
-        b=n4FpVn7gKzNEaMXp+RxkR3EX1Y8TbgmM78CbgTcmV+8gT5AiDmrj3rlqMhNHbXDwE5
-         Msc9lswEV+VvzsdCVqgMQABZHYh7NdN+1T/CYfZkLAE2Qpq6XB0cyBxGQwmJRtAbVKpa
-         6YH3ZeEkTDE6jsfpwCfnvF4xJ10mDljicDmkdgUpeQ8J01P/IkEbjGtXgXwcH5q6RUVE
-         Y4uYCGoGdHb/HYf1FhzdRFOcinTnb7il8D1YlwV3K5/2JDedPsdccpJhMbTyw4ChqOUb
-         4HrUjYkPUHu4H8BdcbAaxbSQ+j75Wc/BdzGZWFRvaqCLnRU8YQkHVv4f0hkS0SW0a8IT
-         xuxw==
+        bh=VeCmmTR4nL1DWlLTvSXW5V8GjozKprjftrRX3BjbH5I=;
+        b=L98GaNtyZMkb5hjdozw0dkFy4Eqd1xeczH/5+J9G1qkfLqD+L8LOeWU/B5r6pdPs9y
+         eYFvPWtYG10ToZcCdMkGhWJSxH97XE7q3j9NNAievYJjiFJn+mHjrSvsv/u5UvJI8N5Z
+         kNRpHVe5dPmYeKv9GKwR9zD0mTse2hRhwi/SwiD0sKOO338X6O30vAI0+hyIBWdlrB/G
+         oOHaB3sbvSp+brIWn6Lkihs2L9xSjVoWPAANTy95oYFKUDFxAs9Q4tXWRuKK03vjI2RG
+         bKayz4p636h8wtCIcQcGp2uSYx7ysilRWMw4VP+rTl7kAScuo56T5IgmrkBzzAW/4acL
+         MZGQ==
 X-Forwarded-Encrypted: i=1;
- AJvYcCVureelRHHi2atzvsZw9sRfcEx8UNMbTniV8KYkSeg8VH5vYATZwD1/0wu2mV5OKwpqYDaRkbfyjpVps3buujw3U+trHlTKZqybztI=
-X-Gm-Message-State: AOJu0YwW/U4xYB/lTrwKYmSX9ZEyi3LsDD3JOTE/dqb236VNNIfHqHsk
-	BG07vpcK6UsQuJXcvFmTmu00zF4N7vtMtd0zhlsrYDvk9UmHpNyyCo3FGsB/55Y=
+ AJvYcCU4x8h13BbUwh0cZWS7BKblL5iFgeP07gKzIpJ9K4APLA796P77dVWEtIPyhSieoNFvwfqCZQNxYolFHZlBtKfKrblDHBCneKh+EzE=
+X-Gm-Message-State: AOJu0YyOhLRF6xz+0xUyoDy4obpa8AlJQNJpCCKVFnD4IpRFq/eb5HrN
+	auWyXjhCbfdES8FmRorpgL2pk1SadJfGkzV2Wb4DyAGl32W7iNY4QQgSkcdhmhM=
 X-Google-Smtp-Source: 
- AGHT+IGsZP6H+91NdmJ6i8soaEWmdRDIYCoyh52OhJZC6bOgqY/X/r4JhNQ6kUaz+Xc1LH/5RJoMXA==
-X-Received: by 2002:a5d:4a4a:0:b0:33d:3cf6:a2ca with SMTP id
- v10-20020a5d4a4a000000b0033d3cf6a2camr361594wrs.30.1708710685868;
-        Fri, 23 Feb 2024 09:51:25 -0800 (PST)
+ AGHT+IFFxDXAmiB4835JX0wNsSNqu2+o3xJ9l2em0tk9z8iXrduKI7NKlIlcZPE8y6hU/3jd20iOCA==
+X-Received: by 2002:a05:600c:4f53:b0:412:96f2:2df9 with SMTP id
+ m19-20020a05600c4f5300b0041296f22df9mr323815wmq.26.1708710684136;
+        Fri, 23 Feb 2024 09:51:24 -0800 (PST)
 Received: from toaster.lan ([2a01:e0a:3c5:5fb1:e8a0:25a6:d4ec:a7ff])
         by smtp.googlemail.com with ESMTPSA id
- bo10-20020a056000068a00b0033cddadde6esm3711524wrb.80.2024.02.23.09.51.25
+ bo10-20020a056000068a00b0033cddadde6esm3711524wrb.80.2024.02.23.09.51.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Feb 2024 09:51:25 -0800 (PST)
+        Fri, 23 Feb 2024 09:51:23 -0800 (PST)
 From: Jerome Brunet <jbrunet@baylibre.com>
 To: Mark Brown <broonie@kernel.org>,
 	Liam Girdwood <lgirdwood@gmail.com>
@@ -92,17 +92,18 @@ Cc: Jerome Brunet <jbrunet@baylibre.com>,
 	alsa-devel@alsa-project.org,
 	linux-kernel@vger.kernel.org,
 	linux-amlogic@lists.infradead.org
-Subject: [PATCH 5/6] ASoC: meson: axg-fifo: take continuous rates
-Date: Fri, 23 Feb 2024 18:51:11 +0100
-Message-ID: <20240223175116.2005407-6-jbrunet@baylibre.com>
+Subject: [PATCH 3/6] ASoC: meson: axg-tdm-interface: update error format error
+ traces
+Date: Fri, 23 Feb 2024 18:51:09 +0100
+Message-ID: <20240223175116.2005407-4-jbrunet@baylibre.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240223175116.2005407-1-jbrunet@baylibre.com>
 References: <20240223175116.2005407-1-jbrunet@baylibre.com>
 MIME-Version: 1.0
 X-Patchwork-Bot: notify
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: N2BPBUFVPV4KCOBTICJTE7BNJZ6EC6OI
-X-Message-ID-Hash: N2BPBUFVPV4KCOBTICJTE7BNJZ6EC6OI
+Message-ID-Hash: 7BGAYJUXMDEPEQPANMJLM4ITAOKWQYJU
+X-Message-ID-Hash: 7BGAYJUXMDEPEQPANMJLM4ITAOKWQYJU
 X-MailFrom: jbrunet@baylibre.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -114,7 +115,8 @@ X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: <>
+Archived-At: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7BGAYJUXMDEPEQPANMJLM4ITAOKWQYJU/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -123,87 +125,29 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The rate of the stream does not matter for the fifos of the axg family.
-Fifos will just push or pull data to/from the DDR according to consumption
-or production of the downstream element, which is the DPCM backend.
+ASoC stopped using CBS_CFS and CBM_CFM a few years ago but the traces in
+the amlogic tdm interface driver did not follow.
 
-Drop the rate list and allow continuous rates. The lower and upper rate are
-set according what is known to work with the different backends
-
-This allows the PDM input backend to also use continuous rates.
+Update this to match the new format names
 
 Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
 ---
- sound/soc/meson/axg-fifo.h  | 2 --
- sound/soc/meson/axg-frddr.c | 8 ++++++--
- sound/soc/meson/axg-toddr.c | 8 ++++++--
- 3 files changed, 12 insertions(+), 6 deletions(-)
+ sound/soc/meson/axg-tdm-interface.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/meson/axg-fifo.h b/sound/soc/meson/axg-fifo.h
-index df528e8cb7c9..a14c31eb06d8 100644
---- a/sound/soc/meson/axg-fifo.h
-+++ b/sound/soc/meson/axg-fifo.h
-@@ -21,8 +21,6 @@ struct snd_soc_dai_driver;
- struct snd_soc_pcm_runtime;
+diff --git a/sound/soc/meson/axg-tdm-interface.c b/sound/soc/meson/axg-tdm-interface.c
+index 2cedbce73837..bf708717635b 100644
+--- a/sound/soc/meson/axg-tdm-interface.c
++++ b/sound/soc/meson/axg-tdm-interface.c
+@@ -133,7 +133,7 @@ static int axg_tdm_iface_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
  
- #define AXG_FIFO_CH_MAX			128
--#define AXG_FIFO_RATES			(SNDRV_PCM_RATE_5512 |		\
--					 SNDRV_PCM_RATE_8000_384000)
- #define AXG_FIFO_FORMATS		(SNDRV_PCM_FMTBIT_S8 |		\
- 					 SNDRV_PCM_FMTBIT_S16_LE |	\
- 					 SNDRV_PCM_FMTBIT_S20_LE |	\
-diff --git a/sound/soc/meson/axg-frddr.c b/sound/soc/meson/axg-frddr.c
-index 8c166a5f338c..98140f449eb3 100644
---- a/sound/soc/meson/axg-frddr.c
-+++ b/sound/soc/meson/axg-frddr.c
-@@ -109,7 +109,9 @@ static struct snd_soc_dai_driver axg_frddr_dai_drv = {
- 		.stream_name	= "Playback",
- 		.channels_min	= 1,
- 		.channels_max	= AXG_FIFO_CH_MAX,
--		.rates		= AXG_FIFO_RATES,
-+		.rates		= SNDRV_PCM_RATE_CONTINUOUS,
-+		.rate_min	= 5515,
-+		.rate_max	= 384000,
- 		.formats	= AXG_FIFO_FORMATS,
- 	},
- 	.ops		= &axg_frddr_ops,
-@@ -184,7 +186,9 @@ static struct snd_soc_dai_driver g12a_frddr_dai_drv = {
- 		.stream_name	= "Playback",
- 		.channels_min	= 1,
- 		.channels_max	= AXG_FIFO_CH_MAX,
--		.rates		= AXG_FIFO_RATES,
-+		.rates		= SNDRV_PCM_RATE_CONTINUOUS,
-+		.rate_min	= 5515,
-+		.rate_max	= 384000,
- 		.formats	= AXG_FIFO_FORMATS,
- 	},
- 	.ops		= &g12a_frddr_ops,
-diff --git a/sound/soc/meson/axg-toddr.c b/sound/soc/meson/axg-toddr.c
-index 1a0be177b8fe..32ee45cce7f8 100644
---- a/sound/soc/meson/axg-toddr.c
-+++ b/sound/soc/meson/axg-toddr.c
-@@ -131,7 +131,9 @@ static struct snd_soc_dai_driver axg_toddr_dai_drv = {
- 		.stream_name	= "Capture",
- 		.channels_min	= 1,
- 		.channels_max	= AXG_FIFO_CH_MAX,
--		.rates		= AXG_FIFO_RATES,
-+		.rates		= SNDRV_PCM_RATE_CONTINUOUS,
-+		.rate_min	= 5515,
-+		.rate_max	= 384000,
- 		.formats	= AXG_FIFO_FORMATS,
- 	},
- 	.ops		= &axg_toddr_ops,
-@@ -226,7 +228,9 @@ static struct snd_soc_dai_driver g12a_toddr_dai_drv = {
- 		.stream_name	= "Capture",
- 		.channels_min	= 1,
- 		.channels_max	= AXG_FIFO_CH_MAX,
--		.rates		= AXG_FIFO_RATES,
-+		.rates		= SNDRV_PCM_RATE_CONTINUOUS,
-+		.rate_min	= 5515,
-+		.rate_max	= 384000,
- 		.formats	= AXG_FIFO_FORMATS,
- 	},
- 	.ops		= &g12a_toddr_ops,
+ 	case SND_SOC_DAIFMT_BP_FC:
+ 	case SND_SOC_DAIFMT_BC_FP:
+-		dev_err(dai->dev, "only CBS_CFS and CBM_CFM are supported\n");
++		dev_err(dai->dev, "only BP_FP and BC_FC are supported\n");
+ 		fallthrough;
+ 	default:
+ 		return -EINVAL;
 -- 
 2.43.0
 
