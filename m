@@ -4,61 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E63CFC5478C
-	for <alsa-devel@archiver.kernel.org>; Fri, 23 Feb 2024 15:40:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 378C7C54798
+	for <alsa-devel@archiver.kernel.org>; Fri, 23 Feb 2024 15:40:39 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 69172B70;
-	Fri, 23 Feb 2024 16:39:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 69172B70
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9C49BAE8;
+	Fri, 23 Feb 2024 16:40:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9C49BAE8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1708702809;
-	bh=at4PleEsdofi0W9d0DHq9d3aHLVH9DNyQVTGoGwWLic=;
+	s=default; t=1708702831;
+	bh=OKdQJCFhAqqpbWVPBGX0dPyvOIVA2y3RPVYZ2iQ4DF8=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=EVRCC0IprwARrV1SUEsqxo7JLhUL90mV3q6l6PgEi5HdxEmSmu5LXhgemMl+v86z9
-	 IVaQ9piJ+9x1PPkn7/5Zqu3SIXzr8HPAp7a8erROtTE0syogttqMeC67Rz9YK32IS3
-	 Fq07ioNDAfhM9rzCqZPitwqXX1anzCkRMO7vkwv4=
+	b=LmqtX/kS0HAqiG+CeVsWtBzO24xd8ZrniBEm3I5ick7t0F07FPRRThb4V/UWbk3t0
+	 vx098yyTFl1S2PnsyvQcZQmtmMzHRW/H5/tqPcDMlsWYL8E4dMG1t759SCuUXOtd2i
+	 K7E9okSSzrobvc8JKpJvt2OL4i4AydNv9GI1ebY0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2E185F805B4; Fri, 23 Feb 2024 16:39:30 +0100 (CET)
+	id D35C3F805FA; Fri, 23 Feb 2024 16:39:33 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D176BF8047D;
-	Fri, 23 Feb 2024 16:39:29 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 61EEFF805F9;
+	Fri, 23 Feb 2024 16:39:33 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2BD34F8056F; Fri, 23 Feb 2024 16:39:25 +0100 (CET)
+	id 0A5E9F80496; Fri, 23 Feb 2024 16:39:26 +0100 (CET)
 Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7DA85F80496
+	by alsa1.perex.cz (Postfix) with ESMTPS id 69EB3F80104
 	for <alsa-devel@alsa-project.org>; Fri, 23 Feb 2024 16:39:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7DA85F80496
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 69EB3F80104
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=XZjyc/Af
+ header.s=PODMain02222019 header.b=R4ITCF05
 Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
 	by mx0b-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id
- 41N5xe8x005825;
+ 41N8gUBT005505;
 	Fri, 23 Feb 2024 09:39:13 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
 	:mime-version:content-transfer-encoding:content-type; s=
-	PODMain02222019; bh=3z2szSszGyGY76+w1bd3gmMNzvy8vmlvqxcIqwLz1oU=; b=
-	XZjyc/Af2fREOUTBwV6wnG0has8/ucQHH4/Dd/d4mpW20JOvHQzLT1olZW/jqv/x
-	jKUeI8CmdN1a33AJoNZdpxwfjg7G8HESiXPTu1eQilK9h0IkxcSKE8EZHvDVWIib
-	K6lTcLfU45oRysGtLDtoTN+OUo7AlK+TqHsoV42xZuq/Bn2+VeCCjLDDyOMVXyeV
-	kLNMMkKrsgIjKw21BHTOlYi+m/wzeMzI2rs5IweAxKp2gXdAmzMEDCoB7s6YS5Ts
-	hU0NZwMFfx2OYwPf9UvHKcLB5UOS5OFutPYOdbPWcGQVWPP/R5WujB3ZZTKtfX2o
-	8FBDSlGbHXIcq56GILie9w==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3wd205m5pf-2
+	PODMain02222019; bh=LAKmFjKtKhPNxrQSxKAdVi250lMdkTuizyIqCUftZ3M=; b=
+	R4ITCF05QtPO7pRl+w9TMFyOjNN+svra9CtJZWMMpKdInp4+k4MkAyRHAOm9gRRl
+	lkck96bIEp36BU0NJccCZLxqcQKN/1bJzB45D2aqNCqLiP56p62WkN5sMnFl3O2C
+	/vR3LpkJXllZIC3I9EGev5ieE0su/2Fv01xHf4m1v4VkLlf8sqgvKCCg860lsFOP
+	0NVewGGRugd5J+5o46TxhkuT8nvel/WNzp6T9xkLU/DwRhG7KwKqOQo+3Y4mrqOe
+	2duUkjjn0331uH7ELkUXjX9upzOud964X5PqQDrxcVE/XLvhwvxlbgbncfEJU6mR
+	6DSbSsT9w4TGJY+3mUayMQ==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3wd205m5pe-2
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 23 Feb 2024 09:39:12 -0600 (CST)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+	Fri, 23 Feb 2024 09:39:13 -0600 (CST)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 23 Feb
  2024 15:39:10 +0000
 Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
@@ -67,7 +67,7 @@ Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
  15.2.1118.40 via Frontend Transport; Fri, 23 Feb 2024 15:39:10 +0000
 Received: from ediswws06.ad.cirrus.com (ediswws06.ad.cirrus.com
  [198.90.208.18])
-	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 6FF9B820258;
+	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 6799D82024B;
 	Fri, 23 Feb 2024 15:39:10 +0000 (UTC)
 From: Richard Fitzgerald <rf@opensource.cirrus.com>
 To: <broonie@kernel.org>, <tiwai@suse.com>
@@ -75,21 +75,20 @@ CC: <linux-sound@vger.kernel.org>, <alsa-devel@alsa-project.org>,
         <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
         "Richard
  Fitzgerald" <rf@opensource.cirrus.com>
-Subject: [PATCH v2 5/6] ALSA: hda: cs35l56: Apply amp calibration from EFI
- data
-Date: Fri, 23 Feb 2024 15:39:09 +0000
-Message-ID: <20240223153910.2063698-6-rf@opensource.cirrus.com>
+Subject: [PATCH v2 1/6] ASoC: wm_adsp: Add wm_adsp_start() and wm_adsp_stop()
+Date: Fri, 23 Feb 2024 15:39:05 +0000
+Message-ID: <20240223153910.2063698-2-rf@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20240223153910.2063698-1-rf@opensource.cirrus.com>
 References: <20240223153910.2063698-1-rf@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: XPFxklkVkvtGI-zt_bsAP_b0xRbmgSLY
-X-Proofpoint-GUID: XPFxklkVkvtGI-zt_bsAP_b0xRbmgSLY
+X-Proofpoint-ORIG-GUID: nUbU09Aytq7CW1IUBSvrxt0qntPr0FIe
+X-Proofpoint-GUID: nUbU09Aytq7CW1IUBSvrxt0qntPr0FIe
 X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: KU7IJAD4BSVYC6MC7NOB2JEMNFFTGL7U
-X-Message-ID-Hash: KU7IJAD4BSVYC6MC7NOB2JEMNFFTGL7U
+Message-ID-Hash: H7GSKCEB7U6WZO7WCUZVWVXOKAM4ZJJN
+X-Message-ID-Hash: H7GSKCEB7U6WZO7WCUZVWVXOKAM4ZJJN
 X-MailFrom: prvs=97835e8ec7=rf@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -102,138 +101,90 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KU7IJAD4BSVYC6MC7NOB2JEMNFFTGL7U/>
-List-Archive: <>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/H7GSKCEB7U6WZO7WCUZVWVXOKAM4ZJJN/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-If there are factory calibration settings in EFI, extract the
-settings and write them to the firmware calibration controls.
+Separate the functionality of wm_adsp_event() into two exported
+functions wm_adsp_start() and wm_adsp_stop().
+
+This allows the codec driver to start and stop the DSP outside of a
+DAPM widget.
 
 Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 ---
- sound/pci/hda/Kconfig       |  2 ++
- sound/pci/hda/cs35l56_hda.c | 39 ++++++++++++++++++++++++++++++-------
- 2 files changed, 34 insertions(+), 7 deletions(-)
+ sound/soc/codecs/wm_adsp.c | 27 ++++++++++++++++++---------
+ sound/soc/codecs/wm_adsp.h |  2 ++
+ 2 files changed, 20 insertions(+), 9 deletions(-)
 
-diff --git a/sound/pci/hda/Kconfig b/sound/pci/hda/Kconfig
-index 26da739eea82..f806636242ee 100644
---- a/sound/pci/hda/Kconfig
-+++ b/sound/pci/hda/Kconfig
-@@ -165,6 +165,7 @@ config SND_HDA_SCODEC_CS35L56_I2C
- 	select SND_HDA_SCODEC_CS35L56
- 	select SND_HDA_CIRRUS_SCODEC
- 	select SND_HDA_CS_DSP_CONTROLS
-+	select SND_SOC_CS_AMP_LIB
- 	help
- 	  Say Y or M here to include CS35L56 amplifier support with
- 	  I2C control.
-@@ -180,6 +181,7 @@ config SND_HDA_SCODEC_CS35L56_SPI
- 	select SND_HDA_SCODEC_CS35L56
- 	select SND_HDA_CIRRUS_SCODEC
- 	select SND_HDA_CS_DSP_CONTROLS
-+	select SND_SOC_CS_AMP_LIB
- 	help
- 	  Say Y or M here to include CS35L56 amplifier support with
- 	  SPI control.
-diff --git a/sound/pci/hda/cs35l56_hda.c b/sound/pci/hda/cs35l56_hda.c
-index 75a14ba54fcd..5ad76d6914c3 100644
---- a/sound/pci/hda/cs35l56_hda.c
-+++ b/sound/pci/hda/cs35l56_hda.c
-@@ -14,6 +14,7 @@
- #include <linux/regmap.h>
- #include <linux/slab.h>
- #include <sound/core.h>
-+#include <sound/cs-amp-lib.h>
- #include <sound/hda_codec.h>
- #include <sound/tlv.h>
- #include "cirrus_scodec.h"
-@@ -547,6 +548,22 @@ static void cs35l56_hda_add_dsp_controls(struct cs35l56_hda *cs35l56)
- 	hda_cs_dsp_add_controls(&cs35l56->cs_dsp, &info);
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index 36ea0dcdc7ab..e451c009f2d9 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -1092,27 +1092,36 @@ static void wm_adsp_event_post_stop(struct cs_dsp *cs_dsp)
+ 	dsp->fatal_error = false;
  }
  
-+static void cs35l56_hda_apply_calibration(struct cs35l56_hda *cs35l56)
++int wm_adsp_run(struct wm_adsp *dsp)
 +{
-+	int ret;
++	flush_work(&dsp->boot_work);
 +
-+	if (!cs35l56->base.cal_data_valid || cs35l56->base.secured)
-+		return;
-+
-+	ret = cs_amp_write_cal_coeffs(&cs35l56->cs_dsp,
-+				      &cs35l56_calibration_controls,
-+				      &cs35l56->base.cal_data);
-+	if (ret < 0)
-+		dev_warn(cs35l56->base.dev, "Failed to write calibration: %d\n", ret);
-+	else
-+		dev_info(cs35l56->base.dev, "Calibration applied\n");
++	return cs_dsp_run(&dsp->cs_dsp);
 +}
++EXPORT_SYMBOL_GPL(wm_adsp_run);
 +
- static int cs35l56_hda_fw_load(struct cs35l56_hda *cs35l56)
++void wm_adsp_stop(struct wm_adsp *dsp)
++{
++	cs_dsp_stop(&dsp->cs_dsp);
++}
++EXPORT_SYMBOL_GPL(wm_adsp_stop);
++
+ int wm_adsp_event(struct snd_soc_dapm_widget *w,
+ 		  struct snd_kcontrol *kcontrol, int event)
  {
- 	const struct firmware *coeff_firmware = NULL;
-@@ -618,12 +635,8 @@ static int cs35l56_hda_fw_load(struct cs35l56_hda *cs35l56)
- 	if (coeff_filename)
- 		dev_dbg(cs35l56->base.dev, "Loaded Coefficients: %s\n", coeff_filename);
+ 	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
+ 	struct wm_adsp *dsps = snd_soc_component_get_drvdata(component);
+ 	struct wm_adsp *dsp = &dsps[w->shift];
+-	int ret = 0;
  
--	if (!firmware_missing) {
--		ret = cs35l56_mbox_send(&cs35l56->base, CS35L56_MBOX_CMD_AUDIO_REINIT);
--		if (ret)
--			goto err_powered_up;
--	} else if (wmfw_firmware || coeff_firmware) {
--		/* If we downloaded firmware, reset the device and wait for it to boot */
-+	/* If we downloaded firmware, reset the device and wait for it to boot */
-+	if (firmware_missing && (wmfw_firmware || coeff_firmware)) {
- 		cs35l56_system_reset(&cs35l56->base, false);
- 		regcache_mark_dirty(cs35l56->base.regmap);
- 		ret = cs35l56_wait_for_firmware_boot(&cs35l56->base);
-@@ -646,6 +659,11 @@ static int cs35l56_hda_fw_load(struct cs35l56_hda *cs35l56)
- 	if (ret)
- 		dev_dbg(cs35l56->base.dev, "%s: cs_dsp_run ret %d\n", __func__, ret);
- 
-+	cs35l56_hda_apply_calibration(cs35l56);
-+	ret = cs35l56_mbox_send(&cs35l56->base, CS35L56_MBOX_CMD_AUDIO_REINIT);
-+	if (ret)
-+		cs_dsp_stop(&cs35l56->cs_dsp);
-+
- err_powered_up:
- 	if (!cs35l56->base.fw_patched)
- 		cs_dsp_power_down(&cs35l56->cs_dsp);
-@@ -953,6 +971,8 @@ int cs35l56_hda_common_probe(struct cs35l56_hda *cs35l56, int id)
- 		goto err;
+ 	switch (event) {
+ 	case SND_SOC_DAPM_POST_PMU:
+-		flush_work(&dsp->boot_work);
+-		ret = cs_dsp_run(&dsp->cs_dsp);
+-		break;
++		return wm_adsp_run(dsp);
+ 	case SND_SOC_DAPM_PRE_PMD:
+-		cs_dsp_stop(&dsp->cs_dsp);
+-		break;
++		wm_adsp_stop(dsp);
++		return 0;
+ 	default:
+-		break;
++		return 0;
  	}
+-
+-	return ret;
+ }
+ EXPORT_SYMBOL_GPL(wm_adsp_event);
  
-+	cs35l56->base.cal_index = cs35l56->index;
-+
- 	cs35l56_init_cs_dsp(&cs35l56->base, &cs35l56->cs_dsp);
- 	cs35l56->cs_dsp.client_ops = &cs35l56_hda_client_ops;
+diff --git a/sound/soc/codecs/wm_adsp.h b/sound/soc/codecs/wm_adsp.h
+index 067d807a7ca8..e53dfcf1f78f 100644
+--- a/sound/soc/codecs/wm_adsp.h
++++ b/sound/soc/codecs/wm_adsp.h
+@@ -98,6 +98,8 @@ irqreturn_t wm_adsp2_bus_error(int irq, void *data);
+ irqreturn_t wm_halo_bus_error(int irq, void *data);
+ irqreturn_t wm_halo_wdt_expire(int irq, void *data);
  
-@@ -990,6 +1010,10 @@ int cs35l56_hda_common_probe(struct cs35l56_hda *cs35l56, int id)
- 	if (ret)
- 		goto err;
++int wm_adsp_run(struct wm_adsp *dsp);
++void wm_adsp_stop(struct wm_adsp *dsp);
+ int wm_adsp_event(struct snd_soc_dapm_widget *w,
+ 		  struct snd_kcontrol *kcontrol, int event);
  
-+	ret = cs35l56_get_calibration(&cs35l56->base);
-+	if (ret)
-+		goto err;
-+
- 	ret = cs_dsp_halo_init(&cs35l56->cs_dsp);
- 	if (ret) {
- 		dev_err_probe(cs35l56->base.dev, ret, "cs_dsp_halo_init failed\n");
-@@ -1064,10 +1088,11 @@ const struct dev_pm_ops cs35l56_hda_pm_ops = {
- EXPORT_SYMBOL_NS_GPL(cs35l56_hda_pm_ops, SND_HDA_SCODEC_CS35L56);
- 
- MODULE_DESCRIPTION("CS35L56 HDA Driver");
-+MODULE_IMPORT_NS(FW_CS_DSP);
- MODULE_IMPORT_NS(SND_HDA_CIRRUS_SCODEC);
- MODULE_IMPORT_NS(SND_HDA_CS_DSP_CONTROLS);
- MODULE_IMPORT_NS(SND_SOC_CS35L56_SHARED);
-+MODULE_IMPORT_NS(SND_SOC_CS_AMP_LIB);
- MODULE_AUTHOR("Richard Fitzgerald <rf@opensource.cirrus.com>");
- MODULE_AUTHOR("Simon Trimmer <simont@opensource.cirrus.com>");
- MODULE_LICENSE("GPL");
--MODULE_IMPORT_NS(FW_CS_DSP);
 -- 
 2.30.2
 
