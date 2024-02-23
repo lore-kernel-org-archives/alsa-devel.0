@@ -4,70 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DCB99C54798
-	for <alsa-devel@archiver.kernel.org>; Fri, 23 Feb 2024 15:41:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A0A03C5478C
+	for <alsa-devel@archiver.kernel.org>; Fri, 23 Feb 2024 15:41:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D90F8A4A;
-	Fri, 23 Feb 2024 16:41:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D90F8A4A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8E615E0F;
+	Fri, 23 Feb 2024 16:41:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8E615E0F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1708702886;
-	bh=AyhWYPSqg+SbEKRLSFfHUk7zH/sfDacTTWQa5bUQwDU=;
+	s=default; t=1708702901;
+	bh=wWJUUu1RN/cjxHK7dTeua3UtBDt9H2kC7aCvh/PL8Os=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=FKgbZE3VLKs6L5yD4jkrC9eKczYZAnoQnyVyVLMOicmPYWTHjsgEq4YFah907IsrI
-	 rYyt+8WkJKMvZPw1lSXTz4DCTgekqSkxrnzSzROG8lUadwKr5ksYZCwJwEH8+kSEsA
-	 GdUvWxd+8ugWoM90JD/MZDAWzi9dXW5AjpHLoS4Y=
+	b=X6qKcuOkmoUD61hvOvyRnLrwC0DkSga1WdnLmDIna6UfC+E86LbZnyhElQiUlcHiG
+	 mgoQnSp6UDJ15rp/oNMJrkCCKB3n8hmBkl2EDMh9n/96ORGovlbgxpemeLnYxY7oPr
+	 Aieu9+S56dZa2J5T/aup/GoKsjpiAszeetvRdGUc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 84051F8067F; Fri, 23 Feb 2024 16:39:44 +0100 (CET)
+	id 7966FF8069C; Fri, 23 Feb 2024 16:39:53 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D925CF80688;
-	Fri, 23 Feb 2024 16:39:43 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 49E22F80587;
+	Fri, 23 Feb 2024 16:39:53 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CF2D7F80601; Fri, 23 Feb 2024 16:39:35 +0100 (CET)
+	id 00E82F8057E; Fri, 23 Feb 2024 16:39:47 +0100 (CET)
 Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A7C16F804CC
+	by alsa1.perex.cz (Postfix) with ESMTPS id 2302DF80567
 	for <alsa-devel@alsa-project.org>; Fri, 23 Feb 2024 16:39:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A7C16F804CC
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2302DF80567
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=RFyRNNCO
+ header.s=PODMain02222019 header.b=VMDYgNt1
 Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
 	by mx0b-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id
- 41N8gUBU005505;
+ 41N5xe90005825;
 	Fri, 23 Feb 2024 09:39:14 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
 	:mime-version:content-transfer-encoding:content-type; s=
-	PODMain02222019; bh=vizjXmHcd079C2mw5k4d+8ZahdNc9pZNwCbEzx/xBg8=; b=
-	RFyRNNCOsXkt6ZNQR4Y9sdMfFmWO448DqcO0T4YlByVfGscVeGeVODo0Iq4XwkeR
-	MHYw4uutrILYRZZwTdznxzHIaT4SLQ9lrKFMW15YJW0Sc1iqGPdLjdhC8t462uiO
-	JP7qUVSz6dGJXNqf8pBQoPvmuHDZZfrJkVj+jhsbnQTmwMtGNlhodaP8PiUj1oBa
-	dSHY3aHb0zPI42tbxIKnrvkcjJbJkC3N9eRSJiADyOGpYlECsNpgz3+TO/CTE2Kj
-	gcuK2aeNDcXLAr7oQBSgMWGn/hT4dGkSRa+bEj13tJgrOaCnXfNYFMG/rW7DXnBD
-	ockbt8C4Xk+1QET9/16UnQ==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3wd205m5pe-3
+	PODMain02222019; bh=xf4aK3VaxucenEoTuHMXauhjAUm7yZY8KlH7f9LC4mY=; b=
+	VMDYgNt14zl3MVkPKKyNp/Q8zsGPm3KCPlI+uXGlm8W6RB0thXqsX4PotOoAFw1V
+	Fxz6kZaNolPXxmbCzh4htysCG9bTLDtTOSg1ZQuMoRVezAZpGWkam7YGIL39nesQ
+	oesqtyymnEwqwmkUGdfMwzEypPlRLwJbVKuZEuJ5fuEA+vUDvLq4bVeexEvc0RY4
+	W2XBr0eQLAZ7fvRlM3Y/SvaUf0USi7tQCVxcqqbDco5IImHlTHlfurckEYIoDAdX
+	qacMsJe0X0QuhdZfLOS9MsVybgJx78l9xrLFbjO8VGBcAwoV70VUHzQM9LohTL8+
+	H/56rBN/jdGZkITEotpNFg==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3wd205m5pf-3
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Fri, 23 Feb 2024 09:39:13 -0600 (CST)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 23 Feb
  2024 15:39:10 +0000
 Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
- ediex01.ad.cirrus.com (198.61.84.80) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
  15.2.1118.40 via Frontend Transport; Fri, 23 Feb 2024 15:39:10 +0000
 Received: from ediswws06.ad.cirrus.com (ediswws06.ad.cirrus.com
  [198.90.208.18])
-	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 6C05382024D;
+	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 721FA820259;
 	Fri, 23 Feb 2024 15:39:10 +0000 (UTC)
 From: Richard Fitzgerald <rf@opensource.cirrus.com>
 To: <broonie@kernel.org>, <tiwai@suse.com>
@@ -75,21 +74,21 @@ CC: <linux-sound@vger.kernel.org>, <alsa-devel@alsa-project.org>,
         <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
         "Richard
  Fitzgerald" <rf@opensource.cirrus.com>
-Subject: [PATCH v2 3/6] ASoC: cs35l56: Add helper functions for amp
- calibration
-Date: Fri, 23 Feb 2024 15:39:07 +0000
-Message-ID: <20240223153910.2063698-4-rf@opensource.cirrus.com>
+Subject: [PATCH v2 6/6] ASoC: cs-amp-lib: Add KUnit test for calibration
+ helpers
+Date: Fri, 23 Feb 2024 15:39:10 +0000
+Message-ID: <20240223153910.2063698-7-rf@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20240223153910.2063698-1-rf@opensource.cirrus.com>
 References: <20240223153910.2063698-1-rf@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: JFWIkNrrD6umswLLx3p8xM8XQGDQlDEn
-X-Proofpoint-GUID: JFWIkNrrD6umswLLx3p8xM8XQGDQlDEn
+X-Proofpoint-ORIG-GUID: dBXltzD6Wcpe0ICfV9g0j5cWFWX9Va1x
+X-Proofpoint-GUID: dBXltzD6Wcpe0ICfV9g0j5cWFWX9Va1x
 X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: XXDMY3H637HNMX2HB3WU2M57AAY5DZH6
-X-Message-ID-Hash: XXDMY3H637HNMX2HB3WU2M57AAY5DZH6
+Message-ID-Hash: 774SKT7JHORMSO5EJ5RIIBE4H64WDYQV
+X-Message-ID-Hash: 774SKT7JHORMSO5EJ5RIIBE4H64WDYQV
 X-MailFrom: prvs=97835e8ec7=rf@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -102,7 +101,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XXDMY3H637HNMX2HB3WU2M57AAY5DZH6/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/774SKT7JHORMSO5EJ5RIIBE4H64WDYQV/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -111,166 +110,611 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Adds some helper functions and data for applying amp calibration.
+Add a KUnit test for the cs-amp-lib library. This has test cases
+for cs_amp_get_efi_calibration_data() and cs_amp_write_cal_coeffs().
 
-1. cs35l56_read_silicon_uid() to get the silicon ID that is used to
-   search for the correct calibration data entry.
-
-2. Add the registers for the silicon ID to the readable registers.
-
-3. cs35l56_get_calibration() wrapper around
-   cs_amp_get_efi_calibration_data()
-
-4. cs35l56_calibration_controls() table of the firmware controls
-   for calibration data.
-
-5. Added members to struct cs35l56_base to store the calibration
-   data.
+A KUNIT_STATIC_STUB_REDIRECT() has been added to
+cs_amp_get_efi_variable() and cs_amp_write_cal_coeff() so that the
+KUnit test can redirect these to test harness functions.
 
 Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 ---
- include/sound/cs35l56.h           | 10 ++++
- sound/soc/codecs/Kconfig          |  1 +
- sound/soc/codecs/cs35l56-shared.c | 83 +++++++++++++++++++++++++++++++
- 3 files changed, 94 insertions(+)
+ include/sound/cs-amp-lib.h         |  14 +
+ sound/soc/codecs/Kconfig           |  13 +
+ sound/soc/codecs/Makefile          |   2 +
+ sound/soc/codecs/cs-amp-lib-test.c | 715 +++++++++++++++++++++++++++++
+ sound/soc/codecs/cs-amp-lib.c      |  18 +-
+ 5 files changed, 760 insertions(+), 2 deletions(-)
+ create mode 100644 sound/soc/codecs/cs-amp-lib-test.c
 
-diff --git a/include/sound/cs35l56.h b/include/sound/cs35l56.h
-index b24716ab2750..4014ed7097b3 100644
---- a/include/sound/cs35l56.h
-+++ b/include/sound/cs35l56.h
-@@ -12,6 +12,7 @@
- #include <linux/firmware/cirrus/cs_dsp.h>
- #include <linux/regulator/consumer.h>
- #include <linux/regmap.h>
-+#include <sound/cs-amp-lib.h>
- 
- #define CS35L56_DEVID					0x0000000
- #define CS35L56_REVID					0x0000004
-@@ -23,6 +24,9 @@
- #define CS35L56_BLOCK_ENABLES2				0x000201C
- #define CS35L56_REFCLK_INPUT				0x0002C04
- #define CS35L56_GLOBAL_SAMPLE_RATE			0x0002C0C
-+#define CS35L56_OTP_MEM_53				0x00300D4
-+#define CS35L56_OTP_MEM_54				0x00300D8
-+#define CS35L56_OTP_MEM_55				0x00300DC
- #define CS35L56_ASP1_ENABLES1				0x0004800
- #define CS35L56_ASP1_CONTROL1				0x0004804
- #define CS35L56_ASP1_CONTROL2				0x0004808
-@@ -262,6 +266,9 @@ struct cs35l56_base {
- 	bool fw_patched;
- 	bool secured;
- 	bool can_hibernate;
-+	bool cal_data_valid;
-+	s8 cal_index;
-+	struct cirrus_amp_cal_data cal_data;
- 	struct gpio_desc *reset_gpio;
- };
- 
-@@ -269,6 +276,8 @@ extern struct regmap_config cs35l56_regmap_i2c;
- extern struct regmap_config cs35l56_regmap_spi;
- extern struct regmap_config cs35l56_regmap_sdw;
- 
-+extern const struct cirrus_amp_cal_controls cs35l56_calibration_controls;
+diff --git a/include/sound/cs-amp-lib.h b/include/sound/cs-amp-lib.h
+index 077fe36885b5..f481148735e1 100644
+--- a/include/sound/cs-amp-lib.h
++++ b/include/sound/cs-amp-lib.h
+@@ -49,4 +49,18 @@ int cs_amp_write_cal_coeffs(struct cs_dsp *dsp,
+ 			    const struct cirrus_amp_cal_data *data);
+ int cs_amp_get_efi_calibration_data(struct device *dev, u64 target_uid, int amp_index,
+ 				    struct cirrus_amp_cal_data *out_data);
 +
- extern const char * const cs35l56_tx_input_texts[CS35L56_NUM_INPUT_SRC];
- extern const unsigned int cs35l56_tx_input_values[CS35L56_NUM_INPUT_SRC];
- 
-@@ -286,6 +295,7 @@ int cs35l56_is_fw_reload_needed(struct cs35l56_base *cs35l56_base);
- int cs35l56_runtime_suspend_common(struct cs35l56_base *cs35l56_base);
- int cs35l56_runtime_resume_common(struct cs35l56_base *cs35l56_base, bool is_soundwire);
- void cs35l56_init_cs_dsp(struct cs35l56_base *cs35l56_base, struct cs_dsp *cs_dsp);
-+int cs35l56_get_calibration(struct cs35l56_base *cs35l56_base);
- int cs35l56_read_prot_status(struct cs35l56_base *cs35l56_base,
- 			     bool *fw_missing, unsigned int *fw_version);
- int cs35l56_hw_init(struct cs35l56_base *cs35l56_base);
++struct cs_amp_test_hooks {
++	efi_status_t (*get_efi_variable)(efi_char16_t *name,
++					 efi_guid_t *guid,
++					 unsigned long *size,
++					 void *buf);
++
++	int (*write_cal_coeff)(struct cs_dsp *dsp,
++			       const struct cirrus_amp_cal_controls *controls,
++			       const char *ctl_name, u32 val);
++};
++
++extern const struct cs_amp_test_hooks * const cs_amp_test_hooks;
++
+ #endif /* CS_AMP_LIB_H */
 diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 8356bd1256d8..15f287784d8b 100644
+index 15f287784d8b..0a6d034b67f1 100644
 --- a/sound/soc/codecs/Kconfig
 +++ b/sound/soc/codecs/Kconfig
-@@ -800,6 +800,7 @@ config SND_SOC_CS35L56
+@@ -732,6 +732,19 @@ config SND_SOC_CROS_EC_CODEC
+ config SND_SOC_CS_AMP_LIB
  	tristate
  
- config SND_SOC_CS35L56_SHARED
++config SND_SOC_CS_AMP_LIB_TEST
++	tristate "KUnit test for Cirrus Logic cs-amp-lib"
++	depends on ACPI || COMPILE_TEST || KUNIT
++	default KUNIT_ALL_TESTS
 +	select SND_SOC_CS_AMP_LIB
- 	tristate
- 
- config SND_SOC_CS35L56_I2C
-diff --git a/sound/soc/codecs/cs35l56-shared.c b/sound/soc/codecs/cs35l56-shared.c
-index cb4e83126b08..20b6dbd3fbab 100644
---- a/sound/soc/codecs/cs35l56-shared.c
-+++ b/sound/soc/codecs/cs35l56-shared.c
-@@ -5,10 +5,12 @@
- // Copyright (C) 2023 Cirrus Logic, Inc. and
- //                    Cirrus Logic International Semiconductor Ltd.
- 
++	help
++	  This builds KUnit tests for the Cirrus Logic common
++	  amplifier library.
++	  For more information on KUnit and unit tests in general,
++	  please refer to the KUnit documentation in
++	  Documentation/dev-tools/kunit/.
++	  If in doubt, say "N".
++
+ config SND_SOC_CS35L32
+ 	tristate "Cirrus Logic CS35L32 CODEC"
+ 	depends on I2C
+diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
+index 0fc40640e5d0..7c075539dc47 100644
+--- a/sound/soc/codecs/Makefile
++++ b/sound/soc/codecs/Makefile
+@@ -60,6 +60,7 @@ snd-soc-cpcap-objs := cpcap.o
+ snd-soc-cq93vc-objs := cq93vc.o
+ snd-soc-cros-ec-codec-objs := cros_ec_codec.o
+ snd-soc-cs-amp-lib-objs := cs-amp-lib.o
++snd-soc-cs-amp-lib-test-objs := cs-amp-lib-test.o
+ snd-soc-cs35l32-objs := cs35l32.o
+ snd-soc-cs35l33-objs := cs35l33.o
+ snd-soc-cs35l34-objs := cs35l34.o
+@@ -454,6 +455,7 @@ obj-$(CONFIG_SND_SOC_CQ0093VC) += snd-soc-cq93vc.o
+ obj-$(CONFIG_SND_SOC_CPCAP)	+= snd-soc-cpcap.o
+ obj-$(CONFIG_SND_SOC_CROS_EC_CODEC)	+= snd-soc-cros-ec-codec.o
+ obj-$(CONFIG_SND_SOC_CS_AMP_LIB)	+= snd-soc-cs-amp-lib.o
++obj-$(CONFIG_SND_SOC_CS_AMP_LIB_TEST)	+= snd-soc-cs-amp-lib-test.o
+ obj-$(CONFIG_SND_SOC_CS35L32)	+= snd-soc-cs35l32.o
+ obj-$(CONFIG_SND_SOC_CS35L33)	+= snd-soc-cs35l33.o
+ obj-$(CONFIG_SND_SOC_CS35L34)	+= snd-soc-cs35l34.o
+diff --git a/sound/soc/codecs/cs-amp-lib-test.c b/sound/soc/codecs/cs-amp-lib-test.c
+new file mode 100644
+index 000000000000..be7af2fbe469
+--- /dev/null
++++ b/sound/soc/codecs/cs-amp-lib-test.c
+@@ -0,0 +1,715 @@
++// SPDX-License-Identifier: GPL-2.0-only
++//
++// KUnit test for the Cirrus common amplifier library.
++//
++// Copyright (C) 2024 Cirrus Logic, Inc. and
++//                    Cirrus Logic International Semiconductor Ltd.
++
++#include <kunit/test.h>
++#include <kunit/static_stub.h>
++#include <linux/firmware/cirrus/cs_dsp.h>
 +#include <linux/firmware/cirrus/wmfw.h>
- #include <linux/gpio/consumer.h>
- #include <linux/regmap.h>
- #include <linux/regulator/consumer.h>
- #include <linux/types.h>
++#include <linux/gpio/driver.h>
++#include <linux/list.h>
++#include <linux/module.h>
++#include <linux/platform_device.h>
++#include <linux/random.h>
 +#include <sound/cs-amp-lib.h>
- 
- #include "cs35l56.h"
- 
-@@ -36,6 +38,8 @@ int cs35l56_set_patch(struct cs35l56_base *cs35l56_base)
- EXPORT_SYMBOL_NS_GPL(cs35l56_set_patch, SND_SOC_CS35L56_SHARED);
- 
- static const struct reg_default cs35l56_reg_defaults[] = {
-+	/* no defaults for OTP_MEM - first read populates cache */
 +
- 	{ CS35L56_ASP1_ENABLES1,		0x00000000 },
- 	{ CS35L56_ASP1_CONTROL1,		0x00000028 },
- 	{ CS35L56_ASP1_CONTROL2,		0x18180200 },
-@@ -91,6 +95,9 @@ static bool cs35l56_readable_reg(struct device *dev, unsigned int reg)
- 	case CS35L56_BLOCK_ENABLES2:
- 	case CS35L56_REFCLK_INPUT:
- 	case CS35L56_GLOBAL_SAMPLE_RATE:
-+	case CS35L56_OTP_MEM_53:
-+	case CS35L56_OTP_MEM_54:
-+	case CS35L56_OTP_MEM_55:
- 	case CS35L56_ASP1_ENABLES1:
- 	case CS35L56_ASP1_CONTROL1:
- 	case CS35L56_ASP1_CONTROL2:
-@@ -629,6 +636,81 @@ void cs35l56_init_cs_dsp(struct cs35l56_base *cs35l56_base, struct cs_dsp *cs_ds
- }
- EXPORT_SYMBOL_NS_GPL(cs35l56_init_cs_dsp, SND_SOC_CS35L56_SHARED);
- 
-+struct cs35l56_pte {
-+	u8 x;
-+	u8 wafer_id;
-+	u8 pte[2];
-+	u8 lot[3];
-+	u8 y;
-+	u8 unused[3];
-+	u8 dvs;
-+} __packed;
-+static_assert((sizeof(struct cs35l56_pte) % sizeof(u32)) == 0);
++#define TYPESAFE_ACTIVATE_STATIC_STUB_PTR(test, fn_ptr, replacement_fn)		\
++	do {									\
++		typecheck_fn(typeof(fn_ptr), replacement_fn);			\
++		__kunit_activate_static_stub(test, fn_ptr, replacement_fn);	\
++	} while (0)
 +
-+static int cs35l56_read_silicon_uid(struct cs35l56_base *cs35l56_base, u64 *uid)
++struct cs_amp_lib_test_priv {
++	struct platform_device amp_pdev;
++
++	struct cirrus_amp_efi_data *cal_blob;
++	struct list_head ctl_write_list;
++};
++
++struct cs_amp_lib_test_ctl_write_entry {
++	struct list_head list;
++	unsigned int value;
++	char name[16];
++};
++
++struct cs_amp_lib_test_param {
++	int num_amps;
++	int amp_index;
++};
++
++static void cs_amp_lib_test_init_dummy_cal_blob(struct kunit *test, int num_amps)
 +{
-+	struct cs35l56_pte pte;
-+	u64 unique_id;
-+	int ret;
++	struct cs_amp_lib_test_priv *priv = test->priv;
++	unsigned int blob_size;
 +
-+	ret = regmap_raw_read(cs35l56_base->regmap, CS35L56_OTP_MEM_53, &pte, sizeof(pte));
-+	if (ret) {
-+		dev_err(cs35l56_base->dev, "Failed to read OTP: %d\n", ret);
-+		return ret;
-+	}
++	blob_size = offsetof(struct cirrus_amp_efi_data, data) +
++		    sizeof(struct cirrus_amp_cal_data) * num_amps;
 +
-+	unique_id = pte.lot[2] | (pte.lot[1] << 8) | (pte.lot[0] << 16);
-+	unique_id <<= 32;
-+	unique_id |= pte.x | (pte.y << 8) | (pte.wafer_id << 16) | (pte.dvs << 24);
++	priv->cal_blob = kunit_kzalloc(test, blob_size, GFP_KERNEL);
++	KUNIT_ASSERT_NOT_NULL(test, priv->cal_blob);
 +
-+	dev_dbg(cs35l56_base->dev, "UniqueID = %#llx\n", unique_id);
++	priv->cal_blob->size = blob_size;
++	priv->cal_blob->count = num_amps;
 +
-+	*uid = unique_id;
-+
-+	return 0;
++	get_random_bytes(priv->cal_blob->data, sizeof(struct cirrus_amp_cal_data) * num_amps);
 +}
 +
-+/* Firmware calibration controls */
-+const struct cirrus_amp_cal_controls cs35l56_calibration_controls = {
++static u64 cs_amp_lib_test_get_target_uid(struct kunit *test)
++{
++	struct cs_amp_lib_test_priv *priv = test->priv;
++	const struct cs_amp_lib_test_param *param = test->param_value;
++	u64 uid;
++
++	uid = priv->cal_blob->data[param->amp_index].calTarget[1];
++	uid <<= 32;
++	uid |= priv->cal_blob->data[param->amp_index].calTarget[0];
++
++	return uid;
++}
++
++/* Redirected get_efi_variable to simulate that the file is too short */
++static efi_status_t cs_amp_lib_test_get_efi_variable_nohead(efi_char16_t *name,
++							    efi_guid_t *guid,
++							    unsigned long *size,
++							    void *buf)
++{
++	if (!buf) {
++		*size = offsetof(struct cirrus_amp_efi_data, data) - 1;
++		return EFI_BUFFER_TOO_SMALL;
++	}
++
++	return EFI_NOT_FOUND;
++}
++
++/* Should return -EOVERFLOW if the header is larger than the EFI data */
++static void cs_amp_lib_test_cal_data_too_short_test(struct kunit *test)
++{
++	struct cs_amp_lib_test_priv *priv = test->priv;
++	struct cirrus_amp_cal_data result_data;
++	int ret;
++
++	/* Redirect calls to get EFI data */
++	TYPESAFE_ACTIVATE_STATIC_STUB_PTR(test,
++					  cs_amp_test_hooks->get_efi_variable,
++					  cs_amp_lib_test_get_efi_variable_nohead);
++
++	ret = cs_amp_get_efi_calibration_data(&priv->amp_pdev.dev, 0, 0, &result_data);
++	KUNIT_EXPECT_EQ(test, ret, -EOVERFLOW);
++
++	kunit_deactivate_static_stub(test, cs_amp_test_hooks->get_efi_variable);
++}
++
++/* Redirected get_efi_variable to simulate that the count is larger than the file */
++static efi_status_t cs_amp_lib_test_get_efi_variable_bad_count(efi_char16_t *name,
++							       efi_guid_t *guid,
++							       unsigned long *size,
++							       void *buf)
++{
++	struct kunit *test = kunit_get_current_test();
++	struct cs_amp_lib_test_priv *priv = test->priv;
++
++	if (!buf) {
++		/*
++		 * Return a size that is shorter than required for the
++		 * declared number of entries.
++		 */
++		*size = priv->cal_blob->size - 1;
++		return EFI_BUFFER_TOO_SMALL;
++	}
++
++	memcpy(buf, priv->cal_blob, priv->cal_blob->size - 1);
++
++	return EFI_SUCCESS;
++}
++
++/* Should return -EOVERFLOW if the entry count is larger than the EFI data */
++static void cs_amp_lib_test_cal_count_too_big_test(struct kunit *test)
++{
++	struct cs_amp_lib_test_priv *priv = test->priv;
++	struct cirrus_amp_cal_data result_data;
++	int ret;
++
++	cs_amp_lib_test_init_dummy_cal_blob(test, 8);
++
++	/* Redirect calls to get EFI data */
++	TYPESAFE_ACTIVATE_STATIC_STUB_PTR(test,
++					  cs_amp_test_hooks->get_efi_variable,
++					  cs_amp_lib_test_get_efi_variable_bad_count);
++
++	ret = cs_amp_get_efi_calibration_data(&priv->amp_pdev.dev, 0, 0, &result_data);
++	KUNIT_EXPECT_EQ(test, ret, -EOVERFLOW);
++
++	kunit_deactivate_static_stub(test, cs_amp_test_hooks->get_efi_variable);
++}
++
++/* Redirected get_efi_variable to simulate that the variable not found */
++static efi_status_t cs_amp_lib_test_get_efi_variable_none(efi_char16_t *name,
++							  efi_guid_t *guid,
++							  unsigned long *size,
++							  void *buf)
++{
++	return EFI_NOT_FOUND;
++}
++
++/* If EFI doesn't contain a cal data variable the result should be -ENOENT */
++static void cs_amp_lib_test_no_cal_data_test(struct kunit *test)
++{
++	struct cs_amp_lib_test_priv *priv = test->priv;
++	struct cirrus_amp_cal_data result_data;
++	int ret;
++
++	/* Redirect calls to get EFI data */
++	TYPESAFE_ACTIVATE_STATIC_STUB_PTR(test,
++					  cs_amp_test_hooks->get_efi_variable,
++					  cs_amp_lib_test_get_efi_variable_none);
++
++	ret = cs_amp_get_efi_calibration_data(&priv->amp_pdev.dev, 0, 0, &result_data);
++	KUNIT_EXPECT_EQ(test, ret, -ENOENT);
++
++	kunit_deactivate_static_stub(test, cs_amp_test_hooks->get_efi_variable);
++}
++
++/* Redirected get_efi_variable to simulate reading a cal data blob */
++static efi_status_t cs_amp_lib_test_get_efi_variable(efi_char16_t *name,
++						     efi_guid_t *guid,
++						     unsigned long *size,
++						     void *buf)
++{
++	static const efi_char16_t expected_name[] = L"CirrusSmartAmpCalibrationData";
++	static const efi_guid_t expected_guid =
++		EFI_GUID(0x02f9af02, 0x7734, 0x4233, 0xb4, 0x3d, 0x93, 0xfe, 0x5a, 0xa3, 0x5d, 0xb3);
++	struct kunit *test = kunit_get_current_test();
++	struct cs_amp_lib_test_priv *priv = test->priv;
++
++	KUNIT_EXPECT_NOT_ERR_OR_NULL(test, name);
++	KUNIT_EXPECT_NOT_ERR_OR_NULL(test, guid);
++	KUNIT_EXPECT_NOT_ERR_OR_NULL(test, size);
++
++	KUNIT_EXPECT_MEMEQ(test, name, expected_name, sizeof(expected_name));
++	KUNIT_EXPECT_MEMEQ(test, guid, &expected_guid, sizeof(expected_guid));
++
++	if (!buf) {
++		*size = priv->cal_blob->size;
++		return EFI_BUFFER_TOO_SMALL;
++	}
++
++	KUNIT_ASSERT_GE_MSG(test, ksize(buf), priv->cal_blob->size, "Buffer to small");
++
++	memcpy(buf, priv->cal_blob, priv->cal_blob->size);
++
++	return EFI_SUCCESS;
++}
++
++/* Get cal data block for a given amp, matched by target UID. */
++static void cs_amp_lib_test_get_efi_cal_by_uid_test(struct kunit *test)
++{
++	struct cs_amp_lib_test_priv *priv = test->priv;
++	const struct cs_amp_lib_test_param *param = test->param_value;
++	struct cirrus_amp_cal_data result_data;
++	u64 target_uid;
++	int ret;
++
++	cs_amp_lib_test_init_dummy_cal_blob(test, param->num_amps);
++
++	/* Redirect calls to get EFI data */
++	TYPESAFE_ACTIVATE_STATIC_STUB_PTR(test,
++					  cs_amp_test_hooks->get_efi_variable,
++					  cs_amp_lib_test_get_efi_variable);
++
++	target_uid = cs_amp_lib_test_get_target_uid(test);
++	ret = cs_amp_get_efi_calibration_data(&priv->amp_pdev.dev, target_uid, -1, &result_data);
++	KUNIT_EXPECT_EQ(test, ret, 0);
++
++	kunit_deactivate_static_stub(test, cs_amp_test_hooks->get_efi_variable);
++
++	KUNIT_EXPECT_EQ(test, result_data.calTarget[0], target_uid & 0xFFFFFFFFULL);
++	KUNIT_EXPECT_EQ(test, result_data.calTarget[1], target_uid >> 32);
++	KUNIT_EXPECT_EQ(test, result_data.calTime[0],
++			      priv->cal_blob->data[param->amp_index].calTime[0]);
++	KUNIT_EXPECT_EQ(test, result_data.calTime[1],
++			      priv->cal_blob->data[param->amp_index].calTime[1]);
++	KUNIT_EXPECT_EQ(test, result_data.calAmbient,
++			      priv->cal_blob->data[param->amp_index].calAmbient);
++	KUNIT_EXPECT_EQ(test, result_data.calStatus,
++			      priv->cal_blob->data[param->amp_index].calStatus);
++	KUNIT_EXPECT_EQ(test, result_data.calR,
++			      priv->cal_blob->data[param->amp_index].calR);
++}
++
++/* Get cal data block for a given amp index without checking target UID. */
++static void cs_amp_lib_test_get_efi_cal_by_index_unchecked_test(struct kunit *test)
++{
++	struct cs_amp_lib_test_priv *priv = test->priv;
++	const struct cs_amp_lib_test_param *param = test->param_value;
++	struct cirrus_amp_cal_data result_data;
++	int ret;
++
++	cs_amp_lib_test_init_dummy_cal_blob(test, param->num_amps);
++
++	/* Redirect calls to get EFI data */
++	TYPESAFE_ACTIVATE_STATIC_STUB_PTR(test,
++					  cs_amp_test_hooks->get_efi_variable,
++					  cs_amp_lib_test_get_efi_variable);
++
++	ret = cs_amp_get_efi_calibration_data(&priv->amp_pdev.dev, 0,
++					      param->amp_index, &result_data);
++	KUNIT_EXPECT_EQ(test, ret, 0);
++
++	kunit_deactivate_static_stub(test, cs_amp_test_hooks->get_efi_variable);
++
++	KUNIT_EXPECT_EQ(test, result_data.calTime[0],
++			      priv->cal_blob->data[param->amp_index].calTime[0]);
++	KUNIT_EXPECT_EQ(test, result_data.calTime[1],
++			      priv->cal_blob->data[param->amp_index].calTime[1]);
++	KUNIT_EXPECT_EQ(test, result_data.calAmbient,
++			      priv->cal_blob->data[param->amp_index].calAmbient);
++	KUNIT_EXPECT_EQ(test, result_data.calStatus,
++			      priv->cal_blob->data[param->amp_index].calStatus);
++	KUNIT_EXPECT_EQ(test, result_data.calR,
++			      priv->cal_blob->data[param->amp_index].calR);
++}
++
++/* Get cal data block for a given amp index with checked target UID. */
++static void cs_amp_lib_test_get_efi_cal_by_index_checked_test(struct kunit *test)
++{
++	struct cs_amp_lib_test_priv *priv = test->priv;
++	const struct cs_amp_lib_test_param *param = test->param_value;
++	struct cirrus_amp_cal_data result_data;
++	u64 target_uid;
++	int ret;
++
++	cs_amp_lib_test_init_dummy_cal_blob(test, param->num_amps);
++
++	/* Redirect calls to get EFI data */
++	TYPESAFE_ACTIVATE_STATIC_STUB_PTR(test,
++					  cs_amp_test_hooks->get_efi_variable,
++					  cs_amp_lib_test_get_efi_variable);
++
++	target_uid = cs_amp_lib_test_get_target_uid(test);
++	ret = cs_amp_get_efi_calibration_data(&priv->amp_pdev.dev, target_uid,
++					      param->amp_index, &result_data);
++	KUNIT_EXPECT_EQ(test, ret, 0);
++
++	kunit_deactivate_static_stub(test, cs_amp_test_hooks->get_efi_variable);
++
++	KUNIT_EXPECT_EQ(test, result_data.calTime[0],
++			      priv->cal_blob->data[param->amp_index].calTime[0]);
++	KUNIT_EXPECT_EQ(test, result_data.calTime[1],
++			      priv->cal_blob->data[param->amp_index].calTime[1]);
++	KUNIT_EXPECT_EQ(test, result_data.calAmbient,
++			      priv->cal_blob->data[param->amp_index].calAmbient);
++	KUNIT_EXPECT_EQ(test, result_data.calStatus,
++			      priv->cal_blob->data[param->amp_index].calStatus);
++	KUNIT_EXPECT_EQ(test, result_data.calR,
++			      priv->cal_blob->data[param->amp_index].calR);
++}
++
++/*
++ * Get cal data block for a given amp index with checked target UID.
++ * The UID does not match so the result should be -ENOENT.
++ */
++static void cs_amp_lib_test_get_efi_cal_by_index_uid_mismatch_test(struct kunit *test)
++{
++	struct cs_amp_lib_test_priv *priv = test->priv;
++	const struct cs_amp_lib_test_param *param = test->param_value;
++	struct cirrus_amp_cal_data result_data;
++	u64 target_uid;
++	int ret;
++
++	cs_amp_lib_test_init_dummy_cal_blob(test, param->num_amps);
++
++	/* Redirect calls to get EFI data */
++	TYPESAFE_ACTIVATE_STATIC_STUB_PTR(test,
++					  cs_amp_test_hooks->get_efi_variable,
++					  cs_amp_lib_test_get_efi_variable);
++
++	/* Get a target UID that won't match the entry */
++	target_uid = ~cs_amp_lib_test_get_target_uid(test);
++	ret = cs_amp_get_efi_calibration_data(&priv->amp_pdev.dev, target_uid,
++					      param->amp_index, &result_data);
++	KUNIT_EXPECT_EQ(test, ret, -ENOENT);
++
++	kunit_deactivate_static_stub(test, cs_amp_test_hooks->get_efi_variable);
++}
++
++/*
++ * Get cal data block for a given amp, where the cal data does not
++ * specify calTarget so the lookup falls back to using the index
++ */
++static void cs_amp_lib_test_get_efi_cal_by_index_fallback_test(struct kunit *test)
++{
++	struct cs_amp_lib_test_priv *priv = test->priv;
++	const struct cs_amp_lib_test_param *param = test->param_value;
++	struct cirrus_amp_cal_data result_data;
++	static const u64 bad_target_uid = 0xBADCA100BABABABAULL;
++	int i, ret;
++
++	cs_amp_lib_test_init_dummy_cal_blob(test, param->num_amps);
++
++	/* Make all the target values zero so they are ignored */
++	for (i = 0; i < priv->cal_blob->count; ++i) {
++		priv->cal_blob->data[i].calTarget[0] = 0;
++		priv->cal_blob->data[i].calTarget[1] = 0;
++	}
++
++	/* Redirect calls to get EFI data */
++	TYPESAFE_ACTIVATE_STATIC_STUB_PTR(test,
++					  cs_amp_test_hooks->get_efi_variable,
++					  cs_amp_lib_test_get_efi_variable);
++
++	ret = cs_amp_get_efi_calibration_data(&priv->amp_pdev.dev, bad_target_uid,
++					      param->amp_index, &result_data);
++	KUNIT_EXPECT_EQ(test, ret, 0);
++
++	kunit_deactivate_static_stub(test, cs_amp_test_hooks->get_efi_variable);
++
++	KUNIT_EXPECT_EQ(test, result_data.calTime[0],
++			      priv->cal_blob->data[param->amp_index].calTime[0]);
++	KUNIT_EXPECT_EQ(test, result_data.calTime[1],
++			      priv->cal_blob->data[param->amp_index].calTime[1]);
++	KUNIT_EXPECT_EQ(test, result_data.calAmbient,
++			      priv->cal_blob->data[param->amp_index].calAmbient);
++	KUNIT_EXPECT_EQ(test, result_data.calStatus,
++			      priv->cal_blob->data[param->amp_index].calStatus);
++	KUNIT_EXPECT_EQ(test, result_data.calR,
++			      priv->cal_blob->data[param->amp_index].calR);
++}
++
++/*
++ * If the target UID isn't present in the cal data, and there isn't an
++ * index to fall back do, the result should be -ENOENT.
++ */
++static void cs_amp_lib_test_get_efi_cal_uid_not_found_noindex_test(struct kunit *test)
++{
++	struct cs_amp_lib_test_priv *priv = test->priv;
++	struct cirrus_amp_cal_data result_data;
++	static const u64 bad_target_uid = 0xBADCA100BABABABAULL;
++	int i, ret;
++
++	cs_amp_lib_test_init_dummy_cal_blob(test, 8);
++
++	/* Make all the target values != bad_target_uid */
++	for (i = 0; i < priv->cal_blob->count; ++i) {
++		priv->cal_blob->data[i].calTarget[0] &= ~(bad_target_uid & 0xFFFFFFFFULL);
++		priv->cal_blob->data[i].calTarget[1] &= ~(bad_target_uid >> 32);
++	}
++
++	/* Redirect calls to get EFI data */
++	TYPESAFE_ACTIVATE_STATIC_STUB_PTR(test,
++					  cs_amp_test_hooks->get_efi_variable,
++					  cs_amp_lib_test_get_efi_variable);
++
++	ret = cs_amp_get_efi_calibration_data(&priv->amp_pdev.dev, bad_target_uid, -1,
++					      &result_data);
++	KUNIT_EXPECT_EQ(test, ret, -ENOENT);
++
++	kunit_deactivate_static_stub(test, cs_amp_test_hooks->get_efi_variable);
++}
++
++/*
++ * If the target UID isn't present in the cal data, and the index is
++ * out of range, the result should be -ENOENT.
++ */
++static void cs_amp_lib_test_get_efi_cal_uid_not_found_index_not_found_test(struct kunit *test)
++{
++	struct cs_amp_lib_test_priv *priv = test->priv;
++	struct cirrus_amp_cal_data result_data;
++	static const u64 bad_target_uid = 0xBADCA100BABABABAULL;
++	int i, ret;
++
++	cs_amp_lib_test_init_dummy_cal_blob(test, 8);
++
++	/* Make all the target values != bad_target_uid */
++	for (i = 0; i < priv->cal_blob->count; ++i) {
++		priv->cal_blob->data[i].calTarget[0] &= ~(bad_target_uid & 0xFFFFFFFFULL);
++		priv->cal_blob->data[i].calTarget[1] &= ~(bad_target_uid >> 32);
++	}
++
++	/* Redirect calls to get EFI data */
++	TYPESAFE_ACTIVATE_STATIC_STUB_PTR(test,
++					  cs_amp_test_hooks->get_efi_variable,
++					  cs_amp_lib_test_get_efi_variable);
++
++	ret = cs_amp_get_efi_calibration_data(&priv->amp_pdev.dev, bad_target_uid, 99,
++					      &result_data);
++	KUNIT_EXPECT_EQ(test, ret, -ENOENT);
++
++	kunit_deactivate_static_stub(test, cs_amp_test_hooks->get_efi_variable);
++}
++
++/*
++ * If the target UID isn't given, and the index is out of range, the
++ * result should be -ENOENT.
++ */
++static void cs_amp_lib_test_get_efi_cal_no_uid_index_not_found_test(struct kunit *test)
++{
++	struct cs_amp_lib_test_priv *priv = test->priv;
++	struct cirrus_amp_cal_data result_data;
++	int ret;
++
++	cs_amp_lib_test_init_dummy_cal_blob(test, 8);
++
++	/* Redirect calls to get EFI data */
++	TYPESAFE_ACTIVATE_STATIC_STUB_PTR(test,
++					  cs_amp_test_hooks->get_efi_variable,
++					  cs_amp_lib_test_get_efi_variable);
++
++	ret = cs_amp_get_efi_calibration_data(&priv->amp_pdev.dev, 0, 99, &result_data);
++	KUNIT_EXPECT_EQ(test, ret, -ENOENT);
++
++	kunit_deactivate_static_stub(test, cs_amp_test_hooks->get_efi_variable);
++}
++
++/* If neither the target UID or the index is given the result should be -ENOENT. */
++static void cs_amp_lib_test_get_efi_cal_no_uid_no_index_test(struct kunit *test)
++{
++	struct cs_amp_lib_test_priv *priv = test->priv;
++	struct cirrus_amp_cal_data result_data;
++	int ret;
++
++	cs_amp_lib_test_init_dummy_cal_blob(test, 8);
++
++	/* Redirect calls to get EFI data */
++	TYPESAFE_ACTIVATE_STATIC_STUB_PTR(test,
++					  cs_amp_test_hooks->get_efi_variable,
++					  cs_amp_lib_test_get_efi_variable);
++
++	ret = cs_amp_get_efi_calibration_data(&priv->amp_pdev.dev, 0, -1, &result_data);
++	KUNIT_EXPECT_EQ(test, ret, -ENOENT);
++
++	kunit_deactivate_static_stub(test, cs_amp_test_hooks->get_efi_variable);
++}
++
++/*
++ * If the UID is passed as 0 this must not match an entry with an
++ * unpopulated calTarget
++ */
++static void cs_amp_lib_test_get_efi_cal_zero_not_matched_test(struct kunit *test)
++{
++	struct cs_amp_lib_test_priv *priv = test->priv;
++	struct cirrus_amp_cal_data result_data;
++	int i, ret;
++
++	cs_amp_lib_test_init_dummy_cal_blob(test, 8);
++
++	/* Make all the target values zero so they are ignored */
++	for (i = 0; i < priv->cal_blob->count; ++i) {
++		priv->cal_blob->data[i].calTarget[0] = 0;
++		priv->cal_blob->data[i].calTarget[1] = 0;
++	}
++
++	/* Redirect calls to get EFI data */
++	TYPESAFE_ACTIVATE_STATIC_STUB_PTR(test,
++					  cs_amp_test_hooks->get_efi_variable,
++					  cs_amp_lib_test_get_efi_variable);
++
++	ret = cs_amp_get_efi_calibration_data(&priv->amp_pdev.dev, 0, -1, &result_data);
++	KUNIT_EXPECT_EQ(test, ret, -ENOENT);
++
++	kunit_deactivate_static_stub(test, cs_amp_test_hooks->get_efi_variable);
++}
++
++static const struct cirrus_amp_cal_controls cs_amp_lib_test_calibration_controls = {
 +	.alg_id =	0x9f210,
 +	.mem_region =	WMFW_ADSP2_YM,
 +	.ambient =	"CAL_AMBIENT",
@@ -278,46 +722,262 @@ index cb4e83126b08..20b6dbd3fbab 100644
 +	.status =	"CAL_STATUS",
 +	.checksum =	"CAL_CHECKSUM",
 +};
-+EXPORT_SYMBOL_NS_GPL(cs35l56_calibration_controls, SND_SOC_CS35L56_SHARED);
 +
-+int cs35l56_get_calibration(struct cs35l56_base *cs35l56_base)
++static int cs_amp_lib_test_write_cal_coeff(struct cs_dsp *dsp,
++					   const struct cirrus_amp_cal_controls *controls,
++					   const char *ctl_name, u32 val)
 +{
-+	u64 silicon_uid;
-+	int ret;
++	struct kunit *test = kunit_get_current_test();
++	struct cs_amp_lib_test_priv *priv = test->priv;
++	struct cs_amp_lib_test_ctl_write_entry *entry;
 +
-+	/* Driver can't apply calibration to a secured part, so skip */
-+	if (cs35l56_base->secured)
-+		return 0;
++	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ctl_name);
++	KUNIT_EXPECT_PTR_EQ(test, controls, &cs_amp_lib_test_calibration_controls);
 +
-+	ret = cs35l56_read_silicon_uid(cs35l56_base, &silicon_uid);
-+	if (ret < 0)
-+		return ret;
++	entry = kunit_kzalloc(test, sizeof(*entry), GFP_KERNEL);
++	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, entry);
 +
-+	ret = cs_amp_get_efi_calibration_data(cs35l56_base->dev, silicon_uid,
-+					      cs35l56_base->cal_index,
-+					      &cs35l56_base->cal_data);
++	INIT_LIST_HEAD(&entry->list);
++	strscpy(entry->name, ctl_name, sizeof(entry->name));
++	entry->value = val;
 +
-+	/* Only return an error status if probe should be aborted */
-+	if ((ret == -ENOENT) || (ret == -EOVERFLOW))
-+		return 0;
-+
-+	if (ret < 0)
-+		return ret;
-+
-+	cs35l56_base->cal_data_valid = true;
++	list_add_tail(&entry->list, &priv->ctl_write_list);
 +
 +	return 0;
 +}
-+EXPORT_SYMBOL_NS_GPL(cs35l56_get_calibration, SND_SOC_CS35L56_SHARED);
 +
- int cs35l56_read_prot_status(struct cs35l56_base *cs35l56_base,
- 			     bool *fw_missing, unsigned int *fw_version)
- {
-@@ -923,3 +1005,4 @@ MODULE_DESCRIPTION("ASoC CS35L56 Shared");
- MODULE_AUTHOR("Richard Fitzgerald <rf@opensource.cirrus.com>");
- MODULE_AUTHOR("Simon Trimmer <simont@opensource.cirrus.com>");
- MODULE_LICENSE("GPL");
++static void cs_amp_lib_test_write_cal_data_test(struct kunit *test)
++{
++	struct cs_amp_lib_test_priv *priv = test->priv;
++	struct cs_amp_lib_test_ctl_write_entry *entry;
++	struct cirrus_amp_cal_data data;
++	struct cs_dsp *dsp;
++	int ret;
++
++	dsp = kunit_kzalloc(test, sizeof(*dsp), GFP_KERNEL);
++	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, dsp);
++	dsp->dev = &priv->amp_pdev.dev;
++
++	get_random_bytes(&data, sizeof(data));
++
++	/* Redirect calls to write firmware controls */
++	TYPESAFE_ACTIVATE_STATIC_STUB_PTR(test,
++					  cs_amp_test_hooks->write_cal_coeff,
++					  cs_amp_lib_test_write_cal_coeff);
++
++	ret = cs_amp_write_cal_coeffs(dsp, &cs_amp_lib_test_calibration_controls, &data);
++	KUNIT_EXPECT_EQ(test, ret, 0);
++
++	kunit_deactivate_static_stub(test, cs_amp_test_hooks->write_cal_coeff);
++
++	KUNIT_EXPECT_EQ(test, list_count_nodes(&priv->ctl_write_list), 4);
++
++	/* Checksum control must be written last */
++	entry = list_last_entry(&priv->ctl_write_list, typeof(*entry), list);
++	KUNIT_EXPECT_STREQ(test, entry->name, cs_amp_lib_test_calibration_controls.checksum);
++	KUNIT_EXPECT_EQ(test, entry->value, data.calR + 1);
++	list_del(&entry->list);
++
++	entry = list_first_entry(&priv->ctl_write_list, typeof(*entry), list);
++	KUNIT_EXPECT_STREQ(test, entry->name, cs_amp_lib_test_calibration_controls.ambient);
++	KUNIT_EXPECT_EQ(test, entry->value, data.calAmbient);
++	list_del(&entry->list);
++
++	entry = list_first_entry(&priv->ctl_write_list, typeof(*entry), list);
++	KUNIT_EXPECT_STREQ(test, entry->name, cs_amp_lib_test_calibration_controls.calr);
++	KUNIT_EXPECT_EQ(test, entry->value, data.calR);
++	list_del(&entry->list);
++
++	entry = list_first_entry(&priv->ctl_write_list, typeof(*entry), list);
++	KUNIT_EXPECT_STREQ(test, entry->name, cs_amp_lib_test_calibration_controls.status);
++	KUNIT_EXPECT_EQ(test, entry->value, data.calStatus);
++}
++
++static void cs_amp_lib_test_dev_release(struct device *dev)
++{
++}
++
++static int cs_amp_lib_test_case_init(struct kunit *test)
++{
++	struct cs_amp_lib_test_priv *priv;
++	int ret;
++
++	KUNIT_ASSERT_NOT_NULL(test, cs_amp_test_hooks);
++
++	priv = kunit_kzalloc(test, sizeof(*priv), GFP_KERNEL);
++	if (!priv)
++		return -ENOMEM;
++
++	test->priv = priv;
++	INIT_LIST_HEAD(&priv->ctl_write_list);
++
++	/* Create dummy amp driver dev */
++	priv->amp_pdev.name = "cs_amp_lib_test_drv";
++	priv->amp_pdev.id = -1;
++	priv->amp_pdev.dev.release = cs_amp_lib_test_dev_release;
++	ret = platform_device_register(&priv->amp_pdev);
++	KUNIT_ASSERT_GE_MSG(test, ret, 0, "Failed to register amp platform device\n");
++
++	return 0;
++}
++
++static void cs_amp_lib_test_case_exit(struct kunit *test)
++{
++	struct cs_amp_lib_test_priv *priv = test->priv;
++
++	if (priv->amp_pdev.name)
++		platform_device_unregister(&priv->amp_pdev);
++}
++
++static const struct cs_amp_lib_test_param cs_amp_lib_test_get_cal_param_cases[] = {
++	{ .num_amps = 2, .amp_index = 0 },
++	{ .num_amps = 2, .amp_index = 1 },
++
++	{ .num_amps = 3, .amp_index = 0 },
++	{ .num_amps = 3, .amp_index = 1 },
++	{ .num_amps = 3, .amp_index = 2 },
++
++	{ .num_amps = 4, .amp_index = 0 },
++	{ .num_amps = 4, .amp_index = 1 },
++	{ .num_amps = 4, .amp_index = 2 },
++	{ .num_amps = 4, .amp_index = 3 },
++
++	{ .num_amps = 5, .amp_index = 0 },
++	{ .num_amps = 5, .amp_index = 1 },
++	{ .num_amps = 5, .amp_index = 2 },
++	{ .num_amps = 5, .amp_index = 3 },
++	{ .num_amps = 5, .amp_index = 4 },
++
++	{ .num_amps = 6, .amp_index = 0 },
++	{ .num_amps = 6, .amp_index = 1 },
++	{ .num_amps = 6, .amp_index = 2 },
++	{ .num_amps = 6, .amp_index = 3 },
++	{ .num_amps = 6, .amp_index = 4 },
++	{ .num_amps = 6, .amp_index = 5 },
++
++	{ .num_amps = 8, .amp_index = 0 },
++	{ .num_amps = 8, .amp_index = 1 },
++	{ .num_amps = 8, .amp_index = 2 },
++	{ .num_amps = 8, .amp_index = 3 },
++	{ .num_amps = 8, .amp_index = 4 },
++	{ .num_amps = 8, .amp_index = 5 },
++	{ .num_amps = 8, .amp_index = 6 },
++	{ .num_amps = 8, .amp_index = 7 },
++};
++
++static void cs_amp_lib_test_get_cal_param_desc(const struct cs_amp_lib_test_param *param,
++					       char *desc)
++{
++	snprintf(desc, KUNIT_PARAM_DESC_SIZE, "num_amps:%d amp_index:%d",
++		 param->num_amps, param->amp_index);
++}
++
++KUNIT_ARRAY_PARAM(cs_amp_lib_test_get_cal, cs_amp_lib_test_get_cal_param_cases,
++		  cs_amp_lib_test_get_cal_param_desc);
++
++static struct kunit_case cs_amp_lib_test_cases[] = {
++	/* Tests for getting calibration data from EFI */
++	KUNIT_CASE(cs_amp_lib_test_cal_data_too_short_test),
++	KUNIT_CASE(cs_amp_lib_test_cal_count_too_big_test),
++	KUNIT_CASE(cs_amp_lib_test_no_cal_data_test),
++	KUNIT_CASE(cs_amp_lib_test_get_efi_cal_uid_not_found_noindex_test),
++	KUNIT_CASE(cs_amp_lib_test_get_efi_cal_uid_not_found_index_not_found_test),
++	KUNIT_CASE(cs_amp_lib_test_get_efi_cal_no_uid_index_not_found_test),
++	KUNIT_CASE(cs_amp_lib_test_get_efi_cal_no_uid_no_index_test),
++	KUNIT_CASE(cs_amp_lib_test_get_efi_cal_zero_not_matched_test),
++	KUNIT_CASE_PARAM(cs_amp_lib_test_get_efi_cal_by_uid_test,
++			 cs_amp_lib_test_get_cal_gen_params),
++	KUNIT_CASE_PARAM(cs_amp_lib_test_get_efi_cal_by_index_unchecked_test,
++			 cs_amp_lib_test_get_cal_gen_params),
++	KUNIT_CASE_PARAM(cs_amp_lib_test_get_efi_cal_by_index_checked_test,
++			 cs_amp_lib_test_get_cal_gen_params),
++	KUNIT_CASE_PARAM(cs_amp_lib_test_get_efi_cal_by_index_uid_mismatch_test,
++			 cs_amp_lib_test_get_cal_gen_params),
++	KUNIT_CASE_PARAM(cs_amp_lib_test_get_efi_cal_by_index_fallback_test,
++			 cs_amp_lib_test_get_cal_gen_params),
++
++	/* Tests for writing calibration data */
++	KUNIT_CASE(cs_amp_lib_test_write_cal_data_test),
++
++	{ } /* terminator */
++};
++
++static struct kunit_suite cs_amp_lib_test_suite = {
++	.name = "snd-soc-cs-amp-lib-test",
++	.init = cs_amp_lib_test_case_init,
++	.exit = cs_amp_lib_test_case_exit,
++	.test_cases = cs_amp_lib_test_cases,
++};
++
++kunit_test_suite(cs_amp_lib_test_suite);
++
 +MODULE_IMPORT_NS(SND_SOC_CS_AMP_LIB);
++MODULE_DESCRIPTION("KUnit test for Cirrus Logic amplifier library");
++MODULE_AUTHOR("Richard Fitzgerald <rf@opensource.cirrus.com>");
++MODULE_LICENSE("GPL");
+diff --git a/sound/soc/codecs/cs-amp-lib.c b/sound/soc/codecs/cs-amp-lib.c
+index 4e2e5157a73f..01ef4db5407d 100644
+--- a/sound/soc/codecs/cs-amp-lib.c
++++ b/sound/soc/codecs/cs-amp-lib.c
+@@ -6,6 +6,7 @@
+ //               Cirrus Logic International Semiconductor Ltd.
+ 
+ #include <asm/byteorder.h>
++#include <kunit/static_stub.h>
+ #include <linux/dev_printk.h>
+ #include <linux/efi.h>
+ #include <linux/firmware/cirrus/cs_dsp.h>
+@@ -27,6 +28,8 @@ static int cs_amp_write_cal_coeff(struct cs_dsp *dsp,
+ 	__be32 beval = cpu_to_be32(val);
+ 	int ret;
+ 
++	KUNIT_STATIC_STUB_REDIRECT(cs_amp_write_cal_coeff, dsp, controls, ctl_name, val);
++
+ 	if (IS_REACHABLE(CONFIG_FW_CS_DSP)) {
+ 		mutex_lock(&dsp->pwr_lock);
+ 		cs_ctl = cs_dsp_get_ctl(dsp, ctl_name, controls->mem_region, controls->alg_id);
+@@ -84,7 +87,7 @@ int cs_amp_write_cal_coeffs(struct cs_dsp *dsp,
+ 			    const struct cirrus_amp_cal_controls *controls,
+ 			    const struct cirrus_amp_cal_data *data)
+ {
+-	if (IS_REACHABLE(CONFIG_FW_CS_DSP))
++	if (IS_REACHABLE(CONFIG_FW_CS_DSP) || IS_ENABLED(CONFIG_SND_SOC_CS_AMP_LIB_TEST))
+ 		return _cs_amp_write_cal_coeffs(dsp, controls, data);
+ 	else
+ 		return -ENODEV;
+@@ -98,6 +101,8 @@ static efi_status_t cs_amp_get_efi_variable(efi_char16_t *name,
+ {
+ 	u32 attr;
+ 
++	KUNIT_STATIC_STUB_REDIRECT(cs_amp_get_efi_variable, name, guid, size, buf);
++
+ 	if (IS_ENABLED(CONFIG_EFI))
+ 		return efi.get_variable(name, guid, &attr, size, buf);
+ 
+@@ -250,13 +255,22 @@ static int _cs_amp_get_efi_calibration_data(struct device *dev, u64 target_uid,
+ int cs_amp_get_efi_calibration_data(struct device *dev, u64 target_uid, int amp_index,
+ 				    struct cirrus_amp_cal_data *out_data)
+ {
+-	if (IS_ENABLED(CONFIG_EFI))
++	if (IS_ENABLED(CONFIG_EFI) || IS_ENABLED(CONFIG_SND_SOC_CS_AMP_LIB_TEST))
+ 		return _cs_amp_get_efi_calibration_data(dev, target_uid, amp_index, out_data);
+ 	else
+ 		return -ENOENT;
+ }
+ EXPORT_SYMBOL_NS_GPL(cs_amp_get_efi_calibration_data, SND_SOC_CS_AMP_LIB);
+ 
++static const struct cs_amp_test_hooks cs_amp_test_hook_ptrs = {
++	.get_efi_variable = cs_amp_get_efi_variable,
++	.write_cal_coeff = cs_amp_write_cal_coeff,
++};
++
++const struct cs_amp_test_hooks * const cs_amp_test_hooks =
++	PTR_IF(IS_ENABLED(CONFIG_SND_SOC_CS_AMP_LIB_TEST), &cs_amp_test_hook_ptrs);
++EXPORT_SYMBOL_NS_GPL(cs_amp_test_hooks, SND_SOC_CS_AMP_LIB);
++
+ MODULE_DESCRIPTION("Cirrus Logic amplifier library");
+ MODULE_AUTHOR("Richard Fitzgerald <rf@opensource.cirrus.com>");
+ MODULE_LICENSE("GPL");
 -- 
 2.30.2
 
