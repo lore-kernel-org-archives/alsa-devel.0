@@ -4,72 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4D761C48BF6
-	for <alsa-devel@archiver.kernel.org>; Mon, 26 Feb 2024 16:43:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7F45FC48BF6
+	for <alsa-devel@archiver.kernel.org>; Mon, 26 Feb 2024 17:21:16 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E5E6EE76;
-	Mon, 26 Feb 2024 17:43:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E5E6EE76
+	by alsa0.perex.cz (Postfix) with ESMTPS id EB303B71;
+	Mon, 26 Feb 2024 18:21:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EB303B71
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1708965790;
-	bh=yw07OWyD0LtGybRZCX/Yqm2aQwlLwnlMybFWhWjrytk=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=F7FxtbbdjJekdtoAsxUhrDqWD7TJBNTzmBJC13H5j6J0Ib2cTosbW4R8nW0v2RqCL
-	 CWJP75ZLECexO4muRtIWHxAg3X48x9jZz7zr3x8xN9oRFHNebI1NHsTeo6w/Pc8b6c
-	 YKdKxKGGNzU6wU8+otz02Uy6G5LI82yoxgKyxEgc=
+	s=default; t=1708968074;
+	bh=Eb5QJZq20bhjsWqs2X9DC4ThP+eO9VDbT7OG3VuTb/Q=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=Q4aSGzR0ifs7/YmFGRe3SX6F190zymg5USAQny9W36RVZir/6+YiGHWNOq7dOWiuW
+	 U/TSk0sFv4uWf5LFgoh2Zi/KPz1zgIKuI/hMtfZZSP8nfMi73Wwb9+Io6fK80mxuCH
+	 yW53l4zE1Sq0mjMGDFEDawTEK+dYC7ur1hEvfhUs=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7994CF8024E; Mon, 26 Feb 2024 17:42:33 +0100 (CET)
+	id 97E11F8057F; Mon, 26 Feb 2024 18:20:42 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8AB5EF805A9;
-	Mon, 26 Feb 2024 17:42:33 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1D808F80579;
+	Mon, 26 Feb 2024 18:20:42 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 572DDF80246; Mon, 26 Feb 2024 17:42:28 +0100 (CET)
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+	id 93501F8024E; Mon, 26 Feb 2024 18:20:36 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 13E25F80087
-	for <alsa-devel@alsa-project.org>; Mon, 26 Feb 2024 17:42:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 13E25F80087
+	by alsa1.perex.cz (Postfix) with ESMTPS id 84C39F80212
+	for <alsa-devel@alsa-project.org>; Mon, 26 Feb 2024 18:20:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 84C39F80212
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=n3V2VU9Y
+ header.s=k20201202 header.b=NMWuQ3+X
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id C122BCE18AA;
-	Mon, 26 Feb 2024 16:42:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41460C43390;
-	Mon, 26 Feb 2024 16:42:10 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id DED09612BB;
+	Mon, 26 Feb 2024 17:20:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84A27C433F1;
+	Mon, 26 Feb 2024 17:20:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708965733;
-	bh=yw07OWyD0LtGybRZCX/Yqm2aQwlLwnlMybFWhWjrytk=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=n3V2VU9YIFkybyzgFGadV160pUuRkp2plaLGHlaYeyQHlXcWr70M0e09RRifFEbht
-	 lweekPfQpw0KnMwogvAjS4Yd5+Yl9jggk84KE6IP+Q0MNPT1U08Q9GGHqR8mHMEVIj
-	 X7J/pKmfgLTXb39+YeEYE0VUSrmZyJQ/GyY+2wCFS/ahlfV39oaKj6Z0j6u5LHisrn
-	 JIT99tz4DEFL6st8vHeFZp+aoSCD0QGD9pOb2dSYPNR7f6sosIrwgN1h3Qalt7LR+j
-	 yICKTiRPwrZr5PzzsiSRc6UvhNxfjylF1HpoHVEytgpk88nqXpJfO9wahx5J9/Nqe/
-	 7cOdv1qoG5kog==
+	s=k20201202; t=1708968030;
+	bh=Eb5QJZq20bhjsWqs2X9DC4ThP+eO9VDbT7OG3VuTb/Q=;
+	h=From:To:In-Reply-To:References:Subject:Date:From;
+	b=NMWuQ3+X9U+UU071H9oZjSARYzYtXPb2wvlLaLxsZxBNmP7W5sy1J7+iVZuWQwXbX
+	 FtuMB+ZDhjbo5/QnSzftpuX30iM6VdledqHi8Z9b9IFkH5KZvAdVtvfmTzhCSeBVPT
+	 f3Y5jieMz3/vrVHhEf93yV86zlxU4Rbu6YHwvdcWc6qf7xpLftjqRREbu9prwXA+Oi
+	 cAiRrbW6YFfuBBt8zd45do6huU6pHf8n6Vw4ttLS/Ggmms8vXGcYMRfbspxqG1eVmJ
+	 s74pKs5xVdwh2K5fErULACNxCvaD/lyqxG7dXsAFD6wiuSsOPt1o6LGLIMobqCNiwf
+	 zgH5TyXiVwvTA==
 From: Mark Brown <broonie@kernel.org>
-To: tiwai@suse.com, Richard Fitzgerald <rf@opensource.cirrus.com>
-Cc: linux-sound@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, patches@opensource.cirrus.com
-In-Reply-To: <20240221150507.1039979-1-rf@opensource.cirrus.com>
-References: <20240221150507.1039979-1-rf@opensource.cirrus.com>
-Subject: Re: [PATCH 0/9] ALSA: cs35l56: Apply calibration from EFI
-Message-Id: <170896573086.55097.17093703884740704115.b4-ty@kernel.org>
-Date: Mon, 26 Feb 2024 16:42:10 +0000
+To: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Banajit Goswami <bgoswami@quicinc.com>, linux-sound@vger.kernel.org,
+ linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20240226115925.53953-1-krzysztof.kozlowski@linaro.org>
+References: <20240226115925.53953-1-krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH v4 0/2] ASoC: codecs: tx-macro: correct TX SMIC MUXn
+ widgets on SM8350+
+Message-Id: <170896802827.63378.739994533029521366.b4-ty@kernel.org>
+Date: Mon, 26 Feb 2024 17:20:28 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-a684c
-Message-ID-Hash: NRIEN3K657FNGB222JKWCSSHV7KG6VTA
-X-Message-ID-Hash: NRIEN3K657FNGB222JKWCSSHV7KG6VTA
+Message-ID-Hash: CDXRLOEJESWDMHKV3ORJIGOJ35XWW7SP
+X-Message-ID-Hash: CDXRLOEJESWDMHKV3ORJIGOJ35XWW7SP
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -82,23 +86,22 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NRIEN3K657FNGB222JKWCSSHV7KG6VTA/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CDXRLOEJESWDMHKV3ORJIGOJ35XWW7SP/>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Wed, 21 Feb 2024 15:04:58 +0000, Richard Fitzgerald wrote:
-> Factory calibration of the speakers stores the calibration information
-> into an EFI variable.
+On Mon, 26 Feb 2024 12:59:23 +0100, Krzysztof Kozlowski wrote:
+> Changelog in individual patches.
 > 
-> This set of patches adds support for applying speaker calibration
-> data from that EFI variable.
+> v2:
+> https://lore.kernel.org/alsa-devel/20240125153110.410295-1-krzysztof.kozlowski@linaro.org/
 > 
-> Patch #1 and #2 are bugfixes that are prerequisites.
+> v1:
+> https://lore.kernel.org/all/20230717140138.201745-1-krzysztof.kozlowski@linaro.org/
 > 
 > [...]
 
@@ -108,24 +111,10 @@ Applied to
 
 Thanks!
 
-[1/9] ASoC: wm_adsp: Fix missing mutex_lock in wm_adsp_write_ctl()
-      (no commit info)
-[2/9] ALSA: hda: hda_cs_dsp_ctl: Only call notify when a control has been added to a card
-      (no commit info)
-[3/9] ASoC: wm_adsp: Add wm_adsp_start() and wm_adsp_stop()
-      commit: 5519ac3a7164d5d1c31879bf5b0d279b58c8e88f
-[4/9] ASoC: cs-amp-lib: Add helpers for factory calibration data
-      commit: 1cad8725f2b98965ed3658bc917090b30adb14fa
-[5/9] ASoC: cs35l56: Add helper functions for amp calibration
-      commit: e1830f66f6c62d288d2c27a7ed18ab93caa0b253
-[6/9] ASoC: cs35l56: Apply amp calibration from EFI data
-      commit: 1326444e93c250ff99eba048f699313ba6acbf2f
-[7/9] ALSA: hda: hda_cs_dsp_ctl: Add helper function to write calibration
-      (no commit info)
-[8/9] ALSA: hda: cs35l56: Apply amp calibration from EFI data
-      commit: cfa43aaa7948be5a701ad4099588cf49d5a02708
-[9/9] ASoC: cs-amp-lib: Add KUnit test for calibration helpers
-      (no commit info)
+[1/2] ASoC: codecs: tx-macro: split widgets per different LPASS versions
+      commit: 051e887264b3e161cf2c1e163321b31191bf78a4
+[2/2] ASoC: codecs: tx-macro: correct TX SMIC MUXn widgets on SM8350+
+      commit: d34f0c8ee2e30b8a1470ce635289591148552a93
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
