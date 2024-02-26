@@ -4,75 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ADF88C48BF6
-	for <alsa-devel@archiver.kernel.org>; Mon, 26 Feb 2024 08:52:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5E35EC48BF6
+	for <alsa-devel@archiver.kernel.org>; Mon, 26 Feb 2024 10:41:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E4ACCB60;
-	Mon, 26 Feb 2024 09:52:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E4ACCB60
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2A2C620C;
+	Mon, 26 Feb 2024 11:41:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2A2C620C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1708937566;
-	bh=ImzNxqs0xkj2U6J7gTa9sJdI5GGIwkLF3v5xPj/nHYQ=;
-	h=From:To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=N6wJlpYKYzxci1ZfjLRRy194v2jbw8NDovpcWe12pU0Y/poGWxlr0whd/U63Itp0X
-	 Cq+dnZkkkpgMS/RbNXa5Xh7R6oMZNqyG9hQeIBFyMiOwJIPERa0hXz88pinG86bmZw
-	 6IBozJ1qjHlXDiY5qxgPXOeXyq0SC/DJcpdlHO6o=
+	s=default; t=1708944091;
+	bh=DaawKgzre8sRBX+LnD3mVhbEc25B3Gz5fzha4m6cLRg=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=pQv4x0Lk6u8eRKjwRFNWI/wtbl6jLN3N6v4Ee+19OSj3g9OSPutqFtouq/c1jIUFk
+	 +jREDa/ISHAHGMqnqIByg60PJCi+hD03NqNm7u6vy+EqVGJYwXTgNccL+l/a59RXX1
+	 o/u5yjYqmMkh3ewsPqhcyKUpGN7t5Xo4nLiaxsR0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7620FF805C2; Mon, 26 Feb 2024 09:49:26 +0100 (CET)
+	id E7253F80587; Mon, 26 Feb 2024 11:40:59 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6DA03F80834;
-	Mon, 26 Feb 2024 09:49:26 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 58E09F80246;
+	Mon, 26 Feb 2024 11:40:59 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 27C78F80212; Mon, 26 Feb 2024 09:45:33 +0100 (CET)
-Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
+	id 2A5F0F80246; Mon, 26 Feb 2024 11:40:54 +0100 (CET)
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 81E86F80254
-	for <alsa-devel@alsa-project.org>; Mon, 26 Feb 2024 09:44:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 81E86F80254
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 25EA0201108;
-	Mon, 26 Feb 2024 09:44:17 +0100 (CET)
-Received: from aprdc01srsp001v.ap-rdc01.nxp.com
- (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
-	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id AA57020011D;
-	Mon, 26 Feb 2024 09:44:16 +0100 (CET)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net
- [10.192.224.44])
-	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 9DB49183AD16;
-	Mon, 26 Feb 2024 16:44:14 +0800 (+08)
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
-To: hverkuil@xs4all.nl,
-	sakari.ailus@iki.fi,
-	tfiga@chromium.org,
-	m.szyprowski@samsung.com,
-	mchehab@kernel.org,
-	linux-media@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	shengjiu.wang@gmail.com,
-	Xiubo.Lee@gmail.com,
-	festevam@gmail.com,
-	nicoleotsuka@gmail.com,
-	lgirdwood@gmail.com,
-	broonie@kernel.org,
-	perex@perex.cz,
-	tiwai@suse.com,
-	alsa-devel@alsa-project.org,
-	linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH v13 05/16] ASoC: fsl_asrc: register m2m platform device
-Date: Mon, 26 Feb 2024 16:28:18 +0800
-Message-Id: <1708936109-11587-6-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1708936109-11587-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1708936109-11587-1-git-send-email-shengjiu.wang@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
-Message-ID-Hash: VTREMCENRUDF46XWBCL2TO37OC3PV4OV
-X-Message-ID-Hash: VTREMCENRUDF46XWBCL2TO37OC3PV4OV
-X-MailFrom: shengjiu.wang@nxp.com
+	by alsa1.perex.cz (Postfix) with ESMTPS id 071D2F80087
+	for <alsa-devel@alsa-project.org>; Mon, 26 Feb 2024 11:40:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 071D2F80087
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=GooAhO/d
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708944046; x=1740480046;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=DaawKgzre8sRBX+LnD3mVhbEc25B3Gz5fzha4m6cLRg=;
+  b=GooAhO/dKI2lnF5Brjml0Lv7+h3c66z5QApdVmF0DM4QD7g+FHGlr/kU
+   c/0d5+GPeAavXsHouwLRsrd3Y9wwTwMZn99WbJPRafOlYAggsUUujw6fz
+   2TjbzLOxLdRjkaU7zsnWYycJ5q4QV7HLMeDELAfsMchcWkTtrMP+hCB5P
+   Tt0q5gdUOlfS3SX4UaLr6VCNT3Q2A/dRDAwPkfBnc1a/0e2c5ZQM5cuk4
+   Xg/5wUvPSlXwGwewnU5PiN72sdpI7Iwed97eZBOtlAkzUsoQ+UhViBGsz
+   AK7QmD1tOgDkrRmtqTZQxD8BGd7oy8ukSJ+IxvwK859WRQAJvrq+hZBjH
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10995"; a="13772067"
+X-IronPort-AV: E=Sophos;i="6.06,185,1705392000";
+   d="scan'208";a="13772067"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 26 Feb 2024 02:40:41 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,185,1705392000";
+   d="scan'208";a="11398714"
+Received: from hibeid-mobl.amr.corp.intel.com (HELO localhost)
+ ([10.252.46.254])
+  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 26 Feb 2024 02:40:37 -0800
+From: Jani Nikula <jani.nikula@linux.intel.com>
+To: Cezary Rojewski <cezary.rojewski@intel.com>, broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
+ tiwai@suse.com, perex@perex.cz, joonas.lahtinen@linux.intel.com,
+ rodrigo.vivi@intel.com, tvrtko.ursulin@linux.intel.com,
+ intel-gfx@lists.freedesktop.org, amadeuszx.slawinski@linux.intel.com,
+ pierre-louis.bossart@linux.intel.com, hdegoede@redhat.com, Cezary Rojewski
+ <cezary.rojewski@intel.com>
+Subject: Re: [PATCH v2 1/4] ALSA: hda: Skip i915 initialization on
+ CNL/LKF-based platforms
+In-Reply-To: <20240223114626.1052784-2-cezary.rojewski@intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20240223114626.1052784-1-cezary.rojewski@intel.com>
+ <20240223114626.1052784-2-cezary.rojewski@intel.com>
+Date: Mon, 26 Feb 2024 12:40:34 +0200
+Message-ID: <87plwjo6e5.fsf@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+Message-ID-Hash: YOM74ZR7OKVQIDIVXIPZF57QQSS5HFFZ
+X-Message-ID-Hash: YOM74ZR7OKVQIDIVXIPZF57QQSS5HFFZ
+X-MailFrom: jani.nikula@intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -84,7 +96,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VTREMCENRUDF46XWBCL2TO37OC3PV4OV/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YOM74ZR7OKVQIDIVXIPZF57QQSS5HFFZ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -93,110 +105,80 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Register m2m platform device, that user can
-use M2M feature.
+On Fri, 23 Feb 2024, Cezary Rojewski <cezary.rojewski@intel.com> wrote:
+> Commit 78f613ba1efb ("drm/i915: finish removal of CNL") and its friends
+> removed support for i915 for all CNL-based platforms. HDAudio library,
+> however, still treats such platforms as valid candidates for i915
+> binding. Update query mechanism to reflect changes made in drm tree.
+>
+> At the same time, i915 support for LKF-based platforms has not been
+> provided so remove them from valid binding candidates.
+>
+> Link: https://lore.kernel.org/all/20210728215946.1573015-1-lucas.demarchi@intel.com/
+> Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
+> ---
+>  sound/hda/hdac_i915.c | 32 +++++++++++++++++++++++++++++---
+>  1 file changed, 29 insertions(+), 3 deletions(-)
+>
+> diff --git a/sound/hda/hdac_i915.c b/sound/hda/hdac_i915.c
+> index 365c36fdf205..afee87bd0f2e 100644
+> --- a/sound/hda/hdac_i915.c
+> +++ b/sound/hda/hdac_i915.c
+> @@ -127,15 +127,41 @@ static int i915_component_master_match(struct device *dev, int subcomponent,
+>  /* check whether Intel graphics is present and reachable */
+>  static int i915_gfx_present(struct pci_dev *hdac_pci)
+>  {
+> +	/* List of known platforms with no i915 support. */
+> +	static struct pci_device_id denylist[] = {
 
-Defined platform data structure and platform
-driver name.
+This should be const to place it in rodata, it doesn't need to be
+mutable.
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-Acked-by: Mark Brown <broonie@kernel.org>
----
- include/sound/fsl_asrc_common.h | 23 +++++++++++++++++++++++
- sound/soc/fsl/fsl_asrc.c        | 18 ++++++++++++++++++
- 2 files changed, 41 insertions(+)
+> +		/* CNL */
+> +		{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x5a40), 0x030000, 0xff0000 },
+> +		{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x5a41), 0x030000, 0xff0000 },
+> +		{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x5a42), 0x030000, 0xff0000 },
+> +		{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x5a44), 0x030000, 0xff0000 },
+> +		{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x5a49), 0x030000, 0xff0000 },
+> +		{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x5a4a), 0x030000, 0xff0000 },
+> +		{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x5a4c), 0x030000, 0xff0000 },
+> +		{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x5a50), 0x030000, 0xff0000 },
+> +		{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x5a51), 0x030000, 0xff0000 },
+> +		{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x5a52), 0x030000, 0xff0000 },
+> +		{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x5a54), 0x030000, 0xff0000 },
+> +		{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x5a59), 0x030000, 0xff0000 },
+> +		{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x5a5a), 0x030000, 0xff0000 },
+> +		{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x5a5c), 0x030000, 0xff0000 },
+> +		/* LKF */
+> +		{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x9840), 0x030000, 0xff0000 },
+> +		{ 0 }
 
-diff --git a/include/sound/fsl_asrc_common.h b/include/sound/fsl_asrc_common.h
-index 3b53d366182f..c709b8906929 100644
---- a/include/sound/fsl_asrc_common.h
-+++ b/include/sound/fsl_asrc_common.h
-@@ -71,6 +71,7 @@ struct fsl_asrc_pair {
-  * @dma_params_rx: DMA parameters for receive channel
-  * @dma_params_tx: DMA parameters for transmit channel
-  * @pdev: platform device pointer
-+ * @m2m_pdev: m2m platform device pointer
-  * @regmap: regmap handler
-  * @paddr: physical address to the base address of registers
-  * @mem_clk: clock source to access register
-@@ -103,6 +104,7 @@ struct fsl_asrc {
- 	struct snd_dmaengine_dai_dma_data dma_params_rx;
- 	struct snd_dmaengine_dai_dma_data dma_params_tx;
- 	struct platform_device *pdev;
-+	struct platform_device *m2m_pdev;
- 	struct regmap *regmap;
- 	unsigned long paddr;
- 	struct clk *mem_clk;
-@@ -139,6 +141,27 @@ struct fsl_asrc {
- 	void *private;
- };
- 
-+/**
-+ * struct fsl_asrc_m2m_pdata - platform data
-+ * @asrc: pointer to struct fsl_asrc
-+ * @fmt_in: input sample format
-+ * @fmt_out: output sample format
-+ * @chan_min: minimum channel number
-+ * @chan_max: maximum channel number
-+ * @rate_min: minimum rate
-+ * @rate_max: maximum rete
-+ */
-+struct fsl_asrc_m2m_pdata {
-+	struct fsl_asrc *asrc;
-+	u64 fmt_in;
-+	u64 fmt_out;
-+	int chan_min;
-+	int chan_max;
-+	int rate_min;
-+	int rate_max;
-+};
-+
-+#define M2M_DRV_NAME "fsl_asrc_m2m"
- #define DRV_NAME "fsl-asrc-dai"
- extern struct snd_soc_component_driver fsl_asrc_component;
- 
-diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
-index 7d8643ee0ba0..5ecb5d869607 100644
---- a/sound/soc/fsl/fsl_asrc.c
-+++ b/sound/soc/fsl/fsl_asrc.c
-@@ -1187,6 +1187,7 @@ static int fsl_asrc_runtime_suspend(struct device *dev);
- static int fsl_asrc_probe(struct platform_device *pdev)
- {
- 	struct device_node *np = pdev->dev.of_node;
-+	struct fsl_asrc_m2m_pdata m2m_pdata;
- 	struct fsl_asrc_priv *asrc_priv;
- 	struct fsl_asrc *asrc;
- 	struct resource *res;
-@@ -1368,6 +1369,18 @@ static int fsl_asrc_probe(struct platform_device *pdev)
- 		goto err_pm_get_sync;
- 	}
- 
-+	m2m_pdata.asrc = asrc;
-+	m2m_pdata.fmt_in = FSL_ASRC_FORMATS;
-+	m2m_pdata.fmt_out = FSL_ASRC_FORMATS | SNDRV_PCM_FMTBIT_S8;
-+	m2m_pdata.rate_min = 5512;
-+	m2m_pdata.rate_max = 192000;
-+	m2m_pdata.chan_min = 1;
-+	m2m_pdata.chan_max = 10;
-+	asrc->m2m_pdev = platform_device_register_data(&pdev->dev,
-+						       M2M_DRV_NAME,
-+						       PLATFORM_DEVID_AUTO,
-+						       &m2m_pdata,
-+						       sizeof(m2m_pdata));
- 	return 0;
- 
- err_pm_get_sync:
-@@ -1380,6 +1393,11 @@ static int fsl_asrc_probe(struct platform_device *pdev)
- 
- static void fsl_asrc_remove(struct platform_device *pdev)
- {
-+	struct fsl_asrc *asrc = dev_get_drvdata(&pdev->dev);
-+
-+	if (asrc->m2m_pdev && !IS_ERR(asrc->m2m_pdev))
-+		platform_device_unregister(asrc->m2m_pdev);
-+
- 	pm_runtime_disable(&pdev->dev);
- 	if (!pm_runtime_status_suspended(&pdev->dev))
- 		fsl_asrc_runtime_suspend(&pdev->dev);
+Nitpick, prefer {} over { 0 }.
+
+BR,
+Jani.
+
+> +	};
+>  	struct pci_dev *display_dev = NULL;
+>  
+>  	if (!gpu_bind || (gpu_bind < 0 && video_firmware_drivers_only()))
+>  		return false;
+>  
+>  	for_each_pci_dev(display_dev) {
+> -		if (display_dev->vendor == PCI_VENDOR_ID_INTEL &&
+> -		    (display_dev->class >> 16) == PCI_BASE_CLASS_DISPLAY &&
+> -		    connectivity_check(display_dev, hdac_pci)) {
+> +		if (display_dev->vendor != PCI_VENDOR_ID_INTEL ||
+> +		    (display_dev->class >> 16) != PCI_BASE_CLASS_DISPLAY)
+> +			continue;
+> +
+> +		if (pci_match_id(denylist, display_dev))
+> +			continue;
+> +
+> +		if (connectivity_check(display_dev, hdac_pci)) {
+>  			pci_dev_put(display_dev);
+>  			return true;
+>  		}
+
 -- 
-2.34.1
-
+Jani Nikula, Intel
