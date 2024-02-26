@@ -4,47 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5359AC5478C
-	for <alsa-devel@archiver.kernel.org>; Mon, 26 Feb 2024 08:49:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1DD73C5478C
+	for <alsa-devel@archiver.kernel.org>; Mon, 26 Feb 2024 08:49:35 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5E633A4A;
-	Mon, 26 Feb 2024 09:49:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5E633A4A
+	by alsa0.perex.cz (Postfix) with ESMTPS id D48F0839;
+	Mon, 26 Feb 2024 09:49:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D48F0839
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1708937351;
-	bh=GgIga9Nj+62L3GQWRmi334z4f2Zo3wnisgcFIUt1rAo=;
+	s=default; t=1708937372;
+	bh=tPu1HR1hbe6Ado+9YhJTzNC6C5/D/ujBZZRJXpk7Qzc=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=Wi3lKw9JvIFKu5AmLXTAVuKJWQ5u3YCH0lHIi7Rx1DobzFtFmXMoax26IpHpfNH2J
-	 kDbRcpOl6LHZ/dad1nsFguxIdyLpm+piQWFcRtGgKkrzjRxt/P7zbFNHRBexNazTNj
-	 pQQPvANQk0jLtc8VsSKIeHffwmKFUVuRkPhBeDqQ=
+	b=uZ5cH8tt1921Lzp+w21sOxuE/AR7aGL7+aU1LC4uKABWH6N9jPTVqMEKfl+mVfYze
+	 ZCNw2R5X4ZAaik9ByiQ0c2iFhkSSXW9IPsNOoJncycWaaL2ySmGYdfcjTQcH/0nipE
+	 YDc5deFE4V+F0UQgEk4lV4Jm+zg5r3re1FYHx+kw=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3529DF805BF; Mon, 26 Feb 2024 09:48:29 +0100 (CET)
+	id 1CFA7F805EB; Mon, 26 Feb 2024 09:48:34 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 97D53F805C6;
-	Mon, 26 Feb 2024 09:48:28 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3BCC1F8057F;
+	Mon, 26 Feb 2024 09:48:34 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 36B4AF8057C; Mon, 26 Feb 2024 09:44:44 +0100 (CET)
-Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
+	id D87BBF8047D; Mon, 26 Feb 2024 09:44:48 +0100 (CET)
+Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C6F5FF80087
-	for <alsa-devel@alsa-project.org>; Mon, 26 Feb 2024 09:44:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C6F5FF80087
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 8D4731A0134;
-	Mon, 26 Feb 2024 09:44:10 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTPS id A7F2FF80570
+	for <alsa-devel@alsa-project.org>; Mon, 26 Feb 2024 09:44:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A7F2FF80570
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 52CFD20008E;
+	Mon, 26 Feb 2024 09:44:23 +0100 (CET)
 Received: from aprdc01srsp001v.ap-rdc01.nxp.com
  (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
-	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 27D5E1A010D;
-	Mon, 26 Feb 2024 09:44:10 +0100 (CET)
+	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id E00DE20014B;
+	Mon, 26 Feb 2024 09:44:22 +0100 (CET)
 Received: from localhost.localdomain (shlinux2.ap.freescale.net
  [10.192.224.44])
-	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 0D5B4180222A;
-	Mon, 26 Feb 2024 16:44:07 +0800 (+08)
+	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id D3A451820F56;
+	Mon, 26 Feb 2024 16:44:20 +0800 (+08)
 From: Shengjiu Wang <shengjiu.wang@nxp.com>
 To: hverkuil@xs4all.nl,
 	sakari.ailus@iki.fi,
@@ -63,15 +63,15 @@ To: hverkuil@xs4all.nl,
 	tiwai@suse.com,
 	alsa-devel@alsa-project.org,
 	linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH v13 01/16] media: v4l2-ctrls: add support for fraction_bits
-Date: Mon, 26 Feb 2024 16:28:14 +0800
-Message-Id: <1708936109-11587-2-git-send-email-shengjiu.wang@nxp.com>
+Subject: [PATCH v13 09/16] media: uapi: Define audio sample format fourcc type
+Date: Mon, 26 Feb 2024 16:28:22 +0800
+Message-Id: <1708936109-11587-10-git-send-email-shengjiu.wang@nxp.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1708936109-11587-1-git-send-email-shengjiu.wang@nxp.com>
 References: <1708936109-11587-1-git-send-email-shengjiu.wang@nxp.com>
 X-Virus-Scanned: ClamAV using ClamSMTP
-Message-ID-Hash: CB7MSY6XDNLWMTLXSATJQ27LYHDTC2SD
-X-Message-ID-Hash: CB7MSY6XDNLWMTLXSATJQ27LYHDTC2SD
+Message-ID-Hash: OQRRHIRSMHNLBB3V7VUG7NNHV24W2AID
+X-Message-ID-Hash: OQRRHIRSMHNLBB3V7VUG7NNHV24W2AID
 X-MailFrom: shengjiu.wang@nxp.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -84,347 +84,193 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CB7MSY6XDNLWMTLXSATJQ27LYHDTC2SD/>
-List-Archive: <>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OQRRHIRSMHNLBB3V7VUG7NNHV24W2AID/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Hans Verkuil <hverkuil@xs4all.nl>
+The audio sample format definition is from alsa,
+the header file is include/uapi/sound/asound.h, but
+don't include this header file directly, because in
+user space, there is another copy in alsa-lib.
+There will be conflict in userspace for include
+videodev2.h & asound.h and asoundlib.h
 
-This adds support for the fraction_bits field, used with integer controls.
-This allows fixed point formats to be described.
+Here still use the fourcc format.
 
-The fraction_bits field is only exposed through VIDIOC_QUERY_EXT_CTRL.
-
-For a given signed two's complement Qf fixed point value 'f' equals
-fraction_bits.
-
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 ---
- .../media/v4l/vidioc-queryctrl.rst            | 11 ++-
- drivers/media/v4l2-core/v4l2-ctrls-api.c      |  1 +
- drivers/media/v4l2-core/v4l2-ctrls-core.c     | 93 +++++++++++++++----
- include/media/v4l2-ctrls.h                    |  7 +-
- include/uapi/linux/videodev2.h                |  3 +-
- 5 files changed, 95 insertions(+), 20 deletions(-)
+ .../userspace-api/media/v4l/pixfmt-audio.rst  | 87 +++++++++++++++++++
+ .../userspace-api/media/v4l/pixfmt.rst        |  1 +
+ drivers/media/v4l2-core/v4l2-ioctl.c          | 13 +++
+ include/uapi/linux/videodev2.h                | 23 +++++
+ 4 files changed, 124 insertions(+)
+ create mode 100644 Documentation/userspace-api/media/v4l/pixfmt-audio.rst
 
-diff --git a/Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst b/Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst
-index 4d38acafe8e1..e65c7e5d78ec 100644
---- a/Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst
-+++ b/Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst
-@@ -267,7 +267,16 @@ See also the examples in :ref:`control`.
-       - The size of each dimension. The first ``nr_of_dims`` elements of
- 	this array must be non-zero, all remaining elements must be zero.
-     * - __u32
--      - ``reserved``\ [32]
-+      - ``fraction_bits``
-+      - The number of least significant bits of the control value that
-+        form the fraction of the fixed point value. This is 0 if the value
-+	is a regular integer. This can be used with all integer control types
-+	(``INTEGER``, ``INTEGER64``, ``U8``, ``U16`` and ``U32``).
-+	For the signed types the signed two's complement representation is used.
-+	This field applies to the control value as well as the ``minimum``,
-+	``maximum``, ``step`` and ``default_value`` fields.
-+    * - __u32
-+      - ``reserved``\ [31]
-       - Reserved for future extensions. Applications and drivers must set
- 	the array to zero.
- 
-diff --git a/drivers/media/v4l2-core/v4l2-ctrls-api.c b/drivers/media/v4l2-core/v4l2-ctrls-api.c
-index d9a422017bd9..ef16b00421ec 100644
---- a/drivers/media/v4l2-core/v4l2-ctrls-api.c
-+++ b/drivers/media/v4l2-core/v4l2-ctrls-api.c
-@@ -1101,6 +1101,7 @@ int v4l2_query_ext_ctrl(struct v4l2_ctrl_handler *hdl, struct v4l2_query_ext_ctr
- 	qc->elems = ctrl->elems;
- 	qc->nr_of_dims = ctrl->nr_of_dims;
- 	memcpy(qc->dims, ctrl->dims, qc->nr_of_dims * sizeof(qc->dims[0]));
-+	qc->fraction_bits = ctrl->fraction_bits;
- 	qc->minimum = ctrl->minimum;
- 	qc->maximum = ctrl->maximum;
- 	qc->default_value = ctrl->default_value;
-diff --git a/drivers/media/v4l2-core/v4l2-ctrls-core.c b/drivers/media/v4l2-core/v4l2-ctrls-core.c
-index c4d995f32191..d83a37198bb5 100644
---- a/drivers/media/v4l2-core/v4l2-ctrls-core.c
-+++ b/drivers/media/v4l2-core/v4l2-ctrls-core.c
-@@ -252,12 +252,61 @@ void v4l2_ctrl_type_op_init(const struct v4l2_ctrl *ctrl, u32 from_idx,
- }
- EXPORT_SYMBOL(v4l2_ctrl_type_op_init);
- 
-+static void v4l2_ctrl_log_fp(s64 v, unsigned int fraction_bits)
-+{
-+	s64 i, f, mask;
+diff --git a/Documentation/userspace-api/media/v4l/pixfmt-audio.rst b/Documentation/userspace-api/media/v4l/pixfmt-audio.rst
+new file mode 100644
+index 000000000000..04b4a7fbd8f4
+--- /dev/null
++++ b/Documentation/userspace-api/media/v4l/pixfmt-audio.rst
+@@ -0,0 +1,87 @@
++.. SPDX-License-Identifier: GFDL-1.1-no-invariants-or-later
 +
-+	if (!fraction_bits) {
-+		pr_cont("%lld", v);
-+		return;
-+	}
++.. _pixfmt-audio:
 +
-+	mask = (1ULL << fraction_bits) - 1;
++*************
++Audio Formats
++*************
 +
-+	/*
-+	 * Note: this function does not support fixed point u64 with
-+	 * fraction_bits set to 64. At the moment there is no U64
-+	 * control type, but if that is added, then this code will have
-+	 * to add support for it.
-+	 */
-+	if (fraction_bits >= 63)
-+		i = v < 0 ? -1 : 0;
-+	else
-+		i = div64_s64(v, 1LL << fraction_bits);
++These formats are used for :ref:`audiomem2mem` interface only.
 +
-+	f = v < 0 ? -((-v) & mask) : (v & mask);
++.. tabularcolumns:: |p{5.8cm}|p{1.2cm}|p{10.3cm}|
 +
-+	if (!f) {
-+		pr_cont("%lld", i);
-+	} else if (fraction_bits < 20) {
-+		u64 div = 1ULL << fraction_bits;
++.. cssclass:: longtable
 +
-+		if (!i && f < 0)
-+			pr_cont("-%lld/%llu", -f, div);
-+		else if (!i)
-+			pr_cont("%lld/%llu", f, div);
-+		else if (i < 0 || f < 0)
-+			pr_cont("-%lld-%llu/%llu", -i, -f, div);
-+		else
-+			pr_cont("%lld+%llu/%llu", i, f, div);
-+	} else {
-+		if (!i && f < 0)
-+			pr_cont("-%lld/(2^%u)", -f, fraction_bits);
-+		else if (!i)
-+			pr_cont("%lld/(2^%u)", f, fraction_bits);
-+		else if (i < 0 || f < 0)
-+			pr_cont("-%lld-%llu/(2^%u)", -i, -f, fraction_bits);
-+		else
-+			pr_cont("%lld+%llu/(2^%u)", i, f, fraction_bits);
-+	}
-+}
++.. flat-table:: Audio Format
++    :header-rows:  1
++    :stub-columns: 0
++    :widths:       3 1 4
 +
- void v4l2_ctrl_type_op_log(const struct v4l2_ctrl *ctrl)
- {
- 	union v4l2_ctrl_ptr ptr = ctrl->p_cur;
++    * - Identifier
++      - Code
++      - Details
++    * .. _V4L2-AUDIO-FMT-S8:
++
++      - ``V4L2_AUDIO_FMT_S8``
++      - 'S8'
++      - Corresponds to SNDRV_PCM_FORMAT_S8 in ALSA
++    * .. _V4L2-AUDIO-FMT-S16-LE:
++
++      - ``V4L2_AUDIO_FMT_S16_LE``
++      - 'S16_LE'
++      - Corresponds to SNDRV_PCM_FORMAT_S16_LE in ALSA
++    * .. _V4L2-AUDIO-FMT-U16-LE:
++
++      - ``V4L2_AUDIO_FMT_U16_LE``
++      - 'U16_LE'
++      - Corresponds to SNDRV_PCM_FORMAT_U16_LE in ALSA
++    * .. _V4L2-AUDIO-FMT-S24-LE:
++
++      - ``V4L2_AUDIO_FMT_S24_LE``
++      - 'S24_LE'
++      - Corresponds to SNDRV_PCM_FORMAT_S24_LE in ALSA
++    * .. _V4L2-AUDIO-FMT-U24-LE:
++
++      - ``V4L2_AUDIO_FMT_U24_LE``
++      - 'U24_LE'
++      - Corresponds to SNDRV_PCM_FORMAT_U24_LE in ALSA
++    * .. _V4L2-AUDIO-FMT-S32-LE:
++
++      - ``V4L2_AUDIO_FMT_S32_LE``
++      - 'S32_LE'
++      - Corresponds to SNDRV_PCM_FORMAT_S32_LE in ALSA
++    * .. _V4L2-AUDIO-FMT-U32-LE:
++
++      - ``V4L2_AUDIO_FMT_U32_LE``
++      - 'U32_LE'
++      - Corresponds to SNDRV_PCM_FORMAT_U32_LE in ALSA
++    * .. _V4L2-AUDIO-FMT-FLOAT-LE:
++
++      - ``V4L2_AUDIO_FMT_FLOAT_LE``
++      - 'FLOAT_LE'
++      - Corresponds to SNDRV_PCM_FORMAT_FLOAT_LE in ALSA
++    * .. _V4L2-AUDIO-FMT-IEC958-SUBFRAME-LE:
++
++      - ``V4L2_AUDIO_FMT_IEC958_SUBFRAME_LE``
++      - 'IEC958_SUBFRAME_LE'
++      - Corresponds to SNDRV_PCM_FORMAT_IEC958_SUBFRAME_LE in ALSA
++    * .. _V4L2-AUDIO-FMT-S24-3LE:
++
++      - ``V4L2_AUDIO_FMT_S24_3LE``
++      - 'S24_3LE'
++      - Corresponds to SNDRV_PCM_FORMAT_S24_3LE in ALSA
++    * .. _V4L2-AUDIO-FMT-U24-3LE:
++
++      - ``V4L2_AUDIO_FMT_U24_3LE``
++      - 'U24_3LE'
++      - Corresponds to SNDRV_PCM_FORMAT_U24_3LE in ALSA
++    * .. _V4L2-AUDIO-FMT-S20-3LE:
++
++      - ``V4L2_AUDIO_FMT_S20_3LE``
++      - 'S20_3LE'
++      - Corresponds to SNDRV_PCM_FORMAT_S24_3LE in ALSA
++    * .. _V4L2-AUDIO-FMT-U20-3LE:
++
++      - ``V4L2_AUDIO_FMT_U20_3LE``
++      - 'U20_3LE'
++      - Corresponds to SNDRV_PCM_FORMAT_U20_3LE in ALSA
+diff --git a/Documentation/userspace-api/media/v4l/pixfmt.rst b/Documentation/userspace-api/media/v4l/pixfmt.rst
+index 11dab4a90630..2eb6fdd3b43d 100644
+--- a/Documentation/userspace-api/media/v4l/pixfmt.rst
++++ b/Documentation/userspace-api/media/v4l/pixfmt.rst
+@@ -36,3 +36,4 @@ see also :ref:`VIDIOC_G_FBUF <VIDIOC_G_FBUF>`.)
+     colorspaces
+     colorspaces-defs
+     colorspaces-details
++    pixfmt-audio
+diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
+index 961abcdf7290..be229c69e991 100644
+--- a/drivers/media/v4l2-core/v4l2-ioctl.c
++++ b/drivers/media/v4l2-core/v4l2-ioctl.c
+@@ -1471,6 +1471,19 @@ static void v4l_fill_fmtdesc(struct v4l2_fmtdesc *fmt)
+ 	case V4L2_PIX_FMT_Y210:		descr = "10-bit YUYV Packed"; break;
+ 	case V4L2_PIX_FMT_Y212:		descr = "12-bit YUYV Packed"; break;
+ 	case V4L2_PIX_FMT_Y216:		descr = "16-bit YUYV Packed"; break;
++	case V4L2_AUDIO_FMT_S8:		descr = "8-bit Signed"; break;
++	case V4L2_AUDIO_FMT_S16_LE:	descr = "16-bit Signed LE"; break;
++	case V4L2_AUDIO_FMT_U16_LE:		descr = "16-bit Unsigned LE"; break;
++	case V4L2_AUDIO_FMT_S24_LE:		descr = "24(32)-bit Signed LE"; break;
++	case V4L2_AUDIO_FMT_U24_LE:		descr = "24(32)-bit Unsigned LE"; break;
++	case V4L2_AUDIO_FMT_S32_LE:		descr = "32-bit Signed LE"; break;
++	case V4L2_AUDIO_FMT_U32_LE:		descr = "32-bit Unsigned LE"; break;
++	case V4L2_AUDIO_FMT_FLOAT_LE:		descr = "32-bit Float LE"; break;
++	case V4L2_AUDIO_FMT_IEC958_SUBFRAME_LE:	descr = "32-bit IEC958 LE"; break;
++	case V4L2_AUDIO_FMT_S24_3LE:		descr = "24(24)-bit Signed LE"; break;
++	case V4L2_AUDIO_FMT_U24_3LE:		descr = "24(24)-bit Unsigned LE"; break;
++	case V4L2_AUDIO_FMT_S20_3LE:		descr = "20(24)-bit Signed LE"; break;
++	case V4L2_AUDIO_FMT_U20_3LE:		descr = "20(24)-bit Unsigned LE"; break;
  
- 	if (ctrl->is_array) {
--		unsigned i;
-+		unsigned int i;
- 
- 		for (i = 0; i < ctrl->nr_of_dims; i++)
- 			pr_cont("[%u]", ctrl->dims[i]);
-@@ -266,7 +315,7 @@ void v4l2_ctrl_type_op_log(const struct v4l2_ctrl *ctrl)
- 
- 	switch (ctrl->type) {
- 	case V4L2_CTRL_TYPE_INTEGER:
--		pr_cont("%d", *ptr.p_s32);
-+		v4l2_ctrl_log_fp(*ptr.p_s32, ctrl->fraction_bits);
- 		break;
- 	case V4L2_CTRL_TYPE_BOOLEAN:
- 		pr_cont("%s", *ptr.p_s32 ? "true" : "false");
-@@ -281,19 +330,19 @@ void v4l2_ctrl_type_op_log(const struct v4l2_ctrl *ctrl)
- 		pr_cont("0x%08x", *ptr.p_s32);
- 		break;
- 	case V4L2_CTRL_TYPE_INTEGER64:
--		pr_cont("%lld", *ptr.p_s64);
-+		v4l2_ctrl_log_fp(*ptr.p_s64, ctrl->fraction_bits);
- 		break;
- 	case V4L2_CTRL_TYPE_STRING:
- 		pr_cont("%s", ptr.p_char);
- 		break;
- 	case V4L2_CTRL_TYPE_U8:
--		pr_cont("%u", (unsigned)*ptr.p_u8);
-+		v4l2_ctrl_log_fp(*ptr.p_u8, ctrl->fraction_bits);
- 		break;
- 	case V4L2_CTRL_TYPE_U16:
--		pr_cont("%u", (unsigned)*ptr.p_u16);
-+		v4l2_ctrl_log_fp(*ptr.p_u16, ctrl->fraction_bits);
- 		break;
- 	case V4L2_CTRL_TYPE_U32:
--		pr_cont("%u", (unsigned)*ptr.p_u32);
-+		v4l2_ctrl_log_fp(*ptr.p_u32, ctrl->fraction_bits);
- 		break;
- 	case V4L2_CTRL_TYPE_H264_SPS:
- 		pr_cont("H264_SPS");
-@@ -1753,11 +1802,12 @@ static struct v4l2_ctrl *v4l2_ctrl_new(struct v4l2_ctrl_handler *hdl,
- 			u32 id, const char *name, enum v4l2_ctrl_type type,
- 			s64 min, s64 max, u64 step, s64 def,
- 			const u32 dims[V4L2_CTRL_MAX_DIMS], u32 elem_size,
--			u32 flags, const char * const *qmenu,
-+			u32 fraction_bits, u32 flags, const char * const *qmenu,
- 			const s64 *qmenu_int, const union v4l2_ctrl_ptr p_def,
- 			void *priv)
- {
- 	struct v4l2_ctrl *ctrl;
-+	unsigned int max_fraction_bits = 0;
- 	unsigned sz_extra;
- 	unsigned nr_of_dims = 0;
- 	unsigned elems = 1;
-@@ -1779,20 +1829,28 @@ static struct v4l2_ctrl *v4l2_ctrl_new(struct v4l2_ctrl_handler *hdl,
- 
- 	/* Prefill elem_size for all types handled by std_type_ops */
- 	switch ((u32)type) {
-+	case V4L2_CTRL_TYPE_INTEGER:
-+		elem_size = sizeof(s32);
-+		max_fraction_bits = 31;
-+		break;
- 	case V4L2_CTRL_TYPE_INTEGER64:
- 		elem_size = sizeof(s64);
-+		max_fraction_bits = 63;
- 		break;
- 	case V4L2_CTRL_TYPE_STRING:
- 		elem_size = max + 1;
- 		break;
- 	case V4L2_CTRL_TYPE_U8:
- 		elem_size = sizeof(u8);
-+		max_fraction_bits = 8;
- 		break;
- 	case V4L2_CTRL_TYPE_U16:
- 		elem_size = sizeof(u16);
-+		max_fraction_bits = 16;
- 		break;
- 	case V4L2_CTRL_TYPE_U32:
- 		elem_size = sizeof(u32);
-+		max_fraction_bits = 32;
- 		break;
- 	case V4L2_CTRL_TYPE_MPEG2_SEQUENCE:
- 		elem_size = sizeof(struct v4l2_ctrl_mpeg2_sequence);
-@@ -1876,10 +1934,10 @@ static struct v4l2_ctrl *v4l2_ctrl_new(struct v4l2_ctrl_handler *hdl,
- 	}
- 
- 	/* Sanity checks */
--	if (id == 0 || name == NULL || !elem_size ||
--	    id >= V4L2_CID_PRIVATE_BASE ||
--	    (type == V4L2_CTRL_TYPE_MENU && qmenu == NULL) ||
--	    (type == V4L2_CTRL_TYPE_INTEGER_MENU && qmenu_int == NULL)) {
-+	if (id == 0 || !name || !elem_size ||
-+	    fraction_bits > max_fraction_bits || id >= V4L2_CID_PRIVATE_BASE ||
-+	    (type == V4L2_CTRL_TYPE_MENU && !qmenu) ||
-+	    (type == V4L2_CTRL_TYPE_INTEGER_MENU && !qmenu_int)) {
- 		handler_set_err(hdl, -ERANGE);
- 		return NULL;
- 	}
-@@ -1940,6 +1998,7 @@ static struct v4l2_ctrl *v4l2_ctrl_new(struct v4l2_ctrl_handler *hdl,
- 	ctrl->name = name;
- 	ctrl->type = type;
- 	ctrl->flags = flags;
-+	ctrl->fraction_bits = fraction_bits;
- 	ctrl->minimum = min;
- 	ctrl->maximum = max;
- 	ctrl->step = step;
-@@ -2038,7 +2097,7 @@ struct v4l2_ctrl *v4l2_ctrl_new_custom(struct v4l2_ctrl_handler *hdl,
- 	ctrl = v4l2_ctrl_new(hdl, cfg->ops, cfg->type_ops, cfg->id, name,
- 			type, min, max,
- 			is_menu ? cfg->menu_skip_mask : step, def,
--			cfg->dims, cfg->elem_size,
-+			cfg->dims, cfg->elem_size, cfg->fraction_bits,
- 			flags, qmenu, qmenu_int, cfg->p_def, priv);
- 	if (ctrl)
- 		ctrl->is_private = cfg->is_private;
-@@ -2063,7 +2122,7 @@ struct v4l2_ctrl *v4l2_ctrl_new_std(struct v4l2_ctrl_handler *hdl,
- 		return NULL;
- 	}
- 	return v4l2_ctrl_new(hdl, ops, NULL, id, name, type,
--			     min, max, step, def, NULL, 0,
-+			     min, max, step, def, NULL, 0, 0,
- 			     flags, NULL, NULL, ptr_null, NULL);
- }
- EXPORT_SYMBOL(v4l2_ctrl_new_std);
-@@ -2096,7 +2155,7 @@ struct v4l2_ctrl *v4l2_ctrl_new_std_menu(struct v4l2_ctrl_handler *hdl,
- 		return NULL;
- 	}
- 	return v4l2_ctrl_new(hdl, ops, NULL, id, name, type,
--			     0, max, mask, def, NULL, 0,
-+			     0, max, mask, def, NULL, 0, 0,
- 			     flags, qmenu, qmenu_int, ptr_null, NULL);
- }
- EXPORT_SYMBOL(v4l2_ctrl_new_std_menu);
-@@ -2128,7 +2187,7 @@ struct v4l2_ctrl *v4l2_ctrl_new_std_menu_items(struct v4l2_ctrl_handler *hdl,
- 		return NULL;
- 	}
- 	return v4l2_ctrl_new(hdl, ops, NULL, id, name, type,
--			     0, max, mask, def, NULL, 0,
-+			     0, max, mask, def, NULL, 0, 0,
- 			     flags, qmenu, NULL, ptr_null, NULL);
- 
- }
-@@ -2150,7 +2209,7 @@ struct v4l2_ctrl *v4l2_ctrl_new_std_compound(struct v4l2_ctrl_handler *hdl,
- 		return NULL;
- 	}
- 	return v4l2_ctrl_new(hdl, ops, NULL, id, name, type,
--			     min, max, step, def, NULL, 0,
-+			     min, max, step, def, NULL, 0, 0,
- 			     flags, NULL, NULL, p_def, NULL);
- }
- EXPORT_SYMBOL(v4l2_ctrl_new_std_compound);
-@@ -2174,7 +2233,7 @@ struct v4l2_ctrl *v4l2_ctrl_new_int_menu(struct v4l2_ctrl_handler *hdl,
- 		return NULL;
- 	}
- 	return v4l2_ctrl_new(hdl, ops, NULL, id, name, type,
--			     0, max, 0, def, NULL, 0,
-+			     0, max, 0, def, NULL, 0, 0,
- 			     flags, NULL, qmenu_int, ptr_null, NULL);
- }
- EXPORT_SYMBOL(v4l2_ctrl_new_int_menu);
-diff --git a/include/media/v4l2-ctrls.h b/include/media/v4l2-ctrls.h
-index 59679a42b3e7..c35514c5bf88 100644
---- a/include/media/v4l2-ctrls.h
-+++ b/include/media/v4l2-ctrls.h
-@@ -211,7 +211,8 @@ typedef void (*v4l2_ctrl_notify_fnc)(struct v4l2_ctrl *ctrl, void *priv);
-  *		except for dynamic arrays. In that case it is in the range of
-  *		1 to @p_array_alloc_elems.
-  * @dims:	The size of each dimension.
-- * @nr_of_dims:The number of dimensions in @dims.
-+ * @nr_of_dims: The number of dimensions in @dims.
-+ * @fraction_bits: The number of fraction bits for fixed point values.
-  * @menu_skip_mask: The control's skip mask for menu controls. This makes it
-  *		easy to skip menu items that are not valid. If bit X is set,
-  *		then menu item X is skipped. Of course, this only works for
-@@ -228,6 +229,7 @@ typedef void (*v4l2_ctrl_notify_fnc)(struct v4l2_ctrl *ctrl, void *priv);
-  *		:math:`ceil(\frac{maximum - minimum}{step}) + 1`.
-  *		Used only if the @type is %V4L2_CTRL_TYPE_INTEGER_MENU.
-  * @flags:	The control's flags.
-+ * @fraction_bits: The number of fraction bits for fixed point values.
-  * @priv:	The control's private pointer. For use by the driver. It is
-  *		untouched by the control framework. Note that this pointer is
-  *		not freed when the control is deleted. Should this be needed
-@@ -286,6 +288,7 @@ struct v4l2_ctrl {
- 	u32 new_elems;
- 	u32 dims[V4L2_CTRL_MAX_DIMS];
- 	u32 nr_of_dims;
-+	u32 fraction_bits;
- 	union {
- 		u64 step;
- 		u64 menu_skip_mask;
-@@ -426,6 +429,7 @@ struct v4l2_ctrl_handler {
-  * @dims:	The size of each dimension.
-  * @elem_size:	The size in bytes of the control.
-  * @flags:	The control's flags.
-+ * @fraction_bits: The number of fraction bits for fixed point values.
-  * @menu_skip_mask: The control's skip mask for menu controls. This makes it
-  *		easy to skip menu items that are not valid. If bit X is set,
-  *		then menu item X is skipped. Of course, this only works for
-@@ -455,6 +459,7 @@ struct v4l2_ctrl_config {
- 	u32 dims[V4L2_CTRL_MAX_DIMS];
- 	u32 elem_size;
- 	u32 flags;
-+	u32 fraction_bits;
- 	u64 menu_skip_mask;
- 	const char * const *qmenu;
- 	const s64 *qmenu_int;
+ 	default:
+ 		/* Compressed formats */
 diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
-index a8015e5e7fa4..b8573e9ccde6 100644
+index 2c03d2dfadbe..673a6235a029 100644
 --- a/include/uapi/linux/videodev2.h
 +++ b/include/uapi/linux/videodev2.h
-@@ -1947,7 +1947,8 @@ struct v4l2_query_ext_ctrl {
- 	__u32                elems;
- 	__u32                nr_of_dims;
- 	__u32                dims[V4L2_CTRL_MAX_DIMS];
--	__u32		     reserved[32];
-+	__u32                fraction_bits;
-+	__u32		     reserved[31];
- };
+@@ -843,6 +843,29 @@ struct v4l2_pix_format {
+ #define V4L2_META_FMT_RK_ISP1_PARAMS	v4l2_fourcc('R', 'K', '1', 'P') /* Rockchip ISP1 3A Parameters */
+ #define V4L2_META_FMT_RK_ISP1_STAT_3A	v4l2_fourcc('R', 'K', '1', 'S') /* Rockchip ISP1 3A Statistics */
  
- /*  Used in the VIDIOC_QUERYMENU ioctl for querying menu items */
++/*
++ * Audio-data formats
++ * All these audio formats use a fourcc starting with 'AU'
++ * followed by the SNDRV_PCM_FORMAT_ value from asound.h.
++ */
++#define V4L2_AUDIO_FMT_S8			v4l2_fourcc('A', 'U', '0', '0')
++#define V4L2_AUDIO_FMT_S16_LE			v4l2_fourcc('A', 'U', '0', '2')
++#define V4L2_AUDIO_FMT_U16_LE			v4l2_fourcc('A', 'U', '0', '4')
++#define V4L2_AUDIO_FMT_S24_LE			v4l2_fourcc('A', 'U', '0', '6')
++#define V4L2_AUDIO_FMT_U24_LE			v4l2_fourcc('A', 'U', '0', '8')
++#define V4L2_AUDIO_FMT_S32_LE			v4l2_fourcc('A', 'U', '1', '0')
++#define V4L2_AUDIO_FMT_U32_LE			v4l2_fourcc('A', 'U', '1', '2')
++#define V4L2_AUDIO_FMT_FLOAT_LE			v4l2_fourcc('A', 'U', '1', '4')
++#define V4L2_AUDIO_FMT_IEC958_SUBFRAME_LE	v4l2_fourcc('A', 'U', '1', '8')
++#define V4L2_AUDIO_FMT_S24_3LE			v4l2_fourcc('A', 'U', '3', '2')
++#define V4L2_AUDIO_FMT_U24_3LE			v4l2_fourcc('A', 'U', '3', '4')
++#define V4L2_AUDIO_FMT_S20_3LE			v4l2_fourcc('A', 'U', '3', '6')
++#define V4L2_AUDIO_FMT_U20_3LE			v4l2_fourcc('A', 'U', '3', '8')
++
++#define v4l2_fourcc_to_audfmt(fourcc)	\
++	(__force snd_pcm_format_t)(((((fourcc) >> 16) & 0xff) - '0') * 10  \
++				   + ((((fourcc) >> 24) & 0xff) - '0'))
++
+ /* priv field value to indicates that subsequent fields are valid. */
+ #define V4L2_PIX_FMT_PRIV_MAGIC		0xfeedcafe
+ 
 -- 
 2.34.1
 
