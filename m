@@ -4,112 +4,101 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 05F6FC54798
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Feb 2024 12:17:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BFDFCC54798
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Feb 2024 12:55:23 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3A7CDE7D;
-	Tue, 27 Feb 2024 13:16:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3A7CDE7D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0F32F93A;
+	Tue, 27 Feb 2024 13:55:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0F32F93A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1709036223;
-	bh=8bxWkdHWjuivwKz8TBybuK02NLszyCe4cZF3c/Vh6Zg=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1709038521;
+	bh=hzcl8ETz418dMjd6G20Lpf/mTOdZjZj2Qy8qFzLW91I=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=jP8Np7uRT13+7aAGj1YFo91vP1ZxbfRwgs6da7A7AVWKJzB3iziE/olWokqdUUzZM
-	 aHthx3LfuF4X2bASpyV5l+nlXXWo4VVnAZ7pTCk3U5jMz5rIyxAJtQMS/Q4tYDxuyP
-	 VE7aN7ThZUc6hAsP4LNupB2KuTUmWwN3D1dx0WSY=
+	b=qqihLApsSqruV284nWku5Sst7sX7GCY5z6zZQ/nwrbLtU+SbnrTyOrhZC8Bb0Xbbx
+	 W4lkN8gkmMKSWhbVaMzOSMnAyMl/w0n6umxyKhgGn446R84//jIDmwJmlXzrn2PeOY
+	 /cQ4nJskZsIcIdZc/vP8kVmhP1g6/5nO2NoMvyvI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 04B71F89722; Tue, 27 Feb 2024 13:11:29 +0100 (CET)
+	id A0BD3F805A8; Tue, 27 Feb 2024 13:54:49 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 50652F89727;
-	Tue, 27 Feb 2024 13:11:29 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E3C22F80579;
+	Tue, 27 Feb 2024 13:54:48 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id EA27AF896F6; Tue, 27 Feb 2024 13:11:21 +0100 (CET)
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com
- [IPv6:2a00:1098:ed:100::25])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 84BCCF8087C
-	for <alsa-devel@alsa-project.org>; Tue, 27 Feb 2024 13:11:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 84BCCF8087C
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=collabora.com header.i=@collabora.com
- header.a=rsa-sha256 header.s=mail header.b=UbZhegny
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1709035864;
-	bh=8bxWkdHWjuivwKz8TBybuK02NLszyCe4cZF3c/Vh6Zg=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=UbZhegny3dX5c5Ge2uf8Vf0e4f5bvOx9G2h0WeuWNKBmlSmVZVJ4pSer12jNuDAgl
-	 XLGCdiHd5iIgtvrCebyFu9KAwn93c7avtXOxTOoXDDm+QGKtf78g0Tmr7+qf9YDBTZ
-	 WNcMQ5QlycAGFk3qX+VPdvxvOEvaS7GKC1QqBXikVtWwDBnuTi6IHOiqEmzS/qK5A7
-	 YZCxu2h1AuTGBMdZrrfTCkrbdQHR2rnwLiJ2dtwrzHd+k0E++sOWc2DqSFjleIt1f+
-	 2kWgp4GRvH2dh/X+5niD+4XmJGqYERLi1TyOUQ/oU8s3Y+cAN+g2QMyWYjpbltqeYW
-	 gRBO63LnWu6AQ==
-Received: from IcarusMOD.eternityproject.eu (cola.collaboradmins.com
- [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	id 6D41BF801C0; Tue, 27 Feb 2024 13:54:42 +0100 (CET)
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com
+ [IPv6:2a00:1450:4864:20::531])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 195D837820EF;
-	Tue, 27 Feb 2024 12:11:02 +0000 (UTC)
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-To: broonie@kernel.org
-Cc: wenst@chromium.org,
-	lgirdwood@gmail.com,
-	robh@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org,
-	matthias.bgg@gmail.com,
-	perex@perex.cz,
-	tiwai@suse.com,
-	trevor.wu@mediatek.com,
-	maso.huang@mediatek.com,
-	xiazhengqiao@huaqin.corp-partner.google.com,
-	arnd@arndb.de,
-	kuninori.morimoto.gx@renesas.com,
-	shraash@google.com,
-	amergnat@baylibre.com,
-	nicolas.ferre@microchip.com,
-	u.kleine-koenig@pengutronix.de,
-	dianders@chromium.org,
-	frank.li@vivo.com,
-	allen-kh.cheng@mediatek.com,
-	eugen.hristev@collabora.com,
-	claudiu.beznea@tuxon.dev,
-	jarkko.nikula@bitmer.com,
-	jiaxin.yu@mediatek.com,
-	alpernebiyasak@gmail.com,
-	ckeepax@opensource.cirrus.com,
-	zhourui@huaqin.corp-partner.google.com,
-	nfraprado@collabora.com,
-	alsa-devel@alsa-project.org,
-	shane.chien@mediatek.com,
-	linux-sound@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org,
-	kernel@collabora.com,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Subject: [PATCH 22/22] arm64: dts: mediatek: mt8186-corsola: Specify sound DAI
- links and routing
-Date: Tue, 27 Feb 2024 13:09:39 +0100
-Message-ID: <20240227120939.290143-23-angelogioacchino.delregno@collabora.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240227120939.290143-1-angelogioacchino.delregno@collabora.com>
-References: <20240227120939.290143-1-angelogioacchino.delregno@collabora.com>
+	by alsa1.perex.cz (Postfix) with ESMTPS id 56CABF800F0
+	for <alsa-devel@alsa-project.org>; Tue, 27 Feb 2024 13:54:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 56CABF800F0
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20230601 header.b=eW8WcQfn
+Received: by mail-ed1-x531.google.com with SMTP id
+ 4fb4d7f45d1cf-563f675be29so4499182a12.0
+        for <alsa-devel@alsa-project.org>;
+ Tue, 27 Feb 2024 04:54:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709038476; x=1709643276;
+ darn=alsa-project.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Fu6wnvLt7SL5MDp9Rtohqbab7bq75miqKe0wHBxnz5c=;
+        b=eW8WcQfnSWU4Kv07NUmSQigvRovUInT8YeNSj8IvBEEXqAMSbYryfVK/gpT96d2dgy
+         hHmAtXmkKA9hdkjqW6paLsKYIOj41EkcnWNkhXuqfTPxj4elW9xRZygbgXbQoERAW4Um
+         TngufumHP247L5lAeTp0sy0B1s/QSIqKaow1A0A0B7OrMNnVAIfEuApAuSDSoD3Xvo+k
+         8h1PnFm+WFkT5X4pIE+T8XpHFqBpULAnh8Ry4yyKT5aI7tvhXaXeDIRLzusfyDla5DPp
+         OZrxAalIWGyvsgCyWv5HT2f8vwEMyd/cA0ld481TtfbT8zYq6+DpgItFW17qylXoOQKe
+         XWEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709038476; x=1709643276;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Fu6wnvLt7SL5MDp9Rtohqbab7bq75miqKe0wHBxnz5c=;
+        b=Lv6HiqaoFtkN9QvzfkUEY2fNXybdzGcmV2HbnG6WhCQfDUw7uuNiSUyR8nIaJWZ+XW
+         2iWWJrceu0iJZf7TnkXVk9g/HUeZKYYD64pwlj5GvNx2NfZBF0MFbmClIFQ1iuCU3e3O
+         m5TYE33B/kv/i5Ulydu0dDyEwhCHsFNuaCJI+KU0x0GUNNM6q3xBQIoE5ZL+FSYFyND4
+         Vdpfms+v/rQTBxG0yLmboKUtwDqVxmGETL6yAkZQpwgrK6f6WBHnQpgRvozdxkUhetkP
+         VRaI5ypVK88T9wzpVNF/UoJkU/78oM+TjNjkTETlxvdgo0nvECtQfDTp/w/JghrrdBhM
+         q2yA==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCXM2RMYgfXWEpKg/e+AlVe5E75MdIGckIjBoC/Wuk4+7kE5bWX/ZAPvT9ZACvIqaDMs0qlT/tXm39sNFEUyKXXuld2ys4CwzRqREYw=
+X-Gm-Message-State: AOJu0YxX+9w6V+hgPD4fk+LqSBR+t78wCFsKiiRYmTBd8UAgsw5bTl2n
+	jKafkSNH7IbYcvxWpwEyUJS9yeRUKhT7pQUP/AGgb3fdGeWCNso15ccRu8PT2LZtfO/lcAEqP+B
+	7rdPwG33yQarifn4t+7MUj2BqnNU=
+X-Google-Smtp-Source: 
+ AGHT+IF4BkL4UQx6+4pVk9ZzaBlJ7bwex+QDUbRui4NuhDaik48pgZL9E2yleH+qiS3w9aoTwufqHq9Nmlhk7ZfBnLY=
+X-Received: by 2002:a17:906:35cd:b0:a43:2aef:b5ea with SMTP id
+ p13-20020a17090635cd00b00a432aefb5eamr4451060ejb.66.1709038475924; Tue, 27
+ Feb 2024 04:54:35 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: U7LHLJCVMTJFS4IW5GCL4EVKRDQOBF5E
-X-Message-ID-Hash: U7LHLJCVMTJFS4IW5GCL4EVKRDQOBF5E
-X-MailFrom: angelogioacchino.delregno@collabora.com
+References: <20240227123602.258190-1-javier.garcia.ta@udima.es>
+In-Reply-To: <20240227123602.258190-1-javier.garcia.ta@udima.es>
+From: Daniel Baluta <daniel.baluta@gmail.com>
+Date: Tue, 27 Feb 2024 14:54:23 +0200
+Message-ID: 
+ <CAEnQRZD1chD+14iFc=m1zY17rEQXGB9AQTxLZnhcPg7VVmR=PA@mail.gmail.com>
+Subject: Re: [PATCH] Convert the Imagination Technologies SPDIF Input
+ Controllerto DT schema.
+To: =?UTF-8?Q?Javier_Garc=C3=ADa?= <javier.garcia.ta@udima.es>
+Cc: daniel.baluta@nxp.com, Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+	alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Message-ID-Hash: 7D4K6K7FCJK7AGMFI5D7K2OAZD2LXF5A
+X-Message-ID-Hash: 7D4K6K7FCJK7AGMFI5D7K2OAZD2LXF5A
+X-MailFrom: daniel.baluta@gmail.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -121,7 +110,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/U7LHLJCVMTJFS4IW5GCL4EVKRDQOBF5E/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7D4K6K7FCJK7AGMFI5D7K2OAZD2LXF5A/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -130,77 +119,26 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The drivers and bindings acquired support for specifying audio hardware
-and links in device tree: describe and link the sound related HW of this
-machine.
+Few comments:
 
-Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
----
- .../boot/dts/mediatek/mt8186-corsola.dtsi     | 42 ++++++++++++++++---
- 1 file changed, 37 insertions(+), 5 deletions(-)
+Subject should contain a prefix e.g:
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt8186-corsola.dtsi b/arch/arm64/boot/dts/mediatek/mt8186-corsola.dtsi
-index 3dea28f1d806..0bdb83c3e560 100644
---- a/arch/arm64/boot/dts/mediatek/mt8186-corsola.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8186-corsola.dtsi
-@@ -42,7 +42,7 @@ backlight_lcd0: backlight-lcd0 {
- 		default-brightness-level = <576>;
- 	};
- 
--	bt-sco-codec {
-+	bt-sco {
- 		compatible = "linux,bt-sco";
- 		#sound-dai-cells = <0>;
- 	};
-@@ -223,12 +223,44 @@ sound: sound {
- 		mediatek,adsp = <&adsp>;
- 		mediatek,platform = <&afe>;
- 
--		playback-codecs {
--			sound-dai = <&it6505dptx>, <&rt1019p>;
-+		audio-routing =
-+			"Headphone", "HPOL",
-+			"Headphone", "HPOR",
-+			"IN1P", "Headset Mic",
-+			"Speakers", "Speaker",
-+			"HDMI1", "TX";
-+
-+		hs-playback-dai-link {
-+			link-name = "I2S0";
-+			dai-format = "i2s";
-+			mediatek,clk-provider = "cpu";
-+			codec {
-+				sound-dai = <&rt5682s 0>;
-+			};
-+		};
-+
-+		hs-capture-dai-link {
-+			link-name = "I2S1";
-+			dai-format = "i2s";
-+			mediatek,clk-provider = "cpu";
-+			codec {
-+				sound-dai = <&rt5682s 0>;
-+			};
- 		};
- 
--		headset-codec {
--			sound-dai = <&rt5682s 0>;
-+		spk-share-dai-link {
-+			link-name = "I2S2";
-+			mediatek,clk-provider = "cpu";
-+		};
-+
-+		spk-hdmi-playback-dai-link {
-+			link-name = "I2S3";
-+			dai-format = "i2s";
-+			mediatek,clk-provider = "cpu";
-+			/* RT1019P and IT6505 connected to the same I2S line */
-+			codec {
-+				sound-dai = <&it6505dptx>, <&rt1019p>;
-+			};
- 		};
- 	};
- 
--- 
-2.44.0
+ASoC: dt-bindings: img,spdif-in: Convert Imagination ....
 
+Also do not add a '.' at the end of the subject line.
+
+one more comment inline:
+
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/pistachio-clk.h>
+> +    #include <dt-bindings/gpio/gpio.h>
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +    #include <dt-bindings/interrupt-controller/mips-gic.h>
+> +    #include <dt-bindings/reset/pistachio-resets.h>
+> +    spdif_in: spdif-in@18100e00 {
+
+Node name should be generic:
+
+e.g spdif_in: spdif@18100....
