@@ -4,114 +4,112 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E487FC5478C
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Feb 2024 23:55:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1CBA0C5478C
+	for <alsa-devel@archiver.kernel.org>; Wed, 28 Feb 2024 01:37:36 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 66321A4A;
-	Wed, 28 Feb 2024 00:55:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 66321A4A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 49B43839;
+	Wed, 28 Feb 2024 02:37:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 49B43839
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1709078147;
-	bh=9FOVYSo+iG9hyEh6u5SNUAzHZYr9W8MBAUjQN2LkKlk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1709084254;
+	bh=dsfjDkLxPl7XuZAAodMm1A/mWRSh0VCh/ddJ7CI9D84=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=pr5gHRa0p7fhHtyKwGxY/tj3EMHFiKFRxBKY/p1a6ewscgdNRPpIsPlgyQ62W8+6l
-	 Vua6n4LF7YavE35CdHHOnQ/uQOy/gdVen9tb1pHv56EldSxF8Emio/zW+xfq4lcJHR
-	 xbJGYOJ2+Q1FL0y6YZD5/Ey0DZ4drNFGkSlrlIA0=
+	b=cggzkj8mA5Jb7t9IO3jW3ztt0s4vP9pkQqEvQ9Cyxmn0DovJmcdVcL1ONhCb/fQMi
+	 8QfkjHhuKY0upoYvxnuh0WFWa/bLDaoX1NSTrsTmLkGIlGNLgeHCzYiEQpY8DOOnyg
+	 Cb81jUBoJb10VjFnjER3yA5rZtkHTrYLOJxEjby8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C6AAAF80587; Wed, 28 Feb 2024 00:55:14 +0100 (CET)
+	id 51777F805E1; Wed, 28 Feb 2024 02:36:51 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9DF90F805AB;
-	Wed, 28 Feb 2024 00:55:13 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 64788F805C1;
+	Wed, 28 Feb 2024 02:36:50 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 36995F801C0; Wed, 28 Feb 2024 00:55:06 +0100 (CET)
-Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com
- [66.111.4.28])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 4C3EFF805BB; Wed, 28 Feb 2024 02:36:44 +0100 (CET)
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com
+ [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 13FE7F80104
-	for <alsa-devel@alsa-project.org>; Wed, 28 Feb 2024 00:54:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 13FE7F80104
+	by alsa1.perex.cz (Postfix) with ESMTPS id 3AEE7F8013D
+	for <alsa-devel@alsa-project.org>; Wed, 28 Feb 2024 02:36:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3AEE7F8013D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=sakamocchi.jp header.i=@sakamocchi.jp
- header.a=rsa-sha256 header.s=fm1 header.b=XWhf3FJv;
-	dkim=pass (2048-bit key,
- unprotected) header.d=messagingengine.com header.i=@messagingengine.com
- header.a=rsa-sha256 header.s=fm1 header.b=NpNnDLpj
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-	by mailout.nyi.internal (Postfix) with ESMTP id AB5A05C018B;
-	Tue, 27 Feb 2024 18:54:51 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Tue, 27 Feb 2024 18:54:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
-	 h=cc:cc:content-type:content-type:date:date:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to; s=fm1; t=1709078091; x=
-	1709164491; bh=xcTOWQg1PFqLrVMI8eNqGXIBCtofOFm0NofjwWW70hE=; b=X
-	Whf3FJvTgI+79gWTC8DKbYy2eMK/+Ppq3rXmiwm9c16lfwAoF/xWRyTF8/kDu60M
-	Ga0wm2rWKDeLPtyW97xGmWK3DuxyNlQl44Y29qYLJtKEwzs3oAtMh/VlMkwbiTdC
-	2H8qOGaBaB05Lj94jVEAoNj9Xf8ucxNNiJHkeHMoGggsiM9fySUHt5hYibaLLQOf
-	rBdumKRCdXxqJcOw9D/V1VpK9rda2EWP6DFhNXiHD8vNqJlQnDrkmYmSYN6M0BdE
-	x7b+5YcJQulnXu8XxQcvkNc/9C87YzWYiRhuRDfE6zOt3x0zEcGYF7wvTKNXUa7d
-	FjQfDJO+XVF9XBZcTgzQw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm1; t=1709078091; x=1709164491; bh=xcTOWQg1PFqLrVMI8eNqGXIBCtof
-	OFm0NofjwWW70hE=; b=NpNnDLpj04rFEtOxzkqJ84o8vXg4qO3QwN83AkjYi1Vu
-	W7n/tdWFIGZDEjND4B0mf/L8TUJ52k+21m+2hVSBC4U6G+qUQoj8wuhoRFrdt32W
-	CcqO3bm1lABua/A0s0LGp5mh5Bsd/TnhJHywXapoI7QTiXE359xeOPnJfrTjyg9r
-	w4Ex5njMHbYpG7QUjU0DORn/EMQnuRon3BSHRBh0ePHsTKQaw3F6QCgkcaghM9AI
-	T7oQcbXPFsbAUsaDyIAW9FiH5vcarZwz5PeuJ00O0P2VavNOSssZjBj/7Hmo86Qc
-	m3/yspYgDJ5DsXlEIGMKWazsIhQmoJFwGLpY3wxsTw==
-X-ME-Sender: <xms:S3beZZvtOVf5_lx-lKRtMfCe-leyD2EBRWW4oIon4cgduKbGsEKMZg>
-    <xme:S3beZSeJ_es6d6Jo0KsP7Vwa9KV6kkBKP-CCHrSV-ucNVlxVMi_PYYQ7Rs2dacj1h
-    IODWk3Bff5rUwhYloc>
-X-ME-Received: 
- <xmr:S3beZczHgH3GnjGk8XyogAQRZLkWEaS_MAlAiLgXEj0CVKHTH-T3xZis-fAEBvRapcNqKEeEjF9_-JlmXYDDaqRm3YetmRGSpA>
-X-ME-Proxy-Cause: 
- gggruggvucftvghtrhhoucdtuddrgedvledrgeeigdduhecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefvrghkrghs
-    hhhiucfurghkrghmohhtohcuoehoqdhtrghkrghshhhisehsrghkrghmohgttghhihdrjh
-    hpqeenucggtffrrghtthgvrhhnpeehhffhteetgfekvdeiueffveevueeftdelhfejieei
-    tedvleeftdfgfeeuudekueenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmh
-    grihhlfhhrohhmpehoqdhtrghkrghshhhisehsrghkrghmohgttghhihdrjhhp
-X-ME-Proxy: <xmx:S3beZQPGSYBiuQoLT-IymQNjPgwmZDm6kU-Qfx-Ul71ubdGEpHrpfA>
-    <xmx:S3beZZ_FV0gURLZZzOoe3-yESPbIgPM5vJl_EUtEBnDgVPI6dcCQxg>
-    <xmx:S3beZQWbZjoInvmrWeHL3ZF2Ij4oowY4cQKoo9JG-3vW7vj7OqIlyQ>
-    <xmx:S3beZbluRPIg1XJwK_8kavynnARDfo2K-9AvtbuoOGXWmlPl3tYQLQ>
-Feedback-ID: ie8e14432:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 27 Feb 2024 18:54:49 -0500 (EST)
-Date: Wed, 28 Feb 2024 08:54:46 +0900
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-To: Michele Perrone <michele.perrone@weiss.ch>
-Cc: Rolf Anderegg <rolf.anderegg@weiss.ch>, alsa-devel@alsa-project.org
-Subject: Re: MAN301 internal routing (Re: [PATCH] ALSA: dice: add stream
- format parameters for Weiss devices)
-Message-ID: <20240227235446.GA70770@workstation.local>
-Mail-Followup-To: Michele Perrone <michele.perrone@weiss.ch>,
-	Rolf Anderegg <rolf.anderegg@weiss.ch>, alsa-devel@alsa-project.org
-References: <24703333-9250-40bf-e736-a5f3c4862034@weiss.ch>
- <20240121140748.GA189921@workstation.local>
- <17a48bbd-6b2c-4977-89f8-03f3385d3a56@weiss.ch>
+ unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
+ header.s=qcppdkim1 header.b=i5+PujAm
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id
+ 41S0vNsH018822;
+	Wed, 28 Feb 2024 01:36:31 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:in-reply-to:references
+	:mime-version:content-type; s=qcppdkim1; bh=7BvCAlpaJd5vciJaDviZ
+	Zl2eQkULyyWHrpBod8Ffqjc=; b=i5+PujAmx/LtuKubDlxI8jPlNnflLEXpXvYn
+	9WEFlcTyFV2UoC9yI3gNPP1LWZ+hoQEu9y9u9qMxiMWnkjLvvVGnH9hdOBG164Y9
+	SZWYIvTgzCmOnY70M1rcZhIOpc5MzO3JFKezcEwtAT1EQASuUdgFuSsQH3ilIELn
+	qgdcuNO1Y2PzQdM2qaC2H4OHakdwmOFQ/mScJuqsJ6oM6kwbSjHXaLz2g+3AXYpY
+	iNPJz68+hiIXFR2NjYtfBxzBcvND7KH1izfNjX+UO5T/Qkx7DGUGsRpXq3CMndg6
+	EozhmxS0TdMajkoGSomkyA6ctwRnx75vv7P2+uFWNqXTPBi+Xw==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com
+ [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wh507b3ea-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 28 Feb 2024 01:36:31 +0000 (GMT)
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com
+ [10.47.209.197])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id
+ 41S1aTMk004858
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 28 Feb 2024 01:36:29 GMT
+Received: from hu-wcheng-lv.qualcomm.com (10.49.16.6) by
+ nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Tue, 27 Feb 2024 17:36:29 -0800
+From: Wesley Cheng <quic_wcheng@quicinc.com>
+To: <srinivas.kandagatla@linaro.org>, <mathias.nyman@intel.com>,
+        <perex@perex.cz>, <conor+dt@kernel.org>, <corbet@lwn.net>,
+        <lgirdwood@gmail.com>, <andersson@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <gregkh@linuxfoundation.org>,
+        <Thinh.Nguyen@synopsys.com>, <broonie@kernel.org>,
+        <bgoswami@quicinc.com>, <tiwai@suse.com>, <robh+dt@kernel.org>,
+        <konrad.dybcio@linaro.org>
+CC: <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-sound@vger.kernel.org>, <linux-usb@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <alsa-devel@alsa-project.org>,
+        Mathias Nyman <mathias.nyman@linux.intel.com>,
+        Wesley Cheng <quic_wcheng@quicinc.com>
+Subject: [PATCH v18 01/41] xhci: add helper to stop endpoint and wait for
+ completion
+Date: Tue, 27 Feb 2024 17:35:39 -0800
+Message-ID: <20240228013619.29758-2-quic_wcheng@quicinc.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20240228013619.29758-1-quic_wcheng@quicinc.com>
+References: <20240228013619.29758-1-quic_wcheng@quicinc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <17a48bbd-6b2c-4977-89f8-03f3385d3a56@weiss.ch>
-Message-ID-Hash: C6YBJTQXECJJR2T6S4Y3PF5IMSCFVVUT
-X-Message-ID-Hash: C6YBJTQXECJJR2T6S4Y3PF5IMSCFVVUT
-X-MailFrom: o-takashi@sakamocchi.jp
+Content-Type: text/plain
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
+ signatures=585085
+X-Proofpoint-ORIG-GUID: GBRw_-AlcsOIuuHBLpVwIjagG0WzKl5O
+X-Proofpoint-GUID: GBRw_-AlcsOIuuHBLpVwIjagG0WzKl5O
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-27_11,2024-02-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ bulkscore=0 suspectscore=0
+ clxscore=1015 mlxscore=0 malwarescore=0 impostorscore=0 phishscore=0
+ lowpriorityscore=0 mlxlogscore=999 priorityscore=1501 spamscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2402120000 definitions=main-2402280011
+Message-ID-Hash: UTFXDUMDCK7URTC5DX7A7KVGR7RSN56C
+X-Message-ID-Hash: UTFXDUMDCK7URTC5DX7A7KVGR7RSN56C
+X-MailFrom: quic_wcheng@quicinc.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -123,96 +121,89 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/C6YBJTQXECJJR2T6S4Y3PF5IMSCFVVUT/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UTFXDUMDCK7URTC5DX7A7KVGR7RSN56C/>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi Michele,
+From: Mathias Nyman <mathias.nyman@linux.intel.com>
 
-Thanks for your reply.
+Expose xhci_stop_endpoint_sync() which is a synchronous variant of
+xhci_queue_stop_endpoint().  This is useful for client drivers that are
+using the secondary interrupters, and need to stop/clean up the current
+session.  The stop endpoint command handler will also take care of cleaning
+up the ring.
 
-On Mon, Feb 26, 2024 at 05:06:12PM +0100, Michele Perrone wrote:
-> You are correct about the available input and outputs, but I'm not sure that
-> I understand your routing scheme very well.
-> 
->  * The currently active digital input can be selected with "Digital
->    Input Capture Route", like this:
->      o AES/EBU: amixer -c 0 cset numid=3,iface=MIXER,name='Digital
->        Input Capture Route' 0
->      o S/PDIF RCA: amixer -c 0 cset numid=3,iface=MIXER,name='Digital
->        Input Capture Route' 1
->      o S/PDIF toslink: amixer -c 0 cset
->        numid=3,iface=MIXER,name='Digital Input Capture Route' 2
->        When playing sound from stream input, it doesn't make any
->        difference which one the above is currently selected.
->  * The clock can be selected independently from the current input with
->    AV/C [1].
->  * The 2-channel output can be routed to all the digital and analog
->    outputs simultaneously (but analog outputs are only available if the
->    DAC is connected).
->    One can choose which outputs are active or not with the "Output
->    Playback Switch":
->      o AES/EBU on: amixer -c 0 cset numid=6,iface=MIXER,name='XLR::XLR
->        Output Playback Switch' 1
->        AES/EBU off: amixer -c 0 cset numid=6,iface=MIXER,name='XLR::XLR
->        Output Playback Switch' 0
->      o S/PDIF RCA on: amixer -c 0 cset
->        numid=7,iface=MIXER,name='RCA::RCA Output Playback Switch' 1
->        S/PDIF RCA off: amixer -c 0 cset
->        numid=7,iface=MIXER,name='RCA::RCA Output Playback Switch' 0
->      o DAC on: amixer -c 0 cset numid=10,iface=MIXER,name='DAC::DAC
->        Output Playback Switch' 1
->        DAC off: amixer -c 0 cset numid=10,iface=MIXER,name='DAC::DAC
->        Output Playback Switch' 0
->  * There is no hardware mixer capability, i.e. the inputs cannot be
->    routed directly to the outputs.
-> 
-> Our preamp mode works like this:
-> 
-> 1. A digital input source is selected with AV/C (Toslink, or RCA, or
->    XLR), i.e. with "Digital Input Capture Route"
-> 2. Clock input source is set to the same as audio input source with
->    AV/C [1]
-> 3. DICE clock rate is set to external clock rate [2]
-> 4. A simple 2-channel ALSA loopback with digital volume control is
->    created between input and output
-> 
-> I hope this answers your questions, otherwise please let me know.
+Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
+Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
+---
+ drivers/usb/host/xhci.c | 39 +++++++++++++++++++++++++++++++++++++++
+ drivers/usb/host/xhci.h |  2 ++
+ 2 files changed, 41 insertions(+)
 
-Hm. I'm sorry but it is still unclear that the destination of audio
-signal in the IEEE 1394 isochronous packet arrived at your device
-(precisely the source port in the router function of TCAT DICE chip).
-It is Playback PCM channel in ALSA word, and depicted as
-'stream-input-1/2' in my diagram for my convenience.
-
-```
-spdif-opt-input-1/2  ---+
-spdif-coax-input-1/2 --(or)--> digital-input-1/2 -----------------> stream-output-1/2
-aesebu-xlr-input-1/2 ---+             |
-                                      v
-stream-input-1/2 --------------------(or)--+----------------------> spdif-coax-output-1/2
-                                            +----------------------> aesebu-xlr-output-1/2
-                                            +--analog-output-1/2 --> analog-xlr-output-1/2
-                                                       +-----------> analog-coax-output-1/2
-```
-
-I assume that the actual source selection of 'digital-input-1/2' is done
-in the router function of DICE chip as well as the selection between
-'digital-input-1/2' and 'stream-input-1/2'. The mixer function of the
-chip is not used as I expected, thus the selection should exist as the
-source of audio signals for the outputs. However, in the above description,
-I cannot find such selection.
-
-Or the device has a fixed route between 'stream-input-1/2' and
-'analog-{xlr,coax}-output-1/2'? The user can not hear the audio signal
-of opt/coax/xlr digital input ports in the analog outputs?
-
-
-Thanks
-
-Takashi Sakamoto
+diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
+index b405b8236134..9803efe7cdf2 100644
+--- a/drivers/usb/host/xhci.c
++++ b/drivers/usb/host/xhci.c
+@@ -2796,6 +2796,45 @@ static int xhci_reserve_bandwidth(struct xhci_hcd *xhci,
+ 	return -ENOMEM;
+ }
+ 
++/*
++ * Synchronous XHCI stop endpoint helper.  Issues the stop endpoint command and
++ * waits for the command completion before returning.
++ */
++int xhci_stop_endpoint_sync(struct xhci_hcd *xhci, struct xhci_virt_ep *ep, int suspend,
++			    gfp_t gfp_flags)
++{
++	struct xhci_command *command;
++	unsigned long flags;
++	int ret;
++
++	command = xhci_alloc_command(xhci, true, gfp_flags);
++	if (!command)
++		return -ENOMEM;
++
++	spin_lock_irqsave(&xhci->lock, flags);
++	ret = xhci_queue_stop_endpoint(xhci, command, ep->vdev->slot_id,
++				       ep->ep_index, suspend);
++	if (ret < 0) {
++		spin_unlock_irqrestore(&xhci->lock, flags);
++		goto out;
++	}
++
++	xhci_ring_cmd_db(xhci);
++	spin_unlock_irqrestore(&xhci->lock, flags);
++
++	wait_for_completion(command->completion);
++
++	if (command->status == COMP_COMMAND_ABORTED ||
++	    command->status == COMP_COMMAND_RING_STOPPED) {
++		xhci_warn(xhci, "Timeout while waiting for stop endpoint command\n");
++		ret = -ETIME;
++	}
++out:
++	xhci_free_command(xhci, command);
++
++	return ret;
++}
++EXPORT_SYMBOL_GPL(xhci_stop_endpoint_sync);
+ 
+ /* Issue a configure endpoint command or evaluate context command
+  * and wait for it to finish.
+diff --git a/drivers/usb/host/xhci.h b/drivers/usb/host/xhci.h
+index 6e09b9130fae..4f5e5187ea46 100644
+--- a/drivers/usb/host/xhci.h
++++ b/drivers/usb/host/xhci.h
+@@ -1920,6 +1920,8 @@ void xhci_ring_doorbell_for_active_rings(struct xhci_hcd *xhci,
+ void xhci_cleanup_command_queue(struct xhci_hcd *xhci);
+ void inc_deq(struct xhci_hcd *xhci, struct xhci_ring *ring);
+ unsigned int count_trbs(u64 addr, u64 len);
++int xhci_stop_endpoint_sync(struct xhci_hcd *xhci, struct xhci_virt_ep *ep,
++			    int suspend, gfp_t gfp_flags);
+ 
+ /* xHCI roothub code */
+ void xhci_set_link_state(struct xhci_hcd *xhci, struct xhci_port *port,
