@@ -4,58 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2F1D6C5478C
-	for <alsa-devel@archiver.kernel.org>; Wed, 28 Feb 2024 17:22:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 847EBC5478C
+	for <alsa-devel@archiver.kernel.org>; Wed, 28 Feb 2024 17:23:36 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 52456850;
-	Wed, 28 Feb 2024 18:22:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 52456850
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9572B84D;
+	Wed, 28 Feb 2024 18:23:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9572B84D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1709140964;
-	bh=IdzX1daifoNbsjtYDp3Q/p54xzf2vmD7Pd4A4jPXUVw=;
+	s=default; t=1709141014;
+	bh=evNttuUon9tazsxXMKIkVG5dhOyYfZ8Y77/5OFQehaQ=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=ff11q+FlDu8EngyZv2h/+fJe7mUVMg9IzR9IU3f1muV6ui0uWZ9FSjU+tFdMq2l45
-	 8CiUwotmpyxIeigxb4RB8B675LdYE6R7O5vkKGPCBFYIO+0ehm1H63xFJMiAX4Nazh
-	 igGY6jU4KiHveUoU9BI2BgVNlw+qGoREqaPrrOww=
+	b=PTQOWM48XErT2Sc8MYH0e2G1chksXRBykv8Rk22JeJ6LSRivIVTfbBo2KwSnJyEcf
+	 +ZI5/g694fzyLFvueE34+N9o/tFewBYA8AQGrv1E4AN5akqIL3GF2GshUO4nQhKcWf
+	 ysvtlnb7slI665mEiCMDC2DG1OGDBbmNydt/2SY4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7B1FAF80571; Wed, 28 Feb 2024 18:22:12 +0100 (CET)
+	id 41BD0F805A9; Wed, 28 Feb 2024 18:23:03 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B4FF5F805AA;
-	Wed, 28 Feb 2024 18:22:11 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D753BF80579;
+	Wed, 28 Feb 2024 18:23:02 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 64CB6F801C0; Wed, 28 Feb 2024 18:22:06 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	id 8DD0BF801C0; Wed, 28 Feb 2024 18:22:58 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A1C78F80087
-	for <alsa-devel@alsa-project.org>; Wed, 28 Feb 2024 18:21:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A1C78F80087
+	by alsa1.perex.cz (Postfix) with ESMTPS id D31EFF8013D
+	for <alsa-devel@alsa-project.org>; Wed, 28 Feb 2024 18:22:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D31EFF8013D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=Ms/GE9ra
+ header.s=k20201202 header.b=s08hT55s
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 6C058618FB;
-	Wed, 28 Feb 2024 17:21:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0DE0C433C7;
-	Wed, 28 Feb 2024 17:21:53 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id DFB9C618FB;
+	Wed, 28 Feb 2024 17:22:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED270C433F1;
+	Wed, 28 Feb 2024 17:22:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709140916;
-	bh=IdzX1daifoNbsjtYDp3Q/p54xzf2vmD7Pd4A4jPXUVw=;
+	s=k20201202; t=1709140958;
+	bh=evNttuUon9tazsxXMKIkVG5dhOyYfZ8Y77/5OFQehaQ=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Ms/GE9rasK+9LhTcZthY7FTR1yQhhlpPZkFs9ZBMvGJ/CjHBYEwEEvlYNRWCnokBt
-	 EYT+nZHQVAEsGo/sUgsKOYy78OoQQcYdLfoc/mL0bfVFsCmDp1STIaDfBfDZIcNGVW
-	 3JttXvJElftsFg+MJ7Y9tuH5nRWhdnxXfj4SEFwiBHpETPajQ17cRI+2SpeCF4mAEe
-	 5KyjaSrBWakzNJJOLQIdy07TW9pkMZSah0+fbFsXaqnTKwRRtxXUxIzK/rlAY+BBu4
-	 caDsofjI0jI+sXSYPkIGMLbhdUr0ekO7xrDItTf8r2PcXWi+nZY/F0QX4GqM8Z6Vnv
-	 mjVDoN5jOUT6w==
-Date: Wed, 28 Feb 2024 17:21:50 +0000
+	b=s08hT55saQcImzVbA/nOrLPJ81PDdmdEqxrRsCDnGEUqVZjp9wC+CjyzvQUEzAssl
+	 MVIGIWukJrhTryxVC8yZZZFVWC3gLdtE/d0qD3z/QftuBbKPSDgua8LDsTK/rfRtsl
+	 dUt/7M/K7/JQjpRysU6kmIcGWn3On3u5p+NFGOnineflpS8HL4Mi9iUB2+djrsbU8/
+	 APcPiVMZPbcQJU4PRFP6dJHMp0958yP3u12xOcMaZrmKnH39ivNwGXo9wWDNTttsiH
+	 emjT3VgOXN6qZkOozt/1/kKGx98I7clto+Kw+BPW7N80Hrz/98EqNgK+cvrrpJuK4K
+	 2WXrxjOGTQkMw==
+Date: Wed, 28 Feb 2024 17:22:33 +0000
 From: Mark Brown <broonie@kernel.org>
 To: Cezary Rojewski <cezary.rojewski@intel.com>
 Cc: alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
@@ -64,19 +65,19 @@ Cc: alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
 	tvrtko.ursulin@linux.intel.com, intel-gfx@lists.freedesktop.org,
 	amadeuszx.slawinski@linux.intel.com,
 	pierre-louis.bossart@linux.intel.com, hdegoede@redhat.com
-Subject: Re: [PATCH v3 2/5] ASoC: codecs: hda: Skip HDMI/DP registration if
- i915 is missing
-Message-ID: <d79e0336-58c7-4ad1-af5b-fc6934c2e921@sirena.org.uk>
+Subject: Re: [PATCH v3 3/5] ASoC: Intel: avs: Ignore codecs with no suppoting
+ driver
+Message-ID: <d7a5c567-b085-4eca-b12b-ff0626116b5f@sirena.org.uk>
 References: <20240226124432.1203798-1-cezary.rojewski@intel.com>
- <20240226124432.1203798-3-cezary.rojewski@intel.com>
+ <20240226124432.1203798-4-cezary.rojewski@intel.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="ai/7cep230enU383"
+	protocol="application/pgp-signature"; boundary="pfFywTWBH8wMNQLq"
 Content-Disposition: inline
-In-Reply-To: <20240226124432.1203798-3-cezary.rojewski@intel.com>
+In-Reply-To: <20240226124432.1203798-4-cezary.rojewski@intel.com>
 X-Cookie: Function reject.
-Message-ID-Hash: FVOQEHINCGRCDXIMVYWKDA6AZ5BEWGG7
-X-Message-ID-Hash: FVOQEHINCGRCDXIMVYWKDA6AZ5BEWGG7
+Message-ID-Hash: V46P6OXJLKHVZDHG2TCWFGIO2CEEJBVM
+X-Message-ID-Hash: V46P6OXJLKHVZDHG2TCWFGIO2CEEJBVM
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -89,8 +90,9 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FVOQEHINCGRCDXIMVYWKDA6AZ5BEWGG7/>
-List-Archive: <>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/V46P6OXJLKHVZDHG2TCWFGIO2CEEJBVM/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
@@ -98,30 +100,31 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 
---ai/7cep230enU383
+--pfFywTWBH8wMNQLq
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Feb 26, 2024 at 01:44:29PM +0100, Cezary Rojewski wrote:
-> If i915 does not support given platform but the hardware i.e.: HDAudio
-> codec is still there, the codec-probing procedure will succeed for such
-> device but the follow up initialization will always end up with -ENODEV.
+On Mon, Feb 26, 2024 at 01:44:30PM +0100, Cezary Rojewski wrote:
+> HDMI codecs which are present and functional from audio perspective lack
+> i915 support on drm side what results in -ENODEV during the probing
+> sequence. There is no reason to perform recovery procedure e.g.: reset
+> the HDAudio controller if this is the case.
 
 Acked-by: Mark Brown <broonie@kernel.org>
 
---ai/7cep230enU383
+--pfFywTWBH8wMNQLq
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXfa60ACgkQJNaLcl1U
-h9AIxgf/aE9dWFzQfCG0Di32ndV0EqQxs1Nz2hFLNJ6P6zBxMvAzajZB3qDjJ3XI
-xXw01xKmYAvK377Gp7p0LnR91wMO62ePladK4ECjIlgu8Ju2Frd5gdR/aRpuKWv+
-aCcfrEVcwaz9aCuKA/5ZvbwKHRlvoyNMfCX2nfr9jTrbYA0oYF6HvpGJYvwaDwnp
-7yS2ITem2+OoKrx4jDZ2cLBaZO6FE3TOAVeHBRr9B5DsFX9mK11VFaIfKCYKeYqS
-czXdWiRwzujKV66cf8XxbUWHaqd52UOR+h2L1GvX56rVKcq3FkuCQqmb3VbCuImf
-O6gbkzuB43qmtFANlYGaT1Q9EcXk9g==
-=wTRz
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXfa9gACgkQJNaLcl1U
+h9AU/gf+I3nstWc8uH7TGRyZ4L+HznVtBLiaeJINkFfzFFNX6FdxdDY3JEMvitjj
+IR/v0m9u2n94Z8SmE+T2dqKhdOD1ARfxIwHPZ5JoxCn0RBj/Lo+7M4qLTo2xzSzy
+czj9qzLOAgIP4WNv+XVcZ8CVRfv/nSvx/ZIfM0K8+dz0aqjTLMMSTbZ+vxlkM42D
+wLkMI3M2pp7J43ltS5ha7qvehHyQ/7P1/BC2TxQp6p4z+M4hGyTu6Glru1KE/nDz
+QCJJ+z6FnX+Q13Fq17aD1lg2xbjixOcrDWgDgb16dhO4tpzXoP36zRIuorrl56og
+9SxnRsI8090hDwXKMVXe5KIsO8bOGQ==
+=KbLi
 -----END PGP SIGNATURE-----
 
---ai/7cep230enU383--
+--pfFywTWBH8wMNQLq--
