@@ -4,60 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 605DFC54798
-	for <alsa-devel@archiver.kernel.org>; Sat,  9 Mar 2024 09:10:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 72CD3C54798
+	for <alsa-devel@archiver.kernel.org>; Sat,  9 Mar 2024 10:06:59 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3BDBA93A;
-	Sat,  9 Mar 2024 10:10:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3BDBA93A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 31403844;
+	Sat,  9 Mar 2024 11:06:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 31403844
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1709975436;
-	bh=kfX028FWhZont2HoIjirR20ONoQNSU9ZufgfXE0zyIk=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=cff08JrdiriVNxEqP5mT68vrvCnDj4MLVMWB6RzmttJuCylQGp3JMMVf3VMRvEK8b
-	 +pxVc2XVs6a5UhTX8Ylc6KNsVmUqrra9adrmyLXFOjYWw6Tswij5rCVWtJ/PB/IWX9
-	 9+T5GpQBERDlrWJFbBJDtyXUxp1FfZkqtc2yDewA=
+	s=default; t=1709978816;
+	bh=0Qce3EgeLPkKjkHYKQFnccarXSgWI3VcDD+V67lSULE=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=W4wQqfFELOuaW/MKqMipDixL3F8kCr4+8GY9DHh3fC6Cp3KrWFEoHM7Jw0RiVaf/L
+	 FzTD0hLfKfw31OLhIIFtJRqc/fa1EEIzNu0fWV9HJTQLu8wP5sJjMsgBrhuyiLh8NW
+	 QnJMdjIWlFtUsxqL4EvULggPLSX/XTZ+R+Q9ly5U=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AEB87F805AB; Sat,  9 Mar 2024 10:10:03 +0100 (CET)
+	id 441A9F805AD; Sat,  9 Mar 2024 11:06:24 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 78237F80580;
-	Sat,  9 Mar 2024 10:10:01 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9C4B0F80496;
+	Sat,  9 Mar 2024 11:06:24 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B1B9FF8024E; Sat,  9 Mar 2024 10:04:49 +0100 (CET)
-Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
- [207.180.221.201])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3EA81F80087
-	for <alsa-devel@alsa-project.org>; Sat,  9 Mar 2024 10:01:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3EA81F80087
+	id BF48CF801C0; Fri,  1 Mar 2024 02:19:11 +0100 (CET)
+Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.3])
+	by alsa1.perex.cz (Postfix) with ESMTP id 67586F800F0
+	for <alsa-devel@alsa-project.org>; Fri,  1 Mar 2024 02:18:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 67586F800F0
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (1024-bit key,
+ unprotected) header.d=163.com header.i=@163.com header.a=rsa-sha256
+ header.s=s110527 header.b=RYoHruyp
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=8eX63
+	ggw/SlvICRxbqzBzag4pSVNVLQSaMXoM3yRais=; b=RYoHruypxU2y8XMLNwpfe
+	x82VogKFQ52DfiQ8DY2anUkdfP78KsUwqx73O6sGczzQ/Fv6zuv7XIb/I7zRBMWr
+	3RuR6RY72Rui/vcvrkeVGlzukpUiym0GYEK3F/12VWsbUbMelVwosdMOT+mSrhx+
+	p/I57hKRFvYLYNlvy88co0=
+Received: from localhost.localdomain (unknown [111.48.58.12])
+	by gzga-smtp-mta-g1-4 (Coremail) with SMTP id
+ _____wCHb57yLOFlXN+REw--.49146S2;
+	Fri, 01 Mar 2024 09:18:43 +0800 (CST)
+From: songxiebing <soxiebing@163.com>
+To: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org,
+	linux-kernel@vger.kernel.org,
+	songxiebing@kylinos.cn,
+	soxiebing@163.com,
+	tiwai@suse.com
+Subject: [PATCH v2] ALSA: hda: optimize the probe codec process
+Date: Fri,  1 Mar 2024 09:18:41 +0800
+Message-Id: <20240301011841.7247-1-soxiebing@163.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <878r35huf0.wl-tiwai@suse.de>
+References: <878r35huf0.wl-tiwai@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub issues - edited <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1709974916039611101-webhooks-bot@alsa-project.org>
-References: <1709974916039611101-webhooks-bot@alsa-project.org>
-Subject: Alsamixer is exiting upon receiving some keys,
- such as volume control ones
-Message-Id: <20240309090449.B1B9FF8024E@alsa1.perex.cz>
-Date: Sat,  9 Mar 2024 10:04:49 +0100 (CET)
-Message-ID-Hash: VLCJNIFAOCGVOX2DS3PREOHRRN45V3O4
-X-Message-ID-Hash: VLCJNIFAOCGVOX2DS3PREOHRRN45V3O4
-X-MailFrom: github@alsa-project.org
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: _____wCHb57yLOFlXN+REw--.49146S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7Wry7tFW5Kw43KFW5Cr1DGFg_yoW8KF18p3
+	W7Cr1fGayxtF4akFs7Gw43Ka4xWa4vqan8Jw1Yyw13Zwn7Kr1fXr9YyrW8AFW8ur4I9r1Y
+	vw4UK3WkX3s8CaUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0piwIDrUUUUU=
+X-Originating-IP: [111.48.58.12]
+X-CM-SenderInfo: 5vr0xvpelqwqqrwthudrp/1tbiJxaUw2XAkqqxxgAAsM
+X-MailFrom: soxiebing@163.com
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: MJLROUQJ6DO3RVYS23VJPNSAD4WXSVEK
+X-Message-ID-Hash: MJLROUQJ6DO3RVYS23VJPNSAD4WXSVEK
+X-Mailman-Approved-At: Sat, 09 Mar 2024 10:06:16 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: <>
+Archived-At: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MJLROUQJ6DO3RVYS23VJPNSAD4WXSVEK/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -66,20 +91,54 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-utils issue #255 was edited from Porkepix:
+From: songxiebing <songxiebing@kylinos.cn>
 
-When in an environment not intercepting those keys (usually managed by your compositor/window manager), upon receiving some keycodes such as volume up or down, alsamixer is exiting and writing the UTF-8 keycode inside the terminal while it shouldn't.
+In azx_probe_codecs function, when bus->codec_mask is becomes to 0(no codecs),
+execute azx_init_chip, bus->codec_mask will be initialized to a value again,
+this causes snd_hda_codec_new function to run, the process is as follows:
+-->snd_hda_codec_new
+-->snd_hda_codec_device_init
+-->snd_hdac_device_init---snd_hdac_read_parm(...AC_PAR_VENDOR_ID) 2s
+		       ---snd_hdac_read_parm(...AC_PAR_VENDOR_ID) 2s
+		       ---snd_hdac_read_parm(...AC_PAR_SUBSYSTEM_ID) 2s
+		       ---snd_hdac_read_parm(...AC_PAR_REV_ID) 2s
+		       ---snd_hdac_read_parm(...AC_PAR_NODE_COUNT) 2s
+when no codecs, read communication is error, each command will be polled for
+2 second, a total of 10s, it is easy to some problem.
+like this:
+  2 [   14.833404][ 6] [  T164] hda 0006:00: Codec #0 probe error; disabling it...
+  3 [   14.844178][ 6] [  T164] hda 0006:00: codec_mask = 0x1
+  4 [   14.880532][ 6] [  T164] hda 0006:00: too slow response, last cmd=0x0f0000
+  5 [   15.891988][ 6] [  T164] hda 0006:00: too slow response, last cmd=0x0f0000
+  6 [   16.978090][ 6] [  T164] hda 0006:00: too slow response, last cmd=0x0f0001
+  7 [   18.140895][ 6] [  T164] hda 0006:00: too slow response, last cmd=0x0f0002
+  8 [   19.135516][ 6] [  T164] hda 0006:00: too slow response, last cmd=0x0f0004
+ 10 [   19.900086][ 6] [  T164] hda 0006:00: no codecs initialized
+ 11 [   45.573398][ 2] [    C2] watchdog: BUG: soft lockup - CPU#2 stuck for 22s! [kworker/2:0:25]
 
-Examples:
-Mute key > 440u
-Volume down key > 438u
-Volume up key > 439u
+Here, when bus->codec_mask is 0, use a direct break to avoid execute snd_hda_codec_new function.
 
-Curiously enough, the microphone mute one doesn't do anything.
+Signed-off-by: songxiebing <songxiebing@kylinos.cn>
+---
+Changes in v2: fix some non-ASCII comma letters.
+---
+ sound/pci/hda/hda_controller.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-These should at the very least not exit alsamixer. A bonus would be, when they're not intercepted, to actually use them to apply mutes and volumes up/down.
+diff --git a/sound/pci/hda/hda_controller.c b/sound/pci/hda/hda_controller.c
+index e5c53ad..e1ece0a 100644
+--- a/sound/pci/hda/hda_controller.c
++++ b/sound/pci/hda/hda_controller.c
+@@ -1474,6 +1474,9 @@ int azx_probe_codecs(struct azx *chip, unsigned int max_slots)
+ 				dev_warn(chip->card->dev,
+ 					 "Codec #%d probe error; disabling it...\n", c);
+ 				bus->codec_mask &= ~(1 << c);
++				/* no codecs */
++				if (bus->codec_mask == 0)
++					break;
+ 				/* More badly, accessing to a non-existing
+ 				 * codec often screws up the controller chip,
+ 				 * and disturbs the further communications.
+-- 
+2.7.4
 
-EDIT: Terminal here is Alacritty as that behavior might change with others eg. if they're not sending any key codes over to what's running.
-
-Issue URL     : https://github.com/alsa-project/alsa-utils/issues/255
-Repository URL: https://github.com/alsa-project/alsa-utils
