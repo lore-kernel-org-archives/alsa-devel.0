@@ -4,76 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 57ACAC54E49
-	for <alsa-devel@archiver.kernel.org>; Sun,  3 Mar 2024 14:02:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E6E68C48BF6
+	for <alsa-devel@archiver.kernel.org>; Sun,  3 Mar 2024 14:04:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4F86BDF8;
-	Sun,  3 Mar 2024 15:02:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4F86BDF8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1410986F;
+	Sun,  3 Mar 2024 15:04:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1410986F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1709474557;
-	bh=aHHeDo98C2gtHAUGfKjhxFP0caGOk5SNi6qFQET/O6g=;
+	s=default; t=1709474651;
+	bh=D4QlXce0c91s/ffFvETgwwOIaFxWa6yMBjLyBctvMOo=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=nTQDgcbgMt+GZqZJ2hZrhwRy/m7H7fskHcpg3mcRAbdUc+JspFYqYXwM3Mc3k9YHZ
-	 XMAv2Q1cJO/+a3aUJW1Mz4gg0RHqzc05Zwa6uOnYYvJR3EJJa/eaXiaoGHV7KNT3gH
-	 f99ADjOJ1jnr0klnrS4oMvHanRekdGvDPkk957hg=
+	b=aH1KN2F0UVidr2gVq6JSc1TX5dfcGfsmv/OEwHB3xUWM+Jxg4/PJpnOUI9HsPTpxl
+	 Mq8Zn0mRtESMiFBNIhcUBsElF9YNUhSRrWoaCshUCZIPcumNuM9ULqk92hUP9Xigwy
+	 9AM8gieBhjKbhMDybLVobz7eBnrop53ri1yfUPqU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 18650F805BF; Sun,  3 Mar 2024 15:01:46 +0100 (CET)
+	id 34F08F805AC; Sun,  3 Mar 2024 15:03:39 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2FE09F805A1;
-	Sun,  3 Mar 2024 15:01:46 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 79323F805A0;
+	Sun,  3 Mar 2024 15:03:39 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 51FC6F802E8; Sun,  3 Mar 2024 15:01:31 +0100 (CET)
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+	id 2EF8EF801F5; Sun,  3 Mar 2024 15:01:33 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B1ADBF8014B
-	for <alsa-devel@alsa-project.org>; Sun,  3 Mar 2024 15:01:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B1ADBF8014B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 0F4BCF8024E
+	for <alsa-devel@alsa-project.org>; Sun,  3 Mar 2024 15:01:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0F4BCF8024E
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=aHr1o4jT
+ header.s=k20201202 header.b=ScUlgv/8
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 6562ECE0F8B;
-	Sun,  3 Mar 2024 14:01:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9BB09C433F1;
-	Sun,  3 Mar 2024 14:01:14 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 445D560BB8;
+	Sun,  3 Mar 2024 14:01:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C821C43394;
+	Sun,  3 Mar 2024 14:01:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709474476;
-	bh=aHHeDo98C2gtHAUGfKjhxFP0caGOk5SNi6qFQET/O6g=;
+	s=k20201202; t=1709474483;
+	bh=D4QlXce0c91s/ffFvETgwwOIaFxWa6yMBjLyBctvMOo=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=aHr1o4jT+8Gq7sgM1MNAc/+OIRqXJQUiUXlVDhbRFQDSJWKIuf1bt/sOuh1TiHl8x
-	 dd5Z4mZECzwQ7LxsNvnQFBb/NSHBAd8bFrqjkyjSzQyBWT7GXqd7LvssY4Fb1gqLgj
-	 q+Q+ku6dlCRaa0RvAQJ/TeT0QtC5b4rOWRqYv54DjuKcfAUtMO2+KJaFVlAJRsQ+XD
-	 nWRGySONOZLep8N63xqwBqkYbXZwFFv6DgMC5uMI9P+ybzCJ2K3vrTsnNisTRcwrXE
-	 APnMEoZSAeCieS1xA+WjYIuURqS5T49Tr/1kwWUPDtGxDDJvcr3YS4/yyal4iOzC5q
-	 SkHj3Gy/C13Fg==
+	b=ScUlgv/8P7vVsi/iIa0rTXlTkk7w2dsZL1Erbny1qdbbCnbX/YAn2Xrnf7oEdqU+b
+	 5exRWZJfDUukjgcah+Z5d4fkPLlGOrCS7DvDnnGHs7cZ+fvdCXz6C+OTfcVwkyXRxL
+	 ArCRacqborrmxvMVq6EpnHR6RrU9C/SsX68LM3HprxfT68HVGCCisnYcvVqLS1FN0P
+	 CZ2K4EL/60oa5QTITKsZP+b2yahPa3JmlHK6iGE/a7ZlMHCHacK2f9EhbWyX+WVwGm
+	 Od6iwNLOVmpWN/+2YKSzY2Viv0rmdpXmlWJOADvkB5xPUdhetwPgUwKnuk9TO/xZFQ
+	 OBQH9isk6eNWw==
 From: Vinod Koul <vkoul@kernel.org>
-To: =?utf-8?q?Amadeusz_S=C5=82awi=C5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Sanyog Kale <sanyog.r.kale@intel.com>, alsa-devel@alsa-project.org
-In-Reply-To: <20230929105546.774332-1-amadeuszx.slawinski@linux.intel.com>
-References: <20230929105546.774332-1-amadeuszx.slawinski@linux.intel.com>
+To: Cezary Rojewski <cezary.rojewski@intel.com>
+Cc: alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
+ linux-kernel@vger.kernel.org, broonie@kernel.org,
+ pierre-louis.bossart@linux.intel.com, yung-chuan.liao@linux.intel.com,
+ amadeuszx.slawinski@linux.intel.com
+In-Reply-To: <20240219105206.335738-1-cezary.rojewski@intel.com>
+References: <20240219105206.335738-1-cezary.rojewski@intel.com>
 Subject: Re: [PATCH] soundwire: Use snd_soc_substream_to_rtd() to obtain
  rtd
-Message-Id: <170947447421.763853.8896036097104356333.b4-ty@kernel.org>
-Date: Sun, 03 Mar 2024 19:31:14 +0530
+Message-Id: <170947448017.763853.3989657204347502636.b4-ty@kernel.org>
+Date: Sun, 03 Mar 2024 19:31:20 +0530
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.12.3
-Message-ID-Hash: S4XYEATMAFDJFTOWBX4QE6P33K6OK5IV
-X-Message-ID-Hash: S4XYEATMAFDJFTOWBX4QE6P33K6OK5IV
+Message-ID-Hash: TCLLYV6YNCICTBGNLUSTUS572B7SOCUL
+X-Message-ID-Hash: TCLLYV6YNCICTBGNLUSTUS572B7SOCUL
 X-MailFrom: vkoul@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -86,7 +85,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/S4XYEATMAFDJFTOWBX4QE6P33K6OK5IV/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TCLLYV6YNCICTBGNLUSTUS572B7SOCUL/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -96,7 +95,7 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 
-On Fri, 29 Sep 2023 12:55:46 +0200, Amadeusz Sławiński wrote:
+On Mon, 19 Feb 2024 11:52:06 +0100, Cezary Rojewski wrote:
 > Utilize the helper function instead of casting from ->private_data
 > directly.
 > 
