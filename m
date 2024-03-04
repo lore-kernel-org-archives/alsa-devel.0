@@ -4,64 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8391DC48BF6
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 Mar 2024 19:05:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AF04FC5478C
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 Mar 2024 19:06:03 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A2E5B850;
-	Mon,  4 Mar 2024 20:05:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A2E5B850
+	by alsa0.perex.cz (Postfix) with ESMTPS id B678283B;
+	Mon,  4 Mar 2024 20:05:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B678283B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1709579144;
-	bh=JwZ+hTwodZVOZjjcv5y82g/XjxBtI97P5qvbPi/nw5s=;
+	s=default; t=1709579161;
+	bh=IGtLZonsM9HIqBfRp5gPX4on64P1EIL/CQLv8R7f7l4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=X5ZVCvcS/wV5YPqxatdQupSjEYjiNDLHYaeqbQ+TJeFyEoayZACsIEQ0D5og4MEGL
-	 EVkORS5rhqKNgLVzlcmQheWZGZ1kXaSUGHtQtgAiwetHvcKs98Kk4/ihW1E8FVWBuU
-	 hTdskX+6/0ROU3WdQQMSMUUarhGGeXAf8Etfnw/E=
+	b=hi3zeRqAEw1fOZIRA/Et5qp9ZHb2/18xil95Q27neoKpQrsbgj63+PtFdgwrfiBJJ
+	 Up/3iWygfX3v3Rl8Ht9XHO7ex5u0kTLfADykDd3bU6OzF23+KqQhgvB6as0C6KBToy
+	 OenwoxjcZ5WCrfqYrYNMtB8bKsvUQU4IfNFfziHk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CC2B2F805DA; Mon,  4 Mar 2024 20:04:47 +0100 (CET)
+	id 634DCF80589; Mon,  4 Mar 2024 20:04:50 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 13FD8F805F8;
-	Mon,  4 Mar 2024 20:04:47 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5C5BFF80494;
+	Mon,  4 Mar 2024 20:04:50 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9CD9EF80496; Mon,  4 Mar 2024 20:04:39 +0100 (CET)
+	id 7525BF805B0; Mon,  4 Mar 2024 20:04:40 +0100 (CET)
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A5B2BF80093
-	for <alsa-devel@alsa-project.org>; Mon,  4 Mar 2024 20:04:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A5B2BF80093
+	by alsa1.perex.cz (Postfix) with ESMTPS id B454CF801F5
+	for <alsa-devel@alsa-project.org>; Mon,  4 Mar 2024 20:04:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B454CF801F5
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=gan3UviL
+ header.s=Intel header.b=Xpl7rWbi
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709579075; x=1741115075;
+  t=1709579072; x=1741115072;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=JwZ+hTwodZVOZjjcv5y82g/XjxBtI97P5qvbPi/nw5s=;
-  b=gan3UviLLYIW5RjFi29sTZGRE9QcCpYEM8LchxGe0RTezEv44hD55BqM
-   qjT01Q42nVY4QhJJuDLfZDTPF9yaPZZwE2Scu6gk66wCDdcvsp+a+s4+7
-   hbbEhx+7ryrtvHi8SqqEdRgzg+Eya763nkZm9cNxn0AKflmIZDUBYIoV9
-   eV075Bgxi0nE/t5ZDKWPDQPwuCuMNaAz+DI3LEE9iss9iHf4agBOYtrRQ
-   lvG/FW270fvlTeDPBoz4+Ieotr4ZbaAcKHQci5gD5B4DYSunw1ShnISjg
-   yL6wxNwQ3p0lQ2n4DRxTouVbX7vS3QZM9puD1mP/PH99cu6/RuOXsc9OK
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11003"; a="4257299"
+  bh=IGtLZonsM9HIqBfRp5gPX4on64P1EIL/CQLv8R7f7l4=;
+  b=Xpl7rWbinS3u0RkRXxAbcFAXnO3wKX9Fyiv1tiCse6+sMkvsLF5d6TSS
+   Qwdh4FmZ/ScBXVA6fuDlz1fYrKTaqvmAaR86KdIdWKYKhGlxCND5Sdzju
+   tT3HZVEj5gfivuAI4g3NgbGmRYcKtmS3VE//2XKEkauLYytqRYlp0NbmG
+   ZLAJHfazDRpNkQU7IuzKA43U0XV9Cdl77855xh1eCyH3jNi3Oj7OWKu4W
+   Tf/n8D9bil3IaRoTUrYQb9Rmb98Ld5BxvIvygACXV1n251lSGjg8VqnVt
+   NjKHEOwNwPgvfyoRCFUH+/pVaZBJQZkNH9eJkAI3808qmgei9d9vYYFhM
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11003"; a="4257275"
 X-IronPort-AV: E=Sophos;i="6.06,204,1705392000";
-   d="scan'208";a="4257299"
+   d="scan'208";a="4257275"
 Received: from orviesa005.jf.intel.com ([10.64.159.145])
   by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 04 Mar 2024 11:04:33 -0800
+ 04 Mar 2024 11:04:28 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.06,204,1705392000";
-   d="scan'208";a="13788291"
+   d="scan'208";a="13788282"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
-  by orviesa005.jf.intel.com with ESMTP; 04 Mar 2024 11:04:30 -0800
+  by orviesa005.jf.intel.com with ESMTP; 04 Mar 2024 11:04:26 -0800
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: broonie@kernel.org
 Cc: alsa-devel@alsa-project.org,
@@ -72,16 +72,17 @@ Cc: alsa-devel@alsa-project.org,
 	pierre-louis.bossart@linux.intel.com,
 	hdegoede@redhat.com,
 	Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: [PATCH 4/5] ASoC: Intel: avs: ssm4567: Board cleanup
-Date: Mon,  4 Mar 2024 20:05:35 +0100
-Message-Id: <20240304190536.1783332-5-cezary.rojewski@intel.com>
+Subject: [PATCH 2/5] ASoC: topology: Do not ignore route checks when parsing
+ graphs
+Date: Mon,  4 Mar 2024 20:05:33 +0100
+Message-Id: <20240304190536.1783332-3-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240304190536.1783332-1-cezary.rojewski@intel.com>
 References: <20240304190536.1783332-1-cezary.rojewski@intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: RI3ZCF6XZUR6EZLNS4PFANKQCBI6HZEV
-X-Message-ID-Hash: RI3ZCF6XZUR6EZLNS4PFANKQCBI6HZEV
+Message-ID-Hash: GSC6K7MZNOONQB6SOT5C2KT4HIXUKBCC
+X-Message-ID-Hash: GSC6K7MZNOONQB6SOT5C2KT4HIXUKBCC
 X-MailFrom: cezary.rojewski@intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -93,45 +94,44 @@ X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RI3ZCF6XZUR6EZLNS4PFANKQCBI6HZEV/>
-List-Archive: <>
+Archived-At: <>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The card-name suffix and the DP-widgets are an unintended copy-paste
-from skl_nau88215_ssm4567.c. Both are redundant.
+One of the framework responsibilities is to ensure that the enumerated
+DPCMs are valid i.e.: a valid BE is connected to a valid FE DAI. While
+the are checks in soc-core.c and soc-pcm.c that verify this, a component
+driver may attempt to workaround this by loading an invalid graph
+through the topology file.
+
+Be strict and fail topology loading when invalid graph is encountered.
 
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 ---
- sound/soc/intel/avs/boards/ssm4567.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ sound/soc/soc-topology.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/intel/avs/boards/ssm4567.c b/sound/soc/intel/avs/boards/ssm4567.c
-index b64be685dc23..abb87bb88fff 100644
---- a/sound/soc/intel/avs/boards/ssm4567.c
-+++ b/sound/soc/intel/avs/boards/ssm4567.c
-@@ -37,8 +37,6 @@ static const struct snd_kcontrol_new card_controls[] = {
- static const struct snd_soc_dapm_widget card_widgets[] = {
- 	SND_SOC_DAPM_SPK("Left Speaker", NULL),
- 	SND_SOC_DAPM_SPK("Right Speaker", NULL),
--	SND_SOC_DAPM_SPK("DP1", NULL),
--	SND_SOC_DAPM_SPK("DP2", NULL),
- };
+diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+index d6d368837235..778f539d9ff5 100644
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -1083,8 +1083,9 @@ static int soc_tplg_dapm_graph_elems_load(struct soc_tplg *tplg,
+ 			break;
+ 		}
  
- static const struct snd_soc_dapm_route card_base_routes[] = {
-@@ -158,7 +156,7 @@ static int avs_ssm4567_probe(struct platform_device *pdev)
- 	if (!card)
- 		return -ENOMEM;
+-		/* add route, but keep going if some fail */
+-		snd_soc_dapm_add_routes(dapm, route, 1);
++		ret = snd_soc_dapm_add_routes(dapm, route, 1);
++		if (ret && !dapm->card->disable_route_checks)
++			break;
+ 	}
  
--	card->name = "avs_ssm4567-adi";
-+	card->name = "avs_ssm4567";
- 	card->dev = dev;
- 	card->owner = THIS_MODULE;
- 	card->dai_link = dai_link;
+ 	return ret;
 -- 
 2.25.1
 
