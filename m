@@ -4,77 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 75292C48BF6
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 Mar 2024 13:38:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 59B27C54E41
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 Mar 2024 14:24:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3C77AA4A;
-	Mon,  4 Mar 2024 14:38:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3C77AA4A
+	by alsa0.perex.cz (Postfix) with ESMTPS id B5074850;
+	Mon,  4 Mar 2024 15:24:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B5074850
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1709559513;
-	bh=Ph0t88urpiIfgX3lePmkozKVSowGvKDDtWxRZ0hH0SY=;
+	s=default; t=1709562279;
+	bh=XXxnvR6/7pWjgGR4OrSNwADlQ09xHuL0Usz9cO3xdU4=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=aZgSJkhiGc7x9HF6aCq14EnUX7539EiDf+Rg3ZBwlSB0hUlmLnCUbXUDF7aKdXVNy
-	 o/7M2HjFfB21c8fqF9UV+BeE/8dWaEZW2GZ9Ys0F3tbQQzMuKZk6tvgpHRzZzVIvxQ
-	 J/bxK3UzttpQ0tvM4HCk5ZmgxVSjDMh0knoldtyU=
+	b=kyfTrSrabBlmxQAgTJ7soTJaOLUMaxtp0nfcPKGtzk+ZWHFTW8hQNXfpBRXAs6DLI
+	 13dLIOhir3xeYbjfLn/c6dwESrNGvNPVMohwrG/OX/qL8eVesiL0FmG8Hv1xLqNZBl
+	 F1gQ4h1CyHgTdfARQnZUnjgQMQFyR8Dna3R4FA+g=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E3834F8059F; Mon,  4 Mar 2024 14:38:01 +0100 (CET)
+	id 2926EF8057E; Mon,  4 Mar 2024 15:24:07 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0C834F80088;
-	Mon,  4 Mar 2024 14:38:01 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0DC16F805AB;
+	Mon,  4 Mar 2024 15:24:07 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 95228F8024E; Mon,  4 Mar 2024 14:37:54 +0100 (CET)
-Received: from sin.source.kernel.org (sin.source.kernel.org
- [IPv6:2604:1380:40e1:4800::1])
+	id 74327F802E8; Mon,  4 Mar 2024 15:24:00 +0100 (CET)
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E6C36F80088
-	for <alsa-devel@alsa-project.org>; Mon,  4 Mar 2024 14:37:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E6C36F80088
+	by alsa1.perex.cz (Postfix) with ESMTPS id CBABEF8014B
+	for <alsa-devel@alsa-project.org>; Mon,  4 Mar 2024 15:23:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CBABEF8014B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=W6YTCCzx
+ header.s=k20201202 header.b=AsPt8hoD
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 86EA0CE12EC;
-	Mon,  4 Mar 2024 13:37:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87519C433C7;
-	Mon,  4 Mar 2024 13:37:33 +0000 (UTC)
+	by sin.source.kernel.org (Postfix) with ESMTP id A84D6CE1386;
+	Mon,  4 Mar 2024 14:23:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 90565C43390;
+	Mon,  4 Mar 2024 14:23:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709559453;
-	bh=Ph0t88urpiIfgX3lePmkozKVSowGvKDDtWxRZ0hH0SY=;
+	s=k20201202; t=1709562223;
+	bh=XXxnvR6/7pWjgGR4OrSNwADlQ09xHuL0Usz9cO3xdU4=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=W6YTCCzx3azyARlHLnJKj7DlRItWL5zU5z7c2kkrB/veS/4VLDVzLIqutidwIFPXg
-	 +oD7pa46iAuCawIFdTOfPQ6mc44Z6RgVRaTAjLlVuu3xNHt4PaUoswpEmeRc0FCZB3
-	 mJmG7dn8ArXlzs0hQK0ZsgqgKemoQSyigGvy3Hn/ibL04I17ATwReEFGw+n4OZ65Gq
-	 hwjgWQUX6h4vcG+oJiZQy4jZgJ2VuuWXyjYsTzlRXgicBTDfFdTVZBBkzhkrZP+6fd
-	 AZbPzsmiLKkxUmA/Ho1OCOaCbT12Q1EOxlJn4pWPgRB+MrK2+VBcefw3oX6AR+aM0S
-	 kRH+qRae3MZbg==
-Date: Mon, 4 Mar 2024 07:37:31 -0600
+	b=AsPt8hoDUStklKvbr9l5y2fCjUGifbeJjU76gbjhnARANwQXeq28a2bR771tR8nGT
+	 noq991Wu1u/PCmt4GmXY7fDKquRwzL5iof/dZkzUfh9seVFkRx739pgn8PWheEu6SG
+	 UWs0JrRh19UszyusQy3QxyfcQm8/sMHN5c88pWXSH+PdSW3/3avE5HPVXoLb9tKBdF
+	 TTIhXfxcJX8lBh50VfYt0ukdtiFqg/8esZM4/Etf2qaOf17eYQFv2EsnRZg7uqsvSu
+	 YR364dIhms7VAjpVoZ2rKs1VYiEaI6QPd6KwtY0QFiCXusYMaYeO3bErFJyEXF+YuE
+	 Zek//seAJQ1FA==
+Date: Mon, 4 Mar 2024 08:23:41 -0600
 From: Rob Herring <robh@kernel.org>
-To: Seven Lee <wtli@nuvoton.com>
-Cc: broonie@kernel.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	conor+dt@kernel.org, YHCHuang@nuvoton.com, KCHSU0@nuvoton.com,
-	CTLIN0@nuvoton.com, SJLIN0@nuvoton.com, scott6986@gmail.com,
-	supercraig0719@gmail.com, dardar923@gmail.com
-Subject: Re: [PATCH v3 1/2] ASoC: dt-bindings: Added schema for
- "nuvoton,nau8325"
-Message-ID: <20240304133731.GA105655-robh@kernel.org>
-References: <20240304101523.538989-1-wtli@nuvoton.com>
- <20240304101523.538989-2-wtli@nuvoton.com>
+To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: broonie@kernel.org, wenst@chromium.org, lgirdwood@gmail.com,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	matthias.bgg@gmail.com, perex@perex.cz, tiwai@suse.com,
+	trevor.wu@mediatek.com, maso.huang@mediatek.com,
+	xiazhengqiao@huaqin.corp-partner.google.com, arnd@arndb.de,
+	kuninori.morimoto.gx@renesas.com, shraash@google.com,
+	amergnat@baylibre.com, nicolas.ferre@microchip.com,
+	u.kleine-koenig@pengutronix.de, dianders@chromium.org,
+	frank.li@vivo.com, allen-kh.cheng@mediatek.com,
+	eugen.hristev@collabora.com, claudiu.beznea@tuxon.dev,
+	jarkko.nikula@bitmer.com, jiaxin.yu@mediatek.com,
+	alpernebiyasak@gmail.com, ckeepax@opensource.cirrus.com,
+	zhourui@huaqin.corp-partner.google.com, nfraprado@collabora.com,
+	alsa-devel@alsa-project.org, shane.chien@mediatek.com,
+	linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org, kernel@collabora.com
+Subject: Re: [PATCH 19/22] ASoC: dt-bindings: mt8192: Document audio-routing
+ and dai-link subnode
+Message-ID: <20240304142341.GA156846-robh@kernel.org>
+References: <20240227120939.290143-1-angelogioacchino.delregno@collabora.com>
+ <20240227120939.290143-20-angelogioacchino.delregno@collabora.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240304101523.538989-2-wtli@nuvoton.com>
-Message-ID-Hash: K22Z5B7QNJ7RNWHXIQ4Q37R34MYBXBLV
-X-Message-ID-Hash: K22Z5B7QNJ7RNWHXIQ4Q37R34MYBXBLV
+In-Reply-To: 
+ <20240227120939.290143-20-angelogioacchino.delregno@collabora.com>
+Message-ID-Hash: ZP4N3VK5XNWPRKVIG2L4DPRX2TZDYYBD
+X-Message-ID-Hash: ZP4N3VK5XNWPRKVIG2L4DPRX2TZDYYBD
 X-MailFrom: robh@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -87,7 +99,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/K22Z5B7QNJ7RNWHXIQ4Q37R34MYBXBLV/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZP4N3VK5XNWPRKVIG2L4DPRX2TZDYYBD/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -96,110 +108,218 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, Mar 04, 2024 at 06:15:22PM +0800, Seven Lee wrote:
-> Added a DT schema for describing nau8325 audio amplifiers.
-
-Present tense: Add a ...
-
-Please say more about this device. Features, link to datasheet, etc.
-
+On Tue, Feb 27, 2024 at 01:09:36PM +0100, AngeloGioacchino Del Regno wrote:
+> Document the dai-link subnodes and the audio-routing property, allowing
+> to describe machine specific audio hardware and links in device tree.
 > 
-> Signed-off-by: Seven Lee <wtli@nuvoton.com>
+> While at it, also deprecate the old properties which were previously
+> used with the driver's partially hardcoded configuration.
+> 
+> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 > ---
->  .../bindings/sound/nuvoton,nau8325.yaml       | 74 +++++++++++++++++++
->  1 file changed, 74 insertions(+)
->  create mode 100755 Documentation/devicetree/bindings/sound/nuvoton,nau8325.yaml
-
-Schemas aren't executable. checkpatch.pl will tell you this.
-
+>  .../sound/mt8192-mt6359-rt1015-rt5682.yaml    | 129 ++++++++++++++++--
+>  1 file changed, 121 insertions(+), 8 deletions(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/sound/nuvoton,nau8325.yaml b/Documentation/devicetree/bindings/sound/nuvoton,nau8325.yaml
-> new file mode 100755
-> index 000000000000..297d29462812
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/nuvoton,nau8325.yaml
-> @@ -0,0 +1,74 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/sound/nuvoton,nau8325.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> diff --git a/Documentation/devicetree/bindings/sound/mt8192-mt6359-rt1015-rt5682.yaml b/Documentation/devicetree/bindings/sound/mt8192-mt6359-rt1015-rt5682.yaml
+> index 7e50f5d65c8f..78e221003750 100644
+> --- a/Documentation/devicetree/bindings/sound/mt8192-mt6359-rt1015-rt5682.yaml
+> +++ b/Documentation/devicetree/bindings/sound/mt8192-mt6359-rt1015-rt5682.yaml
+> @@ -20,6 +20,15 @@ properties:
+>        - mediatek,mt8192_mt6359_rt1015p_rt5682
+>        - mediatek,mt8192_mt6359_rt1015p_rt5682s
+>  
+> +  audio-routing:
+> +    $ref: /schemas/types.yaml#/definitions/non-unique-string-array
+
+Already defined in sound-card-common.yaml. Add a $ref.
+
+> +    description:
+> +      A list of the connections between audio components. Each entry is a
+> +      pair of strings, the first being the connection's sink, the second
+> +      being the connection's source.
+> +      Valid names could be the input or output widgets of audio components,
+> +      power supplies, MicBias of codec and the software switch.
+
+Generally the names are defined here.
+
 > +
-> +title: NAU8325 audio Amplifier
+>    mediatek,platform:
+>      $ref: /schemas/types.yaml#/definitions/phandle
+>      description: The phandle of MT8192 ASoC platform.
+> @@ -27,10 +36,12 @@ properties:
+>    mediatek,hdmi-codec:
+>      $ref: /schemas/types.yaml#/definitions/phandle
+>      description: The phandle of HDMI codec.
+> +    deprecated: true
+>  
+>    headset-codec:
+>      type: object
+>      additionalProperties: false
+> +    deprecated: true
+>  
+>      properties:
+>        sound-dai:
+> @@ -41,6 +52,7 @@ properties:
+>    speaker-codecs:
+>      type: object
+>      additionalProperties: false
+> +    deprecated: true
+>  
+>      properties:
+>        sound-dai:
+> @@ -51,13 +63,83 @@ properties:
+>      required:
+>        - sound-dai
+>  
+> +patternProperties:
+> +  ".*-dai-link$":
+> +    type: object
+> +    description:
+> +      Container for dai-link level properties and CODEC sub-nodes.
 > +
-> +maintainers:
-> +  - Seven Lee <WTLI@nuvoton.com>
+> +    properties:
+> +      link-name:
+> +        description: Indicates dai-link name and PCM stream name
+> +        items:
+> +          enum:
+> +            - I2S0
+> +            - I2S1
+> +            - I2S2
+> +            - I2S3
+> +            - I2S4
+> +            - I2S5
+> +            - I2S6
+> +            - I2S7
+> +            - I2S8
+> +            - I2S9
+> +            - TDM
+> +
+> +      codec:
+> +        description: Holds subnode which indicates codec dai.
+> +        type: object
+> +        additionalProperties: false
+> +        properties:
+> +          sound-dai:
+> +            minItems: 1
+> +            maxItems: 2
+> +        required:
+> +          - sound-dai
+> +
+> +      dai-format:
+> +        description: audio format
+> +        items:
+> +          enum:
+> +            - i2s
+> +            - right_j
+> +            - left_j
+> +            - dsp_a
+> +            - dsp_b
+> +
+> +      mediatek,clk-provider:
+> +        $ref: /schemas/types.yaml#/definitions/string
+> +        description: Indicates dai-link clock master.
+> +        items:
+> +          enum:
+> +            - cpu
+> +            - codec
+> +
+> +    additionalProperties: false
+
+Move this before properties.
+
+> +
+> +    required:
+> +      - link-name
+> +
+>  additionalProperties: false
+>  
+>  required:
+>    - compatible
+>    - mediatek,platform
+> -  - headset-codec
+> -  - speaker-codecs
 > +
 > +allOf:
-> +  - $ref: dai-common.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    const: nuvoton,nau8325
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  nuvoton,vref-impedance:
-> +    description:
-> +      VREF impedance selection.
-> +    enum: ["Open", "25kOhm", "125kOhm", "2.5kOhm"]
+> +  # Disallow dai-link-xxx nodes if the legacy properties are specified
 
-Use standard units (-ohms), not strings. For "open", just omit the 
-property.
+xxx-dai-link?
 
-> +
-> +
-> +  nuvoton,dac-vref:
-> +    description: DAC Reference Voltage Setting.
-> +    enum: ["External VDDA", "1.5V", "1.6V", "1.7V"]
+> +  - if:
+> +      patternProperties:
+> +        ".*-dai-link$": false
+> +    then:
+> +      required:
+> +        - headset-codec
+> +        - speaker-codecs
+> +    else:
+> +      properties:
+> +        headset-codec: false
+> +        speaker-codecs: false
+> +        mediatek,hdmi-codec: false
 
-Use standard units.
+Allowing both would preserve compatibility. That's not needed? If so, 
+say why in the commit msg.
 
+>  
+>  examples:
+>    - |
+> @@ -65,19 +147,50 @@ examples:
+>      sound: mt8192-sound {
+>          compatible = "mediatek,mt8192_mt6359_rt1015_rt5682";
+>          mediatek,platform = <&afe>;
+> -        mediatek,hdmi-codec = <&anx_bridge_dp>;
+>          pinctrl-names = "aud_clk_mosi_off",
+>                          "aud_clk_mosi_on";
+>          pinctrl-0 = <&aud_clk_mosi_off>;
+>          pinctrl-1 = <&aud_clk_mosi_on>;
+>  
+> -        headset-codec {
+> -            sound-dai = <&rt5682>;
+> +        audio-routing =
+> +                "Headphone Jack", "HPOL",
+> +                "Headphone Jack", "HPOR",
+> +                "IN1P", "Headset Mic",
+> +                "Speakers", "Speaker";
 > +
-> +
-> +  nuvoton,alc-enable:
-> +    description:
-> +      Enable digital automatic level control (ALC) function.
-> +    type: boolean
-> +
-> +  nuvoton,clock-detection-disable:
-> +    description:
-> +      When clock detection is enabled, it will detect whether MCLK
-> +      and FS are within the range. MCLK range is from 2.048MHz to 24.576MHz.
-> +      FS range is from 8kHz to 96kHz. And also needs to detect the ratio
-> +      MCLK_SRC/LRCK of 256, 400 or 500, and needs to detect the BCLK
-> +      to make sure data is present. There needs to be at least 8 BCLK
-> +      cycles per Frame Sync.
-> +    type: boolean
-> +
-> +  nuvoton,clock-det-data:
-> +    description:
-> +      Request clock detection to require 2048 non-zero samples before enabling
-> +      the audio paths. If set then non-zero samples is required, otherwise it
-> +      doesn't matter.
-> +    type: boolean
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    i2c {
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +        codec@21 {
-> +            compatible = "nuvoton,nau8325";
-> +            reg = <0x21>;
-> +            nuvoton,vref-impedance = "125kOhm";
-> +            nuvoton,dac-vref = "1.6V";
-> +            nuvoton,alc-enable;
-> +            nuvoton,clock-det-data;
+> +        spk-playback-dai-link {
+> +                link-name = "I2S3";
+> +                dai-format = "i2s";
+> +                mediatek,clk-provider = "cpu";
+> +                codec {
+> +                        sound-dai = <&rt1015p>;
+> +                };
 > +        };
-> +    };
+> +
+> +        hs-playback-dai-link {
+> +                link-name = "I2S8";
+> +                dai-format = "i2s";
+> +                mediatek,clk-provider = "cpu";
+> +                codec {
+> +                        sound-dai = <&rt5682 0>;
+> +                };
+> +        };
+> +
+> +        hs-capture-dai-link {
+> +                link-name = "I2S9";
+> +                dai-format = "i2s";
+> +                mediatek,clk-provider = "cpu";
+> +                codec {
+> +                        sound-dai = <&rt5682 0>;
+> +                };
+>          };
+>  
+> -        speaker-codecs {
+> -            sound-dai = <&rt1015_l>,
+> -                        <&rt1015_r>;
+> +        displayport-dai-link {
+> +                link-name = "TDM";
+> +                dai-format = "dsp_a";
+> +                codec {
+> +                        sound-dai = <&anx_bridge_dp>;
+> +                };
+>          };
+>      };
+>  
 > -- 
-> 2.25.1
+> 2.44.0
 > 
