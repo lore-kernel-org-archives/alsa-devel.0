@@ -4,75 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 58AF9C5478C
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 Mar 2024 12:44:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 75292C48BF6
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 Mar 2024 13:38:35 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 791E893A;
-	Mon,  4 Mar 2024 13:44:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 791E893A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3C77AA4A;
+	Mon,  4 Mar 2024 14:38:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3C77AA4A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1709556262;
-	bh=LdCePQgPdx/+9m/zexikhSQ8q667okKeZiVG052vBEI=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
+	s=default; t=1709559513;
+	bh=Ph0t88urpiIfgX3lePmkozKVSowGvKDDtWxRZ0hH0SY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=DOTG8w/Ig84SS0r9VC43DatzqbIt/au18nXf5B1GLcjVT3BuyXWXt80o89GWap/Pj
-	 mgGIhEOwEHSVaXSIb7AHSksKfBKQswZ8V9c+nP4vquICUwzLUGOq7AGl2L4TTss/es
-	 xoJ9NXnRoQL8oEfZd9sEKIb7+sz7te4pwD9m9JzY=
+	b=aZgSJkhiGc7x9HF6aCq14EnUX7539EiDf+Rg3ZBwlSB0hUlmLnCUbXUDF7aKdXVNy
+	 o/7M2HjFfB21c8fqF9UV+BeE/8dWaEZW2GZ9Ys0F3tbQQzMuKZk6tvgpHRzZzVIvxQ
+	 J/bxK3UzttpQ0tvM4HCk5ZmgxVSjDMh0knoldtyU=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 018E3F805AA; Mon,  4 Mar 2024 13:43:46 +0100 (CET)
+	id E3834F8059F; Mon,  4 Mar 2024 14:38:01 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 75824F805AA;
-	Mon,  4 Mar 2024 13:43:46 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0C834F80088;
+	Mon,  4 Mar 2024 14:38:01 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1538AF8024E; Mon,  4 Mar 2024 13:43:41 +0100 (CET)
-Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net
- [IPv6:2001:4b98:dc4:8::228])
-	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+	id 95228F8024E; Mon,  4 Mar 2024 14:37:54 +0100 (CET)
+Received: from sin.source.kernel.org (sin.source.kernel.org
+ [IPv6:2604:1380:40e1:4800::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 0E2DCF8014B
-	for <alsa-devel@alsa-project.org>; Mon,  4 Mar 2024 13:43:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0E2DCF8014B
+	by alsa1.perex.cz (Postfix) with ESMTPS id E6C36F80088
+	for <alsa-devel@alsa-project.org>; Mon,  4 Mar 2024 14:37:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E6C36F80088
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=l+rYMq8i
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 9D4871BF206;
-	Mon,  4 Mar 2024 12:43:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1709556211;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=r8fiNaO/LNk/DNM1VzAkgWp6ITdQul2gPeq1Y3bECeA=;
-	b=l+rYMq8i1ZrXDZ7j4GG6hUKWiUTz4c2OxZ0Zh7RL7eZt20IUrzua9sbb3jjWrOYm8H/f8J
-	mxMqzOBB7VieWoXLAe1deacN3F2kQ95WeCmmIBniEaRCZAyoW7Fz33Vvkf1R0RNgQfsvVB
-	PnD2374It6Qi2zUVEriuK5Ooh/RKYJ/JtCvvqBclA6K3QIuTNnY/FSmPsH4NLuYCT6hjvJ
-	5IAnvIoKynI7xuLdn5zscM05sCKwebKTblF0gmIyR8WApbqnh4IfVHOkWh0ISmSAPrh2o9
-	gQhzBVZwSMOi0b0bbJwEeTK3zq/LP6eWCIxacFpI2IlTxh0FCU5uWA6Su1OdNw==
-Date: Mon, 4 Mar 2024 13:43:29 +0100
-From: Luca Ceresoli <luca.ceresoli@bootlin.com>
-To: Pavel Hofman <pavel.hofman@ivitera.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- linux-rockchip@lists.infradead.org, Nicolas Frattaroli
- <frattaroli.nicolas@gmail.com>, Sugar Zhang <sugar.zhang@rock-chips.com>,
- linux-sound@vger.kernel.org
-Subject: Re: ASoC: rockchip_i2s_tdm calibration clocking problem
-Message-ID: <20240304134329.392c75bf@booty>
-In-Reply-To: <c590ff6e-e57e-a7f7-e47d-2e14261a782c@ivitera.com>
-References: <c590ff6e-e57e-a7f7-e47d-2e14261a782c@ivitera.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=W6YTCCzx
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sin.source.kernel.org (Postfix) with ESMTP id 86EA0CE12EC;
+	Mon,  4 Mar 2024 13:37:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87519C433C7;
+	Mon,  4 Mar 2024 13:37:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709559453;
+	bh=Ph0t88urpiIfgX3lePmkozKVSowGvKDDtWxRZ0hH0SY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=W6YTCCzx3azyARlHLnJKj7DlRItWL5zU5z7c2kkrB/veS/4VLDVzLIqutidwIFPXg
+	 +oD7pa46iAuCawIFdTOfPQ6mc44Z6RgVRaTAjLlVuu3xNHt4PaUoswpEmeRc0FCZB3
+	 mJmG7dn8ArXlzs0hQK0ZsgqgKemoQSyigGvy3Hn/ibL04I17ATwReEFGw+n4OZ65Gq
+	 hwjgWQUX6h4vcG+oJiZQy4jZgJ2VuuWXyjYsTzlRXgicBTDfFdTVZBBkzhkrZP+6fd
+	 AZbPzsmiLKkxUmA/Ho1OCOaCbT12Q1EOxlJn4pWPgRB+MrK2+VBcefw3oX6AR+aM0S
+	 kRH+qRae3MZbg==
+Date: Mon, 4 Mar 2024 07:37:31 -0600
+From: Rob Herring <robh@kernel.org>
+To: Seven Lee <wtli@nuvoton.com>
+Cc: broonie@kernel.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	conor+dt@kernel.org, YHCHuang@nuvoton.com, KCHSU0@nuvoton.com,
+	CTLIN0@nuvoton.com, SJLIN0@nuvoton.com, scott6986@gmail.com,
+	supercraig0719@gmail.com, dardar923@gmail.com
+Subject: Re: [PATCH v3 1/2] ASoC: dt-bindings: Added schema for
+ "nuvoton,nau8325"
+Message-ID: <20240304133731.GA105655-robh@kernel.org>
+References: <20240304101523.538989-1-wtli@nuvoton.com>
+ <20240304101523.538989-2-wtli@nuvoton.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-GND-Sasl: luca.ceresoli@bootlin.com
-Message-ID-Hash: LFBWBHRT6IXXUM5UBYPP2ZR7X66DVVNY
-X-Message-ID-Hash: LFBWBHRT6IXXUM5UBYPP2ZR7X66DVVNY
-X-MailFrom: luca.ceresoli@bootlin.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240304101523.538989-2-wtli@nuvoton.com>
+Message-ID-Hash: K22Z5B7QNJ7RNWHXIQ4Q37R34MYBXBLV
+X-Message-ID-Hash: K22Z5B7QNJ7RNWHXIQ4Q37R34MYBXBLV
+X-MailFrom: robh@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -84,7 +87,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LFBWBHRT6IXXUM5UBYPP2ZR7X66DVVNY/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/K22Z5B7QNJ7RNWHXIQ4Q37R34MYBXBLV/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -93,96 +96,110 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hello Pavel,
+On Mon, Mar 04, 2024 at 06:15:22PM +0800, Seven Lee wrote:
+> Added a DT schema for describing nau8325 audio amplifiers.
 
-On Wed, 31 Jan 2024 09:25:41 +0100
-Pavel Hofman <pavel.hofman@ivitera.com> wrote:
+Present tense: Add a ...
 
-> Hi,
-> 
-> I am hitting a clock issue with rockchip_i2s_tdm.c + simple-audio-card 
-> (+ RK3308).
-> 
-> At boot the mclk clk_i2s0_8ch_tx is (somehow) initialized to some 
-> (unimportant?) value 50176000 Hz. Note that this frequency is not 
-> multiple of either 48kHz or 44.1kHz.
-> 
-> Method asoc_simple_parse_clk() reads this value and sets it to 
-> simple_dai->sysclk.
-> 
-> Subsequently at asoc_simple_dai_init this "random" initial value is 
-> stored to i2s_tdm->mclk_tx_freq:
-> 
->     17.839330]  rockchip_i2s_tdm_set_sysclk+0x50/0xbc 
-> [snd_soc_rockchip_i2s_tdm]
-> [   17.839367]  snd_soc_dai_set_sysclk+0x38/0xb8 [snd_soc_core]
-> [   17.839596]  asoc_simple_init_dai+0x94/0xc0 [snd_soc_simple_card_utils]
-> [   17.839640]  asoc_simple_dai_init+0x130/0x230 [snd_soc_simple_card_utils]
-> [   17.839672]  snd_soc_link_init+0x28/0x90 [snd_soc_core]
-> [   17.839843]  snd_soc_bind_card+0x60c/0xbb4 [snd_soc_core]
-> 
-> 
-> When starting playback, called by rockchip_i2s_tdm_hw_params(), 
-> rockchip_i2s_tdm_calibrate_mclk() correctly switches parent of 
-> mclk_parent to correct root pll clock mclk_root0/1 for the given 
-> samplerate and correctly configures mclk_parent frequency.
-> 
-> https://github.com/torvalds/linux/blob/master/sound/soc/rockchip/rockchip_i2s_tdm.c#L862-L864
-> 
-> But right after that, the next line of rockchip_i2s_tdm_hw_params() 
-> calls rockchip_i2s_tdm_set_mclk()
-> 
-> https://github.com/torvalds/linux/blob/master/sound/soc/rockchip/rockchip_i2s_tdm.c#L866C9-L866C34
-> 
-> This method calls clk_set_rate(i2s_tdm->mclk_tx, i2s_tdm->mclk_tx_freq), 
-> which resets the clock and its parental chain to the original incorrect 
-> value stored in i2s_tdm->mclk_tx_freq from the dai initialization.
-> 
-> https://github.com/torvalds/linux/blob/master/sound/soc/rockchip/rockchip_i2s_tdm.c#L693
-> 
-> As a result, no matter what sample rate is being played, the i2s mclk 
-> clock always ends up configured incorrectly.
+Please say more about this device. Features, link to datasheet, etc.
 
-Thanks for the detailed report. I've also run in the same issue while
-working on the RK3308 internal audio codec and your analysis matches my
-findings.
-
-> DTS I2S sets all clocks, therefore the clk calibration in 
-> rockchip_i2s_tdm.c should be (and is) used:
 > 
-> 	i2s_8ch_0: i2s@ff300000 {
-> 		compatible = "rockchip,rk3308-i2s-tdm";
-> 		reg = <0x0 0xff300000 0x0 0x1000>;
-> 		interrupts = <GIC_SPI 48 IRQ_TYPE_LEVEL_HIGH>;
-> 		clocks = <&cru SCLK_I2S0_8CH_TX>, <&cru SCLK_I2S0_8CH_RX>, <&cru 
-> HCLK_I2S0_8CH>,  
-> 			 <&cru SCLK_I2S0_8CH_TX_SRC>,
-> 			 <&cru SCLK_I2S0_8CH_RX_SRC>,
-> 			 <&cru PLL_VPLL0>,
-> 			 <&cru PLL_VPLL1>;
-> 		clock-names = "mclk_tx", "mclk_rx", "hclk",
-> 			      "mclk_tx_src", "mclk_rx_src",
-> 			      "mclk_root0", "mclk_root1";
-> 		.........
+> Signed-off-by: Seven Lee <wtli@nuvoton.com>
+> ---
+>  .../bindings/sound/nuvoton,nau8325.yaml       | 74 +++++++++++++++++++
+>  1 file changed, 74 insertions(+)
+>  create mode 100755 Documentation/devicetree/bindings/sound/nuvoton,nau8325.yaml
+
+Schemas aren't executable. checkpatch.pl will tell you this.
+
 > 
+> diff --git a/Documentation/devicetree/bindings/sound/nuvoton,nau8325.yaml b/Documentation/devicetree/bindings/sound/nuvoton,nau8325.yaml
+> new file mode 100755
+> index 000000000000..297d29462812
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/nuvoton,nau8325.yaml
+> @@ -0,0 +1,74 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/sound/nuvoton,nau8325.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: NAU8325 audio Amplifier
+> +
+> +maintainers:
+> +  - Seven Lee <WTLI@nuvoton.com>
+> +
+> +allOf:
+> +  - $ref: dai-common.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    const: nuvoton,nau8325
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  nuvoton,vref-impedance:
+> +    description:
+> +      VREF impedance selection.
+> +    enum: ["Open", "25kOhm", "125kOhm", "2.5kOhm"]
+
+Use standard units (-ohms), not strings. For "open", just omit the 
+property.
+
+> +
+> +
+> +  nuvoton,dac-vref:
+> +    description: DAC Reference Voltage Setting.
+> +    enum: ["External VDDA", "1.5V", "1.6V", "1.7V"]
+
+Use standard units.
+
+> +
+> +
+> +  nuvoton,alc-enable:
+> +    description:
+> +      Enable digital automatic level control (ALC) function.
+> +    type: boolean
+> +
+> +  nuvoton,clock-detection-disable:
+> +    description:
+> +      When clock detection is enabled, it will detect whether MCLK
+> +      and FS are within the range. MCLK range is from 2.048MHz to 24.576MHz.
+> +      FS range is from 8kHz to 96kHz. And also needs to detect the ratio
+> +      MCLK_SRC/LRCK of 256, 400 or 500, and needs to detect the BCLK
+> +      to make sure data is present. There needs to be at least 8 BCLK
+> +      cycles per Frame Sync.
+> +    type: boolean
+> +
+> +  nuvoton,clock-det-data:
+> +    description:
+> +      Request clock detection to require 2048 non-zero samples before enabling
+> +      the audio paths. If set then non-zero samples is required, otherwise it
+> +      doesn't matter.
+> +    type: boolean
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    i2c {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +        codec@21 {
+> +            compatible = "nuvoton,nau8325";
+> +            reg = <0x21>;
+> +            nuvoton,vref-impedance = "125kOhm";
+> +            nuvoton,dac-vref = "1.6V";
+> +            nuvoton,alc-enable;
+> +            nuvoton,clock-det-data;
+> +        };
+> +    };
+> -- 
+> 2.25.1
 > 
-> It seems to me that the calibration code should also rewrite the 
-> initially incorrect i2s_tdm->mclk_tx_freq and i2s_tdm->mclk_rx_freq with 
-> correct values corresponding to the momentary hw_params rate, or maybe 
-> rockchip_i2s_tdm_set_mclk() should not be called if 
-> rockchip_i2s_tdm_calibrate_mclk() is called a line above (i.e. putting 
-> the call to rockchip_i2s_tdm_set_mclk() into "else" branch).
-
-In my latest v3 series I have implemented a different solution, so
-you way want to review and/or test it and give your feedback in that
-thread:
-
-https://lore.kernel.org/all/20240221-rk3308-audio-codec-v3-1-dfa34abfcef6@bootlin.com/
-
-Best regards,
-Luca
-
--- 
-Luca Ceresoli, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
