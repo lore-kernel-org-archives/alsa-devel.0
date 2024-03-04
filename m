@@ -4,47 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 71F2FC54E41
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 Mar 2024 08:41:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2B323C48BF6
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 Mar 2024 08:45:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B0CA73E8;
-	Mon,  4 Mar 2024 09:41:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B0CA73E8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 698339F6;
+	Mon,  4 Mar 2024 09:44:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 698339F6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1709541687;
-	bh=pw9U4pCdKM6RWJbX59D3gGEzOBvDq0qFToANPtbRMzA=;
+	s=default; t=1709541900;
+	bh=aq3piChNaFVUZRLflgh3OwyCrCx9FsrV4KZ41F3f0DM=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=jdInpjwyyn7scm3Z/vQwLK90s0t5qaKsToJRzHbEJNkXgxcjds5TOjGXTOCO14MyH
-	 cWRW7Gy23NHFidNNlPTXGVlxTGfg9X2MP33422wMOKyteN60xem85Yp5sKLyvXtsdP
-	 WvGO+VD+X8nUCEw7t/bSYbxEKn31iYQ06KFwC5I8=
+	b=FEpQwY5Id4GGfixio4ns6f96kQSLOgMlVD7joUNbq/f2mDoAiQ+sOriPilua1p1SV
+	 0Guik2iv2GbZXt/oEpFAqhfi55Al44GKNQ8HMZ0yi6Ljmiv+aOkXCUnO+CiVmE9eAL
+	 QEZBXTSx6U4SPXh6hlJzAA2ru6GMjR6iIKQJIqKs=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BD914F805AE; Mon,  4 Mar 2024 09:40:57 +0100 (CET)
+	id 9A74DF8057D; Mon,  4 Mar 2024 09:44:28 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 807CBF8057B;
-	Mon,  4 Mar 2024 09:40:56 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 811CFF80093;
+	Mon,  4 Mar 2024 09:44:28 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 969ADF8024E; Mon,  4 Mar 2024 09:40:49 +0100 (CET)
+	id 4756AF8024E; Mon,  4 Mar 2024 09:44:22 +0100 (CET)
 Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7B89AF80088
-	for <alsa-devel@alsa-project.org>; Mon,  4 Mar 2024 09:40:44 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTPS id B1D76F80093
+	for <alsa-devel@alsa-project.org>; Mon,  4 Mar 2024 09:44:19 +0100 (CET)
 Received: from mail1.perex.cz (localhost [127.0.0.1])
-	by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 520AC36294;
-	Mon,  4 Mar 2024 09:40:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 520AC36294
+	by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id C3F7D3629A;
+	Mon,  4 Mar 2024 09:44:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz C3F7D3629A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
-	t=1709541643; bh=NuSqrbVag5pWAbxIAJMsOHPMGGyMpXIJUGDWlpTnMzI=;
+	t=1709541858; bh=4hD4+P4XH/Rx1amXf8YR6TVc6+rzEKz38EVYhJ4UfB0=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=UX20+PN4067YqHEhslcyatCgA++2LNhPErQ7FODwxn4UZd6zFyUta4LS8nWc/v2uv
-	 sjBB87Pg8XLOWOolBgXkfYUB8rLzUJPE0V83D1Wazhr4KFr4SKP0i2Fw6lQU1qdw1z
-	 IX2gsgt8VLlQxbUuDZ8H7R36IliJn0tVDr7B10y4=
+	b=I/XEvupb73gwK2AxF/gKXmLYIiqrd74951Ucw2R0i9hsng9Ud38uVS5EdA134jjlK
+	 mTMjHC1zpf8JRs7SszrwOw8nBNszRXYNHPMH41LOnv9mTzXlTMstkEDU5kwXVB7Hj/
+	 Y9wM2ngMREHRPytOrWJa/aNLCE3gb8Lq81/W6Ytw=
 Received: from [192.168.100.98] (unknown [192.168.100.98])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
@@ -52,17 +52,17 @@ Received: from [192.168.100.98] (unknown [192.168.100.98])
 	(No client certificate requested)
 	(Authenticated sender: perex)
 	by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
-	Mon,  4 Mar 2024 09:40:40 +0100 (CET)
-Message-ID: <083c4932-d0af-4311-bb74-417dc16236fa@perex.cz>
-Date: Mon, 4 Mar 2024 09:40:39 +0100
+	Mon,  4 Mar 2024 09:44:15 +0100 (CET)
+Message-ID: <be219d0a-a215-4b2f-80cb-40e382a67764@perex.cz>
+Date: Mon, 4 Mar 2024 09:44:14 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RESEND] conf: USB-Audio: Add more Scarlett devices to the
- IEC958 blacklist
+Subject: Re: [PATCH] [alsa-lib][PATCH] conf: USB-Audio: Add Corsair HS60 Pro
+ to the IEC958 blacklist
 Content-Language: en-US
-To: "Geoffrey D. Bennett" <g@b4.vu>, Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
-References: <ZeWGbxZIc7AF96h0@m.b4.vu>
+To: David Senoner <seda18@rolmail.net>, alsa-devel@alsa-project.org
+Cc: tiwai@suse.de
+References: <20240226141403.13948-1-seda18@rolmail.net>
 From: Jaroslav Kysela <perex@perex.cz>
 Autocrypt: addr=perex@perex.cz; keydata=
  xsFNBFvNeCsBEACUu2ZgwoGXmVFGukNPWjA68/7eMWI7AvNHpekSGv3z42Iy4DGZabs2Jtvk
@@ -107,11 +107,11 @@ Autocrypt: addr=perex@perex.cz; keydata=
  k8vz1gDNeG7HOIh46GnKIrQiUXVzAuUvM5vI9YaW3YRNTcn3pguQRt+Tl9Y6G+j+yvuLL173
  m4zRUU6DOygmpQAVYSOJvKAJ07AhQGaWAAi5msM6BcTU4YGcpW7FHr6+xaFDlRHzf1lkvavX
  WoxP1IA1DFuBMeYMzfyi4qDWjXc+C51ZaQd39EulYMh+JVaWRoY=
-In-Reply-To: <ZeWGbxZIc7AF96h0@m.b4.vu>
+In-Reply-To: <20240226141403.13948-1-seda18@rolmail.net>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-ID-Hash: LM4OM7267FIJ6XLUFWQ7PNNAITISTU44
-X-Message-ID-Hash: LM4OM7267FIJ6XLUFWQ7PNNAITISTU44
+Message-ID-Hash: 3WK56AVHOZK4XLLSSKLBACYNGUTJRJX3
+X-Message-ID-Hash: 3WK56AVHOZK4XLLSSKLBACYNGUTJRJX3
 X-MailFrom: perex@perex.cz
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -124,7 +124,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LM4OM7267FIJ6XLUFWQ7PNNAITISTU44/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3WK56AVHOZK4XLLSSKLBACYNGUTJRJX3/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -133,14 +133,16 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 04. 03. 24 9:29, Geoffrey D. Bennett wrote:
-> The Scarlett Solo and 2i2 don't have S/PDIF outputs.
+On 26. 02. 24 15:14, David Senoner wrote:
+> This device is just an external USB soundcard with a female 3.5mm jack
+> for a headset, no S/PDIF | IEC958 connector. Add it to the blacklist to
+> prevent it being opened.
 > 
-> Signed-off-by: Geoffrey D. Bennett <g@b4.vu>
+> Signed-off-by: David Senoner <seda18@rolmail.net>
 
 Applied. Thanks.
 
-			Jaroslav
+					Jaroslav
 
 -- 
 Jaroslav Kysela <perex@perex.cz>
