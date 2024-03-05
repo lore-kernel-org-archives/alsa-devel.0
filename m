@@ -4,63 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4696CC54E41
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Mar 2024 14:39:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 09549C54798
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Mar 2024 14:39:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A28CC84D;
-	Tue,  5 Mar 2024 15:38:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A28CC84D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2509BB76;
+	Tue,  5 Mar 2024 15:39:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2509BB76
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1709649547;
-	bh=5fONkLaHesIMOm70XBSf2qSYOdhmhcWYXBd9O88r6vE=;
+	s=default; t=1709649565;
+	bh=VqibmGC3Jl/dxCE8AV7JqAdCOckz+GBMN1nkxkHyhc8=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=OlqdkbQO6q9y2k+aHjn6CwSggHNxtC31tuUIl0rwZIhRSHfCVpakFSCWUc/xYOs2p
-	 XgoTnMP9QkO2ys1WGv1ziJWI2oFpk68BIajemh3LvsDzeAzUXOHyznmGDHSLlT+Soe
-	 F8JQJiQgdTP9Gnpv3CXV1L+evjJp8uzd1khxXZXU=
+	b=g11rxBkAJn4bWNilsiOYFPvyayMg9doblCDzuj9BKLjCm8chPPHdhbE3XrZaD6g7Y
+	 aaRwQqWSrvVbW5NI+zDpnkPWFZelDb54SfjZ+XM8B+wtJOKLaaeVQ83swYvo7+MQ91
+	 kfOl65IP8hQrR7yG7SYjsiD6JGAMeedl+UBywE3k=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4D0D4F8067F; Tue,  5 Mar 2024 15:37:31 +0100 (CET)
+	id A906EF80697; Tue,  5 Mar 2024 15:37:40 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id CB423F80679;
-	Tue,  5 Mar 2024 15:37:30 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9F2A2F80691;
+	Tue,  5 Mar 2024 15:37:39 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CE6D0F80640; Tue,  5 Mar 2024 15:37:26 +0100 (CET)
+	id 4BB39F80579; Tue,  5 Mar 2024 15:37:36 +0100 (CET)
 Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net
- [217.70.183.198])
+ [IPv6:2001:4b98:dc4:8::226])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 3E528F80088
-	for <alsa-devel@alsa-project.org>; Tue,  5 Mar 2024 15:37:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3E528F80088
+	by alsa1.perex.cz (Postfix) with ESMTPS id BBF6FF8024E
+	for <alsa-devel@alsa-project.org>; Tue,  5 Mar 2024 15:37:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BBF6FF8024E
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=Dww9oTa0
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 7D724C000D;
-	Tue,  5 Mar 2024 14:37:01 +0000 (UTC)
+ header.s=gm1 header.b=JSYcxPM0
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 8196EC0007;
+	Tue,  5 Mar 2024 14:36:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1709649422;
+	t=1709649419;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Covygwy/chhwB+41NdS6+HU1LkO9hceqZpnJ7smcrJA=;
-	b=Dww9oTa0Zs55La/ClEwRRMb289+Xa8qxTqSSGm7cweu5BabQ2I3IZ5o+FNt3KVdMirAIKd
-	QevEziJV6e7q/KvLKGvUWHNMMewXth7JDTZDTPqVHXjnmdLKPXbsvu8TDJQGIlytJpfzHX
-	HCRB0zuURAT/49+Wr0XNKVInuwrgkPxHF+ylqUgWwP39Fxi4firZnH1UWgjj7qlpbQ3+ft
-	/d1sT2g6x107dCMPU/NvZZqA1UvpcKl894/MtaFOLo2kb50Cd1MklmY2oyv2zFzPUJPPSf
-	tbfeTjRy4hp+5VFxUyiaug0y2Wunib7yj93UpKBm2xPvuB1obwpqBwnEp5f2Dg==
+	bh=7nOGJSWM5DMTY+8OJI5pb0eawfVnNHkYI1yq5zzD180=;
+	b=JSYcxPM0+0rhLj26E5SZB3FUzzRurNnAaU1CH+3UgpdNQ6wPRIE4OKy7o/X9iaLQS3j6Ik
+	tBAcgFXvpizqQJAg+YN4CVZIQOOqM5lCOe/HFuyRx/Zvy1YV5hzi8HtYccvvlfWeiLx+Iy
+	IZZMkJfUurV8XVmYr+xZ/TujhXifNHOu9nfWPfUf7i/rIHGCbPAs8hhm+l6neQoES2mVT0
+	uO0myHxI/y0sLaBkTHNPD7OYbMPtpej+6lKHLfE9gDDt8ETFyZoy8mUyZtTFlcGaZRDv6Y
+	Zi4XdHThllDRIJ+ZZTGQTmwTserdcjXUUGC6N0ImwtGSnHVMycw38I4HHFZkzw==
 From: Luca Ceresoli <luca.ceresoli@bootlin.com>
-Date: Tue, 05 Mar 2024 15:36:32 +0100
-Subject: [PATCH v4 5/7] arm64: defconfig: enable Rockchip RK3308 internal
- audio codec driver
+Date: Tue, 05 Mar 2024 15:36:30 +0100
+Subject: [PATCH v4 3/7] ASoC: core: add SOC_DOUBLE_RANGE_TLV() helper macro
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240305-rk3308-audio-codec-v4-5-312acdbe628f@bootlin.com>
+Message-Id: <20240305-rk3308-audio-codec-v4-3-312acdbe628f@bootlin.com>
 References: <20240305-rk3308-audio-codec-v4-0-312acdbe628f@bootlin.com>
 In-Reply-To: <20240305-rk3308-audio-codec-v4-0-312acdbe628f@bootlin.com>
 To: Nicolas Frattaroli <frattaroli.nicolas@gmail.com>,
@@ -76,8 +75,8 @@ Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
  Luca Ceresoli <luca.ceresoli@bootlin.com>
 X-Mailer: b4 0.13.0
 X-GND-Sasl: luca.ceresoli@bootlin.com
-Message-ID-Hash: UA4MOVFUJG5DLF44XJLZL6WEWM7RCCRS
-X-Message-ID-Hash: UA4MOVFUJG5DLF44XJLZL6WEWM7RCCRS
+Message-ID-Hash: WJD4ZDQKDNZGQMGSGDED72NDLS5KYKCL
+X-Message-ID-Hash: WJD4ZDQKDNZGQMGSGDED72NDLS5KYKCL
 X-MailFrom: luca.ceresoli@bootlin.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -90,7 +89,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UA4MOVFUJG5DLF44XJLZL6WEWM7RCCRS/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WJD4ZDQKDNZGQMGSGDED72NDLS5KYKCL/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -99,31 +98,50 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-This codec now has a driver.
+No macro currently allows handling a stereo control that has left and right
+in the same register and whose minimum register value is not zero. Add one
+that does that.
+
+Note that even though the snd_soc_*_volsw_range() look more appropriate
+given the _range suffix, they are not suitable because they don't honor the
+two shift values. The snd_soc_*_volsw() look more generic and are suitable
+for the task.
 
 Signed-off-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
 
 ---
 
 Changed in v4: nothing
+Changed in v3: nothing
 
-This patch is new in v3.
+This patch is new in v2.
 ---
- arch/arm64/configs/defconfig | 1 +
- 1 file changed, 1 insertion(+)
+ include/sound/soc.h | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index e6cf3e5d63c3..20650b03d25c 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -981,6 +981,7 @@ CONFIG_SND_SOC_GTM601=m
- CONFIG_SND_SOC_MSM8916_WCD_ANALOG=m
- CONFIG_SND_SOC_MSM8916_WCD_DIGITAL=m
- CONFIG_SND_SOC_PCM3168A_I2C=m
-+CONFIG_SND_SOC_RK3308=m
- CONFIG_SND_SOC_RK817=m
- CONFIG_SND_SOC_RT5640=m
- CONFIG_SND_SOC_RT5659=m
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 6defc5547ff9..7492315ce0b8 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -149,6 +149,18 @@
+ 		{.reg = xreg, .rreg = xreg, \
+ 		.shift = shift_left, .rshift = shift_right, \
+ 		.max = xmax, .min = xmin} }
++#define SOC_DOUBLE_RANGE_TLV(xname, xreg, xshift_left, xshift_right, xmin, xmax, \
++			     xinvert, tlv_array) \
++{	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = (xname),\
++	.access = SNDRV_CTL_ELEM_ACCESS_TLV_READ |\
++		  SNDRV_CTL_ELEM_ACCESS_READWRITE,\
++	.tlv.p = (tlv_array), \
++	.info = snd_soc_info_volsw, \
++	.get = snd_soc_get_volsw, .put = snd_soc_put_volsw, \
++	.private_value = (unsigned long)&(struct soc_mixer_control) \
++		{.reg = xreg, .rreg = xreg, \
++		 .shift = xshift_left, .rshift = xshift_right, \
++		 .min = xmin, .max = xmax, .invert = xinvert} }
+ #define SOC_DOUBLE_R_TLV(xname, reg_left, reg_right, xshift, xmax, xinvert, tlv_array) \
+ {	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = (xname),\
+ 	.access = SNDRV_CTL_ELEM_ACCESS_TLV_READ |\
 
 -- 
 2.34.1
