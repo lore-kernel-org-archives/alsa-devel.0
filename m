@@ -4,90 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B1DF8C54E41
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Mar 2024 16:16:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4A8A3C5475B
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Mar 2024 16:16:53 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 04C5093A;
-	Wed,  6 Mar 2024 17:16:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 04C5093A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8CAD884D;
+	Wed,  6 Mar 2024 17:16:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8CAD884D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1709741801;
-	bh=RMQmLYTq+/lca1JA6Zn12GvSI8xskgbIRo9zEF+OM+U=;
+	s=default; t=1709741811;
+	bh=ioYN/9YghUj0aCB+8sxcgLE59kh3ARmKIokGHWoPN0s=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=f6vDx/QRsVRFY6vFHQHt4Ui+zgXuQozrCybCmHeVNxXFBg8d+9qKElbNkD9+a2+87
-	 GSUFZfwADlzMs7b+ka4AITFVKkQrafSFKzCtdF1ovmRKhwPICB6v9cOsM6b9xgf1Q9
-	 6sg/sZTIv1GrdWsaWl8Vxdn/euAqCb9CWSdr5Ar8=
+	b=LotdBYC8R3Y9Xe0WCG+h5j+EksPy1WUoiWMzlDWygurYKb6nM8cYVX+j1d2+TOMEq
+	 Jmb93/DzQKMps+rL+qNqzKlaQYCtKpsIgi+Rd6tGz+X6H7BkUGOSPB4MTgygR36woU
+	 22FcYzPL9NHpqka9xVKKzNLkNvtnAWYUhOJf7Y3E=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4A82FF8061D; Wed,  6 Mar 2024 17:15:28 +0100 (CET)
+	id 37FD1F80636; Wed,  6 Mar 2024 17:15:30 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1BD4BF8061C;
-	Wed,  6 Mar 2024 17:15:28 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A4DF6F8063C;
+	Wed,  6 Mar 2024 17:15:29 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 86422F805C9; Wed,  6 Mar 2024 17:15:20 +0100 (CET)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
+	id 6CDA5F805C9; Wed,  6 Mar 2024 17:15:22 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 25E27F801F5
-	for <alsa-devel@alsa-project.org>; Wed,  6 Mar 2024 17:15:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 25E27F801F5
+	by alsa1.perex.cz (Postfix) with ESMTPS id 5C753F805B0
+	for <alsa-devel@alsa-project.org>; Wed,  6 Mar 2024 17:15:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5C753F805B0
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=Yxr2izgv
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-	by mx0a-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id
- 4265UZQj010435;
-	Wed, 6 Mar 2024 10:15:08 -0600
+ header.s=PODMain02222019 header.b=DzuFhK0x
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+	by mx0b-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id
+ 4268m45H016753;
+	Wed, 6 Mar 2024 10:15:10 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
 	:mime-version:content-transfer-encoding:content-type; s=
-	PODMain02222019; bh=2EYpIdLCLpu/Qfdxs7ZcC2sdIWeueyqtT7yWJw24UdI=; b=
-	Yxr2izgvWnvIXEAv+/AgNeH3mFypNJerj0Ku9cYA+ai/uqu60rCo6udHh1DE5XoR
-	aUEASdBg7jsLjAB4PAPFChbUP5pHzq/uHU/klTOuECzeIm77SIy8LMIQKj//R+jL
-	xMxBoNNO2jYKLNVszi0Dml6stGNxFqSKApcBKcceHYnOK/DAk4W50Hl7Q+7UR7Ml
-	3X1iHT8rqcn3I39No05fDSfUZw24Tq52tVYzL0IW4PI5n5JdNhE/79D4N2UTcpER
-	tx66c34JTYcvPitlfbrDE6Hq09scvOCrsQ+UrH2eqeCJx5eH1xZrLJjWOljMNMEc
-	F6H5zvESrzgpDW8nIKcnQg==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3wm2d2mwg1-2
+	PODMain02222019; bh=bRU53y88xZ5UTSTdeL7E9DlLRqfwscew8y4zZPeOtvw=; b=
+	DzuFhK0xgLwkNfb/9rHkmebTTxtraSge9LlgHjAeC2to/86SSIItWaKJv6zboVu3
+	qifYBzQ2rIQQdcWClGmXVV+FBnKLgan4HkOPWxPg3IyiR/IBPZo/1sQJqKzAMuBX
+	3IJaMauPfr11MG2FuUYs2Sn9Pl7TEESesie7PIiyPQhYJiNarufIpQnGQtUZ1SoE
+	OfuPDG/hQbbEBkep9FgIaa1PwmzLt1iQ9h9y60njAPJP1v04KRmqbD66GO9aif2M
+	gGgMqh9fwrfSkbRW349eOP1wpYHFpp1pG1ANS8nlzYXc6xgyQr+hTT41Ppmr0MIk
+	UX4PEaYkaTNIMdCXmIIiXw==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3wpn930g9n-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 06 Mar 2024 10:15:07 -0600 (CST)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+	Wed, 06 Mar 2024 10:15:10 -0600 (CST)
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Wed, 6 Mar 2024
- 16:15:07 +0000
+ 16:15:08 +0000
 Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
  anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1544.4 via Frontend Transport; Wed, 6 Mar 2024 16:15:06 +0000
+ 15.2.1544.4 via Frontend Transport; Wed, 6 Mar 2024 16:15:08 +0000
 Received: from ediswws08.ad.cirrus.com (ediswws08.ad.cirrus.com
  [198.90.208.13])
-	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id E33D6820243;
-	Wed,  6 Mar 2024 16:15:06 +0000 (UTC)
+	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id BE609820243;
+	Wed,  6 Mar 2024 16:15:08 +0000 (UTC)
 From: Stuart Henderson <stuarth@opensource.cirrus.com>
 To: <broonie@kernel.org>, <shengjiu.wang@gmail.com>, <Xiubo.Lee@gmail.com>
 CC: <patches@opensource.cirrus.com>, <linux-sound@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>, <alsa-devel@alsa-project.org>,
         "Stuart
  Henderson" <stuarth@opensource.cirrus.com>
-Subject: [PATCH 3/5] ASoC: fsl: Fix up mclk_id for fsl,imx-audio-wm8962
-Date: Wed, 6 Mar 2024 16:14:37 +0000
-Message-ID: <20240306161439.1385643-3-stuarth@opensource.cirrus.com>
+Subject: [PATCH 5/5] ASoC: wm8962: Fix up incorrect error message in
+ wm8962_set_fll
+Date: Wed, 6 Mar 2024 16:14:39 +0000
+Message-ID: <20240306161439.1385643-5-stuarth@opensource.cirrus.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240306161439.1385643-1-stuarth@opensource.cirrus.com>
 References: <20240306161439.1385643-1-stuarth@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: Zq9cizakeBP__Op7gmoYpMpTME1TrWbh
-X-Proofpoint-GUID: Zq9cizakeBP__Op7gmoYpMpTME1TrWbh
+X-Proofpoint-GUID: GQpgMBZCV7sidcX6J5TRZH52UMzzfD2J
+X-Proofpoint-ORIG-GUID: GQpgMBZCV7sidcX6J5TRZH52UMzzfD2J
 X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: D4H7WYO4XYAPX372GTQR7LH3XUY7LTRP
-X-Message-ID-Hash: D4H7WYO4XYAPX372GTQR7LH3XUY7LTRP
+Message-ID-Hash: K7O5SR4RQEQ2ZNEHAZTFKZDKJAGUJWSN
+X-Message-ID-Hash: K7O5SR4RQEQ2ZNEHAZTFKZDKJAGUJWSN
 X-MailFrom: prvs=079554e8cd=stuarth@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -100,7 +101,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/D4H7WYO4XYAPX372GTQR7LH3XUY7LTRP/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/K7O5SR4RQEQ2ZNEHAZTFKZDKJAGUJWSN/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -109,30 +110,27 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-wm8962_set_fll is currently incorrect, and largely ignores the source
-parameter.  This patch fixes this use of wm8962_set_fll in preparation
-for fixing this.  Previously we were using WM8962_SYSCLK_MCLK (0), but
-wm8962_set_fll ends up using the fll_id (in this case WM8962_FLL = 1).
-Change this to WM8962_FLL_MCLK (1) instead.
+Use source instead of ret, which seems to be unrelated and will always
+be zero.
 
 Signed-off-by: Stuart Henderson <stuarth@opensource.cirrus.com>
 ---
- sound/soc/fsl/fsl-asoc-card.c | 2 +-
+ sound/soc/codecs/wm8962.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
-index bc07f26ba303..2781fd8d198e 100644
---- a/sound/soc/fsl/fsl-asoc-card.c
-+++ b/sound/soc/fsl/fsl-asoc-card.c
-@@ -656,7 +656,7 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
- 		priv->card.num_dapm_routes = ARRAY_SIZE(audio_map_tx);
- 	} else if (of_device_is_compatible(np, "fsl,imx-audio-wm8962")) {
- 		codec_dai_name = "wm8962";
--		priv->codec_priv.mclk_id = WM8962_SYSCLK_MCLK;
-+		priv->codec_priv.mclk_id = WM8962_FLL_MCLK;
- 		priv->codec_priv.fll_id = WM8962_SYSCLK_FLL;
- 		priv->codec_priv.pll_id = WM8962_FLL;
- 		priv->dai_fmt |= SND_SOC_DAIFMT_CBP_CFP;
+diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
+index 24bd818c3345..5ad6850c591f 100644
+--- a/sound/soc/codecs/wm8962.c
++++ b/sound/soc/codecs/wm8962.c
+@@ -2941,7 +2941,7 @@ static int wm8962_set_fll(struct snd_soc_component *component, int fll_id, int s
+ 				    WM8962_FLL_FRC_NCO, WM8962_FLL_FRC_NCO);
+ 		break;
+ 	default:
+-		dev_err(component->dev, "Unknown FLL source %d\n", ret);
++		dev_err(component->dev, "Unknown FLL source %d\n", source);
+ 		return -EINVAL;
+ 	}
+ 
 -- 
 2.39.2
 
