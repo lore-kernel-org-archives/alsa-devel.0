@@ -4,47 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DE7DEC54E41
-	for <alsa-devel@archiver.kernel.org>; Sat,  9 Mar 2024 10:15:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A5B82C54798
+	for <alsa-devel@archiver.kernel.org>; Sat,  9 Mar 2024 10:15:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B02C8E9F;
-	Sat,  9 Mar 2024 11:14:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B02C8E9F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0B461844;
+	Sat,  9 Mar 2024 11:15:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0B461844
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1709979308;
-	bh=pJzzRLw0ld6ieyqr7fhe5DRfgd38ERsz5SID14arAVY=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=l1+Vw73RnGWd3mKbzfGmTk0qzz+Wn3vxz4YIb8yWyhbE1u2PiKFTW9fL/gyK0I+Zd
-	 yY8rvzPgg3MwOpWJ3y3tegqFy6ovMbJ/3/qyywcs/LERNVCbgZos62cjiZi8j8bOlF
-	 cEmrBi2fvlWdubLk96UKScq4yVirRzH3E+qKC+Ww=
+	s=default; t=1709979332;
+	bh=fCf8VgKAZPcTn7Hbdj2zRMYVft3c4RyIgKvpUyrpq9I=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=lj8UAbfibKEb1r75qTh5E0p9HyOm1YdOnOa5I8EHYCvqskYBkEhZGGY+gqTH6xk1V
+	 FfSq6dchvgrfHqT4bg/QgSAFHiQAO64oTNMySncBkGHzfEnNASPVJigS0eE1wybBa4
+	 ch4vZhcBOpFvhZCnv4yFG56Eiy3RWDlDLqP5c8y0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D6DFFF8069A; Sat,  9 Mar 2024 11:12:59 +0100 (CET)
+	id BC4B6F806BB; Sat,  9 Mar 2024 11:13:02 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id EEC7AF8069F;
-	Sat,  9 Mar 2024 11:12:58 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D9C7DF806A8;
+	Sat,  9 Mar 2024 11:13:01 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7A752F802E8; Wed,  6 Mar 2024 02:34:43 +0100 (CET)
+	id 38B46F8024E; Wed,  6 Mar 2024 02:34:46 +0100 (CET)
 Received: from mail78-39.sinamail.sina.com.cn (mail78-39.sinamail.sina.com.cn
  [219.142.78.39])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 2AC6EF8014B
-	for <alsa-devel@alsa-project.org>; Wed,  6 Mar 2024 02:34:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2AC6EF8014B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 3924BF801F5
+	for <alsa-devel@alsa-project.org>; Wed,  6 Mar 2024 02:34:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3924BF801F5
 Received: from unknown (HELO zy-virtual-machine.localdomain)([116.232.53.71])
 	by sina.net (10.75.30.235) with ESMTP
-	id 65E7C81800003DE4; Wed, 6 Mar 2024 09:34:17 +0800 (CST)
+	id 65E7C81800003DE4; Wed, 6 Mar 2024 09:34:21 +0800 (CST)
 X-Sender: zhangyi@everest-semi.com
 X-Auth-ID: zhangyi@everest-semi.com
 Authentication-Results: sina.net;
 	 spf=none smtp.mailfrom=zhangyi@everest-semi.com;
 	 dkim=none header.i=none;
 	 dmarc=none action=none header.from=zhangyi@everest-semi.com
-X-SMAIL-MID: 4BE93CC2C17E4254B72E6993CDEE0D62
-X-SMAIL-UIID: 4BE93CC2C17E4254B72E6993CDEE0D62-20240306-093417
+X-SMAIL-MID: 4B4DBEA8F7494573A9940413471E1AE4
+X-SMAIL-UIID: 4B4DBEA8F7494573A9940413471E1AE4-20240306-093421
 From: Zhang Yi <zhangyi@everest-semi.com>
 To: alsa-devel@alsa-project.org,
 	broonie@kernel.org,
@@ -54,48 +55,91 @@ Cc: tiwai@suse.com,
 	yangxiaohua@everest-semi.com,
 	zhuning@everest-semi.com,
 	zhangyi@everest-semi.com
-Subject: [PATCH v1 0/2] ASoC: codecs: ES8326: change members of private
- structure
-Date: Wed,  6 Mar 2024 09:34:12 +0800
-Message-Id: <20240306013414.18708-1-zhangyi@everest-semi.com>
+Subject: [PATCH v1 2/2] ASoC: codecs: ES8326: change support for ES8326
+Date: Wed,  6 Mar 2024 09:34:14 +0800
+Message-Id: <20240306013414.18708-3-zhangyi@everest-semi.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20240306013414.18708-1-zhangyi@everest-semi.com>
+References: <20240306013414.18708-1-zhangyi@everest-semi.com>
 X-MailFrom: zhangyi@everest-semi.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: YUJNYTVSSBZEHGXZPTEKFSLHWAWVFKKH
-X-Message-ID-Hash: YUJNYTVSSBZEHGXZPTEKFSLHWAWVFKKH
-X-Mailman-Approved-At: Sat, 09 Mar 2024 10:10:51 +0000
+Message-ID-Hash: OLH3AIRWPKESH7EGZHT2WZGOXVFV5XJP
+X-Message-ID-Hash: OLH3AIRWPKESH7EGZHT2WZGOXVFV5XJP
+X-Mailman-Approved-At: Sat, 09 Mar 2024 10:10:52 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YUJNYTVSSBZEHGXZPTEKFSLHWAWVFKKH/>
-List-Archive: <>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OLH3AIRWPKESH7EGZHT2WZGOXVFV5XJP/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-We found that using 0x45 as the default value for interrupt-clk 
-would cause a headset detection error.So we took 0x00 as the default 
-value for interrupt-clk and passed the test.
-We removed mic1-src and mic2-src, which were not used.
+Removed mic1-src and mic2-src. and changed default value
+of interrupt-clk
 
-*** BLURB HERE ***
-
-Zhang Yi (2):
-  ASoC: codecs: ES8326: Changing members of private structure
-  ASoC: codecs: ES8326: change support for ES8326
-
+Signed-off-by: Zhang Yi <zhangyi@everest-semi.com>
+---
  .../bindings/sound/everest,es8326.yaml        | 22 ++-----------------
- sound/soc/codecs/es8326.c                     | 18 +--------------
- 2 files changed, 3 insertions(+), 37 deletions(-)
+ 1 file changed, 2 insertions(+), 20 deletions(-)
 
+diff --git a/Documentation/devicetree/bindings/sound/everest,es8326.yaml b/Documentation/devicetree/bindings/sound/everest,es8326.yaml
+index 07781408e788..5c9ee6ba7980 100644
+--- a/Documentation/devicetree/bindings/sound/everest,es8326.yaml
++++ b/Documentation/devicetree/bindings/sound/everest,es8326.yaml
+@@ -37,22 +37,6 @@ properties:
+     maximum: 0x0f
+     default: 0x0f
+ 
+-  everest,mic1-src:
+-    $ref: /schemas/types.yaml#/definitions/uint8
+-    description:
+-      the value of reg 2A when headset plugged.
+-    minimum: 0x00
+-    maximum: 0x77
+-    default: 0x22
+-
+-  everest,mic2-src:
+-    $ref: /schemas/types.yaml#/definitions/uint8
+-    description:
+-      the value of reg 2A when headset unplugged.
+-    minimum: 0x00
+-    maximum: 0x77
+-    default: 0x44
+-
+   everest,jack-detect-inverted:
+     $ref: /schemas/types.yaml#/definitions/flag
+     description:
+@@ -87,7 +71,7 @@ properties:
+        0 means the chip detect jack type again after button released.
+     minimum: 0
+     maximum: 0x7f
+-    default: 0x45
++    default: 0x00
+ 
+ required:
+   - compatible
+@@ -107,10 +91,8 @@ examples:
+         clocks = <&clks 10>;
+         clock-names = "mclk";
+         #sound-dai-cells = <0>;
+-        everest,mic1-src = [22];
+-        everest,mic2-src = [44];
+         everest,jack-pol = [0e];
+         everest,interrupt-src = [08];
+-        everest,interrupt-clk = [45];
++        everest,interrupt-clk = [00];
+       };
+     };
 -- 
 2.17.1
 
