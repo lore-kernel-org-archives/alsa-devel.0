@@ -4,138 +4,163 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 595F0C54E41
-	for <alsa-devel@archiver.kernel.org>; Sat,  9 Mar 2024 10:15:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A7757C54E41
+	for <alsa-devel@archiver.kernel.org>; Sat,  9 Mar 2024 10:16:08 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0AA35847;
-	Sat,  9 Mar 2024 11:15:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0AA35847
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5910EEBE;
+	Sat,  9 Mar 2024 11:15:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5910EEBE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1709979347;
-	bh=o7h8D68XuKpUbWhzQ5giwG7GjdYbrQMBGY5wZ3X+bbk=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=uA+Kkpjh+6T2D0g8ViPZIAnzPnAr+LysRuyrSVjjKMmVdVv4k0qyIZ476ISB3zMRK
-	 Ie6ebI/5entxZqmoAXAENWqvMvJfvsJ+4JevufLYtCxWhbnprezRayg7sM9SLM4rT2
-	 tMlt0WvoXwZV91I5GQS98SPbZBnGZBh0IhVSgNe4=
+	s=default; t=1709979366;
+	bh=6VrZRSURzUXrSBObI2POcRjZjknLbdF/Dl4bUKgbr9M=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=qkiuIFD23sfOnpE1x526BsJomUBOUOX+tcEAEolCgQ388XBpZCRAnMvshZdum78H5
+	 5vHw0Q8TtntvykWImfnhGn4JmnF2liwYn+U6/doy4vvhYfnRo6MwvcoytOJdbWyCM0
+	 KIkxl+qVxqxLW0Vc1tr8Y6NMCxCFR46YRZrNFpI4=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CBCE4F806D8; Sat,  9 Mar 2024 11:13:05 +0100 (CET)
+	id 45CB7F80710; Sat,  9 Mar 2024 11:13:08 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 24AC4F806DD;
-	Sat,  9 Mar 2024 11:13:05 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D816AF80709;
+	Sat,  9 Mar 2024 11:13:07 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2A4DDF8024E; Wed,  6 Mar 2024 02:35:06 +0100 (CET)
-Received: from mail78-37.sinamail.sina.com.cn (mail78-37.sinamail.sina.com.cn
- [219.142.78.37])
+	id 76854F8024E; Wed,  6 Mar 2024 10:17:05 +0100 (CET)
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com
+ [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 5635DF8014B
-	for <alsa-devel@alsa-project.org>; Wed,  6 Mar 2024 02:34:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5635DF8014B
-Received: from unknown (HELO zy-virtual-machine.localdomain)([116.232.53.71])
-	by sina.net (10.75.30.235) with ESMTP
-	id 65E7C81800003DE4; Wed, 6 Mar 2024 09:34:19 +0800 (CST)
-X-Sender: zhangyi@everest-semi.com
-X-Auth-ID: zhangyi@everest-semi.com
-Authentication-Results: sina.net;
-	 spf=none smtp.mailfrom=zhangyi@everest-semi.com;
-	 dkim=none header.i=none;
-	 dmarc=none action=none header.from=zhangyi@everest-semi.com
-X-SMAIL-MID: 304AC0D7CD594CE48FF1DD5CB581F46B
-X-SMAIL-UIID: 304AC0D7CD594CE48FF1DD5CB581F46B-20240306-093419
-From: Zhang Yi <zhangyi@everest-semi.com>
-To: alsa-devel@alsa-project.org,
-	broonie@kernel.org,
-	devicetree@vger.kernel.org
-Cc: tiwai@suse.com,
-	amadeuszx.slawinski@linux.intel.com,
-	yangxiaohua@everest-semi.com,
-	zhuning@everest-semi.com,
-	zhangyi@everest-semi.com
-Subject: [PATCH v1 1/2] ASoC: codecs: ES8326: Changing members of private
- structure
-Date: Wed,  6 Mar 2024 09:34:13 +0800
-Message-Id: <20240306013414.18708-2-zhangyi@everest-semi.com>
+	by alsa1.perex.cz (Postfix) with ESMTPS id 33CBDF8014B
+	for <alsa-devel@alsa-project.org>; Wed,  6 Mar 2024 10:16:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 33CBDF8014B
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
+ header.s=qcppdkim1 header.b=g3hibTTt
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id
+ 4265q93M026583;
+	Wed, 6 Mar 2024 09:16:49 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id; s=qcppdkim1; bh=gQv1BqfTdUsf
+	nWnODQhK96rxVTBRcHtoOh+02sf4lcI=; b=g3hibTTtKpbYCOwJlBXWXOYb4Sbv
+	I1IXYHKCkppebLWb+v0gLOGg6Fyf2sH0QgXgwlUkNqqItJyM6SJYSBRJ4fxtegZv
+	gwbslXAn3GCsZSGzypFpwSAD1GfvMkOfDp0QPYf+I+l8pZJzDS3dAKoej4pRk3fZ
+	DXCmwKILt92uFuGgzAXKuxmFw2coW2vIq+BmK7KDHPDlKYWy18vi51EzqUo0Tt4d
+	W+F2nb3KpEuRYoOffdCXkxqpAMCgUqRagjwVS2h3P7aRScpvNGiYLm9TyLom3VOC
+	gBJedd6fO42gAz10/BZ+B03DDGD+ccGXc4Dg9UVMIjgW4gLLDTD7pD0k1Q==
+Received: from apblrppmta02.qualcomm.com
+ (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wpjqf0dae-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 06 Mar 2024 09:16:49 +0000 (GMT)
+Received: from pps.filterd (APBLRPPMTA02.qualcomm.com [127.0.0.1])
+	by APBLRPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id
+ 4269GktO022533;
+	Wed, 6 Mar 2024 09:16:46 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 3wkw6kt155-1;
+	Wed, 06 Mar 2024 09:16:46 +0000
+Received: from APBLRPPMTA02.qualcomm.com (APBLRPPMTA02.qualcomm.com
+ [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 4269GkNT022528;
+	Wed, 6 Mar 2024 09:16:46 GMT
+Received: from hu-maiyas-hyd.qualcomm.com (hu-vdadhani-hyd.qualcomm.com
+ [10.213.106.28])
+	by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 4269Gk91022527;
+	Wed, 06 Mar 2024 09:16:46 +0000
+Received: by hu-maiyas-hyd.qualcomm.com (Postfix, from userid 4047106)
+	id C772A5001D9; Wed,  6 Mar 2024 14:46:44 +0530 (+0530)
+From: Viken Dadhaniya <quic_vdadhani@quicinc.com>
+To: andersson@kernel.org, konrad.dybcio@linaro.org,
+        srinivas.kandagatla@linaro.org, linux-arm-msm@vger.kernel.org,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: quic_msavaliy@quicinc.com, quic_vtanuku@quicinc.com,
+        quic_anupkulk@quicinc.com, quic_cchiluve@quicinc.com,
+        Viken Dadhaniya <quic_vdadhani@quicinc.com>, stable@vger.kernel.org
+Subject: [PATCH v2] slimbus: qcom-ngd-ctrl: Add timeout for wait operation
+Date: Wed,  6 Mar 2024 14:46:42 +0530
+Message-Id: <20240306091642.9123-1-quic_vdadhani@quicinc.com>
 X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20240306013414.18708-1-zhangyi@everest-semi.com>
-References: <20240306013414.18708-1-zhangyi@everest-semi.com>
-X-MailFrom: zhangyi@everest-semi.com
+X-QCInternal: smtphost
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
+ signatures=585085
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
+ signatures=585085
+X-Proofpoint-GUID: jDFJ5S_vQCEQaiGFzoqot2HSa80kYa4k
+X-Proofpoint-ORIG-GUID: jDFJ5S_vQCEQaiGFzoqot2HSa80kYa4k
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-06_04,2024-03-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ suspectscore=0 mlxscore=0
+ clxscore=1011 phishscore=0 malwarescore=0 bulkscore=0 impostorscore=0
+ mlxlogscore=999 priorityscore=1501 lowpriorityscore=0 adultscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2402120000 definitions=main-2403060072
+X-MailFrom: vdadhani@qualcomm.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: PEPWUO5VH5K3ABWVBR5WHBD7WQ4AOGKY
-X-Message-ID-Hash: PEPWUO5VH5K3ABWVBR5WHBD7WQ4AOGKY
-X-Mailman-Approved-At: Sat, 09 Mar 2024 10:10:52 +0000
+Message-ID-Hash: BMX3PGFPHPNL3UOZGPFE7FZWNRKQZFMX
+X-Message-ID-Hash: BMX3PGFPHPNL3UOZGPFE7FZWNRKQZFMX
+X-Mailman-Approved-At: Sat, 09 Mar 2024 10:11:10 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PEPWUO5VH5K3ABWVBR5WHBD7WQ4AOGKY/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BMX3PGFPHPNL3UOZGPFE7FZWNRKQZFMX/>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-We don't use mic1_src and mic2_src.so we delete these two members.
-We changed the default value of interrupt-clk for headphone detection
+In current driver qcom_slim_ngd_up_worker() indefinitely
+waiting for ctrl->qmi_up completion object. This is
+resulting in workqueue lockup on Kthread.
 
-Signed-off-by: Zhang Yi <zhangyi@everest-semi.com>
+Added wait_for_completion_interruptible_timeout to
+allow the thread to wait for specific timeout period and
+bail out instead waiting infinitely.
+
+Fixes: a899d324863a ("slimbus: qcom-ngd-ctrl: add Sub System Restart support")
+Cc: stable@vger.kernel.org
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+Signed-off-by: Viken Dadhaniya <quic_vdadhani@quicinc.com>
 ---
- sound/soc/codecs/es8326.c | 18 +-----------------
- 1 file changed, 1 insertion(+), 17 deletions(-)
+v1 -> v2:
+- Remove macro and add value inline.
+- add fix, cc and review tag.
+---
+---
+ drivers/slimbus/qcom-ngd-ctrl.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/es8326.c b/sound/soc/codecs/es8326.c
-index 608862aebd71..15289dadafea 100755
---- a/sound/soc/codecs/es8326.c
-+++ b/sound/soc/codecs/es8326.c
-@@ -31,8 +31,6 @@ struct es8326_priv {
- 	 * while enabling or disabling or during an irq.
- 	 */
- 	struct mutex lock;
--	u8 mic1_src;
--	u8 mic2_src;
- 	u8 jack_pol;
- 	u8 interrupt_src;
- 	u8 interrupt_clk;
-@@ -1092,20 +1090,6 @@ static int es8326_probe(struct snd_soc_component *component)
- 	es8326->jd_inverted = device_property_read_bool(component->dev,
- 							"everest,jack-detect-inverted");
+diff --git a/drivers/slimbus/qcom-ngd-ctrl.c b/drivers/slimbus/qcom-ngd-ctrl.c
+index efeba8275a66..a09a26bf4988 100644
+--- a/drivers/slimbus/qcom-ngd-ctrl.c
++++ b/drivers/slimbus/qcom-ngd-ctrl.c
+@@ -1451,7 +1451,11 @@ static void qcom_slim_ngd_up_worker(struct work_struct *work)
+ 	ctrl = container_of(work, struct qcom_slim_ngd_ctrl, ngd_up_work);
  
--	ret = device_property_read_u8(component->dev, "everest,mic1-src", &es8326->mic1_src);
--	if (ret != 0) {
--		dev_dbg(component->dev, "mic1-src return %d", ret);
--		es8326->mic1_src = ES8326_ADC_AMIC;
--	}
--	dev_dbg(component->dev, "mic1-src %x", es8326->mic1_src);
--
--	ret = device_property_read_u8(component->dev, "everest,mic2-src", &es8326->mic2_src);
--	if (ret != 0) {
--		dev_dbg(component->dev, "mic2-src return %d", ret);
--		es8326->mic2_src = ES8326_ADC_DMIC;
--	}
--	dev_dbg(component->dev, "mic2-src %x", es8326->mic2_src);
--
- 	ret = device_property_read_u8(component->dev, "everest,jack-pol", &es8326->jack_pol);
- 	if (ret != 0) {
- 		dev_dbg(component->dev, "jack-pol return %d", ret);
-@@ -1125,7 +1109,7 @@ static int es8326_probe(struct snd_soc_component *component)
- 				      &es8326->interrupt_clk);
- 	if (ret != 0) {
- 		dev_dbg(component->dev, "interrupt-clk return %d", ret);
--		es8326->interrupt_clk = 0x45;
-+		es8326->interrupt_clk = 0x00;
- 	}
- 	dev_dbg(component->dev, "interrupt-clk %x", es8326->interrupt_clk);
+ 	/* Make sure qmi service is up before continuing */
+-	wait_for_completion_interruptible(&ctrl->qmi_up);
++	if (!wait_for_completion_interruptible_timeout(&ctrl->qmi_up,
++						       msecs_to_jiffies(MSEC_PER_SEC))) {
++		dev_err(ctrl->dev, "QMI wait timeout\n");
++		return;
++	}
  
+ 	mutex_lock(&ctrl->ssr_lock);
+ 	qcom_slim_ngd_enable(ctrl, true);
 -- 
-2.17.1
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
+of Code Aurora Forum, hosted by The Linux Foundation
 
