@@ -4,91 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5F962C5475B
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Mar 2024 16:16:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1C902C5475B
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Mar 2024 16:16:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1E436741;
-	Wed,  6 Mar 2024 17:15:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1E436741
+	by alsa0.perex.cz (Postfix) with ESMTPS id AD592DEE;
+	Wed,  6 Mar 2024 17:16:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AD592DEE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1709741759;
-	bh=mf/a3fJvXAWlIxG7i7kGND+vj/W4iuRR4kcrYdv2AZo=;
+	s=default; t=1709741777;
+	bh=NL/0kJLMNB3af/nPrZVGA4zsieNtor+zdkiPluqcrOw=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=gbYH/rObgmXuIet7g/0fB7V/BaQ9fg3DBdc1V190EqmnuDj9EGS46i21nihumfUGB
-	 SqmXZol14By2Ch2uFpHG81upjb18NN+izx78PYYea6iei4EQ/yzjPJ2KnWijTZ8NjU
-	 ra1NGqrgUGDjs8RKCc5ImAJGpyOwkJiObSSfRm4w=
+	b=mpiwOQpTAHlijJzzMfgSYSbuhda0pQXlamIDyV2SkPkH1qL4j8E0CpDlhTyqXVD/B
+	 RGTIT/Pc2ktFSvdpaomSMaByD90ohefe/3DId52ubNJMNgHWA2VGqREcMqX5dklbXd
+	 BbT8CeMDHrZuFbHMQ3+bjoeOxNeIJgvt9BGAlTz0=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 399BEF805E3; Wed,  6 Mar 2024 17:15:20 +0100 (CET)
+	id 2822CF805F1; Wed,  6 Mar 2024 17:15:22 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3D839F805B1;
-	Wed,  6 Mar 2024 17:15:19 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 72692F805F9;
+	Wed,  6 Mar 2024 17:15:22 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 97127F805B2; Wed,  6 Mar 2024 17:15:15 +0100 (CET)
+	id 04E07F805B1; Wed,  6 Mar 2024 17:15:16 +0100 (CET)
 Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id CB5BBF80087
-	for <alsa-devel@alsa-project.org>; Wed,  6 Mar 2024 17:15:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CB5BBF80087
+	by alsa1.perex.cz (Postfix) with ESMTPS id B54A8F8058C
+	for <alsa-devel@alsa-project.org>; Wed,  6 Mar 2024 17:15:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B54A8F8058C
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=N4cpKvZJ
+ header.s=PODMain02222019 header.b=WRxLoTK3
 Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
 	by mx0a-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id
- 4265UZQi010435;
-	Wed, 6 Mar 2024 10:15:07 -0600
+ 4265UZQk010435;
+	Wed, 6 Mar 2024 10:15:08 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
 	:mime-version:content-transfer-encoding:content-type; s=
-	PODMain02222019; bh=pJ/WkIoXhaqR5oIitapGQqC4cshDQ7jqZ1DKMYWOGgM=; b=
-	N4cpKvZJBNuduFYQsLACqWOfpg4e4PuFZnJ+yLTtXbEMlkrMSr1fibOelmoJskYL
-	WL8ySZqXify+amKimsFRUhVW5uMNK76wJ1z57Iy2in9aLtq4IDw3As5CZAt+GpLc
-	Lx2H3A0RdwzcwmkxTlnzW6U/I6y0BXjDdKKG/M5FYFwx35YC2CE2ZhSgGg5C2rrs
-	K4PiVDS+96SQCtBdfCAUkjOtIXPJ2m/fY6H0Bj81+RfGCL3x4T7XvWCrJTc1Qh/F
-	v6WzUmlNtYfQoiShmUGOeVekMWHpmOogAq8UwrId+FcAS4jawh3Q2PE2vFuZe6iU
-	6/UCQRkKDhoJtp57XY2PHw==
+	PODMain02222019; bh=VZNrVFRkfXL9w5uIYi/FRwxU+dWrhc/p57PfZFvalls=; b=
+	WRxLoTK3l9ZH4Y7a6CbeC65EN2kWfgDWIcKEW6+y020QvLT7GRYPUFUSme9nDEKH
+	nBBs9inOwKpGCm5Sc6CFVq6xX01GJYesK56CGjb4kvQ+t8HHsqpuA7+eRlN2TMeF
+	NdjqrSZQK3Sx50M0gBK1/902hf+AhiUXH9xPmHryZe46N6/EQoLu0ATKhu8+HZrt
+	rIfzqDESazRjC18IOLhN2B97Pc9bzZ3Zw2UPchcXCzKZ1ww7sn9zAAn6m6wu+rQr
+	53OOan5DC7EMuXLy8+zNBtOK67ohdPAd6w56owdnq4nLlWEra15HEni6gSQIXHa3
+	tmzMm28SY+VqGCQbOyyffQ==
 Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3wm2d2mwg1-1
+	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3wm2d2mwg1-3
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 06 Mar 2024 10:15:06 -0600 (CST)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
+	Wed, 06 Mar 2024 10:15:08 -0600 (CST)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
  (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Wed, 6 Mar 2024
- 16:15:04 +0000
+ 16:15:08 +0000
 Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1544.4 via Frontend Transport; Wed, 6 Mar 2024 16:15:04 +0000
+ ediex01.ad.cirrus.com (198.61.84.80) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4
+ via Frontend Transport; Wed, 6 Mar 2024 16:15:08 +0000
 Received: from ediswws08.ad.cirrus.com (ediswws08.ad.cirrus.com
  [198.90.208.13])
-	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id CA14E820243;
-	Wed,  6 Mar 2024 16:15:04 +0000 (UTC)
+	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id EB68082024D;
+	Wed,  6 Mar 2024 16:15:07 +0000 (UTC)
 From: Stuart Henderson <stuarth@opensource.cirrus.com>
 To: <broonie@kernel.org>, <shengjiu.wang@gmail.com>, <Xiubo.Lee@gmail.com>
 CC: <patches@opensource.cirrus.com>, <linux-sound@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>, <alsa-devel@alsa-project.org>,
         "Stuart
  Henderson" <stuarth@opensource.cirrus.com>
-Subject: [PATCH 2/5] ASoC: wm8962: Enable both SPKOUTR_ENA and SPKOUTL_ENA in
- mono mode
-Date: Wed, 6 Mar 2024 16:14:36 +0000
-Message-ID: <20240306161439.1385643-2-stuarth@opensource.cirrus.com>
+Subject: [PATCH 4/5] ASoC: wm8962: Fix wm8962_set_fll to use source instead of
+ fll_id
+Date: Wed, 6 Mar 2024 16:14:38 +0000
+Message-ID: <20240306161439.1385643-4-stuarth@opensource.cirrus.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240306161439.1385643-1-stuarth@opensource.cirrus.com>
 References: <20240306161439.1385643-1-stuarth@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: FSOOlnZEJT6VPeZIY-D8claeutY-n2KL
-X-Proofpoint-GUID: FSOOlnZEJT6VPeZIY-D8claeutY-n2KL
+X-Proofpoint-ORIG-GUID: fpMeca3XnbrZ1u6BZ8CozMD4xQPnsanN
+X-Proofpoint-GUID: fpMeca3XnbrZ1u6BZ8CozMD4xQPnsanN
 X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: 6APZ57XLPDIB2QLOX6KOMIOHIL7NTT4I
-X-Message-ID-Hash: 6APZ57XLPDIB2QLOX6KOMIOHIL7NTT4I
+Message-ID-Hash: LTNQNQDLCP4LUK6R7BYCLMO6WCQJ5EA3
+X-Message-ID-Hash: LTNQNQDLCP4LUK6R7BYCLMO6WCQJ5EA3
 X-MailFrom: prvs=079554e8cd=stuarth@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -101,76 +102,61 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6APZ57XLPDIB2QLOX6KOMIOHIL7NTT4I/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LTNQNQDLCP4LUK6R7BYCLMO6WCQJ5EA3/>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+Previously wm8962_set_fll was using fll_id to configure the source.
+This change is problematic, but it looks like there's limited
+users of this driver, and luckily they all seem to be intending to
+use WM8962_FLL_MCLK as the source which happens to have the same
+value as WM8962_FLL.
+
 Signed-off-by: Stuart Henderson <stuarth@opensource.cirrus.com>
 ---
- sound/soc/codecs/wm8962.c | 23 ++++++++++++++---------
- 1 file changed, 14 insertions(+), 9 deletions(-)
+ sound/soc/codecs/wm8962.c | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
 
 diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
-index 6d7bb696b135..2256cc0a37eb 100644
+index 2256cc0a37eb..24bd818c3345 100644
 --- a/sound/soc/codecs/wm8962.c
 +++ b/sound/soc/codecs/wm8962.c
-@@ -2229,6 +2229,9 @@ SND_SOC_DAPM_PGA_E("HPOUT", SND_SOC_NOPM, 0, 0, NULL, 0, hp_event,
+@@ -2890,6 +2890,14 @@ static int wm8962_set_fll(struct snd_soc_component *component, int fll_id, int s
+ 	int ret;
+ 	int fll1 = 0;
  
- SND_SOC_DAPM_OUTPUT("HPOUTL"),
- SND_SOC_DAPM_OUTPUT("HPOUTR"),
++	switch (fll_id) {
++	case WM8962_FLL:
++		break;
++	default:
++		dev_err(component->dev, "Unknown FLL ID %d\n", fll_id);
++		return -EINVAL;
++	}
 +
-+SND_SOC_DAPM_PGA("SPKOUTL Output", WM8962_CLASS_D_CONTROL_1, 6, 0, NULL, 0),
-+SND_SOC_DAPM_PGA("SPKOUTR Output", WM8962_CLASS_D_CONTROL_1, 7, 0, NULL, 0),
- };
+ 	/* Any change? */
+ 	if (source == wm8962->fll_src && Fref == wm8962->fll_fref &&
+ 	    Fout == wm8962->fll_fout)
+@@ -2916,13 +2924,13 @@ static int wm8962_set_fll(struct snd_soc_component *component, int fll_id, int s
+ 	/* Parameters good, disable so we can reprogram */
+ 	snd_soc_component_update_bits(component, WM8962_FLL_CONTROL_1, WM8962_FLL_ENA, 0);
  
- static const struct snd_soc_dapm_widget wm8962_dapm_spk_mono_widgets[] = {
-@@ -2236,7 +2239,6 @@ SND_SOC_DAPM_MIXER("Speaker Mixer", WM8962_MIXER_ENABLES, 1, 0,
- 		   spkmixl, ARRAY_SIZE(spkmixl)),
- SND_SOC_DAPM_MUX_E("Speaker PGA", WM8962_PWR_MGMT_2, 4, 0, &spkoutl_mux,
- 		   out_pga_event, SND_SOC_DAPM_POST_PMU),
--SND_SOC_DAPM_PGA("Speaker Output", WM8962_CLASS_D_CONTROL_1, 7, 0, NULL, 0),
- SND_SOC_DAPM_OUTPUT("SPKOUT"),
- };
- 
-@@ -2251,9 +2253,6 @@ SND_SOC_DAPM_MUX_E("SPKOUTL PGA", WM8962_PWR_MGMT_2, 4, 0, &spkoutl_mux,
- SND_SOC_DAPM_MUX_E("SPKOUTR PGA", WM8962_PWR_MGMT_2, 3, 0, &spkoutr_mux,
- 		   out_pga_event, SND_SOC_DAPM_POST_PMU),
- 
--SND_SOC_DAPM_PGA("SPKOUTR Output", WM8962_CLASS_D_CONTROL_1, 7, 0, NULL, 0),
--SND_SOC_DAPM_PGA("SPKOUTL Output", WM8962_CLASS_D_CONTROL_1, 6, 0, NULL, 0),
--
- SND_SOC_DAPM_OUTPUT("SPKOUTL"),
- SND_SOC_DAPM_OUTPUT("SPKOUTR"),
- };
-@@ -2366,12 +2365,18 @@ static const struct snd_soc_dapm_route wm8962_spk_mono_intercon[] = {
- 	{ "Speaker PGA", "Mixer", "Speaker Mixer" },
- 	{ "Speaker PGA", "DAC", "DACL" },
- 
--	{ "Speaker Output", NULL, "Speaker PGA" },
--	{ "Speaker Output", NULL, "SYSCLK" },
--	{ "Speaker Output", NULL, "TOCLK" },
--	{ "Speaker Output", NULL, "TEMP_SPK" },
-+	{ "SPKOUTL Output", NULL, "Speaker PGA" },
-+	{ "SPKOUTL Output", NULL, "SYSCLK" },
-+	{ "SPKOUTL Output", NULL, "TOCLK" },
-+	{ "SPKOUTL Output", NULL, "TEMP_SPK" },
-+
-+	{ "SPKOUTR Output", NULL, "Speaker PGA" },
-+	{ "SPKOUTR Output", NULL, "SYSCLK" },
-+	{ "SPKOUTR Output", NULL, "TOCLK" },
-+	{ "SPKOUTR Output", NULL, "TEMP_SPK" },
- 
--	{ "SPKOUT", NULL, "Speaker Output" },
-+	{ "SPKOUT", NULL, "SPKOUTL Output" },
-+	{ "SPKOUT", NULL, "SPKOUTR Output" },
- };
- 
- static const struct snd_soc_dapm_route wm8962_spk_stereo_intercon[] = {
+-	switch (fll_id) {
++	switch (source) {
+ 	case WM8962_FLL_MCLK:
+ 	case WM8962_FLL_BCLK:
+-		fll1 |= (fll_id - 1) << WM8962_FLL_REFCLK_SRC_SHIFT;
++		fll1 |= (source - 1) << WM8962_FLL_REFCLK_SRC_SHIFT;
+ 		break;
+ 	case WM8962_FLL_OSC:
+-		fll1 |= (fll_id - 1) << WM8962_FLL_REFCLK_SRC_SHIFT;
++		fll1 |= (source - 1) << WM8962_FLL_REFCLK_SRC_SHIFT;
+ 		snd_soc_component_update_bits(component, WM8962_PLL2,
+ 					      WM8962_OSC_ENA, WM8962_OSC_ENA);
+ 		break;
 -- 
 2.39.2
 
