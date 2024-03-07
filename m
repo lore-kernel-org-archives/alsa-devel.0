@@ -4,52 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6CF93C48BF6
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Mar 2024 11:50:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 856EBC54E49
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Mar 2024 11:50:48 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D9126F51;
-	Thu,  7 Mar 2024 12:50:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D9126F51
+	by alsa0.perex.cz (Postfix) with ESMTPS id CC1BAEB1;
+	Thu,  7 Mar 2024 12:50:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CC1BAEB1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1709812234;
-	bh=PhUbcVjfbDZRFpij5bSKc+8hvWDLh0jAfdYGXhyvfGI=;
+	s=default; t=1709812246;
+	bh=8bxWkdHWjuivwKz8TBybuK02NLszyCe4cZF3c/Vh6Zg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=X3ItpDzsWdf/qga6jPORfZBq+AstMlVBkeO0YdQUUT1BTD6W1YPhAKC1b6m/f9jq8
-	 1oM2BR9kWe1gSPeZpG57qiXVzg6u2frubcIUQfUbJDrhDM7zQZ+6E/s6pxPV0oCwFY
-	 UvJItarf37+JPPk2F62crU5MPq3rQR3Tg5m8dN30=
+	b=ECBXdh4Pk2EFThmBPnh5ENGuvh+5YNlK9RFv+6XDAQMWWTjoLCNwQVnNSda2axJMr
+	 AdLikVjwG3osdFoJgD9xb2saug5d39YlWLdvr1kjZNW9Vw0OExUOaY7k9hOvmvU6Wg
+	 gwv0gp+fsXukLyFFyMAYCBo+N8IeC6gd6Rd8d8js=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E9F35F805F8; Thu,  7 Mar 2024 12:46:20 +0100 (CET)
+	id ACB1EF80C08; Thu,  7 Mar 2024 12:46:28 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2C7FBF805EF;
-	Thu,  7 Mar 2024 12:46:20 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id EB288F8060A;
+	Thu,  7 Mar 2024 12:46:27 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E756EF80815; Thu,  7 Mar 2024 12:45:59 +0100 (CET)
+	id 0BD84F80605; Thu,  7 Mar 2024 12:46:12 +0100 (CET)
 Received: from madrid.collaboradmins.com (madrid.collaboradmins.com
- [46.235.227.194])
+ [IPv6:2a00:1098:ed:100::25])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B0513F806A9
-	for <alsa-devel@alsa-project.org>; Thu,  7 Mar 2024 12:45:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B0513F806A9
+	by alsa1.perex.cz (Postfix) with ESMTPS id 5FCC3F806F7
+	for <alsa-devel@alsa-project.org>; Thu,  7 Mar 2024 12:45:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5FCC3F806F7
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=collabora.com header.i=@collabora.com
- header.a=rsa-sha256 header.s=mail header.b=1yQDhPJX
+ header.a=rsa-sha256 header.s=mail header.b=KeT64IIE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1709811938;
-	bh=PhUbcVjfbDZRFpij5bSKc+8hvWDLh0jAfdYGXhyvfGI=;
+	s=mail; t=1709811945;
+	bh=8bxWkdHWjuivwKz8TBybuK02NLszyCe4cZF3c/Vh6Zg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=1yQDhPJXTzad1FHuZjnONMxRAtgjyRo58y2Us1LAou+ipgfsUngaCvQxyz7EskJ30
-	 Q/MaBlE86nDpnMd5gwHQm9ocfkVdeJQI/bT4kOawcZGSPOMyzwlqTykfPWxfP/m7Ml
-	 HSMSkhWJ7wKPOfDOTTacR1xa4DaAByINXCU8uuhVUKJCF/pfqHlXrR70eifHl542vx
-	 r3ZTs6lstS3CsGi87sTbfzk1TCIcCKntceigvRChou7vSb4Hqa7G0Qzb6EKDQRqvPQ
-	 NqtJts/8D1HUPtbenV32pKOw5DbPIhBmo6cOc/kZBP0nYOc2nZBHr+yEip0Xf2sCfm
-	 /h65wCBg1HvLg==
+	b=KeT64IIEUmDtx6ONnrK70cAlu1NnYKqwBoVDZemg5fugfpHTO5lxbn3aaOd/IHMI/
+	 QIBd2Mp3tUQWpPsZ47yKYRRbd8tU2r1FaOiEDUNI1c/OIFZzZvRIsV4x/B0k01w8QS
+	 3WZu0WQdNHM5flp8LFloIgZMfJt0zcBqawOXVzIJ/2YqrlyIqWgN5JPRyeGUrhhQz8
+	 LNWx4t2ybOXZud75GNZaWxyhv2U4WIFf5LJmu2oDm8E7ESmio2Y6Bj9C2E5CUQDx/W
+	 zrfYNqBS9r5uVhawrolCsZjcLfQz9xPTJ9WPDNvRk9ji2Gu0A9G/CV9/F1RYC2Lgj7
+	 d2tKTVLMbzOqg==
 Received: from IcarusMOD.eternityproject.eu (cola.collaboradmins.com
  [195.201.22.229])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
@@ -57,8 +57,8 @@ Received: from IcarusMOD.eternityproject.eu (cola.collaboradmins.com
  SHA256)
 	(No client certificate requested)
 	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 25E1137820EE;
-	Thu,  7 Mar 2024 11:45:36 +0000 (UTC)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 2E3E237820F9;
+	Thu,  7 Mar 2024 11:45:43 +0000 (UTC)
 From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 To: broonie@kernel.org
 Cc: wenst@chromium.org,
@@ -98,17 +98,17 @@ Cc: wenst@chromium.org,
 	linux-mediatek@lists.infradead.org,
 	kernel@collabora.com,
 	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Subject: [PATCH v2 19/22] ASoC: dt-bindings: mt8192: Document audio-routing
- and dai-link subnode
-Date: Thu,  7 Mar 2024 12:44:42 +0100
-Message-ID: <20240307114445.196981-20-angelogioacchino.delregno@collabora.com>
+Subject: [PATCH v2 22/22] arm64: dts: mediatek: mt8186-corsola: Specify sound
+ DAI links and routing
+Date: Thu,  7 Mar 2024 12:44:45 +0100
+Message-ID: <20240307114445.196981-23-angelogioacchino.delregno@collabora.com>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240307114445.196981-1-angelogioacchino.delregno@collabora.com>
 References: <20240307114445.196981-1-angelogioacchino.delregno@collabora.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: QSVQ7SFXSPP5SZMHXG7SLIR4WXVORVGL
-X-Message-ID-Hash: QSVQ7SFXSPP5SZMHXG7SLIR4WXVORVGL
+Message-ID-Hash: CCXGP6GCJBKYO5TUMAENIRWAPHAA3LU4
+X-Message-ID-Hash: CCXGP6GCJBKYO5TUMAENIRWAPHAA3LU4
 X-MailFrom: angelogioacchino.delregno@collabora.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -121,7 +121,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QSVQ7SFXSPP5SZMHXG7SLIR4WXVORVGL/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CCXGP6GCJBKYO5TUMAENIRWAPHAA3LU4/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -130,201 +130,76 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Document the dai-link subnodes and the audio-routing property, allowing
-to describe machine specific audio hardware and links in device tree.
-
-While at it, also deprecate the old properties which were previously
-used with the driver's partially hardcoded configuration.
+The drivers and bindings acquired support for specifying audio hardware
+and links in device tree: describe and link the sound related HW of this
+machine.
 
 Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 ---
- .../sound/mt8192-mt6359-rt1015-rt5682.yaml    | 124 ++++++++++++++++--
- 1 file changed, 115 insertions(+), 9 deletions(-)
+ .../boot/dts/mediatek/mt8186-corsola.dtsi     | 42 ++++++++++++++++---
+ 1 file changed, 37 insertions(+), 5 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/mt8192-mt6359-rt1015-rt5682.yaml b/Documentation/devicetree/bindings/sound/mt8192-mt6359-rt1015-rt5682.yaml
-index 7e50f5d65c8f..449454c50dcc 100644
---- a/Documentation/devicetree/bindings/sound/mt8192-mt6359-rt1015-rt5682.yaml
-+++ b/Documentation/devicetree/bindings/sound/mt8192-mt6359-rt1015-rt5682.yaml
-@@ -13,6 +13,9 @@ maintainers:
- description:
-   This binding describes the MT8192 sound card.
+diff --git a/arch/arm64/boot/dts/mediatek/mt8186-corsola.dtsi b/arch/arm64/boot/dts/mediatek/mt8186-corsola.dtsi
+index 3dea28f1d806..0bdb83c3e560 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8186-corsola.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt8186-corsola.dtsi
+@@ -42,7 +42,7 @@ backlight_lcd0: backlight-lcd0 {
+ 		default-brightness-level = <576>;
+ 	};
  
-+allOf:
-+  - $ref: sound-card-common.yaml#
-+
- properties:
-   compatible:
-     enum:
-@@ -20,6 +23,14 @@ properties:
-       - mediatek,mt8192_mt6359_rt1015p_rt5682
-       - mediatek,mt8192_mt6359_rt1015p_rt5682s
+-	bt-sco-codec {
++	bt-sco {
+ 		compatible = "linux,bt-sco";
+ 		#sound-dai-cells = <0>;
+ 	};
+@@ -223,12 +223,44 @@ sound: sound {
+ 		mediatek,adsp = <&adsp>;
+ 		mediatek,platform = <&afe>;
  
-+  audio-routing:
-+    description:
-+      A list of the connections between audio components. Each entry is a
-+      pair of strings, the first being the connection's sink, the second
-+      being the connection's source.
-+      Valid names could be the input or output widgets of audio components,
-+      power supplies, MicBias of codec and the software switch.
+-		playback-codecs {
+-			sound-dai = <&it6505dptx>, <&rt1019p>;
++		audio-routing =
++			"Headphone", "HPOL",
++			"Headphone", "HPOR",
++			"IN1P", "Headset Mic",
++			"Speakers", "Speaker",
++			"HDMI1", "TX";
 +
-   mediatek,platform:
-     $ref: /schemas/types.yaml#/definitions/phandle
-     description: The phandle of MT8192 ASoC platform.
-@@ -27,10 +38,12 @@ properties:
-   mediatek,hdmi-codec:
-     $ref: /schemas/types.yaml#/definitions/phandle
-     description: The phandle of HDMI codec.
-+    deprecated: true
++		hs-playback-dai-link {
++			link-name = "I2S0";
++			dai-format = "i2s";
++			mediatek,clk-provider = "cpu";
++			codec {
++				sound-dai = <&rt5682s 0>;
++			};
++		};
++
++		hs-capture-dai-link {
++			link-name = "I2S1";
++			dai-format = "i2s";
++			mediatek,clk-provider = "cpu";
++			codec {
++				sound-dai = <&rt5682s 0>;
++			};
+ 		};
  
-   headset-codec:
-     type: object
-     additionalProperties: false
-+    deprecated: true
- 
-     properties:
-       sound-dai:
-@@ -41,6 +54,7 @@ properties:
-   speaker-codecs:
-     type: object
-     additionalProperties: false
-+    deprecated: true
- 
-     properties:
-       sound-dai:
-@@ -51,33 +65,125 @@ properties:
-     required:
-       - sound-dai
- 
-+patternProperties:
-+  ".*-dai-link$":
-+    type: object
-+    additionalProperties: false
+-		headset-codec {
+-			sound-dai = <&rt5682s 0>;
++		spk-share-dai-link {
++			link-name = "I2S2";
++			mediatek,clk-provider = "cpu";
++		};
 +
-+    description:
-+      Container for dai-link level properties and CODEC sub-nodes.
-+
-+    properties:
-+      link-name:
-+        description: Indicates dai-link name and PCM stream name
-+        enum:
-+          - I2S0
-+          - I2S1
-+          - I2S2
-+          - I2S3
-+          - I2S4
-+          - I2S5
-+          - I2S6
-+          - I2S7
-+          - I2S8
-+          - I2S9
-+          - TDM
-+
-+      codec:
-+        description: Holds subnode which indicates codec dai.
-+        type: object
-+        additionalProperties: false
-+        properties:
-+          sound-dai:
-+            minItems: 1
-+            maxItems: 2
-+        required:
-+          - sound-dai
-+
-+      dai-format:
-+        description: audio format
-+        enum: [ i2s, right_j, left_j, dsp_a, dsp_b ]
-+
-+      mediatek,clk-provider:
-+        $ref: /schemas/types.yaml#/definitions/string
-+        description: Indicates dai-link clock master.
-+        enum: [ cpu, codec ]
-+
-+    required:
-+      - link-name
-+
- additionalProperties: false
- 
- required:
-   - compatible
-   - mediatek,platform
--  - headset-codec
--  - speaker-codecs
-+
-+# Disallow legacy properties if xxx-dai-link nodes are specified
-+if:
-+  not:
-+    patternProperties:
-+      ".*-dai-link$": false
-+then:
-+  properties:
-+    headset-codec: false
-+    speaker-codecs: false
-+    mediatek,hdmi-codec: false
-+else:
-+  required:
-+    - headset-codec
-+    - speaker-codecs
- 
- examples:
-   - |
- 
-     sound: mt8192-sound {
-         compatible = "mediatek,mt8192_mt6359_rt1015_rt5682";
--        mediatek,platform = <&afe>;
--        mediatek,hdmi-codec = <&anx_bridge_dp>;
-+        model = "mt8192_mt6359_rt1015_rt5682";
-         pinctrl-names = "aud_clk_mosi_off",
-                         "aud_clk_mosi_on";
-         pinctrl-0 = <&aud_clk_mosi_off>;
-         pinctrl-1 = <&aud_clk_mosi_on>;
-+        mediatek,platform = <&afe>;
-+
-+        audio-routing =
-+                "Headphone Jack", "HPOL",
-+                "Headphone Jack", "HPOR",
-+                "IN1P", "Headset Mic",
-+                "Speakers", "Speaker";
-+
-+        spk-playback-dai-link {
-+                link-name = "I2S3";
-+                dai-format = "i2s";
-+                mediatek,clk-provider = "cpu";
-+                codec {
-+                        sound-dai = <&rt1015p>;
-+                };
-+        };
-+
-+        hs-playback-dai-link {
-+                link-name = "I2S8";
-+                dai-format = "i2s";
-+                mediatek,clk-provider = "cpu";
-+                codec {
-+                        sound-dai = <&rt5682 0>;
-+                };
-+        };
- 
--        headset-codec {
--            sound-dai = <&rt5682>;
-+        hs-capture-dai-link {
-+                link-name = "I2S9";
-+                dai-format = "i2s";
-+                mediatek,clk-provider = "cpu";
-+                codec {
-+                        sound-dai = <&rt5682 0>;
-+                };
-         };
- 
--        speaker-codecs {
--            sound-dai = <&rt1015_l>,
--                        <&rt1015_r>;
-+        displayport-dai-link {
-+                link-name = "TDM";
-+                dai-format = "dsp_a";
-+                codec {
-+                        sound-dai = <&anx_bridge_dp>;
-+                };
-         };
-     };
++		spk-hdmi-playback-dai-link {
++			link-name = "I2S3";
++			dai-format = "i2s";
++			mediatek,clk-provider = "cpu";
++			/* RT1019P and IT6505 connected to the same I2S line */
++			codec {
++				sound-dai = <&it6505dptx>, <&rt1019p>;
++			};
+ 		};
+ 	};
  
 -- 
 2.44.0
