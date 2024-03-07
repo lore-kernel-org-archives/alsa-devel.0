@@ -4,47 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 54175C54E41
-	for <alsa-devel@archiver.kernel.org>; Sat,  9 Mar 2024 10:18:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 268FDC54E41
+	for <alsa-devel@archiver.kernel.org>; Sat,  9 Mar 2024 10:19:16 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B02E3EC1;
-	Sat,  9 Mar 2024 11:18:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B02E3EC1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 22217192C;
+	Sat,  9 Mar 2024 11:19:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 22217192C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1709979530;
-	bh=h/K6J3J6NVa8QNKbOCikSU5cRzzRT4i487NnMKL31hU=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=HPaKssQVObbi/M9CP9iRfA7hpCO4jXo1czMlqDhXCUXHvqGRhPghMe4f0DIx4Vyxq
-	 JtZ2+cRWwObLnF7CtEFWvPHGnZizaaFAGAYXrlNgyE6byUI2ow+WNXR4z47VH07vL+
-	 Ggbvui6IPgfnwsPw2M/Hq/0z6gu13T1kk9p7R3Ok=
+	s=default; t=1709979554;
+	bh=o7h8D68XuKpUbWhzQ5giwG7GjdYbrQMBGY5wZ3X+bbk=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=TMG81d1cw5FZfasZUlrEAM6EB/N/iz5WypTnlVR2zavsLvSlJPDInfrAoK9bLPSZc
+	 9cwkZazgS6bOs1u5R+sKULFqHcilb/EEgpe2sgId4A9XWqdy+gvt87OjvXjaapSQWj
+	 GEtzZ6sPO5OC4Ezs9wY9T0V7ZUDO2LaW/Y5zXmkk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 61395F89682; Sat,  9 Mar 2024 11:13:44 +0100 (CET)
+	id AF9A5F896F0; Sat,  9 Mar 2024 11:13:48 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2F1CBF89682;
-	Sat,  9 Mar 2024 11:13:44 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1E855F896DB;
+	Sat,  9 Mar 2024 11:13:48 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 161CDF8024E; Thu,  7 Mar 2024 06:12:52 +0100 (CET)
-Received: from mail78-66.sinamail.sina.com.cn (mail78-66.sinamail.sina.com.cn
- [219.142.78.66])
+	id 13685F802E8; Thu,  7 Mar 2024 06:12:56 +0100 (CET)
+Received: from mail78-63.sinamail.sina.com.cn (mail78-63.sinamail.sina.com.cn
+ [219.142.78.63])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id AA3F5F801F5
-	for <alsa-devel@alsa-project.org>; Thu,  7 Mar 2024 06:12:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AA3F5F801F5
+	by alsa1.perex.cz (Postfix) with ESMTPS id AA356F8014B
+	for <alsa-devel@alsa-project.org>; Thu,  7 Mar 2024 06:12:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AA356F8014B
 Received: from unknown (HELO zy-virtual-machine.localdomain)([116.232.53.71])
 	by sina.net (10.75.30.239) with ESMTP
-	id 65E94CB900013490; Thu, 7 Mar 2024 13:12:26 +0800 (CST)
+	id 65E94CB900013490; Thu, 7 Mar 2024 13:12:28 +0800 (CST)
 X-Sender: zhangyi@everest-semi.com
 X-Auth-ID: zhangyi@everest-semi.com
 Authentication-Results: sina.net;
 	 spf=none smtp.mailfrom=zhangyi@everest-semi.com;
 	 dkim=none header.i=none;
 	 dmarc=none action=none header.from=zhangyi@everest-semi.com
-X-SMAIL-MID: 6672B29C3930461E99E44569A3BDEAF9
-X-SMAIL-UIID: 6672B29C3930461E99E44569A3BDEAF9-20240307-131226
+X-SMAIL-MID: 924257DA11B742E8838AD976B829C33B
+X-SMAIL-UIID: 924257DA11B742E8838AD976B829C33B-20240307-131228
 From: Zhang Yi <zhangyi@everest-semi.com>
 To: alsa-devel@alsa-project.org,
 	broonie@kernel.org,
@@ -54,26 +55,28 @@ Cc: tiwai@suse.com,
 	yangxiaohua@everest-semi.com,
 	zhuning@everest-semi.com,
 	zhangyi@everest-semi.com
-Subject: [PATCH v2 0/2] ASoC: codecs: ES8326: change members of private
+Subject: [PATCH v2 1/2] ASoC: codecs: ES8326: Changing members of private
  structure
-Date: Thu,  7 Mar 2024 13:12:20 +0800
-Message-Id: <20240307051222.24010-1-zhangyi@everest-semi.com>
+Date: Thu,  7 Mar 2024 13:12:21 +0800
+Message-Id: <20240307051222.24010-2-zhangyi@everest-semi.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20240307051222.24010-1-zhangyi@everest-semi.com>
+References: <20240307051222.24010-1-zhangyi@everest-semi.com>
 X-MailFrom: zhangyi@everest-semi.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: RT5CN6XGW6ZAKC3AOBGYKYOAYQZJHT7A
-X-Message-ID-Hash: RT5CN6XGW6ZAKC3AOBGYKYOAYQZJHT7A
+Message-ID-Hash: EI2R23V4SSQW2YXBK3NP2DE5HAZ5OFXT
+X-Message-ID-Hash: EI2R23V4SSQW2YXBK3NP2DE5HAZ5OFXT
 X-Mailman-Approved-At: Sat, 09 Mar 2024 10:11:37 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RT5CN6XGW6ZAKC3AOBGYKYOAYQZJHT7A/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/EI2R23V4SSQW2YXBK3NP2DE5HAZ5OFXT/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -82,19 +85,57 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-We found that using 0x45 as the default value for interrupt-clk 
-would cause a headset detection error.So we took 0x00 as the default 
-value for interrupt-clk and passed the test.
-We removed mic1-src and mic2-src, which were not used.
+We don't use mic1_src and mic2_src.so we delete these two members.
+We changed the default value of interrupt-clk for headphone detection
 
-Zhang Yi (2):
-  ASoC: codecs: ES8326: Changing members of private structure
-  ASoC: codecs: ES8326: change support for ES8326
+Signed-off-by: Zhang Yi <zhangyi@everest-semi.com>
+---
+ sound/soc/codecs/es8326.c | 18 +-----------------
+ 1 file changed, 1 insertion(+), 17 deletions(-)
 
- .../bindings/sound/everest,es8326.yaml         |  8 ++++----
- sound/soc/codecs/es8326.c                      | 18 +-----------------
- 2 files changed, 5 insertions(+), 21 deletions(-)
-
+diff --git a/sound/soc/codecs/es8326.c b/sound/soc/codecs/es8326.c
+index 608862aebd71..15289dadafea 100755
+--- a/sound/soc/codecs/es8326.c
++++ b/sound/soc/codecs/es8326.c
+@@ -31,8 +31,6 @@ struct es8326_priv {
+ 	 * while enabling or disabling or during an irq.
+ 	 */
+ 	struct mutex lock;
+-	u8 mic1_src;
+-	u8 mic2_src;
+ 	u8 jack_pol;
+ 	u8 interrupt_src;
+ 	u8 interrupt_clk;
+@@ -1092,20 +1090,6 @@ static int es8326_probe(struct snd_soc_component *component)
+ 	es8326->jd_inverted = device_property_read_bool(component->dev,
+ 							"everest,jack-detect-inverted");
+ 
+-	ret = device_property_read_u8(component->dev, "everest,mic1-src", &es8326->mic1_src);
+-	if (ret != 0) {
+-		dev_dbg(component->dev, "mic1-src return %d", ret);
+-		es8326->mic1_src = ES8326_ADC_AMIC;
+-	}
+-	dev_dbg(component->dev, "mic1-src %x", es8326->mic1_src);
+-
+-	ret = device_property_read_u8(component->dev, "everest,mic2-src", &es8326->mic2_src);
+-	if (ret != 0) {
+-		dev_dbg(component->dev, "mic2-src return %d", ret);
+-		es8326->mic2_src = ES8326_ADC_DMIC;
+-	}
+-	dev_dbg(component->dev, "mic2-src %x", es8326->mic2_src);
+-
+ 	ret = device_property_read_u8(component->dev, "everest,jack-pol", &es8326->jack_pol);
+ 	if (ret != 0) {
+ 		dev_dbg(component->dev, "jack-pol return %d", ret);
+@@ -1125,7 +1109,7 @@ static int es8326_probe(struct snd_soc_component *component)
+ 				      &es8326->interrupt_clk);
+ 	if (ret != 0) {
+ 		dev_dbg(component->dev, "interrupt-clk return %d", ret);
+-		es8326->interrupt_clk = 0x45;
++		es8326->interrupt_clk = 0x00;
+ 	}
+ 	dev_dbg(component->dev, "interrupt-clk %x", es8326->interrupt_clk);
+ 
 -- 
 2.17.1
 
