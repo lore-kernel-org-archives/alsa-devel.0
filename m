@@ -4,75 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F39EDC48BF6
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Mar 2024 14:57:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 775B4C54E49
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Mar 2024 16:38:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1703B7F4;
-	Thu,  7 Mar 2024 15:56:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1703B7F4
+	by alsa0.perex.cz (Postfix) with ESMTPS id DFCFDA4A;
+	Thu,  7 Mar 2024 17:38:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DFCFDA4A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1709823422;
-	bh=yvWbqsd/c+r0lbhGPO4lqFdi7lTy3J5AN6rJtoM7+iQ=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=GTfkFCidZChZLeONEDSBJnZlt97juoU+lnaPzTNJMFFD2biXSpV+Ae/JlvYNR6y+R
-	 tx24nfAYGR0R1HfrBH+lCrLYfikqNwy/kG4wnZfh7oGTM6Tj+pVfFrlSErh3t6dES3
-	 4aT3wXmy8eivXpRAUh4AbI3OkdQwfww1e5uiWi6M=
+	s=default; t=1709829510;
+	bh=mDh+JZ3LDF/K67NUz+jUaNK4jTIkQl0icjPjmPpIjY0=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=QRhLxXTC3MhAE7C7Yh0+ovwjx0ioJEbQL0qhShXMFZYamvSFh2hWmLKhUfWqWelR5
+	 noW/xDMbDTgvxmEt5n4n0q6RfcOfRCin+5N6z/JU23IVBcyXCx5ed2oUR87Vd2FW2p
+	 SOJvPu1JPLF39QEePH9VD11ZhFPWWGJLA1lok6qc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 771D2F805D3; Thu,  7 Mar 2024 15:56:13 +0100 (CET)
+	id 8C786F80587; Thu,  7 Mar 2024 17:37:57 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id DCAC6F805C3;
-	Thu,  7 Mar 2024 15:56:12 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B8CF6F805A9;
+	Thu,  7 Mar 2024 17:37:56 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DA528F8024E; Thu,  7 Mar 2024 15:56:05 +0100 (CET)
-Received: from sin.source.kernel.org (sin.source.kernel.org
- [IPv6:2604:1380:40e1:4800::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 139D6F8024E; Thu,  7 Mar 2024 17:37:52 +0100 (CET)
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 510BBF80087
-	for <alsa-devel@alsa-project.org>; Thu,  7 Mar 2024 15:55:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 510BBF80087
+	by alsa1.perex.cz (Postfix) with ESMTPS id 7F187F80088
+	for <alsa-devel@alsa-project.org>; Thu,  7 Mar 2024 17:37:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7F187F80088
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=ttJeT32c
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id C34E0CE0B4B;
-	Thu,  7 Mar 2024 14:55:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0ADBDC433C7;
-	Thu,  7 Mar 2024 14:55:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709823355;
-	bh=yvWbqsd/c+r0lbhGPO4lqFdi7lTy3J5AN6rJtoM7+iQ=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=ttJeT32c3lIc134VYxIOjcK8MhEEqbVKwiDgEsM2Pdaqx3typMN2W1KAhZqRlFiJp
-	 Lz8fgI+EqclmMZ5xA+o50omWpXLT0Vt+Qvfjq6DhCeOKXaFbKQY6WFreY7oqchxZo3
-	 AfwMs8MnHHI8/bFbrhR5ut2Kv7UOhev/xVysDqaKB2Q7vuAtqnEWRDT4MRUHyP9EPP
-	 WkfQqS5MQJQ+GmaBdKflAsy5ad7e0Nwcqzsbt8tyKQUBm5EHgsjZojK9KoR4tUYzmS
-	 HpjZCcR3lFw76siSnnbRGxHdjIIIWUQ0qxZS053FXnUbt2XSTvlnIVoFetAZvqyxKx
-	 NOLlfxKr2yD0g==
-From: Mark Brown <broonie@kernel.org>
-To: Richard Fitzgerald <rf@opensource.cirrus.com>
-Cc: linux-sound@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, patches@opensource.cirrus.com
-In-Reply-To: <20240307105353.40067-1-rf@opensource.cirrus.com>
-References: <20240307105353.40067-1-rf@opensource.cirrus.com>
-Subject: Re: [PATCH] firmware: cirrus: cs_dsp: Initialize debugfs_root to
- invalid
-Message-Id: <170982335375.46708.557228863521307529.b4-ty@kernel.org>
-Date: Thu, 07 Mar 2024 14:55:53 +0000
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=igFhZrNu
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709829466; x=1741365466;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=mDh+JZ3LDF/K67NUz+jUaNK4jTIkQl0icjPjmPpIjY0=;
+  b=igFhZrNuYoT4O8VACwDCyUa7O40D3rWhk2n2GQFWp0ZFYO7ZavYDgfvT
+   YqVprQxAPagyHP65oTbA4TkbTrEx64l5hofSysikRtBFQvhcPE/ftf40K
+   Mdb3ZMJOrRL1+EWh5tlxlk4vNuk+RtArfkXQm3aPv09Hhx6aPqfVxTeIE
+   i5AErdHZ3tt9XhFcQ/nMoAJKkyGRdTWqY5DydbOprGhvTJXMZkNWO+Fna
+   NWf7G/AHQw2vWnOFWxG97v427N3CQ57BVWEojOB2T0Gxse6rgVP/gQmDY
+   rkMmX4ENMOk5zYeei9Ffm6HdnsKDArAYWzUFi9IvxOTGbcNNBBZWEPzW8
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="15940825"
+X-IronPort-AV: E=Sophos;i="6.07,211,1708416000";
+   d="scan'208";a="15940825"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 07 Mar 2024 08:37:41 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="937046389"
+X-IronPort-AV: E=Sophos;i="6.07,211,1708416000";
+   d="scan'208";a="937046389"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 07 Mar 2024 08:37:37 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+	id B77293C0; Thu,  7 Mar 2024 18:37:36 +0200 (EET)
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	alsa-devel@alsa-project.org,
+	linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
+	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+	Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+	Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+	Bard Liao <yung-chuan.liao@linux.intel.com>,
+	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+	Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+	Mark Brown <broonie@kernel.org>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>
+Subject: [PATCH v1 1/1] ASoC: Intel: catpt: Carefully use PCI bitwise
+ constants
+Date: Thu,  7 Mar 2024 18:37:34 +0200
+Message-ID: <20240307163734.3852754-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-a684c
-Message-ID-Hash: 3NFRUWPZ5X52BD22CQSTRP7BNYSTO2KH
-X-Message-ID-Hash: 3NFRUWPZ5X52BD22CQSTRP7BNYSTO2KH
-X-MailFrom: broonie@kernel.org
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: CLHKMCYHU4ISGNT2B6L3HECLBV4FJ4B5
+X-Message-ID-Hash: CLHKMCYHU4ISGNT2B6L3HECLBV4FJ4B5
+X-MailFrom: andriy.shevchenko@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -84,7 +100,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3NFRUWPZ5X52BD22CQSTRP7BNYSTO2KH/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CLHKMCYHU4ISGNT2B6L3HECLBV4FJ4B5/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -93,41 +109,41 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, 07 Mar 2024 10:53:53 +0000, Richard Fitzgerald wrote:
-> Initialize debugfs_root to -ENODEV so that if the client never sets a
-> valid debugfs root the debugfs files will not be created.
-> 
-> A NULL pointer passed to any of the debugfs_create_*() functions means
-> "create in the root of debugfs". It doesn't mean "ignore".
-> 
-> 
-> [...]
+PM constants for PCI devices are defined with bitwise annotation.
+When used as is, sparse complains about that:
 
-Applied to
+  .../catpt/dsp.c:390:9: warning: restricted pci_power_t degrades to integer
+  .../catpt/dsp.c:414:9: warning: restricted pci_power_t degrades to integer
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+Force them to be u32 in the driver.
 
-Thanks!
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ sound/soc/intel/catpt/dsp.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-[1/1] firmware: cirrus: cs_dsp: Initialize debugfs_root to invalid
-      commit: 66626b15636b5f5cf3d7f6104799f77462748974
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+diff --git a/sound/soc/intel/catpt/dsp.c b/sound/soc/intel/catpt/dsp.c
+index 346bec000306..5454c6d9ab5b 100644
+--- a/sound/soc/intel/catpt/dsp.c
++++ b/sound/soc/intel/catpt/dsp.c
+@@ -387,7 +387,7 @@ int catpt_dsp_power_down(struct catpt_dev *cdev)
+ 	mask = cdev->spec->d3srampgd_bit | cdev->spec->d3pgd_bit;
+ 	catpt_updatel_pci(cdev, VDRTCTL0, mask, cdev->spec->d3pgd_bit);
+ 
+-	catpt_updatel_pci(cdev, PMCS, PCI_PM_CTRL_STATE_MASK, PCI_D3hot);
++	catpt_updatel_pci(cdev, PMCS, PCI_PM_CTRL_STATE_MASK, (__force u32)PCI_D3hot);
+ 	/* give hw time to drop off */
+ 	udelay(50);
+ 
+@@ -411,7 +411,7 @@ int catpt_dsp_power_up(struct catpt_dev *cdev)
+ 	val = mask & (~CATPT_VDRTCTL2_DTCGE);
+ 	catpt_updatel_pci(cdev, VDRTCTL2, mask, val);
+ 
+-	catpt_updatel_pci(cdev, PMCS, PCI_PM_CTRL_STATE_MASK, PCI_D0);
++	catpt_updatel_pci(cdev, PMCS, PCI_PM_CTRL_STATE_MASK, (__force u32)PCI_D0);
+ 
+ 	/* SRAM power gating none */
+ 	mask = cdev->spec->d3srampgd_bit | cdev->spec->d3pgd_bit;
+-- 
+2.43.0.rc1.1.gbec44491f096
 
