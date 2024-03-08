@@ -4,119 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F0EF8C54798
-	for <alsa-devel@archiver.kernel.org>; Sat,  9 Mar 2024 10:20:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AC0EEC54E41
+	for <alsa-devel@archiver.kernel.org>; Sat,  9 Mar 2024 10:20:54 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E5E3D22CD;
-	Sat,  9 Mar 2024 11:20:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E5E3D22CD
+	by alsa0.perex.cz (Postfix) with ESMTPS id B1A5722CC;
+	Sat,  9 Mar 2024 11:20:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B1A5722CC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1709979633;
-	bh=pGPyxY4xey0LpvE+RP3d8bxeSrlEhfkiAYH7RTLqgcA=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To:List-Id:
+	s=default; t=1709979652;
+	bh=H1pae9I4dPVZlw6CRHdNlnGqt4bwvpSKXKKFd4GTJUI=;
+	h=From:Date:To:cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=hPky0ytqDh0Mf+SpY6HD20XPeqnAHfa4eK/EIT39a7xGLe2sJ8VplTokwfzKNuA7F
-	 Y+wtcnuqeegRjo7cUGjFpo+NivzRsiwFV0yb6+2ScDxAAtelwz0o6T2JRgZsrwop3G
-	 SGRNRpTpDuvdD00Nd30w4CNMF2dzQq1gspaEdBV0=
+	b=M18fdm8Vhb+pvObQESdZbflKUNU9LqCyw3lGyDmR4Z7BUIkLOMAaymMJ62Iig83Ml
+	 ZCezaggA9NeRI9hbueBB3dxPBUvrZfouQCGYRgkwUG8sP5JZPbDj4w6fHmkL0qOQ3G
+	 sFripJUgWHxsWNDPWgv0mOEkvA7k+Atpc9sYAM60=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A87FAF89776; Sat,  9 Mar 2024 11:14:06 +0100 (CET)
+	id 562F0F89789; Sat,  9 Mar 2024 11:14:10 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id CDCACF89760;
-	Sat,  9 Mar 2024 11:14:05 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E5194F8978A;
+	Sat,  9 Mar 2024 11:14:09 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 61BCFF8024E; Fri,  8 Mar 2024 13:43:46 +0100 (CET)
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com
- [205.220.180.131])
+	id E1DA8F8024E; Fri,  8 Mar 2024 15:15:20 +0100 (CET)
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 24711F80087
-	for <alsa-devel@alsa-project.org>; Fri,  8 Mar 2024 13:43:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 24711F80087
+	by alsa1.perex.cz (Postfix) with ESMTPS id 7964AF80088
+	for <alsa-devel@alsa-project.org>; Fri,  8 Mar 2024 15:15:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7964AF80088
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
- header.s=qcppdkim1 header.b=JeABPd+f
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id
- 428AjMLW026896;
-	Fri, 8 Mar 2024 12:43:40 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=nY2VG82b+ivJfZOzlfIERrNz50L7KSM3nXuL3F//TZ4=; b=Je
-	ABPd+fplo5kRF4DK0cCV90chBmoasIm28/y3Dy1vvkWFjpGWsnPgiMWxz7et4P5d
-	jyshTiDvTKO1qnS0Sh+uQm1OUXYwsNcZp2ioEieKxR7qqbMEy1iWvnZHMdRmwt31
-	6fIAtUCbmKlaIb0Uv8RoW+48RehbHbRt9Vj1/rMa4n89cyEB2i07WlPiV/jluauR
-	9yEw12d5bLzsqY8PfWpBLWUKjMAirCKYSWkG1QOcM1rgdjKKcA6yTP9xI1app0aD
-	3nPLgM9jKNKzsOzZaHZDJNCMNgxi+H/IpreGuIFQ1z8u2Ka2ZEdg06Q9IFbTrMMO
-	0n83cFUzbBJvTuvo5WeQ==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com
- [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wr16y08dp-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 08 Mar 2024 12:43:40 +0000 (GMT)
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com
- [10.47.209.197])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id
- 428Chc5b003833
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 8 Mar 2024 12:43:38 GMT
-Received: from [10.216.59.105] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 8 Mar
- 2024 04:43:35 -0800
-Message-ID: <0fe1374b-318b-4dea-94fc-596c665eab53@quicinc.com>
-Date: Fri, 8 Mar 2024 18:13:30 +0530
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=Ta7VpCx3
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709907319; x=1741443319;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=nnJa2eJuW3gIneCAKpj1Ao6WHMfBOJS01uvb6VF/qzs=;
+  b=Ta7VpCx3Q8tpSSxeAzB+lQHu71325Iwtr2rspxmCNZv0wGhJzDJg4h1O
+   h/sHIrzfj0yyKaOk936YNsXE4pgkD1ARMf2B799HS9+y1Upf8ybY0/6AU
+   elm7BO/by1SBgE1NEqbaqwigqNRm542MHuxXZBd5A7i0vOJJarV4gCW9W
+   IF+cXLyG6x+cPw5Rrfz+lNc438PIJ+gAUk3iVnHKcW+L6yui0BkAIkgz5
+   KM9a7lCadRvUXW0EYPyMK5IxhDeKtMfLDq+bzm2HOVkzRM9YkUF21rV3D
+   9rS22hs/mEcu2Bushm8wqEvsF3x8R8IqykFMXU4jZTTY3wxEwKQhLnaq+
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="15765642"
+X-IronPort-AV: E=Sophos;i="6.07,109,1708416000";
+   d="scan'208";a="15765642"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 08 Mar 2024 06:15:16 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,109,1708416000";
+   d="scan'208";a="41450832"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost)
+ ([10.245.244.186])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 08 Mar 2024 06:15:11 -0800
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Fri, 8 Mar 2024 16:15:08 +0200 (EET)
+To: Richard Fitzgerald <rf@opensource.cirrus.com>
+cc: broonie@kernel.org, tiwai@suse.com, Hans de Goede <hdegoede@redhat.com>,
+    lenb@kernel.org, "Rafael J. Wysocki" <rafael@kernel.org>,
+    linux-sound@vger.kernel.org, alsa-devel@alsa-project.org,
+    LKML <linux-kernel@vger.kernel.org>, patches@opensource.cirrus.com,
+    platform-driver-x86@vger.kernel.org, linux-acpi@vger.kernel.org,
+    Simon Trimmer <simont@opensource.cirrus.com>
+Subject: Re: [PATCH 3/3] platform/x86: serial-multi-instantiate: Add support
+ for CS35L54 and CS35L57
+In-Reply-To: <20240308135900.603192-4-rf@opensource.cirrus.com>
+Message-ID: <ea3c3230-cdf1-c41f-47fd-8b47667f7c5c@linux.intel.com>
+References: <20240308135900.603192-1-rf@opensource.cirrus.com>
+ <20240308135900.603192-4-rf@opensource.cirrus.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1] slimbus: qcom-ngd-ctrl: Reduce auto suspend delay
-To: Konrad Dybcio <konrad.dybcio@linaro.org>, <andersson@kernel.org>,
-        <srinivas.kandagatla@linaro.org>, <linux-arm-msm@vger.kernel.org>,
-        <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>
-CC: <quic_msavaliy@quicinc.com>, <quic_vtanuku@quicinc.com>,
-        <quic_anupkulk@quicinc.com>, <quic_cchiluve@quicinc.com>
-References: <20240304135000.21432-1-quic_vdadhani@quicinc.com>
- <d784e46d-974d-4bf3-a2d3-491e7ad19701@linaro.org>
-Content-Language: en-US
-From: Viken Dadhaniya <quic_vdadhani@quicinc.com>
-In-Reply-To: <d784e46d-974d-4bf3-a2d3-491e7ad19701@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
- signatures=585085
-X-Proofpoint-ORIG-GUID: UTP_M8OGb3LdCuB_7DUa4e32perp86ZZ
-X-Proofpoint-GUID: UTP_M8OGb3LdCuB_7DUa4e32perp86ZZ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-08_08,2024-03-06_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- lowpriorityscore=0
- phishscore=0 adultscore=0 spamscore=0 priorityscore=1501 clxscore=1015
- bulkscore=0 suspectscore=0 malwarescore=0 impostorscore=0 mlxscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2402120000 definitions=main-2403080102
-X-MailFrom: quic_vdadhani@quicinc.com
+X-MailFrom: ilpo.jarvinen@linux.intel.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: SKJVHLAA5RUKB3PNSFXTIUC6RA2LGNIP
-X-Message-ID-Hash: SKJVHLAA5RUKB3PNSFXTIUC6RA2LGNIP
+Message-ID-Hash: YOSC77IWNBKO5SZNLK3OI5FBF2CC4URZ
+X-Message-ID-Hash: YOSC77IWNBKO5SZNLK3OI5FBF2CC4URZ
 X-Mailman-Approved-At: Sat, 09 Mar 2024 10:12:12 +0000
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=ISO-8859-15
+X-Content-Filtered-By: Mailman/MimeDel 3.3.9
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SKJVHLAA5RUKB3PNSFXTIUC6RA2LGNIP/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YOSC77IWNBKO5SZNLK3OI5FBF2CC4URZ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -125,48 +106,98 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+On Fri, 8 Mar 2024, Richard Fitzgerald wrote:
 
+> From: Simon Trimmer <simont@opensource.cirrus.com>
+>=20
+> Add the ACPI HIDs and smi_node descriptions for the CS35L54 and CS35L57
+> Boosted Smart Amplifiers.
+>=20
+> Signed-off-by: Simon Trimmer <simont@opensource.cirrus.com>
+> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+> ---
+> This patch doesn't have any build dependencies on the ASOC/HDA code so
+> can be take separately.
 
-On 3/6/2024 2:46 AM, Konrad Dybcio wrote:
-> 
-> 
-> On 3/4/24 14:50, Viken Dadhaniya wrote:
->> Currently we have auto suspend delay of 1s which is
->> very high and it takes long time to driver for runtime
->> suspend after use case is done.
->>
->> Hence to optimize runtime PM ops, reduce auto suspend
->> delay to 100ms.
->>
->> Signed-off-by: Viken Dadhaniya <quic_vdadhani@quicinc.com>
->> ---
-> 
-> What determines 1s to be high and 100ms to be low enough? Could
-> you share some more reasoning?
+Acked-by: Ilpo J=E4rvinen <ilpo.jarvinen@linux.intel.com>
 
-Right now we don't have exact number which can quantify either power or 
-performance. But we are following small window so as to not keep timer 
-running longer while having resources like Clock ON. Theoretically and 
-testing wise, this is not creating any side effect too.
+--=20
+ i.
 
-> 
->>   drivers/slimbus/qcom-ngd-ctrl.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/slimbus/qcom-ngd-ctrl.c 
->> b/drivers/slimbus/qcom-ngd-ctrl.c
->> index efeba8275a66..5de45a0e3da5 100644
->> --- a/drivers/slimbus/qcom-ngd-ctrl.c
->> +++ b/drivers/slimbus/qcom-ngd-ctrl.c
->> @@ -81,7 +81,7 @@
->>   #define SLIM_USR_MC_DISCONNECT_PORT    0x2E
->>   #define SLIM_USR_MC_REPEAT_CHANGE_VALUE    0x0
->> -#define QCOM_SLIM_NGD_AUTOSUSPEND    MSEC_PER_SEC
->> +#define QCOM_SLIM_NGD_AUTOSUSPEND    (MSEC_PER_SEC / 10)
-> 
-> This could be a good opportunity to inline this value..
-
-Updated in v2.
-
-> 
-> Konrad
+> ---
+>  drivers/acpi/scan.c                           |  2 ++
+>  .../platform/x86/serial-multi-instantiate.c   | 28 +++++++++++++++++++
+>  2 files changed, 30 insertions(+)
+>=20
+> diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
+> index e6ed1ba91e5c..091c501bed1f 100644
+> --- a/drivers/acpi/scan.c
+> +++ b/drivers/acpi/scan.c
+> @@ -1725,7 +1725,9 @@ static bool acpi_device_enumeration_by_parent(struc=
+t acpi_device *device)
+>  		{"BSG1160", },
+>  		{"BSG2150", },
+>  		{"CSC3551", },
+> +		{"CSC3554", },
+>  		{"CSC3556", },
+> +		{"CSC3557", },
+>  		{"INT33FE", },
+>  		{"INT3515", },
+>  		/* Non-conforming _HID for Cirrus Logic already released */
+> diff --git a/drivers/platform/x86/serial-multi-instantiate.c b/drivers/pl=
+atform/x86/serial-multi-instantiate.c
+> index 8158e3cf5d6d..97b9c6392230 100644
+> --- a/drivers/platform/x86/serial-multi-instantiate.c
+> +++ b/drivers/platform/x86/serial-multi-instantiate.c
+> @@ -329,6 +329,19 @@ static const struct smi_node cs35l41_hda =3D {
+>  	.bus_type =3D SMI_AUTO_DETECT,
+>  };
+> =20
+> +static const struct smi_node cs35l54_hda =3D {
+> +	.instances =3D {
+> +		{ "cs35l54-hda", IRQ_RESOURCE_AUTO, 0 },
+> +		{ "cs35l54-hda", IRQ_RESOURCE_AUTO, 0 },
+> +		{ "cs35l54-hda", IRQ_RESOURCE_AUTO, 0 },
+> +		{ "cs35l54-hda", IRQ_RESOURCE_AUTO, 0 },
+> +		/* a 5th entry is an alias address, not a real device */
+> +		{ "cs35l54-hda_dummy_dev" },
+> +		{}
+> +	},
+> +	.bus_type =3D SMI_AUTO_DETECT,
+> +};
+> +
+>  static const struct smi_node cs35l56_hda =3D {
+>  	.instances =3D {
+>  		{ "cs35l56-hda", IRQ_RESOURCE_AUTO, 0 },
+> @@ -342,6 +355,19 @@ static const struct smi_node cs35l56_hda =3D {
+>  	.bus_type =3D SMI_AUTO_DETECT,
+>  };
+> =20
+> +static const struct smi_node cs35l57_hda =3D {
+> +	.instances =3D {
+> +		{ "cs35l57-hda", IRQ_RESOURCE_AUTO, 0 },
+> +		{ "cs35l57-hda", IRQ_RESOURCE_AUTO, 0 },
+> +		{ "cs35l57-hda", IRQ_RESOURCE_AUTO, 0 },
+> +		{ "cs35l57-hda", IRQ_RESOURCE_AUTO, 0 },
+> +		/* a 5th entry is an alias address, not a real device */
+> +		{ "cs35l57-hda_dummy_dev" },
+> +		{}
+> +	},
+> +	.bus_type =3D SMI_AUTO_DETECT,
+> +};
+> +
+>  /*
+>   * Note new device-ids must also be added to ignore_serial_bus_ids in
+>   * drivers/acpi/scan.c: acpi_device_enumeration_by_parent().
+> @@ -350,7 +376,9 @@ static const struct acpi_device_id smi_acpi_ids[] =3D=
+ {
+>  	{ "BSG1160", (unsigned long)&bsg1160_data },
+>  	{ "BSG2150", (unsigned long)&bsg2150_data },
+>  	{ "CSC3551", (unsigned long)&cs35l41_hda },
+> +	{ "CSC3554", (unsigned long)&cs35l54_hda },
+>  	{ "CSC3556", (unsigned long)&cs35l56_hda },
+> +	{ "CSC3557", (unsigned long)&cs35l57_hda },
+>  	{ "INT3515", (unsigned long)&int3515_data },
+>  	/* Non-conforming _HID for Cirrus Logic already released */
+>  	{ "CLSA0100", (unsigned long)&cs35l41_hda },
+>=20
