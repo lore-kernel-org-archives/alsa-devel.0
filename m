@@ -4,60 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 68331C54E4A
-	for <alsa-devel@archiver.kernel.org>; Fri,  8 Mar 2024 17:53:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9EE78C5475B
+	for <alsa-devel@archiver.kernel.org>; Fri,  8 Mar 2024 17:53:22 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 85668828;
-	Fri,  8 Mar 2024 18:52:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 85668828
+	by alsa0.perex.cz (Postfix) with ESMTPS id 94F1C93A;
+	Fri,  8 Mar 2024 18:53:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 94F1C93A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1709920380;
-	bh=J64dE3WP+PZYmP2KxggN7FPTEDJqMClbq9ewdZ6bQpc=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=SJmY/vFXH8lLBpf2Zb7JAdTa2jPpBelGsJVee9GYRMGUPCt031oKlTFZymYzrmeAI
-	 iySiZPbrRaqgxfbn8lLd6NFtO5C6cUbAb3ilNbPXctWpbcuUa8cuiWxr0SAkH9a05G
-	 nV9cveffui9pM/tP6y4i/ieaudF5s8kukfj8hpPE=
+	s=default; t=1709920400;
+	bh=Jw6H/X0CX/61elARNUFXKlsTxT779kTCRm/xhTeM5I8=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=usGxpXcnFCloxfZ07mYdDggnHkRXcv/mOUWfMUkxT3XT6VtgyVNNjkFyOC/gqeqdD
+	 KgmLnNXTSj82Hq5DWtLtJbvppsmJhUJbnEPCBsoCqvysnb0gdgB0hy/ew9M7KZ00Em
+	 V7ngSAlae6qp8cCe4XZj2Sq6gLhsUwzT3/JfKJoA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id ADD0DF80639; Fri,  8 Mar 2024 18:51:58 +0100 (CET)
+	id 61507F80699; Fri,  8 Mar 2024 18:52:02 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5DDF0F805F8;
-	Fri,  8 Mar 2024 18:51:57 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 56DE9F80619;
+	Fri,  8 Mar 2024 18:51:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 80924F804B0; Fri,  8 Mar 2024 18:46:12 +0100 (CET)
+	id 47AF4F8024E; Fri,  8 Mar 2024 18:46:25 +0100 (CET)
 Received: from irl.hu (irl.hu [95.85.9.111])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
  server-digest SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with UTF8SMTPS id EB9DBF80087
-	for <alsa-devel@alsa-project.org>; Fri,  8 Mar 2024 18:42:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EB9DBF80087
+	by alsa1.perex.cz (Postfix) with UTF8SMTPS id E534FF80093
+	for <alsa-devel@alsa-project.org>; Fri,  8 Mar 2024 18:42:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E534FF80093
 Received: from fedori.lan (51b693e7.dsl.pool.telekom.hu
  [::ffff:81.182.147.231])
   (AUTH: CRAM-MD5 soyer@irl.hu, )
   by irl.hu with ESMTPSA
-  id 00000000000767FD.0000000065EB4DED.0020A5AB;
- Fri, 08 Mar 2024 18:42:05 +0100
+  id 000000000007680E.0000000065EB4DEF.0020A5B8;
+ Fri, 08 Mar 2024 18:42:07 +0100
 From: Gergo Koteles <soyer@irl.hu>
 To: Shenghao Ding <shenghao-ding@ti.com>, Kevin Lu <kevin-lu@ti.com>,
   Baojun Xu <baojun.xu@ti.com>, Jaroslav Kysela <perex@perex.cz>,
   Takashi Iwai <tiwai@suse.com>
 Cc: alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
   linux-kernel@vger.kernel.org, Gergo Koteles <soyer@irl.hu>
-Subject: [PATCH 0/5] ALSA: hda/tas2781: restore power state after
- system_resume
-Date: Fri,  8 Mar 2024 18:41:39 +0100
-Message-ID: <cover.1709918447.git.soyer@irl.hu>
+Subject: [PATCH 2/5] ALSA: hda/tas2781: add lock to system_suspend
+Date: Fri,  8 Mar 2024 18:41:41 +0100
+Message-ID: 
+ <c666da13d4bc48cd1ab1357479e0c6096541372c.1709918447.git.soyer@irl.hu>
 X-Mailer: git-send-email 2.44.0
+In-Reply-To: <cover.1709918447.git.soyer@irl.hu>
+References: <cover.1709918447.git.soyer@irl.hu>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 X-Mime-Autoconverted: from 8bit to 7bit by courier 1.0
-Message-ID-Hash: FN5QKQZBRCW6FSM2UACNAOOCE4J6HGIQ
-X-Message-ID-Hash: FN5QKQZBRCW6FSM2UACNAOOCE4J6HGIQ
+Message-ID-Hash: PXSSCIQM2DRVR2ESUL4MTARZ7XN2GXPC
+X-Message-ID-Hash: PXSSCIQM2DRVR2ESUL4MTARZ7XN2GXPC
 X-MailFrom: soyer@irl.hu
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -70,7 +73,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FN5QKQZBRCW6FSM2UACNAOOCE4J6HGIQ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PXSSCIQM2DRVR2ESUL4MTARZ7XN2GXPC/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -79,23 +82,32 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-This series makes some simplifications, speeding up the start of the 
-playback and restoring the power state of the amplifiers after 
-system_resume.
+Add the missing lock around tasdevice_tuning_switch().
 
-Gergo Koteles (5):
-  ALSA: hda/tas2781: use dev_dbg in system_resume
-  ALSA: hda/tas2781: add lock to system_suspend
-  ALSA: hda/tas2781: do not reset cur_* values in runtime_suspend
-  ALSA: hda/tas2781: do not call pm_runtime_force_* in
-    system_resume/suspend
-  ALSA: hda/tas2781: restore power state after system_resume
+Fixes: 5be27f1e3ec9 ("ALSA: hda/tas2781: Add tas2781 HDA driver")
+Signed-off-by: Gergo Koteles <soyer@irl.hu>
+---
+ sound/pci/hda/tas2781_hda_i2c.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
- sound/pci/hda/tas2781_hda_i2c.c | 35 ++++++++++++++++-----------------
- 1 file changed, 17 insertions(+), 18 deletions(-)
-
-
-base-commit: 90d35da658da8cff0d4ecbb5113f5fac9d00eb72
+diff --git a/sound/pci/hda/tas2781_hda_i2c.c b/sound/pci/hda/tas2781_hda_i2c.c
+index ee3e0afc9b31..750e49fbb91e 100644
+--- a/sound/pci/hda/tas2781_hda_i2c.c
++++ b/sound/pci/hda/tas2781_hda_i2c.c
+@@ -885,9 +885,13 @@ static int tas2781_system_suspend(struct device *dev)
+ 	if (ret)
+ 		return ret;
+ 
++	mutex_lock(&tas_hda->priv->codec_lock);
++
+ 	/* Shutdown chip before system suspend */
+ 	tasdevice_tuning_switch(tas_hda->priv, 1);
+ 
++	mutex_unlock(&tas_hda->priv->codec_lock);
++
+ 	/*
+ 	 * Reset GPIO may be shared, so cannot reset here.
+ 	 * However beyond this point, amps may be powered down.
 -- 
 2.44.0
 
