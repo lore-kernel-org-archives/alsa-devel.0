@@ -4,78 +4,157 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 44465C5475B
-	for <alsa-devel@archiver.kernel.org>; Fri,  8 Mar 2024 14:13:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 53882C54E4A
+	for <alsa-devel@archiver.kernel.org>; Fri,  8 Mar 2024 17:52:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EAA77741;
-	Fri,  8 Mar 2024 15:13:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EAA77741
+	by alsa0.perex.cz (Postfix) with ESMTPS id B1DF91F4;
+	Fri,  8 Mar 2024 18:52:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B1DF91F4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1709907197;
-	bh=E2jQGhctqhdTeyf9K9GCx+OjkomQmjygegGT1CBBREQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1709920342;
+	bh=jSd7IIXQ7VLOmg5dOyp3aWtcasoACFv/Wzn1lQdNPGQ=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=nVjKWU1CO3tqyyKFv4WkRd8aCRKTsvL//rxKd1wolyMnANDHTFiZjgPlHR5Zw3LHX
-	 qz+H3KSwCr99WXZ2hBMI1eF46W9vHw4snM8JzEVvnk50UZgvqjg1ZnqIxSjWqOuxfM
-	 +h+aJkRPYr2WzmvCtwIHAyU0Xty6hwWZpY2OKZ0I=
+	b=s3WHUSaHfI0k4UyS0Rfv0yuo+1QNepQTfkAXhs0tmAewVR1+ZYvxmihPAdbMGIK8p
+	 woT2SOLq4ZUxu3dr5K6+j8elYigFIUK3gimux1wGz9A7Al84NAHSlhq5mqizb3EpoC
+	 K8VWA1IP0JpW3VSAH8HlrAFhRW+wQTNBEkH+JbSQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B7B94F8057A; Fri,  8 Mar 2024 15:12:45 +0100 (CET)
+	id 20FA7F8024E; Fri,  8 Mar 2024 18:51:50 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 03AE7F805AA;
-	Fri,  8 Mar 2024 15:12:45 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 70790F805A8;
+	Fri,  8 Mar 2024 18:51:47 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 70A8EF8024E; Fri,  8 Mar 2024 15:12:40 +0100 (CET)
-Received: from sin.source.kernel.org (sin.source.kernel.org
- [IPv6:2604:1380:40e1:4800::1])
+	id 9613CF80093; Fri,  8 Mar 2024 18:33:38 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 6A58FF80088
-	for <alsa-devel@alsa-project.org>; Fri,  8 Mar 2024 15:12:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6A58FF80088
+	by alsa1.perex.cz (Postfix) with ESMTPS id D60DCF80093
+	for <alsa-devel@alsa-project.org>; Fri,  8 Mar 2024 18:28:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D60DCF80093
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=GI24qi44
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 37639CE25A6;
-	Fri,  8 Mar 2024 14:12:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70B52C43390;
-	Fri,  8 Mar 2024 14:12:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709907153;
-	bh=E2jQGhctqhdTeyf9K9GCx+OjkomQmjygegGT1CBBREQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=GI24qi44A/VKrjHaZyry5snyO4/S802K7VYlZx5PFgC7N79guUAXhow08Urp7MUAK
-	 ByE8lXVWDynmqBRDBgcg/wTmFHls89Nsbatq/i9pifile8ZwwfDSBJdF4Bf55YE9fh
-	 EuHcsPsvO5TzB/cmJW04FgYGCJ85bffDyTvDmR5H6HxfDE2lO5aD2uwg1AvenRILIy
-	 wnUEEKlLysKL06eTY27BGRD2qLD2eTxah7JGI80+QvEnlQ3AlxMAcjRJhnUVgmJwHg
-	 GR05l60AYWnmAW1L0gztoN+bUZtf1y9dniOxOk1/GPl33MMBTUXX3bqEGBNI5SdXRt
-	 01DmTSJSzzDGA==
-Date: Fri, 8 Mar 2024 14:12:27 +0000
-From: Mark Brown <broonie@kernel.org>
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=Q3v8WJFx;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=JabkKrle;
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.a=rsa-sha256 header.s=susede2_rsa header.b=Q3v8WJFx;
+	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=JabkKrle
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 32C7F38984;
+	Fri,  8 Mar 2024 17:01:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1709917300;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=JplA17DpVz2NSdYvWMuTpMBcFjE3T30ebSwmXrG1t4E=;
+	b=Q3v8WJFx7o2fsPQpSOC/SLdlrPBcMqqbM6FKV/IVhO/MwGfFJJj26pmz4LyhP1E1Bp8rlY
+	pldcsGR/3ihuclHzqHasc4eqEx87v58Iq+umN6WBJ3G5ZmWQGzBISyzBrKQbT/959FidAs
+	U2rTWXmsUjBo/XeO+r1UtYvIs2xmU3s=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1709917300;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=JplA17DpVz2NSdYvWMuTpMBcFjE3T30ebSwmXrG1t4E=;
+	b=JabkKrleE3jFzGoB6O82N27VgsmfyaAH0LcGEa2IiIIVG+usEXnMxjUP9EFgUgriAlTnsX
+	YoOL9JKpQtqZkoDw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1709917300;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=JplA17DpVz2NSdYvWMuTpMBcFjE3T30ebSwmXrG1t4E=;
+	b=Q3v8WJFx7o2fsPQpSOC/SLdlrPBcMqqbM6FKV/IVhO/MwGfFJJj26pmz4LyhP1E1Bp8rlY
+	pldcsGR/3ihuclHzqHasc4eqEx87v58Iq+umN6WBJ3G5ZmWQGzBISyzBrKQbT/959FidAs
+	U2rTWXmsUjBo/XeO+r1UtYvIs2xmU3s=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1709917300;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=JplA17DpVz2NSdYvWMuTpMBcFjE3T30ebSwmXrG1t4E=;
+	b=JabkKrleE3jFzGoB6O82N27VgsmfyaAH0LcGEa2IiIIVG+usEXnMxjUP9EFgUgriAlTnsX
+	YoOL9JKpQtqZkoDw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CDB0A133DC;
+	Fri,  8 Mar 2024 17:01:39 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id PvNnMHNE62XTYgAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Fri, 08 Mar 2024 17:01:39 +0000
+Date: Fri, 08 Mar 2024 18:01:38 +0100
+Message-ID: <87bk7od5e5.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
 To: Richard Fitzgerald <rf@opensource.cirrus.com>
-Cc: tiwai@suse.com, hdegoede@redhat.com, lenb@kernel.org, rafael@kernel.org,
-	linux-sound@vger.kernel.org, alsa-devel@alsa-project.org,
-	linux-kernel@vger.kernel.org, patches@opensource.cirrus.com,
-	platform-driver-x86@vger.kernel.org, linux-acpi@vger.kernel.org,
-	Simon Trimmer <simont@opensource.cirrus.com>
-Subject: Re: [PATCH 1/3] ASoC: cs35l56: Add support for CS35L54 and CS35L57
-Message-ID: <275d4e66-dc76-47cc-9681-e60b218a8cc7@sirena.org.uk>
+Cc: <broonie@kernel.org>,
+	<tiwai@suse.com>,
+	<hdegoede@redhat.com>,
+	<lenb@kernel.org>,
+	<rafael@kernel.org>,
+	<linux-sound@vger.kernel.org>,
+	<alsa-devel@alsa-project.org>,
+	<linux-kernel@vger.kernel.org>,
+	<patches@opensource.cirrus.com>,
+	<platform-driver-x86@vger.kernel.org>,
+	<linux-acpi@vger.kernel.org>
+Subject: Re: [PATCH 0/3] ALSA: Add support for Cirrus Logic CS35L54 and
+ CS35L57
+In-Reply-To: <20240308135900.603192-1-rf@opensource.cirrus.com>
 References: <20240308135900.603192-1-rf@opensource.cirrus.com>
- <20240308135900.603192-2-rf@opensource.cirrus.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="UB2zcriJOOZ1VYZ+"
-Content-Disposition: inline
-In-Reply-To: <20240308135900.603192-2-rf@opensource.cirrus.com>
-X-Cookie: Isn't this my STOP?!
-Message-ID-Hash: QHTRS5Y5GW62FLMLRWPX5O62WDSC5X72
-X-Message-ID-Hash: QHTRS5Y5GW62FLMLRWPX5O62WDSC5X72
-X-MailFrom: broonie@kernel.org
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=Q3v8WJFx;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=JabkKrle
+X-Spamd-Result: default: False [-2.82 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 URIBL_BLOCKED(0.00)[suse.de:dkim];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 DWL_DNSWL_MED(-2.00)[suse.de:dkim];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.de:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_TWELVE(0.00)[12];
+	 MID_CONTAINS_FROM(1.00)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-1.51)[91.76%];
+	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]
+X-Rspamd-Queue-Id: 32C7F38984
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+Message-ID-Hash: NQ3MHVJI3XQWXZ5U5IXE3PROCPUIEN63
+X-Message-ID-Hash: NQ3MHVJI3XQWXZ5U5IXE3PROCPUIEN63
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -87,7 +166,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QHTRS5Y5GW62FLMLRWPX5O62WDSC5X72/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NQ3MHVJI3XQWXZ5U5IXE3PROCPUIEN63/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -96,34 +175,32 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-
---UB2zcriJOOZ1VYZ+
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Fri, Mar 08, 2024 at 01:58:58PM +0000, Richard Fitzgerald wrote:
-> From: Simon Trimmer <simont@opensource.cirrus.com>
->=20
+On Fri, 08 Mar 2024 14:58:57 +0100,
+Richard Fitzgerald wrote:
+> 
 > The CS35L54 and CS35L57 are Boosted Smart Amplifiers. The CS35L54 has
 > I2C/SPI control and I2S/TDM audio. The CS35L57 also has SoundWire
 > control and audio.
+>     
+> The hardware differences between L54, L56 and L57 do not affect the
+> driver control interface so they can all be handled by the same driver.
+> 
+> The HDA patch has build dependencies on the ASoC patch.
+> 
+> The final patch updates serial-multi-instantiate and scan.c to trap
+> the ACPI HID for HDA systems that declare multiple amps all under one
+> Device() node. This patch does not have any build dependency on the
+> first two patches so can be taken separately.
+> 
+> Simon Trimmer (3):
+>   ASoC: cs35l56: Add support for CS35L54 and CS35L57
+>   ALSA: hda: cs35l56: Add support for CS35L54 and CS35L57
+>   platform/x86: serial-multi-instantiate: Add support for CS35L54 and
+>     CS35L57
 
-Acked-by: Mark Brown <broonie@kernel.org>
+Applied all three patches to for-next branch now.
 
---UB2zcriJOOZ1VYZ+
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
+thanks,
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXrHMoACgkQJNaLcl1U
-h9BJNgf/col+eBURywhfhU3h5mWvgk9QsAP/3Q91Vw+e7Gs1iqslPA8VMZ8hEEpl
-ju6worO4W2byKRApwSBWq9otMb6RHqliZPejYB+CYMjEmd4dGMYN9a23NXDGE/Kh
-0naRleJyq2sT3icE9dkxYav2I3wGKlekSgnyKeO214cm91kdfA3YrOn1ahna6Wrq
-dZQagOFwx7/Vg33BBzOvMpbaVMtAQTcTcnk4QhaLQbOJG4tezTQHXKis2hnHDOsI
-ah1fvI3VC6nUIZDGEIZPb/Hmi3+gyiWrPyH2jmj3wUg2bacHPHJHYCxjIt6AOFKx
-H44hhHYLhLuzmJXgiVshJBxdsAwHbQ==
-=kY3n
------END PGP SIGNATURE-----
-
---UB2zcriJOOZ1VYZ+--
+Takashi
