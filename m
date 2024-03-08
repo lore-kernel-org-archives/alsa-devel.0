@@ -4,95 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C422DC54E4A
-	for <alsa-devel@archiver.kernel.org>; Fri,  8 Mar 2024 08:35:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4343EC5475B
+	for <alsa-devel@archiver.kernel.org>; Fri,  8 Mar 2024 09:04:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CE191820;
-	Fri,  8 Mar 2024 09:35:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CE191820
+	by alsa0.perex.cz (Postfix) with ESMTPS id AA2721CE;
+	Fri,  8 Mar 2024 10:04:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AA2721CE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1709886956;
-	bh=Pzu0gaWkTDesifP6Q2YOgfjmau3I8TTI4fcSFW4LqO8=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=rR8ekCXsiB78dZ+yQBzHhj9UIDAlPSTMHbRsXtGfnYhsn7okYvbVnBZ0/r6StthPo
-	 3S2p4d6O4LDEfbThk4GtcsdxS5PVPYrWqWrCNJJQNvzJU1xRDlC1f2mvnqnKwsnHoJ
-	 l+/HLjAgVM457RTTFkHMGYkQIha3KltJD8JDByxs=
+	s=default; t=1709888655;
+	bh=60Mwhx3nnlEAz6uV5d5w6IxQadSN0bJCde0NZHBkIZ0=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=Pp1juHWLAE00LIh4EEwo4rUDHl/PeBxgD5mmPCPr8HOaVn9K6QrzlVweBRE+MGyr8
+	 e3NqKaxcZFTE9MA6GBZltSwg+29PRpQokPXY7CKkyu4v+IC3QsogtFrfZZTgA2kR3P
+	 CsPK1kfpY3hbLOwCkOyzj5661hi70FYqyYID3DcM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3D8E8F805AD; Fri,  8 Mar 2024 09:35:25 +0100 (CET)
+	id AED4BF8057C; Fri,  8 Mar 2024 10:03:43 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id DE3E2F80087;
-	Fri,  8 Mar 2024 09:35:24 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6CFAEF8057E;
+	Fri,  8 Mar 2024 10:03:42 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6D2FCF8024E; Fri,  8 Mar 2024 09:35:18 +0100 (CET)
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com
- [IPv6:2a00:1098:ed:100::25])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 72AFDF804B0; Fri,  8 Mar 2024 10:03:36 +0100 (CET)
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 181BEF80087
-	for <alsa-devel@alsa-project.org>; Fri,  8 Mar 2024 09:35:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 181BEF80087
+	by alsa1.perex.cz (Postfix) with ESMTPS id DEEB8F80093
+	for <alsa-devel@alsa-project.org>; Fri,  8 Mar 2024 10:03:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DEEB8F80093
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=collabora.com header.i=@collabora.com
- header.a=rsa-sha256 header.s=mail header.b=Rvngq1IG
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1709886907;
-	bh=Pzu0gaWkTDesifP6Q2YOgfjmau3I8TTI4fcSFW4LqO8=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=Rvngq1IGeh+RcP8rkLUgR3vxThFsprDzFgDjGcGG+mms1y5TwzyBtcrHJT4hIJN21
-	 fTDOqY8Dlovk1QHdUIBtd/Lw4XKmIIXPSOF0GTBMOlMoRJLKlNCOcsaK2+H3xCPLlW
-	 V+lrASTtZ0n3k9r8Ts5VUFjAXbb2LH83Q+jFapF2QW9Yr9LP3d0FUeTPRn1cNjPEJi
-	 g/5PElyi1RT47FWOMr8baVeb6i2xiuPdYby/IQ6ov7DH5FL+ExA48uMk+nou7wwoH+
-	 BzCIUPnzk9fc6GtHSudp5mnaPUK49lmkEQlS/VD6m5XcGPsjfcRy1X9srcrb5eUMUc
-	 VTSIBPn03Xh/A==
-Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 9DFD737813CA;
-	Fri,  8 Mar 2024 08:35:05 +0000 (UTC)
-Message-ID: <25a93c67-35d8-4ce6-86f0-780559d58e96@collabora.com>
-Date: Fri, 8 Mar 2024 09:35:05 +0100
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=HqC74FY9
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709888609; x=1741424609;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=60Mwhx3nnlEAz6uV5d5w6IxQadSN0bJCde0NZHBkIZ0=;
+  b=HqC74FY9KfWigq3AldnEZJgWK7uzLzXQzhe9Pfgg1rsqRsvNpewJyZH/
+   3oOoNXq85li/3A7zG2atrEdcPtzAE6PP6WYD9HVo61zU83dTGC3OUtd2s
+   Y33KvGyTyn1Pd5MmxYlQ6l4ZG/B+iMgHYFC8qXB68jSKJ5wTUA3W1OkRD
+   7l1ALZubu+kVr/CgunM/bfbAvW1ZLEFeoocOah0UrTT15kzUenJvoYuxU
+   Z03o9CihTpdzs/DqH2/sB5pIruUMPF4Sfh9PZrp+ld0o/kplCyhW6MViW
+   tAf/MT6fjm2GVYadsO0vaayh8jGdf6iDjBB9Ys9Ncbv53vOMMiohM1X5A
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="15246986"
+X-IronPort-AV: E=Sophos;i="6.07,109,1708416000";
+   d="scan'208";a="15246986"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 08 Mar 2024 01:03:23 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,109,1708416000";
+   d="scan'208";a="10419237"
+Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
+  by orviesa010.jf.intel.com with ESMTP; 08 Mar 2024 01:03:21 -0800
+From: Cezary Rojewski <cezary.rojewski@intel.com>
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org,
+	linux-sound@vger.kernel.org,
+	tiwai@suse.com,
+	perex@perex.cz,
+	amadeuszx.slawinski@linux.intel.com,
+	pierre-louis.bossart@linux.intel.com,
+	hdegoede@redhat.com,
+	Cezary Rojewski <cezary.rojewski@intel.com>
+Subject: [PATCH v2 0/5] ASoC: Harden DAPM route checks and Intel fixes
+Date: Fri,  8 Mar 2024 10:04:57 +0100
+Message-Id: <20240308090502.2136760-1-cezary.rojewski@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 19/22] ASoC: dt-bindings: mt8192: Document
- audio-routing and dai-link subnode
-To: Rob Herring <robh@kernel.org>
-Cc: broonie@kernel.org, wenst@chromium.org, lgirdwood@gmail.com,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- matthias.bgg@gmail.com, perex@perex.cz, tiwai@suse.com,
- trevor.wu@mediatek.com, maso.huang@mediatek.com,
- xiazhengqiao@huaqin.corp-partner.google.com, arnd@arndb.de,
- kuninori.morimoto.gx@renesas.com, shraash@google.com, amergnat@baylibre.com,
- nicolas.ferre@microchip.com, u.kleine-koenig@pengutronix.de,
- dianders@chromium.org, frank.li@vivo.com, allen-kh.cheng@mediatek.com,
- eugen.hristev@collabora.com, claudiu.beznea@tuxon.dev,
- jarkko.nikula@bitmer.com, jiaxin.yu@mediatek.com, alpernebiyasak@gmail.com,
- ckeepax@opensource.cirrus.com, zhourui@huaqin.corp-partner.google.com,
- nfraprado@collabora.com, alsa-devel@alsa-project.org,
- shane.chien@mediatek.com, linux-sound@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
- kernel@collabora.com
-References: <20240307114445.196981-1-angelogioacchino.delregno@collabora.com>
- <20240307114445.196981-20-angelogioacchino.delregno@collabora.com>
- <20240307141228.GA2491015-robh@kernel.org>
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Content-Language: en-US
-In-Reply-To: <20240307141228.GA2491015-robh@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: EV4SGSMJ6CRUFKLRGGFTU72653XBTTFY
-X-Message-ID-Hash: EV4SGSMJ6CRUFKLRGGFTU72653XBTTFY
-X-MailFrom: angelogioacchino.delregno@collabora.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: B5QFXXBGEGNOOUJVKC7B6REZ32OPJVT7
+X-Message-ID-Hash: B5QFXXBGEGNOOUJVKC7B6REZ32OPJVT7
+X-MailFrom: cezary.rojewski@intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -104,7 +92,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/EV4SGSMJ6CRUFKLRGGFTU72653XBTTFY/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/B5QFXXBGEGNOOUJVKC7B6REZ32OPJVT7/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -113,74 +101,52 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Il 07/03/24 15:12, Rob Herring ha scritto:
-> On Thu, Mar 07, 2024 at 12:44:42PM +0100, AngeloGioacchino Del Regno wrote:
->> Document the dai-link subnodes and the audio-routing property, allowing
->> to describe machine specific audio hardware and links in device tree.
->>
->> While at it, also deprecate the old properties which were previously
->> used with the driver's partially hardcoded configuration.
->>
-> 
-> I replied on v1, but one more thing here.
-> 
->> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
->> ---
->>   .../sound/mt8192-mt6359-rt1015-rt5682.yaml    | 124 ++++++++++++++++--
->>   1 file changed, 115 insertions(+), 9 deletions(-)
->>
->> diff --git a/Documentation/devicetree/bindings/sound/mt8192-mt6359-rt1015-rt5682.yaml b/Documentation/devicetree/bindings/sound/mt8192-mt6359-rt1015-rt5682.yaml
->> index 7e50f5d65c8f..449454c50dcc 100644
->> --- a/Documentation/devicetree/bindings/sound/mt8192-mt6359-rt1015-rt5682.yaml
->> +++ b/Documentation/devicetree/bindings/sound/mt8192-mt6359-rt1015-rt5682.yaml
->> @@ -13,6 +13,9 @@ maintainers:
->>   description:
->>     This binding describes the MT8192 sound card.
->>   
->> +allOf:
->> +  - $ref: sound-card-common.yaml#
->> +
->>   properties:
->>     compatible:
->>       enum:
->> @@ -20,6 +23,14 @@ properties:
->>         - mediatek,mt8192_mt6359_rt1015p_rt5682
->>         - mediatek,mt8192_mt6359_rt1015p_rt5682s
->>   
->> +  audio-routing:
->> +    description:
->> +      A list of the connections between audio components. Each entry is a
->> +      pair of strings, the first being the connection's sink, the second
->> +      being the connection's source.
->> +      Valid names could be the input or output widgets of audio components,
->> +      power supplies, MicBias of codec and the software switch.
->> +
->>     mediatek,platform:
->>       $ref: /schemas/types.yaml#/definitions/phandle
->>       description: The phandle of MT8192 ASoC platform.
->> @@ -27,10 +38,12 @@ properties:
->>     mediatek,hdmi-codec:
->>       $ref: /schemas/types.yaml#/definitions/phandle
->>       description: The phandle of HDMI codec.
->> +    deprecated: true
-> 
-> The deprecated keyword doesn't do anything at the moment, but my plan
-> there is to add a mode to the tools which disables all deprecated
-> properties. That will give you want you want in terms of disallowing
-> these properties.
+Set of loosely connected patches. Most impactful change is dropping any
+permisiveness when snd_soc_dapm_add_routes() fails in soc-topology.c To
+do it safely, disable route checks for all skylake-driver boards.
 
-That would definitely be awesome - looking forward to it!
+Relevant background:
 
-> 
-> That would require dropping them from "required" which I'm fine with you
-> doing. (Though technically that's still an ABI change)
-> 
+Since commit daa480bde6b3 ("ASoC: soc-core: tidyup for
+snd_soc_dapm_add_routes()") route checks are no longer permissive. Probe
+failures for Intel boards have been partially addressed by commit
+a22ae72b86a4 ("ASoC: soc-core: isable route checks for legacy devices")
+and its follow up but only skl_nau88l25_ssm4567.c is patched. The rest
+of the boards still need fixing.
 
-Then instead of waiting for you to add that mode and then remove stuff later,
-I'll just omit the `else: required:` block on v3, so that we avoid commit
-noise and all the warnings when the deprecated check gets released.
+After that, removal of copy-pastas found in ssm4567.c and redundant code
+in i2s_test.c for avs-boards.
 
-I guess that's fine, right?
+Changes in v2:
+- glk_rt5682_max98357a.c and skl_hda_dsp_generic.c now disable route
+  checks only for the skylake-drvier
+- asoc now logs failures of snd_soc_dapm_add_routes() in soc-topology.c
 
-Cheers,
-Angelo
+Amadeusz Sławiński (1):
+  ASoC: Intel: avs: i2s_test: Remove redundant dapm routes
+
+Cezary Rojewski (4):
+  ASoC: Intel: Disable route checks for Skylake boards
+  ASoC: topology: Do not ignore route checks when parsing graphs
+  ASoC: Intel: avs: ssm4567: Do not ignore route checks
+  ASoC: Intel: avs: ssm4567: Board cleanup
+
+ sound/soc/intel/avs/boards/i2s_test.c         | 79 -------------------
+ sound/soc/intel/avs/boards/ssm4567.c          |  5 +-
+ sound/soc/intel/boards/bxt_da7219_max98357a.c |  1 +
+ sound/soc/intel/boards/bxt_rt298.c            |  1 +
+ sound/soc/intel/boards/glk_rt5682_max98357a.c |  2 +
+ sound/soc/intel/boards/kbl_da7219_max98357a.c |  1 +
+ sound/soc/intel/boards/kbl_da7219_max98927.c  |  4 +
+ sound/soc/intel/boards/kbl_rt5660.c           |  1 +
+ sound/soc/intel/boards/kbl_rt5663_max98927.c  |  2 +
+ .../intel/boards/kbl_rt5663_rt5514_max98927.c |  1 +
+ sound/soc/intel/boards/skl_hda_dsp_generic.c  |  2 +
+ .../soc/intel/boards/skl_nau88l25_max98357a.c |  1 +
+ sound/soc/intel/boards/skl_rt286.c            |  1 +
+ sound/soc/soc-topology.c                      | 11 ++-
+ 14 files changed, 27 insertions(+), 85 deletions(-)
+
+-- 
+2.25.1
+
