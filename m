@@ -4,100 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AC0EEC54E41
-	for <alsa-devel@archiver.kernel.org>; Sat,  9 Mar 2024 10:20:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D295BC54798
+	for <alsa-devel@archiver.kernel.org>; Sat,  9 Mar 2024 12:57:03 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B1A5722CC;
-	Sat,  9 Mar 2024 11:20:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B1A5722CC
+	by alsa0.perex.cz (Postfix) with ESMTPS id D4894868;
+	Sat,  9 Mar 2024 13:56:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D4894868
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1709979652;
-	bh=H1pae9I4dPVZlw6CRHdNlnGqt4bwvpSKXKKFd4GTJUI=;
-	h=From:Date:To:cc:Subject:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=M18fdm8Vhb+pvObQESdZbflKUNU9LqCyw3lGyDmR4Z7BUIkLOMAaymMJ62Iig83Ml
-	 ZCezaggA9NeRI9hbueBB3dxPBUvrZfouQCGYRgkwUG8sP5JZPbDj4w6fHmkL0qOQ3G
-	 sFripJUgWHxsWNDPWgv0mOEkvA7k+Atpc9sYAM60=
+	s=default; t=1709989020;
+	bh=PVdx/k3JskFnVw+7FY7uLMiFcC0VvQuoTImjhf2Kbz4=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=qsaZT+gTojtvb2Gt/KiduYOyZ2qL59QLFa/eyvwk/zYRmoqF5qzaJ610vYsLLcOo6
+	 s8j7kln4MlDMAGnanOeQpVTMCQjclkSAyDmo5HnKw/BI1PLMUifcGpvRD5vhv/EU0h
+	 2KMW0sykGJtjJ8clDJ3s35AIwIq54Yh8Vfg14QIs=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 562F0F89789; Sat,  9 Mar 2024 11:14:10 +0100 (CET)
+	id 56A5FF80589; Sat,  9 Mar 2024 13:56:26 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E5194F8978A;
-	Sat,  9 Mar 2024 11:14:09 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E47B7F805A9;
+	Sat,  9 Mar 2024 13:56:25 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E1DA8F8024E; Fri,  8 Mar 2024 15:15:20 +0100 (CET)
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7964AF80088
-	for <alsa-devel@alsa-project.org>; Fri,  8 Mar 2024 15:15:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7964AF80088
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=Ta7VpCx3
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709907319; x=1741443319;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=nnJa2eJuW3gIneCAKpj1Ao6WHMfBOJS01uvb6VF/qzs=;
-  b=Ta7VpCx3Q8tpSSxeAzB+lQHu71325Iwtr2rspxmCNZv0wGhJzDJg4h1O
-   h/sHIrzfj0yyKaOk936YNsXE4pgkD1ARMf2B799HS9+y1Upf8ybY0/6AU
-   elm7BO/by1SBgE1NEqbaqwigqNRm542MHuxXZBd5A7i0vOJJarV4gCW9W
-   IF+cXLyG6x+cPw5Rrfz+lNc438PIJ+gAUk3iVnHKcW+L6yui0BkAIkgz5
-   KM9a7lCadRvUXW0EYPyMK5IxhDeKtMfLDq+bzm2HOVkzRM9YkUF21rV3D
-   9rS22hs/mEcu2Bushm8wqEvsF3x8R8IqykFMXU4jZTTY3wxEwKQhLnaq+
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="15765642"
-X-IronPort-AV: E=Sophos;i="6.07,109,1708416000";
-   d="scan'208";a="15765642"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 08 Mar 2024 06:15:16 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,109,1708416000";
-   d="scan'208";a="41450832"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost)
- ([10.245.244.186])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 08 Mar 2024 06:15:11 -0800
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Fri, 8 Mar 2024 16:15:08 +0200 (EET)
-To: Richard Fitzgerald <rf@opensource.cirrus.com>
-cc: broonie@kernel.org, tiwai@suse.com, Hans de Goede <hdegoede@redhat.com>,
-    lenb@kernel.org, "Rafael J. Wysocki" <rafael@kernel.org>,
-    linux-sound@vger.kernel.org, alsa-devel@alsa-project.org,
-    LKML <linux-kernel@vger.kernel.org>, patches@opensource.cirrus.com,
-    platform-driver-x86@vger.kernel.org, linux-acpi@vger.kernel.org,
-    Simon Trimmer <simont@opensource.cirrus.com>
-Subject: Re: [PATCH 3/3] platform/x86: serial-multi-instantiate: Add support
- for CS35L54 and CS35L57
-In-Reply-To: <20240308135900.603192-4-rf@opensource.cirrus.com>
-Message-ID: <ea3c3230-cdf1-c41f-47fd-8b47667f7c5c@linux.intel.com>
-References: <20240308135900.603192-1-rf@opensource.cirrus.com>
- <20240308135900.603192-4-rf@opensource.cirrus.com>
+	id D4899F8024E; Sat,  9 Mar 2024 13:56:17 +0100 (CET)
+Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
+ [207.180.221.201])
+	by alsa1.perex.cz (Postfix) with ESMTP id 1B49BF8014B
+	for <alsa-devel@alsa-project.org>; Sat,  9 Mar 2024 13:56:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1B49BF8014B
 MIME-Version: 1.0
-X-MailFrom: ilpo.jarvinen@linux.intel.com
-X-Mailman-Rule-Hits: nonmember-moderation
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1709988967430800676-webhooks-bot@alsa-project.org>
+References: <1709988967430800676-webhooks-bot@alsa-project.org>
+Subject: Unable to find amixer simple control
+Message-Id: <20240309125617.D4899F8024E@alsa1.perex.cz>
+Date: Sat,  9 Mar 2024 13:56:17 +0100 (CET)
+Message-ID-Hash: TLSQG4ZPNZU3OKL2LSQ6ZJLWE5PWZYP6
+X-Message-ID-Hash: TLSQG4ZPNZU3OKL2LSQ6ZJLWE5PWZYP6
+X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: YOSC77IWNBKO5SZNLK3OI5FBF2CC4URZ
-X-Message-ID-Hash: YOSC77IWNBKO5SZNLK3OI5FBF2CC4URZ
-X-Mailman-Approved-At: Sat, 09 Mar 2024 10:12:12 +0000
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=ISO-8859-15
-X-Content-Filtered-By: Mailman/MimeDel 3.3.9
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YOSC77IWNBKO5SZNLK3OI5FBF2CC4URZ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TLSQG4ZPNZU3OKL2LSQ6ZJLWE5PWZYP6/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -106,98 +66,41 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, 8 Mar 2024, Richard Fitzgerald wrote:
+alsa-project/alsa-utils issue #256 was opened from Ovalelephant35:
 
-> From: Simon Trimmer <simont@opensource.cirrus.com>
->=20
-> Add the ACPI HIDs and smi_node descriptions for the CS35L54 and CS35L57
-> Boosted Smart Amplifiers.
->=20
-> Signed-off-by: Simon Trimmer <simont@opensource.cirrus.com>
-> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-> ---
-> This patch doesn't have any build dependencies on the ASOC/HDA code so
-> can be take separately.
+Following are the output of terminal when trying to fetch amixer set:-
+```0
+amixer: Unable to find simple control 'DC Mode Enable',0
+1709919772.617362 WARNING measure-activity: Problem with amixer set "DC Mode Enable" mute amixer: Unable to find simple control 'V_REFOUT Enable',0
+1709919772.664983 WARNING measure-activity: Problem with amixer set "V_REFOUT Enable" unmute amixer: Unable to find simple control 'Mic Boost (+20dB)',0
+1709919772.766386 WARNING measure-activity: Problem with amixer set "Mic Boost (+20dB)" unmute amixer: Unable to find simple control 'DC Mode Enable',0
+1709919772.866294 WARNING measure-activity: amixer: Could not get DC Mode
+amixer: Unable to find simple control 'V_REFOUT Enable',0
+1709919772.916730 WARNING measure-activity: amixer: Could not get mic bias voltage. amixer: Unable to find simple control 'Mic Boost (+20dB)',0
+1709919773.016803 WARNING measure-activity: amixer: Could not get mic boost Traceback (most recent call last):
+File "/usr/bin/sugar-activity3", line 5, in <module>
+activityinstance.main()
+File "/usr/lib/python3.7/dist-packages/sugar3/activity/activityinstance.py", line 230, in main instance = create_activity_instance(activity_constructor, activity_handle)
+O
+File "/usr/lib/python3.7/dist-packages/sugar3/activity/activityinstance.py", line 59, in create_activity_insta activity = constructor(handle)
+File "/home/user/Activities/Measure/measure.py", line 187, in
+self.audiograb
+ag(self.wave.new buffer, self)
+init
+File "/home/user/Activities/Measure/audiograb.py", line 125, in init
+self.pipeline.add(self.alsasrc)
+TypeError: Argument 1 does not allow None as a value
+Exited with status 1, pid 20470 activity id 53d702f16908eb0372466a8f3d74df190d6d00ca
+```
+Installed alsa-utils when amixer was missing using this command
+```sudo apt-get alsa-utils```
 
-Acked-by: Ilpo J=E4rvinen <ilpo.jarvinen@linux.intel.com>
+Currently on using command ```amixer controls``` this is the output
+```
+numid=3, iface-MIXER, name='Master Playback Volume' 
+numid=2,iface-MIXER, name='Capture Switch'
+numid=1, iface-MIXER, name='Capture Volume' 
+```
 
---=20
- i.
-
-> ---
->  drivers/acpi/scan.c                           |  2 ++
->  .../platform/x86/serial-multi-instantiate.c   | 28 +++++++++++++++++++
->  2 files changed, 30 insertions(+)
->=20
-> diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
-> index e6ed1ba91e5c..091c501bed1f 100644
-> --- a/drivers/acpi/scan.c
-> +++ b/drivers/acpi/scan.c
-> @@ -1725,7 +1725,9 @@ static bool acpi_device_enumeration_by_parent(struc=
-t acpi_device *device)
->  		{"BSG1160", },
->  		{"BSG2150", },
->  		{"CSC3551", },
-> +		{"CSC3554", },
->  		{"CSC3556", },
-> +		{"CSC3557", },
->  		{"INT33FE", },
->  		{"INT3515", },
->  		/* Non-conforming _HID for Cirrus Logic already released */
-> diff --git a/drivers/platform/x86/serial-multi-instantiate.c b/drivers/pl=
-atform/x86/serial-multi-instantiate.c
-> index 8158e3cf5d6d..97b9c6392230 100644
-> --- a/drivers/platform/x86/serial-multi-instantiate.c
-> +++ b/drivers/platform/x86/serial-multi-instantiate.c
-> @@ -329,6 +329,19 @@ static const struct smi_node cs35l41_hda =3D {
->  	.bus_type =3D SMI_AUTO_DETECT,
->  };
-> =20
-> +static const struct smi_node cs35l54_hda =3D {
-> +	.instances =3D {
-> +		{ "cs35l54-hda", IRQ_RESOURCE_AUTO, 0 },
-> +		{ "cs35l54-hda", IRQ_RESOURCE_AUTO, 0 },
-> +		{ "cs35l54-hda", IRQ_RESOURCE_AUTO, 0 },
-> +		{ "cs35l54-hda", IRQ_RESOURCE_AUTO, 0 },
-> +		/* a 5th entry is an alias address, not a real device */
-> +		{ "cs35l54-hda_dummy_dev" },
-> +		{}
-> +	},
-> +	.bus_type =3D SMI_AUTO_DETECT,
-> +};
-> +
->  static const struct smi_node cs35l56_hda =3D {
->  	.instances =3D {
->  		{ "cs35l56-hda", IRQ_RESOURCE_AUTO, 0 },
-> @@ -342,6 +355,19 @@ static const struct smi_node cs35l56_hda =3D {
->  	.bus_type =3D SMI_AUTO_DETECT,
->  };
-> =20
-> +static const struct smi_node cs35l57_hda =3D {
-> +	.instances =3D {
-> +		{ "cs35l57-hda", IRQ_RESOURCE_AUTO, 0 },
-> +		{ "cs35l57-hda", IRQ_RESOURCE_AUTO, 0 },
-> +		{ "cs35l57-hda", IRQ_RESOURCE_AUTO, 0 },
-> +		{ "cs35l57-hda", IRQ_RESOURCE_AUTO, 0 },
-> +		/* a 5th entry is an alias address, not a real device */
-> +		{ "cs35l57-hda_dummy_dev" },
-> +		{}
-> +	},
-> +	.bus_type =3D SMI_AUTO_DETECT,
-> +};
-> +
->  /*
->   * Note new device-ids must also be added to ignore_serial_bus_ids in
->   * drivers/acpi/scan.c: acpi_device_enumeration_by_parent().
-> @@ -350,7 +376,9 @@ static const struct acpi_device_id smi_acpi_ids[] =3D=
- {
->  	{ "BSG1160", (unsigned long)&bsg1160_data },
->  	{ "BSG2150", (unsigned long)&bsg2150_data },
->  	{ "CSC3551", (unsigned long)&cs35l41_hda },
-> +	{ "CSC3554", (unsigned long)&cs35l54_hda },
->  	{ "CSC3556", (unsigned long)&cs35l56_hda },
-> +	{ "CSC3557", (unsigned long)&cs35l57_hda },
->  	{ "INT3515", (unsigned long)&int3515_data },
->  	/* Non-conforming _HID for Cirrus Logic already released */
->  	{ "CLSA0100", (unsigned long)&cs35l41_hda },
->=20
+Issue URL     : https://github.com/alsa-project/alsa-utils/issues/256
+Repository URL: https://github.com/alsa-project/alsa-utils
