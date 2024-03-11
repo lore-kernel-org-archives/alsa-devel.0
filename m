@@ -4,56 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B081FC5475B
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 Mar 2024 18:46:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AE5DAC54E58
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 Mar 2024 18:46:39 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8F96814DC;
-	Mon, 11 Mar 2024 19:46:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8F96814DC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 27CE521DD;
+	Mon, 11 Mar 2024 19:46:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 27CE521DD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1710182784;
-	bh=lqUQWIx+8Xr3kNZFo3F/Pk5FsJwY8BoGx7jkaoPKYX0=;
+	s=default; t=1710182798;
+	bh=NbFoFKDFJZ/lAIRyGGvrwioKM5cI7LsQ0SBfnOwu3Sg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=exr5+TDUn+k4BvBekO1iApDM2sWuI73lrHlNuWZVPBsI9apJRmjASvjiNRX4Lpdyx
-	 4H0t9ZGiRWw0shJLrAuoioLNlNvth3r6rspxdsEoaNKqREc5MqORmNCJT9fuC9sU6m
-	 NJAZx08mL+SvBIpf39+5V/5ER/zknTgtIMul3+z4=
+	b=bJ41patGWm7/vaKaxtKZG2z0rEQbqlXOcb+zYQ+T+92sS7iFDpYdvQsfb5j2wSaLC
+	 9HUslUSDs8Es+ktVdiJA6VOO0FALD393XuxF+nT330EyQsd71TpzXGiavB0wyp/KXg
+	 ODBkXjbpQmlEOE3XRi13wqUTlweSEtT1rcwDonPM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 68C3AF8075E; Mon, 11 Mar 2024 19:41:21 +0100 (CET)
+	id 53643F805E6; Mon, 11 Mar 2024 19:43:20 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 01759F80733;
-	Mon, 11 Mar 2024 19:41:21 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0E347F805ED;
+	Mon, 11 Mar 2024 19:43:20 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 03508F8070D; Mon, 11 Mar 2024 19:41:15 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	id 1A58CF8070D; Mon, 11 Mar 2024 19:41:17 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E3DDDF806DD
-	for <alsa-devel@alsa-project.org>; Mon, 11 Mar 2024 19:40:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E3DDDF806DD
+	by alsa1.perex.cz (Postfix) with ESMTPS id 4DA58F806CA
+	for <alsa-devel@alsa-project.org>; Mon, 11 Mar 2024 19:40:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4DA58F806CA
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=aMDKUnXQ
+ header.s=k20201202 header.b=RZrX1bLy
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id B90BE60F10;
-	Mon, 11 Mar 2024 18:40:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9DB5DC433C7;
-	Mon, 11 Mar 2024 18:40:26 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 9ED7D60F70;
+	Mon, 11 Mar 2024 18:40:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32B7EC43399;
+	Mon, 11 Mar 2024 18:40:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710182430;
-	bh=lqUQWIx+8Xr3kNZFo3F/Pk5FsJwY8BoGx7jkaoPKYX0=;
+	s=k20201202; t=1710182437;
+	bh=NbFoFKDFJZ/lAIRyGGvrwioKM5cI7LsQ0SBfnOwu3Sg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=aMDKUnXQzA1fQzeq8T6NG0aWAIoioNXxKjXg9a8Z4QFmoxmA+zRJ0EWmeeukV0RB6
-	 DFP4vB91nckbcrFgnYJ6j3CAPMl1p4DD0f8z8kdqQMnH/yZ6U5EgEt4D8tUqtretuL
-	 J313Qz0djX9xLN6qgpgoIM71hiXQVle+c2FNH5vlpW68GCYHae8pVcXcSNZPtq9jX2
-	 bKz96zJEvVTyjOapTLh7c0XaX74vD65Sng6ElCQwUHdmKwKtOPnmIJ2bjyuJJ3kvXX
-	 MdTedDOhNUwtrYiOw5atvGeiA/IFUcGNrATn8du/46uUwMMXlG5V6ldXml79OQzVzn
-	 wUMLV5P/Dzecw==
+	b=RZrX1bLyIzljat8nEoaKKSd2xkU1YoZFY0lNKZarRlrtwm87McyvJbOFyIhgPS3Oq
+	 xSlcaE/s6dag8E9JSBWQKLcx23JGnxwHvPReBsjXiUBqQYweGpFOffDNuLPBUHvrco
+	 qCpf7rQvBS2uGv4oMpAzd3KQ/wSWPLu3M0MfGmtZqlJHMs0zCqFlE7fYbSB/1jJ9FM
+	 C+miP+9lMGbLDU+G+tx5f4Uw9WiuZGfj3aTBjfas3wkm9D0mCR5wzlZQ7Jb87fr9uk
+	 DWzRGp0HCcfIzGBcMRuxTY8xx7aKd+oCAUfMJlUVyAsIYuB02zOQ6CwHfgLxa0GFQT
+	 M/TuksDGEh3TQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -65,10 +66,10 @@ Cc: Stuart Henderson <stuarth@opensource.cirrus.com>,
 	tiwai@suse.com,
 	patches@opensource.cirrus.com,
 	alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 4.19 3/5] ASoC: wm8962: Enable oscillator if selecting
- WM8962_FLL_OSC
-Date: Mon, 11 Mar 2024 14:40:09 -0400
-Message-ID: <20240311184011.329314-3-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 5/5] ASoC: wm8962: Fix up incorrect error message
+ in wm8962_set_fll
+Date: Mon, 11 Mar 2024 14:40:11 -0400
+Message-ID: <20240311184011.329314-5-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240311184011.329314-1-sashal@kernel.org>
 References: <20240311184011.329314-1-sashal@kernel.org>
@@ -77,8 +78,8 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 4.19.309
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 46LIELDCUHCBGTT7QZYOTXJBQ6NMFNML
-X-Message-ID-Hash: 46LIELDCUHCBGTT7QZYOTXJBQ6NMFNML
+Message-ID-Hash: FSBUJON5SIJIAO5FWWVC7XC3CSYF4L6I
+X-Message-ID-Hash: FSBUJON5SIJIAO5FWWVC7XC3CSYF4L6I
 X-MailFrom: sashal@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -91,7 +92,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/46LIELDCUHCBGTT7QZYOTXJBQ6NMFNML/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FSBUJON5SIJIAO5FWWVC7XC3CSYF4L6I/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -102,33 +103,32 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Stuart Henderson <stuarth@opensource.cirrus.com>
 
-[ Upstream commit 03c7874106ca5032a312626b927b1c35f07b1f35 ]
+[ Upstream commit 96e202f8c52ac49452f83317cf3b34cd1ad81e18 ]
+
+Use source instead of ret, which seems to be unrelated and will always
+be zero.
 
 Signed-off-by: Stuart Henderson <stuarth@opensource.cirrus.com>
-Link: https://msgid.link/r/20240306161439.1385643-1-stuarth@opensource.cirrus.com
+Link: https://msgid.link/r/20240306161439.1385643-5-stuarth@opensource.cirrus.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/wm8962.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ sound/soc/codecs/wm8962.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
-index 3f75cb3209ffa..674bc6f65ed0e 100644
+index 55e041031d398..74321c16e41f4 100644
 --- a/sound/soc/codecs/wm8962.c
 +++ b/sound/soc/codecs/wm8962.c
-@@ -2848,8 +2848,12 @@ static int wm8962_set_fll(struct snd_soc_component *component, int fll_id, int s
- 	switch (fll_id) {
- 	case WM8962_FLL_MCLK:
- 	case WM8962_FLL_BCLK:
-+		fll1 |= (fll_id - 1) << WM8962_FLL_REFCLK_SRC_SHIFT;
-+		break;
- 	case WM8962_FLL_OSC:
- 		fll1 |= (fll_id - 1) << WM8962_FLL_REFCLK_SRC_SHIFT;
-+		snd_soc_component_update_bits(component, WM8962_PLL2,
-+					      WM8962_OSC_ENA, WM8962_OSC_ENA);
+@@ -2867,7 +2867,7 @@ static int wm8962_set_fll(struct snd_soc_component *component, int fll_id, int s
+ 				    WM8962_FLL_FRC_NCO, WM8962_FLL_FRC_NCO);
  		break;
- 	case WM8962_FLL_INT:
- 		snd_soc_component_update_bits(component, WM8962_FLL_CONTROL_1,
+ 	default:
+-		dev_err(component->dev, "Unknown FLL source %d\n", ret);
++		dev_err(component->dev, "Unknown FLL source %d\n", source);
+ 		return -EINVAL;
+ 	}
+ 
 -- 
 2.43.0
 
