@@ -4,77 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 23B5EC5475B
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 Mar 2024 18:38:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 38BDDC5475B
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 Mar 2024 18:39:03 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EF0FCE94;
-	Mon, 11 Mar 2024 19:38:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EF0FCE94
+	by alsa0.perex.cz (Postfix) with ESMTPS id 23F2BA4B;
+	Mon, 11 Mar 2024 19:38:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 23F2BA4B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1710182329;
-	bh=IA2auWJWODwH5z1b1RuFSmAMwQl9MlpFfPqkOuWvdOU=;
+	s=default; t=1710182341;
+	bh=+QnN6eBvfT5YP0LZVKnQaEsUmmjbX3a5mPdlwG1VBws=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=kQp5Ja75XuBGQbox6ebzCiCoCHd7OQicF7y2Odu/qi815i9bfrDL9IhwEi8tqgg9H
-	 XNrJU2H3gc3JYTRl56AY3krB6W0zRooNMHP4HB4xUQ2T4qOMQhG9IjCZufwdDtrm+s
-	 bNMB5oIPhC12geekowJnANxbAb5Vgcjk6qlmHa4w=
+	b=BHkKumw+Q+cClI+LZTLehRMyA7eLRWjL+Ht778SrPVbKNXHjj/87W5sJ+pmZGDkM/
+	 tTRTUvv32FgouKqBbPirJfVJJFX851cHsq1jYoeG1A+s9BC/TRPZiIYNVFgTiPl9dG
+	 X078+GwoqJCSFYldMZ2yceMKri5HoT7xCzlwOmnQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0ACB2F80612; Mon, 11 Mar 2024 19:37:47 +0100 (CET)
+	id 02037F805FE; Mon, 11 Mar 2024 19:37:48 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id EAC74F805F8;
-	Mon, 11 Mar 2024 19:37:45 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5045EF80618;
+	Mon, 11 Mar 2024 19:37:47 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 16C19F804B0; Mon, 11 Mar 2024 19:37:01 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	id C3BF8F80563; Mon, 11 Mar 2024 19:37:23 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 2B614F800E4
-	for <alsa-devel@alsa-project.org>; Mon, 11 Mar 2024 19:36:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2B614F800E4
+	by alsa1.perex.cz (Postfix) with ESMTPS id 85469F800E4
+	for <alsa-devel@alsa-project.org>; Mon, 11 Mar 2024 19:37:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 85469F800E4
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=rpOqJdYq
+ header.s=k20201202 header.b=jBudWVwC
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id CBCC760EB9;
-	Mon, 11 Mar 2024 18:36:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54796C43390;
-	Mon, 11 Mar 2024 18:36:47 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 4C86160BCB;
+	Mon, 11 Mar 2024 18:37:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D1E10C43394;
+	Mon, 11 Mar 2024 18:37:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710182214;
-	bh=IA2auWJWODwH5z1b1RuFSmAMwQl9MlpFfPqkOuWvdOU=;
+	s=k20201202; t=1710182238;
+	bh=+QnN6eBvfT5YP0LZVKnQaEsUmmjbX3a5mPdlwG1VBws=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=rpOqJdYqvFyWmjgHhSacPme38u+RKS6kXpQiyy0mnkqcK+ARSTV3FLb675wxuyMvs
-	 cHGDULO/Ozy/Fjed1vU80CUgG/03/acODeiWCvTuhM1RLX87voTJ9G/Rc6H8KrKaYb
-	 f5SyvkBpL2jTD8kUzdYzX9uPypux3FyoboxmtY/CoIdjCfSYXC91r44w4vH4mfpk80
-	 Zn8uIxSZReXTIm47XxENX8ojejLdF1E2InJqWYF/InkJ2Hok80In09QpEealKqpa7+
-	 PG5wvZn0dygQZOym516LOJs3si1rFzR9FpE0CNkyxWWgaktNUDSLEOAanja5Y1F2Nl
-	 OgYULTjfNYWAQ==
+	b=jBudWVwCDBxjsOJUmT51tXNsJzNZpQ3eHYRfVhncJ4J6R0gQOySNCwSEkbO6hlLfa
+	 TXgbmdtFYktVnLyWog5iwUo5l2XBS5+AHwtE57/yz2PIjcYYRdYW1aXDOSxoHc8GdA
+	 NvfCNMMDp2lTPbnJE6yFMDlVplPM4Pi0rK5pDHxvFtzwcDmZ7AS5jV70QPddmeiRJS
+	 ci+cVCXyPJWXdkpza1yQ3UcJqKz/NrceilSsCamyczH9ojD6+y17BTfo5EGuHVLCOJ
+	 sHvYLGEzBYmRGF2Djwmq3+oX06dMNjR3TopB81vDk0WyYFOjLQNqyB3z2UwuaY9clj
+	 W1iETTGhdL0Ew==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Stefan Binding <sbinding@opensource.cirrus.com>,
-	Takashi Iwai <tiwai@suse.de>,
+Cc: Stuart Henderson <stuarth@opensource.cirrus.com>,
+	Mark Brown <broonie@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
+	lgirdwood@gmail.com,
 	perex@perex.cz,
 	tiwai@suse.com,
-	gregkh@linuxfoundation.org,
-	kailang@realtek.com,
-	jian-hong@endlessm.com,
-	bin.li@canonical.com,
-	jeremy.szu@canonical.com,
-	jin@mediatomb.cc,
-	hui.wang@canonical.com,
-	edward@edward-p.xyz,
+	patches@opensource.cirrus.com,
 	alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 6.7 06/14] ALSA: hda/realtek: Add quirks for Lenovo
- Thinkbook 16P laptops
-Date: Mon, 11 Mar 2024 14:36:09 -0400
-Message-ID: <20240311183618.327694-6-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.7 12/14] ASoC: wm8962: Enable oscillator if
+ selecting WM8962_FLL_OSC
+Date: Mon, 11 Mar 2024 14:36:15 -0400
+Message-ID: <20240311183618.327694-12-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240311183618.327694-1-sashal@kernel.org>
 References: <20240311183618.327694-1-sashal@kernel.org>
@@ -83,8 +78,8 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.7.9
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: BGBGOR32MFX5JYM6MZI7IXVN2IZ3DK64
-X-Message-ID-Hash: BGBGOR32MFX5JYM6MZI7IXVN2IZ3DK64
+Message-ID-Hash: GB7YBWT3BAWXMHGROEA7WDD5LQMY4PLI
+X-Message-ID-Hash: GB7YBWT3BAWXMHGROEA7WDD5LQMY4PLI
 X-MailFrom: sashal@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -97,7 +92,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BGBGOR32MFX5JYM6MZI7IXVN2IZ3DK64/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GB7YBWT3BAWXMHGROEA7WDD5LQMY4PLI/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -106,36 +101,35 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Stefan Binding <sbinding@opensource.cirrus.com>
+From: Stuart Henderson <stuarth@opensource.cirrus.com>
 
-[ Upstream commit 6214e24cae9b10a7c1572f99552610a24614fffe ]
+[ Upstream commit 03c7874106ca5032a312626b927b1c35f07b1f35 ]
 
-These models use 2 CS35L41 amps with HDA using I2C.
-Both models have _DSD support inside cs35l41_hda_property.c.
-
-Closes: https://bugzilla.kernel.org/show_bug.cgi?id=218437
-
-Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/20240301160154.158398-3-sbinding@opensource.cirrus.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Stuart Henderson <stuarth@opensource.cirrus.com>
+Link: https://msgid.link/r/20240306161439.1385643-1-stuarth@opensource.cirrus.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/patch_realtek.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/codecs/wm8962.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index eb45e5c3db8c6..9590fd31441bc 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -10288,6 +10288,8 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x17aa, 0x3886, "Y780 VECO DUAL", ALC287_FIXUP_TAS2781_I2C),
- 	SND_PCI_QUIRK(0x17aa, 0x38a7, "Y780P AMD YG dual", ALC287_FIXUP_TAS2781_I2C),
- 	SND_PCI_QUIRK(0x17aa, 0x38a8, "Y780P AMD VECO dual", ALC287_FIXUP_TAS2781_I2C),
-+	SND_PCI_QUIRK(0x17aa, 0x38a9, "Thinkbook 16P", ALC287_FIXUP_CS35L41_I2C_2),
-+	SND_PCI_QUIRK(0x17aa, 0x38ab, "Thinkbook 16P", ALC287_FIXUP_CS35L41_I2C_2),
- 	SND_PCI_QUIRK(0x17aa, 0x38b4, "Legion Slim 7 16IRH8", ALC287_FIXUP_CS35L41_I2C_2),
- 	SND_PCI_QUIRK(0x17aa, 0x38b5, "Legion Slim 7 16IRH8", ALC287_FIXUP_CS35L41_I2C_2),
- 	SND_PCI_QUIRK(0x17aa, 0x38b6, "Legion Slim 7 16APH8", ALC287_FIXUP_CS35L41_I2C_2),
+diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
+index fb90ae6a8a344..6d7bb696b1356 100644
+--- a/sound/soc/codecs/wm8962.c
++++ b/sound/soc/codecs/wm8962.c
+@@ -2914,8 +2914,12 @@ static int wm8962_set_fll(struct snd_soc_component *component, int fll_id, int s
+ 	switch (fll_id) {
+ 	case WM8962_FLL_MCLK:
+ 	case WM8962_FLL_BCLK:
++		fll1 |= (fll_id - 1) << WM8962_FLL_REFCLK_SRC_SHIFT;
++		break;
+ 	case WM8962_FLL_OSC:
+ 		fll1 |= (fll_id - 1) << WM8962_FLL_REFCLK_SRC_SHIFT;
++		snd_soc_component_update_bits(component, WM8962_PLL2,
++					      WM8962_OSC_ENA, WM8962_OSC_ENA);
+ 		break;
+ 	case WM8962_FLL_INT:
+ 		snd_soc_component_update_bits(component, WM8962_FLL_CONTROL_1,
 -- 
 2.43.0
 
