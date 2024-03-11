@@ -4,72 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 38BDDC5475B
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 Mar 2024 18:39:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 51685C54E58
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 Mar 2024 18:39:29 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 23F2BA4B;
-	Mon, 11 Mar 2024 19:38:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 23F2BA4B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 44E71E0F;
+	Mon, 11 Mar 2024 19:39:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 44E71E0F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1710182341;
-	bh=+QnN6eBvfT5YP0LZVKnQaEsUmmjbX3a5mPdlwG1VBws=;
+	s=default; t=1710182367;
+	bh=y5PTPZ8gniX4MbpvGANx/OZzRS4utU/V31kCwdYd9ac=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=BHkKumw+Q+cClI+LZTLehRMyA7eLRWjL+Ht778SrPVbKNXHjj/87W5sJ+pmZGDkM/
-	 tTRTUvv32FgouKqBbPirJfVJJFX851cHsq1jYoeG1A+s9BC/TRPZiIYNVFgTiPl9dG
-	 X078+GwoqJCSFYldMZ2yceMKri5HoT7xCzlwOmnQ=
+	b=t0cdtWRDbqMw642HZM1+OS6HE1CoVrJJepj1Zl5owOsXl+Oju/VxmlrbIvUP6j98B
+	 VL5NMHtxdJcSMpMce4VlHjo88TL4OgpkF81vTydamBOd0WCfIPU/PeHp3C73jNnADo
+	 KtWHMfGm5bNiYqfzH6688coV72MOVDQcXnWA8cV8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 02037F805FE; Mon, 11 Mar 2024 19:37:48 +0100 (CET)
+	id 81C14F80642; Mon, 11 Mar 2024 19:37:50 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5045EF80618;
-	Mon, 11 Mar 2024 19:37:47 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 926C7F80637;
+	Mon, 11 Mar 2024 19:37:50 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C3BF8F80563; Mon, 11 Mar 2024 19:37:23 +0100 (CET)
+	id 77F86F804B2; Mon, 11 Mar 2024 19:37:08 +0100 (CET)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org
  [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 85469F800E4
-	for <alsa-devel@alsa-project.org>; Mon, 11 Mar 2024 19:37:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 85469F800E4
+	by alsa1.perex.cz (Postfix) with ESMTPS id A1E9EF8025F
+	for <alsa-devel@alsa-project.org>; Mon, 11 Mar 2024 19:37:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A1E9EF8025F
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=jBudWVwC
+ header.s=k20201202 header.b=bIT3Lwdp
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 4C86160BCB;
-	Mon, 11 Mar 2024 18:37:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D1E10C43394;
-	Mon, 11 Mar 2024 18:37:14 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id C61AC60BCB;
+	Mon, 11 Mar 2024 18:37:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4EDBC43601;
+	Mon, 11 Mar 2024 18:36:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710182238;
-	bh=+QnN6eBvfT5YP0LZVKnQaEsUmmjbX3a5mPdlwG1VBws=;
+	s=k20201202; t=1710182220;
+	bh=y5PTPZ8gniX4MbpvGANx/OZzRS4utU/V31kCwdYd9ac=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=jBudWVwCDBxjsOJUmT51tXNsJzNZpQ3eHYRfVhncJ4J6R0gQOySNCwSEkbO6hlLfa
-	 TXgbmdtFYktVnLyWog5iwUo5l2XBS5+AHwtE57/yz2PIjcYYRdYW1aXDOSxoHc8GdA
-	 NvfCNMMDp2lTPbnJE6yFMDlVplPM4Pi0rK5pDHxvFtzwcDmZ7AS5jV70QPddmeiRJS
-	 ci+cVCXyPJWXdkpza1yQ3UcJqKz/NrceilSsCamyczH9ojD6+y17BTfo5EGuHVLCOJ
-	 sHvYLGEzBYmRGF2Djwmq3+oX06dMNjR3TopB81vDk0WyYFOjLQNqyB3z2UwuaY9clj
-	 W1iETTGhdL0Ew==
+	b=bIT3LwdpdEd9X056SIs103POySCMGDQ5vLBqC6ZmXitjIGhgKCzAPGM0zIDkQCp08
+	 /ORqChAkghgHipeq3TEzYfudm+yC4AE6JZk9RfGP2MreFCgEpRX3wQ9rnS5qpUbZR2
+	 8xIUahbw0KkDCcix8tUAvpC1n2k2QmDx7+J2l1cnJ27aEpuOg7brFHMHWMEL/tPHws
+	 rGRY7FOGfSnybqsh6WFpeaADFjp+WqZz0eksv0FUS120h5w6R9FIfAPqkcS8zSdYMW
+	 D2TosHAEe8ytdJ/iWjhJLsYW96lI87r5sK7zuPBs62gG3eBV9+2Xa+cYvoWYzEg3qi
+	 N7M/LXs1y7Z1A==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Stuart Henderson <stuarth@opensource.cirrus.com>,
+Cc: Al Raj Hassain <alrajhassain@gmail.com>,
+	Mario Limonciello <mario.limonciello@amd.com>,
 	Mark Brown <broonie@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
 	lgirdwood@gmail.com,
 	perex@perex.cz,
 	tiwai@suse.com,
-	patches@opensource.cirrus.com,
 	alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 6.7 12/14] ASoC: wm8962: Enable oscillator if
- selecting WM8962_FLL_OSC
-Date: Mon, 11 Mar 2024 14:36:15 -0400
-Message-ID: <20240311183618.327694-12-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.7 08/14] ASoC: amd: yc: Add HP Pavilion Aero Laptop
+ 13-be2xxx(8BD6) into DMI quirk table
+Date: Mon, 11 Mar 2024 14:36:11 -0400
+Message-ID: <20240311183618.327694-8-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240311183618.327694-1-sashal@kernel.org>
 References: <20240311183618.327694-1-sashal@kernel.org>
@@ -78,8 +79,8 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.7.9
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: GB7YBWT3BAWXMHGROEA7WDD5LQMY4PLI
-X-Message-ID-Hash: GB7YBWT3BAWXMHGROEA7WDD5LQMY4PLI
+Message-ID-Hash: 3BHO64WXWAST7RV7VCDY2H4DBFPBR5BJ
+X-Message-ID-Hash: 3BHO64WXWAST7RV7VCDY2H4DBFPBR5BJ
 X-MailFrom: sashal@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -92,7 +93,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GB7YBWT3BAWXMHGROEA7WDD5LQMY4PLI/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3BHO64WXWAST7RV7VCDY2H4DBFPBR5BJ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -101,35 +102,39 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Stuart Henderson <stuarth@opensource.cirrus.com>
+From: Al Raj Hassain <alrajhassain@gmail.com>
 
-[ Upstream commit 03c7874106ca5032a312626b927b1c35f07b1f35 ]
+[ Upstream commit b3a51137607cee7c814cd3a75d96f78b9ee1dc1f ]
 
-Signed-off-by: Stuart Henderson <stuarth@opensource.cirrus.com>
-Link: https://msgid.link/r/20240306161439.1385643-1-stuarth@opensource.cirrus.com
+The HP Pavilion Aero Laptop 13-be2xxx(8BD6) requires a quirk entry for its internal microphone to function.
+
+Signed-off-by: Al Raj Hassain <alrajhassain@gmail.com>
+Reviewed-by: Mario Limonciello <mario.limonciello@amd.com>
+Link: https://msgid.link/r/20240304103924.13673-1-alrajhassain@gmail.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/wm8962.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ sound/soc/amd/yc/acp6x-mach.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
-index fb90ae6a8a344..6d7bb696b1356 100644
---- a/sound/soc/codecs/wm8962.c
-+++ b/sound/soc/codecs/wm8962.c
-@@ -2914,8 +2914,12 @@ static int wm8962_set_fll(struct snd_soc_component *component, int fll_id, int s
- 	switch (fll_id) {
- 	case WM8962_FLL_MCLK:
- 	case WM8962_FLL_BCLK:
-+		fll1 |= (fll_id - 1) << WM8962_FLL_REFCLK_SRC_SHIFT;
-+		break;
- 	case WM8962_FLL_OSC:
- 		fll1 |= (fll_id - 1) << WM8962_FLL_REFCLK_SRC_SHIFT;
-+		snd_soc_component_update_bits(component, WM8962_PLL2,
-+					      WM8962_OSC_ENA, WM8962_OSC_ENA);
- 		break;
- 	case WM8962_FLL_INT:
- 		snd_soc_component_update_bits(component, WM8962_FLL_CONTROL_1,
+diff --git a/sound/soc/amd/yc/acp6x-mach.c b/sound/soc/amd/yc/acp6x-mach.c
+index 80ad60d485ea0..ea9512efa6fa5 100644
+--- a/sound/soc/amd/yc/acp6x-mach.c
++++ b/sound/soc/amd/yc/acp6x-mach.c
+@@ -395,6 +395,13 @@ static const struct dmi_system_id yc_acp_quirk_table[] = {
+ 			DMI_MATCH(DMI_BOARD_NAME, "8B2F"),
+ 		}
+ 	},
++	{
++		.driver_data = &acp6x_card,
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "HP"),
++			DMI_MATCH(DMI_BOARD_NAME, "8BD6"),
++		}
++	},
+ 	{
+ 		.driver_data = &acp6x_card,
+ 		.matches = {
 -- 
 2.43.0
 
