@@ -4,82 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5526FC5475B
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 Mar 2024 18:42:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01A71C5475B
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 Mar 2024 18:42:49 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 87AEC1629;
-	Mon, 11 Mar 2024 19:42:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 87AEC1629
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9E6091928;
+	Mon, 11 Mar 2024 19:42:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9E6091928
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1710182549;
-	bh=sYDEOH0SIb1oJ1rax5oz64WlqG7l/xYsPg5+CTtP2AA=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=soq9Wxz73MEp0V3IRVxsMcOxHZ9t3+xyfBMo3PwEug00g4f9UhOQag6J8C/e6nPP6
-	 5dC3qMCW+p8s46oWezoZ29/OB+bKyd54a3XRgMjaYRwDaLOS+fDGSFAG1zbQ4pPOq+
-	 LojodFGzkqwishidQmo4F+20VHQnNVS/oyw/2VpU=
+	s=default; t=1710182567;
+	bh=YChU0O4tGvLJPSPKaKY3ehmHRybr4RB0vp5VJLcOpIE=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=hRtCK2NP/oRngY0E7fllNTdCH3DJtc1tScEYWjjQ3/h2c8vLilidOXTvMySZLDw46
+	 sZHUIweMsfL7VHKlzlNOmmcpuk+p5MFB1CEzYgXuNBMUOhX+p8pcydmtTT22XYb3si
+	 3M4C9Q1rvl00Bwz8wW5+Py8utBgyfjTE48uCPt+Y=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AF5F0F80798; Mon, 11 Mar 2024 19:39:31 +0100 (CET)
+	id E6FA3F8080C; Mon, 11 Mar 2024 19:39:34 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2ED0EF8065D;
-	Mon, 11 Mar 2024 19:39:31 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 64C5AF8080B;
+	Mon, 11 Mar 2024 19:39:34 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 21346F80752; Mon, 11 Mar 2024 19:39:26 +0100 (CET)
-Received: from sin.source.kernel.org (sin.source.kernel.org
- [IPv6:2604:1380:40e1:4800::1])
+	id E1844F8063B; Mon, 11 Mar 2024 19:39:27 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C17FDF80621
-	for <alsa-devel@alsa-project.org>; Mon, 11 Mar 2024 19:39:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C17FDF80621
+	by alsa1.perex.cz (Postfix) with ESMTPS id BF0B5F8057D
+	for <alsa-devel@alsa-project.org>; Mon, 11 Mar 2024 19:39:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BF0B5F8057D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=NXeCV41H
+ header.s=k20201202 header.b=O5XIJL75
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id F39D9CE125B;
-	Mon, 11 Mar 2024 18:39:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D233CC433C7;
-	Mon, 11 Mar 2024 18:39:12 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 5E18C60F7B;
+	Mon, 11 Mar 2024 18:39:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5987AC43390;
+	Mon, 11 Mar 2024 18:39:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710182356;
-	bh=sYDEOH0SIb1oJ1rax5oz64WlqG7l/xYsPg5+CTtP2AA=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=NXeCV41HHx3c87M0MFjznRquUEhvSqrPdnEavtiz/6IvxR0D8wRB/zw7U2QNc+MsX
-	 RNQsSpKiUWULyvEavRX0gDU1jaNuy2VQ3lm39qnZxzfXWvH+netSb8JJ7s1PfqH4VH
-	 3Xs2RQ23Kdi03StQoOFwcPy7DsxtS1cp/BuTKuuKZhdfmhTatloJru7FnVUtHW9oS3
-	 kuuseIUc4/6xhDcT9XlMqjdSg4DkKDryHV/ZhVT0I4ndxvNLQ5goNGXoShxk2szbxT
-	 QhrrEtcRRsYx1NSh6PMfO2IwNiBvCOroik9TFSgY/o60NxYqvD26wuUEoCWe7eWZep
-	 dlgHmw3qqV4Tw==
+	s=k20201202; t=1710182349;
+	bh=YChU0O4tGvLJPSPKaKY3ehmHRybr4RB0vp5VJLcOpIE=;
+	h=From:To:Cc:Subject:Date:From;
+	b=O5XIJL758u0SnbWBqzXQygnveCAs/3hqtuoZA9E/XvbOXkDksoey62akiDkXSB/6J
+	 U1sOnt3Q2F7anIzfhdYzTFtsHx87ti/NK3jA1sdL/+iUhva0rJJjB0Vm9vAyZGV8HQ
+	 3UsJXRtraogYqb6bUfH0t51pj7m2fZxwZDItvX7SXeA69Thj5oigLVsLaXkWpgGHLU
+	 v8CJ6S1Wu2YArarOG5OBY99+yF9M5tZA77KF4ufKSE3+KBwYN/iCGNXLdBbi1om5xg
+	 RVl0HrgeXbr5OfBaypgQkh61z814PJlNZkx8Wg3QEEoGsZS/dz6zg1YtyhFGEbuOZ2
+	 PBsJHMWCDjBmQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Stuart Henderson <stuarth@opensource.cirrus.com>,
+Cc: =?UTF-8?q?Alban=20Boy=C3=A9?= <alban.boye@protonmail.com>,
+	Cezary Rojewski <cezary.rojewski@intel.com>,
+	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
 	Mark Brown <broonie@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	lgirdwood@gmail.com,
+	liam.r.girdwood@linux.intel.com,
+	yang.jie@linux.intel.com,
 	perex@perex.cz,
 	tiwai@suse.com,
-	patches@opensource.cirrus.com,
+	hdegoede@redhat.com,
 	alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 5.15 3/5] ASoC: wm8962: Enable oscillator if selecting
- WM8962_FLL_OSC
-Date: Mon, 11 Mar 2024 14:38:59 -0400
-Message-ID: <20240311183901.328749-3-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 1/5] ASoC: Intel: bytcr_rt5640: Add an extra
+ entry for the Chuwi Vi8 tablet
+Date: Mon, 11 Mar 2024 14:38:57 -0400
+Message-ID: <20240311183901.328749-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240311183901.328749-1-sashal@kernel.org>
-References: <20240311183901.328749-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.15.151
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 3OXOMLJYA4ASLTLTVB33D6SLUCGV3DU5
-X-Message-ID-Hash: 3OXOMLJYA4ASLTLTVB33D6SLUCGV3DU5
+Message-ID-Hash: P4S3QXFRGR4FRNMIIQCKQT6SDLYQJLJ7
+X-Message-ID-Hash: P4S3QXFRGR4FRNMIIQCKQT6SDLYQJLJ7
 X-MailFrom: sashal@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -92,7 +93,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3OXOMLJYA4ASLTLTVB33D6SLUCGV3DU5/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/P4S3QXFRGR4FRNMIIQCKQT6SDLYQJLJ7/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -101,35 +102,46 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Stuart Henderson <stuarth@opensource.cirrus.com>
+From: Alban Boyé <alban.boye@protonmail.com>
 
-[ Upstream commit 03c7874106ca5032a312626b927b1c35f07b1f35 ]
+[ Upstream commit f8b0127aca8c60826e7354e504a12d4a46b1c3bb ]
 
-Signed-off-by: Stuart Henderson <stuarth@opensource.cirrus.com>
-Link: https://msgid.link/r/20240306161439.1385643-1-stuarth@opensource.cirrus.com
+The bios version can differ depending if it is a dual-boot variant of the tablet.
+Therefore another DMI match is required.
+
+Signed-off-by: Alban Boyé <alban.boye@protonmail.com>
+Reviewed-by: Cezary Rojewski <cezary.rojewski@intel.com>
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://msgid.link/r/20240228192807.15130-1-alban.boye@protonmail.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/wm8962.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ sound/soc/intel/boards/bytcr_rt5640.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
-index 779f7097d336c..9f8929cfada22 100644
---- a/sound/soc/codecs/wm8962.c
-+++ b/sound/soc/codecs/wm8962.c
-@@ -2901,8 +2901,12 @@ static int wm8962_set_fll(struct snd_soc_component *component, int fll_id, int s
- 	switch (fll_id) {
- 	case WM8962_FLL_MCLK:
- 	case WM8962_FLL_BCLK:
-+		fll1 |= (fll_id - 1) << WM8962_FLL_REFCLK_SRC_SHIFT;
-+		break;
- 	case WM8962_FLL_OSC:
- 		fll1 |= (fll_id - 1) << WM8962_FLL_REFCLK_SRC_SHIFT;
-+		snd_soc_component_update_bits(component, WM8962_PLL2,
-+					      WM8962_OSC_ENA, WM8962_OSC_ENA);
- 		break;
- 	case WM8962_FLL_INT:
- 		snd_soc_component_update_bits(component, WM8962_FLL_CONTROL_1,
+diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+index 49dfbd29c5451..434679afa7e1a 100644
+--- a/sound/soc/intel/boards/bytcr_rt5640.c
++++ b/sound/soc/intel/boards/bytcr_rt5640.c
+@@ -668,6 +668,18 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
+ 					BYT_RT5640_SSP0_AIF1 |
+ 					BYT_RT5640_MCLK_EN),
+ 	},
++	{	/* Chuwi Vi8 dual-boot (CWI506) */
++		.matches = {
++			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Insyde"),
++			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "i86"),
++			/* The above are too generic, also match BIOS info */
++			DMI_MATCH(DMI_BIOS_VERSION, "CHUWI2.D86JHBNR02"),
++		},
++		.driver_data = (void *)(BYTCR_INPUT_DEFAULTS |
++					BYT_RT5640_MONO_SPEAKER |
++					BYT_RT5640_SSP0_AIF1 |
++					BYT_RT5640_MCLK_EN),
++	},
+ 	{
+ 		/* Chuwi Vi10 (CWI505) */
+ 		.matches = {
 -- 
 2.43.0
 
