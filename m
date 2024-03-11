@@ -4,79 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5D682C54E58
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 Mar 2024 15:28:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B1BB1C5475B
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 Mar 2024 18:38:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 89F4BE72;
-	Mon, 11 Mar 2024 16:28:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 89F4BE72
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0E429E64;
+	Mon, 11 Mar 2024 19:38:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0E429E64
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1710170890;
-	bh=z4m2mdAW+4t979hNRetfiN0r2sRlcX+HmjBvZVh9Ceg=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1710182296;
+	bh=9ccDM9c454YdhVODsmOP14BtRqS2+UqRY7429uin5Oc=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=PObEbvxZ0YaM28D9YOz1oYXP/mtDhRdFnIf9QY4EMnCxom7tTTGSQXAEXwuMHE/oP
-	 Gc9GsChziY9jRv6Mvw1owbfXq2kmTy2WMWvqLl89zAoKJHXCxdPyeHD61hIngibLxO
-	 LYFfa7+LTrtdwQXcYqTenuMeFVyPgndv/qHxNWFY=
+	b=id4zcaf1/wTmAHta35PKWlU3To4VwBRoeIzqOFl+2ltm1NXpmyztSjlKZ5Wx8MtSM
+	 XUFKo6daUXFkqK0R1ekxjIFh5dwPIh1q3qMaZCVzA8g3KD//Al+2MTLiW4H+g6/iUm
+	 lUCfT/OCw1GLs9jA+QRkK2U96fm0Y4KFiFIe3uxc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1FA75F80563; Mon, 11 Mar 2024 16:27:31 +0100 (CET)
+	id BD150F805A1; Mon, 11 Mar 2024 19:37:44 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4C178F805BA;
-	Mon, 11 Mar 2024 16:27:30 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5079AF805A1;
+	Mon, 11 Mar 2024 19:37:43 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8FA45F8028D; Mon, 11 Mar 2024 16:27:26 +0100 (CET)
-Received: from sin.source.kernel.org (sin.source.kernel.org
- [IPv6:2604:1380:40e1:4800::1])
+	id 8FD4BF8028D; Mon, 11 Mar 2024 19:36:41 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 17174F8014B
-	for <alsa-devel@alsa-project.org>; Mon, 11 Mar 2024 16:27:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 17174F8014B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 69119F8014B
+	for <alsa-devel@alsa-project.org>; Mon, 11 Mar 2024 19:36:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 69119F8014B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=LjsU6RgL
+ header.s=k20201202 header.b=IVZbpevs
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 47B2CCE1129;
-	Mon, 11 Mar 2024 15:27:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 536C8C433F1;
-	Mon, 11 Mar 2024 15:27:08 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 7BCED60F77;
+	Mon, 11 Mar 2024 18:36:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E4A9C43390;
+	Mon, 11 Mar 2024 18:36:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710170830;
-	bh=z4m2mdAW+4t979hNRetfiN0r2sRlcX+HmjBvZVh9Ceg=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=LjsU6RgLyq/y/0t0yeVDVtpFwa67Wl0+iahIdEi0XO6cIY9dHmpqWmiaYay6E60dy
-	 UOb9CU3tRlf2qYWbwi4PdzRvb0Eb2etX0/KU1MTnU+W8N2xwBUfkK7jObdWluCh21m
-	 03WAZQC7A6Xdtn5sOgPJrTlHhaM/e/Se8dqbrsA7aQSaLapaJ8VLdzUQKyuNIOz3OC
-	 HJlNMgHcO4IZJ1h8+61r/BwnSRqyBifkzSMtmjfkGYpaiAAb1EtY9LX+gJTGKLpVCA
-	 MckYE8cYx8+gKdRosCFN6VG8DUVZpQlYyeUiL7BD0SmFFwi/Dl306wU7eznYsacTNL
-	 ZX3vhHrSW8E0g==
-From: Mark Brown <broonie@kernel.org>
-To: Shenghao Ding <shenghao-ding@ti.com>, Kevin Lu <kevin-lu@ti.com>,
- Baojun Xu <baojun.xu@ti.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- =?utf-8?q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-Cc: alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
- linux-kbuild@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>,
- kernel@pengutronix.de
-In-Reply-To: <20240310143852.397212-2-u.kleine-koenig@pengutronix.de>
-References: <20240310143852.397212-2-u.kleine-koenig@pengutronix.de>
-Subject: Re: [PATCH] ASoC: tlv320adc3xxx: Don't strip remove function when
- driver is builtin
-Message-Id: <171017082806.34160.5012089436149425102.b4-ty@kernel.org>
-Date: Mon, 11 Mar 2024 15:27:08 +0000
+	s=k20201202; t=1710182189;
+	bh=9ccDM9c454YdhVODsmOP14BtRqS2+UqRY7429uin5Oc=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=IVZbpevsqMwQNvcfB/koRNPxNnL5ImuEHHZ+CXl5w11XAQ4vHGeSm7Iffr9colPe/
+	 CDe721D7fjYNnVeuM8T/+MrF1xvfzqRsTQfwe9CVlnkJ9j7n2WqDGGixzH3GgKf0xL
+	 reKR5nT20RYxGoYtaGo9oRsHsLyUsr21KmOKzGGQDlQ7KpEJmLYvwkLWwsaq/iMudo
+	 urIrDTQCQiF6IwpwTpyumH2tXJOgLE93KrlN/QvjO2b15v6WwhmfY9SMO0yUqgJAJw
+	 UBUvNKHK9DIYnr/Dv4HpUsJrzsty+kqyGIKHCOB0GZmFeDPiil3cO5yUtAVQnCxp6s
+	 xbphnqBM90Ajw==
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Cc: =?UTF-8?q?Alban=20Boy=C3=A9?= <alban.boye@protonmail.com>,
+	Cezary Rojewski <cezary.rojewski@intel.com>,
+	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+	Mark Brown <broonie@kernel.org>,
+	Sasha Levin <sashal@kernel.org>,
+	liam.r.girdwood@linux.intel.com,
+	yang.jie@linux.intel.com,
+	perex@perex.cz,
+	tiwai@suse.com,
+	hdegoede@redhat.com,
+	alsa-devel@alsa-project.org
+Subject: [PATCH AUTOSEL 6.7 02/14] ASoC: Intel: bytcr_rt5640: Add an extra
+ entry for the Chuwi Vi8 tablet
+Date: Mon, 11 Mar 2024 14:36:05 -0400
+Message-ID: <20240311183618.327694-2-sashal@kernel.org>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240311183618.327694-1-sashal@kernel.org>
+References: <20240311183618.327694-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=UTF-8
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 6.7.9
 Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.13-dev-a684c
-Message-ID-Hash: NVNPESUKYZ72DL6TWV45XWJUHC3UBWYU
-X-Message-ID-Hash: NVNPESUKYZ72DL6TWV45XWJUHC3UBWYU
-X-MailFrom: broonie@kernel.org
+Message-ID-Hash: GM7IVTODB53WDTLBV726C7TIT4K57NHZ
+X-Message-ID-Hash: GM7IVTODB53WDTLBV726C7TIT4K57NHZ
+X-MailFrom: sashal@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -88,7 +96,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NVNPESUKYZ72DL6TWV45XWJUHC3UBWYU/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GM7IVTODB53WDTLBV726C7TIT4K57NHZ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -97,42 +105,46 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Sun, 10 Mar 2024 15:38:51 +0100, Uwe Kleine-König wrote:
-> Using __exit for the remove function results in the remove callback
-> being discarded with SND_SOC_TLV320ADC3XXX=y. When such a device gets
-> unbound (e.g. using sysfs or hotplug), the driver is just removed
-> without the cleanup being performed. This results in resource leaks. Fix
-> it by compiling in the remove callback unconditionally.
-> 
-> This also fixes a W=1 modpost warning:
-> 
-> [...]
+From: Alban Boyé <alban.boye@protonmail.com>
 
-Applied to
+[ Upstream commit f8b0127aca8c60826e7354e504a12d4a46b1c3bb ]
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+The bios version can differ depending if it is a dual-boot variant of the tablet.
+Therefore another DMI match is required.
 
-Thanks!
+Signed-off-by: Alban Boyé <alban.boye@protonmail.com>
+Reviewed-by: Cezary Rojewski <cezary.rojewski@intel.com>
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://msgid.link/r/20240228192807.15130-1-alban.boye@protonmail.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ sound/soc/intel/boards/bytcr_rt5640.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-[1/1] ASoC: tlv320adc3xxx: Don't strip remove function when driver is builtin
-      commit: f31e0d0c2cad23e0cc48731634f85bb2d8707790
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+index 42466b4b1ca45..a290f498ba823 100644
+--- a/sound/soc/intel/boards/bytcr_rt5640.c
++++ b/sound/soc/intel/boards/bytcr_rt5640.c
+@@ -685,6 +685,18 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
+ 					BYT_RT5640_SSP0_AIF1 |
+ 					BYT_RT5640_MCLK_EN),
+ 	},
++	{	/* Chuwi Vi8 dual-boot (CWI506) */
++		.matches = {
++			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Insyde"),
++			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "i86"),
++			/* The above are too generic, also match BIOS info */
++			DMI_MATCH(DMI_BIOS_VERSION, "CHUWI2.D86JHBNR02"),
++		},
++		.driver_data = (void *)(BYTCR_INPUT_DEFAULTS |
++					BYT_RT5640_MONO_SPEAKER |
++					BYT_RT5640_SSP0_AIF1 |
++					BYT_RT5640_MCLK_EN),
++	},
+ 	{
+ 		/* Chuwi Vi10 (CWI505) */
+ 		.matches = {
+-- 
+2.43.0
 
