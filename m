@@ -4,113 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BD6B9C54E58
-	for <alsa-devel@archiver.kernel.org>; Wed, 13 Mar 2024 11:08:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B14E9C54791
+	for <alsa-devel@archiver.kernel.org>; Wed, 13 Mar 2024 12:43:23 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1ABC32097;
-	Wed, 13 Mar 2024 12:08:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1ABC32097
+	by alsa0.perex.cz (Postfix) with ESMTPS id 49043211D;
+	Wed, 13 Mar 2024 13:43:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 49043211D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1710328133;
-	bh=QN26t0rrc+NSqCdkkiNG9yykGnvaBYqQoqHRENbyT90=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1710333800;
+	bh=DXSVZljyBLC5a5bv0CgQcHa/KwzURiQNZglsucfnuhs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=QpvyxBihWtnE7LrX/ItLU8b6Mcl2C2Hc4tO4VoJdUpugHMpWTqyLDFi6l4gUhzBkB
-	 W3pCadzrhViZY6NB8UcAT/+cT2bAgkFpesFqJwu3fMknLNVyHEuBtSEy4Zl87XZ5SG
-	 HbJxFNDg8NK5n6fVg2ztvevNPVFn2Luu+SYZwBx0=
+	b=GfW35FyKBWqpqcCXTMn52M0+DwC5hB8qhV0NXxAzvKKRvhEYfW3F1jkTlK1Unk2fh
+	 ZwVwpUomvdtcMLQl2+zn4hOryfr8DFVISAWSKx0JLjCNA+bQ+YlBwF0vXU5/t7XfUf
+	 SN2IHLxvDBDjuIKLEXDNjClbDYhHmi1q/O51MlEA=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8F4E7F805E7; Wed, 13 Mar 2024 12:05:28 +0100 (CET)
+	id 41E08F805A8; Wed, 13 Mar 2024 13:42:48 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 30655F80699;
-	Wed, 13 Mar 2024 12:05:28 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B07ADF805A9;
+	Wed, 13 Mar 2024 13:42:47 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 47D98F805FB; Wed, 13 Mar 2024 12:05:23 +0100 (CET)
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com
- [46.235.227.194])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 0BFE9F804B0
-	for <alsa-devel@alsa-project.org>; Wed, 13 Mar 2024 12:02:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0BFE9F804B0
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=collabora.com header.i=@collabora.com
- header.a=rsa-sha256 header.s=mail header.b=GreEdrgU
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1710327729;
-	bh=QN26t0rrc+NSqCdkkiNG9yykGnvaBYqQoqHRENbyT90=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=GreEdrgUcxElGmVKqLjQBLN+VGlDoB/Ppi3dCMMNs4hdz4S3IV3L6OAtIBYu+UFDT
-	 8isQqDxjDFebfdSBWFRs+68h8H5boQBW4XIiU3lMcW+lKtV+On9aOeZI5o5cr8aeuz
-	 /ntEGr2QI2mVTbvoEpuO4YRCdV25t4Gb03AVffumtweF+HYTWIqD3ym6YyN45uCc7P
-	 1UZ/tRFkyeiQOpL2sTHneCnyuc+IDElxhtkxdlRQbpdGETGyQbhy8f0zxPFLUHLvGJ
-	 eXW6LxTpNr2/CtdgOaIem2miX2o1wrQ9Ah7DO7UJBnSFsNh2GMxnlLhag/4e4hfVI1
-	 4xKiNwx3n+yIg==
-Received: from IcarusMOD.eternityproject.eu (cola.collaboradmins.com
- [195.201.22.229])
+	id CC281F8028D; Wed, 13 Mar 2024 13:42:41 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 4964237820D8;
-	Wed, 13 Mar 2024 11:02:07 +0000 (UTC)
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-To: broonie@kernel.org
-Cc: wenst@chromium.org,
-	lgirdwood@gmail.com,
-	robh@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org,
-	matthias.bgg@gmail.com,
-	perex@perex.cz,
-	tiwai@suse.com,
-	trevor.wu@mediatek.com,
-	maso.huang@mediatek.com,
-	xiazhengqiao@huaqin.corp-partner.google.com,
-	arnd@arndb.de,
-	kuninori.morimoto.gx@renesas.com,
-	shraash@google.com,
-	amergnat@baylibre.com,
-	nicolas.ferre@microchip.com,
-	u.kleine-koenig@pengutronix.de,
-	dianders@chromium.org,
-	frank.li@vivo.com,
-	allen-kh.cheng@mediatek.com,
-	eugen.hristev@collabora.com,
-	claudiu.beznea@tuxon.dev,
-	jarkko.nikula@bitmer.com,
-	jiaxin.yu@mediatek.com,
-	alpernebiyasak@gmail.com,
-	ckeepax@opensource.cirrus.com,
-	zhourui@huaqin.corp-partner.google.com,
-	nfraprado@collabora.com,
-	alsa-devel@alsa-project.org,
-	shane.chien@mediatek.com,
-	linux-sound@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org,
-	kernel@collabora.com,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Subject: [PATCH v3 05/22] ASoC: mediatek: Add common machine soundcard driver
- probe mechanism
-Date: Wed, 13 Mar 2024 12:01:30 +0100
-Message-ID: <20240313110147.1267793-6-angelogioacchino.delregno@collabora.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: 
- <20240313110147.1267793-1-angelogioacchino.delregno@collabora.com>
-References: <20240313110147.1267793-1-angelogioacchino.delregno@collabora.com>
+	by alsa1.perex.cz (Postfix) with ESMTPS id 1671AF80088
+	for <alsa-devel@alsa-project.org>; Wed, 13 Mar 2024 13:42:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1671AF80088
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=S7iVlM1Y
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 1905361375;
+	Wed, 13 Mar 2024 12:42:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96983C433C7;
+	Wed, 13 Mar 2024 12:42:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710333750;
+	bh=DXSVZljyBLC5a5bv0CgQcHa/KwzURiQNZglsucfnuhs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=S7iVlM1Yv1FdfGxD5dAxt5gtvqPHKBy18644j0pvXAICnMmlq1ZUb3cD2ioaZYpgL
+	 //AMzZ5ClKLtUS6DWftu9L9v6wjtj9YGYwI8yWCowMXyi02ls/9ZpA4v67CLHYdeHM
+	 dV2L8kBzrY7ZFOZ1H8f/o9kD40draOJ3M2tpzXnAzGXNdJLz82x2qnyaM4qjcsAn3y
+	 vdE/bTQB27TepIUa1O3ZbOU8KmTb45gboqvYF8DnTvTFJkmiflFrf7KtzyqHiEWpBn
+	 B8fp/TmKvEa0dEdzIIZeAQRmHGAJEC1S3ErwhRipgq0isUyWO+hx2JOZrfcgnpoKVW
+	 iUJ48KwBMVdBQ==
+Date: Wed, 13 Mar 2024 12:42:25 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Jerome Brunet <jbrunet@baylibre.com>
+Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+	Bard Liao <yung-chuan.liao@linux.intel.com>, bard.liao@intel.com,
+	Conor Dooley <conor+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Rob Herring <robh+dt@kernel.org>, alsa-devel@alsa-project.org,
+	devicetree@vger.kernel.org
+Subject: Re: [PATCH v7 1/5] ASoC: makes CPU/Codec channel connection map more
+ generic
+Message-ID: <0388cd67-42d7-4a20-bf05-6637d484d0bd@sirena.org.uk>
+References: <87v8a64f3d.wl-kuninori.morimoto.gx@renesas.com>
+ <87ttpq4f2c.wl-kuninori.morimoto.gx@renesas.com>
+ <e7121fbc-c814-4153-9f17-82ad5de13e64@sirena.org.uk>
+ <87a5n46xjk.wl-kuninori.morimoto.gx@renesas.com>
+ <7248b107-db87-4409-b93c-f65035d0a6b4@sirena.org.uk>
+ <1jo7bje6da.fsf@starbuckisacylon.baylibre.com>
+ <b9de4fd1-ef4a-4c30-b3cf-e36931be90f1@sirena.org.uk>
+ <1jh6haih3f.fsf@starbuckisacylon.baylibre.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: B7MOQ4WIGIRFV2AYV7H5Q767DYSNKIKX
-X-Message-ID-Hash: B7MOQ4WIGIRFV2AYV7H5Q767DYSNKIKX
-X-MailFrom: angelogioacchino.delregno@collabora.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="wQxpEnVQw38uV/8e"
+Content-Disposition: inline
+In-Reply-To: <1jh6haih3f.fsf@starbuckisacylon.baylibre.com>
+X-Cookie: It's later than you think.
+Message-ID-Hash: BGXW7F22FY7AOI5E7QQJ3VPB3P7H7FOV
+X-Message-ID-Hash: BGXW7F22FY7AOI5E7QQJ3VPB3P7H7FOV
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -122,7 +97,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/B7MOQ4WIGIRFV2AYV7H5Q767DYSNKIKX/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BGXW7F22FY7AOI5E7QQJ3VPB3P7H7FOV/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -131,239 +106,38 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add a common machine soundcard driver probe function that supports both
-DSP and AFE-direct usecases and also provides a hook for legacy machine
-soundcard driver probe mechanisms.
 
-Note that the hook is there because, even for legacy probe, a lot of the
-actual code can still be commonized, hence still reducing duplication
-for the legacy devicetree retrocompatibility cases.
+--wQxpEnVQw38uV/8e
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-This common probe function deprecates all of the inconsistent previous
-probe mechanisms and aims to settle all of the MediaTek card drivers on
-consistent and common devicetree properties describing wanted DAIs,
-device specific DAI configuration and DAI links to codecs found on
-each device/board.
+On Wed, Mar 13, 2024 at 10:36:41AM +0100, Jerome Brunet wrote:
 
-Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
----
- sound/soc/mediatek/common/mtk-soc-card.h      |   7 +-
- .../mediatek/common/mtk-soundcard-driver.c    | 148 ++++++++++++++++++
- .../mediatek/common/mtk-soundcard-driver.h    |  18 +++
- 3 files changed, 172 insertions(+), 1 deletion(-)
+> * Only the u200 is failing. The others devices of the same family are fine.
 
-diff --git a/sound/soc/mediatek/common/mtk-soc-card.h b/sound/soc/mediatek/common/mtk-soc-card.h
-index eeda79370049..3f6e24dd22df 100644
---- a/sound/soc/mediatek/common/mtk-soc-card.h
-+++ b/sound/soc/mediatek/common/mtk-soc-card.h
-@@ -9,9 +9,14 @@
- #ifndef _MTK_SOC_CARD_H_
- #define _MTK_SOC_CARD_H_
- 
-+struct mtk_platform_card_data;
-+struct mtk_sof_priv;
-+
- struct mtk_soc_card_data {
-+	const struct mtk_sof_priv *sof_priv;
-+	struct list_head sof_dai_link_list;
-+	struct mtk_platform_card_data *card_data;
- 	void *mach_priv;
--	void *sof_priv;
- };
- 
- #endif
-diff --git a/sound/soc/mediatek/common/mtk-soundcard-driver.c b/sound/soc/mediatek/common/mtk-soundcard-driver.c
-index 000a086a8cf4..b1db17e392d5 100644
---- a/sound/soc/mediatek/common/mtk-soundcard-driver.c
-+++ b/sound/soc/mediatek/common/mtk-soundcard-driver.c
-@@ -10,6 +10,8 @@
- #include <linux/of.h>
- #include <sound/soc.h>
- 
-+#include "mtk-dsp-sof-common.h"
-+#include "mtk-soc-card.h"
- #include "mtk-soundcard-driver.h"
- 
- static int set_card_codec_info(struct snd_soc_card *card,
-@@ -136,3 +138,149 @@ void clean_card_reference(struct snd_soc_card *card)
- 		snd_soc_of_put_dai_link_codecs(dai_link);
- }
- EXPORT_SYMBOL_GPL(clean_card_reference);
-+
-+int mtk_soundcard_common_probe(struct platform_device *pdev)
-+{
-+	struct device_node *platform_node, *adsp_node;
-+	const struct mtk_soundcard_pdata *pdata;
-+	struct mtk_soc_card_data *soc_card_data;
-+	struct snd_soc_dai_link *orig_dai_link, *dai_link;
-+	struct snd_soc_jack *jacks;
-+	struct snd_soc_card *card;
-+	int i, orig_num_links, ret;
-+	bool needs_legacy_probe;
-+
-+	pdata = device_get_match_data(&pdev->dev);
-+	if (!pdata)
-+		return -EINVAL;
-+
-+	card = pdata->card_data->card;
-+	card->dev = &pdev->dev;
-+	orig_dai_link = card->dai_link;
-+	orig_num_links = card->num_links;
-+
-+	ret = snd_soc_of_parse_card_name(card, "model");
-+	if (ret)
-+		return ret;
-+
-+	if (!card->name) {
-+		if (!pdata->card_name)
-+			return -EINVAL;
-+
-+		card->name = pdata->card_name;
-+	}
-+
-+	needs_legacy_probe = !of_property_read_bool(pdev->dev.of_node, "audio-routing");
-+	if (needs_legacy_probe) {
-+		/*
-+		 * If we have no .soc_probe() callback there's no way of using
-+		 * any legacy probe mechanism, as that cannot not be generic.
-+		 */
-+		if (!pdata->soc_probe)
-+			return -EINVAL;
-+
-+		dev_info_once(&pdev->dev, "audio-routing not found: using legacy probe\n");
-+	} else {
-+		ret = snd_soc_of_parse_audio_routing(card, "audio-routing");
-+		if (ret)
-+			return ret;
-+	}
-+
-+	soc_card_data = devm_kzalloc(&pdev->dev, sizeof(*soc_card_data), GFP_KERNEL);
-+	if (!soc_card_data)
-+		return -ENOMEM;
-+
-+	soc_card_data->card_data = pdata->card_data;
-+
-+	jacks = devm_kcalloc(card->dev, soc_card_data->card_data->num_jacks,
-+			     sizeof(*jacks), GFP_KERNEL);
-+	if (!jacks)
-+		return -ENOMEM;
-+
-+	soc_card_data->card_data->jacks = jacks;
-+
-+	platform_node = of_parse_phandle(pdev->dev.of_node, "mediatek,platform", 0);
-+	if (!platform_node)
-+		return dev_err_probe(&pdev->dev, -EINVAL,
-+				     "Property mediatek,platform missing or invalid\n");
-+
-+	/* Check if this SoC has an Audio DSP */
-+	if (pdata->sof_priv)
-+		adsp_node = of_parse_phandle(pdev->dev.of_node, "mediatek,adsp", 0);
-+	else
-+		adsp_node = NULL;
-+
-+	if (adsp_node) {
-+		if (of_property_read_bool(pdev->dev.of_node, "mediatek,dai-link")) {
-+			ret = mtk_sof_dailink_parse_of(card, pdev->dev.of_node,
-+						       "mediatek,dai-link",
-+						       card->dai_link, card->num_links);
-+			if (ret) {
-+				of_node_put(adsp_node);
-+				of_node_put(platform_node);
-+				return dev_err_probe(&pdev->dev, ret,
-+						     "Cannot parse mediatek,dai-link\n");
-+			}
-+		}
-+
-+		soc_card_data->sof_priv = pdata->sof_priv;
-+		card->probe = mtk_sof_card_probe;
-+		card->late_probe = mtk_sof_card_late_probe;
-+		if (!card->topology_shortname_created) {
-+			snprintf(card->topology_shortname, 32, "sof-%s", card->name);
-+			card->topology_shortname_created = true;
-+		}
-+		card->name = card->topology_shortname;
-+	}
-+
-+	/*
-+	 * Regardless of whether the ADSP is wanted and/or present in a machine
-+	 * specific device tree or not and regardless of whether any AFE_SOF
-+	 * link is present, we have to make sure that the platforms->of_node
-+	 * is not NULL, and set to either ADSP (adsp_node) or AFE (platform_node).
-+	 */
-+	for_each_card_prelinks(card, i, dai_link) {
-+		if (adsp_node && !strncmp(dai_link->name, "AFE_SOF", strlen("AFE_SOF")))
-+			dai_link->platforms->of_node = adsp_node;
-+		else if (!dai_link->platforms->name && !dai_link->platforms->of_node)
-+			dai_link->platforms->of_node = platform_node;
-+	}
-+
-+	if (!needs_legacy_probe) {
-+		ret = parse_dai_link_info(card);
-+		if (ret)
-+			goto err_restore_dais;
-+	} else {
-+		if (adsp_node)
-+			of_node_put(adsp_node);
-+		of_node_put(platform_node);
-+	}
-+
-+	if (pdata->soc_probe) {
-+		ret = pdata->soc_probe(soc_card_data, needs_legacy_probe);
-+		if (ret) {
-+			if (!needs_legacy_probe)
-+				clean_card_reference(card);
-+			goto err_restore_dais;
-+		}
-+	}
-+	snd_soc_card_set_drvdata(card, soc_card_data);
-+
-+	ret = devm_snd_soc_register_card(&pdev->dev, card);
-+
-+	if (!needs_legacy_probe)
-+		clean_card_reference(card);
-+
-+	if (ret) {
-+		dev_err_probe(&pdev->dev, ret, "Cannot register card\n");
-+		goto err_restore_dais;
-+	}
-+
-+	return 0;
-+
-+err_restore_dais:
-+	card->dai_link = orig_dai_link;
-+	card->num_links = orig_num_links;
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(mtk_soundcard_common_probe);
-diff --git a/sound/soc/mediatek/common/mtk-soundcard-driver.h b/sound/soc/mediatek/common/mtk-soundcard-driver.h
-index d92cac1d7b72..44320efff5f8 100644
---- a/sound/soc/mediatek/common/mtk-soundcard-driver.h
-+++ b/sound/soc/mediatek/common/mtk-soundcard-driver.h
-@@ -9,6 +9,24 @@
- #ifndef _MTK_SOUNDCARD_DRIVER_H_
- #define _MTK_SOUNDCARD_DRIVER_H_
- 
-+struct mtk_sof_priv;
-+struct mtk_soc_card_data;
-+
-+struct mtk_platform_card_data {
-+	struct snd_soc_card *card;
-+	struct snd_soc_jack *jacks;
-+	u8 num_jacks;
-+	u8 flags;
-+};
-+
-+struct mtk_soundcard_pdata {
-+	const char *card_name;
-+	struct mtk_platform_card_data *card_data;
-+	struct mtk_sof_priv *sof_priv;
-+	int (*soc_probe)(struct mtk_soc_card_data *card_data, bool legacy);
-+};
-+
- int parse_dai_link_info(struct snd_soc_card *card);
- void clean_card_reference(struct snd_soc_card *card);
-+int mtk_soundcard_common_probe(struct platform_device *pdev);
- #endif
--- 
-2.44.0
+Oh, that's a shame :(
 
+> I'll continue to check but this is apparently related to the options
+> turned on by the debug fragment. Maybe it could be interesting to check
+> another non-intel SoC manufacturer using DPCM with this fragment ?
+> (another device relying on cleared ch_maps - Renesas and/or MTK maybe ?)
+
+The error reported was a kasan one so it may just be that that needs to
+be turned on to reproduce.
+
+--wQxpEnVQw38uV/8e
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXxnzAACgkQJNaLcl1U
+h9Ai0wf+OYHVg9zC6RMcSJpC7ACW+vbtvz0OdadwhgAlHiep1nwv1pT8HxQ/a6ww
+XtYXBPeyZ+Y7/NGN1c01Jvd/h61KP2A/wOM0e2XOh+C0TEqfknw9r+TFVkeqTnMY
+B684z8HI9r+W015kRWHkTV965eMBjxrXIw8iuRCPs75BpdxShLBDm4r6tw1O+j7f
+ZjRxYQmQS+0k++0IheEtoK1zx8h3jrFKYtmFyI7h/zaGTShIu4PwAscGGhk8wd1X
+jm1zEcn55OP3w/8FtzYSGaec0L6ehUDBv23Zpgnx9KuUIvehR/oWzo3uhlRTCKui
+0QHsYd3RamfGrNFDssvpWFVWblNP6Q==
+=ZlKR
+-----END PGP SIGNATURE-----
+
+--wQxpEnVQw38uV/8e--
