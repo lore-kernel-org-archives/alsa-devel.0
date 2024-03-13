@@ -4,53 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C469CC54791
-	for <alsa-devel@archiver.kernel.org>; Wed, 13 Mar 2024 11:03:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 787C2C54E60
+	for <alsa-devel@archiver.kernel.org>; Wed, 13 Mar 2024 11:04:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4EBF11925;
-	Wed, 13 Mar 2024 12:03:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4EBF11925
+	by alsa0.perex.cz (Postfix) with ESMTPS id E25021914;
+	Wed, 13 Mar 2024 12:04:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E25021914
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1710327837;
-	bh=a9JEFvUwTVuwqjXH9zivYh52MX7RhbBCVDFOk812vYw=;
+	s=default; t=1710327853;
+	bh=5l6ixT/QJSwR/7ij5ouRmnGQrpg9lKNtekqp8cQZN/E=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=uF/sbQOlGChvZLeA8+pSVwBImj4ILUn02f6LKnuklxWqKBoGhjm0Hf17YgXYN5qdo
-	 oX6p+8TxM7KoQO024fpPB1PhZdZayYz2JuYGZ3qB0yRQQbHd59iozufJe0AFXiffd+
-	 K3Hq8nnBc1oaz/SnnUnvz258iaxqmwZB/GLwu8zk=
+	b=jJHxcwDReLWzJgCuGJdS3KQPlhf3ZepsHdY+37EvhhTiSj2bgDRjC+rUG2+dvYB18
+	 421ryPoyr+8D8IEKULkgaIw1yHJlUR2s26L8HYYLzH9HBkLBpX40hOYWdaU2iv5fem
+	 2RAjBHLBM0xyLyl8a31Ld6xVGvzrTCKodxczhoww=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 97677F80636; Wed, 13 Mar 2024 12:02:49 +0100 (CET)
+	id 46FCCF805E5; Wed, 13 Mar 2024 12:02:56 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7D050F8063C;
-	Wed, 13 Mar 2024 12:02:48 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 65E20F8065A;
+	Wed, 13 Mar 2024 12:02:55 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BA4F8F80610; Wed, 13 Mar 2024 12:02:42 +0100 (CET)
+	id C801BF80630; Wed, 13 Mar 2024 12:02:50 +0100 (CET)
 Received: from madrid.collaboradmins.com (madrid.collaboradmins.com
  [46.235.227.194])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 6AB22F8025F
-	for <alsa-devel@alsa-project.org>; Wed, 13 Mar 2024 12:02:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6AB22F8025F
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6067FF805B6
+	for <alsa-devel@alsa-project.org>; Wed, 13 Mar 2024 12:02:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6067FF805B6
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=collabora.com header.i=@collabora.com
- header.a=rsa-sha256 header.s=mail header.b=rK5JIqLg
+ header.a=rsa-sha256 header.s=mail header.b=T/18tiYa
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1710327724;
-	bh=a9JEFvUwTVuwqjXH9zivYh52MX7RhbBCVDFOk812vYw=;
+	s=mail; t=1710327738;
+	bh=5l6ixT/QJSwR/7ij5ouRmnGQrpg9lKNtekqp8cQZN/E=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=rK5JIqLgLTnJtYAsZNzSyksBmLpFmSk5/WZBG02jbiJKPOybCnXW00fLgh6u0oaPn
-	 7oQGROqbUFinPCKsfnenrNo0hj+xND1NpJvHrYPNxm2COCldyLCBXrkzegxYxVpLkv
-	 /LsNSxCuYux5q39GVo53nDXnADBulGYz9TFtSnXZXm9MNjh4+FmulphHBOUep53Dwi
-	 oCki5ILVwfW289aEbo1xlo9I1gpsy+48s/nottc7PF7jtqFu5q7YNfUG/BUYckkd2R
-	 q7jun4d4zSZK/kCecNRMDbEklVkRwTb2EINMVLgvV/e8W43B3xEwHlpupffKQRNd9F
-	 SIMTfuKMsBBcw==
+	b=T/18tiYaZDiqQ9LJ/C2vI4kKWOboujDW6/9TeULmkNlq4QACqM7569Vc0Hwyu1hME
+	 aCG3DvfQVRHaqVyVBIKz7iBi6nsp+sS/ib0hl4PpgvB907U74eJfUOAuM6YYJTsvRB
+	 9LYvQFMlA8UNkGno1FU8NqvjhGkDkbRjc6R3aR8hH+076v4TtnnLEprQF4NjgIrHvH
+	 gE4J3yDO/ALdVBq9WVfbmWDDaQSUaJ5zA6kZyij99Xvx1lgViQT91j0KZNUHirotwI
+	 c+b23aFuBx0cB/MilP7gyWVYbiKArcfw5H6ERoO8YDlKWFdtSBNv57l/F10Avh2hsu
+	 3dRz8nHGeeeGQ==
 Received: from IcarusMOD.eternityproject.eu (cola.collaboradmins.com
  [195.201.22.229])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
@@ -58,8 +57,8 @@ Received: from IcarusMOD.eternityproject.eu (cola.collaboradmins.com
  SHA256)
 	(No client certificate requested)
 	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 7BB8637820C6;
-	Wed, 13 Mar 2024 11:02:02 +0000 (UTC)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id C1AAD37820D0;
+	Wed, 13 Mar 2024 11:02:16 +0000 (UTC)
 From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 To: broonie@kernel.org
 Cc: wenst@chromium.org,
@@ -99,18 +98,19 @@ Cc: wenst@chromium.org,
 	linux-mediatek@lists.infradead.org,
 	kernel@collabora.com,
 	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Subject: [PATCH v3 03/22] ASoC: mediatek: Commonize ADDA rate transform
- functions and enums
-Date: Wed, 13 Mar 2024 12:01:28 +0100
-Message-ID: <20240313110147.1267793-4-angelogioacchino.delregno@collabora.com>
+Subject: [PATCH v3 09/22] ASoC: mediatek: mt8192: Migrate to
+ mtk_soundcard_common_probe
+Date: Wed, 13 Mar 2024 12:01:34 +0100
+Message-ID: 
+ <20240313110147.1267793-10-angelogioacchino.delregno@collabora.com>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: 
  <20240313110147.1267793-1-angelogioacchino.delregno@collabora.com>
 References: <20240313110147.1267793-1-angelogioacchino.delregno@collabora.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: LI7L5VJIDWRSDDE3FGEHVVZGXIR2XEO2
-X-Message-ID-Hash: LI7L5VJIDWRSDDE3FGEHVVZGXIR2XEO2
+Message-ID-Hash: O5BP354ILQPHH6U6TGHH32AIG727I3PM
+X-Message-ID-Hash: O5BP354ILQPHH6U6TGHH32AIG727I3PM
 X-MailFrom: angelogioacchino.delregno@collabora.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -123,7 +123,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LI7L5VJIDWRSDDE3FGEHVVZGXIR2XEO2/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/O5BP354ILQPHH6U6TGHH32AIG727I3PM/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -132,908 +132,302 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Both the enumerations for UL/DL rates, delay data and the functions
-adda_{dl,ul}_rate_transform were duplicated for each MediaTek SoC
-dai-adda driver: move the common bits to a new mtk-dai-adda-common
-file and its header.
-While at it, also add the "mtk_" prefix to the exported functions.
+Add mtk_soundcard_pdata platform data for the MediaTek common sound card
+probe mechanism, including a driver/soc-specific probe extension (used
+for bits that cannot be commonized  hence specific to this driver), and
+change the probe function to mtk_soundcard_common_probe.
+
+This is also adding the possibility of specifying the links and routing
+with the audio-routing property and (x)-dai-link nodes in device trees
+to stop hardcoding machine specific links in the card driver assupported
+by the common probe function, but support for legacy device trees is
+retained with a legacy_probe function, which is used only in case the
+new properties are not found.
 
 Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 ---
- sound/soc/mediatek/common/Makefile            |  2 +
- .../soc/mediatek/common/mtk-dai-adda-common.c | 70 ++++++++++++++
- .../soc/mediatek/common/mtk-dai-adda-common.h | 45 +++++++++
- sound/soc/mediatek/mt6797/mt6797-dai-adda.c   | 85 +----------------
- sound/soc/mediatek/mt8183/mt8183-dai-adda.c   | 90 +-----------------
- sound/soc/mediatek/mt8186/mt8186-dai-adda.c   | 92 +------------------
- sound/soc/mediatek/mt8188/mt8188-dai-adda.c   | 89 +-----------------
- sound/soc/mediatek/mt8192/mt8192-dai-adda.c   | 90 +-----------------
- sound/soc/mediatek/mt8195/mt8195-dai-adda.c   | 90 +-----------------
- 9 files changed, 135 insertions(+), 518 deletions(-)
- create mode 100644 sound/soc/mediatek/common/mtk-dai-adda-common.c
- create mode 100644 sound/soc/mediatek/common/mtk-dai-adda-common.h
+ .../mt8192/mt8192-mt6359-rt1015-rt5682.c      | 164 ++++++++++--------
+ 1 file changed, 91 insertions(+), 73 deletions(-)
 
-diff --git a/sound/soc/mediatek/common/Makefile b/sound/soc/mediatek/common/Makefile
-index 42e636c10c1e..363cc258a3d5 100644
---- a/sound/soc/mediatek/common/Makefile
-+++ b/sound/soc/mediatek/common/Makefile
-@@ -1,6 +1,8 @@
- # SPDX-License-Identifier: GPL-2.0
- # platform driver
- snd-soc-mtk-common-objs := mtk-afe-platform-driver.o mtk-afe-fe-dai.o mtk-dsp-sof-common.o mtk-soundcard-driver.o
-+snd-soc-mtk-common-objs += mtk-dai-adda-common.o
-+
- obj-$(CONFIG_SND_SOC_MEDIATEK) += snd-soc-mtk-common.o
+diff --git a/sound/soc/mediatek/mt8192/mt8192-mt6359-rt1015-rt5682.c b/sound/soc/mediatek/mt8192/mt8192-mt6359-rt1015-rt5682.c
+index bfcb2c486c39..645bc1aa67c7 100644
+--- a/sound/soc/mediatek/mt8192/mt8192-mt6359-rt1015-rt5682.c
++++ b/sound/soc/mediatek/mt8192/mt8192-mt6359-rt1015-rt5682.c
+@@ -20,6 +20,8 @@
+ #include "../../codecs/rt1015.h"
+ #include "../../codecs/rt5682.h"
+ #include "../common/mtk-afe-platform-driver.h"
++#include "../common/mtk-soc-card.h"
++#include "../common/mtk-soundcard-driver.h"
+ #include "mt8192-afe-common.h"
+ #include "mt8192-afe-clk.h"
+ #include "mt8192-afe-gpio.h"
+@@ -38,9 +40,10 @@
+ #define RT1015P_RT5682_OF_NAME "mediatek,mt8192_mt6359_rt1015p_rt5682"
+ #define RT1015P_RT5682S_OF_NAME "mediatek,mt8192_mt6359_rt1015p_rt5682s"
  
- obj-$(CONFIG_SND_SOC_MTK_BTCVSD) += mtk-btcvsd.o
-diff --git a/sound/soc/mediatek/common/mtk-dai-adda-common.c b/sound/soc/mediatek/common/mtk-dai-adda-common.c
-new file mode 100644
-index 000000000000..4dc1412489d6
---- /dev/null
-+++ b/sound/soc/mediatek/common/mtk-dai-adda-common.c
-@@ -0,0 +1,70 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * MediaTek ALSA SoC Audio DAI ADDA Common
-+ *
-+ * Copyright (c) 2021 MediaTek Inc.
-+ * Copyright (c) 2024 Collabora Ltd.
-+ *         AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-+ */
-+
-+#include <linux/delay.h>
-+#include <linux/dev_printk.h>
-+
-+#include "mtk-base-afe.h"
-+#include "mtk-dai-adda-common.h"
-+
-+unsigned int mtk_adda_dl_rate_transform(struct mtk_base_afe *afe, u32 rate)
-+{
-+	switch (rate) {
-+	case 8000:
-+		return MTK_AFE_ADDA_DL_RATE_8K;
-+	case 11025:
-+		return MTK_AFE_ADDA_DL_RATE_11K;
-+	case 12000:
-+		return MTK_AFE_ADDA_DL_RATE_12K;
-+	case 16000:
-+		return MTK_AFE_ADDA_DL_RATE_16K;
-+	case 22050:
-+		return MTK_AFE_ADDA_DL_RATE_22K;
-+	case 24000:
-+		return MTK_AFE_ADDA_DL_RATE_24K;
-+	case 32000:
-+		return MTK_AFE_ADDA_DL_RATE_32K;
-+	case 44100:
-+		return MTK_AFE_ADDA_DL_RATE_44K;
-+	case 48000:
-+		return MTK_AFE_ADDA_DL_RATE_48K;
-+	case 96000:
-+		return MTK_AFE_ADDA_DL_RATE_96K;
-+	case 192000:
-+		return MTK_AFE_ADDA_DL_RATE_192K;
-+	default:
-+		dev_info(afe->dev, "%s(), rate %d invalid, use 48kHz!!!\n",
-+			 __func__, rate);
-+		return MTK_AFE_ADDA_DL_RATE_48K;
-+	}
-+}
-+EXPORT_SYMBOL_GPL(mtk_adda_dl_rate_transform);
-+
-+unsigned int mtk_adda_ul_rate_transform(struct mtk_base_afe *afe, u32 rate)
-+{
-+	switch (rate) {
-+	case 8000:
-+		return MTK_AFE_ADDA_UL_RATE_8K;
-+	case 16000:
-+		return MTK_AFE_ADDA_UL_RATE_16K;
-+	case 32000:
-+		return MTK_AFE_ADDA_UL_RATE_32K;
-+	case 48000:
-+		return MTK_AFE_ADDA_UL_RATE_48K;
-+	case 96000:
-+		return MTK_AFE_ADDA_UL_RATE_96K;
-+	case 192000:
-+		return MTK_AFE_ADDA_UL_RATE_192K;
-+	default:
-+		dev_info(afe->dev, "%s(), rate %d invalid, use 48kHz!!!\n",
-+			 __func__, rate);
-+		return MTK_AFE_ADDA_UL_RATE_48K;
-+	}
-+}
-+EXPORT_SYMBOL_GPL(mtk_adda_ul_rate_transform);
-diff --git a/sound/soc/mediatek/common/mtk-dai-adda-common.h b/sound/soc/mediatek/common/mtk-dai-adda-common.h
-new file mode 100644
-index 000000000000..208b0dd89f57
---- /dev/null
-+++ b/sound/soc/mediatek/common/mtk-dai-adda-common.h
-@@ -0,0 +1,45 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Copyright (c) 2021 MediaTek Inc.
-+ * Copyright (c) 2024 Collabora Ltd.
-+ *         AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-+ */
-+
-+#ifndef _MTK_DAI_ADDA_COMMON_H_
-+#define _MTK_DAI_ADDA_COMMON_H_
-+
-+struct mtk_base_afe;
-+
-+enum adda_input_mode_rate {
-+	MTK_AFE_ADDA_DL_RATE_8K = 0,
-+	MTK_AFE_ADDA_DL_RATE_11K = 1,
-+	MTK_AFE_ADDA_DL_RATE_12K = 2,
-+	MTK_AFE_ADDA_DL_RATE_16K = 3,
-+	MTK_AFE_ADDA_DL_RATE_22K = 4,
-+	MTK_AFE_ADDA_DL_RATE_24K = 5,
-+	MTK_AFE_ADDA_DL_RATE_32K = 6,
-+	MTK_AFE_ADDA_DL_RATE_44K = 7,
-+	MTK_AFE_ADDA_DL_RATE_48K = 8,
-+	MTK_AFE_ADDA_DL_RATE_96K = 9,
-+	MTK_AFE_ADDA_DL_RATE_192K = 10,
-+};
-+
-+enum adda_voice_mode_rate {
-+	MTK_AFE_ADDA_UL_RATE_8K = 0,
-+	MTK_AFE_ADDA_UL_RATE_16K = 1,
-+	MTK_AFE_ADDA_UL_RATE_32K = 2,
-+	MTK_AFE_ADDA_UL_RATE_48K = 3,
-+	MTK_AFE_ADDA_UL_RATE_96K = 4,
-+	MTK_AFE_ADDA_UL_RATE_192K = 5,
-+	MTK_AFE_ADDA_UL_RATE_48K_HD = 6,
-+};
-+
-+enum adda_rxif_delay_data {
-+	DELAY_DATA_MISO1 = 0,
-+	DELAY_DATA_MISO0 = 1,
-+	DELAY_DATA_MISO2 = 1,
-+};
-+
-+unsigned int mtk_adda_dl_rate_transform(struct mtk_base_afe *afe, u32 rate);
-+unsigned int mtk_adda_ul_rate_transform(struct mtk_base_afe *afe, u32 rate);
-+#endif
-diff --git a/sound/soc/mediatek/mt6797/mt6797-dai-adda.c b/sound/soc/mediatek/mt6797/mt6797-dai-adda.c
-index 0ac6409c6d61..78f3ad758c12 100644
---- a/sound/soc/mediatek/mt6797/mt6797-dai-adda.c
-+++ b/sound/soc/mediatek/mt6797/mt6797-dai-adda.c
-@@ -10,86 +10,7 @@
- #include "mt6797-afe-common.h"
- #include "mt6797-interconnection.h"
- #include "mt6797-reg.h"
--
--enum {
--	MTK_AFE_ADDA_DL_RATE_8K = 0,
--	MTK_AFE_ADDA_DL_RATE_11K = 1,
--	MTK_AFE_ADDA_DL_RATE_12K = 2,
--	MTK_AFE_ADDA_DL_RATE_16K = 3,
--	MTK_AFE_ADDA_DL_RATE_22K = 4,
--	MTK_AFE_ADDA_DL_RATE_24K = 5,
--	MTK_AFE_ADDA_DL_RATE_32K = 6,
--	MTK_AFE_ADDA_DL_RATE_44K = 7,
--	MTK_AFE_ADDA_DL_RATE_48K = 8,
--	MTK_AFE_ADDA_DL_RATE_96K = 9,
--	MTK_AFE_ADDA_DL_RATE_192K = 10,
--};
--
--enum {
--	MTK_AFE_ADDA_UL_RATE_8K = 0,
--	MTK_AFE_ADDA_UL_RATE_16K = 1,
--	MTK_AFE_ADDA_UL_RATE_32K = 2,
--	MTK_AFE_ADDA_UL_RATE_48K = 3,
--	MTK_AFE_ADDA_UL_RATE_96K = 4,
--	MTK_AFE_ADDA_UL_RATE_192K = 5,
--	MTK_AFE_ADDA_UL_RATE_48K_HD = 6,
--};
--
--static unsigned int adda_dl_rate_transform(struct mtk_base_afe *afe,
--					   unsigned int rate)
--{
--	switch (rate) {
--	case 8000:
--		return MTK_AFE_ADDA_DL_RATE_8K;
--	case 11025:
--		return MTK_AFE_ADDA_DL_RATE_11K;
--	case 12000:
--		return MTK_AFE_ADDA_DL_RATE_12K;
--	case 16000:
--		return MTK_AFE_ADDA_DL_RATE_16K;
--	case 22050:
--		return MTK_AFE_ADDA_DL_RATE_22K;
--	case 24000:
--		return MTK_AFE_ADDA_DL_RATE_24K;
--	case 32000:
--		return MTK_AFE_ADDA_DL_RATE_32K;
--	case 44100:
--		return MTK_AFE_ADDA_DL_RATE_44K;
--	case 48000:
--		return MTK_AFE_ADDA_DL_RATE_48K;
--	case 96000:
--		return MTK_AFE_ADDA_DL_RATE_96K;
--	case 192000:
--		return MTK_AFE_ADDA_DL_RATE_192K;
--	default:
--		dev_warn(afe->dev, "%s(), rate %d invalid, use 48kHz!!!\n",
--			 __func__, rate);
--		return MTK_AFE_ADDA_DL_RATE_48K;
--	}
--}
--
--static unsigned int adda_ul_rate_transform(struct mtk_base_afe *afe,
--					   unsigned int rate)
--{
--	switch (rate) {
--	case 8000:
--		return MTK_AFE_ADDA_UL_RATE_8K;
--	case 16000:
--		return MTK_AFE_ADDA_UL_RATE_16K;
--	case 32000:
--		return MTK_AFE_ADDA_UL_RATE_32K;
--	case 48000:
--		return MTK_AFE_ADDA_UL_RATE_48K;
--	case 96000:
--		return MTK_AFE_ADDA_UL_RATE_96K;
--	case 192000:
--		return MTK_AFE_ADDA_UL_RATE_192K;
--	default:
--		dev_warn(afe->dev, "%s(), rate %d invalid, use 48kHz!!!\n",
--			 __func__, rate);
--		return MTK_AFE_ADDA_UL_RATE_48K;
--	}
--}
-+#include "../common/mtk-dai-adda-common.h"
- 
- /* dai component */
- static const struct snd_kcontrol_new mtk_adda_dl_ch1_mix[] = {
-@@ -246,7 +167,7 @@ static int mtk_dai_adda_hw_params(struct snd_pcm_substream *substream,
- 		regmap_write(afe->regmap, AFE_ADDA_PREDIS_CON1, 0);
- 
- 		/* set input sampling rate */
--		dl_src2_con0 = adda_dl_rate_transform(afe, rate) << 28;
-+		dl_src2_con0 = mtk_adda_dl_rate_transform(afe, rate) << 28;
- 
- 		/* set output mode */
- 		switch (rate) {
-@@ -296,7 +217,7 @@ static int mtk_dai_adda_hw_params(struct snd_pcm_substream *substream,
- 				   0x1 << 0,
- 				   0x0 << 0);
- 
--		voice_mode = adda_ul_rate_transform(afe, rate);
-+		voice_mode = mtk_adda_ul_rate_transform(afe, rate);
- 
- 		ul_src_con0 |= (voice_mode << 17) & (0x7 << 17);
- 
-diff --git a/sound/soc/mediatek/mt8183/mt8183-dai-adda.c b/sound/soc/mediatek/mt8183/mt8183-dai-adda.c
-index 5b8a274419ed..be69bcea2a78 100644
---- a/sound/soc/mediatek/mt8183/mt8183-dai-adda.c
-+++ b/sound/soc/mediatek/mt8183/mt8183-dai-adda.c
-@@ -10,6 +10,7 @@
- #include "mt8183-afe-common.h"
- #include "mt8183-interconnection.h"
- #include "mt8183-reg.h"
-+#include "../common/mtk-dai-adda-common.h"
- 
- enum {
- 	AUDIO_SDM_LEVEL_MUTE = 0,
-@@ -18,91 +19,6 @@ enum {
- 	/* you need to change formula of hp impedance and dc trim too */
+-struct mt8192_mt6359_priv {
+-	struct snd_soc_jack headset_jack;
+-	struct snd_soc_jack hdmi_jack;
++enum mt8192_jacks {
++	MT8192_JACK_HEADSET,
++	MT8192_JACK_HDMI,
++	MT8192_JACK_MAX,
  };
  
--enum {
--	DELAY_DATA_MISO1 = 0,
--	DELAY_DATA_MISO2,
--};
--
--enum {
--	MTK_AFE_ADDA_DL_RATE_8K = 0,
--	MTK_AFE_ADDA_DL_RATE_11K = 1,
--	MTK_AFE_ADDA_DL_RATE_12K = 2,
--	MTK_AFE_ADDA_DL_RATE_16K = 3,
--	MTK_AFE_ADDA_DL_RATE_22K = 4,
--	MTK_AFE_ADDA_DL_RATE_24K = 5,
--	MTK_AFE_ADDA_DL_RATE_32K = 6,
--	MTK_AFE_ADDA_DL_RATE_44K = 7,
--	MTK_AFE_ADDA_DL_RATE_48K = 8,
--	MTK_AFE_ADDA_DL_RATE_96K = 9,
--	MTK_AFE_ADDA_DL_RATE_192K = 10,
--};
--
--enum {
--	MTK_AFE_ADDA_UL_RATE_8K = 0,
--	MTK_AFE_ADDA_UL_RATE_16K = 1,
--	MTK_AFE_ADDA_UL_RATE_32K = 2,
--	MTK_AFE_ADDA_UL_RATE_48K = 3,
--	MTK_AFE_ADDA_UL_RATE_96K = 4,
--	MTK_AFE_ADDA_UL_RATE_192K = 5,
--	MTK_AFE_ADDA_UL_RATE_48K_HD = 6,
--};
--
--static unsigned int adda_dl_rate_transform(struct mtk_base_afe *afe,
--					   unsigned int rate)
--{
--	switch (rate) {
--	case 8000:
--		return MTK_AFE_ADDA_DL_RATE_8K;
--	case 11025:
--		return MTK_AFE_ADDA_DL_RATE_11K;
--	case 12000:
--		return MTK_AFE_ADDA_DL_RATE_12K;
--	case 16000:
--		return MTK_AFE_ADDA_DL_RATE_16K;
--	case 22050:
--		return MTK_AFE_ADDA_DL_RATE_22K;
--	case 24000:
--		return MTK_AFE_ADDA_DL_RATE_24K;
--	case 32000:
--		return MTK_AFE_ADDA_DL_RATE_32K;
--	case 44100:
--		return MTK_AFE_ADDA_DL_RATE_44K;
--	case 48000:
--		return MTK_AFE_ADDA_DL_RATE_48K;
--	case 96000:
--		return MTK_AFE_ADDA_DL_RATE_96K;
--	case 192000:
--		return MTK_AFE_ADDA_DL_RATE_192K;
--	default:
--		dev_warn(afe->dev, "%s(), rate %d invalid, use 48kHz!!!\n",
--			 __func__, rate);
--		return MTK_AFE_ADDA_DL_RATE_48K;
--	}
--}
--
--static unsigned int adda_ul_rate_transform(struct mtk_base_afe *afe,
--					   unsigned int rate)
--{
--	switch (rate) {
--	case 8000:
--		return MTK_AFE_ADDA_UL_RATE_8K;
--	case 16000:
--		return MTK_AFE_ADDA_UL_RATE_16K;
--	case 32000:
--		return MTK_AFE_ADDA_UL_RATE_32K;
--	case 48000:
--		return MTK_AFE_ADDA_UL_RATE_48K;
--	case 96000:
--		return MTK_AFE_ADDA_UL_RATE_96K;
--	case 192000:
--		return MTK_AFE_ADDA_UL_RATE_192K;
--	default:
--		dev_warn(afe->dev, "%s(), rate %d invalid, use 48kHz!!!\n",
--			 __func__, rate);
--		return MTK_AFE_ADDA_UL_RATE_48K;
--	}
--}
--
- /* dai component */
- static const struct snd_kcontrol_new mtk_adda_dl_ch1_mix[] = {
- 	SOC_DAPM_SINGLE_AUTODISABLE("DL1_CH1", AFE_CONN3, I_DL1_CH1, 1, 0),
-@@ -369,7 +285,7 @@ static int mtk_dai_adda_hw_params(struct snd_pcm_substream *substream,
- 		regmap_write(afe->regmap, AFE_ADDA_PREDIS_CON1, 0);
+ /* Headset jack detection DAPM pins */
+@@ -323,13 +326,13 @@ static int mt8192_mt6359_init(struct snd_soc_pcm_runtime *rtd)
  
- 		/* set sampling rate */
--		dl_src2_con0 = adda_dl_rate_transform(afe, rate) << 28;
-+		dl_src2_con0 = mtk_adda_dl_rate_transform(afe, rate) << 28;
+ static int mt8192_rt5682_init(struct snd_soc_pcm_runtime *rtd)
+ {
++	struct mtk_soc_card_data *soc_card_data = snd_soc_card_get_drvdata(rtd->card);
++	struct snd_soc_jack *jack = &soc_card_data->card_data->jacks[MT8192_JACK_HEADSET];
+ 	struct snd_soc_component *cmpnt_afe =
+ 		snd_soc_rtdcom_lookup(rtd, AFE_PCM_NAME);
+ 	struct mtk_base_afe *afe = snd_soc_component_get_drvdata(cmpnt_afe);
+ 	struct snd_soc_component *cmpnt_codec =
+ 		snd_soc_rtd_to_codec(rtd, 0)->component;
+-	struct mt8192_mt6359_priv *priv = snd_soc_card_get_drvdata(rtd->card);
+-	struct snd_soc_jack *jack = &priv->headset_jack;
+ 	int ret;
  
- 		/* set output mode */
- 		switch (rate) {
-@@ -420,7 +336,7 @@ static int mtk_dai_adda_hw_params(struct snd_pcm_substream *substream,
- 				   0x1 << 0,
- 				   0x0 << 0);
+ 	ret = mt8192_dai_i2s_set_share(afe, "I2S8", "I2S9");
+@@ -359,19 +362,19 @@ static int mt8192_rt5682_init(struct snd_soc_pcm_runtime *rtd)
  
--		voice_mode = adda_ul_rate_transform(afe, rate);
-+		voice_mode = mtk_adda_ul_rate_transform(afe, rate);
+ static int mt8192_mt6359_hdmi_init(struct snd_soc_pcm_runtime *rtd)
+ {
++	struct mtk_soc_card_data *soc_card_data = snd_soc_card_get_drvdata(rtd->card);
++	struct snd_soc_jack *jack = &soc_card_data->card_data->jacks[MT8192_JACK_HDMI];
+ 	struct snd_soc_component *cmpnt_codec =
+ 		snd_soc_rtd_to_codec(rtd, 0)->component;
+-	struct mt8192_mt6359_priv *priv = snd_soc_card_get_drvdata(rtd->card);
+ 	int ret;
  
- 		ul_src_con0 |= (voice_mode << 17) & (0x7 << 17);
+-	ret = snd_soc_card_jack_new(rtd->card, "HDMI Jack", SND_JACK_LINEOUT,
+-				    &priv->hdmi_jack);
++	ret = snd_soc_card_jack_new(rtd->card, "HDMI Jack", SND_JACK_LINEOUT, jack);
+ 	if (ret) {
+ 		dev_err(rtd->dev, "HDMI Jack creation failed: %d\n", ret);
+ 		return ret;
+ 	}
  
-diff --git a/sound/soc/mediatek/mt8186/mt8186-dai-adda.c b/sound/soc/mediatek/mt8186/mt8186-dai-adda.c
-index ad6d4b5cf697..dbd157d1a1ea 100644
---- a/sound/soc/mediatek/mt8186/mt8186-dai-adda.c
-+++ b/sound/soc/mediatek/mt8186/mt8186-dai-adda.c
-@@ -11,6 +11,7 @@
- #include "mt8186-afe-common.h"
- #include "mt8186-afe-gpio.h"
- #include "mt8186-interconnection.h"
-+#include "../common/mtk-dai-adda-common.h"
- 
- enum {
- 	UL_IIR_SW = 0,
-@@ -33,35 +34,6 @@ enum {
- 	AUDIO_SDM_3RD,
- };
- 
--enum {
--	DELAY_DATA_MISO1 = 0,
--	DELAY_DATA_MISO2,
--};
--
--enum {
--	MTK_AFE_ADDA_DL_RATE_8K = 0,
--	MTK_AFE_ADDA_DL_RATE_11K = 1,
--	MTK_AFE_ADDA_DL_RATE_12K = 2,
--	MTK_AFE_ADDA_DL_RATE_16K = 3,
--	MTK_AFE_ADDA_DL_RATE_22K = 4,
--	MTK_AFE_ADDA_DL_RATE_24K = 5,
--	MTK_AFE_ADDA_DL_RATE_32K = 6,
--	MTK_AFE_ADDA_DL_RATE_44K = 7,
--	MTK_AFE_ADDA_DL_RATE_48K = 8,
--	MTK_AFE_ADDA_DL_RATE_96K = 9,
--	MTK_AFE_ADDA_DL_RATE_192K = 10,
--};
--
--enum {
--	MTK_AFE_ADDA_UL_RATE_8K = 0,
--	MTK_AFE_ADDA_UL_RATE_16K = 1,
--	MTK_AFE_ADDA_UL_RATE_32K = 2,
--	MTK_AFE_ADDA_UL_RATE_48K = 3,
--	MTK_AFE_ADDA_UL_RATE_96K = 4,
--	MTK_AFE_ADDA_UL_RATE_192K = 5,
--	MTK_AFE_ADDA_UL_RATE_48K_HD = 6,
--};
--
- #define SDM_AUTO_RESET_THRESHOLD 0x190000
- 
- struct mtk_afe_adda_priv {
-@@ -83,64 +55,6 @@ static struct mtk_afe_adda_priv *get_adda_priv_by_name(struct mtk_base_afe *afe,
- 	return afe_priv->dai_priv[dai_id];
+-	return snd_soc_component_set_jack(cmpnt_codec, &priv->hdmi_jack, NULL);
++	return snd_soc_component_set_jack(cmpnt_codec, jack, NULL);
  }
  
--static unsigned int adda_dl_rate_transform(struct mtk_base_afe *afe,
--					   unsigned int rate)
--{
--	switch (rate) {
--	case 8000:
--		return MTK_AFE_ADDA_DL_RATE_8K;
--	case 11025:
--		return MTK_AFE_ADDA_DL_RATE_11K;
--	case 12000:
--		return MTK_AFE_ADDA_DL_RATE_12K;
--	case 16000:
--		return MTK_AFE_ADDA_DL_RATE_16K;
--	case 22050:
--		return MTK_AFE_ADDA_DL_RATE_22K;
--	case 24000:
--		return MTK_AFE_ADDA_DL_RATE_24K;
--	case 32000:
--		return MTK_AFE_ADDA_DL_RATE_32K;
--	case 44100:
--		return MTK_AFE_ADDA_DL_RATE_44K;
--	case 48000:
--		return MTK_AFE_ADDA_DL_RATE_48K;
--	case 96000:
--		return MTK_AFE_ADDA_DL_RATE_96K;
--	case 192000:
--		return MTK_AFE_ADDA_DL_RATE_192K;
--	default:
--		dev_dbg(afe->dev, "%s(), rate %d invalid, use 48kHz!!!\n",
--			 __func__, rate);
+ static int mt8192_i2s_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
+@@ -1136,71 +1139,53 @@ static int mt8192_mt6359_card_set_be_link(struct snd_soc_card *card,
+ 	return 0;
+ }
+ 
+-static int mt8192_mt6359_dev_probe(struct platform_device *pdev)
++static int mt8192_mt6359_legacy_probe(struct mtk_soc_card_data *soc_card_data)
+ {
+-	struct snd_soc_card *card;
+-	struct device_node *platform_node, *hdmi_codec, *headset_codec, *speaker_codec;
+-	int ret, i;
++	struct mtk_platform_card_data *card_data = soc_card_data->card_data;
++	struct snd_soc_card *card = card_data->card;
++	struct device *dev = card->dev;
++	struct device_node *hdmi_codec, *headset_codec, *speaker_codec;
+ 	struct snd_soc_dai_link *dai_link;
+-	struct mt8192_mt6359_priv *priv;
+-
+-	card = (struct snd_soc_card *)of_device_get_match_data(&pdev->dev);
+-	if (!card)
+-		return -EINVAL;
+-	card->dev = &pdev->dev;
+-
+-	if (of_device_is_compatible(pdev->dev.of_node, RT1015P_RT5682_OF_NAME))
+-		card->name = RT1015P_RT5682_CARD_NAME;
+-	else if (of_device_is_compatible(pdev->dev.of_node, RT1015P_RT5682S_OF_NAME))
+-		card->name = RT1015P_RT5682S_CARD_NAME;
+-	else
+-		dev_dbg(&pdev->dev, "No need to set card name\n");
++	int ret, i;
+ 
+-	hdmi_codec = of_parse_phandle(pdev->dev.of_node, "mediatek,hdmi-codec", 0);
++	hdmi_codec = of_parse_phandle(dev->of_node, "mediatek,hdmi-codec", 0);
+ 	if (!hdmi_codec)
+-		dev_dbg(&pdev->dev, "The machine has no hdmi-codec\n");
++		dev_dbg(dev, "The machine has no hdmi-codec\n");
+ 
+-	platform_node = of_parse_phandle(pdev->dev.of_node, "mediatek,platform", 0);
+-	if (!platform_node) {
+-		ret = -EINVAL;
+-		dev_err_probe(&pdev->dev, ret, "Property 'platform' missing or invalid\n");
+-		goto err_platform_node;
 -	}
 -
--	return MTK_AFE_ADDA_DL_RATE_48K;
--}
--
--static unsigned int adda_ul_rate_transform(struct mtk_base_afe *afe,
--					   unsigned int rate)
--{
--	switch (rate) {
--	case 8000:
--		return MTK_AFE_ADDA_UL_RATE_8K;
--	case 16000:
--		return MTK_AFE_ADDA_UL_RATE_16K;
--	case 32000:
--		return MTK_AFE_ADDA_UL_RATE_32K;
--	case 48000:
--		return MTK_AFE_ADDA_UL_RATE_48K;
--	case 96000:
--		return MTK_AFE_ADDA_UL_RATE_96K;
--	case 192000:
--		return MTK_AFE_ADDA_UL_RATE_192K;
--	default:
--		dev_dbg(afe->dev, "%s(), rate %d invalid, use 48kHz!!!\n",
--			 __func__, rate);
--	}
--
--	return MTK_AFE_ADDA_UL_RATE_48K;
--}
--
- /* dai component */
- static const struct snd_kcontrol_new mtk_adda_dl_ch1_mix[] = {
- 	SOC_DAPM_SINGLE_AUTODISABLE("DL1_CH1 Switch", AFE_CONN3, I_DL1_CH1, 1, 0),
-@@ -658,7 +572,7 @@ static int mtk_dai_adda_hw_params(struct snd_pcm_substream *substream,
- 		adda_priv->dl_rate = rate;
+-	speaker_codec = of_get_child_by_name(pdev->dev.of_node, "speaker-codecs");
++	speaker_codec = of_get_child_by_name(dev->of_node, "speaker-codecs");
+ 	if (!speaker_codec) {
+ 		ret = -EINVAL;
+-		dev_err_probe(&pdev->dev, ret, "Property 'speaker-codecs' missing or invalid\n");
++		dev_err_probe(dev, ret, "Property 'speaker-codecs' missing or invalid\n");
+ 		goto err_speaker_codec;
+ 	}
  
- 		/* set sampling rate */
--		dl_src2_con0 = adda_dl_rate_transform(afe, rate) <<
-+		dl_src2_con0 = mtk_adda_dl_rate_transform(afe, rate) <<
- 			       DL_2_INPUT_MODE_CTL_SFT;
+-	headset_codec = of_get_child_by_name(pdev->dev.of_node, "headset-codec");
++	headset_codec = of_get_child_by_name(dev->of_node, "headset-codec");
+ 	if (!headset_codec) {
+ 		ret = -EINVAL;
+-		dev_err_probe(&pdev->dev, ret, "Property 'headset-codec' missing or invalid\n");
++		dev_err_probe(dev, ret, "Property 'headset-codec' missing or invalid\n");
+ 		goto err_headset_codec;
+ 	}
  
- 		/* set output mode, UP_SAMPLING_RATE_X8 */
-@@ -721,7 +635,7 @@ static int mtk_dai_adda_hw_params(struct snd_pcm_substream *substream,
+ 	for_each_card_prelinks(card, i, dai_link) {
+ 		ret = mt8192_mt6359_card_set_be_link(card, dai_link, speaker_codec, "I2S3");
+ 		if (ret) {
+-			dev_err_probe(&pdev->dev, ret, "%s set speaker_codec fail\n",
++			dev_err_probe(dev, ret, "%s set speaker_codec fail\n",
+ 				      dai_link->name);
+-			goto err_probe;
++			break;
  		}
- 	} else {
- 		unsigned int ul_src_con0 = 0;
--		unsigned int voice_mode = adda_ul_rate_transform(afe, rate);
-+		unsigned int voice_mode = mtk_adda_ul_rate_transform(afe, rate);
  
- 		adda_priv->ul_rate = rate;
- 		ul_src_con0 |= (voice_mode << 17) & (0x7 << 17);
-diff --git a/sound/soc/mediatek/mt8188/mt8188-dai-adda.c b/sound/soc/mediatek/mt8188/mt8188-dai-adda.c
-index 7dc029f2b428..8a17d1935c48 100644
---- a/sound/soc/mediatek/mt8188/mt8188-dai-adda.c
-+++ b/sound/soc/mediatek/mt8188/mt8188-dai-adda.c
-@@ -14,6 +14,7 @@
- #include "mt8188-afe-clk.h"
- #include "mt8188-afe-common.h"
- #include "mt8188-reg.h"
-+#include "../common/mtk-dai-adda-common.h"
+ 		ret = mt8192_mt6359_card_set_be_link(card, dai_link, headset_codec, "I2S8");
+ 		if (ret) {
+-			dev_err_probe(&pdev->dev, ret, "%s set headset_codec fail\n",
++			dev_err_probe(dev, ret, "%s set headset_codec fail\n",
+ 				      dai_link->name);
+-			goto err_probe;
++			break;
+ 		}
  
- #define ADDA_HIRES_THRES 48000
+ 		ret = mt8192_mt6359_card_set_be_link(card, dai_link, headset_codec, "I2S9");
+ 		if (ret) {
+-			dev_err_probe(&pdev->dev, ret, "%s set headset_codec fail\n",
++			dev_err_probe(dev, ret, "%s set headset_codec fail\n",
+ 				      dai_link->name);
+-			goto err_probe;
++			break;
+ 		}
  
-@@ -24,94 +25,10 @@ enum {
- 	SUPPLY_SEQ_ADDA_AFE_ON,
+ 		if (hdmi_codec && strcmp(dai_link->name, "TDM") == 0) {
+@@ -1211,52 +1196,85 @@ static int mt8192_mt6359_dev_probe(struct platform_device *pdev)
+ 		if (dai_link->num_codecs && dai_link->codecs[0].dai_name &&
+ 		    strcmp(dai_link->codecs[0].dai_name, RT1015_CODEC_DAI) == 0)
+ 			dai_link->ops = &mt8192_rt1015_i2s_ops;
+-
+-		if (!dai_link->platforms->name)
+-			dai_link->platforms->of_node = platform_node;
+-	}
+-
+-	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
+-	if (!priv) {
+-		ret = -ENOMEM;
+-		goto err_probe;
+-	}
+-	snd_soc_card_set_drvdata(card, priv);
+-
+-	ret = mt8192_afe_gpio_init(&pdev->dev);
+-	if (ret) {
+-		dev_err_probe(&pdev->dev, ret, "%s init gpio error\n", __func__);
+-		goto err_probe;
+ 	}
+ 
+-	ret = devm_snd_soc_register_card(&pdev->dev, card);
+-	if (ret)
+-		dev_err_probe(&pdev->dev, ret, "%s snd_soc_register_card fail\n", __func__);
+-
+-err_probe:
+ 	of_node_put(headset_codec);
+ err_headset_codec:
+ 	of_node_put(speaker_codec);
+ err_speaker_codec:
+-	of_node_put(platform_node);
+-err_platform_node:
+-	of_node_put(hdmi_codec);
++	if (hdmi_codec)
++		of_node_put(hdmi_codec);
++
+ 	return ret;
+ }
+ 
++static int mt8192_mt6359_soc_card_probe(struct mtk_soc_card_data *soc_card_data, bool legacy)
++{
++	struct mtk_platform_card_data *card_data = soc_card_data->card_data;
++	struct snd_soc_card *card = card_data->card;
++	int ret;
++
++	if (legacy) {
++		ret = mt8192_mt6359_legacy_probe(soc_card_data);
++		if (ret)
++			return ret;
++	} else {
++		struct snd_soc_dai_link *dai_link;
++		int i;
++
++		for_each_card_prelinks(card, i, dai_link)
++			if (dai_link->num_codecs && dai_link->codecs[0].dai_name &&
++			    strcmp(dai_link->codecs[0].dai_name, RT1015_CODEC_DAI) == 0)
++				dai_link->ops = &mt8192_rt1015_i2s_ops;
++	}
++
++	ret = mt8192_afe_gpio_init(card->dev);
++	if (ret)
++		return dev_err_probe(card->dev, ret, "%s init gpio error\n", __func__);
++
++	return 0;
++}
++
++static const struct mtk_soundcard_pdata mt8192_mt6359_rt1015_rt5682_pdata = {
++	.card_name = RT1015_RT5682_CARD_NAME,
++	.card_data = &(struct mtk_platform_card_data) {
++		.card = &mt8192_mt6359_rt1015_rt5682_card,
++		.num_jacks = MT8192_JACK_MAX,
++	},
++	.soc_probe = mt8192_mt6359_soc_card_probe
++};
++
++static const struct mtk_soundcard_pdata mt8192_mt6359_rt1015p_rt5682_pdata = {
++	.card_name = RT1015P_RT5682_CARD_NAME,
++	.card_data = &(struct mtk_platform_card_data) {
++		.card = &mt8192_mt6359_rt1015p_rt5682x_card,
++		.num_jacks = MT8192_JACK_MAX,
++	},
++	.soc_probe = mt8192_mt6359_soc_card_probe
++};
++
++static const struct mtk_soundcard_pdata mt8192_mt6359_rt1015p_rt5682s_pdata = {
++	.card_name = RT1015P_RT5682S_CARD_NAME,
++	.card_data = &(struct mtk_platform_card_data) {
++		.card = &mt8192_mt6359_rt1015p_rt5682x_card,
++		.num_jacks = MT8192_JACK_MAX,
++	},
++	.soc_probe = mt8192_mt6359_soc_card_probe
++};
++
+ #ifdef CONFIG_OF
+ static const struct of_device_id mt8192_mt6359_dt_match[] = {
+ 	{
+ 		.compatible = RT1015_RT5682_OF_NAME,
+-		.data = &mt8192_mt6359_rt1015_rt5682_card,
++		.data = &mt8192_mt6359_rt1015_rt5682_pdata,
+ 	},
+ 	{
+ 		.compatible = RT1015P_RT5682_OF_NAME,
+-		.data = &mt8192_mt6359_rt1015p_rt5682x_card,
++		.data = &mt8192_mt6359_rt1015p_rt5682_pdata,
+ 	},
+ 	{
+ 		.compatible = RT1015P_RT5682S_OF_NAME,
+-		.data = &mt8192_mt6359_rt1015p_rt5682x_card,
++		.data = &mt8192_mt6359_rt1015p_rt5682s_pdata,
+ 	},
+ 	{}
+ };
+@@ -1276,7 +1294,7 @@ static struct platform_driver mt8192_mt6359_driver = {
+ #endif
+ 		.pm = &mt8192_mt6359_pm_ops,
+ 	},
+-	.probe = mt8192_mt6359_dev_probe,
++	.probe = mtk_soundcard_common_probe,
  };
  
--enum {
--	MTK_AFE_ADDA_DL_RATE_8K = 0,
--	MTK_AFE_ADDA_DL_RATE_11K = 1,
--	MTK_AFE_ADDA_DL_RATE_12K = 2,
--	MTK_AFE_ADDA_DL_RATE_16K = 3,
--	MTK_AFE_ADDA_DL_RATE_22K = 4,
--	MTK_AFE_ADDA_DL_RATE_24K = 5,
--	MTK_AFE_ADDA_DL_RATE_32K = 6,
--	MTK_AFE_ADDA_DL_RATE_44K = 7,
--	MTK_AFE_ADDA_DL_RATE_48K = 8,
--	MTK_AFE_ADDA_DL_RATE_96K = 9,
--	MTK_AFE_ADDA_DL_RATE_192K = 10,
--};
--
--enum {
--	MTK_AFE_ADDA_UL_RATE_8K = 0,
--	MTK_AFE_ADDA_UL_RATE_16K = 1,
--	MTK_AFE_ADDA_UL_RATE_32K = 2,
--	MTK_AFE_ADDA_UL_RATE_48K = 3,
--	MTK_AFE_ADDA_UL_RATE_96K = 4,
--	MTK_AFE_ADDA_UL_RATE_192K = 5,
--};
--
--enum {
--	DELAY_DATA_MISO1 = 0,
--	DELAY_DATA_MISO0 = 1,
--};
--
- struct mtk_dai_adda_priv {
- 	bool hires_required;
- };
- 
--static unsigned int afe_adda_dl_rate_transform(struct mtk_base_afe *afe,
--					       unsigned int rate)
--{
--	switch (rate) {
--	case 8000:
--		return MTK_AFE_ADDA_DL_RATE_8K;
--	case 11025:
--		return MTK_AFE_ADDA_DL_RATE_11K;
--	case 12000:
--		return MTK_AFE_ADDA_DL_RATE_12K;
--	case 16000:
--		return MTK_AFE_ADDA_DL_RATE_16K;
--	case 22050:
--		return MTK_AFE_ADDA_DL_RATE_22K;
--	case 24000:
--		return MTK_AFE_ADDA_DL_RATE_24K;
--	case 32000:
--		return MTK_AFE_ADDA_DL_RATE_32K;
--	case 44100:
--		return MTK_AFE_ADDA_DL_RATE_44K;
--	case 48000:
--		return MTK_AFE_ADDA_DL_RATE_48K;
--	case 96000:
--		return MTK_AFE_ADDA_DL_RATE_96K;
--	case 192000:
--		return MTK_AFE_ADDA_DL_RATE_192K;
--	default:
--		dev_info(afe->dev, "%s(), rate %u invalid, use 48kHz!!!\n",
--			 __func__, rate);
--		return MTK_AFE_ADDA_DL_RATE_48K;
--	}
--}
--
--static unsigned int afe_adda_ul_rate_transform(struct mtk_base_afe *afe,
--					       unsigned int rate)
--{
--	switch (rate) {
--	case 8000:
--		return MTK_AFE_ADDA_UL_RATE_8K;
--	case 16000:
--		return MTK_AFE_ADDA_UL_RATE_16K;
--	case 32000:
--		return MTK_AFE_ADDA_UL_RATE_32K;
--	case 48000:
--		return MTK_AFE_ADDA_UL_RATE_48K;
--	case 96000:
--		return MTK_AFE_ADDA_UL_RATE_96K;
--	case 192000:
--		return MTK_AFE_ADDA_UL_RATE_192K;
--	default:
--		dev_info(afe->dev, "%s(), rate %u invalid, use 48kHz!!!\n",
--			 __func__, rate);
--		return MTK_AFE_ADDA_UL_RATE_48K;
--	}
--}
--
- static int mt8188_adda_mtkaif_init(struct mtk_base_afe *afe)
- {
- 	struct mt8188_afe_private *afe_priv = afe->platform_priv;
-@@ -440,7 +357,7 @@ static int mtk_dai_da_configure(struct mtk_base_afe *afe,
- 	/* set sampling rate */
- 	mask |= DL_2_INPUT_MODE_CTL_MASK;
- 	val |= FIELD_PREP(DL_2_INPUT_MODE_CTL_MASK,
--			  afe_adda_dl_rate_transform(afe, rate));
-+			  mtk_adda_dl_rate_transform(afe, rate));
- 
- 	/* turn off saturation */
- 	mask |= DL_2_CH1_SATURATION_EN_CTL;
-@@ -474,7 +391,7 @@ static int mtk_dai_ad_configure(struct mtk_base_afe *afe,
- 
- 	mask = UL_VOICE_MODE_CTL_MASK;
- 	val = FIELD_PREP(UL_VOICE_MODE_CTL_MASK,
--			 afe_adda_ul_rate_transform(afe, rate));
-+			 mtk_adda_ul_rate_transform(afe, rate));
- 
- 	regmap_update_bits(afe->regmap, AFE_ADDA_UL_SRC_CON0,
- 			   mask, val);
-diff --git a/sound/soc/mediatek/mt8192/mt8192-dai-adda.c b/sound/soc/mediatek/mt8192/mt8192-dai-adda.c
-index 36d33032a37a..99de85b87643 100644
---- a/sound/soc/mediatek/mt8192/mt8192-dai-adda.c
-+++ b/sound/soc/mediatek/mt8192/mt8192-dai-adda.c
-@@ -13,6 +13,7 @@
- #include "mt8192-afe-common.h"
- #include "mt8192-afe-gpio.h"
- #include "mt8192-interconnection.h"
-+#include "../common/mtk-dai-adda-common.h"
- 
- enum {
- 	UL_IIR_SW = 0,
-@@ -35,93 +36,8 @@ enum {
- 	AUDIO_SDM_3RD,
- };
- 
--enum {
--	DELAY_DATA_MISO1 = 0,
--	DELAY_DATA_MISO2,
--};
--
--enum {
--	MTK_AFE_ADDA_DL_RATE_8K = 0,
--	MTK_AFE_ADDA_DL_RATE_11K = 1,
--	MTK_AFE_ADDA_DL_RATE_12K = 2,
--	MTK_AFE_ADDA_DL_RATE_16K = 3,
--	MTK_AFE_ADDA_DL_RATE_22K = 4,
--	MTK_AFE_ADDA_DL_RATE_24K = 5,
--	MTK_AFE_ADDA_DL_RATE_32K = 6,
--	MTK_AFE_ADDA_DL_RATE_44K = 7,
--	MTK_AFE_ADDA_DL_RATE_48K = 8,
--	MTK_AFE_ADDA_DL_RATE_96K = 9,
--	MTK_AFE_ADDA_DL_RATE_192K = 10,
--};
--
--enum {
--	MTK_AFE_ADDA_UL_RATE_8K = 0,
--	MTK_AFE_ADDA_UL_RATE_16K = 1,
--	MTK_AFE_ADDA_UL_RATE_32K = 2,
--	MTK_AFE_ADDA_UL_RATE_48K = 3,
--	MTK_AFE_ADDA_UL_RATE_96K = 4,
--	MTK_AFE_ADDA_UL_RATE_192K = 5,
--	MTK_AFE_ADDA_UL_RATE_48K_HD = 6,
--};
--
- #define SDM_AUTO_RESET_THRESHOLD 0x190000
- 
--static unsigned int adda_dl_rate_transform(struct mtk_base_afe *afe,
--					   unsigned int rate)
--{
--	switch (rate) {
--	case 8000:
--		return MTK_AFE_ADDA_DL_RATE_8K;
--	case 11025:
--		return MTK_AFE_ADDA_DL_RATE_11K;
--	case 12000:
--		return MTK_AFE_ADDA_DL_RATE_12K;
--	case 16000:
--		return MTK_AFE_ADDA_DL_RATE_16K;
--	case 22050:
--		return MTK_AFE_ADDA_DL_RATE_22K;
--	case 24000:
--		return MTK_AFE_ADDA_DL_RATE_24K;
--	case 32000:
--		return MTK_AFE_ADDA_DL_RATE_32K;
--	case 44100:
--		return MTK_AFE_ADDA_DL_RATE_44K;
--	case 48000:
--		return MTK_AFE_ADDA_DL_RATE_48K;
--	case 96000:
--		return MTK_AFE_ADDA_DL_RATE_96K;
--	case 192000:
--		return MTK_AFE_ADDA_DL_RATE_192K;
--	default:
--		dev_warn(afe->dev, "%s(), rate %d invalid, use 48kHz!!!\n",
--			 __func__, rate);
--		return MTK_AFE_ADDA_DL_RATE_48K;
--	}
--}
--
--static unsigned int adda_ul_rate_transform(struct mtk_base_afe *afe,
--					   unsigned int rate)
--{
--	switch (rate) {
--	case 8000:
--		return MTK_AFE_ADDA_UL_RATE_8K;
--	case 16000:
--		return MTK_AFE_ADDA_UL_RATE_16K;
--	case 32000:
--		return MTK_AFE_ADDA_UL_RATE_32K;
--	case 48000:
--		return MTK_AFE_ADDA_UL_RATE_48K;
--	case 96000:
--		return MTK_AFE_ADDA_UL_RATE_96K;
--	case 192000:
--		return MTK_AFE_ADDA_UL_RATE_192K;
--	default:
--		dev_warn(afe->dev, "%s(), rate %d invalid, use 48kHz!!!\n",
--			 __func__, rate);
--		return MTK_AFE_ADDA_UL_RATE_48K;
--	}
--}
--
- /* dai component */
- static const struct snd_kcontrol_new mtk_adda_dl_ch1_mix[] = {
- 	SOC_DAPM_SINGLE_AUTODISABLE("DL1_CH1", AFE_CONN3, I_DL1_CH1, 1, 0),
-@@ -1156,7 +1072,7 @@ static int mtk_dai_adda_hw_params(struct snd_pcm_substream *substream,
- 		unsigned int dl_src2_con1 = 0;
- 
- 		/* set sampling rate */
--		dl_src2_con0 = adda_dl_rate_transform(afe, rate) <<
-+		dl_src2_con0 = mtk_adda_dl_rate_transform(afe, rate) <<
- 			       DL_2_INPUT_MODE_CTL_SFT;
- 
- 		/* set output mode, UP_SAMPLING_RATE_X8 */
-@@ -1246,7 +1162,7 @@ static int mtk_dai_adda_hw_params(struct snd_pcm_substream *substream,
- 		unsigned int voice_mode = 0;
- 		unsigned int ul_src_con0 = 0;	/* default value */
- 
--		voice_mode = adda_ul_rate_transform(afe, rate);
-+		voice_mode = mtk_adda_ul_rate_transform(afe, rate);
- 
- 		ul_src_con0 |= (voice_mode << 17) & (0x7 << 17);
- 
-diff --git a/sound/soc/mediatek/mt8195/mt8195-dai-adda.c b/sound/soc/mediatek/mt8195/mt8195-dai-adda.c
-index 0dd35255066b..8da1587128cc 100644
---- a/sound/soc/mediatek/mt8195/mt8195-dai-adda.c
-+++ b/sound/soc/mediatek/mt8195/mt8195-dai-adda.c
-@@ -12,6 +12,7 @@
- #include "mt8195-afe-clk.h"
- #include "mt8195-afe-common.h"
- #include "mt8195-reg.h"
-+#include "../common/mtk-dai-adda-common.h"
- 
- #define ADDA_DL_GAIN_LOOPBACK 0x1800
- #define ADDA_HIRES_THRES 48000
-@@ -25,35 +26,6 @@ enum {
- 	SUPPLY_SEQ_ADDA_AFE_ON,
- };
- 
--enum {
--	MTK_AFE_ADDA_DL_RATE_8K = 0,
--	MTK_AFE_ADDA_DL_RATE_11K = 1,
--	MTK_AFE_ADDA_DL_RATE_12K = 2,
--	MTK_AFE_ADDA_DL_RATE_16K = 3,
--	MTK_AFE_ADDA_DL_RATE_22K = 4,
--	MTK_AFE_ADDA_DL_RATE_24K = 5,
--	MTK_AFE_ADDA_DL_RATE_32K = 6,
--	MTK_AFE_ADDA_DL_RATE_44K = 7,
--	MTK_AFE_ADDA_DL_RATE_48K = 8,
--	MTK_AFE_ADDA_DL_RATE_96K = 9,
--	MTK_AFE_ADDA_DL_RATE_192K = 10,
--};
--
--enum {
--	MTK_AFE_ADDA_UL_RATE_8K = 0,
--	MTK_AFE_ADDA_UL_RATE_16K = 1,
--	MTK_AFE_ADDA_UL_RATE_32K = 2,
--	MTK_AFE_ADDA_UL_RATE_48K = 3,
--	MTK_AFE_ADDA_UL_RATE_96K = 4,
--	MTK_AFE_ADDA_UL_RATE_192K = 5,
--};
--
--enum {
--	DELAY_DATA_MISO1 = 0,
--	DELAY_DATA_MISO0 = 1,
--	DELAY_DATA_MISO2 = 1,
--};
--
- enum {
- 	MTK_AFE_ADDA,
- 	MTK_AFE_ADDA6,
-@@ -63,62 +35,6 @@ struct mtk_dai_adda_priv {
- 	bool hires_required;
- };
- 
--static unsigned int afe_adda_dl_rate_transform(struct mtk_base_afe *afe,
--					       unsigned int rate)
--{
--	switch (rate) {
--	case 8000:
--		return MTK_AFE_ADDA_DL_RATE_8K;
--	case 11025:
--		return MTK_AFE_ADDA_DL_RATE_11K;
--	case 12000:
--		return MTK_AFE_ADDA_DL_RATE_12K;
--	case 16000:
--		return MTK_AFE_ADDA_DL_RATE_16K;
--	case 22050:
--		return MTK_AFE_ADDA_DL_RATE_22K;
--	case 24000:
--		return MTK_AFE_ADDA_DL_RATE_24K;
--	case 32000:
--		return MTK_AFE_ADDA_DL_RATE_32K;
--	case 44100:
--		return MTK_AFE_ADDA_DL_RATE_44K;
--	case 48000:
--		return MTK_AFE_ADDA_DL_RATE_48K;
--	case 96000:
--		return MTK_AFE_ADDA_DL_RATE_96K;
--	case 192000:
--		return MTK_AFE_ADDA_DL_RATE_192K;
--	default:
--		dev_info(afe->dev, "%s(), rate %d invalid, use 48kHz!!!\n",
--			 __func__, rate);
--		return MTK_AFE_ADDA_DL_RATE_48K;
--	}
--}
--
--static unsigned int afe_adda_ul_rate_transform(struct mtk_base_afe *afe,
--					       unsigned int rate)
--{
--	switch (rate) {
--	case 8000:
--		return MTK_AFE_ADDA_UL_RATE_8K;
--	case 16000:
--		return MTK_AFE_ADDA_UL_RATE_16K;
--	case 32000:
--		return MTK_AFE_ADDA_UL_RATE_32K;
--	case 48000:
--		return MTK_AFE_ADDA_UL_RATE_48K;
--	case 96000:
--		return MTK_AFE_ADDA_UL_RATE_96K;
--	case 192000:
--		return MTK_AFE_ADDA_UL_RATE_192K;
--	default:
--		dev_info(afe->dev, "%s(), rate %d invalid, use 48kHz!!!\n",
--			 __func__, rate);
--		return MTK_AFE_ADDA_UL_RATE_48K;
--	}
--}
--
- static int mt8195_adda_mtkaif_init(struct mtk_base_afe *afe)
- {
- 	struct mt8195_afe_private *afe_priv = afe->platform_priv;
-@@ -644,7 +560,7 @@ static int mtk_dai_da_configure(struct mtk_base_afe *afe,
- 
- 	/* set sampling rate */
- 	mask |= DL_2_INPUT_MODE_CTL_MASK;
--	val |= DL_2_INPUT_MODE_CTL(afe_adda_dl_rate_transform(afe, rate));
-+	val |= DL_2_INPUT_MODE_CTL(mtk_adda_dl_rate_transform(afe, rate));
- 
- 	/* turn off saturation */
- 	mask |= DL_2_CH1_SATURATION_EN_CTL;
-@@ -681,7 +597,7 @@ static int mtk_dai_ad_configure(struct mtk_base_afe *afe,
- 	unsigned int mask = 0;
- 
- 	mask |= UL_VOICE_MODE_CTL_MASK;
--	val |= UL_VOICE_MODE_CTL(afe_adda_ul_rate_transform(afe, rate));
-+	val |= UL_VOICE_MODE_CTL(mtk_adda_ul_rate_transform(afe, rate));
- 
- 	switch (id) {
- 	case MT8195_AFE_IO_UL_SRC1:
+ module_platform_driver(mt8192_mt6359_driver);
 -- 
 2.44.0
 
