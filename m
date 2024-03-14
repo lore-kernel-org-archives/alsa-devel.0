@@ -4,64 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 65C3DC54E58
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Mar 2024 08:40:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 039E5C54E66
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Mar 2024 08:41:28 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CC3501944;
-	Fri, 15 Mar 2024 09:40:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CC3501944
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5A386162D;
+	Fri, 15 Mar 2024 09:41:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5A386162D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1710492041;
-	bh=FsNb0LecDwWhW+ShYdEvV5hEarU+koJuSLwJ7xHKTCw=;
+	s=default; t=1710492087;
+	bh=PK0t+T/l81LlFYozsaioZe1mA2+TBLCBftSXJcoXLeY=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=U1py0XYn5j5b7jgmms1qokoMW21GWqX4xOUqAjo4Eos4oL1+ljX7jletLFl3JjBP3
-	 zolS1RIPeAOYF4qOZ6Moth0CeKvyL6RCSrXq2Slmoe3LZVKevgEJKY7Ftnf1r0hEaL
-	 GeG7YjhaJiAphdtdY6EJrdKlEimakEw8N3WmPvzE=
+	b=tUP50V96C7DpxZ14oAlWoXooSFoa+mFYyxONuXAHke1PZAFv6LX3CA3n+qJ0LNTCZ
+	 tdnoWLDm0lvpHmkzE7np0HZi8vyH9TZYxBNO3zIFLh1sVQScR7ICdeHT2GAl52aboD
+	 5kyvMdOpCWSYwUlhH1pbZJo09sduKauTawesPwyI=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DA7B6F8067A; Fri, 15 Mar 2024 09:39:22 +0100 (CET)
+	id 84846F806A1; Fri, 15 Mar 2024 09:39:32 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D0D53F80640;
-	Fri, 15 Mar 2024 09:39:21 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C3CB4F80698;
+	Fri, 15 Mar 2024 09:39:31 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id EEEAAF8057C; Fri, 15 Mar 2024 00:23:07 +0100 (CET)
+	id 14DA6F8057E; Fri, 15 Mar 2024 00:23:09 +0100 (CET)
 Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 2C894F804B0
-	for <alsa-devel@alsa-project.org>; Fri, 15 Mar 2024 00:23:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2C894F804B0
+	by alsa1.perex.cz (Postfix) with ESMTPS id B4E3BF80570
+	for <alsa-devel@alsa-project.org>; Fri, 15 Mar 2024 00:23:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B4E3BF80570
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=salutedevices.com header.i=@salutedevices.com
- header.a=rsa-sha256 header.s=mail header.b=QhXDvEmL
+ header.a=rsa-sha256 header.s=mail header.b=HTDF2yKR
 Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id 4EF5312000B;
-	Fri, 15 Mar 2024 02:23:02 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 4EF5312000B
+	by mx1.sberdevices.ru (Postfix) with ESMTP id D902B12000D;
+	Fri, 15 Mar 2024 02:23:03 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru D902B12000D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-	s=mail; t=1710458582;
-	bh=7Ktg/I6qGntShD8ifBiHrTIM9U/dVEP9EA69vHVTqk0=;
+	s=mail; t=1710458583;
+	bh=/nEginKlyNB8n+NrSQ852rUKN1nYJC2wotBJJbFUhDc=;
 	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-	b=QhXDvEmL1/rC3e27KMnsCuaES4ctes2HeDvgOWEANyT25X/Lgjp5bMG/lxgRi8XqR
-	 gVbS+r1EFmkz7+CJxEoHx2VZ/T8Mg3PcAgh+N56B5lMqQ6BaQnWCKQoSks/oU7v6KU
-	 oaNVXzmx8X7CcWzR06MPygdvK4pMg9bmvWC+0PKmJdc0Ye+fidClXX8k4KUfIg4TLl
-	 07LvUNCfkXKCepohgLwKW/KXjf7g0qFpg7tZmaQKp1HQbaLSXBWkPGqp1FyLYhpD+0
-	 V1755xumzTWyqP0wGJ118Vk2odsWZkg/cIU9rVwrJz+Wvh3O/DOTnP2YEPXdn1Eno7
-	 87be5baTtKHAQ==
+	b=HTDF2yKRIJoY/MPUM8mEFhZO7KUp6f8pHP7mH2XYXGWwe9am0x56ayaWfuBvFTNrg
+	 rFY/eYikMk2+QCBoxnBe49hvmXqkt+NGzhCLkD6Zi0aN3F0TuZJNdRc8HPdKTWoK0y
+	 2QTdWA2aPXTrHseHtZYQ7BuD7WF3YbnHrbWt2S0VyC58Xq3OBS+r0W8wxnRmqxfp8g
+	 6lglp46qmF11n97hQ+7MqMoMMBLhvn68uJ3qUwFVC5clcqZodAb3jAnuakJs3mp8my
+	 QQZ5Dk+Dj7qR0jqKA1YIMebtBOEF6vSW1xa5XRyOnON0r0Jmjf4Nlvh4P/Cjz8pg91
+	 9iTDnhnbVVdaQ==
 Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru
  [172.16.192.103])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
 	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Fri, 15 Mar 2024 02:23:02 +0300 (MSK)
+	Fri, 15 Mar 2024 02:23:03 +0300 (MSK)
 Received: from CAB-WSD-0003115.sberdevices.ru (100.64.160.123) by
  p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Fri, 15 Mar 2024 02:23:01 +0300
+ 15.2.1118.40; Fri, 15 Mar 2024 02:23:03 +0300
 From: Jan Dakinevich <jan.dakinevich@salutedevices.com>
 To: Jan Dakinevich <jan.dakinevich@salutedevices.com>, Neil Armstrong
 	<neil.armstrong@linaro.org>, Jerome Brunet <jbrunet@baylibre.com>, Michael
@@ -78,9 +78,10 @@ To: Jan Dakinevich <jan.dakinevich@salutedevices.com>, Neil Armstrong
 	<alsa-devel@alsa-project.org>, <linux-sound@vger.kernel.org>,
 	<linux-gpio@vger.kernel.org>
 CC: <kernel@salutedevices.com>
-Subject: [PATCH 05/25] ASoC: meson: codec-glue: add support for capture stream
-Date: Fri, 15 Mar 2024 02:21:41 +0300
-Message-ID: <20240314232201.2102178-6-jan.dakinevich@salutedevices.com>
+Subject: [PATCH 09/25] ASoC: meson: g12a-toacodec: add support for A1 SoC
+ family
+Date: Fri, 15 Mar 2024 02:21:45 +0300
+Message-ID: <20240314232201.2102178-10-jan.dakinevich@salutedevices.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240314232201.2102178-1-jan.dakinevich@salutedevices.com>
 References: <20240314232201.2102178-1-jan.dakinevich@salutedevices.com>
@@ -117,353 +118,403 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: 5OJHXZAVWY2RIYUEX5IZRMKMJP4OW5UT
-X-Message-ID-Hash: 5OJHXZAVWY2RIYUEX5IZRMKMJP4OW5UT
-X-Mailman-Approved-At: Fri, 15 Mar 2024 08:36:32 +0000
+Message-ID-Hash: RZ3SEGZOJCFRPUKHPUOL4VTDK4DTT2E3
+X-Message-ID-Hash: RZ3SEGZOJCFRPUKHPUOL4VTDK4DTT2E3
+X-Mailman-Approved-At: Fri, 15 Mar 2024 08:36:33 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5OJHXZAVWY2RIYUEX5IZRMKMJP4OW5UT/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RZ3SEGZOJCFRPUKHPUOL4VTDK4DTT2E3/>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
----- >8 ----
-Hope, I haven't misinterpreted the terminology and codec-glue's behavior
-too much.
----- >8 ----
+Internal codec on A1 SoC has ADC and this commit adds support for
+capturing from it.
 
-The glue saves stream's private data in front-end dai and then backend
-dai can reach them searching backward from sink to source. For capture
-stream everything left the same, but searching should be performed from
-source to sink.
+Also, regmap now uses caching for all platforms. Values that are written
+to toacodec's register on A1 SoC can not be read back, that breaks
+regmap_update_bits() functionality. Let's hope the caching will not
+break anything on other platforms.
 
 Signed-off-by: Jan Dakinevich <jan.dakinevich@salutedevices.com>
 ---
- sound/soc/meson/meson-codec-glue.c | 174 ++++++++++++++++++++++-------
- sound/soc/meson/meson-codec-glue.h |  23 ++++
- 2 files changed, 158 insertions(+), 39 deletions(-)
+ sound/soc/meson/g12a-toacodec.c | 221 ++++++++++++++++++++++++++++++--
+ 1 file changed, 208 insertions(+), 13 deletions(-)
 
-diff --git a/sound/soc/meson/meson-codec-glue.c b/sound/soc/meson/meson-codec-glue.c
-index f8c5643f3cfe..da6d65e58d90 100644
---- a/sound/soc/meson/meson-codec-glue.c
-+++ b/sound/soc/meson/meson-codec-glue.c
-@@ -11,65 +11,94 @@
- #include "meson-codec-glue.h"
+diff --git a/sound/soc/meson/g12a-toacodec.c b/sound/soc/meson/g12a-toacodec.c
+index 325cf420fd69..21e569e72157 100644
+--- a/sound/soc/meson/g12a-toacodec.c
++++ b/sound/soc/meson/g12a-toacodec.c
+@@ -50,6 +50,23 @@
+ #define CTRL0_BCLK_SEL_SM1_MSB		6
+ #define CTRL0_BCLK_SEL_SM1_LSB		4
  
- static struct snd_soc_dapm_widget *
--meson_codec_glue_get_input(struct snd_soc_dapm_widget *w)
-+meson_codec_glue_get_data_widget(struct snd_soc_dapm_widget *w, bool playback)
- {
- 	struct snd_soc_dapm_path *p;
--	struct snd_soc_dapm_widget *in;
--
--	snd_soc_dapm_widget_for_each_source_path(w, p) {
-+	struct snd_soc_dapm_widget *node;
-+	enum snd_soc_dapm_type id = playback ? snd_soc_dapm_dai_in
-+					     : snd_soc_dapm_dai_out;
-+	enum snd_soc_dapm_direction dir = playback ? SND_SOC_DAPM_DIR_IN
-+						   : SND_SOC_DAPM_DIR_OUT;
-+	enum snd_soc_dapm_direction rdir = playback ? SND_SOC_DAPM_DIR_OUT
-+						    : SND_SOC_DAPM_DIR_IN;
++/* A1 bits */
++#define CTRL0_DAT_CAPTURE_SEL_A1_MSB	23
++#define CTRL0_DAT_CAPTURE_SEL_A1_LSB	23
++#define CTRL0_LANE_CAPTURE_SEL_A1_MSB	22
++#define CTRL0_LANE_CAPTURE_SEL_A1_LSB	20
++#define CTRL0_DAT_SEL_A1_MSB		19
++#define CTRL0_DAT_SEL_A1_LSB		19
++#define CTRL0_LANE_SEL_A1_MSB		18
++#define CTRL0_LANE_SEL_A1_LSB		16
++#define CTRL0_LRCLK_SEL_A1_MSB		14
++#define CTRL0_LRCLK_SEL_A1_LSB		12
++#define CTRL0_LRCLK_INV_A1		BIT(10)
++#define CTRL0_BLK_CAP_INV_A1		BIT(9)
++#define CTRL0_BCLK_O_INV_A1		BIT(8)
++#define CTRL0_BCLK_SEL_A1_MSB		6
++#define CTRL0_BCLK_SEL_A1_LSB		4
 +
-+	snd_soc_dapm_widget_for_each_path(w, rdir, p) {
- 		if (!p->connect)
- 			continue;
+ #define TOACODEC_OUT_CHMAX		2
  
- 		/* Check that we still are in the same component */
- 		if (snd_soc_dapm_to_component(w->dapm) !=
--		    snd_soc_dapm_to_component(p->source->dapm))
-+		    snd_soc_dapm_to_component(p->node[dir]->dapm))
- 			continue;
+ struct g12a_toacodec {
+@@ -60,6 +77,8 @@ struct g12a_toacodec {
  
--		if (p->source->id == snd_soc_dapm_dai_in)
--			return p->source;
-+		if (p->node[dir]->id == id)
-+			return p->node[dir];
- 
--		in = meson_codec_glue_get_input(p->source);
--		if (in)
--			return in;
-+		node = meson_codec_glue_get_data_widget(p->node[dir], playback);
-+		if (node)
-+			return node;
- 	}
- 
- 	return NULL;
- }
- 
--static void meson_codec_glue_input_set_data(struct snd_soc_dai *dai,
--					    struct meson_codec_glue_input *data)
-+static void meson_codec_glue_set_data(struct snd_soc_dai *dai,
-+				      struct meson_codec_glue_input *data,
-+				      bool playback)
-+{
-+	int stream = playback ? SNDRV_PCM_STREAM_PLAYBACK
-+			      : SNDRV_PCM_STREAM_CAPTURE;
-+
-+	snd_soc_dai_dma_data_set(dai, stream, data);
-+}
-+
-+static struct meson_codec_glue_input *
-+meson_codec_glue_get_data(struct snd_soc_dai *dai, bool playback)
- {
--	snd_soc_dai_dma_data_set_playback(dai, data);
-+	int stream = playback ? SNDRV_PCM_STREAM_PLAYBACK
-+			      : SNDRV_PCM_STREAM_CAPTURE;
-+
-+	return snd_soc_dai_dma_data_get(dai, stream);
- }
- 
- struct meson_codec_glue_input *
- meson_codec_glue_input_get_data(struct snd_soc_dai *dai)
- {
--	return snd_soc_dai_dma_data_get_playback(dai);
-+	return meson_codec_glue_get_data(dai, true);
- }
- EXPORT_SYMBOL_GPL(meson_codec_glue_input_get_data);
- 
-+struct meson_codec_glue_input *
-+meson_codec_glue_capture_output_get_data(struct snd_soc_dai *dai)
-+{
-+	return meson_codec_glue_get_data(dai, false);
-+}
-+EXPORT_SYMBOL_GPL(meson_codec_glue_capture_output_get_data);
-+
- static struct meson_codec_glue_input *
--meson_codec_glue_output_get_input_data(struct snd_soc_dapm_widget *w)
-+meson_codec_glue_data(struct snd_soc_dapm_widget *w, bool playback)
- {
--	struct snd_soc_dapm_widget *in =
--		meson_codec_glue_get_input(w);
-+	struct snd_soc_dapm_widget *node =
-+		meson_codec_glue_get_data_widget(w, playback);
- 	struct snd_soc_dai *dai;
- 
--	if (WARN_ON(!in))
-+	if (WARN_ON(!node))
- 		return NULL;
- 
--	dai = in->priv;
-+	dai = node->priv;
- 
--	return meson_codec_glue_input_get_data(dai);
-+	return meson_codec_glue_get_data(dai, playback);
- }
- 
--int meson_codec_glue_input_hw_params(struct snd_pcm_substream *substream,
--				     struct snd_pcm_hw_params *params,
--				     struct snd_soc_dai *dai)
-+static int meson_codec_glue_hw_params(struct snd_pcm_substream *substream,
-+				      struct snd_pcm_hw_params *params,
-+				      struct snd_soc_dai *dai,
-+				      bool playback)
- {
- 	struct meson_codec_glue_input *data =
--		meson_codec_glue_input_get_data(dai);
-+		meson_codec_glue_get_data(dai, playback);
-+	struct snd_soc_pcm_stream *stream = playback ? &dai->driver->playback
-+						     : &dai->driver->capture;
- 
- 	data->params.rates = snd_pcm_rate_to_rate_bit(params_rate(params));
- 	data->params.rate_min = params_rate(params);
-@@ -77,32 +106,64 @@ int meson_codec_glue_input_hw_params(struct snd_pcm_substream *substream,
- 	data->params.formats = 1ULL << (__force int) params_format(params);
- 	data->params.channels_min = params_channels(params);
- 	data->params.channels_max = params_channels(params);
--	data->params.sig_bits = dai->driver->playback.sig_bits;
-+	data->params.sig_bits = stream->sig_bits;
- 
- 	return 0;
- }
-+
-+int meson_codec_glue_input_hw_params(struct snd_pcm_substream *substream,
-+				     struct snd_pcm_hw_params *params,
-+				     struct snd_soc_dai *dai)
-+{
-+	return meson_codec_glue_hw_params(substream, params, dai, true);
-+}
- EXPORT_SYMBOL_GPL(meson_codec_glue_input_hw_params);
- 
--int meson_codec_glue_input_set_fmt(struct snd_soc_dai *dai,
--				   unsigned int fmt)
-+int meson_codec_glue_capture_output_hw_params(struct snd_pcm_substream *substream,
-+				     struct snd_pcm_hw_params *params,
-+				     struct snd_soc_dai *dai)
-+{
-+	return meson_codec_glue_hw_params(substream, params, dai, false);
-+}
-+EXPORT_SYMBOL_GPL(meson_codec_glue_capture_output_hw_params);
-+
-+static int meson_codec_glue_set_fmt(struct snd_soc_dai *dai,
-+				    unsigned int fmt,
-+				    bool playback)
- {
- 	struct meson_codec_glue_input *data =
--		meson_codec_glue_input_get_data(dai);
-+		meson_codec_glue_get_data(dai, playback);
- 
- 	/* Save the source stream format for the downstream link */
- 	data->fmt = fmt;
- 	return 0;
- }
-+
-+int meson_codec_glue_input_set_fmt(struct snd_soc_dai *dai,
-+				   unsigned int fmt)
-+{
-+	return meson_codec_glue_set_fmt(dai, fmt, true);
-+}
- EXPORT_SYMBOL_GPL(meson_codec_glue_input_set_fmt);
- 
--int meson_codec_glue_output_startup(struct snd_pcm_substream *substream,
--				    struct snd_soc_dai *dai)
-+int meson_codec_glue_capture_output_set_fmt(struct snd_soc_dai *dai,
-+				    unsigned int fmt)
-+{
-+	return meson_codec_glue_set_fmt(dai, fmt, false);
-+}
-+EXPORT_SYMBOL_GPL(meson_codec_glue_capture_output_set_fmt);
-+
-+static int meson_codec_glue_startup(struct snd_pcm_substream *substream,
-+				    struct snd_soc_dai *dai,
-+				    bool playback)
- {
-+	int stream = playback ? SNDRV_PCM_STREAM_CAPTURE
-+			      : SNDRV_PCM_STREAM_PLAYBACK;
- 	struct snd_soc_pcm_runtime *rtd = snd_soc_substream_to_rtd(substream);
--	struct snd_soc_dapm_widget *w = snd_soc_dai_get_widget_capture(dai);
--	struct meson_codec_glue_input *in_data = meson_codec_glue_output_get_input_data(w);
-+	struct snd_soc_dapm_widget *w = snd_soc_dai_get_widget(dai, stream);
-+	struct meson_codec_glue_input *data = meson_codec_glue_data(w, playback);
- 
--	if (!in_data)
-+	if (!data)
- 		return -ENODEV;
- 
- 	if (WARN_ON(!rtd->dai_link->c2c_params)) {
-@@ -111,14 +172,27 @@ int meson_codec_glue_output_startup(struct snd_pcm_substream *substream,
- 	}
- 
- 	/* Replace link params with the input params */
--	rtd->dai_link->c2c_params = &in_data->params;
-+	rtd->dai_link->c2c_params = &data->params;
- 	rtd->dai_link->num_c2c_params = 1;
- 
--	return snd_soc_runtime_set_dai_fmt(rtd, in_data->fmt);
-+	return snd_soc_runtime_set_dai_fmt(rtd, data->fmt);
-+}
-+
-+int meson_codec_glue_output_startup(struct snd_pcm_substream *substream,
-+				    struct snd_soc_dai *dai)
-+{
-+	return meson_codec_glue_startup(substream, dai, true);
- }
- EXPORT_SYMBOL_GPL(meson_codec_glue_output_startup);
- 
--int meson_codec_glue_input_dai_probe(struct snd_soc_dai *dai)
-+int meson_codec_glue_capture_input_startup(struct snd_pcm_substream *substream,
-+				   struct snd_soc_dai *dai)
-+{
-+	return meson_codec_glue_startup(substream, dai, false);
-+}
-+EXPORT_SYMBOL_GPL(meson_codec_glue_capture_input_startup);
-+
-+static int meson_codec_glue_dai_probe(struct snd_soc_dai *dai, bool playback)
- {
- 	struct meson_codec_glue_input *data;
- 
-@@ -126,21 +200,43 @@ int meson_codec_glue_input_dai_probe(struct snd_soc_dai *dai)
- 	if (!data)
- 		return -ENOMEM;
- 
--	meson_codec_glue_input_set_data(dai, data);
-+	meson_codec_glue_set_data(dai, data, playback);
- 	return 0;
- }
-+
-+int meson_codec_glue_input_dai_probe(struct snd_soc_dai *dai)
-+{
-+	return meson_codec_glue_dai_probe(dai, true);
-+}
- EXPORT_SYMBOL_GPL(meson_codec_glue_input_dai_probe);
- 
--int meson_codec_glue_input_dai_remove(struct snd_soc_dai *dai)
-+int meson_codec_glue_capture_output_dai_probe(struct snd_soc_dai *dai)
-+{
-+	return meson_codec_glue_dai_probe(dai, false);
-+}
-+EXPORT_SYMBOL_GPL(meson_codec_glue_capture_output_dai_probe);
-+
-+static int meson_codec_glue_dai_remove(struct snd_soc_dai *dai, bool playback)
- {
- 	struct meson_codec_glue_input *data =
--		meson_codec_glue_input_get_data(dai);
-+		meson_codec_glue_get_data(dai, playback);
- 
- 	kfree(data);
- 	return 0;
- }
-+
-+int meson_codec_glue_input_dai_remove(struct snd_soc_dai *dai)
-+{
-+	return meson_codec_glue_dai_remove(dai, true);
-+}
- EXPORT_SYMBOL_GPL(meson_codec_glue_input_dai_remove);
- 
-+int meson_codec_glue_capture_output_dai_remove(struct snd_soc_dai *dai)
-+{
-+	return meson_codec_glue_dai_remove(dai, false);
-+}
-+EXPORT_SYMBOL_GPL(meson_codec_glue_capture_output_dai_remove);
-+
- MODULE_AUTHOR("Jerome Brunet <jbrunet@baylibre.com>");
- MODULE_DESCRIPTION("Amlogic Codec Glue Helpers");
- MODULE_LICENSE("GPL v2");
-diff --git a/sound/soc/meson/meson-codec-glue.h b/sound/soc/meson/meson-codec-glue.h
-index 07f99446c0c6..75d20aa75638 100644
---- a/sound/soc/meson/meson-codec-glue.h
-+++ b/sound/soc/meson/meson-codec-glue.h
-@@ -14,6 +14,10 @@ struct meson_codec_glue_input {
- 	unsigned int fmt;
+ struct g12a_toacodec_match_data {
+ 	const struct snd_soc_component_driver *component_drv;
++	struct snd_soc_dai_driver *dai_drv;
++	int num_dai_drv;
+ 	struct reg_field field_dat_sel;
+ 	struct reg_field field_lrclk_sel;
+ 	struct reg_field field_bclk_sel;
+@@ -69,6 +88,10 @@ static const char * const g12a_toacodec_mux_texts[] = {
+ 	"I2S A", "I2S B", "I2S C",
  };
  
-+/*
-+ * Playback stream
-+ */
++static const char * const a1_toacodec_mux_texts[] = {
++	"I2S A", "I2S B",
++};
 +
- /* Input helpers */
- struct meson_codec_glue_input *
- meson_codec_glue_input_get_data(struct snd_soc_dai *dai);
-@@ -29,4 +33,23 @@ int meson_codec_glue_input_dai_remove(struct snd_soc_dai *dai);
- int meson_codec_glue_output_startup(struct snd_pcm_substream *substream,
- 				    struct snd_soc_dai *dai);
+ static int g12a_toacodec_mux_put_enum(struct snd_kcontrol *kcontrol,
+ 				      struct snd_ctl_elem_value *ucontrol)
+ {
+@@ -124,8 +147,12 @@ static SOC_ENUM_SINGLE_DECL(sm1_toacodec_mux_enum, TOACODEC_CTRL0,
+ 			    CTRL0_DAT_SEL_SM1_LSB,
+ 			    g12a_toacodec_mux_texts);
  
-+/*
-+ * Capture stream
+-static const struct snd_kcontrol_new g12a_toacodec_mux =
+-	SOC_DAPM_ENUM_EXT("Source", g12a_toacodec_mux_enum,
++static SOC_ENUM_SINGLE_DECL(a1_toacodec_mux_enum, TOACODEC_CTRL0,
++			    CTRL0_DAT_SEL_A1_LSB,
++			    a1_toacodec_mux_texts);
++
++static const struct snd_kcontrol_new a1_toacodec_mux =
++	SOC_DAPM_ENUM_EXT("Source", a1_toacodec_mux_enum,
+ 			  snd_soc_dapm_get_enum_double,
+ 			  g12a_toacodec_mux_put_enum);
+ 
+@@ -134,10 +161,21 @@ static const struct snd_kcontrol_new sm1_toacodec_mux =
+ 			  snd_soc_dapm_get_enum_double,
+ 			  g12a_toacodec_mux_put_enum);
+ 
++static const struct snd_kcontrol_new g12a_toacodec_mux =
++	SOC_DAPM_ENUM_EXT("Source", g12a_toacodec_mux_enum,
++			  snd_soc_dapm_get_enum_double,
++			  g12a_toacodec_mux_put_enum);
++
+ static const struct snd_kcontrol_new g12a_toacodec_out_enable =
+ 	SOC_DAPM_SINGLE_AUTODISABLE("Switch", TOACODEC_CTRL0,
+ 				    CTRL0_ENABLE_SHIFT, 1, 0);
+ 
++/* Don't use AUTODISABLE unlike G12A. On A1 it causes noise after playback
++ * is stopped.
 + */
++static const struct snd_kcontrol_new a1_toacodec_enable =
++	SOC_DAPM_SINGLE("Switch", TOACODEC_CTRL0, CTRL0_ENABLE_SHIFT, 1, 0);
 +
-+/* Output helpers */
-+struct meson_codec_glue_input *
-+meson_codec_glue_capture_output_get_data(struct snd_soc_dai *dai);
-+int meson_codec_glue_capture_output_hw_params(struct snd_pcm_substream *substream,
-+					      struct snd_pcm_hw_params *params,
-+					      struct snd_soc_dai *dai);
-+int meson_codec_glue_capture_output_set_fmt(struct snd_soc_dai *dai,
-+					    unsigned int fmt);
-+int meson_codec_glue_capture_output_dai_probe(struct snd_soc_dai *dai);
-+int meson_codec_glue_capture_output_dai_remove(struct snd_soc_dai *dai);
+ static const struct snd_soc_dapm_widget g12a_toacodec_widgets[] = {
+ 	SND_SOC_DAPM_MUX("SRC", SND_SOC_NOPM, 0, 0,
+ 			 &g12a_toacodec_mux),
+@@ -152,19 +190,34 @@ static const struct snd_soc_dapm_widget sm1_toacodec_widgets[] = {
+ 			    &g12a_toacodec_out_enable),
+ };
+ 
+-static int g12a_toacodec_input_hw_params(struct snd_pcm_substream *substream,
+-					 struct snd_pcm_hw_params *params,
+-					 struct snd_soc_dai *dai)
++static const struct snd_soc_dapm_widget a1_toacodec_widgets[] = {
++	SND_SOC_DAPM_SWITCH("EN", SND_SOC_NOPM, 0, 0,
++			    &a1_toacodec_enable),
++	SND_SOC_DAPM_MUX("Playback SRC", SND_SOC_NOPM, 0, 0,
++			 &a1_toacodec_mux),
++	SND_SOC_DAPM_MUX("Capture SRC A", SND_SOC_NOPM, 0, 0,
++			 &a1_toacodec_mux),
++	SND_SOC_DAPM_MUX("Capture SRC B", SND_SOC_NOPM, 0, 0,
++			 &a1_toacodec_mux),
++};
 +
-+/* Input helpers */
-+int meson_codec_glue_capture_input_startup(struct snd_pcm_substream *substream,
-+					   struct snd_soc_dai *dai);
++static int g12a_toacodec_hw_params(struct snd_pcm_substream *substream,
++				   struct snd_pcm_hw_params *params,
++				   struct snd_soc_dai *dai,
++				   bool playback)
+ {
+ 	struct meson_codec_glue_input *data;
+ 	int ret;
+ 
+-	ret = meson_codec_glue_input_hw_params(substream, params, dai);
++	ret = playback ? meson_codec_glue_input_hw_params(substream, params, dai)
++		       : meson_codec_glue_capture_output_hw_params(substream,
++								   params, dai);
+ 	if (ret)
+ 		return ret;
+ 
+ 	/* The glue will provide 1 lane out of the 4 to the output */
+-	data = meson_codec_glue_input_get_data(dai);
++	data = playback ? meson_codec_glue_input_get_data(dai)
++			: meson_codec_glue_capture_output_get_data(dai);
+ 	data->params.channels_min = min_t(unsigned int, TOACODEC_OUT_CHMAX,
+ 					data->params.channels_min);
+ 	data->params.channels_max = min_t(unsigned int, TOACODEC_OUT_CHMAX,
+@@ -173,6 +226,21 @@ static int g12a_toacodec_input_hw_params(struct snd_pcm_substream *substream,
+ 	return 0;
+ }
+ 
++static int g12a_toacodec_input_hw_params(struct snd_pcm_substream *substream,
++					 struct snd_pcm_hw_params *params,
++					 struct snd_soc_dai *dai)
++{
++	return g12a_toacodec_hw_params(substream, params, dai, true);
++}
 +
- #endif /* _MESON_CODEC_GLUE_H */
++static int
++g12a_toacodec_capture_output_hw_params(struct snd_pcm_substream *substream,
++				       struct snd_pcm_hw_params *params,
++				       struct snd_soc_dai *dai)
++{
++	return g12a_toacodec_hw_params(substream, params, dai, false);
++}
++
+ static const struct snd_soc_dai_ops g12a_toacodec_input_ops = {
+ 	.probe		= meson_codec_glue_input_dai_probe,
+ 	.remove		= meson_codec_glue_input_dai_remove,
+@@ -184,6 +252,17 @@ static const struct snd_soc_dai_ops g12a_toacodec_output_ops = {
+ 	.startup	= meson_codec_glue_output_startup,
+ };
+ 
++static const struct snd_soc_dai_ops g12a_toacodec_capture_output_ops = {
++	.probe		= meson_codec_glue_capture_output_dai_probe,
++	.remove		= meson_codec_glue_capture_output_dai_remove,
++	.hw_params	= g12a_toacodec_capture_output_hw_params,
++	.set_fmt	= meson_codec_glue_capture_output_set_fmt,
++};
++
++static const struct snd_soc_dai_ops g12a_toacodec_capture_input_ops = {
++	.startup	= meson_codec_glue_capture_input_startup,
++};
++
+ #define TOACODEC_STREAM(xname, xsuffix, xchmax)			\
+ {								\
+ 	.stream_name	= xname " " xsuffix,			\
+@@ -208,6 +287,20 @@ static const struct snd_soc_dai_ops g12a_toacodec_output_ops = {
+ 	.ops = &g12a_toacodec_output_ops,				\
+ }
+ 
++#define TOACODEC_CAPTURE_INPUT(xname, xid) {				\
++	.name = xname,							\
++	.id = (xid),							\
++	.playback = TOACODEC_STREAM(xname, "Playback", 2),		\
++	.ops = &g12a_toacodec_capture_input_ops,			\
++}
++
++#define TOACODEC_CAPTURE_OUTPUT(xname, xid) {				\
++	.name = xname,							\
++	.id = (xid),							\
++	.capture = TOACODEC_STREAM(xname, "Capture", 2),		\
++	.ops = &g12a_toacodec_capture_output_ops,			\
++}
++
+ static struct snd_soc_dai_driver g12a_toacodec_dai_drv[] = {
+ 	TOACODEC_INPUT("IN A", TOACODEC_IN_A),
+ 	TOACODEC_INPUT("IN B", TOACODEC_IN_B),
+@@ -215,6 +308,16 @@ static struct snd_soc_dai_driver g12a_toacodec_dai_drv[] = {
+ 	TOACODEC_OUTPUT("OUT", TOACODEC_OUT),
+ };
+ 
++static struct snd_soc_dai_driver a1_toacodec_dai_drv[] = {
++	TOACODEC_INPUT("IN A", TOACODEC_IN_A),
++	TOACODEC_INPUT("IN B", TOACODEC_IN_B),
++	TOACODEC_OUTPUT("OUT", TOACODEC_OUT),
++
++	TOACODEC_CAPTURE_OUTPUT("OUT A", TOACODEC_CAPTURE_OUT_A),
++	TOACODEC_CAPTURE_OUTPUT("OUT B", TOACODEC_CAPTURE_OUT_B),
++	TOACODEC_CAPTURE_INPUT("IN", TOACODEC_CAPTURE_IN),
++};
++
+ static int g12a_toacodec_component_probe(struct snd_soc_component *c)
+ {
+ 	/* Initialize the static clock parameters */
+@@ -229,6 +332,32 @@ static int sm1_toacodec_component_probe(struct snd_soc_component *c)
+ 				       CTRL0_BLK_CAP_INV_SM1);
+ }
+ 
++static int a1_toacodec_component_probe(struct snd_soc_component *c)
++{
++	/* Initialize the static clock parameters */
++	return snd_soc_component_write(c, TOACODEC_CTRL0,
++				       CTRL0_BLK_CAP_INV_A1);
++}
++
++static int a1_toacodec_of_xlate_dai_name(struct snd_soc_component *component,
++					 const struct of_phandle_args *args,
++					 const char **dai_name)
++{
++	struct snd_soc_dai *dai;
++
++	if (args->args_count != 1)
++		return -EINVAL;
++
++	for_each_component_dais(component, dai) {
++		if (dai->id == args->args[0]) {
++			*dai_name = dai->driver->name;
++			return 0;
++		}
++	}
++
++	return -EINVAL;
++}
++
+ static const struct snd_soc_dapm_route g12a_toacodec_routes[] = {
+ 	{ "SRC", "I2S A", "IN A Playback" },
+ 	{ "SRC", "I2S B", "IN B Playback" },
+@@ -237,6 +366,19 @@ static const struct snd_soc_dapm_route g12a_toacodec_routes[] = {
+ 	{ "OUT Capture", NULL, "OUT EN" },
+ };
+ 
++static const struct snd_soc_dapm_route a1_toacodec_routes[] = {
++	{ "Playback SRC", "I2S A", "IN A Playback" },
++	{ "Playback SRC", "I2S B", "IN B Playback" },
++	{ "EN", "Switch", "Playback SRC" },
++	{ "OUT Capture", NULL, "Playback SRC" },
++
++	{ "EN", "Switch", "IN Playback" },
++	{ "Capture SRC A", "I2S A", "EN" },
++	{ "Capture SRC B", "I2S B", "EN" },
++	{ "OUT A Capture", NULL, "Capture SRC A" },
++	{ "OUT B Capture", NULL, "Capture SRC B" },
++};
++
+ static const struct snd_kcontrol_new g12a_toacodec_controls[] = {
+ 	SOC_SINGLE("Lane Select", TOACODEC_CTRL0, CTRL0_LANE_SEL_G12A_LSB,
+ 		   CTRL0_LANE_SEL_G12A_MSB - CTRL0_LANE_SEL_G12A_LSB + 1, 0),
+@@ -247,6 +389,11 @@ static const struct snd_kcontrol_new sm1_toacodec_controls[] = {
+ 		   CTRL0_LANE_SEL_SM1_MSB - CTRL0_LANE_SEL_SM1_LSB + 1, 0),
+ };
+ 
++static const struct snd_kcontrol_new a1_toacodec_controls[] = {
++	SOC_SINGLE("Lane Select", TOACODEC_CTRL0, CTRL0_LANE_SEL_A1_LSB,
++		   CTRL0_LANE_SEL_A1_MSB - CTRL0_LANE_SEL_A1_LSB + 1, 0),
++};
++
+ static const struct snd_soc_component_driver g12a_toacodec_component_drv = {
+ 	.probe			= g12a_toacodec_component_probe,
+ 	.controls		= g12a_toacodec_controls,
+@@ -269,14 +416,44 @@ static const struct snd_soc_component_driver sm1_toacodec_component_drv = {
+ 	.endianness		= 1,
+ };
+ 
++static const struct snd_soc_component_driver a1_toacodec_component_drv = {
++	.probe			= a1_toacodec_component_probe,
++	.of_xlate_dai_name	= a1_toacodec_of_xlate_dai_name,
++	.controls		= a1_toacodec_controls,
++	.num_controls		= ARRAY_SIZE(a1_toacodec_controls),
++	.dapm_widgets		= a1_toacodec_widgets,
++	.num_dapm_widgets	= ARRAY_SIZE(a1_toacodec_widgets),
++	.dapm_routes		= a1_toacodec_routes,
++	.num_dapm_routes	= ARRAY_SIZE(a1_toacodec_routes),
++	.endianness		= 1,
++};
++
++static const struct reg_default g12a_toacodec_reg_default[] = {
++	{ TOACODEC_CTRL0, 0x0 },
++};
++
++static bool g12_toacodec_readable_reg(struct device *dev, unsigned int reg)
++{
++	/* There are no readable registers */
++	return false;
++}
++
+ static const struct regmap_config g12a_toacodec_regmap_cfg = {
+-	.reg_bits	= 32,
+-	.val_bits	= 32,
+-	.reg_stride	= 4,
++	.reg_bits		= 32,
++	.val_bits		= 32,
++	.reg_stride		= 4,
++	.max_register		= TOACODEC_CTRL0,
++	.max_register_is_0	= true,
++	.cache_type		= REGCACHE_FLAT,
++	.reg_defaults		= g12a_toacodec_reg_default,
++	.num_reg_defaults	= ARRAY_SIZE(g12a_toacodec_reg_default),
++	.readable_reg		= g12_toacodec_readable_reg,
+ };
+ 
+ static const struct g12a_toacodec_match_data g12a_toacodec_match_data = {
+ 	.component_drv	= &g12a_toacodec_component_drv,
++	.dai_drv	= g12a_toacodec_dai_drv,
++	.num_dai_drv	= ARRAY_SIZE(g12a_toacodec_dai_drv),
+ 	.field_dat_sel	= REG_FIELD(TOACODEC_CTRL0, CTRL0_DAT_SEL_G12A_LSB,
+ 				    CTRL0_DAT_SEL_G12A_MSB),
+ 	.field_lrclk_sel = REG_FIELD(TOACODEC_CTRL0, CTRL0_LRCLK_SEL_G12A_LSB,
+@@ -287,6 +464,8 @@ static const struct g12a_toacodec_match_data g12a_toacodec_match_data = {
+ 
+ static const struct g12a_toacodec_match_data sm1_toacodec_match_data = {
+ 	.component_drv	= &sm1_toacodec_component_drv,
++	.dai_drv	= g12a_toacodec_dai_drv,
++	.num_dai_drv	= ARRAY_SIZE(g12a_toacodec_dai_drv),
+ 	.field_dat_sel	= REG_FIELD(TOACODEC_CTRL0, CTRL0_DAT_SEL_SM1_LSB,
+ 				    CTRL0_DAT_SEL_SM1_MSB),
+ 	.field_lrclk_sel = REG_FIELD(TOACODEC_CTRL0, CTRL0_LRCLK_SEL_SM1_LSB,
+@@ -295,6 +474,18 @@ static const struct g12a_toacodec_match_data sm1_toacodec_match_data = {
+ 				    CTRL0_BCLK_SEL_SM1_MSB),
+ };
+ 
++static const struct g12a_toacodec_match_data a1_toacodec_match_data = {
++	.component_drv	= &a1_toacodec_component_drv,
++	.dai_drv	= a1_toacodec_dai_drv,
++	.num_dai_drv	= ARRAY_SIZE(a1_toacodec_dai_drv),
++	.field_dat_sel	= REG_FIELD(TOACODEC_CTRL0, CTRL0_DAT_SEL_A1_LSB,
++				    CTRL0_DAT_SEL_A1_MSB),
++	.field_lrclk_sel = REG_FIELD(TOACODEC_CTRL0, CTRL0_LRCLK_SEL_A1_LSB,
++				     CTRL0_LRCLK_SEL_A1_MSB),
++	.field_bclk_sel	= REG_FIELD(TOACODEC_CTRL0, CTRL0_BCLK_SEL_A1_LSB,
++				    CTRL0_BCLK_SEL_A1_MSB),
++};
++
+ static const struct of_device_id g12a_toacodec_of_match[] = {
+ 	{
+ 		.compatible = "amlogic,g12a-toacodec",
+@@ -304,6 +495,10 @@ static const struct of_device_id g12a_toacodec_of_match[] = {
+ 		.compatible = "amlogic,sm1-toacodec",
+ 		.data = &sm1_toacodec_match_data,
+ 	},
++	{
++		.compatible = "amlogic,a1-toacodec",
++		.data = &a1_toacodec_match_data,
++	},
+ 	{}
+ };
+ MODULE_DEVICE_TABLE(of, g12a_toacodec_of_match);
+@@ -356,9 +551,9 @@ static int g12a_toacodec_probe(struct platform_device *pdev)
+ 	if (IS_ERR(priv->field_bclk_sel))
+ 		return PTR_ERR(priv->field_bclk_sel);
+ 
+-	return devm_snd_soc_register_component(dev,
+-			data->component_drv, g12a_toacodec_dai_drv,
+-			ARRAY_SIZE(g12a_toacodec_dai_drv));
++	return devm_snd_soc_register_component(dev, data->component_drv,
++					       data->dai_drv,
++					       data->num_dai_drv);
+ }
+ 
+ static struct platform_driver g12a_toacodec_pdrv = {
 -- 
 2.34.1
 
