@@ -4,64 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E1F98C54E69
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Mar 2024 08:44:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BC91BC54E58
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Mar 2024 08:45:08 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1EE9F22CB;
-	Fri, 15 Mar 2024 09:44:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1EE9F22CB
+	by alsa0.perex.cz (Postfix) with ESMTPS id CE91F22CE;
+	Fri, 15 Mar 2024 09:44:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CE91F22CE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1710492252;
-	bh=CYjDlu0wAmdaaE/J1UWkMbf/VGuAdWr8vnMTUgta4nE=;
+	s=default; t=1710492306;
+	bh=PPaufu1U2yk2CH6X5UKjVc/X+cp8pDKq6JGff4Q4Ako=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=C8/4PyikB2K7SJ6u2RSh001mweFM+jQ3nnxxeiG2HsijxWvJoLr6LRgy4N1zA5F79
-	 dxzQJVaWKQmU/vs3iZ9zLXdUZE+gQeqbQjAk7K0zjIryIiv+OGXqEoRh/5y3UcFrMM
-	 HsGSWP2y2UBZEGBvnTJoEhhyQLrEfek93/LzgDzY=
+	b=YBdHu1uifuKT5981RW/SpB+5wD8ZnaljrluHOhXm0HFWUB/CL4j1V6tXFuX28cdoR
+	 rwRIxbk6CYIO8HWRuyopzRBnAyxEzKNkbrCgEM6+9y6j7kw8ljTWI02EuhvC7fsGgY
+	 v9PFtbuPgPqmRPvetzScNv1qQyKqPzph6V2N477s=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CD83DF80787; Fri, 15 Mar 2024 09:40:36 +0100 (CET)
+	id 7D2BCF80C51; Fri, 15 Mar 2024 09:41:03 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id CB7BEF808C6;
-	Fri, 15 Mar 2024 09:40:35 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id AD69AF805C3;
+	Fri, 15 Mar 2024 09:41:02 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A3C53F8057C; Fri, 15 Mar 2024 00:23:12 +0100 (CET)
-Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
+	id 56D0BF8057F; Fri, 15 Mar 2024 00:23:16 +0100 (CET)
+Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 9FD03F804E7
-	for <alsa-devel@alsa-project.org>; Fri, 15 Mar 2024 00:23:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9FD03F804E7
+	by alsa1.perex.cz (Postfix) with ESMTPS id 857A3F80587
+	for <alsa-devel@alsa-project.org>; Fri, 15 Mar 2024 00:23:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 857A3F80587
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=salutedevices.com header.i=@salutedevices.com
- header.a=rsa-sha256 header.s=mail header.b=hrDhTGiu
-Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id B6C68100012;
-	Fri, 15 Mar 2024 02:23:02 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru B6C68100012
+ header.a=rsa-sha256 header.s=mail header.b=u+Oz0ttF
+Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
+	by mx1.sberdevices.ru (Postfix) with ESMTP id 4C680120017;
+	Fri, 15 Mar 2024 02:23:09 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 4C680120017
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-	s=mail; t=1710458582;
-	bh=ZhogNEU/Na3xqXM1WWl9FN/I/9we0zKI0ixb5HC5af4=;
+	s=mail; t=1710458589;
+	bh=oHTYiFMvsDA2ptkBIAd/4iyJxp1yij69f1A6GAHpv/Y=;
 	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-	b=hrDhTGiu+gMBnJyqOgTpqyBbo6ebwt7ezBaP7pXW2tDvw8jLq8iXKJJ1zespi5ger
-	 vJDTjz5/mubEnva+1j0c07AlqFijW0luBiKopgrx8+7jmwvHrnq8wVr42ed7AAA/ja
-	 4yMF+EUzmvOPlxTtwOEX16aaZEWxPfB32iqu05xSLW1WlmLmenvuNxQBdytX9n3jLO
-	 mYJOv62PHxw50ylBS9DYD/VjMtadC38bNwXJjNk0EenyL0dRVHBV7t+DswY1P1tt5D
-	 aEGsLWgjp5etHyJMwtlYU+bvXvFMGiuPhtmxn21DxZNyMh80OobBxmnXc0mUtVKxJI
-	 6X27KUaeJAu+w==
+	b=u+Oz0ttF+z42jfxCb8bDWrwT8gKjMcS+SPtHlohHa5dn60NXyF1irW3it6wF6OGl4
+	 i4Lp0AkUL/bTG2KtJUzaKkRzm+usunGeByzIycDnIB3gHjsclUTwfnriUShwE3Tqdd
+	 s4fpCnU88rJGOOmf8WkIv0vToE9okHv7OeXnjdmxpFCP/fXTE49PyuIDtFFp68vu6l
+	 vJ4NH5Yy81j+hSvdNX8V3QSFnl+ze2CNuB1YP4ux6mD2k1/B3EKbyP5POZKbQ2W9Rr
+	 WbM8sLazBDjDKPqYrnjlaCVcJxSRZ8+ou2TMxGi99HKcW8zU08YrjHnkApKzgqyR6V
+	 DCSFLLW73a/ew==
 Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru
  [172.16.192.103])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
 	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Fri, 15 Mar 2024 02:23:02 +0300 (MSK)
+	Fri, 15 Mar 2024 02:23:09 +0300 (MSK)
 Received: from CAB-WSD-0003115.sberdevices.ru (100.64.160.123) by
  p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Fri, 15 Mar 2024 02:23:02 +0300
+ 15.2.1118.40; Fri, 15 Mar 2024 02:23:08 +0300
 From: Jan Dakinevich <jan.dakinevich@salutedevices.com>
 To: Jan Dakinevich <jan.dakinevich@salutedevices.com>, Neil Armstrong
 	<neil.armstrong@linaro.org>, Jerome Brunet <jbrunet@baylibre.com>, Michael
@@ -77,10 +77,11 @@ To: Jan Dakinevich <jan.dakinevich@salutedevices.com>, Neil Armstrong
 	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
 	<alsa-devel@alsa-project.org>, <linux-sound@vger.kernel.org>,
 	<linux-gpio@vger.kernel.org>
-CC: <kernel@salutedevices.com>
-Subject: [PATCH 06/25] ASoC: meson: g12a-toacodec: fix "Lane Select" width
-Date: Fri, 15 Mar 2024 02:21:42 +0300
-Message-ID: <20240314232201.2102178-7-jan.dakinevich@salutedevices.com>
+CC: Dmitry Rokosov <ddrokosov@salutedevices.com>, <kernel@salutedevices.com>
+Subject: [PATCH 23/25] ASoC: meson: implement link-name optional property in
+ meson card utils
+Date: Fri, 15 Mar 2024 02:21:59 +0300
+Message-ID: <20240314232201.2102178-24-jan.dakinevich@salutedevices.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240314232201.2102178-1-jan.dakinevich@salutedevices.com>
 References: <20240314232201.2102178-1-jan.dakinevich@salutedevices.com>
@@ -117,15 +118,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: OA6FWZDLE6LWWAZOA4MVHWY4XFQVVDYU
-X-Message-ID-Hash: OA6FWZDLE6LWWAZOA4MVHWY4XFQVVDYU
-X-Mailman-Approved-At: Fri, 15 Mar 2024 08:36:43 +0000
+Message-ID-Hash: ZM6XBPNY5SIRSRLSSGRXPMSYM33WOJIA
+X-Message-ID-Hash: ZM6XBPNY5SIRSRLSSGRXPMSYM33WOJIA
+X-Mailman-Approved-At: Fri, 15 Mar 2024 08:36:44 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OA6FWZDLE6LWWAZOA4MVHWY4XFQVVDYU/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZM6XBPNY5SIRSRLSSGRXPMSYM33WOJIA/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -134,32 +135,51 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-For both G12A and SM1 the width of "Lane Select" should be 2, not 3.
-Otherwise, it overlaps with "Source".
+From: Dmitry Rokosov <ddrokosov@salutedevices.com>
 
-Signed-off-by: Jan Dakinevich <jan.dakinevich@salutedevices.com>
+The 'link-name' property presents an optional DT feature that empowers
+users to customize the name associated with the DAI link and PCM stream.
+This functionality reflects the approach often employed in Qualcomm
+audio cards, providing enhanced flexibility in DAI naming conventions
+for improved system integration and userspace experience.
+
+It allows userspace program to easy determine PCM stream purpose, e.g.:
+    ~ # cat /proc/asound/pcm
+    00-00: speaker (*) :  : playback 1
+    00-01: mics (*) :  : capture 1
+    00-02: loopback (*) :  : capture 1
+
+The previous naming approach using auto-generated fe or be strings
+continues to be utilized as a fallback.
+
+Signed-off-by: Dmitry Rokosov <ddrokosov@salutedevices.com>
 ---
- sound/soc/meson/g12a-toacodec.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/meson/meson-card-utils.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/meson/g12a-toacodec.c b/sound/soc/meson/g12a-toacodec.c
-index 531bb8707a3e..b92de2235627 100644
---- a/sound/soc/meson/g12a-toacodec.c
-+++ b/sound/soc/meson/g12a-toacodec.c
-@@ -229,11 +229,11 @@ static const struct snd_soc_dapm_route g12a_toacodec_routes[] = {
- };
+diff --git a/sound/soc/meson/meson-card-utils.c b/sound/soc/meson/meson-card-utils.c
+index ed6c7e2f609c..7bae72905a9b 100644
+--- a/sound/soc/meson/meson-card-utils.c
++++ b/sound/soc/meson/meson-card-utils.c
+@@ -94,10 +94,14 @@ static int meson_card_set_link_name(struct snd_soc_card *card,
+ 				    struct device_node *node,
+ 				    const char *prefix)
+ {
+-	char *name = devm_kasprintf(card->dev, GFP_KERNEL, "%s.%s",
+-				    prefix, node->full_name);
+-	if (!name)
+-		return -ENOMEM;
++	const char *name;
++
++	if (of_property_read_string(node, "link-name", &name)) {
++		name = devm_kasprintf(card->dev, GFP_KERNEL, "%s.%s",
++				      prefix, node->full_name);
++		if (!name)
++			return -ENOMEM;
++	}
  
- static const struct snd_kcontrol_new g12a_toacodec_controls[] = {
--	SOC_SINGLE("Lane Select", TOACODEC_CTRL0, CTRL0_LANE_SEL, 3, 0),
-+	SOC_SINGLE("Lane Select", TOACODEC_CTRL0, CTRL0_LANE_SEL, 2, 0),
- };
- 
- static const struct snd_kcontrol_new sm1_toacodec_controls[] = {
--	SOC_SINGLE("Lane Select", TOACODEC_CTRL0, CTRL0_LANE_SEL_SM1, 3, 0),
-+	SOC_SINGLE("Lane Select", TOACODEC_CTRL0, CTRL0_LANE_SEL_SM1, 2, 0),
- };
- 
- static const struct snd_soc_component_driver g12a_toacodec_component_drv = {
+ 	link->name = name;
+ 	link->stream_name = name;
 -- 
 2.34.1
 
