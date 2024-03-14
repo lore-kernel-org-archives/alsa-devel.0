@@ -4,64 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6F3F9C54E69
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Mar 2024 08:43:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 74044C54E66
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Mar 2024 08:44:13 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C641722A9;
-	Fri, 15 Mar 2024 09:43:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C641722A9
+	by alsa0.perex.cz (Postfix) with ESMTPS id E2B141923;
+	Fri, 15 Mar 2024 09:44:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E2B141923
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1710492229;
-	bh=NlhjMbIRX6gziG0rPwTAUYT+meYHkS7OcnqxPIk82EU=;
+	s=default; t=1710492251;
+	bh=ybkbzx+DIvWdFpyy8EDoKSIvtWeGkBDccrQr3+eS2DI=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=EzakVfrKkBPaPiUactre3rGBJqRNcxH5Q3zYbHUbkJ2Y2nnYuPC6XVp4jINSKIHXv
-	 NWgY8x+YTkVlTbiGuJc0lE7YDxk2riIMvBm97Tj1ZS9zlLUM6B6AglBcmMw5G5zwYm
-	 aTHpdtX1X1+b6vjvhxIW2XWUbAtOsNJYZ2FwRLIE=
+	b=bQ8VkJlez19FU7dQzi0T5u6+knyUQiOF8vmqpkfwpgHAHl7SjOeeRi6Ft+QvxQRIr
+	 TKig2ciDGC+Kpl5mU0rNnBP1kS5BKRQ+MddiGGsG7uCgfNJ1J3QXWpGmeq1BzS0msC
+	 T7EYIoRnWJYcrowH06/Ar7nZL97YdgCDXjl0mYGY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 37183F805D9; Fri, 15 Mar 2024 09:40:07 +0100 (CET)
+	id 1D333F805E7; Fri, 15 Mar 2024 09:40:04 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 587D7F8060C;
-	Fri, 15 Mar 2024 09:40:07 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0F65AF80736;
+	Fri, 15 Mar 2024 09:40:04 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BED27F80580; Fri, 15 Mar 2024 00:23:11 +0100 (CET)
-Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
+	id 4C7A9F80578; Fri, 15 Mar 2024 00:23:11 +0100 (CET)
+Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 05BE6F80564
-	for <alsa-devel@alsa-project.org>; Fri, 15 Mar 2024 00:23:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 05BE6F80564
+	by alsa1.perex.cz (Postfix) with ESMTPS id 46E26F8057C
+	for <alsa-devel@alsa-project.org>; Fri, 15 Mar 2024 00:23:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 46E26F8057C
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=salutedevices.com header.i=@salutedevices.com
- header.a=rsa-sha256 header.s=mail header.b=KikZPW0d
-Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id 77907100013;
-	Fri, 15 Mar 2024 02:23:03 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 77907100013
+ header.a=rsa-sha256 header.s=mail header.b=pmWgkXaJ
+Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
+	by mx1.sberdevices.ru (Postfix) with ESMTP id C2A15120012;
+	Fri, 15 Mar 2024 02:23:06 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru C2A15120012
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-	s=mail; t=1710458583;
-	bh=qtL8oCp2NzH1Oe5KPqHGKTnMcQ+tN5VZWW0A6Ttb2kk=;
+	s=mail; t=1710458586;
+	bh=9SRIX/FvqDap0SMfdebaXOrywr2NEUWz33l2V3WObDM=;
 	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-	b=KikZPW0d/5d0txHuUd498Azvh+/Igak9XlsSIrt45mBoG59XE3fZ97CoCPDve46YI
-	 GkEzxOLCphTrYydT5sooWbN7EgSxYqtFu2PK3Kuxr79ghMTuikebH1gFoqiC9uIPgf
-	 EwTVeSBEi/M2I69uigWNcGGNDA7NL1DScha+NQU1Xhikex58FDe2RNpmmDyc/RVEIe
-	 4cjFQ6vtzeoAQughFhfgiCFs09ywMKvYeq0XACNBtbUhXhHviYAv5/WIfGWhO13vI0
-	 Xm6F+iFaVAfGcWKHWZUv/v9zFwqNx1e0tdnWb+MpRIXNJSbgLU2BoxM/VuPVp8rqqF
-	 F8CJwR/DfXmQg==
+	b=pmWgkXaJSxRnY2mr5czzY/iGGINaK0+pU7azMlmYipUFsMcwF9rY+yRy3nkG4tXhI
+	 h2emBkJj73eur4HHgzAvK2iDeQHORBbLT/QWiW7uzbkaIitQSQItPYflNW+VEYDcC6
+	 A1sdhRNU4DeQNrK/nbK9uBZKi3zcbleBIlZMg5Agrqd9GPCTR5FxoeibVlSu1gWReA
+	 U2RLXn7gdbNpy8fyHwxgfX1+y/ACrMsZ5Z8JMgVh/8cwK/OVYZvuYb5D/zT/5a+/i5
+	 rFFP+gp6rfElFV+4AgcN3FfjOGBGU1qaSo2zmQ8v5W5YTJBL8xcbMkVNffkNWsJeUb
+	 S+K2xl1zKyVEQ==
 Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru
  [172.16.192.103])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
 	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Fri, 15 Mar 2024 02:23:03 +0300 (MSK)
+	Fri, 15 Mar 2024 02:23:06 +0300 (MSK)
 Received: from CAB-WSD-0003115.sberdevices.ru (100.64.160.123) by
  p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Fri, 15 Mar 2024 02:23:02 +0300
+ 15.2.1118.40; Fri, 15 Mar 2024 02:23:06 +0300
 From: Jan Dakinevich <jan.dakinevich@salutedevices.com>
 To: Jan Dakinevich <jan.dakinevich@salutedevices.com>, Neil Armstrong
 	<neil.armstrong@linaro.org>, Jerome Brunet <jbrunet@baylibre.com>, Michael
@@ -78,10 +78,10 @@ To: Jan Dakinevich <jan.dakinevich@salutedevices.com>, Neil Armstrong
 	<alsa-devel@alsa-project.org>, <linux-sound@vger.kernel.org>,
 	<linux-gpio@vger.kernel.org>
 CC: <kernel@salutedevices.com>
-Subject: [PATCH 08/25] ASoC: dt-bindings: meson: g12a-toacodec: add support
- for A1 SoC family
-Date: Fri, 15 Mar 2024 02:21:44 +0300
-Message-ID: <20240314232201.2102178-9-jan.dakinevich@salutedevices.com>
+Subject: [PATCH 17/25] ASoC: dt-bindings: meson: axg-fifo: claim support of A1
+ SoC family
+Date: Fri, 15 Mar 2024 02:21:53 +0300
+Message-ID: <20240314232201.2102178-18-jan.dakinevich@salutedevices.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240314232201.2102178-1-jan.dakinevich@salutedevices.com>
 References: <20240314232201.2102178-1-jan.dakinevich@salutedevices.com>
@@ -118,15 +118,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: 2TYDARMPXVU7D6VBLQGJHDHL4BQUMGZZ
-X-Message-ID-Hash: 2TYDARMPXVU7D6VBLQGJHDHL4BQUMGZZ
+Message-ID-Hash: JQSQIEY2OV7KCE7EPFJAVGBGCLXUSO4Q
+X-Message-ID-Hash: JQSQIEY2OV7KCE7EPFJAVGBGCLXUSO4Q
 X-Mailman-Approved-At: Fri, 15 Mar 2024 08:36:43 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2TYDARMPXVU7D6VBLQGJHDHL4BQUMGZZ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JQSQIEY2OV7KCE7EPFJAVGBGCLXUSO4Q/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -135,41 +135,33 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add "amlogic,t9015-a1" compatible string and new device tree phandle
-options.
+Add "amlogic,a1-toddr" and "amlogic,a1-frddr" compatible string aliases
+to "amlogic,sm1-toddr" and "amlogic,sm1-frddr" respectevely.
 
 Signed-off-by: Jan Dakinevich <jan.dakinevich@salutedevices.com>
 ---
- .../devicetree/bindings/sound/amlogic,g12a-toacodec.yaml     | 1 +
- include/dt-bindings/sound/meson-g12a-toacodec.h              | 5 +++++
- 2 files changed, 6 insertions(+)
+ .../devicetree/bindings/sound/amlogic,axg-fifo.yaml       | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/amlogic,g12a-toacodec.yaml b/Documentation/devicetree/bindings/sound/amlogic,g12a-toacodec.yaml
-index 23f82bb89750..c47604aa590f 100644
---- a/Documentation/devicetree/bindings/sound/amlogic,g12a-toacodec.yaml
-+++ b/Documentation/devicetree/bindings/sound/amlogic,g12a-toacodec.yaml
-@@ -26,6 +26,7 @@ properties:
-       - items:
-           - enum:
-               - amlogic,sm1-toacodec
-+              - amlogic,a1-toacodec
-           - const: amlogic,g12a-toacodec
+diff --git a/Documentation/devicetree/bindings/sound/amlogic,axg-fifo.yaml b/Documentation/devicetree/bindings/sound/amlogic,axg-fifo.yaml
+index b1b48d683101..1e809c7c2179 100644
+--- a/Documentation/devicetree/bindings/sound/amlogic,axg-fifo.yaml
++++ b/Documentation/devicetree/bindings/sound/amlogic,axg-fifo.yaml
+@@ -25,6 +25,14 @@ properties:
+               - amlogic,g12a-frddr
+               - amlogic,sm1-frddr
+           - const: amlogic,axg-frddr
++      - items:
++          - const: amlogic,a1-toddr
++          - const: amlogic,sm1-toddr
++          - const: amlogic,axg-toddr
++      - items:
++          - const: amlogic,a1-frddr
++          - const: amlogic,sm1-frddr
++          - const: amlogic,axg-frddr
  
    reg:
-diff --git a/include/dt-bindings/sound/meson-g12a-toacodec.h b/include/dt-bindings/sound/meson-g12a-toacodec.h
-index 69d7a75592a2..f726e2c6064d 100644
---- a/include/dt-bindings/sound/meson-g12a-toacodec.h
-+++ b/include/dt-bindings/sound/meson-g12a-toacodec.h
-@@ -7,4 +7,9 @@
- #define TOACODEC_IN_C	2
- #define TOACODEC_OUT	3
- 
-+#define TOACODEC_CAPTURE_OUT_A	4
-+#define TOACODEC_CAPTURE_OUT_B	5
-+#define TOACODEC_CAPTURE_OUT_C	6
-+#define TOACODEC_CAPTURE_IN	7
-+
- #endif /* __DT_MESON_G12A_TOACODEC_H */
+     maxItems: 1
 -- 
 2.34.1
 
