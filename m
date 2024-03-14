@@ -4,64 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1EA2CC54E58
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Mar 2024 08:45:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 16B51C54E66
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Mar 2024 08:46:02 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5301422CD;
-	Fri, 15 Mar 2024 09:45:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5301422CD
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4DAF5227A;
+	Fri, 15 Mar 2024 09:45:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4DAF5227A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1710492354;
-	bh=IzEKonS3Rk9mP1viG+w4DpVU37kIVPLD3KQHL9qY338=;
+	s=default; t=1710492360;
+	bh=5RGNRcPvAAVkRokZsvg1iwyrdPkWT2legrHDAQcnHnc=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=d6y2ziUEB69XWwTCRIwZtwUkqTX0abDPMNUTiJcf9BL7EeS3zFRl5TM9K4pB0pbWe
-	 5bFGJrdILK/55TDmByYqSKNQhTBSyp7LwX7gz+KZz5to4tC0HlxzULLc9BzDTMWiet
-	 NBErrbOCrCg0Dmcb675bn4THNzat9TgqIXrPaHDQ=
+	b=JgXKTSvvKXH9Wqw7HaC5y12A5Yw0gMtSoYukHwZSs8nfkl6ztKJ4+JaJl0kS4n1Fa
+	 6vjGGBqsqKRLMQbXjJnsBtlwxQdZ0FzZ2LzNANcA09/AIS1i2u2NVNG31JxdpRSpRh
+	 M5sQ6KVVMVq3YdBnsKzd9czDe+A8XWobAeZlqrQc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B7336F80CAA; Fri, 15 Mar 2024 09:40:51 +0100 (CET)
+	id 8567FF80C87; Fri, 15 Mar 2024 09:40:42 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 91613F80C90;
-	Fri, 15 Mar 2024 09:40:50 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D1EA0F808CC;
+	Fri, 15 Mar 2024 09:40:41 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 454A6F805B3; Fri, 15 Mar 2024 00:23:15 +0100 (CET)
-Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
+	id 34A11F80578; Fri, 15 Mar 2024 00:23:14 +0100 (CET)
+Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 990BEF8014B
-	for <alsa-devel@alsa-project.org>; Fri, 15 Mar 2024 00:23:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 990BEF8014B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 5D1CAF8057D
+	for <alsa-devel@alsa-project.org>; Fri, 15 Mar 2024 00:23:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5D1CAF8057D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=salutedevices.com header.i=@salutedevices.com
- header.a=rsa-sha256 header.s=mail header.b=Pnxk4JYQ
-Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id BFF02120005;
-	Fri, 15 Mar 2024 02:23:00 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru BFF02120005
+ header.a=rsa-sha256 header.s=mail header.b=u3ppaOV9
+Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
+	by mx1.sberdevices.ru (Postfix) with ESMTP id E428D10001C;
+	Fri, 15 Mar 2024 02:23:08 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru E428D10001C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-	s=mail; t=1710458580;
-	bh=JVEInx1VsQ+k5oHrMWuJJb1gmeD/iUbSkd2IAOMDuc8=;
+	s=mail; t=1710458588;
+	bh=yH+gGyMvZK0BAxIe8YuYpYuVmpvd18qq6ktq5J8ADek=;
 	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-	b=Pnxk4JYQBKVCYVvRS/2Brp3Ukypy7RKzgprVi0yh+stIP98DPYmv5GriGrKlsewzg
-	 3eXevzf8rSqB2LMWKc+LISmVwiqWdNiDdr+EfgZKhADZPTmuFZnHH4IzAdxe4bTaHD
-	 4YlOa3nz4MC9X2xzM5xvSihLRVnjnNGnIPSpniXSG1N35YIqAskEkbcRjr9Q7MMIRw
-	 nM3xaSeEKQgnG8lWaNUvWoEYd+fLsZUfLjRZ/T6inuQfXk5pcY9e9L6TUkEg+QX/w0
-	 vMStx9edszET+iCpoomFrDZh3fz96XwHjIMKdVHDZ1kd0/Ks1ZzRyNWb0PiH/rJTJU
-	 IjJsqsBvZNY9Q==
+	b=u3ppaOV90MwGvXwlrtUUM/UAPNKCL0K49kOFQzOish+rKpWQRvVFUDNeGpGlQWoGU
+	 mH08DvrMpgypj3jvEAhbDctAmcV4Sh7QuN5bUh8raOv7P/b2LPks1jNLjVb5+xA+Hr
+	 4+M0wMv5ttptX648DGIPUEpMNGxQCVzrKF3zzxOlpAqibKnFmALQy2NO7ptN2+vHzZ
+	 DGfwU90ax/df1BT3VT7mB01ue8lML3by0Yq9bHtwPPxcQPyfpkmfxRY4BRX0zt0GfU
+	 0+XJims5lcpzWD1Gi1kvs3/EPDYcXF+DxueyNb3FAsOXxbkl8atVQs5jMyr5MzVgVa
+	 2HSFpe3ema2mg==
 Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru
  [172.16.192.103])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
 	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Fri, 15 Mar 2024 02:23:00 +0300 (MSK)
+	Fri, 15 Mar 2024 02:23:08 +0300 (MSK)
 Received: from CAB-WSD-0003115.sberdevices.ru (100.64.160.123) by
  p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Fri, 15 Mar 2024 02:23:00 +0300
+ 15.2.1118.40; Fri, 15 Mar 2024 02:23:08 +0300
 From: Jan Dakinevich <jan.dakinevich@salutedevices.com>
 To: Jan Dakinevich <jan.dakinevich@salutedevices.com>, Neil Armstrong
 	<neil.armstrong@linaro.org>, Jerome Brunet <jbrunet@baylibre.com>, Michael
@@ -77,10 +77,11 @@ To: Jan Dakinevich <jan.dakinevich@salutedevices.com>, Neil Armstrong
 	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
 	<alsa-devel@alsa-project.org>, <linux-sound@vger.kernel.org>,
 	<linux-gpio@vger.kernel.org>
-CC: <kernel@salutedevices.com>
-Subject: [PATCH 01/25] clk: meson: a1: restrict an amount of 'hifi_pll' params
-Date: Fri, 15 Mar 2024 02:21:37 +0300
-Message-ID: <20240314232201.2102178-2-jan.dakinevich@salutedevices.com>
+CC: Dmitry Rokosov <ddrokosov@salutedevices.com>, <kernel@salutedevices.com>
+Subject: [PATCH 22/25] ASoC: dt-bindings: meson: introduce link-name optional
+ property
+Date: Fri, 15 Mar 2024 02:21:58 +0300
+Message-ID: <20240314232201.2102178-23-jan.dakinevich@salutedevices.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240314232201.2102178-1-jan.dakinevich@salutedevices.com>
 References: <20240314232201.2102178-1-jan.dakinevich@salutedevices.com>
@@ -117,15 +118,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: ZO7LLLPGMXFDG4OWMYEID5ATCRQRCHMH
-X-Message-ID-Hash: ZO7LLLPGMXFDG4OWMYEID5ATCRQRCHMH
+Message-ID-Hash: KWMR5AP4Z4UBQG4YWVK4XDCE5E3AA6XQ
+X-Message-ID-Hash: KWMR5AP4Z4UBQG4YWVK4XDCE5E3AA6XQ
 X-Mailman-Approved-At: Fri, 15 Mar 2024 08:36:44 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZO7LLLPGMXFDG4OWMYEID5ATCRQRCHMH/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KWMR5AP4Z4UBQG4YWVK4XDCE5E3AA6XQ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -134,41 +135,74 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Existing values were insufficient to produce accurate clock for audio
-devices. New values are safe and most suitable to produce 48000Hz sample
-rate.
+From: Dmitry Rokosov <ddrokosov@salutedevices.com>
 
-Signed-off-by: Jan Dakinevich <jan.dakinevich@salutedevices.com>
+The 'link-name' property is an optional DT property that allows for the
+customization of the name associated with the DAI link and PCM stream.
+This functionality mirrors the approach commonly utilized in Qualcomm
+audio cards, providing flexibility in DAI naming conventions for
+improved system integration and userspace experience.
+
+It allows userspace program to easy determine PCM stream purpose, e.g.:
+    ~ # cat /proc/asound/pcm
+    00-00: speaker (*) :  : playback 1
+    00-01: mics (*) :  : capture 1
+    00-02: loopback (*) :  : capture 1
+
+Signed-off-by: Dmitry Rokosov <ddrokosov@salutedevices.com>
 ---
- drivers/clk/meson/a1-pll.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ .../devicetree/bindings/sound/amlogic,axg-sound-card.yaml   | 6 ++++++
+ .../devicetree/bindings/sound/amlogic,gx-sound-card.yaml    | 6 ++++++
+ 2 files changed, 12 insertions(+)
 
-diff --git a/drivers/clk/meson/a1-pll.c b/drivers/clk/meson/a1-pll.c
-index 4325e8a6a3ef..00e06d03445b 100644
---- a/drivers/clk/meson/a1-pll.c
-+++ b/drivers/clk/meson/a1-pll.c
-@@ -74,9 +74,9 @@ static struct clk_regmap fixed_pll = {
- 	},
- };
+diff --git a/Documentation/devicetree/bindings/sound/amlogic,axg-sound-card.yaml b/Documentation/devicetree/bindings/sound/amlogic,axg-sound-card.yaml
+index 492b41cc8ccd..46774a3e4b1d 100644
+--- a/Documentation/devicetree/bindings/sound/amlogic,axg-sound-card.yaml
++++ b/Documentation/devicetree/bindings/sound/amlogic,axg-sound-card.yaml
+@@ -66,6 +66,11 @@ patternProperties:
+         maxItems: 1
+         description: phandle of the CPU DAI
  
--static const struct pll_mult_range hifi_pll_mult_range = {
--	.min = 32,
--	.max = 64,
-+static const struct pll_params_table hifi_pll_params_table[] = {
-+	PLL_PARAMS(128, 5),
-+	{ },
- };
++      link-name:
++        description: Indicates dai-link name and PCM stream name.
++        $ref: /schemas/types.yaml#/definitions/string
++        maxItems: 1
++
+     patternProperties:
+       "^dai-tdm-slot-(t|r)x-mask-[0-3]$":
+         $ref: /schemas/types.yaml#/definitions/uint32-array
+@@ -137,6 +142,7 @@ examples:
  
- static const struct reg_sequence hifi_init_regs[] = {
-@@ -124,7 +124,7 @@ static struct clk_regmap hifi_pll = {
- 			.shift   = 6,
- 			.width   = 1,
- 		},
--		.range = &hifi_pll_mult_range,
-+		.table = hifi_pll_params_table,
- 		.init_regs = hifi_init_regs,
- 		.init_count = ARRAY_SIZE(hifi_init_regs),
- 	},
+         dai-link-0 {
+             sound-dai = <&frddr_a>;
++            link-name = "speaker";
+         };
+ 
+         dai-link-1 {
+diff --git a/Documentation/devicetree/bindings/sound/amlogic,gx-sound-card.yaml b/Documentation/devicetree/bindings/sound/amlogic,gx-sound-card.yaml
+index d4277d342e69..975c148f9712 100644
+--- a/Documentation/devicetree/bindings/sound/amlogic,gx-sound-card.yaml
++++ b/Documentation/devicetree/bindings/sound/amlogic,gx-sound-card.yaml
+@@ -52,6 +52,11 @@ patternProperties:
+         maxItems: 1
+         description: phandle of the CPU DAI
+ 
++      link-name:
++        description: Indicates dai-link name and PCM stream name.
++        $ref: /schemas/types.yaml#/definitions/string
++        maxItems: 1
++
+     patternProperties:
+       "^codec(-[0-9]+)?$":
+         type: object
+@@ -89,6 +94,7 @@ examples:
+ 
+         dai-link-0 {
+                sound-dai = <&i2s_fifo>;
++               link-name = "speaker";
+         };
+ 
+         dai-link-1 {
 -- 
 2.34.1
 
