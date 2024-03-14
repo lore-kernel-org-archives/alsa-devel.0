@@ -4,64 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EC9F9C54E66
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Mar 2024 08:43:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 52DF9C54E66
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Mar 2024 08:43:51 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 31E2B218C;
-	Fri, 15 Mar 2024 09:43:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 31E2B218C
+	by alsa0.perex.cz (Postfix) with ESMTPS id C3ECE210E;
+	Fri, 15 Mar 2024 09:43:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C3ECE210E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1710492223;
-	bh=/RnznKU33/L03MF4VCC+cflkWrgwlP2A4Zdxk9pvLNQ=;
+	s=default; t=1710492229;
+	bh=ULTZgz7wemJg/2kZYe2i3hPuq8ZAwSs1+YjpciWGnDI=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=sqwtMz6POkOwlQfxmd9uemq0AO1750u5r0Q9YyUmRBlDoQ87Cfm0dJ4n1estPs5TD
-	 DYFz9h/bTQU3xJUzTzocMumACv51iTTZuLIQXoidGBkyM+ZbueZTcK0gq4KStsSrI1
-	 SlwUukRMz1WjxutyobpOHyhd7ex3081gEFTBasiY=
+	b=LlCjNhr+Glx8mg8KZHqgG84JNugcTA7vVpxltWroq1d2qyc+HhtGjHOJYBtA2sPY9
+	 TL0lgZcEUjy5ckspTfS1EMTjsp7r94mPmafShQT/942S87grUnfadaEctoeqMs/L09
+	 rjw7YNraU36MqFJrOwWHqTvpGaW4CH0FuukkWfLM=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0B2BCF804E7; Fri, 15 Mar 2024 09:40:30 +0100 (CET)
+	id 2E324F805F1; Fri, 15 Mar 2024 09:40:16 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 91AE7F8060E;
-	Fri, 15 Mar 2024 09:40:29 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6D0A8F805F6;
+	Fri, 15 Mar 2024 09:40:15 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6A494F80580; Fri, 15 Mar 2024 00:23:12 +0100 (CET)
-Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
+	id EA86EF80578; Fri, 15 Mar 2024 00:23:11 +0100 (CET)
+Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 52893F8057E
-	for <alsa-devel@alsa-project.org>; Fri, 15 Mar 2024 00:23:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 52893F8057E
+	by alsa1.perex.cz (Postfix) with ESMTPS id 3738FF8057B
+	for <alsa-devel@alsa-project.org>; Fri, 15 Mar 2024 00:23:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3738FF8057B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=salutedevices.com header.i=@salutedevices.com
- header.a=rsa-sha256 header.s=mail header.b=dx5X71Xu
-Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id 95CF1120015;
-	Fri, 15 Mar 2024 02:23:07 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 95CF1120015
+ header.a=rsa-sha256 header.s=mail header.b=a+wSfL0H
+Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
+	by mx1.sberdevices.ru (Postfix) with ESMTP id 726F7100018;
+	Fri, 15 Mar 2024 02:23:06 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 726F7100018
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-	s=mail; t=1710458587;
-	bh=ZdrA0foYPUX7l+X7zTwiNorgDt1IrMSTCKBa1q4G4Ww=;
+	s=mail; t=1710458586;
+	bh=Pr8V4mkPI24+3PnszozIdpHRsk1mgCHgXbW1+J/O23s=;
 	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-	b=dx5X71XunFOBx/jyJN73MCPnLI+BARQWKQAg9T+oXW2WAEt7t2VbpvMN4SoOLMqOL
-	 V6+g6D2jHc+qT/xGKP6Hn0mTWJZEoAoO8KkPzMNSfGJ0CUI3eEIK2hunyiWVSr/Mow
-	 8bR+CM2g0hPljbffm9WsQzvfLnOkPGQaFXg1exaqAKypWFd6IlkeuQ3KM/TqHDZYM1
-	 5kEFd2owVxNelooshQAEPJfIXeAYXVT6YOGvyJ6iMNIkL/bJBPOo5ovzY45iylSjKQ
-	 PPwj8YuIdrHQtHAs3vF/ONI3yuUETxyWB7DNb0dMXKq421LWxQUwHQFI07ENw7KBHo
-	 gcsX3dSZEynoQ==
+	b=a+wSfL0HD9f9w9gX2BSNJKN1ZDzuhbSZymkpnkGK8a7juHZpfsOV7ELJUkTufLXcB
+	 vnIsstkqyjBdcR2vJiGJfexqHsDM5MsMnZXfdvxG9fmG2U2TQYwl+fs6h83UFZ8DdZ
+	 V0/BLUKdDoCeS3qVy0kgGMZbDEymVCL2a4cEgTm1Loo6wO1dNCOvu4HnOo9Y2JxxQD
+	 WHWpWsFkRAjZnNrnMxUVfEFmIFYIP93e74qrD8ppRLTinXL2hNeqYnBTfhxx6VCa3s
+	 N7v7K3n4UkAf9D19sJJob+6m9QP6KWMGDDs3sTh4yM2sGUfHBZgS8BU9L66VtbZssp
+	 eCIg56PeOQNZw==
 Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru
  [172.16.192.103])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
 	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Fri, 15 Mar 2024 02:23:07 +0300 (MSK)
+	Fri, 15 Mar 2024 02:23:06 +0300 (MSK)
 Received: from CAB-WSD-0003115.sberdevices.ru (100.64.160.123) by
  p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Fri, 15 Mar 2024 02:23:07 +0300
+ 15.2.1118.40; Fri, 15 Mar 2024 02:23:05 +0300
 From: Jan Dakinevich <jan.dakinevich@salutedevices.com>
 To: Jan Dakinevich <jan.dakinevich@salutedevices.com>, Neil Armstrong
 	<neil.armstrong@linaro.org>, Jerome Brunet <jbrunet@baylibre.com>, Michael
@@ -78,10 +78,10 @@ To: Jan Dakinevich <jan.dakinevich@salutedevices.com>, Neil Armstrong
 	<alsa-devel@alsa-project.org>, <linux-sound@vger.kernel.org>,
 	<linux-gpio@vger.kernel.org>
 CC: <kernel@salutedevices.com>
-Subject: [PATCH 19/25] ASoC: dt-bindings: meson: axg-sound-card: claim support
- of A1 SoC family
-Date: Fri, 15 Mar 2024 02:21:55 +0300
-Message-ID: <20240314232201.2102178-20-jan.dakinevich@salutedevices.com>
+Subject: [PATCH 16/25] ASoC: dt-bindings: meson: meson-axg-audio-arb: claim
+ support of A1 SoC family
+Date: Fri, 15 Mar 2024 02:21:52 +0300
+Message-ID: <20240314232201.2102178-17-jan.dakinevich@salutedevices.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240314232201.2102178-1-jan.dakinevich@salutedevices.com>
 References: <20240314232201.2102178-1-jan.dakinevich@salutedevices.com>
@@ -118,15 +118,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: 2UUO7A3C4PHTXUD5BCBOYG3QSAYFG5PD
-X-Message-ID-Hash: 2UUO7A3C4PHTXUD5BCBOYG3QSAYFG5PD
+Message-ID-Hash: SOR4KZM27AWW3SHDA4JIIRRQHI2V6C3R
+X-Message-ID-Hash: SOR4KZM27AWW3SHDA4JIIRRQHI2V6C3R
 X-Mailman-Approved-At: Fri, 15 Mar 2024 08:36:43 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2UUO7A3C4PHTXUD5BCBOYG3QSAYFG5PD/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SOR4KZM27AWW3SHDA4JIIRRQHI2V6C3R/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -135,31 +135,35 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add "amlogic,a1-sound-card" compatible string alias to
-"amlogic,axg-sound-card".
+Add "amlogic,meson-a1-audio-arb" compatible string alias to
+"amlogic,meson-sm1-audio-arb".
 
 Signed-off-by: Jan Dakinevich <jan.dakinevich@salutedevices.com>
 ---
- .../devicetree/bindings/sound/amlogic,axg-sound-card.yaml   | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ .../bindings/reset/amlogic,meson-axg-audio-arb.yaml    | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/amlogic,axg-sound-card.yaml b/Documentation/devicetree/bindings/sound/amlogic,axg-sound-card.yaml
-index 5db718e4d0e7..492b41cc8ccd 100644
---- a/Documentation/devicetree/bindings/sound/amlogic,axg-sound-card.yaml
-+++ b/Documentation/devicetree/bindings/sound/amlogic,axg-sound-card.yaml
-@@ -14,7 +14,11 @@ allOf:
+diff --git a/Documentation/devicetree/bindings/reset/amlogic,meson-axg-audio-arb.yaml b/Documentation/devicetree/bindings/reset/amlogic,meson-axg-audio-arb.yaml
+index bc1d284785e1..57e977db029f 100644
+--- a/Documentation/devicetree/bindings/reset/amlogic,meson-axg-audio-arb.yaml
++++ b/Documentation/devicetree/bindings/reset/amlogic,meson-axg-audio-arb.yaml
+@@ -15,9 +15,13 @@ description: The Amlogic Audio ARB is a simple device which enables or disables
  
  properties:
    compatible:
--    const: amlogic,axg-sound-card
+-    enum:
+-      - amlogic,meson-axg-audio-arb
+-      - amlogic,meson-sm1-audio-arb
 +    oneOf:
-+      - const: amlogic,axg-sound-card
++      - enum:
++          - amlogic,meson-axg-audio-arb
++          - amlogic,meson-sm1-audio-arb
 +      - items:
-+          - const: amlogic,a1-sound-card
-+          - const: amlogic,axg-sound-card
++          - const: amlogic,meson-a1-audio-arb
++          - const: amlogic,meson-sm1-audio-arb
  
-   audio-aux-devs:
-     $ref: /schemas/types.yaml#/definitions/phandle-array
+   reg:
+     maxItems: 1
 -- 
 2.34.1
 
