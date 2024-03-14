@@ -4,64 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 718A4C54E66
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Mar 2024 08:40:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 65C3DC54E58
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Mar 2024 08:40:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CB874192C;
-	Fri, 15 Mar 2024 09:40:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CB874192C
+	by alsa0.perex.cz (Postfix) with ESMTPS id CC3501944;
+	Fri, 15 Mar 2024 09:40:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CC3501944
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1710492039;
-	bh=QgV+Xw9NbQEO6idqHDJtYJNVbDwVxFgW0gvsSbHMu8Q=;
+	s=default; t=1710492041;
+	bh=FsNb0LecDwWhW+ShYdEvV5hEarU+koJuSLwJ7xHKTCw=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=KKhr/8NkQOfUCHRvF8tB6pLaroNWYzkOKd+OHyd4jWczl4t22mmwSakolWllU8tvp
-	 kAFWIjsIBsdyKVrudgLyvRzMk1bqOG/OUOMuXVEfcgXgCG9o32rhwev6bLhm5wvgq5
-	 BJrwAH7IJr4D4el6nj0CPW1fRBzdVq+ADAJ4L26M=
+	b=U1py0XYn5j5b7jgmms1qokoMW21GWqX4xOUqAjo4Eos4oL1+ljX7jletLFl3JjBP3
+	 zolS1RIPeAOYF4qOZ6Moth0CeKvyL6RCSrXq2Slmoe3LZVKevgEJKY7Ftnf1r0hEaL
+	 GeG7YjhaJiAphdtdY6EJrdKlEimakEw8N3WmPvzE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 18902F8063D; Fri, 15 Mar 2024 09:39:27 +0100 (CET)
+	id DA7B6F8067A; Fri, 15 Mar 2024 09:39:22 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E4F97F805A9;
-	Fri, 15 Mar 2024 09:39:26 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D0D53F80640;
+	Fri, 15 Mar 2024 09:39:21 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 82005F8057D; Fri, 15 Mar 2024 00:23:08 +0100 (CET)
-Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
+	id EEEAAF8057C; Fri, 15 Mar 2024 00:23:07 +0100 (CET)
+Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 39A52F8028D
-	for <alsa-devel@alsa-project.org>; Fri, 15 Mar 2024 00:23:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 39A52F8028D
+	by alsa1.perex.cz (Postfix) with ESMTPS id 2C894F804B0
+	for <alsa-devel@alsa-project.org>; Fri, 15 Mar 2024 00:23:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2C894F804B0
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=salutedevices.com header.i=@salutedevices.com
- header.a=rsa-sha256 header.s=mail header.b=olAfs4U+
-Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id 2C36110000F;
-	Fri, 15 Mar 2024 02:23:01 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 2C36110000F
+ header.a=rsa-sha256 header.s=mail header.b=QhXDvEmL
+Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
+	by mx1.sberdevices.ru (Postfix) with ESMTP id 4EF5312000B;
+	Fri, 15 Mar 2024 02:23:02 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 4EF5312000B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-	s=mail; t=1710458581;
-	bh=gLbD9tc2pn1QeC2j87RMdeV5jO49713zgVqzzHkHt5E=;
+	s=mail; t=1710458582;
+	bh=7Ktg/I6qGntShD8ifBiHrTIM9U/dVEP9EA69vHVTqk0=;
 	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-	b=olAfs4U+XHSt8Jjd8Kt9sbP4C31rhs/GCY26OiVHdADa4Y7Yp2XPE0JKjjsd9lW6v
-	 0cKI4H9dXCsXKID7URpBSBeYnTuS32Ueu5oVaUM5/dzdYScIhPKj2WkVZT7EYkEt9r
-	 I29pzstQtiDxer98h7IzQDdZcuVt57HKUu/eAukhxAZVCX2SOD76x3NTz06BFeFwR7
-	 RVvEljeL67R7hbxAOX9BtnzOQPd8S/XntJr3dNVx6xShjJrttCn1fGVg0oiQkhV0vu
-	 BcATVRWw3lAOtQ+tUOVXGMTiEQ+O1vHTO7hxkDCGqsWCyWwucLDfu7BQTi/OCQFwks
-	 RZL3jDyEKIsJw==
+	b=QhXDvEmL1/rC3e27KMnsCuaES4ctes2HeDvgOWEANyT25X/Lgjp5bMG/lxgRi8XqR
+	 gVbS+r1EFmkz7+CJxEoHx2VZ/T8Mg3PcAgh+N56B5lMqQ6BaQnWCKQoSks/oU7v6KU
+	 oaNVXzmx8X7CcWzR06MPygdvK4pMg9bmvWC+0PKmJdc0Ye+fidClXX8k4KUfIg4TLl
+	 07LvUNCfkXKCepohgLwKW/KXjf7g0qFpg7tZmaQKp1HQbaLSXBWkPGqp1FyLYhpD+0
+	 V1755xumzTWyqP0wGJ118Vk2odsWZkg/cIU9rVwrJz+Wvh3O/DOTnP2YEPXdn1Eno7
+	 87be5baTtKHAQ==
 Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru
  [172.16.192.103])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
 	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Fri, 15 Mar 2024 02:23:01 +0300 (MSK)
+	Fri, 15 Mar 2024 02:23:02 +0300 (MSK)
 Received: from CAB-WSD-0003115.sberdevices.ru (100.64.160.123) by
  p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Fri, 15 Mar 2024 02:23:00 +0300
+ 15.2.1118.40; Fri, 15 Mar 2024 02:23:01 +0300
 From: Jan Dakinevich <jan.dakinevich@salutedevices.com>
 To: Jan Dakinevich <jan.dakinevich@salutedevices.com>, Neil Armstrong
 	<neil.armstrong@linaro.org>, Jerome Brunet <jbrunet@baylibre.com>, Michael
@@ -78,10 +78,9 @@ To: Jan Dakinevich <jan.dakinevich@salutedevices.com>, Neil Armstrong
 	<alsa-devel@alsa-project.org>, <linux-sound@vger.kernel.org>,
 	<linux-gpio@vger.kernel.org>
 CC: <kernel@salutedevices.com>
-Subject: [PATCH 02/25] clk: meson: axg: move reset controller's code to
- separate module
-Date: Fri, 15 Mar 2024 02:21:38 +0300
-Message-ID: <20240314232201.2102178-3-jan.dakinevich@salutedevices.com>
+Subject: [PATCH 05/25] ASoC: meson: codec-glue: add support for capture stream
+Date: Fri, 15 Mar 2024 02:21:41 +0300
+Message-ID: <20240314232201.2102178-6-jan.dakinevich@salutedevices.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240314232201.2102178-1-jan.dakinevich@salutedevices.com>
 References: <20240314232201.2102178-1-jan.dakinevich@salutedevices.com>
@@ -118,15 +117,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: V32FTDYFNUIQYX5SRYI6CQ2CU3CSRRNN
-X-Message-ID-Hash: V32FTDYFNUIQYX5SRYI6CQ2CU3CSRRNN
-X-Mailman-Approved-At: Fri, 15 Mar 2024 08:36:33 +0000
+Message-ID-Hash: 5OJHXZAVWY2RIYUEX5IZRMKMJP4OW5UT
+X-Message-ID-Hash: 5OJHXZAVWY2RIYUEX5IZRMKMJP4OW5UT
+X-Mailman-Approved-At: Fri, 15 Mar 2024 08:36:32 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/V32FTDYFNUIQYX5SRYI6CQ2CU3CSRRNN/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5OJHXZAVWY2RIYUEX5IZRMKMJP4OW5UT/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -135,317 +134,336 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-This code will by reused by A1 SoC.
+---- >8 ----
+Hope, I haven't misinterpreted the terminology and codec-glue's behavior
+too much.
+---- >8 ----
+
+The glue saves stream's private data in front-end dai and then backend
+dai can reach them searching backward from sink to source. For capture
+stream everything left the same, but searching should be performed from
+source to sink.
 
 Signed-off-by: Jan Dakinevich <jan.dakinevich@salutedevices.com>
 ---
- drivers/clk/meson/Kconfig            |   5 ++
- drivers/clk/meson/Makefile           |   1 +
- drivers/clk/meson/axg-audio.c        |  95 +----------------------
- drivers/clk/meson/meson-audio-rstc.c | 109 +++++++++++++++++++++++++++
- drivers/clk/meson/meson-audio-rstc.h |  12 +++
- 5 files changed, 130 insertions(+), 92 deletions(-)
- create mode 100644 drivers/clk/meson/meson-audio-rstc.c
- create mode 100644 drivers/clk/meson/meson-audio-rstc.h
+ sound/soc/meson/meson-codec-glue.c | 174 ++++++++++++++++++++++-------
+ sound/soc/meson/meson-codec-glue.h |  23 ++++
+ 2 files changed, 158 insertions(+), 39 deletions(-)
 
-diff --git a/drivers/clk/meson/Kconfig b/drivers/clk/meson/Kconfig
-index 29ffd14d267b..d6a2fa5f7e88 100644
---- a/drivers/clk/meson/Kconfig
-+++ b/drivers/clk/meson/Kconfig
-@@ -48,6 +48,10 @@ config COMMON_CLK_MESON_CPU_DYNDIV
- 	tristate
- 	select COMMON_CLK_MESON_REGMAP
+diff --git a/sound/soc/meson/meson-codec-glue.c b/sound/soc/meson/meson-codec-glue.c
+index f8c5643f3cfe..da6d65e58d90 100644
+--- a/sound/soc/meson/meson-codec-glue.c
++++ b/sound/soc/meson/meson-codec-glue.c
+@@ -11,65 +11,94 @@
+ #include "meson-codec-glue.h"
  
-+config COMMON_CLK_MESON_AUDIO_RSTC
-+	tristate
-+	select RESET_CONTROLLER
-+
- config COMMON_CLK_MESON8B
- 	bool "Meson8 SoC Clock controller support"
- 	depends on ARM
-@@ -101,6 +105,7 @@ config COMMON_CLK_AXG_AUDIO
- 	select COMMON_CLK_MESON_PHASE
- 	select COMMON_CLK_MESON_SCLK_DIV
- 	select COMMON_CLK_MESON_CLKC_UTILS
-+	select COMMON_CLK_MESON_AUDIO_RSTC
- 	select REGMAP_MMIO
- 	help
- 	  Support for the audio clock controller on AmLogic A113D devices,
-diff --git a/drivers/clk/meson/Makefile b/drivers/clk/meson/Makefile
-index 9ee4b954c896..88d94921a4dc 100644
---- a/drivers/clk/meson/Makefile
-+++ b/drivers/clk/meson/Makefile
-@@ -12,6 +12,7 @@ obj-$(CONFIG_COMMON_CLK_MESON_PLL) += clk-pll.o
- obj-$(CONFIG_COMMON_CLK_MESON_REGMAP) += clk-regmap.o
- obj-$(CONFIG_COMMON_CLK_MESON_SCLK_DIV) += sclk-div.o
- obj-$(CONFIG_COMMON_CLK_MESON_VID_PLL_DIV) += vid-pll-div.o
-+obj-$(CONFIG_COMMON_CLK_MESON_AUDIO_RSTC) += meson-audio-rstc.o
- 
- # Amlogic Clock controllers
- 
-diff --git a/drivers/clk/meson/axg-audio.c b/drivers/clk/meson/axg-audio.c
-index ac3482960903..990203a7ad5c 100644
---- a/drivers/clk/meson/axg-audio.c
-+++ b/drivers/clk/meson/axg-audio.c
-@@ -12,10 +12,10 @@
- #include <linux/platform_device.h>
- #include <linux/regmap.h>
- #include <linux/reset.h>
--#include <linux/reset-controller.h>
- #include <linux/slab.h>
- 
- #include "meson-clkc-utils.h"
-+#include "meson-audio-rstc.h"
- #include "axg-audio.h"
- #include "clk-regmap.h"
- #include "clk-phase.h"
-@@ -1648,84 +1648,6 @@ static struct clk_regmap *const sm1_clk_regmaps[] = {
- 	&sm1_sysclk_b_en,
- };
- 
--struct axg_audio_reset_data {
--	struct reset_controller_dev rstc;
--	struct regmap *map;
--	unsigned int offset;
--};
--
--static void axg_audio_reset_reg_and_bit(struct axg_audio_reset_data *rst,
--					unsigned long id,
--					unsigned int *reg,
--					unsigned int *bit)
--{
--	unsigned int stride = regmap_get_reg_stride(rst->map);
--
--	*reg = (id / (stride * BITS_PER_BYTE)) * stride;
--	*reg += rst->offset;
--	*bit = id % (stride * BITS_PER_BYTE);
--}
--
--static int axg_audio_reset_update(struct reset_controller_dev *rcdev,
--				unsigned long id, bool assert)
--{
--	struct axg_audio_reset_data *rst =
--		container_of(rcdev, struct axg_audio_reset_data, rstc);
--	unsigned int offset, bit;
--
--	axg_audio_reset_reg_and_bit(rst, id, &offset, &bit);
--
--	regmap_update_bits(rst->map, offset, BIT(bit),
--			assert ? BIT(bit) : 0);
--
--	return 0;
--}
--
--static int axg_audio_reset_status(struct reset_controller_dev *rcdev,
--				unsigned long id)
--{
--	struct axg_audio_reset_data *rst =
--		container_of(rcdev, struct axg_audio_reset_data, rstc);
--	unsigned int val, offset, bit;
--
--	axg_audio_reset_reg_and_bit(rst, id, &offset, &bit);
--
--	regmap_read(rst->map, offset, &val);
--
--	return !!(val & BIT(bit));
--}
--
--static int axg_audio_reset_assert(struct reset_controller_dev *rcdev,
--				unsigned long id)
--{
--	return axg_audio_reset_update(rcdev, id, true);
--}
--
--static int axg_audio_reset_deassert(struct reset_controller_dev *rcdev,
--				unsigned long id)
--{
--	return axg_audio_reset_update(rcdev, id, false);
--}
--
--static int axg_audio_reset_toggle(struct reset_controller_dev *rcdev,
--				unsigned long id)
--{
--	int ret;
--
--	ret = axg_audio_reset_assert(rcdev, id);
--	if (ret)
--		return ret;
--
--	return axg_audio_reset_deassert(rcdev, id);
--}
--
--static const struct reset_control_ops axg_audio_rstc_ops = {
--	.assert = axg_audio_reset_assert,
--	.deassert = axg_audio_reset_deassert,
--	.reset = axg_audio_reset_toggle,
--	.status = axg_audio_reset_status,
--};
--
- static const struct regmap_config axg_audio_regmap_cfg = {
- 	.reg_bits	= 32,
- 	.val_bits	= 32,
-@@ -1745,7 +1667,6 @@ static int axg_audio_clkc_probe(struct platform_device *pdev)
+ static struct snd_soc_dapm_widget *
+-meson_codec_glue_get_input(struct snd_soc_dapm_widget *w)
++meson_codec_glue_get_data_widget(struct snd_soc_dapm_widget *w, bool playback)
  {
- 	struct device *dev = &pdev->dev;
- 	const struct audioclk_data *data;
--	struct axg_audio_reset_data *rst;
- 	struct regmap *map;
- 	void __iomem *regs;
- 	struct clk_hw *hw;
-@@ -1807,18 +1728,8 @@ static int axg_audio_clkc_probe(struct platform_device *pdev)
- 	if (!data->reset_num)
- 		return 0;
+ 	struct snd_soc_dapm_path *p;
+-	struct snd_soc_dapm_widget *in;
+-
+-	snd_soc_dapm_widget_for_each_source_path(w, p) {
++	struct snd_soc_dapm_widget *node;
++	enum snd_soc_dapm_type id = playback ? snd_soc_dapm_dai_in
++					     : snd_soc_dapm_dai_out;
++	enum snd_soc_dapm_direction dir = playback ? SND_SOC_DAPM_DIR_IN
++						   : SND_SOC_DAPM_DIR_OUT;
++	enum snd_soc_dapm_direction rdir = playback ? SND_SOC_DAPM_DIR_OUT
++						    : SND_SOC_DAPM_DIR_IN;
++
++	snd_soc_dapm_widget_for_each_path(w, rdir, p) {
+ 		if (!p->connect)
+ 			continue;
  
--	rst = devm_kzalloc(dev, sizeof(*rst), GFP_KERNEL);
--	if (!rst)
--		return -ENOMEM;
--
--	rst->map = map;
--	rst->offset = data->reset_offset;
--	rst->rstc.nr_resets = data->reset_num;
--	rst->rstc.ops = &axg_audio_rstc_ops;
--	rst->rstc.of_node = dev->of_node;
--	rst->rstc.owner = THIS_MODULE;
--
--	return devm_reset_controller_register(dev, &rst->rstc);
-+	return meson_audio_rstc_register(dev, map, data->reset_offset,
-+					 data->reset_num);
+ 		/* Check that we still are in the same component */
+ 		if (snd_soc_dapm_to_component(w->dapm) !=
+-		    snd_soc_dapm_to_component(p->source->dapm))
++		    snd_soc_dapm_to_component(p->node[dir]->dapm))
+ 			continue;
+ 
+-		if (p->source->id == snd_soc_dapm_dai_in)
+-			return p->source;
++		if (p->node[dir]->id == id)
++			return p->node[dir];
+ 
+-		in = meson_codec_glue_get_input(p->source);
+-		if (in)
+-			return in;
++		node = meson_codec_glue_get_data_widget(p->node[dir], playback);
++		if (node)
++			return node;
+ 	}
+ 
+ 	return NULL;
  }
  
- static const struct audioclk_data axg_audioclk_data = {
-diff --git a/drivers/clk/meson/meson-audio-rstc.c b/drivers/clk/meson/meson-audio-rstc.c
-new file mode 100644
-index 000000000000..2079d24c40f4
---- /dev/null
-+++ b/drivers/clk/meson/meson-audio-rstc.c
-@@ -0,0 +1,109 @@
-+// SPDX-License-Identifier: (GPL-2.0 OR MIT)
+-static void meson_codec_glue_input_set_data(struct snd_soc_dai *dai,
+-					    struct meson_codec_glue_input *data)
++static void meson_codec_glue_set_data(struct snd_soc_dai *dai,
++				      struct meson_codec_glue_input *data,
++				      bool playback)
++{
++	int stream = playback ? SNDRV_PCM_STREAM_PLAYBACK
++			      : SNDRV_PCM_STREAM_CAPTURE;
++
++	snd_soc_dai_dma_data_set(dai, stream, data);
++}
++
++static struct meson_codec_glue_input *
++meson_codec_glue_get_data(struct snd_soc_dai *dai, bool playback)
+ {
+-	snd_soc_dai_dma_data_set_playback(dai, data);
++	int stream = playback ? SNDRV_PCM_STREAM_PLAYBACK
++			      : SNDRV_PCM_STREAM_CAPTURE;
++
++	return snd_soc_dai_dma_data_get(dai, stream);
+ }
+ 
+ struct meson_codec_glue_input *
+ meson_codec_glue_input_get_data(struct snd_soc_dai *dai)
+ {
+-	return snd_soc_dai_dma_data_get_playback(dai);
++	return meson_codec_glue_get_data(dai, true);
+ }
+ EXPORT_SYMBOL_GPL(meson_codec_glue_input_get_data);
+ 
++struct meson_codec_glue_input *
++meson_codec_glue_capture_output_get_data(struct snd_soc_dai *dai)
++{
++	return meson_codec_glue_get_data(dai, false);
++}
++EXPORT_SYMBOL_GPL(meson_codec_glue_capture_output_get_data);
++
+ static struct meson_codec_glue_input *
+-meson_codec_glue_output_get_input_data(struct snd_soc_dapm_widget *w)
++meson_codec_glue_data(struct snd_soc_dapm_widget *w, bool playback)
+ {
+-	struct snd_soc_dapm_widget *in =
+-		meson_codec_glue_get_input(w);
++	struct snd_soc_dapm_widget *node =
++		meson_codec_glue_get_data_widget(w, playback);
+ 	struct snd_soc_dai *dai;
+ 
+-	if (WARN_ON(!in))
++	if (WARN_ON(!node))
+ 		return NULL;
+ 
+-	dai = in->priv;
++	dai = node->priv;
+ 
+-	return meson_codec_glue_input_get_data(dai);
++	return meson_codec_glue_get_data(dai, playback);
+ }
+ 
+-int meson_codec_glue_input_hw_params(struct snd_pcm_substream *substream,
+-				     struct snd_pcm_hw_params *params,
+-				     struct snd_soc_dai *dai)
++static int meson_codec_glue_hw_params(struct snd_pcm_substream *substream,
++				      struct snd_pcm_hw_params *params,
++				      struct snd_soc_dai *dai,
++				      bool playback)
+ {
+ 	struct meson_codec_glue_input *data =
+-		meson_codec_glue_input_get_data(dai);
++		meson_codec_glue_get_data(dai, playback);
++	struct snd_soc_pcm_stream *stream = playback ? &dai->driver->playback
++						     : &dai->driver->capture;
+ 
+ 	data->params.rates = snd_pcm_rate_to_rate_bit(params_rate(params));
+ 	data->params.rate_min = params_rate(params);
+@@ -77,32 +106,64 @@ int meson_codec_glue_input_hw_params(struct snd_pcm_substream *substream,
+ 	data->params.formats = 1ULL << (__force int) params_format(params);
+ 	data->params.channels_min = params_channels(params);
+ 	data->params.channels_max = params_channels(params);
+-	data->params.sig_bits = dai->driver->playback.sig_bits;
++	data->params.sig_bits = stream->sig_bits;
+ 
+ 	return 0;
+ }
++
++int meson_codec_glue_input_hw_params(struct snd_pcm_substream *substream,
++				     struct snd_pcm_hw_params *params,
++				     struct snd_soc_dai *dai)
++{
++	return meson_codec_glue_hw_params(substream, params, dai, true);
++}
+ EXPORT_SYMBOL_GPL(meson_codec_glue_input_hw_params);
+ 
+-int meson_codec_glue_input_set_fmt(struct snd_soc_dai *dai,
+-				   unsigned int fmt)
++int meson_codec_glue_capture_output_hw_params(struct snd_pcm_substream *substream,
++				     struct snd_pcm_hw_params *params,
++				     struct snd_soc_dai *dai)
++{
++	return meson_codec_glue_hw_params(substream, params, dai, false);
++}
++EXPORT_SYMBOL_GPL(meson_codec_glue_capture_output_hw_params);
++
++static int meson_codec_glue_set_fmt(struct snd_soc_dai *dai,
++				    unsigned int fmt,
++				    bool playback)
+ {
+ 	struct meson_codec_glue_input *data =
+-		meson_codec_glue_input_get_data(dai);
++		meson_codec_glue_get_data(dai, playback);
+ 
+ 	/* Save the source stream format for the downstream link */
+ 	data->fmt = fmt;
+ 	return 0;
+ }
++
++int meson_codec_glue_input_set_fmt(struct snd_soc_dai *dai,
++				   unsigned int fmt)
++{
++	return meson_codec_glue_set_fmt(dai, fmt, true);
++}
+ EXPORT_SYMBOL_GPL(meson_codec_glue_input_set_fmt);
+ 
+-int meson_codec_glue_output_startup(struct snd_pcm_substream *substream,
+-				    struct snd_soc_dai *dai)
++int meson_codec_glue_capture_output_set_fmt(struct snd_soc_dai *dai,
++				    unsigned int fmt)
++{
++	return meson_codec_glue_set_fmt(dai, fmt, false);
++}
++EXPORT_SYMBOL_GPL(meson_codec_glue_capture_output_set_fmt);
++
++static int meson_codec_glue_startup(struct snd_pcm_substream *substream,
++				    struct snd_soc_dai *dai,
++				    bool playback)
+ {
++	int stream = playback ? SNDRV_PCM_STREAM_CAPTURE
++			      : SNDRV_PCM_STREAM_PLAYBACK;
+ 	struct snd_soc_pcm_runtime *rtd = snd_soc_substream_to_rtd(substream);
+-	struct snd_soc_dapm_widget *w = snd_soc_dai_get_widget_capture(dai);
+-	struct meson_codec_glue_input *in_data = meson_codec_glue_output_get_input_data(w);
++	struct snd_soc_dapm_widget *w = snd_soc_dai_get_widget(dai, stream);
++	struct meson_codec_glue_input *data = meson_codec_glue_data(w, playback);
+ 
+-	if (!in_data)
++	if (!data)
+ 		return -ENODEV;
+ 
+ 	if (WARN_ON(!rtd->dai_link->c2c_params)) {
+@@ -111,14 +172,27 @@ int meson_codec_glue_output_startup(struct snd_pcm_substream *substream,
+ 	}
+ 
+ 	/* Replace link params with the input params */
+-	rtd->dai_link->c2c_params = &in_data->params;
++	rtd->dai_link->c2c_params = &data->params;
+ 	rtd->dai_link->num_c2c_params = 1;
+ 
+-	return snd_soc_runtime_set_dai_fmt(rtd, in_data->fmt);
++	return snd_soc_runtime_set_dai_fmt(rtd, data->fmt);
++}
++
++int meson_codec_glue_output_startup(struct snd_pcm_substream *substream,
++				    struct snd_soc_dai *dai)
++{
++	return meson_codec_glue_startup(substream, dai, true);
+ }
+ EXPORT_SYMBOL_GPL(meson_codec_glue_output_startup);
+ 
+-int meson_codec_glue_input_dai_probe(struct snd_soc_dai *dai)
++int meson_codec_glue_capture_input_startup(struct snd_pcm_substream *substream,
++				   struct snd_soc_dai *dai)
++{
++	return meson_codec_glue_startup(substream, dai, false);
++}
++EXPORT_SYMBOL_GPL(meson_codec_glue_capture_input_startup);
++
++static int meson_codec_glue_dai_probe(struct snd_soc_dai *dai, bool playback)
+ {
+ 	struct meson_codec_glue_input *data;
+ 
+@@ -126,21 +200,43 @@ int meson_codec_glue_input_dai_probe(struct snd_soc_dai *dai)
+ 	if (!data)
+ 		return -ENOMEM;
+ 
+-	meson_codec_glue_input_set_data(dai, data);
++	meson_codec_glue_set_data(dai, data, playback);
+ 	return 0;
+ }
++
++int meson_codec_glue_input_dai_probe(struct snd_soc_dai *dai)
++{
++	return meson_codec_glue_dai_probe(dai, true);
++}
+ EXPORT_SYMBOL_GPL(meson_codec_glue_input_dai_probe);
+ 
+-int meson_codec_glue_input_dai_remove(struct snd_soc_dai *dai)
++int meson_codec_glue_capture_output_dai_probe(struct snd_soc_dai *dai)
++{
++	return meson_codec_glue_dai_probe(dai, false);
++}
++EXPORT_SYMBOL_GPL(meson_codec_glue_capture_output_dai_probe);
++
++static int meson_codec_glue_dai_remove(struct snd_soc_dai *dai, bool playback)
+ {
+ 	struct meson_codec_glue_input *data =
+-		meson_codec_glue_input_get_data(dai);
++		meson_codec_glue_get_data(dai, playback);
+ 
+ 	kfree(data);
+ 	return 0;
+ }
++
++int meson_codec_glue_input_dai_remove(struct snd_soc_dai *dai)
++{
++	return meson_codec_glue_dai_remove(dai, true);
++}
+ EXPORT_SYMBOL_GPL(meson_codec_glue_input_dai_remove);
+ 
++int meson_codec_glue_capture_output_dai_remove(struct snd_soc_dai *dai)
++{
++	return meson_codec_glue_dai_remove(dai, false);
++}
++EXPORT_SYMBOL_GPL(meson_codec_glue_capture_output_dai_remove);
++
+ MODULE_AUTHOR("Jerome Brunet <jbrunet@baylibre.com>");
+ MODULE_DESCRIPTION("Amlogic Codec Glue Helpers");
+ MODULE_LICENSE("GPL v2");
+diff --git a/sound/soc/meson/meson-codec-glue.h b/sound/soc/meson/meson-codec-glue.h
+index 07f99446c0c6..75d20aa75638 100644
+--- a/sound/soc/meson/meson-codec-glue.h
++++ b/sound/soc/meson/meson-codec-glue.h
+@@ -14,6 +14,10 @@ struct meson_codec_glue_input {
+ 	unsigned int fmt;
+ };
+ 
 +/*
-+ * Copyright (c) 2018 BayLibre, SAS.
-+ * Author: Jerome Brunet <jbrunet@baylibre.com>
++ * Playback stream
 + */
 +
-+#include <linux/reset-controller.h>
+ /* Input helpers */
+ struct meson_codec_glue_input *
+ meson_codec_glue_input_get_data(struct snd_soc_dai *dai);
+@@ -29,4 +33,23 @@ int meson_codec_glue_input_dai_remove(struct snd_soc_dai *dai);
+ int meson_codec_glue_output_startup(struct snd_pcm_substream *substream,
+ 				    struct snd_soc_dai *dai);
+ 
++/*
++ * Capture stream
++ */
 +
-+#include "meson-audio-rstc.h"
++/* Output helpers */
++struct meson_codec_glue_input *
++meson_codec_glue_capture_output_get_data(struct snd_soc_dai *dai);
++int meson_codec_glue_capture_output_hw_params(struct snd_pcm_substream *substream,
++					      struct snd_pcm_hw_params *params,
++					      struct snd_soc_dai *dai);
++int meson_codec_glue_capture_output_set_fmt(struct snd_soc_dai *dai,
++					    unsigned int fmt);
++int meson_codec_glue_capture_output_dai_probe(struct snd_soc_dai *dai);
++int meson_codec_glue_capture_output_dai_remove(struct snd_soc_dai *dai);
 +
-+struct meson_audio_reset_data {
-+	struct reset_controller_dev rstc;
-+	struct regmap *map;
-+	unsigned int offset;
-+};
++/* Input helpers */
++int meson_codec_glue_capture_input_startup(struct snd_pcm_substream *substream,
++					   struct snd_soc_dai *dai);
 +
-+static void meson_audio_reset_reg_and_bit(struct meson_audio_reset_data *rst,
-+					  unsigned long id,
-+					  unsigned int *reg,
-+					  unsigned int *bit)
-+{
-+	unsigned int stride = regmap_get_reg_stride(rst->map);
-+
-+	*reg = (id / (stride * BITS_PER_BYTE)) * stride;
-+	*reg += rst->offset;
-+	*bit = id % (stride * BITS_PER_BYTE);
-+}
-+
-+static int meson_audio_reset_update(struct reset_controller_dev *rcdev,
-+				    unsigned long id, bool assert)
-+{
-+	struct meson_audio_reset_data *rst =
-+		container_of(rcdev, struct meson_audio_reset_data, rstc);
-+	unsigned int offset, bit;
-+
-+	meson_audio_reset_reg_and_bit(rst, id, &offset, &bit);
-+
-+	regmap_update_bits(rst->map, offset, BIT(bit),
-+			assert ? BIT(bit) : 0);
-+
-+	return 0;
-+}
-+
-+static int meson_audio_reset_status(struct reset_controller_dev *rcdev,
-+				    unsigned long id)
-+{
-+	struct meson_audio_reset_data *rst =
-+		container_of(rcdev, struct meson_audio_reset_data, rstc);
-+	unsigned int val, offset, bit;
-+
-+	meson_audio_reset_reg_and_bit(rst, id, &offset, &bit);
-+
-+	regmap_read(rst->map, offset, &val);
-+
-+	return !!(val & BIT(bit));
-+}
-+
-+static int meson_audio_reset_assert(struct reset_controller_dev *rcdev,
-+				    unsigned long id)
-+{
-+	return meson_audio_reset_update(rcdev, id, true);
-+}
-+
-+static int meson_audio_reset_deassert(struct reset_controller_dev *rcdev,
-+				      unsigned long id)
-+{
-+	return meson_audio_reset_update(rcdev, id, false);
-+}
-+
-+static int meson_audio_reset_toggle(struct reset_controller_dev *rcdev,
-+				    unsigned long id)
-+{
-+	int ret;
-+
-+	ret = meson_audio_reset_assert(rcdev, id);
-+	if (ret)
-+		return ret;
-+
-+	return meson_audio_reset_deassert(rcdev, id);
-+}
-+
-+static const struct reset_control_ops meson_audio_rstc_ops = {
-+	.assert = meson_audio_reset_assert,
-+	.deassert = meson_audio_reset_deassert,
-+	.reset = meson_audio_reset_toggle,
-+	.status = meson_audio_reset_status,
-+};
-+
-+int meson_audio_rstc_register(struct device *dev, struct regmap *map,
-+			      unsigned int offset, unsigned int num)
-+{
-+	struct meson_audio_reset_data *rst;
-+
-+	rst = devm_kzalloc(dev, sizeof(*rst), GFP_KERNEL);
-+	if (!rst)
-+		return -ENOMEM;
-+
-+	rst->map = map;
-+	rst->offset = offset;
-+	rst->rstc.nr_resets = num;
-+	rst->rstc.ops = &meson_audio_rstc_ops;
-+	rst->rstc.of_node = dev->of_node;
-+	rst->rstc.owner = THIS_MODULE;
-+
-+	return devm_reset_controller_register(dev, &rst->rstc);
-+}
-+EXPORT_SYMBOL_GPL(meson_audio_rstc_register);
-+
-+MODULE_LICENSE("GPL v2");
-diff --git a/drivers/clk/meson/meson-audio-rstc.h b/drivers/clk/meson/meson-audio-rstc.h
-new file mode 100644
-index 000000000000..6b441549de03
---- /dev/null
-+++ b/drivers/clk/meson/meson-audio-rstc.h
-@@ -0,0 +1,12 @@
-+/* SPDX-License-Identifier: (GPL-2.0 OR MIT) */
-+
-+#ifndef __MESON_AUDIO_RSTC_H
-+#define __MESON_AUDIO_RSTC_H
-+
-+#include <linux/device.h>
-+#include <linux/regmap.h>
-+
-+int meson_audio_rstc_register(struct device *dev, struct regmap *map,
-+			      unsigned int offset, unsigned int num);
-+
-+#endif /* __MESON_AUDIO_RSTC_H */
+ #endif /* _MESON_CODEC_GLUE_H */
 -- 
 2.34.1
 
