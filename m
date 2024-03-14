@@ -4,64 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B87DCC54E58
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Mar 2024 08:46:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 41466C54E58
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Mar 2024 08:46:05 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1D3C6231C;
-	Fri, 15 Mar 2024 09:45:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1D3C6231C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2AD8D2110;
+	Fri, 15 Mar 2024 09:45:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2AD8D2110
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1710492361;
-	bh=TY/FEYhqFh969ciLYcfm0iAfwLhssq1zr79rdix8om0=;
+	s=default; t=1710492363;
+	bh=Yt5zFOftrqT2wzEvoq7cia/KskA8mEKdbWcPzDasIGY=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=BxJmCcSzS16oBszSO/Kxp2pQxWvMhNbfrsfXx2gezM1rY1gaw421cBt/st81TH/vM
-	 pjdEs5MOsrgaTB/7JGxM5+1YrKzWbCcTTeqjvD6aFf0wGqQEdVVWpKPlAHGliesyIB
-	 kKtlM5E1zs4IsETjGYo+vRtrviLRy4Za3qJ8cxXk=
+	b=hE+xx1c2rgK4Ul5gqmk97XHf/AyOr8tahVHCT248ELyqvySoYYH0Qlf6nBwXnISEp
+	 QBJJgYmNiYNG08fEvfzWrLyo6a9gMKix9Vw9uqvcD1LKgXXVm9ZeRffRk9XNntGba2
+	 2BRpeVBRqg2K+zyc4URkalt9gCoUqP6ezTt1bSYY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 383F8F80C70; Fri, 15 Mar 2024 09:41:07 +0100 (CET)
+	id 6A5A1F80CC3; Fri, 15 Mar 2024 09:41:13 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5D38EF80CBC;
-	Fri, 15 Mar 2024 09:41:07 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C38D5F8062E;
+	Fri, 15 Mar 2024 09:41:12 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D2DDBF8057F; Fri, 15 Mar 2024 00:23:16 +0100 (CET)
+	id 95AE6F805AE; Fri, 15 Mar 2024 00:23:17 +0100 (CET)
 Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id EF36EF80571
-	for <alsa-devel@alsa-project.org>; Fri, 15 Mar 2024 00:23:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EF36EF80571
+	by alsa1.perex.cz (Postfix) with ESMTPS id ADC38F8025F
+	for <alsa-devel@alsa-project.org>; Fri, 15 Mar 2024 00:23:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ADC38F8025F
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=salutedevices.com header.i=@salutedevices.com
- header.a=rsa-sha256 header.s=mail header.b=O4MfZMzY
+ header.a=rsa-sha256 header.s=mail header.b=fbafMPha
 Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id 8295D12000E;
-	Fri, 15 Mar 2024 02:23:04 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 8295D12000E
+	by mx1.sberdevices.ru (Postfix) with ESMTP id 2626812000C;
+	Fri, 15 Mar 2024 02:23:03 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 2626812000C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-	s=mail; t=1710458584;
-	bh=MKV8dYg/6Fpl3cJydqZngZg7p1L9JdS0YLCOIXerNeo=;
+	s=mail; t=1710458583;
+	bh=CCvJrpEy8sCRXCr8dMiJp3FMH8ERqXOpfe0cLHeVGoc=;
 	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-	b=O4MfZMzYv+M3u9n7G1rmDQtlFIIaZ5K04MNTtTE7VQKgCp/fve7zjyOjllODWdmTA
-	 pwvGI/q3NDv7C32vI7KdXIL3WhGw+AfEjaIke7oLLCuJ7/IBn5jMxx6S4xtdOYdAbS
-	 s1bFmuptdbG65FNfYxdQ6NGY3Meg8r01CZe/FOJmp1tODBTnjOINHQBPgotGQiya70
-	 H+WxxYcGY9i+kOMK2BVt8cst1IBcPWJ9XrqCXFEXv9dD5UKEf4J1G6f4mcKQg41WP3
-	 AcSoJsiIxdYayNeGPrmCmLYtEoTJ18GiyCZI2yqDDONrjSM9wyJVYKpshlI6b+FqbC
-	 HAgMmOy5fiTQQ==
+	b=fbafMPhazDMHL8jLJUDMUBps9XXh6YqILIDeVkfRYxY4Kd3tiirAcAhWopKN5WZbg
+	 zvpCNbU2sDk3hvJ7UklbC/di83AlfNXI71dC1VHjvZweGx909EMhXKazjofpxsxzoc
+	 qJ3E6Amu1d0pcrcL7VVwO70Cgb10WM2+wkErXc2Lun5Md2iF2LUVz9gQ5l+Zv+rFXf
+	 vd/+utQUEQmC11h6xelNs2rLl2K9FaK9T8RS2JuwM9lYxxytjk4YaL+2pt+NAr0IIl
+	 tE8DBnDorVRb0zH91zidP3oOP3KPOy7lpa6IrAOiNJ6mZgD/6tgR2IQ9psAqCU3EZA
+	 Pv8Kd0tCDTsaA==
 Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru
  [172.16.192.103])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
 	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Fri, 15 Mar 2024 02:23:04 +0300 (MSK)
+	Fri, 15 Mar 2024 02:23:03 +0300 (MSK)
 Received: from CAB-WSD-0003115.sberdevices.ru (100.64.160.123) by
  p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Fri, 15 Mar 2024 02:23:03 +0300
+ 15.2.1118.40; Fri, 15 Mar 2024 02:23:02 +0300
 From: Jan Dakinevich <jan.dakinevich@salutedevices.com>
 To: Jan Dakinevich <jan.dakinevich@salutedevices.com>, Neil Armstrong
 	<neil.armstrong@linaro.org>, Jerome Brunet <jbrunet@baylibre.com>, Michael
@@ -78,10 +78,10 @@ To: Jan Dakinevich <jan.dakinevich@salutedevices.com>, Neil Armstrong
 	<alsa-devel@alsa-project.org>, <linux-sound@vger.kernel.org>,
 	<linux-gpio@vger.kernel.org>
 CC: <kernel@salutedevices.com>
-Subject: [PATCH 11/25] ASoC: dt-bindings: meson: t9015: add support for A1 SoC
- family
-Date: Fri, 15 Mar 2024 02:21:47 +0300
-Message-ID: <20240314232201.2102178-12-jan.dakinevich@salutedevices.com>
+Subject: [PATCH 07/25] ASoC: meson: g12a-toacodec: rework the definition of
+ bits
+Date: Fri, 15 Mar 2024 02:21:43 +0300
+Message-ID: <20240314232201.2102178-8-jan.dakinevich@salutedevices.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240314232201.2102178-1-jan.dakinevich@salutedevices.com>
 References: <20240314232201.2102178-1-jan.dakinevich@salutedevices.com>
@@ -118,15 +118,14 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: B4EUJCCX3ZG4N5IDCZCEXSD7Z5JGYW74
-X-Message-ID-Hash: B4EUJCCX3ZG4N5IDCZCEXSD7Z5JGYW74
+Message-ID-Hash: DLDQMKKQFGMLQANUPDVRIMEPKFOESGNE
+X-Message-ID-Hash: DLDQMKKQFGMLQANUPDVRIMEPKFOESGNE
 X-Mailman-Approved-At: Fri, 15 Mar 2024 08:36:51 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/B4EUJCCX3ZG4N5IDCZCEXSD7Z5JGYW74/>
+Archived-At: <>
 List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
@@ -134,28 +133,144 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add "amlogic,t9015-a1" compatible string.
+There is a lot of defines, but almost all of them are not used. Lets
+rework them:
+
+ - keep separate the definition for different platforms to make easier
+   checking that they match documentation.
+
+ - use LSB/MSB sufixes for uniformity.
+
+ - don't use hard-coded values for already declared defines.
 
 Signed-off-by: Jan Dakinevich <jan.dakinevich@salutedevices.com>
 ---
- Documentation/devicetree/bindings/sound/amlogic,t9015.yaml | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ sound/soc/meson/g12a-toacodec.c | 77 ++++++++++++++++++++-------------
+ 1 file changed, 47 insertions(+), 30 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/amlogic,t9015.yaml b/Documentation/devicetree/bindings/sound/amlogic,t9015.yaml
-index 5f5cccdbeb34..ee8bd57dbcf9 100644
---- a/Documentation/devicetree/bindings/sound/amlogic,t9015.yaml
-+++ b/Documentation/devicetree/bindings/sound/amlogic,t9015.yaml
-@@ -21,7 +21,9 @@ properties:
+diff --git a/sound/soc/meson/g12a-toacodec.c b/sound/soc/meson/g12a-toacodec.c
+index b92de2235627..325cf420fd69 100644
+--- a/sound/soc/meson/g12a-toacodec.c
++++ b/sound/soc/meson/g12a-toacodec.c
+@@ -20,26 +20,35 @@
+ #define G12A_TOACODEC_DRV_NAME "g12a-toacodec"
  
-   compatible:
-     items:
--      - const: amlogic,t9015
-+      - enum:
-+          - amlogic,t9015
-+          - amlogic,t9015-a1
+ #define TOACODEC_CTRL0			0x0
+-#define  CTRL0_ENABLE_SHIFT		31
+-#define  CTRL0_DAT_SEL_SM1_MSB		19
+-#define  CTRL0_DAT_SEL_SM1_LSB		18
+-#define  CTRL0_DAT_SEL_MSB		15
+-#define  CTRL0_DAT_SEL_LSB		14
+-#define  CTRL0_LANE_SEL_SM1		16
+-#define  CTRL0_LANE_SEL			12
+-#define  CTRL0_LRCLK_SEL_SM1_MSB	14
+-#define  CTRL0_LRCLK_SEL_SM1_LSB	12
+-#define  CTRL0_LRCLK_SEL_MSB		9
+-#define  CTRL0_LRCLK_SEL_LSB		8
+-#define  CTRL0_LRCLK_INV_SM1		BIT(10)
+-#define  CTRL0_BLK_CAP_INV_SM1		BIT(9)
+-#define  CTRL0_BLK_CAP_INV		BIT(7)
+-#define  CTRL0_BCLK_O_INV_SM1		BIT(8)
+-#define  CTRL0_BCLK_O_INV		BIT(6)
+-#define  CTRL0_BCLK_SEL_SM1_MSB		6
+-#define  CTRL0_BCLK_SEL_MSB		5
+-#define  CTRL0_BCLK_SEL_LSB		4
+-#define  CTRL0_MCLK_SEL			GENMASK(2, 0)
++
++/* Common bits */
++#define CTRL0_ENABLE_SHIFT		31
++#define CTRL0_MCLK_SEL			GENMASK(2, 0)
++
++/* G12A bits */
++#define CTRL0_DAT_SEL_G12A_MSB		15
++#define CTRL0_DAT_SEL_G12A_LSB		14
++#define CTRL0_LANE_SEL_G12A_MSB		13
++#define CTRL0_LANE_SEL_G12A_LSB		12
++#define CTRL0_LRCLK_SEL_G12A_MSB	9
++#define CTRL0_LRCLK_SEL_G12A_LSB	8
++#define CTRL0_BLK_CAP_INV_G12A		BIT(7)
++#define CTRL0_BCLK_O_INV_G12A		BIT(6)
++#define CTRL0_BCLK_SEL_G12A_MSB		5
++#define CTRL0_BCLK_SEL_G12A_LSB		4
++
++/* SM1 bits */
++#define CTRL0_DAT_SEL_SM1_MSB		19
++#define CTRL0_DAT_SEL_SM1_LSB		18
++#define CTRL0_LANE_SEL_SM1_MSB		17
++#define CTRL0_LANE_SEL_SM1_LSB		16
++#define CTRL0_LRCLK_SEL_SM1_MSB		14
++#define CTRL0_LRCLK_SEL_SM1_LSB		12
++#define CTRL0_LRCLK_INV_SM1		BIT(10)
++#define CTRL0_BLK_CAP_INV_SM1		BIT(9)
++#define CTRL0_BCLK_O_INV_SM1		BIT(8)
++#define CTRL0_BCLK_SEL_SM1_MSB		6
++#define CTRL0_BCLK_SEL_SM1_LSB		4
  
-   clocks:
-     items:
+ #define TOACODEC_OUT_CHMAX		2
+ 
+@@ -108,7 +117,7 @@ static int g12a_toacodec_mux_put_enum(struct snd_kcontrol *kcontrol,
+ }
+ 
+ static SOC_ENUM_SINGLE_DECL(g12a_toacodec_mux_enum, TOACODEC_CTRL0,
+-			    CTRL0_DAT_SEL_LSB,
++			    CTRL0_DAT_SEL_G12A_LSB,
+ 			    g12a_toacodec_mux_texts);
+ 
+ static SOC_ENUM_SINGLE_DECL(sm1_toacodec_mux_enum, TOACODEC_CTRL0,
+@@ -210,7 +219,7 @@ static int g12a_toacodec_component_probe(struct snd_soc_component *c)
+ {
+ 	/* Initialize the static clock parameters */
+ 	return snd_soc_component_write(c, TOACODEC_CTRL0,
+-				       CTRL0_BLK_CAP_INV);
++				       CTRL0_BLK_CAP_INV_G12A);
+ }
+ 
+ static int sm1_toacodec_component_probe(struct snd_soc_component *c)
+@@ -229,11 +238,13 @@ static const struct snd_soc_dapm_route g12a_toacodec_routes[] = {
+ };
+ 
+ static const struct snd_kcontrol_new g12a_toacodec_controls[] = {
+-	SOC_SINGLE("Lane Select", TOACODEC_CTRL0, CTRL0_LANE_SEL, 2, 0),
++	SOC_SINGLE("Lane Select", TOACODEC_CTRL0, CTRL0_LANE_SEL_G12A_LSB,
++		   CTRL0_LANE_SEL_G12A_MSB - CTRL0_LANE_SEL_G12A_LSB + 1, 0),
+ };
+ 
+ static const struct snd_kcontrol_new sm1_toacodec_controls[] = {
+-	SOC_SINGLE("Lane Select", TOACODEC_CTRL0, CTRL0_LANE_SEL_SM1, 2, 0),
++	SOC_SINGLE("Lane Select", TOACODEC_CTRL0, CTRL0_LANE_SEL_SM1_LSB,
++		   CTRL0_LANE_SEL_SM1_MSB - CTRL0_LANE_SEL_SM1_LSB + 1, 0),
+ };
+ 
+ static const struct snd_soc_component_driver g12a_toacodec_component_drv = {
+@@ -266,16 +277,22 @@ static const struct regmap_config g12a_toacodec_regmap_cfg = {
+ 
+ static const struct g12a_toacodec_match_data g12a_toacodec_match_data = {
+ 	.component_drv	= &g12a_toacodec_component_drv,
+-	.field_dat_sel	= REG_FIELD(TOACODEC_CTRL0, 14, 15),
+-	.field_lrclk_sel = REG_FIELD(TOACODEC_CTRL0, 8, 9),
+-	.field_bclk_sel	= REG_FIELD(TOACODEC_CTRL0, 4, 5),
++	.field_dat_sel	= REG_FIELD(TOACODEC_CTRL0, CTRL0_DAT_SEL_G12A_LSB,
++				    CTRL0_DAT_SEL_G12A_MSB),
++	.field_lrclk_sel = REG_FIELD(TOACODEC_CTRL0, CTRL0_LRCLK_SEL_G12A_LSB,
++				     CTRL0_LRCLK_SEL_G12A_MSB),
++	.field_bclk_sel	= REG_FIELD(TOACODEC_CTRL0, CTRL0_BCLK_SEL_G12A_LSB,
++				    CTRL0_BCLK_SEL_G12A_MSB),
+ };
+ 
+ static const struct g12a_toacodec_match_data sm1_toacodec_match_data = {
+ 	.component_drv	= &sm1_toacodec_component_drv,
+-	.field_dat_sel	= REG_FIELD(TOACODEC_CTRL0, 18, 19),
+-	.field_lrclk_sel = REG_FIELD(TOACODEC_CTRL0, 12, 14),
+-	.field_bclk_sel	= REG_FIELD(TOACODEC_CTRL0, 4, 6),
++	.field_dat_sel	= REG_FIELD(TOACODEC_CTRL0, CTRL0_DAT_SEL_SM1_LSB,
++				    CTRL0_DAT_SEL_SM1_MSB),
++	.field_lrclk_sel = REG_FIELD(TOACODEC_CTRL0, CTRL0_LRCLK_SEL_SM1_LSB,
++				     CTRL0_LRCLK_SEL_SM1_MSB),
++	.field_bclk_sel	= REG_FIELD(TOACODEC_CTRL0, CTRL0_BCLK_SEL_SM1_LSB,
++				    CTRL0_BCLK_SEL_SM1_MSB),
+ };
+ 
+ static const struct of_device_id g12a_toacodec_of_match[] = {
 -- 
 2.34.1
 
