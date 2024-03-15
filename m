@@ -4,115 +4,148 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 22678C54E69
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Mar 2024 10:13:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3B995C54E58
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Mar 2024 10:17:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B84B722AB;
-	Fri, 15 Mar 2024 11:13:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B84B722AB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5B8F9227D;
+	Fri, 15 Mar 2024 11:17:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5B8F9227D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1710497619;
-	bh=+QI7pZjV5YnoIH6SZx7QJZM4F+zGSldQpGRXjDpUssA=;
-	h=References:From:To:Cc:Subject:Date:In-reply-to:List-Id:
+	s=default; t=1710497833;
+	bh=Le34RBxbSQSoZlpWt27Xlzewd/eWX1ig4W7Q73xiS8Y=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=kslmAsvgCgcK2zX9Gkq+8lHGYMAKFKvDWNCYvFLpSr+PpuGzJgGYZwZM+pjlUBmtH
-	 /j8URSh2/dkcy5sDi/KtVRpKcUFPzzshQRRJQ/0ZUw+XhHUILqARuZKibVwS6U6sPL
-	 3439Hgy7Vsa1akMVOb38ggXJhexKGl9vt5coExx4=
+	b=VEdIIGCzNFlRvO6vy3mAzgYurIozew5GtAI0ChLbAmctZX9NcmtgsOwkO1nXQDkIs
+	 mjoeYoh5jziNdpXFaaS8D5EpCea9eEKoR5rM7IdzaNaoDr1iRdVinRYKCiIaUqshks
+	 O3jgU/GBLUeBuYUq7uyV6KjCE1vr7a6SYUB7UQxQ=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 46C99F805AC; Fri, 15 Mar 2024 11:13:07 +0100 (CET)
+	id 43B1CF80564; Fri, 15 Mar 2024 11:16:53 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C50D9F805AA;
-	Fri, 15 Mar 2024 11:13:06 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DED28F8057B;
+	Fri, 15 Mar 2024 11:16:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6502EF8028D; Fri, 15 Mar 2024 11:13:01 +0100 (CET)
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com
- [IPv6:2a00:1450:4864:20::32d])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	id 37B7DF8028D; Fri, 15 Mar 2024 11:16:45 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2a07:de40:b251:101:10:150:64:2])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E1603F800E4
-	for <alsa-devel@alsa-project.org>; Fri, 15 Mar 2024 11:12:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E1603F800E4
+	by alsa1.perex.cz (Postfix) with ESMTPS id 1C986F800E4
+	for <alsa-devel@alsa-project.org>; Fri, 15 Mar 2024 11:16:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1C986F800E4
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=baylibre-com.20230601.gappssmtp.com
- header.i=@baylibre-com.20230601.gappssmtp.com header.a=rsa-sha256
- header.s=20230601 header.b=FZYmimU1
-Received: by mail-wm1-x32d.google.com with SMTP id
- 5b1f17b1804b1-413fffcc472so4554765e9.3
-        for <alsa-devel@alsa-project.org>;
- Fri, 15 Mar 2024 03:12:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1710497576;
- x=1711102376; darn=alsa-project.org;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
-        bh=LQKgoyfzzduaJ5jov9NmJ8PCZR9rXm8iDmJsBk54NZ8=;
-        b=FZYmimU1xJLpeFS1BuB9kF+UtLHcHkWAdG9j1uB4nr6Ebn+6nmwrJXruIiU30zPWBa
-         8QAAdSoWNfHPoHVGSVpgHuwGhq0VTsdheDfKCd2WeW5cUzymfqiErs6Els0ribylRycD
-         +CBViIY/QByPpeb40pNixapQPhlt705c5OKU44ELb9I6GDjb64jCb9gQ2IqyKpYvsM+m
-         beXAGvfQ06p1iTtH4ltis+XawH+yQjnFN8QthYOFeD6CrPrSUvNKpJOGKw5c5/xuULou
-         GSc5i1TflNm9b91SfnIubB056xhrpErWzNy7U2IkcE/Q8UgET7tLh1SNbw93eJ8JyAco
-         B+pQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710497576; x=1711102376;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LQKgoyfzzduaJ5jov9NmJ8PCZR9rXm8iDmJsBk54NZ8=;
-        b=HprK0Yp1GXlIwawedcWiTZl+VcO/a/vrcGqzfzzp6wMnSNUddpaJp6QrRJvZv4fSoe
-         Hzr/pZmDj7dOk3ceYaGgI42w7KF0cYrOGWnjptBJLCvHuFWHMBEK02rncjrTBibuvw83
-         YJguVjyw8e0Od2kr4lCQlDHNlbJNldXbORh68FBkxKQ37DpPDybBvN9cKKJj7FPyg5O4
-         enAb4bYXTHnQN/jQiTp9RqyILBO/1DQ75HwqqpoopQF+5ttvSvWWZwvJHJVN2MgNEy1l
-         u2hHKv0Nw7mbY8hRHnh3+t96wnLDg7wisdEVimclrqrqmJtjwJyrxxBLlLI6ocVscv+b
-         V5Pg==
-X-Forwarded-Encrypted: i=1;
- AJvYcCXBXiS3gCVXNCjLrFYHjpfng5JrCATuaw2XOV2Szxu4u+hf4q17YNjxpjJHdajSceDOWEa60xJJ1wxrEPpjmtcfAUpLHFO1MRsCeBc=
-X-Gm-Message-State: AOJu0YxUrT+/RCTv/jPrrLVNtG9WgAz1f3OLwBpkzOgSfBSIspkXiqtH
-	WxOukedbgdhwo3Sm9JSJ8XdfBJbb16bT95ck4zHz00xADKRQk0w2wqMc5cv+Qg8=
-X-Google-Smtp-Source: 
- AGHT+IGkpPwSpcUKRjM84ML2A3Du8Hq7iROZC24mk3kzA01vpaV9CKlS3GgcL5y/xRPaeZYOGOCuww==
-X-Received: by 2002:a05:600c:4eca:b0:414:1e0:2afa with SMTP id
- g10-20020a05600c4eca00b0041401e02afamr788040wmq.3.1710497575919;
-        Fri, 15 Mar 2024 03:12:55 -0700 (PDT)
-Received: from localhost ([2a01:e0a:3c5:5fb1:8151:4d0a:14d8:1124])
-        by smtp.gmail.com with ESMTPSA id
- bu27-20020a056000079b00b0033ecbfc6941sm2481373wrb.110.2024.03.15.03.12.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Mar 2024 03:12:55 -0700 (PDT)
-References: <20240314232201.2102178-1-jan.dakinevich@salutedevices.com>
- <20240314232201.2102178-20-jan.dakinevich@salutedevices.com>
-User-agent: mu4e 1.10.8; emacs 29.2
-From: Jerome Brunet <jbrunet@baylibre.com>
-To: Jan Dakinevich <jan.dakinevich@salutedevices.com>
-Cc: Neil Armstrong <neil.armstrong@linaro.org>, Jerome Brunet
- <jbrunet@baylibre.com>, Michael  Turquette <mturquette@baylibre.com>,
- Stephen Boyd <sboyd@kernel.org>, Rob  Herring <robh@kernel.org>, Krzysztof
- Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
- <conor+dt@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>, Kevin
- Hilman <khilman@baylibre.com>, Martin Blumenstingl
- <martin.blumenstingl@googlemail.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, Linus Walleij <linus.walleij@linaro.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- linux-amlogic@lists.infradead.org, linux-clk@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
- linux-sound@vger.kernel.org, linux-gpio@vger.kernel.org,
- kernel@salutedevices.com
-Subject: Re: [PATCH 19/25] ASoC: dt-bindings: meson: axg-sound-card: claim
- support of A1 SoC family
-Date: Fri, 15 Mar 2024 11:06:52 +0100
-In-reply-to: <20240314232201.2102178-20-jan.dakinevich@salutedevices.com>
-Message-ID: <1jr0gbhkgp.fsf@starbuckisacylon.baylibre.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-Message-ID-Hash: TO2WIMGIVED6GY7CJUYAL73CV7ON5TRF
-X-Message-ID-Hash: TO2WIMGIVED6GY7CJUYAL73CV7ON5TRF
-X-MailFrom: jbrunet@baylibre.com
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=MgC+FN7J;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=Nhucof32;
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.a=rsa-sha256 header.s=susede2_rsa header.b=RKczVi8e;
+	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=ZiOmniBw
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
+ [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id D465A1FB56;
+	Fri, 15 Mar 2024 10:16:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1710497795;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=aM7Fh7BB6+u1t/Mp/NSCwDxelG/N9MvjWgGxq738pns=;
+	b=MgC+FN7JRKbzLA6MXgT4CQVoV8UCIhnju+lQq2HHvrRNk0Hr19d0pj/UWmMt5etLclgxhd
+	RudmXAoWoyGyxsmTk7Bji0Wn/gvWLHRci2hbJ1TKGr85esw43AeKshFLy/Fo4hW18Pwzs5
+	GAV/BDhtTpS4Mm23LkS7MN1aRHrLRLk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1710497795;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=aM7Fh7BB6+u1t/Mp/NSCwDxelG/N9MvjWgGxq738pns=;
+	b=Nhucof32grCj4iLqdWKX3ZBWo5fohaMZ+GGdI299h8+wV+ufXWeNQ5ccDWkWs2izBsZVh8
+	myHq563Zm8D/+DDQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1710497794;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=aM7Fh7BB6+u1t/Mp/NSCwDxelG/N9MvjWgGxq738pns=;
+	b=RKczVi8eENKCaUMmhTV/k4F+gFZ3Uknqg97SBRHJyku6ADiMOL9T39ESkAnrTvsqdklHyn
+	M0IbtRTQWuA9xd6A2Ee+xBFBHuUf9Aq/OCzY7UsJKsRnN2D45xAJlt9mYWXB43VAy18agS
+	62fMhEfga0GLGUwltmfOCVM6jPfdDPg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1710497794;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=aM7Fh7BB6+u1t/Mp/NSCwDxelG/N9MvjWgGxq738pns=;
+	b=ZiOmniBwnGvc9hoC9RW4kR1elWTFeZn9VAHrgPWH1YbbK+20CBD26hXiQRfB7tXQHYYwRw
+	ODdZN9SV4TJEz2BQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id AF9C213460;
+	Fri, 15 Mar 2024 10:16:34 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id Q2NKKQIg9GUxaQAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Fri, 15 Mar 2024 10:16:34 +0000
+Date: Fri, 15 Mar 2024 11:16:34 +0100
+Message-ID: <87ttl7by0t.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: i@jichi.ca
+Cc: tiwai@suse.com,
+	alsa-devel@alsa-project.org
+Subject: Re: [PATCH] ALSA: hda/realtek: Add quirk for Lenovo Yoga 9 14IMH9
+In-Reply-To: <20240315081954.45470-3-i@jichi.ca>
+References: <20240315081954.45470-3-i@jichi.ca>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=RKczVi8e;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=ZiOmniBw
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-3.81 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 TO_DN_NONE(0.00)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_TRACE(0.00)[suse.de:+];
+	 MX_GOOD(-0.01)[];
+	 NEURAL_HAM_SHORT(-0.20)[-0.998];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 BAYES_HAM(-1.30)[90.04%];
+	 ARC_NA(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 FROM_HAS_DN(0.00)[];
+	 RCPT_COUNT_THREE(0.00)[3];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MIME_GOOD(-0.10)[text/plain];
+	 DWL_DNSWL_MED(-2.00)[suse.de:dkim];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 MID_CONTAINS_FROM(1.00)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 RCVD_TLS_ALL(0.00)[]
+X-Rspamd-Queue-Id: D465A1FB56
+Message-ID-Hash: QF3PXBV5B3E6OPX2DR2B52JNZZE52SXB
+X-Message-ID-Hash: QF3PXBV5B3E6OPX2DR2B52JNZZE52SXB
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -124,7 +157,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TO2WIMGIVED6GY7CJUYAL73CV7ON5TRF/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QF3PXBV5B3E6OPX2DR2B52JNZZE52SXB/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -133,46 +166,21 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+On Fri, 15 Mar 2024 09:19:56 +0100,
+i@jichi.ca wrote:
+> 
+> From: Jichi Zhang <i@jichi.ca>
+> 
+> The speakers on the Lenovo Yoga 9 14IMH9 are similar to previous generations
+> such as the 14IAP7, and the bass speakers can be fixed using similar methods
+> with one caveat: 14IMH9 uses CS35L41 amplifiers which need to be activated
+> seperately.
+> 
+> Signed-off-by: Jichi Zhang <i@jichi.ca>
 
-On Fri 15 Mar 2024 at 02:21, Jan Dakinevich <jan.dakinevich@salutedevices.com> wrote:
-
-> Add "amlogic,a1-sound-card" compatible string alias to
-> "amlogic,axg-sound-card".
->
-> Signed-off-by: Jan Dakinevich <jan.dakinevich@salutedevices.com>
-> ---
->  .../devicetree/bindings/sound/amlogic,axg-sound-card.yaml   | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
->
-> diff --git a/Documentation/devicetree/bindings/sound/amlogic,axg-sound-card.yaml b/Documentation/devicetree/bindings/sound/amlogic,axg-sound-card.yaml
-> index 5db718e4d0e7..492b41cc8ccd 100644
-> --- a/Documentation/devicetree/bindings/sound/amlogic,axg-sound-card.yaml
-> +++ b/Documentation/devicetree/bindings/sound/amlogic,axg-sound-card.yaml
-> @@ -14,7 +14,11 @@ allOf:
->  
->  properties:
->    compatible:
-> -    const: amlogic,axg-sound-card
-> +    oneOf:
-> +      - const: amlogic,axg-sound-card
-> +      - items:
-> +          - const: amlogic,a1-sound-card
-> +          - const: amlogic,axg-sound-card
-
-I know the rule about SoC related name but it is different here.
-This does not describe HW in the SoC. 
-
-The axg sound card is just a name, much like simple-card or
-audio-graph-card. I could have named it "amlogic,my-awesome-card"
-
-We would not add "amlogic,a1-simple-card", would we ?
-
-It is purely a software component, which aggregate HW ones.
+Applied now (with a correction of a typo in the description).
 
 
->    audio-aux-devs:
->      $ref: /schemas/types.yaml#/definitions/phandle-array
+thanks,
 
-
--- 
-Jerome
+Takashi
