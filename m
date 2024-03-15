@@ -4,97 +4,99 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70051C54E58
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Mar 2024 10:21:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 44742C54E58
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Mar 2024 10:25:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9496821B5;
-	Fri, 15 Mar 2024 11:21:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9496821B5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4401E22AE;
+	Fri, 15 Mar 2024 11:25:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4401E22AE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1710498099;
-	bh=JSCNMW8qWshcPVnF89xrbpx4/BHY0kCqY+YQoPryMmE=;
+	s=default; t=1710498353;
+	bh=NfFTjprpYpTx/YOcA395cb2tUELkt8+AWxFx0BohTVw=;
 	h=References:From:To:Cc:Subject:Date:In-reply-to:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=CaPOg70/JSfKsrwecAW8MonHr+1KQdyiv+NShNjimNsL148nnH3zXJbGMawPb3Eml
-	 gwD6JSYfoq6HRQs6UN0KP3UYLLnMi0sKjUFY9xS94Knt4y4CZcFQTNrShQoLVXMd0d
-	 WexKc9sHpVoT8DEr+LTIQO02iEKoGaBXKitmdt0c=
+	b=PHUKei2qLMK5wLQWpRP7qWBxcE/DDn7zyb54dOA5wOl80YoWuU1yix22eRspc8WPJ
+	 c6PD6pO4BcPWO70v1t1OV5F1k4Y7gViXEYjmXvyMev/XrOzpHfmbUVMZU+G1hSlwR6
+	 9bYilFy8A6H78GS8mR9fiSlImo8stVEBbT2plymc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E64ACF805AA; Fri, 15 Mar 2024 11:21:08 +0100 (CET)
+	id 29ACAF80579; Fri, 15 Mar 2024 11:25:21 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6217AF8057B;
-	Fri, 15 Mar 2024 11:21:08 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A6B93F805A9;
+	Fri, 15 Mar 2024 11:25:21 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1724AF8028D; Fri, 15 Mar 2024 11:21:04 +0100 (CET)
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com
- [IPv6:2a00:1450:4864:20::131])
+	id CF60FF8028D; Fri, 15 Mar 2024 11:25:16 +0100 (CET)
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com
+ [IPv6:2a00:1450:4864:20::42a])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 28207F8014B
-	for <alsa-devel@alsa-project.org>; Fri, 15 Mar 2024 11:20:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 28207F8014B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 09B38F800E4
+	for <alsa-devel@alsa-project.org>; Fri, 15 Mar 2024 11:25:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 09B38F800E4
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=baylibre-com.20230601.gappssmtp.com
  header.i=@baylibre-com.20230601.gappssmtp.com header.a=rsa-sha256
- header.s=20230601 header.b=r5lRlroB
-Received: by mail-lf1-x131.google.com with SMTP id
- 2adb3069b0e04-513173e8191so2654911e87.1
+ header.s=20230601 header.b=3e5qa8XD
+Received: by mail-wr1-x42a.google.com with SMTP id
+ ffacd0b85a97d-33e94c12cfaso1443299f8f.3
         for <alsa-devel@alsa-project.org>;
- Fri, 15 Mar 2024 03:20:55 -0700 (PDT)
+ Fri, 15 Mar 2024 03:25:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1710498054;
- x=1711102854; darn=alsa-project.org;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1710498307;
+ x=1711103107; darn=alsa-project.org;
         h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
          :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
-        bh=6gMhyQcCq8fucjInJ87jHa5Zs8QHwH2ZIASN5Qcn1XU=;
-        b=r5lRlroBZWOd4flhThlOY01dc3G9XwkimjPQzyLDYuya1u0q/0OOqFjZ0UylPkHESZ
-         D/c/PMHISW/Fvd4sjN+4yS8Py0RqNvepBlOIRP9Zw0bFj+QvZv3fMtd5wvxyEL6DCNeI
-         JXoWdw6sRPcfjPgq+CC7XP8JOH6PfA4cqUcu8ShmQ6DA/fhkv7KlU7p3ui+xCMurUXUp
-         gKuN7+KXLGU2WNkGu7YSUjAs+b6a16WZdPodyZDnlKbVcnQucgOP9lO4tYxeB0P9k0S0
-         sFAnDctH+d/uc6gVROi1zE51DRT29mOKq/pDPRcXtfQdhrQZNtyV2SXAg7hQJ3CUUJ4j
-         tW7g==
+        bh=I3EB/6PldhsbhWY9+bYWiu2w8/wr6W5dSP5c/9sIMoI=;
+        b=3e5qa8XDZldnK7HwjUIaMDabzt1YlQPAG2qDTgNLMc/0q7L1gZm17EpRpoioAfRHzm
+         ghWCKWS9Zfj2xLyS9c2BmBAErqbyZUA2dqqTc3c92/OS/S1LgAMLSmrSXmK6JsRNw9ua
+         NcMsPSQ9ekVNhSh6kkVhDJ1wh7FClV+KsO8hWSDvt+XRd2t4UhwfcNY6DcvzcckFF+gq
+         +3GsuFf/wlFCifmh9CqSRStSMGpci6auHcQ1jp51C7Y5qnsFP8e6C+eSfFfV9Ru254Zt
+         HDojs2ihshIKAm+z1p0WTfyocbHxcGogBW5sisgrmI6tkbhQzCOW6QRaoDmVdjtmWayY
+         vNGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710498054; x=1711102854;
+        d=1e100.net; s=20230601; t=1710498307; x=1711103107;
         h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
          :user-agent:references:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=6gMhyQcCq8fucjInJ87jHa5Zs8QHwH2ZIASN5Qcn1XU=;
-        b=d0YOzoTBV37obrQwrnVaiDxX2YjEOJlzw7DqaR+BWTE9fP54DOjNfWQqNpq1QaAlN0
-         05al5od7qPt2xarW/srZYpup/PtjbzBF+AvNIkfRKMZ/FqQfsENLtdgXTA6R2WPNbu3O
-         U+sNvRqqJHeE3m/k3Oc7zJVcJC/2zidI6S5+cDnlbIMXo9P3CWvkIdYotOS0BEYRSIkQ
-         qcRHpgcBo/o4hH4JPpoOIUFqWjH18IwnYhHYYP8c0Aha//YVRm7vJg5+dmDMqbijUO+/
-         uVIodBd+e0CcwHz+ynhT2LcS1jozMKiRryFYEarVgWUkOvCxaYAcFKHcvQWcmaQoNIHI
-         QaPA==
+        bh=I3EB/6PldhsbhWY9+bYWiu2w8/wr6W5dSP5c/9sIMoI=;
+        b=v7rbW12k3l9lUF10gUpgaKreTXtXd4ARYndy5bXI1+Oji/EVVQQihNnaLaLn13jqz1
+         PsrwRdn/nCHFThY4FoaSrb70e8zVGJLFsVLFlRKFZCW056i2CtK177AK69IRTFP+3UAp
+         Ht4EsguOjMptT3QI9LyMVsyGxkOs6EKmTGEkJEx1lU7a5zUuQBJAp7IqqaAJrzinpdSn
+         7DGb7WGQc9qVOC+vKFuxhoP50GqGOEYQrvgOqdNLohYWAXAPfOAlLS3qnZBxTGK9gtKl
+         Q35W9Hp7xyqRg+D84Ndsg3A6o/mbPD88ALoG8QltwVxceTy9wBag4gFql84wjGQNp+hY
+         V7yA==
 X-Forwarded-Encrypted: i=1;
- AJvYcCVK95UB4+Vew2wNU02u1wtAbGlQKzNjZbq8+7bKH2LAzsHWFffEf14eoIteDjRKQ3eL8vRUOKZyMcQUzqcc44dXWsRkIvI3Xbw+e4U=
-X-Gm-Message-State: AOJu0YxyWnRCMDD7i3kVcXMtTD7mouyDaVBASvH9AGv+RTi7KgNvYznG
-	qq4TmWba43u5lifqBc+JjQsmN190/dUvj87pALZLU5a5BPRvSfgiPGpBTYEuQY8=
+ AJvYcCX4GDOvhTcwmJGP+q+ZlOZzLfklPUztoewHHa9ULs4ZxF8CBOO/SR1BCYQWseDozHKCx0dpH4pmKxuQ1JaSJTr8UUrCv5kYZAS/tok=
+X-Gm-Message-State: AOJu0YzAuNiy+16+TGREqX1N2ATkBYKmeRLT4P5hhU2BFjhaFoE4lOtZ
+	pju/h1lq5mWZsPhY3Aij8+Lmrw7WBI/irZx3b32+XrkL+wgSJD2qTvzgPekmB58=
 X-Google-Smtp-Source: 
- AGHT+IE93RWjsQIaXcrXP7QebJrBXb65k9rloMkqM4nhLZfNJA/HvogTh3saXyVEmcMBtfGaiLq/Mg==
-X-Received: by 2002:ac2:4348:0:b0:513:42e:ddf0 with SMTP id
- o8-20020ac24348000000b00513042eddf0mr2648632lfl.36.1710498054118;
-        Fri, 15 Mar 2024 03:20:54 -0700 (PDT)
+ AGHT+IGWDipfwojUVR3R0h/HAg8+ErMHQU1L9DU1QDqUHJY9+2A1t5wePivY0yDxiYGWnr60Q0NDnQ==
+X-Received: by 2002:a5d:4cc1:0:b0:33e:7f5c:732c with SMTP id
+ c1-20020a5d4cc1000000b0033e7f5c732cmr3060666wrt.62.1710498307090;
+        Fri, 15 Mar 2024 03:25:07 -0700 (PDT)
 Received: from localhost ([2a01:e0a:3c5:5fb1:8151:4d0a:14d8:1124])
         by smtp.gmail.com with ESMTPSA id
- n7-20020a05600c3b8700b00413ea3db648sm8058358wms.26.2024.03.15.03.20.53
+ o14-20020adfe80e000000b0033e8c50fc3fsm2818997wrm.90.2024.03.15.03.25.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Mar 2024 03:20:53 -0700 (PDT)
+        Fri, 15 Mar 2024 03:25:06 -0700 (PDT)
 References: <20240314232201.2102178-1-jan.dakinevich@salutedevices.com>
- <20240314232201.2102178-22-jan.dakinevich@salutedevices.com>
+ <20240314232201.2102178-14-jan.dakinevich@salutedevices.com>
+ <ca80caab-2664-4797-a222-e14537eea440@linaro.org>
 User-agent: mu4e 1.10.8; emacs 29.2
 From: Jerome Brunet <jbrunet@baylibre.com>
-To: Jan Dakinevich <jan.dakinevich@salutedevices.com>
-Cc: Neil Armstrong <neil.armstrong@linaro.org>, Jerome Brunet
- <jbrunet@baylibre.com>, Michael  Turquette <mturquette@baylibre.com>,
- Stephen Boyd <sboyd@kernel.org>, Rob  Herring <robh@kernel.org>, Krzysztof
- Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
- <conor+dt@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>, Kevin
- Hilman <khilman@baylibre.com>, Martin Blumenstingl
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Jan Dakinevich <jan.dakinevich@salutedevices.com>, Neil Armstrong
+ <neil.armstrong@linaro.org>, Jerome Brunet <jbrunet@baylibre.com>, Michael
+ Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, Rob
+ Herring <robh@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+ Philipp Zabel <p.zabel@pengutronix.de>, Kevin Hilman
+ <khilman@baylibre.com>, Martin Blumenstingl
  <martin.blumenstingl@googlemail.com>, Liam Girdwood <lgirdwood@gmail.com>,
  Mark Brown <broonie@kernel.org>, Linus Walleij <linus.walleij@linaro.org>,
  Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
@@ -103,15 +105,15 @@ Cc: Neil Armstrong <neil.armstrong@linaro.org>, Jerome Brunet
  linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
  linux-sound@vger.kernel.org, linux-gpio@vger.kernel.org,
  kernel@salutedevices.com
-Subject: Re: [PATCH 21/25] ASoC: dt-bindings: meson: axg-tdm-iface: claim
- support of A1 SoC family
-Date: Fri, 15 Mar 2024 11:13:48 +0100
-In-reply-to: <20240314232201.2102178-22-jan.dakinevich@salutedevices.com>
-Message-ID: <1jmsqzhk3e.fsf@starbuckisacylon.baylibre.com>
+Subject: Re: [PATCH 13/25] ASoC: dt-bindings: meson: axg-pdm: document
+ 'sysrate' property
+Date: Fri, 15 Mar 2024 11:22:59 +0100
+In-reply-to: <ca80caab-2664-4797-a222-e14537eea440@linaro.org>
+Message-ID: <1jil1nhjwd.fsf@starbuckisacylon.baylibre.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Message-ID-Hash: QD7NZ7RAS57OOL6NNDIICCMQXX3YWYJV
-X-Message-ID-Hash: QD7NZ7RAS57OOL6NNDIICCMQXX3YWYJV
+Message-ID-Hash: IVWMFZGTH6K3WCGEJVNGWK6X2FX5XQGS
+X-Message-ID-Hash: IVWMFZGTH6K3WCGEJVNGWK6X2FX5XQGS
 X-MailFrom: jbrunet@baylibre.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -124,8 +126,9 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QD7NZ7RAS57OOL6NNDIICCMQXX3YWYJV/>
-List-Archive: <>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IVWMFZGTH6K3WCGEJVNGWK6X2FX5XQGS/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
@@ -133,44 +136,47 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 
-On Fri 15 Mar 2024 at 02:21, Jan Dakinevich <jan.dakinevich@salutedevices.com> wrote:
+On Fri 15 Mar 2024 at 11:00, Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> wrote:
 
-> Add "amlogic,a1-tdm-iface" compatible string alias to
-> "amlogic,axg-tdm-iface".
+> On 15/03/2024 00:21, Jan Dakinevich wrote:
+>> This option allow to redefine the rate of DSP system clock.
 >
-> Signed-off-by: Jan Dakinevich <jan.dakinevich@salutedevices.com>
-> ---
->  .../devicetree/bindings/sound/amlogic,axg-tdm-iface.yaml    | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
+> And why is it suitable for bindings? Describe the hardware, not what you
+> want to do in the driver.
 >
-> diff --git a/Documentation/devicetree/bindings/sound/amlogic,axg-tdm-iface.yaml b/Documentation/devicetree/bindings/sound/amlogic,axg-tdm-iface.yaml
-> index 45955d8a26d1..7c1af85b52b4 100644
-> --- a/Documentation/devicetree/bindings/sound/amlogic,axg-tdm-iface.yaml
-> +++ b/Documentation/devicetree/bindings/sound/amlogic,axg-tdm-iface.yaml
-> @@ -14,7 +14,11 @@ allOf:
->  
->  properties:
->    compatible:
-> -    const: amlogic,axg-tdm-iface
-> +    oneOf:
-> +      - const: amlogic,axg-tdm-iface
-> +      - items:
-> +          - const: amlogic,a1-tdm-iface
-> +          - const: amlogic,axg-tdm-iface
+>> 
+>> Signed-off-by: Jan Dakinevich <jan.dakinevich@salutedevices.com>
+>> ---
+>>  Documentation/devicetree/bindings/sound/amlogic,axg-pdm.yaml | 4 ++++
+>>  1 file changed, 4 insertions(+)
+>> 
+>> diff --git a/Documentation/devicetree/bindings/sound/amlogic,axg-pdm.yaml b/Documentation/devicetree/bindings/sound/amlogic,axg-pdm.yaml
+>> index df21dd72fc65..d2f23a59a6b6 100644
+>> --- a/Documentation/devicetree/bindings/sound/amlogic,axg-pdm.yaml
+>> +++ b/Documentation/devicetree/bindings/sound/amlogic,axg-pdm.yaml
+>> @@ -40,6 +40,10 @@ properties:
+>>    resets:
+>>      maxItems: 1
+>>  
+>> +  sysrate:
+>> +    $ref: /schemas/types.yaml#/definitions/uint32
+>> +    description: redefine rate of DSP system clock
+>
+> No vendor prefix, so is it a generic property? Also, missing unit
+> suffix, but more importantly I don't understand why this is a property
+> of hardware.
 
-Same as the card driver. I could have named it "amlogic,tdm-iface"
++1.
 
-This is purely a SW component, which help agregate clocks and
-tdm-formatters. It is analog to a "gpio-leds" or a "pwm-clock"
-driver. We would add a compatible for every SoC for these, would we ?
+The appropriate way to set rate of the clock before the driver take over
+is 'assigned-rate', if you need to customize this for different
+platform.
 
-I don't think it makes a lot of sense to add this. It is not going to
-hurt but this is just adding useless compatible to the doc that will
-never be used
+Then you don't have to deal with it in the device driver.
 
->  
->    "#sound-dai-cells":
->      const: 0
+>
+> Best regards,
+> Krzysztof
 
 
 -- 
