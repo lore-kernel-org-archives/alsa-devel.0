@@ -4,55 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B1806C54E60
-	for <alsa-devel@archiver.kernel.org>; Sun, 17 Mar 2024 08:59:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 322F4C54E60
+	for <alsa-devel@archiver.kernel.org>; Sun, 17 Mar 2024 08:59:51 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id ED6D52393;
-	Sun, 17 Mar 2024 09:59:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ED6D52393
+	by alsa0.perex.cz (Postfix) with ESMTPS id 63D69279E;
+	Sun, 17 Mar 2024 09:59:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 63D69279E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1710665974;
-	bh=Vqa6QA158MoJJhfEt2Iy0wh9/kNKE3uYlMHDc5V99h4=;
+	s=default; t=1710665989;
+	bh=PZctGisBviZ+mhYGc0hACek77ifie3PoPw9sdjq58Zk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=iaP0ddRWHa801F+hyzwgLRvmTINEif2Ysnce7xN2RTO6j/xah3Csq1MQORtvXxN7g
-	 KHiiCXuHzpPbHqmQTnmJVgRndllHoxvzqM2yZoE25mWby/xZFQhh63NxRintZpHIfj
-	 +ejLpk0mHpQlvi4xSfacFUQTj1OzGeDbunu48a40=
+	b=OS4Y7N3Gv8qVx4pMJ7X8x0pEfyCjAnBZkq4jBfIFRF2tLlJbmyidIWS3sr7kql+Os
+	 GPTTN1L7d3B2CZlWW1XMj5JroXUAgLfaPtylTkT/QRgwHOsMpULwDZs7QqDtM7cuhc
+	 0zGsZXm14g38jfzC5Pb7+JSwpCxxzHNcs7uNvd28=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 327D1F805D2; Sun, 17 Mar 2024 09:58:47 +0100 (CET)
+	id 8A8BEF805F4; Sun, 17 Mar 2024 09:58:53 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C8A7DF805B4;
-	Sun, 17 Mar 2024 09:58:46 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9316AF805EA;
+	Sun, 17 Mar 2024 09:58:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 21C91F8025F; Fri, 15 Mar 2024 12:28:24 +0100 (CET)
+	id 0D604F8028D; Fri, 15 Mar 2024 12:28:27 +0100 (CET)
 Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net
  [IPv6:2001:4b98:dc4:8::224])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id F3DA9F8028D
-	for <alsa-devel@alsa-project.org>; Fri, 15 Mar 2024 12:27:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F3DA9F8028D
+	by alsa1.perex.cz (Postfix) with ESMTPS id 7DF5DF80564
+	for <alsa-devel@alsa-project.org>; Fri, 15 Mar 2024 12:28:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7DF5DF80564
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=Ohc8rMAZ
-Received: by mail.gandi.net (Postfix) with ESMTPA id B465DE0005;
-	Fri, 15 Mar 2024 11:27:56 +0000 (UTC)
+ header.s=gm1 header.b=OAmeDyl1
+Received: by mail.gandi.net (Postfix) with ESMTPA id A5B21E0008;
+	Fri, 15 Mar 2024 11:27:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1710502077;
+	t=1710502080;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=R6wAImaMrQQgDt9yLO+ckEgLXUzk4/YE6uy/Vm+UgWI=;
-	b=Ohc8rMAZZQx0N2dF+PKKTV4O9wDsMc5dVw6E/m4mHYRavO52U//ZROTrJgthdMmQqkJKQZ
-	4YTOOU1vpC8MGeWcaFJmfQIfoiZrBvrsYPFA2ZJ6D5PsIuVPDZ85dKj0KR8tI2ZtpCh4vv
-	5IW2+I4vm30iSb1BZDnRu6boyg2It16Ebims7bIzVmx9uW60OohG3Wad2WEn99v5cpKNR4
-	ePZkxJlQomAPo4tckYT8XnDBRir76ecEKH9m3Lli6ivMlVGcYWIgB1JIFC2BGjp9tkFNHj
-	kjrZHgd3IPs51zP3/tFI5lbTx1RZ1JyZ4NHzG0c9Ht/g++MAnlE07DbYYRYazA==
+	bh=GUQ51tONiYtM45o3XTZI6XR8a2iefLuxKfBONeCjMBU=;
+	b=OAmeDyl1URRkwdmnV9xjdSDYTqCPZq7Lo3uQP/qsirimdgj75LzvdooBBW64tSkVs7UBNK
+	Qr1Nj27ust8cyzZouNhKUw4IJWAOvjsRzEVi5jEG+nXP+8p0QhR6matgyotrrjUjGsqqkI
+	aKcXz/29Qf2HpLk8UZ7vR9bkykTtEHUnqfKFD0f/SRk2n5GzDG9NP09QOPrwi1iGNledPR
+	kSHRn5ukgDVX2jKd/cl2A0NWdRb5mmUFaKMLTLpOQTFLBZQicHu/3u39aO/3SOZZCTRL+I
+	Bwa9DnkmdK0iDXNHA1Xpe6dGJHgrmCx45p9101QFwX8Q8GmhiFDdFHga5TUQOw==
 From: Bastien Curutchet <bastien.curutchet@bootlin.com>
 To: Liam Girdwood <lgirdwood@gmail.com>,
 	Mark Brown <broonie@kernel.org>,
@@ -70,9 +70,10 @@ Cc: linux-sound@vger.kernel.org,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
 	herve.codina@bootlin.com,
 	christophercordahi@nanometrics.ca
-Subject: [PATCH 02/13] ASoC: dt-bindings: davinci-mcbsp: Add new properties
-Date: Fri, 15 Mar 2024 12:27:34 +0100
-Message-ID: <20240315112745.63230-3-bastien.curutchet@bootlin.com>
+Subject: [PATCH 04/13] ASoC: ti: davinci-i2s: Replace dev_err with
+ dev_err_probe
+Date: Fri, 15 Mar 2024 12:27:36 +0100
+Message-ID: <20240315112745.63230-5-bastien.curutchet@bootlin.com>
 X-Mailer: git-send-email 2.43.2
 In-Reply-To: <20240315112745.63230-1-bastien.curutchet@bootlin.com>
 References: <20240315112745.63230-1-bastien.curutchet@bootlin.com>
@@ -85,9 +86,9 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: RH4UVYQJ5MC5NUI2W4A2ENAWFYZGBPYR
-X-Message-ID-Hash: RH4UVYQJ5MC5NUI2W4A2ENAWFYZGBPYR
-X-Mailman-Approved-At: Sun, 17 Mar 2024 08:55:59 +0000
+Message-ID-Hash: UX2VRHEGYVG5YFLS3AWYTWVXNT7SPD5S
+X-Message-ID-Hash: UX2VRHEGYVG5YFLS3AWYTWVXNT7SPD5S
+X-Mailman-Approved-At: Sun, 17 Mar 2024 08:56:00 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
@@ -100,70 +101,58 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Following features are not described in the bindings:
- - The McBSP uses an internal sample rate generator to provide bit clock
-   or frame clock. This sample rate generator can be programmed to be
-   driven by McBSP's internal clock source or by an external clock source
-   (located on CLKS pin).
- - McBSP can be configured in 'free-running' mode so that its serial
-   clocks will continue to run during emulation halt.
- - McBSP can generate a SYNCERR when unexpected frame pulses are detected
+There are dev_err() in the probe() function.
 
-Add an optional clock item that allows to select an external clock as
-sample rate generator's input.
-
-Add a 'ti,disable-free-run' flag to disable the free-running mode. This
-mode is selected by default by the driver that's why I add a disabling
-flag instead of an enabling one.
-
-Add a 'ti,enable-sync-err' flag to enable SYNCERR generation when
-unexpected frame pulses are detected.
+Replace them with dev_err_probe()
 
 Signed-off-by: Bastien Curutchet <bastien.curutchet@bootlin.com>
 ---
- .../devicetree/bindings/sound/davinci-mcbsp.yaml | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ sound/soc/ti/davinci-i2s.c | 11 ++++-------
+ 1 file changed, 4 insertions(+), 7 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/davinci-mcbsp.yaml b/Documentation/devicetree/bindings/sound/davinci-mcbsp.yaml
-index 8b0e9b5da08f..d8d4e7ea6e02 100644
---- a/Documentation/devicetree/bindings/sound/davinci-mcbsp.yaml
-+++ b/Documentation/devicetree/bindings/sound/davinci-mcbsp.yaml
-@@ -50,12 +50,16 @@ properties:
-       - const: tx
+diff --git a/sound/soc/ti/davinci-i2s.c b/sound/soc/ti/davinci-i2s.c
+index 5c906641640e..4cb3ef62db20 100644
+--- a/sound/soc/ti/davinci-i2s.c
++++ b/sound/soc/ti/davinci-i2s.c
+@@ -644,8 +644,7 @@ static int davinci_i2s_probe(struct platform_device *pdev)
+ 			 "\"mpu\" mem resource not found, using index 0\n");
+ 		mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 		if (!mem) {
+-			dev_err(&pdev->dev, "no mem resource?\n");
+-			return -ENODEV;
++			return dev_err_probe(&pdev->dev, -ENODEV, "no mem resource?\n");
+ 		}
+ 	}
  
-   clocks:
-+    minItems: 1
-     items:
-       - description: functional clock
-+      - description: external input clock for sample rate generator.
+@@ -672,8 +671,7 @@ static int davinci_i2s_probe(struct platform_device *pdev)
+ 	} else if (IS_ENABLED(CONFIG_OF) && pdev->dev.of_node) {
+ 		dma_data->filter_data = "tx";
+ 	} else {
+-		dev_err(&pdev->dev, "Missing DMA tx resource\n");
+-		return -ENODEV;
++		return dev_err_probe(&pdev->dev, -ENODEV, "Missing DMA tx resource\n");
+ 	}
  
-   clock-names:
-+    minItems: 1
-     items:
-       - const: fck
-+      - const: clks
+ 	dma_data = &dev->dma_data[SNDRV_PCM_STREAM_CAPTURE];
+@@ -687,8 +685,7 @@ static int davinci_i2s_probe(struct platform_device *pdev)
+ 	} else if (IS_ENABLED(CONFIG_OF) && pdev->dev.of_node) {
+ 		dma_data->filter_data = "rx";
+ 	} else {
+-		dev_err(&pdev->dev, "Missing DMA rx resource\n");
+-		return -ENODEV;
++		return dev_err_probe(&pdev->dev, -ENODEV, "Missing DMA rx resource\n");
+ 	}
  
-   power-domains:
-     description: phandle to the corresponding power-domain
-@@ -64,6 +68,18 @@ properties:
-   "#sound-dai-cells":
-     const: 0
+ 	dev->clk = clk_get(&pdev->dev, NULL);
+@@ -708,7 +705,7 @@ static int davinci_i2s_probe(struct platform_device *pdev)
  
-+  ti,disable-free-run:
-+    $ref: /schemas/types.yaml#/definitions/flag
-+    description:
-+      Disable free-running mode. If not present, serial clocks continue to run
-+      during emulation halt.
-+
-+  ti,enable-sync-err:
-+    $ref: /schemas/types.yaml#/definitions/flag
-+    description:
-+      Enable synchronisation error detections when an unexpected frame pulse is
-+      received. If not present, unexpected frame pulses are ignored.
-+
- required:
-   - "#sound-dai-cells"
-   - compatible
+ 	ret = edma_pcm_platform_register(&pdev->dev);
+ 	if (ret) {
+-		dev_err(&pdev->dev, "register PCM failed: %d\n", ret);
++		dev_err_probe(&pdev->dev, ret, "register PCM failed\n");
+ 		goto err_unregister_component;
+ 	}
+ 
 -- 
 2.43.2
 
