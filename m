@@ -4,64 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DAEA4C54E67
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Mar 2024 14:42:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 612F5C54E58
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Mar 2024 14:55:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2FE5E2353;
-	Fri, 15 Mar 2024 15:42:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2FE5E2353
+	by alsa0.perex.cz (Postfix) with ESMTPS id B9D002346;
+	Fri, 15 Mar 2024 15:55:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B9D002346
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1710513745;
-	bh=/q5YpMd9flHlseDCFPbg8au4ag1109m5lTjQTwS5gjw=;
+	s=default; t=1710514541;
+	bh=wpqIUwnNLWbIy1Zvw8blSo1JlKbndzcJuNOieCu2HqE=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=LIKt335p+P0AIA/yGz7zbAbjKqZvxpzXMAQJqmxA3jokfsoGMxitpDkms+0G0L/wL
-	 N0bjMms02LNgHP0QN0DC+K6n/WnT60rrCpKfACSrFtqgW9szVetoiLd+fNamUjnE6M
-	 RG7ZHdlmf4qR19bwwj12U8wFgElUQtUZDZ/LMyJQ=
+	b=cu/gQ/yb3z0fB4nyZuqaiVy0llYxiGP/7/mA++dzSTnYMpZ2OFakOyyrpX3qJp08A
+	 g1LjFQoFDIyt+zaqos7se1ucNO0d+QcuCfIlUuPo6HGMzM1B4xBEVxRSbXo8CI/r6I
+	 pyHrweIoEtk5xXpVZlqSrJVHouuZ7eJgqihNP4fc=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 137ADF805A9; Fri, 15 Mar 2024 15:41:54 +0100 (CET)
+	id 5A5E4F805AB; Fri, 15 Mar 2024 15:55:09 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 99B5FF805A9;
-	Fri, 15 Mar 2024 15:41:53 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 008C2F80580;
+	Fri, 15 Mar 2024 15:55:09 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E1A99F8028D; Fri, 15 Mar 2024 15:41:45 +0100 (CET)
-Received: from sin.source.kernel.org (sin.source.kernel.org
- [IPv6:2604:1380:40e1:4800::1])
+	id 07A8AF8028D; Fri, 15 Mar 2024 15:55:04 +0100 (CET)
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 2CA77F800E4
-	for <alsa-devel@alsa-project.org>; Fri, 15 Mar 2024 15:41:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2CA77F800E4
+	by alsa1.perex.cz (Postfix) with ESMTPS id 1D2B6F80093
+	for <alsa-devel@alsa-project.org>; Fri, 15 Mar 2024 15:55:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1D2B6F80093
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=Xh9YWr5X
+ header.s=k20201202 header.b=oJf9ywlx
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 5CECBCE20AD;
-	Fri, 15 Mar 2024 14:41:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 277A7C43394;
-	Fri, 15 Mar 2024 14:40:25 +0000 (UTC)
+	by sin.source.kernel.org (Postfix) with ESMTP id 693FDCE20BE;
+	Fri, 15 Mar 2024 14:54:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4979C433F1;
+	Fri, 15 Mar 2024 14:54:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710513629;
-	bh=/q5YpMd9flHlseDCFPbg8au4ag1109m5lTjQTwS5gjw=;
+	s=k20201202; t=1710514496;
+	bh=wpqIUwnNLWbIy1Zvw8blSo1JlKbndzcJuNOieCu2HqE=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Xh9YWr5X8ZC2LB5aTOiLwQb+ka5kfR3Rq3WSR2N14VU3k+/gBkTescbM5r8gxPImq
-	 PYMXqiXv+1R5zvYmVQRbOj6ISyIIs0Jg8SW9cu6tBsgV/NDNrsaCAXlUSFYZxqToWn
-	 l4Q6LURoBzapyHnLXCTKsDJVE8U0/mXF0vJu3TgISaWVou228FJcyNcrrXVWgFf61b
-	 /wkXznU5VRw4R7GUKnxZMu75XOzGg7FqW58iVcnSpE65Z/LJnJSZZlhEc0IwZgcdU4
-	 AXBntKqJoom6SKD0SvFQTZtZ0ljv+F6gieBnDhx3uW4Kl499/3lbwubH7ebT/R2iuF
-	 LFfM0sXO6WpOA==
-Date: Fri, 15 Mar 2024 14:40:23 +0000
+	b=oJf9ywlxeebUGm5lGowLDQIprnpa21rM3k9zG//vZtyYRSfB12aid3EbbaKNikdWU
+	 suAfBiOrvPAUV5fJUGyOYhuTW2JvvaxXO2GQ77MheCnaDoT2ma0zyXXObXaql4jmsb
+	 Tqip77HGMgvF1isYlmA/yPck4M0NyBZ6ZsWp2FpleUs4B4QxlxC6eAQn5672rThdEn
+	 fjy7KIEzadIzf+GtGeelzqslmpmgbTIl8gBsohHeEsCtkI+AWLxc/0PzE0ryShaSVH
+	 LLgRjlyZKxusS0VD5yXJcu5E0iGvfPFw09Y1jpnI0BeT7jN/vQ4WheUxLvSOVU0C/R
+	 ngIYI8uCVlwTw==
+Date: Fri, 15 Mar 2024 14:54:51 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Herve Codina <herve.codina@bootlin.com>
-Cc: Bastien Curutchet <bastien.curutchet@bootlin.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Rob Herring <robh+dt@kernel.org>,
+To: Bastien Curutchet <bastien.curutchet@bootlin.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
 	Conor Dooley <conor+dt@kernel.org>,
 	Peter Ujfalusi <peter.ujfalusi@gmail.com>,
@@ -69,22 +65,22 @@ Cc: Bastien Curutchet <bastien.curutchet@bootlin.com>,
 	linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	christophercordahi@nanometrics.ca
-Subject: Re: [PATCH 04/13] ASoC: ti: davinci-i2s: Replace dev_err with
- dev_err_probe
-Message-ID: <2f58922d-8964-4693-ab8a-612eb2f427e1@sirena.org.uk>
+	herve.codina@bootlin.com, christophercordahi@nanometrics.ca
+Subject: Re: [PATCH 09/13] ASoC: ti: davinci-i2s: Enable unexpected frame
+ pulses detection
+Message-ID: <9b3091e7-53ea-46f8-9dbc-a3896e920a97@sirena.org.uk>
 References: <20240315112745.63230-1-bastien.curutchet@bootlin.com>
- <20240315112745.63230-5-bastien.curutchet@bootlin.com>
- <6102130b-b496-4e75-9b9f-f960484848fb@sirena.org.uk>
- <20240315152332.57c8fdc4@bootlin.com>
+ <20240315112745.63230-10-bastien.curutchet@bootlin.com>
+ <51866f62-460d-4035-bcf1-b9f03cf9be0b@sirena.org.uk>
+ <13faa6c8-ad4f-4f81-935a-5ea74621d373@bootlin.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="15hPqMQpuEKqXq2/"
+	protocol="application/pgp-signature"; boundary="2KhnnhvxjBoPFAUT"
 Content-Disposition: inline
-In-Reply-To: <20240315152332.57c8fdc4@bootlin.com>
+In-Reply-To: <13faa6c8-ad4f-4f81-935a-5ea74621d373@bootlin.com>
 X-Cookie: A well-known friend is a treasure.
-Message-ID-Hash: R55DTDSHKA3BCUPJGW6HGXWXZOJGGELV
-X-Message-ID-Hash: R55DTDSHKA3BCUPJGW6HGXWXZOJGGELV
+Message-ID-Hash: LTOF2HLDTNGGFPWDHCQAPUXWUXBP6I7K
+X-Message-ID-Hash: LTOF2HLDTNGGFPWDHCQAPUXWUXBP6I7K
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -97,7 +93,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/R55DTDSHKA3BCUPJGW6HGXWXZOJGGELV/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LTOF2HLDTNGGFPWDHCQAPUXWUXBP6I7K/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -107,38 +103,53 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 
---15hPqMQpuEKqXq2/
+--2KhnnhvxjBoPFAUT
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Mar 15, 2024 at 03:23:32PM +0100, Herve Codina wrote:
-> Mark Brown <broonie@kernel.org> wrote:
+On Fri, Mar 15, 2024 at 03:45:24PM +0100, Bastien Curutchet wrote:
+> On 3/15/24 15:09, Mark Brown wrote:
+> > On Fri, Mar 15, 2024 at 12:27:41PM +0100, Bastien Curutchet wrote:
 
-> > dev_err_probe() with a fixed error code doesn't seem to make much sense,
-> > the whole point is to handle deferral but for a straight lookup like
-> > this that can't happen.
+> > > McBSP can generate an SYNCERR when unexpected frame pulses are
+> > > detected. The driver always disables this feature and ignore the
+> > > unexpected frame pulses.
 
-> The error code is uniformly formatted and the error path is more compact.
->   https://elixir.bootlin.com/linux/latest/source/drivers/base/core.c#L4963
+> > What does "unexpected" mean?
 
-> IMHO, to benefit of these feature, it makes sense to use it even with a fixed
-> error code.
+> Unexpected frame sync pulse is defined in datasheet as a sync pulse that
+> occurs <N> bit clocks earlier than the last transmitted bit of the previous
+> frame. The <N> can be configured through registers.
 
-I'm not convinced TBH, the fixed error code smells pretty bad.
+> > > Enable the generation of SYNCERR by the McBSP according to the
+> > > 'ti,enable-sync-err' device-tree property.
 
---15hPqMQpuEKqXq2/
+> > Why would this be optional, and how is this reported - I'm not seeing
+> > any interrupt handling updates?
+
+> It is possible to deliberately ignore them and that is what is done today in
+> the driver.
+> This is reported as a status bit in a register. An interrupt can indeed be
+> generated from this but I'm not using it (now at least).
+> I use the fact that McBSP automatically drops previous element and starts a
+> new reception when an unexpected frame pulse occurs.
+
+That sounds like a very standard behaviour for incorrect clocking.  I
+don't think this needs configuration at all, just enable this mode.
+
+--2KhnnhvxjBoPFAUT
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmX0XdYACgkQJNaLcl1U
-h9BL+Qf/e/mT3mvVoCNVK90XX2T3vJXR/x4cDU6LIbiYli44yw2LIvQ6NEJdy1s2
-h2NuvcMj4KFqXuOmTHZFkLVj3bteWZpfEBCd9Yyp3k0S2v3lz6vKMo6WeI2JTMnZ
-Or+DSkLgGs8Rgn7aVqilsMBQRKQjnZ9JrYK0v02oMMWjm4Lg5Gk9AXwOOPvHAbWt
-m/SrXOnPfFeWn0XXywm3AjF1vWnFu1g+qbPq/MniiwA7kYF7CG2fZCm/p1itXQIc
-C+Phc9DjmvnJQwC+pSgTSoWx8nwKW6cDiV0ndVaJkudn90o4yxWj4DGJSxzCz8U+
-ytZAz8Q0eZ+iH6t2K2R+Mt/5eNGvrg==
-=GIiK
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmX0YToACgkQJNaLcl1U
+h9DXzQf/SiZqlmZT6xmjS1bCVvJ6Goxl8aWHFYwkoXqqlqIa3nAeHYUUyXV05kI3
+Q9wNkk5YWPwDi4hHCkO8/XTvDtnobNBT51YqIWsgLquWdHyHehjGdvhqMkxN/eGi
+vJ2v+789u9CPM5hry0dMXgBTxlDG5G1b5GWoGe7rjYEdoCDDTNJo56JRpCk3T/GX
+g001ZFQgk2tZUyaGgBEjF1cFzWY2WocYH5l5nhhALRHQ+H0zP75++neQ19ydZkC0
+Y4R+CzYDoWn/jvgrf5ng/n+o66WW97stC12kMTjiodnTpaCWSF7Bk+qk1WqLoWAJ
+uu2o1O7QEGyyJWz+4GuiRyuMupFGbw==
+=aZq6
 -----END PGP SIGNATURE-----
 
---15hPqMQpuEKqXq2/--
+--2KhnnhvxjBoPFAUT--
