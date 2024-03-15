@@ -4,55 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A82A8C54E67
-	for <alsa-devel@archiver.kernel.org>; Sun, 17 Mar 2024 09:03:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D6FBEC54E67
+	for <alsa-devel@archiver.kernel.org>; Sun, 17 Mar 2024 09:03:46 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C5CA923D0;
-	Sun, 17 Mar 2024 10:03:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C5CA923D0
+	by alsa0.perex.cz (Postfix) with ESMTPS id EFE7023D7;
+	Sun, 17 Mar 2024 10:03:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EFE7023D7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1710666198;
-	bh=UUEMGYTWx7hSbIotL4/4C7MIZafTER3ZfeVzf1vYOUs=;
+	s=default; t=1710666225;
+	bh=AwAqDOZzz46Ed6tx9rUXvHKRqYi8N1dzTDMvRTXZYWk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=d7Mit0tyMaouawXNZWKiVZRtOdkcWzRsE6PyFRRYMYbqOHbaki3o1Nn6aII+X0PQm
-	 WJX+nia5DA+HcxhXKz2h/7v2gDKEUsze6TXVXVcHZNxz28dEBZTSP/K78z5A7b+yYR
-	 h/Pa+hPazIOqIysBlr0Q6jClnoPtt4QB3clEpjVM=
+	b=ldyd1jnl5Cdl9fKF39o7Pm5c+snX0YLgd7P1+umlx0LWFoJUdQlWz1hAgRgAgbP2i
+	 idmRqujYb/e+ncNDePOM5dP/DSBIqM7qErwAQ5Lopr5ireo0phnytjbJQW6C1dlTw5
+	 6EW2ldHU2p15FisgdQ2U0F8+UKMYPfPClx4vYNwk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9B074F80601; Sun, 17 Mar 2024 10:02:19 +0100 (CET)
+	id 72F3CF8057B; Sun, 17 Mar 2024 10:02:26 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 675C6F80615;
-	Sun, 17 Mar 2024 10:02:18 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3EFACF80634;
+	Sun, 17 Mar 2024 10:02:26 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7BA31F80564; Fri, 15 Mar 2024 12:28:34 +0100 (CET)
+	id 89C98F804E7; Fri, 15 Mar 2024 12:28:39 +0100 (CET)
 Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net
  [IPv6:2001:4b98:dc4:8::224])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E2F11F80570
-	for <alsa-devel@alsa-project.org>; Fri, 15 Mar 2024 12:28:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E2F11F80570
+	by alsa1.perex.cz (Postfix) with ESMTPS id 34CC0F80571
+	for <alsa-devel@alsa-project.org>; Fri, 15 Mar 2024 12:28:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 34CC0F80571
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=EiiBBzN9
-Received: by mail.gandi.net (Postfix) with ESMTPA id 54481E0002;
-	Fri, 15 Mar 2024 11:28:06 +0000 (UTC)
+ header.s=gm1 header.b=f1mkYBOY
+Received: by mail.gandi.net (Postfix) with ESMTPA id F0518E0008;
+	Fri, 15 Mar 2024 11:28:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1710502087;
+	t=1710502089;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=HVFVDw+1H0r8Xsrvu6KZ3OKr5htVuJOvlACpebRa/Dc=;
-	b=EiiBBzN95HqvkJVIx018Xh4otOv/gqgzfN6yZ94Kt4PHXhlq9JEosn/xu6UFUnKbljyv3C
-	d0JCnQkmekizZ208iSbdvbfBnwfIoNit9aQLFyb+9WhtzMXFpAaOsl0oH4KuxVxL7t8omr
-	KZU8Bbc5LZcVFaOA9f1s6/okWfCUAebbzTv8duG6mrdssmpDg9Oum1eN/D5cprdwC8+DoB
-	yAz1xpTGEe3BsUTJWSym2KWuSHU8PMZnsrock1eB/7yQM8HSGowbYos+FOXFRMBQd6ekgA
-	Qeq6nSG9y8z5PirFvKnBKRzoVCdOZ7vuqfoyS0t4qznc1aC4Mf4OA+V5zRZSPg==
+	bh=esZKn+SlazHXsQkGa0+kdlqCRWQZg4hF1p4IJ88VcZA=;
+	b=f1mkYBOYCtNZ7HhGkubtHbUKhGnUYVSZ3KcO56/kpibDdUQ4NRvccmSm6ViJmBJOyD+aCR
+	5SnTQabldHU02Ky9VeqcY/o26cmeNLeS10I6LjC6VNAyNexFPiD7hIRm1/lA7V6d/++QSR
+	pNwq3ucoQKHmXfhtAmk13mDMM/f92NqJoXjRQwKPXAk+YD+VJ+B5tMeznnds1fdRm00K4O
+	JojzL00fbfKulO/hnFZRZU2CXHGO6+gLZu4F7RwzIRbE+BIDsrb+z0Nz23dFtKSxLMDjAB
+	XN9D7MM8IfBUhffvLDebl2rNOPFRL1Ys2S5cDGX/ILm2j1lHsdMdETphHozCDw==
 From: Bastien Curutchet <bastien.curutchet@bootlin.com>
 To: Liam Girdwood <lgirdwood@gmail.com>,
 	Mark Brown <broonie@kernel.org>,
@@ -70,10 +70,9 @@ Cc: linux-sound@vger.kernel.org,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
 	herve.codina@bootlin.com,
 	christophercordahi@nanometrics.ca
-Subject: [PATCH 09/13] ASoC: ti: davinci-i2s: Enable unexpected frame pulses
- detection
-Date: Fri, 15 Mar 2024 12:27:41 +0100
-Message-ID: <20240315112745.63230-10-bastien.curutchet@bootlin.com>
+Subject: [PATCH 11/13] ASoC: ti: davinci-i2s: Add S24_LE to supported formats
+Date: Fri, 15 Mar 2024 12:27:43 +0100
+Message-ID: <20240315112745.63230-12-bastien.curutchet@bootlin.com>
 X-Mailer: git-send-email 2.43.2
 In-Reply-To: <20240315112745.63230-1-bastien.curutchet@bootlin.com>
 References: <20240315112745.63230-1-bastien.curutchet@bootlin.com>
@@ -86,15 +85,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: GVB7Y4ATLGL6FWVPBM4YCIUKQTY4CYDT
-X-Message-ID-Hash: GVB7Y4ATLGL6FWVPBM4YCIUKQTY4CYDT
-X-Mailman-Approved-At: Sun, 17 Mar 2024 08:56:02 +0000
+Message-ID-Hash: 2EUGINJ7DUCDUJMLMPZGPTIPTPV5VSXI
+X-Message-ID-Hash: 2EUGINJ7DUCDUJMLMPZGPTIPTPV5VSXI
+X-Mailman-Approved-At: Sun, 17 Mar 2024 08:56:03 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GVB7Y4ATLGL6FWVPBM4YCIUKQTY4CYDT/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2EUGINJ7DUCDUJMLMPZGPTIPTPV5VSXI/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -103,65 +102,96 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-McBSP can generate an SYNCERR when unexpected frame pulses are
-detected. The driver always disables this feature and ignore the
-unexpected frame pulses.
+S24_LE is supported by McBSP but not by the driver.
 
-Enable the generation of SYNCERR by the McBSP according to the
-'ti,enable-sync-err' device-tree property.
+Add S24_LE to driver's supported formats. Using it enables the sign
+extension in DRR (Data Receive Register). The other formats are kept
+with the zero extension in DRR.
+
+Remove data_type table as it is no longer used.
 
 Signed-off-by: Bastien Curutchet <bastien.curutchet@bootlin.com>
 ---
- sound/soc/ti/davinci-i2s.c | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
+ sound/soc/ti/davinci-i2s.c | 34 +++++++++++++++++++++-------------
+ 1 file changed, 21 insertions(+), 13 deletions(-)
 
 diff --git a/sound/soc/ti/davinci-i2s.c b/sound/soc/ti/davinci-i2s.c
-index 7cdd86f47ead..2c19e45b6b54 100644
+index 67307e75f2a8..13e349e7a6ec 100644
 --- a/sound/soc/ti/davinci-i2s.c
 +++ b/sound/soc/ti/davinci-i2s.c
-@@ -163,6 +163,8 @@ struct davinci_mcbsp_dev {
+@@ -61,6 +61,9 @@
  
- 	int tdm_slots;
- 	int slot_width;
-+
-+	bool sync_err;
+ #define DAVINCI_MCBSP_SPCR_RRST		(1 << 0)
+ #define DAVINCI_MCBSP_SPCR_RINTM(v)	((v) << 4)
++#define DAVINCI_MCBSP_SPCR_RJUST(v)	((v) << 13)
++#define DAVINCI_MCBSP_SPCR_RJUST_Z_LE	DAVINCI_MCBSP_SPCR_RJUST(0)
++#define DAVINCI_MCBSP_SPCR_RJUST_S_LE	DAVINCI_MCBSP_SPCR_RJUST(1)
+ #define DAVINCI_MCBSP_SPCR_XRST		(1 << 16)
+ #define DAVINCI_MCBSP_SPCR_XINTM(v)	((v) << 20)
+ #define DAVINCI_MCBSP_SPCR_GRST		(1 << 22)
+@@ -107,15 +110,10 @@ enum {
+ 	DAVINCI_MCBSP_WORD_32,
  };
  
- static inline void davinci_mcbsp_write_reg(struct davinci_mcbsp_dev *dev,
-@@ -432,8 +434,10 @@ static int davinci_i2s_hw_params(struct snd_pcm_substream *substream,
- 	struct davinci_mcbsp_dev *dev = snd_soc_dai_get_drvdata(dai);
- 	struct snd_interval *i = NULL;
- 	int mcbsp_word_length, master;
--	unsigned int rcr, xcr, clk_div, freq, framesize;
-+	unsigned int clk_div, freq, framesize;
- 	unsigned int srgr = 0;
-+	unsigned int rcr = 0;
-+	unsigned int xcr = 0;
- 	u32 spcr;
+-static const unsigned char data_type[SNDRV_PCM_FORMAT_S32_LE + 1] = {
+-	[SNDRV_PCM_FORMAT_S8]		= 1,
+-	[SNDRV_PCM_FORMAT_S16_LE]	= 2,
+-	[SNDRV_PCM_FORMAT_S32_LE]	= 4,
+-};
+-
+ static const unsigned char asp_word_length[SNDRV_PCM_FORMAT_S32_LE + 1] = {
+ 	[SNDRV_PCM_FORMAT_S8]		= DAVINCI_MCBSP_WORD_8,
+ 	[SNDRV_PCM_FORMAT_S16_LE]	= DAVINCI_MCBSP_WORD_16,
++	[SNDRV_PCM_FORMAT_S24_LE]	= DAVINCI_MCBSP_WORD_24,
+ 	[SNDRV_PCM_FORMAT_S32_LE]	= DAVINCI_MCBSP_WORD_32,
+ };
+ 
+@@ -443,8 +441,23 @@ static int davinci_i2s_hw_params(struct snd_pcm_substream *substream,
  	snd_pcm_format_t fmt;
  	unsigned element_cnt = 1;
-@@ -530,8 +534,10 @@ static int davinci_i2s_hw_params(struct snd_pcm_substream *substream,
- 	}
- 	davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_SRGR_REG, srgr);
  
--	rcr = DAVINCI_MCBSP_RCR_RFIG;
--	xcr = DAVINCI_MCBSP_XCR_XFIG;
-+	if (!dev->sync_err) {
-+		rcr |= DAVINCI_MCBSP_RCR_RFIG;
-+		xcr |= DAVINCI_MCBSP_XCR_XFIG;
-+	}
- 	if (dev->mode == MOD_DSP_B) {
- 		rcr |= DAVINCI_MCBSP_RCR_RDATDLY(0);
- 		xcr |= DAVINCI_MCBSP_XCR_XDATDLY(0);
-@@ -760,6 +766,8 @@ static int davinci_i2s_probe(struct platform_device *pdev)
- 
- 	dev->base = io_base;
- 
-+	dev->sync_err = of_property_read_bool(pdev->dev.of_node, "ti,enable-sync-err");
+-	/* general line settings */
+ 	spcr = davinci_mcbsp_read_reg(dev, DAVINCI_MCBSP_SPCR_REG);
 +
- 	/* setup DMA, first TX, then RX */
- 	dma_data = &dev->dma_data[SNDRV_PCM_STREAM_PLAYBACK];
- 	dma_data->addr = (dma_addr_t)(mem->start + DAVINCI_MCBSP_DXR_REG);
++	/* Determine xfer data type */
++	fmt = params_format(params);
++	switch (fmt) {
++	case SNDRV_PCM_FORMAT_S16_LE:
++	case SNDRV_PCM_FORMAT_S32_LE:
++		break;
++	case SNDRV_PCM_FORMAT_S24_LE:
++		spcr |= DAVINCI_MCBSP_SPCR_RJUST_S_LE;
++		break;
++	default:
++		dev_warn(dev->dev, "davinci-i2s: unsupported PCM format\n");
++		return -EINVAL;
++	}
++
++	/* general line settings */
+ 	if (dev->free_run)
+ 		spcr |= DAVINCI_MCBSP_SPCR_FREE;
+ 	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
+@@ -548,12 +561,6 @@ static int davinci_i2s_hw_params(struct snd_pcm_substream *substream,
+ 		rcr |= DAVINCI_MCBSP_RCR_RDATDLY(1);
+ 		xcr |= DAVINCI_MCBSP_XCR_XDATDLY(1);
+ 	}
+-	/* Determine xfer data type */
+-	fmt = params_format(params);
+-	if ((fmt > SNDRV_PCM_FORMAT_S32_LE) || !data_type[fmt]) {
+-		printk(KERN_WARNING "davinci-i2s: unsupported PCM format\n");
+-		return -EINVAL;
+-	}
+ 
+ 	if (params_channels(params) == 2) {
+ 		element_cnt = 2;
+@@ -692,6 +699,7 @@ static void davinci_i2s_shutdown(struct snd_pcm_substream *substream,
+ 
+ #define DAVINCI_I2S_RATES	SNDRV_PCM_RATE_8000_96000
+ #define DAVINCI_I2S_FORMATS	(SNDRV_PCM_FMTBIT_S16_LE | \
++				 SNDRV_PCM_FMTBIT_S24_LE | \
+ 				 SNDRV_PCM_FMTBIT_S32_LE)
+ 
+ static int davinci_i2s_dai_probe(struct snd_soc_dai *dai)
 -- 
 2.43.2
 
