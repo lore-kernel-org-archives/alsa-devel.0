@@ -4,149 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C3548C54E60
-	for <alsa-devel@archiver.kernel.org>; Sun, 17 Mar 2024 08:38:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C5F64C54E60
+	for <alsa-devel@archiver.kernel.org>; Sun, 17 Mar 2024 08:56:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CCF182369;
-	Sun, 17 Mar 2024 09:38:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CCF182369
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4C90523CF;
+	Sun, 17 Mar 2024 09:56:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4C90523CF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1710664713;
-	bh=c+bbqGjD9ItjCEUMB5GJWo/HLn/d82hm11kvr0sPDsM=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=a+6liJcsOHXdANgecg7MpIl4iVYM5v5kfLVSDBZYimvcxdvOx3kfgHBFcunSvQQmT
-	 TZYTe/sVi1GJVkigWn2DYEXOrO+btYzgZR1SLMdqoEBwjVpxHGnkft+lH8rMwGodUv
-	 yTqfxR6HxQ16kmv6LRdJtVMVZ/Gzkwl1PycHsjvU=
+	s=default; t=1710665783;
+	bh=cMBm2ZUDvv/FeHjU9MT1L6ylkEfHxwGT+Fdb6DMTg3U=;
+	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=dpE3J/J7Og193r7lvh2vRn6vNL2IhxT+0/LoxeNGtXeM7wGfp0EfnqP22cpJmRINv
+	 J7nTqc6Ypoil3MUrVcEUvDzeuAzfzTJYUGkfokHRl7S2QdI16A5u/LLxDi2fqNZV+m
+	 qcR4Uu1dK4UOzyMxMMmshIDQmHpRM2qGoAQHY458=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4C1BEF805C9; Sun, 17 Mar 2024 09:37:52 +0100 (CET)
+	id 6D334F805AA; Sun, 17 Mar 2024 09:55:51 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id ED39FF805D3;
-	Sun, 17 Mar 2024 09:37:51 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C8965F8057E;
+	Sun, 17 Mar 2024 09:55:50 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E1C5CF804E7; Sun, 17 Mar 2024 09:37:10 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 7350EF8057D; Fri, 15 Mar 2024 12:28:13 +0100 (CET)
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net
+ [217.70.183.196])
+	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 27AE5F8025F
-	for <alsa-devel@alsa-project.org>; Sun, 17 Mar 2024 09:37:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 27AE5F8025F
+	by alsa1.perex.cz (Postfix) with ESMTPS id 2C644F8025F
+	for <alsa-devel@alsa-project.org>; Fri, 15 Mar 2024 12:27:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2C644F8025F
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=idxnekbf;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=Q+RUdSnE;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=idxnekbf;
-	dkim=neutral header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=Q+RUdSnE
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org
- [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id A1B0D20887;
-	Sun, 17 Mar 2024 08:37:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1710664624;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=CA32GN7w7Gy0elzjx0zMFbSvrRho6U8r0Mxwq6cnA2k=;
-	b=idxnekbftCX5aURAKySfor03E7Z8WxA1OBVdEQRJyPjMu1UQyMwUaSlB8oyKUaHQ9DvoCm
-	qsjOuVYVLeODL1XH2tTUhZYPHwsBEyykKURk0pyqP60jTuH0mpZ7+hvalgpxMTj6y3BemA
-	UH5QMC8bCZQRgjkXXVEjgy0BnN50KmI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1710664624;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=CA32GN7w7Gy0elzjx0zMFbSvrRho6U8r0Mxwq6cnA2k=;
-	b=Q+RUdSnEsCPdcGF5ICkX/BnzBGBvlSvISciuueVmtVI3VAvUC+tSWnJaoJ5gYDLmglKGsc
-	DMsWB8EWfr4JHpAw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1710664624;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=CA32GN7w7Gy0elzjx0zMFbSvrRho6U8r0Mxwq6cnA2k=;
-	b=idxnekbftCX5aURAKySfor03E7Z8WxA1OBVdEQRJyPjMu1UQyMwUaSlB8oyKUaHQ9DvoCm
-	qsjOuVYVLeODL1XH2tTUhZYPHwsBEyykKURk0pyqP60jTuH0mpZ7+hvalgpxMTj6y3BemA
-	UH5QMC8bCZQRgjkXXVEjgy0BnN50KmI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1710664624;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=CA32GN7w7Gy0elzjx0zMFbSvrRho6U8r0Mxwq6cnA2k=;
-	b=Q+RUdSnEsCPdcGF5ICkX/BnzBGBvlSvISciuueVmtVI3VAvUC+tSWnJaoJ5gYDLmglKGsc
-	DMsWB8EWfr4JHpAw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 80D2A1349D;
-	Sun, 17 Mar 2024 08:37:04 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 1rtbHbCr9mUjSAAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Sun, 17 Mar 2024 08:37:04 +0000
-Date: Sun, 17 Mar 2024 09:37:03 +0100
-Message-ID: <874jd59rv4.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: alsa-devel@alsa-project.org
-Subject: Re: [PATCH] ALSA: core: add kunitconfig
-In-Reply-To: <20240317024050.588370-1-o-takashi@sakamocchi.jp>
-References: <20240317024050.588370-1-o-takashi@sakamocchi.jp>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-Spamd-Result: default: False [-3.30 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-0.998];
-	 RCPT_COUNT_TWO(0.00)[2];
-	 MID_CONTAINS_FROM(1.00)[];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-Authentication-Results: smtp-out2.suse.de;
-	none
-Message-ID-Hash: XND5LRZRHN6EYLNVZDBWN4LPSCLMPHXE
-X-Message-ID-Hash: XND5LRZRHN6EYLNVZDBWN4LPSCLMPHXE
-X-MailFrom: tiwai@suse.de
+	dkim=pass (2048-bit key,
+ unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
+ header.s=gm1 header.b=Hbu9H1td
+Received: by mail.gandi.net (Postfix) with ESMTPA id 218EDE0004;
+	Fri, 15 Mar 2024 11:27:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1710502074;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=yKwrXtvxj8TEZrcKF8i8hnVKSrTEOPd44rgLaggpYn8=;
+	b=Hbu9H1tdUnGCCxaS50Hbpsn1zVwsI8XeVjXTg81w6ZplrhN1WxMKpPRos8LILwVed0L63B
+	PiW4Zy8L6nEbXD0+3psh3ELfndG3HbMMd/c2hzFfAcbSTDg0BpjNddu7dBxFqP8Hv6gxCL
+	7x4t8xFtmvjwsYrZxLiuBwtxC1fg7lFCv/CF6/7kuoynStldNWHo9EYaZibQSZiGbDpcuJ
+	y5CaZDVJqaVhSqV4Tdj2L6iIYrir+5froFdjZQ56Ue3zxIylI0vla324frDvmOjFNo8AEH
+	QVJTO/rxL7cFSxlqOoNcyfx1GOu+ZNJWDWbk+pSsLQaAVHysLIr5BrNT1KuKNA==
+From: Bastien Curutchet <bastien.curutchet@bootlin.com>
+To: Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	Bastien Curutchet <bastien.curutchet@bootlin.com>
+Cc: linux-sound@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	alsa-devel@alsa-project.org,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	herve.codina@bootlin.com,
+	christophercordahi@nanometrics.ca
+Subject: [PATCH 00/13] ASoC: ti: davinci-i2s: Add features to McBSP driver
+Date: Fri, 15 Mar 2024 12:27:32 +0100
+Message-ID: <20240315112745.63230-1-bastien.curutchet@bootlin.com>
+X-Mailer: git-send-email 2.43.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: bastien.curutchet@bootlin.com
+X-MailFrom: bastien.curutchet@bootlin.com
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: UDVUVJSJNXL7YCCLZREOPOQOPE2S3JGV
+X-Message-ID-Hash: UDVUVJSJNXL7YCCLZREOPOQOPE2S3JGV
+X-Mailman-Approved-At: Sun, 17 Mar 2024 08:55:45 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XND5LRZRHN6EYLNVZDBWN4LPSCLMPHXE/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UDVUVJSJNXL7YCCLZREOPOQOPE2S3JGV/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -155,48 +98,51 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Sun, 17 Mar 2024 03:40:50 +0100,
-Takashi Sakamoto wrote:
-> 
-> It is helpful to add .kunitconfig if we work with the tools provided by
-> KUnit project. The file describes the series of kernel configurations to
-> satisfy the dependency to build the target test.
-> 
-> For example:
-> 
-> $ ./tools/testing/kunit/kunit.py run --arch=arm64 --cross_compile=aarch64-linux-gnu- --kunitconfig=sound/core/
-> [11:35:13] Configuring KUnit Kernel ...
-> Regenerating .config ...
-> Populating config with:
-> $ make ARCH=arm64 O=.kunit olddefconfig CROSS_COMPILE=aarch64-linux-gnu-
-> [11:35:19] Building KUnit Kernel ...
-> Populating config with:
-> $ make ARCH=arm64 O=.kunit olddefconfig CROSS_COMPILE=aarch64-linux-gnu-
-> Building with:
-> $ make ARCH=arm64 O=.kunit --jobs=8 CROSS_COMPILE=aarch64-linux-gnu-
-> [11:37:35] Starting KUnit Kernel (1/1)...
-> [11:37:35] ============================================================
-> Running tests with:
-> $ qemu-system-aarch64 -nodefaults -m 1024 -kernel .kunit/arch/arm64/boot/Image.gz -append 'kunit.enable=1 console=ttyAMA0 kunit_shutdown=reboot' -no-reboot -nographic -serial stdio -machine virt -cpu max,pauth-impdef=on
-> [11:37:35] ============== sound-core-test (10 subtests) ===============
-> [11:37:35] [PASSED] test_phys_format_size
-> [11:37:35] [PASSED] test_format_width
-> [11:37:35] [PASSED] test_format_endianness
-> [11:37:35] [PASSED] test_format_signed
-> [11:37:35] [PASSED] test_format_fill_silence
-> [11:37:35] [PASSED] test_playback_avail
-> [11:37:35] [PASSED] test_capture_avail
-> [11:37:35] [PASSED] test_card_set_id
-> [11:37:35] [PASSED] test_pcm_format_name
-> [11:37:35] [PASSED] test_card_add_component
-> [11:37:35] ================= [PASSED] sound-core-test =================
-> [11:37:35] ============================================================
-> [11:37:35] Testing complete. Ran 10 tests: passed: 10
-> [11:37:35] Elapsed time: 142.333s total, 5.617s configuring, 136.047s building, 0.630s running
-> 
-> Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+This series aims to add some features to McBSP driver.
 
-Applied now.  Thanks.
+Convert bindings from .txt to .yaml.
+Add possibility to use an external clock as sample rate generator's
+input.
+Add handling of new formats (TDM, S24_LE, BP_FC).
+Add optional properties in DT:
+ - ti,enable-sync-err  : Enable the detection of unexpected frame pulses
+ - ti,disable-free-run : Disable the free-running mode where McBSP drives
+                         serial clocks during emulation halt
+ - ti,drive-dx 	       : Outputs a chosen pattern on DX pin during
+                         capture streams.
 
+This has been tested on a platform designed off of the DAVINCI/OMAP-L138
+connected to 3 daisy-chained AD7767. An external clock drives the
+sample rate generator through the CLKS pin.
+The hardware I have only allowed me to test acquisition side of McBSP.
+It is connected to a 6 channels TDM and acts as Bit clock provider and
+Frame clock consumer.
 
-Takashi
+Bastien Curutchet (13):
+  ASoC: dt-bindings: davinci-mcbsp: convert McBSP bindings to yaml
+    schema
+  ASoC: dt-bindings: davinci-mcbsp: Add new properties
+  ASoC: ti: davinci-i2s: Remove the unused clk_input_pin attribute
+  ASoC: ti: davinci-i2s: Replace dev_err with dev_err_probe
+  ASoC: ti: davinci-i2s: Use external clock to drive sample rate
+    generator
+  ASoC: ti: davinci-i2s: Delete unnecessary assignment
+  ASoC: ti: davinci-i2s: Add TDM support
+  ASoC: ti: davinci-i2s: Add handling of BP_FC format
+  ASoC: ti: davinci-i2s: Enable unexpected frame pulses detection
+  ASoC: ti: davinci-i2s: Make free-running mode optional
+  ASoC: ti: davinci-i2s: Add S24_LE to supported formats
+  ASoC: dt-bindings: davinic-mcbsp: Add the 'ti,drive-dx' property
+  ASoC: ti: davinci-i2s: Opitonally drive DX pin during capture streams
+
+ .../bindings/sound/davinci-mcbsp.txt          |  50 ---
+ .../bindings/sound/davinci-mcbsp.yaml         | 119 +++++++
+ include/linux/platform_data/davinci_asp.h     |  15 -
+ sound/soc/ti/davinci-i2s.c                    | 333 ++++++++++++++----
+ 4 files changed, 376 insertions(+), 141 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/sound/davinci-mcbsp.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/davinci-mcbsp.yaml
+
+-- 
+2.43.2
+
