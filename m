@@ -4,55 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6AE7EC54E67
-	for <alsa-devel@archiver.kernel.org>; Sun, 17 Mar 2024 09:04:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3ADDBC54E60
+	for <alsa-devel@archiver.kernel.org>; Sun, 17 Mar 2024 09:04:51 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E13A623D6;
-	Sun, 17 Mar 2024 10:04:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E13A623D6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7D37E238C;
+	Sun, 17 Mar 2024 10:04:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7D37E238C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1710666267;
-	bh=XVrqaYGWmJTFebdeWf0nePt+KDZv5ZIE/BRC4hiKX1o=;
+	s=default; t=1710666289;
+	bh=xf2gnirs9NBtEZ1Xk3wbbzWcel2ZGkgx1esK1/Rn/mI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=fDQ3AfzC7uYHHv7tntUw4ujg2m7vw2pbRAgJdL2Wy5O9LiIgUXoxoYCFdjs6Se2/b
-	 InDc9uv51rff5Lyd3n8R94gQYayx2e6bDpc4kjIKjENKEvW9xuhqKhQNnDAuqfVEWk
-	 3VXeyS6F11cSLG1WomopNkG4M+JB7l0k0Wy2Y74o=
+	b=Y2bzfeybsvy/xIxTTFloxsA1e6f+MmytDv3Eneo9mIqy4dmBqFWlKuhokDAyBxM1O
+	 pNAbrvzuC3ecguELm9abG6ITkOmSg5MqD8B+LA8wV8gC7AlGGhDjfX7PFSWNq/GDcH
+	 FBlnfiXa7NTNSohCE+/1QXphQQZ5Vh81GEVyasl8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 36D5CF80687; Sun, 17 Mar 2024 10:02:45 +0100 (CET)
+	id D3CFEF805D6; Sun, 17 Mar 2024 10:02:52 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id BA4C4F8069C;
-	Sun, 17 Mar 2024 10:02:44 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 03137F805C8;
+	Sun, 17 Mar 2024 10:02:51 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 15889F8028D; Fri, 15 Mar 2024 12:29:31 +0100 (CET)
+	id 7038AF80570; Fri, 15 Mar 2024 12:29:35 +0100 (CET)
 Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net
  [IPv6:2001:4b98:dc4:8::224])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 09A4AF804B0
-	for <alsa-devel@alsa-project.org>; Fri, 15 Mar 2024 12:28:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 09A4AF804B0
+	by alsa1.perex.cz (Postfix) with ESMTPS id 3EA91F80093
+	for <alsa-devel@alsa-project.org>; Fri, 15 Mar 2024 12:27:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3EA91F80093
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=nQloQW+L
-Received: by mail.gandi.net (Postfix) with ESMTPA id 4FE46E0004;
-	Fri, 15 Mar 2024 11:28:02 +0000 (UTC)
+ header.s=gm1 header.b=kTyKJc4y
+Received: by mail.gandi.net (Postfix) with ESMTPA id 2E639E0006;
+	Fri, 15 Mar 2024 11:27:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1710502083;
+	t=1710502079;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=rIIVeMMbsAWvQSYg8CaxSM8SnaSJIx8VolCRbQElsx8=;
-	b=nQloQW+LiV7NH+lAEDVXoJbNi3po1hk/8VSb3nnFfLqg3YhAzmXIS4BV63HKESHUBS5PHw
-	mjTogem3ct8QXJ1rglzYWWCcYDokmAJ/uUh+JsBeaxZukIHK1SGmDMfY+etmN8yZyKv4qZ
-	UGRb0H1QDD7DOryGFKFJvp/poc87G+J6gxXSOjTS2Qmhvtora+DGRn77j2oGcWu96rHvqT
-	kDa17wCDAtXpEqAID8cGXcc9A2HZea0sGM4y0BVeTXrwMzDP+7OZs4zuqF4qSW7+30a4tZ
-	6FcQDGWNJNUgwmVTivFucl+QrfUXMmzKMea3RRfEFhG0a13uGNtGIohaP9fIqg==
+	bh=oS6/v1Kh5XV6ssrnHrgLVDsnztMrvT6ht6wxi9TnOcg=;
+	b=kTyKJc4y0z+lIgkuSyNi01osbBGdO7ZLmmuvrb8zXyHQ90gw0aOZSI4oSB9yE09emHWDoY
+	MisZ0sKNhK5wnsX/tn9A0gZAoMXMN3NOfujWFB9CACbamn37dSavFNnRu9xbjzbaQbX6i8
+	ltUlnqKfBRI06fXUgBmfeVetBTydwntSgQEz7Aq3GBxEqx8LQnJ+XcJk/4Wqu8xb4qCrWH
+	m+sAE96bTNbbLDcDCFXJ8227GRAvPXBewgxQNxK9cdEQySCYBFZgxkcdl2PtahmhLbX0T2
+	9Z/UBf3J/LHX9belXvrDI95Qlx8RT9o5N2Fwwv09n6BjatqjcsXcvZzU9h/2qQ==
 From: Bastien Curutchet <bastien.curutchet@bootlin.com>
 To: Liam Girdwood <lgirdwood@gmail.com>,
 	Mark Brown <broonie@kernel.org>,
@@ -70,9 +70,10 @@ Cc: linux-sound@vger.kernel.org,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
 	herve.codina@bootlin.com,
 	christophercordahi@nanometrics.ca
-Subject: [PATCH 06/13] ASoC: ti: davinci-i2s: Delete unnecessary assignment
-Date: Fri, 15 Mar 2024 12:27:38 +0100
-Message-ID: <20240315112745.63230-7-bastien.curutchet@bootlin.com>
+Subject: [PATCH 03/13] ASoC: ti: davinci-i2s: Remove the unused clk_input_pin
+ attribute
+Date: Fri, 15 Mar 2024 12:27:35 +0100
+Message-ID: <20240315112745.63230-4-bastien.curutchet@bootlin.com>
 X-Mailer: git-send-email 2.43.2
 In-Reply-To: <20240315112745.63230-1-bastien.curutchet@bootlin.com>
 References: <20240315112745.63230-1-bastien.curutchet@bootlin.com>
@@ -85,43 +86,125 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: CQM5BT4HIYTDWDWVM5NJCJB56AVPUGSE
-X-Message-ID-Hash: CQM5BT4HIYTDWDWVM5NJCJB56AVPUGSE
+Message-ID-Hash: OXD63YDEXXAF54YF7W5PYMP3CYQNL6XP
+X-Message-ID-Hash: OXD63YDEXXAF54YF7W5PYMP3CYQNL6XP
 X-Mailman-Approved-At: Sun, 17 Mar 2024 08:56:28 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: <>
-List-Archive: <>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-In davinci_i2s_hw_params(), mcbsp_word_length is set twice to
-asp_word_length[fmt].
+The clk_input_pin attribute of davinci_mcbsp_dev struct is not set since
+commit 257ade78b601 ("ASoC: davinci-i2s: Convert to use edma-pcm").
 
-Remove second unnecessary assignment.
+Remove the attribute.
+Keep the behaviour of the MCBSP_CLKR case as MCBSP_CLKR == 0.
+I can't test the BC_FP format so I added back the initial comment that
+was removed by commit ec6375533748 ("ASoC: DaVinci: Added selection of
+clk input pin for McBSP"). This was the last dependency to
+linux/platform_data/davinci_asp.h so it is not included anymore.
+
+Remove the enum mcbsp_clk_input_pin from davinci_asp.h as it is not used
+anywhere else.
 
 Signed-off-by: Bastien Curutchet <bastien.curutchet@bootlin.com>
 ---
- sound/soc/ti/davinci-i2s.c | 1 -
- 1 file changed, 1 deletion(-)
+ include/linux/platform_data/davinci_asp.h | 15 --------------
+ sound/soc/ti/davinci-i2s.c                | 24 ++++-------------------
+ 2 files changed, 4 insertions(+), 35 deletions(-)
 
+diff --git a/include/linux/platform_data/davinci_asp.h b/include/linux/platform_data/davinci_asp.h
+index c8645b2ed3c0..b9c8520b4bd3 100644
+--- a/include/linux/platform_data/davinci_asp.h
++++ b/include/linux/platform_data/davinci_asp.h
+@@ -25,16 +25,6 @@ struct davinci_mcasp_pdata {
+ 	unsigned sram_size_capture;
+ 	struct gen_pool *sram_pool;
+ 
+-	/*
+-	 * If McBSP peripheral gets the clock from an external pin,
+-	 * there are three chooses, that are MCBSP_CLKX, MCBSP_CLKR
+-	 * and MCBSP_CLKS.
+-	 * Depending on different hardware connections it is possible
+-	 * to use this setting to change the behaviour of McBSP
+-	 * driver.
+-	 */
+-	int clk_input_pin;
+-
+ 	/*
+ 	 * This flag works when both clock and FS are outputs for the cpu
+ 	 * and makes clock more accurate (FS is not symmetrical and the
+@@ -91,11 +81,6 @@ enum {
+ 	MCASP_VERSION_OMAP,	/* OMAP4/5 */
+ };
+ 
+-enum mcbsp_clk_input_pin {
+-	MCBSP_CLKR = 0,		/* as in DM365 */
+-	MCBSP_CLKS,
+-};
+-
+ #define INACTIVE_MODE	0
+ #define TX_MODE		1
+ #define RX_MODE		2
 diff --git a/sound/soc/ti/davinci-i2s.c b/sound/soc/ti/davinci-i2s.c
-index 8ee22d79b0f4..f4514d4dff07 100644
+index 07c8b2259208..5c906641640e 100644
 --- a/sound/soc/ti/davinci-i2s.c
 +++ b/sound/soc/ti/davinci-i2s.c
-@@ -479,7 +479,6 @@ static int davinci_i2s_hw_params(struct snd_pcm_substream *substream,
- 			return -EINVAL;
- 		}
- 	}
--	mcbsp_word_length = asp_word_length[fmt];
+@@ -19,7 +19,6 @@
+ #include <linux/delay.h>
+ #include <linux/io.h>
+ #include <linux/clk.h>
+-#include <linux/platform_data/davinci_asp.h>
  
- 	switch (master) {
- 	case SND_SOC_DAIFMT_BP_FP:
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+@@ -159,7 +158,6 @@ struct davinci_mcbsp_dev {
+ 
+ 	unsigned int fmt;
+ 	int clk_div;
+-	int clk_input_pin;
+ 	bool i2s_accurate_sck;
+ };
+ 
+@@ -239,26 +237,12 @@ static int davinci_i2s_set_dai_fmt(struct snd_soc_dai *cpu_dai,
+ 			DAVINCI_MCBSP_PCR_CLKRM;
+ 		break;
+ 	case SND_SOC_DAIFMT_BC_FP:
+-		pcr = DAVINCI_MCBSP_PCR_FSRM | DAVINCI_MCBSP_PCR_FSXM;
+ 		/*
+-		 * Selection of the clock input pin that is the
+-		 * input for the Sample Rate Generator.
+-		 * McBSP FSR and FSX are driven by the Sample Rate
+-		 * Generator.
++		 * McBSP CLKR pin is the input for the Sample Rate Generator.
++		 * McBSP FSR and FSX are driven by the Sample Rate Generator.
+ 		 */
+-		switch (dev->clk_input_pin) {
+-		case MCBSP_CLKS:
+-			pcr |= DAVINCI_MCBSP_PCR_CLKXM |
+-				DAVINCI_MCBSP_PCR_CLKRM;
+-			break;
+-		case MCBSP_CLKR:
+-			pcr |= DAVINCI_MCBSP_PCR_SCLKME;
+-			break;
+-		default:
+-			dev_err(dev->dev, "bad clk_input_pin\n");
+-			return -EINVAL;
+-		}
+-
++		pcr = DAVINCI_MCBSP_PCR_FSRM | DAVINCI_MCBSP_PCR_FSXM;
++		pcr |= DAVINCI_MCBSP_PCR_SCLKME;
+ 		break;
+ 	case SND_SOC_DAIFMT_BC_FC:
+ 		/* codec is master */
 -- 
 2.43.2
 
