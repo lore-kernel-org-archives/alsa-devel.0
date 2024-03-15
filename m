@@ -4,117 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 44742C54E58
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Mar 2024 10:25:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1702CC54E67
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Mar 2024 13:34:35 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4401E22AE;
-	Fri, 15 Mar 2024 11:25:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4401E22AE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 326C7233D;
+	Fri, 15 Mar 2024 14:34:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 326C7233D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1710498353;
-	bh=NfFTjprpYpTx/YOcA395cb2tUELkt8+AWxFx0BohTVw=;
-	h=References:From:To:Cc:Subject:Date:In-reply-to:List-Id:
+	s=default; t=1710509673;
+	bh=JfFjAgEhqLnBfKgjQe9qzywYHRntA6N/TCPrlY0SO3s=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=PHUKei2qLMK5wLQWpRP7qWBxcE/DDn7zyb54dOA5wOl80YoWuU1yix22eRspc8WPJ
-	 c6PD6pO4BcPWO70v1t1OV5F1k4Y7gViXEYjmXvyMev/XrOzpHfmbUVMZU+G1hSlwR6
-	 9bYilFy8A6H78GS8mR9fiSlImo8stVEBbT2plymc=
+	b=EvPwoLXqsUPNbdTRj49d5gdhTBJVeETWotQwPiOvVV1AJWQOWyEUaka8UOo75Mnef
+	 pycax8J3u+1IJuv5qfK86vSTmVYtFc3QePaG/UHAcU9fRmVYOI+mapX/3GVz3WLOKi
+	 crokq9XwxlG4aq9etEX4CyVSsffAb3KM+Bp8gKOk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 29ACAF80579; Fri, 15 Mar 2024 11:25:21 +0100 (CET)
+	id A83A7F805AB; Fri, 15 Mar 2024 14:33:57 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A6B93F805A9;
-	Fri, 15 Mar 2024 11:25:21 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 294F3F805A9;
+	Fri, 15 Mar 2024 14:33:57 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CF60FF8028D; Fri, 15 Mar 2024 11:25:16 +0100 (CET)
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com
- [IPv6:2a00:1450:4864:20::42a])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	id 6B824F8028D; Fri, 15 Mar 2024 14:33:52 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 09B38F800E4
-	for <alsa-devel@alsa-project.org>; Fri, 15 Mar 2024 11:25:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 09B38F800E4
+	by alsa1.perex.cz (Postfix) with ESMTPS id 8506BF80093
+	for <alsa-devel@alsa-project.org>; Fri, 15 Mar 2024 14:33:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8506BF80093
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=baylibre-com.20230601.gappssmtp.com
- header.i=@baylibre-com.20230601.gappssmtp.com header.a=rsa-sha256
- header.s=20230601 header.b=3e5qa8XD
-Received: by mail-wr1-x42a.google.com with SMTP id
- ffacd0b85a97d-33e94c12cfaso1443299f8f.3
-        for <alsa-devel@alsa-project.org>;
- Fri, 15 Mar 2024 03:25:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1710498307;
- x=1711103107; darn=alsa-project.org;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
-        bh=I3EB/6PldhsbhWY9+bYWiu2w8/wr6W5dSP5c/9sIMoI=;
-        b=3e5qa8XDZldnK7HwjUIaMDabzt1YlQPAG2qDTgNLMc/0q7L1gZm17EpRpoioAfRHzm
-         ghWCKWS9Zfj2xLyS9c2BmBAErqbyZUA2dqqTc3c92/OS/S1LgAMLSmrSXmK6JsRNw9ua
-         NcMsPSQ9ekVNhSh6kkVhDJ1wh7FClV+KsO8hWSDvt+XRd2t4UhwfcNY6DcvzcckFF+gq
-         +3GsuFf/wlFCifmh9CqSRStSMGpci6auHcQ1jp51C7Y5qnsFP8e6C+eSfFfV9Ru254Zt
-         HDojs2ihshIKAm+z1p0WTfyocbHxcGogBW5sisgrmI6tkbhQzCOW6QRaoDmVdjtmWayY
-         vNGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710498307; x=1711103107;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=I3EB/6PldhsbhWY9+bYWiu2w8/wr6W5dSP5c/9sIMoI=;
-        b=v7rbW12k3l9lUF10gUpgaKreTXtXd4ARYndy5bXI1+Oji/EVVQQihNnaLaLn13jqz1
-         PsrwRdn/nCHFThY4FoaSrb70e8zVGJLFsVLFlRKFZCW056i2CtK177AK69IRTFP+3UAp
-         Ht4EsguOjMptT3QI9LyMVsyGxkOs6EKmTGEkJEx1lU7a5zUuQBJAp7IqqaAJrzinpdSn
-         7DGb7WGQc9qVOC+vKFuxhoP50GqGOEYQrvgOqdNLohYWAXAPfOAlLS3qnZBxTGK9gtKl
-         Q35W9Hp7xyqRg+D84Ndsg3A6o/mbPD88ALoG8QltwVxceTy9wBag4gFql84wjGQNp+hY
-         V7yA==
-X-Forwarded-Encrypted: i=1;
- AJvYcCX4GDOvhTcwmJGP+q+ZlOZzLfklPUztoewHHa9ULs4ZxF8CBOO/SR1BCYQWseDozHKCx0dpH4pmKxuQ1JaSJTr8UUrCv5kYZAS/tok=
-X-Gm-Message-State: AOJu0YzAuNiy+16+TGREqX1N2ATkBYKmeRLT4P5hhU2BFjhaFoE4lOtZ
-	pju/h1lq5mWZsPhY3Aij8+Lmrw7WBI/irZx3b32+XrkL+wgSJD2qTvzgPekmB58=
-X-Google-Smtp-Source: 
- AGHT+IGWDipfwojUVR3R0h/HAg8+ErMHQU1L9DU1QDqUHJY9+2A1t5wePivY0yDxiYGWnr60Q0NDnQ==
-X-Received: by 2002:a5d:4cc1:0:b0:33e:7f5c:732c with SMTP id
- c1-20020a5d4cc1000000b0033e7f5c732cmr3060666wrt.62.1710498307090;
-        Fri, 15 Mar 2024 03:25:07 -0700 (PDT)
-Received: from localhost ([2a01:e0a:3c5:5fb1:8151:4d0a:14d8:1124])
-        by smtp.gmail.com with ESMTPSA id
- o14-20020adfe80e000000b0033e8c50fc3fsm2818997wrm.90.2024.03.15.03.25.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Mar 2024 03:25:06 -0700 (PDT)
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=aqYoumkN
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 1FBD4616D5;
+	Fri, 15 Mar 2024 13:33:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1682EC433C7;
+	Fri, 15 Mar 2024 13:33:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710509612;
+	bh=JfFjAgEhqLnBfKgjQe9qzywYHRntA6N/TCPrlY0SO3s=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=aqYoumkNxTsioqSB8CHVWJv6WqJg7w80kOK6LuxD1ntomlPu2KhueYUskFagoOWcV
+	 +/GjL/DAHUdcNR9lvwtkhKtwlRxaMhAv/b+c2X1Wr1J/+op42sMSrJYd11dOIStcRe
+	 sD8Wsy1gnp7j/MgKDTbm6sc1Vi6hOZ9PwGlNWJBVz5Hl5puzNVm+BIwNOYT7l3I9Up
+	 q3w9tASq5ZFgvWlIwcQlOstwahLObdzOuPViX3fhg+nIJyjfoqcWW1G4cdjJUe6JVh
+	 40RmBTRBjMvoflBe/rhfxo04DMidctU7GO2AIDeYBE4zZ0/4hurR2VoNINr8LCSNyE
+	 FFrSLJjsySVZQ==
+Date: Fri, 15 Mar 2024 13:33:23 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Jan Dakinevich <jan.dakinevich@salutedevices.com>
+Cc: Neil Armstrong <neil.armstrong@linaro.org>,
+	Jerome Brunet <jbrunet@baylibre.com>,
+	Michael Turquette <mturquette@baylibre.com>,
+	Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Kevin Hilman <khilman@baylibre.com>,
+	Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	linux-amlogic@lists.infradead.org, linux-clk@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
+	linux-sound@vger.kernel.org, linux-gpio@vger.kernel.org,
+	kernel@salutedevices.com
+Subject: Re: [PATCH 09/25] ASoC: meson: g12a-toacodec: add support for A1 SoC
+ family
+Message-ID: <2a41e8b6-7e8a-4995-a1d7-c5d30e53c2d5@sirena.org.uk>
 References: <20240314232201.2102178-1-jan.dakinevich@salutedevices.com>
- <20240314232201.2102178-14-jan.dakinevich@salutedevices.com>
- <ca80caab-2664-4797-a222-e14537eea440@linaro.org>
-User-agent: mu4e 1.10.8; emacs 29.2
-From: Jerome Brunet <jbrunet@baylibre.com>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Jan Dakinevich <jan.dakinevich@salutedevices.com>, Neil Armstrong
- <neil.armstrong@linaro.org>, Jerome Brunet <jbrunet@baylibre.com>, Michael
- Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, Rob
- Herring <robh@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- Philipp Zabel <p.zabel@pengutronix.de>, Kevin Hilman
- <khilman@baylibre.com>, Martin Blumenstingl
- <martin.blumenstingl@googlemail.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, Linus Walleij <linus.walleij@linaro.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- linux-amlogic@lists.infradead.org, linux-clk@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
- linux-sound@vger.kernel.org, linux-gpio@vger.kernel.org,
- kernel@salutedevices.com
-Subject: Re: [PATCH 13/25] ASoC: dt-bindings: meson: axg-pdm: document
- 'sysrate' property
-Date: Fri, 15 Mar 2024 11:22:59 +0100
-In-reply-to: <ca80caab-2664-4797-a222-e14537eea440@linaro.org>
-Message-ID: <1jil1nhjwd.fsf@starbuckisacylon.baylibre.com>
+ <20240314232201.2102178-10-jan.dakinevich@salutedevices.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Message-ID-Hash: IVWMFZGTH6K3WCGEJVNGWK6X2FX5XQGS
-X-Message-ID-Hash: IVWMFZGTH6K3WCGEJVNGWK6X2FX5XQGS
-X-MailFrom: jbrunet@baylibre.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="whZtyi24go8F2IXG"
+Content-Disposition: inline
+In-Reply-To: <20240314232201.2102178-10-jan.dakinevich@salutedevices.com>
+X-Cookie: A well-known friend is a treasure.
+Message-ID-Hash: 26P4TKYG37B52JBOBS7KTCTJKEMMTU4Z
+X-Message-ID-Hash: 26P4TKYG37B52JBOBS7KTCTJKEMMTU4Z
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -126,7 +101,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IVWMFZGTH6K3WCGEJVNGWK6X2FX5XQGS/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/26P4TKYG37B52JBOBS7KTCTJKEMMTU4Z/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -136,48 +111,37 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 
-On Fri 15 Mar 2024 at 11:00, Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> wrote:
+--whZtyi24go8F2IXG
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> On 15/03/2024 00:21, Jan Dakinevich wrote:
->> This option allow to redefine the rate of DSP system clock.
->
-> And why is it suitable for bindings? Describe the hardware, not what you
-> want to do in the driver.
->
->> 
->> Signed-off-by: Jan Dakinevich <jan.dakinevich@salutedevices.com>
->> ---
->>  Documentation/devicetree/bindings/sound/amlogic,axg-pdm.yaml | 4 ++++
->>  1 file changed, 4 insertions(+)
->> 
->> diff --git a/Documentation/devicetree/bindings/sound/amlogic,axg-pdm.yaml b/Documentation/devicetree/bindings/sound/amlogic,axg-pdm.yaml
->> index df21dd72fc65..d2f23a59a6b6 100644
->> --- a/Documentation/devicetree/bindings/sound/amlogic,axg-pdm.yaml
->> +++ b/Documentation/devicetree/bindings/sound/amlogic,axg-pdm.yaml
->> @@ -40,6 +40,10 @@ properties:
->>    resets:
->>      maxItems: 1
->>  
->> +  sysrate:
->> +    $ref: /schemas/types.yaml#/definitions/uint32
->> +    description: redefine rate of DSP system clock
->
-> No vendor prefix, so is it a generic property? Also, missing unit
-> suffix, but more importantly I don't understand why this is a property
-> of hardware.
+On Fri, Mar 15, 2024 at 02:21:45AM +0300, Jan Dakinevich wrote:
 
-+1.
+>  static const struct regmap_config g12a_toacodec_regmap_cfg = {
+> -	.reg_bits	= 32,
+> -	.val_bits	= 32,
+> -	.reg_stride	= 4,
+> +	.reg_bits		= 32,
+> +	.val_bits		= 32,
+> +	.reg_stride		= 4,
+> +	.max_register		= TOACODEC_CTRL0,
+> +	.max_register_is_0	= true,
 
-The appropriate way to set rate of the clock before the driver take over
-is 'assigned-rate', if you need to customize this for different
-platform.
+If the maximum register is 0 how does the regmap have a stride?
 
-Then you don't have to deal with it in the device driver.
+--whZtyi24go8F2IXG
+Content-Type: application/pgp-signature; name="signature.asc"
 
->
-> Best regards,
-> Krzysztof
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmX0TiMACgkQJNaLcl1U
+h9CfZwf9FCsJlpA0ZVHlgM+29kv/xJWAC/kxB2g9thms8cg6YPHLUd9VqS+DpK4u
+Q1506N0mbJUukxVui6tAnM0IUp+AZDr/ZmpdA1+qqTmHXWJYdGW9AlLdwMKLrURg
+HfnYEEeIqCizK2nTTVhOJfkIR9W7ynS35aFJvmsO4BYd1LD4eh4SeD+Qg+L+rW/p
+rmEIYL1arUZjZy0n7oFuinL7TImzcPP64lNK2AN9ilTmp5QtoV6TX+Vs/3bifpct
+GmTkrmSC7N+jX9S9djridoNIVNXjWGZIofNCpNZbOm+vnkwmAZ+jyKz5uPt+twrQ
+R4METAHd4l9JPhWejRP3JBTwMZ3pug==
+=VGfS
+-----END PGP SIGNATURE-----
 
--- 
-Jerome
+--whZtyi24go8F2IXG--
