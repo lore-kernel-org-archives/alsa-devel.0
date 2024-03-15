@@ -4,129 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A1438C54E60
-	for <alsa-devel@archiver.kernel.org>; Sun, 17 Mar 2024 09:05:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B87BFC54E60
+	for <alsa-devel@archiver.kernel.org>; Sun, 17 Mar 2024 09:05:23 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 71E2F2972;
-	Sun, 17 Mar 2024 10:04:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 71E2F2972
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0F3D82392;
+	Sun, 17 Mar 2024 10:05:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0F3D82392
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1710666302;
-	bh=T/HfBhiQE1waDWYQEd1vD78rXPyQGtudkxEwrgNEHpM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1710666322;
+	bh=7+fJfBST5IdB1sgP/eTQYRwwxuAf0nFH5htcIsMtVUI=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Gbn3daZHz+nKm0q57JmuPqKYLdbIV3TYtB9WJM+3cUl/0AtUA5XiHxMfVg8UUUy5h
-	 WHlZng6B9MMx4dp7Jdq7fKF8qIZGDd7+VFGG6PYEcp8yS9sin6gjNz3VSVeRLrll7u
-	 FZqQfPC2aFhQZhNKYhhE42k/UTjLVXhEB5NG1gew=
+	b=h4acGZ4ILPMJd0XTUSNb0FNnEHfOXLccYlLalS+rQOaYyN1DU4R0LzkOK149Ho+Nz
+	 UXhDLvuVxkvDIzs518WrQvT82Y8QSOEkh5FvugjiR67LzgTfDhQBtrQTlcWIjmCnA7
+	 dUZOH/9aINrGLY8ht4MGIOYGfJvRY7l65NhCKoD8=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B18EAF806AF; Sun, 17 Mar 2024 10:03:01 +0100 (CET)
+	id 30584F80570; Sun, 17 Mar 2024 10:03:08 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 79847F805E3;
-	Sun, 17 Mar 2024 10:03:00 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BE128F806D1;
+	Sun, 17 Mar 2024 10:03:07 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 17AA7F8028D; Fri, 15 Mar 2024 14:18:31 +0100 (CET)
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com
- [IPv6:2a00:1450:4864:20::32f])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id D11E1F8028D; Fri, 15 Mar 2024 15:45:30 +0100 (CET)
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net
+ [217.70.183.201])
+	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 5D95BF80093
-	for <alsa-devel@alsa-project.org>; Fri, 15 Mar 2024 14:18:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5D95BF80093
+	by alsa1.perex.cz (Postfix) with ESMTPS id 657CEF80093
+	for <alsa-devel@alsa-project.org>; Fri, 15 Mar 2024 15:45:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 657CEF80093
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=QYDPmQe0
-Received: by mail-wm1-x32f.google.com with SMTP id
- 5b1f17b1804b1-41403889b6aso2435375e9.2
-        for <alsa-devel@alsa-project.org>;
- Fri, 15 Mar 2024 06:18:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710508683; x=1711113483;
- darn=alsa-project.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=BAvj14vJUGomBSxrVqhPVayHAwF+lgqULbYlbgwOBiU=;
-        b=QYDPmQe0JQlExk03YYemV9B9yxtgPOstXfpDImGXmnWOmGbQxJfC7HQv42C3EB+stN
-         n7EMU0kiWb1DPDQZrISC5iiOid3bPD1UH83rCEmXaytJPFTYIv0jHm/B5CiIO/eQ+RtM
-         aaaVHIlut1OUm+AgHqeaAAIrZo9JhvQS8YdglrrxuuPRkeE6a1AkrbE+/F1Y/A3ja8N2
-         q7PoOOl3nXdf0AbXVTPHj2D2QgBSXCMDrMZBAPkRmQKIl9hLLwiI01QsbCgLcxgh2Svo
-         Cv/urcU0dPFjm9BM/eie7Ma0jzawTpWkOU9xxHAzl0Z2y6h38fcVGdOoXP5z48Weg+Ac
-         9JBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710508683; x=1711113483;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BAvj14vJUGomBSxrVqhPVayHAwF+lgqULbYlbgwOBiU=;
-        b=PoURdPwqFEwuSamFtq/QYxTfhP0jV4UQAP13qVlU52mU1+hXhpFePsVvvGDqDDjM/I
-         NJ7ijQU4tUr77CsvFJ+ubuRBqFZS714dydGuk+ZARiQQvbJpXZiilqQsGxFmA/tYiaaW
-         gTIPDgO1XIQR8JuvS/PgdzF7AKLeV2nVZ2cIto0RZdvNx6HATfWllfY5/6xwEmfmIKAS
-         8aqOPdhMY7+g+kFV+AuB/w0nTPM3S5N3o1LaIybFm2FC1kd0vAPw4Bbk2BGmdJqiusOY
-         Od4MYxmxaw494pXUlEk+jbdMEB0rx0j75wJqLUc8n5PiOi1g7DD8+IXPwoYpDlruYd9R
-         MjIA==
-X-Forwarded-Encrypted: i=1;
- AJvYcCWtxGWygj3Di4jq9ozwEfYXZ+kr8rldCKUmJqPwrrOEVClIyrZjKnhVIBCOLTzYUO12827jV8sSZ/OyP7E/UQHEs1ZIyjP/roq3dGk=
-X-Gm-Message-State: AOJu0YxbL5u+c2Af27zovabRlFGiMV3CaU/k9GyRiNhzvQTH0of7gTik
-	JnTMfstfokR7MoqwpkGi+oma5K/6TSYrRgeCQelIc7KKB5LNaILC26rOUvCm8Y4=
-X-Google-Smtp-Source: 
- AGHT+IHlUY3Az6uwRCsdn4XHEMvaEDhhX0HkGvtTN9jqjiaiqubgf+xJXK+Mvnp/afaT+k0YwpLk1g==
-X-Received: by 2002:a05:600c:4f94:b0:413:f1c0:8a5d with SMTP id
- n20-20020a05600c4f9400b00413f1c08a5dmr3796731wmq.26.1710508682802;
-        Fri, 15 Mar 2024 06:18:02 -0700 (PDT)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id
- fl22-20020a05600c0b9600b00414013adab2sm1909935wmb.6.2024.03.15.06.18.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Mar 2024 06:18:02 -0700 (PDT)
-Date: Fri, 15 Mar 2024 16:17:58 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Jan Dakinevich <jan.dakinevich@salutedevices.com>
-Cc: Neil Armstrong <neil.armstrong@linaro.org>,
-	Jerome Brunet <jbrunet@baylibre.com>,
-	Michael Turquette <mturquette@baylibre.com>,
-	Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	Kevin Hilman <khilman@baylibre.com>,
-	Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-	linux-amlogic@lists.infradead.org, linux-clk@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
-	linux-sound@vger.kernel.org, linux-gpio@vger.kernel.org,
-	kernel@salutedevices.com
-Subject: Re: [PATCH 06/25] ASoC: meson: g12a-toacodec: fix "Lane Select" width
-Message-ID: <cc26302f-fa57-41ba-bf1c-2e7ef898b4d0@moroto.mountain>
-References: <20240314232201.2102178-1-jan.dakinevich@salutedevices.com>
- <20240314232201.2102178-7-jan.dakinevich@salutedevices.com>
+ unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
+ header.s=gm1 header.b=KWDBifJA
+Received: by mail.gandi.net (Postfix) with ESMTPSA id A85231BF20C;
+	Fri, 15 Mar 2024 14:45:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1710513925;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=lCzVTi/8qiIkWIQuMQeabN+Upuh5rS0d0MiWy39obn8=;
+	b=KWDBifJAeamjCj4tFGXOKgrfAdJ+TaLvUBsIFlZSmEqiozMYaPqkiTjZKk+6rPwCnKloM7
+	tCnUNg4sxFveR6d7CK8E47hqVzEvvypk7BtvNEW3jHLxBdCOrFXrO4s1KNYGVjvxZEtkMX
+	SA29cZrOEH6nQ3hGtJ69pjG0SxbvbDwb+F4naOcJKjsU2SIdcr2AkLJwa8m/kJkxkdBZob
+	ZovQHltOeOJMR00N20S1O4tlOMtDtJ/TCRtE3PUQAk3MpBehBg1GMFLROjSzPG/u3J2VzW
+	OYDeQ+H/rCftP6Mfp7AA0EOz9xvxO/DjZj7Xg9PnMTgpKXCe3mNbtvKDYJUFXA==
+Message-ID: <13faa6c8-ad4f-4f81-935a-5ea74621d373@bootlin.com>
+Date: Fri, 15 Mar 2024 15:45:24 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240314232201.2102178-7-jan.dakinevich@salutedevices.com>
-X-MailFrom: dan.carpenter@linaro.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 09/13] ASoC: ti: davinci-i2s: Enable unexpected frame
+ pulses detection
+To: Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Peter Ujfalusi
+ <peter.ujfalusi@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, linux-sound@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ alsa-devel@alsa-project.org, Thomas Petazzoni
+ <thomas.petazzoni@bootlin.com>, herve.codina@bootlin.com,
+ christophercordahi@nanometrics.ca
+References: <20240315112745.63230-1-bastien.curutchet@bootlin.com>
+ <20240315112745.63230-10-bastien.curutchet@bootlin.com>
+ <51866f62-460d-4035-bcf1-b9f03cf9be0b@sirena.org.uk>
+Content-Language: en-US
+From: Bastien Curutchet <bastien.curutchet@bootlin.com>
+In-Reply-To: <51866f62-460d-4035-bcf1-b9f03cf9be0b@sirena.org.uk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-GND-Sasl: bastien.curutchet@bootlin.com
+X-MailFrom: bastien.curutchet@bootlin.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: O23TXST3Y5VJFUXZPAUDXHQZIHBP2PH4
-X-Message-ID-Hash: O23TXST3Y5VJFUXZPAUDXHQZIHBP2PH4
+Message-ID-Hash: YUNGBNTUI4SNYA4IZVTAOR3V2XYZ2O6W
+X-Message-ID-Hash: YUNGBNTUI4SNYA4IZVTAOR3V2XYZ2O6W
 X-Mailman-Approved-At: Sun, 17 Mar 2024 08:56:29 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/O23TXST3Y5VJFUXZPAUDXHQZIHBP2PH4/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YUNGBNTUI4SNYA4IZVTAOR3V2XYZ2O6W/>
 List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
@@ -134,17 +100,35 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, Mar 15, 2024 at 02:21:42AM +0300, Jan Dakinevich wrote:
-> For both G12A and SM1 the width of "Lane Select" should be 2, not 3.
-> Otherwise, it overlaps with "Source".
+Hi Mark,
+
+On 3/15/24 15:09, Mark Brown wrote:
+> On Fri, Mar 15, 2024 at 12:27:41PM +0100, Bastien Curutchet wrote:
 > 
-> Signed-off-by: Jan Dakinevich <jan.dakinevich@salutedevices.com>
+>> McBSP can generate an SYNCERR when unexpected frame pulses are
+>> detected. The driver always disables this feature and ignore the
+>> unexpected frame pulses.
+> 
+> What does "unexpected" mean?
 
-When you resend this, could you describe how this bug might look to a
-user?  If a user hits this bug and they want to see if it has been
-fixed by reading the commit messages, I don't think this description
-is sufficient for that.
+Unexpected frame sync pulse is defined in datasheet as a sync pulse that 
+occurs <N> bit clocks earlier than the last transmitted bit of the 
+previous frame. The <N> can be configured through registers.
 
-regards,
-dan carpenter
+> 
+>> Enable the generation of SYNCERR by the McBSP according to the
+>> 'ti,enable-sync-err' device-tree property.
+> 
+> Why would this be optional, and how is this reported - I'm not seeing
+> any interrupt handling updates?
 
+It is possible to deliberately ignore them and that is what is done 
+today in the driver.
+This is reported as a status bit in a register. An interrupt can indeed 
+be generated from this but I'm not using it (now at least).
+I use the fact that McBSP automatically drops previous element and 
+starts a new reception when an unexpected frame pulse occurs.
+
+
+Best regards,
+Bastien
