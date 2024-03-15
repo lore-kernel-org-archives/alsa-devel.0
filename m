@@ -4,55 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 322F4C54E60
-	for <alsa-devel@archiver.kernel.org>; Sun, 17 Mar 2024 08:59:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01C24C54E60
+	for <alsa-devel@archiver.kernel.org>; Sun, 17 Mar 2024 09:00:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 63D69279E;
-	Sun, 17 Mar 2024 09:59:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 63D69279E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5B78C23D0;
+	Sun, 17 Mar 2024 09:59:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5B78C23D0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1710665989;
-	bh=PZctGisBviZ+mhYGc0hACek77ifie3PoPw9sdjq58Zk=;
+	s=default; t=1710666005;
+	bh=MAOpYtzIi5nSAxTwhZTwchxlNt0JYzz6RgEXHKtioD4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=OS4Y7N3Gv8qVx4pMJ7X8x0pEfyCjAnBZkq4jBfIFRF2tLlJbmyidIWS3sr7kql+Os
-	 GPTTN1L7d3B2CZlWW1XMj5JroXUAgLfaPtylTkT/QRgwHOsMpULwDZs7QqDtM7cuhc
-	 0zGsZXm14g38jfzC5Pb7+JSwpCxxzHNcs7uNvd28=
+	b=JjIeBg6iTyRoubwavShdW4RXhPbKEoCKr5NMZwUo8iqlatAmx6P7HPYAhrlw/MetX
+	 Ujgf4gxxYkdDGJgpuzcHWxzKJ9Zvw7vbLGPDPYrjvEy/zhlx+D8DYoA30NtVFkARJq
+	 ZObqoVCaJjuiSNOsOgW3hoN98S+ITV0Th9bbu78w=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8A8BEF805F4; Sun, 17 Mar 2024 09:58:53 +0100 (CET)
+	id D7F80F80613; Sun, 17 Mar 2024 09:58:58 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9316AF805EA;
-	Sun, 17 Mar 2024 09:58:52 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1C2ABF80613;
+	Sun, 17 Mar 2024 09:58:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0D604F8028D; Fri, 15 Mar 2024 12:28:27 +0100 (CET)
+	id AADBAF8028D; Fri, 15 Mar 2024 12:28:29 +0100 (CET)
 Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net
  [IPv6:2001:4b98:dc4:8::224])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7DF5DF80564
-	for <alsa-devel@alsa-project.org>; Fri, 15 Mar 2024 12:28:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7DF5DF80564
+	by alsa1.perex.cz (Postfix) with ESMTPS id 44C6CF804E7
+	for <alsa-devel@alsa-project.org>; Fri, 15 Mar 2024 12:28:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 44C6CF804E7
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=OAmeDyl1
-Received: by mail.gandi.net (Postfix) with ESMTPA id A5B21E0008;
-	Fri, 15 Mar 2024 11:27:59 +0000 (UTC)
+ header.s=gm1 header.b=DNynfv49
+Received: by mail.gandi.net (Postfix) with ESMTPA id A324DE0011;
+	Fri, 15 Mar 2024 11:28:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1710502080;
+	t=1710502084;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=GUQ51tONiYtM45o3XTZI6XR8a2iefLuxKfBONeCjMBU=;
-	b=OAmeDyl1URRkwdmnV9xjdSDYTqCPZq7Lo3uQP/qsirimdgj75LzvdooBBW64tSkVs7UBNK
-	Qr1Nj27ust8cyzZouNhKUw4IJWAOvjsRzEVi5jEG+nXP+8p0QhR6matgyotrrjUjGsqqkI
-	aKcXz/29Qf2HpLk8UZ7vR9bkykTtEHUnqfKFD0f/SRk2n5GzDG9NP09QOPrwi1iGNledPR
-	kSHRn5ukgDVX2jKd/cl2A0NWdRb5mmUFaKMLTLpOQTFLBZQicHu/3u39aO/3SOZZCTRL+I
-	Bwa9DnkmdK0iDXNHA1Xpe6dGJHgrmCx45p9101QFwX8Q8GmhiFDdFHga5TUQOw==
+	bh=yx0wGhoCKKR0NqDBheYxgoW20rIDo8sjPDarWAgrdTI=;
+	b=DNynfv491FuAHe5AwDyA6vZ1A7uXAvagyCefuAYE4qwxog4M9xv3D1Zez4RQWNcbZqLL/Q
+	E2QxtXQz/Up4hN8GWEEK8Z2uwdHnCJt6VggJSwHEOuNRthS1On23nsJvVTrEHTitDAQ3sI
+	OlMhdHKE4V8E013Fuy4/gkAsO6Be53YWUfP/7G+TLTD508ldtevYmC0bCvsEKov9HIzrSd
+	2LFCTDPf7Snnz3tGRiJ5Qm9fx5gPLjeWVSP0eRmr1iu+WLgHaX4HF3wOpAAS59EqWkzgLV
+	RKcnZeUUjunSZZVmEiqMti2lON9sssaBXmRBHRObMC77wpKC8mzwyZKYnr2xbw==
 From: Bastien Curutchet <bastien.curutchet@bootlin.com>
 To: Liam Girdwood <lgirdwood@gmail.com>,
 	Mark Brown <broonie@kernel.org>,
@@ -70,10 +70,9 @@ Cc: linux-sound@vger.kernel.org,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
 	herve.codina@bootlin.com,
 	christophercordahi@nanometrics.ca
-Subject: [PATCH 04/13] ASoC: ti: davinci-i2s: Replace dev_err with
- dev_err_probe
-Date: Fri, 15 Mar 2024 12:27:36 +0100
-Message-ID: <20240315112745.63230-5-bastien.curutchet@bootlin.com>
+Subject: [PATCH 07/13] ASoC: ti: davinci-i2s: Add TDM support
+Date: Fri, 15 Mar 2024 12:27:39 +0100
+Message-ID: <20240315112745.63230-8-bastien.curutchet@bootlin.com>
 X-Mailer: git-send-email 2.43.2
 In-Reply-To: <20240315112745.63230-1-bastien.curutchet@bootlin.com>
 References: <20240315112745.63230-1-bastien.curutchet@bootlin.com>
@@ -86,8 +85,8 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: UX2VRHEGYVG5YFLS3AWYTWVXNT7SPD5S
-X-Message-ID-Hash: UX2VRHEGYVG5YFLS3AWYTWVXNT7SPD5S
+Message-ID-Hash: 77BY36CKFWSFXA2S3OAX5WEE5J23YMW3
+X-Message-ID-Hash: 77BY36CKFWSFXA2S3OAX5WEE5J23YMW3
 X-Mailman-Approved-At: Sun, 17 Mar 2024 08:56:00 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
@@ -101,58 +100,164 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-There are dev_err() in the probe() function.
+TDM is not supported by the McBSP driver. The McBSP datasheet does not
+name explicitly TDM as a supported format but it is possible to configure
+the McBSP to do TDM if all slots are used by McBSP.
 
-Replace them with dev_err_probe()
+Add TDM support. It uses single-phase frame. Slot width is used to
+compute the McBSP's word length.
+
+Implement the set_tdm_slot() hook of snd_soc_dai_ops struct. It only
+supports TDM if all slots are used by McBSP.
+
+The snd_soc_dai_driver's capture.channels_max is updated from 2 to 128.
+128 is the maximum frame length when using single-phase frame.
+playback.channels_max has not been updated as I could not test TDM on
+playbacks with my hardware.
+
+This was tested on platform designed off of DAVINCI/OMAP_L138 with BP_FC
+format so this is only supported format for TDM yet. A check is done in
+davinci_i2s_set_dai_fmt() to prevent TDM to be used with other formats
 
 Signed-off-by: Bastien Curutchet <bastien.curutchet@bootlin.com>
 ---
- sound/soc/ti/davinci-i2s.c | 11 ++++-------
- 1 file changed, 4 insertions(+), 7 deletions(-)
+ sound/soc/ti/davinci-i2s.c | 81 ++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 77 insertions(+), 4 deletions(-)
 
 diff --git a/sound/soc/ti/davinci-i2s.c b/sound/soc/ti/davinci-i2s.c
-index 5c906641640e..4cb3ef62db20 100644
+index f4514d4dff07..4adaed010700 100644
 --- a/sound/soc/ti/davinci-i2s.c
 +++ b/sound/soc/ti/davinci-i2s.c
-@@ -644,8 +644,7 @@ static int davinci_i2s_probe(struct platform_device *pdev)
- 			 "\"mpu\" mem resource not found, using index 0\n");
- 		mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 		if (!mem) {
--			dev_err(&pdev->dev, "no mem resource?\n");
--			return -ENODEV;
-+			return dev_err_probe(&pdev->dev, -ENODEV, "no mem resource?\n");
- 		}
- 	}
+@@ -160,6 +160,9 @@ struct davinci_mcbsp_dev {
+ 	unsigned int fmt;
+ 	int clk_div;
+ 	bool i2s_accurate_sck;
++
++	int tdm_slots;
++	int slot_width;
+ };
  
-@@ -672,8 +671,7 @@ static int davinci_i2s_probe(struct platform_device *pdev)
- 	} else if (IS_ENABLED(CONFIG_OF) && pdev->dev.of_node) {
- 		dma_data->filter_data = "tx";
- 	} else {
--		dev_err(&pdev->dev, "Missing DMA tx resource\n");
--		return -ENODEV;
-+		return dev_err_probe(&pdev->dev, -ENODEV, "Missing DMA tx resource\n");
- 	}
+ static inline void davinci_mcbsp_write_reg(struct davinci_mcbsp_dev *dev,
+@@ -213,6 +216,57 @@ static void davinci_mcbsp_stop(struct davinci_mcbsp_dev *dev, int playback)
+ 	toggle_clock(dev, playback);
+ }
  
- 	dma_data = &dev->dma_data[SNDRV_PCM_STREAM_CAPTURE];
-@@ -687,8 +685,7 @@ static int davinci_i2s_probe(struct platform_device *pdev)
- 	} else if (IS_ENABLED(CONFIG_OF) && pdev->dev.of_node) {
- 		dma_data->filter_data = "rx";
- 	} else {
--		dev_err(&pdev->dev, "Missing DMA rx resource\n");
--		return -ENODEV;
-+		return dev_err_probe(&pdev->dev, -ENODEV, "Missing DMA rx resource\n");
- 	}
++static int davinci_i2s_tdm_word_length(int tdm_slot_width)
++{
++	switch (tdm_slot_width) {
++	case 8:
++		return DAVINCI_MCBSP_WORD_8;
++	case 12:
++		return DAVINCI_MCBSP_WORD_12;
++	case 16:
++		return DAVINCI_MCBSP_WORD_16;
++	case 20:
++		return DAVINCI_MCBSP_WORD_20;
++	case 24:
++		return DAVINCI_MCBSP_WORD_24;
++	case 32:
++		return DAVINCI_MCBSP_WORD_32;
++	default:
++		return -EINVAL;
++	}
++}
++
++static int davinci_i2s_set_tdm_slot(struct snd_soc_dai *cpu_dai,
++				    unsigned int tx_mask,
++				    unsigned int rx_mask,
++				    int slots, int slot_width)
++{
++	struct davinci_mcbsp_dev *dev = snd_soc_dai_get_drvdata(cpu_dai);
++
++	dev_dbg(dev->dev, "%s - slots %d, slot_width %d\n", __func__, slots, slot_width);
++
++	if (slots > 128 || !slots) {
++		dev_err(dev->dev, "Invalid number of slots\n");
++		return -EINVAL;
++	}
++
++	if (rx_mask != (1 << slots) - 1) {
++		dev_err(dev->dev, "Invalid RX mask (0x%08x) : all slots must be used by McBSP\n",
++			rx_mask);
++		return -EINVAL;
++	}
++
++	if (davinci_i2s_tdm_word_length(slot_width) < 0) {
++		dev_err(dev->dev, "%s: Unsupported slot_width %d\n", __func__, slot_width);
++		return -EINVAL;
++	}
++
++	dev->tdm_slots = slots;
++	dev->slot_width = slot_width;
++
++	return 0;
++}
++
+ #define DEFAULT_BITPERSAMPLE	16
  
- 	dev->clk = clk_get(&pdev->dev, NULL);
-@@ -708,7 +705,7 @@ static int davinci_i2s_probe(struct platform_device *pdev)
+ static int davinci_i2s_set_dai_fmt(struct snd_soc_dai *cpu_dai,
+@@ -228,6 +282,13 @@ static int davinci_i2s_set_dai_fmt(struct snd_soc_dai *cpu_dai,
+ 		DAVINCI_MCBSP_SRGR_FWID(DEFAULT_BITPERSAMPLE - 1);
  
- 	ret = edma_pcm_platform_register(&pdev->dev);
- 	if (ret) {
--		dev_err(&pdev->dev, "register PCM failed: %d\n", ret);
-+		dev_err_probe(&pdev->dev, ret, "register PCM failed\n");
- 		goto err_unregister_component;
- 	}
+ 	dev->fmt = fmt;
++
++	if ((dev->tdm_slots || dev->slot_width) &&
++	    ((fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) != SND_SOC_DAIFMT_BP_FC)) {
++		dev_err(dev->dev, "TDM is only supported for BP_FC format\n");
++		return -EINVAL;
++	}
++
+ 	/* set master/slave audio interface */
+ 	switch (fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
+ 	case SND_SOC_DAIFMT_BP_FP:
+@@ -383,7 +444,13 @@ static int davinci_i2s_hw_params(struct snd_pcm_substream *substream,
  
+ 	master = dev->fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK;
+ 	fmt = params_format(params);
+-	mcbsp_word_length = asp_word_length[fmt];
++	if (dev->slot_width)
++		mcbsp_word_length = davinci_i2s_tdm_word_length(dev->slot_width);
++	else
++		mcbsp_word_length = asp_word_length[fmt];
++
++	if (mcbsp_word_length < 0)
++		return mcbsp_word_length;
+ 
+ 	switch (master) {
+ 	case SND_SOC_DAIFMT_BP_FP:
+@@ -483,8 +550,13 @@ static int davinci_i2s_hw_params(struct snd_pcm_substream *substream,
+ 	switch (master) {
+ 	case SND_SOC_DAIFMT_BP_FP:
+ 	case SND_SOC_DAIFMT_BP_FC:
+-		rcr |= DAVINCI_MCBSP_RCR_RFRLEN1(0);
+-		xcr |= DAVINCI_MCBSP_XCR_XFRLEN1(0);
++		if (dev->tdm_slots > 0) {
++			rcr |= DAVINCI_MCBSP_RCR_RFRLEN1(dev->tdm_slots - 1);
++			xcr |= DAVINCI_MCBSP_XCR_XFRLEN1(dev->tdm_slots - 1);
++		} else {
++			rcr |= DAVINCI_MCBSP_RCR_RFRLEN1(0);
++			xcr |= DAVINCI_MCBSP_XCR_XFRLEN1(0);
++		}
+ 		break;
+ 	case SND_SOC_DAIFMT_BC_FC:
+ 	case SND_SOC_DAIFMT_BC_FP:
+@@ -609,6 +681,7 @@ static const struct snd_soc_dai_ops davinci_i2s_dai_ops = {
+ 	.hw_params	= davinci_i2s_hw_params,
+ 	.set_fmt	= davinci_i2s_set_dai_fmt,
+ 	.set_clkdiv	= davinci_i2s_dai_set_clkdiv,
++	.set_tdm_slot   = davinci_i2s_set_tdm_slot,
+ 
+ };
+ 
+@@ -621,7 +694,7 @@ static struct snd_soc_dai_driver davinci_i2s_dai = {
+ 	},
+ 	.capture = {
+ 		.channels_min = 2,
+-		.channels_max = 2,
++		.channels_max = 128,
+ 		.rates = DAVINCI_I2S_RATES,
+ 		.formats = DAVINCI_I2S_FORMATS,
+ 	},
 -- 
 2.43.2
 
