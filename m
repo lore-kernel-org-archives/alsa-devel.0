@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 29303C6FD1F
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Mar 2024 13:58:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E1646C54E58
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Mar 2024 13:59:11 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D19261909;
-	Wed, 20 Mar 2024 14:58:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D19261909
+	by alsa0.perex.cz (Postfix) with ESMTPS id 12A8720C6;
+	Wed, 20 Mar 2024 14:59:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 12A8720C6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1710943133;
-	bh=mACvWHc/sDSGl1pEWdfQ6+2WTvuB/H3LPCOT9PEacq4=;
+	s=default; t=1710943150;
+	bh=7D6rUs7oxFVkKkNiFleJBun4VT034Uea7yEgWMsWmlw=;
 	h=Date:Subject:To:CC:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=S3o+f9iYLvBVXvLp94hZjDn/673q4cHaYU7jWW7IIU6mec6E48Tza4ZVvJzDCMcsX
-	 hov+tkDfNzQ26aQ41j3ZB8qOEH+VI0MrdtTNt4Qg2vMz3AZ+8fupRKZ+D9hLv4pJSV
-	 q616wTY6dEytGybmiujVBlnhPjg0QBOAbnLJRnmk=
+	b=GneIK5clpfTfP7WvLHo4A7xP4pOOzE5qKrAizEN66ZRYLPQt6YXO/PfXmzwOVRNHj
+	 dz8wyBCqOJ6O25VJEL/Vl1WtbFS39ycx9Og0QsU8XTE0KDeyLGyy1FOu2yMT2vvGfh
+	 1nb7jKzxz787VWLqtiZqkK6miPVb29WYYsFZgitY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3DFDBF805AD; Wed, 20 Mar 2024 14:58:07 +0100 (CET)
+	id BF5CCF805D9; Wed, 20 Mar 2024 14:58:08 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E1545F805D2;
-	Wed, 20 Mar 2024 14:58:06 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4F4C5F805F7;
+	Wed, 20 Mar 2024 14:58:08 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1B996F804E7; Sun, 17 Mar 2024 15:30:04 +0100 (CET)
+	id 78878F804E7; Sun, 17 Mar 2024 16:12:27 +0100 (CET)
 Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 91758F8025F
-	for <alsa-devel@alsa-project.org>; Sun, 17 Mar 2024 15:29:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 91758F8025F
+	by alsa1.perex.cz (Postfix) with ESMTPS id 49AA1F80088
+	for <alsa-devel@alsa-project.org>; Sun, 17 Mar 2024 16:12:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 49AA1F80088
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=salutedevices.com header.i=@salutedevices.com
- header.a=rsa-sha256 header.s=mail header.b=o04TGxXH
+ header.a=rsa-sha256 header.s=mail header.b=i3G//zfv
 Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id 46CC2120006;
-	Sun, 17 Mar 2024 17:29:57 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 46CC2120006
+	by mx1.sberdevices.ru (Postfix) with ESMTP id CD12E120006;
+	Sun, 17 Mar 2024 18:12:23 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru CD12E120006
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-	s=mail; t=1710685797;
-	bh=U7iGhIFEEZJr2pptTT9ef5adqscsVQVXDtlJaym04/U=;
+	s=mail; t=1710688343;
+	bh=vuhFTgRx08IRoav35YN/UioWYf2u92NjCnQaH1ojeG8=;
 	h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
-	b=o04TGxXHCIs+xdCGFZjuqAqJVDHx6+acGPFOJSTYaI6LnxXuT8PcQ2yvRfSAbQQIk
-	 4meOHYBpCBtgy/6fctGtrJgHf9RoHbQC5eYtno1SL599F8tytgg/CiwhCp8Osay7L9
-	 Fic1MUlA5kG6N9L8C5c8T1boCun87MWSgBEP5oNEUUhBfjk/xX7tJvibi212XHDZqB
-	 kgeVfleDZbV3+LhqdLQKJr06dAulZcGzbggyE5O2wYng6Y4wBesR6mKm1yxL4aMynW
-	 OVCBmur3qSylI22aidgBK/5UDVhbBzQZBBzNmjILssrsGHJQV25KrvxHzWRuz+Kvr0
-	 WFngVLFSl9yvg==
+	b=i3G//zfvC8D25R7CeiPqgfTYLeC1qWFZb4cP+lom1aRx85YIxRzgmxU3gi1fDQbCC
+	 FEWDKcilb3Q85z+4Mw5WaWRNsztDe1af8+3dhhpqnBxsTVOSPymdOH6yq1g5Zxjy6a
+	 GN33MnDQpD9srrr1P5ZmWs+zVitGL0ZLyVh684TnWlOs0Ml7K0lcAsPNBm5SGB5tH5
+	 rRYc7EssYUt+6JUSq5ei4AZWv9iJ1eoGkzqUc7cpgI2IfJZUk4Y7Drr/yIMc4fDtiH
+	 8+ONekataCh0QleERya7UP7hwSWekqrJFjvMUWJkyF9yOrxgLvLfDs8WAyXZciHY4U
+	 GHsupLqGtGiMw==
 Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru
  [172.16.192.103])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
 	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Sun, 17 Mar 2024 17:29:57 +0300 (MSK)
+	Sun, 17 Mar 2024 18:12:23 +0300 (MSK)
 Received: from [172.28.160.49] (100.64.160.123) by
  p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Sun, 17 Mar 2024 17:29:56 +0300
-Message-ID: <5a541ea3-ac4b-4606-9b6a-b103084b30b5@salutedevices.com>
-Date: Sun, 17 Mar 2024 17:29:14 +0300
+ 15.2.1118.40; Sun, 17 Mar 2024 18:12:23 +0300
+Message-ID: <5ca8e65f-9e65-45d2-9bb5-10be3eea2e0b@salutedevices.com>
+Date: Sun, 17 Mar 2024 18:11:40 +0300
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH 08/25] ASoC: dt-bindings: meson: g12a-toacodec: add
@@ -87,8 +87,10 @@ CC: <kernel@salutedevices.com>
 References: <20240314232201.2102178-1-jan.dakinevich@salutedevices.com>
  <20240314232201.2102178-9-jan.dakinevich@salutedevices.com>
  <f91ea77c-8170-4ae6-850f-3d5715d83855@linaro.org>
+ <5a541ea3-ac4b-4606-9b6a-b103084b30b5@salutedevices.com>
+ <83c5f475-6cc5-4084-a54e-1ed7c71735a0@linaro.org>
 From: Jan Dakinevich <jan.dakinevich@salutedevices.com>
-In-Reply-To: <f91ea77c-8170-4ae6-850f-3d5715d83855@linaro.org>
+In-Reply-To: <83c5f475-6cc5-4084-a54e-1ed7c71735a0@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
 X-Originating-IP: [100.64.160.123]
@@ -105,9 +107,9 @@ X-KSMG-AntiSpam-Method: none
 X-KSMG-AntiSpam-Auth: dkim=none
 X-KSMG-AntiSpam-Info: LuaCore: 7 0.3.7
  6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a, {Tracking_smtp_not_equal_from},
- {Tracking_from_domain_doesnt_match_to}, FromAlignment: n,
- {Tracking_smtp_domain_mismatch}, {Tracking_smtp_domain_2level_mismatch},
- ApMailHostAddress: 100.64.160.123
+ {Tracking_arrow_text}, {Tracking_from_domain_doesnt_match_to},
+ FromAlignment: n, {Tracking_smtp_domain_mismatch},
+ {Tracking_smtp_domain_2level_mismatch}, ApMailHostAddress: 100.64.160.123
 X-MS-Exchange-Organization-SCL: -1
 X-KSMG-AntiSpam-Interceptor-Info: scan successful
 X-KSMG-AntiPhishing: Clean
@@ -121,15 +123,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: FGP3GW46EC7QZUEAJLVFSPR6ZCIDAA23
-X-Message-ID-Hash: FGP3GW46EC7QZUEAJLVFSPR6ZCIDAA23
-X-Mailman-Approved-At: Wed, 20 Mar 2024 13:57:05 +0000
+Message-ID-Hash: W6R7NULBT42UJOBRA4JPHIWCYU5MVWAS
+X-Message-ID-Hash: W6R7NULBT42UJOBRA4JPHIWCYU5MVWAS
+X-Mailman-Approved-At: Wed, 20 Mar 2024 13:57:11 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FGP3GW46EC7QZUEAJLVFSPR6ZCIDAA23/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/W6R7NULBT42UJOBRA4JPHIWCYU5MVWAS/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -138,46 +140,25 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-I mean the following... This commit adds new defines to
-meson-g12a-toacodec.h header. These defines are used in the following way:
 
-sound-dai = <&toacodec TOACODEC_IN_A>;
-sound-dai = <&toacodec TOACODEC_CAPTURE_OUT_A>;
 
-So, can you make an advise how to call something like "&toacodec" to
-which I declare new parameters.
-
-On 3/15/24 12:58, Krzysztof Kozlowski wrote:
-> On 15/03/2024 00:21, Jan Dakinevich wrote:
->> Add "amlogic,t9015-a1" compatible string and new device tree phandle
->> options.
-> 
-> I don't understand the second part. You did not add any options, no
-> phandles. You added some defines for something, so say what are these
-> "something".
-> 
+On 3/17/24 17:46, Krzysztof Kozlowski wrote:
+> On 17/03/2024 15:29, Jan Dakinevich wrote:
+>> I mean the following... This commit adds new defines to
+>> meson-g12a-toacodec.h header. These defines are used in the following way:
 >>
->> Signed-off-by: Jan Dakinevich <jan.dakinevich@salutedevices.com>
->> ---
->>  .../devicetree/bindings/sound/amlogic,g12a-toacodec.yaml     | 1 +
->>  include/dt-bindings/sound/meson-g12a-toacodec.h              | 5 +++++
->>  2 files changed, 6 insertions(+)
+>> sound-dai = <&toacodec TOACODEC_IN_A>;
+>> sound-dai = <&toacodec TOACODEC_CAPTURE_OUT_A>;
 >>
->> diff --git a/Documentation/devicetree/bindings/sound/amlogic,g12a-toacodec.yaml b/Documentation/devicetree/bindings/sound/amlogic,g12a-toacodec.yaml
->> index 23f82bb89750..c47604aa590f 100644
->> --- a/Documentation/devicetree/bindings/sound/amlogic,g12a-toacodec.yaml
->> +++ b/Documentation/devicetree/bindings/sound/amlogic,g12a-toacodec.yaml
->> @@ -26,6 +26,7 @@ properties:
->>        - items:
->>            - enum:
->>                - amlogic,sm1-toacodec
->> +              - amlogic,a1-toacodec
+>> So, can you make an advise how to call something like "&toacodec" to
+>> which I declare new parameters.
 > 
-> Keep alphabetical order. Don't stuff new entries to the end...
+> &toacodec is phandle but it is not really relevant here. You should
+> explain what these defines are. DAI ids?
 > 
-> 
-> 
-> 
+
+Yes, these are DAI ids. Ok, I'll write it in next version.
+
 > Best regards,
 > Krzysztof
 > 
