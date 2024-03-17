@@ -4,93 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0E848C54E60
-	for <alsa-devel@archiver.kernel.org>; Sun, 17 Mar 2024 14:46:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3ADCFC54E60
+	for <alsa-devel@archiver.kernel.org>; Sun, 17 Mar 2024 16:28:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4EE1E23D5;
-	Sun, 17 Mar 2024 15:46:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4EE1E23D5
+	by alsa0.perex.cz (Postfix) with ESMTPS id A6FEB279B;
+	Sun, 17 Mar 2024 17:28:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A6FEB279B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1710686811;
-	bh=1X2LtDUQjMqglYwuVSvpv1QX0Xslu7eK0Y7pY912diU=;
+	s=default; t=1710692916;
+	bh=tptFNoMWAOOlzBO5sAOseuR3BJfkcQOLBcvNInTjS8w=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=b62Xjj+tD1njdjolLndL+XEHPoCxQVjcP6N3MXpcOXUV2OCuWYpFTZJohQUuMFoGp
-	 i1yU9NFy1bzc8zZkyDdXV2Fww1lJ5dJiYBWDHGQfGSHu7+NnWTeVaB1zQecBT2q1z7
-	 N7baY/7wmldVhHesL8enfc9doz/zKcBy9JTLBQyM=
+	b=Z99v3QrLQuLXctDqijNs9Nfs6QjCGCROwIjv2ADfrMAZis/N+ALmUuE+r4SBMeYzq
+	 MRcf2l2gRoPIzyqF4PhoIlzfuUWz4i/r8Tuzq0caVd1GwF6WQtjBtAhne6QXvUDnLR
+	 Lfzb2OBuaLyTQN3HFDOgjIUZBeKzhw+brTHC2sQY=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 78D9FF805A8; Sun, 17 Mar 2024 15:46:18 +0100 (CET)
+	id 5B98CF805AA; Sun, 17 Mar 2024 17:27:57 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C002BF802DB;
-	Sun, 17 Mar 2024 15:46:18 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D0336F80580;
+	Sun, 17 Mar 2024 17:27:56 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1FB72F804E7; Sun, 17 Mar 2024 15:46:12 +0100 (CET)
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com
- [IPv6:2a00:1450:4864:20::634])
+	id DB730F804E7; Sun, 17 Mar 2024 17:27:51 +0100 (CET)
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com
+ [IPv6:2a00:1450:4864:20::635])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 3F467F80088
-	for <alsa-devel@alsa-project.org>; Sun, 17 Mar 2024 15:46:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3F467F80088
+	by alsa1.perex.cz (Postfix) with ESMTPS id 041AFF8025F
+	for <alsa-devel@alsa-project.org>; Sun, 17 Mar 2024 17:27:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 041AFF8025F
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=sz7AqPKa
-Received: by mail-ej1-x634.google.com with SMTP id
- a640c23a62f3a-a44ad785a44so402199366b.3
+ header.s=google header.b=MnoJXsJg
+Received: by mail-ej1-x635.google.com with SMTP id
+ a640c23a62f3a-a44665605f3so396496366b.2
         for <alsa-devel@alsa-project.org>;
- Sun, 17 Mar 2024 07:46:04 -0700 (PDT)
+ Sun, 17 Mar 2024 09:27:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710686763; x=1711291563;
+        d=linaro.org; s=google; t=1710692863; x=1711297663;
  darn=alsa-project.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=m7AUOlK+Z0kCQipiPiIuL+asYzeOsNB2c/oldwYILwo=;
-        b=sz7AqPKaHILM6zuqHE8ijaY8PcwkNHKMV/5KSq+te7Q4LVhdlgzh/cFDRXOac4GAIJ
-         AhpWbouvq+blwMLk43QlyLZWuQVmSrkicGTv/xKVdTnIbMDpAjAsQxGVBsR2eB1zHqSF
-         kCOAtkXrLwDfgAG/ubikpoeBNmJvkosGF+6zrpFdFB+9NRlt2mf0LyWLSIHhNR+026uk
-         /YEzdCWK+NhLTxJlC5JImttckexZNcEkzb0xat9CuYQJjRy0Z3tVFPrXb3B0irBEc/1K
-         VWUIZZLWGtJ0ZX5s0WGWel5C4n84skhIXKql1HeEi9OoECJUPAqIVOIhoHA0d383F4rX
-         tthg==
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=1n2WFX+7suz3HRMA03UCKEjbkhnw9bIPtT5LjeIC65w=;
+        b=MnoJXsJgH2A1hkt63PZKrR1705Eo0HtCfEHyFOws0Fpc/nuVXTghX1P7heSJWp5DQ3
+         /n5M2HOkwhivasBs0hiTC9as528FX5vjUbmgMeHiAHeOe80kaVVB4PlfHbLIRgvpY5P4
+         mgxxT03jsOOGvxCupElhoQM0cONHha5OfZOZV1gXk0tqiHk3cw6DpqiACaJWI4esoVyd
+         4pUpWPLuHgaEmty68R9MNpZjvawIuYbez2ff8hMIuPvKRGRNWdEs7HJ+BfVVOWEpAmiN
+         isFtGAvZh3v3EqbFfnndp+n28haat+CYVjY2LXbvtxiaJu2d+Mqz+NKnhhwxUTZjGBlO
+         kBSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710686763; x=1711291563;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=m7AUOlK+Z0kCQipiPiIuL+asYzeOsNB2c/oldwYILwo=;
-        b=EpOWDLdPPwLWj79lvUaZMmaEHYFd7PF48Le1cmXCrPVx/dftMDlhU8bo02U3LV0Jlf
-         VKEbV//5aT7uGf1eRmcJBS+jhh7+4+ZAHjqBxafSUdQwIWNeRswPG94WFNtdiYG2UFBj
-         PDU5DzE5vsbrcMY4PjffR/7XxscOzcm7Gnm6R8zE9eFgulF3sNcFDqV5y0PNVmNyfh/L
-         V8DZwEZVjCccKc1ykAeyg3v0v6+hfjk7NNEZybqr1FDFWFP86XErLBf4mQjnW4ZINtJ7
-         Kq1V2cQ116vH4L57sfy7Cn3g9yGY6zIeSTvgG6zu7zJtYMgPDWZ55SnBTAK0jDgn3w/d
-         Qxnw==
+        d=1e100.net; s=20230601; t=1710692863; x=1711297663;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1n2WFX+7suz3HRMA03UCKEjbkhnw9bIPtT5LjeIC65w=;
+        b=GSIDcXtCZcuBsCb0xg/RRb01mJKqqci/XmkGarm9K0nXr5ahAfiljPWsOmJEoVujOJ
+         mCpJgMpu8Zye4EKqgT46Ocry7FuUVk+hnZHpO+qYhCR7nvRg/UoEn5jRCex6f9zK1lRT
+         FWNzEpV3m+E8CcJe8WdlIg03AQh2v3LQDzgaqRgq7h8H0iFJqpJzs79TrCGKLj4U1+et
+         s91R+jc+AutkQUvrVdv/Lrb3M2yGooQGHUq5IaieLl6+o2t/yPq1n0e5DQCULNlLmczK
+         j3W47XcpQacsvn14VEqgnVlRH2dvYD+HpEKaBsL2aOTeyEOBXEg50EkxOEWbikVs/H9S
+         hyHw==
 X-Forwarded-Encrypted: i=1;
- AJvYcCUSuTtwUA/howODJHhMzzvBGaBpEKm9kmjhEN671qFuqwDqI3a7VZqK/2bPKk0+6Tjqe7L90ogUygd7cyyoUM8hqVeiEI7KzARrIAU=
-X-Gm-Message-State: AOJu0YyIfCp1hXJWmIKuzduP8a3ZBvgP+K2l11K6ZVipNmMY0T8ldxM+
-	YyY7L10kXQCRyHudRsGoL+DS3O8sypLQg7VJ2Darc8M6tfnqnJBs2X1SYrc0xug=
+ AJvYcCXzE6uzHmsm65HsM5X/ioZbLq0iLQ1ispvio+ZrhYUO3afJqyCiFMLPI8HVGJDWhB+8ncKZqyIv5RGiEb/v6vfUQybP4KmZO9D5mks=
+X-Gm-Message-State: AOJu0YzJtwEscSPc4XWyv9EuQ+HdFyyYgLzcJjah28KWv8iVbVfue2Z9
+	74uJje02cprE2+pVnDSvZ//2bx8V0Q3BfyK3OWhMS2gDiLB9PIlh8LCPMEV1oqY=
 X-Google-Smtp-Source: 
- AGHT+IEipFXNHf59P5WluE7iQ/3kBfLs5PIin0P/xlpZa4GFaDZZm+qYCD/O/2Py3laPIHZi1RGFeA==
-X-Received: by 2002:a17:906:a44b:b0:a46:98fb:e81a with SMTP id
- cb11-20020a170906a44b00b00a4698fbe81amr3701052ejb.1.1710686763438;
-        Sun, 17 Mar 2024 07:46:03 -0700 (PDT)
+ AGHT+IFUx3DiGw5K8wzzgyv5/heiiNtklq9IaWGxscuOA2ycZY2UvKzdHUAqMl6UtjtfDCPC1JocDw==
+X-Received: by 2002:a17:906:4a04:b0:a46:c022:4d2d with SMTP id
+ w4-20020a1709064a0400b00a46c0224d2dmr140019eju.54.1710692863067;
+        Sun, 17 Mar 2024 09:27:43 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.222.97])
         by smtp.gmail.com with ESMTPSA id
- s10-20020a1709060c0a00b00a44899a44ddsm3890789ejf.11.2024.03.17.07.46.01
+ hy10-20020a1709068a6a00b00a45fcda4782sm3886952ejc.56.2024.03.17.09.27.41
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 17 Mar 2024 07:46:02 -0700 (PDT)
-Message-ID: <83c5f475-6cc5-4084-a54e-1ed7c71735a0@linaro.org>
-Date: Sun, 17 Mar 2024 15:46:00 +0100
+        Sun, 17 Mar 2024 09:27:42 -0700 (PDT)
+Message-ID: <16a22924-054d-4d50-9f32-cc07c0bbbdf4@linaro.org>
+Date: Sun, 17 Mar 2024 17:27:40 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 08/25] ASoC: dt-bindings: meson: g12a-toacodec: add
- support for A1 SoC family
+Subject: Re: [PATCH 13/25] ASoC: dt-bindings: meson: axg-pdm: document
+ 'sysrate' property
+Content-Language: en-US
 To: Jan Dakinevich <jan.dakinevich@salutedevices.com>,
  Neil Armstrong <neil.armstrong@linaro.org>,
  Jerome Brunet <jbrunet@baylibre.com>,
@@ -109,10 +109,9 @@ To: Jan Dakinevich <jan.dakinevich@salutedevices.com>,
  linux-gpio@vger.kernel.org
 Cc: kernel@salutedevices.com
 References: <20240314232201.2102178-1-jan.dakinevich@salutedevices.com>
- <20240314232201.2102178-9-jan.dakinevich@salutedevices.com>
- <f91ea77c-8170-4ae6-850f-3d5715d83855@linaro.org>
- <5a541ea3-ac4b-4606-9b6a-b103084b30b5@salutedevices.com>
-Content-Language: en-US
+ <20240314232201.2102178-14-jan.dakinevich@salutedevices.com>
+ <ca80caab-2664-4797-a222-e14537eea440@linaro.org>
+ <827c4f17-043e-4e09-aea6-0fee22d1b234@salutedevices.com>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -158,11 +157,11 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <5a541ea3-ac4b-4606-9b6a-b103084b30b5@salutedevices.com>
+In-Reply-To: <827c4f17-043e-4e09-aea6-0fee22d1b234@salutedevices.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-ID-Hash: COZ4O6AZW737VSD6OBZCS7B56XDRUJYJ
-X-Message-ID-Hash: COZ4O6AZW737VSD6OBZCS7B56XDRUJYJ
+Message-ID-Hash: 74WWJ4I4VCLSC7MXSKQJBE7RJNVMHB3X
+X-Message-ID-Hash: 74WWJ4I4VCLSC7MXSKQJBE7RJNVMHB3X
 X-MailFrom: krzysztof.kozlowski@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -175,7 +174,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/COZ4O6AZW737VSD6OBZCS7B56XDRUJYJ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/74WWJ4I4VCLSC7MXSKQJBE7RJNVMHB3X/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -184,18 +183,29 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 17/03/2024 15:29, Jan Dakinevich wrote:
-> I mean the following... This commit adds new defines to
-> meson-g12a-toacodec.h header. These defines are used in the following way:
+On 17/03/2024 16:55, Jan Dakinevich wrote:
 > 
-> sound-dai = <&toacodec TOACODEC_IN_A>;
-> sound-dai = <&toacodec TOACODEC_CAPTURE_OUT_A>;
 > 
-> So, can you make an advise how to call something like "&toacodec" to
-> which I declare new parameters.
+> On 3/15/24 13:00, Krzysztof Kozlowski wrote:
+>> On 15/03/2024 00:21, Jan Dakinevich wrote:
+>>> This option allow to redefine the rate of DSP system clock.
+>>
+>> And why is it suitable for bindings? Describe the hardware, not what you
+>> want to do in the driver.
+>>
+> 
+> What do you mean? I am adding some new property and should describe it
+> in dt-bindinds. Isn't it?
 
-&toacodec is phandle but it is not really relevant here. You should
-explain what these defines are. DAI ids?
+No, if the property is not suitable for bindings, you should not add it
+in the first place. So again: explain what sort of hardware, not driver,
+problem you are solving here, so we can understand why do you need new
+property. Otherwise use existing properties or no properties, because we
+do not define all possible clocks in the bindings.
+
+Let's be clear: with such commit msg explanation as you have, my answer
+is: no, driver should set clock frequency and you do not need this
+property at all.
 
 Best regards,
 Krzysztof
