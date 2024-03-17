@@ -4,104 +4,108 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6A5B6C54E60
-	for <alsa-devel@archiver.kernel.org>; Sun, 17 Mar 2024 09:05:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 377E2C54E67
+	for <alsa-devel@archiver.kernel.org>; Sun, 17 Mar 2024 09:05:54 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 590BD2BB6;
-	Sun, 17 Mar 2024 10:05:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 590BD2BB6
+	by alsa0.perex.cz (Postfix) with ESMTPS id A95532389;
+	Sun, 17 Mar 2024 10:05:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A95532389
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1710666336;
-	bh=4wRJFN6IXBfIiauJKNPViO/VAlzpwd79IT7rJ8dvJv0=;
-	h=From:To:Cc:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
+	s=default; t=1710666352;
+	bh=aCT0vUa9iGG4jg2bvIm4ZCdWt/b43G+VBuROresZ9VA=;
+	h=Date:From:Subject:To:Cc:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=pJN0yi+CFjqbTdIi974/UgO94EFBtfL9sYKo0rORuNcJ3z1oKa6HLRfuHTk2YJdgi
-	 x2zfoCLtAlG4GMLxyCo16sAbNHUe0l3xwO1Yi6hr9bcyEIIgJK8S2IiemtjoFovz2i
-	 gVUWgvcWGSNck3vIgNnEBMz5OFr2CWMIdONTZFDw=
+	b=qajuUaYpWkFDHlgIObMc+TucylpZ1mlpZYJjKp+sc2ndgqeC9eK8PBgtJaLVV9blQ
+	 n3OkzzvzbXDHbCWnihodoiq0+WBDyEZ/1vj6FhwCIj2Y2Vqm/1qK+bTepi3W+XrCAa
+	 5gK8VW1G2qFBiNR+DHMeCBDYNggYUv4j93L7bcyE=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 06302F80604; Sun, 17 Mar 2024 10:03:16 +0100 (CET)
+	id 5296DF806D3; Sun, 17 Mar 2024 10:03:21 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1CA25F806EF;
-	Sun, 17 Mar 2024 10:03:16 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3BC9BF805F4;
+	Sun, 17 Mar 2024 10:03:17 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 31539F8028D; Sat, 16 Mar 2024 10:43:38 +0100 (CET)
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com
- [IPv6:2a00:1450:4864:20::22e])
+	id 4BEB8F804E7; Sun, 17 Mar 2024 03:05:00 +0100 (CET)
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com
+ [IPv6:2607:f8b0:4864:20::629])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 2EE8EF80088
-	for <alsa-devel@alsa-project.org>; Sat, 16 Mar 2024 10:43:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2EE8EF80088
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9E770F80088
+	for <alsa-devel@alsa-project.org>; Sun, 17 Mar 2024 03:04:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9E770F80088
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20230601 header.b=DjC1GwtU
-Received: by mail-lj1-x22e.google.com with SMTP id
- 38308e7fff4ca-2d2509c66daso38505541fa.3
+ unprotected) header.d=cpp-in.20230601.gappssmtp.com header.i=@cpp-in.20230601.gappssmtp.com
+ header.a=rsa-sha256 header.s=20230601 header.b=yaO3Pawi
+Received: by mail-pl1-x629.google.com with SMTP id
+ d9443c01a7336-1dddbe47ac1so23068185ad.1
         for <alsa-devel@alsa-project.org>;
- Sat, 16 Mar 2024 02:43:28 -0700 (PDT)
+ Sat, 16 Mar 2024 19:04:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710582207; x=1711187007;
- darn=alsa-project.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=aXpQc7xpGdduCJ7w/YzFGyfHXDRiwkRakFMzzDur64Q=;
-        b=DjC1GwtU5V3LPV41wiioovqzflAwk/7adejDFxNKYGlmvX45QS1YdkLXerrgJ00BLz
-         dsEDcbxPRsRxmFtlsHcFkzlHnT9wj//8ab0spvwiWj3X//Rg4UoMC/nfq1129zTQDOnY
-         /8sZKkcklgRX57lqB6E3cRDnnQdJ23bk+u7W//DQU6ro1rW0kUwuLaMNRXNLwh0WqWoQ
-         PFFZJN6CYSmqdxFlycEGHQQjyTNkHn3sl9hMmj+Fsj5fL9ATz+/iMVCF+uPFynpkoAIv
-         sHd5jLmhZHbIunLZPefBcBCHhdxAmZuIYzP+X7TIJ0OODNByBlJMhUMu7ig0vvJYHRoA
-         A4YA==
+        d=cpp-in.20230601.gappssmtp.com; s=20230601; t=1710641090;
+ x=1711245890; darn=alsa-project.org;
+        h=content-transfer-encoding:content-language:cc:to:subject:from
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IWtXa4epYbJQbXxdWpC2jiOsOGSFUbjYRhlCuBfpHew=;
+        b=yaO3PawinpvPQlI7lrbVZKF3wr9S1MwX8Hbf6cCsG175SqxuIaGZ8vXwvmF35wGBZt
+         +cRphUC+8/YrC0Uvupuan7dHaxxWN2t20aqWoI9tg4vcYaTTpWgozlA2H3WJeMfQVWAZ
+         A+sZxioU0QOCmrZvSPwqHrf+hqN3rf7jviq4LGnoZ2+Ic814+AqGBdPuD4OVgvr5+NdS
+         2B2s4eAL8hboQnsnjRIjSr0qEy3QZviYqOil7zYNKEz7rQKNUbZWEwfyTEWAtq6jmG3I
+         cdgndWdXzTiIJaMqAGKcmoXiPq1XWn8L2mbwBUxJZId2SwteHIc15i3VZ8Vt016sR4Gy
+         2zMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710582207; x=1711187007;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=aXpQc7xpGdduCJ7w/YzFGyfHXDRiwkRakFMzzDur64Q=;
-        b=Fyq+ldz9FRDv7xIDTpM0BCzgivT9A3i/B+U9+g0e71jDVLlvlb8ert71yGYAI2n81W
-         yUQaUcTLtgt7FFh3GdS4Mp9LHvFgfyzddH0bDv4BPJGPvQZITxsLDzuPmmReZgwysT09
-         gsZNwLJPaikZazuVMetMH0dll+9Q3jxfmQs3N5/TbzLqCbgQfrtDYSP4Ty9FEHd2MCrY
-         XUjatLqRa42Rw3q1yCjjc/4uT0qvQgxwzTFMH2dH8Aa7bbWQ/yz01Xi8rDySytQJqvwU
-         yI2SDiFfDvdH0npIri7TflW0Bhr04ERE2wHhepZxPQWXpABsTjHILMQd9UKDsV8QLETE
-         huJw==
-X-Gm-Message-State: AOJu0YyzCVJI+Nvm0CMeLIcoH3Pdo+hwdUHBM7XNoMdhz3Pr8KHkYcWU
-	9JePQ6OcCgDmJk4peeJE0NcwnXdTYsQXTcRsMVF5iWRxt/jbXO0W
+        d=1e100.net; s=20230601; t=1710641090; x=1711245890;
+        h=content-transfer-encoding:content-language:cc:to:subject:from
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=IWtXa4epYbJQbXxdWpC2jiOsOGSFUbjYRhlCuBfpHew=;
+        b=G6efobLibREQMmiZcTv1WKFOl14qRXsSiBTogmlePEsOZtSZsSYHDeZHoXyCfQHwGV
+         7hDAFS+cNW3//Tq/VqGACBOvZwCHZ3tEOj/PlMM7z0HtlBq+CnA6WjpQBA7/gTCFkh8o
+         VnSKspud4JRFVrbAxXhChP9LZJblBf7Cax7MutpbXUBobXMjAQgDGo+aV9cHKMovl2++
+         /oWmZ8cK6eDS3rMGVS6QXpt61g6xSuW2zTHuJT4S6jjSL5vwg7TjPrOFZhfTasVoT7d/
+         ArjlJNmZyUI07rmUl7yjXLt5/JpS5PWUCXNSOqRvgFqDhtbXH+gvQgETFIZbVAu3HrvF
+         EjGQ==
+X-Gm-Message-State: AOJu0YxeQkzX4uqj9Z/mUcmfIZ5zfiNt3Spzv4fv4eGt8Sy+PpIsxft+
+	Q8+yXaQOcmFjvFxPhtdO3tip3lVJMShGN8QRUKSBzCa8iSBSviPjYHKSReNjoA==
 X-Google-Smtp-Source: 
- AGHT+IGmyz/fcATvO+Tv2wCPoiXnHeamAhSlCJnPcXEq1U9ZXUP7l48mVQVvnhmTmMaFDRW7GdnKeQ==
-X-Received: by 2002:ac2:4acd:0:b0:513:cf5a:f872 with SMTP id
- m13-20020ac24acd000000b00513cf5af872mr4321013lfp.69.1710582206718;
-        Sat, 16 Mar 2024 02:43:26 -0700 (PDT)
-Received: from localhost.localdomain
- (51-171-224-185-dynamic.agg7.kby.lmk-mlw.eircom.net. [51.171.224.185])
-        by smtp.googlemail.com with ESMTPSA id
- l21-20020a056000023500b0033ec312cd8asm5068843wrz.33.2024.03.16.02.43.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 16 Mar 2024 02:43:26 -0700 (PDT)
-From: Ian Murphy <iano200@gmail.com>
-To: tiwai@suse.com
-Cc: alsa-devel@alsa-project.org,
-	linux-sound@vger.kernel.org,
-	Ian Murphy <iano200@gmail.com>
-Subject: [PATCH] ALSA: hda/realtek: add in quirk for Acer Swift Go 16 -
- SFG16-71
-Date: Sat, 16 Mar 2024 09:41:57 +0000
-Message-ID: <20240316094157.13890-1-iano200@gmail.com>
-X-Mailer: git-send-email 2.44.0
+ AGHT+IGJfXs2YCoHgkgwujxBkyiSGmRp8KbhcbDvqGktBTuf7mgurovld+JrdIomojDkTkRDlF31Vw==
+X-Received: by 2002:a17:902:da8d:b0:1e0:16e0:b28e with SMTP id
+ j13-20020a170902da8d00b001e016e0b28emr210988plx.34.1710641090085;
+        Sat, 16 Mar 2024 19:04:50 -0700 (PDT)
+Received: from [192.168.3.16] (mx-ll-183.89.30-58.dynamic.3bb.co.th.
+ [183.89.30.58])
+        by smtp.gmail.com with ESMTPSA id
+ v11-20020a170902d68b00b001defd3e64d5sm2881143ply.263.2024.03.16.19.04.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 16 Mar 2024 19:04:49 -0700 (PDT)
+Message-ID: <570989e3-299f-4617-adde-b6b8d1e06277@cpp.in>
+Date: Sun, 17 Mar 2024 05:04:44 +0300
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-MailFrom: iano200@gmail.com
+User-Agent: Mozilla Thunderbird
+From: Anthony I Gilea <i@cpp.in>
+Subject: [PATCH] ALSA: hda: cs35l41: Support HP Spectre x360 14 eu0000
+To: James Schulman <james.schulman@cirrus.com>,
+ David Rhodes <david.rhodes@cirrus.com>,
+ Richard Fitzgerald <rf@opensource.cirrus.com>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
+ linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-MailFrom: i@cpp.in
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: BTMRYBMPAYNXXZD5SHMFYKSQ27U3UCZT
-X-Message-ID-Hash: BTMRYBMPAYNXXZD5SHMFYKSQ27U3UCZT
-X-Mailman-Approved-At: Sun, 17 Mar 2024 08:56:46 +0000
+Message-ID-Hash: FJGPXKRU7VQM2TSVRVSSGEHK4LI4SSB2
+X-Message-ID-Hash: FJGPXKRU7VQM2TSVRVSSGEHK4LI4SSB2
+X-Mailman-Approved-At: Sun, 17 Mar 2024 08:56:47 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
@@ -114,62 +118,34 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Keyboard has an LED that is ON/OFF when mic is muted/active
- - LED is controlled by GPIO pin
- - Patch enables led to appear in /sys/class/leds/ as hda::micmute
- - Enables LED when mic is MUTED
- - Disables LED when mic is active
+The new HP Spectre x360 has _DSD for CS35L41 amps in ACPI but
+reset-gpios and spk-id-gpios are merged into single Package of size 4 so
+_DSD parser fails to parse it.
 
-Signed-off-by: Ian Murphy <iano200@gmail.com>
+Overwrite broken _DSD with the correct configuration.
+
+Signed-off-by: Anthony I Gilea <i@cpp.in>
 ---
- sound/pci/hda/patch_realtek.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+  sound/pci/hda/cs35l41_hda_property.c | 2 ++
+  1 file changed, 2 insertions(+)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index a91d5ec29bfb..05c685485606 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -6891,6 +6891,13 @@ static void yoga7_14arb7_fixup_i2c(struct hda_codec *cdc,
- 	comp_generic_fixup(cdc, action, "i2c", "INT8866", "-%s:00", 1);
- }
- 
-+static void alc256_fixup_acer_sfg16_micmute_led(struct hda_codec *codec,
-+			       const struct hda_fixup *fix, int action)
-+{
-+       alc_fixup_hp_gpio_led(codec, action, 0, 0x04);
-+}
-+
-+
- /* for alc295_fixup_hp_top_speakers */
- #include "hp_x360_helper.c"
- 
-@@ -7374,6 +7381,7 @@ enum {
- 	ALC289_FIXUP_DELL_CS35L41_SPI_2,
- 	ALC294_FIXUP_CS35L41_I2C_2,
- 	ALC245_FIXUP_CS35L56_SPI_4_HP_GPIO_LED,
-+	ALC256_FIXUP_ACER_SFG16_MICMUTE_LED,
- };
- 
- /* A special fixup for Lenovo C940 and Yoga Duet 7;
-@@ -9569,6 +9577,10 @@ static const struct hda_fixup alc269_fixups[] = {
- 		.chained = true,
- 		.chain_id = ALC285_FIXUP_HP_GPIO_LED,
- 	},
-+	[ALC256_FIXUP_ACER_SFG16_MICMUTE_LED] = {
-+		.type = HDA_FIXUP_FUNC,
-+		.v.func = alc256_fixup_acer_sfg16_micmute_led,
-+	},
- };
- 
- static const struct snd_pci_quirk alc269_fixup_tbl[] = {
-@@ -9612,6 +9624,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1025, 0x1430, "Acer TravelMate B311R-31", ALC256_FIXUP_ACER_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1025, 0x1466, "Acer Aspire A515-56", ALC255_FIXUP_ACER_HEADPHONE_AND_MIC),
- 	SND_PCI_QUIRK(0x1025, 0x1534, "Acer Predator PH315-54", ALC255_FIXUP_ACER_MIC_NO_PRESENCE),
-+	SND_PCI_QUIRK(0x1025, 0x169a, "Acer Swift SFG16", ALC256_FIXUP_ACER_SFG16_MICMUTE_LED),
- 	SND_PCI_QUIRK(0x1028, 0x0470, "Dell M101z", ALC269_FIXUP_DELL_M101Z),
- 	SND_PCI_QUIRK(0x1028, 0x053c, "Dell Latitude E5430", ALC292_FIXUP_DELL_E7X),
- 	SND_PCI_QUIRK(0x1028, 0x054b, "Dell XPS one 2710", ALC275_FIXUP_DELL_XPS),
--- 
-2.44.0
+diff --ruNp a/sound/pci/hda/cs35l41_hda_property.c b/sound/pci/hda/cs35l41_hda_property.c
 
+--- a/sound/pci/hda/cs35l41_hda_property.c	2024-03-10 23:38:09.000000000 +0300
++++ b/sound/pci/hda/cs35l41_hda_property.c	2024-03-14 18:22:01.887566917 +0300
+@@ -64,6 +64,7 @@ static const struct cs35l41_config cs35l
+  	{ "103C8BE5", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
+  	{ "103C8BE6", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
+  	{ "103C8B3A", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
++	{ "103C8C15", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
+  	{ "104312AF", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 1000, 4500, 24 },
+  	{ "10431433", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4500, 24 },
+  	{ "10431463", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4500, 24 },
+@@ -405,6 +406,7 @@ static const struct cs35l41_prop_model c
+  	{ "CSC3551", "103C8BE5", generic_dsd_config },
+  	{ "CSC3551", "103C8BE6", generic_dsd_config },
+  	{ "CSC3551", "103C8B3A", generic_dsd_config },
++	{ "CSC3551", "103C8C15", generic_dsd_config },
+  	{ "CSC3551", "104312AF", generic_dsd_config },
+  	{ "CSC3551", "10431433", generic_dsd_config },
+  	{ "CSC3551", "10431463", generic_dsd_config },
