@@ -4,104 +4,131 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8BE1FC54E58
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Mar 2024 09:14:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0CD2CC6FD1F
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Mar 2024 13:58:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4A57B1928;
-	Wed, 20 Mar 2024 10:14:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4A57B1928
+	by alsa0.perex.cz (Postfix) with ESMTPS id 69A1D1530;
+	Wed, 20 Mar 2024 14:58:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 69A1D1530
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1710926067;
-	bh=1b7UUVqZhSlBq9mJniOZ3VNSayqiZODVLYG4tG/MnPE=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:List-Id:
+	s=default; t=1710943119;
+	bh=xAVsxMnJoqTUvzQY5QFOBDRP+AQP097SoH7H4Z6KpPk=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=q5sXI4mPqVfO4jLblxecpklyVUZp7hCZp7Uto/814JD5jYueixkD9xKncSk37qSWO
-	 cCoyfW+O5mg+QK8Wp5Bww8X7RC6ee+VgjRa5+hC6+7KeZfuE71wvsvyJ+mM20uSZjw
-	 64yOfyk+PCLTR4hiN3qV5V5OU5/LrjFibLhbdRdc=
+	b=FKbL6v6NUP9kkcGIah0MFEGfDHv2WQulf5bbPzv6T7FHeXbsKGB0ld4JYroJlXPBd
+	 AvzDxZyQYZEnwSrcOcu0YXbl2o/t23Zz4JWc1UBeErtGLdiJN1Te9MLUmSteg7mwjl
+	 9WNO+ne6zm1zjPWd+NpYU//5+/6A/BO6/qYitvVk=
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BF5ADF80589; Wed, 20 Mar 2024 10:13:55 +0100 (CET)
+	id 03D8BF80587; Wed, 20 Mar 2024 14:58:05 +0100 (CET)
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id AAC0FF805A8;
-	Wed, 20 Mar 2024 10:13:53 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 074BAF805AB;
+	Wed, 20 Mar 2024 14:58:05 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C0C83F804E7; Wed, 20 Mar 2024 10:06:40 +0100 (CET)
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com
- [IPv6:2a00:1098:ed:100::25])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 8EBECF804E7; Sun, 17 Mar 2024 15:17:59 +0100 (CET)
+Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 39AF9F80088
-	for <alsa-devel@alsa-project.org>; Wed, 20 Mar 2024 10:06:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 39AF9F80088
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9F7D6F8025F
+	for <alsa-devel@alsa-project.org>; Sun, 17 Mar 2024 15:17:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9F7D6F8025F
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=collabora.com header.i=@collabora.com
- header.a=rsa-sha256 header.s=mail header.b=YhKisc5C
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1710925582;
-	bh=1b7UUVqZhSlBq9mJniOZ3VNSayqiZODVLYG4tG/MnPE=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=YhKisc5COUh8pVMqFr3PQ/ZSXO6/2wVCZrtESl/hZAf2/1QOMbnQO7Q/p+5ID19Gj
-	 yaBzRidGhB15incFy1i6V+sXMWgIZVWdfKz9UAj9KJwm2/3PDDCIO4mqgki8/fjyVu
-	 I9gxvagMlRm+T8l8FpVwztWEBmNEJVsFbm8GWNybZRAxlmDolc86jhZe5y3VlXd9bh
-	 cN8tQDwiln2aI4C5QZTWXsG7K9r19bLqXRhvURbE8Mh882IeF+Tevei4hjpMkyFP91
-	 vg2XER/kL9bVO3n6PBkHBRgWsjp2cA4VUwp6/vRHbqisWqLDeQg1QuYQ0oOqeaRvUa
-	 G44qG4toMIBTg==
-Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+ unprotected) header.d=salutedevices.com header.i=@salutedevices.com
+ header.a=rsa-sha256 header.s=mail header.b=uv7Lm/X9
+Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
+	by mx1.sberdevices.ru (Postfix) with ESMTP id EEF53100004;
+	Sun, 17 Mar 2024 17:17:55 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru EEF53100004
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+	s=mail; t=1710685075;
+	bh=SQRSKK7y7FzIxWfxLiQrXC7XGIdk++wvMoC5iAR3Cb4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
+	b=uv7Lm/X9X5z1ZUSUWfoS0ttfd/72rpm6SUnpRRaNa24NwI+up88M2sXcGcvi9f9YN
+	 Jig10wMsHnHwV3wanec2UWaKwWicjrcIw9dzuHtmOHhcc7uYxFsB3ysm6RbjCzKe6y
+	 jFKr94t1wofL3qvT2jXHDt0cZ9TG2LvhthtFoXo8mnq8bJQBPmuOH+d043V2q04tZW
+	 98zrHAAMKuh6hEZvYg4S/n02z1WyFyc8uh7Y4DQZO2og/ahv9LdqCGSLBmonIYf9hv
+	 V9kuUDEqBFP9SD9NKttW20YDJR+hHD4daPmB+e6xNuANLo3Bwgo7cs0+9iYR4UQ95k
+	 jIktZ299+OK9Q==
+Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru
+ [172.16.192.103])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id D272337813C4;
-	Wed, 20 Mar 2024 09:06:20 +0000 (UTC)
-Message-ID: <6273f41a-1ab7-40d8-a9ae-262b7cab2981@collabora.com>
-Date: Wed, 20 Mar 2024 10:06:20 +0100
+	by mx1.sberdevices.ru (Postfix) with ESMTPS;
+	Sun, 17 Mar 2024 17:17:55 +0300 (MSK)
+Received: from [172.28.160.49] (100.64.160.123) by
+ p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Sun, 17 Mar 2024 17:17:55 +0300
+Message-ID: <cbfd9c66-cca5-49f5-9468-43710c48518e@salutedevices.com>
+Date: Sun, 17 Mar 2024 17:17:12 +0300
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ASoC: SOF: Remove libraries from topology lookups
-To: Curtis Malainey <cujomalainey@google.com>
-Cc: cujomalainey@chromium.org, alsa-devel@alsa-project.org,
- Wojciech Macek <wmacek@google.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Daniel Baluta <daniel.baluta@nxp.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>, Mark Brown
- <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, Matthias Brugger <matthias.bgg@gmail.com>,
- Rander Wang <rander.wang@intel.com>, Trevor Wu <trevor.wu@mediatek.com>,
- =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-References: <20240318183004.3976923-1-cujomalainey@chromium.org>
- <b1cc3856-fd06-4f3a-b7ff-4dabf249b68c@collabora.com>
- <CAOReqxgt5HFDFmW=mB0=hq04278McFVCeGuz08_G=v5Fs0NWHQ@mail.gmail.com>
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Subject: Re: [PATCH 01/25] clk: meson: a1: restrict an amount of 'hifi_pll'
+ params
 Content-Language: en-US
-In-Reply-To: 
- <CAOReqxgt5HFDFmW=mB0=hq04278McFVCeGuz08_G=v5Fs0NWHQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: I2O6XNIGHE3NV5HGLJTSMF3ILZ6LDVXJ
-X-Message-ID-Hash: I2O6XNIGHE3NV5HGLJTSMF3ILZ6LDVXJ
-X-MailFrom: angelogioacchino.delregno@collabora.com
+To: Jerome Brunet <jbrunet@baylibre.com>
+CC: Neil Armstrong <neil.armstrong@linaro.org>, Michael Turquette
+	<mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, Rob Herring
+	<robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>,
+	Kevin Hilman <khilman@baylibre.com>, Martin Blumenstingl
+	<martin.blumenstingl@googlemail.com>, Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>, Linus Walleij <linus.walleij@linaro.org>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	<linux-amlogic@lists.infradead.org>, <linux-clk@vger.kernel.org>,
+	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <alsa-devel@alsa-project.org>,
+	<linux-sound@vger.kernel.org>, <linux-gpio@vger.kernel.org>,
+	<kernel@salutedevices.com>
+References: <20240314232201.2102178-1-jan.dakinevich@salutedevices.com>
+ <20240314232201.2102178-2-jan.dakinevich@salutedevices.com>
+ <1j8r2jj24k.fsf@starbuckisacylon.baylibre.com>
+From: Jan Dakinevich <jan.dakinevich@salutedevices.com>
+In-Reply-To: <1j8r2jj24k.fsf@starbuckisacylon.baylibre.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
+ p-i-exch-sc-m02.sberdevices.ru (172.16.192.103)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 183875 [Feb 29 2024]
+X-KSMG-AntiSpam-Version: 6.1.0.3
+X-KSMG-AntiSpam-Envelope-From: YVDakinevich@sberdevices.ru
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 7 0.3.7
+ 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a, {Tracking_smtp_not_equal_from},
+ {Tracking_from_domain_doesnt_match_to}, FromAlignment: n,
+ {Tracking_smtp_domain_mismatch}, {Tracking_smtp_domain_2level_mismatch},
+ ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960,
+ bases: 2024/02/29 19:21:00 #23899999
+X-KSMG-AntiVirus-Status: Clean, skipped
+X-MailFrom: YVDakinevich@sberdevices.ru
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: PB7X4CQXWSNDXYYQLUSOKZQGD3DXB63C
+X-Message-ID-Hash: PB7X4CQXWSNDXYYQLUSOKZQGD3DXB63C
+X-Mailman-Approved-At: Wed, 20 Mar 2024 13:56:56 +0000
 X-Mailman-Version: 3.3.9
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: <>
+Archived-At: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PB7X4CQXWSNDXYYQLUSOKZQGD3DXB63C/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -110,35 +137,71 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Il 19/03/24 16:51, Curtis Malainey ha scritto:
-> On Tue, Mar 19, 2024 at 4:07 AM AngeloGioacchino Del Regno
-> <angelogioacchino.delregno@collabora.com> wrote:
->>
->> Il 18/03/24 19:29, cujomalainey@chromium.org ha scritto:
->>> From: Curtis Malainey <cujomalainey@chromium.org>
->>>
->>> Default firmware shipped in open source are not licensed for 3P
->>> libraries, therefore topologies should not reference them.
->>>
->>> If a OS wants to use 3P (that they have licensed) then they should use
->>> the appropriate topology override mechanisms.
->>
->> That's ok, but still needs the sof-mt8195-mt6359-rt1019-rt5682.tplg firmware
->> in linux-firmware, or this change breaks sound.
->>
->> Regards,
->> Angelo
->>
+
+
+On 3/15/24 11:58, Jerome Brunet wrote:
 > 
-> Got any docs I can refer to? I have never contributed to
-> linux-firmware. If you are willing to send the update on my behalf
-> that would be fine by me as well.
+> On Fri 15 Mar 2024 at 02:21, Jan Dakinevich <jan.dakinevich@salutedevices.com> wrote:
+> 
+>> Existing values were insufficient to produce accurate clock for audio
+>> devices. New values are safe and most suitable to produce 48000Hz sample
+>> rate.
+> 
+> The hifi pll is not about 48k only. I see no reason to restrict the PLL
+> to a single setting.
+> > You've provided no justification why the PLL driver can't reach the same
+> setting for 48k. The setting below is just the crude part. the fine
+> tuning is done done with the frac parameter so I doubt this provides a
+> more accurate rate.
+> 
 
-There you go:
-https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git/tree/README.md
+You are right, it is not about 48k only. However, there are two issues.
 
-Anyway, can you please also describe what is the appropriate topology
-override mechanism in the description of this commit?
+First, indeed, I could just extend the range of multipliers to 1..255.
+But I am unsure if hifi_pll is able to handle whole range of
+mulptipliers. The value 128 is taken from Amlogic's branch, and I am
+pretty sure that it works.
 
-Thanks,
-Angelo
+Second, unfortunately frac parameter currently doesn't work. When frac
+is used enabling of hifi_pll fails in meson_clk_pll_wait_lock(). I see
+it when try to use 44100Hz and multipliers' range is set to 1..255. So,
+support of other rates than 48k requires extra effort.
+
+>>
+>> Signed-off-by: Jan Dakinevich <jan.dakinevich@salutedevices.com>
+>> ---
+>>  drivers/clk/meson/a1-pll.c | 8 ++++----
+>>  1 file changed, 4 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/drivers/clk/meson/a1-pll.c b/drivers/clk/meson/a1-pll.c
+>> index 4325e8a6a3ef..00e06d03445b 100644
+>> --- a/drivers/clk/meson/a1-pll.c
+>> +++ b/drivers/clk/meson/a1-pll.c
+>> @@ -74,9 +74,9 @@ static struct clk_regmap fixed_pll = {
+>>  	},
+>>  };
+>>  
+>> -static const struct pll_mult_range hifi_pll_mult_range = {
+>> -	.min = 32,
+>> -	.max = 64,
+>> +static const struct pll_params_table hifi_pll_params_table[] = {
+>> +	PLL_PARAMS(128, 5),
+>> +	{ },
+>>  };
+>>  
+>>  static const struct reg_sequence hifi_init_regs[] = {
+>> @@ -124,7 +124,7 @@ static struct clk_regmap hifi_pll = {
+>>  			.shift   = 6,
+>>  			.width   = 1,
+>>  		},
+>> -		.range = &hifi_pll_mult_range,
+>> +		.table = hifi_pll_params_table,
+>>  		.init_regs = hifi_init_regs,
+>>  		.init_count = ARRAY_SIZE(hifi_init_regs),
+>>  	},
+> 
+> 
+
+-- 
+Best regards
+Jan Dakinevich
